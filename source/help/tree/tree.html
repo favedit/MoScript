@@ -1,0 +1,98 @@
+<HTML>
+<HEAD>
+<TITLE>Popup Example</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<LINK rel='stylesheet' href='../../../system/acs/control.css' type='text/css'>
+<LINK rel='stylesheet' href='../../../system/acs/lang_jp.css' type='text/css'>
+
+<SCRIPT language='javascript' src='../../runtime.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../0-runtime/4 - RXml.js'></SCRIPT>
+
+<!--
+<SCRIPT language='javascript' src='../../base.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../core.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ctl.tree.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../8-context/context_cn.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../1-lang/TXmlConnect.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.tree/FTreeView.js'></SCRIPT>
+-->
+
+<SCRIPT>
+RContext.contextPath = '';
+RContext.contextTag = '/system';
+RContext.themeId = '00';
+RContext.languageId = 'cn';
+RContext.uriIcon = '/system/ars/icon';
+RContext.uriPicture = '/system/ars/pic';
+</SCRIPT>
+</HEAD>
+
+<SCRIPT>
+function onCnn(){
+   var ce = new TEvent(this, EXmlEvent.Send);
+   ce.url = 'tree.xml';
+   ce.document = new TXmlDoc();
+	ce.onLoad = function(){
+			_id1.innerText = this.document.xml();
+			_id2.innerText = this.document.dump();
+		}
+
+   var xc = RConsole.find(FXmlConsole);
+   xc.process(ce);
+}
+
+function onShow(){
+	tree.reloadNode();
+}
+
+function tvClick(a,b){
+   //alert(b.dump())
+   //RDump.dump(_id3, tree);
+   //_id3.innerHTML = '';
+   //RDump.dump(_id3, b);
+}
+function tvLoaded(a,b){
+   //RDump.dump(_id3, tree);
+   //RDump.dump(_id3, b);
+}
+
+var tree = null;
+function _onload(){
+   //RGlobal.path = '../..';
+   var treeConfig = RXml.makeNode(xTree);
+   //tree = RControl.create(treeConfig, _idp);
+   //tree.lsnsLoaded.push(new TListener(null, tvLoaded));
+   //tree.lsnsClick.push(new TListener(null, tvClick));
+   //tree.loadDocument(RXml.makeDocument(oMetaData));
+	//tree.connect('node.xml');
+   //tree.connect('http://localhost:8080/mylife/system.monitor.objects.ws');
+   //tree.connect('http://localhost:88/ajs/help/tree/node.xml');
+
+	//RDump.dump(_id3, tree);
+   //var c = document.createElement("INPUT");
+   RDump.dump(treeConfig, _id3);
+}
+</SCRIPT>
+
+<SCRIPT id="xTree" type="application/xml">
+   <TreeView>
+		<Column name='tcNode' icon='db.tab' caption='Caption'/>
+   </TreeView>
+</SCRIPT>
+
+<BODY onload='_onload()'>
+<input type='button' value='Connect' onclick='onCnn()'>
+<input type='button' value='Show' onclick='onShow()'>
+<HR>
+<DIV id='_idp' nowrap></DIV><HR>
+<DIV id='_id0' nowrap></DIV>
+<DIV id='_id1' nowrap></DIV>
+<DIV id='_id2' nowrap></DIV>
+<DIV id='_id3' nowrap></DIV>
+<DIV id='_log' nowrap></DIV><HR>
+</BODY>
+
+</HTML>

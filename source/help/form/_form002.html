@@ -1,0 +1,104 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../../../acs/lang_jp.css' type="text/css" media="all"/>
+</HEAD>
+
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var form = null;
+var toolbar = null;
+function doAction(action){
+	if(action == 'update'){
+		form.dsUpdate('#update.xml');
+	}
+	//RConsole.find(FDatasetConsole).doAction(action);
+}
+function doMove(action){
+	RConsole.find(FDatasetConsole).movePosition(action);
+}
+function omo(){
+	alert(this);
+}
+function _load(){
+	RGlobal.setContext('jp', '../../..', '../..');
+	RWindow.connect(window);
+
+	form = RControl.fromXml(xForm, _id_form);
+	//form.dsFetch('#ds-nodetype.xml');
+	//form.setAction(EAction.Update);
+
+	//RWindow.setEnable(false);
+
+	//form.loadValue(RXml.makeNode(xValue))
+
+	//alert(form.hPanel.outerHTML)
+
+   //form.name = 'system.form.frmField';
+	//form.connect('frmField.xml', 'find', 'find');
+   //form.connect('http://127.0.0.1:8080/mylife/system.web.form.ws', 'find', 'find');
+
+	//form = RControl.create(RXml.makeNode(oMetaData), _idp);
+	//form.doUpdate();
+	//RDump.dump(_id3, form.components.get('dpSelect'))
+}
+</SCRIPT>
+<!-- Environment --------------------------------------------->
+<XML ID="xEnvironment">
+<Environment form_name="design.webform.ColumnForm" sel_type="columnedit" sel_form="logic.common.LanguageList" sel_control="BQAAAO3oJVsYAQAA"/>
+</XML>
+<!-- Form ---------------------------------------------------->
+<XML id='xForm'>
+<WebForm name="system.form.frmColumn" action="/system/design/webform/WebForm.wa?type=field" dataset="com.navigator.node.type">
+	<Select name="cboType" label="类型" width="250" nowrap="Y" label_width="80" data_name="type" data_type="string" disp_access="LIUD" edit_width="140" edit_access="IU" valid_access="IU" edit_refer="system.control.ControlType">
+		<Item label="文本输入框" value="Edit"/>
+		<Item label="数字输入框" value="Number"/>
+		<Item label="单选框" value="Check"/>
+		<Item label="下拉选择框" value="Select"/>
+		<Item label="时间选取框" value="Datepicker"/>
+		<Item label="分割线" value="Split"/>
+		<Item label="数据命令" value="DataAction"/>
+		<Item label="数据列" value="Column"/>
+		<Item label="数据列-文本框" value="ColumnEdit"/>
+		<Item label="数据列-单选框" value="ColumnCheck"/>
+		<Item label="记录选取框" value="Picker"/>
+		<Item label="多行文本输入框" value="Memo"/>
+	</Select>
+</WebForm></XML>
+<!-- Value --------------------------------------------------->
+<XML ID="xValue">
+<ColumnEdit name="colIsValid" label="有效" type="ColumnEdit" width="40" data_name="IS_VALID" data_type="bool" disp_access="_L___" disp_list="Y" edit_access="IU" edit_insert="Y" edit_update="Y" valid_access="IU" valid_insert="Y" valid_update="Y"/>
+</XML>
+<!-- Body begin ---------------------------------------------->
+<BODY onload="__bodyLoad()" onunload="__bodyUnload()" scroll="no" onload="_load()">
+<FORM method='POST' name="fmMain">
+<INPUT type='hidden' name='_environment'></INPUT>
+
+<TABLE border='0' cellpadding='0' cellspacing='0' width='100%'>
+<TR><TD style='padding:8' valign='top'>
+<!-- Form begin ---------------------------------------------->
+<DIV id='_id_form' style='width:100%;height:100%;overflow:visible'></DIV><br>
+<!-- Form end ------------------------------------------------>
+</TD></TR>
+</TABLE>
+
+</FORM>
+<SCRIPT language='javascript'>
+function __bodyLoad(){
+
+_load()}
+function __bodyUnload(){}
+</SCRIPT>
+</BODY>
+<!-- Body end ------------------------------------------------>
+</HTML>

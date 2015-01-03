@@ -1,0 +1,48 @@
+<SCRIPT src='../../0-runtime/0 - Common.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/1 - ESpace.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TArray.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TAttributes.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TInvoke.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TLoaderListener.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TListener.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TListeners.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TMap.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TSpaceStore.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TString.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/2 - TClass.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/3 - MoJS.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/3 - Runtime.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/4 - RLoader.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/4 - RWindow.sc.js'></SCRIPT>
+<SCRIPT src='../../0-runtime/4 - RClass.sc.js'></SCRIPT>
+<SCRIPT src='../../1-lang/RArray.sc.js'></SCRIPT>
+
+<SCRIPT>
+function onLoadedAll(){
+   var _log = top._log;
+   _log.innerText += '\n Frame all loaded.';
+   RLoader.loaded('frame.all');
+}
+function onLoaded(fname){
+   var _log = top._log;
+   _log.innerText += '\n Frame test js loaded.';
+   RLoader.wait(new TInvoke(RLoader, onLoadedAll), 'frame.catalog', 'frame.details');
+};
+function _load(){
+   var _log = top._log;
+   _log.innerText += '\n Frame loaded.';
+   //
+   //debugger
+   RLoader.load('mobj', 'test.js');
+   RLoader.wait(new TInvoke(RLoader, onLoaded), 'mobj');
+}
+function _unload(){
+   var _log = top._log;
+   _log.innerText += '\n Frame unloaded.';
+}
+</SCRIPT>
+<BODY onload='_load()' onunload='_unload()'>
+<IFRAME id='id_left' src='PageLeft.html'></IFRAME>
+<IFRAME id='id_right' src='PageRight.html'></IFRAME>
+<DIV id='_log'></DIV>
+</BODY>

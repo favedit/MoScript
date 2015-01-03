@@ -1,0 +1,19 @@
+﻿<HTML>
+<HEAD>
+<TITLE>Popup Example</TITLE>
+<SCRIPT LANGUAGE="JScript">
+var oPopup = window.createPopup();
+function ButtonClick()
+{
+var oPopBody = oPopup.document.body;
+oPopBody.style.backgroundColor = "lightyellow";
+oPopBody.style.border = "solid black 1px";
+oPopBody.innerHTML = "Click outside <B>popup</B> to close.";
+oPopup.show(100, 100, 180, 25, document.body);
+}
+</SCRIPT>
+</HEAD>
+<BODY>
+<BUTTON onclick="ButtonClick()">Click Me!</BUTTON>
+</BODY>
+</HTML>

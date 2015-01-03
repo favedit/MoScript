@@ -1,0 +1,122 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../../../acs/lang_jp.css' type="text/css" media="all"/>
+</HEAD>
+
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../lang/TRow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../lang/TDataset.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/MDropable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/MDataset.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/MEditable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FFocusEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../core/RWindow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FDataset.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FMemo.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FMemoEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FSelect.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FSelectEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FCalendar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FCalendarEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPicker.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FForm.js'></SCRIPT>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var form = null;
+var toolbar = null;
+function _dump(o){
+	RDump.dump(_id3, o);
+}
+function doInsert(action){
+	RControl.setAction(EAction.Insert);
+	form.dsInsert('#ds-form001-insert.xml');
+}
+function doUpdate(action){
+	RControl.setAction(EAction.Update);
+	form.dsUpdate('#ds-form001-update.xml');
+}
+function doDelete(action){
+	RControl.setAction(EAction.Delete);
+	form.dsDelete('#ds-form001-delete.xml');
+}
+function doDesignUpdate(){
+	var x = RControl.store(form);
+	alert(x.dump())
+}
+function _load(){
+	RGlobal.setContext('jp', '../../..', '../..');
+	RLog.connect(_log);
+	RWindow.connect(window);
+
+	toolbar = RControl.fromXml(xToolBar, _id_toolbar);
+
+	form = RControl.fromXml(xForm, _id_form);
+	//form.loadValue(RXml.makeNode(xValue))
+	form.dsFetch('#_form-country-ds.xml');
+	//RControl.setAction(EAction.Update);
+
+   //form.name = 'system.form.frmField';
+	//form.connect('frmField.xml', 'find', 'find');
+   //form.connect('http://127.0.0.1:8080/mylife/system.web.form.ws', 'find', 'find');
+
+	//form = RControl.create(RXml.makeNode(oMetaData), _idp);
+	//form.doUpdate();
+	//RDump.dump(_id3, RClass.find(FControl))
+	//RDump.dump(_id3, form.components.get('tfName'))
+	//RDump.dump(_id3, form.components.get('tfName3'))
+	//RDump.dump(_id3, form)
+	//RDump.dump(_id3, toolbar)
+}
+</SCRIPT>
+
+<XML ID="xToolBar">
+	<ToolBar width='100%' disp_access='D'>
+<!--
+		<ToolButton name='btnRefresh' caption='Refresh' icon='tool.refresh'/>
+-->
+		<ToolButton name='btnBack'         caption='Back'    icon='tool.back'/>
+		<ToolButtonSplit/>
+		<ToolButton name='btnInsert'       caption='Insert'  icon='tool.insert' icon_disable='tool.insertd' action='doInsert()'/>
+		<ToolButton name='btnUpdate'       caption='Update'  icon='tool.update' icon_disable='tool.updated' action='doUpdate()'/>
+		<ToolButton name='btnDelete'       caption='Delete'  icon='tool.delete' icon_disable='tool.deleted' action='doDelete()'/>
+<!--
+  		<ToolButtonSplit/>
+		<ToolButtonDrop name='btnActions'  caption='Action'  icon='tool.action' icon_disable='tool.insertd'/>
+		<ToolButtonSplit/>
+		<ToolButton name='btnUpdateDesign'  caption='Update Design'  icon='tool.update' icon_disable='tool.updated' action='doDesignUpdate()'/>
+-->
+	</ToolBar>
+</XML>
+<XML id='xForm'>
+<WebForm name="logic.base.fmwCountry" dataset="base.country">
+	<Picker name="edtName" width="250" nowrap="Y" label="Name" label_width="80" data_name="name" edit_type="edit" edit_width="80"/>
+	<Edit name="edtCode" width="250" label="Code" label_width="80" data_name="code" edit_type="check" edit_width="80" disp_picker='Y'/>
+	<Edit name="edtLabel" width="250" label="Label" label_width="80" data_name="label" edit_type="edit" edit_width="140"/>
+	<Edit name="edtFullName" label="FullName" label_width="80" data_name="full_name" edit_type="edit" edit_width="300"/>
+	<Edit name="edtNote" label="Note" label_width="80" data_name="note" edit_type="memo" edit_width="300"/>
+</WebForm>
+</XML>
+
+<BODY onload='_load()' style='padding:0; margin:8; background-color:#FFFFFF' scroll='no'>
+
+<DIV id='_id_toolbar'></DIV>
+<BR>
+<DIV id='_id_form' style='width:100%;'></DIV><BR>
+
+<DIV id='_log' style='height:200;overflow:auto'></DIV><br>
+<DIV id='_dump'></DIV><br>
+</BODY>
+
+</HTML>

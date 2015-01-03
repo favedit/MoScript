@@ -1,0 +1,32 @@
+.cMenu            { position:absolute; background-color:#FFFFFF; border-left:1px solid #C0C0C0; border-top:1px solid #C0C0C0; border-right:1px solid #000000; border-bottom:1px solid #000000; }
+
+
+.menu_panel       { background-color:buttonface; padding:4px; }
+
+.menu_item        { white-space: nowrap; cursor:hand;
+                    padding-left:5px; padding-top:2px; padding-right:5px; padding-bottom:2px; }
+.menu_item_focus  { cursor:hand; background-color:#F0F0F0; border:1px solid #808080;
+                    padding-left:4px; padding-top:1px; padding-right:4px; padding-bottom:1px; }
+.menu_item_down   { cursor:hand; background-color:#F0F0F0;
+                    border-left:1px solid #000000; border-top:1px solid #000000; border-right:1px solid #C0C0C0; border-bottom:1px solid #C0C0C0;
+                    padding-left:4px; padding-top:1px; padding-right:4px; padding-bottom:1px; }
+
+.popup_item       { white-space: nowrap; cursor:hand;
+                    padding-left:5px; padding-top:2px; padding-right:20px; padding-bottom:2px; }
+.popup_item_side  { white-space: nowrap; cursor:hand;
+                    padding-left:5px; padding-top:2px; padding-right:5px; padding-bottom:2px; }
+
+.popup_item_focus { cursor:hand; background-color:#F0F0F0; border:1px solid #808080;
+                    padding-left:4px; padding-top:1px; padding-right:4px; padding-bottom:1px; }
+.popup_item_down  { cursor:hand; background-color:#F0F0F0;
+                    border-left:1px solid #000000; border-top:1px solid #000000; border-right:1px solid #C0C0C0; border-bottom:1px solid #C0C0C0;
+                    padding-left:4px; padding-top:1px; padding-right:4px; padding-bottom:1px; }
+
+.popup_panel      { display:none; position:absolute;
+                    border:1px solid #808080; background-color:#F0F0F0; padding:4px; }
+
+.ctlMenuItem_h    { white-space: nowrap; background-color:#F0F0F0; padding-left:2px; padding-top:1px; padding-right:2px; padding-bottom:1px; border:1px solid #808080; cursor:hand;}
+.ctlMenuItem_d    { white-space: nowrap; background-color:#FFFFFF; padding-left:4px; padding-top:3px; padding-right:4px; padding-bottom:3px; color:#999999; cursor:normal; }
+.ctlMenuItem_dp   { margin-top:6; width:13px; height:13px; font-family:Webdings; line-height:6px; font-size:10px; background-color:buttonface; }
+.ctlMenuItem_dph  { margin-top:6; width:13px; height:13px; font-family:Webdings; line-height:6px; font-size:10px; background-color:buttonface; }
+

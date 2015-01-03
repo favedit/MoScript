@@ -1,0 +1,94 @@
+<HTML>
+<SCRIPT>
+var ls = new Date().getTime();
+</SCRIPT>
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+<SCRIPT>
+var _count = 1000;
+function testHtml(){
+	var s = new TStr();
+	for(var n=0; n<_count; n++){
+		s.append('<TABLE>');
+		// Line 1
+		s.append("<TR>");
+		s.append("<TD bgcolor=#C0D7E7 width=1 height=1><IMG src='n.gif'></TD>");
+		s.append("<TD bgcolor=#77A9CB width=1></TD>");
+		s.append("<TD bgcolor=#23C2D8></TD>");
+		s.append("<TD bgcolor=#6291B4 width=1></TD>");
+		s.append("<TD bgcolor=#C0D7E7 width=1></TD>");
+		s.append("</TR>");
+		// Line 2
+		s.append("<TR>");
+		s.append("<TD bgcolor=#C5DAED height=1><IMG src='n.gif'></TD>");
+		s.append("<TD bgcolor=#D3E6F2></TD>");
+		s.append("<TD bgcolor=#FFFFFF>", n,"</TD>");
+		s.append("<TD bgcolor=#D3E6F2></TD>");
+		s.append("<TD bgcolor=#82A8C3></TD>");
+		s.append("</TR>");
+		// Line 3
+		s.append("<TR>");
+		s.append("<TD bgcolor=#C5DAED height=1><IMG src='n.gif'></TD>");
+		s.append("<TD bgcolor=#D3E6F2></TD>");
+		s.append("<TD bgcolor=#FFFFFF>", n,"</TD>");
+		s.append("<TD bgcolor=#D3E6F2></TD>");
+		s.append("<TD bgcolor=#82A8C3></TD>");
+		s.append("</TR>");
+		// Line 4
+		s.append("<TR>");
+		s.append("<TD bgcolor=#C5DAED height=1><IMG src='n.gif'></TD>");
+		s.append("<TD bgcolor=#D3E6F2></TD>");
+		s.append("<TD bgcolor=#FFFFFF>", n,"</TD>");
+		s.append("<TD bgcolor=#D3E6F2></TD>");
+		s.append("<TD bgcolor=#82A8C3></TD>");
+		s.append("</TR>");
+		// Line 5
+		s.append("<TR>");
+		s.append("<TD bgcolor=#C5DAED height=1><IMG src='n.gif'></TD>");
+		s.append("<TD bgcolor=#D3E6F2></TD>");
+		s.append("<TD bgcolor=#FFFFFF>", n,"</TD>");
+		s.append("<TD bgcolor=#D3E6F2></TD>");
+		s.append("<TD bgcolor=#82A8C3></TD>");
+		s.append("</TR>");
+		//s.append('<TR><TD>', n ,'</TD></TR>');
+		//s.append('<TR><TD>', n ,'</TD></TR>');
+		//s.append('<TR><TD>', n ,'</TD></TR>');
+		s.append('</TABLE>');
+	}
+	id_html1.innerHTML = s.toString();
+}
+function testDom(){
+	for(var n=0; n<_count; n++){
+		var ht = RBuilder.newTable()
+		var hc = ht.insertRow().insertCell();
+		hc.innerText = n;
+		hc = ht.insertRow().insertCell();
+		hc.innerText = n;
+		hc = ht.insertRow().insertCell();
+		hc.innerText = n;
+		hc = ht.insertRow().insertCell();
+		hc.innerText = n;
+		hc = ht.insertRow().insertCell();
+		hc.innerText = n;
+		id_html2.appendChild(ht);
+	}
+}
+function _load(){
+	var le = new Date().getTime();
+
+	var ls1 = new Date().getTime();
+	testHtml();
+	var le1 = new Date().getTime();
+
+	var ls2 = new Date().getTime();
+	testDom();
+	var le2 = new Date().getTime();
+
+	id_result.innerText = 'System: ' + (le-ls) + ' - ' + (le1-ls1) + ' - ' + (le2-ls2);
+}
+</SCRIPT>
+<BODY onload='_load()'>
+<DIV id='id_result'></DIV>
+<DIV id='id_html1'></DIV>
+<DIV id='id_html2'></DIV>
+</BODY>
+</HTML>

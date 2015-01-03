@@ -1,0 +1,775 @@
+<HTML>
+<HEAD>
+<META http-equiv='Content-Type' content='text/html;charset=UTF-8'>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+<SCRIPT>RGlobal.setContext('jp','../../..','/6-help');</SCRIPT>
+</HEAD>
+
+<SCRIPT>
+/*var form = null;
+var toolbar = null;
+function showClass(clazz){
+	_id_dump.innerHTML = '';
+	if(RStr.startsWith(clazz, 'E')){
+		RDump.dump(_id_dump, eval(clazz))
+	}else if(RStr.startsWith(clazz, 'F')){
+		var cls = RClass.find(clazz);
+		RDump.dump(_id_dump, cls)
+	}else if(RStr.startsWith(clazz, 'R')){
+		RDump.dump(_id_dump, eval(clazz))
+	}
+}*/
+
+function _onload(){
+	tree = RControl.create(RXml.makeNode(xTree), _idp);
+	tree.lsnsClick.push(new TListener(tree, onNodeClick));
+}
+</SCRIPT>
+<XML ID="xTree">
+<TreeView>
+<Node name="FControl" label="FControl" type="Class" form_name="FComponent.html">
+	<Node name="FComponent" label="FComponent" type="Class" form_name="FComponent.html">
+		<Node name="FObject" label="FObject" type="Class" form_name="FComponent.html"/>
+		<Node name="MConfig" label="MConfig" type="Manager" form_name="FComponent.html"/>
+		<Node name="MClone" label="MClone" type="z" form_name="FComponent.html"/>
+	</Node>
+	<Node name="MStyle" label="MStyle" type="Manager" form_name="FComponent.html"/>
+	<Node name="MDisplay" label="MDisplay" type="Manager" form_name="FComponent.html"/>
+	<Node name="MSize" label="MSize" type="Manager" form_name="FComponent.html"/>
+	<Node name="MPad" label="MPad" type="Manager" form_name="FComponent.html"/>
+	<Node name="MFocus" label="MFocus" type="Manager" form_name="FComponent.html"/>
+</Node>
+</TreeView></XML>
+<BODY onload='_onload()' style='padding:8;margin:0'>
+<TABLE width='100%' border='0' cellspacing='1' cellpadding='4'>
+<TR valign='top'><TD>导航</TD></TR>
+</TABLE>
+<TABLE width='100%' border='0' cellspacing='1' cellpadding='4'>
+<TR valign='bottom'><TD><H1>FControl</H1></TD><TD align='right'>版本号：1.0.1</TD></TR>
+</TABLE>
+<HR>
+<!------------------------继承关系--------------------------------->
+<DIV id='_idp' nowrap></DIV>
+<!------------------------详细说明--------------------------------->
+<TABLE width='100%' border='0' cellspacing='1' cellpadding='4'>
+<TR><TD>所有控件的基类</TD></TR>
+</TABLE>
+<!------------------------属性--------------------------------->
+<TABLE width='100%' bgcolor='#cccccc' border='0' cellspacing='1' cellpadding='2'>
+<TR bgcolor='#dddddd'>
+<TD width='20%'>属性</TD>
+<TD width='20%'>类型</TD>
+<TD width='60%'>描述信息</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> nowrap</TD>
+<TD>boolean</TD>
+<TD>v.description</TD>
+</TR>
+</TABLE>
+<BR>
+<!------------------------注册事件--------------------------------->
+<TABLE width='100%' bgcolor='#cccccc' border='0' cellspacing='1' cellpadding='2'>
+<TR bgcolor='#dddddd'>
+<TD width='20%'>注册事件</TD>
+<TD width='20%'>类型</TD>
+<TD width='60%'>描述信息</TD>
+</TR>
+</TABLE>
+<BR>
+</jt:equals>
+<!------------------------注册样式--------------------------------->
+<TABLE width='100%' bgcolor='#cccccc' border='0' cellspacing='1' cellpadding='2'>
+<TR bgcolor='#dddddd'>
+<TD width='20%'>注册样式</TD>
+<TD width='20%'>类型</TD>
+<TD width='60%'>描述信息</TD>
+</TR>
+</TABLE>
+<BR>
+</jt:equals>
+<!------------------------函数-------------------------------->
+<TABLE width='100%' bgcolor='#cccccc' border='0' cellspacing='1' cellpadding='2'>
+<TR bgcolor='#dddddd'>
+<TD>函数</TD>	
+<TD>描述信息</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#onEnter'>onEnter</TD>
+<TD></TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#onLeave'>onLeave</TD>
+<TD></TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#oeBuild'>oeBuild</TD>
+<TD>onBuild的响应事件</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#oeShow'>oeShow</TD>
+<TD>onShow的响应事件</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#oeHidden'>oeHidden</TD>
+<TD>onHidden的响应事件</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#oeEnable'>oeEnable</TD>
+<TD>onEnable的响应事件</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#oeDisable'>oeDisable</TD>
+<TD></TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#oeAction'>oeAction</TD>
+<TD></TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#onBuildPanel'>onBuildPanel</TD>
+<TD>创建一个span句柄</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#onEvent'>onEvent</TD>
+<TD>分发事件响应</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#topControl'>topControl</TD>
+<TD></TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#build'>build</TD>
+<TD></TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#design'>design</TD>
+<TD>当设计控件时  ???</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#isShow'>isShow</TD>
+<TD>控件是否显示</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#show'>show</TD>
+<TD>让所有控件显示</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#hide'>hide</TD>
+<TD>让控件隐藏</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#setVisible'>setVisible</TD>
+<TD>根据参数，控制控件的隐藏和显示</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#enable'>enable</TD>
+<TD>enable控件</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#disable'>disable</TD>
+<TD>disable控件</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#setEnable'>setEnable</TD>
+<TD>根据参数able控件 ???</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#resize'>resize</TD>
+<TD>改变控件大小时,分发事件</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#refresh'>refresh</TD>
+<TD>改变控件大小，分发事件</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#setAction'>setAction</TD>
+<TD>改变控件大小，分发事件</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#panel'>panel</TD>
+<TD>得到控件显示句柄</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#setPanel'>setPanel</TD>
+<TD>把控件放到一个html父容器里</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#setStyle'>setStyle</TD>
+<TD>设置控件的显示格式</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <A href='#attachEvent'>attachEvent</TD>
+<TD>将一个HTML对象和已经注册过的事件相连</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> oeDesign</TD>
+<TD>空函数</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> oeResize</TD>
+<TD>空函数</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> oeRefresh</TD>
+<TD>空函数</TD>
+</TR>
+<TR bgcolor='#F8F8F8'>
+<TD><IMG src='../ars/icon/cls/method.gif' align='absmiddle'> oeRefre</TD>
+<TD>虚函数</TD>
+</TR>
+</TABLE>
+<!------------------------常量-------------------------------->
+<!--------------------------------------------------------->
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='onEnter'>onEnter</a>
+	<BR>
+	
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='onLeave'>onLeave</a>
+	<BR>
+	
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='oeBuild'>oeBuild</a>
+	<BR>
+	onBuild的响应事件
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		event (event)</jt:NotEmpty></TD>
+	<TD width='80' nowrap>TEvent</TD>
+	<TD></TD>
+	</TR>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		return ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>EEventStatus.Stop</TD>
+	<TD></TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='oeShow'>oeShow</a>
+	<BR>
+	onShow的响应事件
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		event (event)</jt:NotEmpty></TD>
+	<TD width='80' nowrap>TEvent</TD>
+	<TD></TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='oeHidden'>oeHidden</a>
+	<BR>
+	onHidden的响应事件
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		event (event)</jt:NotEmpty></TD>
+	<TD width='80' nowrap>TEvent</TD>
+	<TD></TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='oeEnable'>oeEnable</a>
+	<BR>
+	onEnable的响应事件
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		event (event)</jt:NotEmpty></TD>
+	<TD width='80' nowrap>TEvent</TD>
+	<TD></TD>
+	</TR>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		return ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>EEventStatus.Stop</TD>
+	<TD></TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='oeDisable'>oeDisable</a>
+	<BR>
+	
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='oeAction'>oeAction</a>
+	<BR>
+	
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='onBuildPanel'>onBuildPanel</a>
+	<BR>
+	创建一个span句柄
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		event (event)</jt:NotEmpty></TD>
+	<TD width='80' nowrap>TEvent</TD>
+	<TD></TD>
+	</TR>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		return ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>HTML</TD>
+	<TD>html句柄</TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='onEvent'>onEvent</a>
+	<BR>
+	分发事件响应
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		event (event)</jt:NotEmpty></TD>
+	<TD width='80' nowrap>TEvent</TD>
+	<TD></TD>
+	</TR>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		return ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>EEventStatus</TD>
+	<TD></TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='topControl'>topControl</a>
+	<BR>
+	
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='build'>build</a>
+	<BR>
+	
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='design'>design</a>
+	<BR>
+	当设计控件时  ???
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		event (event)</jt:NotEmpty></TD>
+	<TD width='80' nowrap>TEvent</TD>
+	<TD></TD>
+	</TR>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		return ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>EEventStatus.Stop</TD>
+	<TD></TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='isShow'>isShow</a>
+	<BR>
+	控件是否显示
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='show'>show</a>
+	<BR>
+	让所有控件显示
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		see ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>FControl</TD>
+	<TD>setVisible</TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='hide'>hide</a>
+	<BR>
+	让控件隐藏
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		see ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>FControl</TD>
+	<TD>setVisible</TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='setVisible'>setVisible</a>
+	<BR>
+	根据参数，控制控件的隐藏和显示
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		see ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>FComponent</TD>
+	<TD>process</TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='enable'>enable</a>
+	<BR>
+	enable控件
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		see ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>FControl</TD>
+	<TD>setEnable</TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='disable'>disable</a>
+	<BR>
+	disable控件
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		see ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>FControl</TD>
+	<TD>setEnable</TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='setEnable'>setEnable</a>
+	<BR>
+	根据参数able控件 ???
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		see ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>FComponent</TD>
+	<TD>process</TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='resize'>resize</a>
+	<BR>
+	改变控件大小时,分发事件
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='refresh'>refresh</a>
+	<BR>
+	改变控件大小，分发事件
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		type (type)</jt:NotEmpty></TD>
+	<TD width='80' nowrap>TEventType</TD>
+	<TD>事件类型</TD>
+	</TR>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		see ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>FComponent</TD>
+	<TD>process</TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='setAction'>setAction</a>
+	<BR>
+	改变控件大小，分发事件
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		see ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>FComponent</TD>
+	<TD>process</TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='panel'>panel</a>
+	<BR>
+	得到控件显示句柄
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		return ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>hPanel</TD>
+	<TD></TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='setPanel'>setPanel</a>
+	<BR>
+	把控件放到一个html父容器里
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='setStyle'>setStyle</a>
+	<BR>
+	设置控件的显示格式
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		see ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>FComponent</TD>
+	<TD>process</TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD bgcolor='#FFFFF0' style='border:1 solid #999999'>
+	<IMG src='../ars/icon/cls/method.gif' align='absmiddle'> <a name='attachEvent'>attachEvent</a>
+	<BR>
+	将一个HTML对象和已经注册过的事件相连
+</TD></TR>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		<TR bgcolor='#F0FFF0'>
+	<TD width='160' nowrap>
+		<IMG src='../ars/icon/cls/field.gif' align='absmiddle'> 
+		see ()</jt:NotEmpty></TD>
+	<TD width='80' nowrap>RControl</TD>
+	<TD>attachEvent</TD>
+	</TR>
+	
+	</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+<BR>
+<TABLE width='100%' border='0' cellspacing='0' cellpadding='2'>
+<TR bgcolor='#FFFFFF'><TD style='padding-left:40'>
+	<TABLE width='100%' bgcolor='#999999' cellspacing='1' cellpadding='2'>
+		</TABLE>
+</TD></TR>
+</TABLE>
+
+</BODY>
+
+</HTML>

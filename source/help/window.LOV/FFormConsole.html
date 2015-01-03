@@ -1,0 +1,96 @@
+<HTML>
+<HEAD>
+<TITLE>FFormConsole</TITLE>
+<LINK rel="stylesheet" href='../../../company/acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../../../company/acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+<SCRIPT>RGlobal.setContext('jp','../../..','/system');</SCRIPT>
+
+<SCRIPT language='javascript' src='../../2-base/MEditable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.form/FSelect.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.window/MSearch.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.window/FWindow.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+function load_(){
+		
+	//FFormConsole_fetch();
+	//MSizeable
+	//var win = RClass.create(FWindow);
+	//win.show();
+	RWindow.connect(window);
+	form = RControl.fromXml(xForm, _id_form);
+
+		/**var doc = new TXmlDocWebForm();
+		var root = doc.root();
+		root.set('name', "logic.system.module.CatalogList");
+		root.set('name222', "123");
+		root.set('action', EDataAction.FetchLov);
+
+				var doc2 = new TXmlDocWebForm();
+				var root2 = doc2.root();
+		root.push(root2);
+		alert(doc.xml());*/
+	/**var doc = new TXmlDoc();
+	var root = doc.root();
+	var node1 = root.create
+		root.set('name', "logic.system.module.CatalogList");
+		root.set('name222', "123");
+		root.set('action', EDataAction.FetchLov);
+
+
+
+	var node = new TNode();
+	var node1 = new TNode();
+	node.name = "webform";
+	node.set('name', "logic.system.module.CatalogList");
+	node.set('action', EDataAction.FetchLov);
+	node1.set("lable","liyongle");
+	node.push(node1);
+	alert(node.xml());*/
+		var doc = new TXmlDoc();
+		var root = doc.root();
+		var dsNode = root.create("Control");
+		dsNode.set('lov_refer', "logic.system.module.CatalogList");
+		root.set('action',"fetchLov");
+		alert(doc.xml());
+		
+
+		//fmMain.action = '/eUIS/design.webform.ws?do=fetchLov';
+	    //fmMain.submit();
+	    
+		var e = new TEvent(null, EXmlEvent.Send, tt);
+		e.url = "http://localhost:88/eUIS/design.webform.ws";
+		e.document = doc;
+		e.dsAction = EDataAction.fetchLov;
+		RConsole.find(FXmlConsole).process(e);
+
+}
+function tt(e){
+debugger;
+	alert(this.document.xml());
+}
+</SCRIPT>
+<!-- Form ---------------------------------------------------->
+<XML id='xForm'>
+<WebForm name="logic.person.module.ViewForm" label="模块视角表单" edit_access="SIUD" dataset="person.module.view">
+	<Edit name="edtOuid" label="编号" width="250" nowrap="Y" label_width="80" data_name="OUID" disp_access="SPLIUD" edit_width="60"/>
+	<Check name="chkIsValid" label="有效性" label_width="80" data_name="IS_VALID" data_default="Y" disp_access="SPLIUD" edit_access="IU" valid_access="IU"/>
+	<Edit name="edtOver" label="版本" label_width="80" data_name="OVER"/>
+	<Edit name="edtName" label="名称" label_width="80" data_name="NAME" disp_access="SPLIUD" edit_width="300" edit_access="IU" valid_access="IU"/>
+	<Edit name="edtLabel" label="标签" label_width="80" data_name="LABEL" disp_access="SPLIUD" edit_width="300" edit_access="IU" valid_access="IU"/>
+	<Memo name="edtNote" label="注释" label_width="80" data_name="NOTE" disp_access="SPLIUD" edit_width="300" edit_height="40" edit_access="IU" valid_access="IU"/>
+</WebForm>
+</XML>
+<!-- Form ---------------------------------------------------->
+<form name="fmMain">
+<BODY onload='load_()'>
+<DIV id='_id_form' nowrap></DIV><HR>
+<DIV id='_idx' nowrap style='height:26px'></DIV><HR>
+<DIV id='_id0' nowrap></DIV><HR>
+<DIV id='_id1' nowrap></DIV><HR>
+<DIV id='_id2' nowrap></DIV><HR>
+</BODY>
+</form>
+</HTML>

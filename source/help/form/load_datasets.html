@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel='stylesheet' href='../../../company/acs/control.css' type='text/css'>
+<LINK rel='stylesheet' href='../../../company/acs/lang_jp.css' type='text/css'>
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+<SCRIPT>RGlobal.setContext('jp','../../..','/system');</SCRIPT>
+<SCRIPT language='javascript' src='../../2-base/MDataset.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3-core/FDatasetConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.form/FForm.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.table/FTable.js'></SCRIPT>
+</HEAD>
+<!-- Script -------------------------------------------------->
+<SCRIPT>
+var action = 'update';
+var toolbar = null;
+var form = null;
+function _load(){
+	//RLog.connect(_log);
+	// Build toolbar
+	toolbar = RControl.fromXml(xToolBar, _id_toolbar);
+	// Build form
+	form = RControl.fromXml(xForm, _id_form);
+	form.setAction(REnum.encode(EAction, action));
+	form.loadDatasets(RXml.makeNode(xValue));
+}
+</SCRIPT>
+<!-- Environment --------------------------------------------->
+<XML ID="xEnvironment">
+webform.environment
+</XML>
+<!-- ToolBar ------------------------------------------------->
+<XML ID="xToolBar">
+<ToolBar width='100%' height='100%'>
+	<ToolButton name='btnRefresh' caption='Refresh' icon='tool.refresh' icon_disable='tool.refreshd'/>
+	<ToolButtonSplit/>
+	<ToolButton name='btnSave' caption='Save' icon='tool.save' icon_disable='tool.saved' action='doSave()'/>
+	<ToolButton name='btnDelete' caption='Delete' icon='tool.delete' icon_disable='tool.deleted' disp_access='U' page='delete@#/system/persistence/Persistence.wa'/>
+</ToolBar>
+</XML>
+<!-- Form ---------------------------------------------------->
+<XML id='xForm'>
+<WebForm name="logic.person.module.CatalogForm" label="模块组织表单" dataset="person.module.catalog">
+	<Number name="edtViewId" label="视图标识" width="250" nowrap="Y" label_width="80" data_name="VIEW_ID" disp_access="SPLIUD" edit_width="60"/>
+	<Edit name="edtParentId" label="父标识" width="250" nowrap="Y" label_width="80" data_name="PARENT_ID" disp_access="SPLIUD" edit_width="60"/>
+	<Edit name="edtOver" label="版本" width="250" label_width="80" data_name="OVER"/>
+	<Edit name="edtOuid" label="编号" width="250" nowrap="Y" label_width="80" data_name="OUID" disp_access="SPLIUD" edit_width="60"/>
+	<Check name="chkIsValid" label="有效性" label_width="80" data_name="IS_VALID" data_default="Y" disp_access="SPLIUD" edit_access="IU" valid_access="IU"/>
+	<Number name="edtDisplayOrder" label="显示排序" label_width="80" data_name="DISPLAY_ORDER" disp_access="SPLIUD" edit_width="60" edit_access="IU" valid_access="IU"/>
+	<Edit name="edtName" label="名称" label_width="80" data_name="NAME" disp_access="SPLIUD" edit_width="300" edit_access="IU" valid_access="IU"/>
+	<Edit name="edtLabel" label="标签" label_width="80" data_name="LABEL" disp_access="SPLIUD" edit_width="300" edit_access="IU" valid_access="IU"/>
+	<Memo name="edtNote" label="注释" label_width="80" data_name="NOTE" disp_access="SPLIUD" edit_width="300" edit_height="40" edit_access="IU" valid_access="IU"/>
+	<PageControl name="pgcPages" label="分页控件" top="10" pad_top="12">
+		<PageSheet name="psCatalog" label="子目录列表" form_name="logic.person.module.CatalogList" form_link="VIEW_ID=${VIEW_ID},PARENT_ID=${OUID}">
+			<WebTable name="logic.person.module.CatalogList" label="模块组织列表" dataset_order="DISPLAY_ORDER" dataset="person.module.catalog" form_name="logic.person.module.CatalogForm">
+				<Column name="colOuid" label="编号" width="60" label_width="80" data_name="OUID" disp_access="SLIUD" edit_access="IU" valid_access="IU"/>
+				<Column name="colOver" label="版本" width="60" label_width="80" data_name="OVER" disp_access="SIUD" edit_access="IU" valid_access="IU"/>
+				<ColumnCheck name="colIsValid" label="有效性" width="60" label_width="80" data_name="IS_VALID"/>
+				<ColumnEdit name="colDisplayOrder" label="显示顺序" width="60" label_width="80" data_name="DISPLAY_ORDER" disp_access="SLIUD" edit_access="IU" valid_access="IU"/>
+				<Column name="colName" label="名称" width="160" label_width="80" data_name="NAME" disp_access="SLIUD" edit_access="IU" valid_access="IU"/>
+				<Column name="colLabel" label="中文名称" label_width="80" data_name="LABEL" disp_access="SLIUD" edit_access="IU" valid_access="IU"/>
+			</WebTable>
+		</PageSheet>
+	</PageControl>
+</WebForm>
+</XML>
+<!-- Value --------------------------------------------------->
+<XML ID="xValue">
+<Node>
+	<Dataset form_name="logic.person.module.CatalogForm">
+		<Row view_id="2" parent_id="0" over="" ouid="25" is_valid="Y" display_order="7" name="" label="系统设置" note=""/>
+	</Dataset>
+	<Dataset form_name="logic.person.module.CatalogList" name="psCatalog">
+		<Row ouid="41" over="" is_valid="" display_order="" name="" label="基本信息"/>
+		<Row ouid="44" over="" is_valid="" display_order="" name="" label="目录管理"/>
+		<Row ouid="43" over="" is_valid="" display_order="" name="" label="模块管理"/>
+		<Row ouid="42" over="" is_valid="" display_order="" name="" label="再线处理"/>
+	</Dataset>
+</Node>
+</XML>
+<!-- Body begin ---------------------------------------------->
+<BODY onload="_load()">
+<FORM method='POST' name="fmMain">
+<INPUT type='hidden' name='_environment'></INPUT>
+
+<TABLE border='0' cellpadding='0' cellspacing='0' width='100%'>
+<TR>
+<TD height='24'>
+<!-- Toolbar begin ------------------------------------------->
+<DIV id='_id_toolbar'></DIV>
+<!-- Toolbar end --------------------------------------------->
+</TD>
+</TR>
+<TR><TD height='4'></TD></TR>
+<TR><TD style='padding:8' valign='top'>
+<!-- Form begin ---------------------------------------------->
+<DIV style='width:100%;height:100;'>
+	<DIV id='_id_form'></DIV>
+</DIV>
+<DIV id='_dump'></DIV>
+<DIV id='_log'></DIV>
+<br>
+<!-- Form end ------------------------------------------------>
+</TD></TR>
+</TABLE>
+
+</FORM>
+</BODY>
+<!-- Body end ------------------------------------------------>
+</HTML>

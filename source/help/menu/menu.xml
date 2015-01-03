@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTD-8"?>
+
+<MenuBar name='mnuMain'>
+
+	<MenuItem name='file' icon='sys.edit' text='ファイル'>
+		<PopupMenu>
+			<PopupItem name='file' icon='sys.edit' text='新規作成'>
+				<PopupMenu>
+					<PopupItem name='file' icon='sys.edit' text='新規...'/>
+				</PopupMenu>
+			</PopupItem>
+		   <PopupItem name='file' icon='sys.edit' text='上書き保存'/>
+		</PopupMenu>
+	</MenuItem>
+
+	<MenuItem name='file' icon='sys.edit' text='編集'>
+		<PopupMenu>
+			<PopupItem name='file' icon='sys.edit' text='新規作成'>
+				<PopupMenu>
+					<PopupItem name='file' icon='sys.edit' text='新規...'/>
+					<PopupItem name='file' icon='sys.edit' text='新規...'/>
+					<PopupItem name='file' icon='sys.edit' text='新規...'/>
+					<PopupItem name='file' icon='sys.edit' text='新規...'/>
+					<PopupItem name='file' icon='sys.edit' text='新規...'/>
+				</PopupMenu>
+			</PopupItem>
+		   <PopupItem name='file' icon='sys.edit' text='上書き保存'/>
+		</PopupMenu>
+	</MenuItem>
+
+	<MenuItem name='file' icon='sys.edit' text='表示'/>
+
+	<MenuItem name='file' icon='sys.search' text='検索'/>
+
+</MenuBar>

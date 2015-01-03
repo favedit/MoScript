@@ -1,0 +1,117 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel='stylesheet' href='../../../system/acs/control.css' type='text/css'>
+<LINK rel='stylesheet' href='../../../system/acs/lang_jp.css' type='text/css'>
+</HEAD>
+
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.toolbar/FToolButtonMenu.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.toolbar/FMenuButton.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.toolbar/FMenuButtonSplit.js'></SCRIPT>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var toolbar = null;
+function doAction(n){
+	if(n == 0){
+		form.doAction('doPrepare');
+	}
+	if(n == 1){
+		form.doAction('doInsert');
+	}
+	if(n == 2){
+		form.doAction('doUpdate');
+	}
+	if(n == 3){
+		form.doAction('doDelete');
+	}
+}
+function doBack(){
+	alert('Back');
+}
+function doTree(){
+	var down = toolbar.button('btnTree').down;
+	window.document.body.disabled = down;
+}
+
+function showDump(){
+	RDump.dump(RLayer);
+}
+function _load(){
+   RGlobal.setContext('jp', '../../..', '/system');
+	//RLog.connect(_log);
+	RWindow.connect();
+
+   //RDump.dump(RClass.find(FControl))
+	//return
+   //RDump.dump(_id3, _id1)
+   //RDump.dump(_id3, RClass.create(FColumnEdit))
+
+   //debugger
+	toolbar = RControl.fromXml(xToolBar, _idp);
+
+	//toolbar.addClickListener('btnBack', doBack);
+
+	//var pop = RControl.fromXml(xPopup);
+	//pop.show();
+	
+
+	//form.name = 'system.form.frmField';
+	//form.connect('frmField.xml', 'find', 'find');*/
+	//form.connect('http://127.0.0.1:8080/mylife/system.web.form.ws', 'find', 'find');
+
+	//form = RControl.create(RXml.makeNode(oMetaData), _idp);
+	//form.doUpdate();
+	//RDump.dump(toolbar.component('btnActions'), _dump)
+	//RDump.dump(_id3, toolbar)
+}
+</SCRIPT>
+
+<XML ID="xPopup">
+<PopupMenu name='pmuTest'>
+	<MenuItem name='bmiSQL' label='SQL' icon='tool.action' icon_disable='tool.insertd'/>
+	<MenuItem name='bmiPackage' label='Package' icon='tool.action' icon_disable='tool.insertd'/>
+	<MenuItem name='bmiExecute' label='Execute Package SQL' icon='tool.action' icon_disable='tool.insertd'/>
+</PopupMenu>
+</XML>
+
+<XML ID="xToolBar">
+<ToolBar height='24' width='100%' align='right'>
+	<ToolButtonText name='btnPersistence'    label='Persistence'    icon='tool.back' disp_access='IUD' action='showDump()'/>
+	<ToolButton name='btnBack'    label='Back'    icon='tool.back' icon_disable='tool.insertd' disable='Y'/>
+	<ToolButton name='btnRefresh' label='Refresh' icon='tool.refresh'/>
+	<ToolButtonSplit/>
+	<ToolButtonCheck name='btnTree'  label='Tree'  icon='tool.insert' icon_disable='tool.insertd' action='doTree()'/>
+	<ToolButtonSplit/>
+	<ToolButton name='btnInsert'  label='Insert'  icon='tool.insert' icon_disable='tool.insertd' action='alert(1)'/>
+	
+	<ToolButtonMenu name="insertFilter" label="新建滤镜" is_valid="Y" disp_access="SPLIUD" icon="tool.insert">
+		<MenuButton name="filterAlpha" label="过滤器-透明" is_valid="Y" disp_access="LIUD" page="insert@#/design/webtheme/WebTheme.wa" attributes="_type=FilterAlpha\nsel_type=component\nform_name=design.webtheme.FilterAlphaForm"/>
+		<MenuButton name="filterBasicImage" label="过滤器-图片效果" is_valid="Y" disp_access="LIUD" page="insert@#/design/webtheme/WebTheme.wa" attributes="_type=FilterBasicImage\nsel_type=component\nform_name=design.webtheme.FilterBasicImageForm"/>
+		<MenuButtonSplit name="filterBasicImage1" label="过滤器-图片效果" disp_access="SPLIUD" />
+		<MenuButton name="FilterGradient" label="过滤器-定制色彩" is_valid="Y" disp_access="LIUD" page="insert@#/design/webtheme/WebTheme.wa" attributes="_type=FilterGradient\nsel_type=component\nform_name=design.webtheme.FilterGradientForm"/>
+    </ToolButtonMenu>
+    
+    
+	<ToolButton name='btnUpdate'  caption='Update'  icon='tool.update' icon_disable='tool.updated'/>
+	<ToolButton name='btnDelete'  caption='Delete'  icon='tool.delete' icon_disable='tool.deleted'/>
+	<ToolButtonSplit/>
+</ToolBar>
+</XML>
+
+<BODY onload='_load()'>
+<FORM name='fmMain'>
+<DIV id='_idp'></DIV><br>
+<DIV id='_dump'></DIV><br>
+<DIV id='_log'></DIV><br>
+</FORM>
+</BODY>
+</HTML>

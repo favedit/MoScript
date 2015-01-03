@@ -1,0 +1,88 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel='stylesheet' href="../../../acs/control.css" type='text/css'>
+<LINK rel='stylesheet' href="../../../acs/lang_jp.css" type='text/css'>
+<SCRIPT language='javascript' src="../../mobj.js"></SCRIPT>
+<SCRIPT>RGlobal.setContext('jp','../../..','/system');</SCRIPT>
+
+</HEAD>
+<!-- Script -------------------------------------------------->
+<SCRIPT>
+var action = 'update';
+var form = null;
+var toolbar = null;
+function doRefresh(){
+	fmMain.action = '';
+	fmMain.submit();
+}
+function doSave(){
+	if(action == 'insert'){
+		form.doAction('daInsert');
+	}else{
+		form.doAction('daSave');
+	}
+}
+function _load(){
+	RLog.connect(_log);
+
+	// Build form
+	form = RControl.fromXml(xForm, _id_form);
+	form.doAction('daSave');
+	//form.loadValue(RXml.makeNode(xValue))
+	// Action
+	//RControl.processAction(EAction.encode(action));
+}
+</SCRIPT>
+<!-- Environment --------------------------------------------->
+<XML ID="xEnvironment">
+webform.environment
+</XML>
+<!-- ToolBar ------------------------------------------------->
+
+</XML>
+<!-- Form ---------------------------------------------------->
+<XML id='xForm'><WebForm name="system.persistence.frmComponent" type="WebForm">
+<Number name="tfName" type="Number" label="Êý×Ö:" label_width="80" data_name="name" edit_width="140"/>
+</WebForm></XML>
+<!-- Value --------------------------------------------------->
+<XML ID="xValue">
+webform.formvalue
+</XML>
+<!-- Body begin ---------------------------------------------->
+
+<BODY onload="__bodyLoad()" onunload="__bodyUnload()" onload="_load()" class="bodyMain" scroll=no>
+<FORM method='POST' name="fmMain">
+<INPUT type='hidden' name='_environment'></INPUT>
+
+<TABLE border='0' cellpadding='0' cellspacing='0' width='100%' height='100%'>
+<TR>
+<TD height='24'>
+<!-- Toolbar begin ------------------------------------------->
+<DIV id='_id_toolbar'></DIV>
+<!-- Toolbar end --------------------------------------------->
+</TD>
+</TR>
+<TR><TD height='4'></TD></TR>
+<TR><TD style='padding:8' valign='top'>
+<!-- Form begin ---------------------------------------------->
+<DIV style='width:100%;height:100%;'>
+	<DIV id='_id_form'></DIV>
+	<DIV id='_log'></DIV>
+</DIV>
+<br>
+<!-- Form end ------------------------------------------------>
+</TD></TR>
+</TABLE>
+
+</FORM>
+<SCRIPT language='javascript'>
+debugger;
+function __bodyLoad(){
+_load()}
+function __bodyUnload(){}
+
+</SCRIPT>
+</BODY>
+<!-- Body end ------------------------------------------------>
+</HTML>

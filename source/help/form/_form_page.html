@@ -1,0 +1,114 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../_.css' type="text/css" media="all"/>
+</HEAD>
+
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../TItem.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FDataAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPrepareAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FSelect.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FCheck.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FEdit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FMemo.js'></SCRIPT>
+<SCRIPT language='javascript' src='../EStyleStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ECellStatus.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../MSelectListener.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPageSheet.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPageBar.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../FForm.js'></SCRIPT>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var form = null;
+function doAction(n){
+	if(n == 0){
+		form.doAction('doPrepare');
+	}
+	if(n == 1){
+		form.doAction('doInsert');
+	}
+	if(n == 2){
+		form.doAction('doUpdate');
+	}
+	if(n == 3){
+		form.doAction('doDelete');
+	}
+}
+function _load(){
+	RGlobal.setContext('jp', '../../..', '../..');
+	RLog.link(_log);
+
+   //RDump.dump(_id3, RClass.find(FForm))
+   //RDump.dump(_id3, _id1)
+   //RDump.dump(_id3, RClass.create(FColumnEdit))
+
+   //form = RClass.create(FForm);
+   //form.setPanel(_idp);
+   //form.name = 'system.form.frmField';
+	//form.connect('frmField.xml', 'find', 'find');
+   //form.connect('http://127.0.0.1:8080/mylife/system.web.form.ws', 'find', 'find');
+	
+	form = RControl.create(RXml.makeNode(xForm), _idp);
+	//form.doUpdate();
+	RDump.dump(_id3, form.components.get('pageBar'))
+	//RDump.dump(_id3, form)
+}
+</SCRIPT>
+
+<XML ID="xForm">
+	<Form service='' insert_able='Y' update_able='Y' delete_able='Y'>
+		<Edit   name='edtId'    label='User Id:'  width='240' label_width='80' edit_width='100' data_name='user_id'       data_value='001' nowrap='N'/>
+		<Edit   name='userName' label='Name:'     width='240' label_width='80' edit_width='100' data_name='user_name'     data_value='mcy' nowrap='Y'/>
+		<Edit   name='userPwd'  label='Password:' width='240' label_width='80' edit_width='100' data_name='user_passward' data_value='wy'  nowrap='N'/>
+		<Check  name='isValid'  label='Is Valid:' width='240' label_width='80'                  data_name='is_valid'      data_value='Y'   true_value='Y' false_value='N' nowrap='Y'/>
+		<Select name='country'  label='Country:'              label_width='80' edit_width='100' data_name='country_id'    data_value='3'   data_empty='Y' nowrap='N'>
+			<Item value='1' label='China'/>
+			<Item value='2' label='Japan'/>
+			<Item value='3' label='English'/>
+		</Select>
+		<Memo name='note'     label='Note:'                 label_width='80' edit_width='200' data_name='note'          data_value='[Hello]' nowrap='N'/>
+
+		<PageBar name='pageBar' width='100%'>
+			<PageSheet name='psBack'   caption='Back'   icon='tool.back'>
+				<Edit   name='edtId'    label='User Id:'  width='240' label_width='80' edit_width='100' data_name='user_id'       data_value='001' nowrap='N'/>
+				<Edit   name='userName' label='Name:'     width='240' label_width='80' edit_width='100' data_name='user_name'     data_value='mcy' nowrap='Y'/>
+			</PageSheet>
+			<PageSheet name='psInsert' caption='Insert' icon='tool.insert' icon_disable='tool.insertd'/>
+			<PageSheet name='psUpdate' caption='Update' icon='tool.insert' icon_disable='tool.insertd'/>
+			<PageSheet name='psDelete' caption='Delete' icon='tool.insert' icon_disable='tool.insertd'/>
+		</PageBar>
+
+	</Form>
+</XML>
+
+<BODY onload='_load()'>
+
+<input type='BUTTON' value='Prepare' onclick='doAction(0)'></input> | 
+<input type='BUTTON' value='Insert'  onclick='doAction(1)'></input> | 
+<input type='BUTTON' value='Update'  onclick='doAction(2)'></input> | 
+<input type='BUTTON' value='Delete'  onclick='doAction(3)'></input>
+
+<HR>
+
+<DIV id='_idp'></DIV><br>
+<DIV id='_id0'></DIV><br>
+<DIV id='_id1'></DIV><br>
+<DIV id='_id2'></DIV><br>
+<DIV id='_id3'></DIV><br>
+<DIV id='_id4'></DIV><br>
+<DIV id='_log'></DIV><br>
+</BODY>
+
+</HTML>

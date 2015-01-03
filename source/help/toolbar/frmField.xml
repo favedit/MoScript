@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebForm
+		name="system.form.frmField"
+		edit_search="N" edit_insert="Y" edit_update="Y" edit_delete="Y"
+		service="/design/webform/WebForm.wa?tp=field">
+
+  <PrepareAction name='doPrepare' service='prepare.xml' />
+  <DataAction    name='doInsert'  service='insert.xml' />
+  <DataAction    name='doUpdate'  service='update.xml' />
+  <DataAction    name='doDelete'  service='delete.xml' />
+
+  <Edit   name="tfName" type="fld" label="Name"
+          width='200' label_width="80" edit_width='100'
+          data_name="name" data_value='asd'
+          disp_delete="Y" disp_insert="Y" disp_update="Y" disp_wrap="N"
+          edit_insert="Y" edit_type="edit" edit_update="Y"
+          valid_insert="N" valid_update="N"
+          nowrap='N'/>
+
+  <Edit   data_name="label"                     width='200' label_width="80" edit_width='100' disp_delete="N" disp_insert="N" disp_update="N" disp_wrap="Y" edit_insert="N" edit_type="edit" edit_update="N" valid_insert="N" valid_update="N" name="tfLabel" type="fld" label="Label"  nowrap='Y'/>
+
+  <Select data_name="type"                      width='200' label_width="80" edit_width='100' disp_delete="N" disp_insert="N" disp_update="N" disp_wrap="Y" edit_insert="N" edit_refer="system.form.fieldType" edit_type="edit" edit_update="N" valid_insert="N" valid_update="N" name="tfType" type="fld" label="Type"  nowrap='N'>
+			<Item value='1' label='China'/>
+			<Item value='2' label='Japan'/>
+			<Item value='3' label='English'/>
+  </Select>
+
+  <Check  data_name="disp_insert"  disp_wrap="N" width='200' label_width="80"                  name="tfDispInsert" type="form.field" label="Insert"  nowrap='Y'/>
+  <Check  data_name="dispUpdate"  disp_wrap="N" width='200' label_width="80"                  name="tfDispUpdate" type="form.field" label="Update"  nowrap='Y'/>
+  <Check  data_name="dispDelete"  disp_wrap="Y" width='200' label_width="80"                  name="tfDispDelete" type="form.field" label="Delete"  nowrap='N'/>
+  <Edit   data_name="dataName"    disp_wrap="N" width='200' label_width="80" edit_width='100' name="tfDataName" type="form.field" label="Data Name"  nowrap='Y'/>
+
+  <Select data_name="dataType"    disp_wrap="N" width='200' label_width="80" edit_width='100' edit_refer="system.form.dataType" edit_type="combo" name="tfDataType" type="form.field" label="Data Type"  nowrap='N'>
+			<Item value='1' label='China'/>
+			<Item value='2' label='Japan'/>
+			<Item value='3' label='English'/>
+  </Select>
+
+  <Edit   data_name="editType"    disp_wrap="N" width='200' label_width="80" edit_width='100' edit_refer="system.form.editType" edit_type="combo" name="tfEditType" type="form.field" label="Edit Type"  nowrap='Y'/>
+  <Check  data_name="editInsert"  disp_wrap="N" width='200' label_width="80"                  name="tfEditInsert" type="form.field" label="Insert"  nowrap='Y'/>
+  <Check  data_name="editUpdate"  disp_wrap="N" width='200' label_width="80"                  name="tfEditUpdate" type="form.field" label="Update"  nowrap='N'/>
+  <Check  data_name="validInsert" disp_wrap="N" width='200' label_width="80"                  name="tfValidInsert" type="form.field" label="Insert"  nowrap='Y'/>
+  <Check  data_name="validUpdate" disp_wrap="Y" width='200' label_width="80"                  name="tfValidUpdate" type="form.field" label="Update"  nowrap='N'/>
+</WebForm>
+

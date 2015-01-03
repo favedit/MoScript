@@ -1,0 +1,241 @@
+完美仿MSN右下角弹出对话框<br>
+遇到问题：<br>
+1 为什么用var objdiv = document.getElementById("xMsg3");用objdiv来替换页面中的document.getElementById("xMsg3") 代码就会出错.<br>
+可改善点：<br>
+1 可自动消失<br>
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>先飞电脑技术网</title>
+<style type='text/css'>
+<!--
+a:visited {
+	text-decoration: none;
+	color: slategray;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: slategray;
+}
+
+a:link {
+	text-decoration: none;
+	color: slategray;
+}
+-->
+</style>
+</head>
+<Script language="JavaScript">
+<!--
+window.onload = getMsg;
+window.onresize = resizeDiv;
+window.onerror = function(){}
+//短信提示使用(asilas添加)
+var divTop,divLeft,divWidth,divHeight,docHeight,docWidth,objTimer,i = 0;
+function getMsg()
+{
+	try{
+	divTop = parseInt(document.getElementById("xMsg3").style.top,10);
+	divLeft = parseInt(document.getElementById("xMsg3").style.left,10)
+	divHeight = parseInt(document.getElementById("xMsg3").offsetHeight,10)
+	divWidth = parseInt(document.getElementById("xMsg3").offsetWidth,10)
+
+	alert(docWidth = document.body.clientWidth);
+	docHeight = document.body.clientHeight;
+
+	document.getElementById("xMsg3").style.top = parseInt(document.body.scrollTop,10) + docHeight + 10;//  divHeight
+	document.getElementById("xMsg3").style.left = parseInt(document.body.scrollLeft,10) + docWidth - divWidth
+	document.getElementById("xMsg3").style.visibility="visible"
+	objTimer = window.setInterval("moveDiv()",1)
+	}
+	catch(e){}
+}
+
+function resizeDiv()
+{
+	i+=1
+	//if(i>300) closeDiv()	//客户想不用自动消失由用户来自己关闭所以屏蔽这句
+	try{
+	divHeight = parseInt(document.getElementById("xMsg3").offsetHeight,10)
+	divWidth = parseInt(document.getElementById("xMsg3").offsetWidth,10)
+	docWidth = document.body.clientWidth;
+	docHeight = document.body.clientHeight;
+	document.getElementById("xMsg3").style.top = docHeight - divHeight + parseInt(document.body.scrollTop,10)
+	document.getElementById("xMsg3").style.left = docWidth - divWidth + parseInt(document.body.scrollLeft,10)
+	}
+	catch(e){}
+}
+function moveDiv()
+{
+		//锁定标题栏;
+		var obj = document.getElementById("xMsg3").childNodes[0];
+		obj.setCapture();
+		//定义对象;
+		var win = obj.parentNode;
+		var sha = win.nextSibling;
+		//记录鼠标和层位置;
+		//x0 = event.clientX;
+		//y0 = event.clientY;
+		//x1 = parseInt(win.style.left);
+		//y1 = parseInt(win.style.top);
+		//记录颜色;
+		//normal = obj.style.backgroundColor;
+		//改变风格;
+		obj.style.backgroundColor = hover;
+		win.style.borderColor = hover;
+		obj.nextSibling.style.color = hover;
+		//sha.style.left = x1 + offx;
+		//sha.style.top = y1 + offy;
+		//moveable = true
+	try
+	{
+	if(parseInt(document.getElementById("xMsg3").style.top,10) <= (docHeight - divHeight + parseInt(document.body.scrollTop,10)))
+	{
+
+		window.clearInterval(objTimer)
+		//正常显示颜色
+		var obj = document.getElementById("xMsg3").childNodes[0];
+		var win = obj.parentNode;
+		var sha = win.nextSibling;
+		var msg = obj.nextSibling;
+		win.style.borderColor     = normal;
+		obj.style.backgroundColor = normal;
+		msg.style.color           = normal;
+		//sha.style.left = obj.parentNode.style.left;
+		//sha.style.top = obj.parentNode.style.top;
+		obj.releaseCapture();
+		//颜色变换完毕
+		objTimer = window.setInterval("resizeDiv()",1)
+	}
+	divTop = parseInt(document.getElementById("xMsg3").style.top,10)
+	document.getElementById("xMsg3").style.top = divTop - 1
+	}
+	catch(e){}
+}
+function closeDiv()
+{
+	document.getElementById('xMsg3').style.visibility='hidden';
+	if(objTimer) window.clearInterval(objTimer)
+}
+//-------------------------------------自定函数
+function getFocus(obj){
+
+}
+var hover='orange',normal='slategray';//变化的颜色;
+function startDrag(obj){
+	if(event.button==1)
+	{
+		//锁定标题栏;
+		obj.setCapture();
+		//定义对象;
+		var win = obj.parentNode;
+		var sha = win.nextSibling;
+		//记录鼠标和层位置;
+		//x0 = event.clientX;
+		//y0 = event.clientY;
+		//x1 = parseInt(win.style.left);
+		//y1 = parseInt(win.style.top);
+		//记录颜色;
+		normal = obj.style.backgroundColor;
+		//改变风格;
+		obj.style.backgroundColor = hover;
+		win.style.borderColor = hover;
+		obj.nextSibling.style.color = hover;
+		//sha.style.left = x1 + offx;
+		//sha.style.top = y1 + offy;
+		//moveable = true;
+	}
+
+}
+function stopDrag(obj){
+	if(event.button==1)
+	{
+		var win = obj.parentNode;
+		var sha = win.nextSibling;
+		var msg = obj.nextSibling;
+		win.style.borderColor     = normal;
+		obj.style.backgroundColor = normal;
+		msg.style.color           = normal;
+		//sha.style.left = obj.parentNode.style.left;
+		//sha.style.top = obj.parentNode.style.top;
+		obj.releaseCapture();
+	}
+}
+function cls(obj){
+	closeDiv()
+	//alert(cls);
+}
+function drag(obj){
+	//alert(drag);
+}
+function min(obj){
+	var win = obj.parentNode.parentNode;//整个框
+	var sha = win.nextSibling;					//阴影框
+	var tit = obj.parentNode;						//标题栏
+	var msg = tit.nextSibling;					//内容栏
+	var flg = msg.style.display=="none";//内容栏是否没有显示
+	if(flg)
+	{
+		win.style.height = parseInt(msg.style.height) + parseInt(tit.style.height) + 2*2;
+		//sha.style.height = win.style.height;
+		msg.style.display = "block";
+		obj.innerHTML = "0";
+	}
+	else
+	{
+		win.style.height = parseInt(tit.style.height) + 2*2;
+		//sha.style.height = win.style.height;
+		obj.innerHTML = "2";
+		msg.style.display = "none";
+	}
+	//alert(drag);
+}
+function dbClick(obj){
+
+}
+//-------------------------------------
+//<div style='background-color:slategray;width:156;height:20;color:white;' onmousedown='startDrag(this)' onmouseup='stopDrag(this)' onmousemove='drag(this)' ondblclick='min(this.childNodes[1])'>
+//<span style='width:132;padding-left:3px;'>Message</span>
+//<span style='width:12;border-width:0px;color:white;font-family:webdings;' onclick='min(this)'>0</span>
+//<span style='width:12;border-width:0px;color:white;font-family:webdings;' onclick='cls(this)'>r</span>
+//</div>
+-->
+</Script>
+
+<!--温馨提示代码开始-->
+<body scroll=no>
+<div id=xMsg3
+	style='z-index: 10006; width: 200; height: 160; left: 250; VISIBILITY: hidden; top: 50; background-color: slategray; color: slategray; font-size: 10px; font-family: Verdana; position: absolute; cursor: default; border: 2px solid slategray;'
+	onmousedown='getFocus(this)'>
+			<div
+			style='background-color: slategray; width: 196; height: 20; color: white;'onmousedown='startDrag(this)' onmouseup='stopDrag(this)' onmousemove='drag(this)' ondblclick='dbClick(this)'>
+			<span style='width: 160; padding-left: 3px;'>New message</span>
+			<span style='width: 12; border-width: 0px; color: white; font-family: webdings;'onclick='min(this)'>0</span>
+			<span style='width: 12; border-width: 0px; color: white; font-family: webdings;'onclick='cls(this)'>r</span>
+			</div>
+
+			<div
+			style='width: 100%; height: 136; background-color: white; line-height: 14px; word-break: break-all; padding: 3px;'>
+			李永乐<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;<a href='#'>你有一个新消息</a><br>
+			</div>
+</div>
+
+<div
+style='width: 200;VISIBILITY: hidden; height: 160; top: 50; left: 250; z-index: 10005; position: absolute; background-color: BLACK; filter: alpha(opacity = 40);'>by
+gggggggg
+</div>
+
+
+
+
+
+
+
+
+
+</body>
+<!--温馨提示代码结束-->
+</html>

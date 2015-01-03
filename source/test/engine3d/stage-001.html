@@ -1,0 +1,176 @@
+<HTML>
+<HEAD>
+<TITLE>Stage3d Example</TITLE>
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../ajs/runtime.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/lang.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/base.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/core.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/graphic.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/graphic-2d.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/graphic-3d.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/graphic-3d-wgl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/engine.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/engine-2d.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/engine-3d.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/control.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../5-graphic-3d-wgl/FWglContext.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+var context = null;
+var program = null;
+var mRotationX = 0;
+var mRotationY = 0;
+var mRotationZ = 0;
+var mMatrix = null;
+var vc_vp_matrix = null;
+var cube = null;
+var pvi = null;
+var pci = null;
+
+function onEnterFrame(){
+   mMatrix.identity();
+   //mMatrix.rotation(mRotationX, 0, 0);
+   //mMatrix.rotation(0.5, 0, 0);
+   mMatrix.setScale(2.0, 2.0, 2.0);
+   mMatrix._rx = mRotationX;
+   mMatrix._ry = mRotationY;
+   mMatrix._rz = mRotationZ;
+   mMatrix.updateForce();
+
+   mRotationX += 0.01;
+   mRotationY += 0.02;
+   mRotationZ += 0.03;
+
+   context.clear(0, 0, 0, 1, 1);
+   context.setProgram(program);
+   program.setParameter('vc_model_matrix', mMatrix.data(), 64);
+   program.setParameter('vc_vp_matrix', vc_vp_matrix.data(), 64);
+
+   context.bindVertexBuffer(pvi, cube.vertexPositionBuffer, 0, ERenderAttributeFormat.Float3);
+   context.bindVertexBuffer(pci, cube.vertexColorBuffer, 0, ERenderAttributeFormat.Float4);
+   context.drawTriangles(cube.indexBuffer);
+
+   context.present();
+   //console.log(pvi, vb);
+}
+
+function _load(){
+   RRuntime.processCd = EProcess.Debug;
+   RBrowser.construct();
+
+   var c1 = RClass.create(FControl);
+   RDump.dump(c1, _dump);
+   return;
+
+
+   
+   var xc = RConsole.find(FXmlConsole);
+   RDump.dump(xc, _dump);
+
+   var hCanvas = document.getElementById('_canvas');
+   context = REngine3d.createContext(FWglContext, hCanvas);
+   context.setViewPort(hCanvas.width, hCanvas.height);
+   context.setDepthMode(true, ERenderDepthMode.LessEqual);
+   context.setCullingMode(true, ERenderCullMode.Front);
+
+   program = context.createProgram();
+   program.upload(ERenderShader.Vertex,
+      "attribute vec3 va_position;\n" +
+      "attribute vec4 va_color;\n" +
+      "uniform mat4 vc_model_matrix;\n" +
+      "uniform mat4 vc_vp_matrix;\n" +
+      "varying vec4 v_color;\n" +
+      "void main(void){\n" +
+      "   gl_Position = vec4(va_position, 1.0) * vc_model_matrix * vc_vp_matrix;\n" +
+      "   v_color = va_color;\n" +
+      "}\n");
+   program.upload(ERenderShader.Fragment,
+      "#ifdef GL_ES\n" +
+      "precision highp float;\n" +
+      "#endif\n" +
+      "varying vec4 v_color;\n" +
+      "void main(void) {\n" +
+      "   gl_FragColor = v_color;\n" +
+      "}\n");
+   program.build();
+   program.attributeRegister('va_position');
+   program.attributeRegister('va_color');
+   program.parameterRegister('vc_model_matrix', ERenderParameterFormat.Float4x4);
+   program.parameterRegister('vc_vp_matrix', ERenderParameterFormat.Float4x4);
+   program.link();
+
+   pvi = context._native.getAttribLocation(program._native, "va_position");
+   pci = context._native.getAttribLocation(program._native, "va_color");
+
+   cube = RClass.create(FRenderCube);
+   cube.setup(context);
+
+   //var tx = context.createFlatTexture();
+   //tx.loadUrl("http://localhost:999/ars/001.png");
+
+   var rc = RClass.create(FRenderCamera);
+   rc.position.set(0, 0, -10);
+   rc.lookAt(0, 0, 0);
+   rc.update();
+
+   var rp = RClass.create(FRenderProjection);
+   rp.width = hCanvas.width;
+   rp.height = hCanvas.height;
+   rp.update();
+
+   mMatrix = new SMatrix3d();
+   vc_vp_matrix = new SMatrix3d();
+   vc_vp_matrix.append(rc.matrix);
+   vc_vp_matrix.append(rp.matrix);
+
+   //RDump.dump(tx, _dump);
+
+   //var reader = new FileReader();
+   //reader.addEventListener("load", processimage, false); 
+   //reader.readAsArrayBuffer("http://");
+
+   //var ab = new ArrayBuffer(13);
+   //alert(ab.byteLength)
+   //RDump.dump(ab, _dump);
+   //var ab2 = new Float32Array(13);
+   //alert(ab2.byteLength + " - " + ab2.length + " - " + ab2.BYTES_PER_ELEMENT + " - " + ab2.byteOffset)
+   //RDump.dump(ab2, _dump);
+
+   //RDump.dump(Array, _dump);
+
+   //RDump.dump(FileReader, _dump);
+   //RDump.dump(vc_model_matrix, _dump);
+   //RDump.dump(vb, _dump);
+   //RDump.dump(ib, _dump);
+   RDump.dump(context, _dump);
+
+   //RDump.dump(hCanvas.getContext('webgl'), _dump);
+
+   //var names = new Array();
+   //alert(names.length);
+   //debugger
+
+	//RLogger.connect(_msg);
+	//var cd = RClass.create(FClassD);
+	//RDump.dump(cd, _dump);
+   //var s = new TAttributes();
+   //alert(s.dump());
+
+   //RDump.dump(RRuntime, _dump);
+   //RDump.dump(RDump, _dump);
+   RStage.lsnsEnterFrame.register(null, onEnterFrame);
+   RStage.start(15);
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+<CANVAS id="_canvas" width="800" height="400"></CANVAS>
+<DIV id='_dump'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

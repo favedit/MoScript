@@ -1,0 +1,166 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../../../acs/lang_jp.css' type="text/css" media="all"/>
+</HEAD>
+
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../lang/TClass.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/MListView.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FDataControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FDataEditControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../core/FMoveConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../core/FDesignConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FCalendar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FRow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FTable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FListView.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FForm.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../window/MWinBorder.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../window/FWindow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../window/FSearchWindow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../window/FListWindow.js'></SCRIPT>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var form = null;
+var toolbar = null;
+var searchBox = null;
+function _dump(o){
+	RDump.dump(o);
+}
+function doFetch(){
+	alert('doFetch');
+}
+function doSearch(){
+	if(!searchBox){
+		searchBox = RControl.create(FSearchWindow);
+		searchBox.linkDsControl(form);
+	}
+	searchBox.show();
+	//_dump(searchBox);
+}
+function doLov(){
+	RConsole.find(FDatasetConsole).listView();
+}
+function doInsert(action){
+	RControl.setAction(EAction.Insert);
+	form.dsInsert('#ds-form001-insert.xml');
+}
+function doUpdate(action){
+	//RControl.setAction(EAction.Update);
+	form.dsUpdate('#ds-form001-update.xml');
+}
+function doDelete(action){
+	RControl.setAction(EAction.Delete);
+	form.dsDelete('#ds-form001-delete.xml');
+}
+function doDesignUpdate(){
+	var config = RControl.store(form);
+	var ra = RClass.create(FRemoteAction);
+	ra.execute('saveOrder@http:/localhost:8080/mylife/system.design.webform', config);
+}
+function _load(){
+	RGlobal.setContext('jp', '../../..', '../..');
+	RLog.connect(_log);
+
+	toolbar = RControl.fromXml(xToolBar, _id_toolbar);
+	var dc = RConsole.find(FDatasetConsole);
+	dc.register(EDataAction.Lov, toolbar.button('btnLov'));
+	dc.register(EDataAction.Search, toolbar.button('btnSearch'));
+	dc.register(EDataAction.Insert, toolbar.button('btnInsert'));
+	dc.register(EDataAction.Update, toolbar.button('btnUpdate'));
+	dc.register(EDataAction.Delete, toolbar.button('btnDelete'));
+
+	form = RControl.fromXml(xForm, _id_form);
+	//form.loadValue(RXml.makeNode(xValue))
+	form.dsFetch('#ds-form001.xml');
+	form.setAction(EAction.Update);
+	form.focus();
+
+	form.design(EDesign.Move, true);
+
+	//form.component('edtLanguageId').focus();
+	//RConsole.find(FDatasetConsole).listView();
+	//form.component('edtLanguageId').blur();
+
+	//form.design(EDesign.Move, true);
+	//RControl.setAction(EAction.Update);
+   //form.name = 'system.form.frmField';
+	//form.connect('frmField.xml', 'find', 'find');
+   //form.connect('http://127.0.0.1:8080/mylife/system.web.form.ws', 'find', 'find');
+	//form = RControl.create(RXml.makeNode(oMetaData), _idp);
+	//form.doUpdate();
+	//RDump.dump(RClass.find(FControl))
+	//RDump.dump(form.components.get('cboType'))
+	//RDump.dump(form.component('edtName'))
+	//RDump.dump(form)
+	//RDump.dump(toolbar)
+}
+</SCRIPT>
+
+<XML ID="xToolBar">
+<ToolBar width='100%' disp_access='D'>
+	<ToolButton name='btnBack'         caption='Back'    icon='tool.back'/>
+	<ToolButtonSplit/>
+	<ToolButton name='btnFetch' caption='Fetch'  icon='tool.fetch' icon_disable='tool.insertd' hotkey='F2' action='doFetch()'/>
+	<ToolButton name='btnSearch' caption='Search'  icon='tool.search' icon_disable='tool.insertd' hotkey='F3' action='doSearch()'/>
+	<ToolButton name='btnLov' caption='View'  icon='tool.search' icon_disable='tool.insertd' hotkey='F4' action='doLov()'/>
+	<ToolButtonSplit/>
+	<ToolButton name='btnInsert'       caption='Insert'  icon='tool.insert' icon_disable='tool.insertd' action='doInsert()'/>
+	<ToolButton name='btnUpdate'       caption='Update'  icon='tool.update' icon_disable='tool.updated' action='doUpdate()'/>
+	<ToolButton name='btnDelete'       caption='Delete'  icon='tool.delete' icon_disable='tool.deleted' action='doDelete()'/>
+	<ToolButtonSplit/>
+	<ToolButtonMenu name='btnActions'  caption='Action'  icon='tool.action' icon_disable='tool.insertd'>
+		<MenuItem name='bmiSQL' label='SQL' icon='tool.action' icon_disable='tool.insertd' action='alert(2)'/>
+		<MenuItem name='bmiPackage' label='Package' icon='tool.action' icon_disable='tool.insertd' page='insert@#/../_form/_form001.html'/>
+		<MenuItem name='bmiExecute' label='Execute Package SQL' icon='tool.action' icon_disable='tool.insertd'/>
+	</ToolButtonMenu>
+	<ToolButtonSplit/>
+	<ToolButton name='btnUpdateDesign'  caption='Update Design'  icon='tool.update' icon_disable='tool.updated' action='doDesignUpdate()'/>
+</ToolBar>
+</XML>
+<XML ID="xForm">
+<WebForm _oid_="BgAAAOJZjeQXAQAA" name="system.form.frmColumn" type="WebForm" dataset="node.type" edit_access="SIUD">
+	<Picker name="dpOuid" width='250' label_width='80' nowrap="Y" edit_width='140' disp_access="SLPIUD" label="Country Id" data_name='oid' edit_access='SIUD' />
+	<Select name="cboType" nowrap="N" label="Type" label_width="80" data_name="type" data_type="string" disp_access="SLPIUD" edit_access='SU' edit_width="140" valid_access='IU' picker_width='40'>
+		<Item value="Edit" label="Edit" />
+		<Item value="Number" label="Number" />
+		<Item value="Check" label="CheckBox" />
+		<Item value="Select" label="ComboBox" />
+		<Item value="Datepicker" label="Date Picker" />
+		<Item value="Split" label="Split" />
+		<Item value="DataAction" label="Data Action" />
+	</Select>
+	<Split name="edtSplit" nowrap="Y" label="Name"/>
+	<Edit name="edtName" nowrap="Y" label="Name" width='250' label_width="80" data_name="name"  disp_access="SLPIUD" edit_access='SU' edit_width="140" valid_access='IU' picker_width='40'/>
+	<Edit data_default='A' name="edtCode" nowrap="N" label="Code" label_width="80" data_name="code" disp_access="LPIUD" edit_access='SU' edit_width="140" valid_access='IU' picker_width='40'/>
+	<Edit name="edtFullName" nowrap="Y" width='250' label="Full Name" label_width="80" data_name="full_name" disp_access="LPIUD" edit_access='U' edit_width="140" valid_access='IU' picker_width='80'/>
+	<Number name="edtLanguageId" nowrap="Y" label="Language" label_width="80" data_name="language_id" disp_access="LIUD" edit_access='U' edit_width="40" valid_access='IU' lov_service='#ds-lan-lov.xml' lov_refer='base.language' lov_fields='ouid language_id,full_name language_full_name'/>
+	<Edit name="edtLanguageFullName" nowrap="N" data_name="language_full_name" disp_access="LIUD" edit_access='' edit_width="140"/>
+	<Calendar data_default='@now' name="cldCreateDate" nowrap="Y" label="Create Date" width='250' label_width="80" data_name="create_date" disp_list="Y" disp_insert="Y" disp_update="N" disp_delete="N" edit_width="140" edit_access='IU' valid_access='IU'/>
+	<Check data_default='Y' name="chkIsValid" nowrap="N" label="Is Valid" label_width="80" data_name="is_valid" disp_list="Y" disp_insert="Y" disp_update="N" disp_delete="N" edit_access='IU' valid_access='IU'/>
+	<Memo name="edtNote" type="Edit" nowrap="N" label="Note" label_width="80" data_name="note" disp_list="Y" disp_insert="Y" disp_update="N" disp_delete="N" edit_width="300" edit_height='40' edit_access='IU' valid_access='IU'/>
+</WebForm>
+</XML>
+<XML ID="xValue"/>
+
+<BODY onload='_load()' style='padding:0; margin:8; background-color:#FFFFFF'>
+<DIV id='_id_toolbar'></DIV>
+<BR>
+<DIV id='_id_form' style='width:100%;'></DIV>
+<BR>
+<DIV id='_log' style='height:100;overflow:auto'></DIV>
+<BR>
+</BODY>
+
+</HTML>

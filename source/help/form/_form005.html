@@ -1,0 +1,109 @@
+<HTML>
+    <HEAD>
+        <TITLE>Class Example</TITLE>
+        <LINK rel='stylesheet' href='../../../acs/control.css' type='text/css'>
+        <LINK rel='stylesheet' href='../../../acs/lang_jp.css' type='text/css'>
+        <SCRIPT language='javascript' src='../../mobj.js'>
+        </SCRIPT>
+        <SCRIPT language='javascript' src='../../2-base/FControl.js'>
+        </SCRIPT>
+        <SCRIPT language='javascript' src='../../2-base/MEventHover.js'>
+        </SCRIPT>
+        <SCRIPT>
+            RGlobal.setContext('jp', '../../..', '/system');
+        </SCRIPT>
+    </HEAD>
+    <!-- Script -------------------------------------------------->
+    <SCRIPT>
+        var action = 'update';
+        var form = null;
+        var toolbar = null;
+        function doRefresh(){
+            fmMain.action = '';
+            fmMain.submit();
+        }
+        
+        function doSave(){
+            var a = new TNode();
+            form.saveValue(a);
+            return RLog.debug(this, a.dump());
+            //return alert(a.dump());
+            //return RDump.dump(_dump, form.component('tfName'));
+            
+            if (action == 'insert') {
+                form.doAction('daInsert');
+            }
+            else {
+                form.doAction('daSave');
+            }
+        }
+        
+        function _load(){
+            RLog.connect(_log);
+            debugger
+            form = RControl.fromXml(xForm, _id_form);
+
+        }
+    </SCRIPT>
+    <!-- Environment --------------------------------------------->
+    <XML ID="xEnvironment">
+    </XML>
+    <!-- ToolBar ------------------------------------------------->
+    <XML ID="xToolBar">
+        <ToolBar width='100%' height='100%'>
+            <ToolButton name='btnRefresh' caption='Refresh' icon='tool.refresh' icon_disable='tool.refreshd'/><ToolButtonSplit/><ToolButton name='btnSave' caption='Save' icon='tool.save' icon_disable='tool.saved' action='doSave()'/><ToolButton name='btnDelete' caption='Delete' icon='tool.delete' icon_disable='tool.deleted' disp_access='U' page='delete@#/system/persistence/Persistence.wa'/>
+        </ToolBar>
+    </XML><!-- Form ---------------------------------------------------->
+    <XML id='xForm'>
+        <Edit name="tfName" width="250" nowrap="Y" hint = "Hello World" label="Name" label_width="80" data_name="name" edit_width="140"/>
+    </XML><!-- Value --------------------------------------------------->
+    <XML ID="xValue">
+        <Attribute name="cache" type="String" is_store="Y" is_config="Y" icon2='Y' />
+    </XML><!-- Body begin ---------------------------------------------->
+    <BODY onload="__bodyLoad()" onunload="__bodyUnload()" onload="_load()" class="bodyMain">
+        <FORM method='POST' name="fmMain">
+            <INPUT type='hidden' name='_environment'>
+            </INPUT>
+            <TABLE border='0' cellpadding='0' cellspacing='0' width='100%'>
+                <TR>
+                    <TD height='24'>
+                        <!-- Toolbar begin ------------------------------------------->
+                        <DIV id='_id_toolbar'>
+                        </DIV>
+                        <!-- Toolbar end --------------------------------------------->
+                    </TD>
+                </TR>
+                <TR>
+                    <TD height='4'>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD style='padding:8' valign='top'>
+                        <!-- Form begin ---------------------------------------------->
+                        <DIV style='width:100%;height:300;'>
+                            <DIV id='_id_form'>
+                            </DIV>
+                        </DIV>
+                        <DIV id='_dump'>
+                        </DIV>
+                        <DIV id='_log'>
+                        </DIV>
+                        <br>
+                        <!-- Form end ------------------------------------------------>
+                    </TD>
+                </TR>
+            </TABLE>
+        </FORM>
+        <SCRIPT language='javascript'>
+            function __bodyLoad(){
+            
+            
+                _load()
+            }
+            
+            function __bodyUnload(){
+            }
+        </SCRIPT>
+    </BODY>
+    <!-- Body end ------------------------------------------------>
+</HTML>

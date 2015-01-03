@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TreeView>
+
+	<Node type='table' caption='COM_COUNTRY' child='Y' note='日本語' table='ComCountry' field='Mao'/>
+	<Node type='table' caption='COM_AREA' table='ComCountry' field='Mao'>
+		<Node type='field' caption='Mao' table='ComCountry' field='Mao'/>
+		<Node type='field' caption='Yang'/>
+	</Node>
+	<Node type='table' caption='COM_ASD' child='Y'/>
+	<Node type='table' caption='COM_DSA' child='Y'/>
+
+</TreeView>

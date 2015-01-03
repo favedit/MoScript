@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<PageBar>
+
+	<PageSheet name='info' icon='sys.info' caption='ホーム' action='/system/design/UnitUpdate.wa'/>
+	<PageSheet name='pty' icon='sys.info' caption='製品' action='/inc/wfc/property/Config.wa?type={property}&amp;objects=unit_name&amp;class=[wfc.pty.dsn.unit]'/>
+	<PageSheet name='attrs' icon='sys.info' caption='ヘルプ' action='/system/design/FieldsConfig.wa'/>
+
+</PageBar>

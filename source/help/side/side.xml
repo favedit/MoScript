@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<SideBar>
+
+   <SideButton name='catalog' icon='sys.floder' label='Catalog'/>
+   <SideButton name='info' icon='sys.floder' label='Document'/>
+   <SideButton name='pty' icon='sys.floder' label='Design'/>
+   <SideButton name='attrs' icon='sys.floder' label='Source'/>
+   <SideButton name='source' icon='sys.floder' label='Database'/>
+   <SideButton name='source' icon='sys.floder' label='Framework'/>
+   <SideButton name='source' icon='sys.floder' label='Test'/>
+   <!-- <SideButton name='source' icon='sys.floder' label='Question'/> -->
+   <!-- <SideButton name='source' icon='sys.floder' label='Monitor'/> -->
+   <!-- <SideButton name='source' icon='sys.floder' label='Help'/> -->
+
+</SideBar>

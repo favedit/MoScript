@@ -1,0 +1,96 @@
+<!DOCTYPE   HTML   PUBLIC   "-//W3C//DTD   HTML   4.01   Transitional//EN ">
+
+<html>
+<head>
+<meta http-equiv= "pragma"   content= "no-cache">
+<meta http-equiv= "Content-Type"   content= "text/html;   charset=gb2312">
+<title >Document   Title </title> 
+<style   type= "text/css"> 
+.t{ 
+width:400px; 
+height:200px; 
+padding:5px   0px   0px   10px; 
+} 
+</style > 
+</head > 
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/RHtml.js'></SCRIPT>
+
+<body onmousemove='_mm()'>
+
+<script>
+function _mm(){
+   editor.innerText = window.event.x + " " + window.event.y;
+}
+function tellPoint()
+{     
+	var rng = event.srcElement.createTextRange();	
+     
+	rng.moveToPoint(event.x,event.y);	     
+	rng.moveStart("character",-event.srcElement.value.length)	     
+	     
+	pnum.value = rng.text.length     
+	     
+	returnCase(rng)     
+}
+function _focus(){
+   var r = idb.createTextRange();
+   r.moveToPoint(event.x, event.y);
+   r.moveStart('character', -idb.innerText.length);
+   var pos = r.text.length;
+
+   var r = ide.createTextRange();
+   r.moveStart('character', pos);
+   r.collapse(true); 
+   r.select(); 
+}
+function _ku(){
+   var r = ide.createTextRange();
+   editor.innerText = r.offsetLeft;
+}
+function _md(){
+   var rect = RHtml.rect(idt);
+   RHtml.setRect(ide, rect);
+
+   /*var r = idb.createTextRange();
+   r.moveToPoint(event.x, event.y);
+   r.moveStart('character', -idb.innerText.length);
+   var pos = r.text.length;*/
+
+   //ide.focus();
+   //ide.select();
+   //r.moveStart('character', pos);
+   var r = ide.createTextRange();
+   r.moveToPoint(event.x, event.y);
+   r.collapse(true); 
+   r.select();
+
+   event.returnValue = true;
+}
+</script>
+<table><tr><td  bgcolor=red id='idt' width=180 height=20 onclick='_md()' nowrap>
+Test AbcdefghijkLmn
+</td></tr></table>
+
+<button id='idb' onmousedown='_focus()'>Test AbcdefghijkLmn</button>
+
+
+<input id='ide' value='Test AbcdefghijkLmn' onkeydown='_ku()' style='position:absolute;'></input>
+
+<span id="editor1" contenteditable="true" class="b" style="width:99%; height:40px; border:solid 1px"> </span>
+
+<div id="editor" contenteditable="true" class="b" style="width:99%; height:40px; border:solid 1px"> </div>
+
+<div style= "position:absolute;width:0px;">
+    <div id=cursorDiv style= "position: relative; background-color:red; width: 3px;"> </div>
+</div> 
+<textarea id= "jia" class= "t" onkeyup= "setl()" onclick="setl()" onscroll="setl()"></textarea>
+<script language="javascript">
+function setl(){ 
+   var jia = document.getElementById("jia"); 
+   var rng = document.selection.createRange(); 
+   cursorDiv.style.top = rng.boundingTop-18+jia.scrollTop; 
+} 
+</script>
+</body>
+</html>

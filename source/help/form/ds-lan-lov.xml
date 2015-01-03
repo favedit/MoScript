@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebTable name='lov'>
+	<Column name="colOuid" width='40' label="ID" data_name="OUID" disp_access='LIUD'/>
+	<Column name="colFullName" width='80' label="Full Name" data_name="full_name" disp_access='LIUD'/>
+	<Column name="colNote" label="Note" data_name="note" disp_access='LIUD'/>
+	<Row ouid='1' full_name="Chinese" note="Zhong Guo"/>
+	<Row ouid='2' full_name="Japanese" note="Ri Ben"/>
+	<Row ouid='3' full_name="English" note="Mei Guo"/>
+</WebTable>
+

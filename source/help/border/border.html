@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<TITLE>Popup Example</TITLE>
+<LINK rel="stylesheet" href='../../acs/control.css' type="text/css" media="all"/>
+<SCRIPT src="../../mobj.js"></SCRIPT>
+<SCRIPT>RGlobal.setContext('cn','../..','');</SCRIPT>
+</HEAD>
+
+<SCRIPT>
+function load_(){
+	var bdr = RClass.create(FObject);
+	debugger
+	//bdr.linkHtml(window);
+	//bdr.build();
+
+	//var bdr = RClass.create(FBorder);
+	//bdr.linkHtml(window);
+	//bdr.build();
+
+	//bdr.resize(200, 200);
+	//_id4.innerText = bdr.hBorder.outerHTML;
+
+	//IDump.dump(_id3, bdr);
+	//IDump.dump(document, _id2, IConsole.find(IMoveConsole));
+}
+function mm(){
+	_id2.innerText = window.event.x + ',' + window.event.y + ' - ' + window.event.clientX + ',' + window.event.clientY + ' - ' + window.event.offsetX + ',' + window.event.offsetY;
+}
+</SCRIPT>
+
+<BODY onload='load_()' onmousemove='mm()'>
+<DIV id='_idx' nowrap style='height:260px'></DIV><HR>
+<DIV id='_id0' nowrap></DIV><HR>
+<DIV id='_id1' nowrap></DIV><HR>
+<DIV id='_id2' nowrap></DIV><HR>
+<DIV id='_id3' nowrap></DIV><HR>
+<DIV id='_id4' nowrap></DIV><HR>
+</BODY>
+
+</HTML>

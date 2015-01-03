@@ -1,0 +1,23 @@
+<SCRIPT language='javascript' src='mobj.js'></SCRIPT>
+<INPUT id='id'>
+<script type="text/javascript">
+(function(){
+
+        debugger
+         function $(id){
+
+                   return document.getElementById(id);
+
+         }
+
+         function alertNodeName(id){
+
+                   alert($(id).nodeName);
+
+         }
+         window['c']={};
+
+         window['c']['alertNodeName'] = alertNodeName;
+
+})();
+</script>

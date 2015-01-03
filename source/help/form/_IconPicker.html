@@ -1,0 +1,144 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<LINK rel='stylesheet' href='../../../system/acs/control.css' type='text/css'>
+<LINK rel='stylesheet' href='../../../system/acs/control.auto.css' type='text/css'>
+<LINK rel='stylesheet' href='../../../system/acs/lang_jp.css' type='text/css'>
+<SCRIPT language='javascript' src='../../mobj.js'>
+</SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.form/FDataEditControl.js'>
+</SCRIPT>
+
+<SCRIPT language='javascript' src='../../4-ctl.form/FIconPicker.js'>
+</SCRIPT>
+<SCRIPT language='javascript' src='../../2-base/MEditable.js'>
+</SCRIPT>
+<SCRIPT language='javascript' src='../../core.js'>
+</SCRIPT>
+<SCRIPT>
+   RGlobal.setContext('jp', '../../..', '/system');
+</SCRIPT>
+</HEAD>
+<!-- Script -------------------------------------------------->
+<SCRIPT>
+   var action = 'update';
+   var form = null;
+   var toolbar = null;
+   function doRefresh() {
+      fmMain.action = '';
+      fmMain.submit();
+   }
+   function doInsert() {
+      form.doAction('insertAction');
+   }
+   function doSave() {
+      if (RWindow.inDisable) {
+         return;
+      }
+      if ('insert' == action) {
+         form.doAction('insertAction');
+      } else if ('update' == action) {
+         form.doAction('updateAction');
+      } else {
+         alert('Unknown action [' + action + ']');
+      }
+   }
+   function doDelete() {
+      form.doAction('deleteAction');
+   }
+   function _load() {
+      //RWindow.connect(window);
+      //debugger
+      //var cell = RControl.create(FCell);
+      var xform = RXml.makeNode(xForm);
+      //var xvalue = RXml.makeNode(xValue);
+      // Build toolbar
+      //toolbar = RToolBar.fromNode(xform, _id_toolbar, true);
+      //toolbar.setAction(REnum.encode(EAction, action));
+      // Build form
+      form = RControl.fromNode(xform, _id_form);
+      //form.setAction(REnum.encode(EAction, action));
+      //if(RClass.isClass(form, FForm)){
+      //	form.loadValue(xvalue, EStore.DataNvl);
+      //}else if(RClass.isClass(form, FTable)){
+      //	form.loadDatasets(xvalue)
+      //}
+      //form.focus();
+      // Set title
+      //top.document.title = form.label;
+   }
+</SCRIPT>
+<!-- Environment --------------------------------------------->
+<XML ID="xEnvironment">
+<Environment node_type="WebForm" node_filter="" sel_type="component"
+	sel_collection="database.procedure.PackageForm"
+	sel_component="gkvfxsaXeCgX[9Fa7UYitw" />
+</XML>
+<!-- Form ---------------------------------------------------->
+<XML id='xForm'>
+	
+	
+	
+<IconPicker  width="260" label_width="80" edit_width="160" name="name"
+	label="数量" nowrap="Y" disp_access="SPLIUDT" data_name="name"
+	 edit_access="IU" valid_access="IU"
+	valid_require="N" edit_complete="Y" edit_unit="个" data_value='#up' />
+	
+	
+</XML>
+<!-- Value --------------------------------------------------->
+<XML ID="xValue">
+<Edit _uuid="gkvfxsaXeCgX[9Fa7UYitw" _type="Edit" name="name" label="名称"
+	nowrap="Y" width="250" disp_access="SPLIUD" disp_search="Y"
+	disp_picker="Y" disp_list="Y" disp_insert="Y" disp_update="Y"
+	disp_delete="Y" data_name="object_name" label_width="80"
+	edit_access="IU" edit_insert="Y" edit_update="Y" valid_access="IU"
+	valid_insert="Y" valid_update="Y" />
+</XML>
+<!-- Body begin ---------------------------------------------->
+<BODY onload="__bodyLoad()" onunload="__bodyUnload()" scroll="no"
+	onload="_load()" class="bodyMain">
+<FORM method='POST' name="fmMain" action="#"><INPUT type="submit"
+	name='_environment'></INPUT> <INPUT type="hidden" name="form_name"
+	value="design.webform.EditForm" class="comEdit"> <INPUT
+	type="hidden" name="form_service" class="comEdit"> <INPUT
+	type="hidden" name="sel_type" value="component" class="comEdit">
+<INPUT type="hidden" name="sel_collection"
+	value="database.procedure.PackageForm" class="comEdit"> <INPUT
+	type="hidden" name="sel_component" value="gkvfxsaXeCgX[9Fa7UYitw"
+	class="comEdit">
+<TABLE border='0' cellpadding='0' cellspacing='0' width='100%'
+	height='100%'>
+	<!-- Toolbar begin ------------------------------------------->
+	<TR>
+		<TD height='1'>
+		<DIV id='_id_toolbar'></DIV>
+		</TD>
+	</TR>
+	<!-- Toolbar end --------------------------------------------->
+	<!-- Form begin ---------------------------------------------->
+	<TR>
+		<TD>
+		<DIV style='padding: 12; width: 100%; height: 100%; overflow: auto'>
+		<DIV id='_id_form' style='width: 100%'>		<br><INPUT TYPE="text" AUTOCOMPLETE="on"></DIV>
+		</DIV>
+		</TD>
+
+	</TR>
+	<!-- Form end ------------------------------------------------>
+</TABLE>
+</FORM>
+<div id='stack'>
+</div>
+<SCRIPT language='javascript'>
+   function __bodyLoad() {
+
+      _load()
+   }
+   function __bodyUnload() {
+   }
+</SCRIPT>
+</BODY>
+<!-- Body end ------------------------------------------------>
+</HTML>

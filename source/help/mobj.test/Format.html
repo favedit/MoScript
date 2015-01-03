@@ -1,0 +1,163 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>效果直逼flash的Div+Css+Js菜单</title>
+<style>
+body {
+	background-color: #B8B8A0;
+}
+
+#fbtn {
+	display: none;
+	overflow: hidden;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #e1e1c9 #e1e1c9 #6e6e56 #6e6e56;
+	padding: 1 1 1 1;
+	width: 115px;
+	height: 30px;
+}
+
+#fbtn_txt {
+	position: relative;
+}
+
+#fbtn_txt div {
+	height: 30px;
+	padding-top: 11px;
+	font-size: 12px;
+	color: #800080;
+	text-align: center;
+	cursor: hand;
+}
+
+#fbtn_mask {
+	background-color: #ffffff;
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+</style>
+
+</head>
+
+<body>
+<div id=fbtn>
+<div id=fbtn_mask></div>
+<div id=fbtn_txt>
+<div>G1</div>
+<div>good morning</div>
+</div>
+</div>
+
+<div id=fbtn>
+<div id=fbtn_mask></div>
+<div id=fbtn_txt>
+<div>G2</div>
+<div>good evening</div>
+</div>
+</div>
+
+<div id=fbtn>
+<div id=fbtn_mask></div>
+<div id=fbtn_txt>
+<div>M1</div>
+<div>my name is fireyy</div>
+</div>
+</div>
+
+<div id=fbtn>
+<div id=fbtn_mask></div>
+<div id=fbtn_txt>
+<div>M2</div>
+<div>mm mm i love u</div>
+</div>
+</div>
+
+<div id=fbtn>
+<div id=fbtn_mask></div>
+<div id=fbtn_txt>
+<div>G1</div>
+<div>good morning</div>
+</div>
+</div>
+
+<div id=fbtn>
+<div id=fbtn_mask></div>
+<div id=fbtn_txt>
+<div>G2</div>
+<div>good evening</div>
+</div>
+</div>
+
+<div id=fbtn>
+<div id=fbtn_mask></div>
+<div id=fbtn_txt>
+<div>M1</div>
+<div>my name is fireyy</div>
+</div>
+</div>
+
+<div id=fbtn>
+<div id=fbtn_mask></div>
+<div id=fbtn_txt>
+<div>M2</div>
+<div>mm mm i love u</div>
+</div>
+</div>
+
+<script>
+   var current = null;
+   var t = null;
+
+   for ( var i = 0; i < fbtn.length; i++) {
+      fbtn_txt[i].style.posTop = -30;
+      fbtn_mask[i].style.posTop = -30;
+      fbtn[i].index = i;
+      fbtn[i].style.display = "block";
+
+      fbtn[i].onmouseover = function() {
+         if (!current) {
+            current = this;
+            domove(this.index);
+         } else if (current != this) {
+            domove(current.index);
+            domove(this.index);
+            current = this;
+         }
+      }
+
+      fbtn[i].onmouseout = function() {
+         if (event.toElement == this.parentElement & t == this) {
+            domove(this.index);
+            current = null;
+         }
+      }
+   }
+
+   function domove(num) {
+      var o = fbtn_txt[num];
+      var m = fbtn_mask[num];
+      if (o.style.posTop < -60) {
+         o.style.display = "none";
+         var t = o.children[1].innerHTML;
+         o.children[1].innerHTML = o.children[0].innerHTML;
+         o.children[0].innerHTML = t;
+         o.style.posTop = -30;
+         o.style.display = "block";
+         if (m.style.posTop > 30)
+            m.style.posTop = -30;
+         else
+            m.style.posTop = 0;
+      } else {
+         m.style.posTop += 3;
+         o.style.posTop -= 3;
+         setTimeout('domove(' + num + ')', 15);
+      }
+   }
+</script>
+</body>
+</html>
+
+本文来自: CSSPLAY中文官方网(www.cssplay.org.cn)
+详细出处参考：http://www.cssplay.org.cn/css-menu/20080904/729.html

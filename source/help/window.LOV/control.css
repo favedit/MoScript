@@ -1,0 +1,1477 @@
+/* ------------------------------------------------------ */
+/* Tag                                                    */
+/* ------------------------------------------------------ */
+.Tag_Icon  { border:0px; }
+.Tag_Image { border:0px; }
+
+/* ------------------------------------------------------ */
+/* FControl                                               */
+/* ------------------------------------------------------ */
+.FControl_Panel
+	{
+	padding:1;
+	}
+.FControl_Design
+	{
+	cursor:hand;
+	border-left:1 solid #FFFFFF; border-top:1 solid #FFFFFF; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	background-color:#D9D6D0;
+	}
+.FControl_DesignDrag
+	{
+	background-color:#D9D6D0;
+	border:1 solid #666666;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=60, style=0);
+	}
+.FControl_DesignMove
+	{
+	position:absolute;
+	cursor:hand;
+	background-color:#FEF0DE;
+	border:1 solid #666666;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=60, style=0);
+	}
+.FControl_DesignHover
+	{
+	cursor:hand;
+	margin:0;
+	padding:0;
+	background-color:#FEF0DE;
+	border:1 solid #666666;
+	}
+
+/* ------------------------------------------------------ */
+/* FDataEditControl                                       */
+/* ------------------------------------------------------ */
+.FDataEditControl_EditForm
+	{
+	border:0 solid #849CB1;
+	}
+.FDataEditControl_Edit
+	{
+	border:1 solid #849CB1;
+	}
+.FDataEditControl_Drop
+	{
+	cursor:hand;
+	}
+
+/* ------------------------------------------------------ */
+/* RWindow                                                */
+/* ------------------------------------------------------ */
+.RWindow_Disable
+	{
+	position:absolute;
+	width:100%; height:100%;
+	background-color:#8E8573;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=20, style=0);
+	}
+.RWindow_Shadow
+	{
+	position:absolute;
+	background-color:#666666;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=60, style=0);
+	}
+
+/* ------------------------------------------------------ */
+/* FDesignConsole                                         */
+/* ------------------------------------------------------ */
+.FDesignConsole_Split
+	{
+	position:absolute;
+	background-color: #FF0000;
+	border-left:1 solid #FFC1C1; border-top:1 solid #FFC1C1; border-right:1 solid #970000; border-bottom:1 solid #970000;
+	}
+
+/* ------------------------------------------------------ */
+/* FMessageConsole                                         */
+/* ------------------------------------------------------ */
+.FMessageConsole_Panel
+	{
+	width:360; height:240;
+	position:absolute;
+	border:1 solid red;
+	background-color:#FFFFFF;
+	}
+
+/* ------------------------------------------------------ */
+/* PageBar                                                */
+/* ------------------------------------------------------ */
+.FPageBar_Panel
+	{
+	width:100%;
+	}
+.FPageBar_TitlePanel
+	{
+	height:1;
+	}
+.FPageBar_SheetPanel
+	{
+	vertical-align: top;
+	border-left:1 solid #666666; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	padding-left:6; padding-right:6; padding-bottom:6;
+	}
+.FPageBar_Sheets
+	{
+	border:1 solid blue;
+	width:100%; height:100;
+	}
+.FPageBar_Top
+	{
+	height:1px; background-color:#FFFFFF;
+	}
+.FPageBar_TopSel
+	{
+	height:1px; background-color:#666666;
+	}
+.FPageBar_Left
+	{
+	border-top:1 solid #666666;
+	width:1px; background-color:#FFFFFF;
+	}
+.FPageBar_LeftSel
+	{
+	width:1px; background-color:#666666;
+	}
+.FPageBar_Right
+	{
+	width:1px; background-color:#666666;
+	}
+.FPageBar_RightSel
+	{
+	width:1px; background-color:#666666;
+	}
+.FPageBar_RightP
+	{
+	width:1px; border-top:1 solid #666666;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#CAC6BD);
+	}
+.FPageBar_Bottom
+	{
+	height:1px; background-color:#333333;
+	}
+.FPageBar_BottomSel
+	{
+	height:1px; background-color:#FFFFFF;
+	}
+.FPageBar_SheetLeft
+	{
+	width:1px; background-color:#333333;
+	}
+.FPageBar_SheetRight
+	{
+	width:1px; background-color:#333333;
+	}
+
+/* ------------------------------------------------------ */
+/* PageControl                                            */
+/* ------------------------------------------------------ */
+.FPageControl_Panel
+	{
+	width:100%;
+	}
+.FPageControl_TitlePanel
+	{
+	height:1;
+	}
+.FPageControl_SheetPanel
+	{
+	vertical-align: top;
+	border-left:1 solid #29bad5; border-right:1 solid #29bad5; border-bottom:1 solid #29bad5;
+	padding-left:6; padding-right:6; padding-bottom:6;
+	}
+.FPageControl_Sheets
+	{
+	border:1 solid blue;
+	width:100%; height:100;
+	}
+.FPageControl_Top
+	{
+	height:1px; background-color:#FFFFFF;
+	}
+.FPageControl_TopSel
+	{
+	height:1px; background-color:#29bad5;
+	}
+.FPageControl_Left
+	{
+	border-top:1 solid #666666;
+	width:1px; background-color:#FFFFFF;
+	}
+.FPageControl_LeftSel
+	{
+	width:1px; background-color:#29bad5;
+	}
+.FPageControl_Right
+	{
+	width:1px; background-color:#29bad5;
+	}
+.FPageControl_RightSel
+	{
+	width:1px; background-color:#29bad5;
+	}
+.FPageControl_RightP
+	{
+	width:1px; border-top:1 solid #29bad5;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#29bad7);
+	}
+.FPageControl_Bottom
+	{
+	height:1px; background-color:#29bad5;
+	}
+.FPageControl_BottomSel
+	{
+	height:1px; background-color:#FFFFFF;
+	}
+.FPageControl_SheetLeft
+	{
+	width:1px; background-color:#29bad5;
+	}
+.FPageControl_SheetRight
+	{
+	width:1px; background-color:#29bad5;
+	}
+
+/* ------------------------------------------------------ */
+/* PageSheet                                              */
+/* ------------------------------------------------------ */
+.FPageSheet_Panel
+	{
+	cursor:hand; width:1%;
+	white-space: nowrap;
+	}
+.FPageSheet_Sheet
+	{
+	padding:10px;
+	}
+.FPageSheet_Button
+	{
+	width:100%; height:100%; border-top:1 solid #29bad5;
+	padding-left:8px; padding-top:2px; padding-right:8px; padding-bottom:2px;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#29bad7);
+	}
+.FPageSheet_Hover
+	{
+	width:100%; height:100%; border-top:1 solid #29bad5;
+	padding-left:8px; padding-top:2px; padding-right:8px; padding-bottom:2px;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#29bad7);
+	}
+.FPageSheet_Select
+	{
+	cursor:hand; width:100%; height:100%;
+	padding-left:8px; padding-top:3px; padding-right:8px; padding-bottom:2px;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#29bad7, endcolorstr=#FFFFFF);
+	width:100%; height:100%;
+	}
+
+/* ------------------------------------------------------ */
+/* ToolBar                                                */
+/* ------------------------------------------------------ */
+.FToolBar_Panel
+	{
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #AAAAAA; border-bottom:1 solid #AAAAAA;
+	background-color:#DEDBD6;
+	}
+.FToolBar_Button
+	{
+	white-space: nowrap;
+	padding-left:8px; padding-top:2px; padding-right:8px; padding-bottom:2px;
+	}
+
+/* ------------------------------------------------------ */
+/* ToolButton                                             */
+/* ------------------------------------------------------ */
+.FToolButton_Panel
+	{
+	height:100%;
+	}
+.FToolButton_Button
+	{
+	width:1; cursor:hand;
+	border-left:1 solid #FFFFFF; border-right:1 solid #7B7975;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#EAE3D5);
+	}
+.FToolButton_Hover
+	{
+	width:1; cursor:hand;
+	border-left:1 solid #FFFFFF; border-right:1 solid #7B7975;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#BDB7AC);
+	}
+.FToolButton_Press
+	{
+	width:1; cursor:hand;
+	border-left:1 solid #FFFFFF; border-right:1 solid #7B7975;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#BDB7AC, endcolorstr=#FFFFFF);
+	}
+.FToolButton_Disable
+	{
+	width:1;
+	background-color:#C7C2BA;
+	border-left:1 solid #FFFFFF; border-right:1 solid #7B7975;
+	}
+
+/* ------------------------------------------------------ */
+/* ToolButtonSplit                                        */
+/* ------------------------------------------------------ */
+.FToolButtonSplit_Panel
+	{
+	width: 6;
+	}
+.FToolButtonSplit_Button
+	{
+	background-color:#ddd9d3;
+	border-left:1 solid #FFFFFF; border-right:1 solid #7b7975;
+	}
+
+/* ------------------------------------------------------ */
+/* ToolButtonText                                         */
+/* ------------------------------------------------------ */
+.FToolButtonText_Panel
+	{
+	width:100%; height:100%;
+	}
+.FToolButtonText_Button
+	{
+	border-left:1 solid #FFFFFF; border-right:1 solid #7b7975;
+	}
+.FToolButtonText_Hover
+	{
+	cursor:hand; background-color:#F5F1EA;
+	border-left:1 solid #FFFFFF; border-top:1 solid #FFFFFF; border-right:1 solid #999999;
+	}
+.FToolButtonText_Press
+	{
+	color:#666666; background-color:#e0dcd6; cursor:hand;
+	border-left:1 solid #7b7975; border-top:1 solid #7b7975; border-right:1 solid #FFFFFF; border-bottom:1 solid #FFFFFF;
+	}
+
+/* ------------------------------------------------------ */
+/* ToolButtonCheck                                        */
+/* ------------------------------------------------------ */
+.FToolButtonCheck_Panel
+	{
+	width:100%; height:100%;
+	}
+.FToolButtonCheck_Button
+	{
+	width:1; cursor:hand;
+	background-color:#F5F1EA;
+	border-left:1 solid #FFFFFF; border-top:1 solid #FFFFFF; border-right:1 solid #999999; border-bottom:1 solid #FFFFFF;
+	}
+.FToolButtonCheck_Down
+	{
+	width:1; cursor:hand;
+	color:#666666; background-color:#e0dcd6;
+	border-left:1 solid #7b7975; border-top:1 solid #7b7975; border-right:1 solid #FFFFFF; border-bottom:1 solid #FFFFFF;
+	}
+.FToolButtonCheck_Hover
+	{
+	width:1; cursor:hand;
+	border-left:1 solid #FFFFFF; border-top:1 solid #FFFFFF; border-right:1 solid #7B7975; border-bottom:1 solid #BDB7AC;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#BDB7AC);
+	}
+.FToolButtonCheck_Press
+	{
+	width:1; cursor:hand;
+	border-left:1 solid #FFFFFF; border-top:1 solid #FFFFFF; border-right:1 solid #7B7975; border-bottom:1 solid #FFFFFF;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#BDB7AC, endcolorstr=#FFFFFF);
+	}
+
+/* ------------------------------------------------------ */
+/* FToolButtonMenu                                         */
+/* ------------------------------------------------------ */
+.FToolButtonMenu_Panel
+	{
+	height:100%;
+	}
+.FToolButtonMenu_Button
+	{
+	width:1;
+	border-left:1 solid #FFFFFF; border-right:1 solid #7B7975;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#EAE3D5);
+	}
+.FToolButtonMenu_Drop
+	{
+	width:1; cursor:hand;
+	border-left:1 solid #7B7975;
+	padding:1px;
+	font-family:Webdings; line-height:6px; font-size:10px;
+	}
+.FToolButtonMenu_Hover
+	{
+	width:1; cursor:hand;
+	border-left:1 solid #FFFFFF; border-right:1 solid #7b7975;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#BDB7AC);
+	}
+.FToolButtonMenu_Press
+	{
+	width:1; cursor:hand;
+	border-left:1 solid #FFFFFF; border-right:1 solid #7B7975;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#BDB7AC, endcolorstr=#FFFFFF);
+	}
+
+
+
+/* ------------------------------------------------------ */
+/* FTextEditor                                            */
+/* ------------------------------------------------------ */
+.FTextEditor_Panel
+	{
+	position:absolute;
+	border:0;
+	background-color:#008000;
+	}
+.FTextEditor_PanelHover
+	{
+	position:absolute; 
+	border:0;
+	background-color:#80FF80;
+	}
+.FTextEditor_Edit
+	{
+	border:0;
+	background-color:#DDFFDD;
+	}
+.FTextEditor_EditHover
+	{
+	border:0;
+	background-color:#EEFFEE;
+	}
+
+/* ------------------------------------------------------ */
+/* CalendarEditor                                         */
+/* ------------------------------------------------------ */
+.FCalendarEditor_Panel
+	{
+	position:absolute;
+	border:0;
+	}
+.FCalendarEditor_Edit
+	{
+	background-color:#DDFFDD;
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+.FCalendarEditor_EditHover
+	{
+	border:0;
+	background-color:#EEFFEE;
+	}
+
+.FCalendarEditor_DropPanel
+	{
+	width:1;
+	border:1 solid #666666;
+	background-color:#CCCCCC;
+	}
+.FCalendarEditor_TitlePanel
+	{
+	width:100%;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#eae3d5);
+	}
+.FCalendarEditor_DaysPanel
+	{
+	width:100%;
+	background-color:#eae3d5;
+	}
+.FCalendarEditor_TimePanel
+	{
+	width:100%;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#eae3d5);
+	}
+.FCalendarEditor_Year
+	{
+	text-align:right; width:40;
+	}
+.FCalendarEditor_Month
+	{
+	text-align:right; width:20;
+	}
+.FCalendarEditor_Week
+	{
+	text-align:center;
+	width:20px; padding-top:3;
+	color:#FFFFFF; background-color:#999999;
+	}
+.FCalendarEditor_Day
+	{
+	padding-left:2; padding-right:2;
+	text-align:right;
+	background-color:#FFFFFF;
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+.FCalendarEditor_DayHover
+	{
+	cursor:hand;
+	padding-left:2; padding-right:2;
+	text-align:right;
+	background-color:#CCFFCC;
+	border-left:1 solid #CCCCCC; border-top:1 solid #CCCCCC; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+.FCalendarEditor_DaySel
+	{
+	cursor:hand;
+	text-align:right;
+	padding-left:2; padding-right:2;
+	background-color:#88FF88;
+	border-left:1 solid #CCCCCC; border-top:1 solid #CCCCCC; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	}
+.FCalendarEditor_DayFree
+	{
+	text-align:right;
+	padding-left:2; padding-right:2;
+	background-color:#FFFFBB;
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+.FCalendarEditor_DayNone
+	{
+	color:#BDB7AC; background-color:#BDB7AC;
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+
+.FCalendarEditor_Button
+	{
+	text-align:center;
+	width:13px; height:15px; font-family:Webdings;
+	line-height:10px; font-size:10px;
+	cursor:hand; border:1px solid #999999;
+	}
+.FCalendarEditor_ButtonHover
+	{
+	text-align:center;
+	width:13px; height:15px; font-family:Webdings;
+	line-height:10px; font-size:10px; background-color:buttonface;
+	cursor:hand;
+	border-left:1px solid #FFFFFF; border-top:1px solid #FFFFFF; border-right:1px solid #808080; border-bottom:1px solid #808080;
+	}
+.FCalendarEditor_Time
+	{
+	width:60;
+	text-align:right; 
+	}
+.FCalendarEditor_Ok
+	{
+	width:40;
+	text-align:center; 
+	cursor:hand; border:1px solid #999999;
+	}
+.FCalendarEditor_Now
+	{
+	width:40;
+	text-align:center; 
+	cursor:hand; border:1px solid #999999;
+	}
+
+/* ------------------------------------------------------ */
+/* FMemoEditor                                            */
+/* ------------------------------------------------------ */
+.FMemoEditor_Panel
+	{
+	position:absolute;
+	border:0;
+	}
+.FMemoEditor_DropPanel
+	{
+	width:1;
+	border:1 solid #666666;
+	background-color:#CCCCCC;
+	}
+.FMemoEditor_Edit
+	{
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+.FMemoEditor_Memo
+	{
+	background-color:#FFFFFF;
+	width:240; height:120;
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+
+/* ------------------------------------------------------ */
+/* FSelectEditor                                          */
+/* ------------------------------------------------------ */
+.FSelectEditor_Panel
+	{
+	position:absolute;
+	}
+.FSelectEditor_PanelHover
+	{
+	position:absolute;
+	}
+.FSelectEditor_Edit
+	{
+	border:1 solid #29bad7;
+	}
+.FSelectEditor_EditHover
+	{
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+.FSelectEditor_Drop
+	{
+	cursor:hand;
+	}
+.FSelectEditor_DropPanel
+	{
+	width:100%;
+	border:1 solid #666666;
+	background-color:#CCCCCC;
+	}
+.FSelectEditor_Row
+	{
+	cursor:hand;
+	padding-left:6;
+	background-color:#FFFFFF;
+	white-space:nowrap;
+	}
+.FSelectEditor_RowHover
+	{
+	cursor:hand;
+	padding-left:6;
+	background-color:#C5F8C5;
+	white-space:nowrap;
+	}
+.FSelectEditor_RowSelect
+	{
+	cursor:hand;
+	padding-left:6;
+	color:#333333; background-color:#88F088;
+	white-space:nowrap;
+	}
+.FSelectEditor_Flag
+	{
+	cursor:hand;
+	width:3;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=1, startcolorstr=#FFFFFF, endcolorstr=#EAE3D5);
+	}
+
+/* ------------------------------------------------------ */
+/* FPickerEditor                                          */
+/* ------------------------------------------------------ */
+.FPickerEditor_Panel
+	{
+	position:absolute;
+	}
+.FPickerEditor_PanelHover
+	{
+	position:absolute;
+	}
+.FPickerEditor_Edit
+	{
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+.FPickerEditor_EditHover
+	{
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+.FPickerEditor_Drop
+	{
+	cursor:hand;
+	}
+.FPickerEditor_DropPanel
+	{
+	width:100%; overflow-y:auto;
+	border:1 solid #666666;
+	background-color:#CCCCCC;
+	}
+.FPickerEditor_Title
+	{
+	white-space: nowrap;
+	cursor:hand;
+	color:#333333;
+	padding-left:8; padding-right:8;
+	background-color:#408040;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#EAE3D5);
+	}
+.FPickerEditor_Row
+	{
+	cursor:hand;
+	background-color:#FFFFFF;
+	}
+.FPickerEditor_RowHover
+	{
+	cursor:hand;
+	background-color:#C5F8C5;
+	}
+.FPickerEditor_RowSelect
+	{
+	cursor:hand;
+	color:#333333;
+	background-color:#88F088;
+	}
+.FPickerEditor_Flag
+	{
+	cursor:hand;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=1, startcolorstr=#FFFFFF, endcolorstr=#EAE3D5);
+	}
+.FPickerEditor_Cell
+	{
+	cursor:hand;
+	white-space: nowrap;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=1, startcolorstr=#FFFFFF, endcolorstr=#EAE3D5);
+	}
+
+/* ------------------------------------------------------ */
+/* FDataEditControl                                       */
+/* ------------------------------------------------------ */
+.FDataEditControl_Panel
+	{
+	padding:1;
+	}
+.FDataEditControl_Edit
+	{
+	border:1 solid #29bad7;
+	}
+
+/* ------------------------------------------------------ */
+/* Edit                                                   */
+/* ------------------------------------------------------ */
+.FEdit_Edit
+	{
+	border:1 solid #29bad7;
+	}
+
+/* ------------------------------------------------------ */
+/* FNumber                                                */
+/* ------------------------------------------------------ */
+.FNumber_Panel
+	{
+	padding:1;
+	}
+.FNumber_Edit
+	{
+	text-align:right;
+	border:1 solid #29bad7;
+	}
+
+/* ------------------------------------------------------ */
+/* FCheck                                                 */
+/* ------------------------------------------------------ */
+.FCheck_Panel
+	{
+	padding:1;
+	}
+.FCheck_Edit
+	{
+	cursor:hand; border:0;
+	}
+
+/* ------------------------------------------------------ */
+/* Select                                                 */
+/* ------------------------------------------------------ */
+.FSelect_Panel
+	{
+	padding:1;
+	}
+.FSelect_Edit
+	{
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+
+/* ------------------------------------------------------ */
+/* FPicker                                                */
+/* ------------------------------------------------------ */
+.FPicker_Panel
+	{
+	padding:1;
+	}
+.FPicker_Edit
+	{
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+
+/* ------------------------------------------------------ */
+/* Memo                                                   */
+/* ------------------------------------------------------ */
+.FMemo_Panel
+	{
+	padding:1;
+	}
+.FMemo_Edit
+	{
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+
+/* ------------------------------------------------------ */
+/* Calendar                                               */
+/* ------------------------------------------------------ */
+.FCalendar_Panel
+	{
+	padding:1;
+	}
+.FCalendar_Edit
+	{
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+
+/* ------------------------------------------------------ */
+/* Split                                                  */
+/* ------------------------------------------------------ */
+.FSplit_Panel
+	{
+	cursor:hand;
+	padding-top:4; padding-bottom:4;
+	width:100%; 
+	}
+.FSplit_Title
+	{
+	color:#333333; background-color:#e5e4ff;
+	border-top:1 solid #767698; border-bottom:1 solid #767698;
+	}
+
+/* ------------------------------------------------------ */
+/* Table                                                  */
+/* ------------------------------------------------------ */
+.FTable_Panel
+	{
+	width:100%;
+	}
+.FTable_Heads
+	{
+	border:0; padding:0; margin:0;
+	width:100%; height:1;
+	background-color:#999999;
+	}
+.FTable_Rows
+	{
+	border:0; padding:0; margin:0;
+	width:100%; height:100%; overflow:auto;
+	background-color:#999999;
+	}
+.FTable_Navigator
+	{
+	width:100%; height:1;
+	border-top:1 solid #666666;
+	}
+.FTable_Head
+	{
+	text-align:center;
+	padding-left:1; padding-top:4; padding-right:1;
+	filter:progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#DFDDD7', gradientType='0');
+	}
+.FTable_HeadLabel
+	{
+	white-space: nowrap;
+	}
+.FTable_Row
+	{
+	border:0;
+	}
+.FTable_Cell
+	{
+	cursor:hand;
+	border:0; padding:2; background-color:#FFFFDD;
+	}
+.FTable_Hint
+	{
+	white-space: nowrap;
+	}
+.FTable_NavButton
+	{
+	cursor:hand;
+	white-space: nowrap;
+	padding:4; background-color:#FFFFFF;
+	}
+
+.FRow_Panel{
+}
+
+/* ------------------------------------------------------ */
+/* Column                                                 */
+/* ------------------------------------------------------ */
+.FCell_Panel{
+}
+
+/* ------------------------------------------------------ */
+/* ColumnStatus                                           */
+/* ------------------------------------------------------ */
+.FColumnStatus_Head
+	{
+	width:20; padding:0 1;
+	filter:progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#CAC6BD', gradientType='0');
+	}
+.FColumnStatus_Check
+	{
+	cursor:hand;
+	border:0;
+	}
+.FCellStatus_Panel
+	{
+	cursor:hand;
+	width:20; padding:0 1;
+	text-align:center; background-color:#CCCCFF;
+	}
+
+/* ------------------------------------------------------ */
+/* FColumnEdit                                            */
+/* ------------------------------------------------------ */
+.FColumnEdit_Panel
+	{
+	position:absolute;
+	border:0;
+	}
+.FCellEdit_Edit
+	{
+	border:0;
+	}
+.FCellEdit_EditHover
+	{
+	border:0;
+	}
+
+/* ------------------------------------------------------ */
+/* FColumnCheck                                           */
+/* ------------------------------------------------------ */
+.FColumnCheck_Cell
+	{
+	border:0; padding:1; text-align:center;
+	}
+.FCellCheck_Edit
+	{
+	cursor:hand;
+	border:0;
+	}
+
+/* ------------------------------------------------------ */
+/* FColumnSelect                                          */
+/* ------------------------------------------------------ */
+.FColumnSelect_Cell
+	{
+	border:0; padding:1; text-align:center;
+	}
+.FCellSelect_Edit
+	{
+	border:0;
+	}
+.FCellSelect_Drop
+	{
+	cursor:hand;
+	}
+
+/* ------------------------------------------------------ */
+/* FTreeView                                              */
+/* ------------------------------------------------------ */
+.FTreeView_Panel
+	{
+	}
+
+.FTreeView_NodeIcon
+	{
+	background:url(/res/icon/ctl/node);
+	}
+
+
+.FTreeView_Head
+   {
+      border-top:1px solid #666666; border-bottom:1px solid #666666;
+		padding-left:8px; padding-right:8px;
+		filter:progid:DXImageTransform.Microsoft.Gradient(startColorStr='#DDDDDD', endColorStr='#FFFFFF', gradientType='0');
+   }
+.FTreeView_Node
+   {
+      width:0;
+   }
+.FTreeView_NodeHover
+   {
+      cursor:hand; background-color:#EEEEEE;
+   }
+.FTreeView_NodeSelect
+   {
+      cursor:hand; background-color:#CCCCCC;
+   }
+.FTreeView_Cell
+   {
+      padding-left:1; padding-top:1; padding-right:0; padding-bottom:1;
+   }
+.FTreeView_CellHover
+   {
+      padding:0;
+      border-left:1px solid #EEEEEE; border-top:1px solid #EEEEEE; border-bottom:1px solid #EEEEEE;
+		filter:progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#EEEEEE', gradientType='1');
+   }
+.FTreeView_CellSelect
+   {
+      padding:0;
+      border-left:1px solid #CCCCCC; border-top:1px solid #CCCCCC; border-bottom:1px solid #CCCCCC;
+		filter:progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#CCCCCC', gradientType='1');
+   }
+.FTreeColumn_Panel
+	{
+	color:#666666;
+	border-top:1px solid #29bad5; border-bottom:1px solid #29bad5;
+	padding-top:2px; padding-bottom:2px;
+	padding-left:2px; padding-right:2px;
+	background-color:#a4eaea;
+	/* filter:progid:DXImageTransform.Microsoft.Gradient(startColorStr='#29bad5', endColorStr='#FFFFFF', gradientType='0'); */
+   }
+
+
+/* ------------------------------------------------------ */
+/* ColumnStatus                                           */
+/* ------------------------------------------------------ */
+.FMessageBox_Panel
+	{
+	width:100%; height:100%;
+	border: 1 solid red;
+	}
+.FMessageBox_Title
+	{
+	height:1;
+	padding-left: 8;
+	color:#FFFFFF; font-weight:bold;
+	filter:progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FF8866', endColorStr='#FFFFDD', gradientType='1');
+	}
+.FMessageBox_Message
+	{
+	height:100%;
+	vertical-align:top;
+	border:1 solid #666666;
+	background-color:#FFFFFF;
+	}
+.FMessageBox_MessageIcon
+	{
+	width:1;
+	padding:2 8;
+	}
+.FMessageBox_MessageText
+	{
+	}
+.FMessageBox_Description
+	{
+	height:80;
+	border:1 solid #666666;
+	background-color:#FFFFFF;
+	}
+.FMessageBox_ButtonPanel
+	{
+	width:80; text-align:center; vertical-align:top;
+	padding-top:8;
+	background-color:#FFFFDD;
+	}
+.FMessageBox_Button
+	{
+	cursor:hand;
+	width:60; height:20; padding:4; margin:4;
+	background-color:#DDDDEE;
+	border-left:1 solid #F0F0F0; border-top:1 solid #F0F0F0; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	}
+
+/* ------------------------------------------------------ */
+/* FColumnCheckEditor                                     */
+/* ------------------------------------------------------ */
+.FColumnCheckEditor_Panel
+	{
+	position:absolute;
+	border:0;
+	}
+.FColumnCheckEditor_Edit
+	{
+	border:0;
+	}
+.FColumnCheckEditor_EditHover
+	{
+	border:0;
+	}
+
+/* ------------------------------------------------------ */
+/* FColumnSelectEditor                                      */
+/* ------------------------------------------------------ */
+.FColumnSelectEditor_Panel
+	{
+	position:absolute;
+	border:0;
+	}
+.FColumnSelectEditor_Edit
+	{
+	border:0;
+	}
+.FColumnSelectEditor_EditHover
+	{
+	border:0;
+	}
+
+/* ------------------------------------------------------ */
+/* FListBox                                              */
+/* ------------------------------------------------------ */
+.FListBox_Panel
+	{
+	width:100%; height:100%;
+	border-left:1 solid #CCCCCC; border-top:1 solid #CCCCCC; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	padding:2;
+	background-color:#DDDDEE;
+	}
+
+/* ------------------------------------------------------ */
+/* FListItem                                              */
+/* ------------------------------------------------------ */
+.FListItem_Panel
+	{
+	width:100%;
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+.FListItem_Design
+	{
+	width:100%;
+	border-left:1 solid #AAAAAA; border-top:1 solid #AAAAAA; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	}
+.FListItem_Body
+	{
+	width:100%;
+	padding:2;
+	background-color:#FFFFFF;
+	}
+.FListItem_Line
+	{
+	margin-left: 4; margin-right:4;
+	}
+.FListItem_Icon
+	{
+	width:1;
+	padding-left: 4; padding-right:4;
+	}
+.FListItem_Label
+	{
+	white-space: nowrap;
+	margin-left: 4; margin-right:4;
+	}
+
+/* ------------------------------------------------------ */
+/* FMenuItem                                              */
+/* ------------------------------------------------------ */
+.FMenuItem_Panel
+	{
+	width:100%;
+	border:1 solid #999999;
+	background-color:#F5F2ED;
+	}
+.FMenuItem_Hover
+	{
+	width:100%;
+	cursor:hand;
+	border-left:1 solid #CCCCCC; border-top:1 solid #CCCCCC; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#E2D9C5);
+	}
+.FMenuItem_Press
+	{
+	width:100%;
+	cursor:hand;
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#E2D9C5, endcolorstr=#FFFFFF);
+	}
+.FMenuItem_Button
+	{
+	width:100%;
+	padding:1 14;
+	white-space:nowrap;
+	}
+.FMenuItem_Label
+	{
+	white-space:nowrap;
+	}
+
+/* ------------------------------------------------------ */
+/* FPopupMenu                                             */
+/* ------------------------------------------------------ */
+.FPopupMenu_Panel
+	{
+	position:absolute;
+	border-left:1 solid #F0F0F0; border-top:1 solid #F0F0F0; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	background-color:#EAE3D5;
+	}
+.FPopupMenu_Caption
+	{
+	height:6;
+	border-bottom:1 solid #FFFFFF;
+	background-color:#666666;
+	/*filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#CCCCCC, endcolorstr=#666666);*/
+	}
+.FPopupMenu_Button
+	{
+	padding-top: 3; padding-left:4; padding-right:4;
+	}
+
+.FPopupMenu_Drop
+	{
+	width:1; cursor:hand;
+	border-left:1 solid #7B7975;
+	padding:1px;
+	font-family:Webdings; line-height:6px; font-size:10px;
+	}
+.FPopupMenu_Hover
+	{
+	width:1; cursor:hand;
+	border-left:1 solid #FFFFFF; border-right:1 solid #7b7975;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#BDB7AC);
+	}
+.FPopupMenu_Press
+	{
+	width:1; cursor:hand;
+	border-left:1 solid #FFFFFF; border-right:1 solid #7B7975;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#BDB7AC, endcolorstr=#FFFFFF);
+	}
+
+/* ------------------------------------------------------ */
+/* FSearchBox                                             */
+/* ------------------------------------------------------ */
+.FSearchBox_Panel
+	{
+	width:500; height:280;
+	position:absolute;
+	background-color:#FFFFFF;
+	border-left:1 solid #CCCCCC; border-top:1 solid #CCCCCC; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	}
+.FSearchBox_TitlePanel
+	{
+	color:#FFFFFF;
+	height:1;
+	padding:4;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=1, startcolorstr=#3355F4, endcolorstr=#BEACEC);
+	}
+.FSearchBox_FieldsPanel
+	{
+	vertical-align: top;
+	color:#FFFFFF;
+	padding:4;
+	border-left:1 solid #CCCCCC; border-top:1 solid #CCCCCC; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	}
+.FSearchBox_TypePanel
+	{
+	padding-left:8;
+	}
+.FSearchBox_OrderPanel
+	{
+	padding-left:8;
+	}
+
+/* ------------------------------------------------------ */
+/* FSearchEdit                                            */
+/* ------------------------------------------------------ */
+
+/* ------------------------------------------------------ */
+/* FButton                                                */
+/* ------------------------------------------------------ */
+.FButton_Panel
+	{
+	cursor:hand;
+	padding:2 8;
+	background-color:#DDDDEE;
+	border-left:1 solid #F0F0F0; border-top:1 solid #F0F0F0; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	}
+.FButton_Icon
+	{
+	}
+.FButton_Label
+	{
+	white-space: nowrap;
+	padding-left:8;
+	}
+
+/* ------------------------------------------------------ */
+/* FListView                                              */
+/* ------------------------------------------------------ */
+.FListView_Panel
+	{
+	width:600; height:300;
+	position:absolute;
+	background-color:#FFFFFF;
+	border-left:1 solid #CCCCCC; border-top:1 solid #CCCCCC; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	}
+.FListView_TitlePanel
+	{
+	color:#FFFFFF;
+	height:1;
+	padding:4;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=1, startcolorstr=#3355F4, endcolorstr=#BEACEC);
+	}
+.FListView_FieldsPanel
+	{
+	vertical-align: top;
+	color:#FFFFFF;
+	padding:4;
+	border-left:1 solid #CCCCCC; border-top:1 solid #CCCCCC; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	}
+.FListView_TypePanel
+	{
+	padding-left:8;
+	}
+.FListView_OrderPanel
+	{
+	padding-left:8;
+	}
+
+/* ------------------------------------------------------ */
+/* MWinBorder                                             */
+/* ------------------------------------------------------ */
+.MWinBorder_Panel
+	{
+	position:absolute;
+	width:600; height:300;
+	border-left:1 solid #CCCCCC; border-top:1 solid #CCCCCC; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	}
+.MWinBorder_Title
+	{
+	width:100%;
+	color:#FFFFFF;
+	height:1;
+	padding:4;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=1, startcolorstr=#3355F4, endcolorstr=#BEACEC);
+	}
+.MWinBorder_Inner
+	{
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=60, style=0);
+	}
+.MWinBorder_Caption
+	{
+	color:#FFFFFF;
+	vertical-align:bottom;
+	line-height:12px;
+	}
+.MWinBorder_Body
+	{
+	width:100%; height:100%;
+	padding:4;
+	background-color:#FFFFFF;
+	border-left:1 solid #CCCCCC; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+.MWinBorder_BodyHover
+	{
+	width:100%; height:100%;
+	padding:4;
+	background-color:#FFFFFF;
+	border-left:1 solid #CCCCCC; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=60, style=0);
+	}
+.MWinBorder_Button
+	{
+	color:#000000; background-color:#FFFFFF;
+	font-family:webdings; width:11px; line-height:11px;
+	border:1px solid #758D5E;
+	}
+
+/* ------------------------------------------------------ */
+/* FSearchWindow                                          */
+/* ------------------------------------------------------ */
+.FSearchWindow_Panel
+	{
+	position:ablsolute;
+	width:500; height:280;
+	background-color:#FFFFFF;
+	border-left:1 solid #CCCCCC; border-top:1 solid #CCCCCC; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	}
+.FSearchWindow_TitlePanel
+	{
+	color:#FFFFFF;
+	height:1;
+	padding:4;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=1, startcolorstr=#3355F4, endcolorstr=#BEACEC);
+	}
+.FSearchWindow_FieldsPanel
+	{
+	vertical-align: top;
+	color:#FFFFFF;
+	padding:4;
+	border-left:1 solid #CCCCCC; border-top:1 solid #CCCCCC; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	}
+.FSearchWindow_TypePanel
+	{
+	padding-left:8;
+	}
+.FSearchWindow_OrderPanel
+	{
+	padding-left:8;
+	}
+.FSearchWindow_ButtonPanel
+	{
+	width: 80;
+	}
+
+/* ------------------------------------------------------ */
+/* FListWindow                                            */
+/* ------------------------------------------------------ */
+.FListWindow_Panel
+	{
+	width:600; height:300;
+	position:absolute;
+	background-color:#FFFFFF;
+	border-left:1 solid #CCCCCC; border-top:1 solid #CCCCCC; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	}
+.FListWindow_TitlePanel
+	{
+	color:#FFFFFF;
+	height:1;
+	padding:4;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=1, startcolorstr=#3355F4, endcolorstr=#BEACEC);
+	}
+.FListWindow_ListPanel
+	{
+	vertical-align: top;
+	color:#FFFFFF;
+	padding:4;
+	border-left:1 solid #CCCCCC; border-top:1 solid #CCCCCC; border-right:1 solid #666666; border-bottom:1 solid #666666;
+	}
+.FListWindow_ButtonPanel
+	{
+	width:100;
+	}
+.FListWindow_TypePanel
+	{
+	padding-left:8;
+	}
+.FListWindow_OrderPanel
+	{
+	padding-left:8;
+	}
+/* ------------------------------------------------------ */
+/* FColorPickerEditor                                            */
+/* ------------------------------------------------------ */
+.FColorPickerEditor_Panel
+	{
+	position:absolute;
+	}
+.FColorPickerEditor_PanelHover
+	{
+	position:absolute;
+	}
+.FColorPickerEditor_Edit
+	{
+	border:1 solid #29bad7;
+	}
+.FColorPickerEditor_EditHover
+	{
+	border-left:1 solid #666666; border-top:1 solid #666666; border-right:1 solid #CCCCCC; border-bottom:1 solid #CCCCCC;
+	}
+.FColorPickerEditor_Drop
+	{
+	cursor:hand;
+	}
+.FColorPickerEditor_DropPanel
+	{
+	width:100%;
+	border:1 solid #666666;
+	background-color:#CCCCCC;
+	}
+.FColorPickerEditor_Row
+	{
+	cursor:hand;
+	padding-left:6;
+	background-color:#FFFFFF;
+	white-space:nowrap;
+	}
+.FColorPickerEditor_RowHover
+	{
+	cursor:hand;
+	padding-left:6;
+	background-color:#C5F8C5;
+	white-space:nowrap;
+	}
+.FColorPickerEditor_RowSelect
+	{
+	cursor:hand;
+	padding-left:6;
+	color:#333333; background-color:#88F088;
+	white-space:nowrap;
+	}
+.FColorPickerEditor_Flag
+	{
+	cursor:hand;
+	width:3;
+	filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=1, startcolorstr=#FFFFFF, endcolorstr=#EAE3D5);
+	}

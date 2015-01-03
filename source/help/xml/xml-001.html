@@ -1,0 +1,36 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../ajs/runtime.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/lang.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/base.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3-base/RDump.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+function _load(){
+   RBrowser.construct();
+   //var names = new Array();
+   //alert(names.length);
+   //debugger
+   RDump.dump(window, _dump);
+
+	//RLogger.connect(_msg);
+	//var cd = RClass.create(FClassD);
+	//RDump.dump(cd, _dump);
+   //var s = new TAttributes();
+   //alert(s.dump());
+
+   //RDump.dump(RRuntime, _dump);
+   //RDump.dump(RDump, _dump);
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+<DIV id='_dump'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

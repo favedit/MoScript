@@ -1,0 +1,45 @@
+<script>
+   var isDraging = false;
+   var ox, oy;
+   function fnDown() {
+      isDraging = true;
+      ox = event.offsetX;
+      oy = event.offsetY;
+      mid.setCapture();
+   }
+   function fnMove() {
+      if (event.button != 1)
+         fnRelease();
+      if (isDraging) {
+         var th = event.y - oTable.offsetTop - oy;
+         if (th < 1)
+            th = 1;
+         if (th + parseInt(mid.height) > parseInt(oTable.height))
+            th = parseInt(oTable.height) - parseInt(mid.height);
+         up.height = th;
+      }
+   }
+   function fnUp() {
+      fnRelease();
+   }
+   function fnRelease() {
+      isDraging = false;
+      mid.releaseCapture();
+   }
+</script>
+<BODY>
+<TABLE id=oTable width=200 height=250 border=1 cellspacing="0"
+	cellpadding="0">
+	<TR>
+		<TD id=up bgColor=#330099></TD>
+	</TR>
+	<TR>
+		<TD id=mid height=40 bgColor=#3366CC onmousedown="fnDown()"
+			onmousemove="fnMove()" onmouseup="fnUp"></TD>
+	</TR>
+	<TR>
+		<TD id=down bgColor=#330099></TD>
+	</TR>
+</TABLE>
+</BODY>
+<a href="http://www.alixixi.com/Dev/HTML/jsrun/">欢迎访问阿里西西网页特效集</a>

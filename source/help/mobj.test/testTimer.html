@@ -1,0 +1,179 @@
+<SCRIPT language='javascript' src='mobj.js'></SCRIPT>
+<SCRIPT language='javascript' src='4-ctl.window/FTimer.js'></SCRIPT>
+<script language='javascript'>
+function mousemove(event){
+   window.status = event.x +";"+event.y +";"+ window.screen.widthwindow.screen.width;
+}
+function mousedown(o,event){
+   debugger
+   window.status = event.x +";"+event.y +";"+ window.screen.widthwindow.screen.width;
+}
+
+</script>
+<style tyle= ''>
+ <style type="text/css">
+ <!--
+   h1.dabiaoti {
+   font-weight: bolder;
+   text-align: center;
+   }
+   h1#daohang {
+   font-size: 12px;
+   font-weight: bolder;
+   text-align: left;
+   }
+   h1.xinwen {
+   font-size: 16px;
+   font-weight:bold;
+   text-align: center;
+   color:green;
+   }
+   -->
+ </style>
+<body onmousemove = "mousemove(event)" onmousedown = "mousedown(this,event)">  
+<div id='wnd'>
+<div id=xMsg3
+	style='z-index: 10006; width: 200; height: 160; left: 250; top: 50; background-color: slategray; color: slategray; font-size: 10px; font-family: Verdana; position: absolute; cursor: default; border: 2px solid slategray;'>
+<div
+	style='background-color: slategray; width: 196; height: 20; color: white;'><span
+	style='width: 172; padding-left: 3px;'>测试</span><span
+	style='width: 12; border-width: 0px; color: white; font-family: webdings;'>0</span><span
+	style='width: 12; border-width: 0px; color: white; font-family: webdings;'>r</span>
+</div>
+<div
+	style='width: 100%; height: 136; background-color: white; line-height: 14px; word-break: break-all; padding: 3px;'>您有一条新消息 <a href='http://www.baidu.com'>www.baidu.com</a>!</div>
+</div>
+<div
+	style='width: 200; height: 160; top: 50; left: 250; z-index: 10005; position: absolute; background-color: BLACK; filter: alpha(opacity =   40);'>by
+gggggggg</div>
+</div>
+<div id='_log'></div>
+<div id='_position'></div>
+<INPUT id='id'>
+
+<SCRIPT>
+function showPosition(o,e){
+   if(!o || !e){
+      alert("ERROR");
+      return;
+   }
+   var sArea = document.getElementById('_position');
+   sArea.innerHTML = "";
+   sArea.innerHTML = window.
+   
+}
+
+
+var t = RControl.create(FTimer,document.body);
+t.show();
+
+
+var myStr = new TStr();
+myStr.append("MoJS 引擎基础篇");
+myStr.append("MoJS 引擎高级篇");
+
+
+var wnd = document.getElementById('wnd');
+    wnd.style.position = 'relative';
+    wnd.style.backgroundColor = 'RED'; 
+    wnd.style.zIndex = 1000000;
+    
+    var docWidth = document.body.clientWidth;
+    var dcoHeight = document.body.clientHeight;
+    
+    wnd.style.top = 600;
+    wnd.style.left = 300;
+
+var area = document.getElementById('_log');
+//var at = area.append("table");
+_log.style.overflow = 'scroll';
+_log.style.height = "100";
+
+   //var idTimer = window.setInterval('movWnd()',10);
+   function movWnd(){
+      if(wnd.style.posTop < 0 ){
+         clearInterval(idTimer);
+      }
+      at.insertRow().insertCell().innerTEXT = "<br>------------------------------------------------------------";
+      wnd.style.posTop -=1; 
+   }
+// ------------------------------------------------------------
+function myObj(){
+   var o     = this;
+   o.timer   = 0;
+   o.add     = myObj_add;
+   o.date    = new TDate();
+   o.date.now();
+}
+// ------------------------------------------------------------
+var Obj1 = new myObj();
+function myObj_add(){
+   var o   = this;
+   ++o.timer;
+   o.date.now();
+   area.innerHTML += "<br>------------------------------------------------------------";
+   area.innerHTML += "<br>offsetTop="+wnd.offsetTop+" ;offsetLeft="+wnd.offsetLeft;
+   area.innerHTML += "<br>offsetWidth="+wnd.offsetWidth+" ;offsetHeight="+wnd.offsetHeight;     
+   area.innerHTML +=("<br>"+o.timer+" : "+ new Date().toString() );
+   t.hPanel.style.posTop -=1; 
+   
+}
+// ------------------------------------------------------------
+Obj1.active = new TActive(Obj1, Obj1.add);
+Obj1.active.interval = 200;
+RConsole.find(FActiveConsole).push(Obj1.active);
+// ------------------------------------------------------------
+function TMouseEvent(h, n, c, p){
+	var o = this;
+	// Attribute
+	o.hSource   = h;
+	o.eventName = n;
+	o.control   = c;
+	o.onProcess = p;
+	// Method
+	o.ohEvent   = TMouseEvent_ohEvent;
+	o.construct = TMouseEvent_construct;
+	o.process   = TMouseEvent_process;
+	return o;
+}
+// ------------------------------------------------------------
+// ------------------------------------------------------------
+function TMouseEvent_ohEvent(){
+	var o = this.link;
+	if(RClass.isClass(o, TMouseEvent)){
+		o.process();
+	}
+}
+// ------------------------------------------------------------
+function TMouseEvent_construct(){
+	var o = this;
+	o.hSource.link = this;
+	o.hSource[o.eventName] = o.ohEvent;
+}
+// ------------------------------------------------------------
+// config, value
+function TMouseEvent_process(){
+	var o = this;
+	RConsole.find(FEventConsole).add(o.control, o.onProcess);
+	return;
+
+	if(o.onProcess){
+		if(o.control){
+			o.onProcess.call(o.control);
+		}else{
+			o.onProcess();
+		}
+	}
+}
+function test(){
+}
+function test2(){
+   t.show();
+	alert(RClass.name(this));
+}
+var n = new test();
+
+var e = new TMouseEvent(id, 'onmousedown', n, test2);
+e.construct();
+//id['onmousedown'] = oe;
+</SCRIPT>

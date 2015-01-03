@@ -1,0 +1,17 @@
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html;charset=gb2312">
+<TITLE>输入框-字符代码</TITLE>
+</HEAD>
+<SCRIPT>
+function _keydown(){
+   var kc = event.keyCode;
+   var c = String.fromCharCode(kc);
+   idd.innerHTML = c + '=' + event.keyCode + '-' + event.which + '<BR>' + idd.innerHTML;
+}
+</SCRIPT>
+<BODY>   
+<INPUT name='ida' onkeydown='_keydown()'>
+<DIV id='idd'></DIV>
+</BODY>
+</HTML>

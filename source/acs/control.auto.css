@@ -1,0 +1,652 @@
+/* ------------------------------------------------------ */
+/* Tag                                                    */
+/* ------------------------------------------------------ */
+.Tag_Icon  { border:0px; }
+.Tag_Image { border:0px; }
+
+/* ------------------------------------------------------ */
+/* FEdit
+/* ------------------------------------------------------ */
+.FEdit_Unit
+   {
+   padding-left: 4;
+   }
+
+/* ------------------------------------------------------ */
+/* FCheck
+/* ------------------------------------------------------ */
+.FCheck_Edit
+   {
+   cursor: hand;
+   border: 0;
+   }
+
+/* ------------------------------------------------------ */
+/* FNumber
+/* ------------------------------------------------------ */
+.FNumber_Edit
+   {
+   width: 100%;
+   border: 0;
+   text-align: right;
+   }
+.FNumber_Edit
+   {
+   width: 100%;
+   border: 0;
+   text-align: right;
+   }
+.FNumber_Unit
+   {
+   }
+.FNumber_ArrayForm
+   {
+   text-align: center;
+   }
+.FNumber_UpButton
+   {
+   }
+.FNumber_DownButton
+   {
+   }
+
+/* ------------------------------------------------------ */
+/* FColorPicker
+/* ------------------------------------------------------ */
+.FColorPicker_Edit
+   {
+   width: 100%;
+   border: 0;
+   }
+.FColorPicker_Drop
+   {
+   cursor: hand;
+   }
+
+/* ------------------------------------------------------ */
+/* FMemo
+/* ------------------------------------------------------ */
+.FMemo_Edit
+   {
+   width: 100%;
+   height: 100%;
+   border: 0;
+   }
+
+/* ------------------------------------------------------ */
+/* FSelect
+/* ------------------------------------------------------ */
+.FSelect_Edit
+   {
+   width: 100%;
+   border: 0;
+   }
+.FSelect_Panel
+   {
+   padding: 1;
+   }
+.FSelect_Drop
+   {
+   cursor: hand;
+   }
+.FSelect_LabelForm
+   {
+   }
+
+/* ------------------------------------------------------ */
+/* FSplit
+/* ------------------------------------------------------ */
+.FSplit_Panel
+   {
+   cursor: hand;
+   width: 100%;
+   padding-top: 4;
+   padding-bottom: 4;
+   }
+.FSplit_Title
+   {
+   color: #333333;
+   background-color: #e5e4ff;
+   border-top: 1 solid #767698;
+   border-bottom: 1 solid #767698;
+   }
+
+/* ------------------------------------------------------ */
+/* FControl
+/* ------------------------------------------------------ */
+.FControl_Panel
+   {
+   padding: 1;
+   }
+.FControl_Design
+   {
+   background-color: #D9D6D0;
+   cursor: hand;
+   border-left: 1 solid #FFFFFF;
+   border-top: 1 solid #FFFFFF;
+   border-right: 1 solid #666666;
+   border-bottom: 1 solid #666666;
+   }
+.FControl_DesignDrag
+   {
+   background-color: #D9D6D0;
+   border: 1 solid #666666;
+
+   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=60,style=0);
+   }
+.FControl_DesignMove
+   {
+   background-color: #FEF0DE;
+   cursor: hand;
+   position: absolute;
+   border: 1 solid #666666;
+
+   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=60,style=0);
+   }
+.FControl_DesignHover
+   {
+   background-color: #FEF0DE;
+   cursor: hand;
+   border: 1 solid #666666;
+   padding: 0;
+   margin: 0;
+   }
+
+/* ------------------------------------------------------ */
+/* FDataEditControl
+/* ------------------------------------------------------ */
+.FDataEditControl_EditForm
+   {
+   border: 0;
+   table-layout: auto;
+   }
+.FDataEditControl_Edit
+   {
+   width: 100%;
+   border: 0;
+   }
+
+/* ------------------------------------------------------ */
+/* RWindow
+/* ------------------------------------------------------ */
+.RWindow_Disable
+   {
+   background-color: #8E8573;
+   width: 100%;
+   height: 100%;
+   position: absolute;
+
+   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=20,style=0);
+   }
+.RWindow_Shadow
+   {
+   background-color: #666666;
+   position: absolute;
+
+   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=60,style=0);
+   }
+
+/* ------------------------------------------------------ */
+/* FColorPickerEditor
+/* ------------------------------------------------------ */
+.FColorPickerEditor_Panel
+   {
+   position: absolute;
+   }
+.FColorPickerEditor_Edit
+   {
+   border: 1 solid #29bad7;
+   }
+.FColorPickerEditor_Drop
+   {
+   cursor: hand;
+   }
+.FColorPickerEditor_DropPanel
+   {
+   background-color: #CCCCCC;
+   width: 100%;
+   border: 1 solid #666666;
+   }
+
+/* ------------------------------------------------------ */
+/* FSelectEditor
+/* ------------------------------------------------------ */
+.FSelectEditor_Panel
+   {
+   position: absolute;
+   padding: 1;
+   }
+.FSelectEditor_PanelHover
+   {
+   position: absolute;
+   }
+.FSelectEditor_Edit
+   {
+   width: 100%;
+   border: 0;
+   }
+.FSelectEditor_EditForm
+   {
+   border-left: 1 solid #666666;
+   border-top: 1 solid #666666;
+   border-right: 1 solid #CCCCCC;
+   border-bottom: 1 solid #CCCCCC;
+   }
+.FSelectEditor_EditHover
+   {
+   border-left: 1 solid #666666;
+   border-top: 1 solid #666666;
+   border-right: 1 solid #CCCCCC;
+   border-bottom: 1 solid #CCCCCC;
+   }
+.FSelectEditor_Drop
+   {
+   cursor: hand;
+   }
+.FSelectEditor_DropPanel
+   {
+   background-color: #CCCCCC;
+   width: 100%;
+   border: 1 solid #666666;
+   }
+.FSelectEditor_Row
+   {
+   background-color: #FFFFFF;
+   cursor: hand;
+   padding-left: 6;
+   white-space: nowrap;
+   }
+.FSelectEditor_RowHover
+   {
+   background-color: #C5F8C5;
+   cursor: hand;
+   padding-left: 6;
+   white-space: nowrap;
+   }
+.FSelectEditor_RowSelect
+   {
+   color: #333333;
+   background-color: #88F088;
+   cursor: hand;
+   padding-left: 6;
+   white-space: nowrap;
+   }
+.FSelectEditor_Flag
+   {
+   cursor: hand;
+   width: 3;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=1,startcolorstr=#FFFFFF,endcolorstr=#EAE3D5);
+   }
+
+/* ------------------------------------------------------ */
+/* FIconPicker
+/* ------------------------------------------------------ */
+.FIconPicker_Unit
+   {
+   padding-left: 4;
+   }
+
+/* ------------------------------------------------------ */
+/* FTreeView
+/* ------------------------------------------------------ */
+.FTreeView_Panel
+   {
+   }
+.FTreeView_NodeIcon
+   {
+   }
+.FTreeView_Head
+   {
+   border-top: 1 solid #666666;
+   border-bottom: 1 solid #666666;
+   padding-left: 8;
+   padding-right: 8;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=0,startcolorstr=#DDDDDD,endcolorstr=#FFFFFF);
+   }
+.FTreeView_Node
+   {
+   width: 0;
+   }
+.FTreeView_NodeHover
+   {
+   background-color: #DDDDDD;
+   cursor: hand;
+   }
+.FTreeView_NodeSelect
+   {
+   background-color: #CCCCCC;
+   cursor: hand;
+   }
+.FTreeView_Cell
+   {
+   padding-left: 1;
+   padding-top: 1;
+   padding-right: 0;
+   padding-bottom: 1;
+   }
+.FTreeView_CellHover
+   {
+   border-left: 1 solid #EEEEEE;
+   border-top: 1 solid #EEEEEE;
+   border-bottom: 1 solid #EEEEEE;
+   padding: 0;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=1,startcolorstr=#EEEEEE,endcolorstr=#DDDDDD);
+   }
+.FTreeView_CellSelect
+   {
+   border-left: 1 solid #CCCCCC;
+   border-top: 1 solid #CCCCCC;
+   border-bottom: 1 solid #CCCCCC;
+   padding: 0;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=1,startcolorstr=#FFFFFF,endcolorstr=#CCCCCC);
+   }
+
+/* ------------------------------------------------------ */
+/* FToolBar
+/* ------------------------------------------------------ */
+.FToolBar_Panel
+   {
+   background-color: #DEDBD6;
+   border-left: 1 solid #666666;
+   border-top: 1 solid #666666;
+   border-right: 1 solid #AAAAAA;
+   border-bottom: 1 solid #AAAAAA;
+   }
+.FToolBar_Button
+   {
+   padding-left: 8;
+   padding-top: 2;
+   padding-right: 8;
+   padding-bottom: 2;
+   white-space: nowrap;
+   }
+
+/* ------------------------------------------------------ */
+/* FToolButton
+/* ------------------------------------------------------ */
+.FToolButton_Panel
+   {
+   height: 100%;
+   }
+.FToolButton_Hover
+   {
+   cursor: hand;
+   width: 1;
+   border-left: 1 solid #FFFFFF;
+   border-right: 1 solid #7B7975;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=0,startcolorstr=#FFFFFF,endcolorstr=#BDB7AC);
+   }
+.FToolButton_Press
+   {
+   cursor: hand;
+   width: 1;
+   border-left: 1 solid #FFFFFF;
+   border-right: 1 solid #7B7975;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=0,startcolorstr=#BDB7AC,endcolorstr=#FFFFFF);
+   }
+.FToolButton_Disable
+   {
+   background-color: #C7C2BA;
+   width: 1;
+   border-left: 1 solid #FFFFFF;
+   border-right: 1 solid #7B7975;
+   }
+.FToolButton_Button
+   {
+   cursor: hand;
+   width: 1;
+   border-left: 1 solid #FFFFFF;
+   border-right: 1 solid #7B7975;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=0,startcolorstr=#FFFFFF,endcolorstr=#EAE3D5);
+   }
+.FToolButton_Label
+   {
+   }
+
+/* ------------------------------------------------------ */
+/* FToolButtonSplit
+/* ------------------------------------------------------ */
+.FToolButtonSplit_Panel
+   {
+   width: 6;
+   }
+.FToolButtonSplit_Button
+   {
+   background-color: #ddd9d3;
+   border-left: 1 solid #FFFFFF;
+   border-right: 1 solid #7b7975;
+   }
+
+/* ------------------------------------------------------ */
+/* FToolButtonText
+/* ------------------------------------------------------ */
+.FToolButtonText_Panel
+   {
+   width: 100%;
+   height: 100%;
+   }
+.FToolButtonText_Button
+   {
+   border-left: 1 solid #FFFFFF;
+   border-right: 1 solid #7b7975;
+   }
+.FToolButtonText_Hover
+   {
+   background-color: #F5F1EA;
+   cursor: hand;
+   border-left: 1 solid #FFFFFF;
+   border-top: 1 solid #FFFFFF;
+   border-right: 1 solid #999999;
+   }
+.FToolButtonText_Press
+   {
+   color: #666666;
+   background-color: #e0dcd6;
+   cursor: hand;
+   border-left: 1 solid #7b7975;
+   border-top: 1 solid #7b7975;
+   border-right: 1 solid #FFFFFF;
+   border-bottom: 1 solid #FFFFFF;
+   }
+
+/* ------------------------------------------------------ */
+/* FToolButtonCheck
+/* ------------------------------------------------------ */
+.FToolButtonCheck_Panel
+   {
+   width: 100%;
+   height: 100%;
+   }
+.FToolButtonCheck_Button
+   {
+   background-color: #F5F1EA;
+   cursor: hand;
+   width: 1;
+   border-left: 1 solid #FFFFFF;
+   border-top: 1 solid #FFFFFF;
+   border-right: 1 solid #999999;
+   border-bottom: 1 solid #FFFFFF;
+   }
+.FToolButtonCheck_Down
+   {
+   color: #666666;
+   background-color: #e0dcd6;
+   cursor: hand;
+   width: 1;
+   border-left: 1 solid #7b7975;
+   border-top: 1 solid #7b7975;
+   border-right: 1 solid #FFFFFF;
+   border-bottom: 1 solid #FFFFFF;
+   }
+.FToolButtonCheck_Hover
+   {
+   cursor: hand;
+   width: 1;
+   border-left: 1 solid #FFFFFF;
+   border-top: 1 solid #FFFFFF;
+   border-right: 1 solid #7B7975;
+   border-bottom: 1 solid #BDB7AC;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=0,startcolorstr=#FFFFFF,endcolorstr=#BDB7AC);
+   }
+.FToolButtonCheck_Press
+   {
+   cursor: hand;
+   width: 1;
+   border-left: 1 solid #FFFFFF;
+   border-top: 1 solid #FFFFFF;
+   border-right: 1 solid #7B7975;
+   border-bottom: 1 solid #7B7975;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=0,startcolorstr=#BDB7AC,endcolorstr=#FFFFFF);
+   }
+
+/* ------------------------------------------------------ */
+/* FToolButtonMenu
+/* ------------------------------------------------------ */
+.FToolButtonMenu_Panel
+   {
+   height: 100%;
+   }
+.FToolButtonMenu_Button
+   {
+   cursor: hand;
+   width: 1;
+   border-left: 1 solid #FFFFFF;
+   border-right: 1 solid #7B7975;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=0,startcolorstr=#FFFFFF,endcolorstr=#EAE3D5);
+   }
+.FToolButtonMenu_Drop
+   {
+   cursor: hand;
+   width: 1;
+   border-left: 1 solid #7B7975;
+   padding: 1;
+   line-height: 6px;
+   font-family: Webdings;
+   font-size: 10px;
+   }
+.FToolButtonMenu_Hover
+   {
+   cursor: hand;
+   width: 1;
+   border-left: 1 solid #FFFFFF;
+   border-right: 1 solid #7b7975;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=0,startcolorstr=#FFFFFF,endcolorstr=#BDB7AC);
+   }
+.FToolButtonMenu_Press
+   {
+   cursor: hand;
+   width: 1;
+   border-left: 1 solid #FFFFFF;
+   border-right: 1 solid #7B7975;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=0,startcolorstr=#BDB7AC,endcolorstr=#FFFFFF);
+   }
+
+/* ------------------------------------------------------ */
+/* FMenuButton
+/* ------------------------------------------------------ */
+.FMenuButton_Panel
+   {
+   background-color: #F5F2ED;
+   width: 100%;
+   border: 1 solid #999999;
+   }
+.FMenuButton_Hover
+   {
+   cursor: hand;
+   width: 100%;
+   border-left: 1 solid #CCCCCC;
+   border-top: 1 solid #CCCCCC;
+   border-right: 1 solid #666666;
+   border-bottom: 1 solid #666666;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=0,startcolorstr=#FFFFFF,endcolorstr=#E2D9C5);
+   }
+.FMenuButton_Press
+   {
+   cursor: hand;
+   width: 100%;
+   border-left: 1 solid #666666;
+   border-top: 1 solid #666666;
+   border-right: 1 solid #CCCCCC;
+   border-bottom: 1 solid #CCCCCC;
+
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=0,startcolorstr=#E2D9C5,endcolorstr=#FFFFFF);
+   }
+.FMenuButton_Button
+   {
+   width: 100%;
+   padding: 4;
+   white-space: nowrap;
+   }
+.FMenuButton_Label
+   {
+   white-space: nowrap;
+   }
+
+/* ------------------------------------------------------ */
+/* FMenuButtonSplit
+/* ------------------------------------------------------ */
+.FMenuButtonSplit_Panel
+   {
+   width: 100%;
+   }
+.FMenuButtonSplit_Up
+   {
+   background-color: #666666;
+   width: 100%;
+   height: 1;
+   }
+.FMenuButtonSplit_Down
+   {
+   background-color: #FFFFFF;
+   width: 100%;
+   height: 1;
+   }
+
+/* ------------------------------------------------------ */
+/* FDataControl
+/* ------------------------------------------------------ */
+.FDataControl_Form
+   {
+   }
+.FDataControl_LabelForm
+   {
+   }
+.FDataControl_ControlForm
+   {
+   }
+
+/* ------------------------------------------------------ */
+/* FEditControl
+/* ------------------------------------------------------ */
+.FEditControl_Form
+   {
+   }
+.FEditControl_LabelForm
+   {
+   }
+.FEditControl_ControlForm
+   {
+   }
+.FEditControl_EditForm
+   {
+   border: 0;
+   table-layout: auto;
+   }
+.FEditControl_Edit
+   {
+   width: 100%;
+   border: 0;
+   }

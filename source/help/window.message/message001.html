@@ -1,0 +1,63 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel='stylesheet' href='../../../system/acs/control.css'type='text/css'>
+<LINK rel='stylesheet' href='../../../system/acs/lang_jp.css'type='text/css'>
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+<SCRIPT>RGlobal.setContext('jp','../../..','/system');</SCRIPT>
+<SCRIPT language='javascript' src='../../3-core/FMessageConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.form/FButton.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.window/FWindow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.window/FMessageWindow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.window/MWinBorder.js'></SCRIPT>
+
+</HEAD>
+<!-- Script -------------------------------------------------->
+<SCRIPT>
+function _load(){
+	var f = RControl.create(FMessageWindow);
+	f.show();
+	//var messageBox = RControl.create(FMessageWindow);
+	//var messageBox = RControl.create(FWindow);
+	//searchBox.linkDsControl(form);
+	//messageBox.show();
+	//RLog.connect(_log);
+	// Build toolbar
+	//toolbar = RControl.fromXml(xToolBar, _id_toolbar);
+	// Build form
+	//form = RControl.fromXml(xForm, _id_form);
+	//form.doAction('daSave');
+	//form.loadValue(RXml.makeNode(xValue))
+	// Action
+	//RControl.processAction(EAction.encode(action));
+}
+</SCRIPT>
+<!-- Environment --------------------------------------------->
+<!-- ToolBar ------------------------------------------------->
+<!-- Form ---------------------------------------------------->
+<!-- Value --------------------------------------------------->
+<!-- Body begin ---------------------------------------------->
+<BODY onload="_load()">
+<FORM method='POST' name="fmMain">
+<INPUT type='hidden' name='_environment'></INPUT>
+<TABLE border='0' cellpadding='0' cellspacing='0' width='100%' height='100%'>
+<TR>
+<TD height='24'>
+<!-- Toolbar begin ------------------------------------------->
+<!-- Toolbar end --------------------------------------------->
+</TD>
+</TR>
+<TR><TD height='4'></TD></TR>
+<TR><TD style='padding:8' valign='top'>
+<!-- Form begin ---------------------------------------------->
+<DIV style='width:100%;height:100%;'>
+	<DIV id='_id_form'></DIV>
+</DIV>
+<br>
+<!-- Form end ------------------------------------------------>
+</TD></TR>
+</TABLE>
+</FORM>
+</BODY>
+<!-- Body end ------------------------------------------------>
+</HTML>
