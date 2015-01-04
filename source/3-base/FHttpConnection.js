@@ -1,5 +1,5 @@
 ﻿//==========================================================
-// <T>节点通讯工具类。</T>
+// <T>页面通讯链接。</T>
 //
 // @class
 // @author maocy
@@ -9,160 +9,203 @@ function FHttpConnection(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._contentCd   = EContent.Binary;
-   o._url         = null;
-   o._statusUsing = false;
-   o._statusFree  = true;
+   o._asynchronous        = false;
+   o._methodCd            = EHttpMethod.Get;
+   o._contentCd           = EHttpContent.Binary;
+   o._url                 = null;
    // @attribute
-   o._control  = null;
-   o._data        = null;
+   o._inputData           = null;
+   o._outputData          = null;
+   // @attribute
+   o._connection          = null;
+   o._contentLength       = 0;
+   o._statusFree          = true;
+   //..........................................................
+   // @listener
+   o.lsnsLoad             = null;
    //..........................................................
    // @event
-   o.onLoad       = null;
-   o.onFire       = FHttpConnection_onFire;
-   o.onCnnReady   = FHttpConnection_onCnnReady;
-   o.onDocReady   = FHttpConnection_onDocReady;
+   o.onConnectionSend     = FHttpConnection_onConnectionSend;
+   o.onConnectionReady    = FHttpConnection_onConnectionReady;
+   o.onConnectionComplete = FHttpConnection_onConnectionComplete;
    //..........................................................
    // @method
-   o.construct    = FHttpConnection_construct;
-   o.setHeaders   = FHttpConnection_setHeaders;
-   o.send         = FHttpConnection_send;
-   o.receive      = FHttpConnection_receive;
-   o.syncSend     = FHttpConnection_syncSend;
-   o.syncReceive  = FHttpConnection_syncReceive;
+   o.construct            = FHttpConnection_construct;
+   o.setHeaders           = FHttpConnection_setHeaders;
+   o.inputData            = FHttpConnection_inputData;
+   o.setInputData         = FHttpConnection_setInputData;
+   o.outputData           = FHttpConnection_outputData;
+   o.setOutputData        = FHttpConnection_setOutputData;
+   o.content              = FHttpConnection_content;
+   o.sendSync             = FHttpConnection_sendSync;
+   o.sendAsync            = FHttpConnection_sendAsync;
+   o.send                 = FHttpConnection_send;
    return o;
 }
 
 //==========================================================
-// <T>事件响应处理。</T>
+// <T>响应链接发送处理。</T>
 //==========================================================
-function FHttpConnection_onFire(doc, element){
-   if(doc){
-      this._document = (doc.constructor == Function) ? new doc() : new doc.constructor();
-   }else{
-      this._document = new TXmlDocument();
+function FHttpConnection_onConnectionSend(){
+   var o = this;
+   if(o._inputData){
+      o._contentLength = o._inputData.length;
    }
-   if(element){
-      RXml.buildNode(this._document, null, element)
-   }
-   if(this.onLoad){
-      this.onLoad(this);
-   }
-   this.inUsing = false;
 }
 
 //==========================================================
-// <T>链接准备处理。</T>
+// <T>响应链接准备处理。</T>
 //==========================================================
-function FHttpConnection_onCnnReady(cnn, doc){
-   if(cnn.readyState == EXmlStatus.Finish){
-      var dc = this._docControl;
-      if(RXml.modeCd == EBrowser.IE){
-         var self = this;
-         dc.async = true;
-         dc.onreadystatechange = function(){self.onDocReady(dc, doc)};
-         dc.loadXML(cnn.responseText);
-      }else{
-         this.onFire(doc, cnn.responseXML._documentElement);
+function FHttpConnection_onConnectionReady(){
+   var o = this._linker;
+   if(o._asynchronous){
+      var c = o._connection;
+      if(c.readyState == EHttpStatus.Finish){
+         o.setOutputData();
+         o.onConnectionComplete();
       }
    }
 }
 
 //==========================================================
-// <T>文档准备处理。</T>
+// <T>响应链接完成处理。</T>
 //==========================================================
-function FHttpConnection_onDocReady(dc, doc){
-   if(dc.readyState == EXmlParse.Finish){
-      if(dc._documentElement){
-         this.onFire(doc, dc._documentElement);
-      }else{
-         alert('Read xml error.\n' + this._control.responseText);
-      }
-   }
+function FHttpConnection_onConnectionComplete(){
+   var o = this;
+   o._statusFree = true;
 }
 
 //==========================================================
-// <T>构造配置发送接收工具类。</T>
+// <T>构造处理。</T>
 //==========================================================
 function FHttpConnection_construct(){
    var o = this;
-   o._control = RXml.newConnect();
+   o.lsnsLoad = new TListeners();
+   var c = o._connection = RXml.createConnection();
+   c._linker = o;
+   c.onreadystatechange = o.onConnectionReady;
 }
 
 //==========================================================
-// <T>设置头信息。</T>
+// <T>设置头信息集合。</T>
 //==========================================================
-function FHttpConnection_setHeaders(cnn, len){
+function FHttpConnection_setHeaders(){
    var o = this;
-   if(o._contentCd == EContent.Binary){
+   var c = o._connection;
+   // 传输格式
+   if(o._contentCd == EHttpContent.Binary){
       if(RBrowser.isBrowser(EBrowser.Chrome)){
-         cnn.overrideMimeType('text/plain; charset=x-user-defined');
+         c.overrideMimeType('text/plain; charset=x-user-defined');
       }else{
-         cnn.setRequestHeader('Accept-Charset', 'x-user-defined');
-         //cnn.setRequestHeader('Content-Type', 'application/pdf');
+         c.setRequestHeader('Accept-Charset', 'x-user-defined');
       }
    }else{
-      cnn.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+      c.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
    }
+   // 数据长度
    if(!RBrowser.isBrowser(EBrowser.Chrome)){
-      if(len > 0){
-         cnn.setRequestHeader('content-length', len);
+      if(o._contentLength > 0){
+         c.setRequestHeader('content-length', o._contentLength);
       }
    }
 }
 
 //==========================================================
-// <T>发送XML信息到指定地址。</T>
+// <T>获得发送信息。</T>
+//
+// @param p:value:String 内容
 //==========================================================
-function FHttpConnection_send(url, doc){
+function FHttpConnection_inputData(){
+   return this._inputData;
+}
+
+//==========================================================
+// <T>设置发送信息。</T>
+//
+// @param p:value:String 内容
+//==========================================================
+function FHttpConnection_setInputData(p){
+   this._inputData = p;
+}
+
+//==========================================================
+// <T>获得接收信息。</T>
+//
+// @param p:value:String 内容
+//==========================================================
+function FHttpConnection_outputData(){
+   return this._outputData;
+}
+
+//==========================================================
+// <T>设置接收信息。</T>
+//==========================================================
+function FHttpConnection_setOutputData(){
    var o = this;
-   o._statusUsing = true;
-   o._url = url;
-   var xml = doc.xml().toString();
-   var cnn = o._control;
-   RLogger.info(this, 'Send xml url. (url={0})', url);
-   cnn.abort();
+   var c = o._connection;
+   // 传输格式
+   if(o._contentCd == EHttpContent.Binary){
+      if(RBrowser.isBrowser(EBrowser.Chrome)){
+         o._outputData = new ArrayBuffer(c.response);
+      }else{
+         o._outputData = new ArrayBuffer(c.responseBody.toArray());
+      }
+   }else{
+      o._outputData = c.responseText;
+   }
+}
+
+//==========================================================
+// <T>获得内容。</T>
+//
+// @return Object 内容
+//==========================================================
+function FHttpConnection_content(){
+   return this._outputData;
+}
+
+//==========================================================
+// <T>同步发送页面请求。</T>
+//==========================================================
+function FHttpConnection_sendSync(){
+   var o = this;
+   var c = o._connection;
+   c.open(o._methodCd, o._url, false);
+   o.setHeaders(c, 0);
+   c.send(o._inputData);
+   o.setOutputData();
+   o.onConnectionComplete();
+   RLogger.info(this, 'Send http sync url. (method={1}, url={2})', o._methodCd, o._url);
+}
+
+//==========================================================
+// <T>异步发送页面请求。</T>
+//==========================================================
+function FHttpConnection_sendAsync(){
+   var o = this;
+   var c = o._connection;
+   c.open(o._methodCd, o._url, true);
+   o.setHeaders(c, 0);
+   c.send(o._inputData);
+   RLogger.info(this, 'Send http async url. (method={1}, url={2})', o._methodCd, o._url);
+}
+
+//==========================================================
+// <T>发送页面请求。</T>
+//
+// @param p:url:String 页面地址
+//==========================================================
+function FHttpConnection_send(p){
+   var o = this;
+   // 设置参数
+   o._url = p;
+   o._statusFree = false;
    // 发送信息
-   cnn.open('POST', url, true);
-   o.setHeaders(cnn, xml.length);
-   var self = this;
-   cnn.onreadystatechange = function(){self.onCnnReady(cnn, doc)};
-   cnn.send(xml);
-}
-
-//==========================================================
-//
-//==========================================================
-function FHttpConnection_receive(url, doc){
-   this.send(url, doc);
-}
-
-//==========================================================
-// <T>异步发送一个配置请求。</T>
-//
-// @method
-// @param u:url:String 网络地址
-// @return XML信息
-//==========================================================
-function FHttpConnection_syncSend(u, doc){
-   var o = this;
-   o._statusUsing = true;
-   o._url = u;
-   // 发送文档到服务器，同步接收返回的文档信息
-   var cnn = o._control;
-   cnn.open('GET', u, false);
-   o.setHeaders(cnn, 0);
-   cnn.send();
-   // 获得返回的文档对象
-   //console.log(cnn);
-   RDump.dump(cnn, _dump);
-   o._statusUsing = false;
-   return null;
-}
-
-//==========================================================
-//
-//==========================================================
-function FHttpConnection_syncReceive(url, doc){
-   return this.syncSend(url, doc);
+   o.onConnectionSend();
+   if(o._asynchronous){
+      o.sendAsync();
+   }else{
+      o.sendSync();
+   }
+   return o.content();
 }

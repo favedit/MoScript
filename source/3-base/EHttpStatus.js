@@ -1,12 +1,11 @@
 ﻿//===========================================================
-// <T>节点状态枚举。</T>
+// <T>请求状态枚举。</T>
 //
 // @enum
 // @author maocy
 // @version 141230
-// 该类是一个定义xml连接状态的枚举类
 //===========================================================
-var EXmlStatus = new function EXmlStatus(){
+var EHttpStatus = new function EHttpStatus(){
    var o = this;
    // @attribute Integer 准备连接
    o.Begin   = 0;

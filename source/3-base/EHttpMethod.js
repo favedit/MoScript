@@ -1,15 +1,15 @@
 ﻿//==========================================================
-// <T>内容类型。</T>
+// <T>页面方法类型枚举。</T>
 //
 // @enum
 // @author maocy
 // @version 150104
 //==========================================================
-var EContent = new function EContent(){
+var EHttpMethod = new function EHttpMethod(){
    var o = this;
-   // @member 二进制
-   o.Binary = 1;
-   // @member 文本
-   o.Text  = 2;
+   // @member GET请求
+   o.Get  = 'GET';
+   // @member POST请求
+   o.Post = 'POST';
    return o;
 }

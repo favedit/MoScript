@@ -394,20 +394,6 @@ var ERegExp = new function ERegExp(){
    o.E                   = /^\w{1,}[@]{1}[a-zA-Z]{1,}[.]{1}[a-zA-Z]{1,}$/;
    return o;
 }
-var EXmlParse = new function EXmlParse(){
-   var o = this;
-   o.Finish  = 4;
-   return o;
-}
-var EXmlStatus = new function EXmlStatus(){
-   var o = this;
-   o.Begin   = 0;
-   o.Build   = 1;
-   o.Send    = 2;
-   o.Receive = 3;
-   o.Finish  = 4;
-   return o;
-}
 function FConsole(o){
    o = RClass.inherits(this, o, FObject);
    o._scopeCd = EScope.Global;

@@ -9,23 +9,23 @@ var RXml = new function RXml(){
    var o = this;
    //..........................................................
    // @attribute
-   o.httpActiveX  = false;
-   o.httpVendor   = null;
-   o.domActiveX   = false;
-   o.domVendor    = null;
+   o.httpActiveX      = false;
+   o.httpVendor       = null;
+   o.domActiveX       = false;
+   o.domVendor        = null;
    //..........................................................
    // @method
-   o.construct    = RXml_construct;
-   o.isNode       = RXml_isNode;
-   o.newConnect   = RXml_newConnect;
-   o.newDocument  = RXml_newDocument;
-   o.loadString   = RXml_loadString;
-   o.makeNode     = RXml_makeNode;
-   o.makeDocument = RXml_makeDocument;
-   o.buildNode    = RXml_buildNode;
-   o.fromText     = RXml_fromText;
-   o.buildText    = RXml_buildText;
-   o.unpack       = RXml_unpack;
+   o.construct        = RXml_construct;
+   o.isNode           = RXml_isNode;
+   o.createConnection = RXml_createConnection;
+   o.createDocument   = RXml_createDocument;
+   o.loadString       = RXml_loadString;
+   o.makeNode         = RXml_makeNode;
+   o.makeDocument     = RXml_makeDocument;
+   o.buildNode        = RXml_buildNode;
+   o.fromText         = RXml_fromText;
+   o.buildText        = RXml_buildText;
+   o.unpack           = RXml_unpack;
    //..........................................................
    // @construct
    o.construct();
@@ -111,7 +111,7 @@ function RXml_isNode(n){
 // @method
 // @return 配置链接
 //===========================================================
-function RXml_newConnect(){
+function RXml_createConnection(){
    var o = this;
    var r = null;
    if(o.httpActiveX){
@@ -132,7 +132,7 @@ function RXml_newConnect(){
 // @method
 // @return 配置链接
 //===========================================================
-function RXml_newDocument(){
+function RXml_createDocument(){
    var o = this;
    var r = null;
    if(o.domActiveX){

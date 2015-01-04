@@ -70,7 +70,7 @@ function TXmlNode_innerXml(s){
    if(ns){
       var c = ns.count();
       for(var n = 0; n < c; n++){
-         ns.get(n).xml(s);
+         ns.get(n).innerXml(s);
       }
    }
    RXml.buildText(s, o._value)

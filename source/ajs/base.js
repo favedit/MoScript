@@ -16,10 +16,25 @@ var EBrowser = new function EBrowser(){
    o.Chrome  = 3;
    return o;
 }
-var EContent = new function EContent(){
+var EHttpContent = new function EHttpContent(){
    var o = this;
    o.Binary = 1;
    o.Text  = 2;
+   return o;
+}
+var EHttpMethod = new function EHttpMethod(){
+   var o = this;
+   o.Get  = 'GET';
+   o.Post = 'POST';
+   return o;
+}
+var EHttpStatus = new function EHttpStatus(){
+   var o = this;
+   o.Begin   = 0;
+   o.Build   = 1;
+   o.Send    = 2;
+   o.Receive = 3;
+   o.Finish  = 4;
    return o;
 }
 function FBytes(o){
@@ -283,226 +298,172 @@ function FByteStream_writeDouble(v){
 }
 function FHttpConnection(o){
    o = RClass.inherits(this, o, FObject);
-   o._contentCd   = EContent.Binary;
-   o._url         = null;
-   o._statusUsing = false;
-   o._statusFree  = true;
-   o._control  = null;
-   o._data        = null;
-   o.onLoad       = null;
-   o.onFire       = FHttpConnection_onFire;
-   o.onCnnReady   = FHttpConnection_onCnnReady;
-   o.onDocReady   = FHttpConnection_onDocReady;
-   o.construct    = FHttpConnection_construct;
-   o.setHeaders   = FHttpConnection_setHeaders;
-   o.send         = FHttpConnection_send;
-   o.receive      = FHttpConnection_receive;
-   o.syncSend     = FHttpConnection_syncSend;
-   o.syncReceive  = FHttpConnection_syncReceive;
+   o._asynchronous        = false;
+   o._methodCd            = EHttpMethod.Get;
+   o._contentCd           = EHttpContent.Binary;
+   o._url                 = null;
+   o._inputData           = null;
+   o._outputData          = null;
+   o._connection          = null;
+   o._contentLength       = 0;
+   o._statusFree          = true;
+   o.lsnsLoad             = null;
+   o.onConnectionSend     = FHttpConnection_onConnectionSend;
+   o.onConnectionReady    = FHttpConnection_onConnectionReady;
+   o.onConnectionComplete = FHttpConnection_onConnectionComplete;
+   o.construct            = FHttpConnection_construct;
+   o.setHeaders           = FHttpConnection_setHeaders;
+   o.inputData            = FHttpConnection_inputData;
+   o.setInputData         = FHttpConnection_setInputData;
+   o.outputData           = FHttpConnection_outputData;
+   o.setOutputData        = FHttpConnection_setOutputData;
+   o.content              = FHttpConnection_content;
+   o.sendSync             = FHttpConnection_sendSync;
+   o.sendAsync            = FHttpConnection_sendAsync;
+   o.send                 = FHttpConnection_send;
    return o;
 }
-function FHttpConnection_onFire(doc, element){
-   if(doc){
-      this._document = (doc.constructor == Function) ? new doc() : new doc.constructor();
-   }else{
-      this._document = new TXmlDocument();
+function FHttpConnection_onConnectionSend(){
+   var o = this;
+   if(o._inputData){
+      o._contentLength = o._inputData.length;
    }
-   if(element){
-      RXml.buildNode(this._document, null, element)
-   }
-   if(this.onLoad){
-      this.onLoad(this);
-   }
-   this.inUsing = false;
 }
-function FHttpConnection_onCnnReady(cnn, doc){
-   if(cnn.readyState == EXmlStatus.Finish){
-      var dc = this._docControl;
-      if(RXml.modeCd == EBrowser.IE){
-         var self = this;
-         dc.async = true;
-         dc.onreadystatechange = function(){self.onDocReady(dc, doc)};
-         dc.loadXML(cnn.responseText);
-      }else{
-         this.onFire(doc, cnn.responseXML._documentElement);
+function FHttpConnection_onConnectionReady(){
+   var o = this._linker;
+   if(o._asynchronous){
+      var c = o._connection;
+      if(c.readyState == EHttpStatus.Finish){
+         o.setOutputData();
+         o.onConnectionComplete();
       }
    }
 }
-function FHttpConnection_onDocReady(dc, doc){
-   if(dc.readyState == EXmlParse.Finish){
-      if(dc._documentElement){
-         this.onFire(doc, dc._documentElement);
-      }else{
-         alert('Read xml error.\n' + this._control.responseText);
-      }
-   }
+function FHttpConnection_onConnectionComplete(){
+   var o = this;
+   o._statusFree = true;
 }
 function FHttpConnection_construct(){
    var o = this;
-   o._control = RXml.newConnect();
+   o.lsnsLoad = new TListeners();
+   var c = o._connection = RXml.createConnection();
+   c._linker = o;
+   c.onreadystatechange = o.onConnectionReady;
 }
-function FHttpConnection_setHeaders(cnn, len){
+function FHttpConnection_setHeaders(){
    var o = this;
-   if(o._contentCd == EContent.Binary){
+   var c = o._connection;
+   if(o._contentCd == EHttpContent.Binary){
       if(RBrowser.isBrowser(EBrowser.Chrome)){
-         cnn.overrideMimeType('text/plain; charset=x-user-defined');
+         c.overrideMimeType('text/plain; charset=x-user-defined');
       }else{
-         cnn.setRequestHeader('Accept-Charset', 'x-user-defined');
+         c.setRequestHeader('Accept-Charset', 'x-user-defined');
       }
    }else{
-      cnn.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+      c.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
    }
    if(!RBrowser.isBrowser(EBrowser.Chrome)){
-      if(len > 0){
-         cnn.setRequestHeader('content-length', len);
+      if(o._contentLength > 0){
+         c.setRequestHeader('content-length', o._contentLength);
       }
    }
 }
-function FHttpConnection_send(url, doc){
+function FHttpConnection_inputData(){
+   return this._inputData;
+}
+function FHttpConnection_setInputData(p){
+   this._inputData = p;
+}
+function FHttpConnection_outputData(){
+   return this._outputData;
+}
+function FHttpConnection_setOutputData(){
    var o = this;
-   o._statusUsing = true;
-   o._url = url;
-   var xml = doc.xml().toString();
-   var cnn = o._control;
-   RLogger.info(this, 'Send xml url. (url={0})', url);
-   cnn.abort();
-   cnn.open('POST', url, true);
-   o.setHeaders(cnn, xml.length);
-   var self = this;
-   cnn.onreadystatechange = function(){self.onCnnReady(cnn, doc)};
-   cnn.send(xml);
+   var c = o._connection;
+   if(o._contentCd == EHttpContent.Binary){
+      if(RBrowser.isBrowser(EBrowser.Chrome)){
+         o._outputData = new ArrayBuffer(c.response);
+      }else{
+         o._outputData = new ArrayBuffer(c.responseBody.toArray());
+      }
+   }else{
+      o._outputData = c.responseText;
+   }
 }
-function FHttpConnection_receive(url, doc){
-   this.send(url, doc);
+function FHttpConnection_content(){
+   return this._outputData;
 }
-function FHttpConnection_syncSend(u, doc){
+function FHttpConnection_sendSync(){
    var o = this;
-   o._statusUsing = true;
-   o._url = u;
-   var cnn = o._control;
-   cnn.open('GET', u, false);
-   o.setHeaders(cnn, 0);
-   cnn.send();
-   RDump.dump(cnn, _dump);
-   o._statusUsing = false;
-   return null;
+   var c = o._connection;
+   c.open(o._methodCd, o._url, false);
+   o.setHeaders(c, 0);
+   c.send(o._inputData);
+   o.setOutputData();
+   o.onConnectionComplete();
+   RLogger.info(this, 'Send http sync url. (method={1}, url={2})', o._methodCd, o._url);
 }
-function FHttpConnection_syncReceive(url, doc){
-   return this.syncSend(url, doc);
+function FHttpConnection_sendAsync(){
+   var o = this;
+   var c = o._connection;
+   c.open(o._methodCd, o._url, true);
+   o.setHeaders(c, 0);
+   c.send(o._inputData);
+   RLogger.info(this, 'Send http async url. (method={1}, url={2})', o._methodCd, o._url);
+}
+function FHttpConnection_send(p){
+   var o = this;
+   o._url = p;
+   o._statusFree = false;
+   o.onConnectionSend();
+   if(o._asynchronous){
+      o.sendAsync();
+   }else{
+      o.sendSync();
+   }
+   return o.content();
 }
 function FXmlConnection(o){
-   o = RClass.inherits(this, o, FObject);
-   o._url         = null;
-   o._sync        = false;
-   o._statusUsing = false;
-   o._statusFree  = true;
-   o._cnnControl  = null;
-   o._docControl  = null;
-   o._document    = null;
-   o.onLoad       = null;
-   o.onFire       = FXmlConnection_onFire;
-   o.onCnnReady   = FXmlConnection_onCnnReady;
-   o.onDocReady   = FXmlConnection_onDocReady;
-   o.construct    = FXmlConnection_construct;
-   o.setHeaders   = FXmlConnection_setHeaders;
-   o.send         = FXmlConnection_send;
-   o.receive      = FXmlConnection_receive;
-   o.syncSend     = FXmlConnection_syncSend;
-   o.syncReceive  = FXmlConnection_syncReceive;
+   o = RClass.inherits(this, o, FHttpConnection);
+   o._contentCd           = EHttpContent.Text;
+   o._inputNode           = null;
+   o._outputNode          = null;
+   o.onConnectionSend     = FXmlConnection_onConnectionSend;
+   o.onConnectionComplete = FXmlConnection_onConnectionComplete;
+   o.content              = FXmlConnection_content;
    return o;
 }
-function FXmlConnection_onFire(doc, element){
-   if(doc){
-      this._document = (doc.constructor == Function) ? new doc() : new doc.constructor();
-   }else{
-      this._document = new TXmlDocument();
-   }
-   if(element){
-      RXml.buildNode(this._document, null, element)
-   }
-   if(this.onLoad){
-      this.onLoad(this);
-   }
-   this.inUsing = false;
-}
-function FXmlConnection_onCnnReady(cnn, doc){
-   if(cnn.readyState == EXmlStatus.Finish){
-      var dc = this._docControl;
-      if(RXml.modeCd == EBrowser.IE){
-         var self = this;
-         dc.async = true;
-         dc.onreadystatechange = function(){self.onDocReady(dc, doc)};
-         dc.loadXML(cnn.responseText);
-      }else{
-         this.onFire(doc, cnn.responseXML._documentElement);
-      }
-   }
-}
-function FXmlConnection_onDocReady(dc, doc){
-   if(dc.readyState == EXmlParse.Finish){
-      if(dc._documentElement){
-         this.onFire(doc, dc._documentElement);
-      }else{
-         alert('Read xml error.\n' + this._cnnControl.responseText);
-      }
-   }
-}
-function FXmlConnection_construct(){
+function FHttpConnection_onConnectionSend(){
    var o = this;
-   o._cnnControl = RXml.newConnect();
-   o._docControl = RXml.newDocument();
-}
-function FXmlConnection_setHeaders(cnn, len){
-   cnn.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
-   if(!RBrowser.isBrowser(EBrowser.Chrome)){
-      cnn.setRequestHeader('content-length', len);
+   if(o._inputNode){
+      var d = new TXmlDocument();
+      d.setRoot(_inputNode);
+      var s = s.xml().toString();
+      o._inputData = s;
+      o._contentLength = s.length;
    }
 }
-function FXmlConnection_send(url, doc){
+function FXmlConnection_onConnectionComplete(){
    var o = this;
-   o._statusUsing = true;
-   o._url = url;
-   var xml = doc.xml().toString();
-   var cnn = o._cnnControl;
-   RLogger.info(this, 'Send xml url. (url={0})', url);
-   cnn.abort();
-   cnn.open('POST', url, true);
-   o.setHeaders(cnn, xml.length);
-   var self = this;
-   cnn.onreadystatechange = function(){self.onCnnReady(cnn, doc)};
-   cnn.send(xml);
-}
-function FXmlConnection_receive(url, doc){
-   this.send(url, doc);
-}
-function FXmlConnection_syncSend(u, doc){
-   var o = this;
-   o._statusUsing = true;
-   o._url = u;
-   var xml = doc.xml().toString();
-   var cnn = o._cnnControl;
-   cnn.open('POST', u, false);
-   o.setHeaders(cnn, xml.length);
-   cnn.send(xml);
-   var element = null;
-   if(cnn.responseXML){
-      element = cnn.responseXML.documentElement;
+   var c = o._connection;
+   var e = null;
+   if(c.responseXML){
+      e = c.responseXML.documentElement;
    }else if(cnn.responseXml){
-      element = cnn.responseXml.documentElement;
+      e = c.responseXml.documentElement;
    }else{
       throw new TError(o, "Fetch xml data failure.");
    }
-   var xd = o._document = new TXmlDocument();
-   if(element){
-      RXml.buildNode(xd, null, element);
-   }else{
-      RMessage.fatal(o, null, 'Read xml error. (url={1})\n{2}', u, this._cnnControl.responseText)
+   if(!e){
+      return RMessage.fatal(o, null, 'Read xml error. (url={1})\n{2}', u, c._outputText)
    }
-   o._statusUsing = false;
-   return xd;
+   var d = new TXmlDocument();
+   RXml.buildNode(d, null, e);
+   o._outputNode = d.root();
+   o._statusFree = true;
 }
-function FXmlConnection_syncReceive(url, doc){
-   return this.syncSend(url, doc);
+function FXmlConnection_content(){
+   return this._outputNode;
 }
 function HBlur(n, m){
    var o = this;
@@ -2677,21 +2638,21 @@ function RWindow_dispose(){
 }
 var RXml = new function RXml(){
    var o = this;
-   o.httpActiveX  = false;
-   o.httpVendor   = null;
-   o.domActiveX   = false;
-   o.domVendor    = null;
-   o.construct    = RXml_construct;
-   o.isNode       = RXml_isNode;
-   o.newConnect   = RXml_newConnect;
-   o.newDocument  = RXml_newDocument;
-   o.loadString   = RXml_loadString;
-   o.makeNode     = RXml_makeNode;
-   o.makeDocument = RXml_makeDocument;
-   o.buildNode    = RXml_buildNode;
-   o.fromText     = RXml_fromText;
-   o.buildText    = RXml_buildText;
-   o.unpack       = RXml_unpack;
+   o.httpActiveX      = false;
+   o.httpVendor       = null;
+   o.domActiveX       = false;
+   o.domVendor        = null;
+   o.construct        = RXml_construct;
+   o.isNode           = RXml_isNode;
+   o.createConnection = RXml_createConnection;
+   o.createDocument   = RXml_createDocument;
+   o.loadString       = RXml_loadString;
+   o.makeNode         = RXml_makeNode;
+   o.makeDocument     = RXml_makeDocument;
+   o.buildNode        = RXml_buildNode;
+   o.fromText         = RXml_fromText;
+   o.buildText        = RXml_buildText;
+   o.unpack           = RXml_unpack;
    o.construct();
    return o;
 }
@@ -2750,7 +2711,7 @@ function RXml_construct(){
 function RXml_isNode(n){
    return RClass.isName(n, 'TNode');
 }
-function RXml_newConnect(){
+function RXml_createConnection(){
    var o = this;
    var r = null;
    if(o.httpActiveX){
@@ -2763,7 +2724,7 @@ function RXml_newConnect(){
    }
    return r;
 }
-function RXml_newDocument(){
+function RXml_createDocument(){
    var o = this;
    var r = null;
    if(o.domActiveX){
@@ -2985,19 +2946,20 @@ function THtmlItem_get(n){
 function THtmlItem_set(n, v){
    this._links[n] = v;
 }
-function TXmlDocument(o, r){
+function TXmlDocument(o){
    if(!o){o = this;}
-   o._root  = r;
-   o.create = TXmlDocument_create;
-   o.root   = TXmlDocument_root;
-   o.xml    = TXmlDocument_xml;
-   o.dump   = TXmlDocument_dump;
+   o._root   = null;
+   o.create  = TXmlDocument_create;
+   o.root    = TXmlDocument_root;
+   o.setRoot = TXmlDocument_setRoot;
+   o.xml     = TXmlDocument_xml;
+   o.dump    = TXmlDocument_dump;
    return o;
 }
-function TXmlDocument_create(n, as, v){
+function TXmlDocument_create(n, a, v){
    var r = new TXmlNode();
    r._name = n;
-   r._attributes = as;
+   r._attributes = a;
    r._value = v;
    return r;
 }
@@ -3009,18 +2971,26 @@ function TXmlDocument_root(){
    }
    return r;
 }
+function TXmlDocument_setRoot(p){
+   var o = this;
+   if(!o._root){
+      o._root = p;
+   }else{
+      throw new TError(o, 'Root node is already exists.');
+   }
+}
 function TXmlDocument_xml(){
    var s = new TString();
    s.append("<?xml version='1.0' encoding='UTF-8'?>");
    this.root().xml(s);
-   return s;
+   return s.toString();
 }
-function TXmlDocument_dump(d){
+function TXmlDocument_dump(){
    var o = this;
-   d = RString.nvlStr(d);
-   d.appendLine(RClass.name(o));
-   o.root().dump(d);
-   return d;
+   var r = new TString();
+   r.appendLine(RClass.name(o));
+   o.root().innerDump(r);
+   return r.toString();
 }
 function TXmlNode(){
    var o = this;
@@ -3069,7 +3039,7 @@ function TXmlNode_innerXml(s){
    if(ns){
       var c = ns.count();
       for(var n = 0; n < c; n++){
-         ns.get(n).xml(s);
+         ns.get(n).innerXml(s);
       }
    }
    RXml.buildText(s, o._value)

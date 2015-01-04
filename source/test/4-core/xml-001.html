@@ -33,13 +33,18 @@ function _load(){
    RRuntime.processCd = EProcess.Debug;
    RBrowser.construct();
 
-   var hc = RClass.create(FHttpConnection);
-   hc.syncSend('http://localhost:999/test/7-control-form/imgad.jpg');
-   //RDump.dump(hc, _dump);
+
+   //var hc = RClass.create(FHttpConnection);
+   //var r = hc.send('http://localhost/script/test/7-control-form/imgad.jpg');
+   //hc.send('http://localhost:999/test/7-control-form/imgad.jpg');
+
+   var hc = RClass.create(FXmlConnection);
+   var r = hc.send('http://localhost/script/test/7-control-form/xml_insert.xml');
+   RDump.dump(hc, _dump);
 
    var xc = RConsole.find(FXmlConsole);
    var x = new TXmlDocument();
-   var xd = xc.send('http://localhost:999/test/7-control-form/xml_insert.xml', x);
+   //var xd = xc.send('http://localhost:999/test/7-control-form/xml_insert.xml', x);
    //RDump.dump(xc, _dump);
    //RDump.dump(xd, _dump);
 }
