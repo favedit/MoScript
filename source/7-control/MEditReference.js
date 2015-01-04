@@ -9,11 +9,11 @@ function MEditReference(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property
-   o._lovService    = RClass.register(o, new APtyString(null, '_lovService', null, EDataService.WebForm));
-   o._lovRefer      = RClass.register(o, new APtyString(null, '_lovRefer'));
-   o._lovFields     = RClass.register(o, new APtyString(null, '_lovFields'));
-   o._lovWhere      = RClass.register(o, new APtyString(null, '_lovWhere'));
-   o._lovOrder      = RClass.register(o, new APtyString(null, '_lovOrder'));
+   o._lovService    = RClass.register(o, new APtyString('_lovService', null, EDataService.WebForm));
+   o._lovRefer      = RClass.register(o, new APtyString('_lovRefer'));
+   o._lovFields     = RClass.register(o, new APtyString('_lovFields'));
+   o._lovWhere      = RClass.register(o, new APtyString('_lovWhere'));
+   o._lovOrder      = RClass.register(o, new APtyString('_lovOrder'));
    //..........................................................
    // @attribute
    o.__listView     = null;

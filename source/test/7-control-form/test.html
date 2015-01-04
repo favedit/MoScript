@@ -1,0 +1,48 @@
+<html> 
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<script type="text/javascript"><!-- 
+function generatable(){ 
+var tableObje = document.getElementById("info"); 
+var bodyObj = tableObje.tBodies[0]; 
+var rowObj = bodyObj.insertRow(); 
+var cellObj = rowObj.insertCell(); 
+cellObj.innerHTML = "张三"; 
+cellObj = rowObj.insertCell(); 
+cellObj.innerHTML = "请参阅我编写的其他书目对应的脚本特性为请参阅我编写的其他书目"; 
+cellObj = rowObj.insertCell(); 
+cellObj.innerHTML = "当事人地址信息请小房间也是查看。"; 
+} 
+function generatable1(){ 
+var tableObje = document.getElementById("info"); 
+var bodyObj = tableObje.tBodies[0]; 
+var rowObj = document.createElement("tr"); 
+
+var cellObj = document.createElement("td"); 
+cellObj.innerHTML = "张三"; 
+rowObj.appendChild(cellObj) 
+
+cellObj = document.createElement("td"); 
+cellObj.innerHTML = "请参阅我编写的其他书目对应的脚本特性为请参阅我编写的其他书目"; 
+rowObj.appendChild(cellObj); 
+
+cellObj = document.createElement("td"); 
+cellObj.innerHTML = "当事人地址信息请小房间也是查看。"; 
+rowObj.appendChild(cellObj); 
+
+bodyObj.appendChild(rowObj); 
+} 
+// --></script> 
+<body onload="generatable()"> 
+<table width=100 bgcolor=#f3f3f3 id=info border=1 style="table-layout:fixed;" style="table-layout:fixed;"> 
+<thead> 
+<tr> 
+<td style="width:80">姓名</td> 
+<td style="width:200">描述</td> 
+<td style="width:100">地址</td> 
+</tr> 
+</thead> 
+<tbody> 
+</tbody> 
+</table> 
+</body> 
+</html> 

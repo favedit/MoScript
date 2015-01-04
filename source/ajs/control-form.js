@@ -1,6 +1,6 @@
 function FEdit(o){
    o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
-   o._styleEdit       = RClass.register(o, new AStyle(null, '_styleEdit', 'Edit'));
+   o._styleEdit       = RClass.register(o, new AStyle('_styleEdit', 'Edit'));
    o.onBuildEditorValue   = FEdit_onBuildEditorValue;
    return o;
 }
@@ -126,14 +126,14 @@ function FEdit_link(){
    var o = this;
 }
 function FEditControl(o){
-   o = RClass.inherits(this, o, FControl, MEditDescriptor, MEditValue, MDisplay);
-   o._labelModeCd          = RClass.register(o, new APtyString(null, '_labelModeCd', null, ELabelMode.All));
-   o._labelPositionCd      = RClass.register(o, new APtyString(null, '_labelPositionCd', null, ELabelPosition.Left));
-   o._labelSize            = RClass.register(o, new APtySize2(null, '_labelSize'));
-   o._labelAlignCd         = RClass.register(o, new APtyString(null, '_labelAlignCd', null, EAlign.Left));
-   o._editSize             = RClass.register(o, new APtySize2(null, '_editSize'));
-   o._styleLabelContainer  = RClass.register(o, new AStyle(null, '_styleLabelContainer', 'LabelContainer'));
-   o._styleEditorContainer = RClass.register(o, new AStyle(null, '_styleEditorContainer', 'EditorContainer'));
+   o = RClass.inherits(this, o, FControl);
+   o._labelModeCd          = RClass.register(o, new APtyString('_labelModeCd', null, ELabelMode.All));
+   o._labelPositionCd      = RClass.register(o, new APtyString('_labelPositionCd', null, ELabelPosition.Left));
+   o._labelSize            = RClass.register(o, new APtySize2('_labelSize'));
+   o._labelAlignCd         = RClass.register(o, new APtyString('_labelAlignCd', null, EAlign.Left));
+   o._editSize             = RClass.register(o, new APtySize2('_editSize'));
+   o._styleLabelContainer  = RClass.register(o, new AStyle('_styleLabelContainer', 'LabelContainer'));
+   o._styleEditorContainer = RClass.register(o, new AStyle('_styleEditorContainer', 'EditorContainer'));
    o._hLabelPanel        = null;
    o,_hLabelContainer    = null;
    o,_hIconPanel         = null;

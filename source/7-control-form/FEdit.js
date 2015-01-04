@@ -9,7 +9,7 @@ function FEdit(o){
    o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
    //..........................................................
    // @style
-   o._styleEdit       = RClass.register(o, new AStyle(null, '_styleEdit', 'Edit'));
+   o._styleEdit       = RClass.register(o, new AStyle('_styleEdit', 'Edit'));
    //o.stUnit        = RClass.register(o, new AStyle('Unit'));
    //..........................................................
    // @attribute

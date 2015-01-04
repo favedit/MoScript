@@ -78,7 +78,7 @@ var RHtml = new function RHtml(){
 function RHtml_displayGet(h){
    var r = null;
    var s = h.style.display;
-   if(RBrowser.typeCd == EBrowser.Explorer){
+   if(RBrowser.isBrowser(EBrowser.Explorer)){
       r = (s == 'inline');
    }else{
       r = (s != 'none');
@@ -94,7 +94,7 @@ function RHtml_displayGet(h){
 //==========================================================
 function RHtml_displaySet(h, v){
    var s = null;
-   if(RBrowser.typeCd == EBrowser.Explorer){
+   if(RBrowser.isBrowser(EBrowser.Explorer)){
       s = v ? 'inline' : 'none';
    }else{
       s = v ? null : 'none';
@@ -111,7 +111,7 @@ function RHtml_displaySet(h, v){
 function RHtml_visibleGet(h){
    var r = null;
    var s = h.style.display;
-   if(RBrowser.typeCd == EBrowser.Explorer){
+   if(RBrowser.isBrowser(EBrowser.Explorer)){
       r = (s == 'block');
    }else{
       r = (s != 'none');
@@ -127,7 +127,7 @@ function RHtml_visibleGet(h){
 //==========================================================
 function RHtml_visibleSet(h, v){
    var s = null;
-   if(RBrowser.typeCd == EBrowser.Explorer){
+   if(RBrowser.isBrowser(EBrowser.Explorer)){
       s = v ? 'block' : 'none';
    }else{
       s = v ? null : 'none';
@@ -143,7 +143,7 @@ function RHtml_visibleSet(h, v){
 //==========================================================
 function RHtml_textGet(h, v){
    var r = null;
-   if(RBrowser.typeCd == EBrowser.FireFox){
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
       r = h.textContent;
    }else{
       r = h.innerText;
@@ -158,7 +158,7 @@ function RHtml_textGet(h, v){
 // @param v:value:String 文本内容
 //==========================================================
 function RHtml_textSet(h, v){
-   if(RBrowser.typeCd == EBrowser.FireFox){
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
       h.textContent = v;
    }else{
       h.innerText = v;

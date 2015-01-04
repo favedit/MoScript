@@ -4,11 +4,15 @@
 // @property
 // @param n:name:String 名称
 // @param l:linker:String 关联名称
+// @param vl:left:Integer 左边距
+// @param vt:top:Integer 上边距
+// @param vr:right:Integer 右边距
+// @param vb:bottom:Integer 下边距
 // @author maocy
 // @version 150101
 //==========================================================
-function APtyPadding(o, n, l, vl, vt, vr, vb){
-   if(!o){o = this;}
+function APtyPadding(n, l, vl, vt, vr, vb){
+   var o = this;
    AProperty(o, n, l);
    //..........................................................
    // @attribute
@@ -33,7 +37,7 @@ function APtyPadding(o, n, l, vl, vt, vr, vb){
 //============================================================
 function APtyPadding_load(v, x){
    var o = this;
-   v[o.name].parse(x.get(o.linker));
+   v[o._name].parse(x.get(o._linker));
 }
 
 //============================================================
@@ -45,7 +49,7 @@ function APtyPadding_load(v, x){
 //============================================================
 function APtyPadding_save(v, x){
    var o = this;
-   x.set(o.name, v[o.name].toString());
+   x.set(o._name, v[o._name].toString());
 }
 
 //============================================================
@@ -56,6 +60,5 @@ function APtyPadding_save(v, x){
 //============================================================
 function APtyPadding_toString(){
    var o = this;
-   return '<PaddingProperty:linker=' + o.linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom +  '>';
+   return 'linker=' + o._linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom;
 }
-

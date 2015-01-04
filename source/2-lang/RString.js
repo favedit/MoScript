@@ -32,7 +32,6 @@ var RString = new function RString(){
    o.findChars    = RString_findChars;
    o.inRange      = RString_inRange;
    o.nvl          = RString_nvl;
-   o.nvlStr       = RString_nvlStr;
    o.firstUpper   = RString_firstUpper;
    o.firstLower   = RString_firstLower;
    o.firstLine    = RString_firstLine;
@@ -352,20 +351,6 @@ function RString_nvl(v, d){
 }
 
 //==========================================================
-// <T>返回一个不为空的字符串对象。</T>
-//
-// @method
-// @param v:value:String 字符串对象
-// @return Boolean 非空字符串对象
-//==========================================================
-function RString_nvlStr(v){
-   if(!v){
-      v = new TString();
-   }
-   return v;
-}
-
-//==========================================================
 // <T>将字符串的首字符变为大写。</T>
 //
 // @method
@@ -531,6 +516,9 @@ function RString_trim(v, ts){
       if(-1 == ts.indexOf(v.charAt(r))){
          break;
       }
+   }
+   if(l == r + 1){
+      return null;
    }
    if((l != 0) || (r != v.length-1)){
       return v.substring(l, r + 1);

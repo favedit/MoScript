@@ -7,6 +7,7 @@
 //==========================================================
 function MProperty(o){
    o = RClass.inherits(this, o);
+   //..........................................................
    // @method
    o.propertyAssign = MProperty_propertyAssign;
    o.propertyLoad   = MProperty_propertyLoad;
@@ -23,10 +24,12 @@ function MProperty(o){
 function MProperty_propertyAssign(v){
    var o = this;
    var c = RClass.find(o.constructor);
-   var ps = c.annotations(EAnnotation.Property);
-   for(var n in ps){
-      var p = ps[n];
-      o[p.name] = c[p.name];
+   var as = c.annotations(EAnnotation.Property);
+   for(var n in as){
+      var a = as[n];
+      if(a.constructor != Function){
+         o[a._name] = c[a._name];
+      }
    }
 }
 
@@ -39,16 +42,18 @@ function MProperty_propertyAssign(v){
 function MProperty_propertyLoad(v){
    var o = this;
    var c = RClass.find(o.constructor);
-   var ps = c.annotations(EAnnotation.Property);
-   for(var n in ps){
-      var p = ps[n];
-      if(p.force){
-         p.load(o, v);
-      }else{
-         if(v.contains(p.config)){
-            p.load(o, v);
-         }else if(o[p.name] == null){
-            o[p.name] = p.value;
+   var as = c.annotations(EAnnotation.Property);
+   for(var n in as){
+      var a = as[n];
+      if(a.constructor != Function){
+         if(a._force){
+            a.load(o, v);
+         }else{
+            if(v.contains(a._linker)){
+               a.load(o, v);
+            }else if(o[p._name] == null){
+               o[a._name] = a._value;
+            }
          }
       }
    }
@@ -63,8 +68,11 @@ function MProperty_propertyLoad(v){
 function MProperty_propertySave(v){
    var o = this;
    var c = RClass.find(o.constructor);
-   var ps = c.annotations(EAnnotation.Property);
-   for(var n in ps){
-      ps[n].save(o, v);
+   var as = c.annotations(EAnnotation.Property);
+   for(var n in as){
+      var a = as[n];
+      if(a.constructor != Function){
+         a.save(o, v);
+      }
    }
 }

@@ -7,8 +7,8 @@
 // @author maocy
 // @version 150101
 //==========================================================
-function APtyPoint2(o, n, l, x, y){
-   if(!o){o = this;}
+function APtyPoint2(n, l, x, y){
+   var o = this;
    AProperty(o, n, l);
    //..........................................................
    // @attribute
@@ -31,7 +31,7 @@ function APtyPoint2(o, n, l, x, y){
 //============================================================
 function APtyPoint2_load(v, x){
    var o = this;
-   v[o.name].parse(x.get(o.linker));
+   v[o._name].parse(x.get(o._linker));
 }
 
 //============================================================
@@ -43,7 +43,7 @@ function APtyPoint2_load(v, x){
 //============================================================
 function APtyPoint2_save(v, x){
    var o = this;
-   x.set(o.name, v[o.name].toString());
+   x.set(o._name, v[o._name].toString());
 }
 
 //============================================================
@@ -54,5 +54,5 @@ function APtyPoint2_save(v, x){
 //============================================================
 function APtyPoint2_toString(){
    var o = this;
-   return '<Point2Property:linker=' + o.linker + ',value=' + o._x + ',' + o._y +  '>';
+   return 'linker=' + o._linker + ',value=' + o._x + ',' + o._y;
 }

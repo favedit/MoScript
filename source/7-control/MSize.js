@@ -9,20 +9,20 @@ function MSize(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property
-   o._location   = RClass.register(o, new APtyPoint2(null, '_location'));
-   o._size       = RClass.register(o, new APtySize2(null, '_size'));
+   o._location = RClass.register(o, new APtyPoint2('_location'));
+   o._size     = RClass.register(o, new APtySize2('_size'));
    //..........................................................
    // @event
-   o.onSize       = null;
+   o.onSize    = null;
    //..........................................................
    // @method
-   o.construct    = MSize_construct;
-   o.calcRect     = MSize_calcRect;
-   o.resize       = MSize_resize;
-   o.setSize      = MSize_setSize;
-   o.setBounds    = MSize_setBounds;
-   o.resetSize    = MSize_resetSize;
-   o.innerDump    = MSize_innerDump;
+   o.construct = MSize_construct;
+   o.calcRect  = MSize_calcRect;
+   o.resize    = MSize_resize;
+   o.setSize   = MSize_setSize;
+   o.setBounds = MSize_setBounds;
+   o.resetSize = MSize_resetSize;
+   o.innerDump = MSize_innerDump;
    return o;
 }
 

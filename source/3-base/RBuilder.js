@@ -41,8 +41,6 @@ var RBuilder = new function RBuilder(){
    o.onBuildTrPanel    = RBuilder_onBuildTrPanel;
    o.onBuildTablePanel = RBuilder_onBuildTablePanel;
    // @method
-   o.appendRow         = RBuilder_appendRow;
-   o.appendCell        = RBuilder_appendCell;
    o.createFragment    = RBuilder_createFragment;
    return o;
 }
@@ -462,54 +460,6 @@ function RBuilder_onBuildTrPanel(){
 //===========================================================
 function RBuilder_onBuildTablePanel(){
    this.hPanel = RBuilder.newTable();
-}
-
-//===========================================================
-// 创建一个Row对象，放在父容器table里面，并返回这个对象
-//
-// @method
-// @param table:table:HTML html表格容器
-// @param css:css:String 样式表
-// @param index:index:Integer 插入的行号
-// @param width:width:Integer 行宽度
-// @param height:height:Integer 行高度
-// @see RBuilder_newIcon
-// @return Object 返回创建的tr对象
-//===========================================================
-function RBuilder_appendRow(table, css, index, width, height){
-   var h = index ? table.insertRow(index) : table.insertRow();
-   if(css){
-      h.className = css;
-   }
-   if(width){
-      h.width = width;
-   }
-   if(height){
-      h.height = height;
-   }
-   return h;
-}
-
-//===========================================================
-// 创建一个td对象，放在tr里面，并返回这个对象
-//
-// @method
-// @param parent:parent:HTML tr容器
-// @param css:css:String 样式表
-// @param html:html:HTML 图片的显示宽度
-// @param height:height:Integer 图片的显示宽度
-// @return Object 返回创建的td对象
-//===========================================================
-function RBuilder_appendCell(row, css, width, height){
-   var h = this.create(row, 'TD', css);
-   row.appendChild(h);
-   if(width){
-      h.width = width;
-   }
-   if(height){
-      h.height = height;
-   }
-   return h;
 }
 
 function RBuilder_createFragment(p){

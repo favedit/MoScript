@@ -423,7 +423,7 @@ function TMap_dump(){
    if(c > 0){
       r.append(' {');
       for(var n = 0; n < c; n++){
-         r.appendLine(o._names[n], '=', ' [', o._values[n], ']');
+         r.appendLine(o._names[n], '=[', o._values[n], ']');
       }
       r.append('}');
    }

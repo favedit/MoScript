@@ -7,7 +7,8 @@
 //==========================================================
 function MClone(o){
    o = RClass.inherits(this, o);
-   // Method
+   //..........................................................
+   // @method
    o.clone  = MClone_clone;
    return o;
 }
@@ -24,10 +25,11 @@ function MClone_clone(){
    for(var n in o){
       v = o[n];
       if(v != null){
-         if(RClass.isBaseDataType(v.constructor)){
-            r[n] = v;
+         if(!RClass.isBaseDataType(v.constructor)){
+            r[n] = v.clone();
          }
       }
+      r[n] = v;
    }
    return r;
 }

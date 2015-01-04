@@ -9,22 +9,22 @@
 //============================================================
 function AProperty(o, n, l){
    if(!o){o = this;}
+   AAnnotation(o, n);
    //..........................................................
    // @declare
-   o.inherit    = true;
-   o.annotation = EAnnotation.Property;
+   o._inherit      = true;
+   o._annotationCd = EAnnotation.Property;
    //..........................................................
    // @attribute
-   o.name       = n;
-   o.linker     = null;
-   o.force      = false;
+   o._linker       = null;
+   o._force        = false;
    //..........................................................
    // @method
-   o.code       = AProperty_code;
-   o.build      = AProperty_build;
-   o.load       = AProperty_load;
-   o.save       = AProperty_save;
-   o.toString   = AProperty_toString;
+   o.code          = AProperty_code;
+   o.build         = AProperty_build;
+   o.load          = AProperty_load;
+   o.save          = AProperty_save;
+   o.toString      = AProperty_toString;
    //..........................................................
    // @construct
    var ln = null;
@@ -38,7 +38,7 @@ function AProperty(o, n, l){
    }else{
       ln = l;
    }
-   o.linker = ln;
+   o._linker = ln;
    return o;
 }
 
@@ -49,7 +49,7 @@ function AProperty(o, n, l){
 // @return String 代码
 //============================================================
 function AProperty_code(){
-   return this.name;
+   return this._linker;
 }
 
 //============================================================
@@ -70,7 +70,7 @@ function AProperty_build(){
 //============================================================
 function AProperty_load(v, x){
    var o = this;
-   v[o.name] = x.get(o.linker);
+   v[o._name] = x.get(o._linker);
 }
 
 //============================================================
@@ -82,7 +82,7 @@ function AProperty_load(v, x){
 //============================================================
 function AProperty_save(v, x){
    var o = this;
-   x.set(o.linker, v[o.name]);
+   x.set(o._linker, v[o._name]);
 }
 
 //============================================================
@@ -93,5 +93,5 @@ function AProperty_save(v, x){
 //============================================================
 function AProperty_toString(){
    var o = this;
-   return '<' + o.annotation + ',linker=' + o.linker + '>';
+   return '<' + o._annotationCd + ',linker=' + o._linker + '>';
 }

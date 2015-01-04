@@ -9,12 +9,13 @@ function MPadding(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property SPadding 填充结构
-   o._padding   = RClass.register(o, new APtyPadding(null, '_padding'));
+   o._padding     = RClass.register(o, new APtyPadding('_padding'));
    //..........................................................
    // @method
-   o.construct  = MPadding_construct;
-   o.padding    = MPadding_padding;
-   o.setPadding = MPadding_setPadding;
+   o.construct    = MPadding_construct;
+   o.padding      = MPadding_padding;
+   o.setPadding   = MPadding_setPadding;
+   o.refreshStyle = MPadding_refreshStyle;
    return o;
 }
 
@@ -45,17 +46,28 @@ function MPadding_padding(){
 // @param b:bottom:Integer 下空白
 //==========================================================
 function MPadding_setPadding(l, t, r, b){
-   var h = this.panel(EPanel.Container);
-   if(l){
-      h.style.paddingLeft = l;
+   return this._padding.set(l, t, r, b);
+}
+
+//==========================================================
+// <T>刷新样式。</T>
+//
+// @method
+//==========================================================
+function MPadding_refreshStyle(){
+   var o = this;
+   var p = o._padding;
+   var h = o.panel(EPanel.Container);
+   if(p.left){
+      h.style.paddingLeft = p.left;
    }
-   if(t){
-      h.style.paddingTop = t;
+   if(p.top){
+      h.style.paddingTop = p.top;
    }
-   if(r){
-      h.style.paddingRight = r;
+   if(p.right){
+      h.style.paddingRight = p.right;
    }
-   if(b){
-      h.style.paddingBottom = b;
+   if(p.bottom){
+      h.style.paddingBottom = p.bottom;
    }
 }

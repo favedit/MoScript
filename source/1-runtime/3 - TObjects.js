@@ -8,10 +8,11 @@
 function TObjects(o){
    if(!o){o = this;}
    // @attribute
-   o.count      = 0;
-   o.memory     = new Array();
+   o._count     = 0;
+   o._items     = new Array();
    // @method
    o.isEmpty    = TObjects_isEmpty;
+   o.count      = TObjects_count;
    o.contains   = TObjects_contains;
    o.indexOf    = TObjects_indexOf;
    o.first      = TObjects_first;
@@ -40,7 +41,17 @@ function TObjects(o){
 // @return Boolean 是否为空
 //===========================================================
 function TObjects_isEmpty(){
-   return (this.count == 0);
+   return (this._count == 0);
+}
+
+//===========================================================
+// <T>判断集合总数。</T>
+//
+// @method
+// @return Integer 总数
+//===========================================================
+function TObjects_count(){
+   return this._count;
 }
 
 //===========================================================
@@ -63,9 +74,9 @@ function TObjects_contains(v){
 //===========================================================
 function TObjects_indexOf(v){
    var o = this;
-   var c = o.count;
+   var c = o._count;
    for(var n = 0; n < c; n++){
-      if(o.memory[n] == v){
+      if(o._items[n] == v){
          return n;
       }
    }
@@ -80,7 +91,7 @@ function TObjects_indexOf(v){
 //===========================================================
 function TObjects_first(){
    var o = this;
-   return o.count ? this.memory[0] : null;
+   return o._count ? this._items[0] : null;
 }
 
 //===========================================================
@@ -91,7 +102,7 @@ function TObjects_first(){
 //===========================================================
 function TObjects_last(){
    var o = this;
-   return o.count ? this.memory[o.count - 1] : null;
+   return o._count ? this._items[o._count - 1] : null;
 }
 
 //===========================================================
@@ -102,7 +113,7 @@ function TObjects_last(){
 // @return 当前位置上的对象
 //===========================================================
 function TObjects_get(n){
-   return ((n >= 0) && (n < this.count)) ? this.memory[n] : null;
+   return ((n >= 0) && (n < this._count)) ? this._items[n] : null;
 }
 
 //===========================================================
@@ -113,8 +124,8 @@ function TObjects_get(n){
 // @param v:value:Object 对象
 //===========================================================
 function TObjects_set(n, v){
-   if((n >= 0) && (n < this.count)){
-      this.memory[n] = v;
+   if((n >= 0) && (n < this._count)){
+      this._items[n] = v;
    }
 }
 
@@ -126,7 +137,7 @@ function TObjects_set(n, v){
 //===========================================================
 function TObjects_append(v){
    var o = this;
-   var c = v.count;
+   var c = v._count;
    for(var n = 0; n < c; n++){
       o.push(v.get(n));
    }
@@ -141,12 +152,12 @@ function TObjects_append(v){
 //===========================================================
 function TObjects_insert(i, v){
    var o = this;
-   var c = o.count;
+   var c = o._count;
    if((i >= 0) && (i <= c)){
       for(var n = c; n > i; n--){
-         o.memory[n] = o.memory[n - 1];
+         o._items[n] = o._items[n - 1];
       }
-      o.memory[i] = v;
+      o._items[i] = v;
    }
 }
 
@@ -158,8 +169,8 @@ function TObjects_insert(i, v){
 // @return Integer 索引值
 //===========================================================
 function TObjects_push(v){
-   var n = this.count++;
-   this.memory[n] = v;
+   var n = this._count++;
+   this._items[n] = v;
    return n;
 }
 
@@ -173,14 +184,14 @@ function TObjects_push(v){
 function TObjects_pushUnique(v){
    var o = this;
    // 查询存在性
-   for(var n = o.count-1; n >= 0; n--){
-      if(o.memory[n] == v){
+   for(var n = o._count-1; n >= 0; n--){
+      if(o._items[n] == v){
          return n;
       }
    }
    // 追加到尾部
-   var n = o.count++;
-   o.memory[n] = v;
+   var n = o._count++;
+   o._items[n] = v;
    return n;
 }
 
@@ -192,8 +203,8 @@ function TObjects_pushUnique(v){
 //===========================================================
 function TObjects_pop(){
    var o = this;
-   if(o.count){
-      return o.memory[--o.count];
+   if(o._count){
+      return o._items[--o._count];
    }
 }
 
@@ -206,10 +217,10 @@ function TObjects_pop(){
 //===========================================================
 function TObjects_swap(l, r){
    var o = this;
-   if((l >= 0) && (l < o.count) && (r >= 0) && (r < o.count) && (l != r)){
-      var v = o.memory[l];
-      o.memory[l] = this.memory[r];
-      o.memory[r] = v;
+   if((l >= 0) && (l < o._count) && (r >= 0) && (r < o._count) && (l != r)){
+      var v = o._items[l];
+      o._items[l] = this._items[r];
+      o._items[r] = v;
    }
 }
 
@@ -219,7 +230,7 @@ function TObjects_swap(l, r){
 // @method
 //===========================================================
 function TObjects_sort(){
-   this.memory.sort();
+   this._items.sort();
 }
 
 //===========================================================
@@ -232,11 +243,11 @@ function TObjects_sort(){
 function TObjects_erase(n){
    var v = null;
    var o = this;
-   if((n >= 0) && (n < o.count)){
-      v = o.memory[n];
-      var c = --o.count;
+   if((n >= 0) && (n < o._count)){
+      v = o._items[n];
+      var c = --o._count;
       for(var i = n; i < c; i++){
-         o.memory[i] = o.memory[i+1];
+         o._items[i] = o._items[i+1];
       }
    }
    return v;
@@ -251,15 +262,15 @@ function TObjects_erase(n){
 function TObjects_remove(v){
    if(v != null){
       var o = this;
-      var c = o.count;
+      var c = o._count;
       if(c > 0){
          var n = 0;
          for(var i = n; i < c; i++){
-            if(o.memory[i] != v){
-               o.memory[n++] = o.memory[i];
+            if(o._items[i] != v){
+               o._items[n++] = o._items[i];
             }
          }
-         o.count = n;
+         o._count = n;
       }
    }
    return v;
@@ -271,7 +282,7 @@ function TObjects_remove(v){
 // @method
 //===========================================================
 function TObjects_clear(){
-   this.count = 0;
+   this._count = 0;
 }
 
 //===========================================================
@@ -281,11 +292,11 @@ function TObjects_clear(){
 //===========================================================
 function TObjects_dispose(){
    var o = this;
-   o.count = 0;
-   for(var n in o.memory){
-      delete o.memory[n];
+   o._count = 0;
+   for(var n in o._items){
+      delete o._items[n];
    }
-   o.memory = null;
+   o._items = null;
 }
 
 //===========================================================
@@ -296,12 +307,12 @@ function TObjects_dispose(){
 //===========================================================
 function TObjects_dump(){
    var o = this;
-   var c = o.count;
+   var c = o._count;
    var r = new TString();
    r.append(RClass.name(o), ':', c);
    if(c > 0){
       for(var n = 0; n < c; n++){
-         r.append(' [', o.memory[n], ']');
+         r.append(' [', o._items[n], ']');
       }
    }
    return r.toString();

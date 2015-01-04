@@ -3,24 +3,25 @@
 //
 // @property
 // @param n:name:String 名称
+// @param s:style:String 样式
 // @author maocy
 // @version 141231
 //==========================================================
-function AStyle(o, n, l){
-   if(!o){o = this;}
+function AStyle(n, s){
+   var o = this;
+   AAnnotation(o, n);
    //..........................................................
    // @declare
-   o.inherit    = false;
-   o.annotation = EAnnotation.Style;
+   o._annotationCd = EAnnotation.Style;
    //..........................................................
    // @attribute
-   o.name       = n;
-   o.style      = l;
+   o._style        = s;
    //..........................................................
    // @method
-   o.code       = AStyle_code;
-   o.build      = AStyle_build;
-   o.toString   = AStyle_toString;
+   o.code          = AStyle_code;
+   o.style         = AStyle_style;
+   o.build         = AStyle_build;
+   o.toString      = AStyle_toString;
    return o;
 }
 
@@ -31,7 +32,17 @@ function AStyle(o, n, l){
 // @return String 代码
 //============================================================
 function AStyle_code(){
-   return this.style;
+   return this._style;
+}
+
+//============================================================
+// <T>获得样式。</T>
+//
+// @method
+// @return String 样式
+//============================================================
+function AStyle_style(){
+   return this._style;
 }
 
 //============================================================
@@ -42,7 +53,7 @@ function AStyle_code(){
 //============================================================
 function AStyle_build(v){
    var o = this;
-   v[o.name] = null;
+   v[o._name] = null;
 }
 
 //============================================================
@@ -53,5 +64,5 @@ function AStyle_build(v){
 //============================================================
 function AStyle_toString(){
    var o = this;
-   return '<Style:style=' + o.style +  '>';
+   return 'style=' + o._style;
 }

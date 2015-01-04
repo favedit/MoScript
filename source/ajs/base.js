@@ -16,6 +16,12 @@ var EBrowser = new function EBrowser(){
    o.Chrome  = 3;
    return o;
 }
+var EContent = new function EContent(){
+   var o = this;
+   o.Binary = 1;
+   o.Text  = 2;
+   return o;
+}
 function FBytes(o){
    o = RClass.inherits(this, o, FObject);
    o._memory   = null;
@@ -274,6 +280,229 @@ function FByteStream_writeDouble(v){
    var r = o._viewer.setDouble(o._position, v, o._endianCd);
    o._position += 8;
    return r;
+}
+function FHttpConnection(o){
+   o = RClass.inherits(this, o, FObject);
+   o._contentCd   = EContent.Binary;
+   o._url         = null;
+   o._statusUsing = false;
+   o._statusFree  = true;
+   o._control  = null;
+   o._data        = null;
+   o.onLoad       = null;
+   o.onFire       = FHttpConnection_onFire;
+   o.onCnnReady   = FHttpConnection_onCnnReady;
+   o.onDocReady   = FHttpConnection_onDocReady;
+   o.construct    = FHttpConnection_construct;
+   o.setHeaders   = FHttpConnection_setHeaders;
+   o.send         = FHttpConnection_send;
+   o.receive      = FHttpConnection_receive;
+   o.syncSend     = FHttpConnection_syncSend;
+   o.syncReceive  = FHttpConnection_syncReceive;
+   return o;
+}
+function FHttpConnection_onFire(doc, element){
+   if(doc){
+      this._document = (doc.constructor == Function) ? new doc() : new doc.constructor();
+   }else{
+      this._document = new TXmlDocument();
+   }
+   if(element){
+      RXml.buildNode(this._document, null, element)
+   }
+   if(this.onLoad){
+      this.onLoad(this);
+   }
+   this.inUsing = false;
+}
+function FHttpConnection_onCnnReady(cnn, doc){
+   if(cnn.readyState == EXmlStatus.Finish){
+      var dc = this._docControl;
+      if(RXml.modeCd == EBrowser.IE){
+         var self = this;
+         dc.async = true;
+         dc.onreadystatechange = function(){self.onDocReady(dc, doc)};
+         dc.loadXML(cnn.responseText);
+      }else{
+         this.onFire(doc, cnn.responseXML._documentElement);
+      }
+   }
+}
+function FHttpConnection_onDocReady(dc, doc){
+   if(dc.readyState == EXmlParse.Finish){
+      if(dc._documentElement){
+         this.onFire(doc, dc._documentElement);
+      }else{
+         alert('Read xml error.\n' + this._control.responseText);
+      }
+   }
+}
+function FHttpConnection_construct(){
+   var o = this;
+   o._control = RXml.newConnect();
+}
+function FHttpConnection_setHeaders(cnn, len){
+   var o = this;
+   if(o._contentCd == EContent.Binary){
+      if(RBrowser.isBrowser(EBrowser.Chrome)){
+         cnn.overrideMimeType('text/plain; charset=x-user-defined');
+      }else{
+         cnn.setRequestHeader('Accept-Charset', 'x-user-defined');
+      }
+   }else{
+      cnn.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+   }
+   if(!RBrowser.isBrowser(EBrowser.Chrome)){
+      if(len > 0){
+         cnn.setRequestHeader('content-length', len);
+      }
+   }
+}
+function FHttpConnection_send(url, doc){
+   var o = this;
+   o._statusUsing = true;
+   o._url = url;
+   var xml = doc.xml().toString();
+   var cnn = o._control;
+   RLogger.info(this, 'Send xml url. (url={0})', url);
+   cnn.abort();
+   cnn.open('POST', url, true);
+   o.setHeaders(cnn, xml.length);
+   var self = this;
+   cnn.onreadystatechange = function(){self.onCnnReady(cnn, doc)};
+   cnn.send(xml);
+}
+function FHttpConnection_receive(url, doc){
+   this.send(url, doc);
+}
+function FHttpConnection_syncSend(u, doc){
+   var o = this;
+   o._statusUsing = true;
+   o._url = u;
+   var cnn = o._control;
+   cnn.open('GET', u, false);
+   o.setHeaders(cnn, 0);
+   cnn.send();
+   RDump.dump(cnn, _dump);
+   o._statusUsing = false;
+   return null;
+}
+function FHttpConnection_syncReceive(url, doc){
+   return this.syncSend(url, doc);
+}
+function FXmlConnection(o){
+   o = RClass.inherits(this, o, FObject);
+   o._url         = null;
+   o._sync        = false;
+   o._statusUsing = false;
+   o._statusFree  = true;
+   o._cnnControl  = null;
+   o._docControl  = null;
+   o._document    = null;
+   o.onLoad       = null;
+   o.onFire       = FXmlConnection_onFire;
+   o.onCnnReady   = FXmlConnection_onCnnReady;
+   o.onDocReady   = FXmlConnection_onDocReady;
+   o.construct    = FXmlConnection_construct;
+   o.setHeaders   = FXmlConnection_setHeaders;
+   o.send         = FXmlConnection_send;
+   o.receive      = FXmlConnection_receive;
+   o.syncSend     = FXmlConnection_syncSend;
+   o.syncReceive  = FXmlConnection_syncReceive;
+   return o;
+}
+function FXmlConnection_onFire(doc, element){
+   if(doc){
+      this._document = (doc.constructor == Function) ? new doc() : new doc.constructor();
+   }else{
+      this._document = new TXmlDocument();
+   }
+   if(element){
+      RXml.buildNode(this._document, null, element)
+   }
+   if(this.onLoad){
+      this.onLoad(this);
+   }
+   this.inUsing = false;
+}
+function FXmlConnection_onCnnReady(cnn, doc){
+   if(cnn.readyState == EXmlStatus.Finish){
+      var dc = this._docControl;
+      if(RXml.modeCd == EBrowser.IE){
+         var self = this;
+         dc.async = true;
+         dc.onreadystatechange = function(){self.onDocReady(dc, doc)};
+         dc.loadXML(cnn.responseText);
+      }else{
+         this.onFire(doc, cnn.responseXML._documentElement);
+      }
+   }
+}
+function FXmlConnection_onDocReady(dc, doc){
+   if(dc.readyState == EXmlParse.Finish){
+      if(dc._documentElement){
+         this.onFire(doc, dc._documentElement);
+      }else{
+         alert('Read xml error.\n' + this._cnnControl.responseText);
+      }
+   }
+}
+function FXmlConnection_construct(){
+   var o = this;
+   o._cnnControl = RXml.newConnect();
+   o._docControl = RXml.newDocument();
+}
+function FXmlConnection_setHeaders(cnn, len){
+   cnn.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+   if(!RBrowser.isBrowser(EBrowser.Chrome)){
+      cnn.setRequestHeader('content-length', len);
+   }
+}
+function FXmlConnection_send(url, doc){
+   var o = this;
+   o._statusUsing = true;
+   o._url = url;
+   var xml = doc.xml().toString();
+   var cnn = o._cnnControl;
+   RLogger.info(this, 'Send xml url. (url={0})', url);
+   cnn.abort();
+   cnn.open('POST', url, true);
+   o.setHeaders(cnn, xml.length);
+   var self = this;
+   cnn.onreadystatechange = function(){self.onCnnReady(cnn, doc)};
+   cnn.send(xml);
+}
+function FXmlConnection_receive(url, doc){
+   this.send(url, doc);
+}
+function FXmlConnection_syncSend(u, doc){
+   var o = this;
+   o._statusUsing = true;
+   o._url = u;
+   var xml = doc.xml().toString();
+   var cnn = o._cnnControl;
+   cnn.open('POST', u, false);
+   o.setHeaders(cnn, xml.length);
+   cnn.send(xml);
+   var element = null;
+   if(cnn.responseXML){
+      element = cnn.responseXML.documentElement;
+   }else if(cnn.responseXml){
+      element = cnn.responseXml.documentElement;
+   }else{
+      throw new TError(o, "Fetch xml data failure.");
+   }
+   var xd = o._document = new TXmlDocument();
+   if(element){
+      RXml.buildNode(xd, null, element);
+   }else{
+      RMessage.fatal(o, null, 'Read xml error. (url={1})\n{2}', u, this._cnnControl.responseText)
+   }
+   o._statusUsing = false;
+   return xd;
+}
+function FXmlConnection_syncReceive(url, doc){
+   return this.syncSend(url, doc);
 }
 function HBlur(n, m){
    var o = this;
@@ -677,23 +906,37 @@ function HScroll_attach(e){
 }
 var RBrowser = new function RBrowser(){
    var o = this;
-   o.typeCd    = 0;
+   o._typeCd    = 0;
    o.construct = RBrowser_construct;
+   o.isBrowser = RBrowser_isBrowser;
+   o.log       = RBrowser_log;
    return o;
 }
 function RBrowser_construct(){
+   var o = this;
    var s = window.navigator.userAgent.toLowerCase();
-   if(s.indexOf("msie") != -1){
-      this.typeCd = EBrowser.Explorer;
-   }else if(s.indexOf("windows") != -1){
-      this.typeCd = EBrowser.Explorer;
+   if(s.indexOf("chrome") != -1){
+      o._typeCd = EBrowser.Chrome;
    }else if(s.indexOf("firefox") != -1){
-      this.typeCd = EBrowser.FireFox;
-   }else if(s.indexOf("chrome") != -1){
-      this.typeCd = EBrowser.Chrome;
+      o._typeCd = EBrowser.FireFox;
+   }else if(s.indexOf("msie") != -1){
+      o._typeCd = EBrowser.Explorer;
+   }else if(s.indexOf("windows") != -1){
+      o._typeCd = EBrowser.Explorer;
    }else{
-      alert(s);
+      alert('Unknown browser.\n' + s);
+      return;
    }
+   if(o._typeCd == EBrowser.Chrome){
+      RLogger.lsnsOutput.register(o, o.log);
+   }
+   RLogger.info(o, 'Parse browser confirm. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+}
+function RBrowser_isBrowser(p){
+   return this._typeCd == p;
+}
+function RBrowser_log(p){
+   console.log(p);
 }
 var RBuilder = new function RBuilder(){
    var o = this;
@@ -725,8 +968,6 @@ var RBuilder = new function RBuilder(){
    o.onBuildTdPanel    = RBuilder_onBuildTdPanel;
    o.onBuildTrPanel    = RBuilder_onBuildTrPanel;
    o.onBuildTablePanel = RBuilder_onBuildTablePanel;
-   o.appendRow         = RBuilder_appendRow;
-   o.appendCell        = RBuilder_appendCell;
    o.createFragment    = RBuilder_createFragment;
    return o;
 }
@@ -896,30 +1137,6 @@ function RBuilder_onBuildTrPanel(){
 function RBuilder_onBuildTablePanel(){
    this.hPanel = RBuilder.newTable();
 }
-function RBuilder_appendRow(table, css, index, width, height){
-   var h = index ? table.insertRow(index) : table.insertRow();
-   if(css){
-      h.className = css;
-   }
-   if(width){
-      h.width = width;
-   }
-   if(height){
-      h.height = height;
-   }
-   return h;
-}
-function RBuilder_appendCell(row, css, width, height){
-   var h = this.create(row, 'TD', css);
-   row.appendChild(h);
-   if(width){
-      h.width = width;
-   }
-   if(height){
-      h.height = height;
-   }
-   return h;
-}
 function RBuilder_createFragment(p){
    return p ? p.ownerDocument.createDocumentFragment() : this.hDocument.createDocumentFragment();
 }
@@ -1026,19 +1243,22 @@ function RDump_dumpInner(di){
       var value = obj[name];
       var type = RClass.safeTypeOf(value, true);
       var info = null;
+      var infoFormat = true;
       if(vcls){
-         var ann = vcls.annotationFind(name);
+         var ann = vcls.attributeFind(name);
          if(ann){
-            type = 'Annotation'
-            info = ann + ' - ' + value;
+            type = 'Annotation<' + RMethod.name(ann.constructor) + '>'
+            info = value + "<FONT color='green'> - (" + RHtml.toHtml(ann.toString()) + ")</FONT>";
+            infoFormat = false;
          }
       }
       if(info == null){
          info = this.typeInfo(value, type);
       }
       var rdi = null;
-      var index = hInsRow ? hInsRow.rowIndex + 1 : 1;
+      var index = hInsRow ? hInsRow.rowIndex + 1 : 0;
       var hRow = RBuilder.appendTableRow(hTable, null, index);
+      hRow.bgColor = '#FFFFFF';
       if(RString.startsWith(info, '@')){
          hRow.style.cursor = 'pointer';
          hRow.onclick = this.onclick;
@@ -1078,9 +1298,14 @@ function RDump_dumpInner(di){
       if(RString.startsWith(info, '@')){
          info = info.substr(1);
       }
-      hCell.innerHTML = RHtml.toHtml(info);
+      if(infoFormat){
+         hCell.innerHTML = RHtml.toHtml(info);
+      }else{
+         hCell.innerHTML = info;
+      }
       hCell.style.borderBottom = '1px solid #F0F0F0';
    }
+   hTable.width = '100%'
 }
 function RDump_dump(v, h){
    if(!h){
@@ -1094,17 +1319,20 @@ function RDump_dump(v, h){
    s.appendLine('@' + RClass.code(v) + '>');
    var hPanel = RBuilder.append(h, 'DIV');
    hPanel.style.border = '1px solid #BBBBBB';
-   var hTable = RBuilder.appendTable(hPanel, null, null, 0, 1, 0);
-   hTable.width = '100%'
-   var hRow = RBuilder.appendTableRow(hTable);
+   hPanel.style.backgroundColor = '#E0E0EB';
+   var hTitleTable = RBuilder.appendTable(hPanel, null, null, 0, 1, 0);
+   var hRow = RBuilder.appendTableRow(hTitleTable);
    var hCell = RBuilder.appendTableCell(hRow);
-   RHtml.textSet(hCell, s.toString());
-   hCell.colSpan = 3;
+   hTitleTable.width = '100%'
    hCell.style.padding = 2;
    hCell.style.borderBottom = '1px solid gray';
    hCell.style.backgroundColor = '#E0E0EB';
+   RHtml.textSet(hCell, s.toString());
+   var hTable = RBuilder.appendTable(hPanel, null, null, 0, 1, 0);
+   hTable.style.width = '100%';
    var di = new TDumpItem();
    di.hTable = hTable;
+   di.hRow = null;
    di.hParent = h;
    di.link = v;
    di.level = 0;
@@ -1250,7 +1478,7 @@ var RHtml = new function RHtml(){
 function RHtml_displayGet(h){
    var r = null;
    var s = h.style.display;
-   if(RBrowser.typeCd == EBrowser.Explorer){
+   if(RBrowser.isBrowser(EBrowser.Explorer)){
       r = (s == 'inline');
    }else{
       r = (s != 'none');
@@ -1259,7 +1487,7 @@ function RHtml_displayGet(h){
 }
 function RHtml_displaySet(h, v){
    var s = null;
-   if(RBrowser.typeCd == EBrowser.Explorer){
+   if(RBrowser.isBrowser(EBrowser.Explorer)){
       s = v ? 'inline' : 'none';
    }else{
       s = v ? null : 'none';
@@ -1269,7 +1497,7 @@ function RHtml_displaySet(h, v){
 function RHtml_visibleGet(h){
    var r = null;
    var s = h.style.display;
-   if(RBrowser.typeCd == EBrowser.Explorer){
+   if(RBrowser.isBrowser(EBrowser.Explorer)){
       r = (s == 'block');
    }else{
       r = (s != 'none');
@@ -1278,7 +1506,7 @@ function RHtml_visibleGet(h){
 }
 function RHtml_visibleSet(h, v){
    var s = null;
-   if(RBrowser.typeCd == EBrowser.Explorer){
+   if(RBrowser.isBrowser(EBrowser.Explorer)){
       s = v ? 'block' : 'none';
    }else{
       s = v ? null : 'none';
@@ -1287,7 +1515,7 @@ function RHtml_visibleSet(h, v){
 }
 function RHtml_textGet(h, v){
    var r = null;
-   if(RBrowser.typeCd == EBrowser.FireFox){
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
       r = h.textContent;
    }else{
       r = h.innerText;
@@ -1295,7 +1523,7 @@ function RHtml_textGet(h, v){
    return r;
 }
 function RHtml_textSet(h, v){
-   if(RBrowser.typeCd == EBrowser.FireFox){
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
       h.textContent = v;
    }else{
       h.innerText = v;
@@ -2588,40 +2816,43 @@ function RXml_makeDocument(xdoc){
    }
    return doc;
 }
-function RXml_buildNode(doc, node, element){
-   var attrs = null;
-   if(element.attributes){
-      var len = element.attributes.length;
-      if(len > 0){
-         attrs = new TMap();
-         for(var n = 0; n < len; n++){
-            var attr = element.attributes[n];
-            if(attr.nodeName){
-               attrs.set(attr.nodeName, RXml.fromText(attr.value));
+function RXml_buildNode(pd, pn, pe){
+   var xas= null;
+   var eas = pe.attributes;
+   if(eas){
+      var eac = eas.length;
+      if(eac > 0){
+         xas = new TAttributes();
+         for(var n = 0; n < eac; n++){
+            var ea = eas[n];
+            if(ea.nodeName){
+               xas.set(ea.nodeName, RXml.fromText(ea.value));
             }
          }
       }
    }
-   var text = new TString();
-   text.append(element.value);
-   var childs = element.childNodes
-   if(childs){
-      for(var n=0; n<childs.length; n++){
-         if(childs[n].nodeType == ENodeType.Text){
-            text.append(childs[n].nodeValue);
+   var xt = new TString();
+   xt.append(pe.value);
+   var ecs = pe.childNodes
+   if(ecs){
+      var ecc = ecs.length;
+      for(var n = 0; n < ecc; n++){
+         if(ecs[n].nodeType == ENodeType.Text){
+            xt.append(ecs[n].nodeValue);
          }
       }
    }
-   var child = doc.create(element.nodeName, attrs, text);
-   if(node){
-      node.push(child);
+   var xc = pd.create(pe.nodeName, xas, RString.trim(xt.toString()));
+   if(pn){
+      pn.push(xc);
    }else{
-      doc.node = child;
+      pd._root = xc;
    }
-   if(childs){
-      for(var n=0; n<childs.length; n++){
-         if(childs[n].nodeType == ENodeType.Node){
-            this.buildNode(doc, child, childs[n]);
+   if(ecs){
+      var cc = ecs.length;
+      for(var n = 0; n < cc; n++){
+         if(ecs[n].nodeType == ENodeType.Node){
+            this.buildNode(pd, xc, ecs[n]);
          }
       }
    }
@@ -2754,139 +2985,29 @@ function THtmlItem_get(n){
 function THtmlItem_set(n, v){
    this._links[n] = v;
 }
-function TXmlConnect(o){
+function TXmlDocument(o, r){
    if(!o){o = this;}
-   o.address     = null;
-   o.sync        = false;
-   o.inUsing     = false;
-   o.document    = null;
-   o.cnnControl  = null;
-   o.docControl  = null;
-   o.onLoad      = null;
-   o.onFire      = TXmlConnect_onFire;
-   o.onCnnReady  = TXmlConnect_onCnnReady;
-   o.onDocReady  = TXmlConnect_onDocReady;
-   o.construct   = TXmlConnect_construct;
-   o.setHeaders  = TXmlConnect_setHeaders;
-   o.send        = TXmlConnect_send;
-   o.receive     = TXmlConnect_receive;
-   o.syncSend    = TXmlConnect_syncSend;
-   o.syncReceive = TXmlConnect_syncReceive;
-   o.construct();
-   return o;
-}
-function TXmlConnect_onFire(doc, element){
-   if(doc){
-      this.document = (doc.constructor == Function) ? new doc() : new doc.constructor();
-   }else{
-      this.document = new TXmlDocument();
-   }
-   if(element){
-      RXml.buildNode(this.document, null, element)
-   }
-   if(this.onLoad){
-      this.onLoad(this);
-   }
-   this.inUsing = false;
-}
-function TXmlConnect_onCnnReady(cnn, doc){
-   if(cnn.readyState == EXmlStatus.Finish){
-      var dc = this.docControl;
-      if(RXml.modeCd == EBrowser.IE){
-         var self = this;
-         dc.async = true;
-         dc.onreadystatechange = function(){self.onDocReady(dc, doc)};
-         dc.loadXML(cnn.responseText);
-      }else{
-         this.onFire(doc, cnn.responseXML.documentElement);
-      }
-   }
-}
-function TXmlConnect_onDocReady(dc, doc){
-   if(dc.readyState == EXmlParse.Finish){
-      if(dc.documentElement){
-         this.onFire(doc, dc.documentElement);
-      }else{
-         alert('Read xml error.\n' + this.cnnControl.responseText);
-      }
-   }
-}
-function TXmlConnect_construct(){
-   var o = this;
-   o.cnnControl = RXml.newConnect();
-   o.docControl = RXml.newDocument();
-}
-function TXmlConnect_setHeaders(cnn, len){
-   if(RXml.modeCd == EBrowser.IE){
-      cnn.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
-      cnn.setRequestHeader('content-length', len);
-   }
-}
-function TXmlConnect_send(url, doc){
-   var o = this;
-   o.inUsing = true;
-   o.address = url;
-   var xml = doc.xml().toString();
-   var cnn = o.cnnControl;
-   RLogger.info(this, 'Send xml url. (url={0})', url);
-   cnn.abort();
-   cnn.open('POST', url, true);
-   o.setHeaders(cnn, xml.length);
-   var self = this;
-   cnn.onreadystatechange = function(){self.onCnnReady(cnn, doc)};
-   cnn.send(xml);
-}
-function TXmlConnect_receive(url, doc){
-   this.send(url, doc);
-}
-function TXmlConnect_syncSend(url, doc){
-   var o = this;
-   o.inUsing = true;
-   o.address = url;
-   var xml = doc.xml().toString();
-   var cnn = o.cnnControl;
-   cnn.open('POST', url, false);
-   o.setHeaders(cnn, xml.length);
-   cnn.send(xml);
-   var element = null;
-   if(o.xmlMode == EXmlCnnType.IE){
-      element = cnn.responseXML.documentElement;
-   }else{
-      element = cnn.responseXml.documentElement;
-   }
-   o.document = new TXmlDocument();
-   if(element){
-      RXml.buildNode(this.document, null, element);
-   }else{
-      RMessage.fatal(o, null, 'Read xml error.\n{0}', this.cnnControl.responseText)
-   }
-   o.inUsing = false;
-   return o.document;
-}
-function TXmlConnect_syncReceive(url, doc){
-   return this.syncSend(url, doc);
-}
-function TXmlDocument(o){
-   if(!o){o = this;}
-   o.node       = n;
-   o.create     = TXmlDocument_create;
-   o.root       = TXmlDocument_root;
-   o.xml        = TXmlDocument_xml;
-   o.dump       = TXmlDocument_dump;
+   o._root  = r;
+   o.create = TXmlDocument_create;
+   o.root   = TXmlDocument_root;
+   o.xml    = TXmlDocument_xml;
+   o.dump   = TXmlDocument_dump;
    return o;
 }
 function TXmlDocument_create(n, as, v){
-   var n = new TNode(n);
-   n.attrs = as;
-   n.value = v;
-   return n;
+   var r = new TXmlNode();
+   r._name = n;
+   r._attributes = as;
+   r._value = v;
+   return r;
 }
 function TXmlDocument_root(){
    var o = this;
-   if(!o.node){
-      o.node = new TNode('Configuration');
+   var r = o._root;
+   if(!r){
+      r = o._root = new TXmlNode('Configuration');
    }
-   return o.node;
+   return r;
 }
 function TXmlDocument_xml(){
    var s = new TString();
@@ -2900,4 +3021,68 @@ function TXmlDocument_dump(d){
    d.appendLine(RClass.name(o));
    o.root().dump(d);
    return d;
+}
+function TXmlNode(){
+   var o = this;
+   TNode(o);
+   o.create   = TXmlNode_create;
+   o.innerXml = TXmlNode_innerXml;
+   o.xml      = TXmlNode_xml;
+   o.toString = TXmlNode_toString;
+   return o;
+}
+function TXmlNode_create(n, a){
+   var r = new TNode();
+   r._name = n;
+   r._attributes = a;
+   if(!RClass.isClass(attrs, TAttributes)){
+      var a = arguments;
+      var len = a.length;
+      for(var n = 1; n < len; n += 2){
+         if(n + 1 < len){
+            r.set(a[n], a[n+1]);
+         }else{
+            r._value = a[n];
+         }
+      }
+   }
+   this.push(r);
+   return r;
+}
+function TXmlNode_innerXml(s){
+   var o = this;
+   s.append('<', o._name);
+   var as = o._attributes;
+   if(as){
+      var ac = as.count();
+      for(var n = 0; n < ac; n++){
+         s.append(' ', as.name(n), '="');
+         RXml.buildText(s, as.value(n));
+         s.append('"');
+      }
+   }
+   if(!o._nodes && (o._value == null)){
+      s.append('/');
+   }
+   s.append('>');
+   var ns = o._nodes;
+   if(ns){
+      var c = ns.count();
+      for(var n = 0; n < c; n++){
+         ns.get(n).xml(s);
+      }
+   }
+   RXml.buildText(s, o._value)
+   if(o._nodes || o._value != null){
+      s.append('</', o._name, '>');
+   }
+   return s;
+}
+function TXmlNode_xml(s){
+   var s = new TString();
+   this.innerXml(s);
+   return s.toString();
+}
+function TXmlNode_toString(){
+   return this.xml().toString();
 }

@@ -18,14 +18,14 @@ function FControl(o){
    o = RClass.inherits(this, o, FComponent, MStyle, MSize, MPadding);
    //..........................................................
    // @property Boolean 是否禁止
-   o._disable          = RClass.register(o, new APtyBoolean(null, '_disable', null, false));
+   o._disable          = RClass.register(o, new APtyBoolean('_disable', null, false));
    // @property Boolean 是否回行
-   o._nowrap           = RClass.register(o, new APtyBoolean(null, '_nowrap', null, false));
+   o._nowrap           = RClass.register(o, new APtyBoolean('_nowrap', null, false));
    // @property String 提示信息
-   o._hint             = RClass.register(o, new APtyString(null, '_hint'));
+   o._hint             = RClass.register(o, new APtyString('_hint'));
    //..........................................................
    // @style
-   o._styleContainer = RClass.register(o, new AStyle(null, '_styleContainer', 'Container'));
+   o._styleContainer   = RClass.register(o, new AStyle('_styleContainer', 'Container'));
    // @style
    //o._styleDesign      = RClass.register(o, new AStyle('Design'));
    // @style
@@ -36,19 +36,19 @@ function FControl(o){
    //o._styleDesignMove  = RClass.register(o, new AStyle('DesignMove'));
    //..........................................................
    // @attribute
-   //o._displayCd        = EDisplayMode.Update;
-   o._statusVisible      = true;
-   o._statusEnable       = true;
-   o._statusBuild        = false;
+   //o._displayCd      = EDisplayMode.Update;
+   o._statusVisible    = true;
+   o._statusEnable     = true;
+   o._statusBuild      = false;
    o._controls         = null;
-   //o._sizeCd           = ESize.Normal;
-   //o._events           = null;
-   //o._storage          = null;
+   //o._sizeCd         = ESize.Normal;
+   //o._events         = null;
+   //o._storage        = null;
    //..........................................................
    // @html 父容器
-   o._hParent            = null;
+   o._hParent          = null;
    // @html 容器
-   o._hContainer         = null;
+   o._hContainer       = null;
    //..........................................................
    // @event
    //o.onEnter           = RClass.register(o, new HMouseEnter('onEnter'), FControl_onEnter);

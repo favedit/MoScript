@@ -20,15 +20,11 @@
 <SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../../3-base/TDumpItem.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../3-base/RDump.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../3-base/RBuilder.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../7-control/FComponent.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../7-control/FControl.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../7-control/MSize.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../7-control/MEditDescriptor.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../7-control-form/FEditControl.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../7-control-form/FEdit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../2-lang/RConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3-base/FHttpConnection.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3-base/FXmlConnection.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3-base/RXml.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-core/FXmlConsole.js'></SCRIPT>
 </HEAD>
 
 <SCRIPT>
@@ -36,16 +32,16 @@
 function _load(){
    RRuntime.processCd = EProcess.Debug;
    RBrowser.construct();
-   //RStyle.connect();
-   //debugger
-   //var edit = RClass.create(FEdit);
-   //var edit = RClass.create(FControl);
-   var edit = RClass.create(FEdit);
-   edit._label = "编号";
-   edit._labelSize.width = 100;
-   edit.psBuild(_panel);
-   _panel.appendChild(edit._hContainer);
-   RDump.dump(edit, _dump);
+
+   var hc = RClass.create(FHttpConnection);
+   hc.syncSend('http://localhost:999/test/7-control-form/imgad.jpg');
+   //RDump.dump(hc, _dump);
+
+   var xc = RConsole.find(FXmlConsole);
+   var x = new TXmlDocument();
+   var xd = xc.send('http://localhost:999/test/7-control-form/xml_insert.xml', x);
+   //RDump.dump(xc, _dump);
+   //RDump.dump(xd, _dump);
 }
 </SCRIPT>
 

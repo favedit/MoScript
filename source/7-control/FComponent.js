@@ -20,9 +20,9 @@ function FComponent(o){
    o._components   = null;
    //..........................................................
    // @property String 名称
-   o._name         = RClass.register(o, new APtyString(null, '_name'));
+   o._name         = RClass.register(o, new APtyString('_name'));
    // @property String 标签
-   o._label        = RClass.register(o, new APtyString(null, '_label'));
+   o._label        = RClass.register(o, new APtyString('_label'));
    //..........................................................
    /// @process
    o.oeInitialize  = FComponent_oeInitialize;

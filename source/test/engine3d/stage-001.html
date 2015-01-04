@@ -62,14 +62,13 @@ function _load(){
    RRuntime.processCd = EProcess.Debug;
    RBrowser.construct();
 
-   var c1 = RClass.create(FControl);
-   RDump.dump(c1, _dump);
-   return;
+   //var c1 = RClass.create(FControl);
+   //RDump.dump(c1, _dump);
+   //return;
 
 
-   
-   var xc = RConsole.find(FXmlConsole);
-   RDump.dump(xc, _dump);
+   //var xc = RConsole.find(FXmlConsole);
+   //RDump.dump(xc, _dump);
 
    var hCanvas = document.getElementById('_canvas');
    context = REngine3d.createContext(FWglContext, hCanvas);

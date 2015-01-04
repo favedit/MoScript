@@ -9,8 +9,8 @@ function MEditZoom(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property
-   o._zoomRefer = RClass.register(o, new APtyString(null, '_zoomRefer'));
-   o._zoomField = RClass.register(o, new APtyString(null, '_zoomField'));
+   o._zoomRefer = RClass.register(o, new APtyString('_zoomRefer'));
+   o._zoomField = RClass.register(o, new APtyString('_zoomField'));
    //..........................................................
    // @method
    o.testZoom   = MEditZoom_testZoom;

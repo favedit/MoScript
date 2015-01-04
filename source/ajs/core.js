@@ -133,7 +133,7 @@ function FMonitorConsole_release(){
 }
 function FXmlConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o.scope       = EScope.Page;
+   o._scopeCd    = EScope.Local;
    o.connections = null;
    o.onLoad      = FXmlConsole_onLoad;
    o.construct   = FXmlConsole_construct;
@@ -144,7 +144,7 @@ function FXmlConsole(o){
 }
 function FXmlConsole_construct(){
    var o = this;
-   o.connections = new TList();
+   o.connections = new TObjects();
 }
 function FXmlConsole_onLoad(){
    var o = this;
@@ -153,26 +153,25 @@ function FXmlConsole_onLoad(){
    e.process();
    o.event = null;
    o.document = null;
-   o.isFree = true;
+   o._statusFree = true;
 }
 function FXmlConsole_alloc(){
    var o = this;
    var a = null;
    var cs = o.connections;
-   var l = cs.count;
-   for(var n=0; n<l; n++){
+   for(var n = cs.count - 1; n >= 0; n--){
       var c = cs.get(n);
-      if(c && c.isFree){
+      if(c._statusFree){
          a = c;
          break;
       }
    }
    if(!a){
-      a = new TXmlConnect();
+      a = RClass.create(FXmlConnection);
       cs.push(a);
       a.onLoad = o.onLoad;
    }
-   a.isFree = false;
+   a._statusFree = false;
    return a;
 }
 function FXmlConsole_process(e){
@@ -196,6 +195,6 @@ function FXmlConsole_send(u, d){
    var o = this;
    var c = o.alloc();
    var r = c.syncSend(u, d);
-   c.isFree = true;
+   c._statusFree = true;
    return r;
 }

@@ -132,6 +132,7 @@ function RDump_dumpInner(di){
       RArray.reverse(names, 0, names.length - 1);
    }else{
       RArray.sort(names, true);
+      //RArray.sort(names);
    }
    // Items Info
    var items = new Array();
@@ -141,20 +142,23 @@ function RDump_dumpInner(di){
       var value = obj[name];
       var type = RClass.safeTypeOf(value, true);
       var info = null;
+      var infoFormat = true;
       if(vcls){
-         var ann = vcls.annotationFind(name);
+         var ann = vcls.attributeFind(name);
          if(ann){
-            type = 'Annotation'
-            info = ann + ' - ' + value;
+            type = 'Annotation<' + RMethod.name(ann.constructor) + '>'
+            info = value + "<FONT color='green'> - (" + RHtml.toHtml(ann.toString()) + ")</FONT>";
+            infoFormat = false;
          }
       }
       if(info == null){
          info = this.typeInfo(value, type);
       }
-      // Row
+      // 建立表格行
       var rdi = null;
-      var index = hInsRow ? hInsRow.rowIndex + 1 : 1;
+      var index = hInsRow ? hInsRow.rowIndex + 1 : 0;
       var hRow = RBuilder.appendTableRow(hTable, null, index);
+      hRow.bgColor = '#FFFFFF';
       if(RString.startsWith(info, '@')){
          hRow.style.cursor = 'pointer';
          hRow.onclick = this.onclick;
@@ -169,11 +173,11 @@ function RDump_dumpInner(di){
       }else{
          di.push(hRow);
       }
-      // Virtual function
+      // 设置虚函数
       if((type == 'Function') && (info == 'virtual')){
          hRow.bgColor = '#E0F0FF';
       }
-      // Cell: Name
+      // 建立名称单元格
       var hCell = RBuilder.appendTableCell(hRow);
       var icon = RString.startsWith(info, '@') ? ' +' : '  ';
       var label = RString.repeat('   ', level) + icon + ' ' + name
@@ -183,7 +187,7 @@ function RDump_dumpInner(di){
       if(rdi){
          rdi.hText = hCell;
       }
-      // Cell: type
+      // 建立类型单元格
       var hCell = RBuilder.appendTableCell(hRow);
       hCell.innerHTML = RHtml.toHtml(type);
       hCell.style.borderBottom = '1px solid #F0F0F0';
@@ -193,14 +197,20 @@ function RDump_dumpInner(di){
          hCell.style.color = '#FF3333';
       }
       hCell.width = '200px'
-      // Cell: Info
+      // 建立信息单元格
       var hCell = RBuilder.appendTableCell(hRow);
       if(RString.startsWith(info, '@')){
          info = info.substr(1);
       }
-      hCell.innerHTML = RHtml.toHtml(info);
+      if(infoFormat){
+         hCell.innerHTML = RHtml.toHtml(info);
+      }else{
+         hCell.innerHTML = info;
+      }
       hCell.style.borderBottom = '1px solid #F0F0F0';
    }
+   hTable.width = '100%'
+   //console.log(hTable.outerHTML);
 }
 
 //===========================================================
@@ -223,19 +233,32 @@ function RDump_dump(v, h){
    // 追加内容
    var hPanel = RBuilder.append(h, 'DIV');
    hPanel.style.border = '1px solid #BBBBBB';
-   var hTable = RBuilder.appendTable(hPanel, null, null, 0, 1, 0);
-   hTable.width = '100%'
-   // 追加行内容
-   var hRow = RBuilder.appendTableRow(hTable);
+   hPanel.style.backgroundColor = '#E0E0EB';
+   // 追加功能
+   var hTitleTable = RBuilder.appendTable(hPanel, null, null, 0, 1, 0);
+   var hRow = RBuilder.appendTableRow(hTitleTable);
    var hCell = RBuilder.appendTableCell(hRow);
-   RHtml.textSet(hCell, s.toString());
-   hCell.colSpan = 3;
+   hTitleTable.width = '100%'
    hCell.style.padding = 2;
    hCell.style.borderBottom = '1px solid gray';
    hCell.style.backgroundColor = '#E0E0EB';
+   RHtml.textSet(hCell, s.toString());
+   // 追加行内容
+   var hTable = RBuilder.appendTable(hPanel, null, null, 0, 1, 0);
+   //hTable.width = '100%'
+   //hTable.style.tableLayout = 'table-row';
+   hTable.style.width = '100%';
+   //var hRow = RBuilder.appendTableRow(hTable);
+   //var hCell = RBuilder.appendTableCell(hRow);
+   //hCell.colSpan = 3;
+   //hCell.style.padding = 2;
+   //hCell.style.borderBottom = '1px solid gray';
+   //hCell.style.backgroundColor = '#E0E0EB';
+   //RHtml.textSet(hCell, s.toString());
    // 建立新的层次
    var di = new TDumpItem();
    di.hTable = hTable;
+   di.hRow = null;
    di.hParent = h;
    di.link = v;
    di.level = 0;

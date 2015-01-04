@@ -1,3 +1,22 @@
+function AAnnotation(o, n){
+   if(!o){o = this;}
+   o._annotationCd = null;
+   o._inherit      = false;
+   o._name         = n;
+   o.annotationCd  = AProperty_annotationCd;
+   o.name          = AProperty_name;
+   o.code          = AProperty_code;
+   return o;
+}
+function AProperty_annotationCd(){
+   return this._annotationCd;
+}
+function AProperty_name(){
+   return this._name;
+}
+function AProperty_code(){
+   return this._name;
+}
 function AEnum(n, l){
    var o = this;
    o.inherit    = true;
@@ -16,16 +35,16 @@ function ALinker(n, l){
 }
 function AProperty(o, n, l){
    if(!o){o = this;}
-   o.inherit    = true;
-   o.annotation = EAnnotation.Property;
-   o.name       = n;
-   o.linker     = null;
-   o.force      = false;
-   o.code       = AProperty_code;
-   o.build      = AProperty_build;
-   o.load       = AProperty_load;
-   o.save       = AProperty_save;
-   o.toString   = AProperty_toString;
+   AAnnotation(o, n);
+   o._inherit      = true;
+   o._annotationCd = EAnnotation.Property;
+   o._linker       = null;
+   o._force        = false;
+   o.code          = AProperty_code;
+   o.build         = AProperty_build;
+   o.load          = AProperty_load;
+   o.save          = AProperty_save;
+   o.toString      = AProperty_toString;
    var ln = null;
    if(l == null){
       if(RString.startsWith(n, '_')){
@@ -37,28 +56,28 @@ function AProperty(o, n, l){
    }else{
       ln = l;
    }
-   o.linker = ln;
+   o._linker = ln;
    return o;
 }
 function AProperty_code(){
-   return this.name;
+   return this._linker;
 }
 function AProperty_build(){
 }
 function AProperty_load(v, x){
    var o = this;
-   v[o.name] = x.get(o.linker);
+   v[o._name] = x.get(o._linker);
 }
 function AProperty_save(v, x){
    var o = this;
-   x.set(o.linker, v[o.name]);
+   x.set(o._linker, v[o._name]);
 }
 function AProperty_toString(){
    var o = this;
-   return '<' + o.annotation + ',linker=' + o.linker + '>';
+   return '<' + o._annotationCd + ',linker=' + o._linker + '>';
 }
-function APtyBoolean(o, n, l, v){
-   if(!o){o = this;}
+function APtyBoolean(n, l, v){
+   var o = this;
    AProperty(o, n, l);
    o._value    = v ? v : false;
    o.build    = APtyBoolean_build;
@@ -69,20 +88,22 @@ function APtyBoolean(o, n, l, v){
 }
 function APtyBoolean_build(v){
    var o = this;
-   v[o.name] = o._value;
+   v[o._name] = o._value;
 }
 function APtyBoolean_load(v, x){
-   v[this.name] = RBoolean.parse(x.get(this.linker));
+   var o = this;
+   v[o._name] = RBoolean.parse(x.get(o._linker));
 }
 function APtyBoolean_save(o, c){
-   x.set(this.linker, RBoolean.toString(v[this.name]));
+   var o = this;
+   x.set(o._linker, RBoolean.toString(v[o._name]));
 }
 function APtyBoolean_toString(){
    var o = this;
-   return '<BooleanProperty:linker=' + o.linker + ',value=' + o._value +  '>';
+   return 'linker=' + o._linker + ',value=' + o._value;
 }
-function APtyInteger(o, n, l, v){
-   if(!o){o = this;}
+function APtyInteger(n, l, v){
+   var o = this;
    AProperty(o, n, l);
    o.value    = RInteger.nvl(v);
    o.build    = APtyInteger_build;
@@ -91,11 +112,11 @@ function APtyInteger(o, n, l, v){
 }
 function APtyInteger_build(v){
    var o = this;
-   v[o.name] = o._value;
+   v[o._name] = o._value;
 }
 function APtyInteger_toString(){
    var o = this;
-   return '<IntegerProperty:linker=' + o.linker + ',value=' + o._value +  '>';
+   return 'linker=' + o._linker + ',value=' + o._value;
 }
 function APtyNode(o, n, l){
    if(!o){o = this;}
@@ -108,8 +129,8 @@ function APtyNode(o, n, l){
 function APtyNode_load(v, x){
    v[this.name] = x;
 }
-function APtyPadding(o, n, l, vl, vt, vr, vb){
-   if(!o){o = this;}
+function APtyPadding(n, l, vl, vt, vr, vb){
+   var o = this;
    AProperty(o, n, l);
    o._left    = RInteger.nvl(vl);
    o._top     = RInteger.nvl(vt);
@@ -122,18 +143,18 @@ function APtyPadding(o, n, l, vl, vt, vr, vb){
 }
 function APtyPadding_load(v, x){
    var o = this;
-   v[o.name].parse(x.get(o.linker));
+   v[o._name].parse(x.get(o._linker));
 }
 function APtyPadding_save(v, x){
    var o = this;
-   x.set(o.name, v[o.name].toString());
+   x.set(o._name, v[o._name].toString());
 }
 function APtyPadding_toString(){
    var o = this;
-   return '<PaddingProperty:linker=' + o.linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom +  '>';
+   return 'linker=' + o._linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom;
 }
-function APtyPoint2(o, n, l, x, y){
-   if(!o){o = this;}
+function APtyPoint2(n, l, x, y){
+   var o = this;
    AProperty(o, n, l);
    o._x       = RInteger.nvl(x);
    o._y       = RInteger.nvl(y);
@@ -144,15 +165,15 @@ function APtyPoint2(o, n, l, x, y){
 }
 function APtyPoint2_load(v, x){
    var o = this;
-   v[o.name].parse(x.get(o.linker));
+   v[o._name].parse(x.get(o._linker));
 }
 function APtyPoint2_save(v, x){
    var o = this;
-   x.set(o.name, v[o.name].toString());
+   x.set(o._name, v[o._name].toString());
 }
 function APtyPoint2_toString(){
    var o = this;
-   return '<Point2Property:linker=' + o.linker + ',value=' + o._x + ',' + o._y +  '>';
+   return 'linker=' + o._linker + ',value=' + o._x + ',' + o._y;
 }
 function APtySet(o, n, l, s, v){
    if(!o){o = this;}
@@ -189,8 +210,8 @@ function APtySet_toString(){
    var o = this;
    return '<SetProperty:linker=' + o.linker + ',value=' + o._value + ',search=' + o._search +  '>';
 }
-function APtySize2(o, n, l, w, h){
-   if(!o){o = this;}
+function APtySize2(n, l, w, h){
+   var o = this;
    AProperty(o, n, l);
    o._width   = RInteger.nvl(w);
    o._height  = RInteger.nvl(h);
@@ -201,18 +222,18 @@ function APtySize2(o, n, l, w, h){
 }
 function APtySize2_load(v, x){
    var o = this;
-   v[o.name].parse(x.get(o.linker));
+   v[o._name].parse(x.get(o._linker));
 }
 function APtySize2_save(v, x){
    var o = this;
-   x.set(o.name, v[o.name].toString());
+   x.set(o._name, v[o._name].toString());
 }
 function APtySize2_toString(){
    var o = this;
-   return '<Size2Property:linker=' + o.linker + ',value=' + o._width + ',' + o._height +  '>';
+   return 'linker=' + o._linker + ',value=' + o._width + ',' + o._height;
 }
-function APtyString(o, n, l, v){
-   if(!o){o = this;}
+function APtyString(n, l, v){
+   var o = this;
    AProperty(o, n, l);
    o._value    = v ? v : null;
    o.build    = APtyString_build;
@@ -221,33 +242,36 @@ function APtyString(o, n, l, v){
 }
 function APtyString_build(v){
    var o = this;
-   v[o.name] = o._value;
+   v[o._name] = o._value;
 }
 function APtyString_toString(){
    var o = this;
-   return '<StringProperty:linker=' + o.linker + ',value=' + o._value +  '>';
+   return 'linker=' + o._linker + ',value=' + o._value;
 }
-function AStyle(o, n, l){
-   if(!o){o = this;}
-   o.inherit    = false;
-   o.annotation = EAnnotation.Style;
-   o.name       = n;
-   o.style      = l;
-   o.code       = AStyle_code;
-   o.build      = AStyle_build;
-   o.toString   = AStyle_toString;
+function AStyle(n, s){
+   var o = this;
+   AAnnotation(o, n);
+   o._annotationCd = EAnnotation.Style;
+   o._style        = s;
+   o.code          = AStyle_code;
+   o.style         = AStyle_style;
+   o.build         = AStyle_build;
+   o.toString      = AStyle_toString;
    return o;
 }
 function AStyle_code(){
-   return this.style;
+   return this._style;
+}
+function AStyle_style(){
+   return this._style;
 }
 function AStyle_build(v){
    var o = this;
-   v[o.name] = null;
+   v[o._name] = null;
 }
 function AStyle_toString(){
    var o = this;
-   return '<Style:style=' + o.style +  '>';
+   return 'style=' + o._style;
 }
 var EAnnotation = new function EAnnotation(){
    var o = this;
@@ -342,6 +366,12 @@ var EKeyCode = new function EKeyCode(){
    }
    return o;
 }
+var ENodeType = new function ENodeType(){
+   var o = this;
+   o.Node = 1;
+   o.Text = 3;
+   return o;
+}
 var ENumber = new function ENumber(){
    var o = this;
    o.Integer              = 'I';
@@ -380,8 +410,12 @@ var EXmlStatus = new function EXmlStatus(){
 }
 function FConsole(o){
    o = RClass.inherits(this, o, FObject);
-   o.scopeCd = EScope.Global;
+   o._scopeCd = EScope.Global;
+   o.scopeCd  = FConsole_scopeCd;
    return o;
+}
+function FConsole_scopeCd(){
+   return this._scopeCd;
 }
 function FObject(o){
    if(!o){o = this;}
@@ -420,10 +454,11 @@ function MClone_clone(){
    for(var n in o){
       v = o[n];
       if(v != null){
-         if(RClass.isBaseDataType(v.constructor)){
-            r[n] = v;
+         if(!RClass.isBaseDataType(v.constructor)){
+            r[n] = v.clone();
          }
       }
+      r[n] = v;
    }
    return r;
 }
@@ -437,25 +472,29 @@ function MProperty(o){
 function MProperty_propertyAssign(v){
    var o = this;
    var c = RClass.find(o.constructor);
-   var ps = c.annotations(EAnnotation.Property);
-   for(var n in ps){
-      var p = ps[n];
-      o[p.name] = c[p.name];
+   var as = c.annotations(EAnnotation.Property);
+   for(var n in as){
+      var a = as[n];
+      if(a.constructor != Function){
+         o[a._name] = c[a._name];
+      }
    }
 }
 function MProperty_propertyLoad(v){
    var o = this;
    var c = RClass.find(o.constructor);
-   var ps = c.annotations(EAnnotation.Property);
-   for(var n in ps){
-      var p = ps[n];
-      if(p.force){
-         p.load(o, v);
-      }else{
-         if(v.contains(p.config)){
-            p.load(o, v);
-         }else if(o[p.name] == null){
-            o[p.name] = p.value;
+   var as = c.annotations(EAnnotation.Property);
+   for(var n in as){
+      var a = as[n];
+      if(a.constructor != Function){
+         if(a._force){
+            a.load(o, v);
+         }else{
+            if(v.contains(a._linker)){
+               a.load(o, v);
+            }else if(o[p._name] == null){
+               o[a._name] = a._value;
+            }
          }
       }
    }
@@ -463,9 +502,12 @@ function MProperty_propertyLoad(v){
 function MProperty_propertySave(v){
    var o = this;
    var c = RClass.find(o.constructor);
-   var ps = c.annotations(EAnnotation.Property);
-   for(var n in ps){
-      ps[n].save(o, v);
+   var as = c.annotations(EAnnotation.Property);
+   for(var n in as){
+      var a = as[n];
+      if(a.constructor != Function){
+         a.save(o, v);
+      }
    }
 }
 var RArray = new function RArray(){
@@ -1100,21 +1142,23 @@ function RConsole_find(v){
       return r;
    }
    var c = RClass.forName(n);
-   switch(c.instance.scope){
+   var s = c.instance.scopeCd();
+   switch(s){
       case EScope.Global:
          r = top.RConsole.createByName(n);
          RGlobal.set(o.ConsolePreFix + n, r);
          o.consoles.set(n, r);
          break;
-      case EScope.Page:
+      case EScope.Local:
          r = o.createByName(n);
-         o.consoles.set(n, r);
          o.localConsoles.set(n, r);
+         o.consoles.set(n, r);
          break;
       default:
-         return RLogger.fatal(o, 'Unknown name. (name={0})', n);
+         return RLogger.fatal(o, 'Unknown scope code. (name={1})', n);
    }
-   return c;
+   RLogger.info(o, 'Create console. (name={1}, scope={2})', n, REnum.decode(EScope, s));
+   return r;
 }
 function RConsole_release(){
    var o = this;
@@ -1267,14 +1311,14 @@ function RDate_formatText(v, f){
 function RDate_formatDate(date, fmt){
    if(!date){return '';}
    fmt = fmt ? fmt.toLowerCase() : this.DataFormat;
-   fmt = fmt.replace(/yyyy/g, RInt.format(date.year, 4));
-   fmt = fmt.replace(/yy/g, RInt.format(date.year%100, 2));
-   fmt = fmt.replace(/mm/g, RInt.format(date.month, 2));
-   fmt = fmt.replace(/dd/g, RInt.format(date.day, 2));
-   fmt = fmt.replace(/hh24/g, RInt.format(date.hour, 2));
-   fmt = fmt.replace(/mi/g, RInt.format(date.minute, 2));
-   fmt = fmt.replace(/ss/g, RInt.format(date.second, 2));
-   fmt = fmt.replace(/ms/g, RInt.format(date.ms, 3));
+   fmt = fmt.replace(/yyyy/g, RInteger.format(date.year, 4));
+   fmt = fmt.replace(/yy/g, RInteger.format(date.year%100, 2));
+   fmt = fmt.replace(/mm/g, RInteger.format(date.month, 2));
+   fmt = fmt.replace(/dd/g, RInteger.format(date.day, 2));
+   fmt = fmt.replace(/hh24/g, RInteger.format(date.hour, 2));
+   fmt = fmt.replace(/mi/g, RInteger.format(date.minute, 2));
+   fmt = fmt.replace(/ss/g, RInteger.format(date.second, 2));
+   fmt = fmt.replace(/ms/g, RInteger.format(date.ms, 3));
    return fmt;
 }
 function RDate_monthDays(year, month){
@@ -1330,27 +1374,27 @@ function RDate_checkItems(items){
    if(!items){
       return false;
    }
-   var year = RInt.parse(items["year"]);
+   var year = RInteger.parse(items["year"]);
    if(year < this.MinYear || year > this.MaxYear){
       return false;
    }
-   var month = RInt.parse(items["month"]);
+   var month = RInteger.parse(items["month"]);
    if(month < 1 || month > 12){
       return false;
    }
-   var day = RInt.parse(items["day"]);
+   var day = RInteger.parse(items["day"]);
    if(day < 1 || day > this.monthDays(year, month)){
       return false;
    }
-   var hour = RInt.parse(items["hour"]);
+   var hour = RInteger.parse(items["hour"]);
    if(hour < 0 || hour > 23){
       return false;
    }
-   var second = RInt.parse(items["second"]);
+   var second = RInteger.parse(items["second"]);
    if(second < 0 || second > 59){
       return false;
    }
-   var ms = RInt.parse(items["ms"]);
+   var ms = RInteger.parse(items["ms"]);
    if(ms < 0 || ms > 99){
       return false;
    }
@@ -1360,7 +1404,7 @@ function RDate_check(value, format){
    return this.checkItems(this.splitFormat(value, format));
 }
 function RDate_makeDate(date, da){
-   var d = new Date(RInt.parse(da.year), RInt.parse(da.month)-1, RInt.parse(da.day), RInt.parse(da.hour), RInt.parse(da.minute), RInt.parse(da.second), RInt.parse(da.ms));
+   var d = new Date(RInteger.parse(da.year), RInteger.parse(da.month)-1, RInteger.parse(da.day), RInteger.parse(da.hour), RInteger.parse(da.minute), RInteger.parse(da.second), RInteger.parse(da.ms));
    if(date){
       date.setDate(d);
       return date;
@@ -1387,32 +1431,32 @@ function RDate_splitDate(da, value){
          arDate = value.split('/');
       }
       if(arDate.length >= 1){
-         da.year = RInt.parse(arDate[0]);
+         da.year = RInteger.parse(arDate[0]);
       }
       if(arDate.length >= 2){
-         da.month = RInt.parse(arDate[1]);
+         da.month = RInteger.parse(arDate[1]);
       }
       if(arDate.length >= 3){
-         da.day = RInt.parse(arDate[2]);
+         da.day = RInteger.parse(arDate[2]);
       }
    }else if(value.indexOf(':') != -1){
       this.splitTime(da, value);
    }else if(value.length == 14){
-      da.year = RInt.parse(value.substr(0, 4));
-      da.month = RInt.parse(value.substr(4, 2));
-      da.day = RInt.parse(value.substr(6, 2));
-      da.hour = RInt.parse(value.substr(8, 2));
-      da.minute = RInt.parse(value.substr(10, 2));
-      da.second = RInt.parse(value.substr(12, 2));
+      da.year = RInteger.parse(value.substr(0, 4));
+      da.month = RInteger.parse(value.substr(4, 2));
+      da.day = RInteger.parse(value.substr(6, 2));
+      da.hour = RInteger.parse(value.substr(8, 2));
+      da.minute = RInteger.parse(value.substr(10, 2));
+      da.second = RInteger.parse(value.substr(12, 2));
    }else if(value.length == 8){
-      da.year = RInt.parse(value.substr(0, 4));
-      da.month = RInt.parse(value.substr(4, 2));
-      da.day = RInt.parse(value.substr(6, 2));
+      da.year = RInteger.parse(value.substr(0, 4));
+      da.month = RInteger.parse(value.substr(4, 2));
+      da.day = RInteger.parse(value.substr(6, 2));
    }else if(value.length == 6){
-      da.year = RInt.parse(value.substr(0, 4));
-      da.month = RInt.parse(value.substr(4, 2));
+      da.year = RInteger.parse(value.substr(0, 4));
+      da.month = RInteger.parse(value.substr(4, 2));
    }else if(value.length == 4){
-      da.year = RInt.parse(value);
+      da.year = RInteger.parse(value);
    }
 }
 function RDate_splitTime(da, value){
@@ -1420,23 +1464,23 @@ function RDate_splitTime(da, value){
    if(value.indexOf(':') != -1){
       var ar = value.split(':');
       if(ar.length >= 1){
-         da.hour = RInt.parse(ar[0]);
+         da.hour = RInteger.parse(ar[0]);
       }
       if(ar.length >= 2){
-         da.minute = RInt.parse(ar[1]);
+         da.minute = RInteger.parse(ar[1]);
       }
       if(ar.length >= 3){
-         da.second = RInt.parse(ar[2]);
+         da.second = RInteger.parse(ar[2]);
       }
    }else if(value.length == 6){
-      da.hour = RInt.parse(value.substr(0, 2));
-      da.minute = RInt.parse(value.substr(2, 2));
-      da.second = RInt.parse(value.substr(4, 2));
+      da.hour = RInteger.parse(value.substr(0, 2));
+      da.minute = RInteger.parse(value.substr(2, 2));
+      da.second = RInteger.parse(value.substr(4, 2));
    }else if(value.length == 4){
-      da.hour = RInt.parse(value.substr(0, 2));
-      da.minute = RInt.parse(value.substr(2, 2));
+      da.hour = RInteger.parse(value.substr(0, 2));
+      da.minute = RInteger.parse(value.substr(2, 2));
    }else if(value.length == 2){
-      da.hour = RInt.parse(value.substr(0, 2));
+      da.hour = RInteger.parse(value.substr(0, 2));
    }
 }
 function RDate_autoParse(d, v){
@@ -1898,19 +1942,24 @@ function RInteger_calculate(f, a, b){
 }
 var RLogger = new function RLogger(){
    var o = this;
-   o.hasError = false;
-   o.fatal    = RLogger_fatal;
-   o.error    = RLogger_error;
-   o.warn     = RLogger_warn;
-   o.info     = RLogger_info;
+   o._statusError = false;
+   o.lsnsOutput   = new TListeners();
+   o.output       = RLogger_output;
+   o.fatal        = RLogger_fatal;
+   o.error        = RLogger_error;
+   o.warn         = RLogger_warn;
+   o.info         = RLogger_info;
    return o;
+}
+function RLogger_output(p){
+   this.lsnsOutput.process(p);
 }
 function RLogger_fatal(sf, er, ms, pm){
    var o = this;
-   if(o.hasError){
+   if(o._statusError){
       return;
    }
-   o.hasError = true;
+   o._statusError = true;
    var s = new TString();
    var t = new Array();
    var f = RLogger_fatal.caller;
@@ -1952,15 +2001,34 @@ function RLogger_fatal(sf, er, ms, pm){
    alert(m);
 }
 function RLogger_error(self, method, msg, params){
-   if(this.hasError){
+   if(this._statusError){
       return;
    }
-   this.hasError = true;
+   this._statusError = true;
    throw new Error(msg);
 }
 function RLogger_warn(sf, ms, pm){
 }
 function RLogger_info(sf, ms, pm){
+   var n = RMethod.name(RLogger_info.caller);
+   n = n.replace('_', '.');
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|I [' + RString.rpad(n, 40) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = null;
+      if(typeof(a) == 'function'){
+         s = RMethod.name(a);
+      }else{
+         s = a.toString();
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
+   }
+   r.append(ms);
+   RLogger.output(r.toString());
 }
 var RMath = new function RMath(){
    var o = this;
@@ -2205,7 +2273,6 @@ var RString = new function RString(){
    o.findChars    = RString_findChars;
    o.inRange      = RString_inRange;
    o.nvl          = RString_nvl;
-   o.nvlStr       = RString_nvlStr;
    o.firstUpper   = RString_firstUpper;
    o.firstLower   = RString_firstLower;
    o.firstLine    = RString_firstLine;
@@ -2367,12 +2434,6 @@ function RString_nvl(v, d){
    }
    return (d != null) ? d : this.EMPTY;
 }
-function RString_nvlStr(v){
-   if(!v){
-      v = new TString();
-   }
-   return v;
-}
 function RString_firstUpper(v){
    return (v != null) ? v.charAt(0).toUpperCase() + v.substr(1) : v;
 }
@@ -2459,6 +2520,9 @@ function RString_trim(v, ts){
       if(-1 == ts.indexOf(v.charAt(r))){
          break;
       }
+   }
+   if(l == r + 1){
+      return null;
    }
    if((l != 0) || (r != v.length-1)){
       return v.substring(l, r + 1);
@@ -3006,8 +3070,9 @@ function SSize3_dump(){
 function TClass(o){
    if(!o){o = this;}
    o.__disposed     = true;
-   o._annotations  = new Object();
    o._unused        = null;
+   o._annotations   = new Object();
+   o._attributes    = new Object();
    o.name           = null;
    o.parent         = null;
    o.base           = null;
@@ -3020,7 +3085,8 @@ function TClass(o){
    o.assign         = TClass_assign;
    o.annotations    = TClass_annotations;
    o.annotation     = TClass_annotation;
-   o.annotationFind = TClass_annotationFind
+   o.annotationFind = TClass_annotationFind;
+   o.attributeFind  = TClass_attributeFind;
    o.style          = TClass_style;
    o.build          = TClass_build;
    o.newInstance    = TClass_newInstance;
@@ -3030,19 +3096,21 @@ function TClass(o){
 }
 function TClass_register(v){
    var o = this;
-   var a = v.annotation;
-   var n = v.code();
-   if(!a || !n){
-      throw new TError(o, "Unknown annotation. (class={1},annotation={2},name={3})", RClass.dump(o), a, n);
+   var a = v.annotationCd();
+   var n = v.name();
+   var c = v.code();
+   if(!a || !c){
+      throw new TError(o, "Unknown annotation. (class={1},annotation={2},name={3},code={4})", RClass.dump(o), a, n, c);
    }
    var as = o._annotations[a];
    if(!as){
       as = o._annotations[a] = new Object();
    }
-   if(as[n]){
-      throw new TError(o, "Duplicate annotation. (class={1},annotation={2},name={3})", RClass.dump(o), a, n);
+   if(as[c]){
+      throw new TError(o, "Duplicate annotation. (class={1},annotation={2},name={3},code={4},value={5})", RClass.dump(o), a, n, c, v.toString());
    }
-   as[n] = v;
+   as[c] = v;
+   o._attributes[n] = v;
 }
 function TClass_assign(c){
    var o = this;
@@ -3054,12 +3122,18 @@ function TClass_assign(c){
       var as = c._annotations[an];
       for(var n in as){
          if(ls[n]){
-            RLogger.fatal(o, null, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5})", an, o.name, n, c.name, n);
+            RLogger.fatal(o, null, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, c.name, n, a.toString());
          }
          var a = as[n];
-         if(a.inherit){
+         if(a._inherit){
             ls[n] = a;
          }
+      }
+   }
+   for(var n in c._attributes){
+      var a = c._attributes[n];
+      if(a.construct != Function){
+         o._attributes[n] = c._attributes[n];
       }
    }
 }
@@ -3091,10 +3165,19 @@ function TClass_annotationFind(p){
       if(as){
          var a = as[p];
          if(a != null){
-            if(a.annotation){
+            if(a.constructor != Function){
                return a;
             }
          }
+      }
+   }
+   return null;
+}
+function TClass_attributeFind(p){
+   var a = this._attributes[p];
+   if(a){
+      if(a.constructor != Function){
+         return a;
       }
    }
    return null;
@@ -3119,7 +3202,7 @@ function TClass_style(n){
    if(!a){
       RLogger.fatal(o, null, "No register style annotation. (name={1}, linker={2}, class={3})", o.name + '_' + n, o.liner, o.name);
    }
-   var sn = p.name + '_' + a.style;
+   var sn = p.name + '_' + a.style();
    o.styles[n] = sn;
    return sn;
 }
@@ -3801,112 +3884,91 @@ function TMessages_push(msg){
 }
 function TNode(o){
    if(!o){o = this;}
-   o.name         = 'Node';
-   o.value        = null;
-   o.attributes   = null;
-   o.nodes        = null;
+   o._name        = 'Node';
+   o._value       = null;
+   o._attributes  = null;
+   o._nodes       = null;
    o.isName       = TNode_isName;
-   o.hasAttribute = TNode_hasAttribute;
-   o.hasNode      = TNode_hasNode;
-   o.attributes   = TNode_attributes;
    o.contains     = TNode_contains;
+   o.hasAttribute = TNode_hasAttribute;
+   o.attributes   = TNode_attributes;
+   o.hasNode      = TNode_hasNode;
+   o.node         = TNode_node;
+   o.nodes        = TNode_nodes;
    o.get          = TNode_get;
    o.set          = TNode_set;
-   o.node         = TNode_node;
-   o.push         = TNode_push;
-   o.create       = TNode_create;
    o.find         = TNode_find;
    o.findNode     = TNode_findNode;
-   o.isEmpty      = TNode_isEmpty;
-   o.xml          = TNode_xml;
+   o.push         = TNode_push;
    o.toString     = TNode_toString;
    o.innerDump    = TNode_innerDump;
    o.dump         = TNode_dump;
    return o;
 }
 function TNode_isName(n){
-   return RString.equals(this.name, n);
+   return RString.equals(this._name, n);
+}
+function TNode_contains(n){
+   var r = this._attributes;
+   return r ? r.contains(n) : false;
 }
 function TNode_hasAttribute(){
-   var s = this.attributes;
-   return s ? !s.isEmpty() : false;
-}
-function TNode_hasNode(){
-   var s = this.nodes;
+   var s = this._attributes;
    return s ? !s.isEmpty() : false;
 }
 function TNode_attributes(){
    var o = this;
-   if(!o.attributes){
-      o.attributes = new TAttributes();
+   var r = o._attributes;
+   if(!r){
+      r = o._attributes = new TAttributes();
    }
-   return o.attributes;
+   return r;
 }
-function TNode_contains(n){
-   var s = this.attributes;
-   return s ? s.contains(n) : false;
+function TNode_hasNode(){
+   var s = this._nodes;
+   return s ? !s.isEmpty() : false;
+}
+function TNode_node(n){
+   var s = this._nodes;
+   return s ? s.get(n) : null;
+}
+function TNode_nodes(){
+   var o = this;
+   var r = o._nodes;
+   if(!r){
+      r = o._nodes = new TObjects();
+   }
+   return r;
 }
 function TNode_get(n, v){
-   return this.attributes ? this.attributes.get(n, v) : null;
+   return this._attributes ? this._attributes.get(n, v) : null;
 }
 function TNode_set(n, v){
    if(v != null){
       this.attributes().set(n, v);
    }
 }
-function TNode_node(n){
-   var s = this.nodes;
-   return s ? s.get(n) : null;
-}
-function TNode_push(node){
-   var o = this;
-   if(!o.nodes){
-      o.nodes = new TList();
-   }
-   o.nodes.push(node);
-}
-function TNode_create(n, a){
-   var node = new TNode();
-   node.name = n;
-   node.attributes = a;
-   if(!RClass.isClass(attrs, TAttributes)){
-      var a = arguments;
-      var len = a.length;
-      for(var n = 1; n < len; n += 2){
-         if(n + 1 < len){
-            node.set(a[n], a[n+1]);
-         }else{
-            node.value = a[n];
-         }
-      }
-   }
-   this.push(node);
-   return node;
-}
-function TNode_isEmpty(){
-   return this.nodes ? this.nodes.isEmpty() : null;
-}
 function TNode_find(name, attrs){
-   if(this.nodes){
-      var c = this.nodes.count;
+   if(this._nodes){
+      var c = this._nodes.count;
       if(name != null){
          name = name.toLowerCase();
       }
       var len = arguments.length;
       for(var n = 0; n < c; n++){
-         var node = this.nodes.get(n);
-         if(name != null && name != node.name.toLowerCase()){
+         var node = this._nodes.get(n);
+         if(name != null && name != node._name.toLowerCase()){
             continue;
          }
          var finded = true;
          for(var i = 1; i < len; i += 2){
             if(i+1 < len){
-               if(node.attributes.get(arguments[n]) != arguments[n+1]){
+               if(node._attributes.get(arguments[n]) != arguments[n+1]){
                   finded = false;
                   break;
                }
             }else{
-               if(node.value != arguments[n]){
+               if(node._value != arguments[n]){
                   finded = false;
                   break;
                }
@@ -3923,15 +3985,15 @@ function TNode_findNode(name, value){
    var o = this;
    var at = new TAttributes();
    var nd = null;
-   if(o.attributes != null){
-      at = o.attributes;
+   if(o._attributes != null){
+      at = o._attributes;
    }
    if(at.get(name) == value){
       nd = o;
    }else{
      if(o.hasNode()){
-        for(var n = 0; n< o.nodes.count; n++){
-           nd = o.nodes.get(n).findNode(name, value);
+        for(var n = 0; n< o._nodes.count; n++){
+           nd = o._nodes.get(n).findNode(name, value);
            if(nd != null){
               break;
            }
@@ -3940,68 +4002,43 @@ function TNode_findNode(name, value){
    }
    return nd;
 }
-function TNode_xml(s){
+function TNode_push(p){
    var o = this;
-   s = RString.nvlStr(s);
-   s.append('<', o.name);
-   var as = o.attributes;
-   if(as){
-      for(var n=0; n<as.count; n++){
-         s.append(' ', as.name(n), '="');
-         RXml.buildText(s, as.value(n));
-         s.append('"');
-      }
-   }
-   if(!o.nodes && null == o.value){
-      s.append('/');
-   }
-   s.append('>');
-   var ns = o.nodes;
-   if(ns){
-      var c = ns.count;
-      for(var n=0; n<c; n++){
-         ns.get(n).xml(s);
-      }
-   }
-   RXml.buildText(s, o.value)
-   if(o.nodes || o.value != null){
-      s.append('</', o.name, '>');
-   }
-   return s;
+   o.nodes().push(p);
 }
 function TNode_toString(){
-   return this.xml().toString();
+   return this.dump();
 }
 function TNode_innerDump(dump, node, space){
    if(space == null){
       space = '';
    }
-   dump.append(space, node.name, '(', RClass.name(node), ')');
-   if(node.attributes){
-      var count = node.attributes.count;
+   dump.append(space, node._name, '(', RClass.name(node), ')');
+   if(node._attributes){
+      var count = node._attributes.count;
       dump.append(' [', count, ':');
       for(var n=0; n<count; n++){
          if(n > 0){
             dump.append(' ');
          }
-         dump.append(node.attributes.name(n), '=', node.attributes.value(n));
+         dump.append(node._attributes.name(n), '=', node._attributes.value(n));
          if(n < count-1){
             dump.append(',');
          }
       }
       dump.append(']');
    }
-   if(node.value){
-      var value = node.value.toString();
+   if(node._value){
+      var value = node._value.toString();
       if(!RString.isEmpty(value)){
          dump.append(' {', value.length, ':', value, '}');
       }
    }
-   if(node.nodes){
-      var count = node.nodes.count;
+   if(node._nodes){
+      var count = node._nodes.count;
       dump.append('\n');
-      for(var n=0; n<count; n++){
-         node.nodes.get(n).dump(dump, space + '   ');
+      for(var n = 0; n < count; n++){
+         node._nodes.get(n).dump(dump, space + '   ');
          if(n < count-1){
             dump.append('\n');
          }

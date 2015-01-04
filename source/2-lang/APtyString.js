@@ -8,8 +8,8 @@
 // @author maocy
 // @version 141231
 //============================================================
-function APtyString(o, n, l, v){
-   if(!o){o = this;}
+function APtyString(n, l, v){
+   var o = this;
    AProperty(o, n, l);
    //..........................................................
    // @attribute
@@ -29,7 +29,7 @@ function APtyString(o, n, l, v){
 //============================================================
 function APtyString_build(v){
    var o = this;
-   v[o.name] = o._value;
+   v[o._name] = o._value;
 }
 
 //============================================================
@@ -40,5 +40,5 @@ function APtyString_build(v){
 //============================================================
 function APtyString_toString(){
    var o = this;
-   return '<StringProperty:linker=' + o.linker + ',value=' + o._value +  '>';
+   return 'linker=' + o._linker + ',value=' + o._value;
 }

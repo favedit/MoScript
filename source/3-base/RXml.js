@@ -2,17 +2,19 @@
 // <T>配置工具类。</T>
 //
 // @reference
-// @author maochunyang
-// @version 1.0.1
+// @author maocy
+// @version 150104
 //==========================================================
 var RXml = new function RXml(){
    var o = this;
-   // Attribute
+   //..........................................................
+   // @attribute
    o.httpActiveX  = false;
    o.httpVendor   = null;
    o.domActiveX   = false;
    o.domVendor    = null;
-   // Member
+   //..........................................................
+   // @method
    o.construct    = RXml_construct;
    o.isNode       = RXml_isNode;
    o.newConnect   = RXml_newConnect;
@@ -24,7 +26,8 @@ var RXml = new function RXml(){
    o.fromText     = RXml_fromText;
    o.buildText    = RXml_buildText;
    o.unpack       = RXml_unpack;
-   // Construct
+   //..........................................................
+   // @construct
    o.construct();
    return o;
 }
@@ -215,50 +218,53 @@ function RXml_makeDocument(xdoc){
 // 遍历构建XML节点树
 //
 // @method
-// @param doc:TXmlDoc:TXmlDoc JS系统中的XML文件
-// @param node:TNode:TNode 父节点
-// @param element:element:XML 页面中的XML
+// @param pd:document:TXmlDocument JS系统中的XML文件
+// @param pn:node:TXmlNode 父节点
+// @param pe:element:XmlElement 页面元素
 // @see RXml.fromText
 // @see TXmlDoc.create
 //===========================================================
-function RXml_buildNode(doc, node, element){
-   // Build attributes
-   var attrs = null;
-   if(element.attributes){
-      var len = element.attributes.length;
-      if(len > 0){
-         attrs = new TMap();
-         for(var n = 0; n < len; n++){
-            var attr = element.attributes[n];
-            if(attr.nodeName){
-               attrs.set(attr.nodeName, RXml.fromText(attr.value));
+function RXml_buildNode(pd, pn, pe){
+   // 建立属性集合
+   var xas= null;
+   var eas = pe.attributes;
+   if(eas){
+      var eac = eas.length;
+      if(eac > 0){
+         xas = new TAttributes();
+         for(var n = 0; n < eac; n++){
+            var ea = eas[n];
+            if(ea.nodeName){
+               xas.set(ea.nodeName, RXml.fromText(ea.value));
             }
          }
       }
    }
    // Build text
-   var text = new TString();
-   text.append(element.value);
-   var childs = element.childNodes
-   if(childs){
-      for(var n=0; n<childs.length; n++){
-         if(childs[n].nodeType == ENodeType.Text){
-            text.append(childs[n].nodeValue);
+   var xt = new TString();
+   xt.append(pe.value);
+   var ecs = pe.childNodes
+   if(ecs){
+      var ecc = ecs.length;
+      for(var n = 0; n < ecc; n++){
+         if(ecs[n].nodeType == ENodeType.Text){
+            xt.append(ecs[n].nodeValue);
          }
       }
    }
-   // Create node
-   var child = doc.create(element.nodeName, attrs, text);
-   if(node){
-      node.push(child);
+   // 创建节点
+   var xc = pd.create(pe.nodeName, xas, RString.trim(xt.toString()));
+   if(pn){
+      pn.push(xc);
    }else{
-      doc.node = child;
+      pd._root = xc;
    }
-   // Build child nodes
-   if(childs){
-      for(var n=0; n<childs.length; n++){
-         if(childs[n].nodeType == ENodeType.Node){
-            this.buildNode(doc, child, childs[n]);
+   // 创建子节点集合
+   if(ecs){
+      var cc = ecs.length;
+      for(var n = 0; n < cc; n++){
+         if(ecs[n].nodeType == ENodeType.Node){
+            this.buildNode(pd, xc, ecs[n]);
          }
       }
    }

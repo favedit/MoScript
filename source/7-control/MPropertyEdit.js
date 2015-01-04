@@ -9,12 +9,12 @@ function MPropertyEdit(o){
    o = RClass.inherits(this, o, MEditValidator, MEditReference, MEditZoom);
    //..........................................................
    // @property
-   o._editCase       = RClass.register(o, new APtyString(null, '_editCase'));
-   o._editPattern    = RClass.register(o, new APtyString(null, '_editPattern'));
-   o._editLength     = RClass.register(o, new APtyInteger(null, '_editLength'));
-   o._editComplete   = RClass.register(o, new APtyBoolean(null, '_editComplete'));
-   o._validLengthMin = RClass.register(o, new APtyInteger(null, '_validLengthMin'));
-   o._validLengthMax = RClass.register(o, new APtyInteger(null, '_validLengthMax'));
+   o._editCase       = RClass.register(o, new APtyString('_editCase'));
+   o._editPattern    = RClass.register(o, new APtyString('_editPattern'));
+   o._editLength     = RClass.register(o, new APtyInteger('_editLength'));
+   o._editComplete   = RClass.register(o, new APtyBoolean('_editComplete'));
+   o._validLengthMin = RClass.register(o, new APtyInteger('_validLengthMin'));
+   o._validLengthMax = RClass.register(o, new APtyInteger('_validLengthMax'));
    //..........................................................
    // @process
    o.oeValid         = MPropertyEdit_oeValid;

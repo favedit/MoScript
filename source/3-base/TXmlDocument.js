@@ -1,20 +1,20 @@
 ﻿//============================================================
-// <T>XML文档工具类。</T>
+// <T>配置文档。</T>
 //
 // @tool
-// @param n:node:TNode 根节点
+// @param r:rootNode:TNode 根节点
 // @author maocy
-// @version 1.0.1
+// @version 150104
 //============================================================
-function TXmlDocument(o){
+function TXmlDocument(o, r){
    if(!o){o = this;}
-   // Attribute
-   o.node       = n;
-   // Method
-   o.create     = TXmlDocument_create;
-   o.root       = TXmlDocument_root;
-   o.xml        = TXmlDocument_xml;
-   o.dump       = TXmlDocument_dump;
+   // @attribute
+   o._root  = r;
+   // @method
+   o.create = TXmlDocument_create;
+   o.root   = TXmlDocument_root;
+   o.xml    = TXmlDocument_xml;
+   o.dump   = TXmlDocument_dump;
    return o;
 }
 
@@ -25,13 +25,14 @@ function TXmlDocument(o){
 // @param n:name:String 节点名称
 // @param as:attributes:TAttributes 节点属性
 // @param v:value:String 节点名称
-// @return TNode 节点对象
+// @return TXmlNode 节点对象
 //============================================================
 function TXmlDocument_create(n, as, v){
-   var n = new TNode(n);
-   n.attrs = as;
-   n.value = v;
-   return n;
+   var r = new TXmlNode();
+   r._name = n;
+   r._attributes = as;
+   r._value = v;
+   return r;
 }
 
 //============================================================
@@ -39,14 +40,15 @@ function TXmlDocument_create(n, as, v){
 // <P>如果文档的根节点不存在，则创建一个新的根节点。</P>
 //
 // @method
-// @return TNode 文档的根节点
+// @return TXmlNode 根节点
 //============================================================
 function TXmlDocument_root(){
    var o = this;
-   if(!o.node){
-      o.node = new TNode('Configuration');
+   var r = o._root;
+   if(!r){
+      r = o._root = new TXmlNode('Configuration');
    }
-   return o.node;
+   return r;
 }
 
 //============================================================

@@ -104,14 +104,14 @@ function RDate_formatText(v, f){
 function RDate_formatDate(date, fmt){
    if(!date){return '';}
    fmt = fmt ? fmt.toLowerCase() : this.DataFormat;
-   fmt = fmt.replace(/yyyy/g, RInt.format(date.year, 4));
-   fmt = fmt.replace(/yy/g, RInt.format(date.year%100, 2));
-   fmt = fmt.replace(/mm/g, RInt.format(date.month, 2));
-   fmt = fmt.replace(/dd/g, RInt.format(date.day, 2));
-   fmt = fmt.replace(/hh24/g, RInt.format(date.hour, 2));
-   fmt = fmt.replace(/mi/g, RInt.format(date.minute, 2));
-   fmt = fmt.replace(/ss/g, RInt.format(date.second, 2));
-   fmt = fmt.replace(/ms/g, RInt.format(date.ms, 3));
+   fmt = fmt.replace(/yyyy/g, RInteger.format(date.year, 4));
+   fmt = fmt.replace(/yy/g, RInteger.format(date.year%100, 2));
+   fmt = fmt.replace(/mm/g, RInteger.format(date.month, 2));
+   fmt = fmt.replace(/dd/g, RInteger.format(date.day, 2));
+   fmt = fmt.replace(/hh24/g, RInteger.format(date.hour, 2));
+   fmt = fmt.replace(/mi/g, RInteger.format(date.minute, 2));
+   fmt = fmt.replace(/ss/g, RInteger.format(date.second, 2));
+   fmt = fmt.replace(/ms/g, RInteger.format(date.ms, 3));
    return fmt;
 }
 
@@ -192,27 +192,27 @@ function RDate_checkItems(items){
    if(!items){
       return false;
    }
-   var year = RInt.parse(items["year"]);
+   var year = RInteger.parse(items["year"]);
    if(year < this.MinYear || year > this.MaxYear){
       return false;
    }
-   var month = RInt.parse(items["month"]);
+   var month = RInteger.parse(items["month"]);
    if(month < 1 || month > 12){
       return false;
    }
-   var day = RInt.parse(items["day"]);
+   var day = RInteger.parse(items["day"]);
    if(day < 1 || day > this.monthDays(year, month)){
       return false;
    }
-   var hour = RInt.parse(items["hour"]);
+   var hour = RInteger.parse(items["hour"]);
    if(hour < 0 || hour > 23){
       return false;
    }
-   var second = RInt.parse(items["second"]);
+   var second = RInteger.parse(items["second"]);
    if(second < 0 || second > 59){
       return false;
    }
-   var ms = RInt.parse(items["ms"]);
+   var ms = RInteger.parse(items["ms"]);
    if(ms < 0 || ms > 99){
       return false;
    }
@@ -240,7 +240,7 @@ function RDate_check(value, format){
 // @return TDate 返回日期时间
 //===========================================================
 function RDate_makeDate(date, da){
-   var d = new Date(RInt.parse(da.year), RInt.parse(da.month)-1, RInt.parse(da.day), RInt.parse(da.hour), RInt.parse(da.minute), RInt.parse(da.second), RInt.parse(da.ms));
+   var d = new Date(RInteger.parse(da.year), RInteger.parse(da.month)-1, RInteger.parse(da.day), RInteger.parse(da.hour), RInteger.parse(da.minute), RInteger.parse(da.second), RInteger.parse(da.ms));
    if(date){
       date.setDate(d);
       return date;
@@ -284,32 +284,32 @@ function RDate_splitDate(da, value){
          arDate = value.split('/');
       }
       if(arDate.length >= 1){
-         da.year = RInt.parse(arDate[0]);
+         da.year = RInteger.parse(arDate[0]);
       }
       if(arDate.length >= 2){
-         da.month = RInt.parse(arDate[1]);
+         da.month = RInteger.parse(arDate[1]);
       }
       if(arDate.length >= 3){
-         da.day = RInt.parse(arDate[2]);
+         da.day = RInteger.parse(arDate[2]);
       }
    }else if(value.indexOf(':') != -1){
       this.splitTime(da, value);
    }else if(value.length == 14){
-      da.year = RInt.parse(value.substr(0, 4));
-      da.month = RInt.parse(value.substr(4, 2));
-      da.day = RInt.parse(value.substr(6, 2));
-      da.hour = RInt.parse(value.substr(8, 2));
-      da.minute = RInt.parse(value.substr(10, 2));
-      da.second = RInt.parse(value.substr(12, 2));
+      da.year = RInteger.parse(value.substr(0, 4));
+      da.month = RInteger.parse(value.substr(4, 2));
+      da.day = RInteger.parse(value.substr(6, 2));
+      da.hour = RInteger.parse(value.substr(8, 2));
+      da.minute = RInteger.parse(value.substr(10, 2));
+      da.second = RInteger.parse(value.substr(12, 2));
    }else if(value.length == 8){
-      da.year = RInt.parse(value.substr(0, 4));
-      da.month = RInt.parse(value.substr(4, 2));
-      da.day = RInt.parse(value.substr(6, 2));
+      da.year = RInteger.parse(value.substr(0, 4));
+      da.month = RInteger.parse(value.substr(4, 2));
+      da.day = RInteger.parse(value.substr(6, 2));
    }else if(value.length == 6){
-      da.year = RInt.parse(value.substr(0, 4));
-      da.month = RInt.parse(value.substr(4, 2));
+      da.year = RInteger.parse(value.substr(0, 4));
+      da.month = RInteger.parse(value.substr(4, 2));
    }else if(value.length == 4){
-      da.year = RInt.parse(value);
+      da.year = RInteger.parse(value);
    }
 }
 
@@ -326,23 +326,23 @@ function RDate_splitTime(da, value){
    if(value.indexOf(':') != -1){
       var ar = value.split(':');
       if(ar.length >= 1){
-         da.hour = RInt.parse(ar[0]);
+         da.hour = RInteger.parse(ar[0]);
       }
       if(ar.length >= 2){
-         da.minute = RInt.parse(ar[1]);
+         da.minute = RInteger.parse(ar[1]);
       }
       if(ar.length >= 3){
-         da.second = RInt.parse(ar[2]);
+         da.second = RInteger.parse(ar[2]);
       }
    }else if(value.length == 6){
-      da.hour = RInt.parse(value.substr(0, 2));
-      da.minute = RInt.parse(value.substr(2, 2));
-      da.second = RInt.parse(value.substr(4, 2));
+      da.hour = RInteger.parse(value.substr(0, 2));
+      da.minute = RInteger.parse(value.substr(2, 2));
+      da.second = RInteger.parse(value.substr(4, 2));
    }else if(value.length == 4){
-      da.hour = RInt.parse(value.substr(0, 2));
-      da.minute = RInt.parse(value.substr(2, 2));
+      da.hour = RInteger.parse(value.substr(0, 2));
+      da.minute = RInteger.parse(value.substr(2, 2));
    }else if(value.length == 2){
-      da.hour = RInt.parse(value.substr(0, 2));
+      da.hour = RInteger.parse(value.substr(0, 2));
    }
 }
 

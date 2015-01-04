@@ -7,8 +7,8 @@
 // @author maocy
 // @version 150101
 //==========================================================
-function APtySize2(o, n, l, w, h){
-   if(!o){o = this;}
+function APtySize2(n, l, w, h){
+   var o = this;
    AProperty(o, n, l);
    //..........................................................
    // @attribute
@@ -31,7 +31,7 @@ function APtySize2(o, n, l, w, h){
 //============================================================
 function APtySize2_load(v, x){
    var o = this;
-   v[o.name].parse(x.get(o.linker));
+   v[o._name].parse(x.get(o._linker));
 }
 
 //============================================================
@@ -43,7 +43,7 @@ function APtySize2_load(v, x){
 //============================================================
 function APtySize2_save(v, x){
    var o = this;
-   x.set(o.name, v[o.name].toString());
+   x.set(o._name, v[o._name].toString());
 }
 
 //============================================================
@@ -54,5 +54,5 @@ function APtySize2_save(v, x){
 //============================================================
 function APtySize2_toString(){
    var o = this;
-   return '<Size2Property:linker=' + o.linker + ',value=' + o._width + ',' + o._height +  '>';
+   return 'linker=' + o._linker + ',value=' + o._width + ',' + o._height;
 }

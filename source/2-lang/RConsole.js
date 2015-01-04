@@ -117,6 +117,7 @@ function RConsole_createByName(n){
 //==========================================================
 function RConsole_find(v){
    var o = this;
+   // 获得名称
    var n = null;
    if(v.constructor = String){
       n = RClass.name(v);
@@ -137,7 +138,8 @@ function RConsole_find(v){
    }
    // 创建控制台实例
    var c = RClass.forName(n);
-   switch(c.instance.scope){
+   var s = c.instance.scopeCd();
+   switch(s){
       case EScope.Global:
          // 从顶层对象重新创建
          r = top.RConsole.createByName(n);
@@ -145,17 +147,17 @@ function RConsole_find(v){
          // 在本地保存当前对象
          o.consoles.set(n, r);
          break;
-      case EScope.Page:
+      case EScope.Local:
          // 在本地保存当前对象
          r = o.createByName(n);
-         o.consoles.set(n, r);
          o.localConsoles.set(n, r);
+         o.consoles.set(n, r);
          break;
       default:
-         return RLogger.fatal(o, 'Unknown name. (name={0})', n);
+         return RLogger.fatal(o, 'Unknown scope code. (name={1})', n);
    }
-   
-   return c;
+   RLogger.info(o, 'Create console. (name={1}, scope={2})', n, REnum.decode(EScope, s));
+   return r;
 }
 
 //==========================================================

@@ -8,8 +8,8 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function APtyBoolean(o, n, l, v){
-   if(!o){o = this;}
+function APtyBoolean(n, l, v){
+   var o = this;
    AProperty(o, n, l);
    //..........................................................
    // @attribute
@@ -31,7 +31,7 @@ function APtyBoolean(o, n, l, v){
 //============================================================
 function APtyBoolean_build(v){
    var o = this;
-   v[o.name] = o._value;
+   v[o._name] = o._value;
 }
 
 //============================================================
@@ -42,7 +42,8 @@ function APtyBoolean_build(v){
 // @param x:config:TNode 节点
 //============================================================
 function APtyBoolean_load(v, x){
-   v[this.name] = RBoolean.parse(x.get(this.linker));
+   var o = this;
+   v[o._name] = RBoolean.parse(x.get(o._linker));
 }
 
 //============================================================
@@ -53,7 +54,8 @@ function APtyBoolean_load(v, x){
 // @param x:config:TNode 节点
 //============================================================
 function APtyBoolean_save(o, c){
-   x.set(this.linker, RBoolean.toString(v[this.name]));
+   var o = this;
+   x.set(o._linker, RBoolean.toString(v[o._name]));
 }
 
 //============================================================
@@ -64,5 +66,5 @@ function APtyBoolean_save(o, c){
 //============================================================
 function APtyBoolean_toString(){
    var o = this;
-   return '<BooleanProperty:linker=' + o.linker + ',value=' + o._value +  '>';
+   return 'linker=' + o._linker + ',value=' + o._value;
 }

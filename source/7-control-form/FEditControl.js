@@ -18,20 +18,20 @@
 //==========================================================
 function FEditControl(o){
    //o = RClass.inherits(this, o, FControl, MEditDescriptor, MEditValue, MDesign, MFocus, MDisplay, MProgress);
-   o = RClass.inherits(this, o, FControl, MEditDescriptor, MEditValue, MDisplay);
+   o = RClass.inherits(this, o, FControl);
    //..........................................................
    // @property
-   o._labelModeCd          = RClass.register(o, new APtyString(null, '_labelModeCd', null, ELabelMode.All));
-   o._labelPositionCd      = RClass.register(o, new APtyString(null, '_labelPositionCd', null, ELabelPosition.Left));
-   o._labelSize            = RClass.register(o, new APtySize2(null, '_labelSize'));
-   o._labelAlignCd         = RClass.register(o, new APtyString(null, '_labelAlignCd', null, EAlign.Left));
-   o._editSize             = RClass.register(o, new APtySize2(null, '_editSize'));
+   o._labelModeCd          = RClass.register(o, new APtyString('_labelModeCd', null, ELabelMode.All));
+   o._labelPositionCd      = RClass.register(o, new APtyString('_labelPositionCd', null, ELabelPosition.Left));
+   o._labelSize            = RClass.register(o, new APtySize2('_labelSize'));
+   o._labelAlignCd         = RClass.register(o, new APtyString('_labelAlignCd', null, EAlign.Left));
+   o._editSize             = RClass.register(o, new APtySize2('_editSize'));
    //o.dataType            = RClass.register(o, new APtyString('dataType'));
    //o.typeAble            = RClass.register(o, new APtyString('typeAble'), EBool.False);
    //..........................................................
    // @style
-   o._styleLabelContainer  = RClass.register(o, new AStyle(null, '_styleLabelContainer', 'LabelContainer'));
-   o._styleEditorContainer = RClass.register(o, new AStyle(null, '_styleEditorContainer', 'EditorContainer'));
+   o._styleLabelContainer  = RClass.register(o, new AStyle('_styleLabelContainer', 'LabelContainer'));
+   o._styleEditorContainer = RClass.register(o, new AStyle('_styleEditorContainer', 'EditorContainer'));
    //..........................................................
    // @attribute
    //o._textColor        = null;

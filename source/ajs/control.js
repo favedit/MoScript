@@ -170,8 +170,8 @@ function FComponent(o){
    o = RClass.inherits(this, o, FObject, MProperty, MClone);
    o._parent       = null;
    o._components   = null;
-   o._name         = RClass.register(o, new APtyString(null, '_name'));
-   o._label        = RClass.register(o, new APtyString(null, '_label'));
+   o._name         = RClass.register(o, new APtyString('_name'));
+   o._label        = RClass.register(o, new APtyString('_label'));
    o.oeInitialize  = FComponent_oeInitialize;
    o.oeRelease     = FComponent_oeRelease;
    o.isParent      = FComponent_isParent;
@@ -392,16 +392,16 @@ function FContainer_setChildrenProperty(p, vs){
 }
 function FControl(o){
    o = RClass.inherits(this, o, FComponent, MStyle, MSize, MPadding);
-   o._disable          = RClass.register(o, new APtyBoolean(null, '_disable', null, false));
-   o._nowrap           = RClass.register(o, new APtyBoolean(null, '_nowrap', null, false));
-   o._hint             = RClass.register(o, new APtyString(null, '_hint'));
-   o._styleContainer = RClass.register(o, new AStyle(null, '_styleContainer', 'Container'));
-   o._statusVisible      = true;
-   o._statusEnable       = true;
-   o._statusBuild        = false;
+   o._disable          = RClass.register(o, new APtyBoolean('_disable', null, false));
+   o._nowrap           = RClass.register(o, new APtyBoolean('_nowrap', null, false));
+   o._hint             = RClass.register(o, new APtyString('_hint'));
+   o._styleContainer   = RClass.register(o, new AStyle('_styleContainer', 'Container'));
+   o._statusVisible    = true;
+   o._statusEnable     = true;
+   o._statusBuild      = false;
    o._controls         = null;
-   o._hParent            = null;
-   o._hContainer         = null;
+   o._hParent          = null;
+   o._hContainer       = null;
    o.onBuildContainer  = FControl_onBuildContainer;
    o.oeBuild           = FControl_oeBuild;
    o.oeMode            = FControl_oeMode;
@@ -999,11 +999,11 @@ function MEditDescriptor_validText(t){
 }
 function MEditReference(o){
    o = RClass.inherits(this, o);
-   o._lovService    = RClass.register(o, new APtyString(null, '_lovService', null, EDataService.WebForm));
-   o._lovRefer      = RClass.register(o, new APtyString(null, '_lovRefer'));
-   o._lovFields     = RClass.register(o, new APtyString(null, '_lovFields'));
-   o._lovWhere      = RClass.register(o, new APtyString(null, '_lovWhere'));
-   o._lovOrder      = RClass.register(o, new APtyString(null, '_lovOrder'));
+   o._lovService    = RClass.register(o, new APtyString('_lovService', null, EDataService.WebForm));
+   o._lovRefer      = RClass.register(o, new APtyString('_lovRefer'));
+   o._lovFields     = RClass.register(o, new APtyString('_lovFields'));
+   o._lovWhere      = RClass.register(o, new APtyString('_lovWhere'));
+   o._lovOrder      = RClass.register(o, new APtyString('_lovOrder'));
    o.__listView     = null;
    o.onListSelected = RMethod.empty;
    o.canListView    = MEditReference_canListView;
@@ -1242,8 +1242,8 @@ function MEditValue_doBlur(){
 }
 function MEditZoom(o){
    o = RClass.inherits(this, o);
-   o._zoomRefer = RClass.register(o, new APtyString(null, '_zoomRefer'));
-   o._zoomField = RClass.register(o, new APtyString(null, '_zoomField'));
+   o._zoomRefer = RClass.register(o, new APtyString('_zoomRefer'));
+   o._zoomField = RClass.register(o, new APtyString('_zoomField'));
    o.testZoom   = MEditZoom_testZoom;
    o.doZoom     = MEditZoom_doZoom;
    return o;
@@ -1277,10 +1277,11 @@ function MFocus_blur(){
 }
 function MPadding(o){
    o = RClass.inherits(this, o);
-   o._padding   = RClass.register(o, new APtyPadding(null, '_padding'));
-   o.construct  = MPadding_construct;
-   o.padding    = MPadding_padding;
-   o.setPadding = MPadding_setPadding;
+   o._padding     = RClass.register(o, new APtyPadding('_padding'));
+   o.construct    = MPadding_construct;
+   o.padding      = MPadding_padding;
+   o.setPadding   = MPadding_setPadding;
+   o.refreshStyle = MPadding_refreshStyle;
    return o;
 }
 function MPadding_construct(){
@@ -1291,18 +1292,23 @@ function MPadding_padding(){
    return this._padding;
 }
 function MPadding_setPadding(l, t, r, b){
-   var h = this.panel(EPanel.Container);
-   if(l){
-      h.style.paddingLeft = l;
+   return this._padding.set(l, t, r, b);
+}
+function MPadding_refreshStyle(){
+   var o = this;
+   var p = o._padding;
+   var h = o.panel(EPanel.Container);
+   if(p.left){
+      h.style.paddingLeft = p.left;
    }
-   if(t){
-      h.style.paddingTop = t;
+   if(p.top){
+      h.style.paddingTop = p.top;
    }
-   if(r){
-      h.style.paddingRight = r;
+   if(p.right){
+      h.style.paddingRight = p.right;
    }
-   if(b){
-      h.style.paddingBottom = b;
+   if(p.bottom){
+      h.style.paddingBottom = p.bottom;
    }
 }
 function MProgress(o){
@@ -1312,12 +1318,12 @@ function MProgress(o){
 }
 function MPropertyEdit(o){
    o = RClass.inherits(this, o, MEditValidator, MEditReference, MEditZoom);
-   o._editCase       = RClass.register(o, new APtyString(null, '_editCase'));
-   o._editPattern    = RClass.register(o, new APtyString(null, '_editPattern'));
-   o._editLength     = RClass.register(o, new APtyInteger(null, '_editLength'));
-   o._editComplete   = RClass.register(o, new APtyBoolean(null, '_editComplete'));
-   o._validLengthMin = RClass.register(o, new APtyInteger(null, '_validLengthMin'));
-   o._validLengthMax = RClass.register(o, new APtyInteger(null, '_validLengthMax'));
+   o._editCase       = RClass.register(o, new APtyString('_editCase'));
+   o._editPattern    = RClass.register(o, new APtyString('_editPattern'));
+   o._editLength     = RClass.register(o, new APtyInteger('_editLength'));
+   o._editComplete   = RClass.register(o, new APtyBoolean('_editComplete'));
+   o._validLengthMin = RClass.register(o, new APtyInteger('_validLengthMin'));
+   o._validLengthMax = RClass.register(o, new APtyInteger('_validLengthMax'));
    o.oeValid         = MPropertyEdit_oeValid;
    return o;
 }
@@ -1339,16 +1345,16 @@ function MPropertyEdit_oeValid(e){
 }
 function MSize(o){
    o = RClass.inherits(this, o);
-   o._location   = RClass.register(o, new APtyPoint2(null, '_location'));
-   o._size       = RClass.register(o, new APtySize2(null, '_size'));
-   o.onSize       = null;
-   o.construct    = MSize_construct;
-   o.calcRect     = MSize_calcRect;
-   o.resize       = MSize_resize;
-   o.setSize      = MSize_setSize;
-   o.setBounds    = MSize_setBounds;
-   o.resetSize    = MSize_resetSize;
-   o.innerDump    = MSize_innerDump;
+   o._location = RClass.register(o, new APtyPoint2('_location'));
+   o._size     = RClass.register(o, new APtySize2('_size'));
+   o.onSize    = null;
+   o.construct = MSize_construct;
+   o.calcRect  = MSize_calcRect;
+   o.resize    = MSize_resize;
+   o.setSize   = MSize_setSize;
+   o.setBounds = MSize_setBounds;
+   o.resetSize = MSize_resetSize;
+   o.innerDump = MSize_innerDump;
    return o;
 }
 function MSize_construct(){

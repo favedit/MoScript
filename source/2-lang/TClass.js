@@ -7,12 +7,14 @@
 //==========================================================
 function TClass(o){
    if(!o){o = this;}
-   // 本类是安全对象，禁止内存管理器自动释放
+   //..........................................................
+   // @attribute 本类是安全对象，禁止内存管理器自动释放
    o.__disposed     = true;
-   // Attribute [private]
-   o._annotations  = new Object();
+   // @attribute
    o._unused        = null;
-   // Attribute
+   o._annotations   = new Object();
+   o._attributes    = new Object();
+   // @attribute
    o.name           = null;
    o.parent         = null;
    o.base           = null;
@@ -21,12 +23,14 @@ function TClass(o){
    o.abstract       = false;
    o.styles         = new Array();
    o.instances      = new Array();
-   // Method
+   //..........................................................
+   // @method
    o.register       = TClass_register;
    o.assign         = TClass_assign;
    o.annotations    = TClass_annotations;
    o.annotation     = TClass_annotation;
-   o.annotationFind = TClass_annotationFind
+   o.annotationFind = TClass_annotationFind;
+   o.attributeFind  = TClass_attributeFind;
    o.style          = TClass_style;
    o.build          = TClass_build;
    o.newInstance    = TClass_newInstance;
@@ -44,20 +48,23 @@ function TClass(o){
 function TClass_register(v){
    var o = this;
    // 检查类型和名称的合法性
-   var a = v.annotation;
-   var n = v.code();
-   if(!a || !n){
-      throw new TError(o, "Unknown annotation. (class={1},annotation={2},name={3})", RClass.dump(o), a, n);
+   var a = v.annotationCd();
+   var n = v.name();
+   var c = v.code();
+   if(!a || !c){
+      throw new TError(o, "Unknown annotation. (class={1},annotation={2},name={3},code={4})", RClass.dump(o), a, n, c);
    }
    // 获得一个Annotation的类型容器
    var as = o._annotations[a];
    if(!as){
       as = o._annotations[a] = new Object();
    }
-   if(as[n]){
-      throw new TError(o, "Duplicate annotation. (class={1},annotation={2},name={3})", RClass.dump(o), a, n);
+   if(as[c]){
+      throw new TError(o, "Duplicate annotation. (class={1},annotation={2},name={3},code={4},value={5})", RClass.dump(o), a, n, c, v.toString());
    }
-   as[n] = v;
+   as[c] = v;
+   // 设置属性
+   o._attributes[n] = v;
 }
 
 //==========================================================
@@ -68,6 +75,8 @@ function TClass_register(v){
 //==========================================================
 function TClass_assign(c){
    var o = this;
+   //..........................................................
+   // 复制描述器
    for(var an in c._annotations){
       // 在自己当前对象内查找描述的类型容器
       var ls = o._annotations[an];
@@ -78,12 +87,20 @@ function TClass_assign(c){
       var as = c._annotations[an];
       for(var n in as){
          if(ls[n]){
-            RLogger.fatal(o, null, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5})", an, o.name, n, c.name, n);
+            RLogger.fatal(o, null, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, c.name, n, a.toString());
          }
          var a = as[n];
-         if(a.inherit){
+         if(a._inherit){
             ls[n] = a;
          }
+      }
+   }
+   //..........................................................
+   // 复制属性集合
+   for(var n in c._attributes){
+      var a = c._attributes[n];
+      if(a.construct != Function){
+         o._attributes[n] = c._attributes[n];
       }
    }
 }
@@ -140,10 +157,27 @@ function TClass_annotationFind(p){
       if(as){
          var a = as[p];
          if(a != null){
-            if(a.annotation){
+            if(a.constructor != Function){
                return a;
             }
          }
+      }
+   }
+   return null;
+}
+
+//==========================================================
+// <T>根据属性查找描述器。</T>
+//
+// @method
+// @param p:name:String 名称
+// @return Object 描述对象
+//==========================================================
+function TClass_attributeFind(p){
+   var a = this._attributes[p];
+   if(a){
+      if(a.constructor != Function){
+         return a;
       }
    }
    return null;
@@ -180,7 +214,7 @@ function TClass_style(n){
       RLogger.fatal(o, null, "No register style annotation. (name={1}, linker={2}, class={3})", o.name + '_' + n, o.liner, o.name);
    }
    // 生成样式名称
-   var sn = p.name + '_' + a.style;
+   var sn = p.name + '_' + a.style();
    o.styles[n] = sn;
    return sn;
 }

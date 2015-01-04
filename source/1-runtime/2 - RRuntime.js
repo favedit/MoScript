@@ -7,10 +7,12 @@
 //==========================================================
 var RRuntime = new function RRuntime(){
    var o = this;
-   // Propery
+   //..........................................................
+   // @propery
    o._nextUid  = 1;
    o.processCd = EProcess.Release;
-   // Method
+   //..........................................................
+   // @method
    o.isDebug   = RRuntime_isDebug;
    o.isRelease = RRuntime_isRelease;
    o.nvl       = RRuntime_nvl;
