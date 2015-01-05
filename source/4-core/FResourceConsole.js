@@ -1,22 +1,25 @@
 //==========================================================
-// <T>页面数据通讯的控制台。</T>
+// <T>资源控制台。</T>
 //
 // @console
 // @author maocy
 // @version 150104
 //==========================================================
-function FHttpConsole(o){
+function FResourceConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   // Attribute
+   //..........................................................
+   // @attribute
    o._scopeCd    = EScope.Local;
-   o.connections = null;
-   // Event
-   o.onLoad      = FHttpConsole_onLoad;
-   // Method
-   o.construct   = FHttpConsole_construct;
-   o.alloc       = FHttpConsole_alloc;
-   o.process     = FHttpConsole_process;
-   o.send        = FHttpConsole_send;
+   o._resources  = null;
+   //..........................................................
+   // @event
+   o.onLoad      = FResourceConsole_onLoad;
+   //..........................................................
+   // @method
+   o.construct   = FResourceConsole_construct;
+   o.alloc       = FResourceConsole_alloc;
+   o.process     = FResourceConsole_process;
+   o.send        = FResourceConsole_send;
    return o;
 }
 
@@ -25,7 +28,7 @@ function FHttpConsole(o){
 //
 // @method
 //==========================================================
-function FHttpConsole_construct(){
+function FResourceConsole_construct(){
    var o = this;
    o.connections = new TObjects();
 }
@@ -35,7 +38,7 @@ function FHttpConsole_construct(){
 //
 // @method
 //==========================================================
-function FHttpConsole_onLoad(){
+function FResourceConsole_onLoad(){
    var o = this;
    var e = o.event;
    e.document = o.document;
@@ -51,7 +54,7 @@ function FHttpConsole_onLoad(){
 // @method
 // @return 节点链接
 //==========================================================
-function FHttpConsole_alloc(){
+function FResourceConsole_alloc(){
    var o = this;
    // 查找一个未使用的节点链接
    var a = null;
@@ -81,7 +84,7 @@ function FHttpConsole_alloc(){
 // @param e:event:TEvent 事件信息
 // @return XML信息
 //==========================================================
-function FHttpConsole_process(e){
+function FResourceConsole_process(e){
    var o = this;
    var c = o.alloc();
    c.event = e;
@@ -107,7 +110,7 @@ function FHttpConsole_process(e){
 // @param d:document:TXmlDocument 发送文档
 // @return TXmlDocument 接收文档
 //==========================================================
-function FHttpConsole_send(u, d){
+function FResourceConsole_send(u, d){
    var o = this;
    var c = o.alloc();
    var r = c.syncSend(u, d);

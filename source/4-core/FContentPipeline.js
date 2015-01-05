@@ -1,12 +1,12 @@
 //==========================================================
-// <T>后台服务基类。</T>
+// <T>内容管道。</T>
 //
-// @reference
+// @class
 // @author maocy
 // @version 141231
 //==========================================================
 function FContentPipeline(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FPipeline);
    //..........................................................
    // @attribute
    o._scopeCd = EScope.Global;

@@ -61,8 +61,12 @@ function FHttpConnection_onConnectionReady(){
    if(o._asynchronous){
       var c = o._connection;
       if(c.readyState == EHttpStatus.Finish){
-         o.setOutputData();
-         o.onConnectionComplete();
+         if(c.status == 200){
+            o.setOutputData();
+            o.onConnectionComplete();
+         }else{
+            throw new TError(o, 'Connection failure. (url={1})', o._url);
+         }
       }
    }
 }
@@ -73,6 +77,7 @@ function FHttpConnection_onConnectionReady(){
 function FHttpConnection_onConnectionComplete(){
    var o = this;
    o._statusFree = true;
+   o.lsnsLoad.process();
 }
 
 //==========================================================
@@ -96,8 +101,12 @@ function FHttpConnection_setHeaders(){
    if(o._contentCd == EHttpContent.Binary){
       if(RBrowser.isBrowser(EBrowser.Chrome)){
          c.overrideMimeType('text/plain; charset=x-user-defined');
+         if(o._asynchronous){
+            c.responseType = 'arraybuffer';
+         }
       }else{
          c.setRequestHeader('Accept-Charset', 'x-user-defined');
+         c.responseType = 'arraybuffer';
       }
    }else{
       c.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
@@ -146,9 +155,10 @@ function FHttpConnection_setOutputData(){
    // 传输格式
    if(o._contentCd == EHttpContent.Binary){
       if(RBrowser.isBrowser(EBrowser.Chrome)){
-         o._outputData = new ArrayBuffer(c.response);
+         o._outputData = c.response;
       }else{
-         o._outputData = new ArrayBuffer(c.responseBody.toArray());
+         //o._outputData = c.responseBody.toArray();
+         o._outputData = c.response;
       }
    }else{
       o._outputData = c.responseText;
@@ -175,7 +185,7 @@ function FHttpConnection_sendSync(){
    c.send(o._inputData);
    o.setOutputData();
    o.onConnectionComplete();
-   RLogger.info(this, 'Send http sync url. (method={1}, url={2})', o._methodCd, o._url);
+   RLogger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
 }
 
 //==========================================================
@@ -187,7 +197,7 @@ function FHttpConnection_sendAsync(){
    c.open(o._methodCd, o._url, true);
    o.setHeaders(c, 0);
    c.send(o._inputData);
-   RLogger.info(this, 'Send http async url. (method={1}, url={2})', o._methodCd, o._url);
+   RLogger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
 }
 
 //==========================================================

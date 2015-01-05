@@ -1,0 +1,59 @@
+<HTML>
+<HEAD>
+<TITLE>Control-Edit-Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../ajs/runtime.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/lang.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/base.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/core.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/graphic.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/graphic-2d.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/graphic-3d.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/graphic-3d-wgl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/engine.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/engine-2d.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/engine-3d.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/control.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/control-form.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../2-lang/RConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3-base/FHttpConnection.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3-base/FXmlConnection.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3-base/RXml.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-core/FXmlConsole.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+
+function _load(){
+   RRuntime.processCd = EProcess.Debug;
+   RBrowser.construct();
+
+
+   var hc = RClass.create(FHttpConnection);
+   //var r = hc.send('http://localhost/script/test/7-control-form/imgad.jpg');
+   hc.send('http://localhost:999/test/7-control-form/imgad.jpg');
+
+   //var hc = RClass.create(FXmlConnection);
+   //var r = hc.send('http://localhost/script/test/7-control-form/xml_insert.xml');
+   //var r = hc.send('http://localhost:999/test/7-control-form/xml_insert.xml');
+   //RDump.dump(hc, _dump);
+
+   var xc = RConsole.find(FXmlConsole);
+   var x = new TXmlDocument();
+   //RDump.dump(xc, _dump);
+   //RDump.dump(xd, _dump);
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+<DIV id='_panel'></DIV><br>
+<DIV id='_dump'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

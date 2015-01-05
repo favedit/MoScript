@@ -1,31 +1,29 @@
 //==========================================================
-// <T>三维渲染引擎。</T>
+// <T>资源。</T>
 //
-// @class FObject
+// @class
 // @author maocy
-// @history 141230
+// @version 150105
 //==========================================================
-var REngine3d = new function REngine3d(){
-   var o = this;
+function FResource(o){
+   o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o.contexts = new TObjects();
+   o._typeName  = null;
+   o._groupName = null;
+   o._name      = null;
    //..........................................................
    // @method
-   o.createContext = REngine3d_createContext;
+   o.name  = FResource_name;
    return o;
 }
 
 //==========================================================
-// <T>创建渲染环境</T>
+// <T>获得名称。</T>
 //
 // @method
-// @param h:canvas:HtmlCanvasTag 页面画板
+// @return 名称
 //==========================================================
-function REngine3d_createContext(c, h){
-   var o = this;
-   var r = RClass.create(c);
-   r.linkCanvas(h);
-   o.contexts.push(r);
-   return r;
+function FResource_name(){
+   return this._name;
 }

@@ -1,31 +1,27 @@
 //==========================================================
-// <T>字节数组。</T>
+// <T>数据观察。</T>
 //
 // @author maocy
 // @history 150105
 //==========================================================
-function FBytes(o){
-   o = RClass.inherits(this, o, FObject, MDataView);
-   //..........................................................
-   // @attribute
-   o._memory   = null;
+function FDataView(o){
+   o = RClass.inherits(this, o, FObject, MDataView, MDataStream);
    //..........................................................
    // @method
-   o.construct = FBytes_construct;
-   o.dispose   = FBytes_dispose;
+   o.link    = FDataView_link;
+   o.dispose = FDataView_dispose;
    return o;
 }
 
 //==========================================================
 // <T>构造处理。</T>
 //
-// @author maocy
+// @param p:data:Array 数组
 //==========================================================
-function FBytes_construct(){
+function FDataView_link(p){
    var o = this;
-   o.__base.FObject.construct.call(o);
-   o._memory = new ArrayBuffer();
-   o._viewer = new DataView(o._memory);
+   o._memory = p;
+   o._viewer = new DataView(p);
 }
 
 //==========================================================
@@ -33,7 +29,7 @@ function FBytes_construct(){
 //
 // @author maocy
 //==========================================================
-function FBytes_dispose(){
+function FDataView_dispose(){
    var o = this;
    o._memory = null;
    o._viewer = null;

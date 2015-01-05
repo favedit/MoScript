@@ -1,0 +1,33 @@
+<HTML>
+<HEAD>
+<TITLE>Control-Edit-Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../ajs/mo-core.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+
+function _load(){
+   RRuntime.processCd = EProcess.Debug;
+   RBrowser.construct();
+
+   var os = new TObjects();
+   os.push(1);
+   os.push(2);
+   os.push(3);
+   os.push(2);
+   os.push(3);
+   os.erase(2);
+   RDump.dump(os, _dump);
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+<DIV id='_panel'></DIV><br>
+<DIV id='_dump'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

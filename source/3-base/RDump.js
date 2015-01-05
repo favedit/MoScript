@@ -89,7 +89,7 @@ function RDump_typeInfo(v, t){
          }
          return RMethod.name(v, true);
       case 'Array':
-         return '@<Array@' + RClass.code(v) + '>';
+         return '@<Array@' + RClass.code(v) + '> length=' + v.length;
       case 'Html':
          //return '@' + v.outerHTML;
          return '@<' + v.tagName + '>';
@@ -137,6 +137,9 @@ function RDump_dumpInner(di){
    // Items Info
    var items = new Array();
    var c = names.length;
+   if(c > 200){
+      c = 200;
+   }
    for(var n = 0; n < c; n++){
       var name = names[n];
       var value = obj[name];

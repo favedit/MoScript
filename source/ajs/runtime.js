@@ -944,9 +944,11 @@ function TObjects_erase(n){
    if((n >= 0) && (n < o._count)){
       v = o._items[n];
       var c = --o._count;
+      var s = o._items;
       for(var i = n; i < c; i++){
-         o._items[i] = o._items[i+1];
+         s[i] = s[i+1];
       }
+      s[c] = null;
    }
    return v;
 }
@@ -956,10 +958,14 @@ function TObjects_remove(v){
       var c = o._count;
       if(c > 0){
          var n = 0;
+         var s = o._items;
          for(var i = n; i < c; i++){
-            if(o._items[i] != v){
-               o._items[n++] = o._items[i];
+            if(s[i] != v){
+               s[n++] = s[i];
             }
+         }
+         for(var i = n; i < c; i++){
+            s[i] = null;
          }
          o._count = n;
       }
@@ -967,7 +973,9 @@ function TObjects_remove(v){
    return v;
 }
 function TObjects_clear(){
-   this._count = 0;
+   var o = this;
+   o._items.length = 0;
+   o._count = 0;
 }
 function TObjects_dispose(){
    var o = this;

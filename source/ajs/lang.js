@@ -812,11 +812,14 @@ function RClass_code(v){
 }
 function RClass_name(v){
    if(v){
-      if(v.clazz){
-         return v.clazz.name;
+      if(v.__name){
+         return v.__name;
+      }
+      if(v.__class){
+         return v.__class.name;
       }
       if(typeof(v) == 'function'){
-         return RString.mid(v.toString(), 'function ', '(');
+         return RMethod.name(v);
       }
       var c = v.constructor;
       if(c){
@@ -1044,20 +1047,21 @@ function RClass_free(o){
 var RConsole = new function RConsole(){
    var o = this;
    o.ConsolePreFix = 'console:';
-   o.registers     = new TObjects();
-   o.consoles      = new TDictionary();
-   o.localConsoles = new TDictionary();
-   o.register      = RConsole_register;
-   o.initialize    = RConsole_initialize;
-   o.create        = RConsole_create;
-   o.createByName  = RConsole_createByName;
-   o.find          = RConsole_find;
-   o.release       = RConsole_release;
+   o._registers     = new TObjects();
+   o._consoles      = new TDictionary();
+   o._localConsoles = new TDictionary();
+   o.initialize     = RConsole_initialize;
+   o.register       = RConsole_register;
+   o.create         = RConsole_create;
+   o.createByName   = RConsole_createByName;
+   o.get            = RConsole_get;
+   o.find           = RConsole_find;
+   o.release        = RConsole_release;
    return o;
 }
 function RConsole_initialize(){
    var o = this;
-   var rs = o.registers;
+   var rs = o._registers;
    var c = rs.count;
    for(var n = 0; n < rs; n++){
       var r = rs.get(n);
@@ -1066,8 +1070,8 @@ function RConsole_initialize(){
       }
    }
 }
-function RConsole_register(c){
-   this.registers.push(c);
+function RConsole_register(p){
+   this._registers.push(p);
 }
 function RConsole_create(n){
    var r = null;
@@ -1109,6 +1113,12 @@ function RConsole_createByName(n){
    }
    return r;
 }
+function RConsole_get(v){
+   var o = this;
+   var n = RClass.name(v);
+   var r = o._consoles.get(n);
+   return r;
+}
 function RConsole_find(v){
    var o = this;
    var n = null;
@@ -1123,7 +1133,7 @@ function RConsole_find(v){
    if(r){
       return r;
    }
-   r = o.consoles.get(n);
+   r = o._consoles.get(n);
    if(r){
       return r;
    }
@@ -1133,12 +1143,12 @@ function RConsole_find(v){
       case EScope.Global:
          r = top.RConsole.createByName(n);
          RGlobal.set(o.ConsolePreFix + n, r);
-         o.consoles.set(n, r);
+         o._consoles.set(n, r);
          break;
       case EScope.Local:
          r = o.createByName(n);
-         o.localConsoles.set(n, r);
-         o.consoles.set(n, r);
+         o._localConsoles.set(n, r);
+         o._consoles.set(n, r);
          break;
       default:
          return RLogger.fatal(o, 'Unknown scope code. (name={1})', n);
@@ -1148,10 +1158,23 @@ function RConsole_find(v){
 }
 function RConsole_release(){
    var o = this;
-   RMemory.free(this.localConsoles);
-   o.registers = null;
-   o.consoles = null;
-   o.localConsoles = null;
+   if(o._registers){
+      o._registers.dispose();
+      o._registers = null;
+   }
+   var cs = o._localConsoles;
+   if(cs){
+      var c = cs.count();
+      for(var n = 0; n < c; n++){
+         cs.value(n).dispose();
+      }
+      cs.dispose();
+   }
+   o._localConsoles = null;
+   if(o._consoles){
+      o._consoles.dispose();
+   }
+   o._consoles = null;
 }
 var RContext = new function(){
    var o = this;
@@ -2061,20 +2084,28 @@ function RMethod_isEmpty(v){
 function RMethod_isVirtual(v){
    return (v && v.__virtual);
 }
-function RMethod_name(v){
-   if(v){
-      if(typeof(v) == 'function'){
-         var s = v.toString();
-         return RString.mid(s, 'function ', '(');
+function RMethod_name(p){
+   if(p){
+      if(typeof(p) == 'function'){
+         if(p.__name){
+            return p.__name;
+         }
+         var s = p.toString();
+         var n = p.__name = RString.mid(s, 'function ', '(');
+         return n;
       }
    }
    return null;
 }
-function RMethod_fullName(v){
-   if(v){
-      if(typeof(v) == 'function'){
-         var s = v.toString();
-         return RString.mid(s, 'function ', ')') + ')';
+function RMethod_fullName(p){
+   if(p){
+      if(p.constructor == Function){
+         if(p.__fullname){
+            return p.__fullname;
+         }
+         var s = p.toString();
+         var n = p.__fullname = RString.mid(s, 'function ', ')') + ')';
+         return n;
       }
    }
    return null;
@@ -3773,6 +3804,19 @@ function TLoaderListener_check(l){
       }
    }
    return true;
+}
+function TLocker(o){
+   if(!o){o = this;}
+   o._lock = false;
+   o.enter = TLocker_enter;
+   o.leave = TLocker_leave;
+   return o;
+}
+function TLocker_enter(){
+   this._lock = true;
+}
+function TLocker_leave(){
+   this._lock = false;
 }
 function TMessage(){
    var o = this;

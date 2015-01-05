@@ -1,27 +1,27 @@
 //==========================================================
-// <T>后台服务基类。</T>
+// <T>数据内容。</T>
 //
 // @reference
 // @author maocy
-// @version 141231
+// @version 150105
 //==========================================================
 function FContent(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._scopeCd = EScope.Global;
+   o._name = null;
    //..........................................................
    // @method
-   o.scopeCd  = FContent_scopeCd;
+   o.name  = FContent_name;
    return o;
 }
 
 //==========================================================
-// <T>获得范围类型。</T>
+// <T>获得名称。</T>
 //
 // @method
-// @return 范围类型
+// @return 名称
 //==========================================================
-function FContent_scopeCd(){
-   return this._scopeCd;
+function FContent_name(){
+   return this._name;
 }

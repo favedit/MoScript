@@ -1,3 +1,162 @@
+var EThreadStatus = new function EThreadStatus(){
+   var o = this;
+   o.Sleep  = 0;
+   o.Active = 1;
+   o.Finish = 2;
+   return o;
+}
+function FContent(o){
+   o = RClass.inherits(this, o, FObject);
+   o._name = null;
+   o.name  = FContent_name;
+   return o;
+}
+function FContent_name(){
+   return this._name;
+}
+function FContentConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd    = EScope.Local;
+   o.connections = null;
+   o.onLoad      = FContentConsole_onLoad;
+   o.construct   = FContentConsole_construct;
+   o.alloc       = FContentConsole_alloc;
+   o.process     = FContentConsole_process;
+   o.send        = FContentConsole_send;
+   return o;
+}
+function FContentConsole_construct(){
+   var o = this;
+   o.connections = new TObjects();
+}
+function FContentConsole_onLoad(){
+   var o = this;
+   var e = o.event;
+   e.document = o.document;
+   e.process();
+   o.event = null;
+   o.document = null;
+   o._statusFree = true;
+}
+function FContentConsole_alloc(){
+   var o = this;
+   var a = null;
+   var cs = o.connections;
+   for(var n = cs.count - 1; n >= 0; n--){
+      var c = cs.get(n);
+      if(c._statusFree){
+         a = c;
+         break;
+      }
+   }
+   if(!a){
+      a = RClass.create(FXmlConnection);
+      cs.push(a);
+      a.onLoad = o.onLoad;
+   }
+   a._statusFree = false;
+   return a;
+}
+function FContentConsole_process(e){
+   var o = this;
+   var c = o.alloc();
+   c.event = e;
+   switch(e.code){
+      case EXmlEvent.Send:
+         c.send(e.url, e.document);
+         break;
+      case EXmlEvent.Receive:
+         c.receive(e.url, e.document);
+         break;
+      case EXmlEvent.SyncSend:
+         return c.syncSend(e.url, e.document);
+      case EXmlEvent.SyncReceive:
+         return c.syncReceive(e.url, e.document);
+   }
+}
+function FContentConsole_send(u, d){
+   var o = this;
+   var c = o.alloc();
+   var r = c.syncSend(u, d);
+   c._statusFree = true;
+   return r;
+}
+function FContentPipeline(o){
+   o = RClass.inherits(this, o, FPipeline);
+   o._scopeCd = EScope.Global;
+   o.scopeCd  = FContentPipeline_scopeCd;
+   return o;
+}
+function FContentPipeline_scopeCd(){
+   return this._scopeCd;
+}
+function FHttpConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd    = EScope.Local;
+   o.connections = null;
+   o.onLoad      = FHttpConsole_onLoad;
+   o.construct   = FHttpConsole_construct;
+   o.alloc       = FHttpConsole_alloc;
+   o.process     = FHttpConsole_process;
+   o.send        = FHttpConsole_send;
+   return o;
+}
+function FHttpConsole_construct(){
+   var o = this;
+   o.connections = new TObjects();
+}
+function FHttpConsole_onLoad(){
+   var o = this;
+   var e = o.event;
+   e.document = o.document;
+   e.process();
+   o.event = null;
+   o.document = null;
+   o._statusFree = true;
+}
+function FHttpConsole_alloc(){
+   var o = this;
+   var a = null;
+   var cs = o.connections;
+   for(var n = cs.count - 1; n >= 0; n--){
+      var c = cs.get(n);
+      if(c._statusFree){
+         a = c;
+         break;
+      }
+   }
+   if(!a){
+      a = RClass.create(FXmlConnection);
+      cs.push(a);
+      a.onLoad = o.onLoad;
+   }
+   a._statusFree = false;
+   return a;
+}
+function FHttpConsole_process(e){
+   var o = this;
+   var c = o.alloc();
+   c.event = e;
+   switch(e.code){
+      case EXmlEvent.Send:
+         c.send(e.url, e.document);
+         break;
+      case EXmlEvent.Receive:
+         c.receive(e.url, e.document);
+         break;
+      case EXmlEvent.SyncSend:
+         return c.syncSend(e.url, e.document);
+      case EXmlEvent.SyncReceive:
+         return c.syncReceive(e.url, e.document);
+   }
+}
+function FHttpConsole_send(u, d){
+   var o = this;
+   var c = o.alloc();
+   var r = c.syncSend(u, d);
+   c._statusFree = true;
+   return r;
+}
 function FIdleConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o.scope            = EScope.Page;
@@ -129,6 +288,292 @@ function FMonitorConsole_wait(request){
 function FMonitorConsole_release(){
    if(this.hWindow && this.intervalId){
       this.hWindow.clearInterval(this.intervalId);
+   }
+}
+function FPipeline(o){
+   o = RClass.inherits(this, o, FObject);
+   o._name = null;
+   o.name  = FPipeline_name;
+   return o;
+}
+function FPipeline_name(){
+   return this._name;
+}
+function FProcessConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd    = EScope.Local;
+   o.connections = null;
+   o.onLoad      = FProcessConsole_onLoad;
+   o.construct   = FProcessConsole_construct;
+   o.alloc       = FProcessConsole_alloc;
+   o.process     = FProcessConsole_process;
+   o.send        = FProcessConsole_send;
+   return o;
+}
+function FProcessConsole_construct(){
+   var o = this;
+   o.connections = new TObjects();
+}
+function FProcessConsole_onLoad(){
+   var o = this;
+   var e = o.event;
+   e.document = o.document;
+   e.process();
+   o.event = null;
+   o.document = null;
+   o._statusFree = true;
+}
+function FProcessConsole_alloc(){
+   var o = this;
+   var a = null;
+   var cs = o.connections;
+   for(var n = cs.count - 1; n >= 0; n--){
+      var c = cs.get(n);
+      if(c._statusFree){
+         a = c;
+         break;
+      }
+   }
+   if(!a){
+      a = RClass.create(FXmlConnection);
+      cs.push(a);
+      a.onLoad = o.onLoad;
+   }
+   a._statusFree = false;
+   return a;
+}
+function FProcessConsole_process(e){
+   var o = this;
+   var c = o.alloc();
+   c.event = e;
+   switch(e.code){
+      case EXmlEvent.Send:
+         c.send(e.url, e.document);
+         break;
+      case EXmlEvent.Receive:
+         c.receive(e.url, e.document);
+         break;
+      case EXmlEvent.SyncSend:
+         return c.syncSend(e.url, e.document);
+      case EXmlEvent.SyncReceive:
+         return c.syncReceive(e.url, e.document);
+   }
+}
+function FProcessConsole_send(u, d){
+   var o = this;
+   var c = o.alloc();
+   var r = c.syncSend(u, d);
+   c._statusFree = true;
+   return r;
+}
+function FResource(o){
+   o = RClass.inherits(this, o, FObject);
+   o._typeName  = null;
+   o._groupName = null;
+   o._name      = null;
+   o.name  = FResource_name;
+   return o;
+}
+function FResource_name(){
+   return this._name;
+}
+function FResourceConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd    = EScope.Local;
+   o._resources  = null;
+   o.onLoad      = FResourceConsole_onLoad;
+   o.construct   = FResourceConsole_construct;
+   o.alloc       = FResourceConsole_alloc;
+   o.process     = FResourceConsole_process;
+   o.send        = FResourceConsole_send;
+   return o;
+}
+function FResourceConsole_construct(){
+   var o = this;
+   o.connections = new TObjects();
+}
+function FResourceConsole_onLoad(){
+   var o = this;
+   var e = o.event;
+   e.document = o.document;
+   e.process();
+   o.event = null;
+   o.document = null;
+   o._statusFree = true;
+}
+function FResourceConsole_alloc(){
+   var o = this;
+   var a = null;
+   var cs = o.connections;
+   for(var n = cs.count - 1; n >= 0; n--){
+      var c = cs.get(n);
+      if(c._statusFree){
+         a = c;
+         break;
+      }
+   }
+   if(!a){
+      a = RClass.create(FXmlConnection);
+      cs.push(a);
+      a.onLoad = o.onLoad;
+   }
+   a._statusFree = false;
+   return a;
+}
+function FResourceConsole_process(e){
+   var o = this;
+   var c = o.alloc();
+   c.event = e;
+   switch(e.code){
+      case EXmlEvent.Send:
+         c.send(e.url, e.document);
+         break;
+      case EXmlEvent.Receive:
+         c.receive(e.url, e.document);
+         break;
+      case EXmlEvent.SyncSend:
+         return c.syncSend(e.url, e.document);
+      case EXmlEvent.SyncReceive:
+         return c.syncReceive(e.url, e.document);
+   }
+}
+function FResourceConsole_send(u, d){
+   var o = this;
+   var c = o.alloc();
+   var r = c.syncSend(u, d);
+   c._statusFree = true;
+   return r;
+}
+function FResourceGroup(o){
+   o = RClass.inherits(this, o, FObject);
+   o._name = null;
+   o.name  = FResourceGroup_name;
+   return o;
+}
+function FResourceGroup_name(){
+   return this._name;
+}
+function FResourceType(o){
+   o = RClass.inherits(this, o, FObject);
+   o._name      = null;
+   o._pipeline  = null;
+   o._resources = null;
+   o.construct  = FResourceType_construct;
+   o.name       = FResourceType_name;
+   o.resource   = FResourceType_resource;
+   o.resources  = FResourceType_resources;
+   return o;
+}
+function FResourceType_construct(){
+   var o = this;
+   o.__base.construct.call(o);
+   o._resources = new TDictionary();
+}
+function FResourceType_name(){
+   return this._name;
+}
+function FResourceType_resource(p){
+   return this._resources.get(p);;
+}
+function FResourceType_resources(){
+   return this._resources;
+}
+function FThread(o){
+   o = RClass.inherits(this, o, FObject);
+   o._owner    = null;
+   o._name     = null;
+   o._statusCd = EThreadStatus.Sleep;
+   o._interval = 100;
+   o._count    = 0;
+   o.callback  = null;
+   o.name      = FThread_name;
+   o.statusCd  = FThread_statusCd;
+   o.process   = FThread_process;
+   return o;
+}
+function FThread_name(){
+   return this._name;
+}
+function FThread_statusCd(){
+   return this._statusCd;
+}
+function FThread_process(){
+   var o = this;
+   if(o.count > 0){
+      if(o.run){
+         if(o.owner){
+            o.run.call(o.owner, o);
+         }else{
+            o.run(o);
+         }
+      }
+      o.count = o.interval;
+      o.count--;
+   }
+}
+function FThreadConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd     = EScope.Local;
+   o._active      = true;
+   o._interval    = 10;
+   o._threads     = null;
+   o._hWindow     = null;
+   o._hIntervalId = null;
+   o.ohInterval   = FThreadConsole_ohInterval;
+   o.construct    = FThreadConsole_construct;
+   o.process      = FThreadConsole_process;
+   o.processAll   = FThreadConsole_processAll;
+   o.dispose      = FThreadConsole_dispose;
+   return o;
+}
+function FThreadConsole_ohInterval(){
+   var c = RConsole.get(FThreadConsole);
+   c.processAll();
+}
+function FThreadConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._threads = new TObjects();
+   o._hWindow = window;
+   o._hIntervalId = o._hWindow.setInterval(o.ohInterval, o._interval);
+}
+function FThreadConsole_process(p){
+   var o = this;
+   if(p){
+      switch(p.status()){
+         case EThreadStatus.Sleep:
+            break;
+         case EThreadStatus.Active:
+            p.process(o.interval);
+            break;
+         case EThreadStatus.Finish:
+            p.dispose();
+            o._threads.remove(p);
+            break;
+      }
+   }
+}
+function FThreadConsole_processAll(){
+   var o = this;
+   if(o._active){
+      var ts = o._threads;
+      var c = ts.count;
+      for(var n = 0; n < c; n++){
+         var t = ts.get(n);
+         o.process(t);
+      }
+   }
+}
+function FThreadConsole_dispose(){
+   var o = this;
+   var hw = o._hWindow;
+   if(hw){
+      var hi = o._hIntervalId;
+      if(hi){
+         hw.clearInterval(hi);
+         o._hIntervalId = null;
+      }
+      o._hWindow = null;
    }
 }
 function FXmlConsole(o){

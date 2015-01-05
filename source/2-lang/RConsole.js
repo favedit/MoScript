@@ -12,26 +12,29 @@ var RConsole = new function RConsole(){
    o.ConsolePreFix = 'console:';
    //..........................................................
    // @attribute
-   o.registers     = new TObjects();
-   o.consoles      = new TDictionary();
-   o.localConsoles = new TDictionary();
+   o._registers     = new TObjects();
+   o._consoles      = new TDictionary();
+   o._localConsoles = new TDictionary();
    //..........................................................
    // @method
-   o.register      = RConsole_register;
-   o.initialize    = RConsole_initialize;
-   o.create        = RConsole_create;
-   o.createByName  = RConsole_createByName;
-   o.find          = RConsole_find;
-   o.release       = RConsole_release;
+   o.initialize     = RConsole_initialize;
+   o.register       = RConsole_register;
+   o.create         = RConsole_create;
+   o.createByName   = RConsole_createByName;
+   o.get            = RConsole_get;
+   o.find           = RConsole_find;
+   o.release        = RConsole_release;
    return o;
 }
 
 //==========================================================
+// <T>初始化控制台管理器。</T>
 //
+// @method
 //==========================================================
 function RConsole_initialize(){
    var o = this;
-   var rs = o.registers;
+   var rs = o._registers;
    var c = rs.count;
    for(var n = 0; n < rs; n++){
       var r = rs.get(n);
@@ -42,10 +45,13 @@ function RConsole_initialize(){
 }
  
 //==========================================================
-// TConsole
+// <T>注册一个控制台。</T>
+//
+// @method
+// @param p:console:TConsole 类名称
 //==========================================================
-function RConsole_register(c){
-   this.registers.push(c);
+function RConsole_register(p){
+   this._registers.push(p);
 }
 
 //==========================================================
@@ -109,6 +115,22 @@ function RConsole_createByName(n){
 }
 
 //==========================================================
+// <T>根据类函数获得一个控制台实例。</T>
+//
+// @method
+// @param v:value:Object 类名称/类函数
+// @return Object 控制台实例
+//==========================================================
+function RConsole_get(v){
+   var o = this;
+   // 获得名称
+   var n = RClass.name(v);
+   // 查找本地控制台
+   var r = o._consoles.get(n);
+   return r;
+}
+
+//==========================================================
 // <T>根据类函数查找一个控制台实例。</T>
 //
 // @method
@@ -132,7 +154,7 @@ function RConsole_find(v){
       return r;
    }
    // 查找本地控制台
-   r = o.consoles.get(n);
+   r = o._consoles.get(n);
    if(r){
       return r;
    }
@@ -145,13 +167,13 @@ function RConsole_find(v){
          r = top.RConsole.createByName(n);
          RGlobal.set(o.ConsolePreFix + n, r);
          // 在本地保存当前对象
-         o.consoles.set(n, r);
+         o._consoles.set(n, r);
          break;
       case EScope.Local:
          // 在本地保存当前对象
          r = o.createByName(n);
-         o.localConsoles.set(n, r);
-         o.consoles.set(n, r);
+         o._localConsoles.set(n, r);
+         o._consoles.set(n, r);
          break;
       default:
          return RLogger.fatal(o, 'Unknown scope code. (name={1})', n);
@@ -169,8 +191,24 @@ function RConsole_find(v){
 //==========================================================
 function RConsole_release(){
    var o = this;
-   RMemory.free(this.localConsoles);
-   o.registers = null;
-   o.consoles = null;
-   o.localConsoles = null;
+   // 释放注册信息
+   if(o._registers){
+      o._registers.dispose();
+      o._registers = null;
+   }
+   // 释放本地所有控制台
+   var cs = o._localConsoles;
+   if(cs){
+      var c = cs.count();
+      for(var n = 0; n < c; n++){
+         cs.value(n).dispose();
+      }
+      cs.dispose();
+   }
+   o._localConsoles = null;
+   // 释放属性
+   if(o._consoles){
+      o._consoles.dispose();
+   }
+   o._consoles = null;
 }

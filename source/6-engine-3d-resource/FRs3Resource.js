@@ -1,31 +1,26 @@
 //==========================================================
-// <T>三维渲染引擎。</T>
+// <T>资源对象。</T>
 //
-// @class FObject
 // @author maocy
-// @history 141230
+// @history 150105
 //==========================================================
-var REngine3d = new function REngine3d(){
-   var o = this;
+function FRs3Resource(o){
+   o = RClass.inherits(this, o, FResource);
    //..........................................................
    // @attribute
-   o.contexts = new TObjects();
+   o._contentLength = 0;
    //..........................................................
    // @method
-   o.createContext = REngine3d_createContext;
+   o.unserialize    = FRs3Resource_unserialize;
    return o;
 }
 
 //==========================================================
-// <T>创建渲染环境</T>
+// <T>从输入流里反序列化信息内容</T>
 //
-// @method
-// @param h:canvas:HtmlCanvasTag 页面画板
+// @param p:input:FByteStream 数据流
+// @return 处理结果
 //==========================================================
-function REngine3d_createContext(c, h){
-   var o = this;
-   var r = RClass.create(c);
-   r.linkCanvas(h);
-   o.contexts.push(r);
-   return r;
+function FRs3Resource_unserialize(p){
+   this._name = p.readString();
 }

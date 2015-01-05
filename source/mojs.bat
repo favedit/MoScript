@@ -18,9 +18,40 @@
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\6-engine         %JS_HOME%\ajs\engine.js         N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\6-engine-2d      %JS_HOME%\ajs\engine-2d.js      N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\6-engine-3d      %JS_HOME%\ajs\engine-3d.js      N
+@"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\6-engine-3d-resource %JS_HOME%\ajs\engine-3d-res.js N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\7-control        %JS_HOME%\ajs\control.js        N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\7-control-form   %JS_HOME%\ajs\control-form.js   N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\7-control-table  %JS_HOME%\ajs\control-table.js  N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\8-stage          %JS_HOME%\ajs\stage.js          N
 
 COPY /Y %JS_HOME%\9-context\*.js %JS_HOME%\ajs\
+
+@REM ============================================================
+@SET JAVA_FMGR=org.mo.util.javascript.FJsFileMerger
+
+@SET JS_FILES=
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\runtime.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\lang.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\base.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\core.js
+echo %JS_FILES%
+@"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_FMGR% %JS_FILES% %JS_HOME%\ajs\mo-core.js
+
+@SET JS_FILES=
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\graphic.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\graphic-2d.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\graphic-3d.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\graphic-3d-wgl.js
+@"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_FMGR% %JS_FILES% %JS_HOME%\ajs\mo-graphic.js
+
+@SET JS_FILES=
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\engine.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\engine-2d.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\engine-3d.js
+@"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_FMGR% %JS_FILES% %JS_HOME%\ajs\mo-engine.js
+
+@SET JS_FILES=
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\control.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\control-form.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\control-table.js
+@"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_FMGR% %JS_FILES% %JS_HOME%\ajs\mo-control.js

@@ -276,12 +276,15 @@ function RClass_code(v){
 function RClass_name(v){
    if(v){
       // 如果对象是标准类的情况
-      if(v.clazz){
-         return v.clazz.name;
+      if(v.__name){
+         return v.__name;
+      }
+      if(v.__class){
+         return v.__class.name;
       }
       // 如果对象是函数的情况
       if(typeof(v) == 'function'){
-         return RString.mid(v.toString(), 'function ', '(');
+         return RMethod.name(v);
       }
       // 如果对象是普通对象的情况
       var c = v.constructor;

@@ -542,15 +542,13 @@ function FWglContext_bindTexture(ps, pi, pt){
 // @param b:blue:Float 蓝色
 // @param a:alpha:Float 透明
 // @param d:depth:Float 深度
-// @return 处理结果
 //============================================================
 function FWglContext_clear(r, g, b, a, d){
    var o = this;
-   var g = o._native;
-   g.clearColor(r, g, b, a);
-   g.clearDepth(d);
-   g.clear(g.COLOR_BUFFER_BIT | g.DEPTH_BUFFER_BIT);
-   return true;
+   var c = o._native;
+   c.clearColor(r, g, b, a);
+   c.clearDepth(d);
+   c.clear(c.COLOR_BUFFER_BIT | c.DEPTH_BUFFER_BIT);
 }
 
 //============================================================

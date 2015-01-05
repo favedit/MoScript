@@ -427,12 +427,13 @@ function FRenderViewport_set(l, t, w, h){
    o.height= h;
 }
 var REngine3d = new function REngine3d(){
-   o = RClass.inherits(this, o, FObject);
+   var o = this;
    o.contexts = new TObjects();
    o.createContext = REngine3d_createContext;
    return o;
 }
 function REngine3d_createContext(c, h){
+   var o = this;
    var r = RClass.create(c);
    r.linkCanvas(h);
    o.contexts.push(r);

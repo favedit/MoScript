@@ -54,7 +54,7 @@ function FXmlConnection_onConnectionComplete(){
       throw new TError(o, "Fetch xml data failure.");
    }
    if(!e){
-      return RMessage.fatal(o, null, 'Read xml error. (url={1})\n{2}', u, c._outputText)
+      return RMessage.fatal(o, null, 'Read xml error. (url={1})\n{2}', o._url, c._outputText)
    }
    // 建立文档对象
    var d = new TXmlDocument();
