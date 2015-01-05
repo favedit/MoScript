@@ -48,10 +48,12 @@ function TXmlNode_create(n, a){
 // <T>构建配置文本。</T>
 //
 // @param s:string:String 字符串对象
+// @param l:level:Integer 层级
 // @return String 构建成xml格式的字符串
 //==========================================================
-function TXmlNode_innerXml(s){
+function TXmlNode_innerXml(s, l){
    var o = this;
+   s.appendRepeat('   ', l);
    s.append('<', o._name);
    var as = o._attributes;
    if(as){
@@ -65,17 +67,19 @@ function TXmlNode_innerXml(s){
    if(!o._nodes && (o._value == null)){
       s.append('/');
    }
-   s.append('>');
+   s.append('>\n');
    var ns = o._nodes;
    if(ns){
       var c = ns.count();
       for(var n = 0; n < c; n++){
-         ns.get(n).innerXml(s);
+         ns.get(n).innerXml(s, l + 1);
       }
    }
    RXml.buildText(s, o._value)
    if(o._nodes || o._value != null){
+      s.appendRepeat('   ', l);
       s.append('</', o._name, '>');
+      s.append('\n');
    }
    return s;
 }
@@ -87,7 +91,7 @@ function TXmlNode_innerXml(s){
 //==========================================================
 function TXmlNode_xml(s){
    var s = new TString();
-   this.innerXml(s);
+   this.innerXml(s, 0);
    return s.toString();
 }
 

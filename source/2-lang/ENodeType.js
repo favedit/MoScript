@@ -11,5 +11,7 @@ var ENodeType = new function ENodeType(){
    o.Node = 1;
    // @attribute 文本
    o.Text = 3;
+   // @attribute 数据
+   o.Data = 4;
    return o;
 }

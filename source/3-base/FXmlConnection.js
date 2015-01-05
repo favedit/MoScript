@@ -48,7 +48,7 @@ function FXmlConnection_onConnectionComplete(){
    var e = null;
    if(c.responseXML){
       e = c.responseXML.documentElement;
-   }else if(cnn.responseXml){
+   }else if(c.responseXml){
       e = c.responseXml.documentElement;
    }else{
       throw new TError(o, "Fetch xml data failure.");

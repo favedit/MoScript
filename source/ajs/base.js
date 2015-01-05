@@ -253,7 +253,7 @@ function FXmlConnection_onConnectionComplete(){
    var e = null;
    if(c.responseXML){
       e = c.responseXML.documentElement;
-   }else if(cnn.responseXml){
+   }else if(c.responseXml){
       e = c.responseXml.documentElement;
    }else{
       throw new TError(o, "Fetch xml data failure.");
@@ -1495,6 +1495,8 @@ var RHtml = new function RHtml(){
    o.radioSet       = RHtml_radioSet;
    o.linkGet        = RHtml_linkGet;
    o.linkSet        = RHtml_linkSet;
+   o.toText         = RHtml_toText;
+   o.toHtml         = RHtml_toHtml;
    o.offsetPosition = RHtml_offsetPosition;
    o.offsetX        = RHtml_offsetX;
    o.offsetY        = RHtml_offsetY;
@@ -1514,8 +1516,6 @@ var RHtml = new function RHtml(){
    o.setBounds      = RHtml_setBounds;
    o.setPixelRect   = RHtml_setPixelRect;
    o.setPixelBounds = RHtml_setPixelBounds;
-   o.toText         = RHtml_toText;
-   o.toHtml         = RHtml_toHtml;
    o.showNodes      = RHtml_showNodes;
    o.hideNodes      = RHtml_hideNodes;
    o.showChildren   = RHtml_showChildren;
@@ -1632,6 +1632,29 @@ function RHtml_linkSet(h, n, v){
       i._link = h;
    }
    i.set(n, v);
+}
+function RHtml_toText(p){
+   if(p != null){
+      p = p.toString();
+      p = p.replace(/&lt;/, '<');
+      p = p.replace(/&gt;/g, '>');
+      p = p.replace(/&nbsp;/g, ' ');
+      p = p.replace(/<BR>/g, '\n');
+   }
+   return p;
+}
+function RHtml_toHtml(p){
+   if(p != null){
+      p = p.toString();
+      p = p.replace(/</g, '&lt;');
+      p = p.replace(/>/g, '&gt;');
+      p = p.replace(/ /g, '&nbsp;');
+      p = p.replace(/\n/g, '<BR>');
+      p = p.replace(/\\n/g, '<BR>');
+      p = p.replace(/\r/g, '');
+      p = p.replace(/\\r/g, '');
+   }
+   return p;
 }
 function RHtml_clone(o, s, t){
    if(!t){
@@ -1893,20 +1916,6 @@ function RHtml_setPixelBounds(o, l, t, w, h){
          s.pixelHeight = h;
       }
    }
-}
-function RHtml_toText(html){
-   return html;
-}
-function RHtml_toHtml(text){
-   if(null != text){
-      text = text.toString();
-      text = text.replace(/</g, '&lt;');
-      text = text.replace(/>/g, '&gt;');
-      text = text.replace(/ /g, '&nbsp;');
-      text = text.replace(/\\r\\n/g, '<BR>');
-      text = text.replace(/\\n/g, '<BR>');
-   }
-   return text;
 }
 function RHtml_changeWidth(s, t){
    if(s && t){
@@ -2896,8 +2905,12 @@ function RXml_buildNode(pd, pn, pe){
    if(ecs){
       var ecc = ecs.length;
       for(var n = 0; n < ecc; n++){
-         if(ecs[n].nodeType == ENodeType.Text){
-            xt.append(ecs[n].nodeValue);
+         var en = ecs[n];
+         var ect = en.nodeType;
+         if(ect == ENodeType.Text){
+            xt.append(en.nodeValue);
+         }else if(ect == ENodeType.Data){
+            xt.append(en.data);
          }
       }
    }
@@ -3117,8 +3130,9 @@ function TXmlNode_create(n, a){
    this.push(r);
    return r;
 }
-function TXmlNode_innerXml(s){
+function TXmlNode_innerXml(s, l){
    var o = this;
+   s.appendRepeat('   ', l);
    s.append('<', o._name);
    var as = o._attributes;
    if(as){
@@ -3132,23 +3146,25 @@ function TXmlNode_innerXml(s){
    if(!o._nodes && (o._value == null)){
       s.append('/');
    }
-   s.append('>');
+   s.append('>\n');
    var ns = o._nodes;
    if(ns){
       var c = ns.count();
       for(var n = 0; n < c; n++){
-         ns.get(n).innerXml(s);
+         ns.get(n).innerXml(s, l + 1);
       }
    }
    RXml.buildText(s, o._value)
    if(o._nodes || o._value != null){
+      s.appendRepeat('   ', l);
       s.append('</', o._name, '>');
+      s.append('\n');
    }
    return s;
 }
 function TXmlNode_xml(s){
    var s = new TString();
-   this.innerXml(s);
+   this.innerXml(s, 0);
    return s.toString();
 }
 function TXmlNode_toString(){

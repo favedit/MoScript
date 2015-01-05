@@ -5,8 +5,8 @@ var ERenderAttributeFormat = new function ERenderAttributeFormat(){
    o.Float2 = 2;
    o.Float3 = 3;
    o.Float4 = 4;
-   o.Byte = 5;
-   o.ByteNormal = 6;
+   o.Byte4 = 5;
+   o.Byte4Normal = 6;
    return o;
 }
 var ERenderBlendMode = new function ERenderBlendMode(){
@@ -72,7 +72,7 @@ var ERenderShader = new function ERenderShader(){
 }
 var ERenderTexture = new function ERenderTexture(){
    var o = this;
-   o.None = 0;
+   o.Unknown = 0;
    o.Flat2d = 1;
    o.Flat3d = 2;
    o.Cube= 3;
@@ -210,8 +210,8 @@ function FRenderTexture_construct(){
 }
 function FRenderFlatTexture(o){
    o = RClass.inherits(this, o, FRenderTexture);
-   o.width = 0;
-   o.height = 0;
+   o.width     = 0;
+   o.height    = 0;
    o.construct = FRenderFlatTexture_construct;
    return o;
 }
@@ -253,23 +253,30 @@ function FRenderObject_setup(){
 }
 function FRenderProgram(o){
    o = RClass.inherits(this, o, FRenderObject);
-   o._attributes     = null;
-   o._parameters     = null;
-   o._samplers       = null;
-   o._vertexShader   = null;
-   o._fragmentShader = null;
+   o._attributes       = null;
+   o._parameters       = null;
+   o._samplers         = null;
+   o._vertexShader     = null;
+   o._fragmentShader   = null;
    o.hasAttribute      = FRenderProgram_hasAttribute;
-   o.attributeRegister = FRenderProgram_attributeRegister;
-   o.attributeFind     = FRenderProgram_attributeFind;
+   o.registerAttribute = FRenderProgram_registerAttribute;
+   o.findAttribute     = FRenderProgram_findAttribute;
    o.attributes        = FRenderProgram_attributes;
    o.hasParameter      = FRenderProgram_hasParameter;
-   o.parameterRegister = FRenderProgram_parameterRegister;
-   o.parameterFind     = FRenderProgram_parameterFind;
+   o.registerParameter = FRenderProgram_registerParameter;
+   o.findParameter     = FRenderProgram_findParameter;
    o.parameters        = FRenderProgram_parameters;
    o.hasSampler        = FRenderProgram_hasSampler;
+   o.registerSampler   = FRenderProgram_registerSampler;
+   o.findSampler       = FRenderProgram_findSampler;
    o.samplers          = FRenderProgram_samplers;
-   o.vertexShader    = RMethod.virtual(o, 'vertexShader');
-   o.fragmentShader  = RMethod.virtual(o, 'fragmentShader');
+   o.vertexShader      = RMethod.virtual(o, 'vertexShader');
+   o.fragmentShader    = RMethod.virtual(o, 'fragmentShader');
+   o.setAttribute      = RMethod.virtual(o, 'setAttribute');
+   o.setParameter      = RMethod.virtual(o, 'setParameter');
+   o.setSampler        = RMethod.virtual(o, 'setSampler');
+   o.upload            = RMethod.virtual(o, 'upload');
+   o.loadConfig        = FRenderProgram_loadConfig;
    return o;
 }
 function FRenderProgram_hasAttribute(){
@@ -277,14 +284,14 @@ function FRenderProgram_hasAttribute(){
    var r = o._attributes;
    return r ? !r.isEmpty() : false;
 }
-function FRenderProgram_attributeRegister(n){
+function FRenderProgram_registerAttribute(n){
    var o = this;
    var r = RClass.create(FRenderProgramAttribute);
-   r.name = n;
+   r._name = n;
    o.attributes().set(n, r);
    return r;
 }
-function FRenderProgram_attributeFind(n){
+function FRenderProgram_findAttribute(n){
    return this._attributes ? this._attributes.get(n) : null;
 }
 function FRenderProgram_attributes(){
@@ -300,15 +307,15 @@ function FRenderProgram_hasParameter(){
    var r = o._parameters;
    return r ? !r.isEmpty() : false;
 }
-function FRenderProgram_parameterRegister(pn, pf){
+function FRenderProgram_registerParameter(pn, pf){
    var o = this;
    var r = RClass.create(FRenderProgramParameter);
-   r.name = pn;
+   r._name = pn;
    r.formatCd = pf;
    o.parameters().set(pn, r);
    return r;
 }
-function FRenderProgram_parameterFind(n){
+function FRenderProgram_findParameter(n){
    return this._parameters ? this._parameters.get(n) : null;
 }
 function FRenderProgram_parameters(){
@@ -324,6 +331,16 @@ function FRenderProgram_hasSampler(){
    var r = o._samplers;
    return r ? !r.isEmpty() : false;
 }
+function FRenderProgram_registerSampler(pn){
+   var o = this;
+   var r = RClass.create(FRenderProgramSampler);
+   r._name = pn;
+   o.samplers().set(pn, r);
+   return r;
+}
+function FRenderProgram_findSampler(n){
+   return this._samplers ? this._samplers.get(n) : null;
+}
 function FRenderProgram_samplers(){
    var o = this;
    var r = o._samplers;
@@ -332,37 +349,118 @@ function FRenderProgram_samplers(){
    }
    return r;
 }
+function FRenderProgram_loadConfig(p){
+   var o = this;
+   var ns = p.nodes();
+   var nc = ns.count();
+   for(var i = 0; i < nc; i++){
+      var n = ns.get(i);
+      if(n.isName('State')){
+      }else if(n.isName('Specular')){
+      }else if(n.isName('Parameter')){
+         var pp = RClass.create(FRenderProgramParameter);
+         pp.loadConfig(n);
+         o.parameters().set(pp.name(), pp);
+         var s = pp.toString();
+      }else if(n.isName('Attribute')){
+         var pa = RClass.create(FRenderProgramAttribute);
+         pa.loadConfig(n);
+         o.attributes().set(pa.name(), pa);
+      }else if(n.isName('Sampler')){
+         var ps = RClass.create(FRenderProgramSampler);
+         ps.loadConfig(n);
+         o.samplers().set(ps.name(), ps);
+      }else if(n.isName('Source')){
+         var st = n.get('name');
+         var sv = n.value();
+         if(st == 'vertex'){
+            program.upload(ERenderShader.Vertex, sv);
+         }else if(st == 'fragment'){
+            program.upload(ERenderShader.Fragment, sv);
+         }else{
+            throw new TError(o, 'Unknown source type. (name={1})', nt);
+         }
+      }else{
+         throw new TError(o, 'Unknown config type. (name={1})', n.name());
+      }
+   }
+}
 function FRenderProgramAttribute(o){
    o = RClass.inherits(this, o, FObject);
-   o.name = null;
-   o.linker = null;
-   o.statusUsed = false;
-   o.slot = -1;
-   o.index = -1;
-   o.formatCd = -1;
+   o._name       = null;
+   o._linker     = null;
+   o._statusUsed = false;
+   o._slot       = -1;
+   o._index      = -1;
+   o._formatCd   = ERenderAttributeFormat.Unknown;
+   o.name        = FRenderProgramAttribute_name;
+   o.linker      = FRenderProgramAttribute_linker;
+   o.loadConfig  = FRenderProgramAttribute_loadConfig;
    return o;
+}
+function FRenderProgramAttribute_name(){
+   return this._name;
+}
+function FRenderProgramAttribute_linker(){
+   return this._linker;
+}
+function FRenderProgramAttribute_loadConfig(p){
+   var o = this;
+   o._name = p.get('name');
+   o._linker = p.get('linker');
+   o._formatCd = REnum.encode(ERenderAttributeFormat, p.get('format'));
 }
 function FRenderProgramParameter(o){
    o = RClass.inherits(this, o, FObject);
-   o.name = null;
-   o.linker = null;
-   o.statusUsed = false;
-   o.shaderCd = -1;
-   o.formatCd = -1;
-   o.slot = -1;
-   o.size = 0;
-   o.buffer = null;
+   o._name       = null;
+   o._linker     = null;
+   o._statusUsed = false;
+   o._shaderCd   = -1;
+   o._formatCd   = ERenderParameterFormat.Unknown;
+   o._slot       = -1;
+   o._size       = 0;
+   o._buffer     = null;
+   o.name        = FRenderProgramParameter_name;
+   o.linker      = FRenderProgramParameter_linker;
+   o.loadConfig  = FRenderProgramParameter_loadConfig;
    return o;
+}
+function FRenderProgramParameter_name(){
+   return this._name;
+}
+function FRenderProgramParameter_linker(){
+   return this._linker;
+}
+function FRenderProgramParameter_loadConfig(p){
+   var o = this;
+   o._name = p.get('name');
+   o._linker = p.get('linker');
+   o._formatCd = REnum.encode(ERenderParameterFormat, p.get('format'));
 }
 function FRenderProgramSampler(o){
    o = RClass.inherits(this, o, FObject);
-   o.name = null;
-   o.linker = null;
-   o.statusUsed = false;
-   o.slot = -1;
-   o.index = 0;
-   o.source = null;
+   o._name       = null;
+   o._linker     = null;
+   o._statusUsed = false;
+   o._slot       = -1;
+   o._index      = 0;
+   o._source     = null;
+   o.name        = FRenderProgramSampler_name;
+   o.linker      = FRenderProgramSampler_linker;
+   o.loadConfig  = FRenderProgramSampler_loadConfig;
    return o;
+}
+function FRenderProgramSampler_name(){
+   return this._name;
+}
+function FRenderProgramSampler_linker(){
+   return this._linker;
+}
+function FRenderProgramSampler_loadConfig(p){
+   var o = this;
+   o._name = p.get('name');
+   o._linker = p.get('linker');
+   o._source = p.get('source');
 }
 function FRenderProjection(o){
    o = RClass.inherits(this, o, FObject);
@@ -395,9 +493,13 @@ function FRenderShader(o){
 }
 function FRenderTexture(o){
    o = RClass.inherits(this, o, FRenderObject);
-   o._textureCd  = 0;
+   o._textureCd  = ERenderTexture.Unknown;
    o._statusLoad = false;
+   o.textureCd   = FRenderTexture_textureCd;
    return o;
+}
+function FRenderTexture_textureCd(){
+   return this._textureCd;
 }
 function FRenderVertexBuffer(o){
    o = RClass.inherits(this, o, FRenderObject);

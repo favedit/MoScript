@@ -247,8 +247,12 @@ function RXml_buildNode(pd, pn, pe){
    if(ecs){
       var ecc = ecs.length;
       for(var n = 0; n < ecc; n++){
-         if(ecs[n].nodeType == ENodeType.Text){
-            xt.append(ecs[n].nodeValue);
+         var en = ecs[n];
+         var ect = en.nodeType;
+         if(ect == ENodeType.Text){
+            xt.append(en.nodeValue);
+         }else if(ect == ENodeType.Data){
+            xt.append(en.data);
          }
       }
    }

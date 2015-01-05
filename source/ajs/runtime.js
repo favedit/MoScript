@@ -286,7 +286,22 @@ function TAttributes_unpack(p){
 function TDictionary(o){
    if(!o){o = this;}
    TMap(o);
+   o.dump = TDictionary_dump;
    return o;
+}
+function TDictionary_dump(){
+   var o = this;
+   var r = new TString();
+   var c = o._count;
+   r.append(RRuntime.className(o), ': ', c);
+   if(c > 0){
+      r.append(' {\n');
+      for(var n = 0; n < c; n++){
+         r.append('   ', o._names[n], '=[', o._values[n], ']\n');
+      }
+      r.append('}');
+   }
+   return r.toString();
 }
 function TList(o){
    if(!o){o = this;}
@@ -1006,6 +1021,7 @@ function TString(o){
    o.append     = TString_append;
    o.appendIf   = TString_appendIf;
    o.appendLine = TString_appendLine;
+   o.appendRepeat = TString_appendRepeat;
    o.push       = TString_push;
    o.clear      = TString_clear;
    o.toString   = TString_toString;
@@ -1049,6 +1065,13 @@ function TString_appendIf(f, v){
             o.memory[o.count++] = a[n];
          }
       }
+   }
+   return o;
+}
+function TString_appendRepeat(v, c){
+   var o = this;
+   for(var n = 0; n < c; n++){
+      o.memory[o.count++] = v;
    }
    return o;
 }

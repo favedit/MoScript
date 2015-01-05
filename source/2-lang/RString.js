@@ -229,10 +229,14 @@ function RString_contains(v, s){
 //    <L value='true'>相等</L>
 //==========================================================
 function RString_equals(s, t, f){
-   if((v != null) && (s != null)){
+   if((s != null) && (t != null)){
       // 强制转换为字符串
-      s += '';
-      t += '';
+      if(s.constructor != String){
+         s = s.toString();
+      }
+      if(t.constructor != String){
+         t = t.toString();
+      }
       // 比较相同
       if(f){
          return (s == t);

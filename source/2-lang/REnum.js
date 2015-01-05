@@ -52,11 +52,12 @@ function REnum_tryEncode(e, v, d){
 // @param d:default:Object 缺省内容
 //============================================================
 function REnum_encode(e, v){
-   var v = this.tryEncode(e, v);
-   if(v == null){
-      RMessage.fatal(this, 'encode', 'Invalid value (enum={0}, value={1})', RClass.dump(e), v); 
+   var o = this;
+   var r = o.tryEncode(e, v);
+   if(r == null){
+      throw new TError(o, 'Invalid value (enum={0}, value={1})', RClass.dump(e), v); 
    }
-   return v;
+   return r;
 }
 
 //============================================================
@@ -87,9 +88,10 @@ function REnum_tryDecode(e, v, d){
 // @param d:default:Object 缺省描述
 //============================================================
 function REnum_decode(e, v){
-   var v = this.tryDecode(e, v);
-   if(v == null){
-      RMessage.fatal(this, 'decode', 'Invalid value (enum={0}, value={1})', RClass.dump(e), v); 
+   var o = this;
+   var r = o.tryDecode(e, v);
+   if(r == null){
+      throw new TError(o, 'Invalid value (enum={0}, value={1})', RClass.dump(e), v); 
    }
-   return v;
+   return r;
 }

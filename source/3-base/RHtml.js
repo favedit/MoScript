@@ -25,6 +25,9 @@ var RHtml = new function RHtml(){
    // @method
    o.linkGet        = RHtml_linkGet;
    o.linkSet        = RHtml_linkSet;
+   // @method
+   o.toText         = RHtml_toText;
+   o.toHtml         = RHtml_toHtml;
 
    // @method
    // 协助在HTML元素上存储所有属性设置信息，系统退出时，会自动删掉上面的所有关联。
@@ -48,8 +51,6 @@ var RHtml = new function RHtml(){
    o.setBounds      = RHtml_setBounds;
    o.setPixelRect   = RHtml_setPixelRect;
    o.setPixelBounds = RHtml_setPixelBounds;
-   o.toText         = RHtml_toText;
-   o.toHtml         = RHtml_toHtml;
    o.showNodes      = RHtml_showNodes;
    o.hideNodes      = RHtml_hideNodes;
    o.showChildren   = RHtml_showChildren;
@@ -252,6 +253,43 @@ function RHtml_linkSet(h, n, v){
       i._link = h;
    }
    i.set(n, v);
+}
+
+//==========================================================
+// <T>将页面内容转换成文本内容。</T>
+//
+// @param p:html:String 页面内容
+// @return String 文本内容
+//==========================================================
+function RHtml_toText(p){
+   if(p != null){
+      p = p.toString();
+      p = p.replace(/&lt;/, '<');
+      p = p.replace(/&gt;/g, '>');
+      p = p.replace(/&nbsp;/g, ' ');
+      p = p.replace(/<BR>/g, '\n');
+   }
+   return p;
+}
+
+//==========================================================
+// <T>将文本内容转换成页面内容。</T>
+//
+// @param p:text:String 文本内容
+// @return String 页面内容
+//==========================================================
+function RHtml_toHtml(p){
+   if(p != null){
+      p = p.toString();
+      p = p.replace(/</g, '&lt;');
+      p = p.replace(/>/g, '&gt;');
+      p = p.replace(/ /g, '&nbsp;');
+      p = p.replace(/\n/g, '<BR>');
+      p = p.replace(/\\n/g, '<BR>');
+      p = p.replace(/\r/g, '');
+      p = p.replace(/\\r/g, '');
+   }
+   return p;
 }
 
 
@@ -621,28 +659,6 @@ function RHtml_setPixelBounds(o, l, t, w, h){
          s.pixelHeight = h;
       }
    }
-}
-
-//==========================================================
-//
-//==========================================================
-function RHtml_toText(html){
-   return html;
-}
-
-//==========================================================
-//
-//==========================================================
-function RHtml_toHtml(text){
-   if(null != text){
-      text = text.toString();
-      text = text.replace(/</g, '&lt;');
-      text = text.replace(/>/g, '&gt;');
-      text = text.replace(/ /g, '&nbsp;');
-      text = text.replace(/\\r\\n/g, '<BR>');
-      text = text.replace(/\\n/g, '<BR>');
-   }
-   return text;
 }
 
 //==========================================================

@@ -618,8 +618,8 @@ function RClass_dump(v){
          // HTML对象的情况
          return t + '<' + v.tagName + '>@' + RRuntime.uid(v);
       default:
-         if(v.name){
-            return t + '<' + v.name + '>@' + o.code(v);
+         if(v.__name){
+            return t + '<' + v.__name + '>@' + o.code(v);
          }
    }
    return t + '@' + o.code(v);

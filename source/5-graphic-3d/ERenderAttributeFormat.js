@@ -18,8 +18,8 @@ var ERenderAttributeFormat = new function ERenderAttributeFormat(){
    // @member 4维浮点数
    o.Float4 = 4;
    // @member 字节
-   o.Byte = 5;
+   o.Byte4 = 5;
    // @member 规范化字节
-   o.ByteNormal = 6;
+   o.Byte4Normal = 6;
    return o;
 }

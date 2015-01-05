@@ -8,8 +8,8 @@ function FRenderFlatTexture(o){
    o = RClass.inherits(this, o, FRenderTexture);
    //..........................................................
    // @attribute
-   o.width = 0;
-   o.height = 0;
+   o.width     = 0;
+   o.height    = 0;
    //..........................................................
    // @method
    o.construct = FRenderFlatTexture_construct;

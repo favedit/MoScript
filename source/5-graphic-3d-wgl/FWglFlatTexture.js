@@ -17,6 +17,7 @@ function FWglFlatTexture(o){
    o.setup   = FWglFlatTexture_setup;
    // @method
    o.loadUrl = FWglFlatTexture_loadUrl;
+   o.upload  = FWglFlatTexture_upload;
    return o;
 }
 
@@ -59,3 +60,22 @@ function FWglFlatTexture_loadUrl(p){
    r.src = p;
    r.onload = function(){o.onImageLoad(this);}
 }
+
+//==========================================================
+// <T>上传图片内容。</T>
+//
+// @method
+// @param p:image:HtmlImgTag 图片
+//==========================================================
+function FWglFlatTexture_upload(p){
+   var o = this;
+   var c = o._context;;
+   var g = c._native;
+   // 绑定数据
+   g.bindTexture(g.TEXTURE_2D, o._native);
+   // 上传内容
+   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, p);
+   var r = c.checkError("texImage2D", "Upload image failure.");
+   o._statusLoad = r;
+}
+

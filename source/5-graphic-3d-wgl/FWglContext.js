@@ -478,7 +478,7 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
 //============================================================
 // <T>绑定纹理。</T>
 //
-// @param ps:slo:Integert 插槽
+// @param ps:slo:Integer 插槽
 // @param pi:index:Integer 索引
 // @param pt:texture:FRenderTexture 纹理
 // @return 处理结果
@@ -507,7 +507,7 @@ function FWglContext_bindTexture(ps, pi, pt){
    }
    //............................................................
    // 绑定纹理
-   switch(pt.textureCd){
+   switch(pt.textureCd()){
       case ERenderTexture.Flat2d:{
          g.bindTexture(g.TEXTURE_2D, pt._native);
          g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
@@ -531,7 +531,7 @@ function FWglContext_bindTexture(ps, pi, pt){
          break;
       }
    }
-   return result;
+   return r;
 }
 
 //============================================================

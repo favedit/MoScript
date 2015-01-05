@@ -286,7 +286,22 @@ function TAttributes_unpack(p){
 function TDictionary(o){
    if(!o){o = this;}
    TMap(o);
+   o.dump = TDictionary_dump;
    return o;
+}
+function TDictionary_dump(){
+   var o = this;
+   var r = new TString();
+   var c = o._count;
+   r.append(RRuntime.className(o), ': ', c);
+   if(c > 0){
+      r.append(' {\n');
+      for(var n = 0; n < c; n++){
+         r.append('   ', o._names[n], '=[', o._values[n], ']\n');
+      }
+      r.append('}');
+   }
+   return r.toString();
 }
 function TList(o){
    if(!o){o = this;}
@@ -1006,6 +1021,7 @@ function TString(o){
    o.append     = TString_append;
    o.appendIf   = TString_appendIf;
    o.appendLine = TString_appendLine;
+   o.appendRepeat = TString_appendRepeat;
    o.push       = TString_push;
    o.clear      = TString_clear;
    o.toString   = TString_toString;
@@ -1049,6 +1065,13 @@ function TString_appendIf(f, v){
             o.memory[o.count++] = a[n];
          }
       }
+   }
+   return o;
+}
+function TString_appendRepeat(v, c){
+   var o = this;
+   for(var n = 0; n < c; n++){
+      o.memory[o.count++] = v;
    }
    return o;
 }
@@ -1603,6 +1626,7 @@ var ENodeType = new function ENodeType(){
    var o = this;
    o.Node = 1;
    o.Text = 3;
+   o.Data = 4;
    return o;
 }
 var ENumber = new function ENumber(){
@@ -2265,8 +2289,8 @@ function RClass_dump(v){
       case 'Html':
          return t + '<' + v.tagName + '>@' + RRuntime.uid(v);
       default:
-         if(v.name){
-            return t + '<' + v.name + '>@' + o.code(v);
+         if(v.__name){
+            return t + '<' + v.__name + '>@' + o.code(v);
          }
    }
    return t + '@' + o.code(v);
@@ -2930,11 +2954,12 @@ function REnum_tryEncode(e, v, d){
    return d;
 }
 function REnum_encode(e, v){
-   var v = this.tryEncode(e, v);
-   if(v == null){
-      RMessage.fatal(this, 'encode', 'Invalid value (enum={0}, value={1})', RClass.dump(e), v);
+   var o = this;
+   var r = o.tryEncode(e, v);
+   if(r == null){
+      throw new TError(o, 'Invalid value (enum={0}, value={1})', RClass.dump(e), v);
    }
-   return v;
+   return r;
 }
 function REnum_tryDecode(e, v, d){
    if(e != null){
@@ -2947,11 +2972,12 @@ function REnum_tryDecode(e, v, d){
    return d;
 }
 function REnum_decode(e, v){
-   var v = this.tryDecode(e, v);
-   if(v == null){
-      RMessage.fatal(this, 'decode', 'Invalid value (enum={0}, value={1})', RClass.dump(e), v);
+   var o = this;
+   var r = o.tryDecode(e, v);
+   if(r == null){
+      throw new TError(o, 'Invalid value (enum={0}, value={1})', RClass.dump(e), v);
    }
-   return v;
+   return r;
 }
 var RFile = new function(){
    var o = this;
@@ -3618,9 +3644,13 @@ function RString_contains(v, s){
    return false;
 }
 function RString_equals(s, t, f){
-   if((v != null) && (s != null)){
-      s += '';
-      t += '';
+   if((s != null) && (t != null)){
+      if(s.constructor != String){
+         s = s.toString();
+      }
+      if(t.constructor != String){
+         t = t.toString();
+      }
       if(f){
          return (s == t);
       }else{
@@ -5152,6 +5182,8 @@ function TNode(o){
    o._attributes  = null;
    o._nodes       = null;
    o.isName       = TNode_isName;
+   o.name         = TNode_name;
+   o.value        = TNode_value;
    o.contains     = TNode_contains;
    o.hasAttribute = TNode_hasAttribute;
    o.attributes   = TNode_attributes;
@@ -5170,6 +5202,12 @@ function TNode(o){
 }
 function TNode_isName(n){
    return RString.equals(this._name, n);
+}
+function TNode_name(){
+   return this._name;
+}
+function TNode_value(){
+   return this._value;
 }
 function TNode_contains(n){
    var r = this._attributes;
@@ -5655,7 +5693,7 @@ function FXmlConnection_onConnectionComplete(){
    var e = null;
    if(c.responseXML){
       e = c.responseXML.documentElement;
-   }else if(cnn.responseXml){
+   }else if(c.responseXml){
       e = c.responseXml.documentElement;
    }else{
       throw new TError(o, "Fetch xml data failure.");
@@ -6897,6 +6935,8 @@ var RHtml = new function RHtml(){
    o.radioSet       = RHtml_radioSet;
    o.linkGet        = RHtml_linkGet;
    o.linkSet        = RHtml_linkSet;
+   o.toText         = RHtml_toText;
+   o.toHtml         = RHtml_toHtml;
    o.offsetPosition = RHtml_offsetPosition;
    o.offsetX        = RHtml_offsetX;
    o.offsetY        = RHtml_offsetY;
@@ -6916,8 +6956,6 @@ var RHtml = new function RHtml(){
    o.setBounds      = RHtml_setBounds;
    o.setPixelRect   = RHtml_setPixelRect;
    o.setPixelBounds = RHtml_setPixelBounds;
-   o.toText         = RHtml_toText;
-   o.toHtml         = RHtml_toHtml;
    o.showNodes      = RHtml_showNodes;
    o.hideNodes      = RHtml_hideNodes;
    o.showChildren   = RHtml_showChildren;
@@ -7034,6 +7072,29 @@ function RHtml_linkSet(h, n, v){
       i._link = h;
    }
    i.set(n, v);
+}
+function RHtml_toText(p){
+   if(p != null){
+      p = p.toString();
+      p = p.replace(/&lt;/, '<');
+      p = p.replace(/&gt;/g, '>');
+      p = p.replace(/&nbsp;/g, ' ');
+      p = p.replace(/<BR>/g, '\n');
+   }
+   return p;
+}
+function RHtml_toHtml(p){
+   if(p != null){
+      p = p.toString();
+      p = p.replace(/</g, '&lt;');
+      p = p.replace(/>/g, '&gt;');
+      p = p.replace(/ /g, '&nbsp;');
+      p = p.replace(/\n/g, '<BR>');
+      p = p.replace(/\\n/g, '<BR>');
+      p = p.replace(/\r/g, '');
+      p = p.replace(/\\r/g, '');
+   }
+   return p;
 }
 function RHtml_clone(o, s, t){
    if(!t){
@@ -7295,20 +7356,6 @@ function RHtml_setPixelBounds(o, l, t, w, h){
          s.pixelHeight = h;
       }
    }
-}
-function RHtml_toText(html){
-   return html;
-}
-function RHtml_toHtml(text){
-   if(null != text){
-      text = text.toString();
-      text = text.replace(/</g, '&lt;');
-      text = text.replace(/>/g, '&gt;');
-      text = text.replace(/ /g, '&nbsp;');
-      text = text.replace(/\\r\\n/g, '<BR>');
-      text = text.replace(/\\n/g, '<BR>');
-   }
-   return text;
 }
 function RHtml_changeWidth(s, t){
    if(s && t){
@@ -8298,8 +8345,12 @@ function RXml_buildNode(pd, pn, pe){
    if(ecs){
       var ecc = ecs.length;
       for(var n = 0; n < ecc; n++){
-         if(ecs[n].nodeType == ENodeType.Text){
-            xt.append(ecs[n].nodeValue);
+         var en = ecs[n];
+         var ect = en.nodeType;
+         if(ect == ENodeType.Text){
+            xt.append(en.nodeValue);
+         }else if(ect == ENodeType.Data){
+            xt.append(en.data);
          }
       }
    }
@@ -8519,8 +8570,9 @@ function TXmlNode_create(n, a){
    this.push(r);
    return r;
 }
-function TXmlNode_innerXml(s){
+function TXmlNode_innerXml(s, l){
    var o = this;
+   s.appendRepeat('   ', l);
    s.append('<', o._name);
    var as = o._attributes;
    if(as){
@@ -8534,23 +8586,25 @@ function TXmlNode_innerXml(s){
    if(!o._nodes && (o._value == null)){
       s.append('/');
    }
-   s.append('>');
+   s.append('>\n');
    var ns = o._nodes;
    if(ns){
       var c = ns.count();
       for(var n = 0; n < c; n++){
-         ns.get(n).innerXml(s);
+         ns.get(n).innerXml(s, l + 1);
       }
    }
    RXml.buildText(s, o._value)
    if(o._nodes || o._value != null){
+      s.appendRepeat('   ', l);
       s.append('</', o._name, '>');
+      s.append('\n');
    }
    return s;
 }
 function TXmlNode_xml(s){
    var s = new TString();
-   this.innerXml(s);
+   this.innerXml(s, 0);
    return s.toString();
 }
 function TXmlNode_toString(){

@@ -8,7 +8,7 @@
 var ERenderTexture = new function ERenderTexture(){
    var o = this;
    // @member 未知
-   o.None = 0;
+   o.Unknown = 0;
    // @member 2D纹理
    o.Flat2d = 1;
    // @member 3D纹理

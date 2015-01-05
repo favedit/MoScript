@@ -16,6 +16,7 @@ function TString(o){
    o.append     = TString_append;
    o.appendIf   = TString_appendIf;
    o.appendLine = TString_appendLine;
+   o.appendRepeat = TString_appendRepeat;
    o.push       = TString_push;
    o.clear      = TString_clear;
    o.toString   = TString_toString;
@@ -89,6 +90,21 @@ function TString_appendIf(f, v){
             o.memory[o.count++] = a[n];
          }
       }
+   }
+   return o;
+}
+
+//==========================================================
+// <T>追加重复字符串。</T>
+//
+// @method
+// @param v:values:String 字符串
+// @param c:count:Integer 次数
+//==========================================================
+function TString_appendRepeat(v, c){
+   var o = this;
+   for(var n = 0; n < c; n++){
+      o.memory[o.count++] = v;
    }
    return o;
 }

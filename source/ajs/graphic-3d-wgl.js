@@ -311,7 +311,7 @@ function FWglContext_bindTexture(ps, pi, pt){
       }
       o._renderTextureActiveSlot = ps;
    }
-   switch(pt.textureCd){
+   switch(pt.textureCd()){
       case ERenderTexture.Flat2d:{
          g.bindTexture(g.TEXTURE_2D, pt._native);
          g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
@@ -335,7 +335,7 @@ function FWglContext_bindTexture(ps, pi, pt){
          break;
       }
    }
-   return result;
+   return r;
 }
 function FWglContext_clear(r, g, b, a, d){
    var o = this;
@@ -437,6 +437,7 @@ function FWglFlatTexture(o){
    o.onImageLoad = FWglFlatTexture_onImageLoad;
    o.setup   = FWglFlatTexture_setup;
    o.loadUrl = FWglFlatTexture_loadUrl;
+   o.upload  = FWglFlatTexture_upload;
    return o;
 }
 function FWglFlatTexture_onImageLoad(v){
@@ -459,6 +460,15 @@ function FWglFlatTexture_loadUrl(p){
    var r = new Image();
    r.src = p;
    r.onload = function(){o.onImageLoad(this);}
+}
+function FWglFlatTexture_upload(p){
+   var o = this;
+   var c = o._context;;
+   var g = c._native;
+   g.bindTexture(g.TEXTURE_2D, o._native);
+   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, p);
+   var r = c.checkError("texImage2D", "Upload image failure.");
+   o._statusLoad = r;
 }
 function FWglFragmentShader(o){
    o = RClass.inherits(this, o, FRenderFragmentShader);
@@ -539,7 +549,9 @@ function FWglProgram(o){
    o.upload         = FWglProgram_upload;
    o.build          = FWglProgram_build;
    o.link           = FWglProgram_link;
+   o.setAttribute   = FWglProgram_setAttribute;
    o.setParameter   = FWglProgram_setParameter;
+   o.setSampler     = FWglProgram_setSampler;
    o.dispose        = FWglProgram_dispose;
    return o;
 }
@@ -602,9 +614,9 @@ function FWglProgram_build(){
    }
    if(o.hasAttribute()){
       var as = o.attributes();
-      var count = as.Count();
-      for(var n = 0; n < count; n++){
-         var a = as.get(n);
+      var ac = as.count();
+      for(var n = 0; n < ac; n++){
+         var a = as.value(n);
          var an = a.name();
          g.bindAttribLocation(pn, n, an);
          r = c.checkError("bindAttribLocation", "Bind attribute location. (program_id=%d, slot=%d, name=%s)", pn, n, an);
@@ -647,14 +659,14 @@ function FWglProgram_link(){
       var pc = o._parameters.count();
       for(var n = 0; n < pc; n++){
          var p = o._parameters.value(n);
-         var i = g.getUniformLocation(pn, p.name);
-         r = c.checkError("getUniformLocation", "Find parameter slot. (program_id=%d, name=%s, slot=%d)", pn, p.name, i);
+         var i = g.getUniformLocation(pn, p.name());
+         r = c.checkError("getUniformLocation", "Find parameter slot. (program_id=%d, name=%s, slot=%d)", pn, p.name(), i);
          if(!r){
             return r;
          }
-         p.slot = i;
+         p._slot = i;
          if(i != null){
-            p.statusUsed = true;
+            p._statusUsed = true;
          }
       }
    }
@@ -662,14 +674,14 @@ function FWglProgram_link(){
       var pc = o._attributes.count();
       for(var n = 0; n < pc; n++){
          var p = o._attributes.value(n);
-         var i = g.getAttribLocation(pn, p.name);
-         r = c.checkError("getAttribLocation", "Find attribute slot. (program_id=%d, name=%s, slot=%d)", pn, p.name, i);
+         var i = g.getAttribLocation(pn, p.name());
+         r = c.checkError("getAttribLocation", "Find attribute slot. (program_id=%d, name=%s, slot=%d)", pn, p.name(), i);
          if(!r){
             return r;
          }
-         p.slot = i;
+         p._slot = i;
          if(i != -1){
-            p.statusUsed = true;
+            p._statusUsed = true;
          }
       }
    }
@@ -677,30 +689,40 @@ function FWglProgram_link(){
       var pc = o._samplers.count();
       for(var n = 0; n < pc; n++){
          var p = o._samplers.value(n);
-         var i = g.getUniformLocation(pn, p.name);
-         r = c.checkError("getUniformLocation", "Find sampler slot. (program_id=%d, name=%s, slot=%d)", pn, p.name, i);
+         var i = g.getUniformLocation(pn, p.name());
+         r = c.checkError("getUniformLocation", "Find sampler slot. (program_id=%d, name=%s, slot=%d)", pn, p.name(), i);
          if(!r){
             return r;
          }
-         p.slot = i;
+         p._slot = i;
          if(i != null){
-            p.statusUsed = true;;
+            p._statusUsed = true;;
          }
       }
       var si = 0;
       for(var n = 0; n < pc; n++){
          var p = o._samplers.value(n);
-         if(p.statusUsed){
-            p.index = si++;
+         if(p._statusUsed){
+            p._index = si++;
          }
       }
    }
    return r;
 }
+function FWglProgram_setAttribute(pn, pb, pf){
+   var o = this;
+   var p = o.findAttribute(pn);
+   o._context.bindVertexBuffer(p._slot, pb, 0, pf);
+}
 function FWglProgram_setParameter(pn, pv, pc){
    var o = this;
-   var p = o.parameterFind(pn);
-   o._context.bindConst(null, p.slot, p.formatCd, pv, pc);
+   var p = o.findParameter(pn);
+   o._context.bindConst(null, p._slot, p._formatCd, pv, pc);
+}
+function FWglProgram_setSampler(pn, pt){
+   var o = this;
+   var p = o.findSampler(pn);
+   o._context.bindTexture(p._slot, p._index, pt);
 }
 function FWglProgram_dispose(){
    var o = this;

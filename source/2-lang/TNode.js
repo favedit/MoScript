@@ -16,6 +16,8 @@ function TNode(o){
    //..........................................................
    // @method
    o.isName       = TNode_isName;
+   o.name         = TNode_name;
+   o.value        = TNode_value;
    o.contains     = TNode_contains;
    o.hasAttribute = TNode_hasAttribute;
    o.attributes   = TNode_attributes;
@@ -42,6 +44,26 @@ function TNode(o){
 //==========================================================
 function TNode_isName(n){
    return RString.equals(this._name, n);
+}
+
+//==========================================================
+// <T>获得名称。</T>
+//
+// @method
+// @return String 名称
+//==========================================================
+function TNode_name(){
+   return this._name;
+}
+
+//==========================================================
+// <T>获得内容。</T>
+//
+// @method
+// @return String 内容
+//==========================================================
+function TNode_value(){
+   return this._value;
 }
 
 //==========================================================

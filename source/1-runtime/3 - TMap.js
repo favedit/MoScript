@@ -7,11 +7,13 @@
 //==========================================================
 function TMap(o){
    if(!o){o = this;}
+   //..........................................................
    // @attribute
    o._count        = 0;
    o._table        = new Object();
    o._names        = new Array();
    o._values       = new Array();
+   //..........................................................
    // @method
    o.isEmpty       = TMap_isEmpty;
    o.count         = TMap_count;

@@ -370,6 +370,7 @@ var ENodeType = new function ENodeType(){
    var o = this;
    o.Node = 1;
    o.Text = 3;
+   o.Data = 4;
    return o;
 }
 var ENumber = new function ENumber(){
@@ -1032,8 +1033,8 @@ function RClass_dump(v){
       case 'Html':
          return t + '<' + v.tagName + '>@' + RRuntime.uid(v);
       default:
-         if(v.name){
-            return t + '<' + v.name + '>@' + o.code(v);
+         if(v.__name){
+            return t + '<' + v.__name + '>@' + o.code(v);
          }
    }
    return t + '@' + o.code(v);
@@ -1697,11 +1698,12 @@ function REnum_tryEncode(e, v, d){
    return d;
 }
 function REnum_encode(e, v){
-   var v = this.tryEncode(e, v);
-   if(v == null){
-      RMessage.fatal(this, 'encode', 'Invalid value (enum={0}, value={1})', RClass.dump(e), v);
+   var o = this;
+   var r = o.tryEncode(e, v);
+   if(r == null){
+      throw new TError(o, 'Invalid value (enum={0}, value={1})', RClass.dump(e), v);
    }
-   return v;
+   return r;
 }
 function REnum_tryDecode(e, v, d){
    if(e != null){
@@ -1714,11 +1716,12 @@ function REnum_tryDecode(e, v, d){
    return d;
 }
 function REnum_decode(e, v){
-   var v = this.tryDecode(e, v);
-   if(v == null){
-      RMessage.fatal(this, 'decode', 'Invalid value (enum={0}, value={1})', RClass.dump(e), v);
+   var o = this;
+   var r = o.tryDecode(e, v);
+   if(r == null){
+      throw new TError(o, 'Invalid value (enum={0}, value={1})', RClass.dump(e), v);
    }
-   return v;
+   return r;
 }
 var RFile = new function(){
    var o = this;
@@ -2385,9 +2388,13 @@ function RString_contains(v, s){
    return false;
 }
 function RString_equals(s, t, f){
-   if((v != null) && (s != null)){
-      s += '';
-      t += '';
+   if((s != null) && (t != null)){
+      if(s.constructor != String){
+         s = s.toString();
+      }
+      if(t.constructor != String){
+         t = t.toString();
+      }
       if(f){
          return (s == t);
       }else{
@@ -3919,6 +3926,8 @@ function TNode(o){
    o._attributes  = null;
    o._nodes       = null;
    o.isName       = TNode_isName;
+   o.name         = TNode_name;
+   o.value        = TNode_value;
    o.contains     = TNode_contains;
    o.hasAttribute = TNode_hasAttribute;
    o.attributes   = TNode_attributes;
@@ -3937,6 +3946,12 @@ function TNode(o){
 }
 function TNode_isName(n){
    return RString.equals(this._name, n);
+}
+function TNode_name(){
+   return this._name;
+}
+function TNode_value(){
+   return this._value;
 }
 function TNode_contains(n){
    var r = this._attributes;

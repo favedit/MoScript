@@ -9,14 +9,21 @@ function FWglProgram(o){
    //..........................................................
    // @attribute
    o._native        = null;
+   //..........................................................
    // @method
    o.setup          = FWglProgram_setup;
+   // @method
    o.vertexShader   = FWglProgram_vertexShader;
    o.fragmentShader = FWglProgram_fragmentShader;
+   // @method
    o.upload         = FWglProgram_upload;
    o.build          = FWglProgram_build;
    o.link           = FWglProgram_link;
+   // @method
+   o.setAttribute   = FWglProgram_setAttribute;
    o.setParameter   = FWglProgram_setParameter;
+   o.setSampler     = FWglProgram_setSampler;
+   // @method
    o.dispose        = FWglProgram_dispose;
    return o;
 }
@@ -118,9 +125,9 @@ function FWglProgram_build(){
    // 设置属性集合
    if(o.hasAttribute()){
       var as = o.attributes();
-      var count = as.Count();
-      for(var n = 0; n < count; n++){
-         var a = as.get(n);
+      var ac = as.count();
+      for(var n = 0; n < ac; n++){
+         var a = as.value(n);
          var an = a.name();
          g.bindAttribLocation(pn, n, an);
          r = c.checkError("bindAttribLocation", "Bind attribute location. (program_id=%d, slot=%d, name=%s)", pn, n, an);
@@ -182,14 +189,14 @@ function FWglProgram_link(){
       var pc = o._parameters.count();
       for(var n = 0; n < pc; n++){
          var p = o._parameters.value(n);
-         var i = g.getUniformLocation(pn, p.name);
-         r = c.checkError("getUniformLocation", "Find parameter slot. (program_id=%d, name=%s, slot=%d)", pn, p.name, i);
+         var i = g.getUniformLocation(pn, p.name());
+         r = c.checkError("getUniformLocation", "Find parameter slot. (program_id=%d, name=%s, slot=%d)", pn, p.name(), i);
          if(!r){
             return r;
          }
-         p.slot = i;
+         p._slot = i;
          if(i != null){
-            p.statusUsed = true;
+            p._statusUsed = true;
          }
       }
    }
@@ -198,14 +205,14 @@ function FWglProgram_link(){
       var pc = o._attributes.count();
       for(var n = 0; n < pc; n++){
          var p = o._attributes.value(n);
-         var i = g.getAttribLocation(pn, p.name);
-         r = c.checkError("getAttribLocation", "Find attribute slot. (program_id=%d, name=%s, slot=%d)", pn, p.name, i);
+         var i = g.getAttribLocation(pn, p.name());
+         r = c.checkError("getAttribLocation", "Find attribute slot. (program_id=%d, name=%s, slot=%d)", pn, p.name(), i);
          if(!r){
             return r;
          }
-         p.slot = i;
+         p._slot = i;
          if(i != -1){
-            p.statusUsed = true;
+            p._statusUsed = true;
          }
       }
    }
@@ -214,21 +221,21 @@ function FWglProgram_link(){
       var pc = o._samplers.count();
       for(var n = 0; n < pc; n++){
          var p = o._samplers.value(n);
-         var i = g.getUniformLocation(pn, p.name);
-         r = c.checkError("getUniformLocation", "Find sampler slot. (program_id=%d, name=%s, slot=%d)", pn, p.name, i);
+         var i = g.getUniformLocation(pn, p.name());
+         r = c.checkError("getUniformLocation", "Find sampler slot. (program_id=%d, name=%s, slot=%d)", pn, p.name(), i);
          if(!r){
             return r;
          }
-         p.slot = i;
+         p._slot = i;
          if(i != null){
-            p.statusUsed = true;;
+            p._statusUsed = true;;
          }
       }
       var si = 0;
       for(var n = 0; n < pc; n++){
          var p = o._samplers.value(n);
-         if(p.statusUsed){
-            p.index = si++;
+         if(p._statusUsed){
+            p._index = si++;
          }
       }
    }
@@ -236,14 +243,44 @@ function FWglProgram_link(){
 }
 
 //==========================================================
+// <T>设置属性。</T>
+//
+// @method
+// @param pn:name:String 名称
+// @param pb:buffer:Object 数据
+// @param pf:format:Integer 个数
+//==========================================================
+function FWglProgram_setAttribute(pn, pb, pf){
+   var o = this;
+   var p = o.findAttribute(pn);
+   o._context.bindVertexBuffer(p._slot, pb, 0, pf);
+}
+
+//==========================================================
 // <T>设置参数。</T>
 //
 // @method
+// @param pn:name:String 名称
+// @param pv:value:Object 数据
+// @param pc:count:Integer 个数
 //==========================================================
 function FWglProgram_setParameter(pn, pv, pc){
    var o = this;
-   var p = o.parameterFind(pn);
-   o._context.bindConst(null, p.slot, p.formatCd, pv, pc);
+   var p = o.findParameter(pn);
+   o._context.bindConst(null, p._slot, p._formatCd, pv, pc);
+}
+
+//==========================================================
+// <T>设置取样器。</T>
+//
+// @method
+// @param pn:name:String 名称
+// @param pt:texture:FRenderTexture 纹理
+//==========================================================
+function FWglProgram_setSampler(pn, pt){
+   var o = this;
+   var p = o.findSampler(pn);
+   o._context.bindTexture(p._slot, p._index, pt);
 }
 
 //==========================================================
