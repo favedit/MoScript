@@ -13,12 +13,11 @@
    <Specular name='fog'      value='N'/>
    <!--=====================================================-->
    <Parameter name='vc_model_matrix'    linker='Vertex.ModelMatrix' format='Float4x4'/>
-   <Parameter name='vc_model_mat3'      linker='Vertex.ModelMatrix' format='Float3x3'/>
    <Parameter name='vc_vp_matrix'       linker='Vertex.ModelMatrix' format='Float4x4'/>
    <Parameter name='vc_camera_position' linker='Vertex.ModelMatrix' format='Float4'/>
    <Parameter name='vc_light_direction' linker='Vertex.ModelMatrix' format='Float4'/>
-   <Parameter name='fc_camera_position' linker='Vertex.ModelMatrix' format='Float3'/>
-   <Parameter name='fc_light_direction' linker='Vertex.ModelMatrix' format='Float3'/>
+   <Parameter name='fc_camera_position' linker='Vertex.ModelMatrix' format='Float4'/>
+   <Parameter name='fc_light_direction' linker='Vertex.ModelMatrix' format='Float4'/>
    <!--=====================================================-->
    <Attribute name='va_instance' linker='instance' format='Float1'/>
    <Attribute name='va_position' linker='position' format='Float4'/>
@@ -37,63 +36,25 @@
    <Source name='vertex'><![CDATA[
       attribute vec3 va_position;
       attribute vec2 va_coord;
-      attribute vec3 va_normal;
-      attribute vec3 va_binormal;
-      attribute vec3 va_tangent;
       uniform mat4 vc_model_matrix;
-      uniform mat3 vc_model_mat3;
       uniform mat4 vc_vp_matrix;
-      varying vec4 v_model_position;
       varying vec2 v_coord;
-      varying vec3 v_normal;
       void main(void){
          vec4 position = vec4(va_position, 1.0);
          vec4 modelPosition = position * vc_model_matrix;
-         vec3 normal = normalize(va_normal.xyz * mat3(vc_model_matrix));
-         //vec3 normal = normalize(va_normal.xyz * vc_model_mat3);
          gl_Position = modelPosition * vc_vp_matrix;
-         v_model_position = modelPosition;
          v_coord = va_coord;
-         v_normal = normal;
-
-         //vec3 binormal = normalize(va_binormal * mat3(vc_model_matrix));
-         //vec3 tangent = normalize(va_tangent * mat3(vc_model_matrix));
-         //mat3 matrixTs = mat3(tangent, binormal, normal);
       }
    ]]></Source>
    <Source name='fragment'><![CDATA[
       #ifdef GL_ES
       precision highp float;
       #endif
-      uniform vec3 fc_camera_position;
-      uniform vec3 fc_light_direction;
-      varying vec4 v_model_position;
       varying vec2 v_coord;
-      varying vec3 v_normal;
       uniform sampler2D fs_diffuse;
-      uniform sampler2D fs_normal;
-      uniform sampler2D fs_specular;
       void main(void) {
-         vec3 cameraDirection = normalize(fc_camera_position - v_model_position.xyz);
-
-         float normalFactor = dot(v_normal.xyz, -fc_light_direction);
-
          vec3 color = texture2D(fs_diffuse, v_coord).rgb;
-         vec3 result = color * normalFactor * 1.4;
-
-         vec3 normal = texture2D(fs_normal, v_coord).rgb;
-         result += normal * 0.01;
-
-         vec3 specular = texture2D(fs_specular, v_coord).rgb;
-         vec3 reflectionDirection = normalize(reflect(fc_light_direction, v_normal));
-         float specularFactor = min(dot(cameraDirection, reflectionDirection), 1.0);
-         specularFactor = pow(specularFactor, 20.0);
-         result += result * specularFactor * specular.x * 2.0;
-
-         //gl_FragColor = vec4(result.xyz, 1.0);
-         //gl_FragColor = vec4(v_normal.xyz, 1.0);
-         gl_FragColor = vec4(normalFactor, normalFactor, normalFactor, 1.0);
-         //gl_FragColor = vec4(specularFactor, specularFactor, specularFactor, 1.0);
+         gl_FragColor = vec4(color.rgb, 1.0);
       }
    ]]></Source>
 </Configuration>

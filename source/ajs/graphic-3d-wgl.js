@@ -161,7 +161,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
             return false;
          }
          var count = length / 4;
-         g.uniform1fv(slot, count, pd);
+         g.uniform1fv(slot, pd);
          r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
@@ -171,7 +171,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
             return false;
          }
          var count = length / 8;
-         g.uniform2fv(slot, count, pd);
+         g.uniform2fv(slot, pd);
          r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
@@ -181,8 +181,8 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
             return false;
          }
          var count = length / 12;
-         g.uniform3fv(slot, count, pd);
-         r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         g.uniform3fv(slot, pd);
+         r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case ERenderParameterFormat.Float4:{
@@ -191,7 +191,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
             return false;
          }
          var count = length / 16;
-         g.uniform4fv(slot, count, pd);
+         g.uniform4fv(slot, pd);
          r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
@@ -201,7 +201,17 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
             return false;
          }
          var count = length / 36;
-         g.uniformMatrix3fv(slot, count, false, pd);
+         var dt = new Float32Array(16);
+         dt[ 0] = pd[ 0];
+         dt[ 1] = pd[ 4];
+         dt[ 2] = pd[ 8];
+         dt[ 3] = pd[ 1];
+         dt[ 4] = pd[ 5];
+         dt[ 5] = pd[ 9];
+         dt[ 6] = pd[ 2];
+         dt[ 7] = pd[ 6];
+         dt[ 8] = pd[10];
+         g.uniformMatrix3fv(slot, false, pd);
          r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
@@ -211,7 +221,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
             return false;
          }
          var count = length / 48;
-         g.uniform4fv(slot, count * 3, pd);
+         g.uniform4fv(slot, pd);
          r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }

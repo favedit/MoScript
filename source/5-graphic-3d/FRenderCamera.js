@@ -10,11 +10,11 @@ function FRenderCamera(o){
    // @attribute 类型名称
    o.name = null;
    // 变换矩阵
-   o.matrix = null;
+   o.matrix        = null;
    // 相机位置
-   o.position = null;
+   o.position      = null;
    // 相机方向
-   o.direction = null;
+   o.direction     = null;
    // 中心前位置
    o._centerFront = 0;
    // 中心后位置
@@ -24,22 +24,22 @@ function FRenderCamera(o){
    // 远焦平面位置
    o._focalFar = 100.0;
    // 可见视截体
-   o._planes = null;
+   o._planes       = null;
    // 视截体
-   o._frustum = null;
+   o._frustum      = null;
    // 投影变换
-   o.projection = null;
+   o._projection   = null;
    // 渲染目标
-   o.viewport = null;
+   o._viewport     = null;
    //..........................................................
    // 上轴线
-   o._axisUp = null;
+   o._axisUp       = null;
    // X轴线
-   o._axisX = null;
+   o._axisX        = null;
    // Y轴线
-   o._axisY = null;
+   o._axisY        = null;
    // Z轴线
-   o._axisZ = null;
+   o._axisZ        = null;
    //..........................................................
    // @method
    o.construct     = FRenderCamera_construct;

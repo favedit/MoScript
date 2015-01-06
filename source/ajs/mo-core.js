@@ -3971,6 +3971,40 @@ function RString_removeChars(v, s){
    }
    return v;
 }
+var RTimer = new function RTimer(){
+   var o = this;
+   o._startTime = 0;
+   o._lastTime  = 0;
+   o._count     = 0;
+   o.setup      = RTimer_setup;
+   o.current    = RTimer_current;
+   o.rate       = RTimer_rate;
+   o.update     = RTimer_update;
+   return o;
+}
+function RTimer_setup(){
+   var o = this;
+   var n = new Date().getTime();
+   o._startTime = n;
+   o._lastTime = n;
+}
+function RTimer_current(){
+   return this._lastTime;
+}
+function RTimer_rate(){
+   var o = this;
+   if(o._count == 0){
+      return 0;
+   }
+   var t = o._lastTime - o._startTime;
+   var c = o._count * 1000 / t;
+   return parseInt(c);
+}
+function RTimer_update(){
+   var o = this;
+   o._count++;
+   o._lastTime = new Date().getTime();
+}
 function SMatrix4x4(o){
    if(o){o = this}
    return o;
@@ -5666,6 +5700,49 @@ function FHttpConnection_send(p){
       o.sendSync();
    }
    return o.content();
+}
+function FImage(o){
+   o = RClass.inherits(this, o, FObject);
+   o._image    = null;
+   o._ready    = false;
+   o.lsnsLoad  = null;
+   o.ohLoad    = FImage_ohLoad;
+   o.construct = FImage_construct;
+   o.testReady = FImage_testReady;
+   o.image     = FImage_image;
+   o.loadUrl   = FImage_loadUrl;
+   o.dispose   = FImage_dispose;
+   return o;
+}
+function FImage_construct(){
+   var o = this;
+   o.lsnsLoad = new TListeners();
+}
+function FImage_ohLoad(){
+   var o = this._linker;
+   o._ready = true;
+   o.lsnsLoad.process(o);
+}
+function FImage_testReady(){
+   return this._ready;
+}
+function FImage_image(){
+   return this._image;
+}
+function FImage_loadUrl(u){
+   var o = this;
+   var g = o._image;
+   if(g == null){
+      g = o._image = new Image();
+      g._linker = o;
+      g.onload = o.ohLoad;
+   }
+   g.src = u;
+}
+function FImage_dispose(){
+   var o = this;
+   o._image = null;
+   o.__base.FObject.dispose.call(o);
 }
 function FXmlConnection(o){
    o = RClass.inherits(this, o, FHttpConnection);

@@ -21,6 +21,90 @@ function FGeometry3d_load(p){
    var o = this;
    o._renderable = p;
 }
+function FInstanceTexture(o){
+   o = RClass.inherits(this, o, FObject);
+   o._context    = null;
+   o._ready      = false;
+   o._image      = null;
+   o._texture    = null;
+   o.onLoad      = FInstanceTexture_onLoad;
+   o.construct   = FInstanceTexture_construct;
+   o.linkContext = FInstanceTexture_linkContext;
+   o.image       = FInstanceTexture_image;
+   o.texture     = FInstanceTexture_texture;
+   o.testReady   = FInstanceTexture_testReady;
+   o.load        = FInstanceTexture_load;
+   o.dispose     = FInstanceTexture_dispose;
+   return o;
+}
+function FInstanceTexture_onLoad(p){
+   var o = this;
+   var t = o._texture = o._context.createFlatTexture();
+   t.upload(p.image());
+   o._ready  = true;
+}
+function FInstanceTexture_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+function FInstanceTexture_linkContext(p){
+   this._context = p;
+}
+function FInstanceTexture_image(){
+   return this._image;
+}
+function FInstanceTexture_texture(){
+   return this._texture;
+}
+function FInstanceTexture_testReady(){
+   return this._ready;
+}
+function FInstanceTexture_load(u){
+   var o = this;
+   var g = o._image = RClass.create(FImage);
+   g.lsnsLoad.register(o, o.onLoad);
+   g.loadUrl(u);
+}
+function FInstanceTexture_dispose(){
+   var o = this;
+   o._context = null;
+   o._ready = false;
+   o._image = null;
+   o._texture = null;
+}
+function FInstanceTextureConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd  = EScope.Local;
+   o._images   = null;
+   o._textures = null;
+   o._path     = '/assets/texture/';
+   o.construct = FInstanceTextureConsole_construct;
+   o.textures  = FInstanceTextureConsole_textures;
+   o.load      = FInstanceTextureConsole_load;
+   return o;
+}
+function FInstanceTextureConsole_construct(){
+   var o = this;
+   o._images = new TDictionary();
+   o._textures = new TDictionary();
+}
+function FInstanceTextureConsole_textures(){
+   return this._textures;
+}
+function FInstanceTextureConsole_load(pc, pn){
+   var o = this;
+   var t = o._textures.get(pn);
+   if(t != null){
+      return t;
+   }
+   var u = RBrowser.contentPath() + o._path + pn;
+   t = RClass.create(FInstanceTexture);
+   t.linkContext(pc);
+   t._name = pn;
+   t.load(u);
+   o._textures.set(pn, t);
+   return t;
+}
 function FModel3d(o){
    o = RClass.inherits(this, o, FDisplay);
    o._statusReady = false;
@@ -288,7 +372,7 @@ function FRenderModelConsole_load(pc, pn){
       return m;
    }
    var u = RBrowser.contentPath() + o._path + pn + '.ser'
-   var m = RClass.create(FRenderModel);
+   m = RClass.create(FRenderModel);
    m._context = pc;
    m._name = pn;
    m.load(u);
@@ -365,6 +449,43 @@ function FRenderRectangle_setup(p){
    o.indexBuffer = context.createIndexBuffer();
    o.indexBuffer.upload(id, 6);
 }
+function FSimpleStage3d(o){
+   o = RClass.inherits(this, o, FStage3d);
+   o,_skyLayer    = null;
+   o,_mapLayer    = null;
+   o,_spriteLayer = null;
+   o,_faceLayer   = null;
+   o.construct    = FSimpleStage3d_construct;
+   o.skyLayer     = FSimpleStage3d_skyLayer;
+   o.mapLayer     = FSimpleStage3d_mapLayer;
+   o.spriteLayer  = FSimpleStage3d_spriteLayer;
+   o.faceLayer    = FSimpleStage3d_faceLayer;
+   return o;
+}
+function FSimpleStage3d_construct(){
+   var o = this;
+   o.__base.FStage3d.construct.call(o);
+   var l = o._skyLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('sky', l);
+   var l = o._mapLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('map', l);
+   var l = o._spriteLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('sprite', l);
+   var l = o._faceLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('face', l);
+}
+function FSimpleStage3d_skyLayer(){
+   return this._skyLayer;
+}
+function FSimpleStage3d_mapLayer(){
+   return this._mapLayer;
+}
+function FSimpleStage3d_spriteLayer(){
+   return this._spriteLayer;
+}
+function FSimpleStage3d_faceLayer(){
+   return this._faceLayer;
+}
 function FSprite3d(o){
    o = RClass.inherits(this, o, FObject);
    o._context    = null;
@@ -378,4 +499,30 @@ function FSprite3d_linkContext(p){
 }
 function FSprite3d_testVisible(p){
    return this._visible;
+}
+function FStage3d(o){
+   o = RClass.inherits(this, o, FStage);
+   o._camera     = null;
+   o,_projection = null;
+   o.construct   = FStage3d_construct;
+   o.camera      = FStage3d_camera;
+   o.projection  = FStage3d_projection;
+   return o;
+}
+function FStage3d_construct(){
+   var o = this;
+   o.__base.FStage.construct.call(o);
+   var rc = o._camera = RClass.create(FRenderCamera);
+   rc.position.set(0, 0, -100);
+   rc.lookAt(0, 0, 0);
+   rc.update();
+   var rp = o._projection = RClass.create(FRenderProjection);
+   rp.update();
+   rc._projection = rp;
+}
+function FStage3d_camera(){
+   return this._camera;
+}
+function FStage3d_projection(){
+   return this._projection;
 }

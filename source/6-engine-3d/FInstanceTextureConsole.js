@@ -1,22 +1,23 @@
 //==========================================================
-// <T>资源控制台。</T>
+// <T>纹理控制台。</T>
 //
 // @console
 // @author maocy
 // @version 150106
 //==========================================================
-function FRenderModelConsole(o){
+function FInstanceTextureConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
    o._scopeCd  = EScope.Local;
-   o._models   = null;
-   o._path     = '/assets/model/';
+   o._images   = null;
+   o._textures = null;
+   o._path     = '/assets/texture/';
    //..........................................................
    // @method
-   o.construct = FRenderModelConsole_construct;
-   o.models    = FRenderModelConsole_models;
-   o.load      = FRenderModelConsole_load;
+   o.construct = FInstanceTextureConsole_construct;
+   o.textures  = FInstanceTextureConsole_textures;
+   o.load      = FInstanceTextureConsole_load;
    return o;
 }
 
@@ -25,19 +26,20 @@ function FRenderModelConsole(o){
 //
 // @method
 //==========================================================
-function FRenderModelConsole_construct(){
+function FInstanceTextureConsole_construct(){
    var o = this;
-   o._models = new TDictionary();
+   o._images = new TDictionary();
+   o._textures = new TDictionary();
 }
 
 //==========================================================
-// <T>获得渲染模型集合。</T>
+// <T>获得渲染纹理集合。</T>
 //
 // @method
-// @return TDictionary 渲染模型集合
+// @return TDictionary 渲染纹理集合
 //==========================================================
-function FRenderModelConsole_models(){
-   return this._models;
+function FInstanceTextureConsole_textures(){
+   return this._textures;
 }
 
 //==========================================================
@@ -48,20 +50,20 @@ function FRenderModelConsole_models(){
 // @param pn:name:String 名称
 // @return FRenderModel 渲染模型
 //==========================================================
-function FRenderModelConsole_load(pc, pn){
+function FInstanceTextureConsole_load(pc, pn){
    var o = this;
    // 查找模型
-   var m = o._models.get(pn);
-   if(m != null){
-      return m;
+   var t = o._textures.get(pn);
+   if(t != null){
+      return t;
    }
    // 获得路径
-   var u = RBrowser.contentPath() + o._path + pn + '.ser'
+   var u = RBrowser.contentPath() + o._path + pn;
    // 加载模型
-   m = RClass.create(FRenderModel);
-   m._context = pc;
-   m._name = pn;
-   m.load(u);
-   o._models.set(pn, m);
-   return m;
+   t = RClass.create(FInstanceTexture);
+   t.linkContext(pc);
+   t._name = pn;
+   t.load(u);
+   o._textures.set(pn, t);
+   return t;
 }

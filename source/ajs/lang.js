@@ -2715,6 +2715,40 @@ function RString_removeChars(v, s){
    }
    return v;
 }
+var RTimer = new function RTimer(){
+   var o = this;
+   o._startTime = 0;
+   o._lastTime  = 0;
+   o._count     = 0;
+   o.setup      = RTimer_setup;
+   o.current    = RTimer_current;
+   o.rate       = RTimer_rate;
+   o.update     = RTimer_update;
+   return o;
+}
+function RTimer_setup(){
+   var o = this;
+   var n = new Date().getTime();
+   o._startTime = n;
+   o._lastTime = n;
+}
+function RTimer_current(){
+   return this._lastTime;
+}
+function RTimer_rate(){
+   var o = this;
+   if(o._count == 0){
+      return 0;
+   }
+   var t = o._lastTime - o._startTime;
+   var c = o._count * 1000 / t;
+   return parseInt(c);
+}
+function RTimer_update(){
+   var o = this;
+   o._count++;
+   o._lastTime = new Date().getTime();
+}
 function SMatrix4x4(o){
    if(o){o = this}
    return o;
