@@ -25,6 +25,7 @@ function MDataStream(o){
    o.readFloat    = FByteStream_readFloat;
    o.readDouble   = FByteStream_readDouble;
    o.readString   = FByteStream_readString;
+   o.readBytes    = FByteStream_readBytes;
    // @method
    o.writeBoolean = FByteStream_writeBoolean;
    o.writeInt8    = FByteStream_writeInt8;
@@ -189,6 +190,40 @@ function FByteStream_readString(){
       r.push(String.fromCharCode(v));
    }
    return r.toString();
+}
+
+//==========================================================
+// <T>读取字节数组。</T>
+//
+// @param pd:data:ArrayBuffer 数组
+// @param po:offset:Integer 开始位置
+// @param pl:length:Integer 长度
+// @return Integer 读取长度
+//==========================================================
+function FByteStream_readBytes(pd, po, pl){
+   var o = this;
+   // 暂时不支持开始位置选择
+   if(po != 0){
+      throw new TError('Unsupport.');
+   }
+   // 8字节复制
+   var c = pl >> 3;
+   if(c > 0){
+      var a = new Float64Array(pd);
+      for(var i = 0; i < c; i++){
+         a[i] = o._viewer.getFloat64(o._position, o._endianCd);
+         o._position += 8;
+      }
+   }
+   // 剩余字节复制
+   if((pl % 8) > 0){
+      var n = c << 3;
+      var a = new Uint8Array(pd);
+      for(var i = n; i < pl; i++){
+         a[i] = o._viewer.getUint8(o._position, o._endianCd);
+         o._position++;
+      }
+   }
 }
 
 //==========================================================

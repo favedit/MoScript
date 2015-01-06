@@ -77,7 +77,7 @@ function FHttpConnection_onConnectionReady(){
 function FHttpConnection_onConnectionComplete(){
    var o = this;
    o._statusFree = true;
-   o.lsnsLoad.process();
+   o.lsnsLoad.process(o);
 }
 
 //==========================================================

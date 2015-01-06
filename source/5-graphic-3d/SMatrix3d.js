@@ -24,6 +24,8 @@ function SMatrix3d(o){
    o.setTranslate = SMatrix3d_setTranslate
    o.setRotation  = SMatrix3d_setRotation
    o.setScale     = SMatrix3d_setScale
+   o.assignData   = SMatrix3d_assignData;
+   o.assign       = SMatrix3d_assign;
    o.appendData   = SMatrix3d_appendData;
    o.append       = SMatrix3d_append;
    o.translate    = SMatrix3d_translate;
@@ -101,7 +103,28 @@ function SMatrix3d_setScale(x, y, z){
 }
 
 //============================================================
-// <追加一个矩阵数据内容。</T>
+// <T>接收一个数据。</T>
+//
+// @param p:array:Float32Array 数据
+//============================================================
+function SMatrix3d_assignData(p){
+   var d = this._data;
+   for(var n = 0; n < 16; n++){
+      d[n] = p[n];
+   }
+}
+
+//============================================================
+// <T>接收一个矩阵。</T>
+//
+// @param p:matrix:SMatrix3d 矩阵
+//============================================================
+function SMatrix3d_assign(p){
+   this.assignData(p._data);
+}
+
+//============================================================
+// <T>追加一个矩阵数据内容。</T>
 //
 // @param v:values:Float32Array 数据
 //============================================================

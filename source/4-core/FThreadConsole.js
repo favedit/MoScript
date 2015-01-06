@@ -23,6 +23,8 @@ function FThreadConsole(o){
    //..........................................................
    // @method
    o.construct    = FThreadConsole_construct;
+   o.push         = FThreadConsole_push;
+   o.start        = FThreadConsole_start;
    o.process      = FThreadConsole_process;
    o.processAll   = FThreadConsole_processAll;
    o.dispose      = FThreadConsole_dispose;
@@ -37,6 +39,27 @@ function FThreadConsole(o){
 function FThreadConsole_ohInterval(){
    var c = RConsole.get(FThreadConsole);
    c.processAll();
+}
+
+//==========================================================
+// <T>增加一个新线程。</T>
+//
+// @method
+// @param p:thread:FThread 线程
+//==========================================================
+function FThreadConsole_push(p){
+   this._threads.push(p);
+}
+
+//==========================================================
+// <T>启动一个新线程。</T>
+//
+// @method
+// @param p:thread:FThread 线程
+//==========================================================
+function FThreadConsole_start(p){
+   p.start();
+   this._threads.push(p);
 }
 
 //==========================================================
@@ -62,11 +85,11 @@ function FThreadConsole_construct(){
 function FThreadConsole_process(p){
    var o = this;
    if(p){
-      switch(p.status()){
+      switch(p.statusCd()){
          case EThreadStatus.Sleep:
             break;
          case EThreadStatus.Active:
-            p.process(o.interval);
+            p.process(o._interval);
             break;
          case EThreadStatus.Finish:
             p.dispose();
@@ -85,7 +108,7 @@ function FThreadConsole_processAll(){
    var o = this;
    if(o._active){
       var ts = o._threads;
-      var c = ts.count;
+      var c = ts.count();
       for(var n = 0; n < c; n++){
          var t = ts.get(n);
          o.process(t);

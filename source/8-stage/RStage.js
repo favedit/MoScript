@@ -8,16 +8,21 @@ var RStage = new function RStage(){
    var o = this;
    //..........................................................
    // @attribute
+   o._active        = true;
+   o._stages        = null;
+   //..........................................................
+   // @listener
    o.lsnsEnterFrame = null;
    o.lsnsLeaveFrame = null;
    //..........................................................
    // @event
-   o.onProcess = RStage_onProcess;
+   o.onProcess      = RStage_onProcess;
    //..........................................................
    // @method
-   o.construct = RStage_construct;
-   o.process   = RStage_process;
-   o.start     = RStage_start;
+   o.construct      = RStage_construct;
+   o.register       = RStage_register;
+   o.process        = RStage_process;
+   o.start          = RStage_start;
    //..........................................................
    // @construct
    o.construct();
@@ -26,6 +31,8 @@ var RStage = new function RStage(){
 
 //==========================================================
 // <T>逻辑处理。</T>
+//
+// @method
 //==========================================================
 function RStage_onProcess(){
    RStage.process();
@@ -33,6 +40,8 @@ function RStage_onProcess(){
 
 //==========================================================
 // <T>构造处理。</T>
+//
+// @method
 //==========================================================
 function RStage_construct(){
    var o = this;
@@ -41,16 +50,48 @@ function RStage_construct(){
 }
 
 //==========================================================
-// <T>启动处理。</T>
+// <T>注册一个舞台。</T>
+//
+// @method
+// @param n:name:String 名称
+// @param s:stage:FStage 舞台
+//==========================================================
+function RStage_register(n , s){
+   var o = this;
+   var ss = o._stages;
+   if(ss == null){
+      ss = o._stages = new TDictionary();
+   }
+   ss.set(n , s);
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
 //==========================================================
 function RStage_process(){
    var o = this;
-   o.lsnsEnterFrame.process(o);
-   o.lsnsLeaveFrame.process(o);
+   if(o._active){
+      // 前处理
+      o.lsnsEnterFrame.process(o);
+      // 舞台处理
+      var ss = o._stages;
+      if(ss != null){
+         var sc = ss.count();
+         for(var n = 0; n < sc; n++){
+            ss.value(n).process();
+         }
+      }
+      // 后处理
+      o.lsnsLeaveFrame.process(o);
+   }
 }
 
 //==========================================================
 // <T>启动处理。</T>
+//
+// @method
 //==========================================================
 function RStage_start(v){
    var o = this;

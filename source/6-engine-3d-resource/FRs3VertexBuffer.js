@@ -16,8 +16,29 @@ function FRs3VertexBuffer(o){
    o._data        = null;
    //..........................................................
    // @method
+   o.name         = FRs3VertexBuffer_name;
+   o.formatCd     = FRs3VertexBuffer_formatCd;
    o.unserialize  = FRs3VertexBuffer_unserialize;
+   o.dispose      = FRs3VertexBuffer_dispose;
    return o;
+}
+
+//==========================================================
+// <T>获得名称。</T>
+//
+// @return String 名称
+//==========================================================
+function FRs3VertexBuffer_name(){
+   return this._name;
+}
+
+//==========================================================
+// <T>获得名称。</T>
+//
+// @return String 名称
+//==========================================================
+function FRs3VertexBuffer_formatCd(){
+   return this._formatCd;
 }
 
 //==========================================================
@@ -36,8 +57,21 @@ function FRs3VertexBuffer_unserialize(p){
    var c = o._vertexCount;
    var t = o._stride * c;
    o._data = new ArrayBuffer(t);
-   var w = new Uint8Array(o._data);
-   for(var i = 0; i < t; i++){
-      w[i] = p.readUint8();
-   }
+   p.readBytes(o._data, 0, t);
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FRs3VertexBuffer_dispose(){
+   var o = this;
+   o.__base.FObject.dispose.call(o);
+   o._geometry = null;
+   o._name = null;
+   o._formatCd = null;
+   o._vertexCount = null;
+   o._stride = null;
+   o._data = null;
 }

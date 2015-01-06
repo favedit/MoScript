@@ -254,7 +254,10 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
       n = b._native;
    }
    g.bindBuffer(g.ARRAY_BUFFER, n);
-      r = o.checkError("bindBuffer", "Bind buffer. (buffer_id=%d)", n);
+   r = o.checkError("bindBuffer", "Bind buffer. (buffer_id=%d)", n);
+   if(!r){
+      return r;
+   }
    if(b != null){
       g.enableVertexAttribArray(s);
       r = o.checkError("enableVertexAttribArray", "Enable vertex attribute array. (slot=%d)", s);

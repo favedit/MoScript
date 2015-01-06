@@ -20,6 +20,9 @@ function FRs3Geometry(o){
    //..........................................................
    // @method
    o.construct        = FRs3Geometry_construct;
+   o.findVertexBuffer = FRs3Geometry_findVertexBuffer;
+   o.vertexBuffers    = FRs3Geometry_vertexBuffers;
+   o.indexBuffer      = FRs3Geometry_indexBuffer;
    o.unserialize      = FRs3Geometry_unserialize;
    return o;
 }
@@ -33,6 +36,43 @@ function FRs3Geometry_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._vertexBuffers = new TObjects();
+}
+
+//==========================================================
+// <T>查找顶点缓冲。</T>
+//
+// @method
+// @param p:name:String 名称
+//==========================================================
+function FRs3Geometry_findVertexBuffer(p){
+   var o = this;
+   var vs = o._vertexBuffers;
+   var c = vs.count();
+   for(var n = 0; n < c; n++){
+      var v = vs.get(n);
+      if(v.name() == p){
+         return v;
+      }
+   }
+   return null;
+}
+
+//==========================================================
+// <T>获得顶点缓冲集合</T>
+//
+// @return 顶点缓冲集合
+//==========================================================
+function FRs3Geometry_vertexBuffers(){
+   return this._vertexBuffers;
+}
+
+//==========================================================
+// <T>获得索引缓冲集合</T>
+//
+// @return 索引缓冲集合
+//==========================================================
+function FRs3Geometry_indexBuffer(){
+   return this._indexBuffer;
 }
 
 //==========================================================

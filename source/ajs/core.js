@@ -480,16 +480,23 @@ function FResourceType_resources(){
 }
 function FThread(o){
    o = RClass.inherits(this, o, FObject);
-   o._owner    = null;
-   o._name     = null;
-   o._statusCd = EThreadStatus.Sleep;
-   o._interval = 100;
-   o._count    = 0;
-   o.callback  = null;
-   o.name      = FThread_name;
-   o.statusCd  = FThread_statusCd;
-   o.process   = FThread_process;
+   o._name       = null;
+   o._statusCd   = EThreadStatus.Sleep;
+   o._interval   = 100;
+   o._delay      = 0;
+   o.lsnsProcess = null;
+   o.construct   = FThread_construct;
+   o.name        = FThread_name;
+   o.statusCd    = FThread_statusCd;
+   o.start       = FThread_start;
+   o.stop        = FThread_stop;
+   o.process     = FThread_process;
    return o;
+}
+function FThread_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.lsnsProcess = new TListeners();
 }
 function FThread_name(){
    return this._name;
@@ -497,18 +504,19 @@ function FThread_name(){
 function FThread_statusCd(){
    return this._statusCd;
 }
-function FThread_process(){
+function FThread_start(){
+   this._statusCd = EThreadStatus.Active;
+}
+function FThread_stop(){
+   this._statusCd = EThreadStatus.Finish;
+}
+function FThread_process(p){
    var o = this;
-   if(o.count > 0){
-      if(o.run){
-         if(o.owner){
-            o.run.call(o.owner, o);
-         }else{
-            o.run(o);
-         }
-      }
-      o.count = o.interval;
-      o.count--;
+   if(o._delay <= 0){
+      o.lsnsProcess.process(o);
+      o._delay = o._interval;
+   }else{
+      o._delay -= p;
    }
 }
 function FThreadConsole(o){
@@ -521,6 +529,8 @@ function FThreadConsole(o){
    o._hIntervalId = null;
    o.ohInterval   = FThreadConsole_ohInterval;
    o.construct    = FThreadConsole_construct;
+   o.push         = FThreadConsole_push;
+   o.start        = FThreadConsole_start;
    o.process      = FThreadConsole_process;
    o.processAll   = FThreadConsole_processAll;
    o.dispose      = FThreadConsole_dispose;
@@ -529,6 +539,13 @@ function FThreadConsole(o){
 function FThreadConsole_ohInterval(){
    var c = RConsole.get(FThreadConsole);
    c.processAll();
+}
+function FThreadConsole_push(p){
+   this._threads.push(p);
+}
+function FThreadConsole_start(p){
+   p.start();
+   this._threads.push(p);
 }
 function FThreadConsole_construct(){
    var o = this;
@@ -540,11 +557,11 @@ function FThreadConsole_construct(){
 function FThreadConsole_process(p){
    var o = this;
    if(p){
-      switch(p.status()){
+      switch(p.statusCd()){
          case EThreadStatus.Sleep:
             break;
          case EThreadStatus.Active:
-            p.process(o.interval);
+            p.process(o._interval);
             break;
          case EThreadStatus.Finish:
             p.dispose();
@@ -557,7 +574,7 @@ function FThreadConsole_processAll(){
    var o = this;
    if(o._active){
       var ts = o._threads;
-      var c = ts.count;
+      var c = ts.count();
       for(var n = 0; n < c; n++){
          var t = ts.get(n);
          o.process(t);

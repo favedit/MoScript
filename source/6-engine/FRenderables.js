@@ -1,29 +1,22 @@
 //==========================================================
-// <T>线程。</T>
+// <T>渲染可绘制对象集合。</T>
 //
-// @class
 // @author maocy
-// @version 150105
+// @history 150106
 //==========================================================
-function FThread(o){
+function FRenderables(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._name       = null;
-   o._statusCd   = EThreadStatus.Sleep;
-   o._interval   = 100;
-   o._delay      = 0;
-   //..........................................................
-   // @listener
-   o.lsnsProcess = null;
+   o._renderables = null;
    //..........................................................
    // @method
-   o.construct   = FThread_construct;
-   o.name        = FThread_name;
-   o.statusCd    = FThread_statusCd;
-   o.start       = FThread_start;
-   o.stop        = FThread_stop;
-   o.process     = FThread_process;
+   o.construct    = FRenderables_construct;
+   o.count        = FRenderables_count;
+   o.get          = FRenderables_get;
+   o.push         = FRenderables_push;
+   o.clear        = FRenderables_clear;
+   o.dispose      = FRenderables_dispose;
    return o;
 }
 
@@ -32,63 +25,56 @@ function FThread(o){
 //
 // @method
 //==========================================================
-function FThread_construct(){
+function FRenderables_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o.lsnsProcess = new TListeners();
+   o._renderables = new TObjects();
 }
 
 //==========================================================
-// <T>获得名称。</T>
+// <T>获得总数。</T>
 //
 // @method
-// @return 名称
+// @return Integer 总数
 //==========================================================
-function FThread_name(){
-   return this._name;
+function FRenderables_count(p){
+   return this._renderables.count();
 }
 
 //==========================================================
-// <T>获得状态。</T>
+// <T>获得一个渲染对象。</T>
 //
-// @method
-// @return 状态
+// @return FRenderable 渲染对象
 //==========================================================
-function FThread_statusCd(){
-   return this._statusCd;
+function FRenderables_get(p){
+   return this._renderables.get(p);
 }
 
 //==========================================================
-// <T>启动处理。</T>
+// <T>增加一个渲染对象。</T>
 //
-// @method
+// @param p:renderable:FRenderable 渲染对象
 //==========================================================
-function FThread_start(){
-   this._statusCd = EThreadStatus.Active;
+function FRenderables_push(p){
+   this._renderables.push(p);
 }
 
 //==========================================================
-// <T>停止处理。</T>
+// <T>清空处理。</T>
 //
 // @method
 //==========================================================
-function FThread_stop(){
-   this._statusCd = EThreadStatus.Finish;
+function FRenderables_clear(){
+   this._renderables.clear();
 }
 
 //==========================================================
-// <T>调用处理。</T>
+// <T>释放处理。</T>
 //
 // @method
-// @param p:interval:integer 调用间隔
-// @return 名称
 //==========================================================
-function FThread_process(p){
+function FRenderables_dispose(){
    var o = this;
-   if(o._delay <= 0){
-      o.lsnsProcess.process(o);
-      o._delay = o._interval;
-   }else{
-      o._delay -= p;
-   }
+   o._renderables = null;
+   o.__base.FObject.dispose.call(o);
 }

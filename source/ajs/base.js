@@ -141,7 +141,7 @@ function FHttpConnection_onConnectionReady(){
 function FHttpConnection_onConnectionComplete(){
    var o = this;
    o._statusFree = true;
-   o.lsnsLoad.process();
+   o.lsnsLoad.process(o);
 }
 function FHttpConnection_construct(){
    var o = this;
@@ -686,6 +686,7 @@ function MDataStream(o){
    o.readFloat    = FByteStream_readFloat;
    o.readDouble   = FByteStream_readDouble;
    o.readString   = FByteStream_readString;
+   o.readBytes    = FByteStream_readBytes;
    o.writeBoolean = FByteStream_writeBoolean;
    o.writeInt8    = FByteStream_writeInt8;
    o.writeInt16   = FByteStream_writeInt16;
@@ -777,6 +778,28 @@ function FByteStream_readString(){
       r.push(String.fromCharCode(v));
    }
    return r.toString();
+}
+function FByteStream_readBytes(pd, po, pl){
+   var o = this;
+   if(po != 0){
+      throw new TError('Unsupport.');
+   }
+   var c = pl >> 3;
+   if(c > 0){
+      var a = new Float64Array(pd);
+      for(var i = 0; i < c; i++){
+         a[i] = o._viewer.getFloat64(o._position, o._endianCd);
+         o._position += 8;
+      }
+   }
+   if((pl % 8) > 0){
+      var n = c << 3;
+      var a = new Uint8Array(pd);
+      for(var i = n; i < pl; i++){
+         a[i] = o._viewer.getUint8(o._position, o._endianCd);
+         o._position++;
+      }
+   }
 }
 function FByteStream_writeBoolean(v){
    var o = this;
@@ -962,10 +985,12 @@ function MDataView_setDouble(p, v){
 }
 var RBrowser = new function RBrowser(){
    var o = this;
-   o._typeCd    = 0;
-   o.construct = RBrowser_construct;
-   o.isBrowser = RBrowser_isBrowser;
-   o.log       = RBrowser_log;
+   o._typeCd      = 0;
+   o._contentPath = null;
+   o.construct    = RBrowser_construct;
+   o.contentPath  = RBrowser_contentPath;
+   o.isBrowser    = RBrowser_isBrowser;
+   o.log          = RBrowser_log;
    return o;
 }
 function RBrowser_construct(){
@@ -987,6 +1012,9 @@ function RBrowser_construct(){
       RLogger.lsnsOutput.register(o, o.log);
    }
    RLogger.info(o, 'Parse browser confirm. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+}
+function RBrowser_contentPath(p){
+   return this._contentPath;
 }
 function RBrowser_isBrowser(p){
    return this._typeCd == p;

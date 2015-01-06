@@ -5581,7 +5581,7 @@ function FHttpConnection_onConnectionReady(){
 function FHttpConnection_onConnectionComplete(){
    var o = this;
    o._statusFree = true;
-   o.lsnsLoad.process();
+   o.lsnsLoad.process(o);
 }
 function FHttpConnection_construct(){
    var o = this;
@@ -6126,6 +6126,7 @@ function MDataStream(o){
    o.readFloat    = FByteStream_readFloat;
    o.readDouble   = FByteStream_readDouble;
    o.readString   = FByteStream_readString;
+   o.readBytes    = FByteStream_readBytes;
    o.writeBoolean = FByteStream_writeBoolean;
    o.writeInt8    = FByteStream_writeInt8;
    o.writeInt16   = FByteStream_writeInt16;
@@ -6217,6 +6218,28 @@ function FByteStream_readString(){
       r.push(String.fromCharCode(v));
    }
    return r.toString();
+}
+function FByteStream_readBytes(pd, po, pl){
+   var o = this;
+   if(po != 0){
+      throw new TError('Unsupport.');
+   }
+   var c = pl >> 3;
+   if(c > 0){
+      var a = new Float64Array(pd);
+      for(var i = 0; i < c; i++){
+         a[i] = o._viewer.getFloat64(o._position, o._endianCd);
+         o._position += 8;
+      }
+   }
+   if((pl % 8) > 0){
+      var n = c << 3;
+      var a = new Uint8Array(pd);
+      for(var i = n; i < pl; i++){
+         a[i] = o._viewer.getUint8(o._position, o._endianCd);
+         o._position++;
+      }
+   }
 }
 function FByteStream_writeBoolean(v){
    var o = this;
@@ -6402,10 +6425,12 @@ function MDataView_setDouble(p, v){
 }
 var RBrowser = new function RBrowser(){
    var o = this;
-   o._typeCd    = 0;
-   o.construct = RBrowser_construct;
-   o.isBrowser = RBrowser_isBrowser;
-   o.log       = RBrowser_log;
+   o._typeCd      = 0;
+   o._contentPath = null;
+   o.construct    = RBrowser_construct;
+   o.contentPath  = RBrowser_contentPath;
+   o.isBrowser    = RBrowser_isBrowser;
+   o.log          = RBrowser_log;
    return o;
 }
 function RBrowser_construct(){
@@ -6427,6 +6452,9 @@ function RBrowser_construct(){
       RLogger.lsnsOutput.register(o, o.log);
    }
    RLogger.info(o, 'Parse browser confirm. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+}
+function RBrowser_contentPath(p){
+   return this._contentPath;
 }
 function RBrowser_isBrowser(p){
    return this._typeCd == p;
@@ -9092,16 +9120,23 @@ function FResourceType_resources(){
 }
 function FThread(o){
    o = RClass.inherits(this, o, FObject);
-   o._owner    = null;
-   o._name     = null;
-   o._statusCd = EThreadStatus.Sleep;
-   o._interval = 100;
-   o._count    = 0;
-   o.callback  = null;
-   o.name      = FThread_name;
-   o.statusCd  = FThread_statusCd;
-   o.process   = FThread_process;
+   o._name       = null;
+   o._statusCd   = EThreadStatus.Sleep;
+   o._interval   = 100;
+   o._delay      = 0;
+   o.lsnsProcess = null;
+   o.construct   = FThread_construct;
+   o.name        = FThread_name;
+   o.statusCd    = FThread_statusCd;
+   o.start       = FThread_start;
+   o.stop        = FThread_stop;
+   o.process     = FThread_process;
    return o;
+}
+function FThread_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.lsnsProcess = new TListeners();
 }
 function FThread_name(){
    return this._name;
@@ -9109,18 +9144,19 @@ function FThread_name(){
 function FThread_statusCd(){
    return this._statusCd;
 }
-function FThread_process(){
+function FThread_start(){
+   this._statusCd = EThreadStatus.Active;
+}
+function FThread_stop(){
+   this._statusCd = EThreadStatus.Finish;
+}
+function FThread_process(p){
    var o = this;
-   if(o.count > 0){
-      if(o.run){
-         if(o.owner){
-            o.run.call(o.owner, o);
-         }else{
-            o.run(o);
-         }
-      }
-      o.count = o.interval;
-      o.count--;
+   if(o._delay <= 0){
+      o.lsnsProcess.process(o);
+      o._delay = o._interval;
+   }else{
+      o._delay -= p;
    }
 }
 function FThreadConsole(o){
@@ -9133,6 +9169,8 @@ function FThreadConsole(o){
    o._hIntervalId = null;
    o.ohInterval   = FThreadConsole_ohInterval;
    o.construct    = FThreadConsole_construct;
+   o.push         = FThreadConsole_push;
+   o.start        = FThreadConsole_start;
    o.process      = FThreadConsole_process;
    o.processAll   = FThreadConsole_processAll;
    o.dispose      = FThreadConsole_dispose;
@@ -9141,6 +9179,13 @@ function FThreadConsole(o){
 function FThreadConsole_ohInterval(){
    var c = RConsole.get(FThreadConsole);
    c.processAll();
+}
+function FThreadConsole_push(p){
+   this._threads.push(p);
+}
+function FThreadConsole_start(p){
+   p.start();
+   this._threads.push(p);
 }
 function FThreadConsole_construct(){
    var o = this;
@@ -9152,11 +9197,11 @@ function FThreadConsole_construct(){
 function FThreadConsole_process(p){
    var o = this;
    if(p){
-      switch(p.status()){
+      switch(p.statusCd()){
          case EThreadStatus.Sleep:
             break;
          case EThreadStatus.Active:
-            p.process(o.interval);
+            p.process(o._interval);
             break;
          case EThreadStatus.Finish:
             p.dispose();
@@ -9169,7 +9214,7 @@ function FThreadConsole_processAll(){
    var o = this;
    if(o._active){
       var ts = o._threads;
-      var c = ts.count;
+      var c = ts.count();
       for(var n = 0; n < c; n++){
          var t = ts.get(n);
          o.process(t);

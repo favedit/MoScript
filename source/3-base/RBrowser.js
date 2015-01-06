@@ -9,12 +9,14 @@ var RBrowser = new function RBrowser(){
    var o = this;
    //..........................................................
    // @attribute
-   o._typeCd    = 0;
+   o._typeCd      = 0;
+   o._contentPath = null;
    //..........................................................
    // @method
-   o.construct = RBrowser_construct;
-   o.isBrowser = RBrowser_isBrowser;
-   o.log       = RBrowser_log;
+   o.construct    = RBrowser_construct;
+   o.contentPath  = RBrowser_contentPath;
+   o.isBrowser    = RBrowser_isBrowser;
+   o.log          = RBrowser_log;
    return o;
 }
 
@@ -43,6 +45,15 @@ function RBrowser_construct(){
    }
    // 输出日志
    RLogger.info(o, 'Parse browser confirm. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+}
+
+//===========================================================
+// <T>获得内容路径。</T>
+//
+// @return String 内容路径
+//===========================================================
+function RBrowser_contentPath(p){
+   return this._contentPath;
 }
 
 //===========================================================

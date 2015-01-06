@@ -2,23 +2,20 @@
 // <T>渲染可绘制对象。</T>
 //
 // @author maocy
-// @history 141231
+// @history 150106
 //==========================================================
-function FRenderable(o){
+function FRegion(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._display    = null;
-   o._context    = null;
-   o._visible    = true;
-   o._matrix     = null;
+   o._renderables = null;
    //..........................................................
    // @method
-   o.construct   = FRenderable_construct;
-   o.matrix      = FRenderable_matrix;
-   o.linkContext = FRenderable_linkContext;
-   o.testVisible = FRenderable_testVisible;
-   o.update      = FRenderable_update;
+   o.construct      = FRegion_construct;
+   o.renderables    = FRegion_renderables;
+   o.pushRenderable = FRegion_pushRenderable;
+   o.clear          = FRegion_clear;
+   o.dispose        = FRegion_dispose;
    return o;
 }
 
@@ -27,47 +24,46 @@ function FRenderable(o){
 //
 // @method
 //==========================================================
-function FRenderable_construct(){
+function FRegion_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._matrix = new SMatrix3d();
+   o._renderables = RClass.create(FRenderables);
 }
 
 //==========================================================
-// <T>获得矩阵。</T>
+// <T>获得渲染对象集合。</T>
 //
-// @method
-// @return 矩阵
+// @return FRenderables 渲染对象集合
 //==========================================================
-function FRenderable_matrix(){
-   return this._matrix;
+function FRegion_renderables(p){
+   return this._renderables;
 }
 
 //==========================================================
-// <T>关联环境。</T>
+// <T>增加一个渲染对象。</T>
 //
-// @param p:context:FRenderContext 环境
+// @param p:renderable:FRenderable 渲染对象
 //==========================================================
-function FRenderable_linkContext(p){
-   this._context = p;
+function FRegion_pushRenderable(p){
+   this._renderables.push(p);
 }
 
 //==========================================================
-// <T>测试是否可见。</T>
-//
-// @return Boolean 是否可见
-//==========================================================
-function FRenderable_testVisible(p){
-   return this._visible;
-}
-
-//==========================================================
-// <T>更新处理。</T>
+// <T>清空处理。</T>
 //
 // @method
 //==========================================================
-function FRenderable_update(p){
+function FRegion_clear(){
+   this._renderables.clear();
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FRegion_dispose(){
    var o = this;
-   // 更新矩阵
-   o._matrix.assign(p);
+   o._renderables = null;
+   o.__base.FObject.dispose.call(o);
 }

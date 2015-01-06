@@ -429,7 +429,10 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
    }
    g.bindBuffer(g.ARRAY_BUFFER, n);
    // 检查错误
-      r = o.checkError("bindBuffer", "Bind buffer. (buffer_id=%d)", n);
+   r = o.checkError("bindBuffer", "Bind buffer. (buffer_id=%d)", n);
+   if(!r){
+      return r;
+   }
    //............................................................
    // 激活顶点流
    if(b != null){

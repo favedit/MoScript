@@ -208,6 +208,53 @@ function FRenderTexture_construct(){
    o.__base.FRenderTexture.construct();
    o._textureCd = ERenderTexture.Cube;
 }
+function FRenderEffect(o){
+   o = RClass.inherits(this, o, FRenderObject);
+   o._context       = null;
+   o._program       = null;
+   o.setParameter   = FRenderEffect_setParameter;
+   o.setSampler     = FRenderEffect_setSampler;
+   o.drawRenderable = FRenderEffect_drawRenderable;
+   o.loadUrl        = FRenderEffect_loadUrl;
+   return o;
+}
+function FRenderEffect_setParameter(pn, pv, pc){
+   this._program.setParameter(pn, pv, pc);
+}
+function FRenderEffect_setSampler(pn, pt){
+   this._program.setSampler(pn, pt);
+}
+function FRenderEffect_drawRenderable(r){
+   var o = this;
+   var c = o._context;
+   var p = o._program;
+   if(p.hasAttribute()){
+      var as = p.attributes();
+      var ac = as.count();
+      for(var n = 0; n < ac; n++){
+         var a = as.value(n);
+         if(a._statusUsed){
+            var vb = r.findVertexBuffer(a._linker);
+            if(vb == null){
+               throw new TError("Can't find renderable vertex buffer. (linker={1})", a._linker);
+            }
+            p.setAttribute(a._name, vb, vb._formatCd);
+         }
+      }
+   }
+   var ib = r.indexBuffer();
+   c.drawTriangles(ib, 0, ib._count);
+}
+function FRenderEffect_loadUrl(u){
+   var o = this;
+   var c = o._context;
+   var x = RClass.create(FXmlConnection);
+   var d = x.send(u);
+   var p = o._program = c.createProgram();
+   p.loadConfig(d);
+   p.build();
+   p.link();
+}
 function FRenderFlatTexture(o){
    o = RClass.inherits(this, o, FRenderTexture);
    o.width     = 0;
@@ -374,9 +421,9 @@ function FRenderProgram_loadConfig(p){
          var st = n.get('name');
          var sv = n.value();
          if(st == 'vertex'){
-            program.upload(ERenderShader.Vertex, sv);
+            o.upload(ERenderShader.Vertex, sv);
          }else if(st == 'fragment'){
-            program.upload(ERenderShader.Fragment, sv);
+            o.upload(ERenderShader.Fragment, sv);
          }else{
             throw new TError(o, 'Unknown source type. (name={1})', nt);
          }
@@ -503,10 +550,16 @@ function FRenderTexture_textureCd(){
 }
 function FRenderVertexBuffer(o){
    o = RClass.inherits(this, o, FRenderObject);
-   o.stride = 0;
-   o.count  = 0;
+   o._name     = 0;
+   o._formatCd = ERenderAttributeFormat.Unknown;
+   o.stride    = 0;
+   o.count     = 0;
+   o.name   = FRenderVertexBuffer_name;
    o.upload = RMethod.virtual(o, 'upload');
    return o;
+}
+function FRenderVertexBuffer_name(){
+   return this._name;
 }
 function FRenderVertexShader(o){
    o = RClass.inherits(this, o, FRenderShader);
@@ -558,6 +611,8 @@ function SMatrix3d(o){
    o.setTranslate = SMatrix3d_setTranslate
    o.setRotation  = SMatrix3d_setRotation
    o.setScale     = SMatrix3d_setScale
+   o.assignData   = SMatrix3d_assignData;
+   o.assign       = SMatrix3d_assign;
    o.appendData   = SMatrix3d_appendData;
    o.append       = SMatrix3d_append;
    o.translate    = SMatrix3d_translate;
@@ -603,6 +658,15 @@ function SMatrix3d_setScale(x, y, z){
    o._sy = y;
    o._sz = z;
    o.dirty = true;
+}
+function SMatrix3d_assignData(p){
+   var d = this._data;
+   for(var n = 0; n < 16; n++){
+      d[n] = p[n];
+   }
+}
+function SMatrix3d_assign(p){
+   this.assignData(p._data);
 }
 function SMatrix3d_appendData(v){
    var d = this._data;

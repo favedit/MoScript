@@ -239,9 +239,9 @@ function FRenderProgram_loadConfig(p){
          var st = n.get('name');
          var sv = n.value();
          if(st == 'vertex'){
-            program.upload(ERenderShader.Vertex, sv);
+            o.upload(ERenderShader.Vertex, sv);
          }else if(st == 'fragment'){
-            program.upload(ERenderShader.Fragment, sv);
+            o.upload(ERenderShader.Fragment, sv);
          }else{
             throw new TError(o, 'Unknown source type. (name={1})', nt);
          }

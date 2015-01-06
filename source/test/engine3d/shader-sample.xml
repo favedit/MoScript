@@ -19,13 +19,13 @@
    <Parameter name='fc_camera_position' linker='Vertex.ModelMatrix' format='Float4'/>
    <Parameter name='fc_light_direction' linker='Vertex.ModelMatrix' format='Float4'/>
    <!--=====================================================-->
-   <Attribute name='va_instance' linker='Instance' format='Float1'/>
-   <Attribute name='va_position' linker='Position' format='Float4'/>
-   <Attribute name='va_color'    linker='Color'    format='Byte4Normal'/>
-   <Attribute name='va_coord'    linker='Coord'    format='Float2'/>
-   <Attribute name='va_normal'   linker='Normal'   format='Float3'/>
-   <Attribute name='va_binormal' linker='Binormal' format='Float3'/>
-   <Attribute name='va_tangent'  linker='Tangent'  format='Float3'/>
+   <Attribute name='va_instance' linker='instance' format='Float1'/>
+   <Attribute name='va_position' linker='position' format='Float4'/>
+   <Attribute name='va_color'    linker='color'    format='Byte4Normal'/>
+   <Attribute name='va_coord'    linker='coord'    format='Float2'/>
+   <Attribute name='va_normal'   linker='normal'   format='Float3'/>
+   <Attribute name='va_binormal' linker='binormal' format='Float3'/>
+   <Attribute name='va_tangent'  linker='tangent'  format='Float3'/>
    <!--=====================================================-->
    <Sampler name='fs_diffuse'     linker='Diffuse'     source='PackDiffuse'/>
    <Sampler name='fs_normal'      linker='Normal'      source='PackNormal'/>
@@ -35,24 +35,25 @@
    <!--=====================================================-->
    <Source name='vertex'><![CDATA[
       attribute vec3 va_position;
-      attribute vec4 va_color;
+      attribute vec2 va_coord;
       uniform mat4 vc_model_matrix;
       uniform mat4 vc_vp_matrix;
-      varying vec4 v_color;
+      varying vec2 v_coord;
       void main(void){
          vec4 position = vec4(va_position, 1.0);
-         gl_Position = position * vc_model_matrix * vc_vp_matrix;
-         v_color = va_color;
+         vec4 modelPosition = position * vc_model_matrix;
+         gl_Position = modelPosition * vc_vp_matrix;
+         v_coord = va_coord;
       }
    ]]></Source>
    <Source name='fragment'><![CDATA[
       #ifdef GL_ES
       precision highp float;
       #endif
-      varying vec4 v_color;
+      varying vec2 v_coord;
       uniform sampler2D fs_diffuse;
       void main(void) {
-         vec3 color = texture2D(fs_diffuse, v_color.xy).rgb;
+         vec3 color = texture2D(fs_diffuse, v_coord).rgb;
          gl_FragColor = vec4(color.rgb, 1.0);
       }
    ]]></Source>
