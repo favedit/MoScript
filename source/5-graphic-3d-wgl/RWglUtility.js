@@ -25,11 +25,11 @@ var RWglUtility = new function RWglUtility(){
 //==========================================================
 function RWglUtility_convertFillMode(g, v){
    switch(v){
-      case ERenderFillMode.Point:
+      case EG3dFillMode.Point:
          return g.POINT;
-      case ERenderFillMode.Line:
+      case EG3dFillMode.Line:
          return g.LINE;
-      case ERenderFillMode.Face:
+      case EG3dFillMode.Face:
          return g.FILL;
    }
    RLogger.fatal(this, null, "Convert fill mode failure. (fill_cd={1})", v);
@@ -46,11 +46,11 @@ function RWglUtility_convertFillMode(g, v){
 //==========================================================
 function RWglUtility_convertCullMode(g, v){
    switch(v){
-      case ERenderCullMode.Front:
+      case EG3dCullMode.Front:
          return g.FRONT;
-      case ERenderCullMode.Back:
+      case EG3dCullMode.Back:
          return g.BACK;
-      case ERenderCullMode.Both:
+      case EG3dCullMode.Both:
          return g.FRONT_AND_BACK;
    }
    RLogger.fatal(this, null, "Convert cull mode failure. (cull_cd={1})", v);
@@ -67,19 +67,19 @@ function RWglUtility_convertCullMode(g, v){
 //==========================================================
 function RWglUtility_convertDepthMode(g, v){
    switch(v){
-      case ERenderDepthMode.Equal:
+      case EG3dDepthMode.Equal:
          return g.EQUAL;
-      case ERenderDepthMode.NotEqual:
+      case EG3dDepthMode.NotEqual:
          return g.NOTEQUAL;
-      case ERenderDepthMode.Less:
+      case EG3dDepthMode.Less:
          return g.LESS;
-      case ERenderDepthMode.LessEqual:
+      case EG3dDepthMode.LessEqual:
          return g.LEQUAL;
-      case ERenderDepthMode.Greater:
+      case EG3dDepthMode.Greater:
          return g.GREATER;
-      case ERenderDepthMode.GreaterEqual:
+      case EG3dDepthMode.GreaterEqual:
          return g.GEQUAL;
-      case ERenderDepthMode.Always:
+      case EG3dDepthMode.Always:
          return g.ALWAYS;
    }
    RLogger.fatal(this, null, "Convert depth mode failure. (depth_cd={1})", v);
@@ -96,9 +96,9 @@ function RWglUtility_convertDepthMode(g, v){
 //==========================================================
 function RWglUtility_convertBlendFactors(g, v){
    switch(v){
-      case ERenderBlendMode.SourceAlpha:
+      case EG3dBlendMode.SourceAlpha:
          return g.SRC_ALPHA;
-      case ERenderBlendMode.OneMinusSourceAlpha:
+      case EG3dBlendMode.OneMinusSourceAlpha:
          return g.ONE_MINUS_SRC_ALPHA;
       default:
          break;
@@ -117,9 +117,9 @@ function RWglUtility_convertBlendFactors(g, v){
 //==========================================================
 function RWglUtility_convertIndexStride(g, v){
    switch(v){
-      case ERenderIndexStride.Uint16:
+      case EG3dIndexStride.Uint16:
          return g.UNSIGNED_SHORT;
-      case ERenderIndexStride.Uint32:
+      case EG3dIndexStride.Uint32:
          return g.UNSIGNED_INT;
    }
    RLogger.fatal(this, null, "Convert index stride failure. (stride_cd={1})", v);

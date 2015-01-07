@@ -11,11 +11,9 @@ function FRenderable(o){
    o._display    = null;
    o._context    = null;
    o._visible    = true;
-   o._matrix     = null;
    //..........................................................
    // @method
    o.construct   = FRenderable_construct;
-   o.matrix      = FRenderable_matrix;
    o.linkContext = FRenderable_linkContext;
    o.testVisible = FRenderable_testVisible;
    o.update      = FRenderable_update;
@@ -30,17 +28,6 @@ function FRenderable(o){
 function FRenderable_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._matrix = new SMatrix3d();
-}
-
-//==========================================================
-// <T>获得矩阵。</T>
-//
-// @method
-// @return 矩阵
-//==========================================================
-function FRenderable_matrix(){
-   return this._matrix;
 }
 
 //==========================================================
@@ -67,7 +54,4 @@ function FRenderable_testVisible(p){
 // @method
 //==========================================================
 function FRenderable_update(p){
-   var o = this;
-   // 更新矩阵
-   o._matrix.assign(p);
 }

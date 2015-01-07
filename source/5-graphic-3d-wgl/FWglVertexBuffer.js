@@ -5,7 +5,7 @@
 // @history 141230
 //==========================================================
 function FWglVertexBuffer(o){
-   o = RClass.inherits(this, o, FRenderVertexBuffer);
+   o = RClass.inherits(this, o, FG3dVertexBuffer);
    //..........................................................
    // @method
    o.setup  = FWglVertexBuffer_setup;
@@ -21,7 +21,7 @@ function FWglVertexBuffer(o){
 //==========================================================
 function FWglVertexBuffer_setup(){
    var o = this;
-   o.__base.FRenderVertexBuffer.setup.call(o);
+   o.__base.FG3dVertexBuffer.setup.call(o);
    var g = o._context._native;
    o._native = g.createBuffer();
 }

@@ -5,7 +5,7 @@
 // @history 141230
 //==========================================================
 function FWglFlatTexture(o){
-   o = RClass.inherits(this, o, FRenderFlatTexture);
+   o = RClass.inherits(this, o, FG3dFlatTexture);
    //..........................................................
    // @attribute
    o._native = null;
@@ -44,7 +44,7 @@ function FWglFlatTexture_onImageLoad(v){
 function FWglFlatTexture_setup(){
    var o = this;
    var g = o._context._native;
-   o.__base.FRenderFlatTexture.setup.call(o);
+   o.__base.FG3dFlatTexture.setup.call(o);
    o._native = g.createTexture();
 }
 

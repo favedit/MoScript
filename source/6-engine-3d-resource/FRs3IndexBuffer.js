@@ -10,7 +10,7 @@ function FRs3IndexBuffer(o){
    // @attribute
    o._geometry    = null;
    o._count       = null;
-   o._strideCd    = ERenderIndexStride.Unknown;
+   o._strideCd    = EG3dIndexStride.Unknown;
    o._memory      = null;
    o._data        = null;
    //..........................................................
@@ -71,13 +71,13 @@ function FRs3IndexBuffer_unserialize(p){
    var c = o._count = p.readInt32();
    var sc = o._strideCd = p.readInt8();
    // 读取数据
-   if(sc == ERenderIndexStride.Uint16){
+   if(sc == EG3dIndexStride.Uint16){
       o._memory = new ArrayBuffer(2 * c);
       var d = o._data = new Uint16Array(o._memory);
       for(var i = 0; i < c; i++){
          d[i] = p.readUint16();
       }
-   }else if(sc == ERenderIndexStride.Uint16){
+   }else if(sc == EG3dIndexStride.Uint16){
       o._memory = new ArrayBuffer(4 * c);
       var d = o._data = new Uint16Array(o._memory);
       for(var i = 0; i < c; i++){

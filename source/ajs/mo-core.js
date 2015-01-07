@@ -9205,6 +9205,8 @@ function FThread(o){
    o.construct   = FThread_construct;
    o.name        = FThread_name;
    o.statusCd    = FThread_statusCd;
+   o.interval    = FThread_interval;
+   o.setInterval = FThread_setInterval;
    o.start       = FThread_start;
    o.stop        = FThread_stop;
    o.process     = FThread_process;
@@ -9220,6 +9222,12 @@ function FThread_name(){
 }
 function FThread_statusCd(){
    return this._statusCd;
+}
+function FThread_interval(){
+   return this._interval;
+}
+function FThread_setInterval(p){
+   this._interval = p;
 }
 function FThread_start(){
    this._statusCd = EThreadStatus.Active;

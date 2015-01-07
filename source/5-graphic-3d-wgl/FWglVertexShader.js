@@ -5,7 +5,7 @@
 // @history 141230
 //==========================================================
 function FWglVertexShader(o){
-   o = RClass.inherits(this, o, FRenderVertexShader);
+   o = RClass.inherits(this, o, FG3dVertexShader);
    //..........................................................
    // @attribute
    o._native = null;
@@ -23,7 +23,7 @@ function FWglVertexShader(o){
 //==========================================================
 function FWglVertexShader_setup(){
    var o = this;
-   o.__base.FRenderVertexShader.setup.call(o);
+   o.__base.FG3dVertexShader.setup.call(o);
    var g = o._context._native;
    o._native = g.createShader(g.VERTEX_SHADER);
 }
@@ -66,5 +66,5 @@ function FWglVertexShader_dispose(){
       g.deleteShader(o._native);
    }
    o._native = null;
-   o.__base.FRenderVertexShader.dispose.call(o);
+   o.__base.FG3dVertexShader.dispose.call(o);
 }

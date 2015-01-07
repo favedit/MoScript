@@ -1,5 +1,5 @@
 function FWglContext(o){
-   o = RClass.inherits(this, o, FRenderContext);
+   o = RClass.inherits(this, o, FG3dContext);
    o._native             = null;
    o._textureActiveSlot  = 0;
    o.linkCanvas          = FWglContext_linkCanvas;
@@ -25,7 +25,18 @@ function FWglContext(o){
    return o;
 }
 function FWglContext_linkCanvas(h){
-   this._native = h.getContext('experimental-webgl')
+   var o = this;
+   o._hCanvas = h;
+   if(h.getContext){
+      var n = h.getContext('experimental-webgl');
+      if(n == null){
+         n = h.getContext('webgl');
+      }
+      if(n == null){
+         throw new TError("Current browser can't support WebGL technique.");
+      }
+      o._native = n;
+   }
 }
 function FWglContext_createProgram(){
    var o = this;
@@ -155,7 +166,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
    var g = o._native;
    var r = true;
    switch (formatCd){
-      case ERenderParameterFormat.Float1:{
+      case EG3dParameterFormat.Float1:{
          if(length % 4 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
             return false;
@@ -165,7 +176,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float2:{
+      case EG3dParameterFormat.Float2:{
          if(length % 8 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
             return false;
@@ -175,7 +186,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float3:{
+      case EG3dParameterFormat.Float3:{
          if(length % 12 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=d)", length);
             return false;
@@ -185,7 +196,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float4:{
+      case EG3dParameterFormat.Float4:{
          if(length % 16 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
             return false;
@@ -195,13 +206,13 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float3x3:{
+      case EG3dParameterFormat.Float3x3:{
          if(length % 36 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
+            RLogger.fatal(o, null, "Length is invalid. (length={1})", length);
             return false;
          }
          var count = length / 36;
-         var dt = new Float32Array(16);
+         var dt = new Float32Array(9);
          dt[ 0] = pd[ 0];
          dt[ 1] = pd[ 4];
          dt[ 2] = pd[ 8];
@@ -211,11 +222,11 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          dt[ 6] = pd[ 2];
          dt[ 7] = pd[ 6];
          dt[ 8] = pd[10];
-         g.uniformMatrix3fv(slot, false, pd);
-         r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         g.uniformMatrix3fv(slot, g.FALSE, dt);
+         r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float4x3:{
+      case EG3dParameterFormat.Float4x3:{
          if(length % 48 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
             return false;
@@ -225,7 +236,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float4x4:{
+      case EG3dParameterFormat.Float4x4:{
          if(length % 64 != 0){
             RLogger.fatal(o, null, "Float4x4 length is invalid. (length=%d)", length);
             return false;
@@ -248,7 +259,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          dt[13] = pd[ 7];
          dt[14] = pd[11];
          dt[15] = pd[15];
-         g.uniformMatrix4fv(slot, false, dt);
+         g.uniformMatrix4fv(slot, g.FALSE, dt);
          r = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
@@ -281,22 +292,22 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
    }
    var bs = b.stride;
    switch(f){
-      case ERenderAttributeFormat.Float1:
+      case EG3dAttributeFormat.Float1:
          g.vertexAttribPointer(s, 1, g.FLOAT, false, bs, i);
          break;
-      case ERenderAttributeFormat.Float2:
+      case EG3dAttributeFormat.Float2:
          g.vertexAttribPointer(s, 2, g.FLOAT, false, bs, i);
          break;
-      case ERenderAttributeFormat.Float3:
+      case EG3dAttributeFormat.Float3:
          g.vertexAttribPointer(s, 3, g.FLOAT, false, bs, i);
          break;
-      case ERenderAttributeFormat.Float4:
+      case EG3dAttributeFormat.Float4:
          g.vertexAttribPointer(s, 4, g.FLOAT, false, bs, i);
          break;
-      case ERenderAttributeFormat.Byte4:
+      case EG3dAttributeFormat.Byte4:
          g.vertexAttribPointer(s, 4, g.UNSIGNED_BYTE, false, bs, i);
          break;
-      case ERenderAttributeFormat.Byte4Normal:
+      case EG3dAttributeFormat.Byte4Normal:
          g.vertexAttribPointer(s, 4, g.UNSIGNED_BYTE, true, bs, i);
          break;
       default:
@@ -325,7 +336,7 @@ function FWglContext_bindTexture(ps, pi, pt){
       o._renderTextureActiveSlot = ps;
    }
    switch(pt.textureCd()){
-      case ERenderTexture.Flat2d:{
+      case EG3dTexture.Flat2d:{
          g.bindTexture(g.TEXTURE_2D, pt._native);
          g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
          g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
@@ -335,7 +346,7 @@ function FWglContext_bindTexture(ps, pi, pt){
          }
          break;
       }
-      case ERenderTexture.Cube:{
+      case EG3dTexture.Cube:{
          g.bindTexture(g.TEXTURE_CUBE_MAP, pt._native);
          r = o.checkError("glBindTexture", "Bind texture failure. (texture_id=%d)", pt._native);
          if(!r){
@@ -429,7 +440,7 @@ function FWglContext_checkError(c, m, p1){
    return r;
 }
 function FWglCubeTexture(o){
-   o = RClass.inherits(this, o, FRenderCubeTexture);
+   o = RClass.inherits(this, o, FG3dCubeTexture);
    o._native = null;
    o.setup  = FWglCubeTexture_setup;
    o.link     = FWglCubeTexture_link;
@@ -438,14 +449,14 @@ function FWglCubeTexture(o){
 function FWglCubeTexture_setup(){
    var o = this;
    var g = o._context._native;
-   o.__base.FRenderFlatTexture.setup.call(o);
+   o.__base.FG3dFlatTexture.setup.call(o);
    o._native = g.createTexture();
 }
 function FWglCubeTexture_link(v){
-   this._Texture = v;
+   this._texture = v;
 }
 function FWglFlatTexture(o){
-   o = RClass.inherits(this, o, FRenderFlatTexture);
+   o = RClass.inherits(this, o, FG3dFlatTexture);
    o._native = null;
    o.onImageLoad = FWglFlatTexture_onImageLoad;
    o.setup   = FWglFlatTexture_setup;
@@ -465,7 +476,7 @@ function FWglFlatTexture_onImageLoad(v){
 function FWglFlatTexture_setup(){
    var o = this;
    var g = o._context._native;
-   o.__base.FRenderFlatTexture.setup.call(o);
+   o.__base.FG3dFlatTexture.setup.call(o);
    o._native = g.createTexture();
 }
 function FWglFlatTexture_loadUrl(p){
@@ -484,7 +495,7 @@ function FWglFlatTexture_upload(p){
    o._statusLoad = r;
 }
 function FWglFragmentShader(o){
-   o = RClass.inherits(this, o, FRenderFragmentShader);
+   o = RClass.inherits(this, o, FG3dFragmentShader);
    o._native = null;
    o.setup   = FWglFragmentShader_setup;
    o.upload  = FWglFragmentShader_upload;
@@ -493,7 +504,7 @@ function FWglFragmentShader(o){
 }
 function FWglFragmentShader_setup(){
    var o = this;
-   o.__base.FRenderFragmentShader.setup.call(o);
+   o.__base.FG3dFragmentShader.setup.call(o);
    var g = o._context._native;
    o._native = g.createShader(g.FRAGMENT_SHADER);
 }
@@ -521,17 +532,17 @@ function FWglFragmentShader_dispose(){
       g.deleteShader(o._native);
    }
    o._native = null;
-   o.__base.FRenderFragmentShader.dispose.call(o);
+   o.__base.FG3dFragmentShader.dispose.call(o);
 }
 function FWglIndexBuffer(o){
-   o = RClass.inherits(this, o, FRenderIndexBuffer);
+   o = RClass.inherits(this, o, FG3dIndexBuffer);
    o.setup  = FWglIndexBuffer_setup;
    o.upload = FWglIndexBuffer_upload;
    return o;
 }
 function FWglIndexBuffer_setup(){
    var o = this;
-   o.__base.FRenderIndexBuffer.setup.call(o);
+   o.__base.FG3dIndexBuffer.setup.call(o);
    var g = o._context._native;
    o._native = g.createBuffer();
 }
@@ -554,7 +565,7 @@ function FWglIndexBuffer_upload(pd, pc){
    c.checkError('bufferData', 'bufferData');
 }
 function FWglProgram(o){
-   o = RClass.inherits(this, o, FRenderProgram);
+   o = RClass.inherits(this, o, FG3dProgram);
    o._native        = null;
    o.setup          = FWglProgram_setup;
    o.vertexShader   = FWglProgram_vertexShader;
@@ -598,10 +609,10 @@ function FWglProgram_fragmentShader(){
 function FWglProgram_upload(t, s){
    var o = this;
    var g = o._context._native;
-   if(t == ERenderShader.Vertex){
+   if(t == EG3dShader.Vertex){
       var vs = o.vertexShader();
       vs.upload(s);
-   }else if(t == ERenderShader.Fragment){
+   }else if(t == EG3dShader.Fragment){
       var fs = o.fragmentShader();
       fs.upload(s);
    }else{
@@ -746,14 +757,14 @@ function FWglProgram_dispose(){
    o.base.FProgram3d.dispose.call(o);
 }
 function FWglVertexBuffer(o){
-   o = RClass.inherits(this, o, FRenderVertexBuffer);
+   o = RClass.inherits(this, o, FG3dVertexBuffer);
    o.setup  = FWglVertexBuffer_setup;
    o.upload = FWglVertexBuffer_upload;
    return o;
 }
 function FWglVertexBuffer_setup(){
    var o = this;
-   o.__base.FRenderVertexBuffer.setup.call(o);
+   o.__base.FG3dVertexBuffer.setup.call(o);
    var g = o._context._native;
    o._native = g.createBuffer();
 }
@@ -777,7 +788,7 @@ function FWglVertexBuffer_upload(v, s, c){
    c.checkError('bufferData', 'bufferData');
 }
 function FWglVertexShader(o){
-   o = RClass.inherits(this, o, FRenderVertexShader);
+   o = RClass.inherits(this, o, FG3dVertexShader);
    o._native = null;
    o.setup   = FWglVertexShader_setup;
    o.upload  = FWglVertexShader_upload;
@@ -786,7 +797,7 @@ function FWglVertexShader(o){
 }
 function FWglVertexShader_setup(){
    var o = this;
-   o.__base.FRenderVertexShader.setup.call(o);
+   o.__base.FG3dVertexShader.setup.call(o);
    var g = o._context._native;
    o._native = g.createShader(g.VERTEX_SHADER);
 }
@@ -814,7 +825,7 @@ function FWglVertexShader_dispose(){
       g.deleteShader(o._native);
    }
    o._native = null;
-   o.__base.FRenderVertexShader.dispose.call(o);
+   o.__base.FG3dVertexShader.dispose.call(o);
 }
 var RWglUtility = new function RWglUtility(){
    var o = this;
@@ -827,11 +838,11 @@ var RWglUtility = new function RWglUtility(){
 }
 function RWglUtility_convertFillMode(g, v){
    switch(v){
-      case ERenderFillMode.Point:
+      case EG3dFillMode.Point:
          return g.POINT;
-      case ERenderFillMode.Line:
+      case EG3dFillMode.Line:
          return g.LINE;
-      case ERenderFillMode.Face:
+      case EG3dFillMode.Face:
          return g.FILL;
    }
    RLogger.fatal(this, null, "Convert fill mode failure. (fill_cd={1})", v);
@@ -839,11 +850,11 @@ function RWglUtility_convertFillMode(g, v){
 }
 function RWglUtility_convertCullMode(g, v){
    switch(v){
-      case ERenderCullMode.Front:
+      case EG3dCullMode.Front:
          return g.FRONT;
-      case ERenderCullMode.Back:
+      case EG3dCullMode.Back:
          return g.BACK;
-      case ERenderCullMode.Both:
+      case EG3dCullMode.Both:
          return g.FRONT_AND_BACK;
    }
    RLogger.fatal(this, null, "Convert cull mode failure. (cull_cd={1})", v);
@@ -851,19 +862,19 @@ function RWglUtility_convertCullMode(g, v){
 }
 function RWglUtility_convertDepthMode(g, v){
    switch(v){
-      case ERenderDepthMode.Equal:
+      case EG3dDepthMode.Equal:
          return g.EQUAL;
-      case ERenderDepthMode.NotEqual:
+      case EG3dDepthMode.NotEqual:
          return g.NOTEQUAL;
-      case ERenderDepthMode.Less:
+      case EG3dDepthMode.Less:
          return g.LESS;
-      case ERenderDepthMode.LessEqual:
+      case EG3dDepthMode.LessEqual:
          return g.LEQUAL;
-      case ERenderDepthMode.Greater:
+      case EG3dDepthMode.Greater:
          return g.GREATER;
-      case ERenderDepthMode.GreaterEqual:
+      case EG3dDepthMode.GreaterEqual:
          return g.GEQUAL;
-      case ERenderDepthMode.Always:
+      case EG3dDepthMode.Always:
          return g.ALWAYS;
    }
    RLogger.fatal(this, null, "Convert depth mode failure. (depth_cd={1})", v);
@@ -871,9 +882,9 @@ function RWglUtility_convertDepthMode(g, v){
 }
 function RWglUtility_convertBlendFactors(g, v){
    switch(v){
-      case ERenderBlendMode.SourceAlpha:
+      case EG3dBlendMode.SourceAlpha:
          return g.SRC_ALPHA;
-      case ERenderBlendMode.OneMinusSourceAlpha:
+      case EG3dBlendMode.OneMinusSourceAlpha:
          return g.ONE_MINUS_SRC_ALPHA;
       default:
          break;
@@ -883,9 +894,9 @@ function RWglUtility_convertBlendFactors(g, v){
 }
 function RWglUtility_convertIndexStride(g, v){
    switch(v){
-      case ERenderIndexStride.Uint16:
+      case EG3dIndexStride.Uint16:
          return g.UNSIGNED_SHORT;
-      case ERenderIndexStride.Uint32:
+      case EG3dIndexStride.Uint32:
          return g.UNSIGNED_INT;
    }
    RLogger.fatal(this, null, "Convert index stride failure. (stride_cd={1})", v);

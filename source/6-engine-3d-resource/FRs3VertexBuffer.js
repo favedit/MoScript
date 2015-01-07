@@ -10,7 +10,7 @@ function FRs3VertexBuffer(o){
    // @attribute
    o._geometry    = null;
    o._name        = null;
-   o._formatCd    = ERenderAttributeFormat.Unknown;
+   o._formatCd    = EG3dAttributeFormat.Unknown;
    o._vertexCount = 0;
    o._stride      = 0;
    o._data        = null;

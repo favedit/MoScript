@@ -5,7 +5,7 @@
 // @history 141231
 //==========================================================
 function FGeometry3d(o){
-   o = RClass.inherits(this, o, FRenderable);
+   o = RClass.inherits(this, o, FRenderable3d);
    //..........................................................
    // @attribute
    o._renderable      = null;
@@ -25,7 +25,7 @@ function FGeometry3d(o){
 //==========================================================
 function FGeometry3d_construct(){
    var o = this;
-   o.__base.FRenderable.construct.call(o);
+   o.__base.FRenderable3d.construct.call(o);
 }
 
 //==========================================================

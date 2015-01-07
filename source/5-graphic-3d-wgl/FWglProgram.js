@@ -5,7 +5,7 @@
 // @history 141230
 //==========================================================
 function FWglProgram(o){
-   o = RClass.inherits(this, o, FRenderProgram);
+   o = RClass.inherits(this, o, FG3dProgram);
    //..........................................................
    // @attribute
    o._native        = null;
@@ -79,16 +79,16 @@ function FWglProgram_fragmentShader(){
 // <T>关联内容处理。</T>
 //
 // @method
-// @param t:type:ERenderShader 渲染程序类型
+// @param t:type:EG3dShader 渲染程序类型
 // @param s:source:String 渲染代码
 //==========================================================
 function FWglProgram_upload(t, s){
    var o = this;
    var g = o._context._native;
-   if(t == ERenderShader.Vertex){
+   if(t == EG3dShader.Vertex){
       var vs = o.vertexShader();
       vs.upload(s);
-   }else if(t == ERenderShader.Fragment){
+   }else if(t == EG3dShader.Fragment){
       var fs = o.fragmentShader();
       fs.upload(s);
    }else{
@@ -100,7 +100,7 @@ function FWglProgram_upload(t, s){
 // <T>关联内容处理。</T>
 //
 // @method
-// @param t:type:ERenderShader 渲染程序类型
+// @param t:type:EG3dShader 渲染程序类型
 // @param s:source:String 渲染代码
 //==========================================================
 function FWglProgram_build(){
@@ -142,7 +142,7 @@ function FWglProgram_build(){
 // <T>关联内容处理。</T>
 //
 // @method
-// @param t:type:ERenderShader 渲染程序类型
+// @param t:type:EG3dShader 渲染程序类型
 // @param s:source:String 渲染代码
 //==========================================================
 function FWglProgram_link(){
@@ -275,7 +275,7 @@ function FWglProgram_setParameter(pn, pv, pc){
 //
 // @method
 // @param pn:name:String 名称
-// @param pt:texture:FRenderTexture 纹理
+// @param pt:texture:FG3dTexture 纹理
 //==========================================================
 function FWglProgram_setSampler(pn, pt){
    var o = this;

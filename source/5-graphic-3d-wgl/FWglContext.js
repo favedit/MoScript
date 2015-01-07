@@ -5,7 +5,7 @@
 // @history 141230
 //==========================================================
 function FWglContext(o){
-   o = RClass.inherits(this, o, FRenderContext);
+   o = RClass.inherits(this, o, FG3dContext);
    //..........................................................
    // @attribute
    o._native             = null;
@@ -13,7 +13,6 @@ function FWglContext(o){
    //..........................................................
    // @method
    o.linkCanvas          = FWglContext_linkCanvas;
-   //..........................................................
    // @method
    o.createProgram       = FWglContext_createProgram;
    o.createVertexBuffer  = FWglContext_createVertexBuffer;
@@ -48,8 +47,18 @@ function FWglContext(o){
 // @param h:hCanvas:HtmlCanvasTag 页面画布标签
 //==========================================================
 function FWglContext_linkCanvas(h){
-   //this._native = h.getContext('webgl')
-   this._native = h.getContext('experimental-webgl')
+   var o = this;
+   o._hCanvas = h;
+   if(h.getContext){
+      var n = h.getContext('experimental-webgl');
+      if(n == null){
+         n = h.getContext('webgl');
+      }
+      if(n == null){
+         throw new TError("Current browser can't support WebGL technique.");
+      }
+      o._native = n;
+   }
 }
 
 //==========================================================
@@ -98,7 +107,7 @@ function FWglContext_createIndexBuffer(){
 // <T>创建平面渲染纹理。</T>
 //
 // @method
-// @return FRenderFlatTexture 平面渲染纹理
+// @return FG3dFlatTexture 平面渲染纹理
 //==========================================================
 function FWglContext_createFlatTexture(){
    var o = this;
@@ -112,7 +121,7 @@ function FWglContext_createFlatTexture(){
 // <T>创建立方渲染纹理。</T>
 //
 // @method
-// @return FRenderCubeTexture 立方渲染纹理
+// @return FG3dCubeTexture 立方渲染纹理
 //==========================================================
 function FWglContext_createCubeTexture(){
    var o = this;
@@ -148,7 +157,7 @@ function FWglContext_setFillMode(){
 // <T>设置深度模式。</T>
 //
 // @param f:depthFlag:Boolean 深度开关
-// @param v:depthCd:ERenderDepthMode 深度模式
+// @param v:depthCd:EG3dDepthMode 深度模式
 // @return 处理结果
 //============================================================
 function FWglContext_setDepthMode(f, v){
@@ -180,7 +189,7 @@ function FWglContext_setDepthMode(f, v){
 // <T>设置剪裁模式。</T>
 //
 // @param f:cullFlag:Boolean 剪裁开关
-// @param v:cullCd:ERenderCullMode 剪裁模式
+// @param v:cullCd:EG3dCullMode 剪裁模式
 // @return 处理结果
 //============================================================
 function FWglContext_setCullingMode(f, v){
@@ -212,8 +221,8 @@ function FWglContext_setCullingMode(f, v){
 // <T>设置融合方式。</T>
 //
 // @param f:blendFlag:Boolean 剪裁开关
-// @param vs:sourceCd:ERenderBlendMode 来源融合模式
-// @param vt:tagetCd:ERenderBlendMode 目标融合模式
+// @param vs:sourceCd:EG3dBlendMode 来源融合模式
+// @param vt:tagetCd:EG3dBlendMode 目标融合模式
 // @return 处理结果
 //============================================================
 function FWglContext_setBlendFactors(f, vs, vt){
@@ -259,7 +268,7 @@ function FWglContext_setScissorRectangle(l, t, w, h){
 //============================================================
 // <T>设置渲染程序。</T>
 //
-// @param v:program:FRenderProgram 渲染程序
+// @param v:program:FG3dProgram 渲染程序
 //============================================================
 function FWglContext_setProgram(v){
    var o = this;
@@ -296,7 +305,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
    //}
    // 修改数据
    switch (formatCd){
-      case ERenderParameterFormat.Float1:{
+      case EG3dParameterFormat.Float1:{
          // 检查长度
          if(length % 4 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
@@ -309,7 +318,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float2:{
+      case EG3dParameterFormat.Float2:{
          // 检查长度
          if(length % 8 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
@@ -322,7 +331,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float3:{
+      case EG3dParameterFormat.Float3:{
          // 检查长度
          if(length % 12 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=d)", length);
@@ -335,7 +344,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float4:{
+      case EG3dParameterFormat.Float4:{
          // 检查长度
          if(length % 16 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
@@ -348,7 +357,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float3x3:{
+      case EG3dParameterFormat.Float3x3:{
          // 检查长度
          if(length % 36 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length={1})", length);
@@ -356,7 +365,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          }
          // 修改数据
          var count = length / 36;
-         var dt = new Float32Array(16);
+         var dt = new Float32Array(9);
          dt[ 0] = pd[ 0];
          dt[ 1] = pd[ 4];
          dt[ 2] = pd[ 8];
@@ -366,12 +375,12 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          dt[ 6] = pd[ 2];
          dt[ 7] = pd[ 6];
          dt[ 8] = pd[10];
-         g.uniformMatrix3fv(slot, false, pd);
+         g.uniformMatrix3fv(slot, g.FALSE, dt);
          // 检查错误
          r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float4x3:{
+      case EG3dParameterFormat.Float4x3:{
          // 检查长度
          if(length % 48 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
@@ -385,7 +394,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float4x4:{
+      case EG3dParameterFormat.Float4x4:{
          // 检查长度
          if(length % 64 != 0){
             RLogger.fatal(o, null, "Float4x4 length is invalid. (length=%d)", length);
@@ -411,7 +420,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          dt[13] = pd[ 7];
          dt[14] = pd[11];
          dt[15] = pd[15];
-         g.uniformMatrix4fv(slot, false, dt);
+         g.uniformMatrix4fv(slot, g.FALSE, dt);
          // 检查错误
          r = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
@@ -424,7 +433,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
 // <T>绑定顶点缓冲。</T>
 //
 // @param s:slot:Integer 插槽
-// @param b:vertexBuffer:FRenderVertexBuffer 顶点缓冲
+// @param b:vertexBuffer:FG3dVertexBuffer 顶点缓冲
 // @param i:offset:Integer 偏移位置
 // @param f:formatCd:String 格式
 //============================================================
@@ -460,22 +469,22 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
    // 设置顶点流
    var bs = b.stride;
    switch(f){
-      case ERenderAttributeFormat.Float1:
+      case EG3dAttributeFormat.Float1:
          g.vertexAttribPointer(s, 1, g.FLOAT, false, bs, i);
          break;
-      case ERenderAttributeFormat.Float2:
+      case EG3dAttributeFormat.Float2:
          g.vertexAttribPointer(s, 2, g.FLOAT, false, bs, i);
          break;
-      case ERenderAttributeFormat.Float3:
+      case EG3dAttributeFormat.Float3:
          g.vertexAttribPointer(s, 3, g.FLOAT, false, bs, i);
          break;
-      case ERenderAttributeFormat.Float4:
+      case EG3dAttributeFormat.Float4:
          g.vertexAttribPointer(s, 4, g.FLOAT, false, bs, i);
          break;
-      case ERenderAttributeFormat.Byte4:
+      case EG3dAttributeFormat.Byte4:
          g.vertexAttribPointer(s, 4, g.UNSIGNED_BYTE, false, bs, i);
          break;
-      case ERenderAttributeFormat.Byte4Normal:
+      case EG3dAttributeFormat.Byte4Normal:
          g.vertexAttribPointer(s, 4, g.UNSIGNED_BYTE, true, bs, i);
          break;
       default:
@@ -493,7 +502,7 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
 //
 // @param ps:slo:Integer 插槽
 // @param pi:index:Integer 索引
-// @param pt:texture:FRenderTexture 纹理
+// @param pt:texture:FG3dTexture 纹理
 // @return 处理结果
 //============================================================
 function FWglContext_bindTexture(ps, pi, pt){
@@ -521,7 +530,7 @@ function FWglContext_bindTexture(ps, pi, pt){
    //............................................................
    // 绑定纹理
    switch(pt.textureCd()){
-      case ERenderTexture.Flat2d:{
+      case EG3dTexture.Flat2d:{
          g.bindTexture(g.TEXTURE_2D, pt._native);
          g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
          g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
@@ -531,7 +540,7 @@ function FWglContext_bindTexture(ps, pi, pt){
          }
          break;
       }
-      case ERenderTexture.Cube:{
+      case EG3dTexture.Cube:{
          g.bindTexture(g.TEXTURE_CUBE_MAP, pt._native);
          r = o.checkError("glBindTexture", "Bind texture failure. (texture_id=%d)", pt._native);
          if(!r){

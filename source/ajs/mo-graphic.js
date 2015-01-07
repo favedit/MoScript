@@ -1,62 +1,83 @@
 function FGraphicContext(o){
    o = RClass.inherits(this, o, FObject);
-   o._optionDepth        = false;
-   o._optionCull         = false;
-   o._depthModeCd        = 0;
-   o._cullModeCd         = 0;
-   o._statusBlend        = false;
-   o._blendSourceCd      = 0;
-   o._blendTargetCd      = 0;
-   o._program            = null;
-   o.linkCanvas          = RMethod.virtual(o, 'linkCanvas');
-   o.createProgram       = RMethod.virtual(o, 'createProgram');
-   o.createVertexBuffer  = RMethod.virtual(o, 'createVertexBuffer');
-   o.createIndexBuffer   = RMethod.virtual(o, 'createIndexBuffer');
-   o.createFlatTexture   = RMethod.virtual(o, 'createFlatTexture');
-   o.createCubeTexture   = RMethod.virtual(o, 'createCubeTexture');
-   o.setFillMode         = RMethod.virtual(o, 'setFillMode');
-   o.setDepthMode        = RMethod.virtual(o, 'setDepthMode');
-   o.setCullingMode      = RMethod.virtual(o, 'setCullingMode');
-   o.setBlendFactors     = RMethod.virtual(o, 'setBlendFactors');
-   o.setScissorRectangle = RMethod.virtual(o, 'setScissorRectangle');
-   o.setProgram          = RMethod.virtual(o, 'setProgram');
-   o.bindVertexBuffer    = RMethod.virtual(o, 'bindVertexBuffer');
-   o.bindTexture         = RMethod.virtual(o, 'bindTexture');
-   o.clear               = RMethod.virtual(o, 'clear');
-   o.drawTriangles       = RMethod.virtual(o, 'drawTriangles');
-   o.present             = RMethod.virtual(o, 'present');
+   o._hCanvas   = null;
+   o.construct  = FGraphicContext_construct;
+   o.linkCanvas = RMethod.virtual(o, 'linkCanvas');
+   o.dispose    = FGraphicContext_dispose;
    return o;
+}
+function FGraphicContext_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+function FGraphicContext_dispose(){
+   var o = this;
+   o._hCanvas = null;
+   o.__base.FObject.dispose.call(o);
 }
 function FG2dContext(o){
-   o = RClass.inherits(this, o, FObject);
-   o._optionDepth        = false;
-   o._optionCull         = false;
-   o._depthModeCd        = 0;
-   o._cullModeCd         = 0;
-   o._statusBlend        = false;
-   o._blendSourceCd      = 0;
-   o._blendTargetCd      = 0;
-   o._program            = null;
-   o.linkCanvas          = RMethod.virtual(o, 'linkCanvas');
-   o.createProgram       = RMethod.virtual(o, 'createProgram');
-   o.createVertexBuffer  = RMethod.virtual(o, 'createVertexBuffer');
-   o.createIndexBuffer   = RMethod.virtual(o, 'createIndexBuffer');
-   o.createFlatTexture   = RMethod.virtual(o, 'createFlatTexture');
-   o.createCubeTexture   = RMethod.virtual(o, 'createCubeTexture');
-   o.setFillMode         = RMethod.virtual(o, 'setFillMode');
-   o.setDepthMode        = RMethod.virtual(o, 'setDepthMode');
-   o.setCullingMode      = RMethod.virtual(o, 'setCullingMode');
-   o.setBlendFactors     = RMethod.virtual(o, 'setBlendFactors');
-   o.setScissorRectangle = RMethod.virtual(o, 'setScissorRectangle');
-   o.setProgram          = RMethod.virtual(o, 'setProgram');
-   o.bindVertexBuffer    = RMethod.virtual(o, 'bindVertexBuffer');
-   o.bindTexture         = RMethod.virtual(o, 'bindTexture');
-   o.clear               = RMethod.virtual(o, 'clear');
-   o.drawTriangles       = RMethod.virtual(o, 'drawTriangles');
-   o.present             = RMethod.virtual(o, 'present');
+   o = RClass.inherits(this, o, FGraphicContext);
+   o._native       = null;
+   o.construct     = FG2dContext_construct;
+   o.linkCanvas    = FG2dContext_linkCanvas;
+   o.drawLine      = FG2dContext_drawLine;
+   o.drawRecrangle = FG2dContext_drawRecrangle;
+   o.drawText      = FG2dContext_drawText;
+   o.drawImage     = FG2dContext_drawImage;
+   o.fillRecrangle = FG2dContext_fillRecrangle;
+   o.dispose       = FG2dContext_dispose;
    return o;
 }
-var ERenderAttributeFormat = new function ERenderAttributeFormat(){
+function FG2dContext_construct(){
+   var o = this;
+   o.__base.FGraphicContext.construct.call(o);
+}
+function FG2dContext_linkCanvas(h){
+   var o = this;
+   o._hCanvas = h;
+   o._native = h.getContext('2d')
+}
+function FG2dContext_drawLine(x1, y1, x2, y2){
+   var o = this;
+   var c = o._native;
+   c.moveTo(x1, y1);
+   c.lineTo(x2, y2);
+   c.stroke();
+}
+function FG2dContext_drawRecrangle(x1, y1, x2, y2){
+   var o = this;
+   var c = o._native;
+   c.moveTo(x1, y1);
+   c.lineTo(x2, y1);
+   c.lineTo(x2, y2);
+   c.lineTo(x1, y2);
+   c.lineTo(x1, y1);
+   c.stroke();
+}
+function FG2dContext_drawText(x, y, t){
+   var o = this;
+   o._native.fillText(t, x, y);
+}
+function FG2dContext_drawImage(){
+}
+function FG2dContext_fillRecrangle(x1, y1, x2, y2){
+   var o = this;
+   var c = o._native;
+   c.beginPath();
+   c.moveTo(x1, y1);
+   c.lineTo(x2, y1);
+   c.lineTo(x2, y2);
+   c.lineTo(x1, y2);
+   c.lineTo(x1, y1);
+   c.closePath();
+   c.fill();
+}
+function FG2dContext_dispose(){
+   var o = this;
+   o._native = null;
+   o.__base.FGraphicContext.dispose.call(o);
+}
+var EG3dAttributeFormat = new function EG3dAttributeFormat(){
    var o = this;
    o.Unknown = 0;
    o.Float1 = 1;
@@ -67,14 +88,14 @@ var ERenderAttributeFormat = new function ERenderAttributeFormat(){
    o.Byte4Normal = 6;
    return o;
 }
-var ERenderBlendMode = new function ERenderBlendMode(){
+var EG3dBlendMode = new function EG3dBlendMode(){
    var o = this;
    o.None = 0;
    o.SourceAlpha= 1;
    o.OneMinusSourceAlpha = 2;
    return o;
 }
-var ERenderCullMode = new function ERenderCullMode(){
+var EG3dCullMode = new function EG3dCullMode(){
    var o = this;
    o.None = 0;
    o.Front= 1;
@@ -82,7 +103,7 @@ var ERenderCullMode = new function ERenderCullMode(){
    o.Both = 3;
    return o;
 }
-var ERenderDepthMode = new function ERenderDepthMode(){
+var EG3dDepthMode = new function EG3dDepthMode(){
    var o = this;
    o.None = 0;
    o.Equal = 1;
@@ -94,7 +115,7 @@ var ERenderDepthMode = new function ERenderDepthMode(){
    o.Always = 7;
    return o;
 }
-var ERenderFillMode = new function ERenderFillMode(){
+var EG3dFillMode = new function EG3dFillMode(){
    var o = this;
    o.Unknown = 0;
    o.Point = 1;
@@ -102,14 +123,14 @@ var ERenderFillMode = new function ERenderFillMode(){
    o.Face = 3;
    return o;
 }
-var ERenderIndexStride = new function ERenderIndexStride(){
+var EG3dIndexStride = new function EG3dIndexStride(){
    var o = this;
    o.Unknown = 0;
    o.Uint16 = 1;
    o.Uint32 = 2;
    return o;
 }
-var ERenderParameterFormat = new function ERenderParameterFormat(){
+var EG3dParameterFormat = new function EG3dParameterFormat(){
    var o = this;
    o.Unknown = 0;
    o.Float1 = 1;
@@ -121,14 +142,14 @@ var ERenderParameterFormat = new function ERenderParameterFormat(){
    o.Float4x4 = 7;
    return o;
 }
-var ERenderShader = new function ERenderShader(){
+var EG3dShader = new function EG3dShader(){
    var o = this;
    o.Unknown = 0;
    o.Vertex   = 1;
    o.Fragment = 2;
    return o;
 }
-var ERenderTexture = new function ERenderTexture(){
+var EG3dTexture = new function EG3dTexture(){
    var o = this;
    o.Unknown = 0;
    o.Flat2d = 1;
@@ -136,7 +157,52 @@ var ERenderTexture = new function ERenderTexture(){
    o.Cube= 3;
    return o;
 }
-function FRenderCamera(o){
+function FG3dBaseMaterial(o){
+   o = RClass.inherits(this, o, FObject);
+   o.name = null;
+   o.optionMerge = null;
+   o.optionSort = null;
+   o.sortLevel = null;
+   o.optionAlpha = null;
+   o.optionDepth = null;
+   o.optionCompare = null;
+   o.optionDouble = null;
+   o.optionShadow = null;
+   o.optionShadowSelf = null;
+   o.color = null;
+   o.alpha = null;
+   o.ambientColor = null;
+   o.ambientShadow = null;
+   o.diffuseColor = null;
+   o.diffuseShadow = null;
+   o.diffuseViewColor = null;
+   o.diffuseViewShadow = null;
+   o.specularColor = null;
+   o.specularShadow = null;
+   o.specularInfo = null;
+   o.specularViewColor = null;
+   o.specularViewInfo = null;
+   o.specularViewShadow = null;
+   o.reflectColor = null;
+   o.textures = null;
+   o.construct = FG3dBaseMaterial_construct;
+   o.textures  = FG3dBaseMaterial_textures;
+   return o;
+}
+function FG3dBaseMaterial_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o.ambientColor = new SColor4();
+   o.diffuseColor = new SColor4();
+   o.diffuseViewColor = new SColor4();
+   o.specularColor = new SColor4();
+   o.specularViewColor = new SColor4();
+   o.reflectColor = new SColor4();
+}
+function FG3dBaseMaterial_textures(){
+   return this.textures;
+}
+function FG3dCamera(o){
    o = RClass.inherits(this, o, FObject);
    o.name = null;
    o.matrix        = null;
@@ -154,50 +220,50 @@ function FRenderCamera(o){
    o._axisX        = null;
    o._axisY        = null;
    o._axisZ        = null;
-   o.construct     = FRenderCamera_construct;
-   o.doWalk        = FRenderCamera_doWalk;
-   o.doStrafe      = FRenderCamera_doStrafe;
-   o.doFly         = FRenderCamera_doFly;
-   o.doYaw         = FRenderCamera_doYaw;
-   o.doPitch       = FRenderCamera_doPitch;
-   o.lookAt        = FRenderCamera_lookAt;
-   o.updateFrustum = FRenderCamera_updateFrustum;
-   o.update        = FRenderCamera_update;
+   o.construct     = FG3dCamera_construct;
+   o.doWalk        = FG3dCamera_doWalk;
+   o.doStrafe      = FG3dCamera_doStrafe;
+   o.doFly         = FG3dCamera_doFly;
+   o.doYaw         = FG3dCamera_doYaw;
+   o.doPitch       = FG3dCamera_doPitch;
+   o.lookAt        = FG3dCamera_lookAt;
+   o.updateFrustum = FG3dCamera_updateFrustum;
+   o.update        = FG3dCamera_update;
    return o;
 }
-function FRenderCamera_construct(){
+function FG3dCamera_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o.matrix = new SMatrix3d();
    o.position = new SPoint3();
    o.direction = new SVector3();
-   o.viewport = RClass.create(FRenderViewport);
-   o.projection = RClass.create(FRenderProjection);
+   o.viewport = RClass.create(FG3dViewport);
+   o.projection = RClass.create(FG3dProjection);
    o._axisUp = new SVector3();
    o._axisUp.set(0, 1, 0);
    o._axisX = new SVector3();
    o._axisY = new SVector3();
    o._axisZ = new SVector3();
 }
-function FRenderCamera_doWalk(){
+function FG3dCamera_doWalk(){
 }
-function FRenderCamera_doStrafe(){
+function FG3dCamera_doStrafe(){
 }
-function FRenderCamera_doFly(){
+function FG3dCamera_doFly(){
 }
-function FRenderCamera_doYaw(){
+function FG3dCamera_doYaw(){
 }
-function FRenderCamera_doPitch(){
+function FG3dCamera_doPitch(){
 }
-function FRenderCamera_lookAt(x, y, z){
+function FG3dCamera_lookAt(x, y, z){
    var o = this;
    var p = o.position;
    o.direction.set(x - p.x, y - p.y, z - p.z);
    o.direction.normalize();
 }
-function FRenderCamera_updateFrustum(){
+function FG3dCamera_updateFrustum(){
 }
-function FRenderCamera_update(){
+function FG3dCamera_update(){
    var o = this;
    var ax = o._axisX;
    var ay = o._axisY;
@@ -226,8 +292,8 @@ function FRenderCamera_update(){
    d[14] = -az.dotPoint3(o.position);
    d[15] = 1.0;
 }
-function FRenderContext(o){
-   o = RClass.inherits(this, o, FObject);
+function FG3dContext(o){
+   o = RClass.inherits(this, o, FGraphicContext);
    o._optionDepth        = false;
    o._optionCull         = false;
    o._depthModeCd        = 0;
@@ -236,7 +302,7 @@ function FRenderContext(o){
    o._blendSourceCd      = 0;
    o._blendTargetCd      = 0;
    o._program            = null;
-   o.linkCanvas          = RMethod.virtual(o, 'linkCanvas');
+   o.construct           = FG3dContext_construct;
    o.createProgram       = RMethod.virtual(o, 'createProgram');
    o.createVertexBuffer  = RMethod.virtual(o, 'createVertexBuffer');
    o.createIndexBuffer   = RMethod.virtual(o, 'createIndexBuffer');
@@ -253,36 +319,46 @@ function FRenderContext(o){
    o.clear               = RMethod.virtual(o, 'clear');
    o.drawTriangles       = RMethod.virtual(o, 'drawTriangles');
    o.present             = RMethod.virtual(o, 'present');
+   o.dispose             = FG3dContext_dispose;
    return o;
 }
-function FRenderCubeTexture(o){
-   o = RClass.inherits(this, o, FRenderTexture);
-   o.size = 0;
-   o.construct = FRenderTexture_construct;
-   return o;
-}
-function FRenderTexture_construct(){
+function FG3dContext_construct(){
    var o = this;
-   o.__base.FRenderTexture.construct();
-   o._textureCd = ERenderTexture.Cube;
+   o.__base.FGraphicContext.construct.call(o);
 }
-function FRenderEffect(o){
-   o = RClass.inherits(this, o, FRenderObject);
+function FG3dContext_dispose(){
+   var o = this;
+   o._program = null;
+   o.__base.FGraphicContext.dispose.call(o);
+}
+function FG3dCubeTexture(o){
+   o = RClass.inherits(this, o, FG3dTexture);
+   o.size = 0;
+   o.construct = FG3dTexture_construct;
+   return o;
+}
+function FG3dTexture_construct(){
+   var o = this;
+   o.__base.FG3dTexture.construct();
+   o._textureCd = EG3dTexture.Cube;
+}
+function FG3dEffect(o){
+   o = RClass.inherits(this, o, FG3dObject);
    o._context       = null;
    o._program       = null;
-   o.setParameter   = FRenderEffect_setParameter;
-   o.setSampler     = FRenderEffect_setSampler;
-   o.drawRenderable = FRenderEffect_drawRenderable;
-   o.loadUrl        = FRenderEffect_loadUrl;
+   o.setParameter   = FG3dEffect_setParameter;
+   o.setSampler     = FG3dEffect_setSampler;
+   o.drawRenderable = FG3dEffect_drawRenderable;
+   o.loadUrl        = FG3dEffect_loadUrl;
    return o;
 }
-function FRenderEffect_setParameter(pn, pv, pc){
+function FG3dEffect_setParameter(pn, pv, pc){
    this._program.setParameter(pn, pv, pc);
 }
-function FRenderEffect_setSampler(pn, pt){
+function FG3dEffect_setSampler(pn, pt){
    this._program.setSampler(pn, pt);
 }
-function FRenderEffect_drawRenderable(r){
+function FG3dEffect_drawRenderable(r){
    var o = this;
    var c = o._context;
    var p = o._program;
@@ -303,7 +379,7 @@ function FRenderEffect_drawRenderable(r){
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
 }
-function FRenderEffect_loadUrl(u){
+function FG3dEffect_loadUrl(u){
    var o = this;
    var c = o._context;
    var x = RClass.create(FXmlConnection);
@@ -313,93 +389,144 @@ function FRenderEffect_loadUrl(u){
    p.build();
    p.link();
 }
-function FRenderFlatTexture(o){
-   o = RClass.inherits(this, o, FRenderTexture);
+function FG3dEffectConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._effects = null;
+   o._path = "/assets/shader/";
+   o.construct = FG3dEffectConsole_construct;
+   o.find      = FG3dEffectConsole_find;
+   return o;
+}
+function FG3dEffectConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._effects = new TDictionary();
+}
+function FG3dEffectConsole_find(c, p){
+   var o = this;
+   var n = RClass.name(p);
+   var e = o._effects.get(n);
+   if(e == null){
+      e = RClass.createByName(n);
+      e.linkContext(c);
+      e._path = o._path;
+      e.load();
+      o._effects.set(n, e);
+   }
+   return e;
+}
+function FG3dFlatTexture(o){
+   o = RClass.inherits(this, o, FG3dTexture);
    o.width     = 0;
    o.height    = 0;
-   o.construct = FRenderFlatTexture_construct;
+   o.construct = FG3dFlatTexture_construct;
    return o;
 }
-function FRenderFlatTexture_construct(){
+function FG3dFlatTexture_construct(){
    var o = this;
-   o.__base.FRenderTexture.construct();
-   o._textureCd = ERenderTexture.Flat2d;
+   o.__base.FG3dTexture.construct();
+   o._textureCd = EG3dTexture.Flat2d;
 }
-function FRenderFragmentShader(o){
-   o = RClass.inherits(this, o, FRenderShader);
+function FG3dFragmentShader(o){
+   o = RClass.inherits(this, o, FG3dShader);
    return o;
 }
-function FRenderIndexBuffer(o){
-   o = RClass.inherits(this, o, FRenderObject);
-   o.strideCd = ERenderIndexStride.Uint16;
+function FG3dIndexBuffer(o){
+   o = RClass.inherits(this, o, FG3dObject);
+   o.strideCd = EG3dIndexStride.Uint16;
    o.count    = 0;
    o.upload = RMethod.virtual(o, 'upload');
    return o;
 }
-function FRenderLight(o){
+function FG3dLight(o){
    o = RClass.inherits(this, o, FObject);
    return o;
 }
-function FRenderMaterial(o){
-   o = RClass.inherits(this, o, FObject);
+function FG3dLightMaterial(o){
+   o = RClass.inherits(this, o, FG3dBaseMaterial);
    return o;
 }
-function FRenderObject(o){
+function FG3dMaterial(o){
+   o = RClass.inherits(this, o, FG3dBaseMaterial);
+   o._textures = null;
+   o.textures  = FG3dMaterial_textures;
+   return o;
+}
+function FG3dMaterial_textures(){
+   return this._textures;
+}
+function FG3dMaterialTexture(o){
+   o = RClass.inherits(this, o, FG3dMaterial);
+   o.name = null;
+   o.reflectColor = null;
+   o.construct   = FG3dMaterial_construct;
+   return o;
+}
+function FG3dMaterial_construct(){
+   var o = this;
+   o.ambientColor = new SColor4();
+   o.diffuseColor = new SColor4();
+   o.diffuseViewColor = new SColor4();
+   o.specularColor = new SColor4();
+   o.specularViewColor = new SColor4();
+   o.reflectColor = new SColor4();
+}
+function FG3dObject(o){
    o = RClass.inherits(this, o, FObject);
    o._context = null;
-   o.linkContext = FRenderObject_linkContext;
-   o.setup       = FRenderObject_setup;
+   o.linkContext = FG3dObject_linkContext;
+   o.setup       = FG3dObject_setup;
    return o;
 }
-function FRenderObject_linkContext(c){
+function FG3dObject_linkContext(c){
    this._context = c;
 }
-function FRenderObject_setup(){
+function FG3dObject_setup(){
 }
-function FRenderProgram(o){
-   o = RClass.inherits(this, o, FRenderObject);
+function FG3dProgram(o){
+   o = RClass.inherits(this, o, FG3dObject);
    o._attributes       = null;
    o._parameters       = null;
    o._samplers         = null;
    o._vertexShader     = null;
    o._fragmentShader   = null;
-   o.hasAttribute      = FRenderProgram_hasAttribute;
-   o.registerAttribute = FRenderProgram_registerAttribute;
-   o.findAttribute     = FRenderProgram_findAttribute;
-   o.attributes        = FRenderProgram_attributes;
-   o.hasParameter      = FRenderProgram_hasParameter;
-   o.registerParameter = FRenderProgram_registerParameter;
-   o.findParameter     = FRenderProgram_findParameter;
-   o.parameters        = FRenderProgram_parameters;
-   o.hasSampler        = FRenderProgram_hasSampler;
-   o.registerSampler   = FRenderProgram_registerSampler;
-   o.findSampler       = FRenderProgram_findSampler;
-   o.samplers          = FRenderProgram_samplers;
+   o.hasAttribute      = FG3dProgram_hasAttribute;
+   o.registerAttribute = FG3dProgram_registerAttribute;
+   o.findAttribute     = FG3dProgram_findAttribute;
+   o.attributes        = FG3dProgram_attributes;
+   o.hasParameter      = FG3dProgram_hasParameter;
+   o.registerParameter = FG3dProgram_registerParameter;
+   o.findParameter     = FG3dProgram_findParameter;
+   o.parameters        = FG3dProgram_parameters;
+   o.hasSampler        = FG3dProgram_hasSampler;
+   o.registerSampler   = FG3dProgram_registerSampler;
+   o.findSampler       = FG3dProgram_findSampler;
+   o.samplers          = FG3dProgram_samplers;
    o.vertexShader      = RMethod.virtual(o, 'vertexShader');
    o.fragmentShader    = RMethod.virtual(o, 'fragmentShader');
    o.setAttribute      = RMethod.virtual(o, 'setAttribute');
    o.setParameter      = RMethod.virtual(o, 'setParameter');
    o.setSampler        = RMethod.virtual(o, 'setSampler');
    o.upload            = RMethod.virtual(o, 'upload');
-   o.loadConfig        = FRenderProgram_loadConfig;
+   o.loadConfig        = FG3dProgram_loadConfig;
    return o;
 }
-function FRenderProgram_hasAttribute(){
+function FG3dProgram_hasAttribute(){
    var o = this;
    var r = o._attributes;
    return r ? !r.isEmpty() : false;
 }
-function FRenderProgram_registerAttribute(n){
+function FG3dProgram_registerAttribute(n){
    var o = this;
-   var r = RClass.create(FRenderProgramAttribute);
+   var r = RClass.create(FG3dProgramAttribute);
    r._name = n;
    o.attributes().set(n, r);
    return r;
 }
-function FRenderProgram_findAttribute(n){
+function FG3dProgram_findAttribute(n){
    return this._attributes ? this._attributes.get(n) : null;
 }
-function FRenderProgram_attributes(){
+function FG3dProgram_attributes(){
    var o = this;
    var r = o._attributes;
    if(r == null){
@@ -407,23 +534,23 @@ function FRenderProgram_attributes(){
    }
    return r;
 }
-function FRenderProgram_hasParameter(){
+function FG3dProgram_hasParameter(){
    var o = this;
    var r = o._parameters;
    return r ? !r.isEmpty() : false;
 }
-function FRenderProgram_registerParameter(pn, pf){
+function FG3dProgram_registerParameter(pn, pf){
    var o = this;
-   var r = RClass.create(FRenderProgramParameter);
+   var r = RClass.create(FG3dProgramParameter);
    r._name = pn;
    r.formatCd = pf;
    o.parameters().set(pn, r);
    return r;
 }
-function FRenderProgram_findParameter(n){
+function FG3dProgram_findParameter(n){
    return this._parameters ? this._parameters.get(n) : null;
 }
-function FRenderProgram_parameters(){
+function FG3dProgram_parameters(){
    var o = this;
    var r = o._parameters;
    if(r == null){
@@ -431,22 +558,22 @@ function FRenderProgram_parameters(){
    }
    return r;
 }
-function FRenderProgram_hasSampler(){
+function FG3dProgram_hasSampler(){
    var o = this;
    var r = o._samplers;
    return r ? !r.isEmpty() : false;
 }
-function FRenderProgram_registerSampler(pn){
+function FG3dProgram_registerSampler(pn){
    var o = this;
-   var r = RClass.create(FRenderProgramSampler);
+   var r = RClass.create(FG3dProgramSampler);
    r._name = pn;
    o.samplers().set(pn, r);
    return r;
 }
-function FRenderProgram_findSampler(n){
+function FG3dProgram_findSampler(n){
    return this._samplers ? this._samplers.get(n) : null;
 }
-function FRenderProgram_samplers(){
+function FG3dProgram_samplers(){
    var o = this;
    var r = o._samplers;
    if(r == null){
@@ -454,7 +581,7 @@ function FRenderProgram_samplers(){
    }
    return r;
 }
-function FRenderProgram_loadConfig(p){
+function FG3dProgram_loadConfig(p){
    var o = this;
    var ns = p.nodes();
    var nc = ns.count();
@@ -463,25 +590,25 @@ function FRenderProgram_loadConfig(p){
       if(n.isName('State')){
       }else if(n.isName('Specular')){
       }else if(n.isName('Parameter')){
-         var pp = RClass.create(FRenderProgramParameter);
+         var pp = RClass.create(FG3dProgramParameter);
          pp.loadConfig(n);
          o.parameters().set(pp.name(), pp);
          var s = pp.toString();
       }else if(n.isName('Attribute')){
-         var pa = RClass.create(FRenderProgramAttribute);
+         var pa = RClass.create(FG3dProgramAttribute);
          pa.loadConfig(n);
          o.attributes().set(pa.name(), pa);
       }else if(n.isName('Sampler')){
-         var ps = RClass.create(FRenderProgramSampler);
+         var ps = RClass.create(FG3dProgramSampler);
          ps.loadConfig(n);
          o.samplers().set(ps.name(), ps);
       }else if(n.isName('Source')){
          var st = n.get('name');
          var sv = n.value();
          if(st == 'vertex'){
-            o.upload(ERenderShader.Vertex, sv);
+            o.upload(EG3dShader.Vertex, sv);
          }else if(st == 'fragment'){
-            o.upload(ERenderShader.Fragment, sv);
+            o.upload(EG3dShader.Fragment, sv);
          }else{
             throw new TError(o, 'Unknown source type. (name={1})', nt);
          }
@@ -490,59 +617,59 @@ function FRenderProgram_loadConfig(p){
       }
    }
 }
-function FRenderProgramAttribute(o){
+function FG3dProgramAttribute(o){
    o = RClass.inherits(this, o, FObject);
    o._name       = null;
    o._linker     = null;
    o._statusUsed = false;
    o._slot       = -1;
    o._index      = -1;
-   o._formatCd   = ERenderAttributeFormat.Unknown;
-   o.name        = FRenderProgramAttribute_name;
-   o.linker      = FRenderProgramAttribute_linker;
-   o.loadConfig  = FRenderProgramAttribute_loadConfig;
+   o._formatCd   = EG3dAttributeFormat.Unknown;
+   o.name        = FG3dProgramAttribute_name;
+   o.linker      = FG3dProgramAttribute_linker;
+   o.loadConfig  = FG3dProgramAttribute_loadConfig;
    return o;
 }
-function FRenderProgramAttribute_name(){
+function FG3dProgramAttribute_name(){
    return this._name;
 }
-function FRenderProgramAttribute_linker(){
+function FG3dProgramAttribute_linker(){
    return this._linker;
 }
-function FRenderProgramAttribute_loadConfig(p){
+function FG3dProgramAttribute_loadConfig(p){
    var o = this;
    o._name = p.get('name');
    o._linker = p.get('linker');
-   o._formatCd = REnum.encode(ERenderAttributeFormat, p.get('format'));
+   o._formatCd = REnum.encode(EG3dAttributeFormat, p.get('format'));
 }
-function FRenderProgramParameter(o){
+function FG3dProgramParameter(o){
    o = RClass.inherits(this, o, FObject);
    o._name       = null;
    o._linker     = null;
    o._statusUsed = false;
    o._shaderCd   = -1;
-   o._formatCd   = ERenderParameterFormat.Unknown;
+   o._formatCd   = EG3dParameterFormat.Unknown;
    o._slot       = -1;
    o._size       = 0;
    o._buffer     = null;
-   o.name        = FRenderProgramParameter_name;
-   o.linker      = FRenderProgramParameter_linker;
-   o.loadConfig  = FRenderProgramParameter_loadConfig;
+   o.name        = FG3dProgramParameter_name;
+   o.linker      = FG3dProgramParameter_linker;
+   o.loadConfig  = FG3dProgramParameter_loadConfig;
    return o;
 }
-function FRenderProgramParameter_name(){
+function FG3dProgramParameter_name(){
    return this._name;
 }
-function FRenderProgramParameter_linker(){
+function FG3dProgramParameter_linker(){
    return this._linker;
 }
-function FRenderProgramParameter_loadConfig(p){
+function FG3dProgramParameter_loadConfig(p){
    var o = this;
    o._name = p.get('name');
    o._linker = p.get('linker');
-   o._formatCd = REnum.encode(ERenderParameterFormat, p.get('format'));
+   o._formatCd = REnum.encode(EG3dParameterFormat, p.get('format'));
 }
-function FRenderProgramSampler(o){
+function FG3dProgramSampler(o){
    o = RClass.inherits(this, o, FObject);
    o._name       = null;
    o._linker     = null;
@@ -550,24 +677,24 @@ function FRenderProgramSampler(o){
    o._slot       = -1;
    o._index      = 0;
    o._source     = null;
-   o.name        = FRenderProgramSampler_name;
-   o.linker      = FRenderProgramSampler_linker;
-   o.loadConfig  = FRenderProgramSampler_loadConfig;
+   o.name        = FG3dProgramSampler_name;
+   o.linker      = FG3dProgramSampler_linker;
+   o.loadConfig  = FG3dProgramSampler_loadConfig;
    return o;
 }
-function FRenderProgramSampler_name(){
+function FG3dProgramSampler_name(){
    return this._name;
 }
-function FRenderProgramSampler_linker(){
+function FG3dProgramSampler_linker(){
    return this._linker;
 }
-function FRenderProgramSampler_loadConfig(p){
+function FG3dProgramSampler_loadConfig(p){
    var o = this;
    o._name = p.get('name');
    o._linker = p.get('linker');
    o._source = p.get('source');
 }
-function FRenderProjection(o){
+function FG3dProjection(o){
    o = RClass.inherits(this, o, FObject);
    o.width       = 0;
    o.height      = 0;
@@ -577,62 +704,113 @@ function FRenderProjection(o){
    o.znear       = 0.01;
    o.zfar        = 200;
    o.matrix     = null;
-   o.construct = FRenderProjection_construct;
-   o.update    = FRenderProjection_update;
+   o.construct = FG3dProjection_construct;
+   o.update    = FG3dProjection_update;
    return o;
 }
-function FRenderProjection_construct(){
+function FG3dProjection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o.matrix = new SPerspectiveMatrix3d();
 }
-function FRenderProjection_update(){
+function FG3dProjection_update(){
    var o = this;
    o.fieldOfView = RMath.DEGREE_RATE * o.angle;
    o.matrix.perspectiveFieldOfViewLH(o.fieldOfView, o.width / o.height, o.znear, o.zfar);
 }
-function FRenderShader(o){
-   o = RClass.inherits(this, o, FRenderObject);
+function FG3dShader(o){
+   o = RClass.inherits(this, o, FG3dObject);
    o.source = null;
    return o;
 }
-function FRenderTexture(o){
-   o = RClass.inherits(this, o, FRenderObject);
-   o._textureCd  = ERenderTexture.Unknown;
-   o._statusLoad = false;
-   o.textureCd   = FRenderTexture_textureCd;
+function FG3dTechnique(o){
+   o = RClass.inherits(this, o, FObject);
+   o._context  = null;
+   o._passes   = null;
+   o.construct = FG3dTechnique_construct;
+   o.setup     = FG3dTechnique_setup;
+   o.draw      = FG3dTechnique_draw;
    return o;
 }
-function FRenderTexture_textureCd(){
+function FG3dTechnique_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._passes = new TObjects();
+}
+function FG3dTechnique_setup(){
+}
+function FG3dTechnique_draw(pn, pt){
+}
+function FG3dTechniqueConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._techniques = null;
+   o.construct   = FG3dTechniqueConsole_construct;
+   o.find        = FG3dTechniqueConsole_find;
+   return o;
+}
+function FG3dTechniqueConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._techniques = new TDictionary();
+}
+function FG3dTechniqueConsole_find(c, p){
+   var o = this;
+   var n = RClass.name(p);
+   var t = o._techniques.get(n);
+   if(t == null){
+      t = RClass.createByName(n);
+      t.setup();
+      o._techniques.set(n, t);
+   }
+   return t;
+}
+function FG3dTechniquePass(o){
+   o = RClass.inherits(this, o, FObject);
+   o._name    = null;
+   o._context = null;
+   o._name    = FG3dTechniquePass_name;
+   return o;
+}
+function FG3dTechniquePass_name(){
+   return this._name;
+}
+function FG3dTexture(o){
+   o = RClass.inherits(this, o, FG3dObject);
+   o._textureCd  = EG3dTexture.Unknown;
+   o._statusLoad = false;
+   o.textureCd   = FG3dTexture_textureCd;
+   return o;
+}
+function FG3dTexture_textureCd(){
    return this._textureCd;
 }
-function FRenderVertexBuffer(o){
-   o = RClass.inherits(this, o, FRenderObject);
+function FG3dVertexBuffer(o){
+   o = RClass.inherits(this, o, FG3dObject);
    o._name     = 0;
-   o._formatCd = ERenderAttributeFormat.Unknown;
+   o._formatCd = EG3dAttributeFormat.Unknown;
    o.stride    = 0;
    o.count     = 0;
-   o.name   = FRenderVertexBuffer_name;
+   o.name   = FG3dVertexBuffer_name;
    o.upload = RMethod.virtual(o, 'upload');
    return o;
 }
-function FRenderVertexBuffer_name(){
+function FG3dVertexBuffer_name(){
    return this._name;
 }
-function FRenderVertexShader(o){
-   o = RClass.inherits(this, o, FRenderShader);
+function FG3dVertexShader(o){
+   o = RClass.inherits(this, o, FG3dShader);
    return o;
 }
-function FRenderViewport(o){
+function FG3dViewport(o){
    o = RClass.inherits(this, o, FObject);
    o.left   = 0;
    o.top    = 0;
    o.width  = 0;
    o.height = 0;
-   o.set    = FRenderViewport_set;
+   o.set    = FG3dViewport_set;
    return o;
 }
-function FRenderViewport_set(l, t, w, h){
+function FG3dViewport_set(l, t, w, h){
    var o = this;
    o.left = l;
    o.top = t;
@@ -651,6 +829,35 @@ function REngine3d_createContext(c, h){
    r.linkCanvas(h);
    o.contexts.push(r);
    return r;
+}
+function SColor4(o){
+   if(!o){o = this;}
+   o.red      = 0;
+   o.green    = 0;
+   o.blue     = 0;
+   o.alpha    = 1;
+   o.assign   = SColor4_assign;
+   o.set      = SColor4_set;
+   o.toString = SColor4_toString;
+   return o;
+}
+function SColor4_assign(p){
+   var o = this;
+   o.red = p.red;
+   o.green = p.green;
+   o.blue = p.blue;
+   o.alpha = p.alpha;
+}
+function SColor4_set(r, g, b, a){
+   var o = this;
+   o.red = r;
+   o.green = g;
+   o.blue = b;
+   o.alpha = a;
+}
+function SColor4_toString(){
+   var o = this;
+   return o.red + ',' + o.green + ',' + o.blue + ',' + o.alpha;
 }
 function SMatrix3d(o){
    if(!o){o = this;}
@@ -1079,8 +1286,105 @@ function SVector3_cross2(po, pi){
    po.y = (o.z * pi.x) - (o.x * pi.z);
    po.z = (o.x * pi.y) - (o.y * pi.x);
 }
+function FG3dSampleAutomaticEffect(o){
+   o = RClass.inherits(this, o, FG3dEffect);
+   o._context       = null;
+   o._program       = null;
+   o.drawRenderable = FG3dSampleAutomaticEffect_drawRenderable;
+   o.load           = FG3dSampleAutomaticEffect_load;
+   return o;
+}
+function FG3dSampleAutomaticEffect_drawRenderable(r){
+   var o = this;
+   var c = o._context;
+   var p = o._program;
+   if(p.hasAttribute()){
+      var as = p.attributes();
+      var ac = as.count();
+      for(var n = 0; n < ac; n++){
+         var a = as.value(n);
+         if(a._statusUsed){
+            var vb = r.findVertexBuffer(a._linker);
+            if(vb == null){
+               throw new TError("Can't find renderable vertex buffer. (linker={1})", a._linker);
+            }
+            p.setAttribute(a._name, vb, vb._formatCd);
+         }
+      }
+   }
+   var ib = r.indexBuffer();
+   c.drawTriangles(ib, 0, ib._count);
+}
+function FG3dSampleAutomaticEffect_load(){
+   var o = this;
+   var u = RBrowser.contentPath() + o._path + "simple.automatic.xml";
+   o.loadUrl(u);
+}
+function FG3dSampleColorEffect(o){
+   o = RClass.inherits(this, o, FG3dEffect);
+   o._context       = null;
+   o._program       = null;
+   o.setParameter   = FG3dSampleColorEffect_setParameter;
+   o.setSampler     = FG3dSampleColorEffect_setSampler;
+   o.drawRenderable = FG3dSampleColorEffect_drawRenderable;
+   o.loadUrl        = FG3dSampleColorEffect_loadUrl;
+   return o;
+}
+function FG3dSampleColorEffect_setParameter(pn, pv, pc){
+   this._program.setParameter(pn, pv, pc);
+}
+function FG3dSampleColorEffect_setSampler(pn, pt){
+   this._program.setSampler(pn, pt);
+}
+function FG3dSampleColorEffect_drawRenderable(r){
+   var o = this;
+   var c = o._context;
+   var p = o._program;
+   if(p.hasAttribute()){
+      var as = p.attributes();
+      var ac = as.count();
+      for(var n = 0; n < ac; n++){
+         var a = as.value(n);
+         if(a._statusUsed){
+            var vb = r.findVertexBuffer(a._linker);
+            if(vb == null){
+               throw new TError("Can't find renderable vertex buffer. (linker={1})", a._linker);
+            }
+            p.setAttribute(a._name, vb, vb._formatCd);
+         }
+      }
+   }
+   var ib = r.indexBuffer();
+   c.drawTriangles(ib, 0, ib._count);
+}
+function FG3dSampleColorEffect_loadUrl(u){
+   var o = this;
+   var c = o._context;
+   var x = RClass.create(FXmlConnection);
+   var d = x.send(u);
+   var p = o._program = c.createProgram();
+   p.loadConfig(d);
+   p.build();
+   p.link();
+}
+function FG3dSampleTechnique(o){
+   o = RClass.inherits(this, o, FG3dTechnique);
+   o._pass = null;
+   o.setup = FG3dSampleTechnique_setup;
+   return o;
+}
+function FG3dSampleTechnique_setup(){
+   var o = this;
+   o.__base.FG3dTechnique.setup.call(o);
+   o._pass = RClass.create(FG3dSampleTechniquePass);
+   o._passes.push(o._pass);
+}
+function FG3dSampleTechniquePass(o){
+   o = RClass.inherits(this, o, FG3dTechniquePass);
+   return o;
+}
 function FWglContext(o){
-   o = RClass.inherits(this, o, FRenderContext);
+   o = RClass.inherits(this, o, FG3dContext);
    o._native             = null;
    o._textureActiveSlot  = 0;
    o.linkCanvas          = FWglContext_linkCanvas;
@@ -1106,7 +1410,18 @@ function FWglContext(o){
    return o;
 }
 function FWglContext_linkCanvas(h){
-   this._native = h.getContext('experimental-webgl')
+   var o = this;
+   o._hCanvas = h;
+   if(h.getContext){
+      var n = h.getContext('experimental-webgl');
+      if(n == null){
+         n = h.getContext('webgl');
+      }
+      if(n == null){
+         throw new TError("Current browser can't support WebGL technique.");
+      }
+      o._native = n;
+   }
 }
 function FWglContext_createProgram(){
    var o = this;
@@ -1236,7 +1551,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
    var g = o._native;
    var r = true;
    switch (formatCd){
-      case ERenderParameterFormat.Float1:{
+      case EG3dParameterFormat.Float1:{
          if(length % 4 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
             return false;
@@ -1246,7 +1561,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float2:{
+      case EG3dParameterFormat.Float2:{
          if(length % 8 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
             return false;
@@ -1256,7 +1571,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float3:{
+      case EG3dParameterFormat.Float3:{
          if(length % 12 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=d)", length);
             return false;
@@ -1266,7 +1581,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float4:{
+      case EG3dParameterFormat.Float4:{
          if(length % 16 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
             return false;
@@ -1276,13 +1591,13 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float3x3:{
+      case EG3dParameterFormat.Float3x3:{
          if(length % 36 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
+            RLogger.fatal(o, null, "Length is invalid. (length={1})", length);
             return false;
          }
          var count = length / 36;
-         var dt = new Float32Array(16);
+         var dt = new Float32Array(9);
          dt[ 0] = pd[ 0];
          dt[ 1] = pd[ 4];
          dt[ 2] = pd[ 8];
@@ -1292,11 +1607,11 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          dt[ 6] = pd[ 2];
          dt[ 7] = pd[ 6];
          dt[ 8] = pd[10];
-         g.uniformMatrix3fv(slot, false, pd);
-         r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         g.uniformMatrix3fv(slot, g.FALSE, dt);
+         r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float4x3:{
+      case EG3dParameterFormat.Float4x3:{
          if(length % 48 != 0){
             RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
             return false;
@@ -1306,7 +1621,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
-      case ERenderParameterFormat.Float4x4:{
+      case EG3dParameterFormat.Float4x4:{
          if(length % 64 != 0){
             RLogger.fatal(o, null, "Float4x4 length is invalid. (length=%d)", length);
             return false;
@@ -1329,7 +1644,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          dt[13] = pd[ 7];
          dt[14] = pd[11];
          dt[15] = pd[15];
-         g.uniformMatrix4fv(slot, false, dt);
+         g.uniformMatrix4fv(slot, g.FALSE, dt);
          r = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }
@@ -1362,22 +1677,22 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
    }
    var bs = b.stride;
    switch(f){
-      case ERenderAttributeFormat.Float1:
+      case EG3dAttributeFormat.Float1:
          g.vertexAttribPointer(s, 1, g.FLOAT, false, bs, i);
          break;
-      case ERenderAttributeFormat.Float2:
+      case EG3dAttributeFormat.Float2:
          g.vertexAttribPointer(s, 2, g.FLOAT, false, bs, i);
          break;
-      case ERenderAttributeFormat.Float3:
+      case EG3dAttributeFormat.Float3:
          g.vertexAttribPointer(s, 3, g.FLOAT, false, bs, i);
          break;
-      case ERenderAttributeFormat.Float4:
+      case EG3dAttributeFormat.Float4:
          g.vertexAttribPointer(s, 4, g.FLOAT, false, bs, i);
          break;
-      case ERenderAttributeFormat.Byte4:
+      case EG3dAttributeFormat.Byte4:
          g.vertexAttribPointer(s, 4, g.UNSIGNED_BYTE, false, bs, i);
          break;
-      case ERenderAttributeFormat.Byte4Normal:
+      case EG3dAttributeFormat.Byte4Normal:
          g.vertexAttribPointer(s, 4, g.UNSIGNED_BYTE, true, bs, i);
          break;
       default:
@@ -1406,7 +1721,7 @@ function FWglContext_bindTexture(ps, pi, pt){
       o._renderTextureActiveSlot = ps;
    }
    switch(pt.textureCd()){
-      case ERenderTexture.Flat2d:{
+      case EG3dTexture.Flat2d:{
          g.bindTexture(g.TEXTURE_2D, pt._native);
          g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
          g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
@@ -1416,7 +1731,7 @@ function FWglContext_bindTexture(ps, pi, pt){
          }
          break;
       }
-      case ERenderTexture.Cube:{
+      case EG3dTexture.Cube:{
          g.bindTexture(g.TEXTURE_CUBE_MAP, pt._native);
          r = o.checkError("glBindTexture", "Bind texture failure. (texture_id=%d)", pt._native);
          if(!r){
@@ -1510,7 +1825,7 @@ function FWglContext_checkError(c, m, p1){
    return r;
 }
 function FWglCubeTexture(o){
-   o = RClass.inherits(this, o, FRenderCubeTexture);
+   o = RClass.inherits(this, o, FG3dCubeTexture);
    o._native = null;
    o.setup  = FWglCubeTexture_setup;
    o.link     = FWglCubeTexture_link;
@@ -1519,14 +1834,14 @@ function FWglCubeTexture(o){
 function FWglCubeTexture_setup(){
    var o = this;
    var g = o._context._native;
-   o.__base.FRenderFlatTexture.setup.call(o);
+   o.__base.FG3dFlatTexture.setup.call(o);
    o._native = g.createTexture();
 }
 function FWglCubeTexture_link(v){
-   this._Texture = v;
+   this._texture = v;
 }
 function FWglFlatTexture(o){
-   o = RClass.inherits(this, o, FRenderFlatTexture);
+   o = RClass.inherits(this, o, FG3dFlatTexture);
    o._native = null;
    o.onImageLoad = FWglFlatTexture_onImageLoad;
    o.setup   = FWglFlatTexture_setup;
@@ -1546,7 +1861,7 @@ function FWglFlatTexture_onImageLoad(v){
 function FWglFlatTexture_setup(){
    var o = this;
    var g = o._context._native;
-   o.__base.FRenderFlatTexture.setup.call(o);
+   o.__base.FG3dFlatTexture.setup.call(o);
    o._native = g.createTexture();
 }
 function FWglFlatTexture_loadUrl(p){
@@ -1565,7 +1880,7 @@ function FWglFlatTexture_upload(p){
    o._statusLoad = r;
 }
 function FWglFragmentShader(o){
-   o = RClass.inherits(this, o, FRenderFragmentShader);
+   o = RClass.inherits(this, o, FG3dFragmentShader);
    o._native = null;
    o.setup   = FWglFragmentShader_setup;
    o.upload  = FWglFragmentShader_upload;
@@ -1574,7 +1889,7 @@ function FWglFragmentShader(o){
 }
 function FWglFragmentShader_setup(){
    var o = this;
-   o.__base.FRenderFragmentShader.setup.call(o);
+   o.__base.FG3dFragmentShader.setup.call(o);
    var g = o._context._native;
    o._native = g.createShader(g.FRAGMENT_SHADER);
 }
@@ -1602,17 +1917,17 @@ function FWglFragmentShader_dispose(){
       g.deleteShader(o._native);
    }
    o._native = null;
-   o.__base.FRenderFragmentShader.dispose.call(o);
+   o.__base.FG3dFragmentShader.dispose.call(o);
 }
 function FWglIndexBuffer(o){
-   o = RClass.inherits(this, o, FRenderIndexBuffer);
+   o = RClass.inherits(this, o, FG3dIndexBuffer);
    o.setup  = FWglIndexBuffer_setup;
    o.upload = FWglIndexBuffer_upload;
    return o;
 }
 function FWglIndexBuffer_setup(){
    var o = this;
-   o.__base.FRenderIndexBuffer.setup.call(o);
+   o.__base.FG3dIndexBuffer.setup.call(o);
    var g = o._context._native;
    o._native = g.createBuffer();
 }
@@ -1635,7 +1950,7 @@ function FWglIndexBuffer_upload(pd, pc){
    c.checkError('bufferData', 'bufferData');
 }
 function FWglProgram(o){
-   o = RClass.inherits(this, o, FRenderProgram);
+   o = RClass.inherits(this, o, FG3dProgram);
    o._native        = null;
    o.setup          = FWglProgram_setup;
    o.vertexShader   = FWglProgram_vertexShader;
@@ -1679,10 +1994,10 @@ function FWglProgram_fragmentShader(){
 function FWglProgram_upload(t, s){
    var o = this;
    var g = o._context._native;
-   if(t == ERenderShader.Vertex){
+   if(t == EG3dShader.Vertex){
       var vs = o.vertexShader();
       vs.upload(s);
-   }else if(t == ERenderShader.Fragment){
+   }else if(t == EG3dShader.Fragment){
       var fs = o.fragmentShader();
       fs.upload(s);
    }else{
@@ -1827,14 +2142,14 @@ function FWglProgram_dispose(){
    o.base.FProgram3d.dispose.call(o);
 }
 function FWglVertexBuffer(o){
-   o = RClass.inherits(this, o, FRenderVertexBuffer);
+   o = RClass.inherits(this, o, FG3dVertexBuffer);
    o.setup  = FWglVertexBuffer_setup;
    o.upload = FWglVertexBuffer_upload;
    return o;
 }
 function FWglVertexBuffer_setup(){
    var o = this;
-   o.__base.FRenderVertexBuffer.setup.call(o);
+   o.__base.FG3dVertexBuffer.setup.call(o);
    var g = o._context._native;
    o._native = g.createBuffer();
 }
@@ -1858,7 +2173,7 @@ function FWglVertexBuffer_upload(v, s, c){
    c.checkError('bufferData', 'bufferData');
 }
 function FWglVertexShader(o){
-   o = RClass.inherits(this, o, FRenderVertexShader);
+   o = RClass.inherits(this, o, FG3dVertexShader);
    o._native = null;
    o.setup   = FWglVertexShader_setup;
    o.upload  = FWglVertexShader_upload;
@@ -1867,7 +2182,7 @@ function FWglVertexShader(o){
 }
 function FWglVertexShader_setup(){
    var o = this;
-   o.__base.FRenderVertexShader.setup.call(o);
+   o.__base.FG3dVertexShader.setup.call(o);
    var g = o._context._native;
    o._native = g.createShader(g.VERTEX_SHADER);
 }
@@ -1895,7 +2210,7 @@ function FWglVertexShader_dispose(){
       g.deleteShader(o._native);
    }
    o._native = null;
-   o.__base.FRenderVertexShader.dispose.call(o);
+   o.__base.FG3dVertexShader.dispose.call(o);
 }
 var RWglUtility = new function RWglUtility(){
    var o = this;
@@ -1908,11 +2223,11 @@ var RWglUtility = new function RWglUtility(){
 }
 function RWglUtility_convertFillMode(g, v){
    switch(v){
-      case ERenderFillMode.Point:
+      case EG3dFillMode.Point:
          return g.POINT;
-      case ERenderFillMode.Line:
+      case EG3dFillMode.Line:
          return g.LINE;
-      case ERenderFillMode.Face:
+      case EG3dFillMode.Face:
          return g.FILL;
    }
    RLogger.fatal(this, null, "Convert fill mode failure. (fill_cd={1})", v);
@@ -1920,11 +2235,11 @@ function RWglUtility_convertFillMode(g, v){
 }
 function RWglUtility_convertCullMode(g, v){
    switch(v){
-      case ERenderCullMode.Front:
+      case EG3dCullMode.Front:
          return g.FRONT;
-      case ERenderCullMode.Back:
+      case EG3dCullMode.Back:
          return g.BACK;
-      case ERenderCullMode.Both:
+      case EG3dCullMode.Both:
          return g.FRONT_AND_BACK;
    }
    RLogger.fatal(this, null, "Convert cull mode failure. (cull_cd={1})", v);
@@ -1932,19 +2247,19 @@ function RWglUtility_convertCullMode(g, v){
 }
 function RWglUtility_convertDepthMode(g, v){
    switch(v){
-      case ERenderDepthMode.Equal:
+      case EG3dDepthMode.Equal:
          return g.EQUAL;
-      case ERenderDepthMode.NotEqual:
+      case EG3dDepthMode.NotEqual:
          return g.NOTEQUAL;
-      case ERenderDepthMode.Less:
+      case EG3dDepthMode.Less:
          return g.LESS;
-      case ERenderDepthMode.LessEqual:
+      case EG3dDepthMode.LessEqual:
          return g.LEQUAL;
-      case ERenderDepthMode.Greater:
+      case EG3dDepthMode.Greater:
          return g.GREATER;
-      case ERenderDepthMode.GreaterEqual:
+      case EG3dDepthMode.GreaterEqual:
          return g.GEQUAL;
-      case ERenderDepthMode.Always:
+      case EG3dDepthMode.Always:
          return g.ALWAYS;
    }
    RLogger.fatal(this, null, "Convert depth mode failure. (depth_cd={1})", v);
@@ -1952,9 +2267,9 @@ function RWglUtility_convertDepthMode(g, v){
 }
 function RWglUtility_convertBlendFactors(g, v){
    switch(v){
-      case ERenderBlendMode.SourceAlpha:
+      case EG3dBlendMode.SourceAlpha:
          return g.SRC_ALPHA;
-      case ERenderBlendMode.OneMinusSourceAlpha:
+      case EG3dBlendMode.OneMinusSourceAlpha:
          return g.ONE_MINUS_SRC_ALPHA;
       default:
          break;
@@ -1964,9 +2279,9 @@ function RWglUtility_convertBlendFactors(g, v){
 }
 function RWglUtility_convertIndexStride(g, v){
    switch(v){
-      case ERenderIndexStride.Uint16:
+      case EG3dIndexStride.Uint16:
          return g.UNSIGNED_SHORT;
-      case ERenderIndexStride.Uint32:
+      case EG3dIndexStride.Uint32:
          return g.UNSIGNED_INT;
    }
    RLogger.fatal(this, null, "Convert index stride failure. (stride_cd={1})", v);

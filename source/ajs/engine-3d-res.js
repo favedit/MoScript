@@ -59,7 +59,7 @@ function FRs3IndexBuffer(o){
    o = RClass.inherits(this, o, FObject);
    o._geometry    = null;
    o._count       = null;
-   o._strideCd    = ERenderIndexStride.Unknown;
+   o._strideCd    = EG3dIndexStride.Unknown;
    o._memory      = null;
    o._data        = null;
    o.count        = FRs3IndexBuffer_count;
@@ -85,13 +85,13 @@ function FRs3IndexBuffer_unserialize(p){
    var o = this;
    var c = o._count = p.readInt32();
    var sc = o._strideCd = p.readInt8();
-   if(sc == ERenderIndexStride.Uint16){
+   if(sc == EG3dIndexStride.Uint16){
       o._memory = new ArrayBuffer(2 * c);
       var d = o._data = new Uint16Array(o._memory);
       for(var i = 0; i < c; i++){
          d[i] = p.readUint16();
       }
-   }else if(sc == ERenderIndexStride.Uint16){
+   }else if(sc == EG3dIndexStride.Uint16){
       o._memory = new ArrayBuffer(4 * c);
       var d = o._data = new Uint16Array(o._memory);
       for(var i = 0; i < c; i++){
@@ -129,6 +129,21 @@ function FRs3Model_unserialize(p){
       o._geometrys.push(g);
    }
 }
+function FRs3ModelConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._models   = null;
+   o.construct = FRs3ModelConsole_construct;
+   o.load      = FRs3ModelConsole_load;
+   return o;
+}
+function FRs3ModelConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._models = new TDictionary();
+}
+function FRs3ModelConsole_load(p){
+   var o = this;
+}
 function FRs3Resource(o){
    o = RClass.inherits(this, o, FResource);
    o._contentLength = 0;
@@ -142,7 +157,7 @@ function FRs3VertexBuffer(o){
    o = RClass.inherits(this, o, FObject);
    o._geometry    = null;
    o._name        = null;
-   o._formatCd    = ERenderAttributeFormat.Unknown;
+   o._formatCd    = EG3dAttributeFormat.Unknown;
    o._vertexCount = 0;
    o._stride      = 0;
    o._data        = null;

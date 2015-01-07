@@ -5,7 +5,7 @@
 // @history 150106
 //==========================================================
 function FModel3d(o){
-   o = RClass.inherits(this, o, FDisplay);
+   o = RClass.inherits(this, o, FDisplay3d);
    //..........................................................
    // @attribute
    o._statusReady = false;
@@ -26,7 +26,7 @@ function FModel3d(o){
 //==========================================================
 function FModel3d_construct(){
    var o = this;
-   o.__base.FDisplay.construct.call(o);
+   o.__base.FDisplay3d.construct.call(o);
    o._renderables = new TObjects();
 }
 

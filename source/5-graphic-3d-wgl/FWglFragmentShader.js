@@ -5,7 +5,7 @@
 // @history 141230
 //==========================================================
 function FWglFragmentShader(o){
-   o = RClass.inherits(this, o, FRenderFragmentShader);
+   o = RClass.inherits(this, o, FG3dFragmentShader);
    //..........................................................
    // @attribute
    o._native = null;
@@ -23,7 +23,7 @@ function FWglFragmentShader(o){
 //==========================================================
 function FWglFragmentShader_setup(){
    var o = this;
-   o.__base.FRenderFragmentShader.setup.call(o);
+   o.__base.FG3dFragmentShader.setup.call(o);
    var g = o._context._native;
    o._native = g.createShader(g.FRAGMENT_SHADER);
 }
@@ -66,5 +66,5 @@ function FWglFragmentShader_dispose(){
       g.deleteShader(o._native);
    }
    o._native = null;
-   o.__base.FRenderFragmentShader.dispose.call(o);
+   o.__base.FG3dFragmentShader.dispose.call(o);
 }

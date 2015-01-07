@@ -13,6 +13,7 @@ function FModel3dConsole(o){
    o._loadModels = null;
    o._models     = null;
    o._thread     = null;
+   o._interval   = 100;
    //..........................................................
    o.onProcess   = FModel3dConsole_onProcess;
    //..........................................................
@@ -34,11 +35,10 @@ function FModel3dConsole_construct(){
    o._loadModels = new TObjects();
    o._models = new TDictionary();
    // 创建线程
-   var tc = RConsole.find(FThreadConsole);
    var t = o._thread = RClass.create(FThread);
-   t._interval = 0;
+   t.setInterval(o._interval);
    t.lsnsProcess.register(o, o.onProcess);
-   tc.start(t);
+   RConsole.find(FThreadConsole).start(t);
 }
 
 //==========================================================
@@ -62,7 +62,7 @@ function FModel3dConsole_models(){
 function FModel3dConsole_alloc(pc, pn){
    var o = this;
    // 加载渲染对象
-   var rmc = RConsole.find(FRenderModelConsole);
+   var rmc = RConsole.find(FRd3ModelConsole);
    var rm = rmc.load(pc, pn);
    // 加载模型
    var m = RClass.create(FModel3d);

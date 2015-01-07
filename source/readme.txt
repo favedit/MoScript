@@ -1,4 +1,3 @@
-
 内容        内容管道             资源
 FContent -> FContentPipeline - > FResource
             FPipeline
@@ -9,10 +8,15 @@ FResourceConsole：资源管理
 
 资源为加工后的内容
 
-
-
 Resource：资源管理空间
    - 一个资源一个管理
+   - BitmapResource
+   - TextureResource
+   - ModelResource
+   - ThemeResource
+   - MaterialResource
+   - TemplateResource
+   - SceneResource
 
 Renderable：渲染对象管理空间
    - 1个渲染对象一个存储
@@ -47,4 +51,3 @@ filterRenderables()
 FRenderPipeline
 
 FRenderEffect
-

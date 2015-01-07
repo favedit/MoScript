@@ -5,7 +5,7 @@
 // @history 141230
 //==========================================================
 function FWglCubeTexture(o){
-   o = RClass.inherits(this, o, FRenderCubeTexture);
+   o = RClass.inherits(this, o, FG3dCubeTexture);
    //..........................................................
    // @attribute
    o._native = null;
@@ -25,7 +25,7 @@ function FWglCubeTexture(o){
 function FWglCubeTexture_setup(){
    var o = this;
    var g = o._context._native;
-   o.__base.FRenderFlatTexture.setup.call(o);
+   o.__base.FG3dFlatTexture.setup.call(o);
    o._native = g.createTexture();
 }
 
@@ -36,5 +36,5 @@ function FWglCubeTexture_setup(){
 // @param v:value:Object 渲染程序
 //==========================================================
 function FWglCubeTexture_link(v){
-   this._Texture = v;
+   this._texture = v;
 }

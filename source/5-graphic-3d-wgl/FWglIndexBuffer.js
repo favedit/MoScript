@@ -6,7 +6,7 @@
 // @history 141230
 //==========================================================
 function FWglIndexBuffer(o){
-   o = RClass.inherits(this, o, FRenderIndexBuffer);
+   o = RClass.inherits(this, o, FG3dIndexBuffer);
    //..........................................................
    // @method
    o.setup  = FWglIndexBuffer_setup;
@@ -22,7 +22,7 @@ function FWglIndexBuffer(o){
 //==========================================================
 function FWglIndexBuffer_setup(){
    var o = this;
-   o.__base.FRenderIndexBuffer.setup.call(o);
+   o.__base.FG3dIndexBuffer.setup.call(o);
    var g = o._context._native;
    o._native = g.createBuffer();
 }
