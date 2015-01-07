@@ -41,7 +41,7 @@ function FRd3Cube_setup(p){
    o.indexBuffer.upload(id, 36);
 }
 function FRd3Geometry(o){
-   o = RClass.inherits(this, o, FRenderable);
+   o = RClass.inherits(this, o, FG3dObject);
    o._vertexBuffers = null;
    o._indexBuffer   = null;
    o.construct        = FRd3Geometry_construct;
@@ -52,7 +52,7 @@ function FRd3Geometry(o){
 }
 function FRd3Geometry_construct(){
    var o = this;
-   o.__base.FRenderable.construct.call(o);
+   o.__base.FG3dObject.construct.call(o);
    o._vertexBuffers = new TObjects();
 }
 function FRd3Geometry_findVertexBuffer(p){
@@ -88,7 +88,7 @@ function FRd3Geometry_loadResource(p){
    ib.upload(rib.data(), rib.count());
 }
 function FRd3Model(o){
-   o = RClass.inherits(this, o, FRenderable);
+   o = RClass.inherits(this, o, FG3dObject);
    o._context    = null;
    o._dataReady  = false;
    o._geometrys  = null;
@@ -120,7 +120,7 @@ function FRd3Model_onDataLoad(c){
 }
 function FRd3Model_construct(){
    var o = this;
-   o.__base.FRenderable.construct.call(o);
+   o.__base.FG3dObject.construct.call(o);
    o._geometrys = new TObjects();
 }
 function FRd3Model_geometrys(){

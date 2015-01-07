@@ -24,15 +24,16 @@
 <SCRIPT>
 // http://localhost:999/test/engine3d/resource-001.html
 var hc = null;
-var contentPath = 'http://localhost:999';
+//var contentPath = 'http://localhost:999';
 //var contentPath = 'http://10.12.21.33:999';
-//var contentPath = 'http://localhost/script';
+var contentPath = 'http://localhost/script';
 
 var context = null;
 var stage = null;
 var layer = null;
-var effect = null;
-var region = null;
+
+var models = new TObjects();
+
 var textureDiffuse = null;
 var textureNormal = null;
 var textureSpecular = null;
@@ -40,15 +41,9 @@ var textureSpecular = null;
 var mRotationX = 0;
 var mRotationY = 0;
 var mRotationZ = 0;
-var mMatrix = null;
-var vc_vp_matrix = null;
-
-var models = new TObjects();
-
-var cameraPosition = new Float32Array(3);
-var lightDirection = new Float32Array(3);
 
 function onEnterFrame(){
+   // 旋转模型
    var mc = models.count();
    var c = 4;
    for(var z = 0; z < c; z++){
@@ -65,41 +60,14 @@ function onEnterFrame(){
          m.update();
       }
    }
-
-   context.clear(1, 1, 1, 1, 1);
-
-   region.clear();
-   layer.filterRenderables(region)
-   var rs = region.renderables();
-   var rc = rs.count();
-   for(var n = 0; n < rc; n++){
-      var r = rs.get(n);
-      context.setProgram(effect._program);
-      effect.setParameter('vc_model_matrix', r.matrix().data(), 64);
-      effect.setParameter('vc_vp_matrix', vc_vp_matrix.data(), 64);
-      effect.setParameter('vc_camera_position', cameraPosition, 12);
-      effect.setParameter('vc_light_direction', lightDirection, 12);
-      effect.setParameter('fc_camera_position', cameraPosition, 12);
-      effect.setParameter('fc_light_direction', lightDirection, 12);
-      if(textureDiffuse.testReady()){
-         effect.setSampler('fs_diffuse', textureDiffuse.texture());
-      }
-      if(textureNormal.testReady()){
-         effect.setSampler('fs_normal', textureNormal.texture());
-      }
-      if(textureSpecular.testReady()){
-         effect.setSampler('fs_specular', textureSpecular.texture());
-      }
-      effect.drawRenderable(r);
-   }
-   context.present();
-
    mRotationX += 0.01;
    mRotationY += 0.01;
    mRotationZ += 0.03;
-   RTimer.update();
-
-   _info.innerText = RTimer.rate() + ' f/s - ' + rc;
+   // 设置帧速
+   var info = RTimer.rate() + ' f/s';
+   if(info != _info.innerText){
+      _info.innerText = RTimer.rate() + ' f/s';
+   }
 }
 
 function _load(){
@@ -108,24 +76,15 @@ function _load(){
    RBrowser._contentPath = contentPath;
 
    var hCanvas = document.getElementById('_canvas');
-   //context = REngine3d.createContext(FG2dContext, hCanvas);
-   //RDump.dump(context, _dump);
-
    context = REngine3d.createContext(FWglContext, hCanvas);
-   context.setViewPort(hCanvas.width, hCanvas.height);
-   context.setDepthMode(true, EG3dDepthMode.LessEqual);
-   context.setCullingMode(true, EG3dCullMode.Front);
 
    stage = RClass.create(FSimpleStage3d);
-   stage.selectTechnique(FG3dSampleTechnique);
+   stage.backgroundColor().set(1, 1, 1, 1);
+   stage.selectTechnique(context, FG3dSampleTechnique);
    RDump.dump(stage, _dump);
 
    layer = stage.spriteLayer();
    RStage.register('stage3d', stage);
-   //RDump.dump(stage, _dump);
-
-   var ec = RConsole.find(FG3dEffectConsole);
-   effect = ec.find(context, FG3dSampleAutomaticEffect);
 
    var rmc = RConsole.find(FModel3dConsole);
    for(var x = 0; x < 1; x++){
@@ -133,45 +92,26 @@ function _load(){
       layer.pushDisplay(model3d);
       models.push(model3d);
    }
-   
-   RDump.dump(rmc, _dump);
 
    var itc = RConsole.find(FRd3TextureConsole);
    textureDiffuse = itc.load(context, 'pvw.show.item.001/diffuse.jpg');
    textureNormal = itc.load(context, 'pvw.show.item.001/normal.jpg');
    textureSpecular = itc.load(context, 'pvw.show.item.001/specular.level.jpg');
-
-   region = RClass.create(FRegion);
-
-   RStage.lsnsEnterFrame.register(null, onEnterFrame);
-   RStage.start();
-   RTimer.setup();
-
    // 设置相机
    var rc = stage.camera();
-   rc.position.set(0, 8, -10);
+   rc.setPosition(0, 8, -10);
    rc.lookAt(0, 0, 0);
    rc.update();
-   cameraPosition[0] = rc.position.x;
-   cameraPosition[1] = rc.position.y;
-   cameraPosition[2] = rc.position.z;
-
-   var ld = new SVector3();
-   ld.set(0.7, -0.7, 0);
-   ld.normalize();
-   lightDirection[0] = ld.x;
-   lightDirection[1] = ld.y;
-   lightDirection[2] = ld.z;
+   // 设置光源
+   stage.directionalLight().direction().set(0.7, -0.7, 0);
    // 设置投影
    var rp = stage.projection();
    rp.width = hCanvas.width;
    rp.height = hCanvas.height;
    rp.update();
-
-   mMatrix = new SMatrix3d();
-   vc_vp_matrix = new SMatrix3d();
-   vc_vp_matrix.append(rc.matrix);
-   vc_vp_matrix.append(rp.matrix);
+   // 启动处理
+   RStage.lsnsEnterFrame.register(null, onEnterFrame);
+   RStage.start();
 }
 </SCRIPT>
 

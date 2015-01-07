@@ -4,23 +4,25 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FRenderable3d(o){
-   o = RClass.inherits(this, o, FRenderable);
+function FG3dRenderable(o){
+   o = RClass.inherits(this, o, FGraphicRenderable);
    //..........................................................
    // @attribute
-   o._matrix        = null;
+   o._matrix            = null;
    // @attribute
-   o._effectName    = null;
-   o._effect        = null;
-   o._materialName  = null;
-   o._referMaterial = null;
-   o._material      = null;
+   o._effectName        = null;
+   o._effect            = null;
+   o._materialName      = null;
+   o._material          = null;
+   o._materialReference = null;
    //..........................................................
    // @method
-   o.construct      = FRenderable3d_construct;
-   o.matrix         = FRenderable3d_matrix;
-   o.material       = FRenderable3d_material;
-   o.update         = FRenderable3d_update;
+   o.construct          = FG3dRenderable_construct;
+   o.matrix             = FG3dRenderable_matrix;
+   o.effectName         = FG3dRenderable_effectName;
+   o.material           = FG3dRenderable_material;
+   o.testVisible        = FG3dRenderable_testVisible;
+   o.update             = FG3dRenderable_update;
    return o;
 }
 
@@ -29,9 +31,9 @@ function FRenderable3d(o){
 //
 // @method
 //==========================================================
-function FRenderable3d_construct(){
+function FG3dRenderable_construct(){
    var o = this;
-   o.__base.FRenderable.construct.call(o);
+   o.__base.FGraphicRenderable.construct.call(o);
    o._matrix = new SMatrix3d();
    o._material = RClass.create(FG3dMaterial);
 }
@@ -42,8 +44,18 @@ function FRenderable3d_construct(){
 // @method
 // @return 矩阵
 //==========================================================
-function FRenderable3d_matrix(){
+function FG3dRenderable_matrix(){
    return this._matrix;
+}
+
+//==========================================================
+// <T>获得效果器名称。</T>
+//
+// @method
+// @return String 效果器名称
+//==========================================================
+function FG3dRenderable_effectName(){
+   return this._effectName;
 }
 
 //==========================================================
@@ -52,8 +64,12 @@ function FRenderable3d_matrix(){
 // @method
 // @return 材质
 //==========================================================
-function FRenderable3d_material(){
+function FG3dRenderable_material(){
    return this._material;
+}
+
+function FG3dRenderable_testVisible(){
+   return true;
 }
 
 //==========================================================
@@ -61,9 +77,7 @@ function FRenderable3d_material(){
 //
 // @method
 //==========================================================
-function FRenderable3d_update(p){
+function FG3dRenderable_update(p){
    var o = this;
-   o.__base.FRenderable.update.call(o, p);
-   // 更新矩阵
    o._matrix.assign(p);
 }

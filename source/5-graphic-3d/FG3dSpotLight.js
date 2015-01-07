@@ -1,11 +1,11 @@
 //==========================================================
-// <T>光源。</T>
+// <T>锥形光源。</T>
 //
 // @author maocy
 // @history 141230
 //==========================================================
-function FG3dLight(o){
-   o = RClass.inherits(this, o, FObject);
+function FG3dSpotLight(o){
+   o = RClass.inherits(this, o, FG3dLight);
    //..........................................................
    // @method
    return o;

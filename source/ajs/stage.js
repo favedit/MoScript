@@ -41,6 +41,7 @@ function RStage_process(){
          }
       }
       o.lsnsLeaveFrame.process(o);
+      RTimer.update();
    }
 }
 function RStage_start(v){
@@ -48,6 +49,7 @@ function RStage_start(v){
    if(v == null){
       v = o._interval;
    }
+   RTimer.setup();
    RStage.process();
    setInterval('RStage_onProcess()', v);
 }

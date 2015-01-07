@@ -5,7 +5,7 @@
 // @history 150106
 //==========================================================
 function FRd3Model(o){
-   o = RClass.inherits(this, o, FRenderable);
+   o = RClass.inherits(this, o, FG3dObject);
    //..........................................................
    // @attribute
    o._context    = null;
@@ -57,7 +57,7 @@ function FRd3Model_onDataLoad(c){
 //==========================================================
 function FRd3Model_construct(){
    var o = this;
-   o.__base.FRenderable.construct.call(o);
+   o.__base.FG3dObject.construct.call(o);
    o._geometrys = new TObjects();
 }
 

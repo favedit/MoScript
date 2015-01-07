@@ -6,10 +6,13 @@ function FG3dSampleAutomaticEffect(o){
    o.load           = FG3dSampleAutomaticEffect_load;
    return o;
 }
-function FG3dSampleAutomaticEffect_drawRenderable(r){
+function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
    var o = this;
    var c = o._context;
    var p = o._program;
+   var prvp = pr.matrixViewProjection();
+   var prcp = pr.cameraPosition();
+   var prld = pr.lightDirection();
    if(p.hasAttribute()){
       var as = p.attributes();
       var ac = as.count();
@@ -23,6 +26,21 @@ function FG3dSampleAutomaticEffect_drawRenderable(r){
             p.setAttribute(a._name, vb, vb._formatCd);
          }
       }
+   }
+   p.setParameter('vc_model_matrix', r.matrix().data(), 64);
+   p.setParameter('vc_vp_matrix', prvp.data(), 64);
+   p.setParameter('vc_camera_position', prcp, 12);
+   p.setParameter('vc_light_direction', prld, 12);
+   p.setParameter('fc_camera_position', prcp, 12);
+   p.setParameter('fc_light_direction', prld, 12);
+   if(textureDiffuse.testReady()){
+      p.setSampler('fs_diffuse', textureDiffuse.texture());
+   }
+   if(textureNormal.testReady()){
+      p.setSampler('fs_normal', textureNormal.texture());
+   }
+   if(textureSpecular.testReady()){
+      p.setSampler('fs_specular', textureSpecular.texture());
    }
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
@@ -89,6 +107,7 @@ function FG3dSampleTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
    o._pass = RClass.create(FG3dSampleTechniquePass);
+   o._pass.linkContext(o._context);
    o._passes.push(o._pass);
 }
 function FG3dSampleTechniquePass(o){

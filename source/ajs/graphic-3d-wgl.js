@@ -2,6 +2,9 @@ function FWglContext(o){
    o = RClass.inherits(this, o, FG3dContext);
    o._native             = null;
    o._textureActiveSlot  = 0;
+   o._data9              = null;
+   o._data16             = null;
+   o.construct           = FWglContext_construct;
    o.linkCanvas          = FWglContext_linkCanvas;
    o.createProgram       = FWglContext_createProgram;
    o.createVertexBuffer  = FWglContext_createVertexBuffer;
@@ -24,6 +27,12 @@ function FWglContext(o){
    o.checkError          = FWglContext_checkError;
    return o;
 }
+function FWglContext_construct(){
+   var o = this;
+   o.__base.FG3dContext.construct.call(o);
+   o._data9 = new Float32Array(9);
+   o._data16 = new Float32Array(16);
+}
 function FWglContext_linkCanvas(h){
    var o = this;
    o._hCanvas = h;
@@ -37,6 +46,9 @@ function FWglContext_linkCanvas(h){
       }
       o._native = n;
    }
+   o.setViewPort(h.width, h.height);
+   o.setDepthMode(true, EG3dDepthMode.LessEqual);
+   o.setCullingMode(true, EG3dCullMode.Front);
 }
 function FWglContext_createProgram(){
    var o = this;
@@ -211,8 +223,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
             RLogger.fatal(o, null, "Length is invalid. (length={1})", length);
             return false;
          }
-         var count = length / 36;
-         var dt = new Float32Array(9);
+         var dt = o._data9;
          dt[ 0] = pd[ 0];
          dt[ 1] = pd[ 4];
          dt[ 2] = pd[ 8];
@@ -241,8 +252,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
             RLogger.fatal(o, null, "Float4x4 length is invalid. (length=%d)", length);
             return false;
          }
-         var count = length >> 6;
-         var dt = new Float32Array(16);
+         var dt = o._data16;
          dt[ 0] = pd[ 0];
          dt[ 1] = pd[ 4];
          dt[ 2] = pd[ 8];

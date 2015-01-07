@@ -7,10 +7,14 @@
 //==========================================================
 function SVector3(o){
    if(!o){o = this;}
+   //..........................................................
    // @attribute
-   o.x = 0;
-   o.y = 0;
-   o.z = 0;
+   o.x         = 0;
+   o.y         = 0;
+   o.z         = 0;
+   // @attribute
+   o._data     = null;
+   //..........................................................
    // @method
    o.assign    = SVector3_assign;
    o.set       = SVector3_set;
@@ -19,6 +23,7 @@ function SVector3(o){
    o.dotPoint3 = SVector3_dotPoint3;
    o.cross     = SVector3_cross;
    o.cross2    = SVector3_cross2;
+   o.data      = SVector3_data;
    return o;
 }
 
@@ -105,4 +110,21 @@ function SVector3_cross2(po, pi){
    po.x = (o.y * pi.z) - (o.z * pi.y);
    po.y = (o.z * pi.x) - (o.x * pi.z);
    po.z = (o.x * pi.y) - (o.y * pi.x);
+}
+
+//============================================================
+// <T>获得数据。</T>
+//
+// @return Float32Array 数据
+//============================================================
+function SVector3_data(){
+   var o = this;
+   var d = o._data;
+   if(d == null){
+      d = o._data = new Float32Array(3);
+   }
+   d[0] = o.x;
+   d[1] = o.y;
+   d[2] = o.z;
+   return d;
 }

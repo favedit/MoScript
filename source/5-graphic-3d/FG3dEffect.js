@@ -8,15 +8,25 @@ function FG3dEffect(o){
    o = RClass.inherits(this, o, FG3dObject);
    //..........................................................
    // @attribute
-   o._context       = null;
    o._program       = null;
    //..........................................................
    // @method
+   o.program        = FG3dEffect_program;
    o.setParameter   = FG3dEffect_setParameter;
    o.setSampler     = FG3dEffect_setSampler;
    o.drawRenderable = FG3dEffect_drawRenderable;
    o.loadUrl        = FG3dEffect_loadUrl;
    return o;
+}
+
+//==========================================================
+// <T>获得渲染程序。</T>
+//
+// @method
+// @return FG3dProgram 渲染程序
+//==========================================================
+function FG3dEffect_program(){
+   return this._program;
 }
 
 //==========================================================
@@ -53,7 +63,7 @@ function FG3dEffect_drawRenderable(r){
    var c = o._context;
    var p = o._program;
    // 绑定程序
-   //c.setProgram(p);
+   c.setProgram(p);
    // 绑定所有属性流
    if(p.hasAttribute()){
       var as = p.attributes();

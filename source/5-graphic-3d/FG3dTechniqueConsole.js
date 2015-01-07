@@ -41,6 +41,7 @@ function FG3dTechniqueConsole_find(c, p){
    var t = o._techniques.get(n);
    if(t == null){
       t = RClass.createByName(n);
+      t.linkContext(c);
       t.setup();
       o._techniques.set(n, t);
    }

@@ -23,12 +23,13 @@ function FG3dSampleAutomaticEffect(o){
 // @method
 // @param p:renderable:FRenderable 渲染对象
 //==========================================================
-function FG3dSampleAutomaticEffect_drawRenderable(r){
+function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
    var o = this;
    var c = o._context;
    var p = o._program;
-   // 绑定程序
-   //c.setProgram(p);
+   var prvp = pr.matrixViewProjection();
+   var prcp = pr.cameraPosition();
+   var prld = pr.lightDirection();
    // 绑定所有属性流
    if(p.hasAttribute()){
       var as = p.attributes();
@@ -43,6 +44,22 @@ function FG3dSampleAutomaticEffect_drawRenderable(r){
             p.setAttribute(a._name, vb, vb._formatCd);
          }
       }
+   }
+   // 绑定所有属性流
+   p.setParameter('vc_model_matrix', r.matrix().data(), 64);
+   p.setParameter('vc_vp_matrix', prvp.data(), 64);
+   p.setParameter('vc_camera_position', prcp, 12);
+   p.setParameter('vc_light_direction', prld, 12);
+   p.setParameter('fc_camera_position', prcp, 12);
+   p.setParameter('fc_light_direction', prld, 12);
+   if(textureDiffuse.testReady()){
+      p.setSampler('fs_diffuse', textureDiffuse.texture());
+   }
+   if(textureNormal.testReady()){
+      p.setSampler('fs_normal', textureNormal.texture());
+   }
+   if(textureSpecular.testReady()){
+      p.setSampler('fs_specular', textureSpecular.texture());
    }
    // 绘制处理
    var ib = r.indexBuffer();

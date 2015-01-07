@@ -5,7 +5,7 @@
 // @history 150106
 //==========================================================
 function FRd3Geometry(o){
-   o = RClass.inherits(this, o, FRenderable);
+   o = RClass.inherits(this, o, FG3dObject);
    //..........................................................
    // @attribute
    o._vertexBuffers = null;
@@ -26,7 +26,7 @@ function FRd3Geometry(o){
 //==========================================================
 function FRd3Geometry_construct(){
    var o = this;
-   o.__base.FRenderable.construct.call(o);
+   o.__base.FG3dObject.construct.call(o);
    o._vertexBuffers = new TObjects();
 }
 

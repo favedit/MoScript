@@ -24,5 +24,6 @@ function FG3dSampleTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
    o._pass = RClass.create(FG3dSampleTechniquePass);
+   o._pass.linkContext(o._context);
    o._passes.push(o._pass);
 }

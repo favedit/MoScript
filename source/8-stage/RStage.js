@@ -86,6 +86,7 @@ function RStage_process(){
       }
       // 后处理
       o.lsnsLeaveFrame.process(o);
+      RTimer.update();
    }
 }
 
@@ -99,6 +100,7 @@ function RStage_start(v){
    if(v == null){
       v = o._interval;
    }
+   RTimer.setup();
    RStage.process();
    setInterval('RStage_onProcess()', v);
 }

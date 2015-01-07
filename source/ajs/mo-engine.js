@@ -256,91 +256,6 @@ function FDrawable_set(l, t, w, h){
    o.left = l;
    o.top = t;
 }
-function FRegion(o){
-   o = RClass.inherits(this, o, FObject);
-   o._renderables = null;
-   o.construct      = FRegion_construct;
-   o.renderables    = FRegion_renderables;
-   o.pushRenderable = FRegion_pushRenderable;
-   o.clear          = FRegion_clear;
-   o.dispose        = FRegion_dispose;
-   return o;
-}
-function FRegion_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-   o._renderables = RClass.create(FRenderables);
-}
-function FRegion_renderables(p){
-   return this._renderables;
-}
-function FRegion_pushRenderable(p){
-   this._renderables.push(p);
-}
-function FRegion_clear(){
-   this._renderables.clear();
-}
-function FRegion_dispose(){
-   var o = this;
-   o._renderables = null;
-   o.__base.FObject.dispose.call(o);
-}
-function FRenderable(o){
-   o = RClass.inherits(this, o, FObject);
-   o._display    = null;
-   o._context    = null;
-   o._visible    = true;
-   o.construct   = FRenderable_construct;
-   o.linkContext = FRenderable_linkContext;
-   o.testVisible = FRenderable_testVisible;
-   o.update      = FRenderable_update;
-   return o;
-}
-function FRenderable_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-}
-function FRenderable_linkContext(p){
-   this._context = p;
-}
-function FRenderable_testVisible(p){
-   return this._visible;
-}
-function FRenderable_update(p){
-}
-function FRenderables(o){
-   o = RClass.inherits(this, o, FObject);
-   o._renderables = null;
-   o.construct    = FRenderables_construct;
-   o.count        = FRenderables_count;
-   o.get          = FRenderables_get;
-   o.push         = FRenderables_push;
-   o.clear        = FRenderables_clear;
-   o.dispose      = FRenderables_dispose;
-   return o;
-}
-function FRenderables_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-   o._renderables = new TObjects();
-}
-function FRenderables_count(p){
-   return this._renderables.count();
-}
-function FRenderables_get(p){
-   return this._renderables.get(p);
-}
-function FRenderables_push(p){
-   this._renderables.push(p);
-}
-function FRenderables_clear(){
-   this._renderables.clear();
-}
-function FRenderables_dispose(){
-   var o = this;
-   o._renderables = null;
-   o.__base.FObject.dispose.call(o);
-}
 function FStage(o){
    o = RClass.inherits(this, o, FObject);
    o._layers   = null;
@@ -483,7 +398,7 @@ function FDisplay3d_dispose(){
    o.__base.FDisplay.dispose.call(o);
 }
 function FGeometry3d(o){
-   o = RClass.inherits(this, o, FRenderable3d);
+   o = RClass.inherits(this, o, FG3dRenderable);
    o._renderable      = null;
    o.construct        = FGeometry3d_construct;
    o.findVertexBuffer = FGeometry3d_findVertexBuffer;
@@ -493,7 +408,7 @@ function FGeometry3d(o){
 }
 function FGeometry3d_construct(){
    var o = this;
-   o.__base.FRenderable3d.construct.call(o);
+   o.__base.FG3dRenderable.construct.call(o);
 }
 function FGeometry3d_findVertexBuffer(p){
    return this._renderable.findVertexBuffer(p);
@@ -606,37 +521,6 @@ function FModel3dConsole_onProcess(){
       }
    }
 }
-function FRenderable3d(o){
-   o = RClass.inherits(this, o, FRenderable);
-   o._matrix        = null;
-   o._effectName    = null;
-   o._effect        = null;
-   o._materialName  = null;
-   o._referMaterial = null;
-   o._material      = null;
-   o.construct      = FRenderable3d_construct;
-   o.matrix         = FRenderable3d_matrix;
-   o.material       = FRenderable3d_material;
-   o.update         = FRenderable3d_update;
-   return o;
-}
-function FRenderable3d_construct(){
-   var o = this;
-   o.__base.FRenderable.construct.call(o);
-   o._matrix = new SMatrix3d();
-   o._material = RClass.create(FG3dMaterial);
-}
-function FRenderable3d_matrix(){
-   return this._matrix;
-}
-function FRenderable3d_material(){
-   return this._material;
-}
-function FRenderable3d_update(p){
-   var o = this;
-   o.__base.FRenderable.update.call(o, p);
-   o._matrix.assign(p);
-}
 function FSimpleStage3d(o){
    o = RClass.inherits(this, o, FStage3d);
    o,_skyLayer    = null;
@@ -690,40 +574,71 @@ function FSprite3d_testVisible(p){
 }
 function FStage3d(o){
    o = RClass.inherits(this, o, FStage);
-   o._camera         = null;
-   o._projection     = null;
-   o._technique      = null;
-   o.construct       = FStage3d_construct;
-   o.technique       = FStage3d_technique;
-   o.selectTechnique = FStage3d_selectTechnique;
-   o.camera          = FStage3d_camera;
-   o.projection      = FStage3d_projection;
+   o._backgroundColor  = null;
+   o._camera           = null;
+   o._projection       = null;
+   o._directionalLight = null
+   o._technique        = null;
+   o._region           = null;
+   o.construct         = FStage3d_construct;
+   o.backgroundColor   = FStage3d_backgroundColor;
+   o.camera            = FStage3d_camera;
+   o.projection        = FStage3d_projection;
+   o.directionalLight  = FStage3d_directionalLight;
+   o.technique         = FStage3d_technique;
+   o.selectTechnique   = FStage3d_selectTechnique;
+   o.process           = FStage3d_process;
    return o;
 }
 function FStage3d_construct(){
    var o = this;
    o.__base.FStage.construct.call(o);
+   o._backgroundColor = new SColor4();
+   o._backgroundColor.set(0, 0, 0, 1);
    var rc = o._camera = RClass.create(FG3dCamera);
-   rc.position.set(0, 0, -100);
+   rc.position().set(0, 0, -100);
    rc.lookAt(0, 0, 0);
    rc.update();
    var rp = o._projection = RClass.create(FG3dProjection);
    rp.update();
    rc._projection = rp;
+   var dl = o._directionalLight = RClass.create(FG3dDirectionalLight);
+   dl.direction().set(0, -1, 0);
+   var r = o._region = RClass.create(FG3dRegion);
+   r._camera = rc;
+   r._projection = rp;
+   r._directionalLight = dl;
 }
-function FStage3d_technique(){
-   return this._technique;
-}
-function FStage3d_selectTechnique(p){
-   var o = this;
-   var tc = RConsole.find(FG3dTechniqueConsole);
-   o._technique = tc.find(null, p);
+function FStage3d_backgroundColor(){
+   return this._backgroundColor;
 }
 function FStage3d_camera(){
    return this._camera;
 }
 function FStage3d_projection(){
    return this._projection;
+}
+function FStage3d_directionalLight(){
+   return this._directionalLight;
+}
+function FStage3d_technique(){
+   return this._technique;
+}
+function FStage3d_selectTechnique(c, p){
+   var o = this;
+   var tc = RConsole.find(FG3dTechniqueConsole);
+   o._technique = tc.find(c, p);
+}
+function FStage3d_process(){
+   var o = this;
+   var r = o._region;
+   o.__base.FStage.process.call(o);
+   r.prepare();
+   layer.filterRenderables(r);
+   r.update();
+   var bc = o._backgroundColor;
+   o._technique._context.clear(bc.red, bc.green, bc.blue, bc.alpha, 1);
+   o._technique.drawRegion(r);
 }
 function FRd3Cube(o){
    o = RClass.inherits(this, o, FObject);
@@ -768,7 +683,7 @@ function FRd3Cube_setup(p){
    o.indexBuffer.upload(id, 36);
 }
 function FRd3Geometry(o){
-   o = RClass.inherits(this, o, FRenderable);
+   o = RClass.inherits(this, o, FG3dObject);
    o._vertexBuffers = null;
    o._indexBuffer   = null;
    o.construct        = FRd3Geometry_construct;
@@ -779,7 +694,7 @@ function FRd3Geometry(o){
 }
 function FRd3Geometry_construct(){
    var o = this;
-   o.__base.FRenderable.construct.call(o);
+   o.__base.FG3dObject.construct.call(o);
    o._vertexBuffers = new TObjects();
 }
 function FRd3Geometry_findVertexBuffer(p){
@@ -815,7 +730,7 @@ function FRd3Geometry_loadResource(p){
    ib.upload(rib.data(), rib.count());
 }
 function FRd3Model(o){
-   o = RClass.inherits(this, o, FRenderable);
+   o = RClass.inherits(this, o, FG3dObject);
    o._context    = null;
    o._dataReady  = false;
    o._geometrys  = null;
@@ -847,7 +762,7 @@ function FRd3Model_onDataLoad(c){
 }
 function FRd3Model_construct(){
    var o = this;
-   o.__base.FRenderable.construct.call(o);
+   o.__base.FG3dObject.construct.call(o);
    o._geometrys = new TObjects();
 }
 function FRd3Model_geometrys(){

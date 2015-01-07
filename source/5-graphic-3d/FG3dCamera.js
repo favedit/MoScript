@@ -12,7 +12,7 @@ function FG3dCamera(o){
    // 变换矩阵
    o.matrix        = null;
    // 相机位置
-   o.position      = null;
+   o._position      = null;
    // 相机方向
    o.direction     = null;
    // 中心前位置
@@ -44,6 +44,9 @@ function FG3dCamera(o){
    // @method
    o.construct     = FG3dCamera_construct;
    // @method
+   o.position      = FG3dCamera_position;
+   o.setPosition   = FG3dCamera_setPosition;
+   // @method
    o.doWalk        = FG3dCamera_doWalk;
    o.doStrafe      = FG3dCamera_doStrafe;
    o.doFly         = FG3dCamera_doFly;
@@ -63,7 +66,7 @@ function FG3dCamera_construct(){
    o.__base.FObject.construct.call(o);
    // 初始化变量
    o.matrix = new SMatrix3d();
-   o.position = new SPoint3();
+   o._position = new SPoint3();
    o.direction = new SVector3();
    o.viewport = RClass.create(FG3dViewport);
    o.projection = RClass.create(FG3dProjection);
@@ -73,6 +76,28 @@ function FG3dCamera_construct(){
    o._axisX = new SVector3();
    o._axisY = new SVector3();
    o._axisZ = new SVector3();
+}
+
+//==========================================================
+// <T>获得位置。</T>
+//
+// @method
+// @return 位置
+//==========================================================
+function FG3dCamera_position(){
+   return this._position;
+}
+
+//==========================================================
+// <T>设置位置。</T>
+//
+// @method
+// @param x:Number X坐标
+// @param y:Number Y坐标
+// @param z:Number Z坐标
+//==========================================================
+function FG3dCamera_setPosition(x, y, z){
+   this._position.set(x, y, z);
 }
 
 //==========================================================
@@ -110,7 +135,7 @@ function FG3dCamera_doPitch(){
 //==========================================================
 function FG3dCamera_lookAt(x, y, z){
    var o = this;
-   var p = o.position;
+   var p = o._position;
    o.direction.set(x - p.x, y - p.y, z - p.z);
    o.direction.normalize();
 }
@@ -152,8 +177,8 @@ function FG3dCamera_update(){
    d[ 9] = ay.z;
    d[10] = az.z;
    d[11] = 0.0;
-   d[12] = -ax.dotPoint3(o.position);
-   d[13] = -ay.dotPoint3(o.position);
-   d[14] = -az.dotPoint3(o.position);
+   d[12] = -ax.dotPoint3(o._position);
+   d[13] = -ay.dotPoint3(o._position);
+   d[14] = -az.dotPoint3(o._position);
    d[15] = 1.0;
 }

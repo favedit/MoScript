@@ -15,3 +15,7 @@ function FGraphicContext_dispose(){
    o._hCanvas = null;
    o.__base.FObject.dispose.call(o);
 }
+function FGraphicRenderable(o){
+   o = RClass.inherits(this, o, FObject);
+   return o;
+}

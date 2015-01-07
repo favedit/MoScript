@@ -10,7 +10,12 @@ function FWglContext(o){
    // @attribute
    o._native             = null;
    o._textureActiveSlot  = 0;
+   // @attribute
+   o._data9              = null;
+   o._data16             = null;
    //..........................................................
+   // @method
+   o.construct           = FWglContext_construct;
    // @method
    o.linkCanvas          = FWglContext_linkCanvas;
    // @method
@@ -41,6 +46,18 @@ function FWglContext(o){
 }
 
 //==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FWglContext_construct(){
+   var o = this;
+   o.__base.FG3dContext.construct.call(o);
+   o._data9 = new Float32Array(9);
+   o._data16 = new Float32Array(16);
+}
+
+//==========================================================
 // <T>关联页面画布标签。</T>
 //
 // @method
@@ -48,6 +65,7 @@ function FWglContext(o){
 //==========================================================
 function FWglContext_linkCanvas(h){
    var o = this;
+   // 获得环境
    o._hCanvas = h;
    if(h.getContext){
       var n = h.getContext('experimental-webgl');
@@ -59,6 +77,10 @@ function FWglContext_linkCanvas(h){
       }
       o._native = n;
    }
+   // 设置状态
+   o.setViewPort(h.width, h.height);
+   o.setDepthMode(true, EG3dDepthMode.LessEqual);
+   o.setCullingMode(true, EG3dCullMode.Front);
 }
 
 //==========================================================
@@ -364,8 +386,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
             return false;
          }
          // 修改数据
-         var count = length / 36;
-         var dt = new Float32Array(9);
+         var dt = o._data9;
          dt[ 0] = pd[ 0];
          dt[ 1] = pd[ 4];
          dt[ 2] = pd[ 8];
@@ -401,9 +422,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
             return false;
          }
          // 修改数据
-         var count = length >> 6;
-         //g.uniformMatrix4fv(slot, false, pd);
-         var dt = new Float32Array(16);
+         var dt = o._data16;
          dt[ 0] = pd[ 0];
          dt[ 1] = pd[ 4];
          dt[ 2] = pd[ 8];
