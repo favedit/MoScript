@@ -92,70 +92,41 @@ function FContentPipeline_scopeCd(){
 }
 function FHttpConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._scopeCd    = EScope.Local;
-   o.connections = null;
-   o.onLoad      = FHttpConsole_onLoad;
-   o.construct   = FHttpConsole_construct;
-   o.alloc       = FHttpConsole_alloc;
-   o.process     = FHttpConsole_process;
-   o.send        = FHttpConsole_send;
+   o._scopeCd  = EScope.Local;
+   o._pool     = null;
+   o.onLoad    = FHttpConsole_onLoad;
+   o.construct = FHttpConsole_construct;
+   o.alloc     = FHttpConsole_alloc;
+   o.send      = FHttpConsole_send;
    return o;
 }
 function FHttpConsole_construct(){
    var o = this;
-   o.connections = new TObjects();
+   o.__base.FConsole.construct.call(o);
+   o._pool = RClass.create(FObjectPool);
 }
-function FHttpConsole_onLoad(){
+function FHttpConsole_onLoad(p){
    var o = this;
-   var e = o.event;
-   e.document = o.document;
-   e.process();
-   o.event = null;
-   o.document = null;
-   o._statusFree = true;
+   o._pool.free(p);
 }
 function FHttpConsole_alloc(){
    var o = this;
-   var a = null;
-   var cs = o.connections;
-   for(var n = cs.count - 1; n >= 0; n--){
-      var c = cs.get(n);
-      if(c._statusFree){
-         a = c;
-         break;
-      }
+   var p = o._pool;
+   if(!p.hasFree()){
+      var c = RClass.create(FHttpConnection);
+      c._asynchronous = true;
+      o._pool.push(c);
    }
-   if(!a){
-      a = RClass.create(FXmlConnection);
-      cs.push(a);
-      a.onLoad = o.onLoad;
-   }
-   a._statusFree = false;
-   return a;
+   var c = p.alloc();
+   c.lsnsLoad.clear();
+   c.lsnsLoad.register(o, o.onLoad);
+   return c;
 }
-function FHttpConsole_process(e){
+function FHttpConsole_send(u){
    var o = this;
    var c = o.alloc();
-   c.event = e;
-   switch(e.code){
-      case EXmlEvent.Send:
-         c.send(e.url, e.document);
-         break;
-      case EXmlEvent.Receive:
-         c.receive(e.url, e.document);
-         break;
-      case EXmlEvent.SyncSend:
-         return c.syncSend(e.url, e.document);
-      case EXmlEvent.SyncReceive:
-         return c.syncReceive(e.url, e.document);
-   }
-}
-function FHttpConsole_send(u, d){
-   var o = this;
-   var c = o.alloc();
-   var r = c.syncSend(u, d);
-   c._statusFree = true;
-   return r;
+   c.send(u);
+   return c;
 }
 function FIdleConsole(o){
    o = RClass.inherits(this, o, FConsole);

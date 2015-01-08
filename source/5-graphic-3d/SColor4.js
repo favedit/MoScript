@@ -9,18 +9,19 @@ function SColor4(o){
    if(!o){o = this;}
    //..........................................................
    // @attribute
-   o.red      = 0;
-   o.green    = 0;
-   o.blue     = 0;
-   o.alpha    = 1;
+   o.red         = 0;
+   o.green       = 0;
+   o.blue        = 0;
+   o.alpha       = 1;
    // @attribute
-   o._data     = null;
+   o._data       = null;
    //..........................................................
    // @method
-   o.assign   = SColor4_assign;
-   o.set      = SColor4_set;
-   o.data     = SColor4_data;
-   o.toString = SColor4_toString;
+   o.assign      = SColor4_assign;
+   o.set         = SColor4_set;
+   o.data        = SColor4_data;
+   o.unserialize = SColor4_unserialize
+   o.toString    = SColor4_toString;
    return o;
 }
 
@@ -70,6 +71,20 @@ function SColor4_data(){
    d[2] = o.blue;
    d[2] = o.alpha;
    return d;
+}
+
+//==========================================================
+// <T>从输入流里反序列化信息内容</T>
+//
+// @param p:input:FByteStream 数据流
+// @return 处理结果
+//==========================================================
+function SColor4_unserialize(p){
+   var o = this;
+   o.red = p.readFloat();
+   o.green = p.readFloat();
+   o.blue = p.readFloat();
+   o.alpha = p.readFloat();
 }
 
 //============================================================

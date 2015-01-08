@@ -35,15 +35,15 @@ function FRs3ThemeConsole_construct(){
 // @return 处理结果
 //==========================================================
 function FRs3ThemeConsole_load(p){
-   // 读取父信息
    var o = this;
-   var m = o._themes.get(p);
-   if(m == null){
-      var u = RBrowser.contextPath() + o._path + p + '.ser';
-      alert(u);
-      m = RClass.create(FRs3Theme);
-      m.load(u);
-      o._themes.set(p, m);
+   var r = o._themes.get(p);
+   if(r == null){
+      // 生成地址
+      var u = RBrowser.contentPath(o._path + p + '.ser');
+      // 创建主题
+      r = RClass.create(FRs3Theme);
+      r.load(u);
+      o._themes.set(p, r);
    }
-   return m;
+   return r;
 }

@@ -1686,6 +1686,56 @@ function FObject_dump(){
    this.innerDump(r, 0);
    return r.toString();
 }
+function FObjectPool(o){
+   o = RClass.inherits(this, o, FObject);
+   o._items    = null;
+   o._frees    = null;
+   o.construct = FObjectPool_construct;
+   o.hasFree   = FObjectPool_hasFree;
+   o.alloc     = FObjectPool_alloc;
+   o.free      = FObjectPool_free;
+   o.push      = FObjectPool_push;
+   o.dispose   = FObjectPool_dispose;
+   return o;
+}
+function FObjectPool_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._items = new TObjects();
+   o._frees = new TObjects();
+}
+function FObjectPool_hasFree(){
+   return !this._frees.isEmpty();
+}
+function FObjectPool_alloc(p){
+   var o = this;
+   var r = null;
+   if(!o._frees.isEmpty()){
+      r = o._frees.pop();
+   }
+   return r;
+}
+function FObjectPool_free(p){
+   var o = this;
+   o._frees.push(p);
+}
+function FObjectPool_push(p){
+   var o = this;
+   o._items.push(p);
+   o._frees.push(p);
+}
+function FObjectPool_dispose(){
+   var o = this;
+   if(o._items){
+      o._items.dispose();
+      o._items = null;
+   }
+   if(o._frees){
+      o._frees.dispose();
+      o._frees = null;
+   }
+   o.__base.FObject.dispose.call(o);
+}
 function MClone(o){
    o = RClass.inherits(this, o);
    o.clone  = MClone_clone;
@@ -5561,8 +5611,8 @@ function FDataView_link(p){
 }
 function FDataView_dispose(){
    var o = this;
-   o._memory = null;
    o._viewer = null;
+   o._memory = null;
    o.__base.FObject.dispose.call(o);
 }
 function FHttpConnection(o){
@@ -6396,29 +6446,37 @@ function FByteStream_writeString(v){
 }
 function MDataView(o){
    o = RClass.inherits(this, o);
-   o._viewer   = null;
-   o._endianCd = 0;
-   o.getInt8   = MDataView_getInt8;
-   o.getInt16  = MDataView_getInt16;
-   o.getInt32  = MDataView_getInt32;
-   o.getInt64  = MDataView_getInt64;
-   o.getUint8  = MDataView_getUint8;
-   o.getUint16 = MDataView_getUint16;
-   o.getUint32 = MDataView_getUint32;
-   o.getUint64 = MDataView_getUint64;
-   o.getFloat  = MDataView_getFloat;
-   o.getDouble = MDataView_getDouble;
-   o.setInt8   = MDataView_setInt8;
-   o.setInt16  = MDataView_setInt16;
-   o.setInt32  = MDataView_setInt32;
-   o.setInt64  = MDataView_setInt64;
-   o.setUint8  = MDataView_setUint8;
-   o.setUint16 = MDataView_setUint16;
-   o.setUint32 = MDataView_setUint32;
-   o.setUint64 = MDataView_setUint64;
-   o.setFloat  = MDataView_setFloat;
-   o.setDouble = MDataView_setDouble;
+   o._viewer     = null;
+   o._endianCd   = 0;
+   o.endianCd    = MDataView_endianCd;
+   o.setEndianCd = MDataView_setEndianCd;
+   o.getInt8     = MDataView_getInt8;
+   o.getInt16    = MDataView_getInt16;
+   o.getInt32    = MDataView_getInt32;
+   o.getInt64    = MDataView_getInt64;
+   o.getUint8    = MDataView_getUint8;
+   o.getUint16   = MDataView_getUint16;
+   o.getUint32   = MDataView_getUint32;
+   o.getUint64   = MDataView_getUint64;
+   o.getFloat    = MDataView_getFloat;
+   o.getDouble   = MDataView_getDouble;
+   o.setInt8     = MDataView_setInt8;
+   o.setInt16    = MDataView_setInt16;
+   o.setInt32    = MDataView_setInt32;
+   o.setInt64    = MDataView_setInt64;
+   o.setUint8    = MDataView_setUint8;
+   o.setUint16   = MDataView_setUint16;
+   o.setUint32   = MDataView_setUint32;
+   o.setUint64   = MDataView_setUint64;
+   o.setFloat    = MDataView_setFloat;
+   o.setDouble   = MDataView_setDouble;
    return o;
+}
+function MDataView_endianCd(p){
+   return this._endianCd;
+}
+function MDataView_setEndianCd(p){
+   this._endianCd = p;
 }
 function MDataView_getInt8(p){
    var o = this;
@@ -6531,7 +6589,11 @@ function RBrowser_construct(){
    RLogger.info(o, 'Parse browser confirm. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }
 function RBrowser_contentPath(p){
-   return this._contentPath;
+   var o = this;
+   if(p){
+      return o._contentPath + p;
+   }
+   return o._contentPath;
 }
 function RBrowser_isBrowser(p){
    return this._typeCd == p;
@@ -8809,70 +8871,41 @@ function FContentPipeline_scopeCd(){
 }
 function FHttpConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._scopeCd    = EScope.Local;
-   o.connections = null;
-   o.onLoad      = FHttpConsole_onLoad;
-   o.construct   = FHttpConsole_construct;
-   o.alloc       = FHttpConsole_alloc;
-   o.process     = FHttpConsole_process;
-   o.send        = FHttpConsole_send;
+   o._scopeCd  = EScope.Local;
+   o._pool     = null;
+   o.onLoad    = FHttpConsole_onLoad;
+   o.construct = FHttpConsole_construct;
+   o.alloc     = FHttpConsole_alloc;
+   o.send      = FHttpConsole_send;
    return o;
 }
 function FHttpConsole_construct(){
    var o = this;
-   o.connections = new TObjects();
+   o.__base.FConsole.construct.call(o);
+   o._pool = RClass.create(FObjectPool);
 }
-function FHttpConsole_onLoad(){
+function FHttpConsole_onLoad(p){
    var o = this;
-   var e = o.event;
-   e.document = o.document;
-   e.process();
-   o.event = null;
-   o.document = null;
-   o._statusFree = true;
+   o._pool.free(p);
 }
 function FHttpConsole_alloc(){
    var o = this;
-   var a = null;
-   var cs = o.connections;
-   for(var n = cs.count - 1; n >= 0; n--){
-      var c = cs.get(n);
-      if(c._statusFree){
-         a = c;
-         break;
-      }
+   var p = o._pool;
+   if(!p.hasFree()){
+      var c = RClass.create(FHttpConnection);
+      c._asynchronous = true;
+      o._pool.push(c);
    }
-   if(!a){
-      a = RClass.create(FXmlConnection);
-      cs.push(a);
-      a.onLoad = o.onLoad;
-   }
-   a._statusFree = false;
-   return a;
+   var c = p.alloc();
+   c.lsnsLoad.clear();
+   c.lsnsLoad.register(o, o.onLoad);
+   return c;
 }
-function FHttpConsole_process(e){
+function FHttpConsole_send(u){
    var o = this;
    var c = o.alloc();
-   c.event = e;
-   switch(e.code){
-      case EXmlEvent.Send:
-         c.send(e.url, e.document);
-         break;
-      case EXmlEvent.Receive:
-         c.receive(e.url, e.document);
-         break;
-      case EXmlEvent.SyncSend:
-         return c.syncSend(e.url, e.document);
-      case EXmlEvent.SyncReceive:
-         return c.syncReceive(e.url, e.document);
-   }
-}
-function FHttpConsole_send(u, d){
-   var o = this;
-   var c = o.alloc();
-   var r = c.syncSend(u, d);
-   c._statusFree = true;
-   return r;
+   c.send(u);
+   return c;
 }
 function FIdleConsole(o){
    o = RClass.inherits(this, o, FConsole);

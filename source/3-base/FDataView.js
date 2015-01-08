@@ -31,7 +31,7 @@ function FDataView_link(p){
 //==========================================================
 function FDataView_dispose(){
    var o = this;
-   o._memory = null;
    o._viewer = null;
+   o._memory = null;
    o.__base.FObject.dispose.call(o);
 }

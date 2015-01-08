@@ -103,59 +103,100 @@ function FRs3IndexBuffer_unserialize(p){
 }
 function FRs3Material(o){
    o = RClass.inherits(this, o, FRs3Resource);
-   o._geometrys  = null;
-   o._skeleton   = null;
-   o._animation  = null;
+   o._groupCode  = null;
+   o._effectName = null;
+   o._optionLight = null;
+   o._optionMerge = null;
+   o._optionSort = null;
+   o._sortLevel = null;
+   o._optionAlpha = null;
+   o._optionDepth = null;
+   o._optionCompare = null;
+   o._optionDouble = null;
+   o._optionShadow = null;
+   o._optionShadowSelf = null;
+   o._optionDynamic = null;
+   o._optionTransmittance = null;
+   o._optionOpacity = null;
+   o._coordRateWidth = null;
+   o._coordRateHeight = null;
+   o._colorMin = null;
+   o._colorMax = null;
+   o._colorRate = null;
+   o._colorMerge = null;
+   o._alphaBase = null;
+   o._alphaRate = null;
+   o._alphaLevel = null;
+   o._alphaMerge = null;
+   o._ambientColor = null;
+   o._ambientShadow = null;
+   o._diffuseColor = null;
+   o._diffuseShadow = null;
+   o._diffuseViewColor = null;
+   o._diffuseViewShadow = null;
+   o._specularColor = null;
+   o._specularBase = null;
+   o._specularRate = null;
+   o._specularAverage = null;
+   o._specularShadow = null;
+   o._specularViewColor = null;
+   o._specularViewBase = null;
+   o._specularViewRate = null;
+   o._specularViewAverage = null;
+   o._specularViewShadow = null;
+   o._reflectColor = null;
+   o._reflectMerge = null;
+   o._reflectShadow = null;
+   o._refractFrontColor = null;
+   o._refractBackColor = null;
+   o._opacityColor = null;
+   o._opacityRate = null;
+   o._opacityAlpha = null;
+   o._opacityDepth = null;
+   o._opacityTransmittance = null;
+   o._emissiveColor = null;
+   o._textures   = null;
    o.construct   = FRs3Material_construct;
-   o.geometrys   = FRs3Material_geometrys;
+   o.textures    = FRs3Material_textures;
    o.unserialize = FRs3Material_unserialize;
    return o;
 }
 function FRs3Material_construct(){
    var o = this;
    o.__base.FRs3Resource.construct.call(o);
-   o._geometrys = new TObjects();
+   o._ambientColor = new SColor4()
+   o._diffuseColor = new SColor4()
+   o._diffuseViewColor = new SColor4()
+   o._specularColor = new SColor4()
+   o._specularViewColor = new SColor4()
+   o._reflectColor = new SColor4()
+   o._refractFrontColor = new SColor4()
+   o._opacityColor = new SColor4()
+   o._emissiveColor = null;
+   o._textures = new TObjects();
 }
-function FRs3Material_geometrys(){
-   return this._geometrys;
+function FRs3Material_textures(){
+   return this._textures;
 }
 function FRs3Material_unserialize(p){
    var o = this;
-   o.__base.FRs3Resource.unserialize.call(o, p);
-   var gc = p.readInt16();
-   for(var n = 0; n < gc; n++){
-      var g = RClass.create(FRs3Geometry);
-      g.unserialize(p);
-      o._geometrys.push(g);
-   }
+   o._groupCode = p.readString();
+   o._effectName = p.readString();
+   var c = p.readInt8();
 }
 function FRs3MaterialTexture(o){
    o = RClass.inherits(this, o, FRs3Resource);
-   o._name       = null;
-   o._skeleton   = null;
-   o._animation  = null;
-   o.construct   = FRs3MaterialTexture_construct;
-   o.geometrys   = FRs3MaterialTexture_geometrys;
+   o._code        = null;
+   o._packCode    = null;
+   o._textureCode = null;
    o.unserialize = FRs3MaterialTexture_unserialize;
    return o;
 }
-function FRs3MaterialTexture_construct(){
-   var o = this;
-   o.__base.FRs3Resource.construct.call(o);
-   o._geometrys = new TObjects();
-}
-function FRs3MaterialTexture_geometrys(){
-   return this._geometrys;
-}
 function FRs3MaterialTexture_unserialize(p){
    var o = this;
-   o.__base.FRs3Resource.unserialize.call(o, p);
-   var gc = p.readInt16();
-   for(var n = 0; n < gc; n++){
-      var g = RClass.create(FRs3Geometry);
-      g.unserialize(p);
-      o._geometrys.push(g);
-   }
+   o._code = p.readString();
+   o._packCode = null;
+   o._textureCode = null;
 }
 function FRs3Model(o){
    o = RClass.inherits(this, o, FRs3Resource);
@@ -188,6 +229,7 @@ function FRs3Model_unserialize(p){
 function FRs3ModelConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._models   = null;
+   o._path     = '/assets/model/'
    o.construct = FRs3ModelConsole_construct;
    o.load      = FRs3ModelConsole_load;
    return o;
@@ -199,15 +241,58 @@ function FRs3ModelConsole_construct(){
 }
 function FRs3ModelConsole_load(p){
    var o = this;
+   var r = o._models.get(p);
+   if(r == null){
+      var u = RBrowser.contentPath(o._path + p + '.ser');
+      r = RClass.create(FRs3Model);
+      r.load(u);
+      o._models.set(p, r);
+   }
+   return r;
 }
 function FRs3Resource(o){
    o = RClass.inherits(this, o, FResource);
-   o._contentLength = 0;
-   o.unserialize    = FRs3Resource_unserialize;
+   o._dataReady   = false;
+   o._dataSize    = 0;
+   o._lsnsLoad    = null;
+   o.onLoad       = FRs3Resource_onLoad;
+   o.loadListener = FRs3Resource_loadListener;
+   o.testReady    = FRs3Resource_testReady;
+   o.unserialize  = FRs3Resource_unserialize;
+   o.load         = FRs3Resource_load;
    return o;
+}
+function FRs3Resource_onLoad(p){
+   var o = this;
+   var v = RClass.create(FDataView);
+   v.setEndianCd(true);
+   v.link(p.outputData());
+   o.unserialize(v);
+   v.dispose();
+   o._dataReady = true;
+   if(o._lsnsLoad){
+      o._lsnsLoad.process();
+   }
+}
+function FRs3Resource_loadListener(){
+   var o = this;
+   var ls = o._lsnsLoad;
+   if(ls == null){
+      ls = o._lsnsLoad = new TListeners();
+   }
+   return ls;
+}
+function FRs3Resource_testReady(){
+   return this._dataReady;
 }
 function FRs3Resource_unserialize(p){
    this._name = p.readString();
+}
+function FRs3Resource_load(u){
+   var o = this;
+   var hc = RConsole.find(FHttpConsole);
+   var c = hc.send(u);
+   c.lsnsLoad.register(o, o.onLoad);
 }
 function FRs3Scene(o){
    o = RClass.inherits(this, o, FRs3Resource);
@@ -237,6 +322,30 @@ function FRs3Scene_unserialize(p){
       o._geometrys.push(g);
    }
 }
+function FRs3SceneConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scenes   = null;
+   o._path     = '/assets/scene/'
+   o.construct = FRs3SceneConsole_construct;
+   o.load      = FRs3SceneConsole_load;
+   return o;
+}
+function FRs3SceneConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._scenes = new TDictionary();
+}
+function FRs3SceneConsole_load(p){
+   var o = this;
+   var r = o._scenes.get(p);
+   if(r == null){
+      var u = RBrowser.contentPath(o._path + p + '.ser');
+      r = RClass.create(FRs3Scene);
+      r.load(u);
+      o._scenes.set(p, r);
+   }
+   return r;
+}
 function FRs3Template(o){
    o = RClass.inherits(this, o, FRs3Resource);
    o._geometrys  = null;
@@ -265,29 +374,44 @@ function FRs3Template_unserialize(p){
       o._geometrys.push(g);
    }
 }
+function FRs3TemplateConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._templates = null;
+   o._path      = '/assets/template/'
+   o.construct = FRs3TemplateConsole_construct;
+   o.load      = FRs3TemplateConsole_load;
+   return o;
+}
+function FRs3TemplateConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._templates = new TDictionary();
+}
+function FRs3TemplateConsole_load(p){
+   var o = this;
+   var r = o._templates.get(p);
+   if(r == null){
+      var u = RBrowser.contentPath(o._path + p + '.ser');
+      r = RClass.create(FRs3Template);
+      r.load(u);
+      o._templates.set(p, r);
+   }
+   return r;
+}
 function FRs3Theme(o){
    o = RClass.inherits(this, o, FRs3Resource);
    o._materials  = null;
-   o.onLoad      = FRs3Theme_onLoad;
-   o.load        = FRs3Theme_load;
    o.unserialize = FRs3Theme_unserialize;
    return o;
 }
-function FRs3Theme_onLoad(p){
-   p = asdf;
-}
 function FRs3Theme_unserialize(p){
-   this._name = p.readString();
-   var hc = RClass.create(FHttpConnection);
-   hc._asynchronous = true;
-   hc.lsnsLoad.register(o, o.onDataLoad);
-   hc.send(u);
-}
-function FRs3Theme_load(u){
-   var hc = RClass.create(FHttpConnection);
-   hc._asynchronous = true;
-   hc.lsnsLoad.register(o, o.onDataLoad);
-   hc.send(u);
+   var c = p.readInt32();
+   for(var n = 0; n < c; n++){
+      var m = RClass.create(FRs3Material);
+      m.unserialize(p);
+      RDump.dump(m, _dump);
+      break;
+   }
 }
 function FRs3ThemeConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -304,15 +428,14 @@ function FRs3ThemeConsole_construct(){
 }
 function FRs3ThemeConsole_load(p){
    var o = this;
-   var m = o._themes.get(p);
-   if(m == null){
-      var u = RBrowser.contextPath() + o._path + p + '.ser';
-      alert(u);
-      m = RClass.create(FRs3Theme);
-      m.load(u);
-      o._themes.set(p, m);
+   var r = o._themes.get(p);
+   if(r == null){
+      var u = RBrowser.contentPath(o._path + p + '.ser');
+      r = RClass.create(FRs3Theme);
+      r.load(u);
+      o._themes.set(p, r);
    }
-   return m;
+   return r;
 }
 function FRs3VertexBuffer(o){
    o = RClass.inherits(this, o, FObject);

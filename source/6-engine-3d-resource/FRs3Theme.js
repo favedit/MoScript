@@ -10,11 +10,7 @@ function FRs3Theme(o){
    // @attribute
    o._materials  = null;
    //..........................................................
-   // @event
-   o.onLoad      = FRs3Theme_onLoad;
-   //..........................................................
    // @method
-   o.load        = FRs3Theme_load;
    o.unserialize = FRs3Theme_unserialize;
    return o;
 }
@@ -25,33 +21,12 @@ function FRs3Theme(o){
 // @param p:input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FRs3Theme_onLoad(p){
-   p = asdf;
-}
-
-//==========================================================
-// <T>从输入流里反序列化信息内容</T>
-//
-// @param p:input:FByteStream 数据流
-// @return 处理结果
-//==========================================================
 function FRs3Theme_unserialize(p){
-   this._name = p.readString();
-   var hc = RClass.create(FHttpConnection);
-   hc._asynchronous = true;
-   hc.lsnsLoad.register(o, o.onDataLoad);
-   hc.send(u);
-}
-
-//==========================================================
-// <T>从输入流里反序列化信息内容</T>
-//
-// @param p:input:FByteStream 数据流
-// @return 处理结果
-//==========================================================
-function FRs3Theme_load(u){
-   var hc = RClass.create(FHttpConnection);
-   hc._asynchronous = true;
-   hc.lsnsLoad.register(o, o.onDataLoad);
-   hc.send(u);
+   var c = p.readInt32();
+   for(var n = 0; n < c; n++){
+      var m = RClass.create(FRs3Material);
+      m.unserialize(p);
+      RDump.dump(m, _dump);
+      break;
+   }
 }

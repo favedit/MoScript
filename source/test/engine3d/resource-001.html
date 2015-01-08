@@ -24,9 +24,9 @@
 <SCRIPT>
 // http://localhost:999/test/engine3d/resource-001.html
 var hc = null;
-var contentPath = 'http://localhost:999';
+//var contentPath = 'http://localhost:999';
 //var contentPath = 'http://10.12.21.33:999';
-//var contentPath = 'http://localhost/script';
+var contentPath = 'http://localhost/script';
 
 var context = null;
 var stage = null;
@@ -75,8 +75,7 @@ function _load(){
    RBrowser.construct();
    RBrowser._contentPath = contentPath;
 
-   debugger
-   var tc = RClass.find(FRs3ThemeConsole);
+   var tc = RConsole.find(FRs3ThemeConsole);
    var m = tc.load('color');
    return;
 

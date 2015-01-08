@@ -50,10 +50,15 @@ function RBrowser_construct(){
 //===========================================================
 // <T>获得内容路径。</T>
 //
+// @param p:uri:String 路径
 // @return String 内容路径
 //===========================================================
 function RBrowser_contentPath(p){
-   return this._contentPath;
+   var o = this;
+   if(p){
+      return o._contentPath + p;
+   }
+   return o._contentPath;
 }
 
 //===========================================================

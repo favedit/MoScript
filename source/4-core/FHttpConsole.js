@@ -7,16 +7,18 @@
 //==========================================================
 function FHttpConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   // Attribute
-   o._scopeCd    = EScope.Local;
-   o.connections = null;
-   // Event
-   o.onLoad      = FHttpConsole_onLoad;
-   // Method
-   o.construct   = FHttpConsole_construct;
-   o.alloc       = FHttpConsole_alloc;
-   o.process     = FHttpConsole_process;
-   o.send        = FHttpConsole_send;
+   //..........................................................
+   // @attribute
+   o._scopeCd  = EScope.Local;
+   o._pool     = null;
+   //..........................................................
+   // @event
+   o.onLoad    = FHttpConsole_onLoad;
+   //..........................................................
+   // @method
+   o.construct = FHttpConsole_construct;
+   o.alloc     = FHttpConsole_alloc;
+   o.send      = FHttpConsole_send;
    return o;
 }
 
@@ -27,22 +29,19 @@ function FHttpConsole(o){
 //==========================================================
 function FHttpConsole_construct(){
    var o = this;
-   o.connections = new TObjects();
+   o.__base.FConsole.construct.call(o);
+   o._pool = RClass.create(FObjectPool);
 }
 
 //==========================================================
 // <T>加载事件完成后，响应的处理。</T>
 //
 // @method
+// @param p:connection:FHttpConnection 网络链接
 //==========================================================
-function FHttpConsole_onLoad(){
+function FHttpConsole_onLoad(p){
    var o = this;
-   var e = o.event;
-   e.document = o.document;
-   e.process();
-   o.event = null;
-   o.document = null;
-   o._statusFree = true;
+   o._pool.free(p);
 }
 
 //==========================================================
@@ -53,64 +52,30 @@ function FHttpConsole_onLoad(){
 //==========================================================
 function FHttpConsole_alloc(){
    var o = this;
+   var p = o._pool;
    // 查找一个未使用的节点链接
-   var a = null;
-   var cs = o.connections;
-   for(var n = cs.count - 1; n >= 0; n--){
-      var c = cs.get(n);
-      if(c._statusFree){
-         a = c;
-         break;
-      }
+   if(!p.hasFree()){
+      var c = RClass.create(FHttpConnection);
+      c._asynchronous = true;
+      o._pool.push(c);
    }
-   // 没有未使用的时候，创建一个新的节点链接
-   if(!a){
-      a = RClass.create(FXmlConnection);
-      cs.push(a);
-      a.onLoad = o.onLoad;
-   }
-   // 设置
-   a._statusFree = false;
-   return a;
+   // 收集对象
+   var c = p.alloc();
+   c.lsnsLoad.clear();
+   c.lsnsLoad.register(o, o.onLoad);
+   return c;
 }
 
 //==========================================================
-// <T>同步或异步获发送一个XML信息，返回XML信息。</T>
-//
-// @method
-// @param e:event:TEvent 事件信息
-// @return XML信息
-//==========================================================
-function FHttpConsole_process(e){
-   var o = this;
-   var c = o.alloc();
-   c.event = e;
-   switch(e.code){
-      case EXmlEvent.Send:
-         c.send(e.url, e.document);
-         break;
-      case EXmlEvent.Receive:
-         c.receive(e.url, e.document);
-         break;
-      case EXmlEvent.SyncSend:
-         return c.syncSend(e.url, e.document);
-      case EXmlEvent.SyncReceive:
-         return c.syncReceive(e.url, e.document);
-   }
-}
-
-//==========================================================
-// <T>异步获发送一个XML信息，返回XML信息。</T>
+// <T>发送一个页面信息，返回页面信息。</T>
 //
 // @method
 // @param u:url:String 发送地址
-// @param d:document:TXmlDocument 发送文档
-// @return TXmlDocument 接收文档
+// @return FHttpConnection 链接对象
 //==========================================================
-function FHttpConsole_send(u, d){
+function FHttpConsole_send(u){
    var o = this;
    var c = o.alloc();
-   var r = c.syncSend(u, d);
-   c._statusFree = true;
-   return r;
+   c.send(u);
+   return c;
 }

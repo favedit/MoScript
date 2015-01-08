@@ -1,19 +1,19 @@
 //==========================================================
-// <T>资源模型管理器。</T>
+// <T>资源模板管理器。</T>
 //
 // @author maocy
-// @history 150105
+// @history 150108
 //==========================================================
-function FRs3ModelConsole(o){
+function FRs3TemplateConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._models   = null;
-   o._path     = '/assets/model/'
+   o._templates = null;
+   o._path      = '/assets/template/'
    //..........................................................
    // @method
-   o.construct = FRs3ModelConsole_construct;
-   o.load      = FRs3ModelConsole_load;
+   o.construct = FRs3TemplateConsole_construct;
+   o.load      = FRs3TemplateConsole_load;
    return o;
 }
 
@@ -22,10 +22,10 @@ function FRs3ModelConsole(o){
 //
 // @method
 //==========================================================
-function FRs3ModelConsole_construct(){
+function FRs3TemplateConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._models = new TDictionary();
+   o._templates = new TDictionary();
 }
 
 //==========================================================
@@ -34,16 +34,16 @@ function FRs3ModelConsole_construct(){
 // @param p:input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FRs3ModelConsole_load(p){
+function FRs3TemplateConsole_load(p){
    var o = this;
-   var r = o._models.get(p);
+   var r = o._templates.get(p);
    if(r == null){
       // 生成地址
       var u = RBrowser.contentPath(o._path + p + '.ser');
-      // 创建模型
-      r = RClass.create(FRs3Model);
+      // 创建主题
+      r = RClass.create(FRs3Template);
       r.load(u);
-      o._models.set(p, r);
+      o._templates.set(p, r);
    }
    return r;
 }

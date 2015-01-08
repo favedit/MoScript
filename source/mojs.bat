@@ -60,3 +60,11 @@ echo %JS_FILES%
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\control-form.js
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\control-table.js
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_FMGR% %JS_FILES% %JS_HOME%\ajs\mo-control.js
+
+@SET JS_FILES=
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\mo-core.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\mo-graphic.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\mo-engine.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\mo-graphic.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\mo-control.js
+@"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_FMGR% %JS_FILES% %JS_HOME%\ajs\mo.js

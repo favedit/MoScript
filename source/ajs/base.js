@@ -87,8 +87,8 @@ function FDataView_link(p){
 }
 function FDataView_dispose(){
    var o = this;
-   o._memory = null;
    o._viewer = null;
+   o._memory = null;
    o.__base.FObject.dispose.call(o);
 }
 function FHttpConnection(o){
@@ -922,29 +922,37 @@ function FByteStream_writeString(v){
 }
 function MDataView(o){
    o = RClass.inherits(this, o);
-   o._viewer   = null;
-   o._endianCd = 0;
-   o.getInt8   = MDataView_getInt8;
-   o.getInt16  = MDataView_getInt16;
-   o.getInt32  = MDataView_getInt32;
-   o.getInt64  = MDataView_getInt64;
-   o.getUint8  = MDataView_getUint8;
-   o.getUint16 = MDataView_getUint16;
-   o.getUint32 = MDataView_getUint32;
-   o.getUint64 = MDataView_getUint64;
-   o.getFloat  = MDataView_getFloat;
-   o.getDouble = MDataView_getDouble;
-   o.setInt8   = MDataView_setInt8;
-   o.setInt16  = MDataView_setInt16;
-   o.setInt32  = MDataView_setInt32;
-   o.setInt64  = MDataView_setInt64;
-   o.setUint8  = MDataView_setUint8;
-   o.setUint16 = MDataView_setUint16;
-   o.setUint32 = MDataView_setUint32;
-   o.setUint64 = MDataView_setUint64;
-   o.setFloat  = MDataView_setFloat;
-   o.setDouble = MDataView_setDouble;
+   o._viewer     = null;
+   o._endianCd   = 0;
+   o.endianCd    = MDataView_endianCd;
+   o.setEndianCd = MDataView_setEndianCd;
+   o.getInt8     = MDataView_getInt8;
+   o.getInt16    = MDataView_getInt16;
+   o.getInt32    = MDataView_getInt32;
+   o.getInt64    = MDataView_getInt64;
+   o.getUint8    = MDataView_getUint8;
+   o.getUint16   = MDataView_getUint16;
+   o.getUint32   = MDataView_getUint32;
+   o.getUint64   = MDataView_getUint64;
+   o.getFloat    = MDataView_getFloat;
+   o.getDouble   = MDataView_getDouble;
+   o.setInt8     = MDataView_setInt8;
+   o.setInt16    = MDataView_setInt16;
+   o.setInt32    = MDataView_setInt32;
+   o.setInt64    = MDataView_setInt64;
+   o.setUint8    = MDataView_setUint8;
+   o.setUint16   = MDataView_setUint16;
+   o.setUint32   = MDataView_setUint32;
+   o.setUint64   = MDataView_setUint64;
+   o.setFloat    = MDataView_setFloat;
+   o.setDouble   = MDataView_setDouble;
    return o;
+}
+function MDataView_endianCd(p){
+   return this._endianCd;
+}
+function MDataView_setEndianCd(p){
+   this._endianCd = p;
 }
 function MDataView_getInt8(p){
    var o = this;
@@ -1057,7 +1065,11 @@ function RBrowser_construct(){
    RLogger.info(o, 'Parse browser confirm. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }
 function RBrowser_contentPath(p){
-   return this._contentPath;
+   var o = this;
+   if(p){
+      return o._contentPath + p;
+   }
+   return o._contentPath;
 }
 function RBrowser_isBrowser(p){
    return this._typeCd == p;
