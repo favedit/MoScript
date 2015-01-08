@@ -101,6 +101,62 @@ function FRs3IndexBuffer_unserialize(p){
       throw new TError('Unknown stride type. (stride_cd={1})', sc);
    }
 }
+function FRs3Material(o){
+   o = RClass.inherits(this, o, FRs3Resource);
+   o._geometrys  = null;
+   o._skeleton   = null;
+   o._animation  = null;
+   o.construct   = FRs3Material_construct;
+   o.geometrys   = FRs3Material_geometrys;
+   o.unserialize = FRs3Material_unserialize;
+   return o;
+}
+function FRs3Material_construct(){
+   var o = this;
+   o.__base.FRs3Resource.construct.call(o);
+   o._geometrys = new TObjects();
+}
+function FRs3Material_geometrys(){
+   return this._geometrys;
+}
+function FRs3Material_unserialize(p){
+   var o = this;
+   o.__base.FRs3Resource.unserialize.call(o, p);
+   var gc = p.readInt16();
+   for(var n = 0; n < gc; n++){
+      var g = RClass.create(FRs3Geometry);
+      g.unserialize(p);
+      o._geometrys.push(g);
+   }
+}
+function FRs3MaterialTexture(o){
+   o = RClass.inherits(this, o, FRs3Resource);
+   o._name       = null;
+   o._skeleton   = null;
+   o._animation  = null;
+   o.construct   = FRs3MaterialTexture_construct;
+   o.geometrys   = FRs3MaterialTexture_geometrys;
+   o.unserialize = FRs3MaterialTexture_unserialize;
+   return o;
+}
+function FRs3MaterialTexture_construct(){
+   var o = this;
+   o.__base.FRs3Resource.construct.call(o);
+   o._geometrys = new TObjects();
+}
+function FRs3MaterialTexture_geometrys(){
+   return this._geometrys;
+}
+function FRs3MaterialTexture_unserialize(p){
+   var o = this;
+   o.__base.FRs3Resource.unserialize.call(o, p);
+   var gc = p.readInt16();
+   for(var n = 0; n < gc; n++){
+      var g = RClass.create(FRs3Geometry);
+      g.unserialize(p);
+      o._geometrys.push(g);
+   }
+}
 function FRs3Model(o){
    o = RClass.inherits(this, o, FRs3Resource);
    o._geometrys  = null;
@@ -152,6 +208,111 @@ function FRs3Resource(o){
 }
 function FRs3Resource_unserialize(p){
    this._name = p.readString();
+}
+function FRs3Scene(o){
+   o = RClass.inherits(this, o, FRs3Resource);
+   o._geometrys  = null;
+   o._skeleton   = null;
+   o._animation  = null;
+   o.construct   = FRs3Scene_construct;
+   o.geometrys   = FRs3Scene_geometrys;
+   o.unserialize = FRs3Scene_unserialize;
+   return o;
+}
+function FRs3Scene_construct(){
+   var o = this;
+   o.__base.FRs3Resource.construct.call(o);
+   o._geometrys = new TObjects();
+}
+function FRs3Scene_geometrys(){
+   return this._geometrys;
+}
+function FRs3Scene_unserialize(p){
+   var o = this;
+   o.__base.FRs3Resource.unserialize.call(o, p);
+   var gc = p.readInt16();
+   for(var n = 0; n < gc; n++){
+      var g = RClass.create(FRs3Geometry);
+      g.unserialize(p);
+      o._geometrys.push(g);
+   }
+}
+function FRs3Template(o){
+   o = RClass.inherits(this, o, FRs3Resource);
+   o._geometrys  = null;
+   o._skeleton   = null;
+   o._animation  = null;
+   o.construct   = FRs3Template_construct;
+   o.geometrys   = FRs3Template_geometrys;
+   o.unserialize = FRs3Template_unserialize;
+   return o;
+}
+function FRs3Template_construct(){
+   var o = this;
+   o.__base.FRs3Resource.construct.call(o);
+   o._geometrys = new TObjects();
+}
+function FRs3Template_geometrys(){
+   return this._geometrys;
+}
+function FRs3Template_unserialize(p){
+   var o = this;
+   o.__base.FRs3Resource.unserialize.call(o, p);
+   var gc = p.readInt16();
+   for(var n = 0; n < gc; n++){
+      var g = RClass.create(FRs3Geometry);
+      g.unserialize(p);
+      o._geometrys.push(g);
+   }
+}
+function FRs3Theme(o){
+   o = RClass.inherits(this, o, FRs3Resource);
+   o._materials  = null;
+   o.onLoad      = FRs3Theme_onLoad;
+   o.load        = FRs3Theme_load;
+   o.unserialize = FRs3Theme_unserialize;
+   return o;
+}
+function FRs3Theme_onLoad(p){
+   p = asdf;
+}
+function FRs3Theme_unserialize(p){
+   this._name = p.readString();
+   var hc = RClass.create(FHttpConnection);
+   hc._asynchronous = true;
+   hc.lsnsLoad.register(o, o.onDataLoad);
+   hc.send(u);
+}
+function FRs3Theme_load(u){
+   var hc = RClass.create(FHttpConnection);
+   hc._asynchronous = true;
+   hc.lsnsLoad.register(o, o.onDataLoad);
+   hc.send(u);
+}
+function FRs3ThemeConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._themes   = null;
+   o._path     = '/assets/theme/'
+   o.construct = FRs3ThemeConsole_construct;
+   o.load      = FRs3ThemeConsole_load;
+   return o;
+}
+function FRs3ThemeConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._themes = new TDictionary();
+}
+function FRs3ThemeConsole_load(p){
+   var o = this;
+   var m = o._themes.get(p);
+   if(m == null){
+      var u = RBrowser.contextPath() + o._path + p + '.ser';
+      alert(u);
+      m = RClass.create(FRs3Theme);
+      m.load(u);
+      o._themes.set(p, m);
+   }
+   return m;
 }
 function FRs3VertexBuffer(o){
    o = RClass.inherits(this, o, FObject);
