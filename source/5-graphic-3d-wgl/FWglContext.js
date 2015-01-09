@@ -68,9 +68,9 @@ function FWglContext_linkCanvas(h){
    // 获得环境
    o._hCanvas = h;
    if(h.getContext){
-      var n = h.getContext('experimental-webgl');
+      var n = h.getContext('webgl');
       if(n == null){
-         n = h.getContext('webgl');
+         n = h.getContext('experimental-webgl');
       }
       if(n == null){
          throw new TError("Current browser can't support WebGL technique.");
@@ -328,63 +328,34 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
    // 修改数据
    switch (formatCd){
       case EG3dParameterFormat.Float1:{
-         // 检查长度
-         if(length % 4 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
-            return false;
-         }
          // 修改数据
-         var count = length / 4;
          g.uniform1fv(slot, pd);
          // 检查错误
-         r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float2:{
-         // 检查长度
-         if(length % 8 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
-            return false;
-         }
          // 修改数据
-         var count = length / 8;
          g.uniform2fv(slot, pd);
          // 检查错误
-         r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float3:{
-         // 检查长度
-         if(length % 12 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=d)", length);
-            return false;
-         }
          // 修改数据
-         var count = length / 12;
          g.uniform3fv(slot, pd);
          // 检查错误
          r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float4:{
-         // 检查长度
-         if(length % 16 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
-            return false;
-         }
          // 修改数据
-         var count = length / 16;
          g.uniform4fv(slot, pd);
          // 检查错误
-         r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float3x3:{
-         // 检查长度
-         if(length % 36 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length={1})", length);
-            return false;
-         }
          // 修改数据
          var dt = o._data9;
          dt[ 0] = pd[ 0];
@@ -412,15 +383,10 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          g.uniform4fv(slot, pd);
          //glUniformMatrix4x3fv(slot, count, GL_FALSE, (const GLfloat*)pData);
          // 检查错误
-         r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float4x4:{
-         // 检查长度
-         if(length % 64 != 0){
-            RLogger.fatal(o, null, "Float4x4 length is invalid. (length=%d)", length);
-            return false;
-         }
          // 修改数据
          var dt = o._data16;
          dt[ 0] = pd[ 0];
@@ -561,6 +527,10 @@ function FWglContext_bindTexture(ps, pi, pt){
       }
       case EG3dTexture.Cube:{
          g.bindTexture(g.TEXTURE_CUBE_MAP, pt._native);
+         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MIN_FILTER, g.NEAREST);
+         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MAG_FILTER, g.NEAREST);
+         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_WRAP_S, g.CLAMP_TO_EDGE);
+         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_WRAP_T, g.CLAMP_TO_EDGE);
          r = o.checkError("glBindTexture", "Bind texture failure. (texture_id=%d)", pt._native);
          if(!r){
             return r;

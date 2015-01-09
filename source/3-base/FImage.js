@@ -9,6 +9,8 @@ function FImage(o){
    //..........................................................
    // @attribute
    o._image    = null;
+   o._width    = 0;
+   o._height   = 0;
    o._ready    = false;
    //..........................................................
    // @event
@@ -44,6 +46,8 @@ function FImage_construct(){
 function FImage_ohLoad(){
    var o = this._linker;
    o._ready = true;
+   o._width = o._image.naturalWidth;
+   o._height = o._image.naturalHeight;
    o.lsnsLoad.process(o);
 }
 

@@ -170,11 +170,11 @@ function FWglProgram_link(){
    var pr = g.getProgramParameter(pn, g.VALIDATE_STATUS);
    if(!pr){
       var pi = g.getProgramInfoLog(pn);
-      RLogger.fatal(this, null, "Validate program failure. (reason={1})", pi);
+      //RLogger.fatal(this, null, "Validate program failure. (reason={1})", pi);
       // 释放程序
-      g.deleteProgram(o._native);
-      o._native = null;;
-      return false;
+      //g.deleteProgram(o._native);
+      //o._native = null;;
+      //return false;
    }
    //............................................................
    // 结束处理

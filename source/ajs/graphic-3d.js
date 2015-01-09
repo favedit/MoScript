@@ -416,19 +416,12 @@ function FG3dMaterial_textures(){
 }
 function FG3dMaterialTexture(o){
    o = RClass.inherits(this, o, FG3dMaterial);
-   o.name = null;
-   o.reflectColor = null;
-   o.construct   = FG3dMaterial_construct;
+   o._texture  = null;
+   o.construct = FG3dMaterialTexture_construct;
    return o;
 }
-function FG3dMaterial_construct(){
+function FG3dMaterialTexture_construct(){
    var o = this;
-   o.ambientColor = new SColor4();
-   o.diffuseColor = new SColor4();
-   o.diffuseViewColor = new SColor4();
-   o.specularColor = new SColor4();
-   o.specularViewColor = new SColor4();
-   o.reflectColor = new SColor4();
 }
 function FG3dObject(o){
    o = RClass.inherits(this, o, FObject);
@@ -637,11 +630,13 @@ function FG3dProgramSampler(o){
    o._name       = null;
    o._linker     = null;
    o._statusUsed = false;
+   o._formatCd   = EG3dTexture.Flat2d;
    o._slot       = -1;
    o._index      = 0;
    o._source     = null;
    o.name        = FG3dProgramSampler_name;
    o.linker      = FG3dProgramSampler_linker;
+   o.formatCd    = FG3dProgramSampler_formatCd;
    o.loadConfig  = FG3dProgramSampler_loadConfig;
    return o;
 }
@@ -651,11 +646,14 @@ function FG3dProgramSampler_name(){
 function FG3dProgramSampler_linker(){
    return this._linker;
 }
+function FG3dProgramSampler_formatCd(){
+   return this._formatCd;
+}
 function FG3dProgramSampler_loadConfig(p){
    var o = this;
    o._name = p.get('name');
    o._linker = p.get('linker');
-   o._source = p.get('source');
+   o._formatCd = REnum.encode(EG3dTexture, p.get('format', 'Flat2d'));
 }
 function FG3dProjection(o){
    o = RClass.inherits(this, o, FObject);
@@ -1342,6 +1340,91 @@ function SPerspectiveMatrix3d_perspectiveFieldOfViewRH(pv, pr, pn, pf){
    d[13] = 0.0;
    d[14] = (pn * pf) / (pf - pn);
    d[15] = 0.0;
+}
+function SQuaternion(o){
+   if(!o){o = this;}
+   o.x           = 0.0;
+   o.y           = 0.0;
+   o.z           = 0.0;
+   o.w           = 1.0;
+   o.assign      = SQuaternion_assign;
+   o.set         = SQuaternion_set;
+   o.absolute    = SQuaternion_absolute;
+   o.normalize   = SQuaternion_normalize;
+   o.slerp       = SQuaternion_slerp;
+   o.serialize   = SQuaternion_serialize;
+   o.unserialize = SQuaternion_unserialize;
+   o.toString    = SQuaternion_toString;
+   return o;
+}
+function SQuaternion_assign(p){
+   var o = this;
+   o.x = p.x;
+   o.y = p.y;
+   o.z = p.z;
+   o.w = p.w;
+}
+function SQuaternion_set(x, y, z, w){
+   var o = this;
+   o.x = x;
+   o.y = y;
+   o.z = z;
+   o.w = w;
+}
+function SQuaternion_absolute(){
+   var o = this;
+   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z) + (o.w * o.w));
+}
+function SQuaternion_normalize(){
+   var o = this;
+   var a = o.absolute();
+   var v = 1.0 / a;
+   o.x *= v;
+   o.y *= v;
+   o.z *= v;
+   o.w *= v;
+}
+function SQuaternion_slerp(v1, v2, r){
+   var o = this;
+   var rv = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
+   var rf = false;
+   if (rv < 0.0){
+      rf = true;
+      rv = -rv;
+   }
+   var r1 = 0.0;
+   var r2 = 0.0;
+   if(rv > 0.999999){
+      r1 = 1.0 - r;
+      r2 = rf ? -r : r;
+   }else{
+      var ra = Math.acos(rv);
+      var rb = 1.0 / Math.sin(ra);
+      r1 = Math.sin((1.0 - r) * ra) * rb;
+      r2 = rf ? (-Math.sin(r * ra) * rb) : (Math.sin(r * ra) * rb);
+   }
+   o.x = (r1 * v1.x) + (r2 * v2.x);
+   o.y = (r1 * v1.y) + (r2 * v2.y);
+   o.z = (r1 * v1.z) + (r2 * v2.z);
+   o.w = (r1 * v1.w) + (r2 * v2.w);
+}
+function SQuaternion_serialize(p){
+   var o = this;
+   p.writeFloat(o.x);
+   p.writeFloat(o.y);
+   p.writeFloat(o.z);
+   p.writeFloat(o.w);
+}
+function SQuaternion_unserialize(p){
+   var o = this;
+   o.x = p.readFloat();
+   o.y = p.readFloat();
+   o.z = p.readFloat();
+   o.w = p.readFloat();
+}
+function SQuaternion_toString(){
+   var o = this;
+   return o.x + ',' + o.y + ',' + o.z + ',' + o.w;
 }
 function SVector3(o){
    if(!o){o = this;}

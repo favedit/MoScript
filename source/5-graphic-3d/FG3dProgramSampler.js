@@ -14,6 +14,8 @@ function FG3dProgramSampler(o){
    // @attribute 使用标志
    o._statusUsed = false;
    // @attribute 插槽
+   o._formatCd   = EG3dTexture.Flat2d;
+   // @attribute 插槽
    o._slot       = -1;
    // @attribute 索引
    o._index      = 0;
@@ -23,6 +25,7 @@ function FG3dProgramSampler(o){
    // @method
    o.name        = FG3dProgramSampler_name;
    o.linker      = FG3dProgramSampler_linker;
+   o.formatCd    = FG3dProgramSampler_formatCd;
    o.loadConfig  = FG3dProgramSampler_loadConfig;
    return o;
 }
@@ -48,6 +51,16 @@ function FG3dProgramSampler_linker(){
 }
 
 //==========================================================
+// <T>获得格式类型。</T>
+//
+// @method
+// @return EG3dTexture 格式类型
+//==========================================================
+function FG3dProgramSampler_formatCd(){
+   return this._formatCd;
+}
+
+//==========================================================
 // <T>从配置节点钟加载信息。</T>
 //
 // @method
@@ -57,5 +70,5 @@ function FG3dProgramSampler_loadConfig(p){
    var o = this;
    o._name = p.get('name');
    o._linker = p.get('linker');
-   o._source = p.get('source');
+   o._formatCd = REnum.encode(EG3dTexture, p.get('format', 'Flat2d'));
 }

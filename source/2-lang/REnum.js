@@ -55,7 +55,7 @@ function REnum_encode(e, v){
    var o = this;
    var r = o.tryEncode(e, v);
    if(r == null){
-      throw new TError(o, 'Invalid value (enum={0}, value={1})', RClass.dump(e), v); 
+      throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(e), v); 
    }
    return r;
 }
@@ -91,7 +91,7 @@ function REnum_decode(e, v){
    var o = this;
    var r = o.tryDecode(e, v);
    if(r == null){
-      throw new TError(o, 'Invalid value (enum={0}, value={1})', RClass.dump(e), v); 
+      throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(e), v); 
    }
    return r;
 }

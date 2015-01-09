@@ -401,8 +401,10 @@ function FGeometry3d(o){
    o = RClass.inherits(this, o, FG3dRenderable);
    o._renderable      = null;
    o.construct        = FGeometry3d_construct;
+   o.testVisible      = FGeometry3d_testVisible;
    o.findVertexBuffer = FGeometry3d_findVertexBuffer;
    o.indexBuffer      = FGeometry3d_indexBuffer;
+   o.findTexture      = FGeometry3d_findTexture;
    o.load             = FGeometry3d_load;
    return o;
 }
@@ -410,11 +412,18 @@ function FGeometry3d_construct(){
    var o = this;
    o.__base.FG3dRenderable.construct.call(o);
 }
+function FGeometry3d_testVisible(p){
+   var r = this._renderable;
+   return r ? r.testReady() : false;
+}
 function FGeometry3d_findVertexBuffer(p){
    return this._renderable.findVertexBuffer(p);
 }
 function FGeometry3d_indexBuffer(){
    return this._renderable.indexBuffer();
+}
+function FGeometry3d_findTexture(p){
+   return this._renderable.findTexture(p);
 }
 function FGeometry3d_load(p){
    var o = this;
@@ -684,11 +693,16 @@ function FRd3Cube_setup(p){
 }
 function FRd3Geometry(o){
    o = RClass.inherits(this, o, FG3dObject);
-   o._vertexBuffers = null;
-   o._indexBuffer   = null;
+   o._ready            = false;
+   o._vertexBuffers    = null;
+   o._indexBuffer      = null;
+   o._resourceMaterial = null;
+   o._textures         = null;
    o.construct        = FRd3Geometry_construct;
+   o.testReady        = FRd3Geometry_testReady;
    o.findVertexBuffer = FRd3Geometry_findVertexBuffer;
    o.indexBuffer      = FRd3Geometry_indexBuffer;
+   o.findTexture      = FRd3Geometry_findTexture;
    o.loadResource     = FRd3Geometry_loadResource;
    return o;
 }
@@ -696,6 +710,23 @@ function FRd3Geometry_construct(){
    var o = this;
    o.__base.FG3dObject.construct.call(o);
    o._vertexBuffers = new TObjects();
+}
+function FRd3Geometry_testReady(){
+   var o = this;
+   if(!o._ready){
+      var ts = o._textures;
+      if(ts != null){
+         var c = ts.count();
+         for(var i = 0; i < c; i++){
+            var t = ts.value(i);
+            if(!t.testReady()){
+               return false;
+            }
+         }
+      }
+      o._ready = true;
+   }
+   return o._ready;
 }
 function FRd3Geometry_findVertexBuffer(p){
    var o = this;
@@ -711,6 +742,9 @@ function FRd3Geometry_findVertexBuffer(p){
 }
 function FRd3Geometry_indexBuffer(){
    return this._indexBuffer;
+}
+function FRd3Geometry_findTexture(p){
+   return this._textures.get(p);
 }
 function FRd3Geometry_loadResource(p){
    var o = this;
@@ -728,6 +762,77 @@ function FRd3Geometry_loadResource(p){
    var rib = p.indexBuffer();
    var ib = o._indexBuffer = c.createIndexBuffer();
    ib.upload(rib.data(), rib.count());
+   var materialCode = p.materialCode();
+   var themeConsole = RConsole.find(FRs3ThemeConsole);
+   var material = o._material = themeConsole.find(materialCode);
+   var textures = material.textures();
+   var textureCount = textures.count();
+   if(textureCount > 0){
+      var rts = o._textures = new TDictionary();
+      var textureConsole = RConsole.find(FRd3TextureConsole)
+      for(var n = 0; n < textureCount; n++){
+         var texture = textures.get(n);
+         var rt = textureConsole.load(o._context, texture.bitmapCode(), texture.code());
+         rts.set(texture.code(), rt);
+      }
+   }
+}
+function FRd3Material(o){
+   o = RClass.inherits(this, o, FG3dObject);
+   o._vertexBuffers   = null;
+   o._indexBuffer     = null;
+   o._material        = null;
+   o.construct        = FRd3Material_construct;
+   o.findVertexBuffer = FRd3Material_findVertexBuffer;
+   o.indexBuffer      = FRd3Material_indexBuffer;
+   o.loadResource     = FRd3Material_loadResource;
+   return o;
+}
+function FRd3Material_construct(){
+   var o = this;
+   o.__base.FG3dObject.construct.call(o);
+   o._vertexBuffers = new TObjects();
+}
+function FRd3Material_findVertexBuffer(p){
+   var o = this;
+   var vs = o._vertexBuffers;
+   var c = vs.count();
+   for(var n = 0; n < c; n++){
+      var v = vs.get(n);
+      if(v.name() == p){
+         return v;
+      }
+   }
+   return null;
+}
+function FRd3Material_indexBuffer(){
+   return this._indexBuffer;
+}
+function FRd3Material_loadResource(p){
+   var o = this;
+   var c = o._context;
+   var rvs = p.vertexBuffers();
+   var rvc = rvs.count();
+   for(var n = 0; n < rvc; n++){
+      var rv = rvs.get(n);
+      var vb = context.createVertexBuffer();
+      vb._name = rv.name();
+      vb._formatCd = rv.formatCd();
+      vb.upload(new Float32Array(rv._data), rv._stride, rv._vertexCount);
+      o._vertexBuffers.push(vb);
+   }
+   var rib = p.indexBuffer();
+   var ib = o._indexBuffer = c.createIndexBuffer();
+   ib.upload(rib.data(), rib.count());
+   var materialCode = p.materialCode();
+   var themeConsole = RConsole.find(FRs3ThemeConsole);
+   var material = o._material = themeConsole.find(materialCode);
+   var textures = material.textures();
+   var textureCount = textures.count();
+   for(var n = 0; n < textureCount; n++){
+      var texture = textures.get(n);
+      alert(texture.code());
+   }
 }
 function FRd3Model(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -953,17 +1058,88 @@ function FRd3TextureConsole_construct(){
 function FRd3TextureConsole_textures(){
    return this._textures;
 }
-function FRd3TextureConsole_load(pc, pn){
+function FRd3TextureConsole_load(pc, pt, pb){
    var o = this;
-   var t = o._textures.get(pn);
+   var c = RString.toLower(pt + '/' + pb);
+   var t = o._textures.get(c);
    if(t != null){
       return t;
    }
-   var u = RBrowser.contentPath() + o._path + pn;
-   t = RClass.create(FRd3Texture);
-   t.linkContext(pc);
-   t._name = pn;
-   t.load(u);
-   o._textures.set(pn, t);
+   var u = RBrowser.contentPath(o._path + c + '.jpg');
+   if(RString.toLower(pb) == 'environment'){
+      t = RClass.create(FRd3TextureCube);
+      t.linkContext(pc);
+      t._name = c;
+      t.load(RBrowser.contentPath(o._path + c));
+   }else{
+      t = RClass.create(FRd3Texture);
+      t.linkContext(pc);
+      t._name = c;
+      t.load(u);
+   }
+   o._textures.set(c, t);
    return t;
+}
+function FRd3TextureCube(o){
+   o = RClass.inherits(this, o, FRd3Texture);
+   o.imageX1 = null;
+   o.imageX2 = null;
+   o.imageY1 = null;
+   o.imageY2 = null;
+   o.imageZ1 = null;
+   o.imageZ2 = null;
+   o.onLoad      = FRd3TextureCube_onLoad;
+   o.load        = FRd3TextureCube_load;
+   return o;
+}
+function FRd3TextureCube_onLoad(p){
+   var o = this;
+   if(!o.imageX1.testReady()){
+      return;
+   }
+   if(!o.imageX2.testReady()){
+      return;
+   }
+   if(!o.imageY1.testReady()){
+      return;
+   }
+   if(!o.imageY2.testReady()){
+      return;
+   }
+   if(!o.imageZ1.testReady()){
+      return;
+   }
+   if(!o.imageZ2.testReady()){
+      return;
+   }
+   var t = o._texture = o._context.createCubeTexture();
+   t.upload(o.imageX1, o.imageX2, o.imageY1, o.imageY2, o.imageZ1, o.imageZ2);
+   o._ready  = true;
+}
+function FRd3TextureCube_load(u){
+   var o = this;
+   var g = o.imageX1 = RClass.create(FImage);
+   g._name = 'x1'
+   g.lsnsLoad.register(o, o.onLoad);
+   g.loadUrl(u + "-x1.jpg");
+   var g = o.imageX2 = RClass.create(FImage);
+   g._name = 'x2'
+   g.lsnsLoad.register(o, o.onLoad);
+   g.loadUrl(u + "-x2.jpg");
+   var g = o.imageY1 = RClass.create(FImage);
+   g._name = 'y1'
+   g.lsnsLoad.register(o, o.onLoad);
+   g.loadUrl(u + "-y1.jpg");
+   var g = o.imageY2 = RClass.create(FImage);
+   g._name = 'y2'
+   g.lsnsLoad.register(o, o.onLoad);
+   g.loadUrl(u + "-y2.jpg");
+   var g = o.imageZ1 = RClass.create(FImage);
+   g._name = 'z1'
+   g.lsnsLoad.register(o, o.onLoad);
+   g.loadUrl(u + "-z1.jpg");
+   var g = o.imageZ2 = RClass.create(FImage);
+   g._name = 'z2'
+   g.lsnsLoad.register(o, o.onLoad);
+   g.loadUrl(u + "-z2.jpg");
 }

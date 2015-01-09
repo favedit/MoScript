@@ -10,6 +10,7 @@ function FRs3Geometry(o){
    o._boneIds         = null;
    o._track           = null;
    o.construct        = FRs3Geometry_construct;
+   o.materialCode     = FRs3Geometry_materialCode;
    o.findVertexBuffer = FRs3Geometry_findVertexBuffer;
    o.vertexBuffers    = FRs3Geometry_vertexBuffers;
    o.indexBuffer      = FRs3Geometry_indexBuffer;
@@ -21,14 +22,19 @@ function FRs3Geometry_construct(){
    o.__base.FObject.construct.call(o);
    o._vertexBuffers = new TObjects();
 }
+function FRs3Geometry_materialCode(){
+   return this._materialCode;
+}
 function FRs3Geometry_findVertexBuffer(p){
    var o = this;
    var vs = o._vertexBuffers;
-   var c = vs.count();
-   for(var n = 0; n < c; n++){
-      var v = vs.get(n);
-      if(v.name() == p){
-         return v;
+   if(vs){
+      var c = vs.count();
+      for(var n = 0; n < c; n++){
+         var v = vs.get(n);
+         if(v.name() == p){
+            return v;
+         }
       }
    }
    return null;
@@ -46,11 +52,14 @@ function FRs3Geometry_unserialize(p){
    o._materialCode = p.readString();
    o._vertexCount = p.readInt32();
    var vc = p.readInt8();
-   for(var n = 0; n < vc; n++){
-      var vb = RClass.create(FRs3VertexBuffer);
-      vb._vertexCount = o._vertexCount;
-      vb.unserialize(p)
-      o._vertexBuffers.push(vb);
+   if(vc > 0){
+      var vs = o._vertexBuffers = new TObjects();
+      for(var n = 0; n < vc; n++){
+         var vb = RClass.create(FRs3VertexBuffer);
+         vb._vertexCount = o._vertexCount;
+         vb.unserialize(p)
+         vs.push(vb);
+      }
    }
    var ib = o._indexBuffer = RClass.create(FRs3IndexBuffer);
    ib.unserialize(p);
@@ -103,7 +112,7 @@ function FRs3IndexBuffer_unserialize(p){
 }
 function FRs3Material(o){
    o = RClass.inherits(this, o, FRs3Resource);
-   o._groupCode  = null;
+   o._code  = null;
    o._effectName = null;
    o._optionLight = null;
    o._optionMerge = null;
@@ -157,6 +166,7 @@ function FRs3Material(o){
    o._emissiveColor = null;
    o._textures   = null;
    o.construct   = FRs3Material_construct;
+   o.code        = FRs3Material_code;
    o.textures    = FRs3Material_textures;
    o.unserialize = FRs3Material_unserialize;
    return o;
@@ -173,30 +183,52 @@ function FRs3Material_construct(){
    o._refractFrontColor = new SColor4()
    o._opacityColor = new SColor4()
    o._emissiveColor = null;
-   o._textures = new TObjects();
+}
+function FRs3Material_code(){
+   return this._code;
 }
 function FRs3Material_textures(){
    return this._textures;
 }
 function FRs3Material_unserialize(p){
    var o = this;
-   o._groupCode = p.readString();
+   o._code = p.readString();
    o._effectName = p.readString();
    var c = p.readInt8();
+   if(c > 0){
+      var ts = o._textures = new TObjects();
+      for(var i = 0; i< c; i++){
+         var t = RClass.create(FRs3MaterialTexture);
+         t.unserialize(p);
+         ts.push(t);
+      }
+   }
 }
 function FRs3MaterialTexture(o){
    o = RClass.inherits(this, o, FRs3Resource);
    o._code        = null;
-   o._packCode    = null;
    o._textureCode = null;
-   o.unserialize = FRs3MaterialTexture_unserialize;
+   o._bitmapCode  = null;
+   o.code         = FRs3MaterialTexture_code;
+   o.textureCode  = FRs3MaterialTexture_textureCode;
+   o.bitmapCode   = FRs3MaterialTexture_bitmapCode;
+   o.unserialize  = FRs3MaterialTexture_unserialize;
    return o;
+}
+function FRs3MaterialTexture_code(){
+   return this._code;
+}
+function FRs3MaterialTexture_textureCode(){
+   return this._textureCode;
+}
+function FRs3MaterialTexture_bitmapCode(){
+   return this._bitmapCode;
 }
 function FRs3MaterialTexture_unserialize(p){
    var o = this;
    o._code = p.readString();
-   o._packCode = null;
-   o._textureCode = null;
+   o._textureCode = p.readString();
+   o._bitmapCode = p.readString();
 }
 function FRs3Model(o){
    o = RClass.inherits(this, o, FRs3Resource);
@@ -398,35 +430,20 @@ function FRs3TemplateConsole_load(p){
    }
    return r;
 }
-function FRs3Theme(o){
-   o = RClass.inherits(this, o, FRs3Resource);
-   o._materials  = null;
-   o.unserialize = FRs3Theme_unserialize;
-   return o;
-}
-function FRs3Theme_unserialize(p){
-   var c = p.readInt32();
-   for(var n = 0; n < c; n++){
-      var m = RClass.create(FRs3Material);
-      m.unserialize(p);
-      RDump.dump(m, _dump);
-      break;
-   }
-}
-function FRs3ThemeConsole(o){
+function FRs3Texture(o){
    o = RClass.inherits(this, o, FConsole);
    o._themes   = null;
    o._path     = '/assets/theme/'
-   o.construct = FRs3ThemeConsole_construct;
-   o.load      = FRs3ThemeConsole_load;
+   o.construct = FRs3Texture_construct;
+   o.load      = FRs3Texture_load;
    return o;
 }
-function FRs3ThemeConsole_construct(){
+function FRs3Texture_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._themes = new TDictionary();
 }
-function FRs3ThemeConsole_load(p){
+function FRs3Texture_load(p){
    var o = this;
    var r = o._themes.get(p);
    if(r == null){
@@ -435,6 +452,119 @@ function FRs3ThemeConsole_load(p){
       r.load(u);
       o._themes.set(p, r);
    }
+   return r;
+}
+function FRs3TextureBitmap(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._themes   = null;
+   o._path     = '/assets/theme/'
+   o.construct = FRs3TextureBitmap_construct;
+   o.load      = FRs3TextureBitmap_load;
+   return o;
+}
+function FRs3TextureBitmap_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._themes = new TDictionary();
+}
+function FRs3TextureBitmap_load(p){
+   var o = this;
+   var r = o._themes.get(p);
+   if(r == null){
+      var u = RBrowser.contentPath(o._path + p + '.ser');
+      r = RClass.create(FRs3Theme);
+      r.load(u);
+      o._themes.set(p, r);
+   }
+   return r;
+}
+function FRs3TextureConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._themes   = null;
+   o._path     = '/assets/theme/'
+   o.construct = FRs3TextureConsole_construct;
+   o.load      = FRs3TextureConsole_load;
+   return o;
+}
+function FRs3TextureConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._themes = new TDictionary();
+}
+function FRs3TextureConsole_load(p){
+   var o = this;
+   var r = o._themes.get(p);
+   if(r == null){
+      var u = RBrowser.contentPath(o._path + p + '.ser');
+      r = RClass.create(FRs3Theme);
+      r.load(u);
+      o._themes.set(p, r);
+   }
+   return r;
+}
+function FRs3Theme(o){
+   o = RClass.inherits(this, o, FRs3Resource);
+   o._materials  = null;
+   o.materials   = FRs3Theme_materials;
+   o.find        = FRs3Theme_find;
+   o.unserialize = FRs3Theme_unserialize;
+   return o;
+}
+function FRs3Theme_materials(){
+   return this._materials;
+}
+function FRs3Theme_find(p){
+   var ms = this._materials;
+   return ms ? ms.get(p) : null;
+}
+function FRs3Theme_unserialize(p){
+   var o = this;
+   var c = p.readInt32();
+   if(c > 0){
+      var ms = o._materials = new TDictionary();
+      for(var n = 0; n < c; n++){
+         var m = RClass.create(FRs3Material);
+         m.unserialize(p);
+         ms.set(m.code(), m);
+      }
+   }
+}
+function FRs3ThemeConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._path        = '/assets/theme/'
+   o._activeTheme = null;
+   o._themes      = null;
+   o.construct    = FRs3ThemeConsole_construct;
+   o.activeTheme  = FRs3ThemeConsole_activeTheme;
+   o.find         = FRs3ThemeConsole_find;
+   o.select       = FRs3ThemeConsole_select;
+   return o;
+}
+function FRs3ThemeConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._themes = new TDictionary();
+}
+function FRs3ThemeConsole_activeTheme(){
+   return this._activeTheme;
+}
+function FRs3ThemeConsole_find(p){
+   var t = this._activeTheme;
+   if(t == null){
+      throw new TError('Active theme is empty.');
+   }
+   return t.find(p);
+}
+function FRs3ThemeConsole_select(p){
+   var o = this;
+   var r = o._themes.get(p);
+   if(r == null){
+      var u = RBrowser.contentPath(o._path + p + '.ser');
+      r = RClass.create(FRs3Theme);
+      r.load(u);
+      o._themes.set(p, r);
+   }
+   o._activeTheme = r;
    return r;
 }
 function FRs3VertexBuffer(o){

@@ -12,8 +12,10 @@ function FGeometry3d(o){
    //..........................................................
    // @method
    o.construct        = FGeometry3d_construct;
+   o.testVisible      = FGeometry3d_testVisible;
    o.findVertexBuffer = FGeometry3d_findVertexBuffer;
    o.indexBuffer      = FGeometry3d_indexBuffer;
+   o.findTexture      = FGeometry3d_findTexture;
    o.load             = FGeometry3d_load;
    return o;
 }
@@ -29,10 +31,21 @@ function FGeometry3d_construct(){
 }
 
 //==========================================================
+// <T>测试是否可见。</T>
+//
+// @method
+// @return Boolean 是否可见
+//==========================================================
+function FGeometry3d_testVisible(p){
+   var r = this._renderable;
+   return r ? r.testReady() : false;
+}
+
+//==========================================================
 // <T>查找顶点缓冲。</T>
 //
 // @method
-// @param p:name:String 名称
+// @return FG3dVertexBuffer 顶点缓冲
 //==========================================================
 function FGeometry3d_findVertexBuffer(p){
    return this._renderable.findVertexBuffer(p);
@@ -42,10 +55,21 @@ function FGeometry3d_findVertexBuffer(p){
 // <T>获得索引缓冲。</T>
 //
 // @method
-// @return FRenderIndexBuffer 索引缓冲
+// @return FG3dIndexBuffer 索引缓冲
 //==========================================================
 function FGeometry3d_indexBuffer(){
    return this._renderable.indexBuffer();
+}
+
+//==========================================================
+// <T>根据名称查找纹理。</T>
+//
+// @method
+// @param p:name:String 名称
+// @return FRenderIndexBuffer 纹理
+//==========================================================
+function FGeometry3d_findTexture(p){
+   return this._renderable.findTexture(p);
 }
 
 //==========================================================

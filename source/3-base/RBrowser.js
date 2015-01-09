@@ -9,14 +9,15 @@ var RBrowser = new function RBrowser(){
    var o = this;
    //..........................................................
    // @attribute
-   o._typeCd      = 0;
-   o._contentPath = null;
+   o._typeCd        = 0;
+   o._contentPath   = null;
    //..........................................................
    // @method
-   o.construct    = RBrowser_construct;
-   o.contentPath  = RBrowser_contentPath;
-   o.isBrowser    = RBrowser_isBrowser;
-   o.log          = RBrowser_log;
+   o.construct      = RBrowser_construct;
+   o.contentPath    = RBrowser_contentPath;
+   o.setContentPath = RBrowser_setContentPath;
+   o.isBrowser      = RBrowser_isBrowser;
+   o.log            = RBrowser_log;
    return o;
 }
 
@@ -59,6 +60,15 @@ function RBrowser_contentPath(p){
       return o._contentPath + p;
    }
    return o._contentPath;
+}
+
+//===========================================================
+// <T>设置内容路径。</T>
+//
+// @param p:path:String 路径
+//===========================================================
+function RBrowser_setContentPath(p){
+   this._contentPath = p;
 }
 
 //===========================================================

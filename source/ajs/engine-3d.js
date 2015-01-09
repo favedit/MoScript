@@ -23,8 +23,10 @@ function FGeometry3d(o){
    o = RClass.inherits(this, o, FG3dRenderable);
    o._renderable      = null;
    o.construct        = FGeometry3d_construct;
+   o.testVisible      = FGeometry3d_testVisible;
    o.findVertexBuffer = FGeometry3d_findVertexBuffer;
    o.indexBuffer      = FGeometry3d_indexBuffer;
+   o.findTexture      = FGeometry3d_findTexture;
    o.load             = FGeometry3d_load;
    return o;
 }
@@ -32,11 +34,18 @@ function FGeometry3d_construct(){
    var o = this;
    o.__base.FG3dRenderable.construct.call(o);
 }
+function FGeometry3d_testVisible(p){
+   var r = this._renderable;
+   return r ? r.testReady() : false;
+}
 function FGeometry3d_findVertexBuffer(p){
    return this._renderable.findVertexBuffer(p);
 }
 function FGeometry3d_indexBuffer(){
    return this._renderable.indexBuffer();
+}
+function FGeometry3d_findTexture(p){
+   return this._renderable.findTexture(p);
 }
 function FGeometry3d_load(p){
    var o = this;

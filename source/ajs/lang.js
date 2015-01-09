@@ -826,24 +826,34 @@ function RClass_typeOf(o){
    return 'Null';
 }
 function RClass_safeTypeOf(v, safe){
-   if(v != null){
-      try{
-         if(v.__class){
-            return v.__class.name;
-         }
-         if(v.tagName){
-            return 'Html';
-         }
-         if(v.constructor){
-            return RString.mid(v.constructor.toString(), 'function ', '(');
-         }
-         for(var name in obj){
-            return 'Object';
-         }
-      }catch(e){}
-      return 'Unknown';
+   if(v == null){
+      return 'Null';
    }
-   return 'Null';
+   try{
+      if(v.constructor == Boolean){
+         return 'Boolean';
+      }
+      if(v.constructor == Number){
+         return 'Number';
+      }
+      if(v.constructor == String){
+         return 'String';
+      }
+      if(v.constructor == Function){
+         return RString.mid(v.constructor.toString(), 'function ', '(');
+      }
+      if(v.__class){
+         return v.__class.name;
+      }
+      if(v.tagName){
+         return 'Html';
+      }
+      for(var n in v){
+         return 'Object';
+      }
+   }catch(e){
+   }
+   return 'Unknown';
 }
 function RClass_checkClass(v, c){
    if(!this.isClass(v, c)){
@@ -1751,7 +1761,7 @@ function REnum_encode(e, v){
    var o = this;
    var r = o.tryEncode(e, v);
    if(r == null){
-      throw new TError(o, 'Invalid value (enum={0}, value={1})', RClass.dump(e), v);
+      throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(e), v);
    }
    return r;
 }
@@ -1769,7 +1779,7 @@ function REnum_decode(e, v){
    var o = this;
    var r = o.tryDecode(e, v);
    if(r == null){
-      throw new TError(o, 'Invalid value (enum={0}, value={1})', RClass.dump(e), v);
+      throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(e), v);
    }
    return r;
 }

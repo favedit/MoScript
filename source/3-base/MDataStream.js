@@ -202,27 +202,48 @@ function FByteStream_readString(){
 //==========================================================
 function FByteStream_readBytes(pd, po, pl){
    var o = this;
+   // 检查长度
+   if(pl <= 0){
+      return;
+   }
    // 暂时不支持开始位置选择
    if(po != 0){
       throw new TError('Unsupport.');
    }
    // 8字节复制
-   var c = pl >> 3;
-   if(c > 0){
+   if(pl % 8 == 0){
       var a = new Float64Array(pd);
+      var c = pl >> 3;
       for(var i = 0; i < c; i++){
          a[i] = o._viewer.getFloat64(o._position, o._endianCd);
          o._position += 8;
       }
+      return;
    }
-   // 剩余字节复制
-   if((pl % 8) > 0){
-      var n = c << 3;
-      var a = new Uint8Array(pd);
-      for(var i = n; i < pl; i++){
-         a[i] = o._viewer.getUint8(o._position, o._endianCd);
-         o._position++;
+   // 4字节复制
+   if(pl % 4 == 0){
+      var c = pl >> 2;
+      var a = new Uint32Array(pd);
+      for(var i = 0; i < c; i++){
+         a[i] = o._viewer.getUint32(o._position, o._endianCd);
+         o._position += 4;
       }
+      return;
+   }
+   // 2字节复制
+   if(pl % 2 == 0){
+      var c = pl >> 1;
+      var a = new Uint16Array(pd);
+      for(var i = 0; i < c; i++){
+         a[i] = o._viewer.getUint16(o._position, o._endianCd);
+         o._position += 2;
+      }
+      return;
+   }
+   // 逐字节复制
+   var a = new Uint8Array(pd);
+   for(var i = 0; i < pl; i++){
+      a[i] = o._viewer.getUint8(o._position++, o._endianCd);
    }
 }
 

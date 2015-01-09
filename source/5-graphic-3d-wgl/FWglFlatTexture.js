@@ -78,4 +78,3 @@ function FWglFlatTexture_upload(p){
    var r = c.checkError("texImage2D", "Upload image failure.");
    o._statusLoad = r;
 }
-

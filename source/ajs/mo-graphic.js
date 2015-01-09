@@ -499,19 +499,12 @@ function FG3dMaterial_textures(){
 }
 function FG3dMaterialTexture(o){
    o = RClass.inherits(this, o, FG3dMaterial);
-   o.name = null;
-   o.reflectColor = null;
-   o.construct   = FG3dMaterial_construct;
+   o._texture  = null;
+   o.construct = FG3dMaterialTexture_construct;
    return o;
 }
-function FG3dMaterial_construct(){
+function FG3dMaterialTexture_construct(){
    var o = this;
-   o.ambientColor = new SColor4();
-   o.diffuseColor = new SColor4();
-   o.diffuseViewColor = new SColor4();
-   o.specularColor = new SColor4();
-   o.specularViewColor = new SColor4();
-   o.reflectColor = new SColor4();
 }
 function FG3dObject(o){
    o = RClass.inherits(this, o, FObject);
@@ -720,11 +713,13 @@ function FG3dProgramSampler(o){
    o._name       = null;
    o._linker     = null;
    o._statusUsed = false;
+   o._formatCd   = EG3dTexture.Flat2d;
    o._slot       = -1;
    o._index      = 0;
    o._source     = null;
    o.name        = FG3dProgramSampler_name;
    o.linker      = FG3dProgramSampler_linker;
+   o.formatCd    = FG3dProgramSampler_formatCd;
    o.loadConfig  = FG3dProgramSampler_loadConfig;
    return o;
 }
@@ -734,11 +729,14 @@ function FG3dProgramSampler_name(){
 function FG3dProgramSampler_linker(){
    return this._linker;
 }
+function FG3dProgramSampler_formatCd(){
+   return this._formatCd;
+}
 function FG3dProgramSampler_loadConfig(p){
    var o = this;
    o._name = p.get('name');
    o._linker = p.get('linker');
-   o._source = p.get('source');
+   o._formatCd = REnum.encode(EG3dTexture, p.get('format', 'Flat2d'));
 }
 function FG3dProjection(o){
    o = RClass.inherits(this, o, FObject);
@@ -1426,6 +1424,91 @@ function SPerspectiveMatrix3d_perspectiveFieldOfViewRH(pv, pr, pn, pf){
    d[14] = (pn * pf) / (pf - pn);
    d[15] = 0.0;
 }
+function SQuaternion(o){
+   if(!o){o = this;}
+   o.x           = 0.0;
+   o.y           = 0.0;
+   o.z           = 0.0;
+   o.w           = 1.0;
+   o.assign      = SQuaternion_assign;
+   o.set         = SQuaternion_set;
+   o.absolute    = SQuaternion_absolute;
+   o.normalize   = SQuaternion_normalize;
+   o.slerp       = SQuaternion_slerp;
+   o.serialize   = SQuaternion_serialize;
+   o.unserialize = SQuaternion_unserialize;
+   o.toString    = SQuaternion_toString;
+   return o;
+}
+function SQuaternion_assign(p){
+   var o = this;
+   o.x = p.x;
+   o.y = p.y;
+   o.z = p.z;
+   o.w = p.w;
+}
+function SQuaternion_set(x, y, z, w){
+   var o = this;
+   o.x = x;
+   o.y = y;
+   o.z = z;
+   o.w = w;
+}
+function SQuaternion_absolute(){
+   var o = this;
+   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z) + (o.w * o.w));
+}
+function SQuaternion_normalize(){
+   var o = this;
+   var a = o.absolute();
+   var v = 1.0 / a;
+   o.x *= v;
+   o.y *= v;
+   o.z *= v;
+   o.w *= v;
+}
+function SQuaternion_slerp(v1, v2, r){
+   var o = this;
+   var rv = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
+   var rf = false;
+   if (rv < 0.0){
+      rf = true;
+      rv = -rv;
+   }
+   var r1 = 0.0;
+   var r2 = 0.0;
+   if(rv > 0.999999){
+      r1 = 1.0 - r;
+      r2 = rf ? -r : r;
+   }else{
+      var ra = Math.acos(rv);
+      var rb = 1.0 / Math.sin(ra);
+      r1 = Math.sin((1.0 - r) * ra) * rb;
+      r2 = rf ? (-Math.sin(r * ra) * rb) : (Math.sin(r * ra) * rb);
+   }
+   o.x = (r1 * v1.x) + (r2 * v2.x);
+   o.y = (r1 * v1.y) + (r2 * v2.y);
+   o.z = (r1 * v1.z) + (r2 * v2.z);
+   o.w = (r1 * v1.w) + (r2 * v2.w);
+}
+function SQuaternion_serialize(p){
+   var o = this;
+   p.writeFloat(o.x);
+   p.writeFloat(o.y);
+   p.writeFloat(o.z);
+   p.writeFloat(o.w);
+}
+function SQuaternion_unserialize(p){
+   var o = this;
+   o.x = p.readFloat();
+   o.y = p.readFloat();
+   o.z = p.readFloat();
+   o.w = p.readFloat();
+}
+function SQuaternion_toString(){
+   var o = this;
+   return o.x + ',' + o.y + ',' + o.z + ',' + o.w;
+}
 function SVector3(o){
    if(!o){o = this;}
    o.x         = 0;
@@ -1526,21 +1609,27 @@ function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
          }
       }
    }
-   p.setParameter('vc_model_matrix', r.matrix().data(), 64);
-   p.setParameter('vc_vp_matrix', prvp.data(), 64);
-   p.setParameter('vc_camera_position', prcp, 12);
-   p.setParameter('vc_light_direction', prld, 12);
-   p.setParameter('fc_camera_position', prcp, 12);
-   p.setParameter('fc_light_direction', prld, 12);
-   if(textureDiffuse.testReady()){
-      p.setSampler('fs_diffuse', textureDiffuse.texture());
+   if(p.hasSampler()){
+      var ss = p.samplers();
+      var sc = ss.count();
+      for(var n = 0; n < sc; n++){
+         var s = ss.value(n);
+         if(s._statusUsed){
+            var ln = s.linker();
+            var sp = r.findTexture(ln);
+            if(sp == null){
+               throw new TError("Can't find sampler. (linker={1})", ln);
+            }
+            p.setSampler(s.name(), sp.texture());
+         }
+      }
    }
-   if(textureNormal.testReady()){
-      p.setSampler('fs_normal', textureNormal.texture());
-   }
-   if(textureSpecular.testReady()){
-      p.setSampler('fs_specular', textureSpecular.texture());
-   }
+   p.setParameter('vc_model_matrix', r.matrix().data());
+   p.setParameter('vc_vp_matrix', prvp.data());
+   p.setParameter('vc_camera_position', prcp);
+   p.setParameter('vc_light_direction', prld);
+   p.setParameter('fc_camera_position', prcp);
+   p.setParameter('fc_light_direction', prld);
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
 }
@@ -1652,9 +1741,9 @@ function FWglContext_linkCanvas(h){
    var o = this;
    o._hCanvas = h;
    if(h.getContext){
-      var n = h.getContext('experimental-webgl');
+      var n = h.getContext('webgl');
       if(n == null){
-         n = h.getContext('webgl');
+         n = h.getContext('experimental-webgl');
       }
       if(n == null){
          throw new TError("Current browser can't support WebGL technique.");
@@ -1794,50 +1883,26 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
    var r = true;
    switch (formatCd){
       case EG3dParameterFormat.Float1:{
-         if(length % 4 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
-            return false;
-         }
-         var count = length / 4;
          g.uniform1fv(slot, pd);
-         r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float2:{
-         if(length % 8 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
-            return false;
-         }
-         var count = length / 8;
          g.uniform2fv(slot, pd);
-         r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float3:{
-         if(length % 12 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=d)", length);
-            return false;
-         }
-         var count = length / 12;
          g.uniform3fv(slot, pd);
          r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float4:{
-         if(length % 16 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
-            return false;
-         }
-         var count = length / 16;
          g.uniform4fv(slot, pd);
-         r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float3x3:{
-         if(length % 36 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length={1})", length);
-            return false;
-         }
          var dt = o._data9;
          dt[ 0] = pd[ 0];
          dt[ 1] = pd[ 4];
@@ -1859,14 +1924,10 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          }
          var count = length / 48;
          g.uniform4fv(slot, pd);
-         r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float4x4:{
-         if(length % 64 != 0){
-            RLogger.fatal(o, null, "Float4x4 length is invalid. (length=%d)", length);
-            return false;
-         }
          var dt = o._data16;
          dt[ 0] = pd[ 0];
          dt[ 1] = pd[ 4];
@@ -1973,6 +2034,10 @@ function FWglContext_bindTexture(ps, pi, pt){
       }
       case EG3dTexture.Cube:{
          g.bindTexture(g.TEXTURE_CUBE_MAP, pt._native);
+         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MIN_FILTER, g.NEAREST);
+         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MAG_FILTER, g.NEAREST);
+         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_WRAP_S, g.CLAMP_TO_EDGE);
+         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_WRAP_T, g.CLAMP_TO_EDGE);
          r = o.checkError("glBindTexture", "Bind texture failure. (texture_id=%d)", pt._native);
          if(!r){
             return r;
@@ -2067,18 +2132,33 @@ function FWglContext_checkError(c, m, p1){
 function FWglCubeTexture(o){
    o = RClass.inherits(this, o, FG3dCubeTexture);
    o._native = null;
-   o.setup  = FWglCubeTexture_setup;
-   o.link     = FWglCubeTexture_link;
+   o.setup   = FWglCubeTexture_setup;
+   o.link    = FWglCubeTexture_link;
+   o.upload  = FWglCubeTexture_upload;
    return o;
 }
 function FWglCubeTexture_setup(){
    var o = this;
    var g = o._context._native;
-   o.__base.FG3dFlatTexture.setup.call(o);
+   o.__base.FG3dCubeTexture.setup.call(o);
    o._native = g.createTexture();
 }
 function FWglCubeTexture_link(v){
    this._texture = v;
+}
+function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
+   var o = this;
+   var c = o._context;;
+   var g = c._native;
+   g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
+   g.texImage2D(g.TEXTURE_CUBE_MAP_POSITIVE_X, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, x1.image());
+   g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, x2.image());
+   g.texImage2D(g.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, y1.image());
+   g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, y2.image());
+   g.texImage2D(g.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z1.image());
+   g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z2.image());
+   var r = c.checkError("texImage2D", "Upload cube image failure.");
+   o._statusLoad = r;
 }
 function FWglFlatTexture(o){
    o = RClass.inherits(this, o, FG3dFlatTexture);
@@ -2294,10 +2374,6 @@ function FWglProgram_link(){
    var pr = g.getProgramParameter(pn, g.VALIDATE_STATUS);
    if(!pr){
       var pi = g.getProgramInfoLog(pn);
-      RLogger.fatal(this, null, "Validate program failure. (reason={1})", pi);
-      g.deleteProgram(o._native);
-      o._native = null;;
-      return false;
    }
    g.finish();
    r = c.checkError("finish", "Finish program link faliure. (program_id={1})", pn);

@@ -9,12 +9,45 @@ function FRs3MaterialTexture(o){
    //..........................................................
    // @attribute
    o._code        = null;
-   o._packCode    = null;
    o._textureCode = null;
+   o._bitmapCode  = null;
    //..........................................................
    // @method
-   o.unserialize = FRs3MaterialTexture_unserialize;
+   o.code         = FRs3MaterialTexture_code;
+   o.textureCode  = FRs3MaterialTexture_textureCode;
+   o.bitmapCode   = FRs3MaterialTexture_bitmapCode;
+   o.unserialize  = FRs3MaterialTexture_unserialize;
    return o;
+}
+
+//==========================================================
+// <T>获得代码。</T>
+//
+// @method
+// @return String 代码
+//==========================================================
+function FRs3MaterialTexture_code(){
+   return this._code;
+}
+
+//==========================================================
+// <T>获得纹理代码。</T>
+//
+// @method
+// @return String 纹理代码
+//==========================================================
+function FRs3MaterialTexture_textureCode(){
+   return this._textureCode;
+}
+
+//==========================================================
+// <T>获得位图代码。</T>
+//
+// @method
+// @return String 位图代码
+//==========================================================
+function FRs3MaterialTexture_bitmapCode(){
+   return this._bitmapCode;
 }
 
 //==========================================================
@@ -27,6 +60,6 @@ function FRs3MaterialTexture_unserialize(p){
    // 读取父信息
    var o = this;
    o._code = p.readString();
-   o._packCode = null;
-   o._textureCode = null;
+   o._textureCode = p.readString();
+   o._bitmapCode = p.readString();
 }

@@ -8,7 +8,7 @@ function FRs3Material(o){
    o = RClass.inherits(this, o, FRs3Resource);
    //..........................................................
    // @attribute
-   o._groupCode  = null;
+   o._code  = null;
    o._effectName = null;
    // @attribute
    o._optionLight = null;
@@ -74,6 +74,7 @@ function FRs3Material(o){
    //..........................................................
    // @method
    o.construct   = FRs3Material_construct;
+   o.code        = FRs3Material_code;
    o.textures    = FRs3Material_textures;
    o.unserialize = FRs3Material_unserialize;
    return o;
@@ -96,7 +97,16 @@ function FRs3Material_construct(){
    o._refractFrontColor = new SColor4()
    o._opacityColor = new SColor4()
    o._emissiveColor = null;
-   o._textures = new TObjects();
+}
+
+//==========================================================
+// <T>获得代码。</T>
+//
+// @method
+// @return String 代码
+//==========================================================
+function FRs3Material_code(){
+   return this._code;
 }
 
 //==========================================================
@@ -116,9 +126,18 @@ function FRs3Material_textures(){
 // @return 处理结果
 //==========================================================
 function FRs3Material_unserialize(p){
-   // 读取父信息
    var o = this;
-   o._groupCode = p.readString();
+   // 读取属性
+   o._code = p.readString();
    o._effectName = p.readString();
+   // 读取纹理集合
    var c = p.readInt8();
+   if(c > 0){
+      var ts = o._textures = new TObjects();
+      for(var i = 0; i< c; i++){
+         var t = RClass.create(FRs3MaterialTexture);
+         t.unserialize(p);
+         ts.push(t);
+      }
+   }
 }

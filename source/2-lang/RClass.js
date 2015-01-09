@@ -207,30 +207,41 @@ function RClass_typeOf(o){
 // @return String 类型名称字符串
 //==========================================================
 function RClass_safeTypeOf(v, safe){
-   if(v != null){
-      try{
-         // 一般类实例对象
-         if(v.__class){
-            return v.__class.name;
-         }
-         // 页面对象的情况
-         if(v.tagName){
-            return 'Html';
-         }
-         // 一般对象的情况
-         if(v.constructor){
-            return RString.mid(v.constructor.toString(), 'function ', '(');
-         }
-         // 普通对象的情况
-         for(var name in obj){
-            return 'Object';
-         }
-      }catch(e){}
-      // 未知类型的情况
-      return 'Unknown';
-   }
    // 空对象的情况
-   return 'Null';
+   if(v == null){
+      return 'Null';
+   }
+   try{
+      // 普通数据类型
+      if(v.constructor == Boolean){
+         return 'Boolean';
+      }
+      if(v.constructor == Number){
+         return 'Number';
+      }
+      if(v.constructor == String){
+         return 'String';
+      }
+      if(v.constructor == Function){
+         return RString.mid(v.constructor.toString(), 'function ', '(');
+      }
+      // 一般类实例对象
+      if(v.__class){
+         return v.__class.name;
+      }
+      // 页面对象的情况
+      if(v.tagName){
+         return 'Html';
+      }
+      // 普通对象的情况
+      for(var n in v){
+         return 'Object';
+      }
+   }catch(e){
+      // return e.name + ' ' + e.number + ' ' + e.description + ' ' + e.message;
+   }
+   // 未知类型的情况
+   return 'Unknown';
 }
 
 //==========================================================

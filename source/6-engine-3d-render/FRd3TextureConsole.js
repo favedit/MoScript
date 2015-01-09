@@ -47,23 +47,32 @@ function FRd3TextureConsole_textures(){
 //
 // @method
 // @param pc:content:FRenderContent 名称
-// @param pn:name:String 名称
-// @return FRenderModel 渲染模型
+// @param pt:textureCode:String 纹理代码
+// @param pb:bitmapCode:String 位图代码
+// @return FRd3Texture 渲染模型
 //==========================================================
-function FRd3TextureConsole_load(pc, pn){
+function FRd3TextureConsole_load(pc, pt, pb){
    var o = this;
+   var c = RString.toLower(pt + '/' + pb);
    // 查找模型
-   var t = o._textures.get(pn);
+   var t = o._textures.get(c);
    if(t != null){
       return t;
    }
    // 获得路径
-   var u = RBrowser.contentPath() + o._path + pn;
+   var u = RBrowser.contentPath(o._path + c + '.jpg');
    // 加载模型
-   t = RClass.create(FRd3Texture);
-   t.linkContext(pc);
-   t._name = pn;
-   t.load(u);
-   o._textures.set(pn, t);
+   if(RString.toLower(pb) == 'environment'){
+      t = RClass.create(FRd3TextureCube);
+      t.linkContext(pc);
+      t._name = c;
+      t.load(RBrowser.contentPath(o._path + c));
+   }else{
+      t = RClass.create(FRd3Texture);
+      t.linkContext(pc);
+      t._name = c;
+      t.load(u);
+   }
+   o._textures.set(c, t);
    return t;
 }

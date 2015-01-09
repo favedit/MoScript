@@ -27,21 +27,27 @@ function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
          }
       }
    }
-   p.setParameter('vc_model_matrix', r.matrix().data(), 64);
-   p.setParameter('vc_vp_matrix', prvp.data(), 64);
-   p.setParameter('vc_camera_position', prcp, 12);
-   p.setParameter('vc_light_direction', prld, 12);
-   p.setParameter('fc_camera_position', prcp, 12);
-   p.setParameter('fc_light_direction', prld, 12);
-   if(textureDiffuse.testReady()){
-      p.setSampler('fs_diffuse', textureDiffuse.texture());
+   if(p.hasSampler()){
+      var ss = p.samplers();
+      var sc = ss.count();
+      for(var n = 0; n < sc; n++){
+         var s = ss.value(n);
+         if(s._statusUsed){
+            var ln = s.linker();
+            var sp = r.findTexture(ln);
+            if(sp == null){
+               throw new TError("Can't find sampler. (linker={1})", ln);
+            }
+            p.setSampler(s.name(), sp.texture());
+         }
+      }
    }
-   if(textureNormal.testReady()){
-      p.setSampler('fs_normal', textureNormal.texture());
-   }
-   if(textureSpecular.testReady()){
-      p.setSampler('fs_specular', textureSpecular.texture());
-   }
+   p.setParameter('vc_model_matrix', r.matrix().data());
+   p.setParameter('vc_vp_matrix', prvp.data());
+   p.setParameter('vc_camera_position', prcp);
+   p.setParameter('vc_light_direction', prld);
+   p.setParameter('fc_camera_position', prcp);
+   p.setParameter('fc_light_direction', prld);
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
 }

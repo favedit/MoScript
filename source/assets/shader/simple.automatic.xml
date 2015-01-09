@@ -27,11 +27,11 @@
    <Attribute name='va_binormal' linker='binormal' format='Float3'/>
    <Attribute name='va_tangent'  linker='tangent'  format='Float3'/>
    <!--=====================================================-->
-   <Sampler name='fs_diffuse'     linker='Diffuse'     source='PackDiffuse'/>
-   <Sampler name='fs_normal'      linker='Normal'      source='PackNormal'/>
-   <Sampler name='fs_specular'    linker='Specular'    source='PackSpecular'/>
-   <Sampler name='fs_light'       linker='Light'       source='PackLight'/>
-   <Sampler name='fs_environment' linker='Environment' source='Environment'/>
+   <Sampler name='fs_diffuse'     linker='Diffuse'/>
+   <Sampler name='fs_normal'      linker='Normal'/>
+   <Sampler name='fs_specular'    linker='SpecularLevel'/>
+   <Sampler name='fs_reflect'     linker='Reflect'/>
+   <Sampler name='fs_environment' linker='Environment' format='Cube'/>
    <!--=====================================================-->
    <Source name='vertex'><![CDATA[
       attribute vec3 va_position;
@@ -78,21 +78,29 @@
       uniform sampler2D fs_diffuse;
       uniform sampler2D fs_normal;
       uniform sampler2D fs_specular;
+      uniform sampler2D fs_reflect;
+      uniform samplerCube fs_environment;
       void main(void) {
          vec3 cameraDirection = normalize(fc_camera_position - v_model_position.xyz);
+
          vec3 color = texture2D(fs_diffuse, v_coord).rgb;
-         vec3 result = color * 0.7;
+         vec3 result = color * 0.4;
 
          vec4 normal = texture2D(fs_normal, v_coord);
          normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
          float normalFactor = dot(normal.xyz, -v_light_ts);
-         result += color * normalFactor * 1.4;
+         result += color * normalFactor * 0.6;
 
          vec3 specular = texture2D(fs_specular, v_coord).rgb;
          vec3 reflectionDirection = normalize(reflect(fc_light_direction, v_normal));
          float specularFactor = max(min(dot(cameraDirection, reflectionDirection) + 0.1, 1.0), 0.0);
-         specularFactor = pow(specularFactor, 20.0);
-         result += color * specularFactor * specular.r * 1.9;
+         specularFactor = pow(specularFactor, 10.0);
+         result += color * specularFactor * specular.r * 0.8;
+
+         vec3 reflectColor = texture2D(fs_reflect, v_coord).rgb;
+         vec3 reflectDirection = normalize(reflect(-cameraDirection, v_normal)); 
+         vec4 environmentColor = textureCube(fs_environment, reflectDirection); 
+         result.rgb += result.rgb * environmentColor.rgb * reflectColor.x * 1.8;
 
          gl_FragColor = vec4(result.xyz, 1.0);
       }

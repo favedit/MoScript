@@ -2082,24 +2082,34 @@ function RClass_typeOf(o){
    return 'Null';
 }
 function RClass_safeTypeOf(v, safe){
-   if(v != null){
-      try{
-         if(v.__class){
-            return v.__class.name;
-         }
-         if(v.tagName){
-            return 'Html';
-         }
-         if(v.constructor){
-            return RString.mid(v.constructor.toString(), 'function ', '(');
-         }
-         for(var name in obj){
-            return 'Object';
-         }
-      }catch(e){}
-      return 'Unknown';
+   if(v == null){
+      return 'Null';
    }
-   return 'Null';
+   try{
+      if(v.constructor == Boolean){
+         return 'Boolean';
+      }
+      if(v.constructor == Number){
+         return 'Number';
+      }
+      if(v.constructor == String){
+         return 'String';
+      }
+      if(v.constructor == Function){
+         return RString.mid(v.constructor.toString(), 'function ', '(');
+      }
+      if(v.__class){
+         return v.__class.name;
+      }
+      if(v.tagName){
+         return 'Html';
+      }
+      for(var n in v){
+         return 'Object';
+      }
+   }catch(e){
+   }
+   return 'Unknown';
 }
 function RClass_checkClass(v, c){
    if(!this.isClass(v, c)){
@@ -3007,7 +3017,7 @@ function REnum_encode(e, v){
    var o = this;
    var r = o.tryEncode(e, v);
    if(r == null){
-      throw new TError(o, 'Invalid value (enum={0}, value={1})', RClass.dump(e), v);
+      throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(e), v);
    }
    return r;
 }
@@ -3025,7 +3035,7 @@ function REnum_decode(e, v){
    var o = this;
    var r = o.tryDecode(e, v);
    if(r == null){
-      throw new TError(o, 'Invalid value (enum={0}, value={1})', RClass.dump(e), v);
+      throw new TError(o, 'Invalid value (enum={1}, value={2})', RClass.dump(e), v);
    }
    return r;
 }
@@ -5754,6 +5764,8 @@ function FHttpConnection_send(p){
 function FImage(o){
    o = RClass.inherits(this, o, FObject);
    o._image    = null;
+   o._width    = 0;
+   o._height   = 0;
    o._ready    = false;
    o.lsnsLoad  = null;
    o.ohLoad    = FImage_ohLoad;
@@ -5771,6 +5783,8 @@ function FImage_construct(){
 function FImage_ohLoad(){
    var o = this._linker;
    o._ready = true;
+   o._width = o._image.naturalWidth;
+   o._height = o._image.naturalHeight;
    o.lsnsLoad.process(o);
 }
 function FImage_testReady(){
@@ -6348,24 +6362,42 @@ function FByteStream_readString(){
 }
 function FByteStream_readBytes(pd, po, pl){
    var o = this;
+   if(pl <= 0){
+      return;
+   }
    if(po != 0){
       throw new TError('Unsupport.');
    }
-   var c = pl >> 3;
-   if(c > 0){
+   if(pl % 8 == 0){
       var a = new Float64Array(pd);
+      var c = pl >> 3;
       for(var i = 0; i < c; i++){
          a[i] = o._viewer.getFloat64(o._position, o._endianCd);
          o._position += 8;
       }
+      return;
    }
-   if((pl % 8) > 0){
-      var n = c << 3;
-      var a = new Uint8Array(pd);
-      for(var i = n; i < pl; i++){
-         a[i] = o._viewer.getUint8(o._position, o._endianCd);
-         o._position++;
+   if(pl % 4 == 0){
+      var c = pl >> 2;
+      var a = new Uint32Array(pd);
+      for(var i = 0; i < c; i++){
+         a[i] = o._viewer.getUint32(o._position, o._endianCd);
+         o._position += 4;
       }
+      return;
+   }
+   if(pl % 2 == 0){
+      var c = pl >> 1;
+      var a = new Uint16Array(pd);
+      for(var i = 0; i < c; i++){
+         a[i] = o._viewer.getUint16(o._position, o._endianCd);
+         o._position += 2;
+      }
+      return;
+   }
+   var a = new Uint8Array(pd);
+   for(var i = 0; i < pl; i++){
+      a[i] = o._viewer.getUint8(o._position++, o._endianCd);
    }
 }
 function FByteStream_writeBoolean(v){
@@ -6560,12 +6592,13 @@ function MDataView_setDouble(p, v){
 }
 var RBrowser = new function RBrowser(){
    var o = this;
-   o._typeCd      = 0;
-   o._contentPath = null;
-   o.construct    = RBrowser_construct;
-   o.contentPath  = RBrowser_contentPath;
-   o.isBrowser    = RBrowser_isBrowser;
-   o.log          = RBrowser_log;
+   o._typeCd        = 0;
+   o._contentPath   = null;
+   o.construct      = RBrowser_construct;
+   o.contentPath    = RBrowser_contentPath;
+   o.setContentPath = RBrowser_setContentPath;
+   o.isBrowser      = RBrowser_isBrowser;
+   o.log            = RBrowser_log;
    return o;
 }
 function RBrowser_construct(){
@@ -6594,6 +6627,9 @@ function RBrowser_contentPath(p){
       return o._contentPath + p;
    }
    return o._contentPath;
+}
+function RBrowser_setContentPath(p){
+   this._contentPath = p;
 }
 function RBrowser_isBrowser(p){
    return this._typeCd == p;
@@ -6870,12 +6906,12 @@ function RDump_typeInfo(v, t){
          if(v.constructor == TClass){
             return '@<' + v.name + '@' + RClass.code(v) + '>';
          }
-         if(v.constructor.constructor == Function){
+         if(v.constructor == Function){
             return "@" + v.toString();
          }
          try{
             for(var name in v){
-               return '@' + t + '@<Object@' + RClass.code(v) + '>';
+               return '@<Object@' + RClass.code(v) + '>';
             }
          }catch(e){}
          return '<Object@' + RClass.code(v) + '>';
@@ -6907,6 +6943,7 @@ function RDump_dumpInner(di){
    for(var n = 0; n < c; n++){
       var name = names[n];
       var value = obj[name];
+      var stype = RClass.safeTypeOf(value, true);
       var type = RClass.safeTypeOf(value, true);
       var info = null;
       var infoFormat = true;

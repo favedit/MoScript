@@ -10,6 +10,8 @@ function FRs3Geometry(o){
    // @attribute
    o._optionInstanced = false;
    o._instanceCount   = 0;
+   o._matrix          = null;
+   o._matrix          = null;
    o._materialCode    = null;
    o._vertexCount     = 0;
    o._indexCount      = 0;
@@ -20,6 +22,7 @@ function FRs3Geometry(o){
    //..........................................................
    // @method
    o.construct        = FRs3Geometry_construct;
+   o.materialCode     = FRs3Geometry_materialCode;
    o.findVertexBuffer = FRs3Geometry_findVertexBuffer;
    o.vertexBuffers    = FRs3Geometry_vertexBuffers;
    o.indexBuffer      = FRs3Geometry_indexBuffer;
@@ -39,6 +42,16 @@ function FRs3Geometry_construct(){
 }
 
 //==========================================================
+// <T>获得材质代码。</T>
+//
+// @method
+// @return String 材质代码
+//==========================================================
+function FRs3Geometry_materialCode(){
+   return this._materialCode;
+}
+
+//==========================================================
 // <T>查找顶点缓冲。</T>
 //
 // @method
@@ -47,11 +60,13 @@ function FRs3Geometry_construct(){
 function FRs3Geometry_findVertexBuffer(p){
    var o = this;
    var vs = o._vertexBuffers;
-   var c = vs.count();
-   for(var n = 0; n < c; n++){
-      var v = vs.get(n);
-      if(v.name() == p){
-         return v;
+   if(vs){
+      var c = vs.count();
+      for(var n = 0; n < c; n++){
+         var v = vs.get(n);
+         if(v.name() == p){
+            return v;
+         }
       }
    }
    return null;
@@ -92,11 +107,14 @@ function FRs3Geometry_unserialize(p){
    o._vertexCount = p.readInt32();
    // 读取顶点缓冲
    var vc = p.readInt8();
-   for(var n = 0; n < vc; n++){
-      var vb = RClass.create(FRs3VertexBuffer);
-      vb._vertexCount = o._vertexCount;
-      vb.unserialize(p)
-      o._vertexBuffers.push(vb);
+   if(vc > 0){
+      var vs = o._vertexBuffers = new TObjects();
+      for(var n = 0; n < vc; n++){
+         var vb = RClass.create(FRs3VertexBuffer);
+         vb._vertexCount = o._vertexCount;
+         vb.unserialize(p)
+         vs.push(vb);
+      }
    }
    // 读取索引缓冲
    var ib = o._indexBuffer = RClass.create(FRs3IndexBuffer);

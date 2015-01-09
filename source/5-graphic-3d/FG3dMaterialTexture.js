@@ -7,13 +7,11 @@
 function FG3dMaterialTexture(o){
    o = RClass.inherits(this, o, FG3dMaterial);
    //..........................................................
-   // @attribute 名称
-   o.name = null;
    // 设置合并
-   o.reflectColor = null;
+   o._texture  = null;
    //..........................................................
    // @method
-   o.construct   = FG3dMaterial_construct;
+   o.construct = FG3dMaterialTexture_construct;
    return o;
 }
 
@@ -22,12 +20,6 @@ function FG3dMaterialTexture(o){
 //
 // @method
 //==========================================================
-function FG3dMaterial_construct(){
+function FG3dMaterialTexture_construct(){
    var o = this;
-   o.ambientColor = new SColor4();
-   o.diffuseColor = new SColor4();
-   o.diffuseViewColor = new SColor4();
-   o.specularColor = new SColor4();
-   o.specularViewColor = new SColor4();
-   o.reflectColor = new SColor4();
 }

@@ -13,13 +13,11 @@ function SColor4(o){
    o.green       = 0;
    o.blue        = 0;
    o.alpha       = 1;
-   // @attribute
-   o._data       = null;
    //..........................................................
    // @method
    o.assign      = SColor4_assign;
    o.set         = SColor4_set;
-   o.data        = SColor4_data;
+   o.serialize   = SColor4_serialize
    o.unserialize = SColor4_unserialize
    o.toString    = SColor4_toString;
    return o;
@@ -55,29 +53,25 @@ function SColor4_set(r, g, b, a){
    o.alpha = a;
 }
 
-//============================================================
-// <T>获得数据。</T>
+//==========================================================
+// <T>序列化数据到输出流里。</T>
 //
-// @return Float32Array 数据
-//============================================================
-function SColor4_data(){
+// @method
+// @param p:input:FByteStream 数据流
+//==========================================================
+function SColor4_serialize(p){
    var o = this;
-   var d = o._data;
-   if(d == null){
-      d = o._data = new Float32Array(4);
-   }
-   d[0] = o.red;
-   d[1] = o.green;
-   d[2] = o.blue;
-   d[2] = o.alpha;
-   return d;
+   p.writeFloat(o.red);
+   p.writeFloat(o.green);
+   p.writeFloat(o.blue);
+   p.writeFloat(o.alpha);
 }
 
 //==========================================================
-// <T>从输入流里反序列化信息内容</T>
+// <T>从输入流里反序列化数据。</T>
 //
+// @method
 // @param p:input:FByteStream 数据流
-// @return 处理结果
 //==========================================================
 function SColor4_unserialize(p){
    var o = this;

@@ -37,9 +37,9 @@ function FWglContext_linkCanvas(h){
    var o = this;
    o._hCanvas = h;
    if(h.getContext){
-      var n = h.getContext('experimental-webgl');
+      var n = h.getContext('webgl');
       if(n == null){
-         n = h.getContext('webgl');
+         n = h.getContext('experimental-webgl');
       }
       if(n == null){
          throw new TError("Current browser can't support WebGL technique.");
@@ -179,50 +179,26 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
    var r = true;
    switch (formatCd){
       case EG3dParameterFormat.Float1:{
-         if(length % 4 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
-            return false;
-         }
-         var count = length / 4;
          g.uniform1fv(slot, pd);
-         r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float2:{
-         if(length % 8 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
-            return false;
-         }
-         var count = length / 8;
          g.uniform2fv(slot, pd);
-         r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float3:{
-         if(length % 12 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=d)", length);
-            return false;
-         }
-         var count = length / 12;
          g.uniform3fv(slot, pd);
          r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float4:{
-         if(length % 16 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
-            return false;
-         }
-         var count = length / 16;
          g.uniform4fv(slot, pd);
-         r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float3x3:{
-         if(length % 36 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length={1})", length);
-            return false;
-         }
          var dt = o._data9;
          dt[ 0] = pd[ 0];
          dt[ 1] = pd[ 4];
@@ -244,14 +220,10 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          }
          var count = length / 48;
          g.uniform4fv(slot, pd);
-         r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
          break;
       }
       case EG3dParameterFormat.Float4x4:{
-         if(length % 64 != 0){
-            RLogger.fatal(o, null, "Float4x4 length is invalid. (length=%d)", length);
-            return false;
-         }
          var dt = o._data16;
          dt[ 0] = pd[ 0];
          dt[ 1] = pd[ 4];
@@ -358,6 +330,10 @@ function FWglContext_bindTexture(ps, pi, pt){
       }
       case EG3dTexture.Cube:{
          g.bindTexture(g.TEXTURE_CUBE_MAP, pt._native);
+         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MIN_FILTER, g.NEAREST);
+         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MAG_FILTER, g.NEAREST);
+         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_WRAP_S, g.CLAMP_TO_EDGE);
+         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_WRAP_T, g.CLAMP_TO_EDGE);
          r = o.checkError("glBindTexture", "Bind texture failure. (texture_id=%d)", pt._native);
          if(!r){
             return r;
@@ -452,18 +428,33 @@ function FWglContext_checkError(c, m, p1){
 function FWglCubeTexture(o){
    o = RClass.inherits(this, o, FG3dCubeTexture);
    o._native = null;
-   o.setup  = FWglCubeTexture_setup;
-   o.link     = FWglCubeTexture_link;
+   o.setup   = FWglCubeTexture_setup;
+   o.link    = FWglCubeTexture_link;
+   o.upload  = FWglCubeTexture_upload;
    return o;
 }
 function FWglCubeTexture_setup(){
    var o = this;
    var g = o._context._native;
-   o.__base.FG3dFlatTexture.setup.call(o);
+   o.__base.FG3dCubeTexture.setup.call(o);
    o._native = g.createTexture();
 }
 function FWglCubeTexture_link(v){
    this._texture = v;
+}
+function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
+   var o = this;
+   var c = o._context;;
+   var g = c._native;
+   g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
+   g.texImage2D(g.TEXTURE_CUBE_MAP_POSITIVE_X, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, x1.image());
+   g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, x2.image());
+   g.texImage2D(g.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, y1.image());
+   g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, y2.image());
+   g.texImage2D(g.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z1.image());
+   g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z2.image());
+   var r = c.checkError("texImage2D", "Upload cube image failure.");
+   o._statusLoad = r;
 }
 function FWglFlatTexture(o){
    o = RClass.inherits(this, o, FG3dFlatTexture);
@@ -679,10 +670,6 @@ function FWglProgram_link(){
    var pr = g.getProgramParameter(pn, g.VALIDATE_STATUS);
    if(!pr){
       var pi = g.getProgramInfoLog(pn);
-      RLogger.fatal(this, null, "Validate program failure. (reason={1})", pi);
-      g.deleteProgram(o._native);
-      o._native = null;;
-      return false;
    }
    g.finish();
    r = c.checkError("finish", "Finish program link faliure. (program_id={1})", pn);

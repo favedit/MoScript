@@ -91,18 +91,17 @@ function RDump_typeInfo(v, t){
       case 'Array':
          return '@<Array@' + RClass.code(v) + '> length=' + v.length;
       case 'Html':
-         //return '@' + v.outerHTML;
          return '@<' + v.tagName + '>';
       default:
          if(v.constructor == TClass){
             return '@<' + v.name + '@' + RClass.code(v) + '>';
          }
-         if(v.constructor.constructor == Function){
+         if(v.constructor == Function){
             return "@" + v.toString();
          }
          try{
             for(var name in v){
-               return '@' + t + '@<Object@' + RClass.code(v) + '>';
+               return '@<Object@' + RClass.code(v) + '>';
             }
          }catch(e){}
          return '<Object@' + RClass.code(v) + '>';
@@ -143,6 +142,7 @@ function RDump_dumpInner(di){
    for(var n = 0; n < c; n++){
       var name = names[n];
       var value = obj[name];
+      var stype = RClass.safeTypeOf(value, true);
       var type = RClass.safeTypeOf(value, true);
       var info = null;
       var infoFormat = true;

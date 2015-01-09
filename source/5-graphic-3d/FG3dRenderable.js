@@ -68,6 +68,12 @@ function FG3dRenderable_material(){
    return this._material;
 }
 
+//==========================================================
+// <T>测试是否可见。</T>
+//
+// @method
+// @return Boolean 是否可见
+//==========================================================
 function FG3dRenderable_testVisible(){
    return true;
 }
