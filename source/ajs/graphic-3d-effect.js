@@ -35,10 +35,10 @@ function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
          if(s._statusUsed){
             var ln = s.linker();
             var sp = r.findTexture(ln);
-            if(sp == null){
-               throw new TError("Can't find sampler. (linker={1})", ln);
+            if(sp != null){
+               p.setSampler(s.name(), sp.texture());
+            }else{
             }
-            p.setSampler(s.name(), sp.texture());
          }
       }
    }
@@ -102,6 +102,64 @@ function FG3dSampleColorEffect_loadUrl(u){
    p.loadConfig(d);
    p.build();
    p.link();
+}
+function FG3dSampleSkeletonEffect(o){
+   o = RClass.inherits(this, o, FG3dEffect);
+   o._context       = null;
+   o._program       = null;
+   o.drawRenderable = FG3dSampleSkeletonEffect_drawRenderable;
+   o.load           = FG3dSampleSkeletonEffect_load;
+   return o;
+}
+function FG3dSampleSkeletonEffect_drawRenderable(pr, r){
+   var o = this;
+   var c = o._context;
+   var p = o._program;
+   var prvp = pr.matrixViewProjection();
+   var prcp = pr.cameraPosition();
+   var prld = pr.lightDirection();
+   if(p.hasAttribute()){
+      var as = p.attributes();
+      var ac = as.count();
+      for(var n = 0; n < ac; n++){
+         var a = as.value(n);
+         if(a._statusUsed){
+            var vb = r.findVertexBuffer(a._linker);
+            if(vb == null){
+               throw new TError("Can't find renderable vertex buffer. (linker={1})", a._linker);
+            }
+            p.setAttribute(a._name, vb, vb._formatCd);
+         }
+      }
+   }
+   if(p.hasSampler()){
+      var ss = p.samplers();
+      var sc = ss.count();
+      for(var n = 0; n < sc; n++){
+         var s = ss.value(n);
+         if(s._statusUsed){
+            var ln = s.linker();
+            var sp = r.findTexture(ln);
+            if(sp != null){
+               p.setSampler(s.name(), sp.texture());
+            }else{
+            }
+         }
+      }
+   }
+   p.setParameter('vc_model_matrix', r.matrix().data());
+   p.setParameter('vc_vp_matrix', prvp.data());
+   p.setParameter('vc_camera_position', prcp);
+   p.setParameter('vc_light_direction', prld);
+   p.setParameter('fc_camera_position', prcp);
+   p.setParameter('fc_light_direction', prld);
+   var ib = r.indexBuffer();
+   c.drawTriangles(ib, 0, ib._count);
+}
+function FG3dSampleSkeletonEffect_load(){
+   var o = this;
+   var u = RBrowser.contentPath() + o._path + "simple.skeleton.xml";
+   o.loadUrl(u);
 }
 function FG3dSampleTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);

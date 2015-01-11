@@ -61,6 +61,7 @@ function FRd3TextureConsole_load(pc, pt, pb){
    }
    // 获得路径
    var u = RBrowser.contentPath(o._path + c + '.jpg');
+   RLogger.info(o, 'Load texture from bitmap. (url={1})', u);
    // 加载模型
    if(RString.toLower(pb) == 'environment'){
       t = RClass.create(FRd3TextureCube);

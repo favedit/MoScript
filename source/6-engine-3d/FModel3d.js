@@ -1,4 +1,4 @@
-//==========================================================
+ //==========================================================
 // <T>渲染模型。</T>
 //
 // @author maocy
@@ -8,45 +8,18 @@ function FModel3d(o){
    o = RClass.inherits(this, o, FDisplay3d);
    //..........................................................
    // @attribute
-   o._statusReady = false;
-   o._renderables = null;
-   o._resource    = null;
+   o._dataReady   = false;
+   o._renderables   = null;
+   o._animation     = null;
+   // @attribute
+   o._renderable    = null;
    //..........................................................
    // @method
-   o.construct    = FModel3d_construct;
-   o.testReady    = FModel3d_testReady;
-   o.load         = FModel3d_load;
+   o.testReady      = FModel3d_testReady;
+   o.loadRenderable = FModel3d_loadRenderable;
+   o.processLoad    = FModel3d_processLoad;
+   o.process        = FModel3d_process;
    return o;
-}
-
-//==========================================================
-// <T>构造处理。</T>
-//
-// @method
-//==========================================================
-function FModel3d_construct(){
-   var o = this;
-   o.__base.FDisplay3d.construct.call(o);
-   o._renderables = new TObjects();
-}
-
-//==========================================================
-// <T>查找顶点缓冲。</T>
-//
-// @method
-// @param p:name:String 名称
-//==========================================================
-function FModel3d_findVertexBuffer(p){
-   var o = this;
-   var vs = o._vertexBuffers;
-   var c = vs.count();
-   for(var n = 0; n < c; n++){
-      var v = vs.get(n);
-      if(v.name() == p){
-         return v;
-      }
-   }
-   return null;
 }
 
 //==========================================================
@@ -55,31 +28,85 @@ function FModel3d_findVertexBuffer(p){
 // @return 是否准备好
 //==========================================================
 function FModel3d_testReady(){
-   var o = this;
-   if(!o._statusReady){
-      if(o._resource.testReady()){
-         o.load(o._resource);
-         o._statusReady = true;
-      }
-   }
-   return o._statusReady;
+   return this._dataReady;
 }
 
 //==========================================================
-// <T>加载资源。</T>
+// <T>加载渲染对象。</T>
 //
-// @param p:resource:FRs3Geometry 资源
+// @param p:renderable:FRd3Model 渲染对象
 //==========================================================
-function FModel3d_load(p){
+function FModel3d_loadRenderable(p){
    var o = this;
    var c = o._context;
+   var r = p.resource();
    // 创建顶点缓冲集合
-   var gs = p.geometrys();
-   var gc = gs.count();
-   for(var n = 0; n < gc; n++){
-      var rg = gs.get(n);
-      var g = RClass.create(FGeometry3d);
-      g.load(rg);
-      o._renderables.push(g);
+   var rgs = p.geometrys();
+   if(rgs){
+      var c = rgs.count();
+      if(c > 0){
+         var rs = o.renderables();
+         for(var i = 0; i < c; i++){
+            var rg = rgs.get(i);
+            var g = RClass.create(FGeometry3d);
+            g.load(rg);
+            rs.push(g);
+         }
+      }
    }
+   // 读取动画信息
+   var ra = r.animation();
+   if(ra){
+      var a = o._animation = RClass.create(FRd3Animation);
+      // 加载动画
+      a.loadResource(ra);
+      // 加载骨骼
+      var rk = r.skeleton();
+      var rbs = rk.bones();
+      var c = rbs.count();
+      for(var i = 0; i < c; i++){
+         var rb = c = rbs.value(i);
+         var b = RClass.create(FRd3Bone);
+         b.loadResource(rb);
+         a.bones().set(rb.id(), rb);
+      }
+   }
+   // 绑定骨头集合到几何体中
+   var rgs = p.geometrys();
+   if(rgs){
+   }
+   // 数据准备完成
+   o._dataReady = true;
+}
+
+//==========================================================
+// <T>加载处理。</T>
+//
+// @method
+//==========================================================
+function FModel3d_processLoad(){
+   var o = this;
+   if(o._dataReady){
+      return true;
+   }
+   if(!o._renderable.testReady()){
+      return false;
+   }
+   o.loadRenderable(o._renderable);
+   return true;
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+function FModel3d_process(){
+   var o = this;
+   o.__base.FDisplay3d.process.call(o);
+   // 处理动画集合
+   if(o._animation){
+      o._animation.process();
+   }
+   return true;
 }

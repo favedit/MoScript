@@ -8,57 +8,43 @@ function FRd3Model(o){
    o = RClass.inherits(this, o, FG3dObject);
    //..........................................................
    // @attribute
-   o._context    = null;
-   o._dataReady  = false;
-   o._geometrys  = null;
-   //..........................................................
-   o.onDataLoad  = FRd3Model_onDataLoad;
+   o._name        = null;
+   o._geometrys   = null;
+   o._resource    = null;
+   // @attribute
+   o._dataReady       = false;
    //..........................................................
    // @method
-   o.construct   = FRd3Model_construct;
-   o.geometrys   = FRd3Model_geometrys;
-   o.testReady   = FRd3Model_testReady;
-   o.testVisible = FRd3Model_testVisible;
-   o.load        = FRd3Model_load;
+   o.name         = FRd3Model_name;
+   o.setName      = FRd3Model_setName;
+   o.geometrys    = FRd3Model_geometrys;
+   o.resource     = FRd3Model_resource;
+   o.resource     = FRd3Model_resource;
+   o.setResource  = FRd3Model_setResource;
+   // @method
+   o.testReady    = FRd3Model_testReady;
+   // @method
+   o.loadResource = FRd3Model_loadResource;
+   o.processLoad  = FRd3Model_processLoad;
    return o;
 }
 
 //==========================================================
-// <T>数据加载完成。</T>
+// <T>获得名称。</T>
 //
-// @method
+// @return String 名称
 //==========================================================
-function FRd3Model_onDataLoad(c){
-   var o = this;
-   var v = RClass.create(FDataView);
-   v._endianCd = true;
-   v.link(c.outputData());
-   // 创建资源
-   var rm = RClass.create(FRs3Model);
-   rm.unserialize(v);
-   // 读取内容
-   var gs = rm.geometrys();
-   var gc = gs.count();
-   for(var n = 0; n < gc; n++){
-      var g = gs.get(n);
-      var mg = RClass.create(FRd3Geometry);
-      mg.linkContext(o._context);
-      mg.loadResource(g);
-      o._geometrys.push(mg);
-   }
-   // 加载完成
-   o._dataReady  = true;
+function FRd3Model_name(){
+   return this._name;
 }
 
 //==========================================================
-// <T>构造处理。</T>
+// <T>设置名称。</T>
 //
-// @method
+// @param p:name:String 名称
 //==========================================================
-function FRd3Model_construct(){
-   var o = this;
-   o.__base.FG3dObject.construct.call(o);
-   o._geometrys = new TObjects();
+function FRd3Model_setName(p){
+   this._name = p;
 }
 
 //==========================================================
@@ -71,6 +57,24 @@ function FRd3Model_geometrys(){
 }
 
 //==========================================================
+// <T>获得资源。</T>
+//
+// @return FRs3Model 资源
+//==========================================================
+function FRd3Model_resource(){
+   return this._resource;
+}
+
+//==========================================================
+// <T>设置资源。</T>
+//
+// @param p:resource:FRs3Model 资源
+//==========================================================
+function FRd3Model_setResource(p){
+   this._resource = p;
+}
+
+//==========================================================
 // <T>测试是否准备好。</T>
 //
 // @return 是否准备好
@@ -80,26 +84,46 @@ function FRd3Model_testReady(){
 }
 
 //==========================================================
-// <T>测试是否可见。</T>
+// <T>加载资源信息。</T>
 //
-// @param p:region:FRegion 区域
-// @return Boolean 是否可见
+// @method
+// @param p:resource:FRsModel 资源信息
 //==========================================================
-function FRd3Model_testVisible(p){
+function FRd3Model_loadResource(p){
    var o = this;
-   return o._dataReady && o._visible;
+   // 读取网格集合
+   var rgs = p.geometrys();
+   if(rgs){
+      var gs = o._geometrys = new TObjects();
+      var c = rgs.count();
+      for(var i = 0; i < c; i++){
+         var rg = rgs.get(i);
+         var g = RClass.create(FRd3Geometry);
+         g.linkContext(o._context);
+         g.loadResource(rg);
+         gs.push(g);
+      }
+   }
+   // 加载完成
+   o._dataReady = true;
 }
 
 //==========================================================
-// <T>查找顶点缓冲。</T>
+// <T>加载处理。</T>
 //
 // @method
-// @param p:name:String 名称
 //==========================================================
-function FRd3Model_load(u){
+function FRd3Model_processLoad(){
    var o = this;
-   var hc = RClass.create(FHttpConnection);
-   hc._asynchronous = true;
-   hc.lsnsLoad.register(o, o.onDataLoad);
-   hc.send(u);
+   // 检查数据已加载
+   if(o._dataReady){
+      return true;
+   }
+   // 检查资源是否准备好
+   if(!o._resource.testReady()){
+      return false;
+   }
+   // 加载资源
+   o.loadResource(o._resource);
+   return true;
 }

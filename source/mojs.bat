@@ -9,11 +9,13 @@
 
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\1-runtime            %JS_HOME%\ajs\runtime.js           N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\2-lang               %JS_HOME%\ajs\lang.js              N
+@"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\2-lang-math          %JS_HOME%\ajs\lang-math.js         N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\3-base               %JS_HOME%\ajs\base.js              N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\4-core               %JS_HOME%\ajs\core.js              N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\5-graphic            %JS_HOME%\ajs\graphic.js           N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\5-graphic-2d         %JS_HOME%\ajs\graphic-2d.js        N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\5-graphic-3d         %JS_HOME%\ajs\graphic-3d.js        N
+@"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\5-graphic-3d-render  %JS_HOME%\ajs\graphic-3d-render.js N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\5-graphic-3d-effect  %JS_HOME%\ajs\graphic-3d-effect.js N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\5-graphic-3d-wgl     %JS_HOME%\ajs\graphic-3d-wgl.js    N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\6-engine             %JS_HOME%\ajs\engine.js            N
@@ -34,6 +36,7 @@ COPY /Y %JS_HOME%\9-context\*.js %JS_HOME%\ajs\
 @SET JS_FILES=
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\runtime.js
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\lang.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\lang-math.js
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\base.js
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\core.js
 echo %JS_FILES%
@@ -43,6 +46,7 @@ echo %JS_FILES%
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\graphic.js
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\graphic-2d.js
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\graphic-3d.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\graphic-3d-render.js
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\graphic-3d-effect.js
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\graphic-3d-wgl.js
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_FMGR% %JS_FILES% %JS_HOME%\ajs\mo-graphic.js

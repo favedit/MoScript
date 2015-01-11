@@ -79,5 +79,6 @@ function FGeometry3d_findTexture(p){
 //==========================================================
 function FGeometry3d_load(p){
    var o = this;
+   o._effectName = p.material().effectName();
    o._renderable = p;
 }

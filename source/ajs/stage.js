@@ -1,7 +1,7 @@
 var RStage = new function RStage(){
    var o = this;
    o._active        = true;
-   o._interval      = 1000 / 60;
+   o._interval      = 1000 / 40;
    o._stages        = null;
    o.lsnsEnterFrame = null;
    o.lsnsLeaveFrame = null;
@@ -51,5 +51,5 @@ function RStage_start(v){
    }
    RTimer.setup();
    RStage.process();
-   setInterval('RStage_onProcess()', v);
+   setInterval('RStage_onProcess()', parseInt(v));
 }

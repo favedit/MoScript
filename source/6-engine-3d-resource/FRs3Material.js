@@ -75,6 +75,7 @@ function FRs3Material(o){
    // @method
    o.construct   = FRs3Material_construct;
    o.code        = FRs3Material_code;
+   o.effectName  = FRs3Material_effectName;
    o.textures    = FRs3Material_textures;
    o.unserialize = FRs3Material_unserialize;
    return o;
@@ -107,6 +108,16 @@ function FRs3Material_construct(){
 //==========================================================
 function FRs3Material_code(){
    return this._code;
+}
+
+//==========================================================
+// <T>获得效果名称。</T>
+//
+// @method
+// @return String 效果名称
+//==========================================================
+function FRs3Material_effectName(){
+   return this._effectName;
 }
 
 //==========================================================

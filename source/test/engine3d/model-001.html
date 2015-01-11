@@ -22,11 +22,6 @@
 </HEAD>
 
 <SCRIPT>
-// http://localhost:999/test/engine3d/resource-001.html
-var contentPath = 'http://localhost:999';
-//var contentPath = 'http://10.12.21.33:999';
-//var contentPath = 'http://localhost/script';
-
 var context = null;
 var stage = null;
 var layer = null;
@@ -75,7 +70,7 @@ function onThemeLoad(){
    stage = RClass.create(FSimpleStage3d);
    stage.backgroundColor().set(1, 1, 1, 1);
    stage.selectTechnique(context, FG3dSampleTechnique);
-   RDump.dump(stage, _dump);
+   //RDump.dump(stage, _dump);
 
    layer = stage.spriteLayer();
    RStage.register('stage3d', stage);
@@ -107,7 +102,7 @@ function onThemeLoad(){
 function _load(){
    RRuntime.processCd = EProcess.Debug;
    RBrowser.construct();
-   RBrowser.setContentPath(contentPath);
+   RBrowser.setContentPath('../..');
 
    var tc = RConsole.find(FRs3ThemeConsole);
    var m = tc.select('color');

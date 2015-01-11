@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+   <!--=====================================================-->
+   <State name='fill_mode'   value='Fill'/>
+   <State name='cull_mode'   value='Front'/>
+   <State name='depth_mode'  value='Less'/>
+   <State name='depth_write' value='Y'/>
+   <State name='blend_mode'  value='Y' source='SourceAlpha' target='OneMinusSourceAlpha'/>
+   <State name='alpha_test'  value='N'/>
+   <!--=====================================================-->
+   <Specular name='shadow'   value='N'/>
+   <Specular name='lightmap' value='N'/>
+   <Specular name='fog'      value='N'/>
+   <!--=====================================================-->
+   <Parameter name='vc_model_matrix'    linker='Vertex.ModelMatrix' format='Float4x4'/>
+   <Parameter name='vc_vp_matrix'       linker='Vertex.ModelMatrix' format='Float4x4'/>
+   <Parameter name='vc_camera_position' linker='Vertex.ModelMatrix' format='Float3'/>
+   <Parameter name='vc_light_direction' linker='Vertex.ModelMatrix' format='Float3'/>
+   <Parameter name='fc_camera_position' linker='Vertex.ModelMatrix' format='Float3'/>
+   <Parameter name='fc_light_direction' linker='Vertex.ModelMatrix' format='Float3'/>
+   <!--=====================================================-->
+   <Attribute name='va_instance'    linker='instance'    format='Float1'/>
+   <Attribute name='va_position'    linker='position'    format='Float4'/>
+   <Attribute name='va_color'       linker='color'       format='Byte4Normal'/>
+   <Attribute name='va_coord'       linker='coord'       format='Float2'/>
+   <Attribute name='va_normal'      linker='normal'      format='Float3'/>
+   <Attribute name='va_binormal'    linker='binormal'    format='Float3'/>
+   <Attribute name='va_tangent'     linker='tangent'     format='Float3'/>
+   <Attribute name='va_bone_index'  linker='bone_index'  format='Byte4'/>
+   <Attribute name='va_bone_weight' linker='bone_weight' format='Byte4Normal'/>
+   <!--=====================================================-->
+   <Sampler name='fs_diffuse'     linker='Diffuse'/>
+   <Sampler name='fs_normal'      linker='Normal'/>
+   <Sampler name='fs_specular'    linker='SpecularLevel'/>
+   <!--=====================================================-->
+   <Source name='vertex'><![CDATA[
+      attribute vec3 va_position;
+      attribute vec2 va_coord;
+      attribute vec3 va_normal;
+      attribute vec3 va_binormal;
+      attribute vec3 va_tangent;
+      attribute vec4 va_bone_index;
+      attribute vec4 va_bone_weight;
+      uniform mat4 vc_model_matrix;
+      uniform mat4 vc_bone_matrix[32];
+      uniform mat4 vc_vp_matrix;
+      uniform vec3 vc_camera_position;
+      uniform vec3 vc_light_direction;
+      varying vec4 v_model_position;
+      varying vec2 v_coord;
+      varying vec3 v_normal;
+      varying vec3 v_camera_ts;
+      varying vec3 v_light_ts;
+      void main(void){
+         ivec4 matrixIndex = ivec4(va_bone_index) * 3;
+         vec4 position = vec4(0.0, 0.0, 0.0, 1.0);
+         position.xyz += va_position * vc_bone_matrix[int(va_bone_index.x)] * va_bone_weight.x;
+         position.xyz += va_position * vc_bone_matrix[int(va_bone_index.y)] * va_bone_weight.y;
+         position.xyz += va_position * vc_bone_matrix[int(va_bone_index.z)] * va_bone_weight.z;
+         position.xyz += va_position * vc_bone_matrix[int(va_bone_index.w)] * va_bone_weight.w;
+
+         vec4 modelPosition = position * vc_model_matrix;
+
+         vec3 normal = normalize((va_normal.xyz - 0.5) * 2.0 * mat3(vc_model_matrix));
+         vec3 binormal = normalize((va_binormal - 0.5) * 2.0 * mat3(vc_model_matrix));
+         vec3 tangent = normalize((va_tangent - 0.5) * 2.0 * mat3(vc_model_matrix));
+
+         mat3 matrixTs = mat3(tangent, binormal, normal);
+         vec3 cameraDirection = vc_camera_position - modelPosition.xyz;
+
+         gl_Position = modelPosition * vc_vp_matrix;
+         v_model_position = modelPosition;
+         v_coord = va_coord;
+         v_normal = normal;
+         v_camera_ts = normalize(cameraDirection * matrixTs);
+         v_light_ts = normalize(vc_light_direction * matrixTs);
+      }
+   ]]></Source>
+   <Source name='fragment'><![CDATA[
+      #ifdef GL_ES
+      precision highp float;
+      #endif
+      uniform vec3 fc_camera_position;
+      uniform vec3 fc_light_direction;
+      varying vec4 v_model_position;
+      varying vec2 v_coord;
+      varying vec3 v_normal;
+      varying vec3 v_camera_ts;
+      varying vec3 v_light_ts;
+      uniform sampler2D fs_diffuse;
+      uniform sampler2D fs_normal;
+      uniform sampler2D fs_specular;
+      void main(void) {
+         vec3 cameraDirection = normalize(fc_camera_position - v_model_position.xyz);
+
+         vec3 color = texture2D(fs_diffuse, v_coord).rgb;
+         vec3 result = color * 0.8;
+
+         vec4 normal = texture2D(fs_normal, v_coord);
+         normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
+         float normalFactor = dot(normal.xyz, -v_light_ts);
+         result += color * normalFactor * 0.6;
+
+         vec3 specular = texture2D(fs_specular, v_coord).rgb;
+         vec3 reflectionDirection = normalize(reflect(fc_light_direction, v_normal));
+         float specularFactor = max(min(dot(cameraDirection, reflectionDirection) + 0.1, 1.0), 0.0);
+         specularFactor = pow(specularFactor, 20.0);
+         result += color * specularFactor * specular.r * 0.4;
+
+         gl_FragColor = vec4(result.xyz, 1.0);
+      }
+   ]]></Source>
+</Configuration>

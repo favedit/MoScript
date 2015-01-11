@@ -11,7 +11,7 @@ function FRs3Geometry(o){
    o._optionInstanced = false;
    o._instanceCount   = 0;
    o._matrix          = null;
-   o._matrix          = null;
+   o._outline         = null;
    o._materialCode    = null;
    o._vertexCount     = 0;
    o._indexCount      = 0;
@@ -26,6 +26,7 @@ function FRs3Geometry(o){
    o.findVertexBuffer = FRs3Geometry_findVertexBuffer;
    o.vertexBuffers    = FRs3Geometry_vertexBuffers;
    o.indexBuffer      = FRs3Geometry_indexBuffer;
+   o.boneIds          = FRs3Geometry_boneIds;
    o.unserialize      = FRs3Geometry_unserialize;
    return o;
 }
@@ -38,7 +39,10 @@ function FRs3Geometry(o){
 function FRs3Geometry_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._matrix = new SMatrix3d();
+   o._outline = new SOutline3();
    o._vertexBuffers = new TObjects();
+   o._track = RClass.create(FRs3Track);
 }
 
 //==========================================================
@@ -91,6 +95,15 @@ function FRs3Geometry_indexBuffer(){
 }
 
 //==========================================================
+// <T>获得骨头编号集合。</T>
+//
+// @return Array 骨头编号集合
+//==========================================================
+function FRs3Geometry_boneIds(){
+   return this._boneIds;
+}
+
+//==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
 // @param p:input:FByteStream 数据流
@@ -101,15 +114,15 @@ function FRs3Geometry_unserialize(p){
    // 读取属性
    o._optionInstanced = p.readBoolean();
    o._instanceCount = p.readInt8();
-   //o._matrix.Unserialize(pInput);
-   //o._outline.Unserialize(pInput);
+   o._matrix.unserialize(p);
+   o._outline.unserialize(p);
    o._materialCode = p.readString();
-   o._vertexCount = p.readInt32();
    // 读取顶点缓冲
+   o._vertexCount = p.readInt32();
    var vc = p.readInt8();
    if(vc > 0){
       var vs = o._vertexBuffers = new TObjects();
-      for(var n = 0; n < vc; n++){
+      for(var i = 0; i < vc; i++){
          var vb = RClass.create(FRs3VertexBuffer);
          vb._vertexCount = o._vertexCount;
          vb.unserialize(p)
@@ -120,11 +133,13 @@ function FRs3Geometry_unserialize(p){
    var ib = o._indexBuffer = RClass.create(FRs3IndexBuffer);
    ib.unserialize(p);
    // 读取骨头集合
-   //var boneCount = p.readInt8();
-   //for(var n = 0; n < boneCount; n++){
-   //   o._boneIds->Push(pInput->ReadUint8());
-   //}
+   var bc = p.readInt8();
+   if(bc > 0){
+      var bs = o._boneIds = new TArray();
+      for(var i = 0; i < bc; i++){
+         bs.push(p.readUint8());
+      }
+   }
    // 读取跟踪
-   //_pTrack->Unserialize(pInput);
-   // MO_DEBUG("Unserialize geometry success. (vertex=%d, index=%d, bone=%d, frame=%d)", _vertexBuffer->Count(), _indexBuffer->Count(), boneCount, _pTrack->Frames().Count());
+   o._track.unserialize(p);
 }

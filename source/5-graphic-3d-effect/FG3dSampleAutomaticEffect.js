@@ -54,10 +54,11 @@ function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
          if(s._statusUsed){
             var ln = s.linker();
             var sp = r.findTexture(ln);
-            if(sp == null){
-               throw new TError("Can't find sampler. (linker={1})", ln);
+            if(sp != null){
+               p.setSampler(s.name(), sp.texture());
+            }else{
+               //throw new TError("Can't find sampler. (linker={1})", ln);
             }
-            p.setSampler(s.name(), sp.texture());
          }
       }
    }

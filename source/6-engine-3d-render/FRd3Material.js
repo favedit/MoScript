@@ -91,6 +91,5 @@ function FRd3Material_loadResource(p){
    var textureCount = textures.count();
    for(var n = 0; n < textureCount; n++){
       var texture = textures.get(n);
-      alert(texture.code());
    }
 }

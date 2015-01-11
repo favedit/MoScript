@@ -81,11 +81,33 @@ function RRuntime_uid(v){
    }
    return r;
 }
+function SLooperEntry(o){
+   if(!o){o = this;}
+   o.prior   = null;
+   o.next    = null;
+   o.value   = null;
+   o.dispose = SLooperEntry_dispose;
+   return o;
+}
+function SLooperEntry_dispose(){
+   var o = this;
+   o.prior = null;
+   o.next = null;
+   o.value = null;
+}
+function SLoopEntry(o){
+   if(!o){o = this;}
+   o.prior = null;
+   o.next  = 0;
+   o.value = null;
+   return o;
+}
 function TArray(o){
    if(!o){o = this;}
-   o.length   = 0;
-   o.memory   = new Array();
+   o._length  = 0;
+   o._memory  = new Array();
    o.isEmpty  = TArray_isEmpty;
+   o.length   = TArray_length;
    o.contains = TArray_contains;
    o.indexOf  = TArray_indexOf;
    o.get      = TArray_get;
@@ -102,50 +124,53 @@ function TArray(o){
    return o;
 }
 function TArray_isEmpty(){
-   return this.length == 0;
+   return this._length == 0;
+}
+function TArray_length(){
+   return this._length;
 }
 function TArray_contains(v){
    return this.indexOf(v) != -1;
 }
 function TArray_indexOf(v){
    var o = this;
-   var c = o.length;
+   var c = o._length;
    for(var n = 0; n < c; n++){
-      if(o.memory[n] == v){
+      if(o._memory[n] == v){
          return n;
       }
    }
    return -1;
 }
 function TArray_get(n){
-   return ((n >= 0) && (n < this.length)) ? this.memory[n] : null;
+   return ((n >= 0) && (n < this._length)) ? this._memory[n] : null;
 }
 function TArray_set(n, v){
-   if((n >= 0) && (n < this.length)){
-      this.memory[n] = v;
+   if((n >= 0) && (n < this._length)){
+      this._memory[n] = v;
    }
 }
 function TArray_push(v){
-   this.memory[this.length++] = v;
+   this._memory[this._length++] = v;
 }
 function TArray_swap(l, r){
-   if((l >= 0) && (l < this.length) && (r >= 0) && (r < this.length) && (l != r)){
-      var v = this.memory[l];
-      this.memory[l] = this.memory[r];
-      this.memory[r] = v;
+   if((l >= 0) && (l < this._length) && (r >= 0) && (r < this._length) && (l != r)){
+      var v = this._memory[l];
+      this._memory[l] = this._memory[r];
+      this._memory[r] = v;
    }
 }
 function TArray_sort(){
-   this.memory.sort();
+   this._memory.sort();
 }
 function TArray_erase(i){
    var v = null;
    if((i >= 0) && (i < c)){
       var o = this;
-      o.length--;
-      v = o.memory[i];
+      o._length--;
+      v = o._memory[i];
       for(var n = i; n < c; n++){
-         o.memory[n] = o.memory[n + 1];
+         o._memory[n] = o._memory[n + 1];
       }
    }
    return v;
@@ -154,44 +179,44 @@ function TArray_remove(v){
    if(v != null){
       var o = this;
       var n = 0;
-      var c = o.length;
+      var c = o._length;
       for(var i = n; i < c; i++){
-         if(o.memory[i] != v){
-            o.memory[n++] = o.memory[i];
+         if(o._memory[i] != v){
+            o._memory[n++] = o._memory[i];
          }
       }
-      o.length = n;
+      o._length = n;
    }
    return v;
 }
 function TArray_compress(){
    var o = this;
-   var c = o.length;
+   var c = o._length;
    var l = 0;
    for(var n = 0; n < c; n++){
-      var v = o.memory[n];
+      var v = o._memory[n];
       if(v != null){
-         o.memory[l++] = v;
+         o._memory[l++] = v;
       }
    }
-   o.length = l;
+   o._length = l;
 }
 function TArray_clear(){
-   this.length = 0;
+   this._length = 0;
 }
 function TArray_dispose(){
    var o = this;
-   o.length = 0;
-   o.memory = null;
+   o._length = 0;
+   o._memory = null;
 }
 function TArray_dump(){
    var o = this;
    var r = new TString();
-   var c = o.length;
+   var c = o._length;
    r.append(RRuntime.className(o), ':', c);
    if(c > 0){
       for(var n = 0; n < c; n++){
-         r.append(' [', o.memory[n], ']');
+         r.append(' [', o._memory[n], ']');
       }
    }
    return r.toString();
@@ -481,6 +506,203 @@ function TList_dump(){
    if(c > 0){
       for(var n = 0; n < c; n++){
          r.append(' [', o.memory[n], ']');
+      }
+   }
+   return r.toString();
+}
+function TLooper(o){
+   if(!o){o = this;}
+   o._count             = 0;
+   o._recordCount       = 0;
+   o._current           = null;
+   o._unused            = null;
+   o.innerCreate        = TLooper_innerCreate;
+   o.innerFree          = TLooper_innerFree;
+   o.innerPush          = TLooper_innerPush;
+   o.innerRemove        = TLooper_innerRemove;
+   o.innerRemoveCurrent = TLooper_innerRemoveCurrent;
+   o.innerRemoveValue   = TLooper_innerRemoveValue;
+   o.isEmpty            = TLooper_isEmpty;
+   o.count              = TLooper_count;
+   o.record             = TLooper_record;
+   o.unrecord           = TLooper_unrecord;
+   o.contains           = TLooper_contains;
+   o.current            = TLooper_current;
+   o.next               = TLooper_next;
+   o.push               = TLooper_push;
+   o.pushUnique         = TLooper_pushUnique;
+   o.removeCurrent      = TLooper_removeCurrent;
+   o.remove             = TLooper_remove;
+   o.clear              = TLooper_clear;
+   o.dispose            = TLooper_dispose;
+   o.dump               = TLooper_dump;
+   return o;
+}
+function TLooper_innerCreate(){
+   var o = this;
+   var e = o._unused;
+   if(e == null){
+      e = new SLooperEntry();
+   }else{
+      o._unused = e.next;
+   }
+   return e;
+}
+function TLooper_innerFree(p){
+   var o = this;
+   p.next = o._unused;
+   o._unused = p;
+}
+function TLooper_innerPush(p){
+   var o = this;
+   var ec = o._current;
+   if(ec){
+      var ep = ec.prior;
+      p.prior = ep;
+      p.next = ec;
+      ep.next = p;
+      ec.prior = p;
+   }else{
+      p.prior = p;
+      p.next = p;
+      o._current = p;
+   }
+   o._count++;
+}
+function TLooper_innerRemove(p){
+   var o = this;
+   var ep = p.prior;
+   var en = p.next;
+   ep.next = en;
+   en.prior = ep;
+   o._count--;
+   if(o._count > 0){
+      o._current = en;
+   }else{
+      o._current = null;
+   }
+   o.innerFree(p);
+}
+function TLooper_innerRemoveCurrent(){
+   var o = this;
+   var r = null;
+   if(o._count > 0){
+      r = o._current.value;
+      o.innerRemove(o._current);
+   }
+   return r;
+}
+function TLooper_innerRemoveValue(p){
+   if(o._count > 0){
+      if(o._current.value == p){
+         o.innerRemoveCurrent();
+         return;
+      }
+      var ec = o._current;
+      var en = ec.next;
+      while(en != ec){
+         if(en.value == p){
+            o.innerRemove(en);
+            o._current = ec;
+            return;
+         }
+         en = en.next;
+      }
+   }
+}
+function TLooper_isEmpty(v){
+   return this._count == 0;
+}
+function TLooper_count(){
+   return this._count;
+}
+function TLooper_record(){
+   this._recordCount = this._count;
+}
+function TLooper_unrecord(v){
+   this._recordCount = -1;
+}
+function TLooper_contains(p){
+   var o = this;
+   if(o._current){
+      var c = o._count;
+      var e = o._current;
+      for(var i = 0; i < c; i++){
+         if(e.value == p){
+            return true;
+         }
+         e = e.next;
+      }
+   }
+   return false;
+}
+function TLooper_current(){
+   var e = this._current;
+   return e ? e.value : null;
+}
+function TLooper_next(){
+   var o = this;
+   if(o._current){
+      o._current = o._current.next;
+   }
+   var c = o._recordCount;
+   if(c > 0){
+      o._recordCount--;
+   }else if(c == 0){
+      return null;
+   }
+   return o._current ? o._current.value : null;
+}
+function TLooper_push(p){
+   var o = this;
+   var e = o.innerCreate();
+   e.value = p;
+   o.innerPush(e);
+}
+function TLooper_pushUnique(p){
+   var o = this;
+   if(!o.contains(p)){
+      o.push(p);
+   }
+}
+function TLooper_removeCurrent(){
+   return this.innerRemoveCurrent();
+}
+function TLooper_remove(p){
+   this.innerRemoveValue(p);
+}
+function TLooper_clear(){
+   var o = this;
+   var c = o._current;
+   if(c){
+      c.prior.next = null;
+      c.prior = o._unused;
+      o._unused = c;
+      o._current = null;
+   }
+   o._count = 0;
+}
+function TLooper_dispose(){
+   var o = this;
+   o.clear();
+   var e = o._unused;
+   while(e){
+      var n = e.next;
+      e.dispose();
+      e = n;
+   }
+   o._unused = null;
+}
+function TLooper_dump(){
+   var o = this;
+   var c = o._count;
+   var r = new TString();
+   r.append(RClass.name(this), ': ', c);
+   if(c > 0){
+      var e = o._current;
+      for(var i = 0; i < c; i++){
+         r.append(' [', e.value, ']');
+         e = e.next;
       }
    }
    return r.toString();

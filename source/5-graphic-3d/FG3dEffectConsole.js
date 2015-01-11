@@ -61,11 +61,19 @@ function FG3dEffectConsole_find(c, p){
 //==========================================================
 function FG3dEffectConsole_findByName(c, p){
    var o = this;
-   if(o._effect == null){
-      o._effect = RClass.create(FG3dSampleAutomaticEffect);
-      o._effect.linkContext(c);
-      o._effect._path = o._path;
-      o._effect.load();
+   var es = o._effects;
+   var e = es.get(p);
+   if(e == null){
+      if(p == 'skeleton'){
+         e = RClass.create(FG3dSampleSkeletonEffect);
+      }else{
+         e = RClass.create(FG3dSampleAutomaticEffect);
+      }
+      e.linkContext(c);
+      e._path = o._path;
+      e.load();
+      RLogger.info(o, 'Create effect. (name={1}, instance={2})', p, e);
+      es.set(p, e);
    }
-   return o._effect;
+   return e;
 }

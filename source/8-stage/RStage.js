@@ -9,7 +9,7 @@ var RStage = new function RStage(){
    //..........................................................
    // @attribute
    o._active        = true;
-   o._interval      = 1000 / 60;
+   o._interval      = 1000 / 40;
    o._stages        = null;
    //..........................................................
    // @listener
@@ -102,5 +102,5 @@ function RStage_start(v){
    }
    RTimer.setup();
    RStage.process();
-   setInterval('RStage_onProcess()', v);
+   setInterval('RStage_onProcess()', parseInt(v));
 }

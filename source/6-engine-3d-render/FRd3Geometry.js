@@ -12,15 +12,19 @@ function FRd3Geometry(o){
    o._vertexBuffers    = null;
    o._indexBuffer      = null;
    o._resourceMaterial = null;
+   o._material         = null;
+   o._bones            = null;
    o._textures         = null;
    //..........................................................
    // @method
-   o.construct        = FRd3Geometry_construct;
-   o.testReady        = FRd3Geometry_testReady;
-   o.findVertexBuffer = FRd3Geometry_findVertexBuffer;
-   o.indexBuffer      = FRd3Geometry_indexBuffer;
-   o.findTexture      = FRd3Geometry_findTexture;
-   o.loadResource     = FRd3Geometry_loadResource;
+   o.construct         = FRd3Geometry_construct;
+   o.testReady         = FRd3Geometry_testReady;
+   o.findVertexBuffer  = FRd3Geometry_findVertexBuffer;
+   o.vertexBuffers     = FRd3Geometry_vertexBuffers;
+   o.indexBuffer       = FRd3Geometry_indexBuffer;
+   o.material          = FRd3Geometry_material;
+   o.findTexture       = FRd3Geometry_findTexture;
+   o.loadResource      = FRd3Geometry_loadResource;
    return o;
 }
 
@@ -81,22 +85,41 @@ function FRd3Geometry_findVertexBuffer(p){
 }
 
 //==========================================================
+// <T>获得顶点缓冲集合。</T>
+//
+// @method
+// @return TObjects 顶点缓冲集合
+//==========================================================
+function FRd3Geometry_vertexBuffers(){
+   return this._vertexBuffers;
+}
+
+//==========================================================
 // <T>获得索引缓冲。</T>
 //
 // @method
-// @return FRenderIndexBuffer 索引缓冲
+// @return FG3dIndexBuffer 索引缓冲
 //==========================================================
 function FRd3Geometry_indexBuffer(){
    return this._indexBuffer;
 }
 
+//==========================================================
+// <T>获得材质。</T>
+//
+// @method
+// @return FRsMaterial 材质
+//==========================================================
+function FRd3Geometry_material(){
+   return this._material;
+}
 
 //==========================================================
 // <T>根据名称查找纹理。</T>
 //
 // @method
 // @param p:name:String 名称
-// @return FRenderIndexBuffer 纹理
+// @return FG3dIndexBuffer 纹理
 //==========================================================
 function FRd3Geometry_findTexture(p){
    return this._textures.get(p);
@@ -125,19 +148,27 @@ function FRd3Geometry_loadResource(p){
    var rib = p.indexBuffer();
    var ib = o._indexBuffer = c.createIndexBuffer();
    ib.upload(rib.data(), rib.count());
+   // 创建骨头集合
+   var bs = p.boneIds();
+   if(bs){
+      var c = bs.length();
+      for(var i = 0; i < c; i++){
+         //alert(p.boneIds().length());
+         //o._bones = null;
+      }
+   }
    // 关联材质
-   var materialCode = p.materialCode();
-   var themeConsole = RConsole.find(FRs3ThemeConsole);
-   var material = o._material = themeConsole.find(materialCode);
-   var textures = material.textures();
-   var textureCount = textures.count();
-   if(textureCount > 0){
+   var mc = p.materialCode();
+   var mtl = o._material = RConsole.find(FRs3ThemeConsole).find(mc);
+   var mts = mtl.textures();
+   var mtc = mts.count();
+   if(mtc > 0){
       var rts = o._textures = new TDictionary();
-      var textureConsole = RConsole.find(FRd3TextureConsole)
-      for(var n = 0; n < textureCount; n++){
-         var texture = textures.get(n);
-         var rt = textureConsole.load(o._context, texture.bitmapCode(), texture.code());
-         rts.set(texture.code(), rt);
+      var txc = RConsole.find(FRd3TextureConsole)
+      for(var n = 0; n < mtc; n++){
+         var mt = mts.get(n);
+         var rt = txc.load(o._context, mt.bitmapCode(), mt.code());
+         rts.set(mt.code(), rt);
       }
    }
 }

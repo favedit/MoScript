@@ -22,11 +22,6 @@
 </HEAD>
 
 <SCRIPT>
-// http://localhost:999/test/engine3d/resource-001.html
-var contentPath = 'http://localhost:999';
-//var contentPath = 'http://10.12.21.33:999';
-//var contentPath = 'http://localhost/script';
-
 var context = null;
 var stage = null;
 var layer = null;
@@ -52,9 +47,9 @@ function onEnterFrame(){
          }
          var m = models.get(n);
          //m.location().set(0.1 * x - 8, -0.5, 0.1 * z - 4);
-         m.location().set(0, -6.0, 0);
+         m.location().set(0, -7.0, 0);
          m.rotation().set(0, mRotationY, 0);
-         m.scale().set(1.0, 1.0, 1.0);
+         m.scale().set(0.3, 0.3, 0.3);
          m.update();
       }
    }
@@ -71,7 +66,7 @@ function onEnterFrame(){
 function onThemeLoad(){
    var hCanvas = document.getElementById('_canvas');
    context = REngine3d.createContext(FWglContext, hCanvas);
-   RDump.dump(context, _dump);
+   //RDump.dump(context, _dump);
 
    stage = RClass.create(FSimpleStage3d);
    stage.backgroundColor().set(1, 1, 1, 1);
@@ -88,7 +83,7 @@ function onThemeLoad(){
    }
    // 设置相机
    var rc = stage.camera();
-   rc.setPosition(0, 6, -10);
+   rc.setPosition(0, 2, -14);
    rc.lookAt(0, 0, 0);
    rc.update();
    // 设置光源
@@ -107,7 +102,7 @@ function onThemeLoad(){
 function _load(){
    RRuntime.processCd = EProcess.Debug;
    RBrowser.construct();
-   RBrowser.setContentPath(contentPath);
+   RBrowser.setContentPath('../..');
 
    var tc = RConsole.find(FRs3ThemeConsole);
    var m = tc.select('color');
@@ -116,7 +111,7 @@ function _load(){
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
-<CANVAS id="_canvas" width="800" height="900">您的浏览器不支持HTML5</CANVAS>
+<CANVAS id="_canvas" width="800" height="600">您的浏览器不支持HTML5</CANVAS>
 <DIV id='_info'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

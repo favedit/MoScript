@@ -13,31 +13,41 @@ function FRs3Model(o){
    o._animation  = null;
    //..........................................................
    // @method
-   o.construct   = FRs3Model_construct;
    o.geometrys   = FRs3Model_geometrys;
+   o.skeleton    = FRs3Model_skeleton;
+   o.animation   = FRs3Model_animation;
    o.unserialize = FRs3Model_unserialize;
    return o;
-}
-
-//==========================================================
-// <T>构造处理。</T>
-//
-// @method
-//==========================================================
-function FRs3Model_construct(){
-   var o = this;
-   o.__base.FRs3Resource.construct.call(o);
-   o._geometrys = new TObjects();
 }
 
 //==========================================================
 // <T>获得几何体集合。</T>
 //
 // @method
-// @return 
+// @return TObjects 几何体集合
 //==========================================================
 function FRs3Model_geometrys(){
    return this._geometrys;
+}
+
+//==========================================================
+// <T>获得骨骼信息。</T>
+//
+// @method
+// @return FRs3Skeleton 骨骼信息
+//==========================================================
+function FRs3Model_skeleton(){
+   return this._skeleton;
+}
+
+//==========================================================
+// <T>获得动画信息。</T>
+//
+// @method
+// @return FRs3Animation 动画信息
+//==========================================================
+function FRs3Model_animation(){
+   return this._animation;
 }
 
 //==========================================================
@@ -50,25 +60,38 @@ function FRs3Model_unserialize(p){
    // 读取父信息
    var o = this;
    o.__base.FRs3Resource.unserialize.call(o, p);
+   //..........................................................
    // 读取几何体集合
    var gc = p.readInt16();
-   for(var n = 0; n < gc; n++){
-      var g = RClass.create(FRs3Geometry);
-      g.unserialize(p);
-      o._geometrys.push(g);
+   if(gc > 0){
+      var gs = o._geometrys = new TObjects();
+      for(var i = 0; i < gc; i++){
+         var g = RClass.create(FRs3Geometry);
+         g.unserialize(p);
+         gs.push(g);
+      }
    }
+   //..........................................................
    // 读取骨骼
-   //_skeleton.unserialize(pInput);
+   var sk = null;
+   if(p.readBoolean()){
+      sk = o._skeleton = RClass.create(FRs3Skeleton);
+      sk.unserialize(p);
+   }
+   //..........................................................
    // 读取动画
-   //_animation.unserialize(pInput);
-   // 关联骨头和跟踪
-   //GRs3dTrackPtrs& tracks = _pAnimation->Tracks();
-   //TInt trackCount = tracks.Count();
-   //for(TInt n = 0; n < trackCount; n++){
-   //   FRs3dTrack* pTrack = tracks.Get(n);
-   //   TInt boneId = pTrack->BoneId();
-   //   FRs3dBone* pBone = _pSkeleton->Find(boneId);
-   //   pBone->SetTrack(pTrack);
-   //}
-   //MO_DEBUG("Unserialize model success. (code=%d, geometry_count=%d, track_count=%d)", _code, geometryCount, trackCount);
+   if(p.readBoolean()){
+      var am = o._animation = RClass.create(FRs3Animation);
+      am.unserialize(p);
+      // 关联骨头和跟踪
+      var ts = am.tracks();
+      var tc = ts.count();
+      for(var i = 0; i < tc; i++){
+         var t = ts.get(i);
+         var b = sk.find(t.boneId());
+         b.setTrack(t);
+      }
+   }
+   RLogger.info(o, "Unserialize model success. (code={1}, geometry_count={2}, track_count={3})", o._name, gc, tc);
+   RDump.dump(this, _dump);
 }

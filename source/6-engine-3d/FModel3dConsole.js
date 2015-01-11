@@ -10,11 +10,14 @@ function FModel3dConsole(o){
    //..........................................................
    // @attribute
    o._scopeCd    = EScope.Local;
+   // @attribute
    o._loadModels = null;
    o._models     = null;
+   // @attribute
    o._thread     = null;
    o._interval   = 100;
    //..........................................................
+   // @event
    o.onProcess   = FModel3dConsole_onProcess;
    //..........................................................
    // @method
@@ -25,6 +28,23 @@ function FModel3dConsole(o){
 }
 
 //==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+function FModel3dConsole_onProcess(){
+   var o = this;
+   var ms = o._loadModels;
+   ms.record();
+   while(ms.next()){
+      var m = ms.current();
+      if(m.processLoad()){
+         ms.removeCurrent();
+      }
+   }
+}
+
+//==========================================================
 // <T>构造处理。</T>
 //
 // @method
@@ -32,7 +52,7 @@ function FModel3dConsole(o){
 function FModel3dConsole_construct(){
    var o = this;
    // 设置属性
-   o._loadModels = new TObjects();
+   o._loadModels = new TLooper();
    o._models = new TDictionary();
    // 创建线程
    var t = o._thread = RClass.create(FThread);
@@ -68,7 +88,7 @@ function FModel3dConsole_alloc(pc, pn){
    var m = RClass.create(FModel3d);
    m._context = pc;
    m._name = pn;
-   m._resource = rm;
+   m._renderable = rm;
    // 测试是否已加载
    if(rm.testReady()){
       m.load(rm);
@@ -77,22 +97,4 @@ function FModel3dConsole_alloc(pc, pn){
       o._loadModels.push(m);
    }
    return m;
-}
-
-//==========================================================
-// <T>逻辑处理。</T>
-//
-// @method
-//==========================================================
-function FModel3dConsole_onProcess(){
-   var o = this;
-   var ms = o._loadModels;
-   var c = ms.count();
-   for(var n = 0; n < c; n++){
-      var m = ms.get(n);
-      if(m.testReady()){
-         ms.erase(n);
-         break;
-      }
-   }
 }

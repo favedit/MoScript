@@ -8,10 +8,11 @@
 function TArray(o){
    if(!o){o = this;}
    // Attribute
-   o.length   = 0;
-   o.memory   = new Array();
+   o._length  = 0;
+   o._memory  = new Array();
    // Method
    o.isEmpty  = TArray_isEmpty;
+   o.length   = TArray_length;
    o.contains = TArray_contains;
    o.indexOf  = TArray_indexOf;
    o.get      = TArray_get;
@@ -35,7 +36,17 @@ function TArray(o){
 // @return Boolean 是否为空
 //==========================================================
 function TArray_isEmpty(){
-   return this.length == 0;
+   return this._length == 0;
+}
+
+//==========================================================
+// <T>获得数据长度。</T>
+//
+// @method
+// @return Integer 数据长度
+//==========================================================
+function TArray_length(){
+   return this._length;
 }
 
 //==========================================================
@@ -58,9 +69,9 @@ function TArray_contains(v){
 //==========================================================
 function TArray_indexOf(v){
    var o = this;
-   var c = o.length;
+   var c = o._length;
    for(var n = 0; n < c; n++){
-      if(o.memory[n] == v){
+      if(o._memory[n] == v){
          return n;
       }
    }
@@ -75,7 +86,7 @@ function TArray_indexOf(v){
 // @return 当前位置上的对象
 //==========================================================
 function TArray_get(n){
-   return ((n >= 0) && (n < this.length)) ? this.memory[n] : null;
+   return ((n >= 0) && (n < this._length)) ? this._memory[n] : null;
 }
 
 //==========================================================
@@ -86,8 +97,8 @@ function TArray_get(n){
 // @param v:value:Object 对象
 //==========================================================
 function TArray_set(n, v){
-   if((n >= 0) && (n < this.length)){
-      this.memory[n] = v;
+   if((n >= 0) && (n < this._length)){
+      this._memory[n] = v;
    }
 }
 
@@ -98,7 +109,7 @@ function TArray_set(n, v){
 // @param v:value:Object 对象
 //==========================================================
 function TArray_push(v){
-   this.memory[this.length++] = v;
+   this._memory[this._length++] = v;
 }
 
 //==========================================================
@@ -109,10 +120,10 @@ function TArray_push(v){
 // @param r:right:Integer 第二个对象的索引值
 //==========================================================
 function TArray_swap(l, r){
-   if((l >= 0) && (l < this.length) && (r >= 0) && (r < this.length) && (l != r)){
-      var v = this.memory[l];
-      this.memory[l] = this.memory[r];
-      this.memory[r] = v;
+   if((l >= 0) && (l < this._length) && (r >= 0) && (r < this._length) && (l != r)){
+      var v = this._memory[l];
+      this._memory[l] = this._memory[r];
+      this._memory[r] = v;
    }
 }
 
@@ -122,7 +133,7 @@ function TArray_swap(l, r){
 // @method
 //==========================================================
 function TArray_sort(){
-   this.memory.sort();
+   this._memory.sort();
 }
 
 //==========================================================
@@ -136,10 +147,10 @@ function TArray_erase(i){
    var v = null;
    if((i >= 0) && (i < c)){
       var o = this;
-      o.length--;
-      v = o.memory[i];
+      o._length--;
+      v = o._memory[i];
       for(var n = i; n < c; n++){
-         o.memory[n] = o.memory[n + 1];
+         o._memory[n] = o._memory[n + 1];
       }
    }
    return v;
@@ -155,13 +166,13 @@ function TArray_remove(v){
    if(v != null){
       var o = this;
       var n = 0;
-      var c = o.length;
+      var c = o._length;
       for(var i = n; i < c; i++){
-         if(o.memory[i] != v){
-            o.memory[n++] = o.memory[i];
+         if(o._memory[i] != v){
+            o._memory[n++] = o._memory[i];
          }
       }
-      o.length = n;
+      o._length = n;
    }
    return v;
 }
@@ -173,15 +184,15 @@ function TArray_remove(v){
 //==========================================================
 function TArray_compress(){
    var o = this;
-   var c = o.length;
+   var c = o._length;
    var l = 0;
    for(var n = 0; n < c; n++){
-      var v = o.memory[n];
+      var v = o._memory[n];
       if(v != null){
-         o.memory[l++] = v;
+         o._memory[l++] = v;
       }
    }
-   o.length = l;
+   o._length = l;
 }
 
 //==========================================================
@@ -190,7 +201,7 @@ function TArray_compress(){
 // @method
 //==========================================================
 function TArray_clear(){
-   this.length = 0;
+   this._length = 0;
 }
 
 //==========================================================
@@ -200,8 +211,8 @@ function TArray_clear(){
 //==========================================================
 function TArray_dispose(){
    var o = this;
-   o.length = 0;
-   o.memory = null;
+   o._length = 0;
+   o._memory = null;
 }
 
 //==========================================================
@@ -214,11 +225,11 @@ function TArray_dispose(){
 function TArray_dump(){
    var o = this;
    var r = new TString();
-   var c = o.length;
+   var c = o._length;
    r.append(RRuntime.className(o), ':', c);
    if(c > 0){
       for(var n = 0; n < c; n++){
-         r.append(' [', o.memory[n], ']');
+         r.append(' [', o._memory[n], ']');
       }
    }
    return r.toString();

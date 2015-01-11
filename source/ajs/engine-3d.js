@@ -49,56 +49,75 @@ function FGeometry3d_findTexture(p){
 }
 function FGeometry3d_load(p){
    var o = this;
+   o._effectName = p.material().effectName();
    o._renderable = p;
 }
 function FModel3d(o){
    o = RClass.inherits(this, o, FDisplay3d);
-   o._statusReady = false;
-   o._renderables = null;
-   o._resource    = null;
-   o.construct    = FModel3d_construct;
-   o.testReady    = FModel3d_testReady;
-   o.load         = FModel3d_load;
+   o._dataReady   = false;
+   o._renderables   = null;
+   o._animation     = null;
+   o._renderable    = null;
+   o.testReady      = FModel3d_testReady;
+   o.loadRenderable = FModel3d_loadRenderable;
+   o.processLoad    = FModel3d_processLoad;
+   o.process        = FModel3d_process;
    return o;
 }
-function FModel3d_construct(){
-   var o = this;
-   o.__base.FDisplay3d.construct.call(o);
-   o._renderables = new TObjects();
-}
-function FModel3d_findVertexBuffer(p){
-   var o = this;
-   var vs = o._vertexBuffers;
-   var c = vs.count();
-   for(var n = 0; n < c; n++){
-      var v = vs.get(n);
-      if(v.name() == p){
-         return v;
-      }
-   }
-   return null;
-}
 function FModel3d_testReady(){
-   var o = this;
-   if(!o._statusReady){
-      if(o._resource.testReady()){
-         o.load(o._resource);
-         o._statusReady = true;
-      }
-   }
-   return o._statusReady;
+   return this._dataReady;
 }
-function FModel3d_load(p){
+function FModel3d_loadRenderable(p){
    var o = this;
    var c = o._context;
-   var gs = p.geometrys();
-   var gc = gs.count();
-   for(var n = 0; n < gc; n++){
-      var rg = gs.get(n);
-      var g = RClass.create(FGeometry3d);
-      g.load(rg);
-      o._renderables.push(g);
+   var r = p.resource();
+   var rgs = p.geometrys();
+   if(rgs){
+      var c = rgs.count();
+      if(c > 0){
+         var rs = o.renderables();
+         for(var i = 0; i < c; i++){
+            var rg = rgs.get(i);
+            var g = RClass.create(FGeometry3d);
+            g.load(rg);
+            rs.push(g);
+         }
+      }
    }
+   var ra = r.animation();
+   if(ra){
+      var a = o._animation = RClass.create(FRd3Animation);
+      a.loadResource(ra);
+      var rk = r.skeleton();
+      var rbs = rk.bones();
+      var c = rbs.count();
+      for(var i = 0; i < c; i++){
+         var rb = c = rbs.value(i);
+         var b = RClass.create(FRd3Bone);
+         b.loadResource(rb);
+         a.bones().set(rb.id(), rb);
+      }
+   }
+   o._dataReady = true;
+}
+function FModel3d_processLoad(){
+   var o = this;
+   if(o._dataReady){
+      return true;
+   }
+   if(!o._renderable.testReady()){
+      return false;
+   }
+   o.loadRenderable(o._renderable);
+   return true;
+}
+function FModel3d_process(){
+   var o = this;
+   o.__base.FDisplay3d.process.call(o);
+   if(o._animation){
+      o._animation.process();
+   }
+   return true;
 }
 function FModel3dConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -113,9 +132,20 @@ function FModel3dConsole(o){
    o.alloc       = FModel3dConsole_alloc;
    return o;
 }
+function FModel3dConsole_onProcess(){
+   var o = this;
+   var ms = o._loadModels;
+   ms.record();
+   while(ms.next()){
+      var m = ms.current();
+      if(m.processLoad()){
+         ms.removeCurrent();
+      }
+   }
+}
 function FModel3dConsole_construct(){
    var o = this;
-   o._loadModels = new TObjects();
+   o._loadModels = new TLooper();
    o._models = new TDictionary();
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
@@ -132,25 +162,13 @@ function FModel3dConsole_alloc(pc, pn){
    var m = RClass.create(FModel3d);
    m._context = pc;
    m._name = pn;
-   m._resource = rm;
+   m._renderable = rm;
    if(rm.testReady()){
       m.load(rm);
    }else{
       o._loadModels.push(m);
    }
    return m;
-}
-function FModel3dConsole_onProcess(){
-   var o = this;
-   var ms = o._loadModels;
-   var c = ms.count();
-   for(var n = 0; n < c; n++){
-      var m = ms.get(n);
-      if(m.testReady()){
-         ms.erase(n);
-         break;
-      }
-   }
 }
 function FSimpleStage3d(o){
    o = RClass.inherits(this, o, FStage3d);

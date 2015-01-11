@@ -1,7 +1,105 @@
+function FRs3Animation(o){
+   o = RClass.inherits(this, o, FObject);
+   o._frameCount = 0;
+   o._frameTick  = 0;
+   o._frameSpan  = 0;
+   o._tracks     = null;
+   o.construct   = FRs3Animation_construct;
+   o.tracks      = FRs3Animation_tracks;
+   o.unserialize = FRs3Animation_unserialize;
+   return o;
+}
+function FRs3Animation_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+function FRs3Animation_tracks(){
+   return this._tracks;
+}
+function FRs3Animation_unserialize(p){
+   var o = this;
+   o._frameCount = p.readUint16();
+   o._frameTick = p.readUint16();
+   o._frameSpan = p.readUint32();
+   var c = p.readUint16();
+   if(c > 0){
+      var ts = o._tracks = new TObjects();
+      for(var i = 0; i < c; i++){
+         var t = RClass.create(FRs3Track);
+         t.unserialize(p);
+         ts.push(t);
+      }
+   }
+}
+function FRs3Bone(o){
+   o = RClass.inherits(this, o, FObject);
+   o._id         = 0;
+   o._bones      = null;
+   o._track      = null;
+   o.id          = FRs3Bone_id;
+   o.bones       = FRs3Bone_bones;
+   o.track       = FRs3Bone_track;
+   o.setTrack    = FRs3Bone_setTrack;
+   o.unserialize = FRs3Bone_unserialize;
+   return o;
+}
+function FRs3Bone_id(){
+   return this._id;
+}
+function FRs3Bone_bones(){
+   return this._bones;
+}
+function FRs3Bone_track(){
+   return this._track;
+}
+function FRs3Bone_setTrack(p){
+   this._track = p;
+}
+function FRs3Bone_unserialize(p){
+   var o = this;
+   o._id = p.readUint8();
+   var c = p.readUint8();
+   if(c > 0){
+      var bs = o._bones = new TObjects();
+      for(var i = 0; i < c; i++){
+         var b = RClass.create(FRs3Bone);
+         b.unserialize(p);
+         bs.push(b);
+      }
+   }
+}
+function FRs3Frame(o){
+   o = RClass.inherits(this, o, FObject);
+   o._tick       = 0;
+   o._matrix     = null;
+   o.construct   = FRs3Frame_construct;
+   o.tick        = FRs3Frame_tick;
+   o.matrix      = FRs3Frame_matrix;
+   o.unserialize = FRs3Frame_unserialize;
+   return o;
+}
+function FRs3Frame_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new SMatrix3d();
+}
+function FRs3Frame_tick(){
+   return this._tick;
+}
+function FRs3Frame_matrix(){
+   return this._matrix;
+}
+function FRs3Frame_unserialize(p){
+   var o = this;
+   o._tick = p.readUint16();
+   o._matrix.unserialize(p);
+}
 function FRs3Geometry(o){
    o = RClass.inherits(this, o, FObject);
    o._optionInstanced = false;
    o._instanceCount   = 0;
+   o._matrix          = null;
+   o._outline         = null;
    o._materialCode    = null;
    o._vertexCount     = 0;
    o._indexCount      = 0;
@@ -14,13 +112,17 @@ function FRs3Geometry(o){
    o.findVertexBuffer = FRs3Geometry_findVertexBuffer;
    o.vertexBuffers    = FRs3Geometry_vertexBuffers;
    o.indexBuffer      = FRs3Geometry_indexBuffer;
+   o.boneIds          = FRs3Geometry_boneIds;
    o.unserialize      = FRs3Geometry_unserialize;
    return o;
 }
 function FRs3Geometry_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._matrix = new SMatrix3d();
+   o._outline = new SOutline3();
    o._vertexBuffers = new TObjects();
+   o._track = RClass.create(FRs3Track);
 }
 function FRs3Geometry_materialCode(){
    return this._materialCode;
@@ -45,16 +147,21 @@ function FRs3Geometry_vertexBuffers(){
 function FRs3Geometry_indexBuffer(){
    return this._indexBuffer;
 }
+function FRs3Geometry_boneIds(){
+   return this._boneIds;
+}
 function FRs3Geometry_unserialize(p){
    var o = this;
    o._optionInstanced = p.readBoolean();
    o._instanceCount = p.readInt8();
+   o._matrix.unserialize(p);
+   o._outline.unserialize(p);
    o._materialCode = p.readString();
    o._vertexCount = p.readInt32();
    var vc = p.readInt8();
    if(vc > 0){
       var vs = o._vertexBuffers = new TObjects();
-      for(var n = 0; n < vc; n++){
+      for(var i = 0; i < vc; i++){
          var vb = RClass.create(FRs3VertexBuffer);
          vb._vertexCount = o._vertexCount;
          vb.unserialize(p)
@@ -63,6 +170,14 @@ function FRs3Geometry_unserialize(p){
    }
    var ib = o._indexBuffer = RClass.create(FRs3IndexBuffer);
    ib.unserialize(p);
+   var bc = p.readInt8();
+   if(bc > 0){
+      var bs = o._boneIds = new TArray();
+      for(var i = 0; i < bc; i++){
+         bs.push(p.readUint8());
+      }
+   }
+   o._track.unserialize(p);
 }
 function FRs3IndexBuffer(o){
    o = RClass.inherits(this, o, FObject);
@@ -167,6 +282,7 @@ function FRs3Material(o){
    o._textures   = null;
    o.construct   = FRs3Material_construct;
    o.code        = FRs3Material_code;
+   o.effectName  = FRs3Material_effectName;
    o.textures    = FRs3Material_textures;
    o.unserialize = FRs3Material_unserialize;
    return o;
@@ -186,6 +302,9 @@ function FRs3Material_construct(){
 }
 function FRs3Material_code(){
    return this._code;
+}
+function FRs3Material_effectName(){
+   return this._effectName;
 }
 function FRs3Material_textures(){
    return this._textures;
@@ -235,28 +354,51 @@ function FRs3Model(o){
    o._geometrys  = null;
    o._skeleton   = null;
    o._animation  = null;
-   o.construct   = FRs3Model_construct;
    o.geometrys   = FRs3Model_geometrys;
+   o.skeleton    = FRs3Model_skeleton;
+   o.animation   = FRs3Model_animation;
    o.unserialize = FRs3Model_unserialize;
    return o;
 }
-function FRs3Model_construct(){
-   var o = this;
-   o.__base.FRs3Resource.construct.call(o);
-   o._geometrys = new TObjects();
-}
 function FRs3Model_geometrys(){
    return this._geometrys;
+}
+function FRs3Model_skeleton(){
+   return this._skeleton;
+}
+function FRs3Model_animation(){
+   return this._animation;
 }
 function FRs3Model_unserialize(p){
    var o = this;
    o.__base.FRs3Resource.unserialize.call(o, p);
    var gc = p.readInt16();
-   for(var n = 0; n < gc; n++){
-      var g = RClass.create(FRs3Geometry);
-      g.unserialize(p);
-      o._geometrys.push(g);
+   if(gc > 0){
+      var gs = o._geometrys = new TObjects();
+      for(var i = 0; i < gc; i++){
+         var g = RClass.create(FRs3Geometry);
+         g.unserialize(p);
+         gs.push(g);
+      }
    }
+   var sk = null;
+   if(p.readBoolean()){
+      sk = o._skeleton = RClass.create(FRs3Skeleton);
+      sk.unserialize(p);
+   }
+   if(p.readBoolean()){
+      var am = o._animation = RClass.create(FRs3Animation);
+      am.unserialize(p);
+      var ts = am.tracks();
+      var tc = ts.count();
+      for(var i = 0; i < tc; i++){
+         var t = ts.get(i);
+         var b = sk.find(t.boneId());
+         b.setTrack(t);
+      }
+   }
+   RLogger.info(o, "Unserialize model success. (code={1}, geometry_count={2}, track_count={3})", o._name, gc, tc);
+   RDump.dump(this, _dump);
 }
 function FRs3ModelConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -377,6 +519,52 @@ function FRs3SceneConsole_load(p){
       o._scenes.set(p, r);
    }
    return r;
+}
+function FRs3Skeleton(o){
+   o = RClass.inherits(this, o, FObject);
+   o._bones      = null
+   o._roots      = null
+   o.find        = FRs3Skeleton_find;
+   o.bones       = FRs3Skeleton_bones;
+   o.roots       = FRs3Skeleton_roots;
+   o.innerFilter = FRs3Skeleton_innerFilter;
+   o.unserialize = FRs3Skeleton_unserialize;
+   return o;
+}
+function FRs3Skeleton_find(p){
+   return this._bones.get(p);
+}
+function FRs3Skeleton_bones(){
+   return this._bones;
+}
+function FRs3Skeleton_roots(){
+   return this._roots;
+}
+function FRs3Skeleton_innerFilter(p){
+   var o = this;
+   o._bones.set(p.id(), p);
+   var bs = p.bones();
+   if(bs){
+      var c = bs.count();
+      for(var i = 0; i < c; i++){
+         var b = bs.get(i);
+         o.innerFilter(b)
+      }
+   }
+}
+function FRs3Skeleton_unserialize(p){
+   var o = this;
+   var c = p.readUint8();
+   if(c > 0){
+      o._bones = new TDictionary();
+      var bs = o._roots = new TObjects();
+      for(var i = 0; i < c; i++){
+         var b = RClass.create(FRs3Bone);
+         b.unserialize(p);
+         o.innerFilter(b);
+         bs.push(b);
+      }
+   }
 }
 function FRs3Template(o){
    o = RClass.inherits(this, o, FRs3Resource);
@@ -566,6 +754,62 @@ function FRs3ThemeConsole_select(p){
    }
    o._activeTheme = r;
    return r;
+}
+function FRs3Track(o){
+   o = RClass.inherits(this, o, FObject);
+   o._optionBoneScale = false;
+   o._boneId          = 0;
+   o._frameTick       = 0;
+   o._matrix          = null;
+   o._matrixInvert    = null;
+   o._frames          = null;
+   o.construct        = FRs3Track_construct;
+   o.boneId           = FRs3Track_boneId;
+   o.frameTick        = FRs3Track_frameTick;
+   o.matrix           = FRs3Track_matrix;
+   o.matrixInvert     = FRs3Track_matrixInvert;
+   o.frames           = FRs3Track_frames;
+   o.unserialize      = FRs3Track_unserialize;
+   return o;
+}
+function FRs3Track_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new SMatrix3d();
+   o._matrixInvert = new SMatrix3d();
+}
+function FRs3Track_boneId(){
+   return this._boneId;
+}
+function FRs3Track_frameTick(){
+   return this._frameTick;
+}
+function FRs3Track_matrix(){
+   return this._matrix;
+}
+function FRs3Track_matrixInvert(){
+   return this.matrixInvert;
+}
+function FRs3Track_frames(){
+   return this._frames;
+}
+function FRs3Track_unserialize(p){
+   var o = this;
+   o._optionBoneScale = p.readBoolean();
+   o._boneId = p.readUint8();
+   o._frameTick = p.readUint16();
+   o._matrix.unserialize(p);
+   o._matrixInvert.assign(o._matrix);
+   o._matrixInvert.invert();
+   var c = p.readInt16();
+   if(c > 0){
+      var fs = o._frames = new TObjects();
+      for(var i = 0; i < c; i++){
+         var f = RClass.create(FRs3Frame);
+         f.unserialize(p)
+         fs.push(f);
+      }
+   }
 }
 function FRs3VertexBuffer(o){
    o = RClass.inherits(this, o, FObject);
