@@ -752,6 +752,9 @@ function SRd3PlayInfo(o){
    o.nextFrame    = null;
    o.rate         = 1.0;
    o.alpha        = 1.0;
+   o.translation  = new SPoint3();
+   o.quaternion   = new SQuaternion();
+   o.scale        = new SVector3();
    o.matrix       = new SMatrix3d();
    o.update       = SRd3PlayInfo_update;
    return o;
@@ -765,22 +768,20 @@ function SRd3PlayInfo_update(){
       return false;
    }
    var m = o.matrix;
-   var mc = o.currentFrame.matrix();
+   var ct = o.currentFrame.translation();
+   var cr = o.currentFrame.quaternion();
+   var cs = o.currentFrame.scale();
    var r = o.rate;
    if((r > 0) && (r < 1)){
-      var mn = o.nextFrame.matrix();
-      m.tx = mc.tx + (mn.tx - mc.tx) * r;
-      m.ty = mc.ty + (mn.ty - mc.ty) * r;
-      m.tz = mc.tz + (mn.tz - mc.tz) * r;
-      m.rx = mc.rx + (mn.rx - mc.rx) * r;
-      m.ry = mc.ry + (mn.ry - mc.ry) * r;
-      m.rz = mc.rz + (mn.rz - mc.rz) * r;
-      m.sx = mc.sx + (mn.sx - mc.sx) * r;
-      m.sy = mc.sy + (mn.sy - mc.sy) * r;
-      m.sz = mc.sz + (mn.sz - mc.sz) * r;
-      m.updateForce();
+      var nt = o.nextFrame.translation();
+      var nr = o.nextFrame.quaternion();
+      var ns = o.nextFrame.scale();
+      o.translation.slerp(ct, nt, r);
+      o.quaternion.slerp(cr, nr, r);
+      o.scale.slerp(cs, ns, r);
+      m.build(o.translation, o.quaternion, o.scale);
    }else{
-      m.assign(mc);
+      m.build(ct, cr, cs);
    }
    return true;
 }

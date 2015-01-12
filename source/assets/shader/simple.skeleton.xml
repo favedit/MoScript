@@ -105,8 +105,8 @@
          vec3 specular = texture2D(fs_specular, v_coord).rgb;
          vec3 reflectionDirection = normalize(reflect(fc_light_direction, v_normal));
          float specularFactor = max(min(dot(cameraDirection, reflectionDirection) + 0.1, 1.0), 0.0);
-         specularFactor = pow(specularFactor, 20.0);
-         result += color * specularFactor * specular.r * 0.4;
+         specularFactor = pow(specularFactor, 10.0);
+         result += color * specularFactor * specular.r * 0.6;
 
          gl_FragColor = vec4(result.xyz, 1.0);
       }

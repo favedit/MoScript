@@ -38,7 +38,7 @@ function onEnterFrame(){
          //m.location().set(0.1 * x - 8, -0.5, 0.1 * z - 4);
          m.location().set(0, -7.0, 0);
          m.rotation().set(0, mRotationY, 0);
-         m.scale().set(0.3, 0.3, 0.3);
+         m.scale().set(0.6, 0.6, 0.6);
          m.update();
       }
    }
@@ -75,7 +75,7 @@ function onThemeLoad(){
    rc.lookAt(0, 0, 0);
    rc.update();
    // 设置光源
-   stage.directionalLight().direction().set(0.7, -0.7, 0);
+   stage.directionalLight().direction().set(0.7, 0.7, 0);
    // 设置投影
    var rp = stage.projection();
    rp.width = hCanvas.width;
@@ -99,7 +99,7 @@ function _load(){
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
-<CANVAS id="_canvas" width="800" height="600">您的浏览器不支持HTML5</CANVAS>
+<CANVAS id="_canvas" width="800" height="900">您的浏览器不支持HTML5</CANVAS>
 <DIV id='_info'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

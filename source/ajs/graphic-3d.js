@@ -311,33 +311,6 @@ function FG3dEffectConsole_findByName(c, p){
    }
    return e;
 }
-function FG3dFrame(o){
-   o = RClass.inherits(this, o, FObject);
-   o._boneId = 0;
-   o._modeId          = null;
-   o._boneResource    = null
-   o._trackResource   = null;
-   o._tick            = 0;
-   o._matrix          = null;
-   o.construct   = FG3dFrame_construct;
-   o.tick        = FG3dFrame_tick;
-   o.matrix      = FG3dFrame_matrix;
-   o.update    = FG3dFrame_update;
-   return o;
-}
-function FG3dFrame_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-   o._matrix = new SMatrix3d();
-}
-function FG3dFrame_tick(){
-   return this._tick;
-}
-function FG3dFrame_matrix(){
-   return this._matrix;
-}
-function FG3dFrame_update(p){
-}
 function FG3dLight(o){
    o = RClass.inherits(this, o, FObject);
    return o;

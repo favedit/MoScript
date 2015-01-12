@@ -8,14 +8,18 @@ function FRs3Frame(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._tick       = 0;
-   o._matrix     = null;
+   o._tick        = 0;
+   o._translation = null;
+   o._quaternion  = null;
+   o._scale       = null;
    //..........................................................
    // @method
-   o.construct   = FRs3Frame_construct;
-   o.tick        = FRs3Frame_tick;
-   o.matrix      = FRs3Frame_matrix;
-   o.unserialize = FRs3Frame_unserialize;
+   o.construct    = FRs3Frame_construct;
+   o.tick         = FRs3Frame_tick;
+   o.translation  = FRs3Frame_translation;
+   o.quaternion   = FRs3Frame_quaternion;
+   o.scale        = FRs3Frame_scale;
+   o.unserialize  = FRs3Frame_unserialize;
    return o;
 }
 
@@ -27,7 +31,9 @@ function FRs3Frame(o){
 function FRs3Frame_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._matrix = new SMatrix3d();
+   o._translation = new SPoint3();
+   o._quaternion = new SQuaternion();
+   o._scale = new SVector3();
 }
 
 //==========================================================
@@ -41,13 +47,33 @@ function FRs3Frame_tick(){
 }
 
 //==========================================================
-// <T>查找矩阵。</T>
+// <T>获得位移信息。</T>
 //
 // @method
-// @return SMatrix3d 矩阵
+// @return SPoint3 位移信息
 //==========================================================
-function FRs3Frame_matrix(){
-   return this._matrix;
+function FRs3Frame_translation(){
+   return this._translation;
+}
+
+//==========================================================
+// <T>获得旋转信息。</T>
+//
+// @method
+// @return SQuaternion 旋转信息
+//==========================================================
+function FRs3Frame_quaternion(){
+   return this._quaternion;
+}
+
+//==========================================================
+// <T>获得缩放信息。</T>
+//
+// @method
+// @return SVector3 缩放信息
+//==========================================================
+function FRs3Frame_scale(){
+   return this._scale;
 }
 
 //==========================================================
@@ -59,5 +85,7 @@ function FRs3Frame_matrix(){
 function FRs3Frame_unserialize(p){
    var o = this;
    o._tick = p.readUint16();
-   o._matrix.unserialize(p);
+   o._translation.unserialize(p);
+   o._quaternion.unserialize(p);
+   o._scale.unserialize(p);
 }

@@ -9,21 +9,22 @@ function SVector3(o){
    if(!o){o = this;}
    //..........................................................
    // @attribute
-   o.x         = 0;
-   o.y         = 0;
-   o.z         = 0;
-   // @attribute
-   o._data     = null;
+   o.x           = 0;
+   o.y           = 0;
+   o.z           = 0;
    //..........................................................
    // @method
-   o.assign    = SVector3_assign;
-   o.set       = SVector3_set;
-   o.absolute  = SVector3_absolute;
-   o.normalize = SVector3_normalize;
-   o.dotPoint3 = SVector3_dotPoint3;
-   o.cross     = SVector3_cross;
-   o.cross2    = SVector3_cross2;
-   o.data      = SVector3_data;
+   o.assign      = SVector3_assign;
+   o.set         = SVector3_set;
+   o.absolute    = SVector3_absolute;
+   o.normalize   = SVector3_normalize;
+   o.dotPoint3   = SVector3_dotPoint3;
+   o.cross       = SVector3_cross;
+   o.cross2      = SVector3_cross2;
+   o.slerp       = SVector3_slerp;
+   o.serialize   = SVector3_serialize;
+   o.unserialize = SVector3_unserialize;
+   o.toString    = SVector3_toString;
    return o;
 }
 
@@ -113,18 +114,52 @@ function SVector3_cross2(po, pi){
 }
 
 //============================================================
-// <T>获得数据。</T>
+// <T>计算插值。</T>
 //
-// @return Float32Array 数据
+// @method
+// @param v1:value1:SQuaternion 开始四元数
+// @param v2:value2:SQuaternion 结束四元数
+// @param r:rate:Float 比率
 //============================================================
-function SVector3_data(){
+function SVector3_slerp(v1, v2, r){
    var o = this;
-   var d = o._data;
-   if(d == null){
-      d = o._data = new Float32Array(3);
-   }
-   d[0] = o.x;
-   d[1] = o.y;
-   d[2] = o.z;
-   return d;
+   o.x = (v2.x - v1.x) * r + v1.x;
+   o.y = (v2.y - v1.y) * r + v1.y;
+   o.z = (v2.z - v1.z) * r + v1.z;
+}
+
+//==========================================================
+// <T>序列化数据到输出流里。</T>
+//
+// @method
+// @param p:input:FByteStream 数据流
+//==========================================================
+function SVector3_serialize(p){
+   var o = this;
+   p.writeFloat(o.x);
+   p.writeFloat(o.y);
+   p.writeFloat(o.z);
+}
+
+//==========================================================
+// <T>从输入流里反序列化数据。</T>
+//
+// @method
+// @param p:input:FByteStream 数据流
+//==========================================================
+function SVector3_unserialize(p){
+   var o = this;
+   o.x = p.readFloat();
+   o.y = p.readFloat();
+   o.z = p.readFloat();
+}
+
+//==========================================================
+// <T>获得字符串。</T>
+//
+// @return String 字符串
+//==========================================================
+function SVector3_toString(){
+   var o = this;
+   return o.x + ',' + o.y + ',' + o.z;
 }

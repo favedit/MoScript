@@ -771,29 +771,43 @@ function FRs3Bone_unserialize(p){
 }
 function FRs3Frame(o){
    o = RClass.inherits(this, o, FObject);
-   o._tick       = 0;
-   o._matrix     = null;
-   o.construct   = FRs3Frame_construct;
-   o.tick        = FRs3Frame_tick;
-   o.matrix      = FRs3Frame_matrix;
-   o.unserialize = FRs3Frame_unserialize;
+   o._tick        = 0;
+   o._translation = null;
+   o._quaternion  = null;
+   o._scale       = null;
+   o.construct    = FRs3Frame_construct;
+   o.tick         = FRs3Frame_tick;
+   o.translation  = FRs3Frame_translation;
+   o.quaternion   = FRs3Frame_quaternion;
+   o.scale        = FRs3Frame_scale;
+   o.unserialize  = FRs3Frame_unserialize;
    return o;
 }
 function FRs3Frame_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._matrix = new SMatrix3d();
+   o._translation = new SPoint3();
+   o._quaternion = new SQuaternion();
+   o._scale = new SVector3();
 }
 function FRs3Frame_tick(){
    return this._tick;
 }
-function FRs3Frame_matrix(){
-   return this._matrix;
+function FRs3Frame_translation(){
+   return this._translation;
+}
+function FRs3Frame_quaternion(){
+   return this._quaternion;
+}
+function FRs3Frame_scale(){
+   return this._scale;
 }
 function FRs3Frame_unserialize(p){
    var o = this;
    o._tick = p.readUint16();
-   o._matrix.unserialize(p);
+   o._translation.unserialize(p);
+   o._quaternion.unserialize(p);
+   o._scale.unserialize(p);
 }
 function FRs3Geometry(o){
    o = RClass.inherits(this, o, FObject);
@@ -2312,6 +2326,9 @@ function SRd3PlayInfo(o){
    o.nextFrame    = null;
    o.rate         = 1.0;
    o.alpha        = 1.0;
+   o.translation  = new SPoint3();
+   o.quaternion   = new SQuaternion();
+   o.scale        = new SVector3();
    o.matrix       = new SMatrix3d();
    o.update       = SRd3PlayInfo_update;
    return o;
@@ -2325,22 +2342,20 @@ function SRd3PlayInfo_update(){
       return false;
    }
    var m = o.matrix;
-   var mc = o.currentFrame.matrix();
+   var ct = o.currentFrame.translation();
+   var cr = o.currentFrame.quaternion();
+   var cs = o.currentFrame.scale();
    var r = o.rate;
    if((r > 0) && (r < 1)){
-      var mn = o.nextFrame.matrix();
-      m.tx = mc.tx + (mn.tx - mc.tx) * r;
-      m.ty = mc.ty + (mn.ty - mc.ty) * r;
-      m.tz = mc.tz + (mn.tz - mc.tz) * r;
-      m.rx = mc.rx + (mn.rx - mc.rx) * r;
-      m.ry = mc.ry + (mn.ry - mc.ry) * r;
-      m.rz = mc.rz + (mn.rz - mc.rz) * r;
-      m.sx = mc.sx + (mn.sx - mc.sx) * r;
-      m.sy = mc.sy + (mn.sy - mc.sy) * r;
-      m.sz = mc.sz + (mn.sz - mc.sz) * r;
-      m.updateForce();
+      var nt = o.nextFrame.translation();
+      var nr = o.nextFrame.quaternion();
+      var ns = o.nextFrame.scale();
+      o.translation.slerp(ct, nt, r);
+      o.quaternion.slerp(cr, nr, r);
+      o.scale.slerp(cs, ns, r);
+      m.build(o.translation, o.quaternion, o.scale);
    }else{
-      m.assign(mc);
+      m.build(ct, cr, cs);
    }
    return true;
 }

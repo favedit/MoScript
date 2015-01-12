@@ -5456,40 +5456,30 @@ function SColor4_toString(){
 }
 function SMatrix3d(o){
    if(!o){o = this;}
-   o._dirty       = false;
-   o.tx           = 0.0;
-   o.ty           = 0.0;
-   o.tz           = 0.0;
-   o.rx           = 0.0;
-   o.ry           = 0.0;
-   o.rz           = 0.0;
-   o.sx           = 1.0;
-   o.sy           = 1.0;
-   o.sz           = 1.0;
-   o._data        = new Float32Array(16);
-   o.data         = SMatrix3d_data;
-   o.identity     = SMatrix3d_identity;
-   o.setTranslate = SMatrix3d_setTranslate
-   o.setRotation  = SMatrix3d_setRotation
-   o.setScale     = SMatrix3d_setScale
-   o.equalsData   = SMatrix3d_equalsData;
-   o.equals       = SMatrix3d_equals;
-   o.assignData   = SMatrix3d_assignData;
-   o.assign       = SMatrix3d_assign;
-   o.appendData   = SMatrix3d_appendData;
-   o.append       = SMatrix3d_append;
-   o.translate    = SMatrix3d_translate;
-   o.rotationX    = SMatrix3d_rotationX;
-   o.rotationY    = SMatrix3d_rotationY;
-   o.rotationZ    = SMatrix3d_rotationZ;
-   o.rotation     = SMatrix3d_rotation;
-   o.scale        = SMatrix3d_scale;
-   o.invert       = SMatrix3d_invert;
-   o.updateForce  = SMatrix3d_updateForce;
-   o.update       = SMatrix3d_update;
-   o.writeData    = SMatrix3d_writeData;
-   o.serialize    = SMatrix3d_serialize;
-   o.unserialize  = SMatrix3d_unserialize;
+   SMatrix4x4(o);
+   o._dirty         = false;
+   o.tx             = 0.0;
+   o.ty             = 0.0;
+   o.tz             = 0.0;
+   o.rx             = 0.0;
+   o.ry             = 0.0;
+   o.rz             = 0.0;
+   o.sx             = 1.0;
+   o.sy             = 1.0;
+   o.sz             = 1.0;
+   o.data           = SMatrix3d_data;
+   o.identity       = SMatrix3d_identity;
+   o.setTranslate   = SMatrix3d_setTranslate
+   o.setRotation    = SMatrix3d_setRotation
+   o.setScale       = SMatrix3d_setScale
+   o.equals         = SMatrix3d_equals;
+   o.assign         = SMatrix3d_assign;
+   o.append         = SMatrix3d_append;
+   o.build          = SMatrix3d_build;
+   o.updateForce    = SMatrix3d_updateForce;
+   o.update         = SMatrix3d_update;
+   o.serialize      = SMatrix3d_serialize;
+   o.unserialize    = SMatrix3d_unserialize;
    o.identity();
    return o;
 }
@@ -5528,226 +5518,42 @@ function SMatrix3d_setScale(x, y, z){
    o.sz = z;
    o._dirty = true;
 }
-function SMatrix3d_equalsData(p){
-   var d = this._data;
-   for(var i = 0; i < 16; i++){
-      if(d[i] != p[i]){
-         return false;
-      }
-   }
-   return true;
-}
 function SMatrix3d_equals(p){
    return this.equalsData(p._data);
-}
-function SMatrix3d_assignData(p){
-   var d = this._data;
-   for(var n = 0; n < 16; n++){
-      d[n] = p[n];
-   }
 }
 function SMatrix3d_assign(p){
    this.assignData(p._data);
 }
-function SMatrix3d_appendData(p){
-   var d = this._data;
-   var v00 = (d[ 0] * p[0]) + (d[ 1] * p[4]) + (d[ 2] * p[ 8]) + (d[ 3] * p[12]);
-   var v01 = (d[ 0] * p[1]) + (d[ 1] * p[5]) + (d[ 2] * p[ 9]) + (d[ 3] * p[13]);
-   var v02 = (d[ 0] * p[2]) + (d[ 1] * p[6]) + (d[ 2] * p[10]) + (d[ 3] * p[14]);
-   var v03 = (d[ 0] * p[3]) + (d[ 1] * p[7]) + (d[ 2] * p[11]) + (d[ 3] * p[15]);
-   var v04 = (d[ 4] * p[0]) + (d[ 5] * p[4]) + (d[ 6] * p[ 8]) + (d[ 7] * p[12]);
-   var v05 = (d[ 4] * p[1]) + (d[ 5] * p[5]) + (d[ 6] * p[ 9]) + (d[ 7] * p[13]);
-   var v06 = (d[ 4] * p[2]) + (d[ 5] * p[6]) + (d[ 6] * p[10]) + (d[ 7] * p[14]);
-   var v07 = (d[ 4] * p[3]) + (d[ 5] * p[7]) + (d[ 6] * p[11]) + (d[ 7] * p[15]);
-   var v08 = (d[ 8] * p[0]) + (d[ 9] * p[4]) + (d[10] * p[ 8]) + (d[11] * p[12]);
-   var v09 = (d[ 8] * p[1]) + (d[ 9] * p[5]) + (d[10] * p[ 9]) + (d[11] * p[13]);
-   var v10 = (d[ 8] * p[2]) + (d[ 9] * p[6]) + (d[10] * p[10]) + (d[11] * p[14]);
-   var v11 = (d[ 8] * p[3]) + (d[ 9] * p[7]) + (d[10] * p[11]) + (d[11] * p[15]);
-   var v12 = (d[12] * p[0]) + (d[13] * p[4]) + (d[14] * p[ 8]) + (d[15] * p[12]);
-   var v13 = (d[12] * p[1]) + (d[13] * p[5]) + (d[14] * p[ 9]) + (d[15] * p[13]);
-   var v14 = (d[12] * p[2]) + (d[13] * p[6]) + (d[14] * p[10]) + (d[15] * p[14]);
-   var v15 = (d[12] * p[3]) + (d[13] * p[7]) + (d[14] * p[11]) + (d[15] * p[15]);
-   d[ 0] = v00;
-   d[ 1] = v01;
-   d[ 2] = v02;
-   d[ 3] = v03;
-   d[ 4] = v04;
-   d[ 5] = v05;
-   d[ 6] = v06;
-   d[ 7] = v07;
-   d[ 8] = v08;
-   d[ 9] = v09;
-   d[10] = v10;
-   d[11] = v11;
-   d[12] = v12;
-   d[13] = v13;
-   d[14] = v14;
-   d[15] = v15;
-}
 function SMatrix3d_append(p){
    this.appendData(p._data);
 }
-function SMatrix3d_translate(x, y, z){
-   var v = RMath.float16;
-   v[ 0] = 1;
-   v[ 1] = 0;
-   v[ 2] = 0;
-   v[ 3] = 0;
-   v[ 4] = 0;
-   v[ 5] = 1;
-   v[ 6] = 0;
-   v[ 7] = 0;
-   v[ 8] = 0;
-   v[ 9] = 0;
-   v[10] = 1;
-   v[11] = 0;
-   v[12] = x;
-   v[13] = y;
-   v[14] = z;
-   v[15] = 1;
-   this.appendData(v);
-}
-function SMatrix3d_rotationX(p){
-   var rs = Math.sin(p);
-   var rc = Math.cos(p);
-   var v = RMath.float16;
-   v[ 0] = 1;
-   v[ 1] = 0;
-   v[ 2] = 0;
-   v[ 3] = 0;
-   v[ 4] = 0;
-   v[ 5] = rc;
-   v[ 6] = rs;
-   v[ 7] = 0;
-   v[ 8] = 0;
-   v[ 9] = -rs;
-   v[10] = rc;
-   v[11] = 0;
-   v[12] = 0;
-   v[13] = 0;
-   v[14] = 0;
-   v[15] = 1;
-   this.appendData(v);
-}
-function SMatrix3d_rotationY(p){
-   var rs = Math.sin(p);
-   var rc = Math.cos(p);
-   var v = RMath.float16;
-   v[ 0] = rc;
-   v[ 1] = 0;
-   v[ 2] = rs;
-   v[ 3] = 0;
-   v[ 4] = 0;
-   v[ 5] = 1;
-   v[ 6] = 0;
-   v[ 7] = 0;
-   v[ 8] = -rs;
-   v[ 9] = 0;
-   v[10] = rc;
-   v[11] = 0;
-   v[12] = 0;
-   v[13] = 0;
-   v[14] = 0;
-   v[15] = 1;
-   this.appendData(v);
-}
-function SMatrix3d_rotationZ(p){
-   var rs = Math.sin(p);
-   var rc = Math.cos(p);
-   var v = RMath.float16;
-   v[ 0] = rc;
-   v[ 1] = rs;
-   v[ 2] = 0;
-   v[ 3] = 0;
-   v[ 4] = -rs;
-   v[ 5] = rc;
-   v[ 6] = 1;
-   v[ 7] = 0;
-   v[ 8] = 0;
-   v[ 9] = 0;
-   v[10] = 1;
-   v[11] = 0;
-   v[12] = 0;
-   v[13] = 0;
-   v[14] = 0;
-   v[15] = 1;
-   this.appendData(v);
-}
-function SMatrix3d_rotation(x, y, z){
-   var rsx = Math.sin(x);
-   var rcx = Math.cos(x);
-   var rsy = Math.sin(y);
-   var rcy = Math.cos(y);
-   var rsz = Math.sin(z);
-   var rcz = Math.cos(z);
-   var v = RMath.float16;
-   v[ 0] = rcy * rcz;
-   v[ 1] = rcy * rsz;
-   v[ 2] = -rsy;
-   v[ 3] = 0;
-   v[ 4] = rsx * rsy * rcz - rcx * rsz;
-   v[ 5] = rsx * rsy * rsz + rcx * rcz;
-   v[ 6] = rsx * rcy;
-   v[ 7] = 0;
-   v[ 8] = rcx * rsy * rcz + rsx * rsz;
-   v[ 9] = rcx * rsy * rsz - rsx * rcx;
-   v[10] = rcx * rcy;
-   v[11] = 0;
-   v[12] = 0;
-   v[13] = 0;
-   v[14] = 0;
-   v[15] = 1;
-   this.appendData(v);
-}
-function SMatrix3d_scale(x, y, z){
-   var v = RMath.float16;
-   v[ 0] = x;
-   v[ 1] = 0;
-   v[ 2] = 0;
-   v[ 3] = 0;
-   v[ 4] = 0;
-   v[ 5] = y;
-   v[ 6] = 0;
-   v[ 7] = 0;
-   v[ 8] = 0;
-   v[ 9] = 0;
-   v[10] = z;
-   v[11] = 0;
-   v[12] = 0;
-   v[13] = 0;
-   v[14] = 0;
-   v[15] = 1;
-   this.appendData(v);
-}
-function SMatrix3d_invert(){
-   var o = this;
-   var d = o._data;
-   var v = RMath.float16;
-   v[ 0] =  (d[ 5] * d[10] * d[15]) - (d[ 5] * d[11] * d[14]) - (d[ 9] * d[ 6] * d[15]) + (d[ 9] * d[ 7] * d[14]) + (d[13] * d[ 6] * d[11]) - (d[13] * d[ 7] * d[10]);
-   v[ 4] = -(d[ 4] * d[10] * d[15]) + (d[ 4] * d[11] * d[14]) + (d[ 8] * d[ 6] * d[15]) - (d[ 8] * d[ 7] * d[14]) - (d[12] * d[ 6] * d[11]) + (d[12] * d[ 7] * d[10]);
-   v[ 8] =  (d[ 4] * d[ 9] * d[15]) - (d[ 4] * d[11] * d[13]) - (d[ 8] * d[ 5] * d[15]) + (d[ 8] * d[ 7] * d[13]) + (d[12] * d[ 5] * d[11]) - (d[12] * d[ 7] * d[ 9]);
-   v[12] = -(d[ 4] * d[ 9] * d[14]) + (d[ 4] * d[10] * d[13]) + (d[ 8] * d[ 5] * d[14]) - (d[ 8] * d[ 6] * d[13]) - (d[12] * d[ 5] * d[10]) + (d[12] * d[ 6] * d[ 9]);
-   v[ 1] = -(d[ 1] * d[10] * d[15]) + (d[ 1] * d[11] * d[14]) + (d[ 9] * d[ 2] * d[15]) - (d[ 9] * d[ 3] * d[14]) - (d[13] * d[ 2] * d[11]) + (d[13] * d[ 3] * d[10]);
-   v[ 5] =  (d[ 0] * d[10] * d[15]) - (d[ 0] * d[11] * d[14]) - (d[ 8] * d[ 2] * d[15]) + (d[ 8] * d[ 3] * d[14]) + (d[12] * d[ 2] * d[11]) - (d[12] * d[ 3] * d[10]);
-   v[ 9] = -(d[ 0] * d[ 9] * d[15]) + (d[ 0] * d[11] * d[13]) + (d[ 8] * d[ 1] * d[15]) - (d[ 8] * d[ 3] * d[13]) - (d[12] * d[ 1] * d[11]) + (d[12] * d[ 3] * d[ 9]);
-   v[13] =  (d[ 0] * d[ 9] * d[14]) - (d[ 0] * d[10] * d[13]) - (d[ 8] * d[ 1] * d[14]) + (d[ 8] * d[ 2] * d[13]) + (d[12] * d[ 1] * d[10]) - (d[12] * d[ 2] * d[ 9]);
-   v[ 2] =  (d[ 1] * d[ 6] * d[15]) - (d[ 1] * d[ 7] * d[14]) - (d[ 5] * d[ 2] * d[15]) + (d[ 5] * d[ 3] * d[14]) + (d[13] * d[ 2] * d[ 7]) - (d[13] * d[ 3] * d[ 6]);
-   v[ 6] = -(d[ 0] * d[ 6] * d[15]) + (d[ 0] * d[ 7] * d[14]) + (d[ 4] * d[ 2] * d[15]) - (d[ 4] * d[ 3] * d[14]) - (d[12] * d[ 2] * d[ 7]) + (d[12] * d[ 3] * d[ 6]);
-   v[10] =  (d[ 0] * d[ 5] * d[15]) - (d[ 0] * d[ 7] * d[13]) - (d[ 4] * d[ 1] * d[15]) + (d[ 4] * d[ 3] * d[13]) + (d[12] * d[ 1] * d[ 7]) - (d[12] * d[ 3] * d[ 5]);
-   v[14] = -(d[ 0] * d[ 5] * d[14]) + (d[ 0] * d[ 6] * d[13]) + (d[ 4] * d[ 1] * d[14]) - (d[ 4] * d[ 2] * d[13]) - (d[12] * d[ 1] * d[ 6]) + (d[12] * d[ 2] * d[ 5]);
-   v[ 3] = -(d[ 1] * d[ 6] * d[11]) + (d[ 1] * d[ 7] * d[10]) + (d[ 5] * d[ 2] * d[11]) - (d[ 5] * d[ 3] * d[10]) - (d[ 9] * d[ 2] * d[ 7]) + (d[ 9] * d[ 3] * d[ 6]);
-   v[ 7] =  (d[ 0] * d[ 6] * d[11]) - (d[ 0] * d[ 7] * d[10]) - (d[ 4] * d[ 2] * d[11]) + (d[ 4] * d[ 3] * d[10]) + (d[ 8] * d[ 2] * d[ 7]) - (d[ 8] * d[ 3] * d[ 6]);
-   v[11] = -(d[ 0] * d[ 5] * d[11]) + (d[ 0] * d[ 7] * d[ 9]) + (d[ 4] * d[ 1] * d[11]) - (d[ 4] * d[ 3] * d[ 9]) - (d[ 8] * d[ 1] * d[ 7]) + (d[ 8] * d[ 3] * d[ 5]);
-   v[15] =  (d[ 0] * d[ 5] * d[10]) - (d[ 0] * d[ 6] * d[ 9]) - (d[ 4] * d[ 1] * d[10]) + (d[ 4] * d[ 2] * d[ 9]) + (d[ 8] * d[ 1] * d[ 6]) - (d[ 8] * d[ 2] * d[ 5]);
-   var r = d[ 0] * v[ 0] + d[ 1] * v[ 4] + d[ 2] * v[ 8] + d[ 3] * v[12];
-   if(r == 0.0){
-     return false;
-   }
-   r = 1.0 / r;
-   for(var i = 0; i < 16; i++){
-      d[i] = v[i] * r;
-   }
-   return true;
+function SMatrix3d_build(t, r, s){
+   var d = this._data;
+   var x2 = r.x * r.x;
+   var y2 = r.y * r.y;
+   var z2 = r.z * r.z;
+   var xy = r.x * r.y;
+   var xz = r.x * r.z;
+   var yz = r.y * r.z;
+   var wx = r.w * r.x;
+   var wy = r.w * r.y;
+   var wz = r.w * r.z;
+   d[ 0] = (1.0 - 2.0 * (y2 + z2)) * s.x;
+   d[ 1] = 2.0 * (xy - wz) * s.x;
+   d[ 2] = 2.0 * (xz + wy) * s.x;
+   d[ 3] = 0.0;
+   d[ 4] = 2.0 * (xy + wz) * s.y;
+   d[ 5] = (1.0 - 2.0 * (x2 + z2)) * s.y;
+   d[ 6] = 2.0 * (yz - wx) * s.x;
+   d[ 7] = 0.0;
+   d[ 8] = 2.0 * (xz - wy) * s.z;
+   d[ 9] = 2.0 * (yz + wx) * s.z;
+   d[10] = (1.0 - 2.0 * (x2 + y2)) * s.z;
+   d[11] = 0.0;
+   d[12] = t.x;
+   d[13] = t.y;
+   d[14] = t.z;
+   d[15] = 1.0;
 }
 function SMatrix3d_updateForce(){
    var o = this;
@@ -5782,28 +5588,7 @@ function SMatrix3d_update(){
       o._dirty = false;
    }
 }
-function SMatrix3d_writeData(d, i){
-   var o = this;
-   var pd = o._data;
-   d[i + 0] = pd[ 0];
-   d[i + 1] = pd[ 4];
-   d[i + 2] = pd[ 8];
-   d[i + 3] = pd[12];
-   d[i + 4] = pd[ 1];
-   d[i + 5] = pd[ 5];
-   d[i + 6] = pd[ 9];
-   d[i + 7] = pd[13];
-   d[i + 8] = pd[ 2];
-   d[i + 9] = pd[ 6];
-   d[i +10] = pd[10];
-   d[i +11] = pd[14];
-   d[i +12] = pd[ 3];
-   d[i +13] = pd[ 7];
-   d[i +14] = pd[11];
-   d[i +15] = pd[15];
-}
 function SMatrix3d_serialize(p){
-   var o = this;
    var o = this;
    p.writeFloat(o.tx);
    p.writeFloat(o.ty);
@@ -5829,8 +5614,252 @@ function SMatrix3d_unserialize(p){
    o.updateForce();
 }
 function SMatrix4x4(o){
-   if(o){o = this}
+   if(!o){o = this;}
+   o._data      = new Array(16);
+   o.equalsData = SMatrix4x4_equalsData;
+   o.assignData = SMatrix4x4_assignData;
+   o.appendData = SMatrix4x4_appendData;
+   o.translate  = SMatrix4x4_translate;
+   o.rotationX  = SMatrix4x4_rotationX;
+   o.rotationY  = SMatrix4x4_rotationY;
+   o.rotationZ  = SMatrix4x4_rotationZ;
+   o.rotation   = SMatrix4x4_rotation;
+   o.scale      = SMatrix4x4_scale;
+   o.invert     = SMatrix4x4_invert;
+   o.writeData  = SMatrix4x4_writeData;
    return o;
+}
+function SMatrix4x4_equalsData(p){
+   var d = this._data;
+   for(var i = 0; i < 16; i++){
+      if(d[i] != p[i]){
+         return false;
+      }
+   }
+   return true;
+}
+function SMatrix4x4_assignData(p){
+   var d = this._data;
+   for(var n = 0; n < 16; n++){
+      d[n] = p[n];
+   }
+}
+function SMatrix4x4_appendData(p){
+   var d = this._data;
+   var v00 = (d[ 0] * p[0]) + (d[ 1] * p[4]) + (d[ 2] * p[ 8]) + (d[ 3] * p[12]);
+   var v01 = (d[ 0] * p[1]) + (d[ 1] * p[5]) + (d[ 2] * p[ 9]) + (d[ 3] * p[13]);
+   var v02 = (d[ 0] * p[2]) + (d[ 1] * p[6]) + (d[ 2] * p[10]) + (d[ 3] * p[14]);
+   var v03 = (d[ 0] * p[3]) + (d[ 1] * p[7]) + (d[ 2] * p[11]) + (d[ 3] * p[15]);
+   var v04 = (d[ 4] * p[0]) + (d[ 5] * p[4]) + (d[ 6] * p[ 8]) + (d[ 7] * p[12]);
+   var v05 = (d[ 4] * p[1]) + (d[ 5] * p[5]) + (d[ 6] * p[ 9]) + (d[ 7] * p[13]);
+   var v06 = (d[ 4] * p[2]) + (d[ 5] * p[6]) + (d[ 6] * p[10]) + (d[ 7] * p[14]);
+   var v07 = (d[ 4] * p[3]) + (d[ 5] * p[7]) + (d[ 6] * p[11]) + (d[ 7] * p[15]);
+   var v08 = (d[ 8] * p[0]) + (d[ 9] * p[4]) + (d[10] * p[ 8]) + (d[11] * p[12]);
+   var v09 = (d[ 8] * p[1]) + (d[ 9] * p[5]) + (d[10] * p[ 9]) + (d[11] * p[13]);
+   var v10 = (d[ 8] * p[2]) + (d[ 9] * p[6]) + (d[10] * p[10]) + (d[11] * p[14]);
+   var v11 = (d[ 8] * p[3]) + (d[ 9] * p[7]) + (d[10] * p[11]) + (d[11] * p[15]);
+   var v12 = (d[12] * p[0]) + (d[13] * p[4]) + (d[14] * p[ 8]) + (d[15] * p[12]);
+   var v13 = (d[12] * p[1]) + (d[13] * p[5]) + (d[14] * p[ 9]) + (d[15] * p[13]);
+   var v14 = (d[12] * p[2]) + (d[13] * p[6]) + (d[14] * p[10]) + (d[15] * p[14]);
+   var v15 = (d[12] * p[3]) + (d[13] * p[7]) + (d[14] * p[11]) + (d[15] * p[15]);
+   d[ 0] = v00;
+   d[ 1] = v01;
+   d[ 2] = v02;
+   d[ 3] = v03;
+   d[ 4] = v04;
+   d[ 5] = v05;
+   d[ 6] = v06;
+   d[ 7] = v07;
+   d[ 8] = v08;
+   d[ 9] = v09;
+   d[10] = v10;
+   d[11] = v11;
+   d[12] = v12;
+   d[13] = v13;
+   d[14] = v14;
+   d[15] = v15;
+}
+function SMatrix4x4_translate(x, y, z){
+   var v = RMath.float16;
+   v[ 0] = 1;
+   v[ 1] = 0;
+   v[ 2] = 0;
+   v[ 3] = 0;
+   v[ 4] = 0;
+   v[ 5] = 1;
+   v[ 6] = 0;
+   v[ 7] = 0;
+   v[ 8] = 0;
+   v[ 9] = 0;
+   v[10] = 1;
+   v[11] = 0;
+   v[12] = x;
+   v[13] = y;
+   v[14] = z;
+   v[15] = 1;
+   this.appendData(v);
+}
+function SMatrix4x4_rotationX(p){
+   var rs = Math.sin(p);
+   var rc = Math.cos(p);
+   var v = RMath.float16;
+   v[ 0] = 1;
+   v[ 1] = 0;
+   v[ 2] = 0;
+   v[ 3] = 0;
+   v[ 4] = 0;
+   v[ 5] = rc;
+   v[ 6] = rs;
+   v[ 7] = 0;
+   v[ 8] = 0;
+   v[ 9] = -rs;
+   v[10] = rc;
+   v[11] = 0;
+   v[12] = 0;
+   v[13] = 0;
+   v[14] = 0;
+   v[15] = 1;
+   this.appendData(v);
+}
+function SMatrix4x4_rotationY(p){
+   var rs = Math.sin(p);
+   var rc = Math.cos(p);
+   var v = RMath.float16;
+   v[ 0] = rc;
+   v[ 1] = 0;
+   v[ 2] = rs;
+   v[ 3] = 0;
+   v[ 4] = 0;
+   v[ 5] = 1;
+   v[ 6] = 0;
+   v[ 7] = 0;
+   v[ 8] = -rs;
+   v[ 9] = 0;
+   v[10] = rc;
+   v[11] = 0;
+   v[12] = 0;
+   v[13] = 0;
+   v[14] = 0;
+   v[15] = 1;
+   this.appendData(v);
+}
+function SMatrix4x4_rotationZ(p){
+   var rs = Math.sin(p);
+   var rc = Math.cos(p);
+   var v = RMath.float16;
+   v[ 0] = rc;
+   v[ 1] = rs;
+   v[ 2] = 0;
+   v[ 3] = 0;
+   v[ 4] = -rs;
+   v[ 5] = rc;
+   v[ 6] = 1;
+   v[ 7] = 0;
+   v[ 8] = 0;
+   v[ 9] = 0;
+   v[10] = 1;
+   v[11] = 0;
+   v[12] = 0;
+   v[13] = 0;
+   v[14] = 0;
+   v[15] = 1;
+   this.appendData(v);
+}
+function SMatrix4x4_rotation(x, y, z){
+   var rsx = Math.sin(x);
+   var rcx = Math.cos(x);
+   var rsy = Math.sin(y);
+   var rcy = Math.cos(y);
+   var rsz = Math.sin(z);
+   var rcz = Math.cos(z);
+   var v = RMath.float16;
+   v[ 0] = rcy * rcz;
+   v[ 1] = rcy * rsz;
+   v[ 2] = -rsy;
+   v[ 3] = 0;
+   v[ 4] = rsx * rsy * rcz - rcx * rsz;
+   v[ 5] = rsx * rsy * rsz + rcx * rcz;
+   v[ 6] = rsx * rcy;
+   v[ 7] = 0;
+   v[ 8] = rcx * rsy * rcz + rsx * rsz;
+   v[ 9] = rcx * rsy * rsz - rsx * rcx;
+   v[10] = rcx * rcy;
+   v[11] = 0;
+   v[12] = 0;
+   v[13] = 0;
+   v[14] = 0;
+   v[15] = 1;
+   this.appendData(v);
+}
+function SMatrix4x4_scale(x, y, z){
+   var v = RMath.float16;
+   v[ 0] = x;
+   v[ 1] = 0;
+   v[ 2] = 0;
+   v[ 3] = 0;
+   v[ 4] = 0;
+   v[ 5] = y;
+   v[ 6] = 0;
+   v[ 7] = 0;
+   v[ 8] = 0;
+   v[ 9] = 0;
+   v[10] = z;
+   v[11] = 0;
+   v[12] = 0;
+   v[13] = 0;
+   v[14] = 0;
+   v[15] = 1;
+   this.appendData(v);
+}
+function SMatrix4x4_invert(){
+   var o = this;
+   var d = o._data;
+   var v = RMath.float16;
+   v[ 0] =  (d[ 5] * d[10] * d[15]) - (d[ 5] * d[11] * d[14]) - (d[ 9] * d[ 6] * d[15]) + (d[ 9] * d[ 7] * d[14]) + (d[13] * d[ 6] * d[11]) - (d[13] * d[ 7] * d[10]);
+   v[ 4] = -(d[ 4] * d[10] * d[15]) + (d[ 4] * d[11] * d[14]) + (d[ 8] * d[ 6] * d[15]) - (d[ 8] * d[ 7] * d[14]) - (d[12] * d[ 6] * d[11]) + (d[12] * d[ 7] * d[10]);
+   v[ 8] =  (d[ 4] * d[ 9] * d[15]) - (d[ 4] * d[11] * d[13]) - (d[ 8] * d[ 5] * d[15]) + (d[ 8] * d[ 7] * d[13]) + (d[12] * d[ 5] * d[11]) - (d[12] * d[ 7] * d[ 9]);
+   v[12] = -(d[ 4] * d[ 9] * d[14]) + (d[ 4] * d[10] * d[13]) + (d[ 8] * d[ 5] * d[14]) - (d[ 8] * d[ 6] * d[13]) - (d[12] * d[ 5] * d[10]) + (d[12] * d[ 6] * d[ 9]);
+   v[ 1] = -(d[ 1] * d[10] * d[15]) + (d[ 1] * d[11] * d[14]) + (d[ 9] * d[ 2] * d[15]) - (d[ 9] * d[ 3] * d[14]) - (d[13] * d[ 2] * d[11]) + (d[13] * d[ 3] * d[10]);
+   v[ 5] =  (d[ 0] * d[10] * d[15]) - (d[ 0] * d[11] * d[14]) - (d[ 8] * d[ 2] * d[15]) + (d[ 8] * d[ 3] * d[14]) + (d[12] * d[ 2] * d[11]) - (d[12] * d[ 3] * d[10]);
+   v[ 9] = -(d[ 0] * d[ 9] * d[15]) + (d[ 0] * d[11] * d[13]) + (d[ 8] * d[ 1] * d[15]) - (d[ 8] * d[ 3] * d[13]) - (d[12] * d[ 1] * d[11]) + (d[12] * d[ 3] * d[ 9]);
+   v[13] =  (d[ 0] * d[ 9] * d[14]) - (d[ 0] * d[10] * d[13]) - (d[ 8] * d[ 1] * d[14]) + (d[ 8] * d[ 2] * d[13]) + (d[12] * d[ 1] * d[10]) - (d[12] * d[ 2] * d[ 9]);
+   v[ 2] =  (d[ 1] * d[ 6] * d[15]) - (d[ 1] * d[ 7] * d[14]) - (d[ 5] * d[ 2] * d[15]) + (d[ 5] * d[ 3] * d[14]) + (d[13] * d[ 2] * d[ 7]) - (d[13] * d[ 3] * d[ 6]);
+   v[ 6] = -(d[ 0] * d[ 6] * d[15]) + (d[ 0] * d[ 7] * d[14]) + (d[ 4] * d[ 2] * d[15]) - (d[ 4] * d[ 3] * d[14]) - (d[12] * d[ 2] * d[ 7]) + (d[12] * d[ 3] * d[ 6]);
+   v[10] =  (d[ 0] * d[ 5] * d[15]) - (d[ 0] * d[ 7] * d[13]) - (d[ 4] * d[ 1] * d[15]) + (d[ 4] * d[ 3] * d[13]) + (d[12] * d[ 1] * d[ 7]) - (d[12] * d[ 3] * d[ 5]);
+   v[14] = -(d[ 0] * d[ 5] * d[14]) + (d[ 0] * d[ 6] * d[13]) + (d[ 4] * d[ 1] * d[14]) - (d[ 4] * d[ 2] * d[13]) - (d[12] * d[ 1] * d[ 6]) + (d[12] * d[ 2] * d[ 5]);
+   v[ 3] = -(d[ 1] * d[ 6] * d[11]) + (d[ 1] * d[ 7] * d[10]) + (d[ 5] * d[ 2] * d[11]) - (d[ 5] * d[ 3] * d[10]) - (d[ 9] * d[ 2] * d[ 7]) + (d[ 9] * d[ 3] * d[ 6]);
+   v[ 7] =  (d[ 0] * d[ 6] * d[11]) - (d[ 0] * d[ 7] * d[10]) - (d[ 4] * d[ 2] * d[11]) + (d[ 4] * d[ 3] * d[10]) + (d[ 8] * d[ 2] * d[ 7]) - (d[ 8] * d[ 3] * d[ 6]);
+   v[11] = -(d[ 0] * d[ 5] * d[11]) + (d[ 0] * d[ 7] * d[ 9]) + (d[ 4] * d[ 1] * d[11]) - (d[ 4] * d[ 3] * d[ 9]) - (d[ 8] * d[ 1] * d[ 7]) + (d[ 8] * d[ 3] * d[ 5]);
+   v[15] =  (d[ 0] * d[ 5] * d[10]) - (d[ 0] * d[ 6] * d[ 9]) - (d[ 4] * d[ 1] * d[10]) + (d[ 4] * d[ 2] * d[ 9]) + (d[ 8] * d[ 1] * d[ 6]) - (d[ 8] * d[ 2] * d[ 5]);
+   var r = d[ 0] * v[ 0] + d[ 1] * v[ 4] + d[ 2] * v[ 8] + d[ 3] * v[12];
+   if(r == 0.0){
+     return false;
+   }
+   r = 1.0 / r;
+   for(var i = 0; i < 16; i++){
+      d[i] = v[i] * r;
+   }
+   return true;
+}
+function SMatrix4x4_writeData(d, i){
+   var o = this;
+   var pd = o._data;
+   d[i + 0] = pd[ 0];
+   d[i + 1] = pd[ 4];
+   d[i + 2] = pd[ 8];
+   d[i + 3] = pd[12];
+   d[i + 4] = pd[ 1];
+   d[i + 5] = pd[ 5];
+   d[i + 6] = pd[ 9];
+   d[i + 7] = pd[13];
+   d[i + 8] = pd[ 2];
+   d[i + 9] = pd[ 6];
+   d[i +10] = pd[10];
+   d[i +11] = pd[14];
+   d[i +12] = pd[ 3];
+   d[i +13] = pd[ 7];
+   d[i +14] = pd[11];
+   d[i +15] = pd[15];
 }
 function SOutline3(o){
    if(!o){o = this;}
@@ -6055,6 +6084,7 @@ function SPoint3(x, y, z){
    o.z           = z;
    o.set         = SPoint3_set;
    o.resize      = SPoint3_resize;
+   o.slerp       = SPoint3_slerp;
    o.serialize   = SPoint3_serialize;
    o.unserialize = SPoint3_unserialize;
    o.toString    = SPoint3_toString;
@@ -6084,6 +6114,12 @@ function SPoint3_resize(x, y, z){
    if(z != null){
       o.z += z;
    }
+}
+function SPoint3_slerp(v1, v2, r){
+   var o = this;
+   o.x = (v2.x - v1.x) * r + v1.x;
+   o.y = (v2.y - v1.y) * r + v1.y;
+   o.z = (v2.z - v1.z) * r + v1.z;
 }
 function SPoint3_serialize(p){
    var o = this;
@@ -6442,18 +6478,20 @@ function SSize3_dump(){
 }
 function SVector3(o){
    if(!o){o = this;}
-   o.x         = 0;
-   o.y         = 0;
-   o.z         = 0;
-   o._data     = null;
-   o.assign    = SVector3_assign;
-   o.set       = SVector3_set;
-   o.absolute  = SVector3_absolute;
-   o.normalize = SVector3_normalize;
-   o.dotPoint3 = SVector3_dotPoint3;
-   o.cross     = SVector3_cross;
-   o.cross2    = SVector3_cross2;
-   o.data      = SVector3_data;
+   o.x           = 0;
+   o.y           = 0;
+   o.z           = 0;
+   o.assign      = SVector3_assign;
+   o.set         = SVector3_set;
+   o.absolute    = SVector3_absolute;
+   o.normalize   = SVector3_normalize;
+   o.dotPoint3   = SVector3_dotPoint3;
+   o.cross       = SVector3_cross;
+   o.cross2      = SVector3_cross2;
+   o.slerp       = SVector3_slerp;
+   o.serialize   = SVector3_serialize;
+   o.unserialize = SVector3_unserialize;
+   o.toString    = SVector3_toString;
    return o;
 }
 function SVector3_assign(v){
@@ -6500,16 +6538,27 @@ function SVector3_cross2(po, pi){
    po.y = (o.z * pi.x) - (o.x * pi.z);
    po.z = (o.x * pi.y) - (o.y * pi.x);
 }
-function SVector3_data(){
+function SVector3_slerp(v1, v2, r){
    var o = this;
-   var d = o._data;
-   if(d == null){
-      d = o._data = new Float32Array(3);
-   }
-   d[0] = o.x;
-   d[1] = o.y;
-   d[2] = o.z;
-   return d;
+   o.x = (v2.x - v1.x) * r + v1.x;
+   o.y = (v2.y - v1.y) * r + v1.y;
+   o.z = (v2.z - v1.z) * r + v1.z;
+}
+function SVector3_serialize(p){
+   var o = this;
+   p.writeFloat(o.x);
+   p.writeFloat(o.y);
+   p.writeFloat(o.z);
+}
+function SVector3_unserialize(p){
+   var o = this;
+   o.x = p.readFloat();
+   o.y = p.readFloat();
+   o.z = p.readFloat();
+}
+function SVector3_toString(){
+   var o = this;
+   return o.x + ',' + o.y + ',' + o.z;
 }
 function AEvent(o, n, l){
    var o = this;
