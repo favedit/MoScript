@@ -3569,11 +3569,13 @@ function RLogger_info(sf, ms, pm){
    var c = as.length;
    for(var n = 2; n < c; n++){
       var a = as[n];
-      var s = null;
-      if(typeof(a) == 'function'){
-         s = RMethod.name(a);
-      }else{
-         s = a.toString();
+      var s = '';
+      if(a){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
       }
       ms = ms.replace('{' + (n - 1) + '}', s);
    }
@@ -5485,6 +5487,7 @@ function SMatrix3d(o){
    o.invert       = SMatrix3d_invert;
    o.updateForce  = SMatrix3d_updateForce;
    o.update       = SMatrix3d_update;
+   o.writeData    = SMatrix3d_writeData;
    o.serialize    = SMatrix3d_serialize;
    o.unserialize  = SMatrix3d_unserialize;
    o.identity();
@@ -5758,19 +5761,19 @@ function SMatrix3d_updateForce(){
    d[ 0] = rcy * rcz * o.sx;
    d[ 1] = rcy * rsz * o.sx;
    d[ 2] = -rsy * o.sx;
-   d[ 3] = 0;
+   d[ 3] = 0.0;
    d[ 4] = (rsx * rsy * rcz - rcx * rsz) * o.sy;
    d[ 5] = (rsx * rsy * rsz + rcx * rcz) * o.sy;
    d[ 6] = rsx * rcy * o.sy;
-   d[ 7] = 0;
+   d[ 7] = 0.0;
    d[ 8] = (rcx * rsy * rcz + rsx * rsz) * o.sz;
    d[ 9] = (rcx * rsy * rsz - rsx * rcz) * o.sz;
    d[10] = rcx * rcy * o.sz;
-   d[11] = 0;
+   d[11] = 0.0;
    d[12] = o.tx;
    d[13] = o.ty;
    d[14] = o.tz;
-   d[15] = 1;
+   d[15] = 1.0;
 }
 function SMatrix3d_update(){
    var o = this;
@@ -5778,6 +5781,26 @@ function SMatrix3d_update(){
       o.updateForce();
       o._dirty = false;
    }
+}
+function SMatrix3d_writeData(d, i){
+   var o = this;
+   var pd = o._data;
+   d[i + 0] = pd[ 0];
+   d[i + 1] = pd[ 4];
+   d[i + 2] = pd[ 8];
+   d[i + 3] = pd[12];
+   d[i + 4] = pd[ 1];
+   d[i + 5] = pd[ 5];
+   d[i + 6] = pd[ 9];
+   d[i + 7] = pd[13];
+   d[i + 8] = pd[ 2];
+   d[i + 9] = pd[ 6];
+   d[i +10] = pd[10];
+   d[i +11] = pd[14];
+   d[i +12] = pd[ 3];
+   d[i +13] = pd[ 7];
+   d[i +14] = pd[11];
+   d[i +15] = pd[15];
 }
 function SMatrix3d_serialize(p){
    var o = this;
@@ -6504,6 +6527,23 @@ var EBrowser = new function EBrowser(){
    o.Explorer = 1;
    o.FireFox  = 2;
    o.Chrome  = 3;
+   return o;
+}
+var EDataType = new function EDataType(){
+   var o = this;
+   o.Unknown =  0;
+   o.Boolean =  1;
+   o.Int8    =  2;
+   o.Int16   =  3;
+   o.Int32   =  4;
+   o.Int64   =  5;
+   o.Uint8   =  6;
+   o.Uint16  =  7;
+   o.Uint32  =  8;
+   o.Uint64  =  9;
+   o.Float   = 10;
+   o.Double  = 11;
+   o.String  = 12;
    return o;
 }
 var EHttpContent = new function EHttpContent(){
@@ -8974,6 +9014,50 @@ function RStyle_nvl(s, n){
 }
 function RStyle_style(c, n){
    return RClass.name(c) + '_' + n;
+}
+var RTypeArray = new function RTypeArray(){
+   var o = this;
+   o._data    = new Object();
+   o.createArray = RTypeArray_createArray;
+   o.findTemp    = RTypeArray_findTemp;
+   return o;
+}
+function RTypeArray_createArray(t, l){
+   switch(t){
+      case EDataType.Boolean:
+      case EDataType.Int8:
+         return new Int8Array(l);
+      case EDataType.Int16:
+         return new Int16Array(l);
+      case EDataType.Int32:
+         return new Int32Array(l);
+      case EDataType.Int64:
+         return new Int64Array(l);
+      case EDataType.Uint8:
+         return new Uint8Array(l);
+      case EDataType.Uint16:
+         return new Uint16Array(l);
+      case EDataType.Uint32:
+         return new Uint32Array(l);
+      case EDataType.Float:
+         return new Float32Array(l);
+      case EDataType.Double:
+         return new Float64Array(l);
+   }
+   throw new TError('Create unknown type array. (type={1}, length={2})', t, l);
+}
+function RTypeArray_findTemp(t, l){
+   var o = this;
+   var d = o._data;
+   var s = d[t];
+   if(s == null){
+      s = d[t] = new Object();
+   }
+   var r = s[l];
+   if(r == null){
+      r = s[l] = o.createArray(t, l);
+   }
+   return r;
 }
 var RWindow = new function RWindow(){
    var o = this;

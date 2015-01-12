@@ -105,8 +105,8 @@ function FDisplay_process(){
    var rs = o._renderables;
    if(rs != null){
       var c = rs.count();
-      for(var n = 0; n < c; n++){
-         rs.get(n).process();
+      for(var i = 0; i < c; i++){
+         rs.get(i).process();
       }
    }
    return true;
@@ -197,18 +197,16 @@ function FDisplayContainer_filterRenderables(p){
    }
    return true;
 }
-function FDisplayContainer_process(){
+function FDisplayContainer_process(p){
    var o = this;
    o.__base.FDisplay.process.call(o, p);
    var ds = o._displays;
    if(ds != null){
       var c = ds.count();
-      for(var n = 0; n < c; n++){
-         var d = ds.get(n);
-         d.filterRenderables(p);
+      for(var i = 0; i < c; i++){
+         ds.get(i).process(p);
       }
    }
-   return true;
 }
 function FDisplayContainer_displays(){
    var o = this;
@@ -258,7 +256,7 @@ function FDrawable_set(l, t, w, h){
 }
 function FStage(o){
    o = RClass.inherits(this, o, FObject);
-   o._layers   = null;
+   o._layers        = null;
    o.lsnsEnterFrame = null;
    o.lsnsLeaveFrame = null;
    o.construct     = FStage_construct;
@@ -289,11 +287,11 @@ function FStage_layers(){
 function FStage_process(){
    var o = this;
    o.lsnsEnterFrame.process(o);
-   var ss = o._stages;
-   if(ss != null){
-      var sc = ss.count();
-      for(var n = 0; n < sc; n++){
-         ss.value(n).process();
+   var ls = o._layers;
+   if(ls != null){
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         ls.value(i).process();
       }
    }
    o.lsnsLeaveFrame.process(o);

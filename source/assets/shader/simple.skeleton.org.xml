@@ -42,8 +42,8 @@
       attribute vec3 va_tangent;
       attribute vec4 va_bone_index;
       attribute vec4 va_bone_weight;
-      uniform mat4 vc_bone_matrix[32];
       uniform mat4 vc_model_matrix;
+      uniform mat4 vc_bone_matrix[32];
       uniform mat4 vc_vp_matrix;
       uniform vec3 vc_camera_position;
       uniform vec3 vc_light_direction;
@@ -53,14 +53,21 @@
       varying vec3 v_camera_ts;
       varying vec3 v_light_ts;
       void main(void){
-         vec4 inputPosition = vec4(va_position, 1.0);
-   
+         ivec4 matrixIndex = ivec4(va_bone_index) * 3;
+         vec4 inputPosition = vec4(va_position.xyz, 1.0);
+
          vec4 position = vec4(0.0, 0.0, 0.0, 1.0);
-         position += inputPosition * vc_bone_matrix[int(va_bone_index.x)] * va_bone_weight.x;
-         position += inputPosition * vc_bone_matrix[int(va_bone_index.y)] * va_bone_weight.y;
-         position += inputPosition * vc_bone_matrix[int(va_bone_index.z)] * va_bone_weight.z;
-         position += inputPosition * vc_bone_matrix[int(va_bone_index.w)] * va_bone_weight.w;
+         # position += inputPosition * vc_bone_matrix[int(va_bone_index.x)] * va_bone_weight.x;
+         # position += inputPosition * vc_bone_matrix[int(va_bone_index.y)] * va_bone_weight.y;
+         # position += inputPosition * vc_bone_matrix[int(va_bone_index.z)] * va_bone_weight.z;
+         # position += inputPosition * vc_bone_matrix[int(va_bone_index.w)] * va_bone_weight.w;
+         position += inputPosition * vc_bone_matrix[int(va_bone_index.x)];
+         position += inputPosition * vc_bone_matrix[int(va_bone_index.y)];
+         position += inputPosition * vc_bone_matrix[int(va_bone_index.z)];
+         position += inputPosition * vc_bone_matrix[int(va_bone_index.w)];
+
          vec4 modelPosition = position * vc_model_matrix;
+         gl_Position = modelPosition * vc_vp_matrix;
 
          vec3 normal = normalize((va_normal.xyz - 0.5) * 2.0 * mat3(vc_model_matrix));
          vec3 binormal = normalize((va_binormal - 0.5) * 2.0 * mat3(vc_model_matrix));
@@ -69,7 +76,6 @@
          mat3 matrixTs = mat3(tangent, binormal, normal);
          vec3 cameraDirection = vc_camera_position - modelPosition.xyz;
 
-         gl_Position = modelPosition * vc_vp_matrix;
          v_model_position = modelPosition;
          v_coord = va_coord;
          v_normal = normal;

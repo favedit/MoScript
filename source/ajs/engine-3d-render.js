@@ -52,7 +52,7 @@ function FRd3Animation_loadResource(p){
    var rts = p.tracks();
    var c = rts.count();
    for(var i = 0; i < c; i++){
-      var rt = c = rts.get(i);
+      var rt = rts.get(i);
       var t = RClass.create(FRd3Track);
       t.loadResource(rt);
       o._tracks.push(t);
@@ -61,7 +61,11 @@ function FRd3Animation_loadResource(p){
    var c = bs.count();
    for(var i = 0; i < c; i++){
       var b = bs.value(i);
-      var t = o.findTrack(b.id());
+      var bi = b.id();
+      var t = o.findTrack(bi);
+      if(t == null){
+         throw new TError('Track is not exists. (bone_id={1})', bi);
+      }
       b.setTrackResource(t);
    }
 }
@@ -71,7 +75,7 @@ function FRd3Animation_process(){
    if(o._lastTick == 0){
       o._lastTick = t;
    }
-   var ct = o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate * RMath.PERCENT_1000;
+   var ct = o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate * 3.0;
    var bs = o._bones;
    var c = bs.count();
    for(var i = 0; i < c; i++){
@@ -92,6 +96,7 @@ function FRd3Bone(o){
    o._trackResource   = null;
    o.construct        = FRd3Bone_construct;
    o.id               = FRd3Bone_id;
+   o.matrix           = FRd3Bone_matrix;
    o.trackResource    = FRd3Bone_trackResource;
    o.setTrackResource = FRd3Bone_setTrackResource;
    o.loadResource     = FRd3Bone_loadResource;
@@ -106,6 +111,9 @@ function FRd3Bone_construct(){
 }
 function FRd3Bone_id(){
    return this._boneResource.id();
+}
+function FRd3Bone_matrix(){
+   return this._matrix;
 }
 function FRd3Bone_trackResource(){
    return this._trackResource;
@@ -175,11 +183,12 @@ function FRd3Cube_setup(p){
 function FRd3Geometry(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._ready            = false;
+   o._resource         = null;
    o._vertexBuffers    = null;
    o._indexBuffer      = null;
    o._resourceMaterial = null;
    o._material         = null;
-   o._bones            = null;
+   o._boneIds          = null;
    o._textures         = null;
    o.construct         = FRd3Geometry_construct;
    o.testReady         = FRd3Geometry_testReady;
@@ -188,6 +197,7 @@ function FRd3Geometry(o){
    o.indexBuffer       = FRd3Geometry_indexBuffer;
    o.material          = FRd3Geometry_material;
    o.findTexture       = FRd3Geometry_findTexture;
+   o.boneIds           = FRd3Geometry_boneIds;
    o.loadResource      = FRd3Geometry_loadResource;
    return o;
 }
@@ -237,9 +247,13 @@ function FRd3Geometry_material(){
 function FRd3Geometry_findTexture(p){
    return this._textures.get(p);
 }
+function FRd3Geometry_boneIds(p){
+   return this._boneIds;
+}
 function FRd3Geometry_loadResource(p){
    var o = this;
    var c = o._context;
+   o._resource = p;
    var rvs = p.vertexBuffers();
    var rvc = rvs.count();
    for(var n = 0; n < rvc; n++){
@@ -253,8 +267,7 @@ function FRd3Geometry_loadResource(p){
    var rib = p.indexBuffer();
    var ib = o._indexBuffer = c.createIndexBuffer();
    ib.upload(rib.data(), rib.count());
-   alert(p.boneIds().length());
-   o._bones            = null;
+   o._boneIds = p.boneIds();
    var mc = p.materialCode();
    var mtl = o._material = RConsole.find(FRs3ThemeConsole).find(mc);
    var mts = mtl.textures();
@@ -675,6 +688,8 @@ function FRd3Track(o){
    o._frameTick   = 0;
    o._resource    = null;
    o.boneId       = FRd3Track_boneId;
+   o.matrix       = FRd3Track_matrix;
+   o.matrixInvert = FRd3Track_matrixInvert;
    o.loadResource = FRd3Track_loadResource;
    o.calculate    = FRd3Track_calculate;
    o.dispose      = FRd3Track_dispose;
@@ -682,6 +697,12 @@ function FRd3Track(o){
 }
 function FRd3Track_boneId(){
    return this._resource.boneId();
+}
+function FRd3Track_matrix(){
+   return this._resource.matrix();
+}
+function FRd3Track_matrixInvert(){
+   return this._resource.matrixInvert();
 }
 function FRd3Track_loadResource(p){
    var o = this;
@@ -698,8 +719,8 @@ function FRd3Track_calculate(pi, pt){
    if(fc == 0){
       return false;
    }
-   if(p < 0){
-      p = -p;
+   if(pt < 0){
+      pt = -pt;
    }
    var ft = o._frameTick;
    var i = parseInt(pt / ft) % fc;
@@ -743,11 +764,23 @@ function SRd3PlayInfo_update(){
    if(o.nextFrame == null){
       return false;
    }
-   var currentMatrix = o.currentFrame.matrix();
-   if(rate != 0){
-      o.matrix.assign(currentMatrix);
+   var m = o.matrix;
+   var mc = o.currentFrame.matrix();
+   var r = o.rate;
+   if((r > 0) && (r < 1)){
+      var mn = o.nextFrame.matrix();
+      m.tx = mc.tx + (mn.tx - mc.tx) * r;
+      m.ty = mc.ty + (mn.ty - mc.ty) * r;
+      m.tz = mc.tz + (mn.tz - mc.tz) * r;
+      m.rx = mc.rx + (mn.rx - mc.rx) * r;
+      m.ry = mc.ry + (mn.ry - mc.ry) * r;
+      m.rz = mc.rz + (mn.rz - mc.rz) * r;
+      m.sx = mc.sx + (mn.sx - mc.sx) * r;
+      m.sy = mc.sy + (mn.sy - mc.sy) * r;
+      m.sz = mc.sz + (mn.sz - mc.sz) * r;
+      m.updateForce();
    }else{
-      o.matrix.assign(currentMatrix);
+      m.assign(mc);
    }
    return true;
 }

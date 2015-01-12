@@ -22,12 +22,15 @@ function FDisplay3d_dispose(){
 function FGeometry3d(o){
    o = RClass.inherits(this, o, FG3dRenderable);
    o._renderable      = null;
+   o._bones           = null;
    o.construct        = FGeometry3d_construct;
    o.testVisible      = FGeometry3d_testVisible;
    o.findVertexBuffer = FGeometry3d_findVertexBuffer;
    o.indexBuffer      = FGeometry3d_indexBuffer;
    o.findTexture      = FGeometry3d_findTexture;
+   o.bones            = FGeometry3d_bones;
    o.load             = FGeometry3d_load;
+   o.build            = FGeometry3d_build;
    return o;
 }
 function FGeometry3d_construct(){
@@ -47,16 +50,37 @@ function FGeometry3d_indexBuffer(){
 function FGeometry3d_findTexture(p){
    return this._renderable.findTexture(p);
 }
+function FGeometry3d_bones(p){
+   return this._bones;
+}
 function FGeometry3d_load(p){
    var o = this;
    o._effectName = p.material().effectName();
    o._renderable = p;
 }
+function FGeometry3d_build(p){
+   var o = this;
+   var r = o._renderable;
+   var rbs = r.boneIds();
+   if(rbs){
+      var bs = o._bones = new TObjects();
+      var c = rbs.length();
+      for(var i = 0; i < c; i++){
+         var bi = rbs.get(i);
+         var b = p.findBone(bi);
+         if(b == null){
+            throw new TError("Bone is not exists. (bone_id={1})", bi);
+         }
+         bs.push(b);
+      }
+   }
+}
 function FModel3d(o){
    o = RClass.inherits(this, o, FDisplay3d);
-   o._dataReady   = false;
+   o._dataReady     = false;
    o._renderables   = null;
    o._animation     = null;
+   o._geometrys     = null;
    o._renderable    = null;
    o.testReady      = FModel3d_testReady;
    o.loadRenderable = FModel3d_loadRenderable;
@@ -75,27 +99,37 @@ function FModel3d_loadRenderable(p){
    if(rgs){
       var c = rgs.count();
       if(c > 0){
+         var gs = o._geometrys = new TObjects();
          var rs = o.renderables();
          for(var i = 0; i < c; i++){
             var rg = rgs.get(i);
             var g = RClass.create(FGeometry3d);
             g.load(rg);
+            gs.push(g);
             rs.push(g);
          }
       }
    }
+   var a = null;
    var ra = r.animation();
    if(ra){
-      var a = o._animation = RClass.create(FRd3Animation);
-      a.loadResource(ra);
+      a = o._animation = RClass.create(FRd3Animation);
       var rk = r.skeleton();
       var rbs = rk.bones();
       var c = rbs.count();
       for(var i = 0; i < c; i++){
-         var rb = c = rbs.value(i);
+         var rb = rbs.value(i);
          var b = RClass.create(FRd3Bone);
          b.loadResource(rb);
-         a.bones().set(rb.id(), rb);
+         a.bones().set(b.id(), b);
+      }
+      a.loadResource(ra);
+   }
+   var gs = o._geometrys;
+   if(gs){
+      var c = gs.count();
+      for(var i = 0; i < c; i++){
+         gs.get(i).build(a);
       }
    }
    o._dataReady = true;

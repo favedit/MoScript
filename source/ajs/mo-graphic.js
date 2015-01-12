@@ -17,7 +17,10 @@ function FGraphicContext_dispose(){
 }
 function FGraphicRenderable(o){
    o = RClass.inherits(this, o, FObject);
+   o.process = FGraphicRenderable_process;
    return o;
+}
+function FGraphicRenderable_process(){
 }
 function FG2dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
@@ -1248,6 +1251,7 @@ function FG3dSampleSkeletonEffect(o){
    o = RClass.inherits(this, o, FG3dEffect);
    o._context       = null;
    o._program       = null;
+   o._data          = new Float32Array();
    o.drawRenderable = FG3dSampleSkeletonEffect_drawRenderable;
    o.load           = FG3dSampleSkeletonEffect_load;
    return o;
@@ -1288,12 +1292,26 @@ function FG3dSampleSkeletonEffect_drawRenderable(pr, r){
          }
       }
    }
-   p.setParameter('vc_model_matrix', r.matrix().data());
-   p.setParameter('vc_vp_matrix', prvp.data());
+   p.setParameter('vc_model_matrix', r.matrix());
+   p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
    p.setParameter('vc_light_direction', prld);
    p.setParameter('fc_camera_position', prcp);
    p.setParameter('fc_light_direction', prld);
+   var bs = r.bones();
+   if(bs){
+      var bc = bs.count();
+      if(bc > 32){
+         bc = 32;
+      }
+      var d = RTypeArray.findTemp(EDataType.Float, 16 * bc);
+      for(var i = 0; i < bc; i++){
+         var b = bs.get(i);
+         var m = b.matrix();
+         m.writeData(d, 16 * i);
+      }
+      p.setParameter('vc_bone_matrix', d);
+   }
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
 }
@@ -1545,24 +1563,15 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          break;
       }
       case EG3dParameterFormat.Float4x4:{
-         var dt = o._data16;
-         dt[ 0] = pd[ 0];
-         dt[ 1] = pd[ 4];
-         dt[ 2] = pd[ 8];
-         dt[ 3] = pd[12];
-         dt[ 4] = pd[ 1];
-         dt[ 5] = pd[ 5];
-         dt[ 6] = pd[ 9];
-         dt[ 7] = pd[13];
-         dt[ 8] = pd[ 2];
-         dt[ 9] = pd[ 6];
-         dt[10] = pd[10];
-         dt[11] = pd[14];
-         dt[12] = pd[ 3];
-         dt[13] = pd[ 7];
-         dt[14] = pd[11];
-         dt[15] = pd[15];
-         g.uniformMatrix4fv(slot, g.FALSE, dt);
+         if(pd.constructor == Float32Array){
+            g.uniformMatrix4fv(slot, g.FALSE, pd);
+         }else if(pd.constructor == SMatrix3d){
+            var dt = o._data16;
+            pd.writeData(dt, 0);
+            g.uniformMatrix4fv(slot, g.FALSE, dt);
+         }else{
+            throw new TError('Unknown data type.');
+         }
          r = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
          break;
       }

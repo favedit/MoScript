@@ -17,5 +17,8 @@ function FGraphicContext_dispose(){
 }
 function FGraphicRenderable(o){
    o = RClass.inherits(this, o, FObject);
+   o.process = FGraphicRenderable_process;
    return o;
+}
+function FGraphicRenderable_process(){
 }

@@ -35,9 +35,9 @@ function RStage_process(){
       o.lsnsEnterFrame.process(o);
       var ss = o._stages;
       if(ss != null){
-         var sc = ss.count();
-         for(var n = 0; n < sc; n++){
-            ss.value(n).process();
+         var c = ss.count();
+         for(var i = 0; i < c; i++){
+            ss.value(i).process();
          }
       }
       o.lsnsLeaveFrame.process(o);

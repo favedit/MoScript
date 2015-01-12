@@ -6,19 +6,8 @@
 <SCRIPT language='javascript' src='../../ajs/mo-core.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/mo-graphic.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/mo-engine.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../ajs/engine-3d-res.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../ajs/control.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
-
-<SCRIPT language='javascript' src='../../6-engine-3d-resource/FRs3Resource.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../6-engine-3d-resource/FRs3VertexBuffer.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../6-engine-3d-resource/FRs3IndexBuffer.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../6-engine-3d-resource/FRs3Geometry.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../6-engine-3d-resource/FRs3Model.js'></SCRIPT>
-
-<SCRIPT language='javascript' src='../../5-graphic-3d-wgl/FWglContext.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../5-graphic-3d-wgl/FWglProgram.js'></SCRIPT>
 </HEAD>
 
 <SCRIPT>
@@ -96,7 +85,7 @@ function onThemeLoad(){
    // 启动处理
    RStage.lsnsEnterFrame.register(null, onEnterFrame);
    RStage.start();
-   //onEnterFrame();
+   RDump.dump(stage, _dump);
 }
 
 function _load(){

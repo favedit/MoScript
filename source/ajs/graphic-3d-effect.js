@@ -107,6 +107,7 @@ function FG3dSampleSkeletonEffect(o){
    o = RClass.inherits(this, o, FG3dEffect);
    o._context       = null;
    o._program       = null;
+   o._data          = new Float32Array();
    o.drawRenderable = FG3dSampleSkeletonEffect_drawRenderable;
    o.load           = FG3dSampleSkeletonEffect_load;
    return o;
@@ -147,12 +148,26 @@ function FG3dSampleSkeletonEffect_drawRenderable(pr, r){
          }
       }
    }
-   p.setParameter('vc_model_matrix', r.matrix().data());
-   p.setParameter('vc_vp_matrix', prvp.data());
+   p.setParameter('vc_model_matrix', r.matrix());
+   p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
    p.setParameter('vc_light_direction', prld);
    p.setParameter('fc_camera_position', prcp);
    p.setParameter('fc_light_direction', prld);
+   var bs = r.bones();
+   if(bs){
+      var bc = bs.count();
+      if(bc > 32){
+         bc = 32;
+      }
+      var d = RTypeArray.findTemp(EDataType.Float, 16 * bc);
+      for(var i = 0; i < bc; i++){
+         var b = bs.get(i);
+         var m = b.matrix();
+         m.writeData(d, 16 * i);
+      }
+      p.setParameter('vc_bone_matrix', d);
+   }
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
 }

@@ -2091,11 +2091,13 @@ function RLogger_info(sf, ms, pm){
    var c = as.length;
    for(var n = 2; n < c; n++){
       var a = as[n];
-      var s = null;
-      if(typeof(a) == 'function'){
-         s = RMethod.name(a);
-      }else{
-         s = a.toString();
+      var s = '';
+      if(a){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
       }
       ms = ms.replace('{' + (n - 1) + '}', s);
    }
