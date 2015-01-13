@@ -1,4 +1,5 @@
 refer http://blog.csdn.net/ldpxxx/article/details/17285849
+refer https://www.khronos.org/registry/webgl/specs/latest/2.0/
 
 内容        内容管道             资源
 FContent -> FContentPipeline - > FResource
