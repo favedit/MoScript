@@ -19,6 +19,7 @@ function FG3dRenderable(o){
    o.construct     = FG3dRenderable_construct;
    o.matrix        = FG3dRenderable_matrix;
    o.effectName    = FG3dRenderable_effectName;
+   o.effect        = FG3dRenderable_effect;
    o.material      = FG3dRenderable_material;
    o.testVisible   = RMethod.virtual(o, 'testVisible');
    o.update        = FG3dRenderable_update;
@@ -55,6 +56,26 @@ function FG3dRenderable_matrix(){
 //==========================================================
 function FG3dRenderable_effectName(){
    return this._effectName;
+}
+
+//==========================================================
+// <T>获得效果器名称。</T>
+//
+// @method
+// @return String 效果器名称
+//==========================================================
+function FG3dRenderable_effect(){
+   return this._effect;
+}
+
+//==========================================================
+// <T>设置效果器名称。</T>
+//
+// @method
+// @param p:effect:FG3dEffect 效果器
+//==========================================================
+function FG3dRenderable_setEffect(p){
+   this._effect = p;
 }
 
 //==========================================================

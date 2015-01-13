@@ -350,17 +350,38 @@ function FG3dEffect_loadUrl(u){
 }
 function FG3dEffectConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._effects = null;
-   o._path = "/assets/shader/";
-   o.construct  = FG3dEffectConsole_construct;
-   o.find       = FG3dEffectConsole_find;
-   o.findByName = FG3dEffectConsole_findByName;
+   o._effects         = null;
+   o._path            = "/assets/shader/";
+   o._effectInfo      = null;
+   o.construct        = FG3dEffectConsole_construct;
+   o.buildEffectInfo  = FG3dEffectConsole_buildEffectInfo;
+   o.find             = FG3dEffectConsole_find;
+   o.findByName       = FG3dEffectConsole_findByName;
+   o.findByRenderable = FG3dEffectConsole_findByRenderable;
    return o;
 }
 function FG3dEffectConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._effects = new TDictionary();
+   o._effectInfo = new SG3dEffectInfo();
+}
+function FG3dEffectConsole_buildEffectInfo(f, r){
+   var o = this;
+   var vs = r.vertexBuffers();
+   var c = vs.count();
+   for(var i = 0; i < c; i++){
+      var v = vs.get(i);
+      f.attributes[v.name()] = true;
+   }
+   var ts = r.textures();
+   var c = ts.count();
+   for(var i = 0; i < c; i++){
+      var n = ts.name(i);
+      var t = ts.value(i);
+      f.textures[n] = t;
+   }
+   var m = r.material();
 }
 function FG3dEffectConsole_find(c, p){
    var o = this;
@@ -390,6 +411,26 @@ function FG3dEffectConsole_findByName(c, p){
       e.load();
       RLogger.info(o, 'Create effect. (name={1}, instance={2})', p, e);
       es.set(p, e);
+   }
+   return e;
+}
+function FG3dEffectConsole_findByRenderable(pc, pr){
+   var o = this;
+   var en = pr.material().info().effectName;
+   var es = o._effects;
+   var e = es.get(en);
+   if(e == null){
+      o.buildEffectInfo(o._effectInfo, pr);
+      if(en == 'skeleton'){
+         e = RClass.create(FG3dSampleSkeletonEffect);
+      }else{
+         e = RClass.create(FG3dSampleAutomaticEffect);
+      }
+      e.linkContext(pc);
+      e._path = o._path;
+      e.load();
+      RLogger.info(o, 'Create effect. (name={1}, instance={2})', en, e);
+      es.set(en, e);
    }
    return e;
 }
@@ -538,6 +579,7 @@ function FG3dRenderable(o){
    o.construct     = FG3dRenderable_construct;
    o.matrix        = FG3dRenderable_matrix;
    o.effectName    = FG3dRenderable_effectName;
+   o.effect        = FG3dRenderable_effect;
    o.material      = FG3dRenderable_material;
    o.testVisible   = RMethod.virtual(o, 'testVisible');
    o.update        = FG3dRenderable_update;
@@ -554,6 +596,12 @@ function FG3dRenderable_matrix(){
 }
 function FG3dRenderable_effectName(){
    return this._effectName;
+}
+function FG3dRenderable_effect(){
+   return this._effect;
+}
+function FG3dRenderable_setEffect(p){
+   this._effect = p;
 }
 function FG3dRenderable_material(){
    return this._material;
@@ -639,8 +687,10 @@ function FG3dTechniquePass_drawRegion(p){
    var c = rs.count();
    for(var n = 0; n < c; n++){
       var r = rs.get(n);
-      var en = r.effectName();
-      var e = ec.findByName(o._context, en);
+      var e = r.effect();
+      if(e == null){
+         e = ec.findByRenderable(o._context, r);
+      }
       o._context.setProgram(e.program());
       e.drawRenderable(p, r);
    }
@@ -725,9 +775,49 @@ function REngine3d_createContext(c, h){
    o.contexts.push(r);
    return r;
 }
+function SG3dEffectInfo(o){
+   if(!o){o = this;}
+   o._code                 = null;
+   o.fillModeCd            = EG3dFillMode.Fill;
+   o.optionCullMode        = true;
+   o.cullModeCd            = EG3dCullMode.Front;
+   o.optionDepthTest       = true;
+   o.depthModeCd           = EG3dDepthMode.Less;
+   o.optionDepthWrite      = true;
+   o.optionBlendMode       = false;
+   o.blendSourceMode       = EG3dBlendMode.SourceAlpha;
+   o.blendTargetMode       = EG3dBlendMode.OneMinusSourceAlpha;
+   o.optionAlphaTest       = false;
+   o.supportInstance       = false;
+   o.vertexColor           = false;
+   o.vertexCoord           = false;
+   o.vertexNormal          = false;
+   o.vertexNormalFull      = false;
+   o.vertexSkeleton        = false;
+   o.fragmentAlpha         = false;
+   o.fragmentBump          = false;
+   o.fragmentAmbient       = false;
+   o.fragmentDiffuse       = false;
+   o.fragmentDiffuseView   = false;
+   o.fragmentSpecularColor = false;
+   o.fragmentSpecularLevel = false;
+   o.fragmentSpecularView  = false;
+   o.fragmentEnvironment   = false;
+   o.fragmentLight         = false;
+   o.fragmentReflect       = false;
+   o.fragmentRefract       = false;
+   o.fragmentEmissive      = false;
+   o.fragmentHeight        = false;
+   o.attributes            = new Object();
+   o.textures              = new Object();
+   o.code                  = SG3dEffectInfo_code;
+   return o;
+}
+function SG3dEffectInfo_code(p){
+   var o = this;
+}
 function SG3dMaterialInfo(o){
    if(!o){o = this;}
-   o = RClass.inherits(this, o, FObject);
    o.effectName    = null;
    o.transformName = null;
    o.optionLight = null;
@@ -1423,7 +1513,6 @@ function FG3dSampleSkeletonEffect_drawRenderable(pr, r){
       }
    }
    var m = r.material();
-   debugger
    p.setParameter('vc_model_matrix', r.matrix());
    p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
@@ -1473,10 +1562,14 @@ function FWglContext(o){
    o = RClass.inherits(this, o, FG3dContext);
    o._native             = null;
    o._textureActiveSlot  = 0;
+   o._parameters         = null;
+   o._extensions         = null;
    o._data9              = null;
    o._data16             = null;
    o.construct           = FWglContext_construct;
    o.linkCanvas          = FWglContext_linkCanvas;
+   o.parameters          = FWglContext_parameters;
+   o.extensions          = FWglContext_extensions;
    o.createProgram       = FWglContext_createProgram;
    o.createVertexBuffer  = FWglContext_createVertexBuffer;
    o.createIndexBuffer   = FWglContext_createIndexBuffer;
@@ -1520,6 +1613,160 @@ function FWglContext_linkCanvas(h){
    o.setViewPort(h.width, h.height);
    o.setDepthMode(true, EG3dDepthMode.LessEqual);
    o.setCullingMode(true, EG3dCullMode.Front);
+}
+function FWglContext_parameters(){
+   var o = this;
+   var r = o._parameters;
+   if(r){
+      return r;
+   }
+   var ns =['ACTIVE_TEXTURE',
+      'ALIASED_LINE_WIDTH_RANGE',
+      'ALIASED_POINT_SIZE_RANGE',
+      'ALPHA_BITS',
+      'ARRAY_BUFFER_BINDING',
+      'BLEND',
+      'BLEND_COLOR',
+      'BLEND_DST_ALPHA',
+      'BLEND_DST_RGB',
+      'BLEND_EQUATION_ALPHA',
+      'BLEND_EQUATION_RGB',
+      'BLEND_SRC_ALPHA',
+      'BLEND_SRC_RGB',
+      'BLUE_BITS',
+      'COLOR_CLEAR_VALUE',
+      'COLOR_WRITEMASK',
+      'COMPRESSED_TEXTURE_FORMATS',
+      'CULL_FACE',
+      'CULL_FACE_MODE',
+      'CURRENT_PROGRAM',
+      'DEPTH_BITS',
+      'DEPTH_CLEAR_VALUE',
+      'DEPTH_FUNC',
+      'DEPTH_RANGE',
+      'DEPTH_TEST',
+      'DEPTH_WRITEMASK',
+      'DITHER',
+      'ELEMENT_ARRAY_BUFFER_BINDING',
+      'FRAMEBUFFER_BINDING',
+      'FRONT_FACE',
+      'GENERATE_MIPMAP_HINT',
+      'GREEN_BITS',
+      'IMPLEMENTATION_COLOR_READ_FORMAT',
+      'IMPLEMENTATION_COLOR_READ_TYPE',
+      'LINE_WIDTH',
+      'MAX_COMBINED_TEXTURE_IMAGE_UNITS',
+      'MAX_CUBE_MAP_TEXTURE_SIZE',
+      'MAX_FRAGMENT_UNIFORM_VECTORS',
+      'MAX_RENDERBUFFER_SIZE',
+      'MAX_TEXTURE_IMAGE_UNITS',
+      'MAX_TEXTURE_SIZE',
+      'MAX_VARYING_VECTORS',
+      'MAX_VERTEX_ATTRIBS',
+      'MAX_VERTEX_TEXTURE_IMAGE_UNITS',
+      'MAX_VERTEX_UNIFORM_VECTORS',
+      'MAX_VIEWPORT_DIMS',
+      'PACK_ALIGNMENT',
+      'POLYGON_OFFSET_FACTOR',
+      'POLYGON_OFFSET_FILL',
+      'POLYGON_OFFSET_UNITS',
+      'RED_BITS',
+      'RENDERBUFFER_BINDING',
+      'RENDERER',
+      'SAMPLE_BUFFERS',
+      'SAMPLE_COVERAGE_INVERT',
+      'SAMPLE_COVERAGE_VALUE',
+      'SAMPLES',
+      'SCISSOR_BOX',
+      'SCISSOR_TEST',
+      'SHADING_LANGUAGE_VERSION',
+      'STENCIL_BACK_FAIL',
+      'STENCIL_BACK_FUNC',
+      'STENCIL_BACK_PASS_DEPTH_FAIL',
+      'STENCIL_BACK_PASS_DEPTH_PASS',
+      'STENCIL_BACK_REF',
+      'STENCIL_BACK_VALUE_MASK',
+      'STENCIL_BACK_WRITEMASK',
+      'STENCIL_BITS',
+      'STENCIL_CLEAR_VALUE',
+      'STENCIL_FAIL',
+      'STENCIL_FUNC',
+      'STENCIL_PASS_DEPTH_FAIL',
+      'STENCIL_PASS_DEPTH_PASS',
+      'STENCIL_REF',
+      'STENCIL_TEST',
+      'STENCIL_VALUE_MASK',
+      'STENCIL_WRITEMASK',
+      'SUBPIXEL_BITS',
+      'TEXTURE_BINDING_2D',
+      'TEXTURE_BINDING_CUBE_MAP',
+      'UNPACK_ALIGNMENT',
+      'UNPACK_COLORSPACE_CONVERSION_WEBGL',
+      'UNPACK_FLIP_Y_WEBGL',
+      'UNPACK_PREMULTIPLY_ALPHA_WEBGL',
+      'VENDOR',
+      'VERSION',
+      'VIEWPORT'];
+   var g = o._native;
+   var c = ns.length;
+   r = new Object();
+   for(var i = 0; i < c; i++){
+      var n = ns[i];
+      r[n] = g.getParameter(g[n]);
+   }
+   o._parameters = r;
+   return r;
+}
+function FWglContext_extensions(){
+   var o = this;
+   var r = o._extensions;
+   if(r){
+      return r;
+   }
+   var ns =[
+      'ANGLE_instanced_arrays',
+      'EXT_blend_minmax',
+      'EXT_color_buffer_float',
+      'EXT_color_buffer_half_float',
+      'EXT_disjoint_timer_query',
+      'EXT_frag_depth',
+      'EXT_sRGB',
+      'EXT_shader_texture_lod',
+      'EXT_texture_filter_anisotropic',
+      'OES_element_index_uint',
+      'OES_standard_derivatives',
+      'OES_texture_float',
+      'OES_texture_float_linear',
+      'OES_texture_half_float',
+      'OES_texture_half_float_linear',
+      'OES_vertex_array_object',
+      'WEBGL_color_buffer_float',
+      'WEBGL_compressed_texture_atc',
+      'WEBGL_compressed_texture_es3',
+      'WEBGL_compressed_texture_etc1',
+      'WEBGL_compressed_texture_pvrtc',
+      'WEBGL_compressed_texture_s3tc',
+      'WEBGL_debug_renderer_info',
+      'WEBGL_debug_shader_precision',
+      'WEBGL_debug_shaders',
+      'WEBGL_depth_texture',
+      'WEBGL_draw_buffers',
+      'WEBGL_draw_elements_no_range_check',
+      'WEBGL_dynamic_texture',
+      'WEBGL_lose_context',
+      'WEBGL_security_sensitive_resources',
+      'WEBGL_shared_resources',
+      'WEBGL_subscribe_uniform',
+      'WEBGL_texture_from_depth_video'];
+   var g = o._native;
+   var c = ns.length;
+   r = new Object();
+   for(var i = 0; i < c; i++){
+      var n = ns[i];
+      r[n] = g.getExtension(n);
+   }
+   o._extensions = r;
+   return r;
 }
 function FWglContext_createProgram(){
    var o = this;

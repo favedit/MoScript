@@ -55,14 +55,7 @@ function onEnterFrame(){
 function onThemeLoad(){
    var hCanvas = document.getElementById('_canvas');
    context = REngine3d.createContext(FWglContext, hCanvas);
-   RDump.dump(context, _dump);
-   var g = context._native;
-   var ss = g.getContextAttributes();
-   RDump.dump(ss, _dump);
-   return;
-   //debugger
-   //var g = context._native;
-   //var s = g.getInteger(g.MAX_VERTEX_ATTRIBS);
+   //RDump.dump(context, _dump);
 
    stage = RClass.create(FSimpleStage3d);
    stage.backgroundColor().set(1, 1, 1, 1);

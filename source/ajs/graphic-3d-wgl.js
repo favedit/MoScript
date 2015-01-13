@@ -2,10 +2,14 @@ function FWglContext(o){
    o = RClass.inherits(this, o, FG3dContext);
    o._native             = null;
    o._textureActiveSlot  = 0;
+   o._parameters         = null;
+   o._extensions         = null;
    o._data9              = null;
    o._data16             = null;
    o.construct           = FWglContext_construct;
    o.linkCanvas          = FWglContext_linkCanvas;
+   o.parameters          = FWglContext_parameters;
+   o.extensions          = FWglContext_extensions;
    o.createProgram       = FWglContext_createProgram;
    o.createVertexBuffer  = FWglContext_createVertexBuffer;
    o.createIndexBuffer   = FWglContext_createIndexBuffer;
@@ -49,6 +53,160 @@ function FWglContext_linkCanvas(h){
    o.setViewPort(h.width, h.height);
    o.setDepthMode(true, EG3dDepthMode.LessEqual);
    o.setCullingMode(true, EG3dCullMode.Front);
+}
+function FWglContext_parameters(){
+   var o = this;
+   var r = o._parameters;
+   if(r){
+      return r;
+   }
+   var ns =['ACTIVE_TEXTURE',
+      'ALIASED_LINE_WIDTH_RANGE',
+      'ALIASED_POINT_SIZE_RANGE',
+      'ALPHA_BITS',
+      'ARRAY_BUFFER_BINDING',
+      'BLEND',
+      'BLEND_COLOR',
+      'BLEND_DST_ALPHA',
+      'BLEND_DST_RGB',
+      'BLEND_EQUATION_ALPHA',
+      'BLEND_EQUATION_RGB',
+      'BLEND_SRC_ALPHA',
+      'BLEND_SRC_RGB',
+      'BLUE_BITS',
+      'COLOR_CLEAR_VALUE',
+      'COLOR_WRITEMASK',
+      'COMPRESSED_TEXTURE_FORMATS',
+      'CULL_FACE',
+      'CULL_FACE_MODE',
+      'CURRENT_PROGRAM',
+      'DEPTH_BITS',
+      'DEPTH_CLEAR_VALUE',
+      'DEPTH_FUNC',
+      'DEPTH_RANGE',
+      'DEPTH_TEST',
+      'DEPTH_WRITEMASK',
+      'DITHER',
+      'ELEMENT_ARRAY_BUFFER_BINDING',
+      'FRAMEBUFFER_BINDING',
+      'FRONT_FACE',
+      'GENERATE_MIPMAP_HINT',
+      'GREEN_BITS',
+      'IMPLEMENTATION_COLOR_READ_FORMAT',
+      'IMPLEMENTATION_COLOR_READ_TYPE',
+      'LINE_WIDTH',
+      'MAX_COMBINED_TEXTURE_IMAGE_UNITS',
+      'MAX_CUBE_MAP_TEXTURE_SIZE',
+      'MAX_FRAGMENT_UNIFORM_VECTORS',
+      'MAX_RENDERBUFFER_SIZE',
+      'MAX_TEXTURE_IMAGE_UNITS',
+      'MAX_TEXTURE_SIZE',
+      'MAX_VARYING_VECTORS',
+      'MAX_VERTEX_ATTRIBS',
+      'MAX_VERTEX_TEXTURE_IMAGE_UNITS',
+      'MAX_VERTEX_UNIFORM_VECTORS',
+      'MAX_VIEWPORT_DIMS',
+      'PACK_ALIGNMENT',
+      'POLYGON_OFFSET_FACTOR',
+      'POLYGON_OFFSET_FILL',
+      'POLYGON_OFFSET_UNITS',
+      'RED_BITS',
+      'RENDERBUFFER_BINDING',
+      'RENDERER',
+      'SAMPLE_BUFFERS',
+      'SAMPLE_COVERAGE_INVERT',
+      'SAMPLE_COVERAGE_VALUE',
+      'SAMPLES',
+      'SCISSOR_BOX',
+      'SCISSOR_TEST',
+      'SHADING_LANGUAGE_VERSION',
+      'STENCIL_BACK_FAIL',
+      'STENCIL_BACK_FUNC',
+      'STENCIL_BACK_PASS_DEPTH_FAIL',
+      'STENCIL_BACK_PASS_DEPTH_PASS',
+      'STENCIL_BACK_REF',
+      'STENCIL_BACK_VALUE_MASK',
+      'STENCIL_BACK_WRITEMASK',
+      'STENCIL_BITS',
+      'STENCIL_CLEAR_VALUE',
+      'STENCIL_FAIL',
+      'STENCIL_FUNC',
+      'STENCIL_PASS_DEPTH_FAIL',
+      'STENCIL_PASS_DEPTH_PASS',
+      'STENCIL_REF',
+      'STENCIL_TEST',
+      'STENCIL_VALUE_MASK',
+      'STENCIL_WRITEMASK',
+      'SUBPIXEL_BITS',
+      'TEXTURE_BINDING_2D',
+      'TEXTURE_BINDING_CUBE_MAP',
+      'UNPACK_ALIGNMENT',
+      'UNPACK_COLORSPACE_CONVERSION_WEBGL',
+      'UNPACK_FLIP_Y_WEBGL',
+      'UNPACK_PREMULTIPLY_ALPHA_WEBGL',
+      'VENDOR',
+      'VERSION',
+      'VIEWPORT'];
+   var g = o._native;
+   var c = ns.length;
+   r = new Object();
+   for(var i = 0; i < c; i++){
+      var n = ns[i];
+      r[n] = g.getParameter(g[n]);
+   }
+   o._parameters = r;
+   return r;
+}
+function FWglContext_extensions(){
+   var o = this;
+   var r = o._extensions;
+   if(r){
+      return r;
+   }
+   var ns =[
+      'ANGLE_instanced_arrays',
+      'EXT_blend_minmax',
+      'EXT_color_buffer_float',
+      'EXT_color_buffer_half_float',
+      'EXT_disjoint_timer_query',
+      'EXT_frag_depth',
+      'EXT_sRGB',
+      'EXT_shader_texture_lod',
+      'EXT_texture_filter_anisotropic',
+      'OES_element_index_uint',
+      'OES_standard_derivatives',
+      'OES_texture_float',
+      'OES_texture_float_linear',
+      'OES_texture_half_float',
+      'OES_texture_half_float_linear',
+      'OES_vertex_array_object',
+      'WEBGL_color_buffer_float',
+      'WEBGL_compressed_texture_atc',
+      'WEBGL_compressed_texture_es3',
+      'WEBGL_compressed_texture_etc1',
+      'WEBGL_compressed_texture_pvrtc',
+      'WEBGL_compressed_texture_s3tc',
+      'WEBGL_debug_renderer_info',
+      'WEBGL_debug_shader_precision',
+      'WEBGL_debug_shaders',
+      'WEBGL_depth_texture',
+      'WEBGL_draw_buffers',
+      'WEBGL_draw_elements_no_range_check',
+      'WEBGL_dynamic_texture',
+      'WEBGL_lose_context',
+      'WEBGL_security_sensitive_resources',
+      'WEBGL_shared_resources',
+      'WEBGL_subscribe_uniform',
+      'WEBGL_texture_from_depth_video'];
+   var g = o._native;
+   var c = ns.length;
+   r = new Object();
+   for(var i = 0; i < c; i++){
+      var n = ns[i];
+      r[n] = g.getExtension(n);
+   }
+   o._extensions = r;
+   return r;
 }
 function FWglContext_createProgram(){
    var o = this;

@@ -40,8 +40,10 @@ function FG3dTechniquePass_drawRegion(p){
    var c = rs.count();
    for(var n = 0; n < c; n++){
       var r = rs.get(n);
-      var en = r.effectName();
-      var e = ec.findByName(o._context, en);
+      var e = r.effect();
+      if(e == null){
+         e = ec.findByRenderable(o._context, r);
+      }
       o._context.setProgram(e.program());
       e.drawRenderable(p, r);
    }

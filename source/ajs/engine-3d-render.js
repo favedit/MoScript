@@ -197,6 +197,7 @@ function FRd3Geometry(o){
    o.indexBuffer       = FRd3Geometry_indexBuffer;
    o.material          = FRd3Geometry_material;
    o.findTexture       = FRd3Geometry_findTexture;
+   o.textures          = FRd3Geometry_textures;
    o.boneIds           = FRd3Geometry_boneIds;
    o.loadResource      = FRd3Geometry_loadResource;
    return o;
@@ -246,6 +247,9 @@ function FRd3Geometry_material(){
 }
 function FRd3Geometry_findTexture(p){
    return this._textures.get(p);
+}
+function FRd3Geometry_textures(){
+   return this._textures;
 }
 function FRd3Geometry_boneIds(p){
    return this._boneIds;

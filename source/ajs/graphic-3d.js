@@ -264,17 +264,38 @@ function FG3dEffect_loadUrl(u){
 }
 function FG3dEffectConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._effects = null;
-   o._path = "/assets/shader/";
-   o.construct  = FG3dEffectConsole_construct;
-   o.find       = FG3dEffectConsole_find;
-   o.findByName = FG3dEffectConsole_findByName;
+   o._effects         = null;
+   o._path            = "/assets/shader/";
+   o._effectInfo      = null;
+   o.construct        = FG3dEffectConsole_construct;
+   o.buildEffectInfo  = FG3dEffectConsole_buildEffectInfo;
+   o.find             = FG3dEffectConsole_find;
+   o.findByName       = FG3dEffectConsole_findByName;
+   o.findByRenderable = FG3dEffectConsole_findByRenderable;
    return o;
 }
 function FG3dEffectConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._effects = new TDictionary();
+   o._effectInfo = new SG3dEffectInfo();
+}
+function FG3dEffectConsole_buildEffectInfo(f, r){
+   var o = this;
+   var vs = r.vertexBuffers();
+   var c = vs.count();
+   for(var i = 0; i < c; i++){
+      var v = vs.get(i);
+      f.attributes[v.name()] = true;
+   }
+   var ts = r.textures();
+   var c = ts.count();
+   for(var i = 0; i < c; i++){
+      var n = ts.name(i);
+      var t = ts.value(i);
+      f.textures[n] = t;
+   }
+   var m = r.material();
 }
 function FG3dEffectConsole_find(c, p){
    var o = this;
@@ -304,6 +325,26 @@ function FG3dEffectConsole_findByName(c, p){
       e.load();
       RLogger.info(o, 'Create effect. (name={1}, instance={2})', p, e);
       es.set(p, e);
+   }
+   return e;
+}
+function FG3dEffectConsole_findByRenderable(pc, pr){
+   var o = this;
+   var en = pr.material().info().effectName;
+   var es = o._effects;
+   var e = es.get(en);
+   if(e == null){
+      o.buildEffectInfo(o._effectInfo, pr);
+      if(en == 'skeleton'){
+         e = RClass.create(FG3dSampleSkeletonEffect);
+      }else{
+         e = RClass.create(FG3dSampleAutomaticEffect);
+      }
+      e.linkContext(pc);
+      e._path = o._path;
+      e.load();
+      RLogger.info(o, 'Create effect. (name={1}, instance={2})', en, e);
+      es.set(en, e);
    }
    return e;
 }
@@ -452,6 +493,7 @@ function FG3dRenderable(o){
    o.construct     = FG3dRenderable_construct;
    o.matrix        = FG3dRenderable_matrix;
    o.effectName    = FG3dRenderable_effectName;
+   o.effect        = FG3dRenderable_effect;
    o.material      = FG3dRenderable_material;
    o.testVisible   = RMethod.virtual(o, 'testVisible');
    o.update        = FG3dRenderable_update;
@@ -468,6 +510,12 @@ function FG3dRenderable_matrix(){
 }
 function FG3dRenderable_effectName(){
    return this._effectName;
+}
+function FG3dRenderable_effect(){
+   return this._effect;
+}
+function FG3dRenderable_setEffect(p){
+   this._effect = p;
 }
 function FG3dRenderable_material(){
    return this._material;
@@ -553,8 +601,10 @@ function FG3dTechniquePass_drawRegion(p){
    var c = rs.count();
    for(var n = 0; n < c; n++){
       var r = rs.get(n);
-      var en = r.effectName();
-      var e = ec.findByName(o._context, en);
+      var e = r.effect();
+      if(e == null){
+         e = ec.findByRenderable(o._context, r);
+      }
       o._context.setProgram(e.program());
       e.drawRenderable(p, r);
    }
@@ -639,9 +689,49 @@ function REngine3d_createContext(c, h){
    o.contexts.push(r);
    return r;
 }
+function SG3dEffectInfo(o){
+   if(!o){o = this;}
+   o._code                 = null;
+   o.fillModeCd            = EG3dFillMode.Fill;
+   o.optionCullMode        = true;
+   o.cullModeCd            = EG3dCullMode.Front;
+   o.optionDepthTest       = true;
+   o.depthModeCd           = EG3dDepthMode.Less;
+   o.optionDepthWrite      = true;
+   o.optionBlendMode       = false;
+   o.blendSourceMode       = EG3dBlendMode.SourceAlpha;
+   o.blendTargetMode       = EG3dBlendMode.OneMinusSourceAlpha;
+   o.optionAlphaTest       = false;
+   o.supportInstance       = false;
+   o.vertexColor           = false;
+   o.vertexCoord           = false;
+   o.vertexNormal          = false;
+   o.vertexNormalFull      = false;
+   o.vertexSkeleton        = false;
+   o.fragmentAlpha         = false;
+   o.fragmentBump          = false;
+   o.fragmentAmbient       = false;
+   o.fragmentDiffuse       = false;
+   o.fragmentDiffuseView   = false;
+   o.fragmentSpecularColor = false;
+   o.fragmentSpecularLevel = false;
+   o.fragmentSpecularView  = false;
+   o.fragmentEnvironment   = false;
+   o.fragmentLight         = false;
+   o.fragmentReflect       = false;
+   o.fragmentRefract       = false;
+   o.fragmentEmissive      = false;
+   o.fragmentHeight        = false;
+   o.attributes            = new Object();
+   o.textures              = new Object();
+   o.code                  = SG3dEffectInfo_code;
+   return o;
+}
+function SG3dEffectInfo_code(p){
+   var o = this;
+}
 function SG3dMaterialInfo(o){
    if(!o){o = this;}
-   o = RClass.inherits(this, o, FObject);
    o.effectName    = null;
    o.transformName = null;
    o.optionLight = null;

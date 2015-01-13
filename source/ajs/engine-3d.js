@@ -28,8 +28,10 @@ function FGeometry3d(o){
    o.construct         = FGeometry3d_construct;
    o.testVisible       = FGeometry3d_testVisible;
    o.findVertexBuffer  = FGeometry3d_findVertexBuffer;
+   o.vertexBuffers     = FGeometry3d_vertexBuffers;
    o.indexBuffer       = FGeometry3d_indexBuffer;
    o.findTexture       = FGeometry3d_findTexture;
+   o.textures          = FGeometry3d_textures;
    o.bones             = FGeometry3d_bones;
    o.load              = FGeometry3d_load;
    o.build             = FGeometry3d_build;
@@ -53,11 +55,17 @@ function FGeometry3d_testVisible(p){
 function FGeometry3d_findVertexBuffer(p){
    return this._renderable.findVertexBuffer(p);
 }
+function FGeometry3d_vertexBuffers(){
+   return this._renderable.vertexBuffers();
+}
 function FGeometry3d_indexBuffer(){
    return this._renderable.indexBuffer();
 }
 function FGeometry3d_findTexture(p){
    return this._renderable.findTexture(p);
+}
+function FGeometry3d_textures(){
+   return this._renderable.textures();
 }
 function FGeometry3d_bones(p){
    return this._bones;

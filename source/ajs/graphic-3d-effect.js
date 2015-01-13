@@ -150,7 +150,6 @@ function FG3dSampleSkeletonEffect_drawRenderable(pr, r){
       }
    }
    var m = r.material();
-   debugger
    p.setParameter('vc_model_matrix', r.matrix());
    p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
