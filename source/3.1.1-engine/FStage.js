@@ -8,6 +8,7 @@ function FStage(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
+   o._statusActive  = false;
    o._layers        = null;
    //..........................................................
    // @listener
@@ -18,6 +19,8 @@ function FStage(o){
    o.construct     = FStage_construct;
    o.registerLayer = RStage_registerLayer;
    o.layers        = FStage_layers;
+   o.active        = FStage_active;
+   o.deactive      = FStage_deactive;
    o.process       = FStage_process;
    o.dispose       = FStage_dispose;
    return o;
@@ -60,6 +63,44 @@ function RStage_registerLayer(n, l){
 //==========================================================
 function FStage_layers(){
    return this._layers;
+}
+
+//==========================================================
+// <T>激活处理。</T>
+//
+// @method
+//==========================================================
+function FStage_active(){
+   var o = this;
+   // 设置状态
+   o._statusActive = true;
+   // 层集合处理
+   var ls = o._layers;
+   if(ls != null){
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         ls.value(i).active();
+      }
+   }
+}
+
+//==========================================================
+// <T>取消激活处理。</T>
+//
+// @method
+//==========================================================
+function FStage_deactive(){
+   var o = this;
+   // 层集合处理
+   var ls = o._layers;
+   if(ls != null){
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         ls.value(i).deactive();
+      }
+   }
+   // 设置状态
+   o._statusActive = false;
 }
 
 //==========================================================

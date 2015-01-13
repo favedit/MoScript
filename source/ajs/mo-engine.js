@@ -235,12 +235,21 @@ function FDisplayContainer_dispose(){
 }
 function FDisplayLayer(o){
    o = RClass.inherits(this, o, FDisplayContainer);
-   o.construct = FDisplayLayer_construct;
+   o._statusActive = false;
+   o.construct     = FDisplayLayer_construct;
+   o.active        = FDisplayLayer_active;
+   o.deactive      = FDisplayLayer_deactive;
    return o;
 }
 function FDisplayLayer_construct(){
    var o = this;
    o.__base.FDisplayContainer.construct.call(o);
+}
+function FDisplayLayer_active(){
+   this._statusActive = true;
+}
+function FDisplayLayer_deactive(){
+   this._statusActive = false;
 }
 function FDrawable(o){
    o = RClass.inherits(this, o, FObject);
@@ -256,12 +265,15 @@ function FDrawable_set(l, t, w, h){
 }
 function FStage(o){
    o = RClass.inherits(this, o, FObject);
+   o._statusActive  = false;
    o._layers        = null;
    o.lsnsEnterFrame = null;
    o.lsnsLeaveFrame = null;
    o.construct     = FStage_construct;
    o.registerLayer = RStage_registerLayer;
    o.layers        = FStage_layers;
+   o.active        = FStage_active;
+   o.deactive      = FStage_deactive;
    o.process       = FStage_process;
    o.dispose       = FStage_dispose;
    return o;
@@ -283,6 +295,28 @@ function RStage_registerLayer(n, l){
 }
 function FStage_layers(){
    return this._layers;
+}
+function FStage_active(){
+   var o = this;
+   o._statusActive = true;
+   var ls = o._layers;
+   if(ls != null){
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         ls.value(i).active();
+      }
+   }
+}
+function FStage_deactive(){
+   var o = this;
+   var ls = o._layers;
+   if(ls != null){
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         ls.value(i).deactive();
+      }
+   }
+   o._statusActive = false;
 }
 function FStage_process(){
    var o = this;
@@ -397,16 +431,18 @@ function FDisplay3d_dispose(){
 }
 function FGeometry3d(o){
    o = RClass.inherits(this, o, FG3dRenderable);
-   o._renderable      = null;
-   o._bones           = null;
-   o.construct        = FGeometry3d_construct;
-   o.testVisible      = FGeometry3d_testVisible;
-   o.findVertexBuffer = FGeometry3d_findVertexBuffer;
-   o.indexBuffer      = FGeometry3d_indexBuffer;
-   o.findTexture      = FGeometry3d_findTexture;
-   o.bones            = FGeometry3d_bones;
-   o.load             = FGeometry3d_load;
-   o.build            = FGeometry3d_build;
+   o._ready            = false;
+   o._renderable       = null;
+   o._bones            = null;
+   o._materialResource = null;
+   o.construct         = FGeometry3d_construct;
+   o.testVisible       = FGeometry3d_testVisible;
+   o.findVertexBuffer  = FGeometry3d_findVertexBuffer;
+   o.indexBuffer       = FGeometry3d_indexBuffer;
+   o.findTexture       = FGeometry3d_findTexture;
+   o.bones             = FGeometry3d_bones;
+   o.load              = FGeometry3d_load;
+   o.build             = FGeometry3d_build;
    return o;
 }
 function FGeometry3d_construct(){
@@ -414,8 +450,15 @@ function FGeometry3d_construct(){
    o.__base.FG3dRenderable.construct.call(o);
 }
 function FGeometry3d_testVisible(p){
-   var r = this._renderable;
-   return r ? r.testReady() : false;
+   var o = this;
+   var r = o._ready;
+   if(!r){
+      var d = o._renderable;
+      if(d){
+         r = o._ready = d.testReady();
+      }
+   }
+   return r;
 }
 function FGeometry3d_findVertexBuffer(p){
    return this._renderable.findVertexBuffer(p);
@@ -431,7 +474,10 @@ function FGeometry3d_bones(p){
 }
 function FGeometry3d_load(p){
    var o = this;
-   o._effectName = p.material().effectName();
+   var m = o._material;
+   var mr = o._materialResource = p.material();
+   m.assignInfo(mr.info());
+   o._effectName = m.info().effectName;
    o._renderable = p;
 }
 function FGeometry3d_build(p){
@@ -586,12 +632,42 @@ function FSimpleStage3d(o){
    o,_mapLayer    = null;
    o,_spriteLayer = null;
    o,_faceLayer   = null;
+   o.onKeyDown    = FSimpleStage3d_onKeyDown;
    o.construct    = FSimpleStage3d_construct;
    o.skyLayer     = FSimpleStage3d_skyLayer;
    o.mapLayer     = FSimpleStage3d_mapLayer;
    o.spriteLayer  = FSimpleStage3d_spriteLayer;
    o.faceLayer    = FSimpleStage3d_faceLayer;
+   o.active       = FSimpleStage3d_active;
+   o.deactive     = FSimpleStage3d_deactive;
    return o;
+}
+function FSimpleStage3d_onKeyDown(e){
+   var o = this;
+   var c = o._camera;
+   var k = e.keyCode;
+   var r = 0.3;
+   switch(k){
+      case EKeyCode.W:
+         c.doWalk(r);
+         break;
+      case EKeyCode.S:
+         c.doWalk(-r);
+         break;
+      case EKeyCode.A:
+         c.doStrafe(r);
+         break;
+      case EKeyCode.D:
+         c.doStrafe(-r);
+         break;
+      case EKeyCode.Q:
+         c.doFly(r);
+         break;
+      case EKeyCode.E:
+         c.doFly(-r);
+         break;
+   }
+   c.update();
 }
 function FSimpleStage3d_construct(){
    var o = this;
@@ -616,6 +692,16 @@ function FSimpleStage3d_spriteLayer(){
 }
 function FSimpleStage3d_faceLayer(){
    return this._faceLayer;
+}
+function FSimpleStage3d_active(){
+   var o = this;
+   o.__base.FStage3d.active.call(o);
+   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+}
+function FSimpleStage3d_deactive(){
+   var o = this;
+   o.__base.FStage3d.deactive.call(o);
+   RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
 }
 function FSprite3d(o){
    o = RClass.inherits(this, o, FObject);
@@ -948,62 +1034,13 @@ function FRs3IndexBuffer_unserialize(p){
 }
 function FRs3Material(o){
    o = RClass.inherits(this, o, FRs3Resource);
-   o._code  = null;
-   o._effectName = null;
-   o._optionLight = null;
-   o._optionMerge = null;
-   o._optionSort = null;
-   o._sortLevel = null;
-   o._optionAlpha = null;
-   o._optionDepth = null;
-   o._optionCompare = null;
-   o._optionDouble = null;
-   o._optionShadow = null;
-   o._optionShadowSelf = null;
-   o._optionDynamic = null;
-   o._optionTransmittance = null;
-   o._optionOpacity = null;
-   o._coordRateWidth = null;
-   o._coordRateHeight = null;
-   o._colorMin = null;
-   o._colorMax = null;
-   o._colorRate = null;
-   o._colorMerge = null;
-   o._alphaBase = null;
-   o._alphaRate = null;
-   o._alphaLevel = null;
-   o._alphaMerge = null;
-   o._ambientColor = null;
-   o._ambientShadow = null;
-   o._diffuseColor = null;
-   o._diffuseShadow = null;
-   o._diffuseViewColor = null;
-   o._diffuseViewShadow = null;
-   o._specularColor = null;
-   o._specularBase = null;
-   o._specularRate = null;
-   o._specularAverage = null;
-   o._specularShadow = null;
-   o._specularViewColor = null;
-   o._specularViewBase = null;
-   o._specularViewRate = null;
-   o._specularViewAverage = null;
-   o._specularViewShadow = null;
-   o._reflectColor = null;
-   o._reflectMerge = null;
-   o._reflectShadow = null;
-   o._refractFrontColor = null;
-   o._refractBackColor = null;
-   o._opacityColor = null;
-   o._opacityRate = null;
-   o._opacityAlpha = null;
-   o._opacityDepth = null;
-   o._opacityTransmittance = null;
-   o._emissiveColor = null;
+   o._code       = null;
+   o._info       = null;
    o._textures   = null;
    o.construct   = FRs3Material_construct;
    o.code        = FRs3Material_code;
    o.effectName  = FRs3Material_effectName;
+   o.info        = FRs3Material_info;
    o.textures    = FRs3Material_textures;
    o.unserialize = FRs3Material_unserialize;
    return o;
@@ -1011,21 +1048,16 @@ function FRs3Material(o){
 function FRs3Material_construct(){
    var o = this;
    o.__base.FRs3Resource.construct.call(o);
-   o._ambientColor = new SColor4()
-   o._diffuseColor = new SColor4()
-   o._diffuseViewColor = new SColor4()
-   o._specularColor = new SColor4()
-   o._specularViewColor = new SColor4()
-   o._reflectColor = new SColor4()
-   o._refractFrontColor = new SColor4()
-   o._opacityColor = new SColor4()
-   o._emissiveColor = null;
+   o._info = new SG3dMaterialInfo();
 }
 function FRs3Material_code(){
    return this._code;
 }
 function FRs3Material_effectName(){
-   return this._effectName;
+   return this._info.effectName;
+}
+function FRs3Material_info(){
+   return this._info;
 }
 function FRs3Material_textures(){
    return this._textures;
@@ -1033,7 +1065,59 @@ function FRs3Material_textures(){
 function FRs3Material_unserialize(p){
    var o = this;
    o._code = p.readString();
-   o._effectName = p.readString();
+   var m = o._info;
+   m.effectName = p.readString();
+   m.transformName = p.readString();
+   m.optionLight = p.readBoolean();
+   m.optionMerge = p.readBoolean();
+   m.optionSort = p.readBoolean();
+   m.sortLevel = p.readInt32();
+   m.optionAlpha = p.readBoolean();
+   m.optionDepth = p.readBoolean();
+   m.optionCompare = p.readString();
+   m.optionDouble = p.readBoolean();
+   m.optionShadow = p.readBoolean();
+   m.optionShadowSelf = p.readBoolean();
+   m.optionDynamic = p.readBoolean();
+   m.optionTransmittance = p.readBoolean();
+   m.optionOpacity = p.readBoolean();
+   m.coordRateWidth = p.readFloat();
+   m.coordRateHeight = p.readFloat();
+   m.colorMin = p.readFloat();
+   m.colorMax = p.readFloat();
+   m.colorRate = p.readFloat();
+   m.colorMerge = p.readFloat();
+   m.alphaBase = p.readFloat();
+   m.alphaRate = p.readFloat();
+   m.alphaLevel = p.readFloat();
+   m.alphaMerge = p.readFloat();
+   m.ambientColor.unserialize(p);
+   m.ambientShadow = p.readFloat();
+   m.diffuseColor.unserialize(p);
+   m.diffuseShadow = p.readFloat();
+   m.diffuseViewColor.unserialize(p);
+   m.diffuseViewShadow = p.readFloat();
+   m.specularColor.unserialize(p);
+   m.specularBase = p.readFloat();
+   m.specularRate = p.readFloat();
+   m.specularAverage = p.readFloat();
+   m.specularShadow = p.readFloat();
+   m.specularViewColor.unserialize(p);
+   m.specularViewBase = p.readFloat();
+   m.specularViewRate = p.readFloat();
+   m.specularViewAverage = p.readFloat();
+   m.specularViewShadow = p.readFloat();
+   m.reflectColor.unserialize(p);
+   m.reflectMerge = p.readFloat();
+   m.reflectShadow = p.readFloat();
+   m.refractFrontColor.unserialize(p);
+   m.refractBackColor.unserialize(p);
+   m.opacityColor.unserialize(p);
+   m.opacityRate = p.readFloat();
+   m.opacityAlpha = p.readFloat();
+   m.opacityDepth = p.readFloat();
+   m.opacityTransmittance = p.readFloat();
+   m.emissiveColor.unserialize(p);
    var c = p.readInt8();
    if(c > 0){
       var ts = o._textures = new TObjects();

@@ -8,67 +8,9 @@ function FRs3Material(o){
    o = RClass.inherits(this, o, FRs3Resource);
    //..........................................................
    // @attribute
-   o._code  = null;
-   o._effectName = null;
+   o._code       = null;
    // @attribute
-   o._optionLight = null;
-   o._optionMerge = null;
-   o._optionSort = null;
-   o._sortLevel = null;
-   o._optionAlpha = null;
-   o._optionDepth = null;
-   o._optionCompare = null;
-   o._optionDouble = null;
-   o._optionShadow = null;
-   o._optionShadowSelf = null;
-   o._optionDynamic = null;
-   o._optionTransmittance = null;
-   o._optionOpacity = null;
-   // 存储纹理
-   o._coordRateWidth = null;
-   o._coordRateHeight = null;
-   // 存储颜色
-   o._colorMin = null;
-   o._colorMax = null;
-   o._colorRate = null;
-   o._colorMerge = null;
-   // 存储透明
-   o._alphaBase = null;
-   o._alphaRate = null;
-   o._alphaLevel = null;
-   o._alphaMerge = null;
-   // @attribute
-   o._ambientColor = null;
-   o._ambientShadow = null;
-   o._diffuseColor = null;
-   o._diffuseShadow = null;
-   o._diffuseViewColor = null;
-   o._diffuseViewShadow = null;
-   o._specularColor = null;
-   o._specularBase = null;
-   o._specularRate = null;
-   o._specularAverage = null;
-   o._specularShadow = null;
-   o._specularViewColor = null;
-   o._specularViewBase = null;
-   o._specularViewRate = null;
-   o._specularViewAverage = null;
-   o._specularViewShadow = null;
-      // 存储反射
-   o._reflectColor = null;
-   o._reflectMerge = null;
-   o._reflectShadow = null;
-      // 存储折射
-   o._refractFrontColor = null;
-   o._refractBackColor = null;
-      // 存储不透明度
-   o._opacityColor = null;
-   o._opacityRate = null;
-   o._opacityAlpha = null;
-   o._opacityDepth = null;
-   o._opacityTransmittance = null;
-   // 存储自发光
-   o._emissiveColor = null;
+   o._info       = null;
    // @attribute
    o._textures   = null;
    //..........................................................
@@ -76,6 +18,7 @@ function FRs3Material(o){
    o.construct   = FRs3Material_construct;
    o.code        = FRs3Material_code;
    o.effectName  = FRs3Material_effectName;
+   o.info        = FRs3Material_info;
    o.textures    = FRs3Material_textures;
    o.unserialize = FRs3Material_unserialize;
    return o;
@@ -89,15 +32,8 @@ function FRs3Material(o){
 function FRs3Material_construct(){
    var o = this;
    o.__base.FRs3Resource.construct.call(o);
-   o._ambientColor = new SColor4()
-   o._diffuseColor = new SColor4()
-   o._diffuseViewColor = new SColor4()
-   o._specularColor = new SColor4()
-   o._specularViewColor = new SColor4()
-   o._reflectColor = new SColor4()
-   o._refractFrontColor = new SColor4()
-   o._opacityColor = new SColor4()
-   o._emissiveColor = null;
+   // @attribute
+   o._info = new SG3dMaterialInfo();
 }
 
 //==========================================================
@@ -117,7 +53,17 @@ function FRs3Material_code(){
 // @return String 效果名称
 //==========================================================
 function FRs3Material_effectName(){
-   return this._effectName;
+   return this._info.effectName;
+}
+
+//==========================================================
+// <T>获得材质信息。</T>
+//
+// @method
+// @return SG3dMaterialInfo 材质信息
+//==========================================================
+function FRs3Material_info(){
+   return this._info;
 }
 
 //==========================================================
@@ -140,7 +86,69 @@ function FRs3Material_unserialize(p){
    var o = this;
    // 读取属性
    o._code = p.readString();
-   o._effectName = p.readString();
+   // 读取信息
+   var m = o._info;
+   m.effectName = p.readString();
+   m.transformName = p.readString();
+   // 读取设置
+   m.optionLight = p.readBoolean();
+   m.optionMerge = p.readBoolean();
+   m.optionSort = p.readBoolean();
+   m.sortLevel = p.readInt32();
+   m.optionAlpha = p.readBoolean();
+   m.optionDepth = p.readBoolean();
+   m.optionCompare = p.readString();
+   m.optionDouble = p.readBoolean();
+   m.optionShadow = p.readBoolean();
+   m.optionShadowSelf = p.readBoolean();
+   m.optionDynamic = p.readBoolean();
+   m.optionTransmittance = p.readBoolean();
+   m.optionOpacity = p.readBoolean();
+   // 读取纹理
+   m.coordRateWidth = p.readFloat();
+   m.coordRateHeight = p.readFloat();
+   // 读取颜色
+   m.colorMin = p.readFloat();
+   m.colorMax = p.readFloat();
+   m.colorRate = p.readFloat();
+   m.colorMerge = p.readFloat();
+   // 读取透明
+   m.alphaBase = p.readFloat();
+   m.alphaRate = p.readFloat();
+   m.alphaLevel = p.readFloat();
+   m.alphaMerge = p.readFloat();
+   // 存储属性
+   m.ambientColor.unserialize(p);
+   m.ambientShadow = p.readFloat();
+   m.diffuseColor.unserialize(p);
+   m.diffuseShadow = p.readFloat();
+   m.diffuseViewColor.unserialize(p);
+   m.diffuseViewShadow = p.readFloat();
+   m.specularColor.unserialize(p);
+   m.specularBase = p.readFloat();
+   m.specularRate = p.readFloat();
+   m.specularAverage = p.readFloat();
+   m.specularShadow = p.readFloat();
+   m.specularViewColor.unserialize(p);
+   m.specularViewBase = p.readFloat();
+   m.specularViewRate = p.readFloat();
+   m.specularViewAverage = p.readFloat();
+   m.specularViewShadow = p.readFloat();
+   // 存储反射
+   m.reflectColor.unserialize(p);
+   m.reflectMerge = p.readFloat();
+   m.reflectShadow = p.readFloat();
+   // 存储折射
+   m.refractFrontColor.unserialize(p);
+   m.refractBackColor.unserialize(p);
+   // 存储不透明度
+   m.opacityColor.unserialize(p);
+   m.opacityRate = p.readFloat();
+   m.opacityAlpha = p.readFloat();
+   m.opacityDepth = p.readFloat();
+   m.opacityTransmittance = p.readFloat();
+   // 存储自发光
+   m.emissiveColor.unserialize(p);
    // 读取纹理集合
    var c = p.readInt8();
    if(c > 0){

@@ -16,10 +16,11 @@ var RLogger = new function RLogger(){
    //..........................................................
    // @method
    o.output       = RLogger_output;
-   o.fatal        = RLogger_fatal;
-   o.error        = RLogger_error;
-   o.warn         = RLogger_warn;
+   o.debug        = RLogger_debug;
    o.info         = RLogger_info;
+   o.warn         = RLogger_warn;
+   o.error        = RLogger_error;
+   o.fatal        = RLogger_fatal;
    return o;
 }
 
@@ -31,6 +32,125 @@ var RLogger = new function RLogger(){
 //==========================================================
 function RLogger_output(p){
    this.lsnsOutput.process(p);
+}
+
+//==========================================================
+//<T>显示一个调试信息。</T>
+//
+// @method
+// @param sf:self:Object 消息对象
+// @param ms:message:String 消息内容
+// @param pm:params:Object... 消息参数列表
+//==========================================================
+function RLogger_debug(sf, ms, pm){
+   // 获得函数名称
+   var n = RMethod.name(RLogger_debug.caller);
+   n = n.replace('_', '.');
+   //..........................................................
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|D [' + RString.rpad(n, 40) + '] ');
+   // 格式化参数
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
+   }
+   r.append(ms);
+   //..........................................................
+   RLogger.output(r.toString());
+}
+
+//==========================================================
+//<T>显示一个警告信息。</T>
+//
+// @method
+// @param sf:self:Object 消息对象
+// @param ms:message:String 消息内容
+// @param pm:params:Object... 消息参数列表
+//==========================================================
+function RLogger_info(sf, ms, pm){
+   // 获得函数名称
+   var n = RMethod.name(RLogger_info.caller);
+   n = n.replace('_', '.');
+   //..........................................................
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|I [' + RString.rpad(n, 40) + '] ');
+   // 格式化参数
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
+   }
+   r.append(ms);
+   //..........................................................
+   RLogger.output(r.toString());
+}
+
+//==========================================================
+// <T>显示一个警告信息。</T>
+//
+// @method
+//==========================================================
+function RLogger_warn(sf, ms, pm){
+   // 获得函数名称
+   var n = RMethod.name(RLogger_warn.caller);
+   n = n.replace('_', '.');
+   //..........................................................
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|W [' + RString.rpad(n, 40) + '] ');
+   // 格式化参数
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
+   }
+   r.append(ms);
+   //..........................................................
+   RLogger.output(r.toString());
+}
+
+//==========================================================
+// <T>显示一个错误信息。</T>
+//
+// @method
+//==========================================================
+function RLogger_error(self, method, msg, params){
+   // 检查是否已经弹出过错误
+   if(this._statusError){
+      return;
+   }
+   this._statusError = true;
+   throw new Error(msg);
 }
 
 //==========================================================
@@ -90,62 +210,4 @@ function RLogger_fatal(sf, er, ms, pm){
    m.appendLine('Stack:');
    m.append(s);
    alert(m);
-}
-
-//==========================================================
-// <T>显示一个错误信息。</T>
-//
-// @method
-//==========================================================
-function RLogger_error(self, method, msg, params){
-   // 检查是否已经弹出过错误
-   if(this._statusError){
-      return;
-   }
-   this._statusError = true;
-   throw new Error(msg);
-}
-
-//==========================================================
-// <T>显示一个警告信息。</T>
-//
-// @method
-//==========================================================
-function RLogger_warn(sf, ms, pm){
-}
-
-//==========================================================
-//<T>显示一个警告信息。</T>
-//
-// @method
-// @param sf:self:Object 消息对象
-// @param ms:message:String 消息内容
-// @param pm:params:Object... 消息参数列表
-//==========================================================
-function RLogger_info(sf, ms, pm){
-   // 获得函数名称
-   var n = RMethod.name(RLogger_info.caller);
-   n = n.replace('_', '.');
-   //..........................................................
-   var r = new TString();
-   r.append(RDate.format('yymmdd-hh24miss.ms'));
-   r.append('|I [' + RString.rpad(n, 40) + '] ');
-   // 格式化参数
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a){
-         if(typeof(a) == 'function'){
-            s = RMethod.name(a);
-         }else{
-            s = a.toString();
-         }
-      }
-      ms = ms.replace('{' + (n - 1) + '}', s);
-   }
-   r.append(ms);
-   //..........................................................
-   RLogger.output(r.toString());
 }

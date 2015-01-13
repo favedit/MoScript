@@ -21,16 +21,18 @@ function FDisplay3d_dispose(){
 }
 function FGeometry3d(o){
    o = RClass.inherits(this, o, FG3dRenderable);
-   o._renderable      = null;
-   o._bones           = null;
-   o.construct        = FGeometry3d_construct;
-   o.testVisible      = FGeometry3d_testVisible;
-   o.findVertexBuffer = FGeometry3d_findVertexBuffer;
-   o.indexBuffer      = FGeometry3d_indexBuffer;
-   o.findTexture      = FGeometry3d_findTexture;
-   o.bones            = FGeometry3d_bones;
-   o.load             = FGeometry3d_load;
-   o.build            = FGeometry3d_build;
+   o._ready            = false;
+   o._renderable       = null;
+   o._bones            = null;
+   o._materialResource = null;
+   o.construct         = FGeometry3d_construct;
+   o.testVisible       = FGeometry3d_testVisible;
+   o.findVertexBuffer  = FGeometry3d_findVertexBuffer;
+   o.indexBuffer       = FGeometry3d_indexBuffer;
+   o.findTexture       = FGeometry3d_findTexture;
+   o.bones             = FGeometry3d_bones;
+   o.load              = FGeometry3d_load;
+   o.build             = FGeometry3d_build;
    return o;
 }
 function FGeometry3d_construct(){
@@ -38,8 +40,15 @@ function FGeometry3d_construct(){
    o.__base.FG3dRenderable.construct.call(o);
 }
 function FGeometry3d_testVisible(p){
-   var r = this._renderable;
-   return r ? r.testReady() : false;
+   var o = this;
+   var r = o._ready;
+   if(!r){
+      var d = o._renderable;
+      if(d){
+         r = o._ready = d.testReady();
+      }
+   }
+   return r;
 }
 function FGeometry3d_findVertexBuffer(p){
    return this._renderable.findVertexBuffer(p);
@@ -55,7 +64,10 @@ function FGeometry3d_bones(p){
 }
 function FGeometry3d_load(p){
    var o = this;
-   o._effectName = p.material().effectName();
+   var m = o._material;
+   var mr = o._materialResource = p.material();
+   m.assignInfo(mr.info());
+   o._effectName = m.info().effectName;
    o._renderable = p;
 }
 function FGeometry3d_build(p){
@@ -210,12 +222,42 @@ function FSimpleStage3d(o){
    o,_mapLayer    = null;
    o,_spriteLayer = null;
    o,_faceLayer   = null;
+   o.onKeyDown    = FSimpleStage3d_onKeyDown;
    o.construct    = FSimpleStage3d_construct;
    o.skyLayer     = FSimpleStage3d_skyLayer;
    o.mapLayer     = FSimpleStage3d_mapLayer;
    o.spriteLayer  = FSimpleStage3d_spriteLayer;
    o.faceLayer    = FSimpleStage3d_faceLayer;
+   o.active       = FSimpleStage3d_active;
+   o.deactive     = FSimpleStage3d_deactive;
    return o;
+}
+function FSimpleStage3d_onKeyDown(e){
+   var o = this;
+   var c = o._camera;
+   var k = e.keyCode;
+   var r = 0.3;
+   switch(k){
+      case EKeyCode.W:
+         c.doWalk(r);
+         break;
+      case EKeyCode.S:
+         c.doWalk(-r);
+         break;
+      case EKeyCode.A:
+         c.doStrafe(r);
+         break;
+      case EKeyCode.D:
+         c.doStrafe(-r);
+         break;
+      case EKeyCode.Q:
+         c.doFly(r);
+         break;
+      case EKeyCode.E:
+         c.doFly(-r);
+         break;
+   }
+   c.update();
 }
 function FSimpleStage3d_construct(){
    var o = this;
@@ -240,6 +282,16 @@ function FSimpleStage3d_spriteLayer(){
 }
 function FSimpleStage3d_faceLayer(){
    return this._faceLayer;
+}
+function FSimpleStage3d_active(){
+   var o = this;
+   o.__base.FStage3d.active.call(o);
+   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+}
+function FSimpleStage3d_deactive(){
+   var o = this;
+   o.__base.FStage3d.deactive.call(o);
+   RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
 }
 function FSprite3d(o){
    o = RClass.inherits(this, o, FObject);

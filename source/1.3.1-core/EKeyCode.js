@@ -43,46 +43,46 @@ var EKeyCode = new function EKeyCode(){
    o.PageUp    = 33;
    // @attribute Integer 定义PageDown按键
    o.PageDown  = 34;
-   // @attribute Integer 定义F1按键
+   // @attribute Integer 定义F1~F12按键
    o.F1        = 112;
-   // @attribute Integer 定义F2按键
    o.F2        = 113;
-   // @attribute Integer 定义F3按键
    o.F3        = 114;
-   // @attribute Integer 定义F4按键
    o.F4        = 115;
-   // @attribute Integer 定义F5按键
    o.F5        = 116;
-   // @attribute Integer 定义F6按键
    o.F6        = 117;
-   // @attribute Integer 定义F7按键
    o.F7        = 118;
-   // @attribute Integer 定义F8按键
    o.F8        = 119;
-   // @attribute Integer 定义F9按键
    o.F9        = 120;
-   // @attribute Integer 定义F10按键
    o.F10       = 121;
-   // @attribute Integer 定义F11按键
    o.F11       = 122;
-   // @attribute Integer 定义F12按键
    o.F12       = 123;
-   // @attribute Integer 定义A按键
+   // @attribute Integer 定义A~Z按键
    o.A         = 65;
-   // @attribute Integer 定义B按键
    o.B         = 66;
-   ///@attribute Integer 定义L按键
-   o.L         = 76;
-   ///@attribute Integer 定义Q按键
-   o.Q         = 81;
-   ///@attribute Integer 定义S按键
-   o.S         = 83;
-   ///@attribute Integer 定义F按键
+   o.C         = 67;
+   o.D         = 68;
+   o.E         = 69;
    o.F         = 70;
-   ///@attribute Integer 定义I按键
+   o.G         = 71;
+   o.H         = 72;
    o.I         = 73;
-   ///@attribute Integer 定义D按键
-   o.D           = 68;
+   o.J         = 74;
+   o.K         = 75;
+   o.L         = 76;
+   o.M         = 77;
+   o.N         = 78;
+   o.O         = 79;
+   o.P         = 80;
+   o.Q         = 81;
+   o.R         = 82;
+   o.S         = 83;
+   o.T         = 84;
+   o.U         = 85;
+   o.V         = 86;
+   o.W         = 87;
+   o.X         = 88;
+   o.Y         = 89;
+   o.Z         = 90;
    // @attribute Enum 各个按键的枚举
    o.ControlKeys = [
       o.Tab, o.Enter, o.BackSpace, o.Shift, o.Left, o.Up, o.Right, o.Down,

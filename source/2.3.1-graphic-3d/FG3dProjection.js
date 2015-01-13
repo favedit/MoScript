@@ -13,13 +13,14 @@ function FG3dProjection(o){
    o.angle       = 60;
    o.fieldOfView = 0;
    o.scale       = 0;
-   o.znear       = 0.01;
-   o.zfar        = 200;
-   o.matrix     = null;
+   o.znear       = 0.1;
+   o.zfar        = 100;
+   o._matrix     = null;
    //..........................................................
    // @method
-   o.construct = FG3dProjection_construct;
-   o.update    = FG3dProjection_update;
+   o.construct   = FG3dProjection_construct;
+   o.matrix      = FG3dProjection_matrix;
+   o.update      = FG3dProjection_update;
    return o;
 }
 
@@ -29,7 +30,17 @@ function FG3dProjection(o){
 function FG3dProjection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o.matrix = new SPerspectiveMatrix3d();
+   o._matrix = new SPerspectiveMatrix3d();
+}
+
+//==========================================================
+// <T>获得矩阵。</T>
+//
+// @method
+// @return SMatrix3d 矩阵
+//==========================================================
+function FG3dProjection_matrix(){
+   return this._matrix;
 }
 
 //============================================================
@@ -38,5 +49,5 @@ function FG3dProjection_construct(){
 function FG3dProjection_update(){
    var o = this;
    o.fieldOfView = RMath.DEGREE_RATE * o.angle;
-   o.matrix.perspectiveFieldOfViewLH(o.fieldOfView, o.width / o.height, o.znear, o.zfar);
+   o._matrix.perspectiveFieldOfViewLH(o.fieldOfView, o.width / o.height, o.znear, o.zfar);
 }

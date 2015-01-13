@@ -1780,70 +1780,6 @@ var EEndian = new function EEndian(){
    o.Little = 1;
    return o;
 }
-var EKeyCode = new function EKeyCode(){
-   var o = this;
-   o.None      = 0;
-   o.Esc       = 27;
-   o.Tab       = 9;
-   o.Enter     = 13;
-   o.Shift     = 16;
-   o.Alt       = 18;
-   o.Ctrl      = 17;
-   o.BackSpace = 8;
-   o.Left      = 37;
-   o.Up        = 38;
-   o.Right     = 39;
-   o.Down      = 40;
-   o.Insert    = 45;
-   o.Delete    = 46;
-   o.Home      = 36;
-   o.End       = 35;
-   o.PageUp    = 33;
-   o.PageDown  = 34;
-   o.F1        = 112;
-   o.F2        = 113;
-   o.F3        = 114;
-   o.F4        = 115;
-   o.F5        = 116;
-   o.F6        = 117;
-   o.F7        = 118;
-   o.F8        = 119;
-   o.F9        = 120;
-   o.F10       = 121;
-   o.F11       = 122;
-   o.F12       = 123;
-   o.A         = 65;
-   o.B         = 66;
-   o.L         = 76;
-   o.Q         = 81;
-   o.S         = 83;
-   o.F         = 70;
-   o.I         = 73;
-   o.D           = 68;
-   o.ControlKeys = [
-      o.Tab, o.Enter, o.BackSpace, o.Shift, o.Left, o.Up, o.Right, o.Down,
-      o.Insert, o.Delete, o.Home, o.End, o.PageUp, o.PageDown,o.Ctrl,
-      o.F1, o.F2, o.F3, o.F4, o.F5, o.F6, o.F7, o.F8, o.F9, o.F10, o.F11, o.F12];
-   o.floatCodes  = new Object();
-   var f = o.floatCodes;
-   f[o.Tab] = true;
-   f[o.Enter] = true;
-   f[o.BackSpace] = true;
-   f[o.Left] = true;
-   f[o.Right] = true;
-   f[o.Esc] = true;
-   f[o.Delete] = true;
-   f[o.Home] = true;
-   f[o.End] = true;
-   f[45] = true;
-   f[190] = true;
-   f[46] = true;
-   f[189] = true;
-   for(var n = 48; n <= 57; n++){
-      f[n] = true;
-   }
-   return o;
-}
 var ENodeType = new function ENodeType(){
    var o = this;
    o.Node = 1;
@@ -3495,14 +3431,91 @@ var RLogger = new function RLogger(){
    o._statusError = false;
    o.lsnsOutput   = new TListeners();
    o.output       = RLogger_output;
-   o.fatal        = RLogger_fatal;
-   o.error        = RLogger_error;
-   o.warn         = RLogger_warn;
+   o.debug        = RLogger_debug;
    o.info         = RLogger_info;
+   o.warn         = RLogger_warn;
+   o.error        = RLogger_error;
+   o.fatal        = RLogger_fatal;
    return o;
 }
 function RLogger_output(p){
    this.lsnsOutput.process(p);
+}
+function RLogger_debug(sf, ms, pm){
+   var n = RMethod.name(RLogger_debug.caller);
+   n = n.replace('_', '.');
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|D [' + RString.rpad(n, 40) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
+   }
+   r.append(ms);
+   RLogger.output(r.toString());
+}
+function RLogger_info(sf, ms, pm){
+   var n = RMethod.name(RLogger_info.caller);
+   n = n.replace('_', '.');
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|I [' + RString.rpad(n, 40) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
+   }
+   r.append(ms);
+   RLogger.output(r.toString());
+}
+function RLogger_warn(sf, ms, pm){
+   var n = RMethod.name(RLogger_warn.caller);
+   n = n.replace('_', '.');
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|W [' + RString.rpad(n, 40) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
+   }
+   r.append(ms);
+   RLogger.output(r.toString());
+}
+function RLogger_error(self, method, msg, params){
+   if(this._statusError){
+      return;
+   }
+   this._statusError = true;
+   throw new Error(msg);
 }
 function RLogger_fatal(sf, er, ms, pm){
    var o = this;
@@ -3549,38 +3562,6 @@ function RLogger_fatal(sf, er, ms, pm){
    m.appendLine('Stack:');
    m.append(s);
    alert(m);
-}
-function RLogger_error(self, method, msg, params){
-   if(this._statusError){
-      return;
-   }
-   this._statusError = true;
-   throw new Error(msg);
-}
-function RLogger_warn(sf, ms, pm){
-}
-function RLogger_info(sf, ms, pm){
-   var n = RMethod.name(RLogger_info.caller);
-   n = n.replace('_', '.');
-   var r = new TString();
-   r.append(RDate.format('yymmdd-hh24miss.ms'));
-   r.append('|I [' + RString.rpad(n, 40) + '] ');
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a){
-         if(typeof(a) == 'function'){
-            s = RMethod.name(a);
-         }else{
-            s = a.toString();
-         }
-      }
-      ms = ms.replace('{' + (n - 1) + '}', s);
-   }
-   r.append(ms);
-   RLogger.output(r.toString());
 }
 var RMethod = new function RMethod(){
    var o = this;
@@ -5384,6 +5365,9 @@ var RMath = new function RMath(){
    o.double16     = null;
    o.double16     = null;
    o.double64     = null;
+   o.vectorAxisX = null;
+   o.vectorAxisY = null;
+   o.vectorAxisZ = null;
    o.construct    = RMath_construct;
    o.construct();
    return o;
@@ -5408,6 +5392,12 @@ function RMath_construct(){
    o.double9 = new Float64Array(9);
    o.double12 = new Float64Array(12);
    o.double16 = new Float64Array(16);
+   o.vectorAxisX = new SVector3();
+   o.vectorAxisX.set(1.0, 0.0, 0.0);
+   o.vectorAxisY = new SVector3();
+   o.vectorAxisY.set(0.0, 1.0, 0.0);
+   o.vectorAxisZ = new SVector3();
+   o.vectorAxisZ.set(0.0, 0.0, 1.0);
 }
 function SColor4(o){
    if(!o){o = this;}
@@ -6142,18 +6132,21 @@ function SPoint3_dump(){
 }
 function SQuaternion(o){
    if(!o){o = this;}
-   o.x           = 0.0;
-   o.y           = 0.0;
-   o.z           = 0.0;
-   o.w           = 1.0;
-   o.assign      = SQuaternion_assign;
-   o.set         = SQuaternion_set;
-   o.absolute    = SQuaternion_absolute;
-   o.normalize   = SQuaternion_normalize;
-   o.slerp       = SQuaternion_slerp;
-   o.serialize   = SQuaternion_serialize;
-   o.unserialize = SQuaternion_unserialize;
-   o.toString    = SQuaternion_toString;
+   o.x             = 0.0;
+   o.y             = 0.0;
+   o.z             = 0.0;
+   o.w             = 1.0;
+   o.assign        = SQuaternion_assign;
+   o.set           = SQuaternion_set;
+   o.absolute      = SQuaternion_absolute;
+   o.normalize     = SQuaternion_normalize;
+   o.mul           = SQuaternion_mul;
+   o.mul2          = SQuaternion_mul2;
+   o.slerp         = SQuaternion_slerp;
+   o.fromAxisAngle = SQuaternion_fromAxisAngle;
+   o.serialize     = SQuaternion_serialize;
+   o.unserialize   = SQuaternion_unserialize;
+   o.toString      = SQuaternion_toString;
    return o;
 }
 function SQuaternion_assign(p){
@@ -6183,6 +6176,24 @@ function SQuaternion_normalize(){
    o.z *= v;
    o.w *= v;
 }
+function SQuaternion_mul(p){
+   var o = this;
+   var x = o.x;
+   var y = o.y;
+   var z = o.z;
+   var w = o.w;
+   o.x = (w * p.x) + (x * p.w) + (y * p.z) - (z * p.y);
+   o.y = (w * p.y) + (y * p.w) + (z * p.x) - (x * p.z);
+   o.z = (w * p.z) + (z * p.w) + (x * p.y) - (y * p.x);
+   o.w = (w * p.w) - (x * p.x) - (y * p.y) - (z * p.z);
+}
+function SQuaternion_mul2(p1, p2){
+   var o = this;
+   o.x = (p1.w * p2.x) + (p1.x * p2.w) + (p1.y * p2.z) - (p1.z * p2.y);
+   o.y = (p1.w * p2.y) + (p1.y * p2.w) + (p1.z * p2.x) - (p1.x * p2.z);
+   o.z = (p1.w * p2.z) + (p1.z * p2.w) + (p1.x * p2.y) - (p1.y * p2.x);
+   o.w = (p1.w * p2.w) - (p1.x * p2.x) - (p1.y * p2.y) - (p1.z * p2.z);
+}
 function SQuaternion_slerp(v1, v2, r){
    var o = this;
    var rv = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
@@ -6206,6 +6217,15 @@ function SQuaternion_slerp(v1, v2, r){
    o.y = (r1 * v1.y) + (r2 * v2.y);
    o.z = (r1 * v1.z) + (r2 * v2.z);
    o.w = (r1 * v1.w) + (r2 * v2.w);
+}
+function SQuaternion_fromAxisAngle(a, g){
+   var o = this;
+   var r = g * 0.5;
+   var s = Math.sin(r);
+   o.x = a.x * s;
+   o.y = a.y * s;
+   o.z = a.z * s;
+   o.w = Math.cos(r);
 }
 function SQuaternion_serialize(p){
    var o = this;
@@ -6614,6 +6634,88 @@ var EHttpStatus = new function EHttpStatus(){
    o.Send    = 2;
    o.Receive = 3;
    o.Finish  = 4;
+   return o;
+}
+var EKeyCode = new function EKeyCode(){
+   var o = this;
+   o.None      = 0;
+   o.Esc       = 27;
+   o.Tab       = 9;
+   o.Enter     = 13;
+   o.Shift     = 16;
+   o.Alt       = 18;
+   o.Ctrl      = 17;
+   o.BackSpace = 8;
+   o.Left      = 37;
+   o.Up        = 38;
+   o.Right     = 39;
+   o.Down      = 40;
+   o.Insert    = 45;
+   o.Delete    = 46;
+   o.Home      = 36;
+   o.End       = 35;
+   o.PageUp    = 33;
+   o.PageDown  = 34;
+   o.F1        = 112;
+   o.F2        = 113;
+   o.F3        = 114;
+   o.F4        = 115;
+   o.F5        = 116;
+   o.F6        = 117;
+   o.F7        = 118;
+   o.F8        = 119;
+   o.F9        = 120;
+   o.F10       = 121;
+   o.F11       = 122;
+   o.F12       = 123;
+   o.A         = 65;
+   o.B         = 66;
+   o.C         = 67;
+   o.D         = 68;
+   o.E         = 69;
+   o.F         = 70;
+   o.G         = 71;
+   o.H         = 72;
+   o.I         = 73;
+   o.J         = 74;
+   o.K         = 75;
+   o.L         = 76;
+   o.M         = 77;
+   o.N         = 78;
+   o.O         = 79;
+   o.P         = 80;
+   o.Q         = 81;
+   o.R         = 82;
+   o.S         = 83;
+   o.T         = 84;
+   o.U         = 85;
+   o.V         = 86;
+   o.W         = 87;
+   o.X         = 88;
+   o.Y         = 89;
+   o.Z         = 90;
+   o.ControlKeys = [
+      o.Tab, o.Enter, o.BackSpace, o.Shift, o.Left, o.Up, o.Right, o.Down,
+      o.Insert, o.Delete, o.Home, o.End, o.PageUp, o.PageDown,o.Ctrl,
+      o.F1, o.F2, o.F3, o.F4, o.F5, o.F6, o.F7, o.F8, o.F9, o.F10, o.F11, o.F12];
+   o.floatCodes  = new Object();
+   var f = o.floatCodes;
+   f[o.Tab] = true;
+   f[o.Enter] = true;
+   f[o.BackSpace] = true;
+   f[o.Left] = true;
+   f[o.Right] = true;
+   f[o.Esc] = true;
+   f[o.Delete] = true;
+   f[o.Home] = true;
+   f[o.End] = true;
+   f[45] = true;
+   f[190] = true;
+   f[46] = true;
+   f[189] = true;
+   for(var n = 48; n <= 57; n++){
+      f[n] = true;
+   }
    return o;
 }
 function FBytes(o){
@@ -9110,6 +9212,7 @@ function RTypeArray_findTemp(t, l){
 }
 var RWindow = new function RWindow(){
    var o = this;
+   o.__keyDownEvent    = new SKeyDownEvent();
    o._builder          = null;
    o._disableDeep      = 0;
    o.panels            = new TMap();
@@ -9187,50 +9290,50 @@ function RWindow_connect(w){
    o.processUnload = hb.onunload;
    hb.onunload = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsUnload.process(o, e);
+      o.lsnsUnload.process(e);
       o.onUnload();
    };
    hb.onmousedown = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      RLogger.debug(o, '[D] onmousedown = ' + e.x + ' - ' + e.y);
-      o.lsnsMouseDown.process(o, e);
+      RLogger.info(o, 'Window mouse down. (location={1},{2})', e.x, e.y);
+      o.lsnsMouseDown.process(e);
    };
    hb.onmouseup = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsMouseUp.process(o, e);
+      o.lsnsMouseUp.process(e);
    };
    hb.onmousemove = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsMouseMove.process(o, e);
+      o.lsnsMouseMove.process(e);
    };
    hb.onmouseover = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsMouseOver.process(o, e);
+      o.lsnsMouseOver.process(e);
    };
    hb.onmousewheel = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsMouseWheel.process(o, e);
+      o.lsnsMouseWheel.process(e);
    };
    hb.onkeydown = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      RLogger.debug(o, '[D] onkeydown = ' + e.keyCode);
+      RLogger.debug(o, 'Window key down. (key_code={1})', e.keyCode);
       var s = e.srcElement ? e.srcElement : e.target;
       var t = s.tagName;
-      if(EKey.BackSpace == e.keyCode){
+      if(EKeyCode.BackSpace == e.keyCode){
          if('INPUT' == t){
             if(s.readOnly || 'checkbox' == s.type){
                return RKey.eventClear(e);
@@ -9243,8 +9346,9 @@ function RWindow_connect(w){
             return RKey.eventClear(e);
          }
       }
-      o.lsnsKeyDown.process(o, e);
-      if(EKey.Enter == e.keyCode){
+      o.__keyDownEvent.attach(e);
+      o.lsnsKeyDown.process(o.__keyDownEvent);
+      if(EKeyCode.Enter == e.keyCode){
          if('INPUT' == t){
             if(REvent.process(s, e)){
                RKey.eventClear(e);
@@ -9254,20 +9358,20 @@ function RWindow_connect(w){
    };
    hb.onkeyup = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsKeyUp.process(o, e);
+      o.lsnsKeyUp.process(e);
    };
    hb.onkeypress = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      RLogger.debug(o, '[D] onkeypress = ' + e.keyCode);
-      o.lsnsKeyPress.process(o, e);
+      RLogger.debug(o, 'Window key press. (key_code={1})', e.keyCode);
+      o.lsnsKeyPress.process(e);
    };
    hb.onresize = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
       if(o.oldBodyWidth == o.hBody.offsetWidth && o.oldBodyHeight == o.hBody.offsetHeight){
          return;
@@ -9275,7 +9379,7 @@ function RWindow_connect(w){
       o.oldBodyWidth = o.hBody.offsetWidth;
       o.oldBodyHeight = o.hBody.offsetHeight;
       o.onResize();
-      o.lsnsResize.process(o, e);
+      o.lsnsResize.process(e);
    };
 }
 function RWindow_createElement(n){
@@ -9718,6 +9822,27 @@ function RXml_unpack(s, n){
       }
    }
    return n;
+}
+function SEvent(o){
+   if(!o){o = this;}
+   o.name    = null;
+   o.hSource = null;
+   return o;
+}
+function SKeyDownEvent(o){
+   if(!o){o = this;}
+   SEvent(o);
+   o.shiftKey = false;
+   o.ctrlKey  = false;
+   o.keyCode  = 0;
+   o.attach  = SKeyDownEvent_attach;
+   return o;
+}
+function SKeyDownEvent_attach(e){
+   var o = this;
+   o.shiftKey = e.shiftKey;
+   o.ctrlKey = e.ctrlKey;
+   o.keyCode = e.keyCode;
 }
 function TDumpItem(o){
    if(!o){o = this;}

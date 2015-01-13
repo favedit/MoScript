@@ -7,22 +7,26 @@
 //==========================================================
 var RWindow = new function RWindow(){
    var o = this;
-   // Attribute
+   //..........................................................
+   o.__keyDownEvent    = new SKeyDownEvent();
+   // @attribute
    o._builder          = null;
    o._disableDeep      = 0;
-   // Attribute
+   // @attribute
    o.panels            = new TMap();
    o.inDisable         = false;
    o.inMoving          = false;
    o.inSizing          = false;
-   // Html
+   //..........................................................
+   // @html
    o.hWindow           = null;
    o.hDocument         = null;
    o.hBody             = null;
    o.hContainer        = null;
    o.hDisablePanel     = null;
    o.hShadow           = null;
-   // Listeners
+   //..........................................................
+   // @listeners
    o.lsnsLoad          = new TListeners();
    o.lsnsUnload        = new TListeners();
    o.lsnsMouseDown     = new TListeners();
@@ -34,10 +38,12 @@ var RWindow = new function RWindow(){
    o.lsnsKeyUp         = new TListeners();
    o.lsnsKeyPress      = new TListeners();
    o.lsnsResize        = new TListeners();
-   // Event
+   //..........................................................
+   // @event
    o.onUnload          = RWindow_onUnload;
    o.onResize          = RWindow_onResize;
-   // Method
+   //..........................................................
+   // @method
    o.connect           = RWindow_connect;
    o.createElement     = RWindow_createElement;
    o.createHttpRequest = RWindow_createHttpRequest;
@@ -119,52 +125,52 @@ function RWindow_connect(w){
    o.processUnload = hb.onunload;
    hb.onunload = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsUnload.process(o, e);
+      o.lsnsUnload.process(e);
       o.onUnload();
    };
    // 关联窗口的所有鼠标事件
    hb.onmousedown = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      RLogger.debug(o, '[D] onmousedown = ' + e.x + ' - ' + e.y);
-      o.lsnsMouseDown.process(o, e);
+      RLogger.info(o, 'Window mouse down. (location={1},{2})', e.x, e.y);
+      o.lsnsMouseDown.process(e);
    };
    hb.onmouseup = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsMouseUp.process(o, e);
+      o.lsnsMouseUp.process(e);
    };
    hb.onmousemove = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsMouseMove.process(o, e);
+      o.lsnsMouseMove.process(e);
    };
    hb.onmouseover = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsMouseOver.process(o, e);
+      o.lsnsMouseOver.process(e);
    };
    hb.onmousewheel = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsMouseWheel.process(o, e);
+      o.lsnsMouseWheel.process(e);
    };
    // 关联窗口的所有键盘事件
    hb.onkeydown = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      RLogger.debug(o, '[D] onkeydown = ' + e.keyCode);
+      RLogger.debug(o, 'Window key down. (key_code={1})', e.keyCode);
       var s = e.srcElement ? e.srcElement : e.target;
       var t = s.tagName;
-      if(EKey.BackSpace == e.keyCode){
+      if(EKeyCode.BackSpace == e.keyCode){
          // 禁止在非输入框内输入退格键
          if('INPUT' == t){
             if(s.readOnly || 'checkbox' == s.type){
@@ -179,9 +185,10 @@ function RWindow_connect(w){
          }
       }
       // 纷发按键消息
-      o.lsnsKeyDown.process(o, e);
+      o.__keyDownEvent.attach(e);
+      o.lsnsKeyDown.process(o.__keyDownEvent);
       // 处理回车键
-      if(EKey.Enter == e.keyCode){
+      if(EKeyCode.Enter == e.keyCode){
          if('INPUT' == t){
             if(REvent.process(s, e)){
                RKey.eventClear(e);
@@ -191,21 +198,21 @@ function RWindow_connect(w){
    };
    hb.onkeyup = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsKeyUp.process(o, e);
+      o.lsnsKeyUp.process(e);
    };
    hb.onkeypress = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      RLogger.debug(o, '[D] onkeypress = ' + e.keyCode);
-      o.lsnsKeyPress.process(o, e);
+      RLogger.debug(o, 'Window key press. (key_code={1})', e.keyCode);
+      o.lsnsKeyPress.process(e);
    };
    // 关联窗口的改变大小事件
    hb.onresize = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
       // 根据窗口大小，不发送重复事件
       if(o.oldBodyWidth == o.hBody.offsetWidth && o.oldBodyHeight == o.hBody.offsetHeight){
@@ -215,7 +222,7 @@ function RWindow_connect(w){
       o.oldBodyHeight = o.hBody.offsetHeight;
       // 通知所有控件，窗口改变大小
       o.onResize();
-      o.lsnsResize.process(o, e);
+      o.lsnsResize.process(e);
    };
 }
 

@@ -302,70 +302,6 @@ var EEndian = new function EEndian(){
    o.Little = 1;
    return o;
 }
-var EKeyCode = new function EKeyCode(){
-   var o = this;
-   o.None      = 0;
-   o.Esc       = 27;
-   o.Tab       = 9;
-   o.Enter     = 13;
-   o.Shift     = 16;
-   o.Alt       = 18;
-   o.Ctrl      = 17;
-   o.BackSpace = 8;
-   o.Left      = 37;
-   o.Up        = 38;
-   o.Right     = 39;
-   o.Down      = 40;
-   o.Insert    = 45;
-   o.Delete    = 46;
-   o.Home      = 36;
-   o.End       = 35;
-   o.PageUp    = 33;
-   o.PageDown  = 34;
-   o.F1        = 112;
-   o.F2        = 113;
-   o.F3        = 114;
-   o.F4        = 115;
-   o.F5        = 116;
-   o.F6        = 117;
-   o.F7        = 118;
-   o.F8        = 119;
-   o.F9        = 120;
-   o.F10       = 121;
-   o.F11       = 122;
-   o.F12       = 123;
-   o.A         = 65;
-   o.B         = 66;
-   o.L         = 76;
-   o.Q         = 81;
-   o.S         = 83;
-   o.F         = 70;
-   o.I         = 73;
-   o.D           = 68;
-   o.ControlKeys = [
-      o.Tab, o.Enter, o.BackSpace, o.Shift, o.Left, o.Up, o.Right, o.Down,
-      o.Insert, o.Delete, o.Home, o.End, o.PageUp, o.PageDown,o.Ctrl,
-      o.F1, o.F2, o.F3, o.F4, o.F5, o.F6, o.F7, o.F8, o.F9, o.F10, o.F11, o.F12];
-   o.floatCodes  = new Object();
-   var f = o.floatCodes;
-   f[o.Tab] = true;
-   f[o.Enter] = true;
-   f[o.BackSpace] = true;
-   f[o.Left] = true;
-   f[o.Right] = true;
-   f[o.Esc] = true;
-   f[o.Delete] = true;
-   f[o.Home] = true;
-   f[o.End] = true;
-   f[45] = true;
-   f[190] = true;
-   f[46] = true;
-   f[189] = true;
-   for(var n = 48; n <= 57; n++){
-      f[n] = true;
-   }
-   return o;
-}
 var ENodeType = new function ENodeType(){
    var o = this;
    o.Node = 1;
@@ -2017,14 +1953,91 @@ var RLogger = new function RLogger(){
    o._statusError = false;
    o.lsnsOutput   = new TListeners();
    o.output       = RLogger_output;
-   o.fatal        = RLogger_fatal;
-   o.error        = RLogger_error;
-   o.warn         = RLogger_warn;
+   o.debug        = RLogger_debug;
    o.info         = RLogger_info;
+   o.warn         = RLogger_warn;
+   o.error        = RLogger_error;
+   o.fatal        = RLogger_fatal;
    return o;
 }
 function RLogger_output(p){
    this.lsnsOutput.process(p);
+}
+function RLogger_debug(sf, ms, pm){
+   var n = RMethod.name(RLogger_debug.caller);
+   n = n.replace('_', '.');
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|D [' + RString.rpad(n, 40) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
+   }
+   r.append(ms);
+   RLogger.output(r.toString());
+}
+function RLogger_info(sf, ms, pm){
+   var n = RMethod.name(RLogger_info.caller);
+   n = n.replace('_', '.');
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|I [' + RString.rpad(n, 40) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
+   }
+   r.append(ms);
+   RLogger.output(r.toString());
+}
+function RLogger_warn(sf, ms, pm){
+   var n = RMethod.name(RLogger_warn.caller);
+   n = n.replace('_', '.');
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|W [' + RString.rpad(n, 40) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
+   }
+   r.append(ms);
+   RLogger.output(r.toString());
+}
+function RLogger_error(self, method, msg, params){
+   if(this._statusError){
+      return;
+   }
+   this._statusError = true;
+   throw new Error(msg);
 }
 function RLogger_fatal(sf, er, ms, pm){
    var o = this;
@@ -2071,38 +2084,6 @@ function RLogger_fatal(sf, er, ms, pm){
    m.appendLine('Stack:');
    m.append(s);
    alert(m);
-}
-function RLogger_error(self, method, msg, params){
-   if(this._statusError){
-      return;
-   }
-   this._statusError = true;
-   throw new Error(msg);
-}
-function RLogger_warn(sf, ms, pm){
-}
-function RLogger_info(sf, ms, pm){
-   var n = RMethod.name(RLogger_info.caller);
-   n = n.replace('_', '.');
-   var r = new TString();
-   r.append(RDate.format('yymmdd-hh24miss.ms'));
-   r.append('|I [' + RString.rpad(n, 40) + '] ');
-   var as = arguments;
-   var c = as.length;
-   for(var n = 2; n < c; n++){
-      var a = as[n];
-      var s = '';
-      if(a){
-         if(typeof(a) == 'function'){
-            s = RMethod.name(a);
-         }else{
-            s = a.toString();
-         }
-      }
-      ms = ms.replace('{' + (n - 1) + '}', s);
-   }
-   r.append(ms);
-   RLogger.output(r.toString());
 }
 var RMethod = new function RMethod(){
    var o = this;

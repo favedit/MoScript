@@ -235,12 +235,21 @@ function FDisplayContainer_dispose(){
 }
 function FDisplayLayer(o){
    o = RClass.inherits(this, o, FDisplayContainer);
-   o.construct = FDisplayLayer_construct;
+   o._statusActive = false;
+   o.construct     = FDisplayLayer_construct;
+   o.active        = FDisplayLayer_active;
+   o.deactive      = FDisplayLayer_deactive;
    return o;
 }
 function FDisplayLayer_construct(){
    var o = this;
    o.__base.FDisplayContainer.construct.call(o);
+}
+function FDisplayLayer_active(){
+   this._statusActive = true;
+}
+function FDisplayLayer_deactive(){
+   this._statusActive = false;
 }
 function FDrawable(o){
    o = RClass.inherits(this, o, FObject);
@@ -256,12 +265,15 @@ function FDrawable_set(l, t, w, h){
 }
 function FStage(o){
    o = RClass.inherits(this, o, FObject);
+   o._statusActive  = false;
    o._layers        = null;
    o.lsnsEnterFrame = null;
    o.lsnsLeaveFrame = null;
    o.construct     = FStage_construct;
    o.registerLayer = RStage_registerLayer;
    o.layers        = FStage_layers;
+   o.active        = FStage_active;
+   o.deactive      = FStage_deactive;
    o.process       = FStage_process;
    o.dispose       = FStage_dispose;
    return o;
@@ -283,6 +295,28 @@ function RStage_registerLayer(n, l){
 }
 function FStage_layers(){
    return this._layers;
+}
+function FStage_active(){
+   var o = this;
+   o._statusActive = true;
+   var ls = o._layers;
+   if(ls != null){
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         ls.value(i).active();
+      }
+   }
+}
+function FStage_deactive(){
+   var o = this;
+   var ls = o._layers;
+   if(ls != null){
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         ls.value(i).deactive();
+      }
+   }
+   o._statusActive = false;
 }
 function FStage_process(){
    var o = this;

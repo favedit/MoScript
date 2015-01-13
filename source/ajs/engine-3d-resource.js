@@ -247,62 +247,13 @@ function FRs3IndexBuffer_unserialize(p){
 }
 function FRs3Material(o){
    o = RClass.inherits(this, o, FRs3Resource);
-   o._code  = null;
-   o._effectName = null;
-   o._optionLight = null;
-   o._optionMerge = null;
-   o._optionSort = null;
-   o._sortLevel = null;
-   o._optionAlpha = null;
-   o._optionDepth = null;
-   o._optionCompare = null;
-   o._optionDouble = null;
-   o._optionShadow = null;
-   o._optionShadowSelf = null;
-   o._optionDynamic = null;
-   o._optionTransmittance = null;
-   o._optionOpacity = null;
-   o._coordRateWidth = null;
-   o._coordRateHeight = null;
-   o._colorMin = null;
-   o._colorMax = null;
-   o._colorRate = null;
-   o._colorMerge = null;
-   o._alphaBase = null;
-   o._alphaRate = null;
-   o._alphaLevel = null;
-   o._alphaMerge = null;
-   o._ambientColor = null;
-   o._ambientShadow = null;
-   o._diffuseColor = null;
-   o._diffuseShadow = null;
-   o._diffuseViewColor = null;
-   o._diffuseViewShadow = null;
-   o._specularColor = null;
-   o._specularBase = null;
-   o._specularRate = null;
-   o._specularAverage = null;
-   o._specularShadow = null;
-   o._specularViewColor = null;
-   o._specularViewBase = null;
-   o._specularViewRate = null;
-   o._specularViewAverage = null;
-   o._specularViewShadow = null;
-   o._reflectColor = null;
-   o._reflectMerge = null;
-   o._reflectShadow = null;
-   o._refractFrontColor = null;
-   o._refractBackColor = null;
-   o._opacityColor = null;
-   o._opacityRate = null;
-   o._opacityAlpha = null;
-   o._opacityDepth = null;
-   o._opacityTransmittance = null;
-   o._emissiveColor = null;
+   o._code       = null;
+   o._info       = null;
    o._textures   = null;
    o.construct   = FRs3Material_construct;
    o.code        = FRs3Material_code;
    o.effectName  = FRs3Material_effectName;
+   o.info        = FRs3Material_info;
    o.textures    = FRs3Material_textures;
    o.unserialize = FRs3Material_unserialize;
    return o;
@@ -310,21 +261,16 @@ function FRs3Material(o){
 function FRs3Material_construct(){
    var o = this;
    o.__base.FRs3Resource.construct.call(o);
-   o._ambientColor = new SColor4()
-   o._diffuseColor = new SColor4()
-   o._diffuseViewColor = new SColor4()
-   o._specularColor = new SColor4()
-   o._specularViewColor = new SColor4()
-   o._reflectColor = new SColor4()
-   o._refractFrontColor = new SColor4()
-   o._opacityColor = new SColor4()
-   o._emissiveColor = null;
+   o._info = new SG3dMaterialInfo();
 }
 function FRs3Material_code(){
    return this._code;
 }
 function FRs3Material_effectName(){
-   return this._effectName;
+   return this._info.effectName;
+}
+function FRs3Material_info(){
+   return this._info;
 }
 function FRs3Material_textures(){
    return this._textures;
@@ -332,7 +278,59 @@ function FRs3Material_textures(){
 function FRs3Material_unserialize(p){
    var o = this;
    o._code = p.readString();
-   o._effectName = p.readString();
+   var m = o._info;
+   m.effectName = p.readString();
+   m.transformName = p.readString();
+   m.optionLight = p.readBoolean();
+   m.optionMerge = p.readBoolean();
+   m.optionSort = p.readBoolean();
+   m.sortLevel = p.readInt32();
+   m.optionAlpha = p.readBoolean();
+   m.optionDepth = p.readBoolean();
+   m.optionCompare = p.readString();
+   m.optionDouble = p.readBoolean();
+   m.optionShadow = p.readBoolean();
+   m.optionShadowSelf = p.readBoolean();
+   m.optionDynamic = p.readBoolean();
+   m.optionTransmittance = p.readBoolean();
+   m.optionOpacity = p.readBoolean();
+   m.coordRateWidth = p.readFloat();
+   m.coordRateHeight = p.readFloat();
+   m.colorMin = p.readFloat();
+   m.colorMax = p.readFloat();
+   m.colorRate = p.readFloat();
+   m.colorMerge = p.readFloat();
+   m.alphaBase = p.readFloat();
+   m.alphaRate = p.readFloat();
+   m.alphaLevel = p.readFloat();
+   m.alphaMerge = p.readFloat();
+   m.ambientColor.unserialize(p);
+   m.ambientShadow = p.readFloat();
+   m.diffuseColor.unserialize(p);
+   m.diffuseShadow = p.readFloat();
+   m.diffuseViewColor.unserialize(p);
+   m.diffuseViewShadow = p.readFloat();
+   m.specularColor.unserialize(p);
+   m.specularBase = p.readFloat();
+   m.specularRate = p.readFloat();
+   m.specularAverage = p.readFloat();
+   m.specularShadow = p.readFloat();
+   m.specularViewColor.unserialize(p);
+   m.specularViewBase = p.readFloat();
+   m.specularViewRate = p.readFloat();
+   m.specularViewAverage = p.readFloat();
+   m.specularViewShadow = p.readFloat();
+   m.reflectColor.unserialize(p);
+   m.reflectMerge = p.readFloat();
+   m.reflectShadow = p.readFloat();
+   m.refractFrontColor.unserialize(p);
+   m.refractBackColor.unserialize(p);
+   m.opacityColor.unserialize(p);
+   m.opacityRate = p.readFloat();
+   m.opacityAlpha = p.readFloat();
+   m.opacityDepth = p.readFloat();
+   m.opacityTransmittance = p.readFloat();
+   m.emissiveColor.unserialize(p);
    var c = p.readInt8();
    if(c > 0){
       var ts = o._textures = new TObjects();

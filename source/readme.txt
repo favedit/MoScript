@@ -1,3 +1,5 @@
+refer http://blog.csdn.net/ldpxxx/article/details/17285849
+
 内容        内容管道             资源
 FContent -> FContentPipeline - > FResource
             FPipeline

@@ -8,21 +8,20 @@ function FG3dRenderable(o){
    o = RClass.inherits(this, o, FGraphicRenderable);
    //..........................................................
    // @attribute
-   o._matrix            = null;
+   o._matrix       = null;
    // @attribute
-   o._effectName        = null;
-   o._effect            = null;
-   o._materialName      = null;
-   o._material          = null;
-   o._materialReference = null;
+   o._effectName   = null;
+   o._effect       = null;
+   o._materialName = null;
+   o._material     = null;
    //..........................................................
    // @method
-   o.construct          = FG3dRenderable_construct;
-   o.matrix             = FG3dRenderable_matrix;
-   o.effectName         = FG3dRenderable_effectName;
-   o.material           = FG3dRenderable_material;
-   o.testVisible        = FG3dRenderable_testVisible;
-   o.update             = FG3dRenderable_update;
+   o.construct     = FG3dRenderable_construct;
+   o.matrix        = FG3dRenderable_matrix;
+   o.effectName    = FG3dRenderable_effectName;
+   o.material      = FG3dRenderable_material;
+   o.testVisible   = RMethod.virtual(o, 'testVisible');
+   o.update        = FG3dRenderable_update;
    return o;
 }
 
@@ -66,16 +65,6 @@ function FG3dRenderable_effectName(){
 //==========================================================
 function FG3dRenderable_material(){
    return this._material;
-}
-
-//==========================================================
-// <T>测试是否可见。</T>
-//
-// @method
-// @return Boolean 是否可见
-//==========================================================
-function FG3dRenderable_testVisible(){
-   return true;
 }
 
 //==========================================================

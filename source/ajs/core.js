@@ -54,6 +54,88 @@ var EHttpStatus = new function EHttpStatus(){
    o.Finish  = 4;
    return o;
 }
+var EKeyCode = new function EKeyCode(){
+   var o = this;
+   o.None      = 0;
+   o.Esc       = 27;
+   o.Tab       = 9;
+   o.Enter     = 13;
+   o.Shift     = 16;
+   o.Alt       = 18;
+   o.Ctrl      = 17;
+   o.BackSpace = 8;
+   o.Left      = 37;
+   o.Up        = 38;
+   o.Right     = 39;
+   o.Down      = 40;
+   o.Insert    = 45;
+   o.Delete    = 46;
+   o.Home      = 36;
+   o.End       = 35;
+   o.PageUp    = 33;
+   o.PageDown  = 34;
+   o.F1        = 112;
+   o.F2        = 113;
+   o.F3        = 114;
+   o.F4        = 115;
+   o.F5        = 116;
+   o.F6        = 117;
+   o.F7        = 118;
+   o.F8        = 119;
+   o.F9        = 120;
+   o.F10       = 121;
+   o.F11       = 122;
+   o.F12       = 123;
+   o.A         = 65;
+   o.B         = 66;
+   o.C         = 67;
+   o.D         = 68;
+   o.E         = 69;
+   o.F         = 70;
+   o.G         = 71;
+   o.H         = 72;
+   o.I         = 73;
+   o.J         = 74;
+   o.K         = 75;
+   o.L         = 76;
+   o.M         = 77;
+   o.N         = 78;
+   o.O         = 79;
+   o.P         = 80;
+   o.Q         = 81;
+   o.R         = 82;
+   o.S         = 83;
+   o.T         = 84;
+   o.U         = 85;
+   o.V         = 86;
+   o.W         = 87;
+   o.X         = 88;
+   o.Y         = 89;
+   o.Z         = 90;
+   o.ControlKeys = [
+      o.Tab, o.Enter, o.BackSpace, o.Shift, o.Left, o.Up, o.Right, o.Down,
+      o.Insert, o.Delete, o.Home, o.End, o.PageUp, o.PageDown,o.Ctrl,
+      o.F1, o.F2, o.F3, o.F4, o.F5, o.F6, o.F7, o.F8, o.F9, o.F10, o.F11, o.F12];
+   o.floatCodes  = new Object();
+   var f = o.floatCodes;
+   f[o.Tab] = true;
+   f[o.Enter] = true;
+   f[o.BackSpace] = true;
+   f[o.Left] = true;
+   f[o.Right] = true;
+   f[o.Esc] = true;
+   f[o.Delete] = true;
+   f[o.Home] = true;
+   f[o.End] = true;
+   f[45] = true;
+   f[190] = true;
+   f[46] = true;
+   f[189] = true;
+   for(var n = 48; n <= 57; n++){
+      f[n] = true;
+   }
+   return o;
+}
 function FBytes(o){
    o = RClass.inherits(this, o, FObject, MDataView);
    o._memory   = null;
@@ -2548,6 +2630,7 @@ function RTypeArray_findTemp(t, l){
 }
 var RWindow = new function RWindow(){
    var o = this;
+   o.__keyDownEvent    = new SKeyDownEvent();
    o._builder          = null;
    o._disableDeep      = 0;
    o.panels            = new TMap();
@@ -2625,50 +2708,50 @@ function RWindow_connect(w){
    o.processUnload = hb.onunload;
    hb.onunload = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsUnload.process(o, e);
+      o.lsnsUnload.process(e);
       o.onUnload();
    };
    hb.onmousedown = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      RLogger.debug(o, '[D] onmousedown = ' + e.x + ' - ' + e.y);
-      o.lsnsMouseDown.process(o, e);
+      RLogger.info(o, 'Window mouse down. (location={1},{2})', e.x, e.y);
+      o.lsnsMouseDown.process(e);
    };
    hb.onmouseup = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsMouseUp.process(o, e);
+      o.lsnsMouseUp.process(e);
    };
    hb.onmousemove = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsMouseMove.process(o, e);
+      o.lsnsMouseMove.process(e);
    };
    hb.onmouseover = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsMouseOver.process(o, e);
+      o.lsnsMouseOver.process(e);
    };
    hb.onmousewheel = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsMouseWheel.process(o, e);
+      o.lsnsMouseWheel.process(e);
    };
    hb.onkeydown = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      RLogger.debug(o, '[D] onkeydown = ' + e.keyCode);
+      RLogger.debug(o, 'Window key down. (key_code={1})', e.keyCode);
       var s = e.srcElement ? e.srcElement : e.target;
       var t = s.tagName;
-      if(EKey.BackSpace == e.keyCode){
+      if(EKeyCode.BackSpace == e.keyCode){
          if('INPUT' == t){
             if(s.readOnly || 'checkbox' == s.type){
                return RKey.eventClear(e);
@@ -2681,8 +2764,9 @@ function RWindow_connect(w){
             return RKey.eventClear(e);
          }
       }
-      o.lsnsKeyDown.process(o, e);
-      if(EKey.Enter == e.keyCode){
+      o.__keyDownEvent.attach(e);
+      o.lsnsKeyDown.process(o.__keyDownEvent);
+      if(EKeyCode.Enter == e.keyCode){
          if('INPUT' == t){
             if(REvent.process(s, e)){
                RKey.eventClear(e);
@@ -2692,20 +2776,20 @@ function RWindow_connect(w){
    };
    hb.onkeyup = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      o.lsnsKeyUp.process(o, e);
+      o.lsnsKeyUp.process(e);
    };
    hb.onkeypress = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
-      RLogger.debug(o, '[D] onkeypress = ' + e.keyCode);
-      o.lsnsKeyPress.process(o, e);
+      RLogger.debug(o, 'Window key press. (key_code={1})', e.keyCode);
+      o.lsnsKeyPress.process(e);
    };
    hb.onresize = function(e){
       if(!e){
-         e = o.hWindow.event;
+         e = w.event;
       }
       if(o.oldBodyWidth == o.hBody.offsetWidth && o.oldBodyHeight == o.hBody.offsetHeight){
          return;
@@ -2713,7 +2797,7 @@ function RWindow_connect(w){
       o.oldBodyWidth = o.hBody.offsetWidth;
       o.oldBodyHeight = o.hBody.offsetHeight;
       o.onResize();
-      o.lsnsResize.process(o, e);
+      o.lsnsResize.process(e);
    };
 }
 function RWindow_createElement(n){
@@ -3156,6 +3240,27 @@ function RXml_unpack(s, n){
       }
    }
    return n;
+}
+function SEvent(o){
+   if(!o){o = this;}
+   o.name    = null;
+   o.hSource = null;
+   return o;
+}
+function SKeyDownEvent(o){
+   if(!o){o = this;}
+   SEvent(o);
+   o.shiftKey = false;
+   o.ctrlKey  = false;
+   o.keyCode  = 0;
+   o.attach  = SKeyDownEvent_attach;
+   return o;
+}
+function SKeyDownEvent_attach(e){
+   var o = this;
+   o.shiftKey = e.shiftKey;
+   o.ctrlKey = e.ctrlKey;
+   o.keyCode = e.keyCode;
 }
 function TDumpItem(o){
    if(!o){o = this;}

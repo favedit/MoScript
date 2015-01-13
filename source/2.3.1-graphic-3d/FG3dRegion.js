@@ -103,8 +103,8 @@ function FG3dRegion_pushRenderable(p){
 function FG3dRegion_prepare(){
    var o = this;
    // 设置视角投影矩阵
-   o._matrixViewProjection.assign(o._camera.matrix);
-   o._matrixViewProjection.append(o._projection.matrix);
+   o._matrixViewProjection.assign(o._camera.matrix());
+   o._matrixViewProjection.append(o._projection.matrix());
    // 设置相机位置
    var cp = o._camera.position();
    o._cameraPosition[0] = cp.x;

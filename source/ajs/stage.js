@@ -8,6 +8,8 @@ var RStage = new function RStage(){
    o.onProcess      = RStage_onProcess;
    o.construct      = RStage_construct;
    o.register       = RStage_register;
+   o.active         = RStage_active;
+   o.deactive       = RStage_deactive;
    o.process        = RStage_process;
    o.start          = RStage_start;
    o.construct();
@@ -29,6 +31,26 @@ function RStage_register(n , s){
    }
    ss.set(n , s);
 }
+function RStage_active(){
+   var o = this;
+   var ss = o._stages;
+   if(ss != null){
+      var c = ss.count();
+      for(var i = 0; i < c; i++){
+         ss.value(i).active();
+      }
+   }
+}
+function RStage_deactive(){
+   var o = this;
+   var ss = o._stages;
+   if(ss != null){
+      var c = ss.count();
+      for(var i = 0; i < c; i++){
+         ss.value(i).deactive();
+      }
+   }
+}
 function RStage_process(){
    var o = this;
    if(o._active){
@@ -46,10 +68,11 @@ function RStage_process(){
 }
 function RStage_start(v){
    var o = this;
+   o.active();
+   o.process();
    if(v == null){
       v = o._interval;
    }
    RTimer.setup();
-   RStage.process();
    setInterval('RStage_onProcess()', parseInt(v));
 }

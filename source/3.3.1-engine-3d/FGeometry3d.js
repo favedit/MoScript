@@ -8,18 +8,20 @@ function FGeometry3d(o){
    o = RClass.inherits(this, o, FG3dRenderable);
    //..........................................................
    // @attribute
-   o._renderable      = null;
-   o._bones           = null;
+   o._ready            = false;
+   o._renderable       = null;
+   o._bones            = null;
+   o._materialResource = null;
    //..........................................................
    // @method
-   o.construct        = FGeometry3d_construct;
-   o.testVisible      = FGeometry3d_testVisible;
-   o.findVertexBuffer = FGeometry3d_findVertexBuffer;
-   o.indexBuffer      = FGeometry3d_indexBuffer;
-   o.findTexture      = FGeometry3d_findTexture;
-   o.bones            = FGeometry3d_bones;
-   o.load             = FGeometry3d_load;
-   o.build            = FGeometry3d_build;
+   o.construct         = FGeometry3d_construct;
+   o.testVisible       = FGeometry3d_testVisible;
+   o.findVertexBuffer  = FGeometry3d_findVertexBuffer;
+   o.indexBuffer       = FGeometry3d_indexBuffer;
+   o.findTexture       = FGeometry3d_findTexture;
+   o.bones             = FGeometry3d_bones;
+   o.load              = FGeometry3d_load;
+   o.build             = FGeometry3d_build;
    return o;
 }
 
@@ -40,8 +42,15 @@ function FGeometry3d_construct(){
 // @return Boolean 是否可见
 //==========================================================
 function FGeometry3d_testVisible(p){
-   var r = this._renderable;
-   return r ? r.testReady() : false;
+   var o = this;
+   var r = o._ready;
+   if(!r){
+      var d = o._renderable;
+      if(d){
+         r = o._ready = d.testReady();
+      }
+   }
+   return r;
 }
 
 //==========================================================
@@ -92,7 +101,12 @@ function FGeometry3d_bones(p){
 //==========================================================
 function FGeometry3d_load(p){
    var o = this;
-   o._effectName = p.material().effectName();
+   // 获得材质
+   var m = o._material;
+   var mr = o._materialResource = p.material();
+   m.assignInfo(mr.info());
+   // 设置属性
+   o._effectName = m.info().effectName;
    o._renderable = p;
 }
 
@@ -105,6 +119,7 @@ function FGeometry3d_load(p){
 function FGeometry3d_build(p){
    var o = this;
    var r = o._renderable;
+   // 建立骨头集合
    var rbs = r.boneIds();
    if(rbs){
       var bs = o._bones = new TObjects();

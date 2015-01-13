@@ -22,6 +22,8 @@ var RStage = new function RStage(){
    // @method
    o.construct      = RStage_construct;
    o.register       = RStage_register;
+   o.active         = RStage_active;
+   o.deactive       = RStage_deactive;
    o.process        = RStage_process;
    o.start          = RStage_start;
    //..........................................................
@@ -67,6 +69,38 @@ function RStage_register(n , s){
 }
 
 //==========================================================
+// <T>激活处理。</T>
+//
+// @method
+//==========================================================
+function RStage_active(){
+   var o = this;
+   var ss = o._stages;
+   if(ss != null){
+      var c = ss.count();
+      for(var i = 0; i < c; i++){
+         ss.value(i).active();
+      }
+   }
+}
+
+//==========================================================
+// <T>取消激活处理。</T>
+//
+// @method
+//==========================================================
+function RStage_deactive(){
+   var o = this;
+   var ss = o._stages;
+   if(ss != null){
+      var c = ss.count();
+      for(var i = 0; i < c; i++){
+         ss.value(i).deactive();
+      }
+   }
+}
+
+//==========================================================
 // <T>逻辑处理。</T>
 //
 // @method
@@ -97,10 +131,14 @@ function RStage_process(){
 //==========================================================
 function RStage_start(v){
    var o = this;
+   // 激活舞台
+   o.active();
+   // 舞台处理
+   o.process();
+   // 启动时间处理
    if(v == null){
       v = o._interval;
    }
    RTimer.setup();
-   RStage.process();
    setInterval('RStage_onProcess()', parseInt(v));
 }

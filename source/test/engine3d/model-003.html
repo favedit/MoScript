@@ -55,6 +55,14 @@ function onEnterFrame(){
 function onThemeLoad(){
    var hCanvas = document.getElementById('_canvas');
    context = REngine3d.createContext(FWglContext, hCanvas);
+   RDump.dump(context, _dump);
+   var g = context._native;
+   var ss = g.getContextAttributes();
+   RDump.dump(ss, _dump);
+   return;
+   //debugger
+   //var g = context._native;
+   //var s = g.getInteger(g.MAX_VERTEX_ATTRIBS);
 
    stage = RClass.create(FSimpleStage3d);
    stage.backgroundColor().set(1, 1, 1, 1);
@@ -80,6 +88,7 @@ function onThemeLoad(){
    var rp = stage.projection();
    rp.width = hCanvas.width;
    rp.height = hCanvas.height;
+   rp.zfar = 100;
    rp.update();
    // 启动处理
    RStage.lsnsEnterFrame.register(null, onEnterFrame);
@@ -91,6 +100,7 @@ function _load(){
    RRuntime.processCd = EProcess.Debug;
    RBrowser.construct();
    RBrowser.setContentPath('../..');
+   RWindow.connect(window);
 
    var tc = RConsole.find(FRs3ThemeConsole);
    var m = tc.select('color');

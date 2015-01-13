@@ -63,6 +63,8 @@ function FG3dSampleSkeletonEffect_drawRenderable(pr, r){
          }
       }
    }
+   // 获得材质
+   var m = r.material();
    // 绑定所有属性流
    p.setParameter('vc_model_matrix', r.matrix());
    p.setParameter('vc_vp_matrix', prvp);

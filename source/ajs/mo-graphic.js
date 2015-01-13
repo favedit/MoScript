@@ -136,48 +136,23 @@ function FG3dAnimation_dispose(){
 }
 function FG3dBaseMaterial(o){
    o = RClass.inherits(this, o, FObject);
-   o.name = null;
-   o.optionMerge = null;
-   o.optionSort = null;
-   o.sortLevel = null;
-   o.optionAlpha = null;
-   o.optionDepth = null;
-   o.optionCompare = null;
-   o.optionDouble = null;
-   o.optionShadow = null;
-   o.optionShadowSelf = null;
-   o.color = null;
-   o.alpha = null;
-   o.ambientColor = null;
-   o.ambientShadow = null;
-   o.diffuseColor = null;
-   o.diffuseShadow = null;
-   o.diffuseViewColor = null;
-   o.diffuseViewShadow = null;
-   o.specularColor = null;
-   o.specularShadow = null;
-   o.specularInfo = null;
-   o.specularViewColor = null;
-   o.specularViewInfo = null;
-   o.specularViewShadow = null;
-   o.reflectColor = null;
-   o.textures = null;
-   o.construct = FG3dBaseMaterial_construct;
-   o.textures  = FG3dBaseMaterial_textures;
+   o._name      = null;
+   o._info      = null;
+   o.construct  = FG3dBaseMaterial_construct;
+   o.info       = FG3dBaseMaterial_info;
+   o.assignInfo = FG3dBaseMaterial_assignInfo;
    return o;
 }
 function FG3dBaseMaterial_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o.ambientColor = new SColor4();
-   o.diffuseColor = new SColor4();
-   o.diffuseViewColor = new SColor4();
-   o.specularColor = new SColor4();
-   o.specularViewColor = new SColor4();
-   o.reflectColor = new SColor4();
+   o._info = new SG3dMaterialInfo();
 }
-function FG3dBaseMaterial_textures(){
-   return this.textures;
+function FG3dBaseMaterial_info(){
+   return this._info;
+}
+function FG3dBaseMaterial_assignInfo(p){
+   this._info.assign(p);
 }
 function FG3dBone(o){
    o = RClass.inherits(this, o, FObject);
@@ -190,14 +165,17 @@ function FG3dBone_update(p){
 }
 function FG3dCamera(o){
    o = RClass.inherits(this, o, FObject);
-   o.name = null;
-   o.matrix        = null;
-   o._position      = null;
-   o.direction     = null;
-   o._centerFront = 0;
-   o._centerBack = 0;
-   o._focalNear = 0.1;
-   o._focalFar = 100.0;
+   o.__rotationX   = null;
+   o.__rotationY   = null;
+   o.__rotationZ   = null;
+   o._position     = null;
+   o._direction    = null;
+   o._rotation     = null;
+   o._matrix       = null;
+   o._centerFront  = 0;
+   o._centerBack   = 0;
+   o._focalNear    = 0.1;
+   o._focalFar     = 100.0;
    o._planes       = null;
    o._frustum      = null;
    o._projection   = null;
@@ -209,6 +187,7 @@ function FG3dCamera(o){
    o.construct     = FG3dCamera_construct;
    o.position      = FG3dCamera_position;
    o.setPosition   = FG3dCamera_setPosition;
+   o.matrix        = FG3dCamera_matrix;
    o.doWalk        = FG3dCamera_doWalk;
    o.doStrafe      = FG3dCamera_doStrafe;
    o.doFly         = FG3dCamera_doFly;
@@ -222,9 +201,13 @@ function FG3dCamera(o){
 function FG3dCamera_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o.matrix = new SMatrix3d();
+   o.__rotationX = new SQuaternion();
+   o.__rotationY = new SQuaternion();
+   o.__rotationZ = new SQuaternion();
    o._position = new SPoint3();
-   o.direction = new SVector3();
+   o._direction = new SVector3();
+   o._rotation = new SQuaternion();
+   o._matrix = new SMatrix3d();
    o.viewport = RClass.create(FG3dViewport);
    o.projection = RClass.create(FG3dProjection);
    o._axisUp = new SVector3();
@@ -239,21 +222,34 @@ function FG3dCamera_position(){
 function FG3dCamera_setPosition(x, y, z){
    this._position.set(x, y, z);
 }
-function FG3dCamera_doWalk(){
+function FG3dCamera_matrix(){
+   return this._matrix;
 }
-function FG3dCamera_doStrafe(){
+function FG3dCamera_doWalk(p){
+   var o = this;
+   o._position.x += o._direction.x * p;
+   o._position.z += o._direction.z * p;
 }
-function FG3dCamera_doFly(){
+function FG3dCamera_doStrafe(p){
+   var o = this;
+   o._position.x += o._axisY.x * p;
+   o._position.z += o._axisY.z * p;
 }
-function FG3dCamera_doYaw(){
+function FG3dCamera_doFly(p){
+   var o = this;
+   o._position.y += p;
 }
-function FG3dCamera_doPitch(){
+function FG3dCamera_doYaw(p){
+   var o = this;
+}
+function FG3dCamera_doPitch(p){
+   var o = this;
 }
 function FG3dCamera_lookAt(x, y, z){
    var o = this;
    var p = o._position;
-   o.direction.set(x - p.x, y - p.y, z - p.z);
-   o.direction.normalize();
+   o._direction.set(x - p.x, y - p.y, z - p.z);
+   o._direction.normalize();
 }
 function FG3dCamera_updateFrustum(){
 }
@@ -262,13 +258,13 @@ function FG3dCamera_update(){
    var ax = o._axisX;
    var ay = o._axisY;
    var az = o._axisZ;
-   az.assign(o.direction);
+   az.assign(o._direction);
    az.normalize();
    o._axisUp.cross2(ax, az);
    ax.normalize();
    az.cross2(ay, ax);
    ay.normalize();
-   var d = o.matrix.data();
+   var d = o._matrix.data();
    d[ 0] = ax.x;
    d[ 1] = ay.x;
    d[ 2] = az.x;
@@ -446,22 +442,26 @@ function FG3dProjection(o){
    o.angle       = 60;
    o.fieldOfView = 0;
    o.scale       = 0;
-   o.znear       = 0.01;
-   o.zfar        = 200;
-   o.matrix     = null;
-   o.construct = FG3dProjection_construct;
-   o.update    = FG3dProjection_update;
+   o.znear       = 0.1;
+   o.zfar        = 100;
+   o._matrix     = null;
+   o.construct   = FG3dProjection_construct;
+   o.matrix      = FG3dProjection_matrix;
+   o.update      = FG3dProjection_update;
    return o;
 }
 function FG3dProjection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o.matrix = new SPerspectiveMatrix3d();
+   o._matrix = new SPerspectiveMatrix3d();
+}
+function FG3dProjection_matrix(){
+   return this._matrix;
 }
 function FG3dProjection_update(){
    var o = this;
    o.fieldOfView = RMath.DEGREE_RATE * o.angle;
-   o.matrix.perspectiveFieldOfViewLH(o.fieldOfView, o.width / o.height, o.znear, o.zfar);
+   o._matrix.perspectiveFieldOfViewLH(o.fieldOfView, o.width / o.height, o.znear, o.zfar);
 }
 function FG3dRegion(o){
    o = RClass.inherits(this, o, FObject);
@@ -508,8 +508,8 @@ function FG3dRegion_pushRenderable(p){
 }
 function FG3dRegion_prepare(){
    var o = this;
-   o._matrixViewProjection.assign(o._camera.matrix);
-   o._matrixViewProjection.append(o._projection.matrix);
+   o._matrixViewProjection.assign(o._camera.matrix());
+   o._matrixViewProjection.append(o._projection.matrix());
    var cp = o._camera.position();
    o._cameraPosition[0] = cp.x;
    o._cameraPosition[1] = cp.y;
@@ -530,18 +530,17 @@ function FG3dRegion_dispose(){
 }
 function FG3dRenderable(o){
    o = RClass.inherits(this, o, FGraphicRenderable);
-   o._matrix            = null;
-   o._effectName        = null;
-   o._effect            = null;
-   o._materialName      = null;
-   o._material          = null;
-   o._materialReference = null;
-   o.construct          = FG3dRenderable_construct;
-   o.matrix             = FG3dRenderable_matrix;
-   o.effectName         = FG3dRenderable_effectName;
-   o.material           = FG3dRenderable_material;
-   o.testVisible        = FG3dRenderable_testVisible;
-   o.update             = FG3dRenderable_update;
+   o._matrix       = null;
+   o._effectName   = null;
+   o._effect       = null;
+   o._materialName = null;
+   o._material     = null;
+   o.construct     = FG3dRenderable_construct;
+   o.matrix        = FG3dRenderable_matrix;
+   o.effectName    = FG3dRenderable_effectName;
+   o.material      = FG3dRenderable_material;
+   o.testVisible   = RMethod.virtual(o, 'testVisible');
+   o.update        = FG3dRenderable_update;
    return o;
 }
 function FG3dRenderable_construct(){
@@ -558,9 +557,6 @@ function FG3dRenderable_effectName(){
 }
 function FG3dRenderable_material(){
    return this._material;
-}
-function FG3dRenderable_testVisible(){
-   return true;
 }
 function FG3dRenderable_update(p){
    var o = this;
@@ -728,6 +724,166 @@ function REngine3d_createContext(c, h){
    r.linkCanvas(h);
    o.contexts.push(r);
    return r;
+}
+function SG3dMaterialInfo(o){
+   if(!o){o = this;}
+   o = RClass.inherits(this, o, FObject);
+   o.effectName    = null;
+   o.transformName = null;
+   o.optionLight = null;
+   o.optionMerge = null;
+   o.optionSort = null;
+   o.sortLevel = null;
+   o.optionAlpha = null;
+   o.optionDepth = null;
+   o.optionCompare = null;
+   o.optionDouble = null;
+   o.optionShadow = null;
+   o.optionShadowSelf = null;
+   o.optionDynamic = null;
+   o.optionTransmittance = null;
+   o.optionOpacity = null;
+   o.coordRateWidth  = 1.0;
+   o.coordRateHeight = 1.0;
+   o.colorMin        = 0.0;
+   o.colorMax        = 1.0;
+   o.colorRate       = 1.0;
+   o.colorMerge      = 1.0;
+   o.alphaBase       = 1.0;
+   o.alphaRate       = 1.0;
+   o.alphaLevel      = 1.0;
+   o.alphaMerge      = 1.0;
+   o.ambientColor         = new SColor4();
+   o.ambientShadow        = 1.0;
+   o.diffuseColor         = new SColor4();
+   o.diffuseShadow        = 1.0;
+   o.diffuseViewColor     = new SColor4();
+   o.diffuseViewShadow    = 1.0;
+   o.specularColor        = new SColor4();
+   o.specularBase         = 1.0;
+   o.specularRate         = 1.0;
+   o.specularAverage      = 1.0;
+   o.specularShadow       = 1.0;
+   o.specularInfo         = null;
+   o.specularViewColor    = new SColor4();
+   o.specularViewBase     = 1.0;
+   o.specularViewRate     = 1.0;
+   o.specularViewAverage  = 1.0;
+   o.specularViewShadow   = 1.0;
+   o.specularViewShadow   = null;
+   o.reflectColor         = new SColor4();
+   o.reflectMerge         = 1.0;
+   o.reflectShadow        = 1.0;
+   o.refractFrontColor    = new SColor4();
+   o.refractBackColor     = new SColor4();
+   o.opacityColor         = new SColor4();
+   o.opacityRate          = 1.0;
+   o.opacityAlpha         = 1.0;
+   o.opacityDepth         = 1.0;
+   o.opacityTransmittance = 1.0;
+   o.emissiveColor        = new SColor4();
+   o.assign = SG3dMaterialInfo_assign;
+   o.reset  = SG3dMaterialInfo_reset;
+   return o;
+}
+function SG3dMaterialInfo_assign(p){
+   var o = this;
+   o.effectName = p.effectName;
+   o.transformName = p.transformName;
+   o.optionLight = p.optionLight;
+   o.optionMerge = p.optionMerge;
+   o.optionDepth = p.optionDepth;
+   o.optionCompare = p.optionCompare;
+   o.optionAlpha = p.optionAlpha;
+   o.optionDouble = p.optionDouble;
+   o.optionOpacity = p.optionOpacity;
+   o.optionShadow = p.optionShadow;
+   o.optionShadowSelf = p.optionShadowSelf;
+   o.optionTransmittance = p.optionTransmittance;
+   o.sortLevel = p.sortLevel;
+   o.colorMin = p.colorMin;
+   o.colorMax = p.colorMax;
+   o.colorRate = p.colorRate;
+   o.colorMerge = p.colorMerge;
+   o.alphaBase = p.alphaBase;
+   o.alphaRate = p.alphaRate;
+   o.alphaLevel = p.alphaLevel;
+   o.alphaMerge = p.alphaMerge;
+   o.ambientColor.assign(p.ambientColor);
+   o.ambientShadow = p.ambientShadow;
+   o.diffuseColor.assign(p.diffuseColor);
+   o.diffuseShadow = p.diffuseShadow;
+   o.diffuseViewColor.assign(p.diffuseViewColor);
+   o.diffuseViewShadow = p.diffuseViewShadow;
+   o.specularColor.assign(p.specularColor);
+   o.specularBase = p.specularBase;
+   o.specularRate = p.specularRate;
+   o.specularAverage = p.specularAverage;
+   o.specularShadow = p.specularShadow;
+   o.specularViewColor.assign(p.specularViewColor);
+   o.specularViewBase = p.specularViewBase;
+   o.specularViewRate = p.specularViewRate;
+   o.specularViewAverage = p.specularViewAverage;
+   o.specularViewShadow = p.specularViewShadow;
+   o.reflectColor.assign(p.reflectColor);
+   o.reflectMerge = p.reflectMerge;
+   o.reflectShadow = p.reflectShadow;
+   o.refractFrontColor.assign(p.refractFrontColor);
+   o.refractFrontMerge = p.refractFrontMerge;
+   o.refractFrontShadow = p.refractFrontShadow;
+   o.refractBackColor.assign(p.refractBackColor);
+   o.refractBackMerge = p.refractBackMerge;
+   o.refractBackShadow = p.refractBackShadow;
+   o.opacityColor.assign(p.opacityColor);
+   o.opacityRate = p.opacityRate;
+   o.opacityAlpha = p.optionAlpha;
+   o.opacityDepth = p.optionDepth;
+   o.opacityTransmittance = p.optionTransmittance;
+   o.emissiveColor.assign(p.emissiveColor);
+}
+function SG3dMaterialInfo_reset(){
+   var o = this;
+   o.coordRateWidth = 1.0;
+   o.coordRateHeight = 1.0;
+   o.colorMin = 0.0;
+   o.colorMax = 1.0;
+   o.colorRate = 1.0;
+   o.colorMerge = 1.0;
+   o.alphaBase = 1.0;
+   o.alphaRate = 1.0;
+   o.alphaLevel = 1.0;
+   o.alphaMerge = 1.0;
+   o.ambientColor.set(1.0, 1.0, 1.0, 1.0);
+   o.ambientShadow = 1.0;
+   o.diffuseColor.set(1.0, 1.0, 1.0, 1.0);
+   o.diffuseShadow = 1.0;
+   o.diffuseViewColor.set(1.0, 1.0, 1.0, 1.0);
+   o.diffuseViewShadow = 1.0;
+   o.specularColor.set(1.0, 1.0, 1.0, 1.0);
+   o.specularBase = 1.0;
+   o.specularRate = 1.0;
+   o.specularAverage = 1.0;
+   o.specularShadow = 1.0;
+   o.specularViewColor.set(1.0, 1.0, 1.0, 1.0);
+   o.specularViewBase = 1.0;
+   o.specularViewRate = 1.0;
+   o.specularViewAverage = 1.0;
+   o.specularViewShadow = 1.0;
+   o.reflectColor.set(1.0, 1.0, 1.0, 1.0);
+   o.reflectMerge = 1.0;
+   o.reflectShadow = 1.0;
+   o.refractFrontColor.set(1.0, 1.0, 1.0, 1.0);
+   o.refractFrontMerge = 1.0;
+   o.refractFrontShadow = 1.0;
+   o.refractBackColor.set(1.0, 1.0, 1.0, 1.0);
+   o.refractBackMerge = 1.0;
+   o.refractBackShadow = 1.0;
+   o.opacityColor.set(1.0, 1.0, 1.0, 1.0);
+   o.opacityRate = 1.0;
+   o.opacityAlpha = 1.0;
+   o.opacityDepth = 1.0;
+   o.opacityTransmittance = 1.0;
+   o.emissiveColor.set(1.0, 1.0, 1.0, 1.0);
 }
 var EG3dAttributeFormat = new function EG3dAttributeFormat(){
    var o = this;
@@ -1159,6 +1315,7 @@ function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
          }
       }
    }
+   var m = r.material();
    p.setParameter('vc_model_matrix', r.matrix().data());
    p.setParameter('vc_vp_matrix', prvp.data());
    p.setParameter('vc_camera_position', prcp);
@@ -1265,6 +1422,8 @@ function FG3dSampleSkeletonEffect_drawRenderable(pr, r){
          }
       }
    }
+   var m = r.material();
+   debugger
    p.setParameter('vc_model_matrix', r.matrix());
    p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
