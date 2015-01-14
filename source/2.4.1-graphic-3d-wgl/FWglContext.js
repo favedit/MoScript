@@ -2,6 +2,7 @@
 // <T>WebGL渲染环境。</T>
 //
 // @author maocy
+// @refer https://www.khronos.org/registry/webgl
 // @history 141230
 //==========================================================
 function FWglContext(o){
@@ -59,6 +60,7 @@ function FWglContext(o){
 function FWglContext_construct(){
    var o = this;
    o.__base.FG3dContext.construct.call(o);
+   o._capability = new SWglContextCapability();
    o._data9 = new Float32Array(9);
    o._data16 = new Float32Array(16);
 }
@@ -83,10 +85,22 @@ function FWglContext_linkCanvas(h){
       }
       o._native = n;
    }
+   var g = o._native;
    // 设置状态
    o.setViewPort(h.width, h.height);
    o.setDepthMode(true, EG3dDepthMode.LessEqual);
    o.setCullingMode(true, EG3dCullMode.Front);
+   // 获得渲染信息
+   var c = o._capability;
+   c.vendor = g.getParameter(g.VENDOR);
+   c.version = g.getParameter(g.VERSION);
+   c.shaderVersion = g.getParameter(g.SHADING_LANGUAGE_VERSION);
+   c.vertexCount = g.getParameter(g.MAX_VERTEX_ATTRIBS);
+   c.vertexConst = g.getParameter(g.MAX_VERTEX_UNIFORM_VECTORS);
+   c.varyingCount = g.getParameter(g.MAX_VARYING_VECTORS);
+   c.fragmentConst = g.getParameter(g.MAX_FRAGMENT_UNIFORM_VECTORS);
+   c.samplerCount = g.getParameter(g.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
+   c.samplerSize = g.getParameter(g.MAX_TEXTURE_SIZE);
 }
 
 //==========================================================

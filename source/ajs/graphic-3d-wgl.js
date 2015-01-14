@@ -34,6 +34,7 @@ function FWglContext(o){
 function FWglContext_construct(){
    var o = this;
    o.__base.FG3dContext.construct.call(o);
+   o._capability = new SWglContextCapability();
    o._data9 = new Float32Array(9);
    o._data16 = new Float32Array(16);
 }
@@ -50,9 +51,20 @@ function FWglContext_linkCanvas(h){
       }
       o._native = n;
    }
+   var g = o._native;
    o.setViewPort(h.width, h.height);
    o.setDepthMode(true, EG3dDepthMode.LessEqual);
    o.setCullingMode(true, EG3dCullMode.Front);
+   var c = o._capability;
+   c.vendor = g.getParameter(g.VENDOR);
+   c.version = g.getParameter(g.VERSION);
+   c.shaderVersion = g.getParameter(g.SHADING_LANGUAGE_VERSION);
+   c.vertexCount = g.getParameter(g.MAX_VERTEX_ATTRIBS);
+   c.vertexConst = g.getParameter(g.MAX_VERTEX_UNIFORM_VECTORS);
+   c.varyingCount = g.getParameter(g.MAX_VARYING_VECTORS);
+   c.fragmentConst = g.getParameter(g.MAX_FRAGMENT_UNIFORM_VECTORS);
+   c.samplerCount = g.getParameter(g.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
+   c.samplerSize = g.getParameter(g.MAX_TEXTURE_SIZE);
 }
 function FWglContext_parameters(){
    var o = this;
@@ -668,7 +680,7 @@ function FWglFragmentShader_upload(v){
    if(!r){
       var i = g.getShaderInfoLog(n);
       RLogger.fatal(o, null, 'Upload fragment shader source failure. (error={1})\n{2}', i, v);
-      g.deleteShader(s);
+      g.deleteShader(n);
       o._native = null;
       return false;
    }
@@ -725,6 +737,8 @@ function FWglProgram(o){
    o.link           = FWglProgram_link;
    o.setAttribute   = FWglProgram_setAttribute;
    o.setParameter   = FWglProgram_setParameter;
+   o.setParameter4  = FWglProgram_setParameter4;
+   o.setParameterColor4 = FWglProgram_setParameterColor4;
    o.setSampler     = FWglProgram_setSampler;
    o.dispose        = FWglProgram_dispose;
    return o;
@@ -889,6 +903,26 @@ function FWglProgram_setParameter(pn, pv, pc){
    var p = o.findParameter(pn);
    o._context.bindConst(null, p._slot, p._formatCd, pv, pc);
 }
+function FWglProgram_setParameter4(pn, px, py, pz, pw){
+   var o = this;
+   var p = o.findParameter(pn);
+   var v = RTypeArray.float4();
+   v[0] = px;
+   v[1] = py;
+   v[2] = pz;
+   v[3] = pw;
+   o._context.bindConst(null, p._slot, p._formatCd, v);
+}
+function FWglProgram_setParameterColor4(pn, pv){
+   var o = this;
+   var p = o.findParameter(pn);
+   var v = RTypeArray.float4();
+   v[0] = pv.red;
+   v[1] = pv.green;
+   v[2] = pv.blue;
+   v[3] = pv.alpha;
+   o._context.bindConst(null, p._slot, p._formatCd, v);
+}
 function FWglProgram_setSampler(pn, pt){
    var o = this;
    var p = o.findSampler(pn);
@@ -957,7 +991,7 @@ function FWglVertexShader_upload(v){
    if(!r){
       var i = g.getShaderInfoLog(n);
       RLogger.fatal(o, null, 'Upload vertex shader source failure. (error={1})\n{2}', i, v);
-      g.deleteShader(s);
+      g.deleteShader(n);
       o._native = null;
       return false;
    }
@@ -1047,4 +1081,9 @@ function RWglUtility_convertIndexStride(g, v){
    }
    RLogger.fatal(this, null, "Convert index stride failure. (stride_cd={1})", v);
    return 0;
+}
+function SWglContextCapability(o){
+   if(!o){o = this;}
+   SG3dContextCapability(o);
+   return o;
 }

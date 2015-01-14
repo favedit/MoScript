@@ -5,11 +5,11 @@
 // @author maocy
 // @version 141229
 //==========================================================
-var RBool = new function RBool(){
+var RBoolean = new function RBoolean(){
    var o = this;
    // @method
-   o.parse    = RBool_parse;
-   o.toString = RBool_toString;
+   o.parse    = RBoolean_parse;
+   o.toString = RBoolean_toString;
    return o;
 }
 
@@ -20,8 +20,8 @@ var RBool = new function RBool(){
 // @param v:value:String 
 // @return Boolean 
 //==========================================================
-function RBool_parse(v){
-   return (v == EBool.True);
+function RBoolean_parse(v){
+   return (v == EBoolean.True);
 }
 
 //==========================================================
@@ -31,6 +31,6 @@ function RBool_parse(v){
 // @param v:value:Boolean 
 // @return String 字符串
 //==========================================================
-function RBool_toString(v){
-   return v ? EBool.True : EBool.False;
+function RBoolean_toString(v){
+   return v ? EBoolean.True : EBoolean.False;
 }

@@ -7,7 +7,8 @@
 //==========================================================
 var RString = new function RString(){
    var o = this;
-   // Attribute
+   //..........................................................
+   // @attribute
    o.EMPTY        = '';
    o.SPACE        = '   ';
    o.PAD          = ' ';
@@ -18,7 +19,8 @@ var RString = new function RString(){
    o.CodeLowerZ   = 'z'.charCodeAt(0);
    o.CodeUpperA   = 'A'.charCodeAt(0);
    o.CodeUpperZ   = 'Z'.charCodeAt(0);
-   // Method
+   //..........................................................
+   // @method
    o.isEmpty      = RString_isEmpty;
    o.isBlank      = RString_isBlank;
    o.isAnsi       = RString_isAnsi;
@@ -54,6 +56,7 @@ var RString = new function RString(){
    o.splitPattern = RString_splitPattern;
    o.remove       = RString_remove;
    o.removeChars  = RString_removeChars;
+   o.formatLines  = RString_formatLines;
    return o;
 }
 
@@ -806,4 +809,31 @@ function RString_removeChars(v, s){
       return r.join('');
    }
    return v;
+}
+
+//==========================================================
+// <T>格式化多行文本。</T>
+//
+// @method
+// @param s:source:String 字符串
+// @return String 字符串
+//==========================================================
+function RString_formatLines(p){
+   var o = this;
+   p = p.replace(/\\r/g, '');
+   var ls = p.split('\n');
+   var c = ls.length;
+   var r = new TString();
+   for(var i = 0; i < c; i++){
+      var l = ls[i]
+      l = o.trim(l);
+      if(o.isEmpty(l)){
+         continue;
+      }
+      if(o.startsWith(l, '//')){
+         continue;
+      }
+      r.appendLine(l);
+   }
+   return r.toString();
 }

@@ -9,12 +9,29 @@ var RTypeArray = new function RTypeArray(){
    var o = this;
    //..........................................................
    // @attribute
+   o._float4  = null;
    o._data    = new Object();
    //..........................................................
    // @method
+   o.float4      = RTypeArray_float4;
    o.createArray = RTypeArray_createArray;
    o.findTemp    = RTypeArray_findTemp;
    return o;
+}
+
+//==========================================================
+// <T>获得4元素浮点数。</T>
+//
+// @method
+// @return Float32Array 浮点数
+//==========================================================
+function RTypeArray_float4(){
+   var o = this;
+   var v = o._float4;
+   if(v == null){
+      v = o._float4 = new Float32Array(4);
+   }
+   return v;
 }
 
 //==========================================================

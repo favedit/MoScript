@@ -12,7 +12,9 @@ function FG3dProgram(o){
    o._parameters       = null;
    o._samplers         = null;
    // @attribute
+   o._vertexSource     = null;
    o._vertexShader     = null;
+   o._fragmentSource   = null;
    o._fragmentShader   = null;
    //..........................................................
    // @method
@@ -239,9 +241,11 @@ function FG3dProgram_loadConfig(p){
          var st = n.get('name');
          var sv = n.value();
          if(st == 'vertex'){
-            o.upload(EG3dShader.Vertex, sv);
+            o._vertexSource = sv;
+            //o.upload(EG3dShader.Vertex, sv);
          }else if(st == 'fragment'){
-            o.upload(EG3dShader.Fragment, sv);
+            o._fragmentSource = sv;
+            //o.upload(EG3dShader.Fragment, sv);
          }else{
             throw new TError(o, 'Unknown source type. (name={1})', nt);
          }

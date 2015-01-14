@@ -38,11 +38,12 @@ function FG3dTechniquePass_drawRegion(p){
    var ec = RConsole.find(FG3dEffectConsole);
    var rs = p.renderables();
    var c = rs.count();
-   for(var n = 0; n < c; n++){
-      var r = rs.get(n);
+   for(var i = 0; i < c; i++){
+      var r = rs.get(i);
       var e = r.effect();
       if(e == null){
          e = ec.findByRenderable(o._context, r);
+         r.setEffect(e);
       }
       o._context.setProgram(e.program());
       e.drawRenderable(p, r);

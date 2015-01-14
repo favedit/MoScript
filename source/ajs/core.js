@@ -2586,10 +2586,20 @@ function RStyle_style(c, n){
 }
 var RTypeArray = new function RTypeArray(){
    var o = this;
+   o._float4  = null;
    o._data    = new Object();
+   o.float4      = RTypeArray_float4;
    o.createArray = RTypeArray_createArray;
    o.findTemp    = RTypeArray_findTemp;
    return o;
+}
+function RTypeArray_float4(){
+   var o = this;
+   var v = o._float4;
+   if(v == null){
+      v = o._float4 = new Float32Array(4);
+   }
+   return v;
 }
 function RTypeArray_createArray(t, l){
    switch(t){
@@ -3140,7 +3150,7 @@ function RXml_makeDocument(xdoc){
    return doc;
 }
 function RXml_buildNode(pd, pn, pe){
-   var xas= null;
+   var xas = null;
    var eas = pe.attributes;
    if(eas){
       var eac = eas.length;

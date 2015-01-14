@@ -5,7 +5,7 @@
 // @history 141230
 //==========================================================
 function FG3dSampleAutomaticEffect(o){
-   o = RClass.inherits(this, o, FG3dEffect);
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
    //..........................................................
    // @attribute
    o._context       = null;

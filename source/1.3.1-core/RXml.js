@@ -226,7 +226,7 @@ function RXml_makeDocument(xdoc){
 //===========================================================
 function RXml_buildNode(pd, pn, pe){
    // 建立属性集合
-   var xas= null;
+   var xas = null;
    var eas = pe.attributes;
    if(eas){
       var eac = eas.length;

@@ -283,7 +283,7 @@ var EAnnotation = new function EAnnotation(){
    o.StyleIcon = 'icon';
    return o;
 }
-var EBool = new function EBool(){
+var EBoolean = new function EBoolean(){
    var o = this;
    o.True   = 'Y';
    o.False  = 'N';
@@ -329,6 +329,16 @@ var ERegExp = new function ERegExp(){
    o.NF                  = /^-([1-9]\d*\.\d*|0\.\d*[1-9]\d*)$/;
    o.U                   = /[1-9]{1}[0-9]/;
    o.E                   = /^\w{1,}[@]{1}[a-zA-Z]{1,}[.]{1}[a-zA-Z]{1,}$/;
+   return o;
+}
+var EResult = new function EResult(){
+   var o = this;
+   o.Success  = 0;
+   o.Continue = 1;
+   o.Skip     = 2;
+   o.Finish   = 3;
+   o.Failure  =  -1;
+   o.Cancel   = -2;
    return o;
 }
 function FConsole(o){
@@ -619,17 +629,17 @@ function RArray_nameMaxLength(a){
    }
    return r;
 }
-var RBool = new function RBool(){
+var RBoolean = new function RBoolean(){
    var o = this;
-   o.parse    = RBool_parse;
-   o.toString = RBool_toString;
+   o.parse    = RBoolean_parse;
+   o.toString = RBoolean_toString;
    return o;
 }
-function RBool_parse(v){
-   return (v == EBool.True);
+function RBoolean_parse(v){
+   return (v == EBoolean.True);
 }
-function RBool_toString(v){
-   return v ? EBool.True : EBool.False;
+function RBoolean_toString(v){
+   return v ? EBoolean.True : EBoolean.False;
 }
 var RChar = new function RChar(){
    var o = this;
@@ -2341,6 +2351,7 @@ var RString = new function RString(){
    o.splitPattern = RString_splitPattern;
    o.remove       = RString_remove;
    o.removeChars  = RString_removeChars;
+   o.formatLines  = RString_formatLines;
    return o;
 }
 function RString_isEmpty(v){
@@ -2740,6 +2751,25 @@ function RString_removeChars(v, s){
       return r.join('');
    }
    return v;
+}
+function RString_formatLines(p){
+   var o = this;
+   p = p.replace(/\\r/g, '');
+   var ls = p.split('\n');
+   var c = ls.length;
+   var r = new TString();
+   for(var i = 0; i < c; i++){
+      var l = ls[i]
+      l = o.trim(l);
+      if(o.isEmpty(l)){
+         continue;
+      }
+      if(o.startsWith(l, '//')){
+         continue;
+      }
+      r.appendLine(l);
+   }
+   return r.toString();
 }
 var RTimer = new function RTimer(){
    var o = this;
@@ -3622,6 +3652,7 @@ function TNode(o){
    o.set          = TNode_set;
    o.find         = TNode_find;
    o.findNode     = TNode_findNode;
+   o.searchNode   = TNode_searchNode;
    o.push         = TNode_push;
    o.toString     = TNode_toString;
    o.innerDump    = TNode_innerDump;
@@ -3677,59 +3708,69 @@ function TNode_set(n, v){
       this.attributes().set(n, v);
    }
 }
-function TNode_find(name, attrs){
-   if(this._nodes){
-      var c = this._nodes.count;
-      if(name != null){
-         name = name.toLowerCase();
-      }
-      var len = arguments.length;
-      for(var n = 0; n < c; n++){
-         var node = this._nodes.get(n);
-         if(name != null && name != node._name.toLowerCase()){
-            continue;
-         }
-         var finded = true;
-         for(var i = 1; i < len; i += 2){
-            if(i+1 < len){
-               if(node._attributes.get(arguments[n]) != arguments[n+1]){
-                  finded = false;
-                  break;
-               }
-            }else{
-               if(node._value != arguments[n]){
-                  finded = false;
-                  break;
-               }
-            }
-         }
-         if(finded){
-            return node;
+function TNode_find(pn, pa){
+   var o = this;
+   if(o.hasNode()){
+      var ns = o._nodes;
+      var nc = ns.count;
+      for(var ni = 0; ni < nc; ni++){
+         var n = ns.get(ni);
+         if(n.isName(pn)){
+            return n;
          }
       }
    }
    return null;
 }
-function TNode_findNode(name, value){
+function TNode_findNode(pn, pv){
    var o = this;
-   var at = new TAttributes();
-   var nd = null;
-   if(o._attributes != null){
-      at = o._attributes;
+   if(o.hasNode()){
+      var ns = o._nodes;
+      var nc = ns.count();
+      var as = arguments;
+      var ac = as.length;
+      if((ac - 1) % 2){
+         throw new TError('Attributes is not pair. (length={1})', ac);
+      }
+      for(var ni = 0; ni < nc; ni++){
+         var n = ns.get(ni);
+         if(pn != null){
+            if(!n.isName(pn)){
+               continue;
+            }
+         }
+         var f = true;
+         for(var ai = 1; ai < ac; ai += 2){
+            if(n.get(as[ai]) != as[ai + 1]){
+               f = false;
+               break;
+            }
+         }
+         if(f){
+            return n;
+         }
+      }
    }
-   if(at.get(name) == value){
-      nd = o;
-   }else{
-     if(o.hasNode()){
-        for(var n = 0; n< o._nodes.count; n++){
-           nd = o._nodes.get(n).findNode(name, value);
-           if(nd != null){
-              break;
-           }
-        }
-     }
+   return null;
+}
+function TNode_searchNode(pn, pv){
+   var o = this;
+   if(o.hasAttribute()){
+      if(o._attributes.get(pn) == pv){
+         return o;
+      }
    }
-   return nd;
+   if(o.hasNode()){
+      var ns = o._nodes;
+      var c = ns.count();
+      for(var i = 0; i < c; ni++){
+         var n = ns.get(n).searchNode(pn, pv);
+         if(n != null){
+            return n;
+         }
+      }
+   }
+   return null;
 }
 function TNode_push(p){
    var o = this;

@@ -28,6 +28,7 @@ function TNode(o){
    o.set          = TNode_set;
    o.find         = TNode_find;
    o.findNode     = TNode_findNode;
+   o.searchNode   = TNode_searchNode;
    o.push         = TNode_push;
    o.toString     = TNode_toString;
    o.innerDump    = TNode_innerDump;
@@ -168,42 +169,65 @@ function TNode_set(n, v){
 }
 
 //==========================================================
-// <T>	根据节点名称和属性查找对应节点。</T>
+// <T>根据节点名称查找节点。</T>
 //
 // @method
-// @param name:name:String 要添加的节点
-// @param attrs:attrs:String 节点的属性名称数组
-// @see RClass.isClass
+// @param pn:name:String 要添加的节点
 // @return TNode 返回查找到的节点
 //==========================================================
-function TNode_find(name, attrs){
-   if(this._nodes){
-      var c = this._nodes.count;
-      if(name != null){
-         name = name.toLowerCase();
-      }
-      var len = arguments.length;
-      for(var n = 0; n < c; n++){
-         var node = this._nodes.get(n);
-         if(name != null && name != node._name.toLowerCase()){
-            continue;
+function TNode_find(pn, pa){
+   var o = this;
+   if(o.hasNode()){
+      var ns = o._nodes;
+      var nc = ns.count;
+      for(var ni = 0; ni < nc; ni++){
+         var n = ns.get(ni);
+         if(n.isName(pn)){
+            return n;
          }
-         var finded = true;
-         for(var i = 1; i < len; i += 2){
-            if(i+1 < len){
-               if(node._attributes.get(arguments[n]) != arguments[n+1]){
-                  finded = false;
-                  break;
-               }
-            }else{
-               if(node._value != arguments[n]){
-                  finded = false;
-                  break;
-               }
+      }
+   }
+   return null;
+}
+
+//==========================================================
+// <T>根据节点名称和属性查找节点。</T>
+//
+// @method
+// @param pn:name:String 属性名称
+// @param pv:value:String 属性值
+// @return TNode 对应的节点
+//==========================================================
+function TNode_findNode(pn, pv){
+   var o = this;
+   if(o.hasNode()){
+      var ns = o._nodes;
+      var nc = ns.count();
+      // 检查参数
+      var as = arguments;
+      var ac = as.length;
+      if((ac - 1) % 2){
+         throw new TError('Attributes is not pair. (length={1})', ac);
+      }
+      // 查找所有节点
+      for(var ni = 0; ni < nc; ni++){
+         var n = ns.get(ni);
+         // 检查名称
+         if(pn != null){
+            if(!n.isName(pn)){
+               continue;
             }
          }
-         if(finded){
-            return node;
+         // 检查属性
+         var f = true;
+         for(var ai = 1; ai < ac; ai += 2){
+            if(n.get(as[ai]) != as[ai + 1]){
+               f = false;
+               break;
+            }
+         }
+         if(f){
+            return n;
          }
       }
    }
@@ -213,30 +237,29 @@ function TNode_find(name, attrs){
 //==========================================================
 // <T>根据指定的属性名称和属性值查找节点。</T>
 //
-// @param name:name:String 属性名称
-// @param value:value:String 属性值
+// @method
+// @param pn:name:String 属性名称
+// @param pv:value:String 属性值
 // @return TNode 对应的节点
 //==========================================================
-function TNode_findNode(name, value){
+function TNode_searchNode(pn, pv){
    var o = this;
-   var at = new TAttributes();
-   var nd = null;
-   if(o._attributes != null){
-      at = o._attributes;
+   if(o.hasAttribute()){
+      if(o._attributes.get(pn) == pv){
+         return o;
+      }
    }
-   if(at.get(name) == value){
-      nd = o;
-   }else{
-     if(o.hasNode()){
-        for(var n = 0; n< o._nodes.count; n++){
-           nd = o._nodes.get(n).findNode(name, value);
-           if(nd != null){
-              break;
-           }
-        }
-     }
+   if(o.hasNode()){
+      var ns = o._nodes;
+      var c = ns.count();
+      for(var i = 0; i < c; ni++){
+         var n = ns.get(n).searchNode(pn, pv);
+         if(n != null){
+            return n;
+         }
+      }
    }
-   return nd;
+   return null;
 }
 
 //==========================================================

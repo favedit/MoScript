@@ -5,16 +5,18 @@
 // @history 150109
 //==========================================================
 function FG3dSampleSkeletonEffect(o){
-   o = RClass.inherits(this, o, FG3dEffect);
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
    //..........................................................
    // @attribute
-   o._context       = null;
-   o._program       = null;
-   o._data          = new Float32Array();
+   o._supportSkeleton = true;
+   // @attribute
+   o._context         = null;
+   o._program         = null;
+   o._data            = new Float32Array();
    //..........................................................
    // @method
-   o.drawRenderable = FG3dSampleSkeletonEffect_drawRenderable;
-   o.load           = FG3dSampleSkeletonEffect_load;
+   o.drawRenderable   = FG3dSampleSkeletonEffect_drawRenderable;
+   o.load             = FG3dSampleSkeletonEffect_load;
    return o;
 }
 
@@ -63,8 +65,6 @@ function FG3dSampleSkeletonEffect_drawRenderable(pr, r){
          }
       }
    }
-   // 获得材质
-   var m = r.material();
    // 绑定所有属性流
    p.setParameter('vc_model_matrix', r.matrix());
    p.setParameter('vc_vp_matrix', prvp);
@@ -72,6 +72,19 @@ function FG3dSampleSkeletonEffect_drawRenderable(pr, r){
    p.setParameter('vc_light_direction', prld);
    p.setParameter('fc_camera_position', prcp);
    p.setParameter('fc_light_direction', prld);
+   // 设置材质
+   var m = r.material();
+   var mi = m.info();
+   p.setParameterColor4('fc_color', mi.ambientColor);
+   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
+   p.setParameterColor4('fc_ambient_color', mi.ambientColor);
+   p.setParameterColor4('fc_diffuse_color', mi.diffuseColor);
+   p.setParameterColor4('fc_specular_color', mi.specularColor);
+   p.setParameter4('fc_specular', mi.specularBase, mi.specularRate, mi.specularAverage, mi.specularShadow);
+   p.setParameterColor4('fc_specular_view_color', mi.specularViewColor);
+   p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
+   p.setParameterColor4('fc_reflect_color', mi.reflectColor);
    // 设置骨头集合
    var bs = r.bones();
    if(bs){

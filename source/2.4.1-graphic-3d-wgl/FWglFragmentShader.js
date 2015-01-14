@@ -46,7 +46,7 @@ function FWglFragmentShader_upload(v){
    if(!r){
       var i = g.getShaderInfoLog(n);
       RLogger.fatal(o, null, 'Upload fragment shader source failure. (error={1})\n{2}', i, v);
-      g.deleteShader(s); 
+      g.deleteShader(n); 
       o._native = null;
       return false;
    }

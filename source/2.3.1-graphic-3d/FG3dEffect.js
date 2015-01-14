@@ -8,15 +8,33 @@ function FG3dEffect(o){
    o = RClass.inherits(this, o, FG3dObject);
    //..........................................................
    // @attribute
-   o._program       = null;
+   o._program          = null;
+   o._templateContext  = null;
+   o._vertexTemplate   = null;
+   o._fragmentTemplate = null;
    //..........................................................
    // @method
-   o.program        = FG3dEffect_program;
-   o.setParameter   = FG3dEffect_setParameter;
-   o.setSampler     = FG3dEffect_setSampler;
-   o.drawRenderable = FG3dEffect_drawRenderable;
-   o.loadUrl        = FG3dEffect_loadUrl;
+   o.construct         = FG3dEffect_construct;
+   o.program           = FG3dEffect_program;
+   o.setParameter      = FG3dEffect_setParameter;
+   o.setSampler        = FG3dEffect_setSampler;
+   o.drawRenderable    = FG3dEffect_drawRenderable;
+   o.buildInfo         = FG3dEffect_buildInfo;
+   o.loadUrl           = FG3dEffect_loadUrl;
+   o.build             = FG3dEffect_build;
    return o;
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FG3dEffect_construct(){
+   var o = this;
+   o.__base.FG3dObject.construct.call(o);
+   // 初始化变量
+   o._templateContext = RClass.create(FTagContext);
 }
 
 //==========================================================
@@ -50,6 +68,16 @@ function FG3dEffect_setParameter(pn, pv, pc){
 //==========================================================
 function FG3dEffect_setSampler(pn, pt){
    this._program.setSampler(pn, pt);
+}
+
+//==========================================================
+// <T>绘制渲染对象。</T>
+//
+// @method
+// @param pt:tagContext:FTagContext 模板环境
+// @param pc:effectInfo:SG3dEffectInfo 渲染信息
+//==========================================================
+function FG3dEffect_buildInfo(f, r){
 }
 
 //==========================================================
@@ -99,6 +127,39 @@ function FG3dEffect_loadUrl(u){
    // 加载程序内容
    var p = o._program = c.createProgram();
    p.loadConfig(d);
-   p.build();
-   p.link();
+   // 建立代码模板
+   var vt = o._vertexTemplate = RClass.create(FTagDocument);
+   vt.setSpace('shader');
+   vt.load(p._vertexSource);
+   var ft = o._fragmentTemplate = RClass.create(FTagDocument);
+   ft.setSpace('shader');
+   ft.load(p._fragmentSource);
+}
+
+//==========================================================
+// <T>构建处理。</T>
+//
+// @method
+// @param p:effectInfo:SG3dEffectInfo 效果信息
+//==========================================================
+function FG3dEffect_build(p){
+   var o = this;
+   var g = o._program;
+   // 设置环境
+   var c = o._templateContext;
+   c.resetAttributes();
+   o.buildInfo(c, p);
+   // 生成顶点代码
+   c.resetSource();
+   var vs = o._vertexTemplate.parse(c);
+   var vsf = RString.formatLines(vs);
+   g.upload(EG3dShader.Vertex, vsf);
+   // 生成像素代码
+   c.resetSource();
+   var fs = o._fragmentTemplate.parse(c);
+   var fsf = RString.formatLines(fs);
+   g.upload(EG3dShader.Fragment, fsf);
+   // 编译处理
+   g.build();
+   g.link();
 }

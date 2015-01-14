@@ -1,3 +1,15 @@
+var EG3dAttribute = new function EG3dAttribute(){
+   var o = this;
+   o.Position   = 'position';
+   o.Color      = 'color';
+   o.Coord      = 'coord';
+   o.Normal     = 'normal';
+   o.Binormal   = 'binormal';
+   o.Tangent    = 'tangent';
+   o.BoneIndex  = 'bone_index';
+   o.BoneWeight = 'bone_weight';
+   return o;
+}
 var EG3dAttributeFormat = new function EG3dAttributeFormat(){
    var o = this;
    o.Unknown = 0;
@@ -63,6 +75,21 @@ var EG3dParameterFormat = new function EG3dParameterFormat(){
    o.Float4x4 = 7;
    return o;
 }
+var EG3dSampler = new function EG3dSampler(){
+   var o = this;
+   o.Diffuse       = 'Diffuse';
+   o.Alpha         = 'Alpha';
+   o.Normal        = 'Normal';
+   o.SpecularColor = 'SpecularColor';
+   o.SpecularLevel = 'SpecularLevel';
+   o.Light         = 'Light';
+   o.Reflect       = 'Reflect';
+   o.Refract       = 'Refract';
+   o.Emissive      = 'Emissive';
+   o.Height        = 'Height';
+   o.Environment   = 'Environment';
+   return o;
+}
 var EG3dShader = new function EG3dShader(){
    var o = this;
    o.Unknown = 0;
@@ -80,6 +107,7 @@ var EG3dTexture = new function EG3dTexture(){
 }
 function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
+   o._capability         = null;
    o._optionDepth        = false;
    o._optionCull         = false;
    o._depthModeCd        = 0;
@@ -89,6 +117,7 @@ function FG3dContext(o){
    o._blendTargetCd      = 0;
    o._program            = null;
    o.construct           = FG3dContext_construct;
+   o.capability          = FG3dContext_capability;
    o.createProgram       = RMethod.virtual(o, 'createProgram');
    o.createVertexBuffer  = RMethod.virtual(o, 'createVertexBuffer');
    o.createIndexBuffer   = RMethod.virtual(o, 'createIndexBuffer');
@@ -111,6 +140,9 @@ function FG3dContext(o){
 function FG3dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
+}
+function FG3dContext_capability(){
+   return this._capability;
 }
 function FG3dContext_dispose(){
    var o = this;
@@ -156,7 +188,9 @@ function FG3dProgram(o){
    o._attributes       = null;
    o._parameters       = null;
    o._samplers         = null;
+   o._vertexSource     = null;
    o._vertexShader     = null;
+   o._fragmentSource   = null;
    o._fragmentShader   = null;
    o.hasAttribute      = FG3dProgram_hasAttribute;
    o.registerAttribute = FG3dProgram_registerAttribute;
@@ -274,9 +308,9 @@ function FG3dProgram_loadConfig(p){
          var st = n.get('name');
          var sv = n.value();
          if(st == 'vertex'){
-            o.upload(EG3dShader.Vertex, sv);
+            o._vertexSource = sv;
          }else if(st == 'fragment'){
-            o.upload(EG3dShader.Fragment, sv);
+            o._fragmentSource = sv;
          }else{
             throw new TError(o, 'Unknown source type. (name={1})', nt);
          }
@@ -383,4 +417,32 @@ function FG3dVertexBuffer_name(){
 function FG3dVertexShader(o){
    o = RClass.inherits(this, o, FG3dShader);
    return o;
+}
+function SG3dContextCapability(o){
+   if(!o){o = this;}
+   o.vendor        = null;
+   o.version       = null;
+   o.shaderVersion = null;
+   o.vertexCount   = null;
+   o.vertexConst   = null;
+   o.fragmentConst = null;
+   o.varyingCount  = null;
+   o.samplerCount  = null;
+   o.samplerSize   = null;
+   o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
+   return o;
+}
+function SG3dContextCapability_calculateInstanceCount(vertexCount, boneCount){
+   var o = this;
+   var vertexConstLimit = o.vertexCount;
+   var constRequire = (3 * boneCount) + 4;
+   var constLimit = (vertexConstLimit - 16) / constRequire;
+   var instanceCount = constLimit;
+   if(vertexCount > 0){
+      var vertexCountLimit = 65535;
+      var vertexLimit = vertexCountLimit / vertexCount;
+      instanceCount = Math.min(instanceCount, vertexLimit);
+   }
+   instanceCount = Math.min(instanceCount, 256);
+   return instanceCount;
 }
