@@ -14,6 +14,7 @@ function SPoint3(x, y, z){
    o.z           = z;
    //..........................................................
    // @method
+   o.assign      = SPoint3_assign;
    o.set         = SPoint3_set;
    o.resize      = SPoint3_resize;
    o.slerp       = SPoint3_slerp;
@@ -25,12 +26,25 @@ function SPoint3(x, y, z){
 }
 
 //==========================================================
-// 设置三维坐标，初始化
+// <T>接收数据。</T>
 //
-// @tool
-// @param x:xPosition:Integer X坐标
-// @param y:yPosition:Integer Y坐标
-// @param z:zPosition:Integer Z坐标
+// @method
+// @param p:value:SPoint3 三维坐标
+//==========================================================
+function SPoint3_assign(p){
+   var o = this;
+   o.x = p.x;
+   o.y = p.y;
+   o.z = p.z;
+}
+
+//==========================================================
+// <T>设置三维坐标。</T>
+//
+// @method
+// @param x:Integer X坐标
+// @param y:Integer Y坐标
+// @param z:Integer Z坐标
 //==========================================================
 function SPoint3_set(x, y, z){
    var o = this;
@@ -46,12 +60,13 @@ function SPoint3_set(x, y, z){
 }
 
 //==========================================================
-// 把坐标的三个坐标放大X Y Z
+// <T>修改坐标偏移。</T>
+// 
 //
-// @tool
-// @param x:xPosition:Integer X坐标
-// @param y:yPosition:Integer Y坐标
-// @param z:zPosition:Integer Z坐标
+// @method
+// @param x:Integer X坐标
+// @param y:Integer Y坐标
+// @param z:Integer Z坐标
 //==========================================================
 function SPoint3_resize(x, y, z){
    var o = this;
@@ -118,12 +133,10 @@ function SPoint3_toString(){
 }
 
 //==========================================================
-// ???
+// <T>获得运行内容。</T>
 //
-// @tool
-// @param x:xPosition:Integer X坐标
-// @param y:yPosition:Integer Y坐标
-// @param z:zPosition:Integer Z坐标
+// @method
+// @return String 运行内容
 //==========================================================
 function SPoint3_dump(){
    return RClass.dump(this) + ' [' + this.x + ',' + this.y + ',' + this.z + ']';

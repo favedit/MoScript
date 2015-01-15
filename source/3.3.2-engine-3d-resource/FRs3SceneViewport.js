@@ -9,13 +9,13 @@ function FRs3SceneViewport(o){
    //..........................................................
    // @attribute 属性
    o._angle      = null;
-   o._near       = null;
-   o._far        = null;
+   o._znear      = null;
+   o._zfar       = null;
    //..........................................................
    // @method
    o.angle       = FRs3SceneViewport_angle;
-   o.near        = FRs3SceneViewport_near;
-   o.far         = FRs3SceneViewport_far;
+   o.znear       = FRs3SceneViewport_znear;
+   o.zfar        = FRs3SceneViewport_zfar;
    o.unserialize = FRs3SceneViewport_unserialize;
    return o;
 }
@@ -36,8 +36,8 @@ function FRs3SceneViewport_angle(){
 // @method
 // @return Float 近平面距离
 //==========================================================
-function FRs3SceneViewport_near(){
-   return this._near;
+function FRs3SceneViewport_znear(){
+   return this._znear;
 }
 
 //==========================================================
@@ -46,8 +46,8 @@ function FRs3SceneViewport_near(){
 // @method
 // @return Float 远平面距离
 //==========================================================
-function FRs3SceneViewport_far(){
-   return this._far;
+function FRs3SceneViewport_zfar(){
+   return this._zfar;
 }
 
 //==========================================================
@@ -60,6 +60,6 @@ function FRs3SceneViewport_unserialize(p){
    var o = this;
    // 读取属性
    o._angle = p.readFloat();
-   o._near = p.readFloat();
-   o._far = p.readFloat();
+   o._znear = p.readFloat();
+   o._zfar = p.readFloat();
 }

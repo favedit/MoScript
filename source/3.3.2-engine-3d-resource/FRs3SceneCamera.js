@@ -25,6 +25,8 @@ function FRs3SceneCamera(o){
    // @method
    o.construct    = FRs3SceneCamera_construct;
    o.typeName     = FRs3SceneCamera_typeName;
+   o.position     = FRs3SceneCamera_position;
+   o.direction    = FRs3SceneCamera_direction;
    o.viewport     = FRs3SceneCamera_viewport;
    o.unserialize  = FRs3SceneCamera_unserialize;
    return o;
@@ -51,6 +53,26 @@ function FRs3SceneCamera_construct(){
 //==========================================================
 function FRs3SceneCamera_typeName(){
    return this._typeName;
+}
+
+//==========================================================
+// <T>获得坐标。</T>
+//
+// @method
+// @return SPoint3 坐标
+//==========================================================
+function FRs3SceneCamera_position(){
+   return this._position;
+}
+
+//==========================================================
+// <T>获得方向。</T>
+//
+// @method
+// @return SVector3 方向
+//==========================================================
+function FRs3SceneCamera_direction(){
+   return this._direction;
 }
 
 //==========================================================

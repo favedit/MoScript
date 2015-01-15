@@ -53,18 +53,18 @@ function FG3dEffectConsole_buildEffectInfo(f, r){
    var c = vs.count();
    for(var i = 0; i < c; i++){
       var v = vs.get(i);
-      f.attributes[v.name()] = true;
+      f.attributes.push(v.name());
    }
    // 设置纹理信息
    var ts = r.textures();
-   var c = ts.count();
-   for(var i = 0; i < c; i++){
-      var n = ts.name(i);
-      var t = ts.value(i);
-      f.samplers[n] = t;
+   if(ts){
+      var c = ts.count();
+      for(var i = 0; i < c; i++){
+         f.samplers.push(ts.name(i));
+      }
    }
    // 设置材质信息
-   var m = r.material();
+   //var m = r.material();
 }
 
 //==========================================================
@@ -157,12 +157,16 @@ function FG3dEffectConsole_findByName(c, p){
 function FG3dEffectConsole_findByRenderable(pc, pr){
    var o = this;
    var en = pr.material().info().effectName;
+   if(en == null){
+      en = 'automatic'
+   }
    var et = o.findTemplate(pc, en);
    if(et){
       // 生成标志
+      o._effectInfo.reset();
       o.buildEffectInfo(o._effectInfo, pr);
       et.buildInfo(o._tagContext, o._effectInfo);
-      var ec = en + '|' + o._tagContext.code;
+      var ec = en + o._tagContext.code;
       // 查找效果器
       var es = o._effects;
       var e = es.get(ec);
@@ -173,6 +177,7 @@ function FG3dEffectConsole_findByRenderable(pc, pr){
          }else{
             e = RClass.create(FG3dSampleAutomaticEffect);
          }
+         e._code = ec;
          e.linkContext(pc);
          e._path = o._path;
          e.load();

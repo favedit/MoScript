@@ -15,6 +15,7 @@ function FTemplateRenderable3d(o){
    o._model            = null;
    o._renderable       = null;
    o._bones            = null;
+   o._materialCode     = null;
    o._materialResource = null;
    //..........................................................
    // @method
@@ -221,4 +222,6 @@ function FTemplateRenderable3d_build(p){
 //==========================================================
 function FTemplateRenderable3d_update(p){
    var o = this;
+   var m = o._display.matrix();
+   o._matrix.assign(m);
 }

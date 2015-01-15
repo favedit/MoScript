@@ -82,6 +82,20 @@ function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
    p.setParameterColor4('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameterColor4('fc_reflect_color', mi.reflectColor);
+   // 设置透明
+   if(mi.optionAlpha){
+      c.setBlendFactors(true, EG3dBlendMode.SourceAlpha, EG3dBlendMode.OneMinusSourceAlpha);
+      //c.setBlendFactors(_descriptor.optionBlendMode, _descriptor.blendSourceMode, _descriptor.blendTargetMode);
+   }else{
+      c.setBlendFactors(false);
+   }
+   // 设置双面
+   if(mi.optionDouble){
+      c.setCullingMode(false);
+   }else{
+      c.setCullingMode(true, EG3dCullMode.Front);
+      //c.setCullingMode(_descriptor.optionCullMode, _descriptor.cullModeCd);
+   }
    // 绘制处理
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);

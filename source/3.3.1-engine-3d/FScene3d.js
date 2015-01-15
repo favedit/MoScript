@@ -17,6 +17,9 @@ function FScene3d(o){
    // @attribute
    o._lsnsLoad             = null;
    //..........................................................
+   // @event
+   o.onKeyDown             = FScene3d_onKeyDown;
+   //..........................................................
    // @method
    o.construct             = FScene3d_construct;
    // @method
@@ -31,7 +34,44 @@ function FScene3d(o){
    o.loadResource          = FScene3d_loadResource
    // @method
    o.processLoad           = FScene3d_processLoad;
+   // @method
+   o.active                = FScene3d_active;
+   o.deactive              = FScene3d_deactive;
    return o;
+}
+
+//==========================================================
+// <T>按键处理。</T>
+//
+// @method
+//==========================================================
+function FScene3d_onKeyDown(e){
+   var o = this;
+   // 事件处理
+   var c = o._camera;
+   var k = e.keyCode;
+   var r = 0.3;
+   switch(k){
+      case EKeyCode.W:
+         c.doWalk(r);
+         break;
+      case EKeyCode.S:
+         c.doWalk(-r);
+         break;
+      case EKeyCode.A:
+         c.doStrafe(r);
+         break;
+      case EKeyCode.D:
+         c.doStrafe(-r);
+         break;
+      case EKeyCode.Q:
+         c.doFly(r);
+         break;
+      case EKeyCode.E:
+         c.doFly(-r);
+         break;
+   }
+   c.update();
 }
 
 //==========================================================
@@ -86,66 +126,60 @@ function FScene3d_loadTechniqueResource(p){
 function FScene3d_loadRegionResource(p){
    var o = this;
    o._backgroundColor.assign(p.color());
-   /*
    // 设置颜色
-   _sceneFrame->BackgroundColor().Assign(pResource->Color());
-   FScreenDevice* pScreenDevice = RDeviceManager::Instance().Find<FScreenDevice>();
-   SIntSize2& screenSize = pScreenDevice->Size();
+   //_sceneFrame->BackgroundColor().Assign(pResource->Color());
+   //FScreenDevice* pScreenDevice = RDeviceManager::Instance().Find<FScreenDevice>();
+   //SIntSize2& screenSize = pScreenDevice->Size();
    //............................................................
-   FRs3dSceneCamera* pCameraResource = pResource->Camera();
-   FRs3dSceneViewport* pViewportResource = pCameraResource->Viewport();
+   // 设置相机
+   var rc = p.camera();
    // 加载投影
-   FPerspectiveProjection* pProjection = FPerspectiveProjection::InstanceCreate();
-   pProjection->Size().Set(screenSize.width, screenSize.height);
-   pProjection->SetZ(pViewportResource->Near(), pViewportResource->Far());
-   pProjection->SetAngle(pViewportResource->Angle());
-   pProjection->Update();
-   // 加载相机
-   FCamera* pCamera = FPerspectiveCamera::InstanceCreate();
-   pCamera->Position().Assign(pCameraResource->Position());
-   pCamera->Direction().Assign(pCameraResource->Direction());
-   pCamera->SetProjection(pProjection);
-   pCamera->Update();
+   var c = o._camera;
+   c.position().assign(rc.position());
+   c.direction().assign(rc.direction());
+   c.update();
+   // 设置投影
+   var rv = rc.viewport();
+   var v = o._projection;
+   v.angle = rv.angle();
+   v.znear = rv.znear();
+   v.zfar = rv.zfar();
    // 设置视角
-   FViewport* pViewport = FViewport::InstanceCreate();
-   pViewport->Set(0, 0, screenSize.width, screenSize.height);
-   // 设置视角
-   FRenderView* pView = FRenderView::InstanceCreate();
-   pView->SetCamera(pCamera);
-   pView->SetViewport(pViewport);
-   _activeView = pView;
-   _pViews->Push(pView);
+   //FRenderView* pView = FRenderView::InstanceCreate();
+   //pView->SetCamera(pCamera);
+   //pView->SetViewport(pViewport);
+   //_activeView = pView;
+   //_pViews->Push(pView);
    //............................................................
-   FRs3dSceneLight* pLightResource = pResource->Light();
-   FRs3dSceneCamera* pLightCameraResource = pLightResource->Camera();
-   FRs3dSceneViewport* pLightViewportResource = pLightCameraResource->Viewport();
+   //FRs3dSceneLight* pLightResource = pResource->Light();
+   //FRs3dSceneCamera* pLightCameraResource = pLightResource->Camera();
+   //FRs3dSceneViewport* pLightViewportResource = pLightCameraResource->Viewport();
    // 设置光源投影
-   FPerspectiveProjection* pLightProjection = FPerspectiveProjection::InstanceCreate();
-   pLightProjection->Size().Set(1024, 1024);
-   pLightProjection->SetZ(pLightViewportResource->Near(), pLightViewportResource->Far());
-   pLightProjection->SetAngle(pLightViewportResource->Angle());
-   pLightProjection->Update();
+   //FPerspectiveProjection* pLightProjection = FPerspectiveProjection::InstanceCreate();
+   //pLightProjection->Size().Set(1024, 1024);
+   //pLightProjection->SetZ(pLightViewportResource->Near(), pLightViewportResource->Far());
+   //pLightProjection->SetAngle(pLightViewportResource->Angle());
+   //pLightProjection->Update();
    // 设置光源相机
-   FCamera* pLightCamera = FPerspectiveCamera::InstanceCreate();
-   pLightCamera->Position().Assign(pLightCameraResource->Position());
-   pLightCamera->Direction().Assign(pLightCameraResource->Direction());
-   pLightCamera->SetProjection(pLightProjection);
-   pLightCamera->Update();
+   //FCamera* pLightCamera = FPerspectiveCamera::InstanceCreate();
+   //pLightCamera->Position().Assign(pLightCameraResource->Position());
+   //pLightCamera->Direction().Assign(pLightCameraResource->Direction());
+   //pLightCamera->SetProjection(pLightProjection);
+   //pLightCamera->Update();
    // 设置光源视角
-   FViewport* pLightViewport = FViewport::InstanceCreate();
-   pLightViewport->Set(0, 0, 1024, 1024);
+   //FViewport* pLightViewport = FViewport::InstanceCreate();
+   //pLightViewport->Set(0, 0, 1024, 1024);
    // 设置材质
-   FRs3dSceneMaterial* pLightMaterialResource = pLightResource->Material();
-   GPtr<FScene3dMaterial> lightMaterial = FScene3dMaterial::InstanceCreate();
-   lightMaterial->LoadSceneResource(pLightMaterialResource);
+   //FRs3dSceneMaterial* pLightMaterialResource = pLightResource->Material();
+   //GPtr<FScene3dMaterial> lightMaterial = FScene3dMaterial::InstanceCreate();
+   //lightMaterial->LoadSceneResource(pLightMaterialResource);
    // 设置光源
-   FDirectionalLight* pLight = FDirectionalLight::InstanceCreate();
-   pLight->SetCamera(pLightCamera);
-   pLight->SetViewport(pLightViewport);
-   pLight->Direction().Assign(pLightCamera->Direction());
-   pLight->SetMaterial(lightMaterial);
-   SetDirectionalLight(pLight);
-   */
+   //FDirectionalLight* pLight = FDirectionalLight::InstanceCreate();
+   //pLight->SetCamera(pLightCamera);
+   //pLight->SetViewport(pLightViewport);
+   //pLight->Direction().Assign(pLightCamera->Direction());
+   //pLight->SetMaterial(lightMaterial);
+   //SetDirectionalLight(pLight);
 }
 
 //==========================================================
@@ -268,4 +302,28 @@ function FScene3d_processLoad(){
    }
    o.loadResource(o._resource);
    return true;
+}
+
+//==========================================================
+// <T>激活处理。</T>
+//
+// @method
+//==========================================================
+function FScene3d_active(){
+   var o = this;
+   o.__base.FStage3d.active.call(o);
+   // 注册事件
+   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+}
+
+//==========================================================
+// <T>取消激活处理。</T>
+//
+// @method
+//==========================================================
+function FScene3d_deactive(){
+   var o = this;
+   o.__base.FStage3d.deactive.call(o);
+   // 注销事件
+   RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
 }

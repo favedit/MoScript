@@ -726,6 +726,7 @@ function SPoint3(x, y, z){
    o.x           = x;
    o.y           = y;
    o.z           = z;
+   o.assign      = SPoint3_assign;
    o.set         = SPoint3_set;
    o.resize      = SPoint3_resize;
    o.slerp       = SPoint3_slerp;
@@ -734,6 +735,12 @@ function SPoint3(x, y, z){
    o.toString    = SPoint3_toString;
    o.dump        = SPoint3_dump;
    return o;
+}
+function SPoint3_assign(p){
+   var o = this;
+   o.x = p.x;
+   o.y = p.y;
+   o.z = p.z;
 }
 function SPoint3_set(x, y, z){
    var o = this;
@@ -1168,11 +1175,11 @@ function SVector3(o){
    o.toString    = SVector3_toString;
    return o;
 }
-function SVector3_assign(v){
+function SVector3_assign(p){
    var o = this;
-   o.x = v.x;
-   o.y = v.y;
-   o.z = v.z;
+   o.x = p.x;
+   o.y = p.y;
+   o.z = p.z;
 }
 function SVector3_set(x, y, z){
    var o = this;

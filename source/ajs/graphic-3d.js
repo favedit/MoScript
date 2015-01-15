@@ -101,6 +101,8 @@ function FG3dCamera(o){
    o.construct     = FG3dCamera_construct;
    o.position      = FG3dCamera_position;
    o.setPosition   = FG3dCamera_setPosition;
+   o.direction     = FG3dCamera_direction;
+   o.setDirection  = FG3dCamera_setDirection;
    o.matrix        = FG3dCamera_matrix;
    o.doWalk        = FG3dCamera_doWalk;
    o.doStrafe      = FG3dCamera_doStrafe;
@@ -135,6 +137,12 @@ function FG3dCamera_position(){
 }
 function FG3dCamera_setPosition(x, y, z){
    this._position.set(x, y, z);
+}
+function FG3dCamera_direction(){
+   return this._direction;
+}
+function FG3dCamera_setDirection(x, y, z){
+   this._direction.set(x, y, z);
 }
 function FG3dCamera_matrix(){
    return this._matrix;
@@ -325,16 +333,15 @@ function FG3dEffectConsole_buildEffectInfo(f, r){
    var c = vs.count();
    for(var i = 0; i < c; i++){
       var v = vs.get(i);
-      f.attributes[v.name()] = true;
+      f.attributes.push(v.name());
    }
    var ts = r.textures();
-   var c = ts.count();
-   for(var i = 0; i < c; i++){
-      var n = ts.name(i);
-      var t = ts.value(i);
-      f.samplers[n] = t;
+   if(ts){
+      var c = ts.count();
+      for(var i = 0; i < c; i++){
+         f.samplers.push(ts.name(i));
+      }
    }
-   var m = r.material();
 }
 function FG3dEffectConsole_findTemplate(pc, pn){
    var o = this;
@@ -388,11 +395,15 @@ function FG3dEffectConsole_findByName(c, p){
 function FG3dEffectConsole_findByRenderable(pc, pr){
    var o = this;
    var en = pr.material().info().effectName;
+   if(en == null){
+      en = 'automatic'
+   }
    var et = o.findTemplate(pc, en);
    if(et){
+      o._effectInfo.reset();
       o.buildEffectInfo(o._effectInfo, pr);
       et.buildInfo(o._tagContext, o._effectInfo);
-      var ec = en + '|' + o._tagContext.code;
+      var ec = en + o._tagContext.code;
       var es = o._effects;
       var e = es.get(ec);
       if(e == null){
@@ -401,6 +412,7 @@ function FG3dEffectConsole_findByRenderable(pc, pr){
          }else{
             e = RClass.create(FG3dSampleAutomaticEffect);
          }
+         e._code = ec;
          e.linkContext(pc);
          e._path = o._path;
          e.load();
@@ -592,7 +604,6 @@ function FG3dRenderable_material(){
    return this._material;
 }
 function FG3dRenderable_update(p){
-   var o = this;
 }
 function FG3dShader(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -763,47 +774,85 @@ function REngine3d_createContext(c, h){
 function SG3dEffectInfo(o){
    if(!o){o = this;}
    o.code                  = null;
-   o.fillModeCd            = EG3dFillMode.Fill;
-   o.optionCullMode        = true;
-   o.cullModeCd            = EG3dCullMode.Front;
-   o.optionDepthTest       = true;
-   o.depthModeCd           = EG3dDepthMode.Less;
-   o.optionDepthWrite      = true;
-   o.optionBlendMode       = false;
-   o.blendSourceMode       = EG3dBlendMode.SourceAlpha;
-   o.blendTargetMode       = EG3dBlendMode.OneMinusSourceAlpha;
-   o.optionAlphaTest       = false;
-   o.supportInstance       = false;
-   o.vertexColor           = false;
-   o.vertexCoord           = false;
-   o.vertexNormal          = false;
-   o.vertexNormalFull      = false;
-   o.vertexSkeleton        = false;
-   o.fragmentAlpha         = false;
-   o.fragmentBump          = false;
-   o.fragmentAmbient       = false;
-   o.fragmentDiffuse       = false;
-   o.fragmentDiffuseView   = false;
-   o.fragmentSpecularColor = false;
-   o.fragmentSpecularLevel = false;
-   o.fragmentSpecularView  = false;
-   o.fragmentEnvironment   = false;
-   o.fragmentLight         = false;
-   o.fragmentReflect       = false;
-   o.fragmentRefract       = false;
-   o.fragmentEmissive      = false;
-   o.fragmentHeight        = false;
-   o.attributes            = new Object();
-   o.samplers              = new Object();
+   o.fillModeCd            = null;
+   o.optionCullMode        = null;
+   o.cullModeCd            = null;
+   o.optionDepthTest       = null;
+   o.depthModeCd           = null;
+   o.optionDepthWrite      = null;
+   o.optionBlendMode       = null;
+   o.blendSourceMode       = null;
+   o.blendTargetMode       = null;
+   o.optionAlphaTest       = null;
+   o.supportInstance       = null;
+   o.vertexColor           = null;
+   o.vertexCoord           = null;
+   o.vertexNormal          = null;
+   o.vertexNormalFull      = null;
+   o.vertexSkeleton        = null;
+   o.fragmentAlpha         = null;
+   o.fragmentBump          = null;
+   o.fragmentAmbient       = null;
+   o.fragmentDiffuse       = null;
+   o.fragmentDiffuseView   = null;
+   o.fragmentSpecularColor = null;
+   o.fragmentSpecularLevel = null;
+   o.fragmentSpecularView  = null;
+   o.fragmentEnvironment   = null;
+   o.fragmentLight         = null;
+   o.fragmentReflect       = null;
+   o.fragmentRefract       = null;
+   o.fragmentEmissive      = null;
+   o.fragmentHeight        = null;
+   o.attributes            = new TArray();
+   o.samplers              = new TArray();
    o.attributeContains     = SG3dEffectInfo_attributeContains;
    o.samplerContains       = SG3dEffectInfo_samplerContains;
+   o.reset                 = SG3dEffectInfo_reset;
+   o.reset();
    return o;
 }
 function SG3dEffectInfo_attributeContains(p){
-   return this.attributes[p] != null;
+   return this.attributes.contains(p);
 }
 function SG3dEffectInfo_samplerContains(p){
-   return this.samplers[p] != null;
+   return this.samplers.contains(p);
+}
+function SG3dEffectInfo_reset(){
+   var o = this;
+   o.code = null;
+   o.fillModeCd = EG3dFillMode.Fill;
+   o.optionCullMode = true;
+   o.cullModeCd = EG3dCullMode.Front;
+   o.optionDepthTest = true;
+   o.depthModeCd = EG3dDepthMode.Less;
+   o.optionDepthWrite = true;
+   o.optionBlendMode = false;
+   o.blendSourceMode = EG3dBlendMode.SourceAlpha;
+   o.blendTargetMode = EG3dBlendMode.OneMinusSourceAlpha;
+   o.optionAlphaTest = false;
+   o.supportInstance = false;
+   o.vertexColor = false;
+   o.vertexCoord = false;
+   o.vertexNormal = false;
+   o.vertexNormalFull = false;
+   o.vertexSkeleton = false;
+   o.fragmentAlpha = false;
+   o.fragmentBump = false;
+   o.fragmentAmbient = false;
+   o.fragmentDiffuse = false;
+   o.fragmentDiffuseView = false;
+   o.fragmentSpecularColor = false;
+   o.fragmentSpecularLevel = false;
+   o.fragmentSpecularView = false;
+   o.fragmentEnvironment = false;
+   o.fragmentLight = false;
+   o.fragmentReflect = false;
+   o.fragmentRefract = false;
+   o.fragmentEmissive = false;
+   o.fragmentHeight = false;
+   o.attributes.clear();
+   o.samplers.clear();
 }
 function SG3dMaterialInfo(o){
    if(!o){o = this;}

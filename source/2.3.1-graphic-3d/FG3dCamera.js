@@ -52,6 +52,8 @@ function FG3dCamera(o){
    // @method
    o.position      = FG3dCamera_position;
    o.setPosition   = FG3dCamera_setPosition;
+   o.direction     = FG3dCamera_direction;
+   o.setDirection  = FG3dCamera_setDirection;
    o.matrix        = FG3dCamera_matrix;
    // @method
    o.doWalk        = FG3dCamera_doWalk;
@@ -111,6 +113,28 @@ function FG3dCamera_position(){
 //==========================================================
 function FG3dCamera_setPosition(x, y, z){
    this._position.set(x, y, z);
+}
+
+//==========================================================
+// <T>获得方向。</T>
+//
+// @method
+// @return SVector3 方向
+//==========================================================
+function FG3dCamera_direction(){
+   return this._direction;
+}
+
+//==========================================================
+// <T>设置方向。</T>
+//
+// @method
+// @param x:Number X坐标
+// @param y:Number Y坐标
+// @param z:Number Z坐标
+//==========================================================
+function FG3dCamera_setDirection(x, y, z){
+   this._direction.set(x, y, z);
 }
 
 //==========================================================

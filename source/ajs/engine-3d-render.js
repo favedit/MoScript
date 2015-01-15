@@ -275,14 +275,16 @@ function FRd3Geometry_loadResource(p){
    var mc = p.materialCode();
    var mtl = o._material = RConsole.find(FRs3ThemeConsole).find(mc);
    var mts = mtl.textures();
-   var mtc = mts.count();
-   if(mtc > 0){
-      var rts = o._textures = new TDictionary();
-      var txc = RConsole.find(FRd3TextureConsole)
-      for(var n = 0; n < mtc; n++){
-         var mt = mts.get(n);
-         var rt = txc.load(o._context, mt.bitmapCode(), mt.code());
-         rts.set(mt.code(), rt);
+   if(mts){
+      var mtc = mts.count();
+      if(mtc > 0){
+         var rts = o._textures = new TDictionary();
+         var txc = RConsole.find(FRd3TextureConsole)
+         for(var n = 0; n < mtc; n++){
+            var mt = mts.get(n);
+            var rt = txc.load(o._context, mt.bitmapCode(), mt.code());
+            rts.set(mt.code(), rt);
+         }
       }
    }
 }

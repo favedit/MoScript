@@ -497,6 +497,8 @@ function FRs3SceneCamera(o){
    o._viewport    = null;
    o.construct    = FRs3SceneCamera_construct;
    o.typeName     = FRs3SceneCamera_typeName;
+   o.position     = FRs3SceneCamera_position;
+   o.direction    = FRs3SceneCamera_direction;
    o.viewport     = FRs3SceneCamera_viewport;
    o.unserialize  = FRs3SceneCamera_unserialize;
    return o;
@@ -510,6 +512,12 @@ function FRs3SceneCamera_construct(){
 }
 function FRs3SceneCamera_typeName(){
    return this._typeName;
+}
+function FRs3SceneCamera_position(){
+   return this._position;
+}
+function FRs3SceneCamera_direction(){
+   return this._direction;
 }
 function FRs3SceneCamera_viewport(){
    return this._viewport;
@@ -767,6 +775,8 @@ function FRs3SceneRegion(o){
    o._light          = null;
    o.construct       = FRs3SceneRegion_construct;
    o.color           = FRs3SceneRegion_color;
+   o.camera          = FRs3SceneRegion_camera;
+   o.light           = FRs3SceneRegion_light;
    o.unserialize     = FRs3SceneRegion_unserialize;
    return o;
 }
@@ -782,6 +792,12 @@ function FRs3SceneRegion_construct(){
 }
 function FRs3SceneRegion_color(){
    return this._color;
+}
+function FRs3SceneRegion_camera(){
+   return this._camera;
+}
+function FRs3SceneRegion_light(){
+   return this._light;
 }
 function FRs3SceneRegion_unserialize(p){
    var o = this;
@@ -903,28 +919,28 @@ function FRs3SceneTechniquePass_unserialize(p){
 function FRs3SceneViewport(o){
    o = RClass.inherits(this, o, FObject);
    o._angle      = null;
-   o._near       = null;
-   o._far        = null;
+   o._znear      = null;
+   o._zfar       = null;
    o.angle       = FRs3SceneViewport_angle;
-   o.near        = FRs3SceneViewport_near;
-   o.far         = FRs3SceneViewport_far;
+   o.znear       = FRs3SceneViewport_znear;
+   o.zfar        = FRs3SceneViewport_zfar;
    o.unserialize = FRs3SceneViewport_unserialize;
    return o;
 }
 function FRs3SceneViewport_angle(){
    return this._angle;
 }
-function FRs3SceneViewport_near(){
-   return this._near;
+function FRs3SceneViewport_znear(){
+   return this._znear;
 }
-function FRs3SceneViewport_far(){
-   return this._far;
+function FRs3SceneViewport_zfar(){
+   return this._zfar;
 }
 function FRs3SceneViewport_unserialize(p){
    var o = this;
    o._angle = p.readFloat();
-   o._near = p.readFloat();
-   o._far = p.readFloat();
+   o._znear = p.readFloat();
+   o._zfar = p.readFloat();
 }
 function FRs3Skeleton(o){
    o = RClass.inherits(this, o, FObject);

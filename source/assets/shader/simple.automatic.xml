@@ -40,6 +40,8 @@
    <Sampler name='fs_diffuse'     linker='Diffuse'/>
    <Sampler name='fs_normal'      linker='Normal'/>
    <Sampler name='fs_specular'    linker='SpecularLevel'/>
+   <Sampler name='fs_light'       linker='Light'/>
+   <Sampler name='fs_environment' linker='Environment'/>
    <!--=====================================================-->
    <Source name='vertex'><![CDATA[
       //..........................................................
@@ -206,7 +208,7 @@
          <shader:false source='support.ambient.sampler'>
          vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
          </shader:false>
-         result.rgb += color.xyz * fc_ambient_color.rgb;
+         result.rgb += color.xyz * fc_ambient_color.rgb * 0.8;
          </shader:true>
          //............................................................
          // 计算散射颜色
@@ -220,7 +222,7 @@
          float normalFactor = dot(v_normal, -fc_light_direction);
          </shader:true>
          normalFactor = max(normalFactor, 0.0);
-         result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor;
+         result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor * 0.8;
          </shader:true>
          //............................................................
          <shader:true source='support.specular|support.environment'>
@@ -236,8 +238,8 @@
          </shader:true>
          specularFactor = max(specularFactor, fc_specular.x);
          specularFactor = min(specularFactor, 1.0);
-         specularFactor = pow(specularFactor, fc_specular.y);
-         result.rgb += color.rgb * fc_specular_color.rgb * specularFactor;
+         specularFactor = pow(specularFactor, fc_specular.y + 20);
+         result.rgb += color.rgb * fc_specular_color.rgb * specularFactor * 1.4;
          </shader:true>
          //............................................................
          <shader:true source='support.environment'>
@@ -247,7 +249,7 @@
          vec4 light = texture2D(fs_light, v_coord);
          environmentColor *= light.g;
          </shader:true>
-         result.rgb *= environmentColor.rgb * fc_reflect_color.rgb;
+         result.rgb *= environmentColor.rgb * fc_reflect_color.rgb * 1.5;
          </shader:true>
          //............................................................
          // 计算颜色
@@ -262,8 +264,7 @@
          result.a = color.a * fc_alpha.z;
          </shader:true>
          //............................................................
-         //gl_FragColor = result;
-         gl_FragColor = vec4(color.rgb, 1.0);
+         gl_FragColor = result;
       }
    ]]></Source>
 </Configuration>

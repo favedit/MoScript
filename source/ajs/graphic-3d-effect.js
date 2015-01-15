@@ -304,6 +304,16 @@ function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
    p.setParameterColor4('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameterColor4('fc_reflect_color', mi.reflectColor);
+   if(mi.optionAlpha){
+      c.setBlendFactors(true, EG3dBlendMode.SourceAlpha, EG3dBlendMode.OneMinusSourceAlpha);
+   }else{
+      c.setBlendFactors(false);
+   }
+   if(mi.optionDouble){
+      c.setCullingMode(false);
+   }else{
+      c.setCullingMode(true, EG3dCullMode.Front);
+   }
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
 }

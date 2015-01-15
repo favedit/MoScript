@@ -20,7 +20,6 @@ function FTemplate3d(o){
    // @method
    o.testReady            = FTemplate3d_testReady;
    o.setResource          = FTemplate3d_setResource;
-   o.loadRenderable       = FTemplate3d_loadRenderable;
    o.loadResource         = FTemplate3d_loadResource;
    o.processLoad          = FTemplate3d_processLoad;
    o.process              = FTemplate3d_process;
@@ -43,62 +42,6 @@ function FTemplate3d_testReady(){
 //==========================================================
 function FTemplate3d_setResource(p){
    this._resource = p;
-}
-
-//==========================================================
-// <T>加载渲染对象。</T>
-//
-// @param p:renderable:FRd3Model 渲染对象
-//==========================================================
-function FTemplate3d_loadRenderable(p){
-   debugger
-   var o = this;
-   var c = o._context;
-   var r = p.resource();
-   // 创建顶点缓冲集合
-   var rgs = p.geometrys();
-   if(rgs){
-      var c = rgs.count();
-      if(c > 0){
-         var gs = o._geometrys = new TObjects();
-         var rs = o.renderables();
-         for(var i = 0; i < c; i++){
-            var rg = rgs.get(i);
-            var g = RClass.create(FGeometry3d);
-            g.load(rg);
-            gs.push(g);
-            rs.push(g);
-         }
-      }
-   }
-   // 读取动画信息
-   var a = null;
-   var ra = r.animation();
-   if(ra){
-      a = o._animation = RClass.create(FRd3Animation);
-      // 加载骨骼
-      var rk = r.skeleton();
-      var rbs = rk.bones();
-      var c = rbs.count();
-      for(var i = 0; i < c; i++){
-         var rb = rbs.value(i);
-         var b = RClass.create(FRd3Bone);
-         b.loadResource(rb);
-         a.bones().set(b.id(), b);
-      }
-      // 加载动画
-      a.loadResource(ra);
-   }
-   // 绑定骨头集合到几何体中
-   var gs = o._geometrys;
-   if(gs){
-      var c = gs.count();
-      for(var i = 0; i < c; i++){
-         gs.get(i).build(a);
-      }
-   }
-   // 数据准备完成
-   o._dataReady = true;
 }
 
 //==========================================================

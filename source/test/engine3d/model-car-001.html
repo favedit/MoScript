@@ -97,7 +97,7 @@ function onThemeLoad(){
    context = REngine3d.createContext(FWglContext, hCanvas);
 
    var sc = RConsole.find(FScene3dConsole);
-   var s = sc.alloc(context, 'pvw.show.item.001');
+   var s = sc.alloc(context, 'pvw.sc.car.01.002');
    s.loadListener().register(s, onStageLoad);
 }
 
@@ -120,7 +120,7 @@ function _load(){
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
-<CANVAS id="_canvas" width="800" height="600">您的浏览器不支持HTML5</CANVAS>
+<CANVAS id="_canvas" width="1280" height="800">您的浏览器不支持HTML5</CANVAS>
 <DIV id='_info'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

@@ -33,6 +33,8 @@ function FRs3SceneRegion(o){
    // @method
    o.construct       = FRs3SceneRegion_construct;
    o.color           = FRs3SceneRegion_color;
+   o.camera          = FRs3SceneRegion_camera;
+   o.light           = FRs3SceneRegion_light;
    o.unserialize     = FRs3SceneRegion_unserialize;
    return o;
 }
@@ -61,6 +63,26 @@ function FRs3SceneRegion_construct(){
 //==========================================================
 function FRs3SceneRegion_color(){
    return this._color;
+}
+
+//==========================================================
+// <T>获得相机。</T>
+//
+// @method
+// @return FRs3SceneCamera 相机
+//==========================================================
+function FRs3SceneRegion_camera(){
+   return this._camera;
+}
+
+//==========================================================
+// <T>获得光源。</T>
+//
+// @method
+// @return FRs3SceneLight 光源
+//==========================================================
+function FRs3SceneRegion_light(){
+   return this._light;
 }
 
 //==========================================================
