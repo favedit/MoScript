@@ -131,9 +131,15 @@ function FStage3d_process(){
    var o = this;
    var r = o._region;
    o.__base.FStage.process.call(o);
-   // 绘制处理
+   // 获取所有层的渲染集合
    r.prepare();
-   layer.filterRenderables(r);
+   var ls = o._layers;
+   if(ls != null){
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         ls.value(i).filterRenderables(r);
+      }
+   }
    r.update();
    // 绘制处理
    var bc = o._backgroundColor;

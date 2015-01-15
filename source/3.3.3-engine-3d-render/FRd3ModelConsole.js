@@ -81,6 +81,13 @@ function FRd3ModelConsole_models(){
 //==========================================================
 function FRd3ModelConsole_load(pc, pn){
    var o = this;
+   // 检查参数
+   if(pc == null){
+      throw new TError('Graphics context is empty');
+   }
+   if(RString.isEmpty(pn)){
+      throw new TError('Model name is empty');
+   }
    // 查找模型
    var m = o._models.get(pn);
    if(m){

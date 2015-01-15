@@ -50,7 +50,7 @@ function FModel3d_loadRenderable(p){
          var rs = o.renderables();
          for(var i = 0; i < c; i++){
             var rg = rgs.get(i);
-            var g = RClass.create(FGeometry3d);
+            var g = RClass.create(FModelRenderable3d);
             g.load(rg);
             gs.push(g);
             rs.push(g);

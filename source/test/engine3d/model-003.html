@@ -8,6 +8,8 @@
 <SCRIPT language='javascript' src='../../ajs/mo-engine.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../3.3.1-engine-3d/FScene3d.js'></SCRIPT>
 </HEAD>
 
 <SCRIPT>
@@ -52,24 +54,23 @@ function onEnterFrame(){
    }
 }
 
-function onThemeLoad(){
+function onStageLoad(){
+   var stage = this;
    var hCanvas = document.getElementById('_canvas');
-   context = REngine3d.createContext(FWglContext, hCanvas);
-   //RDump.dump(context, _dump);
-
-   stage = RClass.create(FSimpleStage3d);
-   stage.backgroundColor().set(1, 1, 1, 1);
+   //stage = RClass.create(FSimpleStage3d);
+   //stage.backgroundColor().set(1, 1, 1, 1);
    stage.selectTechnique(context, FG3dSampleTechnique);
-
-   layer = stage.spriteLayer();
    RStage.register('stage3d', stage);
 
-   var rmc = RConsole.find(FModel3dConsole);
-   for(var x = 0; x < 1; x++){
-      var model3d = rmc.alloc(context, 'pvw.show.skeleton.001');
-      layer.pushDisplay(model3d);
-      models.push(model3d);
-   }
+   //layer = stage.spriteLayer();
+   //RStage.register('stage3d', stage);
+
+   //var rmc = RConsole.find(FModel3dConsole);
+   //for(var x = 0; x < 1; x++){
+   //   var model3d = rmc.alloc(context, 'pvw.show.skeleton.001');
+   //   layer.pushDisplay(model3d);
+   //   models.push(model3d);
+   //}
    // 设置相机
    var rc = stage.camera();
    rc.setPosition(0, 2, -14);
@@ -89,11 +90,26 @@ function onThemeLoad(){
    RDump.dump(stage, _dump);
 }
 
+function onThemeLoad(){
+   var hCanvas = document.getElementById('_canvas');
+   context = REngine3d.createContext(FWglContext, hCanvas);
+
+   var sc = RConsole.find(FScene3dConsole);
+   var s = sc.alloc(context, 'pvw.show.item.001');
+   s.loadListener().register(s, onStageLoad);
+}
+
 function _load(){
    RRuntime.processCd = EProcess.Debug;
    RBrowser.construct();
    RBrowser.setContentPath('../..');
    RWindow.connect(window);
+
+   //var tc = RConsole.find(FRs3TemplateConsole);
+   //tc.load('pvw.show.item.001');
+
+   //var sc = RConsole.find(FRs3SceneConsole);
+   //sc.load('pvw.show.item.001');
 
    var tc = RConsole.find(FRs3ThemeConsole);
    var m = tc.select('color');
@@ -102,7 +118,7 @@ function _load(){
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
-<CANVAS id="_canvas" width="800" height="900">您的浏览器不支持HTML5</CANVAS>
+<CANVAS id="_canvas" width="800" height="600">您的浏览器不支持HTML5</CANVAS>
 <DIV id='_info'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

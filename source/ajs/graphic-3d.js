@@ -540,6 +540,13 @@ function FG3dRegion_prepare(){
    o._renderables.clear();
 }
 function FG3dRegion_update(){
+   var o = this;
+   var rs = o._renderables;
+   var c = rs.count();
+   for(var i = 0; i < c; i++){
+      var r = rs.get(i);
+      r.update(o);
+   }
 }
 function FG3dRegion_dispose(){
    var o = this;
@@ -586,7 +593,6 @@ function FG3dRenderable_material(){
 }
 function FG3dRenderable_update(p){
    var o = this;
-   o._matrix.assign(p);
 }
 function FG3dShader(o){
    o = RClass.inherits(this, o, FG3dObject);

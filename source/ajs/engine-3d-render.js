@@ -442,6 +442,12 @@ function FRd3ModelConsole_models(){
 }
 function FRd3ModelConsole_load(pc, pn){
    var o = this;
+   if(pc == null){
+      throw new TError('Graphics context is empty');
+   }
+   if(RString.isEmpty(pn)){
+      throw new TError('Model name is empty');
+   }
    var m = o._models.get(pn);
    if(m){
       return m;

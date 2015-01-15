@@ -8,13 +8,20 @@ function FRs3Scene(o){
    o = RClass.inherits(this, o, FRs3Resource);
    //..........................................................
    // @attribute
-   o._geometrys  = null;
-   o._skeleton   = null;
-   o._animation  = null;
+   o._themeCode  = null;
+   o._technique  = null;
+   o._region     = null;
+   o._sky        = null;
+   o._map        = null;
+   o._space      = null;
    //..........................................................
    // @method
    o.construct   = FRs3Scene_construct;
-   o.geometrys   = FRs3Scene_geometrys;
+   o.technique   = FRs3Scene_technique;
+   o.region      = FRs3Scene_region;
+   o.sky         = FRs3Scene_sky;
+   o.map         = FRs3Scene_map;
+   o.space       = FRs3Scene_space;
    o.unserialize = FRs3Scene_unserialize;
    return o;
 }
@@ -27,48 +34,81 @@ function FRs3Scene(o){
 function FRs3Scene_construct(){
    var o = this;
    o.__base.FRs3Resource.construct.call(o);
-   o._geometrys = new TObjects();
+   o._technique = RClass.create(FRs3SceneTechnique);
+   o._region = RClass.create(FRs3SceneRegion);
+   o._sky = RClass.create(FRs3SceneSky);
+   o._map = RClass.create(FRs3SceneMap);
+   o._space = RClass.create(FRs3SceneSpace);
 }
 
 //==========================================================
-// <T>获得几何体集合。</T>
+// <T>获得技术。</T>
 //
 // @method
-// @return 
+// @return 技术
 //==========================================================
-function FRs3Scene_geometrys(){
-   return this._geometrys;
+function FRs3Scene_technique(){
+   return this._technique;
+}
+
+//==========================================================
+// <T>获得区域。</T>
+//
+// @method
+// @return 区域
+//==========================================================
+function FRs3Scene_region(){
+   return this._region;
+}
+
+//==========================================================
+// <T>获得天空。</T>
+//
+// @method
+// @return 天空
+//==========================================================
+function FRs3Scene_sky(){
+   return this._sky;
+}
+
+//==========================================================
+// <T>获得地图。</T>
+//
+// @method
+// @return 地图
+//==========================================================
+function FRs3Scene_map(){
+   return this._map;
+}
+
+//==========================================================
+// <T>获得空间。</T>
+//
+// @method
+// @return 空间
+//==========================================================
+function FRs3Scene_space(){
+   return this._space;
 }
 
 //==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
 // @param p:input:FByteStream 数据流
-// @return 处理结果
 //==========================================================
 function FRs3Scene_unserialize(p){
-   // 读取父信息
    var o = this;
    o.__base.FRs3Resource.unserialize.call(o, p);
-   // 读取几何体集合
-   var gc = p.readInt16();
-   for(var n = 0; n < gc; n++){
-      var g = RClass.create(FRs3Geometry);
-      g.unserialize(p);
-      o._geometrys.push(g);
-   }
-   // 读取骨骼
-   //_skeleton.unserialize(pInput);
-   // 读取动画
-   //_animation.unserialize(pInput);
-   // 关联骨头和跟踪
-   //GRs3dTrackPtrs& tracks = _pAnimation->Tracks();
-   //TInt trackCount = tracks.Count();
-   //for(TInt n = 0; n < trackCount; n++){
-   //   FRs3dTrack* pTrack = tracks.Get(n);
-   //   TInt boneId = pTrack->BoneId();
-   //   FRs3dBone* pBone = _pSkeleton->Find(boneId);
-   //   pBone->SetTrack(pTrack);
-   //}
-   //MO_DEBUG("Unserialize model success. (code=%d, geometry_count=%d, track_count=%d)", _code, geometryCount, trackCount);
+   // 读取属性
+   o._themeCode = p.readString();
+   // 读取技术
+   o._technique.unserialize(p);
+   // 读取区域
+   o._region.unserialize(p);
+   // 读取天空
+   o._sky.unserialize(p);
+   // 读取地区
+   o._map.unserialize(p);
+   // 读取空间
+   o._space.unserialize(p);
 }

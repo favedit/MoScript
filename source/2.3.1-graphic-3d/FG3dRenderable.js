@@ -93,8 +93,10 @@ function FG3dRenderable_material(){
 // <T>更新处理。</T>
 //
 // @method
+// @param p:region:FG3dRegion 区域
 //==========================================================
 function FG3dRenderable_update(p){
-   var o = this;
-   o._matrix.assign(p);
+   //var o = this;
+   //o._matrix.assign(p);
+   //debugger
 }

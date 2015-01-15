@@ -286,13 +286,24 @@ function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
          }
       }
    }
-   var m = r.material();
-   p.setParameter('vc_model_matrix', r.matrix().data());
-   p.setParameter('vc_vp_matrix', prvp.data());
+   p.setParameter('vc_model_matrix', r.matrix());
+   p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
    p.setParameter('vc_light_direction', prld);
    p.setParameter('fc_camera_position', prcp);
    p.setParameter('fc_light_direction', prld);
+   var m = r.material();
+   var mi = m.info();
+   p.setParameterColor4('fc_color', mi.ambientColor);
+   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
+   p.setParameterColor4('fc_ambient_color', mi.ambientColor);
+   p.setParameterColor4('fc_diffuse_color', mi.diffuseColor);
+   p.setParameterColor4('fc_specular_color', mi.specularColor);
+   p.setParameter4('fc_specular', mi.specularBase, mi.specularRate, mi.specularAverage, mi.specularShadow);
+   p.setParameterColor4('fc_specular_view_color', mi.specularViewColor);
+   p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
+   p.setParameterColor4('fc_reflect_color', mi.reflectColor);
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
 }

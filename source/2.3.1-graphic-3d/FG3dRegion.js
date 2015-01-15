@@ -126,6 +126,13 @@ function FG3dRegion_prepare(){
 // @method
 //==========================================================
 function FG3dRegion_update(){
+   var o = this;
+   var rs = o._renderables;
+   var c = rs.count();
+   for(var i = 0; i < c; i++){
+      var r = rs.get(i);
+      r.update(o);
+   }
 }
 
 //==========================================================
