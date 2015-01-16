@@ -30,6 +30,8 @@ function FG3dShadowDepthPass_setup(){
    var c = o._context;
    // 创建平面
    var d = o._textureDepth = c.createFlatTexture();
+   d.setFilter(EG3dSamplerFilter.Linear, EG3dSamplerFilter.Linear);
+   d.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
    // 创建渲染目标
    var t = o._renderTarget = c.createRenderTarget();
    t.size().set(1024, 1024);
@@ -47,8 +49,14 @@ function FG3dShadowDepthPass_drawRegion(p){
    var o = this;
    var c = o._context;
    // 设置渲染目标
-   c.setRenderTarget(o._renderTarget);
-   c.clear(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+   if(o._finish){
+      c.setRenderTarget(null);
+      var bc = p._backgroundColor;
+      o._context.clear(bc.red, bc.green, bc.blue, bc.alpha, 1);
+   }else{
+      c.setRenderTarget(o._renderTarget);
+      c.clear(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+   }
    // 绘制处理
    p._textureDepth = o._textureDepth;
    o.__base.FG3dTechniquePass.drawRegion.call(o, p)

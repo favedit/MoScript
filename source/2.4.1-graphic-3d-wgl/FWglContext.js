@@ -750,24 +750,21 @@ function FWglContext_bindTexture(ps, pi, pt){
    }
    //............................................................
    // 绑定纹理
+   var gt = null;
    switch(pt.textureCd()){
       case EG3dTexture.Flat2d:{
+         gt = g.TEXTURE_2D;
          g.bindTexture(g.TEXTURE_2D, pt._native);
-         g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
-         g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
-         r = o.checkError("glBindTexture", "Bind texture failure. (texture_id=%d)", pt._native);
+         r = o.checkError("glBindTexture", "Bind flag texture failure. (texture_id=%d)", pt._native);
          if(!r){
             return r;
          }
          break;
       }
       case EG3dTexture.Cube:{
+         gt = g.TEXTURE_CUBE_MAP;
          g.bindTexture(g.TEXTURE_CUBE_MAP, pt._native);
-         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MIN_FILTER, g.NEAREST);
-         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MAG_FILTER, g.NEAREST);
-         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_WRAP_S, g.CLAMP_TO_EDGE);
-         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_WRAP_T, g.CLAMP_TO_EDGE);
-         r = o.checkError("glBindTexture", "Bind texture failure. (texture_id=%d)", pt._native);
+         r = o.checkError("glBindTexture", "Bind cube texture failure. (texture_id=%d)", pt._native);
          if(!r){
             return r;
          }
@@ -777,6 +774,24 @@ function FWglContext_bindTexture(ps, pi, pt){
          RLogger.fatal(o, null, "Unknown texture type.");
          break;
       }
+   }
+   //............................................................
+   // 设置过滤器
+   var fc = RWglUtility.convertSamplerFilter(g, pt.filterMinCd());
+   if(fc){
+      g.texParameteri(gt, g.TEXTURE_MIN_FILTER, fc);
+   }
+   var fc = RWglUtility.convertSamplerFilter(g, pt.filterMagCd());
+   if(fc){
+      g.texParameteri(gt, g.TEXTURE_MAG_FILTER, fc);
+   }
+   var ws = RWglUtility.convertSamplerFilter(g, pt.wrapS());
+   if(ws){
+      //g.texParameteri(gt, g.TEXTURE_WRAP_S, ws);
+   }
+   var wt = RWglUtility.convertSamplerFilter(g, pt.wrapT());
+   if(wt){
+      //g.texParameteri(gt, g.TEXTURE_WRAP_T, wt);
    }
    return r;
 }

@@ -94,7 +94,7 @@
          </shader:true>
          //............................................................
          // 计算点到相机的距离
-         float depth = (v_model_position.z / v_model_position.w) * fc_camera.w;
+         float depth = (v_view_position.z / v_view_position.w) * fc_camera.w;
          depth = max(depth, 0.0);
          depth = min(depth, 1.0);
          //............................................................
@@ -105,8 +105,8 @@
          result = result - temp;
          //............................................................
          // 返回颜色
-         //gl_FragColor = result;
-         gl_FragColor = vec4(depth, depth, depth, 1.0);
+         gl_FragColor = result;
+         //gl_FragColor = vec4(depth, depth, depth, 1.0);
          //gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
       }
    ]]></Source>

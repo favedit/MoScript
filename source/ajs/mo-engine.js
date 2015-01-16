@@ -1155,8 +1155,7 @@ function FStage3d_process(){
       }
    }
    r.update();
-   var bc = o._backgroundColor;
-   o._technique._context.clear(bc.red, bc.green, bc.blue, bc.alpha, 1);
+   r._backgroundColor = o._backgroundColor;
    o._technique.drawRegion(r);
 }
 function FTemplate3d(o){

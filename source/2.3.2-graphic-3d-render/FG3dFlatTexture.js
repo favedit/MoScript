@@ -8,16 +8,18 @@ function FG3dFlatTexture(o){
    o = RClass.inherits(this, o, FG3dTexture);
    //..........................................................
    // @attribute
-   o.width     = 0;
-   o.height    = 0;
+   o.width        = 0;
+   o.height       = 0;
    //..........................................................
    // @method
-   o.construct = FG3dFlatTexture_construct;
+   o.construct    = FG3dFlatTexture_construct;
    return o;
 }
 
 //==========================================================
 // <T>构造处理。</T>
+//
+// @method
 //==========================================================
 function FG3dFlatTexture_construct(){
    var o = this;

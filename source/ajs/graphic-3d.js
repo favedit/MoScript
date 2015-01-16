@@ -782,7 +782,7 @@ function FG3dTechnique_drawRegion(r){
    for(var n = 0; n < c; n++){
       var p = ps.get(n);
       r.setTechniquePass(p);
-      p._stop = (n == c - 1);
+      p._finish = (n == c - 1);
       p.drawRegion(r);
    }
    o._context.present();
@@ -814,6 +814,8 @@ function FG3dTechniqueConsole_find(c, p){
 function FG3dTechniquePass(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._name      = null;
+   o._index     = null;
+   o._finish    = false;
    o.setup      = RMethod.empty;
    o.name       = FG3dTechniquePass_name;
    o.drawRegion = FG3dTechniquePass_drawRegion;
@@ -842,16 +844,6 @@ function FG3dTechniquePass_drawRegion(p){
       o._context.setProgram(e.program());
       e.drawRenderable(p, r);
    }
-}
-function FG3dTexture(o){
-   o = RClass.inherits(this, o, FG3dObject);
-   o._textureCd  = EG3dTexture.Unknown;
-   o._statusLoad = false;
-   o.textureCd   = FG3dTexture_textureCd;
-   return o;
-}
-function FG3dTexture_textureCd(){
-   return this._textureCd;
 }
 function FG3dTrack(o){
    o = RClass.inherits(this, o, FObject);

@@ -7,11 +7,12 @@
 var RWglUtility = new function RWglUtility(){
    var o = this;
    // @method
-   o.convertFillMode     = RWglUtility_convertFillMode;
-   o.convertCullMode     = RWglUtility_convertCullMode;
-   o.convertDepthMode    = RWglUtility_convertDepthMode;
-   o.convertBlendFactors = RWglUtility_convertBlendFactors;
-   o.convertIndexStride  = RWglUtility_convertIndexStride;
+   o.convertFillMode      = RWglUtility_convertFillMode;
+   o.convertCullMode      = RWglUtility_convertCullMode;
+   o.convertDepthMode     = RWglUtility_convertDepthMode;
+   o.convertBlendFactors  = RWglUtility_convertBlendFactors;
+   o.convertIndexStride   = RWglUtility_convertIndexStride;
+   o.convertSamplerFilter = RWglUtility_convertSamplerFilter;
    return o;
 }
 
@@ -32,8 +33,7 @@ function RWglUtility_convertFillMode(g, v){
       case EG3dFillMode.Face:
          return g.FILL;
    }
-   RLogger.fatal(this, null, "Convert fill mode failure. (fill_cd={1})", v);
-   return g.FILL;
+   throw new TError(this, "Convert fill mode failure. (fill_cd={1})", v);
 }
 
 //==========================================================
@@ -53,8 +53,7 @@ function RWglUtility_convertCullMode(g, v){
       case EG3dCullMode.Both:
          return g.FRONT_AND_BACK;
    }
-   RLogger.fatal(this, null, "Convert cull mode failure. (cull_cd={1})", v);
-   return g.FRONT;
+   throw new TError(this, "Convert cull mode failure. (cull_cd={1})", v);
 }
 
 //==========================================================
@@ -82,8 +81,7 @@ function RWglUtility_convertDepthMode(g, v){
       case EG3dDepthMode.Always:
          return g.ALWAYS;
    }
-   RLogger.fatal(this, null, "Convert depth mode failure. (depth_cd={1})", v);
-   return g.LESS;
+   throw new TError(this, "Convert depth mode failure. (depth_cd={1})", v);
 }
 
 //==========================================================
@@ -103,8 +101,7 @@ function RWglUtility_convertBlendFactors(g, v){
       default:
          break;
    }
-   RLogger.fatal(this, null, "Convert blend factors failure. (blend_cd={1})", v);
-   return 0;
+   throw new TError(this, "Convert blend factors failure. (blend_cd={1})", v);
 }
 
 //==========================================================
@@ -122,7 +119,31 @@ function RWglUtility_convertIndexStride(g, v){
       case EG3dIndexStride.Uint32:
          return g.UNSIGNED_INT;
    }
-   RLogger.fatal(this, null, "Convert index stride failure. (stride_cd={1})", v);
-   return 0;
+   throw new TError(this, "Convert index stride failure. (stride_cd={1})", v);
 }
 
+//==========================================================
+// <T>转换采样过滤类型。</T>
+//
+// @method
+// @param g:context:WebGLObject 渲染环境
+// @param v:filter_cd:Integer 采样过滤
+// @return Integer 渲染索引宽度
+//==========================================================
+function RWglUtility_convertSamplerFilter(g, v){
+   switch(v){
+      case EG3dSamplerFilter.Unknown:
+         return 0;
+      case EG3dSamplerFilter.Nearest:
+         return g.NEAREST;
+      case EG3dSamplerFilter.Linear:
+         return g.LINEAR;
+      case EG3dSamplerFilter.Repeat:
+         return g.REPEAT;
+      case EG3dSamplerFilter.ClampToEdge:
+         return g.CLAMP_TO_EDGE;
+      case EG3dSamplerFilter.ClampToBorder:
+         return g.CLAMP_TO_BORDER;
+   }
+   throw new TError(this, "Convert sampler filter failure. (filter_cd={1})", v);
+}

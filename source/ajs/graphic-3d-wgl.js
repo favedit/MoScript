@@ -512,24 +512,21 @@ function FWglContext_bindTexture(ps, pi, pt){
       }
       o._renderTextureActiveSlot = ps;
    }
+   var gt = null;
    switch(pt.textureCd()){
       case EG3dTexture.Flat2d:{
+         gt = g.TEXTURE_2D;
          g.bindTexture(g.TEXTURE_2D, pt._native);
-         g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
-         g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
-         r = o.checkError("glBindTexture", "Bind texture failure. (texture_id=%d)", pt._native);
+         r = o.checkError("glBindTexture", "Bind flag texture failure. (texture_id=%d)", pt._native);
          if(!r){
             return r;
          }
          break;
       }
       case EG3dTexture.Cube:{
+         gt = g.TEXTURE_CUBE_MAP;
          g.bindTexture(g.TEXTURE_CUBE_MAP, pt._native);
-         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MIN_FILTER, g.NEAREST);
-         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MAG_FILTER, g.NEAREST);
-         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_WRAP_S, g.CLAMP_TO_EDGE);
-         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_WRAP_T, g.CLAMP_TO_EDGE);
-         r = o.checkError("glBindTexture", "Bind texture failure. (texture_id=%d)", pt._native);
+         r = o.checkError("glBindTexture", "Bind cube texture failure. (texture_id=%d)", pt._native);
          if(!r){
             return r;
          }
@@ -539,6 +536,20 @@ function FWglContext_bindTexture(ps, pi, pt){
          RLogger.fatal(o, null, "Unknown texture type.");
          break;
       }
+   }
+   var fc = RWglUtility.convertSamplerFilter(g, pt.filterMinCd());
+   if(fc){
+      g.texParameteri(gt, g.TEXTURE_MIN_FILTER, fc);
+   }
+   var fc = RWglUtility.convertSamplerFilter(g, pt.filterMagCd());
+   if(fc){
+      g.texParameteri(gt, g.TEXTURE_MAG_FILTER, fc);
+   }
+   var ws = RWglUtility.convertSamplerFilter(g, pt.wrapS());
+   if(ws){
+   }
+   var wt = RWglUtility.convertSamplerFilter(g, pt.wrapT());
+   if(wt){
    }
    return r;
 }
@@ -1070,11 +1081,12 @@ function FWglVertexShader_dispose(){
 }
 var RWglUtility = new function RWglUtility(){
    var o = this;
-   o.convertFillMode     = RWglUtility_convertFillMode;
-   o.convertCullMode     = RWglUtility_convertCullMode;
-   o.convertDepthMode    = RWglUtility_convertDepthMode;
-   o.convertBlendFactors = RWglUtility_convertBlendFactors;
-   o.convertIndexStride  = RWglUtility_convertIndexStride;
+   o.convertFillMode      = RWglUtility_convertFillMode;
+   o.convertCullMode      = RWglUtility_convertCullMode;
+   o.convertDepthMode     = RWglUtility_convertDepthMode;
+   o.convertBlendFactors  = RWglUtility_convertBlendFactors;
+   o.convertIndexStride   = RWglUtility_convertIndexStride;
+   o.convertSamplerFilter = RWglUtility_convertSamplerFilter;
    return o;
 }
 function RWglUtility_convertFillMode(g, v){
@@ -1086,8 +1098,7 @@ function RWglUtility_convertFillMode(g, v){
       case EG3dFillMode.Face:
          return g.FILL;
    }
-   RLogger.fatal(this, null, "Convert fill mode failure. (fill_cd={1})", v);
-   return g.FILL;
+   throw new TError(this, "Convert fill mode failure. (fill_cd={1})", v);
 }
 function RWglUtility_convertCullMode(g, v){
    switch(v){
@@ -1098,8 +1109,7 @@ function RWglUtility_convertCullMode(g, v){
       case EG3dCullMode.Both:
          return g.FRONT_AND_BACK;
    }
-   RLogger.fatal(this, null, "Convert cull mode failure. (cull_cd={1})", v);
-   return g.FRONT;
+   throw new TError(this, "Convert cull mode failure. (cull_cd={1})", v);
 }
 function RWglUtility_convertDepthMode(g, v){
    switch(v){
@@ -1118,8 +1128,7 @@ function RWglUtility_convertDepthMode(g, v){
       case EG3dDepthMode.Always:
          return g.ALWAYS;
    }
-   RLogger.fatal(this, null, "Convert depth mode failure. (depth_cd={1})", v);
-   return g.LESS;
+   throw new TError(this, "Convert depth mode failure. (depth_cd={1})", v);
 }
 function RWglUtility_convertBlendFactors(g, v){
    switch(v){
@@ -1130,8 +1139,7 @@ function RWglUtility_convertBlendFactors(g, v){
       default:
          break;
    }
-   RLogger.fatal(this, null, "Convert blend factors failure. (blend_cd={1})", v);
-   return 0;
+   throw new TError(this, "Convert blend factors failure. (blend_cd={1})", v);
 }
 function RWglUtility_convertIndexStride(g, v){
    switch(v){
@@ -1140,8 +1148,24 @@ function RWglUtility_convertIndexStride(g, v){
       case EG3dIndexStride.Uint32:
          return g.UNSIGNED_INT;
    }
-   RLogger.fatal(this, null, "Convert index stride failure. (stride_cd={1})", v);
-   return 0;
+   throw new TError(this, "Convert index stride failure. (stride_cd={1})", v);
+}
+function RWglUtility_convertSamplerFilter(g, v){
+   switch(v){
+      case EG3dSamplerFilter.Unknown:
+         return 0;
+      case EG3dSamplerFilter.Nearest:
+         return g.NEAREST;
+      case EG3dSamplerFilter.Linear:
+         return g.LINEAR;
+      case EG3dSamplerFilter.Repeat:
+         return g.REPEAT;
+      case EG3dSamplerFilter.ClampToEdge:
+         return g.CLAMP_TO_EDGE;
+      case EG3dSamplerFilter.ClampToBorder:
+         return g.CLAMP_TO_BORDER;
+   }
+   throw new TError(this, "Convert sampler filter failure. (filter_cd={1})", v);
 }
 function SWglContextCapability(o){
    if(!o){o = this;}

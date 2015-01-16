@@ -90,6 +90,16 @@ var EG3dSampler = new function EG3dSampler(){
    o.Environment   = 'Environment';
    return o;
 }
+var EG3dSamplerFilter = new function EG3dSamplerFilter(){
+   var o = this;
+   o.Unknown       = 0;
+   o.Nearest       = 1;
+   o.Linear        = 2;
+   o.Repeat        = 3;
+   o.ClampToEdge   = 4;
+   o.ClampToBorder = 5;
+   return o;
+}
 var EG3dShader = new function EG3dShader(){
    var o = this;
    o.Unknown = 0;
@@ -175,9 +185,9 @@ function FG3dTexture_construct(){
 }
 function FG3dFlatTexture(o){
    o = RClass.inherits(this, o, FG3dTexture);
-   o.width     = 0;
-   o.height    = 0;
-   o.construct = FG3dFlatTexture_construct;
+   o.width        = 0;
+   o.height       = 0;
+   o.construct    = FG3dFlatTexture_construct;
    return o;
 }
 function FG3dFlatTexture_construct(){
@@ -467,6 +477,48 @@ function FG3dRenderTarget_textures(){
       r = o._textures = new TObjects();
    }
    return r;
+}
+function FG3dTexture(o){
+   o = RClass.inherits(this, o, FG3dObject);
+   o._textureCd   = EG3dTexture.Unknown;
+   o._statusLoad  = false;
+   o._filterMinCd = EG3dSamplerFilter.Linear;
+   o._filterMagCd = EG3dSamplerFilter.Linear;
+   o._wrapS       = EG3dSamplerFilter.Unknown;
+   o._wrapT       = EG3dSamplerFilter.Unknown;
+   o.textureCd    = FG3dTexture_textureCd;
+   o.filterMinCd  = FG3dTexture_filterMinCd;
+   o.filterMagCd  = FG3dTexture_filterMagCd;
+   o.setFilter    = FG3dTexture_setFilter;
+   o.wrapS        = FG3dTexture_wrapS;
+   o.wrapT        = FG3dTexture_wrapT;
+   o.setWrap      = FG3dTexture_setWrap;
+   return o;
+}
+function FG3dTexture_textureCd(){
+   return this._textureCd;
+}
+function FG3dTexture_filterMinCd(){
+   return this._filterMinCd;
+}
+function FG3dTexture_filterMagCd(){
+   return this._filterMagCd;
+}
+function FG3dTexture_setFilter(pi, pa){
+   var o = this;
+   o._filterMinCd = pi;
+   o._filterMagCd = pa;
+}
+function FG3dTexture_wrapS(){
+   return this._wrapS;
+}
+function FG3dTexture_wrapT(){
+   return this._wrapT;
+}
+function FG3dTexture_setWrap(ps, pt){
+   var o = this;
+   o._wrapS = ps;
+   o._wrapT = pt;
 }
 function FG3dVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dObject);

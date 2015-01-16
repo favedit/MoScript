@@ -9,6 +9,8 @@ function FG3dTechniquePass(o){
    //..........................................................
    // @attribute
    o._name      = null;
+   o._index     = null;
+   o._finish    = false;
    //..........................................................
    // @method
    o.setup      = RMethod.empty;

@@ -58,7 +58,7 @@ function FG3dTechnique_drawRegion(r){
    for(var n = 0; n < c; n++){
       var p = ps.get(n);
       r.setTechniquePass(p);
-      p._stop = (n == c - 1);
+      p._finish = (n == c - 1);
       p.drawRegion(r);
    }
    // 显示处理

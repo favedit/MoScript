@@ -4322,6 +4322,12 @@ function RTimer_update(){
    o._count++;
    o._lastTime = new Date().getTime();
 }
+function SEnumItem(o){
+   if(!o){o = this;}
+   o.name  = null;
+   o.value = 0;
+   return o;
+}
 function TClass(o){
    if(!o){o = this;}
    o.__disposed     = true;

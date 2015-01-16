@@ -134,7 +134,7 @@
          mat3 matrixTs = mat3(tangent, binormal, normal);
          vec3 cameraDirection = vc_camera_position - modelPosition.xyz;
          v_camera_ts = normalize(cameraDirection * matrixTs);
-         v_light_ts = normalize(vc_light_direction * matrixTs);
+         v_light_ts = normalize(-vc_light_direction * matrixTs);
          </shader:true>
          </shader:true>
       }
@@ -215,7 +215,7 @@
          //............................................................
          // 计算阴影
          float shadowRate = 0.0;
-         float viewDepth = (v_light_view_position.z / v_light_view_position.w) * fc_light_depth.w + 0.2;
+         float viewDepth = (v_light_view_position.z / v_light_view_position.w) * fc_light_depth.w;
          // 计算距离
          vec4 lightConvert = vec4(1.0, 1.0 / 256.0, 1.0 / 256.0 / 256.0, 1.0 / 256.0 / 256.0 / 256.0);
          vec2 lightCoord = v_light_position.xy / v_light_position.w;
@@ -250,34 +250,36 @@
          if(viewDepth < lightDepth){
             shadowRate += 1.0;
          }
-         shadowRate /= 6.0;
+         shadowRate += 6.0;
+         shadowRate /= 12.0;
+         shadowRate += 0.5;
          //............................................................
          // 计算环境颜色
          <shader:true source='support.ambient'>
          <shader:true source='support.ambient.sampler'>
          vec4 color = texture2D(fs_diffuse, v_coord);
-         //if(color.a < fc_alpha.x){
-         //   discard;
-         //}
+         if(color.a < fc_alpha.x){
+            discard;
+         }
          </shader:true>
          <shader:false source='support.ambient.sampler'>
          vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
          </shader:false>
-         result.rgb += color.xyz * fc_ambient_color.rgb * shadowRate * 0.8;
+         result.rgb += color.xyz * fc_ambient_color.rgb * shadowRate * 1.0;
          </shader:true>
          //............................................................
          // 计算散射颜色
          <shader:true source='support.diffuse'>
          <shader:true source='support.diffuse.dump'>
          vec4 normal = texture2D(fs_normal, v_coord);
-         //normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
+         normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
          float normalFactor = dot(normal.xyz, -v_light_ts);
          </shader:true>
          <shader:true source='support.diffuse.normal'>
-         float normalFactor = dot(v_normal, -fc_light_direction);
+         float normalFactor = dot(v_normal, fc_light_direction);
          </shader:true>
          normalFactor = max(normalFactor, 0.0);
-         result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor * shadowRate * 0.8;
+         result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor * shadowRate * 0.6;
          </shader:true>
          //............................................................
          <shader:true source='support.specular|support.environment'>
@@ -286,15 +288,17 @@
          //............................................................
          // 计算高光颜色
          <shader:true source='support.specular'>
-         vec3 reflectionDirection = normalize(reflect(fc_light_direction, v_normal));
+         vec3 reflectionDirection = normalize(reflect(-fc_light_direction, v_normal));
          float specularFactor = dot(cameraDirection, reflectionDirection);
          <shader:true source='support.specular.level'>
          specularFactor *= normal.w;
          </shader:true>
-         specularFactor = max(specularFactor, fc_specular.x);
-         specularFactor = min(specularFactor, 1.0);
-         specularFactor = pow(specularFactor, fc_specular.y + 20.0);
-         result.rgb += color.rgb * fc_specular_color.rgb * specularFactor * 1.4;
+         //specularFactor = specularFactor * shadowRate;
+         specularFactor = max(specularFactor, 0.0);
+         specularFactor = min(specularFactor + 0.05, 1.0);
+         specularFactor = pow(specularFactor, 30.0);
+         //specularFactor = pow(specularFactor, fc_specular.y + 16.0);
+         result.rgb += color.rgb * fc_specular_color.rgb * specularFactor * 2.0;
          </shader:true>
          //............................................................
          <shader:true source='support.environment'>
@@ -320,9 +324,10 @@
          </shader:true>
          //............................................................
          gl_FragColor = result;
-         //gl_FragColor = vec4(shadowRate, shadowRate, shadowRate, 1.0);
+         //gl_FragColor = vec4(normalFactor, normalFactor, normalFactor, 1.0);
          //gl_FragColor = vec4(viewDepth, viewDepth, viewDepth, 1.0);
          //gl_FragColor = vec4(lightDepth, lightDepth, lightDepth, 1.0);
+         //gl_FragColor = vec4(specularFactor, specularFactor, specularFactor, 1.0);
       }
    ]]></Source>
 </Configuration>

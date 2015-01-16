@@ -868,7 +868,7 @@ function FG3dTechnique_drawRegion(r){
    for(var n = 0; n < c; n++){
       var p = ps.get(n);
       r.setTechniquePass(p);
-      p._stop = (n == c - 1);
+      p._finish = (n == c - 1);
       p.drawRegion(r);
    }
    o._context.present();
@@ -900,6 +900,8 @@ function FG3dTechniqueConsole_find(c, p){
 function FG3dTechniquePass(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._name      = null;
+   o._index     = null;
+   o._finish    = false;
    o.setup      = RMethod.empty;
    o.name       = FG3dTechniquePass_name;
    o.drawRegion = FG3dTechniquePass_drawRegion;
@@ -928,16 +930,6 @@ function FG3dTechniquePass_drawRegion(p){
       o._context.setProgram(e.program());
       e.drawRenderable(p, r);
    }
-}
-function FG3dTexture(o){
-   o = RClass.inherits(this, o, FG3dObject);
-   o._textureCd  = EG3dTexture.Unknown;
-   o._statusLoad = false;
-   o.textureCd   = FG3dTexture_textureCd;
-   return o;
-}
-function FG3dTexture_textureCd(){
-   return this._textureCd;
 }
 function FG3dTrack(o){
    o = RClass.inherits(this, o, FObject);
@@ -1343,6 +1335,16 @@ var EG3dSampler = new function EG3dSampler(){
    o.Environment   = 'Environment';
    return o;
 }
+var EG3dSamplerFilter = new function EG3dSamplerFilter(){
+   var o = this;
+   o.Unknown       = 0;
+   o.Nearest       = 1;
+   o.Linear        = 2;
+   o.Repeat        = 3;
+   o.ClampToEdge   = 4;
+   o.ClampToBorder = 5;
+   return o;
+}
 var EG3dShader = new function EG3dShader(){
    var o = this;
    o.Unknown = 0;
@@ -1428,9 +1430,9 @@ function FG3dTexture_construct(){
 }
 function FG3dFlatTexture(o){
    o = RClass.inherits(this, o, FG3dTexture);
-   o.width     = 0;
-   o.height    = 0;
-   o.construct = FG3dFlatTexture_construct;
+   o.width        = 0;
+   o.height       = 0;
+   o.construct    = FG3dFlatTexture_construct;
    return o;
 }
 function FG3dFlatTexture_construct(){
@@ -1720,6 +1722,48 @@ function FG3dRenderTarget_textures(){
       r = o._textures = new TObjects();
    }
    return r;
+}
+function FG3dTexture(o){
+   o = RClass.inherits(this, o, FG3dObject);
+   o._textureCd   = EG3dTexture.Unknown;
+   o._statusLoad  = false;
+   o._filterMinCd = EG3dSamplerFilter.Linear;
+   o._filterMagCd = EG3dSamplerFilter.Linear;
+   o._wrapS       = EG3dSamplerFilter.Unknown;
+   o._wrapT       = EG3dSamplerFilter.Unknown;
+   o.textureCd    = FG3dTexture_textureCd;
+   o.filterMinCd  = FG3dTexture_filterMinCd;
+   o.filterMagCd  = FG3dTexture_filterMagCd;
+   o.setFilter    = FG3dTexture_setFilter;
+   o.wrapS        = FG3dTexture_wrapS;
+   o.wrapT        = FG3dTexture_wrapT;
+   o.setWrap      = FG3dTexture_setWrap;
+   return o;
+}
+function FG3dTexture_textureCd(){
+   return this._textureCd;
+}
+function FG3dTexture_filterMinCd(){
+   return this._filterMinCd;
+}
+function FG3dTexture_filterMagCd(){
+   return this._filterMagCd;
+}
+function FG3dTexture_setFilter(pi, pa){
+   var o = this;
+   o._filterMinCd = pi;
+   o._filterMagCd = pa;
+}
+function FG3dTexture_wrapS(){
+   return this._wrapS;
+}
+function FG3dTexture_wrapT(){
+   return this._wrapT;
+}
+function FG3dTexture_setWrap(ps, pt){
+   var o = this;
+   o._wrapS = ps;
+   o._wrapT = pt;
 }
 function FG3dVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -2189,8 +2233,17 @@ function FG3dSampleColorEffect_loadUrl(u){
 }
 function FG3dSampleColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._name = 'color';
+   o._name      = 'color';
+   o.drawRegion = FG3dSampleColorPass_drawRegion;
    return o;
+}
+function FG3dSampleColorPass_drawRegion(p){
+   var o = this;
+   var c = o._context;
+   c.setRenderTarget(null);
+   var bc = p._backgroundColor;
+   o._context.clear(bc.red, bc.green, bc.blue, bc.alpha, 1);
+   o.__base.FG3dTechniquePass.drawRegion.call(o, p)
 }
 function FG3dSampleSkeletonEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
@@ -2356,7 +2409,8 @@ function FG3dShadowColorPass_drawRegion(p){
    var o = this;
    var c = o._context;
    c.setRenderTarget(null);
-   c.clear(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+   var bc = p._backgroundColor;
+   o._context.clear(bc.red, bc.green, bc.blue, bc.alpha, 1);
    o.__base.FG3dTechniquePass.drawRegion.call(o, p)
 }
 function FG3dShadowColorSkeletonEffect(o){
@@ -2496,6 +2550,8 @@ function FG3dShadowDepthPass_setup(){
    o.__base.FG3dTechniquePass.setup.call(o);
    var c = o._context;
    var d = o._textureDepth = c.createFlatTexture();
+   d.setFilter(EG3dSamplerFilter.Linear, EG3dSamplerFilter.Linear);
+   d.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
    var t = o._renderTarget = c.createRenderTarget();
    t.size().set(1024, 1024);
    t.textures().push(d);
@@ -2504,8 +2560,14 @@ function FG3dShadowDepthPass_setup(){
 function FG3dShadowDepthPass_drawRegion(p){
    var o = this;
    var c = o._context;
-   c.setRenderTarget(o._renderTarget);
-   c.clear(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+   if(o._finish){
+      c.setRenderTarget(null);
+      var bc = p._backgroundColor;
+      o._context.clear(bc.red, bc.green, bc.blue, bc.alpha, 1);
+   }else{
+      c.setRenderTarget(o._renderTarget);
+      c.clear(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+   }
    p._textureDepth = o._textureDepth;
    o.__base.FG3dTechniquePass.drawRegion.call(o, p)
 }
@@ -3131,24 +3193,21 @@ function FWglContext_bindTexture(ps, pi, pt){
       }
       o._renderTextureActiveSlot = ps;
    }
+   var gt = null;
    switch(pt.textureCd()){
       case EG3dTexture.Flat2d:{
+         gt = g.TEXTURE_2D;
          g.bindTexture(g.TEXTURE_2D, pt._native);
-         g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
-         g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
-         r = o.checkError("glBindTexture", "Bind texture failure. (texture_id=%d)", pt._native);
+         r = o.checkError("glBindTexture", "Bind flag texture failure. (texture_id=%d)", pt._native);
          if(!r){
             return r;
          }
          break;
       }
       case EG3dTexture.Cube:{
+         gt = g.TEXTURE_CUBE_MAP;
          g.bindTexture(g.TEXTURE_CUBE_MAP, pt._native);
-         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MIN_FILTER, g.NEAREST);
-         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MAG_FILTER, g.NEAREST);
-         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_WRAP_S, g.CLAMP_TO_EDGE);
-         g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_WRAP_T, g.CLAMP_TO_EDGE);
-         r = o.checkError("glBindTexture", "Bind texture failure. (texture_id=%d)", pt._native);
+         r = o.checkError("glBindTexture", "Bind cube texture failure. (texture_id=%d)", pt._native);
          if(!r){
             return r;
          }
@@ -3158,6 +3217,20 @@ function FWglContext_bindTexture(ps, pi, pt){
          RLogger.fatal(o, null, "Unknown texture type.");
          break;
       }
+   }
+   var fc = RWglUtility.convertSamplerFilter(g, pt.filterMinCd());
+   if(fc){
+      g.texParameteri(gt, g.TEXTURE_MIN_FILTER, fc);
+   }
+   var fc = RWglUtility.convertSamplerFilter(g, pt.filterMagCd());
+   if(fc){
+      g.texParameteri(gt, g.TEXTURE_MAG_FILTER, fc);
+   }
+   var ws = RWglUtility.convertSamplerFilter(g, pt.wrapS());
+   if(ws){
+   }
+   var wt = RWglUtility.convertSamplerFilter(g, pt.wrapT());
+   if(wt){
    }
    return r;
 }
@@ -3689,11 +3762,12 @@ function FWglVertexShader_dispose(){
 }
 var RWglUtility = new function RWglUtility(){
    var o = this;
-   o.convertFillMode     = RWglUtility_convertFillMode;
-   o.convertCullMode     = RWglUtility_convertCullMode;
-   o.convertDepthMode    = RWglUtility_convertDepthMode;
-   o.convertBlendFactors = RWglUtility_convertBlendFactors;
-   o.convertIndexStride  = RWglUtility_convertIndexStride;
+   o.convertFillMode      = RWglUtility_convertFillMode;
+   o.convertCullMode      = RWglUtility_convertCullMode;
+   o.convertDepthMode     = RWglUtility_convertDepthMode;
+   o.convertBlendFactors  = RWglUtility_convertBlendFactors;
+   o.convertIndexStride   = RWglUtility_convertIndexStride;
+   o.convertSamplerFilter = RWglUtility_convertSamplerFilter;
    return o;
 }
 function RWglUtility_convertFillMode(g, v){
@@ -3705,8 +3779,7 @@ function RWglUtility_convertFillMode(g, v){
       case EG3dFillMode.Face:
          return g.FILL;
    }
-   RLogger.fatal(this, null, "Convert fill mode failure. (fill_cd={1})", v);
-   return g.FILL;
+   throw new TError(this, "Convert fill mode failure. (fill_cd={1})", v);
 }
 function RWglUtility_convertCullMode(g, v){
    switch(v){
@@ -3717,8 +3790,7 @@ function RWglUtility_convertCullMode(g, v){
       case EG3dCullMode.Both:
          return g.FRONT_AND_BACK;
    }
-   RLogger.fatal(this, null, "Convert cull mode failure. (cull_cd={1})", v);
-   return g.FRONT;
+   throw new TError(this, "Convert cull mode failure. (cull_cd={1})", v);
 }
 function RWglUtility_convertDepthMode(g, v){
    switch(v){
@@ -3737,8 +3809,7 @@ function RWglUtility_convertDepthMode(g, v){
       case EG3dDepthMode.Always:
          return g.ALWAYS;
    }
-   RLogger.fatal(this, null, "Convert depth mode failure. (depth_cd={1})", v);
-   return g.LESS;
+   throw new TError(this, "Convert depth mode failure. (depth_cd={1})", v);
 }
 function RWglUtility_convertBlendFactors(g, v){
    switch(v){
@@ -3749,8 +3820,7 @@ function RWglUtility_convertBlendFactors(g, v){
       default:
          break;
    }
-   RLogger.fatal(this, null, "Convert blend factors failure. (blend_cd={1})", v);
-   return 0;
+   throw new TError(this, "Convert blend factors failure. (blend_cd={1})", v);
 }
 function RWglUtility_convertIndexStride(g, v){
    switch(v){
@@ -3759,8 +3829,24 @@ function RWglUtility_convertIndexStride(g, v){
       case EG3dIndexStride.Uint32:
          return g.UNSIGNED_INT;
    }
-   RLogger.fatal(this, null, "Convert index stride failure. (stride_cd={1})", v);
-   return 0;
+   throw new TError(this, "Convert index stride failure. (stride_cd={1})", v);
+}
+function RWglUtility_convertSamplerFilter(g, v){
+   switch(v){
+      case EG3dSamplerFilter.Unknown:
+         return 0;
+      case EG3dSamplerFilter.Nearest:
+         return g.NEAREST;
+      case EG3dSamplerFilter.Linear:
+         return g.LINEAR;
+      case EG3dSamplerFilter.Repeat:
+         return g.REPEAT;
+      case EG3dSamplerFilter.ClampToEdge:
+         return g.CLAMP_TO_EDGE;
+      case EG3dSamplerFilter.ClampToBorder:
+         return g.CLAMP_TO_BORDER;
+   }
+   throw new TError(this, "Convert sampler filter failure. (filter_cd={1})", v);
 }
 function SWglContextCapability(o){
    if(!o){o = this;}

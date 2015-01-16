@@ -28,7 +28,8 @@ function FG3dShadowColorPass_drawRegion(p){
    var c = o._context;
    // 设置渲染目标
    c.setRenderTarget(null);
-   c.clear(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+   var bc = p._backgroundColor;
+   o._context.clear(bc.red, bc.green, bc.blue, bc.alpha, 1);
    // 绘制处理
    o.__base.FG3dTechniquePass.drawRegion.call(o, p)
 }
