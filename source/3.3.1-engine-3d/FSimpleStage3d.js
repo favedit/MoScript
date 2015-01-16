@@ -30,6 +30,40 @@ function FSimpleStage3d(o){
 }
 
 //==========================================================
+// <T>按键处理。</T>
+//
+// @method
+//==========================================================
+function FSimpleStage3d_onKeyDown(e){
+   var o = this;
+   // 事件处理
+   var c = o._camera;
+   var k = e.keyCode;
+   var r = 0.3;
+   switch(k){
+      case EKeyCode.W:
+         c.doWalk(r);
+         break;
+      case EKeyCode.S:
+         c.doWalk(-r);
+         break;
+      case EKeyCode.A:
+         c.doStrafe(r);
+         break;
+      case EKeyCode.D:
+         c.doStrafe(-r);
+         break;
+      case EKeyCode.Q:
+         c.doFly(r);
+         break;
+      case EKeyCode.E:
+         c.doFly(-r);
+         break;
+   }
+   c.update();
+}
+
+//==========================================================
 // <T>构造处理。</T>
 //
 // @method

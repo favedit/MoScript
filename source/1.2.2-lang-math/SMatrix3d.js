@@ -23,12 +23,12 @@ function SMatrix3d(o){
    o.sz             = 1.0;
    //..........................................................
    // @method
-   o.data           = SMatrix3d_data;
-   // @method
    o.identity       = SMatrix3d_identity;
-   o.setTranslate   = SMatrix3d_setTranslate
-   o.setRotation    = SMatrix3d_setRotation
-   o.setScale       = SMatrix3d_setScale
+   o.setTranslate   = SMatrix3d_setTranslate;
+   o.setRotation    = SMatrix3d_setRotation;
+   o.setScale       = SMatrix3d_setScale;
+   o.set            = SMatrix3d_set;
+   o.setAll         = SMatrix3d_setAll;
    o.equals         = SMatrix3d_equals;
    o.assign         = SMatrix3d_assign;
    o.append         = SMatrix3d_append;
@@ -41,16 +41,6 @@ function SMatrix3d(o){
    // @construct
    o.identity();
    return o;
-}
-
-//============================================================
-// <T>获得数据。</T>
-//
-// @method
-// @return Float32Array 数据
-//============================================================
-function SMatrix3d_data(){
-   return this._data;
 }
 
 //============================================================
@@ -115,6 +105,56 @@ function SMatrix3d_setScale(x, y, z){
    o.sx = x;
    o.sy = y;
    o.sz = z;
+   o._dirty = true;
+}
+
+//============================================================
+// <T>设置内容。</T>
+//
+// @method
+// @param pt:SPoint3 坐标
+// @param pr:SVector3 旋转
+// @param ps:SVector3 缩放
+//============================================================
+function SMatrix3d_set(pt, pr, ps){
+   var o = this;
+   o.tx = pt.x;
+   o.ty = pt.y;
+   o.tz = pt.z;
+   o.rx = pr.x;
+   o.ry = pr.y;
+   o.rz = pr.z;
+   o.sx = ps.x;
+   o.sy = ps.y;
+   o.sz = ps.z;
+   o._dirty = true;
+}
+
+//============================================================
+// <T>设置内容。</T>
+//
+// @method
+// @param ptx:Float X坐标
+// @param pty:Float Y坐标
+// @param ptz:Float Z坐标
+// @param prx:Float X旋转
+// @param pry:Float Y旋转
+// @param prz:Float Z旋转
+// @param psx:Float X缩放
+// @param psy:Float Y缩放
+// @param psz:Float Z缩放
+//============================================================
+function SMatrix3d_setAll(ptx, pty, ptz, prx, pry, prz, psx, psy, psz){
+   var o = this;
+   o.tx = ptx;
+   o.ty = pty;
+   o.tz = ptz;
+   o.rx = prx;
+   o.ry = pry;
+   o.rz = prz;
+   o.sx = psx;
+   o.sy = psy;
+   o.sz = psz;
    o._dirty = true;
 }
 

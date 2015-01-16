@@ -20,12 +20,6 @@ function FWglProgram(o){
    o.build          = FWglProgram_build;
    o.link           = FWglProgram_link;
    // @method
-   o.setAttribute   = FWglProgram_setAttribute;
-   o.setParameter   = FWglProgram_setParameter;
-   o.setParameter4  = FWglProgram_setParameter4;
-   o.setParameterColor4 = FWglProgram_setParameterColor4;
-   o.setSampler     = FWglProgram_setSampler;
-   // @method
    o.dispose        = FWglProgram_dispose;
    return o;
 }
@@ -242,85 +236,6 @@ function FWglProgram_link(){
       }
    }
    return r;
-}
-
-//==========================================================
-// <T>设置属性。</T>
-//
-// @method
-// @param pn:name:String 名称
-// @param pb:buffer:Object 数据
-// @param pf:format:Integer 个数
-//==========================================================
-function FWglProgram_setAttribute(pn, pb, pf){
-   var o = this;
-   var p = o.findAttribute(pn);
-   o._context.bindVertexBuffer(p._slot, pb, 0, pf);
-}
-
-//==========================================================
-// <T>设置参数。</T>
-//
-// @method
-// @param pn:name:String 名称
-// @param pv:value:Object 数据
-// @param pc:count:Integer 个数
-//==========================================================
-function FWglProgram_setParameter(pn, pv, pc){
-   var o = this;
-   var p = o.findParameter(pn);
-   o._context.bindConst(null, p._slot, p._formatCd, pv, pc);
-}
-
-//==========================================================
-// <T>设置参数。</T>
-//
-// @method
-// @param pn:name:String 名称
-// @param pv:value:Object 数据
-// @param pc:count:Integer 个数
-//==========================================================
-function FWglProgram_setParameter4(pn, px, py, pz, pw){
-   var o = this;
-   var p = o.findParameter(pn);
-   var v = RTypeArray.float4();
-   v[0] = px;
-   v[1] = py;
-   v[2] = pz;
-   v[3] = pw;
-   o._context.bindConst(null, p._slot, p._formatCd, v);
-}
-
-//==========================================================
-// <T>设置参数。</T>
-//
-// @method
-// @param pn:name:String 名称
-// @param pv:value:Object 数据
-// @param pc:count:Integer 个数
-//==========================================================
-function FWglProgram_setParameterColor4(pn, pv){
-   var o = this;
-   var p = o.findParameter(pn);
-   var v = RTypeArray.float4();
-   v[0] = pv.red;
-   v[1] = pv.green;
-   v[2] = pv.blue;
-   v[3] = pv.alpha;
-   o._context.bindConst(null, p._slot, p._formatCd, v);
-}
-
-//==========================================================
-// <T>设置取样器。</T>
-//
-// @method
-// @param pn:name:String 名称
-// @param pt:texture:FG3dTexture 纹理
-//==========================================================
-function FWglProgram_setSampler(pn, pt){
-   var o = this;
-   var p = o.findSampler(pn);
-   o._context.bindTexture(p._slot, p._index, pt);
 }
 
 //==========================================================

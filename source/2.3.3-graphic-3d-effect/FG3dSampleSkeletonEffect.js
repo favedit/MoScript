@@ -60,7 +60,7 @@ function FG3dSampleSkeletonEffect_drawRenderable(pr, r){
             if(sp != null){
                p.setSampler(s.name(), sp.texture());
             }else{
-               //throw new TError("Can't find sampler. (linker={1})", ln);
+               throw new TError("Can't find sampler. (linker={1})", ln);
             }
          }
       }
@@ -75,16 +75,16 @@ function FG3dSampleSkeletonEffect_drawRenderable(pr, r){
    // 设置材质
    var m = r.material();
    var mi = m.info();
-   p.setParameterColor4('fc_color', mi.ambientColor);
+   p.setParameter('fc_color', mi.ambientColor);
    p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
    p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
-   p.setParameterColor4('fc_ambient_color', mi.ambientColor);
-   p.setParameterColor4('fc_diffuse_color', mi.diffuseColor);
-   p.setParameterColor4('fc_specular_color', mi.specularColor);
+   p.setParameter('fc_ambient_color', mi.ambientColor);
+   p.setParameter('fc_diffuse_color', mi.diffuseColor);
+   p.setParameter('fc_specular_color', mi.specularColor);
    p.setParameter4('fc_specular', mi.specularBase, mi.specularRate, mi.specularAverage, mi.specularShadow);
-   p.setParameterColor4('fc_specular_view_color', mi.specularViewColor);
+   p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
-   p.setParameterColor4('fc_reflect_color', mi.reflectColor);
+   p.setParameter('fc_reflect_color', mi.reflectColor);
    // 设置骨头集合
    var bs = r.bones();
    if(bs){

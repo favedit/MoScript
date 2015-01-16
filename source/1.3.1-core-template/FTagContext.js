@@ -6,7 +6,7 @@
 // @version 150114
 //==========================================================
 function FTagContext(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MInstance);
    //..........................................................
    // @attribute
    o._trimLeft       = false;
@@ -16,13 +16,13 @@ function FTagContext(o){
    //..........................................................
    // @method
    o.construct       = FTagContext_construct;
+   o.instanceAlloc   = FTagContext_instanceAlloc; // Implement MInstance
    o.attributes      = FTagContext_attributes;
    o.get             = FTagContext_get;
    o.set             = FTagContext_set;
    o.setBoolean      = FTagContext_setBoolean;
    o.source          = FTagContext_source;
    o.write           = FTagContext_write;
-   o.resetAttributes = FTagContext_resetAttributes;
    o.resetSource     = FTagContext_resetSource;
    o.dispose         = FTagContext_dispose;
    return o;
@@ -38,6 +38,15 @@ function FTagContext_construct(){
    o.__base.FObject.construct.call(o);
    o._attributes = new TAttributes();
    o._source = new TString();
+}
+
+//==========================================================
+// <T>收集处理。</T>
+//
+// @method
+//==========================================================
+function FTagContext_instanceAlloc(p){
+   this._attributes.clear();
 }
 
 //==========================================================
@@ -104,15 +113,6 @@ function FTagContext_write(p){
    if(!RString.isEmpty(p)){
       this._source.append(p);
    }
-}
-
-//==========================================================
-// <T>重置属性集合。</T>
-//
-// @method
-//==========================================================
-function FTagContext_resetAttributes(p){
-   this._attributes.clear();
 }
 
 //==========================================================

@@ -86,19 +86,19 @@ function FTag_dump(){
    return r.toString();
 }
 function FTagContext(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MInstance);
    o._trimLeft       = false;
    o._trimRight      = false;
    o._attributes     = null;
    o._source         = null;
    o.construct       = FTagContext_construct;
+   o.instanceAlloc   = FTagContext_instanceAlloc; // Implement MInstance
    o.attributes      = FTagContext_attributes;
    o.get             = FTagContext_get;
    o.set             = FTagContext_set;
    o.setBoolean      = FTagContext_setBoolean;
    o.source          = FTagContext_source;
    o.write           = FTagContext_write;
-   o.resetAttributes = FTagContext_resetAttributes;
    o.resetSource     = FTagContext_resetSource;
    o.dispose         = FTagContext_dispose;
    return o;
@@ -108,6 +108,9 @@ function FTagContext_construct(){
    o.__base.FObject.construct.call(o);
    o._attributes = new TAttributes();
    o._source = new TString();
+}
+function FTagContext_instanceAlloc(p){
+   this._attributes.clear();
 }
 function FTagContext_attributes(){
    return this._attributes;
@@ -128,9 +131,6 @@ function FTagContext_write(p){
    if(!RString.isEmpty(p)){
       this._source.append(p);
    }
-}
-function FTagContext_resetAttributes(p){
-   this._attributes.clear();
 }
 function FTagContext_resetSource(p){
    this._source.clear();
@@ -247,6 +247,7 @@ function FTagDocument_load(p){
 }
 function FTagDocument_parse(p){
    var o = this;
+   p.resetSource();
    o._root.parse(p);
    return p.source();
 }

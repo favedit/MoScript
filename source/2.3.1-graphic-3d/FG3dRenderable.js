@@ -11,19 +11,21 @@ function FG3dRenderable(o){
    o._matrix       = null;
    // @attribute
    o._effectName   = null;
-   o._effect       = null;
+   o._activeEffect = null;
+   o._effects      = null;
    o._materialName = null;
    o._material     = null;
    //..........................................................
    // @method
-   o.construct     = FG3dRenderable_construct;
-   o.matrix        = FG3dRenderable_matrix;
-   o.effectName    = FG3dRenderable_effectName;
-   o.effect        = FG3dRenderable_effect;
-   o.setEffect     = FG3dRenderable_setEffect;
-   o.material      = FG3dRenderable_material;
-   o.testVisible   = RMethod.virtual(o, 'testVisible');
-   o.update        = FG3dRenderable_update;
+   o.construct       = FG3dRenderable_construct;
+   o.matrix          = FG3dRenderable_matrix;
+   o.effectName      = FG3dRenderable_effectName;
+   o.activeEffect    = FG3dRenderable_activeEffect;
+   o.setActiveEffect = FG3dRenderable_setActiveEffect;
+   o.effects         = FG3dRenderable_effects;
+   o.material        = FG3dRenderable_material;
+   o.testVisible     = RMethod.virtual(o, 'testVisible');
+   o.update          = FG3dRenderable_update;
    return o;
 }
 
@@ -60,23 +62,38 @@ function FG3dRenderable_effectName(){
 }
 
 //==========================================================
-// <T>获得效果器。</T>
+// <T>获得激活效果器。</T>
 //
 // @method
 // @return FG3dEffect 效果器
 //==========================================================
-function FG3dRenderable_effect(){
-   return this._effect;
+function FG3dRenderable_activeEffect(){
+   return this._activeEffect;
 }
 
 //==========================================================
-// <T>设置效果器。</T>
+// <T>设置激活效果器。</T>
 //
 // @method
 // @param p:effect:FG3dEffect 效果器
 //==========================================================
-function FG3dRenderable_setEffect(p){
-   this._effect = p;
+function FG3dRenderable_setActiveEffect(p){
+   this._activeEffect = p;
+}
+
+//==========================================================
+// <T>获得效果器字典。</T>
+//
+// @method
+// @return TDictionary 效果器字典
+//==========================================================
+function FG3dRenderable_effects(){
+   var o = this;
+   var es = o._effects;
+   if(es == null){
+      es = o._effects = new TDictionary();
+   }
+   return es;
 }
 
 //==========================================================

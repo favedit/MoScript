@@ -11,6 +11,7 @@ function FG3dTechniquePass(o){
    o._name      = null;
    //..........................................................
    // @method
+   o.setup      = RMethod.empty;
    o.name       = FG3dTechniquePass_name;
    o.drawRegion = FG3dTechniquePass_drawRegion;
    return o;
@@ -26,7 +27,6 @@ function FG3dTechniquePass_name(){
    return this._name;
 }
 
-
 //==========================================================
 // <T>绘制区域处理。</T>
 //
@@ -35,16 +35,23 @@ function FG3dTechniquePass_name(){
 //==========================================================
 function FG3dTechniquePass_drawRegion(p){
    var o = this;
-   var ec = RConsole.find(FG3dEffectConsole);
+   var sn = p.spaceName();
    var rs = p.renderables();
    var c = rs.count();
+   // 关联渲染器
    for(var i = 0; i < c; i++){
       var r = rs.get(i);
-      var e = r.effect();
+      var e = r.effects().get(sn);
       if(e == null){
-         e = ec.findByRenderable(o._context, r);
-         r.setEffect(e);
+         e = RConsole.find(FG3dEffectConsole).find(o._context, p, r);
+         r.effects().set(sn, e);
       }
+      r.setActiveEffect(e);
+   }
+   // 绘制处理
+   for(var i = 0; i < c; i++){
+      var r = rs.get(i);
+      var e = r.activeEffect();
       o._context.setProgram(e.program());
       e.drawRenderable(p, r);
    }

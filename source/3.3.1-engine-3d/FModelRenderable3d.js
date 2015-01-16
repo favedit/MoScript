@@ -24,6 +24,7 @@ function FModelRenderable3d(o){
    o.bones             = FModelRenderable3d_bones;
    o.load              = FModelRenderable3d_load;
    o.build             = FModelRenderable3d_build;
+   o.update            = FModelRenderable3d_update;
    return o;
 }
 
@@ -155,4 +156,16 @@ function FModelRenderable3d_build(p){
          bs.push(b);
       }
    }
+}
+
+//==========================================================
+// <T>更新处理。</T>
+//
+// @method
+// @param p:region:FG3dRegion 区域
+//==========================================================
+function FModelRenderable3d_update(p){
+   var o = this;
+   var m = o._display.matrix();
+   o._matrix.assign(m);
 }

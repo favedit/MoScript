@@ -144,42 +144,28 @@ function FScene3d_loadRegionResource(p){
    v.angle = rv.angle();
    v.znear = rv.znear();
    v.zfar = rv.zfar();
-   // 设置视角
-   //FRenderView* pView = FRenderView::InstanceCreate();
-   //pView->SetCamera(pCamera);
-   //pView->SetViewport(pViewport);
-   //_activeView = pView;
-   //_pViews->Push(pView);
    //............................................................
-   //FRs3dSceneLight* pLightResource = pResource->Light();
-   //FRs3dSceneCamera* pLightCameraResource = pLightResource->Camera();
-   //FRs3dSceneViewport* pLightViewportResource = pLightCameraResource->Viewport();
+   var l = o._directionalLight
+   var lc = l.camera();
+   var lp = l.projection();
+   var rl = p.light();
+   var rlc = rl.camera();
+   var rlv = rlc.viewport();
    // 设置光源投影
-   //FPerspectiveProjection* pLightProjection = FPerspectiveProjection::InstanceCreate();
-   //pLightProjection->Size().Set(1024, 1024);
-   //pLightProjection->SetZ(pLightViewportResource->Near(), pLightViewportResource->Far());
-   //pLightProjection->SetAngle(pLightViewportResource->Angle());
-   //pLightProjection->Update();
+   lp.width = 1024;
+   lp.height = 1024;
+   //lp.angle = rlv.angle();
+   //lp.znear = rlv.znear() * 0.01;
+   //lp.zfar = rlv.zfar() + 100;
+   //lp.updateOrtho();
+   lp.angle = 120;
+   lp.znear = 0.01;
+   lp.zfar = 200;
+   lp.update();
    // 设置光源相机
-   //FCamera* pLightCamera = FPerspectiveCamera::InstanceCreate();
-   //pLightCamera->Position().Assign(pLightCameraResource->Position());
-   //pLightCamera->Direction().Assign(pLightCameraResource->Direction());
-   //pLightCamera->SetProjection(pLightProjection);
-   //pLightCamera->Update();
-   // 设置光源视角
-   //FViewport* pLightViewport = FViewport::InstanceCreate();
-   //pLightViewport->Set(0, 0, 1024, 1024);
-   // 设置材质
-   //FRs3dSceneMaterial* pLightMaterialResource = pLightResource->Material();
-   //GPtr<FScene3dMaterial> lightMaterial = FScene3dMaterial::InstanceCreate();
-   //lightMaterial->LoadSceneResource(pLightMaterialResource);
-   // 设置光源
-   //FDirectionalLight* pLight = FDirectionalLight::InstanceCreate();
-   //pLight->SetCamera(pLightCamera);
-   //pLight->SetViewport(pLightViewport);
-   //pLight->Direction().Assign(pLightCamera->Direction());
-   //pLight->SetMaterial(lightMaterial);
-   //SetDirectionalLight(pLight);
+   lc.position().assign(rlc.position());
+   lc.direction().assign(rlc.direction());
+   lc.update();
 }
 
 //==========================================================

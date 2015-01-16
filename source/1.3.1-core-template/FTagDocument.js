@@ -178,6 +178,7 @@ function FTagDocument_load(p){
 function FTagDocument_parse(p){
    var o = this;
    // 解析处理
+   p.resetSource();
    o._root.parse(p);
    return p.source();
 }

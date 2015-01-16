@@ -107,6 +107,7 @@ var EG3dTexture = new function EG3dTexture(){
 }
 function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
+   o._size               = null;
    o._capability         = null;
    o._optionDepth        = false;
    o._optionCull         = false;
@@ -117,17 +118,21 @@ function FG3dContext(o){
    o._blendTargetCd      = 0;
    o._program            = null;
    o.construct           = FG3dContext_construct;
+   o.linkCanvas          = FG3dContext_linkCanvas;
+   o.size                = FG3dContext_size;
    o.capability          = FG3dContext_capability;
    o.createProgram       = RMethod.virtual(o, 'createProgram');
    o.createVertexBuffer  = RMethod.virtual(o, 'createVertexBuffer');
    o.createIndexBuffer   = RMethod.virtual(o, 'createIndexBuffer');
    o.createFlatTexture   = RMethod.virtual(o, 'createFlatTexture');
    o.createCubeTexture   = RMethod.virtual(o, 'createCubeTexture');
+   o.createRenderTarget  = RMethod.virtual(o, 'createRenderTarget');
    o.setFillMode         = RMethod.virtual(o, 'setFillMode');
    o.setDepthMode        = RMethod.virtual(o, 'setDepthMode');
    o.setCullingMode      = RMethod.virtual(o, 'setCullingMode');
    o.setBlendFactors     = RMethod.virtual(o, 'setBlendFactors');
    o.setScissorRectangle = RMethod.virtual(o, 'setScissorRectangle');
+   o.setRenderTarget     = RMethod.virtual(o, 'setRenderTarget');
    o.setProgram          = RMethod.virtual(o, 'setProgram');
    o.bindVertexBuffer    = RMethod.virtual(o, 'bindVertexBuffer');
    o.bindTexture         = RMethod.virtual(o, 'bindTexture');
@@ -140,6 +145,14 @@ function FG3dContext(o){
 function FG3dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
+   o._size = new SSize2();
+}
+function FG3dContext_linkCanvas(h){
+   var o = this;
+   o._size.set(h.width, h.height);
+}
+function FG3dContext_size(){
+   return this._size;
 }
 function FG3dContext_capability(){
    return this._capability;
@@ -206,11 +219,11 @@ function FG3dProgram(o){
    o.samplers          = FG3dProgram_samplers;
    o.vertexShader      = RMethod.virtual(o, 'vertexShader');
    o.fragmentShader    = RMethod.virtual(o, 'fragmentShader');
-   o.setAttribute      = RMethod.virtual(o, 'setAttribute');
-   o.setParameter      = RMethod.virtual(o, 'setParameter');
-   o.setSampler        = RMethod.virtual(o, 'setSampler');
+   o.setAttribute      = FG3dProgram_setAttribute;
+   o.setParameter      = FG3dProgram_setParameter;
+   o.setParameter4     = FG3dProgram_setParameter4;
+   o.setSampler        = FG3dProgram_setSampler;
    o.upload            = RMethod.virtual(o, 'upload');
-   o.loadConfig        = FG3dProgram_loadConfig;
    return o;
 }
 function FG3dProgram_hasAttribute(){
@@ -283,41 +296,61 @@ function FG3dProgram_samplers(){
    }
    return r;
 }
-function FG3dProgram_loadConfig(p){
+function FG3dProgram_setAttribute(pn, pb, pf){
    var o = this;
-   var ns = p.nodes();
-   var nc = ns.count();
-   for(var i = 0; i < nc; i++){
-      var n = ns.get(i);
-      if(n.isName('State')){
-      }else if(n.isName('Specular')){
-      }else if(n.isName('Parameter')){
-         var pp = RClass.create(FG3dProgramParameter);
-         pp.loadConfig(n);
-         o.parameters().set(pp.name(), pp);
-         var s = pp.toString();
-      }else if(n.isName('Attribute')){
-         var pa = RClass.create(FG3dProgramAttribute);
-         pa.loadConfig(n);
-         o.attributes().set(pa.name(), pa);
-      }else if(n.isName('Sampler')){
-         var ps = RClass.create(FG3dProgramSampler);
-         ps.loadConfig(n);
-         o.samplers().set(ps.name(), ps);
-      }else if(n.isName('Source')){
-         var st = n.get('name');
-         var sv = n.value();
-         if(st == 'vertex'){
-            o._vertexSource = sv;
-         }else if(st == 'fragment'){
-            o._fragmentSource = sv;
-         }else{
-            throw new TError(o, 'Unknown source type. (name={1})', nt);
-         }
-      }else{
-         throw new TError(o, 'Unknown config type. (name={1})', n.name());
-      }
+   var p = o.findAttribute(pn);
+   if(p == null){
+      throw new TError(o, 'Bind invalid attribute. (name={1})', pn);
    }
+   o._context.bindVertexBuffer(p._slot, pb, 0, pf);
+}
+function FG3dProgram_setParameter(pn, pv, pc){
+   var o = this;
+   var p = o.findParameter(pn);
+   if(p == null){
+      throw new TError(o, 'Bind invalid parameter. (name={1})', pn);
+   }
+   var d = null;
+   var t = pv.constructor;
+   if((t == Float32Array) || (t == SMatrix3d) || (t == SPerspectiveMatrix3d)){
+      d = pv;
+   }else if(t == SColor4){
+      d = RTypeArray.float4();
+      d[0] = pv.red;
+      d[1] = pv.green;
+      d[2] = pv.blue;
+      d[3] = pv.alpha;
+   }else if((t == SPoint3) || (t == SVector3)){
+      d = RTypeArray.float3();
+      d[0] = pv.x;
+      d[1] = pv.y;
+      d[2] = pv.z;
+   }else if((t == SPoint4) || (t == SVector4)){
+      d = RTypeArray.float4();
+      d[0] = pv.x;
+      d[1] = pv.y;
+      d[2] = pv.z;
+      d[3] = pv.w;
+   }else{
+      throw new TError(o, 'Bind invalid parameter type. (name={1}, type={2})', pn, t);
+   }
+   o._context.bindConst(null, p._slot, p._formatCd, d, pc);
+}
+function FG3dProgram_setParameter4(pn, px, py, pz, pw){
+   var v = RTypeArray.float4();
+   v[0] = px;
+   v[1] = py;
+   v[2] = pz;
+   v[3] = pw;
+   this.setParameter(pn, v, 1);
+}
+function FG3dProgram_setSampler(pn, pt){
+   var o = this;
+   var p = o.findSampler(pn);
+   if(p == null){
+      throw new TError(o, 'Bind invalid sampler. (name={1})', pn);
+   }
+   o._context.bindTexture(p._slot, p._index, pt);
 }
 function FG3dProgramAttribute(o){
    o = RClass.inherits(this, o, FObject);
@@ -377,6 +410,7 @@ function FG3dProgramSampler(o){
    o._linker     = null;
    o._statusUsed = false;
    o._formatCd   = EG3dTexture.Flat2d;
+   o._bind       = true;
    o._slot       = -1;
    o._index      = 0;
    o._source     = null;
@@ -399,7 +433,40 @@ function FG3dProgramSampler_loadConfig(p){
    var o = this;
    o._name = p.get('name');
    o._linker = p.get('linker');
+   o._bind = RBoolean.parse(p.get('bind', 'Y'));
    o._formatCd = REnum.encode(EG3dTexture, p.get('format', 'Flat2d'));
+}
+function FG3dRenderTarget(o){
+   o = RClass.inherits(this, o, FG3dObject);
+   o._size     = null;
+   o._color    = null;
+   o._textures = null;
+   o.construct = FG3dRenderTarget_construct;
+   o.size      = FG3dRenderTarget_size;
+   o.color     = FG3dRenderTarget_color;
+   o.textures  = FG3dRenderTarget_textures;
+   return o;
+}
+function FG3dRenderTarget_construct(){
+   var o = this;
+   o.__base.FG3dObject.construct();
+   o._size = new SSize2();
+   o._color = new SColor4();
+   o._color.set(0.0, 0.0, 0.0, 1.0);
+}
+function FG3dRenderTarget_size(){
+   return this._size;
+}
+function FG3dRenderTarget_color(){
+   return this._color;
+}
+function FG3dRenderTarget_textures(){
+   var o = this;
+   var r = o._textures;
+   if(r == null){
+      r = o._textures = new TObjects();
+   }
+   return r;
 }
 function FG3dVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dObject);

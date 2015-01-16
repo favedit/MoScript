@@ -36,12 +36,12 @@ function FG3dProgram(o){
    o.vertexShader      = RMethod.virtual(o, 'vertexShader');
    o.fragmentShader    = RMethod.virtual(o, 'fragmentShader');
    // @method
-   o.setAttribute      = RMethod.virtual(o, 'setAttribute');
-   o.setParameter      = RMethod.virtual(o, 'setParameter');
-   o.setSampler        = RMethod.virtual(o, 'setSampler');
-   o.upload            = RMethod.virtual(o, 'upload');
+   o.setAttribute      = FG3dProgram_setAttribute;
+   o.setParameter      = FG3dProgram_setParameter;
+   o.setParameter4     = FG3dProgram_setParameter4;
+   o.setSampler        = FG3dProgram_setSampler;
    // @method
-   o.loadConfig        = FG3dProgram_loadConfig;
+   o.upload            = RMethod.virtual(o, 'upload');
    return o;
 }
 
@@ -207,50 +207,101 @@ function FG3dProgram_samplers(){
 }
 
 //==========================================================
-// <T>从配置节点钟加载信息。</T>
+// <T>设置属性。</T>
 //
 // @method
-// @param p:config:TNode 配置节点
+// @param pn:name:String 名称
+// @param pb:buffer:Object 数据
+// @param pf:format:Integer 格式
 //==========================================================
-function FG3dProgram_loadConfig(p){
+function FG3dProgram_setAttribute(pn, pb, pf){
    var o = this;
-   var ns = p.nodes();
-   var nc = ns.count();
-   for(var i = 0; i < nc; i++){
-      var n = ns.get(i);
-      if(n.isName('State')){
-      }else if(n.isName('Specular')){
-      }else if(n.isName('Parameter')){
-         // 设置参数
-         var pp = RClass.create(FG3dProgramParameter);
-         pp.loadConfig(n);
-         o.parameters().set(pp.name(), pp);
-         var s = pp.toString();
-      }else if(n.isName('Attribute')){
-         // 设置属性
-         var pa = RClass.create(FG3dProgramAttribute);
-         pa.loadConfig(n);
-         o.attributes().set(pa.name(), pa);
-      }else if(n.isName('Sampler')){
-         // 设置取样
-         var ps = RClass.create(FG3dProgramSampler);
-         ps.loadConfig(n);
-         o.samplers().set(ps.name(), ps);
-      }else if(n.isName('Source')){
-         // 设置代码
-         var st = n.get('name');
-         var sv = n.value();
-         if(st == 'vertex'){
-            o._vertexSource = sv;
-            //o.upload(EG3dShader.Vertex, sv);
-         }else if(st == 'fragment'){
-            o._fragmentSource = sv;
-            //o.upload(EG3dShader.Fragment, sv);
-         }else{
-            throw new TError(o, 'Unknown source type. (name={1})', nt);
-         }
-      }else{
-         throw new TError(o, 'Unknown config type. (name={1})', n.name());
-      }
+   // 获得定义
+   var p = o.findAttribute(pn);
+   if(p == null){
+      throw new TError(o, 'Bind invalid attribute. (name={1})', pn);
    }
+   // 设置内容
+   o._context.bindVertexBuffer(p._slot, pb, 0, pf);
+}
+
+//==========================================================
+// <T>设置参数。</T>
+//
+// @method
+// @param pn:name:String 名称
+// @param pv:value:Object 数据
+// @param pc:count:Integer 个数
+//==========================================================
+function FG3dProgram_setParameter(pn, pv, pc){
+   var o = this;
+   // 获得定义
+   var p = o.findParameter(pn);
+   if(p == null){
+      throw new TError(o, 'Bind invalid parameter. (name={1})', pn);
+   }
+   // 转换数据
+   var d = null;
+   var t = pv.constructor;
+   if((t == Float32Array) || (t == SMatrix3d) || (t == SPerspectiveMatrix3d)){
+      d = pv;
+   }else if(t == SColor4){
+      d = RTypeArray.float4();
+      d[0] = pv.red;
+      d[1] = pv.green;
+      d[2] = pv.blue;
+      d[3] = pv.alpha;
+   }else if((t == SPoint3) || (t == SVector3)){
+      d = RTypeArray.float3();
+      d[0] = pv.x;
+      d[1] = pv.y;
+      d[2] = pv.z;
+   }else if((t == SPoint4) || (t == SVector4)){
+      d = RTypeArray.float4();
+      d[0] = pv.x;
+      d[1] = pv.y;
+      d[2] = pv.z;
+      d[3] = pv.w;
+   }else{
+      throw new TError(o, 'Bind invalid parameter type. (name={1}, type={2})', pn, t);
+   }
+   // 设置内容
+   o._context.bindConst(null, p._slot, p._formatCd, d, pc);
+}
+
+//==========================================================
+// <T>设置参数。</T>
+//
+// @method
+// @param pn:name:String 名称
+// @param px:Number X数据
+// @param py:Number Y数据
+// @param pz:Number Z数据
+// @param pw:Number W数据
+//==========================================================
+function FG3dProgram_setParameter4(pn, px, py, pz, pw){
+   var v = RTypeArray.float4();
+   v[0] = px;
+   v[1] = py;
+   v[2] = pz;
+   v[3] = pw;
+   this.setParameter(pn, v, 1);
+}
+
+//==========================================================
+// <T>设置取样器。</T>
+//
+// @method
+// @param pn:name:String 名称
+// @param pt:texture:FG3dTexture 纹理
+//==========================================================
+function FG3dProgram_setSampler(pn, pt){
+   var o = this;
+   // 获得定义
+   var p = o.findSampler(pn);
+   if(p == null){
+      throw new TError(o, 'Bind invalid sampler. (name={1})', pn);
+   }
+   // 设置内容
+   o._context.bindTexture(p._slot, p._index, pt);
 }

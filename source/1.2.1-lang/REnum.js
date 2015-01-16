@@ -9,10 +9,14 @@ var REnum = new function REnum(){
    var o = this;
    // @method
    o.contains  = REnum_contains;
+   // @method
    o.tryEncode = REnum_tryEncode;
    o.encode    = REnum_encode;
    o.tryDecode = REnum_tryDecode;
    o.decode    = REnum_decode;
+   // @method
+   o.parse     = REnum_encode;
+   o.format    = REnum_decode;
    return o;
 }
 

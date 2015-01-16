@@ -32,7 +32,10 @@ function FG3dAutomaticEffect(o){
    o._dynamicSkeleton = true;
    //..........................................................
    // @method
-   o.buildInfo = FG3dAutomaticEffect_buildInfo;
+   o.buildInfo      = FG3dAutomaticEffect_buildInfo;
+   o.bindAttributes = FG3dAutomaticEffect_bindAttributes;
+   o.bindSamplers   = FG3dAutomaticEffect_bindSamplers;
+   o.bindMaterial   = FG3dAutomaticEffect_bindMaterial;
    return o;
 }
 
@@ -303,4 +306,73 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    //............................................................
    // 设置代码
    pt.code = s.toString();
+}
+
+//==========================================================
+// <T>绑定所有属性流。</T>
+//
+// @method
+// @param p:renderable:FG3dRenderable 渲染对象
+//==========================================================
+function FG3dAutomaticEffect_bindAttributes(p){
+   var o = this;
+   var g = o._program;
+   if(g.hasAttribute()){
+      var as = g.attributes();
+      var ac = as.count();
+      for(var n = 0; n < ac; n++){
+         var a = as.value(n);
+         if(a._statusUsed){
+            var vb = p.findVertexBuffer(a._linker);
+            g.setAttribute(a._name, vb, vb._formatCd);
+         }
+      }
+   }
+}
+
+//==========================================================
+// <T>绑定所有取样器。</T>
+//
+// @method
+// @param p:renderable:FG3dRenderable 渲染对象
+//==========================================================
+function FG3dAutomaticEffect_bindSamplers(p){
+   var o = this;
+   var g = o._program;
+   if(g.hasSampler()){
+      var ss = g.samplers();
+      var sc = ss.count();
+      for(var n = 0; n < sc; n++){
+         var s = ss.value(n);
+         if(s._bind && s._statusUsed){
+            var ln = s.linker();
+            var sp = p.findTexture(ln);
+            g.setSampler(s.name(), sp.texture());
+         }
+      }
+   }
+}
+
+//==========================================================
+// <T>绑定材质。</T>
+//
+// @method
+// @param p:material:FG3dMaterial 材质
+//==========================================================
+function FG3dAutomaticEffect_bindMaterial(p){
+   var o = this;
+   var c = o._context;
+   var m = p.info();
+   // 设置透明
+   if(m.optionAlpha){
+      c.setBlendFactors(o._stateBlend, o._stateBlendSourceCd, o._stateBlendTargetCd);
+   }else{
+      c.setBlendFactors(false);
+   }
+   // 设置双面
+   if(m.optionDouble){
+      c.setCullingMode(false);
+   }else{
+      c.setCullingMode(o._stateDepth, o._stateCullCd);
+   }
 }

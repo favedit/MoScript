@@ -10,7 +10,8 @@ function FWglContext(o){
    //..........................................................
    // @attribute
    o._native             = null;
-   o._textureActiveSlot  = 0;
+   o._activeRenderTarget = null;
+   o._activeTextureSlot  = 0;
    // @attribute
    o._parameters         = null;
    o._extensions         = null;
@@ -31,6 +32,7 @@ function FWglContext(o){
    o.createIndexBuffer   = FWglContext_createIndexBuffer;
    o.createFlatTexture   = FWglContext_createFlatTexture;
    o.createCubeTexture   = FWglContext_createCubeTexture;
+   o.createRenderTarget  = FWglContext_createRenderTarget;
    // @method
    o.setViewPort         = FWglContext_setViewPort;
    o.setFillMode         = FWglContext_setFillMode;
@@ -38,6 +40,7 @@ function FWglContext(o){
    o.setCullingMode      = FWglContext_setCullingMode;
    o.setBlendFactors     = FWglContext_setBlendFactors;
    o.setScissorRectangle = FWglContext_setScissorRectangle;
+   o.setRenderTarget     = FWglContext_setRenderTarget;
    o.setProgram          = FWglContext_setProgram;
    // @method
    o.bindConst           = FWglContext_bindConst;
@@ -73,6 +76,7 @@ function FWglContext_construct(){
 //==========================================================
 function FWglContext_linkCanvas(h){
    var o = this;
+   o.__base.FG3dContext.linkCanvas.call(o, h)
    // 获得环境
    o._hCanvas = h;
    if(h.getContext){
@@ -345,6 +349,20 @@ function FWglContext_createCubeTexture(){
    return r;
 }
 
+//==========================================================
+// <T>创建渲染目标。</T>
+//
+// @method
+// @return FG3dRenderTarget 渲染目标
+//==========================================================
+function FWglContext_createRenderTarget(){
+   var o = this;
+   var r = RClass.create(FWglRenderTarget);
+   r.linkContext(o);
+   r.setup();
+   return r;
+}
+
 //============================================================
 // <T>设置视角大小。</T>
 //
@@ -480,6 +498,40 @@ function FWglContext_setScissorRectangle(l, t, w, h){
 }
 
 //============================================================
+// <T>设置渲染目标。</T>
+//
+// @method
+// @param p:renderTarget:FG3dRenderTarget 渲染目标
+//============================================================
+function FWglContext_setRenderTarget(p){
+   var o = this;
+   var g = o._native;
+   // 设置程序
+   var r = true;
+   if(p == null){
+      // 解除渲染目标
+      g.bindFramebuffer(g.FRAMEBUFFER, null);
+      r = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", null);
+      if(!r){
+         return r;
+      }
+      // 修改视角
+      g.viewport(0, 0, o._size.width, o._size.height);
+   }else{
+      // 绑定渲染目标
+      g.bindFramebuffer(g.FRAMEBUFFER, p._native);
+      result = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", p._native);
+      if(!r){
+         return r;
+      }
+      // 修改视角
+      var s = p.size();
+      g.viewport(0, 0, s.width, s.height);
+   }
+   o._activeRenderTarget = p;
+}
+
+//============================================================
 // <T>设置渲染程序。</T>
 //
 // @param v:program:FG3dProgram 渲染程序
@@ -518,6 +570,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
    //   return EContinue;
    //}
    // 修改数据
+   var pdc = pd.constructor;
    switch (formatCd){
       case EG3dParameterFormat.Float1:{
          // 修改数据
@@ -580,9 +633,9 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
       }
       case EG3dParameterFormat.Float4x4:{
          // 修改数据
-         if(pd.constructor == Float32Array){
+         if(pdc == Float32Array){
             g.uniformMatrix4fv(slot, g.FALSE, pd);
-         }else if(pd.constructor == SMatrix3d){
+         }else if((pdc == SMatrix3d) || (pdc == SPerspectiveMatrix3d)){
             var dt = o._data16;
             pd.writeData(dt, 0);
             g.uniformMatrix4fv(slot, g.FALSE, dt);
@@ -686,7 +739,7 @@ function FWglContext_bindTexture(ps, pi, pt){
    }
    //............................................................
    // 激活纹理
-   if(o._textureActiveSlot != ps){
+   if(o._activeTextureSlot != ps){
       g.uniform1i(ps, pi);
       g.activeTexture(g.TEXTURE0 + pi);
       r = o.checkError("activeTexture", "Active texture failure. (slot=%d, index=%d)", ps, pi);

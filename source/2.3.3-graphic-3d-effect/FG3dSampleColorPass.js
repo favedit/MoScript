@@ -4,10 +4,11 @@
 // @author maocy
 // @history 141230
 //==========================================================
-function FG3dSampleTechniquePass(o){
+function FG3dSampleColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
    //..........................................................
    // @attribute
+   o._name = 'color';
    //..........................................................
    // @method
    return o;

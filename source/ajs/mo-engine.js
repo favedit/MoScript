@@ -88,17 +88,8 @@ function FDisplay_pushRenderable(p){
 function FDisplay_update(){
    var o = this;
    var m = o._matrix;
-   m.setTranslate(o._location.x, o._location.y, o._location.z);
-   m.setRotation(o._rotation.x, o._rotation.y, o._rotation.z);
-   m.setScale(o._scale.x, o._scale.y, o._scale.z);
-   m.updateForce();
-   var rs = o._renderables;
-   if(rs != null){
-      var c = rs.count();
-      for(var n = 0; n < c; n++){
-         rs.get(n).update(m);
-      }
-   }
+   m.setAll(o._location, o._rotation, o._scale);
+   m.update();
 }
 function FDisplay_process(){
    var o = this;
@@ -109,7 +100,6 @@ function FDisplay_process(){
          rs.get(i).process();
       }
    }
-   return true;
 }
 function FDisplay_dispose(){
    var o = this;
@@ -458,6 +448,7 @@ function FModel3d_loadRenderable(p){
          for(var i = 0; i < c; i++){
             var rg = rgs.get(i);
             var g = RClass.create(FModelRenderable3d);
+            g._display = o;
             g.load(rg);
             gs.push(g);
             rs.push(g);
@@ -574,6 +565,7 @@ function FModelRenderable3d(o){
    o.bones             = FModelRenderable3d_bones;
    o.load              = FModelRenderable3d_load;
    o.build             = FModelRenderable3d_build;
+   o.update            = FModelRenderable3d_update;
    return o;
 }
 function FModelRenderable3d_construct(){
@@ -633,6 +625,11 @@ function FModelRenderable3d_build(p){
          bs.push(b);
       }
    }
+}
+function FModelRenderable3d_update(p){
+   var o = this;
+   var m = o._display.matrix();
+   o._matrix.assign(m);
 }
 function FScene3d(o){
    o = RClass.inherits(this, o, FStage3d);
@@ -717,6 +714,21 @@ function FScene3d_loadRegionResource(p){
    v.angle = rv.angle();
    v.znear = rv.znear();
    v.zfar = rv.zfar();
+   var l = o._directionalLight
+   var lc = l.camera();
+   var lp = l.projection();
+   var rl = p.light();
+   var rlc = rl.camera();
+   var rlv = rlc.viewport();
+   lp.width = 1024;
+   lp.height = 1024;
+   lp.angle = 120;
+   lp.znear = 0.01;
+   lp.zfar = 200;
+   lp.update();
+   lc.position().assign(rlc.position());
+   lc.direction().assign(rlc.direction());
+   lc.update();
 }
 function FScene3d_loadDisplayResource(pl, pd){
    var o = this;
@@ -997,6 +1009,33 @@ function FSimpleStage3d(o){
    o.active       = FSimpleStage3d_active;
    o.deactive     = FSimpleStage3d_deactive;
    return o;
+}
+function FSimpleStage3d_onKeyDown(e){
+   var o = this;
+   var c = o._camera;
+   var k = e.keyCode;
+   var r = 0.3;
+   switch(k){
+      case EKeyCode.W:
+         c.doWalk(r);
+         break;
+      case EKeyCode.S:
+         c.doWalk(-r);
+         break;
+      case EKeyCode.A:
+         c.doStrafe(r);
+         break;
+      case EKeyCode.D:
+         c.doStrafe(-r);
+         break;
+      case EKeyCode.Q:
+         c.doFly(r);
+         break;
+      case EKeyCode.E:
+         c.doFly(-r);
+         break;
+   }
+   c.update();
 }
 function FSimpleStage3d_construct(){
    var o = this;
@@ -2000,6 +2039,8 @@ function FRs3SceneLight(o){
    o._camera             = null;
    o.construct           = FRs3SceneLight_construct;
    o.typeName            = FRs3SceneLight_typeName;
+   o.material            = FRs3SceneLight_material;
+   o.camera              = FRs3SceneLight_camera;
    o.unserialize         = FRs3SceneLight_unserialize;
    return o;
 }
@@ -2014,6 +2055,12 @@ function FRs3SceneLight_construct(){
 }
 function FRs3SceneLight_typeName(){
    return this._typeName;
+}
+function FRs3SceneLight_material(){
+   return this._material;
+}
+function FRs3SceneLight_camera(){
+   return this._camera;
 }
 function FRs3SceneLight_unserialize(p){
    var o = this;

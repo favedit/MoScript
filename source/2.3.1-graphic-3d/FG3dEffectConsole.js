@@ -16,11 +16,10 @@ function FG3dEffectConsole(o){
    //..........................................................
    // @method
    o.construct        = FG3dEffectConsole_construct;
+   o.create           = FG3dEffectConsole_create;
    o.buildEffectInfo  = FG3dEffectConsole_buildEffectInfo;
    o.findTemplate     = FG3dEffectConsole_findTemplate;
    o.find             = FG3dEffectConsole_find;
-   o.findByName       = FG3dEffectConsole_findByName;
-   o.findByRenderable = FG3dEffectConsole_findByRenderable;
    return o;
 }
 
@@ -36,6 +35,39 @@ function FG3dEffectConsole_construct(){
    o._effects = new TDictionary();
    o._effectInfo = new SG3dEffectInfo();
    o._tagContext = RClass.create(FTagContext);
+}
+
+//==========================================================
+// <T>创建效果器。</T>
+//
+// @method
+// @param p:name:String 名称
+//==========================================================
+function FG3dEffectConsole_create(p){
+   var e = null;
+   switch(p){
+      case 'sample.color.automatic':
+         e = RClass.create(FG3dSampleAutomaticEffect);
+         break;
+      case 'sample.color.skeleton':
+         e = RClass.create(FG3dSampleSkeletonEffect);
+         break;
+      case 'shadow.depth.automatic':
+         e = RClass.create(FG3dShadowDepthAutomaticEffect);
+         break;
+      case 'shadow.depth.skeleton':
+         e = RClass.create(FG3dShadowDepthSkeletonEffect);
+         break;
+      case 'shadow.color.automatic':
+         e = RClass.create(FG3dShadowColorAutomaticEffect);
+         break;
+      case 'shadow.color.skeleton':
+         e = RClass.create(FG3dShadowColorSkeletonEffect);
+         break;
+      default:
+         throw new TError(this, 'Unknown effect type name. (type={1})', p);
+   }
+   return e;
 }
 
 //==========================================================
@@ -63,8 +95,6 @@ function FG3dEffectConsole_buildEffectInfo(f, r){
          f.samplers.push(ts.name(i));
       }
    }
-   // 设置材质信息
-   //var m = r.material();
 }
 
 //==========================================================
@@ -81,12 +111,7 @@ function FG3dEffectConsole_findTemplate(pc, pn){
    var e = es.get(pn);
    if(e == null){
       // 创建效果器
-      if(pn == 'skeleton'){
-         e = RClass.create(FG3dSampleSkeletonEffect);
-      }else{
-         e = RClass.create(FG3dSampleAutomaticEffect);
-      }
-      // 构建处理
+      var e = o.create(pn);
       e.linkContext(pc);
       e._path = o._path;
       e.load();
@@ -98,85 +123,36 @@ function FG3dEffectConsole_findTemplate(pc, pn){
 }
 
 //==========================================================
-// <T>根据类名称或对象获得效果器。</T>
-//
-// @method
-// @param c:context:FG3dContext 环境对象
-// @param p:class:Object 类对象
-// @return FG3dEffect 效果器
-//==========================================================
-function FG3dEffectConsole_find(c, p){
-   var o = this;
-   var n = RClass.name(p);
-   var e = o._effects.get(n);
-   if(e == null){
-      e = RClass.createByName(n);
-      e.linkContext(c);
-      e._path = o._path;
-      e.load();
-      o._effects.set(n, e);
-   }
-   return e;
-}
-
-//==========================================================
-// <T>根据类名称或对象获得效果器。</T>
-//
-// @method
-// @param c:context:FG3dContext 环境对象
-// @param p:class:Object 类对象
-// @return FG3dEffect 效果器
-//==========================================================
-function FG3dEffectConsole_findByName(c, p){
-   var o = this;
-   var es = o._effects;
-   var e = es.get(p);
-   if(e == null){
-      if(p == 'skeleton'){
-         e = RClass.create(FG3dSampleSkeletonEffect);
-      }else{
-         e = RClass.create(FG3dSampleAutomaticEffect);
-      }
-      e.linkContext(c);
-      e._path = o._path;
-      e.load();
-      RLogger.info(o, 'Create effect. (name={1}, instance={2})', p, e);
-      es.set(p, e);
-   }
-   return e;
-}
-
-//==========================================================
 // <T>根据渲染对象获得效果器。</T>
 //
 // @method
 // @param pc:context:FG3dContext 环境对象
+// @param pg:region:FG3dRegion 渲染区域
 // @param pr:renderable:FG3dRenderable 渲染对象
 // @return FG3dEffect 效果器
 //==========================================================
-function FG3dEffectConsole_findByRenderable(pc, pr){
+function FG3dEffectConsole_find(pc, pg, pr){
    var o = this;
+   // 获得效果名称
    var en = pr.material().info().effectName;
-   if(en == null){
+   if(RString.isEmpty(en)){
       en = 'automatic'
    }
-   var et = o.findTemplate(pc, en);
+   var ef = pg.technique().name() + '.' + pg.techniquePass().name() + '.' + en;
+   // 查找模板
+   var et = o.findTemplate(pc, ef);
    if(et){
       // 生成标志
       o._effectInfo.reset();
       o.buildEffectInfo(o._effectInfo, pr);
       et.buildInfo(o._tagContext, o._effectInfo);
-      var ec = en + o._tagContext.code;
+      var ec = ef + o._tagContext.code;
       // 查找效果器
       var es = o._effects;
       var e = es.get(ec);
       if(e == null){
          // 创建效果器
-         if(en == 'skeleton'){
-            e = RClass.create(FG3dSampleSkeletonEffect);
-         }else{
-            e = RClass.create(FG3dSampleAutomaticEffect);
-         }
+         var e = o.create(ef);
          e._code = ec;
          e.linkContext(pc);
          e._path = o._path;

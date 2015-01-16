@@ -31,6 +31,8 @@ function FRs3SceneLight(o){
    // @method
    o.construct           = FRs3SceneLight_construct;
    o.typeName            = FRs3SceneLight_typeName;
+   o.material            = FRs3SceneLight_material;
+   o.camera              = FRs3SceneLight_camera;
    o.unserialize         = FRs3SceneLight_unserialize;
    return o;
 }
@@ -58,6 +60,26 @@ function FRs3SceneLight_construct(){
 //==========================================================
 function FRs3SceneLight_typeName(){
    return this._typeName;
+}
+
+//==========================================================
+// <T>获得材质。</T>
+//
+// @method
+// @return FRs3SceneMaterial 材质
+//==========================================================
+function FRs3SceneLight_material(){
+   return this._material;
+}
+
+//==========================================================
+// <T>获得相机。</T>
+//
+// @method
+// @return FRs3SceneCamera 相机
+//==========================================================
+function FRs3SceneLight_camera(){
+   return this._camera;
 }
 
 //==========================================================

@@ -50,11 +50,15 @@ function FG3dTechnique_name(){
 //==========================================================
 function FG3dTechnique_drawRegion(r){
    var o = this;
+   // 设置区域属性
+   r.setTechnique(o);
    // 绘制所有过程
    var ps = o._passes;
    var c = ps.count();
    for(var n = 0; n < c; n++){
       var p = ps.get(n);
+      r.setTechniquePass(p);
+      p._stop = (n == c - 1);
       p.drawRegion(r);
    }
    // 显示处理

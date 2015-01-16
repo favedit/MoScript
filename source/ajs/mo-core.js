@@ -1923,6 +1923,15 @@ function MClone_clone(){
    }
    return r;
 }
+function MInstance(o){
+   o = RClass.inherits(this, o);
+   o.__free          = false;
+   o.instanceCreate  = RMethod.empty;
+   o.instanceAlloc   = RMethod.empty;
+   o.instanceFree    = RMethod.empty;
+   o.instanceRelease = RMethod.empty;
+   return o;
+}
 function MProperty(o){
    o = RClass.inherits(this, o);
    o.propertyAssign = MProperty_propertyAssign;
@@ -3167,6 +3176,8 @@ var REnum = new function REnum(){
    o.encode    = REnum_encode;
    o.tryDecode = REnum_tryDecode;
    o.decode    = REnum_decode;
+   o.parse     = REnum_encode;
+   o.format    = REnum_decode;
    return o;
 }
 function REnum_contains(){
@@ -3350,6 +3361,34 @@ function RHex_parse(v){
 function RHex_format(v, l){
    v = RString.nvl(v, '0').toString(16);
    return l ? RString.lpad(v, l, this.PAD) : v;
+}
+var RInstance = new function RInstance(){
+   var o = this;
+   o._pools = new TDictionary();
+   o.pool   = RInstance_pool;
+   o.get    = RInstance_get;
+   o.alloc  = RInstance_alloc;
+   o.free   = RInstance_free;
+   return o;
+}
+function RInstance_pool(p){
+   var o = this;
+   var n = RClass.name(p);
+   var v = o._pools.get(n);
+   if(v == null){
+      v = new TInstancePool();
+      o._pools.set(n, v);
+   }
+   return v;
+}
+function RInstance_get(p){
+   return this.pool(p).instance(p);
+}
+function RInstance_alloc(n){
+   return this.pool(p).alloc(p);
+}
+function RInstance_free(n){
+   this.pool(p).free(p);
 }
 var RInteger = new function RInteger(){
    var o = this;
@@ -4887,6 +4926,41 @@ function TFatalError(po, pe, pm, pp){
    r.append(s);
    throw new Error(r);
 }
+function TInstancePool(o){
+   if(!o){o = this;}
+   TObjects(o);
+   o._instance = null;
+   o.instance  = TInstancePool_instance;
+   o.alloc     = TInstancePool_alloc;
+   o.free      = TInstancePool_free;
+   return o;
+}
+function TInstancePool_instance(p){
+   var o = this;
+   var r = o._instance;
+   if(r == null){
+      r = o._instance = RClass.create(p);
+      r.instanceCreate();
+   }
+   r.instanceAlloc();
+   return r;
+}
+function TInstancePool_alloc(p){
+   var o = this;
+   var r = null;
+   if(o._count == 0){
+      r = RClass.create(p);
+      r.instanceCreate();
+   }else{
+      r = o.pop();
+   }
+   r.instanceAlloc();
+   return r;
+}
+function TInstancePool_free(p){
+   p.instanceFree();
+   return this.push(p);
+}
 function TInvoke(o, w, p){
    if(!o){o = this;}
    o.owner    = w;
@@ -5385,6 +5459,17 @@ function TSpeed_record(){
    o.callerName = null;
    o.record = null;
 }
+var EFrustumPlane = new function EFrustumPlane(){
+   var o = this;
+   o.Near = 0;
+   o.Far = 1;
+   o.Left = 2;
+   o.Right = 3;
+   o.Top = 4;
+   o.Bottom = 5;
+   o.Count = 6;
+   return o;
+}
 var RMath = new function RMath(){
    var o = this;
    o.PI           = null;
@@ -5485,6 +5570,250 @@ function SColor4_toString(){
    var o = this;
    return o.red + ',' + o.green + ',' + o.blue + ',' + o.alpha;
 }
+function SFrustum(o){
+   if(!o){o = this;}
+   o.conerMatrix = null;
+   o.center = null;
+   o.radius = null;
+   o.minX = null;
+   o.maxX = null;
+   o.minY = null;
+   o.maxY = null;
+   o.minZ = null;
+   o.maxZ = null;
+   o.coners = new Array(24);
+   o.updateCenter = SFrustum_updateCenter;
+   o.update       = SFrustum_update;
+   return o;
+}
+function SFrustum_updateCenter(){
+   var o = this;
+   var n = 0;
+   while(n < 24){
+      var x = coners[n++];
+      if(x < minX){
+         minX = x;
+      }
+      if(x > maxX){
+         maxX = x;
+      }
+      var y = coners[n++];
+      if(y < minY){
+         minY = y;
+      }
+      if(y > maxY){
+         maxY = y;
+      }
+      var z = coners[n++];
+      if(z < minZ){
+         minZ = z;
+      }
+      if(z > maxZ){
+         maxZ = z;
+      }
+   }
+   center.x = (minX + maxX) * 0.5;
+   center.y = (minY + maxY) * 0.5;
+   center.z = (minZ + maxZ) * 0.5;
+   radius = Math.sqrt((minX - minY) * (minX - minY) + (minZ - maxX) * (minZ - maxX) + (maxY - maxZ) * (maxY - maxZ)) * 0.5;
+}
+function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, matrix){
+   var o = this;
+   var aspect = pvw / pvh;
+   var znear = -pvf * pbr;
+   var zfar = pvf * pfr;
+   var fov = tan(MO_GRAPHIC_DEGREE_RATE * pva * 0.5);
+   var nearY = znear * fov;
+   var nearX = nearY * aspect;
+   var farY = zfar * fov;
+   var farX = farY * aspect;
+   var points = [
+      -nearX,  nearY, znear,
+       nearX,  nearY, znear,
+       nearX, -nearY, znear,
+      -nearX, -nearY, znear,
+      -farX,   farY,  zfar,
+       farX,   farY,  zfar,
+       farX,  -farY,  zfar,
+      -farX,  -farY,  zfar];
+   conerMatrix.assign(matrix);
+   conerMatrix.invert();
+   conerMatrix.transform(coners, points, 24);
+   o.updateCenter();
+}
+function SFrustumPlanes(o){
+   if(!o){o = this;}
+   o.planes            = new Array();
+   o.containsPoint     = SFrustumPlanes_containsPoint;
+   o.containsCube      = SFrustumPlanes_containsCube;
+   o.containsRectangle = SFrustumPlanes_containsRectangle;
+   o.containsCorners   = SFrustumPlanes_containsCorners;
+   o.containsSphere    = SFrustumPlanes_containsSphere;
+   o.updateVision      = SFrustumPlanes_updateVision;
+   for(var i = 0; i < EFrustumPlane.Count; i++){
+      o.planes.push(new SPlane());
+   }
+   return o;
+}
+function SFrustumPlanes_containsPoint(x, y, z){
+   var o = this;
+   var ps = o.planes;
+   for(var i = 0; i < EFrustumPlane.Count; i++){
+      if(ps[n].dot(x, y, z) < 0){
+         return false;
+      }
+   }
+   return true;
+}
+function SFrustumPlanes_containsCube(cx, cy, cz, size){
+   var o = this;
+   var ps = o.planes;
+   for(var i = 0; i < EFrustumPlane.Count; i++){
+      var p = ps[n];
+      if(p.dot(cx - l, cy - l, cz - l) >= 0){
+         continue;
+      }
+      if(p.dot(cx + l, cy - l, cz - l) >= 0){
+         continue;
+      }
+      if(p.dot(cx - l, cy + l, cz - l) >= 0){
+         continue;
+      }
+      if(p.dot(cx + l, cy + l, cz - l) >= 0){
+         continue;
+      }
+      if(p.dot(cx - l, cy - l, cz + l) >= 0){
+         continue;
+      }
+      if(p.dot(cx + l, cy - l, cz + l) >= 0){
+         continue;
+      }
+      if(p.dot(cx - l, cy + l, cz + l) >= 0){
+         continue;
+      }
+      if(p.dot(cx + l, cy + l, cz + l) >= 0){
+         continue;
+      }
+      return false;
+   }
+   return true;
+}
+function SFrustumPlanes_containsRectangle(cx, cy, cz, sx, sy, sz){
+   var o = this;
+   var ps = o.planes;
+   for(var i = 0; i < EFrustumPlane.Count; i++){
+      var p = ps[n];
+      if(p.dot(cx - sx, cy - sy, cz - sz) >= 0){
+         continue;
+      }
+      if(p.dot(cx + sx, cy - sy, cz - sz) >= 0){
+         continue;
+      }
+      if(p.dot(cx - sx, cy + sy, cz - sz) >= 0){
+         continue;
+      }
+      if(p.dot(cx + sx, cy + sy, cz - sz) >= 0){
+         continue;
+      }
+      if(p.dot(cx - sx, cy - sy, cz + sz) >= 0){
+         continue;
+      }
+      if(p.dot(cx + sx, cy - sy, cz + sz) >= 0){
+         continue;
+      }
+      if(p.dot(cx - sx, cy + sy, cz + sz) >= 0){
+         continue;
+      }
+      if(p.dot(cx + sx, cy + sy, cz + sz) >= 0){
+         continue;
+      }
+      return false;
+   }
+   return true;
+}
+function SFrustumPlanes_containsCorners(p){
+   var o = this;
+   var ps = o.planes;
+   for(var i = 0; i < EFrustumPlane.Count; i++){
+      var p = ps[n];
+      if(p.dot(p[ 0], p[ 1], p[ 2]) >= 0){
+         continue;
+      }
+      if(p.dot(p[ 3], p[ 4], p[ 5]) >= 0){
+         continue;
+      }
+      if(p.dot(p[ 6], p[ 7], p[ 8]) >= 0){
+         continue;
+      }
+      if(p.dot(p[ 9], p[10], p[11]) >= 0){
+         continue;
+      }
+      if(p.dot(p[12], p[13], p[14]) >= 0){
+         continue;
+      }
+      if(p.dot(p[15], p[16], p[17]) >= 0){
+         continue;
+      }
+      if(p.dot(p[18], p[19], p[20]) >= 0){
+         continue;
+      }
+      if(p.dot(p[21], p[22], p[23]) >= 0){
+         continue;
+      }
+      return false;
+   }
+   return true;
+}
+function SFrustumPlanes_containsSphere(px, py, pz, pr){
+   var o = this;
+   var ps = o.planes;
+   for(var i = 0; i < EFrustumPlane.Count; i++){
+      if(ps[n].dot(px, py, pz) < -pr){
+         return false;
+      }
+   }
+   return true;
+}
+function SFrustumPlanes_updateVision(p){
+   var o = this;
+   var ps = o.planes;
+   var pn = ps[EFrustumPlane.Near];
+   pn.a = p[4 * 0 + 2];
+   pn.b = p[4 * 1 + 2];
+   pn.c = p[4 * 2 + 2];
+   pn.d = p[4 * 3 + 2];
+   pn.normalize();
+   var pf = ps[EFrustumPlane.Far];
+   pf.a = p[4 * 0 + 3] - p[4 * 0 + 2];
+   pf.b = p[4 * 1 + 3] - p[4 * 1 + 2];
+   pf.c = p[4 * 2 + 3] - p[4 * 2 + 2];
+   pf.d = p[4 * 3 + 3] - p[4 * 3 + 2];
+   pf.normalize();
+   var pl = ps[EFrustumPlane.Left];
+   pl.a = p[4 * 0 + 3] + p[4 * 0 + 0];
+   pl.b = p[4 * 1 + 3] + p[4 * 1 + 0];
+   pl.c = p[4 * 2 + 3] + p[4 * 2 + 0];
+   pl.d = p[4 * 3 + 3] + p[4 * 3 + 0];
+   pl.normalize();
+   var pr = ps[EFrustumPlane.Right];
+   pr.a = p[4 * 0 + 3] - p[4 * 0 + 0];
+   pr.b = p[4 * 1 + 3] - p[4 * 1 + 0];
+   pr.c = p[4 * 2 + 3] - p[4 * 2 + 0];
+   pr.d = p[4 * 3 + 3] - p[4 * 3 + 0];
+   pr.normalize();
+   var pt = ps[EFrustumPlane.Top];
+   pt.a = p[4 * 0 + 3] - p[4 * 0 + 1];
+   pt.b = p[4 * 1 + 3] - p[4 * 1 + 1];
+   pt.c = p[4 * 2 + 3] - p[4 * 2 + 1];
+   pt.d = p[4 * 3 + 3] - p[4 * 3 + 1];
+   pt.normalize();
+   var pb = ps[EFrustumPlane.Bottom];
+   pb.a = p[4 * 0 + 3] + p[4 * 0 + 1];
+   pb.b = p[4 * 1 + 3] + p[4 * 1 + 1];
+   pb.c = p[4 * 2 + 3] + p[4 * 2 + 1];
+   pb.d = p[4 * 3 + 3] + p[4 * 3 + 1];
+   pb.normalize();
+}
 function SMatrix3d(o){
    if(!o){o = this;}
    SMatrix4x4(o);
@@ -5498,11 +5827,12 @@ function SMatrix3d(o){
    o.sx             = 1.0;
    o.sy             = 1.0;
    o.sz             = 1.0;
-   o.data           = SMatrix3d_data;
    o.identity       = SMatrix3d_identity;
-   o.setTranslate   = SMatrix3d_setTranslate
-   o.setRotation    = SMatrix3d_setRotation
-   o.setScale       = SMatrix3d_setScale
+   o.setTranslate   = SMatrix3d_setTranslate;
+   o.setRotation    = SMatrix3d_setRotation;
+   o.setScale       = SMatrix3d_setScale;
+   o.set            = SMatrix3d_set;
+   o.setAll         = SMatrix3d_setAll;
    o.equals         = SMatrix3d_equals;
    o.assign         = SMatrix3d_assign;
    o.append         = SMatrix3d_append;
@@ -5513,9 +5843,6 @@ function SMatrix3d(o){
    o.unserialize    = SMatrix3d_unserialize;
    o.identity();
    return o;
-}
-function SMatrix3d_data(){
-   return this._data;
 }
 function SMatrix3d_identity(){
    var o = this;
@@ -5547,6 +5874,32 @@ function SMatrix3d_setScale(x, y, z){
    o.sx = x;
    o.sy = y;
    o.sz = z;
+   o._dirty = true;
+}
+function SMatrix3d_set(pt, pr, ps){
+   var o = this;
+   o.tx = pt.x;
+   o.ty = pt.y;
+   o.tz = pt.z;
+   o.rx = pr.x;
+   o.ry = pr.y;
+   o.rz = pr.z;
+   o.sx = ps.x;
+   o.sy = ps.y;
+   o.sz = ps.z;
+   o._dirty = true;
+}
+function SMatrix3d_setAll(ptx, pty, ptz, prx, pry, prz, psx, psy, psz){
+   var o = this;
+   o.tx = ptx;
+   o.ty = pty;
+   o.tz = ptz;
+   o.rx = prx;
+   o.ry = pry;
+   o.rz = prz;
+   o.sx = psx;
+   o.sy = psy;
+   o.sz = psz;
    o._dirty = true;
 }
 function SMatrix3d_equals(p){
@@ -5647,6 +6000,7 @@ function SMatrix3d_unserialize(p){
 function SMatrix4x4(o){
    if(!o){o = this;}
    o._data      = new Array(16);
+   o.data       = SMatrix4x4_data;
    o.equalsData = SMatrix4x4_equalsData;
    o.assignData = SMatrix4x4_assignData;
    o.appendData = SMatrix4x4_appendData;
@@ -5659,6 +6013,9 @@ function SMatrix4x4(o){
    o.invert     = SMatrix4x4_invert;
    o.writeData  = SMatrix4x4_writeData;
    return o;
+}
+function SMatrix4x4_data(){
+   return this._data;
 }
 function SMatrix4x4_equalsData(p){
    var d = this._data;
@@ -5892,6 +6249,95 @@ function SMatrix4x4_writeData(d, i){
    d[i +14] = pd[11];
    d[i +15] = pd[15];
 }
+function SOrthoMatrix3d(o){
+   if(!o){o = this;}
+   SMatrix3d(o);
+   o.perspectiveLH            = SOrthoMatrix3d_perspectiveLH;
+   o.perspectiveRH            = SOrthoMatrix3d_perspectiveRH;
+   o.perspectiveFieldOfViewLH = SOrthoMatrix3d_perspectiveFieldOfViewLH;
+   o.perspectiveFieldOfViewRH = SOrthoMatrix3d_perspectiveFieldOfViewRH;
+   return o;
+}
+function SOrthoMatrix3d_perspectiveLH(pw, ph, pn, pf){
+   var d = this._data;
+   d[ 0] = 2.0 * pn / pw;
+   d[ 1] = 0.0;
+   d[ 2] = 0.0;
+   d[ 3] = 0.0;
+   d[ 4] = 0.0;
+   d[ 5] = 2.0 * pn / ph;
+   d[ 6] = 0.0;
+   d[ 7] = 0.0;
+   d[ 8] = 0.0;
+   d[ 9] = 0.0;
+   d[10] = pf / (pf - pn);
+   d[11] = 1.0;
+   d[12] = 0.0;
+   d[13] = 0.0;
+   d[14] = (pn * pf) / (pn - pf);
+   d[15] = 0.0;
+}
+function SOrthoMatrix3d_perspectiveRH(pw, ph, pn, pf){
+   var d = this._data;
+   d[ 0] = 2.0 * pn / pw;
+   d[ 1] = 0.0;
+   d[ 2] = 0.0;
+   d[ 3] = 0.0;
+   d[ 4] = 0.0;
+   d[ 5] = 2.0 * pn / ph;
+   d[ 6] = 0.0;
+   d[ 7] = 0.0;
+   d[ 8] = 0.0;
+   d[ 9] = 0.0;
+   d[10] = pf / (pn - pf);
+   d[11] = 1.0;
+   d[12] = 0.0;
+   d[13] = 0.0;
+   d[14] = (pn * pf) / (pn - pf);
+   d[15] = 0.0;
+}
+function SOrthoMatrix3d_perspectiveFieldOfViewLH(pv, pr, pn, pf){
+   var d = this._data;
+   var sy = 1.0 / Math.tan(pv * 0.5);
+   var sx = sy / pr;
+   d[ 0] = sx;
+   d[ 1] = 0.0;
+   d[ 2] = 0.0;
+   d[ 3] = 0.0;
+   d[ 4] = 0.0;
+   d[ 5] = sy;
+   d[ 6] = 0.0;
+   d[ 7] = 0.0;
+   d[ 8] = 0.0;
+   d[ 9] = 0.0;
+   d[10] = pf / (pf - pn);
+   d[11] = 1.0;
+   d[12] = 0.0;
+   d[13] = 0.0;
+   d[14] = (pn * pf) / (pn - pf);
+   d[15] = 0.0;
+}
+function SOrthoMatrix3d_perspectiveFieldOfViewRH(pv, pr, pn, pf){
+   var d = this._data;
+   var sy = 1.0 / Math.tan(pv * 0.5);
+   var sx = sy / pr;
+   d[ 0] = sx;
+   d[ 1] = 0.0;
+   d[ 2] = 0.0;
+   d[ 3] = 0.0;
+   d[ 4] = 0.0;
+   d[ 5] = sy;
+   d[ 6] = 0.0;
+   d[ 7] = 0.0;
+   d[ 8] = 0.0;
+   d[ 9] = 0.0;
+   d[10] = pf / (pn - pf);
+   d[11] = 1.0;
+   d[12] = 0.0;
+   d[13] = 0.0;
+   d[14] = (pn * pf) / (pf - pn);
+   d[15] = 0.0;
+}
 function SOutline3(o){
    if(!o){o = this;}
    o.min = new SPoint3();
@@ -6064,6 +6510,54 @@ function SPerspectiveMatrix3d_perspectiveFieldOfViewRH(pv, pr, pn, pf){
    d[13] = 0.0;
    d[14] = (pn * pf) / (pf - pn);
    d[15] = 0.0;
+}
+function SPlane(o){
+   if(!o){o = this;}
+   o.a         = 0.0;
+   o.b         = 0.0;
+   o.c         = 0.0;
+   o.d         = 0.0;
+   o.assign    = SPlane_assign;
+   o.set       = SPlane_set;
+   o.normalize = SPlane_normalize;
+   o.dot       = SPlane_dot;
+   o.toString  = SPlane_toString;
+   o.dump      = SPlane_dump;
+   return o;
+}
+function SPlane_assign(p){
+   var o = this;
+   o.a = p.a;
+   o.b = p.b;
+   o.c = p.c;
+   o.d = p.d;
+}
+function SPlane_set(pa, pb, pc, pd){
+   var o = this;
+   o.a = pa;
+   o.b = pb;
+   o.c = pc;
+   o.d = pd;
+}
+function SPlane_normalize(){
+   var o = this;
+   var r = 1.0 / Math.sqrt((o.a * o.a) + (o.b * o.b) + (o.c * o.c));
+   o.a *= r;
+   o.b *= r;
+   o.c *= r;
+   o.d *= r;
+}
+function SPlane_dot(x, y, z){
+   var o = this;
+   return (x * o.a) + (y * o.b) + (z * o.c ) + d;
+}
+function SPlane_toString(){
+   var o = this;
+   return o.a + ',' + o.b + ',' + o.c + ',' + o.d;
+}
+function SPlane_dump(){
+   var o = this;
+   return RClass.dump(o) + ' [' + o.toString() + ']';
 }
 function SPoint2(x, y){
    var o = this;
@@ -10174,19 +10668,19 @@ function FTag_dump(){
    return r.toString();
 }
 function FTagContext(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MInstance);
    o._trimLeft       = false;
    o._trimRight      = false;
    o._attributes     = null;
    o._source         = null;
    o.construct       = FTagContext_construct;
+   o.instanceAlloc   = FTagContext_instanceAlloc; // Implement MInstance
    o.attributes      = FTagContext_attributes;
    o.get             = FTagContext_get;
    o.set             = FTagContext_set;
    o.setBoolean      = FTagContext_setBoolean;
    o.source          = FTagContext_source;
    o.write           = FTagContext_write;
-   o.resetAttributes = FTagContext_resetAttributes;
    o.resetSource     = FTagContext_resetSource;
    o.dispose         = FTagContext_dispose;
    return o;
@@ -10196,6 +10690,9 @@ function FTagContext_construct(){
    o.__base.FObject.construct.call(o);
    o._attributes = new TAttributes();
    o._source = new TString();
+}
+function FTagContext_instanceAlloc(p){
+   this._attributes.clear();
 }
 function FTagContext_attributes(){
    return this._attributes;
@@ -10216,9 +10713,6 @@ function FTagContext_write(p){
    if(!RString.isEmpty(p)){
       this._source.append(p);
    }
-}
-function FTagContext_resetAttributes(p){
-   this._attributes.clear();
 }
 function FTagContext_resetSource(p){
    this._source.clear();
@@ -10335,6 +10829,7 @@ function FTagDocument_load(p){
 }
 function FTagDocument_parse(p){
    var o = this;
+   p.resetSource();
    o._root.parse(p);
    return p.source();
 }

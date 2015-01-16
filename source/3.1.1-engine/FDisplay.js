@@ -20,18 +20,22 @@ function FDisplay(o){
    //..........................................................
    // @method
    o.construct         = FDisplay_construct;
+   // @method
    o.isName            = FDisplay_isName;
    o.name              = FDisplay_name;
    o.matrix            = FDisplay_matrix;
    o.location          = FDisplay_location;
    o.rotation          = FDisplay_rotation;
    o.scale             = FDisplay_scale;
+   // @method
    o.hasRenderable     = FDisplay_hasRenderable;
    o.filterRenderables = FDisplay_filterRenderables;
    o.renderables       = FDisplay_renderables;
    o.pushRenderable    = FDisplay_pushRenderable;
+   // @method
    o.process           = FDisplay_process;
    o.update            = FDisplay_update;
+   // @method
    o.dispose           = FDisplay_dispose;
    return o;
 }
@@ -184,18 +188,8 @@ function FDisplay_update(){
    var o = this;
    // 更新矩阵
    var m = o._matrix;
-   m.setTranslate(o._location.x, o._location.y, o._location.z);
-   m.setRotation(o._rotation.x, o._rotation.y, o._rotation.z);
-   m.setScale(o._scale.x, o._scale.y, o._scale.z);
-   m.updateForce();
-   // 处理渲染集合
-   var rs = o._renderables;
-   if(rs != null){
-      var c = rs.count();
-      for(var n = 0; n < c; n++){
-         rs.get(n).update(m);
-      }
-   }
+   m.setAll(o._location, o._rotation, o._scale);
+   m.update();
 }
 
 //==========================================================
@@ -213,7 +207,6 @@ function FDisplay_process(){
          rs.get(i).process();
       }
    }
-   return true;
 }
 
 //==========================================================

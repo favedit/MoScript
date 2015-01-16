@@ -445,6 +445,15 @@ function MClone_clone(){
    }
    return r;
 }
+function MInstance(o){
+   o = RClass.inherits(this, o);
+   o.__free          = false;
+   o.instanceCreate  = RMethod.empty;
+   o.instanceAlloc   = RMethod.empty;
+   o.instanceFree    = RMethod.empty;
+   o.instanceRelease = RMethod.empty;
+   return o;
+}
 function MProperty(o){
    o = RClass.inherits(this, o);
    o.propertyAssign = MProperty_propertyAssign;
@@ -1689,6 +1698,8 @@ var REnum = new function REnum(){
    o.encode    = REnum_encode;
    o.tryDecode = REnum_tryDecode;
    o.decode    = REnum_decode;
+   o.parse     = REnum_encode;
+   o.format    = REnum_decode;
    return o;
 }
 function REnum_contains(){
@@ -1872,6 +1883,34 @@ function RHex_parse(v){
 function RHex_format(v, l){
    v = RString.nvl(v, '0').toString(16);
    return l ? RString.lpad(v, l, this.PAD) : v;
+}
+var RInstance = new function RInstance(){
+   var o = this;
+   o._pools = new TDictionary();
+   o.pool   = RInstance_pool;
+   o.get    = RInstance_get;
+   o.alloc  = RInstance_alloc;
+   o.free   = RInstance_free;
+   return o;
+}
+function RInstance_pool(p){
+   var o = this;
+   var n = RClass.name(p);
+   var v = o._pools.get(n);
+   if(v == null){
+      v = new TInstancePool();
+      o._pools.set(n, v);
+   }
+   return v;
+}
+function RInstance_get(p){
+   return this.pool(p).instance(p);
+}
+function RInstance_alloc(n){
+   return this.pool(p).alloc(p);
+}
+function RInstance_free(n){
+   this.pool(p).free(p);
 }
 var RInteger = new function RInteger(){
    var o = this;
@@ -3408,6 +3447,41 @@ function TFatalError(po, pe, pm, pp){
    r.appendLine('------------------------------------------------------------');
    r.append(s);
    throw new Error(r);
+}
+function TInstancePool(o){
+   if(!o){o = this;}
+   TObjects(o);
+   o._instance = null;
+   o.instance  = TInstancePool_instance;
+   o.alloc     = TInstancePool_alloc;
+   o.free      = TInstancePool_free;
+   return o;
+}
+function TInstancePool_instance(p){
+   var o = this;
+   var r = o._instance;
+   if(r == null){
+      r = o._instance = RClass.create(p);
+      r.instanceCreate();
+   }
+   r.instanceAlloc();
+   return r;
+}
+function TInstancePool_alloc(p){
+   var o = this;
+   var r = null;
+   if(o._count == 0){
+      r = RClass.create(p);
+      r.instanceCreate();
+   }else{
+      r = o.pop();
+   }
+   r.instanceAlloc();
+   return r;
+}
+function TInstancePool_free(p){
+   p.instanceFree();
+   return this.push(p);
 }
 function TInvoke(o, w, p){
    if(!o){o = this;}

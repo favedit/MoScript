@@ -16,6 +16,8 @@ function FG3dProgramSampler(o){
    // @attribute 插槽
    o._formatCd   = EG3dTexture.Flat2d;
    // @attribute 插槽
+   o._bind       = true;
+   // @attribute 插槽
    o._slot       = -1;
    // @attribute 索引
    o._index      = 0;
@@ -70,5 +72,6 @@ function FG3dProgramSampler_loadConfig(p){
    var o = this;
    o._name = p.get('name');
    o._linker = p.get('linker');
+   o._bind = RBoolean.parse(p.get('bind', 'Y'));
    o._formatCd = REnum.encode(EG3dTexture, p.get('format', 'Flat2d'));
 }

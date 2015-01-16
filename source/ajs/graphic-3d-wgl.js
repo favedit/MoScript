@@ -1,7 +1,8 @@
 function FWglContext(o){
    o = RClass.inherits(this, o, FG3dContext);
    o._native             = null;
-   o._textureActiveSlot  = 0;
+   o._activeRenderTarget = null;
+   o._activeTextureSlot  = 0;
    o._parameters         = null;
    o._extensions         = null;
    o._data9              = null;
@@ -15,12 +16,14 @@ function FWglContext(o){
    o.createIndexBuffer   = FWglContext_createIndexBuffer;
    o.createFlatTexture   = FWglContext_createFlatTexture;
    o.createCubeTexture   = FWglContext_createCubeTexture;
+   o.createRenderTarget  = FWglContext_createRenderTarget;
    o.setViewPort         = FWglContext_setViewPort;
    o.setFillMode         = FWglContext_setFillMode;
    o.setDepthMode        = FWglContext_setDepthMode;
    o.setCullingMode      = FWglContext_setCullingMode;
    o.setBlendFactors     = FWglContext_setBlendFactors;
    o.setScissorRectangle = FWglContext_setScissorRectangle;
+   o.setRenderTarget     = FWglContext_setRenderTarget;
    o.setProgram          = FWglContext_setProgram;
    o.bindConst           = FWglContext_bindConst;
    o.bindVertexBuffer    = FWglContext_bindVertexBuffer;
@@ -40,6 +43,7 @@ function FWglContext_construct(){
 }
 function FWglContext_linkCanvas(h){
    var o = this;
+   o.__base.FG3dContext.linkCanvas.call(o, h)
    o._hCanvas = h;
    if(h.getContext){
       var n = h.getContext('webgl');
@@ -255,6 +259,13 @@ function FWglContext_createCubeTexture(){
    r.setup();
    return r;
 }
+function FWglContext_createRenderTarget(){
+   var o = this;
+   var r = RClass.create(FWglRenderTarget);
+   r.linkContext(o);
+   r.setup();
+   return r;
+}
 function FWglContext_setViewPort(w, h){
    var g = this._native;
    g.viewportWidth = w;
@@ -331,6 +342,28 @@ function FWglContext_setBlendFactors(f, vs, vt){
 function FWglContext_setScissorRectangle(l, t, w, h){
    this._native.scissor(l, t, w, h);
 }
+function FWglContext_setRenderTarget(p){
+   var o = this;
+   var g = o._native;
+   var r = true;
+   if(p == null){
+      g.bindFramebuffer(g.FRAMEBUFFER, null);
+      r = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", null);
+      if(!r){
+         return r;
+      }
+      g.viewport(0, 0, o._size.width, o._size.height);
+   }else{
+      g.bindFramebuffer(g.FRAMEBUFFER, p._native);
+      result = o.checkError("glBindFramebuffer", "Bind frame buffer. (frame_buffer={1})", p._native);
+      if(!r){
+         return r;
+      }
+      var s = p.size();
+      g.viewport(0, 0, s.width, s.height);
+   }
+   o._activeRenderTarget = p;
+}
 function FWglContext_setProgram(v){
    var o = this;
    var g = o._native;
@@ -347,6 +380,7 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
    var o = this;
    var g = o._native;
    var r = true;
+   var pdc = pd.constructor;
    switch (formatCd){
       case EG3dParameterFormat.Float1:{
          g.uniform1fv(slot, pd);
@@ -394,9 +428,9 @@ function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
          break;
       }
       case EG3dParameterFormat.Float4x4:{
-         if(pd.constructor == Float32Array){
+         if(pdc == Float32Array){
             g.uniformMatrix4fv(slot, g.FALSE, pd);
-         }else if(pd.constructor == SMatrix3d){
+         }else if((pdc == SMatrix3d) || (pdc == SPerspectiveMatrix3d)){
             var dt = o._data16;
             pd.writeData(dt, 0);
             g.uniformMatrix4fv(slot, g.FALSE, dt);
@@ -469,7 +503,7 @@ function FWglContext_bindTexture(ps, pi, pt){
       r = o.checkError("bindTexture", "Bind texture clear failure. (slot=%d)", ps);
       return r;
    }
-   if(o._textureActiveSlot != ps){
+   if(o._activeTextureSlot != ps){
       g.uniform1i(ps, pi);
       g.activeTexture(g.TEXTURE0 + pi);
       r = o.checkError("activeTexture", "Active texture failure. (slot=%d, index=%d)", ps, pi);
@@ -735,11 +769,6 @@ function FWglProgram(o){
    o.upload         = FWglProgram_upload;
    o.build          = FWglProgram_build;
    o.link           = FWglProgram_link;
-   o.setAttribute   = FWglProgram_setAttribute;
-   o.setParameter   = FWglProgram_setParameter;
-   o.setParameter4  = FWglProgram_setParameter4;
-   o.setParameterColor4 = FWglProgram_setParameterColor4;
-   o.setSampler     = FWglProgram_setSampler;
    o.dispose        = FWglProgram_dispose;
    return o;
 }
@@ -893,41 +922,6 @@ function FWglProgram_link(){
    }
    return r;
 }
-function FWglProgram_setAttribute(pn, pb, pf){
-   var o = this;
-   var p = o.findAttribute(pn);
-   o._context.bindVertexBuffer(p._slot, pb, 0, pf);
-}
-function FWglProgram_setParameter(pn, pv, pc){
-   var o = this;
-   var p = o.findParameter(pn);
-   o._context.bindConst(null, p._slot, p._formatCd, pv, pc);
-}
-function FWglProgram_setParameter4(pn, px, py, pz, pw){
-   var o = this;
-   var p = o.findParameter(pn);
-   var v = RTypeArray.float4();
-   v[0] = px;
-   v[1] = py;
-   v[2] = pz;
-   v[3] = pw;
-   o._context.bindConst(null, p._slot, p._formatCd, v);
-}
-function FWglProgram_setParameterColor4(pn, pv){
-   var o = this;
-   var p = o.findParameter(pn);
-   var v = RTypeArray.float4();
-   v[0] = pv.red;
-   v[1] = pv.green;
-   v[2] = pv.blue;
-   v[3] = pv.alpha;
-   o._context.bindConst(null, p._slot, p._formatCd, v);
-}
-function FWglProgram_setSampler(pn, pt){
-   var o = this;
-   var p = o.findSampler(pn);
-   o._context.bindTexture(p._slot, p._index, pt);
-}
 function FWglProgram_dispose(){
    var o = this;
    if(o._program){
@@ -935,6 +929,73 @@ function FWglProgram_dispose(){
    }
    o._program = null;
    o.base.FProgram3d.dispose.call(o);
+}
+function FWglRenderTarget(o){
+   o = RClass.inherits(this, o, FG3dRenderTarget);
+   o._optionDepth = true;
+   o._native      = null;
+   o._nativeDepth = null;
+   o.setup        = FWglRenderTarget_setup;
+   o.build        = FWglRenderTarget_build;
+   return o;
+}
+function FWglRenderTarget_setup(){
+   var o = this;
+   o.__base.FG3dRenderTarget.setup.call(o);
+   var c = o._context;
+   var g = c._native;
+   o._native = g.createFramebuffer();
+   return c.checkError('createFramebuffer', 'Create frame buffer failure.');
+}
+function FWglRenderTarget_build(){
+   var o = this;
+   var c = o._context;
+   var g = c._native;
+   g.bindFramebuffer(g.FRAMEBUFFER, o._native);
+   var r = c.checkError('bindFramebuffer', 'Bind frame buffer failure.');
+   if(!r){
+      return r;
+   }
+   if(o._optionDepth){
+      var nr = o._nativeDepth = g.createRenderbuffer();
+      var r = c.checkError('createRenderbuffer', 'Create render buffer failure.');
+      if(!r){
+         return r;
+      }
+      g.bindRenderbuffer(g.RENDERBUFFER, nr);
+      var r = c.checkError('bindRenderbuffer', 'Bind render buffer failure.');
+      if(!r){
+         return r;
+      }
+      g.renderbufferStorage(g.RENDERBUFFER, g.DEPTH_COMPONENT16, o._size.width, o._size.height);
+      var r = c.checkError('renderbufferStorage', 'Set render buffer storage format failure.');
+      if(!r){
+         return r;
+      }
+      g.framebufferRenderbuffer(g.FRAMEBUFFER, g.DEPTH_ATTACHMENT, g.RENDERBUFFER, nr);
+      var r = c.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._native, nr);
+      if(!r){
+         return r;
+      }
+   }
+   var ts = o._textures;
+   var tc = ts.count();
+   for(var i = 0; i < tc; i++){
+      var t = ts.get(i);
+      g.bindTexture(g.TEXTURE_2D, t._native);
+      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
+      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
+      g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, o._size.width, o._size.height, 0, g.RGBA, g.UNSIGNED_BYTE, null);
+      var r = c.checkError('texImage2D', "Alloc texture storage. (texture_id, size=%dx%d)", t._native, o._size.width, o._size.height);
+      if(!r){
+         return r;
+      }
+      g.framebufferTexture2D(g.FRAMEBUFFER, g.COLOR_ATTACHMENT0, g.TEXTURE_2D, t._native, 0);
+      var r = c.checkError('framebufferTexture2D', "Set color buffer into frame buffer failure. (framebuffer_id=%d, texture_id=%d)", o._native, t._native);
+      if(!r){
+         return r;
+      }
+   }
 }
 function FWglVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dVertexBuffer);

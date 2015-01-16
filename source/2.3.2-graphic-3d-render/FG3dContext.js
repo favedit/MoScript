@@ -7,6 +7,8 @@
 function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
    //..........................................................
+   // @attribute
+   o._size               = null;
    o._capability         = null;
    // @attribute
    o._optionDepth        = false;
@@ -21,6 +23,9 @@ function FG3dContext(o){
    // @method
    o.construct           = FG3dContext_construct;
    // @method
+   o.linkCanvas          = FG3dContext_linkCanvas;
+   // @method
+   o.size                = FG3dContext_size;
    o.capability          = FG3dContext_capability;
    // @method
    o.createProgram       = RMethod.virtual(o, 'createProgram');
@@ -28,12 +33,14 @@ function FG3dContext(o){
    o.createIndexBuffer   = RMethod.virtual(o, 'createIndexBuffer');
    o.createFlatTexture   = RMethod.virtual(o, 'createFlatTexture');
    o.createCubeTexture   = RMethod.virtual(o, 'createCubeTexture');
+   o.createRenderTarget  = RMethod.virtual(o, 'createRenderTarget');
    // @method
    o.setFillMode         = RMethod.virtual(o, 'setFillMode');
    o.setDepthMode        = RMethod.virtual(o, 'setDepthMode');
    o.setCullingMode      = RMethod.virtual(o, 'setCullingMode');
    o.setBlendFactors     = RMethod.virtual(o, 'setBlendFactors');
    o.setScissorRectangle = RMethod.virtual(o, 'setScissorRectangle');
+   o.setRenderTarget     = RMethod.virtual(o, 'setRenderTarget');
    o.setProgram          = RMethod.virtual(o, 'setProgram');
    // @method
    o.bindVertexBuffer    = RMethod.virtual(o, 'bindVertexBuffer');
@@ -55,6 +62,28 @@ function FG3dContext(o){
 function FG3dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
+   o._size = new SSize2();
+}
+
+//==========================================================
+// <T>关联页面画布标签。</T>
+//
+// @method
+// @param h:hCanvas:HtmlCanvasTag 页面画布标签
+//==========================================================
+function FG3dContext_linkCanvas(h){
+   var o = this;
+   o._size.set(h.width, h.height);
+}
+
+//==========================================================
+// <T>获得尺寸。</T>
+//
+// @method
+// @return SSize2 尺寸
+//==========================================================
+function FG3dContext_size(){
+   return this._size;
 }
 
 //==========================================================

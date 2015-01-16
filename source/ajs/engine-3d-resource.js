@@ -648,6 +648,8 @@ function FRs3SceneLight(o){
    o._camera             = null;
    o.construct           = FRs3SceneLight_construct;
    o.typeName            = FRs3SceneLight_typeName;
+   o.material            = FRs3SceneLight_material;
+   o.camera              = FRs3SceneLight_camera;
    o.unserialize         = FRs3SceneLight_unserialize;
    return o;
 }
@@ -662,6 +664,12 @@ function FRs3SceneLight_construct(){
 }
 function FRs3SceneLight_typeName(){
    return this._typeName;
+}
+function FRs3SceneLight_material(){
+   return this._material;
+}
+function FRs3SceneLight_camera(){
+   return this._camera;
 }
 function FRs3SceneLight_unserialize(p){
    var o = this;

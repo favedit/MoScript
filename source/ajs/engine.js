@@ -88,17 +88,8 @@ function FDisplay_pushRenderable(p){
 function FDisplay_update(){
    var o = this;
    var m = o._matrix;
-   m.setTranslate(o._location.x, o._location.y, o._location.z);
-   m.setRotation(o._rotation.x, o._rotation.y, o._rotation.z);
-   m.setScale(o._scale.x, o._scale.y, o._scale.z);
-   m.updateForce();
-   var rs = o._renderables;
-   if(rs != null){
-      var c = rs.count();
-      for(var n = 0; n < c; n++){
-         rs.get(n).update(m);
-      }
-   }
+   m.setAll(o._location, o._rotation, o._scale);
+   m.update();
 }
 function FDisplay_process(){
    var o = this;
@@ -109,7 +100,6 @@ function FDisplay_process(){
          rs.get(i).process();
       }
    }
-   return true;
 }
 function FDisplay_dispose(){
    var o = this;

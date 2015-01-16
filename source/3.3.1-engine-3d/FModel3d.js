@@ -51,6 +51,7 @@ function FModel3d_loadRenderable(p){
          for(var i = 0; i < c; i++){
             var rg = rgs.get(i);
             var g = RClass.create(FModelRenderable3d);
+            g._display = o;
             g.load(rg);
             gs.push(g);
             rs.push(g);

@@ -12,6 +12,8 @@ function SMatrix4x4(o){
    o._data      = new Array(16);
    //..........................................................
    // @method
+   o.data       = SMatrix4x4_data;
+   // @method
    o.equalsData = SMatrix4x4_equalsData;
    o.assignData = SMatrix4x4_assignData;
    o.appendData = SMatrix4x4_appendData;
@@ -24,6 +26,16 @@ function SMatrix4x4(o){
    o.invert     = SMatrix4x4_invert;
    o.writeData  = SMatrix4x4_writeData;
    return o;
+}
+
+//============================================================
+// <T>获得数据。</T>
+//
+// @method
+// @return Float32Array 数据
+//============================================================
+function SMatrix4x4_data(){
+   return this._data;
 }
 
 //============================================================

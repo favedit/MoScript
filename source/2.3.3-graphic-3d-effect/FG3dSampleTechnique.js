@@ -8,6 +8,8 @@ function FG3dSampleTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
    //..........................................................
    // @attribute
+   o._name = 'sample';
+   // @attribute
    o._pass = null;
    //..........................................................
    // @method
@@ -23,7 +25,9 @@ function FG3dSampleTechnique(o){
 function FG3dSampleTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
-   o._pass = RClass.create(FG3dSampleTechniquePass);
-   o._pass.linkContext(o._context);
-   o._passes.push(o._pass);
+   // 创建颜色处理过程
+   var p = o._pass = RClass.create(FG3dSampleColorPass);
+   p.linkContext(o._context);
+   p.setup();
+   o._passes.push(p);
 }
