@@ -8,6 +8,7 @@
 <SCRIPT language='javascript' src='../../ajs/mo-engine.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../1.2.2-lang-math/SFrustum.js'></SCRIPT>
 </HEAD>
 
 <SCRIPT>
@@ -27,14 +28,8 @@ function onEnterFrame(){
 function onStageLoad(){
    var stage = this;
    stage.selectTechnique(context, FG3dShadowTechnique);
+   //stage.selectTechnique(context, FG3dSampleTechnique);
    RStage.register('stage3d', stage);
-   // 设置光源
-   stage.directionalLight().direction().set(0.7, 0.7, 0);
-   // 设置投影
-   var rp = stage.projection();
-   rp.width = hCanvas.width;
-   rp.height = hCanvas.height;
-   rp.update();
    // 启动处理
    RStage.lsnsEnterFrame.register(null, onEnterFrame);
    RStage.start();
@@ -61,12 +56,13 @@ function _load(){
    // 加载主题
    var tc = RConsole.find(FRs3ThemeConsole);
    var m = tc.select('shadow');
+   //var m = tc.select('color');
    m.loadListener().register(m, onThemeLoad);
 }
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
-<CANVAS id="_canvas" width="800" height="600">您的浏览器不支持HTML5</CANVAS>
+<CANVAS id="_canvas" width="1200" height="800">您的浏览器不支持HTML5</CANVAS>
 <DIV id='_info'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

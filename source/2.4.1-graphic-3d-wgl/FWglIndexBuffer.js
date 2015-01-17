@@ -23,8 +23,7 @@ function FWglIndexBuffer(o){
 function FWglIndexBuffer_setup(){
    var o = this;
    o.__base.FG3dIndexBuffer.setup.call(o);
-   var g = o._context._native;
-   o._native = g.createBuffer();
+   o._native = o._context._native.createBuffer();
 }
 
 //==========================================================
@@ -39,7 +38,7 @@ function FWglIndexBuffer_upload(pd, pc){
    var c = o._context;
    var g = c._native;
    // 设置数据
-   o.count  = pc;
+   o._count = pc;
    // 获得数据
    var d = null;
    if(pd.constructor == Array){
@@ -51,7 +50,7 @@ function FWglIndexBuffer_upload(pd, pc){
    }
    // 上传数据
    g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, o._native);
-   c.checkError('bindBuffer', 'Bindbuffer');
+   c.checkError('bindBuffer', 'Bind buffer failure.');
    g.bufferData(g.ELEMENT_ARRAY_BUFFER, d, g.STATIC_DRAW);
-   c.checkError('bufferData', 'bufferData');
+   c.checkError('bufferData', 'Upload buffer data. (count={1})', pc);
 }

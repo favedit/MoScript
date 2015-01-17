@@ -8,42 +8,45 @@ function FG3dRegion(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._spaceName            = null;
-   o._technique            = null;
-   o._techniquePass        = null;
-   o._camera               = null;
-   o._projection           = null;
-   o._directionalLight     = null
-   o._renderables          = null;
+   o._spaceName                  = null;
+   o._technique                  = null;
+   o._techniquePass              = null;
+   o._camera                     = null;
+   o._projection                 = null;
+   o._directionalLight           = null
+   o._lights                     = null
+   o._renderables                = null;
    // @attribute
-   o._matrixViewProjection  = null;
-   o._lightMatrixView       = null;
-   o._lightMatrixProjection = null;
-   o._cameraPosition        = null;
-   o._lightDirection        = null;
+   o._cameraPosition             = null;
+   o._cameraDirection            = null;
+   o._cameraViewMatrix           = null;
+   o._cameraProjectionMatrix     = null;
+   o._cameraViewProjectionMatrix = null;
+   o._lightPosition              = null;
+   o._lightDirection             = null;
+   o._lightViewMatrix            = null;
+   o._lightProjectionMatrix      = null;
+   o._lightViewProjectionMatrix  = null;
    //..........................................................
    // @method
-   o.construct             = FG3dRegion_construct;
+   o.construct                   = FG3dRegion_construct;
    // @method
-   o.spaceName             = FG3dRegion_spaceName;
-   o.technique             = FG3dRegion_technique;
-   o.setTechnique          = FG3dRegion_setTechnique;
-   o.techniquePass         = FG3dRegion_techniquePass;
-   o.setTechniquePass      = FG3dRegion_setTechniquePass;
-   o.camera                = FG3dRegion_camera;
-   o.projection            = FG3dRegion_projection;
-   o.directionalLight      = FG3dRegion_directionalLight;
+   o.spaceName                   = FG3dRegion_spaceName;
+   o.technique                   = FG3dRegion_technique;
+   o.setTechnique                = FG3dRegion_setTechnique;
+   o.techniquePass               = FG3dRegion_techniquePass;
+   o.setTechniquePass            = FG3dRegion_setTechniquePass;
+   o.camera                      = FG3dRegion_camera;
+   o.directionalLight            = FG3dRegion_directionalLight;
+   o.lights                      = FG3dRegion_lights;
    // @method
-   o.matrixViewProjection  = FG3dRegion_matrixViewProjection;
-   o.cameraPosition        = FG3dRegion_cameraPosition;
-   o.lightDirection        = FG3dRegion_lightDirection;
+   o.renderables                 = FG3dRegion_renderables;
+   o.pushRenderable              = FG3dRegion_pushRenderable;
    // @method
-   o.renderables           = FG3dRegion_renderables;
-   o.pushRenderable        = FG3dRegion_pushRenderable;
-   // @method
-   o.prepare               = FG3dRegion_prepare;
-   o.update                = FG3dRegion_update;
-   o.dispose               = FG3dRegion_dispose;
+   o.prepare                     = FG3dRegion_prepare;
+   o.calculate                   = FG3dRegion_calculate;
+   o.update                      = FG3dRegion_update;
+   o.dispose                     = FG3dRegion_dispose;
    return o;
 }
 
@@ -55,12 +58,20 @@ function FG3dRegion(o){
 function FG3dRegion_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   // 初始化参数
+   o._lights = new TObjects();
    o._renderables = new TObjects();
-   o._matrixViewProjection = new SMatrix3d();
-   o._cameraPosition = new Float32Array(3);
-   o._lightDirection = new Float32Array(3);
-   o._lightMatrixView = new SMatrix3d();
-   o._lightMatrixProjection = new SMatrix3d();
+   // 初始化参数
+   o._cameraPosition = new SPoint3();
+   o._cameraDirection = new SVector3();
+   o._cameraViewMatrix = new SMatrix3d();
+   o._cameraProjectionMatrix = new SMatrix3d();
+   o._cameraViewProjectionMatrix = new SMatrix3d();
+   o._lightPosition = new SPoint3();
+   o._lightDirection = new SVector3();
+   o._lightViewMatrix = new SMatrix3d();
+   o._lightProjectionMatrix = new SMatrix3d();
+   o._lightViewProjectionMatrix = new SMatrix3d();
 }
 
 //==========================================================
@@ -126,16 +137,6 @@ function FG3dRegion_camera(){
 }
 
 //==========================================================
-// <T>获得投影。</T>
-//
-// @method
-// @return FG3dProjection 投影
-//==========================================================
-function FG3dRegion_projection(){
-   return this._projection;
-}
-
-//==========================================================
 // <T>获得方向光。</T>
 //
 // @method
@@ -146,33 +147,13 @@ function FG3dRegion_directionalLight(){
 }
 
 //==========================================================
-// <T>获得视角投影矩阵。</T>
+// <T>获得光源集合。</T>
 //
 // @method
-// @return SMatrix3d 视角投影矩阵
+// @return TObjects 光源集合
 //==========================================================
-function FG3dRegion_matrixViewProjection(p){
-   return this._matrixViewProjection;
-}
-
-//==========================================================
-// <T>获得相机坐标。</T>
-//
-// @method
-// @return Float32Array 相机坐标
-//==========================================================
-function FG3dRegion_cameraPosition(){
-   return this._cameraPosition;
-}
-
-//==========================================================
-// <T>获得光源方向。</T>
-//
-// @method
-// @return Float32Array 光源方向
-//==========================================================
-function FG3dRegion_lightDirection(){
-   return this._lightDirection;
+function FG3dRegion_lights(){
+   return this._lights;
 }
 
 //==========================================================
@@ -200,26 +181,61 @@ function FG3dRegion_pushRenderable(p){
 //==========================================================
 function FG3dRegion_prepare(){
    var o = this;
-   // 设置视角投影矩阵
-   o._matrixViewProjection.assign(o._camera.matrix());
-   o._matrixViewProjection.append(o._projection.matrix());
-   // 设置相机位置
-   var cp = o._camera.position();
-   o._cameraPosition[0] = cp.x;
-   o._cameraPosition[1] = cp.y;
-   o._cameraPosition[2] = cp.z;
-   // 设置光源方向
-   var ld = o._directionalLight.direction();
-   ld.normalize();
-   o._lightDirection[0] = ld.x;
-   o._lightDirection[1] = ld.y;
-   o._lightDirection[2] = ld.z;
-   // 设置光源方向
-   //var lc = o._directionalLight.camera();
-   //o._lightMatrixView
-   //o._lightMatrixProjection = new SMatrix3d();
+   // 设置相机信息
+   var c = o._camera;
+   var cp = c.projection();
+   o._cameraPosition.assign(c.position());
+   o._cameraDirection.assign(c.direction());
+   o._cameraViewMatrix.assign(c.matrix());
+   o._cameraProjectionMatrix.assign(cp.matrix());
+   o._cameraViewProjectionMatrix.assign(c.matrix());
+   o._cameraViewProjectionMatrix.append(cp.matrix());
+   // 设置光源信息
+   var l = o._directionalLight;
+   var lc = l.camera();
+   var lcp = lc.projection();
+   o._lightPosition.assign(lc.position());
+   o._lightDirection.assign(lc.direction());
+   o._lightViewMatrix.assign(lc.matrix());
+   o._lightProjectionMatrix.assign(lcp.matrix());
+   o._lightViewProjectionMatrix.assign(lc.matrix());
+   o._lightViewProjectionMatrix.append(lcp.matrix());
    // 清空渲染集合
    o._renderables.clear();
+}
+
+//==========================================================
+// <T>计算参数数据。</T>
+//
+// @method
+// @param p:parameterCd:EG3dRegionParameter 参数类型
+// @return 参数内容
+//==========================================================
+function FG3dRegion_calculate(p){
+   var o = this;
+   switch(p){
+      case EG3dRegionParameter.CameraPosition:
+         return o._cameraPosition;
+      case EG3dRegionParameter.CameraDirection:
+         return o._cameraDirection;
+      case EG3dRegionParameter.CameraViewMatrix:
+         return o._cameraViewMatrix;
+      case EG3dRegionParameter.CameraProjectionMatrix:
+         return o._cameraProjectionMatrix;
+      case EG3dRegionParameter.CameraViewProjectionMatrix:
+         return o._cameraViewProjectionMatrix;
+      case EG3dRegionParameter.LightPosition:
+         return o._lightPosition;
+      case EG3dRegionParameter.LightDirection:
+         return o._lightDirection;
+      case EG3dRegionParameter.LightViewMatrix:
+         return o._lightViewMatrix;
+      case EG3dRegionParameter.LightProjectionMatrix:
+         return o._lightProjectionMatrix;
+      case EG3dRegionParameter.LightViewProjectionMatrix:
+         return o._lightViewProjectionMatrix;
+   }
+   throw new TError(o, 'Unknown parameter type. (type_cd={1})', p);
 }
 
 //==========================================================
@@ -232,8 +248,7 @@ function FG3dRegion_update(){
    var rs = o._renderables;
    var c = rs.count();
    for(var i = 0; i < c; i++){
-      var r = rs.get(i);
-      r.update(o);
+      rs.get(i).update(o);
    }
 }
 

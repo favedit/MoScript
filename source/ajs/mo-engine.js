@@ -705,30 +705,32 @@ function FScene3d_loadRegionResource(p){
    var o = this;
    o._backgroundColor.assign(p.color());
    var rc = p.camera();
+   var rcv = rc.viewport();
    var c = o._camera;
+   var cp = c._projection;
    c.position().assign(rc.position());
    c.direction().assign(rc.direction());
    c.update();
-   var rv = rc.viewport();
-   var v = o._projection;
-   v.angle = rv.angle();
-   v.znear = rv.znear();
-   v.zfar = rv.zfar();
+   cp.size().assign(o._context.size());
+   cp._angle = rcv.angle();
+   cp._znear = rcv.znear();
+   cp._zfar = rcv.zfar();
+   cp.update();
    var l = o._directionalLight
-   var lc = l.camera();
-   var lp = l.projection();
+   var lc = l._camera;
+   var lp = lc._projection;
    var rl = p.light();
    var rlc = rl.camera();
    var rlv = rlc.viewport();
-   lp.width = 1024;
-   lp.height = 1024;
-   lp.angle = 120;
-   lp.znear = 0.01;
-   lp.zfar = 200;
-   lp.update();
+   lc.position().set(1, 1, -1);
+   lc.lookAt(0, 0, 0);
    lc.position().assign(rlc.position());
-   lc.direction().assign(rlc.direction());
    lc.update();
+   lp.size().set(1024, 1024);
+   lp._angle = 90;
+   lp._znear = rlv.znear();
+   lp._zfar = rlv.zfar();
+   lp.update();
 }
 function FScene3d_loadDisplayResource(pl, pd){
    var o = this;
@@ -1089,7 +1091,6 @@ function FStage3d(o){
    o = RClass.inherits(this, o, FStage);
    o._backgroundColor  = null;
    o._camera           = null;
-   o._projection       = null;
    o._directionalLight = null
    o._technique        = null;
    o._region           = null;
@@ -1108,19 +1109,16 @@ function FStage3d_construct(){
    o.__base.FStage.construct.call(o);
    o._backgroundColor = new SColor4();
    o._backgroundColor.set(0, 0, 0, 1);
-   var rc = o._camera = RClass.create(FG3dCamera);
-   rc.position().set(0, 0, -100);
-   rc.lookAt(0, 0, 0);
-   rc.update();
-   var rp = o._projection = RClass.create(FG3dProjection);
-   rp.update();
-   rc._projection = rp;
-   var dl = o._directionalLight = RClass.create(FG3dDirectionalLight);
-   dl.direction().set(0, -1, 0);
+   var c = o._camera = RClass.create(FG3dPerspectiveCamera);
+   c.position().set(0, 0, -100);
+   c.lookAt(0, 0, 0);
+   c.update();
+   c._projection.update();
+   var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
+   l.direction().set(0, -1, 0);
    var r = o._region = RClass.create(FG3dRegion);
-   r._camera = rc;
-   r._projection = rp;
-   r._directionalLight = dl;
+   r._camera = c;
+   r._directionalLight = l;
 }
 function FStage3d_backgroundColor(){
    return this._backgroundColor;

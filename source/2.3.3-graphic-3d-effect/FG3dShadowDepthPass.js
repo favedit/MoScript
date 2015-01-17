@@ -34,7 +34,7 @@ function FG3dShadowDepthPass_setup(){
    d.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
    // 创建渲染目标
    var t = o._renderTarget = c.createRenderTarget();
-   t.size().set(1024, 1024);
+   t.size().set(2048, 2048);
    t.textures().push(d);
    t.build();
 }

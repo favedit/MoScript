@@ -30,9 +30,10 @@ var RMath = new function RMath(){
    o.double16     = null;
    o.double16     = null;
    o.double64     = null;
-   o.vectorAxisX = null;
-   o.vectorAxisY = null;
-   o.vectorAxisZ = null;
+   o.matrix       = null;
+   o.vectorAxisX  = null;
+   o.vectorAxisY  = null;
+   o.vectorAxisZ  = null;
    o.construct    = RMath_construct;
    o.construct();
    return o;
@@ -57,6 +58,7 @@ function RMath_construct(){
    o.double9 = new Float64Array(9);
    o.double12 = new Float64Array(12);
    o.double16 = new Float64Array(16);
+   o.matrix = new SMatrix3d();
    o.vectorAxisX = new SVector3();
    o.vectorAxisX.set(1.0, 0.0, 0.0);
    o.vectorAxisY = new SVector3();
@@ -111,73 +113,93 @@ function SColor4_toString(){
 }
 function SFrustum(o){
    if(!o){o = this;}
-   o.conerMatrix = null;
-   o.center = null;
-   o.radius = null;
-   o.minX = null;
-   o.maxX = null;
-   o.minY = null;
-   o.maxY = null;
-   o.minZ = null;
-   o.maxZ = null;
-   o.coners = new Array(24);
+   o.center       = new SPoint3();
+   o.radius       = null;
+   o.minX         = null;
+   o.maxX         = null;
+   o.minY         = null;
+   o.maxY         = null;
+   o.minZ         = null;
+   o.maxZ         = null;
+   o.points       = new Array(24);
+   o.coners       = new Array(24);
    o.updateCenter = SFrustum_updateCenter;
    o.update       = SFrustum_update;
    return o;
 }
 function SFrustum_updateCenter(){
    var o = this;
-   var n = 0;
-   while(n < 24){
-      var x = coners[n++];
-      if(x < minX){
-         minX = x;
+   var cs = o.coners;
+   o.minX = o.minY = o.minZ = Number.MAX_VALUE;
+   o.maxX = o.maxY = o.maxZ = -Number.MAX_VALUE;
+   var i = 0;
+   while(i < 24){
+      var x = cs[i++];
+      if(x < o.minX){
+         o.minX = x;
       }
-      if(x > maxX){
-         maxX = x;
+      if(x > o.maxX){
+         o.maxX = x;
       }
-      var y = coners[n++];
-      if(y < minY){
-         minY = y;
+      var y = cs[i++];
+      if(y < o.minY){
+         o.minY = y;
       }
-      if(y > maxY){
-         maxY = y;
+      if(y > o.maxY){
+         o.maxY = y;
       }
-      var z = coners[n++];
-      if(z < minZ){
-         minZ = z;
+      var z = cs[i++];
+      if(z < o.minZ){
+         o.minZ = z;
       }
-      if(z > maxZ){
-         maxZ = z;
+      if(z > o.maxZ){
+         o.maxZ = z;
       }
    }
-   center.x = (minX + maxX) * 0.5;
-   center.y = (minY + maxY) * 0.5;
-   center.z = (minZ + maxZ) * 0.5;
-   radius = Math.sqrt((minX - minY) * (minX - minY) + (minZ - maxX) * (minZ - maxX) + (maxY - maxZ) * (maxY - maxZ)) * 0.5;
+   o.center.x = (o.minX + o.maxX) * 0.5;
+   o.center.y = (o.minY + o.maxY) * 0.5;
+   o.center.z = (o.minZ + o.maxZ) * 0.5;
+   o.radius = Math.sqrt((o.minX - o.minY) * (o.minX - o.minY) + (o.minZ - o.maxX) * (o.minZ - o.maxX) + (o.maxY - o.maxZ) * (o.maxY - o.maxZ)) * 0.5;
 }
-function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, matrix){
+function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    var o = this;
    var aspect = pvw / pvh;
-   var znear = -pvf * pbr;
-   var zfar = pvf * pfr;
-   var fov = tan(MO_GRAPHIC_DEGREE_RATE * pva * 0.5);
+   var znear = pvn;
+   var zfar = pvf;
+   var fov = Math.tan(RMath.DEGREE_RATE * pva * 0.5);
    var nearY = znear * fov;
    var nearX = nearY * aspect;
    var farY = zfar * fov;
    var farX = farY * aspect;
-   var points = [
-      -nearX,  nearY, znear,
-       nearX,  nearY, znear,
-       nearX, -nearY, znear,
-      -nearX, -nearY, znear,
-      -farX,   farY,  zfar,
-       farX,   farY,  zfar,
-       farX,  -farY,  zfar,
-      -farX,  -farY,  zfar];
-   conerMatrix.assign(matrix);
-   conerMatrix.invert();
-   conerMatrix.transform(coners, points, 24);
+   var ps = o.points;
+   ps[ 0] = -nearX;
+   ps[ 1] =  nearY;
+   ps[ 2] =  znear;
+   ps[ 3] =  nearX;
+   ps[ 4] =  nearY;
+   ps[ 5] =  znear;
+   ps[ 6] =  nearX;
+   ps[ 7] = -nearY;
+   ps[ 8] =  znear;
+   ps[ 9] = -nearX;
+   ps[10] = -nearY;
+   ps[11] =  znear;
+   ps[12] = -farX;
+   ps[13] =  farY;
+   ps[14] =  zfar;
+   ps[15] =  farX;
+   ps[16] =  farY;
+   ps[17] =  zfar;
+   ps[18] =  farX;
+   ps[19] = -farY;
+   ps[20] =  zfar;
+   ps[21] = -farX;
+   ps[22] = -farY;
+   ps[23] =  zfar;
+   var m = RMath.matrix;
+   m.assign(pm);
+   m.invert();
+   m.transform(o.coners, ps, 8);
    o.updateCenter();
 }
 function SFrustumPlanes(o){
@@ -550,6 +572,7 @@ function SMatrix4x4(o){
    o.rotation   = SMatrix4x4_rotation;
    o.scale      = SMatrix4x4_scale;
    o.invert     = SMatrix4x4_invert;
+   o.transform  = SMatrix4x4_transform;
    o.writeData  = SMatrix4x4_writeData;
    return o;
 }
@@ -767,6 +790,16 @@ function SMatrix4x4_invert(){
       d[i] = v[i] * r;
    }
    return true;
+}
+function SMatrix4x4_transform(po, pi, pc){
+   var o = this;
+   var d = o._data;
+   for(var i = 0; i < pc; i++){
+      var n = (i << 1) + i;
+      po[n    ] = (pi[n] * d[ 0]) + (pi[n + 1] * d[ 4]) +(pi[n + 2] * d[ 8]) + d[12];
+      po[n + 1] = (pi[n] * d[ 1]) + (pi[n + 1] * d[ 5]) +(pi[n + 2] * d[ 9]) + d[13];
+      po[n + 2] = (pi[n] * d[ 2]) + (pi[n + 1] * d[ 6]) +(pi[n + 2] * d[10]) + d[14];
+   }
 }
 function SMatrix4x4_writeData(d, i){
    var o = this;

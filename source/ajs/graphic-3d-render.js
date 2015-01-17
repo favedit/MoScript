@@ -201,10 +201,18 @@ function FG3dFragmentShader(o){
 }
 function FG3dIndexBuffer(o){
    o = RClass.inherits(this, o, FG3dObject);
-   o.strideCd = EG3dIndexStride.Uint16;
-   o.count    = 0;
-   o.upload = RMethod.virtual(o, 'upload');
+   o._strideCd = EG3dIndexStride.Uint16;
+   o._count    = 0;
+   o.strideCd  = FG3dIndexBuffer_strideCd;
+   o.count     = FG3dIndexBuffer_count;
+   o.upload    = RMethod.virtual(o, 'upload');
    return o;
+}
+function FG3dIndexBuffer_strideCd(){
+   return this._strideCd;
+}
+function FG3dIndexBuffer_count(){
+   return this._count;
 }
 function FG3dProgram(o){
    o = RClass.inherits(this, o, FG3dObject);

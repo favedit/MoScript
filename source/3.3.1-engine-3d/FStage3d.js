@@ -10,7 +10,6 @@ function FStage3d(o){
    // @attribute
    o._backgroundColor  = null;
    o._camera           = null;
-   o._projection       = null;
    o._directionalLight = null
    o._technique        = null;
    // @attribute
@@ -41,22 +40,18 @@ function FStage3d_construct(){
    o._backgroundColor = new SColor4();
    o._backgroundColor.set(0, 0, 0, 1);
    // 创建相机
-   var rc = o._camera = RClass.create(FG3dCamera);
-   rc.position().set(0, 0, -100);
-   rc.lookAt(0, 0, 0);
-   rc.update();
-   // 创建投影
-   var rp = o._projection = RClass.create(FG3dProjection);
-   rp.update();
-   rc._projection = rp;
+   var c = o._camera = RClass.create(FG3dPerspectiveCamera);
+   c.position().set(0, 0, -100);
+   c.lookAt(0, 0, 0);
+   c.update();
+   c._projection.update();
    // 创建方向光源
-   var dl = o._directionalLight = RClass.create(FG3dDirectionalLight);
-   dl.direction().set(0, -1, 0);
+   var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
+   l.direction().set(0, -1, 0);
    // 创建区域
    var r = o._region = RClass.create(FG3dRegion);
-   r._camera = rc;
-   r._projection = rp;
-   r._directionalLight = dl;
+   r._camera = c;
+   r._directionalLight = l;
 }
 
 //==========================================================

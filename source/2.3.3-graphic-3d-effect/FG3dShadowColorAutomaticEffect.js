@@ -21,32 +21,31 @@ function FG3dShadowColorAutomaticEffect(o){
 // <T>绘制渲染对象。</T>
 //
 // @method
-// @param p:renderable:FRenderable 渲染对象
+// @param pg:region:FG3dRegion 渲染区域
+// @param pr:renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FG3dShadowColorAutomaticEffect_drawRenderable(pr, r){
+function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
    // 获得信息
-   var prvp = pr.matrixViewProjection();
-   var prcp = pr.cameraPosition();
-   var prld = pr.lightDirection();
-   var l = pr.directionalLight();
+   var tp = pg.techniquePass();
+   var l = pg.directionalLight();
    var lc = l.camera();
-   var lp = l.projection();
+   var lp = lc.projection();
    // 绑定材质
-   var m = r.material();
+   var m = pr.material();
    o.bindMaterial(m);
    // 绑定顶点常量
-   p.setParameter('vc_model_matrix', r.matrix());
-   p.setParameter('vc_vp_matrix', prvp);
-   p.setParameter('vc_camera_position', prcp);
-   p.setParameter('vc_light_direction', prld);
-   p.setParameter('vc_light_view_matrix', lc.matrix());
-   p.setParameter('vc_light_projection_matrix', lp.matrix());
-   p.setParameter('fc_camera_position', prcp);
-   p.setParameter('fc_light_direction', prld);
-   p.setParameter4('fc_light_depth', 1.0 / 1024.0, -1.0 / 1024.0, 0.0, 1.0 / lp.distance());
+   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('vc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
+   p.setParameter('vc_light_view_matrix', pg.calculate(EG3dRegionParameter.LightViewMatrix));
+   p.setParameter('vc_light_projection_matrix', pg.calculate(EG3dRegionParameter.LightProjectionMatrix));
+   p.setParameter('fc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('fc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
+   p.setParameter4('fc_light_depth', 1.0 / 16384.0, 0.0, -1.0 / 16384.0, 1.0 / lp.distance());
    // 绑定像素常量
    var mi = m.info();
    p.setParameter('fc_color', mi.ambientColor);
@@ -60,13 +59,12 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pr, r){
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
    // 绑定所有属性流
-   o.bindAttributes(r);
+   o.bindAttributes(pr);
    // 绑定所有取样器
-   p.setSampler('fs_light_depth', pr._textureDepth);
-   o.bindSamplers(r);
+   p.setSampler('fs_light_depth', pg._textureDepth);
+   o.bindSamplers(pr);
    // 绘制处理
-   var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   c.drawTriangles(pr.indexBuffer());
 }
 
 //==========================================================

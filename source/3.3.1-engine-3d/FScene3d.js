@@ -125,47 +125,47 @@ function FScene3d_loadTechniqueResource(p){
 //==========================================================
 function FScene3d_loadRegionResource(p){
    var o = this;
-   o._backgroundColor.assign(p.color());
    // 设置颜色
-   //_sceneFrame->BackgroundColor().Assign(pResource->Color());
-   //FScreenDevice* pScreenDevice = RDeviceManager::Instance().Find<FScreenDevice>();
-   //SIntSize2& screenSize = pScreenDevice->Size();
+   o._backgroundColor.assign(p.color());
    //............................................................
    // 设置相机
    var rc = p.camera();
+   var rcv = rc.viewport();
    // 加载投影
    var c = o._camera;
+   var cp = c._projection;
    c.position().assign(rc.position());
    c.direction().assign(rc.direction());
    c.update();
    // 设置投影
-   var rv = rc.viewport();
-   var v = o._projection;
-   v.angle = rv.angle();
-   v.znear = rv.znear();
-   v.zfar = rv.zfar();
+   cp.size().assign(o._context.size());
+   cp._angle = rcv.angle();
+   cp._znear = rcv.znear();
+   cp._zfar = rcv.zfar();
+   cp.update();
    //............................................................
+   // 设置光源
    var l = o._directionalLight
-   var lc = l.camera();
-   var lp = l.projection();
+   var lc = l._camera;
+   var lp = lc._projection;
    var rl = p.light();
    var rlc = rl.camera();
    var rlv = rlc.viewport();
-   // 设置光源投影
-   lp.width = 1024;
-   lp.height = 1024;
-   //lp.angle = rlv.angle();
-   //lp.znear = rlv.znear() * 0.01;
-   //lp.zfar = rlv.zfar() + 100;
-   //lp.updateOrtho();
-   lp.angle = 120;
-   lp.znear = 0.01;
-   lp.zfar = 200;
-   lp.update();
    // 设置光源相机
+   lc.position().set(1, 1, -1);
+   lc.lookAt(0, 0, 0);
+   //lc.direction().assign(rlc.direction());
+   //lc.update();
    lc.position().assign(rlc.position());
-   lc.direction().assign(rlc.direction());
+   //lc.direction().assign(rlc.direction());
    lc.update();
+   // 设置光源投影
+   lp.size().set(1024, 1024);
+   //lp._angle = rlv.angle();
+   lp._angle = 90;
+   lp._znear = rlv.znear();
+   lp._zfar = rlv.zfar();
+   lp.update();
 }
 
 //==========================================================

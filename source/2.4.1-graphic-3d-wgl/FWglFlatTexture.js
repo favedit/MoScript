@@ -8,16 +8,16 @@ function FWglFlatTexture(o){
    o = RClass.inherits(this, o, FG3dFlatTexture);
    //..........................................................
    // @attribute
-   o._native = null;
+   o._native     = null;
    //..........................................................
    // @event
    o.onImageLoad = FWglFlatTexture_onImageLoad;
    //..........................................................
    // @method
-   o.setup   = FWglFlatTexture_setup;
+   o.setup       = FWglFlatTexture_setup;
    // @method
-   o.loadUrl = FWglFlatTexture_loadUrl;
-   o.upload  = FWglFlatTexture_upload;
+   o.loadUrl     = FWglFlatTexture_loadUrl;
+   o.upload      = FWglFlatTexture_upload;
    return o;
 }
 
@@ -58,7 +58,7 @@ function FWglFlatTexture_loadUrl(p){
    var o = this;
    var r = new Image();
    r.src = p;
-   r.onload = function(){o.onImageLoad(this);}
+   r.onload = function(){o.onImageLoad(o);}
 }
 
 //==========================================================

@@ -9,14 +9,31 @@ var RTypeArray = new function RTypeArray(){
    var o = this;
    //..........................................................
    // @attribute
+   o._float3  = null;
    o._float4  = null;
    o._data    = new Object();
    //..........................................................
    // @method
+   o.float3      = RTypeArray_float3;
    o.float4      = RTypeArray_float4;
    o.createArray = RTypeArray_createArray;
    o.findTemp    = RTypeArray_findTemp;
    return o;
+}
+
+//==========================================================
+// <T>获得3元素浮点数。</T>
+//
+// @method
+// @return Float32Array 浮点数
+//==========================================================
+function RTypeArray_float3(){
+   var o = this;
+   var v = o._float3;
+   if(v == null){
+      v = o._float3 = new Float32Array(3);
+   }
+   return v;
 }
 
 //==========================================================

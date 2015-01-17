@@ -82,7 +82,7 @@ function FWglContext_linkCanvas(h){
    if(h.getContext){
       var n = h.getContext('webgl');
       if(n == null){
-         n = h.getContext('experimental-webgl');
+         n = h.getContext('experimental-webgl', {antialias:true});
       }
       if(n == null){
          throw new TError("Current browser can't support WebGL technique.");
@@ -829,7 +829,7 @@ function FWglContext_drawTriangles(b, i, c){
       i = 0;
    }
    if(c == null){
-      c = b.count;
+      c = b.count();
    }
    // 绘制索引流
    g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, b._native);
@@ -837,7 +837,7 @@ function FWglContext_drawTriangles(b, i, c){
    if(!r){
        return r;
    }
-   var strideCd = RWglUtility.convertIndexStride(g, b.strideCd);
+   var strideCd = RWglUtility.convertIndexStride(g, b.strideCd());
    g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
    r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
    if(!r){

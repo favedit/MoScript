@@ -48,7 +48,7 @@ function FWglContext_linkCanvas(h){
    if(h.getContext){
       var n = h.getContext('webgl');
       if(n == null){
-         n = h.getContext('experimental-webgl');
+         n = h.getContext('experimental-webgl', {antialias:true});
       }
       if(n == null){
          throw new TError("Current browser can't support WebGL technique.");
@@ -568,14 +568,14 @@ function FWglContext_drawTriangles(b, i, c){
       i = 0;
    }
    if(c == null){
-      c = b.count;
+      c = b.count();
    }
    g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, b._native);
    r = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", b, i, c, b._native);
    if(!r){
        return r;
    }
-   var strideCd = RWglUtility.convertIndexStride(g, b.strideCd);
+   var strideCd = RWglUtility.convertIndexStride(g, b.strideCd());
    g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
    r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
    if(!r){
@@ -664,11 +664,11 @@ function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
 }
 function FWglFlatTexture(o){
    o = RClass.inherits(this, o, FG3dFlatTexture);
-   o._native = null;
+   o._native     = null;
    o.onImageLoad = FWglFlatTexture_onImageLoad;
-   o.setup   = FWglFlatTexture_setup;
-   o.loadUrl = FWglFlatTexture_loadUrl;
-   o.upload  = FWglFlatTexture_upload;
+   o.setup       = FWglFlatTexture_setup;
+   o.loadUrl     = FWglFlatTexture_loadUrl;
+   o.upload      = FWglFlatTexture_upload;
    return o;
 }
 function FWglFlatTexture_onImageLoad(v){
@@ -690,7 +690,7 @@ function FWglFlatTexture_loadUrl(p){
    var o = this;
    var r = new Image();
    r.src = p;
-   r.onload = function(){o.onImageLoad(this);}
+   r.onload = function(){o.onImageLoad(o);}
 }
 function FWglFlatTexture_upload(p){
    var o = this;
@@ -750,14 +750,13 @@ function FWglIndexBuffer(o){
 function FWglIndexBuffer_setup(){
    var o = this;
    o.__base.FG3dIndexBuffer.setup.call(o);
-   var g = o._context._native;
-   o._native = g.createBuffer();
+   o._native = o._context._native.createBuffer();
 }
 function FWglIndexBuffer_upload(pd, pc){
    var o = this;
    var c = o._context;
    var g = c._native;
-   o.count  = pc;
+   o._count = pc;
    var d = null;
    if(pd.constructor == Array){
       d = new Uint16Array(pd);
@@ -767,9 +766,9 @@ function FWglIndexBuffer_upload(pd, pc){
       RLogger.fatal(o, null, 'Upload index data type is invalid. (value={1})', pd);
    }
    g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, o._native);
-   c.checkError('bindBuffer', 'Bindbuffer');
+   c.checkError('bindBuffer', 'Bind buffer failure.');
    g.bufferData(g.ELEMENT_ARRAY_BUFFER, d, g.STATIC_DRAW);
-   c.checkError('bufferData', 'bufferData');
+   c.checkError('bufferData', 'Upload buffer data. (count={1})', pc);
 }
 function FWglProgram(o){
    o = RClass.inherits(this, o, FG3dProgram);

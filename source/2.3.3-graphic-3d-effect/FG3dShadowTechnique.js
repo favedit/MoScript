@@ -15,6 +15,7 @@ function FG3dShadowTechnique(o){
    //..........................................................
    // @method
    o.setup      = FG3dShadowTechnique_setup;
+   o.drawRegion = FG3dShadowTechnique_drawRegion;
    return o;
 }
 
@@ -37,4 +38,18 @@ function FG3dShadowTechnique_setup(){
    p.linkContext(o._context);
    p.setup();
    ps.push(p);
+}
+
+//==========================================================
+// <T>绘制区域处理。</T>
+//
+// @method
+// @param p:region:FG3dRetion 区域
+//==========================================================
+function FG3dShadowTechnique_drawRegion(p){
+   var o = this;
+   var c = p.camera();
+   var l = p.directionalLight();
+   l.camera().updateFromCamera(c);
+   o.__base.FG3dTechnique.drawRegion.call(o, p);
 }

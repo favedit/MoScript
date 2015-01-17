@@ -13,8 +13,20 @@ function FG3dShadowColorPass(o){
    // @attribute
    //..........................................................
    // @method
+   o.textureDepth  = FG3dShadowColorPass_textureDepth;
+   // @method
    o.drawRegion    = FG3dShadowColorPass_drawRegion;
    return o;
+}
+
+//==========================================================
+// <T>获得深度纹理。</T>
+//
+// @method
+// @return 深度纹理
+//==========================================================
+function FG3dShadowColorPass_textureDepth(){
+   return this._textureDepth;
 }
 
 //==========================================================

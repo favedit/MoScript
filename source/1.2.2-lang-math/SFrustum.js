@@ -8,26 +8,25 @@
 function SFrustum(o){
    if(!o){o = this;}
    //..........................................................
-   // @attribute 转换矩阵
-   o.conerMatrix = null;
    // 中心点
-   o.center = null;
+   o.center       = new SPoint3();
    // 半径
-   o.radius = null;
+   o.radius       = null;
    // 最小X坐标
-   o.minX = null;
+   o.minX         = null;
    // 最大X坐标
-   o.maxX = null;
+   o.maxX         = null;
    // 最小Y坐标
-   o.minY = null;
+   o.minY         = null;
    // 最大Y坐标
-   o.maxY = null;
+   o.maxY         = null;
    // 最小Z坐标
-   o.minZ = null;
+   o.minZ         = null;
    // 最大Z坐标
-   o.maxZ = null;
+   o.maxZ         = null;
    // 顶点集合
-   o.coners = new Array(24);
+   o.points       = new Array(24);
+   o.coners       = new Array(24);
    //..........................................................
    // @method
    o.updateCenter = SFrustum_updateCenter;
@@ -43,37 +42,38 @@ function SFrustum(o){
 function SFrustum_updateCenter(){
    var o = this;
    // 计算空间内位置
-   var n = 0;
-   //o.minX = o.minY = o.minZ = MO_TP_FLOAT_MAX;
-   //o.maxX = o.maxY = o.maxZ = MO_TP_FLOAT_MIN;
-   while(n < 24){
-      var x = coners[n++];
-      if(x < minX){
-         minX = x;
+   var cs = o.coners;
+   o.minX = o.minY = o.minZ = Number.MAX_VALUE;
+   o.maxX = o.maxY = o.maxZ = -Number.MAX_VALUE;
+   var i = 0;
+   while(i < 24){
+      var x = cs[i++];
+      if(x < o.minX){
+         o.minX = x;
       }
-      if(x > maxX){
-         maxX = x;
+      if(x > o.maxX){
+         o.maxX = x;
       }
-      var y = coners[n++];
-      if(y < minY){
-         minY = y;
+      var y = cs[i++];
+      if(y < o.minY){
+         o.minY = y;
       }
-      if(y > maxY){
-         maxY = y;
+      if(y > o.maxY){
+         o.maxY = y;
       }
-      var z = coners[n++];
-      if(z < minZ){
-         minZ = z;
+      var z = cs[i++];
+      if(z < o.minZ){
+         o.minZ = z;
       }
-      if(z > maxZ){
-         maxZ = z;
+      if(z > o.maxZ){
+         o.maxZ = z;
       }
    }
    // 计算中心位置
-   center.x = (minX + maxX) * 0.5;
-   center.y = (minY + maxY) * 0.5;
-   center.z = (minZ + maxZ) * 0.5;
-   radius = Math.sqrt((minX - minY) * (minX - minY) + (minZ - maxX) * (minZ - maxX) + (maxY - maxZ) * (maxY - maxZ)) * 0.5;
+   o.center.x = (o.minX + o.maxX) * 0.5;
+   o.center.y = (o.minY + o.maxY) * 0.5;
+   o.center.z = (o.minZ + o.maxZ) * 0.5;
+   o.radius = Math.sqrt((o.minX - o.minY) * (o.minX - o.minY) + (o.minZ - o.maxX) * (o.minZ - o.maxX) + (o.maxY - o.maxZ) * (o.maxY - o.maxZ)) * 0.5;
 }
 
 //============================================================
@@ -86,33 +86,52 @@ function SFrustum_updateCenter(){
 // @param pvf:viewportFar 视角远平面
 // @param pfr:frontRate 前平面比率
 // @param pbr:backRate 后平面比率
-// @param matrix 矩阵
+// @param pm:matrix:SMatrix4x4 矩阵
 //============================================================
-function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, matrix){
+function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    var o = this;
    // 计算视角信息
    var aspect = pvw / pvh;
-   var znear = -pvf * pbr;
-   var zfar = pvf * pfr;
-   var fov = tan(MO_GRAPHIC_DEGREE_RATE * pva * 0.5);
+   //var znear = -pvf * pbr;
+   var znear = pvn;
+   //var zfar = pvf * pfr;
+   var zfar = pvf;
+   var fov = Math.tan(RMath.DEGREE_RATE * pva * 0.5);
    var nearY = znear * fov;
    var nearX = nearY * aspect;
    var farY = zfar * fov;
    var farX = farY * aspect;
    // 设置空间坐标
-   var points = [
-      -nearX,  nearY, znear,
-       nearX,  nearY, znear,
-       nearX, -nearY, znear,
-      -nearX, -nearY, znear,
-      -farX,   farY,  zfar,
-       farX,   farY,  zfar,
-       farX,  -farY,  zfar,
-      -farX,  -farY,  zfar];
+   var ps = o.points;
+   ps[ 0] = -nearX;
+   ps[ 1] =  nearY;
+   ps[ 2] =  znear;
+   ps[ 3] =  nearX;
+   ps[ 4] =  nearY;
+   ps[ 5] =  znear;
+   ps[ 6] =  nearX;
+   ps[ 7] = -nearY;
+   ps[ 8] =  znear;
+   ps[ 9] = -nearX;
+   ps[10] = -nearY;
+   ps[11] =  znear;
+   ps[12] = -farX;
+   ps[13] =  farY;
+   ps[14] =  zfar;
+   ps[15] =  farX;
+   ps[16] =  farY;
+   ps[17] =  zfar;
+   ps[18] =  farX;
+   ps[19] = -farY;
+   ps[20] =  zfar;
+   ps[21] = -farX;
+   ps[22] = -farY;
+   ps[23] =  zfar;
    // 设置转换矩阵
-   conerMatrix.assign(matrix);
-   conerMatrix.invert();
-   conerMatrix.transform(coners, points, 24);
+   var m = RMath.matrix;
+   m.assign(pm);
+   m.invert();
+   m.transform(o.coners, ps, 8);
    // 计算空间内位置
    o.updateCenter();
 }

@@ -299,50 +299,18 @@ function FG3dSampleAutomaticEffect(o){
    o.load           = FG3dSampleAutomaticEffect_load;
    return o;
 }
-function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
+function FG3dSampleAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   var prvp = pr.matrixViewProjection();
-   var prcp = pr.cameraPosition();
-   var prld = pr.lightDirection();
-   if(p.hasAttribute()){
-      var as = p.attributes();
-      var ac = as.count();
-      for(var n = 0; n < ac; n++){
-         var a = as.value(n);
-         if(a._statusUsed){
-            var vb = r.findVertexBuffer(a._linker);
-            if(vb == null){
-               throw new TError("Can't find renderable vertex buffer. (linker={1})", a._linker);
-            }
-            p.setAttribute(a._name, vb, vb._formatCd);
-         }
-      }
-   }
-   if(p.hasSampler()){
-      var ss = p.samplers();
-      var sc = ss.count();
-      for(var n = 0; n < sc; n++){
-         var s = ss.value(n);
-         if(s._statusUsed){
-            var ln = s.linker();
-            var sp = r.findTexture(ln);
-            if(sp != null){
-               p.setSampler(s.name(), sp.texture());
-            }else{
-               throw new TError("Can't find sampler. (linker={1})", ln);
-            }
-         }
-      }
-   }
-   p.setParameter('vc_model_matrix', r.matrix());
-   p.setParameter('vc_vp_matrix', prvp);
-   p.setParameter('vc_camera_position', prcp);
-   p.setParameter('vc_light_direction', prld);
-   p.setParameter('fc_camera_position', prcp);
-   p.setParameter('fc_light_direction', prld);
-   var m = r.material();
+   var m = pr.material();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('vc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
+   p.setParameter('fc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('fc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
    var mi = m.info();
    p.setParameter('fc_color', mi.ambientColor);
    p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
@@ -354,18 +322,9 @@ function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
-   if(mi.optionAlpha){
-      c.setBlendFactors(o._stateBlend, o._stateBlendSourceCd, o._stateBlendTargetCd);
-   }else{
-      c.setBlendFactors(false);
-   }
-   if(mi.optionDouble){
-      c.setCullingMode(false);
-   }else{
-      c.setCullingMode(o._stateDepth, o._stateCullCd);
-   }
-   var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
 }
 function FG3dSampleAutomaticEffect_load(){
    var o = this;
@@ -543,27 +502,25 @@ function FG3dShadowColorAutomaticEffect(o){
    o.load           = FG3dShadowColorAutomaticEffect_load;
    return o;
 }
-function FG3dShadowColorAutomaticEffect_drawRenderable(pr, r){
+function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   var prvp = pr.matrixViewProjection();
-   var prcp = pr.cameraPosition();
-   var prld = pr.lightDirection();
-   var l = pr.directionalLight();
+   var tp = pg.techniquePass();
+   var l = pg.directionalLight();
    var lc = l.camera();
-   var lp = l.projection();
-   var m = r.material();
+   var lp = lc.projection();
+   var m = pr.material();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', r.matrix());
-   p.setParameter('vc_vp_matrix', prvp);
-   p.setParameter('vc_camera_position', prcp);
-   p.setParameter('vc_light_direction', prld);
-   p.setParameter('vc_light_view_matrix', lc.matrix());
-   p.setParameter('vc_light_projection_matrix', lp.matrix());
-   p.setParameter('fc_camera_position', prcp);
-   p.setParameter('fc_light_direction', prld);
-   p.setParameter4('fc_light_depth', 1.0 / 1024.0, -1.0 / 1024.0, 0.0, 1.0 / lp.distance());
+   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('vc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
+   p.setParameter('vc_light_view_matrix', pg.calculate(EG3dRegionParameter.LightViewMatrix));
+   p.setParameter('vc_light_projection_matrix', pg.calculate(EG3dRegionParameter.LightProjectionMatrix));
+   p.setParameter('fc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('fc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
+   p.setParameter4('fc_light_depth', 1.0 / 16384.0, -1.0 / 16384.0, 0.0, 1.0 / lp.distance());
    var mi = m.info();
    p.setParameter('fc_color', mi.ambientColor);
    p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
@@ -575,11 +532,10 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pr, r){
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
-   o.bindAttributes(r);
-   p.setSampler('fs_light_depth', pr._textureDepth);
-   o.bindSamplers(r);
-   var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   o.bindAttributes(pr);
+   p.setSampler('fs_light_depth', pg._textureDepth);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
 }
 function FG3dShadowColorAutomaticEffect_load(){
    var o = this;
@@ -590,8 +546,12 @@ function FG3dShadowColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
    o._name         = 'color';
    o._textureDepth = null;
+   o.textureDepth  = FG3dShadowColorPass_textureDepth;
    o.drawRegion    = FG3dShadowColorPass_drawRegion;
    return o;
+}
+function FG3dShadowColorPass_textureDepth(){
+   return this._textureDepth;
 }
 function FG3dShadowColorPass_drawRegion(p){
    var o = this;
@@ -696,27 +656,22 @@ function FG3dShadowDepthAutomaticEffect(o){
    o.load           = FG3dShadowDepthAutomaticEffect_load;
    return o;
 }
-function FG3dShadowDepthAutomaticEffect_drawRenderable(pr, r){
+function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   var prvp = pr.matrixViewProjection();
-   var prcp = pr.cameraPosition();
-   var prld = pr.lightDirection();
-   var m = r.material();
-   o.bindMaterial(m);
-   c.setBlendFactors(false);
-   var l = pr.directionalLight();
+   var l = pg.directionalLight();
    var lc = l.camera();
-   var lp = l.projection();
-   p.setParameter('vc_model_matrix', r.matrix());
-   p.setParameter('vc_view_matrix', lc.matrix());
-   p.setParameter('vc_projection_matrix', lp.matrix());
+   var lp = lc.projection();
+   c.setBlendFactors(false);
+   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_view_matrix', pg.calculate(EG3dRegionParameter.LightViewMatrix));
+   p.setParameter('vc_projection_matrix', pg.calculate(EG3dRegionParameter.LightProjectionMatrix));
    p.setParameter4('fc_camera', lc.position().x, lc.position().y, lc.position().z, 1.0 / lp.distance());
-   o.bindAttributes(r);
-   o.bindSamplers(r);
-   var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   p.setParameter4('fc_alpha', 0, 0, 0, 0.1);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
 }
 function FG3dShadowDepthAutomaticEffect_load(){
    var o = this;
@@ -741,7 +696,7 @@ function FG3dShadowDepthPass_setup(){
    d.setFilter(EG3dSamplerFilter.Linear, EG3dSamplerFilter.Linear);
    d.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
    var t = o._renderTarget = c.createRenderTarget();
-   t.size().set(1024, 1024);
+   t.size().set(2048, 2048);
    t.textures().push(d);
    t.build();
 }
@@ -852,6 +807,7 @@ function FG3dShadowTechnique(o){
    o._passDepth = null;
    o._passColor = null;
    o.setup      = FG3dShadowTechnique_setup;
+   o.drawRegion = FG3dShadowTechnique_drawRegion;
    return o;
 }
 function FG3dShadowTechnique_setup(){
@@ -866,4 +822,11 @@ function FG3dShadowTechnique_setup(){
    p.linkContext(o._context);
    p.setup();
    ps.push(p);
+}
+function FG3dShadowTechnique_drawRegion(p){
+   var o = this;
+   var c = p.camera();
+   var l = p.directionalLight();
+   l.camera().updateFromCamera(c);
+   o.__base.FG3dTechnique.drawRegion.call(o, p);
 }

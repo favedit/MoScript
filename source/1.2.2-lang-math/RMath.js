@@ -35,9 +35,11 @@ var RMath = new function RMath(){
    o.double64     = null;
    //..........................................................
    // @attribute
-   o.vectorAxisX = null;
-   o.vectorAxisY = null;
-   o.vectorAxisZ = null;
+   o.matrix       = null;
+   // @attribute
+   o.vectorAxisX  = null;
+   o.vectorAxisY  = null;
+   o.vectorAxisZ  = null;
    //..........................................................
    // @method
    o.construct    = RMath_construct;
@@ -80,6 +82,8 @@ function RMath_construct(){
    o.double9 = new Float64Array(9);
    o.double12 = new Float64Array(12);
    o.double16 = new Float64Array(16);
+   // 初始化矩阵
+   o.matrix = new SMatrix3d();
    // 初始化方向轴
    o.vectorAxisX = new SVector3();
    o.vectorAxisX.set(1.0, 0.0, 0.0);

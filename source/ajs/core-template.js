@@ -240,6 +240,7 @@ function FTagDocument_load(p){
    var s = '<source>' + p + '</source>'
    s = s.replace(new RegExp('<' + o._space + ':', 'g'), '<' + o._space + '_');
    s = s.replace(new RegExp('</' + o._space + ':', 'g'), '</' + o._space + '_');
+   s = s.replace(new RegExp(' & ', 'g'), ' &amp; ');
    s = s.replace(new RegExp(' < ', 'g'), ' &lt; ');
    s = s.replace(new RegExp(' > ', 'g'), ' &rt; ');
    var xr = RXml.loadString(s);

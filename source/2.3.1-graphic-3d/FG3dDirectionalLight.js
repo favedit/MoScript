@@ -9,7 +9,6 @@ function FG3dDirectionalLight(o){
    //..........................................................
    // @attribute
    o._camera     = null;
-   o._projection = null;
    o._viewport   = null;
    o._direction  = null;
    //..........................................................
@@ -31,8 +30,8 @@ function FG3dDirectionalLight_construct(){
    var o = this;
    o.__base.FG3dLight.construct.call(o);
    o._direction = new SVector3();
-   o._camera = RClass.create(FG3dCamera);
-   o._projection = RClass.create(FG3dProjection);
+   //o._camera = RClass.create(FG3dOrthoCamera);
+   o._camera = RClass.create(FG3dPerspectiveCamera);
    o._viewport = RClass.create(FG3dViewport);
 }
 

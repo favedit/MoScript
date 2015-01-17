@@ -21,39 +21,32 @@ function FG3dShadowDepthAutomaticEffect(o){
 // <T>绘制渲染对象。</T>
 //
 // @method
-// @param p:renderable:FRenderable 渲染对象
+// @param pg:region:FG3dRegion 渲染区域
+// @param pr:renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FG3dShadowDepthAutomaticEffect_drawRenderable(pr, r){
+function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   var prvp = pr.matrixViewProjection();
-   var prcp = pr.cameraPosition();
-   var prld = pr.lightDirection();
-   // 绑定材质
-   var m = r.material();
-   o.bindMaterial(m);
-   c.setBlendFactors(false);
    // 获得信息
-   var l = pr.directionalLight();
+   var l = pg.directionalLight();
    var lc = l.camera();
-   var lp = l.projection();
+   var lp = lc.projection();
+   // 关闭混合选项
+   c.setBlendFactors(false);
    // 绑定所有属性流
-   p.setParameter('vc_model_matrix', r.matrix());
-   p.setParameter('vc_view_matrix', lc.matrix());
-   p.setParameter('vc_projection_matrix', lp.matrix());
-   //p.setParameter('vc_view_matrix', pr.camera().matrix());
-   //p.setParameter('vc_projection_matrix', pr.projection().matrix());
-   //p.setParameter('vc_projection_matrix', prvp);
+   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_view_matrix', pg.calculate(EG3dRegionParameter.LightViewMatrix));
+   p.setParameter('vc_projection_matrix', pg.calculate(EG3dRegionParameter.LightProjectionMatrix));
    // 设置材质
    p.setParameter4('fc_camera', lc.position().x, lc.position().y, lc.position().z, 1.0 / lp.distance());
+   p.setParameter4('fc_alpha', 0, 0, 0, 0.1);
    // 绑定所有属性流
-   o.bindAttributes(r);
+   o.bindAttributes(pr);
    // 绑定所有取样器
-   o.bindSamplers(r);
+   o.bindSamplers(pr);
    // 绘制处理
-   var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   c.drawTriangles(pr.indexBuffer());
 }
 
 //==========================================================

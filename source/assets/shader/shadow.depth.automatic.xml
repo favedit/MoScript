@@ -16,6 +16,7 @@
    <Parameter name='vc_view_matrix'       format='Float4x4'/>
    <Parameter name='vc_projection_matrix' format='Float4x4'/>
    <Parameter name='fc_camera'            format='Float4'/>
+   <Parameter name='fc_alpha'             format='Float4'/>
    <!--=====================================================-->
    <Attribute name='va_position' linker='position' format='Float4'/>
    <Attribute name='va_coord'    linker='coord'    format='Float2'/>
@@ -36,7 +37,6 @@
       </shader:true>
       //..........................................................
       // 属性流声明
-      varying vec4 v_model_position;
       varying vec4 v_view_position;
       <shader:true source='vertex.attribute.coord'>
       varying vec2 v_coord;
@@ -44,14 +44,11 @@
       //..........................................................
       // 逻辑处理
       void main(){
-         // 获得输入坐标
-         vec4 inputPosition = vec4(va_position, 1.0);
          // 计算模型坐标
-         vec4 modelPosition = inputPosition * vc_model_matrix;
+         vec4 modelPosition = vec4(va_position, 1.0) * vc_model_matrix;
          vec4 viewPosition = modelPosition * vc_view_matrix;
          // 计算最终坐标
          gl_Position = viewPosition * vc_projection_matrix;
-         v_model_position = modelPosition;
          v_view_position = viewPosition;
          // 设置纹理
          <shader:true source='vertex.attribute.coord'>
@@ -67,12 +64,12 @@
       //..........................................................
       // 声明常量
       uniform vec4 fc_camera;
+      uniform vec4 fc_alpha;
       //..........................................................
       // 声明插值器
-      varying vec4 v_model_position;
       varying vec4 v_view_position;
-      <shader:true source='vertex.attribute.color'>
-      varying vec4 v_color;
+      <shader:true source='vertex.attribute.coord'>
+      varying vec2 v_coord;
       </shader:true>
       //..........................................................
       // 声明取样器
@@ -86,10 +83,10 @@
          // 计算环境颜色
          <shader:true source='support.ambient'>
          <shader:true source='support.ambient.sampler'>
-         //vec4 color = texture2D(fs_diffuse, v_coord);
-         //if(color.a < fc_alpha.x){
-         //   discard;
-         //}
+         vec4 color = texture2D(fs_diffuse, v_coord);
+         if(color.a < fc_alpha.x){
+            discard;
+         }
          </shader:true>
          </shader:true>
          //............................................................
@@ -107,7 +104,6 @@
          // 返回颜色
          gl_FragColor = result;
          //gl_FragColor = vec4(depth, depth, depth, 1.0);
-         //gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
       }
    ]]></Source>
 </Configuration>

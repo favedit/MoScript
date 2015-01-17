@@ -5497,9 +5497,10 @@ var RMath = new function RMath(){
    o.double16     = null;
    o.double16     = null;
    o.double64     = null;
-   o.vectorAxisX = null;
-   o.vectorAxisY = null;
-   o.vectorAxisZ = null;
+   o.matrix       = null;
+   o.vectorAxisX  = null;
+   o.vectorAxisY  = null;
+   o.vectorAxisZ  = null;
    o.construct    = RMath_construct;
    o.construct();
    return o;
@@ -5524,6 +5525,7 @@ function RMath_construct(){
    o.double9 = new Float64Array(9);
    o.double12 = new Float64Array(12);
    o.double16 = new Float64Array(16);
+   o.matrix = new SMatrix3d();
    o.vectorAxisX = new SVector3();
    o.vectorAxisX.set(1.0, 0.0, 0.0);
    o.vectorAxisY = new SVector3();
@@ -5578,73 +5580,93 @@ function SColor4_toString(){
 }
 function SFrustum(o){
    if(!o){o = this;}
-   o.conerMatrix = null;
-   o.center = null;
-   o.radius = null;
-   o.minX = null;
-   o.maxX = null;
-   o.minY = null;
-   o.maxY = null;
-   o.minZ = null;
-   o.maxZ = null;
-   o.coners = new Array(24);
+   o.center       = new SPoint3();
+   o.radius       = null;
+   o.minX         = null;
+   o.maxX         = null;
+   o.minY         = null;
+   o.maxY         = null;
+   o.minZ         = null;
+   o.maxZ         = null;
+   o.points       = new Array(24);
+   o.coners       = new Array(24);
    o.updateCenter = SFrustum_updateCenter;
    o.update       = SFrustum_update;
    return o;
 }
 function SFrustum_updateCenter(){
    var o = this;
-   var n = 0;
-   while(n < 24){
-      var x = coners[n++];
-      if(x < minX){
-         minX = x;
+   var cs = o.coners;
+   o.minX = o.minY = o.minZ = Number.MAX_VALUE;
+   o.maxX = o.maxY = o.maxZ = -Number.MAX_VALUE;
+   var i = 0;
+   while(i < 24){
+      var x = cs[i++];
+      if(x < o.minX){
+         o.minX = x;
       }
-      if(x > maxX){
-         maxX = x;
+      if(x > o.maxX){
+         o.maxX = x;
       }
-      var y = coners[n++];
-      if(y < minY){
-         minY = y;
+      var y = cs[i++];
+      if(y < o.minY){
+         o.minY = y;
       }
-      if(y > maxY){
-         maxY = y;
+      if(y > o.maxY){
+         o.maxY = y;
       }
-      var z = coners[n++];
-      if(z < minZ){
-         minZ = z;
+      var z = cs[i++];
+      if(z < o.minZ){
+         o.minZ = z;
       }
-      if(z > maxZ){
-         maxZ = z;
+      if(z > o.maxZ){
+         o.maxZ = z;
       }
    }
-   center.x = (minX + maxX) * 0.5;
-   center.y = (minY + maxY) * 0.5;
-   center.z = (minZ + maxZ) * 0.5;
-   radius = Math.sqrt((minX - minY) * (minX - minY) + (minZ - maxX) * (minZ - maxX) + (maxY - maxZ) * (maxY - maxZ)) * 0.5;
+   o.center.x = (o.minX + o.maxX) * 0.5;
+   o.center.y = (o.minY + o.maxY) * 0.5;
+   o.center.z = (o.minZ + o.maxZ) * 0.5;
+   o.radius = Math.sqrt((o.minX - o.minY) * (o.minX - o.minY) + (o.minZ - o.maxX) * (o.minZ - o.maxX) + (o.maxY - o.maxZ) * (o.maxY - o.maxZ)) * 0.5;
 }
-function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, matrix){
+function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    var o = this;
    var aspect = pvw / pvh;
-   var znear = -pvf * pbr;
-   var zfar = pvf * pfr;
-   var fov = tan(MO_GRAPHIC_DEGREE_RATE * pva * 0.5);
+   var znear = pvn;
+   var zfar = pvf;
+   var fov = Math.tan(RMath.DEGREE_RATE * pva * 0.5);
    var nearY = znear * fov;
    var nearX = nearY * aspect;
    var farY = zfar * fov;
    var farX = farY * aspect;
-   var points = [
-      -nearX,  nearY, znear,
-       nearX,  nearY, znear,
-       nearX, -nearY, znear,
-      -nearX, -nearY, znear,
-      -farX,   farY,  zfar,
-       farX,   farY,  zfar,
-       farX,  -farY,  zfar,
-      -farX,  -farY,  zfar];
-   conerMatrix.assign(matrix);
-   conerMatrix.invert();
-   conerMatrix.transform(coners, points, 24);
+   var ps = o.points;
+   ps[ 0] = -nearX;
+   ps[ 1] =  nearY;
+   ps[ 2] =  znear;
+   ps[ 3] =  nearX;
+   ps[ 4] =  nearY;
+   ps[ 5] =  znear;
+   ps[ 6] =  nearX;
+   ps[ 7] = -nearY;
+   ps[ 8] =  znear;
+   ps[ 9] = -nearX;
+   ps[10] = -nearY;
+   ps[11] =  znear;
+   ps[12] = -farX;
+   ps[13] =  farY;
+   ps[14] =  zfar;
+   ps[15] =  farX;
+   ps[16] =  farY;
+   ps[17] =  zfar;
+   ps[18] =  farX;
+   ps[19] = -farY;
+   ps[20] =  zfar;
+   ps[21] = -farX;
+   ps[22] = -farY;
+   ps[23] =  zfar;
+   var m = RMath.matrix;
+   m.assign(pm);
+   m.invert();
+   m.transform(o.coners, ps, 8);
    o.updateCenter();
 }
 function SFrustumPlanes(o){
@@ -6017,6 +6039,7 @@ function SMatrix4x4(o){
    o.rotation   = SMatrix4x4_rotation;
    o.scale      = SMatrix4x4_scale;
    o.invert     = SMatrix4x4_invert;
+   o.transform  = SMatrix4x4_transform;
    o.writeData  = SMatrix4x4_writeData;
    return o;
 }
@@ -6234,6 +6257,16 @@ function SMatrix4x4_invert(){
       d[i] = v[i] * r;
    }
    return true;
+}
+function SMatrix4x4_transform(po, pi, pc){
+   var o = this;
+   var d = o._data;
+   for(var i = 0; i < pc; i++){
+      var n = (i << 1) + i;
+      po[n    ] = (pi[n] * d[ 0]) + (pi[n + 1] * d[ 4]) +(pi[n + 2] * d[ 8]) + d[12];
+      po[n + 1] = (pi[n] * d[ 1]) + (pi[n + 1] * d[ 5]) +(pi[n + 2] * d[ 9]) + d[13];
+      po[n + 2] = (pi[n] * d[ 2]) + (pi[n + 1] * d[ 6]) +(pi[n + 2] * d[10]) + d[14];
+   }
 }
 function SMatrix4x4_writeData(d, i){
    var o = this;
@@ -9716,12 +9749,22 @@ function RStyle_style(c, n){
 }
 var RTypeArray = new function RTypeArray(){
    var o = this;
+   o._float3  = null;
    o._float4  = null;
    o._data    = new Object();
+   o.float3      = RTypeArray_float3;
    o.float4      = RTypeArray_float4;
    o.createArray = RTypeArray_createArray;
    o.findTemp    = RTypeArray_findTemp;
    return o;
+}
+function RTypeArray_float3(){
+   var o = this;
+   var v = o._float3;
+   if(v == null){
+      v = o._float3 = new Float32Array(3);
+   }
+   return v;
 }
 function RTypeArray_float4(){
    var o = this;
@@ -10828,6 +10871,7 @@ function FTagDocument_load(p){
    var s = '<source>' + p + '</source>'
    s = s.replace(new RegExp('<' + o._space + ':', 'g'), '<' + o._space + '_');
    s = s.replace(new RegExp('</' + o._space + ':', 'g'), '</' + o._space + '_');
+   s = s.replace(new RegExp(' & ', 'g'), ' &amp; ');
    s = s.replace(new RegExp(' < ', 'g'), ' &lt; ');
    s = s.replace(new RegExp(' > ', 'g'), ' &rt; ');
    var xr = RXml.loadString(s);
@@ -11704,6 +11748,21 @@ function FG2dContext_dispose(){
    o._native = null;
    o.__base.FGraphicContext.dispose.call(o);
 }
+var EG3dRegionParameter = new function EG3dRegionParameter(){
+   var o = this;
+   o.Unknown                    = 0;
+   o.CameraPosition             = 1;
+   o.CameraDirection            = 2;
+   o.CameraViewMatrix           = 3;
+   o.CameraProjectionMatrix     = 4;
+   o.CameraViewProjectionMatrix = 5;
+   o.LightPosition              = 6;
+   o.LightDirection             = 7;
+   o.LightViewMatrix            = 8;
+   o.LightProjectionMatrix      = 9;
+   o.LightViewProjectionMatrix  = 10;
+   return o;
+}
 function FG3dAnimation(o){
    o = RClass.inherits(this, o, FObject);
    o._baseTick    = 0;
@@ -11785,61 +11844,63 @@ function FG3dBone_update(p){
 }
 function FG3dCamera(o){
    o = RClass.inherits(this, o, FObject);
-   o.__rotationX   = null;
-   o.__rotationY   = null;
-   o.__rotationZ   = null;
-   o._position     = null;
-   o._direction    = null;
-   o._rotation     = null;
-   o._matrix       = null;
-   o._centerFront  = 0;
-   o._centerBack   = 0;
-   o._focalNear    = 0.1;
-   o._focalFar     = 100.0;
-   o._planes       = null;
-   o._frustum      = null;
-   o._projection   = null;
-   o._viewport     = null;
-   o._axisUp       = null;
-   o._axisX        = null;
-   o._axisY        = null;
-   o._axisZ        = null;
-   o.construct     = FG3dCamera_construct;
-   o.position      = FG3dCamera_position;
-   o.setPosition   = FG3dCamera_setPosition;
-   o.direction     = FG3dCamera_direction;
-   o.setDirection  = FG3dCamera_setDirection;
-   o.matrix        = FG3dCamera_matrix;
-   o.doWalk        = FG3dCamera_doWalk;
-   o.doStrafe      = FG3dCamera_doStrafe;
-   o.doFly         = FG3dCamera_doFly;
-   o.doYaw         = FG3dCamera_doYaw;
-   o.doPitch       = FG3dCamera_doPitch;
-   o.lookAt        = FG3dCamera_lookAt;
-   o.updateFrustum = FG3dCamera_updateFrustum;
-   o.update        = FG3dCamera_update;
+   o._matrix      = null;
+   o._position    = null;
+   o._direction   = null;
+   o._rotation    = null;
+   o._centerFront = 1.0;
+   o._centerBack  = 1.0;
+   o._focalNear   = 0.1;
+   o._focalFar    = 200.0;
+   o._planes      = null;
+   o._frustum     = null;
+   o._viewport    = null;
+   o.__axisUp     = null;
+   o.__axisX      = null;
+   o.__axisY      = null;
+   o.__axisZ      = null;
+   o.__rotationX  = null;
+   o.__rotationY  = null;
+   o.__rotationZ  = null;
+   o.construct    = FG3dCamera_construct;
+   o.matrix       = FG3dCamera_matrix;
+   o.position     = FG3dCamera_position;
+   o.setPosition  = FG3dCamera_setPosition;
+   o.direction    = FG3dCamera_direction;
+   o.setDirection = FG3dCamera_setDirection;
+   o.frustum      = FG3dCamera_frustum;
+   o.doWalk       = FG3dCamera_doWalk;
+   o.doStrafe     = FG3dCamera_doStrafe;
+   o.doFly        = FG3dCamera_doFly;
+   o.doYaw        = FG3dCamera_doYaw;
+   o.doPitch      = FG3dCamera_doPitch;
+   o.lookAt       = FG3dCamera_lookAt;
+   o.update       = FG3dCamera_update;
    return o;
 }
 function FG3dCamera_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o.__rotationX = new SQuaternion();
-   o.__rotationY = new SQuaternion();
-   o.__rotationZ = new SQuaternion();
+   o._matrix = new SMatrix3d();
    o._position = new SPoint3();
    o._direction = new SVector3();
    o._rotation = new SQuaternion();
-   o._matrix = new SMatrix3d();
-   o.viewport = RClass.create(FG3dViewport);
-   o.projection = RClass.create(FG3dProjection);
-   o._axisUp = new SVector3();
-   o._axisUp.set(0, 1, 0);
-   o._axisX = new SVector3();
-   o._axisY = new SVector3();
-   o._axisZ = new SVector3();
+   o._frustum = new SFrustum();
+   o._viewport = RClass.create(FG3dViewport);
+   o.__axisUp = new SVector3();
+   o.__axisUp.set(0, 1, 0);
+   o.__axisX = new SVector3();
+   o.__axisY = new SVector3();
+   o.__axisZ = new SVector3();
+   o.__rotationX = new SQuaternion();
+   o.__rotationY = new SQuaternion();
+   o.__rotationZ = new SQuaternion();
 }
 function FG3dCamera_position(){
    return this._position;
+}
+function FG3dCamera_matrix(){
+   return this._matrix;
 }
 function FG3dCamera_setPosition(x, y, z){
    this._position.set(x, y, z);
@@ -11850,8 +11911,8 @@ function FG3dCamera_direction(){
 function FG3dCamera_setDirection(x, y, z){
    this._direction.set(x, y, z);
 }
-function FG3dCamera_matrix(){
-   return this._matrix;
+function FG3dCamera_frustum(){
+   return this._frustum;
 }
 function FG3dCamera_doWalk(p){
    var o = this;
@@ -11860,8 +11921,8 @@ function FG3dCamera_doWalk(p){
 }
 function FG3dCamera_doStrafe(p){
    var o = this;
-   o._position.x += o._axisY.x * p;
-   o._position.z += o._axisY.z * p;
+   o._position.x += o.__axisY.x * p;
+   o._position.z += o.__axisY.z * p;
 }
 function FG3dCamera_doFly(p){
    var o = this;
@@ -11879,16 +11940,14 @@ function FG3dCamera_lookAt(x, y, z){
    o._direction.set(x - p.x, y - p.y, z - p.z);
    o._direction.normalize();
 }
-function FG3dCamera_updateFrustum(){
-}
 function FG3dCamera_update(){
    var o = this;
-   var ax = o._axisX;
-   var ay = o._axisY;
-   var az = o._axisZ;
+   var ax = o.__axisX;
+   var ay = o.__axisY;
+   var az = o.__axisZ;
    az.assign(o._direction);
    az.normalize();
-   o._axisUp.cross2(ax, az);
+   o.__axisUp.cross2(ax, az);
    ax.normalize();
    az.cross2(ay, ax);
    ay.normalize();
@@ -11913,7 +11972,6 @@ function FG3dCamera_update(){
 function FG3dDirectionalLight(o){
    o = RClass.inherits(this, o, FG3dLight);
    o._camera     = null;
-   o._projection = null;
    o._viewport   = null;
    o._direction  = null;
    o.construct   = FG3dDirectionalLight_construct;
@@ -11927,8 +11985,7 @@ function FG3dDirectionalLight_construct(){
    var o = this;
    o.__base.FG3dLight.construct.call(o);
    o._direction = new SVector3();
-   o._camera = RClass.create(FG3dCamera);
-   o._projection = RClass.create(FG3dProjection);
+   o._camera = RClass.create(FG3dPerspectiveCamera);
    o._viewport = RClass.create(FG3dViewport);
 }
 function FG3dDirectionalLight_camera(){
@@ -12235,99 +12292,250 @@ function FG3dObject_linkContext(c){
 }
 function FG3dObject_setup(){
 }
+function FG3dOrthoCamera(o){
+   o = RClass.inherits(this, o, FG3dCamera);
+   o._projection      = null;
+   o.construct        = FG3dOrthoCamera_construct;
+   o.projection       = FG3dOrthoCamera_projection;
+   o.updateFrustum    = FG3dOrthoCamera_updateFrustum;
+   o.updateFromCamera = FG3dOrthoCamera_updateFromCamera;
+   return o;
+}
+function FG3dOrthoCamera_construct(){
+   var o = this;
+   o.__base.FG3dCamera.construct.call(o);
+   o._projection = RClass.create(FG3dOrthoProjection);
+}
+function FG3dOrthoCamera_projection(){
+   return this._projection;
+}
+function FG3dOrthoCamera_updateFrustum(){
+   var o = this;
+   var p = o._projection;
+   var s = p._size;
+   var f = o._frustum;
+   f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
+   return f;
+}
+function FG3dOrthoCamera_updateFromCamera(p){
+   var o = this;
+   var pf = p.updateFrustum();
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * pf.radius;
+   var vy = pf.center.y - d.y * pf.radius;
+   var vz = pf.center.z - d.z * pf.radius;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   var f = o._frustum;
+   o._matrix.transform(f.coners, pf.coners, 8);
+   f.updateCenter();
+   o._projection.updateFrustum(f);
+}
+function FG3dOrthoProjection(o){
+   o = RClass.inherits(this, o, FG3dProjection);
+   o._matrix       = null;
+   o.construct     = FG3dOrthoProjection_construct;
+   o.matrix        = FG3dOrthoProjection_matrix;
+   o.update        = FG3dOrthoProjection_update;
+   o.updateFrustum = FG3dOrthoProjection_updateFrustum;
+   return o;
+}
+function FG3dOrthoProjection_construct(){
+   var o = this;
+   o.__base.FG3dProjection.construct.call(o);
+   o._matrix = new SOrthoMatrix3d();
+}
+function FG3dOrthoProjection_matrix(){
+   return this._matrix;
+}
+function FG3dOrthoProjection_update(){
+   var o = this;
+   var s = o._size;
+   o._matrix.identity();
+   var d = o._matrix.data();
+   d[ 0] = 2.0 / s.width;
+   d[ 4] = d[ 8] = d[12] = 0.0;
+   d[ 5] = 2.0 / s.height;
+   d[ 1] = d[ 9] = d[13] = 0.0;
+   d[10] = 1.0 / (o._znear - o._zfar);
+   d[ 2] = d[ 6] = d[14] = 0.0;
+   d[ 3] = d[ 7] = 0.0;
+   d[11] = o._znear / (o._znear - o._zfar);
+   d[15] = 1.0;
+}
+function FG3dOrthoProjection_updateFrustum(p){
+   var o = this;
+   o._znear = p.minZ;
+   o._zfar = p.maxZ;
+   o.update();
+}
+function FG3dPerspectiveCamera(o){
+   o = RClass.inherits(this, o, FG3dCamera);
+   o._projection      = null;
+   o.construct        = FG3dPerspectiveCamera_construct;
+   o.projection       = FG3dPerspectiveCamera_projection;
+   o.updateFrustum    = FG3dPerspectiveCamera_updateFrustum;
+   o.updateFromCamera = FG3dPerspectiveCamera_updateFromCamera;
+   return o;
+}
+function FG3dPerspectiveCamera_construct(){
+   var o = this;
+   o.__base.FG3dCamera.construct.call(o);
+   o._projection = RClass.create(FG3dPerspectiveProjection);
+}
+function FG3dPerspectiveCamera_projection(){
+   return this._projection;
+}
+function FG3dPerspectiveCamera_updateFrustum(){
+   var o = this;
+   var p = o._projection;
+   var s = p._size;
+   var f = o._frustum;
+   f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
+   return f;
+}
+function FG3dPerspectiveCamera_updateFromCamera(p){
+   var o = this;
+   var f = o._frustum
+   var pf = p.updateFrustum();
+   var angle = RMath.DEGREE_RATE * o._projection.angle();
+   var distance = pf.radius / Math.sin(angle * 0.5);
+   distance = Math.max(distance, p._projection._zfar);
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * distance;
+   var vy = pf.center.y - d.y * distance;
+   var vz = pf.center.z - d.z * distance;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   o._matrix.transform(f.coners, pf.coners, 8);
+   f.updateCenter();
+   o._projection.updateFrustum(f);
+}
+function FG3dPerspectiveProjection(o){
+   o = RClass.inherits(this, o, FG3dProjection);
+   o._matrix       = null;
+   o.construct     = FG3dPerspectiveProjection_construct;
+   o.matrix        = FG3dPerspectiveProjection_matrix;
+   o.update        = FG3dPerspectiveProjection_update;
+   o.updateFrustum = FG3dPerspectiveProjection_updateFrustum;
+   return o;
+}
+function FG3dPerspectiveProjection_construct(){
+   var o = this;
+   o.__base.FG3dProjection.construct.call(o);
+   o._matrix = new SPerspectiveMatrix3d();
+}
+function FG3dPerspectiveProjection_matrix(){
+   return this._matrix;
+}
+function FG3dPerspectiveProjection_update(){
+   var o = this;
+   var s = o._size;
+   o._fieldOfView = RMath.DEGREE_RATE * o._angle;
+   o._matrix.perspectiveFieldOfViewLH(o._fieldOfView, s.width / s.height, o._znear, o._zfar);
+}
+function FG3dPerspectiveProjection_updateFrustum(p){
+   var o = this;
+   o._znear = p.minZ;
+   o._zfar = p.maxZ;
+   o.update();
+}
 function FG3dPointLight(o){
    o = RClass.inherits(this, o, FG3dLight);
    return o;
 }
 function FG3dProjection(o){
    o = RClass.inherits(this, o, FObject);
-   o.width       = 0;
-   o.height      = 0;
-   o.angle       = 60;
-   o.fieldOfView = 0;
-   o.scale       = 0;
-   o.znear       = 0.1;
-   o.zfar        = 100;
-   o._matrix     = null;
+   o._size        = null;
+   o._angle       = 60.0;
+   o._fieldOfView = 0;
+   o._znear       = 0.1;
+   o._zfar        = 200.0;
+   o._scale       = 0;
    o.construct   = FG3dProjection_construct;
-   o.matrix      = FG3dProjection_matrix;
+   o.size        = FG3dProjection_size;
+   o.angle       = FG3dProjection_angle;
+   o.znear       = FG3dProjection_znear;
+   o.zfar        = FG3dProjection_zfar;
    o.distance    = FG3dProjection_distance;
-   o.update      = FG3dProjection_update;
-   o.updateOrtho = FG3dProjection_updateOrtho;
    return o;
 }
 function FG3dProjection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._matrix = new SPerspectiveMatrix3d();
+   o._size = new SSize2();;
+}
+function FG3dProjection_size(){
+   return this._size;
+}
+function FG3dProjection_angle(){
+   return this._angle;
+}
+function FG3dProjection_znear(){
+   return this._znear;
+}
+function FG3dProjection_zfar(){
+   return this._zfar;
 }
 function FG3dProjection_distance(){
-   return this.zfar - this.znear;
-}
-function FG3dProjection_matrix(){
-   return this._matrix;
-}
-function FG3dProjection_update(){
-   var o = this;
-   o.fieldOfView = RMath.DEGREE_RATE * o.angle;
-   o._matrix.perspectiveFieldOfViewLH(o.fieldOfView, o.width / o.height, o.znear, o.zfar);
-}
-function FG3dProjection_updateOrtho(){
-   var o = this;
-   o._matrix.identity();
-   var d = o._matrix.data();
-   d[ 0] = 2.0 / o.width;
-   d[ 4] = d[ 8] = d[12] = 0.0;
-   d[ 5] = 2.0 / o.height;
-   d[ 1] = d[ 9] = d[13] = 0.0;
-   d[10] = 1.0 / (o.znear - o.zfar);
-   d[ 2] = d[ 6] = d[14] = 0.0;
-   d[ 3] = d[ 7] = 0.0;
-   d[11] = o.znear / (o.znear - o.zfar);
-   d[15] = 1.0;
+   return this._zfar - this._znear;
 }
 function FG3dRegion(o){
    o = RClass.inherits(this, o, FObject);
-   o._spaceName            = null;
-   o._technique            = null;
-   o._techniquePass        = null;
-   o._camera               = null;
-   o._projection           = null;
-   o._directionalLight     = null
-   o._renderables          = null;
-   o._matrixViewProjection  = null;
-   o._lightMatrixView       = null;
-   o._lightMatrixProjection = null;
-   o._cameraPosition        = null;
-   o._lightDirection        = null;
-   o.construct             = FG3dRegion_construct;
-   o.spaceName             = FG3dRegion_spaceName;
-   o.technique             = FG3dRegion_technique;
-   o.setTechnique          = FG3dRegion_setTechnique;
-   o.techniquePass         = FG3dRegion_techniquePass;
-   o.setTechniquePass      = FG3dRegion_setTechniquePass;
-   o.camera                = FG3dRegion_camera;
-   o.projection            = FG3dRegion_projection;
-   o.directionalLight      = FG3dRegion_directionalLight;
-   o.matrixViewProjection  = FG3dRegion_matrixViewProjection;
-   o.cameraPosition        = FG3dRegion_cameraPosition;
-   o.lightDirection        = FG3dRegion_lightDirection;
-   o.renderables           = FG3dRegion_renderables;
-   o.pushRenderable        = FG3dRegion_pushRenderable;
-   o.prepare               = FG3dRegion_prepare;
-   o.update                = FG3dRegion_update;
-   o.dispose               = FG3dRegion_dispose;
+   o._spaceName                  = null;
+   o._technique                  = null;
+   o._techniquePass              = null;
+   o._camera                     = null;
+   o._projection                 = null;
+   o._directionalLight           = null
+   o._lights                     = null
+   o._renderables                = null;
+   o._cameraPosition             = null;
+   o._cameraDirection            = null;
+   o._cameraViewMatrix           = null;
+   o._cameraProjectionMatrix     = null;
+   o._cameraViewProjectionMatrix = null;
+   o._lightPosition              = null;
+   o._lightDirection             = null;
+   o._lightViewMatrix            = null;
+   o._lightProjectionMatrix      = null;
+   o._lightViewProjectionMatrix  = null;
+   o.construct                   = FG3dRegion_construct;
+   o.spaceName                   = FG3dRegion_spaceName;
+   o.technique                   = FG3dRegion_technique;
+   o.setTechnique                = FG3dRegion_setTechnique;
+   o.techniquePass               = FG3dRegion_techniquePass;
+   o.setTechniquePass            = FG3dRegion_setTechniquePass;
+   o.camera                      = FG3dRegion_camera;
+   o.directionalLight            = FG3dRegion_directionalLight;
+   o.lights                      = FG3dRegion_lights;
+   o.renderables                 = FG3dRegion_renderables;
+   o.pushRenderable              = FG3dRegion_pushRenderable;
+   o.prepare                     = FG3dRegion_prepare;
+   o.calculate                   = FG3dRegion_calculate;
+   o.update                      = FG3dRegion_update;
+   o.dispose                     = FG3dRegion_dispose;
    return o;
 }
 function FG3dRegion_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._lights = new TObjects();
    o._renderables = new TObjects();
-   o._matrixViewProjection = new SMatrix3d();
-   o._cameraPosition = new Float32Array(3);
-   o._lightDirection = new Float32Array(3);
-   o._lightMatrixView = new SMatrix3d();
-   o._lightMatrixProjection = new SMatrix3d();
+   o._cameraPosition = new SPoint3();
+   o._cameraDirection = new SVector3();
+   o._cameraViewMatrix = new SMatrix3d();
+   o._cameraProjectionMatrix = new SMatrix3d();
+   o._cameraViewProjectionMatrix = new SMatrix3d();
+   o._lightPosition = new SPoint3();
+   o._lightDirection = new SVector3();
+   o._lightViewMatrix = new SMatrix3d();
+   o._lightProjectionMatrix = new SMatrix3d();
+   o._lightViewProjectionMatrix = new SMatrix3d();
 }
 function FG3dRegion_spaceName(){
    return this._spaceName;
@@ -12349,20 +12557,11 @@ function FG3dRegion_setTechniquePass(p){
 function FG3dRegion_camera(){
    return this._camera;
 }
-function FG3dRegion_projection(){
-   return this._projection;
-}
 function FG3dRegion_directionalLight(){
    return this._directionalLight;
 }
-function FG3dRegion_matrixViewProjection(p){
-   return this._matrixViewProjection;
-}
-function FG3dRegion_cameraPosition(){
-   return this._cameraPosition;
-}
-function FG3dRegion_lightDirection(){
-   return this._lightDirection;
+function FG3dRegion_lights(){
+   return this._lights;
 }
 function FG3dRegion_renderables(p){
    return this._renderables;
@@ -12372,26 +12571,57 @@ function FG3dRegion_pushRenderable(p){
 }
 function FG3dRegion_prepare(){
    var o = this;
-   o._matrixViewProjection.assign(o._camera.matrix());
-   o._matrixViewProjection.append(o._projection.matrix());
-   var cp = o._camera.position();
-   o._cameraPosition[0] = cp.x;
-   o._cameraPosition[1] = cp.y;
-   o._cameraPosition[2] = cp.z;
-   var ld = o._directionalLight.direction();
-   ld.normalize();
-   o._lightDirection[0] = ld.x;
-   o._lightDirection[1] = ld.y;
-   o._lightDirection[2] = ld.z;
+   var c = o._camera;
+   var cp = c.projection();
+   o._cameraPosition.assign(c.position());
+   o._cameraDirection.assign(c.direction());
+   o._cameraViewMatrix.assign(c.matrix());
+   o._cameraProjectionMatrix.assign(cp.matrix());
+   o._cameraViewProjectionMatrix.assign(c.matrix());
+   o._cameraViewProjectionMatrix.append(cp.matrix());
+   var l = o._directionalLight;
+   var lc = l.camera();
+   var lcp = lc.projection();
+   o._lightPosition.assign(lc.position());
+   o._lightDirection.assign(lc.direction());
+   o._lightViewMatrix.assign(lc.matrix());
+   o._lightProjectionMatrix.assign(lcp.matrix());
+   o._lightViewProjectionMatrix.assign(lc.matrix());
+   o._lightViewProjectionMatrix.append(lcp.matrix());
    o._renderables.clear();
+}
+function FG3dRegion_calculate(p){
+   var o = this;
+   switch(p){
+      case EG3dRegionParameter.CameraPosition:
+         return o._cameraPosition;
+      case EG3dRegionParameter.CameraDirection:
+         return o._cameraDirection;
+      case EG3dRegionParameter.CameraViewMatrix:
+         return o._cameraViewMatrix;
+      case EG3dRegionParameter.CameraProjectionMatrix:
+         return o._cameraProjectionMatrix;
+      case EG3dRegionParameter.CameraViewProjectionMatrix:
+         return o._cameraViewProjectionMatrix;
+      case EG3dRegionParameter.LightPosition:
+         return o._lightPosition;
+      case EG3dRegionParameter.LightDirection:
+         return o._lightDirection;
+      case EG3dRegionParameter.LightViewMatrix:
+         return o._lightViewMatrix;
+      case EG3dRegionParameter.LightProjectionMatrix:
+         return o._lightProjectionMatrix;
+      case EG3dRegionParameter.LightViewProjectionMatrix:
+         return o._lightViewProjectionMatrix;
+   }
+   throw new TError(o, 'Unknown parameter type. (type_cd={1})', p);
 }
 function FG3dRegion_update(){
    var o = this;
    var rs = o._renderables;
    var c = rs.count();
    for(var i = 0; i < c; i++){
-      var r = rs.get(i);
-      r.update(o);
+      rs.get(i).update(o);
    }
 }
 function FG3dRegion_dispose(){
@@ -13066,10 +13296,18 @@ function FG3dFragmentShader(o){
 }
 function FG3dIndexBuffer(o){
    o = RClass.inherits(this, o, FG3dObject);
-   o.strideCd = EG3dIndexStride.Uint16;
-   o.count    = 0;
-   o.upload = RMethod.virtual(o, 'upload');
+   o._strideCd = EG3dIndexStride.Uint16;
+   o._count    = 0;
+   o.strideCd  = FG3dIndexBuffer_strideCd;
+   o.count     = FG3dIndexBuffer_count;
+   o.upload    = RMethod.virtual(o, 'upload');
    return o;
+}
+function FG3dIndexBuffer_strideCd(){
+   return this._strideCd;
+}
+function FG3dIndexBuffer_count(){
+   return this._count;
 }
 function FG3dProgram(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -13731,50 +13969,18 @@ function FG3dSampleAutomaticEffect(o){
    o.load           = FG3dSampleAutomaticEffect_load;
    return o;
 }
-function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
+function FG3dSampleAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   var prvp = pr.matrixViewProjection();
-   var prcp = pr.cameraPosition();
-   var prld = pr.lightDirection();
-   if(p.hasAttribute()){
-      var as = p.attributes();
-      var ac = as.count();
-      for(var n = 0; n < ac; n++){
-         var a = as.value(n);
-         if(a._statusUsed){
-            var vb = r.findVertexBuffer(a._linker);
-            if(vb == null){
-               throw new TError("Can't find renderable vertex buffer. (linker={1})", a._linker);
-            }
-            p.setAttribute(a._name, vb, vb._formatCd);
-         }
-      }
-   }
-   if(p.hasSampler()){
-      var ss = p.samplers();
-      var sc = ss.count();
-      for(var n = 0; n < sc; n++){
-         var s = ss.value(n);
-         if(s._statusUsed){
-            var ln = s.linker();
-            var sp = r.findTexture(ln);
-            if(sp != null){
-               p.setSampler(s.name(), sp.texture());
-            }else{
-               throw new TError("Can't find sampler. (linker={1})", ln);
-            }
-         }
-      }
-   }
-   p.setParameter('vc_model_matrix', r.matrix());
-   p.setParameter('vc_vp_matrix', prvp);
-   p.setParameter('vc_camera_position', prcp);
-   p.setParameter('vc_light_direction', prld);
-   p.setParameter('fc_camera_position', prcp);
-   p.setParameter('fc_light_direction', prld);
-   var m = r.material();
+   var m = pr.material();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('vc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
+   p.setParameter('fc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('fc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
    var mi = m.info();
    p.setParameter('fc_color', mi.ambientColor);
    p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
@@ -13786,18 +13992,9 @@ function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
-   if(mi.optionAlpha){
-      c.setBlendFactors(o._stateBlend, o._stateBlendSourceCd, o._stateBlendTargetCd);
-   }else{
-      c.setBlendFactors(false);
-   }
-   if(mi.optionDouble){
-      c.setCullingMode(false);
-   }else{
-      c.setCullingMode(o._stateDepth, o._stateCullCd);
-   }
-   var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
 }
 function FG3dSampleAutomaticEffect_load(){
    var o = this;
@@ -13975,27 +14172,25 @@ function FG3dShadowColorAutomaticEffect(o){
    o.load           = FG3dShadowColorAutomaticEffect_load;
    return o;
 }
-function FG3dShadowColorAutomaticEffect_drawRenderable(pr, r){
+function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   var prvp = pr.matrixViewProjection();
-   var prcp = pr.cameraPosition();
-   var prld = pr.lightDirection();
-   var l = pr.directionalLight();
+   var tp = pg.techniquePass();
+   var l = pg.directionalLight();
    var lc = l.camera();
-   var lp = l.projection();
-   var m = r.material();
+   var lp = lc.projection();
+   var m = pr.material();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', r.matrix());
-   p.setParameter('vc_vp_matrix', prvp);
-   p.setParameter('vc_camera_position', prcp);
-   p.setParameter('vc_light_direction', prld);
-   p.setParameter('vc_light_view_matrix', lc.matrix());
-   p.setParameter('vc_light_projection_matrix', lp.matrix());
-   p.setParameter('fc_camera_position', prcp);
-   p.setParameter('fc_light_direction', prld);
-   p.setParameter4('fc_light_depth', 1.0 / 1024.0, -1.0 / 1024.0, 0.0, 1.0 / lp.distance());
+   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('vc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
+   p.setParameter('vc_light_view_matrix', pg.calculate(EG3dRegionParameter.LightViewMatrix));
+   p.setParameter('vc_light_projection_matrix', pg.calculate(EG3dRegionParameter.LightProjectionMatrix));
+   p.setParameter('fc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('fc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
+   p.setParameter4('fc_light_depth', 1.0 / 16384.0, -1.0 / 16384.0, 0.0, 1.0 / lp.distance());
    var mi = m.info();
    p.setParameter('fc_color', mi.ambientColor);
    p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
@@ -14007,11 +14202,10 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pr, r){
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
-   o.bindAttributes(r);
-   p.setSampler('fs_light_depth', pr._textureDepth);
-   o.bindSamplers(r);
-   var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   o.bindAttributes(pr);
+   p.setSampler('fs_light_depth', pg._textureDepth);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
 }
 function FG3dShadowColorAutomaticEffect_load(){
    var o = this;
@@ -14022,8 +14216,12 @@ function FG3dShadowColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
    o._name         = 'color';
    o._textureDepth = null;
+   o.textureDepth  = FG3dShadowColorPass_textureDepth;
    o.drawRegion    = FG3dShadowColorPass_drawRegion;
    return o;
+}
+function FG3dShadowColorPass_textureDepth(){
+   return this._textureDepth;
 }
 function FG3dShadowColorPass_drawRegion(p){
    var o = this;
@@ -14128,27 +14326,22 @@ function FG3dShadowDepthAutomaticEffect(o){
    o.load           = FG3dShadowDepthAutomaticEffect_load;
    return o;
 }
-function FG3dShadowDepthAutomaticEffect_drawRenderable(pr, r){
+function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   var prvp = pr.matrixViewProjection();
-   var prcp = pr.cameraPosition();
-   var prld = pr.lightDirection();
-   var m = r.material();
-   o.bindMaterial(m);
-   c.setBlendFactors(false);
-   var l = pr.directionalLight();
+   var l = pg.directionalLight();
    var lc = l.camera();
-   var lp = l.projection();
-   p.setParameter('vc_model_matrix', r.matrix());
-   p.setParameter('vc_view_matrix', lc.matrix());
-   p.setParameter('vc_projection_matrix', lp.matrix());
+   var lp = lc.projection();
+   c.setBlendFactors(false);
+   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_view_matrix', pg.calculate(EG3dRegionParameter.LightViewMatrix));
+   p.setParameter('vc_projection_matrix', pg.calculate(EG3dRegionParameter.LightProjectionMatrix));
    p.setParameter4('fc_camera', lc.position().x, lc.position().y, lc.position().z, 1.0 / lp.distance());
-   o.bindAttributes(r);
-   o.bindSamplers(r);
-   var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   p.setParameter4('fc_alpha', 0, 0, 0, 0.1);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
 }
 function FG3dShadowDepthAutomaticEffect_load(){
    var o = this;
@@ -14173,7 +14366,7 @@ function FG3dShadowDepthPass_setup(){
    d.setFilter(EG3dSamplerFilter.Linear, EG3dSamplerFilter.Linear);
    d.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
    var t = o._renderTarget = c.createRenderTarget();
-   t.size().set(1024, 1024);
+   t.size().set(2048, 2048);
    t.textures().push(d);
    t.build();
 }
@@ -14284,6 +14477,7 @@ function FG3dShadowTechnique(o){
    o._passDepth = null;
    o._passColor = null;
    o.setup      = FG3dShadowTechnique_setup;
+   o.drawRegion = FG3dShadowTechnique_drawRegion;
    return o;
 }
 function FG3dShadowTechnique_setup(){
@@ -14298,6 +14492,13 @@ function FG3dShadowTechnique_setup(){
    p.linkContext(o._context);
    p.setup();
    ps.push(p);
+}
+function FG3dShadowTechnique_drawRegion(p){
+   var o = this;
+   var c = p.camera();
+   var l = p.directionalLight();
+   l.camera().updateFromCamera(c);
+   o.__base.FG3dTechnique.drawRegion.call(o, p);
 }
 function FWglContext(o){
    o = RClass.inherits(this, o, FG3dContext);
@@ -14349,7 +14550,7 @@ function FWglContext_linkCanvas(h){
    if(h.getContext){
       var n = h.getContext('webgl');
       if(n == null){
-         n = h.getContext('experimental-webgl');
+         n = h.getContext('experimental-webgl', {antialias:true});
       }
       if(n == null){
          throw new TError("Current browser can't support WebGL technique.");
@@ -14869,14 +15070,14 @@ function FWglContext_drawTriangles(b, i, c){
       i = 0;
    }
    if(c == null){
-      c = b.count;
+      c = b.count();
    }
    g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, b._native);
    r = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", b, i, c, b._native);
    if(!r){
        return r;
    }
-   var strideCd = RWglUtility.convertIndexStride(g, b.strideCd);
+   var strideCd = RWglUtility.convertIndexStride(g, b.strideCd());
    g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
    r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
    if(!r){
@@ -14965,11 +15166,11 @@ function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
 }
 function FWglFlatTexture(o){
    o = RClass.inherits(this, o, FG3dFlatTexture);
-   o._native = null;
+   o._native     = null;
    o.onImageLoad = FWglFlatTexture_onImageLoad;
-   o.setup   = FWglFlatTexture_setup;
-   o.loadUrl = FWglFlatTexture_loadUrl;
-   o.upload  = FWglFlatTexture_upload;
+   o.setup       = FWglFlatTexture_setup;
+   o.loadUrl     = FWglFlatTexture_loadUrl;
+   o.upload      = FWglFlatTexture_upload;
    return o;
 }
 function FWglFlatTexture_onImageLoad(v){
@@ -14991,7 +15192,7 @@ function FWglFlatTexture_loadUrl(p){
    var o = this;
    var r = new Image();
    r.src = p;
-   r.onload = function(){o.onImageLoad(this);}
+   r.onload = function(){o.onImageLoad(o);}
 }
 function FWglFlatTexture_upload(p){
    var o = this;
@@ -15051,14 +15252,13 @@ function FWglIndexBuffer(o){
 function FWglIndexBuffer_setup(){
    var o = this;
    o.__base.FG3dIndexBuffer.setup.call(o);
-   var g = o._context._native;
-   o._native = g.createBuffer();
+   o._native = o._context._native.createBuffer();
 }
 function FWglIndexBuffer_upload(pd, pc){
    var o = this;
    var c = o._context;
    var g = c._native;
-   o.count  = pc;
+   o._count = pc;
    var d = null;
    if(pd.constructor == Array){
       d = new Uint16Array(pd);
@@ -15068,9 +15268,9 @@ function FWglIndexBuffer_upload(pd, pc){
       RLogger.fatal(o, null, 'Upload index data type is invalid. (value={1})', pd);
    }
    g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, o._native);
-   c.checkError('bindBuffer', 'Bindbuffer');
+   c.checkError('bindBuffer', 'Bind buffer failure.');
    g.bufferData(g.ELEMENT_ARRAY_BUFFER, d, g.STATIC_DRAW);
-   c.checkError('bufferData', 'bufferData');
+   c.checkError('bufferData', 'Upload buffer data. (count={1})', pc);
 }
 function FWglProgram(o){
    o = RClass.inherits(this, o, FG3dProgram);
@@ -16180,30 +16380,32 @@ function FScene3d_loadRegionResource(p){
    var o = this;
    o._backgroundColor.assign(p.color());
    var rc = p.camera();
+   var rcv = rc.viewport();
    var c = o._camera;
+   var cp = c._projection;
    c.position().assign(rc.position());
    c.direction().assign(rc.direction());
    c.update();
-   var rv = rc.viewport();
-   var v = o._projection;
-   v.angle = rv.angle();
-   v.znear = rv.znear();
-   v.zfar = rv.zfar();
+   cp.size().assign(o._context.size());
+   cp._angle = rcv.angle();
+   cp._znear = rcv.znear();
+   cp._zfar = rcv.zfar();
+   cp.update();
    var l = o._directionalLight
-   var lc = l.camera();
-   var lp = l.projection();
+   var lc = l._camera;
+   var lp = lc._projection;
    var rl = p.light();
    var rlc = rl.camera();
    var rlv = rlc.viewport();
-   lp.width = 1024;
-   lp.height = 1024;
-   lp.angle = 120;
-   lp.znear = 0.01;
-   lp.zfar = 200;
-   lp.update();
+   lc.position().set(1, 1, -1);
+   lc.lookAt(0, 0, 0);
    lc.position().assign(rlc.position());
-   lc.direction().assign(rlc.direction());
    lc.update();
+   lp.size().set(1024, 1024);
+   lp._angle = 90;
+   lp._znear = rlv.znear();
+   lp._zfar = rlv.zfar();
+   lp.update();
 }
 function FScene3d_loadDisplayResource(pl, pd){
    var o = this;
@@ -16564,7 +16766,6 @@ function FStage3d(o){
    o = RClass.inherits(this, o, FStage);
    o._backgroundColor  = null;
    o._camera           = null;
-   o._projection       = null;
    o._directionalLight = null
    o._technique        = null;
    o._region           = null;
@@ -16583,19 +16784,16 @@ function FStage3d_construct(){
    o.__base.FStage.construct.call(o);
    o._backgroundColor = new SColor4();
    o._backgroundColor.set(0, 0, 0, 1);
-   var rc = o._camera = RClass.create(FG3dCamera);
-   rc.position().set(0, 0, -100);
-   rc.lookAt(0, 0, 0);
-   rc.update();
-   var rp = o._projection = RClass.create(FG3dProjection);
-   rp.update();
-   rc._projection = rp;
-   var dl = o._directionalLight = RClass.create(FG3dDirectionalLight);
-   dl.direction().set(0, -1, 0);
+   var c = o._camera = RClass.create(FG3dPerspectiveCamera);
+   c.position().set(0, 0, -100);
+   c.lookAt(0, 0, 0);
+   c.update();
+   c._projection.update();
+   var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
+   l.direction().set(0, -1, 0);
    var r = o._region = RClass.create(FG3dRegion);
-   r._camera = rc;
-   r._projection = rp;
-   r._directionalLight = dl;
+   r._camera = c;
+   r._directionalLight = l;
 }
 function FStage3d_backgroundColor(){
    return this._backgroundColor;
@@ -19157,6 +19355,21 @@ function FG2dContext_dispose(){
    o._native = null;
    o.__base.FGraphicContext.dispose.call(o);
 }
+var EG3dRegionParameter = new function EG3dRegionParameter(){
+   var o = this;
+   o.Unknown                    = 0;
+   o.CameraPosition             = 1;
+   o.CameraDirection            = 2;
+   o.CameraViewMatrix           = 3;
+   o.CameraProjectionMatrix     = 4;
+   o.CameraViewProjectionMatrix = 5;
+   o.LightPosition              = 6;
+   o.LightDirection             = 7;
+   o.LightViewMatrix            = 8;
+   o.LightProjectionMatrix      = 9;
+   o.LightViewProjectionMatrix  = 10;
+   return o;
+}
 function FG3dAnimation(o){
    o = RClass.inherits(this, o, FObject);
    o._baseTick    = 0;
@@ -19238,61 +19451,63 @@ function FG3dBone_update(p){
 }
 function FG3dCamera(o){
    o = RClass.inherits(this, o, FObject);
-   o.__rotationX   = null;
-   o.__rotationY   = null;
-   o.__rotationZ   = null;
-   o._position     = null;
-   o._direction    = null;
-   o._rotation     = null;
-   o._matrix       = null;
-   o._centerFront  = 0;
-   o._centerBack   = 0;
-   o._focalNear    = 0.1;
-   o._focalFar     = 100.0;
-   o._planes       = null;
-   o._frustum      = null;
-   o._projection   = null;
-   o._viewport     = null;
-   o._axisUp       = null;
-   o._axisX        = null;
-   o._axisY        = null;
-   o._axisZ        = null;
-   o.construct     = FG3dCamera_construct;
-   o.position      = FG3dCamera_position;
-   o.setPosition   = FG3dCamera_setPosition;
-   o.direction     = FG3dCamera_direction;
-   o.setDirection  = FG3dCamera_setDirection;
-   o.matrix        = FG3dCamera_matrix;
-   o.doWalk        = FG3dCamera_doWalk;
-   o.doStrafe      = FG3dCamera_doStrafe;
-   o.doFly         = FG3dCamera_doFly;
-   o.doYaw         = FG3dCamera_doYaw;
-   o.doPitch       = FG3dCamera_doPitch;
-   o.lookAt        = FG3dCamera_lookAt;
-   o.updateFrustum = FG3dCamera_updateFrustum;
-   o.update        = FG3dCamera_update;
+   o._matrix      = null;
+   o._position    = null;
+   o._direction   = null;
+   o._rotation    = null;
+   o._centerFront = 1.0;
+   o._centerBack  = 1.0;
+   o._focalNear   = 0.1;
+   o._focalFar    = 200.0;
+   o._planes      = null;
+   o._frustum     = null;
+   o._viewport    = null;
+   o.__axisUp     = null;
+   o.__axisX      = null;
+   o.__axisY      = null;
+   o.__axisZ      = null;
+   o.__rotationX  = null;
+   o.__rotationY  = null;
+   o.__rotationZ  = null;
+   o.construct    = FG3dCamera_construct;
+   o.matrix       = FG3dCamera_matrix;
+   o.position     = FG3dCamera_position;
+   o.setPosition  = FG3dCamera_setPosition;
+   o.direction    = FG3dCamera_direction;
+   o.setDirection = FG3dCamera_setDirection;
+   o.frustum      = FG3dCamera_frustum;
+   o.doWalk       = FG3dCamera_doWalk;
+   o.doStrafe     = FG3dCamera_doStrafe;
+   o.doFly        = FG3dCamera_doFly;
+   o.doYaw        = FG3dCamera_doYaw;
+   o.doPitch      = FG3dCamera_doPitch;
+   o.lookAt       = FG3dCamera_lookAt;
+   o.update       = FG3dCamera_update;
    return o;
 }
 function FG3dCamera_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o.__rotationX = new SQuaternion();
-   o.__rotationY = new SQuaternion();
-   o.__rotationZ = new SQuaternion();
+   o._matrix = new SMatrix3d();
    o._position = new SPoint3();
    o._direction = new SVector3();
    o._rotation = new SQuaternion();
-   o._matrix = new SMatrix3d();
-   o.viewport = RClass.create(FG3dViewport);
-   o.projection = RClass.create(FG3dProjection);
-   o._axisUp = new SVector3();
-   o._axisUp.set(0, 1, 0);
-   o._axisX = new SVector3();
-   o._axisY = new SVector3();
-   o._axisZ = new SVector3();
+   o._frustum = new SFrustum();
+   o._viewport = RClass.create(FG3dViewport);
+   o.__axisUp = new SVector3();
+   o.__axisUp.set(0, 1, 0);
+   o.__axisX = new SVector3();
+   o.__axisY = new SVector3();
+   o.__axisZ = new SVector3();
+   o.__rotationX = new SQuaternion();
+   o.__rotationY = new SQuaternion();
+   o.__rotationZ = new SQuaternion();
 }
 function FG3dCamera_position(){
    return this._position;
+}
+function FG3dCamera_matrix(){
+   return this._matrix;
 }
 function FG3dCamera_setPosition(x, y, z){
    this._position.set(x, y, z);
@@ -19303,8 +19518,8 @@ function FG3dCamera_direction(){
 function FG3dCamera_setDirection(x, y, z){
    this._direction.set(x, y, z);
 }
-function FG3dCamera_matrix(){
-   return this._matrix;
+function FG3dCamera_frustum(){
+   return this._frustum;
 }
 function FG3dCamera_doWalk(p){
    var o = this;
@@ -19313,8 +19528,8 @@ function FG3dCamera_doWalk(p){
 }
 function FG3dCamera_doStrafe(p){
    var o = this;
-   o._position.x += o._axisY.x * p;
-   o._position.z += o._axisY.z * p;
+   o._position.x += o.__axisY.x * p;
+   o._position.z += o.__axisY.z * p;
 }
 function FG3dCamera_doFly(p){
    var o = this;
@@ -19332,16 +19547,14 @@ function FG3dCamera_lookAt(x, y, z){
    o._direction.set(x - p.x, y - p.y, z - p.z);
    o._direction.normalize();
 }
-function FG3dCamera_updateFrustum(){
-}
 function FG3dCamera_update(){
    var o = this;
-   var ax = o._axisX;
-   var ay = o._axisY;
-   var az = o._axisZ;
+   var ax = o.__axisX;
+   var ay = o.__axisY;
+   var az = o.__axisZ;
    az.assign(o._direction);
    az.normalize();
-   o._axisUp.cross2(ax, az);
+   o.__axisUp.cross2(ax, az);
    ax.normalize();
    az.cross2(ay, ax);
    ay.normalize();
@@ -19366,7 +19579,6 @@ function FG3dCamera_update(){
 function FG3dDirectionalLight(o){
    o = RClass.inherits(this, o, FG3dLight);
    o._camera     = null;
-   o._projection = null;
    o._viewport   = null;
    o._direction  = null;
    o.construct   = FG3dDirectionalLight_construct;
@@ -19380,8 +19592,7 @@ function FG3dDirectionalLight_construct(){
    var o = this;
    o.__base.FG3dLight.construct.call(o);
    o._direction = new SVector3();
-   o._camera = RClass.create(FG3dCamera);
-   o._projection = RClass.create(FG3dProjection);
+   o._camera = RClass.create(FG3dPerspectiveCamera);
    o._viewport = RClass.create(FG3dViewport);
 }
 function FG3dDirectionalLight_camera(){
@@ -19688,99 +19899,250 @@ function FG3dObject_linkContext(c){
 }
 function FG3dObject_setup(){
 }
+function FG3dOrthoCamera(o){
+   o = RClass.inherits(this, o, FG3dCamera);
+   o._projection      = null;
+   o.construct        = FG3dOrthoCamera_construct;
+   o.projection       = FG3dOrthoCamera_projection;
+   o.updateFrustum    = FG3dOrthoCamera_updateFrustum;
+   o.updateFromCamera = FG3dOrthoCamera_updateFromCamera;
+   return o;
+}
+function FG3dOrthoCamera_construct(){
+   var o = this;
+   o.__base.FG3dCamera.construct.call(o);
+   o._projection = RClass.create(FG3dOrthoProjection);
+}
+function FG3dOrthoCamera_projection(){
+   return this._projection;
+}
+function FG3dOrthoCamera_updateFrustum(){
+   var o = this;
+   var p = o._projection;
+   var s = p._size;
+   var f = o._frustum;
+   f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
+   return f;
+}
+function FG3dOrthoCamera_updateFromCamera(p){
+   var o = this;
+   var pf = p.updateFrustum();
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * pf.radius;
+   var vy = pf.center.y - d.y * pf.radius;
+   var vz = pf.center.z - d.z * pf.radius;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   var f = o._frustum;
+   o._matrix.transform(f.coners, pf.coners, 8);
+   f.updateCenter();
+   o._projection.updateFrustum(f);
+}
+function FG3dOrthoProjection(o){
+   o = RClass.inherits(this, o, FG3dProjection);
+   o._matrix       = null;
+   o.construct     = FG3dOrthoProjection_construct;
+   o.matrix        = FG3dOrthoProjection_matrix;
+   o.update        = FG3dOrthoProjection_update;
+   o.updateFrustum = FG3dOrthoProjection_updateFrustum;
+   return o;
+}
+function FG3dOrthoProjection_construct(){
+   var o = this;
+   o.__base.FG3dProjection.construct.call(o);
+   o._matrix = new SOrthoMatrix3d();
+}
+function FG3dOrthoProjection_matrix(){
+   return this._matrix;
+}
+function FG3dOrthoProjection_update(){
+   var o = this;
+   var s = o._size;
+   o._matrix.identity();
+   var d = o._matrix.data();
+   d[ 0] = 2.0 / s.width;
+   d[ 4] = d[ 8] = d[12] = 0.0;
+   d[ 5] = 2.0 / s.height;
+   d[ 1] = d[ 9] = d[13] = 0.0;
+   d[10] = 1.0 / (o._znear - o._zfar);
+   d[ 2] = d[ 6] = d[14] = 0.0;
+   d[ 3] = d[ 7] = 0.0;
+   d[11] = o._znear / (o._znear - o._zfar);
+   d[15] = 1.0;
+}
+function FG3dOrthoProjection_updateFrustum(p){
+   var o = this;
+   o._znear = p.minZ;
+   o._zfar = p.maxZ;
+   o.update();
+}
+function FG3dPerspectiveCamera(o){
+   o = RClass.inherits(this, o, FG3dCamera);
+   o._projection      = null;
+   o.construct        = FG3dPerspectiveCamera_construct;
+   o.projection       = FG3dPerspectiveCamera_projection;
+   o.updateFrustum    = FG3dPerspectiveCamera_updateFrustum;
+   o.updateFromCamera = FG3dPerspectiveCamera_updateFromCamera;
+   return o;
+}
+function FG3dPerspectiveCamera_construct(){
+   var o = this;
+   o.__base.FG3dCamera.construct.call(o);
+   o._projection = RClass.create(FG3dPerspectiveProjection);
+}
+function FG3dPerspectiveCamera_projection(){
+   return this._projection;
+}
+function FG3dPerspectiveCamera_updateFrustum(){
+   var o = this;
+   var p = o._projection;
+   var s = p._size;
+   var f = o._frustum;
+   f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
+   return f;
+}
+function FG3dPerspectiveCamera_updateFromCamera(p){
+   var o = this;
+   var f = o._frustum
+   var pf = p.updateFrustum();
+   var angle = RMath.DEGREE_RATE * o._projection.angle();
+   var distance = pf.radius / Math.sin(angle * 0.5);
+   distance = Math.max(distance, p._projection._zfar);
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * distance;
+   var vy = pf.center.y - d.y * distance;
+   var vz = pf.center.z - d.z * distance;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   o._matrix.transform(f.coners, pf.coners, 8);
+   f.updateCenter();
+   o._projection.updateFrustum(f);
+}
+function FG3dPerspectiveProjection(o){
+   o = RClass.inherits(this, o, FG3dProjection);
+   o._matrix       = null;
+   o.construct     = FG3dPerspectiveProjection_construct;
+   o.matrix        = FG3dPerspectiveProjection_matrix;
+   o.update        = FG3dPerspectiveProjection_update;
+   o.updateFrustum = FG3dPerspectiveProjection_updateFrustum;
+   return o;
+}
+function FG3dPerspectiveProjection_construct(){
+   var o = this;
+   o.__base.FG3dProjection.construct.call(o);
+   o._matrix = new SPerspectiveMatrix3d();
+}
+function FG3dPerspectiveProjection_matrix(){
+   return this._matrix;
+}
+function FG3dPerspectiveProjection_update(){
+   var o = this;
+   var s = o._size;
+   o._fieldOfView = RMath.DEGREE_RATE * o._angle;
+   o._matrix.perspectiveFieldOfViewLH(o._fieldOfView, s.width / s.height, o._znear, o._zfar);
+}
+function FG3dPerspectiveProjection_updateFrustum(p){
+   var o = this;
+   o._znear = p.minZ;
+   o._zfar = p.maxZ;
+   o.update();
+}
 function FG3dPointLight(o){
    o = RClass.inherits(this, o, FG3dLight);
    return o;
 }
 function FG3dProjection(o){
    o = RClass.inherits(this, o, FObject);
-   o.width       = 0;
-   o.height      = 0;
-   o.angle       = 60;
-   o.fieldOfView = 0;
-   o.scale       = 0;
-   o.znear       = 0.1;
-   o.zfar        = 100;
-   o._matrix     = null;
+   o._size        = null;
+   o._angle       = 60.0;
+   o._fieldOfView = 0;
+   o._znear       = 0.1;
+   o._zfar        = 200.0;
+   o._scale       = 0;
    o.construct   = FG3dProjection_construct;
-   o.matrix      = FG3dProjection_matrix;
+   o.size        = FG3dProjection_size;
+   o.angle       = FG3dProjection_angle;
+   o.znear       = FG3dProjection_znear;
+   o.zfar        = FG3dProjection_zfar;
    o.distance    = FG3dProjection_distance;
-   o.update      = FG3dProjection_update;
-   o.updateOrtho = FG3dProjection_updateOrtho;
    return o;
 }
 function FG3dProjection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._matrix = new SPerspectiveMatrix3d();
+   o._size = new SSize2();;
+}
+function FG3dProjection_size(){
+   return this._size;
+}
+function FG3dProjection_angle(){
+   return this._angle;
+}
+function FG3dProjection_znear(){
+   return this._znear;
+}
+function FG3dProjection_zfar(){
+   return this._zfar;
 }
 function FG3dProjection_distance(){
-   return this.zfar - this.znear;
-}
-function FG3dProjection_matrix(){
-   return this._matrix;
-}
-function FG3dProjection_update(){
-   var o = this;
-   o.fieldOfView = RMath.DEGREE_RATE * o.angle;
-   o._matrix.perspectiveFieldOfViewLH(o.fieldOfView, o.width / o.height, o.znear, o.zfar);
-}
-function FG3dProjection_updateOrtho(){
-   var o = this;
-   o._matrix.identity();
-   var d = o._matrix.data();
-   d[ 0] = 2.0 / o.width;
-   d[ 4] = d[ 8] = d[12] = 0.0;
-   d[ 5] = 2.0 / o.height;
-   d[ 1] = d[ 9] = d[13] = 0.0;
-   d[10] = 1.0 / (o.znear - o.zfar);
-   d[ 2] = d[ 6] = d[14] = 0.0;
-   d[ 3] = d[ 7] = 0.0;
-   d[11] = o.znear / (o.znear - o.zfar);
-   d[15] = 1.0;
+   return this._zfar - this._znear;
 }
 function FG3dRegion(o){
    o = RClass.inherits(this, o, FObject);
-   o._spaceName            = null;
-   o._technique            = null;
-   o._techniquePass        = null;
-   o._camera               = null;
-   o._projection           = null;
-   o._directionalLight     = null
-   o._renderables          = null;
-   o._matrixViewProjection  = null;
-   o._lightMatrixView       = null;
-   o._lightMatrixProjection = null;
-   o._cameraPosition        = null;
-   o._lightDirection        = null;
-   o.construct             = FG3dRegion_construct;
-   o.spaceName             = FG3dRegion_spaceName;
-   o.technique             = FG3dRegion_technique;
-   o.setTechnique          = FG3dRegion_setTechnique;
-   o.techniquePass         = FG3dRegion_techniquePass;
-   o.setTechniquePass      = FG3dRegion_setTechniquePass;
-   o.camera                = FG3dRegion_camera;
-   o.projection            = FG3dRegion_projection;
-   o.directionalLight      = FG3dRegion_directionalLight;
-   o.matrixViewProjection  = FG3dRegion_matrixViewProjection;
-   o.cameraPosition        = FG3dRegion_cameraPosition;
-   o.lightDirection        = FG3dRegion_lightDirection;
-   o.renderables           = FG3dRegion_renderables;
-   o.pushRenderable        = FG3dRegion_pushRenderable;
-   o.prepare               = FG3dRegion_prepare;
-   o.update                = FG3dRegion_update;
-   o.dispose               = FG3dRegion_dispose;
+   o._spaceName                  = null;
+   o._technique                  = null;
+   o._techniquePass              = null;
+   o._camera                     = null;
+   o._projection                 = null;
+   o._directionalLight           = null
+   o._lights                     = null
+   o._renderables                = null;
+   o._cameraPosition             = null;
+   o._cameraDirection            = null;
+   o._cameraViewMatrix           = null;
+   o._cameraProjectionMatrix     = null;
+   o._cameraViewProjectionMatrix = null;
+   o._lightPosition              = null;
+   o._lightDirection             = null;
+   o._lightViewMatrix            = null;
+   o._lightProjectionMatrix      = null;
+   o._lightViewProjectionMatrix  = null;
+   o.construct                   = FG3dRegion_construct;
+   o.spaceName                   = FG3dRegion_spaceName;
+   o.technique                   = FG3dRegion_technique;
+   o.setTechnique                = FG3dRegion_setTechnique;
+   o.techniquePass               = FG3dRegion_techniquePass;
+   o.setTechniquePass            = FG3dRegion_setTechniquePass;
+   o.camera                      = FG3dRegion_camera;
+   o.directionalLight            = FG3dRegion_directionalLight;
+   o.lights                      = FG3dRegion_lights;
+   o.renderables                 = FG3dRegion_renderables;
+   o.pushRenderable              = FG3dRegion_pushRenderable;
+   o.prepare                     = FG3dRegion_prepare;
+   o.calculate                   = FG3dRegion_calculate;
+   o.update                      = FG3dRegion_update;
+   o.dispose                     = FG3dRegion_dispose;
    return o;
 }
 function FG3dRegion_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._lights = new TObjects();
    o._renderables = new TObjects();
-   o._matrixViewProjection = new SMatrix3d();
-   o._cameraPosition = new Float32Array(3);
-   o._lightDirection = new Float32Array(3);
-   o._lightMatrixView = new SMatrix3d();
-   o._lightMatrixProjection = new SMatrix3d();
+   o._cameraPosition = new SPoint3();
+   o._cameraDirection = new SVector3();
+   o._cameraViewMatrix = new SMatrix3d();
+   o._cameraProjectionMatrix = new SMatrix3d();
+   o._cameraViewProjectionMatrix = new SMatrix3d();
+   o._lightPosition = new SPoint3();
+   o._lightDirection = new SVector3();
+   o._lightViewMatrix = new SMatrix3d();
+   o._lightProjectionMatrix = new SMatrix3d();
+   o._lightViewProjectionMatrix = new SMatrix3d();
 }
 function FG3dRegion_spaceName(){
    return this._spaceName;
@@ -19802,20 +20164,11 @@ function FG3dRegion_setTechniquePass(p){
 function FG3dRegion_camera(){
    return this._camera;
 }
-function FG3dRegion_projection(){
-   return this._projection;
-}
 function FG3dRegion_directionalLight(){
    return this._directionalLight;
 }
-function FG3dRegion_matrixViewProjection(p){
-   return this._matrixViewProjection;
-}
-function FG3dRegion_cameraPosition(){
-   return this._cameraPosition;
-}
-function FG3dRegion_lightDirection(){
-   return this._lightDirection;
+function FG3dRegion_lights(){
+   return this._lights;
 }
 function FG3dRegion_renderables(p){
    return this._renderables;
@@ -19825,26 +20178,57 @@ function FG3dRegion_pushRenderable(p){
 }
 function FG3dRegion_prepare(){
    var o = this;
-   o._matrixViewProjection.assign(o._camera.matrix());
-   o._matrixViewProjection.append(o._projection.matrix());
-   var cp = o._camera.position();
-   o._cameraPosition[0] = cp.x;
-   o._cameraPosition[1] = cp.y;
-   o._cameraPosition[2] = cp.z;
-   var ld = o._directionalLight.direction();
-   ld.normalize();
-   o._lightDirection[0] = ld.x;
-   o._lightDirection[1] = ld.y;
-   o._lightDirection[2] = ld.z;
+   var c = o._camera;
+   var cp = c.projection();
+   o._cameraPosition.assign(c.position());
+   o._cameraDirection.assign(c.direction());
+   o._cameraViewMatrix.assign(c.matrix());
+   o._cameraProjectionMatrix.assign(cp.matrix());
+   o._cameraViewProjectionMatrix.assign(c.matrix());
+   o._cameraViewProjectionMatrix.append(cp.matrix());
+   var l = o._directionalLight;
+   var lc = l.camera();
+   var lcp = lc.projection();
+   o._lightPosition.assign(lc.position());
+   o._lightDirection.assign(lc.direction());
+   o._lightViewMatrix.assign(lc.matrix());
+   o._lightProjectionMatrix.assign(lcp.matrix());
+   o._lightViewProjectionMatrix.assign(lc.matrix());
+   o._lightViewProjectionMatrix.append(lcp.matrix());
    o._renderables.clear();
+}
+function FG3dRegion_calculate(p){
+   var o = this;
+   switch(p){
+      case EG3dRegionParameter.CameraPosition:
+         return o._cameraPosition;
+      case EG3dRegionParameter.CameraDirection:
+         return o._cameraDirection;
+      case EG3dRegionParameter.CameraViewMatrix:
+         return o._cameraViewMatrix;
+      case EG3dRegionParameter.CameraProjectionMatrix:
+         return o._cameraProjectionMatrix;
+      case EG3dRegionParameter.CameraViewProjectionMatrix:
+         return o._cameraViewProjectionMatrix;
+      case EG3dRegionParameter.LightPosition:
+         return o._lightPosition;
+      case EG3dRegionParameter.LightDirection:
+         return o._lightDirection;
+      case EG3dRegionParameter.LightViewMatrix:
+         return o._lightViewMatrix;
+      case EG3dRegionParameter.LightProjectionMatrix:
+         return o._lightProjectionMatrix;
+      case EG3dRegionParameter.LightViewProjectionMatrix:
+         return o._lightViewProjectionMatrix;
+   }
+   throw new TError(o, 'Unknown parameter type. (type_cd={1})', p);
 }
 function FG3dRegion_update(){
    var o = this;
    var rs = o._renderables;
    var c = rs.count();
    for(var i = 0; i < c; i++){
-      var r = rs.get(i);
-      r.update(o);
+      rs.get(i).update(o);
    }
 }
 function FG3dRegion_dispose(){
@@ -20519,10 +20903,18 @@ function FG3dFragmentShader(o){
 }
 function FG3dIndexBuffer(o){
    o = RClass.inherits(this, o, FG3dObject);
-   o.strideCd = EG3dIndexStride.Uint16;
-   o.count    = 0;
-   o.upload = RMethod.virtual(o, 'upload');
+   o._strideCd = EG3dIndexStride.Uint16;
+   o._count    = 0;
+   o.strideCd  = FG3dIndexBuffer_strideCd;
+   o.count     = FG3dIndexBuffer_count;
+   o.upload    = RMethod.virtual(o, 'upload');
    return o;
+}
+function FG3dIndexBuffer_strideCd(){
+   return this._strideCd;
+}
+function FG3dIndexBuffer_count(){
+   return this._count;
 }
 function FG3dProgram(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -21184,50 +21576,18 @@ function FG3dSampleAutomaticEffect(o){
    o.load           = FG3dSampleAutomaticEffect_load;
    return o;
 }
-function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
+function FG3dSampleAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   var prvp = pr.matrixViewProjection();
-   var prcp = pr.cameraPosition();
-   var prld = pr.lightDirection();
-   if(p.hasAttribute()){
-      var as = p.attributes();
-      var ac = as.count();
-      for(var n = 0; n < ac; n++){
-         var a = as.value(n);
-         if(a._statusUsed){
-            var vb = r.findVertexBuffer(a._linker);
-            if(vb == null){
-               throw new TError("Can't find renderable vertex buffer. (linker={1})", a._linker);
-            }
-            p.setAttribute(a._name, vb, vb._formatCd);
-         }
-      }
-   }
-   if(p.hasSampler()){
-      var ss = p.samplers();
-      var sc = ss.count();
-      for(var n = 0; n < sc; n++){
-         var s = ss.value(n);
-         if(s._statusUsed){
-            var ln = s.linker();
-            var sp = r.findTexture(ln);
-            if(sp != null){
-               p.setSampler(s.name(), sp.texture());
-            }else{
-               throw new TError("Can't find sampler. (linker={1})", ln);
-            }
-         }
-      }
-   }
-   p.setParameter('vc_model_matrix', r.matrix());
-   p.setParameter('vc_vp_matrix', prvp);
-   p.setParameter('vc_camera_position', prcp);
-   p.setParameter('vc_light_direction', prld);
-   p.setParameter('fc_camera_position', prcp);
-   p.setParameter('fc_light_direction', prld);
-   var m = r.material();
+   var m = pr.material();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('vc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
+   p.setParameter('fc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('fc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
    var mi = m.info();
    p.setParameter('fc_color', mi.ambientColor);
    p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
@@ -21239,18 +21599,9 @@ function FG3dSampleAutomaticEffect_drawRenderable(pr, r){
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
-   if(mi.optionAlpha){
-      c.setBlendFactors(o._stateBlend, o._stateBlendSourceCd, o._stateBlendTargetCd);
-   }else{
-      c.setBlendFactors(false);
-   }
-   if(mi.optionDouble){
-      c.setCullingMode(false);
-   }else{
-      c.setCullingMode(o._stateDepth, o._stateCullCd);
-   }
-   var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
 }
 function FG3dSampleAutomaticEffect_load(){
    var o = this;
@@ -21428,27 +21779,25 @@ function FG3dShadowColorAutomaticEffect(o){
    o.load           = FG3dShadowColorAutomaticEffect_load;
    return o;
 }
-function FG3dShadowColorAutomaticEffect_drawRenderable(pr, r){
+function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   var prvp = pr.matrixViewProjection();
-   var prcp = pr.cameraPosition();
-   var prld = pr.lightDirection();
-   var l = pr.directionalLight();
+   var tp = pg.techniquePass();
+   var l = pg.directionalLight();
    var lc = l.camera();
-   var lp = l.projection();
-   var m = r.material();
+   var lp = lc.projection();
+   var m = pr.material();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', r.matrix());
-   p.setParameter('vc_vp_matrix', prvp);
-   p.setParameter('vc_camera_position', prcp);
-   p.setParameter('vc_light_direction', prld);
-   p.setParameter('vc_light_view_matrix', lc.matrix());
-   p.setParameter('vc_light_projection_matrix', lp.matrix());
-   p.setParameter('fc_camera_position', prcp);
-   p.setParameter('fc_light_direction', prld);
-   p.setParameter4('fc_light_depth', 1.0 / 1024.0, -1.0 / 1024.0, 0.0, 1.0 / lp.distance());
+   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('vc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
+   p.setParameter('vc_light_view_matrix', pg.calculate(EG3dRegionParameter.LightViewMatrix));
+   p.setParameter('vc_light_projection_matrix', pg.calculate(EG3dRegionParameter.LightProjectionMatrix));
+   p.setParameter('fc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('fc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
+   p.setParameter4('fc_light_depth', 1.0 / 16384.0, -1.0 / 16384.0, 0.0, 1.0 / lp.distance());
    var mi = m.info();
    p.setParameter('fc_color', mi.ambientColor);
    p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
@@ -21460,11 +21809,10 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pr, r){
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
-   o.bindAttributes(r);
-   p.setSampler('fs_light_depth', pr._textureDepth);
-   o.bindSamplers(r);
-   var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   o.bindAttributes(pr);
+   p.setSampler('fs_light_depth', pg._textureDepth);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
 }
 function FG3dShadowColorAutomaticEffect_load(){
    var o = this;
@@ -21475,8 +21823,12 @@ function FG3dShadowColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
    o._name         = 'color';
    o._textureDepth = null;
+   o.textureDepth  = FG3dShadowColorPass_textureDepth;
    o.drawRegion    = FG3dShadowColorPass_drawRegion;
    return o;
+}
+function FG3dShadowColorPass_textureDepth(){
+   return this._textureDepth;
 }
 function FG3dShadowColorPass_drawRegion(p){
    var o = this;
@@ -21581,27 +21933,22 @@ function FG3dShadowDepthAutomaticEffect(o){
    o.load           = FG3dShadowDepthAutomaticEffect_load;
    return o;
 }
-function FG3dShadowDepthAutomaticEffect_drawRenderable(pr, r){
+function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   var prvp = pr.matrixViewProjection();
-   var prcp = pr.cameraPosition();
-   var prld = pr.lightDirection();
-   var m = r.material();
-   o.bindMaterial(m);
-   c.setBlendFactors(false);
-   var l = pr.directionalLight();
+   var l = pg.directionalLight();
    var lc = l.camera();
-   var lp = l.projection();
-   p.setParameter('vc_model_matrix', r.matrix());
-   p.setParameter('vc_view_matrix', lc.matrix());
-   p.setParameter('vc_projection_matrix', lp.matrix());
+   var lp = lc.projection();
+   c.setBlendFactors(false);
+   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_view_matrix', pg.calculate(EG3dRegionParameter.LightViewMatrix));
+   p.setParameter('vc_projection_matrix', pg.calculate(EG3dRegionParameter.LightProjectionMatrix));
    p.setParameter4('fc_camera', lc.position().x, lc.position().y, lc.position().z, 1.0 / lp.distance());
-   o.bindAttributes(r);
-   o.bindSamplers(r);
-   var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   p.setParameter4('fc_alpha', 0, 0, 0, 0.1);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
 }
 function FG3dShadowDepthAutomaticEffect_load(){
    var o = this;
@@ -21626,7 +21973,7 @@ function FG3dShadowDepthPass_setup(){
    d.setFilter(EG3dSamplerFilter.Linear, EG3dSamplerFilter.Linear);
    d.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
    var t = o._renderTarget = c.createRenderTarget();
-   t.size().set(1024, 1024);
+   t.size().set(2048, 2048);
    t.textures().push(d);
    t.build();
 }
@@ -21737,6 +22084,7 @@ function FG3dShadowTechnique(o){
    o._passDepth = null;
    o._passColor = null;
    o.setup      = FG3dShadowTechnique_setup;
+   o.drawRegion = FG3dShadowTechnique_drawRegion;
    return o;
 }
 function FG3dShadowTechnique_setup(){
@@ -21751,6 +22099,13 @@ function FG3dShadowTechnique_setup(){
    p.linkContext(o._context);
    p.setup();
    ps.push(p);
+}
+function FG3dShadowTechnique_drawRegion(p){
+   var o = this;
+   var c = p.camera();
+   var l = p.directionalLight();
+   l.camera().updateFromCamera(c);
+   o.__base.FG3dTechnique.drawRegion.call(o, p);
 }
 function FWglContext(o){
    o = RClass.inherits(this, o, FG3dContext);
@@ -21802,7 +22157,7 @@ function FWglContext_linkCanvas(h){
    if(h.getContext){
       var n = h.getContext('webgl');
       if(n == null){
-         n = h.getContext('experimental-webgl');
+         n = h.getContext('experimental-webgl', {antialias:true});
       }
       if(n == null){
          throw new TError("Current browser can't support WebGL technique.");
@@ -22322,14 +22677,14 @@ function FWglContext_drawTriangles(b, i, c){
       i = 0;
    }
    if(c == null){
-      c = b.count;
+      c = b.count();
    }
    g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, b._native);
    r = o.checkError("bindBuffer", "Bind element array buffer failure. (index=0x%08X, offset=%d, count=%d, buffer_id)", b, i, c, b._native);
    if(!r){
        return r;
    }
-   var strideCd = RWglUtility.convertIndexStride(g, b.strideCd);
+   var strideCd = RWglUtility.convertIndexStride(g, b.strideCd());
    g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
    r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
    if(!r){
@@ -22418,11 +22773,11 @@ function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
 }
 function FWglFlatTexture(o){
    o = RClass.inherits(this, o, FG3dFlatTexture);
-   o._native = null;
+   o._native     = null;
    o.onImageLoad = FWglFlatTexture_onImageLoad;
-   o.setup   = FWglFlatTexture_setup;
-   o.loadUrl = FWglFlatTexture_loadUrl;
-   o.upload  = FWglFlatTexture_upload;
+   o.setup       = FWglFlatTexture_setup;
+   o.loadUrl     = FWglFlatTexture_loadUrl;
+   o.upload      = FWglFlatTexture_upload;
    return o;
 }
 function FWglFlatTexture_onImageLoad(v){
@@ -22444,7 +22799,7 @@ function FWglFlatTexture_loadUrl(p){
    var o = this;
    var r = new Image();
    r.src = p;
-   r.onload = function(){o.onImageLoad(this);}
+   r.onload = function(){o.onImageLoad(o);}
 }
 function FWglFlatTexture_upload(p){
    var o = this;
@@ -22504,14 +22859,13 @@ function FWglIndexBuffer(o){
 function FWglIndexBuffer_setup(){
    var o = this;
    o.__base.FG3dIndexBuffer.setup.call(o);
-   var g = o._context._native;
-   o._native = g.createBuffer();
+   o._native = o._context._native.createBuffer();
 }
 function FWglIndexBuffer_upload(pd, pc){
    var o = this;
    var c = o._context;
    var g = c._native;
-   o.count  = pc;
+   o._count = pc;
    var d = null;
    if(pd.constructor == Array){
       d = new Uint16Array(pd);
@@ -22521,9 +22875,9 @@ function FWglIndexBuffer_upload(pd, pc){
       RLogger.fatal(o, null, 'Upload index data type is invalid. (value={1})', pd);
    }
    g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, o._native);
-   c.checkError('bindBuffer', 'Bindbuffer');
+   c.checkError('bindBuffer', 'Bind buffer failure.');
    g.bufferData(g.ELEMENT_ARRAY_BUFFER, d, g.STATIC_DRAW);
-   c.checkError('bufferData', 'bufferData');
+   c.checkError('bufferData', 'Upload buffer data. (count={1})', pc);
 }
 function FWglProgram(o){
    o = RClass.inherits(this, o, FG3dProgram);

@@ -24,6 +24,7 @@ function SMatrix4x4(o){
    o.rotation   = SMatrix4x4_rotation;
    o.scale      = SMatrix4x4_scale;
    o.invert     = SMatrix4x4_invert;
+   o.transform  = SMatrix4x4_transform;
    o.writeData  = SMatrix4x4_writeData;
    return o;
 }
@@ -354,6 +355,25 @@ function SMatrix4x4_invert(){
       d[i] = v[i] * r;
    }
    return true;
+}
+
+//==========================================================
+// <T>变换顶点数据。</T>
+//
+// @method
+// @param po:outputData:Array 输出数据
+// @param pi:inputData:Array 输入数据
+// @param pc:count:Integer 个数
+//==========================================================
+function SMatrix4x4_transform(po, pi, pc){
+   var o = this;
+   var d = o._data;
+   for(var i = 0; i < pc; i++){
+      var n = (i << 1) + i;
+      po[n    ] = (pi[n] * d[ 0]) + (pi[n + 1] * d[ 4]) +(pi[n + 2] * d[ 8]) + d[12];
+      po[n + 1] = (pi[n] * d[ 1]) + (pi[n + 1] * d[ 5]) +(pi[n + 2] * d[ 9]) + d[13];
+      po[n + 2] = (pi[n] * d[ 2]) + (pi[n + 1] * d[ 6]) +(pi[n + 2] * d[10]) + d[14];
+   }
 }
 
 //==========================================================
