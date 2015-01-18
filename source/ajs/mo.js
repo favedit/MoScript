@@ -5592,6 +5592,7 @@ function SFrustum(o){
    o.coners       = new Array(24);
    o.updateCenter = SFrustum_updateCenter;
    o.update       = SFrustum_update;
+   o.updateFlat   = SFrustum_updateFlat;
    return o;
 }
 function SFrustum_updateCenter(){
@@ -5667,6 +5668,55 @@ function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    m.assign(pm);
    m.invert();
    m.transform(o.coners, ps, 8);
+   o.updateCenter();
+}
+function SFrustum_updateFlat(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
+   var o = this;
+   var aspect = pvw / pvh;
+   var znear = pvn;
+   var zfar = pvf;
+   var fov = Math.tan(RMath.DEGREE_RATE * pva * 0.5);
+   var nearY = znear * fov;
+   var nearX = nearY * aspect;
+   var farY = zfar * fov;
+   var farX = farY * aspect;
+   var ps = o.points;
+   ps[ 0] = -nearX;
+   ps[ 1] =  nearY;
+   ps[ 2] =  znear;
+   ps[ 3] =  nearX;
+   ps[ 4] =  nearY;
+   ps[ 5] =  znear;
+   ps[ 6] =  nearX;
+   ps[ 7] = -nearY;
+   ps[ 8] =  znear;
+   ps[ 9] = -nearX;
+   ps[10] = -nearY;
+   ps[11] =  znear;
+   ps[12] = -farX;
+   ps[13] =  farY;
+   ps[14] =  zfar;
+   ps[15] =  farX;
+   ps[16] =  farY;
+   ps[17] =  zfar;
+   ps[18] =  farX;
+   ps[19] = -farY;
+   ps[20] =  zfar;
+   ps[21] = -farX;
+   ps[22] = -farY;
+   ps[23] =  zfar;
+   var m = RMath.matrix;
+   m.assign(pm);
+   m.invert();
+   m.transform(o.coners, ps, 8);
+   o.coners[ 1] = 0.0;
+   o.coners[ 4] = 0.0;
+   o.coners[ 7] = 0.0;
+   o.coners[10] = 0.0;
+   o.coners[13] = 0.0;
+   o.coners[16] = 0.0;
+   o.coners[19] = 0.0;
+   o.coners[22] = 0.0;
    o.updateCenter();
 }
 function SFrustumPlanes(o){
@@ -12374,10 +12424,12 @@ function FG3dOrthoProjection_updateFrustum(p){
 function FG3dPerspectiveCamera(o){
    o = RClass.inherits(this, o, FG3dCamera);
    o._projection      = null;
-   o.construct        = FG3dPerspectiveCamera_construct;
-   o.projection       = FG3dPerspectiveCamera_projection;
-   o.updateFrustum    = FG3dPerspectiveCamera_updateFrustum;
-   o.updateFromCamera = FG3dPerspectiveCamera_updateFromCamera;
+   o.construct         = FG3dPerspectiveCamera_construct;
+   o.projection        = FG3dPerspectiveCamera_projection;
+   o.updateFrustum     = FG3dPerspectiveCamera_updateFrustum;
+   o.updateFlatFrustum = FG3dPerspectiveCamera_updateFlatFrustum;
+   o.updateFromCamera  = FG3dPerspectiveCamera_updateFromCamera;
+   o.updateFlatCamera  = FG3dPerspectiveCamera_updateFlatCamera;
    return o;
 }
 function FG3dPerspectiveCamera_construct(){
@@ -12396,6 +12448,14 @@ function FG3dPerspectiveCamera_updateFrustum(){
    f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
    return f;
 }
+function FG3dPerspectiveCamera_updateFlatFrustum(){
+   var o = this;
+   var p = o._projection;
+   var s = p._size;
+   var f = o._frustum;
+   f.updateFlat(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
+   return f;
+}
 function FG3dPerspectiveCamera_updateFromCamera(p){
    var o = this;
    var f = o._frustum
@@ -12412,6 +12472,33 @@ function FG3dPerspectiveCamera_updateFromCamera(p){
    o.lookAt(pf.center.x, pf.center.y, pf.center.z);
    o.update();
    o._matrix.transform(f.coners, pf.coners, 8);
+   f.updateCenter();
+   o._projection.updateFrustum(f);
+}
+function FG3dPerspectiveCamera_updateFlatCamera(p){
+   var o = this;
+   var f = o._frustum
+   var pf = p.updateFlatFrustum();
+   var angle = RMath.DEGREE_RATE * o._projection.angle();
+   var distance = pf.radius / Math.sin(angle * 0.5);
+   distance = Math.max(distance, p._projection._zfar);
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * distance;
+   var vy = pf.center.y - d.y * distance;
+   var vz = pf.center.z - d.z * distance;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   o._matrix.transform(f.coners, pf.coners, 8);
+   f.coners[ 1] = 0.0;
+   f.coners[ 4] = 0.0;
+   f.coners[ 7] = 0.0;
+   f.coners[10] = 0.0;
+   f.coners[13] = 0.0;
+   f.coners[16] = 0.0;
+   f.coners[19] = 0.0;
+   f.coners[22] = 0.0;
    f.updateCenter();
    o._projection.updateFrustum(f);
 }
@@ -14187,10 +14274,10 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
    p.setParameter('vc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
    p.setParameter('vc_light_view_matrix', pg.calculate(EG3dRegionParameter.LightViewMatrix));
-   p.setParameter('vc_light_projection_matrix', pg.calculate(EG3dRegionParameter.LightProjectionMatrix));
+   p.setParameter('vc_light_vp_matrix', pg.calculate(EG3dRegionParameter.LightViewProjectionMatrix));
    p.setParameter('fc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
    p.setParameter('fc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
-   p.setParameter4('fc_light_depth', 1.0 / 16384.0, -1.0 / 16384.0, 0.0, 1.0 / lp.distance());
+   p.setParameter4('fc_light_depth', 1.0 / 8192.0, 0.0, -1.0 / 8192.0, 1.0 / lp.distance());
    var mi = m.info();
    p.setParameter('fc_color', mi.ambientColor);
    p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
@@ -14491,13 +14578,12 @@ function FG3dShadowTechnique_setup(){
    var p = o._passColor = RClass.create(FG3dShadowColorPass);
    p.linkContext(o._context);
    p.setup();
-   ps.push(p);
 }
 function FG3dShadowTechnique_drawRegion(p){
    var o = this;
    var c = p.camera();
    var l = p.directionalLight();
-   l.camera().updateFromCamera(c);
+   l.camera().updateFlatCamera(c);
    o.__base.FG3dTechnique.drawRegion.call(o, p);
 }
 function FWglContext(o){
@@ -15469,12 +15555,12 @@ function FWglRenderTarget_build(){
       return r;
    }
    if(o._optionDepth){
-      var nr = o._nativeDepth = g.createRenderbuffer();
+      var nd = o._nativeDepth = g.createRenderbuffer();
       var r = c.checkError('createRenderbuffer', 'Create render buffer failure.');
       if(!r){
          return r;
       }
-      g.bindRenderbuffer(g.RENDERBUFFER, nr);
+      g.bindRenderbuffer(g.RENDERBUFFER, nd);
       var r = c.checkError('bindRenderbuffer', 'Bind render buffer failure.');
       if(!r){
          return r;
@@ -15484,8 +15570,8 @@ function FWglRenderTarget_build(){
       if(!r){
          return r;
       }
-      g.framebufferRenderbuffer(g.FRAMEBUFFER, g.DEPTH_ATTACHMENT, g.RENDERBUFFER, nr);
-      var r = c.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._native, nr);
+      g.framebufferRenderbuffer(g.FRAMEBUFFER, g.DEPTH_ATTACHMENT, g.RENDERBUFFER, nd);
+      var r = c.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._native, nd);
       if(!r){
          return r;
       }
@@ -16389,7 +16475,7 @@ function FScene3d_loadRegionResource(p){
    cp.size().assign(o._context.size());
    cp._angle = rcv.angle();
    cp._znear = rcv.znear();
-   cp._zfar = rcv.zfar();
+   cp._zfar = rcv.zfar() * 0.6;
    cp.update();
    var l = o._directionalLight
    var lc = l._camera;
@@ -16401,8 +16487,8 @@ function FScene3d_loadRegionResource(p){
    lc.lookAt(0, 0, 0);
    lc.position().assign(rlc.position());
    lc.update();
-   lp.size().set(1024, 1024);
-   lp._angle = 90;
+   lp.size().set(2048, 2048);
+   lp._angle = 80;
    lp._znear = rlv.znear();
    lp._zfar = rlv.zfar();
    lp.update();
@@ -19981,10 +20067,12 @@ function FG3dOrthoProjection_updateFrustum(p){
 function FG3dPerspectiveCamera(o){
    o = RClass.inherits(this, o, FG3dCamera);
    o._projection      = null;
-   o.construct        = FG3dPerspectiveCamera_construct;
-   o.projection       = FG3dPerspectiveCamera_projection;
-   o.updateFrustum    = FG3dPerspectiveCamera_updateFrustum;
-   o.updateFromCamera = FG3dPerspectiveCamera_updateFromCamera;
+   o.construct         = FG3dPerspectiveCamera_construct;
+   o.projection        = FG3dPerspectiveCamera_projection;
+   o.updateFrustum     = FG3dPerspectiveCamera_updateFrustum;
+   o.updateFlatFrustum = FG3dPerspectiveCamera_updateFlatFrustum;
+   o.updateFromCamera  = FG3dPerspectiveCamera_updateFromCamera;
+   o.updateFlatCamera  = FG3dPerspectiveCamera_updateFlatCamera;
    return o;
 }
 function FG3dPerspectiveCamera_construct(){
@@ -20003,6 +20091,14 @@ function FG3dPerspectiveCamera_updateFrustum(){
    f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
    return f;
 }
+function FG3dPerspectiveCamera_updateFlatFrustum(){
+   var o = this;
+   var p = o._projection;
+   var s = p._size;
+   var f = o._frustum;
+   f.updateFlat(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
+   return f;
+}
 function FG3dPerspectiveCamera_updateFromCamera(p){
    var o = this;
    var f = o._frustum
@@ -20019,6 +20115,33 @@ function FG3dPerspectiveCamera_updateFromCamera(p){
    o.lookAt(pf.center.x, pf.center.y, pf.center.z);
    o.update();
    o._matrix.transform(f.coners, pf.coners, 8);
+   f.updateCenter();
+   o._projection.updateFrustum(f);
+}
+function FG3dPerspectiveCamera_updateFlatCamera(p){
+   var o = this;
+   var f = o._frustum
+   var pf = p.updateFlatFrustum();
+   var angle = RMath.DEGREE_RATE * o._projection.angle();
+   var distance = pf.radius / Math.sin(angle * 0.5);
+   distance = Math.max(distance, p._projection._zfar);
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * distance;
+   var vy = pf.center.y - d.y * distance;
+   var vz = pf.center.z - d.z * distance;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   o._matrix.transform(f.coners, pf.coners, 8);
+   f.coners[ 1] = 0.0;
+   f.coners[ 4] = 0.0;
+   f.coners[ 7] = 0.0;
+   f.coners[10] = 0.0;
+   f.coners[13] = 0.0;
+   f.coners[16] = 0.0;
+   f.coners[19] = 0.0;
+   f.coners[22] = 0.0;
    f.updateCenter();
    o._projection.updateFrustum(f);
 }
@@ -21794,10 +21917,10 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
    p.setParameter('vc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
    p.setParameter('vc_light_view_matrix', pg.calculate(EG3dRegionParameter.LightViewMatrix));
-   p.setParameter('vc_light_projection_matrix', pg.calculate(EG3dRegionParameter.LightProjectionMatrix));
+   p.setParameter('vc_light_vp_matrix', pg.calculate(EG3dRegionParameter.LightViewProjectionMatrix));
    p.setParameter('fc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
    p.setParameter('fc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
-   p.setParameter4('fc_light_depth', 1.0 / 16384.0, -1.0 / 16384.0, 0.0, 1.0 / lp.distance());
+   p.setParameter4('fc_light_depth', 1.0 / 8192.0, 0.0, -1.0 / 8192.0, 1.0 / lp.distance());
    var mi = m.info();
    p.setParameter('fc_color', mi.ambientColor);
    p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
@@ -22098,13 +22221,12 @@ function FG3dShadowTechnique_setup(){
    var p = o._passColor = RClass.create(FG3dShadowColorPass);
    p.linkContext(o._context);
    p.setup();
-   ps.push(p);
 }
 function FG3dShadowTechnique_drawRegion(p){
    var o = this;
    var c = p.camera();
    var l = p.directionalLight();
-   l.camera().updateFromCamera(c);
+   l.camera().updateFlatCamera(c);
    o.__base.FG3dTechnique.drawRegion.call(o, p);
 }
 function FWglContext(o){
@@ -23076,12 +23198,12 @@ function FWglRenderTarget_build(){
       return r;
    }
    if(o._optionDepth){
-      var nr = o._nativeDepth = g.createRenderbuffer();
+      var nd = o._nativeDepth = g.createRenderbuffer();
       var r = c.checkError('createRenderbuffer', 'Create render buffer failure.');
       if(!r){
          return r;
       }
-      g.bindRenderbuffer(g.RENDERBUFFER, nr);
+      g.bindRenderbuffer(g.RENDERBUFFER, nd);
       var r = c.checkError('bindRenderbuffer', 'Bind render buffer failure.');
       if(!r){
          return r;
@@ -23091,8 +23213,8 @@ function FWglRenderTarget_build(){
       if(!r){
          return r;
       }
-      g.framebufferRenderbuffer(g.FRAMEBUFFER, g.DEPTH_ATTACHMENT, g.RENDERBUFFER, nr);
-      var r = c.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._native, nr);
+      g.framebufferRenderbuffer(g.FRAMEBUFFER, g.DEPTH_ATTACHMENT, g.RENDERBUFFER, nd);
+      var r = c.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._native, nd);
       if(!r){
          return r;
       }

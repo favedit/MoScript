@@ -517,10 +517,10 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
    p.setParameter('vc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
    p.setParameter('vc_light_view_matrix', pg.calculate(EG3dRegionParameter.LightViewMatrix));
-   p.setParameter('vc_light_projection_matrix', pg.calculate(EG3dRegionParameter.LightProjectionMatrix));
+   p.setParameter('vc_light_vp_matrix', pg.calculate(EG3dRegionParameter.LightViewProjectionMatrix));
    p.setParameter('fc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
    p.setParameter('fc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
-   p.setParameter4('fc_light_depth', 1.0 / 16384.0, -1.0 / 16384.0, 0.0, 1.0 / lp.distance());
+   p.setParameter4('fc_light_depth', 1.0 / 8192.0, 0.0, -1.0 / 8192.0, 1.0 / lp.distance());
    var mi = m.info();
    p.setParameter('fc_color', mi.ambientColor);
    p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
@@ -821,12 +821,11 @@ function FG3dShadowTechnique_setup(){
    var p = o._passColor = RClass.create(FG3dShadowColorPass);
    p.linkContext(o._context);
    p.setup();
-   ps.push(p);
 }
 function FG3dShadowTechnique_drawRegion(p){
    var o = this;
    var c = p.camera();
    var l = p.directionalLight();
-   l.camera().updateFromCamera(c);
+   l.camera().updateFlatCamera(c);
    o.__base.FG3dTechnique.drawRegion.call(o, p);
 }

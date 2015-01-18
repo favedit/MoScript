@@ -967,12 +967,12 @@ function FWglRenderTarget_build(){
       return r;
    }
    if(o._optionDepth){
-      var nr = o._nativeDepth = g.createRenderbuffer();
+      var nd = o._nativeDepth = g.createRenderbuffer();
       var r = c.checkError('createRenderbuffer', 'Create render buffer failure.');
       if(!r){
          return r;
       }
-      g.bindRenderbuffer(g.RENDERBUFFER, nr);
+      g.bindRenderbuffer(g.RENDERBUFFER, nd);
       var r = c.checkError('bindRenderbuffer', 'Bind render buffer failure.');
       if(!r){
          return r;
@@ -982,8 +982,8 @@ function FWglRenderTarget_build(){
       if(!r){
          return r;
       }
-      g.framebufferRenderbuffer(g.FRAMEBUFFER, g.DEPTH_ATTACHMENT, g.RENDERBUFFER, nr);
-      var r = c.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._native, nr);
+      g.framebufferRenderbuffer(g.FRAMEBUFFER, g.DEPTH_ATTACHMENT, g.RENDERBUFFER, nd);
+      var r = c.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._native, nd);
       if(!r){
          return r;
       }

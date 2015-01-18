@@ -54,26 +54,24 @@ function FWglRenderTarget_build(){
    // 创建深度缓冲区
    if(o._optionDepth){
       // 绑定深度缓冲区
-      var nr = o._nativeDepth = g.createRenderbuffer();
+      var nd = o._nativeDepth = g.createRenderbuffer();
       var r = c.checkError('createRenderbuffer', 'Create render buffer failure.');
       if(!r){
          return r;
       }
-      g.bindRenderbuffer(g.RENDERBUFFER, nr);
+      g.bindRenderbuffer(g.RENDERBUFFER, nd);
       var r = c.checkError('bindRenderbuffer', 'Bind render buffer failure.');
       if(!r){
          return r;
       }
-      //g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
-      //g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
       g.renderbufferStorage(g.RENDERBUFFER, g.DEPTH_COMPONENT16, o._size.width, o._size.height);
       var r = c.checkError('renderbufferStorage', 'Set render buffer storage format failure.');
       if(!r){
          return r;
       }
       // 绑定深度缓冲区
-      g.framebufferRenderbuffer(g.FRAMEBUFFER, g.DEPTH_ATTACHMENT, g.RENDERBUFFER, nr);
-      var r = c.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._native, nr);
+      g.framebufferRenderbuffer(g.FRAMEBUFFER, g.DEPTH_ATTACHMENT, g.RENDERBUFFER, nd);
+      var r = c.checkError('framebufferRenderbuffer', "Set depth buffer to frame buffer failure. (framebuffer=%d, depthbuffer=%d)", o._native, nd);
       if(!r){
          return r;
       }
@@ -86,13 +84,11 @@ function FWglRenderTarget_build(){
       var t = ts.get(i);
       // 设置信息
       g.bindTexture(g.TEXTURE_2D, t._native);
-      //g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.NEAREST);
-      //g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.NEAREST);
       g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
       g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
       // 设置存储
       g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, o._size.width, o._size.height, 0, g.RGBA, g.UNSIGNED_BYTE, null);
-      //g.texImage2D(GL_TEXTURE_2D, 0, GL_R32F, _size.width, _size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
+      //g.texImage2D(g.TEXTURE_2D, 0, g.R32F, _size.width, _size.height, 0, g.RGBA, g.UNSIGNED_BYTE, null);
       var r = c.checkError('texImage2D', "Alloc texture storage. (texture_id, size=%dx%d)", t._native, o._size.width, o._size.height);
       if(!r){
          return r;

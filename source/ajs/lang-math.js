@@ -125,6 +125,7 @@ function SFrustum(o){
    o.coners       = new Array(24);
    o.updateCenter = SFrustum_updateCenter;
    o.update       = SFrustum_update;
+   o.updateFlat   = SFrustum_updateFlat;
    return o;
 }
 function SFrustum_updateCenter(){
@@ -200,6 +201,55 @@ function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    m.assign(pm);
    m.invert();
    m.transform(o.coners, ps, 8);
+   o.updateCenter();
+}
+function SFrustum_updateFlat(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
+   var o = this;
+   var aspect = pvw / pvh;
+   var znear = pvn;
+   var zfar = pvf;
+   var fov = Math.tan(RMath.DEGREE_RATE * pva * 0.5);
+   var nearY = znear * fov;
+   var nearX = nearY * aspect;
+   var farY = zfar * fov;
+   var farX = farY * aspect;
+   var ps = o.points;
+   ps[ 0] = -nearX;
+   ps[ 1] =  nearY;
+   ps[ 2] =  znear;
+   ps[ 3] =  nearX;
+   ps[ 4] =  nearY;
+   ps[ 5] =  znear;
+   ps[ 6] =  nearX;
+   ps[ 7] = -nearY;
+   ps[ 8] =  znear;
+   ps[ 9] = -nearX;
+   ps[10] = -nearY;
+   ps[11] =  znear;
+   ps[12] = -farX;
+   ps[13] =  farY;
+   ps[14] =  zfar;
+   ps[15] =  farX;
+   ps[16] =  farY;
+   ps[17] =  zfar;
+   ps[18] =  farX;
+   ps[19] = -farY;
+   ps[20] =  zfar;
+   ps[21] = -farX;
+   ps[22] = -farY;
+   ps[23] =  zfar;
+   var m = RMath.matrix;
+   m.assign(pm);
+   m.invert();
+   m.transform(o.coners, ps, 8);
+   o.coners[ 1] = 0.0;
+   o.coners[ 4] = 0.0;
+   o.coners[ 7] = 0.0;
+   o.coners[10] = 0.0;
+   o.coners[13] = 0.0;
+   o.coners[16] = 0.0;
+   o.coners[19] = 0.0;
+   o.coners[22] = 0.0;
    o.updateCenter();
 }
 function SFrustumPlanes(o){

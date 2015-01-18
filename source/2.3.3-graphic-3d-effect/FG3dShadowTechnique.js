@@ -37,7 +37,7 @@ function FG3dShadowTechnique_setup(){
    var p = o._passColor = RClass.create(FG3dShadowColorPass);
    p.linkContext(o._context);
    p.setup();
-   ps.push(p);
+   //ps.push(p);
 }
 
 //==========================================================
@@ -48,8 +48,10 @@ function FG3dShadowTechnique_setup(){
 //==========================================================
 function FG3dShadowTechnique_drawRegion(p){
    var o = this;
+   // 计算光照相机
    var c = p.camera();
    var l = p.directionalLight();
-   l.camera().updateFromCamera(c);
+   l.camera().updateFlatCamera(c);
+   // 绘制处理
    o.__base.FG3dTechnique.drawRegion.call(o, p);
 }

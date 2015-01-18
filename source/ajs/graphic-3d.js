@@ -624,10 +624,12 @@ function FG3dOrthoProjection_updateFrustum(p){
 function FG3dPerspectiveCamera(o){
    o = RClass.inherits(this, o, FG3dCamera);
    o._projection      = null;
-   o.construct        = FG3dPerspectiveCamera_construct;
-   o.projection       = FG3dPerspectiveCamera_projection;
-   o.updateFrustum    = FG3dPerspectiveCamera_updateFrustum;
-   o.updateFromCamera = FG3dPerspectiveCamera_updateFromCamera;
+   o.construct         = FG3dPerspectiveCamera_construct;
+   o.projection        = FG3dPerspectiveCamera_projection;
+   o.updateFrustum     = FG3dPerspectiveCamera_updateFrustum;
+   o.updateFlatFrustum = FG3dPerspectiveCamera_updateFlatFrustum;
+   o.updateFromCamera  = FG3dPerspectiveCamera_updateFromCamera;
+   o.updateFlatCamera  = FG3dPerspectiveCamera_updateFlatCamera;
    return o;
 }
 function FG3dPerspectiveCamera_construct(){
@@ -646,6 +648,14 @@ function FG3dPerspectiveCamera_updateFrustum(){
    f.update(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
    return f;
 }
+function FG3dPerspectiveCamera_updateFlatFrustum(){
+   var o = this;
+   var p = o._projection;
+   var s = p._size;
+   var f = o._frustum;
+   f.updateFlat(p._angle, s.width, s.height, p._znear, p._zfar, o._centerFront, o._centerBack, o._matrix);
+   return f;
+}
 function FG3dPerspectiveCamera_updateFromCamera(p){
    var o = this;
    var f = o._frustum
@@ -662,6 +672,33 @@ function FG3dPerspectiveCamera_updateFromCamera(p){
    o.lookAt(pf.center.x, pf.center.y, pf.center.z);
    o.update();
    o._matrix.transform(f.coners, pf.coners, 8);
+   f.updateCenter();
+   o._projection.updateFrustum(f);
+}
+function FG3dPerspectiveCamera_updateFlatCamera(p){
+   var o = this;
+   var f = o._frustum
+   var pf = p.updateFlatFrustum();
+   var angle = RMath.DEGREE_RATE * o._projection.angle();
+   var distance = pf.radius / Math.sin(angle * 0.5);
+   distance = Math.max(distance, p._projection._zfar);
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * distance;
+   var vy = pf.center.y - d.y * distance;
+   var vz = pf.center.z - d.z * distance;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   o.update();
+   o._matrix.transform(f.coners, pf.coners, 8);
+   f.coners[ 1] = 0.0;
+   f.coners[ 4] = 0.0;
+   f.coners[ 7] = 0.0;
+   f.coners[10] = 0.0;
+   f.coners[13] = 0.0;
+   f.coners[16] = 0.0;
+   f.coners[19] = 0.0;
+   f.coners[22] = 0.0;
    f.updateCenter();
    o._projection.updateFrustum(f);
 }

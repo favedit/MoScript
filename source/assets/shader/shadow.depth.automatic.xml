@@ -83,10 +83,10 @@
          // 计算环境颜色
          <shader:true source='support.ambient'>
          <shader:true source='support.ambient.sampler'>
-         vec4 color = texture2D(fs_diffuse, v_coord);
-         if(color.a < fc_alpha.x){
-            discard;
-         }
+         //vec4 color = texture2D(fs_diffuse, v_coord);
+         //if(color.a < fc_alpha.x){
+            //discard;
+         //}
          </shader:true>
          </shader:true>
          //............................................................
@@ -102,8 +102,8 @@
          result = result - temp;
          //............................................................
          // 返回颜色
-         gl_FragColor = result;
-         //gl_FragColor = vec4(depth, depth, depth, 1.0);
+         //gl_FragColor = result;
+         gl_FragColor = vec4(depth, depth, depth, 1.0);
       }
    ]]></Source>
 </Configuration>

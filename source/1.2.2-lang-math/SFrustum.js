@@ -31,6 +31,7 @@ function SFrustum(o){
    // @method
    o.updateCenter = SFrustum_updateCenter;
    o.update       = SFrustum_update;
+   o.updateFlat   = SFrustum_updateFlat;
    return o;
 }
 
@@ -132,6 +133,75 @@ function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    m.assign(pm);
    m.invert();
    m.transform(o.coners, ps, 8);
+   // 计算空间内位置
+   o.updateCenter();
+}
+
+
+//============================================================
+// <T>更新处理</T>
+//
+// @param pva:viewportAngle 视角角度
+// @param pvw:viewportWidth 视角宽度
+// @param pvh:viewportHeight 视角高度
+// @param pvn:viewportNear 视角近平面
+// @param pvf:viewportFar 视角远平面
+// @param pfr:frontRate 前平面比率
+// @param pbr:backRate 后平面比率
+// @param pm:matrix:SMatrix4x4 矩阵
+//============================================================
+function SFrustum_updateFlat(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
+   var o = this;
+   // 计算视角信息
+   var aspect = pvw / pvh;
+   //var znear = -pvf * pbr;
+   var znear = pvn;
+   //var zfar = pvf * pfr;
+   var zfar = pvf;
+   var fov = Math.tan(RMath.DEGREE_RATE * pva * 0.5);
+   var nearY = znear * fov;
+   var nearX = nearY * aspect;
+   var farY = zfar * fov;
+   var farX = farY * aspect;
+   // 设置空间坐标
+   var ps = o.points;
+   ps[ 0] = -nearX;
+   ps[ 1] =  nearY;
+   ps[ 2] =  znear;
+   ps[ 3] =  nearX;
+   ps[ 4] =  nearY;
+   ps[ 5] =  znear;
+   ps[ 6] =  nearX;
+   ps[ 7] = -nearY;
+   ps[ 8] =  znear;
+   ps[ 9] = -nearX;
+   ps[10] = -nearY;
+   ps[11] =  znear;
+   ps[12] = -farX;
+   ps[13] =  farY;
+   ps[14] =  zfar;
+   ps[15] =  farX;
+   ps[16] =  farY;
+   ps[17] =  zfar;
+   ps[18] =  farX;
+   ps[19] = -farY;
+   ps[20] =  zfar;
+   ps[21] = -farX;
+   ps[22] = -farY;
+   ps[23] =  zfar;
+   // 设置转换矩阵
+   var m = RMath.matrix;
+   m.assign(pm);
+   m.invert();
+   m.transform(o.coners, ps, 8);
+   o.coners[ 1] = 0.0;
+   o.coners[ 4] = 0.0;
+   o.coners[ 7] = 0.0;
+   o.coners[10] = 0.0;
+   o.coners[13] = 0.0;
+   o.coners[16] = 0.0;
+   o.coners[19] = 0.0;
+   o.coners[22] = 0.0;
    // 计算空间内位置
    o.updateCenter();
 }

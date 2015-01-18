@@ -141,7 +141,7 @@ function FScene3d_loadRegionResource(p){
    cp.size().assign(o._context.size());
    cp._angle = rcv.angle();
    cp._znear = rcv.znear();
-   cp._zfar = rcv.zfar();
+   cp._zfar = rcv.zfar() * 0.6;
    cp.update();
    //............................................................
    // 设置光源
@@ -160,9 +160,9 @@ function FScene3d_loadRegionResource(p){
    //lc.direction().assign(rlc.direction());
    lc.update();
    // 设置光源投影
-   lp.size().set(1024, 1024);
+   lp.size().set(2048, 2048);
    //lp._angle = rlv.angle();
-   lp._angle = 90;
+   lp._angle = 80;
    lp._znear = rlv.znear();
    lp._zfar = rlv.zfar();
    lp.update();
