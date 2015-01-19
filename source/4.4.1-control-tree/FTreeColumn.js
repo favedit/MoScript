@@ -1,31 +1,34 @@
-/**************************************************************
- * 树目录里定义一列的控件类
- *
- * @control
- * @author maochunyang
- * @version 1.0.1
- **************************************************************/
+//==========================================================
+// <T>树目录列组件。</T>
+//
+// @component
+// @author maocy
+// @version 150119
+//==========================================================
 function FTreeColumn(o){
    o = RClass.inherits(this, o, FControl);
-   // Property
-   o.icon         = RClass.register(o, new TPtyStr('icon'));
-   o.dataName     = RClass.register(o, new TPtyStr('dataName'));
-   o.display      = RClass.register(o, new TPtyBool('display', EBool.False));
-   o.config       = RClass.register(o, new TPtyCfg('config'));
-   // Process
+   //..........................................................
+   // @property
+   o._icon        = RClass.register(o, new APtyString('_icon'));
+   o._dataName    = RClass.register(o, new APtyString('_dataName'));
+   o._display     = RClass.register(o, new APtyBoolean('_display'), EBoolean.False);
+   o._config      = RClass.register(o, new APtyConfig('_config'));
+   //..........................................................
+   // @process
    o.oeBuild      = FTreeColumn_oeBuild;
-   // Event
+   //..........................................................
+   // @event
    o.onBuildPanel = FTreeColumn_onBuildPanel;
    return o;
 }
 
-/**************************************************************
- * 构建列函数
- *
- * @method
- * @param event:event:TEvent 构建事件
- * @return EEventStatus 枚举类型
- **************************************************************/
+//==========================================================
+// <T>构建处理。</T>
+//
+// @method
+// @param event:event:TEvent 构建事件
+// @return EEventStatus 枚举类型
+//==========================================================
 function FTreeColumn_oeBuild(event){
    var o = this;
    var r = o.base.FControl.oeBuild.call(o, event);
@@ -41,12 +44,12 @@ function FTreeColumn_oeBuild(event){
    return EEventStatus.Stop;
 }
 
-/**************************************************************
- * 构建一个panel
- *
- * @method
- * @see RBuilder.create
- **************************************************************/
+//==========================================================
+// <T>建立标签。</T>
+//
+// @method
+// @see RBuilder.create
+//==========================================================
 function FTreeColumn_onBuildPanel(){
    this.hPanel = RBuilder.create(null, 'TD');
 }

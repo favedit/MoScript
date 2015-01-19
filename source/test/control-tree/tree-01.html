@@ -11,6 +11,12 @@
 <SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
 
+<SCRIPT language='javascript' src='../../4.4.1-control-tree/FTreeColumn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.4.1-control-tree/FTreeLevel.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.4.1-control-tree/FTreeNodeType.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.4.1-control-tree/FTreeNode.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.4.1-control-tree/FTreeView.js'></SCRIPT>
+
 <SCRIPT>
 RContext.contextPath = '';
 RContext.contextTag = '/system';
@@ -56,9 +62,13 @@ function _onload(){
    RBrowser.construct();
    RBrowser.setContentPath('../..');
 
-   debugger
-   var treeConfig = RXml.makeNode(xTree);
-   RDump.dump(treeConfig, _dump);
+   //var xnode = RXml.makeNode(xTree);
+   //RDump.dump(treeConfig, _dump);
+
+   var tv = RClass.create(FTreeView);
+   tv.loadUrl('node.xml');
+   RDump.dump(tv, _dump);
+
    //tree = RControl.create(treeConfig, _idp);
    //tree.lsnsLoaded.push(new TListener(null, tvLoaded));
    //tree.lsnsClick.push(new TListener(null, tvClick));

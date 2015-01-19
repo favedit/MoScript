@@ -6,15 +6,15 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function APtyNode(o, n, l){
-   if(!o){o = this;}
+function APtyConfig(n, l){
+   var o = this;
    AProperty(o, n, l);
    //..........................................................
    // @attribute
    o.force = true;
    //..........................................................
    // @method
-   o.load  = APtyNode_load;
+   o.load  = APtyConfig_load;
    o.save  = RMethod.empty;
    return o;
 }
@@ -26,6 +26,6 @@ function APtyNode(o, n, l){
 // @param v:value:Object 对象
 // @param x:config:TNode 节点
 //============================================================
-function APtyNode_load(v, x){
+function APtyConfig_load(v, x){
    v[this.name] = x;
 }

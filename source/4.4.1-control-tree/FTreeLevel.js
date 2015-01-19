@@ -1,15 +1,16 @@
-/**************************************************************
- * 书目录节点层次,主要定义节点的颜色
- *
- * @control
- * @author maochunyang
- * @version 1.0.1
- **************************************************************/
+//==========================================================
+// <T>树目录节点层次组件。</T>
+//
+// @component
+// @author maocy
+// @version 150119
+//==========================================================
 function FTreeLevel(o){
    o = RClass.inherits(this, o, FControl);
-   // Property
-   o.id           = RClass.register(o, new TPtyStr('id'));
-   o.color        = RClass.register(o, new TPtyStr('color'));
-   o.bgColor      = RClass.register(o, new TPtyStr('bgColor'));
+   //..........................................................
+   // @property
+   o._id        = RClass.register(o, new APtyString('_id'));
+   o._color     = RClass.register(o, new APtyString('_color'));
+   o._backColor = RClass.register(o, new APtyString('_backColor'));
    return o;
 }

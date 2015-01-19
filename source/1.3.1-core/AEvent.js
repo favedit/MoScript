@@ -1,29 +1,58 @@
-﻿//============================================================
+﻿//==========================================================
 // <T>事件描述类。</T>
 //
 // @property
 // @param n:name:String 名称
-// @param l:linker:String 关联名称
+// @param p:process:Function 处理函数
 // @author maocy
-// @version 141231
-//============================================================
-function AEvent(o, n, l){
-   var o = this;
-   o.annotation = EAnnotation.Event;
+// @version 150119
+//==========================================================
+function AEvent(o, n, l, h){
+   if(!o){o = this;}
+   AAnnotation(o, n);
+   //..........................................................
    // @attribute
-   o.name       = n;
-   o.linker     = null;
+   o._annotationCd = EAnnotation.Event;
+   // @attribute
+   o._linker       = l;
+   o._handle       = h;
+   o._process      = null;
+   //..........................................................
    // @method
-   o.code     = AEvent_code;
+   o.handle        = AEvent_handle;
+   o.value         = AEvent_value;
+   o.attach        = RMethod.empty;
+   o.toString      = AEvent_toString;
    return o;
 }
 
-//============================================================
-// <T>获得代码。</T>
+//==========================================================
+// <T>获得句柄名称。</T>
 //
 // @method
-// @return String 代码
+// @return String 句柄名称
+//==========================================================
+function AEvent_handle(){
+   return this._handle;
+}
+
+//==========================================================
+// <T>获得内容。</T>
+//
+// @method
+// @return Function 内容
+//==========================================================
+function AEvent_value(){
+   return this._process;
+}
+
 //============================================================
-function AEvent_code(){
-   return this.name;
+// <T>获得字符串。</T>
+//
+// @method
+// @return String 字符串
+//============================================================
+function AEvent_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',handle=' + o._handle;
 }

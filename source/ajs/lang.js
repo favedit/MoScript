@@ -3,19 +3,23 @@ function AAnnotation(o, n){
    o._annotationCd = null;
    o._inherit      = false;
    o._name         = n;
-   o.annotationCd  = AProperty_annotationCd;
-   o.name          = AProperty_name;
-   o.code          = AProperty_code;
+   o.annotationCd  = AAnnotation_annotationCd;
+   o.name          = AAnnotation_name;
+   o.code          = AAnnotation_code;
+   o.value         = AAnnotation_value;
    return o;
 }
-function AProperty_annotationCd(){
+function AAnnotation_annotationCd(){
    return this._annotationCd;
 }
-function AProperty_name(){
+function AAnnotation_name(){
    return this._name;
 }
-function AProperty_code(){
+function AAnnotation_code(){
    return this._name;
+}
+function AAnnotation_value(){
+   return null;
 }
 function AEnum(n, l){
    var o = this;
@@ -102,10 +106,21 @@ function APtyBoolean_toString(){
    var o = this;
    return 'linker=' + o._linker + ',value=' + o._value;
 }
+function APtyConfig(n, l){
+   var o = this;
+   AProperty(o, n, l);
+   o.force = true;
+   o.load  = APtyConfig_load;
+   o.save  = RMethod.empty;
+   return o;
+}
+function APtyConfig_load(v, x){
+   v[this.name] = x;
+}
 function APtyInteger(n, l, v){
    var o = this;
    AProperty(o, n, l);
-   o.value    = RInteger.nvl(v);
+   o._value   = RInteger.nvl(v);
    o.build    = APtyInteger_build;
    o.toString = APtyInteger_toString;
    return o;
@@ -117,17 +132,6 @@ function APtyInteger_build(v){
 function APtyInteger_toString(){
    var o = this;
    return 'linker=' + o._linker + ',value=' + o._value;
-}
-function APtyNode(o, n, l){
-   if(!o){o = this;}
-   AProperty(o, n, l);
-   o.force = true;
-   o.load  = APtyNode_load;
-   o.save  = RMethod.empty;
-   return o;
-}
-function APtyNode_load(v, x){
-   v[this.name] = x;
 }
 function APtyPadding(n, l, vl, vt, vr, vb){
    var o = this;
@@ -887,7 +891,8 @@ function RClass_find(v){
 function RClass_register(v, a, r){
    var n = RMethod.name(v.constructor);
    this.classes[n].register(a);
-   return r;
+   var v = a.value();
+   return (v != null) ? v : r;
 }
 function RClass_createBase(n){
    if(n){

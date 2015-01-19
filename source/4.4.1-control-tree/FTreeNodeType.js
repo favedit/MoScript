@@ -1,19 +1,19 @@
-/**************************************************************
- * 树目录里定义一列的控件类
- *
- * @control
- * @author maochunyang
- * @version 1.0.1
- **************************************************************/
+//==========================================================
+// <T>树目录节点类型组件。</T>
+//
+// @component
+// @author maocy
+// @version 150119
+//==========================================================
 function FTreeNodeType(o){
    o = RClass.inherits(this, o, FComponent);
    // Property
-   o.type       = RClass.register(o, new TPtyStr('type'));
-   o.typeName   = RClass.register(o, new TPtyStr('typeName'));
-   o.icon       = RClass.register(o, new TPtyStr('icon'));
-   o.service    = RClass.register(o, new TPtyStr('service'));
-   o.action     = RClass.register(o, new TPtyStr('action'));
-   o.config     = RClass.register(o, new TPtyCfg('config'));
+   o._type       = RClass.register(o, new APtyString('type'));
+   o._typeName   = RClass.register(o, new APtyString('typeName'));
+   o._icon       = RClass.register(o, new APtyString('icon'));
+   o._service    = RClass.register(o, new APtyString('service'));
+   o._action     = RClass.register(o, new APtyString('action'));
+   o._config     = RClass.register(o, new APtyConfig('config'));
    // Event
    o.get        = FTreeNodeType_get;
    o.set        = FTreeNodeType_set;
@@ -21,53 +21,44 @@ function FTreeNodeType(o){
    return o;
 }
 
-/**************************************************************
- * 相应点击节点操作的函数
- *
- * @method
- * @param event:event:TEvent 构建事件
- * @return EEventStatus 枚举类型
- **************************************************************/
+//==========================================================
+// 相应点击节点操作的函数
+//
+// @method
+// @param event:event:TEvent 构建事件
+// @return EEventStatus 枚举类型
+//==========================================================
 function FTreeNodeType_get(n){
    var o = this;
-   return o.config ? o.config.get(n) : null;
+   return o._config ? o._config.get(n) : null;
 }
 
-/**************************************************************
- * 相应点击节点操作的函数
- *
- * @method
- * @param event:event:TEvent 构建事件
- * @return EEventStatus 枚举类型
- **************************************************************/
-// name, value
+//==========================================================
+// 相应点击节点操作的函数
+//
+// @method
+// @param event:event:TEvent 构建事件
+// @return EEventStatus 枚举类型
+//==========================================================
 function FTreeNodeType_set(n, v){
    var o = this;
-   if(o.config){
-      o.config.set(n, v)
+   if(o._config){
+      o._config.set(n, v)
    }
 }
 
-/**************************************************************
- * 相应点击节点操作的函数
- *
- * @method
- * @param event:event:TEvent 构建事件
- * @return EEventStatus 枚举类型
- **************************************************************/
-function FTreeNodeType_innerDump(dump){
+//==========================================================
+// 相应点击节点操作的函数
+//
+// @method
+// @param event:event:TEvent 构建事件
+// @return EEventStatus 枚举类型
+//==========================================================
+function FTreeNodeType_innerDump(s){
    var o = this;
-   dump.append(RClass.typeOf(o));
-   dump.append('[icon=',  o.icon);
-   dump.append(', service=', o.service);
-   dump.append(', action=', o.action);
-   dump.append(']');
+   s.append(RClass._typeOf(o));
+   s.append('[icon=',  o._icon);
+   s.append(', service=', o._service);
+   s.append(', action=', o._action);
+   s.append(']');
 }
-
-/**************************************************************
- * 相应点击节点操作的函数
- *
- * @method
- * @param event:event:TEvent 构建事件
- * @return EEventStatus 枚举类型
- **************************************************************/

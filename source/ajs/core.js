@@ -1,13 +1,382 @@
-function AEvent(o, n, l){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.name       = n;
-   o.linker     = null;
-   o.code     = AEvent_code;
+function AEvent(o, n, l, h){
+   if(!o){o = this;}
+   AAnnotation(o, n);
+   o._annotationCd = EAnnotation.Event;
+   o._linker       = l;
+   o._handle       = h;
+   o._process      = null;
+   o.handle        = AEvent_handle;
+   o.value         = AEvent_value;
+   o.attach        = RMethod.empty;
+   o.toString      = AEvent_toString;
    return o;
 }
-function AEvent_code(){
-   return this.name;
+function AEvent_handle(){
+   return this._handle;
+}
+function AEvent_value(){
+   return this._process;
+}
+function AEvent_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',handle=' + o._handle;
+}
+function AEventBlur(n, m){
+   var o = this;
+   AEvent(o, n, 'blur', 'onblur');
+   o._hSource = null;
+   o.attach   = AEventBlur_attach;
+   return o;
+}
+function AEventBlur_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+}
+function AEventChange(n){
+   var o = this;
+   AEvent(o, n, 'change', 'onchange');
+   o._hSource = null;
+   o.attach   = AEventChange_attach;
+   return o;
+}
+function AEventChange_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+}
+function AEventClick(n){
+   var o = this;
+   AEvent(o, n, 'click', 'onclick');
+   o._hSource = null;
+   o.attach   = AEventClick_attach;
+   return o;
+}
+function AEventClick_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+}
+function AEventDoubleClick(n){
+   var o = this;
+   AEvent(o, n, 'dblclick', 'ondblclick');
+   o._hSource = null;
+   o.attach   = AEventDoubleClick_attach;
+   return o;
+}
+function AEventDoubleClick_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+}
+function AEventFocus(n){
+   var o = this;
+   AEvent(o, n, 'focus', 'onfocus');
+   o._hSource = null;
+   o.attach   = AEventFocus_attach;
+   return o;
+}
+function AEventFocus_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+}
+function AEventKeyDown(n){
+   var o = this;
+   AEvent(o, n, 'keydown', 'onkeydown');
+   o._hSource  = null;
+   o._altKey   = false;
+   o._shiftKey = false;
+   o._ctrlKey  = false;
+   o._keyCode  = null;
+   o.attach    = AEventKeyDown_attach;
+   return o;
+}
+function AEventKeyDown_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+   o._altKey = p.altKey;
+   o._shiftKey = p.shiftKey;
+   o._ctrlKey = p.ctrlKey;
+   o._keyCode = p.keyCode;
+}
+function AEventKeyPress(n){
+   var o = this;
+   AEvent(o, n, 'keypress', 'onkeypress');
+   o._hSource  = null;
+   o._altKey   = false;
+   o._shiftKey = false;
+   o._ctrlKey  = false;
+   o._keyCode  = null;
+   o.attach    = AEventKeyPress_attach;
+   return o;
+}
+function AEventKeyPress_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+   o._altKey = p.altKey;
+   o._shiftKey = p.shiftKey;
+   o._ctrlKey = p.ctrlKey;
+   o._keyCode = p.keyCode;
+}
+function AEventKeyUp(n){
+   var o = this;
+   AEvent(o, n, 'keyup', 'onkeyup');
+   o._hSource  = null;
+   o._altKey   = false;
+   o._shiftKey = false;
+   o._ctrlKey  = false;
+   o._keyCode  = null;
+   o.attach    = AEventKeyUp_attach;
+   return o;
+}
+function AEventKeyUp_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+   o._altKey = p.altKey;
+   o._shiftKey = p.shiftKey;
+   o._ctrlKey = p.ctrlKey;
+   o._keyCode = p.keyCode;
+}
+function AEventLoad(n){
+   var o = this;
+   AEvent(o, n, 'load', 'onload');
+   o._hSource = null;
+   o.attach   = AEventLoad_attach;
+   return o;
+}
+function AEventLoad_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+}
+function AEventMouseDown(n){
+   var o = this;
+   AEvent(o, n, 'mousedown', 'onmousedown');
+   o._hSource = null;
+   o._altKey  = null;
+   o._ctrlKey = null;
+   o._x       = null;
+   o._y       = null;
+   o._offsetX = null;
+   o._offsetY = null;
+   o._clientX = null;
+   o._clientY = null;
+   o.attach   = AEventMouseDown_attach;
+   return o;
+}
+function AEventMouseDown_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+   o._altKey = p.altKey;
+   o._ctrlKey = p.ctrlKey;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      o._x = p.pageX;
+      o._y = p.pageY;
+      o._offsetX = p.layerX;
+      o._offsetY = p.layerY;
+   }else{
+      o._x = p.x;
+      o._y = p.y;
+      o._offsetX = p.offsetX;
+      o._offsetY = p.offsetY;
+   }
+   o._clientX = p.clientX;
+   o._clientY = p.clientY;
+}
+function AEventMouseEnter(n){
+   var o = this;
+   AEvent(o, n, 'mouseenter', 'onmouseenter');
+   o._hSource = null;
+   o.attach   = AEventMouseEnter_attach;
+   return o;
+}
+function AEventMouseEnter_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+}
+function AEventMouseLeave(n){
+   var o = this;
+   AEvent(o, n, 'mouseleave', 'onmouseleave');
+   o._hSource = null;
+   o.attach   = AEventMouseLeave_attach;
+   return o;
+}
+function AEventMouseLeave_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+}
+function AEventMouseMove(n){
+   var o = this;
+   AEvent(o, n, 'mousemove', 'onmousemove');
+   o._hSource = null;
+   o._altKey  = null;
+   o._ctrlKey = null;
+   o._x       = null;
+   o._y       = null;
+   o._offsetX = null;
+   o._offsetY = null;
+   o._clientX = null;
+   o._clientY = null;
+   o.attach   = AEventMouseMove_attach;
+   return o;
+}
+function AEventMouseMove_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+   o._altKey = p.altKey;
+   o._ctrlKey = p.ctrlKey;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      o._x = p.pageX;
+      o._y = p.pageY;
+      o._offsetX = p.layerX;
+      o._offsetY = p.layerY;
+   }else{
+      o._x = p.x;
+      o._y = p.y;
+      o._offsetX = p.offsetX;
+      o._offsetY = p.offsetY;
+   }
+   o._clientX = p.clientX;
+   o._clientY = p.clientY;
+}
+function AEventMouseOut(n){
+   var o = this;
+   AEvent(o, n, 'mouseout', 'onmouseout');
+   o._hSource = null;
+   o._altKey  = null;
+   o._ctrlKey = null;
+   o._x       = null;
+   o._y       = null;
+   o.attach   = AEventMouseOut_attach;
+   return o;
+}
+function AEventMouseOut_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+   o._altKey = p.altKey;
+   o._ctrlKey = p.ctrlKey;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      o._x = p.pageX;
+      o._y = p.pageY;
+   }else{
+      o._x = p.x;
+      o._y = p.y;
+   }
+}
+function AEventMouseOver(n){
+   var o = this;
+   AEvent(o, n, 'mouseover', 'onmouseover');
+   o._hSource = null;
+   o._altKey  = null;
+   o._ctrlKey = null;
+   o._x       = null;
+   o._y       = null;
+   o.attach   = AEventMouseOver_attach;
+   return o;
+}
+function AEventMouseOver_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+   o._altKey = p.altKey;
+   o._ctrlKey = p.ctrlKey;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      o._x = p.pageX;
+      o._y = p.pageY;
+   }else{
+      o._x = p.x;
+      o._y = p.y;
+   }
+}
+function AEventMouseUp(n){
+   var o = this;
+   AEvent(o, n, 'mouseup', 'onmouseup');
+   o._hSource = null;
+   o._altKey  = null;
+   o._ctrlKey = null;
+   o._x       = null;
+   o._y       = null;
+   o._offsetX = null;
+   o._offsetY = null;
+   o._clientX = null;
+   o._clientY = null;
+   o.attach   = AEventMouseUp_attach;
+   return o;
+}
+function AEventMouseUp_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+   o._altKey = p.altKey;
+   o._ctrlKey = p.ctrlKey;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      o._x = p.pageX;
+      o._y = p.pageY;
+      o._offsetX = p.layerX;
+      o._offsetY = p.layerY;
+   }else{
+      o._x = p.x;
+      o._y = p.y;
+      o._offsetX = p.offsetX;
+      o._offsetY = p.offsetY;
+   }
+   o._clientX = p.clientX;
+   o._clientY = p.clientY;
+}
+function AEventMouseWheel(n){
+   var o = this;
+   AEvent(o, n, 'mousewheel', 'onmousewheel');
+   o._hSource = null;
+   o._altKey  = null;
+   o._ctrlKey = null;
+   o._x       = null;
+   o._y       = null;
+   o._delta   = null;
+   o.attach   = AEventMouseWheel_attach;
+   return o;
+}
+function AEventMouseWheel_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+   o._altKey = p.altKey;
+   o._ctrlKey = p.ctrlKey;
+   o._delta = p.wheelDelta;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      o._x = p.pageX;
+      o._y = p.pageY;
+   }else{
+      o._x = p.x;
+      o._y = p.y;
+   }
+}
+function AEventReadyStateChange(n){
+   var o = this;
+   AEvent(o, n, 'readystatechange', 'onreadystatechange');
+   o._hSource = null;
+   o.attach   = AEventReadyStateChange_attach;
+   return o;
+}
+function AEventReadyStateChange_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+}
+function AEventResize(n){
+   var o = this;
+   AEvent(o, n, 'resize', 'onresize');
+   o._hSource = null;
+   o._x       = null;
+   o._y       = null;
+   o.attach   = AEventResize_attach;
+   return o;
+}
+function AEventResize_attach(p){
+   var o = this;
+   o._x = p.x;
+   o._y = p.y;
+}
+function AEventScroll(n){
+   var o = this;
+   AEvent(o, n, 'scroll', 'onscroll');
+   o._hSource = null;
+   o.attach   = AEventScroll_attach;
+   return o;
+}
+function AEventScroll_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
 }
 var EBrowser = new function EBrowser(){
    var o = this;
@@ -414,406 +783,6 @@ function FXmlConnection_onConnectionComplete(){
 }
 function FXmlConnection_content(){
    return this._outputNode;
-}
-function HBlur(n, m){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'blur';
-   o.handle     = 'onblur';
-   o.name       = n;
-   o.method     = m;
-   o.source     = null;
-   o.hSource    = null;
-   o.attach     = HBlur_attach;
-   return o;
-}
-function HBlur_attach(e){
-   var o = this;
-}
-function HChange(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'change';
-   o.handle     = 'onchange';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.attach     = HChange_attach;
-   return o;
-}
-function HChange_attach(e){
-   var o = this;
-}
-function HClick(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'click';
-   o.handle     = 'onclick';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.attach     = HClick_attach;
-   return o;
-}
-function HClick_attach(e){
-   var o = this;
-   o.srcElement = e.srcElement;
-}
-function HDoubleClick(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'dblclick';
-   o.handle     = 'ondblclick';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.attach     = HDoubleClick_attach;
-   return o;
-}
-function HDoubleClick_attach(e){
-   var o = this;
-}
-function HFocus(n, m){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'focus';
-   o.handle     = 'onfocus';
-   o.name       = n;
-   o.method     = m;
-   o.source     = null;
-   o.hSource    = null;
-   o.attach     = HFocus_attach;
-   return o;
-}
-function HFocus_attach(e){
-   var o = this;
-}
-function HKeyDown(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'keydown';
-   o.handle     = 'onkeydown';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.ctrlKey    = false;
-   o.keyCode    = null;
-   o.attach     = HKeyDown_attach;
-   return o;
-}
-function HKeyDown_attach(e){
-   var o = this;
-   o.shiftKey = e.shiftKey;
-   o.ctrlKey = e.ctrlKey;
-   o.keyCode = e.keyCode;
-}
-function HKeyPress(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'keypress';
-   o.handle     = 'onkeypress';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.keyCode    = null;
-   o.srcElement = null;
-   o.attach     = HKeyPress_attach;
-   return o;
-}
-function HKeyPress_attach(e){
-   var o = this;
-   o.keyCode = e.keyCode;
-   o.srcElement = e.srcElement;
-}
-function HKeyUp(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'keyup';
-   o.handle     = 'onkeyup';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.keyCode    = null;
-   o.srcElement = null;
-   o.attach     = HKeyUp_attach;
-   return o;
-}
-function HKeyUp_attach(e){
-   var o = this;
-   o.keyCode = e.keyCode;
-   o.srcElement = e.srcElement;
-}
-function HLoad(n, m){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'load';
-   o.handle     = 'onload';
-   o.name       = n;
-   o.method     = m;
-   o.source     = null;
-   o.hSource    = null;
-   o.attach     = HLoad_attach;
-   return o;
-}
-function HLoad_attach(e){
-   var o = this;
-}
-function HMouseDown(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'mousedown';
-   o.handle     = 'onmousedown';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.keyAlt     = null;
-   o.keyAlt     = null;
-   o.x          = null;
-   o.y          = null;
-   o.srcElement = null;
-   o.attach     = HMouseDown_attach;
-   return o;
-}
-function HMouseDown_attach(e){
-   var o = this;
-   o.keyAlt = e.altKey;
-   o.keyCtrl = e.ctrlKey;
-   if(window.event){
-      o.x = e.x;
-      o.y = e.y;
-      o.offsetX = e.offsetX;
-      o.offsetY = e.offsetY;
-   }else{
-      o.x = e.pageX;
-      o.y = e.pageY;
-      o.offsetX = e.layerX;
-      o.offsetY = e.layerY;
-   }
-   o.clientX = e.clientX;
-   o.clientY = e.clientY;
-   o.srcElement = e.srcElement;
-}
-function HMouseEnter(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'mouseenter';
-   o.handle     = 'onmouseenter';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.srcElement = null;
-   o.attach     = HMouseEnter_attach;
-   return o;
-}
-function HMouseEnter_attach(e){
-   var o = this;
-   o.srcElement = e.srcElement;
-}
-function HMouseLeave(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'mouseleave';
-   o.handle     = 'onmouseleave';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.attach     = HMouseLeave_attach;
-   return o;
-}
-function HMouseLeave_attach(e){
-   var o = this;
-}
-function HMouseMove(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'mousemove';
-   o.handle     = 'onmousemove';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.keyAlt     = null;
-   o.keyAlt     = null;
-   o.x          = null;
-   o.y          = null;
-   o.offsetX    = null;
-   o.offsetY    = null;
-   o.srcElement = null;
-   o.attach     = HMouseMove_attach;
-   return o;
-}
-function HMouseMove_attach(e){
-   var o = this;
-   o.altKey = e.altKey;
-   o.ctrlKey = e.ctrlKey;
-   if(window.event){
-      o.x = e.x;
-      o.y = e.y;
-      o.offsetX = e.offsetX;
-      o.offsetY = e.offsetY;
-   }else{
-      o.x = e.pageX;
-      o.y = e.pageY;
-      o.offsetX = e.layerX;
-      o.offsetY = e.layerY;
-   }
-   o.clientX = e.clientX;
-   o.clientY = e.clientY;
-   o.srcElement = e.srcElement;
-}
-function HMouseOut(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'mouseout';
-   o.handle     = 'onmouseout';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.keyAlt     = null;
-   o.keyAlt     = null;
-   o.x          = null;
-   o.y          = null;
-   o.srcElement = null;
-   o.attach     = HMouseOut_attach;
-   return o;
-}
-function HMouseOut_attach(e){
-   var o = this;
-   o.keyAlt = e.altKey;
-   o.keyCtrl = e.ctrlKey;
-   o.x = e.x;
-   o.y = e.y;
-   o.srcElement = e.srcElement;
-}
-function HMouseOver(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'mouseover';
-   o.handle     = 'onmouseover';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.keyAlt     = null;
-   o.keyAlt     = null;
-   o.x          = null;
-   o.y          = null;
-   o.srcElement = null;
-   o.attach     = HMouseOver_attach;
-   return o;
-}
-function HMouseOver_attach(e){
-   var o = this;
-   o.keyAlt = e.altKey;
-   o.keyCtrl = e.ctrlKey;
-   o.x = e.x;
-   o.y = e.y;
-   o.srcElement = e.srcElement;
-}
-function HMouseUp(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'mouseup';
-   o.handle     = 'onmouseup';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.keyAlt     = null;
-   o.keyAlt     = null;
-   o.x          = null;
-   o.y          = null;
-   o.srcElement = null;
-   o.attach     = HMouseUp_attach;
-   return o;
-}
-function HMouseUp_attach(e){
-   var o = this;
-   o.keyAlt = e.altKey;
-   o.keyCtrl = e.ctrlKey;
-   if(window.event){
-      o.x = e.x;
-      o.y = e.y;
-      o.offsetX = e.offsetX;
-      o.offsetY = e.offsetY;
-   }else{
-      o.x = e.pageX;
-      o.y = e.pageY;
-      o.offsetX = e.layerX;
-      o.offsetY = e.layerY;
-   }
-   o.clientX = e.clientX;
-   o.clientY = e.clientY;
-   o.srcElement = e.srcElement;
-}
-function HMouseWheel(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'mousewheel';
-   o.handle     = 'onmousewheel';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.keyAlt     = null;
-   o.keyAlt     = null;
-   o.x          = null;
-   o.y          = null;
-   o.wheelDelta = null;
-   o.attach     = HMouseWheel_attach;
-   return o;
-}
-function HMouseWheel_attach(e){
-   var o = this;
-   o.keyAlt = e.altKey;
-   o.keyCtrl = e.ctrlKey;
-   o.wheelDelta = e.wheelDelta;
-   o.x = e.x;
-   o.y = e.y;
-}
-function HReadyStateChange(n, m){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'readystatechange';
-   o.handle     = 'onreadystatechange';
-   o.name       = n;
-   o.method     = m;
-   o.source     = null;
-   o.hSource    = null;
-   o.attach     = HReadyStateChange_attach;
-   return o;
-}
-function HReadyStateChange_attach(e){
-   var o = this;
-}
-function HResize(n){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'resize';
-   o.handle     = 'onresize';
-   o.name       = n;
-   o.source     = null;
-   o.hSource    = null;
-   o.x          = null;
-   o.y          = null;
-   o.attach     = HResize_attach;
-   return o;
-}
-function HResize_attach(e){
-   var o = this;
-   o.x = e.x;
-   o.y = e.y;
-}
-function HScroll(n, m){
-   var o = this;
-   o.annotation = EAnnotation.Event;
-   o.type       = 'scroll';
-   o.handle     = 'onscroll';
-   o.name       = n;
-   o.method     = m;
-   o.source     = null;
-   o.hSource    = null;
-   o.attach     = HScroll_attach;
-   return o;
-}
-function HScroll_attach(e){
-   var o = this;
 }
 function MDataStream(o){
    o = RClass.inherits(this, o);
@@ -1514,7 +1483,11 @@ function RDump_dumpInner(di){
          var ann = vcls.attributeFind(name);
          if(ann){
             type = 'Annotation<' + RMethod.name(ann.constructor) + '>'
-            info = value + "<FONT color='green'> - (" + RHtml.toHtml(ann.toString()) + ")</FONT>";
+            if(value && value.constructor == Function){
+               info = "<FONT color='green'>" + RMethod.name(value) + "</FONT>";
+            }else{
+               info = value + "<FONT color='green'> - (" + RHtml.toHtml(ann.toString()) + ")</FONT>";
+            }
             infoFormat = false;
          }
       }
@@ -2524,6 +2497,56 @@ function RResource_imagePath(path, type){
    }
    return rc.context('/ars/img/' + path);
 }
+var RService = new function RService(){
+   var o = this;
+   o._services = new TDictionary();
+   o.url       = RService_url;
+   o.parse     = RService_parse;
+   return o;
+}
+function RService_url(p){
+   if(RString.startsWith(p, 'http://')){
+      return p;
+   }
+   if(RString.startsWith(p, '#')){
+      return p.substr(1);
+   }
+   if(!RString.startsWith(p, '/')){
+      p = '/' + p;
+   }
+   return top.RContext.context(p + '.ws');
+}
+function RService_parse(p){
+   var o = this;
+   var s = null;
+   var ss = o._services;
+   if(p){
+      s = ss.get(p);
+      if(s == null){
+         var ps = p.split('@');
+         if(ps.length == 1){
+            if(ps[0]){
+               s = new SServiceInfo();
+               s.service = ps[0];
+               s.action = null;
+               s.url = o.url(ps[0]);
+            }
+         }else if(ps.length == 2){
+            if(ps[0] && ps[1]){
+               s = new SServiceInfo();
+               s.service = ps[1];
+               s.action = ps[0];
+               s.url = o.url(ps[1]);
+            }
+         }
+      }
+      if(s == null){
+         throw new TError(o, 'Unknown service format. (source={1})', p);
+      }
+      ss.set(p, s);
+   }
+   return s;
+}
 var RStyle = new function RStyle(){
    var o = this;
    o.connected = false;
@@ -3283,6 +3306,13 @@ function SKeyDownEvent_attach(e){
    o.shiftKey = e.shiftKey;
    o.ctrlKey = e.ctrlKey;
    o.keyCode = e.keyCode;
+}
+function SServiceInfo(){
+   var o = this;
+   o.service = null;
+   o.action  = null;
+   o.url     = null;
+   return o;
 }
 function TDumpItem(o){
    if(!o){o = this;}

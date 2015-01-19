@@ -384,9 +384,12 @@ function RClass_find(v){
 // @return Object 结果对象
 //==========================================================
 function RClass_register(v, a, r){
+   // 注册描述
    var n = RMethod.name(v.constructor);
    this.classes[n].register(a);
-   return r;
+   // 返回内容
+   var v = a.value();
+   return (v != null) ? v : r;
 }
 
 //==========================================================

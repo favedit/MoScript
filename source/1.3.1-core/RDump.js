@@ -26,6 +26,8 @@ var RDump = new function RDump(){
 
 //===========================================================
 // <T>鼠标点击处理。</T>
+//
+// @method
 //===========================================================
 function RDump_onclick(){
    var o = this;
@@ -44,6 +46,7 @@ function RDump_onclick(){
 //===========================================================
 // <T>获得对象的名称信息。</T>
 //
+// @method
 // @param v:value:Object 对象
 // @return 名称信息
 //===========================================================
@@ -63,6 +66,7 @@ function RDump_nameInfo(v){
 //===========================================================
 // <T>获得对象的类型信息。</T>
 //
+// @method
 // @param v:value:Object 对象
 // @param t:typeName:Object 类型
 // @return 类型信息
@@ -112,6 +116,7 @@ function RDump_typeInfo(v, t){
 //===========================================================
 // <T>生成对象的运行信息。</T>
 //
+// @method
 // @param di:dumpItem:TDumpItem 运行信息项目
 //===========================================================
 function RDump_dumpInner(di){
@@ -150,7 +155,11 @@ function RDump_dumpInner(di){
          var ann = vcls.attributeFind(name);
          if(ann){
             type = 'Annotation<' + RMethod.name(ann.constructor) + '>'
-            info = value + "<FONT color='green'> - (" + RHtml.toHtml(ann.toString()) + ")</FONT>";
+            if(value && value.constructor == Function){
+               info = "<FONT color='green'>" + RMethod.name(value) + "</FONT>";
+            }else{
+               info = value + "<FONT color='green'> - (" + RHtml.toHtml(ann.toString()) + ")</FONT>";
+            }
             infoFormat = false;
          }
       }
@@ -219,6 +228,7 @@ function RDump_dumpInner(di){
 //===========================================================
 // <T>生成对象的运行信息。</T>
 //
+// @method
 // @param v:value:Object 对象
 // @param h:html:HtmlObject HTML容器
 //===========================================================

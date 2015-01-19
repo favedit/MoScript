@@ -1,5 +1,5 @@
 //==========================================================
-// 树目录里一个节点的类，主要定义一个节点的显示图标，注释，子节点
+// <T>树目录节点组件。</T>
 // 模板:
 //  hPanel<TR>
 // ┌---------------------------------------------┬-------------┐
@@ -10,34 +10,34 @@
 // └---------------------------------------------┴-------------┘
 // Label = label (tag) [ note ]
 //
-// @class FContainer
-// @author maochunyang
-// @version 1.0.1
+// @component
+// @author maocy
+// @version 150119
 //==========================================================
 function FTreeNode(o){
    o = RClass.inherits(this, o, FContainer);
    //..........................................................
    // @property
-   o.type             = RClass.register(o, new TPtyStr('type'));
-   o.uuid             = RClass.register(o, new TPtyStr('uuid'));
-   o.isValid          = RClass.register(o, new TPtyBool('isValid'), true);
-   o.icon             = RClass.register(o, new TPtyStr('icon'));
-   o.tag              = RClass.register(o, new TPtyStr('tag'));
-   o.note             = RClass.register(o, new TPtyStr('note'));
-   o.child            = RClass.register(o, new TPtyBool('child'));
-   o.checked          = RClass.register(o, new TPtyBool('checked'), false);
-   o.extended         = RClass.register(o, new TPtyBool('extended'), false);
+   o._type             = RClass.register(o, new APtyString('type'));
+   o._uuid             = RClass.register(o, new APtyString('uuid'));
+   o._isValid          = RClass.register(o, new APtyBoolean('isValid'), true);
+   o._icon             = RClass.register(o, new APtyString('icon'));
+   o._tag              = RClass.register(o, new APtyString('tag'));
+   o._note             = RClass.register(o, new APtyString('note'));
+   o._child            = RClass.register(o, new APtyBoolean('child'));
+   o._checked          = RClass.register(o, new APtyBoolean('checked'), false);
+   o._extended         = RClass.register(o, new APtyBoolean('extended'), false);
    //..........................................................
    // @style
-   o.stHover          = RClass.register(o, new TStyle('Hover'));
-   o.stSelect         = RClass.register(o, new TStyle('Select'));
-   o.stNodePanel      = RClass.register(o, new TStyle('NodePanel'));
-   o.stNodeHover      = RClass.register(o, new TStyle('NodeHover'));
-   o.stNodeSelect     = RClass.register(o, new TStyle('NodeSelect'));
-   o.stImage          = RClass.register(o, new TStyle('Image'));
-   o.stIcon           = RClass.register(o, new TStyle('Icon'));
-   o.stIconDisable    = RClass.register(o, new TStyle('IconDisable'));
-   o.stCell           = RClass.register(o, new TStyle('Cell'));
+   o.stHover          = RClass.register(o, new AStyle('Hover'));
+   o.stSelect         = RClass.register(o, new AStyle('Select'));
+   o.stNodePanel      = RClass.register(o, new AStyle('NodePanel'));
+   o.stNodeHover      = RClass.register(o, new AStyle('NodeHover'));
+   o.stNodeSelect     = RClass.register(o, new AStyle('NodeSelect'));
+   o.stImage          = RClass.register(o, new AStyle('Image'));
+   o.stIcon           = RClass.register(o, new AStyle('Icon'));
+   o.stIconDisable    = RClass.register(o, new AStyle('IconDisable'));
+   o.stCell           = RClass.register(o, new AStyle('Cell'));
    //..........................................................
    // @attribute
    o.__linked         = false;
@@ -60,9 +60,9 @@ function FTreeNode(o){
    o.hLabel           = null;
    //..........................................................
    // @event
-   o.onNodeEnter      = RClass.register(o, new HMouseEnter('onNodeEnter'), FTreeNode_onNodeEnter);
-   o.onNodeLeave      = RClass.register(o, new HMouseLeave('onNodeLeave'), FTreeNode_onNodeLeave);
-   o.onNodeClick      = RClass.register(o, new HClick('onNodeClick'), FTreeNode_onNodeClick);
+   o.onNodeEnter      = RClass.register(o, new AEventMouseEnter('onNodeEnter'), FTreeNode_onNodeEnter);
+   o.onNodeLeave      = RClass.register(o, new AEventMouseLeave('onNodeLeave'), FTreeNode_onNodeLeave);
+   o.onNodeClick      = RClass.register(o, new AEventClick('onNodeClick'), FTreeNode_onNodeClick);
    o.onBuildPanel     = RBuilder.onBuildTrPanel;
    //..........................................................
    // @process
@@ -170,7 +170,7 @@ function FTreeNode_onNodeLeave(e){
 function FTreeNode_onNodeClick(e){
    var o = this;
    var t = o.tree;
-   var esn = e.hSender.tagName;
+   var esn = e.hSender._tagName;
    // 处理复选框的情况
    if('INPUT' == esn){
       return;
@@ -191,18 +191,18 @@ function FTreeNode_onNodeClick(e){
       find = find.parent;
    }
    // 设置焦点节点
-   if(!isImg || (isImg && (isParent || !o.child))){
+   if(!isImg || (isImg && (isParent || !o._child))){
       t.selectNode(o, true);
    }
    // 判断是否需要加载节点
-   if(!o.loaded && o.child){
+   if(!o.loaded && o._child){
       o.extend(true);
       if(!isImg){
          t.lsnsClick.process(t, o);
       }
    }else{
       // 已经是加载过的节点
-      if(o.child){
+      if(o._child){
         if(o.isFolder()){
            o.extend(!o._extended);
         }else{
@@ -213,7 +213,7 @@ function FTreeNode_onNodeClick(e){
             }
         }
       }
-      if((isImg && isParent) || (isImg && !o.child) || !isImg){
+      if((isImg && isParent) || (isImg && !o._child) || !isImg){
          t.lsnsClick.process(t, o);
       }
    }
@@ -240,15 +240,15 @@ function FTreeNode_oeBuild(e){
       var hnp = o.hNodePanel = RBuilder.appendCell(hp, o.style('NodePanel'));
       hnp.noWrap = true;
       // 建立图片
-      var ni = o.child ? t.iconPlus : t.iconNode;
+      var ni = o._child ? t._iconPlus : t._iconNode;
       var hi = o.hImage = RBuilder.appendIcon(hnp, ni, o.style('Image'), 16, 16);
       hi._linkType = 'image';
       // 建立图标
-      var ni = RString.nvl(o.icon, o.type ? o.type.icon : null);
+      var ni = RString.nvl(o._icon, o._type ? o._type._icon : null);
       if(ni){
-         var hi = o.hIcon = RBuilder.appendIcon(hnp, ni, o.isValid ? o.style('Icon') : o.style('IconDisable'), 16, 16);
+         var hi = o.hIcon = RBuilder.appendIcon(hnp, ni, o._isValid ? o.style('Icon') : o.style('IconDisable'), 16, 16);
       }else{
-        var hi = o.hIcon = RBuilder.appendIcon(hnp, t.iconEmpty, o.isValid ? o.style('Icon') : o.style('IconDisable'), 1, 1);
+        var hi = o.hIcon = RBuilder.appendIcon(hnp, t._iconEmpty, o._isValid ? o.style('Icon') : o.style('IconDisable'), 1, 1);
       }
       hi._linkType = 'icon';
       // 建立复选框
@@ -257,16 +257,16 @@ function FTreeNode_oeBuild(e){
          hc.width = 13;
          hc.height = 13;
          hc.style.borderWidth = 0;
-         o.setCheck(o.checked);
+         o.setCheck(o._checked);
          t.linkEvent(o, 'onNodeCheckClick', hc);
       }
       // 建立显示文本
       var text = '&nbsp;' + o.label;
-      if(o.tag){
-         text += '&nbsp;<FONT color=blue>(' + o.tag + ')</FONT>';
+      if(o._tag){
+         text += '&nbsp;<FONT color=blue>(' + o._tag + ')</FONT>';
       }
-      if(o.note){
-         text += '&nbsp;<FONT color=green>[ ' + o.note + ' ]</FONT>';
+      if(o._note){
+         text += '&nbsp;<FONT color=green>[ ' + o._note + ' ]</FONT>';
       }
       var hl = o.hLabel = RBuilder.appendText(hnp, text);
       hl.style.font = 'icon';
@@ -307,7 +307,7 @@ function FTreeNode_construct(){
 //==========================================================
 function FTreeNode_hasChild(){
    var o = this;
-   if(o.child){
+   if(o._child){
       return o.nodes && o.nodes.count > 0;
    }
 }
@@ -335,7 +335,7 @@ function FTreeNode_topNode(){
 function FTreeNode_topNodeByType(t){
    var f = this;
    while(f){
-      if(f.type.type == t){
+      if(f._type._type == t){
          return f;
       }
       f = f.parentNode;
@@ -371,7 +371,7 @@ function FTreeNode_set(n, v){
 // @return Boolean 是否选取
 //==========================================================
 function FTreeNode_check(){
-   return this.hCheck.checked;
+   return this.hCheck._checked;
 }
 
 //==========================================================
@@ -381,8 +381,8 @@ function FTreeNode_check(){
 // @param v:value:Boolean 是否选取
 //==========================================================
 function FTreeNode_setCheck(v){
-   this.hCheck.checked = v;
-   this.checked = v;
+   this.hCheck._checked = v;
+   this._checked = v;
 }
 
 //==========================================================
@@ -410,7 +410,7 @@ function FTreeNode_loadConfig(x){
    var o = this;
    o.base.FContainer.loadConfig.call(o, x);
    // Property
-   o.type = RObject.nvl(this.tree.types.get(x.get('type')), this.tree.type);
+   o._type = RObject.nvl(this.tree._types.get(x.get('type')), this.tree._type);
    // Attribute
    o.attributes.append(x.attrs);
    var attrs = x.get('attributes')
@@ -429,9 +429,9 @@ function FTreeNode_saveConfig(x){
    var o = this;
    o.base.FContainer.saveConfig.call(o, x);
    // Property
-   var t = o.type;
+   var t = o._type;
    x.set('type', t.name);
-   x.set('type_type', t.type);
+   x.set('type_type', t._type);
    x.set('attributes', o.attributes.pack());
 }
 
@@ -445,15 +445,15 @@ function FTreeNode_loadNode(x){
    var o = this;
    var t = o.tree;
    // 获取属性
-   o.type = null;
-   o.uuid = null;
-   o.isValid = true;
-   o.icon = null;
-   o.tag = null;
-   o.note = null;
-   o.child = false;
-   o.checked = false;
-   o.extended = true;
+   o._type = null;
+   o._uuid = null;
+   o._isValid = true;
+   o._icon = null;
+   o._tag = null;
+   o._note = null;
+   o._child = false;
+   o._checked = false;
+   o._extended = true;
    o.loadConfig(x);
    o.__linked = false;
    o.__display = true;
@@ -464,32 +464,32 @@ function FTreeNode_loadNode(x){
    o.loaded = false;
    o.level = 0;
    //debugger;
-   var ni = o.child ? t.iconPlus : t.iconNode;
-   o.hImage.src = RResource.iconPath(ni);
+   var ni = o._child ? t._iconPlus : t._iconNode;
+   o.hImage.src = RResource._iconPath(ni);
    // 建立图标
-   var ni = RString.nvl(o.icon, o.type ? o.type.icon : null);
-   o.hIcon.className = o.isValid ? o.style('Icon') : o.style('IconDisable');
+   var ni = RString.nvl(o._icon, o._type ? o._type._icon : null);
+   o.hIcon.className = o._isValid ? o.style('Icon') : o.style('IconDisable');
    if(ni){
      o.hIcon.style.width = 16;
      o.hIcon.style.height = 16;
-      o.hIcon.src = RResource.iconPath(ni);
+      o.hIcon.src = RResource._iconPath(ni);
    }else{
       o.hIcon.style.width = 1;
       o.hIcon.style.height = 1
    }
    if(!RString.isEmpty(o.attributes.get('checked'))){
-     o.checked = RBoolean.isTrue(o.attributes.get('checked'));
+     o._checked = RBoolean.isTrue(o.attributes.get('checked'));
      if(o.hCheck){
-         o.hCheck.checked = o.checked;
+         o.hCheck._checked = o._checked;
      }
    }
    // 建立显示文本
    var text = '&nbsp;' + o.label;
-   if(o.tag){
-      text += '&nbsp;<FONT color=blue>(' + o.tag + ')</FONT>';
+   if(o._tag){
+      text += '&nbsp;<FONT color=blue>(' + o._tag + ')</FONT>';
    }
-   if(o.note){
-      text += '&nbsp;<FONT color=green>[ ' + o.note + ' ]</FONT>';
+   if(o._note){
+      text += '&nbsp;<FONT color=green>[ ' + o._note + ' ]</FONT>';
    }
    o.hLabel.innerHTML = text;
 }
@@ -556,7 +556,7 @@ function FTreeNode_hide(){
 function FTreeNode_extend(flag){
    var o = this;
    var t = o.tree;
-   if(!o.loaded && o.child){
+   if(!o.loaded && o._child){
       // 从服务器加载当前节点
       if(t.__loading){
          //return alert(RContext.get('FTreeView:waiting'));
@@ -567,12 +567,12 @@ function FTreeNode_extend(flag){
    }else{
       // 设置图片
       if(o.hImage && !o.hasChild()){
-         o.hImage.src = RResource.iconPath(t.iconNode);
+         o.hImage.src = RResource._iconPath(t._iconNode);
          return false;
       }
       o._extended = flag;
-      if(o.child && o.hImage){
-         o.hImage.src = RResource.iconPath(flag ? t.iconMinus : t.iconPlus);
+      if(o._child && o.hImage){
+         o.hImage.src = RResource._iconPath(flag ? t._iconMinus : t._iconPlus);
       }
       // 展开和隐藏节点
       if(flag){
@@ -625,7 +625,7 @@ function FTreeNode_push(c){
    var t = o.tree;
    o.base.FContainer.push.call(o, c);
    if(RClass.isClass(c, FTreeNode)){
-      o.child = true;
+      o._child = true;
       o.loaded = true;
       // 记住对象
       var ns = o.nodes;
@@ -702,7 +702,7 @@ function FTreeNode_reloadParent(){
 function FTreeNode_loadQuery(x){
    var o = this;
    var sl = RString.nvl(x.get('label'), o.label);
-   var sn = RString.nvl(x.get('note'), o.note);
+   var sn = RString.nvl(x.get('note'), o._note);
    var text = '&nbsp;' + sl;
    if(!RString.isEmpty(sn)){
       text += '&nbsp;<FONT color=green>[ ' + sn + ' ]</FONT>';
@@ -784,14 +784,14 @@ function FTreeNode_dispose(){
 //==========================================================
 function FTreeNode_innerDump(s){
    var o = this;
-   s.append(RClass.typeOf(o));
+   s.append(RClass._typeOf(o));
    s.append('[level=',  o.level);
-   if(o.type){
-      s.append(' type=',  o.type.name);
+   if(o._type){
+      s.append(' type=',  o._type.name);
    }
-   s.append(', icon=',  o.icon);
+   s.append(', icon=',  o._icon);
    s.append(', caption=', o.label);
-   s.append(', child=', o.child);
+   s.append(', child=', o._child);
    s.append(']');
 }
 
@@ -874,7 +874,7 @@ function FTreeNode_findByName(n){
 //==========================================================
 function FTreeNode_findByUuid(u){
    var o = this;
-   if(o.uuid == u){
+   if(o._uuid == u){
       return o;
    }
    var cs = o.components;
@@ -882,7 +882,7 @@ function FTreeNode_findByUuid(u){
       for(var n=0; n<cs.count; n++){
          var c = cs.value(n);
          if(c){
-            if(c.uuid == u){
+            if(c._uuid == u){
                return c;
             }
             if(c.components){
@@ -934,7 +934,7 @@ function FTreeNode_pushChanged(trd){
 //==========================================================
 function FTreeNode_checkChanged(){
    var o = this;
-   if(o.checked != o.check()){
+   if(o._checked != o.check()){
       return true;
    }
    return false;
@@ -958,7 +958,7 @@ function FTreeNode_getFullPath(){
 
 //---------------------------------------------------
 function FTreeNode_isFolder(){
-   if(this.type){
-       return (this.type.typeName == 'collections') ? true : false;
+   if(this._type){
+       return (this._type._typeName == 'collections') ? true : false;
    }
 }

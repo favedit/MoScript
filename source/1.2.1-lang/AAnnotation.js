@@ -16,9 +16,10 @@ function AAnnotation(o, n){
    o._name         = n;
    //..........................................................
    // @method
-   o.annotationCd  = AProperty_annotationCd;
-   o.name          = AProperty_name;
-   o.code          = AProperty_code;
+   o.annotationCd  = AAnnotation_annotationCd;
+   o.name          = AAnnotation_name;
+   o.code          = AAnnotation_code;
+   o.value         = AAnnotation_value;
    return o;
 }
 
@@ -28,7 +29,7 @@ function AAnnotation(o, n){
 // @method
 // @return EAnnotation 描述类型
 //============================================================
-function AProperty_annotationCd(){
+function AAnnotation_annotationCd(){
    return this._annotationCd;
 }
 
@@ -38,7 +39,7 @@ function AProperty_annotationCd(){
 // @method
 // @return String 代码
 //============================================================
-function AProperty_name(){
+function AAnnotation_name(){
    return this._name;
 }
 
@@ -48,6 +49,16 @@ function AProperty_name(){
 // @method
 // @return String 代码
 //============================================================
-function AProperty_code(){
+function AAnnotation_code(){
    return this._name;
+}
+
+//==========================================================
+// <T>获得内容。</T>
+//
+// @method
+// @return Object 内容
+//==========================================================
+function AAnnotation_value(){
+   return null;
 }

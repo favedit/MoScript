@@ -13,7 +13,7 @@ function APtyInteger(n, l, v){
    AProperty(o, n, l);
    //..........................................................
    // @attribute
-   o.value    = RInteger.nvl(v);
+   o._value   = RInteger.nvl(v);
    //..........................................................
    // @method
    o.build    = APtyInteger_build;
