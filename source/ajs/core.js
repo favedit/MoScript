@@ -3026,12 +3026,12 @@ var RXml = new function RXml(){
    o.isNode           = RXml_isNode;
    o.createConnection = RXml_createConnection;
    o.createDocument   = RXml_createDocument;
-   o.loadString       = RXml_loadString;
+   o.formatText       = RXml_formatText;
+   o.buildText        = RXml_buildText;
+   o.buildNode        = RXml_buildNode;
+   o.makeString       = RXml_makeString;
    o.makeNode         = RXml_makeNode;
    o.makeDocument     = RXml_makeDocument;
-   o.buildNode        = RXml_buildNode;
-   o.fromText         = RXml_fromText;
-   o.buildText        = RXml_buildText;
    o.unpack           = RXml_unpack;
    o.construct();
    return o;
@@ -3117,45 +3117,42 @@ function RXml_createDocument(){
    }
    return r;
 }
-function RXml_loadString(s){
-   var o = this;
-   var x = null;
-   if(o.domActiveX){
-      x = new ActiveXObject(o.domVendor);
-      x.async = false;
-      x.loadXML(s);
-   }else{
-      var p = new DOMParser();
-      x = p.parseFromString(s, 'text/xml');
+function RXml_formatText(s){
+   if(s != null){
+      s = s.replace(/\\n/g, '\n');
    }
-   return x;
+   return s;
 }
-function RXml_makeNode(p){
-   var o = this;
-   if(p.documentElement){
-      var d = new TXmlDocument();
-      o.buildNode(d, null, p.documentElement);
-      return d.node;
-   }else if(p.tagName == 'SCRIPT'){
-      var s = p.textContent;
-      if(!s){
-         s = p.text;
-      }
-      if(s){
-         var d = new TXmlDocument();
-         var xd = o.loadString(s)
-         o.buildNode(d, null, xd.documentElement);
-         return d.node;
+function RXml_buildText(s, v){
+   if(v != null){
+      v = v.toString();
+      var c = v.length;
+      for(var i = 0; i < c; i++){
+         var ch = v.charAt(i);
+         switch(ch){
+            case '<':
+               s.append('&lt;');
+               break;
+            case '>':
+               s.append('&gt;');
+               break;
+            case '"':
+               s.append('&quot;');
+               break;
+            case '&':
+               s.append('&amp;');
+               break;
+            case '\r':
+               continue;
+            case '\n':
+               s.append('\\n');
+               break;
+            default:
+               s.append(ch);
+         }
       }
    }
-   return null;
-}
-function RXml_makeDocument(xdoc){
-   var doc = new TXmlDocument();
-   if(xdoc.documentElement){
-      RXml.buildNode(doc, null, xdoc.documentElement);
-   }
-   return doc;
+   return s;
 }
 function RXml_buildNode(pd, pn, pe){
    var xas = null;
@@ -3167,7 +3164,7 @@ function RXml_buildNode(pd, pn, pe){
          for(var n = 0; n < eac; n++){
             var ea = eas[n];
             if(ea.nodeName){
-               xas.set(ea.nodeName, RXml.fromText(ea.value));
+               xas.set(ea.nodeName, RXml.formatText(ea.value));
             }
          }
       }
@@ -3202,38 +3199,45 @@ function RXml_buildNode(pd, pn, pe){
       }
    }
 }
-function RXml_fromText(s){
-   return (null != s) ? s.replace(/\\n/g, '\n') : s;
+function RXml_makeString(s){
+   var o = this;
+   var x = null;
+   if(o.domActiveX){
+      x = new ActiveXObject(o.domVendor);
+      x.async = false;
+      x.loadXML(s);
+   }else{
+      var p = new DOMParser();
+      x = p.parseFromString(s, 'text/xml');
+   }
+   return x;
 }
-function RXml_buildText(s, v){
-   if(null != v){
-      v = v.toString();
-      for(var n=0; n<v.length; n++){
-         var ch = v.charAt(n);
-         switch(ch){
-            case '<':
-               s.append('&lt;');
-               break;
-            case '>':
-               s.append('&gt;');
-               break;
-            case '"':
-               s.append('&quot;');
-               break;
-            case '&':
-               s.append('&amp;');
-               break;
-            case '\r':
-               continue;
-            case '\n':
-               s.append('\\n');
-               break;
-            default:
-               s.append(ch);
-         }
+function RXml_makeNode(p){
+   var o = this;
+   if(p.documentElement){
+      var d = new TXmlDocument();
+      o.buildNode(d, null, p.documentElement);
+      return d.root();
+   }else if(p.tagName == 'SCRIPT'){
+      var s = p.textContent;
+      if(!s){
+         s = p.text;
+      }
+      if(s){
+         var d = new TXmlDocument();
+         var xd = o.makeString(s)
+         o.buildNode(d, null, xd.documentElement);
+         return d.root();
       }
    }
-   return s;
+   return null;
+}
+function RXml_makeDocument(p){
+   var d = new TXmlDocument();
+   if(p.documentElement){
+      RXml.buildNode(d, null, p.documentElement);
+   }
+   return d;
 }
 function RXml_unpack(s, n){
    var o = this;

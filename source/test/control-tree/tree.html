@@ -3,22 +3,13 @@
 <TITLE>Popup Example</TITLE>
 <META http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<LINK rel='stylesheet' href='../../../system/acs/control.css' type='text/css'>
-<LINK rel='stylesheet' href='../../../system/acs/lang_jp.css' type='text/css'>
+<LINK rel='stylesheet' href='../../acs/control.css' type='text/css'>
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css">
 
-<SCRIPT language='javascript' src='../../runtime.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../0-runtime/4 - RXml.js'></SCRIPT>
-
-<!--
-<SCRIPT language='javascript' src='../../base.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../core.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../ctl.tree.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../8-context/context_cn.js'></SCRIPT>
-
-<SCRIPT language='javascript' src='../../1-lang/TXmlConnect.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../4-ctl.tree/FTreeView.js'></SCRIPT>
--->
+<SCRIPT language='javascript' src='../../ajs/mo-core.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/mo-control.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
 
 <SCRIPT>
 RContext.contextPath = '';
@@ -61,8 +52,13 @@ function tvLoaded(a,b){
 
 var tree = null;
 function _onload(){
-   //RGlobal.path = '../..';
+   RRuntime.processCd = EProcess.Debug;
+   RBrowser.construct();
+   RBrowser.setContentPath('../..');
+
+   debugger
    var treeConfig = RXml.makeNode(xTree);
+   RDump.dump(treeConfig, _dump);
    //tree = RControl.create(treeConfig, _idp);
    //tree.lsnsLoaded.push(new TListener(null, tvLoaded));
    //tree.lsnsClick.push(new TListener(null, tvClick));
@@ -73,7 +69,7 @@ function _onload(){
 
 	//RDump.dump(_id3, tree);
    //var c = document.createElement("INPUT");
-   RDump.dump(treeConfig, _id3);
+   //RDump.dump(treeConfig, _id3);
 }
 </SCRIPT>
 
@@ -87,12 +83,7 @@ function _onload(){
 <input type='button' value='Connect' onclick='onCnn()'>
 <input type='button' value='Show' onclick='onShow()'>
 <HR>
-<DIV id='_idp' nowrap></DIV><HR>
-<DIV id='_id0' nowrap></DIV>
-<DIV id='_id1' nowrap></DIV>
-<DIV id='_id2' nowrap></DIV>
-<DIV id='_id3' nowrap></DIV>
-<DIV id='_log' nowrap></DIV><HR>
+<DIV id='_dump' nowrap></DIV>
 </BODY>
 
 </HTML>

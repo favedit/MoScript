@@ -19,12 +19,12 @@ var RXml = new function RXml(){
    o.isNode           = RXml_isNode;
    o.createConnection = RXml_createConnection;
    o.createDocument   = RXml_createDocument;
-   o.loadString       = RXml_loadString;
+   o.formatText       = RXml_formatText;
+   o.buildText        = RXml_buildText;
+   o.buildNode        = RXml_buildNode;
+   o.makeString       = RXml_makeString;
    o.makeNode         = RXml_makeNode;
    o.makeDocument     = RXml_makeDocument;
-   o.buildNode        = RXml_buildNode;
-   o.fromText         = RXml_fromText;
-   o.buildText        = RXml_buildText;
    o.unpack           = RXml_unpack;
    //..........................................................
    // @construct
@@ -32,11 +32,11 @@ var RXml = new function RXml(){
    return o;
 }
 
-//===========================================================
+//==========================================================
 // <T>构造配置工具类。</T>
 //
 // @method
-//===========================================================
+//==========================================================
 function RXml_construct(){
    var o = this;
    var d = window.document;
@@ -94,23 +94,23 @@ function RXml_construct(){
    }
 }
 
-//===========================================================
+//==========================================================
 // 判断是否是一个节点(TNode)类型
 //
 // @method
 // @param n:Node:TNode 节点对象
 // @return Boolean 返回Boolean类型
-//===========================================================
+//==========================================================
 function RXml_isNode(n){
    return RClass.isName(n, 'TNode');
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个配置链接。</T>
 //
 // @method
 // @return 配置链接
-//===========================================================
+//==========================================================
 function RXml_createConnection(){
    var o = this;
    var r = null;
@@ -126,12 +126,12 @@ function RXml_createConnection(){
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个配置文档。</T>
 //
 // @method
 // @return 配置链接
-//===========================================================
+//==========================================================
 function RXml_createDocument(){
    var o = this;
    var r = null;
@@ -147,74 +147,61 @@ function RXml_createDocument(){
    return r;
 }
 
-//===========================================================
-// <T>加载一个配置字符串。</T>
+//==========================================================
+// <T>格式化文本。</T>
 //
 // @method
-// @param n:Node:TNode 节点对象
-// @return Boolean 返回Boolean类型
-//===========================================================
-function RXml_loadString(s){
-   var o = this;
-   var x = null;
-   // 判断浏览器的类型
-   if(o.domActiveX){
-      x = new ActiveXObject(o.domVendor);
-      x.async = false;
-      x.loadXML(s);
-   }else{
-      var p = new DOMParser();
-      x = p.parseFromString(s, 'text/xml');
+// @param s:string:String 字符串
+// @return String  替换后的字符串
+//==========================================================
+function RXml_formatText(s){
+   if(s != null){
+      s = s.replace(/\\n/g, '\n');
    }
-   return x;
+   return s;
 }
 
-//===========================================================
-// 根据页面中的XML来创建js内的XML树,返回树的根节点
+//==========================================================
+// <T>替换字符串中的转义字符。</T>
 //
 // @method
-// @param p:document 嵌在页面中的XML
-// @see RXml.buildNode
-// @return TNode 创建后的目录树的根元素
-//===========================================================
-function RXml_makeNode(p){
-   var o = this;
-   if(p.documentElement){
-      var d = new TXmlDocument();
-      o.buildNode(d, null, p.documentElement);
-      return d.node;
-   }else if(p.tagName == 'SCRIPT'){
-      var s = p.textContent;
-      if(!s){
-         s = p.text;
+// @param s:string:FString 字符串
+// @param v:value:String 内容
+// @return FString 字符串
+//==========================================================
+function RXml_buildText(s, v){
+   if(v != null){
+      v = v.toString();
+      var c = v.length;
+      for(var i = 0; i < c; i++){
+         var ch = v.charAt(i);
+         switch(ch){
+            case '<':
+               s.append('&lt;');
+               break;
+            case '>':
+               s.append('&gt;');
+               break;
+            case '"':
+               s.append('&quot;');
+               break;
+            case '&':
+               s.append('&amp;');
+               break;
+            case '\r':
+               continue;
+            case '\n':
+               s.append('\\n');
+               break;
+            default:
+               s.append(ch);
+         }
       }
-      if(s){
-         var d = new TXmlDocument();
-         var xd = o.loadString(s)
-         o.buildNode(d, null, xd.documentElement);
-         return d.node;
-      }
    }
-   return null;
+   return s;
 }
 
-//===========================================================
-// 根据页面中的XML来创建js内的XML结构，
-//
-// @method
-// @param xdoc:xdoc:document 嵌在页面中的XML
-// @see RXml.buildNode
-// @return doc XML文件结构
-//===========================================================
-function RXml_makeDocument(xdoc){
-   var doc = new TXmlDocument();
-   if(xdoc.documentElement){
-      RXml.buildNode(doc, null, xdoc.documentElement);
-   }
-   return doc;
-}
-
-//===========================================================
+//==========================================================
 // 遍历构建XML节点树
 //
 // @method
@@ -223,7 +210,7 @@ function RXml_makeDocument(xdoc){
 // @param pe:element:XmlElement 页面元素
 // @see RXml.fromText
 // @see TXmlDoc.create
-//===========================================================
+//==========================================================
 function RXml_buildNode(pd, pn, pe){
    // 建立属性集合
    var xas = null;
@@ -235,12 +222,12 @@ function RXml_buildNode(pd, pn, pe){
          for(var n = 0; n < eac; n++){
             var ea = eas[n];
             if(ea.nodeName){
-               xas.set(ea.nodeName, RXml.fromText(ea.value));
+               xas.set(ea.nodeName, RXml.formatText(ea.value));
             }
          }
       }
    }
-   // Build text
+   // 建立文本
    var xt = new TString();
    xt.append(pe.value);
    var ecs = pe.childNodes
@@ -274,65 +261,79 @@ function RXml_buildNode(pd, pn, pe){
    }
 }
 
-//===========================================================
-// 替换所有的换行符
+//==========================================================
+// <T>加载一个配置字符串。</T>
 //
 // @method
-// @param s:string:String XML文本
-// @return String  替换后的字符串
-//===========================================================
-function RXml_fromText(s){
-   return (null != s) ? s.replace(/\\n/g, '\n') : s;
+// @param n:Node:TNode 节点对象
+// @return Boolean 返回Boolean类型
+//==========================================================
+function RXml_makeString(s){
+   var o = this;
+   var x = null;
+   // 判断浏览器的类型
+   if(o.domActiveX){
+      x = new ActiveXObject(o.domVendor);
+      x.async = false;
+      x.loadXML(s);
+   }else{
+      var p = new DOMParser();
+      x = p.parseFromString(s, 'text/xml');
+   }
+   return x;
 }
 
-//===========================================================
-// 替换字符串中的转义字符
+//==========================================================
+// <T>根据页面中的配置节点对象构建配置节点。</T>
 //
 // @method
-// @param s:string:String JS系统中的XML文件
-// @param v:value:String 父节点
-// @return String  替换后的字符串
-//
-// string, value
-//===========================================================
-function RXml_buildText(s, v){
-   if(null != v){
-      v = v.toString();
-      for(var n=0; n<v.length; n++){
-         var ch = v.charAt(n);
-         switch(ch){
-            case '<':
-               s.append('&lt;');
-               break;
-            case '>':
-               s.append('&gt;');
-               break;
-            case '"':
-               s.append('&quot;');
-               break;
-            case '&':
-               s.append('&amp;');
-               break;
-            case '\r':
-               continue;
-            case '\n':
-               s.append('\\n');
-               break;
-            default:
-               s.append(ch);
-         }
+// @param p:document:document 嵌在页面中的配置节点
+// @return TXmlNode 配置节点
+//==========================================================
+function RXml_makeNode(p){
+   var o = this;
+   if(p.documentElement){
+      var d = new TXmlDocument();
+      o.buildNode(d, null, p.documentElement);
+      return d.root();
+   }else if(p.tagName == 'SCRIPT'){
+      var s = p.textContent;
+      if(!s){
+         s = p.text;
+      }
+      if(s){
+         var d = new TXmlDocument();
+         var xd = o.makeString(s)
+         o.buildNode(d, null, xd.documentElement);
+         return d.root();
       }
    }
-   return s;
+   return null;
 }
 
-//===========================================================
+//==========================================================
+// <T>根据页面中的配置节点对象构建配置文档。</T>
+//
+// @method
+// @param p:document:document 嵌在页面中的配置节点
+// @return TXmlDocument 配置文档
+//==========================================================
+function RXml_makeDocument(p){
+   var d = new TXmlDocument();
+   if(p.documentElement){
+      RXml.buildNode(d, null, p.documentElement);
+   }
+   return d;
+}
+
+//==========================================================
 // <T>解包节点字符串。</T>
 //
 // @method
 // @param s:string:String 打包字符串
+// @param n:node:TNode 节点对象
 // @return TNode 节点对象
-//===========================================================
+//==========================================================
 function RXml_unpack(s, n){
    var o = this;
    if(RString.isEmpty(s)){
@@ -357,4 +358,3 @@ function RXml_unpack(s, n){
    }
    return n;
 }
-
