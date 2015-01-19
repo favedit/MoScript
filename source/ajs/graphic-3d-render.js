@@ -219,9 +219,7 @@ function FG3dProgram(o){
    o._attributes       = null;
    o._parameters       = null;
    o._samplers         = null;
-   o._vertexSource     = null;
    o._vertexShader     = null;
-   o._fragmentSource   = null;
    o._fragmentShader   = null;
    o.hasAttribute      = FG3dProgram_hasAttribute;
    o.registerAttribute = FG3dProgram_registerAttribute;
@@ -486,6 +484,16 @@ function FG3dRenderTarget_textures(){
    }
    return r;
 }
+function FG3dShader(o){
+   o = RClass.inherits(this, o, FG3dObject);
+   o._source = null;
+   o.source  = FG3dShader_source;
+   o.upload  = RMethod.virtual(o, 'upload');
+   return o;
+}
+function FG3dShader_source(){
+   return this._source;
+}
 function FG3dTexture(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._textureCd   = EG3dTexture.Unknown;
@@ -547,29 +555,49 @@ function FG3dVertexShader(o){
 }
 function SG3dContextCapability(o){
    if(!o){o = this;}
-   o.vendor        = null;
-   o.version       = null;
-   o.shaderVersion = null;
-   o.vertexCount   = null;
-   o.vertexConst   = null;
-   o.fragmentConst = null;
-   o.varyingCount  = null;
-   o.samplerCount  = null;
-   o.samplerSize   = null;
+   o.vendor                 = null;
+   o.version                = null;
+   o.shaderVersion          = null;
+   o.attributeCount         = null;
+   o.vertexCount            = 65536;
+   o.vertexConst            = null;
+   o.fragmentConst          = null;
+   o.varyingCount           = null;
+   o.samplerCount           = null;
+   o.samplerSize            = null;
+   o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
    o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
    return o;
 }
-function SG3dContextCapability_calculateInstanceCount(vertexCount, boneCount){
+function SG3dContextCapability_calculateBoneCount(bc, vc){
    var o = this;
-   var vertexConstLimit = o.vertexCount;
-   var constRequire = (3 * boneCount) + 4;
-   var constLimit = (vertexConstLimit - 16) / constRequire;
-   var instanceCount = constLimit;
-   if(vertexCount > 0){
-      var vertexCountLimit = 65535;
-      var vertexLimit = vertexCountLimit / vertexCount;
-      instanceCount = Math.min(instanceCount, vertexLimit);
+   var rb = 0;
+   var bi = bc % 8;
+   if(bi != 0){
+      rb = bc + 8 - bi;
+   }else{
+      rb = bc;
    }
-   instanceCount = Math.min(instanceCount, 256);
-   return instanceCount;
+   var r = 0;
+   var ib = (o.vertexConst - 16) / 4;
+   if(rb > ib){
+      r = ib;
+   }else{
+      r = rb;
+   }
+   return r;
+}
+function SG3dContextCapability_calculateInstanceCount(bc, vc){
+   var o = this;
+   var cr = (4 * bc) + 4;
+   var ib = (o.vertexConst - 16) / cr;
+   var r = cl;
+   if(vc > 0){
+      var iv = o.vertexCount / vc;
+      r = Math.min(ib, iv);
+   }
+   if(r > 64){
+      r = 64;
+   }
+   return r;
 }

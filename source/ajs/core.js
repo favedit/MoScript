@@ -1214,6 +1214,7 @@ var RBuilder = new function RBuilder(){
    o.createSpan        = RBuilder_createSpan;
    o.createDiv         = RBuilder_createDiv;
    o.createTable       = RBuilder_createTable;
+   o.createFragment    = RBuilder_createFragment;
    o.append            = RBuilder_append;
    o.appendIcon        = RBuilder_appendIcon;
    o.appendImage       = RBuilder_appendImage;
@@ -1227,12 +1228,6 @@ var RBuilder = new function RBuilder(){
    o.appendTable       = RBuilder_appendTable;
    o.appendTableRow    = RBuilder_appendTableRow;
    o.appendTableCell   = RBuilder_appendTableCell;
-   o.onBuildSpanPanel  = RBuilder_onBuildSpanPanel;
-   o.onBuildDivPanel   = RBuilder_onBuildDivPanel;
-   o.onBuildTdPanel    = RBuilder_onBuildTdPanel;
-   o.onBuildTrPanel    = RBuilder_onBuildTrPanel;
-   o.onBuildTablePanel = RBuilder_onBuildTablePanel;
-   o.createFragment    = RBuilder_createFragment;
    return o;
 }
 function RBuilder_create(d, t, s){
@@ -1303,6 +1298,9 @@ function RBuilder_createTable(d, s, b, cs, cp){
    h.cellPadding = RInteger.nvl(cp);
    return h;
 }
+function RBuilder_createFragment(d){
+   return d.createDocumentFragment();
+}
 function RBuilder_append(p, t, s){
    var r = RBuilder.create(p.ownerDocument, t, s);
    if(p){
@@ -1367,7 +1365,16 @@ function RBuilder_appendTable(p, s, b, cs, cp){
    return r;
 }
 function RBuilder_appendTableRow(p, s, i, h){
-   var r = (i != null) ? p.insertRow(i) : p.insertRow();
+   var r = null;
+   if(i == null){
+      if(RBrowser.isBrowser(EBrowser.Explorer)){
+         r = p.insertRow();
+      }else{
+         r = p.insertRow(-1);
+      }
+   }else{
+      r = p.insertRow(i);
+   }
    if(s){
       r.className = s;
    }
@@ -1377,7 +1384,16 @@ function RBuilder_appendTableRow(p, s, i, h){
    return r;
 }
 function RBuilder_appendTableCell(p, s, i, w){
-   var r = (i != null) ? p.insertCell(i) : p.insertCell();
+   var r = null;
+   if(i == null){
+      if(RBrowser.isBrowser(EBrowser.Explorer)){
+         r = p.insertCell();
+      }else{
+         r = p.insertCell(-1);
+      }
+   }else{
+      r = p.insertCell(i);
+   }
    if(s){
       r.className = s;
    }
@@ -1385,24 +1401,6 @@ function RBuilder_appendTableCell(p, s, i, w){
       r.width = w;
    }
    return r;
-}
-function RBuilder_onBuildSpanPanel(){
-   this.hPanel = RBuilder.newSpan();
-}
-function RBuilder_onBuildDivPanel(){
-   this.hPanel = RBuilder.newDiv();
-}
-function RBuilder_onBuildTdPanel(){
-   this.hPanel = RBuilder.create(null, 'TD');
-}
-function RBuilder_onBuildTrPanel(){
-   this.hPanel = RBuilder.create(null, 'TR');
-}
-function RBuilder_onBuildTablePanel(){
-   this.hPanel = RBuilder.newTable();
-}
-function RBuilder_createFragment(p){
-   return p ? p.ownerDocument.createDocumentFragment() : this.hDocument.createDocumentFragment();
 }
 var RDump = new function RDump(){
    var o = this;

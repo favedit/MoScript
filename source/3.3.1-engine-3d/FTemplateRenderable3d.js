@@ -23,6 +23,7 @@ function FTemplateRenderable3d(o){
    o.testReady         = FTemplateRenderable3d_testReady;
    o.testVisible       = FTemplateRenderable3d_testVisible;
    o.findVertexBuffer  = FTemplateRenderable3d_findVertexBuffer;
+   o.vertexCount       = FTemplateRenderable3d_vertexCount;
    o.vertexBuffers     = FTemplateRenderable3d_vertexBuffers;
    o.indexBuffer       = FTemplateRenderable3d_indexBuffer;
    o.findTexture       = FTemplateRenderable3d_findTexture;
@@ -78,6 +79,16 @@ function FTemplateRenderable3d_testVisible(p){
 //==========================================================
 function FTemplateRenderable3d_findVertexBuffer(p){
    return this._renderable.findVertexBuffer(p);
+}
+
+//==========================================================
+// <T>获得顶点总数。</T>
+//
+// @method
+// @return Integer 顶点总数
+//==========================================================
+function FTemplateRenderable3d_vertexCount(){
+   return this._renderable.vertexCount();
 }
 
 //==========================================================

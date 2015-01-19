@@ -192,6 +192,7 @@ function FRd3Geometry(o){
    o._textures         = null;
    o.construct         = FRd3Geometry_construct;
    o.testReady         = FRd3Geometry_testReady;
+   o.vertexCount       = FRd3Geometry_vertexCount;
    o.findVertexBuffer  = FRd3Geometry_findVertexBuffer;
    o.vertexBuffers     = FRd3Geometry_vertexBuffers;
    o.indexBuffer       = FRd3Geometry_indexBuffer;
@@ -223,6 +224,9 @@ function FRd3Geometry_testReady(){
       o._ready = true;
    }
    return o._ready;
+}
+function FRd3Geometry_vertexCount(){
+   return this._resource.vertexCount();
 }
 function FRd3Geometry_findVertexBuffer(p){
    var o = this;
@@ -773,24 +777,23 @@ function SRd3PlayInfo(o){
 }
 function SRd3PlayInfo_update(){
    var o = this;
-   if(o.currentFrame == null){
+   var cf = o.currentFrame;
+   if(cf == null){
       return false;
    }
-   if(o.nextFrame == null){
+   var nf = o.nextFrame;
+   if(nf == null){
       return false;
    }
    var m = o.matrix;
-   var ct = o.currentFrame.translation();
-   var cr = o.currentFrame.quaternion();
-   var cs = o.currentFrame.scale();
+   var ct = cf.translation();
+   var cr = cf.quaternion();
+   var cs = cf.scale();
    var r = o.rate;
    if((r > 0) && (r < 1)){
-      var nt = o.nextFrame.translation();
-      var nr = o.nextFrame.quaternion();
-      var ns = o.nextFrame.scale();
-      o.translation.slerp(ct, nt, r);
-      o.quaternion.slerp(cr, nr, r);
-      o.scale.slerp(cs, ns, r);
+      o.translation.slerp(ct, nf.translation(), r);
+      o.quaternion.slerp(cr, nf.quaternion(), r);
+      o.scale.slerp(cs, nf.scale(), r);
       m.build(o.translation, o.quaternion, o.scale);
    }else{
       m.build(ct, cr, cs);

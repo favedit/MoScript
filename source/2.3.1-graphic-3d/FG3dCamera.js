@@ -16,7 +16,7 @@ function FG3dCamera(o){
    // @attribute 相机旋转
    o._rotation    = null;
    // @attribute 中心位置
-   o._centerFront = 1.0;
+   o._centerFront = 0.6;
    o._centerBack  = 1.0;
    // @attribute 焦平面
    o._focalNear   = 0.1;
@@ -218,18 +218,23 @@ function FG3dCamera_doPitch(p){
 
 //==========================================================
 // <T>朝向目标。</T>
+//
+// @method
 //==========================================================
 function FG3dCamera_lookAt(x, y, z){
    var o = this;
    var p = o._position;
-   o._direction.set(x - p.x, y - p.y, z - p.z);
-   o._direction.normalize();
+   var d = o._direction;
+   d.set(x - p.x, y - p.y, z - p.z);
+   d.normalize();
 }
 
 //==========================================================
 // <T>更新相机信息。</T>
 // <P>1. 更新空间矩阵。</P>
 // <P>2. 更新目标点。</P>
+//
+// @method
 //==========================================================
 function FG3dCamera_update(){
    var o = this;

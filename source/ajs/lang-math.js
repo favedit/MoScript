@@ -206,8 +206,8 @@ function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
 function SFrustum_updateFlat(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    var o = this;
    var aspect = pvw / pvh;
-   var znear = pvn;
-   var zfar = pvf;
+   var znear = pvn * pbr;
+   var zfar = pvf * pfr;
    var fov = Math.tan(RMath.DEGREE_RATE * pva * 0.5);
    var nearY = znear * fov;
    var nearX = nearY * aspect;
@@ -1294,6 +1294,59 @@ function SPoint3_toString(){
 function SPoint3_dump(){
    return RClass.dump(this) + ' [' + this.x + ',' + this.y + ',' + this.z + ']';
 }
+function SPoint4(x, y, z, w){
+   var o = this;
+   o.x           = x;
+   o.y           = y;
+   o.z           = z;
+   o.w           = w;
+   o.assign      = SPoint4_assign;
+   o.set         = SPoint4_set;
+   o.serialize   = SPoint4_serialize;
+   o.unserialize = SPoint4_unserialize;
+   o.toString    = SPoint4_toString;
+   return o;
+}
+function SPoint4_assign(p){
+   var o = this;
+   o.x = p.x;
+   o.y = p.y;
+   o.z = p.z;
+   o.w = p.w;
+}
+function SPoint4_set(x, y, z, w){
+   var o = this;
+   if(x != null){
+      o.x = x;
+   }
+   if(y != null){
+      o.y = y;
+   }
+   if(z != null){
+      o.z = z;
+   }
+   if(w != null){
+      o.w = w;
+   }
+}
+function SPoint4_serialize(p){
+   var o = this;
+   p.writeFloat(o.x);
+   p.writeFloat(o.y);
+   p.writeFloat(o.z);
+   p.writeFloat(o.w);
+}
+function SPoint4_unserialize(p){
+   var o = this;
+   o.x = p.readFloat();
+   o.y = p.readFloat();
+   o.z = p.readFloat();
+   o.w = p.readFloat();
+}
+function SPoint4_toString(){
+   var o = this;
+   return o.x + ',' + o.y + ',' + o.z + ',' + o.w;
+}
 function SQuaternion(o){
    if(!o){o = this;}
    o.x             = 0.0;
@@ -1743,4 +1796,65 @@ function SVector3_unserialize(p){
 function SVector3_toString(){
    var o = this;
    return o.x + ',' + o.y + ',' + o.z;
+}
+function SVector4(o){
+   if(!o){o = this;}
+   o.x           = 0;
+   o.y           = 0;
+   o.z           = 0;
+   o.w           = 0;
+   o.assign      = SVector4_assign;
+   o.set         = SVector4_set;
+   o.absolute    = SVector4_absolute;
+   o.normalize   = SVector4_normalize;
+   o.serialize   = SVector4_serialize;
+   o.unserialize = SVector4_unserialize;
+   o.toString    = SVector4_toString;
+   return o;
+}
+function SVector4_assign(p){
+   var o = this;
+   o.x = p.x;
+   o.y = p.y;
+   o.z = p.z;
+   o.w = p.w;
+}
+function SVector4_set(x, y, z, w){
+   var o = this;
+   o.x = x;
+   o.y = y;
+   o.z = z;
+   o.w = w;
+}
+function SVector4_absolute(){
+   var o = this;
+   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z) + (o.w * o.w));
+}
+function SVector4_normalize(){
+   var o = this;
+   var v = o.absolute();
+   if(v != 0.0){
+      o.x /= v;
+      o.y /= v;
+      o.z /= v;
+      o.w /= w;
+   }
+}
+function SVector4_serialize(p){
+   var o = this;
+   p.writeFloat(o.x);
+   p.writeFloat(o.y);
+   p.writeFloat(o.z);
+   p.writeFloat(o.w);
+}
+function SVector4_unserialize(p){
+   var o = this;
+   o.x = p.readFloat();
+   o.y = p.readFloat();
+   o.z = p.readFloat();
+   o.w = p.readFloat();
+}
+function SVector4_toString(){
+   var o = this;
+   return o.x + ',' + o.y + ',' + o.z + ',' + o.w;
 }

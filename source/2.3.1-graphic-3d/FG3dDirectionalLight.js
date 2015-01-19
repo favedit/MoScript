@@ -32,7 +32,7 @@ function FG3dDirectionalLight_construct(){
    o._direction = new SVector3();
    //o._camera = RClass.create(FG3dOrthoCamera);
    o._camera = RClass.create(FG3dPerspectiveCamera);
-   o._viewport = RClass.create(FG3dViewport);
+   //o._viewport = RClass.create(FG3dViewport);
 }
 
 //==========================================================

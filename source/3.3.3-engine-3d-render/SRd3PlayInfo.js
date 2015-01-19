@@ -32,27 +32,26 @@ function SRd3PlayInfo(o){
 function SRd3PlayInfo_update(){
    var o = this;
    // 检查参数
-   if(o.currentFrame == null){
+   var cf = o.currentFrame;
+   if(cf == null){
       return false;
    }
-   if(o.nextFrame == null){
+   var nf = o.nextFrame;
+   if(nf == null){
       return false;
    }
    // 获得矩阵
    var m = o.matrix;
-   var ct = o.currentFrame.translation();
-   var cr = o.currentFrame.quaternion();
-   var cs = o.currentFrame.scale();
+   var ct = cf.translation();
+   var cr = cf.quaternion();
+   var cs = cf.scale();
    // 计算插值矩阵
    var r = o.rate;
    if((r > 0) && (r < 1)){
       // 计算中间矩阵
-      var nt = o.nextFrame.translation();
-      var nr = o.nextFrame.quaternion();
-      var ns = o.nextFrame.scale();
-      o.translation.slerp(ct, nt, r);
-      o.quaternion.slerp(cr, nr, r);
-      o.scale.slerp(cs, ns, r);
+      o.translation.slerp(ct, nf.translation(), r);
+      o.quaternion.slerp(cr, nf.quaternion(), r);
+      o.scale.slerp(cs, nf.scale(), r);
       m.build(o.translation, o.quaternion, o.scale);
       // 计算插值透明度
       //alpha = (next.alpha - current.alpha) * rate + current.alpha;

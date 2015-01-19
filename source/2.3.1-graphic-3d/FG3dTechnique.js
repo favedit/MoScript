@@ -8,13 +8,14 @@ function FG3dTechnique(o){
    o = RClass.inherits(this, o, FG3dObject);
    //..........................................................
    // @attribute
-   o._name      = null;
-   o._passes    = null;
+   o._name        = null;
+   o._passes      = null;
    //..........................................................
    // @method
-   o.construct  = FG3dTechnique_construct;
-   o.name       = FG3dTechnique_name;
-   o.drawRegion = FG3dTechnique_drawRegion;
+   o.construct    = FG3dTechnique_construct;
+   o.name         = FG3dTechnique_name;
+   o.updateRegion = RMethod.empty;
+   o.drawRegion   = FG3dTechnique_drawRegion;
    return o;
 }
 

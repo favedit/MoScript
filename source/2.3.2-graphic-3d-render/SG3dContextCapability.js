@@ -8,18 +8,20 @@ function SG3dContextCapability(o){
    if(!o){o = this;}
    //..........................................................
    // @attribute
-   o.vendor        = null;
-   o.version       = null;
-   o.shaderVersion = null;
+   o.vendor                 = null;
+   o.version                = null;
+   o.shaderVersion          = null;
    // @attribute
-   o.vertexCount   = null;
-   o.vertexConst   = null;
-   o.fragmentConst = null;
-   o.varyingCount  = null;
-   o.samplerCount  = null;
-   o.samplerSize   = null;
+   o.attributeCount         = null;
+   o.vertexCount            = 65536;
+   o.vertexConst            = null;
+   o.fragmentConst          = null;
+   o.varyingCount           = null;
+   o.samplerCount           = null;
+   o.samplerSize            = null;
    //..........................................................
    // @method
+   o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
    o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
    return o;
 }
@@ -27,25 +29,52 @@ function SG3dContextCapability(o){
 //============================================================
 // <T>计算当前设备支持实例的最大个数。</T>
 //
-// @param vertexCount 顶点数量
-// @param boneCount 骨头数量
+// @param bc:boneCount 骨头数量
+// @param vc:vertexCount 顶点数量（不设置的话不限制）
+// @param 可用实例个数
 //============================================================
-function SG3dContextCapability_calculateInstanceCount(vertexCount, boneCount){
+function SG3dContextCapability_calculateBoneCount(bc, vc){
    var o = this;
-   // 计算常量缓冲限制
-   var vertexConstLimit = o.vertexCount;
-   var constRequire = (3 * boneCount) + 4;
-   var constLimit = (vertexConstLimit - 16) / constRequire;
-   var instanceCount = constLimit;
-   // 计算顶点限制
-   if(vertexCount > 0){
-      //var vertexCountLimit = o.vertexCount;
-      var vertexCountLimit = 65535;
-      var vertexLimit = vertexCountLimit / vertexCount;
-      instanceCount = Math.min(instanceCount, vertexLimit);
+   // 以8个为倍数
+   var rb = 0;
+   var bi = bc % 8;
+   if(bi != 0){
+      rb = bc + 8 - bi;
+   }else{
+      rb = bc;
    }
-   // 计算其他限制
-   instanceCount = Math.min(instanceCount, 256);
-   return instanceCount;
+   // 以8个为倍数
+   var r = 0;
+   var ib = (o.vertexConst - 16) / 4;
+   if(rb > ib){
+      r = ib;
+   }else{
+      r = rb;
+   }
+   return r;
 }
 
+//============================================================
+// <T>计算当前设备支持实例的最大个数。</T>
+//
+// @param bc:boneCount 骨头数量
+// @param vc:vertexCount 顶点数量（不设置的话不限制）
+// @param 可用实例个数
+//============================================================
+function SG3dContextCapability_calculateInstanceCount(bc, vc){
+   var o = this;
+   // 计算常量缓冲限制
+   var cr = (4 * bc) + 4;
+   var ib = (o.vertexConst - 16) / cr;
+   var r = cl;
+   // 计算顶点限制
+   if(vc > 0){
+      var iv = o.vertexCount / vc;
+      r = Math.min(ib, iv);
+   }
+   // 计算其他限制
+   if(r > 64){
+      r = 64;
+   }
+   return r;
+}

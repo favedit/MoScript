@@ -88,7 +88,7 @@ function FDisplay_pushRenderable(p){
 function FDisplay_update(){
    var o = this;
    var m = o._matrix;
-   m.setAll(o._location, o._rotation, o._scale);
+   m.set(o._location, o._rotation, o._scale);
    m.update();
 }
 function FDisplay_process(){
@@ -557,6 +557,7 @@ function FModelRenderable3d(o){
    o._materialResource = null;
    o.construct         = FModelRenderable3d_construct;
    o.testVisible       = FModelRenderable3d_testVisible;
+   o.vertexCount       = FModelRenderable3d_vertexCount;
    o.findVertexBuffer  = FModelRenderable3d_findVertexBuffer;
    o.vertexBuffers     = FModelRenderable3d_vertexBuffers;
    o.indexBuffer       = FModelRenderable3d_indexBuffer;
@@ -582,6 +583,9 @@ function FModelRenderable3d_testVisible(p){
       }
    }
    return r;
+}
+function FModelRenderable3d_vertexCount(){
+   return this._renderable.vertexCount();
 }
 function FModelRenderable3d_findVertexBuffer(p){
    return this._renderable.findVertexBuffer(p);
@@ -714,7 +718,7 @@ function FScene3d_loadRegionResource(p){
    cp.size().assign(o._context.size());
    cp._angle = rcv.angle();
    cp._znear = rcv.znear();
-   cp._zfar = rcv.zfar() * 0.6;
+   cp._zfar = rcv.zfar();
    cp.update();
    var l = o._directionalLight
    var lc = l._camera;
@@ -726,8 +730,8 @@ function FScene3d_loadRegionResource(p){
    lc.lookAt(0, 0, 0);
    lc.position().assign(rlc.position());
    lc.update();
-   lp.size().set(2048, 2048);
-   lp._angle = 80;
+   lp.size().set(1024, 1024);
+   lp._angle = 60;
    lp._znear = rlv.znear();
    lp._zfar = rlv.zfar();
    lp.update();
@@ -1144,6 +1148,8 @@ function FStage3d_process(){
    var o = this;
    var r = o._region;
    o.__base.FStage.process.call(o);
+   r._backgroundColor = o._backgroundColor;
+   o._technique.updateRegion(r);
    r.prepare();
    var ls = o._layers;
    if(ls != null){
@@ -1153,7 +1159,6 @@ function FStage3d_process(){
       }
    }
    r.update();
-   r._backgroundColor = o._backgroundColor;
    o._technique.drawRegion(r);
 }
 function FTemplate3d(o){
@@ -1303,6 +1308,7 @@ function FTemplateRenderable3d(o){
    o.testReady         = FTemplateRenderable3d_testReady;
    o.testVisible       = FTemplateRenderable3d_testVisible;
    o.findVertexBuffer  = FTemplateRenderable3d_findVertexBuffer;
+   o.vertexCount       = FTemplateRenderable3d_vertexCount;
    o.vertexBuffers     = FTemplateRenderable3d_vertexBuffers;
    o.indexBuffer       = FTemplateRenderable3d_indexBuffer;
    o.findTexture       = FTemplateRenderable3d_findTexture;
@@ -1331,6 +1337,9 @@ function FTemplateRenderable3d_testVisible(p){
 }
 function FTemplateRenderable3d_findVertexBuffer(p){
    return this._renderable.findVertexBuffer(p);
+}
+function FTemplateRenderable3d_vertexCount(){
+   return this._renderable.vertexCount();
 }
 function FTemplateRenderable3d_vertexBuffers(){
    return this._renderable.vertexBuffers();
@@ -1511,8 +1520,10 @@ function FRs3Geometry(o){
    o._track           = null;
    o.construct        = FRs3Geometry_construct;
    o.materialCode     = FRs3Geometry_materialCode;
+   o.vertexCount      = FRs3Geometry_vertexCount;
    o.findVertexBuffer = FRs3Geometry_findVertexBuffer;
    o.vertexBuffers    = FRs3Geometry_vertexBuffers;
+   o.indexCount       = FRs3Geometry_indexCount;
    o.indexBuffer      = FRs3Geometry_indexBuffer;
    o.boneIds          = FRs3Geometry_boneIds;
    o.track            = FRs3Geometry_track;
@@ -1528,6 +1539,9 @@ function FRs3Geometry_construct(){
 }
 function FRs3Geometry_materialCode(){
    return this._materialCode;
+}
+function FRs3Geometry_vertexCount(){
+   return this._vertexCount;
 }
 function FRs3Geometry_findVertexBuffer(p){
    var o = this;
@@ -1545,6 +1559,9 @@ function FRs3Geometry_findVertexBuffer(p){
 }
 function FRs3Geometry_vertexBuffers(){
    return this._vertexBuffers;
+}
+function FRs3Geometry_indexCount(){
+   return this._indexCount;
 }
 function FRs3Geometry_indexBuffer(){
    return this._indexBuffer;
@@ -2989,6 +3006,7 @@ function FRd3Geometry(o){
    o._textures         = null;
    o.construct         = FRd3Geometry_construct;
    o.testReady         = FRd3Geometry_testReady;
+   o.vertexCount       = FRd3Geometry_vertexCount;
    o.findVertexBuffer  = FRd3Geometry_findVertexBuffer;
    o.vertexBuffers     = FRd3Geometry_vertexBuffers;
    o.indexBuffer       = FRd3Geometry_indexBuffer;
@@ -3020,6 +3038,9 @@ function FRd3Geometry_testReady(){
       o._ready = true;
    }
    return o._ready;
+}
+function FRd3Geometry_vertexCount(){
+   return this._resource.vertexCount();
 }
 function FRd3Geometry_findVertexBuffer(p){
    var o = this;
@@ -3570,24 +3591,23 @@ function SRd3PlayInfo(o){
 }
 function SRd3PlayInfo_update(){
    var o = this;
-   if(o.currentFrame == null){
+   var cf = o.currentFrame;
+   if(cf == null){
       return false;
    }
-   if(o.nextFrame == null){
+   var nf = o.nextFrame;
+   if(nf == null){
       return false;
    }
    var m = o.matrix;
-   var ct = o.currentFrame.translation();
-   var cr = o.currentFrame.quaternion();
-   var cs = o.currentFrame.scale();
+   var ct = cf.translation();
+   var cr = cf.quaternion();
+   var cs = cf.scale();
    var r = o.rate;
    if((r > 0) && (r < 1)){
-      var nt = o.nextFrame.translation();
-      var nr = o.nextFrame.quaternion();
-      var ns = o.nextFrame.scale();
-      o.translation.slerp(ct, nt, r);
-      o.quaternion.slerp(cr, nr, r);
-      o.scale.slerp(cs, ns, r);
+      o.translation.slerp(ct, nf.translation(), r);
+      o.quaternion.slerp(cr, nf.quaternion(), r);
+      o.scale.slerp(cs, nf.scale(), r);
       m.build(o.translation, o.quaternion, o.scale);
    }else{
       m.build(ct, cr, cs);

@@ -242,7 +242,7 @@ function FTagDocument_load(p){
    s = s.replace(new RegExp('</' + o._space + ':', 'g'), '</' + o._space + '_');
    s = s.replace(new RegExp(' & ', 'g'), ' &amp; ');
    s = s.replace(new RegExp(' < ', 'g'), ' &lt; ');
-   s = s.replace(new RegExp(' > ', 'g'), ' &rt; ');
+   s = s.replace(new RegExp(' > ', 'g'), ' &gt; ');
    var xr = RXml.loadString(s);
    o.loadNode(null, xr.firstChild);
 }

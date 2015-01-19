@@ -10,32 +10,33 @@ function FG3dAutomaticEffect(o){
    // @attribute
    o._optionBlendMode = true;
    // @attribute
+   o._supportInstance         = false;
    o._supportVertexColor      = true;
    o._supportVertexCoord      = true;
    o._supportVertexNormal     = true;
    o._supportVertexNormalFull = true;
    o._supportInstance         = false;
    o._supportSkeleton         = false;
-   o._supportAlpha = true;
-   o._supportAmbient = true;
-   o._supportDiffuse = true;
-   o._supportDiffuseView = true;
-   o._supportSpecularColor = true;
-   o._supportSpecularLevel = true;
-   o._supportSpecularView = true;
-   o._supportLight = true;
-   o._supportReflect = true;
-   o._supportRefract = true;
-   o._supportEmissive = true;
-   o._supportHeight = true;
-   o._supportEnvironment = true;
-   o._dynamicSkeleton = true;
+   o._supportAlpha            = true;
+   o._supportAmbient          = true;
+   o._supportDiffuse          = true;
+   o._supportDiffuseView      = true;
+   o._supportSpecularColor    = true;
+   o._supportSpecularLevel    = true;
+   o._supportSpecularView     = true;
+   o._supportLight            = true;
+   o._supportReflect          = true;
+   o._supportRefract          = true;
+   o._supportEmissive         = true;
+   o._supportHeight           = true;
+   o._supportEnvironment      = true;
+   o._dynamicSkeleton         = true;
    //..........................................................
    // @method
-   o.buildInfo      = FG3dAutomaticEffect_buildInfo;
-   o.bindAttributes = FG3dAutomaticEffect_bindAttributes;
-   o.bindSamplers   = FG3dAutomaticEffect_bindSamplers;
-   o.bindMaterial   = FG3dAutomaticEffect_bindMaterial;
+   o.buildInfo                = FG3dAutomaticEffect_buildInfo;
+   o.bindAttributes           = FG3dAutomaticEffect_bindAttributes;
+   o.bindSamplers             = FG3dAutomaticEffect_bindSamplers;
+   o.bindMaterial             = FG3dAutomaticEffect_bindMaterial;
    return o;
 }
 
@@ -289,20 +290,21 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    }
    //............................................................
    // 计算最大实例个数
-   //var instanceCount = cb.calculateInstanceCount(renderableDescriptor.vertexCount, renderableDescriptor.boneCount);
-   //if(o._dynamicInstance && pc){
-   //   pc.defineInt("instance.count", instanceCount);
-   //}
+   o._dynamicInstance = o._supportInstance;
+   if(o._dynamicInstance){
+      var ic = cb.calculateInstanceCount(pc.vertexBoneCount, pc.vertexCount);
+      pt.set("instance.count", ic);
+   }
    // 计算骨头实例个数
-   //if(o._dynamicSkeleton && pc){
    if(o._dynamicSkeleton){
+      var bc = cb.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
+      s.append("|B" + bc);
+      pt.set("bone.count", bc);
       pt.setBoolean("support.bone.weight.1", true);
       pt.setBoolean("support.bone.weight.2", true);
       pt.setBoolean("support.bone.weight.3", true);
       pt.setBoolean("support.bone.weight.4", true);
    }
-   pt.set("bone.count", 32);
-   pt.setBoolean("support.bone.weight.4", true);
    //............................................................
    // 设置代码
    pt.code = s.toString();

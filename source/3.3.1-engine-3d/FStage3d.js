@@ -126,6 +126,10 @@ function FStage3d_process(){
    var o = this;
    var r = o._region;
    o.__base.FStage.process.call(o);
+   // 设置颜色
+   r._backgroundColor = o._backgroundColor;
+   // 更新区域
+   o._technique.updateRegion(r);
    // 获取所有层的渲染集合
    r.prepare();
    var ls = o._layers;
@@ -137,6 +141,5 @@ function FStage3d_process(){
    }
    r.update();
    // 绘制处理
-   r._backgroundColor = o._backgroundColor;
    o._technique.drawRegion(r);
 }

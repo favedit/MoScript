@@ -1,5 +1,5 @@
 ﻿//==========================================================
-// <T>简单自动渲染器。</T>
+// <T>阴影颜色自动渲染器。</T>
 //
 // @author maocy
 // @history 141230
@@ -8,12 +8,10 @@ function FG3dShadowColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    //..........................................................
    // @attribute
-   o._context       = null;
-   o._program       = null;
+   o._code          = 'shadow.color.automatic';
    //..........................................................
    // @method
    o.drawRenderable = FG3dShadowColorAutomaticEffect_drawRenderable;
-   o.load           = FG3dShadowColorAutomaticEffect_load;
    return o;
 }
 
@@ -28,24 +26,28 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   // 获得信息
+   // 获得参数
+   var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
+   var vcvpm = pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix);
+   var vld = pg.calculate(EG3dRegionParameter.LightDirection);
+   var vlvm = pg.calculate(EG3dRegionParameter.LightViewMatrix);
+   var vlvpm = pg.calculate(EG3dRegionParameter.LightViewProjectionMatrix);
+   var vlci = pg.calculate(EG3dRegionParameter.LightInfo);
    var tp = pg.techniquePass();
-   var l = pg.directionalLight();
-   var lc = l.camera();
-   var lp = lc.projection();
    // 绑定材质
    var m = pr.material();
    o.bindMaterial(m);
    // 绑定顶点常量
+   p.setParameter('vc_light_depth', vlci);
    p.setParameter('vc_model_matrix', pr.matrix());
-   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
-   p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
-   p.setParameter('vc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
-   p.setParameter('vc_light_view_matrix', pg.calculate(EG3dRegionParameter.LightViewMatrix));
-   p.setParameter('vc_light_vp_matrix', pg.calculate(EG3dRegionParameter.LightViewProjectionMatrix));
-   p.setParameter('fc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
-   p.setParameter('fc_light_direction', pg.calculate(EG3dRegionParameter.LightDirection));
-   p.setParameter4('fc_light_depth', 1.0 / 8192.0, 0.0, -1.0 / 8192.0, 1.0 / lp.distance());
+   p.setParameter('vc_vp_matrix', vcvpm);
+   p.setParameter('vc_camera_position', vcp);
+   p.setParameter('vc_light_direction', vld);
+   p.setParameter('vc_light_view_matrix', vlvm);
+   p.setParameter('vc_light_vp_matrix', vlvpm);
+   p.setParameter('fc_camera_position', vcp);
+   p.setParameter('fc_light_direction', vld);
+   p.setParameter4('fc_light_depth', 1.0 / 4096.0, 0.0, -1.0 / 4096.0, vlci.w);
    // 绑定像素常量
    var mi = m.info();
    p.setParameter('fc_color', mi.ambientColor);
@@ -61,19 +63,8 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    // 绑定所有属性流
    o.bindAttributes(pr);
    // 绑定所有取样器
-   p.setSampler('fs_light_depth', pg._textureDepth);
+   p.setSampler('fs_light_depth', tp.textureDepth());
    o.bindSamplers(pr);
    // 绘制处理
    c.drawTriangles(pr.indexBuffer());
-}
-
-//==========================================================
-// <T>从网络地址加载渲染器。</T>
-//
-// @method
-//==========================================================
-function FG3dShadowColorAutomaticEffect_load(){
-   var o = this;
-   var u = RBrowser.contentPath() + o._path + "shadow.color.automatic.xml";
-   o.loadUrl(u);
 }

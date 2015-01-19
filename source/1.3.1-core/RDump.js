@@ -248,16 +248,7 @@ function RDump_dump(v, h){
    RHtml.textSet(hCell, s.toString());
    // 追加行内容
    var hTable = RBuilder.appendTable(hPanel, null, null, 0, 1, 0);
-   //hTable.width = '100%'
-   //hTable.style.tableLayout = 'table-row';
    hTable.style.width = '100%';
-   //var hRow = RBuilder.appendTableRow(hTable);
-   //var hCell = RBuilder.appendTableCell(hRow);
-   //hCell.colSpan = 3;
-   //hCell.style.padding = 2;
-   //hCell.style.borderBottom = '1px solid gray';
-   //hCell.style.backgroundColor = '#E0E0EB';
-   //RHtml.textSet(hCell, s.toString());
    // 建立新的层次
    var di = new TDumpItem();
    di.hTable = hTable;

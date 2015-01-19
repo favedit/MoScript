@@ -16,6 +16,7 @@ function FModelRenderable3d(o){
    // @method
    o.construct         = FModelRenderable3d_construct;
    o.testVisible       = FModelRenderable3d_testVisible;
+   o.vertexCount       = FModelRenderable3d_vertexCount;
    o.findVertexBuffer  = FModelRenderable3d_findVertexBuffer;
    o.vertexBuffers     = FModelRenderable3d_vertexBuffers;
    o.indexBuffer       = FModelRenderable3d_indexBuffer;
@@ -54,6 +55,16 @@ function FModelRenderable3d_testVisible(p){
       }
    }
    return r;
+}
+
+//==========================================================
+// <T>获得顶点总数。</T>
+//
+// @method
+// @return Integer 顶点总数
+//==========================================================
+function FModelRenderable3d_vertexCount(){
+   return this._renderable.vertexCount();
 }
 
 //==========================================================

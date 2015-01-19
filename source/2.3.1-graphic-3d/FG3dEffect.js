@@ -8,6 +8,8 @@ function FG3dEffect(o){
    o = RClass.inherits(this, o, FG3dObject);
    //..........................................................
    // @attribute
+   o._code               = null;
+   // @attribute
    o._stateFillCd        = EG3dFillMode.Face;
    o._stateCullCd        = EG3dCullMode.Front;
    o._stateDepth         = true;
@@ -28,6 +30,7 @@ function FG3dEffect(o){
    //..........................................................
    // @method
    o.setup               = RMethod.empty;
+   o.code                = FG3dEffect_code;
    o.program             = FG3dEffect_program;
    o.setParameter        = FG3dEffect_setParameter;
    o.setSampler          = FG3dEffect_setSampler;
@@ -35,8 +38,19 @@ function FG3dEffect(o){
    o.buildInfo           = FG3dEffect_buildInfo;
    o.loadConfig          = FG3dEffect_loadConfig;
    o.loadUrl             = FG3dEffect_loadUrl;
+   o.load                = FG3dEffect_load;
    o.build               = FG3dEffect_build;
    return o;
+}
+
+//==========================================================
+// <T>获得代码。</T>
+//
+// @method
+// @return String 代码
+//==========================================================
+function FG3dEffect_code(){
+   return this._code;
 }
 
 //==========================================================
@@ -234,4 +248,17 @@ function FG3dEffect_build(p){
    // 编译处理
    g.build();
    g.link();
+}
+
+//==========================================================
+// <T>加载渲染器。</T>
+//
+// @method
+//==========================================================
+function FG3dEffect_load(){
+   var o = this;
+   var cp = RBrowser.contentPath();
+   var ec = RConsole.find(FG3dEffectConsole);
+   var u = cp + ec.path() + o._code + ".xml";
+   o.loadUrl(u);
 }

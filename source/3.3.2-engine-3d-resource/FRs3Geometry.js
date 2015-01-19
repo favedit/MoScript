@@ -23,8 +23,10 @@ function FRs3Geometry(o){
    // @method
    o.construct        = FRs3Geometry_construct;
    o.materialCode     = FRs3Geometry_materialCode;
+   o.vertexCount      = FRs3Geometry_vertexCount;
    o.findVertexBuffer = FRs3Geometry_findVertexBuffer;
    o.vertexBuffers    = FRs3Geometry_vertexBuffers;
+   o.indexCount       = FRs3Geometry_indexCount;
    o.indexBuffer      = FRs3Geometry_indexBuffer;
    o.boneIds          = FRs3Geometry_boneIds;
    o.track            = FRs3Geometry_track;
@@ -56,6 +58,16 @@ function FRs3Geometry_materialCode(){
 }
 
 //==========================================================
+// <T>获得顶点总数。</T>
+//
+// @method
+// @return Integer 顶点总数
+//==========================================================
+function FRs3Geometry_vertexCount(){
+   return this._vertexCount;
+}
+
+//==========================================================
 // <T>查找顶点缓冲。</T>
 //
 // @method
@@ -84,6 +96,16 @@ function FRs3Geometry_findVertexBuffer(p){
 //==========================================================
 function FRs3Geometry_vertexBuffers(){
    return this._vertexBuffers;
+}
+
+//==========================================================
+// <T>获得索引总数。</T>
+//
+// @method
+// @return Integer 索引总数
+//==========================================================
+function FRs3Geometry_indexCount(){
+   return this._indexCount;
 }
 
 //==========================================================

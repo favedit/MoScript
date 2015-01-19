@@ -123,8 +123,10 @@ function FRs3Geometry(o){
    o._track           = null;
    o.construct        = FRs3Geometry_construct;
    o.materialCode     = FRs3Geometry_materialCode;
+   o.vertexCount      = FRs3Geometry_vertexCount;
    o.findVertexBuffer = FRs3Geometry_findVertexBuffer;
    o.vertexBuffers    = FRs3Geometry_vertexBuffers;
+   o.indexCount       = FRs3Geometry_indexCount;
    o.indexBuffer      = FRs3Geometry_indexBuffer;
    o.boneIds          = FRs3Geometry_boneIds;
    o.track            = FRs3Geometry_track;
@@ -140,6 +142,9 @@ function FRs3Geometry_construct(){
 }
 function FRs3Geometry_materialCode(){
    return this._materialCode;
+}
+function FRs3Geometry_vertexCount(){
+   return this._vertexCount;
 }
 function FRs3Geometry_findVertexBuffer(p){
    var o = this;
@@ -157,6 +162,9 @@ function FRs3Geometry_findVertexBuffer(p){
 }
 function FRs3Geometry_vertexBuffers(){
    return this._vertexBuffers;
+}
+function FRs3Geometry_indexCount(){
+   return this._indexCount;
 }
 function FRs3Geometry_indexBuffer(){
    return this._indexBuffer;

@@ -1,12 +1,13 @@
-﻿//===========================================================
+﻿//==========================================================
 // <T>页面构建类。</T>
 //
 // @reference
 // @author maocy
 // @version 141229
-//===========================================================
+//==========================================================
 var RBuilder = new function RBuilder(){
    var o = this;
+   //..........................................................
    // @method
    o.create            = RBuilder_create;
    o.createIcon        = RBuilder_createIcon;
@@ -18,6 +19,8 @@ var RBuilder = new function RBuilder(){
    o.createSpan        = RBuilder_createSpan;
    o.createDiv         = RBuilder_createDiv;
    o.createTable       = RBuilder_createTable;
+   o.createFragment    = RBuilder_createFragment;
+   // @method
    o.append            = RBuilder_append;
    o.appendIcon        = RBuilder_appendIcon;
    o.appendImage       = RBuilder_appendImage;
@@ -31,21 +34,10 @@ var RBuilder = new function RBuilder(){
    o.appendTable       = RBuilder_appendTable;
    o.appendTableRow    = RBuilder_appendTableRow;
    o.appendTableCell   = RBuilder_appendTableCell;
-   //..........................................................
-
-
-   // @event
-   o.onBuildSpanPanel  = RBuilder_onBuildSpanPanel;
-   o.onBuildDivPanel   = RBuilder_onBuildDivPanel;
-   o.onBuildTdPanel    = RBuilder_onBuildTdPanel;
-   o.onBuildTrPanel    = RBuilder_onBuildTrPanel;
-   o.onBuildTablePanel = RBuilder_onBuildTablePanel;
-   // @method
-   o.createFragment    = RBuilder_createFragment;
    return o;
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个页面对象。</T>
 //
 // @method
@@ -53,7 +45,7 @@ var RBuilder = new function RBuilder(){
 // @param t:tagName:String 标签名称
 // @param s:styleName:String 样式名称
 // @return HtmlTag 页面对象
-//===========================================================
+//==========================================================
 function RBuilder_create(d, t, s){
    var o = this;
    var h = d.createElement(t);
@@ -63,7 +55,7 @@ function RBuilder_create(d, t, s){
    return h;
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个页面图标对象。</T>
 //
 // @method
@@ -73,7 +65,7 @@ function RBuilder_create(d, t, s){
 // @param w:width:Integer 图片高度
 // @param h:height:Integer 图片宽度
 // @return HtmlImgTag 页面图标对象
-//===========================================================
+//==========================================================
 function RBuilder_createIcon(d, s, u, w, h){
    var r = this.create(d, 'IMG', RString.nvl(s, 'Tag_Icon'));
    r.align = 'absmiddle';
@@ -89,7 +81,7 @@ function RBuilder_createIcon(d, s, u, w, h){
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个页面图片对象。</T>
 //
 // @method
@@ -99,7 +91,7 @@ function RBuilder_createIcon(d, s, u, w, h){
 // @param w:width:Integer 图片高度
 // @param h:height:Integer 图片宽度
 // @return HtmlImgTag 页面图片对象
-//===========================================================
+//==========================================================
 function RBuilder_createImage(d, s, u, w, h){
    var r = this.create(d, 'IMG', u);
    if(u){
@@ -114,7 +106,7 @@ function RBuilder_createImage(d, s, u, w, h){
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个页面文本对象。</T>
 //
 // @method
@@ -122,80 +114,80 @@ function RBuilder_createImage(d, s, u, w, h){
 // @param s:style:String 样式名称
 // @param v:value:String 内容
 // @return HtmlInputTag 页面文本对象
-//===========================================================
+//==========================================================
 function RBuilder_createText(d, s, v){
    var r = this.create(d, 'SPAN', s);
    r.innerHTML = v;
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个页面复选框对象。</T>
 //
 // @method
 // @param d:document:HtmlDocument 页面文档对象
 // @param s:style:String 样式名称
 // @return HtmlInputTag 页面复选框对象
-//===========================================================
+//==========================================================
 function RBuilder_createCheck(d, s){
    var r = this.create(d, "INPUT", s);
    r.type = 'checkbox';
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个页面单选框对象。</T>
 //
 // @method
 // @param d:document:HtmlDocument 页面文档对象
 // @param s:style:String 样式名称
 // @return HtmlInputTag 页面单选框对象
-//===========================================================
+//==========================================================
 function RBuilder_createRadio(d, s){
    var r = this.create(d, "INPUT", s);
    r.type = 'radio';
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个页面编辑框对象。</T>
 //
 // @method
 // @param d:document:HtmlDocument 页面文档对象
 // @param s:style:String 样式名称
 // @return HtmlInputTag 页面编辑框对象
-//===========================================================
+//==========================================================
 function RBuilder_createEdit(d, s){
    var r = this.create(d, "INPUT", s);
    r.type = 'text';
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个页面浮动块对象。</T>
 //
 // @method
 // @param d:document:HtmlDocument 页面文档对象
 // @param s:style:String 样式名称
 // @return HtmlSpanTag 页面浮动块对象
-//===========================================================
+//==========================================================
 function RBuilder_createSpan(d, s){
    return this.create(d, 'SPAN', s);
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个页面浮动块对象。</T>
 //
 // @method
 // @param d:document:HtmlDocument 页面文档对象
 // @param s:style:String 样式名称
 // @return HtmlDivTag 页面浮动块对象
-//===========================================================
+//==========================================================
 function RBuilder_createDiv(d, s){
    return this.create(d, 'DIV', s);
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个页面表格。</T>
 //
 // @method
@@ -205,7 +197,7 @@ function RBuilder_createDiv(d, s){
 // @param cs:cellSpaceing:Integer 单元格之间的宽度
 // @param cp:cellPadding:Integer 单元格内文字与单元格边框之间的距离
 // @return HtmlTag 表格对象
-//===========================================================
+//==========================================================
 function RBuilder_createTable(d, s, b, cs, cp){
    var h = this.create(d, 'TABLE', s);
    h.border = RInteger.nvl(b);
@@ -214,7 +206,18 @@ function RBuilder_createTable(d, s, b, cs, cp){
    return h;
 }
 
-//===========================================================
+//==========================================================
+// <T>创建一个文档碎片。</T>
+//
+// @method
+// @param d:document:HtmlDocument 页面文档对象
+// @return HtmlTag 表格对象
+//==========================================================
+function RBuilder_createFragment(d){
+   return d.createDocumentFragment();
+}
+
+//==========================================================
 // <T>追加一个页面对象，如果存在父容器就放在里面，没有就放在当前页面里。</T>
 //
 // @method
@@ -223,7 +226,7 @@ function RBuilder_createTable(d, s, b, cs, cp){
 // @param s:styleName:String 样式名称
 // @return HtmlTag 页面对象
 // @see RBuilder.create
-//===========================================================
+//==========================================================
 function RBuilder_append(p, t, s){
    var r = RBuilder.create(p.ownerDocument, t, s);
    if(p){
@@ -234,7 +237,7 @@ function RBuilder_append(p, t, s){
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>追加一个页面图标对象，放在父容器里面，并返回这个对象。</T>
 //
 // @method
@@ -244,14 +247,14 @@ function RBuilder_append(p, t, s){
 // @param w:width:Integer 图片高度
 // @param h:height:Integer 图片宽度
 // @return HtmlImgTag 页面图标对象
-//===========================================================
+//==========================================================
 function RBuilder_appendIcon(p, s, u, w, h){
    var r = this.createIcon(p.ownerDocument, s, u, w, h);
    p.appendChild(r);
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>追加一个页面图片对象，放在父容器里面，并返回这个对象。</T>
 //
 // @method
@@ -261,14 +264,14 @@ function RBuilder_appendIcon(p, s, u, w, h){
 // @param w:width:Integer 图片高度
 // @param h:height:Integer 图片宽度
 // @return HtmlImgTag 页面图片对象
-//===========================================================
+//==========================================================
 function RBuilder_appendImage(p, s, u, w, h){
    var r = this.createImage(p.ownerDocument, s, u, w, h);
    p.appendChild(r);
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>追加一个空白页面图标对象，放在父容器里面，并返回这个对象。</T>
 //
 // @method
@@ -276,14 +279,14 @@ function RBuilder_appendImage(p, s, u, w, h){
 // @param w:width:Integer 图片的显示宽度
 // @param h:height:Integer 图片的显示宽度
 // @return HtmlImgTag 空白页面图标对象
-//===========================================================
+//==========================================================
 function RBuilder_appendEmpty(p, w, h){
    var r = this.createIcon(p.ownerDocument, 'n', null, w, h);
    p.appendChild(r);
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>追加一个页面文本对象，放在父容器里面，并返回这个对象。</T>
 //
 // @method
@@ -291,84 +294,84 @@ function RBuilder_appendEmpty(p, w, h){
 // @param s:style:String 样式名称
 // @param v:value:String 内容
 // @return HtmlInputTag 页面文本对象
-//===========================================================
+//==========================================================
 function RBuilder_appendText(p, s, v){
    var r = this.createText(p.ownerDocument, s, v);
    p.appendChild(r);
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>追加一个页面复选框对象，放在父容器里面，并返回这个对象。</T>
 //
 // @method
 // @param p:parent:HtmlTag 页面标签
 // @param s:style:String 样式名称
 // @return HtmlInputTag 页面复选框对象
-//===========================================================
+//==========================================================
 function RBuilder_appendCheck(p, s){
    var r = this.createCheck(p.ownerDocument, s);
    p.appendChild(r);
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>追加一个页面单选框对象，放在父容器里面，并返回这个对象。</T>
 //
 // @method
 // @param p:parent:HtmlTag 页面标签
 // @param s:style:String 样式名称
 // @return HtmlInputTag 页面单选框对象
-//===========================================================
+//==========================================================
 function RBuilder_appendRadio(p, s){
    var r = this.createRadio(p.ownerDocument, s);
    p.appendChild(r);
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>追加一个页面编辑框对象，放在父容器里面，并返回这个对象。</T>
 //
 // @method
 // @param p:parent:HtmlTag 页面标签
 // @param s:style:String 样式名称
 // @return HtmlInputTag 页面编辑框对象
-//===========================================================
+//==========================================================
 function RBuilder_appendEdit(p, s){
    var r = this.createEdit(p.ownerDocument, s);
    p.appendChild(r);
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个页面浮动块对象。</T>
 //
 // @method
 // @param p:parent:HtmlTag 页面标签
 // @param s:style:String 样式名称
 // @return HtmlSpanTag 页面浮动块对象
-//===========================================================
+//==========================================================
 function RBuilder_appendSpan(p, s){
    var r = this.createSpan(p.ownerDocument, s);
    p.appendChild(r);
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>创建一个页面浮动块对象。</T>
 //
 // @method
 // @param p:parent:HtmlTag 页面标签
 // @param s:style:String 样式名称
 // @return HtmlDivTag 页面浮动块对象
-//===========================================================
+//==========================================================
 function RBuilder_appendDiv(p, s){
    var r = this.createDiv(p.ownerDocument, s);
    p.appendChild(r);
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>追加一个页面表格对象，放在父容器里面，并返回这个表格对象。</T>
 //
 // @method
@@ -379,7 +382,7 @@ function RBuilder_appendDiv(p, s){
 // @param cp:cellPadding:Integer 单元格内文字与单元格边框之间的距离
 // @return HtmlTag 表格对象
 // @see RBuilder.createTable
-//===========================================================
+//==========================================================
 function RBuilder_appendTable(p, s, b, cs, cp){
    var r = this.createTable(p.ownerDocument, s, b, cs, cp);
    if(p){
@@ -390,7 +393,7 @@ function RBuilder_appendTable(p, s, b, cs, cp){
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>追加一个页面行对象，并返回这个页面行对象。</T>
 //
 // @method
@@ -400,9 +403,18 @@ function RBuilder_appendTable(p, s, b, cs, cp){
 // @param w:width:Integer 行宽度
 // @param h:height:Integer 行高度
 // @return HtmlTrTag 页面行对象
-//===========================================================
+//==========================================================
 function RBuilder_appendTableRow(p, s, i, h){
-   var r = (i != null) ? p.insertRow(i) : p.insertRow();
+   var r = null;
+   if(i == null){
+      if(RBrowser.isBrowser(EBrowser.Explorer)){
+         r = p.insertRow();
+      }else{
+         r = p.insertRow(-1);
+      }
+   }else{
+      r = p.insertRow(i);
+   }
    if(s){
       r.className = s;
    }
@@ -412,7 +424,7 @@ function RBuilder_appendTableRow(p, s, i, h){
    return r;
 }
 
-//===========================================================
+//==========================================================
 // <T>追加一个页面行对象，并返回这个页面行对象。</T>
 //
 // @method
@@ -422,9 +434,18 @@ function RBuilder_appendTableRow(p, s, i, h){
 // @param w:width:Integer 行宽度
 // @param h:height:Integer 行高度
 // @return HtmlTrTag 页面行对象
-//===========================================================
+//==========================================================
 function RBuilder_appendTableCell(p, s, i, w){
-   var r = (i != null) ? p.insertCell(i) : p.insertCell();
+   var r = null;
+   if(i == null){
+      if(RBrowser.isBrowser(EBrowser.Explorer)){
+         r = p.insertCell();
+      }else{
+         r = p.insertCell(-1);
+      }
+   }else{
+      r = p.insertCell(i);
+   }
    if(s){
       r.className = s;
    }
@@ -432,36 +453,4 @@ function RBuilder_appendTableCell(p, s, i, w){
       r.width = w;
    }
    return r;
-}
-
-
-
-
-
-
-
-
-//===========================================================
-function RBuilder_onBuildSpanPanel(){
-   this.hPanel = RBuilder.newSpan();
-}
-//===========================================================
-function RBuilder_onBuildDivPanel(){
-   this.hPanel = RBuilder.newDiv();
-}
-//===========================================================
-function RBuilder_onBuildTdPanel(){
-   this.hPanel = RBuilder.create(null, 'TD');
-}
-//===========================================================
-function RBuilder_onBuildTrPanel(){
-   this.hPanel = RBuilder.create(null, 'TR');
-}
-//===========================================================
-function RBuilder_onBuildTablePanel(){
-   this.hPanel = RBuilder.newTable();
-}
-
-function RBuilder_createFragment(p){
-   return p ? p.ownerDocument.createDocumentFragment() : this.hDocument.createDocumentFragment();
 }

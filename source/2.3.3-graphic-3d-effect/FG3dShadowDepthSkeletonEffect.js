@@ -1,5 +1,5 @@
 ﻿//==========================================================
-// <T>简单自动渲染器。</T>
+// <T>阴影深度骨骼渲染器。</T>
 //
 // @author maocy
 // @history 150109
@@ -8,15 +8,12 @@ function FG3dShadowDepthSkeletonEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    //..........................................................
    // @attribute
-   o._supportSkeleton = true;
+   o._code            = 'shadow.depth.skeleton';
    // @attribute
-   o._context         = null;
-   o._program         = null;
-   o._data            = new Float32Array();
+   o._supportSkeleton = true;
    //..........................................................
    // @method
    o.drawRenderable   = FG3dShadowDepthSkeletonEffect_drawRenderable;
-   o.load             = FG3dShadowDepthSkeletonEffect_load;
    return o;
 }
 
@@ -24,47 +21,13 @@ function FG3dShadowDepthSkeletonEffect(o){
 // <T>绘制渲染对象。</T>
 //
 // @method
-// @param p:renderable:FRenderable 渲染对象
+// @param pg:region:FG3dRegion 渲染区域
+// @param pr:renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FG3dShadowDepthSkeletonEffect_drawRenderable(pr, r){
+function FG3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   var prvp = pr.matrixViewProjection();
-   var prcp = pr.cameraPosition();
-   var prld = pr.lightDirection();
-   // 绑定所有属性流
-   if(p.hasAttribute()){
-      var as = p.attributes();
-      var ac = as.count();
-      for(var n = 0; n < ac; n++){
-         var a = as.value(n);
-         if(a._statusUsed){
-            var vb = r.findVertexBuffer(a._linker);
-            if(vb == null){
-               throw new TError("Can't find renderable vertex buffer. (linker={1})", a._linker);
-            }
-            p.setAttribute(a._name, vb, vb._formatCd);
-         }
-      }
-   }
-   // 绑定所有属性流
-   if(p.hasSampler()){
-      var ss = p.samplers();
-      var sc = ss.count();
-      for(var n = 0; n < sc; n++){
-         var s = ss.value(n);
-         if(s._statusUsed){
-            var ln = s.linker();
-            var sp = r.findTexture(ln);
-            if(sp != null){
-               p.setSampler(s.name(), sp.texture());
-            }else{
-               throw new TError("Can't find sampler. (linker={1})", ln);
-            }
-         }
-      }
-   }
    // 绑定所有属性流
    p.setParameter('vc_model_matrix', r.matrix());
    p.setParameter('vc_vp_matrix', prvp);
@@ -86,7 +49,7 @@ function FG3dShadowDepthSkeletonEffect_drawRenderable(pr, r){
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
    // 设置骨头集合
-   var bs = r.bones();
+   var bs = pr.bones();
    if(bs){
       var bc = bs.count();
       if(bc > 32){
@@ -100,18 +63,10 @@ function FG3dShadowDepthSkeletonEffect_drawRenderable(pr, r){
       }
       p.setParameter('vc_bone_matrix', d);
    }
+   // 绑定所有属性流
+   o.bindAttributes(pr);
+   // 绑定所有取样器
+   o.bindSamplers(pr);
    // 绘制处理
-   var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
-}
-
-//==========================================================
-// <T>从网络地址加载渲染器。</T>
-//
-// @method
-//==========================================================
-function FG3dShadowDepthSkeletonEffect_load(){
-   var o = this;
-   var u = RBrowser.contentPath() + o._path + "simple.skeleton.xml";
-   o.loadUrl(u);
+   c.drawTriangles(pr.indexBuffer());
 }

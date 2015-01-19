@@ -88,7 +88,7 @@ function FDisplay_pushRenderable(p){
 function FDisplay_update(){
    var o = this;
    var m = o._matrix;
-   m.setAll(o._location, o._rotation, o._scale);
+   m.set(o._location, o._rotation, o._scale);
    m.update();
 }
 function FDisplay_process(){

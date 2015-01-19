@@ -1,5 +1,5 @@
 ﻿//==========================================================
-// <T>简单自动渲染器。</T>
+// <T>阴影深度自动渲染器。</T>
 //
 // @author maocy
 // @history 141230
@@ -8,12 +8,10 @@ function FG3dShadowDepthAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    //..........................................................
    // @attribute
-   o._context       = null;
-   o._program       = null;
+   o._code          = 'shadow.depth.automatic';
    //..........................................................
    // @method
    o.drawRenderable = FG3dShadowDepthAutomaticEffect_drawRenderable;
-   o.load           = FG3dShadowDepthAutomaticEffect_load;
    return o;
 }
 
@@ -28,18 +26,19 @@ function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   // 获得信息
-   var l = pg.directionalLight();
-   var lc = l.camera();
-   var lp = lc.projection();
+   // 获得参数
+   var lvm = pg.calculate(EG3dRegionParameter.LightViewMatrix);
+   var lvpm = pg.calculate(EG3dRegionParameter.LightViewProjectionMatrix);
+   var lci = pg.calculate(EG3dRegionParameter.LightInfo);
    // 关闭混合选项
    c.setBlendFactors(false);
    // 绑定所有属性流
+   p.setParameter('vc_camera', lci);
    p.setParameter('vc_model_matrix', pr.matrix());
-   p.setParameter('vc_view_matrix', pg.calculate(EG3dRegionParameter.LightViewMatrix));
-   p.setParameter('vc_projection_matrix', pg.calculate(EG3dRegionParameter.LightProjectionMatrix));
+   p.setParameter('vc_view_matrix', lvm);
+   p.setParameter('vc_vp_matrix', lvpm);
    // 设置材质
-   p.setParameter4('fc_camera', lc.position().x, lc.position().y, lc.position().z, 1.0 / lp.distance());
+   p.setParameter('fc_camera', lci);
    p.setParameter4('fc_alpha', 0, 0, 0, 0.1);
    // 绑定所有属性流
    o.bindAttributes(pr);
@@ -47,15 +46,4 @@ function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    o.bindSamplers(pr);
    // 绘制处理
    c.drawTriangles(pr.indexBuffer());
-}
-
-//==========================================================
-// <T>从网络地址加载渲染器。</T>
-//
-// @method
-//==========================================================
-function FG3dShadowDepthAutomaticEffect_load(){
-   var o = this;
-   var u = RBrowser.contentPath() + o._path + "shadow.depth.automatic.xml";
-   o.loadUrl(u);
 }

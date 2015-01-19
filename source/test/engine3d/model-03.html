@@ -36,7 +36,7 @@ function onEnterFrame(){
          }
          var m = models.get(n);
          //m.location().set(0.1 * x - 8, -0.5, 0.1 * z - 4);
-         m.location().set(0, -7.0, 0);
+         m.location().set(0, -14.0, 0);
          m.rotation().set(0, mRotationY, 0);
          m.scale().set(0.6, 0.6, 0.6);
          m.update();
@@ -51,7 +51,7 @@ function onEnterFrame(){
       _info.innerText = RTimer.rate() + ' f/s';
    }
 }
-
+//----------------------------------------------------------
 function onThemeLoad(){
    var hCanvas = document.getElementById('_canvas');
    context = REngine3d.createContext(FWglContext, hCanvas);
@@ -59,7 +59,7 @@ function onThemeLoad(){
 
    stage = RClass.create(FSimpleStage3d);
    stage.backgroundColor().set(1, 1, 1, 1);
-   stage.selectTechnique(context, FG3dSampleTechnique);
+   stage.selectTechnique(context, FG3dGeneralTechnique);
 
    layer = stage.spriteLayer();
    RStage.register('stage3d', stage);
@@ -70,25 +70,30 @@ function onThemeLoad(){
       layer.pushDisplay(model3d);
       models.push(model3d);
    }
+   //..........................................................
    // 设置相机
    var rc = stage.camera();
-   rc.setPosition(0, 2, -14);
+   rc.setPosition(0, 2, -30);
    rc.lookAt(0, 0, 0);
    rc.update();
-   // 设置光源
-   stage.directionalLight().direction().set(0.7, 0.7, 0);
    // 设置投影
-   var rp = stage.projection();
-   rp.width = hCanvas.width;
-   rp.height = hCanvas.height;
-   rp.zfar = 100;
+   var rp = stage.camera().projection();
+   rp.size().set(hCanvas.width, hCanvas.height);
+   rp._zfar = 100.0;
    rp.update();
+   //..........................................................
+   // 设置光源
+   var l = stage.directionalLight();
+   var lc = l.camera();
+   lc.position().set(2.0, 2.0, -1.0);
+   lc.lookAt(0, 0, 0);
+   lc.update();
    // 启动处理
    RStage.lsnsEnterFrame.register(null, onEnterFrame);
    RStage.start();
    RDump.dump(stage, _dump);
 }
-
+//----------------------------------------------------------
 function _load(){
    RRuntime.processCd = EProcess.Debug;
    RBrowser.construct();
@@ -102,7 +107,7 @@ function _load(){
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
-<CANVAS id="_canvas" width="800" height="900">您的浏览器不支持HTML5</CANVAS>
+<CANVAS id="_canvas" width="100" height="200">您的浏览器不支持HTML5</CANVAS>
 <DIV id='_info'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

@@ -63,7 +63,7 @@ function FWglContext_linkCanvas(h){
    c.vendor = g.getParameter(g.VENDOR);
    c.version = g.getParameter(g.VERSION);
    c.shaderVersion = g.getParameter(g.SHADING_LANGUAGE_VERSION);
-   c.vertexCount = g.getParameter(g.MAX_VERTEX_ATTRIBS);
+   c.attributeCount = g.getParameter(g.MAX_VERTEX_ATTRIBS);
    c.vertexConst = g.getParameter(g.MAX_VERTEX_UNIFORM_VECTORS);
    c.varyingCount = g.getParameter(g.MAX_VARYING_VECTORS);
    c.fragmentConst = g.getParameter(g.MAX_FRAGMENT_UNIFORM_VECTORS);
@@ -376,68 +376,67 @@ function FWglContext_setProgram(v){
    var r = o.checkError("useProgram", "Set program failure. (program={1}, program_id={2})", v, v._native);
    return r;
 }
-function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
+function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
    var o = this;
    var g = o._native;
    var r = true;
-   var pdc = pd.constructor;
-   switch (formatCd){
+   switch(pdf){
       case EG3dParameterFormat.Float1:{
-         g.uniform1fv(slot, pd);
-         r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
+         g.uniform1fv(psl, pdt);
+         r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float2:{
-         g.uniform2fv(slot, pd);
-         r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
+         g.uniform2fv(psl, pdt);
+         r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float3:{
-         g.uniform3fv(slot, pd);
-         r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
+         g.uniform3fv(psl, pdt);
+         r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float4:{
-         g.uniform4fv(slot, pd);
-         r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
+         g.uniform4fv(psl, pdt);
+         r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float3x3:{
          var dt = o._data9;
-         dt[ 0] = pd[ 0];
-         dt[ 1] = pd[ 4];
-         dt[ 2] = pd[ 8];
-         dt[ 3] = pd[ 1];
-         dt[ 4] = pd[ 5];
-         dt[ 5] = pd[ 9];
-         dt[ 6] = pd[ 2];
-         dt[ 7] = pd[ 6];
-         dt[ 8] = pd[10];
-         g.uniformMatrix3fv(slot, g.FALSE, dt);
-         r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
+         dt[ 0] = pdt[ 0];
+         dt[ 1] = pdt[ 4];
+         dt[ 2] = pdt[ 8];
+         dt[ 3] = pdt[ 1];
+         dt[ 4] = pdt[ 5];
+         dt[ 5] = pdt[ 9];
+         dt[ 6] = pdt[ 2];
+         dt[ 7] = pdt[ 6];
+         dt[ 8] = pdt[10];
+         g.uniformMatrix3fv(psl, g.FALSE, dt);
+         r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float4x3:{
          if(length % 48 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
+            RLogger.fatal(o, null, "Count is invalid. (count=%d)", pdc);
             return false;
          }
          var count = length / 48;
-         g.uniform4fv(slot, pd);
-         r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
+         g.uniform4fv(psl, g.FALSE, pd);
+         r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float4x4:{
-         if(pdc == Float32Array){
-            g.uniformMatrix4fv(slot, g.FALSE, pd);
-         }else if((pdc == SMatrix3d) || (pdc == SPerspectiveMatrix3d)){
-            var dt = o._data16;
-            pd.writeData(dt, 0);
-            g.uniformMatrix4fv(slot, g.FALSE, dt);
+         if(pdt.constructor == Float32Array){
+            g.uniformMatrix4fv(psl, g.FALSE, pdt);
+         }else if(pdt.writeData){
+            var d = o._data16;
+            pdt.writeData(d, 0);
+            g.uniformMatrix4fv(psl, g.FALSE, d);
          }else{
             throw new TError('Unknown data type.');
          }
-         r = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd=%d, slot=%d, pData=0x%08X, count=%d)", psc, psl, pdt, pdc);
          break;
       }
    }
@@ -811,13 +810,10 @@ function FWglProgram_fragmentShader(){
 }
 function FWglProgram_upload(t, s){
    var o = this;
-   var g = o._context._native;
    if(t == EG3dShader.Vertex){
-      var vs = o.vertexShader();
-      vs.upload(s);
+      o.vertexShader().upload(s);
    }else if(t == EG3dShader.Fragment){
-      var fs = o.fragmentShader();
-      fs.upload(s);
+      o.fragmentShader().upload(s);
    }else{
       throw new Error('Unknown type');
    }

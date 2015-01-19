@@ -49,9 +49,9 @@ function FG3dOrthoProjection_update(){
    var s = o._size;
    o._matrix.identity();
    var d = o._matrix.data();
-   d[ 0] = 2.0 / s.width;
+   d[ 0] = 2.0 / s.width * 8.0;
    d[ 4] = d[ 8] = d[12] = 0.0;
-   d[ 5] = 2.0 / s.height;
+   d[ 5] = 2.0 / s.height * 8.0;
    d[ 1] = d[ 9] = d[13] = 0.0;
    d[10] = 1.0 / (o._znear - o._zfar);
    d[ 2] = d[ 6] = d[14] = 0.0;

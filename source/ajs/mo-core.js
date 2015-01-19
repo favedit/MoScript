@@ -2263,17 +2263,21 @@ function RClass_safeTypeOf(v, safe){
       return 'Null';
    }
    try{
-      if(v.constructor == Boolean){
+      var c = v.constructor;
+      if(c == Boolean){
          return 'Boolean';
       }
-      if(v.constructor == Number){
+      if(c == Number){
          return 'Number';
       }
-      if(v.constructor == String){
+      if(c == String){
          return 'String';
       }
-      if(v.constructor == Function){
-         return RString.mid(v.constructor.toString(), 'function ', '(');
+      if(c == Function){
+         return RString.mid(c.toString(), 'function ', '(');
+      }
+      if(c.constructor == Function){
+         return RString.mid(c.toString(), 'function ', '(');
       }
       if(v.__class){
          return v.__class.name;
@@ -5673,8 +5677,8 @@ function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
 function SFrustum_updateFlat(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    var o = this;
    var aspect = pvw / pvh;
-   var znear = pvn;
-   var zfar = pvf;
+   var znear = pvn * pbr;
+   var zfar = pvf * pfr;
    var fov = Math.tan(RMath.DEGREE_RATE * pva * 0.5);
    var nearY = znear * fov;
    var nearX = nearY * aspect;
@@ -6761,6 +6765,59 @@ function SPoint3_toString(){
 function SPoint3_dump(){
    return RClass.dump(this) + ' [' + this.x + ',' + this.y + ',' + this.z + ']';
 }
+function SPoint4(x, y, z, w){
+   var o = this;
+   o.x           = x;
+   o.y           = y;
+   o.z           = z;
+   o.w           = w;
+   o.assign      = SPoint4_assign;
+   o.set         = SPoint4_set;
+   o.serialize   = SPoint4_serialize;
+   o.unserialize = SPoint4_unserialize;
+   o.toString    = SPoint4_toString;
+   return o;
+}
+function SPoint4_assign(p){
+   var o = this;
+   o.x = p.x;
+   o.y = p.y;
+   o.z = p.z;
+   o.w = p.w;
+}
+function SPoint4_set(x, y, z, w){
+   var o = this;
+   if(x != null){
+      o.x = x;
+   }
+   if(y != null){
+      o.y = y;
+   }
+   if(z != null){
+      o.z = z;
+   }
+   if(w != null){
+      o.w = w;
+   }
+}
+function SPoint4_serialize(p){
+   var o = this;
+   p.writeFloat(o.x);
+   p.writeFloat(o.y);
+   p.writeFloat(o.z);
+   p.writeFloat(o.w);
+}
+function SPoint4_unserialize(p){
+   var o = this;
+   o.x = p.readFloat();
+   o.y = p.readFloat();
+   o.z = p.readFloat();
+   o.w = p.readFloat();
+}
+function SPoint4_toString(){
+   var o = this;
+   return o.x + ',' + o.y + ',' + o.z + ',' + o.w;
+}
 function SQuaternion(o){
    if(!o){o = this;}
    o.x             = 0.0;
@@ -7210,6 +7267,67 @@ function SVector3_unserialize(p){
 function SVector3_toString(){
    var o = this;
    return o.x + ',' + o.y + ',' + o.z;
+}
+function SVector4(o){
+   if(!o){o = this;}
+   o.x           = 0;
+   o.y           = 0;
+   o.z           = 0;
+   o.w           = 0;
+   o.assign      = SVector4_assign;
+   o.set         = SVector4_set;
+   o.absolute    = SVector4_absolute;
+   o.normalize   = SVector4_normalize;
+   o.serialize   = SVector4_serialize;
+   o.unserialize = SVector4_unserialize;
+   o.toString    = SVector4_toString;
+   return o;
+}
+function SVector4_assign(p){
+   var o = this;
+   o.x = p.x;
+   o.y = p.y;
+   o.z = p.z;
+   o.w = p.w;
+}
+function SVector4_set(x, y, z, w){
+   var o = this;
+   o.x = x;
+   o.y = y;
+   o.z = z;
+   o.w = w;
+}
+function SVector4_absolute(){
+   var o = this;
+   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z) + (o.w * o.w));
+}
+function SVector4_normalize(){
+   var o = this;
+   var v = o.absolute();
+   if(v != 0.0){
+      o.x /= v;
+      o.y /= v;
+      o.z /= v;
+      o.w /= w;
+   }
+}
+function SVector4_serialize(p){
+   var o = this;
+   p.writeFloat(o.x);
+   p.writeFloat(o.y);
+   p.writeFloat(o.z);
+   p.writeFloat(o.w);
+}
+function SVector4_unserialize(p){
+   var o = this;
+   o.x = p.readFloat();
+   o.y = p.readFloat();
+   o.z = p.readFloat();
+   o.w = p.readFloat();
+}
+function SVector4_toString(){
+   var o = this;
+   return o.x + ',' + o.y + ',' + o.z + ',' + o.w;
 }
 function AEvent(o, n, l){
    var o = this;
@@ -8427,6 +8545,7 @@ var RBuilder = new function RBuilder(){
    o.createSpan        = RBuilder_createSpan;
    o.createDiv         = RBuilder_createDiv;
    o.createTable       = RBuilder_createTable;
+   o.createFragment    = RBuilder_createFragment;
    o.append            = RBuilder_append;
    o.appendIcon        = RBuilder_appendIcon;
    o.appendImage       = RBuilder_appendImage;
@@ -8440,12 +8559,6 @@ var RBuilder = new function RBuilder(){
    o.appendTable       = RBuilder_appendTable;
    o.appendTableRow    = RBuilder_appendTableRow;
    o.appendTableCell   = RBuilder_appendTableCell;
-   o.onBuildSpanPanel  = RBuilder_onBuildSpanPanel;
-   o.onBuildDivPanel   = RBuilder_onBuildDivPanel;
-   o.onBuildTdPanel    = RBuilder_onBuildTdPanel;
-   o.onBuildTrPanel    = RBuilder_onBuildTrPanel;
-   o.onBuildTablePanel = RBuilder_onBuildTablePanel;
-   o.createFragment    = RBuilder_createFragment;
    return o;
 }
 function RBuilder_create(d, t, s){
@@ -8516,6 +8629,9 @@ function RBuilder_createTable(d, s, b, cs, cp){
    h.cellPadding = RInteger.nvl(cp);
    return h;
 }
+function RBuilder_createFragment(d){
+   return d.createDocumentFragment();
+}
 function RBuilder_append(p, t, s){
    var r = RBuilder.create(p.ownerDocument, t, s);
    if(p){
@@ -8580,7 +8696,16 @@ function RBuilder_appendTable(p, s, b, cs, cp){
    return r;
 }
 function RBuilder_appendTableRow(p, s, i, h){
-   var r = (i != null) ? p.insertRow(i) : p.insertRow();
+   var r = null;
+   if(i == null){
+      if(RBrowser.isBrowser(EBrowser.Explorer)){
+         r = p.insertRow();
+      }else{
+         r = p.insertRow(-1);
+      }
+   }else{
+      r = p.insertRow(i);
+   }
    if(s){
       r.className = s;
    }
@@ -8590,7 +8715,16 @@ function RBuilder_appendTableRow(p, s, i, h){
    return r;
 }
 function RBuilder_appendTableCell(p, s, i, w){
-   var r = (i != null) ? p.insertCell(i) : p.insertCell();
+   var r = null;
+   if(i == null){
+      if(RBrowser.isBrowser(EBrowser.Explorer)){
+         r = p.insertCell();
+      }else{
+         r = p.insertCell(-1);
+      }
+   }else{
+      r = p.insertCell(i);
+   }
    if(s){
       r.className = s;
    }
@@ -8598,24 +8732,6 @@ function RBuilder_appendTableCell(p, s, i, w){
       r.width = w;
    }
    return r;
-}
-function RBuilder_onBuildSpanPanel(){
-   this.hPanel = RBuilder.newSpan();
-}
-function RBuilder_onBuildDivPanel(){
-   this.hPanel = RBuilder.newDiv();
-}
-function RBuilder_onBuildTdPanel(){
-   this.hPanel = RBuilder.create(null, 'TD');
-}
-function RBuilder_onBuildTrPanel(){
-   this.hPanel = RBuilder.create(null, 'TR');
-}
-function RBuilder_onBuildTablePanel(){
-   this.hPanel = RBuilder.newTable();
-}
-function RBuilder_createFragment(p){
-   return p ? p.ownerDocument.createDocumentFragment() : this.hDocument.createDocumentFragment();
 }
 var RDump = new function RDump(){
    var o = this;
@@ -10923,7 +11039,7 @@ function FTagDocument_load(p){
    s = s.replace(new RegExp('</' + o._space + ':', 'g'), '</' + o._space + '_');
    s = s.replace(new RegExp(' & ', 'g'), ' &amp; ');
    s = s.replace(new RegExp(' < ', 'g'), ' &lt; ');
-   s = s.replace(new RegExp(' > ', 'g'), ' &rt; ');
+   s = s.replace(new RegExp(' > ', 'g'), ' &gt; ');
    var xr = RXml.loadString(s);
    o.loadNode(null, xr.firstChild);
 }

@@ -188,7 +188,7 @@ function FDisplay_update(){
    var o = this;
    // 更新矩阵
    var m = o._matrix;
-   m.setAll(o._location, o._rotation, o._scale);
+   m.set(o._location, o._rotation, o._scale);
    m.update();
 }
 

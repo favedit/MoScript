@@ -17,6 +17,7 @@ function FG3dOrthoCamera(o){
    // @method
    o.updateFrustum    = FG3dOrthoCamera_updateFrustum;
    o.updateFromCamera = FG3dOrthoCamera_updateFromCamera;
+   o.updateFlatCamera = FG3dOrthoCamera_updateFlatCamera;
    return o;
 }
 
@@ -85,4 +86,33 @@ function FG3dOrthoCamera_updateFromCamera(p){
    f.updateCenter();
    // 更新投影
    o._projection.updateFrustum(f);
+}
+
+//==========================================================
+// <T>平面方式更新相机信息。</T>
+//
+// @method
+// @param p:camera:FG3dCamera 相机
+//==========================================================
+function FG3dOrthoCamera_updateFlatCamera(p){
+   var o = this;
+   var f = o._frustum
+   var pf = p.updateFlatFrustum();
+   // 计算距离 (求出圆球的切线)
+   var angle = RMath.DEGREE_RATE * o._projection.angle();
+   var distance = pf.radius / Math.sin(angle * 0.5);
+   distance = Math.max(distance, p._projection._zfar);
+   // 计算观察点
+   var d = o._direction;
+   d.normalize();
+   var vx = pf.center.x - d.x * distance;
+   var vy = pf.center.y - d.y * distance;
+   var vz = pf.center.z - d.z * distance;
+   o._position.set(vx, vy, vz);
+   o.lookAt(pf.center.x, pf.center.y, pf.center.z);
+   // 更新矩阵
+   o.update();
+   o._projection._znear = 0.3;
+   o._projection._zfar = distance * 1.5;
+   o._projection.update();
 }

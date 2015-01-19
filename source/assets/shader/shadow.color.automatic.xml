@@ -12,6 +12,7 @@
    <Option name='lightmap' value='N'/>
    <Option name='fog'      value='N'/>
    <!--=====================================================-->
+   <Parameter name='vc_light_depth'             format='Float4'/>
    <Parameter name='vc_model_matrix'            format='Float4x4'/>
    <Parameter name='vc_vp_matrix'               format='Float4x4'/>
    <Parameter name='vc_light_view_matrix'       format='Float4x4'/>
@@ -50,6 +51,7 @@
    <Source name='vertex'><![CDATA[
       //..........................................................
       // 变换矩阵声明
+      uniform vec4 vc_light_depth;
       uniform mat4 vc_model_matrix;
       uniform mat4 vc_vp_matrix;
       uniform mat4 vc_light_view_matrix;
@@ -98,9 +100,18 @@
          // 计算最终坐标
          gl_Position = modelPosition * vc_vp_matrix;
          v_model_position = modelPosition;
-         // 计算光投影坐标
-         v_light_view_position = modelPosition * vc_light_view_matrix;
-         //v_light_position = modelPosition * vc_light_vp_matrix;
+         // 计算光源视角坐标
+         vec4 viewPosition = modelPosition * vc_light_view_matrix;
+         float depth = (viewPosition.z / viewPosition.w - vc_light_depth.z) * vc_light_depth.w;
+         depth = max(depth, 0.0);
+         depth = min(depth, 1.0);
+         vec4 result = vec4(depth, depth, depth, depth) * vec4(1.0, 64.0, 64.0 * 64.0, 64.0 * 64.0 * 64.0);
+         result = fract(result);
+         vec4 temp = result.yzww * vec4(1.0 / 64.0, 1.0 / 64.0, 1.0 / 64.0, 0.0);
+         result = result - temp;
+         v_light_view_position = result;
+         //v_light_view_position = vec4(depth, depth, depth, 1.0);
+         // 计算光源屏幕纹理坐标
          vec4 lightPosition = modelPosition * vc_light_vp_matrix;
          lightPosition *= 1.0 / lightPosition.w;
          lightPosition.xy = lightPosition.xy * 0.5 + 0.5;
@@ -201,75 +212,66 @@
       // 逻辑处理
       void main(void){
          vec4 result = vec4(0.0, 0.0, 0.0, 1.0);
+         vec4 lightConvert = vec4(1.0, 1.0 / 64.0, 1.0 / 64.0 / 64.0, 1.0 / 64.0 / 64.0 / 64.0);
          //............................................................
          // 计算阴影
-         float shadowRate = 0.0;
-         float viewDepth = (v_light_view_position.z / v_light_view_position.w) * fc_light_depth.w;
-         // 计算距离
-         vec4 lightConvert = vec4(1.0, 1.0 / 256.0, 1.0 / 256.0 / 256.0, 1.0 / 256.0 / 256.0 / 256.0);
-         //vec2 lightCoord = v_light_position.xy / v_light_position.w;
-         //lightCoord = (lightCoord + 1.0) * 0.5;
-         vec2 lightCoord = v_light_position.xy;
+         float shadowRate = 1.0;
+         float viewDepth = dot(v_light_view_position, lightConvert) - 0.01;
          // 计算影子比率 (0,0)
-         vec4 lightColor = texture2D(fs_light_depth, lightCoord);
+         vec4 lightColor = texture2D(fs_light_depth, v_light_position.xy);
          float lightDepth = dot(lightColor, lightConvert);
-         float lightDepth2 = dot(lightColor, lightConvert);
-         if(viewDepth < lightDepth){
-            shadowRate += 2.0;
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.2;
          }
-         //for(int n = 1; n < 5; n++){
-         float n = 1.0;
          // 计算影子比率 (-1, 1)
-         lightColor = texture2D(fs_light_depth, lightCoord + fc_light_depth.zx * float(n));
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.zx);
          lightDepth = dot(lightColor, lightConvert);
-         if(viewDepth < lightDepth){
-            shadowRate += 1.0;
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
          }
          // 计算影子比率 (-1, 0)
-         lightColor = texture2D(fs_light_depth, lightCoord + fc_light_depth.zy * float(n));
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.zy);
          lightDepth = dot(lightColor, lightConvert);
-         if(viewDepth < lightDepth){
-            shadowRate += 1.0;
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
          }
          // 计算影子比率 (-1, -1)
-         lightColor = texture2D(fs_light_depth, lightCoord + fc_light_depth.zz * float(n));
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.zz);
          lightDepth = dot(lightColor, lightConvert);
-         if(viewDepth < lightDepth){
-            shadowRate += 1.0;
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
          }
          // 计算影子比率 (0, 1)
-         lightColor = texture2D(fs_light_depth, lightCoord + fc_light_depth.yx * float(n));
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.yx);
          lightDepth = dot(lightColor, lightConvert);
-         if(viewDepth < lightDepth){
-            shadowRate += 1.0;
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
          }
          // 计算影子比率 (0, -1)
-         lightColor = texture2D(fs_light_depth, lightCoord + fc_light_depth.yz * float(n));
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.yz);
          lightDepth = dot(lightColor, lightConvert);
-         if(viewDepth < lightDepth){
-            shadowRate += 1.0;
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
          }
          // 计算影子比率 ( 1, 1)
-         lightColor = texture2D(fs_light_depth, lightCoord + fc_light_depth.xx * float(n));
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.xx);
          lightDepth = dot(lightColor, lightConvert);
-         if(viewDepth < lightDepth){
-            shadowRate += 1.0;
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
          }
          // 计算影子比率 ( 1, 0)
-         lightColor = texture2D(fs_light_depth, lightCoord + fc_light_depth.xy * float(n));
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.xy);
          lightDepth = dot(lightColor, lightConvert);
-         if(viewDepth < lightDepth){
-            shadowRate += 1.0;
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
          }
          // 计算影子比率 ( 1,-1)
-         lightColor = texture2D(fs_light_depth, lightCoord + fc_light_depth.xz * float(n));
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.xz);
          lightDepth = dot(lightColor, lightConvert);
-         if(viewDepth < lightDepth){
-            shadowRate += 1.0;
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
          }
-         //}
-         shadowRate = shadowRate * 0.1;
-         //shadowRate = shadowRate * 0.5 + 0.5;
+         shadowRate = shadowRate * 0.5 + 0.5;
          //............................................................
          // 计算环境颜色
          <shader:true source='support.ambient'>
@@ -319,8 +321,8 @@
          </shader:true>
          //............................................................
          <shader:true source='support.environment'>
-         vec3 reflectDirection = normalize(reflect(-cameraDirection, v_normal)); 
-         vec4 environmentColor = textureCube(fs_environment, reflectDirection); 
+         vec3 reflectDirection = normalize(reflect(-cameraDirection, v_normal));
+         vec4 environmentColor = textureCube(fs_environment, reflectDirection);
          <shader:true source='support.light'>
          vec4 light = texture2D(fs_light, v_coord);
          environmentColor *= light.g;
@@ -340,13 +342,13 @@
          result.a = color.a * fc_alpha.z;
          </shader:true>
          //............................................................
-         //gl_FragColor = result;
+         gl_FragColor = result;
          //gl_FragColor = vec4(lightColor.xyz, 1.0);
+         //gl_FragColor = vec4(v_light_view_position.xyz, 1.0);
          //gl_FragColor = vec4(normalFactor, normalFactor, normalFactor, 1.0);
          //gl_FragColor = vec4(viewDepth, viewDepth, viewDepth, 1.0);
          //gl_FragColor = vec4(lightDepth, lightDepth, lightDepth, 1.0);
-         //gl_FragColor = vec4(lightDepth2, lightDepth2, lightDepth2, 1.0);
-         gl_FragColor = vec4(shadowRate, shadowRate, shadowRate, 1.0);
+         //gl_FragColor = vec4(shadowRate, shadowRate, shadowRate, 1.0);
          //gl_FragColor = vec4(specularFactor, specularFactor, specularFactor, 1.0);
       }
    ]]></Source>

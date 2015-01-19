@@ -23,11 +23,13 @@ function SG3dEffectInfo(o){
    // @attribute 配置
    o.supportInstance       = null;
    // @attribute 顶点模式
+   o.vertexCount           = 0;
    o.vertexColor           = null;
    o.vertexCoord           = null;
    o.vertexNormal          = null;
    o.vertexNormalFull      = null;
    o.vertexSkeleton        = null;
+   o.vertexBoneCount       = 0;
    // @attribute 像素模式
    o.fragmentAlpha         = null;
    o.fragmentBump          = null;
@@ -102,11 +104,13 @@ function SG3dEffectInfo_reset(){
    // @attribute 配置
    o.supportInstance = false;
    // @attribute 顶点模式
+   o.vertexCount = 0;
    o.vertexColor = false;
    o.vertexCoord = false;
    o.vertexNormal = false;
    o.vertexNormalFull = false;
    o.vertexSkeleton = false;
+   o.vertexBoneCount = 0;
    // @attribute 像素模式
    o.fragmentAlpha = false;
    o.fragmentBump = false;

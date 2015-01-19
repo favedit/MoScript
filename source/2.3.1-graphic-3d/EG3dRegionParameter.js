@@ -18,5 +18,6 @@ var EG3dRegionParameter = new function EG3dRegionParameter(){
    o.LightViewMatrix            = 8;
    o.LightProjectionMatrix      = 9;
    o.LightViewProjectionMatrix  = 10;
+   o.LightInfo                  = 11;
    return o;
 }

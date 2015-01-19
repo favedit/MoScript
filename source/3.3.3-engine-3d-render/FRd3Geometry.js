@@ -20,6 +20,7 @@ function FRd3Geometry(o){
    // @method
    o.construct         = FRd3Geometry_construct;
    o.testReady         = FRd3Geometry_testReady;
+   o.vertexCount       = FRd3Geometry_vertexCount;
    o.findVertexBuffer  = FRd3Geometry_findVertexBuffer;
    o.vertexBuffers     = FRd3Geometry_vertexBuffers;
    o.indexBuffer       = FRd3Geometry_indexBuffer;
@@ -66,6 +67,16 @@ function FRd3Geometry_testReady(){
       o._ready = true;
    }
    return o._ready;
+}
+
+//==========================================================
+// <T>获得顶点总数。</T>
+//
+// @method
+// @return Integer 顶点总数
+//==========================================================
+function FRd3Geometry_vertexCount(){
+   return this._resource.vertexCount();
 }
 
 //==========================================================

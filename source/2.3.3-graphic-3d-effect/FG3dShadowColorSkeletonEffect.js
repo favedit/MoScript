@@ -1,5 +1,5 @@
 ﻿//==========================================================
-// <T>简单自动渲染器。</T>
+// <T>阴影颜色骨骼渲染器。</T>
 //
 // @author maocy
 // @history 150109
@@ -8,15 +8,12 @@ function FG3dShadowColorSkeletonEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    //..........................................................
    // @attribute
-   o._supportSkeleton = true;
+   o._code            = 'shadow.color.skeleton';
    // @attribute
-   o._context         = null;
-   o._program         = null;
-   o._data            = new Float32Array();
+   o._supportSkeleton = true;
    //..........................................................
    // @method
    o.drawRenderable   = FG3dShadowColorSkeletonEffect_drawRenderable;
-   o.load             = FG3dShadowColorSkeletonEffect_load;
    return o;
 }
 
@@ -103,15 +100,4 @@ function FG3dShadowColorSkeletonEffect_drawRenderable(pr, r){
    // 绘制处理
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
-}
-
-//==========================================================
-// <T>从网络地址加载渲染器。</T>
-//
-// @method
-//==========================================================
-function FG3dShadowColorSkeletonEffect_load(){
-   var o = this;
-   var u = RBrowser.contentPath() + o._path + "simple.skeleton.xml";
-   o.loadUrl(u);
 }

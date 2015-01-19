@@ -27,6 +27,20 @@ function onEnterFrame(){
 // 加载舞台
 function onStageLoad(){
    var stage = this;
+   // 设置相机
+   var c = stage.camera();
+   c._centerFront = 0.4;
+   var cp = c.projection();
+   cp._zfar = 100;
+   cp.update();
+   // 设置光源
+   var l = stage.directionalLight();
+   var lc = l.camera();
+   lc._centerFront = 0.4;
+   lc.position().set(1.0, 2.0, -1.0);
+   lc.lookAt(0, 0, 0);
+   lc.update();
+   //..........................................................
    stage.selectTechnique(context, FG3dShadowTechnique);
    //stage.selectTechnique(context, FG3dSampleTechnique);
    RStage.register('stage3d', stage);
@@ -62,7 +76,7 @@ function _load(){
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
-<CANVAS id="_canvas" width="1200" height="800">您的浏览器不支持HTML5</CANVAS>
+<CANVAS id="_canvas" width="800" height="600">您的浏览器不支持HTML5</CANVAS>
 <DIV id='_info'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

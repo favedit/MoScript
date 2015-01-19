@@ -213,17 +213,21 @@ function RClass_safeTypeOf(v, safe){
    }
    try{
       // 普通数据类型
-      if(v.constructor == Boolean){
+      var c = v.constructor;
+      if(c == Boolean){
          return 'Boolean';
       }
-      if(v.constructor == Number){
+      if(c == Number){
          return 'Number';
       }
-      if(v.constructor == String){
+      if(c == String){
          return 'String';
       }
-      if(v.constructor == Function){
-         return RString.mid(v.constructor.toString(), 'function ', '(');
+      if(c == Function){
+         return RString.mid(c.toString(), 'function ', '(');
+      }
+      if(c.constructor == Function){
+         return RString.mid(c.toString(), 'function ', '(');
       }
       // 一般类实例对象
       if(v.__class){

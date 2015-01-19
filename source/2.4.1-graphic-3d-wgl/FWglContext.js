@@ -99,7 +99,7 @@ function FWglContext_linkCanvas(h){
    c.vendor = g.getParameter(g.VENDOR);
    c.version = g.getParameter(g.VERSION);
    c.shaderVersion = g.getParameter(g.SHADING_LANGUAGE_VERSION);
-   c.vertexCount = g.getParameter(g.MAX_VERTEX_ATTRIBS);
+   c.attributeCount = g.getParameter(g.MAX_VERTEX_ATTRIBS);
    c.vertexConst = g.getParameter(g.MAX_VERTEX_UNIFORM_VECTORS);
    c.varyingCount = g.getParameter(g.MAX_VARYING_VECTORS);
    c.fragmentConst = g.getParameter(g.MAX_FRAGMENT_UNIFORM_VECTORS);
@@ -554,96 +554,95 @@ function FWglContext_setProgram(v){
 //============================================================
 // <T>绑定常量数据。</T>
 //
-// @param shaderCd 渲染类型
-// @param slot 插槽
-// @param pd:data:Float32Array 数据
-// @param length 长度
+// @param psc:shaderCd:EG3dShader 渲染器类型
+// @param psl:slot:Integer 插槽
+// @param pdf:formatCd:EG3dParameterFormat 数据类型
+// @param pdt:data:Float32Array 数据
+// @param pdc:count:Integer 数据个数
 // @return Boolean 处理结果
 //============================================================
-function FWglContext_bindConst(shaderCd, slot, formatCd, pd, length){
+function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
    var o = this;
    var g = o._native;
    var r = true;
    // 检查变更
-   //TBool changed = UpdateConsts(shaderCd, slot, pData, length);
+   //TBool changed = UpdateConsts(psc, psl, pData, pdc);
    //if(!changed){
    //   return EContinue;
    //}
    // 修改数据
-   var pdc = pd.constructor;
-   switch (formatCd){
+   switch(pdf){
       case EG3dParameterFormat.Float1:{
          // 修改数据
-         g.uniform1fv(slot, pd);
+         g.uniform1fv(psl, pdt);
          // 检查错误
-         r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
+         r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float2:{
          // 修改数据
-         g.uniform2fv(slot, pd);
+         g.uniform2fv(psl, pdt);
          // 检查错误
-         r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
+         r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float3:{
          // 修改数据
-         g.uniform3fv(slot, pd);
+         g.uniform3fv(psl, pdt);
          // 检查错误
-         r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
+         r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float4:{
          // 修改数据
-         g.uniform4fv(slot, pd);
+         g.uniform4fv(psl, pdt);
          // 检查错误
-         r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
+         r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float3x3:{
          // 修改数据
          var dt = o._data9;
-         dt[ 0] = pd[ 0];
-         dt[ 1] = pd[ 4];
-         dt[ 2] = pd[ 8];
-         dt[ 3] = pd[ 1];
-         dt[ 4] = pd[ 5];
-         dt[ 5] = pd[ 9];
-         dt[ 6] = pd[ 2];
-         dt[ 7] = pd[ 6];
-         dt[ 8] = pd[10];
-         g.uniformMatrix3fv(slot, g.FALSE, dt);
+         dt[ 0] = pdt[ 0];
+         dt[ 1] = pdt[ 4];
+         dt[ 2] = pdt[ 8];
+         dt[ 3] = pdt[ 1];
+         dt[ 4] = pdt[ 5];
+         dt[ 5] = pdt[ 9];
+         dt[ 6] = pdt[ 2];
+         dt[ 7] = pdt[ 6];
+         dt[ 8] = pdt[10];
+         g.uniformMatrix3fv(psl, g.FALSE, dt);
          // 检查错误
-         r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
+         r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float4x3:{
          // 检查长度
          if(length % 48 != 0){
-            RLogger.fatal(o, null, "Length is invalid. (length=%d)", length);
+            RLogger.fatal(o, null, "Count is invalid. (count=%d)", pdc);
             return false;
          }
          // 修改数据
          var count = length / 48;
-         g.uniform4fv(slot, pd);
-         //glUniformMatrix4x3fv(slot, count, GL_FALSE, (const GLfloat*)pData);
+         g.uniform4fv(psl, g.FALSE, pd);
          // 检查错误
-         r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd={1}, slot={2}, data={3}, length={4})", shaderCd, slot, pd, length);
+         r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float4x4:{
          // 修改数据
-         if(pdc == Float32Array){
-            g.uniformMatrix4fv(slot, g.FALSE, pd);
-         }else if((pdc == SMatrix3d) || (pdc == SPerspectiveMatrix3d)){
-            var dt = o._data16;
-            pd.writeData(dt, 0);
-            g.uniformMatrix4fv(slot, g.FALSE, dt);
+         if(pdt.constructor == Float32Array){
+            g.uniformMatrix4fv(psl, g.FALSE, pdt);
+         }else if(pdt.writeData){
+            var d = o._data16;
+            pdt.writeData(d, 0);
+            g.uniformMatrix4fv(psl, g.FALSE, d);
          }else{
             throw new TError('Unknown data type.');
          }
          // 检查错误
-         r = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd=%d, slot=%d, pData=0x%08X, length=%d)", shaderCd, slot, pd, length);
+         r = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd=%d, slot=%d, pData=0x%08X, count=%d)", psc, psl, pdt, pdc);
          break;
       }
    }

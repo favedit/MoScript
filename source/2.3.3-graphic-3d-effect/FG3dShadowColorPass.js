@@ -1,5 +1,5 @@
 ﻿//==========================================================
-// <T>阴影颜色渲染器。</T>
+// <T>阴影颜色渲染过程。</T>
 //
 // @author maocy
 // @history 141230
@@ -8,14 +8,15 @@ function FG3dShadowColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
    //..........................................................
    // @attribute
-   o._name         = 'color';
-   o._textureDepth = null;
+   o._name           = 'color';
+   o._textureDepth   = null;
    // @attribute
    //..........................................................
    // @method
-   o.textureDepth  = FG3dShadowColorPass_textureDepth;
+   o.textureDepth    = FG3dShadowColorPass_textureDepth;
+   o.setTextureDepth = FG3dShadowColorPass_setTextureDepth;
    // @method
-   o.drawRegion    = FG3dShadowColorPass_drawRegion;
+   o.drawRegion      = FG3dShadowColorPass_drawRegion;
    return o;
 }
 
@@ -27,6 +28,16 @@ function FG3dShadowColorPass(o){
 //==========================================================
 function FG3dShadowColorPass_textureDepth(){
    return this._textureDepth;
+}
+
+//==========================================================
+// <T>设置深度纹理。</T>
+//
+// @method
+// @param p:texture:FG3dTexture 深度纹理
+//==========================================================
+function FG3dShadowColorPass_setTextureDepth(p){
+   this._textureDepth = p;
 }
 
 //==========================================================

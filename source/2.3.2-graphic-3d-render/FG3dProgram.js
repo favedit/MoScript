@@ -12,9 +12,7 @@ function FG3dProgram(o){
    o._parameters       = null;
    o._samplers         = null;
    // @attribute
-   o._vertexSource     = null;
    o._vertexShader     = null;
-   o._fragmentSource   = null;
    o._fragmentShader   = null;
    //..........................................................
    // @method

@@ -154,10 +154,10 @@ function SFrustum_updateFlat(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    var o = this;
    // 计算视角信息
    var aspect = pvw / pvh;
-   //var znear = -pvf * pbr;
-   var znear = pvn;
-   //var zfar = pvf * pfr;
-   var zfar = pvf;
+   var znear = pvn * pbr;
+   //var znear = pvn;
+   var zfar = pvf * pfr;
+   //var zfar = pvf;
    var fov = Math.tan(RMath.DEGREE_RATE * pva * 0.5);
    var nearY = znear * fov;
    var nearX = nearY * aspect;

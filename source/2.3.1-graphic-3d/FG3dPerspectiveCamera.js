@@ -8,7 +8,8 @@ function FG3dPerspectiveCamera(o){
    o = RClass.inherits(this, o, FG3dCamera);
    //..........................................................
    // 投影变换
-   o._projection      = null;
+   o._projection       = null;
+   o._centerFront      = 0.4;
    //..........................................................
    // @method
    o.construct         = FG3dPerspectiveCamera_construct;
@@ -127,25 +128,14 @@ function FG3dPerspectiveCamera_updateFlatCamera(p){
    // 计算观察点
    var d = o._direction;
    d.normalize();
-   var vx = pf.center.x - d.x * distance;
-   var vy = pf.center.y - d.y * distance;
-   var vz = pf.center.z - d.z * distance;
+   var vx = pf.center.x - d.x * distance * o._centerFront;
+   var vy = pf.center.y - d.y * distance * o._centerFront;
+   var vz = pf.center.z - d.z * distance * o._centerFront;
    o._position.set(vx, vy, vz);
    o.lookAt(pf.center.x, pf.center.y, pf.center.z);
    // 更新矩阵
    o.update();
-   // 将顶点转换到当前相机空间
-   o._matrix.transform(f.coners, pf.coners, 8);
-   // 计算当前相机内空间内位置
-   f.coners[ 1] = 0.0;
-   f.coners[ 4] = 0.0;
-   f.coners[ 7] = 0.0;
-   f.coners[10] = 0.0;
-   f.coners[13] = 0.0;
-   f.coners[16] = 0.0;
-   f.coners[19] = 0.0;
-   f.coners[22] = 0.0;
-   f.updateCenter();
-   // 计算当前投影
-   o._projection.updateFrustum(f);
+   o._projection._znear = 0.1;
+   o._projection._zfar = distance;
+   o._projection.update();
 }

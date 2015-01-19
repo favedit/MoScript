@@ -12,11 +12,12 @@
    <Option name='lightmap' value='N'/>
    <Option name='fog'      value='N'/>
    <!--=====================================================-->
-   <Parameter name='vc_model_matrix'      format='Float4x4'/>
-   <Parameter name='vc_view_matrix'       format='Float4x4'/>
-   <Parameter name='vc_projection_matrix' format='Float4x4'/>
-   <Parameter name='fc_camera'            format='Float4'/>
-   <Parameter name='fc_alpha'             format='Float4'/>
+   <Parameter name='vc_camera'       format='Float4'/>
+   <Parameter name='vc_model_matrix' format='Float4x4'/>
+   <Parameter name='vc_view_matrix'  format='Float4x4'/>
+   <Parameter name='vc_vp_matrix'    format='Float4x4'/>
+   <Parameter name='fc_camera'       format='Float4'/>
+   <Parameter name='fc_alpha'        format='Float4'/>
    <!--=====================================================-->
    <Attribute name='va_position' linker='position' format='Float4'/>
    <Attribute name='va_coord'    linker='coord'    format='Float2'/>
@@ -26,9 +27,10 @@
    <Source name='vertex'><![CDATA[
       //..........................................................
       // 变换矩阵声明
+      uniform vec4 vc_camera;
       uniform mat4 vc_model_matrix;
       uniform mat4 vc_view_matrix;
-      uniform mat4 vc_projection_matrix;
+      uniform mat4 vc_vp_matrix;
       //..........................................................
       // 属性流声明
       attribute vec3 va_position;
@@ -37,7 +39,7 @@
       </shader:true>
       //..........................................................
       // 属性流声明
-      varying vec4 v_view_position;
+      varying vec4 v_position;
       <shader:true source='vertex.attribute.coord'>
       varying vec2 v_coord;
       </shader:true>
@@ -46,10 +48,18 @@
       void main(){
          // 计算模型坐标
          vec4 modelPosition = vec4(va_position, 1.0) * vc_model_matrix;
-         vec4 viewPosition = modelPosition * vc_view_matrix;
          // 计算最终坐标
-         gl_Position = viewPosition * vc_projection_matrix;
-         v_view_position = viewPosition;
+         gl_Position = modelPosition * vc_vp_matrix;
+         // 计算视角坐标
+         vec4 viewPosition = modelPosition * vc_view_matrix;
+         float depth = ((viewPosition.z / viewPosition.w) - vc_camera.z) * vc_camera.w;
+         depth = max(depth, 0.0);
+         depth = min(depth, 1.0);
+         vec4 result = vec4(depth, depth, depth, depth) * vec4(1.0, 64.0, 64.0 * 64.0, 64.0 * 64.0 * 64.0);
+         result = fract(result);
+         vec4 temp = result.yzww * vec4(1.0 / 64.0, 1.0 / 64.0, 1.0 / 64.0, 0.0);
+         result = result - temp;
+         v_position = result;
          // 设置纹理
          <shader:true source='vertex.attribute.coord'>
          v_coord = va_coord;
@@ -67,7 +77,7 @@
       uniform vec4 fc_alpha;
       //..........................................................
       // 声明插值器
-      varying vec4 v_view_position;
+      varying vec4 v_position;
       <shader:true source='vertex.attribute.coord'>
       varying vec2 v_coord;
       </shader:true>
@@ -83,27 +93,15 @@
          // 计算环境颜色
          <shader:true source='support.ambient'>
          <shader:true source='support.ambient.sampler'>
-         //vec4 color = texture2D(fs_diffuse, v_coord);
-         //if(color.a < fc_alpha.x){
-            //discard;
-         //}
+         vec4 color = texture2D(fs_diffuse, v_coord);
+         if(color.a < fc_alpha.x){
+            discard;
+         }
          </shader:true>
          </shader:true>
-         //............................................................
-         // 计算点到相机的距离
-         float depth = (v_view_position.z / v_view_position.w) * fc_camera.w;
-         depth = max(depth, 0.0);
-         depth = min(depth, 1.0);
-         //............................................................
-         // 变换到输出颜色
-         vec4 result = vec4(depth, depth, depth, depth) * vec4(1.0, 256.0, 256.0 * 256.0, 256.0 * 256.0 * 256.0);
-         result = fract(result);
-         vec4 temp = result.yzww * vec4(1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0, 0.0);
-         result = result - temp;
          //............................................................
          // 返回颜色
-         //gl_FragColor = result;
-         gl_FragColor = vec4(depth, depth, depth, 1.0);
+         gl_FragColor = v_position;
       }
    ]]></Source>
 </Configuration>

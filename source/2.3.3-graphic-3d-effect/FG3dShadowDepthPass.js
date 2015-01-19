@@ -1,5 +1,5 @@
 ﻿//==========================================================
-// <T>阴影深度渲染器。</T>
+// <T>阴影深度渲染过程。</T>
 //
 // @author maocy
 // @history 141230
@@ -15,6 +15,7 @@ function FG3dShadowDepthPass(o){
    //..........................................................
    // @method
    o.setup         = FG3dShadowDepthPass_setup;
+   o.textureDepth  = FG3dShadowDepthPass_textureDepth;
    o.drawRegion    = FG3dShadowDepthPass_drawRegion;
    return o;
 }
@@ -37,6 +38,16 @@ function FG3dShadowDepthPass_setup(){
    t.size().set(2048, 2048);
    t.textures().push(d);
    t.build();
+}
+
+//==========================================================
+// <T>获得深度纹理。</T>
+//
+// @method
+// @return 深度纹理
+//==========================================================
+function FG3dShadowDepthPass_textureDepth(){
+   return this._textureDepth;
 }
 
 //==========================================================

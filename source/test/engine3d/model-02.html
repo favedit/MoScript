@@ -59,7 +59,7 @@ function onThemeLoad(){
 
    stage = RClass.create(FSimpleStage3d);
    stage.backgroundColor().set(1, 1, 1, 1);
-   stage.selectTechnique(context, FG3dSampleTechnique);
+   stage.selectTechnique(context, FG3dGeneralTechnique);
 
    layer = stage.spriteLayer();
    RStage.register('stage3d', stage);
@@ -72,15 +72,14 @@ function onThemeLoad(){
    }
    // 设置相机
    var rc = stage.camera();
-   rc.setPosition(0, 6, -10);
+   rc.setPosition(0, 6, -12);
    rc.lookAt(0, 0, 0);
    rc.update();
    // 设置光源
    stage.directionalLight().direction().set(0.7, -0.7, 0);
    // 设置投影
-   var rp = stage.projection();
-   rp.width = hCanvas.width;
-   rp.height = hCanvas.height;
+   var rp = stage.camera().projection();
+   rp.size().set(hCanvas.width, hCanvas.height);
    rp.update();
    // 启动处理
    RStage.lsnsEnterFrame.register(null, onEnterFrame);
@@ -100,7 +99,7 @@ function _load(){
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
-<CANVAS id="_canvas" width="800" height="900">您的浏览器不支持HTML5</CANVAS>
+<CANVAS id="_canvas" width="100" height="100">您的浏览器不支持HTML5</CANVAS>
 <DIV id='_info'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

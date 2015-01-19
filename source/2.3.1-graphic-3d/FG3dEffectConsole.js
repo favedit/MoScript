@@ -16,6 +16,7 @@ function FG3dEffectConsole(o){
    //..........................................................
    // @method
    o.construct        = FG3dEffectConsole_construct;
+   o.path             = FG3dEffectConsole_path;
    o.create           = FG3dEffectConsole_create;
    o.buildEffectInfo  = FG3dEffectConsole_buildEffectInfo;
    o.findTemplate     = FG3dEffectConsole_findTemplate;
@@ -38,6 +39,16 @@ function FG3dEffectConsole_construct(){
 }
 
 //==========================================================
+// <T>获得路径。</T>
+//
+// @method
+// @return String 路径
+//==========================================================
+function FG3dEffectConsole_path(){
+   return this._path;
+}
+
+//==========================================================
 // <T>创建效果器。</T>
 //
 // @method
@@ -46,11 +57,11 @@ function FG3dEffectConsole_construct(){
 function FG3dEffectConsole_create(p){
    var e = null;
    switch(p){
-      case 'sample.color.automatic':
-         e = RClass.create(FG3dSampleAutomaticEffect);
+      case 'general.color.automatic':
+         e = RClass.create(FG3dGeneralColorAutomaticEffect);
          break;
-      case 'sample.color.skeleton':
-         e = RClass.create(FG3dSampleSkeletonEffect);
+      case 'general.color.skeleton':
+         e = RClass.create(FG3dGeneralColorSkeletonEffect);
          break;
       case 'shadow.depth.automatic':
          e = RClass.create(FG3dShadowDepthAutomaticEffect);
@@ -74,26 +85,41 @@ function FG3dEffectConsole_create(p){
 // <T>建立效果器信息。</T>
 //
 // @method
-// @param c:context:FG3dContext 环境对象
-// @param p:class:Object 类对象
+// @param pc:context:FG3dContext 渲染环境
+// @param pf:effectInfo:SG3dEffectInfo 效果环境
+// @param pr:renderable:FG3dRenderable 渲染对象
 // @return FG3dEffect 效果器
 //==========================================================
-function FG3dEffectConsole_buildEffectInfo(f, r){
+function FG3dEffectConsole_buildEffectInfo(pc, pf, pr){
    var o = this;
+   // 设置定点属性
+   pf.vertexCount = pr.vertexCount();
    // 设置顶点信息
-   var vs = r.vertexBuffers();
+   var vs = pr.vertexBuffers();
    var c = vs.count();
    for(var i = 0; i < c; i++){
       var v = vs.get(i);
-      f.attributes.push(v.name());
+      pf.attributes.push(v.name());
    }
    // 设置纹理信息
-   var ts = r.textures();
+   var ts = pr.textures();
    if(ts){
       var c = ts.count();
       for(var i = 0; i < c; i++){
-         f.samplers.push(ts.name(i));
+         pf.samplers.push(ts.name(i));
       }
+   }
+   // 设置骨头信息
+   var bs = pr.bones();
+   if(bs){
+      var bc = bs.count();
+      pf.vertexBoneCount = bc;
+      var cb = pc.capability().calculateBoneCount(pf.vertexBoneCount, pf.vertexCount);
+      if(bc > cb){
+         bc = cb;
+      }
+      pr._boneLimit = bc;
+      pf.vertexBoneLimit = bc;
    }
 }
 
@@ -113,7 +139,6 @@ function FG3dEffectConsole_findTemplate(pc, pn){
       // 创建效果器
       var e = o.create(pn);
       e.linkContext(pc);
-      e._path = o._path;
       e.load();
       RLogger.info(o, 'Create effect template. (name={1}, instance={2})', pn, e);
       // 存储效果器
@@ -144,7 +169,7 @@ function FG3dEffectConsole_find(pc, pg, pr){
    if(et){
       // 生成标志
       o._effectInfo.reset();
-      o.buildEffectInfo(o._effectInfo, pr);
+      o.buildEffectInfo(pc, o._effectInfo, pr);
       et.buildInfo(o._tagContext, o._effectInfo);
       var ec = ef + o._tagContext.code;
       // 查找效果器
@@ -153,9 +178,7 @@ function FG3dEffectConsole_find(pc, pg, pr){
       if(e == null){
          // 创建效果器
          var e = o.create(ef);
-         e._code = ec;
          e.linkContext(pc);
-         e._path = o._path;
          e.load();
          e.build(o._effectInfo);
          RLogger.info(o, 'Create effect. (name={1}, instance={2})', en, e);

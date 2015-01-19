@@ -27,6 +27,7 @@ function FG3dRegion(o){
    o._lightViewMatrix            = null;
    o._lightProjectionMatrix      = null;
    o._lightViewProjectionMatrix  = null;
+   o._lightInfo                  = null;
    //..........................................................
    // @method
    o.construct                   = FG3dRegion_construct;
@@ -72,6 +73,7 @@ function FG3dRegion_construct(){
    o._lightViewMatrix = new SMatrix3d();
    o._lightProjectionMatrix = new SMatrix3d();
    o._lightViewProjectionMatrix = new SMatrix3d();
+   o._lightInfo = new SVector4();
 }
 
 //==========================================================
@@ -193,13 +195,15 @@ function FG3dRegion_prepare(){
    // 设置光源信息
    var l = o._directionalLight;
    var lc = l.camera();
-   var lcp = lc.projection();
+   var lcp = lc.position();
+   var lp = lc.projection();
    o._lightPosition.assign(lc.position());
    o._lightDirection.assign(lc.direction());
    o._lightViewMatrix.assign(lc.matrix());
-   o._lightProjectionMatrix.assign(lcp.matrix());
+   o._lightProjectionMatrix.assign(lp.matrix());
    o._lightViewProjectionMatrix.assign(lc.matrix());
-   o._lightViewProjectionMatrix.append(lcp.matrix());
+   o._lightViewProjectionMatrix.append(lp.matrix());
+   o._lightInfo.set(0, 0, lp._znear, 1.0 / lp.distance());
    // 清空渲染集合
    o._renderables.clear();
 }
@@ -234,6 +238,8 @@ function FG3dRegion_calculate(p){
          return o._lightProjectionMatrix;
       case EG3dRegionParameter.LightViewProjectionMatrix:
          return o._lightViewProjectionMatrix;
+      case EG3dRegionParameter.LightInfo:
+         return o._lightInfo;
    }
    throw new TError(o, 'Unknown parameter type. (type_cd={1})', p);
 }
