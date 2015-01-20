@@ -9,8 +9,8 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function APtySet(o, n, l, s, v){
-   if(!o){o = this;}
+function APtySet(n, l, s, v){
+   var o = this;
    AProperty(o, n, l);
    //..........................................................
    // @attribute

@@ -70,14 +70,14 @@ function FEdit_onDataKeyDown(s, e){
 //==========================================================
 function FEdit_onBuildEditorValue(e){
    var o = this;
-   //var h = o.hValue = RBuilder.appendTable(o._hValuePanel, o.style('ValuePanel'));
+   //var h = o.hValue = RBuilder.appendTable(o._hValuePanel, o.styleName('ValuePanel'));
    //htb.style.tableLayout = 'fixed';
    //var hr = o.hEdit = htb.insertRow();
    // 建立修改标志
    //o.onBuildChange(hr.insertCell());
    // 建立编辑控件
    //var hep = hr.insertCell();
-   var he = o._hValue = RBuilder.appendEdit(o._hValuePanel, o.style('Edit'));
+   var he = o._hValue = RBuilder.appendEdit(o._hValuePanel, o.styleName('Edit'));
    // 设置可以输入的最大长度
    if(o._editLength){
       he.maxLength = o._editLength;

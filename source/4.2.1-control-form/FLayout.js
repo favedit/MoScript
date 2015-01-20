@@ -1,31 +1,37 @@
-// ============================================================
+//==========================================================
 // FLayout
-// ============================================================
+//==========================================================
 function FLayout(o){
    o = RClass.inherits(this, o, FContainer);
-   // Html
+   //..........................................................
+   // @html
    o.hContainer     = null;
    o.hPanelTable    = null;
    o.hPanelLine     = null;
-   // Process
+   //..........................................................
+   // @attribtue
    o.__lastSplit    = null;
-   // Process
+   //..........................................................
+   // @process
    o.oeDesign       = FLayout_oeDesign;
    o.oeRefresh      = FLayout_oeRefresh;
    o.oeResize       = FLayout_oeResize;
-   // Event
+   //..........................................................
+   // @event
    o.onDesignBegin  = FLayout_onDesignBegin;
    o.onDesignEnd    = FLayout_onDesignEnd;
    o.onBuildPanel   = FLayout_onBuildPanel;
-   // Method
+   //..........................................................
+   // @method
    o.doResize       = FLayout_doResize;
-   // Method
+   // @method
    o.insertPosition = FLayout_insertPosition;
    o.appendLine     = FLayout_appendLine;
    o.appendChild    = FLayout_appendChild;
    o.moveChild      = FLayout_moveChild;
    o.moveChild      = FLayout_moveChild;
    o.panelExtend    = FLayout_panelExtend;
+   // @method
    o.dispose        = FLayout_dispose;
    return o;
 }

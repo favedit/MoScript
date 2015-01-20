@@ -8,8 +8,8 @@ function MFocus(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @event
-   o.onFocus   = RClass.register(o, new HFocus('onFocus'), MFocus_onFocus);
-   o.onBlur    = RClass.register(o, new HBlur('onBlur'));
+   o.onFocus   = RClass.register(o, new AEventFocus('onFocus'), MFocus_onFocus);
+   o.onBlur    = RClass.register(o, new AEventBlur('onBlur'));
    //..........................................................
    // @method
    o.testFocus = RMethod.emptyTrue;

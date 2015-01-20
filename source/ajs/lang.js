@@ -181,8 +181,8 @@ function APtyPoint2_toString(){
    var o = this;
    return 'linker=' + o._linker + ',value=' + o._x + ',' + o._y;
 }
-function APtySet(o, n, l, s, v){
-   if(!o){o = this;}
+function APtySet(n, l, s, v){
+   var o = this;
    AProperty(o, n, l);
    o._search = s;
    o._value  = v;

@@ -24,7 +24,7 @@ function FEdit_onDataKeyDown(s, e){
 }
 function FEdit_onBuildEditorValue(e){
    var o = this;
-   var he = o._hValue = RBuilder.appendEdit(o._hValuePanel, o.style('Edit'));
+   var he = o._hValue = RBuilder.appendEdit(o._hValuePanel, o.styleName('Edit'));
    if(o._editLength){
       he.maxLength = o._editLength;
    }
@@ -249,7 +249,7 @@ function FEditControl_onBuildLabelText(e){
 }
 function FEditControl_onBuildLabel(e){
    var o = this;
-   var h = o._hLabelContainer = RBuilder.createTable(e.hDocument, o.style('LabelContainer'));
+   var h = o._hLabelContainer = RBuilder.createTable(e.hDocument, o.styleName('LabelContainer'));
    var hr = RBuilder.appendTableRow(h);
    var hip = o._hIconPanel = RBuilder.appendTableCell(hr);
    hip.width = 20;
@@ -277,7 +277,7 @@ function FEditControl_onBuildEditorDrop(e){
 }
 function FEditControl_onBuildEditor(e){
    var o = this;
-   var h = o._hEditorContainer = RBuilder.createTable(e.hDocument, o.style('EditorContainer'));
+   var h = o._hEditorContainer = RBuilder.createTable(e.hDocument, o.styleName('EditorContainer'));
    var hr = RBuilder.appendTableRow(h);
    var hvp = o._hValuePanel = RBuilder.appendTableCell(hr);
    o.onBuildEditorValue(e);
@@ -288,7 +288,7 @@ function FEditControl_onBuildEditor(e){
 }
 function FEditControl_onBuildContainer(e){
    var o = this;
-   o._hContainer = RBuilder.createTable(e.hDocument, o.style('Container'));
+   o._hContainer = RBuilder.createTable(e.hDocument, o.styleName('Container'));
 }
 function FEditControl_oeBuild(e){
    var o = this;
@@ -561,7 +561,7 @@ function FEditControl_dispose(){
    o.hHintIcon = null;
 }
 function FForm(o){
-   o = RClass.inherits(this, o, FLayout, MFocus, MForm, MDisplayAble, MValue, MDataset, MAction);
+   o = RClass.inherits(this, o, FLayout, MFocus, MDataset);
    o.__status           = ERowStatus.Update;
    o.__clearEvent       = null;
    o.__resetEvent       = null;
@@ -636,8 +636,8 @@ function FForm_onLoadDatasetEnd(){
 }
 function FForm_construct(){
    var o = this;
-   o.base.FLayout.construct.call(o);
-   o.base.MDataset.construct.call(o);
+   o.__base.FLayout.construct.call(o);
+   o.__base.MDataset.construct.call(o);
    o.lsnsLoaded = new TListeners();
    o.lsnsClick = new TListeners();
    o.__clearEvent = new TEventProcess(o, 'oeClearValue', MEditValue);
@@ -797,7 +797,7 @@ function FForm_toAttributes(r, m){
 }
 function FForm_focus(){
    var o = this;
-   o.base.MFocus.focus.call(o);
+   o.__base.MFocus.focus.call(o);
    o.focusControl();
    RConsole.find(FFocusConsole).focusClass(MDataset, o);
 }
@@ -824,7 +824,7 @@ function FForm_dsUpdate(u, v){
       }
       return;
    }
-   return o.base.MDataset.dsUpdate.call(o, u, v)
+   return o.__base.MDataset.dsUpdate.call(o, u, v)
 }
 function FForm_setEditable(v){
    var ps = this.allDataComponents();
@@ -862,7 +862,7 @@ function FForm_doDelete(v){
 }
 function FForm_dispose(){
    var o = this;
-   o.base.FLayout.dispose.call(o);
+   o.__base.FLayout.dispose.call(o);
    RMemory.freeHtml(o.hEdit);
    RMemory.freeHtml(o.hDrop);
    o.hEdit = null;
@@ -958,7 +958,7 @@ function FForm_loadDocument(doc){
 }
 function FForm_testStatus(t){
    var o = this;
-   var r = o.base.MDataset.testStatus.call(o, t);
+   var r = o.__base.MDataset.testStatus.call(o, t);
    if(EDataAction.Fetch == t){
       return true;
    }else if(EDataAction.Fetch == t){

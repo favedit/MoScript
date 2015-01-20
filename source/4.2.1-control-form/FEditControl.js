@@ -294,7 +294,7 @@ function FEditControl_onBuildLabelText(e){
 //==========================================================
 function FEditControl_onBuildLabel(e){
    var o = this;
-   var h = o._hLabelContainer = RBuilder.createTable(e.hDocument, o.style('LabelContainer'));
+   var h = o._hLabelContainer = RBuilder.createTable(e.hDocument, o.styleName('LabelContainer'));
    var hr = RBuilder.appendTableRow(h);
    // 建立标签图标
    var hip = o._hIconPanel = RBuilder.appendTableCell(hr);
@@ -349,7 +349,7 @@ function FEditControl_onBuildEditorDrop(e){
 function FEditControl_onBuildEditor(e){
    var o = this;
    /// 建立控件表格
-   var h = o._hEditorContainer = RBuilder.createTable(e.hDocument, o.style('EditorContainer'));
+   var h = o._hEditorContainer = RBuilder.createTable(e.hDocument, o.styleName('EditorContainer'));
    var hr = RBuilder.appendTableRow(h);
    //h.width = '100%';
    //h.height = '100%';
@@ -426,7 +426,7 @@ function FEditControl_onBuildEditor(e){
    // 建立编辑单位信息
    if(o.editUnit){
       var h = o.hUnit = o.hControlRow.insertCell();
-      h.className = o.style('EditUnit');
+      h.className = o.styleName('EditUnit');
       h._pname = 'hUnit';
       h.innerHTML = '&nbsp;'+o.editUnit;
    }*/
@@ -440,7 +440,7 @@ function FEditControl_onBuildEditor(e){
 //==========================================================
 function FEditControl_onBuildContainer(e){
    var o = this;
-   o._hContainer = RBuilder.createTable(e.hDocument, o.style('Container'));
+   o._hContainer = RBuilder.createTable(e.hDocument, o.styleName('Container'));
 }
 
 //==========================================================

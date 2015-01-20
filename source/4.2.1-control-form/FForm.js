@@ -6,7 +6,8 @@
 // @history 091012 MAOCY 创建
 //==========================================================
 function FForm(o){
-   o = RClass.inherits(this, o, FLayout, MFocus, MForm, MDisplayAble, MValue, MDataset, MAction);
+   //o = RClass.inherits(this, o, FLayout, MForm, MDisplayAble, MValue, MAction);
+   o = RClass.inherits(this, o, FLayout, MFocus, MDataset);
    //..........................................................
    o.__status           = ERowStatus.Update;
    o.__clearEvent       = null;
@@ -53,8 +54,6 @@ function FForm(o){
    o.doUpdate           = FForm_doUpdate;
    o.doDelete           = FForm_doDelete;
    o.dispose            = FForm_dispose;
-
-
 
 
 
@@ -126,8 +125,8 @@ function FForm_onLoadDatasetEnd(){
 //==========================================================
 function FForm_construct(){
    var o = this;
-   o.base.FLayout.construct.call(o);
-   o.base.MDataset.construct.call(o);
+   o.__base.FLayout.construct.call(o);
+   o.__base.MDataset.construct.call(o);
    // 建立监听器
    o.lsnsLoaded = new TListeners();
    o.lsnsClick = new TListeners();
@@ -432,7 +431,7 @@ function FForm_toAttributes(r, m){
 //==========================================================
 function FForm_focus(){
    var o = this;
-   o.base.MFocus.focus.call(o);
+   o.__base.MFocus.focus.call(o);
    o.focusControl();
    RConsole.find(FFocusConsole).focusClass(MDataset, o);
 }
@@ -475,7 +474,7 @@ function FForm_dsUpdate(u, v){
       return;
    }
    // 查询数据模式
-   return o.base.MDataset.dsUpdate.call(o, u, v)
+   return o.__base.MDataset.dsUpdate.call(o, u, v)
 }
 
 //==========================================================
@@ -563,7 +562,7 @@ function FForm_doDelete(v){
 //==========================================================
 function FForm_dispose(){
    var o = this;
-   o.base.FLayout.dispose.call(o);
+   o.__base.FLayout.dispose.call(o);
    RMemory.freeHtml(o.hEdit);
    RMemory.freeHtml(o.hDrop);
    o.hEdit = null;
@@ -715,7 +714,7 @@ function FForm_loadDocument(doc){
 // ------------------------------------------------------------
 function FForm_testStatus(t){
    var o = this;
-   var r = o.base.MDataset.testStatus.call(o, t);
+   var r = o.__base.MDataset.testStatus.call(o, t);
    if(EDataAction.Fetch == t){
       return true;
    }else if(EDataAction.Fetch == t){

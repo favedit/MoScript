@@ -1680,8 +1680,8 @@ function APtyPoint2_toString(){
    var o = this;
    return 'linker=' + o._linker + ',value=' + o._x + ',' + o._y;
 }
-function APtySet(o, n, l, s, v){
-   if(!o){o = this;}
+function APtySet(n, l, s, v){
+   var o = this;
    AProperty(o, n, l);
    o._search = s;
    o._value  = v;
@@ -23811,6 +23811,14 @@ function EPositionFace(){
    return o;
 }
 EPosition = new EPositionFace();
+var ERowStatus = new function ERowStatusFace(){
+   var o = this;
+   o.Normal = 'N';
+   o.Insert = 'I';
+   o.Update = 'U';
+   o.Delete  = 'D';
+   return o;
+}
 function FComponent(o){
    o = RClass.inherits(this, o, FObject, MProperty, MClone);
    o._parent       = null;
@@ -24397,6 +24405,554 @@ function MContainer(o){
    o.appendChild = RMethod.empty;
    return o;
 }
+function MDataset(o){
+   o = RClass.inherits(this, o, MEditable);
+   o.dsName               = RClass.register(o, new APtyString('dsName', 'dataset'));
+   o.dsService            = RClass.register(o, new APtyString('dsService', 'service'));
+   o.dsPageSize           = RClass.register(o, new APtyInteger('dsPageSize', 'page_size'), 20);
+   o.dispToolbar          = RClass.register(o, new APtyBoolean('dispToolbar'), false);
+   o.insertAction         = RClass.register(o, new APtyString('insertAction', 'insert'));
+   o.updateAction         = RClass.register(o, new APtyString('updateAction', 'update'));
+   o.deleteAction         = RClass.register(o, new APtyString('deleteAction', 'delete'));
+   o.dsPageIndex          = 0;
+   o.dsViewer             = null;
+   o.dsValues             = null;
+   o.dsGlobalSearchs      = null;
+   o.dsSearchs            = null;
+   o.dsGlobalOrders       = null;
+   o.dsOrders             = null;
+   o.__initializeEvent    = null;
+   o.__showEvent          = null;
+   o.__loadedEvent        = null;
+   o.__progress           = false;
+   o.__progressProcess    = null;
+   o.__validProcess       = null;
+   o.lsnsUpdateBegin      = null;
+   o.lsnsUpdateEnd        = null;
+   o.onDsFetch           = MDataset_onDsFetch;
+   o.onDsPrepareCheck    = RMethod.emptyTrue;
+   o.onDsPrepare         = MDataset_onDsPrepare;
+   o.onDsUpdateCheck     = RMethod.emptyTrue;
+   o.onDsUpdate          = MDataset_onDsUpdate;
+   o.onDsDeleteCheck     = RMethod.emptyTrue;
+   o.onDsDelete          = MDataset_onDsDelete;
+   o.onDsCopy            = MDataset_onDsCopy;
+   o.onDsDoUpdate        = MDataset_onDsDoUpdate;
+   o.onDsProcess         = MDataset_onDsProcess;
+   o.onLoadDatasetBegin  = RMethod.empty;
+   o.onLoadDataset       = RMethod.virtual(o, 'onLoadDataset');
+   o.onLoadDatasetEnd    = RMethod.virtual(o, 'onLoadDatasetEnd');
+   o.getDataCodes        = RMethod.virtual(o, 'getDataCodes');
+   o.getCurrentRow       = RMethod.virtual(o, 'getCurrentRow');
+   o.getSelectedRows     = RMethod.virtual(o, 'getSelectedRows');
+   o.getChangedRows      = RMethod.virtual(o, 'getChangedRows');
+   o.getRows             = RMethod.virtual(o, 'getRows');
+   o.toDeepAttributes    = MDataset_toDeepAttributes;
+   o.construct           = MDataset_construct;
+   o.loadDataset         = MDataset_loadDataset;
+   o.loadDatasets        = MDataset_loadDatasets;
+   o.doPrepare           = RMethod.virtual(o, 'doPrepare');
+   o.doDelete            = RMethod.virtual(o, 'doDelete');
+   o.dsInitialize        = MDataset_dsInitialize;
+   o.dsShow              = MDataset_dsShow;
+   o.dsLoaded            = MDataset_dsLoaded;
+   o.dsFetch             = MDataset_dsFetch;
+   o.dsSearch            = MDataset_dsSearch;
+   o.dsCopy              = MDataset_dsCopy;
+   o.dsPrepare           = MDataset_dsPrepare;
+   o.dsUpdate            = MDataset_dsUpdate;
+   o.dsDelete            = MDataset_dsDelete;
+   o.dsMode              = MDataset_dsMode;
+   o.dsDoUpdate          = MDataset_dsDoUpdate;
+   o.dsProcess           = MDataset_dsProcess;
+   o.dsProcessCustom     = MDataset_dsProcessCustom;
+   o.dsProcessChanged    = MDataset_dsProcessChanged;
+   o.dsProcessSelected   = MDataset_dsProcessSelected;
+   o.dsProcessAll        = MDataset_dsProcessAll;
+   o.psProgress          = MDataset_psProgress;
+   o.psValid             = MDataset_psValid;
+   o.dsCurrent           = MDataset_dsCurrent;
+   o.dsStore             = null;
+   o.dsSearchBox         = null;
+   o.dsSearchWindow      = null;
+   o.onStoreChanged      = RMethod.empty;
+   o.onDsFetchBegin      = RMethod.empty;
+   o.onDsFetchEnd        = RMethod.empty;
+   o.onDsUpdateBegin     = RMethod.empty;
+   o.onDsUpdateEnd       = RMethod.empty;
+   o.hasAction           = RMethod.virtual(o, 'hasAction');
+   o.dsIsChanged         = MDataset_dsIsChanged;
+   o.dsCount             = MDataset_dsCount;
+   o.dsMove              = MDataset_dsMove;
+   o.dsMovePage          = MDataset_dsMovePage;
+   o.dsGet               = MDataset_dsGet;
+   o.dsSet               = MDataset_dsSet;
+   o.dsRefresh           = MDataset_dsRefresh;
+   o.doSearch            = MDataset_doSearch;
+   return o;
+}
+function MDataset_onDsFetch(g){
+   var o = this;
+   o.loadDatasets(g.resultDatasets);
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+function MDataset_onDsPrepare(g){
+   var o = this;
+   g.resultDatasets.set('/', null);
+   o.loadDatasets(g.resultDatasets);
+   o.doPrepare(g.resultRow);
+   if(g.invokeSuccess()){
+	   return;
+   }
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+function MDataset_onDsUpdate(g){
+   var o = this;
+   o.loadDatasets(g.resultDatasets);
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+function MDataset_onDsCopy(g){
+   var o = this;
+   o.loadDatasets(g.resultDatasets);
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+function MDataset_onDsDelete(g){
+   var o = this;
+   o.loadDatasets(g.resultDatasets);
+   o.doDelete(g.resultRow);
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+function MDataset_onDsProcess(g){
+   var o = this;
+   var cb = g.resultCallback;
+   if(cb){
+      cb.invoke(o, g);
+   }
+}
+function MDataset_toDeepAttributes(a, m){
+   var o = this;
+   if(!a){
+      a = new TAttributes();
+   }
+   var ts = new TList();
+   var p = o;
+   while(p){
+      if(RClass.isClass(p, MDataset)){
+         ts.push(p);
+      }
+      if(!p.parent){
+         break;
+      }
+      p = p.topControl(MDataset);
+   }
+   for(var n=ts.count; n>=0; n--){
+      var p = ts.get(n);
+      if(RClass.isClass(p, FForm)){
+         p.toAttributes(a, m);
+      }else if(RClass.isClass(m, FTable)){
+         var r = p.getCurrentRow();
+         if(r){
+            r.toAttributes(a, m);
+         }
+      }
+   }
+   return a;
+}
+function MDataset_onDsDoUpdate(g){
+   var o = this;
+   if(!g.invokeSuccess()){
+      o.psRefresh();
+   }
+   if(!g.processFinish){
+      o.focus();
+      o.lsnsUpdateEnd.process(g);
+   }
+   o.onLoadDatasetEnd();
+}
+function MDataset_construct(){
+   var o = this;
+}
+function MDataset_loadDataset(d){
+   var o = this;
+   o.dsStore = d;
+   d.saveViewer(o.dsViewer);
+   return o.onLoadDataset(d);
+}
+function MDataset_loadDatasets(ds){
+   var o = this;
+   var c = ds.count;
+   for(var n=0; n<c; n++){
+      var d = ds.value(n);
+      if(d){
+         var dc = o.findByPath(d.name)
+         if(!dc){
+            dc = o.findByPath(d.name);
+            return RMessage.fatal(o, null, 'Load dataset failed. (control={0})', d.name);
+         }
+         dc.loadDataset(d);
+      }
+   }
+}
+function MDataset_dsInitialize(){
+   this.callEvent('onFormInitialize', this, this.__initializeEvent);
+}
+function MDataset_dsShow(){
+   this.callEvent('onFormShow', this, this.__showEvent);
+}
+function MDataset_dsLoaded(){
+   this.callEvent('onDatasetLoaded', this, this.__loadedEvent);
+}
+function MDataset_dsFetch(r, f){
+   var o = this;
+   o.psProgress(true);
+   var tc = o.topControl();
+   var g = new TDatasetFetchArg(tc.name, tc.formId, o.dsPageSize, o.dsPageIndex);
+   g.reset = r;
+   g.force = f;
+   g.mode = o._emode;
+   g.searchs.append(o.dsGlobalSearchs);
+   g.searchs.append(o.dsSearchs);
+   g.orders.append(o.dsGlobalOrders);
+   g.orders.append(o.dsOrders);
+   o.toDeepAttributes(g.values);
+   g.values.append(o.dsValues);
+   g.callback = new TInvoke(o, o.onDsFetch);
+   RConsole.find(FDatasetConsole).fetch(g);
+}
+function MDataset_dsSearch(s){
+   var o = this;
+   o.psProgress(true);
+   var tc = o.topControl();
+   var pth = o.fullPath();
+   if(s){
+      pth = s.fullPath();
+   }
+   var g = new TDatasetFetchArg(tc.name, tc.formId, o.dsPageSize, 0, true, false, pth);
+   g.mode = tc._emode;
+   g.searchs.append(o.dsGlobalSearchs);
+   g.searchs.append(o.dsSearchs);
+   g.orders.append(o.dsGlobalOrders);
+   g.orders.append(o.dsOrders);
+   o.toDeepAttributes(g.values);
+   g.values.append(o.dsValues);
+   g.callback = new TInvoke(o, o.onDsFetch);
+   RConsole.find(FDatasetConsole).fetch(g);
+}
+function MDataset_dsCopy(r){
+   var o = this;
+   o.psProgress(true);
+   o.psMode(EMode.Insert);
+   var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
+   g.form = o;
+   g.mode = EMode.Insert;
+   o.dsSearchs.clear();
+   o.dsSearchs.push(new TSearchItem('OUID', r.get("OUID")));
+   g.searchs = o.dsSearchs;
+   g.callback = new TInvoke(o, o.onDsCopy);
+   if(o.onDsUpdateCheck(g)){
+      RConsole.find(FDatasetConsole).fetch(g);
+   }
+   return;
+}
+function MDataset_dsPrepare(cb){
+   var o = this;
+   o.psProgress(true);
+   o.psMode(EMode.Insert);
+   var g = new TDatasetPrepareArg(o.name, o.formId);
+   g.form = o;
+   g.values.append(o.dsValues);
+   g.callbackSuccess = cb;
+   if(o.onDsPrepareCheck(g)){
+      g.callback = new TInvoke(o, o.onDsPrepare);
+      RConsole.find(FDatasetConsole).prepare(g);
+   }
+}
+function MDataset_dsUpdate(u, v){
+   var o = this;
+   o.psProgress(true);
+   o.psMode(EMode.Update);
+   o.dsFetch(true);
+}
+function MDataset_dsDelete(u, v){
+   var o = this;
+   o.psProgress(true);
+   o.psMode(EMode.Delete);
+   var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
+   g.callback = new TInvoke(o, o.onDsDelete);
+   g.form = o;
+   g.mode = EMode.Delete;
+   if(u){
+      g.searchs.push(new TSearchItem('OUID', u));
+   }
+   if(v){
+       g.searchs.push(new TSearchItem('OVER', v));
+   }
+   g.values = o.dsValues;
+   if(o.onDsDeleteCheck(g)){
+      RConsole.find(FDatasetConsole).fetch(g);
+   }
+   return;
+}
+function MDataset_dsMode(m){
+   var o = this;
+   switch(m){
+      case EMode.Insert:
+         o.dsPrepare();
+         break;
+      case EMode.Update:
+         o.dsUpdate();
+         break;
+      case EMode.Delete:
+         o.dsDelete();
+         break;
+   }
+}
+function MDataset_dsDoUpdate(cb, ck){
+   var o = this;
+   if(!o.psValid()){
+      return;
+   }
+   var t = o.topControl();
+   var g = new TDatasetUpdateArg(t.name, o.formId, o.dsName);
+   g.form = o;
+   g.path = o.fullPath();
+   g.mode = o._emode;
+   g.codes = o.getDataCodes();
+   g.callback = new TInvoke(o, o.onDsDoUpdate);
+   g.callbackSuccess = cb;
+   if(EMode.Insert == o._emode || EMode.Delete == o._emode){
+      g.dataset.rows.append(o.getCurrentRows());
+   }else{
+      g.dataset.rows.append(o.getChangedRows());
+      if(!ck){
+         if(!g.hasData()){
+            return RMessage.warn(o, RContext.get('MDataset:nochange'));
+         }
+      }
+   }
+   o.psProgress(true);
+   RConsole.find(FDatasetConsole).update(g);
+}
+function MDataset_dsProcess(da, cb){
+   var o = this;
+   if(!o.psValid()){
+      return;
+   }
+   var g = new TDatasetServiceArg(o.topControl().name, da);
+   g.form = o;
+   g.controlName = o.name;
+   o.toDeepAttributes(g.attributes);
+   g.codes = o.getDataCodes();
+   g.push(o.getCurrentRow());
+   g.resultCallback = cb;
+   o.psProgress(true);
+   g.callback = new TInvoke(o, o.onDsProcess);
+   RConsole.find(FFormConsole).process(g);
+}
+function MDataset_dsProcessCustom(pm, da, cb, cc){
+	var o = this;
+	if(!cc){
+	if(!o.psValid()){
+	   return;
+	}
+	}
+	var g = new TDatasetServiceArg(o.topControl().name, da);
+	g.form = o;
+	g.controlName = o.name;
+	g.attributes = pm;
+	g.codes = o.getDataCodes();
+	g.push(o.getCurrentRow());
+	g.resultCallback = cb;
+	if(!cc){
+	   if(!g.hasData()){
+	      return RMessage.warn(o, RContext.get('MDataset:nodata'));
+	   }
+	}
+	o.psProgress(true);
+	g.callback = new TInvoke(o, o.onDsProcess);
+	RConsole.find(FFormConsole).process(g);
+}
+function MDataset_dsProcessSelected(da, cb){
+	var o = this;
+	if(!o.psValid()){
+	   return;
+	}
+	   var g = new TDatasetServiceArg(o.topControl().name, da);
+	   g.form = o;
+	   g.controlName = o.name;
+	   o.toDeepAttributes(g.attributes);
+	   g.codes = o.getDataCodes();
+	   g.rows = o.getSelectedRows();
+	   if(g.rows.count > 0){
+		  g.resultCallback = cb;
+		  o.psProgress(true);
+		  g.callback = new TInvoke(o, o.onDsProcess);
+		  RConsole.find(FFormConsole).process(g);
+		  o.clearSelectRows();
+	   }else{
+	      return RMessage.warn(o, RContext.get('MDataset:norows'));
+	   }
+}
+function MDataset_dsProcessChanged(da, cb){
+   var o = this;
+   if(!o.psValid()){
+      return;
+   }
+   var g = new TDatasetServiceArg(o.topControl().name, da);
+   g.form = o;
+   g.controlName = o.name;
+   o.toDeepAttributes(g.attributes);
+   g.codes = o.getDataCodes();
+   g.rows = o.getChangedRows();
+   g.resultCallback = cb;
+   if(!g.hasData()){
+      return RMessage.warn(o, RContext.get('MDataset:nochange'));
+   }
+   o.psProgress(true);
+   g.callback = new TInvoke(o, o.onDsProcess);
+   RConsole.find(FFormConsole).process(g);
+}
+function MDataset_dsProcessAll(da, cb){
+   var o = this;
+   if(!o.psValid()){
+      return;
+   }
+   var g = new TDatasetServiceArg(o.topControl().name, da);
+   g.form = o;
+   g.controlName = o.name;
+   o.toDeepAttributes(g.attributes);
+   g.codes = o.getDataCodes();
+   g.rows = o.getRows();
+   g.resultCallback = cb;
+   o.psProgress(true);
+   g.callback = new TInvoke(o, o.onDsProcess);
+   RConsole.find(FFormConsole).process(g);
+}
+function MDataset_psProgress(v){
+   var o = this;
+   if(o.__progress == v){
+      return;
+   }
+   o.__progress = v;
+   var e = o.__progressProcess;
+   e.enable = v;
+   o.process(e);
+}
+function MDataset_psValid(){
+   var o = this;
+   var e = o.__validProcess;
+   var cs = e.controls;
+   cs.clear();
+   o.process(e);
+   if(!cs.isEmpty()){
+      var cw = RConsole.find(FCheckWindowConsole).find();
+      cw.set(cs);
+      cw.show();
+      return false;
+   }
+   return true;
+}
+function MDataset_dsCurrent(){
+   var o = this;
+   var ds = o.dsStore;
+}
+function MDataset_dsIsChanged(){
+   var ds = this.dsStore;
+   return ds ? ds.isChanged() : false;
+}
+function MDataset_dsCount(){
+   return this.dsStore ? this.dsStore.count : 0;
+}
+function MDataset_dsMove(p){
+   var o = this;
+   var ds = o.dsStore;
+   if(null == p && !ds){
+      return;
+   }
+   if(!RInt.isInt(p)){
+      if(EDataAction.First == p){
+         ds.moveFirst();
+      }else if(EDataAction.Prior == p){
+         ds.movePrior();
+      }else if(EDataAction.Next == p){
+         ds.moveNext();
+      }else if(EDataAction.Last == p){
+         ds.moveLast();
+      }else{
+         RMessage.fatal(o, null, 'Unknown position (postion={0})', p);
+      }
+   }else{
+      ds.move(p);
+   }
+   if(RClass.isClass(o, MValue)){
+      o.loadValue(ds.current());
+   }
+}
+function MDataset_dsMovePage(p){
+   var o = this;
+   var ds = o.dsStore;
+   if(!RInt.isInt(p)){
+      if(EDataAction.First == p){
+         p = 0;
+      }else if(EDataAction.Prior == p){
+         p = ds.pageIndex;
+         if(p > 0){
+            p--;
+         }
+      }else if(EDataAction.Next == p){
+         p = ds.pageIndex;
+         if(p < ds.pageCount - 1){
+            p++;
+         }
+      }else if(EDataAction.Last == p){
+         p = ds.pageCount - 1;
+      }else{
+         RMessage.fatal(o, null, 'Unknown page (page={0})', p);
+      }
+   }
+   if(p != ds.pageIndex){
+      o.psProgress(true);
+      var t = o.topControl(MDataset);
+      var g = new TDatasetFetchArg(t.name, t.formId, o.dsPageSize, p, true);
+      g.path =  o.fullPath();
+      g.mode = t._emode;
+      g.searchs.append(o.dsGlobalSearchs);
+      g.searchs.append(o.dsSearchs);
+      g.orders.append(o.dsGlobalOrders);
+      g.orders.append(o.dsOrders);
+      g.values = o.toDeepAttributes();
+      g.values.append(o.dsValues);
+      g.callback = new TInvoke(o, o.onDsFetch);
+      RConsole.find(FDatasetConsole).fetch(g);
+   }
+}
+function MDataset_dsGet(n){
+   return this.dsStore ? this.dsStore.get(n) : '';
+}
+function MDataset_dsSet(n, v){
+   if(this.dsStore){
+      this.dsStore.set(n, v);
+   }
+}
+function MDataset_dsRefresh(){
+   if(this.dsService){
+      this.dsMove(this.dsPage, true);
+   }
+}
+function MDataset_doSearch(){
+   var o = this;
+   var sw = o.dsSearchWindow;
+   if(!sw){
+      sw = o.dsSearchWindow = top.RControl.create(top.FSearchWindow);
+      sw.linkDsControl(o);
+   }
+   sw.show();
+}
 function MDataValue(o){
    o = RClass.inherits(this, o);
    o.loadValue = RMethod.virtual(o, 'loadValue');
@@ -24957,8 +25513,8 @@ function MEditZoom_doZoom(v){
 }
 function MFocus(o){
    o = RClass.inherits(this, o);
-   o.onFocus   = RClass.register(o, new HFocus('onFocus'), MFocus_onFocus);
-   o.onBlur    = RClass.register(o, new HBlur('onBlur'));
+   o.onFocus   = RClass.register(o, new AEventFocus('onFocus'), MFocus_onFocus);
+   o.onBlur    = RClass.register(o, new AEventBlur('onBlur'));
    o.testFocus = RMethod.emptyTrue;
    o.testBlur  = RMethod.emptyTrue;
    o.doFocus   = RMethod.empty;
@@ -25844,7 +26400,7 @@ function FEdit_onDataKeyDown(s, e){
 }
 function FEdit_onBuildEditorValue(e){
    var o = this;
-   var he = o._hValue = RBuilder.appendEdit(o._hValuePanel, o.style('Edit'));
+   var he = o._hValue = RBuilder.appendEdit(o._hValuePanel, o.styleName('Edit'));
    if(o._editLength){
       he.maxLength = o._editLength;
    }
@@ -26069,7 +26625,7 @@ function FEditControl_onBuildLabelText(e){
 }
 function FEditControl_onBuildLabel(e){
    var o = this;
-   var h = o._hLabelContainer = RBuilder.createTable(e.hDocument, o.style('LabelContainer'));
+   var h = o._hLabelContainer = RBuilder.createTable(e.hDocument, o.styleName('LabelContainer'));
    var hr = RBuilder.appendTableRow(h);
    var hip = o._hIconPanel = RBuilder.appendTableCell(hr);
    hip.width = 20;
@@ -26097,7 +26653,7 @@ function FEditControl_onBuildEditorDrop(e){
 }
 function FEditControl_onBuildEditor(e){
    var o = this;
-   var h = o._hEditorContainer = RBuilder.createTable(e.hDocument, o.style('EditorContainer'));
+   var h = o._hEditorContainer = RBuilder.createTable(e.hDocument, o.styleName('EditorContainer'));
    var hr = RBuilder.appendTableRow(h);
    var hvp = o._hValuePanel = RBuilder.appendTableCell(hr);
    o.onBuildEditorValue(e);
@@ -26108,7 +26664,7 @@ function FEditControl_onBuildEditor(e){
 }
 function FEditControl_onBuildContainer(e){
    var o = this;
-   o._hContainer = RBuilder.createTable(e.hDocument, o.style('Container'));
+   o._hContainer = RBuilder.createTable(e.hDocument, o.styleName('Container'));
 }
 function FEditControl_oeBuild(e){
    var o = this;
@@ -26381,7 +26937,7 @@ function FEditControl_dispose(){
    o.hHintIcon = null;
 }
 function FForm(o){
-   o = RClass.inherits(this, o, FLayout, MFocus, MForm, MDisplayAble, MValue, MDataset, MAction);
+   o = RClass.inherits(this, o, FLayout, MFocus, MDataset);
    o.__status           = ERowStatus.Update;
    o.__clearEvent       = null;
    o.__resetEvent       = null;
@@ -26456,8 +27012,8 @@ function FForm_onLoadDatasetEnd(){
 }
 function FForm_construct(){
    var o = this;
-   o.base.FLayout.construct.call(o);
-   o.base.MDataset.construct.call(o);
+   o.__base.FLayout.construct.call(o);
+   o.__base.MDataset.construct.call(o);
    o.lsnsLoaded = new TListeners();
    o.lsnsClick = new TListeners();
    o.__clearEvent = new TEventProcess(o, 'oeClearValue', MEditValue);
@@ -26617,7 +27173,7 @@ function FForm_toAttributes(r, m){
 }
 function FForm_focus(){
    var o = this;
-   o.base.MFocus.focus.call(o);
+   o.__base.MFocus.focus.call(o);
    o.focusControl();
    RConsole.find(FFocusConsole).focusClass(MDataset, o);
 }
@@ -26644,7 +27200,7 @@ function FForm_dsUpdate(u, v){
       }
       return;
    }
-   return o.base.MDataset.dsUpdate.call(o, u, v)
+   return o.__base.MDataset.dsUpdate.call(o, u, v)
 }
 function FForm_setEditable(v){
    var ps = this.allDataComponents();
@@ -26682,7 +27238,7 @@ function FForm_doDelete(v){
 }
 function FForm_dispose(){
    var o = this;
-   o.base.FLayout.dispose.call(o);
+   o.__base.FLayout.dispose.call(o);
    RMemory.freeHtml(o.hEdit);
    RMemory.freeHtml(o.hDrop);
    o.hEdit = null;
@@ -26778,7 +27334,7 @@ function FForm_loadDocument(doc){
 }
 function FForm_testStatus(t){
    var o = this;
-   var r = o.base.MDataset.testStatus.call(o, t);
+   var r = o.__base.MDataset.testStatus.call(o, t);
    if(EDataAction.Fetch == t){
       return true;
    }else if(EDataAction.Fetch == t){
