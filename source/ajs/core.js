@@ -2,20 +2,29 @@ function AEvent(o, n, l, h){
    if(!o){o = this;}
    AAnnotation(o, n);
    o._annotationCd = EAnnotation.Event;
+   o._inherit      = true;
    o._linker       = l;
    o._handle       = h;
    o._process      = null;
+   o.linker        = AEvent_linker;
    o.handle        = AEvent_handle;
    o.value         = AEvent_value;
+   o.create        = AEvent_create;
    o.attach        = RMethod.empty;
    o.toString      = AEvent_toString;
    return o;
+}
+function AEvent_linker(){
+   return this._linker;
 }
 function AEvent_handle(){
    return this._handle;
 }
 function AEvent_value(){
    return this._process;
+}
+function AEvent_create(){
+   return new SEvent();
 }
 function AEvent_toString(){
    var o = this;
@@ -24,215 +33,148 @@ function AEvent_toString(){
 function AEventBlur(n, m){
    var o = this;
    AEvent(o, n, 'blur', 'onblur');
-   o._hSource = null;
-   o.attach   = AEventBlur_attach;
+   o.attach = AEventBlur_attach;
    return o;
 }
-function AEventBlur_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventBlur_attach(e, h){
 }
 function AEventChange(n){
    var o = this;
    AEvent(o, n, 'change', 'onchange');
-   o._hSource = null;
-   o.attach   = AEventChange_attach;
+   o.attach = AEventChange_attach;
    return o;
 }
-function AEventChange_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventChange_attach(e, h){
 }
 function AEventClick(n){
    var o = this;
    AEvent(o, n, 'click', 'onclick');
-   o._hSource = null;
-   o.attach   = AEventClick_attach;
+   o.attach = AEventClick_attach;
    return o;
 }
-function AEventClick_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventClick_attach(e, h){
 }
 function AEventDoubleClick(n){
    var o = this;
    AEvent(o, n, 'dblclick', 'ondblclick');
-   o._hSource = null;
-   o.attach   = AEventDoubleClick_attach;
+   o.attach = AEventDoubleClick_attach;
    return o;
 }
-function AEventDoubleClick_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventDoubleClick_attach(e, h){
 }
 function AEventFocus(n){
    var o = this;
    AEvent(o, n, 'focus', 'onfocus');
-   o._hSource = null;
-   o.attach   = AEventFocus_attach;
+   o.attach = AEventFocus_attach;
    return o;
 }
-function AEventFocus_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventFocus_attach(e, h){
 }
 function AEventKeyDown(n){
    var o = this;
    AEvent(o, n, 'keydown', 'onkeydown');
-   o._hSource  = null;
-   o._altKey   = false;
-   o._shiftKey = false;
-   o._ctrlKey  = false;
-   o._keyCode  = null;
-   o.attach    = AEventKeyDown_attach;
+   o.attach = AEventKeyDown_attach;
    return o;
 }
-function AEventKeyDown_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
-   o._altKey = p.altKey;
-   o._shiftKey = p.shiftKey;
-   o._ctrlKey = p.ctrlKey;
-   o._keyCode = p.keyCode;
+function AEventKeyDown_attach(e, h){
+   e.altKey = h.altKey;
+   e.shiftKey = h.shiftKey;
+   e.ctrlKey = h.ctrlKey;
+   e.keyCode = h.keyCode;
 }
 function AEventKeyPress(n){
    var o = this;
    AEvent(o, n, 'keypress', 'onkeypress');
-   o._hSource  = null;
-   o._altKey   = false;
-   o._shiftKey = false;
-   o._ctrlKey  = false;
-   o._keyCode  = null;
-   o.attach    = AEventKeyPress_attach;
+   o.attach = AEventKeyPress_attach;
    return o;
 }
-function AEventKeyPress_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
-   o._altKey = p.altKey;
-   o._shiftKey = p.shiftKey;
-   o._ctrlKey = p.ctrlKey;
-   o._keyCode = p.keyCode;
+function AEventKeyPress_attach(e, h){
+   e.altKey = h.altKey;
+   e.shiftKey = h.shiftKey;
+   e.ctrlKey = h.ctrlKey;
+   e.keyCode = h.keyCode;
 }
 function AEventKeyUp(n){
    var o = this;
    AEvent(o, n, 'keyup', 'onkeyup');
-   o._hSource  = null;
-   o._altKey   = false;
-   o._shiftKey = false;
-   o._ctrlKey  = false;
-   o._keyCode  = null;
-   o.attach    = AEventKeyUp_attach;
+   o.attach = AEventKeyUp_attach;
    return o;
 }
-function AEventKeyUp_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
-   o._altKey = p.altKey;
-   o._shiftKey = p.shiftKey;
-   o._ctrlKey = p.ctrlKey;
-   o._keyCode = p.keyCode;
+function AEventKeyUp_attach(e, h){
+   e.altKey = h.altKey;
+   e.shiftKey = h.shiftKey;
+   e.ctrlKey = h.ctrlKey;
+   e.keyCode = h.keyCode;
 }
 function AEventLoad(n){
    var o = this;
    AEvent(o, n, 'load', 'onload');
-   o._hSource = null;
-   o.attach   = AEventLoad_attach;
+   o.attach = AEventLoad_attach;
    return o;
 }
-function AEventLoad_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventLoad_attach(e, h){
 }
 function AEventMouseDown(n){
    var o = this;
    AEvent(o, n, 'mousedown', 'onmousedown');
-   o._hSource = null;
-   o._altKey  = null;
-   o._ctrlKey = null;
-   o._x       = null;
-   o._y       = null;
-   o._offsetX = null;
-   o._offsetY = null;
-   o._clientX = null;
-   o._clientY = null;
-   o.attach   = AEventMouseDown_attach;
+   o.attach = AEventMouseDown_attach;
    return o;
 }
-function AEventMouseDown_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
-   o._altKey = p.altKey;
-   o._ctrlKey = p.ctrlKey;
+function AEventMouseDown_attach(e, h){
+   e.altKey = h.altKey;
+   e.ctrlKey = h.ctrlKey;
    if(RBrowser.isBrowser(EBrowser.FireFox)){
-      o._x = p.pageX;
-      o._y = p.pageY;
-      o._offsetX = p.layerX;
-      o._offsetY = p.layerY;
+      e.x = h.pageX;
+      e.y = h.pageY;
+      e.offsetX = h.layerX;
+      e.offsetY = h.layerY;
    }else{
-      o._x = p.x;
-      o._y = p.y;
-      o._offsetX = p.offsetX;
-      o._offsetY = p.offsetY;
+      e.x = h.x;
+      e.y = h.y;
+      e.offsetX = h.offsetX;
+      e.offsetY = h.offsetY;
    }
-   o._clientX = p.clientX;
-   o._clientY = p.clientY;
+   e.clientX = h.clientX;
+   e.clientY = h.clientY;
 }
 function AEventMouseEnter(n){
    var o = this;
    AEvent(o, n, 'mouseenter', 'onmouseenter');
-   o._hSource = null;
-   o.attach   = AEventMouseEnter_attach;
+   o.attach = AEventMouseEnter_attach;
    return o;
 }
-function AEventMouseEnter_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventMouseEnter_attach(e, h){
 }
 function AEventMouseLeave(n){
    var o = this;
    AEvent(o, n, 'mouseleave', 'onmouseleave');
-   o._hSource = null;
-   o.attach   = AEventMouseLeave_attach;
+   o.attach = AEventMouseLeave_attach;
    return o;
 }
-function AEventMouseLeave_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventMouseLeave_attach(e, h){
 }
 function AEventMouseMove(n){
    var o = this;
    AEvent(o, n, 'mousemove', 'onmousemove');
-   o._hSource = null;
-   o._altKey  = null;
-   o._ctrlKey = null;
-   o._x       = null;
-   o._y       = null;
-   o._offsetX = null;
-   o._offsetY = null;
-   o._clientX = null;
-   o._clientY = null;
-   o.attach   = AEventMouseMove_attach;
+   o.attach = AEventMouseMove_attach;
    return o;
 }
-function AEventMouseMove_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
-   o._altKey = p.altKey;
-   o._ctrlKey = p.ctrlKey;
+function AEventMouseMove_attach(e, h){
+   e.altKey = h.altKey;
+   e.ctrlKey = h.ctrlKey;
    if(RBrowser.isBrowser(EBrowser.FireFox)){
-      o._x = p.pageX;
-      o._y = p.pageY;
-      o._offsetX = p.layerX;
-      o._offsetY = p.layerY;
+      e.x = h.pageX;
+      e.y = h.pageY;
+      e.offsetX = h.layerX;
+      e.offsetY = h.layerY;
    }else{
-      o._x = p.x;
-      o._y = p.y;
-      o._offsetX = p.offsetX;
-      o._offsetY = p.offsetY;
+      e.x = h.x;
+      e.y = h.y;
+      e.offsetX = h.offsetX;
+      e.offsetY = h.offsetY;
    }
-   o._clientX = p.clientX;
-   o._clientY = p.clientY;
+   e.clientX = h.clientX;
+   e.clientY = h.clientY;
 }
 function AEventMouseOut(n){
    var o = this;
@@ -285,98 +227,69 @@ function AEventMouseOver_attach(p){
 function AEventMouseUp(n){
    var o = this;
    AEvent(o, n, 'mouseup', 'onmouseup');
-   o._hSource = null;
-   o._altKey  = null;
-   o._ctrlKey = null;
-   o._x       = null;
-   o._y       = null;
-   o._offsetX = null;
-   o._offsetY = null;
-   o._clientX = null;
-   o._clientY = null;
-   o.attach   = AEventMouseUp_attach;
+   o.attach = AEventMouseUp_attach;
    return o;
 }
-function AEventMouseUp_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
-   o._altKey = p.altKey;
-   o._ctrlKey = p.ctrlKey;
+function AEventMouseUp_attach(e, h){
+   e.altKey = h.altKey;
+   e.ctrlKey = h.ctrlKey;
    if(RBrowser.isBrowser(EBrowser.FireFox)){
-      o._x = p.pageX;
-      o._y = p.pageY;
-      o._offsetX = p.layerX;
-      o._offsetY = p.layerY;
+      e.x = h.pageX;
+      e.y = h.pageY;
+      e.offsetX = h.layerX;
+      e.offsetY = h.layerY;
    }else{
-      o._x = p.x;
-      o._y = p.y;
-      o._offsetX = p.offsetX;
-      o._offsetY = p.offsetY;
+      e.x = h.x;
+      e.y = h.y;
+      e.offsetX = h.offsetX;
+      e.offsetY = h.offsetY;
    }
-   o._clientX = p.clientX;
-   o._clientY = p.clientY;
+   e.clientX = h.clientX;
+   e.clientY = h.clientY;
 }
 function AEventMouseWheel(n){
    var o = this;
    AEvent(o, n, 'mousewheel', 'onmousewheel');
-   o._hSource = null;
-   o._altKey  = null;
-   o._ctrlKey = null;
-   o._x       = null;
-   o._y       = null;
-   o._delta   = null;
-   o.attach   = AEventMouseWheel_attach;
+   o.attach = AEventMouseWheel_attach;
    return o;
 }
-function AEventMouseWheel_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
-   o._altKey = p.altKey;
-   o._ctrlKey = p.ctrlKey;
-   o._delta = p.wheelDelta;
+function AEventMouseWheel_attach(e, h){
+   e.altKey = h.altKey;
+   e.ctrlKey = h.ctrlKey;
+   e.delta = h.wheelDelta;
    if(RBrowser.isBrowser(EBrowser.FireFox)){
-      o._x = p.pageX;
-      o._y = p.pageY;
+      e.x = h.pageX;
+      e.y = h.pageY;
    }else{
-      o._x = p.x;
-      o._y = p.y;
+      e.x = h.x;
+      e.y = h.y;
    }
 }
 function AEventReadyStateChange(n){
    var o = this;
    AEvent(o, n, 'readystatechange', 'onreadystatechange');
-   o._hSource = null;
-   o.attach   = AEventReadyStateChange_attach;
+   o.attach = AEventReadyStateChange_attach;
    return o;
 }
-function AEventReadyStateChange_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventReadyStateChange_attach(e, h){
 }
 function AEventResize(n){
    var o = this;
    AEvent(o, n, 'resize', 'onresize');
-   o._hSource = null;
-   o._x       = null;
-   o._y       = null;
-   o.attach   = AEventResize_attach;
+   o.attach = AEventResize_attach;
    return o;
 }
-function AEventResize_attach(p){
-   var o = this;
-   o._x = p.x;
-   o._y = p.y;
+function AEventResize_attach(e, h){
+   e.x = h.x;
+   e.y = h.y;
 }
 function AEventScroll(n){
    var o = this;
    AEvent(o, n, 'scroll', 'onscroll');
-   o._hSource = null;
-   o.attach   = AEventScroll_attach;
+   o.attach = AEventScroll_attach;
    return o;
 }
-function AEventScroll_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventScroll_attach(e, h){
 }
 var EBrowser = new function EBrowser(){
    var o = this;
@@ -778,11 +691,36 @@ function FXmlConnection_onConnectionComplete(){
    }
    var d = new TXmlDocument();
    RXml.buildNode(d, null, e);
-   o._outputNode = d.root();
+   var r = o._outputNode = d.root();
    o._statusFree = true;
+   var e = new SXmlEvent();
+   e.connection = o;;
+   e.document = d;
+   e.root = r;
+   o.lsnsLoad.process(e);
+   e.dispose();
 }
 function FXmlConnection_content(){
    return this._outputNode;
+}
+function MClone(o){
+   o = RClass.inherits(this, o);
+   o.clone  = MClone_clone;
+   return o;
+}
+function MClone_clone(){
+   var o = this;
+   var r = RClass.create(o.constructor);
+   for(var n in o){
+      v = o[n];
+      if(v != null){
+         if(!RClass.isBaseDataType(v.constructor)){
+            r[n] = v.clone();
+         }
+      }
+      r[n] = v;
+   }
+   return r;
 }
 function MDataStream(o){
    o = RClass.inherits(this, o);
@@ -1124,6 +1062,54 @@ function MDataView_setDouble(p, v){
    var o = this;
    o._viewer.setDouble(p, v, o._endianCd);
 }
+function MProperty(o){
+   o = RClass.inherits(this, o);
+   o.propertyAssign = MProperty_propertyAssign;
+   o.propertyLoad   = MProperty_propertyLoad;
+   o.propertySave   = MProperty_propertySave;
+   return o;
+}
+function MProperty_propertyAssign(p){
+   var o = this;
+   var c = RClass.find(o.constructor);
+   var as = c.annotations(EAnnotation.Property);
+   for(var n in as){
+      var a = as[n];
+      if(a.constructor != Function){
+         o[a._name] = p[a._name];
+      }
+   }
+}
+function MProperty_propertyLoad(p){
+   var o = this;
+   var c = RClass.find(o.constructor);
+   var as = c.annotations(EAnnotation.Property);
+   for(var n in as){
+      var a = as[n];
+      if(a.constructor != Function){
+         if(a._force){
+            a.load(o, p);
+         }else{
+            if(p.contains(a._linker)){
+               a.load(o, p);
+            }else if(o[a._name] == null){
+               o[a._name] = a._value;
+            }
+         }
+      }
+   }
+}
+function MProperty_propertySave(p){
+   var o = this;
+   var c = RClass.find(o.constructor);
+   var as = c.annotations(EAnnotation.Property);
+   for(var n in as){
+      var a = as[n];
+      if(a.constructor != Function){
+         a.save(o, p);
+      }
+   }
+}
 var RBrowser = new function RBrowser(){
    var o = this;
    o._typeCd        = 0;
@@ -1183,6 +1169,8 @@ var RBuilder = new function RBuilder(){
    o.createSpan        = RBuilder_createSpan;
    o.createDiv         = RBuilder_createDiv;
    o.createTable       = RBuilder_createTable;
+   o.createTableRow    = RBuilder_createTableRow;
+   o.createTableCell   = RBuilder_createTableCell;
    o.createFragment    = RBuilder_createFragment;
    o.append            = RBuilder_append;
    o.appendIcon        = RBuilder_appendIcon;
@@ -1265,6 +1253,14 @@ function RBuilder_createTable(d, s, b, cs, cp){
    h.border = RInteger.nvl(b);
    h.cellSpacing = RInteger.nvl(cs);
    h.cellPadding = RInteger.nvl(cp);
+   return h;
+}
+function RBuilder_createTableRow(d, s){
+   var h = this.create(d, 'TR', s);
+   return h;
+}
+function RBuilder_createTableCell(d, s){
+   var h = this.create(d, 'TD', s);
    return h;
 }
 function RBuilder_createFragment(d){
@@ -1662,7 +1658,9 @@ function REngine_findLocal(n){
 }
 var RHtml = new function RHtml(){
    var o = this;
+   o._nextUid        = 1;
    o._links          = new Object();
+   o.uid            = RHtml_uid;
    o.displayGet     = RHtml_displayGet;
    o.displaySet     = RHtml_displaySet;
    o.visibleGet     = RHtml_visibleGet;
@@ -1677,6 +1675,8 @@ var RHtml = new function RHtml(){
    o.linkSet        = RHtml_linkSet;
    o.toText         = RHtml_toText;
    o.toHtml         = RHtml_toHtml;
+   o.eventSource    = RHtml_eventSource;
+   o.free           = RHtml_free;
    o.offsetPosition = RHtml_offsetPosition;
    o.offsetX        = RHtml_offsetX;
    o.offsetY        = RHtml_offsetY;
@@ -1713,6 +1713,13 @@ var RHtml = new function RHtml(){
    o.tableMoveRow   = RHtml_tableMoveRow;
    o.clone          = RHtml_clone;
    return o;
+}
+function RHtml_uid(v){
+   var r = v.uniqueNumber;
+   if(r == null){
+      r = v.uniqueNumber = this._nextUid++;
+   }
+   return r;
 }
 function RHtml_displayGet(h){
    var r = null;
@@ -1835,6 +1842,11 @@ function RHtml_toHtml(p){
       p = p.replace(/\\r/g, '');
    }
    return p;
+}
+function RHtml_eventSource(p){
+   return p.srcElement ? p.srcElement : p.target;
+}
+function RHtml_free(p){
 }
 function RHtml_clone(o, s, t){
    if(!t){
@@ -3288,9 +3300,21 @@ function RXml_unpack(s, n){
 }
 function SEvent(o){
    if(!o){o = this;}
-   o.name    = null;
-   o.hSource = null;
+   o.annotation = null;
+   o.source     = null;
+   o.hSender    = null;
+   o.hSource    = null;
+   o.ohProcess  = null;
+   o.onProcess  = null;
+   o.process    = null;
+   o.dispose    = SEvent_dispose;
    return o;
+}
+function SEvent_dispose(){
+   var o = this;
+   for(var n in o){
+      o[n] = null;
+   }
 }
 function SKeyDownEvent(o){
    if(!o){o = this;}
@@ -3312,6 +3336,14 @@ function SServiceInfo(){
    o.service = null;
    o.action  = null;
    o.url     = null;
+   return o;
+}
+function SXmlEvent(o){
+   if(!o){o = this;}
+   SEvent(o);
+   o.connection = null;
+   o.document   = null;
+   o.root       = null;
    return o;
 }
 function TDumpItem(o){
@@ -3441,10 +3473,11 @@ function TXmlNode(){
    return o;
 }
 function TXmlNode_create(n, a){
+   var o = this;
    var r = new TNode();
    r._name = n;
    r._attributes = a;
-   if(!RClass.isClass(attrs, TAttributes)){
+   if(!RClass.isClass(a, TAttributes)){
       var a = arguments;
       var len = a.length;
       for(var n = 1; n < len; n += 2){
@@ -3455,7 +3488,7 @@ function TXmlNode_create(n, a){
          }
       }
    }
-   this.push(r);
+   o.push(r);
    return r;
 }
 function TXmlNode_innerXml(s, l){

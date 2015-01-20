@@ -174,6 +174,10 @@ function FComponent(o){
    o._label        = RClass.register(o, new APtyString('_label'));
    o.oeInitialize  = FComponent_oeInitialize;
    o.oeRelease     = FComponent_oeRelease;
+   o.name          = FComponent_name;
+   o.setName       = FComponent_setName;
+   o.label         = FComponent_label;
+   o.setLabel      = FComponent_setLabel;
    o.isParent      = FComponent_isParent;
    o.topComponent  = FComponent_topComponent;
    o.hasComponent  = FComponent_hasComponent;
@@ -193,6 +197,18 @@ function FComponent_oeInitialize(e){
 }
 function FComponent_oeRelease(e){
    return EEventStatus.Continue;
+}
+function FComponent_name(){
+   return this._name;
+}
+function FComponent_setName(p){
+   this._name = p;
+}
+function FComponent_label(){
+   return this._label;
+}
+function FComponent_setLabel(p){
+   this._label = p;
 }
 function FComponent_isParent(p){
    while(p){
@@ -232,7 +248,7 @@ function FComponent_push(p){
    var o = this;
    if(RClass.isClass(p, FComponent)){
       var ps = o.components();
-      p.parent = o;
+      p._parent = o;
       if(p._name == null){
          p._name = ps.count();
       }
@@ -302,7 +318,13 @@ function FComponent_toString(){
 function FComponent_dispose(){
    var o = this;
    o._parent = null;
-   o._components = null;
+   o._name = null;
+   o._label = null;
+   var cs = o._components
+   if(cs){
+      cs.dispose();
+      o._components = null;
+   }
    o.__base.FObject.dispose.call(o);
 }
 function FComponent_innerDumpInfo(s){
@@ -402,6 +424,15 @@ function FControl(o){
    o._controls         = null;
    o._hParent          = null;
    o._hContainer       = null;
+   o.onEnter           = RClass.register(o, new AEventMouseEnter('onEnter'), FControl_onEnter);
+   o.onLeave           = RClass.register(o, new AEventMouseLeave('onLeave'), FControl_onLeave);
+   o.onMouseOver       = RClass.register(o, new AEventMouseOver('onMouseOver'));
+   o.onMouseOut        = RClass.register(o, new AEventMouseOut('onMouseOut'));
+   o.onMouseDown       = RClass.register(o, new AEventMouseDown('onMouseDown'));
+   o.onMouseUp         = RClass.register(o, new AEventMouseUp('onMouseUp'));
+   o.onClick           = RClass.register(o, new AEventClick('onClick'));
+   o.onDoubleClick     = RClass.register(o, new AEventDoubleClick('onDoubleClick'));
+   o.onResize          = RClass.register(o, new AEventResize('onResize'));
    o.onBuildContainer  = FControl_onBuildContainer;
    o.oeBuild           = FControl_oeBuild;
    o.oeMode            = FControl_oeMode;
@@ -422,6 +453,10 @@ function FControl(o){
    o.setEnable         = FControl_setEnable;
    o.enable            = FControl_enable;
    o.disable           = FControl_disable;
+   o.attachEvent       = FControl_attachEvent;
+   o.linkEvent         = FControl_linkEvent;
+   o.callEvent         = FControl_callEvent;
+   o.push              = FControl_push;
    o.psBuild           = FControl_psBuild;
    o.psMode            = FControl_psMode;
    o.psDesign          = FControl_psDesign;
@@ -429,30 +464,20 @@ function FControl(o){
    o.psVisible         = FControl_psVisible;
    o.psResize          = FControl_psResize;
    o.psRefresh         = FControl_psRefresh;
-   o.push              = FControl_push;
-   o.attachEvent       = FControl_attachEvent;
-   o.linkEvent         = FControl_linkEvent;
-   o.callEvent         = FControl_callEvent;
+   o.setPanel          = FControl_setPanel;
+   o.build             = FControl_build;
    o.dispose           = FControl_dispose;
    return o;
 }
 function FControl_onEnter(e){
    var o = this;
-   RConsole.find(FFocusConsole).enter(o);
-   if(o.hint){
-      window.status = o.hint;
-   }
 }
 function FControl_onLeave(e){
    var o = this;
-   RConsole.find(FFocusConsole).leave(o);
-   if(o.hint){
-      window.status = '';
-   }
 }
 function FControl_onBuildContainer(e){
    var o = this;
-   o._hContainer = RBuilder.createDiv(e.hDocument, o.style('Container'));
+   o._hContainer = RBuilder.createDiv(e.hDocument, o.styleName('Container'));
 }
 function FControl_oeBuild(e){
    var o = this;
@@ -460,8 +485,15 @@ function FControl_oeBuild(e){
       o.onBuildContainer(e);
       var h = o._hContainer;
       RHtml.linkSet(h, 'control', o);
-      o.setSize(o.width, o.height);
-      o.setPadding(o._padding.left, o._padding.top, o._padding.right, o._padding.bottom, true);
+      o.attachEvent('onEnter', h);
+      o.attachEvent('onLeave', h);
+      o.attachEvent('onMouseOver', h);
+      o.attachEvent('onMouseOut', h);
+      o.attachEvent('onMouseDown', h);
+      o.attachEvent('onMouseUp', h);
+      o.attachEvent('onClick', h);
+      o.attachEvent('onDoubleClick', h);
+      o.attachEvent('onResize', h);
       o._statusBuild = true;
    }
    return EEventStatus.Continue;
@@ -494,6 +526,7 @@ function FControl_oeRefresh(e){
 function FControl_construct(){
    var o = this;
    o.__base.FComponent.construct.call(o);
+   o.__base.MStyle.construct.call(o);
    o.__base.MSize.construct.call(o);
    o.__base.MPadding.construct.call(o);
 }
@@ -589,6 +622,33 @@ function FControl_disable(){
       o.setEnable(false);
    }
 }
+function FControl_attachEvent(n, h, m){
+   return RControl.attachEvent(this, n, h, m);
+}
+function FControl_linkEvent(t, n, h, m){
+   return RControl.linkEvent(this, t, n, h, m);
+}
+function FControl_callEvent(n, s, e){
+   var o = this;
+   var es = o._events;
+   if(es){
+      var ec = es.get(n);
+      if(ec){
+         ec.invoke(s, s, e);
+      }
+   }
+}
+function FControl_push(p){
+   var o = this;
+   o.__base.FComponent.push.call(o, p);
+   if(RClass.isClass(p, FControl)){
+      var cs = o.controls();
+      if(!p.name){
+         p.name = cs.count;
+      }
+      cs.set(p.name, p);
+   }
+}
 function FControl_psBuild(p){
    var o = this;
    var h = null;
@@ -652,44 +712,40 @@ function FControl_psRefresh(t){
 }
 function FControl_setPanel(h){
    var o = this;
-   o.hParent = h;
-   if(h && o.hPanel){
-      h.appendChild(o.hPanel);
-   }
+   o._hParent = h;
+   h.appendChild(o._hContainer);
 }
-function FControl_push(p){
+function FControl_build(h){
    var o = this;
-   o.__base.FComponent.push.call(o, p);
-   if(RClass.isClass(p, FControl)){
-      var cs = o.controls();
-      if(!p.name){
-         p.name = cs.count;
-      }
-      cs.set(p.name, p);
+   if(!o._statusBuild){
+      o.psBuild(h);
    }
-}
-function FControl_attachEvent(n, h, m){
-   return RControl.attachEvent(this, n, h, m);
-}
-function FControl_linkEvent(t, n, h, m){
-   return RControl.linkEvent(this, t, n, h, m);
-}
-function FControl_callEvent(n, s, e){
-   var o = this;
-   var es = o._events;
-   if(es){
-      var ec = es.get(n);
-      if(ec){
-         ec.invoke(s, s, e);
-      }
-   }
+   o.setPanel(h);
 }
 function FControl_dispose(){
    var o = this;
-   o.__base.FComponent.dispose.call(o)
-   RMemory.freeHtml(o._hContainer);
+   o._disable = null;
+   o._nowrap = null;
+   o._hint = null;
+   o._styleContainer = null;
+   o._statusVisible = null;
+   o._statusEnable = null;
+   o._statusBuild = null;
+   var v = o._controls;
+   if(v){
+      v.dispose();
+      o._controls = null;
+   }
    o._hParent = null;
-   o._hContainer = null;
+   var v = o._hContainer;
+   if(v){
+      RMemory.freel(v);
+      o._hContainer = null;
+   }
+   o.__base.MPadding.dispose.call(o);
+   o.__base.MSize.dispose.call(o);
+   o.__base.MStyle.dispose.call(o);
+   o.__base.FComponent.dispose.call(o);
 }
 function MContainer(o){
    o = RClass.inherits(this, o);
@@ -1282,6 +1338,7 @@ function MPadding(o){
    o.padding      = MPadding_padding;
    o.setPadding   = MPadding_setPadding;
    o.refreshStyle = MPadding_refreshStyle;
+   o.dispose      = MPadding_dispose;
    return o;
 }
 function MPadding_construct(){
@@ -1309,6 +1366,14 @@ function MPadding_refreshStyle(){
    }
    if(p.bottom){
       h.style.paddingBottom = p.bottom;
+   }
+}
+function MPadding_dispose(){
+   var o = this;
+   var v = o._padding;
+   if(v){
+      v.dispose();
+      o._padding = null;
    }
 }
 function MProgress(o){
@@ -1354,6 +1419,7 @@ function MSize(o){
    o.setSize   = MSize_setSize;
    o.setBounds = MSize_setBounds;
    o.resetSize = MSize_resetSize;
+   o.dispose   = MSize_dispose;
    o.innerDump = MSize_innerDump;
    return o;
 }
@@ -1444,6 +1510,19 @@ function MSize_calcRect(){
    this.rect = RRect.nvl(this.rect);
    RHtml.toRect(this.rect, this.hPanel);
    return this.rect;
+}
+function MSize_dispose(){
+   var o = this;
+   var v = o._location;
+   if(v){
+      v.dispose();
+      o._location = null;
+   }
+   var v = o._size;
+   if(v){
+      v.dispose();
+      o._size = null;
+   }
 }
 function MSize_innerDump(s, l){
    var o = this;
@@ -1591,12 +1670,14 @@ function MSizeable_stopDrag(){
 }
 function MStyle(o){
    o = RClass.inherits(this, o);
-   o.style         = MStyle_style;
+   o.construct     = RMethod.empty;
+   o.styleName     = MStyle_styleName;
    o.styleIcon     = MStyle_styleIcon;
    o.styleIconPath = MStyle_styleIconPath;
+   o.dispose       = RMethod.empty;
    return o;
 }
-function MStyle_style(n, c){
+function MStyle_styleName(n, c){
    var r = RClass.find(c ? c : this, true);
    return r.style(n);
 }
@@ -1608,6 +1689,7 @@ function MStyle_styleIconPath(n, c){
 }
 var RControl = new function RControl(){
    var o = this;
+   o.attachEvent        = RControl_attachEvent;
    o.inMoving           = false;
    o.inSizing           = false;
    o.inDesign           = false;
@@ -1619,7 +1701,6 @@ var RControl = new function RControl(){
    o.innerCreate        = RControl_innerCreate;
    o.create             = RControl_create;
    o.linkEvent          = RControl_linkEvent;
-   o.attachEvent        = RControl_attachEvent;
    o.find               = RControl_find;
    o.fromNode           = RControl_fromNode;
    o.fromXml            = RControl_fromXml;
@@ -1634,6 +1715,29 @@ var RControl = new function RControl(){
    o.newInstance        = RControl_newInstance;
    o.newInstanceByName  = RControl_newInstance;
    return o;
+}
+function RControl_attachEvent(c, n, h, m){
+   var o = this;
+   var e = null;
+   var p = c[n];
+   if(!RMethod.isEmpty(p) || m){
+      var cz = RClass.find(c.constructor);
+      var a = cz.annotation(EAnnotation.Event, n);
+      var al = a.linker();
+      var ah = a.handle();
+      e = a.create();
+      e.annotation = a;
+      e.source = c;
+      e.hSource = h;
+      e.ohProcess = m;
+      e.onProcess = p;
+      e.process = REvent.onProcess;
+      var es = REvent.find(h);
+      es.push(al, e);
+      h[ah] = REvent.ohEvent;
+      RHtml.linkSet(h, '_plink', c);
+   }
+   return e;
 }
 function RControl_innerbuild(ctl, cfg){
    if(ctl){
@@ -1726,25 +1830,6 @@ function RControl_linkEvent(tc, sc, n, h, m){
       REvent.find(h).push(e.type, e);
       h[e.handle] = REvent.ohEvent;
       RHtml.linkSet(h, '_plink', tc);
-      return e;
-   }
-}
-function RControl_attachEvent(c, n, h, m){
-   var o = this;
-   var p = c[n];
-   if(!RMethod.isEmpty(p) || m){
-      var cz = RClass.find(c.constructor);
-      var a = cz.annotation(EAnnotation.Event, n);
-      var e = new a.constructor();
-      e.name = a.name;
-      e.source = c;
-      e.hSource = h;
-      e.ohProcess = m;
-      e.onProcess = p;
-      e.process = REvent.onProcess;
-      REvent.find(h).push(e.type, e);
-      h[e.handle] = REvent.ohEvent;
-      RHtml.linkSet(h, '_plink', c);
       return e;
    }
 }
@@ -1854,27 +1939,24 @@ function RControl_newInstanceByName(n){
 }
 var REvent = new function(){
    var o = this;
-   o.current   = 0;
-   o.events    = new Array();
-   o.objects   = new Array();
+   o._objects  = new Array();
    o.ohEvent   = REvent_ohEvent;
    o.onProcess = REvent_onProcess;
+   o.find      = REvent_find;
+   o.process   = REvent_process;
+   o.current   = 0;
+   o.events    = new Array();
    o.nvl       = REvent_nvl;
    o.alloc     = REvent_alloc;
    o.free      = REvent_free;
-   o.find      = REvent_find;
-   o.process   = REvent_process;
    o.release   = REvent_release;
    RMemory.register('REvent', o);
    return o;
 }
 function REvent_ohEvent(e){
-   if(!e){
-      e = window.event;
-   }
-   REvent.process(this, e);
+   REvent.process(this, e ? e : window.event);
 }
-function REvent_onProcess(){
+function REvent_onProcess(e){
    var e = this;
    RLogger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', e.type, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
    if(e.sender){
@@ -1882,7 +1964,53 @@ function REvent_onProcess(){
    }else{
       e.onProcess.call(e.source, e);
    }
-   RConsole.find(FFormConsole).processEvent(e);
+}
+function REvent_find(p){
+   var u = RHtml.uid(p);
+   var es = this._objects;
+   var e = es[u];
+   if(e == null){
+      e = es[u] = new THtmlEvent();
+      e.linker = p;
+   }
+   return e;
+}
+function REvent_process(hs, he){
+   var o = this;
+   if(!hs || !he){
+      return;
+   }
+   var eo = o.find(hs);
+   if(eo){
+      var es = eo.events[he.type];
+      if(es){
+         var ec = es.length;
+         for(var i = 0; i < ec; i++){
+            var e = es[i];
+            var ea = e.annotation;
+            e.source = RHtml.linkGet(hs, '_plink');
+            e.hSender = RHtml.eventSource(he);
+            e.hSource = hs;
+            ea.attach(e, he);
+            if(e.ohProcess){
+               RLogger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', e.type, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
+               try{
+                  if(e.sender){
+                     e.ohProcess.call(e.source, e.sender, e, he);
+                  }else{
+                     e.ohProcess.call(e.source, e, he);
+                  }
+               }catch(ex){
+                  RMessage.fatal(o, ex, 'Execute {1} failure. (source={2}, html={3}, process={4})', e.type, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
+               }
+            }else if(e.onProcess){
+               RConsole.find(FEventConsole).push(e);
+            }
+         }
+         return true;
+      }
+   }
+   return false;
 }
 function REvent_nvl(event, sender, code){
    if(!event){
@@ -1912,72 +2040,12 @@ function REvent_alloc(s, c){
 function REvent_free(e){
    e.inUsing = false;
 }
-function REvent_find(h){
-   var u = RRuntime.uid(h);
-   var os = this.objects;
-   var e = os[u];
-   if(!e){
-      e = os[u] = new THtmlEvent();
-      e.link = h;
-   }
-   return e;
-}
-function REvent_process(hs, he){
-   if(!(hs && he)){
-      return;
-   }
-   var o = this;
-   var un = hs._psource ? RRRuntimeHtml.uid(hs._psource) : RRuntime.uid(hs);
-   var eo = o.objects[un];
-   if(eo){
-      var es = eo.events[he.type];
-      if(es){
-         var l = es.length;
-         for(var n=0; n<l; n++){
-            var e = es[n];
-            e.source = RHtml.linkGet(hs, '_plink');
-            e.hSender = he.srcElement ? he.srcElement : he.target;
-            e.hSource = hs;
-            if(e.attach){
-               e.attach(he)
-            }
-            var er = e.sender ? e.sender : e.source;
-            if(er && er._events){
-               var ec = er._events.get(e.name);
-               if(ec){
-                  e.result = false;
-                  ec.invoke(e.source, er, e);
-                  if(e.result){
-                     return;
-                  }
-               }
-            }
-            if(e.ohProcess){
-               RLogger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', e.type, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
-               try{
-                  if(e.sender){
-                     e.ohProcess.call(e.source, e.sender, e, he);
-                  }else{
-                     e.ohProcess.call(e.source, e, he);
-                  }
-               }catch(ex){
-                  RMessage.fatal(o, ex, 'Execute {1} failure. (source={2}, html={3}, process={4})', e.type, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
-               }
-            }else if(e.onProcess){
-               RConsole.find(FEventConsole).push(e);
-            }
-         }
-         return true;
-      }
-   }
-   return false;
-}
 function REvent_release(){
    var o = this;
    RMemory.free(o.events);
-   RMemory.free(o.objects);
+   RMemory.free(o._objects);
    o.events = null;
-   o.objects = null;
+   o._objects = null;
 }
 function TEvent(owner, code, proc){
    var o = this;
@@ -2044,18 +2112,12 @@ function TEventProcess_dump(){
 }
 function THtmlEvent(){
    var o = this;
-   o.link    = null;
+   o.linker  = null;
    o.events  = new Object();
-   o.load    = THtmlEvent_load;
    o.push    = THtmlEvent_push;
    o.dispose = THtmlEvent_dispose;
    o.dump    = THtmlEvent_dump;
    return o;
-}
-function THtmlEvent_load(e){
-   var o = this;
-   o.ctrlKey = e.ctrlKey;
-   o.keyCode = e.keyCode;
 }
 function THtmlEvent_push(pn, pe){
    var o = this;
@@ -2066,12 +2128,15 @@ function THtmlEvent_push(pn, pe){
       es.handle = pe.handle;
       ess[pn] = es;
    }
-   var f = pe.name;
    var c = es.length;
-   for(var i = 0; i < c; i++){
-      var e = es[i];
-      if(e.name == f){
-         RMessage.fatal(this, 'push', 'Duplicate event for same control. (name={1}, source={2}, event={3})\n{4}\n{5}', pn, RClass.dump(pe.source), RClass.dump(pe), RString.repeat('-', 60), o.dump());
+   if(c > 0){
+      var fn = pe.annotation.name();
+      for(var i = 0; i < c; i++){
+         var e = es[i];
+         var en = e.annotation.name();
+         if(en == fn){
+            throw new TError(o, 'Duplicate event for same control. (name={1}, source={2}, event={3})\n{4}\n{5}', en, RClass.dump(pe.source), RClass.dump(pe), RString.repeat('-', 60), o.dump());
+         }
       }
    }
    es[es.length] = pe;
@@ -2081,11 +2146,11 @@ function THtmlEvent_dispose(){
    for(var n in o.events){
       var e = o.events[n];
       if(e.length){
-         o.link[e.handle] = null;
+         o.linker[e.handle] = null;
       }
    }
-   if(o.link.link){
-      o.link.removeAttribute('link');
+   if(o.linker.linker){
+      o.linker.removeAttribute('link');
    }
 }
 function THtmlEvent_dump(){
@@ -2101,5 +2166,10 @@ function THtmlEvent_dump(){
          r.append('   ' + n + ' source=' + RClass.dump(e.source) + ', event=' + RClass.dump(e) + '\n');
       }
    }
-   return r.toString();
+   return r.flush();
+}
+function THtmlEvent_load(e){
+   var o = this;
+   o.ctrlKey = e.ctrlKey;
+   o.keyCode = e.keyCode;
 }

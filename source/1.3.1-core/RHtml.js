@@ -9,8 +9,11 @@ var RHtml = new function RHtml(){
    var o = this;
    //..........................................................
    // @attribute
+   o._nextUid        = 1;
    o._links          = new Object();
    //..........................................................
+   // @method
+   o.uid            = RHtml_uid;
    // @method
    o.displayGet     = RHtml_displayGet;
    o.displaySet     = RHtml_displaySet;
@@ -28,6 +31,10 @@ var RHtml = new function RHtml(){
    // @method
    o.toText         = RHtml_toText;
    o.toHtml         = RHtml_toHtml;
+   // @method
+   o.eventSource    = RHtml_eventSource;
+   // @method
+   o.free           = RHtml_free;
 
    // @method
    // 协助在HTML元素上存储所有属性设置信息，系统退出时，会自动删掉上面的所有关联。
@@ -71,8 +78,24 @@ var RHtml = new function RHtml(){
 }
 
 //==========================================================
+// <T>获得页面元素的唯一编号。</T>
+//
+// @method
+// @param v:html:HtmlTag 页面元素
+// @return Integer 唯一编号
+//==========================================================
+function RHtml_uid(v){
+   var r = v.uniqueNumber;
+   if(r == null){
+      r = v.uniqueNumber = this._nextUid++;
+   }
+   return r;
+}
+
+//==========================================================
 // <T>获得显示性。</T>
 //
+// @method
 // @param h:html:HtmlTag 页面对象
 // @return Boolean 显示性
 //==========================================================
@@ -90,6 +113,7 @@ function RHtml_displayGet(h){
 //==========================================================
 // <T>设置显示性。</T>
 //
+// @method
 // @param h:html:HtmlTag 页面对象
 // @param v:visible:Boolean 显示性
 //==========================================================
@@ -106,6 +130,7 @@ function RHtml_displaySet(h, v){
 //==========================================================
 // <T>获得可见性。</T>
 //
+// @method
 // @param h:html:HtmlTag 页面对象
 // @return Boolean 可见性
 //==========================================================
@@ -123,6 +148,7 @@ function RHtml_visibleGet(h){
 //==========================================================
 // <T>设置可见性。</T>
 //
+// @method
 // @param h:html:HtmlTag 页面对象
 // @param v:visible:Boolean 可见性
 //==========================================================
@@ -139,6 +165,7 @@ function RHtml_visibleSet(h, v){
 //==========================================================
 // <T>获得文本内容。</T>
 //
+// @method
 // @param h:html:HtmlTag 页面对象
 // @return String 文本内容
 //==========================================================
@@ -155,6 +182,7 @@ function RHtml_textGet(h, v){
 //==========================================================
 // <T>设置文本内容。</T>
 //
+// @method
 // @param h:html:HtmlTag 页面对象
 // @param v:value:String 文本内容
 //==========================================================
@@ -169,6 +197,7 @@ function RHtml_textSet(h, v){
 //==========================================================
 // <T>获得复选框内容。</T>
 //
+// @method
 // @param h:html:HtmlTag 页面对象
 // @return String 文本内容
 //==========================================================
@@ -179,6 +208,7 @@ function RHtml_checkGet(h){
 //==========================================================
 // <T>设置复选框内容。</T>
 //
+// @method
 // @param h:html:HtmlTag 页面对象
 // @param v:value:String 文本内容
 //==========================================================
@@ -189,6 +219,7 @@ function RHtml_checkSet(h, v){
 //==========================================================
 // <T>获得单选框内容。</T>
 //
+// @method
 // @param hs:html:HtmlTag 页面对象
 // @return String 文本内容
 //==========================================================
@@ -208,6 +239,7 @@ function RHtml_radioGet(hs){
 //==========================================================
 // <T>设置单选框内容。</T>
 //
+// @method
 // @param hs:html:HtmlTag 页面对象
 // @param v:value:String 文本内容
 //==========================================================
@@ -227,6 +259,7 @@ function RHtml_radioSet(hs, v){
 //==========================================================
 // <T>获得页面对象上的存储信息。</T>
 //
+// @method
 // @param hs:html:HtmlTag 页面对象
 // @param n:name:String 名称
 // @return Object 内容
@@ -240,6 +273,7 @@ function RHtml_linkGet(h, n){
 //==========================================================
 // <T>设置页面对象上的存储信息。</T>
 //
+// @method
 // @param hs:html:HtmlTag 页面对象
 // @param n:name:String 名称
 // @param v:value:Object 内容
@@ -258,6 +292,7 @@ function RHtml_linkSet(h, n, v){
 //==========================================================
 // <T>将页面内容转换成文本内容。</T>
 //
+// @method
 // @param p:html:String 页面内容
 // @return String 文本内容
 //==========================================================
@@ -275,6 +310,7 @@ function RHtml_toText(p){
 //==========================================================
 // <T>将文本内容转换成页面内容。</T>
 //
+// @method
 // @param p:text:String 文本内容
 // @return String 页面内容
 //==========================================================
@@ -290,6 +326,25 @@ function RHtml_toHtml(p){
       p = p.replace(/\\r/g, '');
    }
    return p;
+}
+
+//==========================================================
+// <T>获得事件来源。</T>
+//
+// @method
+// @param p:event:HtmlEvent 页面事件
+//==========================================================
+function RHtml_eventSource(p){
+   return p.srcElement ? p.srcElement : p.target;
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+// @param p:html:HtmlTag 页面标签
+//==========================================================
+function RHtml_free(p){
 }
 
 

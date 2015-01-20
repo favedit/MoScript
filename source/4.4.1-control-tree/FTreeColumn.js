@@ -31,7 +31,7 @@ function FTreeColumn(o){
 //==========================================================
 function FTreeColumn_oeBuild(event){
    var o = this;
-   var r = o.base.FControl.oeBuild.call(o, event);
+   var r = o.__base.FControl.oeBuild.call(o, event);
    var h = o.hPanel;
    h.innerText = RString.nvl(o.label);
    h.noWrap = true;

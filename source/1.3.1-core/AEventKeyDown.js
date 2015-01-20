@@ -10,17 +10,8 @@ function AEventKeyDown(n){
    var o = this;
    AEvent(o, n, 'keydown', 'onkeydown');
    //..........................................................
-   // @html
-   o._hSource  = null;
-   //..........................................................
-   // @atribute
-   o._altKey   = false;
-   o._shiftKey = false;
-   o._ctrlKey  = false;
-   o._keyCode  = null;
-   //..........................................................
    // @method
-   o.attach    = AEventKeyDown_attach;
+   o.attach = AEventKeyDown_attach;
    return o;
 }
 
@@ -28,13 +19,12 @@ function AEventKeyDown(n){
 // <T>接收事件信息。</T>
 //
 // @method
-// @param p:event:Event 事件
+// @param e:event:Event 事件
+// @param h:htmlEvent:HtmlEvent 页面事件
 //==========================================================
-function AEventKeyDown_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
-   o._altKey = p.altKey;
-   o._shiftKey = p.shiftKey;
-   o._ctrlKey = p.ctrlKey;
-   o._keyCode = p.keyCode;
+function AEventKeyDown_attach(e, h){
+   e.altKey = h.altKey;
+   e.shiftKey = h.shiftKey;
+   e.ctrlKey = h.ctrlKey;
+   e.keyCode = h.keyCode;
 }

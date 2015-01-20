@@ -11,6 +11,7 @@ function FObject(o){
    //..........................................................
    // @attribute TClass 类对象
    o.__class   = null;
+   o.__dispose = false;
    //..........................................................
    // @method
    o.construct = FObject_construct;
@@ -30,6 +31,8 @@ function FObject(o){
 // @method
 //==========================================================
 function FObject_construct(){
+   var o = this;
+   o.__dispose = false;
 }
 
 //==========================================================
@@ -48,7 +51,9 @@ function FObject_toString(){
 // @method
 //==========================================================
 function FObject_dispose(){
-   this.__class = null;
+   var o = this;
+   o.__class = null;
+   o.__dispose = true;
 }
 
 //==========================================================
@@ -71,5 +76,5 @@ function FObject_innerDump(s, l){
 function FObject_dump(){
    var r = new TString();
    this.innerDump(r, 0);
-   return r.toString();
+   return r.flush();
 }

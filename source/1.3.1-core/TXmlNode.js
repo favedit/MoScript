@@ -26,10 +26,11 @@ function TXmlNode(){
 // @return TNode 返回新建的节点
 //==========================================================
 function TXmlNode_create(n, a){
+   var o = this;
    var r = new TNode();
    r._name = n;
    r._attributes = a;
-   if(!RClass.isClass(attrs, TAttributes)){
+   if(!RClass.isClass(a, TAttributes)){
       var a = arguments;
       var len = a.length;
       for(var n = 1; n < len; n += 2){
@@ -40,7 +41,7 @@ function TXmlNode_create(n, a){
          }
       }
    }
-   this.push(r);
+   o.push(r);
    return r;
 }
 

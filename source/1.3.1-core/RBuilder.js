@@ -19,6 +19,8 @@ var RBuilder = new function RBuilder(){
    o.createSpan        = RBuilder_createSpan;
    o.createDiv         = RBuilder_createDiv;
    o.createTable       = RBuilder_createTable;
+   o.createTableRow    = RBuilder_createTableRow;
+   o.createTableCell   = RBuilder_createTableCell;
    o.createFragment    = RBuilder_createFragment;
    // @method
    o.append            = RBuilder_append;
@@ -203,6 +205,32 @@ function RBuilder_createTable(d, s, b, cs, cp){
    h.border = RInteger.nvl(b);
    h.cellSpacing = RInteger.nvl(cs);
    h.cellPadding = RInteger.nvl(cp);
+   return h;
+}
+
+//==========================================================
+// <T>创建一个页面表格行。</T>
+//
+// @method
+// @param d:document:HtmlDocument 页面文档对象
+// @param s:styleName:String 样式名称
+// @return HtmlTrTag 表格行对象
+//==========================================================
+function RBuilder_createTableRow(d, s){
+   var h = this.create(d, 'TR', s);
+   return h;
+}
+
+//==========================================================
+// <T>创建一个页面表格格子。</T>
+//
+// @method
+// @param d:document:HtmlDocument 页面文档对象
+// @param s:styleName:String 样式名称
+// @return HtmlTdTag 表格格子对象
+//==========================================================
+function RBuilder_createTableCell(d, s){
+   var h = this.create(d, 'TD', s);
    return h;
 }
 

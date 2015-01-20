@@ -53,7 +53,7 @@ function APtyBoolean_load(v, x){
 // @param v:value:Object 对象
 // @param x:config:TNode 节点
 //============================================================
-function APtyBoolean_save(o, c){
+function APtyBoolean_save(v, x){
    var o = this;
    x.set(o._linker, RBoolean.toString(v[o._name]));
 }

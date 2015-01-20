@@ -51,18 +51,18 @@ function FControl(o){
    o._hContainer       = null;
    //..........................................................
    // @event
-   //o.onEnter           = RClass.register(o, new HMouseEnter('onEnter'), FControl_onEnter);
-   //o.onLeave           = RClass.register(o, new HMouseLeave('onLeave'), FControl_onLeave);
-   //o.onMouseOver       = RClass.register(o, new HMouseOver('onMouseOver'));
-   //o.onMouseOut        = RClass.register(o, new HMouseOut('onMouseOut'));
-   //o.onMouseDown       = RClass.register(o, new HMouseDown('onMouseDown'));
-   //o.onMouseUp         = RClass.register(o, new HMouseUp('onMouseUp'));
-   //o.onClick           = RClass.register(o, new HClick('onClick'));
-   //o.onDoubleClick     = RClass.register(o, new HDoubleClick('onDoubleClick'));
-   //o.onKeyDown         = RClass.register(o, new HKeyDown('onKeyDown'));
-   //o.onKeyPress        = RClass.register(o, new HKeyPress('onKeyPress'));
-   //o.onKeyUp           = RClass.register(o, new HKeyUp('onKeyUp'));
-   //o.onResize          = RClass.register(o, new HResize('onResize'));
+   o.onEnter           = RClass.register(o, new AEventMouseEnter('onEnter'), FControl_onEnter);
+   o.onLeave           = RClass.register(o, new AEventMouseLeave('onLeave'), FControl_onLeave);
+   o.onMouseOver       = RClass.register(o, new AEventMouseOver('onMouseOver'));
+   o.onMouseOut        = RClass.register(o, new AEventMouseOut('onMouseOut'));
+   o.onMouseDown       = RClass.register(o, new AEventMouseDown('onMouseDown'));
+   o.onMouseUp         = RClass.register(o, new AEventMouseUp('onMouseUp'));
+   o.onClick           = RClass.register(o, new AEventClick('onClick'));
+   o.onDoubleClick     = RClass.register(o, new AEventDoubleClick('onDoubleClick'));
+   //o.onKeyDown         = RClass.register(o, new AEventKeyDown('onKeyDown'));
+   //o.onKeyPress        = RClass.register(o, new AEventKeyPress('onKeyPress'));
+   //o.onKeyUp           = RClass.register(o, new AEventKeyUp('onKeyUp'));
+   o.onResize          = RClass.register(o, new AEventResize('onResize'));
    // @event
    o.onBuildContainer  = FControl_onBuildContainer;
    //..........................................................
@@ -92,6 +92,12 @@ function FControl(o){
    o.enable            = FControl_enable;
    o.disable           = FControl_disable;
    // @method
+   o.attachEvent       = FControl_attachEvent;
+   o.linkEvent         = FControl_linkEvent;
+   o.callEvent         = FControl_callEvent;
+   // @method
+   o.push              = FControl_push;
+   // @method
    o.psBuild           = FControl_psBuild;
    o.psMode            = FControl_psMode;
    o.psDesign          = FControl_psDesign;
@@ -100,11 +106,9 @@ function FControl(o){
    o.psResize          = FControl_psResize;
    o.psRefresh         = FControl_psRefresh;
    // @method
-   //o.setPanel          = FControl_setPanel;
-   o.push              = FControl_push;
-   o.attachEvent       = FControl_attachEvent;
-   o.linkEvent         = FControl_linkEvent;
-   o.callEvent         = FControl_callEvent;
+   o.setPanel          = FControl_setPanel;
+   o.build             = FControl_build;
+   // @method
    o.dispose           = FControl_dispose;
    return o;
 }
@@ -117,10 +121,10 @@ function FControl(o){
 //==========================================================
 function FControl_onEnter(e){
    var o = this;
-   RConsole.find(FFocusConsole).enter(o);
-   if(o.hint){
-      window.status = o.hint;
-   }
+   //RConsole.find(FFocusConsole).enter(o);
+   //if(o.hint){
+      //window.status = o.hint;
+   //}
 }
 
 //==========================================================
@@ -131,10 +135,10 @@ function FControl_onEnter(e){
 //==========================================================
 function FControl_onLeave(e){
    var o = this;
-   RConsole.find(FFocusConsole).leave(o);
-   if(o.hint){
-      window.status = '';
-   }
+   //RConsole.find(FFocusConsole).leave(o);
+   //if(o.hint){
+      //window.status = '';
+   //}
 }
 
 //==========================================================
@@ -146,7 +150,7 @@ function FControl_onLeave(e){
 //==========================================================
 function FControl_onBuildContainer(e){
    var o = this;
-   o._hContainer = RBuilder.createDiv(e.hDocument, o.style('Container'));
+   o._hContainer = RBuilder.createDiv(e.hDocument, o.styleName('Container'));
 }
 
 //==========================================================
@@ -166,20 +170,22 @@ function FControl_oeBuild(e){
       var h = o._hContainer;
       RHtml.linkSet(h, 'control', o);
       // 关联容器事件
-      //o.attachEvent('onEnter', h);
-      //o.attachEvent('onLeave', h);
-      //o.attachEvent('onMouseOver', h);
-      //o.attachEvent('onMouseOut', h);
-      //o.attachEvent('onMouseDown', h, o.onMouseDown);
-      //o.attachEvent('onMouseUp', h);
-      //o.attachEvent('onClick', h);
-      //o.attachEvent('onDoubleClick', h);
+      o.attachEvent('onEnter', h);
+      o.attachEvent('onLeave', h);
+      o.attachEvent('onMouseOver', h);
+      o.attachEvent('onMouseOut', h);
+      o.attachEvent('onMouseDown', h);
+      o.attachEvent('onMouseUp', h);
+      o.attachEvent('onClick', h);
+      o.attachEvent('onDoubleClick', h);
       //o.attachEvent('onKeyDown', h);
       //o.attachEvent('onKeyPress', h);
+      //o.attachEvent('onKeyUp', h);
+      o.attachEvent('onResize', h);
       // 设置容器位置，大小，空余
       //o.setBounds(o.left, o.top, o.right, o.bottom, true);
-      o.setSize(o.width, o.height);
-      o.setPadding(o._padding.left, o._padding.top, o._padding.right, o._padding.bottom, true);
+      //o.setSize(o.width, o.height);
+      //o.setPadding(o._padding.left, o._padding.top, o._padding.right, o._padding.bottom, true);
       // 如果父容器是可以容纳控件的，则将自己添加到父容器
       //if(RClass.isClass(o.parent, MContainer)){
       //   o.parent.appendChild(o);
@@ -256,10 +262,13 @@ function FControl_oeRefresh(e){
 
 //==========================================================
 // <T>构造处理。</T>
+//
+// @method
 //==========================================================
 function FControl_construct(){
    var o = this;
    o.__base.FComponent.construct.call(o);
+   o.__base.MStyle.construct.call(o);
    o.__base.MSize.construct.call(o);
    o.__base.MPadding.construct.call(o);
 }
@@ -267,6 +276,7 @@ function FControl_construct(){
 //==========================================================
 // <T>获得指定类型的父控件。</T>
 //
+// @method
 // @param c:class:Class 类
 // @return FControl 父控件
 //==========================================================
@@ -342,6 +352,7 @@ function FControl_panel(p){
 //==========================================================
 // <T>判断当前控件是否显示。</T>
 //
+// @method
 // @return Boolean 是否显示
 //==========================================================
 function FControl_isVisible(){
@@ -351,6 +362,7 @@ function FControl_isVisible(){
 //==========================================================
 // <T>设置控件的隐藏和显示。</T>
 //
+// @method
 // @param v:visible:Boolean 是否显示
 //==========================================================
 function FControl_setVisible(v){
@@ -370,6 +382,8 @@ function FControl_setVisible(v){
 
 //==========================================================
 // <T>显示状态切换。</T>
+//
+// @method
 //==========================================================
 function FControl_show(){
    var o = this;
@@ -380,6 +394,8 @@ function FControl_show(){
 
 //==========================================================
 // <T>隐藏状态切换。</T>
+//
+// @method
 //==========================================================
 function FControl_hide(){
    var o = this;
@@ -391,6 +407,7 @@ function FControl_hide(){
 //==========================================================
 // <T>判断当前控件是否可以操作。</T>
 //
+// @method
 // @return Boolean 是否可以
 //==========================================================
 function FControl_isEnable(){
@@ -400,6 +417,7 @@ function FControl_isEnable(){
 //==========================================================
 // <T>设置控件的可操作和禁止。</T>
 //
+// @method
 // @param p:enable:Boolean 是否可操作
 //==========================================================
 function FControl_setEnable(p){
@@ -413,6 +431,8 @@ function FControl_setEnable(p){
 
 //==========================================================
 // <T>可操作状态切换。</T>
+//
+// @method
 //==========================================================
 function FControl_enable(){
    var o = this;
@@ -423,185 +443,13 @@ function FControl_enable(){
 
 //==========================================================
 // <T>禁止状态切换。</T>
+//
+// @method
 //==========================================================
 function FControl_disable(){
    var o = this;
    if(o._statusEnable){
       o.setEnable(false);
-   }
-}
-
-//==========================================================
-// <T>分发控件建立的事件。</T>
-//
-// @param p:parent:HtmlTag 页面元素
-//==========================================================
-function FControl_psBuild(p){
-   var o = this;
-   // 获得文档对象
-   var h = null;
-   var d = null;
-   if(p.createElement){
-      d = p;
-      h = p.body;
-   }else if(p.ownerDocument.createElement){
-      d = p.ownerDocument;
-      h = p;
-   }else{
-      throw new TError("Build parent is invalid. (parent={1})", p);
-   }
-   // 创建事件
-   var e = new TEventProcess(null, o, 'oeBuild', FControl);
-   // 处理消息
-   e.hDocument = d;
-   o.process(e);
-   e.hDocument = null;
-   e.dispose();
-   // 设置父节点
-   //if(h){
-      //o.setPanel(h);
-   //}
-}
-
-//==========================================================
-// <T>分发工作模式的事件。</T>
-//
-// @param p:displayMode:EDisplayMode 显示模式
-//==========================================================
-function FControl_psMode(p){
-   var o = this;
-   // 创建事件
-   var e = new TEventProcess(null, o, 'oeMode', FControl);
-   e.displayCd = p;
-   // 处理消息
-   o.process(e);
-   e.dispose();
-}
-
-//==========================================================
-// <T>分发改变控件设计状态的事件。</T>
-//
-// @param m:mode:EDesign 设计模式
-// @param f:flag:Boolean 开始还是结束
-//==========================================================
-function FControl_psDesign(m, f){
-   var o = this;
-   RConsole.find(FDesignConsole).setFlag(m, f, o);
-   // 创建事件
-   var e = new TEventProcess(null, o, 'oeDesign', MDesign)
-   e.mode = m;
-   e.flag = f;
-   // 处理消息
-   o.process(e);
-   e.dispose();
-}
-
-//==========================================================
-// <T>分发改变控件可操作和禁止的事件。</T>
-//
-// @param v:enable:Boolean 是否可操作
-//==========================================================
-function FControl_psEnable(v){
-   var o = this;
-   // 创建事件
-   var e = new TEventProcess(null, o, 'oeEnable', FControl)
-   e.enable = v;
-   // 处理消息
-   o.process(e);
-   e.dispose();
-}
-
-//==========================================================
-// <T>分发改变控件隐藏和显示的事件。</T>
-//
-// @param v:visible:Boolean 是否可见
-//==========================================================
-function FControl_psVisible(v){
-   var o = this;
-   // 创建事件
-   var e = new TEventProcess(null, o, 'oeVisible', FControl);
-   e.visible = v;
-   // 处理消息
-   o.process(e);
-   e.dispose();
-}
-
-//==========================================================
-// <T>分发改变控件大小的事件。</T>
-//==========================================================
-function FControl_psResize(){
-   var o = this;
-   // 创建事件
-   var e = new TEventProcess(null, o, 'oeResize', FControl);
-   // 处理消息
-   o.process(e);
-   e.dispose();
-}
-
-//==========================================================
-// <T>分发控件刷新的事件。</T>
-//
-// @param t:type:String 刷新类型
-//==========================================================
-function FControl_psRefresh(t){
-   var o = this;
-   // 创建事件
-   var e = new TEventProcess(null, o, 'oeRefresh', FControl);
-   // 处理消息
-   o.process(e);
-   e.dispose();
-}
-
-//==========================================================
-// <T>设置控件的页面父容器。</T>
-//
-// @method
-// @param h:hPanel:HTML 页面元素
-//==========================================================
-function FControl_setPanel(h){
-   var o = this;
-   o.hParent = h;
-   if(h && o.hPanel){
-      h.appendChild(o.hPanel);
-   }
-}
-
-//==========================================================
-// <T>如果当前组件是控件类型则放入自己的控件哈希表中。</T>
-// <P>同时将子组件放入组件哈希表中。</P>
-// <P>如果子控件的名称为空，则给当前子控件创建一个数字的索引名称，
-//    保证子控件不会不其他未命名的子控件所覆盖。</P>
-//
-// @method
-// @param p:component:FComponent 组件对象
-//==========================================================
-function FControl_push(p){
-   var o = this;
-   // 加载事件定义
-   //if(RClass.isClass(p, FEvent)){
-   //   var es = o._events;
-   //   var t = o.topComponent();
-   //   if(!es){
-   //      es = o._events = new TDictionary();
-   //   }
-   //   var en = p.name + '@' + t.name + o.fullPath();
-   //   var e = RControl.events.get(en);
-   //   if(!e){
-   //      e = p;
-   //      RControl.events.set(en, p);
-   //   }
-   //   es.set(e.name, e);
-   //   return;
-   //}
-   // 加载组件
-   o.__base.FComponent.push.call(o, p);
-   // 加载控件
-   if(RClass.isClass(p, FControl)){
-      var cs = o.controls();
-      if(!p.name){
-         p.name = cs.count;
-      }
-      cs.set(p.name, p);
    }
 }
 
@@ -664,14 +512,228 @@ function FControl_callEvent(n, s, e){
 }
 
 //==========================================================
+// <T>如果当前组件是控件类型则放入自己的控件哈希表中。</T>
+// <P>同时将子组件放入组件哈希表中。</P>
+// <P>如果子控件的名称为空，则给当前子控件创建一个数字的索引名称，
+//    保证子控件不会不其他未命名的子控件所覆盖。</P>
+//
+// @method
+// @param p:component:FComponent 组件对象
+//==========================================================
+function FControl_push(p){
+   var o = this;
+   // 加载事件定义
+   //if(RClass.isClass(p, FEvent)){
+   //   var es = o._events;
+   //   var t = o.topComponent();
+   //   if(!es){
+   //      es = o._events = new TDictionary();
+   //   }
+   //   var en = p.name + '@' + t.name + o.fullPath();
+   //   var e = RControl.events.get(en);
+   //   if(!e){
+   //      e = p;
+   //      RControl.events.set(en, p);
+   //   }
+   //   es.set(e.name, e);
+   //   return;
+   //}
+   // 加载组件
+   o.__base.FComponent.push.call(o, p);
+   // 加载控件
+   if(RClass.isClass(p, FControl)){
+      var cs = o.controls();
+      if(!p.name){
+         p.name = cs.count;
+      }
+      cs.set(p.name, p);
+   }
+}
+
+//==========================================================
+// <T>分发控件建立的事件。</T>
+//
+// @method
+// @param p:value:Object 页面元素或事件对象
+//==========================================================
+function FControl_psBuild(p){
+   var o = this;
+   // 获得文档对象
+   var h = null;
+   var d = null;
+   if(p.createElement){
+      d = p;
+      h = p.body;
+   }else if(p.ownerDocument.createElement){
+      d = p.ownerDocument;
+      h = p;
+   }else{
+      throw new TError("Build parent is invalid. (parent={1})", p);
+   }
+   // 创建事件
+   var e = new TEventProcess(null, o, 'oeBuild', FControl);
+   // 处理消息
+   e.hDocument = d;
+   o.process(e);
+   e.hDocument = null;
+   e.dispose();
+}
+
+//==========================================================
+// <T>分发工作模式的事件。</T>
+//
+// @method
+// @param p:displayMode:EDisplayMode 显示模式
+//==========================================================
+function FControl_psMode(p){
+   var o = this;
+   // 创建事件
+   var e = new TEventProcess(null, o, 'oeMode', FControl);
+   e.displayCd = p;
+   // 处理消息
+   o.process(e);
+   e.dispose();
+}
+
+//==========================================================
+// <T>分发改变控件设计状态的事件。</T>
+//
+// @method
+// @param m:mode:EDesign 设计模式
+// @param f:flag:Boolean 开始还是结束
+//==========================================================
+function FControl_psDesign(m, f){
+   var o = this;
+   RConsole.find(FDesignConsole).setFlag(m, f, o);
+   // 创建事件
+   var e = new TEventProcess(null, o, 'oeDesign', MDesign)
+   e.mode = m;
+   e.flag = f;
+   // 处理消息
+   o.process(e);
+   e.dispose();
+}
+
+//==========================================================
+// <T>分发改变控件可操作和禁止的事件。</T>
+//
+// @method
+// @param v:enable:Boolean 是否可操作
+//==========================================================
+function FControl_psEnable(v){
+   var o = this;
+   // 创建事件
+   var e = new TEventProcess(null, o, 'oeEnable', FControl)
+   e.enable = v;
+   // 处理消息
+   o.process(e);
+   e.dispose();
+}
+
+//==========================================================
+// <T>分发改变控件隐藏和显示的事件。</T>
+//
+// @method
+// @param v:visible:Boolean 是否可见
+//==========================================================
+function FControl_psVisible(v){
+   var o = this;
+   // 创建事件
+   var e = new TEventProcess(null, o, 'oeVisible', FControl);
+   e.visible = v;
+   // 处理消息
+   o.process(e);
+   e.dispose();
+}
+
+//==========================================================
+// <T>分发改变控件大小的事件。</T>
+//
+// @method
+//==========================================================
+function FControl_psResize(){
+   var o = this;
+   // 创建事件
+   var e = new TEventProcess(null, o, 'oeResize', FControl);
+   // 处理消息
+   o.process(e);
+   e.dispose();
+}
+
+//==========================================================
+// <T>分发控件刷新的事件。</T>
+//
+// @method
+// @param t:type:String 刷新类型
+//==========================================================
+function FControl_psRefresh(t){
+   var o = this;
+   // 创建事件
+   var e = new TEventProcess(null, o, 'oeRefresh', FControl);
+   // 处理消息
+   o.process(e);
+   e.dispose();
+}
+
+//==========================================================
+// <T>设置控件的页面父容器。</T>
+//
+// @method
+// @param h:hPanel:HtmlTag 页面元素
+//==========================================================
+function FControl_setPanel(h){
+   var o = this;
+   o._hParent = h;
+   h.appendChild(o._hContainer);
+}
+
+//==========================================================
+// <T>构建页面处理。</T>
+//
+// @method
+// @param h:hPanel:HtmlTag 页面元素
+//==========================================================
+function FControl_build(h){
+   var o = this;
+   if(!o._statusBuild){
+      o.psBuild(h);
+   }
+   o.setPanel(h);
+}
+
+//==========================================================
 // <T>释放处理。</T>
 //
 // @method
 //==========================================================
 function FControl_dispose(){
    var o = this;
-   o.__base.FComponent.dispose.call(o)
-   RMemory.freeHtml(o._hContainer);
+   // 释放属性
+   o._disable = null;
+   o._nowrap = null;
+   o._hint = null;
+   // 释放属性
+   o._styleContainer = null;
+   // 释放属性
+   o._statusVisible = null;
+   o._statusEnable = null;
+   o._statusBuild = null;
+   // 释放控件集合
+   var v = o._controls;
+   if(v){
+      v.dispose();
+      o._controls = null;
+   }
+   // 释放属性
    o._hParent = null;
-   o._hContainer = null;
+   var v = o._hContainer;
+   if(v){
+      RMemory.freel(v);
+      o._hContainer = null;
+   }
+   // 释放处理
+   o.__base.MPadding.dispose.call(o);
+   o.__base.MSize.dispose.call(o);
+   o.__base.MStyle.dispose.call(o);
+   o.__base.FComponent.dispose.call(o);
 }

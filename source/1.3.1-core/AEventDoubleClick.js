@@ -10,11 +10,8 @@ function AEventDoubleClick(n){
    var o = this;
    AEvent(o, n, 'dblclick', 'ondblclick');
    //..........................................................
-   // @html
-   o._hSource = null;
-   //..........................................................
    // @method
-   o.attach   = AEventDoubleClick_attach;
+   o.attach = AEventDoubleClick_attach;
    return o;
 }
 
@@ -22,9 +19,8 @@ function AEventDoubleClick(n){
 // <T>接收事件信息。</T>
 //
 // @method
-// @param p:event:Event 事件
+// @param e:event:Event 事件
+// @param h:htmlEvent:HtmlEvent 页面事件
 //==========================================================
-function AEventDoubleClick_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventDoubleClick_attach(e, h){
 }

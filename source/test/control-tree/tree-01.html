@@ -1,6 +1,6 @@
 <HTML>
 <HEAD>
-<TITLE>Popup Example</TITLE>
+<TITLE>Control tree example - 01</TITLE>
 <META http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <LINK rel='stylesheet' href='../../acs/control.css' type='text/css'>
@@ -16,84 +16,69 @@
 <SCRIPT language='javascript' src='../../4.4.1-control-tree/FTreeNodeType.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.4.1-control-tree/FTreeNode.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.4.1-control-tree/FTreeView.js'></SCRIPT>
-
-<SCRIPT>
-RContext.contextPath = '';
-RContext.contextTag = '/system';
-RContext.themeId = '00';
-RContext.languageId = 'cn';
-RContext.uriIcon = '/system/ars/icon';
-RContext.uriPicture = '/system/ars/pic';
-</SCRIPT>
 </HEAD>
 
 <SCRIPT>
-function onCnn(){
-   var ce = new TEvent(this, EXmlEvent.Send);
-   ce.url = 'tree.xml';
-   ce.document = new TXmlDoc();
-	ce.onLoad = function(){
-			_id1.innerText = this.document.xml();
-			_id2.innerText = this.document.dump();
-		}
-
-   var xc = RConsole.find(FXmlConsole);
-   xc.process(ce);
-}
-
-function onShow(){
-	tree.reloadNode();
-}
-
-function tvClick(a,b){
-   //alert(b.dump())
-   //RDump.dump(_id3, tree);
-   //_id3.innerHTML = '';
-   //RDump.dump(_id3, b);
-}
-function tvLoaded(a,b){
-   //RDump.dump(_id3, tree);
-   //RDump.dump(_id3, b);
-}
-
 var tree = null;
+//----------------------------------------------------------
+function onTreeExtend(p){
+   tree.extendAll(null, p);
+}
+//----------------------------------------------------------
+function onTreeNodeClick(tv, tn){
+   _info.innerHTML = 'Click node = ' + tn.label();
+}
+//----------------------------------------------------------
 function _onload(){
+   // 初始内容
    RRuntime.processCd = EProcess.Debug;
+   RContext.contextPath = '/script';
+   RContext.contextTag = '/script/system';
+   RContext.themeId = '00';
+   RContext.languageId = 'cn';
+   RContext.uriIcon = '/system/ars/icon';
+   RContext.uriPicture = '/system/ars/pic';
    RBrowser.construct();
    RBrowser.setContentPath('../..');
-
-   //var xnode = RXml.makeNode(xTree);
-   //RDump.dump(treeConfig, _dump);
-
-   var tv = RClass.create(FTreeView);
-   tv.loadUrl('node.xml');
-   RDump.dump(tv, _dump);
-
-   //tree = RControl.create(treeConfig, _idp);
-   //tree.lsnsLoaded.push(new TListener(null, tvLoaded));
-   //tree.lsnsClick.push(new TListener(null, tvClick));
-   //tree.loadDocument(RXml.makeDocument(oMetaData));
-	//tree.connect('node.xml');
-   //tree.connect('http://localhost:8080/mylife/system.monitor.objects.ws');
-   //tree.connect('http://localhost:88/ajs/help/tree/node.xml');
-
-	//RDump.dump(_id3, tree);
-   //var c = document.createElement("INPUT");
-   //RDump.dump(treeConfig, _id3);
+   // 获得元素
+   var hTreePanel = document.getElementById('_tree');
+   // 创建控件
+   tree = RClass.create(FTreeView);
+   tree.lsnsClick.register(null, onTreeNodeClick);
+   tree.build(hTreePanel);
+   // 创建第一个节点
+   var tn = tree.createNode();
+   tn.setLabel('第一个节点');
+   tree.appendNode(tn);
+   for(var i = 0; i < 10; i++){
+      var tni = tree.createNode();
+      tni.setLabel('第一个节点下的第' + i + '个节点');
+      tn.appendNode(tni);
+   }
+   tn.extend(false);
+   // 创建第二个节点
+   var tn = tree.createNode();
+   tn.setLabel('第二个节点');
+   tree.appendNode(tn);
+   for(var i = 0; i < 10; i++){
+      var tni = tree.createNode();
+      tni.setLabel('第二个节点下的第' + i + '个节点');
+      tn.appendNode(tni);
+   }
+   tn.extend(false);
+   RDump.dump(tree, _dump);
 }
-</SCRIPT>
-
-<SCRIPT id="xTree" type="application/xml">
-   <TreeView>
-		<Column name='tcNode' icon='db.tab' caption='Caption'/>
-   </TreeView>
 </SCRIPT>
 
 <BODY onload='_onload()'>
-<input type='button' value='Connect' onclick='onCnn()'>
-<input type='button' value='Show' onclick='onShow()'>
+<input type='button' value='收起' onclick='onTreeExtend(false)'>
+<input type='button' value='展开' onclick='onTreeExtend(true)'>
 <HR>
-<DIV id='_dump' nowrap></DIV>
+<DIV id='_info'></DIV>
+<HR>
+<DIV id='_tree'></DIV>
+<HR>
+<DIV id='_dump'></DIV>
 </BODY>
 
 </HTML>

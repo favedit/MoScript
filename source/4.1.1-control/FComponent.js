@@ -24,21 +24,30 @@ function FComponent(o){
    // @property String 标签
    o._label        = RClass.register(o, new APtyString('_label'));
    //..........................................................
-   /// @process
+   // @process
    o.oeInitialize  = FComponent_oeInitialize;
    o.oeRelease     = FComponent_oeRelease;
    //..........................................................
-   /// @method
+   // @method
+   o.name          = FComponent_name;
+   o.setName       = FComponent_setName;
+   o.label         = FComponent_label;
+   o.setLabel      = FComponent_setLabel;
+   // @method
    o.isParent      = FComponent_isParent;
    o.topComponent  = FComponent_topComponent;
    o.hasComponent  = FComponent_hasComponent;
    o.components    = FComponent_components;
    o.push          = FComponent_push;
+   // @method
    o.process       = FComponent_process;
    o.psInitialize  = FComponent_psInitialize;
    o.psRelease     = FComponent_psRelease;
+   // @method
    o.toString      = FComponent_toString;
+   // @method
    o.dispose       = FComponent_dispose;
+   // @method
    o.innerDumpInfo = FComponent_innerDumpInfo;
    o.innerDump     = FComponent_innerDump;
    return o;
@@ -64,6 +73,46 @@ function FComponent_oeInitialize(e){
 //==========================================================
 function FComponent_oeRelease(e){
    return EEventStatus.Continue;
+}
+
+//==========================================================
+// <T>获得名称。</T>
+//
+// @method
+// @return String 名称
+//==========================================================
+function FComponent_name(){
+   return this._name;
+}
+
+//==========================================================
+// <T>设置名称。</T>
+//
+// @method
+// @param p:name:String 名称
+//==========================================================
+function FComponent_setName(p){
+   this._name = p;
+}
+
+//==========================================================
+// <T>获得标签。</T>
+//
+// @method
+// @return String 标签
+//==========================================================
+function FComponent_label(){
+   return this._label;
+}
+
+//==========================================================
+// <T>设置标签。</T>
+//
+// @method
+// @param p:label:String 标签
+//==========================================================
+function FComponent_setLabel(p){
+   this._label = p;
 }
 
 //==========================================================
@@ -145,7 +194,7 @@ function FComponent_push(p){
       // 获得子组件集合
       var ps = o.components();
       // 设置子组件名称
-      p.parent = o;
+      p._parent = o;
       if(p._name == null){
          p._name = ps.count();
       }
@@ -259,14 +308,23 @@ function FComponent_toString(){
 }
 
 //==========================================================
-// <T>释放当前实例。</T>
+// <T>释放处理。</T>
 //
 // @method
 //==========================================================
 function FComponent_dispose(){
    var o = this;
+   // 清空属性
    o._parent = null;
-   o._components = null;
+   o._name = null;
+   o._label = null;
+   // 清空组件集合
+   var cs = o._components
+   if(cs){
+      cs.dispose();
+      o._components = null;
+   }
+   // 释放处理
    o.__base.FObject.dispose.call(o);
 }
 

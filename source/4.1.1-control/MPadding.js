@@ -13,14 +13,19 @@ function MPadding(o){
    //..........................................................
    // @method
    o.construct    = MPadding_construct;
+   // @method
    o.padding      = MPadding_padding;
    o.setPadding   = MPadding_setPadding;
    o.refreshStyle = MPadding_refreshStyle;
+   // @method
+   o.dispose      = MPadding_dispose;
    return o;
 }
 
 //==========================================================
 // <T>构造处理。</T>
+//
+// @method
 //==========================================================
 function MPadding_construct(){
    var o = this;
@@ -30,6 +35,7 @@ function MPadding_construct(){
 //==========================================================
 // <T>获得填充信息。</T>
 //
+// @method
 // @return 填充信息
 //==========================================================
 function MPadding_padding(){
@@ -69,5 +75,20 @@ function MPadding_refreshStyle(){
    }
    if(p.bottom){
       h.style.paddingBottom = p.bottom;
+   }
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function MPadding_dispose(){
+   var o = this;
+   // 释放属性
+   var v = o._padding;
+   if(v){
+      v.dispose();
+      o._padding = null;
    }
 }

@@ -10,11 +10,8 @@ function AEventFocus(n){
    var o = this;
    AEvent(o, n, 'focus', 'onfocus');
    //..........................................................
-   // @html
-   o._hSource = null;
-   //..........................................................
    // @method
-   o.attach   = AEventFocus_attach;
+   o.attach = AEventFocus_attach;
    return o;
 }
 
@@ -22,9 +19,8 @@ function AEventFocus(n){
 // <T>接收事件信息。</T>
 //
 // @method
-// @param p:event:Event 事件
+// @param e:event:Event 事件
+// @param h:htmlEvent:HtmlEvent 页面事件
 //==========================================================
-function AEventFocus_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventFocus_attach(e, h){
 }

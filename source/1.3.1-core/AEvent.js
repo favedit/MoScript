@@ -13,17 +13,30 @@ function AEvent(o, n, l, h){
    //..........................................................
    // @attribute
    o._annotationCd = EAnnotation.Event;
+   o._inherit      = true;
    // @attribute
    o._linker       = l;
    o._handle       = h;
    o._process      = null;
    //..........................................................
    // @method
+   o.linker        = AEvent_linker;
    o.handle        = AEvent_handle;
    o.value         = AEvent_value;
+   o.create        = AEvent_create;
    o.attach        = RMethod.empty;
    o.toString      = AEvent_toString;
    return o;
+}
+
+//==========================================================
+// <T>获得关联名称。</T>
+//
+// @method
+// @return String 关联名称
+//==========================================================
+function AEvent_linker(){
+   return this._linker;
 }
 
 //==========================================================
@@ -44,6 +57,16 @@ function AEvent_handle(){
 //==========================================================
 function AEvent_value(){
    return this._process;
+}
+
+//==========================================================
+// <T>创建事件。</T>
+//
+// @method
+// @return SEvent 事件对象
+//==========================================================
+function AEvent_create(){
+   return new SEvent();
 }
 
 //============================================================

@@ -17,6 +17,7 @@ function FXmlConsole(o){
    o.alloc       = FXmlConsole_alloc;
    o.process     = FXmlConsole_process;
    o.send        = FXmlConsole_send;
+   o.sendAsync   = FXmlConsole_sendAsync;
    return o;
 }
 
@@ -110,7 +111,24 @@ function FXmlConsole_process(e){
 function FXmlConsole_send(u, d){
    var o = this;
    var c = o.alloc();
-   var r = c.syncSend(u, d);
+   c._asynchronous = false;
+   var r = c.send(u, d);
    c._statusFree = true;
    return r;
+}
+
+//==========================================================
+// <T>异步获发送一个XML信息，返回XML信息。</T>
+//
+// @method
+// @param u:url:String 发送地址
+// @param d:document:TXmlDocument 发送文档
+// @return TXmlDocument 接收文档
+//==========================================================
+function FXmlConsole_sendAsync(u, d){
+   var o = this;
+   var c = o.alloc();
+   c._asynchronous = true;
+   c.send(u, d);
+   return c;
 }

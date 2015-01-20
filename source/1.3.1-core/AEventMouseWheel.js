@@ -10,19 +10,8 @@ function AEventMouseWheel(n){
    var o = this;
    AEvent(o, n, 'mousewheel', 'onmousewheel');
    //..........................................................
-   // @html
-   o._hSource = null;
-   //..........................................................
-   // @attribute
-   o._altKey  = null;
-   o._ctrlKey = null;
-   o._x       = null;
-   o._y       = null;
-   ///@attribute 用来保存上下键值
-   o._delta   = null;
-   //..........................................................
    // @method
-   o.attach   = AEventMouseWheel_attach;
+   o.attach = AEventMouseWheel_attach;
    return o;
 }
 
@@ -30,19 +19,18 @@ function AEventMouseWheel(n){
 // <T>接收事件信息。</T>
 //
 // @method
-// @param p:event:Event 事件
+// @param e:event:Event 事件
+// @param h:htmlEvent:HtmlEvent 页面事件
 //==========================================================
-function AEventMouseWheel_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
-   o._altKey = p.altKey;
-   o._ctrlKey = p.ctrlKey;
-   o._delta = p.wheelDelta;
+function AEventMouseWheel_attach(e, h){
+   e.altKey = h.altKey;
+   e.ctrlKey = h.ctrlKey;
+   e.delta = h.wheelDelta;
    if(RBrowser.isBrowser(EBrowser.FireFox)){
-      o._x = p.pageX;
-      o._y = p.pageY;
+      e.x = h.pageX;
+      e.y = h.pageY;
    }else{
-      o._x = p.x;
-      o._y = p.y;
+      e.x = h.x;
+      e.y = h.y;
    }
 }

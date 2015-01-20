@@ -1,36 +1,32 @@
-﻿/**************************************************************
- * 存放表格中一列的属性类
- *
- * @tool
- * @author maochunyang
- * @version 1.0.1
- **************************************************************/
+﻿//==========================================================
+// <T>页面事件存储表。</T>
+//
+// @tool
+// @author maocy
+// @version 150120
+//==========================================================
 function THtmlEvent(){
    var o = this;
-   // Property
-   o.link    = null;
+   //..........................................................
+   // @attribute
+   o.linker  = null;
    o.events  = new Object();
-   // Method
-   o.load    = THtmlEvent_load;
+   //..........................................................
+   // @method
+   //o.load    = THtmlEvent_load;
    o.push    = THtmlEvent_push;
    o.dispose = THtmlEvent_dispose;
    o.dump    = THtmlEvent_dump;
    return o;
 }
 
-/**************************************************************
- * <T>从事件对象中复制运行信息。</T>
- *
- * @method
- * @param c:config:TXmlDoc js中的xml节点
- **************************************************************/
-function THtmlEvent_load(e){
-   var o = this;
-   o.ctrlKey = e.ctrlKey;
-   o.keyCode = e.keyCode;
-}
-
-// -------------------------------------------------------------
+//==========================================================
+// <T>页面事件处理。</T>
+//
+// @method
+// @param pn:name:String 事件名称
+// @param pe:event:Event 事件对象
+//==========================================================
 function THtmlEvent_push(pn, pe){
    var o = this;
    var ess = o.events;
@@ -42,33 +38,45 @@ function THtmlEvent_push(pn, pe){
       ess[pn] = es;
    }
    // 存在性检查
-   var f = pe.name;
    var c = es.length;
-   for(var i = 0; i < c; i++){
-      var e = es[i];
-      if(e.name == f){
-         RMessage.fatal(this, 'push', 'Duplicate event for same control. (name={1}, source={2}, event={3})\n{4}\n{5}', pn, RClass.dump(pe.source), RClass.dump(pe), RString.repeat('-', 60), o.dump());
+   if(c > 0){
+      var fn = pe.annotation.name();
+      for(var i = 0; i < c; i++){
+         var e = es[i];
+         var en = e.annotation.name();
+         if(en == fn){
+            throw new TError(o, 'Duplicate event for same control. (name={1}, source={2}, event={3})\n{4}\n{5}', en, RClass.dump(pe.source), RClass.dump(pe), RString.repeat('-', 60), o.dump());
+         }
       }
    }
    // 加入队列
    es[es.length] = pe;
 }
 
-// -------------------------------------------------------------
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
 function THtmlEvent_dispose(){
    var o = this;
    for(var n in o.events){
       var e = o.events[n];
       if(e.length){
-         o.link[e.handle] = null;
+         o.linker[e.handle] = null;
       }
    }
-   if(o.link.link){
-      o.link.removeAttribute('link');
+   if(o.linker.linker){
+      o.linker.removeAttribute('link');
    }
 }
 
-// -------------------------------------------------------------
+//==========================================================
+// <T>获得运行信息。</T>
+//
+// @method
+// @return String 运行信息
+//==========================================================
 function THtmlEvent_dump(){
    var o = this;
    var ess = o.events;
@@ -82,5 +90,20 @@ function THtmlEvent_dump(){
          r.append('   ' + n + ' source=' + RClass.dump(e.source) + ', event=' + RClass.dump(e) + '\n');
       }
    }
-   return r.toString();
+   return r.flush();
 }
+
+
+
+/**************************************************************
+ * <T>从事件对象中复制运行信息。</T>
+ *
+ * @method
+ * @param c:config:TXmlDoc js中的xml节点
+ **************************************************************/
+function THtmlEvent_load(e){
+   var o = this;
+   o.ctrlKey = e.ctrlKey;
+   o.keyCode = e.keyCode;
+}
+

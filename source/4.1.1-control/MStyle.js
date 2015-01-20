@@ -7,10 +7,15 @@
 //==========================================================
 function MStyle(o){
    o = RClass.inherits(this, o);
+   //..........................................................
    // @method
-   o.style         = MStyle_style;
+   o.construct     = RMethod.empty;
+   // @method
+   o.styleName     = MStyle_styleName;
    o.styleIcon     = MStyle_styleIcon;
    o.styleIconPath = MStyle_styleIconPath;
+   // @method
+   o.dispose       = RMethod.empty;
    return o;
 }
 
@@ -22,7 +27,7 @@ function MStyle(o){
 // @param c:class:TClass 类对象
 // @return String 样式名称
 //==========================================================
-function MStyle_style(n, c){
+function MStyle_styleName(n, c){
    var r = RClass.find(c ? c : this, true);
    return r.style(n);
 }

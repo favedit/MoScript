@@ -1037,18 +1037,27 @@ function TMap_toString(){
 function TMap_dispose(){
    var o = this;
    o._count = 0;
-   for(var n in o._table){
-      delete o._table[n];
+   var t = o._table;
+   if(t){
+      for(var i in t){
+         t[i] = null;
+      }
+      o._table = null;
    }
-   o._table = null;
-   for(var n in o._names){
-      delete o._names[n];
+   var n = o._names;
+   if(n){
+      for(var i = n.length - 1; i >= 0; i--){
+         n[i] = null;
+      }
+      o._names = null;
    }
-   o._names = null;
-   for(var n in o._values){
-      delete o._values[n];
+   var v = o._values;
+   if(v){
+      for(var i = v.length - 1; i >= 0; i--){
+         v[i] = null;
+      }
+      o._values = null;
    }
-   o._values = null;
 }
 function TMap_dump(){
    var o = this;
@@ -1236,105 +1245,117 @@ function TObjects_dump(){
 }
 function TString(o){
    if(!o){o = this;}
-   o.count      = 0;
-   o.memory     = new Array();
-   o.isEmpty    = TString_isEmpty;
-   o.assign     = TString_assign;
-   o.append     = TString_append;
-   o.appendIf   = TString_appendIf;
-   o.appendLine = TString_appendLine;
+   o._count       = 0;
+   o._memory      = new Array();
+   o.isEmpty      = TString_isEmpty;
+   o.assign       = TString_assign;
+   o.append       = TString_append;
+   o.appendIf     = TString_appendIf;
+   o.appendLine   = TString_appendLine;
    o.appendRepeat = TString_appendRepeat;
-   o.push       = TString_push;
-   o.clear      = TString_clear;
-   o.toString   = TString_toString;
-   o.dispose    = TString_dispose;
-   o.dump       = TString_dump;
+   o.push         = TString_push;
+   o.clear        = TString_clear;
+   o.toString     = TString_toString;
+   o.flush        = TString_flush;
+   o.dispose      = TString_dispose;
+   o.dump         = TString_dump;
    return o;
 }
 function TString_isEmpty(){
-   return (this.count == 0);
+   return this._count == 0;
 }
 function TString_assign(v){
    var o = this;
    var a = arguments;
    var c = a.length;
-   o.count = 0;
-   for(var n = 0; n < c; n++){
-      if(a[n] != null){
-         o.memory[o.count++] = a[n];
+   o._count = 0;
+   for(var i = 0; i < c; i++){
+      var v = a[n];
+      if(v != null){
+         o._memory[o._count++] = v;
       }
    }
-   return o;
 }
 function TString_append(v){
    var o = this;
    var a = arguments;
    var c = a.length;
-   for(var n = 0; n < c; n++){
-      if(a[n] != null){
-         o.memory[o.count++] = a[n];
+   for(var i = 0; i < c; i++){
+      var v = a[i];
+      if(v != null){
+         o._memory[o._count++] = v;
       }
    }
-   return o;
 }
 function TString_appendIf(f, v){
    var o = this;
    if(f){
       var a = arguments;
       var c = a.length;
-      for(var n = 1; n < c; n++){
-         if(a[n] != null){
-            o.memory[o.count++] = a[n];
+      for(var i = 1; i < c; i++){
+         var v = a[i];
+         if(v != null){
+            o._memory[o._count++] = v;
          }
       }
    }
-   return o;
 }
 function TString_appendRepeat(v, c){
    var o = this;
-   for(var n = 0; n < c; n++){
-      o.memory[o.count++] = v;
+   for(var i = 0; i < c; i++){
+      o._memory[o._count++] = v;
    }
-   return o;
 }
 function TString_appendLine(v){
    var o = this;
    var a = arguments;
    var c = a.length;
-   for(var n = 0; n < c; n++){
-      if(a[n] != null){
-         o.memory[o.count++] = a[n] + '';
+   for(var i = 0; i < c; i++){
+      var v = a[i];
+      if(v != null){
+         o._memory[o._count++] = v;
       }
    }
-   o.memory[o.count++] = '\r\n';
-   return o;
+   o._memory[o._count++] = '\r\n';
 }
 function TString_push(v){
    var o = this;
    var a = arguments;
    var c = a.length;
-   for(var n = 0; n < c; n++){
-      if(a[n] != null){
-         o.memory[o.count++] = a[n];
+   for(var i = 0; i < c; i++){
+      var v = a[i];
+      if(v != null){
+         o._memory[o._count++] = v;
       }
    }
-   return o;
 }
 function TString_clear(){
-   this.count = 0;
+   this._count = 0;
 }
 function TString_toString(){
    var o = this;
-   var r = o.memory;
-   if(o.memory.length != o.count){
-      r = o.memory.slice(0, o.count);
+   var r = o._memory;
+   if(o._memory.length != o._count){
+      r = o._memory.slice(0, o._count);
    }
    return r.join('');
 }
+function TString_flush(){
+   var o = this;
+   var r = o.toString();
+   o.dispose();
+   return r;
+}
 function TString_dispose(){
    var o = this;
-   o.count = 0;
-   o.memory = null;
+   o._count = 0;
+   var m = o._memory;
+   if(m){
+      for(var i = m.length - 1; i >= 0; i--){
+         m[i] = null;
+      }
+      o._memory = null;
+   }
 }
 function TString_dump(){
    var o = this;

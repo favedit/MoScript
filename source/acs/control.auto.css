@@ -305,20 +305,6 @@
 
    filter: progid:DXImageTransform.Microsoft.Gradient(gradienttype=0,startcolorstr=#DDDDDD,endcolorstr=#FFFFFF);
    }
-.FTreeView_Node
-   {
-   width: 0;
-   }
-.FTreeView_NodeHover
-   {
-   background-color: #DDDDDD;
-   cursor: hand;
-   }
-.FTreeView_NodeSelect
-   {
-   background-color: #CCCCCC;
-   cursor: hand;
-   }
 .FTreeView_Cell
    {
    padding-left: 1;

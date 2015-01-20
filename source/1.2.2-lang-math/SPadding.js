@@ -11,23 +11,30 @@
 //==========================================================
 function SPadding(l, t, r, b){
    var o = this;
+   //..........................................................
    // @attribute
    o.left     = RInteger.nvl(l);
    o.top      = RInteger.nvl(t);
    o.right    = RInteger.nvl(r);
    o.bottom   = RInteger.nvl(b);
+   //..........................................................
    // @method
    o.reset    = SPadding_reset;
    o.assign   = SPadding_assign;
    o.set      = SPadding_set;
    o.parse    = SPadding_parse;
    o.toString = SPadding_toString;
+   // @method
+   o.dispose  = SPadding_dispose;
+   // @method
    o.dump     = SPadding_dump;
    return o;
 }
 
 //============================================================
 // <T>重置数据。</T>
+//
+// @method
 //============================================================
 function SPadding_reset(){
    var o = this;
@@ -40,6 +47,7 @@ function SPadding_reset(){
 //============================================================
 // <T>接收填充对象。</T>
 //
+// @method
 // @param p:padding:SPadding 填充对象
 //============================================================
 function SPadding_assign(p){
@@ -53,6 +61,7 @@ function SPadding_assign(p){
 //============================================================
 // <T>设置数据内容。</T>
 //
+// @method
 // @param l:left:Number 左边距
 // @param t:top:Number 上边距
 // @param r:right:Number 右边距
@@ -69,6 +78,7 @@ function SPadding_set(l, t, r, b){
 //============================================================
 // <T>解析字符串。</T>
 //
+// @method
 // @param v:value:String 字符串
 //============================================================
 function SPadding_parse(v){
@@ -87,6 +97,7 @@ function SPadding_parse(v){
 //============================================================
 // <T>获得字符串。</T>
 //
+// @method
 // @return String 字符串
 //============================================================
 function SPadding_toString(){
@@ -95,8 +106,22 @@ function SPadding_toString(){
 }
 
 //============================================================
+// <T>释放处理。</T>
+//
+// @method
+//============================================================
+function SPadding_dispose(){
+   var o = this;
+   o.left = null;
+   o.top = null;
+   o.right = null;
+   o.bottom = null;
+}
+
+//============================================================
 // <T>获得运行信息。</T>
 //
+// @method
 // @return String 运行信息
 //============================================================
 function SPadding_dump(d){

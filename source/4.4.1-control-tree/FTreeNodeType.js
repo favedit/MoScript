@@ -7,18 +7,64 @@
 //==========================================================
 function FTreeNodeType(o){
    o = RClass.inherits(this, o, FComponent);
-   // Property
-   o._type       = RClass.register(o, new APtyString('type'));
-   o._typeName   = RClass.register(o, new APtyString('typeName'));
-   o._icon       = RClass.register(o, new APtyString('icon'));
-   o._service    = RClass.register(o, new APtyString('service'));
-   o._action     = RClass.register(o, new APtyString('action'));
-   o._config     = RClass.register(o, new APtyConfig('config'));
-   // Event
-   o.get        = FTreeNodeType_get;
-   o.set        = FTreeNodeType_set;
-   o.innerDump  = FTreeNodeType_innerDump;
+   //..........................................................
+   // @oroperty
+   o._typeName    = RClass.register(o, new APtyString('_typeName', 'type'));
+   o._icon        = RClass.register(o, new APtyString('_icon'));
+   o._serviceName = RClass.register(o, new APtyString('_serviceName', 'service'));
+   o._actionName  = RClass.register(o, new APtyString('_actionName', 'action'));
+   o._config      = RClass.register(o, new APtyConfig('_config'));
+   //..........................................................
+   o.typeName     = FTreeNodeType_typeName;
+   o.icon         = FTreeNodeType_icon;
+   o.serviceName  = FTreeNodeType_serviceName;
+   o.actionName   = FTreeNodeType_actionName;
+   // @method
+   o.get          = FTreeNodeType_get;
+   o.set          = FTreeNodeType_set;
+   // @method
+   o.innerDump    = FTreeNodeType_innerDump;
    return o;
+}
+
+//==========================================================
+// <T>获得类型名称。</T>
+//
+// @method
+// @return String 类型名称
+//==========================================================
+function FTreeNodeType_typeName(){
+   return this._typeName;
+}
+
+//==========================================================
+// <T>获得图标。</T>
+//
+// @method
+// @return String 图标
+//==========================================================
+function FTreeNodeType_icon(){
+   return this._icon;
+}
+
+//==========================================================
+// <T>获得服务名称。</T>
+//
+// @method
+// @return String 类型名称
+//==========================================================
+function FTreeNodeType_serviceName(){
+   return this._serviceName;
+}
+
+//==========================================================
+// <T>获得命令名称</T>
+//
+// @method
+// @return String 类型名称
+//==========================================================
+function FTreeNodeType_actionName(){
+   return this._actionName;
 }
 
 //==========================================================
@@ -56,9 +102,10 @@ function FTreeNodeType_set(n, v){
 //==========================================================
 function FTreeNodeType_innerDump(s){
    var o = this;
-   s.append(RClass._typeOf(o));
-   s.append('[icon=',  o._icon);
-   s.append(', service=', o._service);
-   s.append(', action=', o._action);
+   s.append(RClass.dump(o));
+   s.append('[type=',  o._typeName);
+   s.append(', icon=',  o._icon);
+   s.append(', service=', o._serviceName);
+   s.append(', action=', o._actionName);
    s.append(']');
 }

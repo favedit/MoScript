@@ -29,7 +29,9 @@ function APtyInteger(n, l, v){
 //============================================================
 function APtyInteger_build(v){
    var o = this;
-   v[o._name] = o._value;
+   if(o._value != 0){
+      v[o._name] = o._value;
+   }
 }
 
 //============================================================

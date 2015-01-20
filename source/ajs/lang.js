@@ -98,7 +98,7 @@ function APtyBoolean_load(v, x){
    var o = this;
    v[o._name] = RBoolean.parse(x.get(o._linker));
 }
-function APtyBoolean_save(o, c){
+function APtyBoolean_save(v, x){
    var o = this;
    x.set(o._linker, RBoolean.toString(v[o._name]));
 }
@@ -127,7 +127,9 @@ function APtyInteger(n, l, v){
 }
 function APtyInteger_build(v){
    var o = this;
-   v[o._name] = o._value;
+   if(o._value != 0){
+      v[o._name] = o._value;
+   }
 }
 function APtyInteger_toString(){
    var o = this;
@@ -357,6 +359,7 @@ function FConsole_scopeCd(){
 function FObject(o){
    if(!o){o = this;}
    o.__class   = null;
+   o.__dispose = false;
    o.construct = FObject_construct;
    o.toString  = FObject_toString;
    o.dispose   = FObject_dispose;
@@ -365,12 +368,16 @@ function FObject(o){
    return o;
 }
 function FObject_construct(){
+   var o = this;
+   o.__dispose = false;
 }
 function FObject_toString(){
    return RClass.dump(this);
 }
 function FObject_dispose(){
-   this.__class = null;
+   var o = this;
+   o.__class = null;
+   o.__dispose = true;
 }
 function FObject_innerDump(s, l){
    s.append(RClass.dump(this));
@@ -378,7 +385,7 @@ function FObject_innerDump(s, l){
 function FObject_dump(){
    var r = new TString();
    this.innerDump(r, 0);
-   return r.toString();
+   return r.flush();
 }
 function FObjectPool(o){
    o = RClass.inherits(this, o, FObject);
@@ -430,25 +437,6 @@ function FObjectPool_dispose(){
    }
    o.__base.FObject.dispose.call(o);
 }
-function MClone(o){
-   o = RClass.inherits(this, o);
-   o.clone  = MClone_clone;
-   return o;
-}
-function MClone_clone(){
-   var o = this;
-   var r = RClass.create(o.constructor);
-   for(var n in o){
-      v = o[n];
-      if(v != null){
-         if(!RClass.isBaseDataType(v.constructor)){
-            r[n] = v.clone();
-         }
-      }
-      r[n] = v;
-   }
-   return r;
-}
 function MInstance(o){
    o = RClass.inherits(this, o);
    o.__free          = false;
@@ -457,54 +445,6 @@ function MInstance(o){
    o.instanceFree    = RMethod.empty;
    o.instanceRelease = RMethod.empty;
    return o;
-}
-function MProperty(o){
-   o = RClass.inherits(this, o);
-   o.propertyAssign = MProperty_propertyAssign;
-   o.propertyLoad   = MProperty_propertyLoad;
-   o.propertySave   = MProperty_propertySave;
-   return o;
-}
-function MProperty_propertyAssign(v){
-   var o = this;
-   var c = RClass.find(o.constructor);
-   var as = c.annotations(EAnnotation.Property);
-   for(var n in as){
-      var a = as[n];
-      if(a.constructor != Function){
-         o[a._name] = c[a._name];
-      }
-   }
-}
-function MProperty_propertyLoad(v){
-   var o = this;
-   var c = RClass.find(o.constructor);
-   var as = c.annotations(EAnnotation.Property);
-   for(var n in as){
-      var a = as[n];
-      if(a.constructor != Function){
-         if(a._force){
-            a.load(o, v);
-         }else{
-            if(v.contains(a._linker)){
-               a.load(o, v);
-            }else if(o[p._name] == null){
-               o[a._name] = a._value;
-            }
-         }
-      }
-   }
-}
-function MProperty_propertySave(v){
-   var o = this;
-   var c = RClass.find(o.constructor);
-   var as = c.annotations(EAnnotation.Property);
-   for(var n in as){
-      var a = as[n];
-      if(a.constructor != Function){
-         a.save(o, v);
-      }
-   }
 }
 var RArray = new function RArray(){
    var o = this;
@@ -3990,7 +3930,7 @@ function TSpeed(o){
 function TSpeed_record(){
    var o = this;
    var sp = new Date().getTime() - o.start;
-   RLogger.log(ELogger.Debug, o.callerName, sp, o.arguments);
+   RLogger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
    o.arguments = null;
    o.start = null;
    o.callerName = null;

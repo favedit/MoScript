@@ -17,17 +17,23 @@ function MSize(o){
    //..........................................................
    // @method
    o.construct = MSize_construct;
+   // @method
    o.calcRect  = MSize_calcRect;
    o.resize    = MSize_resize;
    o.setSize   = MSize_setSize;
    o.setBounds = MSize_setBounds;
    o.resetSize = MSize_resetSize;
+   // @method
+   o.dispose   = MSize_dispose;
+   // @method
    o.innerDump = MSize_innerDump;
    return o;
 }
 
 //==========================================================
 // <T>构造处理。</T>
+//
+// @method
 //==========================================================
 function MSize_construct(){
    var o = this;
@@ -38,6 +44,7 @@ function MSize_construct(){
 //==========================================================
 // <T>改变大小。</T>
 //
+// @method
 // @param w:width:Number 宽度
 // @param h:height:Number 高度
 //==========================================================
@@ -68,6 +75,7 @@ function MSize_resize(width, height){
 //==========================================================
 // <T>设置大小。</T>
 //
+// @method
 // @param w:width:Number 宽度
 // @param h:height:Number 高度
 //==========================================================
@@ -84,6 +92,7 @@ function MSize_setSize(w, h){
 //==========================================================
 // <T>设置尺寸。</T>
 //
+// @method
 // @param w:width:Number 宽度
 // @param h:height:Number 高度
 //==========================================================
@@ -135,6 +144,7 @@ function MSize_setBounds(l, t, r, b, force){
 //==========================================================
 // <T>重置大小。</T>
 //
+// @method
 // @param w:width:Number 宽度
 // @param h:height:Number 高度
 //==========================================================
@@ -146,6 +156,7 @@ function MSize_resetSize(){
 //==========================================================
 // <T>计算矩形。</T>
 //
+// @method
 // @param w:width:Number 宽度
 // @param h:height:Number 高度
 //==========================================================
@@ -156,8 +167,30 @@ function MSize_calcRect(){
 }
 
 //==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function MSize_dispose(){
+   var o = this;
+   // 释放位置
+   var v = o._location;
+   if(v){
+      v.dispose();
+      o._location = null;
+   }
+   // 释放尺寸
+   var v = o._size;
+   if(v){
+      v.dispose();
+      o._size = null;
+   }
+}
+
+//==========================================================
 // <T>计算矩形。</T>
 //
+// @method
 // @param w:width:Number 宽度
 // @param h:height:Number 高度
 //==========================================================

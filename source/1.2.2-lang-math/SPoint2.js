@@ -7,9 +7,11 @@
 //============================================================
 function SPoint2(x, y){
    var o = this;
+   //..........................................................
    // @attribute
    o.x           = RInteger.nvl(x);
    o.y           = RInteger.nvl(y);
+   //..........................................................
    // @method
    o.equals      = SPoint2_equals;
    o.assign      = SPoint2_assign;
@@ -17,6 +19,9 @@ function SPoint2(x, y){
    o.serialize   = SPoint2_serialize;
    o.unserialize = SPoint2_unserialize;
    o.toString    = SPoint2_toString;
+   // @method
+   o.dispose     = SPoint2_dispose;
+   // @method
    o.dump        = SPoint2_dump;
    return o;
 }
@@ -89,6 +94,17 @@ function SPoint2_unserialize(p){
 function SPoint2_toString(){
    var o = this;
    return o.x + ',' + o.y;
+}
+
+//============================================================
+// <T>释放处理。</T>
+//
+// @method
+//============================================================
+function SPoint2_dispose(){
+   var o = this;
+   o.x = null;
+   o.y = null;
 }
 
 //============================================================

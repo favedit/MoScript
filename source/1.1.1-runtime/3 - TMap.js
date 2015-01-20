@@ -395,20 +395,29 @@ function TMap_dispose(){
    var o = this;
    o._count = 0;
    // 清除对照表数据
-   for(var n in o._table){
-      delete o._table[n];
+   var t = o._table;
+   if(t){
+      for(var i in t){
+         t[i] = null;
+      }
+      o._table = null;
    }
-   o._table = null;
-   // 清空名称集
-   for(var n in o._names){
-      delete o._names[n];
+   // 清空名称集合
+   var n = o._names;
+   if(n){
+      for(var i = n.length - 1; i >= 0; i--){
+         n[i] = null;
+      }
+      o._names = null;
    }
-   o._names = null;
-   // 清空数据集
-   for(var n in o._values){
-      delete o._values[n];
+   // 清空数据集合
+   var v = o._values;
+   if(v){
+      for(var i = v.length - 1; i >= 0; i--){
+         v[i] = null;
+      }
+      o._values = null;
    }
-   o._values = null;
 }
 
 //==========================================================

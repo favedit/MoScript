@@ -1,5 +1,5 @@
 ﻿//==========================================================
-// <T>三维尺寸结构。</T>
+// <T>二维尺寸结构。</T>
 //
 // @struct
 // @param w:width:Number 宽度
@@ -9,14 +9,19 @@
 //==========================================================
 function SSize2(w, h){
    var o = this;
+   //..........................................................
    // @attribute
    o.width    = RInteger.nvl(w);
    o.height   = RInteger.nvl(h);
+   //..........................................................
    // @method
    o.assign   = SSize2_assign;
    o.set      = SSize2_set;
    o.parse    = SSize2_parse;
    o.toString = SSize2_toString;
+   // @method
+   o.dispose  = SSize2_dispose;
+   // @method
    o.dump     = SSize2_dump;
    return o;
 }
@@ -68,6 +73,17 @@ function SSize2_parse(v){
 function SSize2_toString(){
    var o = this;
    return o.width + ',' + o.height;
+}
+
+//============================================================
+// <T>释放处理。</T>
+//
+// @method
+//============================================================
+function SSize2_dispose(){
+   var o = this;
+   o.width = null;
+   o.height = null;
 }
 
 //============================================================

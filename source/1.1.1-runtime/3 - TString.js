@@ -7,21 +7,24 @@
 //==========================================================
 function TString(o){
    if(!o){o = this;}
-   // Attribute
-   o.count      = 0;
-   o.memory     = new Array();
-   // Method
-   o.isEmpty    = TString_isEmpty;
-   o.assign     = TString_assign;
-   o.append     = TString_append;
-   o.appendIf   = TString_appendIf;
-   o.appendLine = TString_appendLine;
+   //..........................................................
+   // @attribute
+   o._count       = 0;
+   o._memory      = new Array();
+   //..........................................................
+   // @method
+   o.isEmpty      = TString_isEmpty;
+   o.assign       = TString_assign;
+   o.append       = TString_append;
+   o.appendIf     = TString_appendIf;
+   o.appendLine   = TString_appendLine;
    o.appendRepeat = TString_appendRepeat;
-   o.push       = TString_push;
-   o.clear      = TString_clear;
-   o.toString   = TString_toString;
-   o.dispose    = TString_dispose;
-   o.dump       = TString_dump;
+   o.push         = TString_push;
+   o.clear        = TString_clear;
+   o.toString     = TString_toString;
+   o.flush        = TString_flush;
+   o.dispose      = TString_dispose;
+   o.dump         = TString_dump;
    return o;
 }
 
@@ -32,11 +35,11 @@ function TString(o){
 // @return Boolean 是否为空
 //==========================================================
 function TString_isEmpty(){
-   return (this.count == 0);
+   return this._count == 0;
 }
 
 //==========================================================
-// <T>用另外一个或多个字符串替换当前字符串。</T>
+// <T>接收一个或多个字符串。</T>
 //
 // @method
 // @param v:values:String... 字符串
@@ -45,18 +48,17 @@ function TString_assign(v){
    var o = this;
    var a = arguments;
    var c = a.length;
-   o.count = 0;
-   for(var n = 0; n < c; n++){
-      if(a[n] != null){
-         o.memory[o.count++] = a[n];
+   o._count = 0;
+   for(var i = 0; i < c; i++){
+      var v = a[n];
+      if(v != null){
+         o._memory[o._count++] = v;
       }
    }
-   return o;
 }
 
 //==========================================================
-// <T>追加一个或多个字符串到当前字符串尾部。</T>
-// <P>被追加的内容转换为字符串，放在当前字符串的末尾。</P>
+// <T>追加一个或多个字符串。</T>
 //
 // @method
 // @param v:values:String... 字符串
@@ -65,12 +67,12 @@ function TString_append(v){
    var o = this;
    var a = arguments;
    var c = a.length;
-   for(var n = 0; n < c; n++){
-      if(a[n] != null){
-         o.memory[o.count++] = a[n];
+   for(var i = 0; i < c; i++){
+      var v = a[i];
+      if(v != null){
+         o._memory[o._count++] = v;
       }
    }
-   return o;
 }
 
 //==========================================================
@@ -85,13 +87,13 @@ function TString_appendIf(f, v){
    if(f){
       var a = arguments;
       var c = a.length;
-      for(var n = 1; n < c; n++){
-         if(a[n] != null){
-            o.memory[o.count++] = a[n];
+      for(var i = 1; i < c; i++){
+         var v = a[i];
+         if(v != null){
+            o._memory[o._count++] = v;
          }
       }
    }
-   return o;
 }
 
 //==========================================================
@@ -103,10 +105,9 @@ function TString_appendIf(f, v){
 //==========================================================
 function TString_appendRepeat(v, c){
    var o = this;
-   for(var n = 0; n < c; n++){
-      o.memory[o.count++] = v;
+   for(var i = 0; i < c; i++){
+      o._memory[o._count++] = v;
    }
-   return o;
 }
 
 //==========================================================
@@ -119,13 +120,13 @@ function TString_appendLine(v){
    var o = this;
    var a = arguments;
    var c = a.length;
-   for(var n = 0; n < c; n++){
-      if(a[n] != null){
-         o.memory[o.count++] = a[n] + '';
+   for(var i = 0; i < c; i++){
+      var v = a[i];
+      if(v != null){
+         o._memory[o._count++] = v;
       }
    }
-   o.memory[o.count++] = '\r\n';
-   return o;
+   o._memory[o._count++] = '\r\n';
 }
 
 //==========================================================
@@ -139,22 +140,21 @@ function TString_push(v){
    var o = this;
    var a = arguments;
    var c = a.length;
-   for(var n = 0; n < c; n++){
-      if(a[n] != null){
-         o.memory[o.count++] = a[n];
+   for(var i = 0; i < c; i++){
+      var v = a[i];
+      if(v != null){
+         o._memory[o._count++] = v;
       }
    }
-   return o;
 }
 
 //==========================================================
 // <T>清除字符串内容。</T>
 //
 // @method
-// @param v:values:Object... 字符串
 //==========================================================
 function TString_clear(){
-   this.count = 0;
+   this._count = 0;
 }
 
 //==========================================================
@@ -165,11 +165,24 @@ function TString_clear(){
 //==========================================================
 function TString_toString(){
    var o = this;
-   var r = o.memory;
-   if(o.memory.length != o.count){
-      r = o.memory.slice(0, o.count);
+   var r = o._memory;
+   if(o._memory.length != o._count){
+      r = o._memory.slice(0, o._count);
    }
    return r.join('');
+}
+
+//==========================================================
+// <T>获得字符串内容，释放所有内容。</T>
+//
+// @method
+// @return String 字符串
+//==========================================================
+function TString_flush(){
+   var o = this;
+   var r = o.toString();
+   o.dispose();
+   return r;
 }
 
 //==========================================================
@@ -179,8 +192,16 @@ function TString_toString(){
 //==========================================================
 function TString_dispose(){
    var o = this;
-   o.count = 0;
-   o.memory = null;
+   // 清空属性
+   o._count = 0;
+   // 清空内存
+   var m = o._memory;
+   if(m){
+      for(var i = m.length - 1; i >= 0; i--){
+         m[i] = null;
+      }
+      o._memory = null;
+   }
 }
 
 //==========================================================

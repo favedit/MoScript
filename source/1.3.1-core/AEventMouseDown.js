@@ -10,21 +10,8 @@ function AEventMouseDown(n){
    var o = this;
    AEvent(o, n, 'mousedown', 'onmousedown');
    //..........................................................
-   // @html
-   o._hSource = null;
-   //..........................................................
-   // @atribute
-   o._altKey  = null;
-   o._ctrlKey = null;
-   o._x       = null;
-   o._y       = null;
-   o._offsetX = null;
-   o._offsetY = null;
-   o._clientX = null;
-   o._clientY = null;
-   //..........................................................
    // @method
-   o.attach   = AEventMouseDown_attach;
+   o.attach = AEventMouseDown_attach;
    return o;
 }
 
@@ -32,24 +19,23 @@ function AEventMouseDown(n){
 // <T>接收事件信息。</T>
 //
 // @method
-// @param p:event:Event 事件
+// @param e:event:Event 事件
+// @param h:htmlEvent:HtmlEvent 页面事件
 //==========================================================
-function AEventMouseDown_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
-   o._altKey = p.altKey;
-   o._ctrlKey = p.ctrlKey;
+function AEventMouseDown_attach(e, h){
+   e.altKey = h.altKey;
+   e.ctrlKey = h.ctrlKey;
    if(RBrowser.isBrowser(EBrowser.FireFox)){
-      o._x = p.pageX;
-      o._y = p.pageY;
-      o._offsetX = p.layerX;
-      o._offsetY = p.layerY;
+      e.x = h.pageX;
+      e.y = h.pageY;
+      e.offsetX = h.layerX;
+      e.offsetY = h.layerY;
    }else{
-      o._x = p.x;
-      o._y = p.y;
-      o._offsetX = p.offsetX;
-      o._offsetY = p.offsetY;
+      e.x = h.x;
+      e.y = h.y;
+      e.offsetX = h.offsetX;
+      e.offsetY = h.offsetY;
    }
-   o._clientX = p.clientX;
-   o._clientY = p.clientY;
+   e.clientX = h.clientX;
+   e.clientY = h.clientY;
 }

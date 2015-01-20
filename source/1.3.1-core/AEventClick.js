@@ -10,11 +10,8 @@ function AEventClick(n){
    var o = this;
    AEvent(o, n, 'click', 'onclick');
    //..........................................................
-   // @html
-   o._hSource = null;
-   //..........................................................
    // @method
-   o.attach   = AEventClick_attach;
+   o.attach = AEventClick_attach;
    return o;
 }
 
@@ -22,9 +19,8 @@ function AEventClick(n){
 // <T>接收事件信息。</T>
 //
 // @method
-// @param p:event:Event 事件
+// @param e:event:Event 事件
+// @param h:htmlEvent:HtmlEvent 页面事件
 //==========================================================
-function AEventClick_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventClick_attach(e, h){
 }

@@ -1,27 +1,33 @@
-//===========================================================
-// 控件的管理创建类
+//==========================================================
+// <T>控件的管理类。</T>
 //
 // @reference
-// @author maochunyang
-// @version 1.0.1
-//===========================================================
+// @author maocy
+// @version 150120
+//==========================================================
 var RControl = new function RControl(){
    var o = this;
-   // Attribute
+   //..........................................................
+   // @method
+   o.attachEvent        = RControl_attachEvent;
+
+
+   //..........................................................
+   // @attribute
    o.inMoving           = false;
    o.inSizing           = false;
    o.inDesign           = false;
-   /// @attribute TList 存放所有的控件
+   // @attribute TList 存放所有的控件
    o.instances          = new TList();
    o.events             = new TMap();
    o.controls           = new TMap();
-   // Member
+   //..........................................................
+   // @member
    o.innerbuild         = RControl_innerbuild;
    o.build              = RControl_build;
    o.innerCreate        = RControl_innerCreate;
    o.create             = RControl_create;
    o.linkEvent          = RControl_linkEvent;
-   o.attachEvent        = RControl_attachEvent;
    o.find               = RControl_find;
    o.fromNode           = RControl_fromNode;
    o.fromXml            = RControl_fromXml;
@@ -37,6 +43,54 @@ var RControl = new function RControl(){
    o.newInstanceByName  = RControl_newInstance;
    return o;
 }
+
+//==========================================================
+// <T>连接一个页面事件。</T>
+//
+// @method
+// @param c:control:FControl 控件对象
+// @param n:name:String 事件名称
+// @param h:html:HtmlTag 页面元素
+// @param m:method:Function 处理函数
+//==========================================================
+function RControl_attachEvent(c, n, h, m){
+   var o = this;
+   var e = null;
+   var p = c[n];
+   if(!RMethod.isEmpty(p) || m){
+      // 获得注册过的事件对象
+      var cz = RClass.find(c.constructor);
+      var a = cz.annotation(EAnnotation.Event, n);
+      var al = a.linker();
+      var ah = a.handle();
+      // 复制当前注册事件
+      e = a.create();
+      e.annotation = a;
+      e.source = c;
+      e.hSource = h;
+      // 设置立即回调事件
+      e.ohProcess = m;
+      // 设置队列回调事件
+      e.onProcess = p;
+      // 存储事件
+      e.process = REvent.onProcess;
+      var es = REvent.find(h);
+      es.push(al, e);
+      // 关联事件处理到HTML元素上
+      h[ah] = REvent.ohEvent;
+      RHtml.linkSet(h, '_plink', c);
+   }
+   return e;
+}
+
+
+
+
+
+
+
+
+
 // ------------------------------------------------------------
 function RControl_innerbuild(ctl, cfg){
    if(ctl){
@@ -184,32 +238,6 @@ function RControl_linkEvent(tc, sc, n, h, m){
       // 关联事件处理到HTML元素上
       h[e.handle] = REvent.ohEvent;
       RHtml.linkSet(h, '_plink', tc);
-      return e;
-   }
-}
-// ------------------------------------------------------------
-function RControl_attachEvent(c, n, h, m){
-   var o = this;
-   var p = c[n];
-   if(!RMethod.isEmpty(p) || m){
-      // 获得注册过的事件对象
-      var cz = RClass.find(c.constructor);
-      var a = cz.annotation(EAnnotation.Event, n);
-      // 复制当前注册事件
-      var e = new a.constructor();
-      e.name = a.name;
-      e.source = c;
-      e.hSource = h;
-      // 设置立即回调事件
-      e.ohProcess = m;
-      // 设置队列回调事件
-      e.onProcess = p;
-      e.process = REvent.onProcess;
-      // 存储事件
-      REvent.find(h).push(e.type, e);
-      // 关联事件处理到HTML元素上
-      h[e.handle] = REvent.ohEvent;
-      RHtml.linkSet(h, '_plink', c);
       return e;
    }
 }

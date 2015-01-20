@@ -90,6 +90,149 @@ function FContentPipeline(o){
 function FContentPipeline_scopeCd(){
    return this._scopeCd;
 }
+function FEnvironmentConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o.scope       = EScope.Page;
+   o.environment = null;
+   o.connect     = FEnvironmentConsole_connect;
+   o.build       = FEnvironmentConsole_build;
+   o.buildValue  = FEnvironmentConsole_buildValue;
+   o.xml         = FEnvironmentConsole_xml;
+   return o;
+}
+function FEnvironmentConsole_connect(){
+   var xData = RHtml.get('xEnvironment');
+   if(xData){
+      this.environment = RXml.makeNode(xData);
+   }
+}
+function FEnvironmentConsole_build(config){
+   if(!this.environment){
+      this.connect()
+   }
+   if(this.environment){
+      var node = config.create('Environment');
+      node.attributes().append(this.environment.attributes());
+   }
+}
+function FEnvironmentConsole_buildValue(){
+   if(!this.environment){
+      this.connect()
+   }
+   if(this.environment){
+      var env = RHtml.get('_environment');
+      if(env){
+         env.value = this.environment.xml();
+      }
+   }
+}
+function FEnvironmentConsole_xml(){
+   if(!this.environment){
+      this.connect()
+   }
+   if(this.environment){
+      return this.environment.xml();
+   }
+   return null;
+}
+function FEventConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd   = EScope.Local;
+   o._thread    = null;
+   o._interval  = 10;
+   o._allow     = true;
+   o._allows    = new TAttributes();
+   o._events    = new TObjects();
+   o._listeners = new TAttributes();
+   o.onProcess  = FEventConsole_onProcess;
+   o.construct  = FEventConsole_construct;
+   o.register   = FEventConsole_register;
+   o.push       = FEventConsole_push;
+   o.clear      = FEventConsole_clear;
+   return o;
+}
+function FEventConsole_onProcess(){
+   var o = this;
+   var es = o._events;
+   var ec = es.count();
+   if(ec > 0){
+      while(true){
+         var has = false;
+         for(var n = 0; n < ec; n++){
+            var e = es.get(n);
+            if(e){
+               has = true;
+               e.process();
+               var ls = o._listeners.get(RMethod.name(e));
+               if(ls){
+                  ls.process(e);
+               }
+               es.set(n, null)
+            }
+         }
+         if(!has){
+            break;
+         }
+      }
+      es.clear();
+   }
+}
+function FEventConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.lsnsProcess.register(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(t);
+   RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
+}
+function FEventConsole_register(po, pc){
+   this._events.push(new TEvent(po, null, pc));
+}
+function FEventConsole_push(e){
+   var o = this;
+   var n = RClass.name(e)
+   if(o._allow){
+      var a = true;
+      if(o._allows.contains(n)){
+         a = RBoolean.isTrue(o._allows.get(n));
+      }
+      if(a){
+         var es = o._events;
+         var c = es.count();
+         for(var i = 0; i < c; i++){
+            if(es.get(n) == e){
+               es.set(n, null);
+            }
+         }
+         es.push(e);
+      }
+   }
+}
+function FEventConsole_clear(){
+   this._events.clear();
+}
+function FEventConsole_add(owner, proc){
+   this._events.push(new TEvent(owner, null, proc));
+}
+function FEventConsole_allowEvent(c){
+   this._allows.set(RMethod.name(c), EBool.True);
+}
+function FEventConsole_skipEvent(c){
+   this._allows.set(RMethod.name(c), EBool.False);
+}
+function FEventConsole_allowAll(){
+   this._allow = true;
+}
+function FEventConsole_skipAll(){
+   this._allow = false;
+}
+function FEventConsole_onlyCall(c, m){
+   var o = this;
+   o._allow = false;
+   m.call(c);
+   o._allow = true;
+}
 function FHttpConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd  = EScope.Local;
@@ -581,6 +724,7 @@ function FXmlConsole(o){
    o.alloc       = FXmlConsole_alloc;
    o.process     = FXmlConsole_process;
    o.send        = FXmlConsole_send;
+   o.sendAsync   = FXmlConsole_sendAsync;
    return o;
 }
 function FXmlConsole_construct(){
@@ -635,7 +779,15 @@ function FXmlConsole_process(e){
 function FXmlConsole_send(u, d){
    var o = this;
    var c = o.alloc();
-   var r = c.syncSend(u, d);
+   c._asynchronous = false;
+   var r = c.send(u, d);
    c._statusFree = true;
    return r;
+}
+function FXmlConsole_sendAsync(u, d){
+   var o = this;
+   var c = o.alloc();
+   c._asynchronous = true;
+   c.send(u, d);
+   return c;
 }

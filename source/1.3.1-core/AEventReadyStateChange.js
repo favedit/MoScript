@@ -10,11 +10,8 @@ function AEventReadyStateChange(n){
    var o = this;
    AEvent(o, n, 'readystatechange', 'onreadystatechange');
    //..........................................................
-   // @html
-   o._hSource = null;
-   //..........................................................
    // @method
-   o.attach   = AEventReadyStateChange_attach;
+   o.attach = AEventReadyStateChange_attach;
    return o;
 }
 
@@ -22,9 +19,8 @@ function AEventReadyStateChange(n){
 // <T>接收事件信息。</T>
 //
 // @method
-// @param p:event:Event 事件
+// @param e:event:Event 事件
+// @param h:htmlEvent:HtmlEvent 页面事件
 //==========================================================
-function AEventReadyStateChange_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventReadyStateChange_attach(e, h){
 }

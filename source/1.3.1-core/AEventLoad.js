@@ -10,11 +10,8 @@ function AEventLoad(n){
    var o = this;
    AEvent(o, n, 'load', 'onload');
    //..........................................................
-   // @html
-   o._hSource = null;
-   //..........................................................
    // @method
-   o.attach   = AEventLoad_attach;
+   o.attach = AEventLoad_attach;
    return o;
 }
 
@@ -22,9 +19,8 @@ function AEventLoad(n){
 // <T>接收事件信息。</T>
 //
 // @method
-// @param p:event:Event 事件
+// @param e:event:Event 事件
+// @param h:htmlEvent:HtmlEvent 页面事件
 //==========================================================
-function AEventLoad_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventLoad_attach(e, h){
 }

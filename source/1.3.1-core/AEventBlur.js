@@ -10,11 +10,8 @@ function AEventBlur(n, m){
    var o = this;
    AEvent(o, n, 'blur', 'onblur');
    //..........................................................
-   // @html
-   o._hSource = null;
-   //..........................................................
    // @method
-   o.attach   = AEventBlur_attach;
+   o.attach = AEventBlur_attach;
    return o;
 }
 
@@ -22,9 +19,8 @@ function AEventBlur(n, m){
 // <T>接收事件信息。</T>
 //
 // @method
-// @param p:event:Event 事件
+// @param e:event:Event 事件
+// @param h:htmlEvent:HtmlEvent 页面事件
 //==========================================================
-function AEventBlur_attach(p){
-   var o = this;
-   o._hSource = p.srcElement;
+function AEventBlur_attach(e, h){
 }

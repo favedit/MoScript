@@ -1000,6 +1000,7 @@ function SPadding(l, t, r, b){
    o.set      = SPadding_set;
    o.parse    = SPadding_parse;
    o.toString = SPadding_toString;
+   o.dispose  = SPadding_dispose;
    o.dump     = SPadding_dump;
    return o;
 }
@@ -1039,6 +1040,13 @@ function SPadding_parse(v){
 function SPadding_toString(){
    var o = this;
    return o.left + ',' + o.top + ',' + o.right + ',' + o.bottom;
+}
+function SPadding_dispose(){
+   var o = this;
+   o.left = null;
+   o.top = null;
+   o.right = null;
+   o.bottom = null;
 }
 function SPadding_dump(d){
    var o = this;
@@ -1191,6 +1199,7 @@ function SPoint2(x, y){
    o.serialize   = SPoint2_serialize;
    o.unserialize = SPoint2_unserialize;
    o.toString    = SPoint2_toString;
+   o.dispose     = SPoint2_dispose;
    o.dump        = SPoint2_dump;
    return o;
 }
@@ -1220,6 +1229,11 @@ function SPoint2_unserialize(p){
 function SPoint2_toString(){
    var o = this;
    return o.x + ',' + o.y;
+}
+function SPoint2_dispose(){
+   var o = this;
+   o.x = null;
+   o.y = null;
 }
 function SPoint2_dump(){
    return RClass.dump(this) + ' [' + this.x + ',' + this.y + ']';
@@ -1639,6 +1653,7 @@ function SSize2(w, h){
    o.set      = SSize2_set;
    o.parse    = SSize2_parse;
    o.toString = SSize2_toString;
+   o.dispose  = SSize2_dispose;
    o.dump     = SSize2_dump;
    return o;
 }
@@ -1665,6 +1680,11 @@ function SSize2_parse(v){
 function SSize2_toString(){
    var o = this;
    return o.width + ',' + o.height;
+}
+function SSize2_dispose(){
+   var o = this;
+   o.width = null;
+   o.height = null;
 }
 function SSize2_dump(){
    var o = this;

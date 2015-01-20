@@ -10,15 +10,8 @@ function AEventResize(n){
    var o = this;
    AEvent(o, n, 'resize', 'onresize');
    //..........................................................
-   // @html
-   o._hSource = null;
-   //..........................................................
-   // @atribute
-   o._x       = null;
-   o._y       = null;
-   //..........................................................
    // @method
-   o.attach   = AEventResize_attach;
+   o.attach = AEventResize_attach;
    return o;
 }
 
@@ -26,10 +19,10 @@ function AEventResize(n){
 // <T>接收事件信息。</T>
 //
 // @method
-// @param p:event:Event 事件
+// @param e:event:Event 事件
+// @param h:htmlEvent:HtmlEvent 页面事件
 //==========================================================
-function AEventResize_attach(p){
-   var o = this;
-   o._x = p.x;
-   o._y = p.y;
+function AEventResize_attach(e, h){
+   e.x = h.x;
+   e.y = h.y;
 }

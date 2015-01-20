@@ -59,9 +59,16 @@ function FXmlConnection_onConnectionComplete(){
    // 建立文档对象
    var d = new TXmlDocument();
    RXml.buildNode(d, null, e);
-   o._outputNode = d.root();
+   var r = o._outputNode = d.root();
    // 完成处理
    o._statusFree = true;
+   // 完成处理
+   var e = new SXmlEvent();
+   e.connection = o;;
+   e.document = d;
+   e.root = r;
+   o.lsnsLoad.process(e);
+   e.dispose();
 }
 
 //==========================================================
