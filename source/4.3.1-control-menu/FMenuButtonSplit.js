@@ -1,12 +1,16 @@
-// ============================================================
-// FMenuButtonSplit
-// ============================================================
+//==========================================================
+// <T>菜单分割按键。</T>
+//
+// @face
+// @author maocy
+// @history 150121
+//==========================================================
 function FMenuButtonSplit(o){
    o = RClass.inherits(this, o, FControl, MMenuButton);
    /// @style
-   o.styleUp      = RClass.register(o, new TStyle('Up'));
+   o.styleUp      = RClass.register(o, new AStyle('Up'));
    /// @style
-   o.styleDown    = RClass.register(o, new TStyle('Down'));
+   o.styleDown    = RClass.register(o, new AStyle('Down'));
    // Attribute
    o.disabled     = false;
    // Method

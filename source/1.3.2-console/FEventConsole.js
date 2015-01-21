@@ -12,7 +12,7 @@ function FEventConsole(o){
    o._scopeCd   = EScope.Local;
    // @attribute
    o._thread    = null;
-   o._interval  = 10;
+   o._interval  = 20;
    // @attribute
    o._allow     = true;
    o._allows    = new TAttributes();

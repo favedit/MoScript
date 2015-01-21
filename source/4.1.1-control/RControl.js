@@ -78,7 +78,7 @@ function RControl_attachEvent(c, n, h, m, u){
       es.push(al, e);
       // 关联事件处理到HTML元素上
       if(u){
-         h.addEventListener(a._linker, m, true);
+         h.addEventListener(a._linker, REvent.ohEvent, true);
       }else{
          h[ah] = REvent.ohEvent;
       }

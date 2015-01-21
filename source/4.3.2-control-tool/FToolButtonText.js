@@ -1,8 +1,8 @@
 //==========================================================
-// <T>文本工具按钮。</T>
+// <T>工具栏文本。</T>
 //
-// @class FToolButton
-// @history 091116 MAOCY 创建
+// @author maocy
+// @history 150121
 //==========================================================
 function FToolButtonText(o){
    o = RClass.inherits(this, o, FToolButton);

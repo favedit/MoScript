@@ -1,19 +1,24 @@
-// ============================================================
-// FMenuButtonMenu
-// ============================================================
+//==========================================================
+// <T>菜单展开按键。</T>
+//
+// @face
+// @author maocy
+// @history 150121
+//==========================================================
 function FMenuButtonMenu(o){
-   o = RClass.inherits(this, o, FControl, MEventFocus, MEventClick, MLsnClick);
+   //o = RClass.inherits(this, o, FControl, MEventFocus, MEventClick, MLsnClick);
+   o = RClass.inherits(this, o, FControl);
    // Property
-   o.action       = RClass.register(o, new TPtyStr('action', null));
-   o.target       = RClass.register(o, new TPtyStr('target', null));
-   o.page         = RClass.register(o, new TPtyStr('page'));
-   o.hotkey       = RClass.register(o, new TPtyStr('hotkey'));
-   o.method       = RClass.register(o, new TPtyStr('method'));
-   o.icon         = RClass.register(o, new TPtyStr('icon', null));
-   o.iconDisable  = RClass.register(o, new TPtyStr('iconDisable', null));
-   o.attributes   = RClass.register(o, new TPtyStr('attributes'));
+   o._action       = RClass.register(o, new APtyString('action', null));
+   o._target       = RClass.register(o, new APtyString('target', null));
+   o._page         = RClass.register(o, new APtyString('page'));
+   o._hotkey       = RClass.register(o, new APtyString('hotkey'));
+   o._method       = RClass.register(o, new APtyString('method'));
+   o._icon         = RClass.register(o, new APtyString('icon', null));
+   o._iconDisable  = RClass.register(o, new APtyString('iconDisable', null));
+   o._attributes   = RClass.register(o, new APtyString('attributes'));
    // Attribute
-   o.disabled     = false;
+   o._disabled     = false;
    // Html
    o.hButton      = null;
    o.hButtonLine  = null;
@@ -45,8 +50,8 @@ function FMenuButtonMenu_oeBuild(event){
    o.linkClickEvent(o.hButton);
    var hLine = o.hButtonLine = o.hButton.insertRow();
    var hCel = hLine.insertCell();
-   if(o.icon){
-      o.hIcon = RBuilder.appendIcon(hCel, o.icon);
+   if(o._icon){
+      o.hIcon = RBuilder.appendIcon(hCel, o._icon);
    }
    if(o.label){
       o.hLabel = RBuilder.appendText(hCel, (o.hIcon ? '&nbsp;' : '') + o.label);
@@ -63,8 +68,8 @@ function FMenuButtonMenu_oeEnable(event){
    var o = this;
    o.base.FControl.oeEnable.call(o, event);
    o.hPanel.className = o.style('Button');
-   if(o.iconDisable && o.icon){
-      o.hIcon.src = RRes.iconPath(o.icon);
+   if(o._iconDisable && o._icon){
+      o.hIcon.src = RRes._iconPath(o._icon);
    }
    return EEventStatus.Stop;
 }
@@ -73,55 +78,55 @@ function FMenuButtonMenu_oeDisable(event){
    var o = this;
    o.base.FControl.oeDisable.call(o, event);
    o.hPanel.className = o.style('Disable');
-   if(o.iconDisable){
-      o.hIcon.src = RRes.iconPath(o.iconDisable);
+   if(o._iconDisable){
+      o.hIcon.src = RRes._iconPath(o._iconDisable);
    }
    return EEventStatus.Stop;
 }
 // ------------------------------------------------------------
 function FMenuButtonMenu_onEnter(){
    var o = this;
-   if(!o.disabled){
+   if(!o._disabled){
       o.hPanel.className = o.style('Hover');
    }
 }
 // ------------------------------------------------------------
 function FMenuButtonMenu_onLeave(){
    var o = this;
-   if(!o.disabled){
+   if(!o._disabled){
       o.hPanel.className = o.style('Panel');
    }
 }
 // ------------------------------------------------------------
 function FMenuButtonMenu_onMouseDown(){
    var o = this;
-   if(!o.disabled){
+   if(!o._disabled){
       o.hPanel.className = o.style('Press');
    }
 }
 // ------------------------------------------------------------
 function FMenuButtonMenu_onMouseUp(){
    var o = this;
-   if(!o.disabled){
+   if(!o._disabled){
       o.hPanel.className = o.style('Hover');
    }
 }
 // ------------------------------------------------------------
 function FMenuButtonMenu_onClick(){
    var o = this;
-   if(!o.disabled){
+   if(!o._disabled){
       RConsole.find(FFocusConsole).focus(o);
-      if(o.action){
-         eval(o.action);
+      if(o._action){
+         eval(o._action);
       }
-      if(o.page || o.method){
+      if(o._page || o._method){
          var form = RHtml.form(o.hButton);
-         var p = RPage.parse(o.page);
-         if(o.method){
-            p.action = o.method;
+         var p = RPage.parse(o._page);
+         if(o._method){
+            p._action = o._method;
          }
-         p.split(o.attributes);
-         p.post(form, o.target);
+         p.split(o._attributes);
+         p.post(form, o._target);
       }
       o.processClick();
    }
@@ -143,4 +148,3 @@ function FMenuButtonMenu_dispose(){
    o.hButtonLine = null;
    o.hLabel = null;
 }
-// ------------------------------------------------------------

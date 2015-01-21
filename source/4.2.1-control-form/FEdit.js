@@ -10,6 +10,9 @@ function FEdit(o){
    //..........................................................
    // @style
    o._styleEdit       = RClass.register(o, new AStyle('_styleEdit', 'Edit'));
+   //o.onKeyDown    = RClass.register(o, new AEventKeyDown('onKeyDown'));
+   //o.onKeyPress   = RClass.register(o, new AEventKeyPress('onKeyPress'));
+   //o.onKeyUp      = RClass.register(o, new AEventKeyUp('onKeyUp'));
    //o.stUnit        = RClass.register(o, new AStyle('Unit'));
    //..........................................................
    // @attribute

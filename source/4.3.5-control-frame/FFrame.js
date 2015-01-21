@@ -1,18 +1,15 @@
 //==========================================================
-// <T>工作空间页面集合。</T>
+// <T>页面。</T>
 //
 // @class
 // @author maocy
 // @version 150120
 //==========================================================
-function FWorkspace(o){
+function FFrame(o){
    o = RClass.inherits(this, o, FContainer);
    //..........................................................
-   // @style
-   o._frames          = null;
-   //..........................................................
    // @event
-   o.onBuildContainer = FWorkspace_onBuildContainer
+   o.onBuildPanel = FFrame_onBuildPanel
    return o;
 }
 
@@ -22,7 +19,7 @@ function FWorkspace(o){
 // @method
 // @return HtmlTag 页面元素
 //==========================================================
-function FWorkspace_onBuildContainer(e){
+function FFrame_onBuildPanel(e){
    var o = this;
-   o._hContainer = RBuilder.createDiv(e.hDocument, o.styleName('Container'));
+   o._hPanel = RBuilder.createTableCell(e.hDocument, o.styleName('Panel'));
 }

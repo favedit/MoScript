@@ -1,10 +1,13 @@
-// ============================================================
-// FToolButtonCheck
-// ============================================================
+//==========================================================
+// <T>工具栏复选按键。</T>
+//
+// @author maocy
+// @history 150121
+//==========================================================
 function FToolButtonCheck(o){
    o = RClass.inherits(this, o, FToolButton);
    // Property
-   o.down         = RClass.register(o, new TPtyBool('down', false));
+   o.down         = RClass.register(o, new APtyBoolean('down', false));
    // Event
    o.onEnter      = FToolButtonCheck_onEnter;
    o.onLeave      = FToolButtonCheck_onLeave;

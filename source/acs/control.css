@@ -1,3 +1,106 @@
+html,body{
+   height:100%;
+}
+
+/* ------------------------------------------------------ */
+/* FMenuBar                                               */
+/* ------------------------------------------------------ */
+.FMenuBar_Panel{
+}
+
+/* ------------------------------------------------------ */
+/* FMenuButton                                            */
+/* ------------------------------------------------------ */
+.FMenuButton_Normal{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   color: #EEEEEE;
+   border-radius:2px;
+   cursor: pointer;
+}
+
+.FMenuButton_Hover{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   cursor: pointer;
+}
+
+.FMenuButton_Press{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   cursor: pointer;
+}
+
+.FMenuButton_Disable{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   cursor: pointer;
+}
+
+.FMenuButton_Icon{
+   border: 0px;
+}
+
+.FMenuButton_Label{
+   padding-left: 6px;
+}
+
+/* ------------------------------------------------------ */
+/* FToolBar                                               */
+/* ------------------------------------------------------ */
+.FToolBar_Panel{
+}
+
+/* ------------------------------------------------------ */
+/* FToolButton                                            */
+/* ------------------------------------------------------ */
+.FToolButton_Normal{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   border:1px solid #CCCCCC;
+   background-color: #DDDDDD;
+   cursor: pointer;
+}
+
+.FToolButton_Hover{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   border:1px solid #CCCCCC;
+   background-color: #FFFFF0;
+   cursor: pointer;
+}
+
+.FToolButton_Press{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   border:1px solid #CCCCCC;
+   background-color: #999999;
+   cursor: pointer;
+}
+
+.FToolButton_Disable{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   border:1px solid #CCCCCC;
+   background-color: #666666;
+   cursor: pointer;
+}
+
+.FToolButton_Icon{
+   border: 0px;
+}
+
+.FToolButton_Label{
+   padding-left: 6px;
+}
+
 /* ------------------------------------------------------ */
 /* FTreeView                                              */
 /* ------------------------------------------------------ */
@@ -36,12 +139,28 @@
 .FTreeNode_Cell{
 }
 
+/* ------------------------------------------------------ */
+/* FFrameSet                                              */
+/* ------------------------------------------------------ */
+.FFrameSet_Panel{
+   width: 100%;
+   height: 100%;
+}
 
+/* ------------------------------------------------------ */
+/* FFrameSpliter                                          */
+/* ------------------------------------------------------ */
+.FFrameSpliter_Normal{
+   background-color: #666666;
+}
 
+.FFrameSpliter_Hover{
+   background-color: #999999;
+}
 
-
-
-
+.FFrameSpliter_Draging{
+   background-color: #BBBBBB;
+}
 
 
 

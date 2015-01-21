@@ -90,6 +90,66 @@ function FContentPipeline(o){
 function FContentPipeline_scopeCd(){
    return this._scopeCd;
 }
+function FDragConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd        = EScope.Local;
+   o._activeDragable = null;
+   o._dragables      = null;
+   o.onMouseDown     = FDragConsole_onMouseDown;
+   o.onMouseMove     = FDragConsole_onMouseMove;
+   o.onMouseUp       = FDragConsole_onMouseUp;
+   o.construct       = FDragConsole_construct;
+   o.register        = FDragConsole_register;
+   o.unregister      = FDragConsole_unregister;
+   o.clear           = FDragConsole_clear;
+   return o;
+}
+function FDragConsole_onMouseDown(p){
+   var o = this;
+   var es = p.source;
+   if(!es){
+      return;
+   }
+   if(!RClass.isClass(es, MDragable)){
+      return;
+   }
+   RWindow.setOptionSelect(false);
+   o._activeDragable = es;
+   es.onDragStart(p);
+}
+function FDragConsole_onMouseMove(p){
+   var o = this;
+   if(!o._activeDragable){
+      return;
+   }
+   o._activeDragable.onDragMove(p);
+}
+function FDragConsole_onMouseUp(p){
+   var o = this;
+   if(!o._activeDragable){
+      return;
+   }
+   RWindow.setOptionSelect(true);
+   o._activeDragable.onDragStop(p);
+   o._activeDragable = null;
+}
+function FDragConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._dragables = new TObjects();
+   RWindow.lsnsMouseDown.register(o, o.onMouseDown);
+   RWindow.lsnsMouseMove.register(o, o.onMouseMove);
+   RWindow.lsnsMouseUp.register(o, o.onMouseUp);
+}
+function FDragConsole_register(p){
+   this._dragables.push(p);
+}
+function FDragConsole_unregister(po, pc){
+   this._dragables.remove(p);
+}
+function FDragConsole_clear(){
+   this._dragables.clear();
+}
 function FEnvironmentConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o.scope       = EScope.Page;
@@ -139,7 +199,7 @@ function FEventConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd   = EScope.Local;
    o._thread    = null;
-   o._interval  = 10;
+   o._interval  = 20;
    o._allow     = true;
    o._allows    = new TAttributes();
    o._events    = new TObjects();
@@ -645,7 +705,7 @@ function FThreadConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd     = EScope.Local;
    o._active      = true;
-   o._interval    = 10;
+   o._interval    = 20;
    o._threads     = null;
    o._hWindow     = null;
    o._hIntervalId = null;

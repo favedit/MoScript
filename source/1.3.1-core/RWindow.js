@@ -8,23 +8,16 @@
 var RWindow = new function RWindow(){
    var o = this;
    //..........................................................
-   o.__keyDownEvent    = new SKeyDownEvent();
    // @attribute
-   o._builder          = null;
-   o._disableDeep      = 0;
+   o._optionSelect     = true;
    // @attribute
-   o.panels            = new TMap();
-   o.inDisable         = false;
-   o.inMoving          = false;
-   o.inSizing          = false;
+   o._mouseEvent       = new SMouseEvent();
+   o._keyEvent         = new SKeyboardEvent();
    //..........................................................
    // @html
-   o.hWindow           = null;
-   o.hDocument         = null;
-   o.hBody             = null;
-   o.hContainer        = null;
-   o.hDisablePanel     = null;
-   o.hShadow           = null;
+   o._hWindow          = null;
+   o._hDocument        = null;
+   o._hContainer       = null;
    //..........................................................
    // @listeners
    o.lsnsLoad          = new TListeners();
@@ -40,13 +33,43 @@ var RWindow = new function RWindow(){
    o.lsnsResize        = new TListeners();
    //..........................................................
    // @event
+   o.ohMouseDown       = RWindow_ohMouseDown;
+   o.ohMouseMove       = RWindow_ohMouseMove;
+   o.ohMouseUp         = RWindow_ohMouseUp;
+   o.ohKeyDown         = RWindow_ohKeyDown;
+   o.ohKeyUp           = RWindow_ohKeyUp;
+   o.ohKeyPress        = RWindow_ohKeyPress;
+   o.ohSelect          = RWindow_ohSelect;
+   //..........................................................
+   // @method
+   o.connect           = RWindow_connect;
+   o.optionSelect      = RWindow_optionSelect;
+   o.setOptionSelect   = RWindow_setOptionSelect;
+   o.setCaption        = RWindow_setCaption;
+
+
+
+
+   //..........................................................
+   // @attribute
+   o._builder          = null;
+   o._disableDeep      = 0;
+   // @attribute
+   o.panels            = new TMap();
+   o.inDisable         = false;
+   o.inMoving          = false;
+   o.inSizing          = false;
+   //..........................................................
+   // @html
+   o.hDisablePanel     = null;
+   o.hShadow           = null;
+   //..........................................................
+   // @event
    o.onUnload          = RWindow_onUnload;
    o.onResize          = RWindow_onResize;
    //..........................................................
    // @method
-   o.connect           = RWindow_connect;
    o.createElement     = RWindow_createElement;
-   o.createHttpRequest = RWindow_createHttpRequest;
    o.event             = RWindow_event;
    o.source            = RWindow_source;
    o.getElement        = RWindow_getElement;
@@ -60,7 +83,6 @@ var RWindow = new function RWindow(){
    o.windowDisable     = RWindow_windowDisable;
    o.enable            = RWindow_enable;
    o.disable           = RWindow_disable;
-   o.setCaption        = RWindow_setCaption;
    o.setEnable         = RWindow_setEnable;
    o.showShadow        = RWindow_showShadow;
    o.moveCenter        = RWindow_moveCenter;
@@ -71,6 +93,174 @@ var RWindow = new function RWindow(){
    o.dispose           = RWindow_dispose;
    return o;
 }
+
+//==========================================================
+// <T>鼠标按下处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function RWindow_ohMouseDown(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   o._mouseEvent.attachEvent(p);
+   o.lsnsMouseDown.process(o._mouseEvent);
+}
+
+//==========================================================
+// <T>鼠标移动处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function RWindow_ohMouseMove(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   o._mouseEvent.attachEvent(p);
+   o.lsnsMouseMove.process(o._mouseEvent);
+}
+
+//==========================================================
+// <T>鼠标抬起处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function RWindow_ohMouseUp(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   o._mouseEvent.attachEvent(p);
+   o.lsnsMouseUp.process(o._mouseEvent);
+}
+
+//==========================================================
+// <T>键盘按下处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function RWindow_ohKeyDown(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   o._keyEvent.attachEvent(p);
+   o.lsnsKeyDown.process(o._keyEvent);
+}
+
+//==========================================================
+// <T>键盘抬起处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function RWindow_ohKeyUp(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   o._keyEvent.attachEvent(p);
+   o.lsnsKeyUp.process(o._keyEvent);
+}
+
+//==========================================================
+// <T>键盘点击处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function RWindow_ohKeyPress(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   o._keyEvent.attachEvent(p);
+   o.lsnsKeyPress.process(o._keyEvent);
+}
+
+//==========================================================
+// <T>选取处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function RWindow_ohSelect(p){
+   return RWindow._optionSelect;
+}
+
+//==========================================================
+// <T>关联当前窗口。</T>
+// <P>接管当前窗口对象的各种加载，鼠标，键盘的处理事件。</P>
+//
+// @method
+// @param w:window:<Window> 窗口对象
+//==========================================================
+function RWindow_connect(w){
+   var o = this;
+   // 设置属性
+   var hw = o._hWindow = w;
+   var hd = o._hDocument = hw.document;
+   var hc = o._hContainer = hd.body;
+   // 关联鼠标事件
+   hc.addEventListener('mousedown', o.ohMouseDown, true);
+   hc.addEventListener('mousemove', o.ohMouseMove, true);
+   hc.addEventListener('mouseup', o.ohMouseUp, true);
+   hc.addEventListener('keydown', o.ohKeyDown, true);
+   hc.addEventListener('keyup', o.ohKeyUp, true);
+   hc.addEventListener('keypress', o.ohKeyPress, true);
+   hc.onselectstart = o.ohSelect;
+}
+
+//==========================================================
+// <T>获得配置选取。</T>
+//
+// @method
+// @return Boolean 配置选取
+//==========================================================
+function RWindow_optionSelect(){
+   return this._optionSelect;
+}
+
+//==========================================================
+// <T>设置配置选取。</T>
+//
+// @method
+// @param p:select:Boolean 配置选取
+//==========================================================
+function RWindow_setOptionSelect(p){
+   var o = this;
+   o._optionSelect = p;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      o._hContainer.style.MozUserSelect = p ? '' : 'none';
+   }
+}
+
+//==========================================================
+// <T>设置标题。</T>
+//
+// @method
+// @param p:caption:String 标题
+//==========================================================
+function RWindow_setCaption(p){
+   top.document.title = p;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 //==========================================================
 // <T>卸载窗口时进行处理。</T>
@@ -109,7 +299,7 @@ function RWindow_onResize(){
 // @method
 // @param w:window:<Window> 窗口对象
 //==========================================================
-function RWindow_connect(w){
+function RWindow_connect2(w){
    var o = this;
    o.hWindow = w;
    var hd = o.hDocument = w.document;
@@ -129,26 +319,6 @@ function RWindow_connect(w){
       }
       o.lsnsUnload.process(e);
       o.onUnload();
-   };
-   // 关联窗口的所有鼠标事件
-   hb.onmousedown = function(e){
-      if(!e){
-         e = w.event;
-      }
-      RLogger.info(o, 'Window mouse down. (location={1},{2})', e.x, e.y);
-      o.lsnsMouseDown.process(e);
-   };
-   hb.onmouseup = function(e){
-      if(!e){
-         e = w.event;
-      }
-      o.lsnsMouseUp.process(e);
-   };
-   hb.onmousemove = function(e){
-      if(!e){
-         e = w.event;
-      }
-      o.lsnsMouseMove.process(e);
    };
    hb.onmouseover = function(e){
       if(!e){
@@ -235,20 +405,6 @@ function RWindow_connect(w){
 //==========================================================
 function RWindow_createElement(n){
    return this.hDocument.createElement(n);
-}
-
-//==========================================================
-// <T>创建一个页面远程链接对象。</T>
-//
-// @method
-// @return <HttpRequest> 页面远程链接对象
-//==========================================================
-function RWindow_createHttpRequest(){
-   if(this.hWindow.XMLHttpRequest){
-      return new XMLHttpRequest();
-   }else if(this.hWindow.ActiveXObject){
-      return new ActiveXObject("MsXml2.XmlHttp");
-   }
 }
 
 //==========================================================
@@ -435,16 +591,6 @@ function RWindow_disable(){
       o.setEnable(false);
    }
    o._disableDeep++;
-}
-
-//==========================================================
-// <T>设置当前窗口的标题。</T>
-//
-// @method
-// @param t:text:String 文本内容
-//==========================================================
-function RWindow_setCaption(t){
-   top.document.title = t;
 }
 
 //==========================================================

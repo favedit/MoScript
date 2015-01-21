@@ -7431,13 +7431,17 @@ function AEventLoad(n){
 }
 function AEventLoad_attach(e, h){
 }
-function AEventMouseDown(n){
-   var o = this;
-   AEvent(o, n, 'mousedown', 'onmousedown');
-   o.attach = AEventMouseDown_attach;
+function AEventMouse(o, n, l, h){
+   if(!o){o = this;}
+   AEvent(o, n, l, h);
+   o.attach = AEventMouse_attach;
    return o;
 }
-function AEventMouseDown_attach(e, h){
+function AEventMouse_attach(e, h){
+   e.button = h.button;
+   e.mouseLeft = (h.button == EMouseButton.Left);
+   e.mouseMiddle = (h.button == EMouseButton.Middle);
+   e.mouseRight = (h.button == EMouseButton.Right);
    e.altKey = h.altKey;
    e.ctrlKey = h.ctrlKey;
    if(RBrowser.isBrowser(EBrowser.FireFox)){
@@ -7453,6 +7457,11 @@ function AEventMouseDown_attach(e, h){
    }
    e.clientX = h.clientX;
    e.clientY = h.clientY;
+}
+function AEventMouseDown(n){
+   var o = this;
+   AEventMouse(o, n, 'mousedown', 'onmousedown');
+   return o;
 }
 function AEventMouseEnter(n){
    var o = this;
@@ -7472,26 +7481,8 @@ function AEventMouseLeave_attach(e, h){
 }
 function AEventMouseMove(n){
    var o = this;
-   AEvent(o, n, 'mousemove', 'onmousemove');
-   o.attach = AEventMouseMove_attach;
+   AEventMouse(o, n, 'mousemove', 'onmousemove');
    return o;
-}
-function AEventMouseMove_attach(e, h){
-   e.altKey = h.altKey;
-   e.ctrlKey = h.ctrlKey;
-   if(RBrowser.isBrowser(EBrowser.FireFox)){
-      e.x = h.pageX;
-      e.y = h.pageY;
-      e.offsetX = h.layerX;
-      e.offsetY = h.layerY;
-   }else{
-      e.x = h.x;
-      e.y = h.y;
-      e.offsetX = h.offsetX;
-      e.offsetY = h.offsetY;
-   }
-   e.clientX = h.clientX;
-   e.clientY = h.clientY;
 }
 function AEventMouseOut(n){
    var o = this;
@@ -7543,26 +7534,8 @@ function AEventMouseOver_attach(p){
 }
 function AEventMouseUp(n){
    var o = this;
-   AEvent(o, n, 'mouseup', 'onmouseup');
-   o.attach = AEventMouseUp_attach;
+   AEventMouse(o, n, 'mouseup', 'onmouseup');
    return o;
-}
-function AEventMouseUp_attach(e, h){
-   e.altKey = h.altKey;
-   e.ctrlKey = h.ctrlKey;
-   if(RBrowser.isBrowser(EBrowser.FireFox)){
-      e.x = h.pageX;
-      e.y = h.pageY;
-      e.offsetX = h.layerX;
-      e.offsetY = h.layerY;
-   }else{
-      e.x = h.x;
-      e.y = h.y;
-      e.offsetX = h.offsetX;
-      e.offsetY = h.offsetY;
-   }
-   e.clientX = h.clientX;
-   e.clientY = h.clientY;
 }
 function AEventMouseWheel(n){
    var o = this;
@@ -7733,6 +7706,19 @@ var EKeyCode = new function EKeyCode(){
    for(var n = 48; n <= 57; n++){
       f[n] = true;
    }
+   return o;
+}
+var EMouseButton = new function EMouseButton(){
+   var o = this;
+   o.Left   = 0;
+   o.Right  = 2;
+   o.Middle = 3;
+   return o;
+}
+var EMouseCursor = new function EMouseCursor(){
+   var o = this;
+   o.HSize = 'E-resize';
+   o.VSize = 'N-resize';
    return o;
 }
 function FBytes(o){
@@ -8977,6 +8963,7 @@ var RHtml = new function RHtml(){
    var o = this;
    o._nextUid        = 1;
    o._links          = new Object();
+   o._clientPosition = new SPoint2();
    o.uid            = RHtml_uid;
    o.displayGet     = RHtml_displayGet;
    o.displaySet     = RHtml_displaySet;
@@ -8990,6 +8977,9 @@ var RHtml = new function RHtml(){
    o.radioSet       = RHtml_radioSet;
    o.linkGet        = RHtml_linkGet;
    o.linkSet        = RHtml_linkSet;
+   o.clientPosition = RHtml_clientPosition;
+   o.clientX        = RHtml_clientX;
+   o.clientY        = RHtml_clientY;
    o.toText         = RHtml_toText;
    o.toHtml         = RHtml_toHtml;
    o.eventSource    = RHtml_eventSource;
@@ -9136,6 +9126,31 @@ function RHtml_linkSet(h, n, v){
       i._link = h;
    }
    i.set(n, v);
+}
+function RHtml_clientPosition(h, t){
+   var p = o._clientPosition;
+   while(h != t){
+      p.x += h.offsetLeft - h.scrollLeft;
+      p.y += h.offsetTop - h.scrollTop;
+      h = h.offsetParent;
+   }
+   return p;
+}
+function RHtml_clientX(p){
+   var r = 0;
+   while(p){
+      r += p.offsetLeft - p.scrollLeft;
+      p = p.offsetParent;
+   }
+   return r;
+}
+function RHtml_clientY(p){
+   var r = 0;
+   while(p){
+      r += p.offsetTop - p.scrollTop;
+      p = p.offsetParent;
+   }
+   return r;
 }
 function RHtml_toText(p){
    if(p != null){
@@ -9798,33 +9813,16 @@ var RResource = new function RResource(){
 }
 function RResource_iconPath(path, type){
    var o = this;
-   var rc = top.RContext;
    path = RString.nvl(path, 'n').replace(/\./g, '/') + '.' + RString.nvl(type, 'gif');
-   if(RString.startsWith(path, '#')){
-      path = path.substr(1);
-      return rc.context(rc.uriIcon + '/' + path);
-   }
-   return rc.context('/ars/icon/' + path);
+   return RBrowser.contentPath('/ars/icon/' + path);
 }
 function RResource_iconUrlPath(path, type){
    var o = this;
-   var rc = top.RContext;
    path = RString.nvl(path, 'n').replace(/\./g, '/') + '.' + RString.nvl(type, 'gif');
-   if(RString.startsWith(path, '#')){
-      path = path.substr(1);
-      return 'url(' + rc.context(rc.uriIcon + '/' + path) + ')';
-   }
-   return 'url(' + rc.context('/ars/icon/' + path) + ')';
+   return RBrowser.contentPath('/ars/icon/' + path);
 }
 function RResource_imagePath(path, type){
    var o = this;
-   var rc = top.RContext;
-   path = RString.nvl(path, 'n').replace(/\./g, '/') + '.' + RString.nvl(type, 'gif');
-   if(RString.startsWith(path, '#')){
-      path = path.substr(1);
-      return rc.context(rc.uriImage + '/' + path);
-   }
-   return rc.context('/ars/img/' + path);
 }
 var RService = new function RService(){
    var o = this;
@@ -10000,19 +9998,12 @@ function RTypeArray_findTemp(t, l){
 }
 var RWindow = new function RWindow(){
    var o = this;
-   o.__keyDownEvent    = new SKeyDownEvent();
-   o._builder          = null;
-   o._disableDeep      = 0;
-   o.panels            = new TMap();
-   o.inDisable         = false;
-   o.inMoving          = false;
-   o.inSizing          = false;
-   o.hWindow           = null;
-   o.hDocument         = null;
-   o.hBody             = null;
-   o.hContainer        = null;
-   o.hDisablePanel     = null;
-   o.hShadow           = null;
+   o._optionSelect     = true;
+   o._mouseEvent       = new SMouseEvent();
+   o._keyEvent         = new SKeyboardEvent();
+   o._hWindow          = null;
+   o._hDocument        = null;
+   o._hContainer       = null;
    o.lsnsLoad          = new TListeners();
    o.lsnsUnload        = new TListeners();
    o.lsnsMouseDown     = new TListeners();
@@ -10024,11 +10015,28 @@ var RWindow = new function RWindow(){
    o.lsnsKeyUp         = new TListeners();
    o.lsnsKeyPress      = new TListeners();
    o.lsnsResize        = new TListeners();
+   o.ohMouseDown       = RWindow_ohMouseDown;
+   o.ohMouseMove       = RWindow_ohMouseMove;
+   o.ohMouseUp         = RWindow_ohMouseUp;
+   o.ohKeyDown         = RWindow_ohKeyDown;
+   o.ohKeyUp           = RWindow_ohKeyUp;
+   o.ohKeyPress        = RWindow_ohKeyPress;
+   o.ohSelect          = RWindow_ohSelect;
+   o.connect           = RWindow_connect;
+   o.optionSelect      = RWindow_optionSelect;
+   o.setOptionSelect   = RWindow_setOptionSelect;
+   o.setCaption        = RWindow_setCaption;
+   o._builder          = null;
+   o._disableDeep      = 0;
+   o.panels            = new TMap();
+   o.inDisable         = false;
+   o.inMoving          = false;
+   o.inSizing          = false;
+   o.hDisablePanel     = null;
+   o.hShadow           = null;
    o.onUnload          = RWindow_onUnload;
    o.onResize          = RWindow_onResize;
-   o.connect           = RWindow_connect;
    o.createElement     = RWindow_createElement;
-   o.createHttpRequest = RWindow_createHttpRequest;
    o.event             = RWindow_event;
    o.source            = RWindow_source;
    o.getElement        = RWindow_getElement;
@@ -10042,7 +10050,6 @@ var RWindow = new function RWindow(){
    o.windowDisable     = RWindow_windowDisable;
    o.enable            = RWindow_enable;
    o.disable           = RWindow_disable;
-   o.setCaption        = RWindow_setCaption;
    o.setEnable         = RWindow_setEnable;
    o.showShadow        = RWindow_showShadow;
    o.moveCenter        = RWindow_moveCenter;
@@ -10052,6 +10059,83 @@ var RWindow = new function RWindow(){
    o.containerTop      = RWindow_containerTop;
    o.dispose           = RWindow_dispose;
    return o;
+}
+function RWindow_ohMouseDown(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   o._mouseEvent.attachEvent(p);
+   o.lsnsMouseDown.process(o._mouseEvent);
+}
+function RWindow_ohMouseMove(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   o._mouseEvent.attachEvent(p);
+   o.lsnsMouseMove.process(o._mouseEvent);
+}
+function RWindow_ohMouseUp(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   o._mouseEvent.attachEvent(p);
+   o.lsnsMouseUp.process(o._mouseEvent);
+}
+function RWindow_ohKeyDown(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   o._keyEvent.attachEvent(p);
+   o.lsnsKeyDown.process(o._keyEvent);
+}
+function RWindow_ohKeyUp(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   o._keyEvent.attachEvent(p);
+   o.lsnsKeyUp.process(o._keyEvent);
+}
+function RWindow_ohKeyPress(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   o._keyEvent.attachEvent(p);
+   o.lsnsKeyPress.process(o._keyEvent);
+}
+function RWindow_ohSelect(p){
+   return RWindow._optionSelect;
+}
+function RWindow_connect(w){
+   var o = this;
+   var hw = o._hWindow = w;
+   var hd = o._hDocument = hw.document;
+   var hc = o._hContainer = hd.body;
+   hc.addEventListener('mousedown', o.ohMouseDown, true);
+   hc.addEventListener('mousemove', o.ohMouseMove, true);
+   hc.addEventListener('mouseup', o.ohMouseUp, true);
+   hc.addEventListener('keydown', o.ohKeyDown, true);
+   hc.addEventListener('keyup', o.ohKeyUp, true);
+   hc.addEventListener('keypress', o.ohKeyPress, true);
+   hc.onselectstart = o.ohSelect;
+}
+function RWindow_optionSelect(){
+   return this._optionSelect;
+}
+function RWindow_setOptionSelect(p){
+   var o = this;
+   o._optionSelect = p;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      o._hContainer.style.MozUserSelect = p ? '' : 'none';
+   }
+}
+function RWindow_setCaption(p){
+   top.document.title = p;
 }
 function RWindow_onUnload(){
    RMemory.release();
@@ -10070,7 +10154,7 @@ function RWindow_onResize(){
       }
    }
 }
-function RWindow_connect(w){
+function RWindow_connect2(w){
    var o = this;
    o.hWindow = w;
    var hd = o.hDocument = w.document;
@@ -10082,25 +10166,6 @@ function RWindow_connect(w){
       }
       o.lsnsUnload.process(e);
       o.onUnload();
-   };
-   hb.onmousedown = function(e){
-      if(!e){
-         e = w.event;
-      }
-      RLogger.info(o, 'Window mouse down. (location={1},{2})', e.x, e.y);
-      o.lsnsMouseDown.process(e);
-   };
-   hb.onmouseup = function(e){
-      if(!e){
-         e = w.event;
-      }
-      o.lsnsMouseUp.process(e);
-   };
-   hb.onmousemove = function(e){
-      if(!e){
-         e = w.event;
-      }
-      o.lsnsMouseMove.process(e);
    };
    hb.onmouseover = function(e){
       if(!e){
@@ -10172,13 +10237,6 @@ function RWindow_connect(w){
 }
 function RWindow_createElement(n){
    return this.hDocument.createElement(n);
-}
-function RWindow_createHttpRequest(){
-   if(this.hWindow.XMLHttpRequest){
-      return new XMLHttpRequest();
-   }else if(this.hWindow.ActiveXObject){
-      return new ActiveXObject("MsXml2.XmlHttp");
-   }
 }
 function RWindow_event(){
    return this.hWindow.event;
@@ -10283,9 +10341,6 @@ function RWindow_disable(){
       o.setEnable(false);
    }
    o._disableDeep++;
-}
-function RWindow_setCaption(t){
-   top.document.title = t;
 }
 function RWindow_setEnable(v, f){
    var o = this;
@@ -10633,20 +10688,64 @@ function SEvent_dispose(){
       o[n] = null;
    }
 }
-function SKeyDownEvent(o){
+function SKeyboardEvent(o){
    if(!o){o = this;}
    SEvent(o);
-   o.shiftKey = false;
-   o.ctrlKey  = false;
-   o.keyCode  = 0;
-   o.attach  = SKeyDownEvent_attach;
+   o.shiftKey    = false;
+   o.ctrlKey     = false;
+   o.keyCode     = 0;
+   o.attachEvent = SKeyboardEvent_attachEvent;
    return o;
 }
-function SKeyDownEvent_attach(e){
+function SKeyboardEvent_attachEvent(p){
    var o = this;
-   o.shiftKey = e.shiftKey;
-   o.ctrlKey = e.ctrlKey;
-   o.keyCode = e.keyCode;
+   o.shiftKey = p.shiftKey;
+   o.ctrlKey = p.ctrlKey;
+   o.keyCode = p.keyCode;
+}
+function SMouseEvent(o){
+   if(!o){o = this;}
+   SEvent(o);
+   o.button      = null;
+   o.mouseLeft   = false;
+   o.mouseMiddle = false;
+   o.mouseRight  = false;
+   o.altKey      = false;
+   o.ctrlKey     = false;
+   o.x           = 0;
+   o.y           = 0;
+   o.offsetX     = 0;
+   o.offsetY     = 0;
+   o.clientX     = 0;
+   o.clientY     = 0;
+   o.attachEvent = SMouseEvent_attachEvent;
+   return o;
+}
+function SMouseEvent_attachEvent(p){
+   var o = this;
+   var hs = o.hSource = RHtml.eventSource(p);
+   if(hs){
+      o.source = hs.__linker;
+   }
+   o.button = p.button;
+   o.mouseLeft = (p.button == EMouseButton.Left);
+   o.mouseMiddle = (p.button == EMouseButton.Middle);
+   o.mouseRight = (p.button == EMouseButton.Right);
+   o.altKey = p.altKey;
+   o.ctrlKey = p.ctrlKey;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      o.x = p.pageX;
+      o.y = p.pageY;
+      o.offsetX = p.layerX;
+      o.offsetY = p.layerY;
+   }else{
+      o.x = p.x;
+      o.y = p.y;
+      o.offsetX = p.offsetX;
+      o.offsetY = p.offsetY;
+   }
+   o.clientX = p.clientX;
+   o.clientY = p.clientY;
 }
 function SServiceInfo(){
    var o = this;
@@ -11332,6 +11431,66 @@ function FContentPipeline(o){
 function FContentPipeline_scopeCd(){
    return this._scopeCd;
 }
+function FDragConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd        = EScope.Local;
+   o._activeDragable = null;
+   o._dragables      = null;
+   o.onMouseDown     = FDragConsole_onMouseDown;
+   o.onMouseMove     = FDragConsole_onMouseMove;
+   o.onMouseUp       = FDragConsole_onMouseUp;
+   o.construct       = FDragConsole_construct;
+   o.register        = FDragConsole_register;
+   o.unregister      = FDragConsole_unregister;
+   o.clear           = FDragConsole_clear;
+   return o;
+}
+function FDragConsole_onMouseDown(p){
+   var o = this;
+   var es = p.source;
+   if(!es){
+      return;
+   }
+   if(!RClass.isClass(es, MDragable)){
+      return;
+   }
+   RWindow.setOptionSelect(false);
+   o._activeDragable = es;
+   es.onDragStart(p);
+}
+function FDragConsole_onMouseMove(p){
+   var o = this;
+   if(!o._activeDragable){
+      return;
+   }
+   o._activeDragable.onDragMove(p);
+}
+function FDragConsole_onMouseUp(p){
+   var o = this;
+   if(!o._activeDragable){
+      return;
+   }
+   RWindow.setOptionSelect(true);
+   o._activeDragable.onDragStop(p);
+   o._activeDragable = null;
+}
+function FDragConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._dragables = new TObjects();
+   RWindow.lsnsMouseDown.register(o, o.onMouseDown);
+   RWindow.lsnsMouseMove.register(o, o.onMouseMove);
+   RWindow.lsnsMouseUp.register(o, o.onMouseUp);
+}
+function FDragConsole_register(p){
+   this._dragables.push(p);
+}
+function FDragConsole_unregister(po, pc){
+   this._dragables.remove(p);
+}
+function FDragConsole_clear(){
+   this._dragables.clear();
+}
 function FEnvironmentConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o.scope       = EScope.Page;
@@ -11381,7 +11540,7 @@ function FEventConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd   = EScope.Local;
    o._thread    = null;
-   o._interval  = 10;
+   o._interval  = 20;
    o._allow     = true;
    o._allows    = new TAttributes();
    o._events    = new TObjects();
@@ -11887,7 +12046,7 @@ function FThreadConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd     = EScope.Local;
    o._active      = true;
-   o._interval    = 10;
+   o._interval    = 20;
    o._threads     = null;
    o._hWindow     = null;
    o._hIntervalId = null;

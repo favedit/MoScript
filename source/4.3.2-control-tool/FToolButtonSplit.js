@@ -1,15 +1,13 @@
-/**************************************************************
- * 工具栏类中的分隔条控件
- *
- * @class
- * @face FContorl
- * @author maochunyang
- * @version 1.0.1
- **************************************************************/
+//==========================================================
+// <T>工具栏分隔符。</T>
+//
+// @author maocy
+// @history 150121
+//==========================================================
 function FToolButtonSplit(o){
    o = RClass.inherits(this, o, FControl);
    /// @style
-   o.styleButton  = RClass.register(o, new TStyle('Button'));
+   o.styleButton  = RClass.register(o, new AStyle('Button'));
    // Html
    o.hButton      = null;
    // Process Event

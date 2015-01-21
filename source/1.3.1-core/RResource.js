@@ -18,41 +18,46 @@ var RResource = new function RResource(){
    RMemory.register('RResource', o);
    return o;
 }
+
 // ------------------------------------------------------------
 function RResource_iconPath(path, type){
    var o = this;
-   var rc = top.RContext;
+   //var rc = top.RContext;
    path = RString.nvl(path, 'n').replace(/\./g, '/') + '.' + RString.nvl(type, 'gif');
-   if(RString.startsWith(path, '#')){
-      path = path.substr(1);
-      return rc.context(rc.uriIcon + '/' + path);
-   }
-   return rc.context('/ars/icon/' + path);
+   //if(RString.startsWith(path, '#')){
+      //path = path.substr(1);
+      //return rc.context(rc.uriIcon + '/' + path);
+   //}
+   return RBrowser.contentPath('/ars/icon/' + path);
+   //return rc.context('/ars/icon/' + path);
 }
+
 // ------------------------------------------------------------
 // #sys.icon = root + 
 // sys.icon  = 
 function RResource_iconUrlPath(path, type){
    var o = this;
-   var rc = top.RContext;
+   //var rc = top.RContext;
    path = RString.nvl(path, 'n').replace(/\./g, '/') + '.' + RString.nvl(type, 'gif');
-   if(RString.startsWith(path, '#')){
-      path = path.substr(1);
-      return 'url(' + rc.context(rc.uriIcon + '/' + path) + ')';
-   }
-   return 'url(' + rc.context('/ars/icon/' + path) + ')';
+   //if(RString.startsWith(path, '#')){
+   //   path = path.substr(1);
+   //   return 'url(' + rc.context(rc.uriIcon + '/' + path) + ')';
+   //}
+   return RBrowser.contentPath('/ars/icon/' + path);
+   //return 'url(' + rc.context('/ars/icon/' + path) + ')';
 }
+
 // ------------------------------------------------------------
 // #sys.icon = root + 
 // sys.icon  = 
 function RResource_imagePath(path, type){
    var o = this;
-   var rc = top.RContext;
-   path = RString.nvl(path, 'n').replace(/\./g, '/') + '.' + RString.nvl(type, 'gif');
-   if(RString.startsWith(path, '#')){
-      path = path.substr(1);
-      return rc.context(rc.uriImage + '/' + path);
-   }
-   return rc.context('/ars/img/' + path);
+   //var rc = top.RContext;
+   //path = RString.nvl(path, 'n').replace(/\./g, '/') + '.' + RString.nvl(type, 'gif');
+   //if(RString.startsWith(path, '#')){
+   //   path = path.substr(1);
+   //   return rc.context(rc.uriImage + '/' + path);
+   //}
+   //return rc.context('/ars/img/' + path);
 }
 // ------------------------------------------------------------

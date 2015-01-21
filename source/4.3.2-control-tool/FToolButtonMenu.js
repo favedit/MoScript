@@ -1,8 +1,8 @@
 //==========================================================
-// 工具栏类中的菜单按钮
+// <T>工具栏菜单按键。</T>
 //
-// @class
-// @history 091116 MAOCY 创建
+// @author maocy
+// @history 150121
 //==========================================================
 function FToolButtonMenu(o){
    o = RClass.inherits(this, o, FToolButton, MContainer, MDropable, MFocus);
@@ -14,7 +14,7 @@ function FToolButtonMenu(o){
    o.hDropPanel    = null;
    //..........................................................
    // @style
-   o.siDropHover   = RClass.register(o, new TStyleIcon('DropHover'));
+   o.siDropHover   = RClass.register(o, new AStyleIcon('DropHover'));
    //..........................................................
    // @event
    o.onEnter       = FToolButtonMenu_onEnter;

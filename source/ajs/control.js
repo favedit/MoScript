@@ -428,59 +428,59 @@ function FContainer_setChildrenProperty(p, vs){
 }
 function FControl(o){
    o = RClass.inherits(this, o, FComponent, MStyle, MSize, MPadding);
-   o._disable          = RClass.register(o, new APtyBoolean('_disable', null, false));
-   o._nowrap           = RClass.register(o, new APtyBoolean('_nowrap', null, false));
-   o._hint             = RClass.register(o, new APtyString('_hint'));
-   o._styleContainer   = RClass.register(o, new AStyle('_styleContainer', 'Container'));
-   o._statusVisible    = true;
-   o._statusEnable     = true;
-   o._statusBuild      = false;
-   o._controls         = null;
-   o._hParent          = null;
-   o._hContainer       = null;
-   o.onEnter           = RClass.register(o, new AEventMouseEnter('onEnter'), FControl_onEnter);
-   o.onLeave           = RClass.register(o, new AEventMouseLeave('onLeave'), FControl_onLeave);
-   o.onMouseOver       = RClass.register(o, new AEventMouseOver('onMouseOver'));
-   o.onMouseOut        = RClass.register(o, new AEventMouseOut('onMouseOut'));
-   o.onMouseDown       = RClass.register(o, new AEventMouseDown('onMouseDown'));
-   o.onMouseUp         = RClass.register(o, new AEventMouseUp('onMouseUp'));
-   o.onClick           = RClass.register(o, new AEventClick('onClick'));
-   o.onDoubleClick     = RClass.register(o, new AEventDoubleClick('onDoubleClick'));
-   o.onResize          = RClass.register(o, new AEventResize('onResize'));
-   o.onBuildContainer  = FControl_onBuildContainer;
-   o.oeBuild           = FControl_oeBuild;
-   o.oeMode            = FControl_oeMode;
-   o.oeEnable          = FControl_oeEnable;
-   o.oeVisible         = FControl_oeVisible;
-   o.oeResize          = FControl_oeResize;
-   o.oeRefresh         = FControl_oeRefresh;
-   o.construct         = FControl_construct;
-   o.topControl        = FControl_topControl;
-   o.hasControl        = FControl_hasControl;
-   o.controls          = FControl_controls;
-   o.panel             = FControl_panel;
-   o.isVisible         = FControl_isVisible;
-   o.setVisible        = FControl_setVisible;
-   o.show              = FControl_show;
-   o.hide              = FControl_hide;
-   o.isEnable          = FControl_isEnable;
-   o.setEnable         = FControl_setEnable;
-   o.enable            = FControl_enable;
-   o.disable           = FControl_disable;
-   o.attachEvent       = FControl_attachEvent;
-   o.linkEvent         = FControl_linkEvent;
-   o.callEvent         = FControl_callEvent;
-   o.push              = FControl_push;
-   o.psBuild           = FControl_psBuild;
-   o.psMode            = FControl_psMode;
-   o.psDesign          = FControl_psDesign;
-   o.psEnable          = FControl_psEnable;
-   o.psVisible         = FControl_psVisible;
-   o.psResize          = FControl_psResize;
-   o.psRefresh         = FControl_psRefresh;
-   o.setPanel          = FControl_setPanel;
-   o.build             = FControl_build;
-   o.dispose           = FControl_dispose;
+   o._disable       = RClass.register(o, new APtyBoolean('_disable', null, false));
+   o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap', null, false));
+   o._hint          = RClass.register(o, new APtyString('_hint'));
+   o._stylePanel    = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
+   o._statusVisible = true;
+   o._statusEnable  = true;
+   o._statusBuild   = false;
+   o._controls      = null;
+   o._hParent       = null;
+   o._hPanel        = null;
+   o.onEnter        = RClass.register(o, new AEventMouseEnter('onEnter'), FControl_onEnter);
+   o.onLeave        = RClass.register(o, new AEventMouseLeave('onLeave'), FControl_onLeave);
+   o.onMouseOver    = RClass.register(o, new AEventMouseOver('onMouseOver'));
+   o.onMouseOut     = RClass.register(o, new AEventMouseOut('onMouseOut'));
+   o.onMouseDown    = RClass.register(o, new AEventMouseDown('onMouseDown'));
+   o.onMouseUp      = RClass.register(o, new AEventMouseUp('onMouseUp'));
+   o.onClick        = RClass.register(o, new AEventClick('onClick'));
+   o.onDoubleClick  = RClass.register(o, new AEventDoubleClick('onDoubleClick'));
+   o.onResize       = RClass.register(o, new AEventResize('onResize'));
+   o.onBuildPanel   = FControl_onBuildPanel;
+   o.oeBuild        = FControl_oeBuild;
+   o.oeMode         = FControl_oeMode;
+   o.oeEnable       = FControl_oeEnable;
+   o.oeVisible      = FControl_oeVisible;
+   o.oeResize       = FControl_oeResize;
+   o.oeRefresh      = FControl_oeRefresh;
+   o.construct      = FControl_construct;
+   o.topControl     = FControl_topControl;
+   o.hasControl     = FControl_hasControl;
+   o.controls       = FControl_controls;
+   o.panel          = FControl_panel;
+   o.isVisible      = FControl_isVisible;
+   o.setVisible     = FControl_setVisible;
+   o.show           = FControl_show;
+   o.hide           = FControl_hide;
+   o.isEnable       = FControl_isEnable;
+   o.setEnable      = FControl_setEnable;
+   o.enable         = FControl_enable;
+   o.disable        = FControl_disable;
+   o.attachEvent    = FControl_attachEvent;
+   o.linkEvent      = FControl_linkEvent;
+   o.callEvent      = FControl_callEvent;
+   o.push           = FControl_push;
+   o.psBuild        = FControl_psBuild;
+   o.psMode         = FControl_psMode;
+   o.psDesign       = FControl_psDesign;
+   o.psEnable       = FControl_psEnable;
+   o.psVisible      = FControl_psVisible;
+   o.psResize       = FControl_psResize;
+   o.psRefresh      = FControl_psRefresh;
+   o.setPanel       = FControl_setPanel;
+   o.build          = FControl_build;
+   o.dispose        = FControl_dispose;
    return o;
 }
 function FControl_onEnter(e){
@@ -489,15 +489,15 @@ function FControl_onEnter(e){
 function FControl_onLeave(e){
    var o = this;
 }
-function FControl_onBuildContainer(e){
+function FControl_onBuildPanel(e){
    var o = this;
-   o._hContainer = RBuilder.createDiv(e.hDocument, o.styleName('Container'));
+   o._hPanel = RBuilder.createDiv(e.hDocument, o.styleName('Panel'));
 }
 function FControl_oeBuild(e){
    var o = this;
    if(e.isBefore()){
-      o.onBuildContainer(e);
-      var h = o._hContainer;
+      o.onBuildPanel(e);
+      var h = o._hPanel;
       RHtml.linkSet(h, 'control', o);
       o.attachEvent('onEnter', h);
       o.attachEvent('onLeave', h);
@@ -586,7 +586,7 @@ function FControl_panel(p){
          return o._hParent;
       case EPanel.Container:
       case EPanel.Size:
-         return o._hContainer;
+         return o._hPanel;
    }
    return null;
 }
@@ -727,7 +727,7 @@ function FControl_psRefresh(t){
 function FControl_setPanel(h){
    var o = this;
    o._hParent = h;
-   h.appendChild(o._hContainer);
+   h.appendChild(o._hPanel);
 }
 function FControl_build(h){
    var o = this;
@@ -751,10 +751,10 @@ function FControl_dispose(){
       o._controls = null;
    }
    o._hParent = null;
-   var v = o._hContainer;
+   var v = o._hPanel;
    if(v){
       RMemory.freel(v);
-      o._hContainer = null;
+      o._hPanel = null;
    }
    o.__base.MPadding.dispose.call(o);
    o.__base.MSize.dispose.call(o);
@@ -1426,6 +1426,13 @@ function MDisplay_canVisible(m){
       case EMode.Zoom:
          return o.dispZoom;
    }
+}
+function MDragable(o){
+   o = RClass.inherits(this, o);
+   o.onDragStart = RMethod.virtual(o, 'onDragStart');
+   o.onDragMove  = RMethod.virtual(o, 'onDragMove');
+   o.onDragStop  = RMethod.virtual(o, 'onDragStop');
+   return o;
 }
 function MDropable(o){
    o = RClass.inherits(this, o);
@@ -2312,7 +2319,7 @@ function RControl_attachEvent(c, n, h, m, u){
       var es = REvent.find(h);
       es.push(al, e);
       if(u){
-         h.addEventListener(a._linker, m, true);
+         h.addEventListener(a._linker, REvent.ohEvent, true);
       }else{
          h[ah] = REvent.ohEvent;
       }
@@ -2572,19 +2579,12 @@ function REvent_process(hs, he){
             var ea = e.annotation;
             e.source = RHtml.linkGet(hs, '_plink');
             e.hSender = RHtml.eventSource(he);
+            e.sender = e.hSender._plinker;
             e.hSource = hs;
             ea.attach(e, he);
             if(e.ohProcess){
                RLogger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
-               try{
-                  if(e.sender){
-                     e.ohProcess.call(e.source, e.sender, e, he);
-                  }else{
-                     e.ohProcess.call(e.source, e, he);
-                  }
-               }catch(ex){
-                  RMessage.fatal(o, ex, 'Execute {1} failure. (source={2}, html={3}, process={4})', e.type, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
-               }
+               e.ohProcess.call(e.source, e);
             }else if(e.onProcess){
                RConsole.find(FEventConsole).push(e);
             }

@@ -18,16 +18,16 @@ function FControl(o){
    o = RClass.inherits(this, o, FComponent, MStyle, MSize, MPadding);
    //..........................................................
    // @property Boolean 是否禁止
-   o._disable          = RClass.register(o, new APtyBoolean('_disable', null, false));
+   o._disable       = RClass.register(o, new APtyBoolean('_disable', null, false));
    // @property Boolean 是否回行
-   o._nowrap           = RClass.register(o, new APtyBoolean('_nowrap', null, false));
+   o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap', null, false));
    // @property String 提示信息
-   o._hint             = RClass.register(o, new APtyString('_hint'));
+   o._hint          = RClass.register(o, new APtyString('_hint'));
    //..........................................................
    // @style
-   o._styleContainer   = RClass.register(o, new AStyle('_styleContainer', 'Container'));
+   o._stylePanel    = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
    // @style
-   //o._styleDesign      = RClass.register(o, new AStyle('Design'));
+   //o._styleDesign = RClass.register(o, new AStyle('Design'));
    // @style
    //o._styleDesignHover = RClass.register(o, new AStyle('DesignHover'));
    // @style
@@ -36,80 +36,77 @@ function FControl(o){
    //o._styleDesignMove  = RClass.register(o, new AStyle('DesignMove'));
    //..........................................................
    // @attribute
-   //o._displayCd      = EDisplayMode.Update;
-   o._statusVisible    = true;
-   o._statusEnable     = true;
-   o._statusBuild      = false;
-   o._controls         = null;
-   //o._sizeCd         = ESize.Normal;
-   //o._events         = null;
-   //o._storage        = null;
+   //o._displayCd   = EDisplayMode.Update;
+   o._statusVisible = true;
+   o._statusEnable  = true;
+   o._statusBuild   = false;
+   o._controls      = null;
+   //o._sizeCd      = ESize.Normal;
+   //o._events      = null;
+   //o._storage     = null;
    //..........................................................
    // @html 父容器
-   o._hParent          = null;
-   // @html 容器
-   o._hContainer       = null;
+   o._hParent       = null;
+   // @html 面板容器
+   o._hPanel        = null;
    //..........................................................
    // @event
-   o.onEnter           = RClass.register(o, new AEventMouseEnter('onEnter'), FControl_onEnter);
-   o.onLeave           = RClass.register(o, new AEventMouseLeave('onLeave'), FControl_onLeave);
-   o.onMouseOver       = RClass.register(o, new AEventMouseOver('onMouseOver'));
-   o.onMouseOut        = RClass.register(o, new AEventMouseOut('onMouseOut'));
-   o.onMouseDown       = RClass.register(o, new AEventMouseDown('onMouseDown'));
-   o.onMouseUp         = RClass.register(o, new AEventMouseUp('onMouseUp'));
-   o.onClick           = RClass.register(o, new AEventClick('onClick'));
-   o.onDoubleClick     = RClass.register(o, new AEventDoubleClick('onDoubleClick'));
-   //o.onKeyDown         = RClass.register(o, new AEventKeyDown('onKeyDown'));
-   //o.onKeyPress        = RClass.register(o, new AEventKeyPress('onKeyPress'));
-   //o.onKeyUp           = RClass.register(o, new AEventKeyUp('onKeyUp'));
-   o.onResize          = RClass.register(o, new AEventResize('onResize'));
+   o.onEnter        = RClass.register(o, new AEventMouseEnter('onEnter'), FControl_onEnter);
+   o.onLeave        = RClass.register(o, new AEventMouseLeave('onLeave'), FControl_onLeave);
+   o.onMouseOver    = RClass.register(o, new AEventMouseOver('onMouseOver'));
+   o.onMouseOut     = RClass.register(o, new AEventMouseOut('onMouseOut'));
+   o.onMouseDown    = RClass.register(o, new AEventMouseDown('onMouseDown'));
+   o.onMouseUp      = RClass.register(o, new AEventMouseUp('onMouseUp'));
+   o.onClick        = RClass.register(o, new AEventClick('onClick'));
+   o.onDoubleClick  = RClass.register(o, new AEventDoubleClick('onDoubleClick'));
+   o.onResize       = RClass.register(o, new AEventResize('onResize'));
    // @event
-   o.onBuildContainer  = FControl_onBuildContainer;
+   o.onBuildPanel   = FControl_onBuildPanel;
    //..........................................................
    // @process
-   o.oeBuild           = FControl_oeBuild;
-   o.oeMode            = FControl_oeMode;
-   o.oeEnable          = FControl_oeEnable;
-   o.oeVisible         = FControl_oeVisible;
-   o.oeResize          = FControl_oeResize;
-   o.oeRefresh         = FControl_oeRefresh;
+   o.oeBuild        = FControl_oeBuild;
+   o.oeMode         = FControl_oeMode;
+   o.oeEnable       = FControl_oeEnable;
+   o.oeVisible      = FControl_oeVisible;
+   o.oeResize       = FControl_oeResize;
+   o.oeRefresh      = FControl_oeRefresh;
    //..........................................................
    // @method
-   o.construct         = FControl_construct;
+   o.construct      = FControl_construct;
    // @method
-   o.topControl        = FControl_topControl;
-   o.hasControl        = FControl_hasControl;
-   o.controls          = FControl_controls;
-   o.panel             = FControl_panel;
+   o.topControl     = FControl_topControl;
+   o.hasControl     = FControl_hasControl;
+   o.controls       = FControl_controls;
+   o.panel          = FControl_panel;
    // @method
-   o.isVisible         = FControl_isVisible;
-   o.setVisible        = FControl_setVisible;
-   o.show              = FControl_show;
-   o.hide              = FControl_hide;
+   o.isVisible      = FControl_isVisible;
+   o.setVisible     = FControl_setVisible;
+   o.show           = FControl_show;
+   o.hide           = FControl_hide;
    // @method
-   o.isEnable          = FControl_isEnable;
-   o.setEnable         = FControl_setEnable;
-   o.enable            = FControl_enable;
-   o.disable           = FControl_disable;
+   o.isEnable       = FControl_isEnable;
+   o.setEnable      = FControl_setEnable;
+   o.enable         = FControl_enable;
+   o.disable        = FControl_disable;
    // @method
-   o.attachEvent       = FControl_attachEvent;
-   o.linkEvent         = FControl_linkEvent;
-   o.callEvent         = FControl_callEvent;
+   o.attachEvent    = FControl_attachEvent;
+   o.linkEvent      = FControl_linkEvent;
+   o.callEvent      = FControl_callEvent;
    // @method
-   o.push              = FControl_push;
+   o.push           = FControl_push;
    // @method
-   o.psBuild           = FControl_psBuild;
-   o.psMode            = FControl_psMode;
-   o.psDesign          = FControl_psDesign;
-   o.psEnable          = FControl_psEnable;
-   o.psVisible         = FControl_psVisible;
-   o.psResize          = FControl_psResize;
-   o.psRefresh         = FControl_psRefresh;
+   o.psBuild        = FControl_psBuild;
+   o.psMode         = FControl_psMode;
+   o.psDesign       = FControl_psDesign;
+   o.psEnable       = FControl_psEnable;
+   o.psVisible      = FControl_psVisible;
+   o.psResize       = FControl_psResize;
+   o.psRefresh      = FControl_psRefresh;
    // @method
-   o.setPanel          = FControl_setPanel;
-   o.build             = FControl_build;
+   o.setPanel       = FControl_setPanel;
+   o.build          = FControl_build;
    // @method
-   o.dispose           = FControl_dispose;
+   o.dispose        = FControl_dispose;
    return o;
 }
 
@@ -148,9 +145,9 @@ function FControl_onLeave(e){
 // @method
 // @return HtmlTag 页面元素
 //==========================================================
-function FControl_onBuildContainer(e){
+function FControl_onBuildPanel(e){
    var o = this;
-   o._hContainer = RBuilder.createDiv(e.hDocument, o.styleName('Container'));
+   o._hPanel = RBuilder.createDiv(e.hDocument, o.styleName('Panel'));
 }
 
 //==========================================================
@@ -165,9 +162,9 @@ function FControl_oeBuild(e){
    // 事件前处理
    if(e.isBefore()){
       // 建立控件容器
-      o.onBuildContainer(e);
+      o.onBuildPanel(e);
       // 设置容器样式
-      var h = o._hContainer;
+      var h = o._hPanel;
       RHtml.linkSet(h, 'control', o);
       // 关联容器事件
       o.attachEvent('onEnter', h);
@@ -344,7 +341,7 @@ function FControl_panel(p){
          return o._hParent;
       case EPanel.Container:
       case EPanel.Size:
-         return o._hContainer;
+         return o._hPanel;
    }
    return null;
 }
@@ -684,7 +681,7 @@ function FControl_psRefresh(t){
 function FControl_setPanel(h){
    var o = this;
    o._hParent = h;
-   h.appendChild(o._hContainer);
+   h.appendChild(o._hPanel);
 }
 
 //==========================================================
@@ -726,10 +723,10 @@ function FControl_dispose(){
    }
    // 释放属性
    o._hParent = null;
-   var v = o._hContainer;
+   var v = o._hPanel;
    if(v){
       RMemory.freel(v);
-      o._hContainer = null;
+      o._hPanel = null;
    }
    // 释放处理
    o.__base.MPadding.dispose.call(o);

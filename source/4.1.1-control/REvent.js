@@ -115,6 +115,7 @@ function REvent_process(hs, he){
             var ea = e.annotation;
             e.source = RHtml.linkGet(hs, '_plink');
             e.hSender = RHtml.eventSource(he);
+            e.sender = e.hSender._plinker;
             e.hSource = hs;
             ea.attach(e, he);
             // 自定义处理事件
@@ -132,15 +133,7 @@ function REvent_process(hs, he){
             if(e.ohProcess){
                // 处理立即事件
                RLogger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
-               try{
-                  if(e.sender){
-                     e.ohProcess.call(e.source, e.sender, e, he);
-                  }else{
-                     e.ohProcess.call(e.source, e, he);
-                  }
-               }catch(ex){
-                  RMessage.fatal(o, ex, 'Execute {1} failure. (source={2}, html={3}, process={4})', e.type, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
-               }
+               e.ohProcess.call(e.source, e);
             }else if(e.onProcess){
                // 如果没有立即事件，则处理队列内响应事件
                RConsole.find(FEventConsole).push(e);

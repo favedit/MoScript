@@ -11,6 +11,7 @@ var RHtml = new function RHtml(){
    // @attribute
    o._nextUid        = 1;
    o._links          = new Object();
+   o._clientPosition = new SPoint2();
    //..........................................................
    // @method
    o.uid            = RHtml_uid;
@@ -29,12 +30,19 @@ var RHtml = new function RHtml(){
    o.linkGet        = RHtml_linkGet;
    o.linkSet        = RHtml_linkSet;
    // @method
+   o.clientPosition = RHtml_clientPosition;
+   o.clientX        = RHtml_clientX;
+   o.clientY        = RHtml_clientY;
+   // @method
    o.toText         = RHtml_toText;
    o.toHtml         = RHtml_toHtml;
    // @method
    o.eventSource    = RHtml_eventSource;
    // @method
    o.free           = RHtml_free;
+
+
+
 
    // @method
    // 协助在HTML元素上存储所有属性设置信息，系统退出时，会自动删掉上面的所有关联。
@@ -287,6 +295,66 @@ function RHtml_linkSet(h, n, v){
       i._link = h;
    }
    i.set(n, v);
+}
+
+//==========================================================
+// <T>计算一个控件到指定容器的位置。</T>
+// 计算 table的 offsets. 
+// 计算 绝对定位的元素(position:absolute). 
+// 在其它容器内出现的Scroll offsets(scrollLeft,scrollTop). 
+// 所有父元素溢出的边框(overflow:visible). 
+// 误算绝对定位的父元素. 
+//
+// @method
+// @param h:html:HtmlTag 页面元素
+// @param t:top:HtmlTag 顶层元素
+//==========================================================
+function RHtml_clientPosition(h, t){
+   var p = o._clientPosition;
+   while(h != t){
+      p.x += h.offsetLeft - h.scrollLeft;
+      p.y += h.offsetTop - h.scrollTop;
+      //if('absolute' != RHtml.currentStyle(h).position){
+         //debugger;
+         //break;
+      //}
+      //p.x += h.clientLeft;
+      //p.y += h.clientTop;
+      h = h.offsetParent;
+   }
+   return p;
+}
+
+//==========================================================
+// <T>计算一个页面元素到左侧的距离。</T>
+//
+// @method
+// @param p:html:HtmlTag 页面元素
+// @return Intger 距离
+//==========================================================
+function RHtml_clientX(p){
+   var r = 0;
+   while(p){
+      r += p.offsetLeft - p.scrollLeft;
+      p = p.offsetParent;
+   }
+   return r;
+}
+
+//==========================================================
+// <T>计算一个页面元素到上侧的距离。</T>
+//
+// @method
+// @param p:html:HtmlTag 页面元素
+// @return Intger 距离
+//==========================================================
+function RHtml_clientY(p){
+   var r = 0;
+   while(p){
+      r += p.offsetTop - p.scrollTop;
+      p = p.offsetParent;
+   }
+   return r;
 }
 
 //==========================================================

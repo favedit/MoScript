@@ -1,11 +1,18 @@
 //==========================================================
-// <T>显示对象。</T>
+// <T>主工作区域。</T>
 //
 // @author maocy
-// @history 141231
+// @history 150121
 //==========================================================
 function FDsMainWorkspace(o){
    o = RClass.inherits(this, o, FWorkspace);
+   //..........................................................
+   // @style
+   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+   o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+   o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
    //..........................................................
    // @attribute
    o._framesetMain   = null;
@@ -51,29 +58,28 @@ function FDsMainWorkspace_oeBuild(e){
    o.__base.FWorkspace.oeBuild.call(o, e);
    // 事件前处理
    if(e.isBefore()){
+      o._hPanel.style.width = '100%';
+      o._hPanel.style.height = '100%';
       // 建立主框架
       var fs = o._framesetMain = RClass.create(FFrameSet);
       fs.process(e);
       // 建立工具区
       var f = o._frameToolBar = RClass.create(FFrame);
-      f.setHeight(24);
+      f.setHeight(26);
       f.psBuild(document);
-      f._hContainer.style.backgroundImage = '-webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #AEAEAE), color-stop(1, #555555))';
-      f._hContainer.style.borderBottom = '1px solid #999999';
+      f._hPanel.className = o.styleName('Toolbar_Ground');
       fs.appendFrame(f);
       // 建立内容区
       var f = o._frameBody = RClass.create(FFrame);
       f.process(e);
-      f._hContainer.style.backgroundColor = 'green';
       fs.appendFrame(f);
       // 建立状态区
       var f = o._frameProperty = RClass.create(FFrame);
       f.setHeight(18);
       f.process(e);
-      f._hContainer.style.backgroundImage = '-webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #555555), color-stop(1, #AEAEAE))';
-      f._hContainer.style.borderTop = '1px solid #999999';
+      f._hPanel.className = o.styleName('Statusbar_Ground');
       fs.appendFrame(f);
-      fs.setPanel(o._hContainer);
+      fs.setPanel(o._hPanel);
       //..........................................................
       // 建立内容框架
       var fs = RClass.create(FFrameSet);
@@ -83,14 +89,14 @@ function FDsMainWorkspace_oeBuild(e){
       var f = o._frameCatalog = RClass.create(FFrame);
       f.setWidth(200);
       f.process(e);
-      f._hContainer.style.backgroundColor = '#444444';
+      f._hPanel.className = o.styleName('Catalog_Ground');
       fs.appendFrame(f);
       // 建立分割符
       var sp1 = fs.appendSpliter();
       // 建立工作区
       var f = o._frameWorkspace = RClass.create(FFrame);
       f.process(e);
-      f._hContainer.style.backgroundColor = '#666666';
+      f._hPanel.className = o.styleName('Workspace_Ground');
       fs.appendFrame(f);
       // 建立分割符
       var sp2 = fs.appendSpliter();
@@ -98,12 +104,22 @@ function FDsMainWorkspace_oeBuild(e){
       var f = o._frameStatusBar = RClass.create(FFrame);
       f.setWidth(360);
       f.process(e);
-      f._hContainer.style.backgroundColor = '#444444';
+      f._hPanel.className = o.styleName('Property_Ground');
       fs.appendFrame(f);
-      fs.setPanel(o._frameBody._hContainer);
+      fs.setPanel(o._frameBody._hPanel);
       // 设置分割
-      sp1._hSize = o._frameCatalog._hContainer.parentElement;
-      sp2._hSize = o._frameStatusBar._hContainer.parentElement;
+      sp1._alignCd = EAlign.Left;
+      sp1._hSize = o._frameCatalog._hPanel;
+      sp2._alignCd = EAlign.Right;
+      sp2._hSize = o._frameStatusBar._hPanel;
+      //..........................................................
+      var m = o._menubar = RClass.create(FDsMainMenuBar);
+      m.process(e);
+      m.setPanel(o._frameToolBar._hPanel);
+      //..........................................................
+      var m = o._toolbar = RClass.create(FDsMainToolBar);
+      m.process(e);
+      m.setPanel(o._frameToolBar._hPanel);
    }
    return EEventStatus.Continue;
 }
