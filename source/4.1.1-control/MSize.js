@@ -20,6 +20,8 @@ function MSize(o){
    // @method
    o.calcRect  = MSize_calcRect;
    o.resize    = MSize_resize;
+   o.setWidth  = MSize_setWidth;
+   o.setHeight = MSize_setHeight;
    o.setSize   = MSize_setSize;
    o.setBounds = MSize_setBounds;
    o.resetSize = MSize_resetSize;
@@ -73,6 +75,26 @@ function MSize_resize(width, height){
 }
 
 //==========================================================
+// <T>设置宽度。</T>
+//
+// @method
+// @param p:width:Number 宽度
+//==========================================================
+function MSize_setWidth(p){
+   this.setSize(p, null);
+}
+
+//==========================================================
+// <T>设置高度。</T>
+//
+// @method
+// @param p:height:Number 高度
+//==========================================================
+function MSize_setHeight(p){
+   this.setSize(null, p);
+}
+
+//==========================================================
 // <T>设置大小。</T>
 //
 // @method
@@ -80,12 +102,19 @@ function MSize_resize(width, height){
 // @param h:height:Number 高度
 //==========================================================
 function MSize_setSize(w, h){
-   var h = this.panel(EPanel.Size);
-   if(w){
-      h.style.width = w;
+   var o = this;
+   var t = this.panel(EPanel.Size);
+   if(w != null){
+      o._size.width = w;
+      if(t){
+         t.style.width = w;
+      }
    }
-   if(h){
-      h.style.height = h;
+   if(h != null){
+      o._size.height = h;
+      if(t){
+         t.style.height = h;
+      }
    }
 }
 

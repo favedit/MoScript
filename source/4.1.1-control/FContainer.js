@@ -30,7 +30,7 @@ function FContainer_panel(t){
    if(EPanel.Container == t){
       return o.hPanel;
    }
-   return o.base.FControl.panel.call(o, t);
+   return o.__base.FControl.panel.call(o, t);
 }
 
 //==========================================================

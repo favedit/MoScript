@@ -61,6 +61,12 @@ var EDataService = new function EDataService(){
    o.WebDataset = 'logic.dataset';
    return o;
 }
+var EDirection = new function EDirection(){
+   var o = this;
+   o.Horizontal = 'H';
+   o.Vertical   = 'V';
+   return o;
+}
 var EDisplayMode = new function EDisplayMode(){
    var o = this;
    o.Display = 'P';
@@ -372,7 +378,7 @@ function FContainer_panel(t){
    if(EPanel.Container == t){
       return o.hPanel;
    }
-   return o.base.FControl.panel.call(o, t);
+   return o.__base.FControl.panel.call(o, t);
 }
 function FContainer_focusControl(){
    return null;
@@ -630,8 +636,8 @@ function FControl_disable(){
       o.setEnable(false);
    }
 }
-function FControl_attachEvent(n, h, m){
-   return RControl.attachEvent(this, n, h, m);
+function FControl_attachEvent(n, h, m, u){
+   return RControl.attachEvent(this, n, h, m, u);
 }
 function FControl_linkEvent(t, n, h, m){
    return RControl.linkEvent(this, t, n, h, m);
@@ -1972,6 +1978,8 @@ function MSize(o){
    o.construct = MSize_construct;
    o.calcRect  = MSize_calcRect;
    o.resize    = MSize_resize;
+   o.setWidth  = MSize_setWidth;
+   o.setHeight = MSize_setHeight;
    o.setSize   = MSize_setSize;
    o.setBounds = MSize_setBounds;
    o.resetSize = MSize_resetSize;
@@ -2007,13 +2015,26 @@ function MSize_resize(width, height){
       this.onSize();
    }
 }
+function MSize_setWidth(p){
+   this.setSize(p, null);
+}
+function MSize_setHeight(p){
+   this.setSize(null, p);
+}
 function MSize_setSize(w, h){
-   var h = this.panel(EPanel.Size);
-   if(w){
-      h.style.width = w;
+   var o = this;
+   var t = this.panel(EPanel.Size);
+   if(w != null){
+      o._size.width = w;
+      if(t){
+         t.style.width = w;
+      }
    }
-   if(h){
-      h.style.height = h;
+   if(h != null){
+      o._size.height = h;
+      if(t){
+         t.style.height = h;
+      }
    }
 }
 function MSize_setBounds(l, t, r, b, force){
@@ -2272,7 +2293,7 @@ var RControl = new function RControl(){
    o.newInstanceByName  = RControl_newInstance;
    return o;
 }
-function RControl_attachEvent(c, n, h, m){
+function RControl_attachEvent(c, n, h, m, u){
    var o = this;
    var e = null;
    var p = c[n];
@@ -2290,7 +2311,11 @@ function RControl_attachEvent(c, n, h, m){
       e.process = REvent.onProcess;
       var es = REvent.find(h);
       es.push(al, e);
-      h[ah] = REvent.ohEvent;
+      if(u){
+         h.addEventListener(a._linker, m, true);
+      }else{
+         h[ah] = REvent.ohEvent;
+      }
       RHtml.linkSet(h, '_plink', c);
    }
    return e;
@@ -2514,7 +2539,8 @@ function REvent_ohEvent(e){
 }
 function REvent_onProcess(e){
    var e = this;
-   RLogger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', e.type, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
+   var ea = e.annotation;
+   RLogger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
    if(e.sender){
       e.onProcess.call(e.source, e.sender, e);
    }else{
@@ -2549,7 +2575,7 @@ function REvent_process(hs, he){
             e.hSource = hs;
             ea.attach(e, he);
             if(e.ohProcess){
-               RLogger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', e.type, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
+               RLogger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
                try{
                   if(e.sender){
                      e.ohProcess.call(e.source, e.sender, e, he);

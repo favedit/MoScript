@@ -53,7 +53,7 @@ var RControl = new function RControl(){
 // @param h:html:HtmlTag 页面元素
 // @param m:method:Function 处理函数
 //==========================================================
-function RControl_attachEvent(c, n, h, m){
+function RControl_attachEvent(c, n, h, m, u){
    var o = this;
    var e = null;
    var p = c[n];
@@ -77,7 +77,11 @@ function RControl_attachEvent(c, n, h, m){
       var es = REvent.find(h);
       es.push(al, e);
       // 关联事件处理到HTML元素上
-      h[ah] = REvent.ohEvent;
+      if(u){
+         h.addEventListener(a._linker, m, true);
+      }else{
+         h[ah] = REvent.ohEvent;
+      }
       RHtml.linkSet(h, '_plink', c);
    }
    return e;

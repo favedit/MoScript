@@ -467,8 +467,8 @@ function FControl_disable(){
 // @return TEvent 关联的事件对象
 // @see RControl.attachEvent
 //==========================================================
-function FControl_attachEvent(n, h, m){
-   return RControl.attachEvent(this, n, h, m);
+function FControl_attachEvent(n, h, m, u){
+   return RControl.attachEvent(this, n, h, m, u);
 }
 
 //==========================================================

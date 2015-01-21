@@ -63,7 +63,8 @@ function REvent_ohEvent(e){
 function REvent_onProcess(e){
    // 当前this指向EventHandle对象
    var e = this;
-   RLogger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', e.type, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
+   var ea = e.annotation;
+   RLogger.debug(e, 'Process {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.onProcess));
    if(e.sender){
       e.onProcess.call(e.source, e.sender, e);
    }else{
@@ -130,7 +131,7 @@ function REvent_process(hs, he){
             //}
             if(e.ohProcess){
                // 处理立即事件
-               RLogger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', e.type, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
+               RLogger.debug(e, 'Execute {1}. (source={2}, html={3}, process={4})', ea._handle, RClass.dump(e.source), RClass.dump(e.hSource), RMethod.name(e.ohProcess));
                try{
                   if(e.sender){
                      e.ohProcess.call(e.source, e.sender, e, he);

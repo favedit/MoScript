@@ -28,6 +28,7 @@
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\4.2.1-control-form       %JS_HOME%\ajs\control-form.js       N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\4.3.1-control-table      %JS_HOME%\ajs\control-table.js      N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\4.4.1-control-tree       %JS_HOME%\ajs\control-tree.js       N
+@"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\4.5.1-control-frame      %JS_HOME%\ajs\control-frame.js      N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\5.1.1-stage              %JS_HOME%\ajs\stage.js              N
 
 COPY /Y %JS_HOME%\9.1.1-context\*.js %JS_HOME%\ajs\
@@ -67,6 +68,7 @@ echo %JS_FILES%
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\control-form.js
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\control-table.js
 @SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\control-tree.js
+@SET JS_FILES=%JS_FILES% %JS_HOME%\ajs\control-frame.js
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_FMGR% %JS_FILES% %JS_HOME%\ajs\mo-control.js
 
 @SET JS_FILES=

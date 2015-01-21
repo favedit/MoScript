@@ -72,11 +72,13 @@ function _onload(){
    var hTreePanel = document.getElementById('_tree');
 
    tree = RClass.create(FDataTreeView);
-   tree._serviceName = 'http://localhost:5130/script/test/control-tree/node01.xml';
+   //tree._serviceName = 'http://localhost:5130/script/test/control-tree/node01.xml';
+   tree._serviceName = 'http://localhost/script/test/control-tree/node01.xml';
    tree.lsnsLoaded.register(null, onTreeLoaded);
    tree.lsnsClick.register(null, onTreeClick);
    tree.build(hTreePanel);
-   tree.loadUrl('http://localhost:5130/script/test/control-tree/node01.xml');
+   tree.loadUrl('http://localhost/script/test/control-tree/node01.xml');
+   //tree.loadUrl('http://localhost:5130/script/test/control-tree/node01.xml');
    //tree.loadUrl('http://localhost:5130/script/test/control-tree/node02.xml');
 
    //tree.loadUrl('node.xml');
