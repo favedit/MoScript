@@ -2,14 +2,17 @@ function FDataTreeView(o){
    o = RClass.inherits(this, o, FTreeView);
    o._serviceName     = RClass.register(o, new APtyString('_serviceName', 'service'));
    o._statusLoading   = false;
-   o.lsnsLoad         = new TListeners();
    o.lsnsLoaded       = new TListeners();
+   o.lsnsNodeLoaded   = new TListeners();
    o.onLoaded         = FDataTreeView_onLoaded;
+   o.onNodeLoaded     = FDataTreeView_onNodeLoaded;
    o.construct        = FDataTreeView_construct;
    o.buildNode        = FDataTreeView_buildNode;
    o.loadNode         = FDataTreeView_loadNode;
    o.loadUrl          = FDataTreeView_loadUrl;
+   o.loadNodeUrl      = FDataTreeView_loadNodeUrl;
    o.loadService      = FDataTreeView_loadService;
+   o.loadNodeService  = FDataTreeView_loadNodeService;
    o.reloadNode       = FDataTreeView_reloadNode;
    o.reload           = FDataTreeView_reload;
    o.dispose          = FDataTreeView_dispose;
@@ -31,11 +34,23 @@ function FDataTreeView_onLoaded(p){
    if(x == null){
       throw new TError(o, 'Load tree data failure.');
    }
+   var xt = x.find('TreeView');
+   RControl.build(o, xt);
+   o.lsnsLoaded.process(p);
+   var s = xt.get('service');
+   o.loadNodeService(s);
+}
+function FDataTreeView_onNodeLoaded(p){
+   var o = this;
+   var x = p.root;
+   if(x == null){
+      throw new TError(o, 'Load tree data failure.');
+   }
    var np = p.connection.parentNode;
    o._loadingNode.hide();
    o._statusLoading = false;
    o.buildNode(np, x);
-   o.lsnsLoaded.process(p);
+   o.lsnsNodeLoaded.process(p);
 }
 function FDataTreeView_construct(){
    var o = this;
@@ -96,11 +111,11 @@ function FDataTreeView_loadNode(pn, pf){
       pn._hImage.src = RResource.iconPath(o._iconMinus);
    }
    var ln = o._loadingNode;
-   var nr = pn._hContainer.rowIndex;
-   if(ln._hContainer.rowIndex > nr){
+   var nr = pn._hPanel.rowIndex;
+   if(ln._hPanel.rowIndex > nr){
       nr++;
    }
-   RHtml.tableMoveRow(o._hNodeForm, ln._hContainer.rowIndex, nr);
+   RHtml.tableMoveRow(o._hNodeForm, ln._hPanel.rowIndex, nr);
    ln.setLevel(pn.level + 1);
    ln.show();
    var xc = RConsole.find(FXmlConsole);
@@ -108,12 +123,18 @@ function FDataTreeView_loadNode(pn, pf){
    c.parentNode = pn;
    c.lsnsLoad.register(o, o.onLoaded);
 }
-function FDataTreeView_loadUrl(p, n){
+function FDataTreeView_loadUrl(p){
+   var o = this;
+   var xc = RConsole.find(FXmlConsole);
+   var c = xc.sendAsync(p);
+   c.lsnsLoad.register(o, o.onLoaded);
+}
+function FDataTreeView_loadNodeUrl(p, n){
    var o = this;
    var xc = RConsole.find(FXmlConsole);
    var c = xc.sendAsync(p);
    c.parentNode = RObject.nvl(n, o._focusNode);
-   c.lsnsLoad.register(o, o.onLoaded);
+   c.lsnsLoad.register(o, o.onNodeLoaded);
 }
 function FDataTreeView_loadService(service, attrs){
    var o = this;
@@ -138,6 +159,29 @@ function FDataTreeView_loadService(service, attrs){
       }
    }
    var ln = o._loadingNode;
+}
+function FDataTreeView_loadNodeService(ps, pa){
+   var o = this;
+   var svc = RService.parse(RString.nvl(ps, o._service));
+   if(!svc){
+      throw new TError(o, 'Unknown service.');
+   }
+   var as = RObject.nvl(pa, o._attributes);
+   var xd = new TXmlDocument();
+   var xr = xd.root();
+   xr.set('action', svc.action);
+   if(!as.isEmpty()){
+      if(RClass.isClass(as, TNode)){
+         xr.push(attrs);
+      }if(RClass.isClass(as, TAttributes)){
+      }else{
+      }
+   }
+   var ln = o._loadingNode;
+   var xc = RConsole.find(FXmlConsole);
+   var c = xc.sendAsync(svc.url, xr);
+   c.parentNode = o._focusNode;
+   c.lsnsLoad.register(o, o.onNodeLoaded);
 }
 function FDataTreeView_reloadNode(n){
    var o = this;
@@ -322,7 +366,7 @@ function FDataTreeView_tempAppendChild(child){
    var hc = o._hHeadLine.insertCell();
    hc.height = '100%';
    if(RClass.isClass(child, FTreeColumn)){
-      hc.appendChild(child._hContainer);
+      hc.appendChild(child._hPanel);
    }
 }
 function FTreeColumn(o){
@@ -370,12 +414,13 @@ function FTreeNode(o){
    o._child            = RClass.register(o, new APtyBoolean('_child'), false);
    o._note             = RClass.register(o, new APtyString('_note'));
    o._tag              = RClass.register(o, new APtyString('_tag'));
-   o._stylePanel       = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
+   o._styleNormal      = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
    o._styleHover       = RClass.register(o, new AStyle('_styleHover', 'Hover'));
    o._styleSelect      = RClass.register(o, new AStyle('_styleSelect', 'Select'));
    o._styleImage       = RClass.register(o, new AStyle('_styleImage', 'Image'));
    o._styleIcon        = RClass.register(o, new AStyle('_styleIcon', 'Icon'));
    o._styleIconDisable = RClass.register(o, new AStyle('_styleIconDisable', 'IconDisable'));
+   o._styleLabel       = RClass.register(o, new AStyle('_styleLabel', 'Label'));
    o._styleCell        = RClass.register(o, new AStyle('_styleCell', 'Cell'));
    o._tree             = null;
    o._level            = 0;
@@ -394,7 +439,7 @@ function FTreeNode(o){
    o.onNodeEnter       = RClass.register(o, new AEventMouseEnter('onNodeEnter'), FTreeNode_onNodeEnter);
    o.onNodeLeave       = RClass.register(o, new AEventMouseLeave('onNodeLeave'), FTreeNode_onNodeLeave);
    o.onNodeClick       = RClass.register(o, new AEventClick('onNodeClick'), FTreeNode_onNodeClick);
-   o.onBuildContainer  = FTreeNode_onBuildContainer;
+   o.onBuildPanel      = FTreeNode_onBuildPanel;
    o.oeBuild           = FTreeNode_oeBuild;
    o.construct         = FTreeNode_construct;
    o.type              = FTreeNode_type;
@@ -498,21 +543,21 @@ function FTreeNode_onNodeClick(e){
       }
    }
 }
-function FTreeNode_onBuildContainer(e){
+function FTreeNode_onBuildPanel(e){
    var o = this;
-   o._hContainer = RBuilder.createTableRow(e.hDocument, o.styleName('Container'));
+   o._hPanel = RBuilder.createTableRow(e.hDocument, o.styleName('Panel'));
 }
 function FTreeNode_oeBuild(e){
    var o = this;
    var t = o._tree;
    var r = o.__base.FContainer.oeBuild.call(o, e);
    if(e.isBefore()){
-      var hp = o._hContainer;
+      var hp = o._hPanel;
       hp.style.border = '1 solid red';
       o.attachEvent('onNodeEnter', hp, o.onNodeEnter);
       o.attachEvent('onNodeLeave', hp, o.onNodeLeave);
       o.attachEvent('onNodeClick', hp);
-      var hnp = o._hNodePanel = RBuilder.appendTableCell(hp, o.styleName('Panel'));
+      var hnp = o._hNodePanel = RBuilder.appendTableCell(hp, o.styleName('Normal'));
       hnp.noWrap = true;
       var ni = o._child ? t._iconPlus : t._iconNode;
       var hi = o._hImage = RBuilder.appendIcon(hnp, o.styleName('Image'), ni, 16, 16);
@@ -532,7 +577,7 @@ function FTreeNode_oeBuild(e){
          o.setCheck(o._checked);
          t.linkEvent(o, 'onNodeCheckClick', hc);
       }
-      o._hLabel = RBuilder.appendText(hnp);
+      o._hLabel = RBuilder.appendText(hnp, o.styleName('Label'));
       o.setLabel(o._label);
       var cs = t.columns;
       if(cs){
@@ -627,7 +672,7 @@ function FTreeNode_topNodeByType(t){
 function FTreeNode_show(){
    var o = this;
    var t = o._tree;
-   RHtml.displaySet(o._hContainer, true);
+   RHtml.displaySet(o._hPanel, true);
    var ns = o._nodes;
    if(ns){
       var c = ns.count();
@@ -637,7 +682,7 @@ function FTreeNode_show(){
             t.appendNode(n, o);
          }
          if(n._statusDisplay){
-            RHtml.displaySet(n._hContainer, true);
+            RHtml.displaySet(n._hPanel, true);
             if(n._extended){
                n.show();
             }
@@ -648,8 +693,8 @@ function FTreeNode_show(){
 function FTreeNode_hide(){
    var o = this;
    var t = o._tree;
-   if(o._hContainer){
-      RHtml.displaySet(o._hContainer, false);
+   if(o._hPanel){
+      RHtml.displaySet(o._hPanel, false);
    }
    var cs = o._components;
    if(cs){
@@ -772,7 +817,7 @@ function FTreeNode_click(){
 }
 function FTreeNode_refreshStyle(){
    var o = this;
-   var cs = o._hContainer.cells;
+   var cs = o._hPanel.cells;
    var c = cs.length;
    if(o._statusSelected){
       for(var i = 0; i < c; i++){
@@ -785,7 +830,7 @@ function FTreeNode_refreshStyle(){
          }
       }else{
          for(var i = 0; i < c; i++){
-            cs[i].className = o.styleName('Panel');
+            cs[i].className = o.styleName('Normal');
          }
       }
    }
@@ -1064,7 +1109,7 @@ function FTreeView(o){
    o.lsnsEnter        = new TListeners();
    o.lsnsLeave        = new TListeners();
    o.lsnsClick        = new TListeners();
-   o.onBuildContainer = FTreeView_onBuildContainer;
+   o.onBuildPanel     = FTreeView_onBuildPanel;
    o.onNodeCheckClick = RClass.register(o, new AEventClick('onNodeCheckClick'), FTreeView_onNodeCheckClick);
    o.oeBuild          = FTreeView_oeBuild;
    o.construct        = FTreeView_construct;
@@ -1092,10 +1137,10 @@ function FTreeView(o){
    o.dispose          = FTreeView_dispose;
    return o;
 }
-function FTreeView_onBuildContainer(e){
+function FTreeView_onBuildPanel(e){
    var o = this;
-   o._hContainer = RBuilder.createTable(e.hDocument, o.styleName('Container'));
-   o._hContainer.width = '100%';
+   o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
+   o._hPanel.width = '100%';
 }
 function FTreeView_onNodeCheckClick(s, e){
    var o = this;
@@ -1136,7 +1181,7 @@ function FTreeView_oeBuild(e){
    var o = this;
    var r = o.__base.FContainer.oeBuild.call(o, e);
    if(e.isBefore()){
-      var hr = RBuilder.appendTableRow(o._hContainer);
+      var hr = RBuilder.appendTableRow(o._hPanel);
       var hc = RBuilder.appendTableCell(hr);
       var hnp = o._hNodePanel = RBuilder.appendDiv(hc, o.styleName('NodePanel'));
       var hnf = o._hNodeForm = RBuilder.appendTable(hnp, o.styleName('NodeForm'));
@@ -1221,16 +1266,22 @@ function FTreeView_findByUuid(p){
 function FTreeView_createChild(x){
    var o = this;
    var r = null;
-   if(x.isName('Column') || x.isName('TreeColumn')){
-      r = RClass.create(FTreeColumn);
-   }else if(x.isName('Level') || x.isName('TreeLevel')){
-      r = RClass.create(FTreeLevel);
-   }else if(x.isName('Type') || x.isName('TreeNodeType')){
-      r = RClass.create(FTreeNodeType);
-   }else if(x.isName('Node') || x.isName('TreeNode')){
-      r = RClass.create(FTreeNode);
-   }else{
-      RMessage.fatal(o, null, 'Unknown child type (config={0})', x.xml());
+   var n = x.name();
+   switch(n){
+      case 'TreeColumn':
+         r = RClass.create(FTreeColumn);
+         break;
+      case 'TreeLevel':
+         r = RClass.create(FTreeLevel);
+         break;
+      case 'TreeNodeType':
+         r = RClass.create(FTreeNodeType);
+         break;
+      case 'TreeNode':
+         r = RClass.create(FTreeNode);
+         break;
+      default:
+         throw new TError(o, 'Unknown child type. (config={1})', x.xml());
    }
    r._tree = o;
    return r;
@@ -1241,25 +1292,25 @@ function FTreeView_createNode(){
    if(!n){
       var n = RClass.create(FTreeNode);
       n._tree = o;
-      n.psBuild(o._hContainer);
+      n.psBuild(o._hPanel);
    }
-   RHtml.displaySet(n._hContainer, true);
+   RHtml.displaySet(n._hPanel, true);
    o._allNodes.push(n);
    return n;
 }
 function FTreeView_appendNode(n, p){
    var o = this;
    if(!n._statusLinked){
-      var nh = n._hContainer;
+      var nh = n._hPanel;
       if(p){
-         var nr = p._hContainer.rowIndex;
+         var nr = p._hPanel.rowIndex;
          var ns = p._nodes;
          if(ns){
             var nc = ns.count();
             for(var i = nc - 1; i >= 0; i--){
                var pn = ns.get(i)
                if(pn._statusLinked){
-                  nr = pn._hContainer.rowIndex;
+                  nr = pn._hPanel.rowIndex;
                   break;
                }
             }
@@ -1311,19 +1362,19 @@ function FTreeView_selectNode(n, s){
       }
    }
 }
-function FTreeView_push(c){
+function FTreeView_push(p){
    var o = this;
-   o.__base.FContainer.push.call(o, c);
-   c._tree = o;
-   if(RClass.isClass(c, FTreeColumn)){
-      o._nodeColumns.set(c._name, c);
-   }else if(RClass.isClass(c, FTreeLevel)){
-      o._nodeLevels.set(c._id, c);
-   }else if(RClass.isClass(c, FTreeNodeType)){
-      o._nodeTypes.set(c._typeName, c);
-   }else if(RClass.isClass(c, FTreeNode)){
-      o._nodes.push(c);
-      o._allNodes.push(c);
+   o.__base.FContainer.push.call(o, p);
+   p._tree = o;
+   if(RClass.isClass(p, FTreeColumn)){
+      o._nodeColumns.set(p._name, p);
+   }else if(RClass.isClass(p, FTreeLevel)){
+      o._nodeLevels.set(p._id, p);
+   }else if(RClass.isClass(p, FTreeNodeType)){
+      o._nodeTypes.set(p._typeName, p);
+   }else if(RClass.isClass(p, FTreeNode)){
+      o._nodes.push(p);
+      o._allNodes.push(p);
    }
 }
 function FTreeView_freeNode(p){
@@ -1341,7 +1392,7 @@ function FTreeView_calculateHeight(){
    var c = ns.count();
    for(var i = 0; i < c; i++){
       var n = ns.get(i);
-      if(RHtml.displayGet(n._hContainer)){
+      if(RHtml.displayGet(n._hPanel)){
          c++;
       }
    }

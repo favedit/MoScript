@@ -29,12 +29,13 @@ function FTreeNode(o){
    o._tag              = RClass.register(o, new APtyString('_tag'));
    //..........................................................
    // @style
-   o._stylePanel       = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
+   o._styleNormal      = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
    o._styleHover       = RClass.register(o, new AStyle('_styleHover', 'Hover'));
    o._styleSelect      = RClass.register(o, new AStyle('_styleSelect', 'Select'));
    o._styleImage       = RClass.register(o, new AStyle('_styleImage', 'Image'));
    o._styleIcon        = RClass.register(o, new AStyle('_styleIcon', 'Icon'));
    o._styleIconDisable = RClass.register(o, new AStyle('_styleIconDisable', 'IconDisable'));
+   o._styleLabel       = RClass.register(o, new AStyle('_styleLabel', 'Label'));
    o._styleCell        = RClass.register(o, new AStyle('_styleCell', 'Cell'));
    //..........................................................
    // @attribute
@@ -60,7 +61,7 @@ function FTreeNode(o){
    o.onNodeEnter       = RClass.register(o, new AEventMouseEnter('onNodeEnter'), FTreeNode_onNodeEnter);
    o.onNodeLeave       = RClass.register(o, new AEventMouseLeave('onNodeLeave'), FTreeNode_onNodeLeave);
    o.onNodeClick       = RClass.register(o, new AEventClick('onNodeClick'), FTreeNode_onNodeClick);
-   o.onBuildContainer  = FTreeNode_onBuildContainer;
+   o.onBuildPanel      = FTreeNode_onBuildPanel;
    //..........................................................
    // @process
    o.oeBuild           = FTreeNode_oeBuild;
@@ -213,9 +214,9 @@ function FTreeNode_onNodeClick(e){
 // @method
 // @return HtmlTag 页面元素
 //==========================================================
-function FTreeNode_onBuildContainer(e){
+function FTreeNode_onBuildPanel(e){
    var o = this;
-   o._hContainer = RBuilder.createTableRow(e.hDocument, o.styleName('Container'));
+   o._hPanel = RBuilder.createTableRow(e.hDocument, o.styleName('Panel'));
 }
 
 //==========================================================
@@ -230,13 +231,13 @@ function FTreeNode_oeBuild(e){
    var r = o.__base.FContainer.oeBuild.call(o, e);
    if(e.isBefore()){
       // 建立底板
-      var hp = o._hContainer;
+      var hp = o._hPanel;
       hp.style.border = '1 solid red';
       o.attachEvent('onNodeEnter', hp, o.onNodeEnter);
       o.attachEvent('onNodeLeave', hp, o.onNodeLeave);
       o.attachEvent('onNodeClick', hp);
       // 建立节点底版
-      var hnp = o._hNodePanel = RBuilder.appendTableCell(hp, o.styleName('Panel'));
+      var hnp = o._hNodePanel = RBuilder.appendTableCell(hp, o.styleName('Normal'));
       hnp.noWrap = true;
       // 建立图片
       var ni = o._child ? t._iconPlus : t._iconNode;
@@ -260,7 +261,7 @@ function FTreeNode_oeBuild(e){
          t.linkEvent(o, 'onNodeCheckClick', hc);
       }
       // 建立显示文本
-      o._hLabel = RBuilder.appendText(hnp);
+      o._hLabel = RBuilder.appendText(hnp, o.styleName('Label'));
       o.setLabel(o._label);
       // 建立关联列
       var cs = t.columns;
@@ -444,7 +445,7 @@ function FTreeNode_show(){
    var o = this;
    var t = o._tree;
    // 显示自己
-   RHtml.displaySet(o._hContainer, true);
+   RHtml.displaySet(o._hPanel, true);
    // 显示所有子节点
    var ns = o._nodes;
    if(ns){
@@ -457,7 +458,7 @@ function FTreeNode_show(){
          }
          // 判断是否要显示
          if(n._statusDisplay){
-            RHtml.displaySet(n._hContainer, true);
+            RHtml.displaySet(n._hPanel, true);
             if(n._extended){
                n.show();
             }
@@ -474,8 +475,8 @@ function FTreeNode_show(){
 function FTreeNode_hide(){
    var o = this;
    var t = o._tree;
-   if(o._hContainer){
-      RHtml.displaySet(o._hContainer, false);
+   if(o._hPanel){
+      RHtml.displaySet(o._hPanel, false);
    }
    var cs = o._components;
    if(cs){
@@ -676,7 +677,7 @@ function FTreeNode_click(){
 //==========================================================
 function FTreeNode_refreshStyle(){
    var o = this;
-   var cs = o._hContainer.cells;
+   var cs = o._hPanel.cells;
    var c = cs.length;
    if(o._statusSelected){
       for(var i = 0; i < c; i++){
@@ -689,7 +690,7 @@ function FTreeNode_refreshStyle(){
          }
       }else{
          for(var i = 0; i < c; i++){
-            cs[i].className = o.styleName('Panel');
+            cs[i].className = o.styleName('Normal');
          }
       }
    }

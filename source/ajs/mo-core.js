@@ -5236,14 +5236,14 @@ function TNode_set(n, v){
       this.attributes().set(n, v);
    }
 }
-function TNode_find(pn, pa){
+function TNode_find(p){
    var o = this;
    if(o.hasNode()){
       var ns = o._nodes;
-      var nc = ns.count;
-      for(var ni = 0; ni < nc; ni++){
-         var n = ns.get(ni);
-         if(n.isName(pn)){
+      var c = ns.count();
+      for(var i = 0; i < c; i++){
+         var n = ns.get(i);
+         if(n.isName(p)){
             return n;
          }
       }
@@ -9841,7 +9841,7 @@ function RService_url(p){
    if(!RString.startsWith(p, '/')){
       p = '/' + p;
    }
-   return top.RContext.context(p + '.ws');
+   return p + '.ws';
 }
 function RService_parse(p){
    var o = this;
@@ -9863,7 +9863,7 @@ function RService_parse(p){
                s = new SServiceInfo();
                s.service = ps[1];
                s.action = ps[0];
-               s.url = o.url(ps[1]);
+               s.url = o.url(ps[1]) + '?action=' + ps[0];
             }
          }
       }

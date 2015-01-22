@@ -117,14 +117,18 @@ html,body{
    width: 0;
 }
 
+.FTreeNode_Normal{
+   cursor: pointer;
+}
+
 .FTreeNode_Hover{
    background-color: #DDDDDD;
-   cursor: hand;
+   cursor: pointer;
 }
 
 .FTreeNode_Select{
    background-color: #CCCCCC;
-   cursor: hand;
+   cursor: pointer;
 }
 
 .FTreeNode_Image{
@@ -134,6 +138,11 @@ html,body{
 }
 
 .FTreeNode_IconDisable{
+}
+
+.FTreeNode_Label{
+   font: icon;
+   font-size: 9pt;
 }
 
 .FTreeNode_Cell{

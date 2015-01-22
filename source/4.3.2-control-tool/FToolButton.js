@@ -13,13 +13,6 @@ function FToolButton(o){
    o._hotkey       = RClass.register(o, new APtyString('_hotkey'));
    o._action       = RClass.register(o, new APtyString('_action'));
    //..........................................................
-   // @attribute
-   o._disabled     = false;
-   //..........................................................
-   // @html
-   o._hIcon        = null;
-   o._hLabel       = null;
-   //..........................................................
    // @style
    o._styleNormal  = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
    o._styleHover   = RClass.register(o, new AStyle('_styleHover', 'Hover'));
@@ -27,6 +20,16 @@ function FToolButton(o){
    o._styleDisable = RClass.register(o, new AStyle('_styleDisable', 'Disable'));
    o._styleIcon    = RClass.register(o, new AStyle('_styleIcon', 'Icon'));
    o._styleLabel   = RClass.register(o, new AStyle('_styleLabel', 'Label'));
+   //..........................................................
+   // @attribute
+   o._disabled     = false;
+   //..........................................................
+   // @html
+   o._hIcon        = null;
+   o._hLabel       = null;
+   //..........................................................
+   // @listener
+   o.lsnsClick     = new TListeners();
    //..........................................................
    // @event
    o.onBuildPanel  = FToolButton_onBuildPanel;
@@ -69,9 +72,6 @@ function FToolButton(o){
    //o._styleButton        = RClass.register(o, new AStyleIcon('_styleButton', 'Button'));
    //o._styleButtonDisable = RClass.register(o, new AStyleIcon('_styleButtonDisable', 'ButtonDisable'));
    //o._styleButtonHover   = RClass.register(o, new AStyleIcon('_styleButtonHover', 'ButtonHover'));
-   //..........................................................
-   // @listener
-   //o.lsnsClick       = new TListeners();
    //..........................................................
    // @html
    //o._hButton         = null;
@@ -127,10 +127,10 @@ function FToolButton_onEnter(e){
 //==========================================================
 function FToolButton_onLeave(e){
    var o = this;
-   if(o.hintBox){
-      o.hintBox.hide();
-      o.hintBox = null;
-   }
+   //if(o.hintBox){
+   //   o.hintBox.hide();
+   //   o.hintBox = null;
+   //}
    if(!o._disabled){
       o._hPanel.className = o.styleName('Normal');
       //o._hButton.background = o.styleIconPath('Button', FToolButton);
@@ -145,11 +145,12 @@ function FToolButton_onLeave(e){
 //==========================================================
 function FToolButton_onMouseDown(){
    var o = this;
-   if(o.hintBox){
-      o.hintBox.hide();
-   }
+   //if(o.hintBox){
+   //   o.hintBox.hide();
+   //}
    if(!o._disabled){
-      //this._hPanel.className = this.styleName('Press');
+      o._hPanel.className = this.styleName('Press');
+      o.click();
    }
 }
 
@@ -293,48 +294,48 @@ function FToolButton_setEnable(p){
 //==========================================================
 function FToolButton_click(){
    var o = this;
-   RLogger.debug(o, '[D] onButtonClick = ' + o.name);
-   if(o.isVisible() && !o._disabled && (EAction.Design != o.inAction)){
+   RLogger.debug(o, 'Mouse button click. (label={1})' + o._label);
+   //if(o.isVisible() && !o._disabled && (EAction.Design != o.inAction)){
       // 存储当前焦点对象，强制失去焦点
       //alert('o._disabled='+o._disabled);
-      var fc = RConsole.find(FFocusConsole);
-      fc.storeFocus();
-      fc.blur();
+      //var fc = RConsole.find(FFocusConsole);
+      //fc.storeFocus();
+      //fc.blur();
       // 执行监听信息
       o.lsnsClick.process(o);
       // 执行按键操作
-      if(o._action){
-         eval(o._action);
-      }
-      if(o._service){
-         // 分解service
-         var servs = RString.splitTwo(o._service, '@');
-         // 找到表单对象
-         var f = RConsole.find(FFocusConsole).findClass(MDataset);
-         // 构建处理事件对象
-         var arg = new TDatasetServiceArg(f.name, o._dataAction);
-         arg.callback = new TInvoke(f, f.onDsProcess);
-         arg.rows = f.getCurrentRows();
-         RConsole.find(FFormConsole).process(arg);
-      }
-      if(o._page || o._method){
-         var form = RHtml.form(o._hButton);
-         var p = RPage.parse(o._page);
-         if(o._method){
-            p._action = o._method;
-         }
-         p.split(o._attributes);
+      //if(o._action){
+      //   eval(o._action);
+      //}
+      //if(o._service){
+      //   // 分解service
+      //   var servs = RString.splitTwo(o._service, '@');
+      //   // 找到表单对象
+      //   var f = RConsole.find(FFocusConsole).findClass(MDataset);
+      //   // 构建处理事件对象
+      //   var arg = new TDatasetServiceArg(f.name, o._dataAction);
+      //   arg.callback = new TInvoke(f, f.onDsProcess);
+      //   arg.rows = f.getCurrentRows();
+      //   RConsole.find(FFormConsole).process(arg);
+      //}
+      //if(o._page || o._method){
+         //var form = RHtml.form(o._hButton);
+         //var p = RPage.parse(o._page);
+         //if(o._method){
+         //   p._action = o._method;
+         //}
+         //p.split(o._attributes);
          //
-         var f = RConsole.find(FFocusConsole).findClass(MDataset);
-         if(f){
-            var as = new TAttributes();
-            f.saveValue(as);
+         //var f = RConsole.find(FFocusConsole).findClass(MDataset);
+         //if(f){
+            //var as = new TAttributes();
+            //f.saveValue(as);
             //p.attrs().set('form_pack', as.pack());
-            if(form && form.form_pack){
-               form.form_pack.value = as.pack();
-            }
-         }
-         p.post(form, o._target);
+            //if(form && form.form_pack){
+            //   form.form_pack.value = as.pack();
+            //}
+         //}
+         //p.post(form, o._target);
          /*for(var n = 0;n < p._attributes.count; n++){
             if(RStr.contains(p._attributes.value(n),'$')){
                var v = RStr.removeChars(p._attributes.value(n),'$');
@@ -348,9 +349,9 @@ function FToolButton_click(){
                }
             }
          }*/
-      }
-      o.processClick();
-   }
+      //}
+      //o.processClick();
+   //}
 }
 
 //==========================================================

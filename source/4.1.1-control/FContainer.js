@@ -6,9 +6,11 @@
 //==========================================================
 function FContainer(o){
    o = RClass.inherits(this, o, FControl, MContainer);
-   // Process
+   //..........................................................
+   // @process
    o.oeDesign            = RMethod.empty;
-   // Method
+   //..........................................................
+   // @method
    o.panel               = FContainer_panel;
    o.focusControl        = FContainer_focusControl;
    o.storeConfig         = FContainer_storeConfig;

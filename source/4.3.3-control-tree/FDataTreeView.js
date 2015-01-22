@@ -27,18 +27,22 @@ function FDataTreeView(o){
    o._statusLoading   = false;
    //..........................................................
    // @listener
-   o.lsnsLoad         = new TListeners();
    o.lsnsLoaded       = new TListeners();
+   o.lsnsNodeLoad     = new TListeners();
+   o.lsnsNodeLoaded   = new TListeners();
    //..........................................................
    // @event
    o.onLoaded         = FDataTreeView_onLoaded;
+   o.onNodeLoaded     = FDataTreeView_onNodeLoaded;
    //..........................................................
    // @method
    o.construct        = FDataTreeView_construct;
    o.buildNode        = FDataTreeView_buildNode;
    o.loadNode         = FDataTreeView_loadNode;
    o.loadUrl          = FDataTreeView_loadUrl;
+   o.loadNodeUrl      = FDataTreeView_loadNodeUrl;
    o.loadService      = FDataTreeView_loadService;
+   o.loadNodeService  = FDataTreeView_loadNodeService;
    o.reloadNode       = FDataTreeView_reloadNode;
    o.reload           = FDataTreeView_reload;
    o.dispose          = FDataTreeView_dispose;
@@ -81,6 +85,28 @@ function FDataTreeView_onLoaded(p){
    if(x == null){
       throw new TError(o, 'Load tree data failure.');
    }
+   var xt = x.find('TreeView');
+   // 建立内部对象
+   RControl.build(o, xt);
+   // 响应事件
+   o.lsnsLoaded.process(p);
+   // 加载主信息
+   var s = xt.get('service');
+   o.loadNodeService(s);
+}
+
+//==========================================================
+// <T>加载取回的服务器数据。</T>
+//
+// @method
+// @param p:event:SXmlEvent 事件信息
+//==========================================================
+function FDataTreeView_onNodeLoaded(p){
+   var o = this;
+   var x = p.root;
+   if(x == null){
+      throw new TError(o, 'Load tree data failure.');
+   }
    // 获得事件信息
    var np = p.connection.parentNode;
    // 加载完毕
@@ -89,7 +115,7 @@ function FDataTreeView_onLoaded(p){
    // 加载数据节点
    o.buildNode(np, x);
    // 响应事件
-   o.lsnsLoaded.process(p);
+   o.lsnsNodeLoaded.process(p);
    // 全部展开
    //if(o.extendsAll){
    //    o.extendAll();
@@ -150,6 +176,7 @@ function FDataTreeView_buildNode(pn, px){
 function FDataTreeView_loadNode(pn, pf){
    var o = this;
    o._statusLoading = true;
+   debugger
    // 查找服务名称
    var nt = null;
    var fn = pn;
@@ -179,7 +206,7 @@ function FDataTreeView_loadNode(pn, pf){
    //   return alert('Unknown action');
    //}
    // 相应加载节点事件
-   o.lsnsLoad.process(o, pn);
+   o.lsnsNodeLoad.process(o, pn);
    // 建立节点的发送信息
    var xd = new TXmlDocument();
    var x = xd.root();
@@ -199,11 +226,11 @@ function FDataTreeView_loadNode(pn, pf){
    }
    // 建立加载中的节点
    var ln = o._loadingNode;
-   var nr = pn._hContainer.rowIndex;
-   if(ln._hContainer.rowIndex > nr){
+   var nr = pn._hPanel.rowIndex;
+   if(ln._hPanel.rowIndex > nr){
       nr++;
    }
-   RHtml.tableMoveRow(o._hNodeForm, ln._hContainer.rowIndex, nr);
+   RHtml.tableMoveRow(o._hNodeForm, ln._hPanel.rowIndex, nr);
    ln.setLevel(pn.level + 1);
    ln.show();
    // 建立事件对象，发送信息
@@ -220,13 +247,28 @@ function FDataTreeView_loadNode(pn, pf){
 // @param p:url:String 网络地址
 // @param n:node:FTreeNode 目录节点
 //==========================================================
-function FDataTreeView_loadUrl(p, n){
+function FDataTreeView_loadUrl(p){
+   var o = this;
+   // 加载数据
+   var xc = RConsole.find(FXmlConsole);
+   var c = xc.sendAsync(p);
+   c.lsnsLoad.register(o, o.onLoaded);
+}
+
+//==========================================================
+// <T>从网络地址获得数据。</T>
+//
+// @method
+// @param p:url:String 网络地址
+// @param n:node:FTreeNode 目录节点
+//==========================================================
+function FDataTreeView_loadNodeUrl(p, n){
    var o = this;
    // 加载数据
    var xc = RConsole.find(FXmlConsole);
    var c = xc.sendAsync(p);
    c.parentNode = RObject.nvl(n, o._focusNode);
-   c.lsnsLoad.register(o, o.onLoaded);
+   c.lsnsLoad.register(o, o.onNodeLoaded);
 }
 
 //==========================================================
@@ -260,7 +302,7 @@ function FDataTreeView_loadService(service, attrs){
    }
    // 显示加载中的节点
    var ln = o._loadingNode;
-   //RHtml.tableMoveRow(o._hNodeForm, ln._hContainer.rowIndex, 0);
+   //RHtml.tableMoveRow(o._hNodeForm, ln._hPanel.rowIndex, 0);
    //ln.setLevel(0);
    //ln.show();
    // 连接服务器
@@ -268,6 +310,49 @@ function FDataTreeView_loadService(service, attrs){
    //e.url = svc.url;
    //e.document = xd;
    //RConsole.find(FXmlConsole).process(e);
+}
+
+//==========================================================
+// <T>从服务器获取节点数据。</T>
+//
+// @method
+// @param ps:service:String 服务名称
+// @param pa:attributes:FAttributes 属性集合
+//==========================================================
+function FDataTreeView_loadNodeService(ps, pa){
+   var o = this;
+   // 获得服务信息
+   var svc = RService.parse(RString.nvl(ps, o._service));
+   if(!svc){
+      throw new TError(o, 'Unknown service.');
+   }
+   var as = RObject.nvl(pa, o._attributes);
+   // 建立加载数据
+   var xd = new TXmlDocument();
+   var xr = xd.root();
+   xr.set('action', svc.action);
+   //RConsole.find(FEnvironmentConsole).build(xr);
+   if(!as.isEmpty()){
+      if(RClass.isClass(as, TNode)){
+         xr.push(attrs);
+      }if(RClass.isClass(as, TAttributes)){
+         //xr.create('Tree').attrs = attrs;
+         //xr.create('Attributes').attrs = attrs;
+      }else{
+         //xr.create('Tree').value = attrs;
+         //xr.create('Attributes').value = attrs;
+      }
+   }
+   // 显示加载中的节点
+   var ln = o._loadingNode;
+   //RHtml.tableMoveRow(o._hNodeForm, ln._hPanel.rowIndex, 0);
+   //ln.setLevel(0);
+   //ln.show();
+   // 加载数据
+   var xc = RConsole.find(FXmlConsole);
+   var c = xc.sendAsync(svc.url, xr);
+   c.parentNode = o._focusNode;
+   c.lsnsLoad.register(o, o.onNodeLoaded);
 }
 
 //==========================================================
@@ -569,6 +654,6 @@ function FDataTreeView_tempAppendChild(child){
    var hc = o._hHeadLine.insertCell();
    hc.height = '100%';
    if(RClass.isClass(child, FTreeColumn)){
-      hc.appendChild(child._hContainer);
+      hc.appendChild(child._hPanel);
    }
 }

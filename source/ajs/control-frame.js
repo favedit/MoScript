@@ -6,6 +6,7 @@ function FFrame(o){
 function FFrame_onBuildPanel(e){
    var o = this;
    o._hPanel = RBuilder.createTableCell(e.hDocument, o.styleName('Panel'));
+   o._hPanel.vAlign = 'top';
 }
 function FFrameSet(o){
    o = RClass.inherits(this, o, FContainer);

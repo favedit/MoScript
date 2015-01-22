@@ -59,7 +59,7 @@ function FTreeView(o){
    o.lsnsClick        = new TListeners();
    //..........................................................
    // @event
-   o.onBuildContainer = FTreeView_onBuildContainer;
+   o.onBuildPanel     = FTreeView_onBuildPanel;
    o.onNodeCheckClick = RClass.register(o, new AEventClick('onNodeCheckClick'), FTreeView_onNodeCheckClick);
    //..........................................................
    // @process
@@ -105,10 +105,10 @@ function FTreeView(o){
 // @method
 // @return HtmlTag 页面元素
 //==========================================================
-function FTreeView_onBuildContainer(e){
+function FTreeView_onBuildPanel(e){
    var o = this;
-   o._hContainer = RBuilder.createTable(e.hDocument, o.styleName('Container'));
-   o._hContainer.width = '100%';
+   o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
+   o._hPanel.width = '100%';
 }
 
 //==========================================================
@@ -165,7 +165,7 @@ function FTreeView_oeBuild(e){
    var r = o.__base.FContainer.oeBuild.call(o, e);
    if(e.isBefore()){
       // 构建标题表格
-      var hr = RBuilder.appendTableRow(o._hContainer);
+      var hr = RBuilder.appendTableRow(o._hPanel);
       var hc = RBuilder.appendTableCell(hr);
       // 构建节点底板
       var hnp = o._hNodePanel = RBuilder.appendDiv(hc, o.styleName('NodePanel'));
@@ -331,16 +331,22 @@ function FTreeView_findByUuid(p){
 function FTreeView_createChild(x){
    var o = this;
    var r = null;
-   if(x.isName('Column') || x.isName('TreeColumn')){
-      r = RClass.create(FTreeColumn);
-   }else if(x.isName('Level') || x.isName('TreeLevel')){
-      r = RClass.create(FTreeLevel);
-   }else if(x.isName('Type') || x.isName('TreeNodeType')){
-      r = RClass.create(FTreeNodeType);
-   }else if(x.isName('Node') || x.isName('TreeNode')){
-      r = RClass.create(FTreeNode);
-   }else{
-      RMessage.fatal(o, null, 'Unknown child type (config={0})', x.xml());
+   var n = x.name();
+   switch(n){
+      case 'TreeColumn':
+         r = RClass.create(FTreeColumn);
+         break;
+      case 'TreeLevel':
+         r = RClass.create(FTreeLevel);
+         break;
+      case 'TreeNodeType':
+         r = RClass.create(FTreeNodeType);
+         break;
+      case 'TreeNode':
+         r = RClass.create(FTreeNode);
+         break;
+      default:
+         throw new TError(o, 'Unknown child type. (config={1})', x.xml());
    }
    r._tree = o;
    return r;
@@ -360,10 +366,10 @@ function FTreeView_createNode(){
    if(!n){
       var n = RClass.create(FTreeNode);
       n._tree = o;
-      n.psBuild(o._hContainer);
+      n.psBuild(o._hPanel);
    }
    // 放入所有节点中
-   RHtml.displaySet(n._hContainer, true);
+   RHtml.displaySet(n._hPanel, true);
    o._allNodes.push(n);
    return n;
 }
@@ -379,17 +385,17 @@ function FTreeView_createNode(){
 function FTreeView_appendNode(n, p){
    var o = this;
    if(!n._statusLinked){
-      var nh = n._hContainer;
+      var nh = n._hPanel;
       if(p){
          // 计算最后一个已经连接节点的位置
-         var nr = p._hContainer.rowIndex;
+         var nr = p._hPanel.rowIndex;
          var ns = p._nodes;
          if(ns){
             var nc = ns.count();
             for(var i = nc - 1; i >= 0; i--){
                var pn = ns.get(i)
                if(pn._statusLinked){
-                  nr = pn._hContainer.rowIndex;
+                  nr = pn._hPanel.rowIndex;
                   break;
                }
             }
@@ -460,22 +466,23 @@ function FTreeView_selectNode(n, s){
 // <T>追加控件到自己内部。</T>
 //
 // @method
-// @param c:control:FControl 控件对象
+// @param p:control:FControl 控件对象
 // @return Boolean
 //==========================================================
-function FTreeView_push(c){
+function FTreeView_push(p){
    var o = this;
-   o.__base.FContainer.push.call(o, c);
-   c._tree = o;
-   if(RClass.isClass(c, FTreeColumn)){
-      o._nodeColumns.set(c._name, c);
-   }else if(RClass.isClass(c, FTreeLevel)){
-      o._nodeLevels.set(c._id, c);
-   }else if(RClass.isClass(c, FTreeNodeType)){
-      o._nodeTypes.set(c._typeName, c);
-   }else if(RClass.isClass(c, FTreeNode)){
-      o._nodes.push(c);
-      o._allNodes.push(c);
+   o.__base.FContainer.push.call(o, p);
+   // 增加节点
+   p._tree = o;
+   if(RClass.isClass(p, FTreeColumn)){
+      o._nodeColumns.set(p._name, p);
+   }else if(RClass.isClass(p, FTreeLevel)){
+      o._nodeLevels.set(p._id, p);
+   }else if(RClass.isClass(p, FTreeNodeType)){
+      o._nodeTypes.set(p._typeName, p);
+   }else if(RClass.isClass(p, FTreeNode)){
+      o._nodes.push(p);
+      o._allNodes.push(p);
    }
 }
 
@@ -507,7 +514,7 @@ function FTreeView_calculateHeight(){
    var c = ns.count();
    for(var i = 0; i < c; i++){
       var n = ns.get(i);
-      if(RHtml.displayGet(n._hContainer)){
+      if(RHtml.displayGet(n._hPanel)){
          c++;
       }
    }

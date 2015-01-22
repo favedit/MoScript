@@ -10,6 +10,8 @@ var RControl = new function RControl(){
    //..........................................................
    // @method
    o.attachEvent        = RControl_attachEvent;
+   o.innerbuild         = RControl_innerbuild;
+   o.build              = RControl_build;
 
 
    //..........................................................
@@ -23,8 +25,6 @@ var RControl = new function RControl(){
    o.controls           = new TMap();
    //..........................................................
    // @member
-   o.innerbuild         = RControl_innerbuild;
-   o.build              = RControl_build;
    o.innerCreate        = RControl_innerCreate;
    o.create             = RControl_create;
    o.linkEvent          = RControl_linkEvent;
@@ -87,52 +87,60 @@ function RControl_attachEvent(c, n, h, m, u){
    return e;
 }
 
-
-
-
-
-
-
-
-
-// ------------------------------------------------------------
-function RControl_innerbuild(ctl, cfg){
-   if(ctl){
-      var rs = ctl.loadConfig(cfg);
-      ctl.construct();
-      // Build child
-      if(cfg.nodes){
-         var child = true;
-         if(rs && EStatus.Stop == rs){
-            child = false;
-         }
-         if(child){
-            var nodes = cfg.nodes;
-            for(var n=0; n<nodes.count; n++){
-               var node = nodes.get(n);
-               var obj = ctl.createChild(node);
-               if(obj){
-                  this.innerbuild(obj, node);
-                  ctl.push(obj);
-               }
-            }
+//===========================================================
+// <T>根据配置信息内部构件一个控件。</T>
+//
+// @method
+// @param pc:control:FControl 控件对象
+// @param px:config:TXmlNode 配置节点
+//===========================================================
+function RControl_innerbuild(pc, px){
+   // 检查参数
+   if((pc == null) || (px == null)){
+      return;
+   }
+   // 加载属性集合
+   if(RClass.isClass(pc, MProperty)){
+      pc.propertyLoad(px);
+   }
+   // 建立子节点
+   if(RClass.isClass(pc, MContainer) && px.hasNode()){
+      var xs = px.nodes();
+      var xc = xs.count();
+      for(var i = 0; i < xc; i++){
+         var x = xs.get(i);
+         var c = pc.createChild(x);
+         if(c){
+            this.innerbuild(c, x);
+            pc.push(c);
          }
       }
    }
 }
 
 //===========================================================
-// 表格列表类，
+// <T>根据配置信息构件一个控件。</T>
 //
 // @method
-// @param ctl:control:FControl 控件对象
-// @version 1.0.1
+// @param pc:control:FControl 控件对象
+// @param px:config:TXmlNode 配置节点
 //===========================================================
-function RControl_build(ctl, cfg){
-   this.innerbuild(ctl, cfg);
-   ctl.initialize();
-   ctl.build();
+function RControl_build(pc, px){
+   this.innerbuild(pc, px);
+   //ctl.initialize();
+   //ctl.build();
 }
+
+
+
+
+
+
+
+
+
+
+
 
 //===========================================================
 // <T>根据XML配置信息创建当前组件，并递归创建所有子节点。</T>

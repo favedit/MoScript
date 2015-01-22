@@ -763,6 +763,7 @@ function FControl_dispose(){
 }
 function MContainer(o){
    o = RClass.inherits(this, o);
+   o.createChild = RMethod.empty;
    o.appendChild = RMethod.empty;
    return o;
 }
@@ -2274,14 +2275,14 @@ function MStyle_styleIconPath(n, c){
 var RControl = new function RControl(){
    var o = this;
    o.attachEvent        = RControl_attachEvent;
+   o.innerbuild         = RControl_innerbuild;
+   o.build              = RControl_build;
    o.inMoving           = false;
    o.inSizing           = false;
    o.inDesign           = false;
    o.instances          = new TList();
    o.events             = new TMap();
    o.controls           = new TMap();
-   o.innerbuild         = RControl_innerbuild;
-   o.build              = RControl_build;
    o.innerCreate        = RControl_innerCreate;
    o.create             = RControl_create;
    o.linkEvent          = RControl_linkEvent;
@@ -2327,33 +2328,28 @@ function RControl_attachEvent(c, n, h, m, u){
    }
    return e;
 }
-function RControl_innerbuild(ctl, cfg){
-   if(ctl){
-      var rs = ctl.loadConfig(cfg);
-      ctl.construct();
-      if(cfg.nodes){
-         var child = true;
-         if(rs && EStatus.Stop == rs){
-            child = false;
-         }
-         if(child){
-            var nodes = cfg.nodes;
-            for(var n=0; n<nodes.count; n++){
-               var node = nodes.get(n);
-               var obj = ctl.createChild(node);
-               if(obj){
-                  this.innerbuild(obj, node);
-                  ctl.push(obj);
-               }
-            }
+function RControl_innerbuild(pc, px){
+   if((pc == null) || (px == null)){
+      return;
+   }
+   if(RClass.isClass(pc, MProperty)){
+      pc.propertyLoad(px);
+   }
+   if(RClass.isClass(pc, MContainer) && px.hasNode()){
+      var xs = px.nodes();
+      var xc = xs.count();
+      for(var i = 0; i < xc; i++){
+         var x = xs.get(i);
+         var c = pc.createChild(x);
+         if(c){
+            this.innerbuild(c, x);
+            pc.push(c);
          }
       }
    }
 }
-function RControl_build(ctl, cfg){
-   this.innerbuild(ctl, cfg);
-   ctl.initialize();
-   ctl.build();
+function RControl_build(pc, px){
+   this.innerbuild(pc, px);
 }
 function RControl_innerCreate(p, x, m){
    p._emode = m;

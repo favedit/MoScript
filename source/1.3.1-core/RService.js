@@ -34,7 +34,8 @@ function RService_url(p){
    if(!RString.startsWith(p, '/')){
       p = '/' + p;
    }
-   return top.RContext.context(p + '.ws');
+   // return RBrowser.contentPath(p + '.ws');
+   return p + '.ws';
 }
 
 //==========================================================
@@ -64,7 +65,7 @@ function RService_parse(p){
                s = new SServiceInfo();
                s.service = ps[1];
                s.action = ps[0];
-               s.url = o.url(ps[1]);
+               s.url = o.url(ps[1]) + '?action=' + ps[0];
             }
          }
       }

@@ -60,15 +60,16 @@ function FToolButton(o){
    o._iconDisable  = RClass.register(o, new APtyString('_iconDisable'));
    o._hotkey       = RClass.register(o, new APtyString('_hotkey'));
    o._action       = RClass.register(o, new APtyString('_action'));
-   o._disabled     = false;
-   o._hIcon        = null;
-   o._hLabel       = null;
    o._styleNormal  = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
    o._styleHover   = RClass.register(o, new AStyle('_styleHover', 'Hover'));
    o._stylePress   = RClass.register(o, new AStyle('_stylePress', 'Press'));
    o._styleDisable = RClass.register(o, new AStyle('_styleDisable', 'Disable'));
    o._styleIcon    = RClass.register(o, new AStyle('_styleIcon', 'Icon'));
    o._styleLabel   = RClass.register(o, new AStyle('_styleLabel', 'Label'));
+   o._disabled     = false;
+   o._hIcon        = null;
+   o._hLabel       = null;
+   o.lsnsClick     = new TListeners();
    o.onBuildPanel  = FToolButton_onBuildPanel;
    o.onEnter       = FToolButton_onEnter;
    o.onLeave       = FToolButton_onLeave;
@@ -95,20 +96,15 @@ function FToolButton_onEnter(e){
 }
 function FToolButton_onLeave(e){
    var o = this;
-   if(o.hintBox){
-      o.hintBox.hide();
-      o.hintBox = null;
-   }
    if(!o._disabled){
       o._hPanel.className = o.styleName('Normal');
    }
 }
 function FToolButton_onMouseDown(){
    var o = this;
-   if(o.hintBox){
-      o.hintBox.hide();
-   }
    if(!o._disabled){
+      o._hPanel.className = this.styleName('Press');
+      o.click();
    }
 }
 function FToolButton_onMouseUp(h){
@@ -176,42 +172,8 @@ function FToolButton_setEnable(p){
 }
 function FToolButton_click(){
    var o = this;
-   RLogger.debug(o, '[D] onButtonClick = ' + o.name);
-   if(o.isVisible() && !o._disabled && (EAction.Design != o.inAction)){
-      var fc = RConsole.find(FFocusConsole);
-      fc.storeFocus();
-      fc.blur();
+   RLogger.debug(o, 'Mouse button click. (label={1})' + o._label);
       o.lsnsClick.process(o);
-      if(o._action){
-         eval(o._action);
-      }
-      if(o._service){
-         var servs = RString.splitTwo(o._service, '@');
-         var f = RConsole.find(FFocusConsole).findClass(MDataset);
-         var arg = new TDatasetServiceArg(f.name, o._dataAction);
-         arg.callback = new TInvoke(f, f.onDsProcess);
-         arg.rows = f.getCurrentRows();
-         RConsole.find(FFormConsole).process(arg);
-      }
-      if(o._page || o._method){
-         var form = RHtml.form(o._hButton);
-         var p = RPage.parse(o._page);
-         if(o._method){
-            p._action = o._method;
-         }
-         p.split(o._attributes);
-         var f = RConsole.find(FFocusConsole).findClass(MDataset);
-         if(f){
-            var as = new TAttributes();
-            f.saveValue(as);
-            if(form && form.form_pack){
-               form.form_pack.value = as.pack();
-            }
-         }
-         p.post(form, o._target);
-      }
-      o.processClick();
-   }
 }
 function FToolButton_dispose(){
    var o = this;

@@ -172,17 +172,17 @@ function TNode_set(n, v){
 // <T>根据节点名称查找节点。</T>
 //
 // @method
-// @param pn:name:String 要添加的节点
+// @param p:name:String 要添加的节点
 // @return TNode 返回查找到的节点
 //==========================================================
-function TNode_find(pn, pa){
+function TNode_find(p){
    var o = this;
    if(o.hasNode()){
       var ns = o._nodes;
-      var nc = ns.count;
-      for(var ni = 0; ni < nc; ni++){
-         var n = ns.get(ni);
-         if(n.isName(pn)){
+      var c = ns.count();
+      for(var i = 0; i < c; i++){
+         var n = ns.get(i);
+         if(n.isName(p)){
             return n;
          }
       }

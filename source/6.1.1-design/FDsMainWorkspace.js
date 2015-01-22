@@ -87,7 +87,7 @@ function FDsMainWorkspace_oeBuild(e){
       fs.process(e);
       // 建立目录区
       var f = o._frameCatalog = RClass.create(FFrame);
-      f.setWidth(200);
+      f.setWidth(240);
       f.process(e);
       f._hPanel.className = o.styleName('Catalog_Ground');
       fs.appendFrame(f);
@@ -113,13 +113,19 @@ function FDsMainWorkspace_oeBuild(e){
       sp2._alignCd = EAlign.Right;
       sp2._hSize = o._frameStatusBar._hPanel;
       //..........................................................
-      var m = o._menubar = RClass.create(FDsMainMenuBar);
-      m.process(e);
-      m.setPanel(o._frameToolBar._hPanel);
+      //var c = o._menubar = RClass.create(FDsMainMenuBar);
+      //c.process(e);
+      //c.setPanel(o._frameToolBar._hPanel);
       //..........................................................
-      var m = o._toolbar = RClass.create(FDsMainToolBar);
-      m.process(e);
-      m.setPanel(o._frameToolBar._hPanel);
+      var c = o._catalog = RClass.create(FDsMainCatalog);
+      c.process(e);
+      c.setPanel(o._frameCatalog._hPanel);
+      //..........................................................
+      var c = o._toolbar = RClass.create(FDsMainToolBar);
+      c.process(e);
+      c._worksapce = o;
+      c.setPanel(o._frameToolBar._hPanel);
+      c._persistenceButton.click();
    }
    return EEventStatus.Continue;
 }

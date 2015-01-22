@@ -14,10 +14,15 @@
 <SCRIPT language='javascript' src='../ajs/stage.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 
+<SCRIPT language='javascript' src='../4.1.1-control/RConsole.js'></SCRIPT>
+
 <SCRIPT language='javascript' src='../4.3.5-control-frame/FFrame.js'></SCRIPT>
 <SCRIPT language='javascript' src='../4.3.5-control-frame/FFrameSpliter.js'></SCRIPT>
 <SCRIPT language='javascript' src='../4.3.5-control-frame/FFrameSet.js'></SCRIPT>
 <SCRIPT language='javascript' src='../4.3.5-control-frame/FWorkspace.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../4.3.3-control-tree/FTreeView.js'></SCRIPT>
+<SCRIPT language='javascript' src='../4.3.3-control-tree/FDataTreeView.js'></SCRIPT>
 
 <SCRIPT language='javascript' src='../4.3.1-control-menu/MMenuButton.js'></SCRIPT>
 <SCRIPT language='javascript' src='../4.3.1-control-menu/FMenuButton.js'></SCRIPT>
@@ -34,12 +39,14 @@
 <SCRIPT language='javascript' src='../6.1.1-design/FDsApplication.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.1.1-design/FDsMainMenuBar.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.1.1-design/FDsMainToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.1.1-design/FDsMainCatalog.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.1.1-design/FDsMainWorkspace.js'></SCRIPT>
 
 <SCRIPT>
 function _load(){
    RRuntime.processCd = EProcess.Debug;
    RBrowser.construct();
+   //RBrowser.setContentPath('..');
    RBrowser.setContentPath('..');
    RWindow.connect(window);
 

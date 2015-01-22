@@ -9,6 +9,9 @@ function FDsMainToolBar(o){
    //..........................................................
    // @attribute
    //..........................................................
+   // @event
+   o.onPersistenceClick   = FDsMainToolBar_onPersistenceClick;
+   //..........................................................
    // @method
    o.oeBuild   = FDsMainToolBar_oeBuild;
    //..........................................................
@@ -17,6 +20,18 @@ function FDsMainToolBar(o){
    // @method
    o.dispose   = FDsMainToolBar_dispose;
    return o;
+}
+
+//==========================================================
+// <T>持久化按键点击处理。</T>
+//
+// @method
+// @param e:event:TEventProcess 事件处理
+// @return EEventStatus 处理状态
+//==========================================================
+function FDsMainToolBar_onPersistenceClick(p){
+   var o = this;
+   o._worksapce._catalog.loadUrl('http://localhost:91/cloud.describe.tree.ws?action=query&code=design.persistence');
 }
 
 //==========================================================
@@ -32,21 +47,24 @@ function FDsMainToolBar_oeBuild(e){
    // 事件前处理
    if(e.isBefore()){
       // 建立按键
+      var b = o._persistenceButton  = RClass.create(FToolButton);
+      b.setLabel('持久化定义');
+      b.process(e);
+      b.lsnsClick.register(o, o.onPersistenceClick);
+      o.appendButton(b);
+      // 建立按键
       var b = o._framesetMain = RClass.create(FToolButton);
-      b.setLabel('文件');
-      b.setIcon('design.menu.build');
+      b.setLabel('列表定义');
       b.process(e);
       o.appendButton(b);
       // 建立按键
       var b = o._framesetMain = RClass.create(FToolButton);
-      b.setLabel('保存');
-      b.setIcon('design.menu.save');
+      b.setLabel('数据定义');
       b.process(e);
       o.appendButton(b);
       // 建立按键
       var b = o._framesetMain = RClass.create(FToolButton);
-      b.setLabel('帮助');
-      b.setIcon('design.menu.help');
+      b.setLabel('表单定义');
       b.process(e);
       o.appendButton(b);
    }

@@ -22,4 +22,5 @@ function FFrame(o){
 function FFrame_onBuildPanel(e){
    var o = this;
    o._hPanel = RBuilder.createTableCell(e.hDocument, o.styleName('Panel'));
+   o._hPanel.vAlign = 'top';
 }
