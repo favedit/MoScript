@@ -10,8 +10,11 @@ function AEventMouseLeave(n){
    var o = this;
    AEvent(o, n, 'mouseleave', 'onmouseleave');
    //..........................................................
+   // @attribute
+   o._logger = false;
+   //..........................................................
    // @method
-   o.attach = AEventMouseLeave_attach;
+   o.attach  = AEventMouseLeave_attach;
    return o;
 }
 

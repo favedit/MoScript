@@ -14,7 +14,9 @@ function FHttpConnection(o){
    o._contentCd           = EHttpContent.Binary;
    o._url                 = null;
    // @attribute
+   o._input               = null;
    o._inputData           = null;
+   o._output              = null;
    o._outputData          = null;
    // @attribute
    o._connection          = null;
@@ -206,10 +208,13 @@ function FHttpConnection_sendAsync(){
 //
 // @param p:url:String 页面地址
 //==========================================================
-function FHttpConnection_send(p){
+function FHttpConnection_send(p, d){
    var o = this;
    // 设置参数
    o._url = p;
+   o._input = d;
+   // 设置状态
+   o._methodCd = (d != null) ? EHttpMethod.Post : EHttpMethod.Get;
    o._statusFree = false;
    // 发送信息
    o.onConnectionSend();

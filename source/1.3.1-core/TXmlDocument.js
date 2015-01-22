@@ -48,7 +48,8 @@ function TXmlDocument_root(){
    var o = this;
    var r = o._root;
    if(!r){
-      r = o._root = new TXmlNode('Configuration');
+      r = o._root = new TXmlNode();
+      r._name = 'Configuration';
    }
    return r;
 }
@@ -77,8 +78,8 @@ function TXmlDocument_setRoot(p){
 function TXmlDocument_xml(){
    var s = new TString();
    s.append("<?xml version='1.0' encoding='UTF-8'?>");
-   this.root().xml(s);
-   return s.toString();
+   this.root().innerXml(s, 0);
+   return s.flush();
 }
 
 //==========================================================
@@ -92,5 +93,5 @@ function TXmlDocument_dump(){
    var r = new TString();
    r.appendLine(RClass.name(o));
    o.root().innerDump(r);
-   return r.toString();
+   return r.flush();
 }

@@ -27,7 +27,7 @@ function TXmlNode(){
 //==========================================================
 function TXmlNode_create(n, a){
    var o = this;
-   var r = new TNode();
+   var r = new TXmlNode();
    r._name = n;
    r._attributes = a;
    if(!RClass.isClass(a, TAttributes)){
@@ -48,6 +48,7 @@ function TXmlNode_create(n, a){
 //==========================================================
 // <T>构建配置文本。</T>
 //
+// @method
 // @param s:string:String 字符串对象
 // @param l:level:Integer 层级
 // @return String 构建成xml格式的字符串
@@ -88,17 +89,19 @@ function TXmlNode_innerXml(s, l){
 //==========================================================
 // <T>构建配置文本。</T>
 //
+// @method
 // @return String 配置文本
 //==========================================================
-function TXmlNode_xml(s){
+function TXmlNode_xml(){
    var s = new TString();
    this.innerXml(s, 0);
-   return s.toString();
+   return s.flush();
 }
 
 //==========================================================
 // <T>将构建成xml格式的字符串对象转换为字符串。</T>
 //
+// @method
 // @return String 字符串
 //==========================================================
 function TXmlNode_toString(){

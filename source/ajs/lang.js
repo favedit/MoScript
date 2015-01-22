@@ -100,7 +100,10 @@ function APtyBoolean_load(v, x){
 }
 function APtyBoolean_save(v, x){
    var o = this;
-   x.set(o._linker, RBoolean.toString(v[o._name]));
+   var d = v[o._name];
+   if(d){
+      x.set(o._linker, RBoolean.toString(d));
+   }
 }
 function APtyBoolean_toString(){
    var o = this;
@@ -153,7 +156,10 @@ function APtyPadding_load(v, x){
 }
 function APtyPadding_save(v, x){
    var o = this;
-   x.set(o._name, v[o._name].toString());
+   var d = v[o._name];
+   if(!d.isEmpty()){
+      x.set(o._linker, d.toString());
+   }
 }
 function APtyPadding_toString(){
    var o = this;
@@ -175,7 +181,10 @@ function APtyPoint2_load(v, x){
 }
 function APtyPoint2_save(v, x){
    var o = this;
-   x.set(o._name, v[o._name].toString());
+   var d = v[o._name];
+   if(!d.isEmpty()){
+      x.set(o._linker, d.toString());
+   }
 }
 function APtyPoint2_toString(){
    var o = this;
@@ -232,7 +241,10 @@ function APtySize2_load(v, x){
 }
 function APtySize2_save(v, x){
    var o = this;
-   x.set(o._name, v[o._name].toString());
+   var d = v[o._name];
+   if(!d.isEmpty()){
+      x.set(o._linker, d.toString());
+   }
 }
 function APtySize2_toString(){
    var o = this;

@@ -3,6 +3,7 @@ function AEvent(o, n, l, h){
    AAnnotation(o, n);
    o._annotationCd = EAnnotation.Event;
    o._inherit      = true;
+   o._logger       = true;
    o._linker       = l;
    o._handle       = h;
    o._process      = null;
@@ -149,7 +150,8 @@ function AEventMouseDown(n){
 function AEventMouseEnter(n){
    var o = this;
    AEvent(o, n, 'mouseenter', 'onmouseenter');
-   o.attach = AEventMouseEnter_attach;
+   o._logger = false;
+   o.attach  = AEventMouseEnter_attach;
    return o;
 }
 function AEventMouseEnter_attach(e, h){
@@ -157,7 +159,8 @@ function AEventMouseEnter_attach(e, h){
 function AEventMouseLeave(n){
    var o = this;
    AEvent(o, n, 'mouseleave', 'onmouseleave');
-   o.attach = AEventMouseLeave_attach;
+   o._logger = false;
+   o.attach  = AEventMouseLeave_attach;
    return o;
 }
 function AEventMouseLeave_attach(e, h){
@@ -165,6 +168,7 @@ function AEventMouseLeave_attach(e, h){
 function AEventMouseMove(n){
    var o = this;
    AEventMouse(o, n, 'mousemove', 'onmousemove');
+   o._logger = false;
    return o;
 }
 function AEventMouseOut(n){
@@ -464,7 +468,9 @@ function FHttpConnection(o){
    o._methodCd            = EHttpMethod.Get;
    o._contentCd           = EHttpContent.Binary;
    o._url                 = null;
+   o._input               = null;
    o._inputData           = null;
+   o._output              = null;
    o._outputData          = null;
    o._connection          = null;
    o._contentLength       = 0;
@@ -582,9 +588,11 @@ function FHttpConnection_sendAsync(){
    c.send(o._inputData);
    RLogger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
 }
-function FHttpConnection_send(p){
+function FHttpConnection_send(p, d){
    var o = this;
    o._url = p;
+   o._input = d;
+   o._methodCd = (d != null) ? EHttpMethod.Post : EHttpMethod.Get;
    o._statusFree = false;
    o.onConnectionSend();
    if(o._asynchronous){
@@ -653,10 +661,23 @@ function FXmlConnection(o){
 }
 function FXmlConnection_onConnectionSend(){
    var o = this;
-   if(o._inputNode){
-      var d = new TXmlDocument();
-      d.setRoot(_inputNode);
-      var s = s.xml().toString();
+   var d = o._input;
+   if(d){
+      var s = null;
+      if(d.constructor == String){
+         s = d;
+         o._inputNode = null;
+      }else if(d.constructor == TXmlNode){
+         var x = new TXmlDocument();
+         x.setRoot(d);
+         s = x.xml();
+         o._inputNode = d;
+      }else if(d.constructor == TXmlDocument){
+         s = d.xml();
+         o._inputNode = d.root();
+      }else{
+         throw new TError('Unknown send data type.');
+      }
       o._inputData = s;
       o._contentLength = s.length;
    }
@@ -685,6 +706,10 @@ function FXmlConnection_onConnectionComplete(){
    e.root = r;
    o.lsnsLoad.process(e);
    e.dispose();
+   o._input = null;
+   o._inputNode = null;
+   o._output = null;
+   o._outputNode = null;
 }
 function FXmlConnection_content(){
    return this._outputNode;
@@ -3537,7 +3562,8 @@ function TXmlDocument_root(){
    var o = this;
    var r = o._root;
    if(!r){
-      r = o._root = new TXmlNode('Configuration');
+      r = o._root = new TXmlNode();
+      r._name = 'Configuration';
    }
    return r;
 }
@@ -3552,15 +3578,15 @@ function TXmlDocument_setRoot(p){
 function TXmlDocument_xml(){
    var s = new TString();
    s.append("<?xml version='1.0' encoding='UTF-8'?>");
-   this.root().xml(s);
-   return s.toString();
+   this.root().innerXml(s, 0);
+   return s.flush();
 }
 function TXmlDocument_dump(){
    var o = this;
    var r = new TString();
    r.appendLine(RClass.name(o));
    o.root().innerDump(r);
-   return r.toString();
+   return r.flush();
 }
 function TXmlNode(){
    var o = this;
@@ -3573,7 +3599,7 @@ function TXmlNode(){
 }
 function TXmlNode_create(n, a){
    var o = this;
-   var r = new TNode();
+   var r = new TXmlNode();
    r._name = n;
    r._attributes = a;
    if(!RClass.isClass(a, TAttributes)){
@@ -3622,10 +3648,10 @@ function TXmlNode_innerXml(s, l){
    }
    return s;
 }
-function TXmlNode_xml(s){
+function TXmlNode_xml(){
    var s = new TString();
    this.innerXml(s, 0);
-   return s.toString();
+   return s.flush();
 }
 function TXmlNode_toString(){
    return this.xml().toString();

@@ -14,6 +14,7 @@ function AEvent(o, n, l, h){
    // @attribute
    o._annotationCd = EAnnotation.Event;
    o._inherit      = true;
+   o._logger       = true;
    // @attribute
    o._linker       = l;
    o._handle       = h;

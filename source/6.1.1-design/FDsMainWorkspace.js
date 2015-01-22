@@ -87,7 +87,7 @@ function FDsMainWorkspace_oeBuild(e){
       fs.process(e);
       // 建立目录区
       var f = o._frameCatalog = RClass.create(FFrame);
-      f.setWidth(240);
+      f.setWidth(300);
       f.process(e);
       f._hPanel.className = o.styleName('Catalog_Ground');
       fs.appendFrame(f);

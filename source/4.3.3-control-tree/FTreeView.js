@@ -25,6 +25,7 @@ function FTreeView(o){
    o._indent          = RClass.register(o, new APtyInteger('_indent'), 16);
    //..........................................................
    // @style
+   o._stylePanel      = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
    o._styleNodePanel  = RClass.register(o, new AStyle('_styleNodePanel', 'NodePanel'));
    o._styleNodeForm   = RClass.register(o, new AStyle('_styleNodeForm', 'NodeForm'));
    //..........................................................
@@ -108,7 +109,6 @@ function FTreeView(o){
 function FTreeView_onBuildPanel(e){
    var o = this;
    o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
-   o._hPanel.width = '100%';
 }
 
 //==========================================================
@@ -475,11 +475,11 @@ function FTreeView_push(p){
    // 增加节点
    p._tree = o;
    if(RClass.isClass(p, FTreeColumn)){
-      o._nodeColumns.set(p._name, p);
+      o._nodeColumns.set(p.name(), p);
    }else if(RClass.isClass(p, FTreeLevel)){
-      o._nodeLevels.set(p._id, p);
+      o._nodeLevels.set(p.id(), p);
    }else if(RClass.isClass(p, FTreeNodeType)){
-      o._nodeTypes.set(p._typeName, p);
+      o._nodeTypes.set(p.linker(), p);
    }else if(RClass.isClass(p, FTreeNode)){
       o._nodes.push(p);
       o._allNodes.push(p);

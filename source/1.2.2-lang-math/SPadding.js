@@ -19,6 +19,7 @@ function SPadding(l, t, r, b){
    o.bottom   = RInteger.nvl(b);
    //..........................................................
    // @method
+   o.isEmpty  = SPadding_isEmpty;
    o.reset    = SPadding_reset;
    o.assign   = SPadding_assign;
    o.set      = SPadding_set;
@@ -29,6 +30,17 @@ function SPadding(l, t, r, b){
    // @method
    o.dump     = SPadding_dump;
    return o;
+}
+
+//============================================================
+// <T>判断内容是否为空。</T>
+//
+// @method
+// @return Boolean 是否为空
+//============================================================
+function SPadding_isEmpty(){
+   var o = this;
+   return (o.left == 0) && (o.top == 0) && (o.right == 0) && (o.bottom == 0);
 }
 
 //============================================================

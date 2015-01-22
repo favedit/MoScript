@@ -26,13 +26,28 @@ function FXmlConnection(o){
 
 //==========================================================
 // <T>响应链接发送处理。</T>
+//
+// @method
 //==========================================================
 function FXmlConnection_onConnectionSend(){
    var o = this;
-   if(o._inputNode){
-      var d = new TXmlDocument();
-      d.setRoot(_inputNode);
-      var s = s.xml().toString();
+   var d = o._input;
+   if(d){
+      var s = null;
+      if(d.constructor == String){
+         s = d;
+         o._inputNode = null;
+      }else if(d.constructor == TXmlNode){
+         var x = new TXmlDocument();
+         x.setRoot(d);
+         s = x.xml();
+         o._inputNode = d;
+      }else if(d.constructor == TXmlDocument){
+         s = d.xml();
+         o._inputNode = d.root();
+      }else{
+         throw new TError('Unknown send data type.');
+      }
       o._inputData = s;
       o._contentLength = s.length;
    }
@@ -40,6 +55,8 @@ function FXmlConnection_onConnectionSend(){
 
 //==========================================================
 // <T>事件响应处理。</T>
+//
+// @method
 //==========================================================
 function FXmlConnection_onConnectionComplete(){
    var o = this;
@@ -69,6 +86,11 @@ function FXmlConnection_onConnectionComplete(){
    e.root = r;
    o.lsnsLoad.process(e);
    e.dispose();
+   // 清空属性
+   o._input = null;
+   o._inputNode = null;
+   o._output = null;
+   o._outputNode = null;
 }
 
 //==========================================================

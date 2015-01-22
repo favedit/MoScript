@@ -176,15 +176,14 @@ function FDataTreeView_buildNode(pn, px){
 function FDataTreeView_loadNode(pn, pf){
    var o = this;
    o._statusLoading = true;
-   debugger
    // 查找服务名称
    var nt = null;
    var fn = pn;
    var svc = o._serviceName;
    while(RClass.isClass(fn, FTreeNode)){
       nt = fn.type();
-      if(nt && nt._serviceName){
-         svc = nt._serviceName;
+      if(nt && nt._service){
+         svc = nt._service;
          break;
       }
       fn = fn._parent;
@@ -215,7 +214,7 @@ function FDataTreeView_loadNode(pn, pf){
    //x.create('Attributes', o._attributes);
    var fn = pn;
    while(RClass.isClass(fn, FTreeNode)){
-      var xc = x.create('Node');
+      var xc = x.create('TreeNode');
       fn.propertySave(xc);
       fn = fn._parent;
    }
@@ -234,10 +233,15 @@ function FDataTreeView_loadNode(pn, pf){
    ln.setLevel(pn.level + 1);
    ln.show();
    // 建立事件对象，发送信息
+   var sv = RService.parse(RString.nvl(svc, o._service));
+   if(!sv){
+      throw new TError(o, 'Unknown service.');
+   }
+   // 建立事件对象，发送信息
    var xc = RConsole.find(FXmlConsole);
-   var c = xc.sendAsync(svc, xd);
+   var c = xc.sendAsync(sv.url, xd);
    c.parentNode = pn;
-   c.lsnsLoad.register(o, o.onLoaded);
+   c.lsnsLoad.register(o, o.onNodeLoaded);
 }
 
 //==========================================================

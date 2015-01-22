@@ -19,7 +19,7 @@ function FTreeNode(o){
    //..........................................................
    // @property
    o._valid            = RClass.register(o, new APtyBoolean('_isValid'), true);
-   o._typeName         = RClass.register(o, new APtyString('_typeName'));
+   o._typeName         = RClass.register(o, new APtyString('_typeName', 'type'));
    o._uuid             = RClass.register(o, new APtyString('_uuid'));
    o._icon             = RClass.register(o, new APtyString('_icon'));
    o._checked          = RClass.register(o, new APtyBoolean('_checked'), false);
@@ -71,11 +71,14 @@ function FTreeNode(o){
    // @method
    o.type              = FTreeNode_type;
    o.setLabel          = FTreeNode_setLabel;
+   o.level             = FTreeNode_level;
    o.setLevel          = FTreeNode_setLevel;
-   o.get               = FTreeNode_get;
-   o.set               = FTreeNode_set;
    o.check             = FTreeNode_check;
    o.setCheck          = FTreeNode_setCheck;
+   o.setImage          = FTreeNode_setImage;
+   o.setIcon           = FTreeNode_setIcon;
+   o.get               = FTreeNode_get;
+   o.set               = FTreeNode_set;
    // @method
    o.hasChild          = FTreeNode_hasChild;
    o.topNode           = FTreeNode_topNode;
@@ -90,6 +93,7 @@ function FTreeNode(o){
    o.push              = FTreeNode_push;
    o.remove            = FTreeNode_remove;
    o.removeChildren    = FTreeNode_removeChildren;
+   o.reset             = FTreeNode_reset;
    // @method
    o.click             = FTreeNode_click;
    // @method
@@ -240,17 +244,13 @@ function FTreeNode_oeBuild(e){
       var hnp = o._hNodePanel = RBuilder.appendTableCell(hp, o.styleName('Normal'));
       hnp.noWrap = true;
       // 建立图片
-      var ni = o._child ? t._iconPlus : t._iconNode;
-      var hi = o._hImage = RBuilder.appendIcon(hnp, o.styleName('Image'), ni, 16, 16);
+      var hi = o._hImage = RBuilder.appendIcon(hnp, o.styleName('Image'), null, 16, 16);
       hi._linkType = 'image';
+      o.setImage();
       // 建立图标
-      var ni = RString.nvl(o._icon, o._typeName ? o._typeName._icon : null);
-      if(ni){
-         var hi = o._hIcon = RBuilder.appendIcon(hnp, o._valid ? o.styleName('Icon') : o.styleName('IconDisable'), ni, 16, 16);
-      }else{
-        var hi = o._hIcon = RBuilder.appendIcon(hnp, o._valid ? o.styleName('Icon') : o.styleName('IconDisable'), t._iconEmpty, 1, 1);
-      }
+      var hi = o._hIcon = RBuilder.appendIcon(hnp, null, null, 16, 16)
       hi._linkType = 'icon';
+      o.setIcon(o._icon);
       // 建立复选框
       if(t.dispChecked){
          var hc = o._hCheck = RBuilder.appendCheck(hnp);
@@ -317,17 +317,30 @@ function FTreeNode_setLabel(p){
    var o = this;
    o.__base.FContainer.setLabel.call(o, p)
    // 设置显示内容
-   var s = '';
-   if(!RString.isEmpty(o._label)){
-      s = '&nbsp;' + o._label;
-      if(o._tag){
-         s += '&nbsp;<FONT color=blue>(' + o._tag + ')</FONT>';
+   var h = o._hLabel;
+   if(h){
+      var s = '';
+      if(!RString.isEmpty(o._label)){
+         s = '&nbsp;' + o._label;
+         if(o._tag){
+            s += '&nbsp;<FONT color=blue>(' + o._tag + ')</FONT>';
+         }
+         if(o._note){
+            s += '&nbsp;<FONT color=green>[ ' + o._note + ' ]</FONT>';
+         }
       }
-      if(o._note){
-         s += '&nbsp;<FONT color=green>[ ' + o._note + ' ]</FONT>';
-      }
+      h.innerHTML = s;
    }
-   o._hLabel.innerHTML = s;
+}
+
+//==========================================================
+// <T>获取层次。</T>
+//
+// @method
+// @return Integer 层次
+//==========================================================
+function FTreeNode_level(){
+   return this._level;
 }
 
 //==========================================================
@@ -338,9 +351,89 @@ function FTreeNode_setLabel(p){
 //==========================================================
 function FTreeNode_setLevel(p){
    var o = this;
-   var t = o._tree;
+   // 设置属性
    o._level = p;
-   o._hImage.style.marginLeft = t._indent * p;
+   // 设置页面
+   var h = o._hNodePanel;
+   if(h){
+      h.style.paddingLeft = (o._tree._indent * p) + 'px';
+   }
+}
+
+//==========================================================
+// <T>获取节点选取。</T>
+//
+// @method
+// @return Boolean 是否选取
+//==========================================================
+function FTreeNode_check(){
+   return this._checked;
+}
+
+//==========================================================
+// <T>设置选中。</T>
+//
+// @method
+// @param p:check:Boolean 选中
+//==========================================================
+function FTreeNode_setCheck(p){
+   var o = this;
+   o._checked = p;
+   if(!RString.isEmpty(o._attributes.get('checked'))){
+     o._checked = RBoolean.isTrue(o._attributes.get('checked'));
+     if(o._hCheck){
+         o._hCheck._checked = o._checked;
+     }
+   }
+}
+
+//==========================================================
+// <T>设置位图。</T>
+//
+// @method
+//==========================================================
+function FTreeNode_setImage(){
+   var o = this;
+   var t = o._tree;
+   var h = o._hImage;
+   if(h){
+      var ni = o._child ? t._iconPlus : t._iconNode;
+      h.src = RResource.iconPath(ni);
+   }
+}
+
+//==========================================================
+// <T>设置图标。</T>
+//
+// @method
+// @param p:icon:String 图标
+//==========================================================
+function FTreeNode_setIcon(p){
+   var o = this;
+   // 设置属性
+   o._icon = p;
+   // 设置图标
+   var h = o._hIcon;
+   if(h){
+      var ni = null;
+      if(o._icon){
+         ni = p;
+      }else{
+         var t = o.type();
+         if(t){
+            ni = t.icon();
+         }
+      }
+      if(ni){
+         RHtml.displaySet(h, true);
+         h.style.width = 16;
+         h.style.height = 16;
+         h.className = o._valid ? o.styleName('Icon') : o.styleName('IconDisable');
+         h.src = RResource.iconPath(ni);
+      }else{
+         RHtml.displaySet(h, false);
+      }
+   }
 }
 
 //==========================================================
@@ -363,28 +456,6 @@ function FTreeNode_get(n){
 //==========================================================
 function FTreeNode_set(n, v){
    this._attributes.set(n, v);
-}
-
-//==========================================================
-// <T>获取节点选取。</T>
-//
-// @method
-// @return Boolean 是否选取
-//==========================================================
-function FTreeNode_check(){
-   return this._checked;
-}
-
-//==========================================================
-// <T>设置节点选取。</T>
-//
-// @method
-// @param p:value:Boolean 是否选取
-//==========================================================
-function FTreeNode_setCheck(p){
-   var o = this;
-   o._checked = p;
-   o._hCheck.checked = p;
 }
 
 //==========================================================
@@ -659,6 +730,33 @@ function FTreeNode_removeChildren(){
 }
 
 //==========================================================
+// <T>重置数据。</T>
+//
+// @method
+//==========================================================
+function FTreeNode_reset(){
+   var o = this;
+   // 获取属性
+   o._typeName = null;
+   o._uuid = null;
+   o._valid = true;
+   o._icon = null;
+   o._tag = null;
+   o._note = null;
+   o._child = false;
+   o._checked = false;
+   o._extended = true;
+   // 还原状态
+   o._statusLinked = false;
+   o._statusDisplay = true;
+   o._statusHover = false;
+   o._extended = false;
+   o._statusSelected = false;
+   o._statusLoaded = false;
+   o._level = 0;
+}
+
+//==========================================================
 // <T>点击当前节点。</T>
 //
 // @method
@@ -736,48 +834,15 @@ function FTreeNode_propertySave(x){
 //==========================================================
 function FTreeNode_loadConfig(x){
    var o = this;
-   var t = o._tree;
-   // 获取属性
-   o._typeName = null;
-   o._uuid = null;
-   o._valid = true;
-   o._icon = null;
-   o._tag = null;
-   o._note = null;
-   o._child = false;
-   o._checked = false;
-   o._extended = true;
+   // 重置数据
+   o.reset();
    // 加载属性
    o.propertyLoad(x);
-   // 还原状态
-   o._statusLinked = false;
-   o._statusDisplay = true;
-   o._statusHover = false;
-   o._extended = false;
-   o._statusSelected = false;
-   o._statusLoaded = false;
-   o._level = 0;
-   var ni = o._child ? t._iconPlus : t._iconNode;
-   o._hImage.src = RResource.iconPath(ni);
-   // 建立图标
-   var ni = RString.nvl(o._icon, o._typeName ? o._typeName._icon : null);
-   o._hIcon.className = o._valid ? o.styleName('Icon') : o.styleName('IconDisable');
-   if(ni){
-     o._hIcon.style.width = 16;
-     o._hIcon.style.height = 16;
-      o._hIcon.src = RResource.iconPath(ni);
-   }else{
-      o._hIcon.style.width = 1;
-      o._hIcon.style.height = 1
-   }
-   if(!RString.isEmpty(o._attributes.get('checked'))){
-     o._checked = RBoolean.isTrue(o._attributes.get('checked'));
-     if(o._hCheck){
-         o._hCheck._checked = o._checked;
-     }
-   }
-   // 建立显示文本
+   // 设置内容
    o.setLabel(o._label);
+   o.setCheck(o._checked);
+   o.setImage();
+   o.setIcon(o._icon);
 }
 
 

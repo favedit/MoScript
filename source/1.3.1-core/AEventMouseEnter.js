@@ -10,8 +10,11 @@ function AEventMouseEnter(n){
    var o = this;
    AEvent(o, n, 'mouseenter', 'onmouseenter');
    //..........................................................
+   // @attribute
+   o._logger = false;
+   //..........................................................
    // @method
-   o.attach = AEventMouseEnter_attach;
+   o.attach  = AEventMouseEnter_attach;
    return o;
 }
 

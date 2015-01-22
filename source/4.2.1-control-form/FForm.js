@@ -1,9 +1,9 @@
 //==========================================================
-// <T>表单对象的类。</T>
+// <T>表单控件。</T>
 //
-// @class FLayout, MForm, MDisplayAble, MValue, MDataset, MAction
-// @param o:object:Object 继承父对象
-// @history 091012 MAOCY 创建
+// @class
+// @author maocy
+// @version 150122
 //==========================================================
 function FForm(o){
    //o = RClass.inherits(this, o, FLayout, MForm, MDisplayAble, MValue, MAction);

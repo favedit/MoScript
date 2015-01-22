@@ -104,7 +104,15 @@ html,body{
 /* ------------------------------------------------------ */
 /* FTreeView                                              */
 /* ------------------------------------------------------ */
+.FTreeView_Panel{
+   width: 100%;
+   height: 100%;
+}
+
 .FTreeView_NodePanel{
+   width: 100%;
+   height: 100%;
+   overflow:auto;
 }
 
 .FTreeView_NodeForm{

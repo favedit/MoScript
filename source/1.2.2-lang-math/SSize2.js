@@ -15,6 +15,7 @@ function SSize2(w, h){
    o.height   = RInteger.nvl(h);
    //..........................................................
    // @method
+   o.isEmpty  = SSize2_isEmpty;
    o.assign   = SSize2_assign;
    o.set      = SSize2_set;
    o.parse    = SSize2_parse;
@@ -24,6 +25,17 @@ function SSize2(w, h){
    // @method
    o.dump     = SSize2_dump;
    return o;
+}
+
+//============================================================
+// <T>判断内容是否为空。</T>
+//
+// @method
+// @return Boolean 是否为空
+//============================================================
+function SSize2_isEmpty(){
+   var o = this;
+   return (o.width == 0) && (o.height == 0);
 }
 
 //============================================================

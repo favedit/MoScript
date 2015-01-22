@@ -1,8 +1,9 @@
 //==========================================================
-// <T>控件焦点接口类。</T>
+// <T>焦点控件接口。</T>
 //
-// @class FConsole, MRelease
-// @history 091028 MAOCY 创建
+// @class
+// @author maocy
+// @version 150122
 //==========================================================
 function MFocus(o){
    o = RClass.inherits(this, o);

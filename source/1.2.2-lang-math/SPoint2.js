@@ -13,6 +13,7 @@ function SPoint2(x, y){
    o.y           = RInteger.nvl(y);
    //..........................................................
    // @method
+   o.isEmpty     = SPoint2_isEmpty;
    o.equals      = SPoint2_equals;
    o.assign      = SPoint2_assign;
    o.set         = SPoint2_set;
@@ -24,6 +25,17 @@ function SPoint2(x, y){
    // @method
    o.dump        = SPoint2_dump;
    return o;
+}
+
+//============================================================
+// <T>判断内容是否为空。</T>
+//
+// @method
+// @return Boolean 是否为空
+//============================================================
+function SPoint2_isEmpty(){
+   var o = this;
+   return (o.x == 0) && (o.y == 0);
 }
 
 //============================================================

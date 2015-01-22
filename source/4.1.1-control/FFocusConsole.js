@@ -1,9 +1,10 @@
 //==========================================================
-// <T>焦点管理器。</T>
+// <T>焦点控件控制台。</T>
 // <P>focusControl在切换焦点时，可以为空。activeControl自第一次获得焦点后，不会为空。</P>
 //
-// @class FConsole
-// @history 091028 MAOCY 创建
+// @class
+// @author maocy
+// @version 150122
 //==========================================================
 function FFocusConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -11,19 +12,21 @@ function FFocusConsole(o){
    // @attribute
    o.scope              = EScope.Page;
    // @attribute
-   o.__blurAble         = true;
-   o.__focusAble        = true;
-   o.__focusClasses     = null;
-   o.__storeControl     = null;
+   o._blurAble          = true;
+   o._focusAble         = true;
+   o._focusClasses      = null;
+   o._storeControl      = null;
    // @attribute FControl 获得热点的容器
    o.hoverContainer     = null;
    // @attribute FControl 获得热点的对象
-   o.hoverControl       = null;
+   o._hoverControl      = null;
    // @attribute MFocus 获得焦点的对象
-   o.focusControl       = null;
-   o.blurControl        = null;
+   o._focusControl      = null;
+   o._blurControl       = null;
    // @attribute MFocus 被激活的对象
-   o.activeControl      = null;
+   o._activeControl     = null;
+   //..........................................................
+   // @listeners
    o.lsnsFocus          = null;
    o.lsnsBlur           = null;
    o.lsnsFocusClass     = null;
@@ -34,18 +37,24 @@ function FFocusConsole(o){
    //..........................................................
    // @method
    o.construct          = FFocusConsole_construct;
+   // @method
    o.isFocus            = FFocusConsole_isFocus;
+   // @method
    o.enter              = FFocusConsole_enter;
    o.leave              = FFocusConsole_leave;
+   // @method
    o.focus              = FFocusConsole_focus;
    o.blur               = FFocusConsole_blur;
+   // @method
    o.findClass          = FFocusConsole_findClass;
    o.focusClass         = FFocusConsole_focusClass;
    o.focusHtml          = FFocusConsole_focusHtml;
    o.lockBlur           = FFocusConsole_lockBlur;
    o.unlockBlur         = FFocusConsole_unlockBlur;
+   // @method
    o.storeFocus         = FFocusConsole_storeFocus;
    o.restoreFocus       = FFocusConsole_restoreFocus;
+   // @method
    o.dispose            = FFocusConsole_dispose;
    return o;
 }
@@ -68,7 +77,7 @@ function FFocusConsole_onWindowMouseDown(s, e){
 //==========================================================
 function FFocusConsole_onWindowMouseWheel(s, e){
    var o = this;
-   var fc = this.focusControl;
+   var fc = this._focusControl;
    if(RClass.isClass(fc, MMouseWheel)){
       fc.onMouseWheel(s, e);
    }
@@ -81,14 +90,14 @@ function FFocusConsole_onWindowMouseWheel(s, e){
 //==========================================================
 function FFocusConsole_construct(){
    var o = this;
-   o.base.FConsole.construct.call(o);
+   o.__base.FConsole.construct.call(o);
    // 构建内部对象
-   o.__focusClasses = new Object();
+   o._focusClasses = new Object();
    o.lsnsFocus = new TListeners();
    o.lsnsBlur = new TListeners();
    o.lsnsFocusClass = new TListeners();
-   // Listener
-   RLogger.debug(o, 'Add listener for window mouse down and wheel');
+   // 增加监听器
+   RLogger.info(o, 'Add listener for window mouse down and wheel.');
    RWindow.lsnsMouseDown.register(o, o.onWindowMouseDown);
    RWindow.lsnsMouseWheel.register(o, o.onWindowMouseWheel);
 }
@@ -101,7 +110,7 @@ function FFocusConsole_construct(){
 // @return true:是<B/>false:否
 //==========================================================
 function FFocusConsole_isFocus(c){
-   return (this.focusControl == c);
+   return (this._focusControl == c);
 }
 
 //==========================================================
@@ -115,7 +124,7 @@ function FFocusConsole_enter(c){
    if(RClass.isClass(c, MContainer)){
       o.hoverContainer = c;
    }else{
-      o.hoverControl = c;
+      o._hoverControl = c;
    }
 }
 
@@ -130,8 +139,8 @@ function FFocusConsole_leave(c){
    if(o.hoverContainer == c){
       o.hoverContainer = null;
    }
-   if(o.hoverControl == c){
-      o.hoverControl = null;
+   if(o._hoverControl == c){
+      o._hoverControl = null;
    }
 }
 
@@ -152,27 +161,27 @@ function FFocusConsole_focus(c, e){
       return;
    }
    // 禁止获得两次焦点
-   var f = o.focusControl;
+   var f = o._focusControl;
    if(f == c){
       return;
    }
    // 旧对象失去焦点
-   var bc = o.blurControl;
+   var bc = o._blurControl;
    if(bc != f){
-      if(o.__blurAble && f && f.testBlur(c)){
+      if(o._blurAble && f && f.testBlur(c)){
          // 失去焦点
          RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
-         o.blurControl = f;
+         o._blurControl = f;
          f.doBlur(e);
          // 处理监听
          o.lsnsBlur.process(f);
       }
    }
    // 设置新的焦点对象
-   if(o.__focusAble){
+   if(o._focusAble){
       RLogger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
       c.doFocus(e);
-      o.focusControl = o.activeControl = c;
+      o._focusControl = o._activeControl = c;
       // 处理监听
       o.lsnsFocus.process(c);
    }
@@ -190,8 +199,8 @@ function FFocusConsole_focus(c, e){
 //==========================================================
 function FFocusConsole_blur(c, e){
    var o = this;
-   var fc = o.focusControl;
-   var bc = o.blurControl;
+   var fc = o._focusControl;
+   var bc = o._blurControl;
    // 存在已有焦点对象时，测试是否可以失去焦点
    if(fc && c && !fc.testBlur(c)){
       return;
@@ -200,14 +209,14 @@ function FFocusConsole_blur(c, e){
    if(bc != c && RClass.isClass(c, MFocus)){
       // 不存在时直接失去焦点
       RLogger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
-      o.blurControl = c;
+      o._blurControl = c;
       c.doBlur(e);
    }
    // 强制失去原有焦点
    if(fc){
       RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
       fc.doBlur(e);
-      o.focusControl = null;
+      o._focusControl = null;
    }
 }
 
@@ -221,11 +230,11 @@ function FFocusConsole_findClass(c){
    var o = this;
    // 从类对象列表中获得
    var n = RClass.name(c);
-   if(o.__focusClasses[n]){
-      return o.__focusClasses[n];
+   if(o._focusClasses[n]){
+      return o._focusClasses[n];
    }
    // 从活动对象中获得
-   var p = o.activeControl;
+   var p = o._activeControl;
    if(RClass.isClass(p, FEditor)){
       p = p.source;
    }
@@ -244,9 +253,9 @@ function FFocusConsole_findClass(c){
 function FFocusConsole_focusClass(c, p){
    var o = this;
    var n = RClass.name(c);
-   if(o.__focusClasses[n] != p){
+   if(o._focusClasses[n] != p){
       // 设置类焦点
-      o.__focusClasses[n] = p;
+      o._focusClasses[n] = p;
       RLogger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
       // 纷发类焦点事件
       o.lsnsFocusClass.process(p, c);
@@ -264,7 +273,7 @@ function FFocusConsole_focusHtml(he){
    var c = RControl.htmlControl(he.srcElement);
    RLogger.debug(o, 'Focus html control. (control={1},element={2})', RClass.dump(c), he.srcElement.tagName);
    if(c){
-      if(o.focusControl != c){
+      if(o._focusControl != c){
          o.blur(c, he);
       }
    }else{
@@ -278,7 +287,7 @@ function FFocusConsole_focusHtml(he){
 // @method
 //==========================================================
 function FFocusConsole_lockBlur(){
-   this.__blurAble = false;
+   this._blurAble = false;
 }
 
 //==========================================================
@@ -287,7 +296,7 @@ function FFocusConsole_lockBlur(){
 // @method
 //==========================================================
 function FFocusConsole_unlockBlur(){
-   this.__blurAble = true;
+   this._blurAble = true;
 }
 
 //==========================================================
@@ -297,7 +306,7 @@ function FFocusConsole_unlockBlur(){
 //==========================================================
 function FFocusConsole_storeFocus(){
    var o = this;
-   o.__storeControl = o.focusControl;
+   o._storeControl = o._focusControl;
 }
 
 //==========================================================
@@ -307,9 +316,9 @@ function FFocusConsole_storeFocus(){
 //==========================================================
 function FFocusConsole_restoreFocus(){
    var o = this;
-   if(o.__storeControl){
-      o.__storeControl.focus();
-      o.__storeControl = null;
+   if(o._storeControl){
+      o._storeControl.focus();
+      o._storeControl = null;
    }
 }
 
@@ -320,6 +329,6 @@ function FFocusConsole_restoreFocus(){
 //==========================================================
 function FFocusConsole_dispose(){
    var o = this;
-   o.base.FConsole.dispose.call(o);
-   o.__focusClasses = null;
+   o.__base.FConsole.dispose.call(o);
+   o._focusClasses = null;
 }

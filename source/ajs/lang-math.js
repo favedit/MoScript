@@ -995,6 +995,7 @@ function SPadding(l, t, r, b){
    o.top      = RInteger.nvl(t);
    o.right    = RInteger.nvl(r);
    o.bottom   = RInteger.nvl(b);
+   o.isEmpty  = SPadding_isEmpty;
    o.reset    = SPadding_reset;
    o.assign   = SPadding_assign;
    o.set      = SPadding_set;
@@ -1003,6 +1004,10 @@ function SPadding(l, t, r, b){
    o.dispose  = SPadding_dispose;
    o.dump     = SPadding_dump;
    return o;
+}
+function SPadding_isEmpty(){
+   var o = this;
+   return (o.left == 0) && (o.top == 0) && (o.right == 0) && (o.bottom == 0);
 }
 function SPadding_reset(){
    var o = this;
@@ -1193,6 +1198,7 @@ function SPoint2(x, y){
    var o = this;
    o.x           = RInteger.nvl(x);
    o.y           = RInteger.nvl(y);
+   o.isEmpty     = SPoint2_isEmpty;
    o.equals      = SPoint2_equals;
    o.assign      = SPoint2_assign;
    o.set         = SPoint2_set;
@@ -1202,6 +1208,10 @@ function SPoint2(x, y){
    o.dispose     = SPoint2_dispose;
    o.dump        = SPoint2_dump;
    return o;
+}
+function SPoint2_isEmpty(){
+   var o = this;
+   return (o.x == 0) && (o.y == 0);
 }
 function SPoint2_equals(p){
    return p ? (this.x == p.x && this.y == p.y) : false;
@@ -1649,6 +1659,7 @@ function SSize2(w, h){
    var o = this;
    o.width    = RInteger.nvl(w);
    o.height   = RInteger.nvl(h);
+   o.isEmpty  = SSize2_isEmpty;
    o.assign   = SSize2_assign;
    o.set      = SSize2_set;
    o.parse    = SSize2_parse;
@@ -1656,6 +1667,10 @@ function SSize2(w, h){
    o.dispose  = SSize2_dispose;
    o.dump     = SSize2_dump;
    return o;
+}
+function SSize2_isEmpty(){
+   var o = this;
+   return (o.width == 0) && (o.height == 0);
 }
 function SSize2_assign(v){
    var o = this;

@@ -9,5 +9,8 @@
 function AEventMouseMove(n){
    var o = this;
    AEventMouse(o, n, 'mousemove', 'onmousemove');
+   //..........................................................
+   // @attribute
+   o._logger = false;
    return o;
 }

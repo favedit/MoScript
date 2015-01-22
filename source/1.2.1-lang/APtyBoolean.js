@@ -55,7 +55,10 @@ function APtyBoolean_load(v, x){
 //============================================================
 function APtyBoolean_save(v, x){
    var o = this;
-   x.set(o._linker, RBoolean.toString(v[o._name]));
+   var d = v[o._name];
+   if(d){
+      x.set(o._linker, RBoolean.toString(d));
+   }
 }
 
 //============================================================

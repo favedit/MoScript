@@ -49,7 +49,10 @@ function APtyPadding_load(v, x){
 //============================================================
 function APtyPadding_save(v, x){
    var o = this;
-   x.set(o._name, v[o._name].toString());
+   var d = v[o._name];
+   if(!d.isEmpty()){
+      x.set(o._linker, d.toString());
+   }
 }
 
 //============================================================
