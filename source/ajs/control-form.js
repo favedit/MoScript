@@ -1,3 +1,208 @@
+function FButton(o){
+   o = RClass.inherits(this, o, FControl, MDisplay, MDesign);
+   o.labelPosition      = RClass.register(o, new TPtyStr('labelPosition', EPosition.Left));
+   o.icon               = RClass.register(o, new TPtyStr('icon'));
+   o.type               = RClass.register(o, new TPtyStr('type'));
+   o.action             = RClass.register(o, new TPtyStr('action'));
+   o.dataAction         = RClass.register(o, new TPtyStr('dataAction'));
+   o.service            = RClass.register(o, new TPtyStr('service'));
+   o.target             = RClass.register(o, new TPtyStr('target'));
+   o.page               = RClass.register(o, new TPtyStr('page'));
+   o.method             = RClass.register(o, new TPtyStr('method'));
+   o.iconDisable        = RClass.register(o, new TPtyStr('iconDisable'));
+   o.attributes         = RClass.register(o, new TPtyStr('attributes'));
+   o.editUrl            = RClass.register(o, new TPtyStr('editUrl'));
+   o.editForm           = RClass.register(o, new TPtyStr('editForm'));
+   o.stIcon             = RClass.register(o, new TStyle('Icon'));
+   o.stLabel            = RClass.register(o, new TStyle('Label'));
+   o.stForm             = RClass.register(o, new TStyle('Form'));
+   o.stIconPanel        = RClass.register(o, new TStyleIcon('Panel'));
+   o.__process          = false;
+   o.lsnsClick          = new TListeners();
+   o.hForm              = null;
+   o.hLeftButton        = null;
+   o.hMiddleButton      = null;
+   o.hRightButton       = null;
+   o.hLabelPanel        = null;
+   o.hLabel             = null;
+   o.onButtonEnter      = RClass.register(o, new HMouseEnter('onButtonEnter'), FButton_onButtonEnter);
+   o.onButtonLeave      = RClass.register(o, new HMouseLeave('onButtonLeave'), FButton_onButtonLeave);
+   o.onButtonDown       = RClass.register(o, new HMouseDown('onButtonDown'), FButton_onButtonDown);
+   o.onButtonUp         = RClass.register(o, new HMouseUp('onButtonUp'), FButton_onButtonUp);
+   o.onButtonClickDelay = FButton_onButtonClickDelay;
+   o.onClick            = FButton_onClick;
+   o.onButtonClick      = RClass.register(o, new HClick('onButtonClick'), FButton_onButtonClick);
+   o.oeBuild            = FButton_oeBuild;
+   o.oeMode             = FButton_oeMode;
+   o.setLabel           = FButton_setLabel;
+   o.setLabelColor      = FButton_setLabelColor;
+   o.setLabelStyle      = FButton_setLabelStyle;
+   o.doClick            = FButton_doClick;
+   o.dispose            = FButton_dispose;
+   return o;
+}
+function FButton_onButtonEnter(e){
+   var o = this;
+   if(!o._disabled){
+	  o.hLeftButton.background = o.styleIconPath('HoverLeft');
+	  o.hMiddleButton.background = o.styleIconPath('HoverMiddle');
+	  o.hRightButton.background = o.styleIconPath('HoverRight');
+   }
+}
+function FButton_onButtonLeave(e){
+   var o = this;
+   if(!o._disabled){
+	  o.hLeftButton.background = o.styleIconPath('ButtonLeft');
+	  o.hMiddleButton.background = o.styleIconPath('Button');
+	  o.hRightButton.background = o.styleIconPath('ButtonRight');
+   }
+}
+function FButton_onButtonDown(e){
+   var o = this;
+   if(!o._disabled){
+	  o.hLeftButton.background = o.styleIconPath('PressLeft');
+	  o.hMiddleButton.background = o.styleIconPath('PressMiddle');
+	  o.hRightButton.background = o.styleIconPath('PressRight');
+   }
+}
+function FButton_onButtonUp(e){
+   var o = this;
+   if(!o._disabled){
+	  o.hLeftButton.background = o.styleIconPath('ButtonLeft');
+	  o.hMiddleButton.background = o.styleIconPath('Button');
+	  o.hRightButton.background = o.styleIconPath('ButtonRight');
+   }
+}
+function FButton_onButtonClickDelay(e){
+   var o = this;
+   o.__process = false;
+   o.clickActive.status = EActive.Sleep;
+}
+function FButton_onClick(e){
+   this.doClick();
+}
+function FButton_onButtonClick(e){
+   this.doClick();
+}
+function FButton_oeBuild(e){
+   var o = this;
+   o.base.FControl.oeBuild.call(o, e);
+   var hp = o.hPanel;
+   hp.style.paddingTop = o.padTop ? o.padTop : 10;
+   hp.style.pixelHeight = 26;
+   var hf = o.hForm = RBuilder.appendTable(hp);
+   var hr = hf.insertRow();
+   hr.height = 22;
+   var hl = o.hLeftButton = hr.insertCell();
+   hl.width = 3;
+   hl.background = o.styleIconPath('ButtonLeft');
+   var hm = o.hMiddleButton = hr.insertCell();
+   hm.background = o.styleIconPath('Button');
+   var hrb = o.hRightButton = hr.insertCell();
+   hrb.width = 3;
+   hrb.background = o.styleIconPath('ButtonRight');
+   hf.style.cursor = 'hand';
+   hf.style.border = 0;
+   o.attachEvent('onButtonEnter', hf, o.onButtonEnter);
+   o.attachEvent('onButtonLeave', hf, o.onButtonLeave);
+   o.attachEvent('onButtonDown', hf, o.onButtonDown);
+   o.attachEvent('onButtonUp', hf, o.onButtonUp);
+   o.attachEvent('onButtonClick', hf);
+   var hTb = RBuilder.appendTable(hm);
+   var hr  = hTb.insertRow();
+   var hc = hr.insertCell();
+   hc.width = 10;
+   if(o.icon){
+      var hc = hr.insertCell();
+      hc.width = 16;
+      o.hIcon = RBuilder.appendIcon(hc, o.icon);
+      hcc = hr.insertCell();
+      hcc.width = 4;
+   }
+   if(o.label){
+      var hc = hr.insertCell();
+      hc.align = 'center';
+      hc.noWrap = true;
+      o.hLabel = RBuilder.appendText(hc, o.label);
+      o.hLabel.style.font = 'icon';
+   }
+   var hc = o.hFormEnd = hr.insertCell();
+   hc.width = 10;
+   o.__process = false;
+   var ca = o.clickActive = new TActive(o, o.onButtonClickDelay);
+   ca.interval = 500;
+   ca.status = EActive.Sleep;
+   RConsole.find(FActiveConsole).push(ca);
+   return EEventStatus.Stop;
+}
+function FButton_oeMode(e){
+   var o = this;
+   o.base.FControl.oeMode.call(o, e);
+   o.base.MDisplay.oeMode.call(o, e);
+   return EEventStatus.Stop;
+}
+function FButton_setLabel(v){
+   var o = this;
+   o.label = v;
+   o.hLabel.innerText = v;
+   o.hLabel.noWrap = true;
+}
+function FButton_setLabelColor(c){
+   var o = this;
+   o.hLabel.style.color = '#FF0000';
+}
+function FButton_setLabelStyle(c, w, s){
+   var o = this;
+   o.hLabel.style.color = '#FF0000';
+   o.hLabel.style.fontWeight = 'bold';
+   o.hLabel.style.fontSize = '12';
+}
+function FButton_doClick(){
+   var o = this;
+   if(o.__process){
+      return;
+   }
+   o.__process = true;
+   o.clickActive.status = EActive.Active;
+   o.lsnsClick.process(this);
+   if(o.action){
+      eval(o.action);
+   }
+   if(o.page){
+      var form = RHtml.form(o.hButton);
+      var p = RPage.parse(o.page);
+      if(o.method){
+         p.action = o.method;
+      }
+      p.split(o.attributes);
+      var f = o.topControl(MDataset);
+      if(f){
+         var as = new TAttributes();
+         f.saveValue(as);
+         if(form && form.form_pack){
+            form.form_pack.value = as.pack();
+         }
+      }
+      p.post(form, RString.nvl(o.target, '_self'));
+   }
+   if(o.editUrl){
+      var w = RConsole.find(FButtonConsole).find();
+      w.linkUrl(o.editUrl);
+      w.show();
+   }
+   if(o.editForm){
+      var w = RConsole.find(FButtonFormConsole).find();
+      w.linkForm(o);
+      w.show();
+   }
+}
+function FButton_dispose(){
+   var o = this;
+   o.base.FControl.dispose.call(o);
+   o.hForm = null;
+   o.hFormEnd = null;
+   o.hLabel = null;
+}
 function FEdit(o){
    o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
    o._styleEdit       = RClass.register(o, new AStyle('_styleEdit', 'Edit'));

@@ -53,30 +53,30 @@ function FToolButton(o){
 
 
 
-   o._type            = RClass.register(o, new APtyString('_type'));
-   o._dataAction      = RClass.register(o, new APtyString('_dataAction'));
-   o._service         = RClass.register(o, new APtyString('_service'));
-   o._target          = RClass.register(o, new APtyString('_target'));
-   o._page            = RClass.register(o, new APtyString('_page'));
-   o._method          = RClass.register(o, new APtyString('_method'));
-   o._attributes      = RClass.register(o, new APtyString('_attributes'));
+   //o._type            = RClass.register(o, new APtyString('_type'));
+   //o._dataAction      = RClass.register(o, new APtyString('_dataAction'));
+   //o._service         = RClass.register(o, new APtyString('_service'));
+   //o._target          = RClass.register(o, new APtyString('_target'));
+   //o._page            = RClass.register(o, new APtyString('_page'));
+   //o._method          = RClass.register(o, new APtyString('_method'));
+   //o._attributes      = RClass.register(o, new APtyString('_attributes'));
    //..........................................................
    // @event
-   o.onButtonClick   = RClass.register(o, new AEventClick('onButtonClick'), FToolButton_onButtonClick);
+   //o.onButtonClick   = RClass.register(o, new AEventClick('onButtonClick'), FToolButton_onButtonClick);
    //..........................................................
    // @style
-   o._styleIconDisable   = RClass.register(o, new AStyle('_styleIconDisable', 'IconDisable'));
+   //o._styleIconDisable   = RClass.register(o, new AStyle('_styleIconDisable', 'IconDisable'));
    //o._styleButton        = RClass.register(o, new AStyleIcon('_styleButton', 'Button'));
    //o._styleButtonDisable = RClass.register(o, new AStyleIcon('_styleButtonDisable', 'ButtonDisable'));
    //o._styleButtonHover   = RClass.register(o, new AStyleIcon('_styleButtonHover', 'ButtonHover'));
    //..........................................................
    // @listener
-   o.lsnsClick       = new TListeners();
+   //o.lsnsClick       = new TListeners();
    //..........................................................
    // @html
-   o._hButton         = null;
-   o._hButtonLine     = null;
-   o._hButtonPanel    = null;
+   //o._hButton         = null;
+   //o._hButtonLine     = null;
+   //o._hButtonPanel    = null;
    //..........................................................
    // @event
    //o.onShowHint      = FToolButton_onShowHint;

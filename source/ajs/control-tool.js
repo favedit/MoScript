@@ -56,113 +56,41 @@ function FToolBar_dispose(){
 }
 function FToolButton(o){
    o = RClass.inherits(this, o, FControl);
-   o._type            = RClass.register(o, new APtyString('_type'));
-   o._action          = RClass.register(o, new APtyString('_action'));
-   o._dataAction      = RClass.register(o, new APtyString('_dataAction'));
-   o._service         = RClass.register(o, new APtyString('_service'));
-   o._target          = RClass.register(o, new APtyString('_target'));
-   o._page            = RClass.register(o, new APtyString('_page'));
-   o._hotkey          = RClass.register(o, new APtyString('_hotkey'));
-   o._method          = RClass.register(o, new APtyString('_method'));
-   o._icon            = RClass.register(o, new APtyString('_icon'));
-   o._iconDisable     = RClass.register(o, new APtyString('_iconDisable'));
-   o._attributes      = RClass.register(o, new APtyString('_attributes'));
-   o.onButtonClick   = RClass.register(o, new AEventClick('onButtonClick'), FToolButton_onButtonClick);
-   o._styleButton        = RClass.register(o, new AStyle('_styleButton', 'Button'));
-   o._styleDisable       = RClass.register(o, new AStyle('_styleDisable', 'Disable'));
-   o._styleIcon          = RClass.register(o, new AStyle('_styleIcon', 'Icon'));
-   o._styleIconDisable   = RClass.register(o, new AStyle('_styleIconDisable', 'IconDisable'));
-   o._styleLabel         = RClass.register(o, new AStyle('_styleLabel', 'Label'));
-   o._styleHover         = RClass.register(o, new AStyle('_styleHover', 'Hover'));
-   o._stylePress         = RClass.register(o, new AStyle('_stylePress', 'Press'));
-   o.lsnsClick       = new TListeners();
-   o._disabled        = false;
-   o._hButton         = null;
-   o._hButtonLine     = null;
-   o._hButtonPanel    = null;
-   o._hIcon           = null;
-   o._hLabel           = null;
-   o.onBuildPanel    = FToolButton_onBuildPanel;
-   o.onEnter         = FToolButton_onEnter;
-   o.onLeave         = FToolButton_onLeave;
-   o.onMouseDown     = FToolButton_onMouseDown;
-   o.onMouseUp       = FToolButton_onMouseUp;
-   o.onShowHint      = FToolButton_onShowHint;
-   o.oeBuild         = FToolButton_oeBuild;
-   o.oeEnable        = FToolButton_oeEnable;
-   o.setLabel        = FToolButton_setLabel;
-   o.dispose         = FToolButton_dispose;
+   o._icon         = RClass.register(o, new APtyString('_icon'));
+   o._iconDisable  = RClass.register(o, new APtyString('_iconDisable'));
+   o._hotkey       = RClass.register(o, new APtyString('_hotkey'));
+   o._action       = RClass.register(o, new APtyString('_action'));
+   o._disabled     = false;
+   o._hIcon        = null;
+   o._hLabel       = null;
+   o._styleNormal  = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
+   o._styleHover   = RClass.register(o, new AStyle('_styleHover', 'Hover'));
+   o._stylePress   = RClass.register(o, new AStyle('_stylePress', 'Press'));
+   o._styleDisable = RClass.register(o, new AStyle('_styleDisable', 'Disable'));
+   o._styleIcon    = RClass.register(o, new AStyle('_styleIcon', 'Icon'));
+   o._styleLabel   = RClass.register(o, new AStyle('_styleLabel', 'Label'));
+   o.onBuildPanel  = FToolButton_onBuildPanel;
+   o.onEnter       = FToolButton_onEnter;
+   o.onLeave       = FToolButton_onLeave;
+   o.onMouseDown   = FToolButton_onMouseDown;
+   o.onMouseUp     = FToolButton_onMouseUp;
+   o.oeBuild       = FToolButton_oeBuild;
+   o.icon          = FToolButton_icon;
+   o.setIcon       = FToolButton_setIcon;
+   o.setLabel      = FToolButton_setLabel;
+   o.setEnable     = FToolButton_setEnable;
+   o.click         = FToolButton_click;
+   o.dispose       = FToolButton_dispose;
    return o;
 }
-function FToolButton_oeBuild(e){
+function FToolButton_onBuildPanel(p){
    var o = this;
-   o.base.FControl.oeBuild.call(o, e);
-   var t = o.parent;
-   var h = o.hPanel;
-   var hb = o._hButton = RBuilder.appendTable(o.hPanel, o.style('Panel'));
-   hb.background = o.styleIconPath('Button', FToolButton);
-   var hLine = o._hButtonLine = o._hButton.insertRow();
-   var hCel = o._hButtonPanel = hLine.insertCell();
-   o.attachEvent('onButtonClick', o._hButtonPanel);
-   hCel.className = t.style('Button');
-   if(o._icon){
-      o._hIcon = RBuilder.appendIcon(hCel, o._icon);
-   }
-   if(o.label){
-      o._hLabel = RBuilder.append(hCel, 'SPAN');
-      o._hLabel.innerHTML = '&nbsp;' + o.label;
-   }
-   if(o._hotkey){
-      RConsole.find(FKeyConsole).register(o._hotkey, new TListener(o, o.onButtonClick));
-   }
-   return EEventStatus.Stop;
-}
-function FToolButton_oeEnable(e){
-   var o = this;
-   o.base.FControl.oeEnable.call(o, e);
-   o._disabled = !e.enable;
-   if(e.enable && o._icon){
-      var is = RRes._iconPath(o._icon);
-      if(o._hIcon.src != is){
-         o._hIcon.src = is;
-      }
-   }else if(!e.enable && o._iconDisable){
-      var is = RRes._iconPath(o._iconDisable);
-      if(o._hIcon.src != is){
-         o._hIcon.src = is;
-      }
-   }
-   var css = o.style(e.enable ? 'Icon' : 'IconDisable');
-   if(o._hIcon.className != css){
-      o._hIcon.className = css;
-   }
-   var css = o.style(e.enable ? 'Button' : 'Disable');
-   if(o.hPanel.className != css){
-      o.hPanel.className = css;
-   }
-   var ci = o.styleIconPath(e.enable ? 'Button' : 'ButtonDisable');
-   if(o._hButton.background != ci){
-      o._hButton.background = ci;
-   }
-   return EEventStatus.Stop;
-}
-function FToolButton_onBuildPanel(){
-   this.hPanel = RBuilder.create(null, 'TD', this.style('Button'));
+   o._hPanel = RBuilder.createDiv(p.hDocument, o.styleName('Normal'));
 }
 function FToolButton_onEnter(e){
    var o = this;
-   if(o._hotkey || o.hint){
-      if(!o.hintBox){
-         o.hintBox = RConsole.find(FHintConsole).find();
-      }
-      o.hintBox.linkControl(o);
-      o.active = new TActive(o, o.onShowHint);
-      o.active.count = 300;
-      RConsole.find(FActiveConsole).push(o.active);
-   }
    if(!o._disabled){
-      o.hPanel.className = o.style('Hover');
-      o._hButton.background = o.styleIconPath('ButtonHover', FToolButton);
+      o._hPanel.className = o.styleName('Hover');
    }
 }
 function FToolButton_onLeave(e){
@@ -172,8 +100,7 @@ function FToolButton_onLeave(e){
       o.hintBox = null;
    }
    if(!o._disabled){
-      o.hPanel.className = o.style('Button');
-      o._hButton.background = o.styleIconPath('Button', FToolButton);
+      o._hPanel.className = o.styleName('Normal');
    }
 }
 function FToolButton_onMouseDown(){
@@ -187,10 +114,67 @@ function FToolButton_onMouseDown(){
 function FToolButton_onMouseUp(h){
    var o = this;
    if(!o._disabled){
-      o.hPanel.className = o.style('Hover');
+      o._hPanel.className = o.styleName('Hover');
    }
 }
-function FToolButton_onButtonClick(h){
+function FToolButton_oeBuild(p){
+   var o = this;
+   o.__base.FControl.oeBuild.call(o, p);
+   var h = o._hPanel;
+   if(o._icon){
+      o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);
+   }
+   if(o._label){
+      var s = o._label;
+      if(o._hIcon){
+      }
+      o.hLabel = RBuilder.appendText(h, o.styleName('Label'), s);
+   }
+   return EEventStatus.Stop;
+}
+function FToolButton_icon(){
+   return this._icon;
+}
+function FToolButton_setIcon(p){
+   this._icon = p;
+}
+function FToolButton_setLabel(p){
+   var o = this;
+   o._label = p;
+   if(o._hLabel){
+      o._hLabel.innerText = p;
+   }
+}
+function FToolButton_setEnable(p){
+   var o = this;
+   o.__base.FControl.oeEnable.call(o, e);
+   o._disabled = !e.enable;
+   if(e.enable && o._icon){
+      var is = RRes._iconPath(o._icon);
+      if(o._hIcon.src != is){
+         o._hIcon.src = is;
+      }
+   }else if(!e.enable && o._iconDisable){
+      var is = RRes._iconPath(o._iconDisable);
+      if(o._hIcon.src != is){
+         o._hIcon.src = is;
+      }
+   }
+   var css = o.styleName(e.enable ? 'Icon' : 'IconDisable');
+   if(o._hIcon.className != css){
+      o._hIcon.className = css;
+   }
+   var css = o.styleName(e.enable ? 'Button' : 'Disable');
+   if(o._hPanel.className != css){
+      o._hPanel.className = css;
+   }
+   var ci = o.styleIconPath(e.enable ? 'Button' : 'ButtonDisable');
+   if(o._hButton.background != ci){
+      o._hButton.background = ci;
+   }
+   return EEventStatus.Stop;
+}
+function FToolButton_click(){
    var o = this;
    RLogger.debug(o, '[D] onButtonClick = ' + o.name);
    if(o.isVisible() && !o._disabled && (EAction.Design != o.inAction)){
@@ -229,8 +213,14 @@ function FToolButton_onButtonClick(h){
       o.processClick();
    }
 }
-function FToolButton_click(){
-   this.onClick();
+function FToolButton_dispose(){
+   var o = this;
+   o._hButton = null;
+   o._hButtonLine = null;
+   o._hButtonPanel = null;
+   o._hIcon = null;
+   o._hText = null;
+   o.__base.FControl.dispose.call(o);
 }
 function FToolButton_onShowHint(a){
    var o = this;
@@ -238,23 +228,6 @@ function FToolButton_onShowHint(a){
    if(o.hintBox){
       o.hintBox.show();
    }
-}
-function FToolButton_setLabel(s){
-   this._hLabel.innerText = s;
-}
-function FToolButton_dispose(){
-   var o = this;
-   o.base.FControl.dispose.call(o);
-   RMemory.freeHtml(o._hButtonLine);
-   RMemory.freeHtml(o._hButton);
-   RMemory.freeHtml(o._hLabel);
-   RMemory.freeHtml(o._hButtonPanel);
-   RMemory.freeHtml(o._hIcon);
-   o._hButton = null;
-   o._hButtonLine = null;
-   o._hLabel = null;
-   o._hIcon = null;
-   o._hButtonPanel = null;
 }
 function FToolButtonCheck(o){
    o = RClass.inherits(this, o, FToolButton);

@@ -8,11 +8,13 @@
 @SET JAVA_PMGR=org.mo.util.javascript.FJsPathMerger
 
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\1.1.1-runtime            %JS_HOME%\ajs\runtime.js            N
+
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\1.2.1-lang               %JS_HOME%\ajs\lang.js               N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\1.2.2-lang-math          %JS_HOME%\ajs\lang-math.js          N
+
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\1.3.1-core               %JS_HOME%\ajs\core.js               N
-@"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\1.3.1-core-template      %JS_HOME%\ajs\core-template.js      N
-@"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\1.3.2-console            %JS_HOME%\ajs\console.js            N
+@"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\1.3.2-core-template      %JS_HOME%\ajs\core-template.js      N
+@"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\1.3.3-console            %JS_HOME%\ajs\console.js            N
 
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\2.1.1-graphic            %JS_HOME%\ajs\graphic.js            N
 @"%JAVA_HOME%\bin\java.exe" -cp %JAVA_PATH% %JAVA_PMGR% %JS_HOME%\2.2.1-graphic-2d         %JS_HOME%\ajs\graphic-2d.js         N

@@ -66,30 +66,30 @@ function FMenuBar_release(){
 }
 function FMenuButton(o){
    o = RClass.inherits(this, o, FControl, MMenuButton);
-   o._icon            = RClass.register(o, new APtyString('icon'));
-   o._iconDisable     = RClass.register(o, new APtyString('iconDisable'));
-   o._hotkey          = RClass.register(o, new APtyString('hotkey'));
-   o._action          = RClass.register(o, new APtyString('action'));
-   o._styleNormal     = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
-   o._styleHover      = RClass.register(o, new AStyle('_styleHover', 'Hover'));
-   o._stylePress      = RClass.register(o, new AStyle('_stylePress', 'Press'));
-   o._styleDisable    = RClass.register(o, new AStyle('_styleDisable', 'Disable'));
-   o._styleIcon       = RClass.register(o, new AStyle('_styleLabel', 'Icon'));
-   o._styleLabel      = RClass.register(o, new AStyle('_styleLabel', 'Label'));
-   o._disabled        = false;
-   o._hIcon           = null;
-   o._hText           = null;
-   o.onBuildPanel = FMenuButton_onBuildPanel
-   o.onEnter          = FMenuButton_onEnter;
-   o.onLeave          = FMenuButton_onLeave;
-   o.onMouseDown      = FMenuButton_onMouseDown;
-   o.onMouseUp        = FMenuButton_onMouseUp;
-   o.oeBuild          = FMenuButton_oeBuild;
-   o.icon             = FMenuButton_icon;
-   o.setIcon          = FMenuButton_setIcon;
-   o.setEnable        = FMenuButton_setEnable;
-   o.click            = FMenuButton_click;
-   o.dispose          = FMenuButton_dispose;
+   o._icon         = RClass.register(o, new APtyString('icon'));
+   o._iconDisable  = RClass.register(o, new APtyString('iconDisable'));
+   o._hotkey       = RClass.register(o, new APtyString('hotkey'));
+   o._action       = RClass.register(o, new APtyString('action'));
+   o._styleNormal  = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
+   o._styleHover   = RClass.register(o, new AStyle('_styleHover', 'Hover'));
+   o._stylePress   = RClass.register(o, new AStyle('_stylePress', 'Press'));
+   o._styleDisable = RClass.register(o, new AStyle('_styleDisable', 'Disable'));
+   o._styleIcon    = RClass.register(o, new AStyle('_styleLabel', 'Icon'));
+   o._styleLabel   = RClass.register(o, new AStyle('_styleLabel', 'Label'));
+   o._disabled     = false;
+   o._hIcon        = null;
+   o._hText        = null;
+   o.onBuildPanel  = FMenuButton_onBuildPanel
+   o.onEnter       = FMenuButton_onEnter;
+   o.onLeave       = FMenuButton_onLeave;
+   o.onMouseDown   = FMenuButton_onMouseDown;
+   o.onMouseUp     = FMenuButton_onMouseUp;
+   o.oeBuild       = FMenuButton_oeBuild;
+   o.icon          = FMenuButton_icon;
+   o.setIcon       = FMenuButton_setIcon;
+   o.setEnable     = FMenuButton_setEnable;
+   o.click         = FMenuButton_click;
+   o.dispose       = FMenuButton_dispose;
    return o;
 }
 function FMenuButton_onBuildPanel(e){
