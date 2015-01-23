@@ -9,8 +9,8 @@ function MEditZoom(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property
-   o._zoomRefer = RClass.register(o, new APtyString('_zoomRefer'));
-   o._zoomField = RClass.register(o, new APtyString('_zoomField'));
+   o._zoomReference = RClass.register(o, new APtyString('_zoomReference'));
+   o._zoomField     = RClass.register(o, new APtyString('_zoomField'));
    //..........................................................
    // @method
    o.testZoom   = MEditZoom_testZoom;
@@ -25,15 +25,15 @@ function MEditZoom(o){
 // @return Boolean 是否允许
 //==========================================================
 function MEditZoom_testZoom(){
-   return !RString.isEmpty(this.zoomRefer);
+   return !RString.isEmpty(this._zoomReference);
 }
 
 //==========================================================
 // <T>弹出关联的数据详细窗口。</T>
 //
 // @method
-// @param v:value:String 数据
+// @param p:value:String 数据
 //==========================================================
-function MEditZoom_doZoom(v){
-   RFormSpace.doZoom(this, v);
+function MEditZoom_doZoom(p){
+   RFormSpace.doZoom(this, p);
 }

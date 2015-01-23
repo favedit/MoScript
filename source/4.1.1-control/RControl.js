@@ -8,8 +8,17 @@
 var RControl = new function RControl(){
    var o = this;
    //..........................................................
+   // @property
+   o.PREFIX             = 'F';
+   //..........................................................
+   // @attribute
+   //..........................................................
    // @method
+   o.newInstance        = RControl_newInstance;
    o.attachEvent        = RControl_attachEvent;
+   // @method
+   o.innerCreate        = RControl_innerCreate;
+   o.create             = RControl_create;
    o.innerbuild         = RControl_innerbuild;
    o.build              = RControl_build;
 
@@ -25,8 +34,6 @@ var RControl = new function RControl(){
    o.controls           = new TMap();
    //..........................................................
    // @member
-   o.innerCreate        = RControl_innerCreate;
-   o.create             = RControl_create;
    o.linkEvent          = RControl_linkEvent;
    o.find               = RControl_find;
    o.fromNode           = RControl_fromNode;
@@ -39,9 +46,34 @@ var RControl = new function RControl(){
    o.psMode             = RControl_psMode;
    o.isInfo             = RControl_isInfo;
    o.isGroup            = RControl_isGroup;
-   o.newInstance        = RControl_newInstance;
-   o.newInstanceByName  = RControl_newInstance;
    return o;
+}
+
+//==========================================================
+// <T>创建一个实例。</T>
+//
+// @method
+// @param p:name:String 名称
+// @return FComponent 控件
+//==========================================================
+function RControl_newInstance(p){
+   var o = this;
+   var r = null;
+   if(p){
+      if(p.constructor == String){
+         var n = null
+         if(RString.startsWith(p, o.PREFIX)){
+            n = p;
+         }else{
+            n = o.PREFIX + p;
+         }
+         r = RClass.create(n);
+      }
+   }
+   if(r == null){
+      throw new TError(o, 'Create instance failure. (name={p})', p);
+   }
+   return r;
 }
 
 //==========================================================
@@ -88,13 +120,109 @@ function RControl_attachEvent(c, n, h, m, u){
 }
 
 //===========================================================
+// <T>根据配置信息创建当前组件，并递归创建所有子节点。</T>
+//
+// @method
+// @param pc:parent:FComponent 父组件
+// @param px:config:TXmlNode 配置节点
+// @param pa:attributes:Object 参数集合
+// @return FControl 控件对象
+//===========================================================
+function RControl_innerCreate(pc, px, pa){
+   var o = this;
+   // 检查参数
+   if((pc == null) || (px == null)){
+      return;
+   }
+   // 加载属性
+   if(RClass.isClass(pc, MProperty)){
+      pc.propertyLoad(px)
+   }
+   // 构建子节点
+   if(RClass.isClass(pc, MContainer) && px.hasNode()){
+      var ns = px.nodes();
+      var nc = ns.count();
+      for(var i = 0; i < nc; i++){
+         var n = ns.get(i);
+         var c = pc.createChild(n, pa);
+         if(c){
+            o.innerCreate(c, n, pa);
+            pc.push(c);
+         }
+      }
+   }
+}
+
+//===========================================================
+// <T>通过配置节点来生成对应的控件。</T>
+// <P>如果传入控件为空，则根据配置信息创建控件。</P>
+// <P>控件构造顺序：
+//   <OL>
+//     <L title='CreateChild'>通过父实例创建实例。</L>
+//     <L title='Construct'>实例的构造处理。</L>
+//     <L title='PropertyLoad'>加载配置信息。</L>
+//     <L title='Push'>放入父实例中。</L>
+//   </OL>
+// </P>
+//
+// @method
+// @param pc:control:FControl 控件对象
+// @param px:config:TXmlNode 配置节点
+// @param pa:attributes:Object 属性集合
+// @return FControl 控件对象
+//===========================================================
+function RControl_create(pc, px, pa){
+   var o = this;
+   // 获得控件
+   var c = null;
+   if(pc){
+      c = pc;
+   }else{
+      c = RControl.newInstance(px.name());
+   }
+   // 内部创建
+   o.innerCreate(c, px, pa);
+   //if(RClass.isClass(x, TNode)){
+   //   if(x){
+   //      // 节点对象(TNode)的处理
+   //      if(x.name == 'CellEdit'){
+   //         RControl.newInstance(FCellEdit);
+   //      }else{
+   //          o = RClass.createByName('F' + x.name);
+   //          this.innerCreate(o, x, m);
+   //      }
+   //      o._emode = m;
+   //      this.instances.push(o);
+   //   }
+   //}else{
+   //   // 类对象(Class)的处理
+   //   o = RClass.create(x);
+   //   o._emode = m;
+   //}
+   // 实例存在的处理
+   //if(o){
+   //   // 初始化
+   //   if(x.name != 'CellEdit'){
+   //      o.psInitialize();
+   //      // 构建对象
+   //      o.psBuild();
+   //      // 设置父容器对象
+   //      o.setPanel(hPanel);
+   //   }
+   //}
+   return c;
+}
+
+//===========================================================
 // <T>根据配置信息内部构件一个控件。</T>
 //
 // @method
 // @param pc:control:FControl 控件对象
 // @param px:config:TXmlNode 配置节点
+// @param pa:attribute:Object 属性集合
 //===========================================================
-function RControl_innerbuild(pc, px){
+function RControl_innerbuild(pc, px, pa){
+   var o = this;
    // 检查参数
    if((pc == null) || (px == null)){
       return;
@@ -105,14 +233,14 @@ function RControl_innerbuild(pc, px){
    }
    // 建立子节点
    if(RClass.isClass(pc, MContainer) && px.hasNode()){
-      var xs = px.nodes();
-      var xc = xs.count();
-      for(var i = 0; i < xc; i++){
-         var x = xs.get(i);
-         var c = pc.createChild(x);
+      var ns = px.nodes();
+      var nc = ns.count();
+      for(var i = 0; i < nc; i++){
+         var n = ns.get(i);
+         var c = pc.createChild(n);
          if(c){
-            this.innerbuild(c, x);
-            pc.push(c);
+            o.innerbuild(c, n);
+            pc.appendChild(c);
          }
       }
    }
@@ -120,15 +248,30 @@ function RControl_innerbuild(pc, px){
 
 //===========================================================
 // <T>根据配置信息构件一个控件。</T>
+// <P>控件构造顺序：
+//   <OL>
+//     <L title='CreateChild'>通过父实例创建实例。</L>
+//     <L title='Construct'>实例的构造处理。</L>
+//     <L title='PropertyLoad'>加载配置信息。</L>
+//     <L title='appendChild'>追加到父实例中。</L>
+//     <L title='setPanel'>将当前控件放在地板上，成为可见控件</L>
+//   </OL>
+// </P>
 //
 // @method
 // @param pc:control:FControl 控件对象
 // @param px:config:TXmlNode 配置节点
+// @param pa:attribute:Object 属性集合
+// @param ph:panel:HtmlTag 页面元素
 //===========================================================
-function RControl_build(pc, px){
-   this.innerbuild(pc, px);
-   //ctl.initialize();
-   //ctl.build();
+function RControl_build(pc, px, pa, ph){
+   var o = this;
+   // 内部创建
+   o.innerCreate(pc, px, pa);
+   // 构件页面
+   pc.psBuild(ph);
+   // 内部构架
+   //o.innerbuild(pc, px, pa);
 }
 
 
@@ -142,85 +285,6 @@ function RControl_build(pc, px){
 
 
 
-//===========================================================
-// <T>根据XML配置信息创建当前组件，并递归创建所有子节点。</T>
-//
-// @method
-// @param p:parent:FComponent 父组件
-// @param x:config:TNode 控件的配置信息
-// @param m:mode:EMode 工作模式
-// @return Object 控件对象
-//===========================================================
-function RControl_innerCreate(p, x, m){
-   p._emode = m;
-   if(RClass.isClass(p, MConfig)){
-      if(EStatus.Stop == p.loadConfig(x)){
-         return;
-      }
-   }
-   // Build child
-   var ns = x.nodes;
-   if(ns){
-      for(var i=0; i<ns.count; i++){
-         var n = ns.get(i);
-         var c = p.createChild(n);
-         if(c){
-            c.parent = p;
-            this.innerCreate(c, n, m);
-            p.push(c);
-         }
-      }
-   }
-}
-
-//===========================================================
-// 通过TNode节点来生成对应的控件
-// 控件构造顺序：
-// <OL>
-// <L title='Construct'>单个实例的类构造</L>
-// <L title='Initialize'>当前对象和所有子对象进行初始化</L>
-// <L title='Build'>当前控件和所有子控件进行建立可视化框架</L>
-// <L title='setPanel'>将当前控件放在地板上，成为可见控件</L>
-// </OL>
-//
-// @method
-// @param x:config:TNode TNode类型的节点
-// @param hPanel:hPanel:HTML 生成控件后要放置的位置HTML
-// @param m:mode:EMode 工作模式
-// @return Object 控件对象
-//===========================================================
-function RControl_create(x, hPanel, m){
-   var o = null;
-   if(RClass.isClass(x, TNode)){
-      if(x){
-         // 节点对象(TNode)的处理
-         if(x.name == 'CellEdit'){
-            RControl.newInstance(FCellEdit);
-         }else{
-             o = RClass.createByName('F' + x.name);
-             this.innerCreate(o, x, m);
-         }
-         o._emode = m;
-         this.instances.push(o);
-      }
-   }else{
-      // 类对象(Class)的处理
-      o = RClass.create(x);
-      o._emode = m;
-   }
-   // 实例存在的处理
-   if(o){
-      // 初始化
-      if(x.name != 'CellEdit'){
-         o.psInitialize();
-         // 构建对象
-         o.psBuild();
-         // 设置父容器对象
-         o.setPanel(hPanel);
-      }
-   }
-   return o;
-}
 // ------------------------------------------------------------
 // tc:targetControl:FControl
 // sc:senderControl:FControl
@@ -405,23 +469,4 @@ function RControl_isInfo(v){
 //------------------------------------------------------------
 function RControl_isGroup(v){
    return v ? (0 == v.indexOf('G#')) : false;
-}
-
-//------------------------------------------------------------
-function RControl_newInstance(f){
-   var o = this;
-   if(o.controls){
-     var n = RMethod.name(f);
-      var c = o.controls.get(n);
-      if(!c){
-         var c = new TControl(n);
-         o.controls.set(n, c);
-      }
-   }
-   return c.newInstance(n);
-}
-
-// ------------------------------------------------------------
-function RControl_newInstanceByName(n){
-   return;
 }

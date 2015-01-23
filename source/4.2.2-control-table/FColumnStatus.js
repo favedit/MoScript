@@ -1,23 +1,32 @@
-// ============================================================
-// FColumnStatus
-// ============================================================
+//==========================================================
+// <T>表格状态列。</T>
+//
+// @class
+// @author maocy
+// @version 150123
+//==========================================================
 function FColumnStatus(o){
    o = RClass.inherits(this, o, FColumnEditControl);
    //..........................................................
-   // @icon ��ͨͼ��
-   o.stIconNormal     = RClass.register(o, new TStyleIcon('Normal'));
-   // @icon ��ͨͼ��
-   o.stIconNormal     = RClass.register(o, new TStyleIcon('NormalEnter'));
-   // @icon �½�ͼ��
-   o.stIconInsert     = RClass.register(o, new TStyleIcon('Insert'));
-   // @icon �޸�ͼ��
-   o.stIconChanged    = RClass.register(o, new TStyleIcon('Changed'));
-   // @icon ɾ��ͼ��
-   o.stIconDelete     = RClass.register(o, new TStyleIcon('Delete'));
-   // @icon �Ƿ�ͼ��
-   o.stIconInvalid    = RClass.register(o, new TStyleIcon('Invalid'));
-   // @icon ��ͼ��
-   o.stIconLock       = RClass.register(o, new TStyleIcon('Lock'));
+   // @attribute
+   o._optionFixed          = true;
+   // @attribute
+   o._cellClass            = FCellStatus;
+   //..........................................................
+   // @icon 通常
+   o._styleIconNormal      = RClass.register(o, new AStyleIcon('_styleIconNormal'));
+   // @icon 通常进入
+   o._styleIconNormalEnter = RClass.register(o, new AStyleIcon('_styleIconNormalEnter'));
+   // @icon 插入
+   o._styleIconInsert      = RClass.register(o, new AStyleIcon('_styleIconInsert'));
+   // @icon 改变
+   o._styleIconChanged     = RClass.register(o, new AStyleIcon('_styleIconChanged'));
+   // @icon 删除
+   o._styleIconDelete      = RClass.register(o, new AStyleIcon('_styleIconDelete'));
+   // @icon 无效
+   o._styleIconInvalid     = RClass.register(o, new AStyleIcon('_styleIconInvalid'));
+   // @icon 锁定
+   o._styleIconLock        = RClass.register(o, new AStyleIcon('_styleIconLock'));
    //..........................................................
    // @event
    o.onCellClick      = FColumnStatus_onCellClick;
@@ -33,19 +42,17 @@ function FColumnStatus(o){
 
 
    /// @property
-   o.dispList            = true;
-   o.dispFixed           = true;
+   o._dispList           = true;
    /// @property
-   o.dataName            = '_status';
+   o._dataName           = '_status';
    /// @event
    // Attribute
    o.styleAlign          = 'left';
-   o.hSelect             = null;
+   o._hSelect             = null;
    o.iconNormal          = 'tool.normal';
    o.iconInsert          = 'tool.insert';
    o.iconUpdate          = 'tool.update';
    o.iconDelete          = 'tool.delete';
-   o.__cellClass         = FCellStatus;
    o.width               = 20;
    o.dispSize            = false;
    o.dispDrag            = false;
@@ -80,20 +87,19 @@ function FColumnStatus_onCellClick(s, e){
 }
 
 //==========================================================
-// <T>��������</T>
+// <T>构建处理。</T>
 //
 // @method
-// @param e:event:TEvent �¼�����
+// @param p:event:TEventProcess 构建事件
 //==========================================================
-function FColumnStatus_oeBuild(e){
+function FColumnStatus_oeBuild(p){
    var o = this;
-   var r = o.base.FColumnEditControl.oeBuild.call(o, e);
-   var h = o.hPanel;
+   var r = o.__base.FColumnEditControl.oeBuild.call(o, p);
+   var h = o._hPanel;
    h.align = 'center';
-   //h.style.width = 30;
-   //o.hFixPanel.style.pixelWidth = 30;
-   RBuilder.appendEmpty(o.hPanel, 12, 12);
-   return r;
+   h.style.width = '30px';
+   //o._hFixPanel.style.pixelWidth = 30;
+   RBuilder.appendEmpty(h, 12, 12);
 }
 
 //==========================================================
@@ -133,31 +139,31 @@ function FColumnStatus_ohCellMdclk(){
    tab.insertRow(this.lnkRow.rowIndex());
 }
 //------------------------------------------------------------
-function FColumnStatus_onBuildSearchForm(){
+function FColumnStatus_onBuildSearchForm(p){
    var o = this;
-   var hf = o.hSearchForm = RBuilder.appendTable(o.hSearchPanel);
+   var hf = o._hSearchForm = RBuilder.appendTable(o._hSearchPanel);
    hf.height = 18;
    hf.width = '100%';
-   var hfl = o.hSearchFormLine = hf.insertRow();
-   var hc = hfl.insertCell();
+   var hfl = o._hSearchFormLine = RBuilder.appendTableRow(hf);
+   var hc = RBuilder.appendTableCell(hfl);
    hc.align = 'center';
-   o.hSearchIcon = RBuilder.appendIcon(hc, o.styleIcon('Search'));
-   o.hSearchIcon.title = RContext.get('FColumnStatus:Search');
+   //o._hSearchIcon = RBuilder.appendIcon(hc, o.styleIcon('Search'));
+   //o._hSearchIcon.title = RContext.get('FColumnStatus:Search');
 }
 //------------------------------------------------------------
 function FColumnStatus_createCell(row){
    var o = this;
-   var c = o.base.FColumnEditControl.createCell.call(o, row);
+   var c = o.__base.FColumnEditControl.createCell.call(o, row);
    if(row){
       row.cellStatus = c;
    }
-   c.hPanel.className = c.style('Panel');
+   c._hPanel.className = c.style('Panel');
    return c;
 }
 // ------------------------------------------------------------
 function FColumnStatus_dispose(){
    var o = this;
-   o.base.FColumnEditControl.dispose.call(o);
-   o.hSelect = null;
+   o.__base.FColumnEditControl.dispose.call(o);
+   o._hSelect = null;
 }
 // ------------------------------------------------------------

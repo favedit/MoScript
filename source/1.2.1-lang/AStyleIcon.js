@@ -7,7 +7,7 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function AStyle(n, s){
+function AStyleIcon(n, s){
    var o = this;
    AAnnotation(o, n);
    //..........................................................
@@ -18,10 +18,10 @@ function AStyle(n, s){
    o._style        = s;
    //..........................................................
    // @method
-   o.code          = AStyle_code;
-   o.style         = AStyle_style;
-   o.build         = AStyle_build;
-   o.toString      = AStyle_toString;
+   o.code          = AStyleIcon_code;
+   o.style         = AStyleIcon_style;
+   o.build         = AStyleIcon_build;
+   o.toString      = AStyleIcon_toString;
    //..........................................................
    // @construct
    if(s == null){
@@ -45,7 +45,7 @@ function AStyle(n, s){
 // @method
 // @return String 代码
 //============================================================
-function AStyle_code(){
+function AStyleIcon_code(){
    return this._style;
 }
 
@@ -55,7 +55,7 @@ function AStyle_code(){
 // @method
 // @return String 样式
 //============================================================
-function AStyle_style(){
+function AStyleIcon_style(){
    return this._style;
 }
 
@@ -65,7 +65,7 @@ function AStyle_style(){
 // @method
 // @param v:value:Object 对象
 //============================================================
-function AStyle_build(v){
+function AStyleIcon_build(v){
    var o = this;
    v[o._name] = null;
 }
@@ -76,7 +76,7 @@ function AStyle_build(v){
 // @method
 // @return String 字符串
 //============================================================
-function AStyle_toString(){
+function AStyleIcon_toString(){
    var o = this;
    return 'style=' + o._style;
 }

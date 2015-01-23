@@ -10,13 +10,13 @@ function MEditReference(o){
    //..........................................................
    // @property
    o._lovService    = RClass.register(o, new APtyString('_lovService', null, EDataService.WebForm));
-   o._lovRefer      = RClass.register(o, new APtyString('_lovRefer'));
+   o._lovReference  = RClass.register(o, new APtyString('_lovReference'));
    o._lovFields     = RClass.register(o, new APtyString('_lovFields'));
    o._lovWhere      = RClass.register(o, new APtyString('_lovWhere'));
    o._lovOrder      = RClass.register(o, new APtyString('_lovOrder'));
    //..........................................................
    // @attribute
-   o.__listView     = null;
+   o._listView     = null;
    //..........................................................
    // @event
    //o.onListClick    = RClass.register(o, new HClick('onListClick'), MEditReference_onListClick);
@@ -49,7 +49,7 @@ function MEditReference_onListClick(e){
 //    <L value='false'>不允许</L>
 //==========================================================
 function MEditReference_canListView(){
-   return !RString.isEmpty(this.lovRefer) && this._editable;
+   return !RString.isEmpty(this._lovReference) && this._editable;
 }
 
 //==========================================================
@@ -74,9 +74,9 @@ function MEditReference_setLabelStyle(){
 function MEditReference_doListView(cvs){
    var o = this;
    // 获取关联的选取窗口
-   var v = o.__listView;
+   var v = o._listView;
    if(!v){
-      v = o.__listView = top.RControl.create(top.FListWindow);
+      v = o._listView = top.RControl.create(top.FListWindow);
    }
    // 显示选取窗口
    v.linkConsole = RConsole;

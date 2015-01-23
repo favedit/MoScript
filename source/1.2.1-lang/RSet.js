@@ -7,6 +7,7 @@
 //============================================================
 var RSet = new function RSet(){
    var o = this;
+   //..........................................................
    // @method
    o.contains       = RSet_contains;
    o.containsString = RSet_containsString;

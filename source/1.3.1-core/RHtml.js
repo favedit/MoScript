@@ -34,6 +34,8 @@ var RHtml = new function RHtml(){
    o.clientX        = RHtml_clientX;
    o.clientY        = RHtml_clientY;
    // @method
+   o.setSize        = RHtml_setSize;
+   // @method
    o.toText         = RHtml_toText;
    o.toHtml         = RHtml_toHtml;
    // @method
@@ -355,6 +357,22 @@ function RHtml_clientY(p){
       p = p.offsetParent;
    }
    return r;
+}
+
+//==========================================================
+// <T>设置页面元素大小。</T>
+//
+// @method
+// @param h:html:HtmlTag 页面元素
+// @param s:size:SSize2 大小
+//==========================================================
+function RHtml_setSize(h, s){
+   if(s.width){
+      h.style.width = s.width + 'px';
+   }
+   if(s.height){
+      h.style.height = s.height + 'px';
+   }
 }
 
 //==========================================================

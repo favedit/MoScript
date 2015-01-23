@@ -1,25 +1,25 @@
 //==========================================================
-// <T>显示模式枚举。</T>
+// <T>布局模式枚举。</T>
 //
 // @enum
 // @author maocy
 // @version 150101
 //==========================================================
-var EDisplayMode = new function EDisplayMode(){
+var ELayout = new function ELayout(){
    var o = this;
    // @member 显示
    o.Display = 'P';
    // @member 搜索
-   o.Search = 'S';
+   o.Search  = 'S';
    // @member 设计
-   o.Design = 'G';
+   o.Design  = 'G';
    // @member 新建
    o.Insert  = 'I';
    // @member 修改
-   o.Update = 'U';
+   o.Update  = 'U';
    // @member 删除
-   o.Delete = 'D';
+   o.Delete  = 'D';
    // @member 搜索
-   o.Zoom = 'Z';
+   o.Zoom    = 'Z';
    return o;
 }

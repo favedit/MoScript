@@ -1,20 +1,22 @@
 //==========================================================
-// <T>�ָ����ؼ�</T>
+// <T>分割控件。</T>
 //
-// @class FControl, MDesign, MHorizontal
-// @history 091028 MAOCY ����
+// @class
+// @author maocy
+// @version 150123
 //==========================================================
 function FSplit(o){
-   o = RClass.inherits(this, o, FControl, MDesign, MDisplay, MHorizontal);
+   //o = RClass.inherits(this, o, FControl, MDesign, MDisplay, MHorizontal);
+   o = RClass.inherits(this, o, FControl);
    //..........................................................
    // @property
-   o.dispStyle         = RClass.register(o, new TPtyStr('dispStyle', ESplitStyle.Normal));
-   o.icon              = RClass.register(o, new TPtyStr('icon'));
-   o.editExtend        = RClass.register(o, new TPtyBool('editExtend'), true);
+   o._dispStyle        = RClass.register(o, new APtyString('_dispStyle', ESplitStyle.Normal));
+   o._icon             = RClass.register(o, new APtyString('_icon'));
+   o._editExtend       = RClass.register(o, new APtyBoolean('_editExtend'), true);
    // @style
-   o.stTitle           = RClass.register(o, new TStyle('Title'));
-   o.iconMinus         = 'ctl.collapse_nor';
-   o.iconPlus          = 'ctl.expand_nor';
+   o._styleTitle       = RClass.register(o, new TStyle('Title'));
+   o._iconMinus        = 'ctl.collapse_nor';
+   o._iconPlus         = 'ctl.expand_nor';
    // @attribute
    o.__lines           = null;
    o._esize            = ESize.Horizontal;
@@ -51,7 +53,7 @@ function FSplit(o){
 function FSplit_onSplitMouseEnter(e){
    var o = this;
    if(o.hImage){
-      o.hImage.src = RRes.iconPath(o.extended ? 'ctl.collapse_hvr' : 'ctl.expand_hvr');
+      o.hImage.src = RRes._iconPath(o.extended ? 'ctl.collapse_hvr' : 'ctl.expand_hvr');
    }
 }
 
@@ -64,7 +66,7 @@ function FSplit_onSplitMouseEnter(e){
 function FSplit_onSplitMouseLeave(e){
    var o = this;
    if(o.hImage){
-      o.hImage.src = RRes.iconPath(o.extended ? 'ctl.collapse_nor' : 'ctl.expand_nor');
+      o.hImage.src = RRes._iconPath(o.extended ? 'ctl.collapse_nor' : 'ctl.expand_nor');
    }
 }
 
@@ -76,7 +78,7 @@ function FSplit_onSplitMouseLeave(e){
 //==========================================================
 function FSplit_onMouseDown(){
    var o = this;
-   if(ESplitStyle.Normal == o.dispStyle){
+   if(ESplitStyle.Normal == o._dispStyle){
       o.extend(!o.extended);
    }
 }
@@ -104,7 +106,7 @@ function FSplit_oeBuild(e){
    o.base.FControl.oeBuild.call(o, e);
    o.height = 2;
    // Text
-   if(RString.equals(o.dispStyle, ESplitStyle.Normal)){
+   if(RString.equals(o._dispStyle, ESplitStyle.Normal)){
       var hf = o.hForm;
       var hr = hf.insertRow()
       o.attachEvent('onSplitMouseEnter', hf);
@@ -114,20 +116,20 @@ function FSplit_oeBuild(e){
       hc.width = '100%';
       hc.height = 25;
       hc.style.padding = '0 0';
-      hc.style.background = 'url(' + RRes.iconPath('ctl.FSplit_Panel') + ')';
+      hc.style.background = 'url(' + RRes._iconPath('ctl.FSplit_Panel') + ')';
       RBuilder.appendEmpty(hc, 4);
-      o.hImage = RBuilder.appendIcon(hc, o.iconMinus);
-      if(o.icon){
-         o.hIcon = RBuilder.appendIcon(hc, o.icon);
+      o.hImage = RBuilder.appendIcon(hc, o._iconMinus);
+      if(o._icon){
+         o.hIcon = RBuilder.appendIcon(hc, o._icon);
       }
       o.hText = RBuilder.appendText(hc, '&nbsp;&nbsp;' + o.label);
       o.hText.style.fontWeight='BOLD';
-   }else if(RString.equals(o.dispStyle, ESplitStyle.BulgeLine)){
+   }else if(RString.equals(o._dispStyle, ESplitStyle.BulgeLine)){
       var h = this.hForm.insertRow().insertCell();
       h.style.borderBottom  = '1px solid #666666';
       h.style.borderTop  = '1px solid #DDDDDD';
       h.height = 2;
-   }else if(RString.equals(o.dispStyle, ESplitStyle.HollowLine)){
+   }else if(RString.equals(o._dispStyle, ESplitStyle.HollowLine)){
       var h = this.hForm.insertRow().insertCell();
       h.style.borderBottom  = '1px solid #DDDDDD';
       h.style.borderTop  = '1px solid #666666';
@@ -147,7 +149,7 @@ function FSplit_oeMode(e){
    var o = this;
    var r = o.base.FControl.oeMode.call(o, e);
    o.base.MDisplay.oeMode.call(o, e);
-   o.extend(o.editExtend);
+   o.extend(o._editExtend);
    return r;
 }
 
@@ -180,7 +182,7 @@ function FSplit_extend(v){
    // ����չ��״̬
    o.extended = v;
    if(o.hImage){
-      o.hImage.src = v ? RResource.iconPath(o.iconMinus) : RRes.iconPath(o.iconPlus);
+      o.hImage.src = v ? RResource._iconPath(o._iconMinus) : RRes._iconPath(o._iconPlus);
    }
    // �������еĿɼ���
    var c = o.__lines.count;

@@ -275,6 +275,18 @@ function AStyle(n, s){
    o.style         = AStyle_style;
    o.build         = AStyle_build;
    o.toString      = AStyle_toString;
+   if(s == null){
+      var v = null;
+      if(RString.startsWith(n, '_style')){
+         v = n.substring(6);
+      }else if(RString.startsWith(n, 'style')){
+         v = n.substring(5);
+      }
+      if(v == null){
+         throw new TError('Style name is empty.');
+      }
+      o._style = v;
+   }
    return o;
 }
 function AStyle_code(){
@@ -288,6 +300,43 @@ function AStyle_build(v){
    v[o._name] = null;
 }
 function AStyle_toString(){
+   var o = this;
+   return 'style=' + o._style;
+}
+function AStyleIcon(n, s){
+   var o = this;
+   AAnnotation(o, n);
+   o._annotationCd = EAnnotation.Style;
+   o._style        = s;
+   o.code          = AStyleIcon_code;
+   o.style         = AStyleIcon_style;
+   o.build         = AStyleIcon_build;
+   o.toString      = AStyleIcon_toString;
+   if(s == null){
+      var v = null;
+      if(RString.startsWith(n, '_style')){
+         v = n.substring(6);
+      }else if(RString.startsWith(n, 'style')){
+         v = n.substring(5);
+      }
+      if(v == null){
+         throw new TError('Style name is empty.');
+      }
+      o._style = v;
+   }
+   return o;
+}
+function AStyleIcon_code(){
+   return this._style;
+}
+function AStyleIcon_style(){
+   return this._style;
+}
+function AStyleIcon_build(v){
+   var o = this;
+   v[o._name] = null;
+}
+function AStyleIcon_toString(){
    var o = this;
    return 'style=' + o._style;
 }

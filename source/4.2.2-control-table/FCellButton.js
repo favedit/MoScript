@@ -1,8 +1,9 @@
 //==========================================================
-// <T>单元按键控件类。</T>
+// <T>表格按键单元格。</T>
 //
-// @class FCell
-// @history 090819 MAOCY 创建
+// @class
+// @author maocy
+// @version 150123
 //==========================================================
 function FCellButton(o){
    o = RClass.inherits(this, o, FCell);
@@ -12,12 +13,12 @@ function FCellButton(o){
    o.attributes        = null;
    //..........................................................
    // @event
-   o.onButtonEnter     = RClass.register(o, new HMouseEnter('onButtonEnter'), FCellButton_onButtonEnter);
-   o.onButtonLeave     = RClass.register(o, new HMouseLeave('onButtonLeave'), FCellButton_onButtonLeave);
-   o.onCellLeave       = RClass.register(o, new HMouseLeave('onCellLeave'), FCellButton_onCellLeave);
-   o.onHintEnter       = RClass.register(o, new HMouseEnter('onHintEnter'), FCellButton_onHintEnter);
-   o.onHintLeave       = RClass.register(o, new HMouseLeave('onHintLeave'), FCellButton_onHintLeave);
-   o.onButtonClick     = RClass.register(o, new HClick('onButtonClick'), FCellButton_onButtonClick);
+   o.onButtonEnter     = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FCellButton_onButtonEnter);
+   o.onButtonLeave     = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FCellButton_onButtonLeave);
+   o.onCellLeave       = RClass.register(o, new AEventMouseLeave('onCellLeave'), FCellButton_onCellLeave);
+   o.onHintEnter       = RClass.register(o, new AEventMouseEnter('onHintEnter'), FCellButton_onHintEnter);
+   o.onHintLeave       = RClass.register(o, new AEventMouseLeave('onHintLeave'), FCellButton_onHintLeave);
+   o.onButtonClick     = RClass.register(o, new AEventClick('onButtonClick'), FCellButton_onButtonClick);
    //..........................................................
    // @method
    o.construct         = FCellButton_construct;
@@ -44,11 +45,11 @@ function FCellButton_onButtonEnter(e){
       hs.color = 'black';
       hs.cursor = 'hand';
       if(b.hintBox){
-  		b.hintBox.style.display = "block";
-  	  }
+        b.hintBox.style.display = "block";
+       }
    }
    if (o.hHintPanel) {
-	   o.hHintPanel.style.display = '';
+      o.hHintPanel.style.display = '';
    }
 }
 
@@ -75,19 +76,19 @@ function FCellButton_onHintEnter(e){
 }
 //------------------------------------------------------------
 function FCellButton_onCellLeave(e){
-	var bs = this.buttons;
-	var c = bs.count;
-	for(var n = 0; n<c; n++){
-	   var b = bs.value(n);
-	   if(b.hintBox){
-	      b.hintBox.style.display='none';
-	   }
-	}
+   var bs = this.buttons;
+   var c = bs.count;
+   for(var n = 0; n<c; n++){
+      var b = bs.value(n);
+      if(b.hintBox){
+         b.hintBox.style.display='none';
+      }
+   }
 }
 
 // ------------------------------------------------------------
 function FCellButton_onHintLeave(e){
-	e.hSource.style.backgroundColor = "#ffffff";
+   e.hSource.style.backgroundColor = "#ffffff";
     e.hSource.style.display = "none";
 }
 //==========================================================

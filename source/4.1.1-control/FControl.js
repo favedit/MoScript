@@ -36,12 +36,13 @@ function FControl(o){
    //o._styleDesignMove  = RClass.register(o, new AStyle('DesignMove'));
    //..........................................................
    // @attribute
-   //o._displayCd   = EDisplayMode.Update;
+   o._layoutCd      = ELayout.Display;
+   o._sizeCd        = ESize.Normal;
+   o._controls      = null;
+   // @attribute
    o._statusVisible = true;
    o._statusEnable  = true;
    o._statusBuild   = false;
-   o._controls      = null;
-   //o._sizeCd      = ESize.Normal;
    //o._events      = null;
    //o._storage     = null;
    //..........................................................
@@ -154,15 +155,15 @@ function FControl_onBuildPanel(e){
 // <T>建立当前控件的显示框架。</T>
 //
 // @method
-// @param e:event:TEventProcess 事件处理
+// @param p:event:TEventProcess 事件处理
 // @return EEventStatus 处理状态
 //==========================================================
-function FControl_oeBuild(e){
+function FControl_oeBuild(p){
    var o = this;
    // 事件前处理
-   if(e.isBefore()){
+   if(p.isBefore()){
       // 建立控件容器
-      o.onBuildPanel(e);
+      o.onBuildPanel(p);
       // 设置容器样式
       var h = o._hPanel;
       RHtml.linkSet(h, 'control', o);

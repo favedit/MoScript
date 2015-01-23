@@ -8,6 +8,15 @@ function FContainer(o){
    o = RClass.inherits(this, o, FControl, MContainer);
    //..........................................................
    // @process
+   o.oeBuild     = FContainer_oeBuild
+   //..........................................................
+   // @method
+   o.createChild = FContainer_createChild;
+
+
+
+   //..........................................................
+   // @process
    o.oeDesign            = RMethod.empty;
    //..........................................................
    // @method
@@ -18,6 +27,53 @@ function FContainer(o){
    o.setChildrenProperty = FContainer_setChildrenProperty;
    return o;
 }
+
+//==========================================================
+// <T>建立当前控件的显示框架。</T>
+//
+// @method
+// @param p:event:TEventProcess 事件处理
+// @return EEventStatus 处理状态
+//==========================================================
+function FContainer_oeBuild(p){
+   var o = this;
+   o.__base.FControl.oeBuild.call(o, p)
+   // 事件前处理
+   if(p.isAfter()){
+      // 追加
+      var cs = o._components;
+      if(cs){
+         var c = cs.count();
+         for(var i = 0; i < c; i++){
+            o.appendChild(cs.value(i));
+         }
+      }
+   }
+   return EEventStatus.Continue;
+}
+
+//==========================================================
+// <T>创建子节点。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+// @return FControl 控件
+//==========================================================
+function FContainer_createChild(p){
+   var c = RControl.newInstance(p.name());
+   c._parent = this;
+   return c;
+}
+
+
+
+
+
+
+
+
+
+
 
 //==========================================================
 // <T>根据底板类型得到相应的页面元素。</T>

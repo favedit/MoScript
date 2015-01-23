@@ -1,28 +1,39 @@
 //==========================================================
-// <T>表单单选框控件。</T>
+// <T>单选框控件。</T>
 //
-// @calss FEditControl
-// @history 091110 MAOCY 创建
+// @class
+// @author maocy
+// @version 150123
 //==========================================================
 function FRadio(o){
    o = RClass.inherits(this, o, FEditControl);
    //..........................................................
-   // @attribute
-   o.groupName    = RClass.register(o, new TPtyStr('groupName'));
-   o.editChecked  = RClass.register(o, new TPtyBool('editChecked', false));
+   // @property
+   o._groupName         = RClass.register(o, new APtyString('_groupName'));
+   //..........................................................
+   // @style
+   o._styleInput        = RClass.register(o, new AStyle('_styleInput', 'Input'));
+   //..........................................................
+   // @html
+   o._hInput            = null;
    //..........................................................
    // @event
-   o.onClick      = RMethod.emptyCall;
-   o.onDataClick  = RMethod.emptyCall;
-   o.onBuildEdit  = FRadio_onBuildEdit;
+   o.onBuildEditorValue = FRadio_onBuildEditorValue;
+   //..........................................................
+   // @attribute
+   //o._editChecked = RClass.register(o, new APtyBoolean('_editChecked'), false);
+   //..........................................................
+   // @event
+   //o.onClick      = RMethod.emptyCall;
+   //o.onDataClick  = RMethod.emptyCall;
    //..........................................................
    // @method
-   o.clearValue   = FRadio_clearValue;
-   o.resetValue   = FRadio_resetValue;
-   o.saveValue    = FRadio_saveValue;
-   o.text         = FRadio_text;
-   o.setText      = FRadio_setText;
-   o.refreshStyle = FRadio_refreshStyle;
+   //o.clearValue   = FRadio_clearValue;
+   //o.resetValue   = FRadio_resetValue;
+   //o.saveValue    = FRadio_saveValue;
+   //o.text         = FRadio_text;
+   //o.setText      = FRadio_setText;
+   //o.refreshStyle = FRadio_refreshStyle;
    return o;
 }
 
@@ -32,12 +43,19 @@ function FRadio(o){
 // @method
 // @param h:hPanel:<HTML> 页面容器
 //==========================================================
-function FRadio_onBuildEdit(h){
+function FRadio_onBuildEditorValue(p){
    var o = this;
-   var he = o.hEdit = RBuilder.append(h, '<INPUT type=radio name=' + o.dataName + '>');
-   he.style.border = 0;
-   he.style.cursor = 'hand';
+   // 建立编辑控件
+   o._hInput = RBuilder.appendRadio(o._hValuePanel, o.styleName('Input'));
 }
+
+
+
+
+
+
+
+
 
 //==========================================================
 // <T>清除数据内容。</T>
@@ -54,7 +72,7 @@ function FRadio_clearValue(){
 // @method
 //==========================================================
 function FRadio_resetValue(){
-   this.hEdit.checked = this.editChecked;
+   this.hEdit.checked = this._editChecked;
 }
 
 //==========================================================

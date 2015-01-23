@@ -1,21 +1,18 @@
 //==========================================================
-// <T>×´Ì¬ï¿½ï¿½Ôªï¿½ï¿½</T>
+// <T>±í¸ñ×´Ì¬µ¥Ôª¸ñ¡£</T>
 //
-// hPanel<TD>
-// ï¿½ï¿½------------------------------------------------------ï¿½ï¿½
-// ï¿½ï¿½ hStatus<IMG>                                         ï¿½ï¿½
-// ï¿½ï¿½------------------------------------------------------ï¿½ï¿½
-//
-// @class FCellEditControl
+// @class
+// @author maocy
+// @version 150123
 //==========================================================
 function FCellStatus(o){
    o = RClass.inherits(this, o, FCellEditControl);
    //..........................................................
    // @property
-   o.dataName      = '_status';
+   o._dataName      = '_status';
    //..........................................................
    // @html
-   o.hStatus       = null;
+   o._hStatus       = null;
    //..........................................................
    // @event
    //o.onStatusEnter = RClass.register(o, new HMouseEnter('onStatusEnter'), FCellStatus_onStatusEnter);
@@ -57,10 +54,10 @@ function FCellStatus_buildForm(){
    hp.style.cursor='normal';
    c.linkEvent(o, 'onCellClick', hp, c.onCellClick);
    // ï¿½ï¿½ï¿½ï¿½×´Ì¬Í¼ï¿½ï¿½
-   o.hStatus = RBuilder.appendIcon(hp, o.column.styleIcon(c.table.isFormLinked() ? 'Normal' : 'Normal'));
+   o._hStatus = RBuilder.appendIcon(hp, o.column.styleIcon(c.table.isFormLinked() ? 'Normal' : 'Normal'));
    // ï¿½ï¿½ï¿½ï¿½ï¿½Ð¹ï¿½ï¿½ï¿½ï¿½ï¿½
    if(c.table.dispRowbar){
-      //o.attachEvent('onStatusEnter', o.hStatus);
+      //o.attachEvent('onStatusEnter', o._hStatus);
    }
 }
 
@@ -71,7 +68,7 @@ function FCellStatus_buildForm(){
 // @param s:statusIcon:String Í¼ï¿½ï¿½
 //==========================================================
 function FCellStatus_setIcon(s){
-   this.hStatus.src = s;
+   this._hStatus.src = s;
 }
 
 //==========================================================
@@ -100,5 +97,5 @@ function FCellStatus_refreshStyle(){
 function FCellStatus_dispose(){
    var o = this;
    o.base.FCellEditControl.dispose.call(o);
-   o.hStatus = null;
+   o._hStatus = null;
 }

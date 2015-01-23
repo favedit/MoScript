@@ -5,46 +5,47 @@
 // @history 091106 MAOCY 创建
 //==========================================================
 function FNumber(o){
-   o = RClass.inherits(this, o, FEditControl, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel);
+   //o = RClass.inherits(this, o, FEditControl, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel);
+   o = RClass.inherits(this, o, FEditControl);
    //..........................................................
    // @property
-   o.editAlign         = EAlign.Right;
+   //o.editAlign         = EAlign.Right;
    //..........................................................
    // @attribute
-   o.borderStyle       = EBorder.RoundDrop;
+   //o.borderStyle       = EBorder.RoundDrop;
    //..........................................................
    // @event
-   o.onEditFocus       = RClass.register(o, new HFocus('onEditFocus'), FNumber_onEditFocus);
-   o.onEditBlur        = RClass.register(o, new HBlur('onEditBlur'), FNumber_onEditBlur);
-   o.onEditKeyPress    = RClass.register(o, new HKeyPress('onEditKeyPress'), FNumber_onEditKeyPress);
-   o.onBuildEdit       = FNumber_onBuildEdit;
+   //o.onEditFocus       = RClass.register(o, new HFocus('onEditFocus'), FNumber_onEditFocus);
+   //o.onEditBlur        = RClass.register(o, new HBlur('onEditBlur'), FNumber_onEditBlur);
+   //o.onEditKeyPress    = RClass.register(o, new HKeyPress('onEditKeyPress'), FNumber_onEditKeyPress);
+   //o.onBuildEdit       = FNumber_onBuildEdit;
    //..........................................................
    // @method
-   o.formatValue       = MDescNumber_formatValue;
-   o.formatText        = MDescNumber_formatText;
-   o.onMouseWheel      = MDescNumber_onMouseWheel;
-   o.onDataKeyDown     = FNumber_onDataKeyDown;
-   o.ohEditKeyUp       = FNumber_ohEditKeyUp;
+   //o.formatValue       = MDescNumber_formatValue;
+   //o.formatText        = MDescNumber_formatText;
+   //o.onMouseWheel      = MDescNumber_onMouseWheel;
+   //o.onDataKeyDown     = FNumber_onDataKeyDown;
+   //o.ohEditKeyUp       = FNumber_ohEditKeyUp;
    // 创建HTML标签的函数
    // 相应按键弹起事件
-   o.onEditKeyUp       = FNumber_onEditKeyUp;
+   //o.onEditKeyUp       = FNumber_onEditKeyUp;
    // 相应双击事件 用来做lov用
-   o.onEditDoubleClick = FNumber_onEditDoubleClick;
+   //o.onEditDoubleClick = FNumber_onEditDoubleClick;
    // 相应鼠标滑动事件
    //..........................................................
    // @method
    // 检查是否符合要求
    // 模式是否符合
-   o.validPattern      = FNumber_validPattern;
+   //o.validPattern      = FNumber_validPattern;
    // 设置显示格式
-   o.refreshStyle      = FNumber_refreshStyle;
+   //o.refreshStyle      = FNumber_refreshStyle;
    // 用分割符分割数据
-   o.splitValue        = FNumber_splitValue;
+   //o.splitValue        = FNumber_splitValue;
    // 去掉分隔符
-   o.removeSplit       = FNumber_removeSplit;
-   o.precisionValue    = FNumber_precisionValue;
-   o.dispose           = FNumber_dispose;
-   o.setUnitIcon       = FNumber_setUnitIcon;
+   //o.removeSplit       = FNumber_removeSplit;
+   //o.precisionValue    = FNumber_precisionValue;
+   //o.dispose           = FNumber_dispose;
+   //o.setUnitIcon       = FNumber_setUnitIcon;
    return o;
 }
 

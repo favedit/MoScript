@@ -1,11 +1,11 @@
-/**************************************************************
- * 颜色样式
- *
- * @enum
- * @author maochunyang
- * @version 1.0.1
- **************************************************************/
-function EColorFace(){
+//==========================================================
+// <T>颜色样式。</T>
+//
+// @reference
+// @author maocy
+// @version 150123
+//==========================================================
+var EColor = new function EColor(){
    var o = this;
    // Attribute
    o.Normal        = '#FFFFFF';
@@ -75,4 +75,3 @@ function EColorFace(){
       ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
    return o;
 }
-var EColor = new EColorFace();

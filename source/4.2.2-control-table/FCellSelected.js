@@ -1,14 +1,16 @@
 //==========================================================
-// <T>״行选择列</T>
+// <T>表格选择单元格。</T>
 //
-// @class FCellEditControl
+// @class
+// @author maocy
+// @version 150123
 //==========================================================
 function FCellSelected(o){
    o = RClass.inherits(this, o, FCellEditControl);
    // @property
-   o.dataName      = '_select';
+   o._dataName      = '_select';
    // @html
-   o.hSelected       = null;
+   o._hSelected       = null;
    // @method
    o.buildForm     = FCellSelected_buildForm;
    o.onSelected    = FCellSelected_onSelected;
@@ -31,9 +33,9 @@ function FCellSelected_buildForm(){
    var c = o.column;
    var hp = o.hPanel;
    hp.align = 'center';
-   o.hSelected = RBuilder.appendCheck(hp, o.style('Edit'));
-   o.hSelected.parent = o;
-   o.hSelected.onclick = o.onSelected;
+   o._hSelected = RBuilder.appendCheck(hp, o.styleName('Edit'));
+   o._hSelected.parent = o;
+   o._hSelected.onclick = o.onSelected;
 }
 
 //==========================================================
@@ -47,16 +49,16 @@ function FCellSelected_refreshStyle(){
    var t = r.table;
    var p = null;
    if(t.dispSelected){
-	   o.hPanel.style.display = 'block';
-	   if(r.isSelect){
-	      o.hSelected.checked = true;
-	      o.hPanel.style.backgroundColor = '#CEE7FF';
-	   }else{
-		   o.hSelected.checked = false;
-		   o.hPanel.style.backgroundColor = '#FFFFFF';
-	   }
+      o.hPanel.style.display = 'block';
+      if(r.isSelect){
+         o._hSelected.checked = true;
+         o.hPanel.style.backgroundColor = '#CEE7FF';
+      }else{
+         o._hSelected.checked = false;
+         o.hPanel.style.backgroundColor = '#FFFFFF';
+      }
    }else{
-	   o.hPanel.style.display = 'none';
+      o.hPanel.style.display = 'none';
    }
 }
 
@@ -71,7 +73,7 @@ function FCellSelected_onSelected(){
    if(this.checked){
       t.selectRow(r, false, true);
    }else{
-	  t.clearSelectRow(r);
+     t.clearSelectRow(r);
    }
 }
 
@@ -83,5 +85,5 @@ function FCellSelected_onSelected(){
 function FCellSelected_dispose(){
    var o = this;
    o.base.FCellEditControl.dispose.call(o);
-   o.hSelected = null;
+   o._hSelected = null;
 }

@@ -1774,6 +1774,18 @@ function AStyle(n, s){
    o.style         = AStyle_style;
    o.build         = AStyle_build;
    o.toString      = AStyle_toString;
+   if(s == null){
+      var v = null;
+      if(RString.startsWith(n, '_style')){
+         v = n.substring(6);
+      }else if(RString.startsWith(n, 'style')){
+         v = n.substring(5);
+      }
+      if(v == null){
+         throw new TError('Style name is empty.');
+      }
+      o._style = v;
+   }
    return o;
 }
 function AStyle_code(){
@@ -1787,6 +1799,43 @@ function AStyle_build(v){
    v[o._name] = null;
 }
 function AStyle_toString(){
+   var o = this;
+   return 'style=' + o._style;
+}
+function AStyleIcon(n, s){
+   var o = this;
+   AAnnotation(o, n);
+   o._annotationCd = EAnnotation.Style;
+   o._style        = s;
+   o.code          = AStyleIcon_code;
+   o.style         = AStyleIcon_style;
+   o.build         = AStyleIcon_build;
+   o.toString      = AStyleIcon_toString;
+   if(s == null){
+      var v = null;
+      if(RString.startsWith(n, '_style')){
+         v = n.substring(6);
+      }else if(RString.startsWith(n, 'style')){
+         v = n.substring(5);
+      }
+      if(v == null){
+         throw new TError('Style name is empty.');
+      }
+      o._style = v;
+   }
+   return o;
+}
+function AStyleIcon_code(){
+   return this._style;
+}
+function AStyleIcon_style(){
+   return this._style;
+}
+function AStyleIcon_build(v){
+   var o = this;
+   v[o._name] = null;
+}
+function AStyleIcon_toString(){
    var o = this;
    return 'style=' + o._style;
 }
@@ -8050,10 +8099,12 @@ function FXmlConnection_onConnectionComplete(){
    e.root = r;
    o.lsnsLoad.process(e);
    e.dispose();
-   o._input = null;
-   o._inputNode = null;
-   o._output = null;
-   o._outputNode = null;
+   if(o._asynchronous){
+      o._input = null;
+      o._inputNode = null;
+      o._output = null;
+      o._outputNode = null;
+   }
 }
 function FXmlConnection_content(){
    return this._outputNode;
@@ -8514,36 +8565,45 @@ function RBrowser_log(p){
 }
 var RBuilder = new function RBuilder(){
    var o = this;
-   o.create            = RBuilder_create;
-   o.createIcon        = RBuilder_createIcon;
-   o.createImage       = RBuilder_createImage;
-   o.createText        = RBuilder_createText;
-   o.createCheck       = RBuilder_createCheck;
-   o.createRadio       = RBuilder_createRadio;
-   o.createEdit        = RBuilder_createEdit;
-   o.createSpan        = RBuilder_createSpan;
-   o.createDiv         = RBuilder_createDiv;
-   o.createTable       = RBuilder_createTable;
-   o.createTableRow    = RBuilder_createTableRow;
-   o.createTableCell   = RBuilder_createTableCell;
-   o.createFragment    = RBuilder_createFragment;
-   o.append            = RBuilder_append;
-   o.appendIcon        = RBuilder_appendIcon;
-   o.appendImage       = RBuilder_appendImage;
-   o.appendEmpty       = RBuilder_appendEmpty;
-   o.appendText        = RBuilder_appendText;
-   o.appendCheck       = RBuilder_appendCheck;
-   o.appendRadio       = RBuilder_appendRadio;
-   o.appendEdit        = RBuilder_appendEdit;
-   o.appendSpan        = RBuilder_appendSpan;
-   o.appendDiv         = RBuilder_appendDiv;
-   o.appendTable       = RBuilder_appendTable;
-   o.appendTableRow    = RBuilder_appendTableRow;
-   o.appendTableCell   = RBuilder_appendTableCell;
+   o.create             = RBuilder_create;
+   o.createIcon         = RBuilder_createIcon;
+   o.createImage        = RBuilder_createImage;
+   o.createText         = RBuilder_createText;
+   o.createCheck        = RBuilder_createCheck;
+   o.createRadio        = RBuilder_createRadio;
+   o.createEdit         = RBuilder_createEdit;
+   o.createSpan         = RBuilder_createSpan;
+   o.createDiv          = RBuilder_createDiv;
+   o.createTable        = RBuilder_createTable;
+   o.createTableRow     = RBuilder_createTableRow;
+   o.createTableCell    = RBuilder_createTableCell;
+   o.createFragment     = RBuilder_createFragment;
+   o.append             = RBuilder_append;
+   o.appendIcon         = RBuilder_appendIcon;
+   o.appendImage        = RBuilder_appendImage;
+   o.appendEmpty        = RBuilder_appendEmpty;
+   o.appendText         = RBuilder_appendText;
+   o.appendCheck        = RBuilder_appendCheck;
+   o.appendRadio        = RBuilder_appendRadio;
+   o.appendEdit         = RBuilder_appendEdit;
+   o.appendSpan         = RBuilder_appendSpan;
+   o.appendDiv          = RBuilder_appendDiv;
+   o.appendTable        = RBuilder_appendTable;
+   o.appendTableRow     = RBuilder_appendTableRow;
+   o.appendTableRowCell = RBuilder_appendTableRowCell;
+   o.appendTableCell    = RBuilder_appendTableCell;
    return o;
 }
-function RBuilder_create(d, t, s){
+function RBuilder_create(h, t, s){
    var o = this;
+   var d = null;
+   if(h.ownerDocument){
+      d = h.ownerDocument;
+   }else if(h.hDocument){
+      d = h.hDocument;
+   }else{
+      d = h;
+   }
    var h = d.createElement(t);
    if(s){
       h.className = s;
@@ -8579,7 +8639,9 @@ function RBuilder_createImage(d, s, u, w, h){
 }
 function RBuilder_createText(d, s, v){
    var r = this.create(d, 'SPAN', s);
-   r.innerHTML = v;
+   if(v){
+      r.innerHTML = v;
+   }
    return r;
 }
 function RBuilder_createCheck(d, s){
@@ -8641,7 +8703,7 @@ function RBuilder_appendImage(p, s, u, w, h){
    return r;
 }
 function RBuilder_appendEmpty(p, w, h){
-   var r = this.createIcon(p.ownerDocument, 'n', null, w, h);
+   var r = this.createIcon(p.ownerDocument, null, 'n', w, h);
    p.appendChild(r);
    return r;
 }
@@ -8702,6 +8764,12 @@ function RBuilder_appendTableRow(p, s, i, h){
       r.height = h;
    }
    return r;
+}
+function RBuilder_appendTableRowCell(p, s, w, h){
+   var o = this;
+   var hr = o.appendTableRow(p, null, null, w);
+   var hc = o.appendTableCell(hr, s, null, h);
+   return hc;
 }
 function RBuilder_appendTableCell(p, s, i, w){
    var r = null;
@@ -9032,6 +9100,7 @@ var RHtml = new function RHtml(){
    o.clientPosition = RHtml_clientPosition;
    o.clientX        = RHtml_clientX;
    o.clientY        = RHtml_clientY;
+   o.setSize        = RHtml_setSize;
    o.toText         = RHtml_toText;
    o.toHtml         = RHtml_toHtml;
    o.eventSource    = RHtml_eventSource;
@@ -9203,6 +9272,14 @@ function RHtml_clientY(p){
       p = p.offsetParent;
    }
    return r;
+}
+function RHtml_setSize(h, s){
+   if(s.width){
+      h.style.width = s.width + 'px';
+   }
+   if(s.height){
+      h.style.height = s.height + 'px';
+   }
 }
 function RHtml_toText(p){
    if(p != null){

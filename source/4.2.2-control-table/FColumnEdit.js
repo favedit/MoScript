@@ -1,20 +1,24 @@
 //==========================================================
-// FColumnEdit
+// <T>表格编辑列。</T>
+//
+// @class
+// @author maocy
+// @version 150123
 //==========================================================
 function FColumnEdit(o){
-   o = RClass.inherits(this, o, FColumnEditControl, MDescEdit);
+   o = RClass.inherits(this, o, FColumnEditControl, MPropertyEdit);
    //..........................................................
    // @attribute
-   o.__cellClass    = FCellEdit;
+   o._cellClass     = FCellEdit;
    o.hasDropArea    = true;
    //..........................................................
    // @event
    o.onCellMouseEnter = FColumnEdit_onCellMouseEnter;
    o.onCellMouseLeave = FColumnEdit_onCellMouseLeave;
    o.onListClick      = FColumnEdit_onListClick;
-   o.onZoomClick      = RClass.register(o, new HClick('onZoomClick'), FColumnEdit_onZoomClick);
-   o.onZoomHover      = RClass.register(o, new HMouseEnter('onZoomHover'), FColumnEdit_onZoomHover);
-   o.onZoomLeave      = RClass.register(o, new HMouseLeave('onZoomLeave'), FColumnEdit_onZoomLeave);
+   o.onZoomClick      = RClass.register(o, new AEventClick('onZoomClick'), FColumnEdit_onZoomClick);
+   o.onZoomHover      = RClass.register(o, new AEventMouseEnter('onZoomHover'), FColumnEdit_onZoomHover);
+   o.onZoomLeave      = RClass.register(o, new AEventMouseLeave('onZoomLeave'), FColumnEdit_onZoomLeave);
 
    return o;
 }

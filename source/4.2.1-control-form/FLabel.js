@@ -1,8 +1,9 @@
 //==========================================================
 // <T>文本控件。</T>
 //
-// @class FEditControl
-// @history 091111 MAOCY 创建
+// @class
+// @author maocy
+// @version 150123
 //==========================================================
 function FLabel(o){
    o = RClass.inherits(this, o, FEditControl);
@@ -24,10 +25,10 @@ function FLabel(o){
 //==========================================================
 function FLabel_onBuildEdit(){
    var o = this;
-   o.hEdit = o.hEditCell;
-   if(o.dataDefault){
-      o.hEdit.innerHTML = RString.nvl(o.dataDefault);
-   }
+   //o.hEdit = o.hEditCell;
+   //if(o.dataDefault){
+   //   o.hEdit.innerHTML = RString.nvl(o.dataDefault);
+   //}
 }
 
 //==========================================================
@@ -37,7 +38,7 @@ function FLabel_onBuildEdit(){
 // @return String 文本内容
 //==========================================================
 function FLabel_text(){
-   return this.hEdit.innerText;
+   //return this.hEdit.innerText;
 }
 
 //==========================================================
@@ -47,5 +48,5 @@ function FLabel_text(){
 // @param t:text:String 文本内容
 //==========================================================
 function FLabel_setText(t){
-   this.hEdit.innerHTML = RString.nvl(t);
+   //this.hEdit.innerHTML = RString.nvl(t);
 }

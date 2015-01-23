@@ -1,9 +1,11 @@
 //==========================================================
-// <T>横向部署控件。</T>
+// <T>纵向部署控件。</T>
 //
-// @manager
+// @class
+// @author maocy
+// @version 150123
 //==========================================================
-function MHorizontal(o){
+function MVertical(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @method
@@ -15,13 +17,13 @@ function MHorizontal(o){
 // <T>设置控件的隐藏和显示。</T>
 //
 // @method
-// @param v:visible:Boolean 是否可见
+// @param p:visible:Boolean 是否可见
 //==========================================================
-function MHorizontal_setVisible(v){
+function MHorizontal_setVisible(p){
    var o = this;
    // 布局行
-   var hl = o.hPanelLine;
-   if(hl){
-      //hl.style.display = v ? 'inline' : 'none';
+   var h = o.hPanelLine;
+   if(h){
+      RHtml.displaySet(h, p);
    }
 }

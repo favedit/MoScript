@@ -1,33 +1,42 @@
 //==========================================================
 // <T>复选框。</T>
 //
-// @class FEditControl, MDescCheck
-// @history 091020 MAOCY 创建
+// @class
+// @author maocy
+// @version 150123
 //==========================================================
 function FCheck(o){
-   o = RClass.inherits(this, o, FEditControl, MDescCheck);
+   //o = RClass.inherits(this, o, FEditControl, MDescCheck);
+   o = RClass.inherits(this, o, FEditControl);
    //..........................................................
-   // @attribute
-   o.__recordValue = EBoolean.False;
-   o.borderStyle   = EBorder.None;
+   // @style
+   o._styleInput        = RClass.register(o, new AStyle('_styleInput', 'Input'));
+   //..........................................................
+   // @html
+   o._hInput            = null;
    //..........................................................
    // @event
-   o.onClick       = RMethod.emptyCall;
-   o.onDataClick   = RMethod.emptyCall;
-   o.onBuildEdit   = FCheck_onBuildEdit;
+   o.onBuildEditorValue = FCheck_onBuildEditorValue;
+
+   //..........................................................
+   // @attribute
+   //o._recordValue = EBoolean.False;
+   //o.borderStyle   = EBorder.None;
+   //o.onClick       = RMethod.emptyCall;
+   //o.onDataClick   = RMethod.emptyCall;
    //..........................................................
    // @method
-   o.oeSaveValue   = FCheck_oeSaveValue;
+   //o.oeSaveValue   = FCheck_oeSaveValue;
    //..........................................................
    // @method
    //o.isDataChanged = RMethod.emptyTrue;
-   o.testFocus     = RMethod.emptyFalse;
-   o.clearValue    = MDescCheck_clearValue;
-   o.resetValue    = MDescCheck_resetValue;
-   o.text          = MDescCheck_text;
-   o.setText       = MDescCheck_setText
-   o.validText     = RMethod.empty;
-   o.refreshStyle  = FCheck_refreshStyle;
+   //o.testFocus     = RMethod.emptyFalse;
+   //o.clearValue    = MDescCheck_clearValue;
+   //o.resetValue    = MDescCheck_resetValue;
+   //o.text          = MDescCheck_text;
+   //o.setText       = MDescCheck_setText
+   //o.validText     = RMethod.empty;
+   //o.refreshStyle  = FCheck_refreshStyle;
    return o;
 }
 
@@ -37,12 +46,15 @@ function FCheck(o){
 // @method
 // @param h:panel:<HTML> 底板对象
 //==========================================================
-function FCheck_onBuildEdit(h){
+function FCheck_onBuildEditorValue(p){
    var o = this;
    // 建立编辑控件
-   var he = o.hEdit = RBuilder.appendCheck(h, o.style('Edit'));
-   he.style.cursor = 'hand';
+   o._hInput = RBuilder.appendCheck(o._hValuePanel, o.styleName('Input'));
 }
+
+
+
+
 
 //==========================================================
 // <T>存储内容。</T>

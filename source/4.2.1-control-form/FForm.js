@@ -7,24 +7,34 @@
 //==========================================================
 function FForm(o){
    //o = RClass.inherits(this, o, FLayout, MForm, MDisplayAble, MValue, MAction);
-   o = RClass.inherits(this, o, FLayout, MFocus, MDataset);
+   //o = RClass.inherits(this, o, FLayout, MFocus, MDataset);
+   //o = RClass.inherits(this, o, FLayout, MDataset);
+   o = RClass.inherits(this, o, FLayout);
    //..........................................................
-   o.__status           = ERowStatus.Update;
-   o.__clearEvent       = null;
-   o.__resetEvent       = null;
-   o.__loadEvent        = null;
-   o.__saveEvent        = null;
-   o.__recordEvent      = null;
-   o.__codeEvent        = null;
+   // @event
+   o.onMouseDown        = FForm_onMouseDown;
+
+
+
+
+
+   //..........................................................
+   // @attribute
+   o._dataStatusCd      = ERowStatus.Update;
+   o._clearEvent        = null;
+   o._resetEvent        = null;
+   o._loadEvent         = null;
+   o._saveEvent         = null;
+   o._recordEvent       = null;
+   o._codeEvent         = null;
    /// @attribute TMap<String, FComponent> 按照数据名称存储的数据组件集合
-   o.__dataComponents   = null;
+   o._dataComponents    = null;
    //..........................................................
    // Listener
    o.lsnsLoaded         = null;
    o.lsnsClick          = null;
    //..........................................................
    // @event
-   o.onMouseDown        = FForm_onMouseDown;
    o.onLoadDataset      = FForm_onLoadDataset;
    o.onLoadDatasetEnd   = FForm_onLoadDatasetEnd;
    //..........................................................
@@ -59,24 +69,24 @@ function FForm(o){
 
 
    /// @attribute TMap<String, FComponent> 按照控件名称存储的数据组件集合
-   o._nameComponents    = null;
+   //o._nameComponents    = null;
    //----------------------------------------------------------
    // Method
-   o.allNameComponents  = FForm_allNameComponents;
+   //o.allNameComponents  = FForm_allNameComponents;
    // Attribute
-   o.isLoading          = false;
+   //o.isLoading          = false;
    // Event
-   o.onLoaded           = FForm_onLoaded;
-   o.onDsFetchEnd       = FForm_onDsFetchEnd;
-   o.onDsUpdateBegin    = FForm_onDsUpdateBegin;
-   o.onDsUpdateEnd      = FForm_onDsUpdateEnd;
-   o.onLoadValue        = RMethod.empty;
-   o.onSaveValue        = RMethod.empty;
-   o.connect            = FForm_connect;
-   o.loadDocument       = FForm_loadDocument;
-   o.testStatus         = FForm_testStatus;
-   o.hasAction          = FForm_hasAction;
-   o.setEditable        = FForm_setEditable;
+   //o.onLoaded           = FForm_onLoaded;
+   //o.onDsFetchEnd       = FForm_onDsFetchEnd;
+   //o.onDsUpdateBegin    = FForm_onDsUpdateBegin;
+   //o.onDsUpdateEnd      = FForm_onDsUpdateEnd;
+   //o.onLoadValue        = RMethod.empty;
+   //o.onSaveValue        = RMethod.empty;
+   //o.connect            = FForm_connect;
+   //o.loadDocument       = FForm_loadDocument;
+   //o.testStatus         = FForm_testStatus;
+   //o.hasAction          = FForm_hasAction;
+   //o.setEditable        = FForm_setEditable;
    return o;
 }
 
@@ -84,17 +94,31 @@ function FForm(o){
 // <T>处理鼠标按下事件。</T>
 //
 // @method
-// @param e:event:TEvent 按键事件
+// @param p:event:SEvent 事件信息
 //==========================================================
-function FForm_onMouseDown(e, he){
+function FForm_onMouseDown(p){
    var o = this;
-   var fc = RConsole.find(FFocusConsole);
-   fc.focusClass(MDataset, o);
-   fc.focusHtml(he);
-   if(!RConsole.find(FDesignConsole).isDesign()){
-      he.cancelBubble = true;
-   }
+   //var fc = RConsole.find(FFocusConsole);
+   //fc.focusClass(MDataset, o);
+   //fc.focusHtml(he);
+   //if(!RConsole.find(FDesignConsole).isDesign()){
+   //   he.cancelBubble = true;
+   //}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //==========================================================
 // <T>加载数据集数据到自己内部。</T>
@@ -125,19 +149,19 @@ function FForm_onLoadDatasetEnd(){
 //==========================================================
 function FForm_construct(){
    var o = this;
-   o.__base.FLayout.construct.call(o);
-   o.__base.MDataset.construct.call(o);
+   //o.__base.FLayout.construct.call(o);
+   //o.__base.MDataset.construct.call(o);
    // 建立监听器
-   o.lsnsLoaded = new TListeners();
-   o.lsnsClick = new TListeners();
+   //o.lsnsLoaded = new TListeners();
+   //o.lsnsClick = new TListeners();
    // 建立处理器
-   o.__clearEvent = new TEventProcess(o, 'oeClearValue', MEditValue);
-   o.__resetEvent = new TEventProcess(o, 'oeResetValue', MEditValue);
-   o.__loadEvent = new TEventProcess(o, 'oeLoadValue', MEditValue);
-   o.__saveEvent = new TEventProcess(o, 'oeSaveValue', MEditValue);
-   o.__recordEvent = new TEventProcess(o, 'oeRecordValue', MEditValue);
-   o.__codeEvent = new TEventProcess(o, 'oeSaveCode', MEditDescriptor);
-   o.__dataComponents = new TMap();
+   //o._clearEvent = new TEventProcess(o, 'oeClearValue', MEditValue);
+   //o._resetEvent = new TEventProcess(o, 'oeResetValue', MEditValue);
+   //o._loadEvent = new TEventProcess(o, 'oeLoadValue', MEditValue);
+   //o._saveEvent = new TEventProcess(o, 'oeSaveValue', MEditValue);
+   //o._recordEvent = new TEventProcess(o, 'oeRecordValue', MEditValue);
+   //o._codeEvent = new TEventProcess(o, 'oeSaveCode', MEditDescriptor);
+   //o._dataComponents = new TMap();
 }
 
 //==========================================================
@@ -192,7 +216,7 @@ function FForm_allDataComponents(p, m){
       p = o;
    }
    if(!m){
-      m = o.__dataComponents;
+      m = o._dataComponents;
    }
    // 递归处理所有子对象
    var cs = p.components;
@@ -270,7 +294,7 @@ function FForm_set(n, v){
 //==========================================================
 function FForm_getDataCodes(){
    var o = this;
-   var e = o.__codeEvent;
+   var e = o._codeEvent;
    e.values = new TAttributes();
    o.process(e);
    return e.values;
@@ -351,7 +375,7 @@ function FForm_getRows(){
 // @event
 //==========================================================
 function FForm_clearValue(){
-   this.process(this.__clearEvent);
+   this.process(this._clearEvent);
 }
 
 //==========================================================
@@ -360,7 +384,7 @@ function FForm_clearValue(){
 // @event
 //==========================================================
 function FForm_resetValue(){
-   this.process(this.__resetEvent);
+   this.process(this._resetEvent);
 }
 
 //==========================================================
@@ -373,7 +397,7 @@ function FForm_resetValue(){
 function FForm_loadValue(r, m){
    if(r){
       var o = this;
-      var e = o.__loadEvent;
+      var e = o._loadEvent;
       e.viewer = o.dsViewer;
       e.store = m;
       e.values = r;
@@ -394,13 +418,13 @@ function FForm_saveValue(r, m){
       r = new TRow();
    }
    // 存储数据内容
-   var e = o.__saveEvent;
+   var e = o._saveEvent;
    e.viewer = o.dsViewer;
    e.store = m;
    e.values = r;
    o.process(e);
    // 设置数据状态
-   r.set('_status', o.__status);
+   r.set('_status', o._dataStatusCd);
    return r;
 }
 
@@ -410,7 +434,7 @@ function FForm_saveValue(r, m){
 // @event
 //==========================================================
 function FForm_recordValue(){
-   this.process(this.__recordEvent);
+   this.process(this._recordEvent);
 }
 
 //==========================================================
@@ -504,7 +528,7 @@ function FForm_setEditable(v){
 function FForm_doPrepare(v){
    var o = this;
    // 设置数据状态
-   o.__status = ERowStatus.Insert;
+   o._dataStatusCd = ERowStatus.Insert;
    // 使用默认值重置数据
    o.resetValue();
    // 加载数据
@@ -524,7 +548,7 @@ function FForm_doPrepare(v){
 function FForm_doUpdate(v){
    var o = this;
    // 设置数据状态
-   o.__status = ERowStatus.Update;
+   o._dataStatusCd = ERowStatus.Update;
    // 清空数据
    o.clearValue();
    // 加载数据
@@ -544,7 +568,7 @@ function FForm_doUpdate(v){
 function FForm_doDelete(v){
    var o = this;
    // 设置数据状态
-   o.__status = ERowStatus.Delete;
+   o._dataStatusCd = ERowStatus.Delete;
    // 清空数据
    o.clearValue();
    // 加载数据

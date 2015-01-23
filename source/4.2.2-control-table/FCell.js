@@ -11,15 +11,16 @@
 // │└--------------┴--------------------┴--------------┘│
 // └--------------------------------------------------------┘
 //
-// @class FControl, MEditValue
-// @author maochunyang
-// @version 1.0.1
+// @class
+// @author maocy
+// @version 150123
 //==========================================================
 function FCell(o){
-   o = RClass.inherits(this, o, FControl, MEditValue);
+   //o = RClass.inherits(this, o, FControl, MEditValue);
+   o = RClass.inherits(this, o, FControl);
    //..........................................................
    // @style
-   o.stEdit       = RClass.register(o, new TStyle('Edit'));
+   o.stEdit       = RClass.register(o, new AStyle('Edit'));
    //..........................................................
    // @attribute
    o.table        = null;

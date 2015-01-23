@@ -1,43 +1,89 @@
 //==========================================================
 // <T>表格列表类。</T>
-// 模板:
+//
 //  hPanel<TABLE>
-// ┌--------------------------------------------------------┐
-// │ hTitleForm<TABLE>                                      │
-// │┌-------------------------------┬-------------------┐│
-// ││hCaption<TD>                   │(Buttons)          ││
-// │└-------------------------------┴-------------------┘│
-// ├--------------------------------------------------------┤
-// │ hBorderPanel<TD:TBorder.hPanel>                        │
-// │┌----------------------------------------------------┐│
-// ││ hFixPanel<DIV>            hHeadPanel<DIV>          ││
-// ││┌----------------------┐┌----------------------┐││
-// │││ hFixForm<TABLE>      ││ hHeadForm<TABLE>     │││
-// │││┌------------------┐││┌------------------┐│││
-// ││││hFixHead<TR>      ││││hHead<TR>         ││││
-// │││├------------------┤││├------------------┤│││
-// ││││hFixSearchLine<TR>││││hSearch<TR>       ││││
-// │││└------------------┘││└------------------┘│││
-// ││└----------------------┘└----------------------┘││
-// ││ hColumnPanel<DIV>         hDataPanel<DIV>          ││
-// ││┌----------------------┐┌----------------------┐││
-// │││ hColumnForm<TABLE>   ││ hDataForm<TABLE>     │││
-// │││┌------------------┐││┌------------------┐│││
-// │││└------------------┘││└------------------┘│││
-// ││└----------------------┘└----------------------┘││
-// │└----------------------------------------------------┘│
-// ├--------------------------------------------------------┤
-// │ hHintForm<TABLE>                                       │
-// │┌------------┬--------------------------------------┐│
-// ││hHint<TD>   │(Buttons)                             ││
-// │└------------┴--------------------------------------┘│
-// └--------------------------------------------------------┘
+// ┌----------------------------------------------------------------------┐
+// │ hTitleForm<TABLE>                                                    │hTitlePanel<TD>
+// │┌-------------------------------┬-------------------┐              │
+// ││hCaption<TD>                   │(TitleButtons)     │hTitleLine<TR>│
+// │└-------------------------------┴-------------------┘              │
+// ├----------------------------------------------------------------------┤
+// │                                                                      │hContentPanel<TD>
+// │                                                                      │
+// │                                                                      │
+// │                           (Content)                                  │
+// │                                                                      │
+// │                                                                      │
+// │                                                                      │
+// ├----------------------------------------------------------------------┤
+// │ hHintForm<TABLE>                                                     │hHintPanel<TD>
+// │┌------------┬--------------------------------------┐              │
+// ││hHint<TD>   │(HintButtons)                         │hHintLine<TR> │
+// │└------------┴--------------------------------------┘              │
+// └----------------------------------------------------------------------┘
 //
 // @class FContainer, MForm, MDataset, MValue, MHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey
 // @history 090922 MAOCY 创建
 //==========================================================
 function FGridControl(o) {
-   o = RClass.inherits(this, o, FContainer, MValue, MDataset, MDisplay, MFocus, MForm, MProgress, MHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey);
+   //o = RClass.inherits(this, o, FContainer, MValue, MDataset, MDisplay, MFocus, MForm, MProgress, MHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey);
+   o = RClass.inherits(this, o, FContainer);
+   //..........................................................
+   // @property
+   o._displayTitle        = RClass.register(o, new APtySet('_displayTitle', 'display_title', EGridDisplay.Title), true);
+   //..........................................................
+   // @style
+   o._stylePanel          = RClass.register(o, new AStyle('_stylePanel'));
+   o._styleTitlePanel     = RClass.register(o, new AStyle('_styleTitlePanel'));
+   o._styleTitleForm      = RClass.register(o, new AStyle('_styleTitleForm'));
+   o._styleContentPanel   = RClass.register(o, new AStyle('_styleContentPanel'));
+   o._styleContentForm    = RClass.register(o, new AStyle('_styleContentForm'));
+   o._styleHintPanel      = RClass.register(o, new AStyle('_styleHintPanel'));
+   o._styleHintForm       = RClass.register(o, new AStyle('_styleHintForm'));
+   o._styleHint           = RClass.register(o, new AStyle('_styleHint'));
+   o._styleButton         = RClass.register(o, new AStyle('_styleButton'));
+   //..........................................................
+   // @attribute
+   o._minHeight           = 80;
+   // @attribute
+   o._buttons             = null;
+   o._columns             = null;
+   o._rows                = null;
+   //..........................................................
+   // @html
+   o._hTitlePanel         = null;
+   o._hTitleForm          = null;
+   o._hTitleLine          = null;
+   o._hContentPanel       = null;
+   o._hHintPanel          = null;
+   o._hHintForm           = null;
+   //..........................................................
+   // @listeners
+   o.lsnsRowClick         = null;
+   o.lsnsRowDblClick      = null;
+   //..........................................................
+   // @event
+   o.onBuildTitle         = FGridControl_onBuildTitle;
+   o.onBuildData          = RMethod.virtual(o, 'onBuildData');
+   o.onBuildHint          = FGridControl_onBuildHint;
+   o.onBuildPanel         = FGridControl_onBuildPanel;
+   //..........................................................
+   // @process
+   o.oeBuild              = FGridControl_oeBuild;
+   //..........................................................
+   // @method
+   o.construct            = FGridControl_construct;
+   o.buildNavigatorButton = FGridControl_buildNavigatorButton;
+   o.pushColumn           = RMethod.virtual(o, 'pushColumn');
+   o.push                 = FGridControl_push;
+
+
+
+
+
+
+
+
    //..........................................................
    // @property
    o._formName              = RClass.register(o, new APtyString('formName'));
@@ -48,121 +94,97 @@ function FGridControl(o) {
    o._dispSelected          = RClass.register(o, new APtyBoolean('dispSelected'), false);
    o._dispCount             = RClass.register(o, new APtyInteger('dispCount'), 20);
    o._rowHeight             = RClass.register(o, new APtyInteger('rowHeight'), 0);
-   o._panelTitle            = RClass.register(o, new APtySet('panelTitle', 'panelAccess', EGridDisplay.Title, false));
-   o._panelHead             = RClass.register(o, new APtySet('panelHead', 'panelAccess', EGridDisplay.Head, false));
-   o._panelSearch           = RClass.register(o, new APtySet('panelSearch', 'panelAccess', EGridDisplay.Search, false));
-   o._panelTotal            = RClass.register(o, new APtySet('panelTotal', 'panelAccess', EGridDisplay.Total, false));
-   o._panelNavigator        = RClass.register(o, new APtySet('panelNavigator', 'panelAccess', EGridDisplay.Navigator, false));
+   //o._panelHead             = RClass.register(o, new APtySet('panelHead', 'panelAccess', EGridDisplay.Head), false);
+   //o._panelSearch           = RClass.register(o, new APtySet('panelSearch', 'panelAccess', EGridDisplay.Search), false);
+   //o._panelTotal            = RClass.register(o, new APtySet('panelTotal', 'panelAccess', EGridDisplay.Total), false);
+   //o._panelNavigator        = RClass.register(o, new APtySet('panelNavigator', 'panelAccess', EGridDisplay.Navigator), false);
+   o._panelTitle            = true;
+   o._panelHead             = true;
+   o._panelSearch           = true;
+   o._panelTotal            = true;
+   o._panelNavigator        = true;
    //..........................................................
    // @style
-   o._styleBorderPanel      = RClass.register(o, new AStyle('BorderPanel'));
-   o._styleHeadPanel        = RClass.register(o, new AStyle('HeadPanel'));
-   o._styleHeadForm         = RClass.register(o, new AStyle('HeadForm'));
-   o._styleHeadLine         = RClass.register(o, new AStyle('HeadLine'));
-   o._styleSearchLine       = RClass.register(o, new AStyle('SearchLine'));
-   o._styleDataPanel        = RClass.register(o, new AStyle('DataPanel'));
-   o._styleDataForm         = RClass.register(o, new AStyle('DataForm'));
-   o._styleHintForm         = RClass.register(o, new AStyle('HintForm'));
-   o._styleHint             = RClass.register(o, new AStyle('Hint'));
-   o._styleButton           = RClass.register(o, new AStyle('Button'));
+   //o._styleHeadLine         = RClass.register(o, new AStyle('_styleHeadLine', 'HeadLine'));
+   //o._styleSearchLine       = RClass.register(o, new AStyle('_styleSearchLine', 'SearchLine'));
    //..........................................................
    // @icon
-   o._styleButtonIcon       = RClass.register(o, new AStyleIcon('Button'));
+   //o._styleButtonIcon       = RClass.register(o, new AStyleIcon('Button'));
    //..........................................................
    // @attribute
-   o.__rowClass             = FRow;
-   o.__dataset              = null;
-   o.__focusCell            = null;
-   o.__focusRow             = null;
-   o.__hoverRow             = null;
-   o.__clickRowEvent        = null;
-   o.__doubleClickRowEvent  = null;
-   o.__loadActive           = null; 
+   o._rowClass              = FRow;
+   o._dataset               = null;
+   o._focusCell             = null;
+   o._focusRow              = null;
+   o._hoverRow              = null;
+   o._clickRowEvent         = null;
+   o._doubleClickRowEvent   = null;
+   o._loadActive            = null; 
    o._statusColumn          = null;
    o._loadFinish            = false;
-   o.__isSearching          = false;
+   o._isSearching           = false;
    //..........................................................
    // @attribute
    o._esize                 = ESize.Both;
-   o._minHeight             = 70;
-   o.border                 = null;
-   // @attribute TMap 数据列的列表
-   o._columns                = null;
-   // @attribute TMap 数据列的列表
-   o.buttons                = null;
-   // @attribute TList 数据行的列表
-   o.rows                   = null;
    //..........................................................
    // @html
-   o.hPanel                 = null;
-   o.hCaption               = null;
+   o._hCaption              = null;
    o.hBorderPanel           = null;
-   o.hFixPanel              = null;
-   o.hFixForm               = null;
-   o.hFixHead               = null;
-   o.hFixSearchLine         = null;
-   o.hHeadPanel             = null;
-   o.hHeadForm              = null;
-   o.hHead                  = null;
-   o.hSearch                = null;
-   o.hColumnPanel           = null;
-   o.hColumnForm            = null;
-   o.hDataPanel             = null;
-   o.hDataForm              = null;
-   o.hFixRowLine            = null;
-   o.hFixRows               = null;
-   o.hRows                  = null;
-   o.hRowLine               = null;
-   o.hDelayPanel            = null;
-   o.hDelayText             = null;
-   o.hNavigator             = null;
-   o.hFottor                = null;
-   o.hButtons               = null;
-   //..........................................................
-   // @listeners
-   o.lsnsRowClick           = null;
-   o.lsnsRowDblClick        = null;
+   o._hFixPanel             = null;
+   o._hFixForm              = null;
+   o._hFixHead              = null;
+   o._hFixSearchLine        = null;
+   o._hHeadPanel            = null;
+   o._hHeadForm             = null;
+   o._hHead                 = null;
+   o._hSearch               = null;
+   o._hColumnPanel          = null;
+   o._hColumnForm           = null;
+   o._hContentPanel            = null;
+   o._hContentForm             = null;
+   o._hFixRowLine           = null;
+   o._hFixRows              = null;
+   o._hRows                 = null;
+   o._hRowLine              = null;
+   o._hDelayPanel           = null;
+   o._hDelayText            = null;
+   o._hNavigator            = null;
+   o._hFottor               = null;
+   o._hButtons              = null;
    //..........................................................
    o.onMouseDown            = FGridControl_onMouseDown;
-   o.onHeadMouseDown        = RClass.register(o, new HMouseDown('onHeadMouseDown'), FGridControl_onHeadMouseDown);
-   o.onHeadMouseMove        = RClass.register(o, new HMouseMove('onHeadMouseMove'), FGridControl_onHeadMouseMove);
-   o.onHeadMouseUp          = RClass.register(o, new HMouseUp('onHeadMouseUp'), FGridControl_onHeadMouseUp);
-   o.onDataScroll           = RClass.register(o, new HScroll('onDataScroll'), FGridControl_onDataScroll);
+   o.onHeadMouseDown        = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FGridControl_onHeadMouseDown);
+   o.onHeadMouseMove        = RClass.register(o, new AEventMouseMove('onHeadMouseMove'), FGridControl_onHeadMouseMove);
+   o.onHeadMouseUp          = RClass.register(o, new AEventMouseUp('onHeadMouseUp'), FGridControl_onHeadMouseUp);
+   o.onDataScroll           = RClass.register(o, new AEventScroll('onDataScroll'), FGridControl_onDataScroll);
    // @event 单元格内按键按下
-   o.onCellKeyDown          = RClass.register(o, new HKeyDown('onCellKeyDown'), FGridControl_onCellKeyDown);
-   o.onRowMouseEnter        = RClass.register(o, new HMouseEnter('onRowMouseEnter'), FGridControl_onRowMouseEnter);
-   o.onRowMouseLeave        = RClass.register(o, new HMouseLeave('onRowMouseLeave'), FGridControl_onRowMouseLeave);
+   o.onCellKeyDown          = RClass.register(o, new AEventKeyDown('onCellKeyDown'), FGridControl_onCellKeyDown);
+   o.onRowMouseEnter        = RClass.register(o, new AEventMouseEnter('onRowMouseEnter'), FGridControl_onRowMouseEnter);
+   o.onRowMouseLeave        = RClass.register(o, new AEventMouseLeave('onRowMouseLeave'), FGridControl_onRowMouseLeave);
    // @event 行控件单击事件
-   o.onRowClick             = RClass.register(o, new HClick('onRowClick'), FGridControl_onRowClick);
+   o.onRowClick             = RClass.register(o, new AEventClick('onRowClick'), FGridControl_onRowClick);
    // @event 行控件双击事件
-   o.onColumnSearchKeyDown  = RClass.register(o, new HKeyDown('onColumnSearchKeyDown'), FGridControl_onColumnSearchKeyDown);
-   o.onButtonMouseDown      = RClass.register(o, new HMouseDown('onButtonMouseDown'), FGridControl_onButtonMouseDown);
-   o.onPageCountDown        = RClass.register(o, new HKeyDown('onPageCountDown'), FGridControl_onPageCountDown);
+   o.onColumnSearchKeyDown  = RClass.register(o, new AEventKeyDown('onColumnSearchKeyDown'), FGridControl_onColumnSearchKeyDown);
+   o.onButtonMouseDown      = RClass.register(o, new AEventMouseDown('onButtonMouseDown'), FGridControl_onButtonMouseDown);
+   o.onPageCountDown        = RClass.register(o, new AEventKeyDown('onPageCountDown'), FGridControl_onPageCountDown);
    o.onInsertButtonClick    = FGridControl_onInsertButtonClick;
    o.onExtendButtonClick    = FGridControl_onExtendButtonClick;
    // @event
    o.onDsPrepare            = RMethod.empty;
    // @event
-   o.onResizeAfter          = RMethod.virtual(o, 'onResizeAfter');
+   //o.onResizeAfter          = RMethod.virtual(o, 'onResizeAfter');
    o.onLoadDatasetDelay     = FGridControl_onLoadDatasetDelay;
    o.onLoadDataset          = FGridControl_onLoadDataset;
    o.clearSelectAll         = FGridControl_clearSelectAll;
    o.onLoadDatasetEnd       = RMethod.empty;
    //..........................................................
    // @event
-   o.onBuildTitle           = FGridControl_onBuildTitle;
-   o.onBuildData            = RMethod.virtual(o, 'onBuildData');
-   o.onBuildHint            = FGridControl_onBuildHint;
-   o.onBuildPanel           = RBuilder.onBuildTablePanel;
    //..........................................................
    // @process
-   o.oeBuild                = FGridControl_oeBuild;
    o.oeMode                 = FGridControl_oeMode;
    o.oeProgress             = FGridControl_oeProgress;
    //..........................................................
    // @method
-   o.construct              = FGridControl_construct;
-   o.buildNavigatorButton   = FGridControl_buildNavigatorButton;
    o.isFormLinked           = FGridControl_isFormLinked;
    o.isDataSelected         = FGridControl_isDataSelected;
    o.isDataChanged          = FGridControl_isDataChanged;
@@ -199,8 +221,6 @@ function FGridControl(o) {
    o.doPrepare              = RMethod.empty;
    o.doDelete               = RMethod.empty;
    o.doSearch               = FGridControl_doSearch;
-   o.push                   = FGridControl_push;
-   o.pushColumn             = RMethod.virtual(o, 'pushColumn');
    o.pushButton             = FGridControl_pushButton;
    o.focus                  = FGridControl_focus;
    o.pack                   = FGridControl_pack;
@@ -212,10 +232,10 @@ function FGridControl(o) {
    o.dispose                = FGridControl_dispose;
    o.dump                   = FGridControl_dump;
    // ---------------------------------------------------------
-   o.onColumnTreeClick      = RClass.register(o, new HClick('onColumnTreeClick'), FGridControl_onColumnTreeClick);
+   o.onColumnTreeClick      = RClass.register(o, new AEventClick('onColumnTreeClick'), FGridControl_onColumnTreeClick);
    o.onColumnTreeService    = FGridControl_onColumnTreeService;
-   o.hoverMode              = EColumnMode.None;
-   o.__searchKeyDownEvent   = new TEvent();
+   o.hoverMode              = EGridColumn.None;
+   o._searchKeyDownEvent    = new TEvent();
    o.createChild            = FGridControl_createChild;
    o.buildRow               = FGridControl_buildRow;
    o.buildRows              = FGridControl_buildRows;
@@ -227,13 +247,277 @@ function FGridControl(o) {
    return o;
 }
 
+//==========================================================
+// <T>创建一个控件容器。</T>
+//
+// @method
+// @param p:event:SEventProcess 事件
+//==========================================================
+function FGridControl_onBuildPanel(p){
+   var o = this;
+   o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
+}
+
+//==========================================================
+// <T>构建表格的标题栏。</T>
+//
+// @method
+// @param p:event:TEventProcess 构建事件
+//==========================================================
+function FGridControl_onBuildTitle(e){
+   var o = this;
+   var hf = o._hTitleForm = RBuilder.appendTable(o._hTitlePanel, o.styleName('TitleForm'));
+   var hr = o._hTitleLine = RBuilder.appendTableRow(hf);
+   // 建立标题格子
+   var hc = RBuilder.appendTableCell(hr);
+   hc.align = 'center';
+   hc.innerText = o.label();
+   hc.style.fontWeight = 'bold';
+   hc.style.color = '#176877';
+   hc.style.backgroundImage = 'url(' + RResource.iconPath('control.grid.head') + ')';
+   // 设置可见性
+   RHtml.displaySet(hf, o._displayTitle);
+   //hbc = hf.insertRow();
+   //hdc = hbc.insertCell();
+   //hdc.style.backgroundColor='#CAE9FE';
+   //hdc.style.borderTop='1 solid #95C6FE';
+   //hbf = o._hButtonForm = RBuilder.appendTable(hdc);
+   //hbf.height = 28;
+   //hb = o._hButtons = hbf.insertRow();
+   //hdc.style.display = o._panelTitle ? 'block' : 'none';
+}
+
+//==========================================================
+// <T>构建表格的提示栏。</T>
+//
+// @method
+// @param e:event:TEvent 构建事件
+//==========================================================
+function FGridControl_onBuildHint(e) {
+   var o = this;
+   // 建立提示行
+   var hr = RBuilder.appendTableRow(o._hHintForm);
+   // 展开按钮
+   var hc = RBuilder.appendTableCell(hr);
+   hc.width = 60;
+   o.hExtendButton = o.buildNavigatorButton(hc, 'control.grid.extend', '&nbsp;展开', null, 'hExtend');
+   // 新建按键
+   //if(o.editInsert && o._formName){
+      var hc = RBuilder.appendTableCell(hr);
+      hc.width = 60;
+      o.hInsertButton = o.buildNavigatorButton(hc, 'control.grid.insert', '&nbsp;新建', null, 'hInsert');
+   //}
+   // 提示栏
+   var hc = RBuilder.appendTableCell(hr);
+   hc.width = 10;
+   var hc = RBuilder.appendTableCell(hr);
+   hc.noWrap = true;
+   o.hHint = RBuilder.appendText(hc, o.styleName('Hint'))
+   // 分页栏
+   var hc = RBuilder.appendTableCell(hr);
+   hc.noWrap = true;
+   hc.align = 'right';
+   o.hNavFirst = o.buildNavigatorButton(hc, 'control.grid.first', '&nbsp;' + RContext.get('FGridControl:First'));
+   o.hNavPrior = o.buildNavigatorButton(hc, 'control.grid.prior', '&nbsp;' + RContext.get('FGridControl:Prior'));
+   o.hNavPrior.style.paddingRight = '20';
+   o.hPage = RBuilder.appendEdit(hc)
+   o.hPage.style.width = 40;
+   o.attachEvent('onPageCountDown', o.hPage);
+   o.hNavNext = o.buildNavigatorButton(hc, null, RContext.get('FGridControl:Next')+'&nbsp;', 'control.grid.next');
+   o.hNavLast = o.buildNavigatorButton(hc, null, RContext.get('FGridControl:Last')+'&nbsp;', 'control.grid.last');
+   // 设置可见性
+   //o.hHintForm.style.display = o._panelNavigator ? 'block' : 'none';
+}
+
+//==========================================================
+// <T>构建处理。</T>
+//
+// @method
+// @param p:event:TEventProcess 构建事件
+//==========================================================
+function FGridControl_oeBuild(p){
+   var o = this;
+   // 高度修正
+   if(p.isBefore()){
+      if(!o.height || o.height < 160){
+         o.height = '100%';
+      }
+   }
+   // 父类处理
+   var r = o.__base.FContainer.oeBuild.call(o, p);
+   // 建立表格
+   if(p.isBefore()){
+      // 标题顶层标题区
+      var hc = o._hTitlePanel = RBuilder.appendTableRowCell(o._hPanel, o.styleName('TitlePanel'));
+      o.onBuildTitle(p);
+      //hc.width = 1;
+      //var hd = o._hFixHeight = RBuilder.appendDiv(hc);
+      //hd.style.width = 1;
+      //hd.style.height = o._minHeight;
+      // 建立内部表格
+      var hbp = o._hContentPanel = RBuilder.appendTableRowCell(o._hPanel, o.styleName('ContentPanel'));
+      o.onBuildData(p);
+      //hbp.className = o.styleName('BorderPanel');
+      //hbp.vAlign = 'top';
+      //hbp.style.position = 'relative';
+      //hbp.style.overflow = 'hidden';
+      // 建立提示区
+      o._hHintPanel = RBuilder.appendTableRowCell(o._hPanel, o.styleName('HintPanel'));
+      o._hHintForm = RBuilder.appendTable(o._hHintPanel, o.styleName('HintForm'));
+      o.onBuildHint(p);
+      //if(o._panelNavigator){
+      //   var hnp = o._hNavigator = o._hPanel.insertRow().insertCell();
+      //   hnp.height = 1;
+      //   o.hHintForm = RBuilder.appendTable(hnp, o.styleName('HintForm'));
+      //   o.onBuildHint(p);
+      //}
+      // 建立表格列
+      o._statusColumn.process(p);
+      o._selectColumn.process(p);
+   }else if(p.isAfter()){
+      var cs = o._columns;
+      // 追加标题列
+      var cc = cs.count();
+      for(var i = 0; i < cc; i++){
+         o.pushColumn(cs.value(i));
+      }
+      for(var i = 0; i < cc; i++){
+         var c = cs.value(i);
+         c._index = i;
+      }
+      // 建立树据行
+      var rs = o._rows;
+      var rc = rs.count();
+      for(var i = 0; i < rc; i++){
+         o.buildRow(rs.get(i));
+      }
+      // 设置按键
+      var bs = o._buttons;
+      var bc = bs.count();
+      for(var i = 0; i < bc; i++){
+    	  o.pushButton(bs.value(i));
+      }
+      // 设置数据
+      o._dsPageSize = o._dispCount;
+   }
+   return r;
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FGridControl_construct() {
+   var o = this;
+   o.__base.FContainer.construct.call(o);
+   //o.__base.MDataset.construct.call(o);
+   // 初始化
+   o._buttons = new TDictionary();
+   o._columns = new TDictionary();
+   o._rows = new TObjects();
+   // 建立监听
+   o.lsnsRowClick = new TListeners();
+   o.lsnsRowDblClick = new TListeners();
+   // 设置获取行数
+   //if(o._dispCount < 0){
+   //   o.dsPageSize = 400;
+   //}
+   // 建立事件
+   //o._clickRowEvent = new TEvent();
+   //o._doubleClickRowEvent = new TEvent();
+   // 建立状态列
+   var col = o._statusColumn = RClass.create(FColumnStatus);
+   col._table = this;
+   col._name = '_s';
+   o._columns.set(col._name, col);
+   // 建立选择列
+   var cols = o._selectColumn = RClass.create(FColumnSelected);
+   cols._table = this;
+   cols._name = '_select';
+   o._columns.set(cols._name, cols);
+   // 建立延迟加载数据线程
+   //var a = o._loadActive = new TActive(o, o.onLoadDatasetDelay);
+   //a.status = EActive.Sleep;
+   //RConsole.find(FActiveConsole).push(a);
+   // 创建刷新异步事件
+   //o.eventResizeAfter = new TEvent(o, 'ResizeAfter', o.onResizeAfter);
+}
+
+//==========================================================
+// <T>建立导航按键。</T>
+//
+// @method
+//==========================================================
+function FGridControl_buildNavigatorButton(hParent, iconBf, text, iconAf, name){
+   var o = this;
+   var h = RBuilder.append(hParent, 'SPAN', o.styleName('Button'));
+   h.style.cursor = 'hand';
+   h.style.paddingLeft = '10';
+   o.attachEvent('onButtonMouseDown', h);
+   if (iconBf) {
+      RBuilder.appendIcon(h, null, iconBf);
+   }
+   if(text){
+      if(name){
+         o[name + 'Text'] = RBuilder.appendText(h, null, text);
+      }else{
+         RBuilder.appendText(h, null, text);
+      }
+   }
+   if(iconAf){
+      RBuilder.appendIcon(h, null, iconAf);
+   }
+   return h;
+}
+
+//==========================================================
+// <T>增加一个子组件。</T>
+//
+// @method
+// @param p:component:FComponent 组件
+//==========================================================
+function FGridControl_push(p){
+   var o = this;
+   o.__base.FContainer.push.call(o, p);
+   // 类型处理
+   if(RClass.isClass(p, FColumn)){
+      p._table = o;
+      o._columns.set(p.name(), p);
+   }else if(RClass.isClass(p, FTableButton)){
+      p._table = o;
+      o._buttons.set(p.name(), p);
+   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //------------------------------------------------------------
 function FGridControl_pushButton(b){
    var o = this;
-   var hc  = o.hButtons.insertCell();
+   var hc  = o._hButtons.insertCell();
    hc.style.border = '0 solid #C6D7FF';
-   hc.appendChild(b.hPanel);
+   hc.appendChild(b._hPanel);
    o.push(b);
 }
 
@@ -245,6 +529,7 @@ function FGridControl_pushButton(b){
 //==========================================================
 function FGridControl_onMouseDown(e, he){
    var o = this;
+   return;
    var fc = RConsole.find(FFocusConsole);
    fc.focusClass(MDataset, o);
    fc.focusHtml(he);
@@ -262,15 +547,15 @@ function FGridControl_onMouseDown(e, he){
 function FGridControl_onHeadMouseDown(e){
    var o = this;
    var m = o.getHeadMode(e);
-   if(EColumnMode.Size == m){
-      o.hoverMode = EColumnMode.Size;
-      e.srcElement.status = EColumnMode.Size;
+   if(EGridColumn.Size == m){
+      o.hoverMode = EGridColumn.Size;
+      e.srcElement.status = EGridColumn.Size;
       o.hoverX = e.srcElement.offsetLeft + e.x;
       o.hoverDataCell = null;
-      if(o.hDataForm.rows.length){
-         o.hoverDataCell = o.hDataForm.rows[0].cells[o.hoverHead.index];
+      if(o._hContentForm._rows.length){
+         o.hoverDataCell = o._hContentForm._rows[0].cells[o.hoverHead.index];
       }
-      o.hHeadForm.setCapture();
+      o._hHeadForm.setCapture();
    }
 }
 
@@ -282,23 +567,23 @@ function FGridControl_onHeadMouseDown(e){
 //==========================================================
 function FGridControl_onHeadMouseMove(e){
    var o = this;
-   if(EColumnMode.Size == o.hoverMode){
+   if(EGridColumn.Size == o.hoverMode){
       var bl = o.hoverCellLength;
       var mx = e.srcElement.offsetLeft + e.x;
       var w =  mx - o.hoverX + bl;
       if(w > 0){
-         o.hoverHead.hPanel.style.pixelWidth = w;
-         o.hoverHead.hFixPanel.style.pixelWidth = w;
+         o.hoverHead._hPanel.style.pixelWidth = w;
+         o.hoverHead._hFixPanel.style.pixelWidth = w;
       }
-   }else if(EColumnMode.None == o.hoverMode){
+   }else if(EGridColumn.None == o.hoverMode){
       var m = o.getHeadMode(e);
       var c = 'default';
-      if(EColumnMode.Size == m){
+      if(EGridColumn.Size == m){
          c = 'e-resize';
-      }else if(EColumnMode.Drag == m){
+      }else if(EGridColumn.Drag == m){
          c = 'hand';
       }
-      o.hHeadForm.style.cursor = c;
+      o._hHeadForm.style.cursor = c;
    }
 }
 
@@ -310,10 +595,10 @@ function FGridControl_onHeadMouseMove(e){
 //==========================================================
 function FGridControl_onHeadMouseUp(e){
    var o = this;
-   if(EColumnMode.Size == o.hoverMode){
-      o.hHeadForm.releaseCapture();
+   if(EGridColumn.Size == o.hoverMode){
+      o._hHeadForm.releaseCapture();
    }
-   o.hoverMode = EColumnMode.None;
+   o.hoverMode = EGridColumn.None;
 }
 
 //==========================================================
@@ -324,8 +609,8 @@ function FGridControl_onHeadMouseUp(e){
 //==========================================================
 function FGridControl_onDataScroll(){
    var o = this;
-   o.hHeadPanel.scrollLeft = o.hDataPanel.scrollLeft;
-   o.hColumnPanel.scrollTop = o.hDataPanel.scrollTop;
+   o._hHeadPanel.scrollLeft = o._hContentPanel.scrollLeft;
+   o._hColumnPanel.scrollTop = o._hContentPanel.scrollTop;
 }
 
 //==========================================================
@@ -411,12 +696,12 @@ function FGridControl_onColumnSearchKeyDown(s, e){
          // 建立查询信息
          if(o.table){
         	 o.table.doSearch();
-             o.table.dpScrollLeft = o.table.hDataPanel.scrollLeft;
-             o.table.callEvent('onSearchKeyDown', o, o.__searchKeyDownEvent);
+             o.table.dpScrollLeft = o.table._hContentPanel.scrollLeft;
+             o.table.callEvent('onSearchKeyDown', o, o._searchKeyDownEvent);
          }else{
             o.doSearch();
-            o.dpScrollLeft = o.hDataPanel.scrollLeft;
-            o.callEvent('onSearchKeyDown', o, o.__searchKeyDownEvent);
+            o.dpScrollLeft = o._hContentPanel.scrollLeft;
+            o.callEvent('onSearchKeyDown', o, o._searchKeyDownEvent);
          }
          // 记录横向滚动位置
       }
@@ -503,18 +788,18 @@ function FGridControl_onLoadDatasetDelay(a){
       m = v.count - 1;
    }
    // 重置滚动区
-   if(o.hHeadPanel){
-      o.hHeadPanel.scrollLeft = 0;
+   if(o._hHeadPanel){
+      o._hHeadPanel.scrollLeft = 0;
    }
-   if(o.hColumnPanel){
-      o.hColumnPanel.scrollTop = 0;
+   if(o._hColumnPanel){
+      o._hColumnPanel.scrollTop = 0;
    }
    // 建立行
    o.syncRow(m);
    for(var n = idx; n <= m; n++){
       var r = o.syncRow(n);
       if(h>0) {
-     	 r.hFixPanel.height = h;
+     	 r._hFixPanel.height = h;
       } 
       if(v.next()){
          r.loadRow(v.current());
@@ -528,9 +813,9 @@ function FGridControl_onLoadDatasetDelay(a){
    if(m == v.count-1){
       m = v.count-1;
       a.status = EActive.Sleep;
-      o.hDelayPanel.style.display = 'none';
+      o._hDelayPanel.style.display = 'none';
       // 隐藏掉所有已建立的未使用的行对象
-      var rs = o.rows;
+      var rs = o._rows;
       for(var n=m+1; n<rs.count; n++){
          rs.get(n).setVisible(false);
       }
@@ -542,7 +827,7 @@ function FGridControl_onLoadDatasetDelay(a){
    }
    // 
    if((m+1) != v.count){
-      o.hDelayPanel.filters[0].opacity = 100 - (100/v.count)// (m+1);
+      o._hDelayPanel.filters[0].opacity = 100 - (100/v.count)// (m+1);
    }
    a.acceleration++;
    a.index += a.acceleration;
@@ -560,14 +845,14 @@ function FGridControl_onLoadDatasetDelay(a){
 //==========================================================
 function FGridControl_onLoadDataset(ds, da){
    var o = this;
-   o.__dataset = ds;
-   if(o.hColumnPanel){
-      o.hColumnPanel.scrollTop = 0;
-      o.hColumnPanel.scrollLeft = 0;
+   o._dataset = ds;
+   if(o._hColumnPanel){
+      o._hColumnPanel.scrollTop = 0;
+      o._hColumnPanel.scrollLeft = 0;
    }
-   if(o.hDataPanel){
-	  o.hDataPanel.scrollTop = 0;
-	  o.hDataPanel.scrollLeft = 0;
+   if(o._hContentPanel){
+	  o._hContentPanel.scrollTop = 0;
+	  o._hContentPanel.scrollLeft = 0;
    }
    // 获得数据查看器
    var v = o.dsViewer;
@@ -584,7 +869,7 @@ function FGridControl_onLoadDataset(ds, da){
    }
    // 延时加载数据
    ds.saveViewer(v);
-   var a = o.__loadActive;
+   var a = o._loadActive;
    a.interval = 0;
    a.index = 0;
    a.acceleration = 100;
@@ -603,155 +888,6 @@ function FGridControl_onLoadDataset(ds, da){
 }
 
 //==========================================================
-// <T>构建表格的标题栏。</T>
-//
-// @method
-// @param e:event:TEvent 构建事件
-//==========================================================
-function FGridControl_onBuildTitle(e){
-   var o = this;
-   var hcf = o.hTitleForm = RBuilder.appendTable(o.hBorderPanel);
-   hcf.width = '100%';
-   hcf.height = '20';
-   hcf.style.borderBottom = '1 solid #999999';
-   var hcr = o.hCaptionLine = hcf.insertRow();
-   var hcc = hcr.insertCell();
-   hcc.style.backgroundImage = 'url(' + RResource.iconPath('ctl.FGridControl_Head') + ')';
-   hcc.height = '20';
-   hcc.align = 'center';
-   hcc.innerText = o.label;
-   hcc.style.fontWeight = 'bold';
-   hcc.style.color = '#176877';
-   // 设置可见性
-   hcc.style.display = o._panelTitle ? 'block' : 'none';
-   hbc = hcf.insertRow();
-   hdc = hbc.insertCell();
-   hdc.style.backgroundColor='#CAE9FE';
-   hdc.style.borderTop='1 solid #95C6FE';
-   hbf = o.hButtonForm = RBuilder.appendTable(hdc);
-   //hbf.height = 28;
-   hb = o.hButtons = hbf.insertRow();
-   hdc.style.display = o._panelTitle ? 'block' : 'none';
-}
-
-//==========================================================
-// <T>构建表格的提示栏。</T>
-//
-// @method
-// @param e:event:TEvent 构建事件
-//==========================================================
-function FGridControl_onBuildHint(e) {
-   var o = this;
-   var hr = o.hHintForm.insertRow();
-   // 展开按钮
-   //var hc = hr.insertCell();
-   //hc.width = 60;
-   //o.hExtendButton = o.buildNavigatorButton(hc, 'ctl.FGridControl_extend', '&nbsp;展开', null, 'hExtend');
-   // 新建按键
-   if(o.editInsert && o._formName){
-      var hc = hr.insertCell();
-      hc.width = 60;
-      o.hInsertButton = o.buildNavigatorButton(hc, 'ctl.FGridControl_insert', '&nbsp;新建', null, 'hInsert');
-   }
-   // 提示栏
-   var hc = hr.insertCell();
-   hc.width = 10;
-   var hc = hr.insertCell();
-   hc.noWrap = true;
-   o.hHint = RBuilder.appendText(hc, '', o.style('Hint'))
-   // 分页栏
-   var hc = hr.insertCell();
-   hc.noWrap = true;
-   hc.align = 'right';
-   o.hNavFirst = o.buildNavigatorButton(hc, 'ctl.FGridControl_first', '&nbsp;'+RContext.get('FGridControl:First'));
-   o.hNavPrior = o.buildNavigatorButton(hc, 'ctl.FGridControl_prior', '&nbsp;'+RContext.get('FGridControl:Prior'));
-   o.hNavPrior.style.paddingRight = '20';
-   o.hPage = RBuilder.appendEdit(hc)
-   o.hPage.style.width = 40;
-   o.attachEvent('onPageCountDown', o.hPage);
-   o.hNavNext = o.buildNavigatorButton(hc, null, RContext.get('FGridControl:Next')+'&nbsp;', 'ctl.FGridControl_next');
-   o.hNavLast = o.buildNavigatorButton(hc, null, RContext.get('FGridControl:Last')+'&nbsp;', 'ctl.FGridControl_last');
-   // 设置可见性
-   //o.hHintForm.style.display = o._panelNavigator ? 'block' : 'none';
-}
-
-//==========================================================
-// <T>构建表格控件。</T>
-//
-// @method
-// @param e:event:TEvent 构建事件
-//==========================================================
-function FGridControl_oeBuild(e){
-   var o = this;
-   if(e.isBefore()){
-      // 修正表格高度
-      if(!o.height || o.height < 160){
-         o.height = '100%';
-      }
-   }
-   // 开始建立表格
-   var r = o.base.FContainer.oeBuild.call(o, e);
-   if(e.isBefore()){
-      var hpl = o.hPanel.insertRow();
-      // 建立外边框
-      var b = o.border = new TBorder(EBorder.Round);
-      b.build(hpl.insertCell());
-      var hbf = b.hForm;
-      hbf.width = '100%';
-      hbf.height = '100%';
-      // 建立一像素宽的地纵向支撑列
-      var hc = hpl.insertCell();
-      hc.width = 1;
-      var hd = o.hFixHeight = RBuilder.appendDiv(hc);
-      hd.style.width = 1;
-      hd.style.height = o._minHeight;
-      // 建立内部表格
-      var hbp = o.hBorderPanel = b.hPanel;
-      hbp.className = o.style('BorderPanel');
-      hbp.vAlign = 'top';
-      hbp.style.position = 'relative';
-      hbp.style.overflow = 'hidden';
-      // 标题顶层标题区
-      o.onBuildTitle(e);
-      // 建立内部数据区
-   // 建立选择列
-      o.onBuildData(e);
-      // 建立提示区
-      if(o._panelNavigator){
-         var hnp = o.hNavigator = o.hPanel.insertRow().insertCell();
-         hnp.height = 1;
-         o.hHintForm = RBuilder.appendTable(hnp, o.style('HintForm'));
-         o.onBuildHint(e);
-      }
-   }else if (e.isAfter()) {
-	  o.border.setBorderColor('#9EC4EB');
-      var cs = o._columns;
-      // 追加标题列
-      var cc = cs.count;
-      for(var n=0; n<cc; n++){
-         o.pushColumn(cs.value(n));
-      }
-      // 显示标题列
-      for(var n=0; n<cc; n++){
-         var c = o._columns.value(n);
-         c.index = n;
-      }
-      // 建立树据行
-      var cnt = o.rows.count;
-      for(var n=0; n<cnt; n++){
-         o.buildRow(o.rows.get(n));
-      }
-      // 设置按键
-      var bs = o.buttons;
-      for(var n=0; n<bs.count; n++){
-    	  o.pushButton(bs.value(n));
-      }
-      // 设置数据
-      o.dsPageSize = o._dispCount;
-   }
-   return r;
-}
-//==========================================================
 // <T>处理工作模式转换。</T>
 //
 // @method
@@ -762,8 +898,8 @@ function FGridControl_oeMode(e){
    var o = this;
    o.dispUpdate = true;
    o.dispDelete = true;
-   o.base.FContainer.oeMode.call(o, e);
-   o.base.MDisplay.oeMode.call(o, e);
+   o.__base.FContainer.oeMode.call(o, e);
+   o.__base.MDisplay.oeMode.call(o, e);
    // 根据工作模式获得设置信息
    o._editable = o.canEdit(e.mode);
    // 返回处理结果
@@ -778,14 +914,14 @@ function FGridControl_oeMode(e){
 //==========================================================
 function FGridControl_oeProgress(e){
    var o = this;
-   if('none' == o.hPanel.currentStyle.display){
+   if('none' == o._hPanel.currentStyle.display){
       return;
    }
    // 查找处理中的底板
-   var hdp = o.hDelayPanel;
+   var hdp = o._hDelayPanel;
    if(!hdp){
       // 建立处理中的底板
-      hdp = o.hDelayPanel = RBuilder.appendDiv(o.hBorderPanel);
+      hdp = o._hDelayPanel = RBuilder.appendDiv(o.hBorderPanel);
       var st = hdp.style;
       st.position = 'absolute';
       st.zIndex = RLayer.next();
@@ -796,14 +932,14 @@ function FGridControl_oeProgress(e){
       st.height = '100%';
       st.display = 'none';
       // 建立加载中的表单
-      var hdf = o.hDelayForm = RBuilder.appendTable(hdp);
+      var hdf = o._hDelayForm = RBuilder.appendTable(hdp);
       hdf.style.width = '100%';
       hdf.style.height = '100%';
       var hc = hdf.insertRow().insertCell();
       hc.align = 'center';
       hc.vAlign = 'middle';
       RBuilder.appendIcon(hc, 'ctl.FGridControl_Loading')
-      var t = o.hDelayText = RBuilder.append(hc, 'SPAN');
+      var t = o._hDelayText = RBuilder.append(hc, 'SPAN');
       t.innerHTML = "<BR><BR><FONT color='red'><B>" + RContext.get('FGridControl:Loading') + "</B></FONT>";
    }
    // 根据可见性设置底板
@@ -820,69 +956,6 @@ function FGridControl_oeProgress(e){
    }
    o.refreshHint();
    return EEventStatus.Stop;
-}
-
-//==========================================================
-// <T>初始化表格。</T>
-//
-// @method
-//==========================================================
-function FGridControl_construct() {
-   var o = this;
-   o.base.FContainer.construct.call(o);
-   o.base.MDataset.construct.call(o);
-   // 初始化
-   o._columns = new TMap();
-   o.buttons = new TMap();
-   o.rows = new TList();
-   // 设置获取行数
-   if(o._dispCount < 0){
-      o.dsPageSize = 400;
-   }
-   // 建立监听
-   o.lsnsRowClick = new TListeners();
-   o.lsnsRowDblClick = new TListeners();
-   // 建立事件
-   o.__clickRowEvent = new TEvent();
-   o.__doubleClickRowEvent = new TEvent();
-   // 建立状态列
-   var col = o._statusColumn = RControl.create(FColumnStatus);
-   col.table = this;
-   col.name = '_s';
-   o._columns.set(col.name, col);
-   var cols = o._selectColumn = RControl.create(FColumnSelected);
-   cols.table = this;
-   cols.name = '_select';
-   o._columns.set(cols.name, cols);
-   // 建立延迟加载数据线程
-   var a = o.__loadActive = new TActive(o, o.onLoadDatasetDelay);
-   a.status = EActive.Sleep;
-   RConsole.find(FActiveConsole).push(a);
-   // 创建刷新异步事件
-   o.eventResizeAfter = new TEvent(o, 'ResizeAfter', o.onResizeAfter);
-}
-
-//==========================================================
-function FGridControl_buildNavigatorButton(hParent, iconBf, text, iconAf, name) {
-   var o = this;
-   var h = RBuilder.append(hParent, 'SPAN', o.style('Button'));
-   h.style.cursor = 'hand';
-   h.style.paddingLeft = '10';
-   o.attachEvent('onButtonMouseDown', h);
-   if (iconBf) {
-      RBuilder.appendIcon(h, iconBf);
-   }
-   if(text){
-      if(name){
-         o[name + 'Text'] = RBuilder.appendText(h, text);
-      }else{
-         RBuilder.appendText(h, text);
-      }
-   }
-   if(iconAf){
-      RBuilder.appendIcon(h, iconAf);
-   }
-   return h;
 }
 
 //==========================================================
@@ -906,7 +979,7 @@ function FGridControl_isFormLinked(){
 //    <L value='false'>无</L>
 //==========================================================
 function FGridControl_isDataSelected(){
-   var rs = this.rows;
+   var rs = this._rows;
    for(var n=rs.count-1; n>=0; n--){
       if(rs.get(n).isSelect){
          return true;
@@ -922,7 +995,7 @@ function FGridControl_isDataSelected(){
 //    <L value='false'>未变化</L>
 //==========================================================
 function FGridControl_isDataChanged(){
-   var rs = this.rows;
+   var rs = this._rows;
    for(var n=rs.count-1; n>=0; n--){
       if(rs.get(n).isDataChanged()){
          return true;
@@ -964,22 +1037,23 @@ function FGridControl_getFormLink(t){
 //------------------------------------------------------------
 function FGridControl_getHeadMode(e){
    var o = this;
-   var p = RHtml.point(o.hHeadForm);
+   return;
+   var p = RHtml.point(o._hHeadForm);
    var x = e.srcElement.offsetLeft + e.x - p.x;
    var cs = o._columns;
    // 判定改变大小的范围
    for(var n = 0; n<cs.count; n++){
       var c = cs.value(n);
       if(c.dispSize){
-         var l = c.hPanel.offsetLeft + c.hPanel.offsetWidth - p.x;
-         o.hoverCellLength = c.hPanel.offsetWidth;
+         var l = c._hPanel.offsetLeft + c._hPanel.offsetWidth - p.x;
+         o.hoverCellLength = c._hPanel.offsetWidth;
          if(l - 6 <= x && x<=l){
             o.hoverHead = c;
-            return EColumnMode.Size;
+            return EGridColumn.Size;
          }
       }
    }
-   return EColumnMode.None;
+   return EGridColumn.None;
 }
 
 //==========================================================
@@ -1008,13 +1082,13 @@ function FGridControl_getRowBar(){
 function FGridControl_calculateDataSize(){
    var o = this;
    // 获得数据结构
-   var r = o.__dataRect;
+   var r = o._dataRect;
    if(!r){
-      r = o.__dataRect = new TRect();
+      r = o._dataRect = new TRect();
    }
    // 计算范围
    var hcfh = o.hTitleForm ? o.hTitleForm.offsetHeight : 0;
-   var hfph = o.hFixPanel ? o.hFixPanel.offsetHeight : 0;
+   var hfph = o._hFixPanel ? o._hFixPanel.offsetHeight : 0;
    r.left = 0;
    r.top = hfph + hcfh;;
    r.setWidth(o.hBorderPanel.offsetWidth);
@@ -1031,7 +1105,7 @@ function FGridControl_calculateDataSize(){
 //==========================================================
 function FGridControl_createRow() {
    var o = this;
-   var r = RClass.create(o.__rowClass);
+   var r = RClass.create(o._rowClass);
    r.table = r.parent = o;
    return r;
 }
@@ -1045,10 +1119,10 @@ function FGridControl_createRow() {
 //==========================================================
 function FGridControl_hasVisibleRow() {
    var o = this;
-   var rs = o.rows;
+   var rs = o._rows;
    for(var n = 0; n<rs.count; n++){
 	   var rt = rs.get(n);
-	   if(rt.__visible){
+	   if(rt._visible){
 	      return true;
 	   }
    }
@@ -1067,14 +1141,14 @@ function FGridControl_insertRow(i, r){
    r.index = i;
    r.build();
    // 追加到表的数据行集内
-   if(r.hFixPanel){
-      o.hFixRows.appendChild(r.hFixPanel);
-      RHtml.tableMoveRow(o.hColumnForm, r.hFixPanel.rowIndex, i + 2);
+   if(r._hFixPanel){
+      o._hFixRows.appendChild(r._hFixPanel);
+      RHtml.tableMoveRow(o._hColumnForm, r._hFixPanel.rowIndex, i + 2);
    }
-   o.hRows.appendChild(r.hPanel);
-   RHtml.tableMoveRow(o.hDataForm, r.hPanel.rowIndex, i + 2);
+   o._hRows.appendChild(r._hPanel);
+   RHtml.tableMoveRow(o._hContentForm, r._hPanel.rowIndex, i + 2);
    r.refreshStyle();
-   o.rows.insert(i, r);
+   o._rows.insert(i, r);
 }
 
 //==========================================================
@@ -1086,7 +1160,7 @@ function FGridControl_insertRow(i, r){
 //==========================================================
 function FGridControl_syncRow(i){
    var o = this;
-   var rs = o.rows;
+   var rs = o._rows;
    var r = rs.get(i);
    if(!r){
       // 循环建立所有行
@@ -1096,10 +1170,10 @@ function FGridControl_syncRow(i){
          r.index = n;
          r.build();
          // 追加到表的数据行集内
-         if(r.hFixPanel){
-            o.hFixRows.appendChild(r.hFixPanel);
+         if(r._hFixPanel){
+            o._hFixRows.appendChild(r._hFixPanel);
          }
-         o.hRows.appendChild(r.hPanel);
+         o._hRows.appendChild(r._hPanel);
          rs.push(r);
       }
    }
@@ -1119,7 +1193,7 @@ function FGridControl_syncRow(i){
 // @return TRow 数据行
 //==========================================================
 function FGridControl_getCurrentRow(){
-   var c = this.__focusCell;
+   var c = this._focusCell;
    if(c){
       return c.row.saveRow();
    }
@@ -1132,7 +1206,7 @@ function FGridControl_getCurrentRow(){
 // @return TRow 数据行
 //==========================================================
 function FGridControl_getSelectedRow(){
-   var rs = this.rows;
+   var rs = this._rows;
    var c = rs.count;
    for(var n=0; n<c; n++){
       var r = rs.get(n);
@@ -1150,7 +1224,7 @@ function FGridControl_getSelectedRow(){
 //==========================================================
 function FGridControl_getSelectedRows(){
    var ls = new TList();
-   var rs = this.rows;
+   var rs = this._rows;
    var c = rs.count;
    for(var n=0; n<c; n++){
       var r = rs.get(n);
@@ -1169,7 +1243,7 @@ function FGridControl_getSelectedRows(){
 //==========================================================
 function FGridControl_getChangedRows(){
    var ls = new TList();
-   var rs = this.rows;
+   var rs = this._rows;
    var c = rs.count;
    for(var n=0; n<c; n++){
       var r = rs.get(n);
@@ -1190,7 +1264,7 @@ function FGridControl_getChangedRows(){
 //==========================================================
 function FGridControl_getRows(){
    var ls = new TList();
-   var rs = this.rows;
+   var rs = this._rows;
    var c = rs.count;
    for(var n=0; n<c; n++){
 	  var r = rs.get(n);
@@ -1210,12 +1284,12 @@ function FGridControl_getRows(){
 function FGridControl_refreshHint(){
    var o = this;
    var h = o.hHint;
-   var ds = o.__dataset;
+   var ds = o._dataset;
    if(ds && h){
       var ci = 0;
       var r = o.getSelectedRow();
       if(r){
-         ci = o.rows.indexOf(r)+1;
+         ci = o._rows.indexOf(r)+1;
       }
       //h.innerText = '[' + RContext.get('FGridControl:Row') + ci + '/' + o.dsViewer.count + '/' + ds.total +" "+ RContext.get('FGridControl:Page') + (ds.pageIndex + 1) + '/' + ds.pageCount + ']';
       h.innerHTML ='共' +"<FONT color='red' style='font-weight:BOLD '>"+ds.pageCount +"</FONT>" + '页' + "<FONT color='red' style='font-weight:BOLD '>"+ds.total +"</FONT>" + '条记录，' + '当前选中第'+"<FONT color='red' style='font-weight:BOLD '>"+(ds.pageIndex + 1)+"</FONT>" +'页第'+ "<FONT color='red' style='font-weight:BOLD '>"+ci+"</FONT>" + '条记录';
@@ -1237,7 +1311,7 @@ function FGridControl_refreshSelected(){
 	// 设置全选的复选框
 	sc.hSelected.checked = false;
 	// 设置各行的选择复选框
-	var rs = o.rows;
+	var rs = o._rows;
 	var rc = rs.count;
 	for(var n = 0; n < rc; n++){
 	   var r = rs.get(n);
@@ -1255,11 +1329,11 @@ function FGridControl_refreshSelected(){
 function FGridControl_hoverRow(r, f){
    var o = this;
    if(f){
-      o.__hoverRow = r;
+      o._hoverRow = r;
       r.refreshStyle();
    }else{
-      if(o.__hoverRow == r){
-         o.__hoverRow = null;
+      if(o._hoverRow == r){
+         o._hoverRow = null;
       }
       r.refreshStyle();
    }
@@ -1279,7 +1353,7 @@ function FGridControl_selectRow(row, reset, force) {
    var o = this;
    var has = false;
    if(reset){
-      var rs = o.rows;
+      var rs = o._rows;
       var c = rs.count;
       for(var n=0; n<c; n++){
          var r = rs.get(n);
@@ -1323,7 +1397,7 @@ function FGridControl_clearSelectRow(row) {
 //==========================================================
 function FGridControl_clearSelectRows() {
     var o = this;
-    var rs = o.rows;
+    var rs = o._rows;
     for(var n = 0; n < rs.count; n++){
        rs.get(n).isSelect = false;
     }
@@ -1332,7 +1406,7 @@ function FGridControl_clearSelectRows() {
 
 //==========================================================
 function FGridControl_clickCell(c){
-   this.__focusCell = c;
+   this._focusCell = c;
 }
 
 //==========================================================
@@ -1340,12 +1414,12 @@ function FGridControl_clickRow(r){
    var o = this;
    // 响应监听
    o.lsnsRowClick.process(r);
-   o.__focusRow = r;
+   o._focusRow = r;
    if(o.callEvent('onTableRowClick', r)){
 	   return;
    }
    // 发布事件
-   var e = o.__clickRowEvent;
+   var e = o._clickRowEvent;
    e.source = o;
    e.caller = r;
    e.handle = 'onTableRowClick';
@@ -1372,7 +1446,7 @@ function FGridControl_doubleClickRow(r){
       return;
    }
    // 发布事件
-   var e = o.__doubleClickRowEvent;
+   var e = o._doubleClickRowEvent;
    e.source = o;
    e.caller = r;
    e.handle = 'onTableRowDoubleClick';
@@ -1440,19 +1514,6 @@ function FGridControl_doSearch(){
    o.dsSearch();
 }
 
-// ------------------------------------------------------------
-function FGridControl_push(c){
-   var o = this;
-   o.base.FContainer.push.call(o, c);
-   if(RClass.isClass(c, FColumn)){
-      c.table = o;
-      o._columns.set(c.name, c);
-   }else if(RClass.isClass(c, FTableButton)){
-      c.table = o;
-      o.buttons.set(c.name, c);
-   }
-}
-
 //==========================================================
 // <T>设置当前控件的焦点。</T>
 //
@@ -1471,7 +1532,7 @@ function FGridControl_focus(){
 //==========================================================
 function FGridControl_pack(){
    var o = this;
-   var rfs = o.rows;
+   var rfs = o._rows;
    var ct = rfs.count;
    var root = new TNode('Dataset');
    for(var n = 0; n < ct; n++){
@@ -1493,8 +1554,8 @@ function FGridControl_pack(){
 //==========================================================
 function FGridControl_setVisible(v){
    var o = this;
-   o.base.FContainer.setVisible.call(o, v);
-   o.base.MHorizontal.setVisible.call(o, v);
+   o.__base.FContainer.setVisible.call(o, v);
+   o.__base.MHorizontal.setVisible.call(o, v);
 }
 
 //==========================================================
@@ -1505,7 +1566,7 @@ function FGridControl_setVisible(v){
 //==========================================================
 function FGridControl_setButtonVisible(n, v){
    var o = this;
-   var b = o.buttons.get(n);
+   var b = o._buttons.get(n);
    if(b){
       b.setVisible(v);
    }
@@ -1518,7 +1579,7 @@ function FGridControl_setButtonVisible(n, v){
 //==========================================================
 function FGridControl_hideRows(){
    var o = this;
-   var rs = o.rows;
+   var rs = o._rows;
    for(var n = rs.count-1; n >= 0 ; n--){
       rs.get(n).setVisible(false);
    }
@@ -1531,7 +1592,7 @@ function FGridControl_hideRows(){
 //==========================================================
 function FGridControl_refreshStyle(){
    var o = this;
-   var rs = o.rows;
+   var rs = o._rows;
    var c = rs.count;
    for(var n=0; n<c; n++){
       rs.get(n).refreshStyle();
@@ -1545,30 +1606,30 @@ function FGridControl_refreshStyle(){
 //==========================================================
 function FGridControl_dispose(){
    var o = this;
-   o.base.FContainer.dispose.call(o);
+   o.__base.FContainer.dispose.call(o);
    o.hBorderPanel = null;
-   o.hDelayPanel = null;
-   o.hDelayForm = null;
-   o.hFixPanel = null;
-   o.hFixForm = null;
-   o.hFixHead = null;
-   o.hFixSearch = null;
-   o.hHeadPanel = null;
-   o.hHeadForm = null;
-   o.hHead = null;
-   o.hSearch = null;
-   o.hColumnPanel = null;
-   o.hColumnForm = null;
-   o.hFixRows = null;
-   o.hFixRowLine = null;
-   o.hDataPanel = null;
-   o.hDataForm = null;
-   o.hRows = null;
-   o.hRowLine = null;
-   o.hHintForm = null;
-   o.hInsertButton = null;
-   o.hExtendButton = null;
-   o.hExtendText = null;
+   o._hDelayPanel = null;
+   o._hDelayForm = null;
+   o._hFixPanel = null;
+   o._hFixForm = null;
+   o._hFixHead = null;
+   o._hFixSearch = null;
+   o._hHeadPanel = null;
+   o._hHeadForm = null;
+   o._hHead = null;
+   o._hSearch = null;
+   o._hColumnPanel = null;
+   o._hColumnForm = null;
+   o._hFixRows = null;
+   o._hFixRowLine = null;
+   o._hContentPanel = null;
+   o._hContentForm = null;
+   o._hRows = null;
+   o._hRowLine = null;
+   o._hHintForm = null;
+   o._hInsertButton = null;
+   o._hExtendButton = null;
+   o._hExtendText = null;
 }
 
 //==========================================================
@@ -1581,7 +1642,7 @@ function FGridControl_dump(s) {
    s = RString.nvlStr(s);
    s.appendLine(RClass.name(o));
    // Rows
-   var rs = o.rows;
+   var rs = o._rows;
    for(var n = 0; n < rs.count; n++) {
       s.appendLine(rs.get(n).dump());
    }
@@ -1609,7 +1670,7 @@ function FGridControl_buildRows(){
    return;
    var o = this;
    // 如果行还没有建立的话，则建立行记录
-   var rs = o.rows;
+   var rs = o._rows;
    if(!rs.count){
       // 循环建立所有行
       var c = o._dispCount;
@@ -1619,7 +1680,7 @@ function FGridControl_buildRows(){
          r.table = this;
          r.build();
          // 追加到表的数据行集内
-         o.hRows.appendChild(r.hPanel);
+         o._hRows.appendChild(r._hPanel);
          rs.push(r);
       }
    }
@@ -1628,11 +1689,11 @@ function FGridControl_buildRows(){
 // ------------------------------------------------------------
 function FGridControl_createChild(config) {
    var o = this;
-   var c = o.base.FContainer.createChild.call(o, config);
+   var c = o.__base.FContainer.createChild.call(o, config);
    if(RClass.isClass(c, FRow)){
       c.table = o;
       c.row = o.dsLoadRowNode(config);
-      o.rows.push(c);
+      o._rows.push(c);
       return null;
    }else if(RClass.isClass(c, FColumnEditControl)){
       c.table = o;
@@ -1644,7 +1705,7 @@ function FGridControl_createChild(config) {
 }
 // ------------------------------------------------------------
 function FGridControl_setStyleStatus(row, status) {
-   var hRow = row.hPanel;
+   var hRow = row._hPanel;
    if (hRow) {
       switch (status) {
          case EStyle.Normal:
@@ -1683,8 +1744,8 @@ function FGridControl_clearSelectAll() {
 
 //------------------------------------------------------------
 function FGridControl_appendRow(row) {
-   this.hRows.appendChild(row.hRow);
-   this.rows.push(row);
+   this._hRows.appendChild(row._hRow);
+   this._rows.push(row);
 }
 // ------------------------------------------------------------
 // row
@@ -1711,34 +1772,34 @@ function FGridControl_deleteRow(r) {
 // ------------------------------------------------------------
 function FGridControl_clearRows() {
    var o = this;
-   var c = o.rows.count;
+   var c = o._rows.count;
    for(var n=0; n<c; n++){
-      var r = o.rows.get(n);
+      var r = o._rows.get(n);
       if(r){
          r.dispose();
       }
    }
-   o.rows.clear();
-   RHtml.clear(o.hRows);
+   o._rows.clear();
+   RHtml.clear(o._hRows);
 }
 // ------------------------------------------------------------
 function FGridControl_onColumnTreeService(g){
    var o = this;
    var d = g.resultDatasets.get(g.path);
-   var rs = d.rows;
+   var rs = d._rows;
    if(rs && rs.count > 0){
       var pr = o.focusRow;
       pr.extdStatus = true;
       pr.psResize();
-      var idx = pr.hPanel.rowIndex + 1;
+      var idx = pr._hPanel.rowIndex + 1;
       for(var n = 0; n < rs.count; n++){
          var r = RClass.create(FRow);
          r.table = o;
          pr.childRows.push(r);
          r.parentRow = pr;
-         r.buildChild(o.hFixRows, o.hRows, idx + n);
+         r.buildChild(o._hFixRows, o._hRows, idx + n);
          r.loadRow(rs.get(n));
-         //o.rows.push(r);
+         //o._rows.push(r);
       }
    }
 }

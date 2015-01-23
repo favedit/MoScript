@@ -1,8 +1,9 @@
 //==========================================================
 // <T>文本编辑单元格控件。</T>
 //
-// @class FCellEditControl, MFocus
-// @history 091125 MAOCY 创建
+// @class
+// @author maocy
+// @version 150123
 //==========================================================
 function FCellEdit(o){
    o = RClass.inherits(this, o, FCellEditControl, MFocus);

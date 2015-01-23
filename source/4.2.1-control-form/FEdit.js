@@ -8,8 +8,28 @@
 function FEdit(o){
    o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
    //..........................................................
+   // @property
+   o._inputSize         = RClass.register(o, new APtySize2('_inputSize'));
+   //..........................................................
    // @style
-   o._styleEdit       = RClass.register(o, new AStyle('_styleEdit', 'Edit'));
+   o._styleInput        = RClass.register(o, new AStyle('_styleInput', 'Input'));
+   //..........................................................
+   // @html
+   o._hInput            = null;
+   //..........................................................
+   // @event
+   o.onBuildEditorValue = FEdit_onBuildEditorValue;
+   //..........................................................
+   // @method
+   o.construct          = FEdit_construct;
+
+
+
+
+
+
+
+
    //o.onKeyDown    = RClass.register(o, new AEventKeyDown('onKeyDown'));
    //o.onKeyPress   = RClass.register(o, new AEventKeyPress('onKeyPress'));
    //o.onKeyUp      = RClass.register(o, new AEventKeyUp('onKeyUp'));
@@ -23,7 +43,6 @@ function FEdit(o){
    //..........................................................
    // @event
    //o.onDataKeyDown = FEdit_onDataKeyDown;
-   o.onBuildEditorValue   = FEdit_onBuildEditorValue;
    //..........................................................
    // @method
    //o.formatValue   = FEdit_formatValue;
@@ -36,6 +55,53 @@ function FEdit(o){
    //o.clone         = FEdit_clone;
    return o;
 }
+
+//==========================================================
+// <T>建立编辑器内容。</T>
+//
+// @method
+// @param p:event:TEventProcess 事件对象
+//==========================================================
+function FEdit_onBuildEditorValue(p){
+   var o = this;
+   //var h = o.hValue = RBuilder.appendTable(o._hValuePanel, o.styleName('ValuePanel'));
+   //htb.style.tableLayout = 'fixed';
+   //var hr = o.hEdit = htb.insertRow();
+   // 建立修改标志
+   //o.onBuildChange(hr.insertCell());
+   // 建立编辑控件
+   //var hep = hr.insertCell();
+   var he = o._hInput = RBuilder.appendEdit(o._hValuePanel, o.styleName('Input'));
+   // 设置大小
+   RHtml.setSize(he, o._inputSize);
+   // 设置可以输入的最大长度
+   if(o._editLength){
+      he.maxLength = o._editLength;
+   }
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FEdit_construct(){
+   var o = this;
+   o.__base.FEditControl.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 //==========================================================
 // <T>数据区按键按下事件。</T>
@@ -65,27 +131,6 @@ function FEdit_onDataKeyDown(s, e){
    }
 }
 
-//==========================================================
-// <T>建立编辑器内容。</T>
-//
-// @method
-// @param e:event:TEvent 事件对象
-//==========================================================
-function FEdit_onBuildEditorValue(e){
-   var o = this;
-   //var h = o.hValue = RBuilder.appendTable(o._hValuePanel, o.styleName('ValuePanel'));
-   //htb.style.tableLayout = 'fixed';
-   //var hr = o.hEdit = htb.insertRow();
-   // 建立修改标志
-   //o.onBuildChange(hr.insertCell());
-   // 建立编辑控件
-   //var hep = hr.insertCell();
-   var he = o._hValue = RBuilder.appendEdit(o._hValuePanel, o.styleName('Edit'));
-   // 设置可以输入的最大长度
-   if(o._editLength){
-      he.maxLength = o._editLength;
-   }
-}
 
 //==========================================================
 // <T>格式化数据。</T>

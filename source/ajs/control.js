@@ -28,6 +28,66 @@ var EBorderStyle = new function EBorderStyle(){
    o.Hover    = 3;
    return o;
 }
+var EColor = new function EColor(){
+   var o = this;
+   o.Normal        = '#FFFFFF';
+   o.Select        = '#F8C59A';
+   o.Valid         = '#FFCCCC';
+   o.Invalid       = '#FFCCCC';
+   o.Edit          = '#FFFFFF';
+   o.EditHover     = '#EBFFFF';
+   o.Require       = '#FF0000';
+   o.Readonly      = '#F0F0F0';
+   o.Text          = '#000000';
+   o.TextEdit      = '#0066FF';
+   o.TextReadonly  = '#333333';
+   o.TextInvalid   = 'red';
+   o.Delete        = '#DDDDDD';
+   o.ColumnReadonly = '#FFFFFF';
+   o.Rows          = new Array('#FFFFFF', '#FAFAFA');
+   o.RowSelect     = '#cde5ff';
+   o.RowHover      = '#E8E8FF';
+   o.RowEdit       = '#FFFFFF';
+   o.RowEditSelect = '#FDEBDB';
+   o.RowEditHover  = '#F8F8E0';
+   o.RoundReadonly = new Array(
+      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
+      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
+      ['#24C2DB', '#CFF6F6', '#F8F8F8', '#FFFFFF', '#2AD6F0'],
+      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
+      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
+   o.RoundHover = new Array(
+      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
+      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
+      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
+      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
+      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
+   o.RoundEdit = new Array(
+      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
+      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
+      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
+      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
+      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
+   o.RoundDropReadonly = new Array(
+      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
+      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
+      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
+      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
+      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
+   o.RoundDropHover = new Array(
+      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
+      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
+      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
+      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
+      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
+   o.RoundDropEdit = new Array(
+      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
+      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
+      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
+      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
+      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
+   return o;
+}
 var EDataAction = new function EDataAction(){
    var o = this;
    o.Fetch     = 'fetch';
@@ -65,17 +125,6 @@ var EDirection = new function EDirection(){
    var o = this;
    o.Horizontal = 'H';
    o.Vertical   = 'V';
-   return o;
-}
-var EDisplayMode = new function EDisplayMode(){
-   var o = this;
-   o.Display = 'P';
-   o.Search = 'S';
-   o.Design = 'G';
-   o.Insert  = 'I';
-   o.Update = 'U';
-   o.Delete = 'D';
-   o.Zoom = 'Z';
    return o;
 }
 var EEditConfig = new function(){
@@ -143,6 +192,17 @@ var ELabelPosition = new function ELabelPosition(){
    o.Bottom = 'bottom';
    return o;
 }
+var ELayout = new function ELayout(){
+   var o = this;
+   o.Display = 'P';
+   o.Search  = 'S';
+   o.Design  = 'G';
+   o.Insert  = 'I';
+   o.Update  = 'U';
+   o.Delete  = 'D';
+   o.Zoom    = 'Z';
+   return o;
+}
 var EPanel = new function EPanel(){
    var o = this;
    o.Container = 0;
@@ -178,6 +238,14 @@ var ERowStatus = new function ERowStatusFace(){
    o.Insert = 'I';
    o.Update = 'U';
    o.Delete  = 'D';
+   return o;
+}
+var ESize = new function ESize(){
+   var o = this;
+   o.Normal     = 0
+   o.Horizontal = 1
+   o.Vertical   = 2
+   o.Both       = 3;
    return o;
 }
 function FComponent(o){
@@ -365,6 +433,8 @@ function FComponent_innerDump(s, l){
 }
 function FContainer(o){
    o = RClass.inherits(this, o, FControl, MContainer);
+   o.oeBuild     = FContainer_oeBuild
+   o.createChild = FContainer_createChild;
    o.oeDesign            = RMethod.empty;
    o.panel               = FContainer_panel;
    o.focusControl        = FContainer_focusControl;
@@ -372,6 +442,25 @@ function FContainer(o){
    o.psBuildChildren     = FContainer_psBuildChildren;
    o.setChildrenProperty = FContainer_setChildrenProperty;
    return o;
+}
+function FContainer_oeBuild(p){
+   var o = this;
+   o.__base.FControl.oeBuild.call(o, p)
+   if(p.isAfter()){
+      var cs = o._components;
+      if(cs){
+         var c = cs.count();
+         for(var i = 0; i < c; i++){
+            o.appendChild(cs.value(i));
+         }
+      }
+   }
+   return EEventStatus.Continue;
+}
+function FContainer_createChild(p){
+   var c = RControl.newInstance(p.name());
+   c._parent = this;
+   return c;
 }
 function FContainer_panel(t){
    var o = this;
@@ -432,10 +521,12 @@ function FControl(o){
    o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap', null, false));
    o._hint          = RClass.register(o, new APtyString('_hint'));
    o._stylePanel    = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
+   o._layoutCd      = ELayout.Display;
+   o._sizeCd        = ESize.Normal;
+   o._controls      = null;
    o._statusVisible = true;
    o._statusEnable  = true;
    o._statusBuild   = false;
-   o._controls      = null;
    o._hParent       = null;
    o._hPanel        = null;
    o.onEnter        = RClass.register(o, new AEventMouseEnter('onEnter'), FControl_onEnter);
@@ -493,10 +584,10 @@ function FControl_onBuildPanel(e){
    var o = this;
    o._hPanel = RBuilder.createDiv(e.hDocument, o.styleName('Panel'));
 }
-function FControl_oeBuild(e){
+function FControl_oeBuild(p){
    var o = this;
-   if(e.isBefore()){
-      o.onBuildPanel(e);
+   if(p.isBefore()){
+      o.onBuildPanel(p);
       var h = o._hPanel;
       RHtml.linkSet(h, 'control', o);
       o.attachEvent('onEnter', h);
@@ -1497,13 +1588,13 @@ function MDataValue(o){
 }
 function MDesign(o){
    o = RClass.inherits(this, o);
-   o.inDesign      = false;
-   o.storage       = null;
+   o._statusDesign      = false;
+   o._storage       = null;
    o.oeDesign      = MDesign_oeDesign;
-   o.onDesignEnter = RClass.register(o, new HMouseEnter('onDesignEnter'), MDesign_onDesignEnter);
-   o.onDesignLeave = RClass.register(o, new HMouseEnter('onDesignLeave'), MDesign_onDesignLeave);
-   o.onDesignBegin = RClass.register(o, new HMouseEnter('onDesignBegin'), MDesign_onDesignBegin);
-   o.onDesignEnd   = RClass.register(o, new HMouseEnter('onDesignEnd'), MDesign_onDesignEnd);
+   o.onDesignEnter = RClass.register(o, new AEventMouseEnter('onDesignEnter'), MDesign_onDesignEnter);
+   o.onDesignLeave = RClass.register(o, new AEventMouseEnter('onDesignLeave'), MDesign_onDesignLeave);
+   o.onDesignBegin = RClass.register(o, new AEventMouseEnter('onDesignBegin'), MDesign_onDesignBegin);
+   o.onDesignEnd   = RClass.register(o, new AEventMouseEnter('onDesignEnd'), MDesign_onDesignEnd);
    return o;
 }
 function MDesign_oeDesign(e){
@@ -1511,7 +1602,7 @@ function MDesign_oeDesign(e){
       switch(e.mode){
          case EDesign.Move:
             var o = this;
-            var h = o.hPanel;
+            var h = o._hPanel;
             if(e.flag){
                o.isDesign = true;
                RHtml.link(h, 'className', h.className);
@@ -1529,7 +1620,7 @@ function MDesign_oeDesign(e){
             break;
          case EDesign.Border:
             var o = this;
-            var h = o.hPanel;
+            var h = o._hPanel;
             if(e.flag){
                RHtml.link(h, 'styleBorder', h.style.border);
                h.style.border = '1 solid red';
@@ -1540,26 +1631,26 @@ function MDesign_oeDesign(e){
       }
    }
 }
-function MDesign_onDesignEnter(){
+function MDesign_onDesignEnter(p){
    var o = this;
-   o.hPanel.className = o.style('Design');
+   o._hPanel.className = o.style('Design');
 }
-function MDesign_onDesignLeave(){
+function MDesign_onDesignLeave(p){
 }
-function MDesign_onDesignBegin(){
+function MDesign_onDesignBegin(p){
    var o = this;
-   var g = o.storage = RObject.nvlObj(o.storage);
-   g.designStyle = o.hPanel.className;
-   g.designLayer = o.hPanel.zIndex;
-   o.hPanel.className = o.style('DesignDrag');
-   o.inDesign = true;
+   var g = o._storage = RObject.nvlObj(o._storage);
+   g.designStyle = o._hPanel.className;
+   g.designLayer = o._hPanel.zIndex;
+   o._hPanel.className = o.style('DesignDrag');
+   o._statusDesign = true;
 }
-function MDesign_onDesignEnd(){
+function MDesign_onDesignEnd(p){
    var o = this;
-   var g = o.storage = RObject.nvlObj(o.storage);
-   o.hPanel.className = g.designStyle;
-   o.hPanel.zIndex = g.designLayer;
-   o.inDesign = false;
+   var g = o._storage = RObject.nvlObj(o._storage);
+   o._hPanel.className = g.designStyle;
+   o._hPanel.zIndex = g.designLayer;
+   o._statusDesign = false;
 }
 function MDisplay(o){
    o = RClass.inherits(this, o);
@@ -1800,11 +1891,11 @@ function MEditDescriptor_validText(t){
 function MEditReference(o){
    o = RClass.inherits(this, o);
    o._lovService    = RClass.register(o, new APtyString('_lovService', null, EDataService.WebForm));
-   o._lovRefer      = RClass.register(o, new APtyString('_lovRefer'));
+   o._lovReference  = RClass.register(o, new APtyString('_lovReference'));
    o._lovFields     = RClass.register(o, new APtyString('_lovFields'));
    o._lovWhere      = RClass.register(o, new APtyString('_lovWhere'));
    o._lovOrder      = RClass.register(o, new APtyString('_lovOrder'));
-   o.__listView     = null;
+   o._listView     = null;
    o.onListSelected = RMethod.empty;
    o.canListView    = MEditReference_canListView;
    o.setLabelStyle  = MEditReference_setLabelStyle;
@@ -1818,7 +1909,7 @@ function MEditReference_onListClick(e){
    }
 }
 function MEditReference_canListView(){
-   return !RString.isEmpty(this.lovRefer) && this._editable;
+   return !RString.isEmpty(this._lovReference) && this._editable;
 }
 function MEditReference_setLabelStyle(){
    var o = this;
@@ -1830,9 +1921,9 @@ function MEditReference_setLabelStyle(){
 }
 function MEditReference_doListView(cvs){
    var o = this;
-   var v = o.__listView;
+   var v = o._listView;
    if(!v){
-      v = o.__listView = top.RControl.create(top.FListWindow);
+      v = o._listView = top.RControl.create(top.FListWindow);
    }
    v.linkConsole = RConsole;
    v.linkLovControl(o);
@@ -2042,17 +2133,17 @@ function MEditValue_doBlur(){
 }
 function MEditZoom(o){
    o = RClass.inherits(this, o);
-   o._zoomRefer = RClass.register(o, new APtyString('_zoomRefer'));
-   o._zoomField = RClass.register(o, new APtyString('_zoomField'));
+   o._zoomReference = RClass.register(o, new APtyString('_zoomReference'));
+   o._zoomField     = RClass.register(o, new APtyString('_zoomField'));
    o.testZoom   = MEditZoom_testZoom;
    o.doZoom     = MEditZoom_doZoom;
    return o;
 }
 function MEditZoom_testZoom(){
-   return !RString.isEmpty(this.zoomRefer);
+   return !RString.isEmpty(this._zoomReference);
 }
-function MEditZoom_doZoom(v){
-   RFormSpace.doZoom(this, v);
+function MEditZoom_doZoom(p){
+   RFormSpace.doZoom(this, p);
 }
 function MFocus(o){
    o = RClass.inherits(this, o);
@@ -2074,6 +2165,18 @@ function MFocus_focus(){
 }
 function MFocus_blur(){
    RConsole.find(FFocusConsole).blur(this);
+}
+function MHorizontal(o){
+   o = RClass.inherits(this, o);
+   o.setVisible = MHorizontal_setVisible;
+   return o;
+}
+function MHorizontal_setVisible(p){
+   var o = this;
+   var h = o.hPanelLine;
+   if(h){
+      RHtml.displaySet(h, p);
+   }
 }
 function MPadding(o){
    o = RClass.inherits(this, o);
@@ -2127,7 +2230,7 @@ function MProgress(o){
 }
 function MPropertyEdit(o){
    o = RClass.inherits(this, o, MEditValidator, MEditReference, MEditZoom);
-   o._editCase       = RClass.register(o, new APtyString('_editCase'));
+   o._editCaseCd     = RClass.register(o, new APtyString('_editCaseCd'));
    o._editPattern    = RClass.register(o, new APtyString('_editPattern'));
    o._editLength     = RClass.register(o, new APtyInteger('_editLength'));
    o._editComplete   = RClass.register(o, new APtyBoolean('_editComplete'));
@@ -2446,9 +2549,25 @@ function MStyle_styleIcon(n, c){
 function MStyle_styleIconPath(n, c){
    return RResource.iconPath('ctl.' + RClass.name(c ? c : this, true) + '_' + n);
 }
+function MVertical(o){
+   o = RClass.inherits(this, o);
+   o.setVisible = MHorizontal_setVisible;
+   return o;
+}
+function MHorizontal_setVisible(p){
+   var o = this;
+   var h = o.hPanelLine;
+   if(h){
+      RHtml.displaySet(h, p);
+   }
+}
 var RControl = new function RControl(){
    var o = this;
+   o.PREFIX             = 'F';
+   o.newInstance        = RControl_newInstance;
    o.attachEvent        = RControl_attachEvent;
+   o.innerCreate        = RControl_innerCreate;
+   o.create             = RControl_create;
    o.innerbuild         = RControl_innerbuild;
    o.build              = RControl_build;
    o.inMoving           = false;
@@ -2457,8 +2576,6 @@ var RControl = new function RControl(){
    o.instances          = new TList();
    o.events             = new TMap();
    o.controls           = new TMap();
-   o.innerCreate        = RControl_innerCreate;
-   o.create             = RControl_create;
    o.linkEvent          = RControl_linkEvent;
    o.find               = RControl_find;
    o.fromNode           = RControl_fromNode;
@@ -2471,9 +2588,26 @@ var RControl = new function RControl(){
    o.psMode             = RControl_psMode;
    o.isInfo             = RControl_isInfo;
    o.isGroup            = RControl_isGroup;
-   o.newInstance        = RControl_newInstance;
-   o.newInstanceByName  = RControl_newInstance;
    return o;
+}
+function RControl_newInstance(p){
+   var o = this;
+   var r = null;
+   if(p){
+      if(p.constructor == String){
+         var n = null
+         if(RString.startsWith(p, o.PREFIX)){
+            n = p;
+         }else{
+            n = o.PREFIX + p;
+         }
+         r = RClass.create(n);
+      }
+   }
+   if(r == null){
+      throw new TError(o, 'Create instance failure. (name={p})', p);
+   }
+   return r;
 }
 function RControl_attachEvent(c, n, h, m, u){
    var o = this;
@@ -2502,7 +2636,40 @@ function RControl_attachEvent(c, n, h, m, u){
    }
    return e;
 }
-function RControl_innerbuild(pc, px){
+function RControl_innerCreate(pc, px, pa){
+   var o = this;
+   if((pc == null) || (px == null)){
+      return;
+   }
+   if(RClass.isClass(pc, MProperty)){
+      pc.propertyLoad(px)
+   }
+   if(RClass.isClass(pc, MContainer) && px.hasNode()){
+      var ns = px.nodes();
+      var nc = ns.count();
+      for(var i = 0; i < nc; i++){
+         var n = ns.get(i);
+         var c = pc.createChild(n, pa);
+         if(c){
+            o.innerCreate(c, n, pa);
+            pc.push(c);
+         }
+      }
+   }
+}
+function RControl_create(pc, px, pa){
+   var o = this;
+   var c = null;
+   if(pc){
+      c = pc;
+   }else{
+      c = RControl.newInstance(px.name());
+   }
+   o.innerCreate(c, px, pa);
+   return c;
+}
+function RControl_innerbuild(pc, px, pa){
+   var o = this;
    if((pc == null) || (px == null)){
       return;
    }
@@ -2510,66 +2677,22 @@ function RControl_innerbuild(pc, px){
       pc.propertyLoad(px);
    }
    if(RClass.isClass(pc, MContainer) && px.hasNode()){
-      var xs = px.nodes();
-      var xc = xs.count();
-      for(var i = 0; i < xc; i++){
-         var x = xs.get(i);
-         var c = pc.createChild(x);
-         if(c){
-            this.innerbuild(c, x);
-            pc.push(c);
-         }
-      }
-   }
-}
-function RControl_build(pc, px){
-   this.innerbuild(pc, px);
-}
-function RControl_innerCreate(p, x, m){
-   p._emode = m;
-   if(RClass.isClass(p, MConfig)){
-      if(EStatus.Stop == p.loadConfig(x)){
-         return;
-      }
-   }
-   var ns = x.nodes;
-   if(ns){
-      for(var i=0; i<ns.count; i++){
+      var ns = px.nodes();
+      var nc = ns.count();
+      for(var i = 0; i < nc; i++){
          var n = ns.get(i);
-         var c = p.createChild(n);
+         var c = pc.createChild(n);
          if(c){
-            c.parent = p;
-            this.innerCreate(c, n, m);
-            p.push(c);
+            o.innerbuild(c, n);
+            pc.appendChild(c);
          }
       }
    }
 }
-function RControl_create(x, hPanel, m){
-   var o = null;
-   if(RClass.isClass(x, TNode)){
-      if(x){
-         if(x.name == 'CellEdit'){
-            RControl.newInstance(FCellEdit);
-         }else{
-             o = RClass.createByName('F' + x.name);
-             this.innerCreate(o, x, m);
-         }
-         o._emode = m;
-         this.instances.push(o);
-      }
-   }else{
-      o = RClass.create(x);
-      o._emode = m;
-   }
-   if(o){
-      if(x.name != 'CellEdit'){
-         o.psInitialize();
-         o.psBuild();
-         o.setPanel(hPanel);
-      }
-   }
-   return o;
+function RControl_build(pc, px, pa, ph){
+   var o = this;
+   o.innerCreate(pc, px, pa);
+   pc.psBuild(ph);
 }
 function RControl_linkEvent(tc, sc, n, h, m){
    var o = this;
@@ -2679,21 +2802,6 @@ function RControl_isInfo(v){
 }
 function RControl_isGroup(v){
    return v ? (0 == v.indexOf('G#')) : false;
-}
-function RControl_newInstance(f){
-   var o = this;
-   if(o.controls){
-     var n = RMethod.name(f);
-      var c = o.controls.get(n);
-      if(!c){
-         var c = new TControl(n);
-         o.controls.set(n, c);
-      }
-   }
-   return c.newInstance(n);
-}
-function RControl_newInstanceByName(n){
-   return;
 }
 var REvent = new function(){
    var o = this;

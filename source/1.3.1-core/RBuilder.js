@@ -9,33 +9,34 @@ var RBuilder = new function RBuilder(){
    var o = this;
    //..........................................................
    // @method
-   o.create            = RBuilder_create;
-   o.createIcon        = RBuilder_createIcon;
-   o.createImage       = RBuilder_createImage;
-   o.createText        = RBuilder_createText;
-   o.createCheck       = RBuilder_createCheck;
-   o.createRadio       = RBuilder_createRadio;
-   o.createEdit        = RBuilder_createEdit;
-   o.createSpan        = RBuilder_createSpan;
-   o.createDiv         = RBuilder_createDiv;
-   o.createTable       = RBuilder_createTable;
-   o.createTableRow    = RBuilder_createTableRow;
-   o.createTableCell   = RBuilder_createTableCell;
-   o.createFragment    = RBuilder_createFragment;
+   o.create             = RBuilder_create;
+   o.createIcon         = RBuilder_createIcon;
+   o.createImage        = RBuilder_createImage;
+   o.createText         = RBuilder_createText;
+   o.createCheck        = RBuilder_createCheck;
+   o.createRadio        = RBuilder_createRadio;
+   o.createEdit         = RBuilder_createEdit;
+   o.createSpan         = RBuilder_createSpan;
+   o.createDiv          = RBuilder_createDiv;
+   o.createTable        = RBuilder_createTable;
+   o.createTableRow     = RBuilder_createTableRow;
+   o.createTableCell    = RBuilder_createTableCell;
+   o.createFragment     = RBuilder_createFragment;
    // @method
-   o.append            = RBuilder_append;
-   o.appendIcon        = RBuilder_appendIcon;
-   o.appendImage       = RBuilder_appendImage;
-   o.appendEmpty       = RBuilder_appendEmpty;
-   o.appendText        = RBuilder_appendText;
-   o.appendCheck       = RBuilder_appendCheck;
-   o.appendRadio       = RBuilder_appendRadio;
-   o.appendEdit        = RBuilder_appendEdit;
-   o.appendSpan        = RBuilder_appendSpan;
-   o.appendDiv         = RBuilder_appendDiv;
-   o.appendTable       = RBuilder_appendTable;
-   o.appendTableRow    = RBuilder_appendTableRow;
-   o.appendTableCell   = RBuilder_appendTableCell;
+   o.append             = RBuilder_append;
+   o.appendIcon         = RBuilder_appendIcon;
+   o.appendImage        = RBuilder_appendImage;
+   o.appendEmpty        = RBuilder_appendEmpty;
+   o.appendText         = RBuilder_appendText;
+   o.appendCheck        = RBuilder_appendCheck;
+   o.appendRadio        = RBuilder_appendRadio;
+   o.appendEdit         = RBuilder_appendEdit;
+   o.appendSpan         = RBuilder_appendSpan;
+   o.appendDiv          = RBuilder_appendDiv;
+   o.appendTable        = RBuilder_appendTable;
+   o.appendTableRow     = RBuilder_appendTableRow;
+   o.appendTableRowCell = RBuilder_appendTableRowCell;
+   o.appendTableCell    = RBuilder_appendTableCell;
    return o;
 }
 
@@ -43,13 +44,21 @@ var RBuilder = new function RBuilder(){
 // <T>创建一个页面对象。</T>
 //
 // @method
-// @param d:document:HtmlDocument 页面文档对象
+// @param h:html:HtmlTag 页面元素
 // @param t:tagName:String 标签名称
 // @param s:styleName:String 样式名称
 // @return HtmlTag 页面对象
 //==========================================================
-function RBuilder_create(d, t, s){
+function RBuilder_create(h, t, s){
    var o = this;
+   var d = null;
+   if(h.ownerDocument){
+      d = h.ownerDocument;
+   }else if(h.hDocument){
+      d = h.hDocument;
+   }else{
+      d = h;
+   }
    var h = d.createElement(t);
    if(s){
       h.className = s;
@@ -119,7 +128,9 @@ function RBuilder_createImage(d, s, u, w, h){
 //==========================================================
 function RBuilder_createText(d, s, v){
    var r = this.create(d, 'SPAN', s);
-   r.innerHTML = v;
+   if(v){
+      r.innerHTML = v;
+   }
    return r;
 }
 
@@ -309,7 +320,7 @@ function RBuilder_appendImage(p, s, u, w, h){
 // @return HtmlImgTag 空白页面图标对象
 //==========================================================
 function RBuilder_appendEmpty(p, w, h){
-   var r = this.createIcon(p.ownerDocument, 'n', null, w, h);
+   var r = this.createIcon(p.ownerDocument, null, 'n', w, h);
    p.appendChild(r);
    return r;
 }
@@ -450,6 +461,23 @@ function RBuilder_appendTableRow(p, s, i, h){
       r.height = h;
    }
    return r;
+}
+
+//==========================================================
+// <T>追加一个页面行对象，并返回这个页面行对象。</T>
+//
+// @method
+// @param p:parent:HtmlTableTag 表格容器
+// @param s:styleName:String 样式名称
+// @param w:width:Integer 行宽度
+// @param h:height:Integer 行高度
+// @return HtmlTrTag 页面行对象
+//==========================================================
+function RBuilder_appendTableRowCell(p, s, w, h){
+   var o = this;
+   var hr = o.appendTableRow(p, null, null, w);
+   var hc = o.appendTableCell(hr, s, null, h);
+   return hc;
 }
 
 //==========================================================

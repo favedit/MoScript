@@ -12,35 +12,46 @@
 
 <SCRIPT language='javascript' src='../../4.1.1-control/FComponent.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.1.1-control/FControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/FContainer.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/RControl.js'></SCRIPT>
+
 <SCRIPT language='javascript' src='../../4.1.1-control/MSize.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.1.1-control/MEditDescriptor.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.1.1-control/MDataset.js'></SCRIPT>
+
 <SCRIPT language='javascript' src='../../4.2.1-control-form/FEditControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FLabel.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FCheck.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FRadio.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FNumber.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.2.1-control-form/FEdit.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.2.1-control-form/FLayout.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FPanel.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.2.1-control-form/FForm.js'></SCRIPT>
 </HEAD>
 
 <SCRIPT>
+// http://localhost:91/script/test/control-form/form-01.html
 
 function _load(){
    RRuntime.processCd = EProcess.Debug;
    RBrowser.construct();
-   //RStyle.connect();
-   //debugger
-   //var edit = RClass.create(FEdit);
-   //var edit = RClass.create(FControl);
-   //var edit = RClass.create(FEdit);
-   //edit._label = "编号";
-   //edit._labelSize.width = 100;
-   //edit.psBuild(_panel);
+   RBrowser.setContentPath('../..');
+   RWindow.connect(window);
+   // 加载链接
+   var configUrl = 'http://localhost:91/cloud.describe.frame.ws?action=query&code=common.country.CountryForm';
+   var xc = RClass.create(FXmlConnection);
+   var x = xc.send(configUrl);
+   var xform = x.findNode('Form');
+   // 创建表单
    var form = RClass.create(FForm);
-   //_panel.appendChild(edit._hContainer);
+   RControl.build(form, xform, null, _panel);
+   form.setPanel(_panel);
    RDump.dump(form, _dump);
 }
 </SCRIPT>
 
-<BODY scroll='auto' onload='_load()'>
+<BODY scroll='auto' bgcolor='#444444' onload='_load()'>
 <DIV id='_panel'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

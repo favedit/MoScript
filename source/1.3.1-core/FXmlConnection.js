@@ -86,11 +86,13 @@ function FXmlConnection_onConnectionComplete(){
    e.root = r;
    o.lsnsLoad.process(e);
    e.dispose();
-   // 清空属性
-   o._input = null;
-   o._inputNode = null;
-   o._output = null;
-   o._outputNode = null;
+   // 异步处理后清空属性
+   if(o._asynchronous){
+      o._input = null;
+      o._inputNode = null;
+      o._output = null;
+      o._outputNode = null;
+   }
 }
 
 //==========================================================

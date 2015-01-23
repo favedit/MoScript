@@ -9,7 +9,7 @@ function MPropertyEdit(o){
    o = RClass.inherits(this, o, MEditValidator, MEditReference, MEditZoom);
    //..........................................................
    // @property
-   o._editCase       = RClass.register(o, new APtyString('_editCase'));
+   o._editCaseCd     = RClass.register(o, new APtyString('_editCaseCd'));
    o._editPattern    = RClass.register(o, new APtyString('_editPattern'));
    o._editLength     = RClass.register(o, new APtyInteger('_editLength'));
    o._editComplete   = RClass.register(o, new APtyBoolean('_editComplete'));

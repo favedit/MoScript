@@ -1,35 +1,41 @@
-/**************************************************************
- * 可设计控件接口
- * 
- * @manger
- * @author maochunyang
- * @version 1.0.1
- **************************************************************/
+//==========================================================
+// <T>可设计控件接口。</T>
+//
+// @class
+// @author maocy
+// @version 150123
+//==========================================================
 function MDesign(o){
    o = RClass.inherits(this, o);
-   // Attribute
-   o.inDesign      = false;
-   o.storage       = null;
-   // Process
+   //..........................................................
+   // @attribute
+   o._statusDesign      = false;
+   o._storage       = null;
+   //..........................................................
+   // @process
    o.oeDesign      = MDesign_oeDesign;
-   /// @event
-   o.onDesignEnter = RClass.register(o, new HMouseEnter('onDesignEnter'), MDesign_onDesignEnter);
-   /// @event
-   o.onDesignLeave = RClass.register(o, new HMouseEnter('onDesignLeave'), MDesign_onDesignLeave);
-   /// @event
-   o.onDesignBegin = RClass.register(o, new HMouseEnter('onDesignBegin'), MDesign_onDesignBegin);
-   /// @event
-   o.onDesignEnd   = RClass.register(o, new HMouseEnter('onDesignEnd'), MDesign_onDesignEnd);
+   //..........................................................
+   // @event
+   o.onDesignEnter = RClass.register(o, new AEventMouseEnter('onDesignEnter'), MDesign_onDesignEnter);
+   o.onDesignLeave = RClass.register(o, new AEventMouseEnter('onDesignLeave'), MDesign_onDesignLeave);
+   o.onDesignBegin = RClass.register(o, new AEventMouseEnter('onDesignBegin'), MDesign_onDesignBegin);
+   o.onDesignEnd   = RClass.register(o, new AEventMouseEnter('onDesignEnd'), MDesign_onDesignEnd);
    return o;
 }
-// ------------------------------------------------------------
+
+//==========================================================
+// <T>设计处理。</T>
+//
+// @method
+// @param p:process:TEventProcess 事件处理
+//==========================================================
 function MDesign_oeDesign(e){
    if(e.isBefore()){
       switch(e.mode){
          case EDesign.Move:
             // 控件被移动时处理
             var o = this;
-            var h = o.hPanel;
+            var h = o._hPanel;
             if(e.flag){
                o.isDesign = true;
                RHtml.link(h, 'className', h.className);
@@ -48,7 +54,7 @@ function MDesign_oeDesign(e){
          case EDesign.Border:
             // 控件边框被改动时处理
             var o = this;
-            var h = o.hPanel;
+            var h = o._hPanel;
             if(e.flag){
                RHtml.link(h, 'styleBorder', h.style.border);
                h.style.border = '1 solid red';
@@ -59,29 +65,52 @@ function MDesign_oeDesign(e){
       }
    }
 }
-// ------------------------------------------------------------
-function MDesign_onDesignEnter(){
+
+//==========================================================
+// <T>设计进入处理。</T>
+//
+// @method
+// @param p:process:SEvent 事件
+//==========================================================
+function MDesign_onDesignEnter(p){
    var o = this;
-   o.hPanel.className = o.style('Design');
+   o._hPanel.className = o.style('Design');
 }
-// ------------------------------------------------------------
-function MDesign_onDesignLeave(){
+
+//==========================================================
+// <T>设计离开处理。</T>
+//
+// @method
+// @param p:process:SEvent 事件
+//==========================================================
+function MDesign_onDesignLeave(p){
 }
-// ------------------------------------------------------------
-function MDesign_onDesignBegin(){
+
+//==========================================================
+// <T>设计开始处理。</T>
+//
+// @method
+// @param p:process:SEvent 事件
+//==========================================================
+function MDesign_onDesignBegin(p){
    var o = this;
-   var g = o.storage = RObject.nvlObj(o.storage);
-   g.designStyle = o.hPanel.className;
-   g.designLayer = o.hPanel.zIndex;
-   o.hPanel.className = o.style('DesignDrag');
-   o.inDesign = true;
+   var g = o._storage = RObject.nvlObj(o._storage);
+   g.designStyle = o._hPanel.className;
+   g.designLayer = o._hPanel.zIndex;
+   o._hPanel.className = o.style('DesignDrag');
+   o._statusDesign = true;
 }
-// ------------------------------------------------------------
-function MDesign_onDesignEnd(){
+
+//==========================================================
+// <T>设计结束处理。</T>
+//
+// @method
+// @param p:process:SEvent 事件
+//==========================================================
+function MDesign_onDesignEnd(p){
    var o = this;
-   var g = o.storage = RObject.nvlObj(o.storage);
-   o.hPanel.className = g.designStyle;
-   o.hPanel.zIndex = g.designLayer;
-   o.inDesign = false;
+   var g = o._storage = RObject.nvlObj(o._storage);
+   o._hPanel.className = g.designStyle;
+   o._hPanel.zIndex = g.designLayer;
+   o._statusDesign = false;
 }
-// ------------------------------------------------------------
