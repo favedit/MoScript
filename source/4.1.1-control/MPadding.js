@@ -9,16 +9,16 @@ function MPadding(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property SPadding 填充结构
-   o._padding     = RClass.register(o, new APtyPadding('_padding'));
+   o._padding       = RClass.register(o, new APtyPadding('_padding'));
    //..........................................................
    // @method
-   o.construct    = MPadding_construct;
+   o.construct      = MPadding_construct;
    // @method
-   o.padding      = MPadding_padding;
-   o.setPadding   = MPadding_setPadding;
-   o.refreshStyle = MPadding_refreshStyle;
+   o.padding        = MPadding_padding;
+   o.setPadding     = MPadding_setPadding;
+   o.refreshPadding = MPadding_refreshPadding;
    // @method
-   o.dispose      = MPadding_dispose;
+   o.dispose        = MPadding_dispose;
    return o;
 }
 
@@ -33,17 +33,17 @@ function MPadding_construct(){
 }
 
 //==========================================================
-// <T>获得填充信息。</T>
+// <T>获得填充空白。</T>
 //
 // @method
-// @return 填充信息
+// @return 填充空白
 //==========================================================
 function MPadding_padding(){
    return this._padding;
 }
 
 //==========================================================
-// <T>设置四周的空白。</T>
+// <T>设置填充空白。</T>
 //
 // @method
 // @param l:left:Integer 左空白
@@ -52,30 +52,48 @@ function MPadding_padding(){
 // @param b:bottom:Integer 下空白
 //==========================================================
 function MPadding_setPadding(l, t, r, b){
-   return this._padding.set(l, t, r, b);
-}
-
-//==========================================================
-// <T>刷新样式。</T>
-//
-// @method
-//==========================================================
-function MPadding_refreshStyle(){
    var o = this;
    var p = o._padding;
    var h = o.panel(EPanel.Container);
-   if(p.left){
-      h.style.paddingLeft = p.left;
+   // 设置左空白
+   if(l != null){
+      p.left = l;
+      if(h){
+         h.style.paddingLeft = (l == 0) ? null : l + 'px';
+      }
    }
-   if(p.top){
-      h.style.paddingTop = p.top;
+   // 设置上空白
+   if(t != null){
+      p.top = t;
+      if(h){
+         h.style.paddingTop = (t == 0) ? null : t + 'px';
+      }
    }
-   if(p.right){
-      h.style.paddingRight = p.right;
+   // 设置右空白
+   if(r != null){
+      p.right= r;
+      if(h){
+         h.style.paddingRight = (r == 0) ? null : r + 'px';
+      }
    }
-   if(p.bottom){
-      h.style.paddingBottom = p.bottom;
+   // 设置下空白
+   if(b != null){
+      p.bottom = b;
+      if(h){
+         h.style.paddingBottom = (b == 0) ? null : b + 'px';
+      }
    }
+}
+
+//==========================================================
+// <T>刷新填充空白。</T>
+//
+// @method
+//==========================================================
+function MPadding_refreshPadding(){
+   var o = this;
+   var p = o._padding;
+   o.setPadding(p.left, p.top, p.right, p.bottom);
 }
 
 //==========================================================

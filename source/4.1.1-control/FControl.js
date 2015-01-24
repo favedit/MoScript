@@ -63,9 +63,9 @@ function FControl(o){
    o.onResize       = RClass.register(o, new AEventResize('onResize'));
    // @event
    o.onBuildPanel   = FControl_onBuildPanel;
+   o.onBuild        = FControl_onBuild;
    //..........................................................
    // @process
-   o.oeBuild        = FControl_oeBuild;
    o.oeMode         = FControl_oeMode;
    o.oeEnable       = FControl_oeEnable;
    o.oeVisible      = FControl_oeVisible;
@@ -158,43 +158,33 @@ function FControl_onBuildPanel(e){
 // @param p:event:TEventProcess 事件处理
 // @return EEventStatus 处理状态
 //==========================================================
-function FControl_oeBuild(p){
+function FControl_onBuild(p){
    var o = this;
-   // 事件前处理
-   if(p.isBefore()){
-      // 检查状态
-      if(o._statusBuild){
-         throw new TError(o, 'Current control is already build.');
-      }
-      // 建立控件容器
-      o.onBuildPanel(p);
-      // 设置容器样式
-      var h = o._hPanel;
-      RHtml.linkSet(h, 'control', o);
-      // 关联容器事件
-      o.attachEvent('onEnter', h);
-      o.attachEvent('onLeave', h);
-      o.attachEvent('onMouseOver', h);
-      o.attachEvent('onMouseOut', h);
-      o.attachEvent('onMouseDown', h);
-      o.attachEvent('onMouseUp', h);
-      o.attachEvent('onClick', h);
-      o.attachEvent('onDoubleClick', h);
-      //o.attachEvent('onKeyDown', h);
-      //o.attachEvent('onKeyPress', h);
-      //o.attachEvent('onKeyUp', h);
-      o.attachEvent('onResize', h);
-      // 设置容器位置，大小，空余
-      //o.setBounds(o.left, o.top, o.right, o.bottom, true);
-      //o.setSize(o.width, o.height);
-      //o.setPadding(o._padding.left, o._padding.top, o._padding.right, o._padding.bottom, true);
-      // 如果父容器是可以容纳控件的，则将自己添加到父容器
-      //if(RClass.isClass(o.parent, MContainer)){
-      //   o.parent.appendChild(o);
-      //}
-      o._statusBuild = true;
-   }
-   return EEventStatus.Continue;
+   // 建立控件容器
+   o.onBuildPanel(p);
+   // 设置容器样式
+   var h = o._hPanel;
+   RHtml.linkSet(h, 'control', o);
+   // 关联容器事件
+   o.attachEvent('onEnter', h);
+   o.attachEvent('onLeave', h);
+   o.attachEvent('onMouseOver', h);
+   o.attachEvent('onMouseOut', h);
+   o.attachEvent('onMouseDown', h);
+   o.attachEvent('onMouseUp', h);
+   o.attachEvent('onClick', h);
+   o.attachEvent('onDoubleClick', h);
+   //o.attachEvent('onKeyDown', h);
+   //o.attachEvent('onKeyPress', h);
+   //o.attachEvent('onKeyUp', h);
+   o.attachEvent('onResize', h);
+   // 设置容器位置/大小/空白
+   o.refreshBounds();
+   o.refreshPadding();
+   // 如果父容器是可以容纳控件的，则将自己添加到父容器
+   //if(RClass.isClass(o.parent, MContainer)){
+   //   o.parent.appendChild(o);
+   //}
 }
 
 //==========================================================
@@ -690,17 +680,34 @@ function FControl_setPanel(h){
 }
 
 //==========================================================
-// <T>构建页面处理。</T>
+// <T>构建处理。</T>
 //
 // @method
-// @param h:hPanel:HtmlTag 页面元素
+// @param p:html:HtmlTag 页面元素
 //==========================================================
-function FControl_build(h){
+function FControl_build(p){
    var o = this;
-   if(!o._statusBuild){
-      o.psBuild(h);
+   // 检查状态
+   if(o._statusBuild){
+      throw new TError(o, 'Current control is already builded.');
    }
-   o.setPanel(h);
+   // 获得文档对象
+   var d = null;
+   if(p.createElement){
+      d = p;
+   }else if(p.ownerDocument.createElement){
+      d = p.ownerDocument;
+   }else{
+      throw new TError("Build document is invalid. (document={1})", p);
+   }
+   // 构建处理
+   var a = new SArguments();
+   a.owner = o;
+   a.hDocument = d;
+   o.onBuild(a);
+   RObject.free(a);
+   // 设置状态
+   o._statusBuild = true;
 }
 
 //==========================================================

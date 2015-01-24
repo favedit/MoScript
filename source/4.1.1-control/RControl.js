@@ -239,8 +239,8 @@ function RControl_innerbuild(pc, px, pa, ph){
          var n = ns.get(i);
          var c = pc.createChild(n);
          if(RClass.isClass(c, FControl)){
-            c.psBuild(ph);
             o.innerbuild(c, n, pa, ph);
+            c.psBuild(ph);
             pc.appendChild(c);
          }else if(RClass.isClass(c, FComponent)){
             o.innerbuild(c, n, pa, ph);

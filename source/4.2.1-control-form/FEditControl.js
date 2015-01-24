@@ -5,7 +5,7 @@
 //  hContainer<TABLE>
 // ┌-----------------------------------┬-----------------------------------┐
 // │ hLabelPanel<TD>                   │ hEditorPanel<TD>                  │
-// │ hLabelPanel<TABLE>            │ hEditorPanel<TABLE>           │
+// │ hLabelPanel<TABLE>                │ hEditorPanel<TABLE>               │
 // │┌--------------┬---------------┐│┌---------------┬--------------┐│
 // ││hIconPanel<TD>│hTextPanel<TD> │││hValuePanel<TD>│hDropPanel<TD>││
 // ││hIcon<IMG>    │hText<SPAN>    │││hValue<INPUT>  │hDrop<IMG>    ││
@@ -283,7 +283,7 @@ function FEditControl_onBuildLabelIcon(e){
 //==========================================================
 function FEditControl_onBuildLabelText(e){
    var o = this;
-   o._hText = RBuilder.appendSpan(o._hTextPanel);
+   o._hText = RBuilder.appendSpan(o._hTextPanel, null, o._label);
 }
 
 //==========================================================

@@ -11,6 +11,7 @@ var RObject = new function RObject(){
    o.nvl   = RObject_nvl;
    o.clone = RObject_clone;
    o.copy  = RObject_copy;
+   o.free  = RObject_free;
    return o;
 }
 
@@ -70,6 +71,19 @@ function RObject_copy(s, t){
             }
          }
          t[n] = v;
+      }
+   }
+}
+
+//==========================================================
+// <T>释放一个对象。</T>
+//
+// @param p:obejct:Object 对象
+//==========================================================
+function RObject_free(p){
+   if(p){
+      for(var n in p){
+         p[n] = null;
       }
    }
 }

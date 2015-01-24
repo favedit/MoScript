@@ -602,6 +602,8 @@ function FControl_oeBuild(p){
       o.attachEvent('onClick', h);
       o.attachEvent('onDoubleClick', h);
       o.attachEvent('onResize', h);
+      o.refreshBounds();
+      o.refreshPadding();
       o._statusBuild = true;
    }
    return EEventStatus.Continue;
@@ -2183,12 +2185,12 @@ function MHorizontal_setVisible(p){
 }
 function MPadding(o){
    o = RClass.inherits(this, o);
-   o._padding     = RClass.register(o, new APtyPadding('_padding'));
-   o.construct    = MPadding_construct;
-   o.padding      = MPadding_padding;
-   o.setPadding   = MPadding_setPadding;
-   o.refreshStyle = MPadding_refreshStyle;
-   o.dispose      = MPadding_dispose;
+   o._padding       = RClass.register(o, new APtyPadding('_padding'));
+   o.construct      = MPadding_construct;
+   o.padding        = MPadding_padding;
+   o.setPadding     = MPadding_setPadding;
+   o.refreshPadding = MPadding_refreshPadding;
+   o.dispose        = MPadding_dispose;
    return o;
 }
 function MPadding_construct(){
@@ -2199,24 +2201,38 @@ function MPadding_padding(){
    return this._padding;
 }
 function MPadding_setPadding(l, t, r, b){
-   return this._padding.set(l, t, r, b);
-}
-function MPadding_refreshStyle(){
    var o = this;
    var p = o._padding;
    var h = o.panel(EPanel.Container);
-   if(p.left){
-      h.style.paddingLeft = p.left;
+   if(l != null){
+      p.left = l;
+      if(h){
+         h.style.paddingLeft = (l == 0) ? null : l + 'px';
+      }
    }
-   if(p.top){
-      h.style.paddingTop = p.top;
+   if(t != null){
+      p.top = t;
+      if(h){
+         h.style.paddingTop = (t == 0) ? null : t + 'px';
+      }
    }
-   if(p.right){
-      h.style.paddingRight = p.right;
+   if(r != null){
+      p.right= r;
+      if(h){
+         h.style.paddingRight = (r == 0) ? null : r + 'px';
+      }
    }
-   if(p.bottom){
-      h.style.paddingBottom = p.bottom;
+   if(b != null){
+      p.bottom = b;
+      if(h){
+         h.style.paddingBottom = (b == 0) ? null : b + 'px';
+      }
    }
+}
+function MPadding_refreshPadding(){
+   var o = this;
+   var p = o._padding;
+   o.setPadding(p.left, p.top, p.right, p.bottom);
 }
 function MPadding_dispose(){
    var o = this;
@@ -2260,25 +2276,136 @@ function MPropertyEdit_oeValid(e){
 }
 function MSize(o){
    o = RClass.inherits(this, o);
-   o._location = RClass.register(o, new APtyPoint2('_location'));
-   o._size     = RClass.register(o, new APtySize2('_size'));
-   o.onSize    = null;
-   o.construct = MSize_construct;
-   o.calcRect  = MSize_calcRect;
-   o.resize    = MSize_resize;
-   o.setWidth  = MSize_setWidth;
-   o.setHeight = MSize_setHeight;
-   o.setSize   = MSize_setSize;
-   o.setBounds = MSize_setBounds;
-   o.resetSize = MSize_resetSize;
-   o.dispose   = MSize_dispose;
-   o.innerDump = MSize_innerDump;
+   o._location       = RClass.register(o, new APtyPoint2('_location'));
+   o._size           = RClass.register(o, new APtySize2('_size'));
+   o.construct       = MSize_construct;
+   o.left            = MSize_left;
+   o.setLeft         = MSize_setLeft;
+   o.top             = MSize_top;
+   o.setTop          = MSize_setTop;
+   o.location        = MSize_location;
+   o.setLocation     = MSize_setLocation;
+   o.refreshLocation = MSize_refreshLocation;
+   o.width           = MSize_width;
+   o.setWidth        = MSize_setWidth;
+   o.height          = MSize_height;
+   o.setHeight       = MSize_setHeight;
+   o.size            = MSize_size;
+   o.setSize         = MSize_setSize;
+   o.refreshSize     = MSize_refreshSize;
+   o.setBounds       = MSize_setBounds;
+   o.refreshBounds   = MSize_refreshBounds;
+   o.dispose         = MSize_dispose;
+   o.innerDump       = MSize_innerDump;
    return o;
 }
 function MSize_construct(){
    var o = this;
    o._location = new SPoint2();
    o._size = new SSize2();
+}
+function MSize_left(){
+   return this._location.x;
+}
+function MSize_setLeft(p){
+   this.setLocation(p, null);
+}
+function MSize_top(){
+   return this._location.y;
+}
+function MSize_setTop(p){
+   this.setLocation(null, p);
+}
+function MSize_location(){
+   return this._location;
+}
+function MSize_setLocation(x, y){
+   var o = this;
+   var t = o.panel(EPanel.Size);
+   if(x != null){
+      o._location.x = x;
+      if(t){
+         t.style.left = (x == 0) ? null : x + 'px';
+      }
+   }
+   if(y != null){
+      o._location.y = y;
+      if(t){
+         t.style.top = (y == 0) ? null : y + 'px';
+      }
+   }
+}
+function MSize_refreshLocation(){
+   var o = this;
+   o.setLocation(o._location.x, o._location.y);
+}
+function MSize_construct(){
+   var o = this;
+   o._location = new SPoint2();
+   o._size = new SSize2();
+}
+function MSize_width(){
+   return this._size.width;
+}
+function MSize_setWidth(p){
+   this.setSize(p, null);
+}
+function MSize_height(){
+   return this._size.width;
+}
+function MSize_setHeight(p){
+   this.setSize(null, p);
+}
+function MSize_size(){
+   return this._size;
+}
+function MSize_setSize(w, h){
+   var o = this;
+   var t = o.panel(EPanel.Size);
+   if(w != null){
+      o._size.width = w;
+      if(t){
+         t.style.width = (w == 0) ? null : w + 'px';
+      }
+   }
+   if(h != null){
+      o._size.height = h;
+      if(t){
+         t.style.height = (h == 0) ? null : h + 'px';
+      }
+   }
+}
+function MSize_refreshSize(){
+   var o = this;
+   o.setSize(o._size.width, o._size.height);
+}
+function MSize_setBounds(l, t, w, h){
+   var o = this;
+   o.setLocation(l, t);
+   o.setSize(w, h);
+}
+function MSize_refreshBounds(){
+   var o = this;
+   o.refreshLocation();
+   o.refreshSize();
+}
+function MSize_dispose(){
+   var o = this;
+   var v = o._location;
+   if(v){
+      v.dispose();
+      o._location = null;
+   }
+   var v = o._size;
+   if(v){
+      v.dispose();
+      o._size = null;
+   }
+}
+function MSize_innerDump(s, l){
+   var o = this;
+   s.append('MSize:');
+   s.append(o.left, ',', o.top, '-', o.width, ',', o.height, ']');
 }
 function MSize_resize(width, height){
    var sizeable = false;
@@ -2303,29 +2430,16 @@ function MSize_resize(width, height){
       this.onSize();
    }
 }
-function MSize_setWidth(p){
-   this.setSize(p, null);
-}
-function MSize_setHeight(p){
-   this.setSize(null, p);
-}
-function MSize_setSize(w, h){
+function MSize_resetSize(){
    var o = this;
-   var t = this.panel(EPanel.Size);
-   if(w != null){
-      o._size.width = w;
-      if(t){
-         t.style.width = w;
-      }
-   }
-   if(h != null){
-      o._size.height = h;
-      if(t){
-         t.style.height = h;
-      }
-   }
+   o.setBounds(o.left, o.top, o.left+o.width-1, o.top+o.height-1, true)
 }
-function MSize_setBounds(l, t, r, b, force){
+function MSize_calcRect(){
+   this.rect = RRect.nvl(this.rect);
+   RHtml.toRect(this.rect, this.hPanel);
+   return this.rect;
+}
+function MSize_setBounds2(l, t, r, b, force){
    var o = this;
    var h = o.panel(EPanel.Size);
    if(!h){
@@ -2366,33 +2480,6 @@ function MSize_setBounds(l, t, r, b, force){
    if(c && o.onSize){
       o.onSize();
    }
-}
-function MSize_resetSize(){
-   var o = this;
-   o.setBounds(o.left, o.top, o.left+o.width-1, o.top+o.height-1, true)
-}
-function MSize_calcRect(){
-   this.rect = RRect.nvl(this.rect);
-   RHtml.toRect(this.rect, this.hPanel);
-   return this.rect;
-}
-function MSize_dispose(){
-   var o = this;
-   var v = o._location;
-   if(v){
-      v.dispose();
-      o._location = null;
-   }
-   var v = o._size;
-   if(v){
-      v.dispose();
-      o._size = null;
-   }
-}
-function MSize_innerDump(s, l){
-   var o = this;
-   s.append('Size [', RBoolean.toString(o.isSizeable), ':');
-   s.append(o.left, ',', o.top, '-', o.width, ',', o.height, ']');
 }
 function MSizeable(o){
    o = RClass.inherits(this, o);
@@ -3542,7 +3629,7 @@ function FEditControl_onBuildLabelIcon(e){
 }
 function FEditControl_onBuildLabelText(e){
    var o = this;
-   o._hText = RBuilder.appendSpan(o._hTextPanel);
+   o._hText = RBuilder.appendSpan(o._hTextPanel, null, o._label);
 }
 function FEditControl_onBuildLabel(e){
    var o = this;
@@ -3854,6 +3941,7 @@ function FEditControl_dispose(){
 function FForm(o){
    o = RClass.inherits(this, o, FLayout);
    o.onMouseDown        = FForm_onMouseDown;
+   o.construct          = FForm_construct;
    o._dataStatusCd      = ERowStatus.Update;
    o._clearEvent        = null;
    o._resetEvent        = null;
@@ -3866,7 +3954,6 @@ function FForm(o){
    o.lsnsClick          = null;
    o.onLoadDataset      = FForm_onLoadDataset;
    o.onLoadDatasetEnd   = FForm_onLoadDatasetEnd;
-   o.construct          = FForm_construct;
    o.isDataChanged      = FForm_isDataChanged;
    o.getFormLink        = FForm_getFormLink;
    o.allDataComponents  = FForm_allDataComponents;
@@ -3896,6 +3983,10 @@ function FForm(o){
 function FForm_onMouseDown(p){
    var o = this;
 }
+function FForm_construct(){
+   var o = this;
+   o.__base.FLayout.construct.call(o);
+}
 function FForm_onLoadDataset(ds){
    var o = this;
    o.doUpdate(o.dsViewer.current());
@@ -3904,9 +3995,6 @@ function FForm_onLoadDatasetEnd(){
    var o = this;
    o.topControl().topResize();
    o.psProgress(false);
-}
-function FForm_construct(){
-   var o = this;
 }
 function FForm_isDataChanged(){
    var o = this;

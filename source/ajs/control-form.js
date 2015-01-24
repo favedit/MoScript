@@ -495,7 +495,7 @@ function FEditControl_onBuildLabelIcon(e){
 }
 function FEditControl_onBuildLabelText(e){
    var o = this;
-   o._hText = RBuilder.appendSpan(o._hTextPanel);
+   o._hText = RBuilder.appendSpan(o._hTextPanel, null, o._label);
 }
 function FEditControl_onBuildLabel(e){
    var o = this;
@@ -807,6 +807,7 @@ function FEditControl_dispose(){
 function FForm(o){
    o = RClass.inherits(this, o, FLayout);
    o.onMouseDown        = FForm_onMouseDown;
+   o.construct          = FForm_construct;
    o._dataStatusCd      = ERowStatus.Update;
    o._clearEvent        = null;
    o._resetEvent        = null;
@@ -819,7 +820,6 @@ function FForm(o){
    o.lsnsClick          = null;
    o.onLoadDataset      = FForm_onLoadDataset;
    o.onLoadDatasetEnd   = FForm_onLoadDatasetEnd;
-   o.construct          = FForm_construct;
    o.isDataChanged      = FForm_isDataChanged;
    o.getFormLink        = FForm_getFormLink;
    o.allDataComponents  = FForm_allDataComponents;
@@ -849,6 +849,10 @@ function FForm(o){
 function FForm_onMouseDown(p){
    var o = this;
 }
+function FForm_construct(){
+   var o = this;
+   o.__base.FLayout.construct.call(o);
+}
 function FForm_onLoadDataset(ds){
    var o = this;
    o.doUpdate(o.dsViewer.current());
@@ -857,9 +861,6 @@ function FForm_onLoadDatasetEnd(){
    var o = this;
    o.topControl().topResize();
    o.psProgress(false);
-}
-function FForm_construct(){
-   var o = this;
 }
 function FForm_isDataChanged(){
    var o = this;

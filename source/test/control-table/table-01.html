@@ -47,6 +47,7 @@ function _load(){
    var xtable = x.findNode('Table');
    // 创建表格
    var table = RClass.create(FTable);
+   table.psBuild();
    RControl.build(table, xtable, null, _panel);
    table.setPanel(_panel);
    table.psRefresh();

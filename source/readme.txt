@@ -1,3 +1,16 @@
+FComponent 组件
+FControl 控件
+   CreateChild -> Countruct
+   PropertyLoad
+   Build
+   Push -> AppendChild
+
+FContainer 容器
+FLayout 布局
+FForm 表单
+FTable 表格
+
+
 内容        内容管道             资源
 FContent -> FContentPipeline - > FResource
             FPipeline

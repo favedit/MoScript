@@ -13,6 +13,9 @@ function FForm(o){
    //..........................................................
    // @event
    o.onMouseDown        = FForm_onMouseDown;
+   //..........................................................
+   // @method
+   o.construct          = FForm_construct;
 
 
 
@@ -39,7 +42,6 @@ function FForm(o){
    o.onLoadDatasetEnd   = FForm_onLoadDatasetEnd;
    //..........................................................
    // @method
-   o.construct          = FForm_construct;
    o.isDataChanged      = FForm_isDataChanged;
    o.getFormLink        = FForm_getFormLink;
    o.allDataComponents  = FForm_allDataComponents;
@@ -106,6 +108,28 @@ function FForm_onMouseDown(p){
    //}
 }
 
+//==========================================================
+// <T>构造函数。</T>
+//
+// @method
+//==========================================================
+function FForm_construct(){
+   var o = this;
+   o.__base.FLayout.construct.call(o);
+   //o.__base.MDataset.construct.call(o);
+   // 建立监听器
+   //o.lsnsLoaded = new TListeners();
+   //o.lsnsClick = new TListeners();
+   // 建立处理器
+   //o._clearEvent = new TEventProcess(o, 'oeClearValue', MEditValue);
+   //o._resetEvent = new TEventProcess(o, 'oeResetValue', MEditValue);
+   //o._loadEvent = new TEventProcess(o, 'oeLoadValue', MEditValue);
+   //o._saveEvent = new TEventProcess(o, 'oeSaveValue', MEditValue);
+   //o._recordEvent = new TEventProcess(o, 'oeRecordValue', MEditValue);
+   //o._codeEvent = new TEventProcess(o, 'oeSaveCode', MEditDescriptor);
+   //o._dataComponents = new TMap();
+}
+
 
 
 
@@ -140,28 +164,6 @@ function FForm_onLoadDatasetEnd(){
    var o = this;
    o.topControl().topResize();
    o.psProgress(false);
-}
-
-//==========================================================
-// <T>构造函数。</T>
-//
-// @method
-//==========================================================
-function FForm_construct(){
-   var o = this;
-   //o.__base.FLayout.construct.call(o);
-   //o.__base.MDataset.construct.call(o);
-   // 建立监听器
-   //o.lsnsLoaded = new TListeners();
-   //o.lsnsClick = new TListeners();
-   // 建立处理器
-   //o._clearEvent = new TEventProcess(o, 'oeClearValue', MEditValue);
-   //o._resetEvent = new TEventProcess(o, 'oeResetValue', MEditValue);
-   //o._loadEvent = new TEventProcess(o, 'oeLoadValue', MEditValue);
-   //o._saveEvent = new TEventProcess(o, 'oeSaveValue', MEditValue);
-   //o._recordEvent = new TEventProcess(o, 'oeRecordValue', MEditValue);
-   //o._codeEvent = new TEventProcess(o, 'oeSaveCode', MEditDescriptor);
-   //o._dataComponents = new TMap();
 }
 
 //==========================================================
