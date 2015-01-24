@@ -87,7 +87,7 @@ function FDataTreeView_onLoaded(p){
    }
    var xt = x.find('TreeView');
    // 建立内部对象
-   RControl.build(o, xt);
+   RControl.build(o, xt, null, o._hPanel);
    // 响应事件
    o.lsnsLoaded.process(p);
    // 加载主信息

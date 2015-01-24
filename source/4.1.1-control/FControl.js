@@ -162,6 +162,10 @@ function FControl_oeBuild(p){
    var o = this;
    // 事件前处理
    if(p.isBefore()){
+      // 检查状态
+      if(o._statusBuild){
+         throw new TError(o, 'Current control is already build.');
+      }
       // 建立控件容器
       o.onBuildPanel(p);
       // 设置容器样式

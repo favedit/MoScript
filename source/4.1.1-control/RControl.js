@@ -221,7 +221,7 @@ function RControl_create(pc, px, pa){
 // @param px:config:TXmlNode 配置节点
 // @param pa:attribute:Object 属性集合
 //===========================================================
-function RControl_innerbuild(pc, px, pa){
+function RControl_innerbuild(pc, px, pa, ph){
    var o = this;
    // 检查参数
    if((pc == null) || (px == null)){
@@ -238,9 +238,15 @@ function RControl_innerbuild(pc, px, pa){
       for(var i = 0; i < nc; i++){
          var n = ns.get(i);
          var c = pc.createChild(n);
-         if(c){
-            o.innerbuild(c, n);
+         if(RClass.isClass(c, FControl)){
+            c.psBuild(ph);
+            o.innerbuild(c, n, pa, ph);
             pc.appendChild(c);
+         }else if(RClass.isClass(c, FComponent)){
+            o.innerbuild(c, n, pa, ph);
+            pc.push(c);
+         }else{
+            throw new TError(o, 'Unknown child type.');
          }
       }
    }
@@ -267,11 +273,11 @@ function RControl_innerbuild(pc, px, pa){
 function RControl_build(pc, px, pa, ph){
    var o = this;
    // 内部创建
-   o.innerCreate(pc, px, pa);
+   //o.innerCreate(pc, px, pa);
    // 构件页面
-   pc.psBuild(ph);
+   //pc.psBuild(ph);
    // 内部构架
-   //o.innerbuild(pc, px, pa);
+   o.innerbuild(pc, px, pa, ph);
 }
 
 

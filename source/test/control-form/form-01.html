@@ -45,6 +45,7 @@ function _load(){
    var xform = x.findNode('Form');
    // 创建表单
    var form = RClass.create(FForm);
+   form.psBuild(_panel);
    RControl.build(form, xform, null, _panel);
    form.setPanel(_panel);
    RDump.dump(form, _dump);

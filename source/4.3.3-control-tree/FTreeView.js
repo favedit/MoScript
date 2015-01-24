@@ -163,6 +163,7 @@ function FTreeView_onNodeCheckClick(s, e){
 function FTreeView_oeBuild(e){
    var o = this;
    var r = o.__base.FContainer.oeBuild.call(o, e);
+   // 构建前处理
    if(e.isBefore()){
       // 构建标题表格
       var hr = RBuilder.appendTableRow(o._hPanel);
@@ -183,10 +184,12 @@ function FTreeView_oeBuild(e){
       ln.process(e);
       o.appendNode(ln);
       ln.hide();
-   }else if(e.isAfter()){
+   }
+   // 构建后处理
+   if(e.isAfter()){
       var ns = o._nodes;
       if(!ns.isEmpty()){
-         var nc = ns.count;
+         var nc = ns.count();
          for(var i = 0; i < nc; i++){
             o.appendNode(ns.get(i));
          }
@@ -415,7 +418,6 @@ function FTreeView_appendNode(n, p){
       }else{
          o._hNodeRows.appendChild(nh);
          n.setLevel(0);
-         o.push(n);
       }
       n._statusLinked = true;
    }

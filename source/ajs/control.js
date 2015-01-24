@@ -587,6 +587,9 @@ function FControl_onBuildPanel(e){
 function FControl_oeBuild(p){
    var o = this;
    if(p.isBefore()){
+      if(o._statusBuild){
+         throw new TError(o, 'Current control is already build.');
+      }
       o.onBuildPanel(p);
       var h = o._hPanel;
       RHtml.linkSet(h, 'control', o);
@@ -2668,7 +2671,7 @@ function RControl_create(pc, px, pa){
    o.innerCreate(c, px, pa);
    return c;
 }
-function RControl_innerbuild(pc, px, pa){
+function RControl_innerbuild(pc, px, pa, ph){
    var o = this;
    if((pc == null) || (px == null)){
       return;
@@ -2682,17 +2685,22 @@ function RControl_innerbuild(pc, px, pa){
       for(var i = 0; i < nc; i++){
          var n = ns.get(i);
          var c = pc.createChild(n);
-         if(c){
-            o.innerbuild(c, n);
+         if(RClass.isClass(c, FControl)){
+            c.psBuild(ph);
+            o.innerbuild(c, n, pa, ph);
             pc.appendChild(c);
+         }else if(RClass.isClass(c, FComponent)){
+            o.innerbuild(c, n, pa, ph);
+            pc.push(c);
+         }else{
+            throw new TError(o, 'Unknown child type.');
          }
       }
    }
 }
 function RControl_build(pc, px, pa, ph){
    var o = this;
-   o.innerCreate(pc, px, pa);
-   pc.psBuild(ph);
+   o.innerbuild(pc, px, pa, ph);
 }
 function RControl_linkEvent(tc, sc, n, h, m){
    var o = this;

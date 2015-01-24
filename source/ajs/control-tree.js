@@ -36,7 +36,7 @@ function FDataTreeView_onLoaded(p){
       throw new TError(o, 'Load tree data failure.');
    }
    var xt = x.find('TreeView');
-   RControl.build(o, xt);
+   RControl.build(o, xt, null, o._hPanel);
    o.lsnsLoaded.process(p);
    var s = xt.get('service');
    o.loadNodeService(s);
@@ -1235,10 +1235,11 @@ function FTreeView_oeBuild(e){
       ln.process(e);
       o.appendNode(ln);
       ln.hide();
-   }else if(e.isAfter()){
+   }
+   if(e.isAfter()){
       var ns = o._nodes;
       if(!ns.isEmpty()){
-         var nc = ns.count;
+         var nc = ns.count();
          for(var i = 0; i < nc; i++){
             o.appendNode(ns.get(i));
          }
@@ -1368,7 +1369,6 @@ function FTreeView_appendNode(n, p){
       }else{
          o._hNodeRows.appendChild(nh);
          n.setLevel(0);
-         o.push(n);
       }
       n._statusLinked = true;
    }
