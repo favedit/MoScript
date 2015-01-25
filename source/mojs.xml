@@ -24,6 +24,7 @@
      <PathMerger source='/3.3.3-engine-3d-render'   target='/ajs/engine-3d-render.js'/>
 
      <PathMerger source='/4.1.1-control'            target='/ajs/control.js'/>
+     <PathMerger source='/4.1.2-control-core'       target='/ajs/control-core.js'/>
      <PathMerger source='/4.2.1-control-form'       target='/ajs/control-form.js'/>
      <PathMerger source='/4.2.2-control-table'      target='/ajs/control-table.js'/>
      <PathMerger source='/4.3.1-control-menu'       target='/ajs/control-menu.js'/>
@@ -61,6 +62,7 @@
      </FileMerger>
      <FileMerger target='/ajs/mo-control.js'>
         <File source='/ajs/control.js'/>
+        <File source='/ajs/control-core.js'/>
         <File source='/ajs/control-form.js'/>
         <File source='/ajs/control-table.js'/>
         <File source='/ajs/control-menu.js'/>

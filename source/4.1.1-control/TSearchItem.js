@@ -1,28 +1,26 @@
-/***********************************************************
- * <T>搜索条件信息的工具类。</T>
- *
- * @tool
- * @param n:name:String 名称
- * @param v:value:String 内容
- * @param t:type:ESearch 类型
- * @author maocy
- * @version 1.0.1
- **********************************************************/
-function TSearchItem(n, v, t, f){
-   var o = this;
+//==========================================================
+// <T>搜索项目。</T>
+//
+// @class
+// @author maocy
+// @version 150125
+//==========================================================
+function TSearchItem(o){
+   if(!o){o = this;}
+   //..........................................................
    /// @attribute String 名称
-   o.name   = n;
+   //o.name   = n;
    /// @attribute String 内容
-   o.value  = v;
+   //o.value  = v;
    /// @attribute String 格式化
-   o.format = f;
-   o.type   = RString.nvl(t, ESearch.Equals);
+   //o.format = f;
+   //o.type   = RString.nvl(t, ESearch.Equals);
    // Method
-   o.set    = TSearchItem_set;
-   o.equals = TSearchItem_equals;
-   o.toNode = TSearchItem_toNode;
-   o.pack   = TSearchItem_pack;
-   o.unpack = TSearchItem_unpack;
+   //o.set    = TSearchItem_set;
+   //o.equals = TSearchItem_equals;
+   //o.toNode = TSearchItem_toNode;
+   //o.pack   = TSearchItem_pack;
+   //o.unpack = TSearchItem_unpack;
    return o;
 }
 

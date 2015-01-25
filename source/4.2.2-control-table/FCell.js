@@ -3,12 +3,7 @@
 //
 // hPanel<TD>
 // ┌--------------------------------------------------------┐
-// │ hForm<TABLE>                                           │
-// │ hFormLine<TR>                                          │
-// │┌--------------┬--------------------┬--------------┐│
-// ││hIconPanel<TD>│hEditPanel<TD>      │hDropPanel<TD>││
-// ││hIcon<IMG>    │hEdit<INPUT>        │hDrop<IMG>    ││
-// │└--------------┴--------------------┴--------------┘│
+// │                                                        │
 // └--------------------------------------------------------┘
 //
 // @class
@@ -16,157 +11,147 @@
 // @version 150123
 //==========================================================
 function FCell(o){
-   //o = RClass.inherits(this, o, FControl, MEditValue);
-   o = RClass.inherits(this, o, FControl);
+   o = RClass.inherits(this, o, FControl, MEditValue, MDataValue);
    //..........................................................
    // @style
-   o.stEdit       = RClass.register(o, new AStyle('Edit'));
+   o._stylePanel   = RClass.register(o, new AStyle('_stylePanel'));
    //..........................................................
    // @attribute
-   o.table        = null;
-   o.column       = null;
-   o.row          = null;
+   o._table       = null;
+   o._column      = null;
+   o._row         = null;
+   //..........................................................
+   // @html
+   //o._hEditPanel  = null;
+   //..........................................................
+   // @event
+   o.onBuildPanel = FCell_onBuildPanel;
+   o.onBuild      = FCell_onBuild;
+   //..........................................................
+   // @process
+   o.oeDataLoad   = FCell_oeDataLoad;
+   o.oeDataSave   = FCell_oeDataSave;
+
+
+
    // Html
-   o.hPanel       = null;
-   o.hForm        = null;
-   o.hFormLine    = null;
-   o.hIconPanel   = null;
-   o.hIcon        = null;
-   o.hEditPanel   = null;
-   o.hEdit        = null;
-   o.hDropPanel   = null;
-   o.hDrop        = null;
+   //o.hForm        = null;
+   //o.hFormLine    = null;
+   //o.hIconPanel   = null;
+   //o.hIcon        = null;
+   //o.hDropPanel   = null;
+   //o.hDrop        = null;
    //..........................................................
    // @method
-   o.buildIcon    = FCell_buildIcon;
-   o.buildEdit    = FCell_buildEdit;
-   o.buildDrop    = RMethod.empty;
-   o.buildForm    = FCell_buildForm;
-   o.build        = FCell_build;
+   //o.doFocus      = FCell_doFocus;
+   //o.doBlur       = FCell_doBlur;
    //..........................................................
    // @method
-   o.doFocus      = FCell_doFocus;
-   o.doBlur       = FCell_doBlur;
-   //..........................................................
-   // @method
-   o.descriptor   = FCell_descriptor;
-   o.text         = FCell_text;
-   o.setText      = FCell_setText;
-   o.focus        = FCell_focus;
-   o.setVisible   = FCell_setVisible;
-   o.setEditStyle = RMethod.empty;
-   o.refreshStyle = FCell_refreshStyle;
-   o.dispose      = FCell_dispose;
-   o.dump         = FCell_dump;
+   //o.descriptor   = FCell_descriptor;
+   //o.text         = FCell_text;
+   //o.setText      = FCell_setText;
+   //o.focus        = FCell_focus;
+   //o.setVisible   = FCell_setVisible;
+   //o.setEditStyle = RMethod.empty;
+   //o.refreshStyle = FCell_refreshStyle;
+   //o.dispose      = FCell_dispose;
+   //o.dump         = FCell_dump;
    return o;
 }
 
 //==========================================================
-// <T>在单元格内图标区创建图标。</T>
+// <T>创建一个控件容器。</T>
 //
 // @method
+// @param p:event:TEventProcess 事件处理
 //==========================================================
-function FCell_buildIcon(){
+function FCell_onBuildPanel(p) {
    var o = this;
-   o.hIcon = RBuilder.append(o.hIconPanel, 'IMG');
+   o._hPanel = RBuilder.create(p, 'TD', o.styleName('Panel'));
 }
 
 //==========================================================
-// <T>在单元格内编辑区创建编辑控件。</T>
+// <T>建立显示框架。</T>
 //
 // @method
+// @param p:argements:SArgements 参数集合
 //==========================================================
-function FCell_buildEdit(){
+function FCell_onBuild(p){
    var o = this;
-   var c = o.column;
-   // 建立文本输入框
-   var he = o.hEdit = RBuilder.append(o.hEditPanel, 'INPUT', o.style('Edit'));
-   he.style.width = '100%';
-   // 关联事件
-   c.linkEvent(o, 'onCellMouseDown', he, c.onCellMouseDown);
-   c.linkEvent(o, 'onCellKeyDown', he, c.onCellKeyDown);
-   c.linkEvent(o, 'onCellClick', he, c.onCellClick);
-   c.linkEvent(o, 'onCellDoubleClick', he, c.onCellDoubleClick);
-   // 选取处理
-   if(o.table.isLov){
-      o.hEdit.style.cursor = 'hand';
-   }
-   // 设置文字对齐方式
-   if(!RString.isEmpty(c.editAlign)){
-      he.style.textAlign = c.editAlign;
-   }
-}
-
-//==========================================================
-// <T>在单元格内创建表单底板。</T>
-// <P>只有有图标区或下拉区，则创建底板，否则直接创建编辑控件。</P>
-//
-// @method
-//==========================================================
-function FCell_buildForm(){
-   var o = this;
-   var c = o.column;
-   // 拥有图标区或下拉区的控件，才允许建立表格底板
-   if(c.hasIconArea || c.hasDropArea){
-      // 建立表格底板
-      var hf = o.hForm = RBuilder.appendTable(o.hPanel);
-      hf.width = '100%';
-      var hr = o.hFormLine = hf.insertRow();
-      // 建立图标区
-      if(c.hasIconArea){
-         o.hIconPanel = hr.insertCell();
-         o.hIconPanel.width = 18;
-         o.buildIcon();
-      }
-      // 建立编辑区
-      o.hEditPanel = hr.insertCell();
-      o.buildEdit();
-      // 建立下拉区
-      if(c.hasDropArea){
-         o.hDropPanel = hr.insertCell();
-         o.hDropPanel.width = 8;
-         o.buildDrop();
-      }
-   }else{
-      var hep = o.hEditPanel = o.hPanel;
-      hep.align = c.editAlign;
-      o.buildEdit();
-   }
-}
-
-//==========================================================
-// <T>创建单元格的内部控件。</T>
-//
-// @method
-//==========================================================
-function FCell_build(){
-   var o = this;
-   var c = o.column;
+   o.__base.FControl.onBuild.call(o, p)
    // 创建底板
-   var h = o.hPanel = RBuilder.create(null, 'TD', o.style('Panel'));
-   h.style.borderRight = '1px solid #F0F0F0';
-   h.style.borderBottom = '1px dotted #CCCCCC';
-   RHtml.link(h, 'control', o);
-   c.linkEvent(o, 'onCellMouseEnter', h, c.onCellMouseEnter);
-   c.linkEvent(o, 'onCellMouseLeave', h, c.onCellMouseLeave);
+   var c = o._column;
+   var h = o._hPanel;
+   RHtml.linkSet(h, 'control', o);
+   // 创建布局
+   //c.linkEvent(o, 'onCellMouseEnter', h, c.onCellMouseEnter);
+   //c.linkEvent(o, 'onCellMouseLeave', h, c.onCellMouseLeave);
    // 设置编辑颜色
-   if(c.editColor){
-      h.style.color = c.editColor;
-   }
+   //if(c.editColor){
+   //   h.style.color = c.editColor;
+   //}
    // 设置背景颜色
-   if(c.editBgcolor){
-      h.style.backgroundColor = c.editBgcolor;
-   }
+   //if(c.editBgcolor){
+   //   h.style.backgroundColor = c.editBgcolor;
+   //}
    // 判断显示方式
-   if(EEditFormat.Html != c.editFormat){
-      // 创建布局
-      o.buildForm();
-   }
+   //if(EEditFormat.Html != c.editFormat){
+   //}
    // 设置建立完成状态
-   //o.hEditPanel.style.paddingLeft = 2;
-   //o.hEditPanel.style.overflow = 'hidden';
-   //o.hEditPanel.style.textOverflow = 'ellipsis';
+   //o._hEditPanel.style.paddingLeft = 2;
+   //o._hEditPanel.style.overflow = 'hidden';
+   //o._hEditPanel.style.textOverflow = 'ellipsis';
 }
+
+
+
+//==========================================================
+// <T>数据源从加载数据处理。</T>
+//
+// @method
+// @param p:event:TEventProcess 处理事件
+//==========================================================
+function FCell_oeDataLoad(p){
+   var o = this;
+   var c = o._column;
+   var ds = p.source;
+   var r = ds.currentRow();
+   var v = r.get(c._dataName);
+   o.set(v);
+   return EEventStatus.Stop;
+}
+
+//==========================================================
+// <T>存储数据到数据源处理。</T>
+//
+// @method
+// @param p:event:TEventProcess 处理事件
+//==========================================================
+function FCell_oeDataSave(p){
+   var o = this;
+   var c = o._column;
+   var ds = p.source;
+   var r = ds.currentRow();
+   var v = o.get();
+   r.set(c._dataName, v);
+   return EEventStatus.Stop;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //==========================================================
 // <T>获得焦点。</T>
@@ -175,9 +160,9 @@ function FCell_build(){
 //==========================================================
 function FCell_doFocus(){
    var o = this;
-   o.table.__focusCell = o;
-   if(o.column.isEditAble(o)){
-      var hs = o.hPanel.style;
+   o._table.__focusCell = o;
+   if(o._column.isEditAble(o)){
+      var hs = o._hPanel.style;
       hs.borderLeft = '1px solid #666666';
       hs.borderTop = '1px solid #666666';
       hs.borderRight = '1px solid #CCCCCC';
@@ -194,8 +179,8 @@ function FCell_doFocus(){
 //==========================================================
 function FCell_doBlur(){
    var o = this;
-   if(o.column.isEditAble(o)){
-      var hs = o.hPanel.style;
+   if(o._column.isEditAble(o)){
+      var hs = o._hPanel.style;
       hs.borderLeft = '0px solid #666666';
       hs.borderTop = '0px solid #666666';
       hs.borderRight = '1px solid #F0F0F0';
@@ -211,7 +196,7 @@ function FCell_doBlur(){
 // @method
 //==========================================================
 function FCell_descriptor(){
-   return this.column;
+   return this._column;
 }
 
 //==========================================================
@@ -222,13 +207,13 @@ function FCell_descriptor(){
 //==========================================================
 function FCell_text(){
    var o = this;
-   var c = o.column;
+   var c = o._column;
    if(EEditFormat.Html == c.editFormat){
-      return o.hPanel.innerHTML;
-   }else if(c._absEdit && o.hEdit){
-      return o.hEdit.value;
-   }else if(o.hEditPanel){
-      return o.hEditPanel.innerText;
+      return o._hPanel.innerHTML;
+   }else if(c._absEdit && o._hEdit){
+      return o._hEdit.value;
+   }else if(o._hEditPanel){
+      return o._hEditPanel.innerText;
    }
    return '';
 }
@@ -242,13 +227,13 @@ function FCell_text(){
 function FCell_setText(t){
    // 判断显示方式
    var o = this;
-   var c = o.column;
+   var c = o._column;
    if(EEditFormat.Html == c.editFormat){
-      o.hPanel.innerHTML = t;
-   }else if(c._absEdit && o.hEdit){
-      o.hEdit.value = t;
-   }else if(o.hEditPanel){
-      o.hEditPanel.innerText = t;
+      o._hPanel.innerHTML = t;
+   }else if(c._absEdit && o._hEdit){
+      o._hEdit.value = t;
+   }else if(o._hEditPanel){
+      o._hEditPanel.innerText = t;
    }
 }
 
@@ -260,9 +245,9 @@ function FCell_setText(t){
 //==========================================================
 function FCell_focus(s){
    var o = this;
-   var h = o.hEdit;
+   var h = o._hEdit;
    if(h){
-      o.column.table.selectRow(o.row, true, true);
+      o._column._table.selectRow(o._row, true, true);
       h.focus();
       if(s){
          h.select();
@@ -277,7 +262,7 @@ function FCell_focus(s){
 // @param v:visible:Boolean 可见性
 //==========================================================
 function FCell_setVisible(v){
-   this.hPanel.style.display = v ? 'block' : 'none';
+   this._hPanel.style.display = v ? 'block' : 'none';
 }
 
 //==========================================================
@@ -287,11 +272,11 @@ function FCell_setVisible(v){
 //==========================================================
 function FCell_refreshStyle(){
    var o = this;
-   var t = o.table;
-   var r = o.row;
+   var t = o._table;
+   var r = o._row;
    var s = r.isSelect;
    // 设置编辑颜色
-   var he = o.hEdit;
+   var he = o._hEdit;
    if(he){
       he.readOnly = true;
       he.style.color = EColor.TextReadonly;
@@ -300,19 +285,19 @@ function FCell_refreshStyle(){
    // 设置背景颜色
    var bc = null;
    if(s){
-      bc = EColor.RowSelect;
+      bc = EColor._rowSelect;
    }else{
       var ih = (t.__hoverRow == r);
       if(ih){
-         bc = EColor.RowHover;
+         bc = EColor._rowHover;
       }else{
-         bc = EColor.Rows[r.index % EColor.Rows.length];
+         bc = EColor._rows[r.index % EColor._rows.length];
       }
    }
    if(o.__focus){
-      bc = EColor.RowEditHover;
+      bc = EColor._rowEditHover;
    }
-   o.hPanel.style.backgroundColor = bc;
+   o._hPanel.style.backgroundColor = bc;
 }
 
 //==========================================================
@@ -323,14 +308,14 @@ function FCell_refreshStyle(){
 function FCell_dispose(){
    var o = this;
    o.base.FControl.dispose.call(o);
-   RMemory.freeHtml(o.hPanel);
-   o.hPanel = null;
+   RMemory.freeHtml(o._hPanel);
+   o._hPanel = null;
    o.hForm = null;
    o.hFormLine = null;
    o.hIconPanel = null;
    o.hIcon = null;
-   o.hEditPanel = null;
-   o.hEdit = null;
+   o._hEditPanel = null;
+   o._hEdit = null;
    o.hDropPanel = null;
    o.hDrop = null;
 }

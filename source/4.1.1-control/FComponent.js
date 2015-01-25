@@ -186,12 +186,12 @@ function FComponent_components(){
 // <P>保证子组件不会被其他未命名的子组件所覆盖。</P>
 // 
 // @method
-// @param p:component:FComponent 组件对象
+// @param p:component:FComponent 组件
 //==========================================================
 function FComponent_push(p){
    var o = this;
+   // 增加组件
    if(RClass.isClass(p, FComponent)){
-      // 获得子组件集合
       var ps = o.components();
       // 设置子组件名称
       p._parent = o;

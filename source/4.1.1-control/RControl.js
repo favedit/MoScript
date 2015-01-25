@@ -231,6 +231,10 @@ function RControl_innerbuild(pc, px, pa, ph){
    if(RClass.isClass(pc, MProperty)){
       pc.propertyLoad(px);
    }
+   // 构建处理
+   if(RClass.isClass(pc, FControl)){
+      pc.build(ph);
+   }
    // 建立子节点
    if(RClass.isClass(pc, MContainer) && px.hasNode()){
       var ns = px.nodes();
@@ -238,16 +242,8 @@ function RControl_innerbuild(pc, px, pa, ph){
       for(var i = 0; i < nc; i++){
          var n = ns.get(i);
          var c = pc.createChild(n);
-         if(RClass.isClass(c, FControl)){
-            o.innerbuild(c, n, pa, ph);
-            c.psBuild(ph);
-            pc.appendChild(c);
-         }else if(RClass.isClass(c, FComponent)){
-            o.innerbuild(c, n, pa, ph);
-            pc.push(c);
-         }else{
-            throw new TError(o, 'Unknown child type.');
-         }
+         o.innerbuild(c, n, pa, ph);
+         pc.push(c);
       }
    }
 }

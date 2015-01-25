@@ -6,127 +6,144 @@
 // @history 091118 MAOCY 创建
 //==========================================================
 function MDataset(o){
-   o = RClass.inherits(this, o, MEditable);
+   //o = RClass.inherits(this, o, MEditable);
+   o = RClass.inherits(this, o, MDataContainer);
    //..........................................................
    // @property String 数据集的名称
-   o.dsName               = RClass.register(o, new APtyString('dsName', 'dataset'));
+   o._dsDataset         = RClass.register(o, new APtyString('_dsDataset', 'dataset'));
+   // @property Integer 数据集的分页大小
+   o._dsPageSize        = RClass.register(o, new APtyInteger('_dsPageSize', 'page_size'), 20);
+   // @property String 新建命令
+   o._dsInsertAction    = RClass.register(o, new APtyString('_dsInsertAction', 'insert_action'));
+   // @property String 更新命令
+   o._dsUpdateAction    = RClass.register(o, new APtyString('_dsUpdateAction', 'update_action'));
+   // @property String 删除命令
+   o._dsDeleteAction    = RClass.register(o, new APtyString('_dsDeleteAction', 'delete_action'));
+   //..........................................................
+   // @attribute
+   o._dataSource        = null;
+   //..........................................................
+   // @event
+   o.onDsFetch          = MDataset_onDsFetch;
+   o.onDatasetLoadBegin = RMethod.empty;
+   o.onDatasetLoad      = RMethod.empty;
+   o.onDatasetLoadEnd   = RMethod.empty;
+   //..........................................................
+   // @process
+   o.oeDataLoad         = MDataset_oeDataLoad;
+   o.oeDataSave         = MDataset_oeDataSave;
+   o.oeDatasetLoad      = MDataset_oeDatasetLoad;
+   //..........................................................
+   // @method
+   o.construct          = MDataset_construct;
+   // @method
+   o.loadDataset        = MDataset_loadDataset;
+   o.loadDatasets       = MDataset_loadDatasets;
+   // @method
+   o.dsDatasetLoad      = MDataset_dsDatasetLoad;
+   o.dsFetch            = MDataset_dsFetch;
+
+
+
    // @property String 数据集的服务地址
    //o.dsService            = RClass.register(o, new APtyString('dsService', EService.WebDataset, 'service'));
-   o.dsService            = RClass.register(o, new APtyString('dsService', 'service'));
-   // @property Integer 数据集的分页大小
-   o.dsPageSize           = RClass.register(o, new APtyInteger('dsPageSize', 'page_size'), 20);
-   o.dispToolbar          = RClass.register(o, new APtyBoolean('dispToolbar'), false);
+   //o.dsService            = RClass.register(o, new APtyString('dsService', 'service'));
+   //o.dispToolbar          = RClass.register(o, new APtyBoolean('dispToolbar'), false);
    // @property Boolean 是否允许搜索操作
    //o.editFetch            = RClass.register(o, new APtySet('editFetch', 'edit_config1'), EEditConfig.Fetch);
    // @property Boolean 是否允许搜索操作
    //o.editSearch           = RClass.register(o, new APtySet('editSearch', 'edit_config2'), EEditConfig.Search);
    // @property Boolean 是否允许复制操作
    //o.editCopy             = RClass.register(o, new APtySet('editCopy', 'edit_config3'), EEditConfig.Copy);
-   // @property String 新建命令
-   o.insertAction         = RClass.register(o, new APtyString('insertAction', 'insert'));
-   // @property String 更新命令
-   o.updateAction         = RClass.register(o, new APtyString('updateAction', 'update'));
-   // @property String 删除命令
-   o.deleteAction         = RClass.register(o, new APtyString('deleteAction', 'delete'));
    //..........................................................
    // @attribute Integer 当前页号
-   o.dsPageIndex          = 0;
+   //o.dsPageIndex          = 0;
    // @attribute TDatasetViewer 数据察看器
-   o.dsViewer             = null;
+   //o.dsViewer             = null;
    // @attribute TAttributes 固定数据内容
-   o.dsValues             = null;
+   //o.dsValues             = null;
    // @attribute TList<TSearchItem> 表单搜索信息用的列表
-   o.dsGlobalSearchs      = null;
-   o.dsSearchs            = null;
+   //o.dsGlobalSearchs      = null;
+   //o.dsSearchs            = null;
    // @attribute TList<TOrderItem> 表单排序信息用的列表
-   o.dsGlobalOrders       = null;
-   o.dsOrders             = null;
+   //o.dsGlobalOrders       = null;
+   //o.dsOrders             = null;
    //..........................................................
-   o.__initializeEvent    = null;
-   o.__showEvent          = null;
-   o.__loadedEvent        = null;
-   o.__progress           = false;
-   o.__progressProcess    = null;
-   o.__validProcess       = null;
+   //o.__initializeEvent    = null;
+   //o.__showEvent          = null;
+   //o.__loadedEvent        = null;
+   //o.__progress           = false;
+   //o.__progressProcess    = null;
+   //o.__validProcess       = null;
    //..........................................................
    // @listener
-   o.lsnsUpdateBegin      = null;
-   o.lsnsUpdateEnd        = null;
+   //o.lsnsUpdateBegin      = null;
+   //o.lsnsUpdateEnd        = null;
    //..........................................................
    // @event
-   o.onDsFetch           = MDataset_onDsFetch;
-   o.onDsPrepareCheck    = RMethod.emptyTrue;
-   o.onDsPrepare         = MDataset_onDsPrepare;
-   o.onDsUpdateCheck     = RMethod.emptyTrue;
-   o.onDsUpdate          = MDataset_onDsUpdate;
-   o.onDsDeleteCheck     = RMethod.emptyTrue;
-   o.onDsDelete          = MDataset_onDsDelete;
-   o.onDsCopy            = MDataset_onDsCopy;
-   o.onDsDoUpdate        = MDataset_onDsDoUpdate;
-   o.onDsProcess         = MDataset_onDsProcess;
-   o.onLoadDatasetBegin  = RMethod.empty;
-   o.onLoadDataset       = RMethod.virtual(o, 'onLoadDataset');
-   o.onLoadDatasetEnd    = RMethod.virtual(o, 'onLoadDatasetEnd');
+   //o.onDsPrepareCheck    = RMethod.emptyTrue;
+   //o.onDsPrepare         = MDataset_onDsPrepare;
+   //o.onDsUpdateCheck     = RMethod.emptyTrue;
+   //o.onDsUpdate          = MDataset_onDsUpdate;
+   //o.onDsDeleteCheck     = RMethod.emptyTrue;
+   //o.onDsDelete          = MDataset_onDsDelete;
+   //o.onDsCopy            = MDataset_onDsCopy;
+   //o.onDsDoUpdate        = MDataset_onDsDoUpdate;
+   //o.onDsProcess         = MDataset_onDsProcess;
    //..........................................................
    // @method
-   o.getDataCodes        = RMethod.virtual(o, 'getDataCodes');
-   o.getCurrentRow       = RMethod.virtual(o, 'getCurrentRow');
-   o.getSelectedRows     = RMethod.virtual(o, 'getSelectedRows');
-   o.getChangedRows      = RMethod.virtual(o, 'getChangedRows');
-   o.getRows             = RMethod.virtual(o, 'getRows');
-   o.toDeepAttributes    = MDataset_toDeepAttributes;
+   //o.getDataCodes        = RMethod.virtual(o, 'getDataCodes');
+   //o.getCurrentRow       = RMethod.virtual(o, 'getCurrentRow');
+   //o.getSelectedRows     = RMethod.virtual(o, 'getSelectedRows');
+   //o.getChangedRows      = RMethod.virtual(o, 'getChangedRows');
+   //o.getRows             = RMethod.virtual(o, 'getRows');
+   //o.toDeepAttributes    = MDataset_toDeepAttributes;
    //..........................................................
    // @method
-   o.construct           = MDataset_construct;
-   o.loadDataset         = MDataset_loadDataset;
-   o.loadDatasets        = MDataset_loadDatasets;
-   o.doPrepare           = RMethod.virtual(o, 'doPrepare');
-   o.doDelete            = RMethod.virtual(o, 'doDelete');
-   o.dsInitialize        = MDataset_dsInitialize;
-   o.dsShow              = MDataset_dsShow;
-   o.dsLoaded            = MDataset_dsLoaded;
-   o.dsFetch             = MDataset_dsFetch;
-   o.dsSearch            = MDataset_dsSearch;
-   o.dsCopy              = MDataset_dsCopy;
-   o.dsPrepare           = MDataset_dsPrepare;
-   o.dsUpdate            = MDataset_dsUpdate;
-   o.dsDelete            = MDataset_dsDelete;
-   o.dsMode              = MDataset_dsMode;
-   o.dsDoUpdate          = MDataset_dsDoUpdate;
-   o.dsProcess           = MDataset_dsProcess;
-   o.dsProcessCustom     = MDataset_dsProcessCustom;
-   o.dsProcessChanged    = MDataset_dsProcessChanged;
-   o.dsProcessSelected   = MDataset_dsProcessSelected;
-   o.dsProcessAll        = MDataset_dsProcessAll;
-   o.psProgress          = MDataset_psProgress;
-   o.psValid             = MDataset_psValid;
+   //o.doPrepare           = RMethod.virtual(o, 'doPrepare');
+   //o.doDelete            = RMethod.virtual(o, 'doDelete');
+   //o.dsInitialize        = MDataset_dsInitialize;
+   //o.dsShow              = MDataset_dsShow;
+   //o.dsLoaded            = MDataset_dsLoaded;
+   //o.dsSearch            = MDataset_dsSearch;
+   //o.dsCopy              = MDataset_dsCopy;
+   //o.dsPrepare           = MDataset_dsPrepare;
+   //o.dsUpdate            = MDataset_dsUpdate;
+   //o.dsDelete            = MDataset_dsDelete;
+   //o.dsMode              = MDataset_dsMode;
+   //o.dsDoUpdate          = MDataset_dsDoUpdate;
+   //o.dsProcess           = MDataset_dsProcess;
+   //o.dsProcessCustom     = MDataset_dsProcessCustom;
+   //o.dsProcessChanged    = MDataset_dsProcessChanged;
+   //o.dsProcessSelected   = MDataset_dsProcessSelected;
+   //o.dsProcessAll        = MDataset_dsProcessAll;
+   //o.psProgress          = MDataset_psProgress;
+   //o.psValid             = MDataset_psValid;
 
 
-
-
-
-   o.dsCurrent           = MDataset_dsCurrent;
+   //o.dsCurrent           = MDataset_dsCurrent;
    // Attribute
-   o.dsStore             = null;
-   o.dsSearchBox         = null;
-   o.dsSearchWindow      = null;
-   o.onStoreChanged      = RMethod.empty;
-   o.onDsFetchBegin      = RMethod.empty;
-   o.onDsFetchEnd        = RMethod.empty;
-   o.onDsUpdateBegin     = RMethod.empty;
-   o.onDsUpdateEnd       = RMethod.empty;
+   //o.dsStore             = null;
+   //o.dsSearchBox         = null;
+   //o.dsSearchWindow      = null;
+   //o.onStoreChanged      = RMethod.empty;
+   //o.onDsFetchBegin      = RMethod.empty;
+   //o.onDsFetchEnd        = RMethod.empty;
+   //o.onDsUpdateBegin     = RMethod.empty;
+   //o.onDsUpdateEnd       = RMethod.empty;
    // Method
-   o.hasAction           = RMethod.virtual(o, 'hasAction');
-   o.dsIsChanged         = MDataset_dsIsChanged;
-   o.dsCount             = MDataset_dsCount;
-   o.dsMove              = MDataset_dsMove;
-   o.dsMovePage          = MDataset_dsMovePage;
-   o.dsGet               = MDataset_dsGet;
-   o.dsSet               = MDataset_dsSet;
-   o.dsRefresh           = MDataset_dsRefresh;
-   o.doSearch            = MDataset_doSearch;
+   //o.hasAction           = RMethod.virtual(o, 'hasAction');
+   //o.dsIsChanged         = MDataset_dsIsChanged;
+   //o.dsCount             = MDataset_dsCount;
+   //o.dsMove              = MDataset_dsMove;
+   //o.dsMovePage          = MDataset_dsMovePage;
+   //o.dsGet               = MDataset_dsGet;
+   //o.dsSet               = MDataset_dsSet;
+   //o.dsRefresh           = MDataset_dsRefresh;
+   //o.doSearch            = MDataset_doSearch;
    return o;
 }
+
 
 //==========================================================
 // <T>响应数据读取后的操作。</T>
@@ -137,12 +154,184 @@ function MDataset(o){
 function MDataset_onDsFetch(g){
    var o = this;
    // 加载数据集
-   o.loadDatasets(g.resultDatasets);
+   var ds = g.datasets;
+   o.dsDatasetLoad(ds);
    // 设置加载完成
-   o.onLoadDatasetEnd();
+   //o.onLoadDatasetEnd();
    // 设置焦点
-   o.focus();
+   //o.focus();
 }
+
+//==========================================================
+// <T>数据源从加载数据处理。</T>
+//
+// @method
+// @param p:event:TEventProcess 处理事件
+//==========================================================
+function MDataset_oeDataLoad(p){
+   var o = this;
+   if(p.isBefore()){
+      var ds = p.source;
+      ds.selectDataset();
+      ds.selectRow();
+   }
+   return EEventStatus.Contine;
+}
+
+//==========================================================
+// <T>存储数据到数据源处理。</T>
+//
+// @method
+// @param p:event:TEventProcess 处理事件
+//==========================================================
+function MDataset_oeDataSave(p){
+   var o = this;
+   if(p.isBefore()){
+      var ds = p.source;
+      ds.selectDataset();
+      ds.selectRow();
+   }
+   return EEventStatus.Contine;
+}
+
+//==========================================================
+// <T>加载数据集合。</T>
+//
+// @method
+// @param p:event:TEventProcess 处理事件
+//==========================================================
+function MDataset_oeDatasetLoad(p){
+   var o = this;
+   if(p.isBefore()){
+      var ds = p.datasets;
+      var d = ds.get(o._name);
+      o._dataset = d;
+      o.onDatasetLoad(d);
+   }
+   return EEventStatus.Contine;
+}
+
+//==========================================================
+// <T>构造函数。</T>
+//
+// @method
+//==========================================================
+function MDataset_construct(){
+   var o = this;
+   // 构造对象
+   //o.dsViewer = new TDatasetViewer();
+   //o.dsValues = new TAttributes();
+   //o.dsSearchs = new TSearchItems();
+   //o.dsGlobalSearchs = new TSearchItems();
+   //o.dsOrders = new TOrderItems();
+   //o.dsGlobalOrders = new TOrderItems();
+   // 构造事件
+   //o.__initializeEvent = new TEvent();
+   //o.__showEvent = new TEvent();
+   //o.__loadedEvent = new TEvent();
+   // 构造处理
+   //o.__progressProcess = new TEventProcess(o, 'oeProgress', MProgress);
+   //var vp = o.__validProcess = new TEventProcess(o, 'oeValid', MValidator);
+   //vp.controls = new TList();
+   // 构造监听器
+   //o.lsnsUpdateBegin = new TListeners();
+//   o.lsnsUpdateEnd = new TListeners();
+}
+
+//==========================================================
+// <T>加载单个数据集数据。</T>
+//
+// @method
+// @param d:dataset:TDatset 数据集对象
+//==========================================================
+function MDataset_loadDataset(d){
+   var o = this;
+   o.dsStore = d;
+   d.saveViewer(o.dsViewer);
+   o.onLoadDataset(d);
+}
+
+//==========================================================
+// <T>加载多个数据集数据。</T>
+//
+// @method
+// @param p:datasets:TDictionary<TDataset> 数据集字典
+//==========================================================
+function MDataset_loadDatasets(p){
+   var o = this;
+   var c = p.count();
+   for(var i = 0; i < c; i++){
+      var d = p.value(n);
+      var dc = o.findByPath(d.name)
+      if(!dc){
+         return RMessage.fatal(o, null, 'Load dataset failed. (dataset={1}', d.name);
+      }
+      dc.loadDataset(d);
+   }
+}
+
+//==========================================================
+// <T>加载数据源。</T>
+//
+// @method
+// @param p:dataSource:FDataSource 数据源
+//==========================================================
+function MDataset_dsDatasetLoad(p){
+   var o = this;
+   var e = new TEventProcess(null, o, 'oeDatasetLoad', MDataset);
+   e.datasets = p;
+   o.process(e);
+   e.dispose();
+}
+
+//==========================================================
+// <T>查询结果集。</T>
+//
+// @method
+// @param r:reset:Boolean
+//    <L value='true'>重置数据集</L>
+//    <L value='false'>不重置数据集</L>
+// @param f:force:Boolean
+//    <L value='true'>强制获取</L>
+//    <L value='false'>不强制</L>
+//==========================================================
+function MDataset_dsFetch(){
+   var o = this;
+   // 设置加载中
+   //o.psProgress(true);
+   // 异步获得数据
+   //var tc = o.topControl();
+   //var g = new TDatasetFetchArg(tc.name, tc.formId, o.dsPageSize, o.dsPageIndex);
+   var g = new TDatasetFetchArg();
+   g.owner = o;
+   g.name = o._name;
+   g.callback = o.onDsFetch;
+   //g.reset = r;
+   //g.force = f;
+   //g.mode = o._emode;
+   //g.searchs.append(o.dsGlobalSearchs);
+   //g.searchs.append(o.dsSearchs);
+   //g.orders.append(o.dsGlobalOrders);
+   //g.orders.append(o.dsOrders);
+   //o.toDeepAttributes(g.values);
+   //g.values.append(o.dsValues);
+   //RConsole.find(FDatasetConsole).fetch(g);
+   RConsole.find(FDatasetConsole).fetch(g);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //==========================================================
 // <T>响应新建操作中，数据读取完成后的操作。</T>
@@ -293,68 +482,6 @@ function MDataset_onDsDoUpdate(g){
 }
 
 //==========================================================
-// <T>构造函数。</T>
-//
-// @method
-//==========================================================
-function MDataset_construct(){
-   var o = this;
-   // 构造对象
-   //o.dsViewer = new TDatasetViewer();
-   //o.dsValues = new TAttributes();
-   //o.dsSearchs = new TSearchItems();
-   //o.dsGlobalSearchs = new TSearchItems();
-   //o.dsOrders = new TOrderItems();
-   //o.dsGlobalOrders = new TOrderItems();
-   // 构造事件
-   //o.__initializeEvent = new TEvent();
-   //o.__showEvent = new TEvent();
-   //o.__loadedEvent = new TEvent();
-   // 构造处理
-   //o.__progressProcess = new TEventProcess(o, 'oeProgress', MProgress);
-   //var vp = o.__validProcess = new TEventProcess(o, 'oeValid', MValidator);
-   //vp.controls = new TList();
-   // 构造监听器
-   //o.lsnsUpdateBegin = new TListeners();
-//   o.lsnsUpdateEnd = new TListeners();
-}
-
-//==========================================================
-// <T>加载单个数据集数据。</T>
-//
-// @method
-// @param d:dataset:TDatset 数据集对象
-//==========================================================
-function MDataset_loadDataset(d){
-   var o = this;
-   o.dsStore = d;
-   d.saveViewer(o.dsViewer);
-   return o.onLoadDataset(d);
-}
-
-//==========================================================
-// <T>加载多个数据集数据。</T>
-//
-// @method
-// @param ds:datasets:TMap<String, TDataset> 数据集的集合
-//==========================================================
-function MDataset_loadDatasets(ds){
-   var o = this;
-   var c = ds.count;
-   for(var n=0; n<c; n++){
-      var d = ds.value(n);
-      if(d){
-         var dc = o.findByPath(d.name)
-         if(!dc){
-            dc = o.findByPath(d.name);
-            return RMessage.fatal(o, null, 'Load dataset failed. (control={0})', d.name);
-         }
-         dc.loadDataset(d);
-      }
-   }
-}
-
-//==========================================================
 function MDataset_dsInitialize(){
    this.callEvent('onFormInitialize', this, this.__initializeEvent);
 }
@@ -369,36 +496,6 @@ function MDataset_dsLoaded(){
    this.callEvent('onDatasetLoaded', this, this.__loadedEvent);
 }
 
-//==========================================================
-// <T>根据参数信息远程链接，查询数据内容获得结果集。</T>
-//
-// @method
-// @param r:reset:Boolean
-//    <L value='true'>重置数据集</L>
-//    <L value='false'>不重置数据集</L>
-// @param f:force:Boolean
-//    <L value='true'>强制获取</L>
-//    <L value='false'>不强制</L>
-//==========================================================
-function MDataset_dsFetch(r, f){
-   var o = this;
-   // 设置加载中
-   o.psProgress(true);
-   // 异步获得数据
-   var tc = o.topControl();
-   var g = new TDatasetFetchArg(tc.name, tc.formId, o.dsPageSize, o.dsPageIndex);
-   g.reset = r;
-   g.force = f;
-   g.mode = o._emode;
-   g.searchs.append(o.dsGlobalSearchs);
-   g.searchs.append(o.dsSearchs);
-   g.orders.append(o.dsGlobalOrders);
-   g.orders.append(o.dsOrders);
-   o.toDeepAttributes(g.values);
-   g.values.append(o.dsValues);
-   g.callback = new TInvoke(o, o.onDsFetch);
-   RConsole.find(FDatasetConsole).fetch(g);
-}
 
 //==========================================================
 // <T>根据参数信息远程链接，查询数据内容获得结果集。</T>

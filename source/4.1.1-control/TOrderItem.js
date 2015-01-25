@@ -1,23 +1,22 @@
-/***********************************************************
- * <T>搜索排序信息的工具类。</T>
- *
- * @tool
- * @param n:name:String 排序字段
- * @param t:type:EOrder 排序类型
- * @author maocy
- * @version 1.0.1
- **********************************************************/
-function TOrderItem(n, t){
-   var o = this;
+//==========================================================
+// <T>排序项目。</T>
+//
+// @class
+// @author maocy
+// @version 150125
+//==========================================================
+function TOrderItem(o){
+   if(!o){o = this;}
+   //..........................................................
    /// @attribute String 排序字段
-   o.name   = n;
+   //o.name   = n;
    /// @attribute String 排序类型
-   o.type   = t;
+   //o.type   = t;
    // Method
-   o.set    = TOrderItem_set;
-   o.toNode = TOrderItem_toNode;
-   o.pack   = TOrderItem_pack;
-   o.unpack = TOrderItem_unpack;
+   //o.set    = TOrderItem_set;
+   //o.toNode = TOrderItem_toNode;
+   //o.pack   = TOrderItem_pack;
+   //o.unpack = TOrderItem_unpack;
    return o;
 }
 

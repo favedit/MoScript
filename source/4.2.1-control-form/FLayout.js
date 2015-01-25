@@ -22,37 +22,38 @@ function FLayout(o){
    o = RClass.inherits(this, o, FContainer);
    //..........................................................
    // @style
-   o._styleForm     = RClass.register(o, new AStyle('_styleForm', 'Form'));
+   o._styleForm      = RClass.register(o, new AStyle('_styleForm', 'Form'));
    //..........................................................
    // @attribute
-   o._lastSplit     = null;
+   o._lastSplit      = null;
    //..........................................................
    // @html
-   o._hPanelForm    = null;
-   o._hContainer    = null;
+   o._hPanelForm     = null;
+   o._hContainer     = null;
    // @html
-   o._hPanelTable   = null;
-   o._hPanelLine    = null;
+   o._hPanelTable    = null;
+   o._hPanelLine     = null;
    //..........................................................
    // @event
-   o.onBuildPanel   = FLayout_onBuildPanel;
-   o.onDesignBegin  = FLayout_onDesignBegin;
-   o.onDesignEnd    = FLayout_onDesignEnd;
+   o.onBuildPanel    = FLayout_onBuildPanel;
+   o.onDesignBegin   = FLayout_onDesignBegin;
+   o.onDesignEnd     = FLayout_onDesignEnd;
    //..........................................................
    // @process
-   o.oeDesign       = FLayout_oeDesign;
-   o.oeResize       = FLayout_oeResize;
-   o.oeRefresh      = FLayout_oeRefresh;
+   o.oeDesign        = FLayout_oeDesign;
+   o.oeResize        = FLayout_oeResize;
+   o.oeRefresh       = FLayout_oeRefresh;
    //..........................................................
    // @method
-   o.insertPosition = FLayout_insertPosition;
-   o.moveChild      = FLayout_moveChild;
+   o.insertPosition  = FLayout_insertPosition;
+   o.moveChild       = FLayout_moveChild;
    // @method
-   o.appendLine     = FLayout_appendLine;
-   o.appendChild    = FLayout_appendChild;
+   o.innerAppendLine = FLayout_innerAppendLine;
+   o.appendChild     = FLayout_appendChild;
    // @method
-   o.doResize       = FLayout_doResize;
-   o.dispose        = FLayout_dispose;
+   o.resize          = FLayout_resize;
+   // @method
+   o.dispose         = FLayout_dispose;
 
    //o.panelExtend  = FLayout_panelExtend;
    return o;
@@ -131,7 +132,7 @@ function FLayout_oeResize(event){
    var o = this;
    o.__base.FContainer.oeResize.call(o, event);
    if(e.isAfter()){
-      o.doResize();
+      o.resize();
    }
 }
 
@@ -145,7 +146,7 @@ function FLayout_oeRefresh(event){
    var o = this;
    o.__base.FContainer.oeDesign.call(o, event);
    if(e.isAfter()){
-      o.doResize();
+      o.resize();
    }
 }
 
@@ -230,7 +231,7 @@ function FLayout_moveChild(cf, ct, pos, copy){
             if(cfh){
                o._hContainer.insertBefore(cf._hPanel, ct._hPanel);
             }else{
-               var hNewTab = o.appendLine();
+               var hNewTab = o.innerAppendLine();
                o._hContainer.insertBefore(hNewTab, ct._hPanel);
                var hCell = RBuilder.appendTableCell(o._hPanelLine);
                hCell.appendChild(cf._hPanel);
@@ -244,7 +245,7 @@ function FLayout_moveChild(cf, ct, pos, copy){
                   if(cfh){
                      o._hContainer.insertBefore(cf._hPanel, hTable);
                   }else{
-                     var hNewTab = o.appendLine();
+                     var hNewTab = o.innerAppendLine();
                      o._hContainer.insertBefore(hNewTab, hTable);
                      var hCell = RBuilder.appendTableCell(o._hPanelLine);
                      hCell.appendChild(cf._hPanel);
@@ -262,7 +263,7 @@ function FLayout_moveChild(cf, ct, pos, copy){
          if(cfh){
             o._hContainer.appendChild(cf._hPanel);
          }else{
-            var hNewTab = o.appendLine();
+            var hNewTab = o.innerAppendLine();
             var hCell = RBuilder.appendTableCell(o._hPanelLine);
             hCell.appendChild(cf._hPanel);
             hCell.appendChild(cf._hPanel);
@@ -287,7 +288,7 @@ function FLayout_moveChild(cf, ct, pos, copy){
 // @method
 // @return HtmlTag 布局行
 //==========================================================
-function FLayout_appendLine(){
+function FLayout_innerAppendLine(){
    var o = this;
    var h = null;
    if(o._layoutCd == ELayout.Design){
@@ -313,7 +314,7 @@ function FLayout_appendChild(ctl){
    if(o._layoutCd == ELayout.Design){
       // 追加第一行
       if(!o._hPanelLine){
-         o.appendLine();
+         o.innerAppendLine();
       }
       // 建立分割符
       if(RClass.isClass(ctl, MHorizontal)){
@@ -321,7 +322,7 @@ function FLayout_appendChild(ctl){
             o._hContainer.insertBefore(ctl._hPanel, o._hPanelTable);
          }else{
             o._hContainer.appendChild(ctl._hPanel);
-            o.appendLine();
+            o.innerAppendLine();
          }
          return;
       }
@@ -334,7 +335,7 @@ function FLayout_appendChild(ctl){
       ctl.hLayoutCell = hCell;
       // 追加下一行
       if(!ctl.nowrap && (o.controls.last() != ctl)){
-         o.appendLine();
+         o.innerAppendLine();
       }
    }else{
       ctl._hPanel.style.paddingTop = 2;
@@ -392,7 +393,7 @@ function FLayout_appendChild(ctl){
 //
 // @method
 //==========================================================
-function FLayout_doResize(){
+function FLayout_resize(){
    var o = this;
    var cs = o._components;
    if(cs){

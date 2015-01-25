@@ -7,46 +7,199 @@
 //==========================================================
 function FDatasetConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   //----------------------------------------------------------
+   //..........................................................
    // @attribute EScope 对象范围
-   o.scope            = EScope.Page;
-   // @attribute
-   o.datasets         = null;
-   // @listener
-   o.lsnsLoaded       = null;
-   o.lsnsUpdateBegin  = null;
-   o.lsnsUpdateEnd    = null;
-   //----------------------------------------------------------
+   o._scopeCd = EScope.Local;
+   o._service = 'cloud.data.frame';
+   o._datasets        = null;
+   //..........................................................
    // @event
-   o.onFetchLoaded    = FDatasetConsole_onFetchLoaded;
-   o.onScalarLoaded   = FDatasetConsole_onScalarLoaded;
-   o.onCompleteLoaded = FDatasetConsole_onCompleteLoaded;
-   o.onLovLoaded      = FDatasetConsole_onLovLoadeded;
-   o.onPrepareLoaded  = FDatasetConsole_onPrepareLoaded;
-   o.onUpdateLoaded   = FDatasetConsole_onUpdateLoaded;
-   o.onTreeLoaded     = FDatasetConsole_onTreeLoaded;
-   o.onLoaded         = FDatasetConsole_onLoaded;
-   //----------------------------------------------------------
+   o.onFetch  = FDatasetConsole_onFetch;
+   //..........................................................
    // @method
    o.construct        = FDatasetConsole_construct;
+   // @method
    o.loadDataset      = FDatasetConsole_loadDataset;
    o.loadDatasets     = FDatasetConsole_loadDatasets;
    // @method
-   o.get              = FDatasetConsole_get;
-   o.getById          = FDatasetConsole_getById;
-   o.getByPath        = FDatasetConsole_getByPath;
+   o.fetch    = FDatasetConsole_fetch;
+
+
+
+
+
+
+
+
+   // @listener
+   //o.lsnsLoaded       = null;
+   //o.lsnsUpdateBegin  = null;
+   //o.lsnsUpdateEnd    = null;
+   //----------------------------------------------------------
+   // @event
+   //o.onFetchLoaded    = FDatasetConsole_onFetchLoaded;
+   //o.onScalarLoaded   = FDatasetConsole_onScalarLoaded;
+   //o.onCompleteLoaded = FDatasetConsole_onCompleteLoaded;
+   //o.onLovLoaded      = FDatasetConsole_onLovLoadeded;
+   //o.onPrepareLoaded  = FDatasetConsole_onPrepareLoaded;
+   //o.onUpdateLoaded   = FDatasetConsole_onUpdateLoaded;
+   //o.onTreeLoaded     = FDatasetConsole_onTreeLoaded;
+   //o.onLoaded         = FDatasetConsole_onLoaded;
+   //----------------------------------------------------------
    // @method
-   o.fetch            = FDatasetConsole_fetch;
-   o.scalar           = FDatasetConsole_scalar;
-   o.complete         = FDatasetConsole_complete;
-   o.lov              = FDatasetConsole_lov;
-   o.prepare          = FDatasetConsole_prepare;
-   o.update           = FDatasetConsole_update;
-   o.onColumnFetch    = FDatasetConsole_onColumnFetch;
-   o.columnNodeFetch  = FDatasetConsole_columnNodeFetch;
-   o.treeUpdate       = FDatasetConsole_treeUpdate;
+   //o.get              = FDatasetConsole_get;
+   //o.getById          = FDatasetConsole_getById;
+   //o.getByPath        = FDatasetConsole_getByPath;
+   //o.scalar           = FDatasetConsole_scalar;
+   //o.complete         = FDatasetConsole_complete;
+   //o.lov              = FDatasetConsole_lov;
+   //o.prepare          = FDatasetConsole_prepare;
+   //o.update           = FDatasetConsole_update;
+   //o.onColumnFetch    = FDatasetConsole_onColumnFetch;
+   //o.columnNodeFetch  = FDatasetConsole_columnNodeFetch;
+   //o.treeUpdate       = FDatasetConsole_treeUpdate;
    return o;
 }
+
+//==========================================================
+// <T>获取数据加载完成处理。</T>
+//
+// @method
+// @param p:event:SXmlEvent 配置事件
+//==========================================================
+function FDatasetConsole_onFetch(p){
+   var o = this;
+   var g = p.parameter;
+   var x = p.outputNode;
+   if(x.hasNode()){
+      // 加载数据集合
+      o.loadDatasets(x);
+      // 关联数据节点
+      var dss = g.datasets;
+      var xns = x.nodes();
+      var xnc = xns.count();
+      // 遍历所有的表单节点
+      for(var i = 0; i < xnc; i++){
+         var xn = xns.get(i);
+         var n = xn.get('name');
+         var d = o._datasets.get(n);
+         dss.set(n, d);
+      }
+   }
+   // 设置默认名称
+   //if(!rds.isEmpty()){
+   //   var c = rds.count;
+   //   for(var n=0; n<c; n++){
+   //      var rd = rds.value(n);
+   //      if('/' == rd.name){
+   //         g.resultDataset = rd;
+   //         g.resultRow = rd.row(0);
+   //         break;
+   //      }
+   //   }
+   //}
+   // 回调参数
+   g.process();
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FDatasetConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   // 创建属性
+   o._datasets = new TDictionary();
+   //o.lsnsLoaded      = new TListeners();
+   //o.lsnsUpdateBegin = new TListeners();
+   //o.lsnsUpdateEnd   = new TListeners();
+}
+
+//==========================================================
+// <T>加载一个数据集合。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FDatasetConsole_loadDataset(x){
+   var o = this;
+   // 获得数据集名称
+   var n = x.get('name');
+   if(RString.isEmpty(n)){
+      throw new TError('Unknown dataset name.');
+   }
+   // 获得数据集合
+   var d = o._datasets.get(n);
+   if(!d){
+      d = new TDataset();
+      d.name = n;
+      o._datasets.set(n, d);
+   }
+   // 加载数据
+   d.clear();
+   d.loadConfig(x);
+   return d;
+}
+
+//==========================================================
+// <T>加载多个数据集合。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FDatasetConsole_loadDatasets(p){
+   var o = this;
+   if(p.hasNode()){
+      var xs = p.nodes();
+      var c = xs.count();
+      for(var i = 0; i < c; i++){
+         var x = xs.get(i);
+         if(x.isName('Dataset')){
+            o.loadDataset(x);
+         }
+      }
+   }
+}
+
+//==========================================================
+// <T>根据xml节点向服务器发送数据请求。</T>
+//
+// @method
+// @param dsArg:dsArg:TDatasetFetchArg 取数据时的参数类
+// @return TMap 数据集集合对象
+//==========================================================
+function FDatasetConsole_fetch(p){
+   var o = this;
+   // 获取数据
+   var xd = new TXmlDocument();
+   var xr = xd.root();
+   xr.set('action', 'fetch');
+   p.saveConfig(xr.create('Frame'));
+   // 创建事件
+   var e = new SXmlEvent();
+   e.owner = o;
+   e.url = RService.url(o._service);
+   e.action = EDataAction.Fetch;
+   e.parameter = p;
+   e.inputDocument = xd;
+   e.callback = o.onFetch;
+   // 处理事件
+   RConsole.find(FXmlConsole).process(e);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 //==========================================================
 // <T>响应加载标量信息。</T>
@@ -92,74 +245,7 @@ function FDatasetConsole_scalar(g){
 
 
 
-function FDatasetConsole_loadDataset(fd, x){
-   var o = this;
-   // 获得数据集名称
-   var dn = x.get('name') + '@' + fd;
-   // 察看缓冲中是否含有以前的对象
-   var ds = o.datasets.get(dn);
-   if(!ds){
-      ds = new TDataset();
-      o.datasets.set(dn, ds);
-      ds.id = dn;
-   }
-   // 加载数据
-   ds.clear();
-   ds.loadNode(x);
-   return ds;
-}
 
-// fd:formId:String 表单名称
-function FDatasetConsole_loadDatasets(dss, fd, x){
-   var o = this;
-   if(x && x.hasNode()){
-      var xds = x.nodes;
-      for(var n=0; n<xds.count; n++){
-         var xd = xds.get(n);
-         if(xd.isName('Dataset')){
-            var ds = o.loadDataset(fd, xd);
-            dss.set(ds.name, ds);
-         }
-      }
-   }
-}
-
-//==========================================================
-// <T>取数据后加载XML。</T>
-//
-// @method
-// @param root:root:TNode 返回数据的根节点
-//==========================================================
-function FDatasetConsole_onFetchLoaded(g, x){
-   var o = this;
-   var rds = g.resultDatasets;
-   if(x.hasNode()){
-      var xfs = x.nodes;
-      var xfc = xfs.count;
-      // 遍历所有的表单节点
-      for(var n = 0; n < xfc; n ++){
-         var xf = xfs.get(n);
-         var fd = xf.get('id');
-         if(!RString.isEmpty(fd)){
-            o.loadDatasets(rds, fd, xf);
-         }
-      }
-   }
-   // 设置默认名称
-   if(!rds.isEmpty()){
-      var c = rds.count;
-      for(var n=0; n<c; n++){
-         var rd = rds.value(n);
-         if('/' == rd.name){
-            g.resultDataset = rd;
-            g.resultRow = rd.row(0);
-            break;
-         }
-      }
-   }
-   // 回调参数
-   g.invoke();
-}
 
 //==========================================================
 // <T>选取数据后加载XML。</T>
@@ -308,42 +394,6 @@ function FDatasetConsole_onLoaded(e){
    RConsole.find(FListenerConsole).process(MDataset, EAction.Changed, e, e)
 }
 
-//==========================================================
-// <T>构造函数。</T>
-//
-// @method
-//==========================================================
-function FDatasetConsole_construct(){
-   var o = this;
-   o.datasets = new TMap();
-   // Listener
-   o.lsnsLoaded      = new TListeners();
-   o.lsnsUpdateBegin = new TListeners();
-   o.lsnsUpdateEnd   = new TListeners();
-}
-
-//==========================================================
-// <T>根据xml节点向服务器发送数据请求。</T>
-//
-// @method
-// @param dsArg:dsArg:TDatasetFetchArg 取数据时的参数类
-// @return TMap 数据集集合对象
-//==========================================================
-function FDatasetConsole_fetch(g){
-   var o = this;
-   // 获取数据
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('action', 'fetch');
-   root.push(g.toNode());
-   // 获取返回节点
-   var e = new TEvent(o, EXmlEvent.Send, o.onLoaded);
-   e.url = RService.url('logic.webform.dataset');
-   e.action = EDataAction.Fetch;
-   e.argument = g;
-   e.document = doc;
-   RConsole.find(FXmlConsole).process(e);
-}
 
 
 
@@ -461,7 +511,7 @@ function FDatasetConsole_get(id){
 //==========================================================
 function FDatasetConsole_getById(id){
    var o = this;
-   var d = o.datasets.get(id);
+   var d = o._datasets.get(id);
    return d;
 }
 
@@ -522,6 +572,7 @@ function FDatasetConsole_onColumnFetch(e){
       g.invoke();
    }
 }
+
 //==========================================================
 // <T>向表格数据树获取内容。</T>
 //
@@ -543,6 +594,7 @@ function FDatasetConsole_columnNodeFetch(g){
    e.action = EDataAction.Fetch;
    RConsole.find(FXmlConsole).process(e);
 }
+
 //==========================================================
 // <T>向表格数据树获取内容。</T>
 //

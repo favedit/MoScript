@@ -140,7 +140,7 @@ function REvent_process(hs, he){
                e.ohProcess.call(e.source, e);
             }else if(e.onProcess){
                // 如果没有立即事件，则处理队列内响应事件
-               RConsole.find(FEventConsole).push(e);
+               RConsole.find(FFrameEventConsole).push(e);
             }
          }
          return true;

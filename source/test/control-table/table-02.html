@@ -19,7 +19,10 @@
 <SCRIPT language='javascript' src='../../4.1.1-control/MEditDescriptor.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.1.1-control/MDataset.js'></SCRIPT>
 
+<SCRIPT language='javascript' src='../../4.1.2-control-core/FDatasetConsole.js'></SCRIPT>
+
 <SCRIPT language='javascript' src='../../4.2.2-control-table/FCell.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.2-control-table/FCellEditControl.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.2.2-control-table/FCellStatus.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.2.2-control-table/FCellSelected.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.2.2-control-table/FCellEdit.js'></SCRIPT>
@@ -30,10 +33,16 @@
 <SCRIPT language='javascript' src='../../4.2.2-control-table/FColumnEdit.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.2.2-control-table/FGridControl.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../4.2.2-control-table/FTable.js'></SCRIPT>
+
 </HEAD>
 
 <SCRIPT>
 // http://localhost:91/script/test/control-table/table-01.html
+var table = null;
+
+function doFetch(){
+   table.dsFetch();
+}
 
 function _load(){
    RRuntime.processCd = EProcess.Debug;
@@ -44,7 +53,7 @@ function _load(){
    var dfc = RConsole.find(FDescribeFrameConsole);
    var xframe = dfc.load('common.country.CountryList');
    // 创建表格
-   var table = RClass.create(FTable);
+   table = RClass.create(FTable);
    RControl.build(table, xframe, null, _panel);
    table.setPanel(_panel);
    table.psRefresh();
@@ -53,6 +62,12 @@ function _load(){
 </SCRIPT>
 
 <BODY scroll='auto' bgcolor='#444444' onload='_load()'>
+<INPUT type='button' onclick='doFetch()' value='Fetch'/>
+<INPUT type='button' onclick='doSearch()' value='Search'/>
+<INPUT type='button' onclick='doInsert()' value='Insert'/>
+<INPUT type='button' onclick='doUpdate()' value='Update'/>
+<INPUT type='button' onclick='doDelete()' value='Delete'/>
+<HR>
 <DIV id='_panel'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

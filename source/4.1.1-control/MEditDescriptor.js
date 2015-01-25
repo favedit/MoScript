@@ -32,8 +32,8 @@ function MEditDescriptor(o){
    o._validRequire      = RClass.register(o, new APtyBoolean(null, '_validRequire', null, false));
    //..........................................................
    // @attribute
-   o.__tip             = null;
-   o._validable        = false;
+   //o.__tip             = null;
+   //o._validable        = false;
    //..........................................................
    // @event
    //o.onDataEnter       = RClass.register(o, new HMouseEnter('onDataEnter'), MEditDescriptor_onDataEnter);
@@ -55,15 +55,15 @@ function MEditDescriptor(o){
    //o.onDataEditEnd     = MEditDescriptor_onDataEditEnd;
    //..........................................................
    // @process
-   o.oeSaveCode        = MEditDescriptor_oeSaveCode;
+   //o.oeSaveCode        = MEditDescriptor_oeSaveCode;
    //..........................................................
    // @method
-   o.canValid          = MEditDescriptor_canValid;
-   o.__changedEvent    = new TEvent();
-   o.formatValue       = MEditDescriptor_formatValue;
-   o.formatText        = MEditDescriptor_formatText;
-   o.setInfo           = RMethod.empty;
-   o.validText         = MEditDescriptor_validText;
+   //o.canValid          = MEditDescriptor_canValid;
+   //o.__changedEvent    = new TEvent();
+   //o.formatValue       = MEditDescriptor_formatValue;
+   //o.formatText        = MEditDescriptor_formatText;
+   //o.setInfo           = RMethod.empty;
+   //o.validText         = MEditDescriptor_validText;
    return o;
 }
 

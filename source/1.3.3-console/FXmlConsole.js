@@ -15,9 +15,9 @@ function FXmlConsole(o){
    // Method
    o.construct   = FXmlConsole_construct;
    o.alloc       = FXmlConsole_alloc;
-   o.process     = FXmlConsole_process;
    o.send        = FXmlConsole_send;
    o.sendAsync   = FXmlConsole_sendAsync;
+   o.process     = FXmlConsole_process;
    return o;
 }
 
@@ -36,14 +36,15 @@ function FXmlConsole_construct(){
 //
 // @method
 //==========================================================
-function FXmlConsole_onLoad(){
+function FXmlConsole_onLoad(p){
    var o = this;
-   var e = o.event;
-   e.document = o.document;
-   e.process();
-   o.event = null;
-   o.document = null;
-   o._statusFree = true;
+   debugger
+   //var e = o.event;
+   //e.document = o.document;
+   //e.process();
+   //o.event = null;
+   //o.document = null;
+   //o._statusFree = true;
 }
 
 //==========================================================
@@ -76,31 +77,6 @@ function FXmlConsole_alloc(){
 }
 
 //==========================================================
-// <T>同步或异步获发送一个XML信息，返回XML信息。</T>
-//
-// @method
-// @param e:event:TEvent 事件信息
-// @return XML信息
-//==========================================================
-function FXmlConsole_process(e){
-   var o = this;
-   var c = o.alloc();
-   c.event = e;
-   switch(e.code){
-      case EXmlEvent.Send:
-         c.send(e.url, e.document);
-         break;
-      case EXmlEvent.Receive:
-         c.receive(e.url, e.document);
-         break;
-      case EXmlEvent.SyncSend:
-         return c.syncSend(e.url, e.document);
-      case EXmlEvent.SyncReceive:
-         return c.syncReceive(e.url, e.document);
-   }
-}
-
-//==========================================================
 // <T>异步获发送一个XML信息，返回XML信息。</T>
 //
 // @method
@@ -123,12 +99,34 @@ function FXmlConsole_send(u, d){
 // @method
 // @param u:url:String 发送地址
 // @param d:document:TXmlDocument 发送文档
+// @param p:parameters:Object 参数
 // @return TXmlDocument 接收文档
 //==========================================================
-function FXmlConsole_sendAsync(u, d){
+function FXmlConsole_sendAsync(u, d, p){
    var o = this;
    var c = o.alloc();
    c._asynchronous = true;
+   c._parameters = p;
    c.send(u, d);
+   return c;
+}
+
+//==========================================================
+// <T>处理一个事件。</T>
+//
+// @method
+// @param p:event:SXmlEvent 事件
+//==========================================================
+function FXmlConsole_process(p){
+   var o = this;
+   // 检查参数
+   if(p.constructor != SXmlEvent){
+      throw new TError('Parameter type is invalid.');
+   }
+   // 发送内容
+   var c = o.alloc();
+   c._asynchronous = true;
+   c.send(p.url, p.inputDocument);
+   c.lsnsLoad.register(p, p.process);
    return c;
 }

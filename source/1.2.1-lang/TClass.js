@@ -43,14 +43,14 @@ function TClass(o){
 // <T>向当前类对象注册一个属性。</T>
 //
 // @method
-// @param v:value:Object 描述对象
+// @param p:annotation:AAnnotation 描述对象
 //==========================================================
-function TClass_register(v){
+function TClass_register(p){
    var o = this;
    // 检查类型和名称的合法性
-   var a = v.annotationCd();
-   var n = v.name();
-   var c = v.code();
+   var a = p.annotationCd();
+   var n = p.name();
+   var c = p.code();
    if(!a || !c){
       throw new TError(o, "Unknown annotation. (class={1},annotation={2},name={3},code={4})", RClass.dump(o), a, n, c);
    }
@@ -59,12 +59,15 @@ function TClass_register(v){
    if(!as){
       as = o._annotations[a] = new Object();
    }
-   if(as[c]){
-      throw new TError(o, "Duplicate annotation. (class={1},annotation={2},name={3},code={4},value={5})", RClass.dump(o), a, n, c, v.toString());
+   // 检查重复
+   if(!p._duplicate){
+      if(as[c]){
+         throw new TError(o, "Duplicate annotation. (class={1},annotation={2},name={3},code={4},value={5})", RClass.dump(o), a, n, c, p.toString());
+      }
    }
-   as[c] = v;
-   // 设置属性
-   o._attributes[n] = v;
+   // 设置内容
+   as[c] = p;
+   o._attributes[n] = p;
 }
 
 //==========================================================
@@ -86,10 +89,12 @@ function TClass_assign(c){
       // 复制指定对象内的类型到自己对象内
       var as = c._annotations[an];
       for(var n in as){
-         if(ls[n]){
-            RLogger.fatal(o, null, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, c.name, n, a.toString());
-         }
          var a = as[n];
+         if(!a._duplicate){
+            if(ls[n]){
+               throw new TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, c.name, n, a.toString());
+            }
+         }
          if(a._inherit){
             ls[n] = a;
          }

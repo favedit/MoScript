@@ -9,16 +9,16 @@ function FRadio(o){
    o = RClass.inherits(this, o, FEditControl);
    //..........................................................
    // @property
-   o._groupName         = RClass.register(o, new APtyString('_groupName'));
+   o._groupName       = RClass.register(o, new APtyString('_groupName'));
    //..........................................................
    // @style
-   o._styleInput        = RClass.register(o, new AStyle('_styleInput', 'Input'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput', 'Input'));
    //..........................................................
    // @html
-   o._hInput            = null;
+   o._hInput          = null;
    //..........................................................
    // @event
-   o.onBuildEditorValue = FRadio_onBuildEditorValue;
+   o.onBuildEditValue = FRadio_onBuildEditValue;
    //..........................................................
    // @attribute
    //o._editChecked = RClass.register(o, new APtyBoolean('_editChecked'), false);
@@ -38,12 +38,12 @@ function FRadio(o){
 }
 
 //==========================================================
-// <T>建立编辑页面控件。</T>
+// <T>建立编辑器内容。</T>
 //
 // @method
-// @param h:hPanel:<HTML> 页面容器
+// @param p:argements:SArgements 参数集合
 //==========================================================
-function FRadio_onBuildEditorValue(p){
+function FRadio_onBuildEditValue(p){
    var o = this;
    // 建立编辑控件
    o._hInput = RBuilder.appendRadio(o._hValuePanel, o.styleName('Input'));

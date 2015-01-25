@@ -7,9 +7,11 @@
 // =========================================================
 function TObjects(o){
    if(!o){o = this;}
+   //..........................................................
    // @attribute
    o._count     = 0;
    o._items     = new Array();
+   //..........................................................
    // @method
    o.isEmpty    = TObjects_isEmpty;
    o.count      = TObjects_count;
@@ -19,6 +21,8 @@ function TObjects(o){
    o.last       = TObjects_last;
    o.get        = TObjects_get;
    o.set        = TObjects_set;
+   // @method
+   o.assign     = TObjects_assign;
    o.append     = TObjects_append;
    o.insert     = TObjects_insert;
    o.push       = TObjects_push;
@@ -29,13 +33,14 @@ function TObjects(o){
    o.erase      = TObjects_erase;
    o.remove     = TObjects_remove;
    o.clear      = TObjects_clear;
+   // @method
    o.dispose    = TObjects_dispose;
    o.dump       = TObjects_dump;
    return o;
 }
 
 //===========================================================
-// <T>判断列表是否为空。</T>
+// <T>判断集合是否为空。</T>
 //
 // @method
 // @return Boolean 是否为空
@@ -55,7 +60,7 @@ function TObjects_count(){
 }
 
 //===========================================================
-// <T>判断列表是否含有指定的对象。</T>
+// <T>判断集合是否含有指定的对象。</T>
 //
 // @method
 // @param v:value:Object 对象
@@ -66,7 +71,7 @@ function TObjects_contains(v){
 }
 
 //===========================================================
-// <T>查找指定对象在列表中的索引位置，不存在则返回-1。</T>
+// <T>查找指定对象在集合中的索引位置，不存在则返回-1。</T>
 //
 // @method
 // @param v:value:Object 对象
@@ -84,7 +89,7 @@ function TObjects_indexOf(v){
 }
 
 //===========================================================
-// <T>获得列表中第一个对象。</T>
+// <T>获得集合中第一个对象。</T>
 //
 // @method
 // @return 第一个对象
@@ -95,7 +100,7 @@ function TObjects_first(){
 }
 
 //===========================================================
-// <T>获得列表中最后一个对象。</T>
+// <T>获得集合中最后一个对象。</T>
 //
 // @method
 // @return 最后一个对象
@@ -113,7 +118,8 @@ function TObjects_last(){
 // @return 当前位置上的对象
 //===========================================================
 function TObjects_get(n){
-   return ((n >= 0) && (n < this._count)) ? this._items[n] : null;
+   var o = this;
+   return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
 }
 
 //===========================================================
@@ -124,16 +130,31 @@ function TObjects_get(n){
 // @param v:value:Object 对象
 //===========================================================
 function TObjects_set(n, v){
-   if((n >= 0) && (n < this._count)){
-      this._items[n] = v;
+   var o = this;
+   if((n >= 0) && (n < o._count)){
+      o._items[n] = v;
    }
 }
 
 //===========================================================
-// <T>追加列表全部内容。</T>
+// <T>接收集合全部内容。</T>
 //
 // @method
-// @param v:value:TObjects 列表
+// @param p:values:TObjects 集合
+//===========================================================
+function TObjects_assign(p){
+   var o = this;
+   var c = o._count = p._count;
+   for(var i = 0; i < c; i++){
+      o._items[i] = p._items[i];
+   }
+}
+
+//===========================================================
+// <T>追加集合全部内容。</T>
+//
+// @method
+// @param v:value:TObjects 集合
 //===========================================================
 function TObjects_append(v){
    var o = this;
@@ -162,7 +183,7 @@ function TObjects_insert(i, v){
 }
 
 //===========================================================
-// <T>把对象追加到列表的最后位置。</T>
+// <T>把对象追加到集合的最后位置。</T>
 //
 // @method
 // @param v:value:Object 对象
@@ -175,7 +196,7 @@ function TObjects_push(v){
 }
 
 //===========================================================
-// <T>把唯一对象追加到列表的最后位置。</T>
+// <T>把唯一对象追加到集合的最后位置。</T>
 //
 // @method
 // @param v:value:Object 对象
@@ -196,7 +217,7 @@ function TObjects_pushUnique(v){
 }
 
 //===========================================================
-// <T>将最后一个对象弹出列表。</T>
+// <T>将最后一个对象弹出集合。</T>
 //
 // @method
 // @return Object 对象
@@ -209,7 +230,7 @@ function TObjects_pop(){
 }
 
 //===========================================================
-// <T>在列表中交换两个索引对应的对象。</T>
+// <T>在集合中交换两个索引对应的对象。</T>
 //
 // @method
 // @param l:left:Integer 第一个对象的索引值
@@ -225,7 +246,7 @@ function TObjects_swap(l, r){
 }
 
 //===========================================================
-// <T>对列表内容进行排序。</T>
+// <T>对集合内容进行排序。</T>
 //
 // @method
 //===========================================================

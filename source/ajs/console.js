@@ -195,51 +195,85 @@ function FEnvironmentConsole_xml(){
    }
    return null;
 }
+function FEvent(o){
+   o = RClass.inherits(this, o, FObject);
+   o._owner      = null;
+   o._callback   = null;
+   o._valid      = true;
+   o.owner       = FEvent_owner;
+   o.setOwner    = FEvent_setOwner;
+   o.callback    = FEvent_callback;
+   o.setCallback = FEvent_setCallback;
+   o.valid       = FEvent_valid;
+   o.setValid    = FEvent_setValid;
+   o.process     = FEvent_process;
+   return o;
+}
+function FEvent_owner(){
+   return this._owner;
+}
+function FEvent_setOwner(p){
+   this._owner = p;
+}
+function FEvent_callback(){
+   return this._callback;
+}
+function FEvent_setCallback(p){
+   this._callback = p;
+}
+function FEvent_valid(){
+   return this._valid;
+}
+function FEvent_setValid(p){
+   this._valid = p;
+}
+function FEvent_process(){
+   var o = this;
+   if(o._valid){
+      var s = o._owner;
+      if(s){
+         o._callback.call(s, o);
+      }else{
+         o._callback(o);
+      }
+   }
+}
 function FEventConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._scopeCd   = EScope.Local;
-   o._thread    = null;
-   o._interval  = 20;
-   o._allow     = true;
-   o._allows    = new TAttributes();
-   o._events    = new TObjects();
-   o._listeners = new TAttributes();
-   o.onProcess  = FEventConsole_onProcess;
-   o.construct  = FEventConsole_construct;
-   o.register   = FEventConsole_register;
-   o.push       = FEventConsole_push;
-   o.clear      = FEventConsole_clear;
+   o._scopeCd       = EScope.Local;
+   o._thread        = null;
+   o._interval      = 100;
+   o._processEvents = null;
+   o._events        = null;
+   o.onProcess      = FEventConsole_onProcess;
+   o.construct      = FEventConsole_construct;
+   o.register       = FEventConsole_register;
+   o.push           = FEventConsole_push;
+   o.clear          = FEventConsole_clear;
    return o;
 }
 function FEventConsole_onProcess(){
    var o = this;
    var es = o._events;
-   var ec = es.count();
-   if(ec > 0){
-      while(true){
-         var has = false;
-         for(var n = 0; n < ec; n++){
-            var e = es.get(n);
-            if(e){
-               has = true;
-               e.process();
-               var ls = o._listeners.get(RMethod.name(e));
-               if(ls){
-                  ls.process(e);
-               }
-               es.set(n, null)
-            }
-         }
-         if(!has){
-            break;
-         }
+   if(es.isEmpty()){
+      return;
+   }
+   var ps = o._processEvents;
+   ps.assign(es);
+   es.clear();
+   var c = ps.count();
+   if(c > 0){
+      for(var i = 0; i < c; i++){
+         ps.get(i).process();
       }
-      es.clear();
+      ps.clear();
    }
 }
 function FEventConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   o._processEvents = new TObjects();
+   o._events = new TObjects();
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
    t.lsnsProcess.register(o, o.onProcess);
@@ -247,51 +281,21 @@ function FEventConsole_construct(){
    RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
 }
 function FEventConsole_register(po, pc){
-   this._events.push(new TEvent(po, null, pc));
-}
-function FEventConsole_push(e){
    var o = this;
-   var n = RClass.name(e)
-   if(o._allow){
-      var a = true;
-      if(o._allows.contains(n)){
-         a = RBoolean.isTrue(o._allows.get(n));
-      }
-      if(a){
-         var es = o._events;
-         var c = es.count();
-         for(var i = 0; i < c; i++){
-            if(es.get(n) == e){
-               es.set(n, null);
-            }
-         }
-         es.push(e);
-      }
+   var e = RClass.create(FEvent);
+   e.owner = po;
+   e.callback = pc;
+   o._events.push(e);
+}
+function FEventConsole_push(p){
+   var o = this;
+   var es = o._events;
+   if(!es.contains(p)){
+      es.push(p);
    }
 }
 function FEventConsole_clear(){
    this._events.clear();
-}
-function FEventConsole_add(owner, proc){
-   this._events.push(new TEvent(owner, null, proc));
-}
-function FEventConsole_allowEvent(c){
-   this._allows.set(RMethod.name(c), EBool.True);
-}
-function FEventConsole_skipEvent(c){
-   this._allows.set(RMethod.name(c), EBool.False);
-}
-function FEventConsole_allowAll(){
-   this._allow = true;
-}
-function FEventConsole_skipAll(){
-   this._allow = false;
-}
-function FEventConsole_onlyCall(c, m){
-   var o = this;
-   o._allow = false;
-   m.call(c);
-   o._allow = true;
 }
 function FHttpConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -471,6 +475,17 @@ function FPipeline(o){
    return o;
 }
 function FPipeline_name(){
+   return this._name;
+}
+function FProcess(o){
+   o = RClass.inherits(this, o, FObject);
+   o._typeName  = null;
+   o._groupName = null;
+   o._name      = null;
+   o.name  = FProcess_name;
+   return o;
+}
+function FProcess_name(){
    return this._name;
 }
 function FProcessConsole(o){
@@ -782,23 +797,18 @@ function FXmlConsole(o){
    o.onLoad      = FXmlConsole_onLoad;
    o.construct   = FXmlConsole_construct;
    o.alloc       = FXmlConsole_alloc;
-   o.process     = FXmlConsole_process;
    o.send        = FXmlConsole_send;
    o.sendAsync   = FXmlConsole_sendAsync;
+   o.process     = FXmlConsole_process;
    return o;
 }
 function FXmlConsole_construct(){
    var o = this;
    o.connections = new TObjects();
 }
-function FXmlConsole_onLoad(){
+function FXmlConsole_onLoad(p){
    var o = this;
-   var e = o.event;
-   e.document = o.document;
-   e.process();
-   o.event = null;
-   o.document = null;
-   o._statusFree = true;
+   debugger
 }
 function FXmlConsole_alloc(){
    var o = this;
@@ -819,23 +829,6 @@ function FXmlConsole_alloc(){
    a._statusFree = false;
    return a;
 }
-function FXmlConsole_process(e){
-   var o = this;
-   var c = o.alloc();
-   c.event = e;
-   switch(e.code){
-      case EXmlEvent.Send:
-         c.send(e.url, e.document);
-         break;
-      case EXmlEvent.Receive:
-         c.receive(e.url, e.document);
-         break;
-      case EXmlEvent.SyncSend:
-         return c.syncSend(e.url, e.document);
-      case EXmlEvent.SyncReceive:
-         return c.syncReceive(e.url, e.document);
-   }
-}
 function FXmlConsole_send(u, d){
    var o = this;
    var c = o.alloc();
@@ -844,10 +837,55 @@ function FXmlConsole_send(u, d){
    c._statusFree = true;
    return r;
 }
-function FXmlConsole_sendAsync(u, d){
+function FXmlConsole_sendAsync(u, d, p){
    var o = this;
    var c = o.alloc();
    c._asynchronous = true;
+   c._parameters = p;
    c.send(u, d);
    return c;
+}
+function FXmlConsole_process(p){
+   var o = this;
+   if(p.constructor != SXmlEvent){
+      throw new TError('Parameter type is invalid.');
+   }
+   var c = o.alloc();
+   c._asynchronous = true;
+   c.send(p.url, p.inputDocument);
+   c.lsnsLoad.register(p, p.process);
+   return c;
+}
+function SXmlEvent(o){
+   if(!o){o = this;}
+   o.owner          = null;
+   o.url            = null;
+   o.action         = null;
+   o.parameter      = null;
+   o.inputDocument  = null;
+   o.outputDocument = null;
+   o.callback       = null;
+   o.process        = SXmlEvent_process;
+   o.dispose        = SXmlEvent_dispose;
+   return o;
+}
+function SXmlEvent_process(p){
+   var o = this;
+   o.outputDocument = p.document;
+   o.outputNode = p.root;
+   if(o.owner){
+      o.callback.call(o.owner, o);
+   }else{
+      o.callback(o);
+   }
+}
+function SXmlEvent_dispose(){
+   var o = this;
+   o.owner = null;
+   o.url = null;
+   o.action = null;
+   o.parameter = null;
+   o.inputDocument = null;
+   o.outputDocument = null;
+   o.callback = null;
 }

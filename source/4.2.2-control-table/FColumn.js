@@ -2,35 +2,40 @@
 // <T>表格内的列控件。</T>
 //
 // hPanel<TD>
-// ┌------------------------------------------------------┐
-// │ hForm<TABLE>                                         │
-// │ hFormLine<TR>                                        │
-// │┌--------------┬------------------┬--------------┐│
-// ││hIconPanel<TD>│hHeadPanel<TD>    │hSortPanel<TD>││
-// ││hIcon<IMG>    │hLabel<SPAN>      │hSort<IMG>    ││
-// │└--------------┴------------------┴--------------┘│
-// └------------------------------------------------------┘
+// ┌---------------------------------------------------------------------------------------┐
+// │ hForm<TABLE>                                                                          │
+// │┌--------------┬------------------┬--------------┐                                 │
+// ││hIconPanel<TD>│hHeadPanel<TD>    │hSortPanel<TD>│hFormLine<TR>                    │
+// ││hIcon<IMG>    │hLabel<SPAN>      │hSort<IMG>    │                                 │
+// │└--------------┴------------------┴--------------┘                                 │
+// └---------------------------------------------------------------------------------------┘
 // hSearchPanel<TD>
-// ┌--------------------------------------------------------------------┐
-// │ hSearchForm<TABLE>                                                 │
-// │ hSearchFormLine<TR>                                                │
-// │┌--------------------┬--------------------┬--------------------┐│
-// ││hSearchIconPanel<TD>│hSearchEditPanel<TD>│hSearchDropPanel<TD>││
-// ││hSearchIcon<IMG>    │hSearchEdit<INPUT>  │hSearchDrop<IMG>    ││
-// │└--------------------┴--------------------┴--------------------┘│
-// └--------------------------------------------------------------------┘
+// ┌---------------------------------------------------------------------------------------┐
+// │ hSearchForm<TABLE>                                                                    │
+// │┌--------------------┬--------------------┬--------------------┐                   │
+// ││hSearchIconPanel<TD>│hSearchEditPanel<TD>│hSearchDropPanel<TD>│hSearchFormLine<TR>│
+// ││hSearchIcon<IMG>    │hSearchEdit<INPUT>  │hSearchDrop<IMG>    │                   │
+// │└--------------------┴--------------------┴--------------------┘                   │
+// └---------------------------------------------------------------------------------------┘
 // 
 // @class
 // @author maocy
 // @version 150123
 //==========================================================
-function FColumn(o) {
+function FColumn(o){
    //o = RClass.inherits(this, o, FControl, MEditDescriptor, MDisplay);
-   o = RClass.inherits(this, o, FControl);
+   o = RClass.inherits(this, o, FControl, MDataField);
    //..........................................................
    // @property
-   //o._dispList          = RClass.register(o, new APtySet('dispList', 'disp_config', EDisplayConfig.List), true);
-   o._dispList          = true;
+   //o._displayList     = RClass.register(o, new APtySet('dispList', 'disp_config', EDisplayConfig.List), true);
+   o._displayList       = true;
+   //..........................................................
+   // @style
+   o._styleLabel        = RClass.register(o, new AStyle('_styleLabel'));
+   o._styleSearchPanel  = RClass.register(o, new AStyle('_styleSearchPanel'));
+   o._styleSearchEdit   = RClass.register(o, new AStyle('_styleSearchEdit'));
+   o._styleIconSortUp   = RClass.register(o, new AStyleIcon('_styleIconSortUp'));
+   o._styleIconSortDown = RClass.register(o, new AStyleIcon('_styleIconSortDown'));
    //..........................................................
    // @attribute
    o._cellClass         = FCell;
@@ -38,19 +43,37 @@ function FColumn(o) {
    // @html
    o._hForm             = null;
    o._hFormLine         = null;
+   // @html
+   o._hIconPanel        = null;
+   o._hIcon             = null;
+   o._hLabel            = null;
+   o._hSortPanel        = null;
+   o._hSortUp           = null;
+   o._hSortDown         = null;
+   // @html
+   o._hSearchEditPanel  = null;
+   o._hSearchEdit       = null;
    //..........................................................
    // @event
-   o.onBuildLabel      = FColumn_onBuildLabel;
-   o.onBuildSearchIcon = RMethod.empty;
-   o.onBuildSearchEdit = FColumn_onBuildSearchEdit;
-   o.onBuildSearchDrop = RMethod.empty;
-   o.onBuildSearchForm = FColumn_onBuildSearchForm;
-   o.onBuildSearch     = FColumn_onBuildSearch;
-   o.onBuildTotal      = FColumn_onBuildTotal;
-   o.onBuildPanel      = FColumn_onBuildPanel;
+   o.onBuildLabel       = FColumn_onBuildLabel;
+   o.onBuildSearchIcon  = RMethod.empty;
+   o.onBuildSearchEdit  = FColumn_onBuildSearchEdit;
+   o.onBuildSearchDrop  = RMethod.empty;
+   o.onBuildSearchForm  = FColumn_onBuildSearchForm;
+   o.onBuildSearch      = FColumn_onBuildSearch;
+   o.onBuildTotal       = FColumn_onBuildTotal;
+   o.onBuildPanel       = FColumn_onBuildPanel;
+   o.onBuild            = FColumn_onBuild;
+   // @event
+   o.onSearchEnter      = RClass.register(o, new AEventMouseEnter('onSearchEnter'));
+   o.onSearchClick      = RClass.register(o, new AEventClick('onSearchClick'));
+   o.onSearchLeave      = RClass.register(o, new AEventMouseLeave('onSearchLeave'));
+   o.onSearchKeyDown    = RClass.register(o, new AEventKeyDown('onSearchKeyDown'));
    //..........................................................
    // @process
-   o.oeBuild           = FColumn_oeBuild;
+   //..........................................................
+   // @method
+   o.createCell         = FColumn_createCell;
 
 
 
@@ -61,96 +84,85 @@ function FColumn(o) {
 
    //..........................................................
    // @property
-   //o._dispList          = RClass.register(o, new APtySet('dispList', 'dispConfig', EDisplayConfig.List));
+   //o._displayList          = RClass.register(o, new APtySet('dispList', 'dispConfig', EDisplayConfig.List));
    //o._dispFixed         = RClass.register(o, new APtySet('dispFixed', 'dispConfig', EDisplayConfig.Fixed));
    //o._dispAuto          = RClass.register(o, new APtySet('dispAuto', 'dispConfig', EDisplayConfig.Auto));
    //o._dispSize          = RClass.register(o, new APtySet('dispSize', 'dispConfig', EDisplayConfig.Size));
    //o._dispDrag          = RClass.register(o, new APtySet('dispDrag', 'dispConfig', EDisplayConfig.Drag));
-   o._dataType          = RClass.register(o, new APtyString('dataType'));
-   o._editColor         = RClass.register(o, new APtyString('editColor'));
-   o._editBgcolor       = RClass.register(o, new APtyString('editBgcolor'));
-   o._orderAble         = RClass.register(o, new APtyBoolean('orderAble'));
-   o._editAlign         = EAlign.Left;
-   o._viewIcons         = RClass.register(o, new APtyString('viewIcons'));
+   //o._dataType          = RClass.register(o, new APtyString('dataType'));
+   //o._editColor         = RClass.register(o, new APtyString('editColor'));
+   //o._editBgcolor       = RClass.register(o, new APtyString('editBgcolor'));
+   //o._orderAble         = RClass.register(o, new APtyBoolean('orderAble'));
+   //o._editAlign         = EAlign.Left;
+   //o._viewIcons         = RClass.register(o, new APtyString('viewIcons'));
    //..........................................................
    // @style
-   o._styleHead         = RClass.register(o, new AStyle('_styleHead'));
-   o._styleHeadLabel    = RClass.register(o, new AStyle('_styleHeadLabel'));
-   o._styleSearchPanel  = RClass.register(o, new AStyle('_styleSearchPanel'));
-   o._styleSearchEdit   = RClass.register(o, new AStyle('_styleSearchEdit'));
-   o._styleIconSortUp   = RClass.register(o, new AStyleIcon('_styleIconSortUp'));
-   o._styleIconSortDown = RClass.register(o, new AStyleIcon('_styleIconSortDown'));
+   //o._styleHead         = RClass.register(o, new AStyle('_styleHead'));
+   //o._styleHeadLabel    = RClass.register(o, new AStyle('_styleHeadLabel'));
    //..........................................................
    // @attribute
-   o.hasIconArea       = false;
-   o.hasDropArea       = false;
+   //o.hasIconArea       = false;
+   //o.hasDropArea       = false;
    //..........................................................
    // @attribute
-   o.table             = null;
-   o.index             = null;
-   o.iconMap           = null;
-   o.sortType          = true;
-   o.isDisplay         = true;
-   o.searchHint        = "Search ...";
+   //o.table             = null;
+   //o.index             = null;
+   //o.iconMap           = null;
+   //o.sortType          = true;
+   //o.isDisplay         = true;
+   //o.searchHint        = "Search ...";
    //..........................................................
    // @html
-   o._hIconPanel        = null;
-   o._hIcon             = null;
-   o._hHeadPanel        = null;
-   o._hLabel            = null;
-   o._hSortPanel        = null;
-   o._hSortUp           = null;
-   o._hSortDown         = null;
-   o._hSearchPanel      = null;
-   o._hSearchForm       = null;
-   o._hSearchFormLine   = null;
-   o._hSearchIconPanel  = null;
-   o._hSearchIcon       = null;
-   o._hSearchEditPanel  = null;
-   o._hSearchEdit       = null;
-   o._hSearchDropPanel  = null;
-   o._hSearchDrop       = null;
-   o._hFixPanel         = null;
+   //o._hIconPanel        = null;
+   //o._hIcon             = null;
+   //o._hHeadPanel        = null;
+   //o._hLabel            = null;
+   //o._hSortPanel        = null;
+   //o._hSortUp           = null;
+   //o._hSortDown         = null;
+   //o._hSearchPanel      = null;
+   //o._hSearchForm       = null;
+   //o._hSearchFormLine   = null;
+   //o._hSearchIconPanel  = null;
+   //o._hSearchIcon       = null;
+   //o._hSearchDropPanel  = null;
+   //o._hSearchDrop       = null;
+   //o._hFixPanel         = null;
    //..........................................................
    // @event
-   o.onSearchEnter     = RClass.register(o, new AEventMouseEnter('onSearchEnter'));
-   o.onSearchClick     = RClass.register(o, new AEventClick('onSearchClick'));
-   o.onSearchLeave     = RClass.register(o, new AEventMouseLeave('onSearchLeave'));
-   o.onSearchKeyDown   = RClass.register(o, new AEventKeyDown('onSearchKeyDown'));
-   o.onCellMouseEnter  = RClass.register(o, new AEventMouseEnter('onCellMouseEnter'), FColumn_onCellMouseEnter);
-   o.onCellMouseLeave  = RClass.register(o, new AEventMouseLeave('onCellMouseLeave'), FColumn_onCellMouseLeave);
-   o.onCellMouseDown   = RClass.register(o, new AEventMouseDown('onCellMouseDown'), FColumn_onCellMouseDown);
-   o.onCellClick       = RClass.register(o, new AEventClick('onCellClick'), FColumn_onCellClick);
-   o.onCellDoubleClick = RClass.register(o, new AEventDoubleClick('onCellDoubleClick'), FColumn_onCellDoubleClick);
-   o.onCellKeyDown     = RClass.register(o, new AEventKeyDown('onCellKeyDown'), FColumn_onCellKeyDown);
+   //o.onCellMouseEnter  = RClass.register(o, new AEventMouseEnter('onCellMouseEnter'), FColumn_onCellMouseEnter);
+   //o.onCellMouseLeave  = RClass.register(o, new AEventMouseLeave('onCellMouseLeave'), FColumn_onCellMouseLeave);
+   //o.onCellMouseDown   = RClass.register(o, new AEventMouseDown('onCellMouseDown'), FColumn_onCellMouseDown);
+   //o.onCellClick       = RClass.register(o, new AEventClick('onCellClick'), FColumn_onCellClick);
+   //o.onCellDoubleClick = RClass.register(o, new AEventDoubleClick('onCellDoubleClick'), FColumn_onCellDoubleClick);
+   //o.onCellKeyDown     = RClass.register(o, new AEventKeyDown('onCellKeyDown'), FColumn_onCellKeyDown);
    // @event
-   o.onDataKeyDown     = FColumn_onDataKeyDown;
-   o.onDataChanged     = FColumn_onDataChanged;
+   //o.onDataKeyDown     = FColumn_onDataKeyDown;
+   //o.onDataChanged     = FColumn_onDataChanged;
    // @event
-   o.onEditBegin       = FColumn_onEditBegin;
-   o.onEditEnd         = FColumn_onEditEnd;
-   o.onEditChanged     = FColumn_onEditChanged;
+   //o.onEditBegin       = FColumn_onEditBegin;
+   //o.onEditEnd         = FColumn_onEditEnd;
+   //o.onEditChanged     = FColumn_onEditChanged;
    //..........................................................
    // @event
-   o.onHeadMouseDown   = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FColumn_onHeadMouseDown);
+   //o.onHeadMouseDown   = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FColumn_onHeadMouseDown);
    //..........................................................
    // @process
-   o.oeMode            = FColumn_oeMode;
-   o.oeRefresh         = FColumn_oeRefresh;
+   //o.oeMode            = FColumn_oeMode;
+   //o.oeRefresh         = FColumn_oeRefresh;
    //..........................................................
    // @method
-   o.createCell        = FColumn_createCell;
-   o.createMoveable    = FColumn_createMoveable;
-   o.searchValue       = FColumn_searchValue;
-   o.setStyleStatus    = FColumn_setStyleStatus;
-   o.cell              = FColumn_cell;
-   o.equalsValue       = FColumn_equalsValue;
-   o.setWidth          = FColumn_setWidth;
-   o.setVisible        = FColumn_setVisible;
-   o.moveCellFocus     = FColumn_moveCellFocus;
-   o.getEditRange      = FColumn_getEditRange;
-   o.dispose           = FColumn_dispose;
-   o.dump              = FColumn_dump;
+   //o.createMoveable    = FColumn_createMoveable;
+   //o.searchValue       = FColumn_searchValue;
+   //o.setStyleStatus    = FColumn_setStyleStatus;
+   //o.cell              = FColumn_cell;
+   //o.equalsValue       = FColumn_equalsValue;
+   //o.setWidth          = FColumn_setWidth;
+   //o.setVisible        = FColumn_setVisible;
+   //o.moveCellFocus     = FColumn_moveCellFocus;
+   //o.getEditRange      = FColumn_getEditRange;
+   //o.dispose           = FColumn_dispose;
+   //o.dump              = FColumn_dump;
    return o;
 }
 
@@ -169,20 +181,18 @@ function FColumn_onBuildLabel(p){
       o._hIcon = RBuilder.appendIcon(hip, o.icon);
    }
    // 建立标题区
-   if (o._label) {
-      var hl = o._hLabel = RBuilder.appendTableCell(hr);
-      hl.noWrap = true;
-      hl.style.fontSize = '12';
-      hl.style.fontWeight = 'bolder';
-      // 设置可编辑性
-      hl.style.color = o.editUpdate ? EColor.TextEdit : EColor.TextReadonly;
-      // 设置标题颜色
-      if(o.editUpdate && o.validRequire){
-         hl.style.color = EColor.Require;
-      }
-      hl.align = o.labelAlign;
-      hl.innerText = o.label();
-   }
+   var hl = o._hLabel = RBuilder.appendTableCell(hr);
+   //hl.noWrap = true;
+   //hl.style.fontSize = '12';
+   //hl.style.fontWeight = 'bolder';
+   // 设置可编辑性
+   //hl.style.color = o.editUpdate ? EColor.TextEdit : EColor.TextReadonly;
+   // 设置标题颜色
+   //if(o.editUpdate && o.validRequire){
+   //   hl.style.color = EColor.Require;
+   //}
+   //hl.align = o._labelAlignCd;
+   hl.innerHTML = RString.nvl(o.label());
    // 建立排序区
    var hsp = o._hSortPanel = RBuilder.appendTableCell(hr);
    var hsu = o._hSortUp = RBuilder.appendIcon(hsp, o.styleIcon('SortUp', FColumn));
@@ -203,22 +213,20 @@ function FColumn_onBuildLabel(p){
 //==========================================================
 function FColumn_onBuildSearchEdit(p){
    var o = this;
-   var hc = o._hSearchEditPanel = o._hSearchFormLine.insertCell();
-   var he = o._hSearchEdit = RBuilder.append(hc, 'INPUT', o.styleName('SearchEdit'));
+   var hc = o._hSearchEditPanel = RBuilder.appendTableCell(o._hSearchFormLine, o.styleName('SearchPanel'));
+   var he = o._hSearchEdit = RBuilder.appendEdit(hc, o.styleName('SearchEdit'));
    // 关联事件
    //o.table.linkEvent(o, 'onColumnSearchKeyDown', he);
-   o.attachEvent('onSearchClick', he);
-   he.style.backgroundColor = "#FFFFFF";
-   hc.style.backgroundColor = "#FFFFFF";
+   //o.attachEvent('onSearchClick', he);
    //he.innerText = o.searchHint;
    // 设置文字对齐方式
-   if(!RString.isEmpty(o._editAlign)){
-      he.style.textAlign = o._editAlign;
-   }
+   //if(!RString.isEmpty(o._editAlign)){
+      //he.style.textAlign = o._editAlign;
+   //}
 }
 
 //==========================================================
-// <T>建立搜索表单。</T>
+// <T>建立搜索框。</T>
 //
 // @method
 // @param p:param:TEventProcess 事件
@@ -289,17 +297,17 @@ function FColumn_onBuildTotal(p){
 // @param p:param:TEventProcess 事件
 //==========================================================
 function FColumn_onBuildPanel(p) {
-   this._hPanel = RBuilder.create(p, 'TD');
+   var o = this;
+   o._hPanel = RBuilder.create(p, 'TD', o.styleName('Label'));
 }
 
 //==========================================================
-// <T>建立当前控件的显示框架。</T>
+// <T>建立显示框架。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
-// @return EEventStatus 处理状态
+// @param p:argements:SArgements 参数集合
 //==========================================================
-function FColumn_oeBuild(p) {
+function FColumn_onBuild(p) {
    var o = this;
    var t = o.table;
    // 设置绝对编辑标志
@@ -318,9 +326,9 @@ function FColumn_oeBuild(p) {
       o.hasIconArea = im.count > 0;
    }
    // 调用底层建立对象
-   o.__base.FControl.oeBuild.call(o, p);
+   o.__base.FControl.onBuild.call(o, p);
    var hp = o._hPanel;
-   hp.style.backgroundImage = 'url(' + RResource.iconPath('control.column.head') + ')';
+   //hp.style.backgroundImage = 'url(' + RResource.iconPath('control.column.head') + ')';
    hp.style.padding = 4;
    // 创建标题头容器(TD对象)
    var hf = o._hForm = RBuilder.appendTable(hp);
@@ -339,13 +347,40 @@ function FColumn_oeBuild(p) {
    h.height = 1;
    h.bgColor = '#FFFFFF'
    // 设置宽度
-   if(!o.width){
-      o.width = 60;
+   if(o._size.width < 40){
+      o._size.width = 40;
    }
+   RHtml.setSize(h, o._size);
    o._hPanel.style.pixelWidth = o.width;
    o._hFixPanel.style.pixelWidth = o.width;
-   return EEventStatus.Stop;
 }
+
+//==========================================================
+// <T>创建单元格。</T>
+//
+// @method
+// @param p:row:FRow 表格行
+// @return FCell 单元格
+//==========================================================
+function FColumn_createCell(p) {
+   var o = this;
+   var c = RClass.create(o._cellClass);
+   var t = c._table = o._table;
+   c._name = o._name;
+   c._column = o;
+   c.build(t._hPanel);
+   c.setVisible(o._displayList);
+   return c;
+}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -418,7 +453,7 @@ function FColumn_oeMode(e){
       if(EAction.Design == e.mode){
          d = o.dispDesign;
       }else{
-         d = o._dispList;
+         d = o._displayList;
       }
       o.inModeDisplay = d;
       o.setVisible(d);
@@ -430,7 +465,7 @@ function FColumn_oeMode(e){
 function FColumn_oeRefresh(e) {
    var o = this;
    if(e.isBefore()){
-      o.setVisible(o._dispList);
+      o.setVisible(o._displayList);
    }
 }
 
@@ -517,24 +552,6 @@ function FColumn_onHeadMouseDown(e) {
 //==========================================================
 function FColumn_onRowClick(s, e){
    RConsole.find(FListenerConsole).process(FGridControl, EGridAction.RowClick, s.row, s.row);
-}
-
-//==========================================================
-// <T>根据单元格类型，为行对象创建单元格对象，并设置可见性。</T>
-//
-// @method
-// @param r:row:FRow 行对象
-// @return FCell 单元格实例
-//==========================================================
-function FColumn_createCell() {
-   var o = this;
-   var c = RClass.create(o.__cellClass);
-   c.name = o.name;
-   c.table = o.table;
-   c.column = o;
-   c.build();
-   c.setVisible(o._dispList);
-   return c;
 }
 
 //==========================================================
@@ -675,7 +692,7 @@ function FColumn_moveCellFocus(row, p) {
          var fr = t.rows.get(n);
          for( var i = fi; i >= 0; i--){
             var ft = t.columns.value(i);
-            if(RClass.isClass(ft, FColumn) && ft._dispList){
+            if(RClass.isClass(ft, FColumn) && ft._displayList){
                mt = ft;
                mr = fr;
                mc = mr.cell(mt.index);
@@ -696,7 +713,7 @@ function FColumn_moveCellFocus(row, p) {
          var fr = t.rows.get(n);
          for(var i = fi; i < cc; i++){
             var ft = t.columns.value(i);
-            if(RClass.isClass(ft, FColumn) && ft._dispList){
+            if(RClass.isClass(ft, FColumn) && ft._displayList){
                mt = ft;
                mr = fr;
                mc = mr.cell(mt.index);

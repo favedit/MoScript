@@ -25,7 +25,7 @@ function FControl(o){
    o._hint          = RClass.register(o, new APtyString('_hint'));
    //..........................................................
    // @style
-   o._stylePanel    = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
+   o._stylePanel    = RClass.register(o, new AStyle('_stylePanel'));
    // @style
    //o._styleDesign = RClass.register(o, new AStyle('Design'));
    // @style
@@ -38,13 +38,12 @@ function FControl(o){
    // @attribute
    o._layoutCd      = ELayout.Display;
    o._sizeCd        = ESize.Normal;
-   o._controls      = null;
    // @attribute
    o._statusVisible = true;
    o._statusEnable  = true;
    o._statusBuild   = false;
+   o._storage       = null;
    //o._events      = null;
-   //o._storage     = null;
    //..........................................................
    // @html 父容器
    o._hParent       = null;
@@ -76,8 +75,6 @@ function FControl(o){
    o.construct      = FControl_construct;
    // @method
    o.topControl     = FControl_topControl;
-   o.hasControl     = FControl_hasControl;
-   o.controls       = FControl_controls;
    o.panel          = FControl_panel;
    // @method
    o.isVisible      = FControl_isVisible;
@@ -94,9 +91,6 @@ function FControl(o){
    o.linkEvent      = FControl_linkEvent;
    o.callEvent      = FControl_callEvent;
    // @method
-   o.push           = FControl_push;
-   // @method
-   o.psBuild        = FControl_psBuild;
    o.psMode         = FControl_psMode;
    o.psDesign       = FControl_psDesign;
    o.psEnable       = FControl_psEnable;
@@ -144,19 +138,18 @@ function FControl_onLeave(e){
 // <P>默认为DIV页面元素。</P>
 //
 // @method
-// @return HtmlTag 页面元素
+// @param p:event:TEventProcess 事件处理
 //==========================================================
-function FControl_onBuildPanel(e){
+function FControl_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createDiv(e.hDocument, o.styleName('Panel'));
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
 }
 
 //==========================================================
-// <T>建立当前控件的显示框架。</T>
+// <T>建立显示框架。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
-// @return EEventStatus 处理状态
+// @param p:argements:SArgements 参数集合
 //==========================================================
 function FControl_onBuild(p){
    var o = this;
@@ -296,33 +289,6 @@ function FControl_topControl(c){
 }
 
 //==========================================================
-// <T>判断是否含有子控件。</T>
-//
-// @method
-// @return Boolean 是否含有
-//==========================================================
-function FControl_hasControl(){
-   var cs = this._controls;
-   return cs ? !cs.isEmpty() : false;
-}
-
-//==========================================================
-// <T>获得控件集合。</T>
-//
-// @method
-// @return TDictionary 控件集合
-//==========================================================
-function FControl_controls(){
-   var o = this;
-   var r = o._controls;
-   if(r == null){
-      r = new TDictionary();
-      o._controls = r;
-   }
-   return r;
-}
-
-//==========================================================
 // <T>根据底板类型得到相应的页面元素。</T>
 //
 // @method
@@ -355,11 +321,11 @@ function FControl_isVisible(){
 // <T>设置控件的隐藏和显示。</T>
 //
 // @method
-// @param v:visible:Boolean 是否显示
+// @param p:visible:Boolean 是否显示
 //==========================================================
-function FControl_setVisible(v){
+function FControl_setVisible(p){
    var o = this;
-   o._visible = v;
+   o._visible = p;
    // 设置布局底板的可见性
    //var hp = o.hLayoutCell;
    //if(hp){
@@ -368,7 +334,7 @@ function FControl_setVisible(v){
    // 设置控件底板的可见性
    var h = o.panel(EPanel.Container);
    if(h){
-      RHtml.displaySet(h, v);
+      RHtml.displaySet(h, p);
    }
 }
 
@@ -504,74 +470,6 @@ function FControl_callEvent(n, s, e){
 }
 
 //==========================================================
-// <T>如果当前组件是控件类型则放入自己的控件哈希表中。</T>
-// <P>同时将子组件放入组件哈希表中。</P>
-// <P>如果子控件的名称为空，则给当前子控件创建一个数字的索引名称，
-//    保证子控件不会不其他未命名的子控件所覆盖。</P>
-//
-// @method
-// @param p:component:FComponent 组件对象
-//==========================================================
-function FControl_push(p){
-   var o = this;
-   // 加载事件定义
-   //if(RClass.isClass(p, FEvent)){
-   //   var es = o._events;
-   //   var t = o.topComponent();
-   //   if(!es){
-   //      es = o._events = new TDictionary();
-   //   }
-   //   var en = p.name + '@' + t.name + o.fullPath();
-   //   var e = RControl.events.get(en);
-   //   if(!e){
-   //      e = p;
-   //      RControl.events.set(en, p);
-   //   }
-   //   es.set(e.name, e);
-   //   return;
-   //}
-   // 加载组件
-   o.__base.FComponent.push.call(o, p);
-   // 加载控件
-   if(RClass.isClass(p, FControl)){
-      var cs = o.controls();
-      if(!p.name){
-         p.name = cs.count;
-      }
-      cs.set(p.name, p);
-   }
-}
-
-//==========================================================
-// <T>分发控件建立的事件。</T>
-//
-// @method
-// @param p:value:Object 页面元素或事件对象
-//==========================================================
-function FControl_psBuild(p){
-   var o = this;
-   // 获得文档对象
-   var h = null;
-   var d = null;
-   if(p.createElement){
-      d = p;
-      h = p.body;
-   }else if(p.ownerDocument.createElement){
-      d = p.ownerDocument;
-      h = p;
-   }else{
-      throw new TError("Build parent is invalid. (parent={1})", p);
-   }
-   // 创建事件
-   var e = new TEventProcess(null, o, 'oeBuild', FControl);
-   // 处理消息
-   e.hDocument = d;
-   o.process(e);
-   e.hDocument = null;
-   e.dispose();
-}
-
-//==========================================================
 // <T>分发工作模式的事件。</T>
 //
 // @method
@@ -695,8 +593,10 @@ function FControl_build(p){
    var d = null;
    if(p.createElement){
       d = p;
-   }else if(p.ownerDocument.createElement){
+   }else if(p.ownerDocument && p.ownerDocument.createElement){
       d = p.ownerDocument;
+   }else if(p.hDocument){
+      d = p.hDocument;
    }else{
       throw new TError("Build document is invalid. (document={1})", p);
    }
@@ -727,12 +627,6 @@ function FControl_dispose(){
    o._statusVisible = null;
    o._statusEnable = null;
    o._statusBuild = null;
-   // 释放控件集合
-   var v = o._controls;
-   if(v){
-      v.dispose();
-      o._controls = null;
-   }
    // 释放属性
    o._hParent = null;
    var v = o._hPanel;

@@ -1,5 +1,5 @@
 ﻿//==========================================================
-// <T>用来存储单条数据内容的工具类。</T>
+// <T>数据行。</T>
 //
 // @tool
 // @author maocy
@@ -8,17 +8,19 @@
 function TRow(o){
    if(!o){o = this;}
    TAttributes(o);
-   // Attribute
-   o.dataset       = ds;
-   o.index         = null;
-   o.uniqueId      = null;
-   o.status        = null;
-   // Method
-   o.loadNode      = TRow_loadNode;
-   o.saveNode      = TRow_saveNode;
-   o.copy          = TRow_copy;
-   o.toAttributes  = TRow_toAttributes;
-   o.dump          = TRow_dump;
+   //..........................................................
+   // @attribute
+   o._dataset   = null;
+   o._index     = null;
+   o._uniqueId  = null;
+   o._statusCd  = null;
+   //..........................................................
+   // @method
+   o.loadConfig = TRow_loadConfig;
+   o.saveConfig = TRow_saveConfig;
+   //o.copy         = TRow_copy;
+   //o.toAttributes = TRow_toAttributes;
+   //o.dump         = TRow_dump;
    return o;
 }
 
@@ -28,13 +30,13 @@ function TRow(o){
 // @method
 // @param x:node:TNode 指定的节点对象
 //==========================================================
-function TRow_loadNode(x){
-   if(x && x.attrs){
-      var o = this;
-      o.index = x.get('_id');
-      o.status = x.get('_status');
-      o.uniqueId = x.get('ouid');
-      o.append(x.attrs);
+function TRow_loadConfig(x){
+   var o = this;
+   o._index = x.get('_id');
+   o._statusCd = x.get('_status');
+   o._uniqueId = x.get('ouid');
+   if(x.hasAttribute()){
+      o.append(x.attributes());
    }
 }
 
@@ -44,17 +46,15 @@ function TRow_loadNode(x){
 // @method
 // @param x:node:TNode 数据节点
 //==========================================================
-function TRow_saveNode(x){
-   if(x){
-      var o = this;
-      // 存储行数据的状态
-      x.set('_id', o.index);
-      x.set('_status', o.status);
-      // 存储行数据的所有属性
-      var c = o.count;
-      for(var n=0; n<c; n++){
-         x.set(o.names[n], o.values[n]);
-      }
+function TRow_saveConfig(x){
+   var o = this;
+   // 存储行数据的状态
+   x.set('_id', o._index);
+   x.set('_status', o._statusCd);
+   // 存储行数据的所有属性
+   var c = o.count();
+   for(var i = 0; i < c; i++){
+      x.set(o._names[i], o._values[i]);
    }
 }
 
@@ -68,10 +68,10 @@ function TRow_copy(){
    var o = this;
    // 复制信息
    var r = new TRow();
-   r.dataset = o.dataset;
-   r.index = o.index;
-   r.status = o.status;
-   r.uniqueId = o.uniqueId;
+   r._dataset = o._dataset;
+   r._index = o._index;
+   r._statusCd = o._statusCd;
+   r._uniqueId = o._uniqueId;
    // 存储行数据
    var c = o.count;
    for(var n=0; n<c; n++){
@@ -94,7 +94,7 @@ function TRow_toAttributes(a){
       a = new TAttributes();
    }
    // 存储行状态
-   a.set(RDataset.ROW_STATUS, o.status);
+   a.set(RDataset.ROW_STATUS, o._statusCd);
    // 存储行数据
    a.append(o);
    return a;
@@ -111,7 +111,7 @@ function TRow_dump(s){
    var o = this;
    var c = o.count;
    s = RString.nvlStr(s);
-   s.append(RClass.name(o), ' [', o.status, ': ');
+   s.append(RClass.name(o), ' [', o._statusCd, ': ');
    for(var n=0; n<c; n++){
       if(n > 0){
          s.append(',');

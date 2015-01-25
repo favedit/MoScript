@@ -21,11 +21,15 @@
 // │└------------------------┘└----------------------------------------------------------┘│
 // └------------------------------------------------------------------------------------------┘
 //
-// @class FGridControl
-// @history 091022 MAOCY 创建
+// @class
+// @author maocy
+// @version 150125
 //==========================================================
 function FTable(o) {
-   o = RClass.inherits(this, o, FGridControl);
+   o = RClass.inherits(this, o, FGridControl, MDataset);
+   //..........................................................
+   // @property
+   o._detailFrameName  = RClass.register(o, new APtyString('_detailFrameName'));
    //..........................................................
    // @style
    o._styleFixPanel    = RClass.register(o, new AStyle('_styleFixPanel'));
@@ -48,13 +52,13 @@ function FTable(o) {
    o._hDataForm        = null;
    //..........................................................
    // @event
-   o.onBuildData       = FTable_onBuildData;
+   o.onBuildContent       = FTable_onBuildContent;
    //..........................................................
    // @process
    o.oeRefresh         = FTable_oeRefresh;
    //..........................................................
    // @method
-   o.pushColumn        = FTable_pushColumn;
+   o.appendColumn      = FTable_appendColumn;
 
    //..........................................................
    // @event
@@ -71,7 +75,7 @@ function FTable(o) {
 // @method
 // @param p:event:TEventProcess 构建事件
 //==========================================================
-function FTable_onBuildData(p){
+function FTable_onBuildContent(p){
    var o = this;
    var hbp = o._hContentPanel;
    // 建立固定区(Layer:2)
@@ -79,8 +83,8 @@ function FTable_onBuildData(p){
    hfp.style.zIndex = 2;
    hfp.style.position = 'absolute';
    var hff = o._hFixForm = RBuilder.appendTable(hfp, o.styleName('FixForm'), 0, 0, 1);
-   hff.style.tableLayout = 'fixed';
-   hff.frame = 'rhs';
+   //hff.style.tableLayout = 'fixed';
+   //hff.frame = 'rhs';
    hff.borderColorLight = '#D0D0D0';
    hff.borderColorDark = '#EEEEEE';
    o._hFixHead =  RBuilder.appendTableRow(hff);
@@ -115,13 +119,14 @@ function FTable_onBuildData(p){
    hdp.width = '100%';
    hdp.height = '100%';
    var hdf = o._hDataForm = RBuilder.appendTable(hdp, o.styleName('DataForm'), 0, 0, 1);
+   //hdf.style.tableLayout = 'fixed';
    o._hRows = RBuilder.append(hdf, 'TBODY');
    o._hRowLine = RBuilder.append(o._hRows, 'TR');
    // 关联事件对象
-   o.attachEvent('onHeadMouseDown', o._hHeadForm, o.onHeadMouseDown);
-   o.attachEvent('onHeadMouseMove', o._hHeadForm, o.onHeadMouseMove);
-   o.attachEvent('onHeadMouseUp', o._hHeadForm, o.onHeadMouseUp);
-   o.attachEvent('onDataScroll', o._hDataPanel, o.onDataScroll);
+   //o.attachEvent('onHeadMouseDown', o._hHeadForm, o.onHeadMouseDown);
+   //o.attachEvent('onHeadMouseMove', o._hHeadForm, o.onHeadMouseMove);
+   //o.attachEvent('onHeadMouseUp', o._hHeadForm, o.onHeadMouseUp);
+   //o.attachEvent('onDataScroll', o._hDataPanel, o.onDataScroll);
    // 建立浏览栏
    o.panelNavigator = true;
    // 设置可见性
@@ -144,40 +149,42 @@ function FTable_oeRefresh(e){
    o.__base.FGridControl.oeRefresh.call(o, e);
    if(e.isAfter()){
       // 计算初始化宽度
-      var hcf = o._hTitleForm;
       var hfp = o._hFixPanel;
       var hhp = o._hHeadPanel;
       var hcp = o._hColumnPanel;
       var hdp = o._hDataPanel;
       // 获得初始数据
-      var hcfh = hcf.offsetHeight;
       var hfpw = hfp.offsetWidth;
       var hfph = hfp.offsetHeight;
       // 隐去数据列和数据区，计算无干扰得底板宽度
-      //hcp.style.display = hdp.style.display = 'none';
+      hcp.style.display = hdp.style.display = 'none';
       var ow = o._hContentPanel.offsetWidth;
       var oh = o._hContentPanel.offsetHeight;
-      //hcp.style.display = hdp.style.display = 'block';
+      hcp.style.display = hdp.style.display = 'block';
       // 计算固定区的位置和大小
-      //hfp.style.top = hcfh + 'px';
+      hfp.style.left = '0px';
+      hfp.style.top = '0px';
       // 计算标题区的位置和大小
       //hhp.style.top = hcfh + 'px';
       hhp.style.left = hfpw + 'px';
+      hhp.style.top = '0px';
       hhp.style.width = (ow - hfpw) + 'px';
-      hhp.style.height = hfph + 'px';
+      //hhp.style.height = hfph + 'px';
       o._hHead.style.height = o._hFixHead.offsetHeight + 'px';
       o._hSearch.style.height = o._hFixSearch.offsetHeight + 'px';
       // 计算列区的位置和大小
-      //hcp.style.top = (hcfh + hfph) + 'px';
       hcp.style.top = hfph + 'px';
       hcp.style.width = hfpw + 'px';
       hcp.style.height = (oh - hfph) + 'px';
       // 计算数据区起始位置和宽度
+      hdp.style.left = '0px';
+      hdp.style.top = '0px';
+      hdp.style.width = (ow - hfpw) + 'px';
+      hdp.style.height = (oh - hfph) + 'px';
       hdp.style.paddingLeft = hfpw;
       hdp.style.paddingTop = hfph;
-      hdp.style.width = ow;
-      hdp.style.height = (oh - hcfh) + 'px';
       // 显示的时候调整一次自动标题宽度
+      return;
       var ca = null;
       var aw = ow;
       var cs = o._columns;
@@ -208,7 +215,7 @@ function FTable_oeRefresh(e){
 // @method
 // @param p:event:TEventProcess 构建事件
 //==========================================================
-function FTable_pushColumn(p){
+function FTable_appendColumn(p){
    var o = this;
    // 为固定列的情况
    if(p._optionFixed){
@@ -230,9 +237,9 @@ function FTable_pushColumn(p){
       // 在数据区追加修正行
       o._hRowLine.appendChild(p._hFixPanel);
    }
-   // 追加控件
-   o.push(p);
 }
+
+
 
 
 

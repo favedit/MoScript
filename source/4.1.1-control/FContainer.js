@@ -7,21 +7,32 @@
 function FContainer(o){
    o = RClass.inherits(this, o, FControl, MContainer);
    //..........................................................
-   // @process
-   o.oeBuild     = FContainer_oeBuild
-   //..........................................................
-   // @method
-   o.createChild = FContainer_createChild;
-
-
-
+   // @attributes
+   o._controls         = null;
    //..........................................................
    // @process
-   o.oeDesign            = RMethod.empty;
+   o.oeDesign          = RMethod.empty;
    //..........................................................
    // @method
-   o.panel               = FContainer_panel;
-   o.focusControl        = FContainer_focusControl;
+   o.construct         = FContainer_construct;
+   // @method
+   o.hasControl        = FContainer_hasControl;
+   o.findControl       = FContainer_findControl;
+   o.searchControl     = FContainer_searchControl;
+   o.controls          = FContainer_controls;
+   o.panel             = FContainer_panel;
+   o.focusFirstControl = FContainer_focusFirstControl;
+   // @method
+   o.createChild       = FContainer_createChild;
+   o.appendChild       = FContainer_appendChild;
+   o.push              = FContainer_push;
+   // @method
+   o.dispose           = FContainer_dispose;
+
+
+
+   //..........................................................
+   // @method
    o.storeConfig         = FContainer_storeConfig;
    o.psBuildChildren     = FContainer_psBuildChildren;
    o.setChildrenProperty = FContainer_setChildrenProperty;
@@ -29,27 +40,134 @@ function FContainer(o){
 }
 
 //==========================================================
-// <T>建立当前控件的显示框架。</T>
+// <T>构造处理。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
-// @return EEventStatus 处理状态
 //==========================================================
-function FContainer_oeBuild(p){
+function FContainer_construct(){
    var o = this;
-   o.__base.FControl.oeBuild.call(o, p)
-   // 事件前处理
-   if(p.isAfter()){
-      // 追加
-      var cs = o._components;
-      if(cs){
-         var c = cs.count();
-         for(var i = 0; i < c; i++){
-            o.appendChild(cs.value(i));
+   o.__base.FControl.construct.call(o);
+}
+
+//==========================================================
+// <T>判断是否含有子控件。</T>
+//
+// @method
+// @return Boolean 是否含有
+//==========================================================
+function FContainer_hasControl(){
+   var cs = this._controls;
+   return cs ? !cs.isEmpty() : false;
+}
+
+//==========================================================
+// <T>根据名称查找一个控件。</T>
+//
+// @method
+// @param p:name:String 名称
+// @return FControl 控件
+//==========================================================
+function FContainer_findControl(p){
+   var o = this;
+   var cs = o._controls;
+   if(cs){
+      var cc = cs.count();
+      for(var i = 0; i < cc; i++){
+         var c = cs.value(i);
+         if(c.name() == p){
+            return c;
          }
       }
    }
-   return EEventStatus.Continue;
+   return null;
+}
+
+//==========================================================
+// <T>根据名称搜索一个控件。</T>
+//
+// @method
+// @param p:name:String 名称
+// @return FControl 控件
+//==========================================================
+function FContainer_searchControl(p){
+   var o = this;
+   var cs = o._controls;
+   if(cs){
+      var cc = cs.count();
+      for(var i = 0; i < cc; i++){
+         var c = cs.value(i);
+         if(c.name() == p){
+            return c;
+         }
+         if(RClass.isClass(c, FContainer)){
+            var f = c.searchControl(p);
+            if(f){
+               return f;
+            }
+         }
+      }
+   }
+   return null;
+}
+
+
+//==========================================================
+// <T>获得控件集合。</T>
+//
+// @method
+// @return TDictionary 控件集合
+//==========================================================
+function FContainer_controls(){
+   var o = this;
+   var r = o._controls;
+   if(r == null){
+      r = new TDictionary();
+      o._controls = r;
+   }
+   return r;
+}
+
+//==========================================================
+// <T>根据底板类型得到相应的页面元素。</T>
+//
+// @method
+// @param t:type:EPanel 底板类型
+// @return HTML 页面元素
+//==========================================================
+function FContainer_panel(t){
+   var o = this;
+   if(t == EPanel.Container){
+      return o.hPanel;
+   }
+   return o.__base.FControl.panel.call(o, t);
+}
+
+//==========================================================
+// <T>设置第一个可以获得焦点的子控件获得焦点。</T>
+// <P>若有能获得焦点的控件，则返回第一个获得焦点的控件，若没有，则或什么都不返回。。</P>
+//
+// @method
+// @return MFocus 获得焦点的控件
+//==========================================================
+function FContainer_focusFirstControl(){
+   return null;
+   var o = this;
+   var cs = o._components;
+   if(cs){
+      // 选择自己第一个可以获得焦点的控件
+      var c = cs.count();
+      for(var i = 0; i < c; i++){
+         var p = cs.value(i);
+         if(RClass.isClass(c, MFocus) && c.testFocus()){
+            // 不允许下拉控件获得第一个焦点
+            if(!RClass.isClass(c, FCalendar) && !RClass.isClass(c, FSelect)  && !RClass.isClass(c, FNumber)){
+                return c.focus();
+            }
+         }
+      }
+      // 自己获得焦点
+      RConsole.find(FFocusConsole).focus(o);
+   }
 }
 
 //==========================================================
@@ -65,58 +183,64 @@ function FContainer_createChild(p){
    return c;
 }
 
-
-
-
-
-
-
-
-
-
-
 //==========================================================
-// <T>根据底板类型得到相应的页面元素。</T>
+// <T>增加一个控件。</T>
 //
 // @method
-// @param t:type:EPanel 底板类型
-// @return HTML 页面元素
-// @see FControl.panel
+// @param p:control:FControl 控件
 //==========================================================
-function FContainer_panel(t){
-   var o = this;
-   if(EPanel.Container == t){
-      return o.hPanel;
-   }
-   return o.__base.FControl.panel.call(o, t);
+function FContainer_appendChild(p){
 }
 
 //==========================================================
-// <T>设置第一个可以获得焦点的子控件获得焦点。</T>
+// <T>将子控件放入自己的哈希表中</T>
 //
 // @method
-// @return MFocus 若有能获得焦点的控件，则返回第一个获得焦点的控件，若没有，则或什么都不返回。
+// @param p:component:FComponent 组件对象
 //==========================================================
-function FContainer_focusControl(){
-   return null;
+function FContainer_push(p){
    var o = this;
-   var cs = o.controls;
-   if(cs){
-      // 选择自己第一个可以获得焦点的控件
-      var cc = cs.count;
-      for(var n=0; n<cc; n++){
-         var c = cs.value(n);
-         if(RClass.isClass(c, MFocus) && c.testFocus()){
-        	// 不允许下拉控件获得第一个焦点
-        	if(!RClass.isClass(c, FCalendar) && !RClass.isClass(c, FSelect)  && !RClass.isClass(c, FNumber)){
-                return c.focus();
-            }
-         }
-      }
-      // 自己获得焦点
-      RConsole.find(FFocusConsole).focus(o);
+   // 加载组件
+   o.__base.FControl.push.call(o, p);
+   // 增加控件控件
+   if(RClass.isClass(p, FControl)){
+      // 存储控件
+      o.controls().set(p._name, p);
+      // 追加控件
+      o.appendChild(p);
    }
 }
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FContainer_dispose(){
+   var o = this;
+   // 释放控件集合
+   var v = o._controls;
+   if(v){
+      v.dispose();
+      o._controls = null;
+   }
+   // 释放处理
+   o.__base.FControl.dispose.call(o);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //==========================================================
 // <T>递归存储所有子对象到XML设置信息中。</T>

@@ -13,6 +13,7 @@ function AStyle(n, s){
    //..........................................................
    // @declare
    o._annotationCd = EAnnotation.Style;
+   o._duplicate    = true;
    //..........................................................
    // @attribute
    o._style        = s;

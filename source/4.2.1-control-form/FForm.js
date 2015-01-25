@@ -8,8 +8,7 @@
 function FForm(o){
    //o = RClass.inherits(this, o, FLayout, MForm, MDisplayAble, MValue, MAction);
    //o = RClass.inherits(this, o, FLayout, MFocus, MDataset);
-   //o = RClass.inherits(this, o, FLayout, MDataset);
-   o = RClass.inherits(this, o, FLayout);
+   o = RClass.inherits(this, o, FLayout, MDataset);
    //..........................................................
    // @event
    o.onMouseDown        = FForm_onMouseDown;

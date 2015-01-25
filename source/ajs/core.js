@@ -268,6 +268,81 @@ function AEventScroll(n){
 }
 function AEventScroll_attach(e, h){
 }
+function AStyle(n, s){
+   var o = this;
+   AAnnotation(o, n);
+   o._annotationCd = EAnnotation.Style;
+   o._duplicate    = true;
+   o._style        = s;
+   o.code          = AStyle_code;
+   o.style         = AStyle_style;
+   o.build         = AStyle_build;
+   o.toString      = AStyle_toString;
+   if(s == null){
+      var v = null;
+      if(RString.startsWith(n, '_style')){
+         v = n.substring(6);
+      }else if(RString.startsWith(n, 'style')){
+         v = n.substring(5);
+      }
+      if(v == null){
+         throw new TError('Style name is empty.');
+      }
+      o._style = v;
+   }
+   return o;
+}
+function AStyle_code(){
+   return this._style;
+}
+function AStyle_style(){
+   return this._style;
+}
+function AStyle_build(v){
+   var o = this;
+   v[o._name] = null;
+}
+function AStyle_toString(){
+   var o = this;
+   return 'style=' + o._style;
+}
+function AStyleIcon(n, s){
+   var o = this;
+   AAnnotation(o, n);
+   o._annotationCd = EAnnotation.Style;
+   o._style        = s;
+   o.code          = AStyleIcon_code;
+   o.style         = AStyleIcon_style;
+   o.build         = AStyleIcon_build;
+   o.toString      = AStyleIcon_toString;
+   if(s == null){
+      var v = null;
+      if(RString.startsWith(n, '_style')){
+         v = n.substring(6);
+      }else if(RString.startsWith(n, 'style')){
+         v = n.substring(5);
+      }
+      if(v == null){
+         throw new TError('Style name is empty.');
+      }
+      o._style = v;
+   }
+   return o;
+}
+function AStyleIcon_code(){
+   return this._style;
+}
+function AStyleIcon_style(){
+   return this._style;
+}
+function AStyleIcon_build(v){
+   var o = this;
+   v[o._name] = null;
+}
+function AStyleIcon_toString(){
+   var o = this;
+   return 'style=' + o._style;
+}
 var EBrowser = new function EBrowser(){
    var o = this;
    o.Explorer = 1;
@@ -704,6 +779,7 @@ function FXmlConnection_onConnectionComplete(){
    e.connection = o;;
    e.document = d;
    e.root = r;
+   e.parameters = o._parameters;
    o.lsnsLoad.process(e);
    e.dispose();
    if(o._asynchronous){
@@ -711,6 +787,7 @@ function FXmlConnection_onConnectionComplete(){
       o._inputNode = null;
       o._output = null;
       o._outputNode = null;
+      o._parameters = null;
    }
 }
 function FXmlConnection_content(){
@@ -1495,8 +1572,8 @@ function RDump_dumpInner(di){
    }
    var items = new Array();
    var c = names.length;
-   if(c > 200){
-      c = 200;
+   if(c > 2000){
+      c = 2000;
    }
    for(var n = 0; n < c; n++){
       var name = names[n];

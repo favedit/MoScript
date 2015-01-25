@@ -6,22 +6,30 @@
 // @version 150102
 //==========================================================
 function FEdit(o){
-   o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
+   //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
+   o = RClass.inherits(this, o, FEditControl);
    //..........................................................
    // @property
-   o._inputSize         = RClass.register(o, new APtySize2('_inputSize'));
+   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
    //..........................................................
    // @style
-   o._styleInput        = RClass.register(o, new AStyle('_styleInput', 'Input'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput', 'Input'));
    //..........................................................
    // @html
-   o._hInput            = null;
+   o._hInput          = null;
    //..........................................................
    // @event
-   o.onBuildEditorValue = FEdit_onBuildEditorValue;
+   o.onBuildEditValue = FEdit_onBuildEditValue;
+   //..........................................................
+   // @process
+   //o.oeDataLoad       = FEdit_oeDataLoad;
+   //o.oeDataSave       = FEdit_oeDataSave;
    //..........................................................
    // @method
-   o.construct          = FEdit_construct;
+   o.construct        = FEdit_construct;
+   // @method
+   o.get              = FEdit_get;
+   o.set              = FEdit_set;
 
 
 
@@ -46,7 +54,6 @@ function FEdit(o){
    //..........................................................
    // @method
    //o.formatValue   = FEdit_formatValue;
-   //o.set           = FEdit_set;
    //o.setText       = FEdit_setText;
    //o.validText     = FEdit_validText;
    //o.findEditor    = FEdit_findEditor;
@@ -57,14 +64,37 @@ function FEdit(o){
 }
 
 //==========================================================
+// <T>数据源从加载数据处理。</T>
+//
+// @method
+// @param p:dataSource:FDataSource 数据源
+//==========================================================
+function FEdit_oeDataLoad(p){
+   var o = this;
+   alert(p);
+   return EEventStatus.Stop;
+}
+
+//==========================================================
+// <T>存储数据到数据源处理。</T>
+//
+// @method
+// @param p:dataSource:FDataSource 数据源
+//==========================================================
+function FEdit_oeDataSave(p){
+   var o = this;
+   return EEventStatus.Stop;
+}
+
+//==========================================================
 // <T>建立编辑器内容。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件对象
+// @param p:argements:SArgements 参数集合
 //==========================================================
-function FEdit_onBuildEditorValue(p){
+function FEdit_onBuildEditValue(p){
    var o = this;
-   //var h = o.hValue = RBuilder.appendTable(o._hValuePanel, o.styleName('ValuePanel'));
+   //var h = o.hValue = RBuilder.appendTable(o._hInputPanel, o.styleName('ValuePanel'));
    //htb.style.tableLayout = 'fixed';
    //var hr = o.hEdit = htb.insertRow();
    // 建立修改标志
@@ -89,6 +119,43 @@ function FEdit_construct(){
    var o = this;
    o.__base.FEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
+}
+
+//==========================================================
+// <T>获得数据。</T>
+//
+// @method
+// @return String 数据
+//==========================================================
+function FEdit_get(p){
+   var o = this;
+   var r = o.__base.FEditControl.get.call(o, p);
+   // 获得显示
+   var h = o._hInput;
+   if(h){
+      r = h.value;
+   }
+   return r;
+}
+
+//==========================================================
+// <T>设置数据。</T>
+//
+// @method
+// @param p:value:String 数据
+//==========================================================
+function FEdit_set(p){
+   var o = this;
+   o.__base.FEditControl.set.call(o, p);
+   // 设置显示
+   var h = o._hInput;
+   if(h){
+      h.value = RString.nvl(p);
+   }
+   //o.finded = v;
+   //if(o.hChangeIcon){
+   //   o.hChangeIcon.style.display = 'none';
+   //}
 }
 
 
@@ -147,21 +214,6 @@ function FEdit_formatValue(v){
       r = RString.toLower(r);
    }
    return r;
-}
-
-//==========================================================
-// <T>设置数据。</T>
-//
-// @method
-// @param v:value:String 数据
-//==========================================================
-function FEdit_set(v){
-   var o = this;
-   o.__base.FEditControl.set.call(o, v);
-   o.finded = v;
-   if(o.hChangeIcon){
-      o.hChangeIcon.style.display = 'none';
-   }
 }
 
 //==========================================================

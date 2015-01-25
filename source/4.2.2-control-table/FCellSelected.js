@@ -6,37 +6,74 @@
 // @version 150123
 //==========================================================
 function FCellSelected(o){
-   o = RClass.inherits(this, o, FCellEditControl);
+   o = RClass.inherits(this, o, FCell);
+   //..........................................................
    // @property
-   o._dataName      = '_select';
+   o._dataName  = '_select';
+   //..........................................................
+   // @style
+   o._styleEdit = RClass.register(o, new AStyle('_styleEdit'));
+   //..........................................................
    // @html
-   o._hSelected       = null;
+   o._hSelected = null;
+   //..........................................................
+   // @event
+   o.onBuild    = FCellSelected_onBuild;
+   // @event
+   o.onSelected = FCellSelected_onSelected;
+
+
    // @method
-   o.buildForm     = FCellSelected_buildForm;
-   o.onSelected    = FCellSelected_onSelected;
-   o.refreshStyle  = FCellSelected_refreshStyle;
-   o.isDataChanged = RMethod.emptyFalse;
-   o.get           = RMethod.empty;
-   o.reget         = RMethod.empty;
-   o.set           = RMethod.empty;
-   o.dispose       = FCellSelected_dispose;
+   //o.buildForm     = FCellSelected_buildForm;
+   //o.refreshStyle  = FCellSelected_refreshStyle;
+   //o.isDataChanged = RMethod.emptyFalse;
+   //o.get           = RMethod.empty;
+   //o.reget         = RMethod.empty;
+   //o.set           = RMethod.empty;
+   //o.dispose       = FCellSelected_dispose;
    return o;
 }
 
 //==========================================================
-// <T>建立底板</T>
+// <T>建立显示框架。</T>
 //
 // @method
+// @param p:argements:SArgements 参数集合
 //==========================================================
-function FCellSelected_buildForm(){
+function FCellSelected_onBuild(p){
    var o = this;
-   var c = o.column;
-   var hp = o.hPanel;
-   hp.align = 'center';
-   o._hSelected = RBuilder.appendCheck(hp, o.styleName('Edit'));
-   o._hSelected.parent = o;
-   o._hSelected.onclick = o.onSelected;
+   o.__base.FCell.onBuild.call(o, p)
+   // 创建底板
+   var c = o._column;
+   var h = o._hPanel;
+   h.align = 'center';
+   var hs = o._hSelected = RBuilder.appendCheck(h, o.styleName('Edit'));
+   hs.parent = o;
+   hs.onclick = o.onSelected;
 }
+
+//==========================================================
+//<T>选中事件处理。</T>
+//
+//@method
+//==========================================================
+function FCellSelected_onSelected(p){
+   var o = this;
+   //var r = o.parent.row;
+   //var t = o.parent.table;
+   //if(o.checked){
+      //t.selectRow(r, false, true);
+   //}else{
+     //t.clearSelectRow(r);
+   //}
+}
+
+
+
+
+
+
+
 
 //==========================================================
 //<T>ˢ�µ�Ԫ����ʽ��</T>
@@ -59,21 +96,6 @@ function FCellSelected_refreshStyle(){
       }
    }else{
       o.hPanel.style.display = 'none';
-   }
-}
-
-//==========================================================
-//<T>释放对象。</T>
-//
-//@method
-//==========================================================
-function FCellSelected_onSelected(){
-   var r = this.parent.row;
-   var t = this.parent.table;
-   if(this.checked){
-      t.selectRow(r, false, true);
-   }else{
-     t.clearSelectRow(r);
    }
 }
 

@@ -84,6 +84,7 @@ function FXmlConnection_onConnectionComplete(){
    e.connection = o;;
    e.document = d;
    e.root = r;
+   e.parameters = o._parameters;
    o.lsnsLoad.process(e);
    e.dispose();
    // 异步处理后清空属性
@@ -92,6 +93,7 @@ function FXmlConnection_onConnectionComplete(){
       o._inputNode = null;
       o._output = null;
       o._outputNode = null;
+      o._parameters = null;
    }
 }
 

@@ -1,17 +1,18 @@
 //==========================================================
-// <T>搜索条件信息的工具类。</T>
+// <T>搜索项目集合。</T>
 //
-// @tool
+// @class
 // @author maocy
-// @version 1.0.1
+// @version 150125
 //==========================================================
 function TSearchItems(o){
-   o = moNvl(o, this);
-   TList(o);
-   // Method
-   o.pack        = TSearchItems_pack;
-   o.removeAll   = TSearchItems_removeAll;
-   o.unpack      = TSearchItems_unpack;
+   if(!o){o = this;}
+   TObjects(o);
+   //..........................................................
+   // @method
+   //o.pack        = TSearchItems_pack;
+   //o.removeAll   = TSearchItems_removeAll;
+   //o.unpack      = TSearchItems_unpack;
 }
 
 //==========================================================

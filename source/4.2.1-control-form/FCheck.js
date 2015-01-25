@@ -10,13 +10,13 @@ function FCheck(o){
    o = RClass.inherits(this, o, FEditControl);
    //..........................................................
    // @style
-   o._styleInput        = RClass.register(o, new AStyle('_styleInput', 'Input'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput', 'Input'));
    //..........................................................
    // @html
-   o._hInput            = null;
+   o._hInput          = null;
    //..........................................................
    // @event
-   o.onBuildEditorValue = FCheck_onBuildEditorValue;
+   o.onBuildEditValue = FCheck_onBuildEditValue;
 
    //..........................................................
    // @attribute
@@ -41,12 +41,12 @@ function FCheck(o){
 }
 
 //==========================================================
-// <T>建立控件。</T>
+// <T>建立编辑器内容。</T>
 //
 // @method
-// @param h:panel:<HTML> 底板对象
+// @param p:argements:SArgements 参数集合
 //==========================================================
-function FCheck_onBuildEditorValue(p){
+function FCheck_onBuildEditValue(p){
    var o = this;
    // 建立编辑控件
    o._hInput = RBuilder.appendCheck(o._hValuePanel, o.styleName('Input'));

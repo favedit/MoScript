@@ -4,7 +4,7 @@
 // @console
 // @history 091120 MAOCY 创建
 //==========================================================
-function FFormConsole(o){
+function FFrameConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
@@ -20,19 +20,19 @@ function FFormConsole(o){
    o.events           = null;
    //..........................................................
    // @event
-   o.onProcessLoaded  = FFormConsole_onProcessLoaded;
+   o.onProcessLoaded  = FFrameConsole_onProcessLoaded;
    //..........................................................
    // @method
-   o.construct        = FFormConsole_construct;
-   o.createFromName   = FFormConsole_createFromName;
-   o.get              = FFormConsole_get;
-   o.find             = FFormConsole_find;
-   o.hiddenAll        = FFormConsole_hiddenAll;
-   o.process          = FFormConsole_process;
-   o.loadEvents       = FFormConsole_loadEvents;
-   o.processEvent     = FFormConsole_processEvent;
-   o.free             = FFormConsole_free;
-   o.dispose          = FFormConsole_dispose;
+   o.construct        = FFrameConsole_construct;
+   o.createFromName   = FFrameConsole_createFromName;
+   o.get              = FFrameConsole_get;
+   o.find             = FFrameConsole_find;
+   o.hiddenAll        = FFrameConsole_hiddenAll;
+   o.process          = FFrameConsole_process;
+   o.loadEvents       = FFrameConsole_loadEvents;
+   o.processEvent     = FFrameConsole_processEvent;
+   o.free             = FFrameConsole_free;
+   o.dispose          = FFrameConsole_dispose;
    return o;
 }
 
@@ -41,7 +41,7 @@ function FFormConsole(o){
 //
 // @method
 //==========================================================
-function FFormConsole_construct(){
+function FFrameConsole_construct(){
    var o = this;
    o.forms = new TMap();
    o.formIds = new TMap();
@@ -61,7 +61,7 @@ function FFormConsole_construct(){
 // @param t:type:String 表单类型
 // @return MForm 表单实例
 //==========================================================
-function FFormConsole_createFromName(n, h, b, t){
+function FFrameConsole_createFromName(n, h, b, t){
    var o = this;
    // 检查是否有未使用的表单
    var fs = o.freeForms;
@@ -110,7 +110,7 @@ function FFormConsole_createFromName(n, h, b, t){
 // @param id:id:Integer 表单id
 // @return FWebForm 表单控件结构
 //==========================================================
-function FFormConsole_get(id){
+function FFrameConsole_get(id){
    return o.formIds.get(id); 
 }
 
@@ -123,7 +123,7 @@ function FFormConsole_get(id){
 // @param b:Builder:Builder 构建器
 // @return MForm 表单实例
 //==========================================================
-function FFormConsole_find(n, h, b){
+function FFrameConsole_find(n, h, b){
    var o = this;
    var f = o.forms.get(n);
    if(!f){
@@ -133,7 +133,7 @@ function FFormConsole_find(n, h, b){
 }
 
 //==========================================================
-function FFormConsole_hiddenAll(){
+function FFrameConsole_hiddenAll(){
    var o = this;
    var fs = o.forms;
    var fc = fs.count;
@@ -151,7 +151,7 @@ function FFormConsole_hiddenAll(){
 // @param b:Builder:Builder 构建器
 // @return MForm 表单实例
 //==========================================================
-function FFormConsole_onProcessLoaded(e){
+function FFrameConsole_onProcessLoaded(e){
    var o = this;
    var r = e.document.root();
    var g = e.argument;
@@ -191,7 +191,7 @@ function FFormConsole_onProcessLoaded(e){
 // @param b:Builder:Builder 构建器
 // @return MForm 表单实例
 //==========================================================
-function FFormConsole_process(g){
+function FFrameConsole_process(g){
    var o = this;
    // 构建XML结构对象
    var doc = new TXmlDocument();
@@ -216,7 +216,7 @@ function FFormConsole_process(g){
 // @method
 // @param x:config:TNode 事件定义
 //==========================================================
-function FFormConsole_loadEvents(cfg){
+function FFrameConsole_loadEvents(cfg){
    return;
    var o = this;
    if(!(cfg && cfg.nodes)){
@@ -245,7 +245,7 @@ function FFormConsole_loadEvents(cfg){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FFormConsole_processEvent(e){
+function FFrameConsole_processEvent(e){
    var o = this;
    var es = o.events;
    if(es.isEmpty()){
@@ -281,7 +281,7 @@ function FFormConsole_processEvent(e){
 // @method
 // @param f:form:FControl 表单对象
 //==========================================================
-function FFormConsole_free(f){
+function FFrameConsole_free(f){
    f.setVisible(false);
    this.freeForms.push(f);
 }
@@ -295,7 +295,7 @@ function FFormConsole_free(f){
 // @param b:Builder:Builder 构建器
 // @return MForm 表单实例
 //==========================================================
-function FFormConsole_dispose(){
+function FFrameConsole_dispose(){
    var o = this;
    RMemory.free(o.forms);
    RMemory.free(o.formIds);

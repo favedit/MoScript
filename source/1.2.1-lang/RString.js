@@ -349,12 +349,21 @@ function RString_inRange(v, rs, f){
 // @return Boolean 非空字符串
 //==========================================================
 function RString_nvl(v, d){
-   if(typeof(v) == 'string'){
-      if(v.length > 0){
-         return v;
+   if(v != null){
+      var s = null;
+      if(v.constructor != String){
+         s = v.toString();
+      }else{
+         s = v;
+      }
+      if(s.length > 0){
+         return s;
       }
    }
-   return (d != null) ? d : this.EMPTY;
+   if(d != null){
+      return d;
+   }
+   return this.EMPTY;
 }
 
 //==========================================================

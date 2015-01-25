@@ -27,7 +27,7 @@ function FPanel(o){
 function FPanel_onBuildPanel(p){
    var o = this;
    //var h = o._hPanel = RBuilder.createTable(p.hDocument, o.styleName('Panel'));
-   var h = o._hPanel = RBuilder.createDiv(p.hDocument, o.styleName('Panel'));
+   var h = o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
 
    var hl = RBuilder.appendDiv(h, o.styleName('Label'))
    hl.innerHTML = o._label;

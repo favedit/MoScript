@@ -223,11 +223,12 @@ function TArray_dump(){
 }
 function TAttributes(o){
    if(!o){o = this;}
-   TMap(o);
+   TDictionary(o);
    o.join   = TAttributes_join;
    o.split  = TAttributes_split;
    o.pack   = TAttributes_pack;
    o.unpack = TAttributes_unpack;
+   o.dump   = TAttributes_dump;
    return o;
 }
 function TAttributes_join(n, v){
@@ -307,6 +308,23 @@ function TAttributes_unpack(p){
          o.set(n, v);
       }
    }
+}
+function TAttributes_dump(){
+   var o = this;
+   var r = new TString();
+   var c = o._count;
+   r.append(RRuntime.className(o), ' : ', c);
+   if(c > 0){
+      r.append(' (');
+      for(var n = 0; n < c; n++){
+         if(n > 0){
+            r.append(', ');
+         }
+         r.append(o._names[n], '=', o._values[n]);
+      }
+      r.append(')');
+   }
+   return r.flush();
 }
 function TDictionary(o){
    if(!o){o = this;}
@@ -1085,6 +1103,7 @@ function TObjects(o){
    o.last       = TObjects_last;
    o.get        = TObjects_get;
    o.set        = TObjects_set;
+   o.assign     = TObjects_assign;
    o.append     = TObjects_append;
    o.insert     = TObjects_insert;
    o.push       = TObjects_push;
@@ -1127,11 +1146,20 @@ function TObjects_last(){
    return o._count ? this._items[o._count - 1] : null;
 }
 function TObjects_get(n){
-   return ((n >= 0) && (n < this._count)) ? this._items[n] : null;
+   var o = this;
+   return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
 }
 function TObjects_set(n, v){
-   if((n >= 0) && (n < this._count)){
-      this._items[n] = v;
+   var o = this;
+   if((n >= 0) && (n < o._count)){
+      o._items[n] = v;
+   }
+}
+function TObjects_assign(p){
+   var o = this;
+   var c = o._count = p._count;
+   for(var i = 0; i < c; i++){
+      o._items[i] = p._items[i];
    }
 }
 function TObjects_append(v){

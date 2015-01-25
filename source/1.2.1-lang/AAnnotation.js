@@ -12,6 +12,7 @@ function AAnnotation(o, n){
    // @attribute
    o._annotationCd = null;
    o._inherit      = false;
+   o._duplicate    = false;
    // @attribute
    o._name         = n;
    //..........................................................

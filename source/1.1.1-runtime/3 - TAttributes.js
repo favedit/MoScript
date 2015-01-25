@@ -7,12 +7,15 @@
 //==========================================================
 function TAttributes(o){
    if(!o){o = this;}
-   TMap(o);
+   TDictionary(o);
+   //..........................................................
    // @method
    o.join   = TAttributes_join;
    o.split  = TAttributes_split;
    o.pack   = TAttributes_pack;
    o.unpack = TAttributes_unpack;
+   // @method
+   o.dump   = TAttributes_dump;
    return o;
 }
 
@@ -128,4 +131,28 @@ function TAttributes_unpack(p){
          o.set(n, v);
       }
    }
+}
+
+//==========================================================
+// <T>获得数组的内部信息。</T>
+//
+// @method
+// @return String 字符串
+//==========================================================
+function TAttributes_dump(){
+   var o = this;
+   var r = new TString();
+   var c = o._count;
+   r.append(RRuntime.className(o), ' : ', c);
+   if(c > 0){
+      r.append(' (');
+      for(var n = 0; n < c; n++){
+         if(n > 0){
+            r.append(', ');
+         }
+         r.append(o._names[n], '=', o._values[n]);
+      }
+      r.append(')');
+   }
+   return r.flush();
 }

@@ -141,8 +141,8 @@ function RDump_dumpInner(di){
    // Items Info
    var items = new Array();
    var c = names.length;
-   if(c > 200){
-      c = 200;
+   if(c > 2000){
+      c = 2000;
    }
    for(var n = 0; n < c; n++){
       var name = names[n];

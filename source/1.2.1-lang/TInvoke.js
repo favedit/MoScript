@@ -8,11 +8,11 @@
 // @author maocy
 // @version 141230
 //==========================================================
-function TInvoke(o, w, p){
+function TInvoke(o){
    if(!o){o = this;}
    // @attribute
-   o.owner    = w;
-   o.callback = p;
+   o.owner    = null;
+   o.callback = null;
    // @method
    o.invoke   = TInvoke_invoke;
    return o;

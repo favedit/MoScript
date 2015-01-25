@@ -223,11 +223,12 @@ function TArray_dump(){
 }
 function TAttributes(o){
    if(!o){o = this;}
-   TMap(o);
+   TDictionary(o);
    o.join   = TAttributes_join;
    o.split  = TAttributes_split;
    o.pack   = TAttributes_pack;
    o.unpack = TAttributes_unpack;
+   o.dump   = TAttributes_dump;
    return o;
 }
 function TAttributes_join(n, v){
@@ -307,6 +308,23 @@ function TAttributes_unpack(p){
          o.set(n, v);
       }
    }
+}
+function TAttributes_dump(){
+   var o = this;
+   var r = new TString();
+   var c = o._count;
+   r.append(RRuntime.className(o), ' : ', c);
+   if(c > 0){
+      r.append(' (');
+      for(var n = 0; n < c; n++){
+         if(n > 0){
+            r.append(', ');
+         }
+         r.append(o._names[n], '=', o._values[n]);
+      }
+      r.append(')');
+   }
+   return r.flush();
 }
 function TDictionary(o){
    if(!o){o = this;}
@@ -1085,6 +1103,7 @@ function TObjects(o){
    o.last       = TObjects_last;
    o.get        = TObjects_get;
    o.set        = TObjects_set;
+   o.assign     = TObjects_assign;
    o.append     = TObjects_append;
    o.insert     = TObjects_insert;
    o.push       = TObjects_push;
@@ -1127,11 +1146,20 @@ function TObjects_last(){
    return o._count ? this._items[o._count - 1] : null;
 }
 function TObjects_get(n){
-   return ((n >= 0) && (n < this._count)) ? this._items[n] : null;
+   var o = this;
+   return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
 }
 function TObjects_set(n, v){
-   if((n >= 0) && (n < this._count)){
-      this._items[n] = v;
+   var o = this;
+   if((n >= 0) && (n < o._count)){
+      o._items[n] = v;
+   }
+}
+function TObjects_assign(p){
+   var o = this;
+   var c = o._count = p._count;
+   for(var i = 0; i < c; i++){
+      o._items[i] = p._items[i];
    }
 }
 function TObjects_append(v){
@@ -1501,6 +1529,7 @@ function AAnnotation(o, n){
    if(!o){o = this;}
    o._annotationCd = null;
    o._inherit      = false;
+   o._duplicate    = false;
    o._name         = n;
    o.annotationCd  = AAnnotation_annotationCd;
    o.name          = AAnnotation_name;
@@ -1764,80 +1793,6 @@ function APtyString_build(v){
 function APtyString_toString(){
    var o = this;
    return 'linker=' + o._linker + ',value=' + o._value;
-}
-function AStyle(n, s){
-   var o = this;
-   AAnnotation(o, n);
-   o._annotationCd = EAnnotation.Style;
-   o._style        = s;
-   o.code          = AStyle_code;
-   o.style         = AStyle_style;
-   o.build         = AStyle_build;
-   o.toString      = AStyle_toString;
-   if(s == null){
-      var v = null;
-      if(RString.startsWith(n, '_style')){
-         v = n.substring(6);
-      }else if(RString.startsWith(n, 'style')){
-         v = n.substring(5);
-      }
-      if(v == null){
-         throw new TError('Style name is empty.');
-      }
-      o._style = v;
-   }
-   return o;
-}
-function AStyle_code(){
-   return this._style;
-}
-function AStyle_style(){
-   return this._style;
-}
-function AStyle_build(v){
-   var o = this;
-   v[o._name] = null;
-}
-function AStyle_toString(){
-   var o = this;
-   return 'style=' + o._style;
-}
-function AStyleIcon(n, s){
-   var o = this;
-   AAnnotation(o, n);
-   o._annotationCd = EAnnotation.Style;
-   o._style        = s;
-   o.code          = AStyleIcon_code;
-   o.style         = AStyleIcon_style;
-   o.build         = AStyleIcon_build;
-   o.toString      = AStyleIcon_toString;
-   if(s == null){
-      var v = null;
-      if(RString.startsWith(n, '_style')){
-         v = n.substring(6);
-      }else if(RString.startsWith(n, 'style')){
-         v = n.substring(5);
-      }
-      if(v == null){
-         throw new TError('Style name is empty.');
-      }
-      o._style = v;
-   }
-   return o;
-}
-function AStyleIcon_code(){
-   return this._style;
-}
-function AStyleIcon_style(){
-   return this._style;
-}
-function AStyleIcon_build(v){
-   var o = this;
-   v[o._name] = null;
-}
-function AStyleIcon_toString(){
-   var o = this;
-   return 'style=' + o._style;
 }
 var EAnnotation = new function EAnnotation(){
    var o = this;
@@ -3724,6 +3679,7 @@ var RObject = new function RObject(){
    o.nvl   = RObject_nvl;
    o.clone = RObject_clone;
    o.copy  = RObject_copy;
+   o.free  = RObject_free;
    return o;
 }
 function RObject_nvl(v){
@@ -3762,6 +3718,13 @@ function RObject_copy(s, t){
             }
          }
          t[n] = v;
+      }
+   }
+}
+function RObject_free(p){
+   if(p){
+      for(var n in p){
+         p[n] = null;
       }
    }
 }
@@ -4036,12 +3999,21 @@ function RString_inRange(v, rs, f){
    return false;
 }
 function RString_nvl(v, d){
-   if(typeof(v) == 'string'){
-      if(v.length > 0){
-         return v;
+   if(v != null){
+      var s = null;
+      if(v.constructor != String){
+         s = v.toString();
+      }else{
+         s = v;
+      }
+      if(s.length > 0){
+         return s;
       }
    }
-   return (d != null) ? d : this.EMPTY;
+   if(d != null){
+      return d;
+   }
+   return this.EMPTY;
 }
 function RString_firstUpper(v){
    return (v != null) ? v.charAt(0).toUpperCase() + v.substr(1) : v;
@@ -4353,6 +4325,11 @@ function RTimer_update(){
    o._count++;
    o._lastTime = new Date().getTime();
 }
+function SArguments(o){
+   if(!o){o = this;}
+   o.owner = null;
+   return o;
+}
 function SEnumItem(o){
    if(!o){o = this;}
    o.name  = null;
@@ -4386,11 +4363,11 @@ function TClass(o){
    o.alloc          = TClass_alloc;
    return o;
 }
-function TClass_register(v){
+function TClass_register(p){
    var o = this;
-   var a = v.annotationCd();
-   var n = v.name();
-   var c = v.code();
+   var a = p.annotationCd();
+   var n = p.name();
+   var c = p.code();
    if(!a || !c){
       throw new TError(o, "Unknown annotation. (class={1},annotation={2},name={3},code={4})", RClass.dump(o), a, n, c);
    }
@@ -4398,11 +4375,13 @@ function TClass_register(v){
    if(!as){
       as = o._annotations[a] = new Object();
    }
-   if(as[c]){
-      throw new TError(o, "Duplicate annotation. (class={1},annotation={2},name={3},code={4},value={5})", RClass.dump(o), a, n, c, v.toString());
+   if(!p._duplicate){
+      if(as[c]){
+         throw new TError(o, "Duplicate annotation. (class={1},annotation={2},name={3},code={4},value={5})", RClass.dump(o), a, n, c, p.toString());
+      }
    }
-   as[c] = v;
-   o._attributes[n] = v;
+   as[c] = p;
+   o._attributes[n] = p;
 }
 function TClass_assign(c){
    var o = this;
@@ -4413,10 +4392,12 @@ function TClass_assign(c){
       }
       var as = c._annotations[an];
       for(var n in as){
-         if(ls[n]){
-            RLogger.fatal(o, null, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, c.name, n, a.toString());
-         }
          var a = as[n];
+         if(!a._duplicate){
+            if(ls[n]){
+               throw new TError(o, "Duplicate annotation. (annotation={1}, {2}.{3}={4}.{5}, source={6})", an, o.name, n, c.name, n, a.toString());
+            }
+         }
          if(a._inherit){
             ls[n] = a;
          }
@@ -4607,52 +4588,54 @@ function TContext(n, c, t){
    o.text = t;
    return o;
 }
-function TDataset(){
+function TDataset(o){
    if(!o){o = this;}
-   o.name       = null;
-   o.count      = 0;
-   o.pageSize   = 20;
-   o.pageIndex  = 0;
-   o.pageCount  = 0;
-   o.total      = 0;
-   o.rows       = new TList();
+   o._rows      = new TObjects();
+   o.isEmpty    = TDataset_isEmpty;
    o.createRow  = TDataset_createRow;
+   o.count      = TDataset_count;
    o.row        = TDataset_row;
+   o.rows       = TDataset_rows;
    o.find       = TDataset_find;
-   o.findIndex  = TDataset_findIndex;
    o.push       = TDataset_push;
-   o.remove     = TDataset_remove;
-   o.removeRow  = TDataset_removeRow;
-   o.loadNode   = TDataset_loadNode;
-   o.saveViewer = TDataset_saveViewer;
+   o.loadConfig = TDataset_loadConfig;
    o.clear      = TDataset_clear;
-   o.pack       = TDataset_pack;
-   o.dump       = TDataset_dump;
    return o;
+}
+function TDataset_isEmpty(){
+   var o = this;
+   return o._rows.isEmpty();
 }
 function TDataset_createRow(){
    var o = this;
    var r = new TRow();
-   r.dataset = o;
-   o.rows.push(r);
+   r._dataset = o;
+   o._rows.push(r);
    return r;
 }
-function TDataset_row(n){
-   return (n >= 0 && n < this.count) ? this.rows.get(n) : null;
+function TDataset_count(){
+   return this._rows.count();
 }
-function TDataset_find(){
+function TDataset_row(p){
+   return this._rows.get(p);
+}
+function TDataset_rows(){
+   return this._rows;
+}
+function TDataset_find(p){
    var o = this;
    var a = arguments;
    var l = a.length;
-   if(0 != l % 2){
-      RMessage.fatal(o, null, 'Parameters must is pairs (length={0})', l);
+   if((l % 2) != 0){
+      throw new TError(o, 'Parameters must is pairs (length={1})', l);
    }
-   var rs = o.rows;
-   for(var n=rs.count-1; n>=0; n--){
+   var rs = o._rows;
+   var c = rs.count();
+   for(var n = 0; n < c; n++){
       var r = rs.get(n);
       var f = true;
-      for(var i=0; i<l; i+=2){
-         if(r.get(a[n]) != a[n+1]){
+      for(var i = 0; i < l; i += 2){
+         if(r.get(a[n]) != a[n + 1]){
             f = false;
             break;
          }
@@ -4663,84 +4646,74 @@ function TDataset_find(){
    }
    return null;
 }
-function TDataset_findIndex(id){
+function TDataset_push(r){
+   this._rows.push(r);
+}
+function TDataset_loadConfig(x){
    var o = this;
-   var rs = o.rows;
-   var c = rs.count;
-   for(var n=0; n<c; n++){
+   o._name = x.get('name');
+   o._pageSize = RInteger.parse(x.get('page_size', 1000));
+   o._pageIndex = RInteger.parse(x.get('page', 0));
+   o._pageCount = RInteger.parse(x.get('page_count', 1));
+   o._total = RInteger.parse(x.get('total'));
+   var xns = x.nodes();
+   if(xns){
+      var rs = o._rows;
+      var xnc = xns.count();
+      for(var i = 0; i < xnc; i++){
+         var xn = xns.get(i);
+         if(xn.isName('Row')){
+            var r = o.createRow();
+            r.loadConfig(xn);
+         }
+      }
+   }
+}
+function TDataset_clear(){
+   var o = this;
+   o._pageSize = 20;
+   o._pageIndex = 0;
+   o._pageCount = 0;
+   o._total = 0;
+   o._rows.clear();
+}
+function TDataset_findIndex(p){
+   var o = this;
+   var rs = o._rows;
+   var c = rs.count();
+   for(var n = 0; n < c; n++){
       var r = rs.get(n);
-      if(r.index = id){
+      if(r._index = p){
          return r;
       }
    }
    return null;
 }
-function TDataset_push(r){
-   this.rows.push(r);
-}
 function TDataset_remove(i){
-   return this.rows.remove(i);
+   return this._rows.remove(i);
 }
 function TDataset_removeRow(r){
    var o = this;
    var i = o.indexOf(r);
    if(-1 != i){
-      o.rows.remove(i);
-   }
-}
-function TDataset_loadNode(x){
-   var o = this;
-   o.name = x.get('name');
-   o.pageSize = RInteger.parse(x.get('page_size', 1000));
-   o.pageIndex = RInteger.parse(x.get('page', 0));
-   o.pageCount = RInteger.parse(x.get('page_count', 1));
-   o.total = RInteger.parse(x.get('total'));
-   var xrs = x.nodes;
-   if(xrs){
-      var rs = o.rows;
-      var xrc = o.count = xrs.count;
-      for(var n=0; n<xrc; n++){
-         var xr = xrs.get(n);
-         if(xr.isName(RDataset.ROW)){
-            var r = rs.memory[n];
-            if(!r){
-               var r = new TRow();
-               r.dataset = o;
-               rs.count = n;
-               rs.push(r);
-            }else{
-               r.release();
-            }
-            r.loadNode(xr);
-         }
-      }
-      rs.count = xrc;
+      o._rows.remove(i);
    }
 }
 function TDataset_saveViewer(v){
    var o = this;
-   v.datasetName = o.name;
+   v.datasetName = o._name;
    v.datasetId = o.id;
    v.position = 0;
    v.start = 0;
-   v.count = o.rows.count;
-   v.rows = o.rows;
+   v._count = o._rows._count;
+   v._rows = o._rows;
    v.dataset = o;
-}
-function TDataset_clear(){
-   var o = this;
-   o.rows.clear();
-   o.pageSize = 20;
-   o.pageIndex = 0;
-   o.count = 0;
-   o.pageCount = 0;
-   o.total = 0;
 }
 function TDataset_pack(){
    var o = this;
-   var rs = o.rows;
+   var rs = o._rows;
    var ss = new TStrings();
-   for(var n = 0; n < rs.count; n++){
+   for(var n = 0; n < rs._count; n++){
       ss.push(rs.get(n).pack());
    }
    return ss.pack();
@@ -4748,16 +4721,16 @@ function TDataset_pack(){
 function TDataset_dump(){
    var o = this;
    var r = new TString();
-   r.append(RClass.name(o));
-   r.append(' count=', o.count);
+   r.append(RClass._name(o));
+   r.append(' count=', o._count);
    r.append(' fields=', o.fieldCount);
    r.appendLine();
-   if(o.rows){
-      var c = o.count;
+   if(o._rows){
+      var c = o._count;
       for(var n = 0; n < c; n++){
          r.append('- ');
-         o.rows.get(n).dump(s);
-         if(n != o.count-1){
+         o._rows.get(n).dump(s);
+         if(n != o._count-1){
             r.appendLine();
          }
       }
@@ -4998,10 +4971,10 @@ function TInstancePool_free(p){
    p.instanceFree();
    return this.push(p);
 }
-function TInvoke(o, w, p){
+function TInvoke(o){
    if(!o){o = this;}
-   o.owner    = w;
-   o.callback = p;
+   o.owner    = null;
+   o.callback = null;
    o.invoke   = TInvoke_invoke;
    return o;
 }
@@ -5412,44 +5385,39 @@ function TNode_dump(d, space){
 function TRow(o){
    if(!o){o = this;}
    TAttributes(o);
-   o.dataset       = ds;
-   o.index         = null;
-   o.uniqueId      = null;
-   o.status        = null;
-   o.loadNode      = TRow_loadNode;
-   o.saveNode      = TRow_saveNode;
-   o.copy          = TRow_copy;
-   o.toAttributes  = TRow_toAttributes;
-   o.dump          = TRow_dump;
+   o._dataset   = null;
+   o._index     = null;
+   o._uniqueId  = null;
+   o._statusCd  = null;
+   o.loadConfig = TRow_loadConfig;
+   o.saveConfig = TRow_saveConfig;
    return o;
 }
-function TRow_loadNode(x){
-   if(x && x.attrs){
-      var o = this;
-      o.index = x.get('_id');
-      o.status = x.get('_status');
-      o.uniqueId = x.get('ouid');
-      o.append(x.attrs);
+function TRow_loadConfig(x){
+   var o = this;
+   o._index = x.get('_id');
+   o._statusCd = x.get('_status');
+   o._uniqueId = x.get('ouid');
+   if(x.hasAttribute()){
+      o.append(x.attributes());
    }
 }
-function TRow_saveNode(x){
-   if(x){
-      var o = this;
-      x.set('_id', o.index);
-      x.set('_status', o.status);
-      var c = o.count;
-      for(var n=0; n<c; n++){
-         x.set(o.names[n], o.values[n]);
-      }
+function TRow_saveConfig(x){
+   var o = this;
+   x.set('_id', o._index);
+   x.set('_status', o._statusCd);
+   var c = o.count();
+   for(var i = 0; i < c; i++){
+      x.set(o._names[i], o._values[i]);
    }
 }
 function TRow_copy(){
    var o = this;
    var r = new TRow();
-   r.dataset = o.dataset;
-   r.index = o.index;
-   r.status = o.status;
-   r.uniqueId = o.uniqueId;
+   r._dataset = o._dataset;
+   r._index = o._index;
+   r._statusCd = o._statusCd;
+   r._uniqueId = o._uniqueId;
    var c = o.count;
    for(var n=0; n<c; n++){
       r.set(o.names[n], o.values[n]);
@@ -5461,7 +5429,7 @@ function TRow_toAttributes(a){
    if(!a){
       a = new TAttributes();
    }
-   a.set(RDataset.ROW_STATUS, o.status);
+   a.set(RDataset.ROW_STATUS, o._statusCd);
    a.append(o);
    return a;
 }
@@ -5469,7 +5437,7 @@ function TRow_dump(s){
    var o = this;
    var c = o.count;
    s = RString.nvlStr(s);
-   s.append(RClass.name(o), ' [', o.status, ': ');
+   s.append(RClass.name(o), ' [', o._statusCd, ': ');
    for(var n=0; n<c; n++){
       if(n > 0){
          s.append(',');
@@ -7661,6 +7629,81 @@ function AEventScroll(n){
 }
 function AEventScroll_attach(e, h){
 }
+function AStyle(n, s){
+   var o = this;
+   AAnnotation(o, n);
+   o._annotationCd = EAnnotation.Style;
+   o._duplicate    = true;
+   o._style        = s;
+   o.code          = AStyle_code;
+   o.style         = AStyle_style;
+   o.build         = AStyle_build;
+   o.toString      = AStyle_toString;
+   if(s == null){
+      var v = null;
+      if(RString.startsWith(n, '_style')){
+         v = n.substring(6);
+      }else if(RString.startsWith(n, 'style')){
+         v = n.substring(5);
+      }
+      if(v == null){
+         throw new TError('Style name is empty.');
+      }
+      o._style = v;
+   }
+   return o;
+}
+function AStyle_code(){
+   return this._style;
+}
+function AStyle_style(){
+   return this._style;
+}
+function AStyle_build(v){
+   var o = this;
+   v[o._name] = null;
+}
+function AStyle_toString(){
+   var o = this;
+   return 'style=' + o._style;
+}
+function AStyleIcon(n, s){
+   var o = this;
+   AAnnotation(o, n);
+   o._annotationCd = EAnnotation.Style;
+   o._style        = s;
+   o.code          = AStyleIcon_code;
+   o.style         = AStyleIcon_style;
+   o.build         = AStyleIcon_build;
+   o.toString      = AStyleIcon_toString;
+   if(s == null){
+      var v = null;
+      if(RString.startsWith(n, '_style')){
+         v = n.substring(6);
+      }else if(RString.startsWith(n, 'style')){
+         v = n.substring(5);
+      }
+      if(v == null){
+         throw new TError('Style name is empty.');
+      }
+      o._style = v;
+   }
+   return o;
+}
+function AStyleIcon_code(){
+   return this._style;
+}
+function AStyleIcon_style(){
+   return this._style;
+}
+function AStyleIcon_build(v){
+   var o = this;
+   v[o._name] = null;
+}
+function AStyleIcon_toString(){
+   var o = this;
+   return 'style=' + o._style;
+}
 var EBrowser = new function EBrowser(){
    var o = this;
    o.Explorer = 1;
@@ -8097,6 +8140,7 @@ function FXmlConnection_onConnectionComplete(){
    e.connection = o;;
    e.document = d;
    e.root = r;
+   e.parameters = o._parameters;
    o.lsnsLoad.process(e);
    e.dispose();
    if(o._asynchronous){
@@ -8104,6 +8148,7 @@ function FXmlConnection_onConnectionComplete(){
       o._inputNode = null;
       o._output = null;
       o._outputNode = null;
+      o._parameters = null;
    }
 }
 function FXmlConnection_content(){
@@ -8888,8 +8933,8 @@ function RDump_dumpInner(di){
    }
    var items = new Array();
    var c = names.length;
-   if(c > 200){
-      c = 200;
+   if(c > 2000){
+      c = 2000;
    }
    for(var n = 0; n < c; n++){
       var name = names[n];
@@ -11666,51 +11711,85 @@ function FEnvironmentConsole_xml(){
    }
    return null;
 }
+function FEvent(o){
+   o = RClass.inherits(this, o, FObject);
+   o._owner      = null;
+   o._callback   = null;
+   o._valid      = true;
+   o.owner       = FEvent_owner;
+   o.setOwner    = FEvent_setOwner;
+   o.callback    = FEvent_callback;
+   o.setCallback = FEvent_setCallback;
+   o.valid       = FEvent_valid;
+   o.setValid    = FEvent_setValid;
+   o.process     = FEvent_process;
+   return o;
+}
+function FEvent_owner(){
+   return this._owner;
+}
+function FEvent_setOwner(p){
+   this._owner = p;
+}
+function FEvent_callback(){
+   return this._callback;
+}
+function FEvent_setCallback(p){
+   this._callback = p;
+}
+function FEvent_valid(){
+   return this._valid;
+}
+function FEvent_setValid(p){
+   this._valid = p;
+}
+function FEvent_process(){
+   var o = this;
+   if(o._valid){
+      var s = o._owner;
+      if(s){
+         o._callback.call(s, o);
+      }else{
+         o._callback(o);
+      }
+   }
+}
 function FEventConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._scopeCd   = EScope.Local;
-   o._thread    = null;
-   o._interval  = 20;
-   o._allow     = true;
-   o._allows    = new TAttributes();
-   o._events    = new TObjects();
-   o._listeners = new TAttributes();
-   o.onProcess  = FEventConsole_onProcess;
-   o.construct  = FEventConsole_construct;
-   o.register   = FEventConsole_register;
-   o.push       = FEventConsole_push;
-   o.clear      = FEventConsole_clear;
+   o._scopeCd       = EScope.Local;
+   o._thread        = null;
+   o._interval      = 100;
+   o._processEvents = null;
+   o._events        = null;
+   o.onProcess      = FEventConsole_onProcess;
+   o.construct      = FEventConsole_construct;
+   o.register       = FEventConsole_register;
+   o.push           = FEventConsole_push;
+   o.clear          = FEventConsole_clear;
    return o;
 }
 function FEventConsole_onProcess(){
    var o = this;
    var es = o._events;
-   var ec = es.count();
-   if(ec > 0){
-      while(true){
-         var has = false;
-         for(var n = 0; n < ec; n++){
-            var e = es.get(n);
-            if(e){
-               has = true;
-               e.process();
-               var ls = o._listeners.get(RMethod.name(e));
-               if(ls){
-                  ls.process(e);
-               }
-               es.set(n, null)
-            }
-         }
-         if(!has){
-            break;
-         }
+   if(es.isEmpty()){
+      return;
+   }
+   var ps = o._processEvents;
+   ps.assign(es);
+   es.clear();
+   var c = ps.count();
+   if(c > 0){
+      for(var i = 0; i < c; i++){
+         ps.get(i).process();
       }
-      es.clear();
+      ps.clear();
    }
 }
 function FEventConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   o._processEvents = new TObjects();
+   o._events = new TObjects();
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
    t.lsnsProcess.register(o, o.onProcess);
@@ -11718,51 +11797,21 @@ function FEventConsole_construct(){
    RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
 }
 function FEventConsole_register(po, pc){
-   this._events.push(new TEvent(po, null, pc));
-}
-function FEventConsole_push(e){
    var o = this;
-   var n = RClass.name(e)
-   if(o._allow){
-      var a = true;
-      if(o._allows.contains(n)){
-         a = RBoolean.isTrue(o._allows.get(n));
-      }
-      if(a){
-         var es = o._events;
-         var c = es.count();
-         for(var i = 0; i < c; i++){
-            if(es.get(n) == e){
-               es.set(n, null);
-            }
-         }
-         es.push(e);
-      }
+   var e = RClass.create(FEvent);
+   e.owner = po;
+   e.callback = pc;
+   o._events.push(e);
+}
+function FEventConsole_push(p){
+   var o = this;
+   var es = o._events;
+   if(!es.contains(p)){
+      es.push(p);
    }
 }
 function FEventConsole_clear(){
    this._events.clear();
-}
-function FEventConsole_add(owner, proc){
-   this._events.push(new TEvent(owner, null, proc));
-}
-function FEventConsole_allowEvent(c){
-   this._allows.set(RMethod.name(c), EBool.True);
-}
-function FEventConsole_skipEvent(c){
-   this._allows.set(RMethod.name(c), EBool.False);
-}
-function FEventConsole_allowAll(){
-   this._allow = true;
-}
-function FEventConsole_skipAll(){
-   this._allow = false;
-}
-function FEventConsole_onlyCall(c, m){
-   var o = this;
-   o._allow = false;
-   m.call(c);
-   o._allow = true;
 }
 function FHttpConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -11942,6 +11991,17 @@ function FPipeline(o){
    return o;
 }
 function FPipeline_name(){
+   return this._name;
+}
+function FProcess(o){
+   o = RClass.inherits(this, o, FObject);
+   o._typeName  = null;
+   o._groupName = null;
+   o._name      = null;
+   o.name  = FProcess_name;
+   return o;
+}
+function FProcess_name(){
    return this._name;
 }
 function FProcessConsole(o){
@@ -12253,23 +12313,18 @@ function FXmlConsole(o){
    o.onLoad      = FXmlConsole_onLoad;
    o.construct   = FXmlConsole_construct;
    o.alloc       = FXmlConsole_alloc;
-   o.process     = FXmlConsole_process;
    o.send        = FXmlConsole_send;
    o.sendAsync   = FXmlConsole_sendAsync;
+   o.process     = FXmlConsole_process;
    return o;
 }
 function FXmlConsole_construct(){
    var o = this;
    o.connections = new TObjects();
 }
-function FXmlConsole_onLoad(){
+function FXmlConsole_onLoad(p){
    var o = this;
-   var e = o.event;
-   e.document = o.document;
-   e.process();
-   o.event = null;
-   o.document = null;
-   o._statusFree = true;
+   debugger
 }
 function FXmlConsole_alloc(){
    var o = this;
@@ -12290,23 +12345,6 @@ function FXmlConsole_alloc(){
    a._statusFree = false;
    return a;
 }
-function FXmlConsole_process(e){
-   var o = this;
-   var c = o.alloc();
-   c.event = e;
-   switch(e.code){
-      case EXmlEvent.Send:
-         c.send(e.url, e.document);
-         break;
-      case EXmlEvent.Receive:
-         c.receive(e.url, e.document);
-         break;
-      case EXmlEvent.SyncSend:
-         return c.syncSend(e.url, e.document);
-      case EXmlEvent.SyncReceive:
-         return c.syncReceive(e.url, e.document);
-   }
-}
 function FXmlConsole_send(u, d){
    var o = this;
    var c = o.alloc();
@@ -12315,10 +12353,55 @@ function FXmlConsole_send(u, d){
    c._statusFree = true;
    return r;
 }
-function FXmlConsole_sendAsync(u, d){
+function FXmlConsole_sendAsync(u, d, p){
    var o = this;
    var c = o.alloc();
    c._asynchronous = true;
+   c._parameters = p;
    c.send(u, d);
    return c;
+}
+function FXmlConsole_process(p){
+   var o = this;
+   if(p.constructor != SXmlEvent){
+      throw new TError('Parameter type is invalid.');
+   }
+   var c = o.alloc();
+   c._asynchronous = true;
+   c.send(p.url, p.inputDocument);
+   c.lsnsLoad.register(p, p.process);
+   return c;
+}
+function SXmlEvent(o){
+   if(!o){o = this;}
+   o.owner          = null;
+   o.url            = null;
+   o.action         = null;
+   o.parameter      = null;
+   o.inputDocument  = null;
+   o.outputDocument = null;
+   o.callback       = null;
+   o.process        = SXmlEvent_process;
+   o.dispose        = SXmlEvent_dispose;
+   return o;
+}
+function SXmlEvent_process(p){
+   var o = this;
+   o.outputDocument = p.document;
+   o.outputNode = p.root;
+   if(o.owner){
+      o.callback.call(o.owner, o);
+   }else{
+      o.callback(o);
+   }
+}
+function SXmlEvent_dispose(){
+   var o = this;
+   o.owner = null;
+   o.url = null;
+   o.action = null;
+   o.parameter = null;
+   o.inputDocument = null;
+   o.outputDocument = null;
+   o.callback = null;
 }

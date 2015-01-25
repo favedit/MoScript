@@ -1,15 +1,14 @@
 //==========================================================
-// <T>数据内容的接口。</T>
+// <T>数据字段的接口。</T>
 //
 // @face
 // @author maocy
 // @version 150124
 //==========================================================
-function MDataValue(o){
-   o = RClass.inherits(this, o);
+function MDataField(o){
+   o = RClass.inherits(this, o, MDataValue);
    //..........................................................
-   // @process
-   o.oeDataLoad = RMethod.empty;
-   o.oeDataSave = RMethod.empty;
+   // @property
+   o._dataName = RClass.register(o, new APtyString('_dataName'));
    return o;
 }

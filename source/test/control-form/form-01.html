@@ -32,27 +32,49 @@
 
 <SCRIPT>
 // http://localhost:91/script/test/control-form/form-01.html
+var form = null;
+
+function doLoadValue(){
+   var ds = RClass.create(FDataSource);
+   ds.selectDataset();
+   var r = ds.selectRow();
+   r.set('width', 800);
+   r.set('height', 400);
+   form.dsDataLoad(ds);
+}
+
+function doSaveValue(){
+   var ds = RClass.create(FDataSource);
+   form.dsDataSave(ds);
+   alert(ds.currentRow());
+}
 
 function _load(){
    RRuntime.processCd = EProcess.Debug;
    RBrowser.construct();
    RBrowser.setContentPath('../..');
    RWindow.connect(window);
-   // 加载链接
-   var configUrl = 'http://localhost:91/cloud.describe.frame.ws?action=query&code=common.country.CountryForm';
-   var xc = RClass.create(FXmlConnection);
-   var x = xc.send(configUrl);
-   var xform = x.findNode('Form');
+   // 加载配置
+   var dfc = RConsole.find(FDescribeFrameConsole);
+   var xframe = dfc.load('common.country.CountryForm');
    // 创建表单
-   var form = RClass.create(FForm);
-   form.psBuild(_panel);
-   RControl.build(form, xform, null, _panel);
+   form = RClass.create(FForm);
+   RControl.build(form, xframe, null, _panel);
    form.setPanel(_panel);
    RDump.dump(form, _dump);
+
+   var wc = form.searchControl('width');
+   wc.set('200');
+
+   var hc = form.searchControl('height');
+   hc.set('80');
 }
 </SCRIPT>
 
 <BODY scroll='auto' bgcolor='#444444' onload='_load()'>
+<INPUT type='button' onclick='doLoadValue()' value='Load Value'/>
+<INPUT type='button' onclick='doSaveValue()' value='Save Value'/>
+<HR>
 <DIV id='_panel'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

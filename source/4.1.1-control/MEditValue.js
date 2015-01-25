@@ -6,55 +6,84 @@
 // @version 150102
 //==========================================================
 function MEditValue(o){
-   o = RClass.inherits(this, o, MDataValue);
+   o = RClass.inherits(this, o);
    //..........................................................
    // @property
-   o._dataValue     = RClass.register(o, new APtyString(null, '_dataValue'));
-   //..........................................................
-   // @attribute
-   o.__recordValue = null;
-   o.__recordText  = null;
-   // @attribute
-   o._info         = null;
-   o._hover        = false;
-   o._editable     = true;
-   o._editing      = false;
-   o._disbaled     = false;
-   o._invalid      = false;
-   o._invalidText  = null;
-   //..........................................................
-   // @process
-   o.oeClearValue  = MEditValue_oeClearValue;
-   o.oeResetValue  = MEditValue_oeResetValue;
-   o.oeLoadValue   = MEditValue_oeLoadValue;
-   o.oeSaveValue   = MEditValue_oeSaveValue;
-   o.oeRecordValue = MEditValue_oeRecordValue;
-   o.oeValidValue  = RMethod.empty;
+   o._dataValue = RClass.register(o, new APtyString('_dataValue'));
    //..........................................................
    // @method
-   o.descriptor    = MEditValue_descriptor;
-   o.isTextChanged = MEditValue_isTextChanged;
-   o.isDataChanged = MEditValue_isDataChanged;
-   o.clearValue    = MEditValue_clearValue;
-   o.resetValue    = MEditValue_resetValue;
-   o.loadValue     = MEditValue_loadValue;
-   o.saveValue     = MEditValue_saveValue;
-   o.recordValue   = MEditValue_recordValue;
-   o.commitValue   = MEditValue_commitValue;
-   o.validValue    = RMethod.empty;
+   o.get        = MEditValue_get;
+   o.set        = MEditValue_set;
+
+   //..........................................................
+   // @attribute
+   //o.__recordValue = null;
+   //o.__recordText  = null;
+   // @attribute
+   //o._info         = null;
+   //o._hover        = false;
+   //o._editable     = true;
+   //o._editing      = false;
+   //o._disbaled     = false;
+   //o._invalid      = false;
+   //o._invalidText  = null;
+   //..........................................................
+   // @process
+   //o.oeClearValue  = MEditValue_oeClearValue;
+   //o.oeResetValue  = MEditValue_oeResetValue;
+   //o.oeLoadValue   = MEditValue_oeLoadValue;
+   //o.oeSaveValue   = MEditValue_oeSaveValue;
+   //o.oeRecordValue = MEditValue_oeRecordValue;
+   //o.oeValidValue  = RMethod.empty;
+   //..........................................................
+   // @method
+   //o.descriptor    = MEditValue_descriptor;
+   //o.isTextChanged = MEditValue_isTextChanged;
+   //o.isDataChanged = MEditValue_isDataChanged;
+   //o.clearValue    = MEditValue_clearValue;
+   //o.resetValue    = MEditValue_resetValue;
+   //o.loadValue     = MEditValue_loadValue;
+   //o.saveValue     = MEditValue_saveValue;
+   //o.recordValue   = MEditValue_recordValue;
+   //o.commitValue   = MEditValue_commitValue;
+   //o.validValue    = RMethod.empty;
    //o.text          = RMethod.virtual(o, 'text');
    //o.setText       = RMethod.virtual(o, 'setText');
-   o.get           = MEditValue_get;
-   o.reget         = MEditValue_reget;
-   o.set           = MEditValue_set;
-   o.setInfoPack   = MEditValue_setInfoPack;
-   o.setInfo       = MEditValue_setInfo;
-   o.setEditable   = MEditValue_setEditable;
-   o.doFocus       = MEditValue_doFocus;
-   o.doBlur        = MEditValue_doBlur;
+   //o.reget         = MEditValue_reget;
+   //o.setInfoPack   = MEditValue_setInfoPack;
+   //o.setInfo       = MEditValue_setInfo;
+   //o.setEditable   = MEditValue_setEditable;
+   //o.doFocus       = MEditValue_doFocus;
+   //o.doBlur        = MEditValue_doBlur;
    //o.refreshStyle  = RMethod.virtual(o, 'refreshStyle');
    return o;
 }
+
+//==========================================================
+// <T>获取数据。</T>
+//
+// @method
+// @return String 数据
+//==========================================================
+function MEditValue_get(){
+   return this._dataValue;
+}
+
+//==========================================================
+// <T>设置数据。</T>
+//
+// @method
+// @param p:value:String 数据
+//==========================================================
+function MEditValue_set(p){
+   var o = this;
+   o._dataValue = RString.nvl(p);
+   //o.setText(o.descriptor().formatText(v));
+}
+
+
+
+
 
 //==========================================================
 // <T>清空数据内容处理。</T>
@@ -264,16 +293,6 @@ function MEditValue_commitValue(){
 }
 
 //==========================================================
-// <T>获取数据信息。</T>
-//
-// @method
-// @return String 数据信息
-//==========================================================
-function MEditValue_get(){
-   return this.dataValue;
-}
-
-//==========================================================
 // <T>获取编辑中的数据信息。</T>
 //
 // @method
@@ -281,18 +300,6 @@ function MEditValue_get(){
 //==========================================================
 function MEditValue_reget(){
    return this.descriptor().formatValue(this.text());
-}
-
-//==========================================================
-// <T>设置数据信息。</T>
-//
-// @method
-// @param v:value:String 数据信息
-//==========================================================
-function MEditValue_set(v){
-   var o = this;
-   o.dataValue = RString.nvl(v);
-   o.setText(o.descriptor().formatText(v));
 }
 
 //==========================================================

@@ -10,15 +10,19 @@ function FColumnEdit(o){
    //..........................................................
    // @attribute
    o._cellClass     = FCellEdit;
-   o.hasDropArea    = true;
+
+
+
+
+   //o.hasDropArea    = true;
    //..........................................................
    // @event
-   o.onCellMouseEnter = FColumnEdit_onCellMouseEnter;
-   o.onCellMouseLeave = FColumnEdit_onCellMouseLeave;
-   o.onListClick      = FColumnEdit_onListClick;
-   o.onZoomClick      = RClass.register(o, new AEventClick('onZoomClick'), FColumnEdit_onZoomClick);
-   o.onZoomHover      = RClass.register(o, new AEventMouseEnter('onZoomHover'), FColumnEdit_onZoomHover);
-   o.onZoomLeave      = RClass.register(o, new AEventMouseLeave('onZoomLeave'), FColumnEdit_onZoomLeave);
+   //o.onCellMouseEnter = FColumnEdit_onCellMouseEnter;
+   //o.onCellMouseLeave = FColumnEdit_onCellMouseLeave;
+   //o.onListClick      = FColumnEdit_onListClick;
+   //o.onZoomClick      = RClass.register(o, new AEventClick('onZoomClick'), FColumnEdit_onZoomClick);
+   //o.onZoomHover      = RClass.register(o, new AEventMouseEnter('onZoomHover'), FColumnEdit_onZoomHover);
+   //o.onZoomLeave      = RClass.register(o, new AEventMouseLeave('onZoomLeave'), FColumnEdit_onZoomLeave);
 
    return o;
 }

@@ -212,12 +212,12 @@ function FButton_dispose(){
 }
 function FCheck(o){
    o = RClass.inherits(this, o, FEditControl);
-   o._styleInput        = RClass.register(o, new AStyle('_styleInput', 'Input'));
-   o._hInput            = null;
-   o.onBuildEditorValue = FCheck_onBuildEditorValue;
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput', 'Input'));
+   o._hInput          = null;
+   o.onBuildEditValue = FCheck_onBuildEditValue;
    return o;
 }
-function FCheck_onBuildEditorValue(p){
+function FCheck_onBuildEditValue(p){
    var o = this;
    o._hInput = RBuilder.appendCheck(o._hValuePanel, o.styleName('Input'));
 }
@@ -240,15 +240,26 @@ function FCheck_refreshStyle(){
    }
 }
 function FEdit(o){
-   o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
-   o._inputSize         = RClass.register(o, new APtySize2('_inputSize'));
-   o._styleInput        = RClass.register(o, new AStyle('_styleInput', 'Input'));
-   o._hInput            = null;
-   o.onBuildEditorValue = FEdit_onBuildEditorValue;
-   o.construct          = FEdit_construct;
+   o = RClass.inherits(this, o, FEditControl);
+   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput', 'Input'));
+   o._hInput          = null;
+   o.onBuildEditValue = FEdit_onBuildEditValue;
+   o.construct        = FEdit_construct;
+   o.get              = FEdit_get;
+   o.set              = FEdit_set;
    return o;
 }
-function FEdit_onBuildEditorValue(p){
+function FEdit_oeDataLoad(p){
+   var o = this;
+   alert(p);
+   return EEventStatus.Stop;
+}
+function FEdit_oeDataSave(p){
+   var o = this;
+   return EEventStatus.Stop;
+}
+function FEdit_onBuildEditValue(p){
    var o = this;
    var he = o._hInput = RBuilder.appendEdit(o._hValuePanel, o.styleName('Input'));
    RHtml.setSize(he, o._inputSize);
@@ -260,6 +271,23 @@ function FEdit_construct(){
    var o = this;
    o.__base.FEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
+}
+function FEdit_get(p){
+   var o = this;
+   var r = o.__base.FEditControl.get.call(o, p);
+   var h = o._hInput;
+   if(h){
+      r = h.value;
+   }
+   return r;
+}
+function FEdit_set(p){
+   var o = this;
+   o.__base.FEditControl.set.call(o, p);
+   var h = o._hInput;
+   if(h){
+      h.value = RString.nvl(p);
+   }
 }
 function FEdit_onDataKeyDown(s, e){
    var o = this;
@@ -288,14 +316,6 @@ function FEdit_formatValue(v){
       r = RString.toLower(r);
    }
    return r;
-}
-function FEdit_set(v){
-   var o = this;
-   o.__base.FEditControl.set.call(o, v);
-   o.finded = v;
-   if(o.hChangeIcon){
-      o.hChangeIcon.style.display = 'none';
-   }
 }
 function FEdit_setText(t){
    var o = this;
@@ -376,35 +396,43 @@ function FEdit_link(){
    var o = this;
 }
 function FEditControl(o){
-   o = RClass.inherits(this, o, FControl);
-   o._labelModeCd          = RClass.register(o, new APtyString('_labelModeCd', null, ELabelMode.All));
-   o._labelPositionCd      = RClass.register(o, new APtyString('_labelPositionCd', null, ELabelPosition.Left));
-   o._labelSize            = RClass.register(o, new APtySize2('_labelSize'));
-   o._labelAlignCd         = RClass.register(o, new APtyString('_labelAlignCd', null, EAlign.Left));
-   o._editSize             = RClass.register(o, new APtySize2('_editSize'));
-   o._styleLabelPanel   = RClass.register(o, new AStyle('_styleLabelPanel', 'LabelPanel'));
-   o._styleEditorPanel  = RClass.register(o, new AStyle('_styleEditorPanel', 'EditorPanel'));
-   o._hLabelPanel        = null;
-   o,_hLabelPanel    = null;
-   o,_hIconPanel         = null;
-   o,_hIcon              = null;
-   o,_hTextPanel         = null;
-   o,_hText              = null;
-   o._hEditorPanel         = null;
-   o._hEditorPanel     = null;
-   o.onBuildLabelIcon   = FEditControl_onBuildLabelIcon;
-   o.onBuildLabelText   = FEditControl_onBuildLabelText;
-   o.onBuildLabel       = FEditControl_onBuildLabel;
-   o.onBuildEditorValue = FEditControl_onBuildEditorValue;
-   o.onBuildEditorDrop  = FEditControl_onBuildEditorDrop;
-   o.onBuildEditor      = FEditControl_onBuildEditor;
-   o.onBuildPanel       = FEditControl_onBuildPanel;
-   o.oeBuild            = FEditControl_oeBuild;
-   o.construct         = FEditControl_construct;
-   o.panel             = FEditControl_panel;
-   o.label             = FEditControl_label;
-   o.setLabel          = FEditControl_setLabel;
-   o.dispose           = FEditControl_dispose;
+   o = RClass.inherits(this, o, FControl, MDataField, MEditValue);
+   o._labelModeCd     = RClass.register(o, new APtyString('_labelModeCd'), ELabelMode.All);
+   o._labelPositionCd = RClass.register(o, new APtyString('_labelPositionCd'), ELabelPosition.Left);
+   o._labelSize       = RClass.register(o, new APtySize2('_labelSize'));
+   o._labelAlignCd    = RClass.register(o, new APtyString('_labelAlignCd'), EAlign.Left);
+   o._editSize        = RClass.register(o, new APtySize2('_editSize'));
+   o._dataTypeCd      = RClass.register(o, new APtyString('_dataTypeCd'));
+   o._styleLabelPanel = RClass.register(o, new AStyle('_styleLabelPanel', 'LabelPanel'));
+   o._styleEditPanel  = RClass.register(o, new AStyle('_styleEditPanel', 'EditPanel'));
+   o._hLabelPanel     = null;
+   o,_hLabelForm      = null;
+   o,_hIconPanel      = null;
+   o,_hIcon           = null;
+   o,_hTextPanel      = null;
+   o,_hText           = null;
+   o._hEditPanel      = null;
+   o._hEditorForm     = null;
+   o._hValuePanel     = null;
+   o._hDropPanel      = null;
+   o._hDrop           = null;
+   o.onBuildLabelIcon = FEditControl_onBuildLabelIcon;
+   o.onBuildLabelText = FEditControl_onBuildLabelText;
+   o.onBuildLabel     = FEditControl_onBuildLabel;
+   o.onBuildEditValue = RMethod.virtual(o, 'onBuildEdit');
+   o.onBuildEditDrop  = RMethod.empty;
+   o.onBuildEdit      = FEditControl_onBuildEdit;
+   o.onBuildPanel     = FEditControl_onBuildPanel;
+   o.onBuild          = FEditControl_onBuild;
+   o.oeDataLoad       = FEditControl_oeDataLoad;
+   o.oeDataSave       = FEditControl_oeDataSave;
+   o.oeDesign         = FEditControl_oeDesign;
+   o.oeMode           = FEditControl_oeMode;
+   o.construct        = FEditControl_construct;
+   o.panel            = FEditControl_panel;
+   o.label            = FEditControl_label;
+   o.setLabel         = FEditControl_setLabel;
+   o.dispose          = FEditControl_dispose;
    return o;
 }
 function FEditControl_onChangeEnter(e){
@@ -476,7 +504,7 @@ function FEditControl_onDesignEnd(){
    o._disbaled = false;
    o.hEdit.disbaled = false;
 }
-function FEditControl_onBuildChange(hc){
+function FEditControl_onBuildChange(p){
    var o = this;
    hc.vAlign = 'top';
    hc.width = 5;
@@ -487,25 +515,25 @@ function FEditControl_onBuildChange(hc){
    o.attachEvent('onChangeEnter', hi, o.onChangeEnter);
    o.attachEvent('onChangeClick', hi, o.onChangeClick);
 }
-function FEditControl_onBuildLabelIcon(e){
+function FEditControl_onBuildLabelIcon(p){
    var o = this;
    if(o._labelIcon){
       o._hIcon = RBuilder.appendIcon(o._hIconPanel, o._labelIcon);
    }
 }
-function FEditControl_onBuildLabelText(e){
+function FEditControl_onBuildLabelText(p){
    var o = this;
    o._hText = RBuilder.appendSpan(o._hTextPanel, null, o._label);
 }
-function FEditControl_onBuildLabel(e){
+function FEditControl_onBuildLabel(p){
    var o = this;
-   var h = o._hLabelPanel = RBuilder.createTable(e.hDocument, o.styleName('LabelPanel'));
+   var h = o._hLabelForm = RBuilder.appendTable(o._hLabelPanel, o.styleName('LabelPanel'));
    var hr = RBuilder.appendTableRow(h);
    var hip = o._hIconPanel = RBuilder.appendTableCell(hr);
-   o.onBuildLabelIcon(e);
+   o.onBuildLabelIcon(p);
    var htp = o._hTextPanel = RBuilder.appendTableCell(hr);
    htp.noWrap = true;
-   o.onBuildLabelText(e);
+   o.onBuildLabelText(p);
    RHtml.setSize(h, o._labelSize);
    if(o._labelAlignCd){
       htp.align = o._labelAlignCd;
@@ -515,28 +543,29 @@ function FEditControl_onBuildLabel(e){
       o._hLabel.style.color = o._labelColor;
    }
 }
-function FEditControl_onBuildEditorValue(e){
+function FEditControl_onBuildEditValue(p){
 }
-function FEditControl_onBuildEditorDrop(e){
+function FEditControl_onBuildEditDrop(p){
 }
-function FEditControl_onBuildEditor(e){
+function FEditControl_onBuildEdit(p){
    var o = this;
-   var h = o._hEditorPanel = RBuilder.createTable(e.hDocument, o.styleName('EditorPanel'));
+   var h = o._hEditorForm = RBuilder.appendTable(o._hEditPanel, o.styleName('EditPanel'));
    var hr = RBuilder.appendTableRow(h);
    var hvp = o._hValuePanel = RBuilder.appendTableCell(hr);
-   o.onBuildEditorValue(e);
+   o.onBuildEditValue(p);
    if(RClass.isClass(o, MDropable)){
       var hdp = o._hDropPanel = RBuilder.appendTableCell(hr);
-      o.onBuildEditorDrop(e);
+      o.onBuildEditDrop(p);
    }
+   RHtml.setSize(h, o._editSize);
 }
-function FEditControl_onBuildPanel(e){
+function FEditControl_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
+   o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
 }
-function FEditControl_oeBuild(e){
+function FEditControl_onBuild(p){
    var o = this;
-   o.__base.FControl.oeBuild.call(o, e);
+   o.__base.FControl.onBuild.call(o, p);
    var hc = o._hPanel;
    var hlp = null;
    var hep = null;
@@ -548,15 +577,15 @@ function FEditControl_oeBuild(e){
    }else{
       var lpc = o._labelPositionCd;
       if(lpc == ELabelPosition.Top){
-         hlp = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
-         hep = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
+         hlp = RBuilder.appendTableRowCell(hc);
+         hep = RBuilder.appendTableRowCell(hc);
       }else if(lpc == ELabelPosition.Right){
          var hr = RBuilder.appendTableRow(hc);
          hep = RBuilder.appendTableCell(hr);
          hlp = RBuilder.appendTableCell(hr);
       }else if(lpc == ELabelPosition.Bottom){
-         hep = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
-         hlp = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
+         hep = RBuilder.appendTableRowCell(hc);
+         hlp = RBuilder.appendTableRowCell(hc);
       }else{
          var hr = RBuilder.appendTableRow(hc);
          hlp = RBuilder.appendTableCell(hr);
@@ -566,17 +595,32 @@ function FEditControl_oeBuild(e){
    o._hLabelPanel = hlp;
    o._hEditPanel = hep;
    if(hlp){
-      o.onBuildLabel(e);
-      hlp.appendChild(o._hLabelPanel);
+      o.onBuildLabel(p);
+      hlp.appendChild(o._hLabelForm);
       o.setLabel(o._label);
    }
    if(hep){
-      o.onBuildEditor(e);
-      hep.appendChild(o._hEditorPanel);
+      o.onBuildEdit(p);
    }
    return EEventStatus.Stop;
 }
-function FEditControl_oeDesign(e){
+function FEditControl_oeDataLoad(p){
+   var o = this;
+   var ds = p.source;
+   var r = ds.currentRow();
+   var v = r.get(o._dataName);
+   o.set(v);
+   return EEventStatus.Stop;
+}
+function FEditControl_oeDataSave(p){
+   var o = this;
+   var ds = p.source;
+   var r = ds.currentRow();
+   var v = o.get();
+   r.set(o._dataName, v);
+   return EEventStatus.Stop;
+}
+function FEditControl_oeDesign(p){
    var o = this;
    o.__base.MDesign.oeDesign.call(o, e);
    var hlf = o.hLabelForm;
@@ -673,6 +717,25 @@ function FEditControl_construct(){
    o._labelSize = new SSize2(100, 20);
    o._editSize = new SSize2(200, 20);
 }
+function FEditControl_panel(t){
+   var o = this;
+   if(EPanel.Edit == t){
+      return o.hEdit;
+   }else if(EPanel.Focus == t){
+      return o.hEdit;
+   }
+   return o.__base.FControl.panel.call(o, t);
+}
+function FEditControl_label(p){
+   return this._label;
+}
+function FEditControl_setLabel(p){
+   var o = this;
+   o._label = p;
+   if(o._hText){
+      o._hText.innerHTML = RString.nvl(p);
+   }
+}
 function FEditControl_testFocus(){
    return this._visible && this._editable && !this._disbaled;
 }
@@ -689,23 +752,6 @@ function FEditControl_text(){
 }
 function FEditControl_setText(t){
    this.hEdit.value = t;
-}
-function FEditControl_panel(t){
-   var o = this;
-   if(EPanel.Edit == t){
-      return o.hEdit;
-   }else if(EPanel.Focus == t){
-      return o.hEdit;
-   }
-   return o.__base.FControl.panel.call(o, t);
-}
-function FEditControl_label(p){
-   return this._label;
-}
-function FEditControl_setLabel(p){
-   var o = this;
-   o._hText.innerHTML = RString.nvl(p);
-   o._label = p;
 }
 function FEditControl_setEditable(v){
    var o = this;
@@ -770,11 +816,11 @@ function FEditControl_refreshStyle(){
       he.style.backgroundColor = bc;
    }
    if(hd){
-	   if(he){
-	      he.style.cursor = cr;
-	   }
-	   hd.style.cursor = cr;
-	}
+      if(he){
+         he.style.cursor = cr;
+      }
+      hd.style.cursor = cr;
+   }
    if(o.editBorder){
       var bs = EBorderStyle.Readonly;
       if(o._editable){
@@ -788,24 +834,44 @@ function FEditControl_refreshStyle(){
 }
 function FEditControl_dispose(){
    var o = this;
+   o._labelModeCd = null;
+   o._labelPositionCd = null;
+   o._labelAlignCd = null;
+   o._dataTypeCd = null;
+   var v = o._labelSize;
+   if(v){
+      v.dispose();
+      o._labelSize = null;
+   }
+   var v = o._editSize;
+   if(v){
+      v.dispose();
+      o._editSize = null;
+   }
+   RHtml.free(o._hLabelPanel);
+   o._hLabelPanel = null;
+   RHtml.free(o,_hLabelForm);
+   o,_hLabelForm = null;
+   RHtml.free(o,_hIconPanel);
+   o,_hIconPanel = null;
+   RHtml.free(o,_hIcon);
+   o,_hIcon = null;
+   RHtml.free(o,_hTextPanel);
+   o,_hTextPanel = null;
+   RHtml.free(o,_hText);
+   o,_hText = null;
+   RHtml.free(o._hEditPanel);
+   o._hEditPanel = null;
+   RHtml.free(o._hEditorForm);
+   o._hEditorForm = null;
+   RHtml.free(o._hValuePanel);
+   o._hValuePanel = null;
+   RHtml.free(o._hDropPanel);
+   o._hDropPanel = null;
    o.__base.FControl.dispose.call(o);
-   o._labelSize = null;
-   o._editSize = null;
-   o.hForm = null;
-   o.hFormRow = null;
-   o.hLabelForm = null;
-   o.hChangeIcon = null;
-   o.hIcon = null;
-   o.hLabel = null;
-   o.hControlForm = null;
-   o.hControlRow = null;
-   o.hControl = null;
-   o.hEdit = null;
-   o.hHintPanel = null;
-   o.hHintIcon = null;
 }
 function FForm(o){
-   o = RClass.inherits(this, o, FLayout);
+   o = RClass.inherits(this, o, FLayout, MDataset);
    o.onMouseDown        = FForm_onMouseDown;
    o.construct          = FForm_construct;
    o._dataStatusCd      = ERowStatus.Update;
@@ -1221,24 +1287,24 @@ function FLabel_setText(t){
 }
 function FLayout(o){
    o = RClass.inherits(this, o, FContainer);
-   o._styleForm     = RClass.register(o, new AStyle('_styleForm', 'Form'));
-   o._lastSplit     = null;
-   o._hPanelForm    = null;
-   o._hContainer    = null;
-   o._hPanelTable   = null;
-   o._hPanelLine    = null;
-   o.onBuildPanel   = FLayout_onBuildPanel;
-   o.onDesignBegin  = FLayout_onDesignBegin;
-   o.onDesignEnd    = FLayout_onDesignEnd;
-   o.oeDesign       = FLayout_oeDesign;
-   o.oeResize       = FLayout_oeResize;
-   o.oeRefresh      = FLayout_oeRefresh;
-   o.insertPosition = FLayout_insertPosition;
-   o.moveChild      = FLayout_moveChild;
-   o.appendLine     = FLayout_appendLine;
-   o.appendChild    = FLayout_appendChild;
-   o.doResize       = FLayout_doResize;
-   o.dispose        = FLayout_dispose;
+   o._styleForm      = RClass.register(o, new AStyle('_styleForm', 'Form'));
+   o._lastSplit      = null;
+   o._hPanelForm     = null;
+   o._hContainer     = null;
+   o._hPanelTable    = null;
+   o._hPanelLine     = null;
+   o.onBuildPanel    = FLayout_onBuildPanel;
+   o.onDesignBegin   = FLayout_onDesignBegin;
+   o.onDesignEnd     = FLayout_onDesignEnd;
+   o.oeDesign        = FLayout_oeDesign;
+   o.oeResize        = FLayout_oeResize;
+   o.oeRefresh       = FLayout_oeRefresh;
+   o.insertPosition  = FLayout_insertPosition;
+   o.moveChild       = FLayout_moveChild;
+   o.innerAppendLine = FLayout_innerAppendLine;
+   o.appendChild     = FLayout_appendChild;
+   o.resize          = FLayout_resize;
+   o.dispose         = FLayout_dispose;
    return o;
 }
 function FLayout_onBuildPanel(p){
@@ -1281,14 +1347,14 @@ function FLayout_oeResize(event){
    var o = this;
    o.__base.FContainer.oeResize.call(o, event);
    if(e.isAfter()){
-      o.doResize();
+      o.resize();
    }
 }
 function FLayout_oeRefresh(event){
    var o = this;
    o.__base.FContainer.oeDesign.call(o, event);
    if(e.isAfter()){
-      o.doResize();
+      o.resize();
    }
 }
 function FLayout_insertPosition(cf, ct, idx, copy){
@@ -1356,7 +1422,7 @@ function FLayout_moveChild(cf, ct, pos, copy){
             if(cfh){
                o._hContainer.insertBefore(cf._hPanel, ct._hPanel);
             }else{
-               var hNewTab = o.appendLine();
+               var hNewTab = o.innerAppendLine();
                o._hContainer.insertBefore(hNewTab, ct._hPanel);
                var hCell = RBuilder.appendTableCell(o._hPanelLine);
                hCell.appendChild(cf._hPanel);
@@ -1370,7 +1436,7 @@ function FLayout_moveChild(cf, ct, pos, copy){
                   if(cfh){
                      o._hContainer.insertBefore(cf._hPanel, hTable);
                   }else{
-                     var hNewTab = o.appendLine();
+                     var hNewTab = o.innerAppendLine();
                      o._hContainer.insertBefore(hNewTab, hTable);
                      var hCell = RBuilder.appendTableCell(o._hPanelLine);
                      hCell.appendChild(cf._hPanel);
@@ -1388,7 +1454,7 @@ function FLayout_moveChild(cf, ct, pos, copy){
          if(cfh){
             o._hContainer.appendChild(cf._hPanel);
          }else{
-            var hNewTab = o.appendLine();
+            var hNewTab = o.innerAppendLine();
             var hCell = RBuilder.appendTableCell(o._hPanelLine);
             hCell.appendChild(cf._hPanel);
             hCell.appendChild(cf._hPanel);
@@ -1406,7 +1472,7 @@ function FLayout_moveChild(cf, ct, pos, copy){
       }
    }
 }
-function FLayout_appendLine(){
+function FLayout_innerAppendLine(){
    var o = this;
    var h = null;
    if(o._layoutCd == ELayout.Design){
@@ -1423,14 +1489,14 @@ function FLayout_appendChild(ctl){
    var o = this;
    if(o._layoutCd == ELayout.Design){
       if(!o._hPanelLine){
-         o.appendLine();
+         o.innerAppendLine();
       }
       if(RClass.isClass(ctl, MHorizontal)){
          if(o._hPanelTable.rows[0].cells.length == 0){
             o._hContainer.insertBefore(ctl._hPanel, o._hPanelTable);
          }else{
             o._hContainer.appendChild(ctl._hPanel);
-            o.appendLine();
+            o.innerAppendLine();
          }
          return;
       }
@@ -1441,7 +1507,7 @@ function FLayout_appendChild(ctl){
       hCell.appendChild(ctl._hPanel);
       ctl.hLayoutCell = hCell;
       if(!ctl.nowrap && (o.controls.last() != ctl)){
-         o.appendLine();
+         o.innerAppendLine();
       }
    }else{
       ctl._hPanel.style.paddingTop = 2;
@@ -1485,7 +1551,7 @@ function FLayout_appendChild(ctl){
       }
    }
 }
-function FLayout_doResize(){
+function FLayout_resize(){
    var o = this;
    var cs = o._components;
    if(cs){
@@ -1751,7 +1817,7 @@ function FPanel(o){
 }
 function FPanel_onBuildPanel(p){
    var o = this;
-   var h = o._hPanel = RBuilder.createDiv(p.hDocument, o.styleName('Panel'));
+   var h = o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
    var hl = RBuilder.appendDiv(h, o.styleName('Label'))
    hl.innerHTML = o._label;
    var hb = RBuilder.appendDiv(h, o.styleName('Body'))
@@ -1764,13 +1830,13 @@ function FPanel_onBuildPanel(p){
 }
 function FRadio(o){
    o = RClass.inherits(this, o, FEditControl);
-   o._groupName         = RClass.register(o, new APtyString('_groupName'));
-   o._styleInput        = RClass.register(o, new AStyle('_styleInput', 'Input'));
-   o._hInput            = null;
-   o.onBuildEditorValue = FRadio_onBuildEditorValue;
+   o._groupName       = RClass.register(o, new APtyString('_groupName'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput', 'Input'));
+   o._hInput          = null;
+   o.onBuildEditValue = FRadio_onBuildEditValue;
    return o;
 }
-function FRadio_onBuildEditorValue(p){
+function FRadio_onBuildEditValue(p){
    var o = this;
    o._hInput = RBuilder.appendRadio(o._hValuePanel, o.styleName('Input'));
 }

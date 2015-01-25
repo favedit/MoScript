@@ -1,30 +1,40 @@
 //==========================================================
-// <T>主要负责从服务器取指定的表单结构的XML，并管理框架内所有表单XML。</T>
+// <T>页面定义控制台。</T>
 //
 // @console
-// @author MAOCY
-// @version 1.0.1
+// @author maocy
+// @version 150124
 //==========================================================
-function FFormDefineConsole(o){
+function FDescribeFrameConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   // Attribute
-   o.scope          = EScope.Global;
-   o.defines        = null;
-   o.events         = null;
-   // Listener
+   //..........................................................
+   // @attribute
+   o._scopeCd       = EScope.Global;
+   // @attribute
+   o._service       = 'cloud.describe.frame';
+   o._defines       = null;
+   //..........................................................
+   // @listeners
    o.lsnsLoaded     = null;
+   //..........................................................
+   // @method
+   o.construct      = FDescribeFrameConsole_construct;
+   // @method
+   o.load           = FDescribeFrameConsole_load;
+
+
+   o.events         = null;
    o.formId         = 0;
    // Method
-   o.construct      = FFormDefineConsole_construct;
-   o.createFromName = FFormDefineConsole_createFromName;
-   o.loadNode       = FFormDefineConsole_loadNode;
-   o.loadService    = FFormDefineConsole_loadService;
-   o.nextFormId     = FFormDefineConsole_nextFormId;
-   o.get            = FFormDefineConsole_get;
-   o.find           = FFormDefineConsole_find;
-   o.getLov         = FFormDefineConsole_getLov;
-   o.findLov        = FFormDefineConsole_findLov;
-   o.getEvents      = FFormDefineConsole_getEvents;
+   o.createFromName = FDescribeFrameConsole_createFromName;
+   o.loadNode       = FDescribeFrameConsole_loadNode;
+   o.loadService    = FDescribeFrameConsole_loadService;
+   o.nextFormId     = FDescribeFrameConsole_nextFormId;
+   o.get            = FDescribeFrameConsole_get;
+   o.find           = FDescribeFrameConsole_find;
+   o.getLov         = FDescribeFrameConsole_getLov;
+   o.findLov        = FDescribeFrameConsole_findLov;
+   o.getEvents      = FDescribeFrameConsole_getEvents;
    return o;
 }
 
@@ -33,14 +43,65 @@ function FFormDefineConsole(o){
 //
 // @method
 //==========================================================
-function FFormDefineConsole_construct(){
+function FDescribeFrameConsole_construct(){
    var o = this;
-   o.defines = new TMap();
-   o.defines.set(EForm.Form, new TMap());
-   o.defines.set(EForm.Lov, new TMap());
-   o.events = new TMap();
+   o._defines = new TDictionary();
    o.lsnsLoaded = new TListeners();
+   //o.events = new TMap();
 }
+
+//==========================================================
+// <T>根据名称加载一个表单定义。</T>
+//
+// @method
+// @param n:name:String 名称
+// @return TXmlDocument 节点对象
+//==========================================================
+function FDescribeFrameConsole_load(n){
+   var o = this;
+   // 查找页面
+   var x = o._defines.get(n);
+   if(x){
+      return x;
+   }
+   //..........................................................
+   // 创建数据
+   var xd = new TXmlDocument();
+   var x = xd.root();
+   x.set('action', 'query');
+   var xf = x.create('Frame');
+   xf.set('name', n);
+   // 发送内容
+   var xc = RConsole.find(FXmlConsole);
+   var xr = xc.send(RService.url(o._service), xd);
+   // 检查数据结果
+   //if(!RConsole.find(FMessageConsole).checkResult(new TMessageArg(r))){
+   //   return null;
+   //}
+   //..........................................................
+   // 读取结果
+   var rs = xr.nodes();
+   var rc = rs.count();
+   for(var i = 0; i < rc; i++){
+      var rx = rs.get(i);
+      o._defines.set(rx.get('name'), rx);
+   }
+   //..........................................................
+   // 查找结果
+   var x = o._defines.get(n);
+   if(x == null){
+      throw new TError(o, 'Unknown frame. (name={1])', n);
+   }
+   return x;
+}
+
+
+
+
+
+
+
+
 
 //==========================================================
 // <T>根据表单名称创建一个表单XML对象，并添加到XML管理容器中。</T>
@@ -49,7 +110,7 @@ function FFormDefineConsole_construct(){
 // @param name:FormName:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-function FFormDefineConsole_createFromName(name, type){
+function FDescribeFrameConsole_createFromName(name, type){
    var o = this;
    var doc = o.loadService(name, type);
    o.loadNode(doc);
@@ -66,7 +127,7 @@ function FFormDefineConsole_createFromName(name, type){
 // @method
 // @param x:XML:TXmlDocument XML节点
 //==========================================================
-function FFormDefineConsole_loadNode(x){
+function FDescribeFrameConsole_loadNode(x){
    var o = this;
    var nns = x.root();
    if(nns.hasNode()){
@@ -85,7 +146,7 @@ function FFormDefineConsole_loadNode(x){
                      var fds = dd.nodes;
                      for(var m = 0; m < fds.count; m++){
                         var nd = fds.get(m);
-                        var mp = o.defines.get(tp);
+                        var mp = o._defines.get(tp);
                         mp.set(fn, nd);
                      }
                   }
@@ -107,7 +168,7 @@ function FFormDefineConsole_loadNode(x){
 // @param t:type:String 表单类型
 // @return TXmlDocument 节点对象
 //==========================================================
-function FFormDefineConsole_loadService(n, t){
+function FDescribeFrameConsole_loadService(n, t){
    var o = this;
    if(!t){
       t = EForm.Form;
@@ -134,7 +195,7 @@ function FFormDefineConsole_loadService(n, t){
 // @method
 // @return Integer 获得的表单ID
 //==========================================================
-function FFormDefineConsole_nextFormId(){
+function FDescribeFrameConsole_nextFormId(){
    return ++this.formId;
 }
 
@@ -145,8 +206,8 @@ function FFormDefineConsole_nextFormId(){
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-function FFormDefineConsole_get(n){
-   return this.defines.get(EForm.Form).get(n);
+function FDescribeFrameConsole_get(n){
+   return this._defines.get(EForm.Form).get(n);
 }
 
 //==========================================================
@@ -156,7 +217,7 @@ function FFormDefineConsole_get(n){
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-function FFormDefineConsole_find(n, t){
+function FDescribeFrameConsole_find(n, t){
    var o = this;
    if(EForm.Lov == t){
       return o.findLov(n);
@@ -165,7 +226,7 @@ function FFormDefineConsole_find(n, t){
    if(RClass.isMode(ERun.Debug)){
       RMemory.free(fc);
       fc = null;
-      o.defines.get(EForm.Form).set(n, null);
+      o._defines.get(EForm.Form).set(n, null);
    }
    if(!fc){
       fc = o.createFromName(n);
@@ -180,8 +241,8 @@ function FFormDefineConsole_find(n, t){
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-function FFormDefineConsole_getLov(n){
-   return this.defines.get(EForm.Lov).get(n);
+function FDescribeFrameConsole_getLov(n){
+   return this._defines.get(EForm.Lov).get(n);
 }
 
 //==========================================================
@@ -191,7 +252,7 @@ function FFormDefineConsole_getLov(n){
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-function FFormDefineConsole_findLov(n){
+function FDescribeFrameConsole_findLov(n){
    var o = this;
    var fc = o.getLov(n);
    if(!fc){
@@ -207,6 +268,6 @@ function FFormDefineConsole_findLov(n){
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-function FFormDefineConsole_getEvents(n){
+function FDescribeFrameConsole_getEvents(n){
    return this.events.get(n);
 }

@@ -9,17 +9,17 @@ function MEditable(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property
-   o._editInsert = RClass.register(o, new APtySet(null, '_editInsert', 'edit_mode', EDisplayMode.Insert, false));
-   o._editUpdate = RClass.register(o, new APtySet(null, '_editUpdate', 'edit_mode', EDisplayMode.Update, false));
-   o._editDelete = RClass.register(o, new APtySet(null, '_editDelete', 'edit_mode', EDisplayMode.Delete, false));
-   o._editZoom   = RClass.register(o, new APtySet(null, '_editZoom', 'edit_mode', EDisplayMode.Zoom, false));
+   //o._editInsert = RClass.register(o, new APtySet(null, '_editInsert', 'edit_mode', EDisplayMode.Insert, false));
+   //o._editUpdate = RClass.register(o, new APtySet(null, '_editUpdate', 'edit_mode', EDisplayMode.Update, false));
+   //o._editDelete = RClass.register(o, new APtySet(null, '_editDelete', 'edit_mode', EDisplayMode.Delete, false));
+   //o._editZoom   = RClass.register(o, new APtySet(null, '_editZoom', 'edit_mode', EDisplayMode.Zoom, false));
    //..........................................................
    // @attribute
-   o._absEdit   = true;
-   o._editable  = false;
+   //o._absEdit   = true;
+   //o._editable  = false;
    //..........................................................
    // @method
-   o.canEdit    = MEditable_canEdit;
+   //o.testEdit    = MEditable_testEdit;
    return o;
 }
 
@@ -30,7 +30,7 @@ function MEditable(o){
 // @param m:mode:EMode 模式
 // @return Boolean 可否编辑
 //==========================================================
-function MEditable_canEdit(m){
+function MEditable_testEdit(m){
    var o = this;
    switch(RString.nvl(m, o._emode)){
       case EMode.Insert:
