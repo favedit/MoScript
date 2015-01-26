@@ -233,7 +233,11 @@ function RControl_innerbuild(pc, px, pa, ph){
    }
    // 构建处理
    if(RClass.isClass(pc, FControl)){
-      pc.build(ph);
+      if(!pc.isBuild()){
+         pc.build(ph);
+      }else{
+         pc.refresh();
+      }
    }
    // 建立子节点
    if(RClass.isClass(pc, MContainer) && px.hasNode()){
@@ -255,6 +259,7 @@ function RControl_innerbuild(pc, px, pa, ph){
 //     <L title='CreateChild'>通过父实例创建实例。</L>
 //     <L title='Construct'>实例的构造处理。</L>
 //     <L title='PropertyLoad'>加载配置信息。</L>
+//     <L title='Build'>构建页面处理。</L>
 //     <L title='appendChild'>追加到父实例中。</L>
 //     <L title='setPanel'>将当前控件放在地板上，成为可见控件</L>
 //   </OL>
@@ -268,11 +273,7 @@ function RControl_innerbuild(pc, px, pa, ph){
 //===========================================================
 function RControl_build(pc, px, pa, ph){
    var o = this;
-   // 内部创建
-   //o.innerCreate(pc, px, pa);
-   // 构件页面
-   //pc.psBuild(ph);
-   // 内部构架
+   // 内部构造
    o.innerbuild(pc, px, pa, ph);
 }
 

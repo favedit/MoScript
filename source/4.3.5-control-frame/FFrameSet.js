@@ -95,7 +95,7 @@ function FFrameSet_appendSpliter(){
    var o = this;
    var sp = RClass.create(FFrameSpliter);
    sp._frameset = o;
-   sp.psBuild(o._hPanel);
+   sp.build(o._hPanel);
    if(o._directionCd == EDirection.Horizontal){
       // 横向排布
       o._hLine.appendChild(sp._hPanel);

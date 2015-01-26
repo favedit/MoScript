@@ -31,22 +31,21 @@ function FFrameSpliter(o){
    //..........................................................
    // @event
    o.onBuildPanel  = FFrameSpliter_onBuildPanel
+   o.onBuild       = FFrameSpliter_onBuild;
    // @event
-   o.ohMouseEnter  = RClass.register(o, new AEventMouseEnter('onMouseEnter'), FFrameSpliter_ohMouseEnter);
-   o.ohMouseLeave  = RClass.register(o, new AEventMouseLeave('onMouseLeave'), FFrameSpliter_ohMouseLeave);
+   o.onMouseEnter  = RClass.register(o, new AEventMouseEnter('onMouseEnter'), FFrameSpliter_onMouseEnter);
+   o.onMouseLeave  = RClass.register(o, new AEventMouseLeave('onMouseLeave'), FFrameSpliter_onMouseLeave);
    o.onDragStart   = FFrameSpliter_onDragStart;
    o.onDragMove    = FFrameSpliter_onDragMove;
    o.onDragStop    = FFrameSpliter_onDragStop;
    //..........................................................
-   // @process
-   o.oeBuild       = FFrameSpliter_oeBuild;
-   //..........................................................
-   // method
-   //o.construct      = FFrameSpliter_construct;
+   // @method
+   o.construct     = FFrameSpliter_construct;
+   o.dispose       = FFrameSpliter_dispose;
+
    //o.build            = FFrameSpliter_build;
    //o.link             = FFrameSpliter_link;
    //o.click            = FFrameSpliter_click;
-   //o.dispose        = FFrameSpliter_dispose;
    return o;
 }
 
@@ -54,11 +53,41 @@ function FFrameSpliter(o){
 // <T>创建一个控件容器。</T>
 //
 // @method
-// @return HtmlTag 页面元素
+// @param p:event:TEventProcess 处理事件
 //==========================================================
-function FFrameSpliter_onBuildPanel(e){
+function FFrameSpliter_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createTableCell(e.hDocument, o.styleName('Normal'));
+   o._hPanel = RBuilder.createTableCell(p, o.styleName('Normal'));
+}
+
+//==========================================================
+// <T>建立当前控件的显示框架。</T>
+//
+// @method
+// @param p:event:TEventProcess 事件处理
+// @return EEventStatus 处理状态
+//==========================================================
+function FFrameSpliter_onBuild(p){
+   var o = this;
+   o.__base.FControl.onBuild.call(o, p)
+   var fs = o._frameset;
+   var h = o._hPanel;
+   h.__linker = o;
+   // 创建拖拽对象
+   var hd = o._hDrag = RBuilder.createDiv(p, o.styleName('Draging'));
+   hd.__linker = o;
+   hd.style.position = 'absolute';
+   RHtml.displaySet(hd, false);
+   RConsole.find(FDragConsole).register(o);
+   //h.ownerDocument.body.appendChild(hd);
+   h.appendChild(hd);
+   //fs._hPanel.appendChild(hd);
+   // 设置属性
+   h.style.cursor = 'e-resize';
+   h._plinker = o;
+   o.attachEvent('onMouseEnter', h, o.onMouseEnter);
+   o.attachEvent('onMouseLeave', h, o.onMouseLeave);
+   //o.hButtonIcon = RBuilder.appendIcon(hc, 'ctl.FSpliter_Left');
 }
 
 //==========================================================
@@ -67,7 +96,7 @@ function FFrameSpliter_onBuildPanel(e){
 // @method
 // @return HtmlTag 页面元素
 //==========================================================
-function FFrameSpliter_ohMouseEnter(p){
+function FFrameSpliter_onMouseEnter(p){
    var o = this;
    var hc = o._hPanel;
    hc.className = o.styleName('Hover');
@@ -79,7 +108,7 @@ function FFrameSpliter_ohMouseEnter(p){
 // @method
 // @return HtmlTag 页面元素
 //==========================================================
-function FFrameSpliter_ohMouseLeave(p){
+function FFrameSpliter_onMouseLeave(p){
    var o = this;
    var hc = o._hPanel;
    hc.className = o.styleName('Normal');
@@ -199,48 +228,48 @@ function FFrameSpliter_onDragStop(e){
 }
 
 //==========================================================
-// <T>建立当前控件的显示框架。</T>
+// <T>构造处理。</T>
 //
 // @method
-// @param e:event:TEventProcess 事件处理
-// @return EEventStatus 处理状态
 //==========================================================
-function FFrameSpliter_oeBuild(e){
-   var o = this;
-   o.__base.FControl.oeBuild.call(o, e)
-   // 事件前处理
-   if(e.isBefore()){
-      var fs = o._frameset;
-      var h = o._hPanel;
-      h.__linker = o;
-      // 创建拖拽对象
-      var hd = o._hDrag = RBuilder.createDiv(h.ownerDocument, o.styleName('Draging'));
-      hd.__linker = o;
-      hd.style.position = 'absolute';
-      RHtml.displaySet(hd, false);
-      RConsole.find(FDragConsole).register(o);
-      //h.ownerDocument.body.appendChild(hd);
-      h.appendChild(hd);
-      //fs._hPanel.appendChild(hd);
-      // 设置属性
-      h.style.cursor = 'e-resize';
-      h._plinker = o;
-      o.attachEvent('onMouseEnter', h, o.ohMouseEnter);
-      o.attachEvent('onMouseLeave', h, o.ohMouseLeave);
-      //o.hButtonIcon = RBuilder.appendIcon(hc, 'ctl.FSpliter_Left');
-   }
-   return EEventStatus.Continue;
-}
-
-
-
-
-
-
-// ------------------------------------------------------------
 function FFrameSpliter_construct(){
-   this.direction = EDirection.Horizontal;
+   var o = this;
+   o.__base.FControl.construct.call(o);
 }
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FFrameSpliter_dispose(){
+   var o = this;
+   // 释放页面元素
+   var h = o._hDrag;
+   if(h){
+      RHtml.free(h);
+      o._hDrag = null;
+   }
+   var h = o._hSize;
+   if(h){
+      RHtml.free(h);
+      o._hSize = null;
+   }
+   // 父处理
+   o.__base.FControl.dispose.call(o);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 // ------------------------------------------------------------
 function FFrameSpliter_build(){
    var o = this;
@@ -296,15 +325,3 @@ function FFrameSpliter_click(){
       }
    }
 }
-// ------------------------------------------------------------
-function FFrameSpliter_dispose(){
-   var o = this;
-   o.base.FControl.dispose.call(o);
-   o.hDrag = null;
-   o.hLayer = null;
-   o.hSize = null;
-   o.hForm = null;
-   o.hButton = null;
-   o.hButtonIcon = null;
-}
-// ------------------------------------------------------------

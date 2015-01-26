@@ -208,12 +208,21 @@ function RWindow_connect(w){
    var hd = o._hDocument = hw.document;
    var hc = o._hContainer = hd.body;
    // 关联鼠标事件
-   hc.addEventListener('mousedown', o.ohMouseDown, true);
-   hc.addEventListener('mousemove', o.ohMouseMove, true);
-   hc.addEventListener('mouseup', o.ohMouseUp, true);
-   hc.addEventListener('keydown', o.ohKeyDown, true);
-   hc.addEventListener('keyup', o.ohKeyUp, true);
-   hc.addEventListener('keypress', o.ohKeyPress, true);
+   if(RRuntime.supportHtml5()){
+      hc.addEventListener('mousedown', o.ohMouseDown, true);
+      hc.addEventListener('mousemove', o.ohMouseMove, true);
+      hc.addEventListener('mouseup', o.ohMouseUp, true);
+      hc.addEventListener('keydown', o.ohKeyDown, true);
+      hc.addEventListener('keyup', o.ohKeyUp, true);
+      hc.addEventListener('keypress', o.ohKeyPress, true);
+   }else{
+      hc.onmousedown = o.ohMouseDown;
+      hc.onmousemove = o.ohMouseMove;
+      hc.onmouseup = o.ohMouseUp;
+      hc.onkeydown = o.ohKeyDown;
+      hc.onkeyup = o.ohKeyUp;
+      hc.onkeypress = o.ohKeyPress;
+   }
    hc.onselectstart = o.ohSelect;
 }
 

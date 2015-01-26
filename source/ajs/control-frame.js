@@ -56,7 +56,7 @@ function FFrameSet_appendSpliter(){
    var o = this;
    var sp = RClass.create(FFrameSpliter);
    sp._frameset = o;
-   sp.psBuild(o._hPanel);
+   sp.build(o._hPanel);
    if(o._directionCd == EDirection.Horizontal){
       o._hLine.appendChild(sp._hPanel);
       sp._hPanel.style.width = '4px';
@@ -90,24 +90,43 @@ function FFrameSpliter(o){
    o._hDrag        = null;
    o._hSize        = null;
    o.onBuildPanel  = FFrameSpliter_onBuildPanel
-   o.ohMouseEnter  = RClass.register(o, new AEventMouseEnter('onMouseEnter'), FFrameSpliter_ohMouseEnter);
-   o.ohMouseLeave  = RClass.register(o, new AEventMouseLeave('onMouseLeave'), FFrameSpliter_ohMouseLeave);
+   o.onBuild       = FFrameSpliter_onBuild;
+   o.onMouseEnter  = RClass.register(o, new AEventMouseEnter('onMouseEnter'), FFrameSpliter_onMouseEnter);
+   o.onMouseLeave  = RClass.register(o, new AEventMouseLeave('onMouseLeave'), FFrameSpliter_onMouseLeave);
    o.onDragStart   = FFrameSpliter_onDragStart;
    o.onDragMove    = FFrameSpliter_onDragMove;
    o.onDragStop    = FFrameSpliter_onDragStop;
-   o.oeBuild       = FFrameSpliter_oeBuild;
+   o.construct     = FFrameSpliter_construct;
+   o.dispose       = FFrameSpliter_dispose;
    return o;
 }
-function FFrameSpliter_onBuildPanel(e){
+function FFrameSpliter_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createTableCell(e.hDocument, o.styleName('Normal'));
+   o._hPanel = RBuilder.createTableCell(p, o.styleName('Normal'));
 }
-function FFrameSpliter_ohMouseEnter(p){
+function FFrameSpliter_onBuild(p){
+   var o = this;
+   o.__base.FControl.onBuild.call(o, p)
+   var fs = o._frameset;
+   var h = o._hPanel;
+   h.__linker = o;
+   var hd = o._hDrag = RBuilder.createDiv(p, o.styleName('Draging'));
+   hd.__linker = o;
+   hd.style.position = 'absolute';
+   RHtml.displaySet(hd, false);
+   RConsole.find(FDragConsole).register(o);
+   h.appendChild(hd);
+   h.style.cursor = 'e-resize';
+   h._plinker = o;
+   o.attachEvent('onMouseEnter', h, o.onMouseEnter);
+   o.attachEvent('onMouseLeave', h, o.onMouseLeave);
+}
+function FFrameSpliter_onMouseEnter(p){
    var o = this;
    var hc = o._hPanel;
    hc.className = o.styleName('Hover');
 }
-function FFrameSpliter_ohMouseLeave(p){
+function FFrameSpliter_onMouseLeave(p){
    var o = this;
    var hc = o._hPanel;
    hc.className = o.styleName('Normal');
@@ -189,28 +208,23 @@ function FFrameSpliter_onDragStop(e){
    }
    RHtml.visibleSet(hd, false);
 }
-function FFrameSpliter_oeBuild(e){
-   var o = this;
-   o.__base.FControl.oeBuild.call(o, e)
-   if(e.isBefore()){
-      var fs = o._frameset;
-      var h = o._hPanel;
-      h.__linker = o;
-      var hd = o._hDrag = RBuilder.createDiv(h.ownerDocument, o.styleName('Draging'));
-      hd.__linker = o;
-      hd.style.position = 'absolute';
-      RHtml.displaySet(hd, false);
-      RConsole.find(FDragConsole).register(o);
-      h.appendChild(hd);
-      h.style.cursor = 'e-resize';
-      h._plinker = o;
-      o.attachEvent('onMouseEnter', h, o.ohMouseEnter);
-      o.attachEvent('onMouseLeave', h, o.ohMouseLeave);
-   }
-   return EEventStatus.Continue;
-}
 function FFrameSpliter_construct(){
-   this.direction = EDirection.Horizontal;
+   var o = this;
+   o.__base.FControl.construct.call(o);
+}
+function FFrameSpliter_dispose(){
+   var o = this;
+   var h = o._hDrag;
+   if(h){
+      RHtml.free(h);
+      o._hDrag = null;
+   }
+   var h = o._hSize;
+   if(h){
+      RHtml.free(h);
+      o._hSize = null;
+   }
+   o.__base.FControl.dispose.call(o);
 }
 function FFrameSpliter_build(){
    var o = this;
@@ -262,23 +276,13 @@ function FFrameSpliter_click(){
       }
    }
 }
-function FFrameSpliter_dispose(){
-   var o = this;
-   o.base.FControl.dispose.call(o);
-   o.hDrag = null;
-   o.hLayer = null;
-   o.hSize = null;
-   o.hForm = null;
-   o.hButton = null;
-   o.hButtonIcon = null;
-}
 function FWorkspace(o){
    o = RClass.inherits(this, o, FContainer);
    o._frames      = null;
    o.onBuildPanel = FWorkspace_onBuildPanel
    return o;
 }
-function FWorkspace_onBuildPanel(e){
+function FWorkspace_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createDiv(e.hDocument, o.styleName('Panel'));
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
 }

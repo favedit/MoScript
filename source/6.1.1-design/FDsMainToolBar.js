@@ -13,7 +13,7 @@ function FDsMainToolBar(o){
    o.onPersistenceClick   = FDsMainToolBar_onPersistenceClick;
    //..........................................................
    // @method
-   o.oeBuild   = FDsMainToolBar_oeBuild;
+   o.onBuild   = FDsMainToolBar_onBuild;
    //..........................................................
    // @method
    o.construct = FDsMainToolBar_construct;
@@ -38,37 +38,32 @@ function FDsMainToolBar_onPersistenceClick(p){
 // <T>建立当前控件的显示框架。</T>
 //
 // @method
-// @param e:event:TEventProcess 事件处理
-// @return EEventStatus 处理状态
+// @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsMainToolBar_oeBuild(e){
+function FDsMainToolBar_onBuild(p){
    var o = this;
-   o.__base.FToolBar.oeBuild.call(o, e);
-   // 事件前处理
-   if(e.isBefore()){
-      // 建立按键
-      var b = o._persistenceButton  = RClass.create(FToolButton);
-      b.setLabel('持久化定义');
-      b.process(e);
-      b.lsnsClick.register(o, o.onPersistenceClick);
-      o.appendButton(b);
-      // 建立按键
-      var b = o._framesetMain = RClass.create(FToolButton);
-      b.setLabel('列表定义');
-      b.process(e);
-      o.appendButton(b);
-      // 建立按键
-      var b = o._framesetMain = RClass.create(FToolButton);
-      b.setLabel('数据定义');
-      b.process(e);
-      o.appendButton(b);
-      // 建立按键
-      var b = o._framesetMain = RClass.create(FToolButton);
-      b.setLabel('表单定义');
-      b.process(e);
-      o.appendButton(b);
-   }
-   return EEventStatus.Continue;
+   o.__base.FToolBar.onBuild.call(o, p);
+   // 建立按键
+   var b = o._persistenceButton  = RClass.create(FToolButton);
+   b.setLabel('持久化定义');
+   b.build(p);
+   b.lsnsClick.register(o, o.onPersistenceClick);
+   o.appendButton(b);
+   // 建立按键
+   var b = o._framesetMain = RClass.create(FToolButton);
+   b.setLabel('列表定义');
+   b.build(p);
+   o.appendButton(b);
+   // 建立按键
+   var b = o._framesetMain = RClass.create(FToolButton);
+   b.setLabel('数据定义');
+   b.build(p);
+   o.appendButton(b);
+   // 建立按键
+   var b = o._framesetMain = RClass.create(FToolButton);
+   b.setLabel('表单定义');
+   b.build(p);
+   o.appendButton(b);
 }
 
 //==========================================================

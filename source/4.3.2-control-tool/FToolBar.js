@@ -9,13 +9,13 @@ function FToolBar(o){
    o = RClass.inherits(this, o, FContainer);
    //..........................................................
    // @html
-   o._hLine           = null;
+   o._hLine       = null;
    //..........................................................
    // @event
    o.onBuildPanel = FToolBar_onBuildPanel;
    //..........................................................
    // @method
-   o.appendButton     = FToolBar_appendButton;
+   o.appendButton = FToolBar_appendButton;
 
 
 
@@ -70,6 +70,18 @@ function FToolBar_appendButton(p){
    var hc = RBuilder.appendTableCell(hr);
    p.setPanel(hc);
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**************************************************************
  * 给工具栏里的一个控件添加一个事件监听

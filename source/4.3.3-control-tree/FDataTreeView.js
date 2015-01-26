@@ -230,7 +230,7 @@ function FDataTreeView_loadNode(pn, pf){
       nr++;
    }
    RHtml.tableMoveRow(o._hNodeForm, ln._hPanel.rowIndex, nr);
-   ln.setLevel(pn.level + 1);
+   ln.setLevel(pn.level() + 1);
    ln.show();
    // 建立事件对象，发送信息
    var sv = RService.parse(RString.nvl(svc, o._service));

@@ -14,17 +14,16 @@ function FToolButtonMenu(o){
    o.hDropPanel    = null;
    //..........................................................
    // @style
-   o.siDropHover   = RClass.register(o, new AStyleIcon('DropHover'));
+   o._styleDropHover = RClass.register(o, new AStyleIcon('DropHover'));
    //..........................................................
+   // @event
+   o.onBuild       = FToolButtonMenu_onBuild;
    // @event
    o.onEnter       = FToolButtonMenu_onEnter;
    o.onLeave       = FToolButtonMenu_onLeave;
    o.onBlur        = FToolButtonMenu_onBlur;
    o.onButtonClick = FToolButtonMenu_onButtonClick;
    o.onDropClick   = FToolButtonMenu_onDropClick;
-   //..........................................................
-   // @process
-   o.oeBuild       = FToolButtonMenu_oeBuild;
    //..........................................................
    // @method
    o.construct     = FToolButtonMenu_construct;
@@ -115,10 +114,10 @@ function FToolButtonMenu_onDropClick(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FToolButtonMenu_oeBuild(e){
+function FToolButtonMenu_onBuild(e){
    var o = this;
    if(e.isBefore()){
-      o.base.FToolButton.oeBuild.call(o, e);
+      o.base.FToolButton.onBuild.call(o, e);
       var h = o.hDropPanel = o.hButtonLine.insertCell();
       h.className = o.style('Drop')
       o.hDropIcon = RBuilder.appendIcon(h, o.styleIcon('Drop'));

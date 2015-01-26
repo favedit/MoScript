@@ -98,8 +98,10 @@ function FControl(o){
    o.psResize       = FControl_psResize;
    o.psRefresh      = FControl_psRefresh;
    // @method
-   o.setPanel       = FControl_setPanel;
+   o.isBuild        = FControl_isBuild;
    o.build          = FControl_build;
+   o.refresh        = FControl_refresh;
+   o.setPanel       = FControl_setPanel;
    // @method
    o.dispose        = FControl_dispose;
    return o;
@@ -566,19 +568,18 @@ function FControl_psRefresh(t){
 }
 
 //==========================================================
-// <T>设置控件的页面父容器。</T>
+// <T>判断是否已经构建。</T>
 //
 // @method
-// @param h:hPanel:HtmlTag 页面元素
+// @return Boolean 是否构建
 //==========================================================
-function FControl_setPanel(h){
-   var o = this;
-   o._hParent = h;
-   h.appendChild(o._hPanel);
+function FControl_isBuild(){
+   return this._statusBuild;
 }
 
 //==========================================================
 // <T>构建处理。</T>
+// <P>只允许构建一次，不允许重复构建。</P>
 //
 // @method
 // @param p:html:HtmlTag 页面元素
@@ -608,6 +609,32 @@ function FControl_build(p){
    RObject.free(a);
    // 设置状态
    o._statusBuild = true;
+}
+
+//==========================================================
+// <T>刷新处理。</T>
+// <P>构件后，重新加载内容时，需要刷新处理。</P>
+//
+// @method
+//==========================================================
+function FControl_refresh(){
+   var o = this;
+   // 检查状态
+   if(!o._statusBuild){
+      throw new TError(o, 'Current control is not build.');
+   }
+}
+
+//==========================================================
+// <T>设置控件的页面父容器。</T>
+//
+// @method
+// @param h:hPanel:HtmlTag 页面元素
+//==========================================================
+function FControl_setPanel(h){
+   var o = this;
+   o._hParent = h;
+   h.appendChild(o._hPanel);
 }
 
 //==========================================================

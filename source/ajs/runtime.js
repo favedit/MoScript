@@ -22,21 +22,34 @@ var EScope = new function EScope(){
 }
 var RRuntime = new function RRuntime(){
    var o = this;
-   o._nextUid  = 1;
-   o.processCd = EProcess.Release;
-   o.isDebug   = RRuntime_isDebug;
-   o.isRelease = RRuntime_isRelease;
-   o.nvl       = RRuntime_nvl;
-   o.subString = RRuntime_subString;
-   o.className = RRuntime_className;
-   o.uid       = RRuntime_uid;
+   o._processCd    = EProcess.Release;
+   o._supportHtml5 = false;
+   o._nextUid      = 1;
+   o.construct     = RRuntime_construct;
+   o.isDebug       = RRuntime_isDebug;
+   o.isRelease     = RRuntime_isRelease;
+   o.supportHtml5  = RRuntime_supportHtml5;
+   o.nvl           = RRuntime_nvl;
+   o.subString     = RRuntime_subString;
+   o.className     = RRuntime_className;
+   o.uid           = RRuntime_uid;
+   o.construct();
    return o;
 }
+function RRuntime_construct(){
+   var o = this;
+   if(window.applicationCache){
+      o._supportHtml5 = true;
+   }
+}
 function RRuntime_isDebug(){
-   return (this.processCd == EProcess.Debug);
+   return (this._processCd == EProcess.Debug);
 }
 function RRuntime_isRelease(){
-   return (this.processCd == EProcess.Release);
+   return (this._processCd == EProcess.Release);
+}
+function RRuntime_supportHtml5(){
+   return this._supportHtml5;
 }
 function RRuntime_nvl(a, b){
    return (a != null) ? a : b;

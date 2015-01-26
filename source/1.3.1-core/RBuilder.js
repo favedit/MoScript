@@ -492,13 +492,16 @@ function RBuilder_appendTableRowCell(p, s, w, h){
 // @return HtmlTrTag 页面行对象
 //==========================================================
 function RBuilder_appendTableCell(p, s, i, w){
+   var o = this;
    var r = null;
    if(i == null){
-      if(RBrowser.isBrowser(EBrowser.Explorer)){
-         r = p.insertCell();
-      }else{
-         r = p.insertCell(-1);
-      }
+      r = o.create(p, 'TD', s);
+      p.appendChild(r);
+      //if(RBrowser.isBrowser(EBrowser.Explorer)){
+      //   r = p.insertCell();
+      //}else{
+      //   r = p.insertCell(-1);
+      //}
    }else{
       r = p.insertCell(i);
    }

@@ -44,20 +44,22 @@ function RMath_construct(){
    o.PI2 = Math.PI * 2;
    o.RADIAN_RATE = 180.0 / Math.PI;
    o.DEGREE_RATE = Math.PI / 180.0;
-   o.float1 = new Float32Array(1);
-   o.float2 = new Float32Array(2);
-   o.float3 = new Float32Array(3);
-   o.float4 = new Float32Array(4);
-   o.float9 = new Float32Array(9);
-   o.float12 = new Float32Array(12);
-   o.float16 = new Float32Array(16);
-   o.double1 = new Float64Array(1);
-   o.double2 = new Float64Array(2);
-   o.double3 = new Float64Array(3);
-   o.double4 = new Float64Array(4);
-   o.double9 = new Float64Array(9);
-   o.double12 = new Float64Array(12);
-   o.double16 = new Float64Array(16);
+   if(RRuntime.supportHtml5()){
+      o.float1 = new Float32Array(1);
+      o.float2 = new Float32Array(2);
+      o.float3 = new Float32Array(3);
+      o.float4 = new Float32Array(4);
+      o.float9 = new Float32Array(9);
+      o.float12 = new Float32Array(12);
+      o.float16 = new Float32Array(16);
+      o.double1 = new Float64Array(1);
+      o.double2 = new Float64Array(2);
+      o.double3 = new Float64Array(3);
+      o.double4 = new Float64Array(4);
+      o.double9 = new Float64Array(9);
+      o.double12 = new Float64Array(12);
+      o.double16 = new Float64Array(16);
+   }
    o.matrix = new SMatrix3d();
    o.vectorAxisX = new SVector3();
    o.vectorAxisX.set(1.0, 0.0, 0.0);

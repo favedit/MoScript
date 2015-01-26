@@ -629,8 +629,10 @@ function FControl(o){
    o.psVisible      = FControl_psVisible;
    o.psResize       = FControl_psResize;
    o.psRefresh      = FControl_psRefresh;
-   o.setPanel       = FControl_setPanel;
+   o.isBuild        = FControl_isBuild;
    o.build          = FControl_build;
+   o.refresh        = FControl_refresh;
+   o.setPanel       = FControl_setPanel;
    o.dispose        = FControl_dispose;
    return o;
 }
@@ -830,10 +832,8 @@ function FControl_psRefresh(t){
    o.process(e);
    e.dispose();
 }
-function FControl_setPanel(h){
-   var o = this;
-   o._hParent = h;
-   h.appendChild(o._hPanel);
+function FControl_isBuild(){
+   return this._statusBuild;
 }
 function FControl_build(p){
    var o = this;
@@ -856,6 +856,17 @@ function FControl_build(p){
    o.onBuild(a);
    RObject.free(a);
    o._statusBuild = true;
+}
+function FControl_refresh(){
+   var o = this;
+   if(!o._statusBuild){
+      throw new TError(o, 'Current control is not build.');
+   }
+}
+function FControl_setPanel(h){
+   var o = this;
+   o._hParent = h;
+   h.appendChild(o._hPanel);
 }
 function FControl_dispose(){
    var o = this;
@@ -2722,7 +2733,11 @@ function RControl_innerbuild(pc, px, pa, ph){
       pc.propertyLoad(px);
    }
    if(RClass.isClass(pc, FControl)){
-      pc.build(ph);
+      if(!pc.isBuild()){
+         pc.build(ph);
+      }else{
+         pc.refresh();
+      }
    }
    if(RClass.isClass(pc, MContainer) && px.hasNode()){
       var ns = px.nodes();

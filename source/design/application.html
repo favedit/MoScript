@@ -55,10 +55,11 @@ function _load(){
 
    var ws = RClass.create(FDsMainWorkspace);
    ws.build(document.body);
+   ws.setPanel(document.body);
 
    //RDump.dump(fs, _dump);
 }
 </SCRIPT>
 </HEAD>
-<BODY scroll='no' style='background-color:#444444;margin:0px;' onload='_load()'></BODY>
+<BODY scroll='no' style='background-color:#444444;' onload='_load()'></BODY>
 </HTML>

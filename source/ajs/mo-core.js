@@ -22,21 +22,34 @@ var EScope = new function EScope(){
 }
 var RRuntime = new function RRuntime(){
    var o = this;
-   o._nextUid  = 1;
-   o.processCd = EProcess.Release;
-   o.isDebug   = RRuntime_isDebug;
-   o.isRelease = RRuntime_isRelease;
-   o.nvl       = RRuntime_nvl;
-   o.subString = RRuntime_subString;
-   o.className = RRuntime_className;
-   o.uid       = RRuntime_uid;
+   o._processCd    = EProcess.Release;
+   o._supportHtml5 = false;
+   o._nextUid      = 1;
+   o.construct     = RRuntime_construct;
+   o.isDebug       = RRuntime_isDebug;
+   o.isRelease     = RRuntime_isRelease;
+   o.supportHtml5  = RRuntime_supportHtml5;
+   o.nvl           = RRuntime_nvl;
+   o.subString     = RRuntime_subString;
+   o.className     = RRuntime_className;
+   o.uid           = RRuntime_uid;
+   o.construct();
    return o;
 }
+function RRuntime_construct(){
+   var o = this;
+   if(window.applicationCache){
+      o._supportHtml5 = true;
+   }
+}
 function RRuntime_isDebug(){
-   return (this.processCd == EProcess.Debug);
+   return (this._processCd == EProcess.Debug);
 }
 function RRuntime_isRelease(){
-   return (this.processCd == EProcess.Release);
+   return (this._processCd == EProcess.Release);
+}
+function RRuntime_supportHtml5(){
+   return this._supportHtml5;
 }
 function RRuntime_nvl(a, b){
    return (a != null) ? a : b;
@@ -5510,20 +5523,22 @@ function RMath_construct(){
    o.PI2 = Math.PI * 2;
    o.RADIAN_RATE = 180.0 / Math.PI;
    o.DEGREE_RATE = Math.PI / 180.0;
-   o.float1 = new Float32Array(1);
-   o.float2 = new Float32Array(2);
-   o.float3 = new Float32Array(3);
-   o.float4 = new Float32Array(4);
-   o.float9 = new Float32Array(9);
-   o.float12 = new Float32Array(12);
-   o.float16 = new Float32Array(16);
-   o.double1 = new Float64Array(1);
-   o.double2 = new Float64Array(2);
-   o.double3 = new Float64Array(3);
-   o.double4 = new Float64Array(4);
-   o.double9 = new Float64Array(9);
-   o.double12 = new Float64Array(12);
-   o.double16 = new Float64Array(16);
+   if(RRuntime.supportHtml5()){
+      o.float1 = new Float32Array(1);
+      o.float2 = new Float32Array(2);
+      o.float3 = new Float32Array(3);
+      o.float4 = new Float32Array(4);
+      o.float9 = new Float32Array(9);
+      o.float12 = new Float32Array(12);
+      o.float16 = new Float32Array(16);
+      o.double1 = new Float64Array(1);
+      o.double2 = new Float64Array(2);
+      o.double3 = new Float64Array(3);
+      o.double4 = new Float64Array(4);
+      o.double9 = new Float64Array(9);
+      o.double12 = new Float64Array(12);
+      o.double16 = new Float64Array(16);
+   }
    o.matrix = new SMatrix3d();
    o.vectorAxisX = new SVector3();
    o.vectorAxisX.set(1.0, 0.0, 0.0);
@@ -8817,13 +8832,11 @@ function RBuilder_appendTableRowCell(p, s, w, h){
    return hc;
 }
 function RBuilder_appendTableCell(p, s, i, w){
+   var o = this;
    var r = null;
    if(i == null){
-      if(RBrowser.isBrowser(EBrowser.Explorer)){
-         r = p.insertCell();
-      }else{
-         r = p.insertCell(-1);
-      }
+      r = o.create(p, 'TD', s);
+      p.appendChild(r);
    }else{
       r = p.insertCell(i);
    }
@@ -10290,12 +10303,21 @@ function RWindow_connect(w){
    var hw = o._hWindow = w;
    var hd = o._hDocument = hw.document;
    var hc = o._hContainer = hd.body;
-   hc.addEventListener('mousedown', o.ohMouseDown, true);
-   hc.addEventListener('mousemove', o.ohMouseMove, true);
-   hc.addEventListener('mouseup', o.ohMouseUp, true);
-   hc.addEventListener('keydown', o.ohKeyDown, true);
-   hc.addEventListener('keyup', o.ohKeyUp, true);
-   hc.addEventListener('keypress', o.ohKeyPress, true);
+   if(RRuntime.supportHtml5()){
+      hc.addEventListener('mousedown', o.ohMouseDown, true);
+      hc.addEventListener('mousemove', o.ohMouseMove, true);
+      hc.addEventListener('mouseup', o.ohMouseUp, true);
+      hc.addEventListener('keydown', o.ohKeyDown, true);
+      hc.addEventListener('keyup', o.ohKeyUp, true);
+      hc.addEventListener('keypress', o.ohKeyPress, true);
+   }else{
+      hc.onmousedown = o.ohMouseDown;
+      hc.onmousemove = o.ohMouseMove;
+      hc.onmouseup = o.ohMouseUp;
+      hc.onkeydown = o.ohKeyDown;
+      hc.onkeyup = o.ohKeyUp;
+      hc.onkeypress = o.ohKeyPress;
+   }
    hc.onselectstart = o.ohSelect;
 }
 function RWindow_optionSelect(){

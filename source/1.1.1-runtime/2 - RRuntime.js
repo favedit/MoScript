@@ -8,18 +8,39 @@
 var RRuntime = new function RRuntime(){
    var o = this;
    //..........................................................
-   // @propery
-   o._nextUid  = 1;
-   o.processCd = EProcess.Release;
+   // @attribute
+   o._processCd    = EProcess.Release;
+   o._supportHtml5 = false;
+   // @attribute
+   o._nextUid      = 1;
    //..........................................................
    // @method
-   o.isDebug   = RRuntime_isDebug;
-   o.isRelease = RRuntime_isRelease;
-   o.nvl       = RRuntime_nvl;
-   o.subString = RRuntime_subString;
-   o.className = RRuntime_className;
-   o.uid       = RRuntime_uid;
+   o.construct     = RRuntime_construct;
+   // @method
+   o.isDebug       = RRuntime_isDebug;
+   o.isRelease     = RRuntime_isRelease;
+   o.supportHtml5  = RRuntime_supportHtml5;
+   // @method
+   o.nvl           = RRuntime_nvl;
+   o.subString     = RRuntime_subString;
+   o.className     = RRuntime_className;
+   o.uid           = RRuntime_uid;
+   //..........................................................
+   // @construct
+   o.construct();
    return o;
+}
+
+//===========================================================
+// <T>构造处理。</T>
+//
+// @method
+//===========================================================
+function RRuntime_construct(){
+   var o = this;
+   if(window.applicationCache){
+      o._supportHtml5 = true;
+   }
 }
 
 //==========================================================
@@ -29,7 +50,7 @@ var RRuntime = new function RRuntime(){
 // @return 是否调试模式
 //==========================================================
 function RRuntime_isDebug(){
-   return (this.processCd == EProcess.Debug);
+   return (this._processCd == EProcess.Debug);
 }
 
 //==========================================================
@@ -39,7 +60,17 @@ function RRuntime_isDebug(){
 // @return 是否运行模式
 //==========================================================
 function RRuntime_isRelease(){
-   return (this.processCd == EProcess.Release);
+   return (this._processCd == EProcess.Release);
+}
+
+//==========================================================
+// <T>测试是否支持HTML5规范。</T>
+//
+// @method
+// @return 是否支持
+//==========================================================
+function RRuntime_supportHtml5(){
+   return this._supportHtml5;
 }
 
 //==========================================================

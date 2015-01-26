@@ -20,9 +20,9 @@ function FWorkspace(o){
 // <T>创建一个控件容器。</T>
 //
 // @method
-// @return HtmlTag 页面元素
+// @param p:event:TEventProcess 处理事件
 //==========================================================
-function FWorkspace_onBuildPanel(e){
+function FWorkspace_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createDiv(e.hDocument, o.styleName('Panel'));
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
 }

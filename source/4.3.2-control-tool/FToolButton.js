@@ -33,13 +33,12 @@ function FToolButton(o){
    //..........................................................
    // @event
    o.onBuildPanel  = FToolButton_onBuildPanel;
+   o.onBuild       = FToolButton_onBuild;
+   // @event
    o.onEnter       = FToolButton_onEnter;
    o.onLeave       = FToolButton_onLeave;
    o.onMouseDown   = FToolButton_onMouseDown;
    o.onMouseUp     = FToolButton_onMouseUp;
-   //..........................................................
-   // @process
-   o.oeBuild       = FToolButton_oeBuild;
    //..........................................................
    // @method
    o.icon          = FToolButton_icon;
@@ -87,11 +86,54 @@ function FToolButton(o){
 // <T>创建一个控件容器。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件
+// @param p:event:TEventProcess 事件处理
 //==========================================================
 function FToolButton_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createDiv(p.hDocument, o.styleName('Normal'));
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Normal'));
+}
+
+//==========================================================
+// <T>建立当前控件的显示框架。</T>
+//
+// @method
+// @param p:event:TEventProcess 事件处理
+//==========================================================
+function FToolButton_onBuild(p){
+   var o = this;
+   o.__base.FControl.onBuild.call(o, p);
+   var h = o._hPanel;
+   //var t = o.parent;
+   //var h = o._hPanel;
+   //var hb = o._hButton = RBuilder.appendTable(o._hPanel, o.styleName('Panel'));
+   //hb.background = o.styleIconPath('Button', FToolButton);
+   //var hLine = o._hButtonLine = o._hButton.insertRow();
+   //var hCel = o._hButtonPanel = hLine.insertCell();
+   //o.attachEvent('onButtonClick', o._hButtonPanel);
+   //hCel.className = t.styleName('Button');
+   //if(o._icon){
+   //   o._hIcon = RBuilder.appendIcon(hCel, o._icon);
+   //}
+   //if(o.label){
+   //   o._hLabel = RBuilder.append(hCel, 'SPAN');
+   //   o._hLabel.innerHTML = '&nbsp;' + o.label;
+   //}
+   //if(o._hotkey){
+   //   //o._hLabel.innerHTML = '&nbsp;' + o.label+"("+o._hotkey+")";
+   //   RConsole.find(FKeyConsole).register(o._hotkey, new TListener(o, o.onButtonClick));
+   //
+   // 建立图标
+   if(o._icon){
+      o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);
+   }
+   // 建立标签
+   if(o._label){
+      var s = o._label;
+      if(o._hIcon){
+         //s = '&nbsp;' + o._label;
+      }
+      o.hLabel = RBuilder.appendText(h, o.styleName('Label'), s);
+   }
 }
 
 //==========================================================
@@ -165,51 +207,6 @@ function FToolButton_onMouseUp(h){
    if(!o._disabled){
       o._hPanel.className = o.styleName('Hover');
    }
-}
-
-//==========================================================
-// <T>建立当前控件的显示框架。</T>
-//
-// @method
-// @param p:event:TEventProcess 事件处理
-// @return EEventStatus 处理状态
-//==========================================================
-function FToolButton_oeBuild(p){
-   var o = this;
-   o.__base.FControl.oeBuild.call(o, p);
-   var h = o._hPanel;
-   //var t = o.parent;
-   //var h = o._hPanel;
-   //var hb = o._hButton = RBuilder.appendTable(o._hPanel, o.styleName('Panel'));
-   //hb.background = o.styleIconPath('Button', FToolButton);
-   //var hLine = o._hButtonLine = o._hButton.insertRow();
-   //var hCel = o._hButtonPanel = hLine.insertCell();
-   //o.attachEvent('onButtonClick', o._hButtonPanel);
-   //hCel.className = t.styleName('Button');
-   //if(o._icon){
-   //   o._hIcon = RBuilder.appendIcon(hCel, o._icon);
-   //}
-   //if(o.label){
-   //   o._hLabel = RBuilder.append(hCel, 'SPAN');
-   //   o._hLabel.innerHTML = '&nbsp;' + o.label;
-   //}
-   //if(o._hotkey){
-   //   //o._hLabel.innerHTML = '&nbsp;' + o.label+"("+o._hotkey+")";
-   //   RConsole.find(FKeyConsole).register(o._hotkey, new TListener(o, o.onButtonClick));
-   //
-   // 建立图标
-   if(o._icon){
-      o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);
-   }
-   // 建立标签
-   if(o._label){
-      var s = o._label;
-      if(o._hIcon){
-         //s = '&nbsp;' + o._label;
-      }
-      o.hLabel = RBuilder.appendText(h, o.styleName('Label'), s);
-   }
-   return EEventStatus.Stop;
 }
 
 //==========================================================

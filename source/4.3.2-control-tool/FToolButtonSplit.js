@@ -7,14 +7,14 @@
 function FToolButtonSplit(o){
    o = RClass.inherits(this, o, FControl);
    /// @style
-   o.styleButton  = RClass.register(o, new AStyle('Button'));
+   //o.styleButton  = RClass.register(o, new AStyle('Button'));
    // Html
-   o.hButton      = null;
+   //o.hButton      = null;
    // Process Event
-   o.oeBuild      = FToolButtonSplit_oeBuild;
+   //o.onBuild      = FToolButtonSplit_onBuild;
    // Event
-   o.onBuildPanel = FToolButtonSplit_onBuildPanel;
-   o.dispose      = FToolButtonSplit_dispose;
+   //o.onBuildPanel = FToolButtonSplit_onBuildPanel;
+   //o.dispose      = FToolButtonSplit_dispose;
    return o;
 }
 
@@ -25,9 +25,9 @@ function FToolButtonSplit(o){
  * @param event:Event:EEvent 构建事件
  * @return EEventStatus 构建事件的状态
  **************************************************************/
-function FToolButtonSplit_oeBuild(event){
+function FToolButtonSplit_onBuild(event){
    var o = this;
-   o.base.FControl.oeBuild.call(o, event);
+   o.base.FControl.onBuild.call(o, event);
    o.hButton = RBuilder.append(this.hPanel, 'DIV', o.style('Button'));
    return EEventStatus.Stop;
 }

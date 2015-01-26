@@ -61,10 +61,8 @@ function FTreeView(o){
    //..........................................................
    // @event
    o.onBuildPanel     = FTreeView_onBuildPanel;
+   o.onBuild          = FTreeView_onBuild;
    o.onNodeCheckClick = RClass.register(o, new AEventClick('onNodeCheckClick'), FTreeView_onNodeCheckClick);
-   //..........................................................
-   // @process
-   o.oeBuild          = FTreeView_oeBuild;
    //..........................................................
    // @method
    o.construct        = FTreeView_construct;
@@ -112,6 +110,46 @@ function FTreeView_onBuildPanel(e){
 }
 
 //==========================================================
+// <T>构建树目录。</T>
+//
+// @method
+// @param p:event:TEventProcess 处理事件
+//==========================================================
+function FTreeView_onBuild(p){
+   var o = this;
+   o.__base.FContainer.onBuild.call(o, p);
+   // 构建标题表格
+   var hr = RBuilder.appendTableRow(o._hPanel);
+   var hc = RBuilder.appendTableCell(hr);
+   // 构建节点底板
+   var hnp = o._hNodePanel = RBuilder.appendDiv(hc, o.styleName('NodePanel'));
+   // 构建节点表格
+   var hnf = o._hNodeForm = RBuilder.appendTable(hnp, o.styleName('NodeForm'));
+   hnf.width = '100%';
+   // 表格第一行是标题栏
+   o._hHeadLine = RBuilder.appendTableRow(hnf);
+   o._hNodeRows = hnf.children[0];
+   // 构建加载中节点
+   var ln = o._loadingNode = RClass.create(FTreeNode);
+   ln._tree = o;
+   ln._label = RContext.get('FTreeView:loading');
+   ln._icon = o._iconLoading;
+   ln.build(p);
+   o.appendNode(ln);
+   ln.hide();
+   // 构建后处理
+   var ns = o._nodes;
+   if(!ns.isEmpty()){
+      var nc = ns.count();
+      for(var i = 0; i < nc; i++){
+         o.appendNode(ns.get(i));
+      }
+   }
+   o.extendAuto();
+   //RConsole.find(FKeyConsole).register(EKey.Esc, new TListener(o, o.clear));
+}
+
+//==========================================================
 // <T>响应鼠标点击树节点复选框处理。</T>
 //
 // @method
@@ -152,52 +190,6 @@ function FTreeView_onNodeCheckClick(s, e){
          }
       }
    }
-}
-
-//==========================================================
-// <T>构建树目录。</T>
-//
-// @method
-// @param e:event:TEvent 构建事件
-//==========================================================
-function FTreeView_oeBuild(e){
-   var o = this;
-   var r = o.__base.FContainer.oeBuild.call(o, e);
-   // 构建前处理
-   if(e.isBefore()){
-      // 构建标题表格
-      var hr = RBuilder.appendTableRow(o._hPanel);
-      var hc = RBuilder.appendTableCell(hr);
-      // 构建节点底板
-      var hnp = o._hNodePanel = RBuilder.appendDiv(hc, o.styleName('NodePanel'));
-      // 构建节点表格
-      var hnf = o._hNodeForm = RBuilder.appendTable(hnp, o.styleName('NodeForm'));
-      hnf.width = '100%';
-      // 表格第一行是标题栏
-      o._hHeadLine = RBuilder.appendTableRow(hnf);
-      o._hNodeRows = hnf.children[0];
-      // 构建加载中节点
-      var ln = o._loadingNode = RClass.create(FTreeNode);
-      ln._tree = o;
-      ln._label = RContext.get('FTreeView:loading');
-      ln._icon = o._iconLoading;
-      ln.process(e);
-      o.appendNode(ln);
-      ln.hide();
-   }
-   // 构建后处理
-   if(e.isAfter()){
-      var ns = o._nodes;
-      if(!ns.isEmpty()){
-         var nc = ns.count();
-         for(var i = 0; i < nc; i++){
-            o.appendNode(ns.get(i));
-         }
-      }
-      o.extendAuto();
-      //RConsole.find(FKeyConsole).register(EKey.Esc, new TListener(o, o.clear));
-   }
-   return r;
 }
 
 //==========================================================
@@ -369,7 +361,7 @@ function FTreeView_createNode(){
    if(!n){
       var n = RClass.create(FTreeNode);
       n._tree = o;
-      n.psBuild(o._hPanel);
+      n.build(o._hPanel);
    }
    // 放入所有节点中
    RHtml.displaySet(n._hPanel, true);

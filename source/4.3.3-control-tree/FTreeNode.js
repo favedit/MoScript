@@ -58,13 +58,12 @@ function FTreeNode(o){
    o._hLabel           = null;
    //..........................................................
    // @event
+   o.onBuildPanel      = FTreeNode_onBuildPanel;
+   o.onBuild           = FTreeNode_onBuild;
+   // @event
    o.onNodeEnter       = RClass.register(o, new AEventMouseEnter('onNodeEnter'), FTreeNode_onNodeEnter);
    o.onNodeLeave       = RClass.register(o, new AEventMouseLeave('onNodeLeave'), FTreeNode_onNodeLeave);
    o.onNodeClick       = RClass.register(o, new AEventClick('onNodeClick'), FTreeNode_onNodeClick);
-   o.onBuildPanel      = FTreeNode_onBuildPanel;
-   //..........................................................
-   // @process
-   o.oeBuild           = FTreeNode_oeBuild;
    //..........................................................
    // @method
    o.construct         = FTreeNode_construct;
@@ -120,6 +119,71 @@ function FTreeNode(o){
    o.pushChanged      = FTreeNode_pushChanged;
    o.getFullPath      = FTreeNode_getFullPath;
    return o;
+}
+
+//==========================================================
+// <T>创建一个控件容器。</T>
+//
+// @method
+// @param p:argements:SArgements 参数集合
+//==========================================================
+function FTreeNode_onBuildPanel(p){
+   var o = this;
+   o._hPanel = RBuilder.createTableRow(p, o.styleName('Panel'));
+}
+
+//==========================================================
+// <T>构建页面处理。</T>
+//
+// @method
+// @param p:event:TEventProcess 事件
+//==========================================================
+function FTreeNode_onBuild(p){
+   var o = this;
+   var t = o._tree;
+   var r = o.__base.FContainer.onBuild.call(o, p);
+   // 建立底板
+   var hp = o._hPanel;
+   hp.style.border = '1 solid red';
+   o.attachEvent('onNodeEnter', hp, o.onNodeEnter);
+   o.attachEvent('onNodeLeave', hp, o.onNodeLeave);
+   o.attachEvent('onNodeClick', hp);
+   // 建立节点底版
+   var hnp = o._hNodePanel = RBuilder.appendTableCell(hp, o.styleName('Normal'));
+   hnp.noWrap = true;
+   // 建立图片
+   var hi = o._hImage = RBuilder.appendIcon(hnp, o.styleName('Image'), null, 16, 16);
+   hi._linkType = 'image';
+   o.setImage();
+   // 建立图标
+   var hi = o._hIcon = RBuilder.appendIcon(hnp, null, null, 16, 16)
+   hi._linkType = 'icon';
+   o.setIcon(o._icon);
+   // 建立复选框
+   if(t.dispChecked){
+      var hc = o._hCheck = RBuilder.appendCheck(hnp);
+      hc.width = 13;
+      hc.height = 13;
+      hc.style.borderWidth = 0;
+      o.setCheck(o._checked);
+      t.linkEvent(o, 'onNodeCheckClick', hc);
+   }
+   // 建立显示文本
+   o._hLabel = RBuilder.appendText(hnp, o.styleName('Label'));
+   o.setLabel(o._label);
+   // 建立关联列
+   var cs = t.columns;
+   if(cs){
+      var cc = cs.count();
+      for(var n = 1; n < cc; n++){
+         var c = cs.value(n);
+         var hc = RBuilder.appendTableCell(hp, o.styleName('Cell'));
+         hc.align='center';
+         hc.noWrap = true;
+         hc.innerText = RString.nvl(o.get(c.dataName));
+         RHtml.displaySet(hc, c.display);
+      }
+   }
 }
 
 //==========================================================
@@ -210,74 +274,6 @@ function FTreeNode_onNodeClick(e){
          t.lsnsClick.process(t, o);
       }
    }
-}
-
-//==========================================================
-// <T>创建一个控件容器。</T>
-//
-// @method
-// @return HtmlTag 页面元素
-//==========================================================
-function FTreeNode_onBuildPanel(e){
-   var o = this;
-   o._hPanel = RBuilder.createTableRow(e.hDocument, o.styleName('Panel'));
-}
-
-//==========================================================
-// <T>构建页面处理。</T>
-//
-// @method
-// @param e:event:TEventProcess 事件
-//==========================================================
-function FTreeNode_oeBuild(e){
-   var o = this;
-   var t = o._tree;
-   var r = o.__base.FContainer.oeBuild.call(o, e);
-   if(e.isBefore()){
-      // 建立底板
-      var hp = o._hPanel;
-      hp.style.border = '1 solid red';
-      o.attachEvent('onNodeEnter', hp, o.onNodeEnter);
-      o.attachEvent('onNodeLeave', hp, o.onNodeLeave);
-      o.attachEvent('onNodeClick', hp);
-      // 建立节点底版
-      var hnp = o._hNodePanel = RBuilder.appendTableCell(hp, o.styleName('Normal'));
-      hnp.noWrap = true;
-      // 建立图片
-      var hi = o._hImage = RBuilder.appendIcon(hnp, o.styleName('Image'), null, 16, 16);
-      hi._linkType = 'image';
-      o.setImage();
-      // 建立图标
-      var hi = o._hIcon = RBuilder.appendIcon(hnp, null, null, 16, 16)
-      hi._linkType = 'icon';
-      o.setIcon(o._icon);
-      // 建立复选框
-      if(t.dispChecked){
-         var hc = o._hCheck = RBuilder.appendCheck(hnp);
-         hc.width = 13;
-         hc.height = 13;
-         hc.style.borderWidth = 0;
-         o.setCheck(o._checked);
-         t.linkEvent(o, 'onNodeCheckClick', hc);
-      }
-      // 建立显示文本
-      o._hLabel = RBuilder.appendText(hnp, o.styleName('Label'));
-      o.setLabel(o._label);
-      // 建立关联列
-      var cs = t.columns;
-      if(cs){
-         var cc = cs.count();
-         for(var n = 1; n < cc; n++){
-            var c = cs.value(n);
-            var hc = RBuilder.appendTableCell(hp, o.styleName('Cell'));
-            hc.align='center';
-            hc.noWrap = true;
-            hc.innerText = RString.nvl(o.get(c.dataName));
-            RHtml.displaySet(hc, c.display);
-         }
-      }
-   }
-   return r;
 }
 
 //==========================================================

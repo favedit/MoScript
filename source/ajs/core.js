@@ -1456,13 +1456,11 @@ function RBuilder_appendTableRowCell(p, s, w, h){
    return hc;
 }
 function RBuilder_appendTableCell(p, s, i, w){
+   var o = this;
    var r = null;
    if(i == null){
-      if(RBrowser.isBrowser(EBrowser.Explorer)){
-         r = p.insertCell();
-      }else{
-         r = p.insertCell(-1);
-      }
+      r = o.create(p, 'TD', s);
+      p.appendChild(r);
    }else{
       r = p.insertCell(i);
    }
@@ -2929,12 +2927,21 @@ function RWindow_connect(w){
    var hw = o._hWindow = w;
    var hd = o._hDocument = hw.document;
    var hc = o._hContainer = hd.body;
-   hc.addEventListener('mousedown', o.ohMouseDown, true);
-   hc.addEventListener('mousemove', o.ohMouseMove, true);
-   hc.addEventListener('mouseup', o.ohMouseUp, true);
-   hc.addEventListener('keydown', o.ohKeyDown, true);
-   hc.addEventListener('keyup', o.ohKeyUp, true);
-   hc.addEventListener('keypress', o.ohKeyPress, true);
+   if(RRuntime.supportHtml5()){
+      hc.addEventListener('mousedown', o.ohMouseDown, true);
+      hc.addEventListener('mousemove', o.ohMouseMove, true);
+      hc.addEventListener('mouseup', o.ohMouseUp, true);
+      hc.addEventListener('keydown', o.ohKeyDown, true);
+      hc.addEventListener('keyup', o.ohKeyUp, true);
+      hc.addEventListener('keypress', o.ohKeyPress, true);
+   }else{
+      hc.onmousedown = o.ohMouseDown;
+      hc.onmousemove = o.ohMouseMove;
+      hc.onmouseup = o.ohMouseUp;
+      hc.onkeydown = o.ohKeyDown;
+      hc.onkeyup = o.ohKeyUp;
+      hc.onkeypress = o.ohKeyPress;
+   }
    hc.onselectstart = o.ohSelect;
 }
 function RWindow_optionSelect(){

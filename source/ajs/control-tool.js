@@ -1,8 +1,8 @@
 function FToolBar(o){
    o = RClass.inherits(this, o, FContainer);
-   o._hLine           = null;
+   o._hLine       = null;
    o.onBuildPanel = FToolBar_onBuildPanel;
-   o.appendButton     = FToolBar_appendButton;
+   o.appendButton = FToolBar_appendButton;
    return o;
 }
 function FToolBar_onBuildPanel(e){
@@ -71,11 +71,11 @@ function FToolButton(o){
    o._hLabel       = null;
    o.lsnsClick     = new TListeners();
    o.onBuildPanel  = FToolButton_onBuildPanel;
+   o.onBuild       = FToolButton_onBuild;
    o.onEnter       = FToolButton_onEnter;
    o.onLeave       = FToolButton_onLeave;
    o.onMouseDown   = FToolButton_onMouseDown;
    o.onMouseUp     = FToolButton_onMouseUp;
-   o.oeBuild       = FToolButton_oeBuild;
    o.icon          = FToolButton_icon;
    o.setIcon       = FToolButton_setIcon;
    o.setLabel      = FToolButton_setLabel;
@@ -86,7 +86,21 @@ function FToolButton(o){
 }
 function FToolButton_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createDiv(p.hDocument, o.styleName('Normal'));
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Normal'));
+}
+function FToolButton_onBuild(p){
+   var o = this;
+   o.__base.FControl.onBuild.call(o, p);
+   var h = o._hPanel;
+   if(o._icon){
+      o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);
+   }
+   if(o._label){
+      var s = o._label;
+      if(o._hIcon){
+      }
+      o.hLabel = RBuilder.appendText(h, o.styleName('Label'), s);
+   }
 }
 function FToolButton_onEnter(e){
    var o = this;
@@ -112,21 +126,6 @@ function FToolButton_onMouseUp(h){
    if(!o._disabled){
       o._hPanel.className = o.styleName('Hover');
    }
-}
-function FToolButton_oeBuild(p){
-   var o = this;
-   o.__base.FControl.oeBuild.call(o, p);
-   var h = o._hPanel;
-   if(o._icon){
-      o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);
-   }
-   if(o._label){
-      var s = o._label;
-      if(o._hIcon){
-      }
-      o.hLabel = RBuilder.appendText(h, o.styleName('Label'), s);
-   }
-   return EEventStatus.Stop;
 }
 function FToolButton_icon(){
    return this._icon;
@@ -245,13 +244,13 @@ function FToolButtonMenu(o){
    o = RClass.inherits(this, o, FToolButton, MContainer, MDropable, MFocus);
    o.popup         = null;
    o.hDropPanel    = null;
-   o.siDropHover   = RClass.register(o, new AStyleIcon('DropHover'));
+   o._styleDropHover = RClass.register(o, new AStyleIcon('DropHover'));
+   o.onBuild       = FToolButtonMenu_onBuild;
    o.onEnter       = FToolButtonMenu_onEnter;
    o.onLeave       = FToolButtonMenu_onLeave;
    o.onBlur        = FToolButtonMenu_onBlur;
    o.onButtonClick = FToolButtonMenu_onButtonClick;
    o.onDropClick   = FToolButtonMenu_onDropClick;
-   o.oeBuild       = FToolButtonMenu_oeBuild;
    o.construct     = FToolButtonMenu_construct;
    o.push          = FToolButtonMenu_push;
    o.drop          = FToolButtonMenu_drop;
@@ -298,10 +297,10 @@ function FToolButtonMenu_onButtonClick(){
 function FToolButtonMenu_onDropClick(e){
    this.drop();
 }
-function FToolButtonMenu_oeBuild(e){
+function FToolButtonMenu_onBuild(e){
    var o = this;
    if(e.isBefore()){
-      o.base.FToolButton.oeBuild.call(o, e);
+      o.base.FToolButton.onBuild.call(o, e);
       var h = o.hDropPanel = o.hButtonLine.insertCell();
       h.className = o.style('Drop')
       o.hDropIcon = RBuilder.appendIcon(h, o.styleIcon('Drop'));
@@ -338,16 +337,11 @@ function FToolButtonMenu_dispose(){
 }
 function FToolButtonSplit(o){
    o = RClass.inherits(this, o, FControl);
-   o.styleButton  = RClass.register(o, new AStyle('Button'));
-   o.hButton      = null;
-   o.oeBuild      = FToolButtonSplit_oeBuild;
-   o.onBuildPanel = FToolButtonSplit_onBuildPanel;
-   o.dispose      = FToolButtonSplit_dispose;
    return o;
 }
-function FToolButtonSplit_oeBuild(event){
+function FToolButtonSplit_onBuild(event){
    var o = this;
-   o.base.FControl.oeBuild.call(o, event);
+   o.base.FControl.onBuild.call(o, event);
    o.hButton = RBuilder.append(this.hPanel, 'DIV', o.style('Button'));
    return EEventStatus.Stop;
 }
