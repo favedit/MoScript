@@ -24,6 +24,7 @@ function FModel3dConsole(o){
    o.construct   = FModel3dConsole_construct;
    o.models      = FModel3dConsole_models;
    o.alloc       = FModel3dConsole_alloc;
+   o.free        = FModel3dConsole_free;
    return o;
 }
 
@@ -81,6 +82,13 @@ function FModel3dConsole_models(){
 //==========================================================
 function FModel3dConsole_alloc(pc, pn){
    var o = this;
+   // 尝试从缓冲池中取出
+   var ms = o._models.get(pn);
+   if(ms){
+      if(!ms.isEmpty()){
+         return ms.pop();
+      }
+   }
    // 加载渲染对象
    var rmc = RConsole.find(FRd3ModelConsole);
    var rm = rmc.load(pc, pn);
@@ -88,13 +96,34 @@ function FModel3dConsole_alloc(pc, pn){
    var m = RClass.create(FModel3d);
    m._context = pc;
    m._name = pn;
+   m._modelName = pn;
    m._renderable = rm;
    // 测试是否已加载
-   if(rm.testReady()){
-      m.load(rm);
-   }else{
+   //if(rm.testReady()){
+   //   m.load(rm);
+   //}else{
       // 增加加载中
       o._loadModels.push(m);
-   }
+   //}
    return m;
+}
+
+//==========================================================
+// <T>释放一个模型。</T>
+//
+// @method
+// @param p:model:FModel3d 模型
+//==========================================================
+function FModel3dConsole_free(p){
+   var o = this;
+   // 脱离父对象
+   p.remove();
+   // 放到缓冲池
+   var n = p._modelName;
+   var ms = o._models.get(n);
+   if(ms == null){
+      ms = new TObjects();
+      o._models.set(n, ms);
+   }
+   ms.push(p);
 }

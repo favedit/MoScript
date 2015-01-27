@@ -115,14 +115,23 @@ function FDsMainWorkspace_onBuild(p){
    //c.setPanel(o._frameToolBar._hPanel);
    //..........................................................
    var c = o._catalog = RClass.create(FDsMainCatalog);
+   c._worksapce = o;
    c.build(p);
    c.setPanel(o._frameCatalog._hPanel);
+   o.push(c);
    //..........................................................
    var c = o._toolbar = RClass.create(FDsMainToolBar);
-   c.build(p);
    c._worksapce = o;
+   c.build(p);
    c.setPanel(o._frameToolBar._hPanel);
    c._persistenceButton.click();
+   o.push(c);
+   //..........................................................
+   var c = o._canvas = RClass.create(FDsMainCanvas);
+   c._worksapce = o;
+   c.build(p);
+   c.setPanel(o._frameWorkspace._hPanel);
+   o.push(c);
 }
 
 //==========================================================

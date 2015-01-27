@@ -35,6 +35,7 @@ function FDisplay(o){
    // @method
    o.process           = FDisplay_process;
    o.update            = FDisplay_update;
+   o.remove            = FDisplay_remove;
    // @method
    o.dispose           = FDisplay_dispose;
    return o;
@@ -206,6 +207,20 @@ function FDisplay_process(){
       for(var i = 0; i < c; i++){
          rs.get(i).process();
       }
+   }
+}
+
+//==========================================================
+// <T>从父对象上移除自己。</T>
+//
+// @method
+//==========================================================
+function FDisplay_remove(){
+   var o = this;
+   var c = o._displayContainer;
+   if(c){
+      c.removeDisplay(o);
+      o._displayContainer = null;
    }
 }
 

@@ -1,47 +1,47 @@
 //==========================================================
-// <T>主菜单。</T>
+// <T>绘制对象。</T>
 //
 // @author maocy
-// @history 141231
+// @history 150127
 //==========================================================
-function FDsMainCatalog(o){
-   o = RClass.inherits(this, o, FDataTreeView);
+function FCanvas(o){
+   o = RClass.inherits(this, o, FControl);
+   //..........................................................
+   // @style
+   o._styleCanvas = RClass.register(o, new AStyle('_styleCanvas'));
    //..........................................................
    // @event
-   o.onBuild     = FDsMainCatalog_onBuild;
-   // @event
-   o.onNodeClick = FDsMainCatalog_onNodeClick;
+   o.onBuildPanel = FCanvas_onBuildPanel;
+   o.onBuild      = FCanvas_onBuild;
    //..........................................................
    // @method
-   o.construct   = FDsMainCatalog_construct;
-   // @method
-   o.dispose     = FDsMainCatalog_dispose;
+   o.construct    = FCanvas_construct;
+   o.dispose      = FCanvas_dispose;
    return o;
 }
 
 //==========================================================
-// <T>构建树目录。</T>
+// <T>创建一个控件容器。</T>
 //
 // @method
-// @param p:event:TEventProcess 处理事件
+// @param p:argements:SArgements 参数集合
 //==========================================================
-function FDsMainCatalog_onBuild(p){
+function FCanvas_onBuildPanel(p){
    var o = this;
-   o.__base.FDataTreeView.onBuild.call(o, p);
-   // 注册事件
-   o.lsnsClick.register(o, o.onNodeClick);
+   o._hPanel = RBuilder.create(p, 'CANVAS', o.styleName('Canvas'));
 }
 
 //==========================================================
-// <T>构建树目录。</T>
+// <T>构建页面处理。</T>
 //
 // @method
-// @param p:event:TEventProcess 处理事件
+// @param p:event:TEventProcess 事件
 //==========================================================
-function FDsMainCatalog_onNodeClick(t, n){
+function FCanvas_onBuild(p){
    var o = this;
-   var c = o._worksapce._canvas;
-   c.selectModel(n.name());
+   var t = o._tree;
+   var r = o.__base.FControl.onBuild.call(o, p);
+   // 建立底板
 }
 
 //==========================================================
@@ -49,9 +49,9 @@ function FDsMainCatalog_onNodeClick(t, n){
 //
 // @method
 //==========================================================
-function FDsMainCatalog_construct(){
+function FCanvas_construct(){
    var o = this;
-   o.__base.FDataTreeView.construct.call(o);
+   o.__base.FControl.construct.call(o);
 }
 
 //==========================================================
@@ -59,8 +59,7 @@ function FDsMainCatalog_construct(){
 //
 // @method
 //==========================================================
-function FDsMainCatalog_dispose(){
+function FCanvas_dispose(){
    var o = this;
-   // 父处理
-   o.__base.FDataTreeView.dispose.call(o);
+   o.__base.FControl.dispose.call(o);
 }

@@ -20,6 +20,7 @@ function FDisplay(o){
    o.pushRenderable    = FDisplay_pushRenderable;
    o.process           = FDisplay_process;
    o.update            = FDisplay_update;
+   o.remove            = FDisplay_remove;
    o.dispose           = FDisplay_dispose;
    return o;
 }
@@ -101,6 +102,14 @@ function FDisplay_process(){
       }
    }
 }
+function FDisplay_remove(){
+   var o = this;
+   var c = o._displayContainer;
+   if(c){
+      c.removeDisplay(o);
+      o._displayContainer = null;
+   }
+}
 function FDisplay_dispose(){
    var o = this;
    o._matrix = null;
@@ -124,6 +133,7 @@ function FDisplayContainer(o){
    o.filterRenderables = FDisplayContainer_filterRenderables;
    o.displays          = FDisplayContainer_displays;
    o.pushDisplay       = FDisplayContainer_pushDisplay;
+   o.removeDisplay     = FDisplayContainer_removeDisplay;
    o.process           = FDisplayContainer_process;
    o.dispose           = FDisplayContainer_dispose;
    return o;
@@ -207,7 +217,14 @@ function FDisplayContainer_displays(){
    return r;
 }
 function FDisplayContainer_pushDisplay(p){
-   this.displays().push(p);
+   var o = this;
+   p._displayContainer = o;
+   o.displays().push(p);
+}
+function FDisplayContainer_removeDisplay(p){
+   var o = this;
+   p._displayContainer = null;
+   o.displays().remove(p);
 }
 function FDisplayContainer_dispose(){
    var o = this;
@@ -509,6 +526,7 @@ function FModel3dConsole(o){
    o.construct   = FModel3dConsole_construct;
    o.models      = FModel3dConsole_models;
    o.alloc       = FModel3dConsole_alloc;
+   o.free        = FModel3dConsole_free;
    return o;
 }
 function FModel3dConsole_onProcess(){
@@ -536,18 +554,32 @@ function FModel3dConsole_models(){
 }
 function FModel3dConsole_alloc(pc, pn){
    var o = this;
+   var ms = o._models.get(pn);
+   if(ms){
+      if(!ms.isEmpty()){
+         return ms.pop();
+      }
+   }
    var rmc = RConsole.find(FRd3ModelConsole);
    var rm = rmc.load(pc, pn);
    var m = RClass.create(FModel3d);
    m._context = pc;
    m._name = pn;
+   m._modelName = pn;
    m._renderable = rm;
-   if(rm.testReady()){
-      m.load(rm);
-   }else{
       o._loadModels.push(m);
-   }
    return m;
+}
+function FModel3dConsole_free(p){
+   var o = this;
+   p.remove();
+   var n = p._modelName;
+   var ms = o._models.get(n);
+   if(ms == null){
+      ms = new TObjects();
+      o._models.set(n, ms);
+   }
+   ms.push(p);
 }
 function FModelRenderable3d(o){
    o = RClass.inherits(this, o, FG3dRenderable);
@@ -3080,7 +3112,7 @@ function FRd3Geometry_loadResource(p){
    var rvc = rvs.count();
    for(var n = 0; n < rvc; n++){
       var rv = rvs.get(n);
-      var vb = context.createVertexBuffer();
+      var vb = c.createVertexBuffer();
       vb._name = rv.name();
       vb._formatCd = rv.formatCd();
       vb.upload(new Float32Array(rv._data), rv._stride, rv._vertexCount);

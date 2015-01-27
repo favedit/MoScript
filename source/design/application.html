@@ -40,6 +40,7 @@
 <SCRIPT language='javascript' src='../6.1.1-design/FDsMainMenuBar.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.1.1-design/FDsMainToolBar.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.1.1-design/FDsMainCatalog.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.1.1-design/FDsMainCanvas.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.1.1-design/FDsMainWorkspace.js'></SCRIPT>
 
 <SCRIPT>
@@ -56,6 +57,7 @@ function _load(){
    var ws = RClass.create(FDsMainWorkspace);
    ws.build(document.body);
    ws.setPanel(document.body);
+   ws.psRefresh();
 
    //RDump.dump(fs, _dump);
 }

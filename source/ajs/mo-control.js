@@ -248,6 +248,32 @@ var ESize = new function ESize(){
    o.Both       = 3;
    return o;
 }
+function FCanvas(o){
+   o = RClass.inherits(this, o, FControl);
+   o._styleCanvas = RClass.register(o, new AStyle('_styleCanvas'));
+   o.onBuildPanel = FCanvas_onBuildPanel;
+   o.onBuild      = FCanvas_onBuild;
+   o.construct    = FCanvas_construct;
+   o.dispose      = FCanvas_dispose;
+   return o;
+}
+function FCanvas_onBuildPanel(p){
+   var o = this;
+   o._hPanel = RBuilder.create(p, 'CANVAS', o.styleName('Canvas'));
+}
+function FCanvas_onBuild(p){
+   var o = this;
+   var t = o._tree;
+   var r = o.__base.FControl.onBuild.call(o, p);
+}
+function FCanvas_construct(){
+   var o = this;
+   o.__base.FControl.construct.call(o);
+}
+function FCanvas_dispose(){
+   var o = this;
+   o.__base.FControl.dispose.call(o);
+}
 function FComponent(o){
    o = RClass.inherits(this, o, FObject, MProperty, MClone);
    o._parent       = null;

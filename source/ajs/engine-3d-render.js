@@ -266,7 +266,7 @@ function FRd3Geometry_loadResource(p){
    var rvc = rvs.count();
    for(var n = 0; n < rvc; n++){
       var rv = rvs.get(n);
-      var vb = context.createVertexBuffer();
+      var vb = c.createVertexBuffer();
       vb._name = rv.name();
       vb._formatCd = rv.formatCd();
       vb.upload(new Float32Array(rv._data), rv._stride, rv._vertexCount);

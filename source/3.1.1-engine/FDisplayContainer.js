@@ -12,13 +12,17 @@ function FDisplayContainer(o){
    //..........................................................
    // @method
    o.construct         = FDisplayContainer_construct;
+   // @method
    o.hasDisplay        = FDisplayContainer_hasDisplay;
    o.findDisplay       = FDisplayContainer_findDisplay;
    o.searchDisplay     = FDisplayContainer_searchDisplay;
    o.filterRenderables = FDisplayContainer_filterRenderables;
    o.displays          = FDisplayContainer_displays;
    o.pushDisplay       = FDisplayContainer_pushDisplay;
+   o.removeDisplay     = FDisplayContainer_removeDisplay;
+   // @method
    o.process           = FDisplayContainer_process;
+   // @method
    o.dispose           = FDisplayContainer_dispose;
    return o;
 }
@@ -156,7 +160,20 @@ function FDisplayContainer_displays(){
 // @param p:display:FDisplay 显示对象
 //==========================================================
 function FDisplayContainer_pushDisplay(p){
-   this.displays().push(p);
+   var o = this;
+   p._displayContainer = o;
+   o.displays().push(p);
+}
+
+//==========================================================
+// <T>移除一个显示对象。</T>
+//
+// @param p:display:FDisplay 显示对象
+//==========================================================
+function FDisplayContainer_removeDisplay(p){
+   var o = this;
+   p._displayContainer = null;
+   o.displays().remove(p);
 }
 
 //==========================================================

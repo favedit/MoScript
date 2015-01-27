@@ -32,8 +32,7 @@ function FDsMainToolBar(o){
 function FDsMainToolBar_onPersistenceClick(p){
    var o = this;
    var catalog = o._worksapce._catalog;
-   //o._worksapce._catalog.loadUrl('http://localhost:91/cloud.describe.tree.ws?action=query&code=design.persistence');
-   catalog.loadUrl('http://localhost:92/cloud.content.model.ws?action=list');
+   catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
 }
 
 //==========================================================

@@ -20,6 +20,7 @@ function FDisplay(o){
    o.pushRenderable    = FDisplay_pushRenderable;
    o.process           = FDisplay_process;
    o.update            = FDisplay_update;
+   o.remove            = FDisplay_remove;
    o.dispose           = FDisplay_dispose;
    return o;
 }
@@ -101,6 +102,14 @@ function FDisplay_process(){
       }
    }
 }
+function FDisplay_remove(){
+   var o = this;
+   var c = o._displayContainer;
+   if(c){
+      c.removeDisplay(o);
+      o._displayContainer = null;
+   }
+}
 function FDisplay_dispose(){
    var o = this;
    o._matrix = null;
@@ -124,6 +133,7 @@ function FDisplayContainer(o){
    o.filterRenderables = FDisplayContainer_filterRenderables;
    o.displays          = FDisplayContainer_displays;
    o.pushDisplay       = FDisplayContainer_pushDisplay;
+   o.removeDisplay     = FDisplayContainer_removeDisplay;
    o.process           = FDisplayContainer_process;
    o.dispose           = FDisplayContainer_dispose;
    return o;
@@ -207,7 +217,14 @@ function FDisplayContainer_displays(){
    return r;
 }
 function FDisplayContainer_pushDisplay(p){
-   this.displays().push(p);
+   var o = this;
+   p._displayContainer = o;
+   o.displays().push(p);
+}
+function FDisplayContainer_removeDisplay(p){
+   var o = this;
+   p._displayContainer = null;
+   o.displays().remove(p);
 }
 function FDisplayContainer_dispose(){
    var o = this;

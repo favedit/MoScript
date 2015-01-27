@@ -109,6 +109,7 @@ function FModel3dConsole(o){
    o.construct   = FModel3dConsole_construct;
    o.models      = FModel3dConsole_models;
    o.alloc       = FModel3dConsole_alloc;
+   o.free        = FModel3dConsole_free;
    return o;
 }
 function FModel3dConsole_onProcess(){
@@ -136,18 +137,32 @@ function FModel3dConsole_models(){
 }
 function FModel3dConsole_alloc(pc, pn){
    var o = this;
+   var ms = o._models.get(pn);
+   if(ms){
+      if(!ms.isEmpty()){
+         return ms.pop();
+      }
+   }
    var rmc = RConsole.find(FRd3ModelConsole);
    var rm = rmc.load(pc, pn);
    var m = RClass.create(FModel3d);
    m._context = pc;
    m._name = pn;
+   m._modelName = pn;
    m._renderable = rm;
-   if(rm.testReady()){
-      m.load(rm);
-   }else{
       o._loadModels.push(m);
-   }
    return m;
+}
+function FModel3dConsole_free(p){
+   var o = this;
+   p.remove();
+   var n = p._modelName;
+   var ms = o._models.get(n);
+   if(ms == null){
+      ms = new TObjects();
+      o._models.set(n, ms);
+   }
+   ms.push(p);
 }
 function FModelRenderable3d(o){
    o = RClass.inherits(this, o, FG3dRenderable);
