@@ -3,6 +3,7 @@
 /* ------------------------------------------------------ */
 .FDsMainWorkspace_Toolbar_Ground{
    background: #AEAEAE;
+   padding-top: 3px;
    border-bottom: 1px solid #999999;
    background: -ms-linear-gradient(top, #AEAEAE, #555555);
    background: -moz-linear-gradient(top, #AEAEAE, #555555); 

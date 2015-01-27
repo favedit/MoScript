@@ -31,7 +31,9 @@ function FDsMainToolBar(o){
 //==========================================================
 function FDsMainToolBar_onPersistenceClick(p){
    var o = this;
-   o._worksapce._catalog.loadUrl('http://localhost:91/cloud.describe.tree.ws?action=query&code=design.persistence');
+   var catalog = o._worksapce._catalog;
+   //o._worksapce._catalog.loadUrl('http://localhost:91/cloud.describe.tree.ws?action=query&code=design.persistence');
+   catalog.loadUrl('http://localhost:92/cloud.content.model.ws?action=list');
 }
 
 //==========================================================
@@ -45,23 +47,23 @@ function FDsMainToolBar_onBuild(p){
    o.__base.FToolBar.onBuild.call(o, p);
    // 建立按键
    var b = o._persistenceButton  = RClass.create(FToolButton);
-   b.setLabel('持久化定义');
+   b.setLabel('模型管理');
    b.build(p);
    b.lsnsClick.register(o, o.onPersistenceClick);
    o.appendButton(b);
    // 建立按键
    var b = o._framesetMain = RClass.create(FToolButton);
-   b.setLabel('列表定义');
+   b.setLabel('材质管理');
    b.build(p);
    o.appendButton(b);
    // 建立按键
    var b = o._framesetMain = RClass.create(FToolButton);
-   b.setLabel('数据定义');
+   b.setLabel('模板管理');
    b.build(p);
    o.appendButton(b);
    // 建立按键
    var b = o._framesetMain = RClass.create(FToolButton);
-   b.setLabel('表单定义');
+   b.setLabel('场景管理');
    b.build(p);
    o.appendButton(b);
 }

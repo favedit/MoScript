@@ -11354,7 +11354,7 @@ function FTagDocument_loadNode(pn, pe){
       for(var i = 0; i < c; i++){
          var ea = eas[i];
          if(ea.nodeName){
-            x.set(ea.nodeName, RXml.fromText(ea.value));
+            x.set(ea.nodeName, RXml.formatText(ea.value));
          }
       }
    }
@@ -11389,7 +11389,7 @@ function FTagDocument_load(p){
    s = s.replace(new RegExp(' & ', 'g'), ' &amp; ');
    s = s.replace(new RegExp(' < ', 'g'), ' &lt; ');
    s = s.replace(new RegExp(' > ', 'g'), ' &gt; ');
-   var xr = RXml.loadString(s);
+   var xr = RXml.makeString(s);
    o.loadNode(null, xr.firstChild);
 }
 function FTagDocument_parse(p){
