@@ -10,12 +10,17 @@ var RBrowser = new function RBrowser(){
    //..........................................................
    // @attribute
    o._typeCd        = 0;
-   o._contentPath   = null;
+   o._hostPath      = '';
+   o._contentPath   = '';
    //..........................................................
    // @method
    o.construct      = RBrowser_construct;
+   // @method
+   o.hostPath       = RBrowser_hostPath;
+   o.setHostPath    = RBrowser_setHostPath;
    o.contentPath    = RBrowser_contentPath;
    o.setContentPath = RBrowser_setContentPath;
+   // @method
    o.isBrowser      = RBrowser_isBrowser;
    o.log            = RBrowser_log;
    return o;
@@ -48,6 +53,29 @@ function RBrowser_construct(){
    }
    // 输出日志
    RLogger.info(o, 'Parse browser confirm. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+}
+
+//===========================================================
+// <T>获得主机路径。</T>
+//
+// @param p:uri:String 路径
+// @return String 主机路径
+//===========================================================
+function RBrowser_hostPath(p){
+   var o = this;
+   if(p){
+      return o._hostPath + p;
+   }
+   return o._hostPath;
+}
+
+//===========================================================
+// <T>设置主机路径。</T>
+//
+// @param p:host:String 主机路径
+//===========================================================
+function RBrowser_setHostPath(p){
+   this._hostPath = p;
 }
 
 //===========================================================

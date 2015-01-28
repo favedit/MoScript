@@ -1,3 +1,242 @@
+function FNetRd3Model(o){
+   o = RClass.inherits(this, o, FG3dObject);
+   o._name        = null;
+   o._meshes   = null;
+   o._resource    = null;
+   o._dataReady       = false;
+   o.name         = FNetRd3Model_name;
+   o.setName      = FNetRd3Model_setName;
+   o.geometrys    = FNetRd3Model_geometrys;
+   o.resource     = FNetRd3Model_resource;
+   o.resource     = FNetRd3Model_resource;
+   o.setResource  = FNetRd3Model_setResource;
+   o.testReady    = FNetRd3Model_testReady;
+   o.loadResource = FNetRd3Model_loadResource;
+   o.processLoad  = FNetRd3Model_processLoad;
+   return o;
+}
+function FNetRd3Model_name(){
+   return this._name;
+}
+function FNetRd3Model_setName(p){
+   this._name = p;
+}
+function FNetRd3Model_geometrys(){
+   return this._meshes;
+}
+function FNetRd3Model_resource(){
+   return this._resource;
+}
+function FNetRd3Model_setResource(p){
+   this._resource = p;
+}
+function FNetRd3Model_testReady(){
+   return this._dataReady;
+}
+function FNetRd3Model_loadResource(p){
+   var o = this;
+   var rgs = p.meshes();
+   if(rgs){
+      var gs = o._meshes = new TObjects();
+      var c = rgs.count();
+      for(var i = 0; i < c; i++){
+         var rg = rgs.get(i);
+         var g = RClass.create(FNetRd3ModelMesh);
+         g.linkContext(o._context);
+         g.loadResource(rg);
+         gs.push(g);
+      }
+   }
+   o._dataReady = true;
+}
+function FNetRd3Model_processLoad(){
+   var o = this;
+   if(o._dataReady){
+      return true;
+   }
+   if(!o._resource.testReady()){
+      return false;
+   }
+   o.loadResource(o._resource);
+   return true;
+}
+function FNetRd3ModelConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd    = EScope.Local;
+   o._loadModels = null;
+   o._models     = null;
+   o._thread     = null;
+   o._interval   = 200;
+   o.onProcess   = FNetRd3ModelConsole_onProcess;
+   o.construct   = FNetRd3ModelConsole_construct;
+   o.models      = FNetRd3ModelConsole_models;
+   o.load        = FNetRd3ModelConsole_load;
+   return o;
+}
+function FNetRd3ModelConsole_onProcess(){
+   var o = this;
+   var ms = o._loadModels;
+   ms.record();
+   while(ms.next()){
+      var m = ms.current();
+      if(m.processLoad()){
+         ms.removeCurrent();
+      }
+   }
+}
+function FNetRd3ModelConsole_construct(){
+   var o = this;
+   o._loadModels = new TLooper();
+   o._models = new TDictionary();
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.lsnsProcess.register(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(t);
+}
+function FNetRd3ModelConsole_models(){
+   return this._models;
+}
+function FNetRd3ModelConsole_load(pc, pn){
+   var o = this;
+   if(pc == null){
+      throw new TError('Graphics context is empty');
+   }
+   if(RString.isEmpty(pn)){
+      throw new TError('Model name is empty');
+   }
+   var m = o._models.get(pn);
+   if(m){
+      return m;
+   }
+   var rmc = RConsole.find(FNetRs3ModelConsole);
+   var rm = rmc.load(pn);
+   m = RClass.create(FNetRd3Model);
+   m.linkContext(pc);
+   m.setName(pn);
+   m.setResource(rm);
+   o._models.set(pn, m);
+   if(rm.testReady()){
+      m.loadResource(rm);
+   }else{
+      o._loadModels.push(m);
+   }
+   return m;
+}
+function FNetRd3ModelMesh(o){
+   o = RClass.inherits(this, o, FG3dObject);
+   o._ready            = false;
+   o._resource         = null;
+   o._vertexCount      = 0;
+   o._vertexBuffers    = null;
+   o._indexBuffer      = null;
+   o._resourceMaterial = null;
+   o._material         = null;
+   o._boneIds          = null;
+   o._textures         = null;
+   o.construct         = FNetRd3ModelMesh_construct;
+   o.testReady         = FNetRd3ModelMesh_testReady;
+   o.vertexCount       = FNetRd3ModelMesh_vertexCount;
+   o.findVertexBuffer  = FNetRd3ModelMesh_findVertexBuffer;
+   o.vertexBuffers     = FNetRd3ModelMesh_vertexBuffers;
+   o.indexBuffer       = FNetRd3ModelMesh_indexBuffer;
+   o.material          = FNetRd3ModelMesh_material;
+   o.findTexture       = FNetRd3ModelMesh_findTexture;
+   o.textures          = FNetRd3ModelMesh_textures;
+   o.boneIds           = FNetRd3ModelMesh_boneIds;
+   o.loadResource      = FNetRd3ModelMesh_loadResource;
+   return o;
+}
+function FNetRd3ModelMesh_construct(){
+   var o = this;
+   o.__base.FG3dObject.construct.call(o);
+   o._vertexBuffers = new TObjects();
+}
+function FNetRd3ModelMesh_testReady(){
+   var o = this;
+   if(!o._ready){
+      var ts = o._textures;
+      if(ts != null){
+         var c = ts.count();
+         for(var i = 0; i < c; i++){
+            var t = ts.value(i);
+            if(!t.testReady()){
+               return false;
+            }
+         }
+      }
+      o._ready = true;
+   }
+   return o._ready;
+}
+function FNetRd3ModelMesh_vertexCount(){
+   return this._vertexCount;
+}
+function FNetRd3ModelMesh_findVertexBuffer(p){
+   var o = this;
+   var vs = o._vertexBuffers;
+   var c = vs.count();
+   for(var n = 0; n < c; n++){
+      var v = vs.get(n);
+      if(v.name() == p){
+         return v;
+      }
+   }
+   return null;
+}
+function FNetRd3ModelMesh_vertexBuffers(){
+   return this._vertexBuffers;
+}
+function FNetRd3ModelMesh_indexBuffer(){
+   return this._indexBuffer;
+}
+function FNetRd3ModelMesh_material(){
+   return this._material;
+}
+function FNetRd3ModelMesh_findTexture(p){
+   return this._textures.get(p);
+}
+function FNetRd3ModelMesh_textures(){
+   return this._textures;
+}
+function FNetRd3ModelMesh_boneIds(p){
+   return this._boneIds;
+}
+function FNetRd3ModelMesh_loadResource(p){
+   var o = this;
+   var c = o._context;
+   o._resource = p;
+   var rss = p.streams();
+   var rsc = rss.count();
+   for(var i = 0; i < rsc; i++){
+      var rs = rss.get(i);
+      var rc = rs._code;
+      if((rc == 'index16') || (rc == 'index32')){
+         var b = o._indexBuffer = c.createIndexBuffer();
+         b.upload(rs._data, rs._dataCount * 3);
+      }else{
+         var b = c.createVertexBuffer();
+         b._name = rc;
+         o._vertexCount = rs._dataCount;
+         switch(rc){
+            case "position":
+               b._formatCd = EG3dAttributeFormat.Float3;
+               break;
+            case "coord":
+               b._formatCd = EG3dAttributeFormat.Float2;
+               break;
+            case "normal":
+            case "binormal":
+            case "tangent":
+               b._formatCd = EG3dAttributeFormat.Byte4Normal;
+               break;
+            default:
+               throw new TError("Unknown code");
+         }
+         b.upload(rs._data, rs._dataStride, rs._dataCount);
+         o._vertexBuffers.push(b);
+      }
+   }
+}
 function FRd3Animation(o){
    o = RClass.inherits(this, o, FObject);
    o._baseTick    = 0;

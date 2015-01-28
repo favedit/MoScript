@@ -8,10 +8,13 @@
 var RObject = new function RObject(){
    var o = this;
    // @method
-   o.nvl   = RObject_nvl;
-   o.clone = RObject_clone;
-   o.copy  = RObject_copy;
-   o.free  = RObject_free;
+   o.nvl     = RObject_nvl;
+   // @method
+   o.clone   = RObject_clone;
+   o.copy    = RObject_copy;
+   // @method
+   o.free    = RObject_free;
+   o.release = RObject_release;
    return o;
 }
 
@@ -77,12 +80,31 @@ function RObject_copy(s, t){
 
 //==========================================================
 // <T>释放一个对象。</T>
+// <P>不递归释放，只清空当前层属性。</P>
 //
 // @param p:obejct:Object 对象
 //==========================================================
 function RObject_free(p){
    if(p){
       for(var n in p){
+         p[n] = null;
+      }
+   }
+}
+
+//==========================================================
+// <T>释放一个对象。</T>
+// <P>递归释放所有对象。</P>
+//
+// @param p:obejct:Object 对象
+//==========================================================
+function RObject_release(p){
+   if(p){
+      for(var n in p){
+         var v = p[n];
+         if(typeof(v) == 'Object'){
+            RObject.release(v)
+         }
          p[n] = null;
       }
    }

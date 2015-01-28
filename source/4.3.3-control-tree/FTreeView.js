@@ -364,7 +364,7 @@ function FTreeView_createNode(){
       n.build(o._hPanel);
    }
    // 放入所有节点中
-   RHtml.displaySet(n._hPanel, true);
+   RHtml.visibleSet(n._hPanel, true);
    o._allNodes.push(n);
    return n;
 }

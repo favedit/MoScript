@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+   <Template name="\pvw\show\item.001" label="陶瓷文物" option_loaded="0" option_select="0" option_merge="0" option_light_map="0">
+      <MaterialCollection>
+         <Material code="{material_guid}" effect_name="automatic" option_light="2" option_depth="2" option_normal_scale="2" option_compare="less" option_alpha="0" option_double="0" option_opacity="0" option_symmetry="0" option_shadow="2" option_shadow_self="1" option_transmittance="0" sort_level="1">
+            <Property type='color4' name='diffuse_color' inherit='N'>32.0,32.0,32.0,1.0</Property>
+            <Property type='color3' name='specular_color' inherit='N'>32.0,32.0,32.0,1.0</Property>
+            <Property type='float'  name='specular_level' inherit='N'>32.0,32.0,32.0,1.0</Property>
+            <Textures>
+               <Texture type_name="diffuse" source="\pvw\show\001.01" source_type="diffuse" source_index="0" />
+               <Texture type_name="normal" source="\pvw\show\001.01" source_type="normal" source_index="0" />
+               <Texture type_name="specular.level" source="\pvw\show\001.01" source_type="specular.level" source_index="0" />
+            </Textures>
+         </Material>
+      </MaterialCollection>
+      <DisplayCollection>
+         <Sprite material='{material_guid}'>
+            <Property type='matrix' translation="120,16.9088,59.7401" rotation="-3.141593,-0.3900408,-3.141593" scale="1.0892,1.0892,1.0892" />
+            <MeshRenderable model='{model_guid}' mesh='{mesh_guid}' material='{material_guid}'/>
+         </Sprite>
+      </DisplayCollection>
+      <AnimationCollection>
+      </AnimationCollection>
+   </Template>
+</Configuration>

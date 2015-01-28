@@ -228,7 +228,7 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
       }
    }
    //............................................................
-   // 支持收光技术
+   // 支持发光技术
    var slg = pc.samplerContains(EG3dSampler.Light);
    o._dynamicLight = (o._supportLight && slg);
    if(o._dynamicLight){

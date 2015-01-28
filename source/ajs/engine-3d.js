@@ -250,6 +250,217 @@ function FModelRenderable3d_update(p){
    var m = o._display.matrix();
    o._matrix.assign(m);
 }
+function FNetModel3d(o){
+   o = RClass.inherits(this, o, FDisplay3d);
+   o._dataReady     = false;
+   o._renderables   = null;
+   o._animation     = null;
+   o._geometrys     = null;
+   o._renderable    = null;
+   o.testReady      = FNetModel3d_testReady;
+   o.loadRenderable = FNetModel3d_loadRenderable;
+   o.processLoad    = FNetModel3d_processLoad;
+   o.process        = FNetModel3d_process;
+   return o;
+}
+function FNetModel3d_testReady(){
+   return this._dataReady;
+}
+function FNetModel3d_loadRenderable(p){
+   var o = this;
+   var c = o._context;
+   var r = p.resource();
+   var rgs = p.geometrys();
+   if(rgs){
+      var c = rgs.count();
+      if(c > 0){
+         var gs = o._geometrys = new TObjects();
+         var rs = o.renderables();
+         for(var i = 0; i < c; i++){
+            var rg = rgs.get(i);
+            var g = RClass.create(FNetModelRenderable3d);
+            g._display = o;
+            g.load(rg);
+            gs.push(g);
+            rs.push(g);
+         }
+      }
+   }
+   o._dataReady = true;
+}
+function FNetModel3d_processLoad(){
+   var o = this;
+   if(o._dataReady){
+      return true;
+   }
+   if(!o._renderable.testReady()){
+      return false;
+   }
+   o.loadRenderable(o._renderable);
+   return true;
+}
+function FNetModel3d_process(){
+   var o = this;
+   o.__base.FDisplay3d.process.call(o);
+   if(o._animation){
+      o._animation.process();
+   }
+   return true;
+}
+function FNetModel3dConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd    = EScope.Local;
+   o._loadModels = null;
+   o._models     = null;
+   o._thread     = null;
+   o._interval   = 100;
+   o.onProcess   = FNetModel3dConsole_onProcess;
+   o.construct   = FNetModel3dConsole_construct;
+   o.models      = FNetModel3dConsole_models;
+   o.alloc       = FNetModel3dConsole_alloc;
+   o.free        = FNetModel3dConsole_free;
+   return o;
+}
+function FNetModel3dConsole_onProcess(){
+   var o = this;
+   var ms = o._loadModels;
+   ms.record();
+   while(ms.next()){
+      var m = ms.current();
+      if(m.processLoad()){
+         ms.removeCurrent();
+      }
+   }
+}
+function FNetModel3dConsole_construct(){
+   var o = this;
+   o._loadModels = new TLooper();
+   o._models = new TDictionary();
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.lsnsProcess.register(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(t);
+}
+function FNetModel3dConsole_models(){
+   return this._models;
+}
+function FNetModel3dConsole_alloc(pc, pn){
+   var o = this;
+   var ms = o._models.get(pn);
+   if(ms){
+      if(!ms.isEmpty()){
+         return ms.pop();
+      }
+   }
+   var rmc = RConsole.find(FNetRd3ModelConsole);
+   var rm = rmc.load(pc, pn);
+   var m = RClass.create(FNetModel3d);
+   m._context = pc;
+   m._name = pn;
+   m._modelName = pn;
+   m._renderable = rm;
+      o._loadModels.push(m);
+   return m;
+}
+function FNetModel3dConsole_free(p){
+   var o = this;
+   p.remove();
+   var n = p._modelName;
+   var ms = o._models.get(n);
+   if(ms == null){
+      ms = new TObjects();
+      o._models.set(n, ms);
+   }
+   ms.push(p);
+}
+function FNetModelRenderable3d(o){
+   o = RClass.inherits(this, o, FG3dRenderable);
+   o._ready            = false;
+   o._renderable       = null;
+   o._bones            = null;
+   o._materialResource = null;
+   o.construct         = FNetModelRenderable3d_construct;
+   o.testVisible       = FNetModelRenderable3d_testVisible;
+   o.vertexCount       = FNetModelRenderable3d_vertexCount;
+   o.findVertexBuffer  = FNetModelRenderable3d_findVertexBuffer;
+   o.vertexBuffers     = FNetModelRenderable3d_vertexBuffers;
+   o.indexBuffer       = FNetModelRenderable3d_indexBuffer;
+   o.findTexture       = FNetModelRenderable3d_findTexture;
+   o.textures          = FNetModelRenderable3d_textures;
+   o.bones             = FNetModelRenderable3d_bones;
+   o.load              = FNetModelRenderable3d_load;
+   o.build             = FNetModelRenderable3d_build;
+   o.update            = FNetModelRenderable3d_update;
+   return o;
+}
+function FNetModelRenderable3d_construct(){
+   var o = this;
+   o.__base.FG3dRenderable.construct.call(o);
+}
+function FNetModelRenderable3d_testVisible(p){
+   var o = this;
+   var r = o._ready;
+   if(!r){
+      var d = o._renderable;
+      if(d){
+         r = o._ready = d.testReady();
+      }
+   }
+   return r;
+}
+function FNetModelRenderable3d_vertexCount(){
+   return this._renderable.vertexCount();
+}
+function FNetModelRenderable3d_findVertexBuffer(p){
+   return this._renderable.findVertexBuffer(p);
+}
+function FNetModelRenderable3d_vertexBuffers(){
+   return this._renderable.vertexBuffers();
+}
+function FNetModelRenderable3d_indexBuffer(){
+   return this._renderable.indexBuffer();
+}
+function FNetModelRenderable3d_findTexture(p){
+   return this._renderable.findTexture(p);
+}
+function FNetModelRenderable3d_textures(){
+   return this._renderable.textures();
+}
+function FNetModelRenderable3d_bones(p){
+   return this._bones;
+}
+function FNetModelRenderable3d_load(p){
+   var o = this;
+   var m = o._material;
+   var mr = o._materialResource = p.material();
+   if(mr){
+      m.assignInfo(mr.info());
+   }
+   o._effectName = m.info().effectName;
+   o._renderable = p;
+}
+function FNetModelRenderable3d_build(p){
+   var o = this;
+   var r = o._renderable;
+   var rbs = r.boneIds();
+   if(rbs){
+      var bs = o._bones = new TObjects();
+      var c = rbs.length();
+      for(var i = 0; i < c; i++){
+         var bi = rbs.get(i);
+         var b = p.findBone(bi);
+         if(b == null){
+            throw new TError("Bone is not exists. (bone_id={1})", bi);
+         }
+         bs.push(b);
+      }
+   }
+}
+function FNetModelRenderable3d_update(p){
+   var o = this;
+   var m = o._display.matrix();
+   o._matrix.assign(m);
+}
 function FScene3d(o){
    o = RClass.inherits(this, o, FStage3d);
    o._dataReady            = false;

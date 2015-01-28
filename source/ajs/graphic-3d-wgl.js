@@ -757,7 +757,7 @@ function FWglIndexBuffer_upload(pd, pc){
    var g = c._native;
    o._count = pc;
    var d = null;
-   if(pd.constructor == Array){
+   if((pd.constructor == Array) || (pd.constructor == ArrayBuffer)){
       d = new Uint16Array(pd);
    }else if(pd.constructor == Uint16Array){
       d = pd;
@@ -1022,7 +1022,7 @@ function FWglVertexBuffer_upload(v, s, c){
    o.stride = s;
    o.count  = c;
    var d = null;
-   if(v.constructor == Array){
+   if((v.constructor == Array) || (v.constructor == ArrayBuffer)){
       d = new Float32Array(v);
    }else if(v.constructor == Float32Array){
       d = v;

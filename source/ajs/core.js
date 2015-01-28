@@ -1203,8 +1203,11 @@ function MProperty_propertySave(p){
 var RBrowser = new function RBrowser(){
    var o = this;
    o._typeCd        = 0;
-   o._contentPath   = null;
+   o._hostPath      = '';
+   o._contentPath   = '';
    o.construct      = RBrowser_construct;
+   o.hostPath       = RBrowser_hostPath;
+   o.setHostPath    = RBrowser_setHostPath;
    o.contentPath    = RBrowser_contentPath;
    o.setContentPath = RBrowser_setContentPath;
    o.isBrowser      = RBrowser_isBrowser;
@@ -1230,6 +1233,16 @@ function RBrowser_construct(){
       RLogger.lsnsOutput.register(o, o.log);
    }
    RLogger.info(o, 'Parse browser confirm. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+}
+function RBrowser_hostPath(p){
+   var o = this;
+   if(p){
+      return o._hostPath + p;
+   }
+   return o._hostPath;
+}
+function RBrowser_setHostPath(p){
+   this._hostPath = p;
 }
 function RBrowser_contentPath(p){
    var o = this;

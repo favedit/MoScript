@@ -181,7 +181,7 @@ function FTreeNode_onBuild(p){
          hc.align='center';
          hc.noWrap = true;
          hc.innerText = RString.nvl(o.get(c.dataName));
-         RHtml.displaySet(hc, c.display);
+         RHtml.visibleSet(hc, c.display);
       }
    }
 }
@@ -512,7 +512,7 @@ function FTreeNode_show(){
    var o = this;
    var t = o._tree;
    // 显示自己
-   RHtml.displaySet(o._hPanel, true);
+   RHtml.visibleSet(o._hPanel, true);
    // 显示所有子节点
    var ns = o._nodes;
    if(ns){
@@ -525,7 +525,7 @@ function FTreeNode_show(){
          }
          // 判断是否要显示
          if(n._statusDisplay){
-            RHtml.displaySet(n._hPanel, true);
+            RHtml.visibleSet(n._hPanel, true);
             if(n._extended){
                n.show();
             }
@@ -543,7 +543,7 @@ function FTreeNode_hide(){
    var o = this;
    var t = o._tree;
    if(o._hPanel){
-      RHtml.displaySet(o._hPanel, false);
+      RHtml.visibleSet(o._hPanel, false);
    }
    var cs = o._components;
    if(cs){

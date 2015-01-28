@@ -133,7 +133,7 @@
       <shader:true source='support.diffuse'>
       uniform vec4 fc_diffuse_color;
       </shader:true>
-      <shader:true source='support.specular'>
+      <shader:true source='vertex.attribute.normal'>
       uniform vec4 fc_specular_color;
       uniform vec4 fc_specular;
       </shader:true>
@@ -194,29 +194,29 @@
          <shader:false source='support.ambient.sampler'>
          vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
          </shader:false>
-         result.rgb += color.xyz * fc_ambient_color.rgb * 0.8;
+         result.rgb += color.xyz * fc_ambient_color.rgb * 0.2;
          </shader:true>
          //............................................................
          // 计算散射颜色
-         <shader:true source='support.diffuse'>
+         <shader:true source='vertex.attribute.normal'>
          <shader:true source='support.diffuse.dump'>
          vec4 normal = texture2D(fs_normal, v_coord);
-         //normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
+         normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
          float normalFactor = dot(normal.xyz, -v_light_ts);
          </shader:true>
-         <shader:true source='support.diffuse.normal'>
+         <shader:false source='support.diffuse.dump'>
          float normalFactor = dot(v_normal, -fc_light_direction);
-         </shader:true>
+         </shader:false>
          normalFactor = max(normalFactor, 0.0);
-         result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor * 0.8;
+         result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor * 0.6;
          </shader:true>
          //............................................................
-         <shader:true source='support.specular|support.environment'>
+         <shader:true source='vertex.attribute.normal'>
          vec3 cameraDirection = normalize(fc_camera_position - v_model_position.xyz);
          </shader:true>
          //............................................................
          // 计算高光颜色
-         <shader:true source='support.specular'>
+         <shader:true source='vertex.attribute.normal'>
          vec3 reflectionDirection = normalize(reflect(fc_light_direction, v_normal));
          float specularFactor = dot(cameraDirection, reflectionDirection);
          <shader:true source='support.specular.level'>
@@ -224,8 +224,8 @@
          </shader:true>
          specularFactor = max(specularFactor, fc_specular.x);
          specularFactor = min(specularFactor, 1.0);
-         specularFactor = pow(specularFactor, fc_specular.y + 1.0);
-         result.rgb += color.rgb * fc_specular_color.rgb * specularFactor * 1.4;
+         specularFactor = pow(specularFactor, fc_specular.y);
+         result.rgb += color.rgb * fc_specular_color.rgb * specularFactor * 0.4;
          </shader:true>
          //............................................................
          <shader:true source='support.environment'>

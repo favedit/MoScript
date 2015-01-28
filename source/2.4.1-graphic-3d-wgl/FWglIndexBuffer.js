@@ -41,7 +41,7 @@ function FWglIndexBuffer_upload(pd, pc){
    o._count = pc;
    // 获得数据
    var d = null;
-   if(pd.constructor == Array){
+   if((pd.constructor == Array) || (pd.constructor == ArrayBuffer)){
       d = new Uint16Array(pd);
    }else if(pd.constructor == Uint16Array){
       d = pd;

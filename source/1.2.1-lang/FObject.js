@@ -52,7 +52,7 @@ function FObject_toString(){
 //==========================================================
 function FObject_dispose(){
    var o = this;
-   o.__class = null;
+   RObject.free(o);
    o.__dispose = true;
 }
 

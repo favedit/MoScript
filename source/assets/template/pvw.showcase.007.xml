@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.showcase.007">
+    <ThemeCollection>
+      <Theme code="color">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.31">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.32">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.33">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.34">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.35">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.36">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.37">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.38">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.39">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.40">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.41">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.42">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+        </MaterialCollection>
+      </Theme>
+      <Theme code="shadow">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.31">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.32">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.33">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.34">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.35">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.36">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.37">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.38">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.39">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.40">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.41">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.showcase.007.42">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+          </Material>
+        </MaterialCollection>
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection>
+      <Display model_code="pvw.showcase.007" mesh_code="ms_031_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.007.31" />
+        </MaterialCollection>
+      </Display>
+      <Display model_code="pvw.showcase.007" mesh_code="ms_032_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.007.32" />
+        </MaterialCollection>
+      </Display>
+      <Display model_code="pvw.showcase.007" mesh_code="ms_033_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.007.33" />
+        </MaterialCollection>
+      </Display>
+      <Display model_code="pvw.showcase.007" mesh_code="ms_034_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.007.34" />
+        </MaterialCollection>
+      </Display>
+      <Display model_code="pvw.showcase.007" mesh_code="ms_035_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.007.35" />
+        </MaterialCollection>
+      </Display>
+      <Display model_code="pvw.showcase.007" mesh_code="ms_036_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.007.36" />
+        </MaterialCollection>
+      </Display>
+      <Display model_code="pvw.showcase.007" mesh_code="ms_037_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.007.37" />
+        </MaterialCollection>
+      </Display>
+      <Display model_code="pvw.showcase.007" mesh_code="ms_038_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.007.38" />
+        </MaterialCollection>
+      </Display>
+      <Display model_code="pvw.showcase.007" mesh_code="ms_039_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.007.39" />
+        </MaterialCollection>
+      </Display>
+      <Display model_code="pvw.showcase.007" mesh_code="ms_040_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.007.40" />
+        </MaterialCollection>
+      </Display>
+      <Display model_code="pvw.showcase.007" mesh_code="ms_041_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.007.41" />
+        </MaterialCollection>
+      </Display>
+      <Display model_code="pvw.showcase.007" mesh_code="ms_042_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.007.42" />
+        </MaterialCollection>
+      </Display>
+    </DisplayCollection>
+  </Template>
+</Configuration>

@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>Stage3d Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+<SCRIPT language='javascript' src='../../ajs/mo-core.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/mo-graphic.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/mo-engine.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../3.3.2-engine-3d-resource/FNetRs3ModelStream.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3.3.2-engine-3d-resource/FNetRs3ModelMesh.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3.3.2-engine-3d-resource/FNetRs3Model.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../3.3.2-engine-3d-resource/FNetRs3ModelConsole.js'></SCRIPT>
+
+</HEAD>
+
+<SCRIPT>
+var context = null;
+var stage = null;
+var layer = null;
+var models = new TObjects();
+
+var mRotationX = 0;
+var mRotationY = 0;
+var mRotationZ = 0;
+//----------------------------------------------------------
+function onEnterFrame(){
+   // 旋转模型
+   var mc = models.count();
+   var c = 4;
+   for(var z = 0; z < c; z++){
+      for(var x = 0; x < c; x++){
+         var n = c * z + x;
+         if(n >= mc){
+            break;
+         }
+         var m = models.get(n);
+         // m.location().set(0.1 * x - 8, -0.5, 0.1 * z - 4);
+         //m.location().set(0, -6.0, 0);
+         //m.scale().set(2.0, 2.0, 2.0);
+         m.location().set(0, -4.0, 0);
+         m.rotation().set(-Math.PI/2, mRotationY, 0);
+         m.scale().set(5.0, 5.0, 5.0);
+         m.update();
+      }
+   }
+   mRotationX += 0.01;
+   mRotationY += 0.005;
+   mRotationZ += 0.03;
+   // 设置帧速
+   var info = RTimer.rate() + ' f/s';
+   if(info != _info.innerText){
+      _info.innerText = RTimer.rate() + ' f/s';
+   }
+}
+//----------------------------------------------------------
+function onThemeLoad(){
+   var hCanvas = document.getElementById('_canvas');
+   context = REngine3d.createContext(FWglContext, hCanvas);
+
+   stage = RClass.create(FSimpleStage3d);
+   stage.backgroundColor().set(1, 1, 1, 1);
+   stage.selectTechnique(context, FG3dGeneralTechnique);
+   //RDump.dump(stage, _dump);
+
+   layer = stage.spriteLayer();
+   RStage.register('stage3d', stage);
+
+   //var nrm = RConsole.find(FNetRs3ModelConsole);
+   //var rm = nrm.load('876457BFB45E4804A2CEF9AA79AD1E2B', 'BBDE7E5AFBA5468B9225A45CD5B7A715');
+   //return;
+
+   var rmc = RConsole.find(FNetModel3dConsole);
+   //var model3d = rmc.alloc(context, '876457BFB45E4804A2CEF9AA79AD1E2B', 'BBDE7E5AFBA5468B9225A45CD5B7A715');
+   var model3d = rmc.alloc(context, 'CEF5A9EE0C1A4DED89AC278D07824DBF', '61C7E4AAC84F427ABE07A0DA912ECE4F');
+   layer.pushDisplay(model3d);
+   models.push(model3d);
+   RDump.dump(model3d, _dump);
+
+   // 设置相机
+   var rc = stage.camera();
+   rc.setPosition(0, 8, -8);
+   rc.lookAt(0, 0, 0);
+   rc.update();
+   // 设置光源
+   var l = stage.directionalLight();
+   var lc = l.camera();
+   lc.setPosition(10, 10, 0);
+   lc.lookAt(0, 0, 0);
+   lc.update();
+   // 设置投影
+   var rp = stage.camera().projection();
+   rp.size().set(hCanvas.width, hCanvas.height);
+   rp.update();
+   // 启动处理
+   RStage.lsnsEnterFrame.register(null, onEnterFrame);
+   RStage.start(15);
+   //RDump.dump(stage, _dump);
+}
+//----------------------------------------------------------
+function _load(){
+   RRuntime.processCd = EProcess.Debug;
+   RBrowser.construct();
+   RBrowser.setContentPath('../..');
+
+   var tc = RConsole.find(FRs3ThemeConsole);
+   var m = tc.select('color');
+   m.loadListener().register(m, onThemeLoad);
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+<CANVAS id="_canvas" style='padding-left:20px' width="200" height="400">您的浏览器不支持HTML5</CANVAS>
+<DIV id='_info'></DIV><br>
+<DIV id='_dump'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

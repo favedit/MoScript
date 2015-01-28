@@ -1,3 +1,122 @@
+function FNetRs3Model(o){
+   o = RClass.inherits(this, o, FRs3Resource);
+   o._meshes     = null;
+   o.meshes      = FNetRs3Model_meshes;
+   o.unserialize = FNetRs3Model_unserialize;
+   return o;
+}
+function FNetRs3Model_meshes(){
+   return this._meshes;
+}
+function FNetRs3Model_unserialize(p){
+   var o = this;
+   o.__base.FRs3Resource.unserialize.call(o, p);
+   var c = p.readInt16();
+   if(c > 0){
+      var ms = o._meshes = new TObjects();
+      for(var i = 0; i < c; i++){
+         var m = RClass.create(FNetRs3ModelMesh);
+         m.unserialize(p);
+         ms.push(m);
+      }
+   }
+   RLogger.info(o, "Unserialize model success. (code={1}, mesh_count={2})", o._name, c);
+}
+function FNetRs3ModelConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._models   = null;
+   o._dataUrl  = '/cloud.content.model.wv'
+   o.construct = FNetRs3ModelConsole_construct;
+   o.load      = FNetRs3ModelConsole_load;
+   return o;
+}
+function FNetRs3ModelConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._models = new TDictionary();
+}
+function FNetRs3ModelConsole_load(c, v){
+   var o = this;
+   var ms = o._models;
+   var m = ms.get(c);
+   if(m == null){
+      var u = RBrowser.hostPath(o._dataUrl + '?code=' + c + '&version=' + RString.nvl(v) + '&date=' + RDate.format());
+      m = RClass.create(FNetRs3Model);
+      m.load(u);
+      ms.set(c, m);
+   }
+   return m;
+}
+function FNetRs3ModelMesh(o){
+   o = RClass.inherits(this, o, FObject);
+   o._matrix     = null;
+   o._outline    = null;
+   o._streams    = null;
+   o.construct   = FNetRs3ModelMesh_construct;
+   o.streams     = FNetRs3ModelMesh_streams;
+   o.unserialize = FNetRs3ModelMesh_unserialize;
+   return o;
+}
+function FNetRs3ModelMesh_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new SMatrix3d();
+   o._outline = new SOutline3();
+}
+function FNetRs3ModelMesh_streams(){
+   return this._streams;
+}
+function FNetRs3ModelMesh_unserialize(p){
+   var o = this;
+   var c = p.readInt8();
+   if(c > 0){
+      var ss = o._streams = new TObjects();
+      for(var i = 0; i < c; i++){
+         var s = RClass.create(FNetRs3ModelStream);
+         s.unserialize(p)
+         ss.push(s);
+      }
+   }
+}
+function FNetRs3ModelStream(o){
+   o = RClass.inherits(this, o, FObject);
+   o._code             = null;
+   o._elementDataCd    = 0;
+   o._elementCount     = 0;
+   o._elementNormalize = false;
+   o._dataStride       = 0;
+   o._dataCount        = 0;
+   o._dataLength       = 0;
+   o._data             = null;
+   o._formatCd      = EG3dAttributeFormat.Unknown;
+   o.name              = FNetRs3ModelStream_name;
+   o.formatCd          = FNetRs3ModelStream_formatCd;
+   o.unserialize       = FNetRs3ModelStream_unserialize;
+   o.dispose           = FNetRs3ModelStream_dispose;
+   return o;
+}
+function FNetRs3ModelStream_name(){
+   return this._name;
+}
+function FNetRs3ModelStream_formatCd(){
+   return this._formatCd;
+}
+function FNetRs3ModelStream_unserialize(p){
+   var o = this;
+   o._code = p.readString();
+   o._elementDataCd = p.readUint8();
+   o._elementCount = p.readUint8();
+   o._elementNormalize = p.readBoolean();
+   var ds = o._dataStride = p.readUint8();
+   var dc = o._dataCount = p.readInt32();
+   var dl = o._dataLength = ds * dc;
+   var d = o._data = new ArrayBuffer(dl);
+   p.readBytes(d, 0, dl);
+}
+function FNetRs3ModelStream_dispose(){
+   var o = this;
+   o.__base.FObject.dispose.call(o);
+}
 function FRs3Animation(o){
    o = RClass.inherits(this, o, FObject);
    o._frameCount = 0;

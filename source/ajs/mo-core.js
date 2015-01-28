@@ -1904,7 +1904,7 @@ function FObject_toString(){
 }
 function FObject_dispose(){
    var o = this;
-   o.__class = null;
+   RObject.free(o);
    o.__dispose = true;
 }
 function FObject_innerDump(s, l){
@@ -3689,10 +3689,11 @@ function RMethod_virtual(v, m){
 }
 var RObject = new function RObject(){
    var o = this;
-   o.nvl   = RObject_nvl;
-   o.clone = RObject_clone;
-   o.copy  = RObject_copy;
-   o.free  = RObject_free;
+   o.nvl     = RObject_nvl;
+   o.clone   = RObject_clone;
+   o.copy    = RObject_copy;
+   o.free    = RObject_free;
+   o.release = RObject_release;
    return o;
 }
 function RObject_nvl(v){
@@ -3737,6 +3738,17 @@ function RObject_copy(s, t){
 function RObject_free(p){
    if(p){
       for(var n in p){
+         p[n] = null;
+      }
+   }
+}
+function RObject_release(p){
+   if(p){
+      for(var n in p){
+         var v = p[n];
+         if(typeof(v) == 'Object'){
+            RObject.release(v)
+         }
          p[n] = null;
       }
    }
@@ -8579,8 +8591,11 @@ function MProperty_propertySave(p){
 var RBrowser = new function RBrowser(){
    var o = this;
    o._typeCd        = 0;
-   o._contentPath   = null;
+   o._hostPath      = '';
+   o._contentPath   = '';
    o.construct      = RBrowser_construct;
+   o.hostPath       = RBrowser_hostPath;
+   o.setHostPath    = RBrowser_setHostPath;
    o.contentPath    = RBrowser_contentPath;
    o.setContentPath = RBrowser_setContentPath;
    o.isBrowser      = RBrowser_isBrowser;
@@ -8606,6 +8621,16 @@ function RBrowser_construct(){
       RLogger.lsnsOutput.register(o, o.log);
    }
    RLogger.info(o, 'Parse browser confirm. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+}
+function RBrowser_hostPath(p){
+   var o = this;
+   if(p){
+      return o._hostPath + p;
+   }
+   return o._hostPath;
+}
+function RBrowser_setHostPath(p){
+   this._hostPath = p;
 }
 function RBrowser_contentPath(p){
    var o = this;

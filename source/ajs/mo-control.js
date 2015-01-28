@@ -10800,7 +10800,7 @@ function FTreeNode_onBuild(p){
          hc.align='center';
          hc.noWrap = true;
          hc.innerText = RString.nvl(o.get(c.dataName));
-         RHtml.displaySet(hc, c.display);
+         RHtml.visibleSet(hc, c.display);
       }
    }
 }
@@ -10992,7 +10992,7 @@ function FTreeNode_topNodeByType(t){
 function FTreeNode_show(){
    var o = this;
    var t = o._tree;
-   RHtml.displaySet(o._hPanel, true);
+   RHtml.visibleSet(o._hPanel, true);
    var ns = o._nodes;
    if(ns){
       var c = ns.count();
@@ -11002,7 +11002,7 @@ function FTreeNode_show(){
             t.appendNode(n, o);
          }
          if(n._statusDisplay){
-            RHtml.displaySet(n._hPanel, true);
+            RHtml.visibleSet(n._hPanel, true);
             if(n._extended){
                n.show();
             }
@@ -11014,7 +11014,7 @@ function FTreeNode_hide(){
    var o = this;
    var t = o._tree;
    if(o._hPanel){
-      RHtml.displaySet(o._hPanel, false);
+      RHtml.visibleSet(o._hPanel, false);
    }
    var cs = o._components;
    if(cs){
@@ -11598,7 +11598,7 @@ function FTreeView_createNode(){
       n._tree = o;
       n.build(o._hPanel);
    }
-   RHtml.displaySet(n._hPanel, true);
+   RHtml.visibleSet(n._hPanel, true);
    o._allNodes.push(n);
    return n;
 }

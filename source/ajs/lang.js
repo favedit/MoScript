@@ -364,7 +364,7 @@ function FObject_toString(){
 }
 function FObject_dispose(){
    var o = this;
-   o.__class = null;
+   RObject.free(o);
    o.__dispose = true;
 }
 function FObject_innerDump(s, l){
@@ -2149,10 +2149,11 @@ function RMethod_virtual(v, m){
 }
 var RObject = new function RObject(){
    var o = this;
-   o.nvl   = RObject_nvl;
-   o.clone = RObject_clone;
-   o.copy  = RObject_copy;
-   o.free  = RObject_free;
+   o.nvl     = RObject_nvl;
+   o.clone   = RObject_clone;
+   o.copy    = RObject_copy;
+   o.free    = RObject_free;
+   o.release = RObject_release;
    return o;
 }
 function RObject_nvl(v){
@@ -2197,6 +2198,17 @@ function RObject_copy(s, t){
 function RObject_free(p){
    if(p){
       for(var n in p){
+         p[n] = null;
+      }
+   }
+}
+function RObject_release(p){
+   if(p){
+      for(var n in p){
+         var v = p[n];
+         if(typeof(v) == 'Object'){
+            RObject.release(v)
+         }
          p[n] = null;
       }
    }

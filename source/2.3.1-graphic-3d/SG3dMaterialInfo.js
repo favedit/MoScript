@@ -8,7 +8,7 @@ function SG3dMaterialInfo(o){
    if(!o){o = this;}
    //..........................................................
    // @attribute 效果名称
-   o.effectName    = null;
+   o.effectName    = 'automatic';
    // @attribute 变换名称
    o.transformName = null;
    //..........................................................
@@ -102,6 +102,9 @@ function SG3dMaterialInfo(o){
    // @method
    o.assign = SG3dMaterialInfo_assign;
    o.reset  = SG3dMaterialInfo_reset;
+   //..........................................................
+   // @construct
+   o.reset();
    return o;
 }
 
@@ -197,8 +200,8 @@ function SG3dMaterialInfo_reset(){
    o.diffuseViewColor.set(1.0, 1.0, 1.0, 1.0);
    o.diffuseViewShadow = 1.0;
    o.specularColor.set(1.0, 1.0, 1.0, 1.0);
-   o.specularBase = 1.0;
-   o.specularRate = 1.0;
+   o.specularBase = 0.0;
+   o.specularRate = 30.0;
    o.specularAverage = 1.0;
    o.specularShadow = 1.0;
    o.specularViewColor.set(1.0, 1.0, 1.0, 1.0);

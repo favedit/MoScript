@@ -43,7 +43,7 @@ function FWglVertexBuffer_upload(v, s, c){
    o.count  = c;
    // 获得数据
    var d = null;
-   if(v.constructor == Array){
+   if((v.constructor == Array) || (v.constructor == ArrayBuffer)){
       d = new Float32Array(v);
    }else if(v.constructor == Float32Array){
       d = v;
