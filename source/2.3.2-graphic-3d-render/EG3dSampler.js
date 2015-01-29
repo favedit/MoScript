@@ -7,6 +7,7 @@
 //==========================================================
 var EG3dSampler = new function EG3dSampler(){
    var o = this;
+   //o.Diffuse       = 'Diffuse';
    o.Diffuse       = 'Diffuse';
    o.Alpha         = 'Alpha';
    o.Normal        = 'Normal';

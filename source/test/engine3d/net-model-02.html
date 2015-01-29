@@ -73,11 +73,11 @@ function onThemeLoad(){
    //var rm = nrm.load('876457BFB45E4804A2CEF9AA79AD1E2B', 'BBDE7E5AFBA5468B9225A45CD5B7A715');
    //return;
 
-   var rmc = RConsole.find(FNetModel3dConsole);
-   var model3d = rmc.alloc(context, '2091A7BD886C4B0096C79CF686D3EE2F');
-   layer.pushDisplay(model3d);
-   models.push(model3d);
-   RDump.dump(model3d, _dump);
+   var rtc = RConsole.find(FNetTemplate3dConsole);
+   var rt = rtc.alloc(context, 'FE33584DE8B54BF1BBA7574CEDD7E840');
+   layer.pushDisplay(rt);
+   models.push(rt);
+   RDump.dump(rt, _dump);
 
    // 设置相机
    var rc = stage.camera();
@@ -112,7 +112,7 @@ function _load(){
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
-<CANVAS id="_canvas" style='padding-left:20px' width="800" height="1000">您的浏览器不支持HTML5</CANVAS>
+<CANVAS id="_canvas" style='padding-left:20px' width="200" height="400">您的浏览器不支持HTML5</CANVAS>
 <DIV id='_info'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

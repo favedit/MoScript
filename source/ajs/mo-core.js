@@ -5561,15 +5561,16 @@ function RMath_construct(){
 }
 function SColor4(o){
    if(!o){o = this;}
-   o.red         = 0;
-   o.green       = 0;
-   o.blue        = 0;
-   o.alpha       = 1;
-   o.assign      = SColor4_assign;
-   o.set         = SColor4_set;
-   o.serialize   = SColor4_serialize
-   o.unserialize = SColor4_unserialize
-   o.toString    = SColor4_toString;
+   o.red          = 0;
+   o.green        = 0;
+   o.blue         = 0;
+   o.alpha        = 1;
+   o.assign       = SColor4_assign;
+   o.set          = SColor4_set;
+   o.serialize    = SColor4_serialize;
+   o.unserialize  = SColor4_unserialize;
+   o.unserialize3 = SColor4_unserialize3;
+   o.toString     = SColor4_toString;
    return o;
 }
 function SColor4_assign(p){
@@ -5599,6 +5600,13 @@ function SColor4_unserialize(p){
    o.green = p.readFloat();
    o.blue = p.readFloat();
    o.alpha = p.readFloat();
+}
+function SColor4_unserialize3(p){
+   var o = this;
+   o.red = p.readFloat();
+   o.green = p.readFloat();
+   o.blue = p.readFloat();
+   o.alpha = 1.0;
 }
 function SColor4_toString(){
    var o = this;

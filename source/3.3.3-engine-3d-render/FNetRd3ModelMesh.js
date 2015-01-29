@@ -9,6 +9,7 @@ function FNetRd3ModelMesh(o){
    //..........................................................
    // @attribute
    o._ready            = false;
+   o._guid             = null;
    o._resource         = null;
    o._vertexCount      = 0;
    o._vertexBuffers    = null;
@@ -168,6 +169,7 @@ function FNetRd3ModelMesh_boneIds(p){
 function FNetRd3ModelMesh_loadResource(p){
    var o = this;
    var c = o._context;
+   o._guid = p.guid();
    o._resource = p;
    // 创建顶点缓冲集合
    var rss = p.streams();

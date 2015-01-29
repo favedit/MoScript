@@ -9,17 +9,18 @@ function SColor4(o){
    if(!o){o = this;}
    //..........................................................
    // @attribute
-   o.red         = 0;
-   o.green       = 0;
-   o.blue        = 0;
-   o.alpha       = 1;
+   o.red          = 0;
+   o.green        = 0;
+   o.blue         = 0;
+   o.alpha        = 1;
    //..........................................................
    // @method
-   o.assign      = SColor4_assign;
-   o.set         = SColor4_set;
-   o.serialize   = SColor4_serialize
-   o.unserialize = SColor4_unserialize
-   o.toString    = SColor4_toString;
+   o.assign       = SColor4_assign;
+   o.set          = SColor4_set;
+   o.serialize    = SColor4_serialize;
+   o.unserialize  = SColor4_unserialize;
+   o.unserialize3 = SColor4_unserialize3;
+   o.toString     = SColor4_toString;
    return o;
 }
 
@@ -79,6 +80,20 @@ function SColor4_unserialize(p){
    o.green = p.readFloat();
    o.blue = p.readFloat();
    o.alpha = p.readFloat();
+}
+
+//==========================================================
+// <T>从输入流里反序列化数据。</T>
+//
+// @method
+// @param p:input:FByteStream 数据流
+//==========================================================
+function SColor4_unserialize3(p){
+   var o = this;
+   o.red = p.readFloat();
+   o.green = p.readFloat();
+   o.blue = p.readFloat();
+   o.alpha = 1.0;
 }
 
 //============================================================

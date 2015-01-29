@@ -17,6 +17,7 @@ function FNetRd3Model(o){
    // @method
    o.name         = FNetRd3Model_name;
    o.setName      = FNetRd3Model_setName;
+   o.findMeshByGuid = FNetRd3Model_findMeshByGuid;
    o.geometrys    = FNetRd3Model_geometrys;
    o.resource     = FNetRd3Model_resource;
    o.resource     = FNetRd3Model_resource;
@@ -45,6 +46,19 @@ function FNetRd3Model_name(){
 //==========================================================
 function FNetRd3Model_setName(p){
    this._name = p;
+}
+
+function FNetRd3Model_findMeshByGuid(p){
+   var o = this;
+   var s = o._meshes;
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      var m = s.get(i);
+      if(m._guid == p){
+         return m;
+      }
+   }
+   return null;
 }
 
 //==========================================================

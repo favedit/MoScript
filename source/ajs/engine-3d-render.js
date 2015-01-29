@@ -1,3 +1,42 @@
+function FNetRd3BitmapConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd  = EScope.Local;
+   o._bitmaps  = null;
+   o._dataUrl  = '/cloud.content.texture.bitmap.wv'
+   o.construct = FNetRd3BitmapConsole_construct;
+   o.bitmaps   = FNetRd3BitmapConsole_bitmaps;
+   o.load      = FNetRd3BitmapConsole_load;
+   return o;
+}
+function FNetRd3BitmapConsole_construct(){
+   var o = this;
+   o._bitmaps = new TDictionary();
+}
+function FNetRd3BitmapConsole_bitmaps(){
+   return this._bitmaps;
+}
+function FNetRd3BitmapConsole_load(pc, pg, pt){
+   var o = this;
+   var t = o._bitmaps.get(pg);
+   if(t){
+      return t;
+   }
+   var u = RBrowser.hostPath(o._dataUrl + '?code=' + pg);
+   RLogger.info(o, 'Load texture from bitmap. (url={1})', u);
+   if(RString.toLower(pt) == 'environment'){
+      t = RClass.create(FRd3TextureCube);
+      t.linkContext(pc);
+      t._name = c;
+      t.load(RBrowser.contentPath(o._path + c));
+   }else{
+      t = RClass.create(FRd3Texture);
+      t.linkContext(pc);
+      t._name = pg;
+      t.load(u);
+   }
+   o._bitmaps.set(pg, t);
+   return t;
+}
 function FNetRd3Model(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._name        = null;
@@ -6,6 +45,7 @@ function FNetRd3Model(o){
    o._dataReady       = false;
    o.name         = FNetRd3Model_name;
    o.setName      = FNetRd3Model_setName;
+   o.findMeshByGuid = FNetRd3Model_findMeshByGuid;
    o.geometrys    = FNetRd3Model_geometrys;
    o.resource     = FNetRd3Model_resource;
    o.resource     = FNetRd3Model_resource;
@@ -20,6 +60,18 @@ function FNetRd3Model_name(){
 }
 function FNetRd3Model_setName(p){
    this._name = p;
+}
+function FNetRd3Model_findMeshByGuid(p){
+   var o = this;
+   var s = o._meshes;
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      var m = s.get(i);
+      if(m._guid == p){
+         return m;
+      }
+   }
+   return null;
 }
 function FNetRd3Model_geometrys(){
    return this._meshes;
@@ -125,6 +177,7 @@ function FNetRd3ModelConsole_load(pc, pn){
 function FNetRd3ModelMesh(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._ready            = false;
+   o._guid             = null;
    o._resource         = null;
    o._vertexCount      = 0;
    o._vertexBuffers    = null;
@@ -204,6 +257,7 @@ function FNetRd3ModelMesh_boneIds(p){
 function FNetRd3ModelMesh_loadResource(p){
    var o = this;
    var c = o._context;
+   o._guid = p.guid();
    o._resource = p;
    var rss = p.streams();
    var rsc = rss.count();
