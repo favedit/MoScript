@@ -32,12 +32,12 @@
       </Theme>
     </ThemeCollection>
     <DisplayCollection>
-      <Display model_code="pvw.show.item.001" mesh_code="ms_all">
+      <Sprite model_code="pvw.show.item.001" mesh_code="ms_all">
         <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
         <MaterialCollection>
           <Material code="pvw.show.001.01" />
         </MaterialCollection>
-      </Display>
+      </Sprite>
     </DisplayCollection>
   </Template>
 </Configuration>
