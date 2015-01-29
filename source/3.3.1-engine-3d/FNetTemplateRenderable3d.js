@@ -169,6 +169,11 @@ function FNetTemplateRenderable3d_loadResource(p){
    //............................................................
    // 加载材质
    var m = p._activeMaterial._material;
+   var mi = o._material.info();
+   mi.ambientColor.assign(m._ambientColor);
+   mi.diffuseColor.assign(m._diffuseColor);
+   mi.specularColor.assign(m._specularColor);
+   mi.specularLevel = m._specularLevel;
    o._effectName = m._effectCode;
    var rs = m._textures;
    if(rs){
@@ -191,29 +196,9 @@ function FNetTemplateRenderable3d_loadResource(p){
 function FNetTemplateRenderable3d_load(){
    var o = this;
    var r = o._resource;
-   // 加载模型
+   // 设置网格
    o._renderable = o._model.findMeshByGuid(r.meshGuid());
-   //FMaterial3d* pMaterial = _materialReference->Convert<FMaterial3d>();
-   //GMaterial3dTexturePtrs& materialTextures = pMaterial->MaterialTextures();
-   //if(!materialTextures.IsEmpty()){
-   //   GMaterial3dTexturePtrs::TIteratorC iterator = materialTextures.IteratorC();
-   //   while(iterator.Next()){
-   //      FMaterial3dTexture* pTexture = *iterator;
-   //      FRs3dMaterialTexture* pTextureResource = pTexture->Resource();
-   //      // 获得属性
-   //      TCharC* pCode = pTextureResource->Code();
-   //      TCharC* pPackCode = pTextureResource->PackCode();
-   //      FRenderTexture* pRenderTexture = pTexture->RenderTexture();
-   //      //pRenderTexture->SetOwner(this);
-   //      // 增加取样器
-   //      FRenderableSampler* pSampler = FRenderableSampler::InstanceCreate();
-   //      pSampler->SetCode(pCode);
-   //      pSampler->SetPackCode(pPackCode);
-   //      pSampler->SetGraphicsObject(pRenderTexture);
-   //      SamplerPush(pSampler);
-   //   }
-   //}
-   //_material->AssignOption(pMaterial);
+   // 加载完成
    o._ready = true;
 }
 

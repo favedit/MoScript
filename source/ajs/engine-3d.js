@@ -672,6 +672,11 @@ function FNetTemplateRenderable3d_loadResource(p){
    o._modelMatrix.assign(p.matrix());
    o._model = RConsole.find(FNetRd3ModelConsole).load(o._context, p.modelGuid());
    var m = p._activeMaterial._material;
+   var mi = o._material.info();
+   mi.ambientColor.assign(m._ambientColor);
+   mi.diffuseColor.assign(m._diffuseColor);
+   mi.specularColor.assign(m._specularColor);
+   mi.specularLevel = m._specularLevel;
    o._effectName = m._effectCode;
    var rs = m._textures;
    if(rs){

@@ -1592,17 +1592,17 @@ var EG3dParameterFormat = new function EG3dParameterFormat(){
 }
 var EG3dSampler = new function EG3dSampler(){
    var o = this;
-   o.Diffuse       = 'Diffuse';
-   o.Alpha         = 'Alpha';
-   o.Normal        = 'Normal';
-   o.SpecularColor = 'SpecularColor';
-   o.SpecularLevel = 'SpecularLevel';
-   o.Light         = 'Light';
-   o.Reflect       = 'Reflect';
-   o.Refract       = 'Refract';
-   o.Emissive      = 'Emissive';
-   o.Height        = 'Height';
-   o.Environment   = 'Environment';
+   o.Diffuse       = 'diffuse';
+   o.Alpha         = 'alpha';
+   o.Normal        = 'normal';
+   o.SpecularColor = 'specular.color';
+   o.SpecularLevel = 'specular.level';
+   o.Light         = 'light';
+   o.Reflect       = 'reflect';
+   o.Refract       = 'refract';
+   o.Emissive      = 'emissive';
+   o.Height        = 'height';
+   o.Environment   = 'environment';
    return o;
 }
 var EG3dSamplerFilter = new function EG3dSamplerFilter(){

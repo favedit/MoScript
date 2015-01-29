@@ -194,7 +194,7 @@
          <shader:false source='support.ambient.sampler'>
          vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
          </shader:false>
-         result.rgb += color.xyz * fc_ambient_color.rgb * 0.2;
+         result.rgb += color.xyz * fc_ambient_color.rgb;
          </shader:true>
          //............................................................
          // 计算散射颜色
@@ -208,7 +208,7 @@
          float normalFactor = dot(v_normal, -fc_light_direction);
          </shader:false>
          normalFactor = max(normalFactor, 0.0);
-         result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor * 0.6;
+         result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor;
          </shader:true>
          //............................................................
          <shader:true source='vertex.attribute.normal'>
@@ -225,7 +225,7 @@
          specularFactor = max(specularFactor, fc_specular.x);
          specularFactor = min(specularFactor, 1.0);
          specularFactor = pow(specularFactor, fc_specular.y);
-         result.rgb += color.rgb * fc_specular_color.rgb * specularFactor * 0.4;
+         result.rgb += color.rgb * fc_specular_color.rgb * specularFactor;
          </shader:true>
          //............................................................
          <shader:true source='support.environment'>
@@ -235,7 +235,7 @@
          vec4 light = texture2D(fs_light, v_coord);
          environmentColor *= light.g;
          </shader:true>
-         result.rgb *= environmentColor.rgb * fc_reflect_color.rgb * 1.5;
+         result.rgb *= environmentColor.rgb * fc_reflect_color.rgb;
          </shader:true>
          //............................................................
          // 计算颜色

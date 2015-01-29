@@ -14054,17 +14054,17 @@ var EG3dParameterFormat = new function EG3dParameterFormat(){
 }
 var EG3dSampler = new function EG3dSampler(){
    var o = this;
-   o.Diffuse       = 'Diffuse';
-   o.Alpha         = 'Alpha';
-   o.Normal        = 'Normal';
-   o.SpecularColor = 'SpecularColor';
-   o.SpecularLevel = 'SpecularLevel';
-   o.Light         = 'Light';
-   o.Reflect       = 'Reflect';
-   o.Refract       = 'Refract';
-   o.Emissive      = 'Emissive';
-   o.Height        = 'Height';
-   o.Environment   = 'Environment';
+   o.Diffuse       = 'diffuse';
+   o.Alpha         = 'alpha';
+   o.Normal        = 'normal';
+   o.SpecularColor = 'specular.color';
+   o.SpecularLevel = 'specular.level';
+   o.Light         = 'light';
+   o.Reflect       = 'reflect';
+   o.Refract       = 'refract';
+   o.Emissive      = 'emissive';
+   o.Height        = 'height';
+   o.Environment   = 'environment';
    return o;
 }
 var EG3dSamplerFilter = new function EG3dSamplerFilter(){
@@ -17549,6 +17549,11 @@ function FNetTemplateRenderable3d_loadResource(p){
    o._modelMatrix.assign(p.matrix());
    o._model = RConsole.find(FNetRd3ModelConsole).load(o._context, p.modelGuid());
    var m = p._activeMaterial._material;
+   var mi = o._material.info();
+   mi.ambientColor.assign(m._ambientColor);
+   mi.diffuseColor.assign(m._diffuseColor);
+   mi.specularColor.assign(m._specularColor);
+   mi.specularLevel = m._specularLevel;
    o._effectName = m._effectCode;
    var rs = m._textures;
    if(rs){
@@ -22814,17 +22819,17 @@ var EG3dParameterFormat = new function EG3dParameterFormat(){
 }
 var EG3dSampler = new function EG3dSampler(){
    var o = this;
-   o.Diffuse       = 'Diffuse';
-   o.Alpha         = 'Alpha';
-   o.Normal        = 'Normal';
-   o.SpecularColor = 'SpecularColor';
-   o.SpecularLevel = 'SpecularLevel';
-   o.Light         = 'Light';
-   o.Reflect       = 'Reflect';
-   o.Refract       = 'Refract';
-   o.Emissive      = 'Emissive';
-   o.Height        = 'Height';
-   o.Environment   = 'Environment';
+   o.Diffuse       = 'diffuse';
+   o.Alpha         = 'alpha';
+   o.Normal        = 'normal';
+   o.SpecularColor = 'specular.color';
+   o.SpecularLevel = 'specular.level';
+   o.Light         = 'light';
+   o.Reflect       = 'reflect';
+   o.Refract       = 'refract';
+   o.Emissive      = 'emissive';
+   o.Height        = 'height';
+   o.Environment   = 'environment';
    return o;
 }
 var EG3dSamplerFilter = new function EG3dSamplerFilter(){
