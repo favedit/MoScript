@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+<TITLE>CoolLight Designer</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../acs/design.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../acs/lang_cn.css' type="text/css" media="all"/>
+
+<SCRIPT language='javascript' src='../ajs/mo-core.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo-graphic.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo-engine.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo-control.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo-design.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/stage.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../4.1.1-control/RControl.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../4.3.5-control-frame/FFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../4.3.5-control-frame/FFrameSpliter.js'></SCRIPT>
+<SCRIPT language='javascript' src='../4.3.5-control-frame/FFrameSet.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../4.3.3-control-tree/FTreeView.js'></SCRIPT>
+<SCRIPT language='javascript' src='../4.3.3-control-tree/FDataTreeView.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../4.3.1-control-menu/MMenuButton.js'></SCRIPT>
+<SCRIPT language='javascript' src='../4.3.1-control-menu/FMenuButton.js'></SCRIPT>
+<SCRIPT language='javascript' src='../4.3.1-control-menu/FMenuButtonSplit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../4.3.1-control-menu/FMenuButtonMenu.js'></SCRIPT>
+<SCRIPT language='javascript' src='../4.3.1-control-menu/FMenuBar.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../4.3.2-control-tool/FToolButton.js'></SCRIPT>
+<SCRIPT language='javascript' src='../4.3.2-control-tool/FToolButtonCheck.js'></SCRIPT>
+<SCRIPT language='javascript' src='../4.3.2-control-tool/FToolButtonMenu.js'></SCRIPT>
+<SCRIPT language='javascript' src='../4.3.2-control-tool/FToolButtonSplit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../4.3.2-control-tool/FToolBar.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../6.1.1-design/FDsApplication.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.1.1-design/FDsMainMenuBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.1.1-design/FDsMainToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.1.1-design/FDsMainCatalog.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.1.1-design/FDsMainCanvas.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.1.1-design/FDsMainWorkspace.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../6.2.4-design-template/FDsTemplateToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.4-design-template/FDsTemplateCatalog.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.4-design-template/FDsTemplateCanvas.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.4-design-template/FDsTemplateWorkspace.js'></SCRIPT>
+
+<SCRIPT>
+function _load(){
+   RRuntime.processCd = EProcess.Debug;
+   RApplication.initialize();
+   RBrowser.setContentPath('..');
+
+   var w = RApplication.findWorkspace(FDsTemplateWorkspace);
+   w.build(document.body);
+   w.setPanel(document.body);
+   w.psRefresh();
+
+   //RDump.dump(w, document.body);
+}
+</SCRIPT>
+</HEAD>
+<BODY scroll='no' style='background-color:#444444;' onload='_load()'></BODY>
+</HTML>

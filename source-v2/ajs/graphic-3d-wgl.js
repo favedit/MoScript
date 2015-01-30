@@ -17,7 +17,7 @@ function FWglContext(o){
    o.createFlatTexture   = FWglContext_createFlatTexture;
    o.createCubeTexture   = FWglContext_createCubeTexture;
    o.createRenderTarget  = FWglContext_createRenderTarget;
-   o.setViewPort         = FWglContext_setViewPort;
+   o.setViewport         = FWglContext_setViewport;
    o.setFillMode         = FWglContext_setFillMode;
    o.setDepthMode        = FWglContext_setDepthMode;
    o.setCullingMode      = FWglContext_setCullingMode;
@@ -56,7 +56,7 @@ function FWglContext_linkCanvas(h){
       o._native = n;
    }
    var g = o._native;
-   o.setViewPort(h.width, h.height);
+   o.setViewport(h.width, h.height);
    o.setDepthMode(true, EG3dDepthMode.LessEqual);
    o.setCullingMode(true, EG3dCullMode.Front);
    var c = o._capability;
@@ -266,11 +266,10 @@ function FWglContext_createRenderTarget(){
    r.setup();
    return r;
 }
-function FWglContext_setViewPort(w, h){
-   var g = this._native;
-   g.viewportWidth = w;
-   g.viewportHeight = h;
-   g.viewport(0, 0, w, h);
+function FWglContext_setViewport(l, t, w, h){
+   var o = this;
+   o._size.set(w, h);
+   o._native.viewport(l, t, w, h);
 }
 function FWglContext_setFillMode(){
 }
@@ -345,6 +344,9 @@ function FWglContext_setScissorRectangle(l, t, w, h){
 function FWglContext_setRenderTarget(p){
    var o = this;
    var g = o._native;
+   if(o._activeRenderTarget == p){
+      return;
+   }
    var r = true;
    if(p == null){
       g.bindFramebuffer(g.FRAMEBUFFER, null);

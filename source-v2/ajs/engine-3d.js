@@ -843,17 +843,17 @@ function FTemplate3dConsole(o){
    o.construct      = FTemplate3dConsole_construct;
    o.templates      = FTemplate3dConsole_templates;
    o.alloc          = FTemplate3dConsole_alloc;
-   o.load           = FTemplate3dConsole_load;
+   o.free           = FTemplate3dConsole_free;
    return o;
 }
 function FTemplate3dConsole_onProcess(){
    var o = this;
-   var ms = o._loadTemplates;
-   ms.record();
-   while(ms.next()){
-      var m = ms.current();
-      if(m.processLoad()){
-         ms.removeCurrent();
+   var s = o._loadTemplates;
+   s.record();
+   while(s.next()){
+      var t = s.current();
+      if(t.processLoad()){
+         s.removeCurrent();
       }
    }
 }
@@ -871,22 +871,32 @@ function FTemplate3dConsole_templates(){
 }
 function FTemplate3dConsole_alloc(c, n){
    var o = this;
+   var ts = o._templates.get(n);
+   if(ts){
+      if(!ts.isEmpty()){
+         return ts.pop();
+      }
+   }
    var rc = RConsole.find(FRs3TemplateConsole);
    var r = rc.load(n);
    var t = RClass.create(FTemplate3d);
    t._context = c;
    t._name = n;
+   t._resourceGuid = n;
    t.setResource(r);
    o._loadTemplates.push(t);
    return t;
 }
-function FTemplate3dConsole_load(pt, pn){
+function FTemplate3dConsole_free(p){
    var o = this;
-   var rtc = RConsole.find(FRs3TemplateConsole);
-   var rt = rtc.load(pn);
-   pt._name = pn;
-   pt.setResource(rt);
-   o._loadTemplates.push(pt);
+   p.remove();
+   var n = p._resourceGuid;
+   var ts = o._templates.get(n);
+   if(ts == null){
+      ts = new TObjects();
+      o._templates.set(n, ts);
+   }
+   ts.push(p);
 }
 function FTemplateRenderable3d(o){
    o = RClass.inherits(this, o, FG3dRenderable);

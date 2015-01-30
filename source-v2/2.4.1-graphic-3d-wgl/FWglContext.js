@@ -34,7 +34,7 @@ function FWglContext(o){
    o.createCubeTexture   = FWglContext_createCubeTexture;
    o.createRenderTarget  = FWglContext_createRenderTarget;
    // @method
-   o.setViewPort         = FWglContext_setViewPort;
+   o.setViewport         = FWglContext_setViewport;
    o.setFillMode         = FWglContext_setFillMode;
    o.setDepthMode        = FWglContext_setDepthMode;
    o.setCullingMode      = FWglContext_setCullingMode;
@@ -91,7 +91,7 @@ function FWglContext_linkCanvas(h){
    }
    var g = o._native;
    // 设置状态
-   o.setViewPort(h.width, h.height);
+   o.setViewport(h.width, h.height);
    o.setDepthMode(true, EG3dDepthMode.LessEqual);
    o.setCullingMode(true, EG3dCullMode.Front);
    // 获得渲染信息
@@ -366,14 +366,15 @@ function FWglContext_createRenderTarget(){
 //============================================================
 // <T>设置视角大小。</T>
 //
+// @param l:left:Integer 左位置
+// @param t:top:Integer 上位置
 // @param w:width:Integer 宽度
 // @param h:height:Integer 高度
 //============================================================
-function FWglContext_setViewPort(w, h){
-   var g = this._native;
-   g.viewportWidth = w;
-   g.viewportHeight = h;
-   g.viewport(0, 0, w, h);
+function FWglContext_setViewport(l, t, w, h){
+   var o = this;
+   o._size.set(w, h);
+   o._native.viewport(l, t, w, h);
 }
 
 //============================================================
@@ -506,6 +507,10 @@ function FWglContext_setScissorRectangle(l, t, w, h){
 function FWglContext_setRenderTarget(p){
    var o = this;
    var g = o._native;
+   // 检查是否需要切换
+   if(o._activeRenderTarget == p){
+      return;
+   }
    // 设置程序
    var r = true;
    if(p == null){

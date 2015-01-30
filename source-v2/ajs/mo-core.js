@@ -7065,96 +7065,23 @@ function SRange_dump(d){
    d.append(' [', o.x, ',', o.y, '-', o.width, ',', o.height, '] ');
    return d;
 }
-function SRectangle(l, t, r, b){
-   var o = this;
-   o.left      = RInteger.nvl(left);
-   o.top       = RInteger.nvl(top);
-   o.right     = RInteger.nvl(right);
-   o.bottom    = RInteger.nvl(bottom);
-   o.reset     = SRectangle_reset;
-   o.assign    = SRectangle_assign;
+function SRectangle(o){
+   if(!o){o = this;}
+   o.position  = new SPoint2();
+   o.size      = new SSize2();
    o.set       = SRectangle_set;
-   o.setBounds = SRectangle_setBounds;
-   o.width     = SRectangle_width;
-   o.setWidth  = SRectangle_setWidth;
-   o.height    = SRectangle_height;
-   o.setHeight = SRectangle_setHeight;
-   o.move      = SRectangle_move;
-   o.inc       = SRectangle_inc;
-   o.dec       = SRectangle_dec;
-   o.pack      = SRectangle_dump;
-   o.unpack    = SRectangle_dump;
-   o.dump      = SRectangle_dump;
+   o.assign    = SRectangle_assign;
    return o;
 }
-function SRectangle_reset(){
+function SRectangle_assign(p){
    var o = this;
-   o.left = 0;
-   o.top = 0;
-   o.right = 0;
-   o.bottom = 0;
+   o.position.assign(p.position);
+   o.size.assign(p.size);
 }
-function SRectangle_assign(rect){
-   this.left = rect.left;
-   this.top = rect.top;
-   this.right = rect.right;
-   this.bottom = rect.bottom;
-}
-function SRectangle_set(left, top, right, bottom){
-   this.left = left;
-   this.top = top;
-   this.right = right;
-   this.bottom = bottom;
-}
-function SRectangle_setBounds(left, top, width, height){
+function SRectangle_set(l, t, w, h){
    var o = this;
-   o.left = left;
-   o.top = top;
-   o.right = o.left + width - 1;
-   o.bottom = o.top + height - 1;
-}
-function SRectangle_width(){
-   return this.right - this.left + 1;
-}
-function SRectangle_setWidth(width){
-   if(width){
-      this.right = this.left + width - 1;
-   }
-}
-function SRectangle_height(){
-   return this.bottom - this.top + 1;
-}
-function SRectangle_setHeight(height){
-   if(height){
-      this.bottom = this.top + height - 1;
-   }
-}
-function SRectangle_move(x, y){
-   this.left += x;
-   this.top += y;
-   this.right += x;
-   this.bottom += y;
-}
-function SRectangle_inc(border){
-   var n = RInt.nvl(border, 1);
-   this.left -= n;
-   this.top -= n;
-   this.right += n;
-   this.bottom += n;
-}
-function SRectangle_dec(border){
-   var n = RInt.nvl(border, 1);
-   this.left += n;
-   this.top += n;
-   this.right -= n;
-   this.bottom -= n;
-}
-function SRectangle_dump(d){
-   d = RString.nvlStr(d);
-   d.append(RClass.name(this));
-   d.append(' [', this.left, ',', this.top, '-', this.right, ',', this.bottom, '] ');
-   d.append('(', this.width(), '-', this.height(), ')');
-   return d;
+   o.position.set(l, t);
+   o.size.set(w, h);
 }
 function SSize2(w, h){
    var o = this;
@@ -7248,6 +7175,97 @@ function SSize3_toString(){
 function SSize3_dump(){
    var o = this;
    return RClass.dump(o) + ' [' + o.width + ',' + o.height + ',' + o.deep + ']';
+}
+function SSquare(l, t, r, b){
+   var o = this;
+   o.left      = RInteger.nvl(left);
+   o.top       = RInteger.nvl(top);
+   o.right     = RInteger.nvl(right);
+   o.bottom    = RInteger.nvl(bottom);
+   o.reset     = SSquare_reset;
+   o.assign    = SSquare_assign;
+   o.set       = SSquare_set;
+   o.setBounds = SSquare_setBounds;
+   o.width     = SSquare_width;
+   o.setWidth  = SSquare_setWidth;
+   o.height    = SSquare_height;
+   o.setHeight = SSquare_setHeight;
+   o.move      = SSquare_move;
+   o.inc       = SSquare_inc;
+   o.dec       = SSquare_dec;
+   o.pack      = SSquare_dump;
+   o.unpack    = SSquare_dump;
+   o.dump      = SSquare_dump;
+   return o;
+}
+function SSquare_reset(){
+   var o = this;
+   o.left = 0;
+   o.top = 0;
+   o.right = 0;
+   o.bottom = 0;
+}
+function SSquare_assign(rect){
+   this.left = rect.left;
+   this.top = rect.top;
+   this.right = rect.right;
+   this.bottom = rect.bottom;
+}
+function SSquare_set(left, top, right, bottom){
+   this.left = left;
+   this.top = top;
+   this.right = right;
+   this.bottom = bottom;
+}
+function SSquare_setBounds(left, top, width, height){
+   var o = this;
+   o.left = left;
+   o.top = top;
+   o.right = o.left + width - 1;
+   o.bottom = o.top + height - 1;
+}
+function SSquare_width(){
+   return this.right - this.left + 1;
+}
+function SSquare_setWidth(width){
+   if(width){
+      this.right = this.left + width - 1;
+   }
+}
+function SSquare_height(){
+   return this.bottom - this.top + 1;
+}
+function SSquare_setHeight(height){
+   if(height){
+      this.bottom = this.top + height - 1;
+   }
+}
+function SSquare_move(x, y){
+   this.left += x;
+   this.top += y;
+   this.right += x;
+   this.bottom += y;
+}
+function SSquare_inc(border){
+   var n = RInt.nvl(border, 1);
+   this.left -= n;
+   this.top -= n;
+   this.right += n;
+   this.bottom += n;
+}
+function SSquare_dec(border){
+   var n = RInt.nvl(border, 1);
+   this.left += n;
+   this.top += n;
+   this.right -= n;
+   this.bottom -= n;
+}
+function SSquare_dump(d){
+   d = RString.nvlStr(d);
+   d.append(RClass.name(this));
+   d.append(' [', this.left, ',', this.top, '-', this.right, ',', this.bottom, '] ');
+   d.append('(', this.width(), '-', this.height(), ')');
+   return d;
 }
 function SVector3(o){
    if(!o){o = this;}

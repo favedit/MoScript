@@ -137,6 +137,7 @@ function FG3dContext(o){
    o.createFlatTexture   = RMethod.virtual(o, 'createFlatTexture');
    o.createCubeTexture   = RMethod.virtual(o, 'createCubeTexture');
    o.createRenderTarget  = RMethod.virtual(o, 'createRenderTarget');
+   o.setViewport         = RMethod.virtual(o, 'setViewport');
    o.setFillMode         = RMethod.virtual(o, 'setFillMode');
    o.setDepthMode        = RMethod.virtual(o, 'setDepthMode');
    o.setCullingMode      = RMethod.virtual(o, 'setCullingMode');

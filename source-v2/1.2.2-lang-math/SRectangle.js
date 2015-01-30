@@ -2,171 +2,45 @@
 // <T>矩形结构。</T>
 //
 // @struct
-// @param l:width:Number 宽度
-// @param t:height:Number 高度
-// @param r:deep:Number 深度
-// @param b:deep:Number 深度
 // @author maocy
-// @version 141230
+// @version 150130
 //==========================================================
-function SRectangle(l, t, r, b){
-   var o = this;
+function SRectangle(o){
+   if(!o){o = this;}
+   //..........................................................
    // @attribute
-   o.left      = RInteger.nvl(left);
-   o.top       = RInteger.nvl(top);
-   o.right     = RInteger.nvl(right);
-   o.bottom    = RInteger.nvl(bottom);
+   o.position  = new SPoint2();
+   o.size      = new SSize2();
+   //..........................................................
    // @method
-   o.reset     = SRectangle_reset;
-   o.assign    = SRectangle_assign;
    o.set       = SRectangle_set;
-   o.setBounds = SRectangle_setBounds;
-   o.width     = SRectangle_width;
-   o.setWidth  = SRectangle_setWidth;
-   o.height    = SRectangle_height;
-   o.setHeight = SRectangle_setHeight;
-   o.move      = SRectangle_move;
-   o.inc       = SRectangle_inc;
-   o.dec       = SRectangle_dec;
-   o.pack      = SRectangle_dump;
-   o.unpack    = SRectangle_dump;
-   o.dump      = SRectangle_dump;
+   o.assign    = SRectangle_assign;
    return o;
 }
 
-function SRectangle_reset(){
+//============================================================
+// <T>接收一个矩形数据。</T>
+//
+// @method
+// @param p:rectangle:SRectangle 矩形
+//============================================================
+function SRectangle_assign(p){
    var o = this;
-   o.left = 0;
-   o.top = 0;
-   o.right = 0;
-   o.bottom = 0;
+   o.position.assign(p.position);
+   o.size.assign(p.size);
 }
 
 //============================================================
-// 指定矩形坐标类
+// <T>设置位置和大小。</T>
 //
 // @method
-// @param rect:rectangle:rectangle 矩形对象
+// @param l:left:Number 左位置
+// @param t:top:Number 上位置
+// @param w:width:Number 宽度
+// @param h:height:Number 高度
 //============================================================
-function SRectangle_assign(rect){
-   this.left = rect.left;
-   this.top = rect.top;
-   this.right = rect.right;
-   this.bottom = rect.bottom;
-}
-
-//============================================================
-// 指定当前矩形的四个坐标
-//
-// @method
-//============================================================
-function SRectangle_set(left, top, right, bottom){
-   this.left = left;
-   this.top = top;
-   this.right = right;
-   this.bottom = bottom;
-}
-//============================================================
-// 设定边框的位置
-//
-// @method
-//============================================================
-function SRectangle_setBounds(left, top, width, height){
+function SRectangle_set(l, t, w, h){
    var o = this;
-   o.left = left;
-   o.top = top;
-   o.right = o.left + width - 1;
-   o.bottom = o.top + height - 1;
-}
-
-//============================================================
-// 取得宽度
-//
-// @method
-//============================================================
-function SRectangle_width(){
-   return this.right - this.left + 1;
-}
-
-//============================================================
-// 设定矩形宽度
-//
-// @method
-// @param width:width:Integer 设置的宽度
-//============================================================
-function SRectangle_setWidth(width){
-   if(width){
-      this.right = this.left + width - 1;
-   }
-}
-
-//============================================================
-// 得到矩形的高度
-//
-// @method
-//============================================================
-function SRectangle_height(){
-   return this.bottom - this.top + 1;
-}
-
-//============================================================
-// 设定矩形的高度
-//
-// @method
-//============================================================
-function SRectangle_setHeight(height){
-   if(height){
-      this.bottom = this.top + height - 1;
-   }
-}
-
-//============================================================
-// 把矩形移动到某个位置
-//
-// @method
-// @param x:xPosition:Integ
-//============================================================
-function SRectangle_move(x, y){
-   this.left += x;
-   this.top += y;
-   this.right += x;
-   this.bottom += y;
-}
-
-//============================================================
-// 放大指定的大小
-//
-// @method
-//============================================================
-function SRectangle_inc(border){
-   var n = RInt.nvl(border, 1);
-   this.left -= n;
-   this.top -= n;
-   this.right += n;
-   this.bottom += n;
-}
-
-//============================================================
-// 把矩形缩小指定的宽度和高度
-//
-// @method
-//============================================================
-function SRectangle_dec(border){
-   var n = RInt.nvl(border, 1);
-   this.left += n;
-   this.top += n;
-   this.right -= n;
-   this.bottom -= n;
-}
-//============================================================
-// ???
-//
-// @method
-//============================================================
-function SRectangle_dump(d){
-   d = RString.nvlStr(d);
-   d.append(RClass.name(this));
-   d.append(' [', this.left, ',', this.top, '-', this.right, ',', this.bottom, '] ');
-   d.append('(', this.width(), '-', this.height(), ')');
-   return d;
+   o.position.set(l, t);
+   o.size.set(w, h);
 }

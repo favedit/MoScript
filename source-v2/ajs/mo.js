@@ -7065,96 +7065,23 @@ function SRange_dump(d){
    d.append(' [', o.x, ',', o.y, '-', o.width, ',', o.height, '] ');
    return d;
 }
-function SRectangle(l, t, r, b){
-   var o = this;
-   o.left      = RInteger.nvl(left);
-   o.top       = RInteger.nvl(top);
-   o.right     = RInteger.nvl(right);
-   o.bottom    = RInteger.nvl(bottom);
-   o.reset     = SRectangle_reset;
-   o.assign    = SRectangle_assign;
+function SRectangle(o){
+   if(!o){o = this;}
+   o.position  = new SPoint2();
+   o.size      = new SSize2();
    o.set       = SRectangle_set;
-   o.setBounds = SRectangle_setBounds;
-   o.width     = SRectangle_width;
-   o.setWidth  = SRectangle_setWidth;
-   o.height    = SRectangle_height;
-   o.setHeight = SRectangle_setHeight;
-   o.move      = SRectangle_move;
-   o.inc       = SRectangle_inc;
-   o.dec       = SRectangle_dec;
-   o.pack      = SRectangle_dump;
-   o.unpack    = SRectangle_dump;
-   o.dump      = SRectangle_dump;
+   o.assign    = SRectangle_assign;
    return o;
 }
-function SRectangle_reset(){
+function SRectangle_assign(p){
    var o = this;
-   o.left = 0;
-   o.top = 0;
-   o.right = 0;
-   o.bottom = 0;
+   o.position.assign(p.position);
+   o.size.assign(p.size);
 }
-function SRectangle_assign(rect){
-   this.left = rect.left;
-   this.top = rect.top;
-   this.right = rect.right;
-   this.bottom = rect.bottom;
-}
-function SRectangle_set(left, top, right, bottom){
-   this.left = left;
-   this.top = top;
-   this.right = right;
-   this.bottom = bottom;
-}
-function SRectangle_setBounds(left, top, width, height){
+function SRectangle_set(l, t, w, h){
    var o = this;
-   o.left = left;
-   o.top = top;
-   o.right = o.left + width - 1;
-   o.bottom = o.top + height - 1;
-}
-function SRectangle_width(){
-   return this.right - this.left + 1;
-}
-function SRectangle_setWidth(width){
-   if(width){
-      this.right = this.left + width - 1;
-   }
-}
-function SRectangle_height(){
-   return this.bottom - this.top + 1;
-}
-function SRectangle_setHeight(height){
-   if(height){
-      this.bottom = this.top + height - 1;
-   }
-}
-function SRectangle_move(x, y){
-   this.left += x;
-   this.top += y;
-   this.right += x;
-   this.bottom += y;
-}
-function SRectangle_inc(border){
-   var n = RInt.nvl(border, 1);
-   this.left -= n;
-   this.top -= n;
-   this.right += n;
-   this.bottom += n;
-}
-function SRectangle_dec(border){
-   var n = RInt.nvl(border, 1);
-   this.left += n;
-   this.top += n;
-   this.right -= n;
-   this.bottom -= n;
-}
-function SRectangle_dump(d){
-   d = RString.nvlStr(d);
-   d.append(RClass.name(this));
-   d.append(' [', this.left, ',', this.top, '-', this.right, ',', this.bottom, '] ');
-   d.append('(', this.width(), '-', this.height(), ')');
-   return d;
+   o.position.set(l, t);
+   o.size.set(w, h);
 }
 function SSize2(w, h){
    var o = this;
@@ -7248,6 +7175,97 @@ function SSize3_toString(){
 function SSize3_dump(){
    var o = this;
    return RClass.dump(o) + ' [' + o.width + ',' + o.height + ',' + o.deep + ']';
+}
+function SSquare(l, t, r, b){
+   var o = this;
+   o.left      = RInteger.nvl(left);
+   o.top       = RInteger.nvl(top);
+   o.right     = RInteger.nvl(right);
+   o.bottom    = RInteger.nvl(bottom);
+   o.reset     = SSquare_reset;
+   o.assign    = SSquare_assign;
+   o.set       = SSquare_set;
+   o.setBounds = SSquare_setBounds;
+   o.width     = SSquare_width;
+   o.setWidth  = SSquare_setWidth;
+   o.height    = SSquare_height;
+   o.setHeight = SSquare_setHeight;
+   o.move      = SSquare_move;
+   o.inc       = SSquare_inc;
+   o.dec       = SSquare_dec;
+   o.pack      = SSquare_dump;
+   o.unpack    = SSquare_dump;
+   o.dump      = SSquare_dump;
+   return o;
+}
+function SSquare_reset(){
+   var o = this;
+   o.left = 0;
+   o.top = 0;
+   o.right = 0;
+   o.bottom = 0;
+}
+function SSquare_assign(rect){
+   this.left = rect.left;
+   this.top = rect.top;
+   this.right = rect.right;
+   this.bottom = rect.bottom;
+}
+function SSquare_set(left, top, right, bottom){
+   this.left = left;
+   this.top = top;
+   this.right = right;
+   this.bottom = bottom;
+}
+function SSquare_setBounds(left, top, width, height){
+   var o = this;
+   o.left = left;
+   o.top = top;
+   o.right = o.left + width - 1;
+   o.bottom = o.top + height - 1;
+}
+function SSquare_width(){
+   return this.right - this.left + 1;
+}
+function SSquare_setWidth(width){
+   if(width){
+      this.right = this.left + width - 1;
+   }
+}
+function SSquare_height(){
+   return this.bottom - this.top + 1;
+}
+function SSquare_setHeight(height){
+   if(height){
+      this.bottom = this.top + height - 1;
+   }
+}
+function SSquare_move(x, y){
+   this.left += x;
+   this.top += y;
+   this.right += x;
+   this.bottom += y;
+}
+function SSquare_inc(border){
+   var n = RInt.nvl(border, 1);
+   this.left -= n;
+   this.top -= n;
+   this.right += n;
+   this.bottom += n;
+}
+function SSquare_dec(border){
+   var n = RInt.nvl(border, 1);
+   this.left += n;
+   this.top += n;
+   this.right -= n;
+   this.bottom -= n;
+}
+function SSquare_dump(d){
+   d = RString.nvlStr(d);
+   d.append(RClass.name(this));
+   d.append(' [', this.left, ',', this.top, '-', this.right, ',', this.bottom, '] ');
+   d.append('(', this.width(), '-', this.height(), ')');
+   return d;
 }
 function SVector3(o){
    if(!o){o = this;}
@@ -13342,7 +13360,7 @@ function FG3dProjection(o){
 function FG3dProjection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._size = new SSize2();;
+   o._size = new SSize2();
 }
 function FG3dProjection_size(){
    return this._size;
@@ -14114,6 +14132,7 @@ function FG3dContext(o){
    o.createFlatTexture   = RMethod.virtual(o, 'createFlatTexture');
    o.createCubeTexture   = RMethod.virtual(o, 'createCubeTexture');
    o.createRenderTarget  = RMethod.virtual(o, 'createRenderTarget');
+   o.setViewport         = RMethod.virtual(o, 'setViewport');
    o.setFillMode         = RMethod.virtual(o, 'setFillMode');
    o.setDepthMode        = RMethod.virtual(o, 'setDepthMode');
    o.setCullingMode      = RMethod.virtual(o, 'setCullingMode');
@@ -15308,7 +15327,7 @@ function FWglContext(o){
    o.createFlatTexture   = FWglContext_createFlatTexture;
    o.createCubeTexture   = FWglContext_createCubeTexture;
    o.createRenderTarget  = FWglContext_createRenderTarget;
-   o.setViewPort         = FWglContext_setViewPort;
+   o.setViewport         = FWglContext_setViewport;
    o.setFillMode         = FWglContext_setFillMode;
    o.setDepthMode        = FWglContext_setDepthMode;
    o.setCullingMode      = FWglContext_setCullingMode;
@@ -15347,7 +15366,7 @@ function FWglContext_linkCanvas(h){
       o._native = n;
    }
    var g = o._native;
-   o.setViewPort(h.width, h.height);
+   o.setViewport(h.width, h.height);
    o.setDepthMode(true, EG3dDepthMode.LessEqual);
    o.setCullingMode(true, EG3dCullMode.Front);
    var c = o._capability;
@@ -15557,11 +15576,10 @@ function FWglContext_createRenderTarget(){
    r.setup();
    return r;
 }
-function FWglContext_setViewPort(w, h){
-   var g = this._native;
-   g.viewportWidth = w;
-   g.viewportHeight = h;
-   g.viewport(0, 0, w, h);
+function FWglContext_setViewport(l, t, w, h){
+   var o = this;
+   o._size.set(w, h);
+   o._native.viewport(l, t, w, h);
 }
 function FWglContext_setFillMode(){
 }
@@ -15636,6 +15654,9 @@ function FWglContext_setScissorRectangle(l, t, w, h){
 function FWglContext_setRenderTarget(p){
    var o = this;
    var g = o._native;
+   if(o._activeRenderTarget == p){
+      return;
+   }
    var r = true;
    if(p == null){
       g.bindFramebuffer(g.FRAMEBUFFER, null);
@@ -17720,17 +17741,17 @@ function FTemplate3dConsole(o){
    o.construct      = FTemplate3dConsole_construct;
    o.templates      = FTemplate3dConsole_templates;
    o.alloc          = FTemplate3dConsole_alloc;
-   o.load           = FTemplate3dConsole_load;
+   o.free           = FTemplate3dConsole_free;
    return o;
 }
 function FTemplate3dConsole_onProcess(){
    var o = this;
-   var ms = o._loadTemplates;
-   ms.record();
-   while(ms.next()){
-      var m = ms.current();
-      if(m.processLoad()){
-         ms.removeCurrent();
+   var s = o._loadTemplates;
+   s.record();
+   while(s.next()){
+      var t = s.current();
+      if(t.processLoad()){
+         s.removeCurrent();
       }
    }
 }
@@ -17748,22 +17769,32 @@ function FTemplate3dConsole_templates(){
 }
 function FTemplate3dConsole_alloc(c, n){
    var o = this;
+   var ts = o._templates.get(n);
+   if(ts){
+      if(!ts.isEmpty()){
+         return ts.pop();
+      }
+   }
    var rc = RConsole.find(FRs3TemplateConsole);
    var r = rc.load(n);
    var t = RClass.create(FTemplate3d);
    t._context = c;
    t._name = n;
+   t._resourceGuid = n;
    t.setResource(r);
    o._loadTemplates.push(t);
    return t;
 }
-function FTemplate3dConsole_load(pt, pn){
+function FTemplate3dConsole_free(p){
    var o = this;
-   var rtc = RConsole.find(FRs3TemplateConsole);
-   var rt = rtc.load(pn);
-   pt._name = pn;
-   pt.setResource(rt);
-   o._loadTemplates.push(pt);
+   p.remove();
+   var n = p._resourceGuid;
+   var ts = o._templates.get(n);
+   if(ts == null){
+      ts = new TObjects();
+      o._templates.set(n, ts);
+   }
+   ts.push(p);
 }
 function FTemplateRenderable3d(o){
    o = RClass.inherits(this, o, FG3dRenderable);
@@ -20943,7 +20974,7 @@ function FG3dProjection(o){
 function FG3dProjection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._size = new SSize2();;
+   o._size = new SSize2();
 }
 function FG3dProjection_size(){
    return this._size;
@@ -21715,6 +21746,7 @@ function FG3dContext(o){
    o.createFlatTexture   = RMethod.virtual(o, 'createFlatTexture');
    o.createCubeTexture   = RMethod.virtual(o, 'createCubeTexture');
    o.createRenderTarget  = RMethod.virtual(o, 'createRenderTarget');
+   o.setViewport         = RMethod.virtual(o, 'setViewport');
    o.setFillMode         = RMethod.virtual(o, 'setFillMode');
    o.setDepthMode        = RMethod.virtual(o, 'setDepthMode');
    o.setCullingMode      = RMethod.virtual(o, 'setCullingMode');
@@ -22909,7 +22941,7 @@ function FWglContext(o){
    o.createFlatTexture   = FWglContext_createFlatTexture;
    o.createCubeTexture   = FWglContext_createCubeTexture;
    o.createRenderTarget  = FWglContext_createRenderTarget;
-   o.setViewPort         = FWglContext_setViewPort;
+   o.setViewport         = FWglContext_setViewport;
    o.setFillMode         = FWglContext_setFillMode;
    o.setDepthMode        = FWglContext_setDepthMode;
    o.setCullingMode      = FWglContext_setCullingMode;
@@ -22948,7 +22980,7 @@ function FWglContext_linkCanvas(h){
       o._native = n;
    }
    var g = o._native;
-   o.setViewPort(h.width, h.height);
+   o.setViewport(h.width, h.height);
    o.setDepthMode(true, EG3dDepthMode.LessEqual);
    o.setCullingMode(true, EG3dCullMode.Front);
    var c = o._capability;
@@ -23158,11 +23190,10 @@ function FWglContext_createRenderTarget(){
    r.setup();
    return r;
 }
-function FWglContext_setViewPort(w, h){
-   var g = this._native;
-   g.viewportWidth = w;
-   g.viewportHeight = h;
-   g.viewport(0, 0, w, h);
+function FWglContext_setViewport(l, t, w, h){
+   var o = this;
+   o._size.set(w, h);
+   o._native.viewport(l, t, w, h);
 }
 function FWglContext_setFillMode(){
 }
@@ -23237,6 +23268,9 @@ function FWglContext_setScissorRectangle(l, t, w, h){
 function FWglContext_setRenderTarget(p){
    var o = this;
    var g = o._native;
+   if(o._activeRenderTarget == p){
+      return;
+   }
    var r = true;
    if(p == null){
       g.bindFramebuffer(g.FRAMEBUFFER, null);
@@ -25149,6 +25183,16 @@ function FFocusConsole_dispose(){
    o.__base.FConsole.dispose.call(o);
    o._focusClasses = null;
 }
+function FWorkspace(o){
+   o = RClass.inherits(this, o, FContainer);
+   o._frames      = null;
+   o.onBuildPanel = FWorkspace_onBuildPanel
+   return o;
+}
+function FWorkspace_onBuildPanel(p){
+   var o = this;
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+}
 function MContainer(o){
    o = RClass.inherits(this, o);
    o.createChild = RMethod.empty;
@@ -26702,6 +26746,37 @@ function MHorizontal_setVisible(p){
    var h = o.hPanelLine;
    if(h){
       RHtml.displaySet(h, p);
+   }
+}
+var RApplication = new function RApplication(){
+   var o = this;
+   o._workspaces   = new TDictionary();
+   o.initialize    = RApplication_initialize;
+   o.findWorkspace = RApplication_findWorkspace;
+   o.release       = RApplication_release;
+   return o;
+}
+function RApplication_initialize(){
+   var o = this;
+   RBrowser.construct();
+   RWindow.connect(window);
+}
+function RApplication_findWorkspace(p){
+   var o = this;
+   var n = RClass.name(p);
+   var ws = o._workspaces;
+   var w = ws.get(n);
+   if(w == null){
+      w = RClass.create(p);
+      ws.set(n, w);
+   }
+   return w;
+}
+function RApplication_release(){
+   try{
+      CollectGarbage();
+   }catch(e){
+      RLogger.error(e);
    }
 }
 var RControl = new function RControl(){
@@ -36146,13 +36221,756 @@ function FFrameSpliter_click(){
       }
    }
 }
-function FWorkspace(o){
-   o = RClass.inherits(this, o, FContainer);
-   o._frames      = null;
-   o.onBuildPanel = FWorkspace_onBuildPanel
+function FDsApplication(o){
+   o = RClass.inherits(this, o, FObject);
+   o._name             = null;
+   o._matrix           = null;
+   o._location         = null;
+   o._rotation         = null;
+   o._scale            = null;
+   o._visible          = true;
+   o._renderables      = null;
+   o.construct         = FDsApplication_construct;
+   o.isName            = FDsApplication_isName;
+   o.name              = FDsApplication_name;
+   o.matrix            = FDsApplication_matrix;
+   o.location          = FDsApplication_location;
+   o.rotation          = FDsApplication_rotation;
+   o.scale             = FDsApplication_scale;
+   o.hasRenderable     = FDsApplication_hasRenderable;
+   o.filterRenderables = FDsApplication_filterRenderables;
+   o.renderables       = FDsApplication_renderables;
+   o.pushRenderable    = FDsApplication_pushRenderable;
+   o.process           = FDsApplication_process;
+   o.update            = FDsApplication_update;
+   o.dispose           = FDsApplication_dispose;
    return o;
 }
-function FWorkspace_onBuildPanel(p){
+function FDsApplication_construct(){
    var o = this;
-   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+   o.__base.FObject.construct.call(o);
+   o._matrix = new SMatrix3d();
+   o._location = new SPoint3();
+   o._rotation = new SVector3();
+   o._scale = new SVector3();
+   o._scale.set(1, 1, 1);
 }
+function FDsApplication_isName(p){
+   return this._name == p;
+}
+function FDsApplication_name(){
+   return this._name;
+}
+function FDsApplication_matrix(){
+   return this._matrix;
+}
+function FDsApplication_location(){
+   return this._location;
+}
+function FDsApplication_rotation(){
+   return this._rotation;
+}
+function FDsApplication_scale(){
+   return this._scale;
+}
+function FDsApplication_hasRenderable(){
+   var r = this._renderables;
+   if(r != null){
+      return !r.isEmpty();
+   }
+   return false;
+}
+function FDsApplication_filterRenderables(p){
+   var o = this;
+   if(!o._visible){
+      return false;
+   }
+   var rs = o._renderables;
+   if(rs != null){
+      var c = rs.count();
+      for(var n = 0; n < c; n++){
+         var r = rs.get(n);
+         if(r.testVisible()){
+            p.pushRenderable(r);
+         }
+      }
+   }
+   return true;
+}
+function FDsApplication_renderables(){
+   var o = this;
+   var r = o._renderables;
+   if(r == null){
+      r = o._renderables = new TObjects();
+   }
+   return r;
+}
+function FDsApplication_pushRenderable(p){
+   this.renderables().push(p);
+}
+function FDsApplication_update(){
+   var o = this;
+   var m = o._matrix;
+   m.set(o._location, o._rotation, o._scale);
+   m.update();
+}
+function FDsApplication_process(){
+   var o = this;
+   var rs = o._renderables;
+   if(rs != null){
+      var c = rs.count();
+      for(var i = 0; i < c; i++){
+         rs.get(i).process();
+      }
+   }
+}
+function FDsApplication_dispose(){
+   var o = this;
+   o._matrix = null;
+   o._position = null;
+   o._direction = null;
+   o._scale = null;
+   var rs = o._renderables;
+   if(rs != null){
+      rs.dispose();
+      o._renderables = null
+   }
+   o.__base.FObject.dispose.call(o);
+}
+function FDsMainCanvas(o){
+   o = RClass.inherits(this, o, FCanvas);
+   o._context   = null;
+   o._stage     = null;
+   o._layer     = null;
+   o._activeModel = null;
+   o._rotationX = 0;
+   o._rotationY = 0;
+   o._rotationZ = 0;
+   o.onBuild      = FDsMainCanvas_onBuild;
+   o.onEnterFrame = FDsMainCanvas_onEnterFrame;
+   o.onThemeLoad  = FDsMainCanvas_onThemeLoad;
+   o.oeRefresh    = FDsMainCanvas_oeRefresh;
+   o.construct    = FDsMainCanvas_construct;
+   o.selectModel  = FDsMainCanvas_selectModel;
+   o.dispose      = FDsMainCanvas_dispose;
+   return o;
+}
+function FDsMainCanvas_onEnterFrame(){
+   var o = this;
+   var m = o._activeModel;
+   if(m){
+      m.location().set(0, -6.0, 0);
+      m.rotation().set(0, o._rotationY, 0);
+      m.scale().set(2, 2, 2);
+      m.update();
+      o._rotationX += 0.01;
+      o._rotationY += 0.01;
+      o._rotationZ += 0.03;
+   }
+}
+function FDsMainCanvas_onThemeLoad(){
+   var o = this;
+   var hCanvas = o._hPanel;
+   hCanvas.width = o._hParent.offsetWidth;
+   hCanvas.height = o._hParent.offsetHeight;
+   o._context = REngine3d.createContext(FWglContext, hCanvas);
+   var g = o._stage = RClass.create(FSimpleStage3d);
+   g.backgroundColor().set(0.5, 0.5, 0.5, 1);
+   g.selectTechnique(o._context, FG3dGeneralTechnique);
+   o._layer = o._stage.spriteLayer();
+   RStage.register('stage3d', o._stage);
+   var rc = o._stage.camera();
+   rc.setPosition(0, 3, -20);
+   rc.lookAt(0, 0, 0);
+   rc.update();
+   o._stage.directionalLight().direction().set(0.7, -0.7, 0);
+   var rp = o._stage.camera().projection();
+   rp.size().set(hCanvas.width, hCanvas.height);
+   rp.update();
+   RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
+   RStage.start();
+}
+function FDsMainCanvas_onBuild(p){
+   var o = this;
+   o.__base.FCanvas.onBuild.call(o, p);
+   var tc = RConsole.find(FRs3ThemeConsole);
+   var m = tc.select('color');
+   m.loadListener().register(o, o.onThemeLoad);
+}
+function FDsMainCanvas_oeRefresh(p){
+   var o = this;
+   o.__base.FCanvas.oeRefresh.call(o, p);
+   return EEventStatus.Stop;
+}
+function FDsMainCanvas_construct(){
+   var o = this;
+   o.__base.FCanvas.construct.call(o);
+}
+function FDsMainCanvas_selectModel(p){
+   var o = this;
+   var rmc = RConsole.find(FModel3dConsole);
+   if(o._activeModel != null){
+      rmc.free(o._activeModel);
+   }
+   var m = rmc.alloc(o._context, p);
+   o._layer.pushDisplay(m);
+   o._activeModel = m;
+}
+function FDsMainCanvas_dispose(){
+   var o = this;
+   o.__base.FCanvas.dispose.call(o);
+}
+function FDsMainCatalog(o){
+   o = RClass.inherits(this, o, FDataTreeView);
+   o.onBuild     = FDsMainCatalog_onBuild;
+   o.onNodeClick = FDsMainCatalog_onNodeClick;
+   o.construct   = FDsMainCatalog_construct;
+   o.dispose     = FDsMainCatalog_dispose;
+   return o;
+}
+function FDsMainCatalog_onBuild(p){
+   var o = this;
+   o.__base.FDataTreeView.onBuild.call(o, p);
+   o.lsnsClick.register(o, o.onNodeClick);
+}
+function FDsMainCatalog_onNodeClick(t, n){
+   var o = this;
+   var c = o._worksapce._canvas;
+   c.selectModel(n.name());
+}
+function FDsMainCatalog_construct(){
+   var o = this;
+   o.__base.FDataTreeView.construct.call(o);
+}
+function FDsMainCatalog_dispose(){
+   var o = this;
+   o.__base.FDataTreeView.dispose.call(o);
+}
+function FDsMainMenuBar(o){
+   o = RClass.inherits(this, o, FMenuBar);
+   o.onBuild   = FDsMainMenuBar_onBuild;
+   o.construct = FDsMainMenuBar_construct;
+   o.dispose   = FDsMainMenuBar_dispose;
+   return o;
+}
+function FDsMainMenuBar_onBuild(p){
+   var o = this;
+   o.__base.FMenuBar.onBuild.call(o, p);
+   var b = o._framesetMain = RClass.create(FMenuButton);
+   b.setLabel('文件');
+   b.setIcon('design.menu.build');
+   b.build(p);
+   o.appendButton(b);
+   var b = o._framesetMain = RClass.create(FMenuButton);
+   b.setLabel('保存');
+   b.setIcon('design.menu.save');
+   b.build(p);
+   o.appendButton(b);
+   var b = o._framesetMain = RClass.create(FMenuButton);
+   b.setLabel('帮助');
+   b.setIcon('design.menu.help');
+   b.build(p);
+   o.appendButton(b);
+}
+function FDsMainMenuBar_construct(){
+   var o = this;
+   o.__base.FMenuBar.construct.call(o);
+}
+function FDsMainMenuBar_dispose(){
+   var o = this;
+   o.__base.FMenuBar.dispose.call(o);
+}
+function FDsMainToolBar(o){
+   o = RClass.inherits(this, o, FToolBar);
+   o.onPersistenceClick   = FDsMainToolBar_onPersistenceClick;
+   o.onBuild   = FDsMainToolBar_onBuild;
+   o.construct = FDsMainToolBar_construct;
+   o.dispose   = FDsMainToolBar_dispose;
+   return o;
+}
+function FDsMainToolBar_onPersistenceClick(p){
+   var o = this;
+   var catalog = o._worksapce._catalog;
+   catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
+}
+function FDsMainToolBar_onBuild(p){
+   var o = this;
+   o.__base.FToolBar.onBuild.call(o, p);
+   var b = o._persistenceButton  = RClass.create(FToolButton);
+   b.setLabel('模型管理');
+   b.build(p);
+   b.lsnsClick.register(o, o.onPersistenceClick);
+   o.appendButton(b);
+   var b = o._framesetMain = RClass.create(FToolButton);
+   b.setLabel('材质管理');
+   b.build(p);
+   o.appendButton(b);
+   var b = o._framesetMain = RClass.create(FToolButton);
+   b.setLabel('模板管理');
+   b.build(p);
+   o.appendButton(b);
+   var b = o._framesetMain = RClass.create(FToolButton);
+   b.setLabel('场景管理');
+   b.build(p);
+   o.appendButton(b);
+}
+function FDsMainToolBar_construct(){
+   var o = this;
+   o.__base.FToolBar.construct.call(o);
+}
+function FDsMainToolBar_dispose(){
+   var o = this;
+   o.__base.FToolBar.dispose.call(o);
+}
+function FDsMainWindow(o){
+   o = RClass.inherits(this, o, FObject);
+   o._name             = null;
+   o._matrix           = null;
+   o._location         = null;
+   o._rotation         = null;
+   o._scale            = null;
+   o._visible          = true;
+   o._renderables      = null;
+   o.construct         = FDsMainWindow_construct;
+   o.isName            = FDsMainWindow_isName;
+   o.name              = FDsMainWindow_name;
+   o.matrix            = FDsMainWindow_matrix;
+   o.location          = FDsMainWindow_location;
+   o.rotation          = FDsMainWindow_rotation;
+   o.scale             = FDsMainWindow_scale;
+   o.hasRenderable     = FDsMainWindow_hasRenderable;
+   o.filterRenderables = FDsMainWindow_filterRenderables;
+   o.renderables       = FDsMainWindow_renderables;
+   o.pushRenderable    = FDsMainWindow_pushRenderable;
+   o.process           = FDsMainWindow_process;
+   o.update            = FDsMainWindow_update;
+   o.dispose           = FDsMainWindow_dispose;
+   return o;
+}
+function FDsMainWindow_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new SMatrix3d();
+   o._location = new SPoint3();
+   o._rotation = new SVector3();
+   o._scale = new SVector3();
+   o._scale.set(1, 1, 1);
+}
+function FDsMainWindow_isName(p){
+   return this._name == p;
+}
+function FDsMainWindow_name(){
+   return this._name;
+}
+function FDsMainWindow_matrix(){
+   return this._matrix;
+}
+function FDsMainWindow_location(){
+   return this._location;
+}
+function FDsMainWindow_rotation(){
+   return this._rotation;
+}
+function FDsMainWindow_scale(){
+   return this._scale;
+}
+function FDsMainWindow_hasRenderable(){
+   var r = this._renderables;
+   if(r != null){
+      return !r.isEmpty();
+   }
+   return false;
+}
+function FDsMainWindow_filterRenderables(p){
+   var o = this;
+   if(!o._visible){
+      return false;
+   }
+   var rs = o._renderables;
+   if(rs != null){
+      var c = rs.count();
+      for(var n = 0; n < c; n++){
+         var r = rs.get(n);
+         if(r.testVisible()){
+            p.pushRenderable(r);
+         }
+      }
+   }
+   return true;
+}
+function FDsMainWindow_renderables(){
+   var o = this;
+   var r = o._renderables;
+   if(r == null){
+      r = o._renderables = new TObjects();
+   }
+   return r;
+}
+function FDsMainWindow_pushRenderable(p){
+   this.renderables().push(p);
+}
+function FDsMainWindow_update(){
+   var o = this;
+   var m = o._matrix;
+   m.set(o._location, o._rotation, o._scale);
+   m.update();
+}
+function FDsMainWindow_process(){
+   var o = this;
+   var rs = o._renderables;
+   if(rs != null){
+      var c = rs.count();
+      for(var i = 0; i < c; i++){
+         rs.get(i).process();
+      }
+   }
+}
+function FDsMainWindow_dispose(){
+   var o = this;
+   o._matrix = null;
+   o._position = null;
+   o._direction = null;
+   o._scale = null;
+   var rs = o._renderables;
+   if(rs != null){
+      rs.dispose();
+      o._renderables = null
+   }
+   o.__base.FObject.dispose.call(o);
+}
+function FDsMainWorkspace(o){
+   o = RClass.inherits(this, o, FWorkspace);
+   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+   o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+   o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+   o._framesetMain         = null;
+   o._framesetBody         = null;
+   o._frameToolBar         = null;
+   o._frameBody            = null;
+   o._frameProperty        = null;
+   o._frameCatalog         = null;
+   o._frameWorkspace       = null;
+   o._frameStatusBar       = null;
+   o.onBuild               = FDsMainWorkspace_onBuild;
+   o.construct             = FDsMainWorkspace_construct;
+   o.dispose               = FDsMainWorkspace_dispose;
+   return o;
+}
+function FDsMainWorkspace_construct(){
+   var o = this;
+   o.__base.FWorkspace.construct.call(o);
+}
+function FDsMainWorkspace_onBuild(p){
+   var o = this;
+   o.__base.FWorkspace.onBuild.call(o, p);
+   o._hPanel.style.width = '100%';
+   o._hPanel.style.height = '100%';
+   var fs = o._framesetMain = RClass.create(FFrameSet);
+   fs.build(p);
+   var f = o._frameToolBar = RClass.create(FFrame);
+   f.setHeight(26);
+   f.build(p);
+   f._hPanel.className = o.styleName('Toolbar_Ground');
+   fs.appendFrame(f);
+   var f = o._frameBody = RClass.create(FFrame);
+   f.build(p);
+   fs.appendFrame(f);
+   var f = o._frameProperty = RClass.create(FFrame);
+   f.setHeight(18);
+   f.build(p);
+   f._hPanel.className = o.styleName('Statusbar_Ground');
+   fs.appendFrame(f);
+   fs.setPanel(o._hPanel);
+   var fs = RClass.create(FFrameSet);
+   fs._directionCd = EDirection.Horizontal;
+   fs.build(p);
+   var f = o._frameCatalog = RClass.create(FFrame);
+   f.setWidth(300);
+   f.build(p);
+   f._hPanel.className = o.styleName('Catalog_Ground');
+   fs.appendFrame(f);
+   var sp1 = fs.appendSpliter();
+   var f = o._frameWorkspace = RClass.create(FFrame);
+   f.build(p);
+   f._hPanel.className = o.styleName('Workspace_Ground');
+   fs.appendFrame(f);
+   var sp2 = fs.appendSpliter();
+   var f = o._frameStatusBar = RClass.create(FFrame);
+   f.setWidth(360);
+   f.build(p);
+   f._hPanel.className = o.styleName('Property_Ground');
+   fs.appendFrame(f);
+   fs.setPanel(o._frameBody._hPanel);
+   sp1._alignCd = EAlign.Left;
+   sp1._hSize = o._frameCatalog._hPanel;
+   sp2._alignCd = EAlign.Right;
+   sp2._hSize = o._frameStatusBar._hPanel;
+   var c = o._catalog = RClass.create(FDsMainCatalog);
+   c._worksapce = o;
+   c.build(p);
+   c.setPanel(o._frameCatalog._hPanel);
+   o.push(c);
+   var c = o._toolbar = RClass.create(FDsMainToolBar);
+   c._worksapce = o;
+   c.build(p);
+   c.setPanel(o._frameToolBar._hPanel);
+   c._persistenceButton.click();
+   o.push(c);
+   var c = o._canvas = RClass.create(FDsMainCanvas);
+   c._worksapce = o;
+   c.build(p);
+   c.setPanel(o._frameWorkspace._hPanel);
+   o.push(c);
+}
+function FDsMainWorkspace_dispose(){
+   var o = this;
+   o.__base.FWorkspace.dispose.call(o);
+}
+var temp = 0;
+var temp = 0;
+var temp = 0;
+function FDsTemplateCanvas(o){
+   o = RClass.inherits(this, o, FCanvas);
+   o._context   = null;
+   o._stage     = null;
+   o._layer     = null;
+   o._activeTemplate = null;
+   o._rotationX = 0;
+   o._rotationY = 0;
+   o._rotationZ = 0;
+   o.onBuild      = FDsTemplateCanvas_onBuild;
+   o.onEnterFrame = FDsTemplateCanvas_onEnterFrame;
+   o.oeRefresh    = FDsTemplateCanvas_oeRefresh;
+   o.construct    = FDsTemplateCanvas_construct;
+   o.loadTemplate = FDsTemplateCanvas_loadTemplate;
+   o.dispose      = FDsTemplateCanvas_dispose;
+   return o;
+}
+function FDsTemplateCanvas_onBuild(p){
+   var o = this;
+   o.__base.FCanvas.onBuild.call(o, p);
+   var h = o._hPanel;
+   o._context = REngine3d.createContext(FWglContext, h);
+   var g = o._stage = RClass.create(FSimpleStage3d);
+   g.backgroundColor().set(0.5, 0.5, 0.5, 1);
+   g.selectTechnique(o._context, FG3dGeneralTechnique);
+   o._layer = o._stage.spriteLayer();
+   RStage.register('stage3d', o._stage);
+   var rc = g.camera();
+   rc.setPosition(0, 3, -20);
+   rc.lookAt(0, 0, 0);
+   rc.update();
+   var rp = rc.projection();
+   rp.size().set(h.width, h.height);
+   rp.update();
+   var l = g.directionalLight();
+   var lc = l.camera();
+   lc.setPosition(10, 10, 0);
+   lc.lookAt(0, 0, 0);
+   lc.update();
+   RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
+   RStage.start();
+}
+function FDsTemplateCanvas_onEnterFrame(){
+   var o = this;
+   var m = o._activeTemplate;
+   if(m){
+      m.location().set(0, -6.0, 0);
+      m.rotation().set(0, o._rotationY, 0);
+      m.scale().set(2.0, 2.0, 2.0);
+      m.update();
+      o._rotationX += 0.01;
+      o._rotationY += 0.01;
+      o._rotationZ += 0.03;
+   }
+}
+function FDsTemplateCanvas_oeRefresh(p){
+   var o = this;
+   var c = o._context;
+   o.__base.FCanvas.oeRefresh.call(o, p);
+   var w = o._hParent.offsetWidth;
+   var h = o._hParent.offsetHeight;
+   var hc = o._hPanel;
+   hc.width = w;
+   hc.height = h;
+   hc.style.width = w;
+   hc.style.height = h;
+   var rp = o._stage.camera().projection();
+   rp.size().set(w, h);
+   rp.update();
+   c._size.set(w, h);
+   c.setViewport(0, 0, w, h);
+   c.setScissorRectangle(0, 0, w, h);
+   return EEventStatus.Stop;
+}
+function FDsTemplateCanvas_construct(){
+   var o = this;
+   o.__base.FCanvas.construct.call(o);
+}
+function FDsTemplateCanvas_loadTemplate(p){
+   var o = this;
+   var rmc = RConsole.find(FTemplate3dConsole);
+   if(o._activeTemplate != null){
+      rmc.free(o._activeTemplate);
+   }
+   var m = rmc.alloc(o._context, p);
+   o._layer.pushDisplay(m);
+   o._activeTemplate = m;
+}
+function FDsTemplateCanvas_dispose(){
+   var o = this;
+   o.__base.FCanvas.dispose.call(o);
+}
+function FDsTemplateCatalog(o){
+   o = RClass.inherits(this, o, FDataTreeView);
+   o.onBuild     = FDsTemplateCatalog_onBuild;
+   o.onNodeClick = FDsTemplateCatalog_onNodeClick;
+   o.construct   = FDsTemplateCatalog_construct;
+   o.dispose     = FDsTemplateCatalog_dispose;
+   return o;
+}
+function FDsTemplateCatalog_onBuild(p){
+   var o = this;
+   o.__base.FDataTreeView.onBuild.call(o, p);
+   o.lsnsClick.register(o, o.onNodeClick);
+}
+function FDsTemplateCatalog_onNodeClick(t, n){
+   var o = this;
+   var c = o._worksapce._canvas;
+   c.selectModel(n.name());
+}
+function FDsTemplateCatalog_construct(){
+   var o = this;
+   o.__base.FDataTreeView.construct.call(o);
+}
+function FDsTemplateCatalog_dispose(){
+   var o = this;
+   o.__base.FDataTreeView.dispose.call(o);
+}
+function FDsTemplateToolBar(o){
+   o = RClass.inherits(this, o, FToolBar);
+   o.onPersistenceClick   = FDsTemplateToolBar_onPersistenceClick;
+   o.onBuild   = FDsTemplateToolBar_onBuild;
+   o.construct = FDsTemplateToolBar_construct;
+   o.dispose   = FDsTemplateToolBar_dispose;
+   return o;
+}
+function FDsTemplateToolBar_onPersistenceClick(p){
+   var o = this;
+   var catalog = o._worksapce._catalog;
+   catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
+}
+function FDsTemplateToolBar_onBuild(p){
+   var o = this;
+   o.__base.FToolBar.onBuild.call(o, p);
+   var b = o._persistenceButton  = RClass.create(FToolButton);
+   b.setLabel('刷新');
+   b.build(p);
+   b.lsnsClick.register(o, o.onPersistenceClick);
+   o.appendButton(b);
+   var b = o._framesetMain = RClass.create(FToolButton);
+   b.setLabel('保存');
+   b.build(p);
+   o.appendButton(b);
+}
+function FDsTemplateToolBar_construct(){
+   var o = this;
+   o.__base.FToolBar.construct.call(o);
+}
+function FDsTemplateToolBar_dispose(){
+   var o = this;
+   o.__base.FToolBar.dispose.call(o);
+}
+function FDsTemplateWorkspace(o){
+   o = RClass.inherits(this, o, FWorkspace);
+   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+   o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+   o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+   o._framesetMain         = null;
+   o._framesetBody         = null;
+   o._frameToolBar         = null;
+   o._frameBody            = null;
+   o._frameProperty        = null;
+   o._frameCatalog         = null;
+   o._frameWorkspace       = null;
+   o._frameStatusBar       = null;
+   o.onBuild               = FDsTemplateWorkspace_onBuild;
+   o.construct             = FDsTemplateWorkspace_construct;
+   o.dispose               = FDsTemplateWorkspace_dispose;
+   return o;
+}
+function FDsTemplateWorkspace_construct(){
+   var o = this;
+   o.__base.FWorkspace.construct.call(o);
+}
+function FDsTemplateWorkspace_onBuild(p){
+   var o = this;
+   o.__base.FWorkspace.onBuild.call(o, p);
+   o._hPanel.style.width = '100%';
+   o._hPanel.style.height = '100%';
+   var fs = o._framesetMain = RClass.create(FFrameSet);
+   fs.build(p);
+   var f = o._frameToolBar = RClass.create(FFrame);
+   f.setHeight(26);
+   f.build(p);
+   f._hPanel.className = o.styleName('Toolbar_Ground');
+   fs.appendFrame(f);
+   var f = o._frameBody = RClass.create(FFrame);
+   f.build(p);
+   fs.appendFrame(f);
+   var f = o._frameProperty = RClass.create(FFrame);
+   f.setHeight(18);
+   f.build(p);
+   f._hPanel.className = o.styleName('Statusbar_Ground');
+   fs.appendFrame(f);
+   fs.setPanel(o._hPanel);
+   var fs = RClass.create(FFrameSet);
+   fs._directionCd = EDirection.Horizontal;
+   fs.build(p);
+   var f = o._frameCatalog = RClass.create(FFrame);
+   f.setWidth(300);
+   f.build(p);
+   f._hPanel.className = o.styleName('Catalog_Ground');
+   fs.appendFrame(f);
+   var sp1 = fs.appendSpliter();
+   var f = o._frameWorkspace = RClass.create(FFrame);
+   f.build(p);
+   f._hPanel.className = o.styleName('Workspace_Ground');
+   fs.appendFrame(f);
+   var sp2 = fs.appendSpliter();
+   var f = o._frameStatusBar = RClass.create(FFrame);
+   f.setWidth(360);
+   f.build(p);
+   f._hPanel.className = o.styleName('Property_Ground');
+   fs.appendFrame(f);
+   fs.setPanel(o._frameBody._hPanel);
+   sp1._alignCd = EAlign.Left;
+   sp1._hSize = o._frameCatalog._hPanel;
+   sp2._alignCd = EAlign.Right;
+   sp2._hSize = o._frameStatusBar._hPanel;
+   var c = o._catalog = RClass.create(FDsTemplateCatalog);
+   c._worksapce = o;
+   c.build(p);
+   c.setPanel(o._frameCatalog._hPanel);
+   o.push(c);
+   var c = o._toolbar = RClass.create(FDsTemplateToolBar);
+   c._worksapce = o;
+   c.build(p);
+   c.setPanel(o._frameToolBar._hPanel);
+   o.push(c);
+   var c = o._canvas = RClass.create(FDsTemplateCanvas);
+   c._worksapce = o;
+   c.build(p);
+   c.setPanel(o._frameWorkspace._hPanel);
+   o.push(c);
+   c.loadTemplate('24219F2C47F341B8BC2CD3191DA2A02D');
+}
+function FDsTemplateWorkspace_dispose(){
+   var o = this;
+   o.__base.FWorkspace.dispose.call(o);
+}
+var temp = 0;

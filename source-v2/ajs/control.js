@@ -1088,6 +1088,16 @@ function FFocusConsole_dispose(){
    o.__base.FConsole.dispose.call(o);
    o._focusClasses = null;
 }
+function FWorkspace(o){
+   o = RClass.inherits(this, o, FContainer);
+   o._frames      = null;
+   o.onBuildPanel = FWorkspace_onBuildPanel
+   return o;
+}
+function FWorkspace_onBuildPanel(p){
+   var o = this;
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+}
 function MContainer(o){
    o = RClass.inherits(this, o);
    o.createChild = RMethod.empty;
@@ -2641,6 +2651,37 @@ function MHorizontal_setVisible(p){
    var h = o.hPanelLine;
    if(h){
       RHtml.displaySet(h, p);
+   }
+}
+var RApplication = new function RApplication(){
+   var o = this;
+   o._workspaces   = new TDictionary();
+   o.initialize    = RApplication_initialize;
+   o.findWorkspace = RApplication_findWorkspace;
+   o.release       = RApplication_release;
+   return o;
+}
+function RApplication_initialize(){
+   var o = this;
+   RBrowser.construct();
+   RWindow.connect(window);
+}
+function RApplication_findWorkspace(p){
+   var o = this;
+   var n = RClass.name(p);
+   var ws = o._workspaces;
+   var w = ws.get(n);
+   if(w == null){
+      w = RClass.create(p);
+      ws.set(n, w);
+   }
+   return w;
+}
+function RApplication_release(){
+   try{
+      CollectGarbage();
+   }catch(e){
+      RLogger.error(e);
    }
 }
 var RControl = new function RControl(){

@@ -77,16 +77,16 @@ function _load(){
    rc.setPosition(0, 8, -8);
    rc.lookAt(0, 0, 0);
    rc.update();
+   // 设置投影
+   var rp = rc.projection();
+   rp.size().set(hCanvas.width, hCanvas.height);
+   rp.update();
    // 设置光源
    var l = stage.directionalLight();
    var lc = l.camera();
    lc.setPosition(10, 10, 0);
    lc.lookAt(0, 0, 0);
    lc.update();
-   // 设置投影
-   var rp = stage.camera().projection();
-   rp.size().set(hCanvas.width, hCanvas.height);
-   rp.update();
    // 启动处理
    RStage.lsnsEnterFrame.register(null, onEnterFrame);
    RStage.start(15);

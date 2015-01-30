@@ -276,13 +276,3 @@ function FFrameSpliter_click(){
       }
    }
 }
-function FWorkspace(o){
-   o = RClass.inherits(this, o, FContainer);
-   o._frames      = null;
-   o.onBuildPanel = FWorkspace_onBuildPanel
-   return o;
-}
-function FWorkspace_onBuildPanel(p){
-   var o = this;
-   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
-}

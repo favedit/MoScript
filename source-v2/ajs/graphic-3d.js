@@ -794,7 +794,7 @@ function FG3dProjection(o){
 function FG3dProjection_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._size = new SSize2();;
+   o._size = new SSize2();
 }
 function FG3dProjection_size(){
    return this._size;
