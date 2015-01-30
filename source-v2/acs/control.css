@@ -1,0 +1,391 @@
+/* ------------------------------------------------------ */
+/* FEditControl                                           */
+/* ------------------------------------------------------ */
+.FEditControl_LabelPanel{
+   color: #CCCCCC;
+}
+
+.FEditControl_EditorPanel{
+   padding:0px 2px 0px 2px;
+   border-radius:2px;
+   border-left:1px solid #333333; border-top:1px solid #333333; border-right:1px solid #666666; border-bottom:1px solid #666666;
+   background-color: #565656;
+}
+
+/* ------------------------------------------------------ */
+/* FCheck                                                 */
+/* ------------------------------------------------------ */
+.FCheck_Input{
+   width: 12px;
+   height: 12px;
+   cursor: pointer;
+}
+
+/* ------------------------------------------------------ */
+/* FRadio                                                 */
+/* ------------------------------------------------------ */
+.FRadio_Input{
+   width: 12px;
+   height: 12px;
+   cursor: pointer;
+}
+
+/* ------------------------------------------------------ */
+/* FEdit                                                  */
+/* ------------------------------------------------------ */
+.FEdit_Input{
+   width: 100%;
+   border: 0;
+   color: #CCCCCC;
+   background-color: #565656;
+}
+
+
+/* ------------------------------------------------------ */
+/* FCanvas                                                  */
+/* ------------------------------------------------------ */
+.FCanvas_Canvas{
+}
+/* ------------------------------------------------------ */
+/* FLayout                                                */
+/* ------------------------------------------------------ */
+.FLayout_Form{
+   width: 100%;
+}
+
+/* ------------------------------------------------------ */
+/* FPanel                                                 */
+/* ------------------------------------------------------ */
+.FPanel_Panel{
+}
+
+.FPanel_Label{
+   text-align: center;
+   padding-top: 3px;
+   border: 1px solid #666666;
+   border-radius:4px 4px 0px 0px;
+   color: #EEEEEE;
+   background-color: #666666;
+}
+
+.FPanel_Body{
+   border: 1px solid #666666;
+   border-radius:0px 0px 4px 4px;
+   padding: 0px 8px 0px 8px;
+   background-color: #444444;
+}
+
+.FPanel_Form{
+}
+
+/* ------------------------------------------------------ */
+/* FCell                                                  */
+/* ------------------------------------------------------ */
+.FCell_Panel{
+   background-color: #F0F0F0;
+   border-right: 1px solid #F0F0F0;
+   border-bottom: 1px dotted #CCCCCC;
+}
+
+/* ------------------------------------------------------ */
+/* FCellEdit                                              */
+/* ------------------------------------------------------ */
+.FCellEdit_Input{
+   width: 100%;
+   border: 0px;
+   background-color: #F0F0F0;
+}
+
+/* ------------------------------------------------------ */
+/* FColumn                                                */
+/* ------------------------------------------------------ */
+.FColumn_Label{
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #FFFFFF, #EEEEEE);
+   background: -moz-linear-gradient(top, #FFFFFF, #EEEEEE); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#EEEEEE)); 
+}
+
+.FColumn_SearchPanel{
+   background-color: #EEEEEE;
+}
+
+.FColumn_SearchEdit{
+   width: 100%;
+   border:0px;
+   background-color: #EEEEEE;
+}
+
+/* ------------------------------------------------------ */
+/* FGridControl                                           */
+/* ------------------------------------------------------ */
+.FGridControl_Panel{
+   width:100%;
+   height:300px;
+   border-radius: 6px;
+   border: 1px solid #CCCCCC;
+}
+
+.FGridControl_TitlePanel{
+   height: 24px;
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #DDDDDD, #999999);
+   background: -moz-linear-gradient(top, #DDDDDD, #999999);
+   background: -webkit-gradient(linear, left top, left bottom, from(#DDDDDD), to(#999999));
+}
+
+.FGridControl_Caption{
+   color: #FFFFFF;
+   font-weight: bold;
+   text-align: center;
+}
+
+.FGridControl_TitleForm{
+   width: 100%;
+}
+
+.FGridControl_ContentPanel{
+   position: relative;
+   background-color: #333333;
+}
+
+.FGridControl_HintPanel{
+   height: 20px;
+   padding; 0px 8px 0px 8px;
+   background: -ms-linear-gradient(top, #666666, #999999);
+   background: -moz-linear-gradient(top, #666666, #999999); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#333333), to(#666666)); 
+}
+
+.FGridControl_HintForm{
+   width: 100%;
+}
+
+.FGridControl_Hint{
+}
+
+.FGridControl_Button{
+   color: #EEEEEE;
+   white-space: nowrap;
+}
+
+
+/* ------------------------------------------------------ */
+/* Table                                                  */
+/* ------------------------------------------------------ */
+.FTable_Panel
+{
+   width:100%;
+}
+.FTable_FixPanel{
+   background-color:#FFFFFF;
+}
+
+.FTable_FixForm{
+}
+
+.FTable_HeadPanel{
+   background-color:CCCCCC;
+}
+
+.FTable_HeadForm{
+}
+
+.FTable_ColumnPanel{
+   background-color:CCCCCC;
+}
+
+.FTable_ColumnForm{
+   table-layout:fixed;
+   border-bottom: 1 solid #BFD3EE;
+}
+
+.FTable_DataPanel{
+   background-color:#666666;
+}
+
+.FTable_DataForm{
+   table-layout:fixed;
+   background-color:#BFD3EE;
+   border-bottom: 1 solid #BFD3EE;
+}
+
+.FRow_Panel{
+}
+
+/* ------------------------------------------------------ */
+/* FMenuBar                                               */
+/* ------------------------------------------------------ */
+.FMenuBar_Panel{
+}
+
+/* ------------------------------------------------------ */
+/* FMenuButton                                            */
+/* ------------------------------------------------------ */
+.FMenuButton_Normal{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   color: #EEEEEE;
+   border-radius:2px;
+   cursor: pointer;
+}
+
+.FMenuButton_Hover{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   cursor: pointer;
+}
+
+.FMenuButton_Press{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   cursor: pointer;
+}
+
+.FMenuButton_Disable{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   cursor: pointer;
+}
+
+.FMenuButton_Icon{
+   border: 0px;
+}
+
+.FMenuButton_Label{
+   padding-left: 6px;
+}
+
+/* ------------------------------------------------------ */
+/* FToolBar                                               */
+/* ------------------------------------------------------ */
+.FToolBar_Panel{
+}
+
+/* ------------------------------------------------------ */
+/* FToolButton                                            */
+/* ------------------------------------------------------ */
+.FToolButton_Normal{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   border:1px solid #CCCCCC;
+   background-color: #DDDDDD;
+   cursor: pointer;
+}
+
+.FToolButton_Hover{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   border:1px solid #CCCCCC;
+   background-color: #FFFFF0;
+   cursor: pointer;
+}
+
+.FToolButton_Press{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   border:1px solid #CCCCCC;
+   background-color: #999999;
+   cursor: pointer;
+}
+
+.FToolButton_Disable{
+   margin:0px 2px 0px 2px;
+   padding:2px 8px 2px 8px;
+   border-radius:2px;
+   border:1px solid #CCCCCC;
+   background-color: #666666;
+   cursor: pointer;
+}
+
+.FToolButton_Icon{
+   border: 0px;
+}
+
+.FToolButton_Label{
+   padding-left: 6px;
+}
+
+/* ------------------------------------------------------ */
+/* FTreeView                                              */
+/* ------------------------------------------------------ */
+.FTreeView_Panel{
+   width: 100%;
+   height: 100%;
+}
+
+.FTreeView_NodePanel{
+   width: 100%;
+   height: 100%;
+   overflow:auto;
+}
+
+.FTreeView_NodeForm{
+}
+
+/* ------------------------------------------------------ */
+/* FTreeNode                                              */
+/* ------------------------------------------------------ */
+.FTreeNode_Panel{
+   width: 0;
+}
+
+.FTreeNode_Normal{
+   cursor: pointer;
+}
+
+.FTreeNode_Hover{
+   background-color: #DDDDDD;
+   cursor: pointer;
+}
+
+.FTreeNode_Select{
+   background-color: #CCCCCC;
+   cursor: pointer;
+}
+
+.FTreeNode_Image{
+}
+
+.FTreeNode_Icon{
+}
+
+.FTreeNode_IconDisable{
+}
+
+.FTreeNode_Label{
+   font: icon;
+   font-size: 9pt;
+}
+
+.FTreeNode_Cell{
+}
+
+/* ------------------------------------------------------ */
+/* FFrameSet                                              */
+/* ------------------------------------------------------ */
+.FFrameSet_Panel{
+   width: 100%;
+   height: 100%;
+}
+
+/* ------------------------------------------------------ */
+/* FFrameSpliter                                          */
+/* ------------------------------------------------------ */
+.FFrameSpliter_Normal{
+   background-color: #666666;
+}
+
+.FFrameSpliter_Hover{
+   background-color: #999999;
+}
+
+.FFrameSpliter_Draging{
+   background-color: #BBBBBB;
+}

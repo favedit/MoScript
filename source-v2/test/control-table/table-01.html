@@ -1,0 +1,61 @@
+<HTML>
+<HEAD>
+<TITLE>Control-Edit-Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+
+<SCRIPT language='javascript' src='../../ajs/mo-core.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/mo-control.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../4.1.1-control/FComponent.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/FControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/FContainer.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/RControl.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../4.1.1-control/MSize.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/MEditDescriptor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/MDataset.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../4.2.2-control-table/FCell.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.2-control-table/FCellStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.2-control-table/FCellSelected.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.2-control-table/FCellEdit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.2-control-table/FColumn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.2-control-table/FColumnEditControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.2-control-table/FColumnStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.2-control-table/FColumnSelected.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.2-control-table/FColumnEdit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.2-control-table/FGridControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.2-control-table/FTable.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+// http://localhost:91/script/test/control-table/table-01.html
+
+function _load(){
+   RRuntime.processCd = EProcess.Debug;
+   RBrowser.construct();
+   RBrowser.setContentPath('../..');
+   RWindow.connect(window);
+   // 加载配置
+   var dfc = RConsole.find(FDescribeFrameConsole);
+   var xframe = dfc.load('common.country.CountryList');
+   // 创建表格
+   var table = RClass.create(FTable);
+   RControl.build(table, xframe, null, _panel);
+   table.setPanel(_panel);
+   table.psRefresh();
+   RDump.dump(table, _dump);
+}
+</SCRIPT>
+
+<BODY scroll='auto' bgcolor='#444444' onload='_load()'>
+<DIV id='_panel'></DIV><br>
+<DIV id='_dump'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

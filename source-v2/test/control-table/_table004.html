@@ -1,0 +1,125 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel='stylesheet' href='../../_.css' type='text/css'>
+<SCRIPT src="../../mobj.js"></SCRIPT>
+<SCRIPT>RGlobal.setContext('jp','../../..','/system');</SCRIPT>
+
+<SCRIPT language='javascript' src='../../lang/RHtml.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../lang/TXmlConnect.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../base/FEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FTextEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FRow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/MDataset.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FDataset.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FControl.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../core/FEditConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../core/FFocusConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../core/FXmlConsole.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../EStyleStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ECellStatus.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../MColumnEditable.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../FDataAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPrepareAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnEditable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnEmpty.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnEdit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FTable.js'></SCRIPT>
+</HEAD>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var table = null;
+function _da(n){
+	if(n == 0){
+		table.doAction("doPrepare")
+	}
+	if(n == 1){
+		table.insertRow();
+	}
+	if(n == 2){
+		table.doAction("doUpdate")
+	}
+	if(n == 3){
+		table.deleteRow()
+	}
+}
+function _dump(){
+	alert(table.dump());
+	//RDump.dump(_id3, table);
+}
+function _load(){
+	RGlobal.path = '../../..';
+	//RLog.link(_id0);
+
+   //table = RControl.fromXml(xTable, _table);
+	alert(RXml.makeNode(xTable));
+	//table.loadDataset(RXml.makeNode(xDataset));
+
+   //RDump.dump(_id3, table)
+}
+</SCRIPT>
+
+<XML ID="xTable">
+<Form name="system.database.frmTable" type="WebForm" action="/system/database/Table/Table.wa" dataset="com.navigator.node.type" edit_insert="Y" edit_update="Y" edit_delete="Y"<DataAction name="doSave" type="DataAction" service="system.database.table"/>
+<Split name="gpBasic" type="Split" label="Basic" icon="ctl.radios"/>
+<Edit name="edtName" type="Edit" label="Name" label_width="80" data_name="name" disp_access="LIU" edit_width="200" edit_length=","/>
+<Edit name="edtNote" type="Edit" nowrap="Y" label="Note" label_width="80" data_name="note" disp_access="LIU" edit_width="200" edit_length=","/>
+<Split name="gpData" type="Split" label="Data" icon="ctl.radios"/>
+<Edit name="edtLogic" type="Edit" label="Logic" label_width="80" data_name="logic" disp_access="LIU" edit_width="200" edit_length=","/>
+<Split name="gpAccess" type="Split" label="Access" icon="ctl.radios"/>
+<Check name="chkEditInsert" type="Check" width="160" nowrap="Y" label="Insert" label_width="80" data_name="edit_insert"/>
+<Check name="chkEditUpdate" type="Check" width="125" nowrap="Y" label="Update" label_width="40" data_name="edit_update"/>
+<Check name="chkEditDelete" type="Check" width="125" nowrap="Y" label="Delete" label_width="40" data_name="edit_delete"/>
+</Form>
+</XML>
+
+<XML ID="xDataset">
+<Dataset>
+  <Row ouid="1" over="123" name="China" label="China Label" note="China Note" />
+  <Row ouid="2" over="234" name="Japan" label="Japan Label" note="Japan Note" />
+</Dataset>
+</XML>
+
+<BODY onload='_load()'>
+
+<input type='BUTTON' value='Dump' onclick='_dump()'></input> | 
+<input type='BUTTON' value='Prepare' onclick='_da(0)'></input> | 
+<input type='BUTTON' value='Insert'  onclick='_da(1)'></input> | 
+<input type='BUTTON' value='Update'  onclick='_da(2)'></input> | 
+<input type='BUTTON' value='Delete'  onclick='_da(3)'></input>
+<BR>
+<BUTTON onclick="oID_1.rules=''">No borders</BUTTON>
+<BUTTON onclick="oID_1.rules='none'">Exterior border</BUTTON>
+<BUTTON onclick="oID_1.rules='all'">All borders</BUTTON><BR>
+<BUTTON onclick="oID_1.rules='cols'">Column borders</BUTTON>
+<BUTTON onclick="oID_1.rules='groups'">Groups borders</BUTTON>
+<BUTTON onclick="oID_1.rules='rows'">Table row borders</BUTTON>
+
+<DIV id='_id' style='border:1 solid red'></DIV>
+
+<BR><BR><BR><BR>
+<DIV id='_table'></DIV><br>
+<DIV id='_id0'></DIV><br>
+<DIV id='_id1'></DIV><br>
+<DIV id='_id2'></DIV><br>
+<DIV id='_id3'></DIV><br>
+<DIV id='_id4'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

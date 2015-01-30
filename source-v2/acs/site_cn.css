@@ -1,0 +1,65 @@
+a                 { text-decoration: none ; color : blue; }
+a:hover           { text-decoration: underline }
+td                { font-family:"NSimSun"; font-size:9pt; }
+div               { font-family:"NSimSun"; font-size:9pt; }
+span              { font-family:"NSimSun"; font-size:9pt; }
+input             { font-family:"NSimSun"; font-size:9pt; border:1px solid #999999; }
+textarea          { font-family:"NSimSun"; font-size:9pt; border:1px solid #999999; }
+
+.comCheckBox          { border:0; }
+.comRadioButton       { border:0; }
+
+
+HTML {
+	BORDER-TOP-WIDTH: 0px; PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BORDER-LEFT-WIDTH: 0px; FONT-SIZE: small; BORDER-BOTTOM-WIDTH: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; COLOR: #303440; PADDING-TOP: 0px; FONT-FAMILY: Tahoma, Arial, Verdana; HEIGHT: 100%; BACKGROUND-COLOR: #5081c0; BORDER-RIGHT-WIDTH: 0px
+}
+BODY {
+	BORDER-TOP-WIDTH: 2px; PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BORDER-LEFT-WIDTH: 0px; FONT-SIZE: small; BORDER-BOTTOM-WIDTH: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; COLOR: #303440; PADDING-TOP: 0px; FONT-FAMILY: Tahoma, Arial, Verdana; HEIGHT: 100%; BACKGROUND-COLOR: #5081c0; BORDER-RIGHT-WIDTH: 0px
+}
+FORM {
+	BORDER-TOP-WIDTH: 0px;
+	PADDING-RIGHT: 0px;
+	PADDING-LEFT: 0px;
+	BORDER-LEFT-WIDTH: 0px;
+	BORDER-BOTTOM-WIDTH: 0px;
+	PADDING-BOTTOM: 0px;
+	MARGIN: 0px;
+	COLOR: #303440;
+	PADDING-TOP: 0px; FONT-FAMILY: Tahoma, Arial, Verdana; HEIGHT: 100%; BORDER-RIGHT-WIDTH: 0px
+}
+
+TABLE#Root {
+	BORDER-TOP-WIDTH: 0px; PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; WIDTH: 100%; PADDING-TOP: 0px; BORDER-COLLAPSE: collapse; HEIGHT: 100%; BORDER-RIGHT-WIDTH: 0px
+}
+TD#RootLeft {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; VERTICAL-ALIGN: top; WIDTH: 50%; PADDING-TOP: 0px; BACKGROUND-REPEAT: repeat-y
+}
+TD#RootRight {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; VERTICAL-ALIGN: top; WIDTH: 50%; PADDING-TOP: 0px; BACKGROUND-REPEAT: repeat-y
+}
+TD#RootLeft {
+	BORDER-RIGHT: #35619d 1px solid; BACKGROUND-POSITION: right top; BACKGROUND-IMAGE: url(rootBgLeft.gif)
+}
+TD#RootRight {
+	BACKGROUND-POSITION: left top; BACKGROUND-IMAGE: url(rootBgRight.gif); BORDER-LEFT: #35619d 1px solid
+}
+TD#RootCenter {
+	PADDING-RIGHT: 0px; BACKGROUND-POSITION: left top; PADDING-LEFT: 0px; BACKGROUND-IMAGE: url(topBg.gif); PADDING-BOTTOM: 0px; MARGIN: 0px; VERTICAL-ALIGN: top; PADDING-TOP: 0px; BACKGROUND-REPEAT: repeat-x; BACKGROUND-COLOR: white
+}
+DIV#CenterSpacer {
+	OVERFLOW: hidden; WIDTH: 1022px; HEIGHT: 1px
+}
+DIV#RootTopLeft {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; WIDTH: 100%; BACKGROUND-REPEAT: no-repeat; HEIGHT: 520px; BORDER-RIGHT-WIDTH: 0px;
+	BACKGROUND-POSITION: right top; BACKGROUND-IMAGE: url(rootBgTopLeft.gif); BORDER-COLLAPSE: collapse
+}
+DIV#RootTopRight {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; WIDTH: 100%; BACKGROUND-REPEAT: no-repeat; HEIGHT: 520px; BORDER-RIGHT-WIDTH: 0px;
+	BACKGROUND-POSITION: left top; BACKGROUND-IMAGE: url(rootBgTopRight.gif)
+}
+TABLE.SmTitleHead {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; BACKGROUND-IMAGE: url(../NB/nbh.gif); PADDING-BOTTOM: 0px; MARGIN: 0px; WIDTH: 100%; BORDER-TOP-STYLE: none; PADDING-TOP: 0px; BACKGROUND-REPEAT: repeat-x; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-COLLAPSE: collapse; HEIGHT: 29px; BACKGROUND-COLOR: #5c8ac4; BORDER-BOTTOM-STYLE: none
+}
+TD.SmTitle {
+	PADDING-RIGHT: 10px! important; PADDING-LEFT: 10px! important; FONT-WEIGHT: normal; FONT-SIZE: 12px; PADDING-BOTTOM: 0px! important; WIDTH: 100%; COLOR: white; PADDING-TOP: 7px! important; WHITE-SPACE: nowrap
+}

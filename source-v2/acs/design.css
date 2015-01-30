@@ -1,0 +1,33 @@
+/* ------------------------------------------------------ */
+/* FDsMainWorkspace                                       */
+/* ------------------------------------------------------ */
+.FDsMainWorkspace_Toolbar_Ground{
+   background: #AEAEAE;
+   padding-top: 3px;
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #AEAEAE, #555555);
+   background: -moz-linear-gradient(top, #AEAEAE, #555555); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#AEAEAE), to(#555555)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#AEAEAE, endColorStr=#555555);
+}
+
+.FDsMainWorkspace_Statusbar_Ground{
+   background: #AEAEAE;
+   border-top: 1px solid #999999;
+   background: -ms-linear-gradient(top, #555555, #AEAEAE);
+   background: -moz-linear-gradient(top, #555555, #AEAEAE); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#555555), to(#AEAEAE)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#555555, endColorStr=#AEAEAE);
+}
+
+.FDsMainWorkspace_Catalog_Ground{
+   background: #FFFFFF;
+}
+
+.FDsMainWorkspace_Workspace_Ground{
+   background: #666666;
+}
+
+.FDsMainWorkspace_Property_Ground{
+   background: #444444;
+}

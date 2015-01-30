@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<TreeNodes>
+
+	<TreeNodeType name='db.table' icon='db.tab' service='tree.table.xml'/>
+
+	<TreeNode type='db.table' caption='COM_COUNTRY' child='Y'/>
+	<TreeNode type='db.table' caption='COM_AREA' child='Y'/>
+
+</TreeNodes>

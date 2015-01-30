@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+
+	<Messages2>
+		<Info message='ASD'/>
+		<Info message='ASD2'/>
+	</Messages2>
+	<Dataset name='base.country'>
+		<Row ouid='101' type='String' name="cn" code="080" full_name="Chinese" over="19491001" is_valid="Y" note="ZhongGuo"/>
+		<Row ouid='102' type='Boolean' name="jp" code="081" full_name="Japanese" over="39491001" is_valid="Y" note="RiBen"/>
+		<Row ouid='101' type='String' name="cn" code="080" full_name="Chinese" over="19491001" is_valid="Y" note="ZhongGuo"/>
+		<Row ouid='102' type='Boolean' name="jp" code="081" full_name="Japanese" over="39491001" is_valid="Y" note="RiBen"/>
+	</Dataset>
+
+</Config>
+

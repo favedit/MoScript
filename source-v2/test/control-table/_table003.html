@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../_.css' type="text/css" media="all"/>
+</HEAD>
+
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../base/FEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FTextEditor.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../core/FEditConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../core/FFocusConsole.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../EStyleStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ECellStatus.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../MColumnEditable.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../FRow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FDataAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FPrepareAction.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnEditable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnEdit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FTable.js'></SCRIPT>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var table = null;
+function _da(n){
+	if(n == 0){
+		table.doAction("doPrepare")
+	}
+	if(n == 1){
+		table.insertRow();
+	}
+	if(n == 2){
+		table.doAction("doUpdate")
+	}
+	if(n == 3){
+		table.deleteRow()
+	}
+}
+function _dump(){
+	alert(table.dump());
+	//RDump.dump(_id3, table);
+}
+function _load(){
+	RGlobal.path = '../../..';
+	//RLog.link(_id0);
+
+   table = RControl.fromXml(xTable, _table);
+	table.loadDataset(RXml.makeNode(xDataset));
+
+   //RDump.dump(_id3, table)
+}
+</SCRIPT>
+
+<XML ID="xTable">
+<WebTable _oid_="BQAAAPxTjeQXAQAA" name="logic.basic.tblCountry" type="WebTable" action="/system/design/webform/WebForm.wa?type=field" table_name="BS_COUNTRY" dataset="com.navigator.node.type">
+  <Column _oid_="NAAAAPFZjeQXAQAA" name="colOuid" type="Column" data_name="OUID" data_type="int" caption="UUID" />
+  <Column _oid_="NQAAAPFZjeQXAQAA" name="colOver" type="Column" data_name="OVER" data_type="string" caption="Version" />
+  <Column _oid_="NgAAAPFZjeQXAQAA" name="colName" type="Column" data_name="name" data_type="string" caption="Name" />
+  <Column _oid_="NwAAAPFZjeQXAQAA" name="colLabel" type="Column" data_name="LABEL" data_type="string" caption="Label" />
+  <Column _oid_="OAAAAPFZjeQXAQAA" name="colNote" type="Column" data_name="NOTE" data_type="string" caption="Note" />
+</WebTable>
+</XML>
+
+<XML ID="xDataset">
+<Dataset>
+  <Row ouid="1" over="123" name="China" label="China Label" note="China Note" />
+  <Row ouid="2" over="234" name="Japan" label="Japan Label" note="Japan Note" />
+</Dataset>
+</XML>
+
+<BODY onload='_load()'>
+
+<input type='BUTTON' value='Dump' onclick='_dump()'></input> | 
+<input type='BUTTON' value='Prepare' onclick='_da(0)'></input> | 
+<input type='BUTTON' value='Insert'  onclick='_da(1)'></input> | 
+<input type='BUTTON' value='Update'  onclick='_da(2)'></input> | 
+<input type='BUTTON' value='Delete'  onclick='_da(3)'></input>
+<BR>
+<BUTTON onclick="oID_1.rules=''">No borders</BUTTON>
+<BUTTON onclick="oID_1.rules='none'">Exterior border</BUTTON>
+<BUTTON onclick="oID_1.rules='all'">All borders</BUTTON><BR>
+<BUTTON onclick="oID_1.rules='cols'">Column borders</BUTTON>
+<BUTTON onclick="oID_1.rules='groups'">Groups borders</BUTTON>
+<BUTTON onclick="oID_1.rules='rows'">Table row borders</BUTTON>
+
+<DIV id='_id' style='border:1 solid red'></DIV>
+
+<BR><BR><BR><BR>
+<DIV id='_table'></DIV><br>
+<DIV id='_id0'></DIV><br>
+<DIV id='_id1'></DIV><br>
+<DIV id='_id2'></DIV><br>
+<DIV id='_id3'></DIV><br>
+<DIV id='_id4'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

@@ -1,0 +1,45 @@
+<HTML>
+<HEAD>
+<TITLE>Control-Edit-Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+
+<SCRIPT language='javascript' src='../../ajs/mo-core.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/mo-control.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../4.1.1-control/FComponent.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/FControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/MSize.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/MEditDescriptor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FEditControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FEdit.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+
+function _load(){
+   RRuntime.processCd = EProcess.Debug;
+   RBrowser.construct();
+   //RStyle.connect();
+   //debugger
+   //var edit = RClass.create(FEdit);
+   //var edit = RClass.create(FControl);
+   var edit = RClass.create(FEdit);
+   edit._label = "编号";
+   edit._labelSize.width = 100;
+   edit.psBuild(_panel);
+   _panel.appendChild(edit._hContainer);
+   RDump.dump(edit, _dump);
+}
+</SCRIPT>
+
+<BODY scroll='auto' onload='_load()'>
+<DIV id='_panel'></DIV><br>
+<DIV id='_dump'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

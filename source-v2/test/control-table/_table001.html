@@ -1,0 +1,154 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel='stylesheet' href='../../acs/control.css' type='text/css'>
+<LINK rel='stylesheet' href='../../acs/control.auto.css' type='text/css'>
+<LINK rel='stylesheet' href='../../acs/lang_cn.css' type='text/css'>
+<SCRIPT src="../../mobj.js"></SCRIPT>
+<SCRIPT>RGlobal.setContext('jp','../../..','/system');</SCRIPT>
+
+<SCRIPT language='javascript' src='../../2-base/MEditDescriptor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../2-base/MEditValue.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../2-base/RControl.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../4-ctl.table/FCellEditControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.table/FCellEdit.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../4-ctl.table/FColumnEditControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.table/FColumnEdit.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../4-ctl.table/FCell.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.table/FColumn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.table/FCellStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.table/FCellCheck.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.table/FCellSelect.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.table/FColumnStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.table/FColumnEmpty.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.table/FColumnCheck.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.table/FColumnSelect.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../4-ctl.table/FRow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4-ctl.table/FTable.js'></SCRIPT>
+</HEAD>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var form = null;
+var toolbar = null;
+function doSelectRow(row){
+	alert(row.ouid());
+}
+function doRefresh(){
+	fmMain.action = '';
+	fmMain.submit();
+}
+function doInsert(sender, table){
+	table.makeFormLink('VIEW_ID=${VIEW_ID},PARENT_ID=${OUID}');
+	//form.insertRow();
+}
+function doUpdate(){
+	//form.dsUpdate('#cmd_update.xml');
+	//form.dsUpdate('#ds-table001-delete.xml');
+	form.dsUpdate('#ds-table001-insert.xml');
+	//form.dsUpdate('http://localhost:8080/mylife/system.database.dataset.ws');
+}
+function doDelete(){
+	if(form.isSelected()){
+		alert('Delete');
+	}else{
+		alert('No select');
+	}
+}
+function _load(){
+	//RConsole.find(FLoggerConsole).connect();
+	// Build toolbar
+	toolbar = RControl.fromXml(xToolBar, _id_toolbar);
+	//if(toolbar){
+		//toolbar.component('btnRefresh').addClickListener(doRefresh);
+		//toolbar.component('btnUpdate').addClickListener(doUpdate);
+		//toolbar.component('btnDelete').addClickListener(doDelete);
+	//}
+	// Build form
+	form = RControl.fromXml(xForm, _id_form);
+	form.loadDatasets(RXml.makeNode(xDataset));
+	//RConsole.find(FListenerConsole).register(FTable, ETableAction.GoInsert, form, doInsert);
+	//form.colStatus.lsnsRowDblClick.push(new TListener(form, doSelectRow));
+
+	//if(form){
+		//form.environment = RXml.makeNode(xEnvironment);
+		//form.loadValue(RXml.makeNode(xValue))
+	//}
+	//if(RClass.isClass(form, FTable)){
+		//form.loadDataset(RXml.makeNode(xDataset))
+	//}
+	//form.dsFetch('http://localhost:8080/mylife/logic.webform.dataset.ws')
+	//RDump.dump(_id3, form.hHead.cells[1]);
+	//alert(form.hHead.outerHTML)
+}
+</SCRIPT>
+
+<XML ID="xEnvironment">
+<Node select_form="logic.basic.tblCountry" select_control="OAAAAPFZjeQXAQAA" />
+</XML>
+
+<XML ID="xToolBar">
+<ToolBar width='100%'>
+	<ToolButton name='btnRefresh' label='Refresh' icon='tool.refresh' icon_disable='tool.refreshd' method='rebuild'/>
+	<ToolButtonSplit/>
+	<ToolButton name='btnInsert' label='Insert' icon='tool.insert' icon_disable='tool.insertd' action='doInsert()'/>
+	<ToolButton name='btnUpdate' label='Update' icon='tool.update' icon_disable='tool.updated' action='doUpdate()'/>
+	<ToolButton name='btnDelete' label='Delete' icon='tool.delete' icon_disable='tool.deleted' action='doDelete()'/>
+	<ToolButtonSplit/>
+	<ToolButton name='btnAction' label='Action' icon='tool.action' icon_disable='tool.actiond'/>
+</ToolBar>
+</XML>
+
+<XML ID="xForm">
+<WebTable name="logic.base.tbwCountry" table_name="BS_COUNTRY" dataset="base.country" disp_access='IUD' height='200'>
+	<Column name="colOuid" label="ID" data_name="OUID" data_type="int" width='20' disp_access='IUD'/>
+	<ColumnEdit name="colOver" label="VER" data_name="OVER" width='40' data_type="string" disp_access='LIUD'/>
+	<ColumnEdit name="edtName" label="Name" data_name="name" data_type="string" width='60' caption="Name" edit_access="IUD" disp_access='L'/>
+	<!-- <ColumnEdit name="edtCode" label="Code" data_name="code" width='60' edit_access="-" disp_access='L'/>
+	<ColumnCheck name="chkIsValid" label="Valid" data_name="is_valid" width='20' edit_access="IUD" disp_access='L'/>
+	<ColumnEdit name="edtFullName" label="Full Name" data_name="full_name" width='80' edit_access="IUD" disp_access='L'/>
+	<ColumnEdit name="edtLabel" label="Label" data_name="label" data_type="string" caption="Label" width='80' edit_access="IUD" disp_access='L'>
+		<Item value="Edit" label="Edit" />
+		<Item value="Number" label="Number" />
+		<Item value="Check" label="CheckBox" />
+		<Item value="Select" label="ComboBox" />
+		<Item value="Datepicker" label="Date Picker" />
+		<Item value="Split" label="Split" />
+		<Item value="DataAction" label="Data Action" />
+	</ColumnEdit>
+	<ColumnEdit name="edtNote" label="Note" data_name="NOTE" data_type="string" caption="Note" width='160' edit_access="IUD" disp_access='L'/>-->
+</WebTable>
+</XML>
+
+<XML ID="xDataset">
+<Configuration>
+<Dataset name='logic.base.tbwCountry'>
+	<Row ouid='101' type='String' name="cn" code="080" full_name="Chinese" over="19491001" is_valid="Y" note="ZhongGuo"/>
+	<Row ouid='102' type='Boolean' name="jp" code="081" full_name="Japanese" over="39491001" is_valid="N" note="RiBen"/>
+	<!--<Row ouid='103' type='Boolean' name="jp" code="081" full_name="Japanese" over="39491001" is_valid="Y" note="RiBen"/>-->
+</Dataset>
+</Configuration>
+</XML>
+
+<BODY onload='_load()' scroll='no' style='margin:0;'>
+<FORM method='POST' name="fmMain">
+
+<DIV id='_id_toolbar'></DIV><br>
+<DIV id='_id_form' style='padding:8; width:100%; overflow:auto'></DIV><br>
+<DIV id='_log' style='border:2 solid gray; height:160;overflow:auto'></DIV>
+
+</FORM>
+</BODY>
+
+</HTML>

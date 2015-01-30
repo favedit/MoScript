@@ -1,0 +1,83 @@
+<HTML>
+<HEAD>
+<TITLE>Control-Edit-Example</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../../acs/lang_cn.css' type="text/css" media="all"/>
+
+<SCRIPT language='javascript' src='../../ajs/mo-core.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/mo-control.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../4.1.1-control/FComponent.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/FControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/FContainer.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/RControl.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../4.1.1-control/MSize.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/MEditDescriptor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.1.1-control/MDataset.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FEditControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FLabel.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FCheck.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FRadio.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FNumber.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FEdit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FLayout.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FPanel.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../4.2.1-control-form/FForm.js'></SCRIPT>
+</HEAD>
+
+<SCRIPT>
+// http://localhost:91/script/test/control-form/form-01.html
+var form = null;
+
+function doLoadValue(){
+   var ds = RClass.create(FDataSource);
+   ds.selectDataset();
+   var r = ds.selectRow();
+   r.set('width', 800);
+   r.set('height', 400);
+   form.dsDataLoad(ds);
+}
+
+function doSaveValue(){
+   var ds = RClass.create(FDataSource);
+   form.dsDataSave(ds);
+   alert(ds.currentRow());
+}
+
+function _load(){
+   RRuntime.processCd = EProcess.Debug;
+   RBrowser.construct();
+   RBrowser.setContentPath('../..');
+   RWindow.connect(window);
+   // 加载配置
+   var dfc = RConsole.find(FDescribeFrameConsole);
+   var xframe = dfc.load('common.country.CountryForm');
+   // 创建表单
+   form = RClass.create(FForm);
+   RControl.build(form, xframe, null, _panel);
+   form.setPanel(_panel);
+   RDump.dump(form, _dump);
+
+   var wc = form.searchControl('width');
+   wc.set('200');
+
+   var hc = form.searchControl('height');
+   hc.set('80');
+}
+</SCRIPT>
+
+<BODY scroll='auto' bgcolor='#444444' onload='_load()'>
+<INPUT type='button' onclick='doLoadValue()' value='Load Value'/>
+<INPUT type='button' onclick='doSaveValue()' value='Save Value'/>
+<HR>
+<DIV id='_panel'></DIV><br>
+<DIV id='_dump'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>

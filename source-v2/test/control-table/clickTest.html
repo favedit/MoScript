@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<TITLE>Class Example</TITLE>
+<LINK rel="stylesheet" href='../../_.css' type="text/css" media="all"/>
+</HEAD>
+
+<SCRIPT language='javascript' src='../../mobj.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../base/FEditor.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../base/FTextEditor.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../../core/FEditConsole.js'></SCRIPT>
+<SCRIPT language='javascript' src='../../core/FFocusConsole.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../EStyleStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ECellStatus.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../MColumnEditable.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../TRow.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumn.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnEditable.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnStatus.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FColumnEdit.js'></SCRIPT>
+<SCRIPT language='javascript' src='../FTable.js'></SCRIPT>
+
+<STYLE>
+.lstType  { text-align:center; nowrap };
+.lstLabel { nowrap };
+.lstDate  { nowrap };
+.lstUpd   { nowrap };
+.lstChk   { nowrap };
+</STYLE>
+
+<SCRIPT>
+var table = null;
+function _load(){
+	RGlobal.context = '../..';
+
+	//test.focus();
+	var event = window.event;
+	event.x = 100;
+	event.y = 100;
+	test.click();
+
+   //RDump.dump(_id3, RClass.find(FTextEditor))
+}
+
+</SCRIPT>
+
+<BODY onload='_load()' onmouse>
+
+<INPUT name='test' value='sadfasdfsdaf'></INPUT>
+
+
+
+<BR><BR><BR><BR>
+<DIV id='_idm'></DIV><br>
+<DIV id='_id0'></DIV><br>
+<DIV id='_id1'></DIV><br>
+<DIV id='_id2'></DIV><br>
+<DIV id='_id3'></DIV><br>
+<DIV id='_id4'></DIV><br>
+<DIV id='_msg'></DIV><br>
+</BODY>
+
+</HTML>
