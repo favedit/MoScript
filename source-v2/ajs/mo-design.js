@@ -800,7 +800,7 @@ function FDsTemplateWorkspace_onBuild(p){
    fs.appendFrame(f);
    var sp2 = fs.appendSpliter();
    var f = o._frameProperty = RClass.create(FFrame);
-   f.setWidth(360);
+   f.setWidth(160);
    f.build(p);
    f._hPanel.className = o.styleName('Property_Ground');
    fs.appendFrame(f);

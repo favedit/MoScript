@@ -92,7 +92,7 @@ function FDsTemplateWorkspace_onBuild(p){
    var sp2 = fs.appendSpliter();
    // 建立属性区
    var f = o._frameProperty = RClass.create(FFrame);
-   f.setWidth(360);
+   f.setWidth(240);
    f.build(p);
    f._hPanel.className = o.styleName('Property_Ground');
    fs.appendFrame(f);
