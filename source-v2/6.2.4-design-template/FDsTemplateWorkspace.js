@@ -32,18 +32,10 @@ function FDsTemplateWorkspace(o){
    // @method
    o.construct             = FDsTemplateWorkspace_construct;
    // @method
+   o.loadTemplate          = FDsTemplateWorkspace_loadTemplate;
+   // @method
    o.dispose               = FDsTemplateWorkspace_dispose;
    return o;
-}
-
-//==========================================================
-// <T>构造处理。</T>
-//
-// @method
-//==========================================================
-function FDsTemplateWorkspace_construct(){
-   var o = this;
-   o.__base.FWorkspace.construct.call(o);
 }
 
 //==========================================================
@@ -120,7 +112,6 @@ function FDsTemplateWorkspace_onBuild(p){
    c._worksapce = o;
    c.build(p);
    c.setPanel(o._frameToolBar._hPanel);
-   //c._persistenceButton.click();
    o.push(c);
    //..........................................................
    var c = o._canvas = RClass.create(FDsTemplateCanvas);
@@ -128,7 +119,27 @@ function FDsTemplateWorkspace_onBuild(p){
    c.build(p);
    c.setPanel(o._frameWorkspace._hPanel);
    o.push(c);
-   c.loadTemplate('24219F2C47F341B8BC2CD3191DA2A02D');
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FDsTemplateWorkspace_construct(){
+   var o = this;
+   // 父处理
+   o.__base.FWorkspace.construct.call(o);
+}
+
+//==========================================================
+// <T>加载模板处理。</T>
+//
+// @method
+//==========================================================
+function FDsTemplateWorkspace_loadTemplate(p){
+   var o = this;
+   o._canvas.loadTemplate(p);
 }
 
 //==========================================================

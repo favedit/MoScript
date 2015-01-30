@@ -757,18 +757,18 @@ function FStage3d_process(){
    o._technique.drawRegion(r);
 }
 function FTemplate3d(o){
-   o = RClass.inherits(this, o, FDisplay3d);
-   o._dataReady           = false;
-   o._ready               = false;
-   o._resource            = null;
-   o._animation           = null;
-   o._resource            = null;
-   o._displays             = null;
-   o.testReady            = FTemplate3d_testReady;
-   o.setResource          = FTemplate3d_setResource;
-   o.loadResource         = FTemplate3d_loadResource;
-   o.processLoad          = FTemplate3d_processLoad;
-   o.process              = FTemplate3d_process;
+   o = RClass.inherits(this, o, FDisplay3d, MListenerLoad);
+   o._dataReady   = false;
+   o._ready       = false;
+   o._resource    = null;
+   o._animation   = null;
+   o._resource    = null;
+   o._displays    = null;
+   o.testReady    = FTemplate3d_testReady;
+   o.setResource  = FTemplate3d_setResource;
+   o.loadResource = FTemplate3d_loadResource;
+   o.processLoad  = FTemplate3d_processLoad;
+   o.process      = FTemplate3d_process;
    return o;
 }
 function FTemplate3d_testReady(){
@@ -821,6 +821,7 @@ function FTemplate3d_processLoad(){
          o._renderables.push(d);
       }
    }
+   o.processLoadListener(o);
    o._ready = true;
    return o._ready;
 }

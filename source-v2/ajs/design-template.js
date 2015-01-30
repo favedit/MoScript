@@ -1,18 +1,17 @@
 function FDsTemplateCanvas(o){
    o = RClass.inherits(this, o, FCanvas);
-   o._context   = null;
-   o._stage     = null;
-   o._layer     = null;
+   o._context        = null;
+   o._stage          = null;
+   o._layer          = null;
    o._activeTemplate = null;
-   o._rotationX = 0;
-   o._rotationY = 0;
-   o._rotationZ = 0;
-   o.onBuild      = FDsTemplateCanvas_onBuild;
-   o.onEnterFrame = FDsTemplateCanvas_onEnterFrame;
-   o.oeRefresh    = FDsTemplateCanvas_oeRefresh;
-   o.construct    = FDsTemplateCanvas_construct;
-   o.loadTemplate = FDsTemplateCanvas_loadTemplate;
-   o.dispose      = FDsTemplateCanvas_dispose;
+   o._rotation       = null;
+   o.onBuild         = FDsTemplateCanvas_onBuild;
+   o.onEnterFrame    = FDsTemplateCanvas_onEnterFrame;
+   o.onTemplateLoad  = FDsTemplateCanvas_onTemplateLoad;
+   o.oeRefresh       = FDsTemplateCanvas_oeRefresh;
+   o.construct       = FDsTemplateCanvas_construct;
+   o.loadTemplate    = FDsTemplateCanvas_loadTemplate;
+   o.dispose         = FDsTemplateCanvas_dispose;
    return o;
 }
 function FDsTemplateCanvas_onBuild(p){
@@ -44,14 +43,14 @@ function FDsTemplateCanvas_onEnterFrame(){
    var o = this;
    var m = o._activeTemplate;
    if(m){
+      var r = o._rotation;
       m.location().set(0, -6.0, 0);
-      m.rotation().set(0, o._rotationY, 0);
+      m.rotation().set(0, r.y, 0);
       m.scale().set(2.0, 2.0, 2.0);
       m.update();
-      o._rotationX += 0.01;
-      o._rotationY += 0.01;
-      o._rotationZ += 0.03;
    }
+}
+function FDsTemplateCanvas_onTemplateLoad(p){
 }
 function FDsTemplateCanvas_oeRefresh(p){
    var o = this;
@@ -62,19 +61,16 @@ function FDsTemplateCanvas_oeRefresh(p){
    var hc = o._hPanel;
    hc.width = w;
    hc.height = h;
-   hc.style.width = w;
-   hc.style.height = h;
    var rp = o._stage.camera().projection();
    rp.size().set(w, h);
    rp.update();
-   c._size.set(w, h);
    c.setViewport(0, 0, w, h);
-   c.setScissorRectangle(0, 0, w, h);
    return EEventStatus.Stop;
 }
 function FDsTemplateCanvas_construct(){
    var o = this;
    o.__base.FCanvas.construct.call(o);
+   o._rotation = new SVector3();
 }
 function FDsTemplateCanvas_loadTemplate(p){
    var o = this;
@@ -83,11 +79,17 @@ function FDsTemplateCanvas_loadTemplate(p){
       rmc.free(o._activeTemplate);
    }
    var m = rmc.alloc(o._context, p);
+   m.addLoadListener(o, o.onTemplateLoad);
    o._layer.pushDisplay(m);
    o._activeTemplate = m;
 }
 function FDsTemplateCanvas_dispose(){
    var o = this;
+   var v = o._rotation;
+   if(v){
+      v.dispose();
+      o._rotation = null;
+   }
    o.__base.FCanvas.dispose.call(o);
 }
 function FDsTemplateCatalog(o){
@@ -118,29 +120,38 @@ function FDsTemplateCatalog_dispose(){
 }
 function FDsTemplateToolBar(o){
    o = RClass.inherits(this, o, FToolBar);
-   o.onPersistenceClick   = FDsTemplateToolBar_onPersistenceClick;
-   o.onBuild   = FDsTemplateToolBar_onBuild;
-   o.construct = FDsTemplateToolBar_construct;
-   o.dispose   = FDsTemplateToolBar_dispose;
+   o._refreshButton = null;
+   o._saveButton    = null;
+   o.onBuild        = FDsTemplateToolBar_onBuild;
+   o.onRefreshClick = FDsTemplateToolBar_onRefreshClick;
+   o.onSaveClick    = FDsTemplateToolBar_onSaveClick;
+   o.construct      = FDsTemplateToolBar_construct;
+   o.dispose        = FDsTemplateToolBar_dispose;
    return o;
-}
-function FDsTemplateToolBar_onPersistenceClick(p){
-   var o = this;
-   var catalog = o._worksapce._catalog;
-   catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
 }
 function FDsTemplateToolBar_onBuild(p){
    var o = this;
    o.__base.FToolBar.onBuild.call(o, p);
-   var b = o._persistenceButton  = RClass.create(FToolButton);
+   var b = o._refreshButton  = RClass.create(FToolButton);
    b.setLabel('刷新');
    b.build(p);
-   b.lsnsClick.register(o, o.onPersistenceClick);
+   b.lsnsClick.register(o, o.onRefreshClick);
    o.appendButton(b);
-   var b = o._framesetMain = RClass.create(FToolButton);
+   var b = o._saveButton = RClass.create(FToolButton);
    b.setLabel('保存');
    b.build(p);
+   b.lsnsClick.register(o, o.onSaveClick);
    o.appendButton(b);
+}
+function FDsTemplateToolBar_onRefreshClick(p){
+   var o = this;
+   var catalog = o._worksapce._catalog;
+   catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
+}
+function FDsTemplateToolBar_onSaveClick(p){
+   var o = this;
+   var catalog = o._worksapce._catalog;
+   catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
 }
 function FDsTemplateToolBar_construct(){
    var o = this;
@@ -167,12 +178,9 @@ function FDsTemplateWorkspace(o){
    o._frameStatusBar       = null;
    o.onBuild               = FDsTemplateWorkspace_onBuild;
    o.construct             = FDsTemplateWorkspace_construct;
+   o.loadTemplate          = FDsTemplateWorkspace_loadTemplate;
    o.dispose               = FDsTemplateWorkspace_dispose;
    return o;
-}
-function FDsTemplateWorkspace_construct(){
-   var o = this;
-   o.__base.FWorkspace.construct.call(o);
 }
 function FDsTemplateWorkspace_onBuild(p){
    var o = this;
@@ -234,7 +242,14 @@ function FDsTemplateWorkspace_onBuild(p){
    c.build(p);
    c.setPanel(o._frameWorkspace._hPanel);
    o.push(c);
-   c.loadTemplate('24219F2C47F341B8BC2CD3191DA2A02D');
+}
+function FDsTemplateWorkspace_construct(){
+   var o = this;
+   o.__base.FWorkspace.construct.call(o);
+}
+function FDsTemplateWorkspace_loadTemplate(p){
+   var o = this;
+   o._canvas.loadTemplate(p);
 }
 function FDsTemplateWorkspace_dispose(){
    var o = this;

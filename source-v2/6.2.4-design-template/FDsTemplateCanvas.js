@@ -7,26 +7,25 @@
 function FDsTemplateCanvas(o){
    o = RClass.inherits(this, o, FCanvas);
    //..........................................................
-   o._context   = null;
-   o._stage     = null;
-   o._layer     = null;
+   o._context        = null;
+   o._stage          = null;
+   o._layer          = null;
    o._activeTemplate = null;
-   o._rotationX = 0;
-   o._rotationY = 0;
-   o._rotationZ = 0;
+   o._rotation       = null;
    //..........................................................
    // @event
-   o.onBuild      = FDsTemplateCanvas_onBuild;
-   o.onEnterFrame = FDsTemplateCanvas_onEnterFrame;
+   o.onBuild         = FDsTemplateCanvas_onBuild;
+   o.onEnterFrame    = FDsTemplateCanvas_onEnterFrame;
+   o.onTemplateLoad  = FDsTemplateCanvas_onTemplateLoad;
    //..........................................................
-   o.oeRefresh    = FDsTemplateCanvas_oeRefresh;
+   o.oeRefresh       = FDsTemplateCanvas_oeRefresh;
    //..........................................................
    // @method
-   o.construct    = FDsTemplateCanvas_construct;
+   o.construct       = FDsTemplateCanvas_construct;
    // @method
-   o.loadTemplate = FDsTemplateCanvas_loadTemplate;
+   o.loadTemplate    = FDsTemplateCanvas_loadTemplate;
    // @method
-   o.dispose      = FDsTemplateCanvas_dispose;
+   o.dispose         = FDsTemplateCanvas_dispose;
    return o;
 }
 
@@ -78,20 +77,24 @@ function FDsTemplateCanvas_onEnterFrame(){
    // 旋转模型
    var m = o._activeTemplate;
    if(m){
+      var r = o._rotation;
       m.location().set(0, -6.0, 0);
-      m.rotation().set(0, o._rotationY, 0);
+      m.rotation().set(0, r.y, 0);
       m.scale().set(2.0, 2.0, 2.0);
       m.update();
       // 设置变量
-      o._rotationX += 0.01;
-      o._rotationY += 0.01;
-      o._rotationZ += 0.03;
+      //r.y += 0.01;
    }
-   // 设置帧速
-   //var info = RTimer.rate() + ' f/s';
-   //if(info != _info.innerText){
-   //   _info.innerText = RTimer.rate() + ' f/s';
-   //}
+}
+
+//==========================================================
+// <T>加载模板处理。</T>
+//
+// @method
+// @param p:template:FTemplate3d 模板
+//==========================================================
+function FDsTemplateCanvas_onTemplateLoad(p){
+   //alert(p);
 }
 
 //==========================================================
@@ -110,16 +113,12 @@ function FDsTemplateCanvas_oeRefresh(p){
    var hc = o._hPanel;
    hc.width = w;
    hc.height = h;
-   hc.style.width = w;
-   hc.style.height = h;
    // 设置投影
    var rp = o._stage.camera().projection();
    rp.size().set(w, h);
    rp.update();
    // 设置范围
-   c._size.set(w, h);
    c.setViewport(0, 0, w, h);
-   c.setScissorRectangle(0, 0, w, h);
    return EEventStatus.Stop;
 }
 
@@ -131,6 +130,7 @@ function FDsTemplateCanvas_oeRefresh(p){
 function FDsTemplateCanvas_construct(){
    var o = this;
    o.__base.FCanvas.construct.call(o);
+   o._rotation = new SVector3();
 }
 
 //==========================================================
@@ -144,7 +144,9 @@ function FDsTemplateCanvas_loadTemplate(p){
    if(o._activeTemplate != null){
       rmc.free(o._activeTemplate);
    }
+   // 收集一个显示模板
    var m = rmc.alloc(o._context, p);
+   m.addLoadListener(o, o.onTemplateLoad);
    o._layer.pushDisplay(m);
    o._activeTemplate = m;
 }
@@ -156,6 +158,12 @@ function FDsTemplateCanvas_loadTemplate(p){
 //==========================================================
 function FDsTemplateCanvas_dispose(){
    var o = this;
+   // 释放旋转
+   var v = o._rotation;
+   if(v){
+      v.dispose();
+      o._rotation = null;
+   }
    // 父处理
    o.__base.FCanvas.dispose.call(o);
 }

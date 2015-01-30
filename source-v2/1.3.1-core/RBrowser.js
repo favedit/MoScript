@@ -52,7 +52,7 @@ function RBrowser_construct(){
       RLogger.lsnsOutput.register(o, o.log);
    }
    // 输出日志
-   RLogger.info(o, 'Parse browser confirm. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+   RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }
 
 //===========================================================

@@ -7781,6 +7781,12 @@ var EDataType = new function EDataType(){
    o.String  = 12;
    return o;
 }
+var EEvent = new function EEvent(){
+   var o = this;
+   o.Unknown = 0;
+   o.Load    = 1;
+   return o;
+}
 var EHttpContent = new function EHttpContent(){
    var o = this;
    o.Binary = 1;
@@ -8646,7 +8652,7 @@ function RBrowser_construct(){
    if(o._typeCd == EBrowser.Chrome){
       RLogger.lsnsOutput.register(o, o.log);
    }
-   RLogger.info(o, 'Parse browser confirm. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+   RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }
 function RBrowser_hostPath(p){
    var o = this;

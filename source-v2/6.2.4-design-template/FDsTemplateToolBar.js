@@ -8,31 +8,20 @@ function FDsTemplateToolBar(o){
    o = RClass.inherits(this, o, FToolBar);
    //..........................................................
    // @attribute
+   o._refreshButton = null;
+   o._saveButton    = null;
    //..........................................................
    // @event
-   o.onPersistenceClick   = FDsTemplateToolBar_onPersistenceClick;
+   o.onBuild        = FDsTemplateToolBar_onBuild;
+   // @event
+   o.onRefreshClick = FDsTemplateToolBar_onRefreshClick;
+   o.onSaveClick    = FDsTemplateToolBar_onSaveClick;
    //..........................................................
    // @method
-   o.onBuild   = FDsTemplateToolBar_onBuild;
-   //..........................................................
+   o.construct      = FDsTemplateToolBar_construct;
    // @method
-   o.construct = FDsTemplateToolBar_construct;
-   // @method
-   o.dispose   = FDsTemplateToolBar_dispose;
+   o.dispose        = FDsTemplateToolBar_dispose;
    return o;
-}
-
-//==========================================================
-// <T>持久化按键点击处理。</T>
-//
-// @method
-// @param e:event:TEventProcess 事件处理
-// @return EEventStatus 处理状态
-//==========================================================
-function FDsTemplateToolBar_onPersistenceClick(p){
-   var o = this;
-   var catalog = o._worksapce._catalog;
-   catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
 }
 
 //==========================================================
@@ -45,16 +34,41 @@ function FDsTemplateToolBar_onBuild(p){
    var o = this;
    o.__base.FToolBar.onBuild.call(o, p);
    // 建立按键
-   var b = o._persistenceButton  = RClass.create(FToolButton);
+   var b = o._refreshButton  = RClass.create(FToolButton);
    b.setLabel('刷新');
    b.build(p);
-   b.lsnsClick.register(o, o.onPersistenceClick);
+   b.lsnsClick.register(o, o.onRefreshClick);
    o.appendButton(b);
    // 建立按键
-   var b = o._framesetMain = RClass.create(FToolButton);
+   var b = o._saveButton = RClass.create(FToolButton);
    b.setLabel('保存');
    b.build(p);
+   b.lsnsClick.register(o, o.onSaveClick);
    o.appendButton(b);
+}
+
+//==========================================================
+// <T>刷新按键处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsTemplateToolBar_onRefreshClick(p){
+   var o = this;
+   var catalog = o._worksapce._catalog;
+   catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
+}
+
+//==========================================================
+// <T>保存按键处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsTemplateToolBar_onSaveClick(p){
+   var o = this;
+   var catalog = o._worksapce._catalog;
+   catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
 }
 
 //==========================================================
@@ -64,6 +78,7 @@ function FDsTemplateToolBar_onBuild(p){
 //==========================================================
 function FDsTemplateToolBar_construct(){
    var o = this;
+   // 父处理
    o.__base.FToolBar.construct.call(o);
 }
 
