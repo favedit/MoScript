@@ -8,18 +8,29 @@ function FRs3Template(o){
    o = RClass.inherits(this, o, FRs3Resource);
    //..........................................................
    // @attribute
-   o._guid       = null;
+   o._materialGroups = null;
+   o._themes         = null;
+   o._displays       = null;
    // @attribute
-   o._activeTheme = null;
-   o._themes     = null;
-   o._displays   = null;
+   o._activeTheme    = null;
    //..........................................................
    // @method
-   o.themes      = FRs3Template_themes;
-   o.displays    = FRs3Template_displays;
+   o.materialGroups  = FRs3Template_materialGroups;
+   o.themes          = FRs3Template_themes;
+   o.displays        = FRs3Template_displays;
    // @method
-   o.unserialize = FRs3Template_unserialize;
+   o.unserialize     = FRs3Template_unserialize;
    return o;
+}
+
+//==========================================================
+// <T>获得材质组字典。</T>
+//
+// @method
+// @return TDictionary 材质组字典
+//==========================================================
+function FRs3Template_materialGroups(){
+   return this._materialGroups;
 }
 
 //==========================================================
@@ -51,7 +62,18 @@ function FRs3Template_displays(){
 function FRs3Template_unserialize(p){
    // 读取父信息
    var o = this;
-   o._guid = p.readString();
+   o.__base.FRs3Resource.unserialize.call(o, p);
+   // 读取材质组集合
+   var mgc = RConsole.find(FRs3MaterialGroupConsole);
+   var c = p.readUint16();
+   if(c > 0){
+      var s = o._materialGroups = new TDictionary();
+      for(var i = 0; i < c; i++){
+         // 创建材质组
+         var g = mgc.unserialize(p);
+         s.set(g.guid(), g);
+      }
+   }
    // 读取主题集合
    var c = p.readUint16();
    if(c > 0){

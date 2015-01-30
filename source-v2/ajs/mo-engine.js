@@ -1647,6 +1647,9 @@ function FRs3Material_guid(){
 function FRs3Material_groupGuid(){
    return this._groupGuid;
 }
+function FRs3Material_group(){
+   return this._group;
+}
 function FRs3Material_effectName(){
    return this._info.effectName;
 }
@@ -1670,6 +1673,56 @@ function FRs3Material_unserialize(p){
          ts.push(t);
       }
    }
+}
+function FRs3MaterialConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._materials  = null;
+   o.construct   = FRs3MaterialConsole_construct;
+   o.unserialize = FRs3MaterialConsole_unserialize;
+   o.find        = FRs3MaterialConsole_find;
+   return o;
+}
+function FRs3MaterialConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._materials = new TDictionary();
+}
+function FRs3MaterialConsole_unserialize(p){
+   var o = this;
+   var r = RClass.create(FRs3Material);
+   r.unserialize(p);
+   o._materials.set(r.guid(), r);
+   return r;
+}
+function FRs3MaterialConsole_find(p){
+   return this._materials.get(p);
+}
+function FRs3MaterialGroup(o){
+   o = RClass.inherits(this, o, FRs3Object);
+   return o;
+}
+function FRs3MaterialGroupConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._materialGroups = null;
+   o.construct       = FRs3MaterialGroupConsole_construct;
+   o.unserialize     = FRs3MaterialGroupConsole_unserialize;
+   o.find            = FRs3MaterialGroupConsole_find;
+   return o;
+}
+function FRs3MaterialGroupConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._materialGroups = new TDictionary();
+}
+function FRs3MaterialGroupConsole_unserialize(p){
+   var o = this;
+   var r = RClass.create(FRs3MaterialGroup);
+   r.unserialize(p);
+   o._materialGroups.set(r.guid(), r);
+   return r;
+}
+function FRs3MaterialGroupConsole_find(p){
+   return this._materialGroups.get(p);
 }
 function FRs3MaterialTexture(o){
    o = RClass.inherits(this, o, FRs3Object);
@@ -1819,16 +1872,22 @@ function FRs3ModelStream_dispose(){
 function FRs3Object(o){
    o = RClass.inherits(this, o, FObject);
    o._guid       = null;
+   o._code       = null;
    o.guid        = FRs3Object_guid;
+   o.code        = FRs3Object_code;
    o.unserialize = FRs3Object_unserialize;
    return o;
 }
 function FRs3Object_guid(){
    return this._guid;
 }
+function FRs3Object_code(){
+   return this._code;
+}
 function FRs3Object_unserialize(p){
    var o = this;
    o._guid = p.readString();
+   o._code = p.readString();
 }
 function FRs3Resource(o){
    o = RClass.inherits(this, o, FResource);
@@ -1866,7 +1925,9 @@ function FRs3Resource_testReady(){
    return this._dataReady;
 }
 function FRs3Resource_unserialize(p){
-   this._name = p.readString();
+   var o = this;
+   o._guid = p.readString();
+   o._code = p.readString();
 }
 function FRs3Resource_load(u){
    var o = this;
@@ -2438,14 +2499,18 @@ function FRs3Skeleton_unserialize(p){
 }
 function FRs3Template(o){
    o = RClass.inherits(this, o, FRs3Resource);
-   o._guid       = null;
-   o._activeTheme = null;
-   o._themes     = null;
-   o._displays   = null;
-   o.themes      = FRs3Template_themes;
-   o.displays    = FRs3Template_displays;
-   o.unserialize = FRs3Template_unserialize;
+   o._materialGroups = null;
+   o._themes         = null;
+   o._displays       = null;
+   o._activeTheme    = null;
+   o.materialGroups  = FRs3Template_materialGroups;
+   o.themes          = FRs3Template_themes;
+   o.displays        = FRs3Template_displays;
+   o.unserialize     = FRs3Template_unserialize;
    return o;
+}
+function FRs3Template_materialGroups(){
+   return this._materialGroups;
 }
 function FRs3Template_themes(){
    return this._themes;
@@ -2455,7 +2520,16 @@ function FRs3Template_displays(){
 }
 function FRs3Template_unserialize(p){
    var o = this;
-   o._guid = p.readString();
+   o.__base.FRs3Resource.unserialize.call(o, p);
+   var mgc = RConsole.find(FRs3MaterialGroupConsole);
+   var c = p.readUint16();
+   if(c > 0){
+      var s = o._materialGroups = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var g = mgc.unserialize(p);
+         s.set(g.guid(), g);
+      }
+   }
    var c = p.readUint16();
    if(c > 0){
       var s = o._themes = new TObjects();
@@ -2505,7 +2579,7 @@ function FRs3TemplateConsole_load(c, v){
    return t;
 }
 function FRs3TemplateTheme(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    o._materials   = null;
    o.findMaterial = FRs3TemplateTheme_findMaterial;
    o.materials    = FRs3TemplateTheme_materials;
@@ -2520,12 +2594,13 @@ function FRs3TemplateTheme_materials(){
 }
 function FRs3TemplateTheme_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    var c = p.readUint16();
    if(c > 0){
+      var mc = RConsole.find(FRs3MaterialConsole);
       var s = o._materials = new TDictionary();
       for(var n = 0; n < c; n++){
-         var m = RClass.create(FRs3Material);
-         m.unserialize(p);
+         var m = mc.unserialize(p);
          s.set(m.groupGuid(), m);
       }
    }

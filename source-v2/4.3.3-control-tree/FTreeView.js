@@ -383,18 +383,8 @@ function FTreeView_appendNode(n, p){
       var nh = n._hPanel;
       if(p){
          // 计算最后一个已经连接节点的位置
-         var nr = p._hPanel.rowIndex;
-         var ns = p._nodes;
-         if(ns){
-            var nc = ns.count();
-            for(var i = nc - 1; i >= 0; i--){
-               var pn = ns.get(i)
-               if(pn._statusLinked){
-                  nr = pn._hPanel.rowIndex;
-                  break;
-               }
-            }
-         }
+         var nl = p.searchLast();
+         var nr = nl._hPanel.rowIndex;
          // 关联节点
          if(nh.parentElement){
             if(nh.rowIndex > nr){

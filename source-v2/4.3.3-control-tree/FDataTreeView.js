@@ -92,7 +92,9 @@ function FDataTreeView_onLoaded(p){
    o.lsnsLoaded.process(p);
    // 加载主信息
    var s = xt.get('service');
-   o.loadNodeService(s);
+   if(s){
+      o.loadNodeService(s);
+   }
 }
 
 //==========================================================

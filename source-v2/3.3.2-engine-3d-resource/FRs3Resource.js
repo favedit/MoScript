@@ -76,10 +76,11 @@ function FRs3Resource_testReady(){
 // <T>从输入流里反序列化信息内容</T>
 //
 // @param p:input:FByteStream 数据流
-// @return 处理结果
 //==========================================================
 function FRs3Resource_unserialize(p){
-   this._name = p.readString();
+   var o = this;
+   o._guid = p.readString();
+   o._code = p.readString();
 }
 
 //==========================================================

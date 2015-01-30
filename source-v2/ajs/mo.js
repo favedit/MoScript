@@ -12152,14 +12152,17 @@ function FProcessConsole_send(u, d){
 }
 function FResource(o){
    o = RClass.inherits(this, o, FObject);
-   o._typeName  = null;
-   o._groupName = null;
-   o._name      = null;
-   o.name  = FResource_name;
+   o._guid = null;
+   o._code = null;
+   o.guid  = FResource_guid;
+   o.code  = FResource_code;
    return o;
 }
-function FResource_name(){
-   return this._name;
+function FResource_guid(){
+   return this._guid;
+}
+function FResource_code(){
+   return this._code;
 }
 function FResourceConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -18134,6 +18137,9 @@ function FRs3Material_guid(){
 function FRs3Material_groupGuid(){
    return this._groupGuid;
 }
+function FRs3Material_group(){
+   return this._group;
+}
 function FRs3Material_effectName(){
    return this._info.effectName;
 }
@@ -18157,6 +18163,56 @@ function FRs3Material_unserialize(p){
          ts.push(t);
       }
    }
+}
+function FRs3MaterialConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._materials  = null;
+   o.construct   = FRs3MaterialConsole_construct;
+   o.unserialize = FRs3MaterialConsole_unserialize;
+   o.find        = FRs3MaterialConsole_find;
+   return o;
+}
+function FRs3MaterialConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._materials = new TDictionary();
+}
+function FRs3MaterialConsole_unserialize(p){
+   var o = this;
+   var r = RClass.create(FRs3Material);
+   r.unserialize(p);
+   o._materials.set(r.guid(), r);
+   return r;
+}
+function FRs3MaterialConsole_find(p){
+   return this._materials.get(p);
+}
+function FRs3MaterialGroup(o){
+   o = RClass.inherits(this, o, FRs3Object);
+   return o;
+}
+function FRs3MaterialGroupConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._materialGroups = null;
+   o.construct       = FRs3MaterialGroupConsole_construct;
+   o.unserialize     = FRs3MaterialGroupConsole_unserialize;
+   o.find            = FRs3MaterialGroupConsole_find;
+   return o;
+}
+function FRs3MaterialGroupConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._materialGroups = new TDictionary();
+}
+function FRs3MaterialGroupConsole_unserialize(p){
+   var o = this;
+   var r = RClass.create(FRs3MaterialGroup);
+   r.unserialize(p);
+   o._materialGroups.set(r.guid(), r);
+   return r;
+}
+function FRs3MaterialGroupConsole_find(p){
+   return this._materialGroups.get(p);
 }
 function FRs3MaterialTexture(o){
    o = RClass.inherits(this, o, FRs3Object);
@@ -18306,16 +18362,22 @@ function FRs3ModelStream_dispose(){
 function FRs3Object(o){
    o = RClass.inherits(this, o, FObject);
    o._guid       = null;
+   o._code       = null;
    o.guid        = FRs3Object_guid;
+   o.code        = FRs3Object_code;
    o.unserialize = FRs3Object_unserialize;
    return o;
 }
 function FRs3Object_guid(){
    return this._guid;
 }
+function FRs3Object_code(){
+   return this._code;
+}
 function FRs3Object_unserialize(p){
    var o = this;
    o._guid = p.readString();
+   o._code = p.readString();
 }
 function FRs3Resource(o){
    o = RClass.inherits(this, o, FResource);
@@ -18353,7 +18415,9 @@ function FRs3Resource_testReady(){
    return this._dataReady;
 }
 function FRs3Resource_unserialize(p){
-   this._name = p.readString();
+   var o = this;
+   o._guid = p.readString();
+   o._code = p.readString();
 }
 function FRs3Resource_load(u){
    var o = this;
@@ -18925,14 +18989,18 @@ function FRs3Skeleton_unserialize(p){
 }
 function FRs3Template(o){
    o = RClass.inherits(this, o, FRs3Resource);
-   o._guid       = null;
-   o._activeTheme = null;
-   o._themes     = null;
-   o._displays   = null;
-   o.themes      = FRs3Template_themes;
-   o.displays    = FRs3Template_displays;
-   o.unserialize = FRs3Template_unserialize;
+   o._materialGroups = null;
+   o._themes         = null;
+   o._displays       = null;
+   o._activeTheme    = null;
+   o.materialGroups  = FRs3Template_materialGroups;
+   o.themes          = FRs3Template_themes;
+   o.displays        = FRs3Template_displays;
+   o.unserialize     = FRs3Template_unserialize;
    return o;
+}
+function FRs3Template_materialGroups(){
+   return this._materialGroups;
 }
 function FRs3Template_themes(){
    return this._themes;
@@ -18942,7 +19010,16 @@ function FRs3Template_displays(){
 }
 function FRs3Template_unserialize(p){
    var o = this;
-   o._guid = p.readString();
+   o.__base.FRs3Resource.unserialize.call(o, p);
+   var mgc = RConsole.find(FRs3MaterialGroupConsole);
+   var c = p.readUint16();
+   if(c > 0){
+      var s = o._materialGroups = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var g = mgc.unserialize(p);
+         s.set(g.guid(), g);
+      }
+   }
    var c = p.readUint16();
    if(c > 0){
       var s = o._themes = new TObjects();
@@ -18992,7 +19069,7 @@ function FRs3TemplateConsole_load(c, v){
    return t;
 }
 function FRs3TemplateTheme(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    o._materials   = null;
    o.findMaterial = FRs3TemplateTheme_findMaterial;
    o.materials    = FRs3TemplateTheme_materials;
@@ -19007,12 +19084,13 @@ function FRs3TemplateTheme_materials(){
 }
 function FRs3TemplateTheme_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    var c = p.readUint16();
    if(c > 0){
+      var mc = RConsole.find(FRs3MaterialConsole);
       var s = o._materials = new TDictionary();
       for(var n = 0; n < c; n++){
-         var m = RClass.create(FRs3Material);
-         m.unserialize(p);
+         var m = mc.unserialize(p);
          s.set(m.groupGuid(), m);
       }
    }
@@ -34501,7 +34579,9 @@ function FDataTreeView_onLoaded(p){
    RControl.build(o, xt, null, o._hPanel);
    o.lsnsLoaded.process(p);
    var s = xt.get('service');
-   o.loadNodeService(s);
+   if(s){
+      o.loadNodeService(s);
+   }
 }
 function FDataTreeView_onNodeLoaded(p){
    var o = this;
@@ -34910,6 +34990,8 @@ function FTreeNode(o){
    o.onNodeClick       = RClass.register(o, new AEventClick('onNodeClick'), FTreeNode_onNodeClick);
    o.construct         = FTreeNode_construct;
    o.type              = FTreeNode_type;
+   o.typeName          = FTreeNode_typeName;
+   o.setTypeName       = FTreeNode_setTypeName;
    o.setLabel          = FTreeNode_setLabel;
    o.level             = FTreeNode_level;
    o.setLevel          = FTreeNode_setLevel;
@@ -34927,6 +35009,7 @@ function FTreeNode(o){
    o.select            = FTreeNode_select;
    o.extend            = FTreeNode_extend;
    o.extendAll         = FTreeNode_extendAll;
+   o.searchLast        = FTreeNode_searchLast;
    o.createChild       = FTreeNode_createChild;
    o.appendNode        = FTreeNode_appendNode;
    o.push              = FTreeNode_push;
@@ -35070,6 +35153,14 @@ function FTreeNode_type(){
       return null;
    }
    return t.findType(o._typeName);
+}
+function FTreeNode_typeName(){
+   return this._typeName;
+}
+function FTreeNode_setTypeName(p){
+   var o = this;
+   o._typeName = p;
+   o.setIcon();
 }
 function FTreeNode_setLabel(p){
    var o = this;
@@ -35266,6 +35357,19 @@ function FTreeNode_extendAll(p){
          c.extendAll(p);
       }
    }
+}
+function FTreeNode_searchLast(){
+   var o = this;
+   var s = o._nodes;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         var n = s.get(i)
+         if(n._statusLinked){
+            return n.searchLast();
+         }
+      }
+   }
+   return o;
 }
 function FTreeNode_createChild(x){
    var r = null;
@@ -35798,18 +35902,8 @@ function FTreeView_appendNode(n, p){
    if(!n._statusLinked){
       var nh = n._hPanel;
       if(p){
-         var nr = p._hPanel.rowIndex;
-         var ns = p._nodes;
-         if(ns){
-            var nc = ns.count();
-            for(var i = nc - 1; i >= 0; i--){
-               var pn = ns.get(i)
-               if(pn._statusLinked){
-                  nr = pn._hPanel.rowIndex;
-                  break;
-               }
-            }
-         }
+         var nl = p.searchLast();
+         var nr = nl._hPanel.rowIndex;
          if(nh.parentElement){
             if(nh.rowIndex > nr){
                nr++;
@@ -36787,7 +36881,7 @@ var temp = 0;
 var temp = 0;
 var temp = 0;
 function FDsTemplateCanvas(o){
-   o = RClass.inherits(this, o, FCanvas);
+   o = RClass.inherits(this, o, FCanvas, MListenerLoad);
    o._context        = null;
    o._stage          = null;
    o._layer          = null;
@@ -36834,11 +36928,13 @@ function FDsTemplateCanvas_onEnterFrame(){
       var r = o._rotation;
       m.location().set(0, -6.0, 0);
       m.rotation().set(0, r.y, 0);
-      m.scale().set(2.0, 2.0, 2.0);
+      m.scale().set(0.1, 0.1, 0.1);
       m.update();
    }
 }
 function FDsTemplateCanvas_onTemplateLoad(p){
+   var o = this;
+   o.processLoadListener(o);
 }
 function FDsTemplateCanvas_oeRefresh(p){
    var o = this;
@@ -36882,29 +36978,98 @@ function FDsTemplateCanvas_dispose(){
 }
 function FDsTemplateCatalog(o){
    o = RClass.inherits(this, o, FDataTreeView);
-   o.onBuild     = FDsTemplateCatalog_onBuild;
-   o.onNodeClick = FDsTemplateCatalog_onNodeClick;
-   o.construct   = FDsTemplateCatalog_construct;
-   o.dispose     = FDsTemplateCatalog_dispose;
+   o.onBuild       = FDsTemplateCatalog_onBuild;
+   o.onNodeClick   = FDsTemplateCatalog_onNodeClick;
+   o.construct     = FDsTemplateCatalog_construct;
+   o.buildTheme    = FDsTemplateCatalog_buildTheme;
+   o.buildTemplate = FDsTemplateCatalog_buildTemplate;
+   o.dispose       = FDsTemplateCatalog_dispose;
    return o;
 }
 function FDsTemplateCatalog_onBuild(p){
    var o = this;
    o.__base.FDataTreeView.onBuild.call(o, p);
    o.lsnsClick.register(o, o.onNodeClick);
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.template');
 }
 function FDsTemplateCatalog_onNodeClick(t, n){
    var o = this;
-   var c = o._worksapce._canvas;
-   c.selectModel(n.name());
 }
 function FDsTemplateCatalog_construct(){
    var o = this;
    o.__base.FDataTreeView.construct.call(o);
 }
+function FDsTemplateCatalog_buildTheme(pn, pt){
+   var o = this;
+   var n = o.createNode();
+   n.setLabel(pt.code());
+   n.setTypeName('theme');
+   pn.appendNode(n);
+   var s = pt.materials();
+   var c = s.count();
+   if(c > 0){
+      var mgc = RConsole.find(FRs3MaterialGroupConsole);
+      for(var i = 0; i < c; i++){
+         var m = s.value(i);
+         var mg = mgc.find(m.groupGuid());
+         var mn = o.createNode();
+         mn.setLabel(mg.code());
+         mn.setTypeName('material');
+         n.appendNode(mn);
+      }
+   }
+}
+function FDsTemplateCatalog_buildTemplate(p){
+   var o = this;
+   var r = p._resource;
+   var nr = o.createNode();
+   nr.setLabel(r.code());
+   nr.setTypeName('template');
+   o.appendNode(nr);
+   var ts = r.themes();
+   var c = ts.count();
+   if(c > 0){
+      var ns = o.createNode();
+      ns.setLabel('Themes');
+      ns.setTypeName('themes');
+      nr.appendNode(ns);
+      for(var i = 0; i < c; i++){
+         o.buildTheme(ns, ts.get(i));
+      }
+   }
+   var ds = r.displays();
+   var c = ds.count();
+   if(c > 0){
+      var ns = o.createNode();
+      ns.setLabel('Displays');
+      ns.setTypeName('displays');
+      nr.appendNode(ns);
+      for(var i = 0; i < c; i++){
+         var d = ds.get(i);
+         var n = o.createNode();
+         n.setLabel('Sprite');
+         n.setTypeName('display');
+         ns.appendNode(n);
+      }
+   }
+}
 function FDsTemplateCatalog_dispose(){
    var o = this;
    o.__base.FDataTreeView.dispose.call(o);
+}
+function FDsTemplateMaterialFrame(o){
+   o = RClass.inherits(this, o, FForm);
+   o.construct      = FDsTemplateMaterialFrame_construct;
+   o.dispose        = FDsTemplateMaterialFrame_dispose;
+   return o;
+}
+function FDsTemplateMaterialFrame_construct(){
+   var o = this;
+   o.__base.FForm.construct.call(o);
+}
+function FDsTemplateMaterialFrame_dispose(){
+   var o = this;
+   o.__base.FForm.dispose.call(o);
 }
 function FDsTemplateToolBar(o){
    o = RClass.inherits(this, o, FToolBar);
@@ -36965,6 +37130,7 @@ function FDsTemplateWorkspace(o){
    o._frameWorkspace       = null;
    o._frameStatusBar       = null;
    o.onBuild               = FDsTemplateWorkspace_onBuild;
+   o.onTemplateLoad        = FDsTemplateWorkspace_onTemplateLoad;
    o.construct             = FDsTemplateWorkspace_construct;
    o.loadTemplate          = FDsTemplateWorkspace_loadTemplate;
    o.dispose               = FDsTemplateWorkspace_dispose;
@@ -36985,7 +37151,7 @@ function FDsTemplateWorkspace_onBuild(p){
    var f = o._frameBody = RClass.create(FFrame);
    f.build(p);
    fs.appendFrame(f);
-   var f = o._frameProperty = RClass.create(FFrame);
+   var f = o._frameStatusBar = RClass.create(FFrame);
    f.setHeight(18);
    f.build(p);
    f._hPanel.className = o.styleName('Statusbar_Ground');
@@ -37005,7 +37171,7 @@ function FDsTemplateWorkspace_onBuild(p){
    f._hPanel.className = o.styleName('Workspace_Ground');
    fs.appendFrame(f);
    var sp2 = fs.appendSpliter();
-   var f = o._frameStatusBar = RClass.create(FFrame);
+   var f = o._frameProperty = RClass.create(FFrame);
    f.setWidth(360);
    f.build(p);
    f._hPanel.className = o.styleName('Property_Ground');
@@ -37026,10 +37192,22 @@ function FDsTemplateWorkspace_onBuild(p){
    c.setPanel(o._frameToolBar._hPanel);
    o.push(c);
    var c = o._canvas = RClass.create(FDsTemplateCanvas);
+   c.addLoadListener(o, o.onTemplateLoad);
    c._worksapce = o;
    c.build(p);
    c.setPanel(o._frameWorkspace._hPanel);
    o.push(c);
+   var dfc = RConsole.find(FDescribeFrameConsole);
+   var xframe = dfc.load('design3d.template.MaterialForm');
+   var c = o._materialFrame = RClass.create(FDsTemplateMaterialFrame);
+   c._worksapce = o;
+   RControl.build(c, xframe, null, o._frameProperty._hPanel);
+   c.setPanel(o._frameProperty._hPanel);
+   c._hPanel.width = '100%';
+}
+function FDsTemplateWorkspace_onTemplateLoad(p){
+   var o = this;
+   o._catalog.buildTemplate(p._activeTemplate);
 }
 function FDsTemplateWorkspace_construct(){
    var o = this;

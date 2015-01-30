@@ -10399,7 +10399,9 @@ function FDataTreeView_onLoaded(p){
    RControl.build(o, xt, null, o._hPanel);
    o.lsnsLoaded.process(p);
    var s = xt.get('service');
-   o.loadNodeService(s);
+   if(s){
+      o.loadNodeService(s);
+   }
 }
 function FDataTreeView_onNodeLoaded(p){
    var o = this;
@@ -10808,6 +10810,8 @@ function FTreeNode(o){
    o.onNodeClick       = RClass.register(o, new AEventClick('onNodeClick'), FTreeNode_onNodeClick);
    o.construct         = FTreeNode_construct;
    o.type              = FTreeNode_type;
+   o.typeName          = FTreeNode_typeName;
+   o.setTypeName       = FTreeNode_setTypeName;
    o.setLabel          = FTreeNode_setLabel;
    o.level             = FTreeNode_level;
    o.setLevel          = FTreeNode_setLevel;
@@ -10825,6 +10829,7 @@ function FTreeNode(o){
    o.select            = FTreeNode_select;
    o.extend            = FTreeNode_extend;
    o.extendAll         = FTreeNode_extendAll;
+   o.searchLast        = FTreeNode_searchLast;
    o.createChild       = FTreeNode_createChild;
    o.appendNode        = FTreeNode_appendNode;
    o.push              = FTreeNode_push;
@@ -10968,6 +10973,14 @@ function FTreeNode_type(){
       return null;
    }
    return t.findType(o._typeName);
+}
+function FTreeNode_typeName(){
+   return this._typeName;
+}
+function FTreeNode_setTypeName(p){
+   var o = this;
+   o._typeName = p;
+   o.setIcon();
 }
 function FTreeNode_setLabel(p){
    var o = this;
@@ -11164,6 +11177,19 @@ function FTreeNode_extendAll(p){
          c.extendAll(p);
       }
    }
+}
+function FTreeNode_searchLast(){
+   var o = this;
+   var s = o._nodes;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         var n = s.get(i)
+         if(n._statusLinked){
+            return n.searchLast();
+         }
+      }
+   }
+   return o;
 }
 function FTreeNode_createChild(x){
    var r = null;
@@ -11696,18 +11722,8 @@ function FTreeView_appendNode(n, p){
    if(!n._statusLinked){
       var nh = n._hPanel;
       if(p){
-         var nr = p._hPanel.rowIndex;
-         var ns = p._nodes;
-         if(ns){
-            var nc = ns.count();
-            for(var i = nc - 1; i >= 0; i--){
-               var pn = ns.get(i)
-               if(pn._statusLinked){
-                  nr = pn._hPanel.rowIndex;
-                  break;
-               }
-            }
-         }
+         var nl = p.searchLast();
+         var nr = nl._hPanel.rowIndex;
          if(nh.parentElement){
             if(nh.rowIndex > nr){
                nr++;

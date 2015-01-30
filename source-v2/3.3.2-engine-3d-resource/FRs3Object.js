@@ -9,9 +9,11 @@ function FRs3Object(o){
    //..........................................................
    // @attribute
    o._guid       = null;
+   o._code       = null;
    //..........................................................
    // @method
    o.guid        = FRs3Object_guid;
+   o.code        = FRs3Object_code;
    // @method
    o.unserialize = FRs3Object_unserialize;
    return o;
@@ -28,6 +30,16 @@ function FRs3Object_guid(){
 }
 
 //==========================================================
+// <T>获得代码。</T>
+//
+// @method
+// @return String 代码
+//==========================================================
+function FRs3Object_code(){
+   return this._code;
+}
+
+//==========================================================
 // <T>从输入流里反序列化数据内容</T>
 //
 // @param p:input:FByteStream 数据流
@@ -35,4 +47,5 @@ function FRs3Object_guid(){
 function FRs3Object_unserialize(p){
    var o = this;
    o._guid = p.readString();
+   o._code = p.readString();
 }

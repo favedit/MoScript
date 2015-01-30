@@ -5,7 +5,7 @@
 // @history 150130
 //==========================================================
 function FDsTemplateCanvas(o){
-   o = RClass.inherits(this, o, FCanvas);
+   o = RClass.inherits(this, o, FCanvas, MListenerLoad);
    //..........................................................
    o._context        = null;
    o._stage          = null;
@@ -80,7 +80,7 @@ function FDsTemplateCanvas_onEnterFrame(){
       var r = o._rotation;
       m.location().set(0, -6.0, 0);
       m.rotation().set(0, r.y, 0);
-      m.scale().set(2.0, 2.0, 2.0);
+      m.scale().set(0.1, 0.1, 0.1);
       m.update();
       // 设置变量
       //r.y += 0.01;
@@ -94,7 +94,9 @@ function FDsTemplateCanvas_onEnterFrame(){
 // @param p:template:FTemplate3d 模板
 //==========================================================
 function FDsTemplateCanvas_onTemplateLoad(p){
-   //alert(p);
+   var o = this;
+   // 加载完成
+   o.processLoadListener(o);
 }
 
 //==========================================================

@@ -69,6 +69,8 @@ function FTreeNode(o){
    o.construct         = FTreeNode_construct;
    // @method
    o.type              = FTreeNode_type;
+   o.typeName          = FTreeNode_typeName;
+   o.setTypeName       = FTreeNode_setTypeName;
    o.setLabel          = FTreeNode_setLabel;
    o.level             = FTreeNode_level;
    o.setLevel          = FTreeNode_setLevel;
@@ -87,6 +89,7 @@ function FTreeNode(o){
    o.select            = FTreeNode_select;
    o.extend            = FTreeNode_extend;
    o.extendAll         = FTreeNode_extendAll;
+   o.searchLast        = FTreeNode_searchLast;
    o.createChild       = FTreeNode_createChild;
    o.appendNode        = FTreeNode_appendNode;
    o.push              = FTreeNode_push;
@@ -101,6 +104,8 @@ function FTreeNode(o){
    o.propertyLoad      = FTreeNode_propertyLoad;
    o.propertySave      = FTreeNode_propertySave;
    o.loadConfig        = FTreeNode_loadConfig;
+
+
 
 
    //..........................................................
@@ -301,6 +306,28 @@ function FTreeNode_type(){
       return null;
    }
    return t.findType(o._typeName);
+}
+
+//==========================================================
+// <T>获取类型名称。</T>
+//
+// @method
+// @return String 类型名称
+//==========================================================
+function FTreeNode_typeName(){
+   return this._typeName;
+}
+
+//==========================================================
+// <T>设置类型名称。</T>
+//
+// @method
+// @param String 类型名称
+//==========================================================
+function FTreeNode_setTypeName(p){
+   var o = this;
+   o._typeName = p;
+   o.setIcon();
 }
 
 //==========================================================
@@ -633,6 +660,26 @@ function FTreeNode_extendAll(p){
          c.extendAll(p);
       }
    }
+}
+
+//==========================================================
+// <T>搜索当前节点下最后一个子节点。</T>
+//
+// @method
+// @return FTreeNode 子节点
+//==========================================================
+function FTreeNode_searchLast(){
+   var o = this;
+   var s = o._nodes;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         var n = s.get(i)
+         if(n._statusLinked){
+            return n.searchLast();
+         }
+      }
+   }
+   return o;
 }
 
 //==========================================================

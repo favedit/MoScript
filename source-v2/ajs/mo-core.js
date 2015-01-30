@@ -12152,14 +12152,17 @@ function FProcessConsole_send(u, d){
 }
 function FResource(o){
    o = RClass.inherits(this, o, FObject);
-   o._typeName  = null;
-   o._groupName = null;
-   o._name      = null;
-   o.name  = FResource_name;
+   o._guid = null;
+   o._code = null;
+   o.guid  = FResource_guid;
+   o.code  = FResource_code;
    return o;
 }
-function FResource_name(){
-   return this._name;
+function FResource_guid(){
+   return this._guid;
+}
+function FResource_code(){
+   return this._code;
 }
 function FResourceConsole(o){
    o = RClass.inherits(this, o, FConsole);

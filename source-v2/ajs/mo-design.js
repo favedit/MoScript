@@ -509,7 +509,7 @@ var temp = 0;
 var temp = 0;
 var temp = 0;
 function FDsTemplateCanvas(o){
-   o = RClass.inherits(this, o, FCanvas);
+   o = RClass.inherits(this, o, FCanvas, MListenerLoad);
    o._context        = null;
    o._stage          = null;
    o._layer          = null;
@@ -556,11 +556,13 @@ function FDsTemplateCanvas_onEnterFrame(){
       var r = o._rotation;
       m.location().set(0, -6.0, 0);
       m.rotation().set(0, r.y, 0);
-      m.scale().set(2.0, 2.0, 2.0);
+      m.scale().set(0.1, 0.1, 0.1);
       m.update();
    }
 }
 function FDsTemplateCanvas_onTemplateLoad(p){
+   var o = this;
+   o.processLoadListener(o);
 }
 function FDsTemplateCanvas_oeRefresh(p){
    var o = this;
@@ -604,29 +606,98 @@ function FDsTemplateCanvas_dispose(){
 }
 function FDsTemplateCatalog(o){
    o = RClass.inherits(this, o, FDataTreeView);
-   o.onBuild     = FDsTemplateCatalog_onBuild;
-   o.onNodeClick = FDsTemplateCatalog_onNodeClick;
-   o.construct   = FDsTemplateCatalog_construct;
-   o.dispose     = FDsTemplateCatalog_dispose;
+   o.onBuild       = FDsTemplateCatalog_onBuild;
+   o.onNodeClick   = FDsTemplateCatalog_onNodeClick;
+   o.construct     = FDsTemplateCatalog_construct;
+   o.buildTheme    = FDsTemplateCatalog_buildTheme;
+   o.buildTemplate = FDsTemplateCatalog_buildTemplate;
+   o.dispose       = FDsTemplateCatalog_dispose;
    return o;
 }
 function FDsTemplateCatalog_onBuild(p){
    var o = this;
    o.__base.FDataTreeView.onBuild.call(o, p);
    o.lsnsClick.register(o, o.onNodeClick);
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.template');
 }
 function FDsTemplateCatalog_onNodeClick(t, n){
    var o = this;
-   var c = o._worksapce._canvas;
-   c.selectModel(n.name());
 }
 function FDsTemplateCatalog_construct(){
    var o = this;
    o.__base.FDataTreeView.construct.call(o);
 }
+function FDsTemplateCatalog_buildTheme(pn, pt){
+   var o = this;
+   var n = o.createNode();
+   n.setLabel(pt.code());
+   n.setTypeName('theme');
+   pn.appendNode(n);
+   var s = pt.materials();
+   var c = s.count();
+   if(c > 0){
+      var mgc = RConsole.find(FRs3MaterialGroupConsole);
+      for(var i = 0; i < c; i++){
+         var m = s.value(i);
+         var mg = mgc.find(m.groupGuid());
+         var mn = o.createNode();
+         mn.setLabel(mg.code());
+         mn.setTypeName('material');
+         n.appendNode(mn);
+      }
+   }
+}
+function FDsTemplateCatalog_buildTemplate(p){
+   var o = this;
+   var r = p._resource;
+   var nr = o.createNode();
+   nr.setLabel(r.code());
+   nr.setTypeName('template');
+   o.appendNode(nr);
+   var ts = r.themes();
+   var c = ts.count();
+   if(c > 0){
+      var ns = o.createNode();
+      ns.setLabel('Themes');
+      ns.setTypeName('themes');
+      nr.appendNode(ns);
+      for(var i = 0; i < c; i++){
+         o.buildTheme(ns, ts.get(i));
+      }
+   }
+   var ds = r.displays();
+   var c = ds.count();
+   if(c > 0){
+      var ns = o.createNode();
+      ns.setLabel('Displays');
+      ns.setTypeName('displays');
+      nr.appendNode(ns);
+      for(var i = 0; i < c; i++){
+         var d = ds.get(i);
+         var n = o.createNode();
+         n.setLabel('Sprite');
+         n.setTypeName('display');
+         ns.appendNode(n);
+      }
+   }
+}
 function FDsTemplateCatalog_dispose(){
    var o = this;
    o.__base.FDataTreeView.dispose.call(o);
+}
+function FDsTemplateMaterialFrame(o){
+   o = RClass.inherits(this, o, FForm);
+   o.construct      = FDsTemplateMaterialFrame_construct;
+   o.dispose        = FDsTemplateMaterialFrame_dispose;
+   return o;
+}
+function FDsTemplateMaterialFrame_construct(){
+   var o = this;
+   o.__base.FForm.construct.call(o);
+}
+function FDsTemplateMaterialFrame_dispose(){
+   var o = this;
+   o.__base.FForm.dispose.call(o);
 }
 function FDsTemplateToolBar(o){
    o = RClass.inherits(this, o, FToolBar);
@@ -687,6 +758,7 @@ function FDsTemplateWorkspace(o){
    o._frameWorkspace       = null;
    o._frameStatusBar       = null;
    o.onBuild               = FDsTemplateWorkspace_onBuild;
+   o.onTemplateLoad        = FDsTemplateWorkspace_onTemplateLoad;
    o.construct             = FDsTemplateWorkspace_construct;
    o.loadTemplate          = FDsTemplateWorkspace_loadTemplate;
    o.dispose               = FDsTemplateWorkspace_dispose;
@@ -707,7 +779,7 @@ function FDsTemplateWorkspace_onBuild(p){
    var f = o._frameBody = RClass.create(FFrame);
    f.build(p);
    fs.appendFrame(f);
-   var f = o._frameProperty = RClass.create(FFrame);
+   var f = o._frameStatusBar = RClass.create(FFrame);
    f.setHeight(18);
    f.build(p);
    f._hPanel.className = o.styleName('Statusbar_Ground');
@@ -727,7 +799,7 @@ function FDsTemplateWorkspace_onBuild(p){
    f._hPanel.className = o.styleName('Workspace_Ground');
    fs.appendFrame(f);
    var sp2 = fs.appendSpliter();
-   var f = o._frameStatusBar = RClass.create(FFrame);
+   var f = o._frameProperty = RClass.create(FFrame);
    f.setWidth(360);
    f.build(p);
    f._hPanel.className = o.styleName('Property_Ground');
@@ -748,10 +820,22 @@ function FDsTemplateWorkspace_onBuild(p){
    c.setPanel(o._frameToolBar._hPanel);
    o.push(c);
    var c = o._canvas = RClass.create(FDsTemplateCanvas);
+   c.addLoadListener(o, o.onTemplateLoad);
    c._worksapce = o;
    c.build(p);
    c.setPanel(o._frameWorkspace._hPanel);
    o.push(c);
+   var dfc = RConsole.find(FDescribeFrameConsole);
+   var xframe = dfc.load('design3d.template.MaterialForm');
+   var c = o._materialFrame = RClass.create(FDsTemplateMaterialFrame);
+   c._worksapce = o;
+   RControl.build(c, xframe, null, o._frameProperty._hPanel);
+   c.setPanel(o._frameProperty._hPanel);
+   c._hPanel.width = '100%';
+}
+function FDsTemplateWorkspace_onTemplateLoad(p){
+   var o = this;
+   o._catalog.buildTemplate(p._activeTemplate);
 }
 function FDsTemplateWorkspace_construct(){
    var o = this;

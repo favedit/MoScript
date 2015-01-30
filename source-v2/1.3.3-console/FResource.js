@@ -1,5 +1,5 @@
 //==========================================================
-// <T>资源。</T>
+// <T>资源基类。</T>
 //
 // @class
 // @author maocy
@@ -9,21 +9,31 @@ function FResource(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._typeName  = null;
-   o._groupName = null;
-   o._name      = null;
+   o._guid = null;
+   o._code = null;
    //..........................................................
    // @method
-   o.name  = FResource_name;
+   o.guid  = FResource_guid;
+   o.code  = FResource_code;
    return o;
 }
 
 //==========================================================
-// <T>获得名称。</T>
+// <T>获得唯一编号。</T>
 //
 // @method
-// @return 名称
+// @return String 唯一编号
 //==========================================================
-function FResource_name(){
-   return this._name;
+function FResource_guid(){
+   return this._guid;
+}
+
+//==========================================================
+// <T>获得代码。</T>
+//
+// @method
+// @return String 代码
+//==========================================================
+function FResource_code(){
+   return this._code;
 }

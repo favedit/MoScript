@@ -28,6 +28,7 @@ function FDsTemplateWorkspace(o){
    //..........................................................
    // @process
    o.onBuild               = FDsTemplateWorkspace_onBuild;
+   o.onTemplateLoad        = FDsTemplateWorkspace_onTemplateLoad;
    //..........................................................
    // @method
    o.construct             = FDsTemplateWorkspace_construct;
@@ -63,7 +64,7 @@ function FDsTemplateWorkspace_onBuild(p){
    f.build(p);
    fs.appendFrame(f);
    // 建立状态区
-   var f = o._frameProperty = RClass.create(FFrame);
+   var f = o._frameStatusBar = RClass.create(FFrame);
    f.setHeight(18);
    f.build(p);
    f._hPanel.className = o.styleName('Statusbar_Ground');
@@ -90,7 +91,7 @@ function FDsTemplateWorkspace_onBuild(p){
    // 建立分割符
    var sp2 = fs.appendSpliter();
    // 建立属性区
-   var f = o._frameStatusBar = RClass.create(FFrame);
+   var f = o._frameProperty = RClass.create(FFrame);
    f.setWidth(360);
    f.build(p);
    f._hPanel.className = o.styleName('Property_Ground');
@@ -115,10 +116,31 @@ function FDsTemplateWorkspace_onBuild(p){
    o.push(c);
    //..........................................................
    var c = o._canvas = RClass.create(FDsTemplateCanvas);
+   c.addLoadListener(o, o.onTemplateLoad);
    c._worksapce = o;
    c.build(p);
    c.setPanel(o._frameWorkspace._hPanel);
    o.push(c);
+   //..........................................................
+   var dfc = RConsole.find(FDescribeFrameConsole);
+   var xframe = dfc.load('design3d.template.MaterialForm');
+   var c = o._materialFrame = RClass.create(FDsTemplateMaterialFrame);
+   c._worksapce = o;
+   RControl.build(c, xframe, null, o._frameProperty._hPanel);
+   c.setPanel(o._frameProperty._hPanel);
+   c._hPanel.width = '100%';
+}
+
+//==========================================================
+// <T>加载模板处理。</T>
+//
+// @method
+// @param p:template:FTemplate3d 模板
+//==========================================================
+function FDsTemplateWorkspace_onTemplateLoad(p){
+   var o = this;
+   // 加载完成
+   o._catalog.buildTemplate(p._activeTemplate);
 }
 
 //==========================================================

@@ -5,7 +5,7 @@
 // @history 150129
 //==========================================================
 function FRs3TemplateTheme(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute
    o._materials   = null;
@@ -45,14 +45,16 @@ function FRs3TemplateTheme_materials(){
 // @return 处理结果
 //==========================================================
 function FRs3TemplateTheme_unserialize(p){
+   // 读取父信息
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    // 读取材质集合
    var c = p.readUint16();
    if(c > 0){
+      var mc = RConsole.find(FRs3MaterialConsole);
       var s = o._materials = new TDictionary();
       for(var n = 0; n < c; n++){
-         var m = RClass.create(FRs3Material);
-         m.unserialize(p);
+         var m = mc.unserialize(p);
          s.set(m.groupGuid(), m);
       }
    }
