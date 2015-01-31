@@ -20,6 +20,7 @@ function FRs3Material(o){
    // @method
    o.guid        = FRs3Material_guid;
    o.groupGuid   = FRs3Material_groupGuid;
+   o.group       = FRs3Material_group;
    // @method
    o.effectName  = FRs3Material_effectName;
    o.info        = FRs3Material_info;
@@ -60,13 +61,13 @@ function FRs3Material_groupGuid(){
 }
 
 //==========================================================
-// <T>获得分组。</T>
+// <T>获得材质分组。</T>
 //
 // @method
-// @return FRs3MaterialGroup 资源分组
+// @return FRs3MaterialGroup 材质分组
 //==========================================================
 function FRs3Material_group(){
-   return this._group;
+   return RConsole.find(FRs3MaterialGroupConsole).find(this._groupGuid);
 }
 
 //==========================================================

@@ -87,10 +87,9 @@ function RRuntime_className(v){
    return null;
 }
 function RRuntime_uid(v){
-   var r = v.uniqueNumber;
+   var r = v.__puuid;
    if(r == null){
-      r = v.uniqueNumber = RRuntime._nextUid;
-      RRuntime._nextUid++;
+      r = v.__puuid = RRuntime._nextUid++;
    }
    return r;
 }

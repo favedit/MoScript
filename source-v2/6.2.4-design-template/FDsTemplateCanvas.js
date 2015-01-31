@@ -78,9 +78,9 @@ function FDsTemplateCanvas_onEnterFrame(){
    var m = o._activeTemplate;
    if(m){
       var r = o._rotation;
-      m.location().set(0, -6.0, 0);
+      m.location().set(0, -8.0, 0);
       m.rotation().set(0, r.y, 0);
-      m.scale().set(0.1, 0.1, 0.1);
+      m.scale().set(3.0, 3.0, 3.0);
       m.update();
       // 设置变量
       //r.y += 0.01;

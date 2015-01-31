@@ -1,370 +1,390 @@
 //==========================================================
-// <T>数字输入框。</T>
+// <T>数字编辑框。</T>
 //
-// @class FEditControl, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel
-// @history 091106 MAOCY 创建
+//  hValuePanel<TD>
+//  hValueForm<TABLE>
+// ┌-----------------┬---------------------------------┬--------------------┐
+// │hChangePanel<TD> │ hInputPanel<TD>                 │ hAdjustPanel<TD>   │hValueLine<TR>
+// │                 │                                 │ hAdjustForm<TABLE> │
+// │hChangeIcon<IMG> │┌-----------------------------┐│┌----------------┐│
+// │                 ││                             │││hUpPanel<TD>    ││
+// │                 ││                             │││hUpIcon<IMG>    ││
+// │                 ││hInput<INPUT>                ││├----------------┤│
+// │                 ││                             │││hDownPanel<TD>  ││
+// │                 ││                             │││hDownIcon<IMG>  ││
+// │                 │└-----------------------------┘│└----------------┘│
+// └-----------------┴---------------------------------┴--------------------┘
+//
+// @class
+// @author maocy
+// @version 150131
 //==========================================================
 function FNumber(o){
-   //o = RClass.inherits(this, o, FEditControl, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel);
+   //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
    o = RClass.inherits(this, o, FEditControl);
    //..........................................................
    // @property
-   //o.editAlign         = EAlign.Right;
+   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
    //..........................................................
-   // @attribute
-   //o.borderStyle       = EBorder.RoundDrop;
+   // @style
+   o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
+   o._styleAdjustForm = RClass.register(o, new AStyle('_styleAdjustForm'));
+   o._styleUpPanel    = RClass.register(o, new AStyle('_styleUpPanel'));
+   o._styleDownPanel  = RClass.register(o, new AStyle('_styleDownPanel'));
+   //..........................................................
+   // @html
+   o._hInput          = null;
+   o._iconUp          = '';
+   o._iconDown        = null;
    //..........................................................
    // @event
-   //o.onEditFocus       = RClass.register(o, new HFocus('onEditFocus'), FNumber_onEditFocus);
-   //o.onEditBlur        = RClass.register(o, new HBlur('onEditBlur'), FNumber_onEditBlur);
-   //o.onEditKeyPress    = RClass.register(o, new HKeyPress('onEditKeyPress'), FNumber_onEditKeyPress);
-   //o.onBuildEdit       = FNumber_onBuildEdit;
+   o.onBuildEditValue = FNumber_onBuildEditValue;
+   //..........................................................
+   // @process
+   //o.oeDataLoad       = FNumber_oeDataLoad;
+   //o.oeDataSave       = FNumber_oeDataSave;
    //..........................................................
    // @method
-   //o.formatValue       = MDescNumber_formatValue;
-   //o.formatText        = MDescNumber_formatText;
-   //o.onMouseWheel      = MDescNumber_onMouseWheel;
-   //o.onDataKeyDown     = FNumber_onDataKeyDown;
-   //o.ohEditKeyUp       = FNumber_ohEditKeyUp;
-   // 创建HTML标签的函数
-   // 相应按键弹起事件
-   //o.onEditKeyUp       = FNumber_onEditKeyUp;
-   // 相应双击事件 用来做lov用
-   //o.onEditDoubleClick = FNumber_onEditDoubleClick;
-   // 相应鼠标滑动事件
+   o.construct        = FNumber_construct;
+   // @method
+   o.get              = FNumber_get;
+   o.set              = FNumber_set;
+
+
+
+
+
+
+
+
+   //o.onKeyDown    = RClass.register(o, new AEventKeyDown('onKeyDown'));
+   //o.onKeyPress   = RClass.register(o, new AEventKeyPress('onKeyPress'));
+   //o.onKeyUp      = RClass.register(o, new AEventKeyUp('onKeyUp'));
+   //o.stUnit        = RClass.register(o, new AStyle('Unit'));
+   //..........................................................
+   // @attribute
+   //o.borderStyle   = EBorder.Round;
+   //..........................................................
+   // @html
+   //o.hUnit         = null;
+   //..........................................................
+   // @event
+   //o.onDataKeyDown = FNumber_onDataKeyDown;
    //..........................................................
    // @method
-   // 检查是否符合要求
-   // 模式是否符合
-   //o.validPattern      = FNumber_validPattern;
-   // 设置显示格式
-   //o.refreshStyle      = FNumber_refreshStyle;
-   // 用分割符分割数据
-   //o.splitValue        = FNumber_splitValue;
-   // 去掉分隔符
-   //o.removeSplit       = FNumber_removeSplit;
-   //o.precisionValue    = FNumber_precisionValue;
-   //o.dispose           = FNumber_dispose;
-   //o.setUnitIcon       = FNumber_setUnitIcon;
+   //o.formatValue   = FNumber_formatValue;
+   //o.setText       = FNumber_setText;
+   //o.validText     = FNumber_validText;
+   //o.findEditor    = FNumber_findEditor;
+   //o.drop          = FNumber_drop;
+   //o.link          = FNumber_link;
+   //o.clone         = FNumber_clone;
    return o;
 }
 
 //==========================================================
-// <T>编辑控件获得焦点。 </T>
+// <T>数据源从加载数据处理。</T>
 //
-// @param e:event:TEvent 事件对象
+// @method
+// @param p:dataSource:FDataSource 数据源
 //==========================================================
-function FNumber_onEditFocus(e){
+function FNumber_oeDataLoad(p){
    var o = this;
-   o.setText(o.formatValue(o.text()));
+   return EEventStatus.Stop;
 }
 
 //==========================================================
-// <T>编辑控件失去焦点。 </T>
+// <T>存储数据到数据源处理。</T>
 //
-// @param e:event:TEvent 事件对象
+// @method
+// @param p:dataSource:FDataSource 数据源
 //==========================================================
-function FNumber_onEditBlur(e){
+function FNumber_oeDataSave(p){
    var o = this;
-   o.setText(o.formatText(o.text()));
+   return EEventStatus.Stop;
 }
 
 //==========================================================
-// <T>编辑控件中键盘按下处理。 </T>
+// <T>建立编辑器内容。</T>
 //
-// @param e:event:TEvent 事件对象
+// @method
+// @param p:argements:SArgements 参数集合
 //==========================================================
-function FNumber_onEditKeyPress(e, he){
+function FNumber_onBuildEditValue(p){
    var o = this;
-   var kc = he.keyCode;
-   // 允许输入百分号(%)
-   if(he.shiftKey && 53 == kc){
-      return;
-   }
-   // 检查输入字符是否为数字，否则给清除输入内容
-   if(!EKey.floatCodes[kc]){
-      RKey.eventClear(he);
-   }
-}
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = RBuilder.appendTable(hp);
+   hf.width = '100%';
+   var hl = o._hValueLine = RBuilder.appendTableRow(hf);
+   //..........................................................
+   // 建立改变栏
+   o._hChangePanel = RBuilder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   //..........................................................
+   // 建立输入栏
+   var hip = o._hInputPanel = RBuilder.appendTableCell(hl);
+   var he = o._hInput = RBuilder.appendEdit(hip, o.styleName('Input'));
+   //..........................................................
+   // 建立调整栏
+   var hap = o._hAdjustPanel = RBuilder.appendTableCell(hl);
+   hap.style.borderLeft = '1px solid #666666';
+   hap.width = 12;
+   var haf = o.hAdjustForm = RBuilder.appendTable(hap, o.styleName('AdjustForm'));
+   // 建立上按键
+   var hc = RBuilder.appendTableRowCell(haf);
+   hc.className = o.styleName('UpPanel');
+   var hi = o._hUpIcon = RBuilder.appendIcon(hc, null, 'control.number.up');
+   hi.align = 'center';
+   //o.attachEvent('onUpMouseDown', hi);
+   // 建立下按键
+   var hc = RBuilder.appendTableRowCell(haf);
+   hc.className = o.styleName('DownPanel');
+   var hi = o._hDownIcon = RBuilder.appendIcon(hc, null, 'control.number.down');
+   //o.attachEvent('onDownMouseDown', hi);
 
-//==========================================================
-// <T>创建编辑控件。 </T>
-//
-// @param b:border:TBorder 边框对象
-//==========================================================
-function FNumber_onBuildEdit(b){
-   var o = this;
-   // 建立编辑控件
-   var htb = RBuilder.appendTable(b.hPanel);
-   htb.style.tableLayout = 'fixed';
-   var hr = o.hEdit = htb.insertRow();
+   //h.className = o.styleName('InputPanel');
+   //var h = o.hValue = RBuilder.appendTable(o._hInputPanel, o.styleName('ValuePanel'));
+   //htb.style.tableLayout = 'fixed';
+   //var hr = o.hEdit = htb.insertRow();
    // 建立修改标志
-   o.onBuildChange(hr.insertCell());
-   // 建立放大标志
-   if(o.canZoom()){
-      var hc = hr.insertCell();
-      o.hZoom = RBuilder.appendIcon(hc, 'ctl.zooms');
-      hc.width = 16;
-   }
-   // 建立输入框
-   var hc = hr.insertCell();
-   hc.style.width = '100%';
-   var he = o.hEdit = RBuilder.appendEdit(hc, o.style('Edit'));
-   o.attachEvent('onEditFocus', he, o.onEditFocus);
-   o.attachEvent('onEditKeyPress', he, o.onEditKeyPress);
-   o.attachEvent('onEditBlur', he, o.onEditBlur);
-   o.attachEvent('onDataKeyUp', he, o.ohEditKeyUp); 
+   //o.onBuildChange(hr.insertCell());
+   // 建立编辑控件
+   //var hep = hr.insertCell();
+   // 建立编辑面板
+   // 设置大小
+   //RHtml.setSize(he, o._inputSize);
    // 设置可以输入的最大长度
-   if(o.editLength){
-      he.maxLength = o.editLength;
-   }
-   // 建立调节表单
-   o.buildAdjustForm(b.hDrop);
+   //if(o._editLength){
+   //   he.maxLength = o._editLength;
+   //}
 }
 
 //==========================================================
-//<T>创建编辑控件。 </T>
+// <T>构造处理。</T>
 //
-//@param b:border:TBorder 边框对象
+// @method
 //==========================================================
-function FNumber_setUnitIcon(i){
+function FNumber_construct(){
    var o = this;
-   var hui = o.hUnit;
-   hui.innerHTML = '<IMG src='+i+'>';
+   o.__base.FEditControl.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
 }
 
 //==========================================================
-// 响应按键按下事件，当按下的是上下箭头时，数值按单位变化，否则
-// 按普通数字键处理。 
+// <T>获得数据。</T>
 //
-// @param s:sender 消息发送者
-// @param e:event 事件
+// @method
+// @return String 数据
+//==========================================================
+function FNumber_get(p){
+   var o = this;
+   var r = o.__base.FEditControl.get.call(o, p);
+   // 获得显示
+   var h = o._hInput;
+   if(h){
+      r = h.value;
+   }
+   return r;
+}
+
+//==========================================================
+// <T>设置数据。</T>
+//
+// @method
+// @param p:value:String 数据
+//==========================================================
+function FNumber_set(p){
+   var o = this;
+   o.__base.FEditControl.set.call(o, p);
+   // 设置显示
+   var h = o._hInput;
+   if(h){
+      var s = RFloat.format(p, 0, null, 3, null);
+      h.value = s;
+   }
+   //o.finded = v;
+   //if(o.hChangeIcon){
+   //   o.hChangeIcon.style.display = 'none';
+   //}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//==========================================================
+// <T>数据区按键按下事件。</T>
+//
+// @method
+// @param s:sender:FControl 控件对象
+// @param e:event:TEvent 事件对象
 //==========================================================
 function FNumber_onDataKeyDown(s, e){
    var o = this;
-   if(o.canEdit){
-      if(EKey.Up == e.keyCode){
-         o.adjustValue(true);
-      }else if(EKey.Down == e.keyCode){
-         o.adjustValue(false);
-      }
+   o.__base.FEditControl.onDataKeyDown.call(o, s, e);
+   // 大小写限制
+   if(o.editCase){
+      RKey.fixCase(e, o.editCase);
    }
-   o.base.FEditControl.onDataKeyDown.call(o, s, e);
-}
-
-//==========================================================
-// 响应按键弹起事件，当按下的是上下箭头时，编辑框后的上下箭头的
-// 样式改变。 
-//
-// @param s:sender 消息发送者
-// @param e:event 事件
-//==========================================================
-function FNumber_ohEditKeyUp(s, e){
-   var o = this;
-   if(EKey.Up == e.keyCode && o.canEdit){
-      o.hUpIcon.src = o.styleIconPath('UpSelect');
-   }else if(EKey.Down == e.keyCode && o.canEdit){
-      o.hDownIcon.src = o.styleIconPath('DownSelect');
-   }
-}
-
-
-//------------------------------------------------------------
-function FNumber_onEditKeyDown(e) {
-   var o = this;
-   if(o.canEdit){
-      if (EKey.Up == e.keyCode) {
-         e.source.hUpIcon.src = o.styleIconPath('up');
-         o.changeValue(e, 'Y');
-      }else if (EKey.Down == e.keyCode){
-         e.source.hDownIcon.src = o.styleIconPath('down');
-         o.changeValue(e, 'N');
-      }
-   }
-}
-//------------------------------------------------------------
-function FNumber_onEditKeyUp(e) {
-   var o = this;
-   if(o.canEdit){
-      if (EKey.Up == e.keyCode){
-         e.source.hUpIcon.src = o.styleIconPath('upSelect');
-      }else if (EKey.Down == e.keyCode){
-         e.source.hDownIcon.src = o.styleIconPath('downSelect');
-      }
-   }
-}
-//------------------------------------------------------------
-function FNumber_onEditDoubleClick(){
-   var o = this;
-   this.onListClick();
-}
-// ------------------------------------------------------------
-// s 为没有分隔符的字符串
-function FNumber_validPattern(s) {
-   var o = this;
-   var flag = true;
-   var s = RString.nvl(s);
-   // 首先检测是否是数字 如果不是数字格式 返回 false
-   if(!RRegExp.test(ERegExp.NUMBER,s)){
-      return false;  
-   }
-   var r = null;
-   // 是否符合数字类型
-   if (o.dataType) {
-      for (n in ERegExp) {
-         if (RString.equals(n, o.dataType)) {
-            // 找到第一个就可以了 因此在枚举样式里，只取第一个数据
-            r = ERegExp[n];
-            break;
-         }
-      }
-      if (RString.equals(RClass.name(r), "RegExp")) {
-         flag = RRegExp.test(r, s) ? flag & true : flag & false;
-      }
-   }
-   // 最大值
-   if (o.editMaxvalue) {
-      flag = parseFloat(s) <= parseFloat(o.editMaxvalue) ? flag & true : flag & false;
-   }
-   // 最小值
-   if (o.editMinvalue) {
-      flag = parseFloat(s) >= parseFloat(o.editMinvalue) ? flag & true : flag & false;
-   }
-   return flag;
-}
-//------------------------------------------------------------
-function FNumber_refreshStyle(){
-   var o = this;
-   o.base.FEditControl.refreshStyle.call(o);
-   o.hUpIcon.src = o.styleIconPath(o._hover ? 'UpSelect' : 'Up');
-   o.hDownIcon.src = o.styleIconPath(o._hover ? 'DownSelect' : 'Down');
-}
-// ------------------------------------------------------------
-// 格式化数字用'号隔开数字
-// 保证是有效数字的前提下
-function FNumber_splitValue(v){
-   var o = this;
-   var s = RString.nvl(v.toString());
-   // 负号位置
-   var j = RString.findChars(s,"-");
-   // 百分号位置
-   var b = RString.findChars(s,"%");
-   // 去掉字符串里的无用符号
-   s = RString.removeChars(s, "'");
-   s = RString.removeChars(s, " ");
-   s = RString.removeChars(s, "%");
-   s = RString.removeChars(s, "-");
-   if (!RString.isEmpty(s)) {
-      var sc = '';
-      var c = '';
-      var n = 0;
-      for(var i = s.length; i > -1; i--){
-//         if(n % 3 == 0 && (i + 1) != s.length){
-//            sc = sc.concat("'");
-//         }else{
-//            sc = sc.concat(s.charAt(i));
-//         }
-//         if("." != s.charAt(i)){
-//            n++;
-//         }else{
-//            n = 0;
-//         }
-         if(i != 0 && n != 0 && n % 3 == 0){
-            sc = "'" + s.charAt(i) + sc;
-         }else{
-            sc = s.charAt(i) + sc;
-         }
-         n++;
-         
-      }
-      if(-1 != j){
-          sc = "-" + sc ;
-       }
-      if(-1 != b){
-         sc = sc +"%";
-      }
-      return sc;
-   }
-   return s;
-}
-//------------------------------------------------------------
-// 去掉分隔符
-function FNumber_removeSplit(s){
-   var o = this;
-   var s = RString.nvl(s);
-   s = RString.removeChars(s,"'");
-   s = RString.removeChars(s,"%");
-   return s;
-}
-//------------------------------------------------------------
-function FNumber_precisionValue(v){
-   var o = this;
-   if(RString.isEmpty(v)){
-      return v;
-   }
-   var l1,l2;
-   // 精度的格式一定要正确 0.1,1,10,100...
-   var p = RString.nvl(o.editPrecision);
-   v = RString.nvl(v);
-   if(RString.contains(p,'.')){
-      var sp = p.split('.')
-      l2 = sp[1].length;
-   }else{
-     l1 = p.length; 
-   }
-   // 值为浮点数
-   if(RString.contains(v, '.')){
-      var vs = v.split('.');
-      if(l2){
-         if(l2 > vs[1].length){
-            vs[1] = RString.rpad(vs[1],l2 - vs[1].length,'0');
-         }else if(l2 <= vs[1].length){
-            vs[1] = vs[1].substring(0, l2);
-         }
-      }
-      if(l1){
-         if(l1 > vs[0].length){
-            alert(l1);
-         }else if(l1 < vs[0].length){
-            vs[0] = vs[0].substring(0, vs[0].length - l1);
-            vs[0] = RString.rpad(vs[0],l1,'0');
-         }
-         vs[1] = null;
-      }
-//      v = vs[0] + '.' + RString.nvl(vs[1]);
-      if(vs[1]){
-         v = vs[0] + '.' + RString.nvl(vs[1]);
-      }else{
-         v = vs[0];
-      }
-   // 值为整数
-   }else{
-      if(l1){
-         if(l1 <= v.length){
-            v = v.substring(0, v.length - l1 + 1);
-            for(var n = 0; n < l1 - 1;n++){
-               v = v.concat('0');
+   // 自动提示
+   if(o._editable){
+      return;
+      if(o.editComplete){
+         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
+            var ed = o.findEditor();
+            if(ed){
+               ed.onEditKeyDown(s, e);
             }
          }
-         else if(l1 > v.length){
-            v = 0;
+      }
+   }
+}
+
+
+//==========================================================
+// <T>格式化数据。</T>
+//
+// @method
+// @param v:value:String 显示内容
+//==========================================================
+function FNumber_formatValue(v){
+   var o = this;
+   var r = RString.nvl(v);
+   if(ECase.Upper == o.editCase){
+      r = RString.toUpper(r);
+   }else if(ECase.Lower == o.editCase){
+      r = RString.toLower(r);
+   }
+   return r;
+}
+
+//==========================================================
+// <T>设置内容。</T>
+//
+// @method
+// @param t:text:String 内容
+//==========================================================
+function FNumber_setText(t){
+   var o = this;
+   if(!o.hEdit){
+      return;
+   }
+   if('U'== o.editCase){
+      o.hEdit.value = RString.toUpper(t);
+   }else if('L'== o.editCase){
+         o.hEdit.value = RString.toLower(t);
+   }else{
+      o.hEdit.value = t;
+   }
+   if('right' == o.editAlign ){
+      o.hEdit.style.textAlign = 'right';
+   }else if('left' == o.editAlign ){
+      o.hEdit.style.textAlign = 'left';
+   }else{
+      o.hEdit.style.textAlign = 'center';
+   }
+}
+
+//==========================================================
+// <T>校验内容。</T>
+//
+// @method
+// @param t:text:String 内容
+// @return 校验结果
+//==========================================================
+function FNumber_validText(t){
+   var o = this;
+   var r = o.__base.FEditControl.validText.call(o, t);
+   if(!r){
+      // 最小长度的校验
+      if(o.validLenmin){
+         if(o.validLenmin > t.length){
+            return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
          }
       }
-      if(l2){
-         v = v + '.';
-         for(var n = 0; n < l2;n++){
-            v = v.concat('0');
+      // 最大长度的校验
+      if(o.validLenmax){
+         if(o.validLenmax < t.length){
+            return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
          }
       }
    }
-   return v;
+   return r;
 }
-//------------------------------------------------------------
-function FNumber_dispose(){
+
+//==========================================================
+// <T>查找编辑器。</T>
+//
+// @method
+// @return 编辑器
+//==========================================================
+function FNumber_findEditor(){
    var o = this;
-   o.base.FEditControl.dispose.call(o);
-   o.hLabel = null;
-   o.hUpIcon = null;
-   o.hDownIcon = null;
-   o.hChgIic = null;
+   if(o.editComplete){
+      var de = o.editor;
+      if(!de){
+         o.dsControl = o.topControl(MDataset);
+         if(o.dsControl){
+            de = o.editor = RConsole.find(FNumberConsole).focus(o, FNumberEditor);
+         }
+      }
+      if(de){
+         de.linkControl(o);
+      }
+      return o.editor;
+   }
+}
+
+//==========================================================
+// <T>下拉处理。</T>
+//
+// @method
+//==========================================================
+function FNumber_drop(){
+   var o = this;
+   var de = o.findEditor();
+   if(de){
+      var t = o.reget();
+      if(t.length > 0){
+         if(o.finded != t){
+            if(de.source != o){
+               de.linkControl(o);
+            }
+            de.search(t);
+         }
+         o.finded = t;
+      }
+   }
+}
+
+//==========================================================
+//<T>下拉处理。</T>
+//
+//@method
+//==========================================================
+function FNumber_clone(){
+   var o = this;
+   var r = o._class.newInstance();
+   GHtml_clone(r, o.hPanel);
+   return r;
+}
+
+//==========================================================
+//<T>下拉处理。</T>
+//
+//@method
+//==========================================================
+function FNumber_link(){
+   var o = this;
+   
 }

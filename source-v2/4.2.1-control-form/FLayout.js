@@ -67,7 +67,7 @@ function FLayout(o){
 //==========================================================
 function FLayout_onBuildPanel(p){
    var o = this;
-   var h = o._hPanel = o._hPanelForm = RBuilder.createTable(p.hDocument, o.styleName('Form'));
+   var h = o._hPanel = o._hPanelForm = RBuilder.createTable(p.hDocument, o.styleName('Form'), null, 0, 1);
    // 设计模式
    if(o._layoutCd == ELayout.Design){
       var hr = RBuilder.appendTableRow(h);

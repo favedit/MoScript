@@ -1370,7 +1370,9 @@ function RBuilder_createDiv(d, s){
 }
 function RBuilder_createTable(d, s, b, cs, cp){
    var h = this.create(d, 'TABLE', s);
-   h.border = RInteger.nvl(b);
+   if(b){
+      h.border = RInteger.nvl(b);
+   }
    h.cellSpacing = RInteger.nvl(cs);
    h.cellPadding = RInteger.nvl(cp);
    return h;
@@ -1785,7 +1787,7 @@ var RHtml = new function RHtml(){
    o._nextUid        = 1;
    o._links          = new Object();
    o._clientPosition = new SPoint2();
-   o.uid            = RHtml_uid;
+   o.uid            = RRuntime_uid;
    o.displayGet     = RHtml_displayGet;
    o.displaySet     = RHtml_displaySet;
    o.visibleGet     = RHtml_visibleGet;
@@ -1842,13 +1844,6 @@ var RHtml = new function RHtml(){
    o.tableMoveRow   = RHtml_tableMoveRow;
    o.clone          = RHtml_clone;
    return o;
-}
-function RHtml_uid(v){
-   var r = v.uniqueNumber;
-   if(r == null){
-      r = v.uniqueNumber = this._nextUid++;
-   }
-   return r;
 }
 function RHtml_displayGet(h){
    var r = null;

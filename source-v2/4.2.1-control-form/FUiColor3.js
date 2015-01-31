@@ -1,11 +1,20 @@
 //==========================================================
-// <T>文本编辑框。</T>
+// <T>颜色3编辑框。</T>
+//
+//  hValuePanel<TD>
+//  hValueForm<TABLE>
+// ┌-----------------┬----------------------┬----------------------┬---------------------┬------------------┐
+// │hChangePanel<TD> │ hRedPanel<TD>        │ hGreenPanel<TD>      │ hBluePanel<TD>      │ hDropPanel<TD>   │
+// │hChangeIcon<IMG> │┌------------------┐│┌------------------┐│┌-----------------┐│┌--------------┐│
+// │                 ││hInputRed<INPUT>  │││hInputGreen<INPUT>│││hInputBlue<INPUT>│││hDropIcon<IMG>││
+// │                 │└------------------┘│└------------------┘│└-----------------┘│└--------------┘│
+// └-----------------┴----------------------┴----------------------┴---------------------┴------------------┘
 //
 // @class
 // @author maocy
 // @version 150102
 //==========================================================
-function FEdit(o){
+function FUiColor3(o){
    //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
    o = RClass.inherits(this, o, FEditControl);
    //..........................................................
@@ -13,24 +22,24 @@ function FEdit(o){
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
    //..........................................................
    // @style
-   o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
+   o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
    //..........................................................
    // @html
    o._hInput          = null;
    //..........................................................
    // @event
-   o.onBuildEditValue = FEdit_onBuildEditValue;
+   o.onBuildEditValue = FUiColor3_onBuildEditValue;
    //..........................................................
    // @process
-   //o.oeDataLoad       = FEdit_oeDataLoad;
-   //o.oeDataSave       = FEdit_oeDataSave;
+   //o.oeDataLoad       = FUiColor3_oeDataLoad;
+   //o.oeDataSave       = FUiColor3_oeDataSave;
    //..........................................................
    // @method
-   o.construct        = FEdit_construct;
+   o.construct        = FUiColor3_construct;
    // @method
-   o.get              = FEdit_get;
-   o.set              = FEdit_set;
+   o.get              = FUiColor3_get;
+   o.set              = FUiColor3_set;
 
 
 
@@ -51,16 +60,16 @@ function FEdit(o){
    //o.hUnit         = null;
    //..........................................................
    // @event
-   //o.onDataKeyDown = FEdit_onDataKeyDown;
+   //o.onDataKeyDown = FUiColor3_onDataKeyDown;
    //..........................................................
    // @method
-   //o.formatValue   = FEdit_formatValue;
-   //o.setText       = FEdit_setText;
-   //o.validText     = FEdit_validText;
-   //o.findEditor    = FEdit_findEditor;
-   //o.drop          = FEdit_drop;
-   //o.link          = FEdit_link;
-   //o.clone         = FEdit_clone;
+   //o.formatValue   = FUiColor3_formatValue;
+   //o.setText       = FUiColor3_setText;
+   //o.validText     = FUiColor3_validText;
+   //o.findEditor    = FUiColor3_findEditor;
+   //o.drop          = FUiColor3_drop;
+   //o.link          = FUiColor3_link;
+   //o.clone         = FUiColor3_clone;
    return o;
 }
 
@@ -70,7 +79,7 @@ function FEdit(o){
 // @method
 // @param p:dataSource:FDataSource 数据源
 //==========================================================
-function FEdit_oeDataLoad(p){
+function FUiColor3_oeDataLoad(p){
    var o = this;
    alert(p);
    return EEventStatus.Stop;
@@ -82,7 +91,7 @@ function FEdit_oeDataLoad(p){
 // @method
 // @param p:dataSource:FDataSource 数据源
 //==========================================================
-function FEdit_oeDataSave(p){
+function FUiColor3_oeDataSave(p){
    var o = this;
    return EEventStatus.Stop;
 }
@@ -93,24 +102,36 @@ function FEdit_oeDataSave(p){
 // @method
 // @param p:argements:SArgements 参数集合
 //==========================================================
-function FEdit_onBuildEditValue(p){
+function FUiColor3_onBuildEditValue(p){
    var o = this;
    var h = o._hValuePanel;
-   h.className = o.styleName('InputPanel');
-   //var h = o.hValue = RBuilder.appendTable(o._hInputPanel, o.styleName('ValuePanel'));
-   //htb.style.tableLayout = 'fixed';
-   //var hr = o.hEdit = htb.insertRow();
-   // 建立修改标志
-   //o.onBuildChange(hr.insertCell());
-   // 建立编辑控件
-   //var hep = hr.insertCell();
-   var he = o._hInput = RBuilder.appendEdit(h, o.styleName('Input'));
-   // 设置大小
-   //RHtml.setSize(he, o._inputSize);
-   // 设置可以输入的最大长度
-   if(o._editLength){
-      he.maxLength = o._editLength;
-   }
+   h.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = RBuilder.appendTable(h);
+   hf.width = '100%';
+   var hl = o._hValueLine = RBuilder.appendTableRow(hf);
+   //..........................................................
+   // 建立改变栏
+   o._hChangePanel = RBuilder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   //..........................................................
+   // 建立红色输入栏
+   var hc = RBuilder.appendTableCell(hl);
+   hc.style.borderRight = '1px solid #666666';
+   o._hInputRed = RBuilder.appendEdit(hc, o.styleName('Input'));
+   // 建立绿输入栏
+   var hc = RBuilder.appendTableCell(hl);
+   hc.style.borderLeft = '1px solid #999999';
+   hc.style.borderRight = '1px solid #666666';
+   o._hInputGreen = RBuilder.appendEdit(hc, o.styleName('Input'));
+   // 建立蓝色输入栏
+   var hc = RBuilder.appendTableCell(hl);
+   hc.style.borderLeft = '1px solid #999999';
+   o._hInputBlue = RBuilder.appendEdit(hc, o.styleName('Input'));
+   //..........................................................
+   // 建立下拉栏
+   var hdp = o._hDropPanel = RBuilder.appendTableCell(hl);
+   hdp.style.borderLeft = '1px solid #666666';
+   o.onBuildEditDrop(p);
 }
 
 //==========================================================
@@ -118,7 +139,7 @@ function FEdit_onBuildEditValue(p){
 //
 // @method
 //==========================================================
-function FEdit_construct(){
+function FUiColor3_construct(){
    var o = this;
    o.__base.FEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
@@ -130,7 +151,7 @@ function FEdit_construct(){
 // @method
 // @return String 数据
 //==========================================================
-function FEdit_get(p){
+function FUiColor3_get(p){
    var o = this;
    var r = o.__base.FEditControl.get.call(o, p);
    // 获得显示
@@ -147,14 +168,25 @@ function FEdit_get(p){
 // @method
 // @param p:value:String 数据
 //==========================================================
-function FEdit_set(p){
+function FUiColor3_set(p){
    var o = this;
    o.__base.FEditControl.set.call(o, p);
    // 设置显示
-   var h = o._hInput;
-   if(h){
-      h.value = RString.nvl(p);
+   var v = null;
+   if(p.constructor == SColor4){
+      var r = RFloat.format(p.red, 0, null, 2, null);
+      var g = RFloat.format(p.green, 0, null, 2, null);
+      var b = RFloat.format(p.blue, 0, null, 2, null);
+      v = r + ',' + g + ',' + b;
    }
+   // 设置数据
+   o._hInputRed.value = r;
+   o._hInputGreen.value = g;
+   o._hInputBlue.value = b;
+   //var h = o._hInput;
+   //if(h){
+   //   h.value = v;
+   //}
    //o.finded = v;
    //if(o.hChangeIcon){
    //   o.hChangeIcon.style.display = 'none';
@@ -180,7 +212,7 @@ function FEdit_set(p){
 // @param s:sender:FControl 控件对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FEdit_onDataKeyDown(s, e){
+function FUiColor3_onDataKeyDown(s, e){
    var o = this;
    o.__base.FEditControl.onDataKeyDown.call(o, s, e);
    // 大小写限制
@@ -208,7 +240,7 @@ function FEdit_onDataKeyDown(s, e){
 // @method
 // @param v:value:String 显示内容
 //==========================================================
-function FEdit_formatValue(v){
+function FUiColor3_formatValue(v){
    var o = this;
    var r = RString.nvl(v);
    if(ECase.Upper == o.editCase){
@@ -225,7 +257,7 @@ function FEdit_formatValue(v){
 // @method
 // @param t:text:String 内容
 //==========================================================
-function FEdit_setText(t){
+function FUiColor3_setText(t){
    var o = this;
    if(!o.hEdit){
       return;
@@ -253,7 +285,7 @@ function FEdit_setText(t){
 // @param t:text:String 内容
 // @return 校验结果
 //==========================================================
-function FEdit_validText(t){
+function FUiColor3_validText(t){
    var o = this;
    var r = o.__base.FEditControl.validText.call(o, t);
    if(!r){
@@ -279,14 +311,14 @@ function FEdit_validText(t){
 // @method
 // @return 编辑器
 //==========================================================
-function FEdit_findEditor(){
+function FUiColor3_findEditor(){
    var o = this;
    if(o.editComplete){
       var de = o.editor;
       if(!de){
          o.dsControl = o.topControl(MDataset);
          if(o.dsControl){
-            de = o.editor = RConsole.find(FEditConsole).focus(o, FEditEditor);
+            de = o.editor = RConsole.find(FUiColor3Console).focus(o, FUiColor3Editor);
          }
       }
       if(de){
@@ -301,7 +333,7 @@ function FEdit_findEditor(){
 //
 // @method
 //==========================================================
-function FEdit_drop(){
+function FUiColor3_drop(){
    var o = this;
    var de = o.findEditor();
    if(de){
@@ -323,7 +355,7 @@ function FEdit_drop(){
 //
 //@method
 //==========================================================
-function FEdit_clone(){
+function FUiColor3_clone(){
    var o = this;
    var r = o._class.newInstance();
    GHtml_clone(r, o.hPanel);
@@ -335,7 +367,7 @@ function FEdit_clone(){
 //
 //@method
 //==========================================================
-function FEdit_link(){
+function FUiColor3_link(){
    var o = this;
    
 }

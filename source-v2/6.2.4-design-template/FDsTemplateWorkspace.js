@@ -122,13 +122,10 @@ function FDsTemplateWorkspace_onBuild(p){
    c.setPanel(o._frameWorkspace._hPanel);
    o.push(c);
    //..........................................................
-   var dfc = RConsole.find(FDescribeFrameConsole);
-   var xframe = dfc.load('design3d.template.MaterialForm');
    var c = o._materialFrame = RClass.create(FDsTemplateMaterialFrame);
    c._worksapce = o;
-   RControl.build(c, xframe, null, o._frameProperty._hPanel);
+   c.buildConfig(p);
    c.setPanel(o._frameProperty._hPanel);
-   c._hPanel.width = '100%';
 }
 
 //==========================================================
@@ -141,6 +138,11 @@ function FDsTemplateWorkspace_onTemplateLoad(p){
    var o = this;
    // 加载完成
    o._catalog.buildTemplate(p._activeTemplate);
+   var t = p._activeTemplate;
+   var rt = t._resource;
+   var rtm = rt._themes.get(0);
+   var rm = rtm.materials().value(0);
+   o._materialFrame.loadMaterial(rm);
 }
 
 //==========================================================

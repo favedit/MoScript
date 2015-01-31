@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-function FEdit(o){
+function FUiColor4(o){
    //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
    o = RClass.inherits(this, o, FEditControl);
    //..........................................................
@@ -20,17 +20,17 @@ function FEdit(o){
    o._hInput          = null;
    //..........................................................
    // @event
-   o.onBuildEditValue = FEdit_onBuildEditValue;
+   o.onBuildEditValue = FUiColor4_onBuildEditValue;
    //..........................................................
    // @process
-   //o.oeDataLoad       = FEdit_oeDataLoad;
-   //o.oeDataSave       = FEdit_oeDataSave;
+   //o.oeDataLoad       = FUiColor4_oeDataLoad;
+   //o.oeDataSave       = FUiColor4_oeDataSave;
    //..........................................................
    // @method
-   o.construct        = FEdit_construct;
+   o.construct        = FUiColor4_construct;
    // @method
-   o.get              = FEdit_get;
-   o.set              = FEdit_set;
+   o.get              = FUiColor4_get;
+   o.set              = FUiColor4_set;
 
 
 
@@ -51,16 +51,16 @@ function FEdit(o){
    //o.hUnit         = null;
    //..........................................................
    // @event
-   //o.onDataKeyDown = FEdit_onDataKeyDown;
+   //o.onDataKeyDown = FUiColor4_onDataKeyDown;
    //..........................................................
    // @method
-   //o.formatValue   = FEdit_formatValue;
-   //o.setText       = FEdit_setText;
-   //o.validText     = FEdit_validText;
-   //o.findEditor    = FEdit_findEditor;
-   //o.drop          = FEdit_drop;
-   //o.link          = FEdit_link;
-   //o.clone         = FEdit_clone;
+   //o.formatValue   = FUiColor4_formatValue;
+   //o.setText       = FUiColor4_setText;
+   //o.validText     = FUiColor4_validText;
+   //o.findEditor    = FUiColor4_findEditor;
+   //o.drop          = FUiColor4_drop;
+   //o.link          = FUiColor4_link;
+   //o.clone         = FUiColor4_clone;
    return o;
 }
 
@@ -70,7 +70,7 @@ function FEdit(o){
 // @method
 // @param p:dataSource:FDataSource 数据源
 //==========================================================
-function FEdit_oeDataLoad(p){
+function FUiColor4_oeDataLoad(p){
    var o = this;
    alert(p);
    return EEventStatus.Stop;
@@ -82,7 +82,7 @@ function FEdit_oeDataLoad(p){
 // @method
 // @param p:dataSource:FDataSource 数据源
 //==========================================================
-function FEdit_oeDataSave(p){
+function FUiColor4_oeDataSave(p){
    var o = this;
    return EEventStatus.Stop;
 }
@@ -93,7 +93,7 @@ function FEdit_oeDataSave(p){
 // @method
 // @param p:argements:SArgements 参数集合
 //==========================================================
-function FEdit_onBuildEditValue(p){
+function FUiColor4_onBuildEditValue(p){
    var o = this;
    var h = o._hValuePanel;
    h.className = o.styleName('InputPanel');
@@ -118,7 +118,7 @@ function FEdit_onBuildEditValue(p){
 //
 // @method
 //==========================================================
-function FEdit_construct(){
+function FUiColor4_construct(){
    var o = this;
    o.__base.FEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
@@ -130,7 +130,7 @@ function FEdit_construct(){
 // @method
 // @return String 数据
 //==========================================================
-function FEdit_get(p){
+function FUiColor4_get(p){
    var o = this;
    var r = o.__base.FEditControl.get.call(o, p);
    // 获得显示
@@ -147,13 +147,21 @@ function FEdit_get(p){
 // @method
 // @param p:value:String 数据
 //==========================================================
-function FEdit_set(p){
+function FUiColor4_set(p){
    var o = this;
    o.__base.FEditControl.set.call(o, p);
    // 设置显示
+   var v = null;
+   if(p.constructor == SColor4){
+      var r = RFloat.format(p.red, 0, null, 3, null);
+      var g = RFloat.format(p.green, 0, null, 3, null);
+      var b = RFloat.format(p.blue, 0, null, 3, null);
+      v = r + ',' + g + ',' + b;
+   }
+   // 设置数据
    var h = o._hInput;
    if(h){
-      h.value = RString.nvl(p);
+      h.value = v;
    }
    //o.finded = v;
    //if(o.hChangeIcon){
@@ -180,7 +188,7 @@ function FEdit_set(p){
 // @param s:sender:FControl 控件对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FEdit_onDataKeyDown(s, e){
+function FUiColor4_onDataKeyDown(s, e){
    var o = this;
    o.__base.FEditControl.onDataKeyDown.call(o, s, e);
    // 大小写限制
@@ -208,7 +216,7 @@ function FEdit_onDataKeyDown(s, e){
 // @method
 // @param v:value:String 显示内容
 //==========================================================
-function FEdit_formatValue(v){
+function FUiColor4_formatValue(v){
    var o = this;
    var r = RString.nvl(v);
    if(ECase.Upper == o.editCase){
@@ -225,7 +233,7 @@ function FEdit_formatValue(v){
 // @method
 // @param t:text:String 内容
 //==========================================================
-function FEdit_setText(t){
+function FUiColor4_setText(t){
    var o = this;
    if(!o.hEdit){
       return;
@@ -253,7 +261,7 @@ function FEdit_setText(t){
 // @param t:text:String 内容
 // @return 校验结果
 //==========================================================
-function FEdit_validText(t){
+function FUiColor4_validText(t){
    var o = this;
    var r = o.__base.FEditControl.validText.call(o, t);
    if(!r){
@@ -279,14 +287,14 @@ function FEdit_validText(t){
 // @method
 // @return 编辑器
 //==========================================================
-function FEdit_findEditor(){
+function FUiColor4_findEditor(){
    var o = this;
    if(o.editComplete){
       var de = o.editor;
       if(!de){
          o.dsControl = o.topControl(MDataset);
          if(o.dsControl){
-            de = o.editor = RConsole.find(FEditConsole).focus(o, FEditEditor);
+            de = o.editor = RConsole.find(FUiColor4Console).focus(o, FUiColor4Editor);
          }
       }
       if(de){
@@ -301,7 +309,7 @@ function FEdit_findEditor(){
 //
 // @method
 //==========================================================
-function FEdit_drop(){
+function FUiColor4_drop(){
    var o = this;
    var de = o.findEditor();
    if(de){
@@ -323,7 +331,7 @@ function FEdit_drop(){
 //
 //@method
 //==========================================================
-function FEdit_clone(){
+function FUiColor4_clone(){
    var o = this;
    var r = o._class.newInstance();
    GHtml_clone(r, o.hPanel);
@@ -335,7 +343,7 @@ function FEdit_clone(){
 //
 //@method
 //==========================================================
-function FEdit_link(){
+function FUiColor4_link(){
    var o = this;
    
 }

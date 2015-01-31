@@ -67,6 +67,13 @@ function RControl_newInstance(p){
          }else{
             n = o.PREFIX + p;
          }
+         if(n == 'FColor'){
+            n = 'FUiColor';
+         }else if(n == 'FColor3'){
+            n = 'FUiColor3';
+         }else if(n == 'FColor4'){
+            n = 'FUiColor4';
+         }
          r = RClass.create(n);
       }
    }

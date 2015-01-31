@@ -554,9 +554,9 @@ function FDsTemplateCanvas_onEnterFrame(){
    var m = o._activeTemplate;
    if(m){
       var r = o._rotation;
-      m.location().set(0, -6.0, 0);
+      m.location().set(0, -8.0, 0);
       m.rotation().set(0, r.y, 0);
-      m.scale().set(0.1, 0.1, 0.1);
+      m.scale().set(3.0, 3.0, 3.0);
       m.update();
    }
 }
@@ -688,12 +688,39 @@ function FDsTemplateCatalog_dispose(){
 function FDsTemplateMaterialFrame(o){
    o = RClass.inherits(this, o, FForm);
    o.construct      = FDsTemplateMaterialFrame_construct;
+   o.buildConfig    = FDsTemplateMaterialFrame_buildConfig;
+   o.loadMaterial   = FDsTemplateMaterialFrame_loadMaterial;
    o.dispose        = FDsTemplateMaterialFrame_dispose;
    return o;
 }
 function FDsTemplateMaterialFrame_construct(){
    var o = this;
    o.__base.FForm.construct.call(o);
+}
+function FDsTemplateMaterialFrame_buildConfig(p){
+   var o = this;
+   var x = RConsole.find(FDescribeFrameConsole).load('design3d.template.MaterialForm');
+   RControl.build(o, x, null, p);
+   o._hPanel.width = '100%';
+   o._controlGuid = o.searchControl('guid');
+   o._controlCode = o.searchControl('code');
+   o._controlLabel = o.searchControl('label');
+   o._controlAmbientColor = o.searchControl('ambientColor');
+   o._controlDiffuseColor = o.searchControl('diffuseColor');
+   o._controlSpecularColor = o.searchControl('specularColor');
+   o._controlSpecularLevel = o.searchControl('specularLevel');
+}
+function FDsTemplateMaterialFrame_loadMaterial(p){
+   var o = this;
+   var mi = p._info;
+   var mp = p.group();
+   o._controlGuid.set(p.guid());
+   o._controlCode.set(mp.code());
+   o._controlLabel.set(p._label);
+   o._controlAmbientColor.set(mi.ambientColor);
+   o._controlDiffuseColor.set(mi.diffuseColor);
+   o._controlSpecularColor.set(mi.specularColor);
+   o._controlSpecularLevel.set(mi.specularLevel);
 }
 function FDsTemplateMaterialFrame_dispose(){
    var o = this;
@@ -800,7 +827,7 @@ function FDsTemplateWorkspace_onBuild(p){
    fs.appendFrame(f);
    var sp2 = fs.appendSpliter();
    var f = o._frameProperty = RClass.create(FFrame);
-   f.setWidth(160);
+   f.setWidth(240);
    f.build(p);
    f._hPanel.className = o.styleName('Property_Ground');
    fs.appendFrame(f);
@@ -825,17 +852,19 @@ function FDsTemplateWorkspace_onBuild(p){
    c.build(p);
    c.setPanel(o._frameWorkspace._hPanel);
    o.push(c);
-   var dfc = RConsole.find(FDescribeFrameConsole);
-   var xframe = dfc.load('design3d.template.MaterialForm');
    var c = o._materialFrame = RClass.create(FDsTemplateMaterialFrame);
    c._worksapce = o;
-   RControl.build(c, xframe, null, o._frameProperty._hPanel);
+   c.buildConfig(p);
    c.setPanel(o._frameProperty._hPanel);
-   c._hPanel.width = '100%';
 }
 function FDsTemplateWorkspace_onTemplateLoad(p){
    var o = this;
    o._catalog.buildTemplate(p._activeTemplate);
+   var t = p._activeTemplate;
+   var rt = t._resource;
+   var rtm = rt._themes.get(0);
+   var rm = rtm.materials().value(0);
+   o._materialFrame.loadMaterial(rm);
 }
 function FDsTemplateWorkspace_construct(){
    var o = this;

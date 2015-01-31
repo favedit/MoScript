@@ -213,7 +213,9 @@ function RBuilder_createDiv(d, s){
 //==========================================================
 function RBuilder_createTable(d, s, b, cs, cp){
    var h = this.create(d, 'TABLE', s);
-   h.border = RInteger.nvl(b);
+   if(b){
+      h.border = RInteger.nvl(b);
+   }
    h.cellSpacing = RInteger.nvl(cs);
    h.cellPadding = RInteger.nvl(cp);
    return h;

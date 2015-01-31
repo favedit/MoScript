@@ -87,10 +87,9 @@ function RRuntime_className(v){
    return null;
 }
 function RRuntime_uid(v){
-   var r = v.uniqueNumber;
+   var r = v.__puuid;
    if(r == null){
-      r = v.uniqueNumber = RRuntime._nextUid;
-      RRuntime._nextUid++;
+      r = v.__puuid = RRuntime._nextUid++;
    }
    return r;
 }
@@ -3278,11 +3277,11 @@ var RFloat = new function RFloat(){
    o.nvl       = RFloat_nvl;
    o.toRange   = RFloat_toRange;
    o.sum       = RFloat_sum;
-   o.alg       = RFloat_alg;
+   o.calculate = RFloat_calculate;
    return o;
 }
-function RFloat_isFloat(value){
-   return RString.isPattern(value, 'n');
+function RFloat_isFloat(p){
+   return RString.isPattern(p, 'n');
 }
 function RFloat_parse(value){
    if(value == null){
@@ -3301,45 +3300,57 @@ function RFloat_parse(value){
    }
    return isNaN(rs) ? 0 : rs;
 }
-function RFloat_format(value, len, pad){
-   if(!pad){
-      pad = this.LEFT_CHAR;
+function RFloat_format(v, l, lp, r, rp){
+   var o = this;
+   if(!lp){
+      lp = o.LEFT_CHAR;
    }
-   var value = value.toString();
-   var left = parseFloat(len) - value.length;
-   for(var i=0; i<left; i++){
-      value = pad + value;
+   if(!rp){
+      rp = o.LEFT_CHAR;
    }
-   return value;
+   var s = v.toString();
+   var f = s.indexOf('.');
+   if(f == -1){
+      var sl = f;
+      var sr = '';
+   }else{
+      var sl = s.substring(0, f);
+      var sr = s.substring(f + 1, f + r + 1);
+   }
+   var fl = RString.lpad(sl, l, lp);
+   var fr = RString.lpad(sr, r, rp);
+   return fl + '.' + fr;
 }
 function RFloat_nvl(v, d){
    return v ? v : (d ? d : 0);
 }
-function RFloat_toRange(v, min, max){
+function RFloat_toRange(v, i, a){
    if(null == v){
       v = 0;
    }
    return Math.min(Math.max(v, min), max);
 }
 function RFloat_sum(){
-   var sum = 0;
-   for(var n=0; n<arguments.length; n++){
-      if(null != arguments[n]){
-         sum += parseFloat(arguments[n]);
+   var a = arguments;
+   var r = 0;
+   for(var i = a.length -1 ; i >= 0; i--){
+      var v = a[n];
+      if(v != null){
+         r += parseFloat(v);
       }
    }
-   return sum;
+   return r;
 }
-function RFloat_alg(f,a,b){
-     var a = RFloat.nvl(a);
-     var b = RFloat.nvl(b);
-     a = parseFloat(a);
-     b = parseFloat(b);
-     if(f){
-        return (a + b).toString();
-     }else{
-        return (a - b).toString();
-     }
+function RFloat_calculate(f,a,b){
+  var a = RFloat.nvl(a);
+  var b = RFloat.nvl(b);
+  a = parseFloat(a);
+  b = parseFloat(b);
+  if(f){
+     return (a + b).toString();
+  }else{
+     return (a - b).toString();
+  }
 }
 var RHex = new function(o){
    if(!o){o=this};
@@ -8784,7 +8795,9 @@ function RBuilder_createDiv(d, s){
 }
 function RBuilder_createTable(d, s, b, cs, cp){
    var h = this.create(d, 'TABLE', s);
-   h.border = RInteger.nvl(b);
+   if(b){
+      h.border = RInteger.nvl(b);
+   }
    h.cellSpacing = RInteger.nvl(cs);
    h.cellPadding = RInteger.nvl(cp);
    return h;
@@ -9199,7 +9212,7 @@ var RHtml = new function RHtml(){
    o._nextUid        = 1;
    o._links          = new Object();
    o._clientPosition = new SPoint2();
-   o.uid            = RHtml_uid;
+   o.uid            = RRuntime_uid;
    o.displayGet     = RHtml_displayGet;
    o.displaySet     = RHtml_displaySet;
    o.visibleGet     = RHtml_visibleGet;
@@ -9256,13 +9269,6 @@ var RHtml = new function RHtml(){
    o.tableMoveRow   = RHtml_tableMoveRow;
    o.clone          = RHtml_clone;
    return o;
-}
-function RHtml_uid(v){
-   var r = v.uniqueNumber;
-   if(r == null){
-      r = v.uniqueNumber = this._nextUid++;
-   }
-   return r;
 }
 function RHtml_displayGet(h){
    var r = null;

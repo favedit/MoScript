@@ -3,14 +3,15 @@
 // <P>当对象实现MDrapable接口时候，才会创建下拉元素。</P>
 //
 //  hPanel<TABLE>
-// ┌-----------------------------------┬-----------------------------------┐
-// │ hLabelPanel<TD>                   │ hEditPanel<TD>                  │
-// │ hLabelForm<TABLE>                 │ hEditorForm<TABLE>                │
-// │┌--------------┬---------------┐│┌---------------┬--------------┐│
-// ││hIconPanel<TD>│hTextPanel<TD> │││hValuePanel<TD>│hDropPanel<TD>││
-// ││hIcon<IMG>    │hText<SPAN>    │││(Input)        │hDrop<IMG>    ││
-// │└--------------┴---------------┘│└---------------┴--------------┘│
-// └-----------------------------------┴-----------------------------------┘
+// ┌-----------------------------------┬-------------------------------------┐
+// │ hLabelPanel<TD>                   │ hEditPanel<TD>                      │
+// │ hLabelForm<TABLE>                 │ hEditForm<TABLE>                    │
+// │                                   │ hEditLine<TR>                       │
+// │┌--------------┬---------------┐│┌-----------------┬--------------┐│
+// ││hIconPanel<TD>│hTextPanel<TD> │││hValuePanel<TD>  │hHintPanel<TD>││
+// ││hIcon<IMG>    │hText<SPAN>    │││(Border)         │hHint<IMG>    ││
+// │└--------------┴---------------┘│└-----------------┴--------------┘│
+// └-----------------------------------┴-------------------------------------┘
 //
 // @class
 // @author maocy
@@ -21,251 +22,104 @@ function FEditControl(o){
    o = RClass.inherits(this, o, FControl, MDataField, MEditValue);
    //..........................................................
    // @property
-   o._labelModeCd     = RClass.register(o, new APtyString('_labelModeCd'), ELabelMode.All);
-   o._labelPositionCd = RClass.register(o, new APtyString('_labelPositionCd'), ELabelPosition.Left);
-   o._labelSize       = RClass.register(o, new APtySize2('_labelSize'));
-   o._labelAlignCd    = RClass.register(o, new APtyString('_labelAlignCd'), EAlign.Left);
-   o._editSize        = RClass.register(o, new APtySize2('_editSize'));
-   o._dataTypeCd      = RClass.register(o, new APtyString('_dataTypeCd'));
-   //o.typeAble       = RClass.register(o, new APtyString('typeAble'), EBool.False);
+   o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), ELabelMode.All);
+   o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), ELabelPosition.Left);
+   o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
+   o._labelAlignCd     = RClass.register(o, new APtyString('_labelAlignCd'), EAlign.Left);
+   o._editSize         = RClass.register(o, new APtySize2('_editSize'));
+   o._dataTypeCd       = RClass.register(o, new APtyString('_dataTypeCd'));
+   //o.typeAble        = RClass.register(o, new APtyString('typeAble'), EBool.False);
    //..........................................................
    // @style
-   o._styleLabelPanel = RClass.register(o, new AStyle('_styleLabelPanel', 'LabelPanel'));
-   o._styleEditPanel  = RClass.register(o, new AStyle('_styleEditPanel', 'EditPanel'));
+   o._styleLabelPanel  = RClass.register(o, new AStyle('_styleLabelPanel'));
+   o._styleEditPanel   = RClass.register(o, new AStyle('_styleEditPanel'));
+   o._styleChangePanel = RClass.register(o, new AStyle('_styleChangePanel'));
+   o._styleChangeIcon  = RClass.register(o, new AStyle('_styleChangeIcon'));
+   o._styleDropPanel   = RClass.register(o, new AStyle('_styleDropPanel'));
    //..........................................................
    // @attribute
-   //o._textColor     = null;
-   //o._foreColor     = null;
-   //o._backColor     = null;
-   //o._progress      = false;
+   //o._textColor      = null;
+   //o._foreColor      = null;
+   //o._backColor      = null;
+   //o._progress       = false;
    //..........................................................
    // @html <TD> 标签面板
-   o._hLabelPanel     = null;
+   o._hLabelPanel      = null;
    // @html <TABLE> 标签容器
-   o,_hLabelForm      = null;
+   o,_hLabelForm       = null;
    // @html <TD> 标签图标面板
-   o,_hIconPanel      = null;
+   o,_hIconPanel       = null;
    // @html <IMG> 标签图标
-   o,_hIcon           = null;
+   o,_hIcon            = null;
    // @html <TD> 标签文字面板
-   o,_hTextPanel      = null;
+   o,_hTextPanel       = null;
    // @html <SPAN> 标签文字
-   o,_hText           = null;
+   o,_hText            = null;
    // @html <TD> 编辑面板
-   o._hEditPanel      = null;
+   o._hEditPanel       = null;
    // @html <TABLE> 编辑容器
-   o._hEditorForm     = null;
+   o._hEditForm        = null;
    // @html <TD> 编辑内容面板
-   o._hValuePanel     = null;
-   // @html <TD> 编辑下拉面板
-   o._hDropPanel      = null;
-   // @html <IMG> 编辑下拉图标
-   o._hDrop           = null;
+   o._hValuePanel      = null;
    // @html <IMG> 变更图标
-   //o.hChangeIcon    = null;
-   //o.hHintPanel     = null;
-   //o.hHintIcon      = null;
+   o._hChangeIcon      = null;
+   // @html <TD> 编辑下拉面板
+   o._hDropPanel       = null;
+   // @html <IMG> 编辑下拉图标
+   o._hDrop            = null;
+   //o.hHintPanel      = null;
+   //o.hHintIcon       = null;
    //..........................................................
    // @event
-   //o.onChangeEnter  = RClass.register(o, new HMouseEnter('onChangeEnter'), FEditControl_onChangeEnter);
-   //o.onChangeClick  = RClass.register(o, new HClick('onChangeClick'), FEditControl_onChangeClick);
+   //o.onChangeEnter   = RClass.register(o, new HMouseEnter('onChangeEnter'), FEditControl_onChangeEnter);
+   //o.onChangeClick   = RClass.register(o, new HClick('onChangeClick'), FEditControl_onChangeClick);
    //o.onDataDoubleClick = FEditControl_onDataDoubleClick;
-   //o.onDataKeyDown  = FEditControl_onDataKeyDown;
+   //o.onDataKeyDown   = FEditControl_onDataKeyDown;
    // @event
-   //o.onDesignBegin  = FEditControl_onDesignBegin;
-   //o.onDesignEnd    = FEditControl_onDesignEnd;
+   //o.onDesignBegin   = FEditControl_onDesignBegin;
+   //o.onDesignEnd     = FEditControl_onDesignEnd;
    // @event
-   //o.onBuildChange  = FEditControl_onBuildChange;
-   o.onBuildLabelIcon = FEditControl_onBuildLabelIcon;
-   o.onBuildLabelText = FEditControl_onBuildLabelText;
-   o.onBuildLabel     = FEditControl_onBuildLabel;
-   o.onBuildEditValue = RMethod.virtual(o, 'onBuildEdit');
-   o.onBuildEditDrop  = RMethod.empty;
-   o.onBuildEdit      = FEditControl_onBuildEdit;
-   o.onBuildPanel     = FEditControl_onBuildPanel;
-   o.onBuild          = FEditControl_onBuild;
+   o.onBuildLabelIcon  = FEditControl_onBuildLabelIcon;
+   o.onBuildLabelText  = FEditControl_onBuildLabelText;
+   o.onBuildLabel      = FEditControl_onBuildLabel;
+   o.onBuildEditChange = FEditControl_onBuildEditChange;
+   o.onBuildEditDrop   = FEditControl_onBuildEditDrop;
+   o.onBuildEditValue  = RMethod.virtual(o, 'onBuildEditValue');
+   o.onBuildEdit       = FEditControl_onBuildEdit;
+   o.onBuildPanel      = FEditControl_onBuildPanel;
+   o.onBuild           = FEditControl_onBuild;
    //..........................................................
    // @process
-   o.oeDataLoad       = FEditControl_oeDataLoad;
-   o.oeDataSave       = FEditControl_oeDataSave;
+   o.oeDataLoad        = FEditControl_oeDataLoad;
+   o.oeDataSave        = FEditControl_oeDataSave;
    // @process
-   o.oeDesign         = FEditControl_oeDesign;
-   o.oeMode           = FEditControl_oeMode;
-   //o.oeProgress     = FEditControl_oeProgress;
-   //o.oeLoadValue    = FEditControl_oeLoadValue;
-   //o.scalar         = FEditControl_scalar;
-   //o.onScalar       = FEditControl_onScalar;
+   o.oeDesign          = FEditControl_oeDesign;
+   o.oeMode            = FEditControl_oeMode;
+   //o.oeProgress      = FEditControl_oeProgress;
+   //o.oeLoadValue     = FEditControl_oeLoadValue;
+   //o.scalar          = FEditControl_scalar;
+   //o.onScalar        = FEditControl_onScalar;
    //..........................................................
    // @method
-   //o.doFocus        = FEditControl_doFocus;
-   //o.doBlur         = FEditControl_doBlur;
+   //o.doFocus         = FEditControl_doFocus;
+   //o.doBlur          = FEditControl_doBlur;
    //..........................................................
    // @method
-   o.construct        = FEditControl_construct;
+   o.construct         = FEditControl_construct;
    // @method
-   o.panel            = FEditControl_panel;
-   o.label            = FEditControl_label;
-   o.setLabel         = FEditControl_setLabel;
-   //o.text           = FEditControl_text;
-   //o.setText        = FEditControl_setText;
-   //o.testFocus      = FEditControl_testFocus;
-   //o.getEditRange   = FEditControl_getEditRange;
-   //o.setEditable    = FEditControl_setEditable;
-   //o.setVisible     = FEditControl_setVisible;
-   //o.focus          = FEditControl_focus;
-   //o.refreshStyle   = FEditControl_refreshStyle;
-   o.dispose          = FEditControl_dispose;
+   o.panel             = FEditControl_panel;
+   o.label             = FEditControl_label;
+   o.setLabel          = FEditControl_setLabel;
+   //o.text            = FEditControl_text;
+   //o.setText         = FEditControl_setText;
+   //o.testFocus       = FEditControl_testFocus;
+   //o.getEditRange    = FEditControl_getEditRange;
+   //o.setEditable     = FEditControl_setEditable;
+   //o.setVisible      = FEditControl_setVisible;
+   //o.focus           = FEditControl_focus;
+   //o.refreshStyle    = FEditControl_refreshStyle;
+   o.dispose           = FEditControl_dispose;
    return o;
-}
-
-//==========================================================
-// <T>鼠标进入修改标志。</T>
-//
-// @method
-// @param e:event:TEvent 事件对象
-//==========================================================
-function FEditControl_onChangeEnter(e){
-   var o = this;
-   var t = null;
-   if(RString.isEmpty(o.dataValue)){
-      t = RContext.get('FEditControl:change.empty');
-   }else{
-      t = RContext.get('FEditControl:change.restore', o.dataValue);
-   }
-   o.hChangeIcon.title = t;
-}
-
-//==========================================================
-// <T>鼠标点击修改标志。</T>
-//
-// @method
-// @param e:event:TEvent 事件对象
-//==========================================================
-function FEditControl_onChangeClick(e){
-   this.set(this.dataValue);
-}
-
-//==========================================================
-//<T>设置数据。</T>
-//
-//@method
-//@param v:value:String 数据
-//==========================================================
-function FEditControl_onScalar(g){
-   var o = this;
-   o.set(g.result);
-}
-
-//==========================================================
-//<T>响应焦点失去的操作。</T>
-//
-//@param s:sender:FControl 源控件
-//@param e:event:HBlur 事件对象
-//==========================================================
-function FEditControl_scalar(a){
-   var o = this;
-   var g = new TDatasetScalarArg(o, null, a);
-   g.callback = new TInvoke(o, o.onScalar);
-   RConsole.find(FDatasetConsole).scalar(g);
-}
-
-//==========================================================
-// <T>数据区域鼠标双击事件。</T>
-//
-// @method
-// @param e:event:TEvent 事件对象
-//==========================================================
-function FEditControl_onDataDoubleClick(){
-   var o = this;
-   // 展开下拉菜单
-   if(RClass.isClass(o, MDropable)){
-      o.onDropDoubleClick();
-   }
-   // 显示选取列表
-   if(RClass.isClass(o, MListView)){
-      o.onListClick();
-   }
-}
-
-//==========================================================
-// <T>数据区域键盘按下事件。</T>
-//
-// @method
-// @param e:event:TEvent 事件对象
-//==========================================================
-function FEditControl_onDataKeyDown(s, e){
-   var o = this;
-   o.__base.MEditDescriptor.onDataKeyDown.call(o, s, e);
-   // 设置修改图标
-   var hci = o.hChangeIcon;
-   if(hci){
-      hci.style.display = o.isDataChanged() ? 'block' : 'none';
-   }
-   if(RClass.isClass(o, MDropable) && EKey.Down==e.keyCode){
-      // 展开下拉菜单
-      o.drop();
-   }else if(e.ctrlKey && (EKey.Enter==e.keyCode) && o.editSearch){
-      // 表单内快速查询
-      var dc = o.dsControl;
-      if(dc){
-         if(!o.isValid){
-            var sn = new TNode('Search');
-            var n = sn.create('Item');
-            n.set('name', o.name);
-            n.set('data_name', o.dataName);
-            n.set('data_value', o.dataValue);
-            n.set('search_type', ESearch.Equals);
-            n.set('search_order', EOrder.None);
-            RConsole.find(FDatasetConsole).fetch(dc, sn);
-         }
-      }
-   }
-}
-
-//==========================================================
-// <T>开始设计事件。</T>
-//
-// @method
-// @param e:event:TEvent 事件对象
-//==========================================================
-function FEditControl_onDesignBegin(){
-   var o = this;
-   o.__base.MDesign.onDesignBegin.call(o);
-   o._disbaled = true;
-   o.hEdit.disbaled = true;
-}
-
-//==========================================================
-// <T>结束设计事件。</T>
-//
-// @method
-// @param e:event:TEvent 事件对象
-//==========================================================
-function FEditControl_onDesignEnd(){
-   var o = this;
-   o.__base.MDesign.onDesignEnd.call(o);
-   o._disbaled = false;
-   o.hEdit.disbaled = false;
-}
-
-//==========================================================
-// <T>建立修改标志。</T>
-//
-// @method
-// @param p:arguments:SArguments 参数集合
-//==========================================================
-function FEditControl_onBuildChange(p){
-   var o = this;
-   // 设置底板
-   hc.vAlign = 'top';
-   hc.width = 5;
-   // 建立图标
-   var hi = o.hChangeIcon = RBuilder.appendIcon(hc, 'ctl.chgflag');
-   hi._pname = 'hChangeIcon';
-   hi.style.display = 'none';
-   hi.style.cursor = 'hand';
-   o.attachEvent('onChangeEnter', hi, o.onChangeEnter);
-   o.attachEvent('onChangeClick', hi, o.onChangeClick);
 }
 
 //==========================================================
@@ -323,21 +177,40 @@ function FEditControl_onBuildLabel(p){
 }
 
 //==========================================================
-// <T>建立编辑器内容。</T>
+// <T>建立编辑修改标志。</T>
 //
 // @method
 // @param p:arguments:SArguments 参数集合
 //==========================================================
-function FEditControl_onBuildEditValue(p){
+function FEditControl_onBuildEditChange(p){
+   var o = this;
+   // 设置底板
+   var h = o._hChangePanel;
+   h.className = o.styleName('ChangePanel');
+   h.vAlign = 'top';
+   h.width = 5;
+   // 建立图标
+   var hi = o._hChangeIcon = RBuilder.appendIcon(h, o.styleName('ChangeIcon'), 'control.change');
+   hi._pname = 'change.icon';
+   //o.attachEvent('onChangeEnter', hi, o.onChangeEnter);
+   //o.attachEvent('onChangeClick', hi, o.onChangeClick);
 }
 
 //==========================================================
-// <T>建立编辑器下拉。</T>
+// <T>建立编辑下拉标志。</T>
 //
 // @method
 // @param p:arguments:SArguments 参数集合
 //==========================================================
 function FEditControl_onBuildEditDrop(p){
+   var o = this;
+   // 设置底板
+   var h = o._hDropPanel;
+   h.className = o.styleName('DropPanel');
+   h.width = 11;
+   // 设置图标
+   var hi = o._hDropIcon = RBuilder.appendIcon(h, null, 'control.drop');
+   hi.align = 'center';
 }
 
 //==========================================================
@@ -349,23 +222,18 @@ function FEditControl_onBuildEditDrop(p){
 function FEditControl_onBuildEdit(p){
    var o = this;
    /// 建立控件表格
-   var h = o._hEditorForm = RBuilder.appendTable(o._hEditPanel, o.styleName('EditPanel'));
-   var hr = RBuilder.appendTableRow(h);
-   //h.width = '100%';
-   //h.height = '100%';
-   //h.style.border = '1px solid red';
-   //o.hPanel.style.border = '1px solid red';
-   //o.hPanel.style.width = 400;
+   var h = o._hEditForm = RBuilder.appendTable(o._hEditPanel, o.styleName('EditPanel'));
+   var hr = o._hEditLine = RBuilder.appendTableRow(h);
    // 建立编辑面板
-   var hvp = o._hValuePanel = RBuilder.appendTableCell(hr);
+   o._hValuePanel = RBuilder.appendTableCell(hr);
    o.onBuildEditValue(p);
    // 建立下拉面板
-   if(RClass.isClass(o, MDropable)){
-      var hdp = o._hDropPanel = RBuilder.appendTableCell(hr);
-      o.onBuildEditDrop(p);
-      //o.onBuildDrop();
-      //o.editBorder.hDrop.appendChild(o.hDrop);
-   }
+   //if(RClass.isClass(o, MDropable)){
+   //   var hdp = o._hDropPanel = RBuilder.appendTableCell(hr);
+   //   o.onBuildEditDrop(p);
+   //   //o.onBuildDrop();
+   //   //o.editBorder.hDrop.appendChild(o.hDrop);
+   //}
    // 设置大小
    RHtml.setSize(h, o._editSize);
    //if(o.editWidth){
@@ -521,6 +389,147 @@ function FEditControl_onBuild(p){
    }
    // 设置数据
    return EEventStatus.Stop;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//==========================================================
+// <T>鼠标进入修改标志。</T>
+//
+// @method
+// @param e:event:TEvent 事件对象
+//==========================================================
+function FEditControl_onChangeEnter(e){
+   var o = this;
+   var t = null;
+   if(RString.isEmpty(o.dataValue)){
+      t = RContext.get('FEditControl:change.empty');
+   }else{
+      t = RContext.get('FEditControl:change.restore', o.dataValue);
+   }
+   o.hChangeIcon.title = t;
+}
+
+//==========================================================
+// <T>鼠标点击修改标志。</T>
+//
+// @method
+// @param e:event:TEvent 事件对象
+//==========================================================
+function FEditControl_onChangeClick(e){
+   this.set(this.dataValue);
+}
+
+//==========================================================
+//<T>设置数据。</T>
+//
+//@method
+//@param v:value:String 数据
+//==========================================================
+function FEditControl_onScalar(g){
+   var o = this;
+   o.set(g.result);
+}
+
+//==========================================================
+//<T>响应焦点失去的操作。</T>
+//
+//@param s:sender:FControl 源控件
+//@param e:event:HBlur 事件对象
+//==========================================================
+function FEditControl_scalar(a){
+   var o = this;
+   var g = new TDatasetScalarArg(o, null, a);
+   g.callback = new TInvoke(o, o.onScalar);
+   RConsole.find(FDatasetConsole).scalar(g);
+}
+
+//==========================================================
+// <T>数据区域鼠标双击事件。</T>
+//
+// @method
+// @param e:event:TEvent 事件对象
+//==========================================================
+function FEditControl_onDataDoubleClick(){
+   var o = this;
+   // 展开下拉菜单
+   if(RClass.isClass(o, MDropable)){
+      o.onDropDoubleClick();
+   }
+   // 显示选取列表
+   if(RClass.isClass(o, MListView)){
+      o.onListClick();
+   }
+}
+
+//==========================================================
+// <T>数据区域键盘按下事件。</T>
+//
+// @method
+// @param e:event:TEvent 事件对象
+//==========================================================
+function FEditControl_onDataKeyDown(s, e){
+   var o = this;
+   o.__base.MEditDescriptor.onDataKeyDown.call(o, s, e);
+   // 设置修改图标
+   var hci = o.hChangeIcon;
+   if(hci){
+      hci.style.display = o.isDataChanged() ? 'block' : 'none';
+   }
+   if(RClass.isClass(o, MDropable) && EKey.Down==e.keyCode){
+      // 展开下拉菜单
+      o.drop();
+   }else if(e.ctrlKey && (EKey.Enter==e.keyCode) && o.editSearch){
+      // 表单内快速查询
+      var dc = o.dsControl;
+      if(dc){
+         if(!o.isValid){
+            var sn = new TNode('Search');
+            var n = sn.create('Item');
+            n.set('name', o.name);
+            n.set('data_name', o.dataName);
+            n.set('data_value', o.dataValue);
+            n.set('search_type', ESearch.Equals);
+            n.set('search_order', EOrder.None);
+            RConsole.find(FDatasetConsole).fetch(dc, sn);
+         }
+      }
+   }
+}
+
+//==========================================================
+// <T>开始设计事件。</T>
+//
+// @method
+// @param e:event:TEvent 事件对象
+//==========================================================
+function FEditControl_onDesignBegin(){
+   var o = this;
+   o.__base.MDesign.onDesignBegin.call(o);
+   o._disbaled = true;
+   o.hEdit.disbaled = true;
+}
+
+//==========================================================
+// <T>结束设计事件。</T>
+//
+// @method
+// @param e:event:TEvent 事件对象
+//==========================================================
+function FEditControl_onDesignEnd(){
+   var o = this;
+   o.__base.MDesign.onDesignEnd.call(o);
+   o._disbaled = false;
+   o.hEdit.disbaled = false;
 }
 
 //==========================================================
@@ -958,8 +967,8 @@ function FEditControl_dispose(){
    o,_hText = null;
    RHtml.free(o._hEditPanel);
    o._hEditPanel = null;
-   RHtml.free(o._hEditorForm);
-   o._hEditorForm = null;
+   RHtml.free(o._hEditForm);
+   o._hEditForm = null;
    RHtml.free(o._hValuePanel);
    o._hValuePanel = null;
    RHtml.free(o._hDropPanel);

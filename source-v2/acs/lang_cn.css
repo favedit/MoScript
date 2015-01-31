@@ -43,7 +43,6 @@ a:hover{
 /* ------------------------------------------------------ */
 td{
    font-family:"Microsoft YaHei"; 
-   font-family:"NSimSun";
    font-size:9pt;
 }
 div{
@@ -63,9 +62,8 @@ th{
 /* Input                                                  */
 /* ------------------------------------------------------ */
 input{
-   font-family:"Microsoft YaHei"; 
+   font-family:"NSimSun";
    font-size:9pt;
-   border:1px solid #999999;
 }
 select{
    font-family:"NSimSun";

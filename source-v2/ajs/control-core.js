@@ -872,3 +872,127 @@ function FFrameEventConsole_onlyCall(c, m){
    m.call(c);
    o._allow = true;
 }
+function FMessageConsole(o){
+   o = RClass.inherits(this, o, FConsole, MStyle);
+   o.scope        = EScope.Global;
+   o.result       = new Array();
+   o.attributes   = new Array();
+   o.messageBox   = null;
+   o.messageWindow = null;
+   o.parse        = FMessageConsole_parse;
+   o.popupMessage = FMessageConsole_popupMessage;
+   o.closeMessage = FMessageConsole_closeMessage;
+   o.checkResult  = FMessageConsole_checkResult;
+   return o;
+}
+function FMessageConsole_parse(config){
+   var msgs = null;
+   var msgsNode = config.find('Messages');
+   if(msgsNode && msgsNode.nodes && msgsNode.nodes.count){
+      msgs = new TMessages();
+      for(var n=0; n<msgsNode.nodes.count; n++){
+         var node = msgsNode.node(n);
+         var msg = new TMessage();
+         msg.loadConfig(msgsNode.node(n));
+         msgs.push(msg);
+      }
+   }
+   return msgs;
+}
+function FMessageConsole_popupMessage(g){
+   var o = this;
+   var w = o.messageWindow;
+   if(!w){
+      w = o.messageWindow = RControl.create('FMessageWindow');
+   }
+   w.loadMessages(g);
+   w.show();
+}
+function FMessageConsole_closeMessage(){
+   RWindow.setEnable(true);
+}
+function FMessageConsole_checkResult(g){
+   var o = this;
+   var ms = g.messages = o.parse(g.config);
+   if(ms){
+      var m = ms.message(EMessage.Fatal);
+      if(m && m.attrType == "session.timeout"){
+         var ss = RString.splitTwo(m.redirect, '@');
+         var s = RContext.context(ss[1] + '?do='+ss[0]);
+         fmMain.action = s;
+         fmMain.target = '_self';
+         fmMain.submit();
+      }else{
+         o.popupMessage(g);
+      }
+      return false;
+   }
+   return true;
+}
+function FResultConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o.scope          = EScope.Page;
+   o.executeCommand = FResultConsole_executeCommand;
+   o.checkService   = FResultConsole_checkService;
+   return o;
+}
+function FResultConsole_executeCommand(command){
+   var name = command.get('name');
+   if(EResultCommand.TreeReload == name){
+      var tv = RGlobal.get('catalog.tree');
+      if(tv){
+         tv.reload();
+      }
+   }else if(EResultCommand.TreeNodeRefresh == name){
+      var tv = RGlobal.get('catalog.tree');
+      if(tv){
+         var uuid = command.get('uuid');
+         if(uuid){
+            var fn = tv.findByUuid(uuid);
+            if(fn){
+               tv.reloadNode(fn);
+            }else{
+               return alert("Can't find tree node. (uuid="+uuid+")");
+            }
+         }else{
+            tv.reloadNode();
+         }
+      }
+   }else if(EResultCommand.TreeParentRefresh == name){
+      var tv = RGlobal.get('catalog.tree');
+      if(tv){
+         var fn = tv.focusNode;
+         if(fn){
+            tv.reloadNode(fn.parentNode);
+         }
+      }
+   }else if(EResultCommand.PageRedirect == name){
+      var action = command.get('action');
+      var page = top.RContext.context(command.get('page'));
+      if(action){
+         page += '?do=' + action;
+      }
+      fmMain.action = page;
+      fmMain.target = '';
+      fmMain.submit();
+   }
+}
+function FResultConsole_checkService(config){
+   var o = this;
+   if(config){
+      if(!RConsole.find(FMessageConsole).checkResult(new TMessageArg(config))){
+         return false;
+      }
+      var cmdsNode = config.find('Commands');
+      if(cmdsNode && cmdsNode.nodes && cmdsNode.nodes.count){
+         for(var n=0; n<cmdsNode.nodes.count; n++){
+            var node = cmdsNode.node(n);
+            if(node.isName('Command')){
+               o.executeCommand(node);
+            }
+         }
+      }
+      RConsole.find(FFocusConsole).restoreFocus();
+   }
+   return true;
+}

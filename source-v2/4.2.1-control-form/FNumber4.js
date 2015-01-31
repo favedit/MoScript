@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-function FEdit(o){
+function FNumber4(o){
    //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
    o = RClass.inherits(this, o, FEditControl);
    //..........................................................
@@ -20,17 +20,17 @@ function FEdit(o){
    o._hInput          = null;
    //..........................................................
    // @event
-   o.onBuildEditValue = FEdit_onBuildEditValue;
+   o.onBuildEditValue = FNumber4_onBuildEditValue;
    //..........................................................
    // @process
-   //o.oeDataLoad       = FEdit_oeDataLoad;
-   //o.oeDataSave       = FEdit_oeDataSave;
+   //o.oeDataLoad       = FNumber4_oeDataLoad;
+   //o.oeDataSave       = FNumber4_oeDataSave;
    //..........................................................
    // @method
-   o.construct        = FEdit_construct;
+   o.construct        = FNumber4_construct;
    // @method
-   o.get              = FEdit_get;
-   o.set              = FEdit_set;
+   o.get              = FNumber4_get;
+   o.set              = FNumber4_set;
 
 
 
@@ -51,16 +51,16 @@ function FEdit(o){
    //o.hUnit         = null;
    //..........................................................
    // @event
-   //o.onDataKeyDown = FEdit_onDataKeyDown;
+   //o.onDataKeyDown = FNumber4_onDataKeyDown;
    //..........................................................
    // @method
-   //o.formatValue   = FEdit_formatValue;
-   //o.setText       = FEdit_setText;
-   //o.validText     = FEdit_validText;
-   //o.findEditor    = FEdit_findEditor;
-   //o.drop          = FEdit_drop;
-   //o.link          = FEdit_link;
-   //o.clone         = FEdit_clone;
+   //o.formatValue   = FNumber4_formatValue;
+   //o.setText       = FNumber4_setText;
+   //o.validText     = FNumber4_validText;
+   //o.findEditor    = FNumber4_findEditor;
+   //o.drop          = FNumber4_drop;
+   //o.link          = FNumber4_link;
+   //o.clone         = FNumber4_clone;
    return o;
 }
 
@@ -70,7 +70,7 @@ function FEdit(o){
 // @method
 // @param p:dataSource:FDataSource 数据源
 //==========================================================
-function FEdit_oeDataLoad(p){
+function FNumber4_oeDataLoad(p){
    var o = this;
    alert(p);
    return EEventStatus.Stop;
@@ -82,7 +82,7 @@ function FEdit_oeDataLoad(p){
 // @method
 // @param p:dataSource:FDataSource 数据源
 //==========================================================
-function FEdit_oeDataSave(p){
+function FNumber4_oeDataSave(p){
    var o = this;
    return EEventStatus.Stop;
 }
@@ -93,24 +93,31 @@ function FEdit_oeDataSave(p){
 // @method
 // @param p:argements:SArgements 参数集合
 //==========================================================
-function FEdit_onBuildEditValue(p){
+function FNumber4_onBuildEditValue(p){
    var o = this;
    var h = o._hValuePanel;
    h.className = o.styleName('InputPanel');
-   //var h = o.hValue = RBuilder.appendTable(o._hInputPanel, o.styleName('ValuePanel'));
-   //htb.style.tableLayout = 'fixed';
-   //var hr = o.hEdit = htb.insertRow();
-   // 建立修改标志
-   //o.onBuildChange(hr.insertCell());
-   // 建立编辑控件
-   //var hep = hr.insertCell();
-   var he = o._hInput = RBuilder.appendEdit(h, o.styleName('Input'));
-   // 设置大小
-   //RHtml.setSize(he, o._inputSize);
-   // 设置可以输入的最大长度
-   if(o._editLength){
-      he.maxLength = o._editLength;
-   }
+
+   var hf = o._hInputForm = RBuilder.appendTable(h);
+   var hr = RBuilder.appendTableRow(hf);
+
+   var hc1 = RBuilder.appendTableCell(hr);
+   hc1.style.borderRight = '1px solid #666666';
+   var he1 = o._hInput1 = RBuilder.appendEdit(hc1, o.styleName('Input'));
+   
+   var hc2 = RBuilder.appendTableCell(hr);
+   hc2.style.borderRight = '1px solid #666666';
+   hc2.style.borderLeft = '1px solid #999999';
+   var he2 = o._hInput2 = RBuilder.appendEdit(hc2, o.styleName('Input'));
+
+   var hc3 = RBuilder.appendTableCell(hr);
+   hc3.style.borderLeft = '1px solid #999999';
+   hc3.style.borderRight = '1px solid #666666';
+   var he3 = o._hInput3 = RBuilder.appendEdit(hc3, o.styleName('Input'));
+
+   var hc4 = RBuilder.appendTableCell(hr);
+   hc4.style.borderLeft = '1px solid #999999';
+   var he4 = o._hInput4 = RBuilder.appendEdit(hc4, o.styleName('Input'));
 }
 
 //==========================================================
@@ -118,7 +125,7 @@ function FEdit_onBuildEditValue(p){
 //
 // @method
 //==========================================================
-function FEdit_construct(){
+function FNumber4_construct(){
    var o = this;
    o.__base.FEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
@@ -130,7 +137,7 @@ function FEdit_construct(){
 // @method
 // @return String 数据
 //==========================================================
-function FEdit_get(p){
+function FNumber4_get(p){
    var o = this;
    var r = o.__base.FEditControl.get.call(o, p);
    // 获得显示
@@ -147,7 +154,7 @@ function FEdit_get(p){
 // @method
 // @param p:value:String 数据
 //==========================================================
-function FEdit_set(p){
+function FNumber4_set(p){
    var o = this;
    o.__base.FEditControl.set.call(o, p);
    // 设置显示
@@ -180,7 +187,7 @@ function FEdit_set(p){
 // @param s:sender:FControl 控件对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FEdit_onDataKeyDown(s, e){
+function FNumber4_onDataKeyDown(s, e){
    var o = this;
    o.__base.FEditControl.onDataKeyDown.call(o, s, e);
    // 大小写限制
@@ -208,7 +215,7 @@ function FEdit_onDataKeyDown(s, e){
 // @method
 // @param v:value:String 显示内容
 //==========================================================
-function FEdit_formatValue(v){
+function FNumber4_formatValue(v){
    var o = this;
    var r = RString.nvl(v);
    if(ECase.Upper == o.editCase){
@@ -225,7 +232,7 @@ function FEdit_formatValue(v){
 // @method
 // @param t:text:String 内容
 //==========================================================
-function FEdit_setText(t){
+function FNumber4_setText(t){
    var o = this;
    if(!o.hEdit){
       return;
@@ -253,7 +260,7 @@ function FEdit_setText(t){
 // @param t:text:String 内容
 // @return 校验结果
 //==========================================================
-function FEdit_validText(t){
+function FNumber4_validText(t){
    var o = this;
    var r = o.__base.FEditControl.validText.call(o, t);
    if(!r){
@@ -279,14 +286,14 @@ function FEdit_validText(t){
 // @method
 // @return 编辑器
 //==========================================================
-function FEdit_findEditor(){
+function FNumber4_findEditor(){
    var o = this;
    if(o.editComplete){
       var de = o.editor;
       if(!de){
          o.dsControl = o.topControl(MDataset);
          if(o.dsControl){
-            de = o.editor = RConsole.find(FEditConsole).focus(o, FEditEditor);
+            de = o.editor = RConsole.find(FNumber4Console).focus(o, FNumber4Editor);
          }
       }
       if(de){
@@ -301,7 +308,7 @@ function FEdit_findEditor(){
 //
 // @method
 //==========================================================
-function FEdit_drop(){
+function FNumber4_drop(){
    var o = this;
    var de = o.findEditor();
    if(de){
@@ -323,7 +330,7 @@ function FEdit_drop(){
 //
 //@method
 //==========================================================
-function FEdit_clone(){
+function FNumber4_clone(){
    var o = this;
    var r = o._class.newInstance();
    GHtml_clone(r, o.hPanel);
@@ -335,7 +342,7 @@ function FEdit_clone(){
 //
 //@method
 //==========================================================
-function FEdit_link(){
+function FNumber4_link(){
    var o = this;
    
 }

@@ -14,7 +14,7 @@ var RHtml = new function RHtml(){
    o._clientPosition = new SPoint2();
    //..........................................................
    // @method
-   o.uid            = RHtml_uid;
+   o.uid            = RRuntime_uid;
    // @method
    o.displayGet     = RHtml_displayGet;
    o.displaySet     = RHtml_displaySet;
@@ -85,21 +85,6 @@ var RHtml = new function RHtml(){
    o.tableMoveRow   = RHtml_tableMoveRow;
    o.clone          = RHtml_clone;
    return o;
-}
-
-//==========================================================
-// <T>获得页面元素的唯一编号。</T>
-//
-// @method
-// @param v:html:HtmlTag 页面元素
-// @return Integer 唯一编号
-//==========================================================
-function RHtml_uid(v){
-   var r = v.uniqueNumber;
-   if(r == null){
-      r = v.uniqueNumber = this._nextUid++;
-   }
-   return r;
 }
 
 //==========================================================
