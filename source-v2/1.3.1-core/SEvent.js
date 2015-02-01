@@ -12,6 +12,8 @@ function SEvent(o){
    o.annotation = null;
    // @attribute
    o.source     = null;
+   // @attribute
+   o.hEvent     = null;
    o.hSender    = null;
    o.hSource    = null;
    //..........................................................

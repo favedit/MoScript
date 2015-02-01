@@ -317,11 +317,12 @@ function RHtml_clientPosition(h, t){
 //
 // @method
 // @param p:html:HtmlTag 页面元素
+// @param t:top:HtmlTag 顶层元素
 // @return Intger 距离
 //==========================================================
-function RHtml_clientX(p){
+function RHtml_clientX(p, t){
    var r = 0;
-   while(p){
+   while(p != t){
       r += p.offsetLeft - p.scrollLeft;
       p = p.offsetParent;
    }
@@ -333,11 +334,12 @@ function RHtml_clientX(p){
 //
 // @method
 // @param p:html:HtmlTag 页面元素
+// @param t:top:HtmlTag 顶层元素
 // @return Intger 距离
 //==========================================================
-function RHtml_clientY(p){
+function RHtml_clientY(p, t){
    var r = 0;
-   while(p){
+   while(p != t){
       r += p.offsetTop - p.scrollTop;
       p = p.offsetParent;
    }

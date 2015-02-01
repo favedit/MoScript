@@ -1817,6 +1817,52 @@ function MEditable_testEdit(m){
          return o.editZoom;
    }
 }
+function MEditChange(o){
+   o = RClass.inherits(this, o);
+   o._styleChangePanel = RClass.register(o, new AStyle('_styleChangePanel'));
+   o._styleChangeIcon  = RClass.register(o, new AStyle('_styleChangeIcon'));
+   o._hChangePanel     = null;
+   o._hChangeIcon      = null;
+   o.onBuildEditChange = MEditChange_onBuildEditChange;
+   o.onChangeEnter     = RClass.register(o, new AEventMouseEnter('onChangeEnter'), MEditChange_onChangeEnter);
+   o.onChangeLeave     = RClass.register(o, new AEventMouseLeave('onChangeLeave'), MEditChange_onChangeLeave);
+   o.onChangeClick     = RClass.register(o, new AEventClick('onChangeClick'), MEditChange_onChangeClick);
+   o.construct         = MEditChange_construct;
+   o.changeSet         = MEditChange_changeSet;
+   o.dispose           = MEditChange_dispose;
+   return o;
+}
+function MEditChange_onBuildEditChange(p){
+   var o = this;
+   var h = o._hChangePanel;
+   h.className = o.styleName('ChangePanel', MEditChange);
+   h.vAlign = 'top';
+   h.width = 5;
+   o.attachEvent('onChangeEnter', h, o.onChangeEnter);
+   o.attachEvent('onChangeLeave', h, o.onChangeLeave);
+   o.attachEvent('onChangeClick', h, o.onChangeClick);
+   var hi = o._hChangeIcon = RBuilder.appendIcon(h, o.styleName('ChangeIcon', MEditChange), 'control.change');
+   hi._pname = 'change.icon';
+}
+function MEditChange_onChangeEnter(e){
+   var o = this;
+}
+function MEditChange_onChangeLeave(e){
+   var o = this;
+}
+function MEditChange_onChangeClick(e){
+}
+function MEditChange_construct(){
+}
+function MEditChange_changeSet(p){
+}
+function MEditChange_dispose(){
+   var o = this;
+   RHtml.free(o._hChangeIcon);
+   o._hChangeIcon = null;
+   RHtml.free(o._hChangePanel);
+   o._hChangePanel = null;
+}
 function MEditDescriptor(o){
    o = RClass.inherits(this, o, MEditable);
    o._dataName          = RClass.register(o, new APtyString(null, '_dataName'));
@@ -1926,6 +1972,45 @@ function MEditDescriptor_formatText(t){
 }
 function MEditDescriptor_validText(t){
    var o = this;
+}
+function MEditDrop(o){
+   o = RClass.inherits(this, o);
+   o._styleDropPanel = RClass.register(o, new AStyle('_styleDropPanel'));
+   o._styleDropIcon  = RClass.register(o, new AStyle('_styleDropIcon'));
+   o._hDropPanel     = null;
+   o._hDropIcon      = null;
+   o.onBuildEditDrop = MEditDrop_onBuildEditDrop;
+   o.onDropEnter     = RClass.register(o, new AEventMouseEnter('onDropEnter'), MEditDrop_onDropEnter);
+   o.onDropLeave     = RClass.register(o, new AEventMouseLeave('onDropLeave'), MEditDrop_onDropLeave);
+   o.onDropClick     = RClass.register(o, new AEventClick('onDropClick'), MEditDrop_onDropClick);
+   o.construct       = MEditDrop_construct;
+   o.dispose         = MEditDrop_dispose;
+   return o;
+}
+function MEditDrop_onBuildEditDrop(p){
+   var o = this;
+   var h = o._hDropPanel;
+   h.className = o.styleName('DropPanel', MEditDrop);
+   h.width = 11;
+   var hi = o._hDropIcon = RBuilder.appendIcon(h, o.styleName('DropIcon', MEditDrop), 'control.drop');
+   hi.align = 'center';
+}
+function MEditDrop_onDropEnter(e){
+   var o = this;
+}
+function MEditDrop_onDropLeave(e){
+   var o = this;
+}
+function MEditDrop_onDropClick(e){
+}
+function MEditDrop_construct(){
+}
+function MEditDrop_dispose(){
+   var o = this;
+   RHtml.free(o._hDropIcon);
+   o._hDropIcon = null;
+   RHtml.free(o._hDropPanel);
+   o._hDropPanel = null;
 }
 function MEditReference(o){
    o = RClass.inherits(this, o);
@@ -2220,6 +2305,66 @@ function MListener_processListener(n, p1, p2, p3, p4, p5){
          ls.process(p1, p2, p3, p4, p5);
       }
    }
+}
+function MListenerBlur(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addBlurListener     = MListenerBlur_addBlurListener;
+   o.processBlurListener = MListenerBlur_processBlurListener;
+   return o;
+}
+function MListenerBlur_addBlurListener(w, m){
+   return this.addListener(EEvent.Blur, w, m);
+}
+function MListenerBlur_processBlurListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Blur, p1, p2, p3, p4, p5);
+}
+function MListenerDataChanged(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addDataChangedListener     = MListenerDataChanged_addDataChangedListener;
+   o.processDataChangedListener = MListenerDataChanged_processDataChangedListener;
+   return o;
+}
+function MListenerDataChanged_addDataChangedListener(w, m){
+   return this.addListener(EEvent.DataChanged, w, m);
+}
+function MListenerDataChanged_processDataChangedListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.DataChanged, p1, p2, p3, p4, p5);
+}
+function MListenerEnter(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addEnterListener     = MListenerEnter_addEnterListener;
+   o.processEnterListener = MListenerEnter_processEnterListener;
+   return o;
+}
+function MListenerEnter_addEnterListener(w, m){
+   return this.addListener(EEvent.Enter, w, m);
+}
+function MListenerEnter_processEnterListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Enter, p1, p2, p3, p4, p5);
+}
+function MListenerFocus(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addFocusListener     = MListenerFocus_addFocusListener;
+   o.processFocusListener = MListenerFocus_processFocusListener;
+   return o;
+}
+function MListenerFocus_addFocusListener(w, m){
+   return this.addListener(EEvent.Focus, w, m);
+}
+function MListenerFocus_processFocusListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Focus, p1, p2, p3, p4, p5);
+}
+function MListenerLeave(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addLeaveListener     = MListenerLeave_addLeaveListener;
+   o.processLeaveListener = MListenerLeave_processLeaveListener;
+   return o;
+}
+function MListenerLeave_addLeaveListener(w, m){
+   return this.addListener(EEvent.Leave, w, m);
+}
+function MListenerLeave_processLeaveListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Leave, p1, p2, p3, p4, p5);
 }
 function MListenerLoad(o){
    o = RClass.inherits(this, o, MListener);
@@ -2794,8 +2939,6 @@ function RControl_attachEvent(c, n, h, m, u){
    if(!RMethod.isEmpty(p) || m){
       var cz = RClass.find(c.constructor);
       var a = cz.annotation(EAnnotation.Event, n);
-      var al = a.linker();
-      var ah = a.handle();
       e = a.create();
       e.annotation = a;
       e.source = c;
@@ -2803,14 +2946,9 @@ function RControl_attachEvent(c, n, h, m, u){
       e.ohProcess = m;
       e.onProcess = p;
       e.process = REvent.onProcess;
-      var es = REvent.find(h);
-      es.push(al, e);
-      if(u){
-         h.addEventListener(a._linker, REvent.ohEvent, true);
-      }else{
-         h[ah] = REvent.ohEvent;
-      }
+      REvent.find(h).push(a.linker(), e);
       RHtml.linkSet(h, '_plink', c);
+      a.bind(h, u);
    }
    return e;
 }
@@ -2992,13 +3130,12 @@ var REvent = new function(){
    o.onProcess = REvent_onProcess;
    o.find      = REvent_find;
    o.process   = REvent_process;
+   o.release   = REvent_release;
    o.current   = 0;
    o.events    = new Array();
    o.nvl       = REvent_nvl;
    o.alloc     = REvent_alloc;
    o.free      = REvent_free;
-   o.release   = REvent_release;
-   RMemory.register('REvent', o);
    return o;
 }
 function REvent_ohEvent(e){
@@ -3058,6 +3195,14 @@ function REvent_process(hs, he){
    }
    return false;
 }
+function REvent_release(){
+   var o = this;
+   var v = o._objects;
+   if(v){
+      RMemory.free(v);
+      o._objects = null;
+   }
+}
 function REvent_nvl(event, sender, code){
    if(!event){
       event = new TEvent();
@@ -3085,13 +3230,6 @@ function REvent_alloc(s, c){
 }
 function REvent_free(e){
    e.inUsing = false;
-}
-function REvent_release(){
-   var o = this;
-   RMemory.free(o.events);
-   RMemory.free(o._objects);
-   o.events = null;
-   o._objects = null;
 }
 function TDatasetFetchArg(o){
    if(!o){o = this;}

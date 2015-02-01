@@ -1,23 +1,25 @@
-// ============================================================
-// RKeyFace
-// ============================================================
-var RKey = new function(){
+//===========================================================
+// <T>键盘管理器。</T>
+//
+// @enum
+// @author maocy
+// @version 141230
+//===========================================================
+var RKeyboard = new function RKeyboard(){
    var o = this;
-   // Method
-   o.isCtlKey      = RKey_isCtlKey;
-   o.isNumKey      = RKey_isNumKey;
-   o.isCtlKeyPress = RKey_isCtlKeyPress;
-   o.eventClear    = RKey_eventClear;
-   o.fixCase       = RKey_fixCase;
-   o.fixPattern    = RKey_fixPattern;
-   o.fixChars      = RKey_fixChars;
-   // Construct
-   RMemory.register('RKey', o);
+   //..........................................................
+   // @method
+   o.isCtlKey      = RKeyboard_isCtlKey;
+   o.isNumKey      = RKeyboard_isNumKey;
+   o.isCtlKeyPress = RKeyboard_isCtlKeyPress;
+   o.fixCase       = RKeyboard_fixCase;
+   o.fixPattern    = RKeyboard_fixPattern;
+   o.fixChars      = RKeyboard_fixChars;
    return o;
 }
 // ------------------------------------------------------------
 // Code
-function RKey_isCtlKey(c){
+function RKeyboard_isCtlKey(c){
    var ks = EKey.ControlKeys;
    for(var n=0; n<ks.length; n++){
       if(ks[n] == c){
@@ -29,7 +31,7 @@ function RKey_isCtlKey(c){
 
 //------------------------------------------------------------
 //Code 是否是小键盘数值
-function RKey_isNumKey(c){
+function RKeyboard_isNumKey(c){
    var ks = EKey.ControlKeys;
    if(c >= 96 && c <= 105){
       return true;
@@ -39,7 +41,7 @@ function RKey_isNumKey(c){
 
 // ------------------------------------------------------------
 // Code
-function RKey_isCtlKeyPress(c){
+function RKeyboard_isCtlKeyPress(c){
    for(var n in EKey.ControlKeys){
       if(EKey.ControlKeys[n] == c){
          return true;
@@ -48,13 +50,8 @@ function RKey_isCtlKeyPress(c){
    return false;
 }
 // ------------------------------------------------------------
-// Event
-function RKey_eventClear(e){
-   e.returnValue = false;
-}
-// ------------------------------------------------------------
 // event, case
-function RKey_fixCase(e, c){
+function RKeyboard_fixCase(e, c){
    if(e && c){
       var k = e.keyCode;
       if(ECase.Upper == c){
@@ -67,7 +64,7 @@ function RKey_fixCase(e, c){
 }
 // ------------------------------------------------------------
 // event, pattern
-function RKey_fixPattern(e, p){
+function RKeyboard_fixPattern(e, p){
    if(p){
       var k = e.keyCode;
       if(!this.isCtlKeyPress(k)){
@@ -81,7 +78,7 @@ function RKey_fixPattern(e, p){
 }
 // ------------------------------------------------------------
 // event, pattern
-function RKey_fixChars(e, p){
+function RKeyboard_fixChars(e, p){
    if(p){
       var k = e.keyCode;
       if(this.isNumKey(k)){

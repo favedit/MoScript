@@ -1175,17 +1175,18 @@ function FStage3d_process(){
 }
 function FTemplate3d(o){
    o = RClass.inherits(this, o, FDisplay3d, MListenerLoad);
-   o._dataReady   = false;
-   o._ready       = false;
-   o._resource    = null;
-   o._animation   = null;
-   o._resource    = null;
-   o._displays    = null;
-   o.testReady    = FTemplate3d_testReady;
-   o.setResource  = FTemplate3d_setResource;
-   o.loadResource = FTemplate3d_loadResource;
-   o.processLoad  = FTemplate3d_processLoad;
-   o.process      = FTemplate3d_process;
+   o._dataReady     = false;
+   o._ready         = false;
+   o._resource      = null;
+   o._animation     = null;
+   o._resource      = null;
+   o._displays      = null;
+   o.testReady      = FTemplate3d_testReady;
+   o.setResource    = FTemplate3d_setResource;
+   o.loadResource   = FTemplate3d_loadResource;
+   o.reloadResource = FTemplate3d_reloadResource;
+   o.processLoad    = FTemplate3d_processLoad;
+   o.process        = FTemplate3d_process;
    return o;
 }
 function FTemplate3d_testReady(){
@@ -1207,6 +1208,16 @@ function FTemplate3d_loadResource(p){
          d._context = o._context;
          d.loadResource(r);
          ds.push(d);
+      }
+   }
+}
+function FTemplate3d_reloadResource(){
+   var o = this;
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.get(i).reloadResource();
       }
    }
 }
@@ -1338,6 +1349,7 @@ function FTemplateRenderable3d(o){
    o.textures          = FTemplateRenderable3d_textures;
    o.bones             = FTemplateRenderable3d_bones;
    o.loadResource      = FTemplateRenderable3d_loadResource;
+   o.reloadResource    = FTemplateRenderable3d_reloadResource;
    o.load              = FTemplateRenderable3d_load;
    o.build             = FTemplateRenderable3d_build;
    o.update            = FTemplateRenderable3d_update;
@@ -1394,7 +1406,7 @@ function FTemplateRenderable3d_loadResource(p){
    o._resource = p;
    o._modelMatrix.assign(p.matrix());
    o._model = RConsole.find(FRd3ModelConsole).load(o._context, p.modelGuid());
-   var m = p._activeMaterial._material;
+   var m = o._materialResource = p._activeMaterial._material;
    var mi = o._material.info();
    mi.assign(m.info());
    o._effectName = mi.effectName;
@@ -1409,6 +1421,12 @@ function FTemplateRenderable3d_loadResource(p){
          ts.set(r.code(), t);
       }
    }
+}
+function FTemplateRenderable3d_reloadResource(){
+   var o = this;
+   var m = o._materialResource;
+   var mi = o._material.info();
+   mi.assign(m.info());
 }
 function FTemplateRenderable3d_load(){
    var o = this;

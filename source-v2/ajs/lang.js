@@ -1744,22 +1744,22 @@ var RFloat = new function RFloat(){
 function RFloat_isFloat(p){
    return RString.isPattern(p, 'n');
 }
-function RFloat_parse(value){
-   if(value == null){
+function RFloat_parse(p){
+   if(p == null){
       return 0;
    }
-   value = RString.trim(value.toString());
+   var v = RString.trim(p.toString());
    while(true){
-      if(value.charAt(0) != "0"){
+      if(v.charAt(0) != "0"){
          break;
       }
-      value = value.substr(1);
+      v = v.substr(1);
    }
-   var rs = (value.length > 0) ? parseFloat(value) : 0;
-   if(-1 != RString.findChars(value, '%')){
-      rs = rs / 100;
+   var r = (v.length > 0) ? parseFloat(v) : 0;
+   if(RString.findChars(v, '%') != -1){
+      r = r / 100;
    }
-   return isNaN(rs) ? 0 : rs;
+   return isNaN(r) ? 0 : r;
 }
 function RFloat_format(v, l, lp, r, rp){
    var o = this;
@@ -1813,25 +1813,29 @@ function RFloat_calculate(f,a,b){
      return (a - b).toString();
   }
 }
-var RHex = new function(o){
-   if(!o){o=this};
+var RHex = new function RHex(){
+   var o = this;
    o.NUMBER  = '0x123456789ABCDEF';
    o.PAD     = '0';
    o.isValid = RHex_isValid;
    o.parse   = RHex_parse;
    o.format  = RHex_format;
-   RMemory.register('RHex', o);
    return o;
 }
-function RHex_isValid(v){
-   return RString.isPattern(v, this.NUMBER);
+function RHex_isValid(p){
+   return RString.isPattern(p, this.NUMBER);
 }
-function RHex_parse(v){
-   return v ? parseInt('0x'+v) : '0';
+function RHex_parse(p){
+   return p ? parseInt('0x' + p) : '0';
 }
 function RHex_format(v, l){
-   v = RString.nvl(v, '0').toString(16);
-   return l ? RString.lpad(v, l, this.PAD) : v;
+   var r = null;
+   if(v){
+      r = v.toString(16);
+   }else{
+      r = '0'
+   }
+   return l ? RString.lpad(r, l, this.PAD) : r;
 }
 var RInstance = new function RInstance(){
    var o = this;
@@ -3529,10 +3533,10 @@ function TListeners_register(w, p){
 function TListeners_push(l){
    var o = this;
    if(!l){
-      return RLogger.fatal(o, null, 'Listener is null.');
+      throw new TError(o, 'Listener is null.');
    }
    if(!l.callback){
-      return RLogger.fatal(o, null, 'Listener process is null.');
+      throw new TError(o, 'Listener process is null.');
    }
    if(!o.listeners){
       o.listeners = new TList();

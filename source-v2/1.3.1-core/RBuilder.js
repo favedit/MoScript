@@ -84,10 +84,10 @@ function RBuilder_createIcon(d, s, u, w, h){
       r.src = RResource.iconPath(u);
    }
    if(w){
-      r.style.width = w;
+      r.style.width = w + 'px';
    }
    if(h){
-      r.style.height = h;
+      r.style.height = h + 'px';
    }
    return r;
 }

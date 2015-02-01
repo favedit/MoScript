@@ -7,6 +7,27 @@
 }
 
 /* ------------------------------------------------------ */
+/* MEditChange                                            */
+/* ------------------------------------------------------ */
+.MEditChange_ChangePanel{
+   cursor: pointer;
+}
+
+.MEditChange_ChangeIcon{
+   display: none;
+}
+
+/* ------------------------------------------------------ */
+/* MEditDrop                                              */
+/* ------------------------------------------------------ */
+.MEditDrop_DropPanel{
+   cursor: pointer;
+}
+
+.MEditDrop_DropIcon{
+}
+
+/* ------------------------------------------------------ */
 /* FEditControl                                           */
 /* ------------------------------------------------------ */
 .FEditControl_LabelPanel{
@@ -14,18 +35,6 @@
 }
 
 .FEditControl_EditorPanel{
-}
-
-.FEditControl_ChangePanel{
-   cursor: pointer;
-}
-
-.FEditControl_ChangeIcon{
-   display: none;
-}
-
-.FEditControl_DropPanel{
-   cursor: pointer;
 }
 
 /* ------------------------------------------------------ */

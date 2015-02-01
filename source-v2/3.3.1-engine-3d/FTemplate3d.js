@@ -8,27 +8,31 @@ function FTemplate3d(o){
    o = RClass.inherits(this, o, FDisplay3d, MListenerLoad);
    //..........................................................
    // @attribute
-   o._dataReady   = false;
-   o._ready       = false;
-   o._resource    = null;
+   o._dataReady     = false;
+   o._ready         = false;
+   o._resource      = null;
    // @attribute
-   o._animation   = null;
+   o._animation     = null;
    // @attribute
-   o._resource    = null;
-   o._displays    = null;
+   o._resource      = null;
+   o._displays      = null;
    //..........................................................
    // @method
-   o.testReady    = FTemplate3d_testReady;
-   o.setResource  = FTemplate3d_setResource;
-   o.loadResource = FTemplate3d_loadResource;
-   o.processLoad  = FTemplate3d_processLoad;
-   o.process      = FTemplate3d_process;
+   o.testReady      = FTemplate3d_testReady;
+   // @method
+   o.setResource    = FTemplate3d_setResource;
+   o.loadResource   = FTemplate3d_loadResource;
+   o.reloadResource = FTemplate3d_reloadResource;
+   // @method
+   o.processLoad    = FTemplate3d_processLoad;
+   o.process        = FTemplate3d_process;
    return o;
 }
 
 //==========================================================
 // <T>测试是否准备好。</T>
 //
+// @method
 // @return 是否准备好
 //==========================================================
 function FTemplate3d_testReady(){
@@ -38,6 +42,7 @@ function FTemplate3d_testReady(){
 //==========================================================
 // <T>设置资源模板。</T>
 //
+// @method
 // @param p:resource:FRs3Template 资源模板
 //==========================================================
 function FTemplate3d_setResource(p){
@@ -47,6 +52,7 @@ function FTemplate3d_setResource(p){
 //==========================================================
 // <T>加载资源模板。</T>
 //
+// @method
 // @param p:resource:FRs3Template 资源模板
 //==========================================================
 function FTemplate3d_loadResource(p){
@@ -63,6 +69,22 @@ function FTemplate3d_loadResource(p){
          d._context = o._context;
          d.loadResource(r);
          ds.push(d);
+      }
+   }
+}
+
+//==========================================================
+// <T>重新加载资源。</T>
+//
+// @method
+//==========================================================
+function FTemplate3d_reloadResource(){
+   var o = this;
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.get(i).reloadResource();
       }
    }
 }

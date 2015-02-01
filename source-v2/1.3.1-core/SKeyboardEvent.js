@@ -10,12 +10,14 @@ function SKeyboardEvent(o){
    SEvent(o);
    //..........................................................
    // @attribute
+   o.altKey      = false;
    o.shiftKey    = false;
    o.ctrlKey     = false;
    o.keyCode     = 0;
    //..........................................................
    // @method
    o.attachEvent = SKeyboardEvent_attachEvent;
+   o.cancel      = SKeyboardEvent_cancel;
    return o;
 }
 
@@ -27,7 +29,18 @@ function SKeyboardEvent(o){
 //==========================================================
 function SKeyboardEvent_attachEvent(p){
    var o = this;
+   o.altKey = p.altKey;
    o.shiftKey = p.shiftKey;
    o.ctrlKey = p.ctrlKey;
    o.keyCode = p.keyCode;
+}
+
+//==========================================================
+// <T>取消处理。</T>
+//
+// @method
+//==========================================================
+function SKeyboardEvent_cancel(){
+   var o = this;
+   o.hEvent.returnValue = false;
 }

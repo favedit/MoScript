@@ -14,7 +14,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-function FUiColor3(o){
+function FUiColor3Tpl(o){
    //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
    o = RClass.inherits(this, o, FEditControl, MListenerDataChanged);
    //..........................................................
@@ -28,28 +28,24 @@ function FUiColor3(o){
    // @attribute
    o._innerOriginValue = null;
    o._innerDataValue   = null;
-   // @attribute
-   o._barRed           = null;
-   o._barGreen         = null;
-   o._barBlue          = null;
+   //..........................................................
+   // @html
+   o._hInputRed        = null;
+   o._hInputGreen      = null;
+   o._hInputBlue       = null;
    //..........................................................
    // @event
-   o.onBuildEditValue  = FUiColor3_onBuildEditValue;
+   o.onBuildEditValue  = FUiColor3Tpl_onBuildEditValue;
    // @event
-   o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FUiColor3_onInputKeyPress);
-   o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FUiColor3_onInputChanged);
-   o.onSlideMouseDown  = RClass.register(o, new AEventMouseDown('onSlideMouseDown'), FUiColor3_onSlideMouseDown);
-   o.onSlideMouseMove  = RClass.register(o, new AEventMouseMove('onSlideMouseMove'), FUiColor3_onSlideMouseMove);
-   o.onSlideMouseUp    = RClass.register(o, new AEventMouseUp('onSlideMouseUp'), FUiColor3_onSlideMouseUp);
+   o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FUiColor3Tpl_onInputKeyPress);
+   o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FUiColor3Tpl_onInputChanged);
    //..........................................................
    // @method
-   o.construct         = FUiColor3_construct;
+   o.construct         = FUiColor3Tpl_construct;
    // @method
-   o.get               = FUiColor3_get;
-   o.set               = FUiColor3_set;
-   o.setDisplayColor   = FUiColor3_setDisplayColor;
-   o.setDisplay        = FUiColor3_setDisplay;
-   o.refreshValue      = FUiColor3_refreshValue;
+   o.get               = FUiColor3Tpl_get;
+   o.set               = FUiColor3Tpl_set;
+
 
    //o.onKeyDown    = RClass.register(o, new AEventKeyDown('onKeyDown'));
    //o.onKeyPress   = RClass.register(o, new AEventKeyPress('onKeyPress'));
@@ -63,16 +59,16 @@ function FUiColor3(o){
    //o.hUnit         = null;
    //..........................................................
    // @event
-   //o.onDataKeyDown = FUiColor3_onDataKeyDown;
+   //o.onDataKeyDown = FUiColor3Tpl_onDataKeyDown;
    //..........................................................
    // @method
-   //o.formatValue   = FUiColor3_formatValue;
-   //o.setText       = FUiColor3_setText;
-   //o.validText     = FUiColor3_validText;
-   //o.findEditor    = FUiColor3_findEditor;
-   //o.drop          = FUiColor3_drop;
-   //o.link          = FUiColor3_link;
-   //o.clone         = FUiColor3_clone;
+   //o.formatValue   = FUiColor3Tpl_formatValue;
+   //o.setText       = FUiColor3Tpl_setText;
+   //o.validText     = FUiColor3Tpl_validText;
+   //o.findEditor    = FUiColor3Tpl_findEditor;
+   //o.drop          = FUiColor3Tpl_drop;
+   //o.link          = FUiColor3Tpl_link;
+   //o.clone         = FUiColor3Tpl_clone;
    return o;
 }
 
@@ -82,7 +78,7 @@ function FUiColor3(o){
 // @method
 // @param p:argements:SArgements 参数集合
 //==========================================================
-function FUiColor3_onBuildEditValue(p){
+function FUiColor3Tpl_onBuildEditValue(p){
    var o = this;
    var h = o._hValuePanel;
    h.className = o.styleName('ValuePanel');
@@ -94,55 +90,25 @@ function FUiColor3_onBuildEditValue(p){
    o._hChangePanel = RBuilder.appendTableCell(hl);
    o.onBuildEditChange(p);
    //..........................................................
-   // 建立颜色栏
-   var hcp = o._hColorPanel = RBuilder.appendTableCell(hl);
-   hcp.width = 16;
-   hcp.style.padding = '2px';
-   o._hColorImage = RBuilder.appendIcon(hcp, null, 'n', 14, 47);
-   //..........................................................
-   var hcp = RBuilder.appendTableCell(hl);
-   var hcf = o._hColorForm = RBuilder.appendTable(hcp);
-   hcf.width = '100%';
    // 建立红色输入栏
-   var b = o._barRed = new SUiColorBar();
-   b.control = o;
-   b.type = 'red';
-   b.hPanel = o._hColorForm;
-   b.build();
-   // 建立绿色输入栏
-   var b = o._barGreen = new SUiColorBar();
-   b.control = o;
-   b.type = 'green';
-   b.hPanel = o._hColorForm;
-   b.build();
-   // 建立蓝色输入栏
-   var b = o._barBlue = new SUiColorBar();
-   b.control = o;
-   b.type = 'blue';
-   b.hPanel = o._hColorForm;
-   b.build();
-
-   //o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-   //o.attachEvent('onInputChanged', he, o.onInputChanged);
-
-   //var hc = RBuilder.appendTableCell(hl);
-   //hc.style.borderRight = '1px solid #666666';
-   //var he = o._hInputRed = RBuilder.appendEdit(hc, o.styleName('Input'));
-   //o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-   //o.attachEvent('onInputChanged', he, o.onInputChanged);
+   var hc = RBuilder.appendTableCell(hl);
+   hc.style.borderRight = '1px solid #666666';
+   var he = o._hInputRed = RBuilder.appendEdit(hc, o.styleName('Input'));
+   o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
+   o.attachEvent('onInputChanged', he, o.onInputChanged);
    // 建立绿输入栏
-   //var hc = RBuilder.appendTableCell(hl);
-   //hc.style.borderLeft = '1px solid #999999';
-   //hc.style.borderRight = '1px solid #666666';
-   //var he = o._hInputGreen = RBuilder.appendEdit(hc, o.styleName('Input'));
-   //o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-   //o.attachEvent('onInputChanged', he, o.onInputChanged);
+   var hc = RBuilder.appendTableCell(hl);
+   hc.style.borderLeft = '1px solid #999999';
+   hc.style.borderRight = '1px solid #666666';
+   var he = o._hInputGreen = RBuilder.appendEdit(hc, o.styleName('Input'));
+   o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
+   o.attachEvent('onInputChanged', he, o.onInputChanged);
    // 建立蓝色输入栏
-   //var hc = RBuilder.appendTableCell(hl);
-   //hc.style.borderLeft = '1px solid #999999';
-   //var he = o._hInputBlue = RBuilder.appendEdit(hc, o.styleName('Input'));
-   //o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-   //o.attachEvent('onInputChanged', he, o.onInputChanged);
+   var hc = RBuilder.appendTableCell(hl);
+   hc.style.borderLeft = '1px solid #999999';
+   var he = o._hInputBlue = RBuilder.appendEdit(hc, o.styleName('Input'));
+   o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
+   o.attachEvent('onInputChanged', he, o.onInputChanged);
    //..........................................................
    // 建立下拉栏
    var hdp = o._hDropPanel = RBuilder.appendTableCell(hl);
@@ -155,7 +121,7 @@ function FUiColor3_onBuildEditValue(p){
 //
 // @param p:event:SEvent 事件对象
 //==========================================================
-function FUiColor3_onInputKeyPress(p){
+function FUiColor3Tpl_onInputKeyPress(p){
    var o = this;
    var c = p.keyCode;
    // 允许输入百分号(%)
@@ -173,7 +139,7 @@ function FUiColor3_onInputKeyPress(p){
 //
 // @param p:event:SEvent 事件对象
 //==========================================================
-function FUiColor3_onInputChanged(p){
+function FUiColor3Tpl_onInputChanged(p){
    var o = this;
    // 内容改变通知
    o.processDataChangedListener(o);
@@ -185,44 +151,11 @@ function FUiColor3_onInputChanged(p){
 }
 
 //==========================================================
-// <T>滑动栏鼠标落下处理。 </T>
-//
-// @param p:event:SEvent 事件对象
-//==========================================================
-function FUiColor3_onSlideMouseDown(p){
-   var o = this;
-   var b = p.hSource.__pbar;
-   b.onMouseDown(p);
-}
-
-//==========================================================
-// <T>滑动栏鼠标移动处理。 </T>
-//
-// @param p:event:SEvent 事件对象
-//==========================================================
-function FUiColor3_onSlideMouseMove(p){
-   var o = this;
-   var b = p.hSource.__pbar;
-   b.onMouseMove(p);
-}
-
-//==========================================================
-// <T>滑动栏鼠标抬起处理。 </T>
-//
-// @param p:event:SEvent 事件对象
-//==========================================================
-function FUiColor3_onSlideMouseUp(p){
-   var o = this;
-   var b = p.hSource.__pbar;
-   b.onMouseUp(p);
-}
-
-//==========================================================
 // <T>构造处理。</T>
 //
 // @method
 //==========================================================
-function FUiColor3_construct(){
+function FUiColor3Tpl_construct(){
    var o = this;
    o.__base.FEditControl.construct.call(o);
    // 设置属性
@@ -237,19 +170,19 @@ function FUiColor3_construct(){
 // @method
 // @return String 数据
 //==========================================================
-function FUiColor3_get(p){
+function FUiColor3Tpl_get(p){
    var o = this;
    var v = o._innerDataValue;
    // 获得数据
-   var h = o._barRed.hInput;
+   var h = o._hInputRed;
    if(h){
       v.red = RFloat.parse(h.value);
    }
-   var h = o._barGreen.hInput;
+   var h = o._hInputGreen;
    if(h){
       v.green = RFloat.parse(h.value);
    }
-   var h = o._barBlue.hInput;
+   var h = o._hInputBlue;
    if(h){
       v.blue = RFloat.parse(h.value);
    }
@@ -262,7 +195,7 @@ function FUiColor3_get(p){
 // @method
 // @param p:value:String 数据
 //==========================================================
-function FUiColor3_set(p){
+function FUiColor3Tpl_set(p){
    var o = this;
    o.__base.FEditControl.set.call(o, p);
    // 设置显示
@@ -274,77 +207,21 @@ function FUiColor3_set(p){
    }
    // 格式化数据
    var v = o._innerDataValue;
-
-   var vr = RHex.format(parseInt(v.red * 255), 2);
-   var vg = RHex.format(parseInt(v.green * 255), 2);
-   var vb = RHex.format(parseInt(v.blue * 255), 2);
-   o._hColorImage.style.backgroundColor = '#' + vr + vg + vb;
-
-   o._barRed.set(v.red);
-   o._barGreen.set(v.red);
-   o._barBlue.set(v.red);
-
    // 设置数据
-   //var h = o._hInputRed;
-   //if(h){
-   //   h.value = RFloat.format(v.red, 0, null, 2, null);
-   //}
-   //var h = o._hInputGreen;
-   //if(h){
-   //   h.value = RFloat.format(v.green, 0, null, 2, null);
-   //}
-   //var h = o._hInputBlue;
-   //if(h){
-   //   h.value = RFloat.format(v.blue, 0, null, 2, null);
-   //}
+   var h = o._hInputRed;
+   if(h){
+      h.value = RFloat.format(v.red, 0, null, 2, null);
+   }
+   var h = o._hInputGreen;
+   if(h){
+      h.value = RFloat.format(v.green, 0, null, 2, null);
+   }
+   var h = o._hInputBlue;
+   if(h){
+      h.value = RFloat.format(v.blue, 0, null, 2, null);
+   }
    // 设置修改状态
    o.changeSet(false);
-}
-
-//==========================================================
-// <T>设置显示数据。</T>
-//
-// @method
-// @param p:value:String 数据
-//==========================================================
-function FUiColor3_setDisplayColor(){
-   var o = this;
-   var v = o._innerDataValue;
-   // 设置颜色
-   var vr = RHex.format(parseInt(v.red * 255), 2);
-   var vg = RHex.format(parseInt(v.green * 255), 2);
-   var vb = RHex.format(parseInt(v.blue * 255), 2);
-   o._hColorImage.style.backgroundColor = '#' + vr + vg + vb;
-}
-
-//==========================================================
-// <T>设置显示数据。</T>
-//
-// @method
-// @param p:value:String 数据
-//==========================================================
-function FUiColor3_setDisplay(){
-   var o = this;
-   // 设置颜色
-   o.setDisplayColor();
-   // 设置内容
-   var v = o._innerDataValue;
-   o._barRed.set(v.red);
-   o._barGreen.set(v.red);
-   o._barBlue.set(v.red);
-}
-
-//==========================================================
-// <T>刷新数据。</T>
-//
-// @method
-//==========================================================
-function FUiColor3_refreshValue(){
-   var o = this;
-   o.get();
-   o.setDisplayColor();
-   // 内容改变通知
-   o.processDataChangedListener(o);
 }
 
 
@@ -366,7 +243,7 @@ function FUiColor3_refreshValue(){
 // @param s:sender:FControl 控件对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FUiColor3_onDataKeyDown(s, e){
+function FUiColor3Tpl_onDataKeyDown(s, e){
    var o = this;
    o.__base.FEditControl.onDataKeyDown.call(o, s, e);
    // 大小写限制
@@ -394,7 +271,7 @@ function FUiColor3_onDataKeyDown(s, e){
 // @method
 // @param v:value:String 显示内容
 //==========================================================
-function FUiColor3_formatValue(v){
+function FUiColor3Tpl_formatValue(v){
    var o = this;
    var r = RString.nvl(v);
    if(ECase.Upper == o.editCase){
@@ -411,7 +288,7 @@ function FUiColor3_formatValue(v){
 // @method
 // @param t:text:String 内容
 //==========================================================
-function FUiColor3_setText(t){
+function FUiColor3Tpl_setText(t){
    var o = this;
    if(!o.hEdit){
       return;
@@ -439,7 +316,7 @@ function FUiColor3_setText(t){
 // @param t:text:String 内容
 // @return 校验结果
 //==========================================================
-function FUiColor3_validText(t){
+function FUiColor3Tpl_validText(t){
    var o = this;
    var r = o.__base.FEditControl.validText.call(o, t);
    if(!r){
@@ -465,14 +342,14 @@ function FUiColor3_validText(t){
 // @method
 // @return 编辑器
 //==========================================================
-function FUiColor3_findEditor(){
+function FUiColor3Tpl_findEditor(){
    var o = this;
    if(o.editComplete){
       var de = o.editor;
       if(!de){
          o.dsControl = o.topControl(MDataset);
          if(o.dsControl){
-            de = o.editor = RConsole.find(FUiColor3Console).focus(o, FUiColor3Editor);
+            de = o.editor = RConsole.find(FUiColor3TplConsole).focus(o, FUiColor3TplEditor);
          }
       }
       if(de){
@@ -487,7 +364,7 @@ function FUiColor3_findEditor(){
 //
 // @method
 //==========================================================
-function FUiColor3_drop(){
+function FUiColor3Tpl_drop(){
    var o = this;
    var de = o.findEditor();
    if(de){
@@ -509,7 +386,7 @@ function FUiColor3_drop(){
 //
 //@method
 //==========================================================
-function FUiColor3_clone(){
+function FUiColor3Tpl_clone(){
    var o = this;
    var r = o._class.newInstance();
    GHtml_clone(r, o.hPanel);
@@ -521,7 +398,7 @@ function FUiColor3_clone(){
 //
 //@method
 //==========================================================
-function FUiColor3_link(){
+function FUiColor3Tpl_link(){
    var o = this;
    
 }

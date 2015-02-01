@@ -1,40 +1,61 @@
-﻿//============================================================
-// RHexFace
-//============================================================
-var RHex = new function(o){
-   if(!o){o=this};
-   // Define
+﻿//==========================================================
+// <T>16进制工具。</T>
+//
+// @reference
+// @author maocy
+// @version 150201
+//==========================================================
+var RHex = new function RHex(){
+   var o = this;
+   //..........................................................
+   // @define
    o.NUMBER  = '0x123456789ABCDEF';
    o.PAD     = '0';
-   // Method
+   //..........................................................
+   // @method
    o.isValid = RHex_isValid;
    o.parse   = RHex_parse;
    o.format  = RHex_format;
-   // Construct
-   RMemory.register('RHex', o);
    return o;
 }
 
 //===========================================================
+// <T>判断是否有效16进制内容。</T>
 //
+// @method
+// @param p:value:Object 内容
+// @return Boolean 是否有效
 //===========================================================
-function RHex_isValid(v){
-   return RString.isPattern(v, this.NUMBER);
+function RHex_isValid(p){
+   return RString.isPattern(p, this.NUMBER);
 }
 
 //===========================================================
+// <T>解析16进制内容。</T>
 //
+// @method
+// @param p:value:Object 内容
+// @return String 内容
 //===========================================================
-function RHex_parse(v){
-   return v ? parseInt('0x'+v) : '0';
+function RHex_parse(p){
+   return p ? parseInt('0x' + p) : '0';
 }
 
 //===========================================================
-// Value, Length
+// <T>格式化16进制内容。</T>
 //
+// @method
+// @param v:value:Number 内容
+// @param l:length:Integer 长度
+// @return String 内容
 //===========================================================
 function RHex_format(v, l){
-   v = RString.nvl(v, '0').toString(16);
-   return l ? RString.lpad(v, l, this.PAD) : v;
+   var r = null;
+   if(v){
+      r = v.toString(16);
+   }else{
+      r = '0'
+   }
+   return l ? RString.lpad(r, l, this.PAD) : r;
 }
 

@@ -12,6 +12,7 @@ function FDsTemplateCanvas(o){
    o._layer          = null;
    o._activeTemplate = null;
    o._rotation       = null;
+   o._rotationAble   = false;
    //..........................................................
    // @event
    o.onBuild         = FDsTemplateCanvas_onBuild;
@@ -83,7 +84,9 @@ function FDsTemplateCanvas_onEnterFrame(){
       m.scale().set(3.0, 3.0, 3.0);
       m.update();
       // 设置变量
-      //r.y += 0.01;
+      if(o._rotationAble){
+         r.y += 0.01;
+      }
    }
 }
 

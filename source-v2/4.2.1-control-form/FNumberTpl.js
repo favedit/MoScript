@@ -17,7 +17,6 @@ function FNumberTpl(o){
    // @event
    //o.onEditFocus       = RClass.register(o, new HFocus('onEditFocus'), FNumberTpl_onEditFocus);
    //o.onEditBlur        = RClass.register(o, new HBlur('onEditBlur'), FNumberTpl_onEditBlur);
-   //o.onEditKeyPress    = RClass.register(o, new HKeyPress('onEditKeyPress'), FNumberTpl_onEditKeyPress);
    //o.onBuildEdit       = FNumberTpl_onBuildEdit;
    //..........................................................
    // @method
@@ -67,24 +66,6 @@ function FNumberTpl_onEditFocus(e){
 function FNumberTpl_onEditBlur(e){
    var o = this;
    o.setText(o.formatText(o.text()));
-}
-
-//==========================================================
-// <T>编辑控件中键盘按下处理。 </T>
-//
-// @param e:event:TEvent 事件对象
-//==========================================================
-function FNumberTpl_onEditKeyPress(e, he){
-   var o = this;
-   var kc = he.keyCode;
-   // 允许输入百分号(%)
-   if(he.shiftKey && 53 == kc){
-      return;
-   }
-   // 检查输入字符是否为数字，否则给清除输入内容
-   if(!EKey.floatCodes[kc]){
-      RKey.eventClear(he);
-   }
 }
 
 //==========================================================

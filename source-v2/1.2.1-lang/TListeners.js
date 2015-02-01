@@ -56,10 +56,10 @@ function TListeners_push(l){
    var o = this;
    // 检查监听器有效性
    if(!l){
-      return RLogger.fatal(o, null, 'Listener is null.');
+      throw new TError(o, 'Listener is null.');
    }
    if(!l.callback){
-      return RLogger.fatal(o, null, 'Listener process is null.');
+      throw new TError(o, 'Listener process is null.');
    }
    // 增加监听器
    if(!o.listeners){

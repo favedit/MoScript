@@ -43,22 +43,27 @@ function RFloat_isFloat(p){
 // @param p:value:String 内容
 // @return Number 浮点数
 //===========================================================
-function RFloat_parse(value){
-   if(value == null){
+function RFloat_parse(p){
+   // 检查参数
+   if(p == null){
       return 0;
    }
-   value = RString.trim(value.toString());
+   // 去掉开始0字符
+   var v = RString.trim(p.toString());
    while(true){
-      if(value.charAt(0) != "0"){
+      if(v.charAt(0) != "0"){
          break;
       }
-      value = value.substr(1);
+      v = v.substr(1);
    }
-   var rs = (value.length > 0) ? parseFloat(value) : 0;
-   if(-1 != RString.findChars(value, '%')){
-      rs = rs / 100;
+   // 获得内容
+   var r = (v.length > 0) ? parseFloat(v) : 0;
+   // 百分比处理
+   if(RString.findChars(v, '%') != -1){
+      r = r / 100;
    }
-   return isNaN(rs) ? 0 : rs;
+   // 返回内容
+   return isNaN(r) ? 0 : r;
 }
 
 //===========================================================

@@ -3283,22 +3283,22 @@ var RFloat = new function RFloat(){
 function RFloat_isFloat(p){
    return RString.isPattern(p, 'n');
 }
-function RFloat_parse(value){
-   if(value == null){
+function RFloat_parse(p){
+   if(p == null){
       return 0;
    }
-   value = RString.trim(value.toString());
+   var v = RString.trim(p.toString());
    while(true){
-      if(value.charAt(0) != "0"){
+      if(v.charAt(0) != "0"){
          break;
       }
-      value = value.substr(1);
+      v = v.substr(1);
    }
-   var rs = (value.length > 0) ? parseFloat(value) : 0;
-   if(-1 != RString.findChars(value, '%')){
-      rs = rs / 100;
+   var r = (v.length > 0) ? parseFloat(v) : 0;
+   if(RString.findChars(v, '%') != -1){
+      r = r / 100;
    }
-   return isNaN(rs) ? 0 : rs;
+   return isNaN(r) ? 0 : r;
 }
 function RFloat_format(v, l, lp, r, rp){
    var o = this;
@@ -3352,25 +3352,29 @@ function RFloat_calculate(f,a,b){
      return (a - b).toString();
   }
 }
-var RHex = new function(o){
-   if(!o){o=this};
+var RHex = new function RHex(){
+   var o = this;
    o.NUMBER  = '0x123456789ABCDEF';
    o.PAD     = '0';
    o.isValid = RHex_isValid;
    o.parse   = RHex_parse;
    o.format  = RHex_format;
-   RMemory.register('RHex', o);
    return o;
 }
-function RHex_isValid(v){
-   return RString.isPattern(v, this.NUMBER);
+function RHex_isValid(p){
+   return RString.isPattern(p, this.NUMBER);
 }
-function RHex_parse(v){
-   return v ? parseInt('0x'+v) : '0';
+function RHex_parse(p){
+   return p ? parseInt('0x' + p) : '0';
 }
 function RHex_format(v, l){
-   v = RString.nvl(v, '0').toString(16);
-   return l ? RString.lpad(v, l, this.PAD) : v;
+   var r = null;
+   if(v){
+      r = v.toString(16);
+   }else{
+      r = '0'
+   }
+   return l ? RString.lpad(r, l, this.PAD) : r;
 }
 var RInstance = new function RInstance(){
    var o = this;
@@ -5068,10 +5072,10 @@ function TListeners_register(w, p){
 function TListeners_push(l){
    var o = this;
    if(!l){
-      return RLogger.fatal(o, null, 'Listener is null.');
+      throw new TError(o, 'Listener is null.');
    }
    if(!l.callback){
-      return RLogger.fatal(o, null, 'Listener process is null.');
+      throw new TError(o, 'Listener process is null.');
    }
    if(!o.listeners){
       o.listeners = new TList();
@@ -7437,6 +7441,7 @@ function AEvent(o, n, l, h){
    o.value         = AEvent_value;
    o.create        = AEvent_create;
    o.attach        = RMethod.empty;
+   o.bind          = AEvent_bind;
    o.toString      = AEvent_toString;
    return o;
 }
@@ -7451,6 +7456,14 @@ function AEvent_value(){
 }
 function AEvent_create(){
    return new SEvent();
+}
+function AEvent_bind(h, u){
+   var o = this;
+   if(u){
+      h.addEventListener(o._linker, REvent.ohEvent, true);
+   }else{
+      h[o._handle] = REvent.ohEvent;
+   }
 }
 function AEvent_toString(){
    var o = this;
@@ -7496,6 +7509,23 @@ function AEventFocus(n){
 }
 function AEventFocus_attach(e, h){
 }
+function AEventInputChanged(n){
+   var o = this;
+   AEvent(o, n, 'input', 'oninput');
+   o.attach = AEventInputChanged_attach;
+   o.bind   = AEventInputChanged_bind;
+   return o;
+}
+function AEventInputChanged_attach(e, h){
+}
+function AEventInputChanged_bind(h, u){
+   var o = this;
+   if(RBrowser.isBrowser(EBrowser.Explorer)){
+      h.onpropertychange = REvent.ohEvent;
+   }else{
+      h.addEventListener('input', REvent.ohEvent);
+   }
+}
 function AEventKeyDown(n){
    var o = this;
    AEvent(o, n, 'keydown', 'onkeydown');
@@ -7511,14 +7541,16 @@ function AEventKeyDown_attach(e, h){
 function AEventKeyPress(n){
    var o = this;
    AEvent(o, n, 'keypress', 'onkeypress');
+   o.create = AEventKeyPress_create;
    o.attach = AEventKeyPress_attach;
    return o;
 }
+function AEventKeyPress_create(){
+   return new SKeyboardEvent();
+}
 function AEventKeyPress_attach(e, h){
-   e.altKey = h.altKey;
-   e.shiftKey = h.shiftKey;
-   e.ctrlKey = h.ctrlKey;
-   e.keyCode = h.keyCode;
+   e.hEvent = h;
+   e.attachEvent(h);
 }
 function AEventKeyUp(n){
    var o = this;
@@ -7794,8 +7826,13 @@ var EDataType = new function EDataType(){
 }
 var EEvent = new function EEvent(){
    var o = this;
-   o.Unknown = 0;
-   o.Load    = 1;
+   o.Unknown     = 0;
+   o.Load        = 1;
+   o.Enter       = 2;
+   o.Leave       = 3;
+   o.Focus       = 4;
+   o.Blur        = 5;
+   o.DataChanged = 6;
    return o;
 }
 var EHttpContent = new function EHttpContent(){
@@ -7851,6 +7888,16 @@ var EKeyCode = new function EKeyCode(){
    o.F10       = 121;
    o.F11       = 122;
    o.F12       = 123;
+   o.N0        = 48;
+   o.N1        = 49;
+   o.N2        = 50;
+   o.N3        = 51;
+   o.N4        = 52;
+   o.N5        = 53;
+   o.N6        = 54;
+   o.N7        = 55;
+   o.N8        = 56;
+   o.N9        = 57;
    o.A         = 65;
    o.B         = 66;
    o.C         = 67;
@@ -7881,8 +7928,7 @@ var EKeyCode = new function EKeyCode(){
       o.Tab, o.Enter, o.BackSpace, o.Shift, o.Left, o.Up, o.Right, o.Down,
       o.Insert, o.Delete, o.Home, o.End, o.PageUp, o.PageDown,o.Ctrl,
       o.F1, o.F2, o.F3, o.F4, o.F5, o.F6, o.F7, o.F8, o.F9, o.F10, o.F11, o.F12];
-   o.floatCodes  = new Object();
-   var f = o.floatCodes;
+   var f = o.floatCodes  = new Object();
    f[o.Tab] = true;
    f[o.Enter] = true;
    f[o.BackSpace] = true;
@@ -7896,7 +7942,7 @@ var EKeyCode = new function EKeyCode(){
    f[190] = true;
    f[46] = true;
    f[189] = true;
-   for(var n = 48; n <= 57; n++){
+   for(var n = o.N0; n <= o.N9; n++){
       f[n] = true;
    }
    return o;
@@ -8745,10 +8791,10 @@ function RBuilder_createIcon(d, s, u, w, h){
       r.src = RResource.iconPath(u);
    }
    if(w){
-      r.style.width = w;
+      r.style.width = w + 'px';
    }
    if(h){
-      r.style.height = h;
+      r.style.height = h + 'px';
    }
    return r;
 }
@@ -9378,17 +9424,17 @@ function RHtml_clientPosition(h, t){
    }
    return p;
 }
-function RHtml_clientX(p){
+function RHtml_clientX(p, t){
    var r = 0;
-   while(p){
+   while(p != t){
       r += p.offsetLeft - p.scrollLeft;
       p = p.offsetParent;
    }
    return r;
 }
-function RHtml_clientY(p){
+function RHtml_clientY(p, t){
    var r = 0;
-   while(p){
+   while(p != t){
       r += p.offsetTop - p.scrollTop;
       p = p.offsetParent;
    }
@@ -9825,6 +9871,79 @@ function RHtml_tableMoveRow(ph, ps, pt){
             hb.appendChild(sr);
          }else{
             hb.insertBefore(sr, nr);
+         }
+      }
+   }
+   return true;
+}
+var RKeyboard = new function RKeyboard(){
+   var o = this;
+   o.isCtlKey      = RKeyboard_isCtlKey;
+   o.isNumKey      = RKeyboard_isNumKey;
+   o.isCtlKeyPress = RKeyboard_isCtlKeyPress;
+   o.fixCase       = RKeyboard_fixCase;
+   o.fixPattern    = RKeyboard_fixPattern;
+   o.fixChars      = RKeyboard_fixChars;
+   return o;
+}
+function RKeyboard_isCtlKey(c){
+   var ks = EKey.ControlKeys;
+   for(var n=0; n<ks.length; n++){
+      if(ks[n] == c){
+         return true;
+      }
+   }
+   return false;
+}
+function RKeyboard_isNumKey(c){
+   var ks = EKey.ControlKeys;
+   if(c >= 96 && c <= 105){
+      return true;
+   }
+   return false;
+}
+function RKeyboard_isCtlKeyPress(c){
+   for(var n in EKey.ControlKeys){
+      if(EKey.ControlKeys[n] == c){
+         return true;
+      }
+   }
+   return false;
+}
+function RKeyboard_fixCase(e, c){
+   if(e && c){
+      var k = e.keyCode;
+      if(ECase.Upper == c){
+         k = String.fromCharCode(k).toUpperCase().charCodeAt(0)
+      }else if(ECase.Lower == c){
+         k = String.fromCharCode(k).toLowerCase().charCodeAt(0)
+      }
+      e.keyCode = k;
+   }
+}
+function RKeyboard_fixPattern(e, p){
+   if(p){
+      var k = e.keyCode;
+      if(!this.isCtlKeyPress(k)){
+         if(!RString.isPattern(String.fromCharCode(k), p)){
+            e.keyCode = 0;
+            return false;
+         }
+      }
+   }
+   return true;
+}
+function RKeyboard_fixChars(e, p){
+   if(p){
+      var k = e.keyCode;
+      if(this.isNumKey(k)){
+    	  k = e.keyCode = e.keyCode - 48;
+      }
+      if(!this.isCtlKeyPress(k)){
+         if(!RString.inChars(String.fromCharCode(k), p)){
+            e.keyCode = 0;
+            e.returnValue = false;
+            return false;
          }
       }
    }
@@ -10933,6 +11052,7 @@ function SEvent(o){
    if(!o){o = this;}
    o.annotation = null;
    o.source     = null;
+   o.hEvent     = null;
    o.hSender    = null;
    o.hSource    = null;
    o.ohProcess  = null;
@@ -10950,17 +11070,24 @@ function SEvent_dispose(){
 function SKeyboardEvent(o){
    if(!o){o = this;}
    SEvent(o);
+   o.altKey      = false;
    o.shiftKey    = false;
    o.ctrlKey     = false;
    o.keyCode     = 0;
    o.attachEvent = SKeyboardEvent_attachEvent;
+   o.cancel      = SKeyboardEvent_cancel;
    return o;
 }
 function SKeyboardEvent_attachEvent(p){
    var o = this;
+   o.altKey = p.altKey;
    o.shiftKey = p.shiftKey;
    o.ctrlKey = p.ctrlKey;
    o.keyCode = p.keyCode;
+}
+function SKeyboardEvent_cancel(){
+   var o = this;
+   o.hEvent.returnValue = false;
 }
 function SMouseEvent(o){
    if(!o){o = this;}

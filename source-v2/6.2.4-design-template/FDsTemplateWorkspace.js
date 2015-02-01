@@ -104,26 +104,39 @@ function FDsTemplateWorkspace_onBuild(p){
    sp2._hSize = o._frameStatusBar._hPanel;
    //..........................................................
    var c = o._catalog = RClass.create(FDsTemplateCatalog);
-   c._worksapce = o;
+   c._workspace = o;
    c.build(p);
    c.setPanel(o._frameCatalog._hPanel);
    o.push(c);
    //..........................................................
    var c = o._toolbar = RClass.create(FDsTemplateToolBar);
-   c._worksapce = o;
+   c._workspace = o;
    c.build(p);
    c.setPanel(o._frameToolBar._hPanel);
    o.push(c);
    //..........................................................
+   var hf = RBuilder.appendTable(o._frameWorkspace._hPanel);
+   hf.style.width = '100%';
+   hf.style.height = '100%';
+   // 建立工具栏
+   var hc = RBuilder.appendTableRowCell(hf);
+   hc.height = 20;
+   var c = o._canvasToolbar = RClass.create(FDsTemplateCanvasToolBar);
+   c._workspace = o;
+   c.build(p);
+   c.setPanel(hc);
+   o.push(c);
+   // 建立画板
+   var hc = RBuilder.appendTableRowCell(hf);
    var c = o._canvas = RClass.create(FDsTemplateCanvas);
    c.addLoadListener(o, o.onTemplateLoad);
-   c._worksapce = o;
+   c._workspace = o;
    c.build(p);
-   c.setPanel(o._frameWorkspace._hPanel);
+   c.setPanel(hc);
    o.push(c);
    //..........................................................
    var c = o._materialFrame = RClass.create(FDsTemplateMaterialFrame);
-   c._worksapce = o;
+   c._workspace = o;
    c.buildConfig(p);
    c.setPanel(o._frameProperty._hPanel);
 }
@@ -136,13 +149,14 @@ function FDsTemplateWorkspace_onBuild(p){
 //==========================================================
 function FDsTemplateWorkspace_onTemplateLoad(p){
    var o = this;
+   var t = p._activeTemplate;
    // 加载完成
-   o._catalog.buildTemplate(p._activeTemplate);
+   o._catalog.buildTemplate(t);
    var t = p._activeTemplate;
    var rt = t._resource;
    var rtm = rt._themes.get(0);
    var rm = rtm.materials().value(0);
-   o._materialFrame.loadMaterial(rm);
+   o._materialFrame.loadMaterial(t, rm);
 }
 
 //==========================================================

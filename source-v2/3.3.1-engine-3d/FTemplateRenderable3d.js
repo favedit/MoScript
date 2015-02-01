@@ -9,6 +9,7 @@ function FTemplateRenderable3d(o){
    //..........................................................
    // @attribute
    o._ready            = false;
+   // @attribute
    o._display          = null;
    o._modelMatrix      = null;
    o._resource         = null;
@@ -20,8 +21,10 @@ function FTemplateRenderable3d(o){
    //..........................................................
    // @method
    o.construct         = FTemplateRenderable3d_construct;
+   // @method
    o.testReady         = FTemplateRenderable3d_testReady;
    o.testVisible       = FTemplateRenderable3d_testVisible;
+   // @method
    o.findVertexBuffer  = FTemplateRenderable3d_findVertexBuffer;
    o.vertexCount       = FTemplateRenderable3d_vertexCount;
    o.vertexBuffers     = FTemplateRenderable3d_vertexBuffers;
@@ -29,9 +32,12 @@ function FTemplateRenderable3d(o){
    o.findTexture       = FTemplateRenderable3d_findTexture;
    o.textures          = FTemplateRenderable3d_textures;
    o.bones             = FTemplateRenderable3d_bones;
+   // @method
    o.loadResource      = FTemplateRenderable3d_loadResource;
+   o.reloadResource    = FTemplateRenderable3d_reloadResource;
    o.load              = FTemplateRenderable3d_load;
    o.build             = FTemplateRenderable3d_build;
+   // @method
    o.update            = FTemplateRenderable3d_update;
    return o;
 }
@@ -155,6 +161,7 @@ function FTemplateRenderable3d_bones(p){
 //==========================================================
 // <T>加载资源。</T>
 //
+// @method
 // @param p:resource:FRs3TemplateRenderable 资源
 //==========================================================
 function FTemplateRenderable3d_loadResource(p){
@@ -168,7 +175,7 @@ function FTemplateRenderable3d_loadResource(p){
    o._model = RConsole.find(FRd3ModelConsole).load(o._context, p.modelGuid());
    //............................................................
    // 加载材质
-   var m = p._activeMaterial._material;
+   var m = o._materialResource = p._activeMaterial._material;
    var mi = o._material.info();
    mi.assign(m.info());
    o._effectName = mi.effectName;
@@ -186,8 +193,22 @@ function FTemplateRenderable3d_loadResource(p){
 }
 
 //==========================================================
+// <T>重新加载资源。</T>
+//
+// @method
+//==========================================================
+function FTemplateRenderable3d_reloadResource(){
+   var o = this;
+   // 加载材质
+   var m = o._materialResource;
+   var mi = o._material.info();
+   mi.assign(m.info());
+}
+
+//==========================================================
 // <T>加载资源。</T>
 //
+// @method
 // @param p:resource:FRs3TemplateRenderable 资源
 //==========================================================
 function FTemplateRenderable3d_load(){

@@ -11,8 +11,19 @@ function AEventKeyPress(n){
    AEvent(o, n, 'keypress', 'onkeypress');
    //..........................................................
    // @method
+   o.create = AEventKeyPress_create;
    o.attach = AEventKeyPress_attach;
    return o;
+}
+
+//==========================================================
+// <T>创建事件。</T>
+//
+// @method
+// @return SEvent 事件对象
+//==========================================================
+function AEventKeyPress_create(){
+   return new SKeyboardEvent();
 }
 
 //==========================================================
@@ -23,8 +34,6 @@ function AEventKeyPress(n){
 // @param h:htmlEvent:HtmlEvent 页面事件
 //==========================================================
 function AEventKeyPress_attach(e, h){
-   e.altKey = h.altKey;
-   e.shiftKey = h.shiftKey;
-   e.ctrlKey = h.ctrlKey;
-   e.keyCode = h.keyCode;
+   e.hEvent = h;
+   e.attachEvent(h);
 }

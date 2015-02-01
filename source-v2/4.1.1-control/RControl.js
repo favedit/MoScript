@@ -91,6 +91,7 @@ function RControl_newInstance(p){
 // @param n:name:String 事件名称
 // @param h:html:HtmlTag 页面元素
 // @param m:method:Function 处理函数
+// @param u:capture:Boolean 是否捕捉
 //==========================================================
 function RControl_attachEvent(c, n, h, m, u){
    var o = this;
@@ -100,8 +101,6 @@ function RControl_attachEvent(c, n, h, m, u){
       // 获得注册过的事件对象
       var cz = RClass.find(c.constructor);
       var a = cz.annotation(EAnnotation.Event, n);
-      var al = a.linker();
-      var ah = a.handle();
       // 复制当前注册事件
       e = a.create();
       e.annotation = a;
@@ -113,15 +112,10 @@ function RControl_attachEvent(c, n, h, m, u){
       e.onProcess = p;
       // 存储事件
       e.process = REvent.onProcess;
-      var es = REvent.find(h);
-      es.push(al, e);
+      REvent.find(h).push(a.linker(), e);
       // 关联事件处理到HTML元素上
-      if(u){
-         h.addEventListener(a._linker, REvent.ohEvent, true);
-      }else{
-         h[ah] = REvent.ohEvent;
-      }
       RHtml.linkSet(h, '_plink', c);
+      a.bind(h, u);
    }
    return e;
 }

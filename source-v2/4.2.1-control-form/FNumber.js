@@ -21,35 +21,38 @@
 //==========================================================
 function FNumber(o){
    //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
-   o = RClass.inherits(this, o, FEditControl);
+   o = RClass.inherits(this, o, FEditControl, MListenerDataChanged);
    //..........................................................
    // @property
-   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
+   o._inputSize        = RClass.register(o, new APtySize2('_inputSize'));
    //..........................................................
    // @style
-   o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
-   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
-   o._styleAdjustForm = RClass.register(o, new AStyle('_styleAdjustForm'));
-   o._styleUpPanel    = RClass.register(o, new AStyle('_styleUpPanel'));
-   o._styleDownPanel  = RClass.register(o, new AStyle('_styleDownPanel'));
+   o._styleValuePanel  = RClass.register(o, new AStyle('_styleValuePanel'));
+   o._styleInput       = RClass.register(o, new AStyle('_styleInput'));
+   o._styleAdjustForm  = RClass.register(o, new AStyle('_styleAdjustForm'));
+   o._styleUpPanel     = RClass.register(o, new AStyle('_styleUpPanel'));
+   o._styleDownPanel   = RClass.register(o, new AStyle('_styleDownPanel'));
+   //..........................................................
+   // @attribute
+   o._innerOriginValue = null;
+   o._innerDataValue   = null;
    //..........................................................
    // @html
-   o._hInput          = null;
-   o._iconUp          = '';
-   o._iconDown        = null;
+   o._hInput           = null;
+   o._iconUp           = null;
+   o._iconDown         = null;
    //..........................................................
    // @event
-   o.onBuildEditValue = FNumber_onBuildEditValue;
-   //..........................................................
-   // @process
-   //o.oeDataLoad       = FNumber_oeDataLoad;
-   //o.oeDataSave       = FNumber_oeDataSave;
+   o.onBuildEditValue  = FNumber_onBuildEditValue;
+   // @event
+   o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FNumber_onInputKeyPress);
+   o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FNumber_onInputChanged);
    //..........................................................
    // @method
-   o.construct        = FNumber_construct;
+   o.construct         = FNumber_construct;
    // @method
-   o.get              = FNumber_get;
-   o.set              = FNumber_set;
+   o.get               = FNumber_get;
+   o.set               = FNumber_set;
 
 
 
@@ -84,28 +87,6 @@ function FNumber(o){
 }
 
 //==========================================================
-// <T>数据源从加载数据处理。</T>
-//
-// @method
-// @param p:dataSource:FDataSource 数据源
-//==========================================================
-function FNumber_oeDataLoad(p){
-   var o = this;
-   return EEventStatus.Stop;
-}
-
-//==========================================================
-// <T>存储数据到数据源处理。</T>
-//
-// @method
-// @param p:dataSource:FDataSource 数据源
-//==========================================================
-function FNumber_oeDataSave(p){
-   var o = this;
-   return EEventStatus.Stop;
-}
-
-//==========================================================
 // <T>建立编辑器内容。</T>
 //
 // @method
@@ -126,6 +107,17 @@ function FNumber_onBuildEditValue(p){
    // 建立输入栏
    var hip = o._hInputPanel = RBuilder.appendTableCell(hl);
    var he = o._hInput = RBuilder.appendEdit(hip, o.styleName('Input'));
+   //o.attachEvent('onEditFocus', he, o.onEditFocus);
+   o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
+   o.attachEvent('onInputChanged', he, o.onInputChanged);
+   //o.attachEvent('onEditBlur', he, o.onEditBlur);
+   //o.attachEvent('onDataKeyUp', he, o.ohEditKeyUp); 
+   // 设置大小
+   //RHtml.setSize(he, o._inputSize);
+   // 设置可以输入的最大长度
+   if(o._editLength){
+      he.maxLength = o._editLength;
+   }
    //..........................................................
    // 建立调整栏
    var hap = o._hAdjustPanel = RBuilder.appendTableCell(hl);
@@ -143,21 +135,39 @@ function FNumber_onBuildEditValue(p){
    hc.className = o.styleName('DownPanel');
    var hi = o._hDownIcon = RBuilder.appendIcon(hc, null, 'control.number.down');
    //o.attachEvent('onDownMouseDown', hi);
+}
 
-   //h.className = o.styleName('InputPanel');
-   //var h = o.hValue = RBuilder.appendTable(o._hInputPanel, o.styleName('ValuePanel'));
-   //htb.style.tableLayout = 'fixed';
-   //var hr = o.hEdit = htb.insertRow();
-   // 建立修改标志
-   //o.onBuildChange(hr.insertCell());
-   // 建立编辑控件
-   //var hep = hr.insertCell();
-   // 建立编辑面板
-   // 设置大小
-   //RHtml.setSize(he, o._inputSize);
-   // 设置可以输入的最大长度
-   //if(o._editLength){
-   //   he.maxLength = o._editLength;
+//==========================================================
+// <T>编辑控件中键盘按下处理。 </T>
+//
+// @param p:event:SEvent 事件对象
+//==========================================================
+function FNumber_onInputKeyPress(p){
+   var o = this;
+   var c = p.keyCode;
+   // 允许输入百分号(%)
+   //if(he.shiftKey && 53 == kc){
+   //   return;
+   //}
+   // 检查输入字符是否为数字，否则给清除输入内容
+   if(!EKeyCode.floatCodes[c]){
+      p.cancel();
+   }
+}
+
+//==========================================================
+// <T>编辑控件中数据修改处理。 </T>
+//
+// @param p:event:SEvent 事件对象
+//==========================================================
+function FNumber_onInputChanged(p){
+   var o = this;
+   // 内容改变通知
+   o.processDataChangedListener(o);
+   // 检查内容是否变更
+   //var v = o._hInput.value;
+   //if(o._dataDisplay != v){
+   //   o.processDataChangedListener(o);
    //}
 }
 
@@ -198,16 +208,18 @@ function FNumber_get(p){
 function FNumber_set(p){
    var o = this;
    o.__base.FEditControl.set.call(o, p);
+   // 获得内容
+   var v = RString.nvl(p, '0');
+   o._innerOriginValue = v;
+   o._innerDataValue = v;
+   o._dataDisplay = RFloat.format(p, 0, null, 3, null);
    // 设置显示
    var h = o._hInput;
    if(h){
-      var s = RFloat.format(p, 0, null, 3, null);
-      h.value = s;
+      h.value = o._dataDisplay;
    }
-   //o.finded = v;
-   //if(o.hChangeIcon){
-   //   o.hChangeIcon.style.display = 'none';
-   //}
+   // 设置修改状态
+   o.changeSet(false);
 }
 
 
