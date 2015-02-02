@@ -137,7 +137,7 @@ function FUiContainer_controls(){
 function FUiContainer_panel(t){
    var o = this;
    if(t == EPanel.Container){
-      return o.hPanel;
+      return o._hPanel;
    }
    return o.__base.FUiControl.panel.call(o, t);
 }

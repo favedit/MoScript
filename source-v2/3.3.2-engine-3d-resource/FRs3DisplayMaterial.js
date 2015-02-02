@@ -8,10 +8,10 @@ function FRs3DisplayMaterial(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._groupGuid = null;
+   o._groupGuid  = null;
    //..........................................................
    // @method
-   o.groupGuid = FRs3DisplayMaterial_groupGuid;
+   o.groupGuid   = FRs3DisplayMaterial_groupGuid;
    // @method
    o.unserialize = FRs3DisplayMaterial_unserialize;
    return o;

@@ -15,7 +15,7 @@
 // @version 150119
 //==========================================================
 function FUiTreeNode(o){
-   o = RClass.inherits(this, o, FUiContainer);
+   o = RClass.inherits(this, o, FUiContainer, MDataProperties);
    //..........................................................
    // @property
    o._valid            = RClass.register(o, new APtyBoolean('_isValid'), true);

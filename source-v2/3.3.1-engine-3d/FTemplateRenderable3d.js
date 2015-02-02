@@ -25,6 +25,7 @@ function FTemplateRenderable3d(o){
    o.testReady         = FTemplateRenderable3d_testReady;
    o.testVisible       = FTemplateRenderable3d_testVisible;
    // @method
+   o.modelMatrix       = FTemplateRenderable3d_modelMatrix;
    o.findVertexBuffer  = FTemplateRenderable3d_findVertexBuffer;
    o.vertexCount       = FTemplateRenderable3d_vertexCount;
    o.vertexBuffers     = FTemplateRenderable3d_vertexBuffers;
@@ -85,6 +86,16 @@ function FTemplateRenderable3d_testReady(){
 //==========================================================
 function FTemplateRenderable3d_testVisible(p){
    return this._ready;
+}
+
+//==========================================================
+// <T>获得模型矩阵。</T>
+//
+// @method
+// @return SMatrix3d 模型矩阵
+//==========================================================
+function FTemplateRenderable3d_modelMatrix(){
+   return this._modelMatrix;
 }
 
 //==========================================================
@@ -253,6 +264,8 @@ function FTemplateRenderable3d_build(p){
 //==========================================================
 function FTemplateRenderable3d_update(p){
    var o = this;
-   var m = o._display.matrix();
-   o._matrix.assign(m);
+   var mm = o._modelMatrix
+   var dm = o._display.matrix();
+   o._matrix.assign(mm);
+   o._matrix.append(dm);
 }

@@ -1,33 +1,34 @@
 //==========================================================
-// <T>模板材质属性页面。</T>
+// <T>模板属性页面。</T>
 //
 // @class
 // @author maocy
 // @history 150202
 //==========================================================
-function FDsTemplateMaterialPropertyFrame(o){
+function FDsTemplatePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
    o._visible        = false;
-   o._frameName      = 'design3d.template.property.MaterialFrame';
+   o._frameName      = 'design3d.template.property.TemplateFrame';
    // @attribute
    o._workspace      = null;
    // @attribute
    o._renderTemplate = null;
-   o._renderMaterial = null;
    // @attribute
-   o._materialFrame  = null;
+   o._controlGuid    = null;
+   o._controlCode    = null;
+   o._controlLabel   = null;
    //..........................................................
    // @event
-   o.onBuilded       = FDsTemplateMaterialPropertyFrame_onBuilded;
+   o.onBuilded       = FDsTemplatePropertyFrame_onBuilded;
    //..........................................................
    // @method
-   o.construct       = FDsTemplateMaterialPropertyFrame_construct;
+   o.construct       = FDsTemplatePropertyFrame_construct;
    // @method
-   o.loadObject      = FDsTemplateMaterialPropertyFrame_loadObject;
+   o.loadObject      = FDsTemplatePropertyFrame_loadObject;
    // @method
-   o.dispose         = FDsTemplateMaterialPropertyFrame_dispose;
+   o.dispose         = FDsTemplatePropertyFrame_dispose;
    return o;
 }
 
@@ -37,11 +38,13 @@ function FDsTemplateMaterialPropertyFrame(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsTemplateMaterialPropertyFrame_onBuilded(p){
+function FDsTemplatePropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 设置关联
-   o._materialFrame = o.searchControl('design3d.template.MaterialFrame');
+   o._controlGuid = o.searchControl('guid');
+   o._controlCode = o.searchControl('code');
+   o._controlLabel = o.searchControl('label');
 }
 
 //==========================================================
@@ -49,7 +52,7 @@ function FDsTemplateMaterialPropertyFrame_onBuilded(p){
 //
 // @method
 //==========================================================
-function FDsTemplateMaterialPropertyFrame_construct(){
+function FDsTemplatePropertyFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -62,13 +65,15 @@ function FDsTemplateMaterialPropertyFrame_construct(){
 // @param t:template:FTemplate3d 模板
 // @param m:material:FRs3Material 材质
 //==========================================================
-function FDsTemplateMaterialPropertyFrame_loadObject(t, m){
+function FDsTemplatePropertyFrame_loadObject(t){
    var o = this;
+   var r = t._resource;
    // 设置属性
    o._renderTemplate = t;
-   o._renderMaterial = m;
    // 设置参数
-   o._materialFrame.loadObject(t, m);
+   o._controlGuid.set(r.guid());
+   o._controlCode.set(r.code());
+   o._controlLabel.set(r._label);
 }
 
 //==========================================================
@@ -76,7 +81,7 @@ function FDsTemplateMaterialPropertyFrame_loadObject(t, m){
 //
 // @method
 //==========================================================
-function FDsTemplateMaterialPropertyFrame_dispose(){
+function FDsTemplatePropertyFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

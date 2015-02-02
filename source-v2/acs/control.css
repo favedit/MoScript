@@ -111,8 +111,7 @@
 /* ------------------------------------------------------ */
 /* FUiNumber3                                             */
 /* ------------------------------------------------------ */
-.FUiNumber3_InputPanel{
-   padding:0px 2px 0px 2px;
+.FUiNumber3_ValuePanel{
    border-left:1px solid #333333;
    border-top:1px solid #333333;
    border-right:1px solid #666666;
@@ -121,9 +120,14 @@
    background-color: #777777;
 }
 
+.FUiNumber3_InputPanel{
+   padding:0px 2px 0px 2px;
+}
+
 .FUiNumber3_Input{
    width: 100%;
    border: 0;
+   text-align: right;
    color: #FFFFFF;
    background-color: #777777;
 }

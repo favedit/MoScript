@@ -1,5 +1,5 @@
  //==========================================================
-// <T>模板。</T>
+// <T>渲染模板。</T>
 //
 // @author maocy
 // @history 150106
@@ -18,6 +18,8 @@ function FTemplate3d(o){
    o._displays      = null;
    //..........................................................
    // @method
+   o.displays       = FTemplate3d_displays;
+   // @method
    o.testReady      = FTemplate3d_testReady;
    // @method
    o.setResource    = FTemplate3d_setResource;
@@ -27,6 +29,16 @@ function FTemplate3d(o){
    o.processLoad    = FTemplate3d_processLoad;
    o.process        = FTemplate3d_process;
    return o;
+}
+
+//==========================================================
+// <T>获得显示集合。</T>
+//
+// @method
+// @return TObjects 显示集合
+//==========================================================
+function FTemplate3d_displays(){
+   return this._displays;
 }
 
 //==========================================================

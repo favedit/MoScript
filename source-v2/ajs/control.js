@@ -705,7 +705,7 @@ function FUiContainer_controls(){
 function FUiContainer_panel(t){
    var o = this;
    if(t == EPanel.Container){
-      return o.hPanel;
+      return o._hPanel;
    }
    return o.__base.FUiControl.panel.call(o, t);
 }
@@ -781,8 +781,9 @@ function FUiContainer_setChildrenProperty(p, vs){
 }
 function FUiControl(o){
    o = RClass.inherits(this, o, FUiComponent, MStyle, MSize, MPadding);
-   o._disable       = RClass.register(o, new APtyBoolean('_disable', null, false));
-   o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap', null, false));
+   o._visible       = RClass.register(o, new APtyBoolean('_visible'), true);
+   o._disable       = RClass.register(o, new APtyBoolean('_disable'), false);
+   o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap'), false);
    o._hint          = RClass.register(o, new APtyString('_hint'));
    o._stylePanel    = RClass.register(o, new AStyle('_stylePanel'));
    o._layoutCd      = ELayout.Display;
@@ -852,6 +853,7 @@ function FUiControl_onBuildPanel(p){
 function FUiControl_onBuild(p){
    var o = this;
    o.onBuildPanel(p);
+   o.setVisible(o._visible);
    var h = o._hPanel;
    RHtml.linkSet(h, 'control', o);
    o.attachEvent('onEnter', h);
@@ -936,7 +938,7 @@ function FUiControl_isVisible(){
 }
 function FUiControl_setVisible(p){
    var o = this;
-   o._visible = p;
+   o._statusVisible = p;
    var h = o.panel(EPanel.Container);
    if(h){
       RHtml.displaySet(h, p);
@@ -1142,6 +1144,30 @@ function MDataField(o){
    o = RClass.inherits(this, o, MDataValue);
    o._dataName = RClass.register(o, new APtyString('_dataName'));
    return o;
+}
+function MDataProperties(o){
+   o = RClass.inherits(this, o);
+   o._dataProperties = null;
+   o.dataProperties  = MDataProperties_dataProperties;
+   o.dataPropertyGet = MDataProperties_dataPropertyGet;
+   o.dataPropertySet = MDataProperties_dataPropertySet;
+   return o;
+}
+function MDataProperties_dataProperties(n, c){
+   var o = this;
+   var d = o._dataProperties;
+   if(d == null){
+      d = o._dataProperties = new TDictionary();
+   }
+   return d;
+}
+function MDataProperties_dataPropertyGet(n){
+   var o = this;
+   var d = o._dataProperties;
+   return d ? d.get(n) : null;
+}
+function MDataProperties_dataPropertySet(n, v){
+   this.dataProperties().set(n, v);
 }
 function MDataset(o){
    o = RClass.inherits(this, o, MDataContainer);
@@ -2391,6 +2417,18 @@ function MListenerLoad_addLoadListener(w, m){
 }
 function MListenerLoad_processLoadListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.Load, p1, p2, p3, p4, p5);
+}
+function MListenerSelected(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addSelectedListener     = MListenerSelected_addSelectedListener;
+   o.processSelectedListener = MListenerSelected_processSelectedListener;
+   return o;
+}
+function MListenerSelected_addSelectedListener(w, m){
+   return this.addListener(EEvent.Selected, w, m);
+}
+function MListenerSelected_processSelectedListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Selected, p1, p2, p3, p4, p5);
 }
 function MPadding(o){
    o = RClass.inherits(this, o);

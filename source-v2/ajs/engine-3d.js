@@ -764,6 +764,7 @@ function FTemplate3d(o){
    o._animation     = null;
    o._resource      = null;
    o._displays      = null;
+   o.displays       = FTemplate3d_displays;
    o.testReady      = FTemplate3d_testReady;
    o.setResource    = FTemplate3d_setResource;
    o.loadResource   = FTemplate3d_loadResource;
@@ -771,6 +772,9 @@ function FTemplate3d(o){
    o.processLoad    = FTemplate3d_processLoad;
    o.process        = FTemplate3d_process;
    return o;
+}
+function FTemplate3d_displays(){
+   return this._displays;
 }
 function FTemplate3d_testReady(){
    return this._dataReady;
@@ -924,6 +928,7 @@ function FTemplateRenderable3d(o){
    o.construct         = FTemplateRenderable3d_construct;
    o.testReady         = FTemplateRenderable3d_testReady;
    o.testVisible       = FTemplateRenderable3d_testVisible;
+   o.modelMatrix       = FTemplateRenderable3d_modelMatrix;
    o.findVertexBuffer  = FTemplateRenderable3d_findVertexBuffer;
    o.vertexCount       = FTemplateRenderable3d_vertexCount;
    o.vertexBuffers     = FTemplateRenderable3d_vertexBuffers;
@@ -962,6 +967,9 @@ function FTemplateRenderable3d_testReady(){
 }
 function FTemplateRenderable3d_testVisible(p){
    return this._ready;
+}
+function FTemplateRenderable3d_modelMatrix(){
+   return this._modelMatrix;
 }
 function FTemplateRenderable3d_findVertexBuffer(p){
    return this._renderable.findVertexBuffer(p);
@@ -1036,6 +1044,8 @@ function FTemplateRenderable3d_build(p){
 }
 function FTemplateRenderable3d_update(p){
    var o = this;
-   var m = o._display.matrix();
-   o._matrix.assign(m);
+   var mm = o._modelMatrix
+   var dm = o._display.matrix();
+   o._matrix.assign(mm);
+   o._matrix.append(dm);
 }

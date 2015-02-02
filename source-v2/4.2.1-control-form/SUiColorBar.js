@@ -137,7 +137,9 @@ function SUiColorBar_build(p){
    // 创建输入块
    var hc = RBuilder.appendTableCell(hr);
    hc.width = '36';
-   o.hInput = RBuilder.appendEdit(hc, o.control.styleName('Input'));
+   var he = o.hInput = RBuilder.appendEdit(hc, o.control.styleName('Input'));
+   c.attachEvent('onInputKeyPress', he, c.onInputKeyPress);
+   c.attachEvent('onInputChanged', he, c.onInputChanged);
 }
 
 //==========================================================

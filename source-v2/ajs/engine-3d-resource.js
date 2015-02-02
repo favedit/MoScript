@@ -128,8 +128,8 @@ function FRs3Display_unserialize(p){
 }
 function FRs3DisplayMaterial(o){
    o = RClass.inherits(this, o, FObject);
-   o._groupGuid = null;
-   o.groupGuid = FRs3DisplayMaterial_groupGuid;
+   o._groupGuid  = null;
+   o.groupGuid   = FRs3DisplayMaterial_groupGuid;
    o.unserialize = FRs3DisplayMaterial_unserialize;
    return o;
 }

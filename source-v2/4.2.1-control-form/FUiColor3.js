@@ -121,28 +121,6 @@ function FUiColor3_onBuildEditValue(p){
    b.type = 'blue';
    b.hPanel = o._hColorForm;
    b.build();
-
-   //o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-   //o.attachEvent('onInputChanged', he, o.onInputChanged);
-
-   //var hc = RBuilder.appendTableCell(hl);
-   //hc.style.borderRight = '1px solid #666666';
-   //var he = o._hInputRed = RBuilder.appendEdit(hc, o.styleName('Input'));
-   //o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-   //o.attachEvent('onInputChanged', he, o.onInputChanged);
-   // 建立绿输入栏
-   //var hc = RBuilder.appendTableCell(hl);
-   //hc.style.borderLeft = '1px solid #999999';
-   //hc.style.borderRight = '1px solid #666666';
-   //var he = o._hInputGreen = RBuilder.appendEdit(hc, o.styleName('Input'));
-   //o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-   //o.attachEvent('onInputChanged', he, o.onInputChanged);
-   // 建立蓝色输入栏
-   //var hc = RBuilder.appendTableCell(hl);
-   //hc.style.borderLeft = '1px solid #999999';
-   //var he = o._hInputBlue = RBuilder.appendEdit(hc, o.styleName('Input'));
-   //o.attachEvent('onInputKeyPress', he, o.onInputKeyPress);
-   //o.attachEvent('onInputChanged', he, o.onInputChanged);
    //..........................................................
    // 建立下拉栏
    var hdp = o._hDropPanel = RBuilder.appendTableCell(hl);

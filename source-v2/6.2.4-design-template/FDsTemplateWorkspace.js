@@ -29,6 +29,7 @@ function FDsTemplateWorkspace(o){
    // @process
    o.onBuild               = FDsTemplateWorkspace_onBuild;
    o.onTemplateLoad        = FDsTemplateWorkspace_onTemplateLoad;
+   o.onCatalogSelected     = FDsTemplateWorkspace_onCatalogSelected;
    //..........................................................
    // @method
    o.construct             = FDsTemplateWorkspace_construct;
@@ -107,6 +108,7 @@ function FDsTemplateWorkspace_onBuild(p){
    c._workspace = o;
    c.build(p);
    c.setPanel(o._frameCatalog._hPanel);
+   c.addSelectedListener(o, o.onCatalogSelected);
    o.push(c);
    //..........................................................
    var c = o._toolbar = RClass.create(FDsTemplateToolBar);
@@ -140,9 +142,28 @@ function FDsTemplateWorkspace_onBuild(p){
    //c.buildConfig(p);
    //c.setPanel(o._frameProperty._hPanel);
    //..........................................................
+   // 创建模板属性页面
+   var c = o._templateProperty = RClass.create(FDsTemplatePropertyFrame);
+   c._workspace = o;
+   c.buildDefine(p);
+   c.setPanel(o._frameProperty._hPanel);
+   //..........................................................
+   // 创建主题属性页面
+   var c = o._themeProperty = RClass.create(FDsTemplateThemePropertyFrame);
+   c._workspace = o;
+   c.buildDefine(p);
+   c.setPanel(o._frameProperty._hPanel);
+   //..........................................................
+   // 创建材质属性页面
    var c = o._materialProperty = RClass.create(FDsTemplateMaterialPropertyFrame);
    c._workspace = o;
-   c.buildDefine('design3d.template.MaterialPropertyFrame', p);
+   c.buildDefine(p);
+   c.setPanel(o._frameProperty._hPanel);
+   //..........................................................
+   // 创建精灵属性页面
+   var c = o._displayProperty = RClass.create(FDsTemplateDisplayPropertyFrame);
+   c._workspace = o;
+   c.buildDefine(p);
    c.setPanel(o._frameProperty._hPanel);
 }
 
@@ -154,15 +175,48 @@ function FDsTemplateWorkspace_onBuild(p){
 //==========================================================
 function FDsTemplateWorkspace_onTemplateLoad(p){
    var o = this;
-   var t = p._activeTemplate;
+   var t = o._activeTemplate = p._activeTemplate;
    // 加载完成
    o._catalog.buildTemplate(t);
-   var t = p._activeTemplate;
-   var rt = t._resource;
-   var rtm = rt._themes.get(0);
-   var rm = rtm.materials().value(0);
-   o._materialProperty.loadMaterial(t, rm);
+   // 设置属性
+   o.onCatalogSelected(t);
+   //var rt = t._resource;
+   //var rtm = rt._themes.get(0);
+   //var rm = rtm.materials().value(0);
+   //o._materialProperty.loadMaterial(t, rm);
    //o._materialFrame.loadMaterial(t, rm);
+}
+
+//==========================================================
+// <T>目录对象选择处理。</T>
+//
+// @method
+// @param p:template:FTemplate3d 模板
+//==========================================================
+function FDsTemplateWorkspace_onCatalogSelected(p){
+   var o = this;
+   var t = o._activeTemplate;
+   // 隐藏所有面板
+   o._templateProperty.hide();
+   o._themeProperty.hide();
+   o._materialProperty.hide();
+   o._displayProperty.hide();
+   // 显示选中面板
+   if(RClass.isClass(p, FTemplate3d)){
+      o._templateProperty.show();
+      o._templateProperty.loadObject(t);
+   }else if(RClass.isClass(p, FRs3TemplateTheme)){
+      o._themeProperty.show();
+      o._themeProperty.loadObject(t, p);
+   }else if(RClass.isClass(p, FRs3Material)){
+      o._materialProperty.show();
+      o._materialProperty.loadObject(t, p);
+   }else if(RClass.isClass(p, FG3dRenderable)){
+      o._displayProperty.show();
+      o._displayProperty.loadObject(t, p);
+   }else{
+      throw new TError('Unknown select object type. (value={1})', p);
+   }
 }
 
 //==========================================================

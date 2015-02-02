@@ -18,9 +18,11 @@ function FUiControl(o){
    o = RClass.inherits(this, o, FUiComponent, MStyle, MSize, MPadding);
    //..........................................................
    // @property Boolean 是否禁止
-   o._disable       = RClass.register(o, new APtyBoolean('_disable', null, false));
+   o._visible       = RClass.register(o, new APtyBoolean('_visible'), true);
+   // @property Boolean 是否禁止
+   o._disable       = RClass.register(o, new APtyBoolean('_disable'), false);
    // @property Boolean 是否回行
-   o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap', null, false));
+   o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap'), false);
    // @property String 提示信息
    o._hint          = RClass.register(o, new APtyString('_hint'));
    //..........................................................
@@ -160,6 +162,8 @@ function FUiControl_onBuild(p){
    var o = this;
    // 建立控件容器
    o.onBuildPanel(p);
+   // 设置可见性
+   o.setVisible(o._visible);
    // 设置容器样式
    var h = o._hPanel;
    RHtml.linkSet(h, 'control', o);
@@ -330,10 +334,10 @@ function FUiControl_isVisible(){
 //==========================================================
 function FUiControl_setVisible(p){
    var o = this;
-   o._visible = p;
+   o._statusVisible = p;
    // 设置布局底板的可见性
-   //var hp = o.hLayoutCell;
-   //if(hp){
+   //var h = o._hLayoutCell;
+   //if(h){
    //   RHtml.displaySet(hp, v);
    //}
    // 设置控件底板的可见性

@@ -8,19 +8,19 @@ function FDsTemplateMaterialFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._template      = null;
-   o._material      = null;
+   o._template     = null;
+   o._material     = null;
    //..........................................................
    // @event
-   o.onBuilded      = FDsTemplateMaterialFrame_onBuilded;
-   o.onDataChanged  = FDsTemplateMaterialFrame_onDataChanged;
+   o.onBuilded     = FDsTemplateMaterialFrame_onBuilded;
+   o.onDataChanged = FDsTemplateMaterialFrame_onDataChanged;
    //..........................................................
    // @method
-   o.construct      = FDsTemplateMaterialFrame_construct;
+   o.construct     = FDsTemplateMaterialFrame_construct;
    // @method
-   o.loadMaterial   = FDsTemplateMaterialFrame_loadMaterial;
+   o.loadObject    = FDsTemplateMaterialFrame_loadObject;
    // @method
-   o.dispose        = FDsTemplateMaterialFrame_dispose;
+   o.dispose       = FDsTemplateMaterialFrame_dispose;
    return o;
 }
 
@@ -91,7 +91,7 @@ function FDsTemplateMaterialFrame_construct(){
 // @param t:template:FTemplate3d 模板
 // @param m:material:FRs3Material 材质
 //==========================================================
-function FDsTemplateMaterialFrame_loadMaterial(t, m){
+function FDsTemplateMaterialFrame_loadObject(t, m){
    var o = this;
    o._template = t;
    o._material = m;

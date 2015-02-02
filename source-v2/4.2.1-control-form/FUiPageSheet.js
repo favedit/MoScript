@@ -216,7 +216,7 @@ function FUiPageSheet_select(p){
 //==========================================================
 function FUiPageSheet_setVisible(p){
    var o = this;
-   RHtml.displaySet(o._hForm, p);
+   RHtml.displaySet(o._hPanel, p);
 }
 
 //==========================================================

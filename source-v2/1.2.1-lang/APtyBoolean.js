@@ -31,7 +31,7 @@ function APtyBoolean(n, l, v){
 //============================================================
 function APtyBoolean_build(v){
    var o = this;
-   v[o._name] = o._value;
+   //v[o._name] = o._value;
 }
 
 //============================================================

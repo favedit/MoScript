@@ -93,7 +93,6 @@ function APtyBoolean(n, l, v){
 }
 function APtyBoolean_build(v){
    var o = this;
-   v[o._name] = o._value;
 }
 function APtyBoolean_load(v, x){
    var o = this;
@@ -1772,7 +1771,7 @@ function RFloat_format(v, l, lp, r, rp){
    var s = v.toString();
    var f = s.indexOf('.');
    if(f == -1){
-      var sl = f;
+      var sl = s;
       var sr = '';
    }else{
       var sl = s.substring(0, f);

@@ -1533,412 +1533,6 @@ function FColorPickerEditor_dispose(){
    o.hDropPanel = null;
    o.hEdit = null;
 }
-function FUiForm(o){
-   o = RClass.inherits(this, o, FUiLayout, MDataset);
-   o.onMouseDown        = FUiForm_onMouseDown;
-   o.construct          = FUiForm_construct;
-   o.buildDefine        = FUiForm_buildDefine;
-   o._dataStatusCd      = ERowStatus.Update;
-   o._clearEvent        = null;
-   o._resetEvent        = null;
-   o._loadEvent         = null;
-   o._saveEvent         = null;
-   o._recordEvent       = null;
-   o._codeEvent         = null;
-   o._dataComponents    = null;
-   o.lsnsLoaded         = null;
-   o.lsnsClick          = null;
-   o.onLoadDataset      = FUiForm_onLoadDataset;
-   o.onLoadDatasetEnd   = FUiForm_onLoadDatasetEnd;
-   o.isDataChanged      = FUiForm_isDataChanged;
-   o.getFormLink        = FUiForm_getFormLink;
-   o.allDataComponents  = FUiForm_allDataComponents;
-   o.get                = FUiForm_get;
-   o.reget              = FUiForm_reget;
-   o.set                = FUiForm_set;
-   o.getDataCodes       = FUiForm_getDataCodes;
-   o.getCurrentRow      = FUiForm_getCurrentRow;
-   o.getSelectedRows    = FUiForm_getSelectedRows;
-   o.getCurrentRows     = FUiForm_getCurrentRows;
-   o.getChangedRows     = FUiForm_getChangedRows;
-   o.getRows            = FUiForm_getRows;
-   o.clearValue         = FUiForm_clearValue;
-   o.resetValue         = FUiForm_resetValue;
-   o.loadValue          = FUiForm_loadValue;
-   o.saveValue          = FUiForm_saveValue;
-   o.recordValue        = FUiForm_recordValue;
-   o.toAttributes       = FUiForm_toAttributes;
-   o.focus              = FUiForm_focus;
-   o.dsUpdate           = FUiForm_dsUpdate;
-   o.doPrepare          = FUiForm_doPrepare;
-   o.doUpdate           = FUiForm_doUpdate;
-   o.doDelete           = FUiForm_doDelete;
-   o.dispose            = FUiForm_dispose;
-   return o;
-}
-function FUiForm_onMouseDown(p){
-   var o = this;
-}
-function FUiForm_construct(){
-   var o = this;
-   o.__base.FUiLayout.construct.call(o);
-}
-function FUiForm_buildDefine(n, p){
-   var o = this;
-   var x = RConsole.find(FDescribeFrameConsole).load(n);
-   RControl.build(o, x, null, p);
-}
-function FUiForm_onLoadDataset(ds){
-   var o = this;
-   o.doUpdate(o.dsViewer.current());
-}
-function FUiForm_onLoadDatasetEnd(){
-   var o = this;
-   o.topControl().topResize();
-   o.psProgress(false);
-}
-function FUiForm_isDataChanged(){
-   var o = this;
-   var ps = o.allDataComponents();
-   if(!ps.isEmpty()){
-      var pc = ps.count;
-      for(var n=0; n<pc; n++){
-         var p = ps.value(n);
-         if(p.isDataChanged()){
-            return true;
-         }
-      }
-   }
-}
-function FUiForm_getFormLink(t){
-   var o = this;
-   if(EFormLink.Form == t){
-      return o.name;
-   }else if(EFormLink.Table == t){
-      return o.formName;
-   }
-   RMessage.fatal(o, null, 'Form link is invalid. (type={0})', t);
-}
-function FUiForm_allDataComponents(p, m){
-   var o = this;
-   if(!p){
-      p = o;
-   }
-   if(!m){
-      m = o._dataComponents;
-   }
-   var cs = p.components;
-   if(cs){
-      var cc = cs.count;
-      for(var n = 0; n<cc; n++){
-         var c = cs.value(n);
-         if(!RClass.isClass(c, MDataset)){
-            if(RClass.isClass(c, MValue)){
-               m.set(c.dataName, c);
-            }
-            o.allDataComponents(c, m);
-         }
-      }
-   }
-   return m;
-}
-function FUiForm_get(n){
-   var ps = this.allDataComponents();
-   if(ps){
-      var p = ps.get(n);
-      if(p){
-         return p.get();
-      }
-   }
-}
-function FUiForm_reget(n){
-   var ps = this.allDataComponents();
-   if(ps){
-      var p = ps.get(n);
-      if(p){
-         return p.reget();
-      }
-   }
-}
-function FUiForm_set(n, v){
-   var ps = this.allDataComponents();
-   if(ps){
-      var p = ps.get(n);
-      if(p){
-         p.set(v);
-      }
-   }
-}
-function FUiForm_getDataCodes(){
-   var o = this;
-   var e = o._codeEvent;
-   e.values = new TAttributes();
-   o.process(e);
-   return e.values;
-}
-function FUiForm_getCurrentRow(){
-   return this.saveValue();
-}
-function FUiForm_getSelectedRows(){
-   var ls = new TList();
-   ls.push(this.saveValue());
-   return ls;
-}
-function FUiForm_getCurrentRows(){
-   var o = this;
-   var ls = new TList();
-   var r = new TRow();
-   o.toDeepAttributes(r);
-   o.saveValue(r);
-   ls.push(r);
-   return ls;
-}
-function FUiForm_getChangedRows(){
-   var o = this;
-   var ls = new TList();
-   if(o.isDataChanged()){
-      var r = new TRow();
-      o.toDeepAttributes(r);
-      o.saveValue(r);
-      ls.push(r);
-   }
-   return ls;
-}
-function FUiForm_getRows(){
-   var ls = new TList();
-   ls.push(this.saveValue());
-   return ls;
-}
-function FUiForm_clearValue(){
-   this.process(this._clearEvent);
-}
-function FUiForm_resetValue(){
-   this.process(this._resetEvent);
-}
-function FUiForm_loadValue(r, m){
-   if(r){
-      var o = this;
-      var e = o._loadEvent;
-      e.viewer = o.dsViewer;
-      e.store = m;
-      e.values = r;
-      o.process(e);
-   }
-}
-function FUiForm_saveValue(r, m){
-   var o = this;
-   if(!r){
-      r = new TRow();
-   }
-   var e = o._saveEvent;
-   e.viewer = o.dsViewer;
-   e.store = m;
-   e.values = r;
-   o.process(e);
-   r.set('_status', o._dataStatusCd);
-   return r;
-}
-function FUiForm_recordValue(){
-   this.process(this._recordEvent);
-}
-function FUiForm_toAttributes(r, m){
-   return this.saveValue(r, m);
-}
-function FUiForm_focus(){
-   var o = this;
-   o.__base.MFocus.focus.call(o);
-   o.focusControl();
-   RConsole.find(FFocusConsole).focusClass(MDataset, o);
-}
-function FUiForm_dsUpdate(u, v){
-   var o = this;
-   if(u){
-      o.psProgress(true);
-      o.psMode(EMode.Update);
-      var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0);
-      g.form = o;
-      g.reset = true;
-      o.dsSearchs.clear();
-      if(u){
-         o.dsSearchs.push(new TSearchItem('OUID', u));
-      }
-      if(v){
-         o.dsSearchs.push(new TSearchItem('OVER', v));
-      }
-      g.searchs = o.dsSearchs;
-      g.values.append(o.dsValues);
-      g.callback = new TInvoke(o, o.onDsUpdate);
-      if(o.onDsUpdateCheck(g)){
-         RConsole.find(FDatasetConsole).fetch(g);
-      }
-      return;
-   }
-   return o.__base.MDataset.dsUpdate.call(o, u, v)
-}
-function FUiForm_setEditable(v){
-   var ps = this.allDataComponents();
-   if(ps){
-	   var pc = ps.count;
-	   for(var n = 0; n < pc; n++){
-	      var p = ps.value(n);
-	      p.setEditable(v);
-	   }
-   }
-}
-function FUiForm_doPrepare(v){
-   var o = this;
-   o._dataStatusCd = ERowStatus.Insert;
-   o.resetValue();
-   o.loadValue(v);
-   o.recordValue();
-   o.dsLoaded();
-}
-function FUiForm_doUpdate(v){
-   var o = this;
-   o._dataStatusCd = ERowStatus.Update;
-   o.clearValue();
-   o.loadValue(v);
-   o.recordValue();
-   o.dsLoaded();
-}
-function FUiForm_doDelete(v){
-   var o = this;
-   o._dataStatusCd = ERowStatus.Delete;
-   o.clearValue();
-   o.loadValue(v);
-   o.recordValue();
-   o.dsLoaded();
-}
-function FUiForm_dispose(){
-   var o = this;
-   o.__base.FUiLayout.dispose.call(o);
-   RMemory.freeHtml(o.hEdit);
-   RMemory.freeHtml(o.hDrop);
-   o.hEdit = null;
-   o.hDrop = null;
-}
-function FUiForm_allNameComponents(f, p, m){
-   var o = this;
-   var vs = o._nameComponents;
-   if(!f && vs){
-      return vs;
-   }
-   if(!vs){
-      vs = o._nameComponents = new TMap();
-   }
-   if(f){
-      vs.clear();
-   }
-   if(!p){
-      p = this;
-   }
-   if(!m){
-      m = vs;
-   }
-   var cs = p.components;
-   if(cs){
-      var cc = cs.count;
-      for(var n = 0; n<cc; n++){
-         var c = cs.value(n);
-         if(!RClass.isClass(c, MDataset)){
-            if(RClass.isClass(c, MValue)){
-               m.set(c.name, c);
-            }
-            o.allNameComponents(false, c, m);
-         }
-      }
-   }
-   return vs;
-}
-function FUiForm_onLoaded(){
-   var o = this.form;
-   var doc = this.document;
-   if(o && doc){
-      RControl.build(o, doc.root());
-      o.isLoading = false;
-      o.lsnsLoaded.process(o);
-   }
-}
-function FUiForm_onDsFetchEnd(){
-   var o = this;
-   var v = o.dsCurrent();
-   if(v){
-      o.loadValue(v);
-   }
-}
-function FUiForm_onDsUpdateBegin(){
-   var o = this;
-   var v = o.dsCurrent();
-   if(v){
-      o.saveValue(v);
-   }
-}
-function FUiForm_onDsUpdateEnd(){
-   var o = this;
-   var v = o.dsCurrent();
-   if(v){
-      o.loadValue(v);
-   }
-}
-function FUiForm_connect(service, type, action, attrs){
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('type', type);
-   root.set('name', this.name);
-   root.set('action', action);
-   root.create('Attributes').value = attrs;
-   var event = new TEvent(this, EXmlEvent.Send);
-   event.url = service;
-   event.document = doc;
-   event.form = this;
-   event.onLoad = this.onLoaded;
-   RConsole.find(FXmlConsole).process(event);
-}
-function FUiForm_loadDocument(doc){
-   if(doc){
-      var root = doc.root();
-      if(root.isName('Table')){
-         var o = this;
-         o.loadConfig(root);
-         o.buildColumns(root);
-         o.buildRows(root);
-      }
-   }
-}
-function FUiForm_testStatus(t){
-   var o = this;
-   var r = o.__base.MDataset.testStatus.call(o, t);
-   if(EDataAction.Fetch == t){
-      return true;
-   }else if(EDataAction.Fetch == t){
-      return true;
-   }else if(EDataAction.Search== t){
-      return true;
-   }else if(EDataAction.First == t){
-      return false;
-   }else if(EDataAction.Prior == t){
-      return false;
-   }else if(EDataAction.Next == t){
-      return false;
-   }else if(EDataAction.Last == t){
-      return false;
-   }else if(EDataAction.Action == t){
-      return true;
-   }
-   return r;
-}
-function FUiForm_hasAction(){
-   var o = this;
-   var cs = o.components;
-   var ct = cs.count;
-   for(var n = 0; n < ct; n++){
-      var c = cs.value(n);
-      if(RClass.isClass(c, FDataAction)){
-         return true;
-      }
-   }
-   return false;
-}
 function FIconPicker(o){
    o = RClass.inherits(this, o, FEditControl, MEditBorder, MListView);
    o.iconDefault    = RClass.register(o, new TPtyStr('iconDefault'));
@@ -2449,172 +2043,6 @@ function FNumber2_clone(){
    return r;
 }
 function FNumber2_link(){
-   var o = this;
-}
-function FNumber3(o){
-   o = RClass.inherits(this, o, FEditControl);
-   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
-   o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
-   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
-   o._hInput          = null;
-   o.onBuildEditValue = FNumber3_onBuildEditValue;
-   o.construct        = FNumber3_construct;
-   o.get              = FNumber3_get;
-   o.set              = FNumber3_set;
-   return o;
-}
-function FNumber3_oeDataLoad(p){
-   var o = this;
-   alert(p);
-   return EEventStatus.Stop;
-}
-function FNumber3_oeDataSave(p){
-   var o = this;
-   return EEventStatus.Stop;
-}
-function FNumber3_onBuildEditValue(p){
-   var o = this;
-   var h = o._hValuePanel;
-   h.className = o.styleName('InputPanel');
-   var hf = o._hInputForm = RBuilder.appendTable(h);
-   var hr = RBuilder.appendTableRow(hf);
-   var hc1 = RBuilder.appendTableCell(hr);
-   hc1.style.borderRight = '1px solid #666666';
-   var he1 = o._hInput1 = RBuilder.appendEdit(hc1, o.styleName('Input'));
-   var hc2 = RBuilder.appendTableCell(hr);
-   hc2.style.borderLeft = '1px solid #999999';
-   hc2.style.borderRight = '1px solid #666666';
-   var he2 = o._hInput2 = RBuilder.appendEdit(hc2, o.styleName('Input'));
-   var hc3 = RBuilder.appendTableCell(hr);
-   hc3.style.borderLeft = '1px solid #999999';
-   var he2 = o._hInput3 = RBuilder.appendEdit(hc3, o.styleName('Input'));
-}
-function FNumber3_construct(){
-   var o = this;
-   o.__base.FEditControl.construct.call(o);
-   o._inputSize = new SSize2(120, 0);
-}
-function FNumber3_get(p){
-   var o = this;
-   var r = o.__base.FEditControl.get.call(o, p);
-   var h = o._hInput;
-   if(h){
-      r = h.value;
-   }
-   return r;
-}
-function FNumber3_set(p){
-   var o = this;
-   o.__base.FEditControl.set.call(o, p);
-   var h = o._hInput;
-   if(h){
-      h.value = RString.nvl(p);
-   }
-}
-function FNumber3_onDataKeyDown(s, e){
-   var o = this;
-   o.__base.FEditControl.onDataKeyDown.call(o, s, e);
-   if(o.editCase){
-      RKey.fixCase(e, o.editCase);
-   }
-   if(o._editable){
-      return;
-      if(o.editComplete){
-         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
-            var ed = o.findEditor();
-            if(ed){
-               ed.onEditKeyDown(s, e);
-            }
-         }
-      }
-   }
-}
-function FNumber3_formatValue(v){
-   var o = this;
-   var r = RString.nvl(v);
-   if(ECase.Upper == o.editCase){
-      r = RString.toUpper(r);
-   }else if(ECase.Lower == o.editCase){
-      r = RString.toLower(r);
-   }
-   return r;
-}
-function FNumber3_setText(t){
-   var o = this;
-   if(!o.hEdit){
-      return;
-   }
-   if('U'== o.editCase){
-      o.hEdit.value = RString.toUpper(t);
-   }else if('L'== o.editCase){
-         o.hEdit.value = RString.toLower(t);
-   }else{
-      o.hEdit.value = t;
-   }
-   if('right' == o.editAlign ){
-      o.hEdit.style.textAlign = 'right';
-   }else if('left' == o.editAlign ){
-      o.hEdit.style.textAlign = 'left';
-   }else{
-      o.hEdit.style.textAlign = 'center';
-   }
-}
-function FNumber3_validText(t){
-   var o = this;
-   var r = o.__base.FEditControl.validText.call(o, t);
-   if(!r){
-      if(o.validLenmin){
-         if(o.validLenmin > t.length){
-            return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
-         }
-      }
-      if(o.validLenmax){
-         if(o.validLenmax < t.length){
-            return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
-         }
-      }
-   }
-   return r;
-}
-function FNumber3_findEditor(){
-   var o = this;
-   if(o.editComplete){
-      var de = o.editor;
-      if(!de){
-         o.dsControl = o.topControl(MDataset);
-         if(o.dsControl){
-            de = o.editor = RConsole.find(FNumber3Console).focus(o, FNumber3Editor);
-         }
-      }
-      if(de){
-         de.linkControl(o);
-      }
-      return o.editor;
-   }
-}
-function FNumber3_drop(){
-   var o = this;
-   var de = o.findEditor();
-   if(de){
-      var t = o.reget();
-      if(t.length > 0){
-         if(o.finded != t){
-            if(de.source != o){
-               de.linkControl(o);
-            }
-            de.search(t);
-         }
-         o.finded = t;
-      }
-   }
-}
-function FNumber3_clone(){
-   var o = this;
-   var r = o._class.newInstance();
-   GHtml_clone(r, o.hPanel);
-   return r;
-}
-function FNumber3_link(){
    var o = this;
 }
 function FNumber4(o){
@@ -4944,6 +4372,417 @@ function FUiEditControl_dispose(){
    o.__base.MEditChange.dispose.call(o);
    o.__base.FUiControl.dispose.call(o);
 }
+function FUiForm(o){
+   o = RClass.inherits(this, o, FUiLayout, MDataset);
+   o._frameName         = null;
+   o.onMouseDown        = FUiForm_onMouseDown;
+   o.construct          = FUiForm_construct;
+   o.buildDefine        = FUiForm_buildDefine;
+   o._dataStatusCd      = ERowStatus.Update;
+   o._clearEvent        = null;
+   o._resetEvent        = null;
+   o._loadEvent         = null;
+   o._saveEvent         = null;
+   o._recordEvent       = null;
+   o._codeEvent         = null;
+   o._dataComponents    = null;
+   o.lsnsLoaded         = null;
+   o.lsnsClick          = null;
+   o.onLoadDataset      = FUiForm_onLoadDataset;
+   o.onLoadDatasetEnd   = FUiForm_onLoadDatasetEnd;
+   o.isDataChanged      = FUiForm_isDataChanged;
+   o.getFormLink        = FUiForm_getFormLink;
+   o.allDataComponents  = FUiForm_allDataComponents;
+   o.get                = FUiForm_get;
+   o.reget              = FUiForm_reget;
+   o.set                = FUiForm_set;
+   o.getDataCodes       = FUiForm_getDataCodes;
+   o.getCurrentRow      = FUiForm_getCurrentRow;
+   o.getSelectedRows    = FUiForm_getSelectedRows;
+   o.getCurrentRows     = FUiForm_getCurrentRows;
+   o.getChangedRows     = FUiForm_getChangedRows;
+   o.getRows            = FUiForm_getRows;
+   o.clearValue         = FUiForm_clearValue;
+   o.resetValue         = FUiForm_resetValue;
+   o.loadValue          = FUiForm_loadValue;
+   o.saveValue          = FUiForm_saveValue;
+   o.recordValue        = FUiForm_recordValue;
+   o.toAttributes       = FUiForm_toAttributes;
+   o.focus              = FUiForm_focus;
+   o.dsUpdate           = FUiForm_dsUpdate;
+   o.doPrepare          = FUiForm_doPrepare;
+   o.doUpdate           = FUiForm_doUpdate;
+   o.doDelete           = FUiForm_doDelete;
+   o.dispose            = FUiForm_dispose;
+   return o;
+}
+function FUiForm_onMouseDown(p){
+   var o = this;
+}
+function FUiForm_construct(){
+   var o = this;
+   o.__base.FUiLayout.construct.call(o);
+}
+function FUiForm_buildDefine(h, n){
+   var o = this;
+   if(RString.isEmpty(n)){
+      n = o._frameName;
+   }
+   var fc = RConsole.find(FDescribeFrameConsole);
+   var x = fc.load(n);
+   RControl.build(o, x, null, h);
+}
+function FUiForm_onLoadDataset(ds){
+   var o = this;
+   o.doUpdate(o.dsViewer.current());
+}
+function FUiForm_onLoadDatasetEnd(){
+   var o = this;
+   o.topControl().topResize();
+   o.psProgress(false);
+}
+function FUiForm_isDataChanged(){
+   var o = this;
+   var ps = o.allDataComponents();
+   if(!ps.isEmpty()){
+      var pc = ps.count;
+      for(var n=0; n<pc; n++){
+         var p = ps.value(n);
+         if(p.isDataChanged()){
+            return true;
+         }
+      }
+   }
+}
+function FUiForm_getFormLink(t){
+   var o = this;
+   if(EFormLink.Form == t){
+      return o.name;
+   }else if(EFormLink.Table == t){
+      return o.formName;
+   }
+   RMessage.fatal(o, null, 'Form link is invalid. (type={0})', t);
+}
+function FUiForm_allDataComponents(p, m){
+   var o = this;
+   if(!p){
+      p = o;
+   }
+   if(!m){
+      m = o._dataComponents;
+   }
+   var cs = p.components;
+   if(cs){
+      var cc = cs.count;
+      for(var n = 0; n<cc; n++){
+         var c = cs.value(n);
+         if(!RClass.isClass(c, MDataset)){
+            if(RClass.isClass(c, MValue)){
+               m.set(c.dataName, c);
+            }
+            o.allDataComponents(c, m);
+         }
+      }
+   }
+   return m;
+}
+function FUiForm_get(n){
+   var ps = this.allDataComponents();
+   if(ps){
+      var p = ps.get(n);
+      if(p){
+         return p.get();
+      }
+   }
+}
+function FUiForm_reget(n){
+   var ps = this.allDataComponents();
+   if(ps){
+      var p = ps.get(n);
+      if(p){
+         return p.reget();
+      }
+   }
+}
+function FUiForm_set(n, v){
+   var ps = this.allDataComponents();
+   if(ps){
+      var p = ps.get(n);
+      if(p){
+         p.set(v);
+      }
+   }
+}
+function FUiForm_getDataCodes(){
+   var o = this;
+   var e = o._codeEvent;
+   e.values = new TAttributes();
+   o.process(e);
+   return e.values;
+}
+function FUiForm_getCurrentRow(){
+   return this.saveValue();
+}
+function FUiForm_getSelectedRows(){
+   var ls = new TList();
+   ls.push(this.saveValue());
+   return ls;
+}
+function FUiForm_getCurrentRows(){
+   var o = this;
+   var ls = new TList();
+   var r = new TRow();
+   o.toDeepAttributes(r);
+   o.saveValue(r);
+   ls.push(r);
+   return ls;
+}
+function FUiForm_getChangedRows(){
+   var o = this;
+   var ls = new TList();
+   if(o.isDataChanged()){
+      var r = new TRow();
+      o.toDeepAttributes(r);
+      o.saveValue(r);
+      ls.push(r);
+   }
+   return ls;
+}
+function FUiForm_getRows(){
+   var ls = new TList();
+   ls.push(this.saveValue());
+   return ls;
+}
+function FUiForm_clearValue(){
+   this.process(this._clearEvent);
+}
+function FUiForm_resetValue(){
+   this.process(this._resetEvent);
+}
+function FUiForm_loadValue(r, m){
+   if(r){
+      var o = this;
+      var e = o._loadEvent;
+      e.viewer = o.dsViewer;
+      e.store = m;
+      e.values = r;
+      o.process(e);
+   }
+}
+function FUiForm_saveValue(r, m){
+   var o = this;
+   if(!r){
+      r = new TRow();
+   }
+   var e = o._saveEvent;
+   e.viewer = o.dsViewer;
+   e.store = m;
+   e.values = r;
+   o.process(e);
+   r.set('_status', o._dataStatusCd);
+   return r;
+}
+function FUiForm_recordValue(){
+   this.process(this._recordEvent);
+}
+function FUiForm_toAttributes(r, m){
+   return this.saveValue(r, m);
+}
+function FUiForm_focus(){
+   var o = this;
+   o.__base.MFocus.focus.call(o);
+   o.focusControl();
+   RConsole.find(FFocusConsole).focusClass(MDataset, o);
+}
+function FUiForm_dsUpdate(u, v){
+   var o = this;
+   if(u){
+      o.psProgress(true);
+      o.psMode(EMode.Update);
+      var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0);
+      g.form = o;
+      g.reset = true;
+      o.dsSearchs.clear();
+      if(u){
+         o.dsSearchs.push(new TSearchItem('OUID', u));
+      }
+      if(v){
+         o.dsSearchs.push(new TSearchItem('OVER', v));
+      }
+      g.searchs = o.dsSearchs;
+      g.values.append(o.dsValues);
+      g.callback = new TInvoke(o, o.onDsUpdate);
+      if(o.onDsUpdateCheck(g)){
+         RConsole.find(FDatasetConsole).fetch(g);
+      }
+      return;
+   }
+   return o.__base.MDataset.dsUpdate.call(o, u, v)
+}
+function FUiForm_setEditable(v){
+   var ps = this.allDataComponents();
+   if(ps){
+	   var pc = ps.count;
+	   for(var n = 0; n < pc; n++){
+	      var p = ps.value(n);
+	      p.setEditable(v);
+	   }
+   }
+}
+function FUiForm_doPrepare(v){
+   var o = this;
+   o._dataStatusCd = ERowStatus.Insert;
+   o.resetValue();
+   o.loadValue(v);
+   o.recordValue();
+   o.dsLoaded();
+}
+function FUiForm_doUpdate(v){
+   var o = this;
+   o._dataStatusCd = ERowStatus.Update;
+   o.clearValue();
+   o.loadValue(v);
+   o.recordValue();
+   o.dsLoaded();
+}
+function FUiForm_doDelete(v){
+   var o = this;
+   o._dataStatusCd = ERowStatus.Delete;
+   o.clearValue();
+   o.loadValue(v);
+   o.recordValue();
+   o.dsLoaded();
+}
+function FUiForm_dispose(){
+   var o = this;
+   o.__base.FUiLayout.dispose.call(o);
+   RMemory.freeHtml(o.hEdit);
+   RMemory.freeHtml(o.hDrop);
+   o.hEdit = null;
+   o.hDrop = null;
+}
+function FUiForm_allNameComponents(f, p, m){
+   var o = this;
+   var vs = o._nameComponents;
+   if(!f && vs){
+      return vs;
+   }
+   if(!vs){
+      vs = o._nameComponents = new TMap();
+   }
+   if(f){
+      vs.clear();
+   }
+   if(!p){
+      p = this;
+   }
+   if(!m){
+      m = vs;
+   }
+   var cs = p.components;
+   if(cs){
+      var cc = cs.count;
+      for(var n = 0; n<cc; n++){
+         var c = cs.value(n);
+         if(!RClass.isClass(c, MDataset)){
+            if(RClass.isClass(c, MValue)){
+               m.set(c.name, c);
+            }
+            o.allNameComponents(false, c, m);
+         }
+      }
+   }
+   return vs;
+}
+function FUiForm_onLoaded(){
+   var o = this.form;
+   var doc = this.document;
+   if(o && doc){
+      RControl.build(o, doc.root());
+      o.isLoading = false;
+      o.lsnsLoaded.process(o);
+   }
+}
+function FUiForm_onDsFetchEnd(){
+   var o = this;
+   var v = o.dsCurrent();
+   if(v){
+      o.loadValue(v);
+   }
+}
+function FUiForm_onDsUpdateBegin(){
+   var o = this;
+   var v = o.dsCurrent();
+   if(v){
+      o.saveValue(v);
+   }
+}
+function FUiForm_onDsUpdateEnd(){
+   var o = this;
+   var v = o.dsCurrent();
+   if(v){
+      o.loadValue(v);
+   }
+}
+function FUiForm_connect(service, type, action, attrs){
+   var doc = new TXmlDocument();
+   var root = doc.root();
+   root.set('type', type);
+   root.set('name', this.name);
+   root.set('action', action);
+   root.create('Attributes').value = attrs;
+   var event = new TEvent(this, EXmlEvent.Send);
+   event.url = service;
+   event.document = doc;
+   event.form = this;
+   event.onLoad = this.onLoaded;
+   RConsole.find(FXmlConsole).process(event);
+}
+function FUiForm_loadDocument(doc){
+   if(doc){
+      var root = doc.root();
+      if(root.isName('Table')){
+         var o = this;
+         o.loadConfig(root);
+         o.buildColumns(root);
+         o.buildRows(root);
+      }
+   }
+}
+function FUiForm_testStatus(t){
+   var o = this;
+   var r = o.__base.MDataset.testStatus.call(o, t);
+   if(EDataAction.Fetch == t){
+      return true;
+   }else if(EDataAction.Fetch == t){
+      return true;
+   }else if(EDataAction.Search== t){
+      return true;
+   }else if(EDataAction.First == t){
+      return false;
+   }else if(EDataAction.Prior == t){
+      return false;
+   }else if(EDataAction.Next == t){
+      return false;
+   }else if(EDataAction.Last == t){
+      return false;
+   }else if(EDataAction.Action == t){
+      return true;
+   }
+   return r;
+}
+function FUiForm_hasAction(){
+   var o = this;
+   var cs = o.components;
+   var ct = cs.count;
+   for(var n = 0; n < ct; n++){
+      var c = cs.value(n);
+      if(RClass.isClass(c, FDataAction)){
+         return true;
+      }
+   }
+   return false;
+}
 function FUiFrame(o){
    o = RClass.inherits(this, o, FUiLayout);
    return o;
@@ -5430,6 +5269,226 @@ function FUiNumber_clone(){
 function FUiNumber_link(){
    var o = this;
 }
+function FUiNumber3(o){
+   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
+   o._inputSize        = RClass.register(o, new APtySize2('_inputSize'));
+   o._styleValuePanel  = RClass.register(o, new AStyle('_styleValuePanel'));
+   o._styleInputPanel  = RClass.register(o, new AStyle('_styleInputPanel'));
+   o._styleInput       = RClass.register(o, new AStyle('_styleInput'));
+   o._innerOriginValue = null;
+   o._innerDataValue   = null;
+   o._hInput           = null;
+   o.onBuildEditInput  = FUiNumber3_onBuildEditInput;
+   o.onBuildEditValue  = FUiNumber3_onBuildEditValue;
+   o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FUiNumber3_onInputKeyPress);
+   o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FUiNumber3_onInputChanged);
+   o.construct         = FUiNumber3_construct;
+   o.get               = FUiNumber3_get;
+   o.set               = FUiNumber3_set;
+   return o;
+}
+function FUiNumber3_onBuildEditInput(p, h){
+   var o = this;
+   o.attachEvent('onInputKeyPress', h, o.onInputKeyPress);
+   o.attachEvent('onInputChanged', h, o.onInputChanged);
+}
+function FUiNumber3_onBuildEditValue(p){
+   var o = this;
+   var h = o._hValuePanel;
+   h.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = RBuilder.appendTable(h);
+   var hr = RBuilder.appendTableRow(hf);
+   o._hChangePanel = RBuilder.appendTableCell(hr);
+   o.onBuildEditChange(p);
+   var hc = RBuilder.appendTableCell(hr, o.styleName('InputPanel'));
+   hc.style.borderRight = '1px solid #666666';
+   var he = o._hInput1 = RBuilder.appendEdit(hc, o.styleName('Input'));
+   o.onBuildEditInput(p, he)
+   var hc = RBuilder.appendTableCell(hr, o.styleName('InputPanel'));
+   hc.style.borderLeft = '1px solid #999999';
+   hc.style.borderRight = '1px solid #666666';
+   var he = o._hInput2 = RBuilder.appendEdit(hc, o.styleName('Input'));
+   o.onBuildEditInput(p, he)
+   var hc = RBuilder.appendTableCell(hr, o.styleName('InputPanel'));
+   hc.style.borderLeft = '1px solid #999999';
+   var he = o._hInput3 = RBuilder.appendEdit(hc, o.styleName('Input'));
+   o.onBuildEditInput(p, he)
+}
+function FUiNumber3_onInputKeyPress(p){
+   var o = this;
+   var c = p.keyCode;
+   if(!EKeyCode.floatCodes[c]){
+      p.cancel();
+   }
+}
+function FUiNumber3_onInputChanged(p){
+   var o = this;
+   o.processDataChangedListener(o);
+}
+function FUiNumber3_construct(){
+   var o = this;
+   o.__base.FUiEditControl.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
+   o._innerOriginValue = new SPoint3();
+   o._innerDataValue = new SPoint3();
+}
+function FUiNumber3_get(p){
+   var o = this;
+   o.__base.FUiEditControl.get.call(o, p);
+   var v = o._innerDataValue;
+   var h = o._hInput1;
+   if(h){
+      v.x = RFloat.parse(h.value);
+   }
+   var h = o._hInput2;
+   if(h){
+      v.y = RFloat.parse(h.value);
+   }
+   var h = o._hInput3;
+   if(h){
+      v.z = RFloat.parse(h.value);
+   }
+   return v;
+}
+function FUiNumber3_set(p){
+   var o = this;
+   o.__base.FUiEditControl.set.call(o, p);
+   var a = arguments;
+   var vo = o._innerOriginValue
+   var vd = o._innerDataValue;
+   if(a.length == 1){
+      if((p.constructor == SPoint3) || (p.constructor == SVector3)){
+         vo.assign(p);
+         vd.assign(p);
+      }else{
+         throw new TError('Invalid value format.');
+      }
+   }else if(a.length == 3){
+      vo.set(a[0], a[1], a[2]);
+      vd.assign(vo);
+   }else{
+      throw new TError('Invalid value format.');
+   }
+   var h = o._hInput1;
+   if(h){
+      h.value = RFloat.format(vd.x, 0, null, 3, null);
+   }
+   var h = o._hInput2;
+   if(h){
+      h.value = RFloat.format(vd.y, 0, null, 3, null);
+   }
+   var h = o._hInput3;
+   if(h){
+      h.value = RFloat.format(vd.z, 0, null, 3, null);
+   }
+   o.changeSet(false);
+}
+function FUiNumber3_onDataKeyDown(s, e){
+   var o = this;
+   o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
+   if(o.editCase){
+      RKey.fixCase(e, o.editCase);
+   }
+   if(o._editable){
+      return;
+      if(o.editComplete){
+         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
+            var ed = o.findEditor();
+            if(ed){
+               ed.onEditKeyDown(s, e);
+            }
+         }
+      }
+   }
+}
+function FUiNumber3_formatValue(v){
+   var o = this;
+   var r = RString.nvl(v);
+   if(ECase.Upper == o.editCase){
+      r = RString.toUpper(r);
+   }else if(ECase.Lower == o.editCase){
+      r = RString.toLower(r);
+   }
+   return r;
+}
+function FUiNumber3_setText(t){
+   var o = this;
+   if(!o.hEdit){
+      return;
+   }
+   if('U'== o.editCase){
+      o.hEdit.value = RString.toUpper(t);
+   }else if('L'== o.editCase){
+         o.hEdit.value = RString.toLower(t);
+   }else{
+      o.hEdit.value = t;
+   }
+   if('right' == o.editAlign ){
+      o.hEdit.style.textAlign = 'right';
+   }else if('left' == o.editAlign ){
+      o.hEdit.style.textAlign = 'left';
+   }else{
+      o.hEdit.style.textAlign = 'center';
+   }
+}
+function FUiNumber3_validText(t){
+   var o = this;
+   var r = o.__base.FUiEditControl.validText.call(o, t);
+   if(!r){
+      if(o.validLenmin){
+         if(o.validLenmin > t.length){
+            return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
+         }
+      }
+      if(o.validLenmax){
+         if(o.validLenmax < t.length){
+            return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
+         }
+      }
+   }
+   return r;
+}
+function FUiNumber3_findEditor(){
+   var o = this;
+   if(o.editComplete){
+      var de = o.editor;
+      if(!de){
+         o.dsControl = o.topControl(MDataset);
+         if(o.dsControl){
+            de = o.editor = RConsole.find(FUiNumber3Console).focus(o, FUiNumber3Editor);
+         }
+      }
+      if(de){
+         de.linkControl(o);
+      }
+      return o.editor;
+   }
+}
+function FUiNumber3_drop(){
+   var o = this;
+   var de = o.findEditor();
+   if(de){
+      var t = o.reget();
+      if(t.length > 0){
+         if(o.finded != t){
+            if(de.source != o){
+               de.linkControl(o);
+            }
+            de.search(t);
+         }
+         o.finded = t;
+      }
+   }
+}
+function FUiNumber3_clone(){
+   var o = this;
+   var r = o._class.newInstance();
+   GHtml_clone(r, o.hPanel);
+   return r;
+}
+function FUiNumber3_link(){
+   var o = this;
+}
 function FUiPageControl(o){
    o = RClass.inherits(this, o, FUiContainer);
    o._sizeCd          = ESize.Horizontal;
@@ -5711,7 +5770,7 @@ function FUiPageSheet_select(p){
 }
 function FUiPageSheet_setVisible(p){
    var o = this;
-   RHtml.displaySet(o._hForm, p);
+   RHtml.displaySet(o._hPanel, p);
 }
 function FUiPageSheet_dispose(){
    var o = this;
@@ -5860,7 +5919,9 @@ function SUiColorBar_build(p){
    c.attachEvent('onSlideMouseUp', hf, c.onSlideMouseUp);
    var hc = RBuilder.appendTableCell(hr);
    hc.width = '36';
-   o.hInput = RBuilder.appendEdit(hc, o.control.styleName('Input'));
+   var he = o.hInput = RBuilder.appendEdit(hc, o.control.styleName('Input'));
+   c.attachEvent('onInputKeyPress', he, c.onInputKeyPress);
+   c.attachEvent('onInputChanged', he, c.onInputChanged);
 }
 function SUiColorBar_setSlideValue(p){
    var o = this;
