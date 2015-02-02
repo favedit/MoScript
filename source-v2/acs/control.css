@@ -28,37 +28,37 @@
 }
 
 /* ------------------------------------------------------ */
-/* FEditControl                                           */
+/* FUiEditControl                                         */
 /* ------------------------------------------------------ */
-.FEditControl_LabelPanel{
+.FUiEditControl_LabelPanel{
    color: #CCCCCC;
 }
 
-.FEditControl_EditorPanel{
+.FUiEditControl_EditorPanel{
 }
 
 /* ------------------------------------------------------ */
-/* FCheck                                                 */
+/* FUiCheck                                               */
 /* ------------------------------------------------------ */
-.FCheck_Input{
+.FUiCheck_Input{
    width: 12px;
    height: 12px;
    cursor: pointer;
 }
 
 /* ------------------------------------------------------ */
-/* FRadio                                                 */
+/* FUiRadio                                               */
 /* ------------------------------------------------------ */
-.FRadio_Input{
+.FUiRadio_Input{
    width: 12px;
    height: 12px;
    cursor: pointer;
 }
 
 /* ------------------------------------------------------ */
-/* FNumber                                                */
+/* FUiNumber                                              */
 /* ------------------------------------------------------ */
-.FNumber_ValuePanel{
+.FUiNumber_ValuePanel{
    padding:0px 2px 0px 2px;
    border-left:1px solid #333333;
    border-top:1px solid #333333;
@@ -68,7 +68,7 @@
    background-color: #777777;
 }
 
-.FNumber_Input{
+.FUiNumber_Input{
    width: 100%;
    height: 14px;
    border: 0;
@@ -76,22 +76,22 @@
    background-color: #777777;
 }
 
-.FNumber_AdjustForm{
+.FUiNumber_AdjustForm{
    width: 11px;
    height: 14px;
    cursor: pointer;
 }
 
-.FNumber_UpPanel{
+.FUiNumber_UpPanel{
 }
 
-.FNumber_DownPanel{
+.FUiNumber_DownPanel{
 }
 
 /* ------------------------------------------------------ */
-/* FNumber2                                               */
+/* FUiNumber2                                             */
 /* ------------------------------------------------------ */
-.FNumber2_InputPanel{
+.FUiNumber2_InputPanel{
    padding:0px 2px 0px 2px;
    border-left:1px solid #333333;
    border-top:1px solid #333333;
@@ -101,7 +101,7 @@
    background-color: #777777;
 }
 
-.FNumber2_Input{
+.FUiNumber2_Input{
    width: 100%;
    border: 0;
    color: #FFFFFF;
@@ -109,9 +109,9 @@
 }
 
 /* ------------------------------------------------------ */
-/* FNumber3                                               */
+/* FUiNumber3                                             */
 /* ------------------------------------------------------ */
-.FNumber3_InputPanel{
+.FUiNumber3_InputPanel{
    padding:0px 2px 0px 2px;
    border-left:1px solid #333333;
    border-top:1px solid #333333;
@@ -121,7 +121,7 @@
    background-color: #777777;
 }
 
-.FNumber3_Input{
+.FUiNumber3_Input{
    width: 100%;
    border: 0;
    color: #FFFFFF;
@@ -129,9 +129,9 @@
 }
 
 /* ------------------------------------------------------ */
-/* FNumber4                                               */
+/* FUiNumber4                                             */
 /* ------------------------------------------------------ */
-.FNumber4_InputPanel{
+.FUiNumber4_InputPanel{
    padding:0px 2px 0px 2px;
    border-left:1px solid #333333;
    border-top:1px solid #333333;
@@ -141,7 +141,7 @@
    background-color: #777777;
 }
 
-.FNumber4_Input{
+.FUiNumber4_Input{
    width: 100%;
    border: 0;
    color: #FFFFFF;
@@ -170,7 +170,7 @@
 }
 
 /* ------------------------------------------------------ */
-/* FUiColor3                                               */
+/* FUiColor3                                              */
 /* ------------------------------------------------------ */
 .FUiColor3_ValuePanel{
    padding:0px 3px 0px 3px;
@@ -192,7 +192,7 @@
 }
 
 /* ------------------------------------------------------ */
-/* FUiColor4                                               */
+/* FUiColor4                                              */
 /* ------------------------------------------------------ */
 .FUiColor4_InputPanel{
    padding:0px 3px 0px 3px;
@@ -213,9 +213,9 @@
 }
 
 /* ------------------------------------------------------ */
-/* FEdit                                                  */
+/* FUiEdit                                                */
 /* ------------------------------------------------------ */
-.FEdit_InputPanel{
+.FUiEdit_InputPanel{
    padding:0px 2px 0px 2px;
    border-left:1px solid #333333;
    border-top:1px solid #333333;
@@ -225,7 +225,7 @@
    background-color: #777777;
 }
 
-.FEdit_Input{
+.FUiEdit_Input{
    width: 100%;
    height: 14px;
    border: 0;
@@ -235,25 +235,26 @@
 
 
 /* ------------------------------------------------------ */
-/* FCanvas                                                  */
+/* FUiCanvas                                              */
 /* ------------------------------------------------------ */
-.FCanvas_Canvas{
+.FUiCanvas_Canvas{
 }
+
 /* ------------------------------------------------------ */
-/* FLayout                                                */
+/* FUiLayout                                              */
 /* ------------------------------------------------------ */
-.FLayout_Form{
+.FUiLayout_Form{
    width: 100%;
 }
 
 /* ------------------------------------------------------ */
-/* FPanel                                                 */
+/* FUiPanel                                               */
 /* ------------------------------------------------------ */
-.FPanel_Panel{
+.FUiPanel_Panel{
    padding: 1px 3px;
 }
 
-.FPanel_Label{
+.FUiPanel_Label{
    font-family: "Microsoft YaHei"; 
    cursor: pointer;
    text-align: center;
@@ -265,64 +266,185 @@
    background-color: #333333;
 }
 
-.FPanel_Body{
+.FUiPanel_Body{
    border-radius:0px 0px 4px 4px;
    padding: 2px 10px 2px 10px;
    background-color: #555555;
 }
 
-.FPanel_Form{
+.FUiPanel_Form{
 }
 
 /* ------------------------------------------------------ */
-/* FCell                                                  */
+/* FUiPageSheet                                           */
 /* ------------------------------------------------------ */
-.FCell_Panel{
+.FUiPageSheet_Panel{
+}
+
+.FUiPageSheet_Sheet{
+   padding:10px;
+}
+
+.FUiPageSheet_Button{
+   padding-left:10px; padding-top:3px; padding-right:10px; padding-bottom:2px;
+   background: -ms-linear-gradient(top, #EEEEEE, #999999);
+   background: -moz-linear-gradient(top, #EEEEEE, #999999); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#999999)); 
+   filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#EEEEEE, endcolorstr=#999999);
+}
+
+.FUiPageSheet_ButtonHover{
+   cursor:pointer;
+   border-top:1 solid #EEEEEE;
+   padding-left:10px; padding-top:3px; padding-right:10px; padding-bottom:2px;
+   background: -ms-linear-gradient(top, #FFFFFF, #DDDDDD);
+   background: -moz-linear-gradient(top, #FFFFFF, #DDDDDD); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#DDDDDD)); 
+   filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#DDDDDD);
+}
+
+.FUiPageSheet_ButtonSelect{
+   cursor:pointer;
+   padding-left:10px; padding-top:3px; padding-right:10px; padding-bottom:2px;
+   background: -ms-linear-gradient(top, #BBBBBB, #EEEEEE);
+   background: -moz-linear-gradient(top, #BBBBBB, #EEEEEE); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#BBBBBB), to(#EEEEEE)); 
+   filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#BBBBBB, endcolorstr=#EEEEEE);
+}
+
+.FUiPageSheet_ButtonText{
+   white-space:nowrap;
+}
+
+.FUiPageSheet_Top{
+   height:1px;
+   background-color:#CCCCCC;
+}
+
+.FUiPageSheet_TopSelect{
+   height:1px;
+   background-color:#FFFFFF;
+}
+
+.FUiPageSheet_Left{
+   border-top:1 solid #666666;
+   width: 1px;
+   background-color:#CCCCCC;
+}
+
+.FUiPageSheet_LeftSelect{
+   width: 1px;
+   background-color:#FFFFFF;
+}
+
+.FUiPageSheet_Right{
+   width:1px;
+   background-color:#CCCCCC;
+}
+
+.FUiPageSheet_RightSelect{
+   width:1px;
+   background-color:#FFFFFF;
+}
+
+.FUiPageSheet_Bottom{
+   height:1px;
+   background-color:#CCCCCC;
+}
+
+.FUiPageSheet_BottomSelect{
+   height:1px;
+   background-color:#FFFFFF;
+
+/* ------------------------------------------------------ */
+/* FUiPageControl                                         */
+/* ------------------------------------------------------ */
+.FUiPageControl_Panel{
+   width: 100%;
+}
+
+.FUiPageControl_TitlePanel{
+   height:1;
+}
+
+.FUiPageControl_TitleForm{
+   width: 100%;
+}
+
+.FUiPageControl_SheetPanel{
+   vertical-align: top;
+   border-left:1 solid #29bad5; border-right:1 solid #29bad5; border-bottom:1 solid #29bad5;
+   padding:6;
+}
+
+.FUiPageControl_Sheets{
+   border:1 solid blue;
+   width:100%; height:100;
+}
+
+.FUiPageControl_RightP{
+   width:1px; border-top:1 solid #29bad5;
+   filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#29bad7);
+}
+}
+
+.FUiPageControl_SheetLeft{
+   width:1px; background-color:#29bad5;
+}
+
+.FUiPageControl_SheetRight{
+   width:1px; background-color:#29bad5;
+}
+
+/* ------------------------------------------------------ */
+/* FUiCell                                                */
+/* ------------------------------------------------------ */
+.FUiCell_Panel{
    background-color: #F0F0F0;
    border-right: 1px solid #F0F0F0;
    border-bottom: 1px dotted #CCCCCC;
 }
 
 /* ------------------------------------------------------ */
-/* FCellEdit                                              */
+/* FUiCellEdit                                            */
 /* ------------------------------------------------------ */
-.FCellEdit_Input{
+.FUiCellEdit_Input{
    width: 100%;
    border: 0px;
    background-color: #F0F0F0;
 }
 
 /* ------------------------------------------------------ */
-/* FColumn                                                */
+/* FUiColumn                                              */
 /* ------------------------------------------------------ */
-.FColumn_Label{
+.FUiColumn_Label{
    border-bottom: 1px solid #999999;
    background: -ms-linear-gradient(top, #FFFFFF, #EEEEEE);
    background: -moz-linear-gradient(top, #FFFFFF, #EEEEEE); 
    background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#EEEEEE)); 
 }
 
-.FColumn_SearchPanel{
+.FUiColumn_SearchPanel{
    background-color: #EEEEEE;
 }
 
-.FColumn_SearchEdit{
+.FUiColumn_SearchEdit{
    width: 100%;
    border:0px;
    background-color: #EEEEEE;
 }
 
 /* ------------------------------------------------------ */
-/* FGridControl                                           */
+/* FUiGridControl                                         */
 /* ------------------------------------------------------ */
-.FGridControl_Panel{
+.FUiGridControl_Panel{
    width:100%;
    height:300px;
    border-radius: 6px;
    border: 1px solid #CCCCCC;
 }
 
-.FGridControl_TitlePanel{
+.FUiGridControl_TitlePanel{
    height: 24px;
    border-bottom: 1px solid #999999;
    background: -ms-linear-gradient(top, #DDDDDD, #999999);
@@ -330,22 +452,22 @@
    background: -webkit-gradient(linear, left top, left bottom, from(#DDDDDD), to(#999999));
 }
 
-.FGridControl_Caption{
+.FUiGridControl_Caption{
    color: #FFFFFF;
    font-weight: bold;
    text-align: center;
 }
 
-.FGridControl_TitleForm{
+.FUiGridControl_TitleForm{
    width: 100%;
 }
 
-.FGridControl_ContentPanel{
+.FUiGridControl_ContentPanel{
    position: relative;
    background-color: #333333;
 }
 
-.FGridControl_HintPanel{
+.FUiGridControl_HintPanel{
    height: 20px;
    padding; 0px 8px 0px 8px;
    background: -ms-linear-gradient(top, #666666, #999999);
@@ -353,72 +475,72 @@
    background: -webkit-gradient(linear, left top, left bottom, from(#333333), to(#666666)); 
 }
 
-.FGridControl_HintForm{
+.FUiGridControl_HintForm{
    width: 100%;
 }
 
-.FGridControl_Hint{
+.FUiGridControl_Hint{
 }
 
-.FGridControl_Button{
+.FUiGridControl_Button{
    color: #EEEEEE;
    white-space: nowrap;
 }
 
 
 /* ------------------------------------------------------ */
-/* Table                                                  */
+/* FUiTable                                               */
 /* ------------------------------------------------------ */
-.FTable_Panel
-{
+.FUiTable_Panel{
    width:100%;
 }
-.FTable_FixPanel{
+
+.FUiTable_FixPanel{
    background-color:#FFFFFF;
 }
 
-.FTable_FixForm{
+.FUiTable_FixForm{
 }
 
-.FTable_HeadPanel{
+.FUiTable_HeadPanel{
    background-color:CCCCCC;
 }
 
-.FTable_HeadForm{
+.FUiTable_HeadForm{
 }
 
-.FTable_ColumnPanel{
+.FUiTable_ColumnPanel{
    background-color:CCCCCC;
 }
 
-.FTable_ColumnForm{
+.FUiTable_ColumnForm{
    table-layout:fixed;
    border-bottom: 1 solid #BFD3EE;
 }
 
-.FTable_DataPanel{
+.FUiTable_DataPanel{
    background-color:#666666;
 }
 
-.FTable_DataForm{
+.FUiTable_DataForm{
    table-layout:fixed;
    background-color:#BFD3EE;
    border-bottom: 1 solid #BFD3EE;
 }
 
-.FRow_Panel{
+.FUiRow_Panel{
 }
 
 /* ------------------------------------------------------ */
-/* FMenuBar                                               */
+/* FUiMenuBar                                             */
 /* ------------------------------------------------------ */
-.FMenuBar_Panel{
+.FUiMenuBar_Panel{
 }
 
 /* ------------------------------------------------------ */
-/* FMenuButton                                            */
+/* FUiMenuButton                                          */
 /* ------------------------------------------------------ */
-.FMenuButton_Normal{
+.FUiMenuButton_Normal{
    margin:0px 2px 0px 2px;
    padding:2px 8px 2px 8px;
    color: #EEEEEE;
@@ -426,45 +548,45 @@
    cursor: pointer;
 }
 
-.FMenuButton_Hover{
+.FUiMenuButton_Hover{
    margin:0px 2px 0px 2px;
    padding:2px 8px 2px 8px;
    border-radius:2px;
    cursor: pointer;
 }
 
-.FMenuButton_Press{
+.FUiMenuButton_Press{
    margin:0px 2px 0px 2px;
    padding:2px 8px 2px 8px;
    border-radius:2px;
    cursor: pointer;
 }
 
-.FMenuButton_Disable{
+.FUiMenuButton_Disable{
    margin:0px 2px 0px 2px;
    padding:2px 8px 2px 8px;
    border-radius:2px;
    cursor: pointer;
 }
 
-.FMenuButton_Icon{
+.FUiMenuButton_Icon{
    border: 0px;
 }
 
-.FMenuButton_Label{
+.FUiMenuButton_Label{
    padding-left: 6px;
 }
 
 /* ------------------------------------------------------ */
-/* FToolBar                                               */
+/* FUiToolBar                                             */
 /* ------------------------------------------------------ */
-.FToolBar_Panel{
+.FUiToolBar_Panel{
 }
 
 /* ------------------------------------------------------ */
-/* FToolButton                                            */
+/* FUiToolButton                                          */
 /* ------------------------------------------------------ */
-.FToolButton_Normal{
+.FUiToolButton_Normal{
    margin:0px 2px 0px 2px;
    padding:2px 8px 2px 8px;
    border-radius:2px;
@@ -473,7 +595,7 @@
    cursor: pointer;
 }
 
-.FToolButton_Hover{
+.FUiToolButton_Hover{
    margin:0px 2px 0px 2px;
    padding:2px 8px 2px 8px;
    border-radius:2px;
@@ -482,7 +604,7 @@
    cursor: pointer;
 }
 
-.FToolButton_Press{
+.FUiToolButton_Press{
    margin:0px 2px 0px 2px;
    padding:2px 8px 2px 8px;
    border-radius:2px;
@@ -491,7 +613,7 @@
    cursor: pointer;
 }
 
-.FToolButton_Disable{
+.FUiToolButton_Disable{
    margin:0px 2px 0px 2px;
    padding:2px 8px 2px 8px;
    border-radius:2px;
@@ -500,88 +622,88 @@
    cursor: pointer;
 }
 
-.FToolButton_Icon{
+.FUiToolButton_Icon{
    border: 0px;
 }
 
-.FToolButton_Label{
+.FUiToolButton_Label{
    padding-left: 6px;
 }
 
 /* ------------------------------------------------------ */
-/* FTreeView                                              */
+/* FUiTreeView                                            */
 /* ------------------------------------------------------ */
-.FTreeView_Panel{
+.FUiTreeView_Panel{
    width: 100%;
    height: 100%;
 }
 
-.FTreeView_NodePanel{
+.FUiTreeView_NodePanel{
    width: 100%;
    height: 100%;
    overflow:auto;
 }
 
-.FTreeView_NodeForm{
+.FUiTreeView_NodeForm{
 }
 
 /* ------------------------------------------------------ */
-/* FTreeNode                                              */
+/* FUiTreeNode                                            */
 /* ------------------------------------------------------ */
-.FTreeNode_Panel{
+.FUiTreeNode_Panel{
    width: 0;
 }
 
-.FTreeNode_Normal{
+.FUiTreeNode_Normal{
    cursor: pointer;
 }
 
-.FTreeNode_Hover{
+.FUiTreeNode_Hover{
    background-color: #DDDDDD;
    cursor: pointer;
 }
 
-.FTreeNode_Select{
+.FUiTreeNode_Select{
    background-color: #CCCCCC;
    cursor: pointer;
 }
 
-.FTreeNode_Image{
+.FUiTreeNode_Image{
 }
 
-.FTreeNode_Icon{
+.FUiTreeNode_Icon{
 }
 
-.FTreeNode_IconDisable{
+.FUiTreeNode_IconDisable{
 }
 
-.FTreeNode_Label{
+.FUiTreeNode_Label{
    font: icon;
    font-size: 9pt;
 }
 
-.FTreeNode_Cell{
+.FUiTreeNode_Cell{
 }
 
 /* ------------------------------------------------------ */
-/* FFrameSet                                              */
+/* FUiFrameSpliter                                        */
 /* ------------------------------------------------------ */
-.FFrameSet_Panel{
-   width: 100%;
-   height: 100%;
-}
-
-/* ------------------------------------------------------ */
-/* FFrameSpliter                                          */
-/* ------------------------------------------------------ */
-.FFrameSpliter_Normal{
+.FUiFrameSpliter_Normal{
    background-color: #666666;
 }
 
-.FFrameSpliter_Hover{
+.FUiFrameSpliter_Hover{
    background-color: #999999;
 }
 
-.FFrameSpliter_Draging{
+.FUiFrameSpliter_Draging{
    background-color: #BBBBBB;
+}
+
+/* ------------------------------------------------------ */
+/* FUiFrameSet                                            */
+/* ------------------------------------------------------ */
+.FUiFrameSet_Panel{
+   width: 100%;
+   height: 100%;
 }

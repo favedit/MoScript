@@ -62,6 +62,7 @@ function FRs3Template_displays(){
 function FRs3Template_unserialize(p){
    // 读取父信息
    var o = this;
+   // 父处理
    o.__base.FRs3Resource.unserialize.call(o, p);
    // 读取材质组集合
    var mgc = RConsole.find(FRs3MaterialGroupConsole);

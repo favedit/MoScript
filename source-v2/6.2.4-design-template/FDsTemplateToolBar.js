@@ -5,7 +5,7 @@
 // @history 141231
 //==========================================================
 function FDsTemplateToolBar(o){
-   o = RClass.inherits(this, o, FToolBar);
+   o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @attribute
    o._refreshButton = null;
@@ -32,15 +32,15 @@ function FDsTemplateToolBar(o){
 //==========================================================
 function FDsTemplateToolBar_onBuild(p){
    var o = this;
-   o.__base.FToolBar.onBuild.call(o, p);
+   o.__base.FUiToolBar.onBuild.call(o, p);
    // 建立按键
-   var b = o._refreshButton  = RClass.create(FToolButton);
+   var b = o._refreshButton  = RClass.create(FUiToolButton);
    b.setLabel('刷新');
    b.build(p);
    b.lsnsClick.register(o, o.onRefreshClick);
    o.appendButton(b);
    // 建立按键
-   var b = o._saveButton = RClass.create(FToolButton);
+   var b = o._saveButton = RClass.create(FUiToolButton);
    b.setLabel('保存');
    b.build(p);
    b.lsnsClick.register(o, o.onSaveClick);
@@ -79,7 +79,7 @@ function FDsTemplateToolBar_onSaveClick(p){
 function FDsTemplateToolBar_construct(){
    var o = this;
    // 父处理
-   o.__base.FToolBar.construct.call(o);
+   o.__base.FUiToolBar.construct.call(o);
 }
 
 //==========================================================
@@ -90,5 +90,5 @@ function FDsTemplateToolBar_construct(){
 function FDsTemplateToolBar_dispose(){
    var o = this;
    // 父处理
-   o.__base.FToolBar.dispose.call(o);
+   o.__base.FUiToolBar.dispose.call(o);
 }

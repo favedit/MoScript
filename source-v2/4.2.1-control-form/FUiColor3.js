@@ -15,8 +15,8 @@
 // @version 150102
 //==========================================================
 function FUiColor3(o){
-   //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
-   o = RClass.inherits(this, o, FEditControl, MListenerDataChanged);
+   //o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit);
+   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
    //..........................................................
    // @property
    o._inputSize        = RClass.register(o, new APtySize2('_inputSize'));
@@ -224,7 +224,7 @@ function FUiColor3_onSlideMouseUp(p){
 //==========================================================
 function FUiColor3_construct(){
    var o = this;
-   o.__base.FEditControl.construct.call(o);
+   o.__base.FUiEditControl.construct.call(o);
    // 设置属性
    o._inputSize = new SSize2(120, 0);
    o._innerOriginValue = new SColor4();
@@ -264,7 +264,7 @@ function FUiColor3_get(p){
 //==========================================================
 function FUiColor3_set(p){
    var o = this;
-   o.__base.FEditControl.set.call(o, p);
+   o.__base.FUiEditControl.set.call(o, p);
    // 设置显示
    if(p.constructor == SColor4){
       o._innerOriginValue.assign(p);
@@ -272,31 +272,13 @@ function FUiColor3_set(p){
    }else{
       throw new TError('Invalid value format.');
    }
-   // 格式化数据
-   var v = o._innerDataValue;
-
-   var vr = RHex.format(parseInt(v.red * 255), 2);
-   var vg = RHex.format(parseInt(v.green * 255), 2);
-   var vb = RHex.format(parseInt(v.blue * 255), 2);
-   o._hColorImage.style.backgroundColor = '#' + vr + vg + vb;
-
-   o._barRed.set(v.red);
-   o._barGreen.set(v.red);
-   o._barBlue.set(v.red);
-
+   // 设置颜色
+   o.setDisplayColor();
    // 设置数据
-   //var h = o._hInputRed;
-   //if(h){
-   //   h.value = RFloat.format(v.red, 0, null, 2, null);
-   //}
-   //var h = o._hInputGreen;
-   //if(h){
-   //   h.value = RFloat.format(v.green, 0, null, 2, null);
-   //}
-   //var h = o._hInputBlue;
-   //if(h){
-   //   h.value = RFloat.format(v.blue, 0, null, 2, null);
-   //}
+   var v = o._innerDataValue;
+   o._barRed.set(v.red);
+   o._barGreen.set(v.green);
+   o._barBlue.set(v.blue);
    // 设置修改状态
    o.changeSet(false);
 }
@@ -330,8 +312,8 @@ function FUiColor3_setDisplay(){
    // 设置内容
    var v = o._innerDataValue;
    o._barRed.set(v.red);
-   o._barGreen.set(v.red);
-   o._barBlue.set(v.red);
+   o._barGreen.set(v.green);
+   o._barBlue.set(v.blue);
 }
 
 //==========================================================
@@ -368,7 +350,7 @@ function FUiColor3_refreshValue(){
 //==========================================================
 function FUiColor3_onDataKeyDown(s, e){
    var o = this;
-   o.__base.FEditControl.onDataKeyDown.call(o, s, e);
+   o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
    // 大小写限制
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
@@ -441,7 +423,7 @@ function FUiColor3_setText(t){
 //==========================================================
 function FUiColor3_validText(t){
    var o = this;
-   var r = o.__base.FEditControl.validText.call(o, t);
+   var r = o.__base.FUiEditControl.validText.call(o, t);
    if(!r){
       // 最小长度的校验
       if(o.validLenmin){

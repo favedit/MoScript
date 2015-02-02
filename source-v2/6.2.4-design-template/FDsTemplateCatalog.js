@@ -5,7 +5,7 @@
 // @history 141231
 //==========================================================
 function FDsTemplateCatalog(o){
-   o = RClass.inherits(this, o, FDataTreeView);
+   o = RClass.inherits(this, o, FUiDataTreeView);
    //..........................................................
    // @event
    o.onBuild       = FDsTemplateCatalog_onBuild;
@@ -30,7 +30,7 @@ function FDsTemplateCatalog(o){
 //==========================================================
 function FDsTemplateCatalog_onBuild(p){
    var o = this;
-   o.__base.FDataTreeView.onBuild.call(o, p);
+   o.__base.FUiDataTreeView.onBuild.call(o, p);
    // 注册事件
    o.lsnsClick.register(o, o.onNodeClick);
    // 加载定义
@@ -56,7 +56,7 @@ function FDsTemplateCatalog_onNodeClick(t, n){
 //==========================================================
 function FDsTemplateCatalog_construct(){
    var o = this;
-   o.__base.FDataTreeView.construct.call(o);
+   o.__base.FUiDataTreeView.construct.call(o);
 }
 
 //==========================================================
@@ -142,5 +142,5 @@ function FDsTemplateCatalog_buildTemplate(p){
 function FDsTemplateCatalog_dispose(){
    var o = this;
    // 父处理
-   o.__base.FDataTreeView.dispose.call(o);
+   o.__base.FUiDataTreeView.dispose.call(o);
 }

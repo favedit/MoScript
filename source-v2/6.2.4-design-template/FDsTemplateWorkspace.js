@@ -5,7 +5,7 @@
 // @history 150121
 //==========================================================
 function FDsTemplateWorkspace(o){
-   o = RClass.inherits(this, o, FWorkspace);
+   o = RClass.inherits(this, o, FUiWorkspace);
    //..........................................................
    // @style
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
@@ -47,24 +47,24 @@ function FDsTemplateWorkspace(o){
 //==========================================================
 function FDsTemplateWorkspace_onBuild(p){
    var o = this;
-   o.__base.FWorkspace.onBuild.call(o, p);
+   o.__base.FUiWorkspace.onBuild.call(o, p);
    o._hPanel.style.width = '100%';
    o._hPanel.style.height = '100%';
    // 建立主框架
-   var fs = o._framesetMain = RClass.create(FFrameSet);
+   var fs = o._framesetMain = RClass.create(FUiFrameSet);
    fs.build(p);
    // 建立工具区
-   var f = o._frameToolBar = RClass.create(FFrame);
+   var f = o._frameToolBar = RClass.create(FUiFrameContainer);
    f.setHeight(26);
    f.build(p);
    f._hPanel.className = o.styleName('Toolbar_Ground');
    fs.appendFrame(f);
    // 建立内容区
-   var f = o._frameBody = RClass.create(FFrame);
+   var f = o._frameBody = RClass.create(FUiFrameContainer);
    f.build(p);
    fs.appendFrame(f);
    // 建立状态区
-   var f = o._frameStatusBar = RClass.create(FFrame);
+   var f = o._frameStatusBar = RClass.create(FUiFrameContainer);
    f.setHeight(18);
    f.build(p);
    f._hPanel.className = o.styleName('Statusbar_Ground');
@@ -72,11 +72,11 @@ function FDsTemplateWorkspace_onBuild(p){
    fs.setPanel(o._hPanel);
    //..........................................................
    // 建立内容框架
-   var fs = RClass.create(FFrameSet);
+   var fs = RClass.create(FUiFrameSet);
    fs._directionCd = EDirection.Horizontal;
    fs.build(p);
    // 建立目录区
-   var f = o._frameCatalog = RClass.create(FFrame);
+   var f = o._frameCatalog = RClass.create(FUiFrameContainer);
    f.setWidth(300);
    f.build(p);
    f._hPanel.className = o.styleName('Catalog_Ground');
@@ -84,14 +84,14 @@ function FDsTemplateWorkspace_onBuild(p){
    // 建立分割符
    var sp1 = fs.appendSpliter();
    // 建立工作区
-   var f = o._frameWorkspace = RClass.create(FFrame);
+   var f = o._frameWorkspace = RClass.create(FUiFrameContainer);
    f.build(p);
    f._hPanel.className = o.styleName('Workspace_Ground');
    fs.appendFrame(f);
    // 建立分割符
    var sp2 = fs.appendSpliter();
    // 建立属性区
-   var f = o._frameProperty = RClass.create(FFrame);
+   var f = o._frameProperty = RClass.create(FUiFrameContainer);
    f.setWidth(240);
    f.build(p);
    f._hPanel.className = o.styleName('Property_Ground');
@@ -135,9 +135,14 @@ function FDsTemplateWorkspace_onBuild(p){
    c.setPanel(hc);
    o.push(c);
    //..........................................................
-   var c = o._materialFrame = RClass.create(FDsTemplateMaterialFrame);
+   //var c = o._materialFrame = RClass.create(FDsTemplateMaterialFrame);
+   //c._workspace = o;
+   //c.buildConfig(p);
+   //c.setPanel(o._frameProperty._hPanel);
+   //..........................................................
+   var c = o._materialProperty = RClass.create(FDsTemplateMaterialPropertyFrame);
    c._workspace = o;
-   c.buildConfig(p);
+   c.buildDefine('design3d.template.MaterialPropertyFrame', p);
    c.setPanel(o._frameProperty._hPanel);
 }
 
@@ -156,7 +161,8 @@ function FDsTemplateWorkspace_onTemplateLoad(p){
    var rt = t._resource;
    var rtm = rt._themes.get(0);
    var rm = rtm.materials().value(0);
-   o._materialFrame.loadMaterial(t, rm);
+   o._materialProperty.loadMaterial(t, rm);
+   //o._materialFrame.loadMaterial(t, rm);
 }
 
 //==========================================================
@@ -167,7 +173,7 @@ function FDsTemplateWorkspace_onTemplateLoad(p){
 function FDsTemplateWorkspace_construct(){
    var o = this;
    // 父处理
-   o.__base.FWorkspace.construct.call(o);
+   o.__base.FUiWorkspace.construct.call(o);
 }
 
 //==========================================================
@@ -188,5 +194,5 @@ function FDsTemplateWorkspace_loadTemplate(p){
 function FDsTemplateWorkspace_dispose(){
    var o = this;
    // 父处理
-   o.__base.FWorkspace.dispose.call(o);
+   o.__base.FUiWorkspace.dispose.call(o);
 }

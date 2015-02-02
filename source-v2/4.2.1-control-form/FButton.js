@@ -1,8 +1,9 @@
 //==========================================================
 // <T>按钮控件。</T>
 //
-// @class FControl, MDisplay, MDesign
-// @history 091120 MAOCY 创建
+// @class
+// @author maocy
+// @history 150202
 //==========================================================
 function FButton(o){
    o = RClass.inherits(this, o, FControl, MDisplay, MDesign);

@@ -11,7 +11,7 @@ var EResult = new function EResult(){
    o.Success  = 0;
    // @attribute Integer 继续
    o.Continue = 1;
-   // @attribute Integer 继续
+   // @attribute Integer 跳过
    o.Skip     = 2;
    // @attribute Integer 停止
    o.Finish   = 3;

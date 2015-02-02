@@ -9,7 +9,7 @@ var RControl = new function RControl(){
    var o = this;
    //..........................................................
    // @property
-   o.PREFIX             = 'F';
+   o.PREFIX             = 'FUi';
    //..........................................................
    // @attribute
    //..........................................................
@@ -60,22 +60,26 @@ function RControl_newInstance(p){
    var o = this;
    var r = null;
    if(p){
+      var n = null
       if(p.constructor == String){
-         var n = null
-         if(RString.startsWith(p, o.PREFIX)){
-            n = p;
-         }else{
+         // 字符串
+         if(!RString.startsWith(p, o.PREFIX)){
             n = o.PREFIX + p;
          }
-         if(n == 'FColor'){
-            n = 'FUiColor';
-         }else if(n == 'FColor3'){
-            n = 'FUiColor3';
-         }else if(n == 'FColor4'){
-            n = 'FUiColor4';
+      }else if(p.constructor == TXmlNode){
+         // 配置节点
+         n = p.get('class_name');
+         if(RString.isEmpty(n)){
+            n = p.name();
+            if(!RString.startsWith(n, o.PREFIX)){
+               n = o.PREFIX + n;
+            }
          }
-         r = RClass.create(n);
+      }else{
+         throw new TError(o, 'Unknown parameter. (name={p})', p);
       }
+      // 创建实例
+      r = RClass.create(n);
    }
    if(r == null){
       throw new TError(o, 'Create instance failure. (name={p})', p);
@@ -87,7 +91,7 @@ function RControl_newInstance(p){
 // <T>连接一个页面事件。</T>
 //
 // @method
-// @param c:control:FControl 控件对象
+// @param c:control:FUiControl 控件对象
 // @param n:name:String 事件名称
 // @param h:html:HtmlTag 页面元素
 // @param m:method:Function 处理函数
@@ -127,7 +131,7 @@ function RControl_attachEvent(c, n, h, m, u){
 // @param pc:parent:FComponent 父组件
 // @param px:config:TXmlNode 配置节点
 // @param pa:attributes:Object 参数集合
-// @return FControl 控件对象
+// @return FUiControl 控件对象
 //===========================================================
 function RControl_innerCreate(pc, px, pa){
    var o = this;
@@ -167,10 +171,10 @@ function RControl_innerCreate(pc, px, pa){
 // </P>
 //
 // @method
-// @param pc:control:FControl 控件对象
+// @param pc:control:FUiControl 控件对象
 // @param px:config:TXmlNode 配置节点
 // @param pa:attributes:Object 属性集合
-// @return FControl 控件对象
+// @return FUiControl 控件对象
 //===========================================================
 function RControl_create(pc, px, pa){
    var o = this;
@@ -218,7 +222,7 @@ function RControl_create(pc, px, pa){
 // <T>根据配置信息内部构件一个控件。</T>
 //
 // @method
-// @param pc:control:FControl 控件对象
+// @param pc:control:FUiControl 控件对象
 // @param px:config:TXmlNode 配置节点
 // @param pa:attribute:Object 属性集合
 //===========================================================
@@ -233,7 +237,7 @@ function RControl_innerbuild(pc, px, pa, ph){
       pc.propertyLoad(px);
    }
    // 构建处理
-   if(RClass.isClass(pc, FControl)){
+   if(RClass.isClass(pc, FUiControl)){
       if(!pc.isBuild()){
          pc.build(ph);
       }else{
@@ -251,6 +255,10 @@ function RControl_innerbuild(pc, px, pa, ph){
          pc.push(c);
       }
    }
+   // 构建完成处理
+   if(RClass.isClass(pc, FUiControl)){
+      pc.builded(ph);
+   }
 }
 
 //===========================================================
@@ -267,7 +275,7 @@ function RControl_innerbuild(pc, px, pa, ph){
 // </P>
 //
 // @method
-// @param pc:control:FControl 控件对象
+// @param pc:control:FUiControl 控件对象
 // @param px:config:TXmlNode 配置节点
 // @param pa:attribute:Object 属性集合
 // @param ph:panel:HtmlTag 页面元素
@@ -290,8 +298,8 @@ function RControl_build(pc, px, pa, ph){
 
 
 // ------------------------------------------------------------
-// tc:targetControl:FControl
-// sc:senderControl:FControl
+// tc:targetControl:FUiControl
+// sc:senderControl:FUiControl
 // n:name:String 注册过的事件名称
 // h:html:HTML 注册过的事件名称
 // m:method:Function 即时处理函数

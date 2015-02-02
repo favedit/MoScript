@@ -1945,6 +1945,11 @@ function FRs3Resource_testReady(){
 }
 function FRs3Resource_unserialize(p){
    var o = this;
+   var r = p.readInt32();
+   if(r != EResult.Success){
+      var s = p.readString();
+      throw new TError('Unserial resource failure.\n{1}', s);
+   }
    o._guid = p.readString();
    o._code = p.readString();
 }

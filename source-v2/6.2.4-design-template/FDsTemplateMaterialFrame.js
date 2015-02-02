@@ -5,23 +5,46 @@
 // @history 141231
 //==========================================================
 function FDsTemplateMaterialFrame(o){
-   o = RClass.inherits(this, o, FForm);
+   o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
    o._template      = null;
    o._material      = null;
    //..........................................................
    // @event
+   o.onBuilded      = FDsTemplateMaterialFrame_onBuilded;
    o.onDataChanged  = FDsTemplateMaterialFrame_onDataChanged;
    //..........................................................
    // @method
    o.construct      = FDsTemplateMaterialFrame_construct;
    // @method
-   o.buildConfig    = FDsTemplateMaterialFrame_buildConfig;
    o.loadMaterial   = FDsTemplateMaterialFrame_loadMaterial;
    // @method
    o.dispose        = FDsTemplateMaterialFrame_dispose;
    return o;
+}
+
+//==========================================================
+// <T>构建完成处理。</T>
+//
+// @method
+// @param p:event:TEventProcess 事件处理
+//==========================================================
+function FDsTemplateMaterialFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   // 关联对象
+   o._controlGuid = o.searchControl('guid');
+   o._controlCode = o.searchControl('code');
+   o._controlLabel = o.searchControl('label');
+   var ac = o._controlAmbientColor = o.searchControl('ambientColor');
+   ac.addDataChangedListener(o, o.onDataChanged);
+   var dc = o._controlDiffuseColor = o.searchControl('diffuseColor');
+   dc.addDataChangedListener(o, o.onDataChanged);
+   var sc = o._controlSpecularColor = o.searchControl('specularColor');
+   sc.addDataChangedListener(o, o.onDataChanged);
+   var sl = o._controlSpecularLevel = o.searchControl('specularLevel');
+   sl.addDataChangedListener(o, o.onDataChanged);
 }
 
 //==========================================================
@@ -58,32 +81,7 @@ function FDsTemplateMaterialFrame_onDataChanged(p){
 function FDsTemplateMaterialFrame_construct(){
    var o = this;
    // 父处理
-   o.__base.FForm.construct.call(o);
-}
-
-//==========================================================
-// <T>根据配置构造处理。</T>
-//
-// @method
-//==========================================================
-function FDsTemplateMaterialFrame_buildConfig(p){
-   var o = this;
-   // 建立表单
-   var x = RConsole.find(FDescribeFrameConsole).load('design3d.template.MaterialForm');
-   RControl.build(o, x, null, p);
-   o._hPanel.width = '100%';
-   // 关联对象
-   o._controlGuid = o.searchControl('guid');
-   o._controlCode = o.searchControl('code');
-   o._controlLabel = o.searchControl('label');
-   var ac = o._controlAmbientColor = o.searchControl('ambientColor');
-   ac.addDataChangedListener(o, o.onDataChanged);
-   var dc = o._controlDiffuseColor = o.searchControl('diffuseColor');
-   dc.addDataChangedListener(o, o.onDataChanged);
-   var sc = o._controlSpecularColor = o.searchControl('specularColor');
-   sc.addDataChangedListener(o, o.onDataChanged);
-   var sl = o._controlSpecularLevel = o.searchControl('specularLevel');
-   sl.addDataChangedListener(o, o.onDataChanged);
+   o.__base.FUiForm.construct.call(o);
 }
 
 //==========================================================
@@ -117,5 +115,5 @@ function FDsTemplateMaterialFrame_loadMaterial(t, m){
 function FDsTemplateMaterialFrame_dispose(){
    var o = this;
    // 父处理
-   o.__base.FForm.dispose.call(o);
+   o.__base.FUiForm.dispose.call(o);
 }

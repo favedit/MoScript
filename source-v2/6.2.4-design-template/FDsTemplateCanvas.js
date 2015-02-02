@@ -5,7 +5,7 @@
 // @history 150130
 //==========================================================
 function FDsTemplateCanvas(o){
-   o = RClass.inherits(this, o, FCanvas, MListenerLoad);
+   o = RClass.inherits(this, o, FUiCanvas, MListenerLoad);
    //..........................................................
    o._context        = null;
    o._stage          = null;
@@ -38,7 +38,7 @@ function FDsTemplateCanvas(o){
 //==========================================================
 function FDsTemplateCanvas_onBuild(p){
    var o = this;
-   o.__base.FCanvas.onBuild.call(o, p);
+   o.__base.FUiCanvas.onBuild.call(o, p);
    // 创建渲染环境
    var h = o._hPanel;
    o._context = REngine3d.createContext(FWglContext, h);
@@ -81,7 +81,8 @@ function FDsTemplateCanvas_onEnterFrame(){
       var r = o._rotation;
       m.location().set(0, -8.0, 0);
       m.rotation().set(0, r.y, 0);
-      m.scale().set(3.0, 3.0, 3.0);
+      //m.scale().set(3.0, 3.0, 3.0);
+      m.scale().set(0.5, 0.5, 0.5);
       m.update();
       // 设置变量
       if(o._rotationAble){
@@ -110,7 +111,7 @@ function FDsTemplateCanvas_onTemplateLoad(p){
 function FDsTemplateCanvas_oeRefresh(p){
    var o = this;
    var c = o._context;
-   o.__base.FCanvas.oeRefresh.call(o, p);
+   o.__base.FUiCanvas.oeRefresh.call(o, p);
    // 获得大小
    var w = o._hParent.offsetWidth;
    var h = o._hParent.offsetHeight;
@@ -134,7 +135,7 @@ function FDsTemplateCanvas_oeRefresh(p){
 //==========================================================
 function FDsTemplateCanvas_construct(){
    var o = this;
-   o.__base.FCanvas.construct.call(o);
+   o.__base.FUiCanvas.construct.call(o);
    o._rotation = new SVector3();
 }
 
@@ -170,5 +171,5 @@ function FDsTemplateCanvas_dispose(){
       o._rotation = null;
    }
    // 父处理
-   o.__base.FCanvas.dispose.call(o);
+   o.__base.FUiCanvas.dispose.call(o);
 }

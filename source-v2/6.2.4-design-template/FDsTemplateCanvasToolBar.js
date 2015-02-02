@@ -5,7 +5,7 @@
 // @history 141231
 //==========================================================
 function FDsTemplateCanvasToolBar(o){
-   o = RClass.inherits(this, o, FToolBar);
+   o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @attribute
    o._refreshButton = null;
@@ -33,33 +33,33 @@ function FDsTemplateCanvasToolBar(o){
 //==========================================================
 function FDsTemplateCanvasToolBar_onBuild(p){
    var o = this;
-   o.__base.FToolBar.onBuild.call(o, p);
+   o.__base.FUiToolBar.onBuild.call(o, p);
    // 建立按键
-   var b = o._refreshButton  = RClass.create(FToolButton);
+   var b = o._refreshButton  = RClass.create(FUiToolButton);
    b.setLabel('旋转');
    b.build(p);
    b.lsnsClick.register(o, o.onRotationClick);
    o.appendButton(b);
    // 建立按键
-   var b = o._saveButton = RClass.create(FToolButton);
+   var b = o._saveButton = RClass.create(FUiToolButton);
    b.setLabel('暂停');
    b.build(p);
    b.lsnsClick.register(o, o.onRotationStopClick);
    o.appendButton(b);
    // 建立按键
-   var b = o._saveButton = RClass.create(FToolButton);
+   var b = o._saveButton = RClass.create(FUiToolButton);
    b.setLabel('前视角');
    b.build(p);
    b.lsnsClick.register(o, o.onSaveClick);
    o.appendButton(b);
    // 建立按键
-   var b = o._saveButton = RClass.create(FToolButton);
+   var b = o._saveButton = RClass.create(FUiToolButton);
    b.setLabel('上视角');
    b.build(p);
    b.lsnsClick.register(o, o.onSaveClick);
    o.appendButton(b);
    // 建立按键
-   var b = o._saveButton = RClass.create(FToolButton);
+   var b = o._saveButton = RClass.create(FUiToolButton);
    b.setLabel('左视角');
    b.build(p);
    b.lsnsClick.register(o, o.onSaveClick);
@@ -108,7 +108,7 @@ function FDsTemplateCanvasToolBar_onSaveClick(p){
 function FDsTemplateCanvasToolBar_construct(){
    var o = this;
    // 父处理
-   o.__base.FToolBar.construct.call(o);
+   o.__base.FUiToolBar.construct.call(o);
 }
 
 //==========================================================
@@ -119,5 +119,5 @@ function FDsTemplateCanvasToolBar_construct(){
 function FDsTemplateCanvasToolBar_dispose(){
    var o = this;
    // 父处理
-   o.__base.FToolBar.dispose.call(o);
+   o.__base.FUiToolBar.dispose.call(o);
 }

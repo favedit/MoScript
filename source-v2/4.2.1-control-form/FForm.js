@@ -5,16 +5,18 @@
 // @author maocy
 // @version 150122
 //==========================================================
-function FForm(o){
-   //o = RClass.inherits(this, o, FLayout, MForm, MDisplayAble, MValue, MAction);
-   //o = RClass.inherits(this, o, FLayout, MFocus, MDataset);
-   o = RClass.inherits(this, o, FLayout, MDataset);
+function FUiForm(o){
+   //o = RClass.inherits(this, o, FUiLayout, MForm, MDisplayAble, MValue, MAction);
+   //o = RClass.inherits(this, o, FUiLayout, MFocus, MDataset);
+   o = RClass.inherits(this, o, FUiLayout, MDataset);
    //..........................................................
    // @event
-   o.onMouseDown        = FForm_onMouseDown;
+   o.onMouseDown        = FUiForm_onMouseDown;
    //..........................................................
    // @method
-   o.construct          = FForm_construct;
+   o.construct          = FUiForm_construct;
+   // @method
+   o.buildDefine        = FUiForm_buildDefine;
 
 
 
@@ -37,34 +39,34 @@ function FForm(o){
    o.lsnsClick          = null;
    //..........................................................
    // @event
-   o.onLoadDataset      = FForm_onLoadDataset;
-   o.onLoadDatasetEnd   = FForm_onLoadDatasetEnd;
+   o.onLoadDataset      = FUiForm_onLoadDataset;
+   o.onLoadDatasetEnd   = FUiForm_onLoadDatasetEnd;
    //..........................................................
    // @method
-   o.isDataChanged      = FForm_isDataChanged;
-   o.getFormLink        = FForm_getFormLink;
-   o.allDataComponents  = FForm_allDataComponents;
-   o.get                = FForm_get;
-   o.reget              = FForm_reget;
-   o.set                = FForm_set;
-   o.getDataCodes       = FForm_getDataCodes;
-   o.getCurrentRow      = FForm_getCurrentRow;
-   o.getSelectedRows    = FForm_getSelectedRows;
-   o.getCurrentRows     = FForm_getCurrentRows;
-   o.getChangedRows     = FForm_getChangedRows;
-   o.getRows            = FForm_getRows;
-   o.clearValue         = FForm_clearValue;
-   o.resetValue         = FForm_resetValue;
-   o.loadValue          = FForm_loadValue;
-   o.saveValue          = FForm_saveValue;
-   o.recordValue        = FForm_recordValue;
-   o.toAttributes       = FForm_toAttributes;
-   o.focus              = FForm_focus;
-   o.dsUpdate           = FForm_dsUpdate;
-   o.doPrepare          = FForm_doPrepare;
-   o.doUpdate           = FForm_doUpdate;
-   o.doDelete           = FForm_doDelete;
-   o.dispose            = FForm_dispose;
+   o.isDataChanged      = FUiForm_isDataChanged;
+   o.getFormLink        = FUiForm_getFormLink;
+   o.allDataComponents  = FUiForm_allDataComponents;
+   o.get                = FUiForm_get;
+   o.reget              = FUiForm_reget;
+   o.set                = FUiForm_set;
+   o.getDataCodes       = FUiForm_getDataCodes;
+   o.getCurrentRow      = FUiForm_getCurrentRow;
+   o.getSelectedRows    = FUiForm_getSelectedRows;
+   o.getCurrentRows     = FUiForm_getCurrentRows;
+   o.getChangedRows     = FUiForm_getChangedRows;
+   o.getRows            = FUiForm_getRows;
+   o.clearValue         = FUiForm_clearValue;
+   o.resetValue         = FUiForm_resetValue;
+   o.loadValue          = FUiForm_loadValue;
+   o.saveValue          = FUiForm_saveValue;
+   o.recordValue        = FUiForm_recordValue;
+   o.toAttributes       = FUiForm_toAttributes;
+   o.focus              = FUiForm_focus;
+   o.dsUpdate           = FUiForm_dsUpdate;
+   o.doPrepare          = FUiForm_doPrepare;
+   o.doUpdate           = FUiForm_doUpdate;
+   o.doDelete           = FUiForm_doDelete;
+   o.dispose            = FUiForm_dispose;
 
 
 
@@ -73,21 +75,21 @@ function FForm(o){
    //o._nameComponents    = null;
    //----------------------------------------------------------
    // Method
-   //o.allNameComponents  = FForm_allNameComponents;
+   //o.allNameComponents  = FUiForm_allNameComponents;
    // Attribute
    //o.isLoading          = false;
    // Event
-   //o.onLoaded           = FForm_onLoaded;
-   //o.onDsFetchEnd       = FForm_onDsFetchEnd;
-   //o.onDsUpdateBegin    = FForm_onDsUpdateBegin;
-   //o.onDsUpdateEnd      = FForm_onDsUpdateEnd;
+   //o.onLoaded           = FUiForm_onLoaded;
+   //o.onDsFetchEnd       = FUiForm_onDsFetchEnd;
+   //o.onDsUpdateBegin    = FUiForm_onDsUpdateBegin;
+   //o.onDsUpdateEnd      = FUiForm_onDsUpdateEnd;
    //o.onLoadValue        = RMethod.empty;
    //o.onSaveValue        = RMethod.empty;
-   //o.connect            = FForm_connect;
-   //o.loadDocument       = FForm_loadDocument;
-   //o.testStatus         = FForm_testStatus;
-   //o.hasAction          = FForm_hasAction;
-   //o.setEditable        = FForm_setEditable;
+   //o.connect            = FUiForm_connect;
+   //o.loadDocument       = FUiForm_loadDocument;
+   //o.testStatus         = FUiForm_testStatus;
+   //o.hasAction          = FUiForm_hasAction;
+   //o.setEditable        = FUiForm_setEditable;
    return o;
 }
 
@@ -97,7 +99,7 @@ function FForm(o){
 // @method
 // @param p:event:SEvent 事件信息
 //==========================================================
-function FForm_onMouseDown(p){
+function FUiForm_onMouseDown(p){
    var o = this;
    //var fc = RConsole.find(FFocusConsole);
    //fc.focusClass(MDataset, o);
@@ -112,9 +114,9 @@ function FForm_onMouseDown(p){
 //
 // @method
 //==========================================================
-function FForm_construct(){
+function FUiForm_construct(){
    var o = this;
-   o.__base.FLayout.construct.call(o);
+   o.__base.FUiLayout.construct.call(o);
    //o.__base.MDataset.construct.call(o);
    // 建立监听器
    //o.lsnsLoaded = new TListeners();
@@ -127,6 +129,20 @@ function FForm_construct(){
    //o._recordEvent = new TEventProcess(o, 'oeRecordValue', MEditValue);
    //o._codeEvent = new TEventProcess(o, 'oeSaveCode', MEditDescriptor);
    //o._dataComponents = new TMap();
+}
+
+//==========================================================
+// <T>从配置信息中构建构造页面。</T>
+//
+// @method
+// @param p:frameName:String 页面名称
+// @param p:hDocument:HtmlTag 页面元素
+//==========================================================
+function FUiForm_buildDefine(n, p){
+   var o = this;
+   // 获取页面定义
+   var x = RConsole.find(FDescribeFrameConsole).load(n);
+   RControl.build(o, x, null, p);
 }
 
 
@@ -149,7 +165,7 @@ function FForm_construct(){
 // @method
 // @param ds:dataset:TDataset 数据集
 //==========================================================
-function FForm_onLoadDataset(ds){
+function FUiForm_onLoadDataset(ds){
    var o = this;
    o.doUpdate(o.dsViewer.current());
 }
@@ -159,7 +175,7 @@ function FForm_onLoadDataset(ds){
 //
 // @method
 //==========================================================
-function FForm_onLoadDatasetEnd(){
+function FUiForm_onLoadDatasetEnd(){
    var o = this;
    o.topControl().topResize();
    o.psProgress(false);
@@ -173,7 +189,7 @@ function FForm_onLoadDatasetEnd(){
 //    <L value='true'>变化过</L>
 //    <L value='false'>未变化</L>
 //==========================================================
-function FForm_isDataChanged(){
+function FUiForm_isDataChanged(){
    var o = this;
    var ps = o.allDataComponents();
    if(!ps.isEmpty()){
@@ -193,7 +209,7 @@ function FForm_isDataChanged(){
 // @event
 // @param t:type:EFormLink 关联类型
 //==========================================================
-function FForm_getFormLink(t){
+function FUiForm_getFormLink(t){
    var o = this;
    if(EFormLink.Form == t){
       return o.name;
@@ -210,7 +226,7 @@ function FForm_getFormLink(t){
 // @param p:component:FComponent 当前组件
 // @param m:map:TMap 要存储的数据集
 //==========================================================
-function FForm_allDataComponents(p, m){
+function FUiForm_allDataComponents(p, m){
    var o = this;
    // 检查数据参数
    if(!p){
@@ -243,7 +259,7 @@ function FForm_allDataComponents(p, m){
 // @param n:name:String 字段名称
 // @return String 数据内容
 //==========================================================
-function FForm_get(n){
+function FUiForm_get(n){
    var ps = this.allDataComponents();
    if(ps){
       var p = ps.get(n);
@@ -260,7 +276,7 @@ function FForm_get(n){
 // @param n:name:String 字段名称
 // @return String 数据内容
 //==========================================================
-function FForm_reget(n){
+function FUiForm_reget(n){
    var ps = this.allDataComponents();
    if(ps){
       var p = ps.get(n);
@@ -277,7 +293,7 @@ function FForm_reget(n){
 // @param n:name:String 字段名称
 // @param v:value:String 数据内容
 //==========================================================
-function FForm_set(n, v){
+function FUiForm_set(n, v){
    var ps = this.allDataComponents();
    if(ps){
       var p = ps.get(n);
@@ -293,7 +309,7 @@ function FForm_set(n, v){
 // @method
 // @return TRow 数据行
 //==========================================================
-function FForm_getDataCodes(){
+function FUiForm_getDataCodes(){
    var o = this;
    var e = o._codeEvent;
    e.values = new TAttributes();
@@ -307,7 +323,7 @@ function FForm_getDataCodes(){
 // @method
 // @return TRow 数据行
 //==========================================================
-function FForm_getCurrentRow(){
+function FUiForm_getCurrentRow(){
    return this.saveValue();
 }
 
@@ -317,7 +333,7 @@ function FForm_getCurrentRow(){
 // @method
 // @return TList<TRow> 数据行集合
 //==========================================================
-function FForm_getSelectedRows(){
+function FUiForm_getSelectedRows(){
    var ls = new TList();
    ls.push(this.saveValue());
    return ls;
@@ -329,7 +345,7 @@ function FForm_getSelectedRows(){
 // @method
 // @return TList<TRow> 数据行集合
 //==========================================================
-function FForm_getCurrentRows(){
+function FUiForm_getCurrentRows(){
    var o = this;
    var ls = new TList();
    var r = new TRow();
@@ -345,7 +361,7 @@ function FForm_getCurrentRows(){
 // @method
 // @return TList<TRow> 数据行集合
 //==========================================================
-function FForm_getChangedRows(){
+function FUiForm_getChangedRows(){
    var o = this;
    var ls = new TList();
    if(o.isDataChanged()){
@@ -364,7 +380,7 @@ function FForm_getChangedRows(){
 // @param d:dataset:TDataset 数据集
 // @return TDataset 数据集
 //==========================================================
-function FForm_getRows(){
+function FUiForm_getRows(){
    var ls = new TList();
    ls.push(this.saveValue());
    return ls;
@@ -375,7 +391,7 @@ function FForm_getRows(){
 //
 // @event
 //==========================================================
-function FForm_clearValue(){
+function FUiForm_clearValue(){
    this.process(this._clearEvent);
 }
 
@@ -384,7 +400,7 @@ function FForm_clearValue(){
 //
 // @event
 //==========================================================
-function FForm_resetValue(){
+function FUiForm_resetValue(){
    this.process(this._resetEvent);
 }
 
@@ -395,7 +411,7 @@ function FForm_resetValue(){
 // @param r:row:TRow 行对象
 // @param m:mode:EStore 存储模式
 //==========================================================
-function FForm_loadValue(r, m){
+function FUiForm_loadValue(r, m){
    if(r){
       var o = this;
       var e = o._loadEvent;
@@ -413,7 +429,7 @@ function FForm_loadValue(r, m){
 // @param r:row:TRow 行对象
 // @param m:mode:EStore 存储模式
 //==========================================================
-function FForm_saveValue(r, m){
+function FUiForm_saveValue(r, m){
    var o = this;
    if(!r){
       r = new TRow();
@@ -434,7 +450,7 @@ function FForm_saveValue(r, m){
 //
 // @event
 //==========================================================
-function FForm_recordValue(){
+function FUiForm_recordValue(){
    this.process(this._recordEvent);
 }
 
@@ -445,7 +461,7 @@ function FForm_recordValue(){
 // @param r:row:TRow 行对象
 // @param m:mode:EStore 存储模式
 //==========================================================
-function FForm_toAttributes(r, m){
+function FUiForm_toAttributes(r, m){
    return this.saveValue(r, m);
 }
 
@@ -454,7 +470,7 @@ function FForm_toAttributes(r, m){
 //
 // @method
 //==========================================================
-function FForm_focus(){
+function FUiForm_focus(){
    var o = this;
    o.__base.MFocus.focus.call(o);
    o.focusControl();
@@ -468,7 +484,7 @@ function FForm_focus(){
 // @param u:ouid:String 唯一标识
 // @param v:over:String 行记录的版本
 //==========================================================
-function FForm_dsUpdate(u, v){
+function FUiForm_dsUpdate(u, v){
    var o = this;
    // 获取单条数据模式
    if(u){
@@ -509,7 +525,7 @@ function FForm_dsUpdate(u, v){
 //@param u:ouid:String 唯一标识
 //@param v:over:String 行记录的版本
 //==========================================================
-function FForm_setEditable(v){
+function FUiForm_setEditable(v){
    var ps = this.allDataComponents();
    if(ps){
 	   var pc = ps.count;
@@ -526,7 +542,7 @@ function FForm_setEditable(v){
 // @method
 // @param v:values:TAttributes 属性对象
 //==========================================================
-function FForm_doPrepare(v){
+function FUiForm_doPrepare(v){
    var o = this;
    // 设置数据状态
    o._dataStatusCd = ERowStatus.Insert;
@@ -546,7 +562,7 @@ function FForm_doPrepare(v){
 // @method
 // @param v:values:TAttributes 属性对象
 //==========================================================
-function FForm_doUpdate(v){
+function FUiForm_doUpdate(v){
    var o = this;
    // 设置数据状态
    o._dataStatusCd = ERowStatus.Update;
@@ -566,7 +582,7 @@ function FForm_doUpdate(v){
 // @method
 // @param v:values:TAttributes 属性对象
 //==========================================================
-function FForm_doDelete(v){
+function FUiForm_doDelete(v){
    var o = this;
    // 设置数据状态
    o._dataStatusCd = ERowStatus.Delete;
@@ -585,9 +601,9 @@ function FForm_doDelete(v){
 //
 // @method
 //==========================================================
-function FForm_dispose(){
+function FUiForm_dispose(){
    var o = this;
-   o.__base.FLayout.dispose.call(o);
+   o.__base.FUiLayout.dispose.call(o);
    RMemory.freeHtml(o.hEdit);
    RMemory.freeHtml(o.hDrop);
    o.hEdit = null;
@@ -631,7 +647,7 @@ function FForm_dispose(){
 // @param p:component:FComponent 当前组件
 // @param m:map:TMap 要存储的数据集
 //==========================================================
-function FForm_allNameComponents(f, p, m){
+function FUiForm_allNameComponents(f, p, m){
    var o = this;
    var vs = o._nameComponents;
    // 使用缓冲的集合
@@ -671,7 +687,7 @@ function FForm_allNameComponents(f, p, m){
    return vs;
 }
 // ------------------------------------------------------------
-function FForm_onLoaded(){
+function FUiForm_onLoaded(){
    var o = this.form;
    var doc = this.document;
    if(o && doc){
@@ -681,7 +697,7 @@ function FForm_onLoaded(){
    }
 }
 // ------------------------------------------------------------
-function FForm_onDsFetchEnd(){
+function FUiForm_onDsFetchEnd(){
    var o = this;
    // 从当前行记录读取数据内容
    var v = o.dsCurrent();
@@ -690,7 +706,7 @@ function FForm_onDsFetchEnd(){
    }
 }
 // ------------------------------------------------------------
-function FForm_onDsUpdateBegin(){
+function FUiForm_onDsUpdateBegin(){
    var o = this;
    // 将数据内容保存回当前行记录
    var v = o.dsCurrent();
@@ -699,7 +715,7 @@ function FForm_onDsUpdateBegin(){
    }
 }
 // ------------------------------------------------------------
-function FForm_onDsUpdateEnd(){
+function FUiForm_onDsUpdateEnd(){
    var o = this;
    // 从当前行记录读取数据内容
    var v = o.dsCurrent();
@@ -708,7 +724,7 @@ function FForm_onDsUpdateEnd(){
    }
 }
 // ------------------------------------------------------------
-function FForm_connect(service, type, action, attrs){
+function FUiForm_connect(service, type, action, attrs){
    // Build send info
    var doc = new TXmlDocument();
    var root = doc.root();
@@ -725,7 +741,7 @@ function FForm_connect(service, type, action, attrs){
    RConsole.find(FXmlConsole).process(event);
 }
 // ------------------------------------------------------------
-function FForm_loadDocument(doc){
+function FUiForm_loadDocument(doc){
    if(doc){
       var root = doc.root();
       if(root.isName('Table')){
@@ -737,7 +753,7 @@ function FForm_loadDocument(doc){
    }
 }
 // ------------------------------------------------------------
-function FForm_testStatus(t){
+function FUiForm_testStatus(t){
    var o = this;
    var r = o.__base.MDataset.testStatus.call(o, t);
    if(EDataAction.Fetch == t){
@@ -760,7 +776,7 @@ function FForm_testStatus(t){
    return r;
 }
 // ------------------------------------------------------------
-function FForm_hasAction(){
+function FUiForm_hasAction(){
    var o = this;
    var cs = o.components;
    var ct = cs.count;
