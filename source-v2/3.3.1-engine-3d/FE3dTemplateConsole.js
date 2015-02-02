@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150106
 //==========================================================
-function FTemplate3dConsole(o){
+function FE3dTemplateConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
@@ -18,15 +18,13 @@ function FTemplate3dConsole(o){
    o._interval      = 100;
    //..........................................................
    // @event
-   o.onProcess      = FTemplate3dConsole_onProcess;
+   o.onProcess      = FE3dTemplateConsole_onProcess;
    //..........................................................
    // @method
-   o.construct      = FTemplate3dConsole_construct;
+   o.construct      = FE3dTemplateConsole_construct;
    // @method
-   o.templates      = FTemplate3dConsole_templates;
-   // @method
-   o.alloc          = FTemplate3dConsole_alloc;
-   o.free           = FTemplate3dConsole_free;
+   o.alloc          = FE3dTemplateConsole_alloc;
+   o.free           = FE3dTemplateConsole_free;
    return o;
 }
 
@@ -35,7 +33,7 @@ function FTemplate3dConsole(o){
 //
 // @method
 //==========================================================
-function FTemplate3dConsole_onProcess(){
+function FE3dTemplateConsole_onProcess(){
    var o = this;
    var s = o._loadTemplates;
    s.record();
@@ -52,7 +50,7 @@ function FTemplate3dConsole_onProcess(){
 //
 // @method
 //==========================================================
-function FTemplate3dConsole_construct(){
+function FE3dTemplateConsole_construct(){
    var o = this;
    // 设置属性
    o._loadTemplates = new TLooper();
@@ -65,24 +63,14 @@ function FTemplate3dConsole_construct(){
 }
 
 //==========================================================
-// <T>获得渲染模型集合。</T>
-//
-// @method
-// @return TDictionary 渲染模型集合
-//==========================================================
-function FTemplate3dConsole_templates(){
-   return this._templates;
-}
-
-//==========================================================
 // <T>收集一个渲染模板。</T>
 //
 // @method
 // @param c:content:FRenderContent 渲染环境
 // @param n:name:String 名称
-// @return FTemplate3d 渲染模板
+// @return FE3dTemplate 渲染模板
 //==========================================================
-function FTemplate3dConsole_alloc(c, n){
+function FE3dTemplateConsole_alloc(c, n){
    var o = this;
    // 尝试从缓冲池中取出
    var ts = o._templates.get(n);
@@ -95,7 +83,7 @@ function FTemplate3dConsole_alloc(c, n){
    var rc = RConsole.find(FRs3TemplateConsole);
    var r = rc.load(n);
    // 创建模板
-   var t = RClass.create(FTemplate3d);
+   var t = RClass.create(FE3dTemplate);
    t._context = c;
    t._name = n;
    t._resourceGuid = n;
@@ -109,9 +97,9 @@ function FTemplate3dConsole_alloc(c, n){
 // <T>释放一个渲染模板。</T>
 //
 // @method
-// @param p:template:FTemplate3d 渲染模板
+// @param p:template:FE3dTemplate 渲染模板
 //==========================================================
-function FTemplate3dConsole_free(p){
+function FE3dTemplateConsole_free(p){
    var o = this;
    // 脱离父对象
    p.remove();

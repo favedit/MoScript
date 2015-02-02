@@ -11,21 +11,28 @@ function FG3dRenderable(o){
    o._matrix       = null;
    // @attribute
    o._effectName   = null;
-   o._activeEffect = null;
-   o._effects      = null;
    o._materialName = null;
    o._material     = null;
+   // @attribute
+   o._activeEffect = null;
+   o._effects      = null;
    //..........................................................
    // @method
    o.construct       = FG3dRenderable_construct;
+   // @method
    o.matrix          = FG3dRenderable_matrix;
    o.effectName      = FG3dRenderable_effectName;
+   o.material        = FG3dRenderable_material;
+   // @method
    o.activeEffect    = FG3dRenderable_activeEffect;
    o.setActiveEffect = FG3dRenderable_setActiveEffect;
    o.effects         = FG3dRenderable_effects;
-   o.material        = FG3dRenderable_material;
+   // @method
    o.testVisible     = RMethod.virtual(o, 'testVisible');
+   // @method
    o.update          = FG3dRenderable_update;
+   // @method
+   o.dispose         = FG3dRenderable_dispose;
    return o;
 }
 
@@ -113,7 +120,27 @@ function FG3dRenderable_material(){
 // @param p:region:FG3dRegion 区域
 //==========================================================
 function FG3dRenderable_update(p){
-   //var o = this;
-   //o._matrix.assign(p);
-   //debugger
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FG3dRenderable_dispose(){
+   var o = this;
+   // 释放矩阵
+   var v = o._matrix;
+   if(v){
+      v.dispose();
+      o._matrix = null;
+   }
+   // 释放材质
+   var v = o._material;
+   if(v){
+      v.dispose();
+      o._material = null;
+   }
+   // 父处理
+   o.__base.FGraphicRenderable.dispose.call(o);
 }

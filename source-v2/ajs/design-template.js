@@ -80,7 +80,7 @@ function FDsTemplateCanvas_construct(){
 }
 function FDsTemplateCanvas_loadTemplate(p){
    var o = this;
-   var rmc = RConsole.find(FTemplate3dConsole);
+   var rmc = RConsole.find(FE3dTemplateConsole);
    if(o._activeTemplate != null){
       rmc.free(o._activeTemplate);
    }

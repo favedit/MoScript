@@ -202,7 +202,7 @@ function FDsTemplateWorkspace_onCatalogSelected(p){
    o._materialProperty.hide();
    o._displayProperty.hide();
    // 显示选中面板
-   if(RClass.isClass(p, FTemplate3d)){
+   if(RClass.isClass(p, FE3dTemplate)){
       o._templateProperty.show();
       o._templateProperty.loadObject(t);
    }else if(RClass.isClass(p, FRs3TemplateTheme)){

@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150106
 //==========================================================
-function FTemplate3d(o){
+function FE3dTemplate(o){
    o = RClass.inherits(this, o, FDisplay3d, MListenerLoad);
    //..........................................................
    // @attribute
@@ -18,16 +18,16 @@ function FTemplate3d(o){
    o._displays      = null;
    //..........................................................
    // @method
-   o.displays       = FTemplate3d_displays;
+   o.displays       = FE3dTemplate_displays;
    // @method
-   o.testReady      = FTemplate3d_testReady;
+   o.testReady      = FE3dTemplate_testReady;
    // @method
-   o.setResource    = FTemplate3d_setResource;
-   o.loadResource   = FTemplate3d_loadResource;
-   o.reloadResource = FTemplate3d_reloadResource;
+   o.setResource    = FE3dTemplate_setResource;
+   o.loadResource   = FE3dTemplate_loadResource;
+   o.reloadResource = FE3dTemplate_reloadResource;
    // @method
-   o.processLoad    = FTemplate3d_processLoad;
-   o.process        = FTemplate3d_process;
+   o.processLoad    = FE3dTemplate_processLoad;
+   o.process        = FE3dTemplate_process;
    return o;
 }
 
@@ -37,7 +37,7 @@ function FTemplate3d(o){
 // @method
 // @return TObjects 显示集合
 //==========================================================
-function FTemplate3d_displays(){
+function FE3dTemplate_displays(){
    return this._displays;
 }
 
@@ -47,7 +47,7 @@ function FTemplate3d_displays(){
 // @method
 // @return 是否准备好
 //==========================================================
-function FTemplate3d_testReady(){
+function FE3dTemplate_testReady(){
    return this._dataReady;
 }
 
@@ -57,7 +57,7 @@ function FTemplate3d_testReady(){
 // @method
 // @param p:resource:FRs3Template 资源模板
 //==========================================================
-function FTemplate3d_setResource(p){
+function FE3dTemplate_setResource(p){
    this._resource = p;
 }
 
@@ -67,7 +67,7 @@ function FTemplate3d_setResource(p){
 // @method
 // @param p:resource:FRs3Template 资源模板
 //==========================================================
-function FTemplate3d_loadResource(p){
+function FE3dTemplate_loadResource(p){
    var o = this;
    // 加载资源渲染集合
    var rs = p.displays();
@@ -76,7 +76,7 @@ function FTemplate3d_loadResource(p){
       var ds = o._displays = new TObjects();
       for(var i = 0; i < c; i++){
          var r = rs.get(i);
-         var d = RClass.create(FTemplateRenderable3d);
+         var d = RClass.create(FE3dTemplateRenderable);
          d._display = o;
          d._context = o._context;
          d.loadResource(r);
@@ -90,7 +90,7 @@ function FTemplate3d_loadResource(p){
 //
 // @method
 //==========================================================
-function FTemplate3d_reloadResource(){
+function FE3dTemplate_reloadResource(){
    var o = this;
    var s = o._displays;
    if(s){
@@ -106,7 +106,7 @@ function FTemplate3d_reloadResource(){
 //
 // @method
 //==========================================================
-function FTemplate3d_processLoad(){
+function FE3dTemplate_processLoad(){
    var o = this;
    if(o._ready){
       return true;
@@ -147,7 +147,7 @@ function FTemplate3d_processLoad(){
 //
 // @method
 //==========================================================
-function FTemplate3d_process(){
+function FE3dTemplate_process(){
    var o = this;
    o.__base.FDisplay3d.process.call(o);
    // 处理动画集合

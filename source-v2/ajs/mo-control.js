@@ -2971,7 +2971,7 @@ function RControl_newInstance(p){
             n = o.PREFIX + p;
          }
       }else if(p.constructor == TXmlNode){
-         n = p.get('class_name');
+         n = p.get('type');
          if(RString.isEmpty(n)){
             n = p.name();
             if(!RString.startsWith(n, o.PREFIX)){

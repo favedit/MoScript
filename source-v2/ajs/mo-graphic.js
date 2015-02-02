@@ -1052,19 +1052,20 @@ function FG3dRenderable(o){
    o = RClass.inherits(this, o, FGraphicRenderable);
    o._matrix       = null;
    o._effectName   = null;
-   o._activeEffect = null;
-   o._effects      = null;
    o._materialName = null;
    o._material     = null;
+   o._activeEffect = null;
+   o._effects      = null;
    o.construct       = FG3dRenderable_construct;
    o.matrix          = FG3dRenderable_matrix;
    o.effectName      = FG3dRenderable_effectName;
+   o.material        = FG3dRenderable_material;
    o.activeEffect    = FG3dRenderable_activeEffect;
    o.setActiveEffect = FG3dRenderable_setActiveEffect;
    o.effects         = FG3dRenderable_effects;
-   o.material        = FG3dRenderable_material;
    o.testVisible     = RMethod.virtual(o, 'testVisible');
    o.update          = FG3dRenderable_update;
+   o.dispose         = FG3dRenderable_dispose;
    return o;
 }
 function FG3dRenderable_construct(){
@@ -1097,6 +1098,20 @@ function FG3dRenderable_material(){
    return this._material;
 }
 function FG3dRenderable_update(p){
+}
+function FG3dRenderable_dispose(){
+   var o = this;
+   var v = o._matrix;
+   if(v){
+      v.dispose();
+      o._matrix = null;
+   }
+   var v = o._material;
+   if(v){
+      v.dispose();
+      o._material = null;
+   }
+   o.__base.FGraphicRenderable.dispose.call(o);
 }
 function FG3dShaderTemplate(o){
    o = RClass.inherits(this, o, FTagDocument);

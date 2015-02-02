@@ -68,7 +68,7 @@ function RControl_newInstance(p){
          }
       }else if(p.constructor == TXmlNode){
          // 配置节点
-         n = p.get('class_name');
+         n = p.get('type');
          if(RString.isEmpty(n)){
             n = p.name();
             if(!RString.startsWith(n, o.PREFIX)){
