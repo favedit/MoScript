@@ -45,10 +45,12 @@ function FWglVertexBuffer_upload(v, s, c){
    var d = null;
    if((v.constructor == Array) || (v.constructor == ArrayBuffer)){
       d = new Float32Array(v);
+   }else if(v.constructor == Uint8Array){
+      d = v;
    }else if(v.constructor == Float32Array){
       d = v;
    }else{
-      RLogger.fatal(o, null, 'Upload vertex data type is invalid. (value={1})', v);
+      throw new TError(o, 'Upload vertex data type is invalid. (value={1})', v);
    }
    // 上传数据
    g.bindBuffer(g.ARRAY_BUFFER, o._native);

@@ -6765,9 +6765,9 @@ function SPoint2_dump(){
 }
 function SPoint3(x, y, z){
    var o = this;
-   o.x           = x;
-   o.y           = y;
-   o.z           = z;
+   o.x           = RInteger.nvl(x);
+   o.y           = RInteger.nvl(y);
+   o.z           = RInteger.nvl(z);
    o.assign      = SPoint3_assign;
    o.set         = SPoint3_set;
    o.resize      = SPoint3_resize;
@@ -7102,6 +7102,7 @@ function SSize2(w, h){
    o.width    = RInteger.nvl(w);
    o.height   = RInteger.nvl(h);
    o.isEmpty  = SSize2_isEmpty;
+   o.square   = SSize2_square;
    o.assign   = SSize2_assign;
    o.set      = SSize2_set;
    o.parse    = SSize2_parse;
@@ -7113,6 +7114,9 @@ function SSize2(w, h){
 function SSize2_isEmpty(){
    var o = this;
    return (o.width == 0) && (o.height == 0);
+}
+function SSize2_square(){
+   return this.width * this.height;
 }
 function SSize2_assign(v){
    var o = this;
@@ -14409,6 +14413,7 @@ function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
    o._size               = null;
    o._capability         = null;
+   o._fillModeCd         = EG3dFillMode.Face;
    o._optionDepth        = false;
    o._optionCull         = false;
    o._depthModeCd        = 0;
@@ -15876,7 +15881,27 @@ function FWglContext_setViewport(l, t, w, h){
    o._size.set(w, h);
    o._native.viewport(l, t, w, h);
 }
-function FWglContext_setFillMode(){
+function FWglContext_setFillMode(p){
+   var o = this;
+   var g = o._native;
+   if(o._fillModeCd == p){
+      return;
+   }
+   switch(p){
+      case EG3dFillMode.Point:
+         g.polygonMode(g.FRONT_AND_BACK, g.POINT);
+         break;
+      case EG3dFillMode.Line:
+         g.polygonMode(g.FRONT_AND_BACK, g.LINE);
+         break;
+      case EG3dFillMode.Face:
+         g.polygonMode(g.FRONT, g.FILL);
+         break;
+      default:
+         throw new TError('Invalid parameter. (fill_mode={1})', p);
+   }
+   o._fillModeCd = p;
+   return true;
 }
 function FWglContext_setDepthMode(f, v){
    var o = this;
@@ -16182,7 +16207,11 @@ function FWglContext_drawTriangles(b, i, c){
        return r;
    }
    var strideCd = RWglUtility.convertIndexStride(g, b.strideCd());
-   g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+   if(b._fillMode == EG3dFillMode.Line){
+      g.drawElements(g.LINES, c, strideCd, 2 * i);
+   }else{
+      g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+   }
    r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
    if(!r){
        return r;
@@ -16631,10 +16660,12 @@ function FWglVertexBuffer_upload(v, s, c){
    var d = null;
    if((v.constructor == Array) || (v.constructor == ArrayBuffer)){
       d = new Float32Array(v);
+   }else if(v.constructor == Uint8Array){
+      d = v;
    }else if(v.constructor == Float32Array){
       d = v;
    }else{
-      RLogger.fatal(o, null, 'Upload vertex data type is invalid. (value={1})', v);
+      throw new TError(o, 'Upload vertex data type is invalid. (value={1})', v);
    }
    g.bindBuffer(g.ARRAY_BUFFER, o._native);
    c.checkError('bindBuffer', 'Bindbuffer');
@@ -19885,6 +19916,148 @@ function FRd3Cube_setup(p){
    o.indexBuffer = context.createIndexBuffer();
    o.indexBuffer.upload(id, 36);
 }
+function FRd3Dimensional(o){
+   o = RClass.inherits(this, o, FG3dRenderable);
+   o._cellSize             = null;
+   o._size                 = null;
+   o._lineColor            = null;
+   o._lineCenterColor      = null;
+   o._vertexPositionBuffer = null;
+   o._vertexColorBuffer    = null;
+   o._vertexBuffers        = null;
+   o._indexBuffer          = null;
+   o.construct             = FRd3Dimensional_construct;
+   o.setup                 = FRd3Dimensional_setup;
+   o.testVisible           = RMethod.emptyTrue;
+   o.vertexCount           = FRd3Dimensional_vertexCount;
+   o.findVertexBuffer      = FRd3Dimensional_findVertexBuffer;
+   o.vertexBuffers         = FRd3Dimensional_vertexBuffers;
+   o.indexBuffer           = FRd3Dimensional_indexBuffer;
+   o.textures              = RMethod.empty;
+   o.bones                 = RMethod.empty;
+   return o;
+}
+function FRd3Dimensional_construct(){
+   var o = this;
+   o.__base.FG3dRenderable.construct.call(o);
+   o._cellSize = new SSize2();
+   o._cellSize.set(1, 1);
+   o._size = new SSize2();
+   o._size.set(16, 16);
+   o._vertexBuffers = new TObjects();
+}
+function FRd3Dimensional_setup(p){
+   var o = this;
+   var cw = o._cellSize.width;
+   var ch = o._cellSize.height;
+   var sw = o._size.width;
+   var sw2 = sw / 2;
+   var sh = o._size.height;
+   var sh2 = sh / 2;
+   var vc = 2 * ((sw + 2) + (sh + 2));
+   var v = 0;
+   var vi = 0;
+   var vd = new Float32Array(3 * vc);
+   var vci = 0;
+   var vcd = new Uint8Array(4 * vc);
+   var i = 0;
+   var it = vc;
+   var id = new Uint16Array(it);
+   for(var y = 0; y <= sh; y++){
+      var r = 1;
+      if(y - sh2 == 0){
+         r = 0
+      }
+      vd[v++] = cw * -sw2 * r;
+      vd[v++] = 0;
+      vd[v++] = ch * (y - sh2);
+      vd[v++] = cw * sw2 * r;
+      vd[v++] = 0;
+      vd[v++] = ch * (y - sh2);
+      for(var ci = 0; ci < 8; ci++){
+         vcd[vci++] = 255;
+      }
+      id[i++] = vi++;
+      id[i++] = vi++;
+   }
+   vd[v++] = cw * -sw2 - cw;
+   vd[v++] = 0;
+   vd[v++] = 0;
+   vd[v++] = cw * sw2 + cw;
+   vd[v++] = 0;
+   vd[v++] = 0;
+   for(var ci = 0; ci < 2; ci++){
+      vcd[vci++] = 255;
+      vcd[vci++] = 0;
+      vcd[vci++] = 0;
+      vcd[vci++] = 255;
+   }
+   id[i++] = vi++;
+   id[i++] = vi++;
+   for(var x = 0; x <= sw; x++){
+      var r = 1;
+      if(x - sw2 == 0){
+         r = 0
+      }
+      vd[v++] = cw * (x - sw2);
+      vd[v++] = 0;
+      vd[v++] = ch * - sh2 * r;
+      vd[v++] = cw * (x - sw2);
+      vd[v++] = 0;
+      vd[v++] = ch * sh2 * r;
+      for(var ci = 0; ci < 8; ci++){
+         vcd[vci++] = 255;
+      }
+      id[i++] = vi++;
+      id[i++] = vi++;
+   }
+   vd[v++] = 0;
+   vd[v++] = 0;
+   vd[v++] = ch * - sh2 - ch;
+   vd[v++] = 0;
+   vd[v++] = 0;
+   vd[v++] = ch * sh2 + ch;
+   for(var ci = 0; ci < 2; ci++){
+      vcd[vci++] = 255;
+      vcd[vci++] = 0;
+      vcd[vci++] = 0;
+      vcd[vci++] = 255;
+   }
+   id[i++] = vi++;
+   id[i++] = vi++;
+   o._vertexCount = vc;
+   var vb = o._vertexPositionBuffer = p.createVertexBuffer();
+   vb._name = 'position';
+   vb._formatCd = EG3dAttributeFormat.Float3;
+   vb.upload(vd, 4 * 3, vc);
+   o._vertexBuffers.push(vb);
+   var vb = o._vertexColorBuffer = p.createVertexBuffer();
+   vb._name = 'color';
+   vb._formatCd = EG3dAttributeFormat.Byte4Normal;
+   vb.upload(vcd, 4, vc);
+   o._vertexBuffers.push(vb);
+   var ib = o._indexBuffer = p.createIndexBuffer();
+   ib._fillMode = EG3dFillMode.Line;
+   ib.upload(id, it);
+}
+function FRd3Dimensional_vertexCount(){
+   return this._vertexCount;
+}
+function FRd3Dimensional_findVertexBuffer(p){
+   var o = this;
+   if(p == 'position'){
+      return o._vertexPositionBuffer;
+   }else if(p == 'color'){
+      return o._vertexColorBuffer;
+   }
+   return null;
+}
+function FRd3Dimensional_vertexBuffers(){
+   return this._vertexBuffers;
+}
+function FRd3Dimensional_indexBuffer(){
+   return this._indexBuffer;
+}
 function FRd3Material(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._vertexBuffers   = null;
@@ -22174,6 +22347,7 @@ function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
    o._size               = null;
    o._capability         = null;
+   o._fillModeCd         = EG3dFillMode.Face;
    o._optionDepth        = false;
    o._optionCull         = false;
    o._depthModeCd        = 0;
@@ -23641,7 +23815,27 @@ function FWglContext_setViewport(l, t, w, h){
    o._size.set(w, h);
    o._native.viewport(l, t, w, h);
 }
-function FWglContext_setFillMode(){
+function FWglContext_setFillMode(p){
+   var o = this;
+   var g = o._native;
+   if(o._fillModeCd == p){
+      return;
+   }
+   switch(p){
+      case EG3dFillMode.Point:
+         g.polygonMode(g.FRONT_AND_BACK, g.POINT);
+         break;
+      case EG3dFillMode.Line:
+         g.polygonMode(g.FRONT_AND_BACK, g.LINE);
+         break;
+      case EG3dFillMode.Face:
+         g.polygonMode(g.FRONT, g.FILL);
+         break;
+      default:
+         throw new TError('Invalid parameter. (fill_mode={1})', p);
+   }
+   o._fillModeCd = p;
+   return true;
 }
 function FWglContext_setDepthMode(f, v){
    var o = this;
@@ -23947,7 +24141,11 @@ function FWglContext_drawTriangles(b, i, c){
        return r;
    }
    var strideCd = RWglUtility.convertIndexStride(g, b.strideCd());
-   g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+   if(b._fillMode == EG3dFillMode.Line){
+      g.drawElements(g.LINES, c, strideCd, 2 * i);
+   }else{
+      g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+   }
    r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
    if(!r){
        return r;
@@ -24396,10 +24594,12 @@ function FWglVertexBuffer_upload(v, s, c){
    var d = null;
    if((v.constructor == Array) || (v.constructor == ArrayBuffer)){
       d = new Float32Array(v);
+   }else if(v.constructor == Uint8Array){
+      d = v;
    }else if(v.constructor == Float32Array){
       d = v;
    }else{
-      RLogger.fatal(o, null, 'Upload vertex data type is invalid. (value={1})', v);
+      throw new TError(o, 'Upload vertex data type is invalid. (value={1})', v);
    }
    g.bindBuffer(g.ARRAY_BUFFER, o._native);
    c.checkError('bindBuffer', 'Bindbuffer');
@@ -41624,6 +41824,7 @@ function FDsTemplateCanvas(o){
    o._rotation           = null;
    o._rotationAble       = false;
    o._capturePosition    = null;
+   o._dimensional        = null;
    o.onBuild             = FDsTemplateCanvas_onBuild;
    o.onMouseCaptureStart = FDsTemplateCanvas_onMouseCaptureStart;
    o.onMouseCapture      = FDsTemplateCanvas_onMouseCapture;
@@ -41641,16 +41842,16 @@ function FDsTemplateCanvas_onBuild(p){
    o.__base.FUiCanvas.onBuild.call(o, p);
    var h = o._hPanel;
    h.__linker = o;
-   o._context = REngine3d.createContext(FWglContext, h);
+   var c = o._context = REngine3d.createContext(FWglContext, h);
    var g = o._stage = RClass.create(FSimpleStage3d);
    g._optionKeyboard = false;
    g.backgroundColor().set(0.5, 0.5, 0.5, 1);
-   g.selectTechnique(o._context, FG3dGeneralTechnique);
+   g.selectTechnique(c, FG3dGeneralTechnique);
    o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    var rc = g.camera();
-   rc.setPosition(0, 3, -20);
-   rc.lookAt(0, 0, 0);
+   rc.setPosition(0, 6, -6);
+   rc.lookAt(0, 3, 0);
    rc.update();
    var rp = rc.projection();
    rp.size().set(h.width, h.height);
@@ -41660,6 +41861,9 @@ function FDsTemplateCanvas_onBuild(p){
    lc.setPosition(10, 10, 0);
    lc.lookAt(0, 0, 0);
    lc.update();
+   var dm = o._dimensional = RClass.create(FRd3Dimensional);
+   dm.setup(c);
+   o._layer.pushRenderable(dm);
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start();
    RConsole.find(FMouseConsole).register(o);
@@ -41732,9 +41936,7 @@ function FDsTemplateCanvas_onEnterFrame(){
    var m = o._activeTemplate;
    if(m){
       var r = o._rotation;
-      m.location().set(0, -8.0, 0);
       m.rotation().set(0, r.y, 0);
-      m.scale().set(0.5, 0.5, 0.5);
       m.update();
       if(o._rotationAble){
          r.y += 0.01;

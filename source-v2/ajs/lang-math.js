@@ -1260,9 +1260,9 @@ function SPoint2_dump(){
 }
 function SPoint3(x, y, z){
    var o = this;
-   o.x           = x;
-   o.y           = y;
-   o.z           = z;
+   o.x           = RInteger.nvl(x);
+   o.y           = RInteger.nvl(y);
+   o.z           = RInteger.nvl(z);
    o.assign      = SPoint3_assign;
    o.set         = SPoint3_set;
    o.resize      = SPoint3_resize;
@@ -1597,6 +1597,7 @@ function SSize2(w, h){
    o.width    = RInteger.nvl(w);
    o.height   = RInteger.nvl(h);
    o.isEmpty  = SSize2_isEmpty;
+   o.square   = SSize2_square;
    o.assign   = SSize2_assign;
    o.set      = SSize2_set;
    o.parse    = SSize2_parse;
@@ -1608,6 +1609,9 @@ function SSize2(w, h){
 function SSize2_isEmpty(){
    var o = this;
    return (o.width == 0) && (o.height == 0);
+}
+function SSize2_square(){
+   return this.width * this.height;
 }
 function SSize2_assign(v){
    var o = this;

@@ -11,6 +11,7 @@ function FG3dContext(o){
    o._size               = null;
    o._capability         = null;
    // @attribute
+   o._fillModeCd         = EG3dFillMode.Face;
    o._optionDepth        = false;
    o._optionCull         = false;
    o._depthModeCd        = 0;

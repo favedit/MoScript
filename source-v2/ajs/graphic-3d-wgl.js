@@ -271,7 +271,27 @@ function FWglContext_setViewport(l, t, w, h){
    o._size.set(w, h);
    o._native.viewport(l, t, w, h);
 }
-function FWglContext_setFillMode(){
+function FWglContext_setFillMode(p){
+   var o = this;
+   var g = o._native;
+   if(o._fillModeCd == p){
+      return;
+   }
+   switch(p){
+      case EG3dFillMode.Point:
+         g.polygonMode(g.FRONT_AND_BACK, g.POINT);
+         break;
+      case EG3dFillMode.Line:
+         g.polygonMode(g.FRONT_AND_BACK, g.LINE);
+         break;
+      case EG3dFillMode.Face:
+         g.polygonMode(g.FRONT, g.FILL);
+         break;
+      default:
+         throw new TError('Invalid parameter. (fill_mode={1})', p);
+   }
+   o._fillModeCd = p;
+   return true;
 }
 function FWglContext_setDepthMode(f, v){
    var o = this;
@@ -577,7 +597,11 @@ function FWglContext_drawTriangles(b, i, c){
        return r;
    }
    var strideCd = RWglUtility.convertIndexStride(g, b.strideCd());
-   g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+   if(b._fillMode == EG3dFillMode.Line){
+      g.drawElements(g.LINES, c, strideCd, 2 * i);
+   }else{
+      g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+   }
    r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
    if(!r){
        return r;
@@ -1026,10 +1050,12 @@ function FWglVertexBuffer_upload(v, s, c){
    var d = null;
    if((v.constructor == Array) || (v.constructor == ArrayBuffer)){
       d = new Float32Array(v);
+   }else if(v.constructor == Uint8Array){
+      d = v;
    }else if(v.constructor == Float32Array){
       d = v;
    }else{
-      RLogger.fatal(o, null, 'Upload vertex data type is invalid. (value={1})', v);
+      throw new TError(o, 'Upload vertex data type is invalid. (value={1})', v);
    }
    g.bindBuffer(g.ARRAY_BUFFER, o._native);
    c.checkError('bindBuffer', 'Bindbuffer');

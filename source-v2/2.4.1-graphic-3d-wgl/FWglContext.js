@@ -380,10 +380,31 @@ function FWglContext_setViewport(l, t, w, h){
 //============================================================
 // <T>设置填充模式。</T>
 //
-// @param fillModeCd 填充模式
-// @return 处理结果
+// @param p:fillModeCd:EG3dFillMode 填充模式
 //============================================================
-function FWglContext_setFillMode(){
+function FWglContext_setFillMode(p){
+   var o = this;
+   var g = o._native;
+   // 检查状态
+   if(o._fillModeCd == p){
+      return;
+   }
+   // 设置开关
+   switch(p){
+      case EG3dFillMode.Point:
+         g.polygonMode(g.FRONT_AND_BACK, g.POINT);
+         break;
+      case EG3dFillMode.Line:
+         g.polygonMode(g.FRONT_AND_BACK, g.LINE);
+         break;
+      case EG3dFillMode.Face:
+         g.polygonMode(g.FRONT, g.FILL);
+         break;
+      default:
+         throw new TError('Invalid parameter. (fill_mode={1})', p);
+   }
+   o._fillModeCd = p;
+   return true;
 }
 
 //============================================================
@@ -842,7 +863,20 @@ function FWglContext_drawTriangles(b, i, c){
        return r;
    }
    var strideCd = RWglUtility.convertIndexStride(g, b.strideCd());
-   g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+   //GL_POINTS,  
+   //GL_LINE_STRIP,  
+   //GL_LINE_LOOP,  
+   //GL_LINES,  
+   //GL_TRIANGLE_STRIP,  
+   //GL_TRIANGLE_FAN,  
+   //GL_TRIANGLES,  
+   //GL_QUAD_STRIP,  
+   //GL_QUADS, 
+   if(b._fillMode == EG3dFillMode.Line){
+      g.drawElements(g.LINES, c, strideCd, 2 * i);
+   }else{
+      g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+   }
    r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
    if(!r){
        return r;

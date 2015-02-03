@@ -240,11 +240,12 @@
          //............................................................
          // 计算颜色
          <shader:true source='vertex.attribute.color'>
-         vec4 vertexColor = min(v_color, fc_color.y) - fc_color.x;
-         vertexColor = vertexColor / (fc_color.y - fc_color.x);
-         vertexColor = (vertexColor - fc_color.w) * fc_color.z;
-         vertexColor += 1.0;
-         result.rgb *= vertexColor.rgb;
+         //vec4 vertexColor = min(v_color, fc_color.y) - fc_color.x;
+         //vertexColor = vertexColor / (fc_color.y - fc_color.x);
+         //vertexColor = (vertexColor - fc_color.w) * fc_color.z;
+         //vertexColor += 1.0;
+         //result.rgb *= vertexColor.rgb;
+         result.rgb = v_color.rgb;
          </shader:true>
          <shader:true source='support.alpha'>
          result.a = color.a * fc_alpha.z;

@@ -219,6 +219,148 @@ function FRd3Cube_setup(p){
    o.indexBuffer = context.createIndexBuffer();
    o.indexBuffer.upload(id, 36);
 }
+function FRd3Dimensional(o){
+   o = RClass.inherits(this, o, FG3dRenderable);
+   o._cellSize             = null;
+   o._size                 = null;
+   o._lineColor            = null;
+   o._lineCenterColor      = null;
+   o._vertexPositionBuffer = null;
+   o._vertexColorBuffer    = null;
+   o._vertexBuffers        = null;
+   o._indexBuffer          = null;
+   o.construct             = FRd3Dimensional_construct;
+   o.setup                 = FRd3Dimensional_setup;
+   o.testVisible           = RMethod.emptyTrue;
+   o.vertexCount           = FRd3Dimensional_vertexCount;
+   o.findVertexBuffer      = FRd3Dimensional_findVertexBuffer;
+   o.vertexBuffers         = FRd3Dimensional_vertexBuffers;
+   o.indexBuffer           = FRd3Dimensional_indexBuffer;
+   o.textures              = RMethod.empty;
+   o.bones                 = RMethod.empty;
+   return o;
+}
+function FRd3Dimensional_construct(){
+   var o = this;
+   o.__base.FG3dRenderable.construct.call(o);
+   o._cellSize = new SSize2();
+   o._cellSize.set(1, 1);
+   o._size = new SSize2();
+   o._size.set(16, 16);
+   o._vertexBuffers = new TObjects();
+}
+function FRd3Dimensional_setup(p){
+   var o = this;
+   var cw = o._cellSize.width;
+   var ch = o._cellSize.height;
+   var sw = o._size.width;
+   var sw2 = sw / 2;
+   var sh = o._size.height;
+   var sh2 = sh / 2;
+   var vc = 2 * ((sw + 2) + (sh + 2));
+   var v = 0;
+   var vi = 0;
+   var vd = new Float32Array(3 * vc);
+   var vci = 0;
+   var vcd = new Uint8Array(4 * vc);
+   var i = 0;
+   var it = vc;
+   var id = new Uint16Array(it);
+   for(var y = 0; y <= sh; y++){
+      var r = 1;
+      if(y - sh2 == 0){
+         r = 0
+      }
+      vd[v++] = cw * -sw2 * r;
+      vd[v++] = 0;
+      vd[v++] = ch * (y - sh2);
+      vd[v++] = cw * sw2 * r;
+      vd[v++] = 0;
+      vd[v++] = ch * (y - sh2);
+      for(var ci = 0; ci < 8; ci++){
+         vcd[vci++] = 255;
+      }
+      id[i++] = vi++;
+      id[i++] = vi++;
+   }
+   vd[v++] = cw * -sw2 - cw;
+   vd[v++] = 0;
+   vd[v++] = 0;
+   vd[v++] = cw * sw2 + cw;
+   vd[v++] = 0;
+   vd[v++] = 0;
+   for(var ci = 0; ci < 2; ci++){
+      vcd[vci++] = 255;
+      vcd[vci++] = 0;
+      vcd[vci++] = 0;
+      vcd[vci++] = 255;
+   }
+   id[i++] = vi++;
+   id[i++] = vi++;
+   for(var x = 0; x <= sw; x++){
+      var r = 1;
+      if(x - sw2 == 0){
+         r = 0
+      }
+      vd[v++] = cw * (x - sw2);
+      vd[v++] = 0;
+      vd[v++] = ch * - sh2 * r;
+      vd[v++] = cw * (x - sw2);
+      vd[v++] = 0;
+      vd[v++] = ch * sh2 * r;
+      for(var ci = 0; ci < 8; ci++){
+         vcd[vci++] = 255;
+      }
+      id[i++] = vi++;
+      id[i++] = vi++;
+   }
+   vd[v++] = 0;
+   vd[v++] = 0;
+   vd[v++] = ch * - sh2 - ch;
+   vd[v++] = 0;
+   vd[v++] = 0;
+   vd[v++] = ch * sh2 + ch;
+   for(var ci = 0; ci < 2; ci++){
+      vcd[vci++] = 255;
+      vcd[vci++] = 0;
+      vcd[vci++] = 0;
+      vcd[vci++] = 255;
+   }
+   id[i++] = vi++;
+   id[i++] = vi++;
+   o._vertexCount = vc;
+   var vb = o._vertexPositionBuffer = p.createVertexBuffer();
+   vb._name = 'position';
+   vb._formatCd = EG3dAttributeFormat.Float3;
+   vb.upload(vd, 4 * 3, vc);
+   o._vertexBuffers.push(vb);
+   var vb = o._vertexColorBuffer = p.createVertexBuffer();
+   vb._name = 'color';
+   vb._formatCd = EG3dAttributeFormat.Byte4Normal;
+   vb.upload(vcd, 4, vc);
+   o._vertexBuffers.push(vb);
+   var ib = o._indexBuffer = p.createIndexBuffer();
+   ib._fillMode = EG3dFillMode.Line;
+   ib.upload(id, it);
+}
+function FRd3Dimensional_vertexCount(){
+   return this._vertexCount;
+}
+function FRd3Dimensional_findVertexBuffer(p){
+   var o = this;
+   if(p == 'position'){
+      return o._vertexPositionBuffer;
+   }else if(p == 'color'){
+      return o._vertexColorBuffer;
+   }
+   return null;
+}
+function FRd3Dimensional_vertexBuffers(){
+   return this._vertexBuffers;
+}
+function FRd3Dimensional_indexBuffer(){
+   return this._indexBuffer;
+}
 function FRd3Material(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._vertexBuffers   = null;

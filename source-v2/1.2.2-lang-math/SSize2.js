@@ -16,6 +16,7 @@ function SSize2(w, h){
    //..........................................................
    // @method
    o.isEmpty  = SSize2_isEmpty;
+   o.square   = SSize2_square;
    o.assign   = SSize2_assign;
    o.set      = SSize2_set;
    o.parse    = SSize2_parse;
@@ -36,6 +37,16 @@ function SSize2(w, h){
 function SSize2_isEmpty(){
    var o = this;
    return (o.width == 0) && (o.height == 0);
+}
+
+//============================================================
+// <T>计算平方值。</T>
+//
+// @method
+// @return Number 平方值;
+//============================================================
+function SSize2_square(){
+   return this.width * this.height;
 }
 
 //============================================================

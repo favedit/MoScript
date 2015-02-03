@@ -528,6 +528,7 @@ function FDsTemplateCanvas(o){
    o._rotation           = null;
    o._rotationAble       = false;
    o._capturePosition    = null;
+   o._dimensional        = null;
    o.onBuild             = FDsTemplateCanvas_onBuild;
    o.onMouseCaptureStart = FDsTemplateCanvas_onMouseCaptureStart;
    o.onMouseCapture      = FDsTemplateCanvas_onMouseCapture;
@@ -545,16 +546,16 @@ function FDsTemplateCanvas_onBuild(p){
    o.__base.FUiCanvas.onBuild.call(o, p);
    var h = o._hPanel;
    h.__linker = o;
-   o._context = REngine3d.createContext(FWglContext, h);
+   var c = o._context = REngine3d.createContext(FWglContext, h);
    var g = o._stage = RClass.create(FSimpleStage3d);
    g._optionKeyboard = false;
    g.backgroundColor().set(0.5, 0.5, 0.5, 1);
-   g.selectTechnique(o._context, FG3dGeneralTechnique);
+   g.selectTechnique(c, FG3dGeneralTechnique);
    o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    var rc = g.camera();
-   rc.setPosition(0, 3, -20);
-   rc.lookAt(0, 0, 0);
+   rc.setPosition(0, 6, -6);
+   rc.lookAt(0, 3, 0);
    rc.update();
    var rp = rc.projection();
    rp.size().set(h.width, h.height);
@@ -564,6 +565,9 @@ function FDsTemplateCanvas_onBuild(p){
    lc.setPosition(10, 10, 0);
    lc.lookAt(0, 0, 0);
    lc.update();
+   var dm = o._dimensional = RClass.create(FRd3Dimensional);
+   dm.setup(c);
+   o._layer.pushRenderable(dm);
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start();
    RConsole.find(FMouseConsole).register(o);
@@ -636,9 +640,7 @@ function FDsTemplateCanvas_onEnterFrame(){
    var m = o._activeTemplate;
    if(m){
       var r = o._rotation;
-      m.location().set(0, -8.0, 0);
       m.rotation().set(0, r.y, 0);
-      m.scale().set(0.5, 0.5, 0.5);
       m.update();
       if(o._rotationAble){
          r.y += 0.01;

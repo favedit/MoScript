@@ -9,9 +9,9 @@ function SPoint3(x, y, z){
    var o = this;
    //..........................................................
    // @attribute
-   o.x           = x;
-   o.y           = y;
-   o.z           = z;
+   o.x           = RInteger.nvl(x);
+   o.y           = RInteger.nvl(y);
+   o.z           = RInteger.nvl(z);
    //..........................................................
    // @method
    o.assign      = SPoint3_assign;
