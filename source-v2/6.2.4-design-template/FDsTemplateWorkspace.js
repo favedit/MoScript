@@ -133,6 +133,7 @@ function FDsTemplateWorkspace_onBuild(p){
    var c = o._canvas = RClass.create(FDsTemplateCanvas);
    c.addLoadListener(o, o.onTemplateLoad);
    c._workspace = o;
+   c._toolbar = o._canvasToolbar;
    c.build(p);
    c.setPanel(hc);
    o.push(c);

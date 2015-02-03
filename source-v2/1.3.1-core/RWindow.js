@@ -105,8 +105,9 @@ function RWindow_ohMouseDown(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._mouseEvent.attachEvent(p);
-   o.lsnsMouseDown.process(o._mouseEvent);
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseDown.process(e);
 }
 
 //==========================================================
@@ -120,8 +121,9 @@ function RWindow_ohMouseMove(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._mouseEvent.attachEvent(p);
-   o.lsnsMouseMove.process(o._mouseEvent);
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseMove.process(e);
 }
 
 //==========================================================
@@ -135,8 +137,9 @@ function RWindow_ohMouseUp(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._mouseEvent.attachEvent(p);
-   o.lsnsMouseUp.process(o._mouseEvent);
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseUp.process(e);
 }
 
 //==========================================================
@@ -150,8 +153,9 @@ function RWindow_ohKeyDown(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._keyEvent.attachEvent(p);
-   o.lsnsKeyDown.process(o._keyEvent);
+   var e = o._keyEvent;
+   e.attachEvent(p);
+   o.lsnsKeyDown.process(e);
 }
 
 //==========================================================
@@ -165,8 +169,9 @@ function RWindow_ohKeyUp(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._keyEvent.attachEvent(p);
-   o.lsnsKeyUp.process(o._keyEvent);
+   var e = o._keyEvent;
+   e.attachEvent(p);
+   o.lsnsKeyUp.process(e);
 }
 
 //==========================================================
@@ -180,8 +185,9 @@ function RWindow_ohKeyPress(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._keyEvent.attachEvent(p);
-   o.lsnsKeyPress.process(o._keyEvent);
+   var e = o._keyEvent;
+   e.attachEvent(p);
+   o.lsnsKeyPress.process(e);
 }
 
 //==========================================================

@@ -1,26 +1,43 @@
+var EDsCanvasMode = new function EDsCanvasMode(){
+   var o = this;
+   o.Unknown   = 0;
+   o.Drop      = 1;
+   o.Select    = 2;
+   o.Translate = 3;
+   o.Rotation  = 4;
+   o.Scale     = 5;
+   return o;
+}
 function FDsTemplateCanvas(o){
-   o = RClass.inherits(this, o, FUiCanvas, MListenerLoad);
-   o._context        = null;
-   o._stage          = null;
-   o._layer          = null;
-   o._activeTemplate = null;
-   o._rotation       = null;
-   o._rotationAble   = false;
-   o.onBuild         = FDsTemplateCanvas_onBuild;
-   o.onEnterFrame    = FDsTemplateCanvas_onEnterFrame;
-   o.onTemplateLoad  = FDsTemplateCanvas_onTemplateLoad;
-   o.oeRefresh       = FDsTemplateCanvas_oeRefresh;
-   o.construct       = FDsTemplateCanvas_construct;
-   o.loadTemplate    = FDsTemplateCanvas_loadTemplate;
-   o.dispose         = FDsTemplateCanvas_dispose;
+   o = RClass.inherits(this, o, FUiCanvas, MListenerLoad, MMouseCapture);
+   o._toolbar            = null;
+   o._context            = null;
+   o._stage              = null;
+   o._layer              = null;
+   o._activeTemplate     = null;
+   o._rotation           = null;
+   o._rotationAble       = false;
+   o._capturePosition    = null;
+   o.onBuild             = FDsTemplateCanvas_onBuild;
+   o.onMouseCaptureStart = FDsTemplateCanvas_onMouseCaptureStart;
+   o.onMouseCapture      = FDsTemplateCanvas_onMouseCapture;
+   o.onMouseCaptureStop  = FDsTemplateCanvas_onMouseCaptureStop;
+   o.onEnterFrame        = FDsTemplateCanvas_onEnterFrame;
+   o.onTemplateLoad      = FDsTemplateCanvas_onTemplateLoad;
+   o.oeRefresh           = FDsTemplateCanvas_oeRefresh;
+   o.construct           = FDsTemplateCanvas_construct;
+   o.loadTemplate        = FDsTemplateCanvas_loadTemplate;
+   o.dispose             = FDsTemplateCanvas_dispose;
    return o;
 }
 function FDsTemplateCanvas_onBuild(p){
    var o = this;
    o.__base.FUiCanvas.onBuild.call(o, p);
    var h = o._hPanel;
+   h.__linker = o;
    o._context = REngine3d.createContext(FWglContext, h);
    var g = o._stage = RClass.create(FSimpleStage3d);
+   g._optionKeyboard = false;
    g.backgroundColor().set(0.5, 0.5, 0.5, 1);
    g.selectTechnique(o._context, FG3dGeneralTechnique);
    o._layer = o._stage.spriteLayer();
@@ -39,9 +56,73 @@ function FDsTemplateCanvas_onBuild(p){
    lc.update();
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start();
+   RConsole.find(FMouseConsole).register(o);
+}
+function FDsTemplateCanvas_onMouseCaptureStart(p){
+   var o = this;
+   o._capturePosition.set(p.clientX, p.clientY);
+}
+function FDsTemplateCanvas_onMouseCapture(p){
+   var o = this;
+   var t = o._activeTemplate;
+   if(!t){
+      return;
+   }
+   var cx = p.clientX - o._capturePosition.x;
+   var cy = p.clientY - o._capturePosition.y;
+   var d = t.displays().get(0);
+   var m = d.modelMatrix();
+   switch(o._toolbar._canvasModeCd){
+      case EDsCanvasMode.Drop:
+         break;
+      case EDsCanvasMode.Select:
+         break;
+      case EDsCanvasMode.Translate:
+         m.tx += cx / 360 * 3.14;
+         m.ty += cy / 360 * 3.14;
+         break;
+      case EDsCanvasMode.Rotation:
+         m.ry += cx * RMath.DEGREE_RATE;
+         break;
+      case EDsCanvasMode.Scale:
+         m.sx += cx / 100;
+         m.sy += cy / 100;
+         m.sz += cy / 100;
+         break;
+   }
+   m.updateForce();
+}
+function FDsTemplateCanvas_onMouseCaptureStop(p){
 }
 function FDsTemplateCanvas_onEnterFrame(){
    var o = this;
+   var c = o._stage.camera();
+   var r = 0.3;
+   var kw = RKeyboard.isPress(EKeyCode.W);
+   var ks = RKeyboard.isPress(EKeyCode.S);
+   if(kw && !ks){
+      c.doWalk(r);
+   }
+   if(!kw && ks){
+      c.doWalk(-r);
+   }
+   var ka = RKeyboard.isPress(EKeyCode.A);
+   var kd = RKeyboard.isPress(EKeyCode.D);
+   if(ka && !kd){
+      c.doStrafe(r);
+   }
+   if(!ka && kd){
+      c.doStrafe(-r);
+   }
+   var kq = RKeyboard.isPress(EKeyCode.Q);
+   var ke = RKeyboard.isPress(EKeyCode.E);
+   if(kq && !ke){
+      c.doFly(r);
+   }
+   if(!kq && ke){
+      c.doFly(-r);
+   }
+   c.update();
    var m = o._activeTemplate;
    if(m){
       var r = o._rotation;
@@ -76,6 +157,7 @@ function FDsTemplateCanvas_oeRefresh(p){
 function FDsTemplateCanvas_construct(){
    var o = this;
    o.__base.FUiCanvas.construct.call(o);
+   o._capturePosition = new SPoint2();
    o._rotation = new SVector3();
 }
 function FDsTemplateCanvas_loadTemplate(p){
@@ -100,57 +182,112 @@ function FDsTemplateCanvas_dispose(){
 }
 function FDsTemplateCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._refreshButton = null;
-   o._saveButton    = null;
-   o.onBuild        = FDsTemplateCanvasToolBar_onBuild;
+   o._refreshButton  = null;
+   o._saveButton     = null;
+   o._canvasModeCd   = EDsCanvasMode.Unknown;
+   o.onBuild         = FDsTemplateCanvasToolBar_onBuild;
+   o.onModeClick     = FDsTemplateCanvasToolBar_onModeClick;
+   o.onLookClick     = FDsTemplateCanvasToolBar_onLookClick;
    o.onRotationClick = FDsTemplateCanvasToolBar_onRotationClick;
-   o.onRotationStopClick = FDsTemplateCanvasToolBar_onRotationStopClick;
-   o.onSaveClick    = FDsTemplateCanvasToolBar_onSaveClick;
-   o.construct      = FDsTemplateCanvasToolBar_construct;
-   o.dispose        = FDsTemplateCanvasToolBar_dispose;
+   o.construct       = FDsTemplateCanvasToolBar_construct;
+   o.dispose         = FDsTemplateCanvasToolBar_dispose;
    return o;
 }
 function FDsTemplateCanvasToolBar_onBuild(p){
    var o = this;
    o.__base.FUiToolBar.onBuild.call(o, p);
-   var b = o._refreshButton  = RClass.create(FUiToolButton);
+   var b = o._dropButton = RClass.create(FUiToolButtonCheck);
+   b.setName('dropButton');
+   b.setIcon('design3d.canvas.hand');
+   b.setGroupName('mode');
+   b.setGroupDefault('dropButton');
+   b.build(p);
+   b._canvasModeCd = EDsCanvasMode.Drop;
+   b.addClickListener(o, o.onModeClick);
+   b.check(true);
+   o.push(b);
+   var b = o._selectButton = RClass.create(FUiToolButtonCheck);
+   b.setName('selectButton');
+   b.setIcon('design3d.canvas.pointer');
+   b.setGroupName('mode');
+   b.setGroupDefault('dropButton');
+   b.build(p);
+   b._canvasModeCd = EDsCanvasMode.Select;
+   b.addClickListener(o, o.onModeClick);
+   o.push(b);
+   var b = RClass.create(FUiToolButtonSplit);
+   b.build(p);
+   o.push(b);
+   var b = o._translateButton  = RClass.create(FUiToolButtonCheck);
+   b.setName('translateButton');
+   b.setIcon('design3d.canvas.translate');
+   b.setGroupName('mode');
+   b.setGroupDefault('dropButton');
+   b.build(p);
+   b._canvasModeCd = EDsCanvasMode.Translate;
+   b.addClickListener(o, o.onModeClick);
+   o.push(b);
+   var b = o._rotationButton  = RClass.create(FUiToolButtonCheck);
+   b.setName('rotationButton');
+   b.setIcon('design3d.canvas.rotation');
+   b.setGroupName('mode');
+   b.setGroupDefault('dropButton');
+   b.build(p);
+   b._canvasModeCd = EDsCanvasMode.Rotation;
+   b.addClickListener(o, o.onModeClick);
+   o.push(b);
+   var b = o._scaleButton  = RClass.create(FUiToolButtonCheck);
+   b.setName('scaleButton');
+   b.setIcon('design3d.canvas.scale');
+   b.setGroupName('mode');
+   b.setGroupDefault('dropButton');
+   b.build(p);
+   b._canvasModeCd = EDsCanvasMode.Scale;
+   b.addClickListener(o, o.onModeClick);
+   o.push(b);
+   var b = RClass.create(FUiToolButtonSplit);
+   b.build(p);
+   o.push(b);
+   var b = o._lookFrontButton = RClass.create(FUiToolButton);
+   b.setName('lookFrontButton');
+   b.setLabel('前');
+   b.build(p);
+   b.addClickListener(o, o.onLookClick);
+   o.push(b);
+   var b = o._lookUpButton = RClass.create(FUiToolButton);
+   b.setName('lookUpButton');
+   b.setLabel('上');
+   b.build(p);
+   b.addClickListener(o, o.onLookClick);
+   o.push(b);
+   var b = o._lookLeftButton = RClass.create(FUiToolButton);
+   b.setName('lookLeftButton');
+   b.setLabel('左');
+   b.build(p);
+   b.addClickListener(o, o.onLookClick);
+   o.push(b);
+   var b = RClass.create(FUiToolButtonSplit);
+   b.build(p);
+   o.push(b);
+   var b = o._viewButton  = RClass.create(FUiToolButtonCheck);
+   b.setName('_viewButton');
    b.setLabel('旋转');
    b.build(p);
-   b.lsnsClick.register(o, o.onRotationClick);
-   o.appendButton(b);
-   var b = o._saveButton = RClass.create(FUiToolButton);
-   b.setLabel('暂停');
-   b.build(p);
-   b.lsnsClick.register(o, o.onRotationStopClick);
-   o.appendButton(b);
-   var b = o._saveButton = RClass.create(FUiToolButton);
-   b.setLabel('前视角');
-   b.build(p);
-   b.lsnsClick.register(o, o.onSaveClick);
-   o.appendButton(b);
-   var b = o._saveButton = RClass.create(FUiToolButton);
-   b.setLabel('上视角');
-   b.build(p);
-   b.lsnsClick.register(o, o.onSaveClick);
-   o.appendButton(b);
-   var b = o._saveButton = RClass.create(FUiToolButton);
-   b.setLabel('左视角');
-   b.build(p);
-   b.lsnsClick.register(o, o.onSaveClick);
-   o.appendButton(b);
+   b.addClickListener(o, o.onRotationClick);
+   o.push(b);
 }
-function FDsTemplateCanvasToolBar_onRotationClick(p){
+function FDsTemplateCanvasToolBar_onModeClick(p){
+   var o = this;
+   o._canvasModeCd = p._canvasModeCd;
+}
+function FDsTemplateCanvasToolBar_onLookClick(p){
+   var o = this;
+   o._canvasModeCd = p._canvasModeCd;
+}
+function FDsTemplateCanvasToolBar_onRotationClick(p, v){
    var o = this;
    var c = o._workspace._canvas;
-   c._rotationAble = true;
-}
-function FDsTemplateCanvasToolBar_onRotationStopClick(p){
-   var o = this;
-   var c = o._workspace._canvas;
-   c._rotationAble = false;
-}
-function FDsTemplateCanvasToolBar_onSaveClick(p){
-   var o = this;
+   c._rotationAble = v;
 }
 function FDsTemplateCanvasToolBar_construct(){
    var o = this;
@@ -567,24 +704,22 @@ function FDsTemplateToolBar_onBuild(p){
    o.__base.FUiToolBar.onBuild.call(o, p);
    var b = o._refreshButton  = RClass.create(FUiToolButton);
    b.setLabel('刷新');
+   b.setIcon('design3d.tools.refresh');
    b.build(p);
-   b.lsnsClick.register(o, o.onRefreshClick);
-   o.appendButton(b);
+   b.addClickListener(o, o.onRefreshClick);
+   o.push(b);
    var b = o._saveButton = RClass.create(FUiToolButton);
    b.setLabel('保存');
+   b.setIcon('design3d.tools.save');
    b.build(p);
-   b.lsnsClick.register(o, o.onSaveClick);
-   o.appendButton(b);
+   b.addClickListener(o, o.onSaveClick);
+   o.push(b);
 }
 function FDsTemplateToolBar_onRefreshClick(p){
    var o = this;
-   var catalog = o._worksapce._catalog;
-   catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
 }
 function FDsTemplateToolBar_onSaveClick(p){
    var o = this;
-   var catalog = o._worksapce._catalog;
-   catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
 }
 function FDsTemplateToolBar_construct(){
    var o = this;
@@ -687,6 +822,7 @@ function FDsTemplateWorkspace_onBuild(p){
    var c = o._canvas = RClass.create(FDsTemplateCanvas);
    c.addLoadListener(o, o.onTemplateLoad);
    c._workspace = o;
+   c._toolbar = o._canvasToolbar;
    c.build(p);
    c.setPanel(hc);
    o.push(c);
@@ -720,7 +856,7 @@ function FDsTemplateWorkspace_onCatalogSelected(p){
    o._themeProperty.hide();
    o._materialProperty.hide();
    o._displayProperty.hide();
-   if(RClass.isClass(p, FTemplate3d)){
+   if(RClass.isClass(p, FE3dTemplate)){
       o._templateProperty.show();
       o._templateProperty.loadObject(t);
    }else if(RClass.isClass(p, FRs3TemplateTheme)){

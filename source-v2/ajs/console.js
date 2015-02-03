@@ -468,6 +468,97 @@ function FMonitorConsole_release(){
       this.hWindow.clearInterval(this.intervalId);
    }
 }
+function FMouseConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd       = EScope.Local;
+   o._activeCapture = null;
+   o._captures      = null;
+   o.onMouseDown    = FMouseConsole_onMouseDown;
+   o.onMouseMove    = FMouseConsole_onMouseMove;
+   o.onMouseUp      = FMouseConsole_onMouseUp;
+   o.construct      = FMouseConsole_construct;
+   o.captureStart   = FMouseConsole_captureStart;
+   o.capture        = FMouseConsole_capture;
+   o.captureStop    = FMouseConsole_captureStop;
+   o.register       = FMouseConsole_register;
+   o.unregister     = FMouseConsole_unregister;
+   o.clear          = FMouseConsole_clear;
+   return o;
+}
+function FMouseConsole_onMouseDown(p){
+   var o = this;
+   var s = p.source;
+   if(!s){
+      return;
+   }
+   if(!RClass.isClass(s, MMouseCapture)){
+      return;
+   }
+   if(!s.testMouseCapture()){
+      return;
+   }
+   o._activeCapture = s;
+   o.captureStart(p);
+}
+function FMouseConsole_onMouseMove(p){
+   var o = this;
+   if(!o._activeCapture){
+      return;
+   }
+   o.capture(p);
+}
+function FMouseConsole_onMouseUp(p){
+   var o = this;
+   if(!o._activeCapture){
+      return;
+   }
+   o.captureStop(p);
+}
+function FMouseConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._captures = new TObjects();
+   RWindow.lsnsMouseDown.register(o, o.onMouseDown);
+   RWindow.lsnsMouseMove.register(o, o.onMouseMove);
+   RWindow.lsnsMouseUp.register(o, o.onMouseUp);
+}
+function FMouseConsole_captureStart(p){
+   var o = this;
+   var c = o._activeCapture;
+   if(c){
+      RWindow.setOptionSelect(false);
+      c.onMouseCaptureStart(p);
+   }
+}
+function FMouseConsole_capture(p){
+   var o = this;
+   var c = o._activeCapture;
+   if(c){
+      if(c.testMouseCapture()){
+         c.onMouseCapture(p);
+      }else{
+         o.captureStop(p)
+      }
+   }
+}
+function FMouseConsole_captureStop(p){
+   var o = this;
+   var c = o._activeCapture;
+   if(c){
+      c.onMouseCaptureStop(p);
+      o._activeCapture = null;
+   }
+   RWindow.setOptionSelect(true);
+}
+function FMouseConsole_register(p){
+   this._captures.push(p);
+}
+function FMouseConsole_unregister(p){
+   this._captures.remove(p);
+}
+function FMouseConsole_clear(){
+   this._captures.clear();
+}
 function FPipeline(o){
    o = RClass.inherits(this, o, FObject);
    o._name = null;

@@ -8,24 +8,25 @@ function FSimpleStage3d(o){
    o = RClass.inherits(this, o, FStage3d);
    //..........................................................
    // @attribute
-   o,_skyLayer    = null;
-   o,_mapLayer    = null;
-   o,_spriteLayer = null;
-   o,_faceLayer   = null;
+   o._optionKeyboard = true;
+   o._skyLayer       = null;
+   o._mapLayer       = null;
+   o._spriteLayer    = null;
+   o._faceLayer      = null;
    //..........................................................
    // @event
-   o.onKeyDown    = FSimpleStage3d_onKeyDown;
+   o.onKeyDown       = FSimpleStage3d_onKeyDown;
    //..........................................................
    // @method
-   o.construct    = FSimpleStage3d_construct;
+   o.construct       = FSimpleStage3d_construct;
    // @method
-   o.skyLayer     = FSimpleStage3d_skyLayer;
-   o.mapLayer     = FSimpleStage3d_mapLayer;
-   o.spriteLayer  = FSimpleStage3d_spriteLayer;
-   o.faceLayer    = FSimpleStage3d_faceLayer;
+   o.skyLayer        = FSimpleStage3d_skyLayer;
+   o.mapLayer        = FSimpleStage3d_mapLayer;
+   o.spriteLayer     = FSimpleStage3d_spriteLayer;
+   o.faceLayer       = FSimpleStage3d_faceLayer;
    // @method
-   o.active       = FSimpleStage3d_active;
-   o.deactive     = FSimpleStage3d_deactive;
+   o.active          = FSimpleStage3d_active;
+   o.deactive        = FSimpleStage3d_deactive;
    return o;
 }
 
@@ -134,7 +135,9 @@ function FSimpleStage3d_active(){
    var o = this;
    o.__base.FStage3d.active.call(o);
    // 注册事件
-   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   if(o._optionKeyboard){
+      RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   }
 }
 
 //==========================================================
@@ -146,5 +149,7 @@ function FSimpleStage3d_deactive(){
    var o = this;
    o.__base.FStage3d.deactive.call(o);
    // 注销事件
-   RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
+   if(o._optionKeyboard){
+      RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
+   }
 }

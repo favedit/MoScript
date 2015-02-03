@@ -911,18 +911,19 @@ function FSceneMaterial3d_loadSceneResourcee(p){
 }
 function FSimpleStage3d(o){
    o = RClass.inherits(this, o, FStage3d);
-   o,_skyLayer    = null;
-   o,_mapLayer    = null;
-   o,_spriteLayer = null;
-   o,_faceLayer   = null;
-   o.onKeyDown    = FSimpleStage3d_onKeyDown;
-   o.construct    = FSimpleStage3d_construct;
-   o.skyLayer     = FSimpleStage3d_skyLayer;
-   o.mapLayer     = FSimpleStage3d_mapLayer;
-   o.spriteLayer  = FSimpleStage3d_spriteLayer;
-   o.faceLayer    = FSimpleStage3d_faceLayer;
-   o.active       = FSimpleStage3d_active;
-   o.deactive     = FSimpleStage3d_deactive;
+   o._optionKeyboard = true;
+   o._skyLayer       = null;
+   o._mapLayer       = null;
+   o._spriteLayer    = null;
+   o._faceLayer      = null;
+   o.onKeyDown       = FSimpleStage3d_onKeyDown;
+   o.construct       = FSimpleStage3d_construct;
+   o.skyLayer        = FSimpleStage3d_skyLayer;
+   o.mapLayer        = FSimpleStage3d_mapLayer;
+   o.spriteLayer     = FSimpleStage3d_spriteLayer;
+   o.faceLayer       = FSimpleStage3d_faceLayer;
+   o.active          = FSimpleStage3d_active;
+   o.deactive        = FSimpleStage3d_deactive;
    return o;
 }
 function FSimpleStage3d_onKeyDown(e){
@@ -979,12 +980,16 @@ function FSimpleStage3d_faceLayer(){
 function FSimpleStage3d_active(){
    var o = this;
    o.__base.FStage3d.active.call(o);
-   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   if(o._optionKeyboard){
+      RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   }
 }
 function FSimpleStage3d_deactive(){
    var o = this;
    o.__base.FStage3d.deactive.call(o);
-   RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
+   if(o._optionKeyboard){
+      RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
+   }
 }
 function FSprite3d(o){
    o = RClass.inherits(this, o, FObject);

@@ -2358,6 +2358,18 @@ function MListenerBlur_addBlurListener(w, m){
 function MListenerBlur_processBlurListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.Blur, p1, p2, p3, p4, p5);
 }
+function MListenerClick(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addClickListener     = MListenerClick_addClickListener;
+   o.processClickListener = MListenerClick_processClickListener;
+   return o;
+}
+function MListenerClick_addClickListener(w, m){
+   return this.addListener(EEvent.Click, w, m);
+}
+function MListenerClick_processClickListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Click, p1, p2, p3, p4, p5);
+}
 function MListenerDataChanged(o){
    o = RClass.inherits(this, o, MListener);
    o.addDataChangedListener     = MListenerDataChanged_addDataChangedListener;
@@ -2369,6 +2381,18 @@ function MListenerDataChanged_addDataChangedListener(w, m){
 }
 function MListenerDataChanged_processDataChangedListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.DataChanged, p1, p2, p3, p4, p5);
+}
+function MListenerDoubleClick(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addClickListener     = MListenerDoubleClick_addClickListener;
+   o.processClickListener = MListenerDoubleClick_processClickListener;
+   return o;
+}
+function MListenerDoubleClick_addClickListener(w, m){
+   return this.addListener(EEvent.Click, w, m);
+}
+function MListenerDoubleClick_processClickListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Click, p1, p2, p3, p4, p5);
 }
 function MListenerEnter(o){
    o = RClass.inherits(this, o, MListener);
@@ -2913,6 +2937,7 @@ function RApplication_initialize(){
    var o = this;
    RBrowser.construct();
    RWindow.connect(window);
+   RKeyboard.construct();
 }
 function RApplication_findWorkspace(p){
    var o = this;
@@ -13892,9 +13917,10 @@ function MMenuButton(o){
 }
 function FUiToolBar(o){
    o = RClass.inherits(this, o, FUiContainer);
+   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
    o._hLine       = null;
    o.onBuildPanel = FUiToolBar_onBuildPanel;
-   o.appendButton = FUiToolBar_appendButton;
+   o.appendChild  = FUiToolBar_appendChild;
    return o;
 }
 function FUiToolBar_onBuildPanel(e){
@@ -13902,11 +13928,14 @@ function FUiToolBar_onBuildPanel(e){
    var hc = o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
    o._hLine = RBuilder.appendTableRow(hc);
 }
-function FUiToolBar_appendButton(p){
+function FUiToolBar_appendChild(p){
    var o = this;
-   var hr = o._hLine;
-   var hc = RBuilder.appendTableCell(hr);
-   p.setPanel(hc);
+   o.__base.FUiContainer.appendChild.call(o, p);
+   if(RClass.isClass(p, FUiToolButton)){
+      var hr = o._hLine;
+      var hc = RBuilder.appendTableCell(hr);
+      p.setPanel(hc);
+   }
 }
 function FUiToolBar_addClickListener(name, method){
    var btn = this.component(name);
@@ -13947,7 +13976,7 @@ function FUiToolBar_dispose(){
    o.hParent = null;
 }
 function FUiToolButton(o){
-   o = RClass.inherits(this, o, FUiControl);
+   o = RClass.inherits(this, o, FUiControl, MListenerClick);
    o._icon         = RClass.register(o, new APtyString('_icon'));
    o._iconDisable  = RClass.register(o, new APtyString('_iconDisable'));
    o._hotkey       = RClass.register(o, new APtyString('_hotkey'));
@@ -13961,7 +13990,6 @@ function FUiToolButton(o){
    o._disabled     = false;
    o._hIcon        = null;
    o._hLabel       = null;
-   o.lsnsClick     = new TListeners();
    o.onBuildPanel  = FUiToolButton_onBuildPanel;
    o.onBuild       = FUiToolButton_onBuild;
    o.onEnter       = FUiToolButton_onEnter;
@@ -13988,10 +14016,8 @@ function FUiToolButton_onBuild(p){
       o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);
    }
    if(o._label){
-      var s = o._label;
-      if(o._hIcon){
-      }
-      o.hLabel = RBuilder.appendText(h, o.styleName('Label'), s);
+      o._hLabel = RBuilder.appendText(h, o.styleName('Label'));
+      o.setLabel(o._label);
    }
 }
 function FUiToolButton_onEnter(e){
@@ -14027,9 +14053,13 @@ function FUiToolButton_setIcon(p){
 }
 function FUiToolButton_setLabel(p){
    var o = this;
-   o._label = p;
+   var s = RString.nvl(p);
+   o._label = s;
+   if(o._hIcon){
+      s = ' ' + o._label;
+   }
    if(o._hLabel){
-      o._hLabel.innerText = p;
+      o._hLabel.innerText = s;
    }
 }
 function FUiToolButton_setEnable(p){
@@ -14064,7 +14094,7 @@ function FUiToolButton_setEnable(p){
 function FUiToolButton_click(){
    var o = this;
    RLogger.debug(o, 'Mouse button click. (label={1})' + o._label);
-      o.lsnsClick.process(o);
+      o.processClickListener(o);
 }
 function FUiToolButton_dispose(){
    var o = this;
@@ -14084,53 +14114,101 @@ function FUiToolButton_onShowHint(a){
 }
 function FUiToolButtonCheck(o){
    o = RClass.inherits(this, o, FUiToolButton);
-   o.down         = RClass.register(o, new APtyBoolean('down', false));
-   o.onEnter      = FUiToolButtonCheck_onEnter;
-   o.onLeave      = FUiToolButtonCheck_onLeave;
-   o.onMouseDown  = FUiToolButtonCheck_onMouseDown;
-   o.onMouseUp    = FUiToolButtonCheck_onMouseUp;
-   o.setDown      = FUiToolButtonCheck_setDown;
-   o.dispose      = FUiToolButtonCheck_dispose;
+   o._checked        = RClass.register(o, new APtyBoolean('_checked'));
+   o._groupName      = RClass.register(o, new APtyString('_groupName'));
+   o._groupDefault   = RClass.register(o, new APtyString('_groupDefault'));
+   o.onEnter         = FUiToolButtonCheck_onEnter;
+   o.onLeave         = FUiToolButtonCheck_onLeave;
+   o.onMouseDown     = FUiToolButtonCheck_onMouseDown;
+   o.onMouseUp       = FUiToolButtonCheck_onMouseUp;
+   o.groupName       = FUiToolButtonCheck_groupName;
+   o.setGroupName    = FUiToolButtonCheck_setGroupName;
+   o.groupDefault    = FUiToolButtonCheck_groupDefault;
+   o.setGroupDefault = FUiToolButtonCheck_setGroupDefault;
+   o.innerCheck      = FUiToolButtonCheck_innerCheck;
+   o.check           = FUiToolButtonCheck_check;
+   o.dispose         = FUiToolButtonCheck_dispose;
    return o;
 }
-function FUiToolButtonCheck_onEnter(){
-   if(!this.down){
-      this.hPanel.className = this.style('Hover');
+function FUiToolButtonCheck_onEnter(p){
+   var o = this;
+   if(!o._checked){
+      o._hPanel.className = this.styleName('Hover');
    }
 }
-function FUiToolButtonCheck_onLeave(){
-   if(!this.down){
-      this.hPanel.className = this.style('Button');
+function FUiToolButtonCheck_onLeave(p){
+   var o = this;
+   if(!o._checked){
+      o._hPanel.className = this.styleName('Normal');
    }
 }
-function FUiToolButtonCheck_onMouseDown(){
-   this.hPanel.className = this.style('Press');
+function FUiToolButtonCheck_onMouseDown(p){
+   var o = this;
+   o.check(!o._checked);
+   o.processClickListener(o, o._checked);
 }
 function FUiToolButtonCheck_onMouseUp(){
    var o = this;
-   o.hPanel.className = o.style('Hover');
-   o.setDown(!o.down)
-   if(o.action){
-      eval(o.action);
-   }
-   o.processClick(o, o.down);
 }
-function FUiToolButtonCheck_setDown(down){
+function FUiToolButtonCheck_groupName(){
+   return this._groupName;
+}
+function FUiToolButtonCheck_setGroupName(p){
+   this._groupName = p;
+}
+function FUiToolButtonCheck_groupDefault(){
+   return this._groupDefault;
+}
+function FUiToolButtonCheck_setGroupDefault(p){
+   this._groupDefault = p;
+}
+function FUiToolButtonCheck_innerCheck(p){
    var o = this;
-   if(o.down != down){
-      o.down = down;
-      if(down){
-         o.hPanel.className = o.style('Down');
+   if(o._checked != p){
+      o._checked = p;
+      if(p){
+         o._hPanel.className = o.styleName('Press');
       }else{
-         o.hPanel.className = o.style('Button');
+         o._hPanel.className = o.styleName('Normal');
+      }
+   }
+}
+function FUiToolButtonCheck_check(p){
+   var o = this;
+   if(!p){
+      if(o._groupDefault == o){
+         return;
+      }
+   }
+   o.innerCheck(p);
+   if(!o._parent){
+      return;
+   }
+   if(p){
+      if(!RString.isEmpty(o._groupName)){
+         var cs = o._parent.components();
+         for(var i = cs.count() - 1; i >= 0; i--){
+            var c = cs.value(i);
+            if(c != o){
+               if(RClass.isClass(c, FUiToolButtonCheck)){
+                  c.innerCheck(false);
+               }
+            }
+         }
+      }
+   }else{
+      if(!RString.isEmpty(o._groupDefault)){
+         var cs = o._parent.components();
+         var c = cs.get(o._groupDefault);
+         c.innerCheck(true);
       }
    }
 }
 function FUiToolButtonCheck_dispose(){
    var o = this;
-   o.base.FUiToolButton.dispose.call(o);
-   RMemory.freeHtml(o.hPanel);
-   o.hPanel = null;
+   o._checked = null;
+   o._groupName = null;
+   o.__base.FUiToolButton.dispose.call(o);
 }
 function FUiToolButtonMenu(o){
    o = RClass.inherits(this, o, FUiToolButton, MContainer, MDropable, MFocus);
@@ -14229,24 +14307,14 @@ function FUiToolButtonMenu_dispose(){
 }
 function FUiToolButtonSplit(o){
    o = RClass.inherits(this, o, FUiControl);
+   o._stylePanel = RClass.register(o, new AStyle('_stylePanel'));
+   o.onBuild     = FUiToolButtonSplit_onBuild;
    return o;
 }
-function FUiToolButtonSplit_onBuild(event){
+function FUiToolButtonSplit_onBuild(p){
    var o = this;
-   o.base.FUiControl.onBuild.call(o, event);
-   o.hButton = RBuilder.append(this.hPanel, 'DIV', o.style('Button'));
-   return EEventStatus.Stop;
-}
-function FUiToolButtonSplit_onBuildPanel(){
-   this.hPanel = RBuilder.create(null, 'TD', this.style('Panel'));
-}
-function FUiToolButtonSplit_dispose(){
-   var o = this;
-   o.base.FUiControl.dispose.call(o);
-   RMemory.freeHtml(o.hPanel);
-   RMemory.freeHtml(o.hButton);
-   o.hPanel = null;
-   o.hButton = null;
+   o.__base.FUiControl.onBuild.call(o, p);
+   o._hPanel.className = o.styleName('Panel');
 }
 function FUiToolButtonText(o){
    o = RClass.inherits(this, o, FUiToolButton);

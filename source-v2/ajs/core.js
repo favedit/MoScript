@@ -518,6 +518,12 @@ var EKeyCode = new function EKeyCode(){
    }
    return o;
 }
+var EKeyStatus = new function EKeyStatus(){
+   var o = this;
+   o.Normal = 0;
+   o.Press  = 1;
+   return o;
+}
 var EMouseButton = new function EMouseButton(){
    var o = this;
    o.Left   = 0;
@@ -1199,6 +1205,14 @@ function MDataView_setFloat(p, v){
 function MDataView_setDouble(p, v){
    var o = this;
    o._viewer.setDouble(p, v, o._endianCd);
+}
+function MMouseCapture(o){
+   o = RClass.inherits(this, o);
+   o.onMouseCaptureStart = RMethod.virtual(o, 'onMouseCaptureStart');
+   o.onMouseCapture      = RMethod.virtual(o, 'onMouseCapture');
+   o.onMouseCaptureStop  = RMethod.virtual(o, 'onMouseCaptureStop');
+   o.testMouseCapture    = RMethod.emptyTrue;
+   return o;
 }
 function MProperty(o){
    o = RClass.inherits(this, o);
@@ -2449,33 +2463,61 @@ function RHtml_tableMoveRow(ph, ps, pt){
 }
 var RKeyboard = new function RKeyboard(){
    var o = this;
+   o._status       = new Array();
+   o.onKeyDown     = RKeyboard_onKeyDown;
+   o.onKeyUp       = RKeyboard_onKeyUp;
+   o.construct     = RKeyboard_construct;
    o.isCtlKey      = RKeyboard_isCtlKey;
    o.isNumKey      = RKeyboard_isNumKey;
+   o.isPress       = RKeyboard_isPress;
    o.isCtlKeyPress = RKeyboard_isCtlKeyPress;
    o.fixCase       = RKeyboard_fixCase;
    o.fixPattern    = RKeyboard_fixPattern;
    o.fixChars      = RKeyboard_fixChars;
    return o;
 }
-function RKeyboard_isCtlKey(c){
-   var ks = EKey.ControlKeys;
-   for(var n=0; n<ks.length; n++){
-      if(ks[n] == c){
+function RKeyboard_onKeyDown(p){
+   var o = this;
+   var c = p.keyCode;
+   o._status[c] = EKeyStatus.Press;
+}
+function RKeyboard_onKeyUp(p){
+   var o = this;
+   var c = p.keyCode;
+   o._status[c] = EKeyStatus.Normal;
+}
+function RKeyboard_construct(){
+   var o = this;
+   var s = o._status;
+   for(var i = 0; i < 256; i++){
+      s[i] = EKeyStatus.Normal;
+   }
+   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   RWindow.lsnsKeyUp.register(o, o.onKeyUp);
+}
+function RKeyboard_isCtlKey(p){
+   var s = EKeyCode.ControlKeys;
+   for(var i = s.length - 1; i >= 0; i--){
+      if(s[i] == p){
          return true;
       }
    }
    return false;
 }
 function RKeyboard_isNumKey(c){
-   var ks = EKey.ControlKeys;
-   if(c >= 96 && c <= 105){
+   if(p >= 96 && p <= 105){
       return true;
    }
    return false;
 }
-function RKeyboard_isCtlKeyPress(c){
-   for(var n in EKey.ControlKeys){
-      if(EKey.ControlKeys[n] == c){
+function RKeyboard_isPress(p){
+   var o = this;
+   var v = o._status[p];
+   return v == EKeyStatus.Press;
+}
+function RKeyboard_isCtlKeyPress(p){
+   for(var n in EKeyCode.ControlKeys){
+      if(EKey.ControlKeys[n] == p){
          return true;
       }
    }
@@ -3005,48 +3047,54 @@ function RWindow_ohMouseDown(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._mouseEvent.attachEvent(p);
-   o.lsnsMouseDown.process(o._mouseEvent);
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseDown.process(e);
 }
 function RWindow_ohMouseMove(p){
    var o = RWindow;
    if(!p){
       p = o._hWindow.event;
    }
-   o._mouseEvent.attachEvent(p);
-   o.lsnsMouseMove.process(o._mouseEvent);
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseMove.process(e);
 }
 function RWindow_ohMouseUp(p){
    var o = RWindow;
    if(!p){
       p = o._hWindow.event;
    }
-   o._mouseEvent.attachEvent(p);
-   o.lsnsMouseUp.process(o._mouseEvent);
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseUp.process(e);
 }
 function RWindow_ohKeyDown(p){
    var o = RWindow;
    if(!p){
       p = o._hWindow.event;
    }
-   o._keyEvent.attachEvent(p);
-   o.lsnsKeyDown.process(o._keyEvent);
+   var e = o._keyEvent;
+   e.attachEvent(p);
+   o.lsnsKeyDown.process(e);
 }
 function RWindow_ohKeyUp(p){
    var o = RWindow;
    if(!p){
       p = o._hWindow.event;
    }
-   o._keyEvent.attachEvent(p);
-   o.lsnsKeyUp.process(o._keyEvent);
+   var e = o._keyEvent;
+   e.attachEvent(p);
+   o.lsnsKeyUp.process(e);
 }
 function RWindow_ohKeyPress(p){
    var o = RWindow;
    if(!p){
       p = o._hWindow.event;
    }
-   o._keyEvent.attachEvent(p);
-   o.lsnsKeyPress.process(o._keyEvent);
+   var e = o._keyEvent;
+   e.attachEvent(p);
+   o.lsnsKeyPress.process(e);
 }
 function RWindow_ohSelect(p){
    return RWindow._optionSelect;

@@ -2358,6 +2358,18 @@ function MListenerBlur_addBlurListener(w, m){
 function MListenerBlur_processBlurListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.Blur, p1, p2, p3, p4, p5);
 }
+function MListenerClick(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addClickListener     = MListenerClick_addClickListener;
+   o.processClickListener = MListenerClick_processClickListener;
+   return o;
+}
+function MListenerClick_addClickListener(w, m){
+   return this.addListener(EEvent.Click, w, m);
+}
+function MListenerClick_processClickListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Click, p1, p2, p3, p4, p5);
+}
 function MListenerDataChanged(o){
    o = RClass.inherits(this, o, MListener);
    o.addDataChangedListener     = MListenerDataChanged_addDataChangedListener;
@@ -2369,6 +2381,18 @@ function MListenerDataChanged_addDataChangedListener(w, m){
 }
 function MListenerDataChanged_processDataChangedListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.DataChanged, p1, p2, p3, p4, p5);
+}
+function MListenerDoubleClick(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addClickListener     = MListenerDoubleClick_addClickListener;
+   o.processClickListener = MListenerDoubleClick_processClickListener;
+   return o;
+}
+function MListenerDoubleClick_addClickListener(w, m){
+   return this.addListener(EEvent.Click, w, m);
+}
+function MListenerDoubleClick_processClickListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Click, p1, p2, p3, p4, p5);
 }
 function MListenerEnter(o){
    o = RClass.inherits(this, o, MListener);
@@ -2913,6 +2937,7 @@ function RApplication_initialize(){
    var o = this;
    RBrowser.construct();
    RWindow.connect(window);
+   RKeyboard.construct();
 }
 function RApplication_findWorkspace(p){
    var o = this;

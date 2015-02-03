@@ -1,11 +1,12 @@
 //==========================================================
 // <T>工具栏按键。</T>
 //
+// @class
 // @author maocy
 // @history 150121
 //==========================================================
 function FUiToolButton(o){
-   o = RClass.inherits(this, o, FUiControl);
+   o = RClass.inherits(this, o, FUiControl, MListenerClick);
    //..........................................................
    // @property
    o._icon         = RClass.register(o, new APtyString('_icon'));
@@ -27,9 +28,6 @@ function FUiToolButton(o){
    // @html
    o._hIcon        = null;
    o._hLabel       = null;
-   //..........................................................
-   // @listener
-   o.lsnsClick     = new TListeners();
    //..........................................................
    // @event
    o.onBuildPanel  = FUiToolButton_onBuildPanel;
@@ -128,11 +126,8 @@ function FUiToolButton_onBuild(p){
    }
    // 建立标签
    if(o._label){
-      var s = o._label;
-      if(o._hIcon){
-         //s = '&nbsp;' + o._label;
-      }
-      o.hLabel = RBuilder.appendText(h, o.styleName('Label'), s);
+      o._hLabel = RBuilder.appendText(h, o.styleName('Label'));
+      o.setLabel(o._label);
    }
 }
 
@@ -237,9 +232,13 @@ function FUiToolButton_setIcon(p){
 //==========================================================
 function FUiToolButton_setLabel(p){
    var o = this;
-   o._label = p;
+   var s = RString.nvl(p);
+   o._label = s;
+   if(o._hIcon){
+      s = ' ' + o._label;
+   }
    if(o._hLabel){
-      o._hLabel.innerText = p;
+      o._hLabel.innerText = s;
    }
 }
 
@@ -299,7 +298,7 @@ function FUiToolButton_click(){
       //fc.storeFocus();
       //fc.blur();
       // 执行监听信息
-      o.lsnsClick.process(o);
+      o.processClickListener(o);
       // 执行按键操作
       //if(o._action){
       //   eval(o._action);

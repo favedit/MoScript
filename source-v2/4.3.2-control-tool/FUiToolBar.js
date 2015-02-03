@@ -8,6 +8,9 @@ function FUiToolBar(o){
    //o = RClass.inherits(this, o, FUiContainer, MDisplayAble, MTop);
    o = RClass.inherits(this, o, FUiContainer);
    //..........................................................
+   // @style
+   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
+   //..........................................................
    // @html
    o._hLine       = null;
    //..........................................................
@@ -15,7 +18,7 @@ function FUiToolBar(o){
    o.onBuildPanel = FUiToolBar_onBuildPanel;
    //..........................................................
    // @method
-   o.appendButton = FUiToolBar_appendButton;
+   o.appendChild  = FUiToolBar_appendChild;
 
 
 
@@ -63,12 +66,15 @@ function FUiToolBar_onBuildPanel(e){
 // @method
 // @param p:button:FUiToolButton 按键
 //==========================================================
-function FUiToolBar_appendButton(p){
+function FUiToolBar_appendChild(p){
    var o = this;
+   o.__base.FUiContainer.appendChild.call(o, p);
    // 横向排布
-   var hr = o._hLine;
-   var hc = RBuilder.appendTableCell(hr);
-   p.setPanel(hc);
+   if(RClass.isClass(p, FUiToolButton)){
+      var hr = o._hLine;
+      var hc = RBuilder.appendTableCell(hr);
+      p.setPanel(hc);
+   }
 }
 
 

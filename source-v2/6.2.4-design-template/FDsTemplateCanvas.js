@@ -5,28 +5,33 @@
 // @history 150130
 //==========================================================
 function FDsTemplateCanvas(o){
-   o = RClass.inherits(this, o, FUiCanvas, MListenerLoad);
+   o = RClass.inherits(this, o, FUiCanvas, MListenerLoad, MMouseCapture);
    //..........................................................
-   o._context        = null;
-   o._stage          = null;
-   o._layer          = null;
-   o._activeTemplate = null;
-   o._rotation       = null;
-   o._rotationAble   = false;
+   o._toolbar            = null;
+   o._context            = null;
+   o._stage              = null;
+   o._layer              = null;
+   o._activeTemplate     = null;
+   o._rotation           = null;
+   o._rotationAble       = false;
+   o._capturePosition    = null;
    //..........................................................
    // @event
-   o.onBuild         = FDsTemplateCanvas_onBuild;
-   o.onEnterFrame    = FDsTemplateCanvas_onEnterFrame;
-   o.onTemplateLoad  = FDsTemplateCanvas_onTemplateLoad;
+   o.onBuild             = FDsTemplateCanvas_onBuild;
+   o.onMouseCaptureStart = FDsTemplateCanvas_onMouseCaptureStart;
+   o.onMouseCapture      = FDsTemplateCanvas_onMouseCapture;
+   o.onMouseCaptureStop  = FDsTemplateCanvas_onMouseCaptureStop;
+   o.onEnterFrame        = FDsTemplateCanvas_onEnterFrame;
+   o.onTemplateLoad      = FDsTemplateCanvas_onTemplateLoad;
    //..........................................................
-   o.oeRefresh       = FDsTemplateCanvas_oeRefresh;
+   o.oeRefresh           = FDsTemplateCanvas_oeRefresh;
    //..........................................................
    // @method
-   o.construct       = FDsTemplateCanvas_construct;
+   o.construct           = FDsTemplateCanvas_construct;
    // @method
-   o.loadTemplate    = FDsTemplateCanvas_loadTemplate;
+   o.loadTemplate        = FDsTemplateCanvas_loadTemplate;
    // @method
-   o.dispose         = FDsTemplateCanvas_dispose;
+   o.dispose             = FDsTemplateCanvas_dispose;
    return o;
 }
 
@@ -41,9 +46,11 @@ function FDsTemplateCanvas_onBuild(p){
    o.__base.FUiCanvas.onBuild.call(o, p);
    // 创建渲染环境
    var h = o._hPanel;
+   h.__linker = o;
    o._context = REngine3d.createContext(FWglContext, h);
    // 创建简单舞台
    var g = o._stage = RClass.create(FSimpleStage3d);
+   g._optionKeyboard = false;
    g.backgroundColor().set(0.5, 0.5, 0.5, 1);
    g.selectTechnique(o._context, FG3dGeneralTechnique);
    o._layer = o._stage.spriteLayer();
@@ -66,6 +73,64 @@ function FDsTemplateCanvas_onBuild(p){
    // 启动处理
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start();
+   RConsole.find(FMouseConsole).register(o);
+}
+
+//==========================================================
+// <T>鼠标捕捉开始处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsTemplateCanvas_onMouseCaptureStart(p){
+   var o = this;
+   o._capturePosition.set(p.clientX, p.clientY);
+}
+
+//==========================================================
+// <T>鼠标捕捉处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsTemplateCanvas_onMouseCapture(p){
+   var o = this;
+   var t = o._activeTemplate;
+   if(!t){
+      return;
+   }
+   var cx = p.clientX - o._capturePosition.x;
+   var cy = p.clientY - o._capturePosition.y;
+   var d = t.displays().get(0);
+   var m = d.modelMatrix();
+   switch(o._toolbar._canvasModeCd){
+      case EDsCanvasMode.Drop:
+         break;
+      case EDsCanvasMode.Select:
+         break;
+      case EDsCanvasMode.Translate:
+         m.tx += cx / 360 * 3.14;
+         m.ty += cy / 360 * 3.14;
+         break;
+      case EDsCanvasMode.Rotation:
+         m.ry += cx * RMath.DEGREE_RATE;
+         break;
+      case EDsCanvasMode.Scale:
+         m.sx += cx / 100;
+         m.sy += cy / 100;
+         m.sz += cy / 100;
+         break;
+   }
+   m.updateForce();
+}
+
+//==========================================================
+// <T>鼠标捕捉结束处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsTemplateCanvas_onMouseCaptureStop(p){
 }
 
 //==========================================================
@@ -75,6 +140,36 @@ function FDsTemplateCanvas_onBuild(p){
 //==========================================================
 function FDsTemplateCanvas_onEnterFrame(){
    var o = this;
+   //..........................................................
+   // 按键处理
+   var c = o._stage.camera();
+   var r = 0.3;
+   var kw = RKeyboard.isPress(EKeyCode.W);
+   var ks = RKeyboard.isPress(EKeyCode.S);
+   if(kw && !ks){
+      c.doWalk(r);
+   }
+   if(!kw && ks){
+      c.doWalk(-r);
+   }
+   var ka = RKeyboard.isPress(EKeyCode.A);
+   var kd = RKeyboard.isPress(EKeyCode.D);
+   if(ka && !kd){
+      c.doStrafe(r);
+   }
+   if(!ka && kd){
+      c.doStrafe(-r);
+   }
+   var kq = RKeyboard.isPress(EKeyCode.Q);
+   var ke = RKeyboard.isPress(EKeyCode.E);
+   if(kq && !ke){
+      c.doFly(r);
+   }
+   if(!kq && ke){
+      c.doFly(-r);
+   }
+   c.update();
+   //..........................................................
    // 旋转模型
    var m = o._activeTemplate;
    if(m){
@@ -136,6 +231,7 @@ function FDsTemplateCanvas_oeRefresh(p){
 function FDsTemplateCanvas_construct(){
    var o = this;
    o.__base.FUiCanvas.construct.call(o);
+   o._capturePosition = new SPoint2();
    o._rotation = new SVector3();
 }
 

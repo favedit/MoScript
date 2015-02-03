@@ -29,6 +29,8 @@ function RApplication_initialize(){
    RBrowser.construct();
    // 构造窗口管理器
    RWindow.connect(window);
+   // 构造键盘管理器
+   RKeyboard.construct();
 }
 
 //==========================================================

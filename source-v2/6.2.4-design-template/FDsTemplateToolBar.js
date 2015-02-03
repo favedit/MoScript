@@ -36,15 +36,17 @@ function FDsTemplateToolBar_onBuild(p){
    // 建立按键
    var b = o._refreshButton  = RClass.create(FUiToolButton);
    b.setLabel('刷新');
+   b.setIcon('design3d.tools.refresh');
    b.build(p);
-   b.lsnsClick.register(o, o.onRefreshClick);
-   o.appendButton(b);
+   b.addClickListener(o, o.onRefreshClick);
+   o.push(b);
    // 建立按键
    var b = o._saveButton = RClass.create(FUiToolButton);
    b.setLabel('保存');
+   b.setIcon('design3d.tools.save');
    b.build(p);
-   b.lsnsClick.register(o, o.onSaveClick);
-   o.appendButton(b);
+   b.addClickListener(o, o.onSaveClick);
+   o.push(b);
 }
 
 //==========================================================
@@ -55,8 +57,8 @@ function FDsTemplateToolBar_onBuild(p){
 //==========================================================
 function FDsTemplateToolBar_onRefreshClick(p){
    var o = this;
-   var catalog = o._worksapce._catalog;
-   catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
+   //var catalog = o._worksapce._catalog;
+   //catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
 }
 
 //==========================================================
@@ -67,8 +69,8 @@ function FDsTemplateToolBar_onRefreshClick(p){
 //==========================================================
 function FDsTemplateToolBar_onSaveClick(p){
    var o = this;
-   var catalog = o._worksapce._catalog;
-   catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
+   //var catalog = o._worksapce._catalog;
+   //catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
 }
 
 //==========================================================
