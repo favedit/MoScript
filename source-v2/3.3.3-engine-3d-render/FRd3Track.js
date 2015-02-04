@@ -8,20 +8,30 @@ function FRd3Track(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._frameCount  = 0;
-   o._frameTick   = 0;
+   o._matrix      = null
    o._resource    = null;
    //..........................................................
+   // @method
+   o.construct    = FRd3Track_construct;
    // @method
    o.boneId       = FRd3Track_boneId;
    o.matrix       = FRd3Track_matrix;
    o.matrixInvert = FRd3Track_matrixInvert;
    o.loadResource = FRd3Track_loadResource;
    // @method
-   o.calculate    = FRd3Track_calculate;
-   // @method
    o.dispose      = FRd3Track_dispose;
    return o;
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FRd3Track_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new SMatrix3d();
 }
 
 //==========================================================

@@ -12,12 +12,14 @@ function FRs3ModelMesh(o){
    o._matrix     = null;
    o._outline    = null;
    o._streams    = null;
+   o._tracks     = null;
    //..........................................................
    // @method
    o.construct   = FRs3ModelMesh_construct;
    // @method
    o.guid        = FRs3ModelMesh_guid;
    o.streams     = FRs3ModelMesh_streams;
+   o.tracks      = FRs3ModelMesh_tracks;
    // @method
    o.unserialize = FRs3ModelMesh_unserialize;
    return o;
@@ -46,13 +48,23 @@ function FRs3ModelMesh_guid(){
 }
 
 //==========================================================
-// <T>获得数据流集合</T>
+// <T>获得数据流集合。</T>
 //
 // @method
 // @return TObjects 数据流集合
 //==========================================================
 function FRs3ModelMesh_streams(){
    return this._streams;
+}
+
+//==========================================================
+// <T>获得跟踪集合。</T>
+//
+// @method
+// @return TObjects 跟踪集合
+//==========================================================
+function FRs3ModelMesh_tracks(){
+   return this._tracks;
 }
 
 //==========================================================
@@ -74,6 +86,16 @@ function FRs3ModelMesh_unserialize(p){
          var s = RClass.create(FRs3ModelStream);
          s.unserialize(p)
          ss.push(s);
+      }
+   }
+   // 读取跟踪
+   var c = p.readInt8();
+   if(c > 0){
+      var ts = o._tracks = new TObjects();
+      for(var i = 0; i < c; i++){
+         var t = RClass.create(FRs3Track);
+         t.unserialize(p)
+         ts.push(t);
       }
    }
 }

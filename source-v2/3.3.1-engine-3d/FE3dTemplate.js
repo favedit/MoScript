@@ -12,15 +12,17 @@ function FE3dTemplate(o){
    o._ready         = false;
    o._resource      = null;
    // @attribute
+   o._meshAnimation = null;
    o._animation     = null;
    // @attribute
    o._resource      = null;
    o._displays      = null;
    //..........................................................
    // @method
-   o.displays       = FE3dTemplate_displays;
-   // @method
    o.testReady      = FE3dTemplate_testReady;
+   // @method
+   o.displays       = FE3dTemplate_displays;
+   o.meshAnimation  = FE3dTemplate_meshAnimation;
    // @method
    o.setResource    = FE3dTemplate_setResource;
    o.loadResource   = FE3dTemplate_loadResource;
@@ -29,6 +31,16 @@ function FE3dTemplate(o){
    o.processLoad    = FE3dTemplate_processLoad;
    o.process        = FE3dTemplate_process;
    return o;
+}
+
+//==========================================================
+// <T>测试是否准备好。</T>
+//
+// @method
+// @return 是否准备好
+//==========================================================
+function FE3dTemplate_testReady(){
+   return this._dataReady;
 }
 
 //==========================================================
@@ -42,13 +54,18 @@ function FE3dTemplate_displays(){
 }
 
 //==========================================================
-// <T>测试是否准备好。</T>
+// <T>获得网格动画。</T>
 //
 // @method
-// @return 是否准备好
+// @return FRd3MeshAnimation 显示集合
 //==========================================================
-function FE3dTemplate_testReady(){
-   return this._dataReady;
+function FE3dTemplate_meshAnimation(){
+   var o = this;
+   var a = o._meshAnimation;
+   if(!a){
+      a = o._meshAnimation = RClass.create(FRd3MeshAnimation);
+   }
+   return a;
 }
 
 //==========================================================

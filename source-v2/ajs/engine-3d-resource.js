@@ -350,9 +350,11 @@ function FRs3ModelMesh(o){
    o._matrix     = null;
    o._outline    = null;
    o._streams    = null;
+   o._tracks     = null;
    o.construct   = FRs3ModelMesh_construct;
    o.guid        = FRs3ModelMesh_guid;
    o.streams     = FRs3ModelMesh_streams;
+   o.tracks      = FRs3ModelMesh_tracks;
    o.unserialize = FRs3ModelMesh_unserialize;
    return o;
 }
@@ -368,6 +370,9 @@ function FRs3ModelMesh_guid(){
 function FRs3ModelMesh_streams(){
    return this._streams;
 }
+function FRs3ModelMesh_tracks(){
+   return this._tracks;
+}
 function FRs3ModelMesh_unserialize(p){
    var o = this;
    o._guid = p.readString();
@@ -378,6 +383,15 @@ function FRs3ModelMesh_unserialize(p){
          var s = RClass.create(FRs3ModelStream);
          s.unserialize(p)
          ss.push(s);
+      }
+   }
+   var c = p.readInt8();
+   if(c > 0){
+      var ts = o._tracks = new TObjects();
+      for(var i = 0; i < c; i++){
+         var t = RClass.create(FRs3Track);
+         t.unserialize(p)
+         ts.push(t);
       }
    }
 }
@@ -1312,6 +1326,7 @@ function FRs3Track(o){
    o._frameTick       = 0;
    o._matrix          = null;
    o._matrixInvert    = null;
+   o._frameCount      = null;
    o._frames          = null;
    o.construct        = FRs3Track_construct;
    o.boneId           = FRs3Track_boneId;
@@ -1319,6 +1334,7 @@ function FRs3Track(o){
    o.matrix           = FRs3Track_matrix;
    o.matrixInvert     = FRs3Track_matrixInvert;
    o.frames           = FRs3Track_frames;
+   o.calculate        = FRs3Track_calculate;
    o.unserialize      = FRs3Track_unserialize;
    return o;
 }
@@ -1343,9 +1359,33 @@ function FRs3Track_matrixInvert(){
 function FRs3Track_frames(){
    return this._frames;
 }
+function FRs3Track_calculate(pi, pt){
+   var o = this;
+   var fc = o._frameCount;
+   if(fc == 0){
+      return false;
+   }
+   if(pt < 0){
+      pt = -pt;
+   }
+   var ft = o._frameTick;
+   var i = parseInt(pt / ft) % fc;
+   var fs = o.frames();
+   var cf = fs.get(i);
+   var nf = null;
+   if(i < fc -1){
+      nf = fs.get(i + 1);
+   }else{
+      nf = fs.get(0);
+   }
+   pi.tick = pt;
+   pi.rate = (pt % ft) / ft;
+   pi.currentFrame = cf;
+   pi.nextFrame = nf;
+   return true;
+}
 function FRs3Track_unserialize(p){
    var o = this;
-   o._optionBoneScale = p.readBoolean();
    o._boneId = p.readUint8();
    o._frameTick = p.readUint16();
    o._matrix.unserialize(p);
@@ -1353,6 +1393,7 @@ function FRs3Track_unserialize(p){
    o._matrixInvert.invert();
    var c = p.readInt16();
    if(c > 0){
+      o._frameCount = c;
       var fs = o._frames = new TObjects();
       for(var i = 0; i < c; i++){
          var f = RClass.create(FRs3Frame);

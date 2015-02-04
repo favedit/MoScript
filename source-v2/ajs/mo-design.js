@@ -554,7 +554,7 @@ function FDsTemplateCanvas_onBuild(p){
    o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    var rc = g.camera();
-   rc.setPosition(0, 6, -6);
+   rc.setPosition(0, 6, -20);
    rc.lookAt(0, 3, 0);
    rc.update();
    var rp = rc.projection();
@@ -641,6 +641,7 @@ function FDsTemplateCanvas_onEnterFrame(){
    if(m){
       var r = o._rotation;
       m.rotation().set(0, r.y, 0);
+      m.scale().set(0.003, 0.003, 0.003);
       m.update();
       if(o._rotationAble){
          r.y += 0.01;

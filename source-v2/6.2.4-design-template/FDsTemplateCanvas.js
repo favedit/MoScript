@@ -58,7 +58,7 @@ function FDsTemplateCanvas_onBuild(p){
    RStage.register('stage3d', o._stage);
    // 设置相机
    var rc = g.camera();
-   rc.setPosition(0, 6, -6);
+   rc.setPosition(0, 6, -20);
    rc.lookAt(0, 3, 0);
    rc.update();
    // 设置投影
@@ -182,7 +182,7 @@ function FDsTemplateCanvas_onEnterFrame(){
       //m.location().set(0, -8.0, 0);
       m.rotation().set(0, r.y, 0);
       //m.scale().set(3.0, 3.0, 3.0);
-      //m.scale().set(0.5, 0.5, 0.5);
+      m.scale().set(0.003, 0.003, 0.003);
       m.update();
       // 设置变量
       if(o._rotationAble){

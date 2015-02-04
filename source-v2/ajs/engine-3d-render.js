@@ -417,6 +417,99 @@ function FRd3Material_loadResource(p){
       var texture = textures.get(n);
    }
 }
+function FRd3MeshAnimation(o){
+   o = RClass.inherits(this, o, FObject);
+   o._baseTick    = 0;
+   o._currentTick = 0;
+   o._lastTick    = 0;
+   o._playRate    = 1.0;
+   o._bones       = null;
+   o._tracks      = null;
+   o._resource    = null;
+   o._playInfo    = null;
+   o.construct    = FRd3MeshAnimation_construct;
+   o.findBone     = FRd3MeshAnimation_findBone;
+   o.bones        = FRd3MeshAnimation_bones;
+   o.findTrack    = FRd3MeshAnimation_findTrack;
+   o.tracks       = FRd3MeshAnimation_tracks;
+   o.loadResource = FRd3MeshAnimation_loadResource;
+   o.process      = FRd3MeshAnimation_process;
+   o.dispose      = FRd3MeshAnimation_dispose;
+   return o;
+}
+function FRd3MeshAnimation_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._bones = new TDictionary();
+   o._tracks = new TObjects();
+   o._playInfo = new SRd3PlayInfo();
+}
+function FRd3MeshAnimation_findBone(p){
+   return this._bones.get(p);
+}
+function FRd3MeshAnimation_bones(){
+   return this._bones;
+}
+function FRd3MeshAnimation_findTrack(p){
+   var o = this;
+   var ts = o._tracks;
+   var c = ts.count();
+   for(var i = 0; i < c; i++){
+      var t = ts.get(i);
+      if(t.boneId() == p){
+         return t;
+      }
+   }
+   return null;
+}
+function FRd3MeshAnimation_tracks(){
+   return this._tracks;
+}
+function FRd3MeshAnimation_loadResource(p){
+   var o = this;
+   o._resource = p;
+   var rts = p.tracks();
+   var c = rts.count();
+   for(var i = 0; i < c; i++){
+      var rt = rts.get(i);
+      var t = RClass.create(FRd3Track);
+      t.loadResource(rt);
+      o._tracks.push(t);
+   }
+   var bs = o._bones;
+   var c = bs.count();
+   for(var i = 0; i < c; i++){
+      var b = bs.value(i);
+      var bi = b.id();
+      var t = o.findTrack(bi);
+      if(t == null){
+         throw new TError('Track is not exists. (bone_id={1})', bi);
+      }
+      b.setTrackResource(t);
+   }
+}
+function FRd3MeshAnimation_process(p){
+   var o = this;
+   var t = RTimer.current();
+   if(o._lastTick == 0){
+      o._lastTick = t;
+   }
+   var ct = o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate * 3.0;
+   var r = p._resource;
+   var pi = o._playInfo;
+   r.calculate(pi, ct);
+   pi.update();
+   var m = p._matrix;
+   m.assign(r.matrixInvert());
+   m.append(pi.matrix);
+}
+function FRd3MeshAnimation_dispose(){
+   var o = this;
+   o._bones = null;
+   o._tracks = null;
+   o._resource = null;
+   o.__base.FObject.dispose.call(o);
+}
 function FRd3Model(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._name        = null;
@@ -899,16 +992,20 @@ function FRd3TextureCube_load(u){
 }
 function FRd3Track(o){
    o = RClass.inherits(this, o, FObject);
-   o._frameCount  = 0;
-   o._frameTick   = 0;
+   o._matrix      = null
    o._resource    = null;
+   o.construct    = FRd3Track_construct;
    o.boneId       = FRd3Track_boneId;
    o.matrix       = FRd3Track_matrix;
    o.matrixInvert = FRd3Track_matrixInvert;
    o.loadResource = FRd3Track_loadResource;
-   o.calculate    = FRd3Track_calculate;
    o.dispose      = FRd3Track_dispose;
    return o;
+}
+function FRd3Track_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new SMatrix3d();
 }
 function FRd3Track_boneId(){
    return this._resource.boneId();

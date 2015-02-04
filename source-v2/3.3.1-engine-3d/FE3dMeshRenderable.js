@@ -11,6 +11,8 @@ function FE3dMeshRenderable(o){
    o._display         = null;
    o._modelMatrix     = null;
    o._renderable      = null;
+   o._meshAnimation   = null;
+   o._activeTrack     = null;
    o._bones           = null;
    //..........................................................
    // @method
@@ -26,6 +28,7 @@ function FE3dMeshRenderable(o){
    o.bones            = FE3dMeshRenderable_bones;
    // @method
    o.update           = FE3dMeshRenderable_update;
+   o.process          = FE3dMeshRenderable_process;
    // @method
    o.dispose          = FE3dMeshRenderable_dispose;
    return o;
@@ -134,8 +137,28 @@ function FE3dMeshRenderable_update(p){
    var m = o._matrix;
    var mm = o._modelMatrix
    var dm = o._display.matrix();
-   m.assign(mm);
+   if(o._activeTrack){
+      m.assign(o._activeTrack._matrix);
+      m.append(mm);
+   }else{
+      m.assign(mm);
+   }
    m.append(dm);
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+// @param p:region:FG3dRegion 区域
+//==========================================================
+function FE3dMeshRenderable_process(p){
+   var o = this;
+   o.__base.FG3dRenderable.process.call(p)
+   var a = o._meshAnimation;
+   if(a){
+      a.process(o._activeTrack);
+   }
 }
 
 //==========================================================
