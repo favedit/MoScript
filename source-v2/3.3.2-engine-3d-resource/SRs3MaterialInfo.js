@@ -47,34 +47,34 @@ function SRs3MaterialInfo_unserialize(p){
    //o.colorRate = p.readFloat();
    //o.colorMerge = p.readFloat();
    // 读取透明
-   //o.alphaBase = p.readFloat();
-   //o.alphaRate = p.readFloat();
+   o.alphaBase = p.readFloat();
+   o.alphaRate = p.readFloat();
    //o.alphaLevel = p.readFloat();
    //o.alphaMerge = p.readFloat();
    // 存储属性
-   o.ambientColor.unserialize3(p);
+   o.ambientColor.unserialize(p);
    //o.ambientShadow = p.readFloat();
-   o.diffuseColor.unserialize3(p);
+   o.diffuseColor.unserialize(p);
    //o.diffuseShadow = p.readFloat();
-   //o.diffuseViewColor.unserialize(p);
+   o.diffuseViewColor.unserialize(p);
    //o.diffuseViewShadow = p.readFloat();
-   o.specularColor.unserialize3(p);
+   o.specularColor.unserialize(p);
    //o.specularBase = p.readFloat();
    o.specularLevel = p.readFloat();
    //o.specularAverage = p.readFloat();
    //o.specularShadow = p.readFloat();
-   //o.specularViewColor.unserialize(p);
+   o.specularViewColor.unserialize(p);
    //o.specularViewBase = p.readFloat();
-   //o.specularViewRate = p.readFloat();
+   o.specularViewLevel = p.readFloat();
    //o.specularViewAverage = p.readFloat();
    //o.specularViewShadow = p.readFloat();
    // 存储反射
-   //o.reflectColor.unserialize(p);
-   //o.reflectMerge = p.readFloat();
+   o.reflectColor.unserialize(p);
+   o.reflectMerge = p.readFloat();
    //o.reflectShadow = p.readFloat();
    // 存储折射
-   //o.refractFrontColor.unserialize(p);
-   //o.refractBackColor.unserialize(p);
+   o.refractFrontColor.unserialize(p);
+   o.refractBackColor.unserialize(p);
    // 存储不透明度
    //o.opacityColor.unserialize(p);
    //o.opacityRate = p.readFloat();
@@ -82,5 +82,5 @@ function SRs3MaterialInfo_unserialize(p){
    //o.opacityDepth = p.readFloat();
    //o.opacityTransmittance = p.readFloat();
    // 存储自发光
-   //o.emissiveColor.unserialize(p);
+   o.emissiveColor.unserialize(p);
 }

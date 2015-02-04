@@ -29,6 +29,8 @@
    <Parameter name='fc_specular_view_color' format='Float4'/>
    <Parameter name='fc_specular_view'       format='Float4'/>
    <Parameter name='fc_reflect_color'       format='Float4'/>
+   <Parameter name='fc_reflect'             format='Float4'/>
+   <Parameter name='fc_emissive_color'      format='Float4'/>
    <!--=====================================================-->
    <Attribute name='va_position'    linker='position'    format='Float4'/>
    <Attribute name='va_color'       linker='color'       format='Byte4Normal'/>
@@ -143,6 +145,7 @@
       </shader:true>
       <shader:true source='support.environment'>
       uniform vec4 fc_reflect_color;
+      uniform vec4 fc_reflect;
       </shader:true>
       //..........................................................
       // 声明插值器
@@ -235,7 +238,8 @@
          vec4 light = texture2D(fs_light, v_coord);
          environmentColor *= light.g;
          </shader:true>
-         result.rgb *= environmentColor.rgb * fc_reflect_color.rgb;
+         result.rgb *= fc_reflect.z;
+         result.rgb += environmentColor.rgb * fc_reflect_color.rgb * fc_reflect.w;
          </shader:true>
          //............................................................
          // 计算颜色

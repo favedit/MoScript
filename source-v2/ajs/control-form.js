@@ -5952,7 +5952,7 @@ function SUiColorBar_set(p){
    var r = pv / 255;
    var l = o.hSlideForm.offsetWidth;
    var d = parseInt(l * r);
-   o.hSlideRowML.width = d;
+   o.hSlideRowML.width = Math.max(d, 1);
    o.setColorValue(p);
    var h = o.hInput;
    if(h){

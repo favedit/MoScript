@@ -8,19 +8,30 @@ function FDsTemplateMaterialFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._template     = null;
-   o._material     = null;
+   o._template             = null;
+   o._material             = null;
+   // @attribute
+   o._controlGuid          = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
+   o._controlAmbientColor  = null;
+   o._controlDiffuseColor  = null;
+   o._controlSpecularColor = null;
+   o._controlSpecularLevel = null;
+   o._controlReflectColor  = null;
+   o._controlReflectMerge  = null;
+   o._controlEmissiveColor = null;
    //..........................................................
    // @event
-   o.onBuilded     = FDsTemplateMaterialFrame_onBuilded;
-   o.onDataChanged = FDsTemplateMaterialFrame_onDataChanged;
+   o.onBuilded             = FDsTemplateMaterialFrame_onBuilded;
+   o.onDataChanged         = FDsTemplateMaterialFrame_onDataChanged;
    //..........................................................
    // @method
-   o.construct     = FDsTemplateMaterialFrame_construct;
+   o.construct             = FDsTemplateMaterialFrame_construct;
    // @method
-   o.loadObject    = FDsTemplateMaterialFrame_loadObject;
+   o.loadObject            = FDsTemplateMaterialFrame_loadObject;
    // @method
-   o.dispose       = FDsTemplateMaterialFrame_dispose;
+   o.dispose               = FDsTemplateMaterialFrame_dispose;
    return o;
 }
 
@@ -37,14 +48,20 @@ function FDsTemplateMaterialFrame_onBuilded(p){
    o._controlGuid = o.searchControl('guid');
    o._controlCode = o.searchControl('code');
    o._controlLabel = o.searchControl('label');
-   var ac = o._controlAmbientColor = o.searchControl('ambientColor');
-   ac.addDataChangedListener(o, o.onDataChanged);
-   var dc = o._controlDiffuseColor = o.searchControl('diffuseColor');
-   dc.addDataChangedListener(o, o.onDataChanged);
-   var sc = o._controlSpecularColor = o.searchControl('specularColor');
-   sc.addDataChangedListener(o, o.onDataChanged);
-   var sl = o._controlSpecularLevel = o.searchControl('specularLevel');
-   sl.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlAmbientColor = o.searchControl('ambientColor');
+   c.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlDiffuseColor = o.searchControl('diffuseColor');
+   c.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlSpecularColor = o.searchControl('specularColor');
+   c.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlSpecularLevel = o.searchControl('specularLevel');
+   c.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlReflectColor = o.searchControl('reflectColor');
+   c.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlReflectMerge = o.searchControl('reflectMerge');
+   c.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlEmissiveColor = o.searchControl('emissiveColor');
+   c.addDataChangedListener(o, o.onDataChanged);
 }
 
 //==========================================================
@@ -59,16 +76,24 @@ function FDsTemplateMaterialFrame_onDataChanged(p){
    var m = o._material;
    var mi = m.info();
    // 设置环境颜色
-   var ac = o._controlAmbientColor.get();
-   mi.ambientColor.assign(ac);
+   var v = o._controlAmbientColor.get();
+   mi.ambientColor.assign(v);
    // 设置散射颜色
-   var dc = o._controlDiffuseColor.get();
-   mi.diffuseColor.assign(dc);
+   var v = o._controlDiffuseColor.get();
+   mi.diffuseColor.assign(v);
    // 设置高光颜色
-   var sc = o._controlSpecularColor.get();
-   mi.specularColor.assign(sc);
-   var sl = o._controlSpecularLevel.get();
-   mi.specularLevel = sl;
+   var v = o._controlSpecularColor.get();
+   mi.specularColor.assign(v);
+   var v = o._controlSpecularLevel.get();
+   mi.specularLevel = v;
+   // 设置反射颜色
+   var v = o._controlReflectColor.get();
+   mi.specularColor.assign(v);
+   var v = o._controlReflectMerge.get();
+   mi.reflectMerge = v;
+   // 设置发光颜色
+   var v = o._controlEmissiveColor.get();
+   mi.emissiveColor.assign(v);
    // 重新加载资源
    t.reloadResource();
 }
@@ -105,6 +130,9 @@ function FDsTemplateMaterialFrame_loadObject(t, m){
    o._controlDiffuseColor.set(mi.diffuseColor);
    o._controlSpecularColor.set(mi.specularColor);
    o._controlSpecularLevel.set(mi.specularLevel);
+   o._controlReflectColor.set(mi.reflectColor);
+   o._controlReflectMerge.set(mi.reflectMerge);
+   o._controlEmissiveColor.set(mi.emissiveColor);
 }
 
 //==========================================================

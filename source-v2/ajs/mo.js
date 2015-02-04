@@ -3324,10 +3324,10 @@ function RFloat_nvl(v, d){
    return v ? v : (d ? d : 0);
 }
 function RFloat_toRange(v, i, a){
-   if(null == v){
+   if(v == null){
       v = 0;
    }
-   return Math.min(Math.max(v, min), max);
+   return Math.min(Math.max(v, i), a);
 }
 function RFloat_sum(){
    var a = arguments;
@@ -14238,7 +14238,7 @@ function SG3dMaterialInfo_assign(p){
    o.specularViewAverage = p.specularViewAverage;
    o.specularViewShadow = p.specularViewShadow;
    o.reflectColor.assign(p.reflectColor);
-   o.reflectMerge = p.reflectMerge;
+   o.reflectMerge = RFloat.toRange(p.reflectMerge, 0, 2);
    o.reflectShadow = p.reflectShadow;
    o.refractFrontColor.assign(p.refractFrontColor);
    o.refractFrontMerge = p.refractFrontMerge;
@@ -15233,6 +15233,8 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
+   p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
+   p.setParameter('fc_emissive_color', mi.emissiveColor);
    o.bindAttributes(pr);
    o.bindSamplers(pr);
    c.drawTriangles(pr.indexBuffer());
@@ -19676,10 +19678,20 @@ function SRs3MaterialInfo(o){
 function SRs3MaterialInfo_unserialize(p){
    var o = this;
    o.effectName = p.readString();
-   o.ambientColor.unserialize3(p);
-   o.diffuseColor.unserialize3(p);
-   o.specularColor.unserialize3(p);
+   o.alphaBase = p.readFloat();
+   o.alphaRate = p.readFloat();
+   o.ambientColor.unserialize(p);
+   o.diffuseColor.unserialize(p);
+   o.diffuseViewColor.unserialize(p);
+   o.specularColor.unserialize(p);
    o.specularLevel = p.readFloat();
+   o.specularViewColor.unserialize(p);
+   o.specularViewLevel = p.readFloat();
+   o.reflectColor.unserialize(p);
+   o.reflectMerge = p.readFloat();
+   o.refractFrontColor.unserialize(p);
+   o.refractBackColor.unserialize(p);
+   o.emissiveColor.unserialize(p);
 }
 function SRs3SceneShadow(o){
    if(!o){o = this;}
@@ -22169,7 +22181,7 @@ function SG3dMaterialInfo_assign(p){
    o.specularViewAverage = p.specularViewAverage;
    o.specularViewShadow = p.specularViewShadow;
    o.reflectColor.assign(p.reflectColor);
-   o.reflectMerge = p.reflectMerge;
+   o.reflectMerge = RFloat.toRange(p.reflectMerge, 0, 2);
    o.reflectShadow = p.reflectShadow;
    o.refractFrontColor.assign(p.refractFrontColor);
    o.refractFrontMerge = p.refractFrontMerge;
@@ -23164,6 +23176,8 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
+   p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
+   p.setParameter('fc_emissive_color', mi.emissiveColor);
    o.bindAttributes(pr);
    o.bindSamplers(pr);
    c.drawTriangles(pr.indexBuffer());
@@ -35315,7 +35329,7 @@ function SUiColorBar_set(p){
    var r = pv / 255;
    var l = o.hSlideForm.offsetWidth;
    var d = parseInt(l * r);
-   o.hSlideRowML.width = d;
+   o.hSlideRowML.width = Math.max(d, 1);
    o.setColorValue(p);
    var h = o.hInput;
    if(h){
@@ -42327,13 +42341,23 @@ function FDsTemplateDisplayPropertyFrame_dispose(){
 }
 function FDsTemplateMaterialFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._template     = null;
-   o._material     = null;
-   o.onBuilded     = FDsTemplateMaterialFrame_onBuilded;
-   o.onDataChanged = FDsTemplateMaterialFrame_onDataChanged;
-   o.construct     = FDsTemplateMaterialFrame_construct;
-   o.loadObject    = FDsTemplateMaterialFrame_loadObject;
-   o.dispose       = FDsTemplateMaterialFrame_dispose;
+   o._template             = null;
+   o._material             = null;
+   o._controlGuid          = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
+   o._controlAmbientColor  = null;
+   o._controlDiffuseColor  = null;
+   o._controlSpecularColor = null;
+   o._controlSpecularLevel = null;
+   o._controlReflectColor  = null;
+   o._controlReflectMerge  = null;
+   o._controlEmissiveColor = null;
+   o.onBuilded             = FDsTemplateMaterialFrame_onBuilded;
+   o.onDataChanged         = FDsTemplateMaterialFrame_onDataChanged;
+   o.construct             = FDsTemplateMaterialFrame_construct;
+   o.loadObject            = FDsTemplateMaterialFrame_loadObject;
+   o.dispose               = FDsTemplateMaterialFrame_dispose;
    return o;
 }
 function FDsTemplateMaterialFrame_onBuilded(p){
@@ -42342,28 +42366,40 @@ function FDsTemplateMaterialFrame_onBuilded(p){
    o._controlGuid = o.searchControl('guid');
    o._controlCode = o.searchControl('code');
    o._controlLabel = o.searchControl('label');
-   var ac = o._controlAmbientColor = o.searchControl('ambientColor');
-   ac.addDataChangedListener(o, o.onDataChanged);
-   var dc = o._controlDiffuseColor = o.searchControl('diffuseColor');
-   dc.addDataChangedListener(o, o.onDataChanged);
-   var sc = o._controlSpecularColor = o.searchControl('specularColor');
-   sc.addDataChangedListener(o, o.onDataChanged);
-   var sl = o._controlSpecularLevel = o.searchControl('specularLevel');
-   sl.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlAmbientColor = o.searchControl('ambientColor');
+   c.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlDiffuseColor = o.searchControl('diffuseColor');
+   c.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlSpecularColor = o.searchControl('specularColor');
+   c.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlSpecularLevel = o.searchControl('specularLevel');
+   c.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlReflectColor = o.searchControl('reflectColor');
+   c.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlReflectMerge = o.searchControl('reflectMerge');
+   c.addDataChangedListener(o, o.onDataChanged);
+   var c = o._controlEmissiveColor = o.searchControl('emissiveColor');
+   c.addDataChangedListener(o, o.onDataChanged);
 }
 function FDsTemplateMaterialFrame_onDataChanged(p){
    var o = this;
    var t = o._template;
    var m = o._material;
    var mi = m.info();
-   var ac = o._controlAmbientColor.get();
-   mi.ambientColor.assign(ac);
-   var dc = o._controlDiffuseColor.get();
-   mi.diffuseColor.assign(dc);
-   var sc = o._controlSpecularColor.get();
-   mi.specularColor.assign(sc);
-   var sl = o._controlSpecularLevel.get();
-   mi.specularLevel = sl;
+   var v = o._controlAmbientColor.get();
+   mi.ambientColor.assign(v);
+   var v = o._controlDiffuseColor.get();
+   mi.diffuseColor.assign(v);
+   var v = o._controlSpecularColor.get();
+   mi.specularColor.assign(v);
+   var v = o._controlSpecularLevel.get();
+   mi.specularLevel = v;
+   var v = o._controlReflectColor.get();
+   mi.specularColor.assign(v);
+   var v = o._controlReflectMerge.get();
+   mi.reflectMerge = v;
+   var v = o._controlEmissiveColor.get();
+   mi.emissiveColor.assign(v);
    t.reloadResource();
 }
 function FDsTemplateMaterialFrame_construct(){
@@ -42383,6 +42419,9 @@ function FDsTemplateMaterialFrame_loadObject(t, m){
    o._controlDiffuseColor.set(mi.diffuseColor);
    o._controlSpecularColor.set(mi.specularColor);
    o._controlSpecularLevel.set(mi.specularLevel);
+   o._controlReflectColor.set(mi.reflectColor);
+   o._controlReflectMerge.set(mi.reflectMerge);
+   o._controlEmissiveColor.set(mi.emissiveColor);
 }
 function FDsTemplateMaterialFrame_dispose(){
    var o = this;

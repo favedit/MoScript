@@ -2864,10 +2864,20 @@ function SRs3MaterialInfo(o){
 function SRs3MaterialInfo_unserialize(p){
    var o = this;
    o.effectName = p.readString();
-   o.ambientColor.unserialize3(p);
-   o.diffuseColor.unserialize3(p);
-   o.specularColor.unserialize3(p);
+   o.alphaBase = p.readFloat();
+   o.alphaRate = p.readFloat();
+   o.ambientColor.unserialize(p);
+   o.diffuseColor.unserialize(p);
+   o.diffuseViewColor.unserialize(p);
+   o.specularColor.unserialize(p);
    o.specularLevel = p.readFloat();
+   o.specularViewColor.unserialize(p);
+   o.specularViewLevel = p.readFloat();
+   o.reflectColor.unserialize(p);
+   o.reflectMerge = p.readFloat();
+   o.refractFrontColor.unserialize(p);
+   o.refractBackColor.unserialize(p);
+   o.emissiveColor.unserialize(p);
 }
 function SRs3SceneShadow(o){
    if(!o){o = this;}

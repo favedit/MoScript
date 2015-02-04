@@ -123,10 +123,10 @@ function RFloat_nvl(v, d){
 // @return Number 浮点数
 //===========================================================
 function RFloat_toRange(v, i, a){
-   if(null == v){
+   if(v == null){
       v = 0;
    }
-   return Math.min(Math.max(v, min), max);
+   return Math.min(Math.max(v, i), a);
 }
 
 //===========================================================

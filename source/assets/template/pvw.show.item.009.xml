@@ -5,9 +5,16 @@
       <Theme code="color">
         <MaterialCollection>
           <Material effect_code="automatic" option_double="0" code="pvw.show.009.01">
-            <Ambient r="0.588" g="0.588" b="0.588" />
-            <Diffuse r="0.588" g="0.588" b="0.588" />
-            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.show.009.01" bitmap="diffuse" index="0" />
               <Texture type="environment" texture="pvw.show.009.01" bitmap="environment" index="0" />
@@ -21,9 +28,16 @@
       <Theme code="shadow">
         <MaterialCollection>
           <Material effect_code="automatic" option_double="0" code="pvw.show.009.01">
-            <Ambient r="0.588" g="0.588" b="0.588" />
-            <Diffuse r="0.588" g="0.588" b="0.588" />
-            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.show.009.01" bitmap="diffuse" index="0" />
               <Texture type="environment" texture="pvw.show.009.01" bitmap="environment" index="0" />

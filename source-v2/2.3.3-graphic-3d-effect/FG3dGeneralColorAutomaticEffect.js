@@ -51,6 +51,8 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
+   p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
+   p.setParameter('fc_emissive_color', mi.emissiveColor);
    // 绑定所有属性流
    o.bindAttributes(pr);
    // 绑定所有取样器

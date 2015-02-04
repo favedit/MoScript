@@ -1383,7 +1383,7 @@ function SG3dMaterialInfo_assign(p){
    o.specularViewAverage = p.specularViewAverage;
    o.specularViewShadow = p.specularViewShadow;
    o.reflectColor.assign(p.reflectColor);
-   o.reflectMerge = p.reflectMerge;
+   o.reflectMerge = RFloat.toRange(p.reflectMerge, 0, 2);
    o.reflectShadow = p.reflectShadow;
    o.refractFrontColor.assign(p.refractFrontColor);
    o.refractFrontMerge = p.refractFrontMerge;
