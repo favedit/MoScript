@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.show.skeleton.001">
+    <ThemeCollection>
+      <Theme code="color">
+        <MaterialCollection>
+          <Material effect_code="skeleton.4" option_double="0" code="pvw.show.013.01">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0.4" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.013.01" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.show.013.01" bitmap="normal" index="0" />
+              <Texture type="alpha" texture="pvw.show.013.01" bitmap="alpha" index="0" />
+              <Texture type="specular.level" texture="pvw.show.013.01" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" code="pvw.show.013.02">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0.4" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.013.02" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.show.013.02" bitmap="normal" index="0" />
+              <Texture type="alpha" texture="pvw.show.013.02" bitmap="alpha" index="0" />
+              <Texture type="specular.level" texture="pvw.show.013.02" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="2" code="pvw.show.013.03">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0.4" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.013.03" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.show.013.03" bitmap="normal" index="0" />
+              <Texture type="alpha" texture="pvw.show.013.03" bitmap="alpha" index="0" />
+              <Texture type="specular.level" texture="pvw.show.013.03" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+      <Theme code="shadow">
+        <MaterialCollection>
+          <Material effect_code="skeleton.4" option_double="0" code="pvw.show.013.01">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0.4" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.013.01" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.show.013.01" bitmap="normal" index="0" />
+              <Texture type="alpha" texture="pvw.show.013.01" bitmap="alpha" index="0" />
+              <Texture type="specular.level" texture="pvw.show.013.01" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" code="pvw.show.013.02">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0.4" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.013.02" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.show.013.02" bitmap="normal" index="0" />
+              <Texture type="alpha" texture="pvw.show.013.02" bitmap="alpha" index="0" />
+              <Texture type="specular.level" texture="pvw.show.013.02" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="2" code="pvw.show.013.03">
+            <Ambient r="0.588235" g="0.588235" b="0.588235" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0.4" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.013.03" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.show.013.03" bitmap="normal" index="0" />
+              <Texture type="alpha" texture="pvw.show.013.03" bitmap="alpha" index="0" />
+              <Texture type="specular.level" texture="pvw.show.013.03" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection>
+      <Sprite model_code="pvw.show.skeleton.001" mesh_code="ms_body">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.013.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.skeleton.001" mesh_code="ms_clothes">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.013.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.skeleton.001" mesh_code="ms_hair">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.013.03" />
+        </MaterialCollection>
+      </Sprite>
+    </DisplayCollection>
+  </Template>
+</Configuration>

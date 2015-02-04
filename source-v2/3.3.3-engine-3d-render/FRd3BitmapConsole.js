@@ -63,8 +63,8 @@ function FRd3BitmapConsole_load(pc, pg, pt){
    if(RString.toLower(pt) == 'environment'){
       t = RClass.create(FRd3TextureCube);
       t.linkContext(pc);
-      t._name = c;
-      t.load(RBrowser.contentPath(o._path + c));
+      t._name = pg;
+      t.load(u);
    }else{
       t = RClass.create(FRd3Texture);
       t.linkContext(pc);

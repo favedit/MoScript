@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.show.item.009">
+    <ThemeCollection>
+      <Theme code="color">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" code="pvw.show.009.01">
+            <Ambient r="0.588" g="0.588" b="0.588" />
+            <Diffuse r="0.588" g="0.588" b="0.588" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.009.01" bitmap="diffuse" index="0" />
+              <Texture type="environment" texture="pvw.show.009.01" bitmap="environment" index="0" />
+              <Texture type="normal" texture="pvw.show.009.01" bitmap="normal" index="0" />
+              <Texture type="reflect" texture="pvw.show.009.01" bitmap="reflect" index="0" />
+              <Texture type="specular.level" texture="pvw.show.009.01" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+      <Theme code="shadow">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" code="pvw.show.009.01">
+            <Ambient r="0.588" g="0.588" b="0.588" />
+            <Diffuse r="0.588" g="0.588" b="0.588" />
+            <Specular r="0.9" g="0.9" b="0.9" level="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.009.01" bitmap="diffuse" index="0" />
+              <Texture type="environment" texture="pvw.show.009.01" bitmap="environment" index="0" />
+              <Texture type="normal" texture="pvw.show.009.01" bitmap="normal" index="0" />
+              <Texture type="reflect" texture="pvw.show.009.01" bitmap="reflect" index="0" />
+              <Texture type="specular.level" texture="pvw.show.009.01" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection>
+      <Sprite model_code="pvw.show.item.009" mesh_code="ms_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.009.01" />
+        </MaterialCollection>
+      </Sprite>
+    </DisplayCollection>
+  </Template>
+</Configuration>

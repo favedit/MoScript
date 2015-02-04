@@ -66,30 +66,30 @@ function FRd3TextureCube_load(u){
    var g = o.imageX1 = RClass.create(FImage);
    g._name = 'x1'
    g.lsnsLoad.register(o, o.onLoad);
-   g.loadUrl(u + "-x1.jpg");
+   g.loadUrl(u + "-x1");
    // 加载图X2
    var g = o.imageX2 = RClass.create(FImage);
    g._name = 'x2'
    g.lsnsLoad.register(o, o.onLoad);
-   g.loadUrl(u + "-x2.jpg");
+   g.loadUrl(u + "-x2");
    // 加载图Y1
    var g = o.imageY1 = RClass.create(FImage);
    g._name = 'y1'
    g.lsnsLoad.register(o, o.onLoad);
-   g.loadUrl(u + "-y1.jpg");
+   g.loadUrl(u + "-y1");
    // 加载图Y2
    var g = o.imageY2 = RClass.create(FImage);
    g._name = 'y2'
    g.lsnsLoad.register(o, o.onLoad);
-   g.loadUrl(u + "-y2.jpg");
+   g.loadUrl(u + "-y2");
    // 加载图Z1
    var g = o.imageZ1 = RClass.create(FImage);
    g._name = 'z1'
    g.lsnsLoad.register(o, o.onLoad);
-   g.loadUrl(u + "-z1.jpg");
+   g.loadUrl(u + "-z1");
    // 加载图Z2
    var g = o.imageZ2 = RClass.create(FImage);
    g._name = 'z2'
    g.lsnsLoad.register(o, o.onLoad);
-   g.loadUrl(u + "-z2.jpg");
+   g.loadUrl(u + "-z2");
 }
