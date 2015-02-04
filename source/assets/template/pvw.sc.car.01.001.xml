@@ -1,0 +1,907 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.sc.car.01.001">
+    <ThemeCollection>
+      <Theme code="color">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.01">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="1.1" level="1.1" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.001.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.02">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.03">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.06">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.4" level="0.4" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.07">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.08">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.001.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.09">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.001.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.10">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.sc.car.01.001.03" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.11">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.sc.car.01.001.03" bitmap="diffuse" index="0" />
+              <Texture type="environment" texture="pvw.sc.car.01.001.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.12">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.001.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="2" code="pvw.sc.car.01.001.13">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.001.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+      <Theme code="shadow">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.01">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="1.1" level="1.1" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.001.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.02">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.03">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.06">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.4" level="0.4" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.07">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.08">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.001.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.09">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.001.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.10">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.sc.car.01.001.03" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.11">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.sc.car.01.001.03" bitmap="diffuse" index="0" />
+              <Texture type="environment" texture="pvw.sc.car.01.001.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.sc.car.01.001.12">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.001.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="2" code="pvw.sc.car.01.001.13">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.001.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_006">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_007">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_008">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_009">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_010">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_011">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_012">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_013">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_014">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_015">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_016">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_017">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_018">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_019">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_020">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_021">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_022">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_001_023">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_006">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_007">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_008">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_009">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_010">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_011">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_012">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_013">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_014">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_015">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_016">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_017">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_018">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_019">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_020">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_021">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_002_022">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_006">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_007">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_008">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_009">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_010">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_011">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_012">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_013">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_003_015">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_006_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_006_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_006_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_006_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_006_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_006_006">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_006_007">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_006_008">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_006_009">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_006_010">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_006_011">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_006_012">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_007_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.07" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_007_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.07" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_007_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.07" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_007_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.07" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_007_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.07" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_007_006">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.07" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_008_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.08" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_008_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.08" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_008_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.08" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_008_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.08" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_008_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.08" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_009_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.09" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_009_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.09" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_010_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.10" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_010_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.10" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_010_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.10" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_011_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.11" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_011_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.11" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_012_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.12" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_012_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.12" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_012_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.12" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_012_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.12" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_012_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.12" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_012_006">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.12" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_012_007">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.12" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_012_008">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.12" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_012_009">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.12" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_012_010">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.12" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.001" mesh_code="ms_013_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.001.13" />
+        </MaterialCollection>
+      </Sprite>
+    </DisplayCollection>
+  </Template>
+</Configuration>
