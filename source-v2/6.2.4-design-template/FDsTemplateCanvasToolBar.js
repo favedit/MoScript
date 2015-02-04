@@ -124,9 +124,18 @@ function FDsTemplateCanvasToolBar_onBuild(p){
    o.push(b);
    //..........................................................
    // 建立按键
+   var b = o._playButton  = RClass.create(FUiToolButtonCheck);
+   b.setName('_playButton');
+   b.setLabel('播放');
+   b.setIcon('design3d.tools.play');
+   b.build(p);
+   b.addClickListener(o, o.onRotationClick);
+   o.push(b);
+   // 建立按键
    var b = o._viewButton  = RClass.create(FUiToolButtonCheck);
    b.setName('_viewButton');
    b.setLabel('旋转');
+   b.setIcon('design3d.tools.rotation');
    b.build(p);
    b.addClickListener(o, o.onRotationClick);
    o.push(b);

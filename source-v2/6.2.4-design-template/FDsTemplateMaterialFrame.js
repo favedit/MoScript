@@ -88,7 +88,7 @@ function FDsTemplateMaterialFrame_onDataChanged(p){
    mi.specularLevel = v;
    // 设置反射颜色
    var v = o._controlReflectColor.get();
-   mi.specularColor.assign(v);
+   mi.reflectColor.assign(v);
    var v = o._controlReflectMerge.get();
    mi.reflectMerge = v;
    // 设置发光颜色

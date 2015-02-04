@@ -69,8 +69,21 @@ function FDsTemplateToolBar_onRefreshClick(p){
 //==========================================================
 function FDsTemplateToolBar_onSaveClick(p){
    var o = this;
-   //var catalog = o._worksapce._catalog;
-   //catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
+   var t = o._workspace._activeTemplate;
+   var rt = t._resource;
+   var ts = rt.themes();
+   var tc = ts.count();
+   var xr = new TXmlNode();
+   for(var ti = 0; ti < tc; ti++){
+      var t = ts.get(ti);
+      var ms = t.materials();
+      var mc = ms.count();
+      for(var mi = 0; mi < mc; mi++){
+         var m = ms.value(mi);
+         m.saveConfig(xr.create('Material'));
+      }
+   }
+   RConsole.find(FRs3TemplateConsole).update(xr);
 }
 
 //==========================================================

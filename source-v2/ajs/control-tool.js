@@ -389,7 +389,7 @@ function FUiToolButtonMenu_dispose(){
    o.hDropPanel = null;
 }
 function FUiToolButtonSplit(o){
-   o = RClass.inherits(this, o, FUiControl);
+   o = RClass.inherits(this, o, FUiToolButton);
    o._stylePanel = RClass.register(o, new AStyle('_stylePanel'));
    o.onBuild     = FUiToolButtonSplit_onBuild;
    return o;

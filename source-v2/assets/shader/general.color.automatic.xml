@@ -239,7 +239,7 @@
          environmentColor *= light.g;
          </shader:true>
          //result.rgb *= fc_reflect.z;
-         //result.rgb += environmentColor.rgb * fc_reflect_color.rgb * fc_reflect.w;
+         result.rgb *= environmentColor.rgb * fc_reflect_color.rgb * fc_reflect.w;
          </shader:true>
          //............................................................
          // 计算颜色

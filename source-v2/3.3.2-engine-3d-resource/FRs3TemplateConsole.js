@@ -8,12 +8,14 @@ function FRs3TemplateConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._templates = null;
-   o._dataUrl  = '/cloud.content.template.wv'
+   o._templates  = null;
+   o._serviceUrl = '/cloud.content.template.ws'
+   o._dataUrl    = '/cloud.content.template.wv'
    //..........................................................
    // @method
-   o.construct = FRs3TemplateConsole_construct;
-   o.load      = FRs3TemplateConsole_load;
+   o.construct   = FRs3TemplateConsole_construct;
+   o.load        = FRs3TemplateConsole_load;
+   o.update      = FRs3TemplateConsole_update;
    return o;
 }
 
@@ -47,4 +49,18 @@ function FRs3TemplateConsole_load(c, v){
       s.set(c, t);
    }
    return t;
+}
+
+//==========================================================
+// <T>更新处理。</T>
+//
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FRs3TemplateConsole_update(p){
+   var o = this;
+   // 生成地址
+   var u = RBrowser.hostPath(o._serviceUrl + '?action=update');
+   // 发送数据
+   var xc = RConsole.find(FXmlConsole);
+   var r = xc.send(u, p);
 }

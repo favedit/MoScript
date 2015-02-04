@@ -6,7 +6,7 @@
 // @history 150203
 //==========================================================
 function FUiToolButtonSplit(o){
-   o = RClass.inherits(this, o, FUiControl);
+   o = RClass.inherits(this, o, FUiToolButton);
    //..........................................................
    // @style
    o._stylePanel = RClass.register(o, new AStyle('_stylePanel'));

@@ -8,35 +8,45 @@ function FDsTemplateWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);
    //..........................................................
    // @style
-   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-   o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-   o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+   o._styleToolbarGround    = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+   o._styleStatusbarGround  = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+   o._styleCatalogGround    = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+   o._styleWorkspaceGround  = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+   o._stylePropertyGround   = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
    //..........................................................
    // @attribute
-   o._framesetMain         = null;
-   o._framesetBody         = null;
+   o._framesetMain          = null;
+   o._framesetBody          = null;
    // @attribute
-   o._frameToolBar         = null;
-   o._frameBody            = null;
-   o._frameProperty        = null;
+   o._frameToolBar          = null;
+   o._frameBody             = null;
+   o._frameProperty         = null;
    // @attribute
-   o._frameCatalog         = null;
-   o._frameWorkspace       = null;
-   o._frameStatusBar       = null;
+   o._frameCatalog          = null;
+   o._frameWorkspace        = null;
+   o._frameStatusBar        = null;
+   // @attribute
+   o._templatePropertyFrame = null;
+   o._themePropertyFrame    = null;
+   o._materialPropertyFrame = null;
+   o._displayPropertyFrame  = null;
    //..........................................................
    // @process
-   o.onBuild               = FDsTemplateWorkspace_onBuild;
-   o.onTemplateLoad        = FDsTemplateWorkspace_onTemplateLoad;
-   o.onCatalogSelected     = FDsTemplateWorkspace_onCatalogSelected;
+   o.onBuild                = FDsTemplateWorkspace_onBuild;
+   o.onTemplateLoad         = FDsTemplateWorkspace_onTemplateLoad;
+   o.onCatalogSelected      = FDsTemplateWorkspace_onCatalogSelected;
    //..........................................................
    // @method
-   o.construct             = FDsTemplateWorkspace_construct;
+   o.construct              = FDsTemplateWorkspace_construct;
    // @method
-   o.loadTemplate          = FDsTemplateWorkspace_loadTemplate;
+   o.templatePropertyFrame  = FDsTemplateWorkspace_templatePropertyFrame;
+   o.themePropertyFrame     = FDsTemplateWorkspace_themePropertyFrame;
+   o.materialPropertyFrame  = FDsTemplateWorkspace_materialPropertyFrame;
+   o.displayPropertyFrame   = FDsTemplateWorkspace_displayPropertyFrame;
    // @method
-   o.dispose               = FDsTemplateWorkspace_dispose;
+   o.loadTemplate           = FDsTemplateWorkspace_loadTemplate;
+   // @method
+   o.dispose                = FDsTemplateWorkspace_dispose;
    return o;
 }
 
@@ -130,6 +140,7 @@ function FDsTemplateWorkspace_onBuild(p){
    o.push(c);
    // 建立画板
    var hc = RBuilder.appendTableRowCell(hf);
+   hc.vAlign = 'top';
    var c = o._canvas = RClass.create(FDsTemplateCanvas);
    c.addLoadListener(o, o.onTemplateLoad);
    c._workspace = o;
@@ -137,35 +148,6 @@ function FDsTemplateWorkspace_onBuild(p){
    c.build(p);
    c.setPanel(hc);
    o.push(c);
-   //..........................................................
-   //var c = o._materialFrame = RClass.create(FDsTemplateMaterialFrame);
-   //c._workspace = o;
-   //c.buildConfig(p);
-   //c.setPanel(o._frameProperty._hPanel);
-   //..........................................................
-   // 创建模板属性页面
-   var c = o._templateProperty = RClass.create(FDsTemplatePropertyFrame);
-   c._workspace = o;
-   c.buildDefine(p);
-   c.setPanel(o._frameProperty._hPanel);
-   //..........................................................
-   // 创建主题属性页面
-   var c = o._themeProperty = RClass.create(FDsTemplateThemePropertyFrame);
-   c._workspace = o;
-   c.buildDefine(p);
-   c.setPanel(o._frameProperty._hPanel);
-   //..........................................................
-   // 创建材质属性页面
-   var c = o._materialProperty = RClass.create(FDsTemplateMaterialPropertyFrame);
-   c._workspace = o;
-   c.buildDefine(p);
-   c.setPanel(o._frameProperty._hPanel);
-   //..........................................................
-   // 创建精灵属性页面
-   var c = o._displayProperty = RClass.create(FDsTemplateDisplayPropertyFrame);
-   c._workspace = o;
-   c.buildDefine(p);
-   c.setPanel(o._frameProperty._hPanel);
 }
 
 //==========================================================
@@ -198,23 +180,35 @@ function FDsTemplateWorkspace_onCatalogSelected(p){
    var o = this;
    var t = o._activeTemplate;
    // 隐藏所有面板
-   o._templateProperty.hide();
-   o._themeProperty.hide();
-   o._materialProperty.hide();
-   o._displayProperty.hide();
+   if(o._templatePropertyFrame){
+      o._templatePropertyFrame.hide();
+   }
+   if(o._themePropertyFrame){
+      o._themePropertyFrame.hide();
+   }
+   if(o._materialPropertyFrame){
+      o._materialPropertyFrame.hide();
+   }
+   if(o._displayPropertyFrame){
+      o._displayPropertyFrame.hide();
+   }
    // 显示选中面板
    if(RClass.isClass(p, FE3dTemplate)){
-      o._templateProperty.show();
-      o._templateProperty.loadObject(t);
+      var f = o.templatePropertyFrame();
+      f.show();
+      f.loadObject(t);
    }else if(RClass.isClass(p, FRs3TemplateTheme)){
-      o._themeProperty.show();
-      o._themeProperty.loadObject(t, p);
+      var f = o.themePropertyFrame();
+      f.show();
+      f.loadObject(t, p);
    }else if(RClass.isClass(p, FRs3Material)){
-      o._materialProperty.show();
-      o._materialProperty.loadObject(t, p);
+      var f = o.materialPropertyFrame();
+      f.show();
+      f.loadObject(t, p);
    }else if(RClass.isClass(p, FG3dRenderable)){
-      o._displayProperty.show();
-      o._displayProperty.loadObject(t, p);
+      var f = o.displayPropertyFrame();
+      f.show();
+      f.loadObject(t, p);
    }else{
       throw new TError('Unknown select object type. (value={1})', p);
    }
@@ -229,6 +223,78 @@ function FDsTemplateWorkspace_construct(){
    var o = this;
    // 父处理
    o.__base.FUiWorkspace.construct.call(o);
+}
+
+//==========================================================
+// <T>获得模板属性页面。</T>
+//
+// @method
+// @return FDsTemplatePropertyFrame 模板属性页面
+//==========================================================
+function FDsTemplateWorkspace_templatePropertyFrame(){
+   var o = this;
+   var f = o._templatePropertyFrame;
+   if(!f){
+      f = o._templatePropertyFrame = RClass.create(FDsTemplatePropertyFrame);
+      f._workspace = o;
+      f.buildDefine(o._hPanel);
+      f.setPanel(o._frameProperty._hPanel);
+   }
+   return f;
+}
+
+//==========================================================
+// <T>获得主题属性页面。</T>
+//
+// @method
+// @return FDsTemplateThemePropertyFrame 主题属性页面
+//==========================================================
+function FDsTemplateWorkspace_themePropertyFrame(){
+   var o = this;
+   var f = o._themePropertyFrame;
+   if(!f){
+      var f = o._themePropertyFrame = RClass.create(FDsTemplateThemePropertyFrame);
+      f._workspace = o;
+      f.buildDefine(o._hPanel);
+      f.setPanel(o._frameProperty._hPanel);
+   }
+   return f;
+}
+
+//==========================================================
+// <T>获得材质属性页面。</T>
+//
+// @method
+// @return FDsTemplateMaterialPropertyFrame 材质属性页面
+//==========================================================
+function FDsTemplateWorkspace_materialPropertyFrame(){
+   var o = this;
+   var f = o._materialPropertyFrame;
+   if(!f){
+      f = o._materialPropertyFrame = RClass.create(FDsTemplateMaterialPropertyFrame);
+      f._workspace = o;
+      f.buildDefine(o._hPanel);
+      f.setPanel(o._frameProperty._hPanel);
+   }
+   return f;
+}
+
+//==========================================================
+// <T>获得显示属性页面。</T>
+//
+// @method
+// @return FDsTemplateDisplayPropertyFrame 显示属性页面
+//==========================================================
+function FDsTemplateWorkspace_displayPropertyFrame(){
+   var o = this;
+   var f = o._displayPropertyFrame;
+   if(!f){
+      f = o._displayPropertyFrame = RClass.create(FDsTemplateDisplayPropertyFrame);
+      f._workspace = o;
+      f.buildDefine(o._hPanel);
+      f.setPanel(o._frameProperty._hPanel);
+   }
+   return f;
 }
 
 //==========================================================

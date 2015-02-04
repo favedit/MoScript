@@ -1721,6 +1721,7 @@ function FRs3Material(o){
    o.info        = FRs3Material_info;
    o.textures    = FRs3Material_textures;
    o.unserialize = FRs3Material_unserialize;
+   o.saveConfig  = FRs3Material_saveConfig;
    return o;
 }
 function FRs3Material_construct(){
@@ -1757,6 +1758,20 @@ function FRs3Material_unserialize(p){
          ts.push(t);
       }
    }
+}
+function FRs3Material_saveConfig(p){
+   var o = this;
+   var mi = o._info;
+   p.set('guid', o._guid);
+   p.set('code', o._code);
+   p.set('label', o._label);
+   p.set('ambient_color', mi.ambientColor.toString());
+   p.set('diffuse_color', mi.diffuseColor.toString());
+   p.set('specular_color', mi.specularColor.toString());
+   p.set('specular_level', mi.specularLevel);
+   p.set('reflect_color', mi.reflectColor.toString());
+   p.set('reflect_merge', mi.reflectMerge);
+   p.set('emissive_color', mi.emissiveColor.toString());
 }
 function FRs3MaterialConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -2660,10 +2675,12 @@ function FRs3Template_unserialize(p){
 }
 function FRs3TemplateConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._templates = null;
-   o._dataUrl  = '/cloud.content.template.wv'
-   o.construct = FRs3TemplateConsole_construct;
-   o.load      = FRs3TemplateConsole_load;
+   o._templates  = null;
+   o._serviceUrl = '/cloud.content.template.ws'
+   o._dataUrl    = '/cloud.content.template.wv'
+   o.construct   = FRs3TemplateConsole_construct;
+   o.load        = FRs3TemplateConsole_load;
+   o.update      = FRs3TemplateConsole_update;
    return o;
 }
 function FRs3TemplateConsole_construct(){
@@ -2682,6 +2699,12 @@ function FRs3TemplateConsole_load(c, v){
       s.set(c, t);
    }
    return t;
+}
+function FRs3TemplateConsole_update(p){
+   var o = this;
+   var u = RBrowser.hostPath(o._serviceUrl + '?action=update');
+   var xc = RConsole.find(FXmlConsole);
+   var r = xc.send(u, p);
 }
 function FRs3TemplateTheme(o){
    o = RClass.inherits(this, o, FRs3Object);

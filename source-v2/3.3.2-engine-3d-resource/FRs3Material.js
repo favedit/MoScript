@@ -23,7 +23,9 @@ function FRs3Material(o){
    o.effectName  = FRs3Material_effectName;
    o.info        = FRs3Material_info;
    o.textures    = FRs3Material_textures;
+   // @method
    o.unserialize = FRs3Material_unserialize;
+   o.saveConfig  = FRs3Material_saveConfig;
    return o;
 }
 
@@ -91,8 +93,8 @@ function FRs3Material_textures(){
 //==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
+// @method
 // @param p:input:FByteStream 数据流
-// @return 处理结果
 //==========================================================
 function FRs3Material_unserialize(p){
    var o = this;
@@ -111,4 +113,27 @@ function FRs3Material_unserialize(p){
          ts.push(t);
       }
    }
+}
+
+//==========================================================
+// <T>保存数据信息到配置节点。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FRs3Material_saveConfig(p){
+   var o = this;
+   var mi = o._info;
+   p.set('guid', o._guid);
+   p.set('code', o._code);
+   p.set('label', o._label);
+   p.set('alpha_base', mi.alphaBase);
+   p.set('alpha_rate', mi.alphaRate);
+   p.set('ambient_color', mi.ambientColor.toString());
+   p.set('diffuse_color', mi.diffuseColor.toString());
+   p.set('specular_color', mi.specularColor.toString());
+   p.set('specular_level', mi.specularLevel);
+   p.set('reflect_color', mi.reflectColor.toString());
+   p.set('reflect_merge', mi.reflectMerge);
+   p.set('emissive_color', mi.emissiveColor.toString());
 }
