@@ -8,25 +8,13 @@ function FRs3MaterialTexture(o){
    o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute
-   o._code       = null;
    o._bitmapGuid = null;
    //..........................................................
    // @method
-   o.code        = FRs3MaterialTexture_code;
    o.bitmapGuid  = FRs3MaterialTexture_bitmapGuid;
    // @method
    o.unserialize = FRs3MaterialTexture_unserialize;
    return o;
-}
-
-//==========================================================
-// <T>获得代码。</T>
-//
-// @method
-// @return String 代码
-//==========================================================
-function FRs3MaterialTexture_code(){
-   return this._code;
 }
 
 //==========================================================
@@ -47,7 +35,7 @@ function FRs3MaterialTexture_bitmapGuid(){
 //==========================================================
 function FRs3MaterialTexture_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    // 读取属性
-   o._code = p.readString();
    o._bitmapGuid = p.readString();
 }

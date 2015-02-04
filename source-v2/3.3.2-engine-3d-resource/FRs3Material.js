@@ -8,7 +8,6 @@ function FRs3Material(o){
    o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute
-   o._guid       = null;
    o._groupGuid  = null;
    // @attribute
    o._info       = null;
@@ -18,7 +17,6 @@ function FRs3Material(o){
    // @method
    o.construct   = FRs3Material_construct;
    // @method
-   o.guid        = FRs3Material_guid;
    o.groupGuid   = FRs3Material_groupGuid;
    o.group       = FRs3Material_group;
    // @method
@@ -38,16 +36,6 @@ function FRs3Material_construct(){
    var o = this;
    o.__base.FRs3Object.construct.call(o);
    o._info = new SRs3MaterialInfo();
-}
-
-//==========================================================
-// <T>获得唯一编号。</T>
-//
-// @method
-// @return String 唯一编号
-//==========================================================
-function FRs3Material_guid(){
-   return this._guid;
 }
 
 //==========================================================
@@ -108,8 +96,8 @@ function FRs3Material_textures(){
 //==========================================================
 function FRs3Material_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    // 读取属性
-   o._guid = p.readString();
    o._groupGuid = p.readString();
    // 读取信息
    o._info.unserialize(p);

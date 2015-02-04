@@ -183,12 +183,10 @@ function FRs3Frame_unserialize(p){
 }
 function FRs3Material(o){
    o = RClass.inherits(this, o, FRs3Object);
-   o._guid       = null;
    o._groupGuid  = null;
    o._info       = null;
    o._textures   = null;
    o.construct   = FRs3Material_construct;
-   o.guid        = FRs3Material_guid;
    o.groupGuid   = FRs3Material_groupGuid;
    o.group       = FRs3Material_group;
    o.effectName  = FRs3Material_effectName;
@@ -201,9 +199,6 @@ function FRs3Material_construct(){
    var o = this;
    o.__base.FRs3Object.construct.call(o);
    o._info = new SRs3MaterialInfo();
-}
-function FRs3Material_guid(){
-   return this._guid;
 }
 function FRs3Material_groupGuid(){
    return this._groupGuid;
@@ -222,7 +217,7 @@ function FRs3Material_textures(){
 }
 function FRs3Material_unserialize(p){
    var o = this;
-   o._guid = p.readString();
+   o.__base.FRs3Object.unserialize.call(o, p);
    o._groupGuid = p.readString();
    o._info.unserialize(p);
    var c = p.readInt16();
@@ -287,22 +282,17 @@ function FRs3MaterialGroupConsole_find(p){
 }
 function FRs3MaterialTexture(o){
    o = RClass.inherits(this, o, FRs3Object);
-   o._code       = null;
    o._bitmapGuid = null;
-   o.code        = FRs3MaterialTexture_code;
    o.bitmapGuid  = FRs3MaterialTexture_bitmapGuid;
    o.unserialize = FRs3MaterialTexture_unserialize;
    return o;
-}
-function FRs3MaterialTexture_code(){
-   return this._code;
 }
 function FRs3MaterialTexture_bitmapGuid(){
    return this._bitmapGuid;
 }
 function FRs3MaterialTexture_unserialize(p){
    var o = this;
-   o._code = p.readString();
+   o.__base.FRs3Object.unserialize.call(o, p);
    o._bitmapGuid = p.readString();
 }
 function FRs3Model(o){
@@ -434,8 +424,10 @@ function FRs3Object(o){
    o = RClass.inherits(this, o, FObject);
    o._guid       = null;
    o._code       = null;
+   o._label      = null;
    o.guid        = FRs3Object_guid;
    o.code        = FRs3Object_code;
+   o.label       = FRs3Object_label;
    o.unserialize = FRs3Object_unserialize;
    return o;
 }
@@ -445,10 +437,14 @@ function FRs3Object_guid(){
 function FRs3Object_code(){
    return this._code;
 }
+function FRs3Object_label(){
+   return this._label;
+}
 function FRs3Object_unserialize(p){
    var o = this;
    o._guid = p.readString();
    o._code = p.readString();
+   o._label = p.readString();
 }
 function FRs3Resource(o){
    o = RClass.inherits(this, o, FResource);
@@ -494,6 +490,7 @@ function FRs3Resource_unserialize(p){
    }
    o._guid = p.readString();
    o._code = p.readString();
+   o._label = p.readString();
 }
 function FRs3Resource_load(u){
    var o = this;

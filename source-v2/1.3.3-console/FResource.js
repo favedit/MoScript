@@ -9,12 +9,14 @@ function FResource(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._guid = null;
-   o._code = null;
+   o._guid  = null;
+   o._code  = null;
+   o._label = null;
    //..........................................................
    // @method
-   o.guid  = FResource_guid;
-   o.code  = FResource_code;
+   o.guid   = FResource_guid;
+   o.code   = FResource_code;
+   o.label  = FResource_label;
    return o;
 }
 
@@ -36,4 +38,14 @@ function FResource_guid(){
 //==========================================================
 function FResource_code(){
    return this._code;
+}
+
+//==========================================================
+// <T>获得标签。</T>
+//
+// @method
+// @return String 标签
+//==========================================================
+function FResource_label(){
+   return this._label;
 }

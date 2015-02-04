@@ -648,10 +648,12 @@ function FProcessConsole_send(u, d){
 }
 function FResource(o){
    o = RClass.inherits(this, o, FObject);
-   o._guid = null;
-   o._code = null;
-   o.guid  = FResource_guid;
-   o.code  = FResource_code;
+   o._guid  = null;
+   o._code  = null;
+   o._label = null;
+   o.guid   = FResource_guid;
+   o.code   = FResource_code;
+   o.label  = FResource_label;
    return o;
 }
 function FResource_guid(){
@@ -659,6 +661,9 @@ function FResource_guid(){
 }
 function FResource_code(){
    return this._code;
+}
+function FResource_label(){
+   return this._label;
 }
 function FResourceConsole(o){
    o = RClass.inherits(this, o, FConsole);

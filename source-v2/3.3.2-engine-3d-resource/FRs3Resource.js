@@ -88,6 +88,7 @@ function FRs3Resource_unserialize(p){
    // 读取属性
    o._guid = p.readString();
    o._code = p.readString();
+   o._label = p.readString();
 }
 
 //==========================================================
