@@ -5,11 +5,12 @@
 // @history 150109
 //==========================================================
 function FRs3Skeleton(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute
    o._bones      = null
    o._roots      = null
+   o._skins      = null
    //..........................................................
    // @method
    o.find        = FRs3Skeleton_find;
@@ -80,16 +81,27 @@ function FRs3Skeleton_innerFilter(p){
 //==========================================================
 function FRs3Skeleton_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    // 读取所有子骨头
    var c = p.readUint8();
    if(c > 0){
       o._bones = new TDictionary();
-      var bs = o._roots = new TObjects();
+      var s = o._roots = new TObjects();
       for(var i = 0; i < c; i++){
          var b = RClass.create(FRs3Bone);
          b.unserialize(p);
          o.innerFilter(b);
-         bs.push(b);
+         s.push(b);
+      }
+   }
+   // 读取蒙皮集合
+   var c = p.readUint8();
+   if(c > 0){
+      var s = o._skins = new TObjects();
+      for(var i = 0; i < c; i++){
+         var k = RClass.create(FRs3SkeletonSkin);
+         k.unserialize(p);
+         s.push(b);
       }
    }
 }

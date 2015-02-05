@@ -531,6 +531,7 @@ function FG3dEffectConsole_create(p){
          e = RClass.create(FG3dGeneralColorAutomaticEffect);
          break;
       case 'general.color.skeleton':
+      case 'general.color.skeleton.4':
          e = RClass.create(FG3dGeneralColorSkeletonEffect);
          break;
       case 'shadow.depth.automatic':
@@ -2397,7 +2398,9 @@ function FG3dAutomaticEffect_bindAttributes(p){
          var a = as.value(n);
          if(a._statusUsed){
             var vb = p.findVertexBuffer(a._linker);
-            g.setAttribute(a._name, vb, vb._formatCd);
+            if(vb){
+               g.setAttribute(a._name, vb, vb._formatCd);
+            }
          }
       }
    }
@@ -2486,7 +2489,7 @@ function FG3dGeneralColorPass_drawRegion(p){
 }
 function FG3dGeneralColorSkeletonEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
-   o._code            = 'shadow.color.skeleton';
+   o._code            = 'general.color.skeleton';
    o._supportSkeleton = true;
    o.drawRenderable   = FG3dGeneralColorSkeletonEffect_drawRenderable;
    return o;

@@ -47,7 +47,8 @@
       //..........................................................
       // 变换矩阵声明
       uniform mat4 vc_model_matrix;
-      uniform mat4 vc_bone_matrix[<shader:write source='bone.count'/>];
+      //uniform mat4 vc_bone_matrix[<shader:write source='bone.count'/>];
+      uniform mat4 vc_bone_matrix[40];
       uniform mat4 vc_vp_matrix;
       uniform vec3 vc_camera_position;
       uniform vec3 vc_light_direction;
@@ -98,6 +99,7 @@
          position += inputPosition * vc_bone_matrix[int(va_bone_index.y)] * va_bone_weight.y;
          position += inputPosition * vc_bone_matrix[int(va_bone_index.z)] * va_bone_weight.z;
          position += inputPosition * vc_bone_matrix[int(va_bone_index.w)] * va_bone_weight.w;
+         position = inputPosition;
          // 计算模型坐标
          vec4 modelPosition = position * vc_model_matrix;
          // 计算最终坐标

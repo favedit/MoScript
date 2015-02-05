@@ -1527,25 +1527,21 @@ function FStage3d_process(){
    o._technique.drawRegion(r);
 }
 function FRs3Animation(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    o._frameCount = 0;
    o._frameTick  = 0;
    o._frameSpan  = 0;
    o._tracks     = null;
-   o.construct   = FRs3Animation_construct;
    o.tracks      = FRs3Animation_tracks;
    o.unserialize = FRs3Animation_unserialize;
    return o;
-}
-function FRs3Animation_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
 }
 function FRs3Animation_tracks(){
    return this._tracks;
 }
 function FRs3Animation_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p)
    o._frameCount = p.readUint16();
    o._frameTick = p.readUint16();
    o._frameSpan = p.readUint32();
@@ -1595,6 +1591,38 @@ function FRs3Bone_unserialize(p){
          bs.push(b);
       }
    }
+}
+function FRs3BoneRefer(o){
+   o = RClass.inherits(this, o, FObject);
+   o._index      = null;
+   o._bone       = null;
+   o._track      = null;
+   o.index       = FRs3BoneRefer_index;
+   o.bone        = FRs3BoneRefer_bone;
+   o.setBone     = FRs3BoneRefer_setBone;
+   o.track       = FRs3BoneRefer_track;
+   o.setTrack    = FRs3BoneRefer_setTrack;
+   o.unserialize = FRs3BoneRefer_unserialize;
+   return o;
+}
+function FRs3BoneRefer_index(){
+   return this._index;
+}
+function FRs3BoneRefer_bone(){
+   return this._bone;
+}
+function FRs3BoneRefer_setBone(p){
+   this._bone = p;
+}
+function FRs3BoneRefer_track(){
+   return this._track;
+}
+function FRs3BoneRefer_setTrack(p){
+   this._track = p;
+}
+function FRs3BoneRefer_unserialize(p){
+   var o = this;
+   o._index = p.readUint8();
 }
 function FRs3Display(o){
    o = RClass.inherits(this, o, FObject);
@@ -1840,29 +1868,100 @@ function FRs3MaterialTexture_unserialize(p){
    o.__base.FRs3Object.unserialize.call(o, p);
    o._bitmapGuid = p.readString();
 }
+function FRs3Mesh(o){
+   o = RClass.inherits(this, o, FObject);
+   o._guid       = null;
+   o._matrix     = null;
+   o._outline    = null;
+   o._streams    = null;
+   o._tracks     = null;
+   o.construct   = FRs3Mesh_construct;
+   o.guid        = FRs3Mesh_guid;
+   o.streams     = FRs3Mesh_streams;
+   o.tracks      = FRs3Mesh_tracks;
+   o.unserialize = FRs3Mesh_unserialize;
+   return o;
+}
+function FRs3Mesh_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new SMatrix3d();
+   o._outline = new SOutline3();
+}
+function FRs3Mesh_guid(){
+   return this._guid;
+}
+function FRs3Mesh_streams(){
+   return this._streams;
+}
+function FRs3Mesh_tracks(){
+   return this._tracks;
+}
+function FRs3Mesh_unserialize(p){
+   var o = this;
+   o._guid = p.readString();
+   var c = p.readInt8();
+   if(c > 0){
+      var ss = o._streams = new TObjects();
+      for(var i = 0; i < c; i++){
+         var s = RClass.create(FRs3Stream);
+         s.unserialize(p)
+         ss.push(s);
+      }
+   }
+}
 function FRs3Model(o){
    o = RClass.inherits(this, o, FRs3Resource);
    o._meshes     = null;
+   o._skeletons  = null;
+   o._animations = null;
    o.meshes      = FRs3Model_meshes;
+   o.skeletons   = FRs3Model_skeletons;
+   o.animations  = FRs3Model_animations;
    o.unserialize = FRs3Model_unserialize;
    return o;
 }
 function FRs3Model_meshes(){
    return this._meshes;
 }
+function FRs3Model_skeletons(){
+   return this._skeletons;
+}
+function FRs3Model_animations(){
+   return this._animations;
+}
 function FRs3Model_unserialize(p){
    var o = this;
    o.__base.FRs3Resource.unserialize.call(o, p);
+   debugger
    var c = p.readInt16();
    if(c > 0){
-      var ms = o._meshes = new TObjects();
+      var s = o._meshes = new TObjects();
       for(var i = 0; i < c; i++){
-         var m = RClass.create(FRs3ModelMesh);
+         var m = RClass.create(FRs3Mesh);
          m.unserialize(p);
-         ms.push(m);
+         s.push(m);
       }
    }
-   RLogger.info(o, "Unserialize model success. (code={1}, mesh_count={2})", o._name, c);
+   var c = p.readInt16();
+   if(c > 0){
+      var s = o._skeletons = new TObjects();
+      for(var i = 0; i < c; i++){
+         var k = RClass.create(FRs3Skeleton);
+         k.unserialize(p);
+         s.push(k);
+      }
+   }
+   var c = p.readInt16();
+   if(c > 0){
+      var s = o._animations = new TObjects();
+      for(var i = 0; i < c; i++){
+         var a = RClass.create(FRs3Animation);
+         a.unserialize(p);
+         s.push(a);
+      }
+   }
+   RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
 }
 function FRs3ModelConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -1888,87 +1987,6 @@ function FRs3ModelConsole_load(c, v){
       ms.set(c, m);
    }
    return m;
-}
-function FRs3ModelMesh(o){
-   o = RClass.inherits(this, o, FObject);
-   o._guid       = null;
-   o._matrix     = null;
-   o._outline    = null;
-   o._streams    = null;
-   o._tracks     = null;
-   o.construct   = FRs3ModelMesh_construct;
-   o.guid        = FRs3ModelMesh_guid;
-   o.streams     = FRs3ModelMesh_streams;
-   o.tracks      = FRs3ModelMesh_tracks;
-   o.unserialize = FRs3ModelMesh_unserialize;
-   return o;
-}
-function FRs3ModelMesh_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-   o._matrix = new SMatrix3d();
-   o._outline = new SOutline3();
-}
-function FRs3ModelMesh_guid(){
-   return this._guid;
-}
-function FRs3ModelMesh_streams(){
-   return this._streams;
-}
-function FRs3ModelMesh_tracks(){
-   return this._tracks;
-}
-function FRs3ModelMesh_unserialize(p){
-   var o = this;
-   o._guid = p.readString();
-   var c = p.readInt8();
-   if(c > 0){
-      var ss = o._streams = new TObjects();
-      for(var i = 0; i < c; i++){
-         var s = RClass.create(FRs3ModelStream);
-         s.unserialize(p)
-         ss.push(s);
-      }
-   }
-}
-function FRs3ModelStream(o){
-   o = RClass.inherits(this, o, FObject);
-   o._code             = null;
-   o._elementDataCd    = 0;
-   o._elementCount     = 0;
-   o._elementNormalize = false;
-   o._dataStride       = 0;
-   o._dataCount        = 0;
-   o._dataLength       = 0;
-   o._data             = null;
-   o._formatCd      = EG3dAttributeFormat.Unknown;
-   o.name              = FRs3ModelStream_name;
-   o.formatCd          = FRs3ModelStream_formatCd;
-   o.unserialize       = FRs3ModelStream_unserialize;
-   o.dispose           = FRs3ModelStream_dispose;
-   return o;
-}
-function FRs3ModelStream_name(){
-   return this._name;
-}
-function FRs3ModelStream_formatCd(){
-   return this._formatCd;
-}
-function FRs3ModelStream_unserialize(p){
-   var o = this;
-   o._code = p.readString();
-   o._elementDataCd = p.readUint8();
-   o._elementCount = p.readUint8();
-   o._elementNormalize = p.readBoolean();
-   var ds = o._dataStride = p.readUint8();
-   var dc = o._dataCount = p.readInt32();
-   var dl = o._dataLength = ds * dc;
-   var d = o._data = new ArrayBuffer(dl);
-   p.readBytes(d, 0, dl);
-}
-function FRs3ModelStream_dispose(){
-   var o = this;
-   o.__base.FObject.dispose.call(o);
 }
 function FRs3Object(o){
    o = RClass.inherits(this, o, FObject);
@@ -2565,9 +2583,10 @@ function FRs3SceneViewport_unserialize(p){
    o._zfar = p.readFloat();
 }
 function FRs3Skeleton(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    o._bones      = null
    o._roots      = null
+   o._skins      = null
    o.find        = FRs3Skeleton_find;
    o.bones       = FRs3Skeleton_bones;
    o.roots       = FRs3Skeleton_roots;
@@ -2598,17 +2617,108 @@ function FRs3Skeleton_innerFilter(p){
 }
 function FRs3Skeleton_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    var c = p.readUint8();
    if(c > 0){
       o._bones = new TDictionary();
-      var bs = o._roots = new TObjects();
+      var s = o._roots = new TObjects();
       for(var i = 0; i < c; i++){
          var b = RClass.create(FRs3Bone);
          b.unserialize(p);
          o.innerFilter(b);
-         bs.push(b);
+         s.push(b);
       }
    }
+   var c = p.readUint8();
+   if(c > 0){
+      var s = o._skins = new TObjects();
+      for(var i = 0; i < c; i++){
+         var k = RClass.create(FRs3SkeletonSkin);
+         k.unserialize(p);
+         s.push(b);
+      }
+   }
+}
+function FRs3SkeletonSkin(o){
+   o = RClass.inherits(this, o, FRs3Object);
+   o._streams     = null
+   o._boneRefers  = null
+   o.find        = FRs3SkeletonSkin_find;
+   o.streams     = FRs3SkeletonSkin_streams;
+   o.boneRefers  = FRs3SkeletonSkin_boneRefers;
+   o.unserialize = FRs3SkeletonSkin_unserialize;
+   return o;
+}
+function FRs3SkeletonSkin_find(p){
+   return this._streams.get(p);
+}
+function FRs3SkeletonSkin_streams(){
+   return this._streams;
+}
+function FRs3SkeletonSkin_boneRefers(){
+   return this._boneRefers;
+}
+function FRs3SkeletonSkin_unserialize(p){
+   var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p)
+   o._meshGuid = p.readString();
+   var c = p.readUint8();
+   if(c > 0){
+      var s = o._streams = new TObjects();
+      for(var i = 0; i < c; i++){
+         var t = RClass.create(FRs3Stream);
+         t.unserialize(p);
+         s.push(t);
+      }
+   }
+   var c = p.readUint8();
+   if(c > 0){
+      var s = o._boneRefers = new TObjects();
+      for(var i = 0; i < c; i++){
+         var b = RClass.create(FRs3BoneRefer);
+         b.unserialize(p);
+         s.push(b);
+      }
+   }
+}
+function FRs3Stream(o){
+   o = RClass.inherits(this, o, FObject);
+   o._code             = null;
+   o._elementDataCd    = 0;
+   o._elementCount     = 0;
+   o._elementNormalize = false;
+   o._dataStride       = 0;
+   o._dataCount        = 0;
+   o._dataLength       = 0;
+   o._data             = null;
+   o._formatCd      = EG3dAttributeFormat.Unknown;
+   o.name              = FRs3Stream_name;
+   o.formatCd          = FRs3Stream_formatCd;
+   o.unserialize       = FRs3Stream_unserialize;
+   o.dispose           = FRs3Stream_dispose;
+   return o;
+}
+function FRs3Stream_name(){
+   return this._name;
+}
+function FRs3Stream_formatCd(){
+   return this._formatCd;
+}
+function FRs3Stream_unserialize(p){
+   var o = this;
+   o._code = p.readString();
+   o._elementDataCd = p.readUint8();
+   o._elementCount = p.readUint8();
+   o._elementNormalize = p.readBoolean();
+   var ds = o._dataStride = p.readUint8();
+   var dc = o._dataCount = p.readInt32();
+   var dl = o._dataLength = ds * dc;
+   var d = o._data = new ArrayBuffer(dl);
+   p.readBytes(d, 0, dl);
+}
+function FRs3Stream_dispose(){
+   var o = this;
+   o.__base.FObject.dispose.call(o);
 }
 function FRs3Template(o){
    o = RClass.inherits(this, o, FRs3Resource);

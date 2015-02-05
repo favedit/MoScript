@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150128
 //==========================================================
-function FRs3ModelStream(o){
+function FRs3Stream(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
@@ -20,10 +20,10 @@ function FRs3ModelStream(o){
    o._formatCd      = EG3dAttributeFormat.Unknown;
    //..........................................................
    // @method
-   o.name              = FRs3ModelStream_name;
-   o.formatCd          = FRs3ModelStream_formatCd;
-   o.unserialize       = FRs3ModelStream_unserialize;
-   o.dispose           = FRs3ModelStream_dispose;
+   o.name              = FRs3Stream_name;
+   o.formatCd          = FRs3Stream_formatCd;
+   o.unserialize       = FRs3Stream_unserialize;
+   o.dispose           = FRs3Stream_dispose;
    return o;
 }
 
@@ -32,7 +32,7 @@ function FRs3ModelStream(o){
 //
 // @return String 名称
 //==========================================================
-function FRs3ModelStream_name(){
+function FRs3Stream_name(){
    return this._name;
 }
 
@@ -41,7 +41,7 @@ function FRs3ModelStream_name(){
 //
 // @return String 名称
 //==========================================================
-function FRs3ModelStream_formatCd(){
+function FRs3Stream_formatCd(){
    return this._formatCd;
 }
 
@@ -51,7 +51,7 @@ function FRs3ModelStream_formatCd(){
 // @param p:input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FRs3ModelStream_unserialize(p){
+function FRs3Stream_unserialize(p){
    var o = this;
    // 读取属性
    o._code = p.readString();
@@ -71,7 +71,7 @@ function FRs3ModelStream_unserialize(p){
 //
 // @method
 //==========================================================
-function FRs3ModelStream_dispose(){
+function FRs3Stream_dispose(){
    var o = this;
    o.__base.FObject.dispose.call(o);
 }

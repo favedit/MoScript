@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150128
 //==========================================================
-function FRs3ModelMesh(o){
+function FRs3Mesh(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
@@ -15,13 +15,13 @@ function FRs3ModelMesh(o){
    o._tracks     = null;
    //..........................................................
    // @method
-   o.construct   = FRs3ModelMesh_construct;
+   o.construct   = FRs3Mesh_construct;
    // @method
-   o.guid        = FRs3ModelMesh_guid;
-   o.streams     = FRs3ModelMesh_streams;
-   o.tracks      = FRs3ModelMesh_tracks;
+   o.guid        = FRs3Mesh_guid;
+   o.streams     = FRs3Mesh_streams;
+   o.tracks      = FRs3Mesh_tracks;
    // @method
-   o.unserialize = FRs3ModelMesh_unserialize;
+   o.unserialize = FRs3Mesh_unserialize;
    return o;
 }
 
@@ -30,7 +30,7 @@ function FRs3ModelMesh(o){
 //
 // @method
 //==========================================================
-function FRs3ModelMesh_construct(){
+function FRs3Mesh_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._matrix = new SMatrix3d();
@@ -43,7 +43,7 @@ function FRs3ModelMesh_construct(){
 // @method
 // @return String 唯一编号
 //==========================================================
-function FRs3ModelMesh_guid(){
+function FRs3Mesh_guid(){
    return this._guid;
 }
 
@@ -53,7 +53,7 @@ function FRs3ModelMesh_guid(){
 // @method
 // @return TObjects 数据流集合
 //==========================================================
-function FRs3ModelMesh_streams(){
+function FRs3Mesh_streams(){
    return this._streams;
 }
 
@@ -63,7 +63,7 @@ function FRs3ModelMesh_streams(){
 // @method
 // @return TObjects 跟踪集合
 //==========================================================
-function FRs3ModelMesh_tracks(){
+function FRs3Mesh_tracks(){
    return this._tracks;
 }
 
@@ -74,7 +74,7 @@ function FRs3ModelMesh_tracks(){
 // @param p:input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FRs3ModelMesh_unserialize(p){
+function FRs3Mesh_unserialize(p){
    var o = this;
    // 读取属性
    o._guid = p.readString();
@@ -83,7 +83,7 @@ function FRs3ModelMesh_unserialize(p){
    if(c > 0){
       var ss = o._streams = new TObjects();
       for(var i = 0; i < c; i++){
-         var s = RClass.create(FRs3ModelStream);
+         var s = RClass.create(FRs3Stream);
          s.unserialize(p)
          ss.push(s);
       }

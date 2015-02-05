@@ -77,7 +77,7 @@ function FDsTemplateCanvas_onBuild(p){
    o._layer.pushRenderable(dm);
    // 启动处理
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-   RStage.start();
+   RStage.start(100);
    RConsole.find(FMouseConsole).register(o);
 }
 
@@ -183,6 +183,7 @@ function FDsTemplateCanvas_onEnterFrame(){
       m.rotation().set(0, r.y, 0);
       //m.scale().set(3.0, 3.0, 3.0);
       //m.scale().set(0.003, 0.003, 0.003);
+      m.scale().set(0.2, 0.2, 0.2);
       m.update();
       // 设置变量
       if(o._rotationAble){

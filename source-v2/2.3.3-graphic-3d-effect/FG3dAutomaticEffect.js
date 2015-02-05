@@ -326,7 +326,9 @@ function FG3dAutomaticEffect_bindAttributes(p){
          var a = as.value(n);
          if(a._statusUsed){
             var vb = p.findVertexBuffer(a._linker);
-            g.setAttribute(a._name, vb, vb._formatCd);
+            if(vb){
+               g.setAttribute(a._name, vb, vb._formatCd);
+            }
          }
       }
    }

@@ -59,7 +59,7 @@ function FDsTemplateCanvas_onBuild(p){
    dm.setup(c);
    o._layer.pushRenderable(dm);
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-   RStage.start();
+   RStage.start(100);
    RConsole.find(FMouseConsole).register(o);
 }
 function FDsTemplateCanvas_onMouseCaptureStart(p){
@@ -131,6 +131,7 @@ function FDsTemplateCanvas_onEnterFrame(){
    if(m){
       var r = o._rotation;
       m.rotation().set(0, r.y, 0);
+      m.scale().set(0.2, 0.2, 0.2);
       m.update();
       if(o._rotationAble){
          r.y += 0.01;

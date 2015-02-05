@@ -61,6 +61,7 @@ function FG3dEffectConsole_create(p){
          e = RClass.create(FG3dGeneralColorAutomaticEffect);
          break;
       case 'general.color.skeleton':
+      case 'general.color.skeleton.4':
          e = RClass.create(FG3dGeneralColorSkeletonEffect);
          break;
       case 'shadow.depth.automatic':

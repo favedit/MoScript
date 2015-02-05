@@ -5,7 +5,7 @@
 // @history 150109
 //==========================================================
 function FRs3Animation(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute
    o._frameCount = 0;
@@ -15,20 +15,9 @@ function FRs3Animation(o){
    o._tracks     = null;
    //..........................................................
    // @method
-   o.construct   = FRs3Animation_construct;
    o.tracks      = FRs3Animation_tracks;
    o.unserialize = FRs3Animation_unserialize;
    return o;
-}
-
-//==========================================================
-// <T>构造处理。</T>
-//
-// @method
-//==========================================================
-function FRs3Animation_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
 }
 
 //==========================================================
@@ -49,6 +38,7 @@ function FRs3Animation_tracks(){
 //==========================================================
 function FRs3Animation_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p)
    // 读取属性
    o._frameCount = p.readUint16();
    o._frameTick = p.readUint16();

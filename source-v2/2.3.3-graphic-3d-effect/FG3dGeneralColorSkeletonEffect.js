@@ -8,7 +8,7 @@ function FG3dGeneralColorSkeletonEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    //..........................................................
    // @attribute
-   o._code            = 'shadow.color.skeleton';
+   o._code            = 'general.color.skeleton';
    // @attribute
    o._supportSkeleton = true;
    //..........................................................
