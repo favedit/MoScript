@@ -89,13 +89,13 @@ function FRs3ModelMesh_unserialize(p){
       }
    }
    // 读取跟踪
-   var c = p.readInt8();
-   if(c > 0){
-      var ts = o._tracks = new TObjects();
-      for(var i = 0; i < c; i++){
-         var t = RClass.create(FRs3Track);
-         t.unserialize(p)
-         ts.push(t);
-      }
-   }
+   //var c = p.readInt8();
+   //if(c > 0){
+   //   var ts = o._tracks = new TObjects();
+   //   for(var i = 0; i < c; i++){
+   //      var t = RClass.create(FRs3Track);
+   //      t.unserialize(p)
+   //      ts.push(t);
+   //   }
+   //}
 }

@@ -1765,6 +1765,8 @@ function FRs3Material_saveConfig(p){
    p.set('guid', o._guid);
    p.set('code', o._code);
    p.set('label', o._label);
+   p.set('alpha_base', mi.alphaBase);
+   p.set('alpha_rate', mi.alphaRate);
    p.set('ambient_color', mi.ambientColor.toString());
    p.set('diffuse_color', mi.diffuseColor.toString());
    p.set('specular_color', mi.specularColor.toString());
@@ -1926,15 +1928,6 @@ function FRs3ModelMesh_unserialize(p){
          var s = RClass.create(FRs3ModelStream);
          s.unserialize(p)
          ss.push(s);
-      }
-   }
-   var c = p.readInt8();
-   if(c > 0){
-      var ts = o._tracks = new TObjects();
-      for(var i = 0; i < c; i++){
-         var t = RClass.create(FRs3Track);
-         t.unserialize(p)
-         ts.push(t);
       }
    }
 }
