@@ -386,16 +386,19 @@ function FWglContext_setRenderTarget(p){
    }
    o._activeRenderTarget = p;
 }
-function FWglContext_setProgram(v){
+function FWglContext_setProgram(p){
    var o = this;
    var g = o._native;
-   if(v != null){
-      g.useProgram(v._native);
+   if(o._program == p){
+      return;
+   }
+   if(p != null){
+      g.useProgram(p._native);
    }else{
       g.useProgram(null);
    }
-   _program = v;
-   var r = o.checkError("useProgram", "Set program failure. (program={1}, program_id={2})", v, v._native);
+   o._program = p;
+   var r = o.checkError("useProgram", "Set program failure. (program={1}, program_native={2})", p, p._native);
    return r;
 }
 function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){

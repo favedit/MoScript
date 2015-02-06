@@ -560,20 +560,24 @@ function FWglContext_setRenderTarget(p){
 //============================================================
 // <T>设置渲染程序。</T>
 //
-// @param v:program:FG3dProgram 渲染程序
+// @param p:program:FG3dProgram 渲染程序
 //============================================================
-function FWglContext_setProgram(v){
+function FWglContext_setProgram(p){
    var o = this;
    var g = o._native;
+   // 检查参数
+   if(o._program == p){
+      return;
+   }
    // 设置程序
-   if(v != null){
-      g.useProgram(v._native);
+   if(p != null){
+      g.useProgram(p._native);
    }else{
       g.useProgram(null);
    }
-   _program = v;
+   o._program = p;
    // 检查错误
-   var r = o.checkError("useProgram", "Set program failure. (program={1}, program_id={2})", v, v._native);
+   var r = o.checkError("useProgram", "Set program failure. (program={1}, program_native={2})", p, p._native);
    return r;
 }
 
