@@ -22,11 +22,13 @@ function FE3dTemplate(o){
    // @method
    o.skeletons      = FE3dTemplate_skeletons;
    o.pushSkeleton   = FE3dTemplate_pushSkeleton;
+   o.findAnimation  = FE3dTemplate_findAnimation;
    o.animations     = FE3dTemplate_animations;
    o.pushAnimation  = FE3dTemplate_pushAnimation;
    // @method
    o.setResource    = FE3dTemplate_setResource;
    o.loadSkeletons  = FE3dTemplate_loadSkeletons;
+   o.linkAnimation  = FE3dTemplate_linkAnimation;
    o.loadAnimations = FE3dTemplate_loadAnimations;
    o.loadResource   = FE3dTemplate_loadResource;
    o.reloadResource = FE3dTemplate_reloadResource;
@@ -75,6 +77,18 @@ function FE3dTemplate_pushSkeleton(p){
 }
 
 //==========================================================
+// <T>根据唯一编号查找一个渲染动画。</T>
+//
+// @method
+// @param p:guid:String 唯一编号
+// @return FRd3Animation 渲染动画
+//==========================================================
+function FE3dTemplate_findAnimation(p){
+   var s = this._animations;
+   return s ? s.get(p) : null;
+}
+
+//==========================================================
 // <T>获得动画集合。</T>
 //
 // @method
@@ -96,7 +110,8 @@ function FE3dTemplate_pushAnimation(p){
    if(!r){
       r = o._animations = new TDictionary();
    }
-   r.set(p._resource.guid(), p);
+   var pr = p.resource();
+   r.set(pr.guid(), p);
 }
 
 //==========================================================
@@ -131,6 +146,23 @@ function FE3dTemplate_loadSkeletons(p){
 }
 
 //==========================================================
+// <T>关联渲染动画。</T>
+//
+// @method
+// @param p:animation:FRd3Animation 渲染动画
+//==========================================================
+function FE3dTemplate_linkAnimation(p){
+   var o = this;
+   var ts = p.tracks();
+   var c = ts.count();
+   for(var i = 0; i < c; i++){
+      var t = ts.get(i);
+      var r = o._renderables.get(i);
+      r._activeTrack = t;
+   }
+}
+
+//==========================================================
 // <T>加载动画集合。</T>
 //
 // @method
@@ -142,8 +174,18 @@ function FE3dTemplate_loadAnimations(p){
    if(c > 0){
       for(var i = 0; i < c; i++){
          var r = p.get(i);
+         // 查找是否存在
+         var a = o.findAnimation(r.guid());
+         if(a){
+            continue;
+         }
          // 创建渲染动画
-         var a = RClass.create(FRd3Animation);
+         var a = null;
+         if(r.skeleton() == null){
+            a = RClass.create(FRd3MeshAnimation);
+         }else{
+            a = RClass.create(FRd3SkeletonAnimation);
+         }
          a.loadResource(r);
          o.pushAnimation(a);
       }
@@ -223,6 +265,17 @@ function FE3dTemplate_processLoad(){
          s.get(i).load();
       }
    }
+   // 关联动画
+   var as = o._animations;
+   if(as){
+      var c = as.count();
+      for(var i = 0; i < c; i++){
+         var a = as.value(i);
+         if(a.resource().skeleton() == null){
+            o.linkAnimation(a);
+         }
+      }
+   }
    // 加载完成
    o._ready = true;
    // 事件发送
@@ -237,16 +290,22 @@ function FE3dTemplate_processLoad(){
 //==========================================================
 function FE3dTemplate_process(){
    var o = this;
+   // 处理动画集合
+   var as = o._animations;
+   if(as){
+      var c = as.count();
+      for(var i = 0; i < c; i++){
+         as.value(i).record();
+      }
+   }
+   // 父处理
    o.__base.FDisplay3d.process.call(o);
    // 处理动画集合
    var k = o._activeSkeleton;
-   if(k){
-      var as = o._animations;
-      if(as){
-         var c = as.count();
-         for(var i = 0; i < c; i++){
-            as.value(i).process(k);
-         }
+   if(k && as){
+      var c = as.count();
+      for(var i = 0; i < c; i++){
+         as.value(i).process(k);
       }
    }
 }

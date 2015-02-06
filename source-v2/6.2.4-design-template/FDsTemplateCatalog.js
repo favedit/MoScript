@@ -84,10 +84,10 @@ function FDsTemplateCatalog_buildTheme(pn, pt){
    var s = pt.materials();
    var c = s.count();
    if(c > 0){
-      var mgc = RConsole.find(FRs3MaterialGroupConsole);
+      var mc = RConsole.find(FRs3MaterialConsole);
       for(var i = 0; i < c; i++){
          var m = s.value(i);
-         var mg = mgc.find(m.groupGuid());
+         var mg = mc.findGroup(m.groupGuid());
          // 创建节点
          var mn = o.createNode();
          mn.setLabel(mg.code());

@@ -4,32 +4,24 @@ function FRd3Animation(o){
    o._currentTick = 0;
    o._lastTick    = 0;
    o._playRate    = 1.0;
-   o._bones       = null;
    o._tracks      = null;
    o._resource    = null;
    o._playInfo    = null;
    o.construct    = FRd3Animation_construct;
-   o.findBone     = FRd3Animation_findBone;
-   o.bones        = FRd3Animation_bones;
    o.findTrack    = FRd3Animation_findTrack;
    o.tracks       = FRd3Animation_tracks;
+   o.resource     = FRd3Animation_resource;
    o.loadResource = FRd3Animation_loadResource;
-   o.process      = FRd3Animation_process;
+   o.record       = FRd3Animation_record;
+   o.process      = RMethod.virtual(o, 'process');
    o.dispose      = FRd3Animation_dispose;
    return o;
 }
 function FRd3Animation_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._bones = new TDictionary();
    o._tracks = new TObjects();
    o._playInfo = new SRd3PlayInfo();
-}
-function FRd3Animation_findBone(p){
-   return this._bones.get(p);
-}
-function FRd3Animation_bones(){
-   return this._bones;
 }
 function FRd3Animation_findTrack(p){
    var o = this;
@@ -37,7 +29,7 @@ function FRd3Animation_findTrack(p){
    var c = ts.count();
    for(var i = 0; i < c; i++){
       var t = ts.get(i);
-      if(t.boneId() == p){
+      if(t.boneIndex() == p){
          return t;
       }
    }
@@ -45,6 +37,9 @@ function FRd3Animation_findTrack(p){
 }
 function FRd3Animation_tracks(){
    return this._tracks;
+}
+function FRd3Animation_resource(){
+   return this._resource;
 }
 function FRd3Animation_loadResource(p){
    var o = this;
@@ -54,37 +49,21 @@ function FRd3Animation_loadResource(p){
    for(var i = 0; i < c; i++){
       var rt = rts.get(i);
       var t = RClass.create(FRd3Track);
+      t._animation = o;
       t.loadResource(rt);
       o._tracks.push(t);
    }
-   var bs = o._bones;
-   var c = bs.count();
-   for(var i = 0; i < c; i++){
-      var b = bs.value(i);
-      var bi = b.index();
-      var t = o.findTrack(bi);
-      if(t == null){
-         throw new TError('Track is not exists. (bone_id={1})', bi);
-      }
-      b.setTrackResource(t);
-   }
 }
-function FRd3Animation_process(p){
+function FRd3Animation_record(){
    var o = this;
    var t = RTimer.current();
    if(o._lastTick == 0){
       o._lastTick = t;
    }
-   var ct = o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate * 3.0;
-   var bs = p.bones();
-   var c = bs.count();
-   for(var i = 0; i < c; i++){
-      bs.get(i).update(o._playInfo, ct);
-   }
+   o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate * 3.0;
 }
 function FRd3Animation_dispose(){
    var o = this;
-   o._bones = null;
    o._tracks = null;
    o._resource = null;
    o.__base.FObject.dispose.call(o);
@@ -130,25 +109,21 @@ function FRd3BitmapConsole_load(pc, pg, pt){
 }
 function FRd3Bone(o){
    o = RClass.inherits(this, o, FObject);
-   o._matrix          = null
-   o._boneResource    = null
-   o._trackResource   = null;
-   o.construct        = FRd3Bone_construct;
-   o.id               = FRd3Bone_id;
-   o.matrix           = FRd3Bone_matrix;
-   o.trackResource    = FRd3Bone_trackResource;
-   o.loadResource     = FRd3Bone_loadResource;
-   o.update           = FRd3Bone_update;
-   o.dispose          = FRd3Bone_dispose;
+   o._matrix        = null
+   o._boneResource  = null
+   o._trackResource = null;
+   o.construct      = FRd3Bone_construct;
+   o.matrix         = FRd3Bone_matrix;
+   o.trackResource  = FRd3Bone_trackResource;
+   o.loadResource   = FRd3Bone_loadResource;
+   o.update         = FRd3Bone_update;
+   o.dispose        = FRd3Bone_dispose;
    return o;
 }
 function FRd3Bone_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._matrix = new SMatrix3d();
-}
-function FRd3Bone_id(){
-   return this._boneResource.id();
 }
 function FRd3Bone_matrix(){
    return this._matrix;
@@ -166,8 +141,9 @@ function FRd3Bone_update(pi, pt){
    var t = o._trackResource;
    t.calculate(pi, pt);
    pi.update();
-   o._matrix.assign(t.matrixInvert());
-   o._matrix.append(pi.matrix);
+   var m = o._matrix;
+   m.assign(t.matrixInvert());
+   m.append(pi.matrix);
 }
 function FRd3Bone_dispose(){
    var o = this;
@@ -549,83 +525,13 @@ function FRd3Mesh_loadResource(p){
    }
 }
 function FRd3MeshAnimation(o){
-   o = RClass.inherits(this, o, FObject);
-   o._baseTick    = 0;
-   o._currentTick = 0;
-   o._lastTick    = 0;
-   o._playRate    = 1.0;
-   o._bones       = null;
-   o._tracks      = null;
-   o._resource    = null;
-   o._playInfo    = null;
-   o.construct    = FRd3MeshAnimation_construct;
-   o.findBone     = FRd3MeshAnimation_findBone;
-   o.bones        = FRd3MeshAnimation_bones;
-   o.findTrack    = FRd3MeshAnimation_findTrack;
-   o.tracks       = FRd3MeshAnimation_tracks;
-   o.loadResource = FRd3MeshAnimation_loadResource;
-   o.process      = FRd3MeshAnimation_process;
-   o.dispose      = FRd3MeshAnimation_dispose;
+   o = RClass.inherits(this, o, FRd3Animation);
+   o.process = FRd3MeshAnimation_process;
    return o;
-}
-function FRd3MeshAnimation_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-   o._bones = new TDictionary();
-   o._tracks = new TObjects();
-   o._playInfo = new SRd3PlayInfo();
-}
-function FRd3MeshAnimation_findBone(p){
-   return this._bones.get(p);
-}
-function FRd3MeshAnimation_bones(){
-   return this._bones;
-}
-function FRd3MeshAnimation_findTrack(p){
-   var o = this;
-   var ts = o._tracks;
-   var c = ts.count();
-   for(var i = 0; i < c; i++){
-      var t = ts.get(i);
-      if(t.boneId() == p){
-         return t;
-      }
-   }
-   return null;
-}
-function FRd3MeshAnimation_tracks(){
-   return this._tracks;
-}
-function FRd3MeshAnimation_loadResource(p){
-   var o = this;
-   o._resource = p;
-   var rts = p.tracks();
-   var c = rts.count();
-   for(var i = 0; i < c; i++){
-      var rt = rts.get(i);
-      var t = RClass.create(FRd3Track);
-      t.loadResource(rt);
-      o._tracks.push(t);
-   }
-   var bs = o._bones;
-   var c = bs.count();
-   for(var i = 0; i < c; i++){
-      var b = bs.value(i);
-      var bi = b.id();
-      var t = o.findTrack(bi);
-      if(t == null){
-         throw new TError('Track is not exists. (bone_id={1})', bi);
-      }
-      b.setTrackResource(t);
-   }
 }
 function FRd3MeshAnimation_process(p){
    var o = this;
-   var t = RTimer.current();
-   if(o._lastTick == 0){
-      o._lastTick = t;
-   }
-   var ct = o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate * 3.0;
+   var ct = o._currentTick;
    var r = p._resource;
    var pi = o._playInfo;
    r.calculate(pi, ct);
@@ -633,13 +539,6 @@ function FRd3MeshAnimation_process(p){
    var m = p._matrix;
    m.assign(r.matrixInvert());
    m.append(pi.matrix);
-}
-function FRd3MeshAnimation_dispose(){
-   var o = this;
-   o._bones = null;
-   o._tracks = null;
-   o._resource = null;
-   o.__base.FObject.dispose.call(o);
 }
 function FRd3Model(o){
    o = RClass.inherits(this, o, FRd3Object);
@@ -929,6 +828,20 @@ function FRd3Skeleton_loadResource(p){
       }
    }
 }
+function FRd3SkeletonAnimation(o){
+   o = RClass.inherits(this, o, FRd3Animation);
+   o.process = FRd3SkeletonAnimation_process;
+   return o;
+}
+function FRd3SkeletonAnimation_process(p){
+   var o = this;
+   var ct = o._currentTick;
+   var bs = p.bones();
+   var c = bs.count();
+   for(var i = 0; i < c; i++){
+      bs.get(i).update(o._playInfo, ct);
+   }
+}
 function FRd3Skin(o){
    o = RClass.inherits(this, o, FRd3Object);
    o._resource    = null;
@@ -1154,9 +1067,8 @@ function FRd3Track(o){
    o._matrix      = null
    o._resource    = null;
    o.construct    = FRd3Track_construct;
-   o.boneId       = FRd3Track_boneId;
    o.matrix       = FRd3Track_matrix;
-   o.matrixInvert = FRd3Track_matrixInvert;
+   o.resource     = FRd3Track_resource;
    o.loadResource = FRd3Track_loadResource;
    o.dispose      = FRd3Track_dispose;
    return o;
@@ -1166,14 +1078,11 @@ function FRd3Track_construct(){
    o.__base.FObject.construct.call(o);
    o._matrix = new SMatrix3d();
 }
-function FRd3Track_boneId(){
-   return this._resource.boneId();
-}
 function FRd3Track_matrix(){
-   return this._resource.matrix();
+   return this._matrix;
 }
-function FRd3Track_matrixInvert(){
-   return this._resource.matrixInvert();
+function FRd3Track_resource(){
+   return this._resource;
 }
 function FRd3Track_loadResource(p){
    var o = this;
@@ -1183,32 +1092,6 @@ function FRd3Track_loadResource(p){
       o._frameCount = fs.count();
    }
    o._frameTick = p.frameTick();
-}
-function FRd3Track_calculate(pi, pt){
-   var o = this;
-   var fc = o._frameCount;
-   if(fc == 0){
-      return false;
-   }
-   if(pt < 0){
-      pt = -pt;
-   }
-   var ft = o._frameTick;
-   var i = parseInt(pt / ft) % fc;
-   var r = o._resource;
-   var fs = r.frames();
-   var cf = fs.get(i);
-   var nf = null;
-   if(i < fc -1){
-      nf = fs.get(i + 1);
-   }else{
-      nf = fs.get(0);
-   }
-   pi.tick = pt;
-   pi.rate = (pt % ft) / ft;
-   pi.currentFrame = cf;
-   pi.nextFrame = nf;
-   return true;
 }
 function FRd3Track_dispose(){
    var o = this;

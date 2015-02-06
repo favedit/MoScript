@@ -12,7 +12,6 @@ function FRd3Animation(o){
    o._currentTick = 0;
    o._lastTick    = 0;
    o._playRate    = 1.0;
-   o._bones       = null;
    o._tracks      = null;
    o._resource    = null;
    // @attribute
@@ -20,12 +19,15 @@ function FRd3Animation(o){
    //..........................................................
    // @method
    o.construct    = FRd3Animation_construct;
-   o.findBone     = FRd3Animation_findBone;
-   o.bones        = FRd3Animation_bones;
+   // @method
    o.findTrack    = FRd3Animation_findTrack;
    o.tracks       = FRd3Animation_tracks;
+   o.resource     = FRd3Animation_resource;
    o.loadResource = FRd3Animation_loadResource;
-   o.process      = FRd3Animation_process;
+   // @method
+   o.record       = FRd3Animation_record;
+   o.process      = RMethod.virtual(o, 'process');
+   // @method
    o.dispose      = FRd3Animation_dispose;
    return o;
 }
@@ -38,30 +40,8 @@ function FRd3Animation(o){
 function FRd3Animation_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._bones = new TDictionary();
    o._tracks = new TObjects();
    o._playInfo = new SRd3PlayInfo();
-}
-
-//==========================================================
-// <T>根据编号查找骨头。</T>
-//
-// @method
-// @param p:boneId:Integer 编号
-// @return FRd3Bone 骨头
-//==========================================================
-function FRd3Animation_findBone(p){
-   return this._bones.get(p);
-}
-
-//==========================================================
-// <T>获得骨头字典。</T>
-//
-// @method
-// @return TDictionary 骨头字典
-//==========================================================
-function FRd3Animation_bones(){
-   return this._bones;
 }
 
 //==========================================================
@@ -77,7 +57,7 @@ function FRd3Animation_findTrack(p){
    var c = ts.count();
    for(var i = 0; i < c; i++){
       var t = ts.get(i);
-      if(t.boneId() == p){
+      if(t.boneIndex() == p){
          return t;
       }
    }
@@ -95,10 +75,20 @@ function FRd3Animation_tracks(){
 }
 
 //==========================================================
-// <T>获得材质。</T>
+// <T>获得动画资源。</T>
 //
 // @method
-// @return FG3dMaterial 材质
+// @return FRs3Animation 动画资源
+//==========================================================
+function FRd3Animation_resource(){
+   return this._resource;
+}
+
+//==========================================================
+// <T>加载动画资源。</T>
+//
+// @method
+// @param p:resource:FRs3Animation 动画资源
 //==========================================================
 function FRd3Animation_loadResource(p){
    var o = this;
@@ -110,42 +100,25 @@ function FRd3Animation_loadResource(p){
    for(var i = 0; i < c; i++){
       var rt = rts.get(i);
       var t = RClass.create(FRd3Track);
+      t._animation = o;
       t.loadResource(rt);
       o._tracks.push(t);
-   }
-   // 设置骨头集合
-   var bs = o._bones;
-   var c = bs.count();
-   for(var i = 0; i < c; i++){
-      var b = bs.value(i);
-      var bi = b.index();
-      var t = o.findTrack(bi);
-      if(t == null){
-         throw new TError('Track is not exists. (bone_id={1})', bi);
-      }
-      b.setTrackResource(t);
    }
 }
 
 //==========================================================
-// <T>更新处理。</T>
+// <T>刻录时间。</T>
 //
 // @method
 //==========================================================
-function FRd3Animation_process(p){
+function FRd3Animation_record(){
    var o = this;
    // 获得时间
    var t = RTimer.current();
    if(o._lastTick == 0){
       o._lastTick = t;
    }
-   var ct = o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate * 3.0;
-   // 计算间隔
-   var bs = p.bones();
-   var c = bs.count();
-   for(var i = 0; i < c; i++){
-      bs.get(i).update(o._playInfo, ct);
-   }
+   o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate * 3.0;
 }
 
 //==========================================================
@@ -155,7 +128,6 @@ function FRd3Animation_process(p){
 //==========================================================
 function FRd3Animation_dispose(){
    var o = this;
-   o._bones = null;
    o._tracks = null;
    o._resource = null;
    // 父处理

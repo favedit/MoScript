@@ -65,13 +65,13 @@ function FRs3Template_unserialize(p){
    // 父处理
    o.__base.FRs3Resource.unserialize.call(o, p);
    // 读取材质组集合
-   var mgc = RConsole.find(FRs3MaterialGroupConsole);
+   var mc = RConsole.find(FRs3MaterialConsole);
    var c = p.readUint16();
    if(c > 0){
       var s = o._materialGroups = new TDictionary();
       for(var i = 0; i < c; i++){
          // 创建材质组
-         var g = mgc.unserialize(p);
+         var g = mc.unserializeGroup(p);
          s.set(g.guid(), g);
       }
    }

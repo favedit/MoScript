@@ -22,13 +22,12 @@ function FDisplay3d_dispose(){
 function FE3dMeshRenderable(o){
    o = RClass.inherits(this, o, FG3dRenderable);
    o._display         = null;
-   o._modelMatrix     = null;
    o._renderable      = null;
-   o._meshAnimation   = null;
+   o._modelMatrix     = null;
+   o._vertexBuffers   = null;
    o._activeSkin      = null;
    o._activeTrack     = null;
    o._bones           = null;
-   o._vertexBuffers   = null;
    o.construct        = FE3dMeshRenderable_construct;
    o.modelMatrix      = FE3dMeshRenderable_modelMatrix;
    o.findVertexBuffer = FE3dMeshRenderable_findVertexBuffer;
@@ -46,8 +45,8 @@ function FE3dMeshRenderable(o){
 function FE3dMeshRenderable_construct(){
    var o = this;
    o.__base.FG3dRenderable.construct.call(o);
-   o._modelMatrix = new SMatrix3d();
    o._vertexBuffers = new TDictionary();
+   o._modelMatrix = new SMatrix3d();
 }
 function FE3dMeshRenderable_modelMatrix(){
    return this._modelMatrix;
@@ -75,11 +74,12 @@ function FE3dMeshRenderable_bones(p){
 }
 function FE3dMeshRenderable_update(p){
    var o = this;
-   var m = o._matrix;
    var mm = o._modelMatrix
    var dm = o._display.matrix();
-   if(o._activeTrack){
-      m.assign(o._activeTrack._matrix);
+   var t = o._activeTrack;
+   var m = o._matrix;
+   if(t){
+      m.assign(t.matrix());
       m.append(mm);
    }else{
       m.assign(mm);
@@ -89,9 +89,12 @@ function FE3dMeshRenderable_update(p){
 function FE3dMeshRenderable_process(p){
    var o = this;
    o.__base.FG3dRenderable.process.call(p)
-   var a = o._meshAnimation;
-   if(a){
-      a.process(o._activeTrack);
+   var t = o._activeTrack;
+   if(t){
+      var a = t._animation;
+      if(a){
+         a.process(t);
+      }
    }
 }
 function FE3dMeshRenderable_dispose(){
@@ -119,10 +122,12 @@ function FE3dTemplate(o){
    o.testReady      = FE3dTemplate_testReady;
    o.skeletons      = FE3dTemplate_skeletons;
    o.pushSkeleton   = FE3dTemplate_pushSkeleton;
+   o.findAnimation  = FE3dTemplate_findAnimation;
    o.animations     = FE3dTemplate_animations;
    o.pushAnimation  = FE3dTemplate_pushAnimation;
    o.setResource    = FE3dTemplate_setResource;
    o.loadSkeletons  = FE3dTemplate_loadSkeletons;
+   o.linkAnimation  = FE3dTemplate_linkAnimation;
    o.loadAnimations = FE3dTemplate_loadAnimations;
    o.loadResource   = FE3dTemplate_loadResource;
    o.reloadResource = FE3dTemplate_reloadResource;
@@ -147,6 +152,10 @@ function FE3dTemplate_pushSkeleton(p){
    }
    r.set(p._resource.guid(), p);
 }
+function FE3dTemplate_findAnimation(p){
+   var s = this._animations;
+   return s ? s.get(p) : null;
+}
 function FE3dTemplate_animations(){
    return this._animations;
 }
@@ -156,7 +165,8 @@ function FE3dTemplate_pushAnimation(p){
    if(!r){
       r = o._animations = new TDictionary();
    }
-   r.set(p._resource.guid(), p);
+   var pr = p.resource();
+   r.set(pr.guid(), p);
 }
 function FE3dTemplate_setResource(p){
    this._resource = p;
@@ -174,13 +184,32 @@ function FE3dTemplate_loadSkeletons(p){
       }
    }
 }
+function FE3dTemplate_linkAnimation(p){
+   var o = this;
+   var ts = p.tracks();
+   var c = ts.count();
+   for(var i = 0; i < c; i++){
+      var t = ts.get(i);
+      var r = o._renderables.get(i);
+      r._activeTrack = t;
+   }
+}
 function FE3dTemplate_loadAnimations(p){
    var o = this;
    var c = p.count();
    if(c > 0){
       for(var i = 0; i < c; i++){
          var r = p.get(i);
-         var a = RClass.create(FRd3Animation);
+         var a = o.findAnimation(r.guid());
+         if(a){
+            continue;
+         }
+         var a = null;
+         if(r.skeleton() == null){
+            a = RClass.create(FRd3MeshAnimation);
+         }else{
+            a = RClass.create(FRd3SkeletonAnimation);
+         }
          a.loadResource(r);
          o.pushAnimation(a);
       }
@@ -236,21 +265,35 @@ function FE3dTemplate_processLoad(){
          s.get(i).load();
       }
    }
+   var as = o._animations;
+   if(as){
+      var c = as.count();
+      for(var i = 0; i < c; i++){
+         var a = as.value(i);
+         if(a.resource().skeleton() == null){
+            o.linkAnimation(a);
+         }
+      }
+   }
    o._ready = true;
    o.processLoadListener(o);
    return o._ready;
 }
 function FE3dTemplate_process(){
    var o = this;
+   var as = o._animations;
+   if(as){
+      var c = as.count();
+      for(var i = 0; i < c; i++){
+         as.value(i).record();
+      }
+   }
    o.__base.FDisplay3d.process.call(o);
    var k = o._activeSkeleton;
-   if(k){
-      var as = o._animations;
-      if(as){
-         var c = as.count();
-         for(var i = 0; i < c; i++){
-            as.value(i).process(k);
-         }
+   if(k && as){
+      var c = as.count();
+      for(var i = 0; i < c; i++){
+         as.value(i).process(k);
       }
    }
 }
@@ -429,14 +472,6 @@ function FE3dTemplateRenderable_load(){
             bs.push(b);
          }
       }
-   }
-   var rr = rd._resource;
-   var rts = rr.tracks();
-   if(rts){
-      var rt = rts.first();
-      var t = o._activeTrack = RClass.create(FRd3Track);
-      t.loadResource(rt);
-      o._meshAnimation = o._display.meshAnimation();
    }
    o._ready = true;
 }

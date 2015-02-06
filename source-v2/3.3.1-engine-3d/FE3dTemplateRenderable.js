@@ -179,15 +179,6 @@ function FE3dTemplateRenderable_load(){
          }
       }
    }
-   // 获得资源
-   var rr = rd._resource;
-   var rts = rr.tracks();
-   if(rts){
-      var rt = rts.first();
-      var t = o._activeTrack = RClass.create(FRd3Track);
-      t.loadResource(rt);
-      o._meshAnimation = o._display.meshAnimation();
-   }
    // 加载完成
    o._ready = true;
 }

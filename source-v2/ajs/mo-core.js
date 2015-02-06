@@ -6139,6 +6139,7 @@ function SMatrix4x4(o){
    o.invert     = SMatrix4x4_invert;
    o.transform  = SMatrix4x4_transform;
    o.writeData  = SMatrix4x4_writeData;
+   o.toString   = SMatrix4x4_toString;
    return o;
 }
 function SMatrix4x4_data(){
@@ -6369,22 +6370,40 @@ function SMatrix4x4_transform(po, pi, pc){
 function SMatrix4x4_writeData(d, i){
    var o = this;
    var pd = o._data;
-   d[i + 0] = pd[ 0];
-   d[i + 1] = pd[ 4];
-   d[i + 2] = pd[ 8];
-   d[i + 3] = pd[12];
-   d[i + 4] = pd[ 1];
-   d[i + 5] = pd[ 5];
-   d[i + 6] = pd[ 9];
-   d[i + 7] = pd[13];
-   d[i + 8] = pd[ 2];
-   d[i + 9] = pd[ 6];
-   d[i +10] = pd[10];
-   d[i +11] = pd[14];
-   d[i +12] = pd[ 3];
-   d[i +13] = pd[ 7];
-   d[i +14] = pd[11];
-   d[i +15] = pd[15];
+   d[i++] = pd[ 0];
+   d[i++] = pd[ 4];
+   d[i++] = pd[ 8];
+   d[i++] = pd[12];
+   d[i++] = pd[ 1];
+   d[i++] = pd[ 5];
+   d[i++] = pd[ 9];
+   d[i++] = pd[13];
+   d[i++] = pd[ 2];
+   d[i++] = pd[ 6];
+   d[i++] = pd[10];
+   d[i++] = pd[14];
+   d[i++] = pd[ 3];
+   d[i++] = pd[ 7];
+   d[i++] = pd[11];
+   d[i++] = pd[15];
+}
+function SMatrix4x4_toString(){
+   var d = this._data;
+   var r = new TString();
+   for(var y = 0; y < 4; y++){
+      if(y > 0){
+         r.append('|');
+      }
+      for(var x = 0; x < 4; x++){
+         var i = y * 4 + x;
+         var v = d[i];
+         if(x > 0){
+            r.append(',');
+         }
+         r.append(RFloat.format(v, 0, null, 3, null));
+      }
+   }
+   return r.flush();
 }
 function SOrthoMatrix3d(o){
    if(!o){o = this;}

@@ -8,26 +8,26 @@ function FRs3Display(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._template   = null;
-   o._typeName   = null;
-   o._modelGuid  = null;
-   o._meshGuid   = null;
-   o._matrix     = null;
+   o._template       = null;
+   o._typeName       = null;
+   o._modelGuid      = null;
+   o._meshGuid       = null;
+   o._matrix         = null;
    o._activeMaterial = null;
-   o._materials  = null;
+   o._materials      = null;
    //..........................................................
    // @method
-   o.construct   = FRs3Display_construct;
+   o.construct       = FRs3Display_construct;
    // @method
-   o.typeName    = FRs3Display_typeName;
-   o.modelGuid   = FRs3Display_modelGuid;
-   o.model       = FRs3Display_model;
-   o.meshGuid    = FRs3Display_meshGuid;
-   o.mesh        = FRs3Display_mesh;
-   o.matrix      = FRs3Display_matrix;
-   o.materials   = FRs3Display_materials;
+   o.typeName        = FRs3Display_typeName;
+   o.modelGuid       = FRs3Display_modelGuid;
+   o.model           = FRs3Display_model;
+   o.meshGuid        = FRs3Display_meshGuid;
+   o.mesh            = FRs3Display_mesh;
+   o.matrix          = FRs3Display_matrix;
+   o.materials       = FRs3Display_materials;
    // @method
-   o.unserialize = FRs3Display_unserialize;
+   o.unserialize     = FRs3Display_unserialize;
    return o;
 }
 

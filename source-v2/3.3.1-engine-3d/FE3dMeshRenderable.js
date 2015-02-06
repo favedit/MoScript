@@ -9,13 +9,13 @@ function FE3dMeshRenderable(o){
    //..........................................................
    // @attribute
    o._display         = null;
-   o._modelMatrix     = null;
    o._renderable      = null;
-   o._meshAnimation   = null;
+   // @attribute
+   o._modelMatrix     = null;
+   o._vertexBuffers   = null;
    o._activeSkin      = null;
    o._activeTrack     = null;
    o._bones           = null;
-   o._vertexBuffers   = null;
    //..........................................................
    // @method
    o.construct        = FE3dMeshRenderable_construct;
@@ -44,8 +44,9 @@ function FE3dMeshRenderable(o){
 function FE3dMeshRenderable_construct(){
    var o = this;
    o.__base.FG3dRenderable.construct.call(o);
-   o._modelMatrix = new SMatrix3d();
+   // 构造变量
    o._vertexBuffers = new TDictionary();
+   o._modelMatrix = new SMatrix3d();
 }
 
 //==========================================================
@@ -137,11 +138,13 @@ function FE3dMeshRenderable_bones(p){
 //==========================================================
 function FE3dMeshRenderable_update(p){
    var o = this;
-   var m = o._matrix;
    var mm = o._modelMatrix
    var dm = o._display.matrix();
-   if(o._activeTrack){
-      m.assign(o._activeTrack._matrix);
+   var t = o._activeTrack;
+   // 计算矩阵
+   var m = o._matrix;
+   if(t){
+      m.assign(t.matrix());
       m.append(mm);
    }else{
       m.assign(mm);
@@ -158,9 +161,12 @@ function FE3dMeshRenderable_update(p){
 function FE3dMeshRenderable_process(p){
    var o = this;
    o.__base.FG3dRenderable.process.call(p)
-   var a = o._meshAnimation;
-   if(a){
-      a.process(o._activeTrack);
+   var t = o._activeTrack;
+   if(t){
+      var a = t._animation;
+      if(a){
+         a.process(t);
+      }
    }
 }
 

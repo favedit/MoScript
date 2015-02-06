@@ -60,7 +60,7 @@ function FDsTemplateCanvas_onBuild(p){
    dm.setup(c);
    o._layer.pushRenderable(dm);
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-   RStage.start(1000);
+   RStage.start(15);
    RConsole.find(FMouseConsole).register(o);
 }
 function FDsTemplateCanvas_onMouseCaptureStart(p){
@@ -139,7 +139,7 @@ function FDsTemplateCanvas_onEnterFrame(){
    if(m){
       var r = o._rotation;
       m.rotation().set(0, r.y, 0);
-      m.scale().set(0.002, 0.002, 0.002);
+      m.scale().set(0.2, 0.2, 0.2);
       m.update();
       if(o._rotationAble){
          r.y += 0.01;
@@ -355,10 +355,10 @@ function FDsTemplateCatalog_buildTheme(pn, pt){
    var s = pt.materials();
    var c = s.count();
    if(c > 0){
-      var mgc = RConsole.find(FRs3MaterialGroupConsole);
+      var mc = RConsole.find(FRs3MaterialConsole);
       for(var i = 0; i < c; i++){
          var m = s.value(i);
-         var mg = mgc.find(m.groupGuid());
+         var mg = mc.findGroup(m.groupGuid());
          var mn = o.createNode();
          mn.setLabel(mg.code());
          mn.setTypeName('material');

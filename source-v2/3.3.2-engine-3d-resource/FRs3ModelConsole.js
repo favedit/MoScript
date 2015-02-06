@@ -9,27 +9,31 @@ function FRs3ModelConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._models          = null;
-   o._meshs           = null;
-   o._skeletons       = null;
+   o._models           = null;
+   o._meshs            = null;
+   o._skeletons        = null;
+   o._animations       = null;
    // @attribute
-   o._dataUrl         = '/cloud.content.model.wv'
+   o._dataUrl          = '/cloud.content.model.wv';
    //..........................................................
    // @method
-   o.construct        = FRs3ModelConsole_construct;
+   o.construct         = FRs3ModelConsole_construct;
    // @method
-   o.findModel        = FRs3ModelConsole_findModel;
-   o.models           = FRs3ModelConsole_models;
-   o.findMesh         = FRs3ModelConsole_findMesh;
-   o.meshs            = FRs3ModelConsole_meshs;
-   o.findSkeleton     = FRs3ModelConsole_findSkeleton;
-   o.skeletons        = FRs3ModelConsole_skeletons;
+   o.findModel         = FRs3ModelConsole_findModel;
+   o.models            = FRs3ModelConsole_models;
+   o.findMesh          = FRs3ModelConsole_findMesh;
+   o.meshs             = FRs3ModelConsole_meshs;
+   o.findSkeleton      = FRs3ModelConsole_findSkeleton;
+   o.skeletons         = FRs3ModelConsole_skeletons;
+   o.findAnimation     = FRs3ModelConsole_findAnimation;
+   o.animations        = FRs3ModelConsole_animations;
    // @method
-   o.unserialMesh     = FRs3ModelConsole_unserialMesh;
-   o.unserialSkeleton = FRs3ModelConsole_unserialSkeleton;
-   o.load             = FRs3ModelConsole_load;
+   o.unserialMesh      = FRs3ModelConsole_unserialMesh;
+   o.unserialSkeleton  = FRs3ModelConsole_unserialSkeleton;
+   o.unserialAnimation = FRs3ModelConsole_unserialAnimation;
+   o.load              = FRs3ModelConsole_load;
    // @method
-   o.dispose          = FRs3ModelConsole_dispose;
+   o.dispose           = FRs3ModelConsole_dispose;
    return o;
 }
 
@@ -44,6 +48,7 @@ function FRs3ModelConsole_construct(){
    o._models = new TDictionary();
    o._meshs = new TDictionary();
    o._skeletons = new TDictionary();
+   o._animations = new TDictionary();
 }
 
 //==========================================================
@@ -110,6 +115,27 @@ function FRs3ModelConsole_skeletons(){
 }
 
 //==========================================================
+// <T>根据唯一编号查找动画。</T>
+//
+// @method
+// @param p:guid:String 唯一编号
+// @return FRs3Animation 动画
+//==========================================================
+function FRs3ModelConsole_findAnimation(p){
+   return this._animations.get(p);
+}
+
+//==========================================================
+// <T>获得动画字典。</T>
+//
+// @method
+// @return TDictionary 动画字典
+//==========================================================
+function FRs3ModelConsole_animations(){
+   return this._animations;
+}
+
+//==========================================================
 // <T>反序列化网格。</T>
 //
 // @method
@@ -118,10 +144,10 @@ function FRs3ModelConsole_skeletons(){
 //==========================================================
 function FRs3ModelConsole_unserialMesh(p){
    var o = this;
-   var m = RClass.create(FRs3Mesh);
-   m.unserialize(p);
-   o._meshs.set(m.guid(), m);
-   return m;
+   var r = RClass.create(FRs3Mesh);
+   r.unserialize(p);
+   o._meshs.set(r.guid(), r);
+   return r;
 }
 
 //==========================================================
@@ -133,10 +159,25 @@ function FRs3ModelConsole_unserialMesh(p){
 //==========================================================
 function FRs3ModelConsole_unserialSkeleton(p){
    var o = this;
-   var k = RClass.create(FRs3Skeleton);
-   k.unserialize(p);
-   o._skeletons.set(k.guid(), k);
-   return k;
+   var r = RClass.create(FRs3Skeleton);
+   r.unserialize(p);
+   o._skeletons.set(r.guid(), r);
+   return r;
+}
+
+//==========================================================
+// <T>反序列化动画。</T>
+//
+// @method
+// @param p:input:FByteStream 数据流
+// @return FRs3Animation 动画
+//==========================================================
+function FRs3ModelConsole_unserialAnimation(p){
+   var o = this;
+   var r = RClass.create(FRs3Animation);
+   r.unserialize(p);
+   o._animations.set(r.guid(), r);
+   return r;
 }
 
 //==========================================================

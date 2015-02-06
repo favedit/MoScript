@@ -16,6 +16,7 @@ function FRs3Model(o){
    o.meshes      = FRs3Model_meshes;
    o.skeletons   = FRs3Model_skeletons;
    o.animations  = FRs3Model_animations;
+   // @method
    o.unserialize = FRs3Model_unserialize;
    return o;
 }
@@ -62,15 +63,15 @@ function FRs3Model_unserialize(p){
    o.__base.FRs3Resource.unserialize.call(o, p);
    //..........................................................
    // 存储模型
-   var rmc = RConsole.find(FRs3ModelConsole);
-   rmc.models().set(o.guid(), o);
+   var mc = RConsole.find(FRs3ModelConsole);
+   mc.models().set(o.guid(), o);
    //..........................................................
    // 读取几何体集合
    var c = p.readInt16();
    if(c > 0){
       var s = o._meshes = new TObjects();
       for(var i = 0; i < c; i++){
-         s.push(rmc.unserialMesh(p));
+         s.push(mc.unserialMesh(p));
       }
    }
    //..........................................................
@@ -79,7 +80,7 @@ function FRs3Model_unserialize(p){
    if(c > 0){
       var s = o._skeletons = new TObjects();
       for(var i = 0; i < c; i++){
-         s.push(rmc.unserialSkeleton(p));
+         s.push(mc.unserialSkeleton(p));
       }
    }
    //..........................................................
@@ -88,9 +89,7 @@ function FRs3Model_unserialize(p){
    if(c > 0){
       var s = o._animations = new TObjects();
       for(var i = 0; i < c; i++){
-         var a = RClass.create(FRs3Animation);
-         a.unserialize(p);
-         s.push(a);
+         s.push(mc.unserialAnimation(p));
       }
    }
    RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
