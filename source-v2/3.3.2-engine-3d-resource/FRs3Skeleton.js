@@ -13,9 +13,10 @@ function FRs3Skeleton(o){
    o._skins      = null
    //..........................................................
    // @method
-   o.find        = FRs3Skeleton_find;
+   o.findBone    = FRs3Skeleton_findBone;
    o.bones       = FRs3Skeleton_bones;
    o.roots       = FRs3Skeleton_roots;
+   o.skins       = FRs3Skeleton_skins;
    // @method
    o.innerFilter = FRs3Skeleton_innerFilter;
    o.unserialize = FRs3Skeleton_unserialize;
@@ -28,7 +29,7 @@ function FRs3Skeleton(o){
 // @method
 // @return FRsBone 骨头
 //==========================================================
-function FRs3Skeleton_find(p){
+function FRs3Skeleton_findBone(p){
    return this._bones.get(p);
 }
 
@@ -53,6 +54,16 @@ function FRs3Skeleton_roots(){
 }
 
 //==========================================================
+// <T>获得皮肤集合。</T>
+//
+// @method
+// @return TObjects 皮肤集合
+//==========================================================
+function FRs3Skeleton_skins(){
+   return this._skins;
+}
+
+//==========================================================
 // <T>内部过滤处理。</T>
 //
 // @method
@@ -61,7 +72,7 @@ function FRs3Skeleton_roots(){
 function FRs3Skeleton_innerFilter(p){
    var o = this;
    // 设置字典
-   o._bones.set(p.id(), p);
+   o._bones.set(p.index(), p);
    // 处理所有子节点
    var bs = p.bones();
    if(bs){
@@ -101,7 +112,7 @@ function FRs3Skeleton_unserialize(p){
       for(var i = 0; i < c; i++){
          var k = RClass.create(FRs3SkeletonSkin);
          k.unserialize(p);
-         s.push(b);
+         s.push(k);
       }
    }
 }

@@ -60,16 +60,17 @@ function FRs3Model_unserialize(p){
    // 读取父信息
    var o = this;
    o.__base.FRs3Resource.unserialize.call(o, p);
-   debugger
+   //..........................................................
+   // 存储模型
+   var rmc = RConsole.find(FRs3ModelConsole);
+   rmc.models().set(o.guid(), o);
    //..........................................................
    // 读取几何体集合
    var c = p.readInt16();
    if(c > 0){
       var s = o._meshes = new TObjects();
       for(var i = 0; i < c; i++){
-         var m = RClass.create(FRs3Mesh);
-         m.unserialize(p);
-         s.push(m);
+         s.push(rmc.unserialMesh(p));
       }
    }
    //..........................................................
@@ -78,9 +79,7 @@ function FRs3Model_unserialize(p){
    if(c > 0){
       var s = o._skeletons = new TObjects();
       for(var i = 0; i < c; i++){
-         var k = RClass.create(FRs3Skeleton);
-         k.unserialize(p);
-         s.push(k);
+         s.push(rmc.unserialSkeleton(p));
       }
    }
    //..........................................................

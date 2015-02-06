@@ -159,7 +159,7 @@ function FDsTemplateCatalog_buildTemplate(p){
       }
    }
    // 新建显示节点
-   var ds = p.displays();
+   var ds = p.renderables();
    var c = ds.count();
    if(c > 0){
       var ns = o.createNode();

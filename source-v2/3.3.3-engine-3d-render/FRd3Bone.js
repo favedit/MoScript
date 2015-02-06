@@ -14,12 +14,13 @@ function FRd3Bone(o){
    //..........................................................
    // @method
    o.construct        = FRd3Bone_construct;
+   // @method
    o.id               = FRd3Bone_id;
    o.matrix           = FRd3Bone_matrix;
    o.trackResource    = FRd3Bone_trackResource;
-   o.setTrackResource = FRd3Bone_setTrackResource;
    o.loadResource     = FRd3Bone_loadResource;
    o.update           = FRd3Bone_update;
+   // @method
    o.dispose          = FRd3Bone_dispose;
    return o;
 }
@@ -66,23 +67,15 @@ function FRd3Bone_trackResource(){
 }
 
 //==========================================================
-// <T>设置资源跟踪。</T>
-//
-// @method
-// @param p:track:FRs3Track 资源跟踪
-//==========================================================
-function FRd3Bone_setTrackResource(p){
-   this._trackResource = p;
-}
-
-//==========================================================
 // <T>获得资源。</T>
 //
 // @method
 // @return FRs3Bone 资源
 //==========================================================
 function FRd3Bone_loadResource(p){
-   this._boneResource = p;
+   var o = this;
+   o._boneResource = p;
+   o._trackResource = p.track();
 }
 
 //==========================================================

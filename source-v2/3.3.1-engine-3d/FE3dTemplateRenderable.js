@@ -24,7 +24,6 @@ function FE3dTemplateRenderable(o){
    o.loadResource      = FE3dTemplateRenderable_loadResource;
    o.reloadResource    = FE3dTemplateRenderable_reloadResource;
    o.load              = FE3dTemplateRenderable_load;
-   o.build             = FE3dTemplateRenderable_build;
    // @method
    o.dispose           = FE3dTemplateRenderable_dispose;
    return o;
@@ -129,9 +128,57 @@ function FE3dTemplateRenderable_reloadResource(){
 //==========================================================
 function FE3dTemplateRenderable_load(){
    var o = this;
+   var d = o._display;
    var r = o._resource;
+   var rd = r.model();
+   // 加载骨骼
+   var rds = rd.skeletons();
+   if(rds){
+      d.loadSkeletons(rds);
+   }
+   // 加载动画
+   var rda = rd.animations();
+   if(rda){
+      d.loadAnimations(rda);
+   }
    // 设置网格
-   var rd = o._renderable = o._model.findMeshByGuid(r.meshGuid());
+   var rm = r.mesh();
+   var rd = o._renderable = RConsole.find(FRd3ModelConsole).findMesh(r.meshGuid());
+   var vbs = rd._vertexBuffers;
+   var c = vbs.count();
+   for(var i = 0; i < c; i++){
+      var vb = vbs.get(i);
+      o._vertexBuffers.set(vb._name, vb);
+   }
+   // 设置蒙皮
+   var ss = rd.skins();
+   if(ss){
+      var dk = d._activeSkeleton;
+      // 获得激活皮肤
+      var k = o._activeSkin = ss.first();
+      var ss = k.streams();
+      var c = ss.count();
+      for(var i = 0; i < c; i++){
+         var s = ss.get(i);
+         var vb = s.buffer();
+         o._vertexBuffers.set(vb._name, vb);
+      }
+      // 获得骨头集合
+      var kr = k.resource();
+      var brs = kr.boneRefers();
+      var c = brs.count();
+      if(c > 0){
+         var bs = o._bones = new TObjects();
+         for(var i = 0; i < c; i++){
+            var br = brs.get(i);
+            var b = dk.bones().get(br.index());
+            if(b == null){
+               throw new TError(o, 'Bone is not exist.');
+            }
+            bs.push(b);
+         }
+      }
+   }
    // 获得资源
    var rr = rd._resource;
    var rts = rr.tracks();
@@ -143,31 +190,6 @@ function FE3dTemplateRenderable_load(){
    }
    // 加载完成
    o._ready = true;
-}
-
-//==========================================================
-// <T>构建处理。</T>
-//
-// @method
-// @param p:animation:FRd3Animation 动画
-//==========================================================
-function FE3dTemplateRenderable_build(p){
-   var o = this;
-   var r = o._renderable;
-   // 建立骨头集合
-   var rbs = r.boneIds();
-   if(rbs){
-      var bs = o._bones = new TObjects();
-      var c = rbs.length();
-      for(var i = 0; i < c; i++){
-         var bi = rbs.get(i);
-         var b = p.findBone(bi);
-         if(b == null){
-            throw new TError("Bone is not exists. (bone_id={1})", bi);
-         }
-         bs.push(b);
-      }
-   }
 }
 
 //==========================================================

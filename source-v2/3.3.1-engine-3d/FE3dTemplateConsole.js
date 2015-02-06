@@ -15,7 +15,7 @@ function FE3dTemplateConsole(o){
    o._templates     = null;
    // @attribute
    o._thread        = null;
-   o._interval      = 100;
+   o._interval      = 200;
    //..........................................................
    // @event
    o.onProcess      = FE3dTemplateConsole_onProcess;
@@ -85,7 +85,7 @@ function FE3dTemplateConsole_alloc(c, n){
    // 创建模板
    var t = RClass.create(FE3dTemplate);
    t._context = c;
-   t._name = n;
+   t.setName(n);
    t._resourceGuid = n;
    t.setResource(r);
    // 加载处理

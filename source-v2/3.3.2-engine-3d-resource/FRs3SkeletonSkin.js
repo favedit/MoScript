@@ -8,16 +8,28 @@ function FRs3SkeletonSkin(o){
    o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute
+   o._meshGuid    = null;
    o._streams     = null
    o._boneRefers  = null
    //..........................................................
    // @method
+   o.meshGuid    = FRs3SkeletonSkin_meshGuid;
    o.find        = FRs3SkeletonSkin_find;
    o.streams     = FRs3SkeletonSkin_streams;
    o.boneRefers  = FRs3SkeletonSkin_boneRefers;
    // @method
    o.unserialize = FRs3SkeletonSkin_unserialize;
    return o;
+}
+
+//==========================================================
+// <T>获得网格唯一编号。</T>
+//
+// @method
+// @return String 唯一编号
+//==========================================================
+function FRs3SkeletonSkin_meshGuid(){
+   return this._meshGuid;
 }
 
 //==========================================================

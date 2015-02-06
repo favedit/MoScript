@@ -21,7 +21,9 @@ function FRs3Display(o){
    // @method
    o.typeName    = FRs3Display_typeName;
    o.modelGuid   = FRs3Display_modelGuid;
+   o.model       = FRs3Display_model;
    o.meshGuid    = FRs3Display_meshGuid;
+   o.mesh        = FRs3Display_mesh;
    o.matrix      = FRs3Display_matrix;
    o.materials   = FRs3Display_materials;
    // @method
@@ -61,6 +63,16 @@ function FRs3Display_modelGuid(){
 }
 
 //==========================================================
+// <T>获得模型。</T>
+//
+// @method
+// @return FRs3Model 模型
+//==========================================================
+function FRs3Display_model(){
+   return RConsole.find(FRs3ModelConsole).findModel(this._modelGuid);
+}
+
+//==========================================================
 // <T>获得网格编号。</T>
 //
 // @method
@@ -68,6 +80,16 @@ function FRs3Display_modelGuid(){
 //==========================================================
 function FRs3Display_meshGuid(){
    return this._meshGuid;
+}
+
+//==========================================================
+// <T>获得网格。</T>
+//
+// @method
+// @return FRs3Mesh 网格
+//==========================================================
+function FRs3Display_mesh(){
+   return RConsole.find(FRs3ModelConsole).findMesh(this._meshGuid);
 }
 
 //==========================================================

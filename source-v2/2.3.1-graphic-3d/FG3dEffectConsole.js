@@ -98,9 +98,16 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pr){
    // 设置顶点信息
    var vs = pr.vertexBuffers();
    var c = vs.count();
-   for(var i = 0; i < c; i++){
-      var v = vs.get(i);
-      pf.attributes.push(v.name());
+   if(vs.constructor == TDictionary){
+      for(var i = 0; i < c; i++){
+         var v = vs.value(i);
+         pf.attributes.push(v.name());
+      }
+   }else{
+      for(var i = 0; i < c; i++){
+         var v = vs.get(i);
+         pf.attributes.push(v.name());
+      }
    }
    // 设置纹理信息
    var ts = pr.textures();

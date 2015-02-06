@@ -4,33 +4,39 @@
 // @author maocy
 // @history 150106
 //==========================================================
-function FRd3ModelMesh(o){
-   o = RClass.inherits(this, o, FG3dObject);
+function FRd3Mesh(o){
+   o = RClass.inherits(this, o, FRd3Object);
    //..........................................................
    // @attribute
    o._ready            = false;
-   o._guid             = null;
    o._resource         = null;
    o._vertexCount      = 0;
    o._vertexBuffers    = null;
    o._indexBuffer      = null;
    o._resourceMaterial = null;
    o._material         = null;
+   o._skins            = null;
    o._boneIds          = null;
    o._textures         = null;
    //..........................................................
    // @method
-   o.construct         = FRd3ModelMesh_construct;
-   o.testReady         = FRd3ModelMesh_testReady;
-   o.vertexCount       = FRd3ModelMesh_vertexCount;
-   o.findVertexBuffer  = FRd3ModelMesh_findVertexBuffer;
-   o.vertexBuffers     = FRd3ModelMesh_vertexBuffers;
-   o.indexBuffer       = FRd3ModelMesh_indexBuffer;
-   o.material          = FRd3ModelMesh_material;
-   o.findTexture       = FRd3ModelMesh_findTexture;
-   o.textures          = FRd3ModelMesh_textures;
-   o.boneIds           = FRd3ModelMesh_boneIds;
-   o.loadResource      = FRd3ModelMesh_loadResource;
+   o.construct         = FRd3Mesh_construct;
+   // @method
+   o.testReady         = FRd3Mesh_testReady;
+   // @method
+   o.guid              = FRd3Mesh_guid;
+   o.vertexCount       = FRd3Mesh_vertexCount;
+   o.findVertexBuffer  = FRd3Mesh_findVertexBuffer;
+   o.vertexBuffers     = FRd3Mesh_vertexBuffers;
+   o.indexBuffer       = FRd3Mesh_indexBuffer;
+   o.material          = FRd3Mesh_material;
+   o.skins             = FRd3Mesh_skins;
+   o.pushSkin          = FRd3Mesh_pushSkin;
+   o.findTexture       = FRd3Mesh_findTexture;
+   o.textures          = FRd3Mesh_textures;
+   o.boneIds           = FRd3Mesh_boneIds;
+   // @method
+   o.loadResource      = FRd3Mesh_loadResource;
    return o;
 }
 
@@ -39,9 +45,9 @@ function FRd3ModelMesh(o){
 //
 // @method
 //==========================================================
-function FRd3ModelMesh_construct(){
+function FRd3Mesh_construct(){
    var o = this;
-   o.__base.FG3dObject.construct.call(o);
+   o.__base.FRd3Object.construct.call(o);
    o._vertexBuffers = new TObjects();
 }
 
@@ -51,7 +57,7 @@ function FRd3ModelMesh_construct(){
 // @method
 // @return 是否完成
 //==========================================================
-function FRd3ModelMesh_testReady(){
+function FRd3Mesh_testReady(){
    var o = this;
    if(!o._ready){
       // 测试所有位图加载好
@@ -72,12 +78,22 @@ function FRd3ModelMesh_testReady(){
 }
 
 //==========================================================
+// <T>获得唯一编号。</T>
+//
+// @method
+// @return String 唯一编号
+//==========================================================
+function FRd3Mesh_guid(){
+   return this._resource.guid();
+}
+
+//==========================================================
 // <T>获得顶点总数。</T>
 //
 // @method
 // @return Integer 顶点总数
 //==========================================================
-function FRd3ModelMesh_vertexCount(){
+function FRd3Mesh_vertexCount(){
    return this._vertexCount;
 }
 
@@ -87,7 +103,7 @@ function FRd3ModelMesh_vertexCount(){
 // @method
 // @param p:name:String 名称
 //==========================================================
-function FRd3ModelMesh_findVertexBuffer(p){
+function FRd3Mesh_findVertexBuffer(p){
    var o = this;
    var vs = o._vertexBuffers;
    var c = vs.count();
@@ -106,7 +122,7 @@ function FRd3ModelMesh_findVertexBuffer(p){
 // @method
 // @return TObjects 顶点缓冲集合
 //==========================================================
-function FRd3ModelMesh_vertexBuffers(){
+function FRd3Mesh_vertexBuffers(){
    return this._vertexBuffers;
 }
 
@@ -116,7 +132,7 @@ function FRd3ModelMesh_vertexBuffers(){
 // @method
 // @return FG3dIndexBuffer 索引缓冲
 //==========================================================
-function FRd3ModelMesh_indexBuffer(){
+function FRd3Mesh_indexBuffer(){
    return this._indexBuffer;
 }
 
@@ -126,8 +142,33 @@ function FRd3ModelMesh_indexBuffer(){
 // @method
 // @return FRsMaterial 材质
 //==========================================================
-function FRd3ModelMesh_material(){
+function FRd3Mesh_material(){
    return this._material;
+}
+
+//==========================================================
+// <T>获得渲染蒙皮集合。</T>
+//
+// @method
+// @return TObjects<FRd3Skin> 渲染蒙皮集合
+//==========================================================
+function FRd3Mesh_skins(){
+   return this._skins;
+}
+
+//==========================================================
+// <T>增加一个蒙皮。</T>
+//
+// @method
+// @return FRd3Skin 蒙皮
+//==========================================================
+function FRd3Mesh_pushSkin(p){
+   var o = this;
+   var r = o._skins;
+   if(!r){
+      r = o._skins = new TObjects();
+   }
+   r.push(p);
 }
 
 //==========================================================
@@ -137,7 +178,7 @@ function FRd3ModelMesh_material(){
 // @param p:name:String 名称
 // @return FG3dIndexBuffer 纹理
 //==========================================================
-function FRd3ModelMesh_findTexture(p){
+function FRd3Mesh_findTexture(p){
    return this._textures.get(p);
 }
 
@@ -147,7 +188,7 @@ function FRd3ModelMesh_findTexture(p){
 // @method
 // @return TDictionary 纹理集合
 //==========================================================
-function FRd3ModelMesh_textures(){
+function FRd3Mesh_textures(){
    return this._textures;
 }
 
@@ -157,7 +198,7 @@ function FRd3ModelMesh_textures(){
 // @method
 // @return TArray 骨头集合
 //==========================================================
-function FRd3ModelMesh_boneIds(p){
+function FRd3Mesh_boneIds(p){
    return this._boneIds;
 }
 
@@ -166,10 +207,10 @@ function FRd3ModelMesh_boneIds(p){
 //
 // @param p:resource:FRs3Geometry 资源
 //==========================================================
-function FRd3ModelMesh_loadResource(p){
+function FRd3Mesh_loadResource(p){
    var o = this;
-   var c = o._context;
-   o._guid = p.guid();
+   var c = o._graphicContext;
+   // 设置属性
    o._resource = p;
    // 创建顶点缓冲集合
    var rss = p.streams();

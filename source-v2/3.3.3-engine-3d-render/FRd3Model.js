@@ -5,28 +5,31 @@
 // @history 150130
 //==========================================================
 function FRd3Model(o){
-   o = RClass.inherits(this, o, FG3dObject);
+   o = RClass.inherits(this, o, FRd3Object);
    //..........................................................
    // @attribute
-   o._name        = null;
-   o._meshes   = null;
-   o._resource    = null;
+   o._name                = null;
+   o._resource            = null;
    // @attribute
-   o._dataReady       = false;
+   o._meshes              = null;
+   o._skeletons           = null;
+   // @attribute
+   o._dataReady           = false;
    //..........................................................
    // @method
-   o.name         = FRd3Model_name;
-   o.setName      = FRd3Model_setName;
-   o.findMeshByGuid = FRd3Model_findMeshByGuid;
-   o.geometrys    = FRd3Model_geometrys;
-   o.resource     = FRd3Model_resource;
-   o.resource     = FRd3Model_resource;
-   o.setResource  = FRd3Model_setResource;
+   o.name                 = FRd3Model_name;
+   o.setName              = FRd3Model_setName;
+   o.findMeshByGuid       = FRd3Model_findMeshByGuid;
+   o.geometrys            = FRd3Model_geometrys;
+   o.resource             = FRd3Model_resource;
+   o.resource             = FRd3Model_resource;
+   o.setResource          = FRd3Model_setResource;
    // @method
-   o.testReady    = FRd3Model_testReady;
+   o.testReady            = FRd3Model_testReady;
    // @method
-   o.loadResource = FRd3Model_loadResource;
-   o.processLoad  = FRd3Model_processLoad;
+   o.loadResource         = FRd3Model_loadResource;
+   o.loadSkeletonResource = FRd3Model_loadSkeletonResource;
+   o.processLoad          = FRd3Model_processLoad;
    return o;
 }
 
@@ -48,6 +51,11 @@ function FRd3Model_setName(p){
    this._name = p;
 }
 
+//==========================================================
+// <T>根据唯一编号查找网格。</T>
+//
+// @param p:name:String 名称
+//==========================================================
 function FRd3Model_findMeshByGuid(p){
    var o = this;
    var s = o._meshes;
@@ -98,13 +106,40 @@ function FRd3Model_testReady(){
 }
 
 //==========================================================
-// <T>加载资源信息。</T>
+// <T>加载骨骼资源。</T>
 //
 // @method
-// @param p:resource:FRsModel 资源信息
+// @param p:resource:FRs3Skeleton 骨骼资源
+//==========================================================
+function FRd3Model_loadSkeletonResource(p){
+   var o = this;
+   var rmc = RConsole.find(FRd3ModelConsole);
+   // 加载骨骼皮肤
+   var ss = p.skins();
+   if(ss){
+      var c = ss.count();
+      for(var i = 0; i < c; i++){
+         var s = ss.get(i);
+         // 创建皮肤
+         var rs = RClass.create(FRd3Skin);
+         rs.linkGraphicContext(o);
+         rs.loadResource(s)
+         // 放入网格
+         var m = rmc.findMesh(s.meshGuid());
+         m.pushSkin(rs);
+      }
+   }
+}
+
+//==========================================================
+// <T>加载模型资源。</T>
+//
+// @method
+// @param p:resource:FRs3Model 模型资源
 //==========================================================
 function FRd3Model_loadResource(p){
    var o = this;
+   var rmc = RConsole.find(FRd3ModelConsole);
    // 读取网格集合
    var rgs = p.meshes();
    if(rgs){
@@ -112,10 +147,20 @@ function FRd3Model_loadResource(p){
       var c = rgs.count();
       for(var i = 0; i < c; i++){
          var rg = rgs.get(i);
-         var g = RClass.create(FRd3ModelMesh);
-         g.linkContext(o._context);
+         var g = RClass.create(FRd3Mesh);
+         g.linkGraphicContext(o);
          g.loadResource(rg);
          gs.push(g);
+         rmc.meshs().set(g.guid(), g);
+      }
+   }
+   // 读取骨骼集合
+   var rks = p.skeletons();
+   if(rks){
+      var c = rks.count();
+      for(var i = 0; i < c; i++){
+         var rk = rks.get(i);
+         o.loadSkeletonResource(rk);
       }
    }
    // 加载完成

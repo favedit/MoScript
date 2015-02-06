@@ -10,6 +10,7 @@ function FDisplay(o){
    o.construct         = FDisplay_construct;
    o.isName            = FDisplay_isName;
    o.name              = FDisplay_name;
+   o.setName           = FDisplay_setName;
    o.matrix            = FDisplay_matrix;
    o.location          = FDisplay_location;
    o.rotation          = FDisplay_rotation;
@@ -39,6 +40,9 @@ function FDisplay_isName(p){
 function FDisplay_name(){
    return this._name;
 }
+function FDisplay_setName(p){
+   this._name = p;
+}
 function FDisplay_matrix(){
    return this._matrix;
 }
@@ -53,10 +57,7 @@ function FDisplay_scale(){
 }
 function FDisplay_hasRenderable(){
    var r = this._renderables;
-   if(r != null){
-      return !r.isEmpty();
-   }
-   return false;
+   return r ? !r.isEmpty() : false;
 }
 function FDisplay_filterRenderables(p){
    var o = this;
@@ -64,7 +65,7 @@ function FDisplay_filterRenderables(p){
       return false;
    }
    var rs = o._renderables;
-   if(rs != null){
+   if(rs){
       var c = rs.count();
       for(var n = 0; n < c; n++){
          var r = rs.get(n);

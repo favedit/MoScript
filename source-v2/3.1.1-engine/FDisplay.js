@@ -23,6 +23,7 @@ function FDisplay(o){
    // @method
    o.isName            = FDisplay_isName;
    o.name              = FDisplay_name;
+   o.setName           = FDisplay_setName;
    o.matrix            = FDisplay_matrix;
    o.location          = FDisplay_location;
    o.rotation          = FDisplay_rotation;
@@ -77,6 +78,16 @@ function FDisplay_name(){
 }
 
 //==========================================================
+// <T>设置名称。</T>
+//
+// @method
+// @param p:value:String 名称
+//==========================================================
+function FDisplay_setName(p){
+   this._name = p;
+}
+
+//==========================================================
 // <T>获得矩阵。</T>
 //
 // @method
@@ -124,10 +135,7 @@ function FDisplay_scale(){
 //==========================================================
 function FDisplay_hasRenderable(){
    var r = this._renderables;
-   if(r != null){
-      return !r.isEmpty();
-   }
-   return false;
+   return r ? !r.isEmpty() : false;
 }
 
 //==========================================================
@@ -144,7 +152,7 @@ function FDisplay_filterRenderables(p){
    }
    // 处理渲染集合
    var rs = o._renderables;
-   if(rs != null){
+   if(rs){
       var c = rs.count();
       for(var n = 0; n < c; n++){
          var r = rs.get(n);

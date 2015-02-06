@@ -22,6 +22,26 @@ function FGraphicRenderable(o){
 }
 function FGraphicRenderable_process(){
 }
+function MGraphicObject(o){
+   o = RClass.inherits(this, o);
+   o._graphicContext    = null;
+   o.graphicContext     = MGraphicObject_graphicContext;
+   o.linkGraphicContext = MGraphicObject_linkGraphicContext;
+   return o;
+}
+function MGraphicObject_graphicContext(){
+   return this._graphicContext;
+}
+function MGraphicObject_linkGraphicContext(p){
+   var o = this;
+   if(RClass.isClass(p, FGraphicContext)){
+      o._graphicContext = p;
+   }else if(RClass.isClass(p, MGraphicObject)){
+      o._graphicContext = p._graphicContext;
+   }else{
+      throw new TError(o, 'Link graphic context failure. (context={1})', p);
+   }
+}
 function FG2dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
    o._native       = null;
@@ -556,9 +576,16 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pr){
    pf.vertexCount = pr.vertexCount();
    var vs = pr.vertexBuffers();
    var c = vs.count();
-   for(var i = 0; i < c; i++){
-      var v = vs.get(i);
-      pf.attributes.push(v.name());
+   if(vs.constructor == TDictionary){
+      for(var i = 0; i < c; i++){
+         var v = vs.value(i);
+         pf.attributes.push(v.name());
+      }
+   }else{
+      for(var i = 0; i < c; i++){
+         var v = vs.get(i);
+         pf.attributes.push(v.name());
+      }
    }
    var ts = pr.textures();
    if(ts){

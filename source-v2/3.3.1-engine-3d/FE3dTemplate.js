@@ -12,19 +12,22 @@ function FE3dTemplate(o){
    o._ready         = false;
    o._resource      = null;
    // @attribute
-   o._meshAnimation = null;
-   o._animation     = null;
+   o._skeletons     = null;
+   o._animations    = null;
    // @attribute
    o._resource      = null;
-   o._displays      = null;
    //..........................................................
    // @method
    o.testReady      = FE3dTemplate_testReady;
    // @method
-   o.displays       = FE3dTemplate_displays;
-   o.meshAnimation  = FE3dTemplate_meshAnimation;
+   o.skeletons      = FE3dTemplate_skeletons;
+   o.pushSkeleton   = FE3dTemplate_pushSkeleton;
+   o.animations     = FE3dTemplate_animations;
+   o.pushAnimation  = FE3dTemplate_pushAnimation;
    // @method
    o.setResource    = FE3dTemplate_setResource;
+   o.loadSkeletons  = FE3dTemplate_loadSkeletons;
+   o.loadAnimations = FE3dTemplate_loadAnimations;
    o.loadResource   = FE3dTemplate_loadResource;
    o.reloadResource = FE3dTemplate_reloadResource;
    // @method
@@ -44,28 +47,56 @@ function FE3dTemplate_testReady(){
 }
 
 //==========================================================
-// <T>获得显示集合。</T>
+// <T>获得骨骼集合。</T>
 //
 // @method
-// @return TObjects 显示集合
+// @return TDictionary 骨骼集合
 //==========================================================
-function FE3dTemplate_displays(){
-   return this._displays;
+function FE3dTemplate_skeletons(){
+   return this._skeletons;
 }
 
 //==========================================================
-// <T>获得网格动画。</T>
+// <T>增加一个渲染骨骼。</T>
 //
 // @method
-// @return FRd3MeshAnimation 显示集合
+// @param p:skeleton:FRd3Skeleton 渲染骨骼
 //==========================================================
-function FE3dTemplate_meshAnimation(){
+function FE3dTemplate_pushSkeleton(p){
    var o = this;
-   var a = o._meshAnimation;
-   if(!a){
-      a = o._meshAnimation = RClass.create(FRd3MeshAnimation);
+   var r = o._skeletons;
+   if(!r){
+      r = o._skeletons = new TDictionary();
    }
-   return a;
+   if(!o._activeSkeleton){
+      o._activeSkeleton = p;
+   }
+   r.set(p._resource.guid(), p);
+}
+
+//==========================================================
+// <T>获得动画集合。</T>
+//
+// @method
+// @return TDictionary 动画集合
+//==========================================================
+function FE3dTemplate_animations(){
+   return this._animations;
+}
+
+//==========================================================
+// <T>增加一个渲染动画。</T>
+//
+// @method
+// @param p:animation:FRd3Animation 渲染动画
+//==========================================================
+function FE3dTemplate_pushAnimation(p){
+   var o = this;
+   var r = o._animations;
+   if(!r){
+      r = o._animations = new TDictionary();
+   }
+   r.set(p._resource.guid(), p);
 }
 
 //==========================================================
@@ -79,6 +110,47 @@ function FE3dTemplate_setResource(p){
 }
 
 //==========================================================
+// <T>加载骨骼集合。</T>
+//
+// @method
+// @param p:animations:TObjects 骨骼集合
+//==========================================================
+function FE3dTemplate_loadSkeletons(p){
+   var o = this;
+   var c = p.count();
+   if(c > 0){
+      var ks = o.skeletons();
+      for(var i = 0; i < c; i++){
+         var r = p.get(i);
+         // 创建骨骼
+         var s = RClass.create(FRd3Skeleton);
+         s.loadResource(r);
+         o.pushSkeleton(s);
+      }
+   }
+}
+
+//==========================================================
+// <T>加载动画集合。</T>
+//
+// @method
+// @param p:animations:TObjects 动画集合
+//==========================================================
+function FE3dTemplate_loadAnimations(p){
+   var o = this;
+   var c = p.count();
+   if(c > 0){
+      for(var i = 0; i < c; i++){
+         var r = p.get(i);
+         // 创建渲染动画
+         var a = RClass.create(FRd3Animation);
+         a.loadResource(r);
+         o.pushAnimation(a);
+      }
+   }
+}
+
+//==========================================================
 // <T>加载资源模板。</T>
 //
 // @method
@@ -87,17 +159,17 @@ function FE3dTemplate_setResource(p){
 function FE3dTemplate_loadResource(p){
    var o = this;
    // 加载资源渲染集合
-   var rs = p.displays();
-   var c = rs.count();
+   var ds = p.displays();
+   var c = ds.count();
    if(c > 0){
-      var ds = o._displays = new TObjects();
+      var rs = o.renderables();
       for(var i = 0; i < c; i++){
-         var r = rs.get(i);
-         var d = RClass.create(FE3dTemplateRenderable);
-         d._display = o;
-         d._context = o._context;
-         d.loadResource(r);
-         ds.push(d);
+         var d = ds.get(i);
+         var r = RClass.create(FE3dTemplateRenderable);
+         r._display = o;
+         r._context = o._context;
+         r.loadResource(d);
+         rs.push(r);
       }
    }
 }
@@ -109,7 +181,7 @@ function FE3dTemplate_loadResource(p){
 //==========================================================
 function FE3dTemplate_reloadResource(){
    var o = this;
-   var s = o._displays;
+   var s = o._renderables;
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
@@ -137,25 +209,24 @@ function FE3dTemplate_processLoad(){
       o._dataReady = true;
    }
    // 加载渲染对象
-   var ds = o._displays;
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var d = ds.get(i);
-      if(!d.testReady()){
-         return false;
-      }
-   }
-   if(c > 0){
-      var rs = o._renderables = new TObjects();
+   var s = o._renderables;
+   if(s){
+      // 测试渲染对象
+      var c = s.count();
       for(var i = 0; i < c; i++){
-         var d = ds.get(i);
-         d.load();
-         o._renderables.push(d);
+         if(!s.get(i).testReady()){
+            return false;
+         }
+      }
+      // 加载渲染对象
+      for(var i = 0; i < c; i++){
+         s.get(i).load();
       }
    }
    // 加载完成
-   o.processLoadListener(o);
    o._ready = true;
+   // 事件发送
+   o.processLoadListener(o);
    return o._ready;
 }
 
@@ -168,8 +239,14 @@ function FE3dTemplate_process(){
    var o = this;
    o.__base.FDisplay3d.process.call(o);
    // 处理动画集合
-   if(o._animation){
-      o._animation.process();
+   var k = o._activeSkeleton;
+   if(k){
+      var as = o._animations;
+      if(as){
+         var c = as.count();
+         for(var i = 0; i < c; i++){
+            as.value(i).process(k);
+         }
+      }
    }
-   return true;
 }

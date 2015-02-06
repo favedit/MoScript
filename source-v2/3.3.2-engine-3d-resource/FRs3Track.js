@@ -9,7 +9,7 @@ function FRs3Track(o){
    //..........................................................
    // @attribute
    o._optionBoneScale = false;
-   o._boneId          = 0;
+   o._boneIndex       = 0;
    o._frameTick       = 0;
    o._matrix          = null;
    o._matrixInvert    = null;
@@ -19,7 +19,7 @@ function FRs3Track(o){
    // @method
    o.construct        = FRs3Track_construct;
    // @method
-   o.boneId           = FRs3Track_boneId;
+   o.boneIndex        = FRs3Track_boneIndex;
    o.frameTick        = FRs3Track_frameTick;
    o.matrix           = FRs3Track_matrix;
    o.matrixInvert     = FRs3Track_matrixInvert;
@@ -49,8 +49,8 @@ function FRs3Track_construct(){
 // @method
 // @return Integer 骨头编号
 //==========================================================
-function FRs3Track_boneId(){
-   return this._boneId;
+function FRs3Track_boneIndex(){
+   return this._boneIndex;
 }
 
 //==========================================================
@@ -140,7 +140,7 @@ function FRs3Track_unserialize(p){
    var o = this;
    // 读取属性
    //o._optionBoneScale = p.readBoolean();
-   o._boneId = p.readUint8();
+   o._boneIndex = p.readUint8();
    o._frameTick = p.readUint16();
    o._matrix.unserialize(p);
    // 计算逆矩阵

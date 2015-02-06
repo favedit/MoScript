@@ -102,6 +102,7 @@ function FRd3Animation_tracks(){
 //==========================================================
 function FRd3Animation_loadResource(p){
    var o = this;
+   // 设置属性
    o._resource = p;
    // 加载跟踪集合
    var rts = p.tracks();
@@ -117,7 +118,7 @@ function FRd3Animation_loadResource(p){
    var c = bs.count();
    for(var i = 0; i < c; i++){
       var b = bs.value(i);
-      var bi = b.id();
+      var bi = b.index();
       var t = o.findTrack(bi);
       if(t == null){
          throw new TError('Track is not exists. (bone_id={1})', bi);
@@ -131,7 +132,7 @@ function FRd3Animation_loadResource(p){
 //
 // @method
 //==========================================================
-function FRd3Animation_process(){
+function FRd3Animation_process(p){
    var o = this;
    // 获得时间
    var t = RTimer.current();
@@ -140,10 +141,10 @@ function FRd3Animation_process(){
    }
    var ct = o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate * 3.0;
    // 计算间隔
-   var bs = o._bones;
+   var bs = p.bones();
    var c = bs.count();
    for(var i = 0; i < c; i++){
-      bs.value(i).update(o._playInfo, ct);
+      bs.get(i).update(o._playInfo, ct);
    }
 }
 

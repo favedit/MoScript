@@ -15,6 +15,7 @@ function FDsTemplateCanvas(o){
    o._rotation           = null;
    o._rotationAble       = false;
    o._capturePosition    = null;
+   o._captureMatrix      = null;
    o._dimensional        = null;
    //..........................................................
    // @event
@@ -77,7 +78,8 @@ function FDsTemplateCanvas_onBuild(p){
    o._layer.pushRenderable(dm);
    // 启动处理
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-   RStage.start(100);
+   RStage.start(1000);
+   //RStage.start(15);
    RConsole.find(FMouseConsole).register(o);
 }
 
@@ -89,7 +91,13 @@ function FDsTemplateCanvas_onBuild(p){
 //==========================================================
 function FDsTemplateCanvas_onMouseCaptureStart(p){
    var o = this;
+   var t = o._activeTemplate;
+   if(!t){
+      return;
+   }
+   var d = t.renderables().get(0);
    o._capturePosition.set(p.clientX, p.clientY);
+   o._captureMatrix.assign(d.modelMatrix());
 }
 
 //==========================================================
@@ -106,24 +114,25 @@ function FDsTemplateCanvas_onMouseCapture(p){
    }
    var cx = p.clientX - o._capturePosition.x;
    var cy = p.clientY - o._capturePosition.y;
-   var d = t.displays().get(0);
+   var d = t.renderables().get(0);
    var m = d.modelMatrix();
+   var cm = o._captureMatrix;
    switch(o._toolbar._canvasModeCd){
       case EDsCanvasMode.Drop:
          break;
       case EDsCanvasMode.Select:
          break;
       case EDsCanvasMode.Translate:
-         m.tx += cx / 360 * 3.14;
-         m.ty += cy / 360 * 3.14;
+         m.tx = cm.tx + cx / 360 * 3.14;
+         m.ty = cm.ty + cy / 360 * 3.14;
          break;
       case EDsCanvasMode.Rotation:
-         m.ry += cx * RMath.DEGREE_RATE;
+         m.ry = cm.ry + cx * RMath.DEGREE_RATE;
          break;
       case EDsCanvasMode.Scale:
-         m.sx += cx / 100;
-         m.sy += cy / 100;
-         m.sz += cy / 100;
+         m.sx = cm.sx + cx / 100;
+         m.sy = cm.sy + cx / 100;
+         m.sz = cm.sz + cx / 100;
          break;
    }
    m.updateForce();
@@ -182,8 +191,8 @@ function FDsTemplateCanvas_onEnterFrame(){
       //m.location().set(0, -8.0, 0);
       m.rotation().set(0, r.y, 0);
       //m.scale().set(3.0, 3.0, 3.0);
-      //m.scale().set(0.003, 0.003, 0.003);
-      m.scale().set(0.2, 0.2, 0.2);
+      m.scale().set(0.002, 0.002, 0.002);
+      //m.scale().set(0.1, 0.1, 0.1);
       m.update();
       // 设置变量
       if(o._rotationAble){
@@ -238,6 +247,7 @@ function FDsTemplateCanvas_construct(){
    var o = this;
    o.__base.FUiCanvas.construct.call(o);
    o._capturePosition = new SPoint2();
+   o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
 }
 

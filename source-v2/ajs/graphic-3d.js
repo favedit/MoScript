@@ -470,9 +470,16 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pr){
    pf.vertexCount = pr.vertexCount();
    var vs = pr.vertexBuffers();
    var c = vs.count();
-   for(var i = 0; i < c; i++){
-      var v = vs.get(i);
-      pf.attributes.push(v.name());
+   if(vs.constructor == TDictionary){
+      for(var i = 0; i < c; i++){
+         var v = vs.value(i);
+         pf.attributes.push(v.name());
+      }
+   }else{
+      for(var i = 0; i < c; i++){
+         var v = vs.get(i);
+         pf.attributes.push(v.name());
+      }
    }
    var ts = pr.textures();
    if(ts){

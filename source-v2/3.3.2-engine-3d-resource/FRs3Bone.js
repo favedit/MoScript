@@ -8,38 +8,28 @@ function FRs3Bone(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._id         = 0;
-   o._bones      = null;
+   o._index      = null;
    o._track      = null;
+   o._bones      = null;
    //..........................................................
    // @method
-   o.id          = FRs3Bone_id;
-   o.bones       = FRs3Bone_bones;
+   o.index       = FRs3Bone_index;
    o.track       = FRs3Bone_track;
    o.setTrack    = FRs3Bone_setTrack;
+   o.bones       = FRs3Bone_bones;
    // @method
    o.unserialize = FRs3Bone_unserialize;
    return o;
 }
 
 //==========================================================
-// <T>获得编号。</T>
+// <T>获得索引。</T>
 //
 // @method
-// @return Integer 编号
+// @return Integer 索引
 //==========================================================
-function FRs3Bone_id(){
-   return this._id;
-}
-
-//==========================================================
-// <T>获得骨头集合。</T>
-//
-// @method
-// @return TObjects 骨头集合
-//==========================================================
-function FRs3Bone_bones(){
-   return this._bones;
+function FRs3Bone_index(){
+   return this._index;
 }
 
 //==========================================================
@@ -63,6 +53,16 @@ function FRs3Bone_setTrack(p){
 }
 
 //==========================================================
+// <T>获得骨头集合。</T>
+//
+// @method
+// @return TObjects 骨头集合
+//==========================================================
+function FRs3Bone_bones(){
+   return this._bones;
+}
+
+//==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
 // @method
@@ -71,15 +71,15 @@ function FRs3Bone_setTrack(p){
 function FRs3Bone_unserialize(p){
    var o = this;
    // 读取属性
-   o._id = p.readUint8();
+   o._index = p.readUint8();
    // 读取所有子骨头
    var c = p.readUint8();
    if(c > 0){
-      var bs = o._bones = new TObjects();
+      var s = o._bones = new TObjects();
       for(var i = 0; i < c; i++){
          var b = RClass.create(FRs3Bone);
          b.unserialize(p);
-         bs.push(b);
+         s.push(b);
       }
    }
 }

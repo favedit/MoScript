@@ -12,8 +12,10 @@ function FE3dMeshRenderable(o){
    o._modelMatrix     = null;
    o._renderable      = null;
    o._meshAnimation   = null;
+   o._activeSkin      = null;
    o._activeTrack     = null;
    o._bones           = null;
+   o._vertexBuffers   = null;
    //..........................................................
    // @method
    o.construct        = FE3dMeshRenderable_construct;
@@ -43,6 +45,7 @@ function FE3dMeshRenderable_construct(){
    var o = this;
    o.__base.FG3dRenderable.construct.call(o);
    o._modelMatrix = new SMatrix3d();
+   o._vertexBuffers = new TDictionary();
 }
 
 //==========================================================
@@ -62,7 +65,7 @@ function FE3dMeshRenderable_modelMatrix(){
 // @return FG3dVertexBuffer 顶点缓冲
 //==========================================================
 function FE3dMeshRenderable_findVertexBuffer(p){
-   return this._renderable.findVertexBuffer(p);
+   return this._vertexBuffers.get(p);
 }
 
 //==========================================================
@@ -82,7 +85,7 @@ function FE3dMeshRenderable_vertexCount(){
 // @return TObjects 顶点缓冲集合
 //==========================================================
 function FE3dMeshRenderable_vertexBuffers(){
-   return this._renderable.vertexBuffers();
+   return this._vertexBuffers;
 }
 
 //==========================================================
@@ -168,12 +171,17 @@ function FE3dMeshRenderable_process(p){
 //==========================================================
 function FE3dMeshRenderable_dispose(){
    var o = this;
-   // 设置属性
    // 释放矩阵
    var v = o._modelMatrix;
    if(v){
       v.dispose();
       o._modelMatrix = null;
+   }
+   // 释放顶点缓冲
+   var v = o._vertexBuffers;
+   if(v){
+      v.dispose();
+      o._vertexBuffers = null;
    }
    // 父处理
    o.__base.FG3dRenderable.dispose.call(o);

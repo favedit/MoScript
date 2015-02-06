@@ -99,7 +99,6 @@
          position += inputPosition * vc_bone_matrix[int(va_bone_index.y)] * va_bone_weight.y;
          position += inputPosition * vc_bone_matrix[int(va_bone_index.z)] * va_bone_weight.z;
          position += inputPosition * vc_bone_matrix[int(va_bone_index.w)] * va_bone_weight.w;
-         position = inputPosition;
          // 计算模型坐标
          vec4 modelPosition = position * vc_model_matrix;
          // 计算最终坐标
@@ -149,7 +148,7 @@
       <shader:true source='support.diffuse'>
       uniform vec4 fc_diffuse_color;
       </shader:true>
-      <shader:true source='support.specular'>
+      <shader:true source='vertex.attribute.normal'>
       uniform vec4 fc_specular_color;
       uniform vec4 fc_specular;
       </shader:true>
@@ -159,6 +158,7 @@
       </shader:true>
       <shader:true source='support.environment'>
       uniform vec4 fc_reflect_color;
+      uniform vec4 fc_reflect;
       </shader:true>
       //..........................................................
       // 声明插值器
@@ -214,25 +214,25 @@
          </shader:true>
          //............................................................
          // 计算散射颜色
-         <shader:true source='support.diffuse'>
+         <shader:true source='vertex.attribute.normal'>
          <shader:true source='support.diffuse.dump'>
          vec4 normal = texture2D(fs_normal, v_coord);
-         //normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
+         normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
          float normalFactor = dot(normal.xyz, -v_light_ts);
          </shader:true>
-         <shader:true source='support.diffuse.normal'>
+         <shader:false source='support.diffuse.dump'>
          float normalFactor = dot(v_normal, -fc_light_direction);
-         </shader:true>
+         </shader:false>
          normalFactor = max(normalFactor, 0.0);
          result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor;
          </shader:true>
          //............................................................
-         <shader:true source='support.specular|support.environment'>
+         <shader:true source='vertex.attribute.normal'>
          vec3 cameraDirection = normalize(fc_camera_position - v_model_position.xyz);
          </shader:true>
          //............................................................
          // 计算高光颜色
-         <shader:true source='support.specular'>
+         <shader:true source='vertex.attribute.normal'>
          vec3 reflectionDirection = normalize(reflect(fc_light_direction, v_normal));
          float specularFactor = dot(cameraDirection, reflectionDirection);
          <shader:true source='support.specular.level'>
@@ -251,16 +251,18 @@
          vec4 light = texture2D(fs_light, v_coord);
          environmentColor *= light.g;
          </shader:true>
-         result.rgb *= environmentColor.rgb * fc_reflect_color.rgb;
+         //result.rgb *= fc_reflect.z;
+         result.rgb *= environmentColor.rgb * fc_reflect_color.rgb * fc_reflect.w;
          </shader:true>
          //............................................................
          // 计算颜色
          <shader:true source='vertex.attribute.color'>
-         vec4 vertexColor = min(v_color, fc_color.y) - fc_color.x;
-         vertexColor = vertexColor / (fc_color.y - fc_color.x);
-         vertexColor = (vertexColor - fc_color.w) * fc_color.z;
-         vertexColor += 1.0;
-         result.rgb *= vertexColor.rgb;
+         //vec4 vertexColor = min(v_color, fc_color.y) - fc_color.x;
+         //vertexColor = vertexColor / (fc_color.y - fc_color.x);
+         //vertexColor = (vertexColor - fc_color.w) * fc_color.z;
+         //vertexColor += 1.0;
+         //result.rgb *= vertexColor.rgb;
+         result.rgb = v_color.rgb;
          </shader:true>
          <shader:true source='support.alpha'>
          result.a = color.a * fc_alpha.z;
