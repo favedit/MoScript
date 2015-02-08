@@ -1103,186 +1103,6 @@ function TMap_dump(){
    }
    return r.toString();
 }
-function TObjects(o){
-   if(!o){o = this;}
-   o._count     = 0;
-   o._items     = new Array();
-   o.isEmpty    = TObjects_isEmpty;
-   o.count      = TObjects_count;
-   o.contains   = TObjects_contains;
-   o.indexOf    = TObjects_indexOf;
-   o.first      = TObjects_first;
-   o.last       = TObjects_last;
-   o.get        = TObjects_get;
-   o.set        = TObjects_set;
-   o.assign     = TObjects_assign;
-   o.append     = TObjects_append;
-   o.insert     = TObjects_insert;
-   o.push       = TObjects_push;
-   o.pushUnique = TObjects_pushUnique;
-   o.pop        = TObjects_pop;
-   o.swap       = TObjects_swap;
-   o.sort       = TObjects_sort;
-   o.erase      = TObjects_erase;
-   o.remove     = TObjects_remove;
-   o.clear      = TObjects_clear;
-   o.dispose    = TObjects_dispose;
-   o.dump       = TObjects_dump;
-   return o;
-}
-function TObjects_isEmpty(){
-   return (this._count == 0);
-}
-function TObjects_count(){
-   return this._count;
-}
-function TObjects_contains(v){
-   return this.indexOf(v) != -1;
-}
-function TObjects_indexOf(v){
-   var o = this;
-   var c = o._count;
-   for(var n = 0; n < c; n++){
-      if(o._items[n] == v){
-         return n;
-      }
-   }
-   return -1;
-}
-function TObjects_first(){
-   var o = this;
-   return o._count ? this._items[0] : null;
-}
-function TObjects_last(){
-   var o = this;
-   return o._count ? this._items[o._count - 1] : null;
-}
-function TObjects_get(n){
-   var o = this;
-   return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
-}
-function TObjects_set(n, v){
-   var o = this;
-   if((n >= 0) && (n < o._count)){
-      o._items[n] = v;
-   }
-}
-function TObjects_assign(p){
-   var o = this;
-   var c = o._count = p._count;
-   for(var i = 0; i < c; i++){
-      o._items[i] = p._items[i];
-   }
-}
-function TObjects_append(v){
-   var o = this;
-   var c = v._count;
-   for(var n = 0; n < c; n++){
-      o.push(v.get(n));
-   }
-}
-function TObjects_insert(i, v){
-   var o = this;
-   var c = o._count;
-   if((i >= 0) && (i <= c)){
-      for(var n = c; n > i; n--){
-         o._items[n] = o._items[n - 1];
-      }
-      o._items[i] = v;
-   }
-}
-function TObjects_push(v){
-   var n = this._count++;
-   this._items[n] = v;
-   return n;
-}
-function TObjects_pushUnique(v){
-   var o = this;
-   for(var n = o._count-1; n >= 0; n--){
-      if(o._items[n] == v){
-         return n;
-      }
-   }
-   var n = o._count++;
-   o._items[n] = v;
-   return n;
-}
-function TObjects_pop(){
-   var o = this;
-   if(o._count){
-      return o._items[--o._count];
-   }
-}
-function TObjects_swap(l, r){
-   var o = this;
-   if((l >= 0) && (l < o._count) && (r >= 0) && (r < o._count) && (l != r)){
-      var v = o._items[l];
-      o._items[l] = this._items[r];
-      o._items[r] = v;
-   }
-}
-function TObjects_sort(){
-   this._items.sort();
-}
-function TObjects_erase(n){
-   var v = null;
-   var o = this;
-   if((n >= 0) && (n < o._count)){
-      v = o._items[n];
-      var c = --o._count;
-      var s = o._items;
-      for(var i = n; i < c; i++){
-         s[i] = s[i+1];
-      }
-      s[c] = null;
-   }
-   return v;
-}
-function TObjects_remove(v){
-   if(v != null){
-      var o = this;
-      var c = o._count;
-      if(c > 0){
-         var n = 0;
-         var s = o._items;
-         for(var i = n; i < c; i++){
-            if(s[i] != v){
-               s[n++] = s[i];
-            }
-         }
-         for(var i = n; i < c; i++){
-            s[i] = null;
-         }
-         o._count = n;
-      }
-   }
-   return v;
-}
-function TObjects_clear(){
-   var o = this;
-   o._items.length = 0;
-   o._count = 0;
-}
-function TObjects_dispose(){
-   var o = this;
-   o._count = 0;
-   for(var n in o._items){
-      delete o._items[n];
-   }
-   o._items = null;
-}
-function TObjects_dump(){
-   var o = this;
-   var c = o._count;
-   var r = new TString();
-   r.append(RClass.name(o), ':', c);
-   if(c > 0){
-      for(var n = 0; n < c; n++){
-         r.append(' [', o._items[n], ']');
-      }
-   }
-   return r.toString();
-}
 function TString(o){
    if(!o){o = this;}
    o._count       = 0;
@@ -3707,6 +3527,7 @@ var RObject = new function RObject(){
    o.clone   = RObject_clone;
    o.copy    = RObject_copy;
    o.free    = RObject_free;
+   o.dispose = RObject_dispose;
    o.release = RObject_release;
    return o;
 }
@@ -3755,6 +3576,12 @@ function RObject_free(p){
          p[n] = null;
       }
    }
+}
+function RObject_dispose(p){
+   if(p){
+      p.dispose();
+   }
+   return null;
 }
 function RObject_release(p){
    if(p){
@@ -5421,6 +5248,199 @@ function TNode_dump(d, space){
    d = RString.nvlStr(d);
    return this.innerDump(d, this, space);
 }
+function TObjects(o){
+   if(!o){o = this;}
+   o._count     = 0;
+   o._items     = new Array();
+   o.isEmpty    = TObjects_isEmpty;
+   o.count      = TObjects_count;
+   o.contains   = TObjects_contains;
+   o.indexOf    = TObjects_indexOf;
+   o.first      = TObjects_first;
+   o.last       = TObjects_last;
+   o.get        = TObjects_get;
+   o.set        = TObjects_set;
+   o.assign     = TObjects_assign;
+   o.append     = TObjects_append;
+   o.insert     = TObjects_insert;
+   o.push       = TObjects_push;
+   o.pushUnique = TObjects_pushUnique;
+   o.pop        = TObjects_pop;
+   o.swap       = TObjects_swap;
+   o.sort       = TObjects_sort;
+   o.erase      = TObjects_erase;
+   o.remove     = TObjects_remove;
+   o.clear      = TObjects_clear;
+   o.disposeAll = TObjects_disposeAll;
+   o.dispose    = TObjects_dispose;
+   o.dump       = TObjects_dump;
+   return o;
+}
+function TObjects_isEmpty(){
+   return (this._count == 0);
+}
+function TObjects_count(){
+   return this._count;
+}
+function TObjects_contains(v){
+   return this.indexOf(v) != -1;
+}
+function TObjects_indexOf(v){
+   var o = this;
+   var c = o._count;
+   for(var n = 0; n < c; n++){
+      if(o._items[n] == v){
+         return n;
+      }
+   }
+   return -1;
+}
+function TObjects_first(){
+   var o = this;
+   return o._count ? this._items[0] : null;
+}
+function TObjects_last(){
+   var o = this;
+   return o._count ? this._items[o._count - 1] : null;
+}
+function TObjects_get(n){
+   var o = this;
+   return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
+}
+function TObjects_set(n, v){
+   var o = this;
+   if((n >= 0) && (n < o._count)){
+      o._items[n] = v;
+   }
+}
+function TObjects_assign(p){
+   var o = this;
+   var c = o._count = p._count;
+   for(var i = 0; i < c; i++){
+      o._items[i] = p._items[i];
+   }
+}
+function TObjects_append(v){
+   var o = this;
+   var c = v._count;
+   for(var n = 0; n < c; n++){
+      o.push(v.get(n));
+   }
+}
+function TObjects_insert(i, v){
+   var o = this;
+   var c = o._count;
+   if((i >= 0) && (i <= c)){
+      for(var n = c; n > i; n--){
+         o._items[n] = o._items[n - 1];
+      }
+      o._items[i] = v;
+   }
+}
+function TObjects_push(v){
+   var n = this._count++;
+   this._items[n] = v;
+   return n;
+}
+function TObjects_pushUnique(v){
+   var o = this;
+   for(var n = o._count-1; n >= 0; n--){
+      if(o._items[n] == v){
+         return n;
+      }
+   }
+   var n = o._count++;
+   o._items[n] = v;
+   return n;
+}
+function TObjects_pop(){
+   var o = this;
+   if(o._count){
+      return o._items[--o._count];
+   }
+}
+function TObjects_swap(l, r){
+   var o = this;
+   if((l >= 0) && (l < o._count) && (r >= 0) && (r < o._count) && (l != r)){
+      var v = o._items[l];
+      o._items[l] = this._items[r];
+      o._items[r] = v;
+   }
+}
+function TObjects_sort(){
+   this._items.sort();
+}
+function TObjects_erase(n){
+   var v = null;
+   var o = this;
+   if((n >= 0) && (n < o._count)){
+      v = o._items[n];
+      var c = --o._count;
+      var s = o._items;
+      for(var i = n; i < c; i++){
+         s[i] = s[i+1];
+      }
+      s[c] = null;
+   }
+   return v;
+}
+function TObjects_remove(v){
+   if(v != null){
+      var o = this;
+      var c = o._count;
+      if(c > 0){
+         var n = 0;
+         var s = o._items;
+         for(var i = n; i < c; i++){
+            if(s[i] != v){
+               s[n++] = s[i];
+            }
+         }
+         for(var i = n; i < c; i++){
+            s[i] = null;
+         }
+         o._count = n;
+      }
+   }
+   return v;
+}
+function TObjects_clear(){
+   var o = this;
+   o._items.length = 0;
+   o._count = 0;
+}
+function TObjects_dispose(){
+   var o = this;
+   for(var n in o._items){
+      o._items[n] = null;
+   }
+   o._count = 0;
+   o._items = null;
+}
+function TObjects_disposeAll(){
+   var o = this;
+   for(var n in o._items){
+      var v = o._items[n];
+      if(v){
+         v.dispose();
+      }
+      o._items[n] = null;
+   }
+   o._count = 0;
+   o._items = null;
+}
+function TObjects_dump(){
+   var o = this;
+   var c = o._count;
+   var r = new TString();
+   r.append(RClass.name(o), ':', c);
+   if(c > 0){
+      for(var n = 0; n < c; n++){
+         r.append(' [', o._items[n], ']');
+      }
+   }
+   return r.toString();
+}
 function TRow(o){
    if(!o){o = this;}
    TAttributes(o);
@@ -5520,7 +5540,7 @@ var RMath = new function RMath(){
    o.PI2          = null;
    o.RADIAN_RATE  = null;
    o.DEGREE_RATE  = null;
-   o.PERCENT_1000 = 1.0 / 1000.0;
+   o.PERCENT_1000 = 1 / 1000;
    o.float1       = null;
    o.float2       = null;
    o.float3       = null;
@@ -5535,7 +5555,10 @@ var RMath = new function RMath(){
    o.double16     = null;
    o.double16     = null;
    o.double64     = null;
+   o.vector3      = null;
+   o.vectorScale  = null;
    o.matrix       = null;
+   o.vectorForward = null;
    o.vectorAxisX  = null;
    o.vectorAxisY  = null;
    o.vectorAxisZ  = null;
@@ -5547,8 +5570,8 @@ function RMath_construct(){
    var o = this;
    o.PI = Math.PI;
    o.PI2 = Math.PI * 2;
-   o.RADIAN_RATE = 180.0 / Math.PI;
-   o.DEGREE_RATE = Math.PI / 180.0;
+   o.RADIAN_RATE = 180 / Math.PI;
+   o.DEGREE_RATE = Math.PI / 180;
    if(RRuntime.supportHtml5()){
       o.float1 = new Float32Array(1);
       o.float2 = new Float32Array(2);
@@ -5565,13 +5588,18 @@ function RMath_construct(){
       o.double12 = new Float64Array(12);
       o.double16 = new Float64Array(16);
    }
+   o.vector3 = new SVector3();
+   o.vectorScale = new SVector3();
+   o.vectorScale.set(1, 1, 1);
    o.matrix = new SMatrix3d();
+   o.vectorForward = new SVector3();
+   o.vectorForward.set(0, 0, 1);
    o.vectorAxisX = new SVector3();
-   o.vectorAxisX.set(1.0, 0.0, 0.0);
+   o.vectorAxisX.set(1, 0, 0);
    o.vectorAxisY = new SVector3();
-   o.vectorAxisY.set(0.0, 1.0, 0.0);
+   o.vectorAxisY.set(0, 1, 0);
    o.vectorAxisZ = new SVector3();
-   o.vectorAxisZ.set(0.0, 0.0, 1.0);
+   o.vectorAxisZ.set(0, 0, 1);
 }
 function SColor4(o){
    if(!o){o = this;}
@@ -5944,15 +5972,15 @@ function SMatrix3d(o){
    if(!o){o = this;}
    SMatrix4x4(o);
    o._dirty         = false;
-   o.tx             = 0.0;
-   o.ty             = 0.0;
-   o.tz             = 0.0;
-   o.rx             = 0.0;
-   o.ry             = 0.0;
-   o.rz             = 0.0;
-   o.sx             = 1.0;
-   o.sy             = 1.0;
-   o.sz             = 1.0;
+   o.tx             = 0;
+   o.ty             = 0;
+   o.tz             = 0;
+   o.rx             = 0;
+   o.ry             = 0;
+   o.rz             = 0;
+   o.sx             = 1;
+   o.sy             = 1;
+   o.sz             = 1;
    o.identity       = SMatrix3d_identity;
    o.setTranslate   = SMatrix3d_setTranslate;
    o.setRotation    = SMatrix3d_setRotation;
@@ -5962,7 +5990,6 @@ function SMatrix3d(o){
    o.equals         = SMatrix3d_equals;
    o.assign         = SMatrix3d_assign;
    o.append         = SMatrix3d_append;
-   o.build          = SMatrix3d_build;
    o.updateForce    = SMatrix3d_updateForce;
    o.update         = SMatrix3d_update;
    o.serialize      = SMatrix3d_serialize;
@@ -6037,34 +6064,6 @@ function SMatrix3d_assign(p){
 function SMatrix3d_append(p){
    this.appendData(p._data);
 }
-function SMatrix3d_build(t, r, s){
-   var d = this._data;
-   var x2 = r.x * r.x;
-   var y2 = r.y * r.y;
-   var z2 = r.z * r.z;
-   var xy = r.x * r.y;
-   var xz = r.x * r.z;
-   var yz = r.y * r.z;
-   var wx = r.w * r.x;
-   var wy = r.w * r.y;
-   var wz = r.w * r.z;
-   d[ 0] = (1.0 - 2.0 * (y2 + z2)) * s.x;
-   d[ 1] = 2.0 * (xy - wz) * s.x;
-   d[ 2] = 2.0 * (xz + wy) * s.x;
-   d[ 3] = 0.0;
-   d[ 4] = 2.0 * (xy + wz) * s.y;
-   d[ 5] = (1.0 - 2.0 * (x2 + z2)) * s.y;
-   d[ 6] = 2.0 * (yz - wx) * s.x;
-   d[ 7] = 0.0;
-   d[ 8] = 2.0 * (xz - wy) * s.z;
-   d[ 9] = 2.0 * (yz + wx) * s.z;
-   d[10] = (1.0 - 2.0 * (x2 + y2)) * s.z;
-   d[11] = 0.0;
-   d[12] = t.x;
-   d[13] = t.y;
-   d[14] = t.z;
-   d[15] = 1.0;
-}
 function SMatrix3d_updateForce(){
    var o = this;
    var d = o._data;
@@ -6077,19 +6076,19 @@ function SMatrix3d_updateForce(){
    d[ 0] = rcy * rcz * o.sx;
    d[ 1] = rcy * rsz * o.sx;
    d[ 2] = -rsy * o.sx;
-   d[ 3] = 0.0;
+   d[ 3] = 0;
    d[ 4] = (rsx * rsy * rcz - rcx * rsz) * o.sy;
    d[ 5] = (rsx * rsy * rsz + rcx * rcz) * o.sy;
    d[ 6] = rsx * rcy * o.sy;
-   d[ 7] = 0.0;
+   d[ 7] = 0;
    d[ 8] = (rcx * rsy * rcz + rsx * rsz) * o.sz;
    d[ 9] = (rcx * rsy * rsz - rsx * rcz) * o.sz;
    d[10] = rcx * rcy * o.sz;
-   d[11] = 0.0;
+   d[11] = 0;
    d[12] = o.tx;
    d[13] = o.ty;
    d[14] = o.tz;
-   d[15] = 1.0;
+   d[15] = 1;
 }
 function SMatrix3d_update(){
    var o = this;
@@ -6123,23 +6122,246 @@ function SMatrix3d_unserialize(p){
    o.sz = p.readFloat();
    o.updateForce();
 }
+function SMatrix3x3(o){
+   if(!o){o = this;}
+   o._data           = new Array(9);
+   o.data            = SMatrix3x3_data;
+   o.equalsData      = SMatrix3x3_equalsData;
+   o.assignData      = SMatrix3x3_assignData;
+   o.appendData      = SMatrix3x3_appendData;
+   o.rotationX       = SMatrix3x3_rotationX;
+   o.rotationY       = SMatrix3x3_rotationY;
+   o.rotationZ       = SMatrix3x3_rotationZ;
+   o.rotation        = SMatrix3x3_rotation;
+   o.invert          = SMatrix3x3_invert;
+   o.transform       = SMatrix3x3_transform;
+   o.transformPoint3 = SMatrix3x3_transformPoint3;
+   o.build           = SMatrix3x3_build;
+   o.writeData       = SMatrix3x3_writeData;
+   o.toString        = SMatrix3x3_toString;
+   return o;
+}
+function SMatrix3x3_data(){
+   return this._data;
+}
+function SMatrix3x3_equalsData(p){
+   var d = this._data;
+   for(var i = 0; i < 9; i++){
+      if(d[i] != p[i]){
+         return false;
+      }
+   }
+   return true;
+}
+function SMatrix3x3_assignData(p){
+   var d = this._data;
+   for(var n = 0; n < 9; n++){
+      d[n] = p[n];
+   }
+}
+function SMatrix3x3_appendData(p){
+   var d = this._data;
+   var v0 = (d[0] * p[0]) + (d[1] * p[3]) + (d[2] * p[6]);
+   var v1 = (d[0] * p[1]) + (d[1] * p[4]) + (d[2] * p[7]);
+   var v2 = (d[0] * p[2]) + (d[1] * p[5]) + (d[2] * p[8]);
+   var v3 = (d[3] * p[0]) + (d[4] * p[3]) + (d[5] * p[6]);
+   var v4 = (d[3] * p[1]) + (d[4] * p[4]) + (d[5] * p[7]);
+   var v5 = (d[3] * p[2]) + (d[4] * p[5]) + (d[5] * p[8]);
+   var v6 = (d[6] * p[0]) + (d[7] * p[3]) + (d[8] * p[6]);
+   var v7 = (d[6] * p[1]) + (d[7] * p[4]) + (d[8] * p[7]);
+   var v8 = (d[6] * p[2]) + (d[7] * p[5]) + (d[8] * p[8]);
+   d[0] = v0;
+   d[1] = v1;
+   d[2] = v2;
+   d[3] = v3;
+   d[4] = v4;
+   d[5] = v5;
+   d[6] = v6;
+   d[7] = v7;
+   d[8] = v8;
+}
+function SMatrix3x3_rotationX(p){
+   var rs = Math.sin(p);
+   var rc = Math.cos(p);
+   var v = RMath.float9;
+   v[0] = 1;
+   v[1] = 0;
+   v[2] = 0;
+   v[3] = 0;
+   v[4] = rc;
+   v[5] = rs;
+   v[6] = 0;
+   v[7] = -rs;
+   v[8] = rc;
+   this.appendData(v);
+}
+function SMatrix3x3_rotationY(p){
+   var rs = Math.sin(p);
+   var rc = Math.cos(p);
+   var v = RMath.float9;
+   v[0] = rc;
+   v[1] = 0;
+   v[2] = rs;
+   v[3] = 0;
+   v[4] = 1;
+   v[5] = 0;
+   v[6] = -rs;
+   v[7] = 0;
+   v[8] = rc;
+   this.appendData(v);
+}
+function SMatrix3x3_rotationZ(p){
+   var rs = Math.sin(p);
+   var rc = Math.cos(p);
+   var v = RMath.float9;
+   v[0] = rc;
+   v[1] = rs;
+   v[2] = 0;
+   v[3] = -rs;
+   v[4] = rc;
+   v[5] = 1;
+   v[6] = 0;
+   v[7] = 0;
+   v[8] = 1;
+   this.appendData(v);
+}
+function SMatrix3x3_rotation(x, y, z){
+   var rsx = Math.sin(x);
+   var rcx = Math.cos(x);
+   var rsy = Math.sin(y);
+   var rcy = Math.cos(y);
+   var rsz = Math.sin(z);
+   var rcz = Math.cos(z);
+   var v = RMath.float9;
+   v[0] = rcy * rcz;
+   v[1] = rcy * rsz;
+   v[2] = -rsy;
+   v[3] = rsx * rsy * rcz - rcx * rsz;
+   v[4] = rsx * rsy * rsz + rcx * rcz;
+   v[5] = rsx * rcy;
+   v[6] = rcx * rsy * rcz + rsx * rsz;
+   v[7] = rcx * rsy * rsz - rsx * rcx;
+   v[8] = rcx * rcy;
+   this.appendData(v);
+}
+function SMatrix3x3_invert(){
+   var o = this;
+   var d = o._data;
+   var v = RMath.float9;
+   v[0] = (d[4] * d[8]) - (d[5] * d[7]);
+   v[1] = (d[2] * d[7]) - (d[1] * d[8]);
+   v[2] = (d[1] * d[5]) - (d[2] * d[4]);
+   v[3] = (d[5] * d[6]) - (d[3] * d[8]);
+   v[4] = (d[0] * d[8]) - (d[2] * d[6]);
+   v[5] = (d[2] * d[3]) - (d[0] * d[5]);
+   v[6] = (d[3] * d[7]) - (d[4] * d[6]);
+   v[7] = (d[1] * d[6]) - (d[0] * d[7]);
+   v[8] = (d[0] * d[4]) - (d[1] * d[3]);
+   var r = (d[0] * v[0]) + (d[1] * v[3]) + (d[2] * v[6]);
+   if(r == 0){
+      return false;
+   }
+   r = 1 / r;
+   for(var i = 0; i < 9; i++){
+      d[i] = v[i] * r;
+   }
+   return true;
+}
+function SMatrix3x3_transform(po, pi, pc){
+   var d = this._data;
+   for(var i = 0; i < pc; i++){
+      var n = (i << 1) + i;
+      po[n    ] = (pi[n] * d[0]) + (pi[n + 1] * d[3]) +(pi[n + 2] * d[6]);
+      po[n + 1] = (pi[n] * d[1]) + (pi[n + 1] * d[4]) +(pi[n + 2] * d[7]);
+      po[n + 2] = (pi[n] * d[2]) + (pi[n + 1] * d[5]) +(pi[n + 2] * d[8]);
+   }
+}
+function SMatrix3x3_transformPoint3(pi, po){
+   var d = this._data;
+   var x = (pi.x * d[0]) + (pi.y * d[3]) +(pi.z * d[6]);
+   var y = (pi.x * d[1]) + (pi.y * d[4]) +(pi.z * d[7]);
+   var z = (pi.x * d[2]) + (pi.y * d[5]) +(pi.z * d[8]);
+   var r = null;
+   if(po){
+      r = po;
+   }else{
+      r = new SPoint3();
+   }
+   r.set(x, y, z);
+   return r;
+}
+function SMatrix3x3_build(r){
+   var d = this._data;
+   var x2 = r.x * r.x;
+   var y2 = r.y * r.y;
+   var z2 = r.z * r.z;
+   var xy = r.x * r.y;
+   var xz = r.x * r.z;
+   var yz = r.y * r.z;
+   var wx = r.w * r.x;
+   var wy = r.w * r.y;
+   var wz = r.w * r.z;
+   d[0] = 1 - 2 * (y2 + z2);
+   d[1] = 2 * (xy - wz);
+   d[2] = 2 * (xz + wy);
+   d[3] = 2 * (xy + wz);
+   d[4] = 1 - 2 * (x2 + z2);
+   d[5] = 2 * (yz - wx);
+   d[6] = 2 * (xz - wy);
+   d[7] = 2 * (yz + wx);
+   d[8] = 1 - 2 * (x2 + y2);
+}
+function SMatrix3x3_writeData(d, i){
+   var o = this;
+   var pd = o._data;
+   d[i++] = pd[0];
+   d[i++] = pd[3];
+   d[i++] = pd[6];
+   d[i++] = pd[1];
+   d[i++] = pd[4];
+   d[i++] = pd[7];
+   d[i++] = pd[2];
+   d[i++] = pd[5];
+   d[i++] = pd[8];
+}
+function SMatrix3x3_toString(){
+   var d = this._data;
+   var r = new TString();
+   for(var y = 0; y < 3; y++){
+      if(y > 0){
+         r.append('|');
+      }
+      for(var x = 0; x < 3; x++){
+         var i = y * 3 + x;
+         var v = d[i];
+         if(x > 0){
+            r.append(',');
+         }
+         r.append(RFloat.format(v, 0, null, 3, null));
+      }
+   }
+   return r.flush();
+}
 function SMatrix4x4(o){
    if(!o){o = this;}
-   o._data      = new Array(16);
-   o.data       = SMatrix4x4_data;
-   o.equalsData = SMatrix4x4_equalsData;
-   o.assignData = SMatrix4x4_assignData;
-   o.appendData = SMatrix4x4_appendData;
-   o.translate  = SMatrix4x4_translate;
-   o.rotationX  = SMatrix4x4_rotationX;
-   o.rotationY  = SMatrix4x4_rotationY;
-   o.rotationZ  = SMatrix4x4_rotationZ;
-   o.rotation   = SMatrix4x4_rotation;
-   o.scale      = SMatrix4x4_scale;
-   o.invert     = SMatrix4x4_invert;
-   o.transform  = SMatrix4x4_transform;
-   o.writeData  = SMatrix4x4_writeData;
-   o.toString   = SMatrix4x4_toString;
+   o._data           = new Array(16);
+   o.data            = SMatrix4x4_data;
+   o.equalsData      = SMatrix4x4_equalsData;
+   o.assignData      = SMatrix4x4_assignData;
+   o.appendData      = SMatrix4x4_appendData;
+   o.translate       = SMatrix4x4_translate;
+   o.rotationX       = SMatrix4x4_rotationX;
+   o.rotationY       = SMatrix4x4_rotationY;
+   o.rotationZ       = SMatrix4x4_rotationZ;
+   o.rotation        = SMatrix4x4_rotation;
+   o.scale           = SMatrix4x4_scale;
+   o.invert          = SMatrix4x4_invert;
+   o.transform       = SMatrix4x4_transform;
+   o.transformPoint3 = SMatrix4x4_transformPoint3;
+   o.buildQuaternion = SMatrix4x4_buildQuaternion;
+   o.build           = SMatrix4x4_build;
+   o.writeData       = SMatrix4x4_writeData;
+   o.toString        = SMatrix4x4_toString;
    return o;
 }
 function SMatrix4x4_data(){
@@ -6348,24 +6570,93 @@ function SMatrix4x4_invert(){
    v[11] = -(d[ 0] * d[ 5] * d[11]) + (d[ 0] * d[ 7] * d[ 9]) + (d[ 4] * d[ 1] * d[11]) - (d[ 4] * d[ 3] * d[ 9]) - (d[ 8] * d[ 1] * d[ 7]) + (d[ 8] * d[ 3] * d[ 5]);
    v[15] =  (d[ 0] * d[ 5] * d[10]) - (d[ 0] * d[ 6] * d[ 9]) - (d[ 4] * d[ 1] * d[10]) + (d[ 4] * d[ 2] * d[ 9]) + (d[ 8] * d[ 1] * d[ 6]) - (d[ 8] * d[ 2] * d[ 5]);
    var r = d[ 0] * v[ 0] + d[ 1] * v[ 4] + d[ 2] * v[ 8] + d[ 3] * v[12];
-   if(r == 0.0){
+   if(r == 0){
      return false;
    }
-   r = 1.0 / r;
+   r = 1 / r;
    for(var i = 0; i < 16; i++){
       d[i] = v[i] * r;
    }
    return true;
 }
 function SMatrix4x4_transform(po, pi, pc){
-   var o = this;
-   var d = o._data;
+   var d = this._data;
    for(var i = 0; i < pc; i++){
       var n = (i << 1) + i;
       po[n    ] = (pi[n] * d[ 0]) + (pi[n + 1] * d[ 4]) +(pi[n + 2] * d[ 8]) + d[12];
       po[n + 1] = (pi[n] * d[ 1]) + (pi[n + 1] * d[ 5]) +(pi[n + 2] * d[ 9]) + d[13];
       po[n + 2] = (pi[n] * d[ 2]) + (pi[n + 1] * d[ 6]) +(pi[n + 2] * d[10]) + d[14];
    }
+}
+function SMatrix4x4_transformPoint3(pi, po){
+   var d = this._data;
+   var x = (pi.x * d[ 0]) + (pi.y * d[ 4]) +(pi.z * d[ 8]) + d[12];
+   var y = (pi.x * d[ 1]) + (pi.y * d[ 5]) +(pi.z * d[ 9]) + d[13];
+   var z = (pi.x * d[ 2]) + (pi.y * d[ 6]) +(pi.z * d[10]) + d[14];
+   var r = null;
+   if(po){
+      r = po;
+   }else{
+      r = new SPoint3();
+   }
+   r.set(x, y, z);
+   return r;
+}
+function SMatrix4x4_build(t, r, s){
+   var d = this._data;
+   var x2 = r.x * r.x;
+   var y2 = r.y * r.y;
+   var z2 = r.z * r.z;
+   var xy = r.x * r.y;
+   var xz = r.x * r.z;
+   var yz = r.y * r.z;
+   var wx = r.w * r.x;
+   var wy = r.w * r.y;
+   var wz = r.w * r.z;
+   d[ 0] = (1 - 2 * (y2 + z2)) * s.x;
+   d[ 1] = 2 * (xy - wz) * s.x;
+   d[ 2] = 2 * (xz + wy) * s.x;
+   d[ 3] = 0;
+   d[ 4] = 2 * (xy + wz) * s.y;
+   d[ 5] = (1 - 2 * (x2 + z2)) * s.y;
+   d[ 6] = 2 * (yz - wx) * s.y;
+   d[ 7] = 0;
+   d[ 8] = 2 * (xz - wy) * s.z;
+   d[ 9] = 2 * (yz + wx) * s.z;
+   d[10] = (1 - 2 * (x2 + y2)) * s.z;
+   d[11] = 0;
+   d[12] = t.x;
+   d[13] = t.y;
+   d[14] = t.z;
+   d[15] = 1;
+}
+function SMatrix4x4_buildQuaternion(r){
+   var d = this._data;
+   var x2 = r.x * r.x;
+   var y2 = r.y * r.y;
+   var z2 = r.z * r.z;
+   var xy = r.x * r.y;
+   var xz = r.x * r.z;
+   var yz = r.y * r.z;
+   var wx = r.w * r.x;
+   var wy = r.w * r.y;
+   var wz = r.w * r.z;
+   d[ 0] = 1 - 2 * (y2 + z2);
+   d[ 1] = 2 * (xy - wz);
+   d[ 2] = 2 * (xz + wy);
+   d[ 3] = 0;
+   d[ 4] = 2 * (xy + wz);
+   d[ 5] = 1 - 2 * (x2 + z2);
+   d[ 6] = 2 * (yz - wx);
+   d[ 7] = 0;
+   d[ 8] = 2 * (xz - wy);
+   d[ 9] = 2 * (yz + wx);
+   d[10] = 1 - 2 * (x2 + y2);
+   d[11] = 0;
+   d[12] = 0;
+   d[13] = 0;
+   d[14] = 0;
+   d[15] = 1;
 }
 function SMatrix4x4_writeData(d, i){
    var o = this;
@@ -6496,8 +6787,8 @@ function SOrthoMatrix3d_perspectiveFieldOfViewRH(pv, pr, pn, pf){
 }
 function SOutline3(o){
    if(!o){o = this;}
-   o.min = new SPoint3();
-   o.max = new SPoint3();
+   o.min         = new SPoint3();
+   o.max         = new SPoint3();
    o.assign      = SOutline3_assign;
    o.serialize   = SOutline3_serialize
    o.unserialize = SOutline3_unserialize
@@ -6789,6 +7080,7 @@ function SPoint3(x, y, z){
    o.z           = RInteger.nvl(z);
    o.assign      = SPoint3_assign;
    o.set         = SPoint3_set;
+   o.conjugate   = SPoint3_conjugate;
    o.resize      = SPoint3_resize;
    o.slerp       = SPoint3_slerp;
    o.serialize   = SPoint3_serialize;
@@ -6814,6 +7106,19 @@ function SPoint3_set(x, y, z){
    if(z != null){
       o.z = z;
    }
+}
+function SPoint3_conjugate(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SPoint3();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   return r;
 }
 function SPoint3_resize(x, y, z){
    var o = this;
@@ -6907,21 +7212,33 @@ function SPoint4_toString(){
 }
 function SQuaternion(o){
    if(!o){o = this;}
-   o.x             = 0.0;
-   o.y             = 0.0;
-   o.z             = 0.0;
-   o.w             = 1.0;
+   o.x             = 0;
+   o.y             = 0;
+   o.z             = 0;
+   o.w             = 1;
+   o.identity      = SQuaternion_identity;
    o.assign        = SQuaternion_assign;
    o.set           = SQuaternion_set;
    o.absolute      = SQuaternion_absolute;
    o.normalize     = SQuaternion_normalize;
+   o.conjugate     = SQuaternion_conjugate;
    o.mul           = SQuaternion_mul;
    o.mul2          = SQuaternion_mul2;
+   o.translate     = SQuaternion_translate;
    o.slerp         = SQuaternion_slerp;
    o.fromAxisAngle = SQuaternion_fromAxisAngle;
+   o.fromEuler     = SQuaternion_fromEuler;
+   o.parseEuler    = SQuaternion_parseEuler;
    o.serialize     = SQuaternion_serialize;
    o.unserialize   = SQuaternion_unserialize;
+   o.clone         = SQuaternion_clone;
    o.toString      = SQuaternion_toString;
+   return o;
+}
+function SQuaternion_identity(){
+   var o = this;
+   o.x = o.y = o.z = 0;
+   o.w = 1;
    return o;
 }
 function SQuaternion_assign(p){
@@ -6945,11 +7262,27 @@ function SQuaternion_absolute(){
 function SQuaternion_normalize(){
    var o = this;
    var a = o.absolute();
-   var v = 1.0 / a;
-   o.x *= v;
-   o.y *= v;
-   o.z *= v;
-   o.w *= v;
+   if(a != 0){
+      var v = 1 / a;
+      o.x *= v;
+      o.y *= v;
+      o.z *= v;
+      o.w *= v;
+   }
+}
+function SQuaternion_conjugate(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SQuaternion();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   r.w = o.w;
+   return r;
 }
 function SQuaternion_mul(p){
    var o = this;
@@ -6969,23 +7302,41 @@ function SQuaternion_mul2(p1, p2){
    o.z = (p1.w * p2.z) + (p1.z * p2.w) + (p1.x * p2.y) - (p1.y * p2.x);
    o.w = (p1.w * p2.w) - (p1.x * p2.x) - (p1.y * p2.y) - (p1.z * p2.z);
 }
+function SQuaternion_translate(pi, po){
+   var o = this;
+   var q1 = new SQuaternion();
+   q1.set(pi.x, pi.y, pi.z, 0);
+   q1.normalize();
+   var q2 = o.conjugate();
+   q1.mul(q2);
+   var q = o.clone();
+   q.mul(q1);
+   var r = null;
+   if(po){
+      r = po;
+   }else{
+      r = new SVector3();
+   }
+   r.set(q.x, q.y, q.z);
+   return r;
+}
 function SQuaternion_slerp(v1, v2, r){
    var o = this;
    var rv = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
    var rf = false;
-   if (rv < 0.0){
+   if (rv < 0){
       rf = true;
       rv = -rv;
    }
-   var r1 = 0.0;
-   var r2 = 0.0;
+   var r1 = 0;
+   var r2 = 0;
    if(rv > 0.999999){
-      r1 = 1.0 - r;
+      r1 = 1 - r;
       r2 = rf ? -r : r;
    }else{
       var ra = Math.acos(rv);
-      var rb = 1.0 / Math.sin(ra);
-      r1 = Math.sin((1.0 - r) * ra) * rb;
+      var rb = 1 / Math.sin(ra);
+      r1 = Math.sin((1 - r) * ra) * rb;
       r2 = rf ? (-Math.sin(r * ra) * rb) : (Math.sin(r * ra) * rb);
    }
    o.x = (r1 * v1.x) + (r2 * v2.x);
@@ -7002,6 +7353,35 @@ function SQuaternion_fromAxisAngle(a, g){
    o.z = a.z * s;
    o.w = Math.cos(r);
 }
+function SQuaternion_fromEuler(p, y, r){
+   var o = this;
+   var sr = Math.sin(r * 0.5);
+   var cr = Math.cos(r * 0.5);
+   var sp = Math.sin(p * 0.5);
+   var cp = Math.cos(p * 0.5);
+   var sy = Math.sin(y * 0.5);
+   var cy = Math.cos(y * 0.5);
+   o.x = cr * sp * cy + sr * cp * sy;
+   o.y = cr * cp * sy - sr * sp * cy;
+   o.z = sr * cp * cy - cr * sp * sy;
+   o.w = cr * cp * cy + sr * sp * sy;
+}
+function SQuaternion_parseEuler(p){
+   var o = this;
+   var x2 = o.x * o.x;
+   var y2 = o.y * o.y;
+   var z2 = o.z * o.z;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SVector3();
+   }
+   r.x = Math.asin(RFloat.toRange((o.w * o.x - o.y * o.z) * 2, -1, 1));
+   r.y = Math.atan2(2 * (o.w * o.y + o.z * o.x) , 1 - 2 * (x2 + y2));
+   r.z = Math.atan2(2 * (o.w * o.z + o.x * o.y) , 1 - 2 * (z2 + x2));
+   return r;
+}
 function SQuaternion_serialize(p){
    var o = this;
    p.writeFloat(o.x);
@@ -7015,6 +7395,15 @@ function SQuaternion_unserialize(p){
    o.y = p.readFloat();
    o.z = p.readFloat();
    o.w = p.readFloat();
+}
+function SQuaternion_clone(){
+   var o = this;
+   var r = new SQuaternion();
+   r.x = o.x;
+   r.y = o.y;
+   r.z = o.z;
+   r.w = o.w;
+   return r;
 }
 function SQuaternion_toString(){
    var o = this;
@@ -7313,12 +7702,14 @@ function SVector3(o){
    o.set         = SVector3_set;
    o.absolute    = SVector3_absolute;
    o.normalize   = SVector3_normalize;
+   o.conjugate   = SVector3_conjugate;
    o.dotPoint3   = SVector3_dotPoint3;
    o.cross       = SVector3_cross;
    o.cross2      = SVector3_cross2;
    o.slerp       = SVector3_slerp;
    o.serialize   = SVector3_serialize;
    o.unserialize = SVector3_unserialize;
+   o.clone       = SVector3_clone;
    o.toString    = SVector3_toString;
    return o;
 }
@@ -7341,11 +7732,24 @@ function SVector3_absolute(){
 function SVector3_normalize(){
    var o = this;
    var v = o.absolute();
-   if(v != 0.0){
+   if(v != 0){
       o.x /= v;
       o.y /= v;
       o.z /= v;
    }
+}
+function SVector3_conjugate(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SVector3();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   return r;
 }
 function SVector3_dotPoint3(v){
    var o = this;
@@ -7383,6 +7787,14 @@ function SVector3_unserialize(p){
    o.x = p.readFloat();
    o.y = p.readFloat();
    o.z = p.readFloat();
+}
+function SVector3_clone(){
+   var o = this;
+   var r = new SVector3();
+   r.x = o.x;
+   r.y = o.y;
+   r.z = o.z;
+   return r;
 }
 function SVector3_toString(){
    var o = this;
@@ -12991,8 +13403,8 @@ function FG3dCamera(o){
    o = RClass.inherits(this, o, FObject);
    o._matrix      = null;
    o._position    = null;
+   o._target      = null;
    o._direction   = null;
-   o._rotation    = null;
    o._centerFront = 0.6;
    o._centerBack  = 1.0;
    o._focalNear   = 0.1;
@@ -13004,9 +13416,6 @@ function FG3dCamera(o){
    o.__axisX      = null;
    o.__axisY      = null;
    o.__axisZ      = null;
-   o.__rotationX  = null;
-   o.__rotationY  = null;
-   o.__rotationZ  = null;
    o.construct    = FG3dCamera_construct;
    o.matrix       = FG3dCamera_matrix;
    o.position     = FG3dCamera_position;
@@ -13017,8 +13426,9 @@ function FG3dCamera(o){
    o.doWalk       = FG3dCamera_doWalk;
    o.doStrafe     = FG3dCamera_doStrafe;
    o.doFly        = FG3dCamera_doFly;
-   o.doYaw        = FG3dCamera_doYaw;
    o.doPitch      = FG3dCamera_doPitch;
+   o.doYaw        = FG3dCamera_doYaw;
+   o.doRoll       = FG3dCamera_doRoll;
    o.lookAt       = FG3dCamera_lookAt;
    o.update       = FG3dCamera_update;
    return o;
@@ -13028,8 +13438,8 @@ function FG3dCamera_construct(){
    o.__base.FObject.construct.call(o);
    o._matrix = new SMatrix3d();
    o._position = new SPoint3();
+   o._target = new SPoint3();
    o._direction = new SVector3();
-   o._rotation = new SQuaternion();
    o._frustum = new SFrustum();
    o._viewport = RClass.create(FG3dViewport);
    o.__axisUp = new SVector3();
@@ -13037,9 +13447,6 @@ function FG3dCamera_construct(){
    o.__axisX = new SVector3();
    o.__axisY = new SVector3();
    o.__axisZ = new SVector3();
-   o.__rotationX = new SQuaternion();
-   o.__rotationY = new SQuaternion();
-   o.__rotationZ = new SQuaternion();
 }
 function FG3dCamera_position(){
    return this._position;
@@ -13073,16 +13480,23 @@ function FG3dCamera_doFly(p){
    var o = this;
    o._position.y += p;
 }
-function FG3dCamera_doYaw(p){
-   var o = this;
-}
 function FG3dCamera_doPitch(p){
    var o = this;
+   throw new TFatal(o, 'Unsupport.')
+}
+function FG3dCamera_doYaw(p){
+   var o = this;
+   throw new TFatal(o, 'Unsupport.')
+}
+function FG3dCamera_doRoll(p){
+   var o = this;
+   throw new TFatal(o, 'Unsupport.')
 }
 function FG3dCamera_lookAt(x, y, z){
    var o = this;
    var p = o._position;
    var d = o._direction;
+   o._target.set(x, y, z);
    d.set(x - p.x, y - p.y, z - p.z);
    d.normalize();
 }
@@ -13866,13 +14280,15 @@ function FG3dRegion_dispose(){
 }
 function FG3dRenderable(o){
    o = RClass.inherits(this, o, FGraphicRenderable);
-   o._matrix       = null;
-   o._effectName   = null;
-   o._materialName = null;
-   o._material     = null;
-   o._activeEffect = null;
-   o._effects      = null;
+   o._currentMatrix  = null;
+   o._matrix         = null;
+   o._effectName     = null;
+   o._materialName   = null;
+   o._material       = null;
+   o._activeEffect   = null;
+   o._effects        = null;
    o.construct       = FG3dRenderable_construct;
+   o.currentMatrix   = FG3dRenderable_currentMatrix;
    o.matrix          = FG3dRenderable_matrix;
    o.effectName      = FG3dRenderable_effectName;
    o.material        = FG3dRenderable_material;
@@ -13887,8 +14303,12 @@ function FG3dRenderable(o){
 function FG3dRenderable_construct(){
    var o = this;
    o.__base.FGraphicRenderable.construct.call(o);
+   o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
    o._material = RClass.create(FG3dMaterial);
+}
+function FG3dRenderable_currentMatrix(){
+   return this._currentMatrix;
 }
 function FG3dRenderable_matrix(){
    return this._matrix;
@@ -13904,11 +14324,11 @@ function FG3dRenderable_setActiveEffect(p){
 }
 function FG3dRenderable_effects(){
    var o = this;
-   var es = o._effects;
-   if(es == null){
-      es = o._effects = new TDictionary();
+   var r = o._effects;
+   if(!r){
+      r = o._effects = new TDictionary();
    }
-   return es;
+   return r;
 }
 function FG3dRenderable_material(){
    return this._material;
@@ -13917,16 +14337,10 @@ function FG3dRenderable_update(p){
 }
 function FG3dRenderable_dispose(){
    var o = this;
-   var v = o._matrix;
-   if(v){
-      v.dispose();
-      o._matrix = null;
-   }
-   var v = o._material;
-   if(v){
-      v.dispose();
-      o._material = null;
-   }
+   o._currentMatrix = RObject.dispose(o._currentMatrix);
+   o._matrix = RObject.dispose(o._matrix);
+   o._material = RObject.dispose(o._material);
+   o._effects = RObject.dispose(o._effects);
    o.__base.FGraphicRenderable.dispose.call(o);
 }
 function FG3dShaderTemplate(o){
@@ -15264,7 +15678,7 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var m = pr.material();
    var mi = m.info();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -15316,7 +15730,7 @@ function FG3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    var m = pr.material();
    var mi = m.info();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -15386,7 +15800,7 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    var m = pr.material();
    o.bindMaterial(m);
    p.setParameter('vc_light_depth', vlci);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', vcvpm);
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -15478,7 +15892,7 @@ function FG3dShadowColorSkeletonEffect_drawRenderable(pr, r){
          }
       }
    }
-   p.setParameter('vc_model_matrix', r.matrix());
+   p.setParameter('vc_model_matrix', r.currentMatrix());
    p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
    p.setParameter('vc_light_direction', prld);
@@ -15528,7 +15942,7 @@ function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    var lci = pg.calculate(EG3dRegionParameter.LightInfo);
    c.setBlendFactors(false);
    p.setParameter('vc_camera', lci);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_view_matrix', lvm);
    p.setParameter('vc_vp_matrix', lvpm);
    p.setParameter('fc_camera', lci);
@@ -15588,7 +16002,7 @@ function FG3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   p.setParameter('vc_model_matrix', r.matrix());
+   p.setParameter('vc_model_matrix', r.currentMatrix());
    p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
    p.setParameter('vc_light_direction', prld);
@@ -16863,7 +17277,9 @@ function SWglContextCapability(o){
    return o;
 }
 function FDisplay(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
+   o._parent           = null;
+   o._currentMatrix    = null;
    o._name             = null;
    o._matrix           = null;
    o._location         = null;
@@ -16872,9 +17288,12 @@ function FDisplay(o){
    o._visible          = true;
    o._renderables      = null;
    o.construct         = FDisplay_construct;
+   o.parent            = FDisplay_parent;
+   o.setParent         = FDisplay_setParent;
    o.isName            = FDisplay_isName;
    o.name              = FDisplay_name;
    o.setName           = FDisplay_setName;
+   o.currentMatrix     = FDisplay_currentMatrix;
    o.matrix            = FDisplay_matrix;
    o.location          = FDisplay_location;
    o.rotation          = FDisplay_rotation;
@@ -16883,6 +17302,7 @@ function FDisplay(o){
    o.filterRenderables = FDisplay_filterRenderables;
    o.renderables       = FDisplay_renderables;
    o.pushRenderable    = FDisplay_pushRenderable;
+   o.removeRenderable  = FDisplay_removeRenderable;
    o.process           = FDisplay_process;
    o.update            = FDisplay_update;
    o.remove            = FDisplay_remove;
@@ -16892,11 +17312,18 @@ function FDisplay(o){
 function FDisplay_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
    o._location = new SPoint3();
    o._rotation = new SVector3();
    o._scale = new SVector3();
    o._scale.set(1, 1, 1);
+}
+function FDisplay_parent(){
+   return this._parent;
+}
+function FDisplay_setParent(p){
+   this._parent = p;
 }
 function FDisplay_isName(p){
    return this._name == p;
@@ -16906,6 +17333,9 @@ function FDisplay_name(){
 }
 function FDisplay_setName(p){
    this._name = p;
+}
+function FDisplay_currentMatrix(){
+   return this._currentMatrix;
 }
 function FDisplay_matrix(){
    return this._matrix;
@@ -16943,13 +17373,21 @@ function FDisplay_filterRenderables(p){
 function FDisplay_renderables(){
    var o = this;
    var r = o._renderables;
-   if(r == null){
+   if(!r){
       r = o._renderables = new TObjects();
    }
    return r;
 }
 function FDisplay_pushRenderable(p){
-   this.renderables().push(p);
+   var o = this;
+   p._display = o;
+   o.renderables().push(p);
+}
+function FDisplay_removeRenderable(p){
+   var s = this._renderables;
+   if(s){
+      s.remove(p);
+   }
 }
 function FDisplay_update(){
    var o = this;
@@ -16957,41 +17395,42 @@ function FDisplay_update(){
    m.set(o._location, o._rotation, o._scale);
    m.update();
 }
-function FDisplay_process(){
+function FDisplay_process(p){
    var o = this;
-   var rs = o._renderables;
-   if(rs != null){
-      var c = rs.count();
+   o._currentMatrix.assign(o._matrix);
+   var t = o._parent;
+   if(t){
+      o._currentMatrix.append(t._currentMatrix);
+   }
+   var s = o._renderables;
+   if(s){
+      var c = s.count();
       for(var i = 0; i < c; i++){
-         rs.get(i).process();
+         s.get(i).process(p);
       }
    }
 }
 function FDisplay_remove(){
    var o = this;
-   var c = o._displayContainer;
+   var c = o._parent;
    if(c){
       c.removeDisplay(o);
-      o._displayContainer = null;
+      o._parent = null;
    }
 }
 function FDisplay_dispose(){
    var o = this;
-   o._matrix = null;
-   o._position = null;
-   o._direction = null;
-   o._scale = null;
-   var rs = o._renderables;
-   if(rs != null){
-      rs.dispose();
-      o._renderables = null
-   }
+   RObject.dispose(o._currentMatrix);
+   RObject.dispose(o._matrix);
+   RObject.dispose(o._position);
+   RObject.dispose(o._direction);
+   RObject.dispose(o._scale);
+   RObject.dispose(o._renderables)
    o.__base.FObject.dispose.call(o);
 }
 function FDisplayContainer(o){
    o = RClass.inherits(this, o, FDisplay);
    o._displays         = null;
-   o.construct         = FDisplayContainer_construct;
    o.hasDisplay        = FDisplayContainer_hasDisplay;
    o.findDisplay       = FDisplayContainer_findDisplay;
    o.searchDisplay     = FDisplayContainer_searchDisplay;
@@ -17003,26 +17442,22 @@ function FDisplayContainer(o){
    o.dispose           = FDisplayContainer_dispose;
    return o;
 }
-function FDisplayContainer_construct(){
-   var o = this;
-   o.__base.FDisplay.construct.call(o);
-}
 function FDisplayContainer_hasDisplay(){
    var r = this._displays;
-   if(r != null){
+   if(r){
       return !r.isEmpty();
    }
    return false;
 }
 function FDisplayContainer_findDisplay(p){
    var o = this;
-   if(o._displays == null){
-      var cs = o._displays;
-      var cc = cs.count();
-      for(var n = 0; n < cc; n++){
-         var c = cs.get(n);
-         if(c.isName(p)){
-            return c;
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var f = s.get(i);
+         if(f.isName(p)){
+            return f;
          }
       }
    }
@@ -17030,16 +17465,16 @@ function FDisplayContainer_findDisplay(p){
 }
 function FDisplayContainer_searchDisplay(p){
    var o = this;
-   if(o._displays == null){
-      var cs = o._displays;
-      var cc = cs.count();
-      for(var n = 0; n < cc; n++){
-         var c = cs.get(n);
-         if(c.isName(p)){
-            return c;
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var f = s.get(i);
+         if(f.isName(p)){
+            return f;
          }
-         var r = c.searchDisplay(p);
-         if(r != null){
+         var r = f.searchDisplay(p);
+         if(r){
             return r;
          }
       }
@@ -17052,12 +17487,11 @@ function FDisplayContainer_filterRenderables(p){
    if(!o._visible){
       return false;
    }
-   var ds = o._displays;
-   if(ds != null){
-      var c = ds.count();
-      for(var n = 0; n < c; n++){
-         var d = ds.get(n);
-         d.filterRenderables(p);
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.get(i).filterRenderables(p);
       }
    }
    return true;
@@ -17065,42 +17499,40 @@ function FDisplayContainer_filterRenderables(p){
 function FDisplayContainer_process(p){
    var o = this;
    o.__base.FDisplay.process.call(o, p);
-   var ds = o._displays;
-   if(ds != null){
-      var c = ds.count();
+   var s = o._displays;
+   if(s){
+      var c = s.count();
       for(var i = 0; i < c; i++){
-         ds.get(i).process(p);
+         s.get(i).process(p);
       }
    }
 }
 function FDisplayContainer_displays(){
    var o = this;
    var r = o._displays;
-   if(r == null){
+   if(!r){
       r = o._displays = new TObjects();
    }
    return r;
 }
 function FDisplayContainer_pushDisplay(p){
    var o = this;
-   p._displayContainer = o;
+   p._parent = o;
    o.displays().push(p);
 }
 function FDisplayContainer_removeDisplay(p){
    var o = this;
-   p._displayContainer = null;
    o.displays().remove(p);
+   p._parent = null;
 }
 function FDisplayContainer_dispose(){
    var o = this;
-   var cs = o._displays;
-   if(cs != null){
-      var cc = cs.count();
-      for(var n = 0; n < cc; n++){
-         var c = cs.get(n);
-         c.dispose();
+   var v = o._displays;
+   if(v){
+      for(var i = v.count() - 1; i >= 0; i--){
+         v.get(i).dispose();
       }
-      cs.dispose();
+      v.dispose();
       o._displays = null;
    }
    o.__base.FDisplay.dispose.call(o);
@@ -17301,20 +17733,71 @@ function FDisplay3d_dispose(){
    o._materials = null;
    o.__base.FDisplay.dispose.call(o);
 }
+function FE3dCanvasCamera(o){
+   o = RClass.inherits(this, o, FG3dPerspectiveCamera);
+   o._rotation       = null;
+   o._rotationMatrix = null;
+   o._quaternion     = null;
+   o._quaternionX    = null;
+   o._quaternionY    = null;
+   o._quaternionZ    = null;
+   o.construct       = FE3dCanvasCamera_construct;
+   o.rotation        = FE3dCanvasCamera_rotation;
+   o.doPitch         = FE3dCanvasCamera_doPitch;
+   o.doYaw           = FE3dCanvasCamera_doYaw;
+   o.doRoll          = FE3dCanvasCamera_doRoll;
+   o.update          = FE3dCanvasCamera_update;
+   return o;
+}
+function FE3dCanvasCamera_construct(){
+   var o = this;
+   o.__base.FG3dPerspectiveCamera.construct.call(o);
+   o._rotation = new SVector3();
+   o._rotationMatrix = new SMatrix3x3();
+   o._quaternion = new SQuaternion();
+   o._quaternionX = new SQuaternion();
+   o._quaternionY = new SQuaternion();
+   o._quaternionZ = new SQuaternion();
+}
+function FE3dCanvasCamera_rotation(){
+   return this._rotation;
+}
+function FE3dCanvasCamera_doPitch(p){
+   this._rotation.x += p;
+}
+function FE3dCanvasCamera_doYaw(p){
+   this._rotation.y += p;
+}
+function FE3dCanvasCamera_doRoll(p){
+   this._rotation.z += p;
+}
+function FE3dCanvasCamera_update(){
+   var o = this;
+   var r = o._rotation;
+   o._quaternionX.fromAxisAngle(RMath.vectorAxisX, r.x);
+   o._quaternionY.fromAxisAngle(RMath.vectorAxisY, r.y);
+   o._quaternionZ.fromAxisAngle(RMath.vectorAxisZ, r.z);
+   var q = o._quaternion.identity();
+   q.mul(o._quaternionX);
+   q.mul(o._quaternionY);
+   q.mul(o._quaternionZ);
+   var m = o._rotationMatrix;
+   m.build(q);
+   var t = o._target;
+   m.transformPoint3(RMath.vectorForward, t);
+   m.transformPoint3(RMath.vectorAxisY, o.__axisUp);
+   var d = o._direction;
+   d.assign(t);
+   d.normalize();
+   o.__base.FG3dPerspectiveCamera.update.call(o);
+}
 function FE3dMeshRenderable(o){
-   o = RClass.inherits(this, o, FG3dRenderable);
-   o._display         = null;
+   o = RClass.inherits(this, o, FRd3Renderable);
    o._renderable      = null;
-   o._modelMatrix     = null;
-   o._vertexBuffers   = null;
    o._activeSkin      = null;
    o._activeTrack     = null;
    o._bones           = null;
-   o.construct        = FE3dMeshRenderable_construct;
-   o.modelMatrix      = FE3dMeshRenderable_modelMatrix;
-   o.findVertexBuffer = FE3dMeshRenderable_findVertexBuffer;
    o.vertexCount      = FE3dMeshRenderable_vertexCount;
-   o.vertexBuffers    = FE3dMeshRenderable_vertexBuffers;
    o.indexBuffer      = FE3dMeshRenderable_indexBuffer;
    o.findTexture      = FE3dMeshRenderable_findTexture;
    o.textures         = FE3dMeshRenderable_textures;
@@ -17324,23 +17807,8 @@ function FE3dMeshRenderable(o){
    o.dispose          = FE3dMeshRenderable_dispose;
    return o;
 }
-function FE3dMeshRenderable_construct(){
-   var o = this;
-   o.__base.FG3dRenderable.construct.call(o);
-   o._vertexBuffers = new TDictionary();
-   o._modelMatrix = new SMatrix3d();
-}
-function FE3dMeshRenderable_modelMatrix(){
-   return this._modelMatrix;
-}
-function FE3dMeshRenderable_findVertexBuffer(p){
-   return this._vertexBuffers.get(p);
-}
 function FE3dMeshRenderable_vertexCount(){
    return this._renderable.vertexCount();
-}
-function FE3dMeshRenderable_vertexBuffers(){
-   return this._vertexBuffers;
 }
 function FE3dMeshRenderable_indexBuffer(){
    return this._renderable.indexBuffer();
@@ -17356,21 +17824,24 @@ function FE3dMeshRenderable_bones(p){
 }
 function FE3dMeshRenderable_update(p){
    var o = this;
-   var mm = o._modelMatrix
-   var dm = o._display.matrix();
+   var d = o._display;
+   var mm = o._matrix
    var t = o._activeTrack;
-   var m = o._matrix;
+   var m = o._currentMatrix;
    if(t){
       m.assign(t.matrix());
       m.append(mm);
    }else{
       m.assign(mm);
    }
-   m.append(dm);
+   if(d){
+      var dm = o._display.currentMatrix();
+      m.append(dm);
+   }
 }
 function FE3dMeshRenderable_process(p){
    var o = this;
-   o.__base.FG3dRenderable.process.call(p)
+   o.__base.FRd3Renderable.process.call(p)
    var t = o._activeTrack;
    if(t){
       var a = t._animation;
@@ -17391,7 +17862,7 @@ function FE3dMeshRenderable_dispose(){
       v.dispose();
       o._vertexBuffers = null;
    }
-   o.__base.FG3dRenderable.dispose.call(o);
+   o.__base.FRd3Renderable.dispose.call(o);
 }
 function FE3dTemplate(o){
    o = RClass.inherits(this, o, FDisplay3d, MListenerLoad);
@@ -17651,6 +18122,7 @@ function FE3dTemplateRenderable(o){
    o.construct         = FE3dTemplateRenderable_construct;
    o.testReady         = FE3dTemplateRenderable_testReady;
    o.testVisible       = FE3dTemplateRenderable_testVisible;
+   o.resource          = FE3dTemplateRenderable_resource;
    o.loadResource      = FE3dTemplateRenderable_loadResource;
    o.reloadResource    = FE3dTemplateRenderable_reloadResource;
    o.load              = FE3dTemplateRenderable_load;
@@ -17681,10 +18153,13 @@ function FE3dTemplateRenderable_testReady(){
 function FE3dTemplateRenderable_testVisible(p){
    return this._ready;
 }
+function FE3dTemplateRenderable_resource(p){
+   return this._resource;
+}
 function FE3dTemplateRenderable_loadResource(p){
    var o = this;
    o._resource = p;
-   o._modelMatrix.assign(p.matrix());
+   o._matrix.assign(p.matrix());
    o._model = RConsole.find(FRd3ModelConsole).load(o._context, p.modelGuid());
    var m = o._materialResource = p._activeMaterial._material;
    var mi = o._material.info();
@@ -18455,7 +18930,7 @@ function FStage3d_construct(){
    o.__base.FStage.construct.call(o);
    o._backgroundColor = new SColor4();
    o._backgroundColor.set(0, 0, 0, 1);
-   var c = o._camera = RClass.create(FG3dPerspectiveCamera);
+   var c = o._camera = RClass.create(FE3dCanvasCamera);
    c.position().set(0, 0, -100);
    c.lookAt(0, 0, 0);
    c.update();
@@ -18780,7 +19255,7 @@ function FRs3Material_groupGuid(){
    return this._groupGuid;
 }
 function FRs3Material_group(){
-   return RConsole.find(FRs3MaterialGroupConsole).find(this._groupGuid);
+   return RConsole.find(FRs3MaterialConsole).findGroup(this._groupGuid);
 }
 function FRs3Material_effectName(){
    return this._info.effectName;
@@ -18879,14 +19354,12 @@ function FRs3MaterialTexture_unserialize(p){
    o._bitmapGuid = p.readString();
 }
 function FRs3Mesh(o){
-   o = RClass.inherits(this, o, FObject);
-   o._guid       = null;
-   o._matrix     = null;
+   o = RClass.inherits(this, o, FRs3Object);
    o._outline    = null;
    o._streams    = null;
    o._tracks     = null;
    o.construct   = FRs3Mesh_construct;
-   o.guid        = FRs3Mesh_guid;
+   o.outline     = FRs3Mesh_outline;
    o.streams     = FRs3Mesh_streams;
    o.tracks      = FRs3Mesh_tracks;
    o.unserialize = FRs3Mesh_unserialize;
@@ -18894,12 +19367,11 @@ function FRs3Mesh(o){
 }
 function FRs3Mesh_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
-   o._matrix = new SMatrix3d();
+   o.__base.FRs3Object.construct.call(o);
    o._outline = new SOutline3();
 }
-function FRs3Mesh_guid(){
-   return this._guid;
+function FRs3Mesh_outline(){
+   return this._outline;
 }
 function FRs3Mesh_streams(){
    return this._streams;
@@ -18909,7 +19381,8 @@ function FRs3Mesh_tracks(){
 }
 function FRs3Mesh_unserialize(p){
    var o = this;
-   o._guid = p.readString();
+   o.__base.FRs3Object.unserialize.call(o, p);
+   o._outline.unserialize(p);
    var c = p.readInt8();
    if(c > 0){
       var ss = o._streams = new TObjects();
@@ -20345,8 +20818,109 @@ function FRd3Bone_dispose(){
    o._trackResource = null;
    o.__base.FG3dBone.dispose.call(o);
 }
+function FRd3BoundBox(o){
+   o = RClass.inherits(this, o, FRd3Renderable);
+   o._outline              = null;
+   o._rate                 = 0.2;
+   o._vertexPositionBuffer = null;
+   o._vertexColorBuffer    = null;
+   o.construct             = FRd3BoundBox_construct;
+   o.outline               = FRd3BoundBox_outline;
+   o.setup                 = FRd3BoundBox_setup;
+   o.upload                = FRd3BoundBox_upload;
+   return o;
+}
+function FRd3BoundBox_construct(){
+   var o = this;
+   o.__base.FRd3Renderable.construct.call(o);
+   o._outline = new SOutline3();
+}
+function FRd3BoundBox_outline(){
+   return this._outline;
+}
+function FRd3BoundBox_setup(){
+   var o = this;
+   var c = o._graphicContext;
+   var vb = o._vertexPositionBuffer = c.createVertexBuffer();
+   vb._name = 'position';
+   vb._formatCd = EG3dAttributeFormat.Float3;
+   o._vertexBuffers.set(vb._name, vb);
+   var vd = new Uint8Array(4 * 32);
+   for(var n = 4 * 32 - 1; n >= 0; n--){
+      vd[n] = 0xFF;
+   }
+   var vb = o._vertexColorBuffer = c.createVertexBuffer();
+   vb._name = 'color';
+   vb._formatCd = EG3dAttributeFormat.Byte4Normal;
+   vb.upload(vd, 1 * 4, 32);
+   o._vertexBuffers.set(vb._name, vb);
+   o._vertexCount = 32;
+   var id = [
+      00, 01, 00, 04, 00, 12,
+      03, 02, 03, 05, 03, 13,
+      08, 06, 08, 09, 08, 14,
+      11, 07, 11, 10, 11, 15,
+      20, 16, 20, 21, 20, 24,
+      23, 17, 23, 22, 23, 25,
+      28, 18, 28, 26, 28, 29,
+      31, 19, 31, 27, 31, 30 ];
+   var ib = o._indexBuffer = c.createIndexBuffer();
+   ib._fillMode = EG3dFillMode.Line;
+   ib.upload(id, 48);
+   o.update();
+}
+function FRd3BoundBox_upload(){
+   var o = this;
+   var l = o._outline;
+   var a = l.max;
+   var ax = a.x;
+   var ay = a.y;
+   var az = a.z;
+   var i = l.min;
+   var ix = i.x;
+   var iy = i.y;
+   var iz = i.z;
+   var r = o._rate;
+   var cx = (ax - ix) * r;
+   var cy = (ay - iy) * r;
+   var cz = (az - iz) * r;
+   var vd = [
+      ix,       ay,      iz,
+      ix + cx,  ay,      iz,
+      ax - cx,  ay,      iz,
+      ax,       ay,      iz,
+      ix,       ay - cy, iz,
+      ax,       ay - cy, iz,
+      ix,       iy + cy, iz,
+      ax,       iy + cy, iz,
+      ix,       iy,      iz,
+      ix + cx,  iy,      iz,
+      ax - cx,  iy,      iz,
+      ax,       iy,      iz,
+      ix,       ay,      iz + cz,
+      ax,       ay,      iz + cz,
+      ix,       iy,      iz + cz,
+      ax,       iy,      iz + cz,
+      ix,       ay,      az - cz,
+      ax,       ay,      az - cz,
+      ix,       iy,      az - cz,
+      ax,       iy,      az - cz,
+      ix,       ay,      az,
+      ix + cx,  ay,      az,
+      ax - cx,  ay,      az,
+      ax,       ay,      az,
+      ix,       ay - cy, az,
+      ax,       ay - cy, az,
+      ix,       iy + cy, az,
+      ax,       iy + cy, az,
+      ix,       iy,      az,
+      ix + cx,  iy,      az,
+      ax - cx,  iy,      az,
+      ax,       iy,      az];
+   o._vertexPositionBuffer.upload(vd, 4 * 3, 32);
+}
 function FRd3Cube(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FG3dRenderable);
    o.vertexPositionBuffer = null;
    o.vertexColorBuffer    = null;
    o.indexBuffer          = null;
@@ -20388,37 +20962,28 @@ function FRd3Cube_setup(p){
    o.indexBuffer.upload(id, 36);
 }
 function FRd3Dimensional(o){
-   o = RClass.inherits(this, o, FG3dRenderable);
+   o = RClass.inherits(this, o, FRd3Renderable);
    o._cellSize             = null;
    o._size                 = null;
    o._lineColor            = null;
    o._lineCenterColor      = null;
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
-   o._vertexBuffers        = null;
-   o._indexBuffer          = null;
    o.construct             = FRd3Dimensional_construct;
    o.setup                 = FRd3Dimensional_setup;
-   o.testVisible           = RMethod.emptyTrue;
-   o.vertexCount           = FRd3Dimensional_vertexCount;
-   o.findVertexBuffer      = FRd3Dimensional_findVertexBuffer;
-   o.vertexBuffers         = FRd3Dimensional_vertexBuffers;
-   o.indexBuffer           = FRd3Dimensional_indexBuffer;
-   o.textures              = RMethod.empty;
-   o.bones                 = RMethod.empty;
    return o;
 }
 function FRd3Dimensional_construct(){
    var o = this;
-   o.__base.FG3dRenderable.construct.call(o);
+   o.__base.FRd3Renderable.construct.call(o);
    o._cellSize = new SSize2();
    o._cellSize.set(1, 1);
    o._size = new SSize2();
    o._size.set(16, 16);
-   o._vertexBuffers = new TObjects();
 }
-function FRd3Dimensional_setup(p){
+function FRd3Dimensional_setup(){
    var o = this;
+   var c = o._graphicContext;
    var cw = o._cellSize.width;
    var ch = o._cellSize.height;
    var sw = o._size.width;
@@ -20451,10 +21016,10 @@ function FRd3Dimensional_setup(p){
       id[i++] = vi++;
       id[i++] = vi++;
    }
-   vd[v++] = cw * -sw2 - cw;
+   vd[v++] = cw * -sw2;
    vd[v++] = 0;
    vd[v++] = 0;
-   vd[v++] = cw * sw2 + cw;
+   vd[v++] = cw * sw2;
    vd[v++] = 0;
    vd[v++] = 0;
    for(var ci = 0; ci < 2; ci++){
@@ -20484,10 +21049,10 @@ function FRd3Dimensional_setup(p){
    }
    vd[v++] = 0;
    vd[v++] = 0;
-   vd[v++] = ch * - sh2 - ch;
+   vd[v++] = ch * -sh2;
    vd[v++] = 0;
    vd[v++] = 0;
-   vd[v++] = ch * sh2 + ch;
+   vd[v++] = ch * sh2;
    for(var ci = 0; ci < 2; ci++){
       vcd[vci++] = 255;
       vcd[vci++] = 0;
@@ -20497,37 +21062,19 @@ function FRd3Dimensional_setup(p){
    id[i++] = vi++;
    id[i++] = vi++;
    o._vertexCount = vc;
-   var vb = o._vertexPositionBuffer = p.createVertexBuffer();
+   var vb = o._vertexPositionBuffer = c.createVertexBuffer();
    vb._name = 'position';
    vb._formatCd = EG3dAttributeFormat.Float3;
    vb.upload(vd, 4 * 3, vc);
-   o._vertexBuffers.push(vb);
-   var vb = o._vertexColorBuffer = p.createVertexBuffer();
+   o._vertexBuffers.set(vb._name, vb);
+   var vb = o._vertexColorBuffer = c.createVertexBuffer();
    vb._name = 'color';
    vb._formatCd = EG3dAttributeFormat.Byte4Normal;
    vb.upload(vcd, 4, vc);
-   o._vertexBuffers.push(vb);
-   var ib = o._indexBuffer = p.createIndexBuffer();
+   o._vertexBuffers.set(vb._name, vb);
+   var ib = o._indexBuffer = c.createIndexBuffer();
    ib._fillMode = EG3dFillMode.Line;
    ib.upload(id, it);
-}
-function FRd3Dimensional_vertexCount(){
-   return this._vertexCount;
-}
-function FRd3Dimensional_findVertexBuffer(p){
-   var o = this;
-   if(p == 'position'){
-      return o._vertexPositionBuffer;
-   }else if(p == 'color'){
-      return o._vertexColorBuffer;
-   }
-   return null;
-}
-function FRd3Dimensional_vertexBuffers(){
-   return this._vertexBuffers;
-}
-function FRd3Dimensional_indexBuffer(){
-   return this._indexBuffer;
 }
 function FRd3Material(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -20959,6 +21506,10 @@ function FRd3Pipeline_loadResource(p){
    var ib = o._indexBuffer = c.createIndexBuffer();
    ib.upload(rib.data(), rib.count());
 }
+function FRd3Polygon(o){
+   o = RClass.inherits(this, o, FRd3Renderable);
+   return o;
+}
 function FRd3Rectangle(o){
    o = RClass.inherits(this, o, FObject);
    o.vertexPositionBuffer = null;
@@ -20986,6 +21537,67 @@ function FRd3Rectangle_setup(p){
    var id = [0, 1, 2, 0, 2, 3];
    o.indexBuffer = context.createIndexBuffer();
    o.indexBuffer.upload(id, 6);
+}
+function FRd3Renderable(o){
+   o = RClass.inherits(this, o, FG3dRenderable, MGraphicObject);
+   o._display         = null;
+   o._vertexCount     = 0;
+   o._vertexBuffers   = null;
+   o._indexBuffer     = null;
+   o.construct        = FRd3Renderable_construct;
+   o.setup            = RMethod.empty;
+   o.testVisible      = RMethod.emptyTrue;
+   o.display          = FRd3Renderable_display;
+   o.setDisplay       = FRd3Renderable_setDisplay;
+   o.vertexCount      = FRd3Renderable_vertexCount;
+   o.findVertexBuffer = FRd3Renderable_findVertexBuffer;
+   o.vertexBuffers    = FRd3Renderable_vertexBuffers;
+   o.indexBuffer      = FRd3Renderable_indexBuffer;
+   o.textures         = RMethod.empty;
+   o.bones            = RMethod.empty;
+   o.update           = FRd3Renderable_update;
+   o.remove           = FRd3Renderable_remove;
+   return o;
+}
+function FRd3Renderable_construct(){
+   var o = this;
+   o.__base.FG3dRenderable.construct.call(o);
+   o._vertexBuffers = new TDictionary();
+}
+function FRd3Renderable_display(){
+   return this._display;
+}
+function FRd3Renderable_setDisplay(p){
+   this._display = p;
+}
+function FRd3Renderable_vertexCount(){
+   return this._vertexCount;
+}
+function FRd3Renderable_findVertexBuffer(p){
+   return this._vertexBuffers.get(p);
+}
+function FRd3Renderable_vertexBuffers(){
+   return this._vertexBuffers;
+}
+function FRd3Renderable_indexBuffer(){
+   return this._indexBuffer;
+}
+function FRd3Renderable_update(p){
+   var o = this;
+   var m = o._currentMatrix;
+   m.assign(o._matrix);
+   var d = o._display;
+   if(d){
+      m.append(d.currentMatrix());
+   }
+}
+function FRd3Renderable_remove(){
+   var o = this;
+   var d = o._display;
+   if(d){
+      d.removeRenderable(o);
+      o._display = null;
+   }
 }
 function FRd3Skeleton(o){
    o = RClass.inherits(this, o, FRd3Object);
@@ -21537,8 +22149,8 @@ function FG3dCamera(o){
    o = RClass.inherits(this, o, FObject);
    o._matrix      = null;
    o._position    = null;
+   o._target      = null;
    o._direction   = null;
-   o._rotation    = null;
    o._centerFront = 0.6;
    o._centerBack  = 1.0;
    o._focalNear   = 0.1;
@@ -21550,9 +22162,6 @@ function FG3dCamera(o){
    o.__axisX      = null;
    o.__axisY      = null;
    o.__axisZ      = null;
-   o.__rotationX  = null;
-   o.__rotationY  = null;
-   o.__rotationZ  = null;
    o.construct    = FG3dCamera_construct;
    o.matrix       = FG3dCamera_matrix;
    o.position     = FG3dCamera_position;
@@ -21563,8 +22172,9 @@ function FG3dCamera(o){
    o.doWalk       = FG3dCamera_doWalk;
    o.doStrafe     = FG3dCamera_doStrafe;
    o.doFly        = FG3dCamera_doFly;
-   o.doYaw        = FG3dCamera_doYaw;
    o.doPitch      = FG3dCamera_doPitch;
+   o.doYaw        = FG3dCamera_doYaw;
+   o.doRoll       = FG3dCamera_doRoll;
    o.lookAt       = FG3dCamera_lookAt;
    o.update       = FG3dCamera_update;
    return o;
@@ -21574,8 +22184,8 @@ function FG3dCamera_construct(){
    o.__base.FObject.construct.call(o);
    o._matrix = new SMatrix3d();
    o._position = new SPoint3();
+   o._target = new SPoint3();
    o._direction = new SVector3();
-   o._rotation = new SQuaternion();
    o._frustum = new SFrustum();
    o._viewport = RClass.create(FG3dViewport);
    o.__axisUp = new SVector3();
@@ -21583,9 +22193,6 @@ function FG3dCamera_construct(){
    o.__axisX = new SVector3();
    o.__axisY = new SVector3();
    o.__axisZ = new SVector3();
-   o.__rotationX = new SQuaternion();
-   o.__rotationY = new SQuaternion();
-   o.__rotationZ = new SQuaternion();
 }
 function FG3dCamera_position(){
    return this._position;
@@ -21619,16 +22226,23 @@ function FG3dCamera_doFly(p){
    var o = this;
    o._position.y += p;
 }
-function FG3dCamera_doYaw(p){
-   var o = this;
-}
 function FG3dCamera_doPitch(p){
    var o = this;
+   throw new TFatal(o, 'Unsupport.')
+}
+function FG3dCamera_doYaw(p){
+   var o = this;
+   throw new TFatal(o, 'Unsupport.')
+}
+function FG3dCamera_doRoll(p){
+   var o = this;
+   throw new TFatal(o, 'Unsupport.')
 }
 function FG3dCamera_lookAt(x, y, z){
    var o = this;
    var p = o._position;
    var d = o._direction;
+   o._target.set(x, y, z);
    d.set(x - p.x, y - p.y, z - p.z);
    d.normalize();
 }
@@ -22412,13 +23026,15 @@ function FG3dRegion_dispose(){
 }
 function FG3dRenderable(o){
    o = RClass.inherits(this, o, FGraphicRenderable);
-   o._matrix       = null;
-   o._effectName   = null;
-   o._materialName = null;
-   o._material     = null;
-   o._activeEffect = null;
-   o._effects      = null;
+   o._currentMatrix  = null;
+   o._matrix         = null;
+   o._effectName     = null;
+   o._materialName   = null;
+   o._material       = null;
+   o._activeEffect   = null;
+   o._effects        = null;
    o.construct       = FG3dRenderable_construct;
+   o.currentMatrix   = FG3dRenderable_currentMatrix;
    o.matrix          = FG3dRenderable_matrix;
    o.effectName      = FG3dRenderable_effectName;
    o.material        = FG3dRenderable_material;
@@ -22433,8 +23049,12 @@ function FG3dRenderable(o){
 function FG3dRenderable_construct(){
    var o = this;
    o.__base.FGraphicRenderable.construct.call(o);
+   o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
    o._material = RClass.create(FG3dMaterial);
+}
+function FG3dRenderable_currentMatrix(){
+   return this._currentMatrix;
 }
 function FG3dRenderable_matrix(){
    return this._matrix;
@@ -22450,11 +23070,11 @@ function FG3dRenderable_setActiveEffect(p){
 }
 function FG3dRenderable_effects(){
    var o = this;
-   var es = o._effects;
-   if(es == null){
-      es = o._effects = new TDictionary();
+   var r = o._effects;
+   if(!r){
+      r = o._effects = new TDictionary();
    }
-   return es;
+   return r;
 }
 function FG3dRenderable_material(){
    return this._material;
@@ -22463,16 +23083,10 @@ function FG3dRenderable_update(p){
 }
 function FG3dRenderable_dispose(){
    var o = this;
-   var v = o._matrix;
-   if(v){
-      v.dispose();
-      o._matrix = null;
-   }
-   var v = o._material;
-   if(v){
-      v.dispose();
-      o._material = null;
-   }
+   o._currentMatrix = RObject.dispose(o._currentMatrix);
+   o._matrix = RObject.dispose(o._matrix);
+   o._material = RObject.dispose(o._material);
+   o._effects = RObject.dispose(o._effects);
    o.__base.FGraphicRenderable.dispose.call(o);
 }
 function FG3dShaderTemplate(o){
@@ -23810,7 +24424,7 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var m = pr.material();
    var mi = m.info();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -23862,7 +24476,7 @@ function FG3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    var m = pr.material();
    var mi = m.info();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -23932,7 +24546,7 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    var m = pr.material();
    o.bindMaterial(m);
    p.setParameter('vc_light_depth', vlci);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', vcvpm);
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -24024,7 +24638,7 @@ function FG3dShadowColorSkeletonEffect_drawRenderable(pr, r){
          }
       }
    }
-   p.setParameter('vc_model_matrix', r.matrix());
+   p.setParameter('vc_model_matrix', r.currentMatrix());
    p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
    p.setParameter('vc_light_direction', prld);
@@ -24074,7 +24688,7 @@ function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    var lci = pg.calculate(EG3dRegionParameter.LightInfo);
    c.setBlendFactors(false);
    p.setParameter('vc_camera', lci);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_view_matrix', lvm);
    p.setParameter('vc_vp_matrix', lvpm);
    p.setParameter('fc_camera', lci);
@@ -24134,7 +24748,7 @@ function FG3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   p.setParameter('vc_model_matrix', r.matrix());
+   p.setParameter('vc_model_matrix', r.currentMatrix());
    p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
    p.setParameter('vc_light_direction', prld);
@@ -42494,7 +43108,9 @@ function FDsTemplateCanvas(o){
    o._rotationAble       = false;
    o._capturePosition    = null;
    o._captureMatrix      = null;
+   o._captureRotation    = null;
    o._dimensional        = null;
+   o._selectBoundBox     = null;
    o.onBuild             = FDsTemplateCanvas_onBuild;
    o.onMouseCaptureStart = FDsTemplateCanvas_onMouseCaptureStart;
    o.onMouseCapture      = FDsTemplateCanvas_onMouseCapture;
@@ -42503,6 +43119,7 @@ function FDsTemplateCanvas(o){
    o.onTemplateLoad      = FDsTemplateCanvas_onTemplateLoad;
    o.oeRefresh           = FDsTemplateCanvas_oeRefresh;
    o.construct           = FDsTemplateCanvas_construct;
+   o.selectRenderable    = FDsTemplateCanvas_selectRenderable;
    o.loadTemplate        = FDsTemplateCanvas_loadTemplate;
    o.dispose             = FDsTemplateCanvas_dispose;
    return o;
@@ -42520,11 +43137,12 @@ function FDsTemplateCanvas_onBuild(p){
    o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    var rc = g.camera();
-   rc.setPosition(0, 6, -20);
-   rc.lookAt(0, 3, 0);
+   rc.setPosition(0, 5, -20);
+   rc.lookAt(0, 5, 0);
    rc.update();
    var rp = rc.projection();
    rp.size().set(h.width, h.height);
+   rp._angle = 45;
    rp.update();
    var l = g.directionalLight();
    var lc = l.camera();
@@ -42532,8 +43150,12 @@ function FDsTemplateCanvas_onBuild(p){
    lc.lookAt(0, 0, 0);
    lc.update();
    var dm = o._dimensional = RClass.create(FRd3Dimensional);
-   dm.setup(c);
+   dm.linkGraphicContext(c);
+   dm.setup();
    o._layer.pushRenderable(dm);
+   var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
+   bb.linkGraphicContext(o._context);
+   bb.setup();
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start(15);
    RConsole.find(FMouseConsole).register(o);
@@ -42546,7 +43168,9 @@ function FDsTemplateCanvas_onMouseCaptureStart(p){
    }
    var d = t.renderables().get(0);
    o._capturePosition.set(p.clientX, p.clientY);
-   o._captureMatrix.assign(d.modelMatrix());
+   o._captureMatrix.assign(d.matrix());
+   var c = o._stage.camera();
+   o._captureRotation.assign(c._rotation);
 }
 function FDsTemplateCanvas_onMouseCapture(p){
    var o = this;
@@ -42557,10 +43181,15 @@ function FDsTemplateCanvas_onMouseCapture(p){
    var cx = p.clientX - o._capturePosition.x;
    var cy = p.clientY - o._capturePosition.y;
    var d = t.renderables().get(0);
-   var m = d.modelMatrix();
+   var m = d.matrix();
    var cm = o._captureMatrix;
    switch(o._toolbar._canvasModeCd){
       case EDsCanvasMode.Drop:
+         var c = o._stage.camera();
+         var r = c.rotation();
+         var cr = o._captureRotation;
+         r.x = cr.x + cy * 0.003;
+         r.y = cr.y + cx * 0.003;
          break;
       case EDsCanvasMode.Select:
          break;
@@ -42584,30 +43213,39 @@ function FDsTemplateCanvas_onMouseCaptureStop(p){
 function FDsTemplateCanvas_onEnterFrame(){
    var o = this;
    var c = o._stage.camera();
-   var r = 0.3;
+   var d = 0.5;
+   var r = 0.05;
    var kw = RKeyboard.isPress(EKeyCode.W);
    var ks = RKeyboard.isPress(EKeyCode.S);
    if(kw && !ks){
-      c.doWalk(r);
+      c.doWalk(d);
    }
    if(!kw && ks){
-      c.doWalk(-r);
+      c.doWalk(-d);
    }
    var ka = RKeyboard.isPress(EKeyCode.A);
    var kd = RKeyboard.isPress(EKeyCode.D);
    if(ka && !kd){
-      c.doStrafe(r);
+      c.doYaw(r);
    }
    if(!ka && kd){
-      c.doStrafe(-r);
+      c.doYaw(-r);
    }
    var kq = RKeyboard.isPress(EKeyCode.Q);
    var ke = RKeyboard.isPress(EKeyCode.E);
    if(kq && !ke){
-      c.doFly(r);
+      c.doFly(d);
    }
    if(!kq && ke){
-      c.doFly(-r);
+      c.doFly(-d);
+   }
+   var kz = RKeyboard.isPress(EKeyCode.Z);
+   var kw = RKeyboard.isPress(EKeyCode.X);
+   if(kz && !kw){
+      c.doPitch(r);
+   }
+   if(!kz && kw){
+      c.doPitch(-r);
    }
    c.update();
    var m = o._activeTemplate;
@@ -42646,6 +43284,18 @@ function FDsTemplateCanvas_construct(){
    o._capturePosition = new SPoint2();
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
+   o._captureRotation = new SVector3();
+}
+function FDsTemplateCanvas_selectRenderable(p){
+   var o = this;
+   var r = p.resource();
+   var rm = r.mesh();
+   var rl = rm.outline();
+   var b = o._selectBoundBox;
+   b.outline().assign(rl);
+   b.upload();
+   b.remove();
+   p._display.pushRenderable(b);
 }
 function FDsTemplateCanvas_loadTemplate(p){
    var o = this;
@@ -42671,7 +43321,7 @@ function FDsTemplateCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    o._refreshButton  = null;
    o._saveButton     = null;
-   o._canvasModeCd   = EDsCanvasMode.Unknown;
+   o._canvasModeCd   = EDsCanvasMode.Drop;
    o.onBuild         = FDsTemplateCanvasToolBar_onBuild;
    o.onModeClick     = FDsTemplateCanvasToolBar_onModeClick;
    o.onLookClick     = FDsTemplateCanvasToolBar_onLookClick;
@@ -42892,8 +43542,11 @@ function FDsTemplateCatalog_buildTemplate(p){
       nr.appendNode(ns);
       for(var i = 0; i < c; i++){
          var d = ds.get(i);
+         var r = d.resource();
+         var rd = r.model();
+         var rm = r.mesh();
          var n = o.createNode();
-         n.setLabel('MeshRenderable');
+         n.setLabel(rd.code() + ' - ' + rm.code());
          n.setTypeName('display');
          n.dataPropertySet('linker', d);
          ns.appendNode(n);
@@ -42935,7 +43588,7 @@ function FDsTemplateDisplayFrame_onBuilded(p){
 function FDsTemplateDisplayFrame_onDataChanged(p){
    var o = this;
    var d = o._renderDisplay;
-   var m = d.modelMatrix();
+   var m = d.matrix();
    var v = o._controlTranslate.get();
    m.setTranslate(v.x, v.y, v.z);
    var v = o._controlRotation.get();
@@ -42952,7 +43605,7 @@ function FDsTemplateDisplayFrame_loadObject(t, d){
    var o = this;
    o._renderTemplate = t;
    o._renderDisplay = d;
-   var m = d.modelMatrix();
+   var m = d.matrix();
    o._controlTranslate.set(m.tx, m.ty, m.tz);
    o._controlRotation.set(m.rx, m.ry, m.rz);
    o._controlScale.set(m.sx, m.sy, m.sz);
@@ -43320,7 +43973,7 @@ function FDsTemplateWorkspace_onBuild(p){
    fs._directionCd = EDirection.Horizontal;
    fs.build(p);
    var f = o._frameCatalog = RClass.create(FUiFrameContainer);
-   f.setWidth(300);
+   f.setWidth(400);
    f.build(p);
    f._hPanel.className = o.styleName('Catalog_Ground');
    fs.appendFrame(f);
@@ -43408,6 +44061,7 @@ function FDsTemplateWorkspace_onCatalogSelected(p){
       var f = o.displayPropertyFrame();
       f.show();
       f.loadObject(t, p);
+      o._canvas.selectRenderable(p);
    }else{
       throw new TError('Unknown select object type. (value={1})', p);
    }

@@ -168,8 +168,11 @@ function FDsTemplateCatalog_buildTemplate(p){
       nr.appendNode(ns);
       for(var i = 0; i < c; i++){
          var d = ds.get(i);
+         var r = d.resource();
+         var rd = r.model();
+         var rm = r.mesh();
          var n = o.createNode();
-         n.setLabel('MeshRenderable');
+         n.setLabel(rd.code() + ' - ' + rm.code());
          n.setTypeName('display');
          n.dataPropertySet('linker', d);
          ns.appendNode(n);

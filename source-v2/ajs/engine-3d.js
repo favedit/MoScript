@@ -19,20 +19,71 @@ function FDisplay3d_dispose(){
    o._materials = null;
    o.__base.FDisplay.dispose.call(o);
 }
+function FE3dCanvasCamera(o){
+   o = RClass.inherits(this, o, FG3dPerspectiveCamera);
+   o._rotation       = null;
+   o._rotationMatrix = null;
+   o._quaternion     = null;
+   o._quaternionX    = null;
+   o._quaternionY    = null;
+   o._quaternionZ    = null;
+   o.construct       = FE3dCanvasCamera_construct;
+   o.rotation        = FE3dCanvasCamera_rotation;
+   o.doPitch         = FE3dCanvasCamera_doPitch;
+   o.doYaw           = FE3dCanvasCamera_doYaw;
+   o.doRoll          = FE3dCanvasCamera_doRoll;
+   o.update          = FE3dCanvasCamera_update;
+   return o;
+}
+function FE3dCanvasCamera_construct(){
+   var o = this;
+   o.__base.FG3dPerspectiveCamera.construct.call(o);
+   o._rotation = new SVector3();
+   o._rotationMatrix = new SMatrix3x3();
+   o._quaternion = new SQuaternion();
+   o._quaternionX = new SQuaternion();
+   o._quaternionY = new SQuaternion();
+   o._quaternionZ = new SQuaternion();
+}
+function FE3dCanvasCamera_rotation(){
+   return this._rotation;
+}
+function FE3dCanvasCamera_doPitch(p){
+   this._rotation.x += p;
+}
+function FE3dCanvasCamera_doYaw(p){
+   this._rotation.y += p;
+}
+function FE3dCanvasCamera_doRoll(p){
+   this._rotation.z += p;
+}
+function FE3dCanvasCamera_update(){
+   var o = this;
+   var r = o._rotation;
+   o._quaternionX.fromAxisAngle(RMath.vectorAxisX, r.x);
+   o._quaternionY.fromAxisAngle(RMath.vectorAxisY, r.y);
+   o._quaternionZ.fromAxisAngle(RMath.vectorAxisZ, r.z);
+   var q = o._quaternion.identity();
+   q.mul(o._quaternionX);
+   q.mul(o._quaternionY);
+   q.mul(o._quaternionZ);
+   var m = o._rotationMatrix;
+   m.build(q);
+   var t = o._target;
+   m.transformPoint3(RMath.vectorForward, t);
+   m.transformPoint3(RMath.vectorAxisY, o.__axisUp);
+   var d = o._direction;
+   d.assign(t);
+   d.normalize();
+   o.__base.FG3dPerspectiveCamera.update.call(o);
+}
 function FE3dMeshRenderable(o){
-   o = RClass.inherits(this, o, FG3dRenderable);
-   o._display         = null;
+   o = RClass.inherits(this, o, FRd3Renderable);
    o._renderable      = null;
-   o._modelMatrix     = null;
-   o._vertexBuffers   = null;
    o._activeSkin      = null;
    o._activeTrack     = null;
    o._bones           = null;
-   o.construct        = FE3dMeshRenderable_construct;
-   o.modelMatrix      = FE3dMeshRenderable_modelMatrix;
-   o.findVertexBuffer = FE3dMeshRenderable_findVertexBuffer;
    o.vertexCount      = FE3dMeshRenderable_vertexCount;
-   o.vertexBuffers    = FE3dMeshRenderable_vertexBuffers;
    o.indexBuffer      = FE3dMeshRenderable_indexBuffer;
    o.findTexture      = FE3dMeshRenderable_findTexture;
    o.textures         = FE3dMeshRenderable_textures;
@@ -42,23 +93,8 @@ function FE3dMeshRenderable(o){
    o.dispose          = FE3dMeshRenderable_dispose;
    return o;
 }
-function FE3dMeshRenderable_construct(){
-   var o = this;
-   o.__base.FG3dRenderable.construct.call(o);
-   o._vertexBuffers = new TDictionary();
-   o._modelMatrix = new SMatrix3d();
-}
-function FE3dMeshRenderable_modelMatrix(){
-   return this._modelMatrix;
-}
-function FE3dMeshRenderable_findVertexBuffer(p){
-   return this._vertexBuffers.get(p);
-}
 function FE3dMeshRenderable_vertexCount(){
    return this._renderable.vertexCount();
-}
-function FE3dMeshRenderable_vertexBuffers(){
-   return this._vertexBuffers;
 }
 function FE3dMeshRenderable_indexBuffer(){
    return this._renderable.indexBuffer();
@@ -74,21 +110,24 @@ function FE3dMeshRenderable_bones(p){
 }
 function FE3dMeshRenderable_update(p){
    var o = this;
-   var mm = o._modelMatrix
-   var dm = o._display.matrix();
+   var d = o._display;
+   var mm = o._matrix
    var t = o._activeTrack;
-   var m = o._matrix;
+   var m = o._currentMatrix;
    if(t){
       m.assign(t.matrix());
       m.append(mm);
    }else{
       m.assign(mm);
    }
-   m.append(dm);
+   if(d){
+      var dm = o._display.currentMatrix();
+      m.append(dm);
+   }
 }
 function FE3dMeshRenderable_process(p){
    var o = this;
-   o.__base.FG3dRenderable.process.call(p)
+   o.__base.FRd3Renderable.process.call(p)
    var t = o._activeTrack;
    if(t){
       var a = t._animation;
@@ -109,7 +148,7 @@ function FE3dMeshRenderable_dispose(){
       v.dispose();
       o._vertexBuffers = null;
    }
-   o.__base.FG3dRenderable.dispose.call(o);
+   o.__base.FRd3Renderable.dispose.call(o);
 }
 function FE3dTemplate(o){
    o = RClass.inherits(this, o, FDisplay3d, MListenerLoad);
@@ -369,6 +408,7 @@ function FE3dTemplateRenderable(o){
    o.construct         = FE3dTemplateRenderable_construct;
    o.testReady         = FE3dTemplateRenderable_testReady;
    o.testVisible       = FE3dTemplateRenderable_testVisible;
+   o.resource          = FE3dTemplateRenderable_resource;
    o.loadResource      = FE3dTemplateRenderable_loadResource;
    o.reloadResource    = FE3dTemplateRenderable_reloadResource;
    o.load              = FE3dTemplateRenderable_load;
@@ -399,10 +439,13 @@ function FE3dTemplateRenderable_testReady(){
 function FE3dTemplateRenderable_testVisible(p){
    return this._ready;
 }
+function FE3dTemplateRenderable_resource(p){
+   return this._resource;
+}
 function FE3dTemplateRenderable_loadResource(p){
    var o = this;
    o._resource = p;
-   o._modelMatrix.assign(p.matrix());
+   o._matrix.assign(p.matrix());
    o._model = RConsole.find(FRd3ModelConsole).load(o._context, p.modelGuid());
    var m = o._materialResource = p._activeMaterial._material;
    var mi = o._material.info();
@@ -1173,7 +1216,7 @@ function FStage3d_construct(){
    o.__base.FStage.construct.call(o);
    o._backgroundColor = new SColor4();
    o._backgroundColor.set(0, 0, 0, 1);
-   var c = o._camera = RClass.create(FG3dPerspectiveCamera);
+   var c = o._camera = RClass.create(FE3dCanvasCamera);
    c.position().set(0, 0, -100);
    c.lookAt(0, 0, 0);
    c.update();

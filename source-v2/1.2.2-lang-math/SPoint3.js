@@ -16,6 +16,7 @@ function SPoint3(x, y, z){
    // @method
    o.assign      = SPoint3_assign;
    o.set         = SPoint3_set;
+   o.conjugate   = SPoint3_conjugate;
    o.resize      = SPoint3_resize;
    o.slerp       = SPoint3_slerp;
    o.serialize   = SPoint3_serialize;
@@ -57,6 +58,27 @@ function SPoint3_set(x, y, z){
    if(z != null){
       o.z = z;
    }
+}
+
+//============================================================
+// <T>获得反方向。</T>
+//
+// @method
+// @param p:value:SQuaternion 四元数
+// @return SQuaternion 四元数
+//============================================================
+function SPoint3_conjugate(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SPoint3();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   return r;
 }
 
 //==========================================================

@@ -151,8 +151,109 @@ function FRd3Bone_dispose(){
    o._trackResource = null;
    o.__base.FG3dBone.dispose.call(o);
 }
+function FRd3BoundBox(o){
+   o = RClass.inherits(this, o, FRd3Renderable);
+   o._outline              = null;
+   o._rate                 = 0.2;
+   o._vertexPositionBuffer = null;
+   o._vertexColorBuffer    = null;
+   o.construct             = FRd3BoundBox_construct;
+   o.outline               = FRd3BoundBox_outline;
+   o.setup                 = FRd3BoundBox_setup;
+   o.upload                = FRd3BoundBox_upload;
+   return o;
+}
+function FRd3BoundBox_construct(){
+   var o = this;
+   o.__base.FRd3Renderable.construct.call(o);
+   o._outline = new SOutline3();
+}
+function FRd3BoundBox_outline(){
+   return this._outline;
+}
+function FRd3BoundBox_setup(){
+   var o = this;
+   var c = o._graphicContext;
+   var vb = o._vertexPositionBuffer = c.createVertexBuffer();
+   vb._name = 'position';
+   vb._formatCd = EG3dAttributeFormat.Float3;
+   o._vertexBuffers.set(vb._name, vb);
+   var vd = new Uint8Array(4 * 32);
+   for(var n = 4 * 32 - 1; n >= 0; n--){
+      vd[n] = 0xFF;
+   }
+   var vb = o._vertexColorBuffer = c.createVertexBuffer();
+   vb._name = 'color';
+   vb._formatCd = EG3dAttributeFormat.Byte4Normal;
+   vb.upload(vd, 1 * 4, 32);
+   o._vertexBuffers.set(vb._name, vb);
+   o._vertexCount = 32;
+   var id = [
+      00, 01, 00, 04, 00, 12,
+      03, 02, 03, 05, 03, 13,
+      08, 06, 08, 09, 08, 14,
+      11, 07, 11, 10, 11, 15,
+      20, 16, 20, 21, 20, 24,
+      23, 17, 23, 22, 23, 25,
+      28, 18, 28, 26, 28, 29,
+      31, 19, 31, 27, 31, 30 ];
+   var ib = o._indexBuffer = c.createIndexBuffer();
+   ib._fillMode = EG3dFillMode.Line;
+   ib.upload(id, 48);
+   o.update();
+}
+function FRd3BoundBox_upload(){
+   var o = this;
+   var l = o._outline;
+   var a = l.max;
+   var ax = a.x;
+   var ay = a.y;
+   var az = a.z;
+   var i = l.min;
+   var ix = i.x;
+   var iy = i.y;
+   var iz = i.z;
+   var r = o._rate;
+   var cx = (ax - ix) * r;
+   var cy = (ay - iy) * r;
+   var cz = (az - iz) * r;
+   var vd = [
+      ix,       ay,      iz,
+      ix + cx,  ay,      iz,
+      ax - cx,  ay,      iz,
+      ax,       ay,      iz,
+      ix,       ay - cy, iz,
+      ax,       ay - cy, iz,
+      ix,       iy + cy, iz,
+      ax,       iy + cy, iz,
+      ix,       iy,      iz,
+      ix + cx,  iy,      iz,
+      ax - cx,  iy,      iz,
+      ax,       iy,      iz,
+      ix,       ay,      iz + cz,
+      ax,       ay,      iz + cz,
+      ix,       iy,      iz + cz,
+      ax,       iy,      iz + cz,
+      ix,       ay,      az - cz,
+      ax,       ay,      az - cz,
+      ix,       iy,      az - cz,
+      ax,       iy,      az - cz,
+      ix,       ay,      az,
+      ix + cx,  ay,      az,
+      ax - cx,  ay,      az,
+      ax,       ay,      az,
+      ix,       ay - cy, az,
+      ax,       ay - cy, az,
+      ix,       iy + cy, az,
+      ax,       iy + cy, az,
+      ix,       iy,      az,
+      ix + cx,  iy,      az,
+      ax - cx,  iy,      az,
+      ax,       iy,      az];
+   o._vertexPositionBuffer.upload(vd, 4 * 3, 32);
+}
 function FRd3Cube(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FG3dRenderable);
    o.vertexPositionBuffer = null;
    o.vertexColorBuffer    = null;
    o.indexBuffer          = null;
@@ -194,37 +295,28 @@ function FRd3Cube_setup(p){
    o.indexBuffer.upload(id, 36);
 }
 function FRd3Dimensional(o){
-   o = RClass.inherits(this, o, FG3dRenderable);
+   o = RClass.inherits(this, o, FRd3Renderable);
    o._cellSize             = null;
    o._size                 = null;
    o._lineColor            = null;
    o._lineCenterColor      = null;
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
-   o._vertexBuffers        = null;
-   o._indexBuffer          = null;
    o.construct             = FRd3Dimensional_construct;
    o.setup                 = FRd3Dimensional_setup;
-   o.testVisible           = RMethod.emptyTrue;
-   o.vertexCount           = FRd3Dimensional_vertexCount;
-   o.findVertexBuffer      = FRd3Dimensional_findVertexBuffer;
-   o.vertexBuffers         = FRd3Dimensional_vertexBuffers;
-   o.indexBuffer           = FRd3Dimensional_indexBuffer;
-   o.textures              = RMethod.empty;
-   o.bones                 = RMethod.empty;
    return o;
 }
 function FRd3Dimensional_construct(){
    var o = this;
-   o.__base.FG3dRenderable.construct.call(o);
+   o.__base.FRd3Renderable.construct.call(o);
    o._cellSize = new SSize2();
    o._cellSize.set(1, 1);
    o._size = new SSize2();
    o._size.set(16, 16);
-   o._vertexBuffers = new TObjects();
 }
-function FRd3Dimensional_setup(p){
+function FRd3Dimensional_setup(){
    var o = this;
+   var c = o._graphicContext;
    var cw = o._cellSize.width;
    var ch = o._cellSize.height;
    var sw = o._size.width;
@@ -257,10 +349,10 @@ function FRd3Dimensional_setup(p){
       id[i++] = vi++;
       id[i++] = vi++;
    }
-   vd[v++] = cw * -sw2 - cw;
+   vd[v++] = cw * -sw2;
    vd[v++] = 0;
    vd[v++] = 0;
-   vd[v++] = cw * sw2 + cw;
+   vd[v++] = cw * sw2;
    vd[v++] = 0;
    vd[v++] = 0;
    for(var ci = 0; ci < 2; ci++){
@@ -290,10 +382,10 @@ function FRd3Dimensional_setup(p){
    }
    vd[v++] = 0;
    vd[v++] = 0;
-   vd[v++] = ch * - sh2 - ch;
+   vd[v++] = ch * -sh2;
    vd[v++] = 0;
    vd[v++] = 0;
-   vd[v++] = ch * sh2 + ch;
+   vd[v++] = ch * sh2;
    for(var ci = 0; ci < 2; ci++){
       vcd[vci++] = 255;
       vcd[vci++] = 0;
@@ -303,37 +395,19 @@ function FRd3Dimensional_setup(p){
    id[i++] = vi++;
    id[i++] = vi++;
    o._vertexCount = vc;
-   var vb = o._vertexPositionBuffer = p.createVertexBuffer();
+   var vb = o._vertexPositionBuffer = c.createVertexBuffer();
    vb._name = 'position';
    vb._formatCd = EG3dAttributeFormat.Float3;
    vb.upload(vd, 4 * 3, vc);
-   o._vertexBuffers.push(vb);
-   var vb = o._vertexColorBuffer = p.createVertexBuffer();
+   o._vertexBuffers.set(vb._name, vb);
+   var vb = o._vertexColorBuffer = c.createVertexBuffer();
    vb._name = 'color';
    vb._formatCd = EG3dAttributeFormat.Byte4Normal;
    vb.upload(vcd, 4, vc);
-   o._vertexBuffers.push(vb);
-   var ib = o._indexBuffer = p.createIndexBuffer();
+   o._vertexBuffers.set(vb._name, vb);
+   var ib = o._indexBuffer = c.createIndexBuffer();
    ib._fillMode = EG3dFillMode.Line;
    ib.upload(id, it);
-}
-function FRd3Dimensional_vertexCount(){
-   return this._vertexCount;
-}
-function FRd3Dimensional_findVertexBuffer(p){
-   var o = this;
-   if(p == 'position'){
-      return o._vertexPositionBuffer;
-   }else if(p == 'color'){
-      return o._vertexColorBuffer;
-   }
-   return null;
-}
-function FRd3Dimensional_vertexBuffers(){
-   return this._vertexBuffers;
-}
-function FRd3Dimensional_indexBuffer(){
-   return this._indexBuffer;
 }
 function FRd3Material(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -765,6 +839,10 @@ function FRd3Pipeline_loadResource(p){
    var ib = o._indexBuffer = c.createIndexBuffer();
    ib.upload(rib.data(), rib.count());
 }
+function FRd3Polygon(o){
+   o = RClass.inherits(this, o, FRd3Renderable);
+   return o;
+}
 function FRd3Rectangle(o){
    o = RClass.inherits(this, o, FObject);
    o.vertexPositionBuffer = null;
@@ -792,6 +870,67 @@ function FRd3Rectangle_setup(p){
    var id = [0, 1, 2, 0, 2, 3];
    o.indexBuffer = context.createIndexBuffer();
    o.indexBuffer.upload(id, 6);
+}
+function FRd3Renderable(o){
+   o = RClass.inherits(this, o, FG3dRenderable, MGraphicObject);
+   o._display         = null;
+   o._vertexCount     = 0;
+   o._vertexBuffers   = null;
+   o._indexBuffer     = null;
+   o.construct        = FRd3Renderable_construct;
+   o.setup            = RMethod.empty;
+   o.testVisible      = RMethod.emptyTrue;
+   o.display          = FRd3Renderable_display;
+   o.setDisplay       = FRd3Renderable_setDisplay;
+   o.vertexCount      = FRd3Renderable_vertexCount;
+   o.findVertexBuffer = FRd3Renderable_findVertexBuffer;
+   o.vertexBuffers    = FRd3Renderable_vertexBuffers;
+   o.indexBuffer      = FRd3Renderable_indexBuffer;
+   o.textures         = RMethod.empty;
+   o.bones            = RMethod.empty;
+   o.update           = FRd3Renderable_update;
+   o.remove           = FRd3Renderable_remove;
+   return o;
+}
+function FRd3Renderable_construct(){
+   var o = this;
+   o.__base.FG3dRenderable.construct.call(o);
+   o._vertexBuffers = new TDictionary();
+}
+function FRd3Renderable_display(){
+   return this._display;
+}
+function FRd3Renderable_setDisplay(p){
+   this._display = p;
+}
+function FRd3Renderable_vertexCount(){
+   return this._vertexCount;
+}
+function FRd3Renderable_findVertexBuffer(p){
+   return this._vertexBuffers.get(p);
+}
+function FRd3Renderable_vertexBuffers(){
+   return this._vertexBuffers;
+}
+function FRd3Renderable_indexBuffer(){
+   return this._indexBuffer;
+}
+function FRd3Renderable_update(p){
+   var o = this;
+   var m = o._currentMatrix;
+   m.assign(o._matrix);
+   var d = o._display;
+   if(d){
+      m.append(d.currentMatrix());
+   }
+}
+function FRd3Renderable_remove(){
+   var o = this;
+   var d = o._display;
+   if(d){
+      d.removeRenderable(o);
+      o._display = null;
+   }
 }
 function FRd3Skeleton(o){
    o = RClass.inherits(this, o, FRd3Object);

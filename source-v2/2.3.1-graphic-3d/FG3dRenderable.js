@@ -8,18 +8,20 @@ function FG3dRenderable(o){
    o = RClass.inherits(this, o, FGraphicRenderable);
    //..........................................................
    // @attribute
-   o._matrix       = null;
+   o._currentMatrix  = null;
+   o._matrix         = null;
    // @attribute
-   o._effectName   = null;
-   o._materialName = null;
-   o._material     = null;
+   o._effectName     = null;
+   o._materialName   = null;
+   o._material       = null;
    // @attribute
-   o._activeEffect = null;
-   o._effects      = null;
+   o._activeEffect   = null;
+   o._effects        = null;
    //..........................................................
    // @method
    o.construct       = FG3dRenderable_construct;
    // @method
+   o.currentMatrix   = FG3dRenderable_currentMatrix;
    o.matrix          = FG3dRenderable_matrix;
    o.effectName      = FG3dRenderable_effectName;
    o.material        = FG3dRenderable_material;
@@ -44,8 +46,19 @@ function FG3dRenderable(o){
 function FG3dRenderable_construct(){
    var o = this;
    o.__base.FGraphicRenderable.construct.call(o);
+   o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
    o._material = RClass.create(FG3dMaterial);
+}
+
+//==========================================================
+// <T>获得当前矩阵。</T>
+//
+// @method
+// @return 当前矩阵
+//==========================================================
+function FG3dRenderable_currentMatrix(){
+   return this._currentMatrix;
 }
 
 //==========================================================
@@ -96,11 +109,11 @@ function FG3dRenderable_setActiveEffect(p){
 //==========================================================
 function FG3dRenderable_effects(){
    var o = this;
-   var es = o._effects;
-   if(es == null){
-      es = o._effects = new TDictionary();
+   var r = o._effects;
+   if(!r){
+      r = o._effects = new TDictionary();
    }
-   return es;
+   return r;
 }
 
 //==========================================================
@@ -129,18 +142,11 @@ function FG3dRenderable_update(p){
 //==========================================================
 function FG3dRenderable_dispose(){
    var o = this;
-   // 释放矩阵
-   var v = o._matrix;
-   if(v){
-      v.dispose();
-      o._matrix = null;
-   }
-   // 释放材质
-   var v = o._material;
-   if(v){
-      v.dispose();
-      o._material = null;
-   }
+   // 释放属性
+   o._currentMatrix = RObject.dispose(o._currentMatrix);
+   o._matrix = RObject.dispose(o._matrix);
+   o._material = RObject.dispose(o._material);
+   o._effects = RObject.dispose(o._effects);
    // 父处理
    o.__base.FGraphicRenderable.dispose.call(o);
 }

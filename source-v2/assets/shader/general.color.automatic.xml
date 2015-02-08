@@ -212,6 +212,7 @@
          </shader:false>
          normalFactor = max(normalFactor, 0.0);
          result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor;
+         //result = vec4(normalFactor, normalFactor, normalFactor, 1.0);
          </shader:true>
          //............................................................
          <shader:true source='vertex.attribute.normal'>
@@ -229,6 +230,7 @@
          specularFactor = min(specularFactor, 1.0);
          specularFactor = pow(specularFactor, fc_specular.y);
          result.rgb += color.rgb * fc_specular_color.rgb * specularFactor;
+         //result = vec4(specularFactor, specularFactor, specularFactor, 1.0);
          </shader:true>
          //............................................................
          <shader:true source='support.environment'>
@@ -239,7 +241,7 @@
          environmentColor *= light.g;
          </shader:true>
          //result.rgb *= fc_reflect.z;
-         result.rgb *= environmentColor.rgb * fc_reflect_color.rgb * fc_reflect.w;
+         //result.rgb *= environmentColor.rgb * fc_reflect_color.rgb * fc_reflect.w;
          </shader:true>
          //............................................................
          // 计算颜色

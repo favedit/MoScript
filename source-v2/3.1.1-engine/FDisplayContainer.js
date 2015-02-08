@@ -11,8 +11,6 @@ function FDisplayContainer(o){
    o._displays         = null;
    //..........................................................
    // @method
-   o.construct         = FDisplayContainer_construct;
-   // @method
    o.hasDisplay        = FDisplayContainer_hasDisplay;
    o.findDisplay       = FDisplayContainer_findDisplay;
    o.searchDisplay     = FDisplayContainer_searchDisplay;
@@ -28,21 +26,14 @@ function FDisplayContainer(o){
 }
 
 //==========================================================
-// <T>构造处理。</T>
-//==========================================================
-function FDisplayContainer_construct(){
-   var o = this;
-   o.__base.FDisplay.construct.call(o);
-}
-
-//==========================================================
 // <T>判断是否含有子节点。</T>
 //
+// @method
 // @return Boolean 是否含有
 //==========================================================
 function FDisplayContainer_hasDisplay(){
    var r = this._displays;
-   if(r != null){
+   if(r){
       return !r.isEmpty();
    }
    return false;
@@ -51,18 +42,19 @@ function FDisplayContainer_hasDisplay(){
 //==========================================================
 // <T>根据名称查找子节点。</T>
 //
+// @method
 // @param p:name:String 名称
 // @return FDisplay 子节点
 //==========================================================
 function FDisplayContainer_findDisplay(p){
    var o = this;
-   if(o._displays == null){
-      var cs = o._displays;
-      var cc = cs.count();
-      for(var n = 0; n < cc; n++){
-         var c = cs.get(n);
-         if(c.isName(p)){
-            return c;
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var f = s.get(i);
+         if(f.isName(p)){
+            return f;
          }
       }
    }
@@ -72,23 +64,24 @@ function FDisplayContainer_findDisplay(p){
 //==========================================================
 // <T>根据名称搜索子节点。</T>
 //
+// @method
 // @param p:name:String 名称
 // @return FDisplay 子节点
 //==========================================================
 function FDisplayContainer_searchDisplay(p){
    var o = this;
-   if(o._displays == null){
-      var cs = o._displays;
-      var cc = cs.count();
-      for(var n = 0; n < cc; n++){
-         var c = cs.get(n);
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var f = s.get(i);
          // 判断当前节点
-         if(c.isName(p)){
-            return c;
+         if(f.isName(p)){
+            return f;
          }
          // 判断子节点集合
-         var r = c.searchDisplay(p);
-         if(r != null){
+         var r = f.searchDisplay(p);
+         if(r){
             return r;
          }
       }
@@ -110,12 +103,11 @@ function FDisplayContainer_filterRenderables(p){
       return false;
    }
    // 过滤显示集合
-   var ds = o._displays;
-   if(ds != null){
-      var c = ds.count();
-      for(var n = 0; n < c; n++){
-         var d = ds.get(n);
-         d.filterRenderables(p);
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.get(i).filterRenderables(p);
       }
    }
    return true;
@@ -125,17 +117,17 @@ function FDisplayContainer_filterRenderables(p){
 // <T>逻辑处理。</T>
 //
 // @method
-// @param p:region:FRegion 区域
+// @param p:region:FG3dRegion 区域
 //==========================================================
 function FDisplayContainer_process(p){
    var o = this;
    o.__base.FDisplay.process.call(o, p);
    // 处理显示集合
-   var ds = o._displays;
-   if(ds != null){
-      var c = ds.count();
+   var s = o._displays;
+   if(s){
+      var c = s.count();
       for(var i = 0; i < c; i++){
-         ds.get(i).process(p);
+         s.get(i).process(p);
       }
    }
 }
@@ -143,12 +135,13 @@ function FDisplayContainer_process(p){
 //==========================================================
 // <T>判断是否含有子节点。</T>
 //
+// @method
 // @return Boolean 是否含有
 //==========================================================
 function FDisplayContainer_displays(){
    var o = this;
    var r = o._displays;
-   if(r == null){
+   if(!r){
       r = o._displays = new TObjects();
    }
    return r;
@@ -157,23 +150,25 @@ function FDisplayContainer_displays(){
 //==========================================================
 // <T>增加一个显示对象。</T>
 //
+// @method
 // @param p:display:FDisplay 显示对象
 //==========================================================
 function FDisplayContainer_pushDisplay(p){
    var o = this;
-   p._displayContainer = o;
+   p._parent = o;
    o.displays().push(p);
 }
 
 //==========================================================
 // <T>移除一个显示对象。</T>
 //
+// @method
 // @param p:display:FDisplay 显示对象
 //==========================================================
 function FDisplayContainer_removeDisplay(p){
    var o = this;
-   p._displayContainer = null;
    o.displays().remove(p);
+   p._parent = null;
 }
 
 //==========================================================
@@ -184,14 +179,12 @@ function FDisplayContainer_removeDisplay(p){
 function FDisplayContainer_dispose(){
    var o = this;
    // 释放所有子节点
-   var cs = o._displays;
-   if(cs != null){
-      var cc = cs.count();
-      for(var n = 0; n < cc; n++){
-         var c = cs.get(n);
-         c.dispose();
+   var v = o._displays;
+   if(v){
+      for(var i = v.count() - 1; i >= 0; i--){
+         v.get(i).dispose();
       }
-      cs.dispose();
+      v.dispose();
       o._displays = null;
    }
    o.__base.FDisplay.dispose.call(o);

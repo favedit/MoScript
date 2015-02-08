@@ -529,7 +529,9 @@ function FDsTemplateCanvas(o){
    o._rotationAble       = false;
    o._capturePosition    = null;
    o._captureMatrix      = null;
+   o._captureRotation    = null;
    o._dimensional        = null;
+   o._selectBoundBox     = null;
    o.onBuild             = FDsTemplateCanvas_onBuild;
    o.onMouseCaptureStart = FDsTemplateCanvas_onMouseCaptureStart;
    o.onMouseCapture      = FDsTemplateCanvas_onMouseCapture;
@@ -538,6 +540,7 @@ function FDsTemplateCanvas(o){
    o.onTemplateLoad      = FDsTemplateCanvas_onTemplateLoad;
    o.oeRefresh           = FDsTemplateCanvas_oeRefresh;
    o.construct           = FDsTemplateCanvas_construct;
+   o.selectRenderable    = FDsTemplateCanvas_selectRenderable;
    o.loadTemplate        = FDsTemplateCanvas_loadTemplate;
    o.dispose             = FDsTemplateCanvas_dispose;
    return o;
@@ -555,11 +558,12 @@ function FDsTemplateCanvas_onBuild(p){
    o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    var rc = g.camera();
-   rc.setPosition(0, 6, -20);
-   rc.lookAt(0, 3, 0);
+   rc.setPosition(0, 5, -20);
+   rc.lookAt(0, 5, 0);
    rc.update();
    var rp = rc.projection();
    rp.size().set(h.width, h.height);
+   rp._angle = 45;
    rp.update();
    var l = g.directionalLight();
    var lc = l.camera();
@@ -567,8 +571,12 @@ function FDsTemplateCanvas_onBuild(p){
    lc.lookAt(0, 0, 0);
    lc.update();
    var dm = o._dimensional = RClass.create(FRd3Dimensional);
-   dm.setup(c);
+   dm.linkGraphicContext(c);
+   dm.setup();
    o._layer.pushRenderable(dm);
+   var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
+   bb.linkGraphicContext(o._context);
+   bb.setup();
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start(15);
    RConsole.find(FMouseConsole).register(o);
@@ -581,7 +589,9 @@ function FDsTemplateCanvas_onMouseCaptureStart(p){
    }
    var d = t.renderables().get(0);
    o._capturePosition.set(p.clientX, p.clientY);
-   o._captureMatrix.assign(d.modelMatrix());
+   o._captureMatrix.assign(d.matrix());
+   var c = o._stage.camera();
+   o._captureRotation.assign(c._rotation);
 }
 function FDsTemplateCanvas_onMouseCapture(p){
    var o = this;
@@ -592,10 +602,15 @@ function FDsTemplateCanvas_onMouseCapture(p){
    var cx = p.clientX - o._capturePosition.x;
    var cy = p.clientY - o._capturePosition.y;
    var d = t.renderables().get(0);
-   var m = d.modelMatrix();
+   var m = d.matrix();
    var cm = o._captureMatrix;
    switch(o._toolbar._canvasModeCd){
       case EDsCanvasMode.Drop:
+         var c = o._stage.camera();
+         var r = c.rotation();
+         var cr = o._captureRotation;
+         r.x = cr.x + cy * 0.003;
+         r.y = cr.y + cx * 0.003;
          break;
       case EDsCanvasMode.Select:
          break;
@@ -619,30 +634,39 @@ function FDsTemplateCanvas_onMouseCaptureStop(p){
 function FDsTemplateCanvas_onEnterFrame(){
    var o = this;
    var c = o._stage.camera();
-   var r = 0.3;
+   var d = 0.5;
+   var r = 0.05;
    var kw = RKeyboard.isPress(EKeyCode.W);
    var ks = RKeyboard.isPress(EKeyCode.S);
    if(kw && !ks){
-      c.doWalk(r);
+      c.doWalk(d);
    }
    if(!kw && ks){
-      c.doWalk(-r);
+      c.doWalk(-d);
    }
    var ka = RKeyboard.isPress(EKeyCode.A);
    var kd = RKeyboard.isPress(EKeyCode.D);
    if(ka && !kd){
-      c.doStrafe(r);
+      c.doYaw(r);
    }
    if(!ka && kd){
-      c.doStrafe(-r);
+      c.doYaw(-r);
    }
    var kq = RKeyboard.isPress(EKeyCode.Q);
    var ke = RKeyboard.isPress(EKeyCode.E);
    if(kq && !ke){
-      c.doFly(r);
+      c.doFly(d);
    }
    if(!kq && ke){
-      c.doFly(-r);
+      c.doFly(-d);
+   }
+   var kz = RKeyboard.isPress(EKeyCode.Z);
+   var kw = RKeyboard.isPress(EKeyCode.X);
+   if(kz && !kw){
+      c.doPitch(r);
+   }
+   if(!kz && kw){
+      c.doPitch(-r);
    }
    c.update();
    var m = o._activeTemplate;
@@ -681,6 +705,18 @@ function FDsTemplateCanvas_construct(){
    o._capturePosition = new SPoint2();
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
+   o._captureRotation = new SVector3();
+}
+function FDsTemplateCanvas_selectRenderable(p){
+   var o = this;
+   var r = p.resource();
+   var rm = r.mesh();
+   var rl = rm.outline();
+   var b = o._selectBoundBox;
+   b.outline().assign(rl);
+   b.upload();
+   b.remove();
+   p._display.pushRenderable(b);
 }
 function FDsTemplateCanvas_loadTemplate(p){
    var o = this;
@@ -706,7 +742,7 @@ function FDsTemplateCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    o._refreshButton  = null;
    o._saveButton     = null;
-   o._canvasModeCd   = EDsCanvasMode.Unknown;
+   o._canvasModeCd   = EDsCanvasMode.Drop;
    o.onBuild         = FDsTemplateCanvasToolBar_onBuild;
    o.onModeClick     = FDsTemplateCanvasToolBar_onModeClick;
    o.onLookClick     = FDsTemplateCanvasToolBar_onLookClick;
@@ -927,8 +963,11 @@ function FDsTemplateCatalog_buildTemplate(p){
       nr.appendNode(ns);
       for(var i = 0; i < c; i++){
          var d = ds.get(i);
+         var r = d.resource();
+         var rd = r.model();
+         var rm = r.mesh();
          var n = o.createNode();
-         n.setLabel('MeshRenderable');
+         n.setLabel(rd.code() + ' - ' + rm.code());
          n.setTypeName('display');
          n.dataPropertySet('linker', d);
          ns.appendNode(n);
@@ -970,7 +1009,7 @@ function FDsTemplateDisplayFrame_onBuilded(p){
 function FDsTemplateDisplayFrame_onDataChanged(p){
    var o = this;
    var d = o._renderDisplay;
-   var m = d.modelMatrix();
+   var m = d.matrix();
    var v = o._controlTranslate.get();
    m.setTranslate(v.x, v.y, v.z);
    var v = o._controlRotation.get();
@@ -987,7 +1026,7 @@ function FDsTemplateDisplayFrame_loadObject(t, d){
    var o = this;
    o._renderTemplate = t;
    o._renderDisplay = d;
-   var m = d.modelMatrix();
+   var m = d.matrix();
    o._controlTranslate.set(m.tx, m.ty, m.tz);
    o._controlRotation.set(m.rx, m.ry, m.rz);
    o._controlScale.set(m.sx, m.sy, m.sz);
@@ -1355,7 +1394,7 @@ function FDsTemplateWorkspace_onBuild(p){
    fs._directionCd = EDirection.Horizontal;
    fs.build(p);
    var f = o._frameCatalog = RClass.create(FUiFrameContainer);
-   f.setWidth(300);
+   f.setWidth(400);
    f.build(p);
    f._hPanel.className = o.styleName('Catalog_Ground');
    fs.appendFrame(f);
@@ -1443,6 +1482,7 @@ function FDsTemplateWorkspace_onCatalogSelected(p){
       var f = o.displayPropertyFrame();
       f.show();
       f.loadObject(t, p);
+      o._canvas.selectRenderable(p);
    }else{
       throw new TError('Unknown select object type. (value={1})', p);
    }

@@ -203,8 +203,8 @@ function FG3dCamera(o){
    o = RClass.inherits(this, o, FObject);
    o._matrix      = null;
    o._position    = null;
+   o._target      = null;
    o._direction   = null;
-   o._rotation    = null;
    o._centerFront = 0.6;
    o._centerBack  = 1.0;
    o._focalNear   = 0.1;
@@ -216,9 +216,6 @@ function FG3dCamera(o){
    o.__axisX      = null;
    o.__axisY      = null;
    o.__axisZ      = null;
-   o.__rotationX  = null;
-   o.__rotationY  = null;
-   o.__rotationZ  = null;
    o.construct    = FG3dCamera_construct;
    o.matrix       = FG3dCamera_matrix;
    o.position     = FG3dCamera_position;
@@ -229,8 +226,9 @@ function FG3dCamera(o){
    o.doWalk       = FG3dCamera_doWalk;
    o.doStrafe     = FG3dCamera_doStrafe;
    o.doFly        = FG3dCamera_doFly;
-   o.doYaw        = FG3dCamera_doYaw;
    o.doPitch      = FG3dCamera_doPitch;
+   o.doYaw        = FG3dCamera_doYaw;
+   o.doRoll       = FG3dCamera_doRoll;
    o.lookAt       = FG3dCamera_lookAt;
    o.update       = FG3dCamera_update;
    return o;
@@ -240,8 +238,8 @@ function FG3dCamera_construct(){
    o.__base.FObject.construct.call(o);
    o._matrix = new SMatrix3d();
    o._position = new SPoint3();
+   o._target = new SPoint3();
    o._direction = new SVector3();
-   o._rotation = new SQuaternion();
    o._frustum = new SFrustum();
    o._viewport = RClass.create(FG3dViewport);
    o.__axisUp = new SVector3();
@@ -249,9 +247,6 @@ function FG3dCamera_construct(){
    o.__axisX = new SVector3();
    o.__axisY = new SVector3();
    o.__axisZ = new SVector3();
-   o.__rotationX = new SQuaternion();
-   o.__rotationY = new SQuaternion();
-   o.__rotationZ = new SQuaternion();
 }
 function FG3dCamera_position(){
    return this._position;
@@ -285,16 +280,23 @@ function FG3dCamera_doFly(p){
    var o = this;
    o._position.y += p;
 }
-function FG3dCamera_doYaw(p){
-   var o = this;
-}
 function FG3dCamera_doPitch(p){
    var o = this;
+   throw new TFatal(o, 'Unsupport.')
+}
+function FG3dCamera_doYaw(p){
+   var o = this;
+   throw new TFatal(o, 'Unsupport.')
+}
+function FG3dCamera_doRoll(p){
+   var o = this;
+   throw new TFatal(o, 'Unsupport.')
 }
 function FG3dCamera_lookAt(x, y, z){
    var o = this;
    var p = o._position;
    var d = o._direction;
+   o._target.set(x, y, z);
    d.set(x - p.x, y - p.y, z - p.z);
    d.normalize();
 }
@@ -1078,13 +1080,15 @@ function FG3dRegion_dispose(){
 }
 function FG3dRenderable(o){
    o = RClass.inherits(this, o, FGraphicRenderable);
-   o._matrix       = null;
-   o._effectName   = null;
-   o._materialName = null;
-   o._material     = null;
-   o._activeEffect = null;
-   o._effects      = null;
+   o._currentMatrix  = null;
+   o._matrix         = null;
+   o._effectName     = null;
+   o._materialName   = null;
+   o._material       = null;
+   o._activeEffect   = null;
+   o._effects        = null;
    o.construct       = FG3dRenderable_construct;
+   o.currentMatrix   = FG3dRenderable_currentMatrix;
    o.matrix          = FG3dRenderable_matrix;
    o.effectName      = FG3dRenderable_effectName;
    o.material        = FG3dRenderable_material;
@@ -1099,8 +1103,12 @@ function FG3dRenderable(o){
 function FG3dRenderable_construct(){
    var o = this;
    o.__base.FGraphicRenderable.construct.call(o);
+   o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
    o._material = RClass.create(FG3dMaterial);
+}
+function FG3dRenderable_currentMatrix(){
+   return this._currentMatrix;
 }
 function FG3dRenderable_matrix(){
    return this._matrix;
@@ -1116,11 +1124,11 @@ function FG3dRenderable_setActiveEffect(p){
 }
 function FG3dRenderable_effects(){
    var o = this;
-   var es = o._effects;
-   if(es == null){
-      es = o._effects = new TDictionary();
+   var r = o._effects;
+   if(!r){
+      r = o._effects = new TDictionary();
    }
-   return es;
+   return r;
 }
 function FG3dRenderable_material(){
    return this._material;
@@ -1129,16 +1137,10 @@ function FG3dRenderable_update(p){
 }
 function FG3dRenderable_dispose(){
    var o = this;
-   var v = o._matrix;
-   if(v){
-      v.dispose();
-      o._matrix = null;
-   }
-   var v = o._material;
-   if(v){
-      v.dispose();
-      o._material = null;
-   }
+   o._currentMatrix = RObject.dispose(o._currentMatrix);
+   o._matrix = RObject.dispose(o._matrix);
+   o._material = RObject.dispose(o._material);
+   o._effects = RObject.dispose(o._effects);
    o.__base.FGraphicRenderable.dispose.call(o);
 }
 function FG3dShaderTemplate(o){
@@ -2476,7 +2478,7 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var m = pr.material();
    var mi = m.info();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -2528,7 +2530,7 @@ function FG3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    var m = pr.material();
    var mi = m.info();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -2598,7 +2600,7 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    var m = pr.material();
    o.bindMaterial(m);
    p.setParameter('vc_light_depth', vlci);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', vcvpm);
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -2690,7 +2692,7 @@ function FG3dShadowColorSkeletonEffect_drawRenderable(pr, r){
          }
       }
    }
-   p.setParameter('vc_model_matrix', r.matrix());
+   p.setParameter('vc_model_matrix', r.currentMatrix());
    p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
    p.setParameter('vc_light_direction', prld);
@@ -2740,7 +2742,7 @@ function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    var lci = pg.calculate(EG3dRegionParameter.LightInfo);
    c.setBlendFactors(false);
    p.setParameter('vc_camera', lci);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_view_matrix', lvm);
    p.setParameter('vc_vp_matrix', lvpm);
    p.setParameter('fc_camera', lci);
@@ -2800,7 +2802,7 @@ function FG3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   p.setParameter('vc_model_matrix', r.matrix());
+   p.setParameter('vc_model_matrix', r.currentMatrix());
    p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
    p.setParameter('vc_light_direction', prld);

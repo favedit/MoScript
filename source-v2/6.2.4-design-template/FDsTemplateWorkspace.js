@@ -88,7 +88,7 @@ function FDsTemplateWorkspace_onBuild(p){
    fs.build(p);
    // 建立目录区
    var f = o._frameCatalog = RClass.create(FUiFrameContainer);
-   f.setWidth(300);
+   f.setWidth(400);
    f.build(p);
    f._hPanel.className = o.styleName('Catalog_Ground');
    fs.appendFrame(f);
@@ -209,6 +209,7 @@ function FDsTemplateWorkspace_onCatalogSelected(p){
       var f = o.displayPropertyFrame();
       f.show();
       f.loadObject(t, p);
+      o._canvas.selectRenderable(p);
    }else{
       throw new TError('Unknown select object type. (value={1})', p);
    }

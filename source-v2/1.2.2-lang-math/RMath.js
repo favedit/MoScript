@@ -15,7 +15,7 @@ var RMath = new function RMath(){
    o.RADIAN_RATE  = null;
    o.DEGREE_RATE  = null;
    // @attribute
-   o.PERCENT_1000 = 1.0 / 1000.0;
+   o.PERCENT_1000 = 1 / 1000;
    //..........................................................
    // @attribute
    o.float1       = null;
@@ -35,8 +35,11 @@ var RMath = new function RMath(){
    o.double64     = null;
    //..........................................................
    // @attribute
+   o.vector3      = null;
+   o.vectorScale  = null;
    o.matrix       = null;
    // @attribute
+   o.vectorForward = null;
    o.vectorAxisX  = null;
    o.vectorAxisY  = null;
    o.vectorAxisZ  = null;
@@ -64,8 +67,8 @@ function RMath_construct(){
    // 设置内容
    o.PI = Math.PI;
    o.PI2 = Math.PI * 2;
-   o.RADIAN_RATE = 180.0 / Math.PI;
-   o.DEGREE_RATE = Math.PI / 180.0;
+   o.RADIAN_RATE = 180 / Math.PI;
+   o.DEGREE_RATE = Math.PI / 180;
    // 支持类型数组
    if(RRuntime.supportHtml5()){
       // 初始化临时数组
@@ -85,13 +88,18 @@ function RMath_construct(){
       o.double12 = new Float64Array(12);
       o.double16 = new Float64Array(16);
    }
-   // 初始化矩阵
+   // 初始化属性
+   o.vector3 = new SVector3();
+   o.vectorScale = new SVector3();
+   o.vectorScale.set(1, 1, 1);
    o.matrix = new SMatrix3d();
    // 初始化方向轴
+   o.vectorForward = new SVector3();
+   o.vectorForward.set(0, 0, 1);
    o.vectorAxisX = new SVector3();
-   o.vectorAxisX.set(1.0, 0.0, 0.0);
+   o.vectorAxisX.set(1, 0, 0);
    o.vectorAxisY = new SVector3();
-   o.vectorAxisY.set(0.0, 1.0, 0.0);
+   o.vectorAxisY.set(0, 1, 0);
    o.vectorAxisZ = new SVector3();
-   o.vectorAxisZ.set(0.0, 0.0, 1.0);
+   o.vectorAxisZ.set(0, 0, 1);
 }

@@ -5,11 +5,9 @@
 // @history 150128
 //==========================================================
 function FRs3Mesh(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute
-   o._guid       = null;
-   o._matrix     = null;
    o._outline    = null;
    o._streams    = null;
    o._tracks     = null;
@@ -17,7 +15,7 @@ function FRs3Mesh(o){
    // @method
    o.construct   = FRs3Mesh_construct;
    // @method
-   o.guid        = FRs3Mesh_guid;
+   o.outline     = FRs3Mesh_outline;
    o.streams     = FRs3Mesh_streams;
    o.tracks      = FRs3Mesh_tracks;
    // @method
@@ -32,19 +30,18 @@ function FRs3Mesh(o){
 //==========================================================
 function FRs3Mesh_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
-   o._matrix = new SMatrix3d();
+   o.__base.FRs3Object.construct.call(o);
    o._outline = new SOutline3();
 }
 
 //==========================================================
-// <T>获得唯一编号。</T>
+// <T>获得轮廓。</T>
 //
 // @method
-// @return String 唯一编号
+// @return SOutline3 轮廓
 //==========================================================
-function FRs3Mesh_guid(){
-   return this._guid;
+function FRs3Mesh_outline(){
+   return this._outline;
 }
 
 //==========================================================
@@ -76,8 +73,9 @@ function FRs3Mesh_tracks(){
 //==========================================================
 function FRs3Mesh_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    // 读取属性
-   o._guid = p.readString();
+   o._outline.unserialize(p);
    // 读取数据流集合
    var c = p.readInt8();
    if(c > 0){

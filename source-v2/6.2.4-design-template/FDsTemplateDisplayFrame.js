@@ -52,7 +52,7 @@ function FDsTemplateDisplayFrame_onBuilded(p){
 function FDsTemplateDisplayFrame_onDataChanged(p){
    var o = this;
    var d = o._renderDisplay;
-   var m = d.modelMatrix();
+   var m = d.matrix();
    // 设置环境颜色
    var v = o._controlTranslate.get();
    m.setTranslate(v.x, v.y, v.z);
@@ -89,7 +89,7 @@ function FDsTemplateDisplayFrame_loadObject(t, d){
    o._renderTemplate = t;
    o._renderDisplay = d;
    // 获得矩阵
-   var m = d.modelMatrix();
+   var m = d.matrix();
    // 设置参数
    o._controlTranslate.set(m.tx, m.ty, m.tz);
    o._controlRotation.set(m.rx, m.ry, m.rz);

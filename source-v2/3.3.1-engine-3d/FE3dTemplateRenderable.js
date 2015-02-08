@@ -21,6 +21,7 @@ function FE3dTemplateRenderable(o){
    o.testReady         = FE3dTemplateRenderable_testReady;
    o.testVisible       = FE3dTemplateRenderable_testVisible;
    // @method
+   o.resource          = FE3dTemplateRenderable_resource;
    o.loadResource      = FE3dTemplateRenderable_loadResource;
    o.reloadResource    = FE3dTemplateRenderable_reloadResource;
    o.load              = FE3dTemplateRenderable_load;
@@ -74,6 +75,16 @@ function FE3dTemplateRenderable_testVisible(p){
 }
 
 //==========================================================
+// <T>获得资源。</T>
+//
+// @method
+// @return FRs3TemplateRenderable 资源
+//==========================================================
+function FE3dTemplateRenderable_resource(p){
+   return this._resource;
+}
+
+//==========================================================
 // <T>加载资源。</T>
 //
 // @method
@@ -85,7 +96,7 @@ function FE3dTemplateRenderable_loadResource(p){
    o._resource = p;
    //............................................................
    // 设置数据
-   o._modelMatrix.assign(p.matrix());
+   o._matrix.assign(p.matrix());
    // 加载模型
    o._model = RConsole.find(FRd3ModelConsole).load(o._context, p.modelGuid());
    //............................................................

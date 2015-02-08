@@ -275,7 +275,7 @@ function FRs3Material_groupGuid(){
    return this._groupGuid;
 }
 function FRs3Material_group(){
-   return RConsole.find(FRs3MaterialGroupConsole).find(this._groupGuid);
+   return RConsole.find(FRs3MaterialConsole).findGroup(this._groupGuid);
 }
 function FRs3Material_effectName(){
    return this._info.effectName;
@@ -374,14 +374,12 @@ function FRs3MaterialTexture_unserialize(p){
    o._bitmapGuid = p.readString();
 }
 function FRs3Mesh(o){
-   o = RClass.inherits(this, o, FObject);
-   o._guid       = null;
-   o._matrix     = null;
+   o = RClass.inherits(this, o, FRs3Object);
    o._outline    = null;
    o._streams    = null;
    o._tracks     = null;
    o.construct   = FRs3Mesh_construct;
-   o.guid        = FRs3Mesh_guid;
+   o.outline     = FRs3Mesh_outline;
    o.streams     = FRs3Mesh_streams;
    o.tracks      = FRs3Mesh_tracks;
    o.unserialize = FRs3Mesh_unserialize;
@@ -389,12 +387,11 @@ function FRs3Mesh(o){
 }
 function FRs3Mesh_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
-   o._matrix = new SMatrix3d();
+   o.__base.FRs3Object.construct.call(o);
    o._outline = new SOutline3();
 }
-function FRs3Mesh_guid(){
-   return this._guid;
+function FRs3Mesh_outline(){
+   return this._outline;
 }
 function FRs3Mesh_streams(){
    return this._streams;
@@ -404,7 +401,8 @@ function FRs3Mesh_tracks(){
 }
 function FRs3Mesh_unserialize(p){
    var o = this;
-   o._guid = p.readString();
+   o.__base.FRs3Object.unserialize.call(o, p);
+   o._outline.unserialize(p);
    var c = p.readInt8();
    if(c > 0){
       var ss = o._streams = new TObjects();

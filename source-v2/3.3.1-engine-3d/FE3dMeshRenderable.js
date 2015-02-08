@@ -5,25 +5,17 @@
 // @history 150202
 //==========================================================
 function FE3dMeshRenderable(o){
-   o = RClass.inherits(this, o, FG3dRenderable);
+   o = RClass.inherits(this, o, FRd3Renderable);
    //..........................................................
    // @attribute
-   o._display         = null;
    o._renderable      = null;
    // @attribute
-   o._modelMatrix     = null;
-   o._vertexBuffers   = null;
    o._activeSkin      = null;
    o._activeTrack     = null;
    o._bones           = null;
    //..........................................................
    // @method
-   o.construct        = FE3dMeshRenderable_construct;
-   // @method
-   o.modelMatrix      = FE3dMeshRenderable_modelMatrix;
-   o.findVertexBuffer = FE3dMeshRenderable_findVertexBuffer;
    o.vertexCount      = FE3dMeshRenderable_vertexCount;
-   o.vertexBuffers    = FE3dMeshRenderable_vertexBuffers;
    o.indexBuffer      = FE3dMeshRenderable_indexBuffer;
    o.findTexture      = FE3dMeshRenderable_findTexture;
    o.textures         = FE3dMeshRenderable_textures;
@@ -37,39 +29,6 @@ function FE3dMeshRenderable(o){
 }
 
 //==========================================================
-// <T>构造处理。</T>
-//
-// @method
-//==========================================================
-function FE3dMeshRenderable_construct(){
-   var o = this;
-   o.__base.FG3dRenderable.construct.call(o);
-   // 构造变量
-   o._vertexBuffers = new TDictionary();
-   o._modelMatrix = new SMatrix3d();
-}
-
-//==========================================================
-// <T>获得模型矩阵。</T>
-//
-// @method
-// @return SMatrix3d 模型矩阵
-//==========================================================
-function FE3dMeshRenderable_modelMatrix(){
-   return this._modelMatrix;
-}
-
-//==========================================================
-// <T>查找顶点缓冲。</T>
-//
-// @method
-// @return FG3dVertexBuffer 顶点缓冲
-//==========================================================
-function FE3dMeshRenderable_findVertexBuffer(p){
-   return this._vertexBuffers.get(p);
-}
-
-//==========================================================
 // <T>获得顶点总数。</T>
 //
 // @method
@@ -77,16 +36,6 @@ function FE3dMeshRenderable_findVertexBuffer(p){
 //==========================================================
 function FE3dMeshRenderable_vertexCount(){
    return this._renderable.vertexCount();
-}
-
-//==========================================================
-// <T>获得顶点缓冲集合。</T>
-//
-// @method
-// @return TObjects 顶点缓冲集合
-//==========================================================
-function FE3dMeshRenderable_vertexBuffers(){
-   return this._vertexBuffers;
 }
 
 //==========================================================
@@ -138,18 +87,22 @@ function FE3dMeshRenderable_bones(p){
 //==========================================================
 function FE3dMeshRenderable_update(p){
    var o = this;
-   var mm = o._modelMatrix
-   var dm = o._display.matrix();
+   var d = o._display;
+   var mm = o._matrix
    var t = o._activeTrack;
    // 计算矩阵
-   var m = o._matrix;
+   var m = o._currentMatrix;
    if(t){
       m.assign(t.matrix());
       m.append(mm);
    }else{
       m.assign(mm);
    }
-   m.append(dm);
+   // 计算显示矩阵
+   if(d){
+      var dm = o._display.currentMatrix();
+      m.append(dm);
+   }
 }
 
 //==========================================================
@@ -160,7 +113,7 @@ function FE3dMeshRenderable_update(p){
 //==========================================================
 function FE3dMeshRenderable_process(p){
    var o = this;
-   o.__base.FG3dRenderable.process.call(p)
+   o.__base.FRd3Renderable.process.call(p)
    var t = o._activeTrack;
    if(t){
       var a = t._animation;
@@ -190,5 +143,5 @@ function FE3dMeshRenderable_dispose(){
       o._vertexBuffers = null;
    }
    // 父处理
-   o.__base.FG3dRenderable.dispose.call(o);
+   o.__base.FRd3Renderable.dispose.call(o);
 }

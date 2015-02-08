@@ -1,5 +1,7 @@
 function FDisplay(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
+   o._parent           = null;
+   o._currentMatrix    = null;
    o._name             = null;
    o._matrix           = null;
    o._location         = null;
@@ -8,9 +10,12 @@ function FDisplay(o){
    o._visible          = true;
    o._renderables      = null;
    o.construct         = FDisplay_construct;
+   o.parent            = FDisplay_parent;
+   o.setParent         = FDisplay_setParent;
    o.isName            = FDisplay_isName;
    o.name              = FDisplay_name;
    o.setName           = FDisplay_setName;
+   o.currentMatrix     = FDisplay_currentMatrix;
    o.matrix            = FDisplay_matrix;
    o.location          = FDisplay_location;
    o.rotation          = FDisplay_rotation;
@@ -19,6 +24,7 @@ function FDisplay(o){
    o.filterRenderables = FDisplay_filterRenderables;
    o.renderables       = FDisplay_renderables;
    o.pushRenderable    = FDisplay_pushRenderable;
+   o.removeRenderable  = FDisplay_removeRenderable;
    o.process           = FDisplay_process;
    o.update            = FDisplay_update;
    o.remove            = FDisplay_remove;
@@ -28,11 +34,18 @@ function FDisplay(o){
 function FDisplay_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
    o._location = new SPoint3();
    o._rotation = new SVector3();
    o._scale = new SVector3();
    o._scale.set(1, 1, 1);
+}
+function FDisplay_parent(){
+   return this._parent;
+}
+function FDisplay_setParent(p){
+   this._parent = p;
 }
 function FDisplay_isName(p){
    return this._name == p;
@@ -42,6 +55,9 @@ function FDisplay_name(){
 }
 function FDisplay_setName(p){
    this._name = p;
+}
+function FDisplay_currentMatrix(){
+   return this._currentMatrix;
 }
 function FDisplay_matrix(){
    return this._matrix;
@@ -79,13 +95,21 @@ function FDisplay_filterRenderables(p){
 function FDisplay_renderables(){
    var o = this;
    var r = o._renderables;
-   if(r == null){
+   if(!r){
       r = o._renderables = new TObjects();
    }
    return r;
 }
 function FDisplay_pushRenderable(p){
-   this.renderables().push(p);
+   var o = this;
+   p._display = o;
+   o.renderables().push(p);
+}
+function FDisplay_removeRenderable(p){
+   var s = this._renderables;
+   if(s){
+      s.remove(p);
+   }
 }
 function FDisplay_update(){
    var o = this;
@@ -93,41 +117,42 @@ function FDisplay_update(){
    m.set(o._location, o._rotation, o._scale);
    m.update();
 }
-function FDisplay_process(){
+function FDisplay_process(p){
    var o = this;
-   var rs = o._renderables;
-   if(rs != null){
-      var c = rs.count();
+   o._currentMatrix.assign(o._matrix);
+   var t = o._parent;
+   if(t){
+      o._currentMatrix.append(t._currentMatrix);
+   }
+   var s = o._renderables;
+   if(s){
+      var c = s.count();
       for(var i = 0; i < c; i++){
-         rs.get(i).process();
+         s.get(i).process(p);
       }
    }
 }
 function FDisplay_remove(){
    var o = this;
-   var c = o._displayContainer;
+   var c = o._parent;
    if(c){
       c.removeDisplay(o);
-      o._displayContainer = null;
+      o._parent = null;
    }
 }
 function FDisplay_dispose(){
    var o = this;
-   o._matrix = null;
-   o._position = null;
-   o._direction = null;
-   o._scale = null;
-   var rs = o._renderables;
-   if(rs != null){
-      rs.dispose();
-      o._renderables = null
-   }
+   RObject.dispose(o._currentMatrix);
+   RObject.dispose(o._matrix);
+   RObject.dispose(o._position);
+   RObject.dispose(o._direction);
+   RObject.dispose(o._scale);
+   RObject.dispose(o._renderables)
    o.__base.FObject.dispose.call(o);
 }
 function FDisplayContainer(o){
    o = RClass.inherits(this, o, FDisplay);
    o._displays         = null;
-   o.construct         = FDisplayContainer_construct;
    o.hasDisplay        = FDisplayContainer_hasDisplay;
    o.findDisplay       = FDisplayContainer_findDisplay;
    o.searchDisplay     = FDisplayContainer_searchDisplay;
@@ -139,26 +164,22 @@ function FDisplayContainer(o){
    o.dispose           = FDisplayContainer_dispose;
    return o;
 }
-function FDisplayContainer_construct(){
-   var o = this;
-   o.__base.FDisplay.construct.call(o);
-}
 function FDisplayContainer_hasDisplay(){
    var r = this._displays;
-   if(r != null){
+   if(r){
       return !r.isEmpty();
    }
    return false;
 }
 function FDisplayContainer_findDisplay(p){
    var o = this;
-   if(o._displays == null){
-      var cs = o._displays;
-      var cc = cs.count();
-      for(var n = 0; n < cc; n++){
-         var c = cs.get(n);
-         if(c.isName(p)){
-            return c;
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var f = s.get(i);
+         if(f.isName(p)){
+            return f;
          }
       }
    }
@@ -166,16 +187,16 @@ function FDisplayContainer_findDisplay(p){
 }
 function FDisplayContainer_searchDisplay(p){
    var o = this;
-   if(o._displays == null){
-      var cs = o._displays;
-      var cc = cs.count();
-      for(var n = 0; n < cc; n++){
-         var c = cs.get(n);
-         if(c.isName(p)){
-            return c;
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var f = s.get(i);
+         if(f.isName(p)){
+            return f;
          }
-         var r = c.searchDisplay(p);
-         if(r != null){
+         var r = f.searchDisplay(p);
+         if(r){
             return r;
          }
       }
@@ -188,12 +209,11 @@ function FDisplayContainer_filterRenderables(p){
    if(!o._visible){
       return false;
    }
-   var ds = o._displays;
-   if(ds != null){
-      var c = ds.count();
-      for(var n = 0; n < c; n++){
-         var d = ds.get(n);
-         d.filterRenderables(p);
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.get(i).filterRenderables(p);
       }
    }
    return true;
@@ -201,42 +221,40 @@ function FDisplayContainer_filterRenderables(p){
 function FDisplayContainer_process(p){
    var o = this;
    o.__base.FDisplay.process.call(o, p);
-   var ds = o._displays;
-   if(ds != null){
-      var c = ds.count();
+   var s = o._displays;
+   if(s){
+      var c = s.count();
       for(var i = 0; i < c; i++){
-         ds.get(i).process(p);
+         s.get(i).process(p);
       }
    }
 }
 function FDisplayContainer_displays(){
    var o = this;
    var r = o._displays;
-   if(r == null){
+   if(!r){
       r = o._displays = new TObjects();
    }
    return r;
 }
 function FDisplayContainer_pushDisplay(p){
    var o = this;
-   p._displayContainer = o;
+   p._parent = o;
    o.displays().push(p);
 }
 function FDisplayContainer_removeDisplay(p){
    var o = this;
-   p._displayContainer = null;
    o.displays().remove(p);
+   p._parent = null;
 }
 function FDisplayContainer_dispose(){
    var o = this;
-   var cs = o._displays;
-   if(cs != null){
-      var cc = cs.count();
-      for(var n = 0; n < cc; n++){
-         var c = cs.get(n);
-         c.dispose();
+   var v = o._displays;
+   if(v){
+      for(var i = v.count() - 1; i >= 0; i--){
+         v.get(i).dispose();
       }
-      cs.dispose();
+      v.dispose();
       o._displays = null;
    }
    o.__base.FDisplay.dispose.call(o);

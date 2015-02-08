@@ -313,7 +313,7 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var m = pr.material();
    var mi = m.info();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -365,7 +365,7 @@ function FG3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    var m = pr.material();
    var mi = m.info();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -435,7 +435,7 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    var m = pr.material();
    o.bindMaterial(m);
    p.setParameter('vc_light_depth', vlci);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', vcvpm);
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -527,7 +527,7 @@ function FG3dShadowColorSkeletonEffect_drawRenderable(pr, r){
          }
       }
    }
-   p.setParameter('vc_model_matrix', r.matrix());
+   p.setParameter('vc_model_matrix', r.currentMatrix());
    p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
    p.setParameter('vc_light_direction', prld);
@@ -577,7 +577,7 @@ function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    var lci = pg.calculate(EG3dRegionParameter.LightInfo);
    c.setBlendFactors(false);
    p.setParameter('vc_camera', lci);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_view_matrix', lvm);
    p.setParameter('vc_vp_matrix', lvpm);
    p.setParameter('fc_camera', lci);
@@ -637,7 +637,7 @@ function FG3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._context;
    var p = o._program;
-   p.setParameter('vc_model_matrix', r.matrix());
+   p.setParameter('vc_model_matrix', r.currentMatrix());
    p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
    p.setParameter('vc_light_direction', prld);

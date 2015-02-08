@@ -14,6 +14,7 @@ var RObject = new function RObject(){
    o.copy    = RObject_copy;
    // @method
    o.free    = RObject_free;
+   o.dispose = RObject_dispose;
    o.release = RObject_release;
    return o;
 }
@@ -90,6 +91,18 @@ function RObject_free(p){
          p[n] = null;
       }
    }
+}
+
+//==========================================================
+// <T>释放一个对象。</T>
+//
+// @param p:obejct:Object 对象
+//==========================================================
+function RObject_dispose(p){
+   if(p){
+      p.dispose();
+   }
+   return null;
 }
 
 //==========================================================

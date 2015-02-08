@@ -1103,186 +1103,6 @@ function TMap_dump(){
    }
    return r.toString();
 }
-function TObjects(o){
-   if(!o){o = this;}
-   o._count     = 0;
-   o._items     = new Array();
-   o.isEmpty    = TObjects_isEmpty;
-   o.count      = TObjects_count;
-   o.contains   = TObjects_contains;
-   o.indexOf    = TObjects_indexOf;
-   o.first      = TObjects_first;
-   o.last       = TObjects_last;
-   o.get        = TObjects_get;
-   o.set        = TObjects_set;
-   o.assign     = TObjects_assign;
-   o.append     = TObjects_append;
-   o.insert     = TObjects_insert;
-   o.push       = TObjects_push;
-   o.pushUnique = TObjects_pushUnique;
-   o.pop        = TObjects_pop;
-   o.swap       = TObjects_swap;
-   o.sort       = TObjects_sort;
-   o.erase      = TObjects_erase;
-   o.remove     = TObjects_remove;
-   o.clear      = TObjects_clear;
-   o.dispose    = TObjects_dispose;
-   o.dump       = TObjects_dump;
-   return o;
-}
-function TObjects_isEmpty(){
-   return (this._count == 0);
-}
-function TObjects_count(){
-   return this._count;
-}
-function TObjects_contains(v){
-   return this.indexOf(v) != -1;
-}
-function TObjects_indexOf(v){
-   var o = this;
-   var c = o._count;
-   for(var n = 0; n < c; n++){
-      if(o._items[n] == v){
-         return n;
-      }
-   }
-   return -1;
-}
-function TObjects_first(){
-   var o = this;
-   return o._count ? this._items[0] : null;
-}
-function TObjects_last(){
-   var o = this;
-   return o._count ? this._items[o._count - 1] : null;
-}
-function TObjects_get(n){
-   var o = this;
-   return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
-}
-function TObjects_set(n, v){
-   var o = this;
-   if((n >= 0) && (n < o._count)){
-      o._items[n] = v;
-   }
-}
-function TObjects_assign(p){
-   var o = this;
-   var c = o._count = p._count;
-   for(var i = 0; i < c; i++){
-      o._items[i] = p._items[i];
-   }
-}
-function TObjects_append(v){
-   var o = this;
-   var c = v._count;
-   for(var n = 0; n < c; n++){
-      o.push(v.get(n));
-   }
-}
-function TObjects_insert(i, v){
-   var o = this;
-   var c = o._count;
-   if((i >= 0) && (i <= c)){
-      for(var n = c; n > i; n--){
-         o._items[n] = o._items[n - 1];
-      }
-      o._items[i] = v;
-   }
-}
-function TObjects_push(v){
-   var n = this._count++;
-   this._items[n] = v;
-   return n;
-}
-function TObjects_pushUnique(v){
-   var o = this;
-   for(var n = o._count-1; n >= 0; n--){
-      if(o._items[n] == v){
-         return n;
-      }
-   }
-   var n = o._count++;
-   o._items[n] = v;
-   return n;
-}
-function TObjects_pop(){
-   var o = this;
-   if(o._count){
-      return o._items[--o._count];
-   }
-}
-function TObjects_swap(l, r){
-   var o = this;
-   if((l >= 0) && (l < o._count) && (r >= 0) && (r < o._count) && (l != r)){
-      var v = o._items[l];
-      o._items[l] = this._items[r];
-      o._items[r] = v;
-   }
-}
-function TObjects_sort(){
-   this._items.sort();
-}
-function TObjects_erase(n){
-   var v = null;
-   var o = this;
-   if((n >= 0) && (n < o._count)){
-      v = o._items[n];
-      var c = --o._count;
-      var s = o._items;
-      for(var i = n; i < c; i++){
-         s[i] = s[i+1];
-      }
-      s[c] = null;
-   }
-   return v;
-}
-function TObjects_remove(v){
-   if(v != null){
-      var o = this;
-      var c = o._count;
-      if(c > 0){
-         var n = 0;
-         var s = o._items;
-         for(var i = n; i < c; i++){
-            if(s[i] != v){
-               s[n++] = s[i];
-            }
-         }
-         for(var i = n; i < c; i++){
-            s[i] = null;
-         }
-         o._count = n;
-      }
-   }
-   return v;
-}
-function TObjects_clear(){
-   var o = this;
-   o._items.length = 0;
-   o._count = 0;
-}
-function TObjects_dispose(){
-   var o = this;
-   o._count = 0;
-   for(var n in o._items){
-      delete o._items[n];
-   }
-   o._items = null;
-}
-function TObjects_dump(){
-   var o = this;
-   var c = o._count;
-   var r = new TString();
-   r.append(RClass.name(o), ':', c);
-   if(c > 0){
-      for(var n = 0; n < c; n++){
-         r.append(' [', o._items[n], ']');
-      }
-   }
-   return r.toString();
-}
 function TString(o){
    if(!o){o = this;}
    o._count       = 0;
@@ -3707,6 +3527,7 @@ var RObject = new function RObject(){
    o.clone   = RObject_clone;
    o.copy    = RObject_copy;
    o.free    = RObject_free;
+   o.dispose = RObject_dispose;
    o.release = RObject_release;
    return o;
 }
@@ -3755,6 +3576,12 @@ function RObject_free(p){
          p[n] = null;
       }
    }
+}
+function RObject_dispose(p){
+   if(p){
+      p.dispose();
+   }
+   return null;
 }
 function RObject_release(p){
    if(p){
@@ -5421,6 +5248,199 @@ function TNode_dump(d, space){
    d = RString.nvlStr(d);
    return this.innerDump(d, this, space);
 }
+function TObjects(o){
+   if(!o){o = this;}
+   o._count     = 0;
+   o._items     = new Array();
+   o.isEmpty    = TObjects_isEmpty;
+   o.count      = TObjects_count;
+   o.contains   = TObjects_contains;
+   o.indexOf    = TObjects_indexOf;
+   o.first      = TObjects_first;
+   o.last       = TObjects_last;
+   o.get        = TObjects_get;
+   o.set        = TObjects_set;
+   o.assign     = TObjects_assign;
+   o.append     = TObjects_append;
+   o.insert     = TObjects_insert;
+   o.push       = TObjects_push;
+   o.pushUnique = TObjects_pushUnique;
+   o.pop        = TObjects_pop;
+   o.swap       = TObjects_swap;
+   o.sort       = TObjects_sort;
+   o.erase      = TObjects_erase;
+   o.remove     = TObjects_remove;
+   o.clear      = TObjects_clear;
+   o.disposeAll = TObjects_disposeAll;
+   o.dispose    = TObjects_dispose;
+   o.dump       = TObjects_dump;
+   return o;
+}
+function TObjects_isEmpty(){
+   return (this._count == 0);
+}
+function TObjects_count(){
+   return this._count;
+}
+function TObjects_contains(v){
+   return this.indexOf(v) != -1;
+}
+function TObjects_indexOf(v){
+   var o = this;
+   var c = o._count;
+   for(var n = 0; n < c; n++){
+      if(o._items[n] == v){
+         return n;
+      }
+   }
+   return -1;
+}
+function TObjects_first(){
+   var o = this;
+   return o._count ? this._items[0] : null;
+}
+function TObjects_last(){
+   var o = this;
+   return o._count ? this._items[o._count - 1] : null;
+}
+function TObjects_get(n){
+   var o = this;
+   return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
+}
+function TObjects_set(n, v){
+   var o = this;
+   if((n >= 0) && (n < o._count)){
+      o._items[n] = v;
+   }
+}
+function TObjects_assign(p){
+   var o = this;
+   var c = o._count = p._count;
+   for(var i = 0; i < c; i++){
+      o._items[i] = p._items[i];
+   }
+}
+function TObjects_append(v){
+   var o = this;
+   var c = v._count;
+   for(var n = 0; n < c; n++){
+      o.push(v.get(n));
+   }
+}
+function TObjects_insert(i, v){
+   var o = this;
+   var c = o._count;
+   if((i >= 0) && (i <= c)){
+      for(var n = c; n > i; n--){
+         o._items[n] = o._items[n - 1];
+      }
+      o._items[i] = v;
+   }
+}
+function TObjects_push(v){
+   var n = this._count++;
+   this._items[n] = v;
+   return n;
+}
+function TObjects_pushUnique(v){
+   var o = this;
+   for(var n = o._count-1; n >= 0; n--){
+      if(o._items[n] == v){
+         return n;
+      }
+   }
+   var n = o._count++;
+   o._items[n] = v;
+   return n;
+}
+function TObjects_pop(){
+   var o = this;
+   if(o._count){
+      return o._items[--o._count];
+   }
+}
+function TObjects_swap(l, r){
+   var o = this;
+   if((l >= 0) && (l < o._count) && (r >= 0) && (r < o._count) && (l != r)){
+      var v = o._items[l];
+      o._items[l] = this._items[r];
+      o._items[r] = v;
+   }
+}
+function TObjects_sort(){
+   this._items.sort();
+}
+function TObjects_erase(n){
+   var v = null;
+   var o = this;
+   if((n >= 0) && (n < o._count)){
+      v = o._items[n];
+      var c = --o._count;
+      var s = o._items;
+      for(var i = n; i < c; i++){
+         s[i] = s[i+1];
+      }
+      s[c] = null;
+   }
+   return v;
+}
+function TObjects_remove(v){
+   if(v != null){
+      var o = this;
+      var c = o._count;
+      if(c > 0){
+         var n = 0;
+         var s = o._items;
+         for(var i = n; i < c; i++){
+            if(s[i] != v){
+               s[n++] = s[i];
+            }
+         }
+         for(var i = n; i < c; i++){
+            s[i] = null;
+         }
+         o._count = n;
+      }
+   }
+   return v;
+}
+function TObjects_clear(){
+   var o = this;
+   o._items.length = 0;
+   o._count = 0;
+}
+function TObjects_dispose(){
+   var o = this;
+   for(var n in o._items){
+      o._items[n] = null;
+   }
+   o._count = 0;
+   o._items = null;
+}
+function TObjects_disposeAll(){
+   var o = this;
+   for(var n in o._items){
+      var v = o._items[n];
+      if(v){
+         v.dispose();
+      }
+      o._items[n] = null;
+   }
+   o._count = 0;
+   o._items = null;
+}
+function TObjects_dump(){
+   var o = this;
+   var c = o._count;
+   var r = new TString();
+   r.append(RClass.name(o), ':', c);
+   if(c > 0){
+      for(var n = 0; n < c; n++){
+         r.append(' [', o._items[n], ']');
+      }
+   }
+   return r.toString();
+}
 function TRow(o){
    if(!o){o = this;}
    TAttributes(o);
@@ -5520,7 +5540,7 @@ var RMath = new function RMath(){
    o.PI2          = null;
    o.RADIAN_RATE  = null;
    o.DEGREE_RATE  = null;
-   o.PERCENT_1000 = 1.0 / 1000.0;
+   o.PERCENT_1000 = 1 / 1000;
    o.float1       = null;
    o.float2       = null;
    o.float3       = null;
@@ -5535,7 +5555,10 @@ var RMath = new function RMath(){
    o.double16     = null;
    o.double16     = null;
    o.double64     = null;
+   o.vector3      = null;
+   o.vectorScale  = null;
    o.matrix       = null;
+   o.vectorForward = null;
    o.vectorAxisX  = null;
    o.vectorAxisY  = null;
    o.vectorAxisZ  = null;
@@ -5547,8 +5570,8 @@ function RMath_construct(){
    var o = this;
    o.PI = Math.PI;
    o.PI2 = Math.PI * 2;
-   o.RADIAN_RATE = 180.0 / Math.PI;
-   o.DEGREE_RATE = Math.PI / 180.0;
+   o.RADIAN_RATE = 180 / Math.PI;
+   o.DEGREE_RATE = Math.PI / 180;
    if(RRuntime.supportHtml5()){
       o.float1 = new Float32Array(1);
       o.float2 = new Float32Array(2);
@@ -5565,13 +5588,18 @@ function RMath_construct(){
       o.double12 = new Float64Array(12);
       o.double16 = new Float64Array(16);
    }
+   o.vector3 = new SVector3();
+   o.vectorScale = new SVector3();
+   o.vectorScale.set(1, 1, 1);
    o.matrix = new SMatrix3d();
+   o.vectorForward = new SVector3();
+   o.vectorForward.set(0, 0, 1);
    o.vectorAxisX = new SVector3();
-   o.vectorAxisX.set(1.0, 0.0, 0.0);
+   o.vectorAxisX.set(1, 0, 0);
    o.vectorAxisY = new SVector3();
-   o.vectorAxisY.set(0.0, 1.0, 0.0);
+   o.vectorAxisY.set(0, 1, 0);
    o.vectorAxisZ = new SVector3();
-   o.vectorAxisZ.set(0.0, 0.0, 1.0);
+   o.vectorAxisZ.set(0, 0, 1);
 }
 function SColor4(o){
    if(!o){o = this;}
@@ -5944,15 +5972,15 @@ function SMatrix3d(o){
    if(!o){o = this;}
    SMatrix4x4(o);
    o._dirty         = false;
-   o.tx             = 0.0;
-   o.ty             = 0.0;
-   o.tz             = 0.0;
-   o.rx             = 0.0;
-   o.ry             = 0.0;
-   o.rz             = 0.0;
-   o.sx             = 1.0;
-   o.sy             = 1.0;
-   o.sz             = 1.0;
+   o.tx             = 0;
+   o.ty             = 0;
+   o.tz             = 0;
+   o.rx             = 0;
+   o.ry             = 0;
+   o.rz             = 0;
+   o.sx             = 1;
+   o.sy             = 1;
+   o.sz             = 1;
    o.identity       = SMatrix3d_identity;
    o.setTranslate   = SMatrix3d_setTranslate;
    o.setRotation    = SMatrix3d_setRotation;
@@ -5962,7 +5990,6 @@ function SMatrix3d(o){
    o.equals         = SMatrix3d_equals;
    o.assign         = SMatrix3d_assign;
    o.append         = SMatrix3d_append;
-   o.build          = SMatrix3d_build;
    o.updateForce    = SMatrix3d_updateForce;
    o.update         = SMatrix3d_update;
    o.serialize      = SMatrix3d_serialize;
@@ -6037,34 +6064,6 @@ function SMatrix3d_assign(p){
 function SMatrix3d_append(p){
    this.appendData(p._data);
 }
-function SMatrix3d_build(t, r, s){
-   var d = this._data;
-   var x2 = r.x * r.x;
-   var y2 = r.y * r.y;
-   var z2 = r.z * r.z;
-   var xy = r.x * r.y;
-   var xz = r.x * r.z;
-   var yz = r.y * r.z;
-   var wx = r.w * r.x;
-   var wy = r.w * r.y;
-   var wz = r.w * r.z;
-   d[ 0] = (1.0 - 2.0 * (y2 + z2)) * s.x;
-   d[ 1] = 2.0 * (xy - wz) * s.x;
-   d[ 2] = 2.0 * (xz + wy) * s.x;
-   d[ 3] = 0.0;
-   d[ 4] = 2.0 * (xy + wz) * s.y;
-   d[ 5] = (1.0 - 2.0 * (x2 + z2)) * s.y;
-   d[ 6] = 2.0 * (yz - wx) * s.x;
-   d[ 7] = 0.0;
-   d[ 8] = 2.0 * (xz - wy) * s.z;
-   d[ 9] = 2.0 * (yz + wx) * s.z;
-   d[10] = (1.0 - 2.0 * (x2 + y2)) * s.z;
-   d[11] = 0.0;
-   d[12] = t.x;
-   d[13] = t.y;
-   d[14] = t.z;
-   d[15] = 1.0;
-}
 function SMatrix3d_updateForce(){
    var o = this;
    var d = o._data;
@@ -6077,19 +6076,19 @@ function SMatrix3d_updateForce(){
    d[ 0] = rcy * rcz * o.sx;
    d[ 1] = rcy * rsz * o.sx;
    d[ 2] = -rsy * o.sx;
-   d[ 3] = 0.0;
+   d[ 3] = 0;
    d[ 4] = (rsx * rsy * rcz - rcx * rsz) * o.sy;
    d[ 5] = (rsx * rsy * rsz + rcx * rcz) * o.sy;
    d[ 6] = rsx * rcy * o.sy;
-   d[ 7] = 0.0;
+   d[ 7] = 0;
    d[ 8] = (rcx * rsy * rcz + rsx * rsz) * o.sz;
    d[ 9] = (rcx * rsy * rsz - rsx * rcz) * o.sz;
    d[10] = rcx * rcy * o.sz;
-   d[11] = 0.0;
+   d[11] = 0;
    d[12] = o.tx;
    d[13] = o.ty;
    d[14] = o.tz;
-   d[15] = 1.0;
+   d[15] = 1;
 }
 function SMatrix3d_update(){
    var o = this;
@@ -6123,23 +6122,246 @@ function SMatrix3d_unserialize(p){
    o.sz = p.readFloat();
    o.updateForce();
 }
+function SMatrix3x3(o){
+   if(!o){o = this;}
+   o._data           = new Array(9);
+   o.data            = SMatrix3x3_data;
+   o.equalsData      = SMatrix3x3_equalsData;
+   o.assignData      = SMatrix3x3_assignData;
+   o.appendData      = SMatrix3x3_appendData;
+   o.rotationX       = SMatrix3x3_rotationX;
+   o.rotationY       = SMatrix3x3_rotationY;
+   o.rotationZ       = SMatrix3x3_rotationZ;
+   o.rotation        = SMatrix3x3_rotation;
+   o.invert          = SMatrix3x3_invert;
+   o.transform       = SMatrix3x3_transform;
+   o.transformPoint3 = SMatrix3x3_transformPoint3;
+   o.build           = SMatrix3x3_build;
+   o.writeData       = SMatrix3x3_writeData;
+   o.toString        = SMatrix3x3_toString;
+   return o;
+}
+function SMatrix3x3_data(){
+   return this._data;
+}
+function SMatrix3x3_equalsData(p){
+   var d = this._data;
+   for(var i = 0; i < 9; i++){
+      if(d[i] != p[i]){
+         return false;
+      }
+   }
+   return true;
+}
+function SMatrix3x3_assignData(p){
+   var d = this._data;
+   for(var n = 0; n < 9; n++){
+      d[n] = p[n];
+   }
+}
+function SMatrix3x3_appendData(p){
+   var d = this._data;
+   var v0 = (d[0] * p[0]) + (d[1] * p[3]) + (d[2] * p[6]);
+   var v1 = (d[0] * p[1]) + (d[1] * p[4]) + (d[2] * p[7]);
+   var v2 = (d[0] * p[2]) + (d[1] * p[5]) + (d[2] * p[8]);
+   var v3 = (d[3] * p[0]) + (d[4] * p[3]) + (d[5] * p[6]);
+   var v4 = (d[3] * p[1]) + (d[4] * p[4]) + (d[5] * p[7]);
+   var v5 = (d[3] * p[2]) + (d[4] * p[5]) + (d[5] * p[8]);
+   var v6 = (d[6] * p[0]) + (d[7] * p[3]) + (d[8] * p[6]);
+   var v7 = (d[6] * p[1]) + (d[7] * p[4]) + (d[8] * p[7]);
+   var v8 = (d[6] * p[2]) + (d[7] * p[5]) + (d[8] * p[8]);
+   d[0] = v0;
+   d[1] = v1;
+   d[2] = v2;
+   d[3] = v3;
+   d[4] = v4;
+   d[5] = v5;
+   d[6] = v6;
+   d[7] = v7;
+   d[8] = v8;
+}
+function SMatrix3x3_rotationX(p){
+   var rs = Math.sin(p);
+   var rc = Math.cos(p);
+   var v = RMath.float9;
+   v[0] = 1;
+   v[1] = 0;
+   v[2] = 0;
+   v[3] = 0;
+   v[4] = rc;
+   v[5] = rs;
+   v[6] = 0;
+   v[7] = -rs;
+   v[8] = rc;
+   this.appendData(v);
+}
+function SMatrix3x3_rotationY(p){
+   var rs = Math.sin(p);
+   var rc = Math.cos(p);
+   var v = RMath.float9;
+   v[0] = rc;
+   v[1] = 0;
+   v[2] = rs;
+   v[3] = 0;
+   v[4] = 1;
+   v[5] = 0;
+   v[6] = -rs;
+   v[7] = 0;
+   v[8] = rc;
+   this.appendData(v);
+}
+function SMatrix3x3_rotationZ(p){
+   var rs = Math.sin(p);
+   var rc = Math.cos(p);
+   var v = RMath.float9;
+   v[0] = rc;
+   v[1] = rs;
+   v[2] = 0;
+   v[3] = -rs;
+   v[4] = rc;
+   v[5] = 1;
+   v[6] = 0;
+   v[7] = 0;
+   v[8] = 1;
+   this.appendData(v);
+}
+function SMatrix3x3_rotation(x, y, z){
+   var rsx = Math.sin(x);
+   var rcx = Math.cos(x);
+   var rsy = Math.sin(y);
+   var rcy = Math.cos(y);
+   var rsz = Math.sin(z);
+   var rcz = Math.cos(z);
+   var v = RMath.float9;
+   v[0] = rcy * rcz;
+   v[1] = rcy * rsz;
+   v[2] = -rsy;
+   v[3] = rsx * rsy * rcz - rcx * rsz;
+   v[4] = rsx * rsy * rsz + rcx * rcz;
+   v[5] = rsx * rcy;
+   v[6] = rcx * rsy * rcz + rsx * rsz;
+   v[7] = rcx * rsy * rsz - rsx * rcx;
+   v[8] = rcx * rcy;
+   this.appendData(v);
+}
+function SMatrix3x3_invert(){
+   var o = this;
+   var d = o._data;
+   var v = RMath.float9;
+   v[0] = (d[4] * d[8]) - (d[5] * d[7]);
+   v[1] = (d[2] * d[7]) - (d[1] * d[8]);
+   v[2] = (d[1] * d[5]) - (d[2] * d[4]);
+   v[3] = (d[5] * d[6]) - (d[3] * d[8]);
+   v[4] = (d[0] * d[8]) - (d[2] * d[6]);
+   v[5] = (d[2] * d[3]) - (d[0] * d[5]);
+   v[6] = (d[3] * d[7]) - (d[4] * d[6]);
+   v[7] = (d[1] * d[6]) - (d[0] * d[7]);
+   v[8] = (d[0] * d[4]) - (d[1] * d[3]);
+   var r = (d[0] * v[0]) + (d[1] * v[3]) + (d[2] * v[6]);
+   if(r == 0){
+      return false;
+   }
+   r = 1 / r;
+   for(var i = 0; i < 9; i++){
+      d[i] = v[i] * r;
+   }
+   return true;
+}
+function SMatrix3x3_transform(po, pi, pc){
+   var d = this._data;
+   for(var i = 0; i < pc; i++){
+      var n = (i << 1) + i;
+      po[n    ] = (pi[n] * d[0]) + (pi[n + 1] * d[3]) +(pi[n + 2] * d[6]);
+      po[n + 1] = (pi[n] * d[1]) + (pi[n + 1] * d[4]) +(pi[n + 2] * d[7]);
+      po[n + 2] = (pi[n] * d[2]) + (pi[n + 1] * d[5]) +(pi[n + 2] * d[8]);
+   }
+}
+function SMatrix3x3_transformPoint3(pi, po){
+   var d = this._data;
+   var x = (pi.x * d[0]) + (pi.y * d[3]) +(pi.z * d[6]);
+   var y = (pi.x * d[1]) + (pi.y * d[4]) +(pi.z * d[7]);
+   var z = (pi.x * d[2]) + (pi.y * d[5]) +(pi.z * d[8]);
+   var r = null;
+   if(po){
+      r = po;
+   }else{
+      r = new SPoint3();
+   }
+   r.set(x, y, z);
+   return r;
+}
+function SMatrix3x3_build(r){
+   var d = this._data;
+   var x2 = r.x * r.x;
+   var y2 = r.y * r.y;
+   var z2 = r.z * r.z;
+   var xy = r.x * r.y;
+   var xz = r.x * r.z;
+   var yz = r.y * r.z;
+   var wx = r.w * r.x;
+   var wy = r.w * r.y;
+   var wz = r.w * r.z;
+   d[0] = 1 - 2 * (y2 + z2);
+   d[1] = 2 * (xy - wz);
+   d[2] = 2 * (xz + wy);
+   d[3] = 2 * (xy + wz);
+   d[4] = 1 - 2 * (x2 + z2);
+   d[5] = 2 * (yz - wx);
+   d[6] = 2 * (xz - wy);
+   d[7] = 2 * (yz + wx);
+   d[8] = 1 - 2 * (x2 + y2);
+}
+function SMatrix3x3_writeData(d, i){
+   var o = this;
+   var pd = o._data;
+   d[i++] = pd[0];
+   d[i++] = pd[3];
+   d[i++] = pd[6];
+   d[i++] = pd[1];
+   d[i++] = pd[4];
+   d[i++] = pd[7];
+   d[i++] = pd[2];
+   d[i++] = pd[5];
+   d[i++] = pd[8];
+}
+function SMatrix3x3_toString(){
+   var d = this._data;
+   var r = new TString();
+   for(var y = 0; y < 3; y++){
+      if(y > 0){
+         r.append('|');
+      }
+      for(var x = 0; x < 3; x++){
+         var i = y * 3 + x;
+         var v = d[i];
+         if(x > 0){
+            r.append(',');
+         }
+         r.append(RFloat.format(v, 0, null, 3, null));
+      }
+   }
+   return r.flush();
+}
 function SMatrix4x4(o){
    if(!o){o = this;}
-   o._data      = new Array(16);
-   o.data       = SMatrix4x4_data;
-   o.equalsData = SMatrix4x4_equalsData;
-   o.assignData = SMatrix4x4_assignData;
-   o.appendData = SMatrix4x4_appendData;
-   o.translate  = SMatrix4x4_translate;
-   o.rotationX  = SMatrix4x4_rotationX;
-   o.rotationY  = SMatrix4x4_rotationY;
-   o.rotationZ  = SMatrix4x4_rotationZ;
-   o.rotation   = SMatrix4x4_rotation;
-   o.scale      = SMatrix4x4_scale;
-   o.invert     = SMatrix4x4_invert;
-   o.transform  = SMatrix4x4_transform;
-   o.writeData  = SMatrix4x4_writeData;
-   o.toString   = SMatrix4x4_toString;
+   o._data           = new Array(16);
+   o.data            = SMatrix4x4_data;
+   o.equalsData      = SMatrix4x4_equalsData;
+   o.assignData      = SMatrix4x4_assignData;
+   o.appendData      = SMatrix4x4_appendData;
+   o.translate       = SMatrix4x4_translate;
+   o.rotationX       = SMatrix4x4_rotationX;
+   o.rotationY       = SMatrix4x4_rotationY;
+   o.rotationZ       = SMatrix4x4_rotationZ;
+   o.rotation        = SMatrix4x4_rotation;
+   o.scale           = SMatrix4x4_scale;
+   o.invert          = SMatrix4x4_invert;
+   o.transform       = SMatrix4x4_transform;
+   o.transformPoint3 = SMatrix4x4_transformPoint3;
+   o.buildQuaternion = SMatrix4x4_buildQuaternion;
+   o.build           = SMatrix4x4_build;
+   o.writeData       = SMatrix4x4_writeData;
+   o.toString        = SMatrix4x4_toString;
    return o;
 }
 function SMatrix4x4_data(){
@@ -6348,24 +6570,93 @@ function SMatrix4x4_invert(){
    v[11] = -(d[ 0] * d[ 5] * d[11]) + (d[ 0] * d[ 7] * d[ 9]) + (d[ 4] * d[ 1] * d[11]) - (d[ 4] * d[ 3] * d[ 9]) - (d[ 8] * d[ 1] * d[ 7]) + (d[ 8] * d[ 3] * d[ 5]);
    v[15] =  (d[ 0] * d[ 5] * d[10]) - (d[ 0] * d[ 6] * d[ 9]) - (d[ 4] * d[ 1] * d[10]) + (d[ 4] * d[ 2] * d[ 9]) + (d[ 8] * d[ 1] * d[ 6]) - (d[ 8] * d[ 2] * d[ 5]);
    var r = d[ 0] * v[ 0] + d[ 1] * v[ 4] + d[ 2] * v[ 8] + d[ 3] * v[12];
-   if(r == 0.0){
+   if(r == 0){
      return false;
    }
-   r = 1.0 / r;
+   r = 1 / r;
    for(var i = 0; i < 16; i++){
       d[i] = v[i] * r;
    }
    return true;
 }
 function SMatrix4x4_transform(po, pi, pc){
-   var o = this;
-   var d = o._data;
+   var d = this._data;
    for(var i = 0; i < pc; i++){
       var n = (i << 1) + i;
       po[n    ] = (pi[n] * d[ 0]) + (pi[n + 1] * d[ 4]) +(pi[n + 2] * d[ 8]) + d[12];
       po[n + 1] = (pi[n] * d[ 1]) + (pi[n + 1] * d[ 5]) +(pi[n + 2] * d[ 9]) + d[13];
       po[n + 2] = (pi[n] * d[ 2]) + (pi[n + 1] * d[ 6]) +(pi[n + 2] * d[10]) + d[14];
    }
+}
+function SMatrix4x4_transformPoint3(pi, po){
+   var d = this._data;
+   var x = (pi.x * d[ 0]) + (pi.y * d[ 4]) +(pi.z * d[ 8]) + d[12];
+   var y = (pi.x * d[ 1]) + (pi.y * d[ 5]) +(pi.z * d[ 9]) + d[13];
+   var z = (pi.x * d[ 2]) + (pi.y * d[ 6]) +(pi.z * d[10]) + d[14];
+   var r = null;
+   if(po){
+      r = po;
+   }else{
+      r = new SPoint3();
+   }
+   r.set(x, y, z);
+   return r;
+}
+function SMatrix4x4_build(t, r, s){
+   var d = this._data;
+   var x2 = r.x * r.x;
+   var y2 = r.y * r.y;
+   var z2 = r.z * r.z;
+   var xy = r.x * r.y;
+   var xz = r.x * r.z;
+   var yz = r.y * r.z;
+   var wx = r.w * r.x;
+   var wy = r.w * r.y;
+   var wz = r.w * r.z;
+   d[ 0] = (1 - 2 * (y2 + z2)) * s.x;
+   d[ 1] = 2 * (xy - wz) * s.x;
+   d[ 2] = 2 * (xz + wy) * s.x;
+   d[ 3] = 0;
+   d[ 4] = 2 * (xy + wz) * s.y;
+   d[ 5] = (1 - 2 * (x2 + z2)) * s.y;
+   d[ 6] = 2 * (yz - wx) * s.y;
+   d[ 7] = 0;
+   d[ 8] = 2 * (xz - wy) * s.z;
+   d[ 9] = 2 * (yz + wx) * s.z;
+   d[10] = (1 - 2 * (x2 + y2)) * s.z;
+   d[11] = 0;
+   d[12] = t.x;
+   d[13] = t.y;
+   d[14] = t.z;
+   d[15] = 1;
+}
+function SMatrix4x4_buildQuaternion(r){
+   var d = this._data;
+   var x2 = r.x * r.x;
+   var y2 = r.y * r.y;
+   var z2 = r.z * r.z;
+   var xy = r.x * r.y;
+   var xz = r.x * r.z;
+   var yz = r.y * r.z;
+   var wx = r.w * r.x;
+   var wy = r.w * r.y;
+   var wz = r.w * r.z;
+   d[ 0] = 1 - 2 * (y2 + z2);
+   d[ 1] = 2 * (xy - wz);
+   d[ 2] = 2 * (xz + wy);
+   d[ 3] = 0;
+   d[ 4] = 2 * (xy + wz);
+   d[ 5] = 1 - 2 * (x2 + z2);
+   d[ 6] = 2 * (yz - wx);
+   d[ 7] = 0;
+   d[ 8] = 2 * (xz - wy);
+   d[ 9] = 2 * (yz + wx);
+   d[10] = 1 - 2 * (x2 + y2);
+   d[11] = 0;
+   d[12] = 0;
+   d[13] = 0;
+   d[14] = 0;
+   d[15] = 1;
 }
 function SMatrix4x4_writeData(d, i){
    var o = this;
@@ -6496,8 +6787,8 @@ function SOrthoMatrix3d_perspectiveFieldOfViewRH(pv, pr, pn, pf){
 }
 function SOutline3(o){
    if(!o){o = this;}
-   o.min = new SPoint3();
-   o.max = new SPoint3();
+   o.min         = new SPoint3();
+   o.max         = new SPoint3();
    o.assign      = SOutline3_assign;
    o.serialize   = SOutline3_serialize
    o.unserialize = SOutline3_unserialize
@@ -6789,6 +7080,7 @@ function SPoint3(x, y, z){
    o.z           = RInteger.nvl(z);
    o.assign      = SPoint3_assign;
    o.set         = SPoint3_set;
+   o.conjugate   = SPoint3_conjugate;
    o.resize      = SPoint3_resize;
    o.slerp       = SPoint3_slerp;
    o.serialize   = SPoint3_serialize;
@@ -6814,6 +7106,19 @@ function SPoint3_set(x, y, z){
    if(z != null){
       o.z = z;
    }
+}
+function SPoint3_conjugate(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SPoint3();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   return r;
 }
 function SPoint3_resize(x, y, z){
    var o = this;
@@ -6907,21 +7212,33 @@ function SPoint4_toString(){
 }
 function SQuaternion(o){
    if(!o){o = this;}
-   o.x             = 0.0;
-   o.y             = 0.0;
-   o.z             = 0.0;
-   o.w             = 1.0;
+   o.x             = 0;
+   o.y             = 0;
+   o.z             = 0;
+   o.w             = 1;
+   o.identity      = SQuaternion_identity;
    o.assign        = SQuaternion_assign;
    o.set           = SQuaternion_set;
    o.absolute      = SQuaternion_absolute;
    o.normalize     = SQuaternion_normalize;
+   o.conjugate     = SQuaternion_conjugate;
    o.mul           = SQuaternion_mul;
    o.mul2          = SQuaternion_mul2;
+   o.translate     = SQuaternion_translate;
    o.slerp         = SQuaternion_slerp;
    o.fromAxisAngle = SQuaternion_fromAxisAngle;
+   o.fromEuler     = SQuaternion_fromEuler;
+   o.parseEuler    = SQuaternion_parseEuler;
    o.serialize     = SQuaternion_serialize;
    o.unserialize   = SQuaternion_unserialize;
+   o.clone         = SQuaternion_clone;
    o.toString      = SQuaternion_toString;
+   return o;
+}
+function SQuaternion_identity(){
+   var o = this;
+   o.x = o.y = o.z = 0;
+   o.w = 1;
    return o;
 }
 function SQuaternion_assign(p){
@@ -6945,11 +7262,27 @@ function SQuaternion_absolute(){
 function SQuaternion_normalize(){
    var o = this;
    var a = o.absolute();
-   var v = 1.0 / a;
-   o.x *= v;
-   o.y *= v;
-   o.z *= v;
-   o.w *= v;
+   if(a != 0){
+      var v = 1 / a;
+      o.x *= v;
+      o.y *= v;
+      o.z *= v;
+      o.w *= v;
+   }
+}
+function SQuaternion_conjugate(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SQuaternion();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   r.w = o.w;
+   return r;
 }
 function SQuaternion_mul(p){
    var o = this;
@@ -6969,23 +7302,41 @@ function SQuaternion_mul2(p1, p2){
    o.z = (p1.w * p2.z) + (p1.z * p2.w) + (p1.x * p2.y) - (p1.y * p2.x);
    o.w = (p1.w * p2.w) - (p1.x * p2.x) - (p1.y * p2.y) - (p1.z * p2.z);
 }
+function SQuaternion_translate(pi, po){
+   var o = this;
+   var q1 = new SQuaternion();
+   q1.set(pi.x, pi.y, pi.z, 0);
+   q1.normalize();
+   var q2 = o.conjugate();
+   q1.mul(q2);
+   var q = o.clone();
+   q.mul(q1);
+   var r = null;
+   if(po){
+      r = po;
+   }else{
+      r = new SVector3();
+   }
+   r.set(q.x, q.y, q.z);
+   return r;
+}
 function SQuaternion_slerp(v1, v2, r){
    var o = this;
    var rv = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
    var rf = false;
-   if (rv < 0.0){
+   if (rv < 0){
       rf = true;
       rv = -rv;
    }
-   var r1 = 0.0;
-   var r2 = 0.0;
+   var r1 = 0;
+   var r2 = 0;
    if(rv > 0.999999){
-      r1 = 1.0 - r;
+      r1 = 1 - r;
       r2 = rf ? -r : r;
    }else{
       var ra = Math.acos(rv);
-      var rb = 1.0 / Math.sin(ra);
-      r1 = Math.sin((1.0 - r) * ra) * rb;
+      var rb = 1 / Math.sin(ra);
+      r1 = Math.sin((1 - r) * ra) * rb;
       r2 = rf ? (-Math.sin(r * ra) * rb) : (Math.sin(r * ra) * rb);
    }
    o.x = (r1 * v1.x) + (r2 * v2.x);
@@ -7002,6 +7353,35 @@ function SQuaternion_fromAxisAngle(a, g){
    o.z = a.z * s;
    o.w = Math.cos(r);
 }
+function SQuaternion_fromEuler(p, y, r){
+   var o = this;
+   var sr = Math.sin(r * 0.5);
+   var cr = Math.cos(r * 0.5);
+   var sp = Math.sin(p * 0.5);
+   var cp = Math.cos(p * 0.5);
+   var sy = Math.sin(y * 0.5);
+   var cy = Math.cos(y * 0.5);
+   o.x = cr * sp * cy + sr * cp * sy;
+   o.y = cr * cp * sy - sr * sp * cy;
+   o.z = sr * cp * cy - cr * sp * sy;
+   o.w = cr * cp * cy + sr * sp * sy;
+}
+function SQuaternion_parseEuler(p){
+   var o = this;
+   var x2 = o.x * o.x;
+   var y2 = o.y * o.y;
+   var z2 = o.z * o.z;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SVector3();
+   }
+   r.x = Math.asin(RFloat.toRange((o.w * o.x - o.y * o.z) * 2, -1, 1));
+   r.y = Math.atan2(2 * (o.w * o.y + o.z * o.x) , 1 - 2 * (x2 + y2));
+   r.z = Math.atan2(2 * (o.w * o.z + o.x * o.y) , 1 - 2 * (z2 + x2));
+   return r;
+}
 function SQuaternion_serialize(p){
    var o = this;
    p.writeFloat(o.x);
@@ -7015,6 +7395,15 @@ function SQuaternion_unserialize(p){
    o.y = p.readFloat();
    o.z = p.readFloat();
    o.w = p.readFloat();
+}
+function SQuaternion_clone(){
+   var o = this;
+   var r = new SQuaternion();
+   r.x = o.x;
+   r.y = o.y;
+   r.z = o.z;
+   r.w = o.w;
+   return r;
 }
 function SQuaternion_toString(){
    var o = this;
@@ -7313,12 +7702,14 @@ function SVector3(o){
    o.set         = SVector3_set;
    o.absolute    = SVector3_absolute;
    o.normalize   = SVector3_normalize;
+   o.conjugate   = SVector3_conjugate;
    o.dotPoint3   = SVector3_dotPoint3;
    o.cross       = SVector3_cross;
    o.cross2      = SVector3_cross2;
    o.slerp       = SVector3_slerp;
    o.serialize   = SVector3_serialize;
    o.unserialize = SVector3_unserialize;
+   o.clone       = SVector3_clone;
    o.toString    = SVector3_toString;
    return o;
 }
@@ -7341,11 +7732,24 @@ function SVector3_absolute(){
 function SVector3_normalize(){
    var o = this;
    var v = o.absolute();
-   if(v != 0.0){
+   if(v != 0){
       o.x /= v;
       o.y /= v;
       o.z /= v;
    }
+}
+function SVector3_conjugate(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SVector3();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   return r;
 }
 function SVector3_dotPoint3(v){
    var o = this;
@@ -7383,6 +7787,14 @@ function SVector3_unserialize(p){
    o.x = p.readFloat();
    o.y = p.readFloat();
    o.z = p.readFloat();
+}
+function SVector3_clone(){
+   var o = this;
+   var r = new SVector3();
+   r.x = o.x;
+   r.y = o.y;
+   r.z = o.z;
+   return r;
 }
 function SVector3_toString(){
    var o = this;

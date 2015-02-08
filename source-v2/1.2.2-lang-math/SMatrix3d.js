@@ -12,15 +12,15 @@ function SMatrix3d(o){
    // @attribute
    o._dirty         = false;
    // @attribute
-   o.tx             = 0.0;
-   o.ty             = 0.0;
-   o.tz             = 0.0;
-   o.rx             = 0.0;
-   o.ry             = 0.0;
-   o.rz             = 0.0;
-   o.sx             = 1.0;
-   o.sy             = 1.0;
-   o.sz             = 1.0;
+   o.tx             = 0;
+   o.ty             = 0;
+   o.tz             = 0;
+   o.rx             = 0;
+   o.ry             = 0;
+   o.rz             = 0;
+   o.sx             = 1;
+   o.sy             = 1;
+   o.sz             = 1;
    //..........................................................
    // @method
    o.identity       = SMatrix3d_identity;
@@ -32,7 +32,6 @@ function SMatrix3d(o){
    o.equals         = SMatrix3d_equals;
    o.assign         = SMatrix3d_assign;
    o.append         = SMatrix3d_append;
-   o.build          = SMatrix3d_build;
    o.updateForce    = SMatrix3d_updateForce;
    o.update         = SMatrix3d_update;
    o.serialize      = SMatrix3d_serialize;
@@ -190,43 +189,6 @@ function SMatrix3d_append(p){
 }
 
 //============================================================
-// <T>构建一个矩阵。</T>
-//
-// @method
-// @param t:translation:SPoint3 位移
-// @param r:quaternion:SQuaternion 旋转
-// @param s:scale:SVector3 缩放
-//============================================================
-function SMatrix3d_build(t, r, s){
-   var d = this._data;
-   var x2 = r.x * r.x;
-   var y2 = r.y * r.y;
-   var z2 = r.z * r.z;
-   var xy = r.x * r.y;
-   var xz = r.x * r.z;
-   var yz = r.y * r.z;
-   var wx = r.w * r.x;
-   var wy = r.w * r.y;
-   var wz = r.w * r.z;
-   d[ 0] = (1.0 - 2.0 * (y2 + z2)) * s.x;
-   d[ 1] = 2.0 * (xy - wz) * s.x;
-   d[ 2] = 2.0 * (xz + wy) * s.x;
-   d[ 3] = 0.0;
-   d[ 4] = 2.0 * (xy + wz) * s.y;
-   d[ 5] = (1.0 - 2.0 * (x2 + z2)) * s.y;
-   d[ 6] = 2.0 * (yz - wx) * s.x;
-   d[ 7] = 0.0;
-   d[ 8] = 2.0 * (xz - wy) * s.z;
-   d[ 9] = 2.0 * (yz + wx) * s.z;
-   d[10] = (1.0 - 2.0 * (x2 + y2)) * s.z;
-   d[11] = 0.0;
-   d[12] = t.x;
-   d[13] = t.y;
-   d[14] = t.z;
-   d[15] = 1.0;
-}
-
-//============================================================
 // <T>强制更新数据。</T>
 //
 // @method
@@ -243,19 +205,19 @@ function SMatrix3d_updateForce(){
    d[ 0] = rcy * rcz * o.sx;
    d[ 1] = rcy * rsz * o.sx;
    d[ 2] = -rsy * o.sx;
-   d[ 3] = 0.0;
+   d[ 3] = 0;
    d[ 4] = (rsx * rsy * rcz - rcx * rsz) * o.sy;
    d[ 5] = (rsx * rsy * rsz + rcx * rcz) * o.sy;
    d[ 6] = rsx * rcy * o.sy;
-   d[ 7] = 0.0;
+   d[ 7] = 0;
    d[ 8] = (rcx * rsy * rcz + rsx * rsz) * o.sz;
    d[ 9] = (rcx * rsy * rsz - rsx * rcz) * o.sz;
    d[10] = rcx * rcy * o.sz;
-   d[11] = 0.0;
+   d[11] = 0;
    d[12] = o.tx;
    d[13] = o.ty;
    d[14] = o.tz;
-   d[15] = 1.0;
+   d[15] = 1;
 }
 
 //============================================================

@@ -18,12 +18,14 @@ function SVector3(o){
    o.set         = SVector3_set;
    o.absolute    = SVector3_absolute;
    o.normalize   = SVector3_normalize;
+   o.conjugate   = SVector3_conjugate;
    o.dotPoint3   = SVector3_dotPoint3;
    o.cross       = SVector3_cross;
    o.cross2      = SVector3_cross2;
    o.slerp       = SVector3_slerp;
    o.serialize   = SVector3_serialize;
    o.unserialize = SVector3_unserialize;
+   o.clone       = SVector3_clone;
    o.toString    = SVector3_toString;
    return o;
 }
@@ -75,11 +77,32 @@ function SVector3_absolute(){
 function SVector3_normalize(){
    var o = this;
    var v = o.absolute();
-   if(v != 0.0){
+   if(v != 0){
       o.x /= v;
       o.y /= v;
       o.z /= v;
    }
+}
+
+//============================================================
+// <T>获得反方向。</T>
+//
+// @method
+// @param p:value:SQuaternion 四元数
+// @return SQuaternion 四元数
+//============================================================
+function SVector3_conjugate(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SVector3();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   return r;
 }
 
 //==========================================================
@@ -162,6 +185,21 @@ function SVector3_unserialize(p){
    o.x = p.readFloat();
    o.y = p.readFloat();
    o.z = p.readFloat();
+}
+
+//==========================================================
+// <T>获得克隆对象。</T>
+//
+// @method
+// @return SVector3 克隆对象
+//==========================================================
+function SVector3_clone(){
+   var o = this;
+   var r = new SVector3();
+   r.x = o.x;
+   r.y = o.y;
+   r.z = o.z;
+   return r;
 }
 
 //==========================================================

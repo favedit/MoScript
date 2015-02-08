@@ -39,7 +39,7 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    o.bindMaterial(m);
    // 绑定顶点常量
    p.setParameter('vc_light_depth', vlci);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', vcvpm);
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);

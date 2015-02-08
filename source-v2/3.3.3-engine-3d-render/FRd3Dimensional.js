@@ -16,7 +16,7 @@
 // @history 141231
 //==========================================================
 function FRd3Dimensional(o){
-   o = RClass.inherits(this, o, FG3dRenderable);
+   o = RClass.inherits(this, o, FRd3Renderable);
    //..........................................................
    // @attribute
    o._cellSize             = null;
@@ -26,19 +26,11 @@ function FRd3Dimensional(o){
    // @attribute
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
-   o._vertexBuffers        = null;
-   o._indexBuffer          = null;
    //..........................................................
    // @method
    o.construct             = FRd3Dimensional_construct;
+   // @method
    o.setup                 = FRd3Dimensional_setup;
-   o.testVisible           = RMethod.emptyTrue;
-   o.vertexCount           = FRd3Dimensional_vertexCount;
-   o.findVertexBuffer      = FRd3Dimensional_findVertexBuffer;
-   o.vertexBuffers         = FRd3Dimensional_vertexBuffers;
-   o.indexBuffer           = FRd3Dimensional_indexBuffer;
-   o.textures              = RMethod.empty;
-   o.bones                 = RMethod.empty;
    return o;
 }
 
@@ -49,12 +41,11 @@ function FRd3Dimensional(o){
 //==========================================================
 function FRd3Dimensional_construct(){
    var o = this;
-   o.__base.FG3dRenderable.construct.call(o);
+   o.__base.FRd3Renderable.construct.call(o);
    o._cellSize = new SSize2();
    o._cellSize.set(1, 1);
    o._size = new SSize2();
    o._size.set(16, 16);
-   o._vertexBuffers = new TObjects();
 }
 
 //==========================================================
@@ -65,8 +56,9 @@ function FRd3Dimensional_construct(){
 // @param w:width:Number 宽度
 // @param h:height:Number 高度
 //==========================================================
-function FRd3Dimensional_setup(p){
+function FRd3Dimensional_setup(){
    var o = this;
+   var c = o._graphicContext;
    // 设置变量
    var cw = o._cellSize.width;
    var ch = o._cellSize.height;
@@ -109,11 +101,11 @@ function FRd3Dimensional_setup(p){
       id[i++] = vi++;
    }
    // 中间横线
-   vd[v++] = cw * -sw2 - cw;
+   vd[v++] = cw * -sw2;
    vd[v++] = 0;
    vd[v++] = 0;
    // 结束点
-   vd[v++] = cw * sw2 + cw;
+   vd[v++] = cw * sw2;
    vd[v++] = 0;
    vd[v++] = 0;
    // 颜色设置
@@ -153,11 +145,11 @@ function FRd3Dimensional_setup(p){
    // 中间纵线
    vd[v++] = 0;
    vd[v++] = 0;
-   vd[v++] = ch * - sh2 - ch;
+   vd[v++] = ch * -sh2;
    // 结束点
    vd[v++] = 0;
    vd[v++] = 0;
-   vd[v++] = ch * sh2 + ch;
+   vd[v++] = ch * sh2;
    // 颜色设置
    for(var ci = 0; ci < 2; ci++){
       vcd[vci++] = 255;
@@ -171,40 +163,20 @@ function FRd3Dimensional_setup(p){
    //..........................................................
    o._vertexCount = vc;
    // 上传顶点数据
-   var vb = o._vertexPositionBuffer = p.createVertexBuffer();
+   var vb = o._vertexPositionBuffer = c.createVertexBuffer();
    vb._name = 'position';
    vb._formatCd = EG3dAttributeFormat.Float3;
    vb.upload(vd, 4 * 3, vc);
-   o._vertexBuffers.push(vb);
+   o._vertexBuffers.set(vb._name, vb);
    // 上传颜色数据
-   var vb = o._vertexColorBuffer = p.createVertexBuffer();
+   var vb = o._vertexColorBuffer = c.createVertexBuffer();
    vb._name = 'color';
    vb._formatCd = EG3dAttributeFormat.Byte4Normal;
    vb.upload(vcd, 4, vc);
-   o._vertexBuffers.push(vb);
+   o._vertexBuffers.set(vb._name, vb);
    // 上传索引数据
-   var ib = o._indexBuffer = p.createIndexBuffer();
+   var ib = o._indexBuffer = c.createIndexBuffer();
    ib._fillMode = EG3dFillMode.Line;
    ib.upload(id, it);
 }
 
-function FRd3Dimensional_vertexCount(){
-   return this._vertexCount;
-}
-function FRd3Dimensional_findVertexBuffer(p){
-   var o = this;
-   if(p == 'position'){
-      return o._vertexPositionBuffer;
-   }else if(p == 'color'){
-      return o._vertexColorBuffer;
-   }
-   return null;
-}
-
-function FRd3Dimensional_vertexBuffers(){
-   return this._vertexBuffers;
-}
-
-function FRd3Dimensional_indexBuffer(){
-   return this._indexBuffer;
-}

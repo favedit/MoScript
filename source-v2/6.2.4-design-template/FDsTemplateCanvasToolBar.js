@@ -10,7 +10,7 @@ function FDsTemplateCanvasToolBar(o){
    // @attribute
    o._refreshButton  = null;
    o._saveButton     = null;
-   o._canvasModeCd   = EDsCanvasMode.Unknown;
+   o._canvasModeCd   = EDsCanvasMode.Drop;
    //..........................................................
    // @event
    o.onBuild         = FDsTemplateCanvasToolBar_onBuild;

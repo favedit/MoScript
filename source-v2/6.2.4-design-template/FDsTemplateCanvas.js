@@ -16,7 +16,9 @@ function FDsTemplateCanvas(o){
    o._rotationAble       = false;
    o._capturePosition    = null;
    o._captureMatrix      = null;
+   o._captureRotation    = null;
    o._dimensional        = null;
+   o._selectBoundBox     = null;
    //..........................................................
    // @event
    o.onBuild             = FDsTemplateCanvas_onBuild;
@@ -31,6 +33,7 @@ function FDsTemplateCanvas(o){
    // @method
    o.construct           = FDsTemplateCanvas_construct;
    // @method
+   o.selectRenderable    = FDsTemplateCanvas_selectRenderable;
    o.loadTemplate        = FDsTemplateCanvas_loadTemplate;
    // @method
    o.dispose             = FDsTemplateCanvas_dispose;
@@ -59,12 +62,13 @@ function FDsTemplateCanvas_onBuild(p){
    RStage.register('stage3d', o._stage);
    // 设置相机
    var rc = g.camera();
-   rc.setPosition(0, 6, -20);
+   rc.setPosition(0, 3, -10);
    rc.lookAt(0, 3, 0);
    rc.update();
    // 设置投影
    var rp = rc.projection();
    rp.size().set(h.width, h.height);
+   rp._angle = 45;
    rp.update();
    // 设置光源
    var l = g.directionalLight();
@@ -74,8 +78,13 @@ function FDsTemplateCanvas_onBuild(p){
    lc.update();
    // 创建坐标系
    var dm = o._dimensional = RClass.create(FRd3Dimensional);
-   dm.setup(c);
+   dm.linkGraphicContext(c);
+   dm.setup();
    o._layer.pushRenderable(dm);
+   // 创建选取包围盒
+   var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
+   bb.linkGraphicContext(o._context);
+   bb.setup();
    // 启动处理
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    //RStage.start(4000);
@@ -97,7 +106,10 @@ function FDsTemplateCanvas_onMouseCaptureStart(p){
    }
    var d = t.renderables().get(0);
    o._capturePosition.set(p.clientX, p.clientY);
-   o._captureMatrix.assign(d.modelMatrix());
+   o._captureMatrix.assign(d.matrix());
+
+   var c = o._stage.camera();
+   o._captureRotation.assign(c._rotation);
 }
 
 //==========================================================
@@ -115,10 +127,15 @@ function FDsTemplateCanvas_onMouseCapture(p){
    var cx = p.clientX - o._capturePosition.x;
    var cy = p.clientY - o._capturePosition.y;
    var d = t.renderables().get(0);
-   var m = d.modelMatrix();
+   var m = d.matrix();
    var cm = o._captureMatrix;
    switch(o._toolbar._canvasModeCd){
       case EDsCanvasMode.Drop:
+         var c = o._stage.camera();
+         var r = c.rotation();
+         var cr = o._captureRotation;
+         r.x = cr.x + cy * 0.003;
+         r.y = cr.y + cx * 0.003;
          break;
       case EDsCanvasMode.Select:
          break;
@@ -157,30 +174,41 @@ function FDsTemplateCanvas_onEnterFrame(){
    //..........................................................
    // 按键处理
    var c = o._stage.camera();
-   var r = 0.3;
+   var d = 0.5;
+   var r = 0.05;
    var kw = RKeyboard.isPress(EKeyCode.W);
    var ks = RKeyboard.isPress(EKeyCode.S);
    if(kw && !ks){
-      c.doWalk(r);
+      c.doWalk(d);
    }
    if(!kw && ks){
-      c.doWalk(-r);
+      c.doWalk(-d);
    }
    var ka = RKeyboard.isPress(EKeyCode.A);
    var kd = RKeyboard.isPress(EKeyCode.D);
    if(ka && !kd){
-      c.doStrafe(r);
+      //c.doStrafe(r);
+      c.doYaw(r);
    }
    if(!ka && kd){
-      c.doStrafe(-r);
+      //c.doStrafe(-r);
+      c.doYaw(-r);
    }
    var kq = RKeyboard.isPress(EKeyCode.Q);
    var ke = RKeyboard.isPress(EKeyCode.E);
    if(kq && !ke){
-      c.doFly(r);
+      c.doFly(d);
    }
    if(!kq && ke){
-      c.doFly(-r);
+      c.doFly(-d);
+   }
+   var kz = RKeyboard.isPress(EKeyCode.Z);
+   var kw = RKeyboard.isPress(EKeyCode.X);
+   if(kz && !kw){
+      c.doPitch(r);
+   }
+   if(!kz && kw){
+      c.doPitch(-r);
    }
    c.update();
    //..........................................................
@@ -249,6 +277,25 @@ function FDsTemplateCanvas_construct(){
    o._capturePosition = new SPoint2();
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
+   o._captureRotation = new SVector3();
+}
+
+//==========================================================
+// <T>选中渲染对象处理。</T>
+//
+// @method
+//==========================================================
+function FDsTemplateCanvas_selectRenderable(p){
+   var o = this;
+   var r = p.resource();
+   var rm = r.mesh();
+   var rl = rm.outline();
+   // 显示包围盒
+   var b = o._selectBoundBox;
+   b.outline().assign(rl);
+   b.upload();
+   b.remove();
+   p._display.pushRenderable(b);
 }
 
 //==========================================================

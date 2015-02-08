@@ -36,7 +36,7 @@ function FG3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    var mi = m.info();
    o.bindMaterial(m);
    // 绑定所有属性流
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);

@@ -2168,6 +2168,7 @@ var RObject = new function RObject(){
    o.clone   = RObject_clone;
    o.copy    = RObject_copy;
    o.free    = RObject_free;
+   o.dispose = RObject_dispose;
    o.release = RObject_release;
    return o;
 }
@@ -2216,6 +2217,12 @@ function RObject_free(p){
          p[n] = null;
       }
    }
+}
+function RObject_dispose(p){
+   if(p){
+      p.dispose();
+   }
+   return null;
 }
 function RObject_release(p){
    if(p){
@@ -3881,6 +3888,199 @@ function TNode_innerDump(dump, node, space){
 function TNode_dump(d, space){
    d = RString.nvlStr(d);
    return this.innerDump(d, this, space);
+}
+function TObjects(o){
+   if(!o){o = this;}
+   o._count     = 0;
+   o._items     = new Array();
+   o.isEmpty    = TObjects_isEmpty;
+   o.count      = TObjects_count;
+   o.contains   = TObjects_contains;
+   o.indexOf    = TObjects_indexOf;
+   o.first      = TObjects_first;
+   o.last       = TObjects_last;
+   o.get        = TObjects_get;
+   o.set        = TObjects_set;
+   o.assign     = TObjects_assign;
+   o.append     = TObjects_append;
+   o.insert     = TObjects_insert;
+   o.push       = TObjects_push;
+   o.pushUnique = TObjects_pushUnique;
+   o.pop        = TObjects_pop;
+   o.swap       = TObjects_swap;
+   o.sort       = TObjects_sort;
+   o.erase      = TObjects_erase;
+   o.remove     = TObjects_remove;
+   o.clear      = TObjects_clear;
+   o.disposeAll = TObjects_disposeAll;
+   o.dispose    = TObjects_dispose;
+   o.dump       = TObjects_dump;
+   return o;
+}
+function TObjects_isEmpty(){
+   return (this._count == 0);
+}
+function TObjects_count(){
+   return this._count;
+}
+function TObjects_contains(v){
+   return this.indexOf(v) != -1;
+}
+function TObjects_indexOf(v){
+   var o = this;
+   var c = o._count;
+   for(var n = 0; n < c; n++){
+      if(o._items[n] == v){
+         return n;
+      }
+   }
+   return -1;
+}
+function TObjects_first(){
+   var o = this;
+   return o._count ? this._items[0] : null;
+}
+function TObjects_last(){
+   var o = this;
+   return o._count ? this._items[o._count - 1] : null;
+}
+function TObjects_get(n){
+   var o = this;
+   return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
+}
+function TObjects_set(n, v){
+   var o = this;
+   if((n >= 0) && (n < o._count)){
+      o._items[n] = v;
+   }
+}
+function TObjects_assign(p){
+   var o = this;
+   var c = o._count = p._count;
+   for(var i = 0; i < c; i++){
+      o._items[i] = p._items[i];
+   }
+}
+function TObjects_append(v){
+   var o = this;
+   var c = v._count;
+   for(var n = 0; n < c; n++){
+      o.push(v.get(n));
+   }
+}
+function TObjects_insert(i, v){
+   var o = this;
+   var c = o._count;
+   if((i >= 0) && (i <= c)){
+      for(var n = c; n > i; n--){
+         o._items[n] = o._items[n - 1];
+      }
+      o._items[i] = v;
+   }
+}
+function TObjects_push(v){
+   var n = this._count++;
+   this._items[n] = v;
+   return n;
+}
+function TObjects_pushUnique(v){
+   var o = this;
+   for(var n = o._count-1; n >= 0; n--){
+      if(o._items[n] == v){
+         return n;
+      }
+   }
+   var n = o._count++;
+   o._items[n] = v;
+   return n;
+}
+function TObjects_pop(){
+   var o = this;
+   if(o._count){
+      return o._items[--o._count];
+   }
+}
+function TObjects_swap(l, r){
+   var o = this;
+   if((l >= 0) && (l < o._count) && (r >= 0) && (r < o._count) && (l != r)){
+      var v = o._items[l];
+      o._items[l] = this._items[r];
+      o._items[r] = v;
+   }
+}
+function TObjects_sort(){
+   this._items.sort();
+}
+function TObjects_erase(n){
+   var v = null;
+   var o = this;
+   if((n >= 0) && (n < o._count)){
+      v = o._items[n];
+      var c = --o._count;
+      var s = o._items;
+      for(var i = n; i < c; i++){
+         s[i] = s[i+1];
+      }
+      s[c] = null;
+   }
+   return v;
+}
+function TObjects_remove(v){
+   if(v != null){
+      var o = this;
+      var c = o._count;
+      if(c > 0){
+         var n = 0;
+         var s = o._items;
+         for(var i = n; i < c; i++){
+            if(s[i] != v){
+               s[n++] = s[i];
+            }
+         }
+         for(var i = n; i < c; i++){
+            s[i] = null;
+         }
+         o._count = n;
+      }
+   }
+   return v;
+}
+function TObjects_clear(){
+   var o = this;
+   o._items.length = 0;
+   o._count = 0;
+}
+function TObjects_dispose(){
+   var o = this;
+   for(var n in o._items){
+      o._items[n] = null;
+   }
+   o._count = 0;
+   o._items = null;
+}
+function TObjects_disposeAll(){
+   var o = this;
+   for(var n in o._items){
+      var v = o._items[n];
+      if(v){
+         v.dispose();
+      }
+      o._items[n] = null;
+   }
+   o._count = 0;
+   o._items = null;
+}
+function TObjects_dump(){
+   var o = this;
+   var c = o._count;
+   var r = new TString();
+   r.append(RClass.name(o), ':', c);
+   if(c > 0){
+      for(var n = 0; n < c; n++){
+         r.append(' [', o._items[n], ']');
+      }
+   }
+   return r.toString();
 }
 function TRow(o){
    if(!o){o = this;}

@@ -29,7 +29,7 @@ function FG3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
    var c = o._context;
    var p = o._program;
    // 绑定所有属性流
-   p.setParameter('vc_model_matrix', r.matrix());
+   p.setParameter('vc_model_matrix', r.currentMatrix());
    p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
    p.setParameter('vc_light_direction', prld);

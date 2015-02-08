@@ -57,7 +57,7 @@ function FRs3Material_groupGuid(){
 // @return FRs3MaterialGroup 材质分组
 //==========================================================
 function FRs3Material_group(){
-   return RConsole.find(FRs3MaterialGroupConsole).find(this._groupGuid);
+   return RConsole.find(FRs3MaterialConsole).findGroup(this._groupGuid);
 }
 
 //==========================================================
