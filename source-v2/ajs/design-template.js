@@ -48,8 +48,8 @@ function FDsTemplateCanvas_onBuild(p){
    o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    var rc = g.camera();
-   rc.setPosition(0, 5, -20);
-   rc.lookAt(0, 5, 0);
+   rc.setPosition(0, 3, -10);
+   rc.lookAt(0, 3, 0);
    rc.update();
    var rp = rc.projection();
    rp.size().set(h.width, h.height);

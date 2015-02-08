@@ -1550,37 +1550,11 @@ function SPoint2_dump(){
 }
 function SPoint3(x, y, z){
    var o = this;
-   o.x           = RInteger.nvl(x);
-   o.y           = RInteger.nvl(y);
-   o.z           = RInteger.nvl(z);
-   o.assign      = SPoint3_assign;
-   o.set         = SPoint3_set;
-   o.conjugate   = SPoint3_conjugate;
-   o.resize      = SPoint3_resize;
-   o.slerp       = SPoint3_slerp;
-   o.serialize   = SPoint3_serialize;
-   o.unserialize = SPoint3_unserialize;
-   o.toString    = SPoint3_toString;
-   o.dump        = SPoint3_dump;
+   SValue3.call(o, x, y, z);
+   o.conjugate = SPoint3_conjugate;
+   o.resize    = SPoint3_resize;
+   o.slerp     = SPoint3_slerp;
    return o;
-}
-function SPoint3_assign(p){
-   var o = this;
-   o.x = p.x;
-   o.y = p.y;
-   o.z = p.z;
-}
-function SPoint3_set(x, y, z){
-   var o = this;
-   if(x != null){
-      o.x = x;
-   }
-   if(y != null){
-      o.y = y;
-   }
-   if(z != null){
-      o.z = z;
-   }
 }
 function SPoint3_conjugate(p){
    var o = this;
@@ -1613,77 +1587,24 @@ function SPoint3_slerp(v1, v2, r){
    o.y = (v2.y - v1.y) * r + v1.y;
    o.z = (v2.z - v1.z) * r + v1.z;
 }
-function SPoint3_serialize(p){
-   var o = this;
-   p.writeFloat(o.x);
-   p.writeFloat(o.y);
-   p.writeFloat(o.z);
-}
-function SPoint3_unserialize(p){
-   var o = this;
-   o.x = p.readFloat();
-   o.y = p.readFloat();
-   o.z = p.readFloat();
-}
-function SPoint3_toString(){
-   var o = this;
-   return o.x + ',' + o.y + ',' + o.z;
-}
-function SPoint3_dump(){
-   return RClass.dump(this) + ' [' + this.x + ',' + this.y + ',' + this.z + ']';
-}
 function SPoint4(x, y, z, w){
    var o = this;
-   o.x           = x;
-   o.y           = y;
-   o.z           = z;
-   o.w           = w;
-   o.assign      = SPoint4_assign;
-   o.set         = SPoint4_set;
-   o.serialize   = SPoint4_serialize;
-   o.unserialize = SPoint4_unserialize;
-   o.toString    = SPoint4_toString;
+   SValue4.call(o, x, y, z, w);
+   o.serialize3   = SPoint4_serialize3;
+   o.unserialize3 = SPoint4_unserialize3;
    return o;
 }
-function SPoint4_assign(p){
-   var o = this;
-   o.x = p.x;
-   o.y = p.y;
-   o.z = p.z;
-   o.w = p.w;
-}
-function SPoint4_set(x, y, z, w){
-   var o = this;
-   if(x != null){
-      o.x = x;
-   }
-   if(y != null){
-      o.y = y;
-   }
-   if(z != null){
-      o.z = z;
-   }
-   if(w != null){
-      o.w = w;
-   }
-}
-function SPoint4_serialize(p){
+function SPoint4_serialize3(p){
    var o = this;
    p.writeFloat(o.x);
    p.writeFloat(o.y);
    p.writeFloat(o.z);
-   p.writeFloat(o.w);
 }
-function SPoint4_unserialize(p){
+function SPoint4_unserialize3(p){
    var o = this;
    o.x = p.readFloat();
    o.y = p.readFloat();
    o.z = p.readFloat();
-   o.w = p.readFloat();
-}
-function SPoint4_toString(){
-   var o = this;
-   return o.x + ',' + o.y + ',' + o.z + ',' + o.w;
 }
 function SQuaternion(o){
    if(!o){o = this;}
@@ -2168,43 +2089,35 @@ function SSquare_dump(d){
    d.append('(', this.width(), '-', this.height(), ')');
    return d;
 }
-function SVector3(o){
-   if(!o){o = this;}
-   o.x           = 0;
-   o.y           = 0;
-   o.z           = 0;
-   o.assign      = SVector3_assign;
-   o.set         = SVector3_set;
-   o.absolute    = SVector3_absolute;
-   o.normalize   = SVector3_normalize;
-   o.conjugate   = SVector3_conjugate;
-   o.dotPoint3   = SVector3_dotPoint3;
-   o.cross       = SVector3_cross;
-   o.cross2      = SVector3_cross2;
-   o.slerp       = SVector3_slerp;
-   o.serialize   = SVector3_serialize;
-   o.unserialize = SVector3_unserialize;
-   o.clone       = SVector3_clone;
-   o.toString    = SVector3_toString;
+function SValue3(x, y, z){
+   var o = this;
+   o.x           = RValue.nvl(x, 0);
+   o.y           = RValue.nvl(y, 0);
+   o.z           = RValue.nvl(z, 0);
+   o.assign      = SValue3_assign;
+   o.set         = SValue3_set;
+   o.absolute    = SValue3_absolute;
+   o.normalize   = SValue3_normalize;
+   o.negative    = SValue3_negative;
+   o.serialize   = SValue3_serialize;
+   o.unserialize = SValue3_unserialize;
+   o.parse       = SValue3_parse;
+   o.toString    = SValue3_toString;
    return o;
 }
-function SVector3_assign(p){
+function SValue3_assign(p){
    var o = this;
    o.x = p.x;
    o.y = p.y;
    o.z = p.z;
 }
-function SVector3_set(x, y, z){
+function SValue3_set(x, y, z){
    var o = this;
    o.x = x;
    o.y = y;
    o.z = z;
 }
-function SVector3_absolute(){
-   var o = this;
-   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z));
-}
-function SVector3_normalize(){
+function SValue3_normalize(){
    var o = this;
    var v = o.absolute();
    if(v != 0){
@@ -2212,6 +2125,150 @@ function SVector3_normalize(){
       o.y /= v;
       o.z /= v;
    }
+}
+function SValue3_absolute(){
+   var o = this;
+   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z));
+}
+function SValue3_negative(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new o.constructor();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   return r;
+}
+function SValue3_serialize(p){
+   var o = this;
+   p.writeFloat(o.x);
+   p.writeFloat(o.y);
+   p.writeFloat(o.z);
+}
+function SValue3_unserialize(p){
+   var o = this;
+   o.x = p.readFloat();
+   o.y = p.readFloat();
+   o.z = p.readFloat();
+}
+function SValue3_parse(p){
+   var o = this;
+   var r = p.split(',')
+   if(r.length == 3){
+      o.x = parseFloat(r[0]);
+      o.y = parseFloat(r[1]);
+      o.z = parseFloat(r[2]);
+   }else{
+      throw new TError(o, "Parse value failure. (value={1})", p);
+   }
+}
+function SValue3_toString(){
+   var o = this;
+   return o.x + ',' + o.y + ',' + o.z;
+}
+function SValue4(x, y, z, w){
+   var o = this;
+   o.x           = RValue.nvl(x, 0);
+   o.y           = RValue.nvl(y, 0);
+   o.z           = RValue.nvl(z, 0);
+   o.w           = RValue.nvl(w, 1);
+   o.assign      = SValue4_assign;
+   o.set         = SValue4_set;
+   o.absolute    = SValue4_absolute;
+   o.normalize   = SValue4_normalize;
+   o.negative    = SValue4_negative;
+   o.serialize   = SValue4_serialize;
+   o.unserialize = SValue4_unserialize;
+   o.parse       = SValue4_parse;
+   o.toString    = SValue4_toString;
+   return o;
+}
+function SValue4_assign(p){
+   var o = this;
+   o.x = p.x;
+   o.y = p.y;
+   o.z = p.z;
+   o.w = p.w;
+}
+function SValue4_set(x, y, z, w){
+   var o = this;
+   o.x = x;
+   o.y = y;
+   o.z = z;
+   o.w = w;
+}
+function SValue4_absolute(){
+   var o = this;
+   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z) + (o.w * o.w));
+}
+function SValue4_normalize(){
+   var o = this;
+   var v = o.absolute();
+   if(v != 0){
+      o.x /= v;
+      o.y /= v;
+      o.z /= v;
+      o.w /= w;
+   }
+}
+function SValue4_negative(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new o.constructor();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   r.w = -o.w;
+   return r;
+}
+function SValue4_serialize(p){
+   var o = this;
+   p.writeFloat(o.x);
+   p.writeFloat(o.y);
+   p.writeFloat(o.z);
+   p.writeFloat(o.w);
+}
+function SValue4_unserialize(p){
+   var o = this;
+   o.x = p.readFloat();
+   o.y = p.readFloat();
+   o.z = p.readFloat();
+   o.w = p.readFloat();
+}
+function SValue4_parse(p){
+   var o = this;
+   var r = p.split(',')
+   if(r.length == 4){
+      o.x = parseFloat(r[0]);
+      o.y = parseFloat(r[1]);
+      o.z = parseFloat(r[2]);
+      o.w = parseFloat(r[3]);
+   }else{
+      throw new TError(o, "Parse value failure. (value={1})", p);
+   }
+}
+function SValue4_toString(){
+   var o = this;
+   return o.x + ',' + o.y + ',' + o.z + ',' + o.w;
+}
+function SVector3(x, y, z){
+   var o = this;
+   SValue3.call(o, x, y, z);
+   o.conjugate = SVector3_conjugate;
+   o.dotPoint3 = SVector3_dotPoint3;
+   o.cross     = SVector3_cross;
+   o.cross2    = SVector3_cross2;
+   o.slerp     = SVector3_slerp;
+   o.clone     = SVector3_clone;
+   return o;
 }
 function SVector3_conjugate(p){
    var o = this;
@@ -2251,18 +2308,6 @@ function SVector3_slerp(v1, v2, r){
    o.y = (v2.y - v1.y) * r + v1.y;
    o.z = (v2.z - v1.z) * r + v1.z;
 }
-function SVector3_serialize(p){
-   var o = this;
-   p.writeFloat(o.x);
-   p.writeFloat(o.y);
-   p.writeFloat(o.z);
-}
-function SVector3_unserialize(p){
-   var o = this;
-   o.x = p.readFloat();
-   o.y = p.readFloat();
-   o.z = p.readFloat();
-}
 function SVector3_clone(){
    var o = this;
    var r = new SVector3();
@@ -2271,68 +2316,22 @@ function SVector3_clone(){
    r.z = o.z;
    return r;
 }
-function SVector3_toString(){
+function SVector4(x, y, z, w){
    var o = this;
-   return o.x + ',' + o.y + ',' + o.z;
-}
-function SVector4(o){
-   if(!o){o = this;}
-   o.x           = 0;
-   o.y           = 0;
-   o.z           = 0;
-   o.w           = 0;
-   o.assign      = SVector4_assign;
-   o.set         = SVector4_set;
-   o.absolute    = SVector4_absolute;
-   o.normalize   = SVector4_normalize;
-   o.serialize   = SVector4_serialize;
-   o.unserialize = SVector4_unserialize;
-   o.toString    = SVector4_toString;
+   SValue4.call(o, x, y, z, w);
+   o.serialize3   = SVector4_serialize3;
+   o.unserialize3 = SVector4_unserialize3;
    return o;
 }
-function SVector4_assign(p){
-   var o = this;
-   o.x = p.x;
-   o.y = p.y;
-   o.z = p.z;
-   o.w = p.w;
-}
-function SVector4_set(x, y, z, w){
-   var o = this;
-   o.x = x;
-   o.y = y;
-   o.z = z;
-   o.w = w;
-}
-function SVector4_absolute(){
-   var o = this;
-   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z) + (o.w * o.w));
-}
-function SVector4_normalize(){
-   var o = this;
-   var v = o.absolute();
-   if(v != 0.0){
-      o.x /= v;
-      o.y /= v;
-      o.z /= v;
-      o.w /= w;
-   }
-}
-function SVector4_serialize(p){
+function SVector4_serialize3(p){
    var o = this;
    p.writeFloat(o.x);
    p.writeFloat(o.y);
    p.writeFloat(o.z);
-   p.writeFloat(o.w);
 }
-function SVector4_unserialize(p){
+function SVector4_unserialize3(p){
    var o = this;
    o.x = p.readFloat();
    o.y = p.readFloat();
    o.z = p.readFloat();
-   o.w = p.readFloat();
-}
-function SVector4_toString(){
-   var o = this;
-   return o.x + ',' + o.y + ',' + o.z + ',' + o.w;
 }

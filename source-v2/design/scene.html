@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+<TITLE>CoolLight Designer</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../acs/design.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../acs/lang_cn.css' type="text/css" media="all"/>
+
+<SCRIPT language='javascript' src='../ajs/mo-core.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo-graphic.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo-engine.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo-control.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo-design.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/stage.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneMaterialFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneDisplayFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsScenePropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneThemePropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneMaterialPropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneDisplayPropertyFrame.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneCatalog.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneCanvasToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneCanvas.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneWorkspace.js'></SCRIPT>
+
+<SCRIPT>
+// http://localhost:92/script2/design/template.html
+function _load(){
+   RRuntime.processCd = EProcess.Debug;
+   RApplication.initialize();
+   RBrowser.setContentPath('..');
+
+   var w = RApplication.findWorkspace(FDsSceneWorkspace);
+   w.build(document.body);
+   w.setPanel(document.body);
+   w.psRefresh();
+
+   w.loadTemplate('pvw.show.item.001');
+   //w.loadTemplate('pvw.show.item.009');
+   //w.loadTemplate('pvw.sc.car.01.001');
+   //w.loadTemplate('pvw.show.skeleton.001');
+
+   //RDump.dump(w, document.body);
+}
+</SCRIPT>
+</HEAD>
+<BODY scroll='no' style='background-color:#444444;' onload='_load()'></BODY>
+</HTML>

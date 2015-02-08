@@ -2,86 +2,24 @@
 // <T>三维向量。</T>
 //
 // @struct
-// @author maocy
-// @version 141231
-//==========================================================
-function SVector3(o){
-   if(!o){o = this;}
-   //..........................................................
-   // @attribute
-   o.x           = 0;
-   o.y           = 0;
-   o.z           = 0;
-   //..........................................................
-   // @method
-   o.assign      = SVector3_assign;
-   o.set         = SVector3_set;
-   o.absolute    = SVector3_absolute;
-   o.normalize   = SVector3_normalize;
-   o.conjugate   = SVector3_conjugate;
-   o.dotPoint3   = SVector3_dotPoint3;
-   o.cross       = SVector3_cross;
-   o.cross2      = SVector3_cross2;
-   o.slerp       = SVector3_slerp;
-   o.serialize   = SVector3_serialize;
-   o.unserialize = SVector3_unserialize;
-   o.clone       = SVector3_clone;
-   o.toString    = SVector3_toString;
-   return o;
-}
-
-//==========================================================
-// <T>接收数据。</T>
-//
-// @method
-// @param p:value:SVector3 三维向量
-//==========================================================
-function SVector3_assign(p){
-   var o = this;
-   o.x = p.x;
-   o.y = p.y;
-   o.z = p.z;
-}
-
-//==========================================================
-// <T>设置数据内容。</T>
-//
-// @method
 // @param x:Number X方向
 // @param y:Number Y方向
 // @param z:Number Z方向
+// @author maocy
+// @version 141231
 //==========================================================
-function SVector3_set(x, y, z){
+function SVector3(x, y, z){
    var o = this;
-   o.x = x;
-   o.y = y;
-   o.z = z;
-}
-
-//==========================================================
-// <T>获得绝对值。</T>
-//
-// @method
-// @return Number 绝对值
-//==========================================================
-function SVector3_absolute(){
-   var o = this;
-   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z));
-}
-
-//==========================================================
-// <T>单位化处理。</T>
-//
-// @method
-//==========================================================
-function SVector3_normalize(){
-   var o = this;
-   var v = o.absolute();
-   if(v != 0){
-      o.x /= v;
-      o.y /= v;
-      o.z /= v;
-   }
+   SValue3.call(o, x, y, z);
+   //..........................................................
+   // @method
+   o.conjugate = SVector3_conjugate;
+   o.dotPoint3 = SVector3_dotPoint3;
+   o.cross     = SVector3_cross;
+   o.cross2    = SVector3_cross2;
+   o.slerp     = SVector3_slerp;
+   o.clone     = SVector3_clone;
+   return o;
 }
 
 //============================================================
@@ -162,32 +100,6 @@ function SVector3_slerp(v1, v2, r){
 }
 
 //==========================================================
-// <T>序列化数据到输出流里。</T>
-//
-// @method
-// @param p:input:FByteStream 数据流
-//==========================================================
-function SVector3_serialize(p){
-   var o = this;
-   p.writeFloat(o.x);
-   p.writeFloat(o.y);
-   p.writeFloat(o.z);
-}
-
-//==========================================================
-// <T>从输入流里反序列化数据。</T>
-//
-// @method
-// @param p:input:FByteStream 数据流
-//==========================================================
-function SVector3_unserialize(p){
-   var o = this;
-   o.x = p.readFloat();
-   o.y = p.readFloat();
-   o.z = p.readFloat();
-}
-
-//==========================================================
 // <T>获得克隆对象。</T>
 //
 // @method
@@ -200,15 +112,4 @@ function SVector3_clone(){
    r.y = o.y;
    r.z = o.z;
    return r;
-}
-
-//==========================================================
-// <T>获得字符串。</T>
-//
-// @method
-// @return String 字符串
-//==========================================================
-function SVector3_toString(){
-   var o = this;
-   return o.x + ',' + o.y + ',' + o.z;
 }

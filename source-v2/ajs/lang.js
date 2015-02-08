@@ -2832,6 +2832,14 @@ function RTimer_update(){
    o._count++;
    o._lastTime = new Date().getTime();
 }
+var RValue = new function RValue(){
+   var o = this;
+   o.nvl = RValue_nvl;
+   return o;
+}
+function RValue_nvl(v, d){
+   return (v != null) ? v : d;
+}
 function SArguments(o){
    if(!o){o = this;}
    o.owner = null;
