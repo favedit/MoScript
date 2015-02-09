@@ -4,14 +4,14 @@
 // @author maocy
 // @history 150106
 //==========================================================
-function FSceneMaterial3d(o){
+function FE3dSceneMaterial(o){
    o = RClass.inherits(this, o, FG3dMaterial);
    //..........................................................
    // @attribute
    o._resource         = null;
    //..........................................................
    // @method
-   o.loadSceneResource = FSceneMaterial3d_loadSceneResourcee
+   o.loadSceneResource = FE3dSceneMaterial_loadSceneResourcee
    return o;
 }
 
@@ -21,7 +21,7 @@ function FSceneMaterial3d(o){
 // @method
 // @param p:resource:FRs3SceneRegion 区域资源
 //==========================================================
-function FSceneMaterial3d_loadSceneResourcee(p){
+function FE3dSceneMaterial_loadSceneResourcee(p){
    var o = this;
    o._resource = p;
    o._name = p.code();

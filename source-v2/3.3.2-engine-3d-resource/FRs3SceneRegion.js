@@ -95,7 +95,7 @@ function FRs3SceneRegion_unserialize(p){
    var o = this;
    o.__base.FRs3Object.unserialize.call(o, p);
    // 读取颜色
-   //o._color.unserialize(p);
+   o._color.unserialize(p);
    // 读取颜色级别
    //o._colorLevel.unserialize(p);
    // 读取雾化

@@ -12,8 +12,6 @@ function FDsSceneCanvas(o){
    o = RClass.inherits(this, o, FUiCanvas, MListenerLoad, MMouseCapture);
    o._toolbar            = null;
    o._context            = null;
-   o._stage              = null;
-   o._layer              = null;
    o._activeScene        = null;
    o._rotation           = null;
    o._rotationAble       = false;
@@ -27,7 +25,7 @@ function FDsSceneCanvas(o){
    o.onMouseCapture      = FDsSceneCanvas_onMouseCapture;
    o.onMouseCaptureStop  = FDsSceneCanvas_onMouseCaptureStop;
    o.onEnterFrame        = FDsSceneCanvas_onEnterFrame;
-   o.onTemplateLoad      = FDsSceneCanvas_onTemplateLoad;
+   o.onSceneLoad         = FDsSceneCanvas_onSceneLoad;
    o.oeRefresh           = FDsSceneCanvas_oeRefresh;
    o.construct           = FDsSceneCanvas_construct;
    o.selectRenderable    = FDsSceneCanvas_selectRenderable;
@@ -41,62 +39,30 @@ function FDsSceneCanvas_onBuild(p){
    var h = o._hPanel;
    h.__linker = o;
    var c = o._context = REngine3d.createContext(FWglContext, h);
-   var g = o._stage = RClass.create(FSimpleStage3d);
-   g._optionKeyboard = false;
-   g.backgroundColor().set(0.5, 0.5, 0.5, 1);
-   g.selectTechnique(c, FG3dGeneralTechnique);
-   o._layer = o._stage.spriteLayer();
-   RStage.register('stage3d', o._stage);
-   var rc = g.camera();
-   rc.setPosition(0, 3, -10);
-   rc.lookAt(0, 3, 0);
-   rc.update();
-   var rp = rc.projection();
-   rp.size().set(h.width, h.height);
-   rp._angle = 45;
-   rp.update();
-   var l = g.directionalLight();
-   var lc = l.camera();
-   lc.setPosition(10, 10, 0);
-   lc.lookAt(0, 0, 0);
-   lc.update();
-   var dm = o._dimensional = RClass.create(FRd3Dimensional);
-   dm.linkGraphicContext(c);
-   dm.setup();
-   o._layer.pushRenderable(dm);
-   var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
-   bb.linkGraphicContext(o._context);
-   bb.setup();
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start(15);
    RConsole.find(FMouseConsole).register(o);
 }
 function FDsSceneCanvas_onMouseCaptureStart(p){
    var o = this;
-   var t = o._activeScene;
-   if(!t){
+   var s = o._activeScene;
+   if(!s){
       return;
    }
-   var d = t.renderables().get(0);
    o._capturePosition.set(p.clientX, p.clientY);
-   o._captureMatrix.assign(d.matrix());
-   var c = o._stage.camera();
-   o._captureRotation.assign(c._rotation);
+   o._captureRotation.assign(s.camera()._rotation);
 }
 function FDsSceneCanvas_onMouseCapture(p){
    var o = this;
-   var t = o._activeScene;
-   if(!t){
+   var s = o._activeScene;
+   if(!s){
       return;
    }
    var cx = p.clientX - o._capturePosition.x;
    var cy = p.clientY - o._capturePosition.y;
-   var d = t.renderables().get(0);
-   var m = d.matrix();
-   var cm = o._captureMatrix;
    switch(o._toolbar._canvasModeCd){
       case EDsCanvasMode.Drop:
-         var c = o._stage.camera();
+         var c = o._activeScene.camera();
          var r = c.rotation();
          var cr = o._captureRotation;
          r.x = cr.x + cy * 0.003;
@@ -105,25 +71,22 @@ function FDsSceneCanvas_onMouseCapture(p){
       case EDsCanvasMode.Select:
          break;
       case EDsCanvasMode.Translate:
-         m.tx = cm.tx + cx / 360 * 3.14;
-         m.ty = cm.ty + cy / 360 * 3.14;
          break;
       case EDsCanvasMode.Rotation:
-         m.ry = cm.ry + cx * RMath.DEGREE_RATE;
          break;
       case EDsCanvasMode.Scale:
-         m.sx = cm.sx + cx / 100;
-         m.sy = cm.sy + cx / 100;
-         m.sz = cm.sz + cx / 100;
          break;
    }
-   m.updateForce();
 }
 function FDsSceneCanvas_onMouseCaptureStop(p){
 }
 function FDsSceneCanvas_onEnterFrame(){
    var o = this;
-   var c = o._stage.camera();
+   var s = o._activeScene;
+   if(!s){
+      return;
+   }
+   var c = s.camera();
    var d = 0.5;
    var r = 0.05;
    var kw = RKeyboard.isPress(EKeyCode.W);
@@ -159,18 +122,10 @@ function FDsSceneCanvas_onEnterFrame(){
       c.doPitch(-r);
    }
    c.update();
-   var m = o._activeScene;
-   if(m){
-      var r = o._rotation;
-      m.rotation().set(0, r.y, 0);
-      m.scale().set(0.2, 0.2, 0.2);
-      m.update();
-      if(o._rotationAble){
-         r.y += 0.01;
-      }
+   if(s){
    }
 }
-function FDsSceneCanvas_onTemplateLoad(p){
+function FDsSceneCanvas_onSceneLoad(p){
    var o = this;
    o.processLoadListener(o);
 }
@@ -183,9 +138,6 @@ function FDsSceneCanvas_oeRefresh(p){
    var hc = o._hPanel;
    hc.width = w;
    hc.height = h;
-   var rp = o._stage.camera().projection();
-   rp.size().set(w, h);
-   rp.update();
    c.setViewport(0, 0, w, h);
    return EEventStatus.Stop;
 }
@@ -210,11 +162,16 @@ function FDsSceneCanvas_selectRenderable(p){
 }
 function FDsSceneCanvas_loadScene(p){
    var o = this;
+   var c = o._context;
    var rmc = RConsole.find(FE3dSceneConsole);
    if(o._activeScene != null){
       rmc.free(o._activeScene);
    }
    var m = rmc.alloc(o._context, p);
+   m.addLoadListener(o, o.onSceneLoad);
+   m.selectTechnique(c, FG3dGeneralTechnique);
+   o._activeScene = m;
+   RStage.register('stage3d', m);
 }
 function FDsSceneCanvas_dispose(){
    var o = this;
@@ -430,31 +387,37 @@ function FDsSceneCatalog_buildTemplate(p){
    nr.setTypeName('template');
    nr.dataPropertySet('linker', p);
    o.appendNode(nr);
-   var ts = r.themes();
-   var c = ts.count();
-   if(c > 0){
-      var ns = o.createNode();
-      ns.setLabel('Themes');
-      ns.setTypeName('themes');
-      nr.appendNode(ns);
-      for(var i = 0; i < c; i++){
-         o.buildTheme(ns, ts.get(i));
-      }
-   }
-   var ds = p.renderables();
+   var nt = o.createNode();
+   nt.setLabel('Technique');
+   nt.setTypeName('template');
+   nt.dataPropertySet('linker', p);
+   nr.appendNode(nt);
+   var nt = o.createNode();
+   nt.setLabel('Region');
+   nt.setTypeName('template');
+   nt.dataPropertySet('linker', p);
+   nr.appendNode(nt);
+   var ntc = o.createNode();
+   ntc.setLabel('Camera');
+   ntc.setTypeName('template');
+   ntc.dataPropertySet('linker', p);
+   nt.appendNode(ntc);
+   var ntc = o.createNode();
+   ntc.setLabel('Light');
+   ntc.setTypeName('template');
+   ntc.dataPropertySet('linker', p);
+   nt.appendNode(ntc);
+   var ds = p.layers();
    var c = ds.count();
    if(c > 0){
       var ns = o.createNode();
-      ns.setLabel('Renderables');
+      ns.setLabel('Layers');
       ns.setTypeName('displays');
       nr.appendNode(ns);
       for(var i = 0; i < c; i++){
          var d = ds.get(i);
-         var r = d.resource();
-         var rd = r.model();
-         var rm = r.mesh();
          var n = o.createNode();
-         n.setLabel(rd.code() + ' - ' + rm.code());
+         n.setLabel('Layer');
          n.setTypeName('display');
          n.dataPropertySet('linker', d);
          ns.appendNode(n);
@@ -934,13 +897,13 @@ function FDsSceneWorkspace_onBuild(p){
 }
 function FDsSceneWorkspace_onTemplateLoad(p){
    var o = this;
-   var t = o._activeTemplate = p._activeTemplate;
+   var t = o._activeScene = p._activeScene;
    o._catalog.buildTemplate(t);
    o.onCatalogSelected(t);
 }
 function FDsSceneWorkspace_onCatalogSelected(p){
    var o = this;
-   var t = o._activeTemplate;
+   var t = o._activeScene;
    if(o._templatePropertyFrame){
       o._templatePropertyFrame.hide();
    }
@@ -953,7 +916,7 @@ function FDsSceneWorkspace_onCatalogSelected(p){
    if(o._displayPropertyFrame){
       o._displayPropertyFrame.hide();
    }
-   if(RClass.isClass(p, FE3dTemplate)){
+   if(RClass.isClass(p, FE3dScene)){
       var f = o.templatePropertyFrame();
       f.show();
       f.loadObject(t);

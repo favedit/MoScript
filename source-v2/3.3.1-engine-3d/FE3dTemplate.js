@@ -5,7 +5,7 @@
 // @history 150106
 //==========================================================
 function FE3dTemplate(o){
-   o = RClass.inherits(this, o, FDisplay3d, MListenerLoad);
+   o = RClass.inherits(this, o, FE3dDisplay, MListenerLoad);
    //..........................................................
    // @attribute
    o._dataReady     = false;
@@ -299,7 +299,7 @@ function FE3dTemplate_process(){
       }
    }
    // 父处理
-   o.__base.FDisplay3d.process.call(o);
+   o.__base.FE3dDisplay.process.call(o);
    // 处理动画集合
    var k = o._activeSkeleton;
    if(k && as){

@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150115
 //==========================================================
-function FSceneDisplayMovie3d(o){
+function FE3dSceneDisplayMovie(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
@@ -15,8 +15,8 @@ function FSceneDisplayMovie3d(o){
    o._matrix      = new SMatrix3d();
    //..........................................................
    // @method
-   o.loadResource = FSceneDisplayMovie3d_loadResource;
-   o.process      = FSceneDisplayMovie3d_process;
+   o.loadResource = FE3dSceneDisplayMovie_loadResource;
+   o.process      = FE3dSceneDisplayMovie_process;
    return o;
 }
 
@@ -25,7 +25,7 @@ function FSceneDisplayMovie3d(o){
 //
 // @param p:resource:FRs3SceneMovie 资源
 //==========================================================
-function FSceneDisplayMovie3d_loadResource(p){
+function FE3dSceneDisplayMovie_loadResource(p){
    var o = this;
    o._resource = p;
    o._interval = p._interval;
@@ -38,7 +38,7 @@ function FSceneDisplayMovie3d_loadResource(p){
 //
 // @method
 //==========================================================
-function FSceneDisplayMovie3d_process(p){
+function FE3dSceneDisplayMovie_process(p){
    var o = this;
    // 最后更新
    if(o._firstTick == 0){

@@ -667,7 +667,6 @@ function FRs3Scene_unserialize(p){
    o._themeCode = p.readString();
    o._technique.unserialize(p);
    o._region.unserialize(p);
-   debugger
    var c = p.readInt16();
    for(var i = 0; i < c; i++){
       var l = RClass.create(FRs3SceneLayer);
@@ -749,7 +748,7 @@ function FRs3SceneConsole_load(p){
 }
 function FRs3SceneConsole_update(p){
    var o = this;
-   var u = RBrowser.hostPath(o._serviceUrl + '?action=update');
+   var u = RBrowser.hostPath(o._serviceUrl + '?action=update&date=' + RDate.format());
    var xc = RConsole.find(FXmlConsole);
    var r = xc.send(u, p);
 }
@@ -1026,6 +1025,7 @@ function FRs3SceneRegion_light(){
 function FRs3SceneRegion_unserialize(p){
    var o = this;
    o.__base.FRs3Object.unserialize.call(o, p);
+   o._color.unserialize(p);
    o._camera.unserialize(p);
    o._light.unserialize(p);
 }

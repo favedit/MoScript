@@ -5,31 +5,21 @@
 // @history 150106
 //==========================================================
 function FE3dScene(o){
-   o = RClass.inherits(this, o, FStage3d);
+   o = RClass.inherits(this, o, FE3dStage, MListenerLoad);
    //..........................................................
    // @attribute
    o._dataReady            = false;
    o._resource             = null;
-   // @attribute
-   o._skyLayer             = null;
-   o._mapLayer             = null;
-   o._spaceLayer           = null;
-   // @attribute
-   o._lsnsLoad             = null;
    //..........................................................
    //..........................................................
    // @method
    o.construct             = FE3dScene_construct;
    // @method
-   o.loadListener          = FE3dScene_loadListener;
-   // @method
    o.loadTechniqueResource = FE3dScene_loadTechniqueResource;
-   o.loadRegionResource    = FE3dScene_loadRegionResource
-   o.loadDisplayResource   = FE3dScene_loadDisplayResource
-   o.loadSkyResource       = FE3dScene_loadSkyResource
-   o.loadMapResource       = FE3dScene_loadMapResource
-   o.loadSpaceResource     = FE3dScene_loadSpaceResource
-   o.loadResource          = FE3dScene_loadResource
+   o.loadRegionResource    = FE3dScene_loadRegionResource;
+   o.loadDisplayResource   = FE3dScene_loadDisplayResource;
+   o.loadLayerResource     = FE3dScene_loadLayerResource;
+   o.loadResource          = FE3dScene_loadResource;
    // @method
    o.processLoad           = FE3dScene_processLoad;
    // @method
@@ -45,31 +35,7 @@ function FE3dScene(o){
 //==========================================================
 function FE3dScene_construct(){
    var o = this;
-   o.__base.FStage3d.construct.call(o);
-   // 创建天空层
-   var l = o._skyLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('sky', l);
-   // 创建地图层
-   var l = o._mapLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('map', l);
-   // 创建精灵层
-   var l = o._spaceLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('space', l);
-}
-
-//==========================================================
-// <T>构造处理</T>
-//
-// @method
-// @return TListeners 监听器集合
-//==========================================================
-function FE3dScene_loadListener(){
-   var o = this;
-   var ls = o._lsnsLoad;
-   if(ls == null){
-      ls = o._lsnsLoad = new TListeners();
-   }
-   return ls;
+   o.__base.FE3dStage.construct.call(o);
 }
 
 //==========================================================
@@ -94,7 +60,7 @@ function FE3dScene_loadRegionResource(p){
    //............................................................
    // 设置相机
    var rc = p.camera();
-   var rcv = rc.viewport();
+   var rcv = rc.projection();
    // 加载投影
    var c = o._camera;
    var cp = c._projection;
@@ -114,7 +80,7 @@ function FE3dScene_loadRegionResource(p){
    var lp = lc._projection;
    var rl = p.light();
    var rlc = rl.camera();
-   var rlv = rlc.viewport();
+   var rlv = rlc.projection();
    // 设置光源相机
    lc.position().set(1, 1, -1);
    lc.lookAt(0, 0, 0);
@@ -142,10 +108,10 @@ function FE3dScene_loadRegionResource(p){
 function FE3dScene_loadDisplayResource(pl, pd){
    var o = this;
    // 加载场景显示资源
-   var d3 = RClass.create(FSceneDisplay3d);
+   var d3 = RClass.create(FE3dSceneDisplay);
    d3._context = o._context;
    d3.loadSceneResource(pd);
-   RConsole.find(FTemplate3dConsole).load(d3, pd.code());
+   RConsole.find(FE3dTemplateConsole).load(d3, pd.code());
    //............................................................
    // 读取渲染对象集合
    //FMaterial* pLightMaterial = _directionalLight->Material();
@@ -166,52 +132,18 @@ function FE3dScene_loadDisplayResource(pl, pd){
 // @method
 // @param p:resource:FRs3SceneSky 天空资源
 //==========================================================
-function FE3dScene_loadSkyResource(p){
+function FE3dScene_loadLayerResource(p){
    var o = this;
-   var ds = p.displays();
-   if(ds){
-      var c = ds.count();
+   var l = RClass.create(FDisplayLayer);
+   var s = p.displays();
+   if(s){
+      var c = s.count();
       for(var i = 0; i < c; i++){
-         var d = ds.get(i);
-         o.loadDisplayResource(o._spaceLayer, d);
+         var d = s.get(i);
+         o.loadDisplayResource(l, d);
       }
    }
-}
-
-//==========================================================
-// <T>加载地图资源。</T>
-//
-// @method
-// @param p:resource:FRs3SceneMap 地图资源
-//==========================================================
-function FE3dScene_loadMapResource(p){
-   var o = this;
-   var ds = p.displays();
-   if(ds){
-      var c = ds.count();
-      for(var i = 0; i < c; i++){
-         var d = ds.get(i);
-         o.loadDisplayResource(o._mapLayer, d);
-      }
-   }
-}
-
-//==========================================================
-// <T>加载空间资源。</T>
-//
-// @method
-// @param p:resource:FRs3SceneSpace 空间资源
-//==========================================================
-function FE3dScene_loadSpaceResource(p){
-   var o = this;
-   var ds = p.displays();
-   if(ds){
-      var c = ds.count();
-      for(var i = 0; i < c; i++){
-         var d = ds.get(i);
-         o.loadDisplayResource(o._spaceLayer, d);
-      }
-   }
+   o.registerLayer(p.code(), l)
 }
 
 //==========================================================
@@ -226,15 +158,12 @@ function FE3dScene_loadResource(p){
    o.loadTechniqueResource(p.technique());
    // 加载区域资源
    o.loadRegionResource(p.region());
-   // 加载天空资源
-   o.loadSkyResource(p.sky());
-   // 加载地图资源
-   o.loadMapResource(p.map());
-   // 加载空间资源
-   o.loadSpaceResource(p.space());
-   // 加载事件处理
-   if(o._lsnsLoad){
-      o._lsnsLoad.process();
+   // 加载层集合
+   var ls = p.layers();
+   var c = ls.count();
+   for(var i = 0; i < c; i++){
+      var l = ls.value(i);
+      o.loadLayerResource(l);
    }
 }
 
@@ -252,6 +181,8 @@ function FE3dScene_processLoad(){
       return false;
    }
    o.loadResource(o._resource);
+   // 事件发送
+   o.processLoadListener(o);
    return true;
 }
 
@@ -262,7 +193,7 @@ function FE3dScene_processLoad(){
 //==========================================================
 function FE3dScene_active(){
    var o = this;
-   o.__base.FStage3d.active.call(o);
+   o.__base.FE3dStage.active.call(o);
 }
 
 //==========================================================
@@ -272,5 +203,5 @@ function FE3dScene_active(){
 //==========================================================
 function FE3dScene_deactive(){
    var o = this;
-   o.__base.FStage3d.deactive.call(o);
+   o.__base.FE3dStage.deactive.call(o);
 }

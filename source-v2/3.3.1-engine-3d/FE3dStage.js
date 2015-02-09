@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150106
 //==========================================================
-function FStage3d(o){
+function FE3dStage(o){
    o = RClass.inherits(this, o, FStage);
    //..........................................................
    // @attribute
@@ -16,15 +16,15 @@ function FStage3d(o){
    o._region           = null;
    //..........................................................
    // @method
-   o.construct         = FStage3d_construct;
+   o.construct         = FE3dStage_construct;
    // @method
-   o.backgroundColor   = FStage3d_backgroundColor;
-   o.camera            = FStage3d_camera;
-   o.projection        = FStage3d_projection;
-   o.directionalLight  = FStage3d_directionalLight;
-   o.technique         = FStage3d_technique;
-   o.selectTechnique   = FStage3d_selectTechnique;
-   o.process           = FStage3d_process;
+   o.backgroundColor   = FE3dStage_backgroundColor;
+   o.camera            = FE3dStage_camera;
+   o.projection        = FE3dStage_projection;
+   o.directionalLight  = FE3dStage_directionalLight;
+   o.technique         = FE3dStage_technique;
+   o.selectTechnique   = FE3dStage_selectTechnique;
+   o.process           = FE3dStage_process;
    return o;
 }
 
@@ -33,7 +33,7 @@ function FStage3d(o){
 //
 // @method
 //==========================================================
-function FStage3d_construct(){
+function FE3dStage_construct(){
    var o = this;
    o.__base.FStage.construct.call(o);
    // 创建背景色
@@ -61,7 +61,7 @@ function FStage3d_construct(){
 // @method
 // @return SColor4 背景色
 //==========================================================
-function FStage3d_backgroundColor(){
+function FE3dStage_backgroundColor(){
    return this._backgroundColor;
 }
 
@@ -71,7 +71,7 @@ function FStage3d_backgroundColor(){
 // @method
 // @return FG3dCamera 相机
 //==========================================================
-function FStage3d_camera(){
+function FE3dStage_camera(){
    return this._camera;
 }
 
@@ -81,7 +81,7 @@ function FStage3d_camera(){
 // @method
 // @return FG3dProjection 投影
 //==========================================================
-function FStage3d_projection(){
+function FE3dStage_projection(){
    return this._projection;
 }
 
@@ -91,7 +91,7 @@ function FStage3d_projection(){
 // @method
 // @return FG3dDirectionalLight 方向光
 //==========================================================
-function FStage3d_directionalLight(){
+function FE3dStage_directionalLight(){
    return this._directionalLight;
 }
 
@@ -101,7 +101,7 @@ function FStage3d_directionalLight(){
 // @method
 // @return FG3dTechnique 渲染技术
 //==========================================================
-function FStage3d_technique(){
+function FE3dStage_technique(){
    return this._technique;
 }
 
@@ -112,7 +112,7 @@ function FStage3d_technique(){
 // @param c:context:FG3dContext 环境
 // @param p:technique:FG3dTechnique 渲染技术
 //==========================================================
-function FStage3d_selectTechnique(c, p){
+function FE3dStage_selectTechnique(c, p){
    var o = this;
    var tc = RConsole.find(FG3dTechniqueConsole);
    o._technique = tc.find(c, p);
@@ -123,7 +123,7 @@ function FStage3d_selectTechnique(c, p){
 //
 // @method
 //==========================================================
-function FStage3d_process(){
+function FE3dStage_process(){
    var o = this;
    var r = o._region;
    o.__base.FStage.process.call(o);

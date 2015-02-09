@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150106
 //==========================================================
-function FModel3dConsole(o){
+function FE3dModelConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
@@ -18,13 +18,13 @@ function FModel3dConsole(o){
    o._interval   = 100;
    //..........................................................
    // @event
-   o.onProcess   = FModel3dConsole_onProcess;
+   o.onProcess   = FE3dModelConsole_onProcess;
    //..........................................................
    // @method
-   o.construct   = FModel3dConsole_construct;
-   o.models      = FModel3dConsole_models;
-   o.alloc       = FModel3dConsole_alloc;
-   o.free        = FModel3dConsole_free;
+   o.construct   = FE3dModelConsole_construct;
+   o.models      = FE3dModelConsole_models;
+   o.alloc       = FE3dModelConsole_alloc;
+   o.free        = FE3dModelConsole_free;
    return o;
 }
 
@@ -33,7 +33,7 @@ function FModel3dConsole(o){
 //
 // @method
 //==========================================================
-function FModel3dConsole_onProcess(){
+function FE3dModelConsole_onProcess(){
    var o = this;
    var ms = o._loadModels;
    ms.record();
@@ -50,7 +50,7 @@ function FModel3dConsole_onProcess(){
 //
 // @method
 //==========================================================
-function FModel3dConsole_construct(){
+function FE3dModelConsole_construct(){
    var o = this;
    // 设置属性
    o._loadModels = new TLooper();
@@ -68,7 +68,7 @@ function FModel3dConsole_construct(){
 // @method
 // @return TDictionary 渲染模型集合
 //==========================================================
-function FModel3dConsole_models(){
+function FE3dModelConsole_models(){
    return this._models;
 }
 
@@ -80,7 +80,7 @@ function FModel3dConsole_models(){
 // @param pn:name:String 名称
 // @return FRenderModel 渲染模型
 //==========================================================
-function FModel3dConsole_alloc(pc, pn){
+function FE3dModelConsole_alloc(pc, pn){
    var o = this;
    // 尝试从缓冲池中取出
    var ms = o._models.get(pn);
@@ -114,7 +114,7 @@ function FModel3dConsole_alloc(pc, pn){
 // @method
 // @param p:model:FModel3d 模型
 //==========================================================
-function FModel3dConsole_free(p){
+function FE3dModelConsole_free(p){
    var o = this;
    // 脱离父对象
    p.remove();

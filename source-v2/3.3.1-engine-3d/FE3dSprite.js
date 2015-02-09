@@ -4,7 +4,7 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FSprite3d(o){
+function FE3dSprite(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
@@ -12,8 +12,8 @@ function FSprite3d(o){
    o._visible    = true;
    //..........................................................
    // @method
-   o.linkContext = FSprite3d_linkContext;
-   o.testVisible = FSprite3d_testVisible;
+   o.linkContext = FE3dSprite_linkContext;
+   o.testVisible = FE3dSprite_testVisible;
    return o;
 }
 
@@ -22,7 +22,7 @@ function FSprite3d(o){
 //
 // @param p:context:FRenderContext 环境
 //==========================================================
-function FSprite3d_linkContext(p){
+function FE3dSprite_linkContext(p){
    this._context = p;
 }
 
@@ -31,6 +31,6 @@ function FSprite3d_linkContext(p){
 //
 // @return Boolean 是否可见
 //==========================================================
-function FSprite3d_testVisible(p){
+function FE3dSprite_testVisible(p){
    return this._visible;
 }

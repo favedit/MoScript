@@ -140,39 +140,63 @@ function FDsSceneCatalog_buildDisplay(pn, pt){
 function FDsSceneCatalog_buildTemplate(p){
    var o = this;
    var r = p._resource;
-   // 新建模板节点
+   // 新建场景节点
    var nr = o.createNode();
    nr.setLabel(r.code());
    nr.setTypeName('template');
    nr.dataPropertySet('linker', p);
    o.appendNode(nr);
+   // 新建技术节点
+   var nt = o.createNode();
+   nt.setLabel('Technique');
+   nt.setTypeName('template');
+   nt.dataPropertySet('linker', p);
+   nr.appendNode(nt);
+   // 新建区域节点
+   var nt = o.createNode();
+   nt.setLabel('Region');
+   nt.setTypeName('template');
+   nt.dataPropertySet('linker', p);
+   nr.appendNode(nt);
+   // 新建区域相机节点
+   var ntc = o.createNode();
+   ntc.setLabel('Camera');
+   ntc.setTypeName('template');
+   ntc.dataPropertySet('linker', p);
+   nt.appendNode(ntc);
+   // 新建区域光源节点
+   var ntc = o.createNode();
+   ntc.setLabel('Light');
+   ntc.setTypeName('template');
+   ntc.dataPropertySet('linker', p);
+   nt.appendNode(ntc);
    // 新建主题节点
-   var ts = r.themes();
-   var c = ts.count();
-   if(c > 0){
-      var ns = o.createNode();
-      ns.setLabel('Themes');
-      ns.setTypeName('themes');
-      nr.appendNode(ns);
-      for(var i = 0; i < c; i++){
-         o.buildTheme(ns, ts.get(i));
-      }
-   }
+   //var ts = r.themes();
+   //var c = ts.count();
+   //if(c > 0){
+   //   var ns = o.createNode();
+   //   ns.setLabel('Themes');
+   //   ns.setTypeName('themes');
+   //   nr.appendNode(ns);
+   //   for(var i = 0; i < c; i++){
+   //      o.buildTheme(ns, ts.get(i));
+   //   }
+   //}
    // 新建显示节点
-   var ds = p.renderables();
+   var ds = p.layers();
    var c = ds.count();
    if(c > 0){
       var ns = o.createNode();
-      ns.setLabel('Renderables');
+      ns.setLabel('Layers');
       ns.setTypeName('displays');
       nr.appendNode(ns);
       for(var i = 0; i < c; i++){
          var d = ds.get(i);
-         var r = d.resource();
-         var rd = r.model();
-         var rm = r.mesh();
+         //var r = d.resource();
+         //var rd = r.model();
+         //var rm = r.mesh();
          var n = o.createNode();
-         n.setLabel(rd.code() + ' - ' + rm.code());
+         n.setLabel('Layer');
          n.setTypeName('display');
          n.dataPropertySet('linker', d);
          ns.appendNode(n);

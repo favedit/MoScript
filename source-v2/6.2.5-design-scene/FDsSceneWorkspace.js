@@ -158,7 +158,7 @@ function FDsSceneWorkspace_onBuild(p){
 //==========================================================
 function FDsSceneWorkspace_onTemplateLoad(p){
    var o = this;
-   var t = o._activeTemplate = p._activeTemplate;
+   var t = o._activeScene = p._activeScene;
    // 加载完成
    o._catalog.buildTemplate(t);
    // 设置属性
@@ -178,7 +178,7 @@ function FDsSceneWorkspace_onTemplateLoad(p){
 //==========================================================
 function FDsSceneWorkspace_onCatalogSelected(p){
    var o = this;
-   var t = o._activeTemplate;
+   var t = o._activeScene;
    // 隐藏所有面板
    if(o._templatePropertyFrame){
       o._templatePropertyFrame.hide();
@@ -193,7 +193,7 @@ function FDsSceneWorkspace_onCatalogSelected(p){
       o._displayPropertyFrame.hide();
    }
    // 显示选中面板
-   if(RClass.isClass(p, FE3dTemplate)){
+   if(RClass.isClass(p, FE3dScene)){
       var f = o.templatePropertyFrame();
       f.show();
       f.loadObject(t);

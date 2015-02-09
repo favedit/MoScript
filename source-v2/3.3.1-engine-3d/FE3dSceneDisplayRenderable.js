@@ -4,11 +4,11 @@
 // @author maocy
 // @history 150115
 //==========================================================
-function FSceneDisplayRenderable3d(o){
-   o = RClass.inherits(this, o, FTemplateRenderable3d);
+function FE3dSceneDisplayRenderable(o){
+   o = RClass.inherits(this, o, FE3dTemplateRenderable);
    //..........................................................
    // @method
-   o.loadMaterial = FSceneDisplayRenderable3d_loadMaterial;
+   o.loadMaterial = FE3dSceneDisplayRenderable_loadMaterial;
    return o;
 }
 
@@ -17,7 +17,7 @@ function FSceneDisplayRenderable3d(o){
 //
 // @param p:resource:FRs3TemplateRenderable 资源
 //==========================================================
-function FSceneDisplayRenderable3d_loadMaterial(p){
+function FE3dSceneDisplayRenderable_loadMaterial(p){
    var o = this;
    // 设置资源
    var pi = p.info();

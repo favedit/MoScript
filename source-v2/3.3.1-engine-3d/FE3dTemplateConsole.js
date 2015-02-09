@@ -24,6 +24,7 @@ function FE3dTemplateConsole(o){
    o.construct      = FE3dTemplateConsole_construct;
    // @method
    o.alloc          = FE3dTemplateConsole_alloc;
+   o.load           = FE3dTemplateConsole_load;
    o.free           = FE3dTemplateConsole_free;
    return o;
 }
@@ -87,6 +88,27 @@ function FE3dTemplateConsole_alloc(c, n){
    t._context = c;
    t.setName(n);
    t._resourceGuid = n;
+   t.setResource(r);
+   // 加载处理
+   o._loadTemplates.push(t);
+   return t;
+}
+
+//==========================================================
+// <T>加载一个渲染模板。</T>
+//
+// @method
+// @param t:template:FTemplate3d 渲染模板
+// @param n:name:String 名称
+//==========================================================
+function FE3dTemplateConsole_load(t, n){
+   var o = this;
+   // 获得模板资源
+   var rc = RConsole.find(FRs3TemplateConsole);
+   var r = rc.load(n);
+   // 创建模板
+   t._resourceGuid = n;
+   t.setName(n);
    t.setResource(r);
    // 加载处理
    o._loadTemplates.push(t);

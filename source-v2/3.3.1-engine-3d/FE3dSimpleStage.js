@@ -4,8 +4,8 @@
 // @author maocy
 // @history 150106
 //==========================================================
-function FSimpleStage3d(o){
-   o = RClass.inherits(this, o, FStage3d);
+function FE3dSimpleStage(o){
+   o = RClass.inherits(this, o, FE3dStage);
    //..........................................................
    // @attribute
    o._optionKeyboard = true;
@@ -15,18 +15,18 @@ function FSimpleStage3d(o){
    o._faceLayer      = null;
    //..........................................................
    // @event
-   o.onKeyDown       = FSimpleStage3d_onKeyDown;
+   o.onKeyDown       = FE3dSimpleStage_onKeyDown;
    //..........................................................
    // @method
-   o.construct       = FSimpleStage3d_construct;
+   o.construct       = FE3dSimpleStage_construct;
    // @method
-   o.skyLayer        = FSimpleStage3d_skyLayer;
-   o.mapLayer        = FSimpleStage3d_mapLayer;
-   o.spriteLayer     = FSimpleStage3d_spriteLayer;
-   o.faceLayer       = FSimpleStage3d_faceLayer;
+   o.skyLayer        = FE3dSimpleStage_skyLayer;
+   o.mapLayer        = FE3dSimpleStage_mapLayer;
+   o.spriteLayer     = FE3dSimpleStage_spriteLayer;
+   o.faceLayer       = FE3dSimpleStage_faceLayer;
    // @method
-   o.active          = FSimpleStage3d_active;
-   o.deactive        = FSimpleStage3d_deactive;
+   o.active          = FE3dSimpleStage_active;
+   o.deactive        = FE3dSimpleStage_deactive;
    return o;
 }
 
@@ -35,7 +35,7 @@ function FSimpleStage3d(o){
 //
 // @method
 //==========================================================
-function FSimpleStage3d_onKeyDown(e){
+function FE3dSimpleStage_onKeyDown(e){
    var o = this;
    // 事件处理
    var c = o._camera;
@@ -69,9 +69,9 @@ function FSimpleStage3d_onKeyDown(e){
 //
 // @method
 //==========================================================
-function FSimpleStage3d_construct(){
+function FE3dSimpleStage_construct(){
    var o = this;
-   o.__base.FStage3d.construct.call(o);
+   o.__base.FE3dStage.construct.call(o);
    // 创建天空层
    var l = o._skyLayer = RClass.create(FDisplayLayer);
    o.registerLayer('sky', l);
@@ -92,7 +92,7 @@ function FSimpleStage3d_construct(){
 // @method
 // @return FDisplayLayer 天空层
 //==========================================================
-function FSimpleStage3d_skyLayer(){
+function FE3dSimpleStage_skyLayer(){
    return this._skyLayer;
 }
 
@@ -102,7 +102,7 @@ function FSimpleStage3d_skyLayer(){
 // @method
 // @return FDisplayLayer 地图层
 //==========================================================
-function FSimpleStage3d_mapLayer(){
+function FE3dSimpleStage_mapLayer(){
    return this._mapLayer;
 }
 
@@ -112,7 +112,7 @@ function FSimpleStage3d_mapLayer(){
 // @method
 // @return FDisplayLayer 精灵层
 //==========================================================
-function FSimpleStage3d_spriteLayer(){
+function FE3dSimpleStage_spriteLayer(){
    return this._spriteLayer;
 }
 
@@ -122,7 +122,7 @@ function FSimpleStage3d_spriteLayer(){
 // @method
 // @return FDisplayLayer 界面层
 //==========================================================
-function FSimpleStage3d_faceLayer(){
+function FE3dSimpleStage_faceLayer(){
    return this._faceLayer;
 }
 
@@ -131,9 +131,9 @@ function FSimpleStage3d_faceLayer(){
 //
 // @method
 //==========================================================
-function FSimpleStage3d_active(){
+function FE3dSimpleStage_active(){
    var o = this;
-   o.__base.FStage3d.active.call(o);
+   o.__base.FE3dStage.active.call(o);
    // 注册事件
    if(o._optionKeyboard){
       RWindow.lsnsKeyDown.register(o, o.onKeyDown);
@@ -145,9 +145,9 @@ function FSimpleStage3d_active(){
 //
 // @method
 //==========================================================
-function FSimpleStage3d_deactive(){
+function FE3dSimpleStage_deactive(){
    var o = this;
-   o.__base.FStage3d.deactive.call(o);
+   o.__base.FE3dStage.deactive.call(o);
    // 注销事件
    if(o._optionKeyboard){
       RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);

@@ -54,7 +54,7 @@ function FDsTemplateCanvas_onBuild(p){
    h.__linker = o;
    var c = o._context = REngine3d.createContext(FWglContext, h);
    // 创建简单舞台
-   var g = o._stage = RClass.create(FSimpleStage3d);
+   var g = o._stage = RClass.create(FE3dSimpleStage);
    g._optionKeyboard = false;
    g.backgroundColor().set(0.5, 0.5, 0.5, 1);
    g.selectTechnique(c, FG3dGeneralTechnique);

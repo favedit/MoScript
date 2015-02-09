@@ -9,8 +9,6 @@ function FDsSceneCanvas(o){
    //..........................................................
    o._toolbar            = null;
    o._context            = null;
-   o._stage              = null;
-   o._layer              = null;
    o._activeScene        = null;
    o._rotation           = null;
    o._rotationAble       = false;
@@ -26,7 +24,7 @@ function FDsSceneCanvas(o){
    o.onMouseCapture      = FDsSceneCanvas_onMouseCapture;
    o.onMouseCaptureStop  = FDsSceneCanvas_onMouseCaptureStop;
    o.onEnterFrame        = FDsSceneCanvas_onEnterFrame;
-   o.onTemplateLoad      = FDsSceneCanvas_onTemplateLoad;
+   o.onSceneLoad         = FDsSceneCanvas_onSceneLoad;
    //..........................................................
    o.oeRefresh           = FDsSceneCanvas_oeRefresh;
    //..........................................................
@@ -54,41 +52,40 @@ function FDsSceneCanvas_onBuild(p){
    h.__linker = o;
    var c = o._context = REngine3d.createContext(FWglContext, h);
    // 创建简单舞台
-   var g = o._stage = RClass.create(FSimpleStage3d);
-   g._optionKeyboard = false;
-   g.backgroundColor().set(0.5, 0.5, 0.5, 1);
-   g.selectTechnique(c, FG3dGeneralTechnique);
-   o._layer = o._stage.spriteLayer();
-   RStage.register('stage3d', o._stage);
+   //var g = o._activeScene = RClass.create(FSimpleStage3d);
+   //g._optionKeyboard = false;
+   //g.backgroundColor().set(0.5, 0.5, 0.5, 1);
+   //g.selectTechnique(c, FG3dGeneralTechnique);
+   //RStage.register('stage3d', o._activeScene);
    // 设置相机
-   var rc = g.camera();
-   rc.setPosition(0, 3, -10);
-   rc.lookAt(0, 3, 0);
-   rc.update();
+   //var rc = g.camera();
+   //rc.setPosition(0, 3, -10);
+   //rc.lookAt(0, 3, 0);
+   //rc.update();
    // 设置投影
-   var rp = rc.projection();
-   rp.size().set(h.width, h.height);
-   rp._angle = 45;
-   rp.update();
+   //var rp = rc.projection();
+   //rp.size().set(h.width, h.height);
+   //rp._angle = 45;
+   //rp.update();
    // 设置光源
-   var l = g.directionalLight();
-   var lc = l.camera();
-   lc.setPosition(10, 10, 0);
-   lc.lookAt(0, 0, 0);
-   lc.update();
+   //var l = g.directionalLight();
+   //var lc = l.camera();
+   //lc.setPosition(10, 10, 0);
+   //lc.lookAt(0, 0, 0);
+   //lc.update();
    // 创建坐标系
-   var dm = o._dimensional = RClass.create(FRd3Dimensional);
-   dm.linkGraphicContext(c);
-   dm.setup();
-   o._layer.pushRenderable(dm);
+   //var dm = o._dimensional = RClass.create(FRd3Dimensional);
+   //dm.linkGraphicContext(c);
+   //dm.setup();
    // 创建选取包围盒
-   var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
-   bb.linkGraphicContext(o._context);
-   bb.setup();
+   //var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
+   //bb.linkGraphicContext(o._context);
+   //bb.setup();
    // 启动处理
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    //RStage.start(4000);
    RStage.start(15);
+   // 注册鼠标捕捉监听
    RConsole.find(FMouseConsole).register(o);
 }
 
@@ -100,16 +97,14 @@ function FDsSceneCanvas_onBuild(p){
 //==========================================================
 function FDsSceneCanvas_onMouseCaptureStart(p){
    var o = this;
-   var t = o._activeScene;
-   if(!t){
+   var s = o._activeScene;
+   if(!s){
       return;
    }
-   var d = t.renderables().get(0);
+   //var d = t.renderables().get(0);
    o._capturePosition.set(p.clientX, p.clientY);
-   o._captureMatrix.assign(d.matrix());
-
-   var c = o._stage.camera();
-   o._captureRotation.assign(c._rotation);
+   //o._captureMatrix.assign(d.matrix());
+   o._captureRotation.assign(s.camera()._rotation);
 }
 
 //==========================================================
@@ -120,18 +115,18 @@ function FDsSceneCanvas_onMouseCaptureStart(p){
 //==========================================================
 function FDsSceneCanvas_onMouseCapture(p){
    var o = this;
-   var t = o._activeScene;
-   if(!t){
+   var s = o._activeScene;
+   if(!s){
       return;
    }
    var cx = p.clientX - o._capturePosition.x;
    var cy = p.clientY - o._capturePosition.y;
-   var d = t.renderables().get(0);
-   var m = d.matrix();
-   var cm = o._captureMatrix;
+   //var d = t.renderables().get(0);
+   //var m = d.matrix();
+   //var cm = o._captureMatrix;
    switch(o._toolbar._canvasModeCd){
       case EDsCanvasMode.Drop:
-         var c = o._stage.camera();
+         var c = o._activeScene.camera();
          var r = c.rotation();
          var cr = o._captureRotation;
          r.x = cr.x + cy * 0.003;
@@ -140,19 +135,19 @@ function FDsSceneCanvas_onMouseCapture(p){
       case EDsCanvasMode.Select:
          break;
       case EDsCanvasMode.Translate:
-         m.tx = cm.tx + cx / 360 * 3.14;
-         m.ty = cm.ty + cy / 360 * 3.14;
+         //m.tx = cm.tx + cx / 360 * 3.14;
+         //m.ty = cm.ty + cy / 360 * 3.14;
          break;
       case EDsCanvasMode.Rotation:
-         m.ry = cm.ry + cx * RMath.DEGREE_RATE;
+         //m.ry = cm.ry + cx * RMath.DEGREE_RATE;
          break;
       case EDsCanvasMode.Scale:
-         m.sx = cm.sx + cx / 100;
-         m.sy = cm.sy + cx / 100;
-         m.sz = cm.sz + cx / 100;
+         //m.sx = cm.sx + cx / 100;
+         //m.sy = cm.sy + cx / 100;
+         //m.sz = cm.sz + cx / 100;
          break;
    }
-   m.updateForce();
+   //m.updateForce();
 }
 
 //==========================================================
@@ -171,9 +166,13 @@ function FDsSceneCanvas_onMouseCaptureStop(p){
 //==========================================================
 function FDsSceneCanvas_onEnterFrame(){
    var o = this;
+   var s = o._activeScene;
+   if(!s){
+      return;
+   }
    //..........................................................
    // 按键处理
-   var c = o._stage.camera();
+   var c = s.camera();
    var d = 0.5;
    var r = 0.05;
    var kw = RKeyboard.isPress(EKeyCode.W);
@@ -213,19 +212,18 @@ function FDsSceneCanvas_onEnterFrame(){
    c.update();
    //..........................................................
    // 旋转模型
-   var m = o._activeScene;
-   if(m){
-      var r = o._rotation;
+   if(s){
+      //var r = o._rotation;
       //m.location().set(0, -8.0, 0);
-      m.rotation().set(0, r.y, 0);
+      //m.rotation().set(0, r.y, 0);
       //m.scale().set(3.0, 3.0, 3.0);
       //m.scale().set(0.002, 0.002, 0.002);
-      m.scale().set(0.2, 0.2, 0.2);
-      m.update();
+      //m.scale().set(0.2, 0.2, 0.2);
+      //m.update();
       // 设置变量
-      if(o._rotationAble){
-         r.y += 0.01;
-      }
+      //if(o._rotationAble){
+      //   r.y += 0.01;
+      //}
    }
 }
 
@@ -235,7 +233,7 @@ function FDsSceneCanvas_onEnterFrame(){
 // @method
 // @param p:template:FTemplate3d 模板
 //==========================================================
-function FDsSceneCanvas_onTemplateLoad(p){
+function FDsSceneCanvas_onSceneLoad(p){
    var o = this;
    // 加载完成
    o.processLoadListener(o);
@@ -258,9 +256,9 @@ function FDsSceneCanvas_oeRefresh(p){
    hc.width = w;
    hc.height = h;
    // 设置投影
-   var rp = o._stage.camera().projection();
-   rp.size().set(w, h);
-   rp.update();
+   //var rp = o._activeScene.camera().projection();
+   //rp.size().set(w, h);
+   //rp.update();
    // 设置范围
    c.setViewport(0, 0, w, h);
    return EEventStatus.Stop;
@@ -305,15 +303,18 @@ function FDsSceneCanvas_selectRenderable(p){
 //==========================================================
 function FDsSceneCanvas_loadScene(p){
    var o = this;
+   var c = o._context;
+   // 收集场景
    var rmc = RConsole.find(FE3dSceneConsole);
    if(o._activeScene != null){
       rmc.free(o._activeScene);
    }
    // 监听加载完成
    var m = rmc.alloc(o._context, p);
-   //m.addLoadListener(o, o.onTemplateLoad);
-   //o._layer.pushDisplay(m);
-   //o._activeScene = m;
+   m.addLoadListener(o, o.onSceneLoad);
+   m.selectTechnique(c, FG3dGeneralTechnique);
+   o._activeScene = m;
+   RStage.register('stage3d', m);
 }
 
 //==========================================================

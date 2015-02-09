@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150106
 //==========================================================
-function FModel3d(o){
+function FE3dModel(o){
    o = RClass.inherits(this, o, FDisplay3d);
    //..........................................................
    // @attribute
@@ -16,10 +16,10 @@ function FModel3d(o){
    o._renderable    = null;
    //..........................................................
    // @method
-   o.testReady      = FModel3d_testReady;
-   o.loadRenderable = FModel3d_loadRenderable;
-   o.processLoad    = FModel3d_processLoad;
-   o.process        = FModel3d_process;
+   o.testReady      = FE3dModel_testReady;
+   o.loadRenderable = FE3dModel_loadRenderable;
+   o.processLoad    = FE3dModel_processLoad;
+   o.process        = FE3dModel_process;
    return o;
 }
 
@@ -28,7 +28,7 @@ function FModel3d(o){
 //
 // @return 是否准备好
 //==========================================================
-function FModel3d_testReady(){
+function FE3dModel_testReady(){
    return this._dataReady;
 }
 
@@ -37,7 +37,7 @@ function FModel3d_testReady(){
 //
 // @param p:renderable:FRd3Model 渲染对象
 //==========================================================
-function FModel3d_loadRenderable(p){
+function FE3dModel_loadRenderable(p){
    var o = this;
    var c = o._context;
    var r = p.resource();
@@ -67,7 +67,7 @@ function FModel3d_loadRenderable(p){
 //
 // @method
 //==========================================================
-function FModel3d_processLoad(){
+function FE3dModel_processLoad(){
    var o = this;
    if(o._dataReady){
       return true;
@@ -84,7 +84,7 @@ function FModel3d_processLoad(){
 //
 // @method
 //==========================================================
-function FModel3d_process(){
+function FE3dModel_process(){
    var o = this;
    o.__base.FDisplay3d.process.call(o);
    // 处理动画集合

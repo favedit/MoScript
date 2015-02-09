@@ -4,16 +4,16 @@
 // @author maocy
 // @history 150107
 //==========================================================
-function FDisplay3d(o){
+function FE3dDisplay(o){
    o = RClass.inherits(this, o, FDisplay);
    //..........................................................
    // @attribute
    o._materials = null;
    //..........................................................
    // @method
-   o.construct  = FDisplay3d_construct;
-   o.materials  = FDisplay3d_materials;
-   o.dispose    = FDisplay3d_dispose;
+   o.construct  = FE3dDisplay_construct;
+   o.materials  = FE3dDisplay_materials;
+   o.dispose    = FE3dDisplay_dispose;
    return o;
 }
 
@@ -22,7 +22,7 @@ function FDisplay3d(o){
 //
 // @method
 //==========================================================
-function FDisplay3d_construct(){
+function FE3dDisplay_construct(){
    var o = this;
    o.__base.FDisplay.construct.call(o);
    o._materials = new TDictionary();
@@ -34,7 +34,7 @@ function FDisplay3d_construct(){
 // @method
 // @return FG3dMaterial 材质
 //==========================================================
-function FDisplay3d_materials(){
+function FE3dDisplay_materials(){
    return this._materials;
 }
 
@@ -43,7 +43,7 @@ function FDisplay3d_materials(){
 //
 // @method
 //==========================================================
-function FDisplay3d_dispose(){
+function FE3dDisplay_dispose(){
    var o = this;
    o._materials = null;
    // 父处理

@@ -4,7 +4,7 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FModelRenderable3d(o){
+function FE3dModelRenderable(o){
    o = RClass.inherits(this, o, FG3dRenderable);
    //..........................................................
    // @attribute
@@ -14,18 +14,18 @@ function FModelRenderable3d(o){
    o._materialResource = null;
    //..........................................................
    // @method
-   o.construct         = FModelRenderable3d_construct;
-   o.testVisible       = FModelRenderable3d_testVisible;
-   o.vertexCount       = FModelRenderable3d_vertexCount;
-   o.findVertexBuffer  = FModelRenderable3d_findVertexBuffer;
-   o.vertexBuffers     = FModelRenderable3d_vertexBuffers;
-   o.indexBuffer       = FModelRenderable3d_indexBuffer;
-   o.findTexture       = FModelRenderable3d_findTexture;
-   o.textures          = FModelRenderable3d_textures;
-   o.bones             = FModelRenderable3d_bones;
-   o.load              = FModelRenderable3d_load;
-   o.build             = FModelRenderable3d_build;
-   o.update            = FModelRenderable3d_update;
+   o.construct         = FE3dModelRenderable_construct;
+   o.testVisible       = FE3dModelRenderable_testVisible;
+   o.vertexCount       = FE3dModelRenderable_vertexCount;
+   o.findVertexBuffer  = FE3dModelRenderable_findVertexBuffer;
+   o.vertexBuffers     = FE3dModelRenderable_vertexBuffers;
+   o.indexBuffer       = FE3dModelRenderable_indexBuffer;
+   o.findTexture       = FE3dModelRenderable_findTexture;
+   o.textures          = FE3dModelRenderable_textures;
+   o.bones             = FE3dModelRenderable_bones;
+   o.load              = FE3dModelRenderable_load;
+   o.build             = FE3dModelRenderable_build;
+   o.update            = FE3dModelRenderable_update;
    return o;
 }
 
@@ -34,7 +34,7 @@ function FModelRenderable3d(o){
 //
 // @method
 //==========================================================
-function FModelRenderable3d_construct(){
+function FE3dModelRenderable_construct(){
    var o = this;
    o.__base.FG3dRenderable.construct.call(o);
 }
@@ -45,7 +45,7 @@ function FModelRenderable3d_construct(){
 // @method
 // @return Boolean 是否可见
 //==========================================================
-function FModelRenderable3d_testVisible(p){
+function FE3dModelRenderable_testVisible(p){
    var o = this;
    var r = o._ready;
    if(!r){
@@ -63,7 +63,7 @@ function FModelRenderable3d_testVisible(p){
 // @method
 // @return Integer 顶点总数
 //==========================================================
-function FModelRenderable3d_vertexCount(){
+function FE3dModelRenderable_vertexCount(){
    return this._renderable.vertexCount();
 }
 
@@ -73,7 +73,7 @@ function FModelRenderable3d_vertexCount(){
 // @method
 // @return FG3dVertexBuffer 顶点缓冲
 //==========================================================
-function FModelRenderable3d_findVertexBuffer(p){
+function FE3dModelRenderable_findVertexBuffer(p){
    return this._renderable.findVertexBuffer(p);
 }
 
@@ -83,7 +83,7 @@ function FModelRenderable3d_findVertexBuffer(p){
 // @method
 // @return TObjects 顶点缓冲集合
 //==========================================================
-function FModelRenderable3d_vertexBuffers(){
+function FE3dModelRenderable_vertexBuffers(){
    return this._renderable.vertexBuffers();
 }
 
@@ -93,7 +93,7 @@ function FModelRenderable3d_vertexBuffers(){
 // @method
 // @return FG3dIndexBuffer 索引缓冲
 //==========================================================
-function FModelRenderable3d_indexBuffer(){
+function FE3dModelRenderable_indexBuffer(){
    return this._renderable.indexBuffer();
 }
 
@@ -104,7 +104,7 @@ function FModelRenderable3d_indexBuffer(){
 // @param p:name:String 名称
 // @return FRenderIndexBuffer 纹理
 //==========================================================
-function FModelRenderable3d_findTexture(p){
+function FE3dModelRenderable_findTexture(p){
    return this._renderable.findTexture(p);
 }
 
@@ -114,7 +114,7 @@ function FModelRenderable3d_findTexture(p){
 // @method
 // @return TDictionary 纹理集合
 //==========================================================
-function FModelRenderable3d_textures(){
+function FE3dModelRenderable_textures(){
    return this._renderable.textures();
 }
 
@@ -124,7 +124,7 @@ function FModelRenderable3d_textures(){
 // @method
 // @return TObjects 骨头集合
 //==========================================================
-function FModelRenderable3d_bones(p){
+function FE3dModelRenderable_bones(p){
    return this._bones;
 }
 
@@ -133,7 +133,7 @@ function FModelRenderable3d_bones(p){
 //
 // @param p:resource:FRs3Geometry 资源
 //==========================================================
-function FModelRenderable3d_load(p){
+function FE3dModelRenderable_load(p){
    var o = this;
    // 获得材质
    var m = o._material;
@@ -152,7 +152,7 @@ function FModelRenderable3d_load(p){
 // @method
 // @param p:animation:FRd3Animation 动画
 //==========================================================
-function FModelRenderable3d_build(p){
+function FE3dModelRenderable_build(p){
    var o = this;
    var r = o._renderable;
    // 建立骨头集合
@@ -177,7 +177,7 @@ function FModelRenderable3d_build(p){
 // @method
 // @param p:region:FG3dRegion 区域
 //==========================================================
-function FModelRenderable3d_update(p){
+function FE3dModelRenderable_update(p){
    var o = this;
    var m = o._display.matrix();
    o._matrix.assign(m);

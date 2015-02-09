@@ -4,8 +4,8 @@
 // @author maocy
 // @history 150115
 //==========================================================
-function FSceneDisplay3d(o){
-   o = RClass.inherits(this, o, FTemplate3d);
+function FE3dSceneDisplay(o){
+   o = RClass.inherits(this, o, FE3dTemplate);
    //..........................................................
    // @attribute
    o._dataReady        = false;
@@ -16,11 +16,11 @@ function FSceneDisplay3d(o){
    o._movies           = null;
    //..........................................................
    // @method
-   o.construct         = FSceneDisplay3d_construct;
+   o.construct         = FE3dSceneDisplay_construct;
    // @method
-   o.loadSceneResource = FSceneDisplay3d_loadSceneResource;
-   o.loadResource      = FSceneDisplay3d_loadResource;
-   o.process           = FSceneDisplay3d_process;
+   o.loadSceneResource = FE3dSceneDisplay_loadSceneResource;
+   o.loadResource      = FE3dSceneDisplay_loadResource;
+   o.process           = FE3dSceneDisplay_process;
    return o;
 }
 
@@ -29,9 +29,9 @@ function FSceneDisplay3d(o){
 //
 // @method
 //==========================================================
-function FSceneDisplay3d_construct(){
+function FE3dSceneDisplay_construct(){
    var o = this;
-   o.__base.FTemplate3d.construct.call(o);
+   o.__base.FE3dTemplate.construct.call(o);
    o._movieMatrix = new SMatrix3d();
    o._modelMatrix = new SMatrix3d();
 }
@@ -42,7 +42,7 @@ function FSceneDisplay3d_construct(){
 // @method
 // @param p:resource:FRs3SceneSpace 空间资源
 //==========================================================
-function FSceneDisplay3d_loadSceneResource(p){
+function FE3dSceneDisplay_loadSceneResource(p){
    var o = this;
    o._resource = p;
    // 设置矩阵
@@ -54,7 +54,7 @@ function FSceneDisplay3d_loadSceneResource(p){
       var ms = o._materials = new TDictionary();
       for(var i = 0; i < c; i++){
          var rm = rms.get(i);
-         var m = RClass.create(FSceneMaterial3d);
+         var m = RClass.create(FE3dSceneMaterial);
          m.loadSceneResource(rm);
          ms.set(rm.code(), m);
       }
@@ -66,7 +66,7 @@ function FSceneDisplay3d_loadSceneResource(p){
       var ms = o._movies = new TObjects();
       for(var i = 0; i < c; i++){
          var rm = rms.get(i);
-         var m = RClass.create(FSceneDisplayMovie3d);
+         var m = RClass.create(FE3dSceneDisplayMovie);
          m.loadResource(rm);
          ms.push(m);
       }
@@ -78,28 +78,29 @@ function FSceneDisplay3d_loadSceneResource(p){
 //
 // @param p:resource:FRs3Template 资源
 //==========================================================
-function FSceneDisplay3d_loadResource(p){
+function FE3dSceneDisplay_loadResource(p){
    var o = this;
    // 加载渲染集合
    var ms = o._materials;
-   var rds = p.renderables();
+   var rds = p.displays();
    var c = rds.count();
    if(c > 0){
-      var rs = o._templateRenderables = new TObjects();
+      //var rs = o._templateRenderables = new TObjects();
       for(var i = 0; i < c; i++){
          var rd = rds.get(i);
-         var mc = rd.materialCode();
+         //var mc = rd.materialCode();
          // 创建显示对象
-         var r = RClass.create(FSceneDisplayRenderable3d);
+         var r = RClass.create(FE3dSceneDisplayRenderable);
          r._display = o;
          r._context = o._context;
          r.loadResource(rd);
-         rs.push(r);
+         o.pushRenderable(r);
+         //rs.push(r);
          // 查找材质
-         var m = ms.get(mc);
-         if(m){
-            r.loadMaterial(m);
-         }
+         //var m = ms.get(mc);
+         //if(m){
+         //   r.loadMaterial(m);
+         //}
       }
    }
 }
@@ -109,9 +110,9 @@ function FSceneDisplay3d_loadResource(p){
 //
 // @method
 //==========================================================
-function FSceneDisplay3d_process(p){
+function FE3dSceneDisplay_process(p){
    var o = this;
-   o.__base.FTemplate3d.process.call(o, p);
+   o.__base.FE3dTemplate.process.call(o, p);
    // 加载动画集合
    o._matrix.identity();
    var ms = o._movies;
