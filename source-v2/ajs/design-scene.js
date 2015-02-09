@@ -14,7 +14,7 @@ function FDsSceneCanvas(o){
    o._context            = null;
    o._stage              = null;
    o._layer              = null;
-   o._activeTemplate     = null;
+   o._activeScene        = null;
    o._rotation           = null;
    o._rotationAble       = false;
    o._capturePosition    = null;
@@ -31,7 +31,7 @@ function FDsSceneCanvas(o){
    o.oeRefresh           = FDsSceneCanvas_oeRefresh;
    o.construct           = FDsSceneCanvas_construct;
    o.selectRenderable    = FDsSceneCanvas_selectRenderable;
-   o.loadTemplate        = FDsSceneCanvas_loadTemplate;
+   o.loadScene           = FDsSceneCanvas_loadScene;
    o.dispose             = FDsSceneCanvas_dispose;
    return o;
 }
@@ -73,7 +73,7 @@ function FDsSceneCanvas_onBuild(p){
 }
 function FDsSceneCanvas_onMouseCaptureStart(p){
    var o = this;
-   var t = o._activeTemplate;
+   var t = o._activeScene;
    if(!t){
       return;
    }
@@ -85,7 +85,7 @@ function FDsSceneCanvas_onMouseCaptureStart(p){
 }
 function FDsSceneCanvas_onMouseCapture(p){
    var o = this;
-   var t = o._activeTemplate;
+   var t = o._activeScene;
    if(!t){
       return;
    }
@@ -159,7 +159,7 @@ function FDsSceneCanvas_onEnterFrame(){
       c.doPitch(-r);
    }
    c.update();
-   var m = o._activeTemplate;
+   var m = o._activeScene;
    if(m){
       var r = o._rotation;
       m.rotation().set(0, r.y, 0);
@@ -208,16 +208,13 @@ function FDsSceneCanvas_selectRenderable(p){
    b.remove();
    p._display.pushRenderable(b);
 }
-function FDsSceneCanvas_loadTemplate(p){
+function FDsSceneCanvas_loadScene(p){
    var o = this;
-   var rmc = RConsole.find(FE3dTemplateConsole);
-   if(o._activeTemplate != null){
-      rmc.free(o._activeTemplate);
+   var rmc = RConsole.find(FE3dSceneConsole);
+   if(o._activeScene != null){
+      rmc.free(o._activeScene);
    }
    var m = rmc.alloc(o._context, p);
-   m.addLoadListener(o, o.onTemplateLoad);
-   o._layer.pushDisplay(m);
-   o._activeTemplate = m;
 }
 function FDsSceneCanvas_dispose(){
    var o = this;
@@ -855,7 +852,7 @@ function FDsSceneWorkspace(o){
    o.themePropertyFrame     = FDsSceneWorkspace_themePropertyFrame;
    o.materialPropertyFrame  = FDsSceneWorkspace_materialPropertyFrame;
    o.displayPropertyFrame   = FDsSceneWorkspace_displayPropertyFrame;
-   o.loadTemplate           = FDsSceneWorkspace_loadTemplate;
+   o.loadScene              = FDsSceneWorkspace_loadScene;
    o.dispose                = FDsSceneWorkspace_dispose;
    return o;
 }
@@ -1025,9 +1022,9 @@ function FDsSceneWorkspace_displayPropertyFrame(){
    }
    return f;
 }
-function FDsSceneWorkspace_loadTemplate(p){
+function FDsSceneWorkspace_loadScene(p){
    var o = this;
-   o._canvas.loadTemplate(p);
+   o._canvas.loadScene(p);
 }
 function FDsSceneWorkspace_dispose(){
    var o = this;

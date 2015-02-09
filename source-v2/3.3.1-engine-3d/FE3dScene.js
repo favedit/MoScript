@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150106
 //==========================================================
-function FScene3d(o){
+function FE3dScene(o){
    o = RClass.inherits(this, o, FStage3d);
    //..........................................................
    // @attribute
@@ -17,61 +17,25 @@ function FScene3d(o){
    // @attribute
    o._lsnsLoad             = null;
    //..........................................................
-   // @event
-   o.onKeyDown             = FScene3d_onKeyDown;
    //..........................................................
    // @method
-   o.construct             = FScene3d_construct;
+   o.construct             = FE3dScene_construct;
    // @method
-   o.loadListener          = FScene3d_loadListener;
+   o.loadListener          = FE3dScene_loadListener;
    // @method
-   o.loadTechniqueResource = FScene3d_loadTechniqueResource;
-   o.loadRegionResource    = FScene3d_loadRegionResource
-   o.loadDisplayResource   = FScene3d_loadDisplayResource
-   o.loadSkyResource       = FScene3d_loadSkyResource
-   o.loadMapResource       = FScene3d_loadMapResource
-   o.loadSpaceResource     = FScene3d_loadSpaceResource
-   o.loadResource          = FScene3d_loadResource
+   o.loadTechniqueResource = FE3dScene_loadTechniqueResource;
+   o.loadRegionResource    = FE3dScene_loadRegionResource
+   o.loadDisplayResource   = FE3dScene_loadDisplayResource
+   o.loadSkyResource       = FE3dScene_loadSkyResource
+   o.loadMapResource       = FE3dScene_loadMapResource
+   o.loadSpaceResource     = FE3dScene_loadSpaceResource
+   o.loadResource          = FE3dScene_loadResource
    // @method
-   o.processLoad           = FScene3d_processLoad;
+   o.processLoad           = FE3dScene_processLoad;
    // @method
-   o.active                = FScene3d_active;
-   o.deactive              = FScene3d_deactive;
+   o.active                = FE3dScene_active;
+   o.deactive              = FE3dScene_deactive;
    return o;
-}
-
-//==========================================================
-// <T>按键处理。</T>
-//
-// @method
-//==========================================================
-function FScene3d_onKeyDown(e){
-   var o = this;
-   // 事件处理
-   var c = o._camera;
-   var k = e.keyCode;
-   var r = 0.3;
-   switch(k){
-      case EKeyCode.W:
-         c.doWalk(r);
-         break;
-      case EKeyCode.S:
-         c.doWalk(-r);
-         break;
-      case EKeyCode.A:
-         c.doStrafe(r);
-         break;
-      case EKeyCode.D:
-         c.doStrafe(-r);
-         break;
-      case EKeyCode.Q:
-         c.doFly(r);
-         break;
-      case EKeyCode.E:
-         c.doFly(-r);
-         break;
-   }
-   c.update();
 }
 
 //==========================================================
@@ -79,7 +43,7 @@ function FScene3d_onKeyDown(e){
 //
 // @method
 //==========================================================
-function FScene3d_construct(){
+function FE3dScene_construct(){
    var o = this;
    o.__base.FStage3d.construct.call(o);
    // 创建天空层
@@ -99,7 +63,7 @@ function FScene3d_construct(){
 // @method
 // @return TListeners 监听器集合
 //==========================================================
-function FScene3d_loadListener(){
+function FE3dScene_loadListener(){
    var o = this;
    var ls = o._lsnsLoad;
    if(ls == null){
@@ -114,7 +78,7 @@ function FScene3d_loadListener(){
 // @method
 // @param p:resource:FRs3SceneTechnique 技术资源
 //==========================================================
-function FScene3d_loadTechniqueResource(p){
+function FE3dScene_loadTechniqueResource(p){
 }
 
 //==========================================================
@@ -123,7 +87,7 @@ function FScene3d_loadTechniqueResource(p){
 // @method
 // @param p:resource:FRs3SceneRegion 区域资源
 //==========================================================
-function FScene3d_loadRegionResource(p){
+function FE3dScene_loadRegionResource(p){
    var o = this;
    // 设置颜色
    o._backgroundColor.assign(p.color());
@@ -175,7 +139,7 @@ function FScene3d_loadRegionResource(p){
 // @method
 // @param p:resource:FRs3SceneDisplay 显示资源
 //==========================================================
-function FScene3d_loadDisplayResource(pl, pd){
+function FE3dScene_loadDisplayResource(pl, pd){
    var o = this;
    // 加载场景显示资源
    var d3 = RClass.create(FSceneDisplay3d);
@@ -202,7 +166,7 @@ function FScene3d_loadDisplayResource(pl, pd){
 // @method
 // @param p:resource:FRs3SceneSky 天空资源
 //==========================================================
-function FScene3d_loadSkyResource(p){
+function FE3dScene_loadSkyResource(p){
    var o = this;
    var ds = p.displays();
    if(ds){
@@ -220,7 +184,7 @@ function FScene3d_loadSkyResource(p){
 // @method
 // @param p:resource:FRs3SceneMap 地图资源
 //==========================================================
-function FScene3d_loadMapResource(p){
+function FE3dScene_loadMapResource(p){
    var o = this;
    var ds = p.displays();
    if(ds){
@@ -238,7 +202,7 @@ function FScene3d_loadMapResource(p){
 // @method
 // @param p:resource:FRs3SceneSpace 空间资源
 //==========================================================
-function FScene3d_loadSpaceResource(p){
+function FE3dScene_loadSpaceResource(p){
    var o = this;
    var ds = p.displays();
    if(ds){
@@ -256,7 +220,7 @@ function FScene3d_loadSpaceResource(p){
 // @method
 // @param p:resource:资源
 //==========================================================
-function FScene3d_loadResource(p){
+function FE3dScene_loadResource(p){
    var o = this;
    // 加载技术资源
    o.loadTechniqueResource(p.technique());
@@ -279,7 +243,7 @@ function FScene3d_loadResource(p){
 //
 // @method
 //==========================================================
-function FScene3d_processLoad(){
+function FE3dScene_processLoad(){
    var o = this;
    if(o._dataReady){
       return true;
@@ -296,11 +260,9 @@ function FScene3d_processLoad(){
 //
 // @method
 //==========================================================
-function FScene3d_active(){
+function FE3dScene_active(){
    var o = this;
    o.__base.FStage3d.active.call(o);
-   // 注册事件
-   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
 }
 
 //==========================================================
@@ -308,9 +270,7 @@ function FScene3d_active(){
 //
 // @method
 //==========================================================
-function FScene3d_deactive(){
+function FE3dScene_deactive(){
    var o = this;
    o.__base.FStage3d.deactive.call(o);
-   // 注销事件
-   RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
 }

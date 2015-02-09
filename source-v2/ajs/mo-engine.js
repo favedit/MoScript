@@ -586,6 +586,202 @@ function FE3dMeshRenderable_dispose(){
    }
    o.__base.FRd3Renderable.dispose.call(o);
 }
+function FE3dScene(o){
+   o = RClass.inherits(this, o, FStage3d);
+   o._dataReady            = false;
+   o._resource             = null;
+   o._skyLayer             = null;
+   o._mapLayer             = null;
+   o._spaceLayer           = null;
+   o._lsnsLoad             = null;
+   o.construct             = FE3dScene_construct;
+   o.loadListener          = FE3dScene_loadListener;
+   o.loadTechniqueResource = FE3dScene_loadTechniqueResource;
+   o.loadRegionResource    = FE3dScene_loadRegionResource
+   o.loadDisplayResource   = FE3dScene_loadDisplayResource
+   o.loadSkyResource       = FE3dScene_loadSkyResource
+   o.loadMapResource       = FE3dScene_loadMapResource
+   o.loadSpaceResource     = FE3dScene_loadSpaceResource
+   o.loadResource          = FE3dScene_loadResource
+   o.processLoad           = FE3dScene_processLoad;
+   o.active                = FE3dScene_active;
+   o.deactive              = FE3dScene_deactive;
+   return o;
+}
+function FE3dScene_construct(){
+   var o = this;
+   o.__base.FStage3d.construct.call(o);
+   var l = o._skyLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('sky', l);
+   var l = o._mapLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('map', l);
+   var l = o._spaceLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('space', l);
+}
+function FE3dScene_loadListener(){
+   var o = this;
+   var ls = o._lsnsLoad;
+   if(ls == null){
+      ls = o._lsnsLoad = new TListeners();
+   }
+   return ls;
+}
+function FE3dScene_loadTechniqueResource(p){
+}
+function FE3dScene_loadRegionResource(p){
+   var o = this;
+   o._backgroundColor.assign(p.color());
+   var rc = p.camera();
+   var rcv = rc.viewport();
+   var c = o._camera;
+   var cp = c._projection;
+   c.position().assign(rc.position());
+   c.direction().assign(rc.direction());
+   c.update();
+   cp.size().assign(o._context.size());
+   cp._angle = rcv.angle();
+   cp._znear = rcv.znear();
+   cp._zfar = rcv.zfar();
+   cp.update();
+   var l = o._directionalLight
+   var lc = l._camera;
+   var lp = lc._projection;
+   var rl = p.light();
+   var rlc = rl.camera();
+   var rlv = rlc.viewport();
+   lc.position().set(1, 1, -1);
+   lc.lookAt(0, 0, 0);
+   lc.position().assign(rlc.position());
+   lc.update();
+   lp.size().set(1024, 1024);
+   lp._angle = 60;
+   lp._znear = rlv.znear();
+   lp._zfar = rlv.zfar();
+   lp.update();
+}
+function FE3dScene_loadDisplayResource(pl, pd){
+   var o = this;
+   var d3 = RClass.create(FSceneDisplay3d);
+   d3._context = o._context;
+   d3.loadSceneResource(pd);
+   RConsole.find(FTemplate3dConsole).load(d3, pd.code());
+   pl.pushDisplay(d3);
+}
+function FE3dScene_loadSkyResource(p){
+   var o = this;
+   var ds = p.displays();
+   if(ds){
+      var c = ds.count();
+      for(var i = 0; i < c; i++){
+         var d = ds.get(i);
+         o.loadDisplayResource(o._spaceLayer, d);
+      }
+   }
+}
+function FE3dScene_loadMapResource(p){
+   var o = this;
+   var ds = p.displays();
+   if(ds){
+      var c = ds.count();
+      for(var i = 0; i < c; i++){
+         var d = ds.get(i);
+         o.loadDisplayResource(o._mapLayer, d);
+      }
+   }
+}
+function FE3dScene_loadSpaceResource(p){
+   var o = this;
+   var ds = p.displays();
+   if(ds){
+      var c = ds.count();
+      for(var i = 0; i < c; i++){
+         var d = ds.get(i);
+         o.loadDisplayResource(o._spaceLayer, d);
+      }
+   }
+}
+function FE3dScene_loadResource(p){
+   var o = this;
+   o.loadTechniqueResource(p.technique());
+   o.loadRegionResource(p.region());
+   o.loadSkyResource(p.sky());
+   o.loadMapResource(p.map());
+   o.loadSpaceResource(p.space());
+   if(o._lsnsLoad){
+      o._lsnsLoad.process();
+   }
+}
+function FE3dScene_processLoad(){
+   var o = this;
+   if(o._dataReady){
+      return true;
+   }
+   if(!o._resource.testReady()){
+      return false;
+   }
+   o.loadResource(o._resource);
+   return true;
+}
+function FE3dScene_active(){
+   var o = this;
+   o.__base.FStage3d.active.call(o);
+}
+function FE3dScene_deactive(){
+   var o = this;
+   o.__base.FStage3d.deactive.call(o);
+}
+function FE3dSceneConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd    = EScope.Local;
+   o._loadScenes = null;
+   o._scenes     = null;
+   o._thread     = null;
+   o._interval   = 100;
+   o.onProcess   = FE3dSceneConsole_onProcess;
+   o.construct   = FE3dSceneConsole_construct;
+   o.scenes      = FE3dSceneConsole_scenes;
+   o.alloc       = FE3dSceneConsole_alloc;
+   return o;
+}
+function FE3dSceneConsole_onProcess(){
+   var o = this;
+   var ms = o._loadScenes;
+   ms.record();
+   while(ms.next()){
+      var m = ms.current();
+      if(m.processLoad()){
+         ms.removeCurrent();
+      }
+   }
+}
+function FE3dSceneConsole_construct(){
+   var o = this;
+   o._loadScenes = new TLooper();
+   o._scenes = new TDictionary();
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.lsnsProcess.register(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(t);
+}
+function FE3dSceneConsole_scenes(){
+   return this._scenes;
+}
+function FE3dSceneConsole_alloc(pc, pn){
+   var o = this;
+   var rsc = RConsole.find(FRs3SceneConsole);
+   var rs = rsc.load(pn);
+   return;
+   var s = RClass.create(FE3dScene);
+   s._context = pc;
+   s._name = pn;
+   s._resource = rs;
+   if(rs.testReady()){
+      s.load(rs);
+   }else{
+      o._loadScenes.push(s);
+   }
+   return s;
+}
 function FE3dTemplate(o){
    o = RClass.inherits(this, o, FDisplay3d, MListenerLoad);
    o._dataReady     = false;
@@ -1168,231 +1364,6 @@ function FModelRenderable3d_update(p){
    var o = this;
    var m = o._display.matrix();
    o._matrix.assign(m);
-}
-function FScene3d(o){
-   o = RClass.inherits(this, o, FStage3d);
-   o._dataReady            = false;
-   o._resource             = null;
-   o._skyLayer             = null;
-   o._mapLayer             = null;
-   o._spaceLayer           = null;
-   o._lsnsLoad             = null;
-   o.onKeyDown             = FScene3d_onKeyDown;
-   o.construct             = FScene3d_construct;
-   o.loadListener          = FScene3d_loadListener;
-   o.loadTechniqueResource = FScene3d_loadTechniqueResource;
-   o.loadRegionResource    = FScene3d_loadRegionResource
-   o.loadDisplayResource   = FScene3d_loadDisplayResource
-   o.loadSkyResource       = FScene3d_loadSkyResource
-   o.loadMapResource       = FScene3d_loadMapResource
-   o.loadSpaceResource     = FScene3d_loadSpaceResource
-   o.loadResource          = FScene3d_loadResource
-   o.processLoad           = FScene3d_processLoad;
-   o.active                = FScene3d_active;
-   o.deactive              = FScene3d_deactive;
-   return o;
-}
-function FScene3d_onKeyDown(e){
-   var o = this;
-   var c = o._camera;
-   var k = e.keyCode;
-   var r = 0.3;
-   switch(k){
-      case EKeyCode.W:
-         c.doWalk(r);
-         break;
-      case EKeyCode.S:
-         c.doWalk(-r);
-         break;
-      case EKeyCode.A:
-         c.doStrafe(r);
-         break;
-      case EKeyCode.D:
-         c.doStrafe(-r);
-         break;
-      case EKeyCode.Q:
-         c.doFly(r);
-         break;
-      case EKeyCode.E:
-         c.doFly(-r);
-         break;
-   }
-   c.update();
-}
-function FScene3d_construct(){
-   var o = this;
-   o.__base.FStage3d.construct.call(o);
-   var l = o._skyLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('sky', l);
-   var l = o._mapLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('map', l);
-   var l = o._spaceLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('space', l);
-}
-function FScene3d_loadListener(){
-   var o = this;
-   var ls = o._lsnsLoad;
-   if(ls == null){
-      ls = o._lsnsLoad = new TListeners();
-   }
-   return ls;
-}
-function FScene3d_loadTechniqueResource(p){
-}
-function FScene3d_loadRegionResource(p){
-   var o = this;
-   o._backgroundColor.assign(p.color());
-   var rc = p.camera();
-   var rcv = rc.viewport();
-   var c = o._camera;
-   var cp = c._projection;
-   c.position().assign(rc.position());
-   c.direction().assign(rc.direction());
-   c.update();
-   cp.size().assign(o._context.size());
-   cp._angle = rcv.angle();
-   cp._znear = rcv.znear();
-   cp._zfar = rcv.zfar();
-   cp.update();
-   var l = o._directionalLight
-   var lc = l._camera;
-   var lp = lc._projection;
-   var rl = p.light();
-   var rlc = rl.camera();
-   var rlv = rlc.viewport();
-   lc.position().set(1, 1, -1);
-   lc.lookAt(0, 0, 0);
-   lc.position().assign(rlc.position());
-   lc.update();
-   lp.size().set(1024, 1024);
-   lp._angle = 60;
-   lp._znear = rlv.znear();
-   lp._zfar = rlv.zfar();
-   lp.update();
-}
-function FScene3d_loadDisplayResource(pl, pd){
-   var o = this;
-   var d3 = RClass.create(FSceneDisplay3d);
-   d3._context = o._context;
-   d3.loadSceneResource(pd);
-   RConsole.find(FTemplate3dConsole).load(d3, pd.code());
-   pl.pushDisplay(d3);
-}
-function FScene3d_loadSkyResource(p){
-   var o = this;
-   var ds = p.displays();
-   if(ds){
-      var c = ds.count();
-      for(var i = 0; i < c; i++){
-         var d = ds.get(i);
-         o.loadDisplayResource(o._spaceLayer, d);
-      }
-   }
-}
-function FScene3d_loadMapResource(p){
-   var o = this;
-   var ds = p.displays();
-   if(ds){
-      var c = ds.count();
-      for(var i = 0; i < c; i++){
-         var d = ds.get(i);
-         o.loadDisplayResource(o._mapLayer, d);
-      }
-   }
-}
-function FScene3d_loadSpaceResource(p){
-   var o = this;
-   var ds = p.displays();
-   if(ds){
-      var c = ds.count();
-      for(var i = 0; i < c; i++){
-         var d = ds.get(i);
-         o.loadDisplayResource(o._spaceLayer, d);
-      }
-   }
-}
-function FScene3d_loadResource(p){
-   var o = this;
-   o.loadTechniqueResource(p.technique());
-   o.loadRegionResource(p.region());
-   o.loadSkyResource(p.sky());
-   o.loadMapResource(p.map());
-   o.loadSpaceResource(p.space());
-   if(o._lsnsLoad){
-      o._lsnsLoad.process();
-   }
-}
-function FScene3d_processLoad(){
-   var o = this;
-   if(o._dataReady){
-      return true;
-   }
-   if(!o._resource.testReady()){
-      return false;
-   }
-   o.loadResource(o._resource);
-   return true;
-}
-function FScene3d_active(){
-   var o = this;
-   o.__base.FStage3d.active.call(o);
-   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
-}
-function FScene3d_deactive(){
-   var o = this;
-   o.__base.FStage3d.deactive.call(o);
-   RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
-}
-function FScene3dConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._scopeCd    = EScope.Local;
-   o._loadScenes = null;
-   o._scenes     = null;
-   o._thread     = null;
-   o._interval   = 100;
-   o.onProcess   = FScene3dConsole_onProcess;
-   o.construct   = FScene3dConsole_construct;
-   o.scenes      = FScene3dConsole_scenes;
-   o.alloc       = FScene3dConsole_alloc;
-   return o;
-}
-function FScene3dConsole_onProcess(){
-   var o = this;
-   var ms = o._loadScenes;
-   ms.record();
-   while(ms.next()){
-      var m = ms.current();
-      if(m.processLoad()){
-         ms.removeCurrent();
-      }
-   }
-}
-function FScene3dConsole_construct(){
-   var o = this;
-   o._loadScenes = new TLooper();
-   o._scenes = new TDictionary();
-   var t = o._thread = RClass.create(FThread);
-   t.setInterval(o._interval);
-   t.lsnsProcess.register(o, o.onProcess);
-   RConsole.find(FThreadConsole).start(t);
-}
-function FScene3dConsole_scenes(){
-   return this._scenes;
-}
-function FScene3dConsole_alloc(pc, pn){
-   var o = this;
-   var rsc = RConsole.find(FRs3SceneConsole);
-   var rs = rsc.load(pn);
-   var s = RClass.create(FScene3d);
-   s._context = pc;
-   s._name = pn;
-   s._resource = rs;
-   if(rs.testReady()){
-      s.load(rs);
-   }else{
-      o._loadScenes.push(s);
-   }
-   return s;
 }
 function FSceneDisplay3d(o){
    o = RClass.inherits(this, o, FTemplate3d);
@@ -2339,15 +2310,11 @@ function FRs3Scene(o){
    o._themeCode  = null;
    o._technique  = null;
    o._region     = null;
-   o._sky        = null;
-   o._map        = null;
-   o._space      = null;
+   o._layers     = null;
    o.construct   = FRs3Scene_construct;
    o.technique   = FRs3Scene_technique;
    o.region      = FRs3Scene_region;
-   o.sky         = FRs3Scene_sky;
-   o.map         = FRs3Scene_map;
-   o.space       = FRs3Scene_space;
+   o.layers      = FRs3Scene_layers;
    o.unserialize = FRs3Scene_unserialize;
    return o;
 }
@@ -2356,9 +2323,7 @@ function FRs3Scene_construct(){
    o.__base.FRs3Resource.construct.call(o);
    o._technique = RClass.create(FRs3SceneTechnique);
    o._region = RClass.create(FRs3SceneRegion);
-   o._sky = RClass.create(FRs3SceneSky);
-   o._map = RClass.create(FRs3SceneMap);
-   o._space = RClass.create(FRs3SceneSpace);
+   o._layers = new TDictionary();
 }
 function FRs3Scene_technique(){
    return this._technique;
@@ -2366,14 +2331,8 @@ function FRs3Scene_technique(){
 function FRs3Scene_region(){
    return this._region;
 }
-function FRs3Scene_sky(){
-   return this._sky;
-}
-function FRs3Scene_map(){
-   return this._map;
-}
-function FRs3Scene_space(){
-   return this._space;
+function FRs3Scene_layers(){
+   return this._layers;
 }
 function FRs3Scene_unserialize(p){
    var o = this;
@@ -2381,12 +2340,16 @@ function FRs3Scene_unserialize(p){
    o._themeCode = p.readString();
    o._technique.unserialize(p);
    o._region.unserialize(p);
-   o._sky.unserialize(p);
-   o._map.unserialize(p);
-   o._space.unserialize(p);
+   debugger
+   var c = p.readInt16();
+   for(var i = 0; i < c; i++){
+      var l = RClass.create(FRs3SceneLayer);
+      l.unserialize(p);
+      o._layers.set(l.code(), l);
+   }
 }
 function FRs3SceneCamera(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    o._typeName    = null;
    o._centerFront = null;
    o._centerBack  = null;
@@ -2394,21 +2357,21 @@ function FRs3SceneCamera(o){
    o._direction   = null;
    o._focalNear   = null;
    o._focalFar    = null;
-   o._viewport    = null;
+   o._projection  = null;
    o.construct    = FRs3SceneCamera_construct;
    o.typeName     = FRs3SceneCamera_typeName;
    o.position     = FRs3SceneCamera_position;
    o.direction    = FRs3SceneCamera_direction;
-   o.viewport     = FRs3SceneCamera_viewport;
+   o.projection   = FRs3SceneCamera_projection;
    o.unserialize  = FRs3SceneCamera_unserialize;
    return o;
 }
 function FRs3SceneCamera_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FRs3Object.construct.call(o);
    o._position = new SPoint3();
    o._direction = new SVector3();
-   o._viewport = RClass.create(FRs3SceneViewport);
+   o._projection = RClass.create(FRs3SceneProjection);
 }
 function FRs3SceneCamera_typeName(){
    return this._typeName;
@@ -2419,26 +2382,25 @@ function FRs3SceneCamera_position(){
 function FRs3SceneCamera_direction(){
    return this._direction;
 }
-function FRs3SceneCamera_viewport(){
-   return this._viewport;
+function FRs3SceneCamera_projection(){
+   return this._projection;
 }
 function FRs3SceneCamera_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    o._typeName = p.readString();
-   o._centerFront = p.readFloat();
-   o._centerBack = p.readFloat();
    o._position.unserialize(p);
    o._direction.unserialize(p);
-   o._focalNear = p.readFloat();
-   o._focalFar = p.readFloat();
-   o._viewport.unserialize(p);
+   o._projection.unserialize(p);
 }
 function FRs3SceneConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._scenes   = null;
-   o._path     = '/assets/scene/'
-   o.construct = FRs3SceneConsole_construct;
-   o.load      = FRs3SceneConsole_load;
+   o._scenes     = null;
+   o._serviceUrl = '/cloud.content.scene.ws'
+   o._dataUrl    = '/cloud.content.scene.wv'
+   o.construct   = FRs3SceneConsole_construct;
+   o.load        = FRs3SceneConsole_load;
+   o.update      = FRs3SceneConsole_update;
    return o;
 }
 function FRs3SceneConsole_construct(){
@@ -2448,17 +2410,24 @@ function FRs3SceneConsole_construct(){
 }
 function FRs3SceneConsole_load(p){
    var o = this;
-   var r = o._scenes.get(p);
+   var s = o._scenes;
+   var r = s.get(p);
    if(r == null){
-      var u = RBrowser.contentPath(o._path + p + '.ser');
+      var u = RBrowser.hostPath(o._dataUrl + '?code=' + p + '&date=' + RDate.format());
       r = RClass.create(FRs3Scene);
       r.load(u);
-      o._scenes.set(p, r);
+      s.set(p, r);
    }
    return r;
 }
+function FRs3SceneConsole_update(p){
+   var o = this;
+   var u = RBrowser.hostPath(o._serviceUrl + '?action=update');
+   var xc = RConsole.find(FXmlConsole);
+   var r = xc.send(u, p);
+}
 function FRs3SceneDisplay(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    o._code                = null;
    o._optionMergeVertex   = null;
    o._optionMergeMaterial = null;
@@ -2477,7 +2446,7 @@ function FRs3SceneDisplay(o){
 }
 function FRs3SceneDisplay_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FRs3Object.construct.call(o);
    o._matrix = new SMatrix3d();
 }
 function FRs3SceneDisplay_code(){
@@ -2497,40 +2466,52 @@ function FRs3SceneDisplay_renderables(){
 }
 function FRs3SceneDisplay_unserialize(p){
    var o = this;
-   o._code = p.readString();
-   o._optionMergeVertex = p.readBoolean();
-   o._optionMergeMaterial = p.readBoolean();
+   o.__base.FRs3Object.unserialize.call(o, p);
    o._matrix.unserialize(p);
    var c = p.readUint16();
    if(c > 0){
-      var ms = o._movies = new TObjects();
-      for(var i = 0; i < c; i++){
-         var m = RClass.create(FRs3SceneMovie);
-         m.unserialize(p);
-         ms.push(m);
-      }
-   }
-   var c = p.readUint16();
-   if(c > 0){
-      var ms = o._materials = new TObjects();
+      var s = o._materials = new TObjects();
       for(var i = 0; i < c; i++){
          var m = RClass.create(FRs3SceneMaterial);
          m.unserialize(p);
-         ms.push(m);
+         s.push(m);
       }
    }
    var c = p.readUint16();
    if(c > 0){
-      var rs = o._renderables = new TObjects();
+      var s = o._renderables = new TObjects();
       for(var i = 0; i < c; i++){
          var r = RClass.create(FRs3TemplateRenderable);
          r.unserialize(p);
-         rs.push(r);
+         s.push(r);
+      }
+   }
+}
+function FRs3SceneLayer(o){
+   o = RClass.inherits(this, o, FRs3Object);
+   o._displays   = null;
+   o.displays    = FRs3SceneLayer_displays;
+   o.unserialize = FRs3SceneLayer_unserialize;
+   return o;
+}
+function FRs3SceneLayer_displays(){
+   return this._displays;
+}
+function FRs3SceneLayer_unserialize(p){
+   var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
+   var c = p.readUint16();
+   if(c > 0){
+      var s = o._displays = new TObjects();
+      for(var i = 0; i < c; i++){
+         var d = RClass.create(FRs3SceneDisplay);
+         d.unserialize(p);
+         s.push(d);
       }
    }
 }
 function FRs3SceneLight(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    o._typeName           = null;
    o._optionTrack        = null;
    o._shadow1            = null;
@@ -2555,7 +2536,7 @@ function FRs3SceneLight(o){
 }
 function FRs3SceneLight_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FRs3Object.construct.call(o);
    o._shadow1 = new SRs3SceneShadow();
    o._shadow2 = new SRs3SceneShadow();
    o._shadow3 = new SRs3SceneShadow();
@@ -2573,19 +2554,8 @@ function FRs3SceneLight_camera(){
 }
 function FRs3SceneLight_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    o._typeName = p.readString();
-   o._optionTrack = p.readInt32();
-   o._shadow1.unserialize(p);
-   o._shadow2.unserialize(p);
-   o._shadow3.unserialize(p);
-   o._shadowAmbientMin = p.readFloat();
-   o._shadowAmbientMax = p.readFloat();
-   o._shadowAmbientThick = p.readFloat();
-   o._shadowAmbientRange = p.readFloat();
-   o._shadowMerge1Base = p.readFloat();
-   o._shadowMerge1Rate = p.readFloat();
-   o._shadowMerge2Base = p.readFloat();
-   o._shadowMerge2Rate = p.readFloat();
    o._material.unserialize(p);
    o._camera.unserialize(p);
 }
@@ -2594,7 +2564,7 @@ function FRs3SceneMap(o){
    return o;
 }
 function FRs3SceneMaterial(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    o._code               = null;
    o._label              = null;
    o._info               = null;
@@ -2615,7 +2585,7 @@ function FRs3SceneMaterial(o){
 }
 function FRs3SceneMaterial_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FRs3Object.construct.call(o);
    o._info = new SRs3MaterialInfo();
 }
 function FRs3SceneMaterial_code(){
@@ -2626,18 +2596,10 @@ function FRs3SceneMaterial_info(){
 }
 function FRs3SceneMaterial_unserialize(p){
    var o = this;
-   o._code = p.readString();
-   o._label = p.readString();
+   o.__base.FRs3Object.unserialize.call(o, p);
+   o._groupGuid = p.readString();
    o._info.unserialize(p);
-   o._heightDepth = p.readFloat();
-   o._surfaceRate = p.readFloat();
-   o._surfaceReflect = p.readFloat();
-   o._surfaceBright = p.readFloat();
-   o._surfaceBrightLevel = p.readFloat();
-   o._surfaceCoarse = p.readFloat();
-   o._surfaceCoarseLevel = p.readFloat();
-   o._surfaceMerge = p.readFloat();
-   o._surfacePower = p.readFloat();
+   o._textureCount = p.readInt16();
 }
 function FRs3SceneMovie(o){
    o = RClass.inherits(this, o, FObject);
@@ -2663,8 +2625,35 @@ function FRs3SceneMovie_unserialize(p){
    o._interval = p.readInt32();
    o._rotation.unserialize(p);
 }
+function FRs3SceneProjection(o){
+   o = RClass.inherits(this, o, FRs3Object);
+   o._angle      = null;
+   o._znear      = null;
+   o._zfar       = null;
+   o.angle       = FRs3SceneProjection_angle;
+   o.znear       = FRs3SceneProjection_znear;
+   o.zfar        = FRs3SceneProjection_zfar;
+   o.unserialize = FRs3SceneProjection_unserialize;
+   return o;
+}
+function FRs3SceneProjection_angle(){
+   return this._angle;
+}
+function FRs3SceneProjection_znear(){
+   return this._znear;
+}
+function FRs3SceneProjection_zfar(){
+   return this._zfar;
+}
+function FRs3SceneProjection_unserialize(p){
+   var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
+   o._angle = p.readFloat();
+   o._znear = p.readFloat();
+   o._zfar = p.readFloat();
+}
 function FRs3SceneRegion(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    o._color          = null;
    o._colorLevel     = null;
    o._fogNear        = null;
@@ -2690,7 +2679,7 @@ function FRs3SceneRegion(o){
 }
 function FRs3SceneRegion_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FRs3Object.construct.call(o);
    o._color = new SColor4();
    o._colorLevel = new SColor4();
    o._fogColor = new SColor4();
@@ -2709,36 +2698,18 @@ function FRs3SceneRegion_light(){
 }
 function FRs3SceneRegion_unserialize(p){
    var o = this;
-   o._color.unserialize(p);
-   o._colorLevel.unserialize(p);
-   o._fogNear = p.readFloat();
-   o._fogFar = p.readFloat();
-   o._fogRate = p.readFloat();
-   o._fogAttenuation = p.readFloat();
-   o._fogColor.unserialize(p);
-   o._edgeRate = p.readFloat();
-   o._edgeLevel = p.readFloat();
-   o._edgeWidth = p.readFloat();
-   o._edgeColor.unserialize(p);
-   o._faceRange = p.readFloat();
-   o._faceLimit = p.readFloat();
-   o._faceRate = p.readFloat();
+   o.__base.FRs3Object.unserialize.call(o, p);
    o._camera.unserialize(p);
    o._light.unserialize(p);
 }
 function FRs3SceneRenderable(o){
-   o = RClass.inherits(this, o, FObject);
-   o._code       = null;
-   o.code        = FRs3SceneRenderable_code;
+   o = RClass.inherits(this, o, FRs3Object);
    o.unserialize = FRs3SceneRenderable_unserialize;
    return o;
 }
-function FRs3SceneRenderable_code(){
-   return this._code;
-}
 function FRs3SceneRenderable_unserialize(p){
    var o = this;
-   o._code = p.readString();
+   o.__base.FRs3Object.unserialize.call(o, p);
 }
 function FRs3SceneSky(o){
    o = RClass.inherits(this, o, FRs3SceneSpace);
@@ -2771,24 +2742,19 @@ function FRs3SceneSpace_unserialize(p){
    }
 }
 function FRs3SceneTechnique(o){
-   o = RClass.inherits(this, o, FObject);
-   o._name       = null;
+   o = RClass.inherits(this, o, FRs3Object);
    o._passes     = null;
-   o.name        = FRs3SceneTechnique_name;
    o.passes      = FRs3SceneTechnique_passes;
    o.unserialize = FRs3SceneTechnique_unserialize;
    return o;
-}
-function FRs3SceneTechnique_name(){
-   return this._name;
 }
 function FRs3SceneTechnique_passes(){
    return this._passes;
 }
 function FRs3SceneTechnique_unserialize(p){
    var o = this;
-   o._name = p.readString();
-   var c = p.readUint8();
+   o.__base.FRs3Object.unserialize.call(o, p);
+   var c = p.readInt16();
    if(c > 0){
       var ss = o._passes = new TObjects();
       for(var i = 0; i < c; i++){
@@ -2799,18 +2765,13 @@ function FRs3SceneTechnique_unserialize(p){
    }
 }
 function FRs3SceneTechniquePass(o){
-   o = RClass.inherits(this, o, FObject);
-   o._name         = null;
+   o = RClass.inherits(this, o, FRs3Object);
    o._targetWidth  = null;
    o._targetHeight = null;
-   o.name          = FRs3SceneTechniquePass_name;
    o.targetWidth   = FRs3SceneTechniquePass_targetWidth;
    o.targetHeight  = FRs3SceneTechniquePass_targetHeight;
    o.unserialize   = FRs3SceneTechniquePass_unserialize;
    return o;
-}
-function FRs3SceneTechniquePass_name(){
-   return this._name;
 }
 function FRs3SceneTechniquePass_targetWidth(){
    return this._targetWidth;
@@ -2820,35 +2781,9 @@ function FRs3SceneTechniquePass_targetHeight(){
 }
 function FRs3SceneTechniquePass_unserialize(p){
    var o = this;
-   o._name = p.readString();
+   o.__base.FRs3Object.unserialize.call(o, p);
    o._targetWidth = p.readUint16();
    o._targetHeight = p.readUint16();
-}
-function FRs3SceneViewport(o){
-   o = RClass.inherits(this, o, FObject);
-   o._angle      = null;
-   o._znear      = null;
-   o._zfar       = null;
-   o.angle       = FRs3SceneViewport_angle;
-   o.znear       = FRs3SceneViewport_znear;
-   o.zfar        = FRs3SceneViewport_zfar;
-   o.unserialize = FRs3SceneViewport_unserialize;
-   return o;
-}
-function FRs3SceneViewport_angle(){
-   return this._angle;
-}
-function FRs3SceneViewport_znear(){
-   return this._znear;
-}
-function FRs3SceneViewport_zfar(){
-   return this._zfar;
-}
-function FRs3SceneViewport_unserialize(p){
-   var o = this;
-   o._angle = p.readFloat();
-   o._znear = p.readFloat();
-   o._zfar = p.readFloat();
 }
 function FRs3Skeleton(o){
    o = RClass.inherits(this, o, FRs3Object);

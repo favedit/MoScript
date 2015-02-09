@@ -5,7 +5,7 @@
 // @history 150115
 //==========================================================
 function FRs3SceneMaterial(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute 属性
    o._code               = null;
@@ -39,7 +39,7 @@ function FRs3SceneMaterial(o){
 //==========================================================
 function FRs3SceneMaterial_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FRs3Object.construct.call(o);
    o._info = new SRs3MaterialInfo();
 }
 
@@ -71,20 +71,21 @@ function FRs3SceneMaterial_info(){
 //==========================================================
 function FRs3SceneMaterial_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    // 读取属性
-   o._code = p.readString();
-   o._label = p.readString();
+   o._groupGuid = p.readString();
    // 读取设置
    o._info.unserialize(p);
+   o._textureCount = p.readInt16();
    // 读取高度
-   o._heightDepth = p.readFloat();
+   //o._heightDepth = p.readFloat();
    // 读取表面
-   o._surfaceRate = p.readFloat();
-   o._surfaceReflect = p.readFloat();
-   o._surfaceBright = p.readFloat();
-   o._surfaceBrightLevel = p.readFloat();
-   o._surfaceCoarse = p.readFloat();
-   o._surfaceCoarseLevel = p.readFloat();
-   o._surfaceMerge = p.readFloat();
-   o._surfacePower = p.readFloat();
+   //o._surfaceRate = p.readFloat();
+   //o._surfaceReflect = p.readFloat();
+   //o._surfaceBright = p.readFloat();
+   //o._surfaceBrightLevel = p.readFloat();
+   //o._surfaceCoarse = p.readFloat();
+   //o._surfaceCoarseLevel = p.readFloat();
+   //o._surfaceMerge = p.readFloat();
+   //o._surfacePower = p.readFloat();
 }

@@ -1,29 +1,32 @@
 //==========================================================
-// <T>资源场景技术。</T>
+// <T>资源场景空间。</T>
 //
 // @author maocy
 // @history 150115
 //==========================================================
-function FRs3SceneTechnique(o){
+function FRs3SceneLayer(o){
    o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
-   // @attribute
-   o._passes     = null;
+   // @attribute 属性
+   //o._name       = null;
+   //o._type       = null;
+   // @attribute 显示集合
+   o._displays   = null;
    //..........................................................
    // @method
-   o.passes      = FRs3SceneTechnique_passes;
-   o.unserialize = FRs3SceneTechnique_unserialize;
+   o.displays    = FRs3SceneLayer_displays;
+   o.unserialize = FRs3SceneLayer_unserialize;
    return o;
 }
 
 //==========================================================
-// <T>获得过程集合。</T>
+// <T>获得显示集合。</T>
 //
 // @method
-// @return 过程集合
+// @return TObjects 显示集合
 //==========================================================
-function FRs3SceneTechnique_passes(){
-   return this._passes;
+function FRs3SceneLayer_displays(){
+   return this._displays;
 }
 
 //==========================================================
@@ -32,17 +35,19 @@ function FRs3SceneTechnique_passes(){
 // @param p:input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FRs3SceneTechnique_unserialize(p){
+function FRs3SceneLayer_unserialize(p){
    var o = this;
    o.__base.FRs3Object.unserialize.call(o, p);
-   // 读取过程集合
-   var c = p.readInt16();
+   // 读取属性
+   //o._type = p.readString();
+   // 读取显示集合
+   var c = p.readUint16();
    if(c > 0){
-      var ss = o._passes = new TObjects();
+      var s = o._displays = new TObjects();
       for(var i = 0; i < c; i++){
-         var s = RClass.create(FRs3SceneTechniquePass);
-         s.unserialize(p);
-         ss.push(s);
+         var d = RClass.create(FRs3SceneDisplay);
+         d.unserialize(p);
+         s.push(d);
       }
    }
 }

@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150106
 //==========================================================
-function FScene3dConsole(o){
+function FE3dSceneConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
@@ -18,12 +18,12 @@ function FScene3dConsole(o){
    o._interval   = 100;
    //..........................................................
    // @event
-   o.onProcess   = FScene3dConsole_onProcess;
+   o.onProcess   = FE3dSceneConsole_onProcess;
    //..........................................................
    // @method
-   o.construct   = FScene3dConsole_construct;
-   o.scenes      = FScene3dConsole_scenes;
-   o.alloc       = FScene3dConsole_alloc;
+   o.construct   = FE3dSceneConsole_construct;
+   o.scenes      = FE3dSceneConsole_scenes;
+   o.alloc       = FE3dSceneConsole_alloc;
    return o;
 }
 
@@ -32,7 +32,7 @@ function FScene3dConsole(o){
 //
 // @method
 //==========================================================
-function FScene3dConsole_onProcess(){
+function FE3dSceneConsole_onProcess(){
    var o = this;
    var ms = o._loadScenes;
    ms.record();
@@ -49,7 +49,7 @@ function FScene3dConsole_onProcess(){
 //
 // @method
 //==========================================================
-function FScene3dConsole_construct(){
+function FE3dSceneConsole_construct(){
    var o = this;
    // 设置属性
    o._loadScenes = new TLooper();
@@ -67,7 +67,7 @@ function FScene3dConsole_construct(){
 // @method
 // @return TDictionary 场景集合
 //==========================================================
-function FScene3dConsole_scenes(){
+function FE3dSceneConsole_scenes(){
    return this._scenes;
 }
 
@@ -79,13 +79,14 @@ function FScene3dConsole_scenes(){
 // @param pn:name:String 名称
 // @return FRenderModel 渲染模型
 //==========================================================
-function FScene3dConsole_alloc(pc, pn){
+function FE3dSceneConsole_alloc(pc, pn){
    var o = this;
    // 加载渲染对象
    var rsc = RConsole.find(FRs3SceneConsole);
    var rs = rsc.load(pn);
+   return;
    // 加载模型
-   var s = RClass.create(FScene3d);
+   var s = RClass.create(FE3dScene);
    s._context = pc;
    s._name = pn;
    s._resource = rs;

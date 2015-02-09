@@ -4,8 +4,8 @@
 // @author maocy
 // @history 150115
 //==========================================================
-function FRs3SceneViewport(o){
-   o = RClass.inherits(this, o, FObject);
+function FRs3SceneProjection(o){
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute 属性
    o._angle      = null;
@@ -13,10 +13,10 @@ function FRs3SceneViewport(o){
    o._zfar       = null;
    //..........................................................
    // @method
-   o.angle       = FRs3SceneViewport_angle;
-   o.znear       = FRs3SceneViewport_znear;
-   o.zfar        = FRs3SceneViewport_zfar;
-   o.unserialize = FRs3SceneViewport_unserialize;
+   o.angle       = FRs3SceneProjection_angle;
+   o.znear       = FRs3SceneProjection_znear;
+   o.zfar        = FRs3SceneProjection_zfar;
+   o.unserialize = FRs3SceneProjection_unserialize;
    return o;
 }
 
@@ -26,7 +26,7 @@ function FRs3SceneViewport(o){
 // @method
 // @return Float 张角
 //==========================================================
-function FRs3SceneViewport_angle(){
+function FRs3SceneProjection_angle(){
    return this._angle;
 }
 
@@ -36,7 +36,7 @@ function FRs3SceneViewport_angle(){
 // @method
 // @return Float 近平面距离
 //==========================================================
-function FRs3SceneViewport_znear(){
+function FRs3SceneProjection_znear(){
    return this._znear;
 }
 
@@ -46,7 +46,7 @@ function FRs3SceneViewport_znear(){
 // @method
 // @return Float 远平面距离
 //==========================================================
-function FRs3SceneViewport_zfar(){
+function FRs3SceneProjection_zfar(){
    return this._zfar;
 }
 
@@ -56,8 +56,9 @@ function FRs3SceneViewport_zfar(){
 // @param p:input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FRs3SceneViewport_unserialize(p){
+function FRs3SceneProjection_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    // 读取属性
    o._angle = p.readFloat();
    o._znear = p.readFloat();

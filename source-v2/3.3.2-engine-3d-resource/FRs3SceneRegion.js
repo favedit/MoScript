@@ -5,7 +5,7 @@
 // @history 150105
 //==========================================================
 function FRs3SceneRegion(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute 颜色
    o._color          = null;
@@ -46,7 +46,7 @@ function FRs3SceneRegion(o){
 //==========================================================
 function FRs3SceneRegion_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FRs3Object.construct.call(o);
    o._color = new SColor4();
    o._colorLevel = new SColor4();
    o._fogColor = new SColor4();
@@ -93,25 +93,26 @@ function FRs3SceneRegion_light(){
 //==========================================================
 function FRs3SceneRegion_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    // 读取颜色
-   o._color.unserialize(p);
+   //o._color.unserialize(p);
    // 读取颜色级别
-   o._colorLevel.unserialize(p);
+   //o._colorLevel.unserialize(p);
    // 读取雾化
-   o._fogNear = p.readFloat();
-   o._fogFar = p.readFloat();
-   o._fogRate = p.readFloat();
-   o._fogAttenuation = p.readFloat();
-   o._fogColor.unserialize(p);
+   //o._fogNear = p.readFloat();
+   //o._fogFar = p.readFloat();
+   //o._fogRate = p.readFloat();
+   //o._fogAttenuation = p.readFloat();
+   //o._fogColor.unserialize(p);
    // 读取边界
-   o._edgeRate = p.readFloat();
-   o._edgeLevel = p.readFloat();
-   o._edgeWidth = p.readFloat();
-   o._edgeColor.unserialize(p);
+   //o._edgeRate = p.readFloat();
+   //o._edgeLevel = p.readFloat();
+   //o._edgeWidth = p.readFloat();
+   //o._edgeColor.unserialize(p);
    // 读取平面
-   o._faceRange = p.readFloat();
-   o._faceLimit = p.readFloat();
-   o._faceRate = p.readFloat();
+   //o._faceRange = p.readFloat();
+   //o._faceLimit = p.readFloat();
+   //o._faceRate = p.readFloat();
    // 读取相机
    o._camera.unserialize(p);
    // 读取光源

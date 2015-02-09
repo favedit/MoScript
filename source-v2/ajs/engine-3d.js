@@ -150,6 +150,202 @@ function FE3dMeshRenderable_dispose(){
    }
    o.__base.FRd3Renderable.dispose.call(o);
 }
+function FE3dScene(o){
+   o = RClass.inherits(this, o, FStage3d);
+   o._dataReady            = false;
+   o._resource             = null;
+   o._skyLayer             = null;
+   o._mapLayer             = null;
+   o._spaceLayer           = null;
+   o._lsnsLoad             = null;
+   o.construct             = FE3dScene_construct;
+   o.loadListener          = FE3dScene_loadListener;
+   o.loadTechniqueResource = FE3dScene_loadTechniqueResource;
+   o.loadRegionResource    = FE3dScene_loadRegionResource
+   o.loadDisplayResource   = FE3dScene_loadDisplayResource
+   o.loadSkyResource       = FE3dScene_loadSkyResource
+   o.loadMapResource       = FE3dScene_loadMapResource
+   o.loadSpaceResource     = FE3dScene_loadSpaceResource
+   o.loadResource          = FE3dScene_loadResource
+   o.processLoad           = FE3dScene_processLoad;
+   o.active                = FE3dScene_active;
+   o.deactive              = FE3dScene_deactive;
+   return o;
+}
+function FE3dScene_construct(){
+   var o = this;
+   o.__base.FStage3d.construct.call(o);
+   var l = o._skyLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('sky', l);
+   var l = o._mapLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('map', l);
+   var l = o._spaceLayer = RClass.create(FDisplayLayer);
+   o.registerLayer('space', l);
+}
+function FE3dScene_loadListener(){
+   var o = this;
+   var ls = o._lsnsLoad;
+   if(ls == null){
+      ls = o._lsnsLoad = new TListeners();
+   }
+   return ls;
+}
+function FE3dScene_loadTechniqueResource(p){
+}
+function FE3dScene_loadRegionResource(p){
+   var o = this;
+   o._backgroundColor.assign(p.color());
+   var rc = p.camera();
+   var rcv = rc.viewport();
+   var c = o._camera;
+   var cp = c._projection;
+   c.position().assign(rc.position());
+   c.direction().assign(rc.direction());
+   c.update();
+   cp.size().assign(o._context.size());
+   cp._angle = rcv.angle();
+   cp._znear = rcv.znear();
+   cp._zfar = rcv.zfar();
+   cp.update();
+   var l = o._directionalLight
+   var lc = l._camera;
+   var lp = lc._projection;
+   var rl = p.light();
+   var rlc = rl.camera();
+   var rlv = rlc.viewport();
+   lc.position().set(1, 1, -1);
+   lc.lookAt(0, 0, 0);
+   lc.position().assign(rlc.position());
+   lc.update();
+   lp.size().set(1024, 1024);
+   lp._angle = 60;
+   lp._znear = rlv.znear();
+   lp._zfar = rlv.zfar();
+   lp.update();
+}
+function FE3dScene_loadDisplayResource(pl, pd){
+   var o = this;
+   var d3 = RClass.create(FSceneDisplay3d);
+   d3._context = o._context;
+   d3.loadSceneResource(pd);
+   RConsole.find(FTemplate3dConsole).load(d3, pd.code());
+   pl.pushDisplay(d3);
+}
+function FE3dScene_loadSkyResource(p){
+   var o = this;
+   var ds = p.displays();
+   if(ds){
+      var c = ds.count();
+      for(var i = 0; i < c; i++){
+         var d = ds.get(i);
+         o.loadDisplayResource(o._spaceLayer, d);
+      }
+   }
+}
+function FE3dScene_loadMapResource(p){
+   var o = this;
+   var ds = p.displays();
+   if(ds){
+      var c = ds.count();
+      for(var i = 0; i < c; i++){
+         var d = ds.get(i);
+         o.loadDisplayResource(o._mapLayer, d);
+      }
+   }
+}
+function FE3dScene_loadSpaceResource(p){
+   var o = this;
+   var ds = p.displays();
+   if(ds){
+      var c = ds.count();
+      for(var i = 0; i < c; i++){
+         var d = ds.get(i);
+         o.loadDisplayResource(o._spaceLayer, d);
+      }
+   }
+}
+function FE3dScene_loadResource(p){
+   var o = this;
+   o.loadTechniqueResource(p.technique());
+   o.loadRegionResource(p.region());
+   o.loadSkyResource(p.sky());
+   o.loadMapResource(p.map());
+   o.loadSpaceResource(p.space());
+   if(o._lsnsLoad){
+      o._lsnsLoad.process();
+   }
+}
+function FE3dScene_processLoad(){
+   var o = this;
+   if(o._dataReady){
+      return true;
+   }
+   if(!o._resource.testReady()){
+      return false;
+   }
+   o.loadResource(o._resource);
+   return true;
+}
+function FE3dScene_active(){
+   var o = this;
+   o.__base.FStage3d.active.call(o);
+}
+function FE3dScene_deactive(){
+   var o = this;
+   o.__base.FStage3d.deactive.call(o);
+}
+function FE3dSceneConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd    = EScope.Local;
+   o._loadScenes = null;
+   o._scenes     = null;
+   o._thread     = null;
+   o._interval   = 100;
+   o.onProcess   = FE3dSceneConsole_onProcess;
+   o.construct   = FE3dSceneConsole_construct;
+   o.scenes      = FE3dSceneConsole_scenes;
+   o.alloc       = FE3dSceneConsole_alloc;
+   return o;
+}
+function FE3dSceneConsole_onProcess(){
+   var o = this;
+   var ms = o._loadScenes;
+   ms.record();
+   while(ms.next()){
+      var m = ms.current();
+      if(m.processLoad()){
+         ms.removeCurrent();
+      }
+   }
+}
+function FE3dSceneConsole_construct(){
+   var o = this;
+   o._loadScenes = new TLooper();
+   o._scenes = new TDictionary();
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.lsnsProcess.register(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(t);
+}
+function FE3dSceneConsole_scenes(){
+   return this._scenes;
+}
+function FE3dSceneConsole_alloc(pc, pn){
+   var o = this;
+   var rsc = RConsole.find(FRs3SceneConsole);
+   var rs = rsc.load(pn);
+   return;
+   var s = RClass.create(FE3dScene);
+   s._context = pc;
+   s._name = pn;
+   s._resource = rs;
+   if(rs.testReady()){
+      s.load(rs);
+   }else{
+      o._loadScenes.push(s);
+   }
+   return s;
+}
 function FE3dTemplate(o){
    o = RClass.inherits(this, o, FDisplay3d, MListenerLoad);
    o._dataReady     = false;
@@ -732,231 +928,6 @@ function FModelRenderable3d_update(p){
    var o = this;
    var m = o._display.matrix();
    o._matrix.assign(m);
-}
-function FScene3d(o){
-   o = RClass.inherits(this, o, FStage3d);
-   o._dataReady            = false;
-   o._resource             = null;
-   o._skyLayer             = null;
-   o._mapLayer             = null;
-   o._spaceLayer           = null;
-   o._lsnsLoad             = null;
-   o.onKeyDown             = FScene3d_onKeyDown;
-   o.construct             = FScene3d_construct;
-   o.loadListener          = FScene3d_loadListener;
-   o.loadTechniqueResource = FScene3d_loadTechniqueResource;
-   o.loadRegionResource    = FScene3d_loadRegionResource
-   o.loadDisplayResource   = FScene3d_loadDisplayResource
-   o.loadSkyResource       = FScene3d_loadSkyResource
-   o.loadMapResource       = FScene3d_loadMapResource
-   o.loadSpaceResource     = FScene3d_loadSpaceResource
-   o.loadResource          = FScene3d_loadResource
-   o.processLoad           = FScene3d_processLoad;
-   o.active                = FScene3d_active;
-   o.deactive              = FScene3d_deactive;
-   return o;
-}
-function FScene3d_onKeyDown(e){
-   var o = this;
-   var c = o._camera;
-   var k = e.keyCode;
-   var r = 0.3;
-   switch(k){
-      case EKeyCode.W:
-         c.doWalk(r);
-         break;
-      case EKeyCode.S:
-         c.doWalk(-r);
-         break;
-      case EKeyCode.A:
-         c.doStrafe(r);
-         break;
-      case EKeyCode.D:
-         c.doStrafe(-r);
-         break;
-      case EKeyCode.Q:
-         c.doFly(r);
-         break;
-      case EKeyCode.E:
-         c.doFly(-r);
-         break;
-   }
-   c.update();
-}
-function FScene3d_construct(){
-   var o = this;
-   o.__base.FStage3d.construct.call(o);
-   var l = o._skyLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('sky', l);
-   var l = o._mapLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('map', l);
-   var l = o._spaceLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('space', l);
-}
-function FScene3d_loadListener(){
-   var o = this;
-   var ls = o._lsnsLoad;
-   if(ls == null){
-      ls = o._lsnsLoad = new TListeners();
-   }
-   return ls;
-}
-function FScene3d_loadTechniqueResource(p){
-}
-function FScene3d_loadRegionResource(p){
-   var o = this;
-   o._backgroundColor.assign(p.color());
-   var rc = p.camera();
-   var rcv = rc.viewport();
-   var c = o._camera;
-   var cp = c._projection;
-   c.position().assign(rc.position());
-   c.direction().assign(rc.direction());
-   c.update();
-   cp.size().assign(o._context.size());
-   cp._angle = rcv.angle();
-   cp._znear = rcv.znear();
-   cp._zfar = rcv.zfar();
-   cp.update();
-   var l = o._directionalLight
-   var lc = l._camera;
-   var lp = lc._projection;
-   var rl = p.light();
-   var rlc = rl.camera();
-   var rlv = rlc.viewport();
-   lc.position().set(1, 1, -1);
-   lc.lookAt(0, 0, 0);
-   lc.position().assign(rlc.position());
-   lc.update();
-   lp.size().set(1024, 1024);
-   lp._angle = 60;
-   lp._znear = rlv.znear();
-   lp._zfar = rlv.zfar();
-   lp.update();
-}
-function FScene3d_loadDisplayResource(pl, pd){
-   var o = this;
-   var d3 = RClass.create(FSceneDisplay3d);
-   d3._context = o._context;
-   d3.loadSceneResource(pd);
-   RConsole.find(FTemplate3dConsole).load(d3, pd.code());
-   pl.pushDisplay(d3);
-}
-function FScene3d_loadSkyResource(p){
-   var o = this;
-   var ds = p.displays();
-   if(ds){
-      var c = ds.count();
-      for(var i = 0; i < c; i++){
-         var d = ds.get(i);
-         o.loadDisplayResource(o._spaceLayer, d);
-      }
-   }
-}
-function FScene3d_loadMapResource(p){
-   var o = this;
-   var ds = p.displays();
-   if(ds){
-      var c = ds.count();
-      for(var i = 0; i < c; i++){
-         var d = ds.get(i);
-         o.loadDisplayResource(o._mapLayer, d);
-      }
-   }
-}
-function FScene3d_loadSpaceResource(p){
-   var o = this;
-   var ds = p.displays();
-   if(ds){
-      var c = ds.count();
-      for(var i = 0; i < c; i++){
-         var d = ds.get(i);
-         o.loadDisplayResource(o._spaceLayer, d);
-      }
-   }
-}
-function FScene3d_loadResource(p){
-   var o = this;
-   o.loadTechniqueResource(p.technique());
-   o.loadRegionResource(p.region());
-   o.loadSkyResource(p.sky());
-   o.loadMapResource(p.map());
-   o.loadSpaceResource(p.space());
-   if(o._lsnsLoad){
-      o._lsnsLoad.process();
-   }
-}
-function FScene3d_processLoad(){
-   var o = this;
-   if(o._dataReady){
-      return true;
-   }
-   if(!o._resource.testReady()){
-      return false;
-   }
-   o.loadResource(o._resource);
-   return true;
-}
-function FScene3d_active(){
-   var o = this;
-   o.__base.FStage3d.active.call(o);
-   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
-}
-function FScene3d_deactive(){
-   var o = this;
-   o.__base.FStage3d.deactive.call(o);
-   RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
-}
-function FScene3dConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._scopeCd    = EScope.Local;
-   o._loadScenes = null;
-   o._scenes     = null;
-   o._thread     = null;
-   o._interval   = 100;
-   o.onProcess   = FScene3dConsole_onProcess;
-   o.construct   = FScene3dConsole_construct;
-   o.scenes      = FScene3dConsole_scenes;
-   o.alloc       = FScene3dConsole_alloc;
-   return o;
-}
-function FScene3dConsole_onProcess(){
-   var o = this;
-   var ms = o._loadScenes;
-   ms.record();
-   while(ms.next()){
-      var m = ms.current();
-      if(m.processLoad()){
-         ms.removeCurrent();
-      }
-   }
-}
-function FScene3dConsole_construct(){
-   var o = this;
-   o._loadScenes = new TLooper();
-   o._scenes = new TDictionary();
-   var t = o._thread = RClass.create(FThread);
-   t.setInterval(o._interval);
-   t.lsnsProcess.register(o, o.onProcess);
-   RConsole.find(FThreadConsole).start(t);
-}
-function FScene3dConsole_scenes(){
-   return this._scenes;
-}
-function FScene3dConsole_alloc(pc, pn){
-   var o = this;
-   var rsc = RConsole.find(FRs3SceneConsole);
-   var rs = rsc.load(pn);
-   var s = RClass.create(FScene3d);
-   s._context = pc;
-   s._name = pn;
-   s._resource = rs;
-   if(rs.testReady()){
-      s.load(rs);
-   }else{
-      o._loadScenes.push(s);
-   }
-   return s;
 }
 function FSceneDisplay3d(o){
    o = RClass.inherits(this, o, FTemplate3d);

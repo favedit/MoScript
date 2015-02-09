@@ -8,12 +8,14 @@ function FRs3SceneConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._scenes   = null;
-   o._path     = '/assets/scene/'
+   o._scenes     = null;
+   o._serviceUrl = '/cloud.content.scene.ws'
+   o._dataUrl    = '/cloud.content.scene.wv'
    //..........................................................
    // @method
-   o.construct = FRs3SceneConsole_construct;
-   o.load      = FRs3SceneConsole_load;
+   o.construct   = FRs3SceneConsole_construct;
+   o.load        = FRs3SceneConsole_load;
+   o.update      = FRs3SceneConsole_update;
    return o;
 }
 
@@ -36,14 +38,29 @@ function FRs3SceneConsole_construct(){
 //==========================================================
 function FRs3SceneConsole_load(p){
    var o = this;
-   var r = o._scenes.get(p);
+   var s = o._scenes;
+   var r = s.get(p);
    if(r == null){
       // 生成地址
-      var u = RBrowser.contentPath(o._path + p + '.ser');
+      var u = RBrowser.hostPath(o._dataUrl + '?code=' + p + '&date=' + RDate.format());
       // 创建主题
       r = RClass.create(FRs3Scene);
       r.load(u);
-      o._scenes.set(p, r);
+      s.set(p, r);
    }
    return r;
+}
+
+//==========================================================
+// <T>更新处理。</T>
+//
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FRs3SceneConsole_update(p){
+   var o = this;
+   // 生成地址
+   var u = RBrowser.hostPath(o._serviceUrl + '?action=update&date=' + RDate.format());
+   // 发送数据
+   var xc = RConsole.find(FXmlConsole);
+   var r = xc.send(u, p);
 }

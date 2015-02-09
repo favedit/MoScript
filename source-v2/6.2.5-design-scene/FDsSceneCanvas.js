@@ -11,7 +11,7 @@ function FDsSceneCanvas(o){
    o._context            = null;
    o._stage              = null;
    o._layer              = null;
-   o._activeTemplate     = null;
+   o._activeScene        = null;
    o._rotation           = null;
    o._rotationAble       = false;
    o._capturePosition    = null;
@@ -34,7 +34,7 @@ function FDsSceneCanvas(o){
    o.construct           = FDsSceneCanvas_construct;
    // @method
    o.selectRenderable    = FDsSceneCanvas_selectRenderable;
-   o.loadTemplate        = FDsSceneCanvas_loadTemplate;
+   o.loadScene           = FDsSceneCanvas_loadScene;
    // @method
    o.dispose             = FDsSceneCanvas_dispose;
    return o;
@@ -100,7 +100,7 @@ function FDsSceneCanvas_onBuild(p){
 //==========================================================
 function FDsSceneCanvas_onMouseCaptureStart(p){
    var o = this;
-   var t = o._activeTemplate;
+   var t = o._activeScene;
    if(!t){
       return;
    }
@@ -120,7 +120,7 @@ function FDsSceneCanvas_onMouseCaptureStart(p){
 //==========================================================
 function FDsSceneCanvas_onMouseCapture(p){
    var o = this;
-   var t = o._activeTemplate;
+   var t = o._activeScene;
    if(!t){
       return;
    }
@@ -213,7 +213,7 @@ function FDsSceneCanvas_onEnterFrame(){
    c.update();
    //..........................................................
    // 旋转模型
-   var m = o._activeTemplate;
+   var m = o._activeScene;
    if(m){
       var r = o._rotation;
       //m.location().set(0, -8.0, 0);
@@ -303,17 +303,17 @@ function FDsSceneCanvas_selectRenderable(p){
 //
 // @method
 //==========================================================
-function FDsSceneCanvas_loadTemplate(p){
+function FDsSceneCanvas_loadScene(p){
    var o = this;
-   var rmc = RConsole.find(FE3dTemplateConsole);
-   if(o._activeTemplate != null){
-      rmc.free(o._activeTemplate);
+   var rmc = RConsole.find(FE3dSceneConsole);
+   if(o._activeScene != null){
+      rmc.free(o._activeScene);
    }
-   // 收集一个显示模板
+   // 监听加载完成
    var m = rmc.alloc(o._context, p);
-   m.addLoadListener(o, o.onTemplateLoad);
-   o._layer.pushDisplay(m);
-   o._activeTemplate = m;
+   //m.addLoadListener(o, o.onTemplateLoad);
+   //o._layer.pushDisplay(m);
+   //o._activeScene = m;
 }
 
 //==========================================================

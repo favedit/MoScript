@@ -44,7 +44,7 @@ function FDsSceneWorkspace(o){
    o.materialPropertyFrame  = FDsSceneWorkspace_materialPropertyFrame;
    o.displayPropertyFrame   = FDsSceneWorkspace_displayPropertyFrame;
    // @method
-   o.loadTemplate           = FDsSceneWorkspace_loadTemplate;
+   o.loadScene              = FDsSceneWorkspace_loadScene;
    // @method
    o.dispose                = FDsSceneWorkspace_dispose;
    return o;
@@ -303,9 +303,9 @@ function FDsSceneWorkspace_displayPropertyFrame(){
 //
 // @method
 //==========================================================
-function FDsSceneWorkspace_loadTemplate(p){
+function FDsSceneWorkspace_loadScene(p){
    var o = this;
-   o._canvas.loadTemplate(p);
+   o._canvas.loadScene(p);
 }
 
 //==========================================================
