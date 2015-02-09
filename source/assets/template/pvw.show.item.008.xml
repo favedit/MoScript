@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.show.item.008">
+    <ThemeCollection>
+      <Theme code="color">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" code="pvw.show.008.01">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.79" level="0.79" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.008.01" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.show.008.01" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.show.008.01" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.show.008.02">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.552941" g="0.027451" b="0" power="1" />
+            <Diffuse r="0.552941" g="0.027451" b="0" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.25" level="0.25" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.008.02" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+      <Theme code="shadow">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" code="pvw.show.008.01">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.79" level="0.79" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.008.01" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.show.008.01" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.show.008.01" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" code="pvw.show.008.02">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.552941" g="0.027451" b="0" power="1" />
+            <Diffuse r="0.552941" g="0.027451" b="0" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.25" level="0.25" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.008.02" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_006">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_007">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_008">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_009">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_010">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_011">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_012">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_013">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_014">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_015">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_016">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_017">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_018">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_019">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_020">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_021">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_022">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_023">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_024">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_025">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_026">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_027">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_001_028">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_006">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_007">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_008">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_009">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_010">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_011">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_012">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_013">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.008" mesh_code="ms_002_014">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.008.02" />
+        </MaterialCollection>
+      </Sprite>
+    </DisplayCollection>
+  </Template>
+</Configuration>
