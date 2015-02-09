@@ -6015,6 +6015,7 @@ function SMatrix3d_identity(){
    d[ 4] = 0; d[ 5] = 1; d[ 6] = 0; d[ 7] = 0;
    d[ 8] = 0; d[ 9] = 0; d[10] = 1; d[11] = 0;
    d[12] = 0; d[13] = 0; d[14] = 0; d[15] = 1;
+   return o;
 }
 function SMatrix3d_setTranslate(x, y, z){
    var o = this;

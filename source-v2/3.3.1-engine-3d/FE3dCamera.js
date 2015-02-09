@@ -4,7 +4,7 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FE3dCanvasCamera(o){
+function FE3dCamera(o){
    o = RClass.inherits(this, o, FG3dPerspectiveCamera);
    //..........................................................
    // 四元数
@@ -14,17 +14,18 @@ function FE3dCanvasCamera(o){
    o._quaternionX    = null;
    o._quaternionY    = null;
    o._quaternionZ    = null;
+   o._directionTarget = null;
    //..........................................................
    // @method
-   o.construct       = FE3dCanvasCamera_construct;
+   o.construct       = FE3dCamera_construct;
    // @method
-   o.rotation        = FE3dCanvasCamera_rotation;
+   o.rotation        = FE3dCamera_rotation;
    // @method
-   o.doPitch         = FE3dCanvasCamera_doPitch;
-   o.doYaw           = FE3dCanvasCamera_doYaw;
-   o.doRoll          = FE3dCanvasCamera_doRoll;
+   o.doPitch         = FE3dCamera_doPitch;
+   o.doYaw           = FE3dCamera_doYaw;
+   o.doRoll          = FE3dCamera_doRoll;
    // @method
-   o.update          = FE3dCanvasCamera_update;
+   o.update          = FE3dCamera_update;
    return o;
 }
 
@@ -33,7 +34,7 @@ function FE3dCanvasCamera(o){
 //
 // @method
 //==========================================================
-function FE3dCanvasCamera_construct(){
+function FE3dCamera_construct(){
    var o = this;
    o.__base.FG3dPerspectiveCamera.construct.call(o);
    // 初始化变量
@@ -43,6 +44,7 @@ function FE3dCanvasCamera_construct(){
    o._quaternionX = new SQuaternion();
    o._quaternionY = new SQuaternion();
    o._quaternionZ = new SQuaternion();
+   o._directionTarget = new SVector3();
 }
 
 //==========================================================
@@ -51,7 +53,7 @@ function FE3dCanvasCamera_construct(){
 // @method
 // @return SVector3 旋转弧度
 //==========================================================
-function FE3dCanvasCamera_rotation(){
+function FE3dCamera_rotation(){
    return this._rotation;
 }
 
@@ -61,7 +63,7 @@ function FE3dCanvasCamera_rotation(){
 // @method
 // @param p:radian:Number 弧度
 //==========================================================
-function FE3dCanvasCamera_doPitch(p){
+function FE3dCamera_doPitch(p){
    this._rotation.x += p;
 }
 
@@ -71,7 +73,7 @@ function FE3dCanvasCamera_doPitch(p){
 // @method
 // @param p:radian:Number 弧度
 //==========================================================
-function FE3dCanvasCamera_doYaw(p){
+function FE3dCamera_doYaw(p){
    this._rotation.y += p;
 }
 
@@ -81,8 +83,19 @@ function FE3dCanvasCamera_doYaw(p){
 // @method
 // @param p:radian:Number 弧度
 //==========================================================
-function FE3dCanvasCamera_doRoll(p){
+function FE3dCamera_doRoll(p){
    this._rotation.z += p;
+}
+
+//==========================================================
+// <T>朝向目标。</T>
+//
+// @method
+//==========================================================
+function FE3dCamera_lookAt(x, y, z){
+   // 父更新矩阵
+   o.__base.FG3dPerspectiveCamera.lookAt.call(o, x, y, z);
+   o._directionTarget.assign(o._direction);
 }
 
 //==========================================================
@@ -90,7 +103,7 @@ function FE3dCanvasCamera_doRoll(p){
 //
 // @method
 //==========================================================
-function FE3dCanvasCamera_update(){
+function FE3dCamera_update(){
    var o = this;
    // 计算旋转分量
    var r = o._rotation;
@@ -106,7 +119,7 @@ function FE3dCanvasCamera_update(){
    var m = o._rotationMatrix;
    m.build(q);
    // 计算目标
-   var t = o._target;
+   var t = o._directionTarget;
    m.transformPoint3(RMath.vectorForward, t);
    // 计算上轴
    m.transformPoint3(RMath.vectorAxisY, o.__axisUp);

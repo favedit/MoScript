@@ -40,8 +40,7 @@ function FE3dStage_construct(){
    o._backgroundColor = new SColor4();
    o._backgroundColor.set(0, 0, 0, 1);
    // 创建相机
-   //var c = o._camera = RClass.create(FG3dPerspectiveCamera);
-   var c = o._camera = RClass.create(FE3dCanvasCamera);
+   var c = o._camera = RClass.create(FE3dCamera);
    c.position().set(0, 0, -100);
    c.lookAt(0, 0, 0);
    c.update();

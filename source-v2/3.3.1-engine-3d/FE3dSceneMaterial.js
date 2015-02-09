@@ -11,8 +11,19 @@ function FE3dSceneMaterial(o){
    o._resource         = null;
    //..........................................................
    // @method
+   o.groupGuid         = FE3dSceneMaterial_groupGuid
    o.loadSceneResource = FE3dSceneMaterial_loadSceneResourcee
    return o;
+}
+
+//==========================================================
+// <T>获得分组唯一编号。</T>
+//
+// @method
+// @return String 分组唯一编号
+//==========================================================
+function FE3dSceneMaterial_groupGuid(p){
+   return this._resource.groupGuid();
 }
 
 //==========================================================
@@ -24,6 +35,5 @@ function FE3dSceneMaterial(o){
 function FE3dSceneMaterial_loadSceneResourcee(p){
    var o = this;
    o._resource = p;
-   o._name = p.code();
    o._info.assign(p.info());
 }

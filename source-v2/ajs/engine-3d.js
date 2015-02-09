@@ -1,4 +1,4 @@
-function FE3dCanvasCamera(o){
+function FE3dCamera(o){
    o = RClass.inherits(this, o, FG3dPerspectiveCamera);
    o._rotation       = null;
    o._rotationMatrix = null;
@@ -6,15 +6,16 @@ function FE3dCanvasCamera(o){
    o._quaternionX    = null;
    o._quaternionY    = null;
    o._quaternionZ    = null;
-   o.construct       = FE3dCanvasCamera_construct;
-   o.rotation        = FE3dCanvasCamera_rotation;
-   o.doPitch         = FE3dCanvasCamera_doPitch;
-   o.doYaw           = FE3dCanvasCamera_doYaw;
-   o.doRoll          = FE3dCanvasCamera_doRoll;
-   o.update          = FE3dCanvasCamera_update;
+   o._directionTarget = null;
+   o.construct       = FE3dCamera_construct;
+   o.rotation        = FE3dCamera_rotation;
+   o.doPitch         = FE3dCamera_doPitch;
+   o.doYaw           = FE3dCamera_doYaw;
+   o.doRoll          = FE3dCamera_doRoll;
+   o.update          = FE3dCamera_update;
    return o;
 }
-function FE3dCanvasCamera_construct(){
+function FE3dCamera_construct(){
    var o = this;
    o.__base.FG3dPerspectiveCamera.construct.call(o);
    o._rotation = new SVector3();
@@ -23,20 +24,25 @@ function FE3dCanvasCamera_construct(){
    o._quaternionX = new SQuaternion();
    o._quaternionY = new SQuaternion();
    o._quaternionZ = new SQuaternion();
+   o._directionTarget = new SVector3();
 }
-function FE3dCanvasCamera_rotation(){
+function FE3dCamera_rotation(){
    return this._rotation;
 }
-function FE3dCanvasCamera_doPitch(p){
+function FE3dCamera_doPitch(p){
    this._rotation.x += p;
 }
-function FE3dCanvasCamera_doYaw(p){
+function FE3dCamera_doYaw(p){
    this._rotation.y += p;
 }
-function FE3dCanvasCamera_doRoll(p){
+function FE3dCamera_doRoll(p){
    this._rotation.z += p;
 }
-function FE3dCanvasCamera_update(){
+function FE3dCamera_lookAt(x, y, z){
+   o.__base.FG3dPerspectiveCamera.lookAt.call(o, x, y, z);
+   o._directionTarget.assign(o._direction);
+}
+function FE3dCamera_update(){
    var o = this;
    var r = o._rotation;
    o._quaternionX.fromAxisAngle(RMath.vectorAxisX, r.x);
@@ -48,7 +54,7 @@ function FE3dCanvasCamera_update(){
    q.mul(o._quaternionZ);
    var m = o._rotationMatrix;
    m.build(q);
-   var t = o._target;
+   var t = o._directionTarget;
    m.transformPoint3(RMath.vectorForward, t);
    m.transformPoint3(RMath.vectorAxisY, o.__axisUp);
    var d = o._direction;
@@ -520,7 +526,6 @@ function FE3dSceneDisplay(o){
    o = RClass.inherits(this, o, FE3dTemplate);
    o._dataReady        = false;
    o._movieMatrix      = null;
-   o._modelMatrix      = null;
    o._resource         = null;
    o._materials        = null;
    o._movies           = null;
@@ -534,12 +539,11 @@ function FE3dSceneDisplay_construct(){
    var o = this;
    o.__base.FE3dTemplate.construct.call(o);
    o._movieMatrix = new SMatrix3d();
-   o._modelMatrix = new SMatrix3d();
 }
 function FE3dSceneDisplay_loadSceneResource(p){
    var o = this;
    o._resource = p;
-   o._modelMatrix.assign(p.matrix());
+   o._matrix.assign(p.matrix());
    var rms = p.materials();
    if(rms){
       var c = rms.count();
@@ -548,7 +552,7 @@ function FE3dSceneDisplay_loadSceneResource(p){
          var rm = rms.get(i);
          var m = RClass.create(FE3dSceneMaterial);
          m.loadSceneResource(rm);
-         ms.set(rm.code(), m);
+         ms.set(rm.groupGuid(), m);
       }
    }
    var rms = p.movies();
@@ -576,22 +580,27 @@ function FE3dSceneDisplay_loadResource(p){
          r._context = o._context;
          r.loadResource(rd);
          o.pushRenderable(r);
+         var rdm = rd.materials().first();
+         var m = ms.get(rdm.groupGuid());
+         if(m){
+            r.loadMaterial(m);
+         }
       }
    }
 }
 function FE3dSceneDisplay_process(p){
    var o = this;
    o.__base.FE3dTemplate.process.call(o, p);
-   o._matrix.identity();
+   var m = o._currentMatrix.identity();
    var ms = o._movies;
    if(ms){
       var c = ms.count();
       for(var i = 0; i < c; i++){
          ms.get(i).process(o._movieMatrix);
       }
-      o._matrix.append(o._movieMatrix);
+      m.append(o._movieMatrix);
    }
-   o._matrix.append(o._modelMatrix);
+   m.append(o._matrix);
 }
 function FE3dSceneDisplayMovie(o){
    o = RClass.inherits(this, o, FObject);
@@ -641,13 +650,16 @@ function FE3dSceneDisplayRenderable_loadMaterial(p){
 function FE3dSceneMaterial(o){
    o = RClass.inherits(this, o, FG3dMaterial);
    o._resource         = null;
+   o.groupGuid         = FE3dSceneMaterial_groupGuid
    o.loadSceneResource = FE3dSceneMaterial_loadSceneResourcee
    return o;
+}
+function FE3dSceneMaterial_groupGuid(p){
+   return this._resource.groupGuid();
 }
 function FE3dSceneMaterial_loadSceneResourcee(p){
    var o = this;
    o._resource = p;
-   o._name = p.code();
    o._info.assign(p.info());
 }
 function FE3dSimpleStage(o){
@@ -768,7 +780,7 @@ function FE3dStage_construct(){
    o.__base.FStage.construct.call(o);
    o._backgroundColor = new SColor4();
    o._backgroundColor.set(0, 0, 0, 1);
-   var c = o._camera = RClass.create(FE3dCanvasCamera);
+   var c = o._camera = RClass.create(FE3dCamera);
    c.position().set(0, 0, -100);
    c.lookAt(0, 0, 0);
    c.update();

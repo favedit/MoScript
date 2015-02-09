@@ -9,9 +9,9 @@ var EDsSceneCanvasMode = new function EDsSceneCanvasMode(){
    return o;
 }
 function FDsSceneCanvas(o){
-   o = RClass.inherits(this, o, FUiCanvas, MListenerLoad, MMouseCapture);
-   o._toolbar            = null;
+   o = RClass.inherits(this, o, FDsCanvas);
    o._context            = null;
+   o._canvasModeCd       = EDsCanvasMode.Drop;
    o._activeScene        = null;
    o._rotation           = null;
    o._rotationAble       = false;
@@ -35,13 +35,7 @@ function FDsSceneCanvas(o){
 }
 function FDsSceneCanvas_onBuild(p){
    var o = this;
-   o.__base.FUiCanvas.onBuild.call(o, p);
-   var h = o._hPanel;
-   h.__linker = o;
-   var c = o._context = REngine3d.createContext(FWglContext, h);
-   RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-   RStage.start(15);
-   RConsole.find(FMouseConsole).register(o);
+   o.__base.FDsCanvas.onBuild.call(o, p);
 }
 function FDsSceneCanvas_onMouseCaptureStart(p){
    var o = this;
@@ -60,7 +54,7 @@ function FDsSceneCanvas_onMouseCapture(p){
    }
    var cx = p.clientX - o._capturePosition.x;
    var cy = p.clientY - o._capturePosition.y;
-   switch(o._toolbar._canvasModeCd){
+   switch(o._canvasModeCd){
       case EDsCanvasMode.Drop:
          var c = o._activeScene.camera();
          var r = c.rotation();
@@ -132,7 +126,7 @@ function FDsSceneCanvas_onSceneLoad(p){
 function FDsSceneCanvas_oeRefresh(p){
    var o = this;
    var c = o._context;
-   o.__base.FUiCanvas.oeRefresh.call(o, p);
+   o.__base.FDsCanvas.oeRefresh.call(o, p);
    var w = o._hParent.offsetWidth;
    var h = o._hParent.offsetHeight;
    var hc = o._hPanel;
@@ -143,7 +137,7 @@ function FDsSceneCanvas_oeRefresh(p){
 }
 function FDsSceneCanvas_construct(){
    var o = this;
-   o.__base.FUiCanvas.construct.call(o);
+   o.__base.FDsCanvas.construct.call(o);
    o._capturePosition = new SPoint2();
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
@@ -170,7 +164,7 @@ function FDsSceneCanvas_loadScene(p){
    var m = rmc.alloc(o._context, p);
    m.addLoadListener(o, o.onSceneLoad);
    m.selectTechnique(c, FG3dGeneralTechnique);
-   o._activeScene = m;
+   o._stage = o._activeScene = m;
    RStage.register('stage3d', m);
 }
 function FDsSceneCanvas_dispose(){
@@ -180,7 +174,7 @@ function FDsSceneCanvas_dispose(){
       v.dispose();
       o._rotation = null;
    }
-   o.__base.FUiCanvas.dispose.call(o);
+   o.__base.FDsCanvas.dispose.call(o);
 }
 function FDsSceneCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);

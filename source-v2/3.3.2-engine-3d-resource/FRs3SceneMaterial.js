@@ -8,8 +8,7 @@ function FRs3SceneMaterial(o){
    o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute 属性
-   o._code               = null;
-   o._label              = null;
+   o._groupGuid          = null;
    // @attribute 设置
    o._info               = null;
    // @attribute 高度
@@ -26,7 +25,7 @@ function FRs3SceneMaterial(o){
    //..........................................................
    // @method
    o.construct           = FRs3SceneMaterial_construct;
-   o.code                = FRs3SceneMaterial_code;
+   o.groupGuid           = FRs3SceneMaterial_groupGuid;
    o.info                = FRs3SceneMaterial_info;
    o.unserialize         = FRs3SceneMaterial_unserialize;
    return o;
@@ -44,13 +43,13 @@ function FRs3SceneMaterial_construct(){
 }
 
 //==========================================================
-// <T>获得代码。</T>
+// <T>获得分组唯一编号。</T>
 //
 // @method
-// @return String 代码
+// @return String 分组唯一编号
 //==========================================================
-function FRs3SceneMaterial_code(){
-   return this._code;
+function FRs3SceneMaterial_groupGuid(){
+   return this._groupGuid;
 }
 
 //==========================================================

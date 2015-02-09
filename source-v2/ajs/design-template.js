@@ -9,7 +9,7 @@ var EDsCanvasMode = new function EDsCanvasMode(){
    return o;
 }
 function FDsTemplateCanvas(o){
-   o = RClass.inherits(this, o, FUiCanvas, MListenerLoad, MMouseCapture);
+   o = RClass.inherits(this, o, FDsCanvas, MListenerLoad, MMouseCapture);
    o._toolbar            = null;
    o._context            = null;
    o._stage              = null;
@@ -37,10 +37,7 @@ function FDsTemplateCanvas(o){
 }
 function FDsTemplateCanvas_onBuild(p){
    var o = this;
-   o.__base.FUiCanvas.onBuild.call(o, p);
-   var h = o._hPanel;
-   h.__linker = o;
-   var c = o._context = REngine3d.createContext(FWglContext, h);
+   o.__base.FDsCanvas.onBuild.call(o, p);
    var g = o._stage = RClass.create(FE3dSimpleStage);
    g._optionKeyboard = false;
    g.backgroundColor().set(0.5, 0.5, 0.5, 1);
@@ -60,16 +57,6 @@ function FDsTemplateCanvas_onBuild(p){
    lc.setPosition(10, 10, 0);
    lc.lookAt(0, 0, 0);
    lc.update();
-   var dm = o._dimensional = RClass.create(FRd3Dimensional);
-   dm.linkGraphicContext(c);
-   dm.setup();
-   o._layer.pushRenderable(dm);
-   var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
-   bb.linkGraphicContext(o._context);
-   bb.setup();
-   RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-   RStage.start(15);
-   RConsole.find(FMouseConsole).register(o);
 }
 function FDsTemplateCanvas_onMouseCaptureStart(p){
    var o = this;
@@ -177,7 +164,7 @@ function FDsTemplateCanvas_onTemplateLoad(p){
 function FDsTemplateCanvas_oeRefresh(p){
    var o = this;
    var c = o._context;
-   o.__base.FUiCanvas.oeRefresh.call(o, p);
+   o.__base.FDsCanvas.oeRefresh.call(o, p);
    var w = o._hParent.offsetWidth;
    var h = o._hParent.offsetHeight;
    var hc = o._hPanel;
@@ -191,7 +178,7 @@ function FDsTemplateCanvas_oeRefresh(p){
 }
 function FDsTemplateCanvas_construct(){
    var o = this;
-   o.__base.FUiCanvas.construct.call(o);
+   o.__base.FDsCanvas.construct.call(o);
    o._capturePosition = new SPoint2();
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
@@ -226,7 +213,7 @@ function FDsTemplateCanvas_dispose(){
       v.dispose();
       o._rotation = null;
    }
-   o.__base.FUiCanvas.dispose.call(o);
+   o.__base.FDsCanvas.dispose.call(o);
 }
 function FDsTemplateCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);

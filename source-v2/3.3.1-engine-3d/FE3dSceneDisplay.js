@@ -10,7 +10,6 @@ function FE3dSceneDisplay(o){
    // @attribute
    o._dataReady        = false;
    o._movieMatrix      = null;
-   o._modelMatrix      = null;
    o._resource         = null;
    o._materials        = null;
    o._movies           = null;
@@ -33,7 +32,6 @@ function FE3dSceneDisplay_construct(){
    var o = this;
    o.__base.FE3dTemplate.construct.call(o);
    o._movieMatrix = new SMatrix3d();
-   o._modelMatrix = new SMatrix3d();
 }
 
 //==========================================================
@@ -46,7 +44,7 @@ function FE3dSceneDisplay_loadSceneResource(p){
    var o = this;
    o._resource = p;
    // 设置矩阵
-   o._modelMatrix.assign(p.matrix());
+   o._matrix.assign(p.matrix());
    // 设置材质集合
    var rms = p.materials();
    if(rms){
@@ -56,7 +54,7 @@ function FE3dSceneDisplay_loadSceneResource(p){
          var rm = rms.get(i);
          var m = RClass.create(FE3dSceneMaterial);
          m.loadSceneResource(rm);
-         ms.set(rm.code(), m);
+         ms.set(rm.groupGuid(), m);
       }
    }
    // 加载动画集合
@@ -88,19 +86,18 @@ function FE3dSceneDisplay_loadResource(p){
       //var rs = o._templateRenderables = new TObjects();
       for(var i = 0; i < c; i++){
          var rd = rds.get(i);
-         //var mc = rd.materialCode();
          // 创建显示对象
          var r = RClass.create(FE3dSceneDisplayRenderable);
          r._display = o;
          r._context = o._context;
          r.loadResource(rd);
          o.pushRenderable(r);
-         //rs.push(r);
-         // 查找材质
-         //var m = ms.get(mc);
-         //if(m){
-         //   r.loadMaterial(m);
-         //}
+         // 加载材质
+         var rdm = rd.materials().first();
+         var m = ms.get(rdm.groupGuid());
+         if(m){
+            r.loadMaterial(m);
+         }
       }
    }
 }
@@ -114,14 +111,14 @@ function FE3dSceneDisplay_process(p){
    var o = this;
    o.__base.FE3dTemplate.process.call(o, p);
    // 加载动画集合
-   o._matrix.identity();
+   var m = o._currentMatrix.identity();
    var ms = o._movies;
    if(ms){
       var c = ms.count();
       for(var i = 0; i < c; i++){
          ms.get(i).process(o._movieMatrix);
       }
-      o._matrix.append(o._movieMatrix);
+      m.append(o._movieMatrix);
    }
-   o._matrix.append(o._modelMatrix);
+   m.append(o._matrix);
 }

@@ -48,7 +48,6 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter('fc_diffuse_color', mi.diffuseColor);
    p.setParameter('fc_specular_color', mi.specularColor);
    p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
-   //p.setParameter4('fc_specular', 0, 20, 0, 0);
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);

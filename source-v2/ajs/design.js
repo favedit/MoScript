@@ -114,6 +114,155 @@ function FDsApplication_dispose(){
    }
    o.__base.FObject.dispose.call(o);
 }
+function FDsCanvas(o){
+   o = RClass.inherits(this, o, FUiCanvas, MListenerLoad, MMouseCapture);
+   o._context            = null;
+   o._stage              = null;
+   o._rotation           = null;
+   o._rotationAble       = false;
+   o._capturePosition    = null;
+   o._captureMatrix      = null;
+   o._captureRotation    = null;
+   o._dimensional        = null;
+   o._selectBoundBox     = null;
+   o.onBuild             = FDsCanvas_onBuild;
+   o.onMouseCaptureStart = FDsCanvas_onMouseCaptureStart;
+   o.onMouseCapture      = FDsCanvas_onMouseCapture;
+   o.onMouseCaptureStop  = FDsCanvas_onMouseCaptureStop;
+   o.onEnterFrame        = FDsCanvas_onEnterFrame;
+   o.oeRefresh           = FDsCanvas_oeRefresh;
+   o.construct           = FDsCanvas_construct;
+   o.selectRenderable    = FDsCanvas_selectRenderable;
+   o.dispose             = FDsCanvas_dispose;
+   return o;
+}
+function FDsCanvas_onBuild(p){
+   var o = this;
+   o.__base.FUiCanvas.onBuild.call(o, p);
+   var h = o._hPanel;
+   h.__linker = o;
+   var c = o._context = REngine3d.createContext(FWglContext, h);
+   RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
+   RStage.start(20);
+   RConsole.find(FMouseConsole).register(o);
+}
+function FDsCanvas_onMouseCaptureStart(p){
+   var o = this;
+}
+function FDsCanvas_onMouseCapture(p){
+   var o = this;
+   var s = o._activeScene;
+   if(!s){
+      return;
+   }
+   var cx = p.clientX - o._capturePosition.x;
+   var cy = p.clientY - o._capturePosition.y;
+   switch(o._toolbar._canvasModeCd){
+      case EDsCanvasMode.Drop:
+         var c = o._activeScene.camera();
+         var r = c.rotation();
+         var cr = o._captureRotation;
+         r.x = cr.x + cy * 0.003;
+         r.y = cr.y + cx * 0.003;
+         break;
+      case EDsCanvasMode.Select:
+         break;
+      case EDsCanvasMode.Translate:
+         break;
+      case EDsCanvasMode.Rotation:
+         break;
+      case EDsCanvasMode.Scale:
+         break;
+   }
+}
+function FDsCanvas_onMouseCaptureStop(p){
+}
+function FDsCanvas_onEnterFrame(){
+   var o = this;
+   return;
+   var s = o._activeScene;
+   if(!s){
+      return;
+   }
+   var c = s.camera();
+   var d = 0.5;
+   var r = 0.05;
+   var kw = RKeyboard.isPress(EKeyCode.W);
+   var ks = RKeyboard.isPress(EKeyCode.S);
+   if(kw && !ks){
+      c.doWalk(d);
+   }
+   if(!kw && ks){
+      c.doWalk(-d);
+   }
+   var ka = RKeyboard.isPress(EKeyCode.A);
+   var kd = RKeyboard.isPress(EKeyCode.D);
+   if(ka && !kd){
+      c.doYaw(r);
+   }
+   if(!ka && kd){
+      c.doYaw(-r);
+   }
+   var kq = RKeyboard.isPress(EKeyCode.Q);
+   var ke = RKeyboard.isPress(EKeyCode.E);
+   if(kq && !ke){
+      c.doFly(d);
+   }
+   if(!kq && ke){
+      c.doFly(-d);
+   }
+   var kz = RKeyboard.isPress(EKeyCode.Z);
+   var kw = RKeyboard.isPress(EKeyCode.X);
+   if(kz && !kw){
+      c.doPitch(r);
+   }
+   if(!kz && kw){
+      c.doPitch(-r);
+   }
+   c.update();
+   if(s){
+   }
+}
+function FDsCanvas_oeRefresh(p){
+   var o = this;
+   var c = o._context;
+   o.__base.FUiCanvas.oeRefresh.call(o, p);
+   var w = o._hParent.offsetWidth;
+   var h = o._hParent.offsetHeight;
+   var hc = o._hPanel;
+   hc.width = w;
+   hc.height = h;
+   c.setViewport(0, 0, w, h);
+   return EEventStatus.Stop;
+}
+function FDsCanvas_construct(){
+   var o = this;
+   o.__base.FUiCanvas.construct.call(o);
+   o._capturePosition = new SPoint2();
+   o._captureMatrix = new SMatrix3d();
+   o._rotation = new SVector3();
+   o._captureRotation = new SVector3();
+}
+function FDsCanvas_selectRenderable(p){
+   var o = this;
+   var r = p.resource();
+   var rm = r.mesh();
+   var rl = rm.outline();
+   var b = o._selectBoundBox;
+   b.outline().assign(rl);
+   b.upload();
+   b.remove();
+   p._display.pushRenderable(b);
+}
+function FDsCanvas_dispose(){
+   var o = this;
+   var v = o._rotation;
+   if(v){
+      v.dispose();
+      o._rotation = null;
+   }
+   o.__base.FUiCanvas.dispose.call(o);
+}
 function FDsMainCanvas(o){
    o = RClass.inherits(this, o, FCanvas);
    o._context   = null;

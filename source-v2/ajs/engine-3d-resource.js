@@ -891,8 +891,7 @@ function FRs3SceneMap(o){
 }
 function FRs3SceneMaterial(o){
    o = RClass.inherits(this, o, FRs3Object);
-   o._code               = null;
-   o._label              = null;
+   o._groupGuid          = null;
    o._info               = null;
    o._heightDepth        = null;
    o._surfaceRate        = null;
@@ -904,7 +903,7 @@ function FRs3SceneMaterial(o){
    o._surfaceMerge       = null;
    o._surfacePower       = null;
    o.construct           = FRs3SceneMaterial_construct;
-   o.code                = FRs3SceneMaterial_code;
+   o.groupGuid           = FRs3SceneMaterial_groupGuid;
    o.info                = FRs3SceneMaterial_info;
    o.unserialize         = FRs3SceneMaterial_unserialize;
    return o;
@@ -914,8 +913,8 @@ function FRs3SceneMaterial_construct(){
    o.__base.FRs3Object.construct.call(o);
    o._info = new SRs3MaterialInfo();
 }
-function FRs3SceneMaterial_code(){
-   return this._code;
+function FRs3SceneMaterial_groupGuid(){
+   return this._groupGuid;
 }
 function FRs3SceneMaterial_info(){
    return this._info;
