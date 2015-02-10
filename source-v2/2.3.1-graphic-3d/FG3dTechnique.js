@@ -8,24 +8,24 @@ function FG3dTechnique(o){
    o = RClass.inherits(this, o, FG3dObject);
    //..........................................................
    // @attribute
-   o._name        = null;
+   o._code        = null;
    o._passes      = null;
    //..........................................................
    // @method
    o.construct    = FG3dTechnique_construct;
-   o.name         = FG3dTechnique_name;
+   // @method
+   o.code         = FG3dTechnique_code;
+   o.passes       = FG3dTechnique_passes;
+   // @method
    o.updateRegion = RMethod.empty;
    o.drawRegion   = FG3dTechnique_drawRegion;
    return o;
 }
 
 //==========================================================
-// <T>设置参数。</T>
+// <T>构造处理。</T>
 //
 // @method
-// @param pn:name:String 名称
-// @param pv:value:Object 数据
-// @param pc:count:Integer 个数
 //==========================================================
 function FG3dTechnique_construct(){
    var o = this;
@@ -37,30 +37,39 @@ function FG3dTechnique_construct(){
 // <T>获得名称。</T>
 //
 // @method
-// @return 名称
+// @return String 名称
 //==========================================================
-function FG3dTechnique_name(){
-   return this._name;
+function FG3dTechnique_code(){
+   return this._code;
+}
+
+//==========================================================
+// <T>获得过程集合。</T>
+//
+// @method
+// @return TObjects 过程集合
+//==========================================================
+function FG3dTechnique_passes(){
+   return this._passes;
 }
 
 //==========================================================
 // <T>绘制区域处理。</T>
 //
 // @method
-// @param r:region:FG3dRetion 区域
+// @param p:region:FG3dRetion 区域
 //==========================================================
-function FG3dTechnique_drawRegion(r){
+function FG3dTechnique_drawRegion(p){
    var o = this;
    // 设置区域属性
-   r.setTechnique(o);
+   p.setTechnique(o);
    // 绘制所有过程
-   var ps = o._passes;
-   var c = ps.count();
+   var s = o._passes;
+   var c = s.count();
    for(var n = 0; n < c; n++){
-      var p = ps.get(n);
-      r.setTechniquePass(p);
-      p._finish = (n == c - 1);
-      p.drawRegion(r);
+      var v = s.get(n);
+      p.setTechniquePass(v, (n == c - 1));
+      v.drawRegion(p);
    }
    // 显示处理
    o._context.present();

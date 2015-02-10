@@ -8,7 +8,7 @@ function FG3dShadowTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
    //..........................................................
    // @attribute
-   o._name        = 'shadow';
+   o._code        = 'shadow';
    // @attribute
    o._passDepth   = null;
    o._passColor   = null;

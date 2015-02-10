@@ -9,41 +9,22 @@ function FDsSceneTechniquePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._visible        = false;
+   o._visible      = false;
    // @attribute
-   o._workspace      = null;
+   o._workspace    = null;
+   o._technique    = null;
    // @attribute
-   o._renderTemplate = null;
-   // @attribute
-   o._controlGuid    = null;
-   o._controlCode    = null;
-   o._controlLabel   = null;
-   //..........................................................
-   // @event
-   o.onBuilded       = FDsSceneTechniquePropertyFrame_onBuilded;
+   o._controlGuid  = null;
+   o._controlCode  = null;
+   o._controlLabel = null;
    //..........................................................
    // @method
-   o.construct       = FDsSceneTechniquePropertyFrame_construct;
+   o.construct     = FDsSceneTechniquePropertyFrame_construct;
    // @method
-   o.loadObject      = FDsSceneTechniquePropertyFrame_loadObject;
+   o.loadObject    = FDsSceneTechniquePropertyFrame_loadObject;
    // @method
-   o.dispose         = FDsSceneTechniquePropertyFrame_dispose;
+   o.dispose       = FDsSceneTechniquePropertyFrame_dispose;
    return o;
-}
-
-//==========================================================
-// <T>构建完成处理。</T>
-//
-// @method
-// @param p:event:TEventProcess 事件处理
-//==========================================================
-function FDsSceneTechniquePropertyFrame_onBuilded(p){
-   var o = this;
-   o.__base.FUiForm.onBuilded.call(o, p);
-   // 设置关联
-   o._controlGuid = o.searchControl('guid');
-   o._controlCode = o.searchControl('code');
-   o._controlLabel = o.searchControl('label');
 }
 
 //==========================================================
@@ -61,18 +42,16 @@ function FDsSceneTechniquePropertyFrame_construct(){
 // <T>加载材质信息。</T>
 //
 // @method
-// @param t:template:FTemplate3d 模板
-// @param m:material:FRs3Material 材质
+// @param s:scene:FE3dScene 场景
+// @param t:technique:FG3dTechnique 技术
 //==========================================================
-function FDsSceneTechniquePropertyFrame_loadObject(t){
+function FDsSceneTechniquePropertyFrame_loadObject(s, t){
    var o = this;
    var r = t._resource;
    // 设置属性
-   o._renderTemplate = t;
+   o._technique = t;
    // 设置参数
-   //o._controlGuid.set(r.guid());
-   //o._controlCode.set(r.code());
-   //o._controlLabel.set(r._label);
+   o._controlCode.set(t.code());
 }
 
 //==========================================================

@@ -3008,6 +3008,7 @@ function RControl_newInstance(p){
    var r = null;
    if(p){
       var n = null
+      var tn = null;
       if(p.constructor == String){
          if(!RString.startsWith(p, o.PREFIX)){
             n = o.PREFIX + p;
@@ -3019,11 +3020,16 @@ function RControl_newInstance(p){
             if(!RString.startsWith(n, o.PREFIX)){
                n = o.PREFIX + n;
             }
+         }else{
+            tn = n;
          }
       }else{
          throw new TError(o, 'Unknown parameter. (name={p})', p);
       }
       r = RClass.create(n);
+      if(tn){
+         r.__typed = true;
+      }
    }
    if(r == null){
       throw new TError(o, 'Create instance failure. (name={p})', p);
@@ -3082,13 +3088,17 @@ function RControl_create(pc, px, pa){
    o.innerCreate(c, px, pa);
    return c;
 }
-function RControl_innerbuild(pc, px, pa, ph){
+function RControl_innerbuild(pr, pc, px, pa, ph){
    var o = this;
    if((pc == null) || (px == null)){
       return;
    }
    if(RClass.isClass(pc, MProperty)){
       pc.propertyLoad(px);
+   }
+   var l = px.get('linker');
+   if(l && pr){
+      pr[l] = pc;
    }
    if(RClass.isClass(pc, FUiControl)){
       if(!pc.isBuild()){
@@ -3097,13 +3107,16 @@ function RControl_innerbuild(pc, px, pa, ph){
          pc.refresh();
       }
    }
+   if(pc.__typed){
+      pr = pc;
+   }
    if(RClass.isClass(pc, MContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
          var n = ns.get(i);
          var c = pc.createChild(n);
-         o.innerbuild(c, n, pa, ph);
+         o.innerbuild(pr, c, n, pa, ph);
          pc.push(c);
       }
    }
@@ -3116,7 +3129,7 @@ function RControl_build(c, x, a, h){
    if(!c){
       c = RControl.newInstance(x);
    }
-   o.innerbuild(c, x, a, h);
+   o.innerbuild(null, c, x, a, h);
    return c;
 }
 function RControl_linkEvent(tc, sc, n, h, m){

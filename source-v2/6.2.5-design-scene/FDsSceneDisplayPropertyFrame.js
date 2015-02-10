@@ -66,17 +66,17 @@ function FDsSceneDisplayPropertyFrame_construct(){
 }
 
 //==========================================================
-// <T>加载材质信息。</T>
+// <T>加载显示信息。</T>
 //
 // @method
-// @param t:template:FTemplate3d 模板
+// @param s:scene:FE3dScene 场景
 // @param d:display:FRs3Display 显示
 //==========================================================
-function FDsSceneDisplayPropertyFrame_loadObject(t, d){
+function FDsSceneDisplayPropertyFrame_loadObject(s, d){
    var o = this;
    // 获得材质
-   var rt = t._resource;
-   var rd = d._resource;
+   var sr = s.resource();
+   var dr = d.resourceScene();
    //var rdm = rd.materials().first();
    //var rtm = rt.themes().first();
    //var m = rtm.materials().get(rdm.groupGuid());
@@ -85,11 +85,11 @@ function FDsSceneDisplayPropertyFrame_loadObject(t, d){
    //o._renderDisplay = d;
    //o._renderMaterial = m;
    // 设置参数
-   //o._controlGuid.set(d.guid());
-   //o._controlCode.set(d.code());
-   //o._controlLabel.set(d._label);
+   o._controlGuid.set(dr.guid());
+   o._controlCode.set(dr.code());
+   o._controlLabel.set(dr.label());
    // 设置参数
-   //o._displayFrame.loadObject(t, d);
+   o._frameDisplay.loadObject(s, d);
    //o._materialFrame.loadObject(t, m);
 }
 

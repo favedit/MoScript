@@ -171,7 +171,7 @@ function FG3dEffectConsole_find(pc, pg, pr){
    if(RString.isEmpty(en)){
       en = 'automatic'
    }
-   var ef = pg.technique().name() + '.' + pg.techniquePass().name() + '.' + en;
+   var ef = pg.spaceName() + '.' + en;
    // 查找模板
    var et = o.findTemplate(pc, ef);
    if(et){

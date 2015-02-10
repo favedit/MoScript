@@ -627,7 +627,7 @@ function FG3dEffectConsole_find(pc, pg, pr){
    if(RString.isEmpty(en)){
       en = 'automatic'
    }
-   var ef = pg.technique().name() + '.' + pg.techniquePass().name() + '.' + en;
+   var ef = pg.spaceName() + '.' + en;
    var et = o.findTemplate(pc, ef);
    if(et){
       o._effectInfo.reset();
@@ -994,10 +994,11 @@ function FG3dRegion_setTechnique(p){
 function FG3dRegion_techniquePass(){
    return this._techniquePass;
 }
-function FG3dRegion_setTechniquePass(p){
+function FG3dRegion_setTechniquePass(p, f){
    var o = this;
    o._techniquePass = p;
-   o._spaceName = o._technique.name() + '.' + p.name();
+   o._spaceName = p.fullCode();
+   o._finish = f;
 }
 function FG3dRegion_camera(){
    return this._camera;
@@ -1154,10 +1155,11 @@ function FG3dSpotLight(o){
 }
 function FG3dTechnique(o){
    o = RClass.inherits(this, o, FG3dObject);
-   o._name        = null;
+   o._code        = null;
    o._passes      = null;
    o.construct    = FG3dTechnique_construct;
-   o.name         = FG3dTechnique_name;
+   o.code         = FG3dTechnique_code;
+   o.passes       = FG3dTechnique_passes;
    o.updateRegion = RMethod.empty;
    o.drawRegion   = FG3dTechnique_drawRegion;
    return o;
@@ -1167,19 +1169,21 @@ function FG3dTechnique_construct(){
    o.__base.FG3dObject.construct.call(o);
    o._passes = new TObjects();
 }
-function FG3dTechnique_name(){
-   return this._name;
+function FG3dTechnique_code(){
+   return this._code;
 }
-function FG3dTechnique_drawRegion(r){
+function FG3dTechnique_passes(){
+   return this._passes;
+}
+function FG3dTechnique_drawRegion(p){
    var o = this;
-   r.setTechnique(o);
-   var ps = o._passes;
-   var c = ps.count();
+   p.setTechnique(o);
+   var s = o._passes;
+   var c = s.count();
    for(var n = 0; n < c; n++){
-      var p = ps.get(n);
-      r.setTechniquePass(p);
-      p._finish = (n == c - 1);
-      p.drawRegion(r);
+      var v = s.get(n);
+      p.setTechniquePass(v, (n == c - 1));
+      v.drawRegion(p);
    }
    o._context.present();
 }
@@ -1199,26 +1203,41 @@ function FG3dTechniqueConsole_find(c, p){
    var o = this;
    var n = RClass.name(p);
    var t = o._techniques.get(n);
-   if(t == null){
+   if(!t){
       t = RClass.createByName(n);
       t.linkContext(c);
       t.setup();
       o._techniques.set(n, t);
+      var ps = t.passes();
+      var pc = ps.count();
+      for(var i = 0; i < pc; i++){
+         var v = ps.get(i);
+         v.setFullCode(t.code() + '.' + v.code());
+      }
    }
    return t;
 }
 function FG3dTechniquePass(o){
    o = RClass.inherits(this, o, FG3dObject);
-   o._name      = null;
+   o._fullCode  = null;
+   o._code      = null;
    o._index     = null;
    o._finish    = false;
-   o.setup      = RMethod.empty;
-   o.name       = FG3dTechniquePass_name;
-   o.drawRegion = FG3dTechniquePass_drawRegion;
+   o.setup       = RMethod.empty;
+   o.fullCode    = FG3dTechniquePass_fullCode;
+   o.setFullCode = FG3dTechniquePass_setFullCode;
+   o.code        = FG3dTechniquePass_code;
+   o.drawRegion  = FG3dTechniquePass_drawRegion;
    return o;
 }
-function FG3dTechniquePass_name(){
-   return this._name;
+function FG3dTechniquePass_fullCode(){
+   return this._fullCode;
+}
+function FG3dTechniquePass_setFullCode(p){
+   this._fullCode = p;
+}
+function FG3dTechniquePass_code(){
+   return this._code;
 }
 function FG3dTechniquePass_drawRegion(p){
    var o = this;
@@ -2502,7 +2521,7 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dGeneralColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._name      = 'color';
+   o._code      = 'color';
    o.drawRegion = FG3dGeneralColorPass_drawRegion;
    return o;
 }
@@ -2563,7 +2582,7 @@ function FG3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
 }
 function FG3dGeneralTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
-   o._name      = 'general';
+   o._code      = 'general';
    o._passColor = null;
    o.setup      = FG3dGeneralTechnique_setup;
    o.passColor  = FG3dGeneralTechnique_passColor;
@@ -2627,7 +2646,7 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dShadowColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._name           = 'color';
+   o._code           = 'color';
    o._textureDepth   = null;
    o.textureDepth    = FG3dShadowColorPass_textureDepth;
    o.setTextureDepth = FG3dShadowColorPass_setTextureDepth;
@@ -2753,7 +2772,7 @@ function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dShadowDepthPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._name         = 'depth';
+   o._code         = 'depth';
    o._renderTarget = null;
    o._textureDepth = null;
    o._renderTarget = null;
@@ -2840,7 +2859,7 @@ function FG3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
 }
 function FG3dShadowTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
-   o._name        = 'shadow';
+   o._code        = 'shadow';
    o._passDepth   = null;
    o._passColor   = null;
    o.setup        = FG3dShadowTechnique_setup;

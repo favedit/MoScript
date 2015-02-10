@@ -337,7 +337,7 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dGeneralColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._name      = 'color';
+   o._code      = 'color';
    o.drawRegion = FG3dGeneralColorPass_drawRegion;
    return o;
 }
@@ -398,7 +398,7 @@ function FG3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
 }
 function FG3dGeneralTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
-   o._name      = 'general';
+   o._code      = 'general';
    o._passColor = null;
    o.setup      = FG3dGeneralTechnique_setup;
    o.passColor  = FG3dGeneralTechnique_passColor;
@@ -462,7 +462,7 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dShadowColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._name           = 'color';
+   o._code           = 'color';
    o._textureDepth   = null;
    o.textureDepth    = FG3dShadowColorPass_textureDepth;
    o.setTextureDepth = FG3dShadowColorPass_setTextureDepth;
@@ -588,7 +588,7 @@ function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dShadowDepthPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._name         = 'depth';
+   o._code         = 'depth';
    o._renderTarget = null;
    o._textureDepth = null;
    o._renderTarget = null;
@@ -675,7 +675,7 @@ function FG3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
 }
 function FG3dShadowTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
-   o._name        = 'shadow';
+   o._code        = 'shadow';
    o._passDepth   = null;
    o._passColor   = null;
    o.setup        = FG3dShadowTechnique_setup;

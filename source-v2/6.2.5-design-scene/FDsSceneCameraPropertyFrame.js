@@ -9,41 +9,24 @@ function FDsSceneCameraPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._visible        = false;
+   o._visible          = false;
    // @attribute
-   o._workspace      = null;
+   o._workspace        = null;
+   o._camera           = null;
    // @attribute
-   o._renderTemplate = null;
-   // @attribute
-   o._controlGuid    = null;
-   o._controlCode    = null;
-   o._controlLabel   = null;
-   //..........................................................
-   // @event
-   o.onBuilded       = FDsSceneCameraPropertyFrame_onBuilded;
+   o._controlGuid      = null;
+   o._controlCode      = null;
+   o._controlLabel     = null;
+   o._controlPosition  = null;
+   o._controlDirection = null;
    //..........................................................
    // @method
-   o.construct       = FDsSceneCameraPropertyFrame_construct;
+   o.construct         = FDsSceneCameraPropertyFrame_construct;
    // @method
-   o.loadObject      = FDsSceneCameraPropertyFrame_loadObject;
+   o.loadObject        = FDsSceneCameraPropertyFrame_loadObject;
    // @method
-   o.dispose         = FDsSceneCameraPropertyFrame_dispose;
+   o.dispose           = FDsSceneCameraPropertyFrame_dispose;
    return o;
-}
-
-//==========================================================
-// <T>构建完成处理。</T>
-//
-// @method
-// @param p:event:TEventProcess 事件处理
-//==========================================================
-function FDsSceneCameraPropertyFrame_onBuilded(p){
-   var o = this;
-   o.__base.FUiForm.onBuilded.call(o, p);
-   // 设置关联
-   o._controlGuid = o.searchControl('guid');
-   o._controlCode = o.searchControl('code');
-   o._controlLabel = o.searchControl('label');
 }
 
 //==========================================================
@@ -61,18 +44,20 @@ function FDsSceneCameraPropertyFrame_construct(){
 // <T>加载材质信息。</T>
 //
 // @method
-// @param t:template:FTemplate3d 模板
-// @param m:material:FRs3Material 材质
+// @param s:scene:FE3dScene 场景
+// @param c:technique:FG3dTechnique 技术
 //==========================================================
-function FDsSceneCameraPropertyFrame_loadObject(t){
+function FDsSceneCameraPropertyFrame_loadObject(s, c){
    var o = this;
-   var r = t._resource;
+   var r = c._resource;
    // 设置属性
-   o._renderTemplate = t;
+   o._camera = c;
    // 设置参数
-   //o._controlGuid.set(r.guid());
-   //o._controlCode.set(r.code());
-   //o._controlLabel.set(r._label);
+   o._controlGuid.set(r.guid());
+   o._controlCode.set(r.code());
+   o._controlLabel.set(r.label());
+   o._controlPosition.set(c.position());
+   o._controlDirection.set(c.direction());
 }
 
 //==========================================================

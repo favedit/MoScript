@@ -8,7 +8,7 @@ function FG3dGeneralColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
    //..........................................................
    // @attribute
-   o._name      = 'color';
+   o._code      = 'color';
    //..........................................................
    // @method
    o.drawRegion = FG3dGeneralColorPass_drawRegion;

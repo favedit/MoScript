@@ -8,15 +8,38 @@ function FG3dTechniquePass(o){
    o = RClass.inherits(this, o, FG3dObject);
    //..........................................................
    // @attribute
-   o._name      = null;
+   o._fullCode  = null;
+   o._code      = null;
    o._index     = null;
    o._finish    = false;
    //..........................................................
    // @method
-   o.setup      = RMethod.empty;
-   o.name       = FG3dTechniquePass_name;
-   o.drawRegion = FG3dTechniquePass_drawRegion;
+   o.setup       = RMethod.empty;
+   o.fullCode    = FG3dTechniquePass_fullCode;
+   o.setFullCode = FG3dTechniquePass_setFullCode;
+   o.code        = FG3dTechniquePass_code;
+   o.drawRegion  = FG3dTechniquePass_drawRegion;
    return o;
+}
+
+//==========================================================
+// <T>获得全代码。</T>
+//
+// @method
+// @return String 全代码
+//==========================================================
+function FG3dTechniquePass_fullCode(){
+   return this._fullCode;
+}
+
+//==========================================================
+// <T>设置全代码。</T>
+//
+// @method
+// @return p:fullCode:String 全代码
+//==========================================================
+function FG3dTechniquePass_setFullCode(p){
+   this._fullCode = p;
 }
 
 //==========================================================
@@ -25,8 +48,8 @@ function FG3dTechniquePass(o){
 // @method
 // @return 名称
 //==========================================================
-function FG3dTechniquePass_name(){
-   return this._name;
+function FG3dTechniquePass_code(){
+   return this._code;
 }
 
 //==========================================================

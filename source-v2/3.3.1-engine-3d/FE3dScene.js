@@ -15,6 +15,7 @@ function FE3dScene(o){
    // @method
    o.construct             = FE3dScene_construct;
    // @method
+   o.resource              = FE3dScene_resource;
    o.loadTechniqueResource = FE3dScene_loadTechniqueResource;
    o.loadRegionResource    = FE3dScene_loadRegionResource;
    o.loadDisplayResource   = FE3dScene_loadDisplayResource;
@@ -36,6 +37,16 @@ function FE3dScene(o){
 function FE3dScene_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
+}
+
+//==========================================================
+// <T>获得资源。</T>
+//
+// @method
+// @param FRs3Scene 资源
+//==========================================================
+function FE3dScene_resource(p){
+   return this._resource;
 }
 
 //==========================================================
@@ -63,6 +74,7 @@ function FE3dScene_loadRegionResource(p){
    var rcv = rc.projection();
    // 加载投影
    var c = o._camera;
+   c._resource = rc;
    var cp = c._projection;
    c.position().assign(rc.position());
    c.direction().assign(rc.direction());
@@ -75,12 +87,13 @@ function FE3dScene_loadRegionResource(p){
    cp.update();
    //............................................................
    // 设置光源
-   var l = o._directionalLight
-   var lc = l._camera;
-   var lp = lc._projection;
    var rl = p.light();
    var rlc = rl.camera();
    var rlv = rlc.projection();
+   var l = o._directionalLight
+   l._resource = rl;
+   var lc = l._camera;
+   var lp = lc._projection;
    // 设置光源相机
    lc.position().set(1, 1, -1);
    lc.lookAt(0, 0, 0);

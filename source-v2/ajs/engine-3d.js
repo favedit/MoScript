@@ -372,6 +372,7 @@ function FE3dScene(o){
    o._dataReady            = false;
    o._resource             = null;
    o.construct             = FE3dScene_construct;
+   o.resource              = FE3dScene_resource;
    o.loadTechniqueResource = FE3dScene_loadTechniqueResource;
    o.loadRegionResource    = FE3dScene_loadRegionResource;
    o.loadDisplayResource   = FE3dScene_loadDisplayResource;
@@ -386,6 +387,9 @@ function FE3dScene_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
 }
+function FE3dScene_resource(p){
+   return this._resource;
+}
 function FE3dScene_loadTechniqueResource(p){
 }
 function FE3dScene_loadRegionResource(p){
@@ -394,6 +398,7 @@ function FE3dScene_loadRegionResource(p){
    var rc = p.camera();
    var rcv = rc.projection();
    var c = o._camera;
+   c._resource = rc;
    var cp = c._projection;
    c.position().assign(rc.position());
    c.direction().assign(rc.direction());
@@ -403,12 +408,13 @@ function FE3dScene_loadRegionResource(p){
    cp._znear = rcv.znear();
    cp._zfar = rcv.zfar();
    cp.update();
-   var l = o._directionalLight
-   var lc = l._camera;
-   var lp = lc._projection;
    var rl = p.light();
    var rlc = rl.camera();
    var rlv = rlc.projection();
+   var l = o._directionalLight
+   l._resource = rl;
+   var lc = l._camera;
+   var lp = lc._projection;
    lc.position().set(1, 1, -1);
    lc.lookAt(0, 0, 0);
    lc.position().assign(rlc.position());
@@ -865,6 +871,7 @@ function FE3dTemplate(o){
    o.findAnimation  = FE3dTemplate_findAnimation;
    o.animations     = FE3dTemplate_animations;
    o.pushAnimation  = FE3dTemplate_pushAnimation;
+   o.resource       = FE3dTemplate_resource;
    o.setResource    = FE3dTemplate_setResource;
    o.loadSkeletons  = FE3dTemplate_loadSkeletons;
    o.linkAnimation  = FE3dTemplate_linkAnimation;
@@ -907,6 +914,9 @@ function FE3dTemplate_pushAnimation(p){
    }
    var pr = p.resource();
    r.set(pr.guid(), p);
+}
+function FE3dTemplate_resource(p){
+   return this._resource;
 }
 function FE3dTemplate_setResource(p){
    this._resource = p;

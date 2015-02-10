@@ -13885,7 +13885,7 @@ function FG3dEffectConsole_find(pc, pg, pr){
    if(RString.isEmpty(en)){
       en = 'automatic'
    }
-   var ef = pg.technique().name() + '.' + pg.techniquePass().name() + '.' + en;
+   var ef = pg.spaceName() + '.' + en;
    var et = o.findTemplate(pc, ef);
    if(et){
       o._effectInfo.reset();
@@ -14252,10 +14252,11 @@ function FG3dRegion_setTechnique(p){
 function FG3dRegion_techniquePass(){
    return this._techniquePass;
 }
-function FG3dRegion_setTechniquePass(p){
+function FG3dRegion_setTechniquePass(p, f){
    var o = this;
    o._techniquePass = p;
-   o._spaceName = o._technique.name() + '.' + p.name();
+   o._spaceName = p.fullCode();
+   o._finish = f;
 }
 function FG3dRegion_camera(){
    return this._camera;
@@ -14412,10 +14413,11 @@ function FG3dSpotLight(o){
 }
 function FG3dTechnique(o){
    o = RClass.inherits(this, o, FG3dObject);
-   o._name        = null;
+   o._code        = null;
    o._passes      = null;
    o.construct    = FG3dTechnique_construct;
-   o.name         = FG3dTechnique_name;
+   o.code         = FG3dTechnique_code;
+   o.passes       = FG3dTechnique_passes;
    o.updateRegion = RMethod.empty;
    o.drawRegion   = FG3dTechnique_drawRegion;
    return o;
@@ -14425,19 +14427,21 @@ function FG3dTechnique_construct(){
    o.__base.FG3dObject.construct.call(o);
    o._passes = new TObjects();
 }
-function FG3dTechnique_name(){
-   return this._name;
+function FG3dTechnique_code(){
+   return this._code;
 }
-function FG3dTechnique_drawRegion(r){
+function FG3dTechnique_passes(){
+   return this._passes;
+}
+function FG3dTechnique_drawRegion(p){
    var o = this;
-   r.setTechnique(o);
-   var ps = o._passes;
-   var c = ps.count();
+   p.setTechnique(o);
+   var s = o._passes;
+   var c = s.count();
    for(var n = 0; n < c; n++){
-      var p = ps.get(n);
-      r.setTechniquePass(p);
-      p._finish = (n == c - 1);
-      p.drawRegion(r);
+      var v = s.get(n);
+      p.setTechniquePass(v, (n == c - 1));
+      v.drawRegion(p);
    }
    o._context.present();
 }
@@ -14457,26 +14461,41 @@ function FG3dTechniqueConsole_find(c, p){
    var o = this;
    var n = RClass.name(p);
    var t = o._techniques.get(n);
-   if(t == null){
+   if(!t){
       t = RClass.createByName(n);
       t.linkContext(c);
       t.setup();
       o._techniques.set(n, t);
+      var ps = t.passes();
+      var pc = ps.count();
+      for(var i = 0; i < pc; i++){
+         var v = ps.get(i);
+         v.setFullCode(t.code() + '.' + v.code());
+      }
    }
    return t;
 }
 function FG3dTechniquePass(o){
    o = RClass.inherits(this, o, FG3dObject);
-   o._name      = null;
+   o._fullCode  = null;
+   o._code      = null;
    o._index     = null;
    o._finish    = false;
-   o.setup      = RMethod.empty;
-   o.name       = FG3dTechniquePass_name;
-   o.drawRegion = FG3dTechniquePass_drawRegion;
+   o.setup       = RMethod.empty;
+   o.fullCode    = FG3dTechniquePass_fullCode;
+   o.setFullCode = FG3dTechniquePass_setFullCode;
+   o.code        = FG3dTechniquePass_code;
+   o.drawRegion  = FG3dTechniquePass_drawRegion;
    return o;
 }
-function FG3dTechniquePass_name(){
-   return this._name;
+function FG3dTechniquePass_fullCode(){
+   return this._fullCode;
+}
+function FG3dTechniquePass_setFullCode(p){
+   this._fullCode = p;
+}
+function FG3dTechniquePass_code(){
+   return this._code;
 }
 function FG3dTechniquePass_drawRegion(p){
    var o = this;
@@ -15760,7 +15779,7 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dGeneralColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._name      = 'color';
+   o._code      = 'color';
    o.drawRegion = FG3dGeneralColorPass_drawRegion;
    return o;
 }
@@ -15821,7 +15840,7 @@ function FG3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
 }
 function FG3dGeneralTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
-   o._name      = 'general';
+   o._code      = 'general';
    o._passColor = null;
    o.setup      = FG3dGeneralTechnique_setup;
    o.passColor  = FG3dGeneralTechnique_passColor;
@@ -15885,7 +15904,7 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dShadowColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._name           = 'color';
+   o._code           = 'color';
    o._textureDepth   = null;
    o.textureDepth    = FG3dShadowColorPass_textureDepth;
    o.setTextureDepth = FG3dShadowColorPass_setTextureDepth;
@@ -16011,7 +16030,7 @@ function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dShadowDepthPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._name         = 'depth';
+   o._code         = 'depth';
    o._renderTarget = null;
    o._textureDepth = null;
    o._renderTarget = null;
@@ -16098,7 +16117,7 @@ function FG3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
 }
 function FG3dShadowTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
-   o._name        = 'shadow';
+   o._code        = 'shadow';
    o._passDepth   = null;
    o._passColor   = null;
    o.setup        = FG3dShadowTechnique_setup;
@@ -18144,6 +18163,7 @@ function FE3dScene(o){
    o._dataReady            = false;
    o._resource             = null;
    o.construct             = FE3dScene_construct;
+   o.resource              = FE3dScene_resource;
    o.loadTechniqueResource = FE3dScene_loadTechniqueResource;
    o.loadRegionResource    = FE3dScene_loadRegionResource;
    o.loadDisplayResource   = FE3dScene_loadDisplayResource;
@@ -18158,6 +18178,9 @@ function FE3dScene_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
 }
+function FE3dScene_resource(p){
+   return this._resource;
+}
 function FE3dScene_loadTechniqueResource(p){
 }
 function FE3dScene_loadRegionResource(p){
@@ -18166,6 +18189,7 @@ function FE3dScene_loadRegionResource(p){
    var rc = p.camera();
    var rcv = rc.projection();
    var c = o._camera;
+   c._resource = rc;
    var cp = c._projection;
    c.position().assign(rc.position());
    c.direction().assign(rc.direction());
@@ -18175,12 +18199,13 @@ function FE3dScene_loadRegionResource(p){
    cp._znear = rcv.znear();
    cp._zfar = rcv.zfar();
    cp.update();
-   var l = o._directionalLight
-   var lc = l._camera;
-   var lp = lc._projection;
    var rl = p.light();
    var rlc = rl.camera();
    var rlv = rlc.projection();
+   var l = o._directionalLight
+   l._resource = rl;
+   var lc = l._camera;
+   var lp = lc._projection;
    lc.position().set(1, 1, -1);
    lc.lookAt(0, 0, 0);
    lc.position().assign(rlc.position());
@@ -18637,6 +18662,7 @@ function FE3dTemplate(o){
    o.findAnimation  = FE3dTemplate_findAnimation;
    o.animations     = FE3dTemplate_animations;
    o.pushAnimation  = FE3dTemplate_pushAnimation;
+   o.resource       = FE3dTemplate_resource;
    o.setResource    = FE3dTemplate_setResource;
    o.loadSkeletons  = FE3dTemplate_loadSkeletons;
    o.linkAnimation  = FE3dTemplate_linkAnimation;
@@ -18679,6 +18705,9 @@ function FE3dTemplate_pushAnimation(p){
    }
    var pr = p.resource();
    r.set(pr.guid(), p);
+}
+function FE3dTemplate_resource(p){
+   return this._resource;
 }
 function FE3dTemplate_setResource(p){
    this._resource = p;
@@ -22564,7 +22593,7 @@ function FG3dEffectConsole_find(pc, pg, pr){
    if(RString.isEmpty(en)){
       en = 'automatic'
    }
-   var ef = pg.technique().name() + '.' + pg.techniquePass().name() + '.' + en;
+   var ef = pg.spaceName() + '.' + en;
    var et = o.findTemplate(pc, ef);
    if(et){
       o._effectInfo.reset();
@@ -22931,10 +22960,11 @@ function FG3dRegion_setTechnique(p){
 function FG3dRegion_techniquePass(){
    return this._techniquePass;
 }
-function FG3dRegion_setTechniquePass(p){
+function FG3dRegion_setTechniquePass(p, f){
    var o = this;
    o._techniquePass = p;
-   o._spaceName = o._technique.name() + '.' + p.name();
+   o._spaceName = p.fullCode();
+   o._finish = f;
 }
 function FG3dRegion_camera(){
    return this._camera;
@@ -23091,10 +23121,11 @@ function FG3dSpotLight(o){
 }
 function FG3dTechnique(o){
    o = RClass.inherits(this, o, FG3dObject);
-   o._name        = null;
+   o._code        = null;
    o._passes      = null;
    o.construct    = FG3dTechnique_construct;
-   o.name         = FG3dTechnique_name;
+   o.code         = FG3dTechnique_code;
+   o.passes       = FG3dTechnique_passes;
    o.updateRegion = RMethod.empty;
    o.drawRegion   = FG3dTechnique_drawRegion;
    return o;
@@ -23104,19 +23135,21 @@ function FG3dTechnique_construct(){
    o.__base.FG3dObject.construct.call(o);
    o._passes = new TObjects();
 }
-function FG3dTechnique_name(){
-   return this._name;
+function FG3dTechnique_code(){
+   return this._code;
 }
-function FG3dTechnique_drawRegion(r){
+function FG3dTechnique_passes(){
+   return this._passes;
+}
+function FG3dTechnique_drawRegion(p){
    var o = this;
-   r.setTechnique(o);
-   var ps = o._passes;
-   var c = ps.count();
+   p.setTechnique(o);
+   var s = o._passes;
+   var c = s.count();
    for(var n = 0; n < c; n++){
-      var p = ps.get(n);
-      r.setTechniquePass(p);
-      p._finish = (n == c - 1);
-      p.drawRegion(r);
+      var v = s.get(n);
+      p.setTechniquePass(v, (n == c - 1));
+      v.drawRegion(p);
    }
    o._context.present();
 }
@@ -23136,26 +23169,41 @@ function FG3dTechniqueConsole_find(c, p){
    var o = this;
    var n = RClass.name(p);
    var t = o._techniques.get(n);
-   if(t == null){
+   if(!t){
       t = RClass.createByName(n);
       t.linkContext(c);
       t.setup();
       o._techniques.set(n, t);
+      var ps = t.passes();
+      var pc = ps.count();
+      for(var i = 0; i < pc; i++){
+         var v = ps.get(i);
+         v.setFullCode(t.code() + '.' + v.code());
+      }
    }
    return t;
 }
 function FG3dTechniquePass(o){
    o = RClass.inherits(this, o, FG3dObject);
-   o._name      = null;
+   o._fullCode  = null;
+   o._code      = null;
    o._index     = null;
    o._finish    = false;
-   o.setup      = RMethod.empty;
-   o.name       = FG3dTechniquePass_name;
-   o.drawRegion = FG3dTechniquePass_drawRegion;
+   o.setup       = RMethod.empty;
+   o.fullCode    = FG3dTechniquePass_fullCode;
+   o.setFullCode = FG3dTechniquePass_setFullCode;
+   o.code        = FG3dTechniquePass_code;
+   o.drawRegion  = FG3dTechniquePass_drawRegion;
    return o;
 }
-function FG3dTechniquePass_name(){
-   return this._name;
+function FG3dTechniquePass_fullCode(){
+   return this._fullCode;
+}
+function FG3dTechniquePass_setFullCode(p){
+   this._fullCode = p;
+}
+function FG3dTechniquePass_code(){
+   return this._code;
 }
 function FG3dTechniquePass_drawRegion(p){
    var o = this;
@@ -24439,7 +24487,7 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dGeneralColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._name      = 'color';
+   o._code      = 'color';
    o.drawRegion = FG3dGeneralColorPass_drawRegion;
    return o;
 }
@@ -24500,7 +24548,7 @@ function FG3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
 }
 function FG3dGeneralTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
-   o._name      = 'general';
+   o._code      = 'general';
    o._passColor = null;
    o.setup      = FG3dGeneralTechnique_setup;
    o.passColor  = FG3dGeneralTechnique_passColor;
@@ -24564,7 +24612,7 @@ function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dShadowColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._name           = 'color';
+   o._code           = 'color';
    o._textureDepth   = null;
    o.textureDepth    = FG3dShadowColorPass_textureDepth;
    o.setTextureDepth = FG3dShadowColorPass_setTextureDepth;
@@ -24690,7 +24738,7 @@ function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dShadowDepthPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._name         = 'depth';
+   o._code         = 'depth';
    o._renderTarget = null;
    o._textureDepth = null;
    o._renderTarget = null;
@@ -24777,7 +24825,7 @@ function FG3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
 }
 function FG3dShadowTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
-   o._name        = 'shadow';
+   o._code        = 'shadow';
    o._passDepth   = null;
    o._passColor   = null;
    o.setup        = FG3dShadowTechnique_setup;
@@ -29023,6 +29071,7 @@ function RControl_newInstance(p){
    var r = null;
    if(p){
       var n = null
+      var tn = null;
       if(p.constructor == String){
          if(!RString.startsWith(p, o.PREFIX)){
             n = o.PREFIX + p;
@@ -29034,11 +29083,16 @@ function RControl_newInstance(p){
             if(!RString.startsWith(n, o.PREFIX)){
                n = o.PREFIX + n;
             }
+         }else{
+            tn = n;
          }
       }else{
          throw new TError(o, 'Unknown parameter. (name={p})', p);
       }
       r = RClass.create(n);
+      if(tn){
+         r.__typed = true;
+      }
    }
    if(r == null){
       throw new TError(o, 'Create instance failure. (name={p})', p);
@@ -29097,13 +29151,17 @@ function RControl_create(pc, px, pa){
    o.innerCreate(c, px, pa);
    return c;
 }
-function RControl_innerbuild(pc, px, pa, ph){
+function RControl_innerbuild(pr, pc, px, pa, ph){
    var o = this;
    if((pc == null) || (px == null)){
       return;
    }
    if(RClass.isClass(pc, MProperty)){
       pc.propertyLoad(px);
+   }
+   var l = px.get('linker');
+   if(l && pr){
+      pr[l] = pc;
    }
    if(RClass.isClass(pc, FUiControl)){
       if(!pc.isBuild()){
@@ -29112,13 +29170,16 @@ function RControl_innerbuild(pc, px, pa, ph){
          pc.refresh();
       }
    }
+   if(pc.__typed){
+      pr = pc;
+   }
    if(RClass.isClass(pc, MContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
          var n = ns.get(i);
          var c = pc.createChild(n);
-         o.innerbuild(c, n, pa, ph);
+         o.innerbuild(pr, c, n, pa, ph);
          pc.push(c);
       }
    }
@@ -29131,7 +29192,7 @@ function RControl_build(c, x, a, h){
    if(!c){
       c = RControl.newInstance(x);
    }
-   o.innerbuild(c, x, a, h);
+   o.innerbuild(null, c, x, a, h);
    return c;
 }
 function RControl_linkEvent(tc, sc, n, h, m){
@@ -44281,35 +44342,61 @@ function FDsTemplateWorkspace_dispose(){
    var o = this;
    o.__base.FUiWorkspace.dispose.call(o);
 }
-function FDsSceneCameraPropertyFrame(o){
+function FDsSceneCameraFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._visible        = false;
-   o._workspace      = null;
-   o._renderTemplate = null;
-   o._controlGuid    = null;
-   o._controlCode    = null;
-   o._controlLabel   = null;
-   o.onBuilded       = FDsSceneCameraPropertyFrame_onBuilded;
-   o.construct       = FDsSceneCameraPropertyFrame_construct;
-   o.loadObject      = FDsSceneCameraPropertyFrame_loadObject;
-   o.dispose         = FDsSceneCameraPropertyFrame_dispose;
+   o._visible          = false;
+   o._workspace        = null;
+   o._camera           = null;
+   o._controlPosition  = null;
+   o._controlDirection = null;
+   o.construct         = FDsSceneCameraFrame_construct;
+   o.loadObject        = FDsSceneCameraFrame_loadObject;
+   o.dispose           = FDsSceneCameraFrame_dispose;
    return o;
 }
-function FDsSceneCameraPropertyFrame_onBuilded(p){
+function FDsSceneCameraFrame_construct(){
    var o = this;
-   o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlGuid = o.searchControl('guid');
-   o._controlCode = o.searchControl('code');
-   o._controlLabel = o.searchControl('label');
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsSceneCameraFrame_loadObject(s, c){
+   var o = this;
+   var r = c._resource;
+   o._camera = c;
+   o._controlPosition.set(c.position());
+   o._controlDirection.set(c.direction());
+}
+function FDsSceneCameraFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsSceneCameraPropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible          = false;
+   o._workspace        = null;
+   o._camera           = null;
+   o._controlGuid      = null;
+   o._controlCode      = null;
+   o._controlLabel     = null;
+   o._controlPosition  = null;
+   o._controlDirection = null;
+   o.construct         = FDsSceneCameraPropertyFrame_construct;
+   o.loadObject        = FDsSceneCameraPropertyFrame_loadObject;
+   o.dispose           = FDsSceneCameraPropertyFrame_dispose;
+   return o;
 }
 function FDsSceneCameraPropertyFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
-function FDsSceneCameraPropertyFrame_loadObject(t){
+function FDsSceneCameraPropertyFrame_loadObject(s, c){
    var o = this;
-   var r = t._resource;
-   o._renderTemplate = t;
+   var r = c._resource;
+   o._camera = c;
+   o._controlGuid.set(r.guid());
+   o._controlCode.set(r.code());
+   o._controlLabel.set(r.label());
+   o._controlPosition.set(c.position());
+   o._controlDirection.set(c.direction());
 }
 function FDsSceneCameraPropertyFrame_dispose(){
    var o = this;
@@ -44670,29 +44757,25 @@ function FDsSceneCatalog_dispose(){
 }
 function FDsSceneDisplayFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._renderTemplate = null;
-   o._renderDisplay  = null;
-   o.onBuilded       = FDsSceneDisplayFrame_onBuilded;
-   o.onDataChanged   = FDsSceneDisplayFrame_onDataChanged;
-   o.construct       = FDsSceneDisplayFrame_construct;
-   o.loadObject      = FDsSceneDisplayFrame_loadObject;
-   o.dispose         = FDsSceneDisplayFrame_dispose;
+   o._activeScene   = null;
+   o._activeDisplay = null;
+   o.onBuilded      = FDsSceneDisplayFrame_onBuilded;
+   o.onDataChanged  = FDsSceneDisplayFrame_onDataChanged;
+   o.construct      = FDsSceneDisplayFrame_construct;
+   o.loadObject     = FDsSceneDisplayFrame_loadObject;
+   o.dispose        = FDsSceneDisplayFrame_dispose;
    return o;
 }
 function FDsSceneDisplayFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
-   var mp = o.searchControl('matrixPanel');
-   var c = o._controlTranslate = mp.searchControl('translate');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlRotation = mp.searchControl('rotation');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlScale = mp.searchControl('scale');
-   c.addDataChangedListener(o, o.onDataChanged);
+   o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotation.addDataChangedListener(o, o.onDataChanged);
+   o._controlScale.addDataChangedListener(o, o.onDataChanged);
 }
 function FDsSceneDisplayFrame_onDataChanged(p){
    var o = this;
-   var d = o._renderDisplay;
+   var d = o._activeDisplay;
    var m = d.matrix();
    var v = o._controlTranslate.get();
    m.setTranslate(v.x, v.y, v.z);
@@ -44706,10 +44789,10 @@ function FDsSceneDisplayFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
-function FDsSceneDisplayFrame_loadObject(t, d){
+function FDsSceneDisplayFrame_loadObject(s, d){
    var o = this;
-   o._renderTemplate = t;
-   o._renderDisplay = d;
+   o._activeScene = s;
+   o._activeDisplay = d;
    var m = d.matrix();
    o._controlTranslate.set(m.tx, m.ty, m.tz);
    o._controlRotation.set(m.rx, m.ry, m.rz);
@@ -44751,10 +44834,14 @@ function FDsSceneDisplayPropertyFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
-function FDsSceneDisplayPropertyFrame_loadObject(t, d){
+function FDsSceneDisplayPropertyFrame_loadObject(s, d){
    var o = this;
-   var rt = t._resource;
-   var rd = d._resource;
+   var sr = s.resource();
+   var dr = d.resourceScene();
+   o._controlGuid.set(dr.guid());
+   o._controlCode.set(dr.code());
+   o._controlLabel.set(dr.label());
+   o._frameDisplay.loadObject(s, d);
 }
 function FDsSceneDisplayPropertyFrame_dispose(){
    var o = this;
@@ -44762,33 +44849,28 @@ function FDsSceneDisplayPropertyFrame_dispose(){
 }
 function FDsSceneLayerPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._visible        = false;
-   o._workspace      = null;
-   o._renderTemplate = null;
-   o._controlGuid    = null;
-   o._controlCode    = null;
-   o._controlLabel   = null;
-   o.onBuilded       = FDsSceneLayerPropertyFrame_onBuilded;
-   o.construct       = FDsSceneLayerPropertyFrame_construct;
-   o.loadObject      = FDsSceneLayerPropertyFrame_loadObject;
-   o.dispose         = FDsSceneLayerPropertyFrame_dispose;
+   o._visible      = false;
+   o._workspace    = null;
+   o._layer        = null;
+   o._controlGuid  = null;
+   o._controlCode  = null;
+   o._controlLabel = null;
+   o.construct     = FDsSceneLayerPropertyFrame_construct;
+   o.loadObject    = FDsSceneLayerPropertyFrame_loadObject;
+   o.dispose       = FDsSceneLayerPropertyFrame_dispose;
    return o;
-}
-function FDsSceneLayerPropertyFrame_onBuilded(p){
-   var o = this;
-   o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlGuid = o.searchControl('guid');
-   o._controlCode = o.searchControl('code');
-   o._controlLabel = o.searchControl('label');
 }
 function FDsSceneLayerPropertyFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
-function FDsSceneLayerPropertyFrame_loadObject(t){
+function FDsSceneLayerPropertyFrame_loadObject(s, l){
    var o = this;
-   var r = t._resource;
-   o._renderTemplate = t;
+   var r = l.resource();
+   o._layer = l;
+   o._controlGuid.set(r.guid());
+   o._controlCode.set(r.code());
+   o._controlLabel.set(r._label);
 }
 function FDsSceneLayerPropertyFrame_dispose(){
    var o = this;
@@ -44796,33 +44878,32 @@ function FDsSceneLayerPropertyFrame_dispose(){
 }
 function FDsSceneLightPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._visible        = false;
-   o._workspace      = null;
-   o._renderTemplate = null;
-   o._controlGuid    = null;
-   o._controlCode    = null;
-   o._controlLabel   = null;
-   o.onBuilded       = FDsSceneLightPropertyFrame_onBuilded;
-   o.construct       = FDsSceneLightPropertyFrame_construct;
-   o.loadObject      = FDsSceneLightPropertyFrame_loadObject;
-   o.dispose         = FDsSceneLightPropertyFrame_dispose;
+   o._visible      = false;
+   o._workspace    = null;
+   o._light        = null;
+   o._controlGuid  = null;
+   o._controlCode  = null;
+   o._controlLabel = null;
+   o.construct     = FDsSceneLightPropertyFrame_construct;
+   o.loadObject    = FDsSceneLightPropertyFrame_loadObject;
+   o.dispose       = FDsSceneLightPropertyFrame_dispose;
    return o;
-}
-function FDsSceneLightPropertyFrame_onBuilded(p){
-   var o = this;
-   o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlGuid = o.searchControl('guid');
-   o._controlCode = o.searchControl('code');
-   o._controlLabel = o.searchControl('label');
 }
 function FDsSceneLightPropertyFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
-function FDsSceneLightPropertyFrame_loadObject(t){
+function FDsSceneLightPropertyFrame_loadObject(s, l){
    var o = this;
-   var r = t._resource;
-   o._renderTemplate = t;
+   var r = l._resource;
+   var rm = r.material();
+   var rc = r.camera();
+   o._light = l;
+   o._controlGuid.set(r.guid());
+   o._controlCode.set(r.code());
+   o._controlLabel.set(r._label);
+   o._frameMaterial.loadObject(s, rm);
+   o._frameCamera.loadObject(s, rc);
 }
 function FDsSceneLightPropertyFrame_dispose(){
    var o = this;
@@ -44830,7 +44911,7 @@ function FDsSceneLightPropertyFrame_dispose(){
 }
 function FDsSceneMaterialFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._template             = null;
+   o._scene             = null;
    o._material             = null;
    o._controlGuid          = null;
    o._controlCode          = null;
@@ -44852,27 +44933,17 @@ function FDsSceneMaterialFrame(o){
 function FDsSceneMaterialFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlGuid = o.searchControl('guid');
-   o._controlCode = o.searchControl('code');
-   o._controlLabel = o.searchControl('label');
-   var c = o._controlAmbientColor = o.searchControl('ambientColor');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlDiffuseColor = o.searchControl('diffuseColor');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlSpecularColor = o.searchControl('specularColor');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlSpecularLevel = o.searchControl('specularLevel');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlReflectColor = o.searchControl('reflectColor');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlReflectMerge = o.searchControl('reflectMerge');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlEmissiveColor = o.searchControl('emissiveColor');
-   c.addDataChangedListener(o, o.onDataChanged);
+   o._controlAmbientColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlDiffuseColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlSpecularColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlSpecularLevel.addDataChangedListener(o, o.onDataChanged);
+   o._controlReflectColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlReflectMerge.addDataChangedListener(o, o.onDataChanged);
+   o._controlEmissiveColor.addDataChangedListener(o, o.onDataChanged);
 }
 function FDsSceneMaterialFrame_onDataChanged(p){
    var o = this;
-   var t = o._template;
+   var t = o._scene;
    var m = o._material;
    var mi = m.info();
    var v = o._controlAmbientColor.get();
@@ -44895,15 +44966,13 @@ function FDsSceneMaterialFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
-function FDsSceneMaterialFrame_loadObject(t, m){
+function FDsSceneMaterialFrame_loadObject(s, m){
    var o = this;
-   o._template = t;
+   o._scene = s;
    o._material = m;
-   var mp = m.group();
    var mi = m.info();
    o._controlGuid.set(m.guid());
-   o._controlCode.set(mp.code());
-   o._controlLabel.set(m._label);
+   o._controlLabel.set(m.label());
    o._controlAmbientColor.set(mi.ambientColor);
    o._controlDiffuseColor.set(mi.diffuseColor);
    o._controlSpecularColor.set(mi.specularColor);
@@ -44913,39 +44982,6 @@ function FDsSceneMaterialFrame_loadObject(t, m){
    o._controlEmissiveColor.set(mi.emissiveColor);
 }
 function FDsSceneMaterialFrame_dispose(){
-   var o = this;
-   o.__base.FUiForm.dispose.call(o);
-}
-function FDsSceneMaterialPropertyFrame(o){
-   o = RClass.inherits(this, o, FUiForm);
-   o._visible        = false;
-   o._frameName      = 'design3d.scene.property.MaterialFrame';
-   o._workspace      = null;
-   o._renderTemplate = null;
-   o._renderMaterial = null;
-   o._materialFrame  = null;
-   o.onBuilded       = FDsSceneMaterialPropertyFrame_onBuilded;
-   o.construct       = FDsSceneMaterialPropertyFrame_construct;
-   o.loadObject      = FDsSceneMaterialPropertyFrame_loadObject;
-   o.dispose         = FDsSceneMaterialPropertyFrame_dispose;
-   return o;
-}
-function FDsSceneMaterialPropertyFrame_onBuilded(p){
-   var o = this;
-   o.__base.FUiForm.onBuilded.call(o, p);
-   o._materialFrame = o.searchControl('design3d.template.MaterialFrame');
-}
-function FDsSceneMaterialPropertyFrame_construct(){
-   var o = this;
-   o.__base.FUiForm.construct.call(o);
-}
-function FDsSceneMaterialPropertyFrame_loadObject(t, m){
-   var o = this;
-   o._renderTemplate = t;
-   o._renderMaterial = m;
-   o._materialFrame.loadObject(t, m);
-}
-function FDsSceneMaterialPropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }
@@ -45038,74 +45074,28 @@ function FDsScenePropertyFrame_dispose(){
 }
 function FDsSceneTechniquePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._visible        = false;
-   o._workspace      = null;
-   o._renderTemplate = null;
-   o._controlGuid    = null;
-   o._controlCode    = null;
-   o._controlLabel   = null;
-   o.onBuilded       = FDsSceneTechniquePropertyFrame_onBuilded;
-   o.construct       = FDsSceneTechniquePropertyFrame_construct;
-   o.loadObject      = FDsSceneTechniquePropertyFrame_loadObject;
-   o.dispose         = FDsSceneTechniquePropertyFrame_dispose;
+   o._visible      = false;
+   o._workspace    = null;
+   o._technique    = null;
+   o._controlGuid  = null;
+   o._controlCode  = null;
+   o._controlLabel = null;
+   o.construct     = FDsSceneTechniquePropertyFrame_construct;
+   o.loadObject    = FDsSceneTechniquePropertyFrame_loadObject;
+   o.dispose       = FDsSceneTechniquePropertyFrame_dispose;
    return o;
-}
-function FDsSceneTechniquePropertyFrame_onBuilded(p){
-   var o = this;
-   o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlGuid = o.searchControl('guid');
-   o._controlCode = o.searchControl('code');
-   o._controlLabel = o.searchControl('label');
 }
 function FDsSceneTechniquePropertyFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
-function FDsSceneTechniquePropertyFrame_loadObject(t){
+function FDsSceneTechniquePropertyFrame_loadObject(s, t){
    var o = this;
    var r = t._resource;
-   o._renderTemplate = t;
+   o._technique = t;
+   o._controlCode.set(t.code());
 }
 function FDsSceneTechniquePropertyFrame_dispose(){
-   var o = this;
-   o.__base.FUiForm.dispose.call(o);
-}
-function FDsSceneThemePropertyFrame(o){
-   o = RClass.inherits(this, o, FUiForm);
-   o._visible        = false;
-   o._frameName      = 'design3d.scene.property.ThemeFrame';
-   o._workspace      = null;
-   o._renderTemplate = null;
-   o._renderTheme    = null;
-   o._controlGuid    = null;
-   o._controlCode    = null;
-   o._controlLabel   = null;
-   o.onBuilded       = FDsSceneThemePropertyFrame_onBuilded;
-   o.construct       = FDsSceneThemePropertyFrame_construct;
-   o.loadObject      = FDsSceneThemePropertyFrame_loadObject;
-   o.dispose         = FDsSceneThemePropertyFrame_dispose;
-   return o;
-}
-function FDsSceneThemePropertyFrame_onBuilded(p){
-   var o = this;
-   o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlGuid = o.searchControl('guid');
-   o._controlCode = o.searchControl('code');
-   o._controlLabel = o.searchControl('label');
-}
-function FDsSceneThemePropertyFrame_construct(){
-   var o = this;
-   o.__base.FUiForm.construct.call(o);
-}
-function FDsSceneThemePropertyFrame_loadObject(t, m){
-   var o = this;
-   o._renderTemplate = t;
-   o._renderTheme = m;
-   o._controlGuid.set(m.guid());
-   o._controlCode.set(m.code());
-   o._controlLabel.set(m._label);
-}
-function FDsSceneThemePropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }
@@ -45184,7 +45174,7 @@ function FDsSceneWorkspace_onSceneLoad(p){
    var o = this;
    var t = o._activeScene = p._activeScene;
    o._catalog.buildScene(t);
-   o.onCatalogSelected(t);
+   o.onCatalogSelected(t.technique());
 }
 function FDsSceneWorkspace_onCatalogSelected(p){
    var o = this;

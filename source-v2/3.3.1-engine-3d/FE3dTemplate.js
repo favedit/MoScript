@@ -26,6 +26,7 @@ function FE3dTemplate(o){
    o.animations     = FE3dTemplate_animations;
    o.pushAnimation  = FE3dTemplate_pushAnimation;
    // @method
+   o.resource       = FE3dTemplate_resource;
    o.setResource    = FE3dTemplate_setResource;
    o.loadSkeletons  = FE3dTemplate_loadSkeletons;
    o.linkAnimation  = FE3dTemplate_linkAnimation;
@@ -112,6 +113,16 @@ function FE3dTemplate_pushAnimation(p){
    }
    var pr = p.resource();
    r.set(pr.guid(), p);
+}
+
+//==========================================================
+// <T>获得资源。</T>
+//
+// @method
+// @param FRs3Template 资源
+//==========================================================
+function FE3dTemplate_resource(p){
+   return this._resource;
 }
 
 //==========================================================

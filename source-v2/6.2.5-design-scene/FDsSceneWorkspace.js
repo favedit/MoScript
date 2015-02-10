@@ -126,7 +126,8 @@ function FDsSceneWorkspace_onSceneLoad(p){
    // 加载完成
    o._catalog.buildScene(t);
    // 设置属性
-   o.onCatalogSelected(t);
+   //o.onCatalogSelected(t);
+   o.onCatalogSelected(t.technique());
 }
 
 //==========================================================

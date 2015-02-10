@@ -8,7 +8,7 @@ function FDsSceneMaterialFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._template             = null;
+   o._scene             = null;
    o._material             = null;
    // @attribute
    o._controlGuid          = null;
@@ -45,23 +45,13 @@ function FDsSceneMaterialFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 关联对象
-   o._controlGuid = o.searchControl('guid');
-   o._controlCode = o.searchControl('code');
-   o._controlLabel = o.searchControl('label');
-   var c = o._controlAmbientColor = o.searchControl('ambientColor');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlDiffuseColor = o.searchControl('diffuseColor');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlSpecularColor = o.searchControl('specularColor');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlSpecularLevel = o.searchControl('specularLevel');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlReflectColor = o.searchControl('reflectColor');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlReflectMerge = o.searchControl('reflectMerge');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlEmissiveColor = o.searchControl('emissiveColor');
-   c.addDataChangedListener(o, o.onDataChanged);
+   o._controlAmbientColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlDiffuseColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlSpecularColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlSpecularLevel.addDataChangedListener(o, o.onDataChanged);
+   o._controlReflectColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlReflectMerge.addDataChangedListener(o, o.onDataChanged);
+   o._controlEmissiveColor.addDataChangedListener(o, o.onDataChanged);
 }
 
 //==========================================================
@@ -72,7 +62,7 @@ function FDsSceneMaterialFrame_onBuilded(p){
 //==========================================================
 function FDsSceneMaterialFrame_onDataChanged(p){
    var o = this;
-   var t = o._template;
+   var t = o._scene;
    var m = o._material;
    var mi = m.info();
    // 设置环境颜色
@@ -113,19 +103,19 @@ function FDsSceneMaterialFrame_construct(){
 // <T>加载材质信息。</T>
 //
 // @method
-// @param t:template:FTemplate3d 模板
+// @param s:scene:FE3dScene 场景
 // @param m:material:FRs3Material 材质
 //==========================================================
-function FDsSceneMaterialFrame_loadObject(t, m){
+function FDsSceneMaterialFrame_loadObject(s, m){
    var o = this;
-   o._template = t;
+   o._scene = s;
    o._material = m;
    // 设置参数
-   var mp = m.group();
+   //var mp = m.group();
    var mi = m.info();
    o._controlGuid.set(m.guid());
-   o._controlCode.set(mp.code());
-   o._controlLabel.set(m._label);
+   //o._controlCode.set(mp.code());
+   o._controlLabel.set(m.label());
    o._controlAmbientColor.set(mi.ambientColor);
    o._controlDiffuseColor.set(mi.diffuseColor);
    o._controlSpecularColor.set(mi.specularColor);

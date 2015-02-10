@@ -8,19 +8,19 @@ function FDsSceneDisplayFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._renderTemplate = null;
-   o._renderDisplay  = null;
+   o._activeScene   = null;
+   o._activeDisplay = null;
    //..........................................................
    // @event
-   o.onBuilded       = FDsSceneDisplayFrame_onBuilded;
-   o.onDataChanged   = FDsSceneDisplayFrame_onDataChanged;
+   o.onBuilded      = FDsSceneDisplayFrame_onBuilded;
+   o.onDataChanged  = FDsSceneDisplayFrame_onDataChanged;
    //..........................................................
    // @method
-   o.construct       = FDsSceneDisplayFrame_construct;
+   o.construct      = FDsSceneDisplayFrame_construct;
    // @method
-   o.loadObject      = FDsSceneDisplayFrame_loadObject;
+   o.loadObject     = FDsSceneDisplayFrame_loadObject;
    // @method
-   o.dispose         = FDsSceneDisplayFrame_dispose;
+   o.dispose        = FDsSceneDisplayFrame_dispose;
    return o;
 }
 
@@ -34,13 +34,9 @@ function FDsSceneDisplayFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 关联对象
-   var mp = o.searchControl('matrixPanel');
-   var c = o._controlTranslate = mp.searchControl('translate');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlRotation = mp.searchControl('rotation');
-   c.addDataChangedListener(o, o.onDataChanged);
-   var c = o._controlScale = mp.searchControl('scale');
-   c.addDataChangedListener(o, o.onDataChanged);
+   o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotation.addDataChangedListener(o, o.onDataChanged);
+   o._controlScale.addDataChangedListener(o, o.onDataChanged);
 }
 
 //==========================================================
@@ -51,7 +47,7 @@ function FDsSceneDisplayFrame_onBuilded(p){
 //==========================================================
 function FDsSceneDisplayFrame_onDataChanged(p){
    var o = this;
-   var d = o._renderDisplay;
+   var d = o._activeDisplay;
    var m = d.matrix();
    // 设置环境颜色
    var v = o._controlTranslate.get();
@@ -78,16 +74,16 @@ function FDsSceneDisplayFrame_construct(){
 }
 
 //==========================================================
-// <T>加载材质信息。</T>
+// <T>加载显示信息。</T>
 //
 // @method
-// @param t:template:FTemplate3d 模板
+// @param s:scene:FE3dScene 场景
 // @param d:display:FDisplay3d 显示
 //==========================================================
-function FDsSceneDisplayFrame_loadObject(t, d){
+function FDsSceneDisplayFrame_loadObject(s, d){
    var o = this;
-   o._renderTemplate = t;
-   o._renderDisplay = d;
+   o._activeScene = s;
+   o._activeDisplay = d;
    // 获得矩阵
    var m = d.matrix();
    // 设置参数

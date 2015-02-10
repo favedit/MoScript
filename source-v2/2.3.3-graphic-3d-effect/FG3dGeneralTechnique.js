@@ -8,7 +8,7 @@ function FG3dGeneralTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
    //..........................................................
    // @attribute
-   o._name      = 'general';
+   o._code      = 'general';
    // @attribute
    o._passColor = null;
    //..........................................................

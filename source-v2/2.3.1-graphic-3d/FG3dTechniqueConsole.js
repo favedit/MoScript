@@ -39,11 +39,19 @@ function FG3dTechniqueConsole_find(c, p){
    var o = this;
    var n = RClass.name(p);
    var t = o._techniques.get(n);
-   if(t == null){
+   if(!t){
+      // 创建过程
       t = RClass.createByName(n);
       t.linkContext(c);
       t.setup();
       o._techniques.set(n, t);
+      // 设置过程集合
+      var ps = t.passes();
+      var pc = ps.count();
+      for(var i = 0; i < pc; i++){
+         var v = ps.get(i);
+         v.setFullCode(t.code() + '.' + v.code());
+      }
    }
    return t;
 }

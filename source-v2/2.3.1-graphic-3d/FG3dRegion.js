@@ -122,10 +122,11 @@ function FG3dRegion_techniquePass(){
 // @method
 // @param p:pass:FG3dTechniquePass 技术过程
 //==========================================================
-function FG3dRegion_setTechniquePass(p){
+function FG3dRegion_setTechniquePass(p, f){
    var o = this;
    o._techniquePass = p;
-   o._spaceName = o._technique.name() + '.' + p.name();
+   o._spaceName = p.fullCode();
+   o._finish = f;
 }
 
 //==========================================================

@@ -1,29 +1,28 @@
 //==========================================================
-// <T>场景光源属性页面。</T>
+// <T>场景相机属性页面。</T>
 //
 // @class
 // @author maocy
 // @history 150210
 //==========================================================
-function FDsSceneLightPropertyFrame(o){
+function FDsSceneCameraFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._visible      = false;
+   o._visible          = false;
    // @attribute
-   o._workspace    = null;
-   o._light        = null;
+   o._workspace        = null;
+   o._camera           = null;
    // @attribute
-   o._controlGuid  = null;
-   o._controlCode  = null;
-   o._controlLabel = null;
+   o._controlPosition  = null;
+   o._controlDirection = null;
    //..........................................................
    // @method
-   o.construct     = FDsSceneLightPropertyFrame_construct;
+   o.construct         = FDsSceneCameraFrame_construct;
    // @method
-   o.loadObject    = FDsSceneLightPropertyFrame_loadObject;
+   o.loadObject        = FDsSceneCameraFrame_loadObject;
    // @method
-   o.dispose       = FDsSceneLightPropertyFrame_dispose;
+   o.dispose           = FDsSceneCameraFrame_dispose;
    return o;
 }
 
@@ -32,7 +31,7 @@ function FDsSceneLightPropertyFrame(o){
 //
 // @method
 //==========================================================
-function FDsSceneLightPropertyFrame_construct(){
+function FDsSceneCameraFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -43,22 +42,16 @@ function FDsSceneLightPropertyFrame_construct(){
 //
 // @method
 // @param s:scene:FE3dScene 场景
-// @param l:light:FG3dLight 光源
+// @param c:technique:FG3dTechnique 技术
 //==========================================================
-function FDsSceneLightPropertyFrame_loadObject(s, l){
+function FDsSceneCameraFrame_loadObject(s, c){
    var o = this;
-   var r = l._resource;
-   var rm = r.material();
-   var rc = r.camera();
+   var r = c._resource;
    // 设置属性
-   o._light = l;
+   o._camera = c;
    // 设置参数
-   o._controlGuid.set(r.guid());
-   o._controlCode.set(r.code());
-   o._controlLabel.set(r._label);
-   // 设置参数
-   o._frameMaterial.loadObject(s, rm);
-   o._frameCamera.loadObject(s, rc);
+   o._controlPosition.set(c.position());
+   o._controlDirection.set(c.direction());
 }
 
 //==========================================================
@@ -66,7 +59,7 @@ function FDsSceneLightPropertyFrame_loadObject(s, l){
 //
 // @method
 //==========================================================
-function FDsSceneLightPropertyFrame_dispose(){
+function FDsSceneCameraFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

@@ -61,6 +61,7 @@ function RControl_newInstance(p){
    var r = null;
    if(p){
       var n = null
+      var tn = null;
       if(p.constructor == String){
          // 字符串
          if(!RString.startsWith(p, o.PREFIX)){
@@ -74,12 +75,17 @@ function RControl_newInstance(p){
             if(!RString.startsWith(n, o.PREFIX)){
                n = o.PREFIX + n;
             }
+         }else{
+            tn = n;
          }
       }else{
          throw new TError(o, 'Unknown parameter. (name={p})', p);
       }
       // 创建实例
       r = RClass.create(n);
+      if(tn){
+         r.__typed = true;
+      }
    }
    if(r == null){
       throw new TError(o, 'Create instance failure. (name={p})', p);
@@ -226,7 +232,7 @@ function RControl_create(pc, px, pa){
 // @param px:config:TXmlNode 配置节点
 // @param pa:attribute:Object 属性集合
 //===========================================================
-function RControl_innerbuild(pc, px, pa, ph){
+function RControl_innerbuild(pr, pc, px, pa, ph){
    var o = this;
    // 检查参数
    if((pc == null) || (px == null)){
@@ -236,6 +242,10 @@ function RControl_innerbuild(pc, px, pa, ph){
    if(RClass.isClass(pc, MProperty)){
       pc.propertyLoad(px);
    }
+   var l = px.get('linker');
+   if(l && pr){
+      pr[l] = pc;
+   }
    // 构建处理
    if(RClass.isClass(pc, FUiControl)){
       if(!pc.isBuild()){
@@ -244,6 +254,10 @@ function RControl_innerbuild(pc, px, pa, ph){
          pc.refresh();
       }
    }
+   // 检查类型化
+   if(pc.__typed){
+      pr = pc;
+   }
    // 建立子节点
    if(RClass.isClass(pc, MContainer) && px.hasNode()){
       var ns = px.nodes();
@@ -251,7 +265,7 @@ function RControl_innerbuild(pc, px, pa, ph){
       for(var i = 0; i < nc; i++){
          var n = ns.get(i);
          var c = pc.createChild(n);
-         o.innerbuild(c, n, pa, ph);
+         o.innerbuild(pr, c, n, pa, ph);
          pc.push(c);
       }
    }
@@ -287,7 +301,7 @@ function RControl_build(c, x, a, h){
       c = RControl.newInstance(x);
    }
    // 内部构造
-   o.innerbuild(c, x, a, h);
+   o.innerbuild(null, c, x, a, h);
    return c;
 }
 
