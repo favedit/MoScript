@@ -51,9 +51,8 @@ function FDsTemplateCanvas_onBuild(p){
    o.__base.FDsCanvas.onBuild.call(o, p);
    // 创建简单舞台
    var g = o._stage = RClass.create(FE3dSimpleStage);
-   g._optionKeyboard = false;
    g.backgroundColor().set(0.5, 0.5, 0.5, 1);
-   g.selectTechnique(c, FG3dGeneralTechnique);
+   g.selectTechnique(o._context, FG3dGeneralTechnique);
    o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    // 设置相机
@@ -62,6 +61,7 @@ function FDsTemplateCanvas_onBuild(p){
    rc.lookAt(0, 3, 0);
    rc.update();
    // 设置投影
+   var h = o._hPanel;
    var rp = rc.projection();
    rp.size().set(h.width, h.height);
    rp._angle = 45;
@@ -153,9 +153,14 @@ function FDsTemplateCanvas_onMouseCaptureStop(p){
 //==========================================================
 function FDsTemplateCanvas_onEnterFrame(){
    var o = this;
+   // 检查参数
+   var s = o._stage;
+   if(!s){
+      return;
+   }
    //..........................................................
    // 按键处理
-   var c = o._stage.camera();
+   var c = s.camera();
    var d = 0.5;
    var r = 0.05;
    var kw = RKeyboard.isPress(EKeyCode.W);

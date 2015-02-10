@@ -8,7 +8,7 @@
 //==========================================================
 function AEventClick(n){
    var o = this;
-   AEvent(o, n, 'click', 'onclick');
+   AEvent.call(o, n, 'click', 'onclick');
    //..........................................................
    // @method
    o.attach = AEventClick_attach;

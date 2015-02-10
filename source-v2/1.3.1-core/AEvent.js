@@ -7,9 +7,9 @@
 // @author maocy
 // @version 150119
 //==========================================================
-function AEvent(o, n, l, h){
-   if(!o){o = this;}
-   AAnnotation(o, n);
+function AEvent(n, l, h){
+   var o = this;
+   AAnnotation.call(o, n);
    //..........................................................
    // @attribute
    o._annotationCd = EAnnotation.Event;

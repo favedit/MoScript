@@ -6,7 +6,7 @@
 // @history 150121
 //==========================================================
 function FUiMenuButtonSplit(o){
-   o = RClass.inherits(this, o, FControl, MMenuButton);
+   o = RClass.inherits(this, o, FUiControl, MMenuButton);
    /// @style
    o.styleUp      = RClass.register(o, new AStyle('Up'));
    /// @style
@@ -22,7 +22,7 @@ function FUiMenuButtonSplit(o){
 // ------------------------------------------------------------
 function FUiMenuButtonSplit_oeBuild(e){
    var o = this;
-   o.base.FControl.oeBuild.call(o, e);
+   o.base.FUiControl.oeBuild.call(o, e);
    var h = o.hPanel;
    var hc = h.insertRow().insertCell();
    hc.className = o.style('Up');
@@ -37,7 +37,7 @@ function FUiMenuButtonSplit_onBuildPanel(){
 // ------------------------------------------------------------
 function FUiMenuButtonSplit_dispose(){
    var o = this;
-   o.base.FControl.dispose.call(o);
+   o.base.FUiControl.dispose.call(o);
    RMemory.freeHtml(o.hPanel);
    o.hPanel = null;
 }

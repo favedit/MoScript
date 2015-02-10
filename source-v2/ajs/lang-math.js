@@ -11,42 +11,58 @@ var EFrustumPlane = new function EFrustumPlane(){
 }
 var RMath = new function RMath(){
    var o = this;
-   o.PI           = null;
-   o.PI2          = null;
-   o.RADIAN_RATE  = null;
-   o.DEGREE_RATE  = null;
-   o.PERCENT_1000 = 1 / 1000;
-   o.float1       = null;
-   o.float2       = null;
-   o.float3       = null;
-   o.float4       = null;
-   o.float9       = null;
-   o.float12      = null;
-   o.float16      = null;
-   o.double1      = null;
-   o.double2      = null;
-   o.double3      = null;
-   o.double4      = null;
-   o.double16     = null;
-   o.double16     = null;
-   o.double64     = null;
-   o.vector3      = null;
-   o.vectorScale  = null;
-   o.matrix       = null;
-   o.vectorForward = null;
-   o.vectorAxisX  = null;
-   o.vectorAxisY  = null;
-   o.vectorAxisZ  = null;
-   o.construct    = RMath_construct;
+   o.PI             = Math.PI;
+   o.PI2            = Math.PI * 2;
+   o.RADIAN_RATE    = 180 / Math.PI;
+   o.DEGREE_RATE    = Math.PI / 180;
+   o.PERCENT_10     = 1 / 10;
+   o.PERCENT_100    = 1 / 100;
+   o.PERCENT_1000   = 1 / 1000;
+   o.vectorAxisX    = null;
+   o.vectorAxisY    = null;
+   o.vectorAxisZ    = null;
+   o.vectorScale    = null;
+   o.vectorForward  = null;
+   o.vectorBackward = null;
+   o.identity4x4    = null;
+   o.construct      = RMath_construct;
    o.construct();
    return o;
 }
 function RMath_construct(){
    var o = this;
-   o.PI = Math.PI;
-   o.PI2 = Math.PI * 2;
-   o.RADIAN_RATE = 180 / Math.PI;
-   o.DEGREE_RATE = Math.PI / 180;
+   o.vectorAxisX = new SVector3(1, 0, 0);
+   o.vectorAxisY = new SVector3(0, 1, 0);
+   o.vectorAxisZ = new SVector3(0, 0, 1);
+   o.vectorScale = new SVector3(1, 1, 1);
+   o.vectorForward = new SVector3(0, 0, 1);
+   o.vectorBackward = new SVector3(0, 0, -1);
+   o.identity4x4 = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+}
+var RValue = new function RValue(){
+   var o = this;
+   o.float1    = null;
+   o.float2    = null;
+   o.float3    = null;
+   o.float4    = null;
+   o.float9    = null;
+   o.float12   = null;
+   o.float16   = null;
+   o.double1   = null;
+   o.double2   = null;
+   o.double3   = null;
+   o.double4   = null;
+   o.double16  = null;
+   o.double16  = null;
+   o.double64  = null;
+   o.vector3   = null;
+   o.matrix    = null;
+   o.construct = RValue_construct;
+   o.construct();
+   return o;
+}
+function RValue_construct(){
+   var o = this;
    if(RRuntime.supportHtml5()){
       o.float1 = new Float32Array(1);
       o.float2 = new Float32Array(2);
@@ -64,17 +80,7 @@ function RMath_construct(){
       o.double16 = new Float64Array(16);
    }
    o.vector3 = new SVector3();
-   o.vectorScale = new SVector3();
-   o.vectorScale.set(1, 1, 1);
    o.matrix = new SMatrix3d();
-   o.vectorForward = new SVector3();
-   o.vectorForward.set(0, 0, 1);
-   o.vectorAxisX = new SVector3();
-   o.vectorAxisX.set(1, 0, 0);
-   o.vectorAxisY = new SVector3();
-   o.vectorAxisY.set(0, 1, 0);
-   o.vectorAxisZ = new SVector3();
-   o.vectorAxisZ.set(0, 0, 1);
 }
 function SColor4(o){
    if(!o){o = this;}
@@ -443,9 +449,9 @@ function SFrustumPlanes_updateVision(p){
    pb.d = p[4 * 3 + 3] + p[4 * 3 + 1];
    pb.normalize();
 }
-function SMatrix3d(o){
-   if(!o){o = this;}
-   SMatrix4x4(o);
+function SMatrix3d(){
+   var o = this;
+   SMatrix4x4.call(o);
    o._dirty         = false;
    o.tx             = 0;
    o.ty             = 0;
@@ -456,6 +462,7 @@ function SMatrix3d(o){
    o.sx             = 1;
    o.sy             = 1;
    o.sz             = 1;
+   o.isIdentity     = SMatrix3d_isIdentity;
    o.identity       = SMatrix3d_identity;
    o.setTranslate   = SMatrix3d_setTranslate;
    o.setRotation    = SMatrix3d_setRotation;
@@ -472,17 +479,25 @@ function SMatrix3d(o){
    o.identity();
    return o;
 }
+function SMatrix3d_isIdentity(){
+   var o = this;
+   if((o.tx != 0) || (o.ty != 0) || (o.tz != 0)){
+      return false;
+   }
+   if((o.rx != 0) || (o.ry != 0) || (o.rz != 0)){
+      return false;
+   }
+   if((o.sx != 1) || (o.sy != 1) || (o.sz != 1)){
+      return false;
+   }
+   return o.isIdentityData();
+}
 function SMatrix3d_identity(){
    var o = this;
    o.tx = o.ty = o.tz = 0;
    o.rx = o.ry = o.rz = 0;
    o.sx = o.sy = o.sz = 1;
-   var d = o._data;
-   d[ 0] = 1; d[ 1] = 0; d[ 2] = 0; d[ 3] = 0;
-   d[ 4] = 0; d[ 5] = 1; d[ 6] = 0; d[ 7] = 0;
-   d[ 8] = 0; d[ 9] = 0; d[10] = 1; d[11] = 0;
-   d[12] = 0; d[13] = 0; d[14] = 0; d[15] = 1;
-   return o;
+   return o.identityData();
 }
 function SMatrix3d_setTranslate(x, y, z){
    var o = this;
@@ -598,8 +613,8 @@ function SMatrix3d_unserialize(p){
    o.sz = p.readFloat();
    o.updateForce();
 }
-function SMatrix3x3(o){
-   if(!o){o = this;}
+function SMatrix3x3(){
+   var o = this;
    o._data           = new Array(9);
    o.data            = SMatrix3x3_data;
    o.equalsData      = SMatrix3x3_equalsData;
@@ -723,7 +738,7 @@ function SMatrix3x3_rotation(x, y, z){
 function SMatrix3x3_invert(){
    var o = this;
    var d = o._data;
-   var v = RMath.float9;
+   var v = RValue.float9;
    v[0] = (d[4] * d[8]) - (d[5] * d[7]);
    v[1] = (d[2] * d[7]) - (d[1] * d[8]);
    v[2] = (d[1] * d[5]) - (d[2] * d[4]);
@@ -818,10 +833,12 @@ function SMatrix3x3_toString(){
    }
    return r.flush();
 }
-function SMatrix4x4(o){
-   if(!o){o = this;}
+function SMatrix4x4(){
+   var o = this;
    o._data           = new Array(16);
    o.data            = SMatrix4x4_data;
+   o.isIdentityData  = SMatrix3d_isIdentityData;
+   o.identityData    = SMatrix3d_identityData;
    o.equalsData      = SMatrix4x4_equalsData;
    o.assignData      = SMatrix4x4_assignData;
    o.appendData      = SMatrix4x4_appendData;
@@ -842,6 +859,25 @@ function SMatrix4x4(o){
 }
 function SMatrix4x4_data(){
    return this._data;
+}
+function SMatrix3d_isIdentityData(){
+   var d = this._data;
+   var v = RMath.identity4x4;
+   for(var i = 0; i < 16; i++){
+      if(d[i] != v[i]){
+         return false;
+      }
+   }
+   return true;
+}
+function SMatrix3d_identityData(){
+   var o = this;
+   var d = o._data;
+   var v = RMath.identity4x4;
+   for(var i = 0; i < 16; i++){
+      d[i] = v[i];
+   }
+   return o;
 }
 function SMatrix4x4_equalsData(p){
    var d = this._data;
@@ -1028,7 +1064,7 @@ function SMatrix4x4_scale(x, y, z){
 function SMatrix4x4_invert(){
    var o = this;
    var d = o._data;
-   var v = RMath.float16;
+   var v = RValue.float16;
    v[ 0] =  (d[ 5] * d[10] * d[15]) - (d[ 5] * d[11] * d[14]) - (d[ 9] * d[ 6] * d[15]) + (d[ 9] * d[ 7] * d[14]) + (d[13] * d[ 6] * d[11]) - (d[13] * d[ 7] * d[10]);
    v[ 4] = -(d[ 4] * d[10] * d[15]) + (d[ 4] * d[11] * d[14]) + (d[ 8] * d[ 6] * d[15]) - (d[ 8] * d[ 7] * d[14]) - (d[12] * d[ 6] * d[11]) + (d[12] * d[ 7] * d[10]);
    v[ 8] =  (d[ 4] * d[ 9] * d[15]) - (d[ 4] * d[11] * d[13]) - (d[ 8] * d[ 5] * d[15]) + (d[ 8] * d[ 7] * d[13]) + (d[12] * d[ 5] * d[11]) - (d[12] * d[ 7] * d[ 9]);
@@ -1172,9 +1208,9 @@ function SMatrix4x4_toString(){
    }
    return r.flush();
 }
-function SOrthoMatrix3d(o){
-   if(!o){o = this;}
-   SMatrix3d(o);
+function SOrthoMatrix3d(){
+   var o = this;
+   SMatrix3d.call(o);
    o.perspectiveLH            = SOrthoMatrix3d_perspectiveLH;
    o.perspectiveRH            = SOrthoMatrix3d_perspectiveRH;
    o.perspectiveFieldOfViewLH = SOrthoMatrix3d_perspectiveFieldOfViewLH;
@@ -1358,9 +1394,9 @@ function SPadding_dump(d){
    var o = this;
    return RClass.dump(o) + ' [' + o.left + ',' + o.top + ',' + o.right + ',' + o.bottom + ']';
 }
-function SPerspectiveMatrix3d(o){
-   if(!o){o = this;}
-   SMatrix3d(o);
+function SPerspectiveMatrix3d(){
+   var o = this;
+   SMatrix3d.call(o);
    o.perspectiveLH            = SPerspectiveMatrix3d_perspectiveLH;
    o.perspectiveRH            = SPerspectiveMatrix3d_perspectiveRH;
    o.perspectiveFieldOfViewLH = SPerspectiveMatrix3d_perspectiveFieldOfViewLH;
@@ -2092,9 +2128,9 @@ function SSquare_dump(d){
 }
 function SValue3(x, y, z){
    var o = this;
-   o.x           = RValue.nvl(x, 0);
-   o.y           = RValue.nvl(y, 0);
-   o.z           = RValue.nvl(z, 0);
+   o.x           = RRuntime.nvl(x, 0);
+   o.y           = RRuntime.nvl(y, 0);
+   o.z           = RRuntime.nvl(z, 0);
    o.assign      = SValue3_assign;
    o.set         = SValue3_set;
    o.absolute    = SValue3_absolute;
@@ -2173,10 +2209,10 @@ function SValue3_toString(){
 }
 function SValue4(x, y, z, w){
    var o = this;
-   o.x           = RValue.nvl(x, 0);
-   o.y           = RValue.nvl(y, 0);
-   o.z           = RValue.nvl(z, 0);
-   o.w           = RValue.nvl(w, 1);
+   o.x           = RRuntime.nvl(x, 0);
+   o.y           = RRuntime.nvl(y, 0);
+   o.z           = RRuntime.nvl(z, 0);
+   o.w           = RRuntime.nvl(w, 1);
    o.assign      = SValue4_assign;
    o.set         = SValue4_set;
    o.absolute    = SValue4_absolute;

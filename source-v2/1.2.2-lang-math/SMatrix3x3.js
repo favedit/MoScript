@@ -5,8 +5,8 @@
 // @author maocy
 // @version 150207
 //==========================================================
-function SMatrix3x3(o){
-   if(!o){o = this;}
+function SMatrix3x3(){
+   var o = this;
    //..........................................................
    // @attribute
    o._data           = new Array(9);
@@ -232,7 +232,7 @@ function SMatrix3x3_rotation(x, y, z){
 function SMatrix3x3_invert(){
    var o = this;
    var d = o._data;
-   var v = RMath.float9;
+   var v = RValue.float9;
    // 计算矩阵
    v[0] = (d[4] * d[8]) - (d[5] * d[7]);
    v[1] = (d[2] * d[7]) - (d[1] * d[8]);

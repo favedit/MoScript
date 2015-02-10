@@ -42,6 +42,7 @@ function FG3dAutomaticEffect(o){
 
 //==========================================================
 // <T>绘制渲染对象。</T>
+// <P>绘制渲染对sadfasdf。</P>
 //
 // @method
 // @param pt:tagContext:FTagContext 模板环境

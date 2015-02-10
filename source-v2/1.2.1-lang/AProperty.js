@@ -7,9 +7,9 @@
 // @author maocy
 // @version 141231
 //============================================================
-function AProperty(o, n, l){
-   if(!o){o = this;}
-   AAnnotation(o, n);
+function AProperty(n, l){
+   var o = this;
+   AAnnotation.call(o, n);
    //..........................................................
    // @declare
    o._inherit      = true;

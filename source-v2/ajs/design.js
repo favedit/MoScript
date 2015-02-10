@@ -1,3 +1,24 @@
+var EDsCanvasMode = new function EDsCanvasMode(){
+   var o = this;
+   o.Unknown   = 0;
+   o.Drop      = 1;
+   o.Select    = 2;
+   o.Translate = 3;
+   o.Rotation  = 4;
+   o.Scale     = 5;
+   return o;
+}
+var EDsFrame = new function EDsFrame(){
+   var o = this;
+   o.ScenePropertyFrame = 'design3d.scene.property.SceneFrame';
+   o.SceneTechniquePropertyFrame = 'design3d.scene.property.TechniqueFrame';
+   o.SceneCameraPropertyFrame = 'design3d.scene.property.CameraFrame';
+   o.SceneLightPropertyFrame = 'design3d.scene.property.LightFrame';
+   o.SceneLayerPropertyFrame = 'design3d.scene.property.LayerFrame';
+   o.SceneDisplayPropertyFrame = 'design3d.scene.property.DisplayFrame';
+   o.SceneRenderablePropertyFrame = 'design3d.scene.property.RenderableFrame';
+   return o;
+}
 function FDsApplication(o){
    o = RClass.inherits(this, o, FObject);
    o._name             = null;

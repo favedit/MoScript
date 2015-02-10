@@ -4,49 +4,45 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FDsSceneToolBar(o){
-   o = RClass.inherits(this, o, FUiToolBar);
+function FDsSceneMenuBar(o){
+   o = RClass.inherits(this, o, FUiMenuBar);
+   //..........................................................
+   // @property
+   o._frameName     = 'design3d.scene.MenuBar';
    //..........................................................
    // @attribute
    o._refreshButton = null;
    o._saveButton    = null;
    //..........................................................
    // @event
-   o.onBuild        = FDsSceneToolBar_onBuild;
+   o.onBuilded      = FDsSceneMenuBar_onBuilded;
    // @event
-   o.onRefreshClick = FDsSceneToolBar_onRefreshClick;
-   o.onSaveClick    = FDsSceneToolBar_onSaveClick;
+   o.onRefreshClick = FDsSceneMenuBar_onRefreshClick;
+   o.onSaveClick    = FDsSceneMenuBar_onSaveClick;
    //..........................................................
    // @method
-   o.construct      = FDsSceneToolBar_construct;
+   o.construct      = FDsSceneMenuBar_construct;
    // @method
-   o.dispose        = FDsSceneToolBar_dispose;
+   o.dispose        = FDsSceneMenuBar_dispose;
    return o;
 }
 
 //==========================================================
-// <T>建立当前控件的显示框架。</T>
+// <T>构建完成处理。</T>
 //
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsSceneToolBar_onBuild(p){
+function FDsSceneMenuBar_onBuilded(p){
    var o = this;
-   o.__base.FUiToolBar.onBuild.call(o, p);
-   // 建立按键
-   var b = o._refreshButton  = RClass.create(FUiToolButton);
-   b.setLabel('刷新');
-   b.setIcon('design3d.tools.refresh');
-   b.build(p);
+   o.__base.FUiMenuBar.onBuilded.call(o, p);
+   //..........................................................
+   // 建立刷新按键
+   var b = o._refreshButton = o.searchControl('refreshButton');
    b.addClickListener(o, o.onRefreshClick);
-   o.push(b);
-   // 建立按键
-   var b = o._saveButton = RClass.create(FUiToolButton);
-   b.setLabel('保存');
-   b.setIcon('design3d.tools.save');
-   b.build(p);
+   // 建立保存按键
+   var b = o._saveButton = o.searchControl('saveButton');
    b.addClickListener(o, o.onSaveClick);
-   o.push(b);
 }
 
 //==========================================================
@@ -55,7 +51,7 @@ function FDsSceneToolBar_onBuild(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSceneToolBar_onRefreshClick(p){
+function FDsSceneMenuBar_onRefreshClick(p){
    var o = this;
    //var catalog = o._worksapce._catalog;
    //catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
@@ -67,7 +63,7 @@ function FDsSceneToolBar_onRefreshClick(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSceneToolBar_onSaveClick(p){
+function FDsSceneMenuBar_onSaveClick(p){
    var o = this;
    var t = o._workspace._activeTemplate;
    var rt = t._resource;
@@ -91,10 +87,10 @@ function FDsSceneToolBar_onSaveClick(p){
 //
 // @method
 //==========================================================
-function FDsSceneToolBar_construct(){
+function FDsSceneMenuBar_construct(){
    var o = this;
    // 父处理
-   o.__base.FUiToolBar.construct.call(o);
+   o.__base.FUiMenuBar.construct.call(o);
 }
 
 //==========================================================
@@ -102,8 +98,8 @@ function FDsSceneToolBar_construct(){
 //
 // @method
 //==========================================================
-function FDsSceneToolBar_dispose(){
+function FDsSceneMenuBar_dispose(){
    var o = this;
    // 父处理
-   o.__base.FUiToolBar.dispose.call(o);
+   o.__base.FUiMenuBar.dispose.call(o);
 }

@@ -100,7 +100,6 @@ function FUiToolButton_onBuildPanel(p){
 function FUiToolButton_onBuild(p){
    var o = this;
    o.__base.FUiControl.onBuild.call(o, p);
-   var h = o._hPanel;
    //var t = o.parent;
    //var h = o._hPanel;
    //var hb = o._hButton = RBuilder.appendTable(o._hPanel, o.styleName('Panel'));
@@ -120,6 +119,7 @@ function FUiToolButton_onBuild(p){
    //   //o._hLabel.innerHTML = '&nbsp;' + o.label+"("+o._hotkey+")";
    //   RConsole.find(FKeyConsole).register(o._hotkey, new TListener(o, o.onButtonClick));
    //
+   var h = o._hPanel;
    // 建立图标
    if(o._icon){
       o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);

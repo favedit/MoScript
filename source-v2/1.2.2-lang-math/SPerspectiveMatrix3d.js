@@ -5,9 +5,9 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function SPerspectiveMatrix3d(o){
-   if(!o){o = this;}
-   SMatrix3d(o);
+function SPerspectiveMatrix3d(){
+   var o = this;
+   SMatrix3d.call(o);
    // @method
    o.perspectiveLH            = SPerspectiveMatrix3d_perspectiveLH;
    o.perspectiveRH            = SPerspectiveMatrix3d_perspectiveRH;

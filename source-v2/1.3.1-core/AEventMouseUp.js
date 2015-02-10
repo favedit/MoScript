@@ -8,6 +8,6 @@
 //==========================================================
 function AEventMouseUp(n){
    var o = this;
-   AEventMouse(o, n, 'mouseup', 'onmouseup');
+   AEventMouse.call(o, n, 'mouseup', 'onmouseup');
    return o;
 }

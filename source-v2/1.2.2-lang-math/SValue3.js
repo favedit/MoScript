@@ -12,9 +12,9 @@ function SValue3(x, y, z){
    var o = this;
    //..........................................................
    // @attribute
-   o.x           = RValue.nvl(x, 0);
-   o.y           = RValue.nvl(y, 0);
-   o.z           = RValue.nvl(z, 0);
+   o.x           = RRuntime.nvl(x, 0);
+   o.y           = RRuntime.nvl(y, 0);
+   o.z           = RRuntime.nvl(z, 0);
    //..........................................................
    // @method
    o.assign      = SValue3_assign;

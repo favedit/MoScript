@@ -11,7 +11,7 @@
 //==========================================================
 function APtySet(n, l, s, v){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    //..........................................................
    // @attribute
    o._search = s;

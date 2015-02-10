@@ -1070,7 +1070,7 @@ function FUiControl_builded(p){
    if(o._statusBuilded){
       throw new TError(o, 'Current control is already builded.');
    }
-   o.onBuilded();
+   o.onBuilded(p);
    o._statusBuilded = true;
 }
 function FUiControl_refresh(){
@@ -1103,16 +1103,6 @@ function FUiControl_dispose(){
    o.__base.MSize.dispose.call(o);
    o.__base.MStyle.dispose.call(o);
    o.__base.FUiComponent.dispose.call(o);
-}
-function FUiWorkspace(o){
-   o = RClass.inherits(this, o, FUiContainer);
-   o._frames      = null;
-   o.onBuildPanel = FUiWorkspace_onBuildPanel
-   return o;
-}
-function FUiWorkspace_onBuildPanel(p){
-   var o = this;
-   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
 }
 function MContainer(o){
    o = RClass.inherits(this, o);
@@ -1680,6 +1670,21 @@ function MDataValue(o){
    o.oeDataLoad = RMethod.empty;
    o.oeDataSave = RMethod.empty;
    return o;
+}
+function MDescribeFrame(o){
+   o = RClass.inherits(this, o);
+   o._frameName  = null;
+   o.buildDefine = MDescribeFrame_buildDefine;
+   return o;
+}
+function MDescribeFrame_buildDefine(h, n){
+   var o = this;
+   if(RString.isEmpty(n)){
+      n = o._frameName;
+   }
+   var fc = RConsole.find(FDescribeFrameConsole);
+   var x = fc.load(n);
+   RControl.build(o, x, null, h);
 }
 function MDesign(o){
    o = RClass.inherits(this, o);
@@ -2636,13 +2641,25 @@ function MSize_setSize(w, h){
    if(w != null){
       o._size.width = w;
       if(t){
-         t.style.width = (w == 0) ? null : w + 'px';
+         if(t.tagName == 'TD'){
+            if(w != 0){
+               t.width = w;
+            }
+         }else{
+            t.style.width = (w == 0) ? null : w + 'px';
+         }
       }
    }
    if(h != null){
       o._size.height = h;
       if(t){
-         t.style.height = (h == 0) ? null : h + 'px';
+         if(t.tagName == 'TD'){
+            if(h != 0){
+               t.height = h;
+            }
+         }else{
+            t.style.height = (h == 0) ? null : h + 'px';
+         }
       }
    }
 }
@@ -3094,9 +3111,13 @@ function RControl_innerbuild(pc, px, pa, ph){
       pc.builded(ph);
    }
 }
-function RControl_build(pc, px, pa, ph){
+function RControl_build(c, x, a, h){
    var o = this;
-   o.innerbuild(pc, px, pa, ph);
+   if(!c){
+      c = RControl.newInstance(x);
+   }
+   o.innerbuild(c, x, a, h);
+   return c;
 }
 function RControl_linkEvent(tc, sc, n, h, m){
    var o = this;

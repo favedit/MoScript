@@ -8,7 +8,7 @@
 //==========================================================
 function AEventMouseOut(n){
    var o = this;
-   AEvent(o, n, 'mouseout', 'onmouseout');
+   AEvent.call(o, n, 'mouseout', 'onmouseout');
    //..........................................................
    // @html
    o._hSource = null;

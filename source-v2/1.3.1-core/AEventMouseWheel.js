@@ -8,7 +8,7 @@
 //==========================================================
 function AEventMouseWheel(n){
    var o = this;
-   AEvent(o, n, 'mousewheel', 'onmousewheel');
+   AEvent.call(o, n, 'mousewheel', 'onmousewheel');
    //..........................................................
    // @method
    o.attach = AEventMouseWheel_attach;

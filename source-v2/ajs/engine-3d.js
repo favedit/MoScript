@@ -429,7 +429,8 @@ function FE3dScene_loadDisplayResource(pl, pd){
 }
 function FE3dScene_loadLayerResource(p){
    var o = this;
-   var l = RClass.create(FDisplayLayer);
+   var l = RClass.create(FE3dSceneLayer);
+   l.loadResource(p);
    var s = p.displays();
    if(s){
       var c = s.count();
@@ -526,10 +527,11 @@ function FE3dSceneDisplay(o){
    o = RClass.inherits(this, o, FE3dTemplate);
    o._dataReady        = false;
    o._movieMatrix      = null;
-   o._resource         = null;
+   o._resourceScene    = null;
    o._materials        = null;
    o._movies           = null;
    o.construct         = FE3dSceneDisplay_construct;
+   o.resourceScene     = FE3dSceneDisplay_resourceScene;
    o.loadSceneResource = FE3dSceneDisplay_loadSceneResource;
    o.loadResource      = FE3dSceneDisplay_loadResource;
    o.process           = FE3dSceneDisplay_process;
@@ -540,9 +542,12 @@ function FE3dSceneDisplay_construct(){
    o.__base.FE3dTemplate.construct.call(o);
    o._movieMatrix = new SMatrix3d();
 }
+function FE3dSceneDisplay_resourceScene(){
+   return this._resourceScene;
+}
 function FE3dSceneDisplay_loadSceneResource(p){
    var o = this;
-   o._resource = p;
+   o._resourceScene = p;
    o._matrix.assign(p.matrix());
    var rms = p.materials();
    if(rms){
@@ -646,6 +651,20 @@ function FE3dSceneDisplayRenderable_loadMaterial(p){
    var o = this;
    var pi = p.info();
    o._material.info().assign(pi);
+}
+function FE3dSceneLayer(o){
+   o = RClass.inherits(this, o, FDisplayLayer);
+   o._resource    = null;
+   o.resource     = FE3dSceneLayer_resource;
+   o.loadResource = FE3dSceneLayer_loadResource;
+   return o;
+}
+function FE3dSceneLayer_resource(){
+   return this._resource;
+}
+function FE3dSceneLayer_loadResource(p){
+   var o = this;
+   o._resource = p;
 }
 function FE3dSceneMaterial(o){
    o = RClass.inherits(this, o, FG3dMaterial);
@@ -772,6 +791,7 @@ function FE3dStage(o){
    o.directionalLight  = FE3dStage_directionalLight;
    o.technique         = FE3dStage_technique;
    o.selectTechnique   = FE3dStage_selectTechnique;
+   o.region            = FE3dStage_region;
    o.process           = FE3dStage_process;
    return o;
 }
@@ -810,6 +830,9 @@ function FE3dStage_selectTechnique(c, p){
    var o = this;
    var tc = RConsole.find(FG3dTechniqueConsole);
    o._technique = tc.find(c, p);
+}
+function FE3dStage_region(){
+   return this._region;
 }
 function FE3dStage_process(){
    var o = this;

@@ -8,18 +8,13 @@
 function FUiForm(o){
    //o = RClass.inherits(this, o, FUiLayout, MForm, MDisplayAble, MValue, MAction);
    //o = RClass.inherits(this, o, FUiLayout, MFocus, MDataset);
-   o = RClass.inherits(this, o, FUiLayout, MDataset);
-   //..........................................................
-   // @attribute
-   o._frameName         = null;
+   o = RClass.inherits(this, o, FUiLayout, MDataset, MDescribeFrame);
    //..........................................................
    // @event
    o.onMouseDown        = FUiForm_onMouseDown;
    //..........................................................
    // @method
    o.construct          = FUiForm_construct;
-   // @method
-   o.buildDefine        = FUiForm_buildDefine;
 
 
 
@@ -132,26 +127,6 @@ function FUiForm_construct(){
    //o._recordEvent = new TEventProcess(o, 'oeRecordValue', MEditValue);
    //o._codeEvent = new TEventProcess(o, 'oeSaveCode', MEditDescriptor);
    //o._dataComponents = new TMap();
-}
-
-//==========================================================
-// <T>从配置信息中构建构造页面。</T>
-//
-// @method
-// @param h:hDocument:HtmlTag 页面元素
-// @param n:frameName:String 页面名称
-//==========================================================
-function FUiForm_buildDefine(h, n){
-   var o = this;
-   // 获得名称
-   if(RString.isEmpty(n)){
-      n = o._frameName;
-   }
-   // 获取页面定义
-   var fc = RConsole.find(FDescribeFrameConsole);
-   var x = fc.load(n);
-   // 构建处理
-   RControl.build(o, x, null, h);
 }
 
 

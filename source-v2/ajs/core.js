@@ -1,6 +1,6 @@
-function AEvent(o, n, l, h){
-   if(!o){o = this;}
-   AAnnotation(o, n);
+function AEvent(n, l, h){
+   var o = this;
+   AAnnotation.call(o, n);
    o._annotationCd = EAnnotation.Event;
    o._inherit      = true;
    o._logger       = true;
@@ -42,7 +42,7 @@ function AEvent_toString(){
 }
 function AEventBlur(n, m){
    var o = this;
-   AEvent(o, n, 'blur', 'onblur');
+   AEvent.call(o, n, 'blur', 'onblur');
    o.attach = AEventBlur_attach;
    return o;
 }
@@ -50,7 +50,7 @@ function AEventBlur_attach(e, h){
 }
 function AEventChange(n){
    var o = this;
-   AEvent(o, n, 'change', 'onchange');
+   AEvent.call(o, n, 'change', 'onchange');
    o.attach = AEventChange_attach;
    return o;
 }
@@ -58,7 +58,7 @@ function AEventChange_attach(e, h){
 }
 function AEventClick(n){
    var o = this;
-   AEvent(o, n, 'click', 'onclick');
+   AEvent.call(o, n, 'click', 'onclick');
    o.attach = AEventClick_attach;
    return o;
 }
@@ -66,7 +66,7 @@ function AEventClick_attach(e, h){
 }
 function AEventDoubleClick(n){
    var o = this;
-   AEvent(o, n, 'dblclick', 'ondblclick');
+   AEvent.call(o, n, 'dblclick', 'ondblclick');
    o.attach = AEventDoubleClick_attach;
    return o;
 }
@@ -74,7 +74,7 @@ function AEventDoubleClick_attach(e, h){
 }
 function AEventFocus(n){
    var o = this;
-   AEvent(o, n, 'focus', 'onfocus');
+   AEvent.call(o, n, 'focus', 'onfocus');
    o.attach = AEventFocus_attach;
    return o;
 }
@@ -82,7 +82,7 @@ function AEventFocus_attach(e, h){
 }
 function AEventInputChanged(n){
    var o = this;
-   AEvent(o, n, 'input', 'oninput');
+   AEvent.call(o, n, 'input', 'oninput');
    o.attach = AEventInputChanged_attach;
    o.bind   = AEventInputChanged_bind;
    return o;
@@ -99,7 +99,7 @@ function AEventInputChanged_bind(h, u){
 }
 function AEventKeyDown(n){
    var o = this;
-   AEvent(o, n, 'keydown', 'onkeydown');
+   AEvent.call(o, n, 'keydown', 'onkeydown');
    o.attach = AEventKeyDown_attach;
    return o;
 }
@@ -111,7 +111,7 @@ function AEventKeyDown_attach(e, h){
 }
 function AEventKeyPress(n){
    var o = this;
-   AEvent(o, n, 'keypress', 'onkeypress');
+   AEvent.call(o, n, 'keypress', 'onkeypress');
    o.create = AEventKeyPress_create;
    o.attach = AEventKeyPress_attach;
    return o;
@@ -125,7 +125,7 @@ function AEventKeyPress_attach(e, h){
 }
 function AEventKeyUp(n){
    var o = this;
-   AEvent(o, n, 'keyup', 'onkeyup');
+   AEvent.call(o, n, 'keyup', 'onkeyup');
    o.attach = AEventKeyUp_attach;
    return o;
 }
@@ -137,15 +137,15 @@ function AEventKeyUp_attach(e, h){
 }
 function AEventLoad(n){
    var o = this;
-   AEvent(o, n, 'load', 'onload');
+   AEvent.call(o, n, 'load', 'onload');
    o.attach = AEventLoad_attach;
    return o;
 }
 function AEventLoad_attach(e, h){
 }
-function AEventMouse(o, n, l, h){
-   if(!o){o = this;}
-   AEvent(o, n, l, h);
+function AEventMouse(n, l, h){
+   var o = this;
+   AEvent.call(o, n, l, h);
    o.attach = AEventMouse_attach;
    return o;
 }
@@ -172,12 +172,12 @@ function AEventMouse_attach(e, h){
 }
 function AEventMouseDown(n){
    var o = this;
-   AEventMouse(o, n, 'mousedown', 'onmousedown');
+   AEventMouse.call(o, n, 'mousedown', 'onmousedown');
    return o;
 }
 function AEventMouseEnter(n){
    var o = this;
-   AEvent(o, n, 'mouseenter', 'onmouseenter');
+   AEvent.call(o, n, 'mouseenter', 'onmouseenter');
    o._logger = false;
    o.attach  = AEventMouseEnter_attach;
    return o;
@@ -186,7 +186,7 @@ function AEventMouseEnter_attach(e, h){
 }
 function AEventMouseLeave(n){
    var o = this;
-   AEvent(o, n, 'mouseleave', 'onmouseleave');
+   AEvent.call(o, n, 'mouseleave', 'onmouseleave');
    o._logger = false;
    o.attach  = AEventMouseLeave_attach;
    return o;
@@ -195,13 +195,13 @@ function AEventMouseLeave_attach(e, h){
 }
 function AEventMouseMove(n){
    var o = this;
-   AEventMouse(o, n, 'mousemove', 'onmousemove');
+   AEventMouse.call(o, n, 'mousemove', 'onmousemove');
    o._logger = false;
    return o;
 }
 function AEventMouseOut(n){
    var o = this;
-   AEvent(o, n, 'mouseout', 'onmouseout');
+   AEvent.call(o, n, 'mouseout', 'onmouseout');
    o._hSource = null;
    o._altKey  = null;
    o._ctrlKey = null;
@@ -225,7 +225,7 @@ function AEventMouseOut_attach(p){
 }
 function AEventMouseOver(n){
    var o = this;
-   AEvent(o, n, 'mouseover', 'onmouseover');
+   AEvent.call(o, n, 'mouseover', 'onmouseover');
    o._hSource = null;
    o._altKey  = null;
    o._ctrlKey = null;
@@ -249,12 +249,12 @@ function AEventMouseOver_attach(p){
 }
 function AEventMouseUp(n){
    var o = this;
-   AEventMouse(o, n, 'mouseup', 'onmouseup');
+   AEventMouse.call(o, n, 'mouseup', 'onmouseup');
    return o;
 }
 function AEventMouseWheel(n){
    var o = this;
-   AEvent(o, n, 'mousewheel', 'onmousewheel');
+   AEvent.call(o, n, 'mousewheel', 'onmousewheel');
    o.attach = AEventMouseWheel_attach;
    return o;
 }
@@ -272,7 +272,7 @@ function AEventMouseWheel_attach(e, h){
 }
 function AEventReadyStateChange(n){
    var o = this;
-   AEvent(o, n, 'readystatechange', 'onreadystatechange');
+   AEvent.call(o, n, 'readystatechange', 'onreadystatechange');
    o.attach = AEventReadyStateChange_attach;
    return o;
 }
@@ -280,7 +280,7 @@ function AEventReadyStateChange_attach(e, h){
 }
 function AEventResize(n){
    var o = this;
-   AEvent(o, n, 'resize', 'onresize');
+   AEvent.call(o, n, 'resize', 'onresize');
    o.attach = AEventResize_attach;
    return o;
 }
@@ -290,7 +290,7 @@ function AEventResize_attach(e, h){
 }
 function AEventScroll(n){
    var o = this;
-   AEvent(o, n, 'scroll', 'onscroll');
+   AEvent.call(o, n, 'scroll', 'onscroll');
    o.attach = AEventScroll_attach;
    return o;
 }
@@ -298,7 +298,7 @@ function AEventScroll_attach(e, h){
 }
 function AStyle(n, s){
    var o = this;
-   AAnnotation(o, n);
+   AAnnotation.call(o, n);
    o._annotationCd = EAnnotation.Style;
    o._duplicate    = true;
    o._style        = s;
@@ -336,7 +336,7 @@ function AStyle_toString(){
 }
 function AStyleIcon(n, s){
    var o = this;
-   AAnnotation(o, n);
+   AAnnotation.call(o, n);
    o._annotationCd = EAnnotation.Style;
    o._style        = s;
    o.code          = AStyleIcon_code;

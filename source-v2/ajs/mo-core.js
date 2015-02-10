@@ -51,8 +51,8 @@ function RRuntime_isRelease(){
 function RRuntime_supportHtml5(){
    return this._supportHtml5;
 }
-function RRuntime_nvl(a, b){
-   return (a != null) ? a : b;
+function RRuntime_nvl(v, d){
+   return (v != null) ? v : d;
 }
 function RRuntime_subString(v, b, e){
    if(v == null){
@@ -1357,8 +1357,8 @@ function RMemory_refresh(){
       CollectGarbage();
    }
 }
-function AAnnotation(o, n){
-   if(!o){o = this;}
+function AAnnotation(n){
+   var o = this;
    o._annotationCd = null;
    o._inherit      = false;
    o._duplicate    = false;
@@ -1397,9 +1397,9 @@ function ALinker(n, l){
    o.linker     = l;
    return o;
 }
-function AProperty(o, n, l){
-   if(!o){o = this;}
-   AAnnotation(o, n);
+function AProperty(n, l){
+   var o = this;
+   AAnnotation.call(o, n);
    o._inherit      = true;
    o._annotationCd = EAnnotation.Property;
    o._linker       = null;
@@ -1442,7 +1442,7 @@ function AProperty_toString(){
 }
 function APtyBoolean(n, l, v){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._value    = v ? v : false;
    o.build    = APtyBoolean_build;
    o.load     = APtyBoolean_load;
@@ -1470,7 +1470,7 @@ function APtyBoolean_toString(){
 }
 function APtyConfig(n, l){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o.force = true;
    o.load  = APtyConfig_load;
    o.save  = RMethod.empty;
@@ -1479,9 +1479,31 @@ function APtyConfig(n, l){
 function APtyConfig_load(v, x){
    v[this.name] = x;
 }
+function APtyEnum(n, l, e, d){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._enum    = e;
+   o._default = d;
+   o.load     = APtyEnum_load;
+   o.save     = APtyEnum_save;
+   o.toString = APtyEnum_toString;
+   return o;
+}
+function APtyEnum_load(v, x){
+   var o = this;
+   v[o._name] = x.get(o._linker);
+}
+function APtyEnum_save(v, x){
+   var o = this;
+   x.set(o._linker, v[o._name]);
+}
+function APtyEnum_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',enum=' + o._enum + ',default=' + o._default;
+}
 function APtyInteger(n, l, v){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._value   = RInteger.nvl(v);
    o.build    = APtyInteger_build;
    o.toString = APtyInteger_toString;
@@ -1499,7 +1521,7 @@ function APtyInteger_toString(){
 }
 function APtyPadding(n, l, vl, vt, vr, vb){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._left    = RInteger.nvl(vl);
    o._top     = RInteger.nvl(vt);
    o._right   = RInteger.nvl(vr);
@@ -1526,7 +1548,7 @@ function APtyPadding_toString(){
 }
 function APtyPoint2(n, l, x, y){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._x       = RInteger.nvl(x);
    o._y       = RInteger.nvl(y);
    o.load     = APtyPoint2_load;
@@ -1551,7 +1573,7 @@ function APtyPoint2_toString(){
 }
 function APtySet(n, l, s, v){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._search = s;
    o._value  = v;
    o.build    = APtySet_build;
@@ -1586,7 +1608,7 @@ function APtySet_toString(){
 }
 function APtySize2(n, l, w, h){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._width   = RInteger.nvl(w);
    o._height  = RInteger.nvl(h);
    o.load     = APtySize2_load;
@@ -1611,7 +1633,7 @@ function APtySize2_toString(){
 }
 function APtyString(n, l, v){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._value    = v ? v : null;
    o.build    = APtyString_build;
    o.toString = APtyString_toString;
@@ -4191,14 +4213,6 @@ function RTimer_update(){
    o._count++;
    o._lastTime = new Date().getTime();
 }
-var RValue = new function RValue(){
-   var o = this;
-   o.nvl = RValue_nvl;
-   return o;
-}
-function RValue_nvl(v, d){
-   return (v != null) ? v : d;
-}
 function SArguments(o){
    if(!o){o = this;}
    o.owner = null;
@@ -5544,42 +5558,58 @@ var EFrustumPlane = new function EFrustumPlane(){
 }
 var RMath = new function RMath(){
    var o = this;
-   o.PI           = null;
-   o.PI2          = null;
-   o.RADIAN_RATE  = null;
-   o.DEGREE_RATE  = null;
-   o.PERCENT_1000 = 1 / 1000;
-   o.float1       = null;
-   o.float2       = null;
-   o.float3       = null;
-   o.float4       = null;
-   o.float9       = null;
-   o.float12      = null;
-   o.float16      = null;
-   o.double1      = null;
-   o.double2      = null;
-   o.double3      = null;
-   o.double4      = null;
-   o.double16     = null;
-   o.double16     = null;
-   o.double64     = null;
-   o.vector3      = null;
-   o.vectorScale  = null;
-   o.matrix       = null;
-   o.vectorForward = null;
-   o.vectorAxisX  = null;
-   o.vectorAxisY  = null;
-   o.vectorAxisZ  = null;
-   o.construct    = RMath_construct;
+   o.PI             = Math.PI;
+   o.PI2            = Math.PI * 2;
+   o.RADIAN_RATE    = 180 / Math.PI;
+   o.DEGREE_RATE    = Math.PI / 180;
+   o.PERCENT_10     = 1 / 10;
+   o.PERCENT_100    = 1 / 100;
+   o.PERCENT_1000   = 1 / 1000;
+   o.vectorAxisX    = null;
+   o.vectorAxisY    = null;
+   o.vectorAxisZ    = null;
+   o.vectorScale    = null;
+   o.vectorForward  = null;
+   o.vectorBackward = null;
+   o.identity4x4    = null;
+   o.construct      = RMath_construct;
    o.construct();
    return o;
 }
 function RMath_construct(){
    var o = this;
-   o.PI = Math.PI;
-   o.PI2 = Math.PI * 2;
-   o.RADIAN_RATE = 180 / Math.PI;
-   o.DEGREE_RATE = Math.PI / 180;
+   o.vectorAxisX = new SVector3(1, 0, 0);
+   o.vectorAxisY = new SVector3(0, 1, 0);
+   o.vectorAxisZ = new SVector3(0, 0, 1);
+   o.vectorScale = new SVector3(1, 1, 1);
+   o.vectorForward = new SVector3(0, 0, 1);
+   o.vectorBackward = new SVector3(0, 0, -1);
+   o.identity4x4 = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+}
+var RValue = new function RValue(){
+   var o = this;
+   o.float1    = null;
+   o.float2    = null;
+   o.float3    = null;
+   o.float4    = null;
+   o.float9    = null;
+   o.float12   = null;
+   o.float16   = null;
+   o.double1   = null;
+   o.double2   = null;
+   o.double3   = null;
+   o.double4   = null;
+   o.double16  = null;
+   o.double16  = null;
+   o.double64  = null;
+   o.vector3   = null;
+   o.matrix    = null;
+   o.construct = RValue_construct;
+   o.construct();
+   return o;
+}
+function RValue_construct(){
+   var o = this;
    if(RRuntime.supportHtml5()){
       o.float1 = new Float32Array(1);
       o.float2 = new Float32Array(2);
@@ -5597,17 +5627,7 @@ function RMath_construct(){
       o.double16 = new Float64Array(16);
    }
    o.vector3 = new SVector3();
-   o.vectorScale = new SVector3();
-   o.vectorScale.set(1, 1, 1);
    o.matrix = new SMatrix3d();
-   o.vectorForward = new SVector3();
-   o.vectorForward.set(0, 0, 1);
-   o.vectorAxisX = new SVector3();
-   o.vectorAxisX.set(1, 0, 0);
-   o.vectorAxisY = new SVector3();
-   o.vectorAxisY.set(0, 1, 0);
-   o.vectorAxisZ = new SVector3();
-   o.vectorAxisZ.set(0, 0, 1);
 }
 function SColor4(o){
    if(!o){o = this;}
@@ -5976,9 +5996,9 @@ function SFrustumPlanes_updateVision(p){
    pb.d = p[4 * 3 + 3] + p[4 * 3 + 1];
    pb.normalize();
 }
-function SMatrix3d(o){
-   if(!o){o = this;}
-   SMatrix4x4(o);
+function SMatrix3d(){
+   var o = this;
+   SMatrix4x4.call(o);
    o._dirty         = false;
    o.tx             = 0;
    o.ty             = 0;
@@ -5989,6 +6009,7 @@ function SMatrix3d(o){
    o.sx             = 1;
    o.sy             = 1;
    o.sz             = 1;
+   o.isIdentity     = SMatrix3d_isIdentity;
    o.identity       = SMatrix3d_identity;
    o.setTranslate   = SMatrix3d_setTranslate;
    o.setRotation    = SMatrix3d_setRotation;
@@ -6005,17 +6026,25 @@ function SMatrix3d(o){
    o.identity();
    return o;
 }
+function SMatrix3d_isIdentity(){
+   var o = this;
+   if((o.tx != 0) || (o.ty != 0) || (o.tz != 0)){
+      return false;
+   }
+   if((o.rx != 0) || (o.ry != 0) || (o.rz != 0)){
+      return false;
+   }
+   if((o.sx != 1) || (o.sy != 1) || (o.sz != 1)){
+      return false;
+   }
+   return o.isIdentityData();
+}
 function SMatrix3d_identity(){
    var o = this;
    o.tx = o.ty = o.tz = 0;
    o.rx = o.ry = o.rz = 0;
    o.sx = o.sy = o.sz = 1;
-   var d = o._data;
-   d[ 0] = 1; d[ 1] = 0; d[ 2] = 0; d[ 3] = 0;
-   d[ 4] = 0; d[ 5] = 1; d[ 6] = 0; d[ 7] = 0;
-   d[ 8] = 0; d[ 9] = 0; d[10] = 1; d[11] = 0;
-   d[12] = 0; d[13] = 0; d[14] = 0; d[15] = 1;
-   return o;
+   return o.identityData();
 }
 function SMatrix3d_setTranslate(x, y, z){
    var o = this;
@@ -6131,8 +6160,8 @@ function SMatrix3d_unserialize(p){
    o.sz = p.readFloat();
    o.updateForce();
 }
-function SMatrix3x3(o){
-   if(!o){o = this;}
+function SMatrix3x3(){
+   var o = this;
    o._data           = new Array(9);
    o.data            = SMatrix3x3_data;
    o.equalsData      = SMatrix3x3_equalsData;
@@ -6256,7 +6285,7 @@ function SMatrix3x3_rotation(x, y, z){
 function SMatrix3x3_invert(){
    var o = this;
    var d = o._data;
-   var v = RMath.float9;
+   var v = RValue.float9;
    v[0] = (d[4] * d[8]) - (d[5] * d[7]);
    v[1] = (d[2] * d[7]) - (d[1] * d[8]);
    v[2] = (d[1] * d[5]) - (d[2] * d[4]);
@@ -6351,10 +6380,12 @@ function SMatrix3x3_toString(){
    }
    return r.flush();
 }
-function SMatrix4x4(o){
-   if(!o){o = this;}
+function SMatrix4x4(){
+   var o = this;
    o._data           = new Array(16);
    o.data            = SMatrix4x4_data;
+   o.isIdentityData  = SMatrix3d_isIdentityData;
+   o.identityData    = SMatrix3d_identityData;
    o.equalsData      = SMatrix4x4_equalsData;
    o.assignData      = SMatrix4x4_assignData;
    o.appendData      = SMatrix4x4_appendData;
@@ -6375,6 +6406,25 @@ function SMatrix4x4(o){
 }
 function SMatrix4x4_data(){
    return this._data;
+}
+function SMatrix3d_isIdentityData(){
+   var d = this._data;
+   var v = RMath.identity4x4;
+   for(var i = 0; i < 16; i++){
+      if(d[i] != v[i]){
+         return false;
+      }
+   }
+   return true;
+}
+function SMatrix3d_identityData(){
+   var o = this;
+   var d = o._data;
+   var v = RMath.identity4x4;
+   for(var i = 0; i < 16; i++){
+      d[i] = v[i];
+   }
+   return o;
 }
 function SMatrix4x4_equalsData(p){
    var d = this._data;
@@ -6561,7 +6611,7 @@ function SMatrix4x4_scale(x, y, z){
 function SMatrix4x4_invert(){
    var o = this;
    var d = o._data;
-   var v = RMath.float16;
+   var v = RValue.float16;
    v[ 0] =  (d[ 5] * d[10] * d[15]) - (d[ 5] * d[11] * d[14]) - (d[ 9] * d[ 6] * d[15]) + (d[ 9] * d[ 7] * d[14]) + (d[13] * d[ 6] * d[11]) - (d[13] * d[ 7] * d[10]);
    v[ 4] = -(d[ 4] * d[10] * d[15]) + (d[ 4] * d[11] * d[14]) + (d[ 8] * d[ 6] * d[15]) - (d[ 8] * d[ 7] * d[14]) - (d[12] * d[ 6] * d[11]) + (d[12] * d[ 7] * d[10]);
    v[ 8] =  (d[ 4] * d[ 9] * d[15]) - (d[ 4] * d[11] * d[13]) - (d[ 8] * d[ 5] * d[15]) + (d[ 8] * d[ 7] * d[13]) + (d[12] * d[ 5] * d[11]) - (d[12] * d[ 7] * d[ 9]);
@@ -6705,9 +6755,9 @@ function SMatrix4x4_toString(){
    }
    return r.flush();
 }
-function SOrthoMatrix3d(o){
-   if(!o){o = this;}
-   SMatrix3d(o);
+function SOrthoMatrix3d(){
+   var o = this;
+   SMatrix3d.call(o);
    o.perspectiveLH            = SOrthoMatrix3d_perspectiveLH;
    o.perspectiveRH            = SOrthoMatrix3d_perspectiveRH;
    o.perspectiveFieldOfViewLH = SOrthoMatrix3d_perspectiveFieldOfViewLH;
@@ -6891,9 +6941,9 @@ function SPadding_dump(d){
    var o = this;
    return RClass.dump(o) + ' [' + o.left + ',' + o.top + ',' + o.right + ',' + o.bottom + ']';
 }
-function SPerspectiveMatrix3d(o){
-   if(!o){o = this;}
-   SMatrix3d(o);
+function SPerspectiveMatrix3d(){
+   var o = this;
+   SMatrix3d.call(o);
    o.perspectiveLH            = SPerspectiveMatrix3d_perspectiveLH;
    o.perspectiveRH            = SPerspectiveMatrix3d_perspectiveRH;
    o.perspectiveFieldOfViewLH = SPerspectiveMatrix3d_perspectiveFieldOfViewLH;
@@ -7625,9 +7675,9 @@ function SSquare_dump(d){
 }
 function SValue3(x, y, z){
    var o = this;
-   o.x           = RValue.nvl(x, 0);
-   o.y           = RValue.nvl(y, 0);
-   o.z           = RValue.nvl(z, 0);
+   o.x           = RRuntime.nvl(x, 0);
+   o.y           = RRuntime.nvl(y, 0);
+   o.z           = RRuntime.nvl(z, 0);
    o.assign      = SValue3_assign;
    o.set         = SValue3_set;
    o.absolute    = SValue3_absolute;
@@ -7706,10 +7756,10 @@ function SValue3_toString(){
 }
 function SValue4(x, y, z, w){
    var o = this;
-   o.x           = RValue.nvl(x, 0);
-   o.y           = RValue.nvl(y, 0);
-   o.z           = RValue.nvl(z, 0);
-   o.w           = RValue.nvl(w, 1);
+   o.x           = RRuntime.nvl(x, 0);
+   o.y           = RRuntime.nvl(y, 0);
+   o.z           = RRuntime.nvl(z, 0);
+   o.w           = RRuntime.nvl(w, 1);
    o.assign      = SValue4_assign;
    o.set         = SValue4_set;
    o.absolute    = SValue4_absolute;
@@ -7869,9 +7919,9 @@ function SVector4_unserialize3(p){
    o.y = p.readFloat();
    o.z = p.readFloat();
 }
-function AEvent(o, n, l, h){
-   if(!o){o = this;}
-   AAnnotation(o, n);
+function AEvent(n, l, h){
+   var o = this;
+   AAnnotation.call(o, n);
    o._annotationCd = EAnnotation.Event;
    o._inherit      = true;
    o._logger       = true;
@@ -7913,7 +7963,7 @@ function AEvent_toString(){
 }
 function AEventBlur(n, m){
    var o = this;
-   AEvent(o, n, 'blur', 'onblur');
+   AEvent.call(o, n, 'blur', 'onblur');
    o.attach = AEventBlur_attach;
    return o;
 }
@@ -7921,7 +7971,7 @@ function AEventBlur_attach(e, h){
 }
 function AEventChange(n){
    var o = this;
-   AEvent(o, n, 'change', 'onchange');
+   AEvent.call(o, n, 'change', 'onchange');
    o.attach = AEventChange_attach;
    return o;
 }
@@ -7929,7 +7979,7 @@ function AEventChange_attach(e, h){
 }
 function AEventClick(n){
    var o = this;
-   AEvent(o, n, 'click', 'onclick');
+   AEvent.call(o, n, 'click', 'onclick');
    o.attach = AEventClick_attach;
    return o;
 }
@@ -7937,7 +7987,7 @@ function AEventClick_attach(e, h){
 }
 function AEventDoubleClick(n){
    var o = this;
-   AEvent(o, n, 'dblclick', 'ondblclick');
+   AEvent.call(o, n, 'dblclick', 'ondblclick');
    o.attach = AEventDoubleClick_attach;
    return o;
 }
@@ -7945,7 +7995,7 @@ function AEventDoubleClick_attach(e, h){
 }
 function AEventFocus(n){
    var o = this;
-   AEvent(o, n, 'focus', 'onfocus');
+   AEvent.call(o, n, 'focus', 'onfocus');
    o.attach = AEventFocus_attach;
    return o;
 }
@@ -7953,7 +8003,7 @@ function AEventFocus_attach(e, h){
 }
 function AEventInputChanged(n){
    var o = this;
-   AEvent(o, n, 'input', 'oninput');
+   AEvent.call(o, n, 'input', 'oninput');
    o.attach = AEventInputChanged_attach;
    o.bind   = AEventInputChanged_bind;
    return o;
@@ -7970,7 +8020,7 @@ function AEventInputChanged_bind(h, u){
 }
 function AEventKeyDown(n){
    var o = this;
-   AEvent(o, n, 'keydown', 'onkeydown');
+   AEvent.call(o, n, 'keydown', 'onkeydown');
    o.attach = AEventKeyDown_attach;
    return o;
 }
@@ -7982,7 +8032,7 @@ function AEventKeyDown_attach(e, h){
 }
 function AEventKeyPress(n){
    var o = this;
-   AEvent(o, n, 'keypress', 'onkeypress');
+   AEvent.call(o, n, 'keypress', 'onkeypress');
    o.create = AEventKeyPress_create;
    o.attach = AEventKeyPress_attach;
    return o;
@@ -7996,7 +8046,7 @@ function AEventKeyPress_attach(e, h){
 }
 function AEventKeyUp(n){
    var o = this;
-   AEvent(o, n, 'keyup', 'onkeyup');
+   AEvent.call(o, n, 'keyup', 'onkeyup');
    o.attach = AEventKeyUp_attach;
    return o;
 }
@@ -8008,15 +8058,15 @@ function AEventKeyUp_attach(e, h){
 }
 function AEventLoad(n){
    var o = this;
-   AEvent(o, n, 'load', 'onload');
+   AEvent.call(o, n, 'load', 'onload');
    o.attach = AEventLoad_attach;
    return o;
 }
 function AEventLoad_attach(e, h){
 }
-function AEventMouse(o, n, l, h){
-   if(!o){o = this;}
-   AEvent(o, n, l, h);
+function AEventMouse(n, l, h){
+   var o = this;
+   AEvent.call(o, n, l, h);
    o.attach = AEventMouse_attach;
    return o;
 }
@@ -8043,12 +8093,12 @@ function AEventMouse_attach(e, h){
 }
 function AEventMouseDown(n){
    var o = this;
-   AEventMouse(o, n, 'mousedown', 'onmousedown');
+   AEventMouse.call(o, n, 'mousedown', 'onmousedown');
    return o;
 }
 function AEventMouseEnter(n){
    var o = this;
-   AEvent(o, n, 'mouseenter', 'onmouseenter');
+   AEvent.call(o, n, 'mouseenter', 'onmouseenter');
    o._logger = false;
    o.attach  = AEventMouseEnter_attach;
    return o;
@@ -8057,7 +8107,7 @@ function AEventMouseEnter_attach(e, h){
 }
 function AEventMouseLeave(n){
    var o = this;
-   AEvent(o, n, 'mouseleave', 'onmouseleave');
+   AEvent.call(o, n, 'mouseleave', 'onmouseleave');
    o._logger = false;
    o.attach  = AEventMouseLeave_attach;
    return o;
@@ -8066,13 +8116,13 @@ function AEventMouseLeave_attach(e, h){
 }
 function AEventMouseMove(n){
    var o = this;
-   AEventMouse(o, n, 'mousemove', 'onmousemove');
+   AEventMouse.call(o, n, 'mousemove', 'onmousemove');
    o._logger = false;
    return o;
 }
 function AEventMouseOut(n){
    var o = this;
-   AEvent(o, n, 'mouseout', 'onmouseout');
+   AEvent.call(o, n, 'mouseout', 'onmouseout');
    o._hSource = null;
    o._altKey  = null;
    o._ctrlKey = null;
@@ -8096,7 +8146,7 @@ function AEventMouseOut_attach(p){
 }
 function AEventMouseOver(n){
    var o = this;
-   AEvent(o, n, 'mouseover', 'onmouseover');
+   AEvent.call(o, n, 'mouseover', 'onmouseover');
    o._hSource = null;
    o._altKey  = null;
    o._ctrlKey = null;
@@ -8120,12 +8170,12 @@ function AEventMouseOver_attach(p){
 }
 function AEventMouseUp(n){
    var o = this;
-   AEventMouse(o, n, 'mouseup', 'onmouseup');
+   AEventMouse.call(o, n, 'mouseup', 'onmouseup');
    return o;
 }
 function AEventMouseWheel(n){
    var o = this;
-   AEvent(o, n, 'mousewheel', 'onmousewheel');
+   AEvent.call(o, n, 'mousewheel', 'onmousewheel');
    o.attach = AEventMouseWheel_attach;
    return o;
 }
@@ -8143,7 +8193,7 @@ function AEventMouseWheel_attach(e, h){
 }
 function AEventReadyStateChange(n){
    var o = this;
-   AEvent(o, n, 'readystatechange', 'onreadystatechange');
+   AEvent.call(o, n, 'readystatechange', 'onreadystatechange');
    o.attach = AEventReadyStateChange_attach;
    return o;
 }
@@ -8151,7 +8201,7 @@ function AEventReadyStateChange_attach(e, h){
 }
 function AEventResize(n){
    var o = this;
-   AEvent(o, n, 'resize', 'onresize');
+   AEvent.call(o, n, 'resize', 'onresize');
    o.attach = AEventResize_attach;
    return o;
 }
@@ -8161,7 +8211,7 @@ function AEventResize_attach(e, h){
 }
 function AEventScroll(n){
    var o = this;
-   AEvent(o, n, 'scroll', 'onscroll');
+   AEvent.call(o, n, 'scroll', 'onscroll');
    o.attach = AEventScroll_attach;
    return o;
 }
@@ -8169,7 +8219,7 @@ function AEventScroll_attach(e, h){
 }
 function AStyle(n, s){
    var o = this;
-   AAnnotation(o, n);
+   AAnnotation.call(o, n);
    o._annotationCd = EAnnotation.Style;
    o._duplicate    = true;
    o._style        = s;
@@ -8207,7 +8257,7 @@ function AStyle_toString(){
 }
 function AStyleIcon(n, s){
    var o = this;
-   AAnnotation(o, n);
+   AAnnotation.call(o, n);
    o._annotationCd = EAnnotation.Style;
    o._style        = s;
    o.code          = AStyleIcon_code;

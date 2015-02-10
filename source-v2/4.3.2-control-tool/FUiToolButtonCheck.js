@@ -9,9 +9,12 @@ function FUiToolButtonCheck(o){
    o = RClass.inherits(this, o, FUiToolButton);
    //..........................................................
    // @property
-   o._checked        = RClass.register(o, new APtyBoolean('_checked'));
+   o._optionChecked  = RClass.register(o, new APtyBoolean('_optionChecked', 'check'));
    o._groupName      = RClass.register(o, new APtyString('_groupName'));
    o._groupDefault   = RClass.register(o, new APtyString('_groupDefault'));
+   //..........................................................
+   // @attribute
+   o._statusChecked  = false;
    //..........................................................
    // @event
    o.onEnter         = FUiToolButtonCheck_onEnter;
@@ -38,7 +41,7 @@ function FUiToolButtonCheck(o){
 //==========================================================
 function FUiToolButtonCheck_onEnter(p){
    var o = this;
-   if(!o._checked){
+   if(!o._statusChecked){
       o._hPanel.className = this.styleName('Hover');
    }
 }
@@ -51,7 +54,7 @@ function FUiToolButtonCheck_onEnter(p){
 //==========================================================
 function FUiToolButtonCheck_onLeave(p){
    var o = this;
-   if(!o._checked){
+   if(!o._statusChecked){
       o._hPanel.className = this.styleName('Normal');
    }
 }
@@ -64,8 +67,8 @@ function FUiToolButtonCheck_onLeave(p){
 //==========================================================
 function FUiToolButtonCheck_onMouseDown(p){
    var o = this;
-   o.check(!o._checked);
-   o.processClickListener(o, o._checked);
+   o.check(!o._statusChecked);
+   o.processClickListener(o, o._statusChecked);
 }
 
 //==========================================================
@@ -77,7 +80,7 @@ function FUiToolButtonCheck_onMouseDown(p){
 function FUiToolButtonCheck_onMouseUp(){
    var o = this;
    //o._hPanel.className = o.styleName('Hover');
-   //o.check(!o._checked)
+   //o.check(!o._statusChecked)
    //if(o.action){
       //eval(o.action);
    //}
@@ -132,8 +135,8 @@ function FUiToolButtonCheck_setGroupDefault(p){
 function FUiToolButtonCheck_innerCheck(p){
    var o = this;
    // 设置状态
-   if(o._checked != p){
-      o._checked = p;
+   if(o._statusChecked != p){
+      o._statusChecked = p;
       if(p){
          o._hPanel.className = o.styleName('Press');
       }else{
@@ -192,7 +195,7 @@ function FUiToolButtonCheck_check(p){
 //==========================================================
 function FUiToolButtonCheck_dispose(){
    var o = this;
-   o._checked = null;
+   o._statusChecked = null;
    o._groupName = null;
    o.__base.FUiToolButton.dispose.call(o);
 }

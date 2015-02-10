@@ -1,23 +1,29 @@
-function FUiFrameContainer(o){
+function FUiFramePage(o){
    o = RClass.inherits(this, o, FUiContainer);
-   o.onBuildPanel = FUiFrameContainer_onBuildPanel
+   o.onBuildPanel = FUiFramePage_onBuildPanel
+   o.appendChild  = FUiFramePage_appendChild;
    return o;
 }
-function FUiFrameContainer_onBuildPanel(e){
+function FUiFramePage_onBuildPanel(e){
    var o = this;
-   o._hPanel = RBuilder.createTableCell(e.hDocument, o.styleName('Panel'));
-   o._hPanel.vAlign = 'top';
+   var h = o._hPanel = RBuilder.createTableCell(e.hDocument, o.styleName('Panel'));
+   h.vAlign = 'top';
+}
+function FUiFramePage_appendChild(p){
+   var o = this;
+   o._hPanel.appendChild(p._hPanel);
 }
 function FUiFrameSet(o){
    o = RClass.inherits(this, o, FUiContainer);
+   o._directionCd  = RClass.register(o, new APtyEnum('_directionCd', null, EDirection), EDirection.Vertical);
    o._stylePanel   = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
-   o._directionCd  = EDirection.Vertical;
    o._frames       = null;
    o._hLine        = null;
    o.onBuildPanel  = FUiFrameSet_onBuildPanel;
    o.construct     = FUiFrameSet_construct;
    o.appendFrame   = FUiFrameSet_appendFrame;
    o.appendSpliter = FUiFrameSet_appendSpliter;
+   o.appendChild   = FUiFrameSet_appendChild;
    o.dispose       = FUiFrameSet_dispose;
    return o;
 }
@@ -34,7 +40,7 @@ function FUiFrameSet_appendFrame(p){
    var o = this;
    if(o._directionCd == EDirection.Horizontal){
       var hr = o._hLine;
-      if(hr == null){
+      if(!hr){
          hr = o._hLine = RBuilder.appendTableRow(o._hPanel);
       }
       p.setPanel(hr);
@@ -52,11 +58,15 @@ function FUiFrameSet_appendFrame(p){
    }
    o._frames.push(p);
 }
-function FUiFrameSet_appendSpliter(){
+function FUiFrameSet_appendSpliter(p){
    var o = this;
-   var sp = RClass.create(FUiFrameSpliter);
-   sp._frameset = o;
-   sp.build(o._hPanel);
+   var sp = null;
+   if(p){
+      sp = p;
+   }else{
+      sp = RClass.create(FUiFrameSpliter);
+      sp.build(o._hPanel);
+   }
    if(o._directionCd == EDirection.Horizontal){
       o._hLine.appendChild(sp._hPanel);
       sp._hPanel.style.width = '4px';
@@ -69,6 +79,18 @@ function FUiFrameSet_appendSpliter(){
    }
    o._frames.push(sp);
    return sp;
+}
+function FUiFrameSet_appendChild(p){
+   var o = this;
+   p._frameset = o;
+   if(RClass.isClass(p, FUiFramePage)){
+      o.appendFrame(p);
+      return;
+   }else if(RClass.isClass(p, FUiFrameSpliter)){
+      o.appendSpliter(p);
+      return;
+   }
+   o.__base.FUiContainer.appendChild.call(o, p);
 }
 function FUiFrameSet_dispose(){
    var o = this;
@@ -274,5 +296,24 @@ function FUiFrameSpliter_click(){
             o.hButtonIcon.src = RRes.iconPath('ctl.FSpliter_Right');
          }
       }
+   }
+}
+function FUiWorkspace(o){
+   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
+   o._hContainer  = null;
+   o._frames      = null;
+   o.onBuildPanel = FUiWorkspace_onBuildPanel;
+   o.appendChild  = FUiWorkspace_appendChild;
+   return o;
+}
+function FUiWorkspace_onBuildPanel(p){
+   var o = this;
+   o._hContainer = p.hDocument.body;
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+}
+function FUiWorkspace_appendChild(p){
+   var o = this;
+   if(RClass.isClass(p, FUiFrameSet)){
+      o._hContainer.appendChild(p._hPanel);
    }
 }

@@ -5,14 +5,17 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function SMatrix4x4(o){
-   if(!o){o = this;}
+function SMatrix4x4(){
+   var o = this;
    //..........................................................
    // @attribute
    o._data           = new Array(16);
    //..........................................................
    // @method
    o.data            = SMatrix4x4_data;
+   // @method
+   o.isIdentityData  = SMatrix3d_isIdentityData;
+   o.identityData    = SMatrix3d_identityData;
    // @method
    o.equalsData      = SMatrix4x4_equalsData;
    o.assignData      = SMatrix4x4_assignData;
@@ -46,6 +49,38 @@ function SMatrix4x4(o){
 //============================================================
 function SMatrix4x4_data(){
    return this._data;
+}
+
+//============================================================
+// <T>是否为单位化数据。</T>
+//
+// @method
+// @return 是否单位化
+//============================================================
+function SMatrix3d_isIdentityData(){
+   var d = this._data;
+   var v = RMath.identity4x4;
+   for(var i = 0; i < 16; i++){
+      if(d[i] != v[i]){
+         return false;
+      }
+   }
+   return true;
+}
+
+//============================================================
+// <T>单位化处理。</T>
+//
+// @method
+//============================================================
+function SMatrix3d_identityData(){
+   var o = this;
+   var d = o._data;
+   var v = RMath.identity4x4;
+   for(var i = 0; i < 16; i++){
+      d[i] = v[i];
+   }
+   return o;
 }
 
 //============================================================
@@ -335,7 +370,7 @@ function SMatrix4x4_scale(x, y, z){
 function SMatrix4x4_invert(){
    var o = this;
    var d = o._data;
-   var v = RMath.float16;
+   var v = RValue.float16;
    // 计算矩阵
    v[ 0] =  (d[ 5] * d[10] * d[15]) - (d[ 5] * d[11] * d[14]) - (d[ 9] * d[ 6] * d[15]) + (d[ 9] * d[ 7] * d[14]) + (d[13] * d[ 6] * d[11]) - (d[13] * d[ 7] * d[10]);
    v[ 4] = -(d[ 4] * d[10] * d[15]) + (d[ 4] * d[11] * d[14]) + (d[ 8] * d[ 6] * d[15]) - (d[ 8] * d[ 7] * d[14]) - (d[12] * d[ 6] * d[11]) + (d[12] * d[ 7] * d[10]);

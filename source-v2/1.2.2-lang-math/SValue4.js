@@ -13,10 +13,10 @@ function SValue4(x, y, z, w){
    var o = this;
    //..........................................................
    // @attribute
-   o.x           = RValue.nvl(x, 0);
-   o.y           = RValue.nvl(y, 0);
-   o.z           = RValue.nvl(z, 0);
-   o.w           = RValue.nvl(w, 1);
+   o.x           = RRuntime.nvl(x, 0);
+   o.y           = RRuntime.nvl(y, 0);
+   o.z           = RRuntime.nvl(z, 0);
+   o.w           = RRuntime.nvl(w, 1);
    //..........................................................
    // @method
    o.assign      = SValue4_assign;

@@ -8,11 +8,14 @@
 function FUiFrameSet(o){
    o = RClass.inherits(this, o, FUiContainer);
    //..........................................................
+   // @property String 提示信息
+   o._directionCd  = RClass.register(o, new APtyEnum('_directionCd', null, EDirection), EDirection.Vertical);
+
+   //..........................................................
    // @style
    o._stylePanel   = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
    //..........................................................
    // @style
-   o._directionCd  = EDirection.Vertical;
    o._frames       = null;
    //..........................................................
    // @html
@@ -26,6 +29,8 @@ function FUiFrameSet(o){
    // @method
    o.appendFrame   = FUiFrameSet_appendFrame;
    o.appendSpliter = FUiFrameSet_appendSpliter;
+   // @method
+   o.appendChild   = FUiFrameSet_appendChild;
    // @method
    o.dispose       = FUiFrameSet_dispose;
    return o;
@@ -64,7 +69,7 @@ function FUiFrameSet_appendFrame(p){
    if(o._directionCd == EDirection.Horizontal){
       // 横向排布
       var hr = o._hLine;
-      if(hr == null){
+      if(!hr){
          hr = o._hLine = RBuilder.appendTableRow(o._hPanel);
       }
       p.setPanel(hr);
@@ -91,11 +96,15 @@ function FUiFrameSet_appendFrame(p){
 //
 // @method
 //==========================================================
-function FUiFrameSet_appendSpliter(){
+function FUiFrameSet_appendSpliter(p){
    var o = this;
-   var sp = RClass.create(FUiFrameSpliter);
-   sp._frameset = o;
-   sp.build(o._hPanel);
+   var sp = null;
+   if(p){
+      sp = p;
+   }else{
+      sp = RClass.create(FUiFrameSpliter);
+      sp.build(o._hPanel);
+   }
    if(o._directionCd == EDirection.Horizontal){
       // 横向排布
       o._hLine.appendChild(sp._hPanel);
@@ -110,6 +119,25 @@ function FUiFrameSet_appendSpliter(){
    }
    o._frames.push(sp);
    return sp;
+}
+
+//==========================================================
+// <T>增加一个控件。</T>
+//
+// @method
+// @param p:control:FUiControl 控件
+//==========================================================
+function FUiFrameSet_appendChild(p){
+   var o = this;
+   p._frameset = o;
+   if(RClass.isClass(p, FUiFramePage)){
+      o.appendFrame(p);
+      return;
+   }else if(RClass.isClass(p, FUiFrameSpliter)){
+      o.appendSpliter(p);
+      return;
+   }
+   o.__base.FUiContainer.appendChild.call(o, p);
 }
 
 //==========================================================

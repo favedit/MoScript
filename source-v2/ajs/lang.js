@@ -1,5 +1,5 @@
-function AAnnotation(o, n){
-   if(!o){o = this;}
+function AAnnotation(n){
+   var o = this;
    o._annotationCd = null;
    o._inherit      = false;
    o._duplicate    = false;
@@ -38,9 +38,9 @@ function ALinker(n, l){
    o.linker     = l;
    return o;
 }
-function AProperty(o, n, l){
-   if(!o){o = this;}
-   AAnnotation(o, n);
+function AProperty(n, l){
+   var o = this;
+   AAnnotation.call(o, n);
    o._inherit      = true;
    o._annotationCd = EAnnotation.Property;
    o._linker       = null;
@@ -83,7 +83,7 @@ function AProperty_toString(){
 }
 function APtyBoolean(n, l, v){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._value    = v ? v : false;
    o.build    = APtyBoolean_build;
    o.load     = APtyBoolean_load;
@@ -111,7 +111,7 @@ function APtyBoolean_toString(){
 }
 function APtyConfig(n, l){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o.force = true;
    o.load  = APtyConfig_load;
    o.save  = RMethod.empty;
@@ -120,9 +120,31 @@ function APtyConfig(n, l){
 function APtyConfig_load(v, x){
    v[this.name] = x;
 }
+function APtyEnum(n, l, e, d){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._enum    = e;
+   o._default = d;
+   o.load     = APtyEnum_load;
+   o.save     = APtyEnum_save;
+   o.toString = APtyEnum_toString;
+   return o;
+}
+function APtyEnum_load(v, x){
+   var o = this;
+   v[o._name] = x.get(o._linker);
+}
+function APtyEnum_save(v, x){
+   var o = this;
+   x.set(o._linker, v[o._name]);
+}
+function APtyEnum_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',enum=' + o._enum + ',default=' + o._default;
+}
 function APtyInteger(n, l, v){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._value   = RInteger.nvl(v);
    o.build    = APtyInteger_build;
    o.toString = APtyInteger_toString;
@@ -140,7 +162,7 @@ function APtyInteger_toString(){
 }
 function APtyPadding(n, l, vl, vt, vr, vb){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._left    = RInteger.nvl(vl);
    o._top     = RInteger.nvl(vt);
    o._right   = RInteger.nvl(vr);
@@ -167,7 +189,7 @@ function APtyPadding_toString(){
 }
 function APtyPoint2(n, l, x, y){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._x       = RInteger.nvl(x);
    o._y       = RInteger.nvl(y);
    o.load     = APtyPoint2_load;
@@ -192,7 +214,7 @@ function APtyPoint2_toString(){
 }
 function APtySet(n, l, s, v){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._search = s;
    o._value  = v;
    o.build    = APtySet_build;
@@ -227,7 +249,7 @@ function APtySet_toString(){
 }
 function APtySize2(n, l, w, h){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._width   = RInteger.nvl(w);
    o._height  = RInteger.nvl(h);
    o.load     = APtySize2_load;
@@ -252,7 +274,7 @@ function APtySize2_toString(){
 }
 function APtyString(n, l, v){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    o._value    = v ? v : null;
    o.build    = APtyString_build;
    o.toString = APtyString_toString;
@@ -2831,14 +2853,6 @@ function RTimer_update(){
    var o = this;
    o._count++;
    o._lastTime = new Date().getTime();
-}
-var RValue = new function RValue(){
-   var o = this;
-   o.nvl = RValue_nvl;
-   return o;
-}
-function RValue_nvl(v, d){
-   return (v != null) ? v : d;
 }
 function SArguments(o){
    if(!o){o = this;}

@@ -8,23 +8,25 @@ function FDsSceneCatalog(o){
    o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
    //..........................................................
    // @event
-   o.onBuild       = FDsSceneCatalog_onBuild;
+   o.onBuild        = FDsSceneCatalog_onBuild;
    // @event
-   o.onNodeClick   = FDsSceneCatalog_onNodeClick;
+   o.onNodeClick    = FDsSceneCatalog_onNodeClick;
    //..........................................................
    // @listeners
-   o.lsnsSelect    = null;
+   o.lsnsSelect     = null;
    //..........................................................
    // @method
-   o.construct     = FDsSceneCatalog_construct;
+   o.construct      = FDsSceneCatalog_construct;
    // @method
-   o.buildTheme    = FDsSceneCatalog_buildTheme;
-   o.buildDisplay  = FDsSceneCatalog_buildDisplay;
-   o.buildTemplate = FDsSceneCatalog_buildTemplate;
+   o.buildTechnique = FDsSceneCatalog_buildTechnique;
+   o.buildRegion    = FDsSceneCatalog_buildRegion;
+   o.buildDisplay   = FDsSceneCatalog_buildDisplay;
+   o.buildLayer     = FDsSceneCatalog_buildLayer;
+   o.buildScene     = FDsSceneCatalog_buildScene;
    // @method
-   o.selectObject  = FDsSceneCatalog_selectObject;
+   o.selectObject   = FDsSceneCatalog_selectObject;
    // @method
-   o.dispose       = FDsSceneCatalog_dispose;
+   o.dispose        = FDsSceneCatalog_dispose;
    return o;
 }
 
@@ -40,7 +42,7 @@ function FDsSceneCatalog_onBuild(p){
    // 注册事件
    o.lsnsClick.register(o, o.onNodeClick);
    // 加载定义
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.template');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.scene');
 }
 
 //==========================================================
@@ -66,142 +68,128 @@ function FDsSceneCatalog_construct(){
 }
 
 //==========================================================
-// <T>根据模板主题建立目录。</T>
+// <T>建立技术目录。</T>
 //
 // @method
-// @param r:node:FTreeNode 父节点
-// @param t:theme:FRs3TemplateTheme 模板主题
+// @param n:node:FTreeNode 父节点
+// @param p:technique:FG3dTechnique 渲染技术
 //==========================================================
-function FDsSceneCatalog_buildTheme(pn, pt){
+function FDsSceneCatalog_buildTechnique(n, p){
    var o = this;
-   // 创建主题节点
-   var n = o.createNode();
-   n.setLabel(pt.code());
-   n.setTypeName('theme');
-   n.dataPropertySet('linker', pt);
-   pn.appendNode(n);
-   // 创建材质集合
-   var s = pt.materials();
-   var c = s.count();
-   if(c > 0){
-      var mc = RConsole.find(FRs3MaterialConsole);
+   // 创建技术节点
+   var nt = o.createNode();
+   nt.setLabel('Technique');
+   nt.setTypeName('technique');
+   nt.dataPropertySet('linker', p);
+   n.appendNode(nt);
+}
+
+//==========================================================
+// <T>建立区域目录。</T>
+//
+// @method
+// @param n:node:FTreeNode 父节点
+// @param p:theme:FRs3TemplateTheme 模板主题
+//==========================================================
+function FDsSceneCatalog_buildRegion(n, p){
+   var o = this;
+   // 新建区域节点
+   var nr = o.createNode();
+   nr.setLabel('Region');
+   nr.setTypeName('region');
+   n.appendNode(nr);
+   // 新建区域相机节点
+   var nc = o.createNode();
+   nc.setLabel('Camera');
+   nc.setTypeName('camera');
+   nc.dataPropertySet('linker', p.camera());
+   nr.appendNode(nc);
+   // 新建区域光源节点
+   var nl = o.createNode();
+   nl.setLabel('Light');
+   nl.setTypeName('light');
+   nl.dataPropertySet('linker', p.directionalLight());
+   nr.appendNode(nl);
+}
+
+//==========================================================
+// <T>建立显示目录。</T>
+//
+// @method
+// @param n:node:FTreeNode 父节点
+// @param p:display:FDisplayContainer 显示容器
+//==========================================================
+function FDsSceneCatalog_buildDisplay(n, p){
+   var o = this;
+   // 创建显示集合
+   var s = p.displays();
+   if(s){
+      var c = s.count();
       for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         var mg = mc.findGroup(m.groupGuid());
+         var d = s.get(i);
+         var dr = d.resourceScene();
          // 创建节点
-         var mn = o.createNode();
-         mn.setLabel(mg.code());
-         mn.setTypeName('material');
-         mn.dataPropertySet('linker', m);
-         n.appendNode(mn);
+         var dn = o.createNode();
+         dn.setLabel(dr.code());
+         dn.setTypeName('display');
+         dn.dataPropertySet('linker', d);
+         n.appendNode(dn);
       }
    }
 }
 
 //==========================================================
-// <T>根据模板主题建立目录。</T>
+// <T>建立显示层目录。</T>
 //
 // @method
-// @param r:node:FTreeNode 父节点
-// @param t:theme:FRs3TemplateTheme 模板主题
+// @param n:node:FTreeNode 父节点
+// @param p:stage:FStage 舞台对象
 //==========================================================
-function FDsSceneCatalog_buildDisplay(pn, pt){
+function FDsSceneCatalog_buildLayer(n, p){
    var o = this;
-   // 创建主题节点
-   var n = o.createNode();
-   n.setLabel(pt.code());
-   n.setTypeName('theme');
-   n.dataPropertySet('linker', pt);
-   pn.appendNode(n);
-   // 创建材质集合
-   var s = pt.materials();
-   var c = s.count();
-   if(c > 0){
-      var mgc = RConsole.find(FRs3MaterialGroupConsole);
-      for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         var mg = mgc.find(m.groupGuid());
-         // 创建节点
-         var mn = o.createNode();
-         mn.setLabel(mg.code());
-         mn.setTypeName('material');
-         mn.dataPropertySet('linker', m);
-         n.appendNode(mn);
-      }
+   // 新建层集合节点
+   var ns = o.createNode();
+   ns.setLabel('Layers');
+   ns.setTypeName('layers');
+   n.appendNode(ns);
+   // 新建层集合
+   var ds = p.layers();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var l = ds.value(i);
+      var lr = l.resource();
+      // 新建显示层
+      var nl = o.createNode();
+      nl.setLabel('Layer:' + lr.code());
+      nl.setTypeName('layer');
+      nl.dataPropertySet('linker', l);
+      ns.appendNode(nl);
+      // 新建显示集合
+      o.buildDisplay(nl, l)
    }
 }
 
 //==========================================================
-// <T>根据模板建立目录。</T>
+// <T>建立场景目录。</T>
 //
 // @method
-// @param p:template:FTemplate3d 渲染模板
+// @param p:scene:FE3dScene 渲染场景
 //==========================================================
-function FDsSceneCatalog_buildTemplate(p){
+function FDsSceneCatalog_buildScene(p){
    var o = this;
    var r = p._resource;
    // 新建场景节点
    var nr = o.createNode();
    nr.setLabel(r.code());
-   nr.setTypeName('template');
+   nr.setTypeName('scene');
    nr.dataPropertySet('linker', p);
    o.appendNode(nr);
    // 新建技术节点
-   var nt = o.createNode();
-   nt.setLabel('Technique');
-   nt.setTypeName('template');
-   nt.dataPropertySet('linker', p);
-   nr.appendNode(nt);
+   o.buildTechnique(nr, p.technique())
    // 新建区域节点
-   var nt = o.createNode();
-   nt.setLabel('Region');
-   nt.setTypeName('template');
-   nt.dataPropertySet('linker', p);
-   nr.appendNode(nt);
-   // 新建区域相机节点
-   var ntc = o.createNode();
-   ntc.setLabel('Camera');
-   ntc.setTypeName('template');
-   ntc.dataPropertySet('linker', p);
-   nt.appendNode(ntc);
-   // 新建区域光源节点
-   var ntc = o.createNode();
-   ntc.setLabel('Light');
-   ntc.setTypeName('template');
-   ntc.dataPropertySet('linker', p);
-   nt.appendNode(ntc);
-   // 新建主题节点
-   //var ts = r.themes();
-   //var c = ts.count();
-   //if(c > 0){
-   //   var ns = o.createNode();
-   //   ns.setLabel('Themes');
-   //   ns.setTypeName('themes');
-   //   nr.appendNode(ns);
-   //   for(var i = 0; i < c; i++){
-   //      o.buildTheme(ns, ts.get(i));
-   //   }
-   //}
-   // 新建显示节点
-   var ds = p.layers();
-   var c = ds.count();
-   if(c > 0){
-      var ns = o.createNode();
-      ns.setLabel('Layers');
-      ns.setTypeName('displays');
-      nr.appendNode(ns);
-      for(var i = 0; i < c; i++){
-         var d = ds.get(i);
-         //var r = d.resource();
-         //var rd = r.model();
-         //var rm = r.mesh();
-         var n = o.createNode();
-         n.setLabel('Layer');
-         n.setTypeName('display');
-         n.dataPropertySet('linker', d);
-         ns.appendNode(n);
-      }
-   }
+   o.buildRegion(nr, p.region());
+   // 建立显示层
+   o.buildLayer(nr, p);
 }
 
 //==========================================================

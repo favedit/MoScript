@@ -635,7 +635,7 @@ function FUiControl_builded(p){
       throw new TError(o, 'Current control is already builded.');
    }
    // 构建完成处理
-   o.onBuilded();
+   o.onBuilded(p);
    // 设置状态
    o._statusBuilded = true;
 }

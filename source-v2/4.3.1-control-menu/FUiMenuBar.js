@@ -6,22 +6,19 @@
 // @history 150121
 //==========================================================
 function FUiMenuBar(o){
-   o = RClass.inherits(this, o, FContainer);
+   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
    //..........................................................
    // @style
-   o._stylePanel      = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
+   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
    //..........................................................
    // @html
-   o._hLine            = null;
+   o._hLine       = null;
    //..........................................................
    // @event
-   o.onBuildPanel = FUiMenuBar_onBuildPanel
-   //..........................................................
-   // @attribute
-   o.onBuild          = FUiMenuBar_onBuild;
+   o.onBuildPanel = FUiMenuBar_onBuildPanel;
    //..........................................................
    // @method
-   o.appendButton     = FUiMenuBar_appendButton;
+   o.appendChild = FUiMenuBar_appendChild;
 
 
 
@@ -52,12 +49,12 @@ function FUiMenuBar(o){
 // <T>创建一个控件容器。</T>
 //
 // @method
-// @return HtmlTag 页面元素
+// @param p:event:TEventProcess 事件处理
 //==========================================================
-function FUiMenuBar_onBuildPanel(e){
+function FUiMenuBar_onBuildPanel(p){
    var o = this;
-   var hc = o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
-   o._hLine = RBuilder.appendTableRow(hc);
+   var h = o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
+   o._hLine = RBuilder.appendTableRow(h);
 }
 
 //==========================================================
@@ -66,12 +63,15 @@ function FUiMenuBar_onBuildPanel(e){
 // @method
 // @param p:button:FUiMenuButton 按键
 //==========================================================
-function FUiMenuBar_appendButton(p){
+function FUiMenuBar_appendChild(p){
    var o = this;
+   o.__base.FUiContainer.appendChild.call(o, p);
    // 横向排布
-   var hr = o._hLine;
-   var hc = RBuilder.appendTableCell(hr);
-   p.setPanel(hc);
+   if(RClass.isClass(p, FUiMenuButton)){
+      var hr = o._hLine;
+      var hc = RBuilder.appendTableCell(hr);
+      p.setPanel(hc);
+   }
 }
 
 
@@ -90,6 +90,7 @@ function FUiMenuBar_onBuild(builder){
    // Complete
    builder.hParent = this.hBody;
 }
+
 // ------------------------------------------------------------
 function FUiMenuBar_onLoaded(cnn){
    var doc = cnn.document;

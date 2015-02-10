@@ -10,13 +10,14 @@ function FE3dSceneDisplay(o){
    // @attribute
    o._dataReady        = false;
    o._movieMatrix      = null;
-   o._resource         = null;
+   o._resourceScene    = null;
    o._materials        = null;
    o._movies           = null;
    //..........................................................
    // @method
    o.construct         = FE3dSceneDisplay_construct;
    // @method
+   o.resourceScene     = FE3dSceneDisplay_resourceScene;
    o.loadSceneResource = FE3dSceneDisplay_loadSceneResource;
    o.loadResource      = FE3dSceneDisplay_loadResource;
    o.process           = FE3dSceneDisplay_process;
@@ -35,6 +36,16 @@ function FE3dSceneDisplay_construct(){
 }
 
 //==========================================================
+// <T>获得资源。</T>
+//
+// @method
+// @return FRs3SceneDisplay 资源
+//==========================================================
+function FE3dSceneDisplay_resourceScene(){
+   return this._resourceScene;
+}
+
+//==========================================================
 // <T>加载空间资源。</T>
 //
 // @method
@@ -42,7 +53,7 @@ function FE3dSceneDisplay_construct(){
 //==========================================================
 function FE3dSceneDisplay_loadSceneResource(p){
    var o = this;
-   o._resource = p;
+   o._resourceScene = p;
    // 设置矩阵
    o._matrix.assign(p.matrix());
    // 设置材质集合

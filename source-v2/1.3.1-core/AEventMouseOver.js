@@ -8,7 +8,7 @@
 //==========================================================
 function AEventMouseOver(n){
    var o = this;
-   AEvent(o, n, 'mouseover', 'onmouseover');
+   AEvent.call(o, n, 'mouseover', 'onmouseover');
    //..........................................................
    // @html
    o._hSource = null;

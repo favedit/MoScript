@@ -10,7 +10,7 @@
 //==========================================================
 function APtyBoolean(n, l, v){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    //..........................................................
    // @attribute
    o._value    = v ? v : false;

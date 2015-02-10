@@ -24,6 +24,7 @@ function FE3dStage(o){
    o.directionalLight  = FE3dStage_directionalLight;
    o.technique         = FE3dStage_technique;
    o.selectTechnique   = FE3dStage_selectTechnique;
+   o.region            = FE3dStage_region;
    o.process           = FE3dStage_process;
    return o;
 }
@@ -115,6 +116,16 @@ function FE3dStage_selectTechnique(c, p){
    var o = this;
    var tc = RConsole.find(FG3dTechniqueConsole);
    o._technique = tc.find(c, p);
+}
+
+//==========================================================
+// <T>获得渲染区域。</T>
+//
+// @method
+// @return FG3dRegion 区域
+//==========================================================
+function FE3dStage_region(){
+   return this._region;
 }
 
 //==========================================================

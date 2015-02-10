@@ -8,7 +8,7 @@
 //==========================================================
 function AEventKeyUp(n){
    var o = this;
-   AEvent(o, n, 'keyup', 'onkeyup');
+   AEvent.call(o, n, 'keyup', 'onkeyup');
    //..........................................................
    // @method
    o.attach = AEventKeyUp_attach;

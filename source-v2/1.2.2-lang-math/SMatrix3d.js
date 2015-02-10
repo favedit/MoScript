@@ -5,9 +5,9 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function SMatrix3d(o){
-   if(!o){o = this;}
-   SMatrix4x4(o);
+function SMatrix3d(){
+   var o = this;
+   SMatrix4x4.call(o);
    //..........................................................
    // @attribute
    o._dirty         = false;
@@ -23,6 +23,7 @@ function SMatrix3d(o){
    o.sz             = 1;
    //..........................................................
    // @method
+   o.isIdentity     = SMatrix3d_isIdentity;
    o.identity       = SMatrix3d_identity;
    o.setTranslate   = SMatrix3d_setTranslate;
    o.setRotation    = SMatrix3d_setRotation;
@@ -43,6 +44,26 @@ function SMatrix3d(o){
 }
 
 //============================================================
+// <T>是否为单位化数据。</T>
+//
+// @method
+// @return 是否单位化
+//============================================================
+function SMatrix3d_isIdentity(){
+   var o = this;
+   if((o.tx != 0) || (o.ty != 0) || (o.tz != 0)){
+      return false;
+   }
+   if((o.rx != 0) || (o.ry != 0) || (o.rz != 0)){
+      return false;
+   }
+   if((o.sx != 1) || (o.sy != 1) || (o.sz != 1)){
+      return false;
+   }
+   return o.isIdentityData();
+}
+
+//============================================================
 // <T>单位化处理。</T>
 //
 // @method
@@ -52,12 +73,7 @@ function SMatrix3d_identity(){
    o.tx = o.ty = o.tz = 0;
    o.rx = o.ry = o.rz = 0;
    o.sx = o.sy = o.sz = 1;
-   var d = o._data;
-   d[ 0] = 1; d[ 1] = 0; d[ 2] = 0; d[ 3] = 0;
-   d[ 4] = 0; d[ 5] = 1; d[ 6] = 0; d[ 7] = 0;
-   d[ 8] = 0; d[ 9] = 0; d[10] = 1; d[11] = 0;
-   d[12] = 0; d[13] = 0; d[14] = 0; d[15] = 1;
-   return o;
+   return o.identityData();
 }
 
 //============================================================

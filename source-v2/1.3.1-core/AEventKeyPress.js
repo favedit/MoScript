@@ -8,7 +8,7 @@
 //==========================================================
 function AEventKeyPress(n){
    var o = this;
-   AEvent(o, n, 'keypress', 'onkeypress');
+   AEvent.call(o, n, 'keypress', 'onkeypress');
    //..........................................................
    // @method
    o.create = AEventKeyPress_create;

@@ -74,14 +74,14 @@ function RRuntime_supportHtml5(){
 }
 
 //==========================================================
-// <T>获得两个对象中的第一个非空对象。</T>
+// <T>获得非空对象。</T>
 //
-// @param a:valueA:Object 对象A
-// @param b:valueB:Object 对象B
+// @param v:value:Object 对象A
+// @param d:default:Object 对象B
 // @return Object 非空对象
 //==========================================================
-function RRuntime_nvl(a, b){
-   return (a != null) ? a : b;
+function RRuntime_nvl(v, d){
+   return (v != null) ? v : d;
 }
 
 //==========================================================

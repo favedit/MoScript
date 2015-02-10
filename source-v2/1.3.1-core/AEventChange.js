@@ -8,7 +8,7 @@
 //==========================================================
 function AEventChange(n){
    var o = this;
-   AEvent(o, n, 'change', 'onchange');
+   AEvent.call(o, n, 'change', 'onchange');
    //..........................................................
    // @method
    o.attach = AEventChange_attach;

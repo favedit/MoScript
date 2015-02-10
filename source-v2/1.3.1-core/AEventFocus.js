@@ -8,7 +8,7 @@
 //==========================================================
 function AEventFocus(n){
    var o = this;
-   AEvent(o, n, 'focus', 'onfocus');
+   AEvent.call(o, n, 'focus', 'onfocus');
    //..........................................................
    // @method
    o.attach = AEventFocus_attach;

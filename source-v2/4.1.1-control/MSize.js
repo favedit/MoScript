@@ -222,14 +222,26 @@ function MSize_setSize(w, h){
    if(w != null){
       o._size.width = w;
       if(t){
-         t.style.width = (w == 0) ? null : w + 'px';
+         if(t.tagName == 'TD'){
+            if(w != 0){
+               t.width = w;
+            }
+         }else{
+            t.style.width = (w == 0) ? null : w + 'px';
+         }
       }
    }
    // 设置高度
    if(h != null){
       o._size.height = h;
       if(t){
-         t.style.height = (h == 0) ? null : h + 'px';
+         if(t.tagName == 'TD'){
+            if(h != 0){
+               t.height = h;
+            }
+         }else{
+            t.style.height = (h == 0) ? null : h + 'px';
+         }
       }
    }
 }
@@ -376,6 +388,7 @@ function MSize_calcRect(){
    RHtml.toRect(this.rect, this.hPanel);
    return this.rect;
 }
+
 //==========================================================
 // <T>设置尺寸。</T>
 //

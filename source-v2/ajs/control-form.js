@@ -4373,11 +4373,9 @@ function FUiEditControl_dispose(){
    o.__base.FUiControl.dispose.call(o);
 }
 function FUiForm(o){
-   o = RClass.inherits(this, o, FUiLayout, MDataset);
-   o._frameName         = null;
+   o = RClass.inherits(this, o, FUiLayout, MDataset, MDescribeFrame);
    o.onMouseDown        = FUiForm_onMouseDown;
    o.construct          = FUiForm_construct;
-   o.buildDefine        = FUiForm_buildDefine;
    o._dataStatusCd      = ERowStatus.Update;
    o._clearEvent        = null;
    o._resetEvent        = null;
@@ -4422,15 +4420,6 @@ function FUiForm_onMouseDown(p){
 function FUiForm_construct(){
    var o = this;
    o.__base.FUiLayout.construct.call(o);
-}
-function FUiForm_buildDefine(h, n){
-   var o = this;
-   if(RString.isEmpty(n)){
-      n = o._frameName;
-   }
-   var fc = RConsole.find(FDescribeFrameConsole);
-   var x = fc.load(n);
-   RControl.build(o, x, null, h);
 }
 function FUiForm_onLoadDataset(ds){
    var o = this;

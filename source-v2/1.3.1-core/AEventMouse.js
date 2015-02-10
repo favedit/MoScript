@@ -6,9 +6,9 @@
 // @author maocy
 // @version 150121
 //==========================================================
-function AEventMouse(o, n, l, h){
-   if(!o){o = this;}
-   AEvent(o, n, l, h);
+function AEventMouse(n, l, h){
+   var o = this;
+   AEvent.call(o, n, l, h);
    //..........................................................
    // @method
    o.attach = AEventMouse_attach;

@@ -9,7 +9,7 @@
 //==========================================================
 function AStyle(n, s){
    var o = this;
-   AAnnotation(o, n);
+   AAnnotation.call(o, n);
    //..........................................................
    // @declare
    o._annotationCd = EAnnotation.Style;

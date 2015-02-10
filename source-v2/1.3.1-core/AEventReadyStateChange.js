@@ -8,7 +8,7 @@
 //==========================================================
 function AEventReadyStateChange(n){
    var o = this;
-   AEvent(o, n, 'readystatechange', 'onreadystatechange');
+   AEvent.call(o, n, 'readystatechange', 'onreadystatechange');
    //..........................................................
    // @method
    o.attach = AEventReadyStateChange_attach;

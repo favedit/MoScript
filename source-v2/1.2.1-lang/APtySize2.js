@@ -9,7 +9,7 @@
 //==========================================================
 function APtySize2(n, l, w, h){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    //..........................................................
    // @attribute
    o._width   = RInteger.nvl(w);

@@ -6,7 +6,7 @@
 //==========================================================
 function FUiToolBar(o){
    //o = RClass.inherits(this, o, FUiContainer, MDisplayAble, MTop);
-   o = RClass.inherits(this, o, FUiContainer);
+   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
    //..........................................................
    // @style
    o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
@@ -52,12 +52,12 @@ function FUiToolBar(o){
 // <T>创建一个控件容器。</T>
 //
 // @method
-// @return HtmlTag 页面元素
+// @param p:event:TEventProcess 事件处理
 //==========================================================
-function FUiToolBar_onBuildPanel(e){
+function FUiToolBar_onBuildPanel(p){
    var o = this;
-   var hc = o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
-   o._hLine = RBuilder.appendTableRow(hc);
+   var h = o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
+   o._hLine = RBuilder.appendTableRow(h);
 }
 
 //==========================================================

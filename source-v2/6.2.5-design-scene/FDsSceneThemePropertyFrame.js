@@ -10,7 +10,7 @@ function FDsSceneThemePropertyFrame(o){
    //..........................................................
    // @attribute
    o._visible        = false;
-   o._frameName      = 'design3d.template.property.ThemeFrame';
+   o._frameName      = 'design3d.scene.property.ThemeFrame';
    // @attribute
    o._workspace      = null;
    // @attribute

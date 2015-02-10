@@ -134,7 +134,8 @@ function FE3dScene_loadDisplayResource(pl, pd){
 //==========================================================
 function FE3dScene_loadLayerResource(p){
    var o = this;
-   var l = RClass.create(FDisplayLayer);
+   var l = RClass.create(FE3dSceneLayer);
+   l.loadResource(p);
    var s = p.displays();
    if(s){
       var c = s.count();

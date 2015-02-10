@@ -590,86 +590,44 @@ function FDescribeFrameConsole_getEvents(n){
 }
 function FFrameConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o.scope            = EScope.Page;
-   o.forms            = null;
-   o.freeForms        = null;
-   o.formsLoaded      = null;
-   o.formIds          = null;
-   o.lsnsLoaded       = null;
-   o.events           = null;
-   o.onProcessLoaded  = FFrameConsole_onProcessLoaded;
+   o._scopeCd         = EScope.Local;
+   o._frames          = null;
    o.construct        = FFrameConsole_construct;
-   o.createFromName   = FFrameConsole_createFromName;
-   o.get              = FFrameConsole_get;
+   o.create           = FFrameConsole_create;
    o.find             = FFrameConsole_find;
-   o.hiddenAll        = FFrameConsole_hiddenAll;
-   o.process          = FFrameConsole_process;
-   o.loadEvents       = FFrameConsole_loadEvents;
-   o.processEvent     = FFrameConsole_processEvent;
-   o.free             = FFrameConsole_free;
-   o.dispose          = FFrameConsole_dispose;
+   o.get              = FFrameConsole_get;
    return o;
 }
 function FFrameConsole_construct(){
    var o = this;
-   o.forms = new TMap();
-   o.formIds = new TMap();
-   o.formsLoaded = new TMap();
-   o.lsnsLoaded = new TListeners();
-   o.freeForms = new TList();
-   o.events = new TMap();
+   o._frames = new TMap();
 }
-function FFrameConsole_createFromName(n, h, b, t){
+function FFrameConsole_create(c, n){
    var o = this;
-   var fs = o.freeForms;
-   if(!fs.isEmpty()){
-      var c = fs.count;
-      for(var i=0; i<c; i++){
-         if(fs.get(i).name == n){
-            var f = fs.remove(i);
-            f.setPanel(h);
-            return f;
-         }
-      }
-   }
-   var fdc = RConsole.find(FFormDefineConsole);
-   var fx = fdc.find(n, t);
-   var fd = t + ':' + n;
-   if(!o.formsLoaded.contains(fd)){
-      var es = fdc.getEvents(n);
-      if(es){
-         o.loadEvents(es);
-      }
-      o.formsLoaded.set(fd, true);
-   }
-   var c = RClass.create('F' + fx.name);
-   RControl.innerCreate(c, fx);
-   c.psInitialize();
-   if(!b){
-      b = RWindow.builder();
-   }
-   c.psBuild(h, b);
-   c.dsInitialize();
-   c.setVisible(false);
-   c.formId = fdc.nextFormId();
-   o.formIds.set(c.formId, c);
-   o.forms.set(n, c);
-   return c;
+   var dc = RConsole.find(FDescribeFrameConsole);
+   var x = dc.load(n);
+   var f = RControl.build(null, x, null, c._hPanel);
+   return f;
 }
-function FFrameConsole_get(id){
-   return o.formIds.get(id);
+function FFrameConsole_find(n){
+   return this._frames.get(n);
 }
-function FFrameConsole_find(n, h, b){
+function FFrameConsole_get(c, n, h){
    var o = this;
-   var f = o.forms.get(n);
+   var fs = o._frames;
+   var f = fs.get(n);
    if(!f){
-      f = o.createFromName(n, h, b);
+      f = o.create(c, n);
+      if(h){
+         f.setPanel(h);
+      }
+      fs.set(n, f);
    }
    return f;
 }
 function FFrameConsole_hiddenAll(){
    var o = this;
-   var fs = o.forms;
+   var fs = o._frames;
    var fc = fs.count;
    for(var n=0; n<fc; n++){
       fs.value(n).setVisible(false);
@@ -763,16 +721,16 @@ function FFrameConsole_processEvent(e){
 }
 function FFrameConsole_free(f){
    f.setVisible(false);
-   this.freeForms.push(f);
+   this._freeFrames.push(f);
 }
 function FFrameConsole_dispose(){
    var o = this;
-   RMemory.free(o.forms);
-   RMemory.free(o.formIds);
-   RMemory.free(o.formsLoaded);
-   o.forms = null;
-   o.formIds = null;
-   o.formsLoaded = null;
+   RMemory.free(o._frames);
+   RMemory.free(o._formIds);
+   RMemory.free(o._framesLoaded);
+   o._frames = null;
+   o._formIds = null;
+   o._framesLoaded = null;
 }
 function FFrameEventConsole(o){
    o = RClass.inherits(this, o, FConsole);

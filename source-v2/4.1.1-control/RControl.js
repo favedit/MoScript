@@ -275,15 +275,20 @@ function RControl_innerbuild(pc, px, pa, ph){
 // </P>
 //
 // @method
-// @param pc:control:FUiControl 控件对象
-// @param px:config:TXmlNode 配置节点
-// @param pa:attribute:Object 属性集合
-// @param ph:panel:HtmlTag 页面元素
+// @param c:control:FUiControl 控件对象
+// @param x:config:TXmlNode 配置节点
+// @param a:attribute:Object 属性集合
+// @param h:panel:HtmlTag 页面元素
 //===========================================================
-function RControl_build(pc, px, pa, ph){
+function RControl_build(c, x, a, h){
    var o = this;
+   // 创建控件对象
+   if(!c){
+      c = RControl.newInstance(x);
+   }
    // 内部构造
-   o.innerbuild(pc, px, pa, ph);
+   o.innerbuild(c, x, a, h);
+   return c;
 }
 
 

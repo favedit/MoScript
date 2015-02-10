@@ -51,8 +51,8 @@ function RRuntime_isRelease(){
 function RRuntime_supportHtml5(){
    return this._supportHtml5;
 }
-function RRuntime_nvl(a, b){
-   return (a != null) ? a : b;
+function RRuntime_nvl(v, d){
+   return (v != null) ? v : d;
 }
 function RRuntime_subString(v, b, e){
    if(v == null){

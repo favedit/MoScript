@@ -15,14 +15,14 @@
 <SCRIPT language='javascript' src='../ajs/stage.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneMaterialFrame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneDisplayFrame.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.2.5-design-scene/FDsScenePropertyFrame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneThemePropertyFrame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneMaterialPropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneTechniquePropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneCameraPropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneLightPropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneLayerPropertyFrame.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneDisplayPropertyFrame.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneMenuBar.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneCatalog.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneCanvasToolBar.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.2.5-design-scene/FDsSceneCanvas.js'></SCRIPT>
@@ -36,8 +36,9 @@ function _load(){
    RBrowser.setContentPath('..');
 
    var w = RApplication.findWorkspace(FDsSceneWorkspace);
-   w.build(document.body);
-   w.setPanel(document.body);
+   w.buildDefine(document.body);
+   //w.build(document.body);
+   //w.setPanel(document.body);
    w.psRefresh();
 
    w.loadScene('pvw.show.item.001');

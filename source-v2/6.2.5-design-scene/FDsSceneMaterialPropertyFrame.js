@@ -10,7 +10,7 @@ function FDsSceneMaterialPropertyFrame(o){
    //..........................................................
    // @attribute
    o._visible        = false;
-   o._frameName      = 'design3d.template.property.MaterialFrame';
+   o._frameName      = 'design3d.scene.property.MaterialFrame';
    // @attribute
    o._workspace      = null;
    // @attribute

@@ -1,13 +1,3 @@
-var EDsCanvasMode = new function EDsCanvasMode(){
-   var o = this;
-   o.Unknown   = 0;
-   o.Drop      = 1;
-   o.Select    = 2;
-   o.Translate = 3;
-   o.Rotation  = 4;
-   o.Scale     = 5;
-   return o;
-}
 function FDsTemplateCanvas(o){
    o = RClass.inherits(this, o, FDsCanvas, MListenerLoad, MMouseCapture);
    o._toolbar            = null;
@@ -39,15 +29,15 @@ function FDsTemplateCanvas_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
    var g = o._stage = RClass.create(FE3dSimpleStage);
-   g._optionKeyboard = false;
    g.backgroundColor().set(0.5, 0.5, 0.5, 1);
-   g.selectTechnique(c, FG3dGeneralTechnique);
+   g.selectTechnique(o._context, FG3dGeneralTechnique);
    o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    var rc = g.camera();
    rc.setPosition(0, 3, -10);
    rc.lookAt(0, 3, 0);
    rc.update();
+   var h = o._hPanel;
    var rp = rc.projection();
    rp.size().set(h.width, h.height);
    rp._angle = 45;
@@ -110,7 +100,11 @@ function FDsTemplateCanvas_onMouseCaptureStop(p){
 }
 function FDsTemplateCanvas_onEnterFrame(){
    var o = this;
-   var c = o._stage.camera();
+   var s = o._stage;
+   if(!s){
+      return;
+   }
+   var c = s.camera();
    var d = 0.5;
    var r = 0.05;
    var kw = RKeyboard.isPress(EKeyCode.W);

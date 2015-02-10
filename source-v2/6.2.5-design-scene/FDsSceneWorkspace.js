@@ -7,113 +7,87 @@
 function FDsSceneWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);
    //..........................................................
+   // @property
+   o._frameName            = 'design3d.scene.Workspace';
+   //..........................................................
    // @style
-   o._styleToolbarGround    = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-   o._styleStatusbarGround  = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-   o._styleCatalogGround    = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-   o._styleWorkspaceGround  = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-   o._stylePropertyGround   = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+   o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
+   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+   o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
    //..........................................................
    // @attribute
-   o._framesetMain          = null;
-   o._framesetBody          = null;
+   o._framesetMain         = null;
+   o._framesetBody         = null;
    // @attribute
-   o._frameToolBar          = null;
-   o._frameBody             = null;
-   o._frameProperty         = null;
+   o._frameToolBar         = null;
+   o._frameBody            = null;
+   o._frameProperty        = null;
    // @attribute
-   o._frameCatalog          = null;
-   o._frameWorkspace        = null;
-   o._frameStatusBar        = null;
+   o._frameCatalog         = null;
+   o._frameWorkspace       = null;
+   o._frameStatusBar       = null;
    // @attribute
-   o._templatePropertyFrame = null;
-   o._themePropertyFrame    = null;
-   o._materialPropertyFrame = null;
-   o._displayPropertyFrame  = null;
+   o._propertyFrames       = null;
    //..........................................................
    // @process
-   o.onBuild                = FDsSceneWorkspace_onBuild;
-   o.onTemplateLoad         = FDsSceneWorkspace_onTemplateLoad;
-   o.onCatalogSelected      = FDsSceneWorkspace_onCatalogSelected;
+   o.onBuilded             = FDsSceneWorkspace_onBuilded;
+   o.onSceneLoad           = FDsSceneWorkspace_onSceneLoad;
+   o.onCatalogSelected     = FDsSceneWorkspace_onCatalogSelected;
    //..........................................................
    // @method
-   o.construct              = FDsSceneWorkspace_construct;
+   o.construct             = FDsSceneWorkspace_construct;
    // @method
-   o.templatePropertyFrame  = FDsSceneWorkspace_templatePropertyFrame;
-   o.themePropertyFrame     = FDsSceneWorkspace_themePropertyFrame;
-   o.materialPropertyFrame  = FDsSceneWorkspace_materialPropertyFrame;
-   o.displayPropertyFrame   = FDsSceneWorkspace_displayPropertyFrame;
+   o.findPropertyFrame     = FDsSceneWorkspace_findPropertyFrame;
    // @method
-   o.loadScene              = FDsSceneWorkspace_loadScene;
+   o.loadScene             = FDsSceneWorkspace_loadScene;
    // @method
-   o.dispose                = FDsSceneWorkspace_dispose;
+   o.dispose               = FDsSceneWorkspace_dispose;
    return o;
 }
 
 //==========================================================
-// <T>建立当前控件的显示框架。</T>
+// <T>构建完成处理。</T>
 //
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsSceneWorkspace_onBuild(p){
+function FDsSceneWorkspace_onBuilded(p){
    var o = this;
-   o.__base.FUiWorkspace.onBuild.call(o, p);
-   o._hPanel.style.width = '100%';
-   o._hPanel.style.height = '100%';
-   // 建立主框架
-   var fs = o._framesetMain = RClass.create(FUiFrameSet);
-   fs.build(p);
-   // 建立工具区
-   var f = o._frameToolBar = RClass.create(FUiFrameContainer);
-   f.setHeight(26);
-   f.build(p);
+   o.__base.FUiWorkspace.onBuilded.call(o, p);
+   //..........................................................
+   // 设置工具区
+   var f = o._frameToolBar = o.searchControl('toolbarFrame');
    f._hPanel.className = o.styleName('Toolbar_Ground');
-   fs.appendFrame(f);
-   // 建立内容区
-   var f = o._frameBody = RClass.create(FUiFrameContainer);
-   f.build(p);
-   fs.appendFrame(f);
-   // 建立状态区
-   var f = o._frameStatusBar = RClass.create(FUiFrameContainer);
-   f.setHeight(18);
-   f.build(p);
-   f._hPanel.className = o.styleName('Statusbar_Ground');
-   fs.appendFrame(f);
-   fs.setPanel(o._hPanel);
-   //..........................................................
-   // 建立内容框架
-   var fs = RClass.create(FUiFrameSet);
-   fs._directionCd = EDirection.Horizontal;
-   fs.build(p);
-   // 建立目录区
-   var f = o._frameCatalog = RClass.create(FUiFrameContainer);
-   f.setWidth(400);
-   f.build(p);
+   // 设置目录区
+   var f = o._frameCatalog = o.searchControl('catalogFrame');
    f._hPanel.className = o.styleName('Catalog_Ground');
-   fs.appendFrame(f);
-   // 建立分割符
-   var sp1 = fs.appendSpliter();
-   // 建立工作区
-   var f = o._frameWorkspace = RClass.create(FUiFrameContainer);
-   f.build(p);
+   // 设置属性区
+   var f = o._frameWorkspace = o.searchControl('spaceFrame');
    f._hPanel.className = o.styleName('Workspace_Ground');
-   fs.appendFrame(f);
-   // 建立分割符
-   var sp2 = fs.appendSpliter();
-   // 建立属性区
-   var f = o._frameProperty = RClass.create(FUiFrameContainer);
-   f.setWidth(240);
-   f.build(p);
+   // 设置属性区
+   var f = o._frameProperty = o.searchControl('propertyFrame');
    f._hPanel.className = o.styleName('Property_Ground');
-   fs.appendFrame(f);
-   fs.setPanel(o._frameBody._hPanel);
+   // 设置状态区
+   var f = o._frameStatusBar = o.searchControl('statusFrame');
+   f._hPanel.className = o.styleName('Statusbar_Ground');
    // 设置分割
-   sp1._alignCd = EAlign.Left;
-   sp1._hSize = o._frameCatalog._hPanel;
-   sp2._alignCd = EAlign.Right;
-   sp2._hSize = o._frameStatusBar._hPanel;
+   var f = o._catalogSplitter = o.searchControl('catalogSpliter');
+   f._alignCd = EAlign.Left;
+   f._hSize = o._frameCatalog._hPanel;
+   var f = o._propertySpliter = o.searchControl('propertySpliter');
+   f._alignCd = EAlign.Right;
+   f._hSize = o._frameStatusBar._hPanel;
    //..........................................................
+   // 设置工具栏
+   var c = o._toolbar = RClass.create(FDsSceneMenuBar);
+   c._workspace = o;
+   c.buildDefine(p);
+   c.setPanel(o._frameToolBar._hPanel);
+   o.push(c);
+   //..........................................................
+   // 设置目录栏
    var c = o._catalog = RClass.create(FDsSceneCatalog);
    c._workspace = o;
    c.build(p);
@@ -121,32 +95,22 @@ function FDsSceneWorkspace_onBuild(p){
    c.addSelectedListener(o, o.onCatalogSelected);
    o.push(c);
    //..........................................................
-   var c = o._toolbar = RClass.create(FDsSceneToolBar);
-   c._workspace = o;
-   c.build(p);
-   c.setPanel(o._frameToolBar._hPanel);
-   o.push(c);
-   //..........................................................
-   var hf = RBuilder.appendTable(o._frameWorkspace._hPanel);
-   hf.style.width = '100%';
-   hf.style.height = '100%';
-   // 建立工具栏
-   var hc = RBuilder.appendTableRowCell(hf);
-   hc.height = 20;
+   // 设置画板工具栏
+   var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
    var c = o._canvasToolbar = RClass.create(FDsSceneCanvasToolBar);
    c._workspace = o;
-   c.build(p);
-   c.setPanel(hc);
+   c.buildDefine(p);
+   //c.build(p);
+   c.setPanel(f._hPanel);
    o.push(c);
-   // 建立画板
-   var hc = RBuilder.appendTableRowCell(hf);
-   hc.vAlign = 'top';
+   // 设置画板
+   var f = o._canvasFrame = o.searchControl('canvasFrame');
    var c = o._canvas = RClass.create(FDsSceneCanvas);
-   c.addLoadListener(o, o.onTemplateLoad);
    c._workspace = o;
    c._toolbar = o._canvasToolbar;
+   c.addLoadListener(o, o.onSceneLoad);
    c.build(p);
-   c.setPanel(hc);
+   c.setPanel(f._hPanel);
    o.push(c);
 }
 
@@ -156,60 +120,56 @@ function FDsSceneWorkspace_onBuild(p){
 // @method
 // @param p:template:FTemplate3d 模板
 //==========================================================
-function FDsSceneWorkspace_onTemplateLoad(p){
+function FDsSceneWorkspace_onSceneLoad(p){
    var o = this;
    var t = o._activeScene = p._activeScene;
    // 加载完成
-   o._catalog.buildTemplate(t);
+   o._catalog.buildScene(t);
    // 设置属性
    o.onCatalogSelected(t);
-   //var rt = t._resource;
-   //var rtm = rt._themes.get(0);
-   //var rm = rtm.materials().value(0);
-   //o._materialProperty.loadMaterial(t, rm);
-   //o._materialFrame.loadMaterial(t, rm);
 }
 
 //==========================================================
 // <T>目录对象选择处理。</T>
 //
 // @method
-// @param p:template:FTemplate3d 模板
+// @param p:value:Object 对象
 //==========================================================
 function FDsSceneWorkspace_onCatalogSelected(p){
    var o = this;
-   var t = o._activeScene;
-   // 隐藏所有面板
-   if(o._templatePropertyFrame){
-      o._templatePropertyFrame.hide();
+   var s = o._activeScene;
+   // 隐藏所有属性面板
+   var fs = o._propertyFrames;
+   var c = fs.count();
+   for(var i = 0; i < c; i++){
+      var f = fs.value(i);
+      f.hide();
    }
-   if(o._themePropertyFrame){
-      o._themePropertyFrame.hide();
-   }
-   if(o._materialPropertyFrame){
-      o._materialPropertyFrame.hide();
-   }
-   if(o._displayPropertyFrame){
-      o._displayPropertyFrame.hide();
-   }
-   // 显示选中面板
+   // 显示选中属性面板
    if(RClass.isClass(p, FE3dScene)){
-      var f = o.templatePropertyFrame();
+      var f = o.findPropertyFrame(EDsFrame.ScenePropertyFrame);
       f.show();
-      f.loadObject(t);
-   }else if(RClass.isClass(p, FRs3TemplateTheme)){
-      var f = o.themePropertyFrame();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FG3dTechnique)){
+      var f = o.findPropertyFrame(EDsFrame.SceneTechniquePropertyFrame);
       f.show();
-      f.loadObject(t, p);
-   }else if(RClass.isClass(p, FRs3Material)){
-      var f = o.materialPropertyFrame();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dCamera)){
+      var f = o.findPropertyFrame(EDsFrame.SceneCameraPropertyFrame);
       f.show();
-      f.loadObject(t, p);
-   }else if(RClass.isClass(p, FG3dRenderable)){
-      var f = o.displayPropertyFrame();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FG3dDirectionalLight)){
+      var f = o.findPropertyFrame(EDsFrame.SceneLightPropertyFrame);
       f.show();
-      f.loadObject(t, p);
-      o._canvas.selectRenderable(p);
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dSceneLayer)){
+      var f = o.findPropertyFrame(EDsFrame.SceneLayerPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dSceneDisplay)){
+      var f = o.findPropertyFrame(EDsFrame.SceneDisplayPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
    }else{
       throw new TError('Unknown select object type. (value={1})', p);
    }
@@ -224,76 +184,24 @@ function FDsSceneWorkspace_construct(){
    var o = this;
    // 父处理
    o.__base.FUiWorkspace.construct.call(o);
+   // 设置属性
+   o._propertyFrames = new TDictionary();
 }
 
 //==========================================================
-// <T>获得模板属性页面。</T>
+// <T>根据名称获得属性页面。</T>
 //
 // @method
-// @return FDsScenePropertyFrame 模板属性页面
+// @return FUiFrame 页面
 //==========================================================
-function FDsSceneWorkspace_templatePropertyFrame(){
+function FDsSceneWorkspace_findPropertyFrame(p){
    var o = this;
-   var f = o._templatePropertyFrame;
+   var f = o._propertyFrames.get(p);
    if(!f){
-      f = o._templatePropertyFrame = RClass.create(FDsScenePropertyFrame);
+      var fc = RConsole.find(FFrameConsole);
+      f = fc.get(o, p, o._frameProperty._hPanel);
       f._workspace = o;
-      f.buildDefine(o._hPanel);
-      f.setPanel(o._frameProperty._hPanel);
-   }
-   return f;
-}
-
-//==========================================================
-// <T>获得主题属性页面。</T>
-//
-// @method
-// @return FDsSceneThemePropertyFrame 主题属性页面
-//==========================================================
-function FDsSceneWorkspace_themePropertyFrame(){
-   var o = this;
-   var f = o._themePropertyFrame;
-   if(!f){
-      var f = o._themePropertyFrame = RClass.create(FDsSceneThemePropertyFrame);
-      f._workspace = o;
-      f.buildDefine(o._hPanel);
-      f.setPanel(o._frameProperty._hPanel);
-   }
-   return f;
-}
-
-//==========================================================
-// <T>获得材质属性页面。</T>
-//
-// @method
-// @return FDsSceneMaterialPropertyFrame 材质属性页面
-//==========================================================
-function FDsSceneWorkspace_materialPropertyFrame(){
-   var o = this;
-   var f = o._materialPropertyFrame;
-   if(!f){
-      f = o._materialPropertyFrame = RClass.create(FDsSceneMaterialPropertyFrame);
-      f._workspace = o;
-      f.buildDefine(o._hPanel);
-      f.setPanel(o._frameProperty._hPanel);
-   }
-   return f;
-}
-
-//==========================================================
-// <T>获得显示属性页面。</T>
-//
-// @method
-// @return FDsSceneDisplayPropertyFrame 显示属性页面
-//==========================================================
-function FDsSceneWorkspace_displayPropertyFrame(){
-   var o = this;
-   var f = o._displayPropertyFrame;
-   if(!f){
-      f = o._displayPropertyFrame = RClass.create(FDsSceneDisplayPropertyFrame);
-      f._workspace = o;
-      f.buildDefine(o._hPanel);
-      f.setPanel(o._frameProperty._hPanel);
+      o._propertyFrames.set(p, f);
    }
    return f;
 }
@@ -317,4 +225,7 @@ function FDsSceneWorkspace_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiWorkspace.dispose.call(o);
+   // 设置属性
+   o._propertyFrames.dispose();
+   o._propertyFrames = null;
 }

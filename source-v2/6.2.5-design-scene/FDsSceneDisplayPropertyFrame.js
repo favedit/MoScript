@@ -10,7 +10,7 @@ function FDsSceneDisplayPropertyFrame(o){
    //..........................................................
    // @attribute
    o._visible        = false;
-   o._frameName      = 'design3d.template.property.DisplayFrame';
+   o._frameName      = 'design3d.scene.property.DisplayFrame';
    // @attribute
    o._workspace      = null;
    // @attribute
@@ -77,20 +77,20 @@ function FDsSceneDisplayPropertyFrame_loadObject(t, d){
    // 获得材质
    var rt = t._resource;
    var rd = d._resource;
-   var rdm = rd.materials().first();
-   var rtm = rt.themes().first();
-   var m = rtm.materials().get(rdm.groupGuid());
+   //var rdm = rd.materials().first();
+   //var rtm = rt.themes().first();
+   //var m = rtm.materials().get(rdm.groupGuid());
    // 设置属性
-   o._renderTemplate = t;
-   o._renderDisplay = d;
-   o._renderMaterial = m;
+   //o._renderTemplate = t;
+   //o._renderDisplay = d;
+   //o._renderMaterial = m;
    // 设置参数
    //o._controlGuid.set(d.guid());
    //o._controlCode.set(d.code());
    //o._controlLabel.set(d._label);
    // 设置参数
-   o._displayFrame.loadObject(t, d);
-   o._materialFrame.loadObject(t, m);
+   //o._displayFrame.loadObject(t, d);
+   //o._materialFrame.loadObject(t, m);
 }
 
 //==========================================================
