@@ -14,7 +14,6 @@ function FE3dCamera(o){
    o._quaternionX    = null;
    o._quaternionY    = null;
    o._quaternionZ    = null;
-   o._directionTarget = null;
    //..........................................................
    // @method
    o.construct       = FE3dCamera_construct;
@@ -44,7 +43,6 @@ function FE3dCamera_construct(){
    o._quaternionX = new SQuaternion();
    o._quaternionY = new SQuaternion();
    o._quaternionZ = new SQuaternion();
-   o._directionTarget = new SVector3();
 }
 
 //==========================================================
@@ -88,17 +86,6 @@ function FE3dCamera_doRoll(p){
 }
 
 //==========================================================
-// <T>朝向目标。</T>
-//
-// @method
-//==========================================================
-function FE3dCamera_lookAt(x, y, z){
-   // 父更新矩阵
-   o.__base.FG3dPerspectiveCamera.lookAt.call(o, x, y, z);
-   o._directionTarget.assign(o._direction);
-}
-
-//==========================================================
 // <T>更新相机信息。</T>
 //
 // @method
@@ -119,14 +106,12 @@ function FE3dCamera_update(){
    var m = o._rotationMatrix;
    m.build(q);
    // 计算目标
-   var t = o._directionTarget;
-   m.transformPoint3(RMath.vectorForward, t);
+   var d = o._direction;
+   m.transformPoint3(o._directionTarget, d);
+   d.normalize();
    // 计算上轴
    m.transformPoint3(RMath.vectorAxisY, o.__axisUp);
    // 设置方向
-   var d = o._direction;
-   d.assign(t);
-   d.normalize();
    // 父更新矩阵
    o.__base.FG3dPerspectiveCamera.update.call(o);
 }

@@ -25,8 +25,9 @@ function FDisplay(o){
    o.renderables       = FDisplay_renderables;
    o.pushRenderable    = FDisplay_pushRenderable;
    o.removeRenderable  = FDisplay_removeRenderable;
-   o.process           = FDisplay_process;
    o.update            = FDisplay_update;
+   o.updateMatrix      = FDisplay_updateMatrix;
+   o.process           = FDisplay_process;
    o.remove            = FDisplay_remove;
    o.dispose           = FDisplay_dispose;
    return o;
@@ -117,13 +118,17 @@ function FDisplay_update(){
    m.set(o._location, o._rotation, o._scale);
    m.update();
 }
-function FDisplay_process(p){
+function FDisplay_updateMatrix(){
    var o = this;
    o._currentMatrix.assign(o._matrix);
    var t = o._parent;
    if(t){
       o._currentMatrix.append(t._currentMatrix);
    }
+}
+function FDisplay_process(p){
+   var o = this;
+   o.updateMatrix();
    var s = o._renderables;
    if(s){
       var c = s.count();
@@ -225,7 +230,8 @@ function FDisplayContainer_process(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         s.get(i).process(p);
+         var d = s.get(i);
+         d.process(p);
       }
    }
 }

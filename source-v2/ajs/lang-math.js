@@ -550,7 +550,17 @@ function SMatrix3d_equals(p){
    return this.equalsData(p._data);
 }
 function SMatrix3d_assign(p){
-   this.assignData(p._data);
+   var o = this;
+   o.tx = p.tx;
+   o.ty = p.ty;
+   o.tz = p.tz;
+   o.rx = p.rx;
+   o.ry = p.ry;
+   o.rz = p.rz;
+   o.sx = p.sx;
+   o.sy = p.sy;
+   o.sz = p.sz;
+   o.assignData(p._data);
 }
 function SMatrix3d_append(p){
    this.appendData(p._data);

@@ -30,6 +30,7 @@ function FDsSceneCanvasToolBar(o){
    // @event
    o.onModeClick      = FDsSceneCanvasToolBar_onModeClick;
    o.onLookClick      = FDsSceneCanvasToolBar_onLookClick;
+   o.onPlayClick      = FDsSceneCanvasToolBar_onPlayClick;
    o.onRotationClick  = FDsSceneCanvasToolBar_onRotationClick;
    //..........................................................
    // @method
@@ -84,7 +85,7 @@ function FDsSceneCanvasToolBar_onBuilded(p){
    //..........................................................
    // 建立按键
    var b = o._playButton = o.searchControl('playButton');
-   b.addClickListener(o, o.onRotationClick);
+   b.addClickListener(o, o.onPlayClick);
    // 建立按键
    var b = o._viewButton = o.searchControl('viewButton');
    b.addClickListener(o, o.onRotationClick);
@@ -118,10 +119,22 @@ function FDsSceneCanvasToolBar_onLookClick(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
+function FDsSceneCanvasToolBar_onPlayClick(p, v){
+   var o = this;
+   var c = o._workspace._canvas;
+   c._optionPlay = v;
+}
+
+//==========================================================
+// <T>刷新按键处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
 function FDsSceneCanvasToolBar_onRotationClick(p, v){
    var o = this;
    var c = o._workspace._canvas;
-   c._rotationAble = v;
+   c._optionRotation = v;
 }
 
 //==========================================================

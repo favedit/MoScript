@@ -11,7 +11,7 @@ function FDsSceneCanvas(o){
    o._canvasModeCd       = EDsCanvasMode.Drop;
    o._activeScene        = null;
    o._rotation           = null;
-   o._rotationAble       = false;
+   o._optionRotation     = false;
    o._capturePosition    = null;
    o._captureMatrix      = null;
    o._captureRotation    = null;
@@ -172,18 +172,19 @@ function FDsSceneCanvas_onEnterFrame(){
    c.update();
    //..........................................................
    // 旋转模型
-   if(s){
-      //var r = o._rotation;
-      //m.location().set(0, -8.0, 0);
-      //m.rotation().set(0, r.y, 0);
-      //m.scale().set(3.0, 3.0, 3.0);
-      //m.scale().set(0.002, 0.002, 0.002);
-      //m.scale().set(0.2, 0.2, 0.2);
-      //m.update();
+   if(o._optionRotation){
+      var r = o._rotation;
+      // 旋转所有层
+      var ls = s.layers();
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         var l = ls.value(i);
+         var m = l.matrix();
+         m.setRotation(0, r.y, 0);
+         m.update();
+      }
       // 设置变量
-      //if(o._rotationAble){
-      //   r.y += 0.01;
-      //}
+      r.y += 0.01;
    }
 }
 

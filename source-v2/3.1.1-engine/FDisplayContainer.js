@@ -127,7 +127,8 @@ function FDisplayContainer_process(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         s.get(i).process(p);
+         var d = s.get(i);
+         d.process(p);
       }
    }
 }

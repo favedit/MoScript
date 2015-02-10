@@ -95,36 +95,37 @@ function FG3dBone_update(p){
 }
 function FG3dCamera(o){
    o = RClass.inherits(this, o, FObject);
-   o._matrix      = null;
-   o._position    = null;
-   o._target      = null;
-   o._direction   = null;
-   o._centerFront = 0.6;
-   o._centerBack  = 1.0;
-   o._focalNear   = 0.1;
-   o._focalFar    = 200.0;
-   o._planes      = null;
-   o._frustum     = null;
-   o._viewport    = null;
-   o.__axisUp     = null;
-   o.__axisX      = null;
-   o.__axisY      = null;
-   o.__axisZ      = null;
-   o.construct    = FG3dCamera_construct;
-   o.matrix       = FG3dCamera_matrix;
-   o.position     = FG3dCamera_position;
-   o.setPosition  = FG3dCamera_setPosition;
-   o.direction    = FG3dCamera_direction;
-   o.setDirection = FG3dCamera_setDirection;
-   o.frustum      = FG3dCamera_frustum;
-   o.doWalk       = FG3dCamera_doWalk;
-   o.doStrafe     = FG3dCamera_doStrafe;
-   o.doFly        = FG3dCamera_doFly;
-   o.doPitch      = FG3dCamera_doPitch;
-   o.doYaw        = FG3dCamera_doYaw;
-   o.doRoll       = FG3dCamera_doRoll;
-   o.lookAt       = FG3dCamera_lookAt;
-   o.update       = FG3dCamera_update;
+   o._matrix          = null;
+   o._position        = null;
+   o._target          = null;
+   o._direction       = null;
+   o._directionTarget = null;
+   o._centerFront     = 0.6;
+   o._centerBack      = 1.0;
+   o._focalNear       = 0.1;
+   o._focalFar        = 200.0;
+   o._planes          = null;
+   o._frustum         = null;
+   o._viewport        = null;
+   o.__axisUp         = null;
+   o.__axisX          = null;
+   o.__axisY          = null;
+   o.__axisZ          = null;
+   o.construct        = FG3dCamera_construct;
+   o.matrix           = FG3dCamera_matrix;
+   o.position         = FG3dCamera_position;
+   o.setPosition      = FG3dCamera_setPosition;
+   o.direction        = FG3dCamera_direction;
+   o.setDirection     = FG3dCamera_setDirection;
+   o.frustum          = FG3dCamera_frustum;
+   o.doWalk           = FG3dCamera_doWalk;
+   o.doStrafe         = FG3dCamera_doStrafe;
+   o.doFly            = FG3dCamera_doFly;
+   o.doPitch          = FG3dCamera_doPitch;
+   o.doYaw            = FG3dCamera_doYaw;
+   o.doRoll           = FG3dCamera_doRoll;
+   o.lookAt           = FG3dCamera_lookAt;
+   o.update           = FG3dCamera_update;
    return o;
 }
 function FG3dCamera_construct(){
@@ -134,6 +135,8 @@ function FG3dCamera_construct(){
    o._position = new SPoint3();
    o._target = new SPoint3();
    o._direction = new SVector3();
+   o._directionTarget = new SVector3();
+   o._planes = new Array();
    o._frustum = new SFrustum();
    o._viewport = RClass.create(FG3dViewport);
    o.__axisUp = new SVector3();
@@ -155,7 +158,9 @@ function FG3dCamera_direction(){
    return this._direction;
 }
 function FG3dCamera_setDirection(x, y, z){
-   this._direction.set(x, y, z);
+   var o = this;
+   o._direction.set(x, y, z);
+   o._directionTarget.set(x, y, z);
 }
 function FG3dCamera_frustum(){
    return this._frustum;
@@ -193,6 +198,7 @@ function FG3dCamera_lookAt(x, y, z){
    o._target.set(x, y, z);
    d.set(x - p.x, y - p.y, z - p.z);
    d.normalize();
+   o._directionTarget.assign(d);
 }
 function FG3dCamera_update(){
    var o = this;

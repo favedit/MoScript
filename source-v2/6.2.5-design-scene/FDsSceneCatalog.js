@@ -8,25 +8,27 @@ function FDsSceneCatalog(o){
    o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
    //..........................................................
    // @event
-   o.onBuild        = FDsSceneCatalog_onBuild;
+   o.onBuild         = FDsSceneCatalog_onBuild;
    // @event
-   o.onNodeClick    = FDsSceneCatalog_onNodeClick;
+   o.onLoadDisplay   = FDsSceneCatalog_onLoadDisplay;
+   o.onNodeClick     = FDsSceneCatalog_onNodeClick;
    //..........................................................
    // @listeners
-   o.lsnsSelect     = null;
+   o.lsnsSelect      = null;
    //..........................................................
    // @method
-   o.construct      = FDsSceneCatalog_construct;
+   o.construct       = FDsSceneCatalog_construct;
    // @method
-   o.buildTechnique = FDsSceneCatalog_buildTechnique;
-   o.buildRegion    = FDsSceneCatalog_buildRegion;
-   o.buildDisplay   = FDsSceneCatalog_buildDisplay;
-   o.buildLayer     = FDsSceneCatalog_buildLayer;
-   o.buildScene     = FDsSceneCatalog_buildScene;
+   o.buildTechnique  = FDsSceneCatalog_buildTechnique;
+   o.buildRegion     = FDsSceneCatalog_buildRegion;
+   o.buildRenderable = FDsSceneCatalog_buildRenderable;
+   o.buildDisplay    = FDsSceneCatalog_buildDisplay;
+   o.buildLayer      = FDsSceneCatalog_buildLayer;
+   o.buildScene      = FDsSceneCatalog_buildScene;
    // @method
-   o.selectObject   = FDsSceneCatalog_selectObject;
+   o.selectObject    = FDsSceneCatalog_selectObject;
    // @method
-   o.dispose        = FDsSceneCatalog_dispose;
+   o.dispose         = FDsSceneCatalog_dispose;
    return o;
 }
 
@@ -43,6 +45,19 @@ function FDsSceneCatalog_onBuild(p){
    o.lsnsClick.register(o, o.onNodeClick);
    // 加载定义
    o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.scene');
+}
+
+//==========================================================
+// <T>显示对象加载完成处理。</T>
+//
+// @method
+// @param p:event:TEventProcess 处理事件
+//==========================================================
+function FDsSceneCatalog_onLoadDisplay(p){
+   var o = this;
+   var n = p._linkNode;
+   // 创建渲染集合
+   o.buildRenderable(n, p);
 }
 
 //==========================================================
@@ -119,6 +134,34 @@ function FDsSceneCatalog_buildRegion(n, p){
 // @param n:node:FTreeNode 父节点
 // @param p:display:FDisplayContainer 显示容器
 //==========================================================
+function FDsSceneCatalog_buildRenderable(n, p){
+   var o = this;
+   // 创建渲染集合
+   var s = p.renderables();
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var r = s.get(i);
+         var rr = r.resource();
+         var rd = rr.model();
+         var rm = rr.mesh();
+         // 创建节点
+         var dn = o.createNode();
+         dn.setLabel(rm.code());
+         dn.setTypeName('renderable');
+         dn.dataPropertySet('linker', r);
+         n.appendNode(dn);
+      }
+   }
+}
+
+//==========================================================
+// <T>建立显示目录。</T>
+//
+// @method
+// @param n:node:FTreeNode 父节点
+// @param p:display:FDisplayContainer 显示容器
+//==========================================================
 function FDsSceneCatalog_buildDisplay(n, p){
    var o = this;
    // 创建显示集合
@@ -134,6 +177,9 @@ function FDsSceneCatalog_buildDisplay(n, p){
          dn.setTypeName('display');
          dn.dataPropertySet('linker', d);
          n.appendNode(dn);
+         // 创建渲染集合
+         d.addLoadListener(o, o.onLoadDisplay);
+         d._linkNode = dn;
       }
    }
 }
@@ -147,24 +193,24 @@ function FDsSceneCatalog_buildDisplay(n, p){
 //==========================================================
 function FDsSceneCatalog_buildLayer(n, p){
    var o = this;
-   // 新建层集合节点
+   // 创建显示层集合节点
    var ns = o.createNode();
    ns.setLabel('Layers');
    ns.setTypeName('layers');
    n.appendNode(ns);
-   // 新建层集合
+   // 创建显示层集合
    var ds = p.layers();
    var c = ds.count();
    for(var i = 0; i < c; i++){
       var l = ds.value(i);
       var lr = l.resource();
-      // 新建显示层
+      // 创建显示层节点
       var nl = o.createNode();
       nl.setLabel('Layer:' + lr.code());
       nl.setTypeName('layer');
       nl.dataPropertySet('linker', l);
       ns.appendNode(nl);
-      // 新建显示集合
+      // 创建显示集合
       o.buildDisplay(nl, l)
    }
 }
@@ -178,18 +224,20 @@ function FDsSceneCatalog_buildLayer(n, p){
 function FDsSceneCatalog_buildScene(p){
    var o = this;
    var r = p._resource;
-   // 新建场景节点
+   // 创建场景节点
    var nr = o.createNode();
    nr.setLabel(r.code());
    nr.setTypeName('scene');
    nr.dataPropertySet('linker', p);
    o.appendNode(nr);
-   // 新建技术节点
+   // 创建技术节点
    o.buildTechnique(nr, p.technique())
-   // 新建区域节点
+   // 创建区域节点
    o.buildRegion(nr, p.region());
-   // 建立显示层
+   // 创建显示层
    o.buildLayer(nr, p);
+   // 选中根节点
+   nr.click();
 }
 
 //==========================================================

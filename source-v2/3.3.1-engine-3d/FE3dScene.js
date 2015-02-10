@@ -77,7 +77,7 @@ function FE3dScene_loadRegionResource(p){
    c._resource = rc;
    var cp = c._projection;
    c.position().assign(rc.position());
-   c.direction().assign(rc.direction());
+   c.setDirection(rc.direction().x, rc.direction().y, rc.direction().z);
    c.update();
    // 设置投影
    cp.size().assign(o._context.size());

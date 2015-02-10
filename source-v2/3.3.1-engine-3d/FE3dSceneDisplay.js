@@ -20,7 +20,7 @@ function FE3dSceneDisplay(o){
    o.resourceScene     = FE3dSceneDisplay_resourceScene;
    o.loadSceneResource = FE3dSceneDisplay_loadSceneResource;
    o.loadResource      = FE3dSceneDisplay_loadResource;
-   o.process           = FE3dSceneDisplay_process;
+   o.updateMatrix      = FE3dSceneDisplay_updateMatrix;
    return o;
 }
 
@@ -118,9 +118,8 @@ function FE3dSceneDisplay_loadResource(p){
 //
 // @method
 //==========================================================
-function FE3dSceneDisplay_process(p){
+function FE3dSceneDisplay_updateMatrix(p){
    var o = this;
-   o.__base.FE3dTemplate.process.call(o, p);
    // 加载动画集合
    var m = o._currentMatrix.identity();
    var ms = o._movies;
@@ -132,4 +131,9 @@ function FE3dSceneDisplay_process(p){
       m.append(o._movieMatrix);
    }
    m.append(o._matrix);
+   // 计算父矩阵
+   var t = o._parent;
+   if(t){
+      o._currentMatrix.append(t._currentMatrix);
+   }
 }

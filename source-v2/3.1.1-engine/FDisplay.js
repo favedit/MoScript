@@ -40,8 +40,9 @@ function FDisplay(o){
    o.pushRenderable    = FDisplay_pushRenderable;
    o.removeRenderable  = FDisplay_removeRenderable;
    // @method
-   o.process           = FDisplay_process;
    o.update            = FDisplay_update;
+   o.updateMatrix      = FDisplay_updateMatrix;
+   o.process           = FDisplay_process;
    o.remove            = FDisplay_remove;
    // @method
    o.dispose           = FDisplay_dispose;
@@ -253,6 +254,22 @@ function FDisplay_update(){
 }
 
 //==========================================================
+// <T>更新矩阵。</T>
+//
+// @method
+//==========================================================
+function FDisplay_updateMatrix(){
+   var o = this;
+   // 更新矩阵
+   o._currentMatrix.assign(o._matrix);
+   // 计算父矩阵
+   var t = o._parent;
+   if(t){
+      o._currentMatrix.append(t._currentMatrix);
+   }
+}
+
+//==========================================================
 // <T>逻辑处理。</T>
 //
 // @method
@@ -260,12 +277,8 @@ function FDisplay_update(){
 //==========================================================
 function FDisplay_process(p){
    var o = this;
-   // 处理当前对象
-   o._currentMatrix.assign(o._matrix);
-   var t = o._parent;
-   if(t){
-      o._currentMatrix.append(t._currentMatrix);
-   }
+   // 更新矩阵
+   o.updateMatrix();
    // 处理渲染集合
    var s = o._renderables;
    if(s){

@@ -127,7 +127,7 @@ function FDsSceneWorkspace_onSceneLoad(p){
    o._catalog.buildScene(t);
    // 设置属性
    //o.onCatalogSelected(t);
-   o.onCatalogSelected(t.technique());
+   //o.onCatalogSelected(t.technique());
 }
 
 //==========================================================
@@ -169,6 +169,10 @@ function FDsSceneWorkspace_onCatalogSelected(p){
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dSceneDisplay)){
       var f = o.findPropertyFrame(EDsFrame.SceneDisplayPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FRd3Renderable)){
+      var f = o.findPropertyFrame(EDsFrame.SceneRenderablePropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else{
