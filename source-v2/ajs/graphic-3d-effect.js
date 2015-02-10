@@ -415,6 +415,111 @@ function FG3dGeneralTechnique_setup(){
 function FG3dGeneralTechnique_passColor(){
    return this._passColor;
 }
+function FG3dSelectAutomaticEffect(o){
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o._code          = 'select.automatic';
+   o.drawRenderable = FG3dSelectAutomaticEffect_drawRenderable;
+   return o;
+}
+function FG3dSelectAutomaticEffect_drawRenderable(pg, pr, pi){
+   var o = this;
+   var c = o._context;
+   var s = c.size();
+   var p = o._program;
+   var sx = pg._selectX;
+   var sy = pg._selectY;
+   var m = pr.material();
+   var mi = m.info();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter4('vc_offset', s.width, s.height, 1 - (sx / s.width) * 2, (sy / s.height) * 2 - 1);
+   var i = pi + 1;
+   var i1 = i  & 0xFF;
+   var i2 = (i >> 8) & 0xFF;
+   var i3 = (i >> 16) & 0xFF;
+   p.setParameter4('fc_index', i1 / 255, i2 / 255, i3 / 255, mi.alphaBase);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
+}
+function FG3dSelectPass(o){
+   o = RClass.inherits(this, o, FG3dTechniquePass);
+   o._code         = 'select';
+   o._texture      = null;
+   o._renderTarget = null;
+   o._position     = null;
+   o._data         = null;
+   o.construct     = FG3dSelectPass_construct;
+   o.setup         = FG3dSelectPass_setup;
+   o.textureDepth  = FG3dSelectPass_texture;
+   o.drawRegion    = FG3dSelectPass_drawRegion;
+   return o;
+}
+function FG3dSelectPass_construct(){
+   var o = this;
+   o.__base.FG3dTechniquePass.construct.call(o);
+   o._data = new Uint8Array(4);
+   o._position = new SPoint2();
+}
+function FG3dSelectPass_setup(){
+   var o = this;
+   o.__base.FG3dTechniquePass.setup.call(o);
+   var c = o._context;
+   var T = o._texture = c.createFlatTexture();
+   T.setFilter(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
+   T.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
+   var t = o._renderTarget = c.createRenderTarget();
+   t.size().set(1, 1);
+   t.textures().push(T);
+   t.build();
+}
+function FG3dSelectPass_texture(){
+   return this._texture;
+}
+function FG3dSelectPass_drawRegion(p){
+   var o = this;
+   var c = o._context;
+   var g = c._native;
+   c.setRenderTarget(o._renderTarget);
+   c.clear(0, 0, 0, 0, 1.0, 1.0);
+   o.__base.FG3dTechniquePass.drawRegion.call(o, p);
+   g.readPixels(0, 0, 1, 1, g.RGBA, g.UNSIGNED_BYTE, o._data);
+   var v = o._data[0] + (o._data[1] << 8) + (o._data[2] << 16);
+   o._selectRenderable = null;
+   if(v != 0){
+      var rs = p.renderables();
+      o._selectRenderable = rs.get(v - 1);
+   }
+}
+function FG3dSelectTechnique(o){
+   o = RClass.inherits(this, o, FG3dTechnique);
+   o._code       = 'select';
+   o._passSelect = null;
+   o.setup       = FG3dSelectTechnique_setup;
+   o.passSelect  = FG3dSelectTechnique_passSelect;
+   o.test        = FG3dSelectTechnique_test;
+   return o;
+}
+function FG3dSelectTechnique_setup(){
+   var o = this;
+   o.__base.FG3dTechnique.setup.call(o);
+   var ps = o._passes;
+   var pd = o._passSelect = RClass.create(FG3dSelectPass);
+   pd.linkContext(o._context);
+   pd.setup();
+   ps.push(pd);
+}
+function FG3dSelectTechnique_passSelect(){
+   return this._passSelect;
+}
+function FG3dSelectTechnique_test(p, x, y){
+   var o = this;
+   p._selectX = x;
+   p._selectY = y;
+   o.drawRegion(p);
+   return o._passSelect._selectRenderable;
+}
 function FG3dShadowColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    o._code          = 'shadow.color.automatic';

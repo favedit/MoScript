@@ -163,6 +163,9 @@ function FDsCanvas_onBuild(p){
    var h = o._hPanel;
    h.__linker = o;
    var c = o._context = REngine3d.createContext(FWglContext, h);
+   var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
+   bb.linkGraphicContext(o._context);
+   bb.setup();
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start(20);
    RConsole.find(FMouseConsole).register(o);
@@ -266,14 +269,16 @@ function FDsCanvas_construct(){
 }
 function FDsCanvas_selectRenderable(p){
    var o = this;
-   var r = p.resource();
-   var rm = r.mesh();
-   var rl = rm.outline();
    var b = o._selectBoundBox;
-   b.outline().assign(rl);
-   b.upload();
    b.remove();
-   p._display.pushRenderable(b);
+   if(p){
+      var r = p.resource();
+      var rm = r.mesh();
+      var rl = rm.outline();
+      b.outline().assign(rl);
+      b.upload();
+      p._display.pushRenderable(b);
+   }
 }
 function FDsCanvas_dispose(){
    var o = this;

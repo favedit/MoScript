@@ -80,7 +80,7 @@ function FWglContext_linkCanvas(h){
    // 获得环境
    o._hCanvas = h;
    if(h.getContext){
-      var n = h.getContext('webgl');
+      var n = h.getContext('webgl', {antialias:true});
       if(n == null){
          n = h.getContext('experimental-webgl', {antialias:true});
       }

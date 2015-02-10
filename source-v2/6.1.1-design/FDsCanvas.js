@@ -53,9 +53,9 @@ function FDsCanvas_onBuild(p){
    //dm.linkGraphicContext(c);
    //dm.setup();
    // 创建选取包围盒
-   //var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
-   //bb.linkGraphicContext(o._context);
-   //bb.setup();
+   var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
+   bb.linkGraphicContext(o._context);
+   bb.setup();
    // 启动处理
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start(20);
@@ -244,15 +244,18 @@ function FDsCanvas_construct(){
 //==========================================================
 function FDsCanvas_selectRenderable(p){
    var o = this;
-   var r = p.resource();
-   var rm = r.mesh();
-   var rl = rm.outline();
-   // 显示包围盒
+   // 隐藏包围盒
    var b = o._selectBoundBox;
-   b.outline().assign(rl);
-   b.upload();
    b.remove();
-   p._display.pushRenderable(b);
+   // 显示包围盒
+   if(p){
+      var r = p.resource();
+      var rm = r.mesh();
+      var rl = rm.outline();
+      b.outline().assign(rl);
+      b.upload();
+      p._display.pushRenderable(b);
+   }
 }
 
 //==========================================================

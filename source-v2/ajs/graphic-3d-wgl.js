@@ -46,7 +46,7 @@ function FWglContext_linkCanvas(h){
    o.__base.FG3dContext.linkCanvas.call(o, h)
    o._hCanvas = h;
    if(h.getContext){
-      var n = h.getContext('webgl');
+      var n = h.getContext('webgl', {antialias:true});
       if(n == null){
          n = h.getContext('experimental-webgl', {antialias:true});
       }

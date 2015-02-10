@@ -31,7 +31,6 @@ function FDsSceneCanvas(o){
    // @method
    o.construct           = FDsSceneCanvas_construct;
    // @method
-   o.selectRenderable    = FDsSceneCanvas_selectRenderable;
    o.loadScene           = FDsSceneCanvas_loadScene;
    // @method
    o.dispose             = FDsSceneCanvas_dispose;
@@ -60,6 +59,13 @@ function FDsSceneCanvas_onMouseCaptureStart(p){
    var s = o._activeScene;
    if(!s){
       return;
+   }
+   var r = o._activeScene.region();
+   var st = RConsole.find(FG3dTechniqueConsole).find(o._context, FG3dSelectTechnique);
+   var r = st.test(r, p.offsetX, p.offsetY);
+   o.selectRenderable(r);
+   if(r){
+      //var d = r.display();
    }
    //var d = t.renderables().get(0);
    o._capturePosition.set(p.clientX, p.clientY);
@@ -237,24 +243,6 @@ function FDsSceneCanvas_construct(){
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
    o._captureRotation = new SVector3();
-}
-
-//==========================================================
-// <T>选中渲染对象处理。</T>
-//
-// @method
-//==========================================================
-function FDsSceneCanvas_selectRenderable(p){
-   var o = this;
-   var r = p.resource();
-   var rm = r.mesh();
-   var rl = rm.outline();
-   // 显示包围盒
-   var b = o._selectBoundBox;
-   b.outline().assign(rl);
-   b.upload();
-   b.remove();
-   p._display.pushRenderable(b);
 }
 
 //==========================================================

@@ -78,7 +78,6 @@ function FDsSceneCanvas(o){
    o.onSceneLoad         = FDsSceneCanvas_onSceneLoad;
    o.oeRefresh           = FDsSceneCanvas_oeRefresh;
    o.construct           = FDsSceneCanvas_construct;
-   o.selectRenderable    = FDsSceneCanvas_selectRenderable;
    o.loadScene           = FDsSceneCanvas_loadScene;
    o.dispose             = FDsSceneCanvas_dispose;
    return o;
@@ -92,6 +91,12 @@ function FDsSceneCanvas_onMouseCaptureStart(p){
    var s = o._activeScene;
    if(!s){
       return;
+   }
+   var r = o._activeScene.region();
+   var st = RConsole.find(FG3dTechniqueConsole).find(o._context, FG3dSelectTechnique);
+   var r = st.test(r, p.offsetX, p.offsetY);
+   o.selectRenderable(r);
+   if(r){
    }
    o._capturePosition.set(p.clientX, p.clientY);
    o._captureRotation.assign(s.camera()._rotation);
@@ -202,17 +207,6 @@ function FDsSceneCanvas_construct(){
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
    o._captureRotation = new SVector3();
-}
-function FDsSceneCanvas_selectRenderable(p){
-   var o = this;
-   var r = p.resource();
-   var rm = r.mesh();
-   var rl = rm.outline();
-   var b = o._selectBoundBox;
-   b.outline().assign(rl);
-   b.upload();
-   b.remove();
-   p._display.pushRenderable(b);
 }
 function FDsSceneCanvas_loadScene(p){
    var o = this;

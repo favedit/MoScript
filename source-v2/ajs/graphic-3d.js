@@ -348,8 +348,10 @@ function FG3dEffect_loadConfig(p){
             o._stateDepthWrite = RBoolean.parse(v);
          }else if(n == 'blend_mode'){
             o._stateBlend = RBoolean.parse(v);
-            o._stateBlendSourceCd = REnum.parse(EG3dBlendMode, x.get('source'));
-            o._stateBlendTargetCd = REnum.parse(EG3dBlendMode, x.get('target'));
+            if(o._stateBlend){
+               o._stateBlendSourceCd = REnum.parse(EG3dBlendMode, x.get('source'));
+               o._stateBlendTargetCd = REnum.parse(EG3dBlendMode, x.get('target'));
+            }
          }else if(n == 'alpha_test'){
             o._stateAlphaTest = RBoolean.parse(v);
          }
@@ -449,6 +451,13 @@ function FG3dEffectConsole_path(){
 function FG3dEffectConsole_create(p){
    var e = null;
    switch(p){
+      case 'select.select.automatic':
+         e = RClass.create(FG3dSelectAutomaticEffect);
+         break;
+      case 'select.select.skeleton':
+      case 'select.select.skeleton.4':
+         e = RClass.create(FG3dSelectSkeletonEffect);
+         break;
       case 'general.color.automatic':
          e = RClass.create(FG3dGeneralColorAutomaticEffect);
          break;
@@ -1157,7 +1166,7 @@ function FG3dTechniquePass_drawRegion(p){
       var r = rs.get(i);
       var e = r.activeEffect();
       o._context.setProgram(e.program());
-      e.drawRenderable(p, r);
+      e.drawRenderable(p, r, i);
    }
 }
 function FG3dTrack(o){

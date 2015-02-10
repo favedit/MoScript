@@ -78,6 +78,6 @@ function FG3dTechniquePass_drawRegion(p){
       var r = rs.get(i);
       var e = r.activeEffect();
       o._context.setProgram(e.program());
-      e.drawRenderable(p, r);
+      e.drawRenderable(p, r, i);
    }
 }

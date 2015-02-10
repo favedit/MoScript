@@ -13722,8 +13722,10 @@ function FG3dEffect_loadConfig(p){
             o._stateDepthWrite = RBoolean.parse(v);
          }else if(n == 'blend_mode'){
             o._stateBlend = RBoolean.parse(v);
-            o._stateBlendSourceCd = REnum.parse(EG3dBlendMode, x.get('source'));
-            o._stateBlendTargetCd = REnum.parse(EG3dBlendMode, x.get('target'));
+            if(o._stateBlend){
+               o._stateBlendSourceCd = REnum.parse(EG3dBlendMode, x.get('source'));
+               o._stateBlendTargetCd = REnum.parse(EG3dBlendMode, x.get('target'));
+            }
          }else if(n == 'alpha_test'){
             o._stateAlphaTest = RBoolean.parse(v);
          }
@@ -13823,6 +13825,13 @@ function FG3dEffectConsole_path(){
 function FG3dEffectConsole_create(p){
    var e = null;
    switch(p){
+      case 'select.select.automatic':
+         e = RClass.create(FG3dSelectAutomaticEffect);
+         break;
+      case 'select.select.skeleton':
+      case 'select.select.skeleton.4':
+         e = RClass.create(FG3dSelectSkeletonEffect);
+         break;
       case 'general.color.automatic':
          e = RClass.create(FG3dGeneralColorAutomaticEffect);
          break;
@@ -14531,7 +14540,7 @@ function FG3dTechniquePass_drawRegion(p){
       var r = rs.get(i);
       var e = r.activeEffect();
       o._context.setProgram(e.program());
-      e.drawRenderable(p, r);
+      e.drawRenderable(p, r, i);
    }
 }
 function FG3dTrack(o){
@@ -15873,6 +15882,111 @@ function FG3dGeneralTechnique_setup(){
 function FG3dGeneralTechnique_passColor(){
    return this._passColor;
 }
+function FG3dSelectAutomaticEffect(o){
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o._code          = 'select.automatic';
+   o.drawRenderable = FG3dSelectAutomaticEffect_drawRenderable;
+   return o;
+}
+function FG3dSelectAutomaticEffect_drawRenderable(pg, pr, pi){
+   var o = this;
+   var c = o._context;
+   var s = c.size();
+   var p = o._program;
+   var sx = pg._selectX;
+   var sy = pg._selectY;
+   var m = pr.material();
+   var mi = m.info();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter4('vc_offset', s.width, s.height, 1 - (sx / s.width) * 2, (sy / s.height) * 2 - 1);
+   var i = pi + 1;
+   var i1 = i  & 0xFF;
+   var i2 = (i >> 8) & 0xFF;
+   var i3 = (i >> 16) & 0xFF;
+   p.setParameter4('fc_index', i1 / 255, i2 / 255, i3 / 255, mi.alphaBase);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
+}
+function FG3dSelectPass(o){
+   o = RClass.inherits(this, o, FG3dTechniquePass);
+   o._code         = 'select';
+   o._texture      = null;
+   o._renderTarget = null;
+   o._position     = null;
+   o._data         = null;
+   o.construct     = FG3dSelectPass_construct;
+   o.setup         = FG3dSelectPass_setup;
+   o.textureDepth  = FG3dSelectPass_texture;
+   o.drawRegion    = FG3dSelectPass_drawRegion;
+   return o;
+}
+function FG3dSelectPass_construct(){
+   var o = this;
+   o.__base.FG3dTechniquePass.construct.call(o);
+   o._data = new Uint8Array(4);
+   o._position = new SPoint2();
+}
+function FG3dSelectPass_setup(){
+   var o = this;
+   o.__base.FG3dTechniquePass.setup.call(o);
+   var c = o._context;
+   var T = o._texture = c.createFlatTexture();
+   T.setFilter(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
+   T.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
+   var t = o._renderTarget = c.createRenderTarget();
+   t.size().set(1, 1);
+   t.textures().push(T);
+   t.build();
+}
+function FG3dSelectPass_texture(){
+   return this._texture;
+}
+function FG3dSelectPass_drawRegion(p){
+   var o = this;
+   var c = o._context;
+   var g = c._native;
+   c.setRenderTarget(o._renderTarget);
+   c.clear(0, 0, 0, 0, 1.0, 1.0);
+   o.__base.FG3dTechniquePass.drawRegion.call(o, p);
+   g.readPixels(0, 0, 1, 1, g.RGBA, g.UNSIGNED_BYTE, o._data);
+   var v = o._data[0] + (o._data[1] << 8) + (o._data[2] << 16);
+   o._selectRenderable = null;
+   if(v != 0){
+      var rs = p.renderables();
+      o._selectRenderable = rs.get(v - 1);
+   }
+}
+function FG3dSelectTechnique(o){
+   o = RClass.inherits(this, o, FG3dTechnique);
+   o._code       = 'select';
+   o._passSelect = null;
+   o.setup       = FG3dSelectTechnique_setup;
+   o.passSelect  = FG3dSelectTechnique_passSelect;
+   o.test        = FG3dSelectTechnique_test;
+   return o;
+}
+function FG3dSelectTechnique_setup(){
+   var o = this;
+   o.__base.FG3dTechnique.setup.call(o);
+   var ps = o._passes;
+   var pd = o._passSelect = RClass.create(FG3dSelectPass);
+   pd.linkContext(o._context);
+   pd.setup();
+   ps.push(pd);
+}
+function FG3dSelectTechnique_passSelect(){
+   return this._passSelect;
+}
+function FG3dSelectTechnique_test(p, x, y){
+   var o = this;
+   p._selectX = x;
+   p._selectY = y;
+   o.drawRegion(p);
+   return o._passSelect._selectRenderable;
+}
 function FG3dShadowColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    o._code          = 'shadow.color.automatic';
@@ -16217,7 +16331,7 @@ function FWglContext_linkCanvas(h){
    o.__base.FG3dContext.linkCanvas.call(o, h)
    o._hCanvas = h;
    if(h.getContext){
-      var n = h.getContext('webgl');
+      var n = h.getContext('webgl', {antialias:true});
       if(n == null){
          n = h.getContext('experimental-webgl', {antialias:true});
       }
@@ -22437,8 +22551,10 @@ function FG3dEffect_loadConfig(p){
             o._stateDepthWrite = RBoolean.parse(v);
          }else if(n == 'blend_mode'){
             o._stateBlend = RBoolean.parse(v);
-            o._stateBlendSourceCd = REnum.parse(EG3dBlendMode, x.get('source'));
-            o._stateBlendTargetCd = REnum.parse(EG3dBlendMode, x.get('target'));
+            if(o._stateBlend){
+               o._stateBlendSourceCd = REnum.parse(EG3dBlendMode, x.get('source'));
+               o._stateBlendTargetCd = REnum.parse(EG3dBlendMode, x.get('target'));
+            }
          }else if(n == 'alpha_test'){
             o._stateAlphaTest = RBoolean.parse(v);
          }
@@ -22538,6 +22654,13 @@ function FG3dEffectConsole_path(){
 function FG3dEffectConsole_create(p){
    var e = null;
    switch(p){
+      case 'select.select.automatic':
+         e = RClass.create(FG3dSelectAutomaticEffect);
+         break;
+      case 'select.select.skeleton':
+      case 'select.select.skeleton.4':
+         e = RClass.create(FG3dSelectSkeletonEffect);
+         break;
       case 'general.color.automatic':
          e = RClass.create(FG3dGeneralColorAutomaticEffect);
          break;
@@ -23246,7 +23369,7 @@ function FG3dTechniquePass_drawRegion(p){
       var r = rs.get(i);
       var e = r.activeEffect();
       o._context.setProgram(e.program());
-      e.drawRenderable(p, r);
+      e.drawRenderable(p, r, i);
    }
 }
 function FG3dTrack(o){
@@ -24588,6 +24711,111 @@ function FG3dGeneralTechnique_setup(){
 function FG3dGeneralTechnique_passColor(){
    return this._passColor;
 }
+function FG3dSelectAutomaticEffect(o){
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o._code          = 'select.automatic';
+   o.drawRenderable = FG3dSelectAutomaticEffect_drawRenderable;
+   return o;
+}
+function FG3dSelectAutomaticEffect_drawRenderable(pg, pr, pi){
+   var o = this;
+   var c = o._context;
+   var s = c.size();
+   var p = o._program;
+   var sx = pg._selectX;
+   var sy = pg._selectY;
+   var m = pr.material();
+   var mi = m.info();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter4('vc_offset', s.width, s.height, 1 - (sx / s.width) * 2, (sy / s.height) * 2 - 1);
+   var i = pi + 1;
+   var i1 = i  & 0xFF;
+   var i2 = (i >> 8) & 0xFF;
+   var i3 = (i >> 16) & 0xFF;
+   p.setParameter4('fc_index', i1 / 255, i2 / 255, i3 / 255, mi.alphaBase);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
+}
+function FG3dSelectPass(o){
+   o = RClass.inherits(this, o, FG3dTechniquePass);
+   o._code         = 'select';
+   o._texture      = null;
+   o._renderTarget = null;
+   o._position     = null;
+   o._data         = null;
+   o.construct     = FG3dSelectPass_construct;
+   o.setup         = FG3dSelectPass_setup;
+   o.textureDepth  = FG3dSelectPass_texture;
+   o.drawRegion    = FG3dSelectPass_drawRegion;
+   return o;
+}
+function FG3dSelectPass_construct(){
+   var o = this;
+   o.__base.FG3dTechniquePass.construct.call(o);
+   o._data = new Uint8Array(4);
+   o._position = new SPoint2();
+}
+function FG3dSelectPass_setup(){
+   var o = this;
+   o.__base.FG3dTechniquePass.setup.call(o);
+   var c = o._context;
+   var T = o._texture = c.createFlatTexture();
+   T.setFilter(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
+   T.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
+   var t = o._renderTarget = c.createRenderTarget();
+   t.size().set(1, 1);
+   t.textures().push(T);
+   t.build();
+}
+function FG3dSelectPass_texture(){
+   return this._texture;
+}
+function FG3dSelectPass_drawRegion(p){
+   var o = this;
+   var c = o._context;
+   var g = c._native;
+   c.setRenderTarget(o._renderTarget);
+   c.clear(0, 0, 0, 0, 1.0, 1.0);
+   o.__base.FG3dTechniquePass.drawRegion.call(o, p);
+   g.readPixels(0, 0, 1, 1, g.RGBA, g.UNSIGNED_BYTE, o._data);
+   var v = o._data[0] + (o._data[1] << 8) + (o._data[2] << 16);
+   o._selectRenderable = null;
+   if(v != 0){
+      var rs = p.renderables();
+      o._selectRenderable = rs.get(v - 1);
+   }
+}
+function FG3dSelectTechnique(o){
+   o = RClass.inherits(this, o, FG3dTechnique);
+   o._code       = 'select';
+   o._passSelect = null;
+   o.setup       = FG3dSelectTechnique_setup;
+   o.passSelect  = FG3dSelectTechnique_passSelect;
+   o.test        = FG3dSelectTechnique_test;
+   return o;
+}
+function FG3dSelectTechnique_setup(){
+   var o = this;
+   o.__base.FG3dTechnique.setup.call(o);
+   var ps = o._passes;
+   var pd = o._passSelect = RClass.create(FG3dSelectPass);
+   pd.linkContext(o._context);
+   pd.setup();
+   ps.push(pd);
+}
+function FG3dSelectTechnique_passSelect(){
+   return this._passSelect;
+}
+function FG3dSelectTechnique_test(p, x, y){
+   var o = this;
+   p._selectX = x;
+   p._selectY = y;
+   o.drawRegion(p);
+   return o._passSelect._selectRenderable;
+}
 function FG3dShadowColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    o._code          = 'shadow.color.automatic';
@@ -24932,7 +25160,7 @@ function FWglContext_linkCanvas(h){
    o.__base.FG3dContext.linkCanvas.call(o, h)
    o._hCanvas = h;
    if(h.getContext){
-      var n = h.getContext('webgl');
+      var n = h.getContext('webgl', {antialias:true});
       if(n == null){
          n = h.getContext('experimental-webgl', {antialias:true});
       }
@@ -35763,6 +35991,288 @@ function FUiLayout_dispose(){
    o._hContainer = null;
    o.__base.FUiContainer.dispose.call(o);
 }
+function FUiListBox(o){
+   o = RClass.inherits(this, o, FUiContainer);
+   o._type           = null;
+   o._hForm          = null;
+   o.ohClearClick   = FUiListBox_ohClearClick;
+   o.ohCloseClick   = FUiListBox_ohCloseClick;
+   o.ohResetClick   = FUiListBox_ohResetClick;
+   o.ohLoaded       = FUiListBox_ohLoaded;
+   o.oeBuild        = FUiListBox_oeBuild;
+   o.onBuildPanel   = FUiListBox_onBuildPanel;
+   o.onBuildFields  = FUiListBox_onBuildFields;
+   o.onBuildButton  = FUiListBox_onBuildButton;
+   o.onBuildData    = FUiListBox_onBuildData;
+   o.onKeyDown      = FUiListBox_onKeyDown;
+   o.buildField     = FUiListBox_buildField;
+   o.linkLovControl = FUiListBox_linkLovControl;
+   o.isBuilded      = FUiListBox_isBuilded;
+   o.show           = FUiListBox_show;
+   o.hide           = FUiListBox_hide;
+   o.doSearch       = FUiListBox_doSearch;
+   o.selectRow      = FUiListBox_selectRow;
+   o.dispose        = FUiListBox_dispose;
+   return o;
+}
+function FUiListBox_ohCloseClick(){
+   this.hide();
+}
+function FUiListBox_ohClearClick(){
+   var o = this;
+   var cs = o.fieldsPanel.components;
+   if(cs){
+      for(var n=0; n<cs.count; n++){
+         cs.value(n).clearSearch();
+      }
+   }
+}
+function FUiListBox_ohResetClick(){
+}
+function FUiListBox_ohLoaded(){
+   this.lovControl.onBuildData(this.document.root());
+}
+function FUiListBox_oeBuild(event){
+   var o = this;
+   o.base.FContainer.oeBuild.call(o, event);
+   var hTab = RBuilder.appendTable(o.hPanel);
+   hTab.width = '100%';
+   hTab.height = '100%';
+   var hRow = hTab.insertRow();
+   var h = o.hTitlePanel = hRow.insertCell();
+   h.className = o.style('TitlePanel');
+   RBuilder.appendIcon(h, 'tool.search');
+   RBuilder.appendText(h, '&nbsp;List of View');
+   h.colSpan = 2;
+   hRow = hTab.insertRow();
+   var h = o.hFieldsPanel = hRow.insertCell();
+   h.className = o.style('FieldsPanel');
+   var h = o.hButtonPanel = hRow.insertCell();
+   h.className = o.style('ButtonPanel');
+   o.onBuildButton();
+   return EEventStatus.Stop;
+}
+function FUiListBox_onBuildPanel(){
+   var o = this;
+   o.hPanel = RBuilder.append(null, 'DIV');
+   o.hPanel.style.zIndex = ELayer.Message;
+}
+function FUiListBox_onBuildFields(){
+   return;
+   var o = this;
+   var hTab = o.hFieldsTab = RBuilder.appendTable(o.hFieldsPanel, null, 10, 10);
+   hTab.width = '100%';
+   var hRow = hTab.insertRow();
+   var hCel = hRow.insertCell();
+   hCel.className = this.style('Title');
+   hCel.innerText = 'Message:';
+   var hRow = hTab.insertRow();
+   var hCel = hRow.insertCell();
+   hCel.className = this.style('Message');
+   o.hMessages = RBuilder.appendTable(hCel);
+   o.hMessages.width = '100%';
+   var hRow = hTab.insertRow();
+   var hCel = hRow.insertCell();
+   hCel.className = this.style('Title');
+   hCel.innerText = 'Description:';
+   var hRow = hTab.insertRow();
+   var hCel = hRow.insertCell();
+   hCel.className = this.style('Description');
+}
+function FUiListBox_onBuildButton(){
+   var o = this;
+   var hBtnTab = RBuilder.appendTable(o.hButtonPanel, null, 0, 0, 6);
+   var hRow = hBtnTab.insertRow();
+   var hCel = hRow.insertCell();
+   var b = o.btnSelect = RClass.create(FButton);
+   b.label = 'Select'
+   b.width = '100%';
+   b.addClickListener(o, o.selectRow);
+   b.build(hBtnTab.insertRow().insertCell());
+   var b = o.btnClose = RClass.create(FButton);
+   b.label = 'Close';
+   b.width = '100%';
+   b.addClickListener(o, o.ohCloseClick);
+   b.build(hBtnTab.insertRow().insertCell());
+   var b = o.btnRefresh = RClass.create(FButton);
+   b.label = 'Refresh';
+   b.width = '100%';
+   b.addClickListener(o, o.ohClearClick);
+   b.build(hBtnTab.insertRow().insertCell());
+   var hRow = hBtnTab.insertRow();
+   var hCel = hRow.insertCell();
+   hCel.innerHTML = '&nbsp;';
+}
+function FUiListBox_buildField(c){
+   var o = this;
+   var hCell = o.hFieldsTab.insertRow().insertCell();
+   hCell.innerText = c.label;
+   o.fieldsPanel = RControl.create(FPanel);
+   o.fieldsPanel.build();
+   o.fieldsPanel.setPanel(hCel);
+}
+function FUiListBox_linkLovControl(ctl){
+   var o = this;
+   o.lovControl = ctl;
+   o.lovRefer = ctl.lovRefer;
+   var doc = new TXmlDocument();
+   var root = doc.root();
+   root.set('action', 'dsPicker');
+   RConsole.find('FEnvConsole').build(root);
+   var dn = root.create('Control');
+   dn.set('lov_refer', ctl.lovRefer);
+   dn.set('lov_where', ctl.lovWhere);
+   dn.set('lov_order', ctl.lovOrder);
+   RLog.info(o, 'Send lov request (service={1},node={2})', ctl.lovRefer, root.dump());
+   var e = new TEvent(o, EXmlEvent.Send);
+   e.url = RService.url(ctl.lovService);
+   e.document = doc;
+   e.lovControl = o;
+   e.onLoad = o.ohLoaded;
+   RConsole.find(FXmlConsole).process(e);
+}
+function FUiListBox_onBuildData(config){
+   var o = this;
+   var v = o.listView = RControl.fromNode(config, o.hFieldsPanel);
+   v.hPanel.height = '100%';
+   v.resize();
+   v.addDblClickListener(o, o.selectRow);
+   v.addSelectListener(o, o.selectRow);
+   v.addKeyDownListener(o, o.onKeyDown);
+   o.show();
+}
+function FUiListBox_onKeyDown(sender, e){
+   if(EKey.Esc == e.keyCode){
+      this.hide();
+   }
+}
+function FUiListBox_show(){
+   var o = this;
+   if(!o.isVisible()){
+      o.base.FContainer.show.call(o);
+      RWindow.setEnable(false);
+      RWindow.moveCenter(o.hPanel);
+      o.base.MShadow.show.call(o, true);
+      o.focus();
+      o.listView.focus();
+   }
+}
+function FUiListBox_hide(){
+   var o = this;
+   if(o.isVisible()){
+      o.base.FContainer.hide.call(o);
+      o.base.MShadow.hide.call(o);
+      RWindow.setEnable(true);
+      o.lovControl.focus();
+   }
+}
+function FUiListBox_doSearch(){
+   var o = this;
+   var cs = o.fieldsPanel.components;
+   if(cs){
+      var sn = new TNode('Search');
+      for(var n=0; n<cs.count; n++){
+         cs.value(n).saveSearch(sn);
+      }
+      RLog.debug(o, 'Search value {1}', sn.dump());
+   }
+   o.hide();
+}
+function FUiListBox_selectRow(table, row){
+   var o = this;
+   var fields = o.lovControl.lovFields;
+   var dsCtl = o.lovControl.topControl(MDataset);
+   if(dsCtl && fields){
+      if(!row){
+         row = o.listView.selectRow;
+      }
+      if(row){
+         var flds = RString.splitTwo(fields, ',');
+         for(var n=0; n<flds.length; n++){
+            var v = RString.splitTwo(flds[n], ' ');
+            dsCtl.dsSet(RString.nvl(v[1], v[0]), row.get(v[0]));
+         }
+         dsCtl.loadValue(dsCtl.dsCurrent());
+      }
+   }
+   o.hide();
+}
+function FUiListBox_isBuilded(){
+   return (null != this.listView);
+}
+function FUiListBox_dispose(){
+   var o = this;
+   o.base.FContainer.dispose.call(o);
+   RMemory.freeHtml(o.hEdit);
+   RMemory.freeHtml(o.hButton);
+   RMemory.freeHtml(o.hText);
+   RMemory.freeHtml(o.userSrc);
+   RMemory.freeHtml(o.femaleSrc);
+   RMemory.freeHtml(o.errorSrc);
+   RMemory.freeHtml(o.orgSrc);
+   RMemory.freeHtml(o.dutySrc);
+   RMemory.freeHtml(o.roleSrc);
+   RMemory.freeHtml(o.userUk);
+   o.hEdit = null;
+   o.hButton = null;
+   o.hText = null;
+   o.userSrc = null;
+   o.femaleSrc = null;
+   o.errorSrc = null;
+   o.orgSrc = null;
+   o.dutySrc = null;
+   o.roleSrc = null;
+   o.userUk = null;
+}
+function FUiListItem(o){
+   o = RClass.inherits(this, o, FUiControl);
+   o._styleForm    = RClass.register(o, new AStyle('_styleForm'));
+   o._styleIcon    = RClass.register(o, new AStyle('_styleIcon'));
+   o._styleLabel   = RClass.register(o, new AStyle('_styleLabel'));
+   o.onBuild       = FUiListItem_onBuild;
+   o.onBuildPanel = FUiListItem_onBuildPanel;
+   o.formatValue  = FUiListItem_formatValue;
+   o.text         = FUiListItem_text;
+   o.setText      = FUiListItem_setText;
+   o.dispose      = FUiListItem_dispose;
+   return o;
+}
+function FUiListItem_onBuild(e){
+   var o = this;
+   o.base.FControl.onBuild.call(o, e);
+   if(e.isBefore()){
+      var hf = o.hForm = RBuilder.appendTable(o.hPanel, o.style('Form'));
+      var hRow = hf.insertRow();
+      var hc = hRow.insertCell();
+      hc.className = o.style('Icon');
+      hc.width = 20;
+      o.hIcon = RBuilder.appendIcon(hc, 'arrow');
+      var hc = hRow.insertCell();
+      var h = o.hLabel = RBuilder.append(hc, 'SPAN', o.style('Label'));
+      h.innerText = o.label;
+   }
+}
+function FUiListItem_onBuildPanel(){
+   this.hPanel = RBuilder.create(null, 'DIV');
+}
+function FUiListItem_formatValue(s){
+   return RString.nvl(s);
+}
+function FUiListItem_text(){
+   return this.hEdit.value;
+}
+function FUiListItem_setText(text){
+   this.hEdit.value = text;
+}
+function FUiListItem_dispose(){
+   var o = this;
+   o.base.FControl.dispose.call(o);
+   o.hForm = null;
+   o.hIcon = null;
+   o.hLabel = null;
+   o.hPanel = null;
+   o.hEdit = null;
+}
 function FUiNumber(o){
    o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
    o._inputSize        = RClass.register(o, new APtySize2('_inputSize'));
@@ -42834,6 +43344,9 @@ function FDsCanvas_onBuild(p){
    var h = o._hPanel;
    h.__linker = o;
    var c = o._context = REngine3d.createContext(FWglContext, h);
+   var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
+   bb.linkGraphicContext(o._context);
+   bb.setup();
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start(20);
    RConsole.find(FMouseConsole).register(o);
@@ -42937,14 +43450,16 @@ function FDsCanvas_construct(){
 }
 function FDsCanvas_selectRenderable(p){
    var o = this;
-   var r = p.resource();
-   var rm = r.mesh();
-   var rl = rm.outline();
    var b = o._selectBoundBox;
-   b.outline().assign(rl);
-   b.upload();
    b.remove();
-   p._display.pushRenderable(b);
+   if(p){
+      var r = p.resource();
+      var rm = r.mesh();
+      var rl = rm.outline();
+      b.outline().assign(rl);
+      b.upload();
+      p._display.pushRenderable(b);
+   }
 }
 function FDsCanvas_dispose(){
    var o = this;
@@ -44445,7 +44960,6 @@ function FDsSceneCanvas(o){
    o.onSceneLoad         = FDsSceneCanvas_onSceneLoad;
    o.oeRefresh           = FDsSceneCanvas_oeRefresh;
    o.construct           = FDsSceneCanvas_construct;
-   o.selectRenderable    = FDsSceneCanvas_selectRenderable;
    o.loadScene           = FDsSceneCanvas_loadScene;
    o.dispose             = FDsSceneCanvas_dispose;
    return o;
@@ -44459,6 +44973,12 @@ function FDsSceneCanvas_onMouseCaptureStart(p){
    var s = o._activeScene;
    if(!s){
       return;
+   }
+   var r = o._activeScene.region();
+   var st = RConsole.find(FG3dTechniqueConsole).find(o._context, FG3dSelectTechnique);
+   var r = st.test(r, p.offsetX, p.offsetY);
+   o.selectRenderable(r);
+   if(r){
    }
    o._capturePosition.set(p.clientX, p.clientY);
    o._captureRotation.assign(s.camera()._rotation);
@@ -44569,17 +45089,6 @@ function FDsSceneCanvas_construct(){
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
    o._captureRotation = new SVector3();
-}
-function FDsSceneCanvas_selectRenderable(p){
-   var o = this;
-   var r = p.resource();
-   var rm = r.mesh();
-   var rl = rm.outline();
-   var b = o._selectBoundBox;
-   b.outline().assign(rl);
-   b.upload();
-   b.remove();
-   p._display.pushRenderable(b);
 }
 function FDsSceneCanvas_loadScene(p){
    var o = this;
