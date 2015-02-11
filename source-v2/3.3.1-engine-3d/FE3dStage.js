@@ -136,21 +136,31 @@ function FE3dStage_region(){
 function FE3dStage_process(){
    var o = this;
    var r = o._region;
+   var t = o._technique;
    o.__base.FStage.process.call(o);
-   // 设置颜色
-   r._backgroundColor = o._backgroundColor;
-   // 更新区域
-   o._technique.updateRegion(r);
-   // 获取所有层的渲染集合
+   // 更新区域（更新光源相机等特殊处理）
+   t.updateRegion(r);
+   // 清空区域
    r.prepare();
+   t.clear(o._backgroundColor);
+   // 处理所有层
    var ls = o._layers;
-   if(ls != null){
+   if(ls){
       var c = ls.count();
       for(var i = 0; i < c; i++){
-         ls.value(i).filterRenderables(r);
+         var l = ls.value(i);
+         // 获得技术
+         var lt = l.technique();
+         if(!lt){
+            lt = t;
+         }
+         // 渲染单个层
+         r.reset();
+         l.filterRenderables(r);
+         r.update();
+         lt.drawRegion(r);
       }
    }
-   r.update();
    // 绘制处理
-   o._technique.drawRegion(r);
+   t.present(r);
 }

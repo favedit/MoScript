@@ -100,6 +100,7 @@ function FDsSceneCanvasToolBar_onBuilded(p){
 function FDsSceneCanvasToolBar_onModeClick(p){
    var o = this;
    o._canvasModeCd = p._canvasModeCd;
+   o._workspace._canvas.switchMode(p._canvasModeCd);
 }
 
 //==========================================================

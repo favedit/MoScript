@@ -29,6 +29,8 @@ function FWglContext(o){
    o.bindVertexBuffer    = FWglContext_bindVertexBuffer;
    o.bindTexture         = FWglContext_bindTexture;
    o.clear               = FWglContext_clear;
+   o.clearColor          = FWglContext_clearColor;
+   o.clearDepth          = FWglContext_clearDepth;
    o.drawTriangles       = FWglContext_drawTriangles;
    o.present             = FWglContext_present;
    o.checkError          = FWglContext_checkError;
@@ -583,6 +585,18 @@ function FWglContext_clear(r, g, b, a, d){
    c.clearColor(r, g, b, a);
    c.clearDepth(d);
    c.clear(c.COLOR_BUFFER_BIT | c.DEPTH_BUFFER_BIT);
+}
+function FWglContext_clearColor(r, g, b, a){
+   var o = this;
+   var c = o._native;
+   c.clearColor(r, g, b, a);
+   c.clear(c.COLOR_BUFFER_BIT);
+}
+function FWglContext_clearDepth(d){
+   var o = this;
+   var c = o._native;
+   c.clearDepth(d);
+   c.clear(c.DEPTH_BUFFER_BIT);
 }
 function FWglContext_drawTriangles(b, i, c){
    var o = this;

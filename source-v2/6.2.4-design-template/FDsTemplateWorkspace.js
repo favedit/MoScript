@@ -65,17 +65,17 @@ function FDsTemplateWorkspace_onBuild(p){
    var fs = o._framesetMain = RClass.create(FUiFrameSet);
    fs.build(p);
    // 建立工具区
-   var f = o._frameToolBar = RClass.create(FUiFrameContainer);
+   var f = o._frameToolBar = RClass.create(FUiFramePage);
    f.setHeight(26);
    f.build(p);
    f._hPanel.className = o.styleName('Toolbar_Ground');
    fs.appendFrame(f);
    // 建立内容区
-   var f = o._frameBody = RClass.create(FUiFrameContainer);
+   var f = o._frameBody = RClass.create(FUiFramePage);
    f.build(p);
    fs.appendFrame(f);
    // 建立状态区
-   var f = o._frameStatusBar = RClass.create(FUiFrameContainer);
+   var f = o._frameStatusBar = RClass.create(FUiFramePage);
    f.setHeight(18);
    f.build(p);
    f._hPanel.className = o.styleName('Statusbar_Ground');
@@ -87,7 +87,7 @@ function FDsTemplateWorkspace_onBuild(p){
    fs._directionCd = EDirection.Horizontal;
    fs.build(p);
    // 建立目录区
-   var f = o._frameCatalog = RClass.create(FUiFrameContainer);
+   var f = o._frameCatalog = RClass.create(FUiFramePage);
    f.setWidth(400);
    f.build(p);
    f._hPanel.className = o.styleName('Catalog_Ground');
@@ -95,14 +95,14 @@ function FDsTemplateWorkspace_onBuild(p){
    // 建立分割符
    var sp1 = fs.appendSpliter();
    // 建立工作区
-   var f = o._frameWorkspace = RClass.create(FUiFrameContainer);
+   var f = o._frameWorkspace = RClass.create(FUiFramePage);
    f.build(p);
    f._hPanel.className = o.styleName('Workspace_Ground');
    fs.appendFrame(f);
    // 建立分割符
    var sp2 = fs.appendSpliter();
    // 建立属性区
-   var f = o._frameProperty = RClass.create(FUiFrameContainer);
+   var f = o._frameProperty = RClass.create(FUiFramePage);
    f.setWidth(240);
    f.build(p);
    f._hPanel.className = o.styleName('Property_Ground');

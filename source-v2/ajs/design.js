@@ -1,3 +1,12 @@
+var EDsCanvasDrag = new function EDsCanvasDrag(){
+   var o = this;
+   o.Unknown = 0;
+   o.X       = 1;
+   o.Y       = 2;
+   o.Z       = 3;
+   o.All     = 4;
+   return o;
+}
 var EDsCanvasMode = new function EDsCanvasMode(){
    var o = this;
    o.Unknown   = 0;
@@ -163,6 +172,9 @@ function FDsCanvas_onBuild(p){
    var h = o._hPanel;
    h.__linker = o;
    var c = o._context = REngine3d.createContext(FWglContext, h);
+   var dm = o._dimensional = RClass.create(FRd3Dimensional);
+   dm.linkGraphicContext(c);
+   dm.setup();
    var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
    bb.linkGraphicContext(o._context);
    bb.setup();

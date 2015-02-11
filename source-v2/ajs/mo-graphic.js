@@ -564,6 +564,9 @@ function FG3dEffectConsole_create(p){
       case 'select.select.skeleton.4':
          e = RClass.create(FG3dSelectSkeletonEffect);
          break;
+      case 'control.control.automatic':
+         e = RClass.create(FG3dControlAutomaticEffect);
+         break;
       case 'general.color.automatic':
          e = RClass.create(FG3dGeneralColorAutomaticEffect);
          break;
@@ -951,6 +954,7 @@ function FG3dRegion(o){
    o._projection                 = null;
    o._directionalLight           = null
    o._lights                     = null
+   o._allRenderables             = null;
    o._renderables                = null;
    o._cameraPosition             = null;
    o._cameraDirection            = null;
@@ -972,9 +976,11 @@ function FG3dRegion(o){
    o.camera                      = FG3dRegion_camera;
    o.directionalLight            = FG3dRegion_directionalLight;
    o.lights                      = FG3dRegion_lights;
+   o.allRenderables              = FG3dRegion_allRenderables;
    o.renderables                 = FG3dRegion_renderables;
    o.pushRenderable              = FG3dRegion_pushRenderable;
    o.prepare                     = FG3dRegion_prepare;
+   o.reset                       = FG3dRegion_reset;
    o.calculate                   = FG3dRegion_calculate;
    o.update                      = FG3dRegion_update;
    o.dispose                     = FG3dRegion_dispose;
@@ -985,6 +991,7 @@ function FG3dRegion_construct(){
    o.__base.FObject.construct.call(o);
    o._lights = new TObjects();
    o._renderables = new TObjects();
+   o._allRenderables = new TObjects();
    o._cameraPosition = new SPoint3();
    o._cameraDirection = new SVector3();
    o._cameraViewMatrix = new SMatrix3d();
@@ -1024,11 +1031,16 @@ function FG3dRegion_directionalLight(){
 function FG3dRegion_lights(){
    return this._lights;
 }
+function FG3dRegion_allRenderables(p){
+   return this._allRenderables;
+}
 function FG3dRegion_renderables(p){
    return this._renderables;
 }
 function FG3dRegion_pushRenderable(p){
-   this._renderables.push(p);
+   var o = this;
+   o._renderables.push(p);
+   o._allRenderables.push(p);
 }
 function FG3dRegion_prepare(){
    var o = this;
@@ -1051,6 +1063,10 @@ function FG3dRegion_prepare(){
    o._lightViewProjectionMatrix.assign(lc.matrix());
    o._lightViewProjectionMatrix.append(lp.matrix());
    o._lightInfo.set(0, 0, lp._znear, 1.0 / lp.distance());
+   o._allRenderables.clear();
+}
+function FG3dRegion_reset(){
+   var o = this;
    o._renderables.clear();
 }
 function FG3dRegion_calculate(p){
@@ -1091,7 +1107,8 @@ function FG3dRegion_update(){
 }
 function FG3dRegion_dispose(){
    var o = this;
-   o._renderables = null;
+   o._renderables = RObject.free(o._renderables);
+   o._allRenderables = RObject.free(o._allRenderables);
    o.__base.FObject.dispose.call(o);
 }
 function FG3dRenderable(o){
@@ -1176,7 +1193,9 @@ function FG3dTechnique(o){
    o.code         = FG3dTechnique_code;
    o.passes       = FG3dTechnique_passes;
    o.updateRegion = RMethod.empty;
+   o.clear        = FG3dTechnique_clear;
    o.drawRegion   = FG3dTechnique_drawRegion;
+   o.present      = FG3dTechnique_present;
    return o;
 }
 function FG3dTechnique_construct(){
@@ -1190,6 +1209,12 @@ function FG3dTechnique_code(){
 function FG3dTechnique_passes(){
    return this._passes;
 }
+function FG3dTechnique_clear(p){
+   var o = this;
+   var c = o._context;
+   c.setRenderTarget(null);
+   c.clear(p.red, p.green, p.blue, p.alpha, 1);
+}
 function FG3dTechnique_drawRegion(p){
    var o = this;
    p.setTechnique(o);
@@ -1200,7 +1225,9 @@ function FG3dTechnique_drawRegion(p){
       p.setTechniquePass(v, (n == c - 1));
       v.drawRegion(p);
    }
-   o._context.present();
+}
+function FG3dTechnique_present(p){
+   this._context.present();
 }
 function FG3dTechniqueConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -1743,6 +1770,8 @@ function FG3dContext(o){
    o.bindVertexBuffer    = RMethod.virtual(o, 'bindVertexBuffer');
    o.bindTexture         = RMethod.virtual(o, 'bindTexture');
    o.clear               = RMethod.virtual(o, 'clear');
+   o.clearColor          = RMethod.virtual(o, 'clearColor');
+   o.clearDepth          = RMethod.virtual(o, 'clearDepth');
    o.drawTriangles       = RMethod.virtual(o, 'drawTriangles');
    o.present             = RMethod.virtual(o, 'present');
    o.dispose             = FG3dContext_dispose;
@@ -2497,6 +2526,97 @@ function FG3dAutomaticEffect_bindMaterial(p){
       c.setCullingMode(o._stateDepth, o._stateCullCd);
    }
 }
+function FG3dControlAutomaticEffect(o){
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o._code          = 'control.automatic';
+   o.drawRenderable = FG3dControlAutomaticEffect_drawRenderable;
+   return o;
+}
+function FG3dControlAutomaticEffect_drawRenderable(pg, pr){
+   var o = this;
+   var c = o._context;
+   var p = o._program;
+   var m = pr.material();
+   var mi = m.info();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('fc_color', mi.ambientColor);
+   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
+   p.setParameter('fc_ambient_color', mi.ambientColor);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
+}
+function FG3dControlFrameEffect(o){
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o._code          = 'control.frame';
+   o.drawRenderable = FG3dControlFrameEffect_drawRenderable;
+   return o;
+}
+function FG3dControlFrameEffect_drawRenderable(pg, pr){
+   var o = this;
+   var c = o._context;
+   var p = o._program;
+   var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
+   var vld = pg.calculate(EG3dRegionParameter.LightDirection);
+   var m = pr.material();
+   var mi = m.info();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', vcp);
+   p.setParameter('vc_light_direction', vld);
+   p.setParameter('fc_camera_position', vcp);
+   p.setParameter('fc_light_direction', vld);
+   p.setParameter('fc_color', mi.ambientColor);
+   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
+   p.setParameter('fc_ambient_color', mi.ambientColor);
+   p.setParameter('fc_diffuse_color', mi.diffuseColor);
+   p.setParameter('fc_specular_color', mi.specularColor);
+   p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
+   p.setParameter('fc_specular_view_color', mi.specularViewColor);
+   p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
+   p.setParameter('fc_reflect_color', mi.reflectColor);
+   p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
+   p.setParameter('fc_emissive_color', mi.emissiveColor);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
+}
+function FG3dControlPass(o){
+   o = RClass.inherits(this, o, FG3dTechniquePass);
+   o._code = 'control';
+   return o;
+}
+function FG3dControlTechnique(o){
+   o = RClass.inherits(this, o, FG3dTechnique);
+   o._code        = 'control';
+   o._passControl = null;
+   o.setup       = FG3dControlTechnique_setup;
+   o.passControl = FG3dControlTechnique_passControl;
+   o.drawRegion  = FG3dControlTechnique_drawRegion;
+   return o;
+}
+function FG3dControlTechnique_setup(){
+   var o = this;
+   o.__base.FG3dTechnique.setup.call(o);
+   var ps = o._passes;
+   var pd = o._passControl = RClass.create(FG3dControlPass);
+   pd.linkContext(o._context);
+   pd.setup();
+   ps.push(pd);
+}
+function FG3dControlTechnique_passControl(){
+   return this._passControl;
+}
+function FG3dControlTechnique_drawRegion(p){
+   var o = this;
+   o._context.clearDepth(1);
+   o.__base.FG3dTechnique.drawRegion.call(o, p);
+}
 function FG3dGeneralColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    o._code          = 'general.color.automatic';
@@ -2536,17 +2656,8 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dGeneralColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._code      = 'color';
-   o.drawRegion = FG3dGeneralColorPass_drawRegion;
+   o._code = 'color';
    return o;
-}
-function FG3dGeneralColorPass_drawRegion(p){
-   var o = this;
-   var c = o._context;
-   c.setRenderTarget(null);
-   var bc = p._backgroundColor;
-   o._context.clear(bc.red, bc.green, bc.blue, bc.alpha, 1);
-   o.__base.FG3dTechniquePass.drawRegion.call(o, p)
 }
 function FG3dGeneralColorSkeletonEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
@@ -2681,13 +2792,42 @@ function FG3dSelectPass_drawRegion(p){
    var c = o._context;
    var g = c._native;
    c.setRenderTarget(o._renderTarget);
-   c.clear(0, 0, 0, 0, 1.0, 1.0);
-   o.__base.FG3dTechniquePass.drawRegion.call(o, p);
+   c.clear(0, 0, 0, 0, 1, 1);
+   var sn = p.spaceName();
+   var rs = p.allRenderables();
+   var rc = rs.count();
+   for(var i = 0; i < rc; i++){
+      var r = rs.get(i);
+      var e = r.effects().get(sn);
+      if(!e){
+         e = RConsole.find(FG3dEffectConsole).find(c, p, r);
+         r.effects().set(sn, e);
+      }
+      r.setActiveEffect(e);
+   }
+   for(var i = 0; i < rc; i++){
+      var r = rs.get(i);
+      var e = r.activeEffect();
+      o._context.setProgram(e.program());
+      var d = r.display();
+      if(!d._optionFace){
+         e.drawRenderable(p, r, i);
+      }
+   }
+   c.clearDepth(1);
+   for(var i = 0; i < rc; i++){
+      var r = rs.get(i);
+      var e = r.activeEffect();
+      o._context.setProgram(e.program());
+      var d = r.display();
+      if(d._optionFace){
+         e.drawRenderable(p, r, i);
+      }
+   }
    g.readPixels(0, 0, 1, 1, g.RGBA, g.UNSIGNED_BYTE, o._data);
    var v = o._data[0] + (o._data[1] << 8) + (o._data[2] << 16);
    o._selectRenderable = null;
    if(v != 0){
-      var rs = p.renderables();
       o._selectRenderable = rs.get(v - 1);
    }
 }
@@ -2716,6 +2856,7 @@ function FG3dSelectTechnique_test(p, x, y){
    var o = this;
    p._selectX = x;
    p._selectY = y;
+   p.setTechnique(o);
    o.drawRegion(p);
    return o._passSelect._selectRenderable;
 }
@@ -3046,6 +3187,8 @@ function FWglContext(o){
    o.bindVertexBuffer    = FWglContext_bindVertexBuffer;
    o.bindTexture         = FWglContext_bindTexture;
    o.clear               = FWglContext_clear;
+   o.clearColor          = FWglContext_clearColor;
+   o.clearDepth          = FWglContext_clearDepth;
    o.drawTriangles       = FWglContext_drawTriangles;
    o.present             = FWglContext_present;
    o.checkError          = FWglContext_checkError;
@@ -3600,6 +3743,18 @@ function FWglContext_clear(r, g, b, a, d){
    c.clearColor(r, g, b, a);
    c.clearDepth(d);
    c.clear(c.COLOR_BUFFER_BIT | c.DEPTH_BUFFER_BIT);
+}
+function FWglContext_clearColor(r, g, b, a){
+   var o = this;
+   var c = o._native;
+   c.clearColor(r, g, b, a);
+   c.clear(c.COLOR_BUFFER_BIT);
+}
+function FWglContext_clearDepth(d){
+   var o = this;
+   var c = o._native;
+   c.clearDepth(d);
+   c.clear(c.DEPTH_BUFFER_BIT);
 }
 function FWglContext_drawTriangles(b, i, c){
    var o = this;

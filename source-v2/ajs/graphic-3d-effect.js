@@ -298,6 +298,97 @@ function FG3dAutomaticEffect_bindMaterial(p){
       c.setCullingMode(o._stateDepth, o._stateCullCd);
    }
 }
+function FG3dControlAutomaticEffect(o){
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o._code          = 'control.automatic';
+   o.drawRenderable = FG3dControlAutomaticEffect_drawRenderable;
+   return o;
+}
+function FG3dControlAutomaticEffect_drawRenderable(pg, pr){
+   var o = this;
+   var c = o._context;
+   var p = o._program;
+   var m = pr.material();
+   var mi = m.info();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('fc_color', mi.ambientColor);
+   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
+   p.setParameter('fc_ambient_color', mi.ambientColor);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
+}
+function FG3dControlFrameEffect(o){
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o._code          = 'control.frame';
+   o.drawRenderable = FG3dControlFrameEffect_drawRenderable;
+   return o;
+}
+function FG3dControlFrameEffect_drawRenderable(pg, pr){
+   var o = this;
+   var c = o._context;
+   var p = o._program;
+   var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
+   var vld = pg.calculate(EG3dRegionParameter.LightDirection);
+   var m = pr.material();
+   var mi = m.info();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', vcp);
+   p.setParameter('vc_light_direction', vld);
+   p.setParameter('fc_camera_position', vcp);
+   p.setParameter('fc_light_direction', vld);
+   p.setParameter('fc_color', mi.ambientColor);
+   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
+   p.setParameter('fc_ambient_color', mi.ambientColor);
+   p.setParameter('fc_diffuse_color', mi.diffuseColor);
+   p.setParameter('fc_specular_color', mi.specularColor);
+   p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
+   p.setParameter('fc_specular_view_color', mi.specularViewColor);
+   p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
+   p.setParameter('fc_reflect_color', mi.reflectColor);
+   p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
+   p.setParameter('fc_emissive_color', mi.emissiveColor);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
+}
+function FG3dControlPass(o){
+   o = RClass.inherits(this, o, FG3dTechniquePass);
+   o._code = 'control';
+   return o;
+}
+function FG3dControlTechnique(o){
+   o = RClass.inherits(this, o, FG3dTechnique);
+   o._code        = 'control';
+   o._passControl = null;
+   o.setup       = FG3dControlTechnique_setup;
+   o.passControl = FG3dControlTechnique_passControl;
+   o.drawRegion  = FG3dControlTechnique_drawRegion;
+   return o;
+}
+function FG3dControlTechnique_setup(){
+   var o = this;
+   o.__base.FG3dTechnique.setup.call(o);
+   var ps = o._passes;
+   var pd = o._passControl = RClass.create(FG3dControlPass);
+   pd.linkContext(o._context);
+   pd.setup();
+   ps.push(pd);
+}
+function FG3dControlTechnique_passControl(){
+   return this._passControl;
+}
+function FG3dControlTechnique_drawRegion(p){
+   var o = this;
+   o._context.clearDepth(1);
+   o.__base.FG3dTechnique.drawRegion.call(o, p);
+}
 function FG3dGeneralColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    o._code          = 'general.color.automatic';
@@ -337,17 +428,8 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
 }
 function FG3dGeneralColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
-   o._code      = 'color';
-   o.drawRegion = FG3dGeneralColorPass_drawRegion;
+   o._code = 'color';
    return o;
-}
-function FG3dGeneralColorPass_drawRegion(p){
-   var o = this;
-   var c = o._context;
-   c.setRenderTarget(null);
-   var bc = p._backgroundColor;
-   o._context.clear(bc.red, bc.green, bc.blue, bc.alpha, 1);
-   o.__base.FG3dTechniquePass.drawRegion.call(o, p)
 }
 function FG3dGeneralColorSkeletonEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
@@ -482,13 +564,42 @@ function FG3dSelectPass_drawRegion(p){
    var c = o._context;
    var g = c._native;
    c.setRenderTarget(o._renderTarget);
-   c.clear(0, 0, 0, 0, 1.0, 1.0);
-   o.__base.FG3dTechniquePass.drawRegion.call(o, p);
+   c.clear(0, 0, 0, 0, 1, 1);
+   var sn = p.spaceName();
+   var rs = p.allRenderables();
+   var rc = rs.count();
+   for(var i = 0; i < rc; i++){
+      var r = rs.get(i);
+      var e = r.effects().get(sn);
+      if(!e){
+         e = RConsole.find(FG3dEffectConsole).find(c, p, r);
+         r.effects().set(sn, e);
+      }
+      r.setActiveEffect(e);
+   }
+   for(var i = 0; i < rc; i++){
+      var r = rs.get(i);
+      var e = r.activeEffect();
+      o._context.setProgram(e.program());
+      var d = r.display();
+      if(!d._optionFace){
+         e.drawRenderable(p, r, i);
+      }
+   }
+   c.clearDepth(1);
+   for(var i = 0; i < rc; i++){
+      var r = rs.get(i);
+      var e = r.activeEffect();
+      o._context.setProgram(e.program());
+      var d = r.display();
+      if(d._optionFace){
+         e.drawRenderable(p, r, i);
+      }
+   }
    g.readPixels(0, 0, 1, 1, g.RGBA, g.UNSIGNED_BYTE, o._data);
    var v = o._data[0] + (o._data[1] << 8) + (o._data[2] << 16);
    o._selectRenderable = null;
    if(v != 0){
-      var rs = p.renderables();
       o._selectRenderable = rs.get(v - 1);
    }
 }
@@ -517,6 +628,7 @@ function FG3dSelectTechnique_test(p, x, y){
    var o = this;
    p._selectX = x;
    p._selectY = y;
+   p.setTechnique(o);
    o.drawRegion(p);
    return o._passSelect._selectRenderable;
 }

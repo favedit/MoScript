@@ -40,6 +40,10 @@ function FDisplay(o){
    o.pushRenderable    = FDisplay_pushRenderable;
    o.removeRenderable  = FDisplay_removeRenderable;
    // @method
+   o.show              = FDisplay_show;
+   o.hide              = FDisplay_hide;
+   o.setVisible        = FDisplay_setVisible;
+   // @method
    o.update            = FDisplay_update;
    o.updateMatrix      = FDisplay_updateMatrix;
    o.process           = FDisplay_process;
@@ -238,6 +242,34 @@ function FDisplay_removeRenderable(p){
    if(s){
       s.remove(p);
    }
+}
+
+//==========================================================
+// <T>显示处理。</T>
+//
+// @method
+//==========================================================
+function FDisplay_show(){
+   this.setVisible(true);
+}
+
+//==========================================================
+// <T>隐藏处理。</T>
+//
+// @method
+//==========================================================
+function FDisplay_hide(){
+   this.setVisible(false);
+}
+
+//==========================================================
+// <T>设置显示状态。</T>
+//
+// @method
+// @param p:value:Boolean 显示状态
+//==========================================================
+function FDisplay_setVisible(p){
+   this._visible = p;
 }
 
 //==========================================================

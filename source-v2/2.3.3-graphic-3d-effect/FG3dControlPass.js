@@ -1,13 +1,13 @@
 ﻿//==========================================================
-// <T>通用颜色渲染过程。</T>
+// <T>控件渲染过程。</T>
 //
 // @author maocy
-// @history 150119
+// @history 150211
 //==========================================================
-function FG3dGeneralColorPass(o){
+function FG3dControlPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
    //..........................................................
    // @attribute
-   o._code = 'color';
+   o._code = 'control';
    return o;
 }

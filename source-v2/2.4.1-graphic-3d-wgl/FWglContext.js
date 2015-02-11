@@ -48,6 +48,8 @@ function FWglContext(o){
    o.bindTexture         = FWglContext_bindTexture;
    // @method
    o.clear               = FWglContext_clear;
+   o.clearColor          = FWglContext_clearColor;
+   o.clearDepth          = FWglContext_clearDepth;
    o.drawTriangles       = FWglContext_drawTriangles;
    o.present             = FWglContext_present;
    // @method
@@ -840,6 +842,34 @@ function FWglContext_clear(r, g, b, a, d){
    c.clearColor(r, g, b, a);
    c.clearDepth(d);
    c.clear(c.COLOR_BUFFER_BIT | c.DEPTH_BUFFER_BIT);
+}
+
+//============================================================
+// <T>清空颜色内容。</T>
+//
+// @param r:red:Float 红色
+// @param g:green:Float 绿色
+// @param b:blue:Float 蓝色
+// @param a:alpha:Float 透明
+// @param d:depth:Float 深度
+//============================================================
+function FWglContext_clearColor(r, g, b, a){
+   var o = this;
+   var c = o._native;
+   c.clearColor(r, g, b, a);
+   c.clear(c.COLOR_BUFFER_BIT);
+}
+
+//============================================================
+// <T>清空深度内容。</T>
+//
+// @param d:depth:Float 深度
+//============================================================
+function FWglContext_clearDepth(d){
+   var o = this;
+   var c = o._native;
+   c.clearDepth(d);
+   c.clear(c.DEPTH_BUFFER_BIT);
 }
 
 //============================================================

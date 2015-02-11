@@ -149,6 +149,8 @@ function FG3dContext(o){
    o.bindVertexBuffer    = RMethod.virtual(o, 'bindVertexBuffer');
    o.bindTexture         = RMethod.virtual(o, 'bindTexture');
    o.clear               = RMethod.virtual(o, 'clear');
+   o.clearColor          = RMethod.virtual(o, 'clearColor');
+   o.clearDepth          = RMethod.virtual(o, 'clearDepth');
    o.drawTriangles       = RMethod.virtual(o, 'drawTriangles');
    o.present             = RMethod.virtual(o, 'present');
    o.dispose             = FG3dContext_dispose;

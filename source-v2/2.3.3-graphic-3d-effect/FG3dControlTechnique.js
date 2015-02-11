@@ -1,21 +1,21 @@
 ﻿//==========================================================
-// <T>阴影渲染技术。</T>
+// <T>控件渲染技术。</T>
 //
 // @author maocy
 // @history 150119
 //==========================================================
-function FG3dSelectTechnique(o){
+function FG3dControlTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
    //..........................................................
    // @attribute
-   o._code       = 'select';
+   o._code        = 'control';
    // @attribute
-   o._passSelect = null;
+   o._passControl = null;
    //..........................................................
    // @method
-   o.setup       = FG3dSelectTechnique_setup;
-   o.passSelect  = FG3dSelectTechnique_passSelect;
-   o.test        = FG3dSelectTechnique_test;
+   o.setup       = FG3dControlTechnique_setup;
+   o.passControl = FG3dControlTechnique_passControl;
+   o.drawRegion  = FG3dControlTechnique_drawRegion;
    return o;
 }
 
@@ -24,12 +24,12 @@ function FG3dSelectTechnique(o){
 //
 // @method
 //==========================================================
-function FG3dSelectTechnique_setup(){
+function FG3dControlTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
    var ps = o._passes;
    // 创建选取处理过程
-   var pd = o._passSelect = RClass.create(FG3dSelectPass);
+   var pd = o._passControl = RClass.create(FG3dControlPass);
    pd.linkContext(o._context);
    pd.setup();
    ps.push(pd);
@@ -41,24 +41,20 @@ function FG3dSelectTechnique_setup(){
 // @method
 // @return FG3dShadowDepthPass 深度渲染过程
 //==========================================================
-function FG3dSelectTechnique_passSelect(){
-   return this._passSelect;
+function FG3dControlTechnique_passControl(){
+   return this._passControl;
 }
 
 //==========================================================
-// <T>测试信息。</T>
+// <T>绘制区域处理。</T>
 //
 // @method
-// @param p:region:FG3dRegion 渲染区域
+// @param p:region:FG3dRegion 区域
 //==========================================================
-function FG3dSelectTechnique_test(p, x, y){
+function FG3dControlTechnique_drawRegion(p){
    var o = this;
-   // 设置区域属性
-   p._selectX = x;
-   p._selectY = y;
-   p.setTechnique(o);
-   // 绘制所有过程
-   o.drawRegion(p);
-   // 返回选中内容
-   return o._passSelect._selectRenderable;
+   // 清空深度
+   o._context.clearDepth(1);
+   // 绘制区域
+   o.__base.FG3dTechnique.drawRegion.call(o, p);
 }

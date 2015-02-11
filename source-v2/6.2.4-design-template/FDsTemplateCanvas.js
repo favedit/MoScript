@@ -53,7 +53,7 @@ function FDsTemplateCanvas_onBuild(p){
    var g = o._stage = RClass.create(FE3dSimpleStage);
    g.backgroundColor().set(0.5, 0.5, 0.5, 1);
    g.selectTechnique(o._context, FG3dGeneralTechnique);
-   o._layer = o._stage.spriteLayer();
+   var sl = o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    // 设置相机
    var rc = g.camera();
@@ -72,6 +72,8 @@ function FDsTemplateCanvas_onBuild(p){
    lc.setPosition(10, 10, 0);
    lc.lookAt(0, 0, 0);
    lc.update();
+   // 设置坐标系
+   sl.pushRenderable(o._dimensional);
 }
 
 //==========================================================
@@ -207,7 +209,7 @@ function FDsTemplateCanvas_onEnterFrame(){
       m.rotation().set(0, r.y, 0);
       //m.scale().set(3.0, 3.0, 3.0);
       //m.scale().set(0.002, 0.002, 0.002);
-      m.scale().set(0.2, 0.2, 0.2);
+      //m.scale().set(0.2, 0.2, 0.2);
       m.update();
       // 设置变量
       if(o._rotationAble){

@@ -838,19 +838,27 @@ function FE3dStage_region(){
 function FE3dStage_process(){
    var o = this;
    var r = o._region;
+   var t = o._technique;
    o.__base.FStage.process.call(o);
-   r._backgroundColor = o._backgroundColor;
-   o._technique.updateRegion(r);
+   t.updateRegion(r);
    r.prepare();
+   t.clear(o._backgroundColor);
    var ls = o._layers;
-   if(ls != null){
+   if(ls){
       var c = ls.count();
       for(var i = 0; i < c; i++){
-         ls.value(i).filterRenderables(r);
+         var l = ls.value(i);
+         var lt = l.technique();
+         if(!lt){
+            lt = t;
+         }
+         r.reset();
+         l.filterRenderables(r);
+         r.update();
+         lt.drawRegion(r);
       }
    }
-   r.update();
-   o._technique.drawRegion(r);
+   t.present(r);
 }
 function FE3dTemplate(o){
    o = RClass.inherits(this, o, FE3dDisplay, MListenerLoad);

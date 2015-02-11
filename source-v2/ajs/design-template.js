@@ -31,7 +31,7 @@ function FDsTemplateCanvas_onBuild(p){
    var g = o._stage = RClass.create(FE3dSimpleStage);
    g.backgroundColor().set(0.5, 0.5, 0.5, 1);
    g.selectTechnique(o._context, FG3dGeneralTechnique);
-   o._layer = o._stage.spriteLayer();
+   var sl = o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    var rc = g.camera();
    rc.setPosition(0, 3, -10);
@@ -47,6 +47,7 @@ function FDsTemplateCanvas_onBuild(p){
    lc.setPosition(10, 10, 0);
    lc.lookAt(0, 0, 0);
    lc.update();
+   sl.pushRenderable(o._dimensional);
 }
 function FDsTemplateCanvas_onMouseCaptureStart(p){
    var o = this;
@@ -144,7 +145,6 @@ function FDsTemplateCanvas_onEnterFrame(){
    if(m){
       var r = o._rotation;
       m.rotation().set(0, r.y, 0);
-      m.scale().set(0.2, 0.2, 0.2);
       m.update();
       if(o._rotationAble){
          r.y += 0.01;
@@ -847,15 +847,15 @@ function FDsTemplateWorkspace_onBuild(p){
    o._hPanel.style.height = '100%';
    var fs = o._framesetMain = RClass.create(FUiFrameSet);
    fs.build(p);
-   var f = o._frameToolBar = RClass.create(FUiFrameContainer);
+   var f = o._frameToolBar = RClass.create(FUiFramePage);
    f.setHeight(26);
    f.build(p);
    f._hPanel.className = o.styleName('Toolbar_Ground');
    fs.appendFrame(f);
-   var f = o._frameBody = RClass.create(FUiFrameContainer);
+   var f = o._frameBody = RClass.create(FUiFramePage);
    f.build(p);
    fs.appendFrame(f);
-   var f = o._frameStatusBar = RClass.create(FUiFrameContainer);
+   var f = o._frameStatusBar = RClass.create(FUiFramePage);
    f.setHeight(18);
    f.build(p);
    f._hPanel.className = o.styleName('Statusbar_Ground');
@@ -864,18 +864,18 @@ function FDsTemplateWorkspace_onBuild(p){
    var fs = RClass.create(FUiFrameSet);
    fs._directionCd = EDirection.Horizontal;
    fs.build(p);
-   var f = o._frameCatalog = RClass.create(FUiFrameContainer);
+   var f = o._frameCatalog = RClass.create(FUiFramePage);
    f.setWidth(400);
    f.build(p);
    f._hPanel.className = o.styleName('Catalog_Ground');
    fs.appendFrame(f);
    var sp1 = fs.appendSpliter();
-   var f = o._frameWorkspace = RClass.create(FUiFrameContainer);
+   var f = o._frameWorkspace = RClass.create(FUiFramePage);
    f.build(p);
    f._hPanel.className = o.styleName('Workspace_Ground');
    fs.appendFrame(f);
    var sp2 = fs.appendSpliter();
-   var f = o._frameProperty = RClass.create(FUiFrameContainer);
+   var f = o._frameProperty = RClass.create(FUiFramePage);
    f.setWidth(240);
    f.build(p);
    f._hPanel.className = o.styleName('Property_Ground');

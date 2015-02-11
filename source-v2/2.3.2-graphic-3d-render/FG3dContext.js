@@ -49,6 +49,8 @@ function FG3dContext(o){
    o.bindTexture         = RMethod.virtual(o, 'bindTexture');
    // @method
    o.clear               = RMethod.virtual(o, 'clear');
+   o.clearColor          = RMethod.virtual(o, 'clearColor');
+   o.clearDepth          = RMethod.virtual(o, 'clearDepth');
    o.drawTriangles       = RMethod.virtual(o, 'drawTriangles');
    o.present             = RMethod.virtual(o, 'present');
    // @method

@@ -64,6 +64,9 @@ function FG3dEffectConsole_create(p){
       case 'select.select.skeleton.4':
          e = RClass.create(FG3dSelectSkeletonEffect);
          break;
+      case 'control.control.automatic':
+         e = RClass.create(FG3dControlAutomaticEffect);
+         break;
       case 'general.color.automatic':
          e = RClass.create(FG3dGeneralColorAutomaticEffect);
          break;

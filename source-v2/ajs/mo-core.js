@@ -6014,6 +6014,7 @@ function SMatrix3d(){
    o.setTranslate   = SMatrix3d_setTranslate;
    o.setRotation    = SMatrix3d_setRotation;
    o.setScale       = SMatrix3d_setScale;
+   o.setScaleAll    = SMatrix3d_setScaleAll;
    o.set            = SMatrix3d_set;
    o.setAll         = SMatrix3d_setAll;
    o.equals         = SMatrix3d_equals;
@@ -6065,6 +6066,11 @@ function SMatrix3d_setScale(x, y, z){
    o.sx = x;
    o.sy = y;
    o.sz = z;
+   o._dirty = true;
+}
+function SMatrix3d_setScaleAll(p){
+   var o = this;
+   o.sz = o.sy = o.sx = p;
    o._dirty = true;
 }
 function SMatrix3d_set(pt, pr, ps){

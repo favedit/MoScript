@@ -203,6 +203,10 @@ function FDsSceneCatalog_buildLayer(n, p){
    var c = ds.count();
    for(var i = 0; i < c; i++){
       var l = ds.value(i);
+      // 忽略界面层
+      if(RClass.isClass(l, FDisplayUiLayer)){
+         continue;
+      }
       var lr = l.resource();
       // 创建显示层节点
       var nl = o.createNode();

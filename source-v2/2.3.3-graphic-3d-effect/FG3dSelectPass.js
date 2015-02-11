@@ -78,15 +78,49 @@ function FG3dSelectPass_drawRegion(p){
    var g = c._native;
    // 设置渲染目标
    c.setRenderTarget(o._renderTarget);
-   c.clear(0, 0, 0, 0, 1.0, 1.0);
+   c.clear(0, 0, 0, 0, 1, 1);
+   //..........................................................
    // 绘制处理
-   o.__base.FG3dTechniquePass.drawRegion.call(o, p);
+   var sn = p.spaceName();
+   var rs = p.allRenderables();
+   var rc = rs.count();
+   // 关联渲染器
+   for(var i = 0; i < rc; i++){
+      var r = rs.get(i);
+      var e = r.effects().get(sn);
+      if(!e){
+         e = RConsole.find(FG3dEffectConsole).find(c, p, r);
+         r.effects().set(sn, e);
+      }
+      r.setActiveEffect(e);
+   }
+   // 绘制处理
+   for(var i = 0; i < rc; i++){
+      var r = rs.get(i);
+      var e = r.activeEffect();
+      o._context.setProgram(e.program());
+      var d = r.display();
+      if(!d._optionFace){
+         e.drawRenderable(p, r, i);
+      }
+   }
+   // 绘制界面处理
+   c.clearDepth(1);
+   for(var i = 0; i < rc; i++){
+      var r = rs.get(i);
+      var e = r.activeEffect();
+      o._context.setProgram(e.program());
+      var d = r.display();
+      if(d._optionFace){
+         e.drawRenderable(p, r, i);
+      }
+   }
+   //..........................................................
    // 读取输出
    g.readPixels(0, 0, 1, 1, g.RGBA, g.UNSIGNED_BYTE, o._data);
    var v = o._data[0] + (o._data[1] << 8) + (o._data[2] << 16);
    o._selectRenderable = null;
    if(v != 0){
-      var rs = p.renderables();
       o._selectRenderable = rs.get(v - 1);
    }
 }

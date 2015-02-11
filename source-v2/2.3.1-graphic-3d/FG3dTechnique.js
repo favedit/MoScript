@@ -18,7 +18,9 @@ function FG3dTechnique(o){
    o.passes       = FG3dTechnique_passes;
    // @method
    o.updateRegion = RMethod.empty;
+   o.clear        = FG3dTechnique_clear;
    o.drawRegion   = FG3dTechnique_drawRegion;
+   o.present      = FG3dTechnique_present;
    return o;
 }
 
@@ -54,6 +56,20 @@ function FG3dTechnique_passes(){
 }
 
 //==========================================================
+// <T>清除绘制区。</T>
+//
+// @method
+// @param p:color:SColor4 颜色
+//==========================================================
+function FG3dTechnique_clear(p){
+   var o = this;
+   var c = o._context;
+   // 设置渲染目标
+   c.setRenderTarget(null);
+   c.clear(p.red, p.green, p.blue, p.alpha, 1);
+}
+
+//==========================================================
 // <T>绘制区域处理。</T>
 //
 // @method
@@ -71,6 +87,14 @@ function FG3dTechnique_drawRegion(p){
       p.setTechniquePass(v, (n == c - 1));
       v.drawRegion(p);
    }
-   // 显示处理
-   o._context.present();
+}
+
+//==========================================================
+// <T>绘制完成处理。</T>
+//
+// @method
+// @param p:region:FG3dRetion 区域
+//==========================================================
+function FG3dTechnique_present(p){
+   this._context.present();
 }

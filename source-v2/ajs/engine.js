@@ -25,6 +25,9 @@ function FDisplay(o){
    o.renderables       = FDisplay_renderables;
    o.pushRenderable    = FDisplay_pushRenderable;
    o.removeRenderable  = FDisplay_removeRenderable;
+   o.show              = FDisplay_show;
+   o.hide              = FDisplay_hide;
+   o.setVisible        = FDisplay_setVisible;
    o.update            = FDisplay_update;
    o.updateMatrix      = FDisplay_updateMatrix;
    o.process           = FDisplay_process;
@@ -111,6 +114,15 @@ function FDisplay_removeRenderable(p){
    if(s){
       s.remove(p);
    }
+}
+function FDisplay_show(){
+   this.setVisible(true);
+}
+function FDisplay_hide(){
+   this.setVisible(false);
+}
+function FDisplay_setVisible(p){
+   this._visible = p;
 }
 function FDisplay_update(){
    var o = this;
@@ -267,21 +279,38 @@ function FDisplayContainer_dispose(){
 }
 function FDisplayLayer(o){
    o = RClass.inherits(this, o, FDisplayContainer);
-   o._statusActive = false;
-   o.construct     = FDisplayLayer_construct;
-   o.active        = FDisplayLayer_active;
-   o.deactive      = FDisplayLayer_deactive;
+   o._statusActive   = false;
+   o._technique      = null;
+   o.construct       = FDisplayLayer_construct;
+   o.technique       = FDisplayLayer_technique;
+   o.setTechnique    = FDisplayLayer_setTechnique;
+   o.selectTechnique = FDisplayLayer_selectTechnique;
+   o.active          = FDisplayLayer_active;
+   o.deactive        = FDisplayLayer_deactive;
    return o;
 }
 function FDisplayLayer_construct(){
    var o = this;
    o.__base.FDisplayContainer.construct.call(o);
 }
+function FDisplayLayer_technique(){
+   return this._technique;
+}
+function FDisplayLayer_setTechnique(p){
+   this._technique = p;
+}
+function FDisplayLayer_selectTechnique(c, n){
+   this._technique = RConsole.find(FG3dTechniqueConsole).find(c, n);
+}
 function FDisplayLayer_active(){
    this._statusActive = true;
 }
 function FDisplayLayer_deactive(){
    this._statusActive = false;
+}
+function FDisplayUiLayer(o){
+   o = RClass.inherits(this, o, FDisplayLayer);
+   return o;
 }
 function FDrawable(o){
    o = RClass.inherits(this, o, FObject);
