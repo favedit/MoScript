@@ -48,6 +48,9 @@ function RFloat_parse(p){
    if(p == null){
       return 0;
    }
+   if(p == ''){
+      return 0;
+   }
    // 去掉开始0字符
    var v = RString.trim(p.toString());
    while(true){

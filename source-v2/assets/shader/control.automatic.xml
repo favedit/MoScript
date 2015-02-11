@@ -14,9 +14,7 @@
    <!--=====================================================-->
    <Parameter name='vc_model_matrix'        format='Float4x4'/>
    <Parameter name='vc_vp_matrix'           format='Float4x4'/>
-   <Parameter name='fc_color'               format='Float4'/>
    <Parameter name='fc_alpha'               format='Float4'/>
-   <Parameter name='fc_vertex_color'        format='Float4'/>
    <Parameter name='fc_ambient_color'       format='Float4'/>
    <!--=====================================================-->
    <Attribute name='va_position'    linker='position'    format='Float4'/>
@@ -78,14 +76,8 @@
       #endif
       //..........................................................
       // 声明常量
-      uniform vec4 fc_color;
       uniform vec4 fc_alpha;
-      <shader:true source='vertex.attribute.color'>
-      uniform vec4 fc_vertex_color;
-      </shader:true>
-      <shader:true source='support.ambient'>
       uniform vec4 fc_ambient_color;
-      </shader:true>
       //..........................................................
       // 声明插值器
       varying vec4 v_model_position;
@@ -104,23 +96,20 @@
       //..........................................................
       // 处理
       void main(void){
-         vec4 result = vec4(0.0, 0.0, 0.0, 1.0);
+         vec4 result = fc_ambient_color;
          //............................................................
          // 计算环境颜色
-         <shader:true source='support.ambient'>
          <shader:true source='support.ambient.sampler'>
          vec4 color = texture2D(fs_diffuse, v_coord);
          if(color.a < fc_alpha.x){
             discard;
          }
          </shader:true>
-         <shader:false source='support.ambient.sampler'>
-         vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
-         </shader:false>
-         result.rgb += color.xyz * fc_ambient_color.rgb;
+         <shader:true source='vertex.attribute.color'>
+         result.rgb = v_color.rgb;
          </shader:true>
          //............................................................
-         <shader:true source='support.alpha'>
+         <shader:true source='support.ambient.sampler'>
          result.a = color.a * fc_alpha.z;
          </shader:true>
          //............................................................

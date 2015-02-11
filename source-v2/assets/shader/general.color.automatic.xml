@@ -211,7 +211,6 @@
          </shader:false>
          normalFactor = max(normalFactor, 0.0);
          result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor;
-         //result = vec4(normalFactor, normalFactor, normalFactor, 1.0);
          </shader:true>
          //............................................................
          <shader:true source='vertex.attribute.normal'>
@@ -250,7 +249,6 @@
          //vertexColor = (vertexColor - fc_color.w) * fc_color.z;
          //vertexColor += 1.0;
          //result.rgb *= vertexColor.rgb;
-         result.rgb = v_color.rgb;
          </shader:true>
          <shader:true source='support.alpha'>
          result.a = color.a * fc_alpha.z;

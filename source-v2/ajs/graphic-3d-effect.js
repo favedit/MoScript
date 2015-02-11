@@ -313,8 +313,6 @@ function FG3dControlAutomaticEffect_drawRenderable(pg, pr){
    o.bindMaterial(m);
    p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
-   p.setParameter('fc_color', mi.ambientColor);
-   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
    p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
    p.setParameter('fc_ambient_color', mi.ambientColor);
    o.bindAttributes(pr);

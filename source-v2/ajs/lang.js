@@ -1769,6 +1769,9 @@ function RFloat_parse(p){
    if(p == null){
       return 0;
    }
+   if(p == ''){
+      return 0;
+   }
    var v = RString.trim(p.toString());
    while(true){
       if(v.charAt(0) != "0"){
@@ -1911,6 +1914,9 @@ function RInteger_parse(v, d){
       d = 0;
    }
    if(v == null){
+      return d;
+   }
+   if(v == ''){
       return d;
    }
    v = RString.trim(v.toString());
@@ -4030,8 +4036,8 @@ function TObjects_swap(l, r){
       o._items[r] = v;
    }
 }
-function TObjects_sort(){
-   this._items.sort();
+function TObjects_sort(p){
+   this._items.sort(p);
 }
 function TObjects_erase(n){
    var v = null;

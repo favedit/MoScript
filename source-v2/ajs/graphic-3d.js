@@ -1081,15 +1081,16 @@ function FG3dSpotLight(o){
 }
 function FG3dTechnique(o){
    o = RClass.inherits(this, o, FG3dObject);
-   o._code        = null;
-   o._passes      = null;
-   o.construct    = FG3dTechnique_construct;
-   o.code         = FG3dTechnique_code;
-   o.passes       = FG3dTechnique_passes;
-   o.updateRegion = RMethod.empty;
-   o.clear        = FG3dTechnique_clear;
-   o.drawRegion   = FG3dTechnique_drawRegion;
-   o.present      = FG3dTechnique_present;
+   o._code           = null;
+   o._passes         = null;
+   o.construct       = FG3dTechnique_construct;
+   o.code            = FG3dTechnique_code;
+   o.passes          = FG3dTechnique_passes;
+   o.updateRegion    = RMethod.empty;
+   o.clear           = FG3dTechnique_clear;
+   o.sortRenderables = FG3dTechnique_sortRenderables;
+   o.drawRegion      = FG3dTechnique_drawRegion;
+   o.present         = FG3dTechnique_present;
    return o;
 }
 function FG3dTechnique_construct(){
@@ -1108,6 +1109,8 @@ function FG3dTechnique_clear(p){
    var c = o._context;
    c.setRenderTarget(null);
    c.clear(p.red, p.green, p.blue, p.alpha, 1);
+}
+function FG3dTechnique_sortRenderables(a, b){
 }
 function FG3dTechnique_drawRegion(p){
    var o = this;
@@ -1155,15 +1158,16 @@ function FG3dTechniqueConsole_find(c, p){
 }
 function FG3dTechniquePass(o){
    o = RClass.inherits(this, o, FG3dObject);
-   o._fullCode  = null;
-   o._code      = null;
-   o._index     = null;
-   o._finish    = false;
-   o.setup       = RMethod.empty;
-   o.fullCode    = FG3dTechniquePass_fullCode;
-   o.setFullCode = FG3dTechniquePass_setFullCode;
-   o.code        = FG3dTechniquePass_code;
-   o.drawRegion  = FG3dTechniquePass_drawRegion;
+   o._fullCode       = null;
+   o._code           = null;
+   o._index          = null;
+   o._finish         = false;
+   o.setup           = RMethod.empty;
+   o.fullCode        = FG3dTechniquePass_fullCode;
+   o.setFullCode     = FG3dTechniquePass_setFullCode;
+   o.code            = FG3dTechniquePass_code;
+   o.sortRenderables = FG3dTechniquePass_sortRenderables;
+   o.drawRegion      = FG3dTechniquePass_drawRegion;
    return o;
 }
 function FG3dTechniquePass_fullCode(){
@@ -1174,6 +1178,14 @@ function FG3dTechniquePass_setFullCode(p){
 }
 function FG3dTechniquePass_code(){
    return this._code;
+}
+function FG3dTechniquePass_sortRenderables(s, t){
+   var se = s.activeEffect();
+   var te = t.activeEffect();
+   if(se == te){
+      return 0;
+   }
+   return s._effectName.localeCompare(t._effectName);
 }
 function FG3dTechniquePass_drawRegion(p){
    var o = this;
@@ -1189,6 +1201,7 @@ function FG3dTechniquePass_drawRegion(p){
       }
       r.setActiveEffect(e);
    }
+   rs.sort(o.sortRenderables);
    for(var i = 0; i < c; i++){
       var r = rs.get(i);
       var e = r.activeEffect();

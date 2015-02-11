@@ -3525,6 +3525,7 @@ function FRd3BoundBox(o){
    o = RClass.inherits(this, o, FRd3Renderable);
    o._outline              = null;
    o._rate                 = 0.2;
+   o._effectName           = 'automatic';
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
    o.construct             = FRd3BoundBox_construct;
@@ -3569,8 +3570,11 @@ function FRd3BoundBox_setup(){
       31, 19, 31, 27, 31, 30 ];
    var ib = o._indexBuffer = c.createIndexBuffer();
    ib._fillMode = EG3dFillMode.Line;
+   ib._lineWidth = 1;
    ib.upload(id, 48);
    o.update();
+   var mi = o.material().info();
+   mi.ambientColor.set(1, 1, 1, 1);
 }
 function FRd3BoundBox_upload(){
    var o = this;
@@ -3670,6 +3674,7 @@ function FRd3Dimensional(o){
    o._size                 = null;
    o._lineColor            = null;
    o._lineCenterColor      = null;
+   o._effectName           = 'automatic';
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
    o.construct             = FRd3Dimensional_construct;
@@ -3778,6 +3783,8 @@ function FRd3Dimensional_setup(){
    var ib = o._indexBuffer = c.createIndexBuffer();
    ib._fillMode = EG3dFillMode.Line;
    ib.upload(id, it);
+   var mi = o.material().info();
+   mi.ambientColor.set(1, 1, 1, 1);
 }
 function FRd3Material(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -3951,6 +3958,9 @@ function FRd3Mesh_loadResource(p){
          switch(rc){
             case "position":
                b._formatCd = EG3dAttributeFormat.Float3;
+               break;
+            case "color":
+               b._formatCd = EG3dAttributeFormat.Byte4Normal;
                break;
             case "coord":
                b._formatCd = EG3dAttributeFormat.Float2;

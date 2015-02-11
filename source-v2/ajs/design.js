@@ -25,6 +25,7 @@ var EDsFrame = new function EDsFrame(){
    o.SceneLightPropertyFrame = 'design3d.scene.property.LightFrame';
    o.SceneLayerPropertyFrame = 'design3d.scene.property.LayerFrame';
    o.SceneDisplayPropertyFrame = 'design3d.scene.property.DisplayFrame';
+   o.SceneMaterialPropertyFrame = 'design3d.scene.property.MaterialFrame';
    o.SceneRenderablePropertyFrame = 'design3d.scene.property.RenderableFrame';
    return o;
 }

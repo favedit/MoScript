@@ -30,6 +30,7 @@ function FRd3BoundBox(o){
    // @attribute
    o._outline              = null;
    o._rate                 = 0.2;
+   o._effectName           = 'automatic';
    // @attribute
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
@@ -102,10 +103,15 @@ function FRd3BoundBox_setup(){
       31, 19, 31, 27, 31, 30 ];
    var ib = o._indexBuffer = c.createIndexBuffer();
    ib._fillMode = EG3dFillMode.Line;
+   ib._lineWidth = 1;
    ib.upload(id, 48);
    //..........................................................
    // 更新处理
    o.update();
+   //..........................................................
+   // 设置材质
+   var mi = o.material().info();
+   mi.ambientColor.set(1, 1, 1, 1);
 }
 
 //==========================================================

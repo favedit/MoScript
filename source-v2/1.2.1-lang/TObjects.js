@@ -251,8 +251,8 @@ function TObjects_swap(l, r){
 //
 // @method
 //===========================================================
-function TObjects_sort(){
-   this._items.sort();
+function TObjects_sort(p){
+   this._items.sort(p);
 }
 
 //===========================================================

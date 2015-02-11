@@ -231,6 +231,9 @@ function FRd3Mesh_loadResource(p){
             case "position":
                b._formatCd = EG3dAttributeFormat.Float3;
                break;
+            case "color":
+               b._formatCd = EG3dAttributeFormat.Byte4Normal;
+               break;
             case "coord":
                b._formatCd = EG3dAttributeFormat.Float2;
                break;

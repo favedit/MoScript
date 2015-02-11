@@ -1,18 +1,21 @@
 //==========================================================
-// <T>颜色3编辑框。</T>
+// <T>颜色编辑框。</T>
 //
 // @class
 // @author maocy
 // @version 150201
 //==========================================================
-function SUiColorBar(o){
-   if(!o){o = this;}
+function SUiColorBar(){
+   var o = this;
    //..........................................................
    // @attribute
    o._draging      = false;
    // @attribute
    o.control       = null;
    o.type          = null;
+   // @attribute
+   o.minValue      = 0;
+   o.maxValue      = 1;
    //..........................................................
    // @html
    o.hPanel        = null;
@@ -35,6 +38,7 @@ function SUiColorBar(o){
    // @method
    o.setSlideValue = SUiColorBar_setSlideValue;
    o.setColorValue = SUiColorBar_setColorValue;
+   o.changeInput   = RMethod.empty;
    o.set           = SUiColorBar_set;
    return o;
 }
@@ -92,7 +96,7 @@ function SUiColorBar_build(p){
    var hc = o.hColor = RBuilder.appendTableCell(hr);
    hc.width = 13;
    hc.style.padding = '2px';
-   o.hColorImage = RBuilder.appendIcon(hc, null, 'n', 13, 13);
+   o.hColorImage = RBuilder.appendIcon(hc, null, 'n', 11, 11);
    //..........................................................
    // 创建滑动块
    var hc = o.hSlidePanel = RBuilder.appendTableCell(hr);
@@ -135,9 +139,10 @@ function SUiColorBar_build(p){
    c.attachEvent('onSlideMouseUp', hf, c.onSlideMouseUp);
    //..........................................................
    // 创建输入块
-   var hc = RBuilder.appendTableCell(hr);
+   var hc = RBuilder.appendTableCell(hr, o.control.styleName('InputPanel'));
    hc.width = '36';
    var he = o.hInput = RBuilder.appendEdit(hc, o.control.styleName('Input'));
+   he._pbar = o;
    c.attachEvent('onInputKeyPress', he, c.onInputKeyPress);
    c.attachEvent('onInputChanged', he, c.onInputChanged);
 }
@@ -176,6 +181,8 @@ function SUiColorBar_setColorValue(p){
       c = '00' + v + '00';
    }else if(o.type == 'blue'){
       c = '0000' + v;
+   }else if(o.type == 'power'){
+      c = v + v + v;
    }
    o.hColorImage.style.backgroundColor = '#' + c;
 }

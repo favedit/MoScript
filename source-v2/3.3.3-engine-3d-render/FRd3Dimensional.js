@@ -23,6 +23,7 @@ function FRd3Dimensional(o){
    o._size                 = null;
    o._lineColor            = null;
    o._lineCenterColor      = null;
+   o._effectName           = 'automatic';
    // @attribute
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
@@ -178,5 +179,8 @@ function FRd3Dimensional_setup(){
    var ib = o._indexBuffer = c.createIndexBuffer();
    ib._fillMode = EG3dFillMode.Line;
    ib.upload(id, it);
+   //..........................................................
+   // 设置材质
+   var mi = o.material().info();
+   mi.ambientColor.set(1, 1, 1, 1);
 }
-

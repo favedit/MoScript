@@ -8382,6 +8382,274 @@ function FUiColor4_clone(){
 function FUiColor4_link(){
    var o = this;
 }
+function FUiColorPower(o){
+   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
+   o._inputSize        = RClass.register(o, new APtySize2('_inputSize'));
+   o._styleValuePanel  = RClass.register(o, new AStyle('_styleValuePanel'));
+   o._styleInputPanel  = RClass.register(o, new AStyle('_styleInputPanel'));
+   o._styleInput       = RClass.register(o, new AStyle('_styleInput'));
+   o._innerOriginValue = null;
+   o._innerDataValue   = null;
+   o._barRed           = null;
+   o._barGreen         = null;
+   o._barBlue          = null;
+   o._barPower         = null;
+   o.onBuildEditValue  = FUiColorPower_onBuildEditValue;
+   o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FUiColorPower_onInputKeyPress);
+   o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FUiColorPower_onInputChanged);
+   o.onSlideMouseDown  = RClass.register(o, new AEventMouseDown('onSlideMouseDown'), FUiColorPower_onSlideMouseDown);
+   o.onSlideMouseMove  = RClass.register(o, new AEventMouseMove('onSlideMouseMove'), FUiColorPower_onSlideMouseMove);
+   o.onSlideMouseUp    = RClass.register(o, new AEventMouseUp('onSlideMouseUp'), FUiColorPower_onSlideMouseUp);
+   o.construct         = FUiColorPower_construct;
+   o.get               = FUiColorPower_get;
+   o.set               = FUiColorPower_set;
+   o.setDisplayColor   = FUiColorPower_setDisplayColor;
+   o.setDisplay        = FUiColorPower_setDisplay;
+   o.refreshValue      = FUiColorPower_refreshValue;
+   return o;
+}
+function FUiColorPower_onBuildEditValue(p){
+   var o = this;
+   var h = o._hValuePanel;
+   h.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = RBuilder.appendTable(h);
+   hf.width = '100%';
+   var hl = o._hValueLine = RBuilder.appendTableRow(hf);
+   o._hChangePanel = RBuilder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hcp = o._hColorPanel = RBuilder.appendTableCell(hl);
+   hcp.width = 16;
+   hcp.style.padding = '2px';
+   o._hColorImage = RBuilder.appendIcon(hcp, null, 'n', 14, 65);
+   var hcp = RBuilder.appendTableCell(hl);
+   var hcf = o._hColorForm = RBuilder.appendTable(hcp, null, 0, 1, 0);
+   hcf.width = '100%';
+   var b = o._barRed = new SUiColorChannel();
+   b.control = o;
+   b.type = 'red';
+   b.hPanel = hcf;
+   b.build();
+   var b = o._barGreen = new SUiColorChannel();
+   b.control = o;
+   b.type = 'green';
+   b.hPanel = hcf;
+   b.build();
+   var b = o._barBlue = new SUiColorChannel();
+   b.control = o;
+   b.type = 'blue';
+   b.hPanel = hcf;
+   b.build();
+   var b = o._barPower = new SUiColorPower();
+   b.control = o;
+   b.type = 'power';
+   b.hPanel = hcf;
+   b.build();
+}
+function FUiColorPower_onInputKeyPress(p){
+   var o = this;
+   var c = p.keyCode;
+   if(!EKeyCode.floatCodes[c]){
+      p.cancel();
+   }
+}
+function FUiColorPower_onInputChanged(p){
+   var o = this;
+   var hs = p.hSender;
+   var b = hs._pbar;
+   if(b){
+      b.changeInput();
+   }
+   o.processDataChangedListener(o);
+}
+function FUiColorPower_onSlideMouseDown(p){
+   var o = this;
+   var b = p.hSource.__pbar;
+   b.onMouseDown(p);
+}
+function FUiColorPower_onSlideMouseMove(p){
+   var o = this;
+   var b = p.hSource.__pbar;
+   b.onMouseMove(p);
+}
+function FUiColorPower_onSlideMouseUp(p){
+   var o = this;
+   var b = p.hSource.__pbar;
+   b.onMouseUp(p);
+}
+function FUiColorPower_construct(){
+   var o = this;
+   o.__base.FUiEditControl.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
+   o._innerOriginValue = new SColor4();
+   o._innerDataValue = new SColor4();
+}
+function FUiColorPower_get(p){
+   var o = this;
+   var v = o._innerDataValue;
+   var h = o._barRed.hInput;
+   if(h){
+      v.red = RFloat.parse(h.value);
+   }
+   var h = o._barGreen.hInput;
+   if(h){
+      v.green = RFloat.parse(h.value);
+   }
+   var h = o._barBlue.hInput;
+   if(h){
+      v.blue = RFloat.parse(h.value);
+   }
+   var h = o._barPower.hInput;
+   if(h){
+      v.alpha = RFloat.parse(h.value);
+   }
+   return v;
+}
+function FUiColorPower_set(p){
+   var o = this;
+   o.__base.FUiEditControl.set.call(o, p);
+   if(p.constructor == SColor4){
+      o._innerOriginValue.assign(p);
+      o._innerDataValue.assign(p);
+   }else{
+      throw new TError('Invalid value format.');
+   }
+   o.setDisplayColor();
+   var v = o._innerDataValue;
+   o._barRed.set(v.red);
+   o._barGreen.set(v.green);
+   o._barBlue.set(v.blue);
+   o._barPower.set(v.alpha);
+   o.changeSet(false);
+}
+function FUiColorPower_setDisplayColor(){
+   var o = this;
+   var v = o._innerDataValue;
+   var vr = RHex.format(parseInt(v.red * 255), 2);
+   var vg = RHex.format(parseInt(v.green * 255), 2);
+   var vb = RHex.format(parseInt(v.blue * 255), 2);
+   o._hColorImage.style.backgroundColor = '#' + vr + vg + vb;
+}
+function FUiColorPower_setDisplay(){
+   var o = this;
+   o.setDisplayColor();
+   var v = o._innerDataValue;
+   o._barRed.set(v.red);
+   o._barGreen.set(v.green);
+   o._barBlue.set(v.blue);
+   o._barPower.set(v.alpha);
+}
+function FUiColorPower_refreshValue(){
+   var o = this;
+   o.get();
+   o.setDisplayColor();
+   o.processDataChangedListener(o);
+}
+function FUiColorPower_onDataKeyDown(s, e){
+   var o = this;
+   o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
+   if(o.editCase){
+      RKey.fixCase(e, o.editCase);
+   }
+   if(o._editable){
+      return;
+      if(o.editComplete){
+         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
+            var ed = o.findEditor();
+            if(ed){
+               ed.onEditKeyDown(s, e);
+            }
+         }
+      }
+   }
+}
+function FUiColorPower_formatValue(v){
+   var o = this;
+   var r = RString.nvl(v);
+   if(ECase.Upper == o.editCase){
+      r = RString.toUpper(r);
+   }else if(ECase.Lower == o.editCase){
+      r = RString.toLower(r);
+   }
+   return r;
+}
+function FUiColorPower_setText(t){
+   var o = this;
+   if(!o.hEdit){
+      return;
+   }
+   if('U'== o.editCase){
+      o.hEdit.value = RString.toUpper(t);
+   }else if('L'== o.editCase){
+         o.hEdit.value = RString.toLower(t);
+   }else{
+      o.hEdit.value = t;
+   }
+   if('right' == o.editAlign ){
+      o.hEdit.style.textAlign = 'right';
+   }else if('left' == o.editAlign ){
+      o.hEdit.style.textAlign = 'left';
+   }else{
+      o.hEdit.style.textAlign = 'center';
+   }
+}
+function FUiColorPower_validText(t){
+   var o = this;
+   var r = o.__base.FUiEditControl.validText.call(o, t);
+   if(!r){
+      if(o.validLenmin){
+         if(o.validLenmin > t.length){
+            return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
+         }
+      }
+      if(o.validLenmax){
+         if(o.validLenmax < t.length){
+            return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
+         }
+      }
+   }
+   return r;
+}
+function FUiColorPower_findEditor(){
+   var o = this;
+   if(o.editComplete){
+      var de = o.editor;
+      if(!de){
+         o.dsControl = o.topControl(MDataset);
+         if(o.dsControl){
+            de = o.editor = RConsole.find(FUiColorPowerConsole).focus(o, FUiColorPowerEditor);
+         }
+      }
+      if(de){
+         de.linkControl(o);
+      }
+      return o.editor;
+   }
+}
+function FUiColorPower_drop(){
+   var o = this;
+   var de = o.findEditor();
+   if(de){
+      var t = o.reget();
+      if(t.length > 0){
+         if(o.finded != t){
+            if(de.source != o){
+               de.linkControl(o);
+            }
+            de.search(t);
+         }
+         o.finded = t;
+      }
+   }
+}
+function FUiColorPower_clone(){
+   var o = this;
+   var r = o._class.newInstance();
+   GHtml_clone(r, o.hPanel);
+   return r;
+}
+function FUiColorPower_link(){
+   var o = this;
+}
 function FUiEdit(o){
    o = RClass.inherits(this, o, FUiEditControl);
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
@@ -10718,11 +10986,13 @@ function FUiPanel_onTitleClick(p){
    o._hImage.src = RResource.iconPath(s ? o._imageMinus : o._imagePlus);
    RHtml.displaySet(o._hBody, s);
 }
-function SUiColorBar(o){
-   if(!o){o = this;}
+function SUiColorBar(){
+   var o = this;
    o._draging      = false;
    o.control       = null;
    o.type          = null;
+   o.minValue      = 0;
+   o.maxValue      = 1;
    o.hPanel        = null;
    o.hColor        = null;
    o.hColorImage   = null;
@@ -10735,6 +11005,7 @@ function SUiColorBar(o){
    o.build         = SUiColorBar_build;
    o.setSlideValue = SUiColorBar_setSlideValue;
    o.setColorValue = SUiColorBar_setColorValue;
+   o.changeInput   = RMethod.empty;
    o.set           = SUiColorBar_set;
    return o;
 }
@@ -10765,7 +11036,7 @@ function SUiColorBar_build(p){
    var hc = o.hColor = RBuilder.appendTableCell(hr);
    hc.width = 13;
    hc.style.padding = '2px';
-   o.hColorImage = RBuilder.appendIcon(hc, null, 'n', 13, 13);
+   o.hColorImage = RBuilder.appendIcon(hc, null, 'n', 11, 11);
    var hc = o.hSlidePanel = RBuilder.appendTableCell(hr);
    hc.style.padding = '2px';
    hc.vAlign = 'middle';
@@ -10800,9 +11071,10 @@ function SUiColorBar_build(p){
    c.attachEvent('onSlideMouseDown', hf, c.onSlideMouseDown);
    c.attachEvent('onSlideMouseMove', hf, c.onSlideMouseMove);
    c.attachEvent('onSlideMouseUp', hf, c.onSlideMouseUp);
-   var hc = RBuilder.appendTableCell(hr);
+   var hc = RBuilder.appendTableCell(hr, o.control.styleName('InputPanel'));
    hc.width = '36';
    var he = o.hInput = RBuilder.appendEdit(hc, o.control.styleName('Input'));
+   he._pbar = o;
    c.attachEvent('onInputKeyPress', he, c.onInputKeyPress);
    c.attachEvent('onInputChanged', he, c.onInputChanged);
 }
@@ -10826,6 +11098,8 @@ function SUiColorBar_setColorValue(p){
       c = '00' + v + '00';
    }else if(o.type == 'blue'){
       c = '0000' + v;
+   }else if(o.type == 'power'){
+      c = v + v + v;
    }
    o.hColorImage.style.backgroundColor = '#' + c;
 }
@@ -10840,6 +11114,90 @@ function SUiColorBar_set(p){
    var h = o.hInput;
    if(h){
       h.value = RFloat.format(p, 0, null, 3, null);;
+   }
+}
+function SUiColorChannel(){
+   var o = this;
+   SUiColorBar.call(o);
+   o.minValue      = 0;
+   o.maxValue      = 255;
+   o.setSlideValue = SUiColorChannel_setSlideValue;
+   o.setColorValue = SUiColorChannel_setColorValue;
+   o.set           = SUiColorChannel_set;
+   o.changeInput   = SUiColorChannel_changeInput;
+   return o;
+}
+function SUiColorChannel_setSlideValue(p){
+   var o = this;
+   var l = o.hSlideForm.offsetWidth;
+   var r = parseInt(p / o.maxValue * l);
+   o.hSlideRowML.width = Math.min(Math.max(r, 1), l);
+}
+function SUiColorChannel_setColorValue(p){
+   var o = this;
+   var v = RHex.format(p, 2);
+   var c = '';
+   if(o.type == 'red'){
+      c = v + '0000';
+   }else if(o.type == 'green'){
+      c = '00' + v + '00';
+   }else if(o.type == 'blue'){
+      c = '0000' + v;
+   }
+   o.hColorImage.style.backgroundColor = '#' + c;
+}
+function SUiColorChannel_set(p){
+   var o = this;
+   var r = parseInt(p * 255);
+   var l = o.hSlideForm.offsetWidth;
+   var d = parseInt(l * r / 255);
+   o.hSlideRowML.width = Math.max(d, 1);
+   o.setColorValue(r);
+   o.hInput.value = r;
+}
+function SUiColorChannel_changeInput(){
+   var o = this;
+   var v = Math.min(RInteger.parse(o.hInput.value), o.maxValue);
+   o.hInput.value = v;
+   o.setColorValue(v);
+   o.setSlideValue(v);
+}
+function SUiColorPower(){
+   var o = this;
+   SUiColorBar.call(o);
+   o.minValue      = 0;
+   o.maxValue      = 4;
+   o.setSlideValue = SUiColorPower_setSlideValue;
+   o.setColorValue = SUiColorPower_setColorValue;
+   o.set           = SUiColorPower_set;
+   return o;
+}
+function SUiColorPower_setSlideValue(p){
+   var o = this;
+   var l = o.hSlideForm.offsetWidth;
+   o.hSlideRowML.width = p;
+   var r = p / l * o.maxValue;
+   o.hInput.value = RFloat.format(r, 0, null, 3, null);
+   o.setColorValue(r);
+   o.control.refreshValue();
+}
+function SUiColorPower_setColorValue(p){
+   var o = this;
+   var pv = parseInt(p * 255);
+   var v = RHex.format(pv, 2);
+   o.hColorImage.style.backgroundColor = '#' + v + v + v;
+}
+function SUiColorPower_set(p){
+   var o = this;
+   var pv = parseInt(p * 255);
+   var r = pv / 255;
+   var l = o.hSlideForm.offsetWidth;
+   var d = parseInt(l * r / o.maxValue);
+   o.hSlideRowML.width = Math.max(d, 1);
+   o.setColorValue(p);
+   var h = o.hInput;
+   if(h){
+      h.value = RFloat.format(p, 0, null, 2, null);;
    }
 }
 var EGridColumn = new function EGridColumn(){

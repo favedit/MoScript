@@ -907,6 +907,13 @@ function FWglContext_drawTriangles(b, i, c){
    //GL_QUAD_STRIP,  
    //GL_QUADS, 
    if(b._fillMode == EG3dFillMode.Line){
+      //if(b._lineWidth){
+      //   g.lineWidth(b._lineWidth);
+      //}
+      //g.enable(g.BLEND);
+      //g.enable(g.LINE_SMOOTH);
+      //g.hint(g.LINE_SMOOTH_HINT, g.FASTEST);
+      //g.blendFunc(g.SRC_ALPHA, g.ONE_MINUS_SRC_ALPHA); 
       g.drawElements(g.LINES, c, strideCd, 2 * i);
    }else{
       g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);

@@ -34,8 +34,6 @@ function FG3dControlAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    // 设置材质
-   p.setParameter('fc_color', mi.ambientColor);
-   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
    p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
    p.setParameter('fc_ambient_color', mi.ambientColor);
    // 绑定所有属性流

@@ -394,7 +394,6 @@ function FDsSceneCanvas_loadScene(p){
    m.addLoadListener(o, o.onSceneLoad);
    m.selectTechnique(c, FG3dGeneralTechnique);
    o._stage = o._activeScene = m;
-   RStage.register('stage3d', m);
 }
 function FDsSceneCanvas_dispose(){
    var o = this;
@@ -549,6 +548,21 @@ function FDsSceneCatalog_buildRegion(n, p){
 }
 function FDsSceneCatalog_buildRenderable(n, p){
    var o = this;
+   var s = p.materials();
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var m = s.value(i);
+         var dn = o.createNode();
+         dn.setLabel(m._resource._code);
+         dn.setTypeName('material');
+         dn.dataPropertySet('linker', m);
+         n.appendNode(dn);
+         if(i == 0){
+            dn.click();
+         }
+      }
+   }
    var s = p.renderables();
    if(s){
       var c = s.count();
@@ -833,7 +847,6 @@ function FDsSceneMaterialFrame_onDataChanged(p){
    mi.reflectMerge = v;
    var v = o._controlEmissiveColor.get();
    mi.emissiveColor.assign(v);
-   t.reloadResource();
 }
 function FDsSceneMaterialFrame_construct(){
    var o = this;
@@ -855,6 +868,38 @@ function FDsSceneMaterialFrame_loadObject(s, m){
    o._controlEmissiveColor.set(mi.emissiveColor);
 }
 function FDsSceneMaterialFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsSceneMaterialPropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible        = false;
+   o._workspace      = null;
+   o._selectMaterial = null;
+   o._controlGuid    = null;
+   o._controlCode    = null;
+   o._controlLabel   = null;
+   o._displayFrame   = null;
+   o._materialFrame  = null;
+   o.construct       = FDsSceneMaterialPropertyFrame_construct;
+   o.loadObject      = FDsSceneMaterialPropertyFrame_loadObject;
+   o.dispose         = FDsSceneMaterialPropertyFrame_dispose;
+   return o;
+}
+function FDsSceneMaterialPropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsSceneMaterialPropertyFrame_loadObject(s, m){
+   var o = this;
+   var r = m._resource;
+   o._selectMaterial = m;
+   o._controlGuid.set(r.guid());
+   o._controlCode.set(r.code());
+   o._controlLabel.set(r.label());
+   o._frameMaterial.loadObject(s, r);
+}
+function FDsSceneMaterialPropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }
@@ -1112,6 +1157,10 @@ function FDsSceneWorkspace_onCatalogSelected(p){
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dSceneDisplay)){
       var f = o.findPropertyFrame(EDsFrame.SceneDisplayPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FG3dMaterial)){
+      var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FRd3Renderable)){

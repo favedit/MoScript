@@ -85,7 +85,7 @@ function FDsSceneMaterialFrame_onDataChanged(p){
    var v = o._controlEmissiveColor.get();
    mi.emissiveColor.assign(v);
    // 重新加载资源
-   t.reloadResource();
+   //t.reloadResource();
 }
 
 //==========================================================

@@ -8,19 +8,20 @@ function FG3dTechnique(o){
    o = RClass.inherits(this, o, FG3dObject);
    //..........................................................
    // @attribute
-   o._code        = null;
-   o._passes      = null;
+   o._code           = null;
+   o._passes         = null;
    //..........................................................
    // @method
-   o.construct    = FG3dTechnique_construct;
+   o.construct       = FG3dTechnique_construct;
    // @method
-   o.code         = FG3dTechnique_code;
-   o.passes       = FG3dTechnique_passes;
+   o.code            = FG3dTechnique_code;
+   o.passes          = FG3dTechnique_passes;
    // @method
-   o.updateRegion = RMethod.empty;
-   o.clear        = FG3dTechnique_clear;
-   o.drawRegion   = FG3dTechnique_drawRegion;
-   o.present      = FG3dTechnique_present;
+   o.updateRegion    = RMethod.empty;
+   o.clear           = FG3dTechnique_clear;
+   o.sortRenderables = FG3dTechnique_sortRenderables;
+   o.drawRegion      = FG3dTechnique_drawRegion;
+   o.present         = FG3dTechnique_present;
    return o;
 }
 
@@ -67,6 +68,15 @@ function FG3dTechnique_clear(p){
    // 设置渲染目标
    c.setRenderTarget(null);
    c.clear(p.red, p.green, p.blue, p.alpha, 1);
+}
+
+//==========================================================
+// <T>排序渲染对象处理。</T>
+//
+// @method
+// @param p:region:FG3dRetion 区域
+//==========================================================
+function FG3dTechnique_sortRenderables(a, b){
 }
 
 //==========================================================

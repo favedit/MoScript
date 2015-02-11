@@ -171,6 +171,10 @@ function FDsSceneWorkspace_onCatalogSelected(p){
       var f = o.findPropertyFrame(EDsFrame.SceneDisplayPropertyFrame);
       f.show();
       f.loadObject(s, p);
+   }else if(RClass.isClass(p, FG3dMaterial)){
+      var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
    }else if(RClass.isClass(p, FRd3Renderable)){
       var f = o.findPropertyFrame(EDsFrame.SceneRenderablePropertyFrame);
       f.show();

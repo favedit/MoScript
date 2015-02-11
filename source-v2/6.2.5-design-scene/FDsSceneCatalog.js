@@ -136,6 +136,23 @@ function FDsSceneCatalog_buildRegion(n, p){
 //==========================================================
 function FDsSceneCatalog_buildRenderable(n, p){
    var o = this;
+   // 创建材质集合
+   var s = p.materials();
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var m = s.value(i);
+         // 创建节点
+         var dn = o.createNode();
+         dn.setLabel(m._resource._code);
+         dn.setTypeName('material');
+         dn.dataPropertySet('linker', m);
+         n.appendNode(dn);
+         if(i == 0){
+            dn.click();
+         }
+      }
+   }
    // 创建渲染集合
    var s = p.renderables();
    if(s){

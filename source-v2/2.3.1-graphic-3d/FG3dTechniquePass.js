@@ -8,17 +8,18 @@ function FG3dTechniquePass(o){
    o = RClass.inherits(this, o, FG3dObject);
    //..........................................................
    // @attribute
-   o._fullCode  = null;
-   o._code      = null;
-   o._index     = null;
-   o._finish    = false;
+   o._fullCode       = null;
+   o._code           = null;
+   o._index          = null;
+   o._finish         = false;
    //..........................................................
    // @method
-   o.setup       = RMethod.empty;
-   o.fullCode    = FG3dTechniquePass_fullCode;
-   o.setFullCode = FG3dTechniquePass_setFullCode;
-   o.code        = FG3dTechniquePass_code;
-   o.drawRegion  = FG3dTechniquePass_drawRegion;
+   o.setup           = RMethod.empty;
+   o.fullCode        = FG3dTechniquePass_fullCode;
+   o.setFullCode     = FG3dTechniquePass_setFullCode;
+   o.code            = FG3dTechniquePass_code;
+   o.sortRenderables = FG3dTechniquePass_sortRenderables;
+   o.drawRegion      = FG3dTechniquePass_drawRegion;
    return o;
 }
 
@@ -53,6 +54,22 @@ function FG3dTechniquePass_code(){
 }
 
 //==========================================================
+// <T>排序渲染对象处理。</T>
+//
+// @method
+// @param s:source:FG3dRenderable 区域
+// @param t:target:FG3dRenderable 目标
+//==========================================================
+function FG3dTechniquePass_sortRenderables(s, t){
+   var se = s.activeEffect();
+   var te = t.activeEffect();
+   if(se == te){
+      return 0;
+   }
+   return s._effectName.localeCompare(t._effectName);
+}
+
+//==========================================================
 // <T>绘制区域处理。</T>
 //
 // @method
@@ -73,6 +90,8 @@ function FG3dTechniquePass_drawRegion(p){
       }
       r.setActiveEffect(e);
    }
+   // 控件排序
+   rs.sort(o.sortRenderables);
    // 绘制处理
    for(var i = 0; i < c; i++){
       var r = rs.get(i);
