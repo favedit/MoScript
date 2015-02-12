@@ -1,21 +1,27 @@
 //==========================================================
-// <T>渲染对象。</T>
+// <T>渲染布局元素。</T>
 //
+// @class
 // @author maocy
 // @history 150212
 //==========================================================
-function FG3dObject(o){
-   o = RClass.inherits(this, o, FObject, MGraphicObject);
+function FG3dLayoutElement(o){
+   o = RClass.inherits(this, o, FObject);
+   //..........................................................
+   // @attribute
+   o._name   = 0;
+   o._buffer = null;
    //..........................................................
    // @method
-   o.setup = FG3dObject_setup;
+   o.name   = FG3dLayoutElement_name;
    return o;
 }
 
 //==========================================================
-// <T>配置处理。</T>
+// <T>获得名称。</T>
 //
-// @method
+// @return 名称
 //==========================================================
-function FG3dObject_setup(){
+function FG3dLayoutElement_name(){
+   return this._name;
 }

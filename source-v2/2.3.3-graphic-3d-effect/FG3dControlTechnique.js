@@ -30,7 +30,7 @@ function FG3dControlTechnique_setup(){
    var ps = o._passes;
    // 创建选取处理过程
    var pd = o._passControl = RClass.create(FG3dControlPass);
-   pd.linkContext(o._context);
+   pd.linkGraphicContext(o);
    pd.setup();
    ps.push(pd);
 }
@@ -54,7 +54,7 @@ function FG3dControlTechnique_passControl(){
 function FG3dControlTechnique_drawRegion(p){
    var o = this;
    // 清空深度
-   o._context.clearDepth(1);
+   o._graphicContext.clearDepth(1);
    // 绘制区域
    o.__base.FG3dTechnique.drawRegion.call(o, p);
 }

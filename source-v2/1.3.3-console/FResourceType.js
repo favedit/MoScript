@@ -50,7 +50,7 @@ function FResourceType_name(){
 // @return 资源集合
 //==========================================================
 function FResourceType_resource(p){
-   return this._resources.get(p);;
+   return this._resources.get(p);
 }
 
 //==========================================================

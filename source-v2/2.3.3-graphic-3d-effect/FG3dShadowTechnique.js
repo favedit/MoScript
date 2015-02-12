@@ -32,12 +32,12 @@ function FG3dShadowTechnique_setup(){
    var ps = o._passes;
    // 创建光深处理过程
    var pd = o._passDepth = RClass.create(FG3dShadowDepthPass);
-   pd.linkContext(o._context);
+   pd.linkGraphicContext(o);
    pd.setup();
    ps.push(pd);
    // 创建颜色处理过程
    var pc = o._passColor = RClass.create(FG3dShadowColorPass);
-   pc.linkContext(o._context);
+   pc.linkGraphicContext(o);
    pc.setup();
    ps.push(pc);
    // 设置深度纹理

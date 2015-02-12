@@ -15,12 +15,15 @@ function TObjects(o){
    // @method
    o.isEmpty    = TObjects_isEmpty;
    o.count      = TObjects_count;
+   o.data       = TObjects_data;
    o.contains   = TObjects_contains;
    o.indexOf    = TObjects_indexOf;
    o.first      = TObjects_first;
    o.last       = TObjects_last;
    o.get        = TObjects_get;
    o.set        = TObjects_set;
+   o.directGet  = TObjects_directGet;
+   o.directSet  = TObjects_directSet;
    // @method
    o.assign     = TObjects_assign;
    o.append     = TObjects_append;
@@ -51,13 +54,23 @@ function TObjects_isEmpty(){
 }
 
 //===========================================================
-// <T>判断集合总数。</T>
+// <T>获得总数。</T>
 //
 // @method
 // @return Integer 总数
 //===========================================================
 function TObjects_count(){
    return this._count;
+}
+
+//===========================================================
+// <T>获得数据。</T>
+//
+// @method
+// @return Array 数据
+//===========================================================
+function TObjects_data(){
+   return this._data;
 }
 
 //===========================================================
@@ -135,6 +148,28 @@ function TObjects_set(n, v){
    if((n >= 0) && (n < o._count)){
       o._items[n] = v;
    }
+}
+
+//===========================================================
+// <T>取得指定索引对应的对象。</T>
+//
+// @method
+// @param n:index:Integer 索引位置
+// @return 当前位置上的对象
+//===========================================================
+function TObjects_directGet(n){
+   return this._items[n];
+}
+
+//===========================================================
+// <T>把对象存储在指定的索引处。</T>
+//
+// @method
+// @param n:index:Integer 索引位置
+// @param v:value:Object 对象
+//===========================================================
+function TObjects_directSet(n, v){
+   this._items[n] = v;
 }
 
 //===========================================================

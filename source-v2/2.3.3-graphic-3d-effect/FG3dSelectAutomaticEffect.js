@@ -25,7 +25,7 @@ function FG3dSelectAutomaticEffect(o){
 //==========================================================
 function FG3dSelectAutomaticEffect_drawRenderable(pg, pr, pi){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var s = c.size();
    var p = o._program;
    var sx = pg._selectX;

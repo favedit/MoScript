@@ -830,7 +830,7 @@ function FXmlConnection_onConnectionComplete(){
    var r = o._outputNode = d.root();
    o._statusFree = true;
    var e = new SXmlEvent();
-   e.connection = o;;
+   e.connection = o;
    e.document = d;
    e.root = r;
    e.parameters = o._parameters;
@@ -3821,7 +3821,7 @@ function TDumpItem_show(v){
    var o = this;
    o.display = v;
    var label = RString.repeat('   ', o.level-1) + (v ? ' -' : ' +') + ' ' + o.caption;
-   o.hText.innerHTML = RHtml.toHtml(label);;
+   o.hText.innerHTML = RHtml.toHtml(label);
    o.innerShow(v);
 }
 function THtmlItem(o){

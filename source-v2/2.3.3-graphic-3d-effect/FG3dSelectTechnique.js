@@ -30,7 +30,7 @@ function FG3dSelectTechnique_setup(){
    var ps = o._passes;
    // 创建选取处理过程
    var pd = o._passSelect = RClass.create(FG3dSelectPass);
-   pd.linkContext(o._context);
+   pd.linkGraphicContext(o);
    pd.setup();
    ps.push(pd);
 }

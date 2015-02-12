@@ -189,9 +189,11 @@ function FG3dTexture_construct(){
 }
 function FG3dFlatTexture(o){
    o = RClass.inherits(this, o, FG3dTexture);
-   o.width        = 0;
-   o.height       = 0;
-   o.construct    = FG3dFlatTexture_construct;
+   o.width      = 0;
+   o.height     = 0;
+   o.construct  = FG3dFlatTexture_construct;
+   o.uploadData = RMethod.virtual(o, 'uploadData');
+   o.upload     = RMethod.virtual(o, 'upload');
    return o;
 }
 function FG3dFlatTexture_construct(){
@@ -217,6 +219,28 @@ function FG3dIndexBuffer_strideCd(){
 }
 function FG3dIndexBuffer_count(){
    return this._count;
+}
+function FG3dLayout(o){
+   o = RClass.inherits(this, o, FG3dObject);
+   o._elemets = null;
+   o.elemets  = FG3dLayout_elemets;
+   o.update   = FG3dLayout_update;
+   return o;
+}
+function FG3dLayout_elemets(){
+   return this._elemets;
+}
+function FG3dLayout_update(){
+}
+function FG3dLayoutElement(o){
+   o = RClass.inherits(this, o, FObject);
+   o._name   = 0;
+   o._buffer = null;
+   o.name   = FG3dLayoutElement_name;
+   return o;
+}
+function FG3dLayoutElement_name(){
+   return this._name;
 }
 function FG3dProgram(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -322,7 +346,7 @@ function FG3dProgram_setAttribute(pn, pb, pf){
    if(p == null){
       throw new TError(o, 'Bind invalid attribute. (name={1})', pn);
    }
-   o._context.bindVertexBuffer(p._slot, pb, 0, pf);
+   o._graphicContext.bindVertexBuffer(p._slot, pb, 0, pf);
 }
 function FG3dProgram_setParameter(pn, pv, pc){
    var o = this;
@@ -354,7 +378,7 @@ function FG3dProgram_setParameter(pn, pv, pc){
    }else{
       throw new TError(o, 'Bind invalid parameter type. (name={1}, type={2})', pn, t);
    }
-   o._context.bindConst(null, p._slot, p._formatCd, d, pc);
+   o._graphicContext.bindConst(null, p._slot, p._formatCd, d, pc);
 }
 function FG3dProgram_setParameter4(pn, px, py, pz, pw){
    var v = RTypeArray.float4();
@@ -370,7 +394,7 @@ function FG3dProgram_setSampler(pn, pt){
    if(p == null){
       throw new TError(o, 'Bind invalid sampler. (name={1})', pn);
    }
-   o._context.bindTexture(p._slot, p._index, pt);
+   o._graphicContext.bindTexture(p._slot, p._index, pt);
 }
 function FG3dProgramAttribute(o){
    o = RClass.inherits(this, o, FObject);
@@ -562,6 +586,9 @@ function SG3dContextCapability(o){
    o.vendor                 = null;
    o.version                = null;
    o.shaderVersion          = null;
+   o.optionInstance         = false;
+   o.optionLayout           = false;
+   o.optionMaterialMap      = true;
    o.attributeCount         = null;
    o.vertexCount            = 65536;
    o.vertexConst            = null;

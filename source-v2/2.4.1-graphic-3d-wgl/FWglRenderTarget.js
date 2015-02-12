@@ -26,7 +26,7 @@ function FWglRenderTarget(o){
 function FWglRenderTarget_setup(){
    var o = this;
    o.__base.FG3dRenderTarget.setup.call(o);
-   var c = o._context;
+   var c = o._graphicContext;
    var g = c._native;
    //............................................................
    // 创建帧缓冲
@@ -41,7 +41,7 @@ function FWglRenderTarget_setup(){
 //==========================================================
 function FWglRenderTarget_build(){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var g = c._native;
    //............................................................
    // 绑定帧缓冲

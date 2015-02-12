@@ -24,7 +24,7 @@ function FWglFragmentShader(o){
 function FWglFragmentShader_setup(){
    var o = this;
    o.__base.FG3dFragmentShader.setup.call(o);
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    o._native = g.createShader(g.FRAGMENT_SHADER);
 }
 
@@ -36,7 +36,7 @@ function FWglFragmentShader_setup(){
 //==========================================================
 function FWglFragmentShader_upload(v){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    var n = o._native;
    // 上传代码
    g.shaderSource(n, v);
@@ -61,7 +61,7 @@ function FWglFragmentShader_upload(v){
 //==========================================================
 function FWglFragmentShader_dispose(){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    if(o._native){
       g.deleteShader(o._native);
    }

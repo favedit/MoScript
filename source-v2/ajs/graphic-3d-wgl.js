@@ -1,6 +1,8 @@
 function FWglContext(o){
    o = RClass.inherits(this, o, FG3dContext);
    o._native             = null;
+   o._nativeInstance     = null;
+   o._nativeLayout       = null;
    o._activeRenderTarget = null;
    o._activeTextureSlot  = 0;
    o._parameters         = null;
@@ -12,6 +14,7 @@ function FWglContext(o){
    o.parameters          = FWglContext_parameters;
    o.extensions          = FWglContext_extensions;
    o.createProgram       = FWglContext_createProgram;
+   o.createLayout        = FWglContext_createLayout;
    o.createVertexBuffer  = FWglContext_createVertexBuffer;
    o.createIndexBuffer   = FWglContext_createIndexBuffer;
    o.createFlatTexture   = FWglContext_createFlatTexture;
@@ -71,6 +74,14 @@ function FWglContext_linkCanvas(h){
    c.fragmentConst = g.getParameter(g.MAX_FRAGMENT_UNIFORM_VECTORS);
    c.samplerCount = g.getParameter(g.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
    c.samplerSize = g.getParameter(g.MAX_TEXTURE_SIZE);
+   var e = o._nativeInstance = g.getExtension('ANGLE_instanced_arrays');
+   if(e){
+      c.optionInstance = true;
+   }
+   var e = o._nativeLayout = g.getExtension('OES_vertex_array_object');
+   if(e){
+      c.optionLayout = true;
+   }
 }
 function FWglContext_parameters(){
    var o = this;
@@ -229,42 +240,52 @@ function FWglContext_extensions(){
 function FWglContext_createProgram(){
    var o = this;
    var r = RClass.create(FWglProgram);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
+   r.setup();
+   return r;
+}
+function FWglContext_createLayout(){
+   var o = this;
+   if(!o._capability.optionLayout){
+      throw new TError(o, 'Unsupport layout.');
+   }
+   var r = RClass.create(FWglLayout);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
 function FWglContext_createVertexBuffer(){
    var o = this;
    var r = RClass.create(FWglVertexBuffer);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
 function FWglContext_createIndexBuffer(){
    var o = this;
    var r = RClass.create(FWglIndexBuffer);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
 function FWglContext_createFlatTexture(){
    var o = this;
    var r = RClass.create(FWglFlatTexture);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
 function FWglContext_createCubeTexture(){
    var o = this;
    var r = RClass.create(FWglCubeTexture);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
 function FWglContext_createRenderTarget(){
    var o = this;
    var r = RClass.create(FWglRenderTarget);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
@@ -683,7 +704,7 @@ function FWglCubeTexture(o){
 }
 function FWglCubeTexture_setup(){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    o.__base.FG3dCubeTexture.setup.call(o);
    o._native = g.createTexture();
 }
@@ -692,7 +713,7 @@ function FWglCubeTexture_link(v){
 }
 function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    var o = this;
-   var c = o._context;;
+   var c = o._graphicContext;
    var g = c._native;
    g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
    g.texImage2D(g.TEXTURE_CUBE_MAP_POSITIVE_X, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, x1.image());
@@ -710,12 +731,13 @@ function FWglFlatTexture(o){
    o.onImageLoad = FWglFlatTexture_onImageLoad;
    o.setup       = FWglFlatTexture_setup;
    o.loadUrl     = FWglFlatTexture_loadUrl;
+   o.uploadData  = FWglFlatTexture_uploadData;
    o.upload      = FWglFlatTexture_upload;
    return o;
 }
 function FWglFlatTexture_onImageLoad(v){
    var o = this;
-   var c = o._context;;
+   var c = o._graphicContext;
    var g = c._native;
    g.bindTexture(g.TEXTURE_2D, o._native);
    g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, v);
@@ -724,7 +746,7 @@ function FWglFlatTexture_onImageLoad(v){
 }
 function FWglFlatTexture_setup(){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    o.__base.FG3dFlatTexture.setup.call(o);
    o._native = g.createTexture();
 }
@@ -734,14 +756,23 @@ function FWglFlatTexture_loadUrl(p){
    r.src = p;
    r.onload = function(){o.onImageLoad(o);}
 }
+function FWglFlatTexture_uploadData(d, w, h){
+   var o = this;
+   var c = o._graphicContext;
+   var g = c._native;
+   o.width = w;
+   o.height = h;
+   g.bindTexture(g.TEXTURE_2D, o._native);
+   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, w, h, 0, g.RGBA, g.UNSIGNED_BYTE, d);
+   o._statusLoad = c.checkError("texImage2D", "Upload data failure.");
+}
 function FWglFlatTexture_upload(p){
    var o = this;
-   var c = o._context;;
+   var c = o._graphicContext;
    var g = c._native;
    g.bindTexture(g.TEXTURE_2D, o._native);
    g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, p);
-   var r = c.checkError("texImage2D", "Upload image failure.");
-   o._statusLoad = r;
+   o._statusLoad = c.checkError("texImage2D", "Upload image failure.");
 }
 function FWglFragmentShader(o){
    o = RClass.inherits(this, o, FG3dFragmentShader);
@@ -754,12 +785,12 @@ function FWglFragmentShader(o){
 function FWglFragmentShader_setup(){
    var o = this;
    o.__base.FG3dFragmentShader.setup.call(o);
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    o._native = g.createShader(g.FRAGMENT_SHADER);
 }
 function FWglFragmentShader_upload(v){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    var n = o._native;
    g.shaderSource(n, v);
    g.compileShader(n);
@@ -776,7 +807,7 @@ function FWglFragmentShader_upload(v){
 }
 function FWglFragmentShader_dispose(){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    if(o._native){
       g.deleteShader(o._native);
    }
@@ -792,11 +823,11 @@ function FWglIndexBuffer(o){
 function FWglIndexBuffer_setup(){
    var o = this;
    o.__base.FG3dIndexBuffer.setup.call(o);
-   o._native = o._context._native.createBuffer();
+   o._native = o._graphicContext._native.createBuffer();
 }
 function FWglIndexBuffer_upload(pd, pc){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var g = c._native;
    o._count = pc;
    var d = null;
@@ -812,6 +843,51 @@ function FWglIndexBuffer_upload(pd, pc){
    g.bufferData(g.ELEMENT_ARRAY_BUFFER, d, g.STATIC_DRAW);
    c.checkError('bufferData', 'Upload buffer data. (count={1})', pc);
 }
+function FWglLayout(o){
+   o = RClass.inherits(this, o, FG3dLayout);
+   o.setup    = FWglLayout_setup;
+   o.bind     = FWglLayout_bind;
+   o.unbind   = FWglLayout_unbind;
+   o.active   = FWglLayout_active;
+   o.deactive = FWglLayout_deactive;
+   o.dispose  = FWglLayout_dispose;
+   return o;
+}
+function FWglLayout_setup(){
+   var o = this;
+   o.__base.FG3dLayout.setup.call(o);
+   var c = o._graphicContext;
+   o._native = c._nativeLayout.createVertexArrayOES();
+}
+function FWglLayout_bind(){
+   var o = this;
+   var c = o._graphicContext;
+   c._nativeLayout.bindVertexArrayOES(o._native);
+}
+function FWglLayout_unbind(){
+   var o = this;
+   var c = o._graphicContext;
+   c._nativeLayout.bindVertexArrayOES(null);
+}
+function FWglLayout_active(){
+   var o = this;
+   var c = o._graphicContext;
+   c._nativeLayout.bindVertexArrayOES(o._native);
+}
+function FWglLayout_deactive(){
+   var o = this;
+   var c = o._graphicContext;
+   c._nativeLayout.bindVertexArrayOES(null);
+}
+function FWglLayout_dispose(){
+   var o = this;
+   var c = o._graphicContext;
+   var n = o._native;
+   if(n){
+      c._nativeLayout.deleteVertexArrayOES(n);
+      o._native = null;
+   }
+}
 function FWglProgram(o){
    o = RClass.inherits(this, o, FG3dProgram);
    o._native        = null;
@@ -826,28 +902,26 @@ function FWglProgram(o){
 }
 function FWglProgram_setup(){
    var o = this;
-   var g = o._context._native;
-   o._native = g.createProgram();
+   var c = g = o._graphicContext;
+   o._native = c._native.createProgram();
 }
 function FWglProgram_vertexShader(){
    var o = this;
    var s = o._vertexShader;
-   if(s == null){
-      s = RClass.create(FWglVertexShader);
-      s.linkContext(o._context);
+   if(!s){
+      s = o._vertexShader = RClass.create(FWglVertexShader);
+      s.linkGraphicContext(o);
       s.setup();
-      o._vertexShader = s;
    }
    return s;
 }
 function FWglProgram_fragmentShader(){
    var o = this;
    var s = o._fragmentShader;
-   if(s == null){
-      s = RClass.create(FWglFragmentShader);
-      s.linkContext(o._context);
+   if(!s){
+      s = o._fragmentShader = RClass.create(FWglFragmentShader);
+      s.linkGraphicContext(o);
       s.setup();
-      o._fragmentShader = s;
    }
    return s;
 }
@@ -863,7 +937,7 @@ function FWglProgram_upload(t, s){
 }
 function FWglProgram_build(){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var g = c._native;
    var pn = o._native;
    var vs = o.vertexShader();
@@ -894,7 +968,7 @@ function FWglProgram_build(){
 }
 function FWglProgram_link(){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var g = c._native;
    var r = false;
    var pn = o._native;
@@ -904,7 +978,7 @@ function FWglProgram_link(){
       var pi = g.getProgramInfoLog(pn);
       RLogger.fatal(this, null, "Link program failure. (status={1}, reason={2})", pr, pi);
       g.deleteProgram(o._native);
-      o._native = null;;
+      o._native = null;
       return false;
    }
    g.validateProgram(pn);
@@ -958,7 +1032,7 @@ function FWglProgram_link(){
          }
          p._slot = i;
          if(i != null){
-            p._statusUsed = true;;
+            p._statusUsed = true;
          }
       }
       var si = 0;
@@ -974,7 +1048,7 @@ function FWglProgram_link(){
 function FWglProgram_dispose(){
    var o = this;
    if(o._program){
-      o._context._context.deleteProgram(o._program);
+      o._graphicContext._native.deleteProgram(o._program);
    }
    o._program = null;
    o.base.FProgram3d.dispose.call(o);
@@ -991,14 +1065,14 @@ function FWglRenderTarget(o){
 function FWglRenderTarget_setup(){
    var o = this;
    o.__base.FG3dRenderTarget.setup.call(o);
-   var c = o._context;
+   var c = o._graphicContext;
    var g = c._native;
    o._native = g.createFramebuffer();
    return c.checkError('createFramebuffer', 'Create frame buffer failure.');
 }
 function FWglRenderTarget_build(){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var g = c._native;
    g.bindFramebuffer(g.FRAMEBUFFER, o._native);
    var r = c.checkError('bindFramebuffer', 'Bind frame buffer failure.');
@@ -1055,12 +1129,12 @@ function FWglVertexBuffer(o){
 function FWglVertexBuffer_setup(){
    var o = this;
    o.__base.FG3dVertexBuffer.setup.call(o);
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    o._native = g.createBuffer();
 }
 function FWglVertexBuffer_upload(v, s, c){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var g = c._native;
    o.stride = s;
    o.count  = c;
@@ -1090,12 +1164,12 @@ function FWglVertexShader(o){
 function FWglVertexShader_setup(){
    var o = this;
    o.__base.FG3dVertexShader.setup.call(o);
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    o._native = g.createShader(g.VERTEX_SHADER);
 }
 function FWglVertexShader_upload(v){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    var n = o._native;
    g.shaderSource(n, v);
    g.compileShader(n);
@@ -1112,7 +1186,7 @@ function FWglVertexShader_upload(v){
 }
 function FWglVertexShader_dispose(){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    if(o._native){
       g.deleteShader(o._native);
    }

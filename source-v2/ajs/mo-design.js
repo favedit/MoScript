@@ -180,7 +180,7 @@ function FDsCanvas_onBuild(p){
    bb.linkGraphicContext(o._context);
    bb.setup();
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-   RStage.start(20);
+   RStage.start(1000 / 60);
    RConsole.find(FMouseConsole).register(o);
 }
 function FDsCanvas_onMouseCaptureStart(p){
@@ -2100,14 +2100,15 @@ function FDsSceneCanvas_switchMode(p){
 function FDsSceneCanvas_loadScene(p){
    var o = this;
    var c = o._context;
-   var rmc = RConsole.find(FE3dSceneConsole);
+   var sc = RConsole.find(FE3dSceneConsole);
    if(o._activeScene != null){
-      rmc.free(o._activeScene);
+      sc.free(o._activeScene);
    }
-   var m = rmc.alloc(o._context, p);
-   m.addLoadListener(o, o.onSceneLoad);
-   m.selectTechnique(c, FG3dGeneralTechnique);
-   o._stage = o._activeScene = m;
+   var s = sc.alloc(o._context, p);
+   s.addLoadListener(o, o.onSceneLoad);
+   s.selectTechnique(c, FG3dGeneralTechnique);
+   o._stage = o._activeScene = s;
+   RStage.register('stage3d', s);
 }
 function FDsSceneCanvas_dispose(){
    var o = this;

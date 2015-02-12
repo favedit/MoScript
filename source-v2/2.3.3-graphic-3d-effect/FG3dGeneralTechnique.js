@@ -28,7 +28,7 @@ function FG3dGeneralTechnique_setup(){
    o.__base.FG3dTechnique.setup.call(o);
    // 创建颜色处理过程
    var p = o._passColor = RClass.create(FG3dGeneralColorPass);
-   p.linkContext(o._context);
+   p.linkGraphicContext(o);
    p.setup();
    o._passes.push(p);
 }

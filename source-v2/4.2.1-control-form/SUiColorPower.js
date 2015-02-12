@@ -69,6 +69,6 @@ function SUiColorPower_set(p){
    // 设置数字
    var h = o.hInput;
    if(h){
-      h.value = RFloat.format(p, 0, null, 2, null);;
+      h.value = RFloat.format(p, 0, null, 2, null);
    }
 }

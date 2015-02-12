@@ -11,12 +11,15 @@ function FG3dAutomaticEffect(o){
    o._optionBlendMode = true;
    // @attribute
    o._supportInstance         = false;
+   o._supportLayout           = false;
+   o._supportMaterialMap      = false;
+   // @attribute
    o._supportVertexColor      = true;
    o._supportVertexCoord      = true;
    o._supportVertexNormal     = true;
    o._supportVertexNormalFull = true;
-   o._supportInstance         = false;
    o._supportSkeleton         = false;
+   // @attribute
    o._supportAlpha            = true;
    o._supportAmbient          = true;
    o._supportDiffuse          = true;
@@ -30,14 +33,32 @@ function FG3dAutomaticEffect(o){
    o._supportEmissive         = true;
    o._supportHeight           = true;
    o._supportEnvironment      = true;
+   // @attribute
    o._dynamicSkeleton         = true;
    //..........................................................
    // @method
+   o.setup                    = FG3dAutomaticEffect_setup;
+   // @method
    o.buildInfo                = FG3dAutomaticEffect_buildInfo;
+   // @method
    o.bindAttributes           = FG3dAutomaticEffect_bindAttributes;
    o.bindSamplers             = FG3dAutomaticEffect_bindSamplers;
    o.bindMaterial             = FG3dAutomaticEffect_bindMaterial;
+   // @method
+   o.drawRenderable           = FG3dAutomaticEffect_drawRenderable;
    return o;
+}
+
+//==========================================================
+// <T>配置处理。</T>
+//
+// @method
+//==========================================================
+function FG3dAutomaticEffect_setup(){
+   var o = this;
+   var c = o._graphicContext;
+   var cp = c.capability();
+   o._supportLayout = cp.optionLayout;
 }
 
 //==========================================================
@@ -49,9 +70,17 @@ function FG3dAutomaticEffect(o){
 //==========================================================
 function FG3dAutomaticEffect_buildInfo(pt, pc){
    var o = this;
+   var c = o._graphicContext;
+   var cb = c.capability();
    // 获得参数
    var s = new TString();
-   var cb = o._context.capability();
+   //............................................................
+   // 支持纹理材质映射
+   if(cb.optionMaterialMap){
+      s.append("|OM");
+      pt.setBoolean("option.material.map", true);
+      o._supportMaterialMap = true;
+   }
    //............................................................
    // 支持顶点颜色
    var ac = pc.attributeContains(EG3dAttribute.Color);
@@ -318,6 +347,7 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
 //==========================================================
 function FG3dAutomaticEffect_bindAttributes(p){
    var o = this;
+   var c = o._graphicContext;
    var g = o._program;
    if(g.hasAttribute()){
       var as = g.attributes();
@@ -363,7 +393,7 @@ function FG3dAutomaticEffect_bindSamplers(p){
 //==========================================================
 function FG3dAutomaticEffect_bindMaterial(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var m = p.info();
    // 设置透明
    if(m.optionAlpha){
@@ -376,5 +406,48 @@ function FG3dAutomaticEffect_bindMaterial(p){
       c.setCullingMode(false);
    }else{
       c.setCullingMode(o._stateDepth, o._stateCullCd);
+   }
+}
+
+//==========================================================
+// <T>绘制渲染对象。</T>
+//
+// @method
+// @param pg:region:FG3dRegion 渲染区域
+// @param pr:renderable:FG3dRenderable 渲染对象
+//==========================================================
+function FG3dAutomaticEffect_drawRenderable(pg, pr){
+   var o = this;
+   var c = o._graphicContext;
+   var g = o._program;
+   // 绘制准备
+   var l = null;
+   if(o._supportLayout){
+      var f = pr.activeInfo();
+      l = f.layout;
+      if(!l){
+         l = f.layout = c.createLayout();
+         l.bind();
+         // 绑定所有属性流
+         o.bindAttributes(pr);
+         l.unbind();
+      }
+      l.active();
+   }else{
+      // 绑定所有属性流
+      o.bindAttributes(pr);
+   }
+   // 绑定所有取样器
+   if(o._supportMaterialMap){
+      g.setSampler('fs_material', pg.materialMap().texture());
+   }
+   o.bindSamplers(pr);
+   //..........................................................
+   // 绘制处理
+   c.drawTriangles(pr.indexBuffer());
+   //..........................................................
+   // 绘制完成
+   if(o._supportLayout){
+      l.deactive();
    }
 }

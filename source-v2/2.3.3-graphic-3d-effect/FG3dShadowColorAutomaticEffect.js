@@ -24,7 +24,7 @@ function FG3dShadowColorAutomaticEffect(o){
 //==========================================================
 function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    // 获得参数
    var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);

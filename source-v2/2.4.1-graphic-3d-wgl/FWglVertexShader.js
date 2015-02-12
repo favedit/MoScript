@@ -24,7 +24,7 @@ function FWglVertexShader(o){
 function FWglVertexShader_setup(){
    var o = this;
    o.__base.FG3dVertexShader.setup.call(o);
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    o._native = g.createShader(g.VERTEX_SHADER);
 }
 
@@ -36,7 +36,7 @@ function FWglVertexShader_setup(){
 //==========================================================
 function FWglVertexShader_upload(v){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    var n = o._native;
    // 上传代码
    g.shaderSource(n, v);
@@ -61,7 +61,7 @@ function FWglVertexShader_upload(v){
 //==========================================================
 function FWglVertexShader_dispose(){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    if(o._native){
       g.deleteShader(o._native);
    }

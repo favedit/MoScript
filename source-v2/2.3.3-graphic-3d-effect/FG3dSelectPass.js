@@ -44,7 +44,7 @@ function FG3dSelectPass_construct(){
 function FG3dSelectPass_setup(){
    var o = this;
    o.__base.FG3dTechniquePass.setup.call(o);
-   var c = o._context;
+   var c = o._graphicContext;
    // 创建平面
    var T = o._texture = c.createFlatTexture();
    T.setFilter(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
@@ -74,31 +74,22 @@ function FG3dSelectPass_texture(){
 //==========================================================
 function FG3dSelectPass_drawRegion(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var g = c._native;
    // 设置渲染目标
    c.setRenderTarget(o._renderTarget);
    c.clear(0, 0, 0, 0, 1, 1);
    //..........................................................
    // 绘制处理
-   var sn = p.spaceName();
    var rs = p.allRenderables();
+   // 激活效果器
+   o.activeEffects(p, rs);
+   // 绘制非界面处理
    var rc = rs.count();
-   // 关联渲染器
-   for(var i = 0; i < rc; i++){
-      var r = rs.get(i);
-      var e = r.effects().get(sn);
-      if(!e){
-         e = RConsole.find(FG3dEffectConsole).find(c, p, r);
-         r.effects().set(sn, e);
-      }
-      r.setActiveEffect(e);
-   }
-   // 绘制处理
    for(var i = 0; i < rc; i++){
       var r = rs.get(i);
       var e = r.activeEffect();
-      o._context.setProgram(e.program());
+      c.setProgram(e.program());
       var d = r.display();
       if(!d._optionFace){
          e.drawRenderable(p, r, i);
@@ -109,7 +100,7 @@ function FG3dSelectPass_drawRegion(p){
    for(var i = 0; i < rc; i++){
       var r = rs.get(i);
       var e = r.activeEffect();
-      o._context.setProgram(e.program());
+      c.setProgram(e.program());
       var d = r.display();
       if(d._optionFace){
          e.drawRenderable(p, r, i);

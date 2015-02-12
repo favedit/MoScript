@@ -6501,7 +6501,7 @@ function SUiColorBar_set(p){
    o.setColorValue(p);
    var h = o.hInput;
    if(h){
-      h.value = RFloat.format(p, 0, null, 3, null);;
+      h.value = RFloat.format(p, 0, null, 3, null);
    }
 }
 function SUiColorChannel(){
@@ -6585,6 +6585,6 @@ function SUiColorPower_set(p){
    o.setColorValue(p);
    var h = o.hInput;
    if(h){
-      h.value = RFloat.format(p, 0, null, 2, null);;
+      h.value = RFloat.format(p, 0, null, 2, null);
    }
 }

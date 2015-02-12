@@ -58,7 +58,7 @@ function FDsCanvas_onBuild(p){
    bb.setup();
    // 启动处理
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-   RStage.start(20);
+   RStage.start(1000 / 60);
    // 注册鼠标捕捉监听
    RConsole.find(FMouseConsole).register(o);
 }

@@ -12,15 +12,31 @@ function FG3dTechniquePass(o){
    o._code           = null;
    o._index          = null;
    o._finish         = false;
+   // @attribute
+   o._materialMap    = null;
    //..........................................................
    // @method
-   o.setup           = RMethod.empty;
+   o.setup           = FG3dTechniquePass_setup;
    o.fullCode        = FG3dTechniquePass_fullCode;
    o.setFullCode     = FG3dTechniquePass_setFullCode;
    o.code            = FG3dTechniquePass_code;
+   o.activeEffects   = FG3dTechniquePass_activeEffects;
    o.sortRenderables = FG3dTechniquePass_sortRenderables;
    o.drawRegion      = FG3dTechniquePass_drawRegion;
    return o;
+}
+
+//==========================================================
+// <T>获得全代码。</T>
+//
+// @method
+// @return String 全代码
+//==========================================================
+function FG3dTechniquePass_setup(){
+   var o = this;
+   var m = o._materialMap = RClass.create(FG3dMaterialMap);
+   m.linkGraphicContext(o);
+   m.setup(EG3dMaterialMap.Count, 32);
 }
 
 //==========================================================
@@ -61,12 +77,32 @@ function FG3dTechniquePass_code(){
 // @param t:target:FG3dRenderable 目标
 //==========================================================
 function FG3dTechniquePass_sortRenderables(s, t){
-   var se = s.activeEffect();
-   var te = t.activeEffect();
-   if(se == te){
-      return 0;
+   //var se = s.activeEffect();
+   //var te = t.activeEffect();
+   return s.hashCode() - t.hashCode();
+   //if(se == te){
+   //   return 0;
+   //}
+   //return s._effectName.localeCompare(t._effectName);
+}
+
+//==========================================================
+// <T>激活效果器。</T>
+//
+// @method
+// @param p:region:FG3dRetion 区域
+//==========================================================
+function FG3dTechniquePass_activeEffects(p, rs){
+   var o = this;
+   var sn = p.spaceName();
+   // 关联渲染器
+   for(var i = rs.count() - 1; i >= 0; i--){
+      var r = rs.get(i);
+      var f = r.selectInfo(sn);
+      if(!f.effect){
+         f.effect = RConsole.find(FG3dEffectConsole).find(o._graphicContext, p, r);
+      }
    }
-   return s._effectName.localeCompare(t._effectName);
 }
 
 //==========================================================
@@ -77,26 +113,40 @@ function FG3dTechniquePass_sortRenderables(s, t){
 //==========================================================
 function FG3dTechniquePass_drawRegion(p){
    var o = this;
-   var sn = p.spaceName();
+   var cb = o._graphicContext.capability();
    var rs = p.renderables();
-   var c = rs.count();
-   // 关联渲染器
-   for(var i = 0; i < c; i++){
-      var r = rs.get(i);
-      var e = r.effects().get(sn);
-      if(e == null){
-         e = RConsole.find(FG3dEffectConsole).find(o._context, p, r);
-         r.effects().set(sn, e);
-      }
-      r.setActiveEffect(e);
-   }
+   // 激活效果器
+   o.activeEffects(p, rs);
    // 控件排序
    rs.sort(o.sortRenderables);
-   // 绘制处理
-   for(var i = 0; i < c; i++){
-      var r = rs.get(i);
-      var e = r.activeEffect();
-      o._context.setProgram(e.program());
-      e.drawRenderable(p, r, i);
+   // 渲染处理
+   var c = rs.count();
+   if(c > 0){
+      // 材质影射处理
+      if(cb.optionMaterialMap){
+         var mm = o._materialMap;
+         mm.resize(EG3dMaterialMap.Count, c);
+         //var mm = p.materialMap();
+         for(var i = 0; i < c; i++){
+            var r = rs.get(i);
+            r._materialId = i;
+            var m = r.material();
+            var mi = m.info();
+            mm.setUint8(i, EG3dMaterialMap.AmbientColor, mi.ambientColor);
+            mm.setUint8(i, EG3dMaterialMap.DiffuseColor, mi.diffuseColor);
+            mm.setUint8(i, EG3dMaterialMap.SpecularColor, mi.specularColor);
+            mm.setUint8(i, EG3dMaterialMap.ReflectColor, mi.reflectColor);
+            mm.setUint8(i, EG3dMaterialMap.EmissiveColor, mi.emissiveColor);
+         }
+         mm.update();
+         p._materialMap = mm;
+      }
+      // 绘制处理
+      for(var i = 0; i < c; i++){
+         var r = rs.get(i);
+         var e = r.activeEffect();
+         o._graphicContext.setProgram(e.program());
+         e.drawRenderable(p, r, i);
+      }
    }
 }

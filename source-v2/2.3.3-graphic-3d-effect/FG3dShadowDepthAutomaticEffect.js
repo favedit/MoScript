@@ -24,7 +24,7 @@ function FG3dShadowDepthAutomaticEffect(o){
 //==========================================================
 function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    // 获得参数
    var lvm = pg.calculate(EG3dRegionParameter.LightViewMatrix);

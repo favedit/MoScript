@@ -9,13 +9,15 @@
 function FObject(o){
    if(!o){o = this;}
    //..........................................................
-   // @attribute TClass 类对象
+   // @attribute
    o.__class   = null;
+   o.__hash    = 0;
    o.__dispose = false;
    //..........................................................
    // @method
    o.construct = FObject_construct;
    // @method
+   o.hashCode  = FObject_hashCode;
    o.toString  = FObject_toString;
    // @method
    o.dispose   = FObject_dispose;
@@ -33,6 +35,21 @@ function FObject(o){
 function FObject_construct(){
    var o = this;
    o.__dispose = false;
+}
+
+//==========================================================
+// <T>获取哈希值。</T>
+//
+// @method
+// @return Integer 哈希值
+//==========================================================
+function FObject_hashCode(){
+   var o = this;
+   var v = o.__hash;
+   if(!v){
+      v = o.__hash = RObject.nextId();
+   }
+   return v;
 }
 
 //==========================================================

@@ -25,7 +25,7 @@ function FG3dShadowColorSkeletonEffect(o){
 //==========================================================
 function FG3dShadowColorSkeletonEffect_drawRenderable(pr, r){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    var prvp = pr.matrixViewProjection();
    var prcp = pr.cameraPosition();

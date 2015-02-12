@@ -26,7 +26,7 @@ function FWglCubeTexture(o){
 //==========================================================
 function FWglCubeTexture_setup(){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    o.__base.FG3dCubeTexture.setup.call(o);
    o._native = g.createTexture();
 }
@@ -49,7 +49,7 @@ function FWglCubeTexture_link(v){
 //==========================================================
 function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    var o = this;
-   var c = o._context;;
+   var c = o._graphicContext;
    var g = c._native;
    // 绑定数据
    g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);

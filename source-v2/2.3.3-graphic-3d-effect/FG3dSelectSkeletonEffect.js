@@ -1,17 +1,17 @@
 ﻿//==========================================================
-// <T>控件自动渲染器。</T>
+// <T>通用自动渲染器。</T>
 //
 // @author maocy
-// @history 150211
+// @history 150119
 //==========================================================
-function FG3dControlAutomaticEffect(o){
+function FG3dSelectSkeletonEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    //..........................................................
    // @attribute
-   o._code          = 'control.automatic';
+   o._code          = 'select.automatic';
    //..........................................................
    // @method
-   o.drawRenderable = FG3dControlAutomaticEffect_drawRenderable;
+   o.drawRenderable = FG3dSelectSkeletonEffect_drawRenderable;
    return o;
 }
 
@@ -21,11 +21,15 @@ function FG3dControlAutomaticEffect(o){
 // @method
 // @param pg:region:FG3dRegion 渲染区域
 // @param pr:renderable:FG3dRenderable 渲染对象
+// @param pi:index:Integer 索引位置
 //==========================================================
-function FG3dControlAutomaticEffect_drawRenderable(pg, pr){
+function FG3dSelectSkeletonEffect_drawRenderable(pg, pr, pi){
    var o = this;
    var c = o._graphicContext;
+   var s = c.size();
    var p = o._program;
+   var sx = pg._selectX;
+   var sy = pg._selectY;
    // 绑定材质
    var m = pr.material();
    var mi = m.info();
@@ -33,9 +37,13 @@ function FG3dControlAutomaticEffect_drawRenderable(pg, pr){
    // 绑定所有属性流
    p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter4('vc_offset', s.width, s.height, 1 - (sx / s.width) * 2, (sy / s.height) * 2 - 1);
    // 设置材质
-   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
-   p.setParameter('fc_ambient_color', mi.ambientColor);
+   var i = pi + 1;
+   var i1 = i  & 0xFF;
+   var i2 = (i >> 8) & 0xFF;
+   var i3 = (i >> 16) & 0xFF;
+   p.setParameter4('fc_index', i1 / 255, i2 / 255, i3 / 255, mi.alphaBase);
    // 绑定所有属性流
    o.bindAttributes(pr);
    // 绑定所有取样器

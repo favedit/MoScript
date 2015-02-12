@@ -110,7 +110,7 @@ function FE3dCamera_update(){
    m.transformPoint3(o._directionTarget, d);
    d.normalize();
    // 计算上轴
-   m.transformPoint3(RMath.vectorAxisY, o.__axisUp);
+   //m.transformPoint3(RMath.vectorAxisY, o.__axisUp);
    // 设置方向
    // 父更新矩阵
    o.__base.FG3dPerspectiveCamera.update.call(o);

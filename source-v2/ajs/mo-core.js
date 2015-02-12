@@ -1727,8 +1727,10 @@ function FConsole_scopeCd(){
 function FObject(o){
    if(!o){o = this;}
    o.__class   = null;
+   o.__hash    = 0;
    o.__dispose = false;
    o.construct = FObject_construct;
+   o.hashCode  = FObject_hashCode;
    o.toString  = FObject_toString;
    o.dispose   = FObject_dispose;
    o.innerDump = FObject_innerDump;
@@ -1738,6 +1740,14 @@ function FObject(o){
 function FObject_construct(){
    var o = this;
    o.__dispose = false;
+}
+function FObject_hashCode(){
+   var o = this;
+   var v = o.__hash;
+   if(!v){
+      v = o.__hash = RObject.nextId();
+   }
+   return v;
 }
 function FObject_toString(){
    return RClass.dump(this);
@@ -3551,6 +3561,8 @@ function RMethod_virtual(v, m){
 }
 var RObject = new function RObject(){
    var o = this;
+   o._hash   = 1;
+   o.nextId  = RObject_nextId;
    o.nvl     = RObject_nvl;
    o.clone   = RObject_clone;
    o.copy    = RObject_copy;
@@ -3558,6 +3570,9 @@ var RObject = new function RObject(){
    o.dispose = RObject_dispose;
    o.release = RObject_release;
    return o;
+}
+function RObject_nextId(v){
+   return this._hash++;
 }
 function RObject_nvl(v){
    var a = arguments;
@@ -5282,12 +5297,15 @@ function TObjects(o){
    o._items     = new Array();
    o.isEmpty    = TObjects_isEmpty;
    o.count      = TObjects_count;
+   o.data       = TObjects_data;
    o.contains   = TObjects_contains;
    o.indexOf    = TObjects_indexOf;
    o.first      = TObjects_first;
    o.last       = TObjects_last;
    o.get        = TObjects_get;
    o.set        = TObjects_set;
+   o.directGet  = TObjects_directGet;
+   o.directSet  = TObjects_directSet;
    o.assign     = TObjects_assign;
    o.append     = TObjects_append;
    o.insert     = TObjects_insert;
@@ -5309,6 +5327,9 @@ function TObjects_isEmpty(){
 }
 function TObjects_count(){
    return this._count;
+}
+function TObjects_data(){
+   return this._data;
 }
 function TObjects_contains(v){
    return this.indexOf(v) != -1;
@@ -5340,6 +5361,12 @@ function TObjects_set(n, v){
    if((n >= 0) && (n < o._count)){
       o._items[n] = v;
    }
+}
+function TObjects_directGet(n){
+   return this._items[n];
+}
+function TObjects_directSet(n, v){
+   this._items[n] = v;
 }
 function TObjects_assign(p){
    var o = this;
@@ -8773,7 +8800,7 @@ function FXmlConnection_onConnectionComplete(){
    var r = o._outputNode = d.root();
    o._statusFree = true;
    var e = new SXmlEvent();
-   e.connection = o;;
+   e.connection = o;
    e.document = d;
    e.root = r;
    e.parameters = o._parameters;
@@ -11764,7 +11791,7 @@ function TDumpItem_show(v){
    var o = this;
    o.display = v;
    var label = RString.repeat('   ', o.level-1) + (v ? ' -' : ' +') + ' ' + o.caption;
-   o.hText.innerHTML = RHtml.toHtml(label);;
+   o.hText.innerHTML = RHtml.toHtml(label);
    o.innerShow(v);
 }
 function THtmlItem(o){
@@ -13051,7 +13078,7 @@ function FResourceType_name(){
    return this._name;
 }
 function FResourceType_resource(p){
-   return this._resources.get(p);;
+   return this._resources.get(p);
 }
 function FResourceType_resources(){
    return this._resources;

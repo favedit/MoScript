@@ -11113,7 +11113,7 @@ function SUiColorBar_set(p){
    o.setColorValue(p);
    var h = o.hInput;
    if(h){
-      h.value = RFloat.format(p, 0, null, 3, null);;
+      h.value = RFloat.format(p, 0, null, 3, null);
    }
 }
 function SUiColorChannel(){
@@ -11197,7 +11197,7 @@ function SUiColorPower_set(p){
    o.setColorValue(p);
    var h = o.hInput;
    if(h){
-      h.value = RFloat.format(p, 0, null, 2, null);;
+      h.value = RFloat.format(p, 0, null, 2, null);
    }
 }
 var EGridColumn = new function EGridColumn(){
@@ -13284,7 +13284,7 @@ function FGridControl_calculateDataSize(){
    var hcfh = o.hTitleForm ? o.hTitleForm.offsetHeight : 0;
    var hfph = o._hFixPanel ? o._hFixPanel.offsetHeight : 0;
    r.left = 0;
-   r.top = hfph + hcfh;;
+   r.top = hfph + hcfh;
    r.setWidth(o.hBorderPanel.offsetWidth);
    r.setHeight(o.hBorderPanel.offsetHeight - hcfh - hfph);
    return r;

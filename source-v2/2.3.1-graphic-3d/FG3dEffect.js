@@ -104,7 +104,7 @@ function FG3dEffect_buildInfo(f, r){
 //==========================================================
 function FG3dEffect_drawRenderable(r){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    // 绑定程序
    c.setProgram(p);
@@ -116,7 +116,7 @@ function FG3dEffect_drawRenderable(r){
          var a = as.value(n);
          if(a._statusUsed){
             var vb = r.findVertexBuffer(a._linker);
-            if(vb == null){
+            if(!vb){
                throw new TError("Can't find renderable vertex buffer. (linker={1})", a._linker);
             }
             p.setAttribute(a._name, vb, vb._formatCd);
@@ -136,7 +136,7 @@ function FG3dEffect_drawRenderable(r){
 //==========================================================
 function FG3dEffect_loadConfig(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var g = o._program = c.createProgram();
    // 加载配置
    var xs = p.nodes();

@@ -15,8 +15,8 @@ function FG3dRenderable(o){
    o._materialName   = null;
    o._material       = null;
    // @attribute
-   o._activeEffect   = null;
-   o._effects        = null;
+   o._activeInfo     = null;
+   o._infos          = null;
    //..........................................................
    // @method
    o.construct       = FG3dRenderable_construct;
@@ -27,8 +27,11 @@ function FG3dRenderable(o){
    o.material        = FG3dRenderable_material;
    // @method
    o.activeEffect    = FG3dRenderable_activeEffect;
-   o.setActiveEffect = FG3dRenderable_setActiveEffect;
-   o.effects         = FG3dRenderable_effects;
+   o.activeInfo      = FG3dRenderable_activeInfo;
+   o.effectFind      = FG3dRenderable_effectFind;
+   o.effectSet       = FG3dRenderable_effectSet;
+   o.infos           = FG3dRenderable_infos;
+   o.selectInfo      = FG3dRenderable_selectInfo;
    // @method
    o.testVisible     = RMethod.virtual(o, 'testVisible');
    // @method
@@ -88,32 +91,89 @@ function FG3dRenderable_effectName(){
 // @return FG3dEffect 效果器
 //==========================================================
 function FG3dRenderable_activeEffect(){
-   return this._activeEffect;
+   var i = this._activeInfo;
+   return i ? i.effect : null;
 }
 
 //==========================================================
-// <T>设置激活效果器。</T>
+// <T>获得激活信息。</T>
 //
 // @method
-// @param p:effect:FG3dEffect 效果器
+// @return SG3dRenderableInfo 信息
 //==========================================================
-function FG3dRenderable_setActiveEffect(p){
-   this._activeEffect = p;
+function FG3dRenderable_activeInfo(){
+   return this._activeInfo;
 }
 
 //==========================================================
-// <T>获得效果器字典。</T>
+// <T>根据名称查找效果器。</T>
 //
 // @method
-// @return TDictionary 效果器字典
+// @param p:name:String 名称
+// @return SG3dRenderableInfo 效果器
 //==========================================================
-function FG3dRenderable_effects(){
+function FG3dRenderable_effectFind(p){
    var o = this;
-   var r = o._effects;
+   var s = o._infos;
+   if(s){
+      var i = s.get(p);
+      if(i){
+         return i.effect;
+      }
+   }
+   return null;
+}
+
+//==========================================================
+// <T>设置一个效果器。</T>
+//
+// @method
+// @param n:name:String 名称
+// @param e:effect:FG3dEffect 效果器
+//==========================================================
+function FG3dRenderable_effectSet(n, e){
+   var o = this;
+   var s = o.infos();
+   var i = s.get(n);
+   if(!i){
+      i = new SG3dRenderableInfo();
+      es.set(n, i)
+   }
+   i.effect = e;
+}
+
+//==========================================================
+// <T>获得信息字典。</T>
+//
+// @method
+// @return TDictionary 信息字典
+//==========================================================
+function FG3dRenderable_infos(){
+   var o = this;
+   var r = o._infos;
    if(!r){
-      r = o._effects = new TDictionary();
+      r = o._infos = new TDictionary();
    }
    return r;
+}
+
+//==========================================================
+// <T>选中一个信息。</T>
+//
+// @method
+// @param p:name:String 名称
+// @return SG3dRenderableInfo 信息
+//==========================================================
+function FG3dRenderable_selectInfo(p){
+   var o = this;
+   var s = o.infos();
+   var i = s.get(p);
+   if(!i){
+      i = new SG3dRenderableInfo();
+      s.set(p, i)
+   }
+   o._activeInfo = i;
+   return i;
 }
 
 //==========================================================
@@ -146,7 +206,7 @@ function FG3dRenderable_dispose(){
    o._currentMatrix = RObject.dispose(o._currentMatrix);
    o._matrix = RObject.dispose(o._matrix);
    o._material = RObject.dispose(o._material);
-   o._effects = RObject.dispose(o._effects);
+   o._infos = RObject.dispose(o._infos);
    // 父处理
    o.__base.FGraphicRenderable.dispose.call(o);
 }

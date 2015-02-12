@@ -1,21 +1,27 @@
 //==========================================================
-// <T>渲染对象。</T>
+// <T>可渲染对象信息。</T>
 //
+// @class
 // @author maocy
 // @history 150212
 //==========================================================
-function FG3dObject(o){
-   o = RClass.inherits(this, o, FObject, MGraphicObject);
+function SG3dRenderableInfo(){
+   var o = this;
+   //..........................................................
+   // @attribute 代码
+   o.effect = null;
+   o.layout = null;
    //..........................................................
    // @method
-   o.setup = FG3dObject_setup;
+   o.reset  = SG3dRenderableInfo_reset;
    return o;
 }
 
 //==========================================================
-// <T>配置处理。</T>
+// <T>重置处理。</T>
 //
 // @method
 //==========================================================
-function FG3dObject_setup(){
+function SG3dRenderableInfo_reset(){
+   var o = this;
 }

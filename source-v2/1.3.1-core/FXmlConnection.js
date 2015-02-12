@@ -81,7 +81,7 @@ function FXmlConnection_onConnectionComplete(){
    o._statusFree = true;
    // 完成处理
    var e = new SXmlEvent();
-   e.connection = o;;
+   e.connection = o;
    e.document = d;
    e.root = r;
    e.parameters = o._parameters;

@@ -761,7 +761,7 @@ function FResourceType_name(){
    return this._name;
 }
 function FResourceType_resource(p){
-   return this._resources.get(p);;
+   return this._resources.get(p);
 }
 function FResourceType_resources(){
    return this._resources;

@@ -89,6 +89,7 @@ function FE3dSceneConsole_alloc(pc, pn){
    s._context = pc;
    s._name = pn;
    s._resource = rs;
+   s.setup();
    // 测试是否已加载
    if(rs.testReady()){
       s.load(rs);

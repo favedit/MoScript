@@ -180,7 +180,7 @@ function FDsCanvas_onBuild(p){
    bb.linkGraphicContext(o._context);
    bb.setup();
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-   RStage.start(20);
+   RStage.start(1000 / 60);
    RConsole.find(FMouseConsole).register(o);
 }
 function FDsCanvas_onMouseCaptureStart(p){

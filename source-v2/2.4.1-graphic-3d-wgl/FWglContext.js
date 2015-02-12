@@ -10,6 +10,8 @@ function FWglContext(o){
    //..........................................................
    // @attribute
    o._native             = null;
+   o._nativeInstance     = null;
+   o._nativeLayout       = null;
    o._activeRenderTarget = null;
    o._activeTextureSlot  = 0;
    // @attribute
@@ -28,6 +30,7 @@ function FWglContext(o){
    o.extensions          = FWglContext_extensions;
    // @method
    o.createProgram       = FWglContext_createProgram;
+   o.createLayout        = FWglContext_createLayout;
    o.createVertexBuffer  = FWglContext_createVertexBuffer;
    o.createIndexBuffer   = FWglContext_createIndexBuffer;
    o.createFlatTexture   = FWglContext_createFlatTexture;
@@ -107,6 +110,15 @@ function FWglContext_linkCanvas(h){
    c.fragmentConst = g.getParameter(g.MAX_FRAGMENT_UNIFORM_VECTORS);
    c.samplerCount = g.getParameter(g.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
    c.samplerSize = g.getParameter(g.MAX_TEXTURE_SIZE);
+   // 测试实例绘制支持
+   var e = o._nativeInstance = g.getExtension('ANGLE_instanced_arrays');
+   if(e){
+      c.optionInstance = true;
+   }
+   var e = o._nativeLayout = g.getExtension('OES_vertex_array_object');
+   if(e){
+      c.optionLayout = true;
+   }
 }
 
 //==========================================================
@@ -290,7 +302,25 @@ function FWglContext_extensions(){
 function FWglContext_createProgram(){
    var o = this;
    var r = RClass.create(FWglProgram);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
+   r.setup();
+   return r;
+}
+
+//==========================================================
+// <T>创建布局。</T>
+//
+// @method
+// @return FProgram3d 顶点缓冲
+//==========================================================
+function FWglContext_createLayout(){
+   var o = this;
+   // 检查标志
+   if(!o._capability.optionLayout){
+      throw new TError(o, 'Unsupport layout.');
+   }
+   var r = RClass.create(FWglLayout);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
@@ -304,7 +334,7 @@ function FWglContext_createProgram(){
 function FWglContext_createVertexBuffer(){
    var o = this;
    var r = RClass.create(FWglVertexBuffer);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
@@ -318,7 +348,7 @@ function FWglContext_createVertexBuffer(){
 function FWglContext_createIndexBuffer(){
    var o = this;
    var r = RClass.create(FWglIndexBuffer);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
@@ -332,7 +362,7 @@ function FWglContext_createIndexBuffer(){
 function FWglContext_createFlatTexture(){
    var o = this;
    var r = RClass.create(FWglFlatTexture);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
@@ -346,7 +376,7 @@ function FWglContext_createFlatTexture(){
 function FWglContext_createCubeTexture(){
    var o = this;
    var r = RClass.create(FWglCubeTexture);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
@@ -360,7 +390,7 @@ function FWglContext_createCubeTexture(){
 function FWglContext_createRenderTarget(){
    var o = this;
    var r = RClass.create(FWglRenderTarget);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }

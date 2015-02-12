@@ -2,11 +2,12 @@ function FG3dAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dEffect);
    o._optionBlendMode = true;
    o._supportInstance         = false;
+   o._supportLayout           = false;
+   o._supportMaterialMap      = false;
    o._supportVertexColor      = true;
    o._supportVertexCoord      = true;
    o._supportVertexNormal     = true;
    o._supportVertexNormalFull = true;
-   o._supportInstance         = false;
    o._supportSkeleton         = false;
    o._supportAlpha            = true;
    o._supportAmbient          = true;
@@ -22,16 +23,30 @@ function FG3dAutomaticEffect(o){
    o._supportHeight           = true;
    o._supportEnvironment      = true;
    o._dynamicSkeleton         = true;
+   o.setup                    = FG3dAutomaticEffect_setup;
    o.buildInfo                = FG3dAutomaticEffect_buildInfo;
    o.bindAttributes           = FG3dAutomaticEffect_bindAttributes;
    o.bindSamplers             = FG3dAutomaticEffect_bindSamplers;
    o.bindMaterial             = FG3dAutomaticEffect_bindMaterial;
+   o.drawRenderable           = FG3dAutomaticEffect_drawRenderable;
    return o;
+}
+function FG3dAutomaticEffect_setup(){
+   var o = this;
+   var c = o._graphicContext;
+   var cp = c.capability();
+   o._supportLayout = cp.optionLayout;
 }
 function FG3dAutomaticEffect_buildInfo(pt, pc){
    var o = this;
+   var c = o._graphicContext;
+   var cb = c.capability();
    var s = new TString();
-   var cb = o._context.capability();
+   if(cb.optionMaterialMap){
+      s.append("|OM");
+      pt.setBoolean("option.material.map", true);
+      o._supportMaterialMap = true;
+   }
    var ac = pc.attributeContains(EG3dAttribute.Color);
    o._dynamicVertexColor = (o._supportVertexColor && ac);
    if(o._dynamicVertexColor){
@@ -254,6 +269,7 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
 }
 function FG3dAutomaticEffect_bindAttributes(p){
    var o = this;
+   var c = o._graphicContext;
    var g = o._program;
    if(g.hasAttribute()){
       var as = g.attributes();
@@ -285,7 +301,7 @@ function FG3dAutomaticEffect_bindSamplers(p){
 }
 function FG3dAutomaticEffect_bindMaterial(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var m = p.info();
    if(m.optionAlpha){
       c.setBlendFactors(o._stateBlend, o._stateBlendSourceCd, o._stateBlendTargetCd);
@@ -298,6 +314,33 @@ function FG3dAutomaticEffect_bindMaterial(p){
       c.setCullingMode(o._stateDepth, o._stateCullCd);
    }
 }
+function FG3dAutomaticEffect_drawRenderable(pg, pr){
+   var o = this;
+   var c = o._graphicContext;
+   var g = o._program;
+   var l = null;
+   if(o._supportLayout){
+      var f = pr.activeInfo();
+      l = f.layout;
+      if(!l){
+         l = f.layout = c.createLayout();
+         l.bind();
+         o.bindAttributes(pr);
+         l.unbind();
+      }
+      l.active();
+   }else{
+      o.bindAttributes(pr);
+   }
+   if(o._supportMaterialMap){
+      g.setSampler('fs_material', pg.materialMap().texture());
+   }
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
+   if(o._supportLayout){
+      l.deactive();
+   }
+}
 function FG3dControlAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    o._code          = 'control.automatic';
@@ -306,7 +349,7 @@ function FG3dControlAutomaticEffect(o){
 }
 function FG3dControlAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    var m = pr.material();
    var mi = m.info();
@@ -327,7 +370,7 @@ function FG3dControlFrameEffect(o){
 }
 function FG3dControlFrameEffect_drawRenderable(pg, pr){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
    var vld = pg.calculate(EG3dRegionParameter.LightDirection);
@@ -375,7 +418,7 @@ function FG3dControlTechnique_setup(){
    o.__base.FG3dTechnique.setup.call(o);
    var ps = o._passes;
    var pd = o._passControl = RClass.create(FG3dControlPass);
-   pd.linkContext(o._context);
+   pd.linkGraphicContext(o);
    pd.setup();
    ps.push(pd);
 }
@@ -384,7 +427,7 @@ function FG3dControlTechnique_passControl(){
 }
 function FG3dControlTechnique_drawRegion(p){
    var o = this;
-   o._context.clearDepth(1);
+   o._graphicContext.clearDepth(1);
    o.__base.FG3dTechnique.drawRegion.call(o, p);
 }
 function FG3dGeneralColorAutomaticEffect(o){
@@ -395,7 +438,7 @@ function FG3dGeneralColorAutomaticEffect(o){
 }
 function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
    var vld = pg.calculate(EG3dRegionParameter.LightDirection);
@@ -408,21 +451,19 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter('vc_light_direction', vld);
    p.setParameter('fc_camera_position', vcp);
    p.setParameter('fc_light_direction', vld);
-   p.setParameter('fc_color', mi.ambientColor);
-   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
-   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
-   p.setParameter('fc_ambient_color', mi.ambientColor);
-   p.setParameter('fc_diffuse_color', mi.diffuseColor);
-   p.setParameter('fc_specular_color', mi.specularColor);
+   if(o._supportMaterialMap){
+      var i = pr._materialId;
+      p.setParameter4('fc_material', 1/32, i/512, 0, 0);
+   }else{
+      p.setParameter('fc_ambient_color', mi.ambientColor);
+      p.setParameter('fc_diffuse_color', mi.diffuseColor);
+      p.setParameter('fc_specular_color', mi.specularColor);
+      p.setParameter('fc_reflect_color', mi.reflectColor);
+      p.setParameter('fc_emissive_color', mi.emissiveColor);
+   }
    p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
-   p.setParameter('fc_specular_view_color', mi.specularViewColor);
-   p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
-   p.setParameter('fc_reflect_color', mi.reflectColor);
    p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
-   p.setParameter('fc_emissive_color', mi.emissiveColor);
-   o.bindAttributes(pr);
-   o.bindSamplers(pr);
-   c.drawTriangles(pr.indexBuffer());
+   o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }
 function FG3dGeneralColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
@@ -438,7 +479,7 @@ function FG3dGeneralColorSkeletonEffect(o){
 }
 function FG3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
    var vld = pg.calculate(EG3dRegionParameter.LightDirection);
@@ -488,7 +529,7 @@ function FG3dGeneralTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
    var p = o._passColor = RClass.create(FG3dGeneralColorPass);
-   p.linkContext(o._context);
+   p.linkGraphicContext(o);
    p.setup();
    o._passes.push(p);
 }
@@ -503,7 +544,7 @@ function FG3dSelectAutomaticEffect(o){
 }
 function FG3dSelectAutomaticEffect_drawRenderable(pg, pr, pi){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var s = c.size();
    var p = o._program;
    var sx = pg._selectX;
@@ -545,7 +586,7 @@ function FG3dSelectPass_construct(){
 function FG3dSelectPass_setup(){
    var o = this;
    o.__base.FG3dTechniquePass.setup.call(o);
-   var c = o._context;
+   var c = o._graphicContext;
    var T = o._texture = c.createFlatTexture();
    T.setFilter(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
    T.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
@@ -559,26 +600,17 @@ function FG3dSelectPass_texture(){
 }
 function FG3dSelectPass_drawRegion(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var g = c._native;
    c.setRenderTarget(o._renderTarget);
    c.clear(0, 0, 0, 0, 1, 1);
-   var sn = p.spaceName();
    var rs = p.allRenderables();
+   o.activeEffects(p, rs);
    var rc = rs.count();
    for(var i = 0; i < rc; i++){
       var r = rs.get(i);
-      var e = r.effects().get(sn);
-      if(!e){
-         e = RConsole.find(FG3dEffectConsole).find(c, p, r);
-         r.effects().set(sn, e);
-      }
-      r.setActiveEffect(e);
-   }
-   for(var i = 0; i < rc; i++){
-      var r = rs.get(i);
       var e = r.activeEffect();
-      o._context.setProgram(e.program());
+      c.setProgram(e.program());
       var d = r.display();
       if(!d._optionFace){
          e.drawRenderable(p, r, i);
@@ -588,7 +620,7 @@ function FG3dSelectPass_drawRegion(p){
    for(var i = 0; i < rc; i++){
       var r = rs.get(i);
       var e = r.activeEffect();
-      o._context.setProgram(e.program());
+      c.setProgram(e.program());
       var d = r.display();
       if(d._optionFace){
          e.drawRenderable(p, r, i);
@@ -600,6 +632,34 @@ function FG3dSelectPass_drawRegion(p){
    if(v != 0){
       o._selectRenderable = rs.get(v - 1);
    }
+}
+function FG3dSelectSkeletonEffect(o){
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o._code          = 'select.automatic';
+   o.drawRenderable = FG3dSelectSkeletonEffect_drawRenderable;
+   return o;
+}
+function FG3dSelectSkeletonEffect_drawRenderable(pg, pr, pi){
+   var o = this;
+   var c = o._graphicContext;
+   var s = c.size();
+   var p = o._program;
+   var sx = pg._selectX;
+   var sy = pg._selectY;
+   var m = pr.material();
+   var mi = m.info();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter4('vc_offset', s.width, s.height, 1 - (sx / s.width) * 2, (sy / s.height) * 2 - 1);
+   var i = pi + 1;
+   var i1 = i  & 0xFF;
+   var i2 = (i >> 8) & 0xFF;
+   var i3 = (i >> 16) & 0xFF;
+   p.setParameter4('fc_index', i1 / 255, i2 / 255, i3 / 255, mi.alphaBase);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
 }
 function FG3dSelectTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
@@ -615,7 +675,7 @@ function FG3dSelectTechnique_setup(){
    o.__base.FG3dTechnique.setup.call(o);
    var ps = o._passes;
    var pd = o._passSelect = RClass.create(FG3dSelectPass);
-   pd.linkContext(o._context);
+   pd.linkGraphicContext(o);
    pd.setup();
    ps.push(pd);
 }
@@ -638,7 +698,7 @@ function FG3dShadowColorAutomaticEffect(o){
 }
 function FG3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
    var vcvpm = pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix);
@@ -707,7 +767,7 @@ function FG3dShadowColorSkeletonEffect(o){
 }
 function FG3dShadowColorSkeletonEffect_drawRenderable(pr, r){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    var prvp = pr.matrixViewProjection();
    var prcp = pr.cameraPosition();
@@ -785,7 +845,7 @@ function FG3dShadowDepthAutomaticEffect(o){
 }
 function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    var lvm = pg.calculate(EG3dRegionParameter.LightViewMatrix);
    var lvpm = pg.calculate(EG3dRegionParameter.LightViewProjectionMatrix);
@@ -850,7 +910,7 @@ function FG3dShadowDepthSkeletonEffect(o){
 }
 function FG3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    p.setParameter('vc_model_matrix', r.currentMatrix());
    p.setParameter('vc_vp_matrix', prvp);
@@ -904,11 +964,11 @@ function FG3dShadowTechnique_setup(){
    o.__base.FG3dTechnique.setup.call(o);
    var ps = o._passes;
    var pd = o._passDepth = RClass.create(FG3dShadowDepthPass);
-   pd.linkContext(o._context);
+   pd.linkGraphicContext(o);
    pd.setup();
    ps.push(pd);
    var pc = o._passColor = RClass.create(FG3dShadowColorPass);
-   pc.linkContext(o._context);
+   pc.linkGraphicContext(o);
    pc.setup();
    ps.push(pc);
    pc.setTextureDepth(pd.textureDepth());

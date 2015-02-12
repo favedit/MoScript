@@ -131,6 +131,8 @@ function RStage_process(){
 //==========================================================
 function RStage_start(v){
    var o = this;
+   // 引擎配置
+   RE3dEngine.setup();
    // 激活舞台
    o.active();
    // 舞台处理

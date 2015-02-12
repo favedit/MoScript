@@ -437,16 +437,16 @@ function FDsSceneCanvas_loadScene(p){
    var o = this;
    var c = o._context;
    // 收集场景
-   var rmc = RConsole.find(FE3dSceneConsole);
+   var sc = RConsole.find(FE3dSceneConsole);
    if(o._activeScene != null){
-      rmc.free(o._activeScene);
+      sc.free(o._activeScene);
    }
    // 监听加载完成
-   var m = rmc.alloc(o._context, p);
-   m.addLoadListener(o, o.onSceneLoad);
-   m.selectTechnique(c, FG3dGeneralTechnique);
-   o._stage = o._activeScene = m;
-   //RStage.register('stage3d', m);
+   var s = sc.alloc(o._context, p);
+   s.addLoadListener(o, o.onSceneLoad);
+   s.selectTechnique(c, FG3dGeneralTechnique);
+   o._stage = o._activeScene = s;
+   RStage.register('stage3d', s);
 }
 
 //==========================================================

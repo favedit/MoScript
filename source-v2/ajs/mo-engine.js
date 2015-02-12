@@ -522,7 +522,6 @@ function FE3dCamera_update(){
    var d = o._direction;
    m.transformPoint3(o._directionTarget, d);
    d.normalize();
-   m.transformPoint3(RMath.vectorAxisY, o.__axisUp);
    o.__base.FG3dPerspectiveCamera.update.call(o);
 }
 function FE3dDisplay(o){
@@ -985,6 +984,7 @@ function FE3dSceneConsole_alloc(pc, pn){
    s._context = pc;
    s._name = pn;
    s._resource = rs;
+   s.setup();
    if(rs.testReady()){
       s.load(rs);
    }else{
@@ -1257,6 +1257,7 @@ function FE3dStage(o){
    o._technique        = null;
    o._region           = null;
    o.construct         = FE3dStage_construct;
+   o.setup             = FE3dStage_setup;
    o.backgroundColor   = FE3dStage_backgroundColor;
    o.camera            = FE3dStage_camera;
    o.projection        = FE3dStage_projection;
@@ -1282,6 +1283,12 @@ function FE3dStage_construct(){
    var r = o._region = RClass.create(FG3dRegion);
    r._camera = c;
    r._directionalLight = l;
+}
+function FE3dStage_setup(){
+   var o = this;
+   o.__base.FStage.construct.call(o);
+   o._region.linkGraphicContext(o._context);
+   o._region.setup();
 }
 function FE3dStage_backgroundColor(){
    return this._backgroundColor;
@@ -1717,6 +1724,34 @@ function FE3dTemplateRenderable_load(){
 function FE3dTemplateRenderable_dispose(){
    var o = this;
    o.__base.FE3dMeshRenderable.dispose.call(o);
+}
+var RE3dEngine = new function RE3dEngine(){
+   var o = this;
+   o._setuped = false;
+   o.onSetup  = RE3dEngine_onSetup;
+   o.setup    = RE3dEngine_setup;
+   return o;
+}
+function RE3dEngine_onSetup(){
+   var ec = RConsole.find(FG3dEffectConsole);
+   ec.register('select.select.automatic', FG3dSelectAutomaticEffect);
+   ec.register('select.select.skeleton', FG3dSelectSkeletonEffect);
+   ec.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
+   ec.register('control.control.automatic', FG3dControlAutomaticEffect);
+   ec.register('general.color.automatic', FG3dGeneralColorAutomaticEffect);
+   ec.register('general.color.skeleton', FG3dGeneralColorSkeletonEffect);
+   ec.register('general.color.skeleton.4', FG3dGeneralColorSkeletonEffect);
+   ec.register('shadow.depth.automatic', FG3dShadowDepthAutomaticEffect);
+   ec.register('shadow.depth.skeleton', FG3dShadowDepthSkeletonEffect);
+   ec.register('shadow.color.automatic', FG3dShadowColorAutomaticEffect);
+   ec.register('shadow.color.skeleton', FG3dShadowColorSkeletonEffect);
+}
+function RE3dEngine_setup(){
+   var o = this;
+   if(!o._setuped){
+      o.onSetup();
+      o._setuped = true;
+   }
 }
 function FRs3Animation(o){
    o = RClass.inherits(this, o, FRs3Object);

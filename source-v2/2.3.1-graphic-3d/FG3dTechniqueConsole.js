@@ -12,6 +12,7 @@ function FG3dTechniqueConsole(o){
    //..........................................................
    // @method
    o.construct   = FG3dTechniqueConsole_construct;
+   o.techniques  = FG3dTechniqueConsole_techniques;
    o.find        = FG3dTechniqueConsole_find;
    return o;
 }
@@ -24,7 +25,18 @@ function FG3dTechniqueConsole(o){
 function FG3dTechniqueConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   // 设置变量
    o._techniques = new TDictionary();
+}
+
+//==========================================================
+// <T>获得技术字典。</T>
+//
+// @method
+// @return TDictionary 技术字典
+//==========================================================
+function FG3dTechniqueConsole_techniques(){
+   return this._techniques;
 }
 
 //==========================================================
@@ -38,13 +50,13 @@ function FG3dTechniqueConsole_construct(){
 function FG3dTechniqueConsole_find(c, p){
    var o = this;
    var n = RClass.name(p);
-   var t = o._techniques.get(n);
+   var ts = o._techniques;
+   var t = ts.get(n);
    if(!t){
-      // 创建过程
+      // 创建技术
       t = RClass.createByName(n);
-      t.linkContext(c);
+      t.linkGraphicContext(c);
       t.setup();
-      o._techniques.set(n, t);
       // 设置过程集合
       var ps = t.passes();
       var pc = ps.count();
@@ -52,6 +64,8 @@ function FG3dTechniqueConsole_find(c, p){
          var v = ps.get(i);
          v.setFullCode(t.code() + '.' + v.code());
       }
+      // 存储技术
+      ts.set(n, t);
    }
    return t;
 }

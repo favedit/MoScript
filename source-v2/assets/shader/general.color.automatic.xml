@@ -16,6 +16,7 @@
    <Parameter name='vc_vp_matrix'           format='Float4x4'/>
    <Parameter name='vc_camera_position'     format='Float3'/>
    <Parameter name='vc_light_direction'     format='Float3'/>
+   <Parameter name='fc_material'            format='Float4'/>
    <Parameter name='fc_camera_position'     format='Float3'/>
    <Parameter name='fc_light_direction'     format='Float3'/>
    <Parameter name='fc_color'               format='Float4'/>
@@ -38,6 +39,7 @@
    <Attribute name='va_binormal'    linker='binormal'    format='Float3'/>
    <Attribute name='va_tangent'     linker='tangent'     format='Float3'/>
    <!--=====================================================-->
+   <Sampler name='fs_material'    linker='material'      bind='N'/>
    <Sampler name='fs_diffuse'     linker='diffuse'/>
    <Sampler name='fs_normal'      linker='normal'/>
    <Sampler name='fs_specular'    linker='specular.level'/>
@@ -121,6 +123,9 @@
       #endif
       //..........................................................
       // 声明常量
+      <shader:true source='option.material.map'>
+      uniform vec4 fc_material;
+      </shader:true>
       uniform vec3 fc_camera_position;
       uniform vec3 fc_light_direction;
       uniform vec4 fc_color;
@@ -165,6 +170,9 @@
       </shader:true>
       //..........................................................
       // 声明取样器
+      <shader:true source='option.material.map'>
+      uniform sampler2D fs_material;
+      </shader:true>
       <shader:true source='support.ambient.sampler'>
       uniform sampler2D fs_diffuse;
       </shader:true>
@@ -196,7 +204,13 @@
          <shader:false source='support.ambient.sampler'>
          vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
          </shader:false>
-         result.rgb += color.xyz * fc_ambient_color.rgb;
+         <shader:true source='option.material.map'>
+         vec4 ambientColor = texture2D(fs_material, vec2(0.0 * fc_material.x, fc_material.y));
+         result.rgb += color.rgb * ambientColor.rgb;
+         </shader:true>
+         <shader:false source='option.material.map'>
+         result.rgb += color.rgb * fc_ambient_color.rgb;
+         </shader:false>
          </shader:true>
          //............................................................
          // 计算散射颜色
@@ -210,7 +224,13 @@
          float normalFactor = dot(v_normal, -fc_light_direction);
          </shader:false>
          normalFactor = max(normalFactor, 0.0);
+         <shader:true source='option.material.map'>
+         vec4 diffuseColor = texture2D(fs_material, vec2(1.0 * fc_material.x, fc_material.y));
+         result.rgb += color.rgb * diffuseColor.rgb * normalFactor;
+         </shader:true>
+         <shader:false source='option.material.map'>
          result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor;
+         </shader:false>
          </shader:true>
          //............................................................
          <shader:true source='vertex.attribute.normal'>
@@ -227,8 +247,13 @@
          specularFactor = max(specularFactor, fc_specular.x);
          specularFactor = min(specularFactor, 1.0);
          specularFactor = pow(specularFactor, fc_specular.y);
+         <shader:true source='option.material.map'>
+         vec4 specularColor = texture2D(fs_material, vec2(2.0 * fc_material.x, fc_material.y));
+         result.rgb += color.rgb * specularColor.rgb * specularFactor;
+         </shader:true>
+         <shader:false source='option.material.map'>
          result.rgb += color.rgb * fc_specular_color.rgb * specularFactor;
-         //result = vec4(specularFactor, specularFactor, specularFactor, 1.0);
+         </shader:false>
          </shader:true>
          //............................................................
          <shader:true source='support.environment'>
@@ -251,7 +276,7 @@
          //result.rgb *= vertexColor.rgb;
          </shader:true>
          <shader:true source='support.alpha'>
-         result.a = color.a * fc_alpha.z;
+         //result.a = color.a * fc_alpha.z;
          </shader:true>
          //............................................................
          gl_FragColor = result;

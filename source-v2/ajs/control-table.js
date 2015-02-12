@@ -2082,7 +2082,7 @@ function FGridControl_calculateDataSize(){
    var hcfh = o.hTitleForm ? o.hTitleForm.offsetHeight : 0;
    var hfph = o._hFixPanel ? o._hFixPanel.offsetHeight : 0;
    r.left = 0;
-   r.top = hfph + hcfh;;
+   r.top = hfph + hcfh;
    r.setWidth(o.hBorderPanel.offsetWidth);
    r.setHeight(o.hBorderPanel.offsetHeight - hcfh - hfph);
    return r;

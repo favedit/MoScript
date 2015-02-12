@@ -17,6 +17,7 @@ function FE3dStage(o){
    //..........................................................
    // @method
    o.construct         = FE3dStage_construct;
+   o.setup             = FE3dStage_setup;
    // @method
    o.backgroundColor   = FE3dStage_backgroundColor;
    o.camera            = FE3dStage_camera;
@@ -53,6 +54,19 @@ function FE3dStage_construct(){
    var r = o._region = RClass.create(FG3dRegion);
    r._camera = c;
    r._directionalLight = l;
+}
+
+//==========================================================
+// <T>配置处理。</T>
+//
+// @method
+//==========================================================
+function FE3dStage_setup(){
+   var o = this;
+   o.__base.FStage.construct.call(o);
+   // 创建背景色
+   o._region.linkGraphicContext(o._context);
+   o._region.setup();
 }
 
 //==========================================================

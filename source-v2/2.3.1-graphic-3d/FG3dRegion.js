@@ -5,7 +5,7 @@
 // @history 150106
 //==========================================================
 function FG3dRegion(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
    //..........................................................
    // @attribute
    o._spaceName                  = null;
@@ -30,6 +30,8 @@ function FG3dRegion(o){
    o._lightProjectionMatrix      = null;
    o._lightViewProjectionMatrix  = null;
    o._lightInfo                  = null;
+   // @attribute
+   o._materialMap                = null;
    //..........................................................
    // @method
    o.construct                   = FG3dRegion_construct;
@@ -42,11 +44,13 @@ function FG3dRegion(o){
    o.camera                      = FG3dRegion_camera;
    o.directionalLight            = FG3dRegion_directionalLight;
    o.lights                      = FG3dRegion_lights;
+   o.materialMap                 = FG3dRegion_materialMap;
    // @method
    o.allRenderables              = FG3dRegion_allRenderables;
    o.renderables                 = FG3dRegion_renderables;
    o.pushRenderable              = FG3dRegion_pushRenderable;
    // @method
+   o.setup                       = FG3dRegion_setup;
    o.prepare                     = FG3dRegion_prepare;
    o.reset                       = FG3dRegion_reset;
    o.calculate                   = FG3dRegion_calculate;
@@ -79,6 +83,7 @@ function FG3dRegion_construct(){
    o._lightProjectionMatrix = new SMatrix3d();
    o._lightViewProjectionMatrix = new SMatrix3d();
    o._lightInfo = new SVector4();
+   //o._materialMap = RClass.create(FG3dMaterialMap);
 }
 
 //==========================================================
@@ -165,6 +170,16 @@ function FG3dRegion_lights(){
 }
 
 //==========================================================
+// <T>获得材质映射。</T>
+//
+// @method
+// @return FG3dMaterialMap 材质映射
+//==========================================================
+function FG3dRegion_materialMap(){
+   return this._materialMap;
+}
+
+//==========================================================
 // <T>获得全部渲染对象集合。</T>
 //
 // @return FRenderables 渲染对象集合
@@ -191,6 +206,18 @@ function FG3dRegion_pushRenderable(p){
    var o = this;
    o._renderables.push(p);
    o._allRenderables.push(p);
+}
+
+//==========================================================
+// <T>配置处理。</T>
+//
+// @method
+//==========================================================
+function FG3dRegion_setup(){
+   var o = this;
+   //var mm = o._materialMap;
+   //mm.linkGraphicContext(o);
+   //mm.setup(32, 512);
 }
 
 //==========================================================

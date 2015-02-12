@@ -64,7 +64,7 @@ function FG3dTechnique_passes(){
 //==========================================================
 function FG3dTechnique_clear(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    // 设置渲染目标
    c.setRenderTarget(null);
    c.clear(p.red, p.green, p.blue, p.alpha, 1);
@@ -106,5 +106,5 @@ function FG3dTechnique_drawRegion(p){
 // @param p:region:FG3dRetion 区域
 //==========================================================
 function FG3dTechnique_present(p){
-   this._context.present();
+   this._graphicContext.present();
 }

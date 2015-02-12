@@ -68,6 +68,7 @@ function RStage_process(){
 }
 function RStage_start(v){
    var o = this;
+   RE3dEngine.setup();
    o.active();
    o.process();
    if(v == null){
