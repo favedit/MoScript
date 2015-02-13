@@ -446,7 +446,7 @@ function FDsSceneCanvas_loadScene(p){
    s.addLoadListener(o, o.onSceneLoad);
    s.selectTechnique(c, FG3dGeneralTechnique);
    o._stage = o._activeScene = s;
-   //RStage.register('stage3d', s);
+   RStage.register('stage3d', s);
 }
 
 //==========================================================

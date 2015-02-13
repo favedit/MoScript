@@ -8,7 +8,7 @@ function FDsSceneMaterialFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._scene             = null;
+   o._scene                = null;
    o._material             = null;
    // @attribute
    o._controlGuid          = null;
@@ -64,7 +64,8 @@ function FDsSceneMaterialFrame_onDataChanged(p){
    var o = this;
    var t = o._scene;
    var m = o._material;
-   var mi = m.info();
+   var mr = m.resource();
+   var mi = mr.info();
    // 设置环境颜色
    var v = o._controlAmbientColor.get();
    mi.ambientColor.assign(v);
@@ -85,7 +86,8 @@ function FDsSceneMaterialFrame_onDataChanged(p){
    var v = o._controlEmissiveColor.get();
    mi.emissiveColor.assign(v);
    // 重新加载资源
-   //t.reloadResource();
+   var d = o._material._display;
+   d.reloadResource();
 }
 
 //==========================================================
@@ -112,10 +114,11 @@ function FDsSceneMaterialFrame_loadObject(s, m){
    o._material = m;
    // 设置参数
    //var mp = m.group();
-   var mi = m.info();
-   o._controlGuid.set(m.guid());
-   //o._controlCode.set(mp.code());
-   o._controlLabel.set(m.label());
+   var mr = m.resource();
+   var mi = mr.info();
+   o._controlGuid.set(mr.guid());
+   o._controlCode.set(mr.code());
+   o._controlLabel.set(mr.label());
    o._controlAmbientColor.set(mi.ambientColor);
    o._controlDiffuseColor.set(mi.diffuseColor);
    o._controlSpecularColor.set(mi.specularColor);

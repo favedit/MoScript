@@ -12,7 +12,7 @@ function FDsSceneMaterialPropertyFrame(o){
    o._visible        = false;
    // @attribute
    o._workspace      = null;
-   o._selectMaterial = null;
+   o._activeMaterial = null;
    // @attribute
    o._controlGuid    = null;
    o._controlCode    = null;
@@ -51,13 +51,13 @@ function FDsSceneMaterialPropertyFrame_loadObject(s, m){
    var o = this;
    var r = m._resource;
    // 设置属性
-   o._selectMaterial = m;
+   o._activeMaterial = m;
    // 设置界面
    o._controlGuid.set(r.guid());
    o._controlCode.set(r.code());
    o._controlLabel.set(r.label());
    // 设置界面
-   o._frameMaterial.loadObject(s, r);
+   o._frameMaterial.loadObject(s, m);
 }
 
 //==========================================================

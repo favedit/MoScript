@@ -64,6 +64,7 @@ function FE3dSceneDisplay_loadSceneResource(p){
       for(var i = 0; i < c; i++){
          var rm = rms.get(i);
          var m = RClass.create(FE3dSceneMaterial);
+         m._display = o;
          m.loadSceneResource(rm);
          ms.set(rm.groupGuid(), m);
       }

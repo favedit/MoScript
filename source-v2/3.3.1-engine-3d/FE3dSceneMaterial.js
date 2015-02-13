@@ -8,11 +8,13 @@ function FE3dSceneMaterial(o){
    o = RClass.inherits(this, o, FG3dMaterial);
    //..........................................................
    // @attribute
+   o._display          = null;
    o._resource         = null;
    //..........................................................
    // @method
    o.groupGuid         = FE3dSceneMaterial_groupGuid
-   o.loadSceneResource = FE3dSceneMaterial_loadSceneResourcee
+   o.resource          = FE3dSceneMaterial_resource;
+   o.loadSceneResource = FE3dSceneMaterial_loadSceneResource;
    return o;
 }
 
@@ -27,12 +29,22 @@ function FE3dSceneMaterial_groupGuid(p){
 }
 
 //==========================================================
+// <T>获得资源。</T>
+//
+// @method
+// @return FRs3Resource 资源
+//==========================================================
+function FE3dSceneMaterial_resource(p){
+   return this._resource;
+}
+
+//==========================================================
 // <T>加载区域资源。</T>
 //
 // @method
 // @param p:resource:FRs3SceneRegion 区域资源
 //==========================================================
-function FE3dSceneMaterial_loadSceneResourcee(p){
+function FE3dSceneMaterial_loadSceneResource(p){
    var o = this;
    o._resource = p;
    o._info.assign(p.info());

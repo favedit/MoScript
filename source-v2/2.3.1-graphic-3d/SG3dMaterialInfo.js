@@ -8,50 +8,50 @@ function SG3dMaterialInfo(o){
    if(!o){o = this;}
    //..........................................................
    // @attribute 效果名称
-   o.effectName    = 'automatic';
+   o.effectName           = 'automatic';
    // @attribute 变换名称
-   o.transformName = null;
+   o.transformName        = null;
    //..........................................................
    // @attribute 设置光源
-   o.optionLight = null;
+   o.optionLight          = null;
    // @attribute 设置合并
-   o.optionMerge = null;
+   o.optionMerge          = null;
    // @attribute 设置排序
-   o.optionSort = null;
+   o.optionSort           = null;
    // @attribute 排序级别
-   o.sortLevel = null;
+   o.sortLevel            = null;
    // @attribute 设置透明
-   o.optionAlpha = null;
+   o.optionAlpha          = null;
    // @attribute 设置深度
-   o.optionDepth = null;
+   o.optionDepth          = null;
    // @attribute 设置比较
-   o.optionCompare = null;
+   o.optionCompare        = null;
    // @attribute 设置双面
-   o.optionDouble = null;
+   o.optionDouble         = null;
    // @attribute 设置影子
-   o.optionShadow = null;
+   o.optionShadow         = null;
    // @attribute 设置自阴影
-   o.optionShadowSelf = null;
+   o.optionShadowSelf     = null;
    // @attribute 设置动态
-   o.optionDynamic = null;
+   o.optionDynamic        = null;
    // @attribute 设置投射
-   o.optionTransmittance = null;
+   o.optionTransmittance  = null;
    // @attribute 设置不透明
-   o.optionOpacity = null;
+   o.optionOpacity        = null;
    //..........................................................
    // @attribute 存储纹理
-   o.coordRateWidth  = 1.0;
-   o.coordRateHeight = 1.0;
+   o.coordRateWidth       = 1.0;
+   o.coordRateHeight      = 1.0;
    // @attribute 颜色信息
-   o.colorMin        = 0.0;
-   o.colorMax        = 1.0;
-   o.colorRate       = 1.0;
-   o.colorMerge      = 1.0;
+   o.colorMin             = 0.0;
+   o.colorMax             = 1.0;
+   o.colorRate            = 1.0;
+   o.colorMerge           = 1.0;
    // @attribute 透明信息
-   o.alphaBase       = 1.0;
-   o.alphaRate       = 1.0;
-   o.alphaLevel      = 1.0;
-   o.alphaMerge      = 1.0;
+   o.alphaBase            = 1.0;
+   o.alphaRate            = 1.0;
+   o.alphaLevel           = 1.0;
+   o.alphaMerge           = 1.0;
    //..........................................................
    // 环境光颜色 (RGB=颜色，A=强度)
    o.ambientColor         = new SColor4();
@@ -100,8 +100,9 @@ function SG3dMaterialInfo(o){
    o.emissiveColor        = new SColor4();
    //..........................................................
    // @method
-   o.assign = SG3dMaterialInfo_assign;
-   o.reset  = SG3dMaterialInfo_reset;
+   o.assign               = SG3dMaterialInfo_assign;
+   o.calculate            = SG3dMaterialInfo_calculate;
+   o.reset                = SG3dMaterialInfo_reset;
    //..........................................................
    // @construct
    o.reset();
@@ -115,6 +116,74 @@ function SG3dMaterialInfo(o){
 // @param p:info:SG3dMaterialInfo 材质信息
 //==========================================================
 function SG3dMaterialInfo_assign(p){
+   var o = this;
+   // 存储属性
+   o.effectName = p.effectName;
+   o.transformName = p.transformName;
+   // 存储设置
+   o.optionLight = p.optionLight;
+   o.optionMerge = p.optionMerge;
+   o.optionDepth = p.optionDepth;
+   o.optionCompare = p.optionCompare;
+   o.optionAlpha = p.optionAlpha;
+   o.optionDouble = p.optionDouble;
+   o.optionOpacity = p.optionOpacity;
+   o.optionShadow = p.optionShadow;
+   o.optionShadowSelf = p.optionShadowSelf;
+   o.optionTransmittance = p.optionTransmittance;
+   // 存储信息
+   o.sortLevel = p.sortLevel;
+   // 存储颜色
+   o.colorMin = p.colorMin;
+   o.colorMax = p.colorMax;
+   o.colorRate = p.colorRate;
+   o.colorMerge = p.colorMerge;
+   // 存储透明
+   o.alphaBase = p.alphaBase;
+   o.alphaRate = p.alphaRate;
+   o.alphaLevel = p.alphaLevel;
+   o.alphaMerge = p.alphaMerge;
+   // 存储属性
+   o.ambientColor.assign(p.ambientColor);
+   o.ambientShadow = p.ambientShadow;
+   o.diffuseColor.assign(p.diffuseColor);
+   o.diffuseShadow = p.diffuseShadow;
+   o.diffuseViewColor.assign(p.diffuseViewColor);
+   o.diffuseViewShadow = p.diffuseViewShadow;
+   o.specularColor.assign(p.specularColor);
+   o.specularBase = p.specularBase;
+   o.specularLevel = p.specularLevel;
+   o.specularAverage = p.specularAverage;
+   o.specularShadow = p.specularShadow;
+   o.specularViewColor.assign(p.specularViewColor);
+   o.specularViewBase = p.specularViewBase;
+   o.specularViewRate = p.specularViewRate;
+   o.specularViewAverage = p.specularViewAverage;
+   o.specularViewShadow = p.specularViewShadow;
+   o.reflectColor.assign(p.reflectColor);
+   o.reflectMerge = RFloat.toRange(p.reflectMerge, 0, 2);
+   o.reflectShadow = p.reflectShadow;
+   o.refractFrontColor.assign(p.refractFrontColor);
+   o.refractFrontMerge = p.refractFrontMerge;
+   o.refractFrontShadow = p.refractFrontShadow;
+   o.refractBackColor.assign(p.refractBackColor);
+   o.refractBackMerge = p.refractBackMerge;
+   o.refractBackShadow = p.refractBackShadow;
+   o.opacityColor.assign(p.opacityColor);
+   o.opacityRate = p.opacityRate;
+   o.opacityAlpha = p.optionAlpha;
+   o.opacityDepth = p.optionDepth;
+   o.opacityTransmittance = p.optionTransmittance;
+   o.emissiveColor.assign(p.emissiveColor);
+}
+
+//==========================================================
+// <T>计算数据信息。</T>
+//
+// @method
+// @param p:info:SG3dMaterialInfo 材质信息
+//==========================================================
+function SG3dMaterialInfo_calculate(p){
    var o = this;
    // 存储属性
    o.effectName = p.effectName;

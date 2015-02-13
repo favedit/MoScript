@@ -394,6 +394,7 @@ function FDsSceneCanvas_loadScene(p){
    s.addLoadListener(o, o.onSceneLoad);
    s.selectTechnique(c, FG3dGeneralTechnique);
    o._stage = o._activeScene = s;
+   RStage.register('stage3d', s);
 }
 function FDsSceneCanvas_dispose(){
    var o = this;
@@ -798,7 +799,7 @@ function FDsSceneLightPropertyFrame_dispose(){
 }
 function FDsSceneMaterialFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._scene             = null;
+   o._scene                = null;
    o._material             = null;
    o._controlGuid          = null;
    o._controlCode          = null;
@@ -832,7 +833,8 @@ function FDsSceneMaterialFrame_onDataChanged(p){
    var o = this;
    var t = o._scene;
    var m = o._material;
-   var mi = m.info();
+   var mr = m.resource();
+   var mi = mr.info();
    var v = o._controlAmbientColor.get();
    mi.ambientColor.assign(v);
    var v = o._controlDiffuseColor.get();
@@ -847,6 +849,9 @@ function FDsSceneMaterialFrame_onDataChanged(p){
    mi.reflectMerge = v;
    var v = o._controlEmissiveColor.get();
    mi.emissiveColor.assign(v);
+   debugger
+   var d = o._material._display;
+   d.reloadResource();
 }
 function FDsSceneMaterialFrame_construct(){
    var o = this;
@@ -856,9 +861,11 @@ function FDsSceneMaterialFrame_loadObject(s, m){
    var o = this;
    o._scene = s;
    o._material = m;
-   var mi = m.info();
-   o._controlGuid.set(m.guid());
-   o._controlLabel.set(m.label());
+   var mr = m.resource();
+   var mi = mr.info();
+   o._controlGuid.set(mr.guid());
+   o._controlCode.set(mr.code());
+   o._controlLabel.set(mr.label());
    o._controlAmbientColor.set(mi.ambientColor);
    o._controlDiffuseColor.set(mi.diffuseColor);
    o._controlSpecularColor.set(mi.specularColor);
@@ -875,7 +882,7 @@ function FDsSceneMaterialPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible        = false;
    o._workspace      = null;
-   o._selectMaterial = null;
+   o._activeMaterial = null;
    o._controlGuid    = null;
    o._controlCode    = null;
    o._controlLabel   = null;
@@ -893,11 +900,11 @@ function FDsSceneMaterialPropertyFrame_construct(){
 function FDsSceneMaterialPropertyFrame_loadObject(s, m){
    var o = this;
    var r = m._resource;
-   o._selectMaterial = m;
+   o._activeMaterial = m;
    o._controlGuid.set(r.guid());
    o._controlCode.set(r.code());
    o._controlLabel.set(r.label());
-   o._frameMaterial.loadObject(s, r);
+   o._frameMaterial.loadObject(s, m);
 }
 function FDsSceneMaterialPropertyFrame_dispose(){
    var o = this;

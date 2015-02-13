@@ -4,9 +4,15 @@
 // @author maocy
 // @history 150130
 //==========================================================
-function FE3dSceneCanvas(o){
-   o = RClass.inherits(this, o, FE3dCanvas);
+function FE3dCanvas(o){
+   o = RClass.inherits(this, o, FObject, MListenerLoad, MMouseCapture);
    //..........................................................
+   // @html
+   o._hPanel             = null;
+   o._hCanvas            = null;
+   //..........................................................
+   // @attribute
+   o._context            = null;
    // @attribute
    o._activeScene        = null;
    // @attribute
@@ -16,22 +22,22 @@ function FE3dSceneCanvas(o){
    // @event
    o.onEnterFrame        = FDsSceneCanvas_onEnterFrame;
    // @event
-   o.onMouseCaptureStart = FE3dSceneCanvas_onMouseCaptureStart;
-   o.onMouseCapture      = FE3dSceneCanvas_onMouseCapture;
-   o.onMouseCaptureStop  = FE3dSceneCanvas_onMouseCaptureStop;
+   o.onMouseCaptureStart = FE3dCanvas_onMouseCaptureStart;
+   o.onMouseCapture      = FE3dCanvas_onMouseCapture;
+   o.onMouseCaptureStop  = FE3dCanvas_onMouseCaptureStop;
    // @event
-   o.onResize            = FE3dSceneCanvas_onResize;
+   o.onResize            = FE3dCanvas_onResize;
    // @event
-   o.onSceneLoad         = FE3dSceneCanvas_onSceneLoad;
+   o.onSceneLoad         = FE3dCanvas_onSceneLoad;
    //..........................................................
    // @method
-   o.construct           = FE3dSceneCanvas_construct;
+   o.construct           = FE3dCanvas_construct;
    // @method
-   o.build               = FE3dSceneCanvas_build;
-   o.load                = FE3dSceneCanvas_load;
-   o.setPanel            = FE3dSceneCanvas_setPanel;
+   o.build               = FE3dCanvas_build;
+   o.load                = FE3dCanvas_load;
+   o.setPanel            = FE3dCanvas_setPanel;
    // @method
-   o.dispose             = FE3dSceneCanvas_dispose;
+   o.dispose             = FE3dCanvas_dispose;
    return o;
 }
 
@@ -40,7 +46,7 @@ function FE3dSceneCanvas(o){
 //
 // @method
 //==========================================================
-function FE3dSceneCanvas_onEnterFrame(){
+function FE3dCanvas_onEnterFrame(){
    var o = this;
    var s = o._activeScene;
    if(!s){
@@ -110,7 +116,7 @@ function FE3dSceneCanvas_onEnterFrame(){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FE3dSceneCanvas_onMouseCaptureStart(p){
+function FE3dCanvas_onMouseCaptureStart(p){
    var o = this;
    var s = o._activeScene;
    if(!s){
@@ -130,7 +136,7 @@ function FE3dSceneCanvas_onMouseCaptureStart(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FE3dSceneCanvas_onMouseCapture(p){
+function FE3dCanvas_onMouseCapture(p){
    var o = this;
    var s = o._activeScene;
    if(!s){
@@ -151,7 +157,7 @@ function FE3dSceneCanvas_onMouseCapture(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FE3dSceneCanvas_onMouseCaptureStop(p){
+function FE3dCanvas_onMouseCaptureStop(p){
 }
 
 //==========================================================
@@ -160,7 +166,7 @@ function FE3dSceneCanvas_onMouseCaptureStop(p){
 // @method
 // @param p:template:FTemplate3d 模板
 //==========================================================
-function FE3dSceneCanvas_onResize(){
+function FE3dCanvas_onResize(){
    var o = this;
    // 获得大小
    var hp = o._hPanel;
@@ -181,7 +187,7 @@ function FE3dSceneCanvas_onResize(){
 // @method
 // @param p:template:FTemplate3d 模板
 //==========================================================
-function FE3dSceneCanvas_onSceneLoad(p){
+function FE3dCanvas_onSceneLoad(p){
    var o = this;
    var c = o._context;
    var s = o._activeScene;
@@ -199,7 +205,7 @@ function FE3dSceneCanvas_onSceneLoad(p){
 //
 // @method
 //==========================================================
-function FE3dSceneCanvas_construct(){
+function FE3dCanvas_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._rotation = new SVector3();
@@ -213,7 +219,7 @@ function FE3dSceneCanvas_construct(){
 // @method
 // @param p:document:HtmlTag 页面元素
 //==========================================================
-function FE3dSceneCanvas_build(p){
+function FE3dCanvas_build(p){
    var o = this;
    // 创建画板
    var h = o._hCanvas = RBuilder.create(p, 'CANVAS');
@@ -234,7 +240,7 @@ function FE3dSceneCanvas_build(p){
 //
 // @method
 //==========================================================
-function FE3dSceneCanvas_load(p){
+function FE3dCanvas_load(p){
    var o = this;
    var c = o._context;
    // 收集场景
@@ -255,7 +261,7 @@ function FE3dSceneCanvas_load(p){
 //
 // @method
 //==========================================================
-function FE3dSceneCanvas_setPanel(p){
+function FE3dCanvas_setPanel(p){
    var o = this;
    var c = o._context;
    var hc = o._hCanvas;
@@ -271,7 +277,7 @@ function FE3dSceneCanvas_setPanel(p){
 //
 // @method
 //==========================================================
-function FE3dSceneCanvas_dispose(){
+function FE3dCanvas_dispose(){
    var o = this;
    // 释放旋转
    var v = o._rotation;
