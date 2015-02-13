@@ -3129,7 +3129,7 @@ function RControl_build(c, x, a, h){
    if(!c){
       c = RControl.newInstance(x);
    }
-   o.innerbuild(null, c, x, a, h);
+   o.innerbuild(c, c, x, a, h);
    return c;
 }
 function RControl_linkEvent(tc, sc, n, h, m){

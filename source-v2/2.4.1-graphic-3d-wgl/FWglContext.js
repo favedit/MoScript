@@ -602,7 +602,7 @@ function FWglContext_setProgram(p){
       return;
    }
    // 设置程序
-   if(p != null){
+   if(p){
       g.useProgram(p._native);
    }else{
       g.useProgram(null);

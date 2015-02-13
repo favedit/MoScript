@@ -5,9 +5,9 @@
 // @author maocy
 // @version 150113
 //==========================================================
-function SMouseEvent(o){
-   if(!o){o = this;}
-   SEvent(o);
+function SMouseEvent(){
+   var o = this;
+   SEvent.call(o);
    //..........................................................
    // @attribute
    o.button      = null;

@@ -5,9 +5,9 @@
 // @author maocy
 // @version 150113
 //==========================================================
-function SKeyboardEvent(o){
-   if(!o){o = this;}
-   SEvent(o);
+function SKeyboardEvent(){
+   var o = this;
+   SEvent.call(o);
    //..........................................................
    // @attribute
    o.altKey      = false;

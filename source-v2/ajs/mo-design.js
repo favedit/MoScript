@@ -2623,9 +2623,11 @@ function FDsSceneMenuBar(o){
    o._frameName     = 'design3d.scene.MenuBar';
    o._refreshButton = null;
    o._saveButton    = null;
+   o._runButton     = null;
    o.onBuilded      = FDsSceneMenuBar_onBuilded;
    o.onRefreshClick = FDsSceneMenuBar_onRefreshClick;
    o.onSaveClick    = FDsSceneMenuBar_onSaveClick;
+   o.onRunClick     = FDsSceneMenuBar_onRunClick;
    o.construct      = FDsSceneMenuBar_construct;
    o.dispose        = FDsSceneMenuBar_dispose;
    return o;
@@ -2633,17 +2635,18 @@ function FDsSceneMenuBar(o){
 function FDsSceneMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
-   var b = o._refreshButton = o.searchControl('refreshButton');
-   b.addClickListener(o, o.onRefreshClick);
-   var b = o._saveButton = o.searchControl('saveButton');
-   b.addClickListener(o, o.onSaveClick);
+   o._refreshButton.addClickListener(o, o.onRefreshClick);
+   o._saveButton.addClickListener(o, o.onSaveClick);
+   o._runButton.addClickListener(o, o.onRunClick);
 }
 function FDsSceneMenuBar_onRefreshClick(p){
    var o = this;
 }
 function FDsSceneMenuBar_onSaveClick(p){
    var o = this;
-   var t = o._workspace._activeTemplate;
+   var t = o._workspace._activeScene;
+   alert(t);
+   return;
    var rt = t._resource;
    var ts = rt.themes();
    var tc = ts.count();
@@ -2658,6 +2661,10 @@ function FDsSceneMenuBar_onSaveClick(p){
       }
    }
    RConsole.find(FRs3TemplateConsole).update(xr);
+}
+function FDsSceneMenuBar_onRunClick(p){
+   var u = '../view/scene.html';
+   window.open(u);
 }
 function FDsSceneMenuBar_construct(){
    var o = this;

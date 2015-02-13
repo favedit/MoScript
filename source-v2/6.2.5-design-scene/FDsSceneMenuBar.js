@@ -13,12 +13,14 @@ function FDsSceneMenuBar(o){
    // @attribute
    o._refreshButton = null;
    o._saveButton    = null;
+   o._runButton     = null;
    //..........................................................
    // @event
    o.onBuilded      = FDsSceneMenuBar_onBuilded;
    // @event
    o.onRefreshClick = FDsSceneMenuBar_onRefreshClick;
    o.onSaveClick    = FDsSceneMenuBar_onSaveClick;
+   o.onRunClick     = FDsSceneMenuBar_onRunClick;
    //..........................................................
    // @method
    o.construct      = FDsSceneMenuBar_construct;
@@ -37,12 +39,10 @@ function FDsSceneMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
    //..........................................................
-   // 建立刷新按键
-   var b = o._refreshButton = o.searchControl('refreshButton');
-   b.addClickListener(o, o.onRefreshClick);
-   // 建立保存按键
-   var b = o._saveButton = o.searchControl('saveButton');
-   b.addClickListener(o, o.onSaveClick);
+   // 注册事件
+   o._refreshButton.addClickListener(o, o.onRefreshClick);
+   o._saveButton.addClickListener(o, o.onSaveClick);
+   o._runButton.addClickListener(o, o.onRunClick);
 }
 
 //==========================================================
@@ -65,7 +65,9 @@ function FDsSceneMenuBar_onRefreshClick(p){
 //==========================================================
 function FDsSceneMenuBar_onSaveClick(p){
    var o = this;
-   var t = o._workspace._activeTemplate;
+   var t = o._workspace._activeScene;
+   alert(t);
+   return;
    var rt = t._resource;
    var ts = rt.themes();
    var tc = ts.count();
@@ -80,6 +82,17 @@ function FDsSceneMenuBar_onSaveClick(p){
       }
    }
    RConsole.find(FRs3TemplateConsole).update(xr);
+}
+
+//==========================================================
+// <T>保存按键处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsSceneMenuBar_onRunClick(p){
+   var u = '../view/scene.html';
+   window.open(u);
 }
 
 //==========================================================

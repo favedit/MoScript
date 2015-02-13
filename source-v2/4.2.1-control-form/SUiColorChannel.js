@@ -17,6 +17,7 @@ function SUiColorChannel(){
    o.setSlideValue = SUiColorChannel_setSlideValue;
    o.setColorValue = SUiColorChannel_setColorValue;
    o.set           = SUiColorChannel_set;
+   // @method
    o.changeInput   = SUiColorChannel_changeInput;
    return o;
 }
@@ -28,13 +29,16 @@ function SUiColorChannel(){
 //==========================================================
 function SUiColorChannel_setSlideValue(p){
    var o = this;
-   var l = o.hSlideForm.offsetWidth;
-   var r = parseInt(p / o.maxValue * l);
-   o.hSlideRowML.width = Math.min(Math.max(r, 1), l);
-   //var r = parseInt((p / l) * 255);
-   //o.hInput.value = r;
-   //o.setColorValue(r);
-   //o.control.refreshValue();
+   // 设置宽度
+   var w = o.hSlideForm.offsetWidth;
+   o.hSlideRowML.width = RInteger.toRange(p, 1, w);
+   // 设置输入
+   var r = parseInt(p / w * o.maxValue);
+   o.hInput.value = RInteger.toRange(r, o.minValue, o.maxValue);
+   // 设置颜色
+   o.setColorValue(r);
+   // 刷新内容
+   o.control.refreshValue();
 }
 
 //==========================================================
@@ -76,7 +80,6 @@ function SUiColorChannel_set(p){
    // 设置数字
    o.hInput.value = r;
 }
-
 
 //==========================================================
 function SUiColorChannel_changeInput(){

@@ -8343,9 +8343,11 @@ function AStyleIcon_toString(){
 }
 var EBrowser = new function EBrowser(){
    var o = this;
+   o.Unknown = 0;
    o.Explorer = 1;
-   o.FireFox  = 2;
-   o.Chrome  = 3;
+   o.FireFox = 2;
+   o.Chrome = 3;
+   o.Safari = 4;
    return o;
 }
 var EDataType = new function EDataType(){
@@ -8363,6 +8365,13 @@ var EDataType = new function EDataType(){
    o.Float   = 10;
    o.Double  = 11;
    o.String  = 12;
+   return o;
+}
+var EDevice = new function EDevice(){
+   var o = this;
+   o.Unknown = 0;
+   o.Pc = 1;
+   o.Mobile = 2;
    return o;
 }
 var EEvent = new function EEvent(){
@@ -8505,6 +8514,15 @@ var EMouseCursor = new function EMouseCursor(){
    var o = this;
    o.HSize = 'E-resize';
    o.VSize = 'N-resize';
+   return o;
+}
+var ESoftware = new function ESoftware(){
+   var o = this;
+   o.Unknown = 0;
+   o.Window = 1;
+   o.Linux = 2;
+   o.Android = 3;
+   o.Apple = 4;
    return o;
 }
 function FBytes(o){
@@ -9234,7 +9252,9 @@ function MProperty_propertySave(p){
 }
 var RBrowser = new function RBrowser(){
    var o = this;
-   o._typeCd        = 0;
+   o._deviceCd      = EDevice.Unknown;
+   o._softwareCd    = ESoftware.Unknown;
+   o._typeCd        = EBrowser.Unknown;
    o._hostPath      = '';
    o._contentPath   = '';
    o.construct      = RBrowser_construct;
@@ -9249,6 +9269,10 @@ var RBrowser = new function RBrowser(){
 function RBrowser_construct(){
    var o = this;
    var s = window.navigator.userAgent.toLowerCase();
+   if(s.indexOf("android") != -1){
+      o._typeCd = EDevice.Mobile;
+      o._softwareCd = ESoftware.Android;
+   }
    if(s.indexOf("chrome") != -1){
       o._typeCd = EBrowser.Chrome;
    }else if(s.indexOf("firefox") != -1){
@@ -9257,6 +9281,8 @@ function RBrowser_construct(){
       o._typeCd = EBrowser.Explorer;
    }else if(s.indexOf("windows") != -1){
       o._typeCd = EBrowser.Explorer;
+   }else if(s.indexOf("safari") != -1){
+      o._typeCd = EBrowser.Safari;
    }else{
       alert('Unknown browser.\n' + s);
       return;
@@ -10953,6 +10979,7 @@ var RWindow = new function RWindow(){
    o._optionSelect     = true;
    o._mouseEvent       = new SMouseEvent();
    o._keyEvent         = new SKeyboardEvent();
+   o._resizeEvent      = new SResizeEvent();
    o._hWindow          = null;
    o._hDocument        = null;
    o._hContainer       = null;
@@ -10973,6 +11000,7 @@ var RWindow = new function RWindow(){
    o.ohKeyDown         = RWindow_ohKeyDown;
    o.ohKeyUp           = RWindow_ohKeyUp;
    o.ohKeyPress        = RWindow_ohKeyPress;
+   o.ohResize          = RWindow_ohResize;
    o.ohSelect          = RWindow_ohSelect;
    o.connect           = RWindow_connect;
    o.optionSelect      = RWindow_optionSelect;
@@ -11065,6 +11093,15 @@ function RWindow_ohKeyPress(p){
    var e = o._keyEvent;
    e.attachEvent(p);
    o.lsnsKeyPress.process(e);
+}
+function RWindow_ohResize(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   var e = o._resizeEvent;
+   e.attachEvent(p);
+   o.lsnsResize.process(e);
 }
 function RWindow_ohSelect(p){
    return RWindow._optionSelect;
@@ -11637,8 +11674,8 @@ function RXml_unpack(s, n){
    }
    return n;
 }
-function SEvent(o){
-   if(!o){o = this;}
+function SEvent(){
+   var o = this;
    o.annotation = null;
    o.source     = null;
    o.hEvent     = null;
@@ -11656,9 +11693,9 @@ function SEvent_dispose(){
       o[n] = null;
    }
 }
-function SKeyboardEvent(o){
-   if(!o){o = this;}
-   SEvent(o);
+function SKeyboardEvent(){
+   var o = this;
+   SEvent.call(o);
    o.altKey      = false;
    o.shiftKey    = false;
    o.ctrlKey     = false;
@@ -11678,9 +11715,9 @@ function SKeyboardEvent_cancel(){
    var o = this;
    o.hEvent.returnValue = false;
 }
-function SMouseEvent(o){
-   if(!o){o = this;}
-   SEvent(o);
+function SMouseEvent(){
+   var o = this;
+   SEvent.call(o);
    o.button      = null;
    o.mouseLeft   = false;
    o.mouseMiddle = false;
@@ -11722,6 +11759,21 @@ function SMouseEvent_attachEvent(p){
    o.clientX = p.clientX;
    o.clientY = p.clientY;
 }
+function SResizeEvent(){
+   var o = this;
+   SEvent.call(o);
+   o.width       = null;
+   o.height      = null;
+   o.attachEvent = SResizeEvent_attachEvent;
+   return o;
+}
+function SResizeEvent_attachEvent(p){
+   var o = this;
+   var hs = o.hSource = RHtml.eventSource(p);
+   if(hs){
+      o.source = hs.__linker;
+   }
+}
 function SServiceInfo(){
    var o = this;
    o.service = null;
@@ -11729,9 +11781,9 @@ function SServiceInfo(){
    o.url     = null;
    return o;
 }
-function SXmlEvent(o){
-   if(!o){o = this;}
-   SEvent(o);
+function SXmlEvent(){
+   var o = this;
+   SEvent.call(o);
    o.connection = null;
    o.document   = null;
    o.root       = null;
@@ -14134,7 +14186,6 @@ function FG3dMaterialMap_update(){
    if(o._dirty){
       var s = o._size;
       o._texture.uploadData(o._data, s.width, s.height);
-      console.log('Material dirty.', s.width, s.height);
       o._dirty = false;
    }
 }
@@ -17207,7 +17258,7 @@ function FWglContext_setProgram(p){
    if(o._program == p){
       return;
    }
-   if(p != null){
+   if(p){
       g.useProgram(p._native);
    }else{
       g.useProgram(null);
@@ -19019,6 +19070,178 @@ function FE3dScene_active(){
 function FE3dScene_deactive(){
    var o = this;
    o.__base.FE3dStage.deactive.call(o);
+}
+function FE3dSceneCanvas(o){
+   o = RClass.inherits(this, o, FObject, MListenerLoad, MMouseCapture);
+   o._hPanel             = null;
+   o._hCanvas            = null;
+   o._context            = null;
+   o._activeScene        = null;
+   o._capturePosition    = null;
+   o._captureRotation    = null;
+   o.onEnterFrame        = FDsSceneCanvas_onEnterFrame;
+   o.onMouseCaptureStart = FE3dSceneCanvas_onMouseCaptureStart;
+   o.onMouseCapture      = FE3dSceneCanvas_onMouseCapture;
+   o.onMouseCaptureStop  = FE3dSceneCanvas_onMouseCaptureStop;
+   o.onResize            = FE3dSceneCanvas_onResize;
+   o.onSceneLoad         = FE3dSceneCanvas_onSceneLoad;
+   o.construct           = FE3dSceneCanvas_construct;
+   o.build               = FE3dSceneCanvas_build;
+   o.load                = FE3dSceneCanvas_load;
+   o.setPanel            = FE3dSceneCanvas_setPanel;
+   o.dispose             = FE3dSceneCanvas_dispose;
+   return o;
+}
+function FE3dSceneCanvas_onEnterFrame(){
+   var o = this;
+   var s = o._activeScene;
+   if(!s){
+      return;
+   }
+   var c = s.camera();
+   var d = 0.5;
+   var r = 0.05;
+   var kw = RKeyboard.isPress(EKeyCode.W);
+   var ks = RKeyboard.isPress(EKeyCode.S);
+   if(kw && !ks){
+      c.doWalk(d);
+   }
+   if(!kw && ks){
+      c.doWalk(-d);
+   }
+   var ka = RKeyboard.isPress(EKeyCode.A);
+   var kd = RKeyboard.isPress(EKeyCode.D);
+   if(ka && !kd){
+      c.doYaw(r);
+   }
+   if(!ka && kd){
+      c.doYaw(-r);
+   }
+   var kq = RKeyboard.isPress(EKeyCode.Q);
+   var ke = RKeyboard.isPress(EKeyCode.E);
+   if(kq && !ke){
+      c.doFly(d);
+   }
+   if(!kq && ke){
+      c.doFly(-d);
+   }
+   var kz = RKeyboard.isPress(EKeyCode.Z);
+   var kw = RKeyboard.isPress(EKeyCode.X);
+   if(kz && !kw){
+      c.doPitch(r);
+   }
+   if(!kz && kw){
+      c.doPitch(-r);
+   }
+   c.update();
+   if(o._optionRotation){
+      var r = o._rotation;
+      var ls = s.layers();
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         var l = ls.value(i);
+         var m = l.matrix();
+         m.setRotation(0, r.y, 0);
+         m.update();
+      }
+      r.y += 0.01;
+   }
+}
+function FE3dSceneCanvas_onMouseCaptureStart(p){
+   var o = this;
+   var s = o._activeScene;
+   if(!s){
+      return;
+   }
+   var r = o._activeScene.region();
+   var st = RConsole.find(FG3dTechniqueConsole).find(o._context, FG3dSelectTechnique);
+   var r = st.test(r, p.offsetX, p.offsetY);
+   o._capturePosition.set(p.clientX, p.clientY);
+   o._captureRotation.assign(s.camera()._rotation);
+}
+function FE3dSceneCanvas_onMouseCapture(p){
+   var o = this;
+   var s = o._activeScene;
+   if(!s){
+      return;
+   }
+   var cx = p.clientX - o._capturePosition.x;
+   var cy = p.clientY - o._capturePosition.y;
+   var c = o._activeScene.camera();
+   var r = c.rotation();
+   var cr = o._captureRotation;
+   r.x = cr.x + cy * 0.003;
+   r.y = cr.y + cx * 0.003;
+}
+function FE3dSceneCanvas_onMouseCaptureStop(p){
+}
+function FE3dSceneCanvas_onResize(){
+   var o = this;
+   var hp = o._hPanel;
+   var w = hp.offsetWidth;
+   var h = hp.offsetHeight;
+   var hc = o._hCanvas;
+   hc.width = w;
+   hc.height = h;
+   var c = o._context;
+   c.setViewport(0, 0, w, h);
+}
+function FE3dSceneCanvas_onSceneLoad(p){
+   var o = this;
+   var c = o._context;
+   var s = o._activeScene;
+   var cs = c.size();
+   var rp = s.camera().projection();
+   rp.size().set(cs.width, cs.height);
+   rp.update();
+   o.processLoadListener(o, s);
+}
+function FE3dSceneCanvas_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._rotation = new SVector3();
+   o._capturePosition = new SPoint2();
+   o._captureRotation = new SVector3();
+}
+function FE3dSceneCanvas_build(p){
+   var o = this;
+   var h = o._hCanvas = RBuilder.create(p, 'CANVAS');
+   h.__linker = o;
+   var c = o._context = REngine3d.createContext(FWglContext, h);
+   RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
+   RStage.start(1000 / 60);
+   RWindow.lsnsResize.register(o, o.onResize);
+   RConsole.find(FMouseConsole).register(o);
+}
+function FE3dSceneCanvas_load(p){
+   var o = this;
+   var c = o._context;
+   var sc = RConsole.find(FE3dSceneConsole);
+   if(o._activeScene != null){
+      sc.free(o._activeScene);
+   }
+   var s = sc.alloc(o._context, p);
+   s.addLoadListener(o, o.onSceneLoad);
+   s.selectTechnique(c, FG3dGeneralTechnique);
+   o._stage = o._activeScene = s;
+   RStage.register('stage3d', s);
+}
+function FE3dSceneCanvas_setPanel(p){
+   var o = this;
+   var c = o._context;
+   var hc = o._hCanvas;
+   o._hPanel = p;
+   p.appendChild(o._hCanvas);
+   o.onResize();
+}
+function FE3dSceneCanvas_dispose(){
+   var o = this;
+   var v = o._rotation;
+   if(v){
+      v.dispose();
+      o._rotation = null;
+   }
+   o.__base.FObject.dispose.call(o);
 }
 function FE3dSceneConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -23601,7 +23824,6 @@ function FG3dMaterialMap_update(){
    if(o._dirty){
       var s = o._size;
       o._texture.uploadData(o._data, s.width, s.height);
-      console.log('Material dirty.', s.width, s.height);
       o._dirty = false;
    }
 }
@@ -26674,7 +26896,7 @@ function FWglContext_setProgram(p){
    if(o._program == p){
       return;
    }
-   if(p != null){
+   if(p){
       g.useProgram(p._native);
    }else{
       g.useProgram(null);
@@ -30676,7 +30898,7 @@ function RControl_build(c, x, a, h){
    if(!c){
       c = RControl.newInstance(x);
    }
-   o.innerbuild(null, c, x, a, h);
+   o.innerbuild(c, c, x, a, h);
    return c;
 }
 function RControl_linkEvent(tc, sc, n, h, m){
@@ -36033,22 +36255,15 @@ function FUiColorPower_construct(){
 function FUiColorPower_get(p){
    var o = this;
    var v = o._innerDataValue;
-   var h = o._barRed.hInput;
-   if(h){
-      v.red = RFloat.parse(h.value);
-   }
-   var h = o._barGreen.hInput;
-   if(h){
-      v.green = RFloat.parse(h.value);
-   }
-   var h = o._barBlue.hInput;
-   if(h){
-      v.blue = RFloat.parse(h.value);
-   }
+   var r = 1;
    var h = o._barPower.hInput;
-   if(h){
-      v.alpha = RFloat.parse(h.value);
-   }
+   r = v.alpha = RFloat.parse(h.value) / 255;
+   var h = o._barRed.hInput;
+   v.red = RInteger.parse(h.value) * r;
+   var h = o._barGreen.hInput;
+   v.green = RInteger.parse(h.value) * r;
+   var h = o._barBlue.hInput;
+   v.blue = RInteger.parse(h.value) * r;
    return v;
 }
 function FUiColorPower_set(p){
@@ -38558,7 +38773,7 @@ function SUiColorBar(){
 }
 function SUiColorBar_onMouseDown(p){
    var o = this;
-   var x = RHtml_clientX(p.hSender, o.hSlideForm) + p.offsetX;
+   var x = RHtml.clientX(p.hSender, o.hSlideForm) + p.offsetX;
    o._draging = true;
    RWindow.setOptionSelect(false);
    o.setSlideValue(x);
@@ -38566,7 +38781,7 @@ function SUiColorBar_onMouseDown(p){
 function SUiColorBar_onMouseMove(p){
    var o = this;
    if(o._draging){
-      var x = RHtml_clientX(p.hSender, o.hSlideForm) + p.offsetX;
+      var x = RHtml.clientX(p.hSender, o.hSlideForm) + p.offsetX;
       o.setSlideValue(x);
    }
 }
@@ -38676,9 +38891,12 @@ function SUiColorChannel(){
 }
 function SUiColorChannel_setSlideValue(p){
    var o = this;
-   var l = o.hSlideForm.offsetWidth;
-   var r = parseInt(p / o.maxValue * l);
-   o.hSlideRowML.width = Math.min(Math.max(r, 1), l);
+   var w = o.hSlideForm.offsetWidth;
+   o.hSlideRowML.width = RInteger.toRange(p, 1, w);
+   var r = parseInt(p / w * o.maxValue);
+   o.hInput.value = RInteger.toRange(r, o.minValue, o.maxValue);
+   o.setColorValue(r);
+   o.control.refreshValue();
 }
 function SUiColorChannel_setColorValue(p){
    var o = this;
@@ -38716,23 +38934,29 @@ function SUiColorPower(){
    o.maxValue      = 4;
    o.setSlideValue = SUiColorPower_setSlideValue;
    o.setColorValue = SUiColorPower_setColorValue;
+   o.get           = SUiColorPower_get;
    o.set           = SUiColorPower_set;
+   o.changeInput   = SUiColorPower_changeInput;
    return o;
 }
 function SUiColorPower_setSlideValue(p){
    var o = this;
-   var l = o.hSlideForm.offsetWidth;
-   o.hSlideRowML.width = p;
-   var r = p / l * o.maxValue;
-   o.hInput.value = RFloat.format(r, 0, null, 3, null);
+   var w = o.hSlideForm.offsetWidth;
+   o.hSlideRowML.width = RInteger.toRange(p, 1, w);
+   var r = p / w * o.maxValue;
+   o.hInput.value = RFloat.format(r, 0, null, 2, null);
    o.setColorValue(r);
    o.control.refreshValue();
 }
 function SUiColorPower_setColorValue(p){
    var o = this;
-   var pv = parseInt(p * 255);
+   var pv = Math.min(parseInt(p * 255), 255);
    var v = RHex.format(pv, 2);
    o.hColorImage.style.backgroundColor = '#' + v + v + v;
+}
+function SUiColorPower_get(){
+   var o = this;
+   return RFloat.parse(o.hInput.value);
 }
 function SUiColorPower_set(p){
    var o = this;
@@ -38742,10 +38966,13 @@ function SUiColorPower_set(p){
    var d = parseInt(l * r / o.maxValue);
    o.hSlideRowML.width = Math.max(d, 1);
    o.setColorValue(p);
-   var h = o.hInput;
-   if(h){
-      h.value = RFloat.format(p, 0, null, 2, null);
-   }
+   o.hInput.value = RFloat.format(p, 0, null, 2, null);
+}
+function SUiColorPower_changeInput(){
+   var o = this;
+   var v = Math.min(RFloat.parse(o.hInput.value), o.maxValue);
+   var w = o.hSlideForm.offsetWidth;
+   o.setSlideValue(v * w);
 }
 var EGridColumn = new function EGridColumn(){
    var o = this;
@@ -47395,9 +47622,11 @@ function FDsSceneMenuBar(o){
    o._frameName     = 'design3d.scene.MenuBar';
    o._refreshButton = null;
    o._saveButton    = null;
+   o._runButton     = null;
    o.onBuilded      = FDsSceneMenuBar_onBuilded;
    o.onRefreshClick = FDsSceneMenuBar_onRefreshClick;
    o.onSaveClick    = FDsSceneMenuBar_onSaveClick;
+   o.onRunClick     = FDsSceneMenuBar_onRunClick;
    o.construct      = FDsSceneMenuBar_construct;
    o.dispose        = FDsSceneMenuBar_dispose;
    return o;
@@ -47405,17 +47634,18 @@ function FDsSceneMenuBar(o){
 function FDsSceneMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
-   var b = o._refreshButton = o.searchControl('refreshButton');
-   b.addClickListener(o, o.onRefreshClick);
-   var b = o._saveButton = o.searchControl('saveButton');
-   b.addClickListener(o, o.onSaveClick);
+   o._refreshButton.addClickListener(o, o.onRefreshClick);
+   o._saveButton.addClickListener(o, o.onSaveClick);
+   o._runButton.addClickListener(o, o.onRunClick);
 }
 function FDsSceneMenuBar_onRefreshClick(p){
    var o = this;
 }
 function FDsSceneMenuBar_onSaveClick(p){
    var o = this;
-   var t = o._workspace._activeTemplate;
+   var t = o._workspace._activeScene;
+   alert(t);
+   return;
    var rt = t._resource;
    var ts = rt.themes();
    var tc = ts.count();
@@ -47430,6 +47660,10 @@ function FDsSceneMenuBar_onSaveClick(p){
       }
    }
    RConsole.find(FRs3TemplateConsole).update(xr);
+}
+function FDsSceneMenuBar_onRunClick(p){
+   var u = '../view/scene.html';
+   window.open(u);
 }
 function FDsSceneMenuBar_construct(){
    var o = this;

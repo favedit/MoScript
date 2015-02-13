@@ -1,40 +1,33 @@
 ﻿//==========================================================
-// <T>事件信息类。</T>
+// <T>改变大小事件信息类。</T>
 //
 // @struct
 // @author maocy
-// @version 150113
+// @version 150213
 //==========================================================
-function SEvent(){
+function SResizeEvent(){
    var o = this;
+   SEvent.call(o);
    //..........................................................
    // @attribute
-   o.annotation = null;
-   // @attribute
-   o.source     = null;
-   // @attribute
-   o.hEvent     = null;
-   o.hSender    = null;
-   o.hSource    = null;
+   o.width       = null;
+   o.height      = null;
    //..........................................................
    // @method
-   o.ohProcess  = null;
-   o.onProcess  = null;
-   // @method
-   o.process    = null;
-   // @method
-   o.dispose    = SEvent_dispose;
+   o.attachEvent = SResizeEvent_attachEvent;
    return o;
 }
 
 //==========================================================
-// <T>释放处理。</T>
+// <T>接收事件信息。</T>
 //
 // @method
+// @param p:event:HtmlEvent 页面事件
 //==========================================================
-function SEvent_dispose(){
+function SResizeEvent_attachEvent(p){
    var o = this;
-   for(var n in o){
-      o[n] = null;
+   var hs = o.hSource = RHtml.eventSource(p);
+   if(hs){
+      o.source = hs.__linker;
    }
 }

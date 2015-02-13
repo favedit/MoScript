@@ -3874,22 +3874,15 @@ function FUiColorPower_construct(){
 function FUiColorPower_get(p){
    var o = this;
    var v = o._innerDataValue;
-   var h = o._barRed.hInput;
-   if(h){
-      v.red = RFloat.parse(h.value);
-   }
-   var h = o._barGreen.hInput;
-   if(h){
-      v.green = RFloat.parse(h.value);
-   }
-   var h = o._barBlue.hInput;
-   if(h){
-      v.blue = RFloat.parse(h.value);
-   }
+   var r = 1;
    var h = o._barPower.hInput;
-   if(h){
-      v.alpha = RFloat.parse(h.value);
-   }
+   r = v.alpha = RFloat.parse(h.value) / 255;
+   var h = o._barRed.hInput;
+   v.red = RInteger.parse(h.value) * r;
+   var h = o._barGreen.hInput;
+   v.green = RInteger.parse(h.value) * r;
+   var h = o._barBlue.hInput;
+   v.blue = RInteger.parse(h.value) * r;
    return v;
 }
 function FUiColorPower_set(p){
@@ -6399,7 +6392,7 @@ function SUiColorBar(){
 }
 function SUiColorBar_onMouseDown(p){
    var o = this;
-   var x = RHtml_clientX(p.hSender, o.hSlideForm) + p.offsetX;
+   var x = RHtml.clientX(p.hSender, o.hSlideForm) + p.offsetX;
    o._draging = true;
    RWindow.setOptionSelect(false);
    o.setSlideValue(x);
@@ -6407,7 +6400,7 @@ function SUiColorBar_onMouseDown(p){
 function SUiColorBar_onMouseMove(p){
    var o = this;
    if(o._draging){
-      var x = RHtml_clientX(p.hSender, o.hSlideForm) + p.offsetX;
+      var x = RHtml.clientX(p.hSender, o.hSlideForm) + p.offsetX;
       o.setSlideValue(x);
    }
 }
@@ -6517,9 +6510,12 @@ function SUiColorChannel(){
 }
 function SUiColorChannel_setSlideValue(p){
    var o = this;
-   var l = o.hSlideForm.offsetWidth;
-   var r = parseInt(p / o.maxValue * l);
-   o.hSlideRowML.width = Math.min(Math.max(r, 1), l);
+   var w = o.hSlideForm.offsetWidth;
+   o.hSlideRowML.width = RInteger.toRange(p, 1, w);
+   var r = parseInt(p / w * o.maxValue);
+   o.hInput.value = RInteger.toRange(r, o.minValue, o.maxValue);
+   o.setColorValue(r);
+   o.control.refreshValue();
 }
 function SUiColorChannel_setColorValue(p){
    var o = this;
@@ -6557,23 +6553,29 @@ function SUiColorPower(){
    o.maxValue      = 4;
    o.setSlideValue = SUiColorPower_setSlideValue;
    o.setColorValue = SUiColorPower_setColorValue;
+   o.get           = SUiColorPower_get;
    o.set           = SUiColorPower_set;
+   o.changeInput   = SUiColorPower_changeInput;
    return o;
 }
 function SUiColorPower_setSlideValue(p){
    var o = this;
-   var l = o.hSlideForm.offsetWidth;
-   o.hSlideRowML.width = p;
-   var r = p / l * o.maxValue;
-   o.hInput.value = RFloat.format(r, 0, null, 3, null);
+   var w = o.hSlideForm.offsetWidth;
+   o.hSlideRowML.width = RInteger.toRange(p, 1, w);
+   var r = p / w * o.maxValue;
+   o.hInput.value = RFloat.format(r, 0, null, 2, null);
    o.setColorValue(r);
    o.control.refreshValue();
 }
 function SUiColorPower_setColorValue(p){
    var o = this;
-   var pv = parseInt(p * 255);
+   var pv = Math.min(parseInt(p * 255), 255);
    var v = RHex.format(pv, 2);
    o.hColorImage.style.backgroundColor = '#' + v + v + v;
+}
+function SUiColorPower_get(){
+   var o = this;
+   return RFloat.parse(o.hInput.value);
 }
 function SUiColorPower_set(p){
    var o = this;
@@ -6583,8 +6585,11 @@ function SUiColorPower_set(p){
    var d = parseInt(l * r / o.maxValue);
    o.hSlideRowML.width = Math.max(d, 1);
    o.setColorValue(p);
-   var h = o.hInput;
-   if(h){
-      h.value = RFloat.format(p, 0, null, 2, null);
-   }
+   o.hInput.value = RFloat.format(p, 0, null, 2, null);
+}
+function SUiColorPower_changeInput(){
+   var o = this;
+   var v = Math.min(RFloat.parse(o.hInput.value), o.maxValue);
+   var w = o.hSlideForm.offsetWidth;
+   o.setSlideValue(v * w);
 }

@@ -827,7 +827,6 @@ function FG3dMaterialMap_update(){
    if(o._dirty){
       var s = o._size;
       o._texture.uploadData(o._data, s.width, s.height);
-      console.log('Material dirty.', s.width, s.height);
       o._dirty = false;
    }
 }
@@ -3900,7 +3899,7 @@ function FWglContext_setProgram(p){
    if(o._program == p){
       return;
    }
-   if(p != null){
+   if(p){
       g.useProgram(p._native);
    }else{
       g.useProgram(null);

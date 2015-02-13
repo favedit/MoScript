@@ -301,7 +301,7 @@ function RControl_build(c, x, a, h){
       c = RControl.newInstance(x);
    }
    // 内部构造
-   o.innerbuild(null, c, x, a, h);
+   o.innerbuild(c, c, x, a, h);
    return c;
 }
 

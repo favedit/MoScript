@@ -469,6 +469,178 @@ function FE3dScene_deactive(){
    var o = this;
    o.__base.FE3dStage.deactive.call(o);
 }
+function FE3dSceneCanvas(o){
+   o = RClass.inherits(this, o, FObject, MListenerLoad, MMouseCapture);
+   o._hPanel             = null;
+   o._hCanvas            = null;
+   o._context            = null;
+   o._activeScene        = null;
+   o._capturePosition    = null;
+   o._captureRotation    = null;
+   o.onEnterFrame        = FDsSceneCanvas_onEnterFrame;
+   o.onMouseCaptureStart = FE3dSceneCanvas_onMouseCaptureStart;
+   o.onMouseCapture      = FE3dSceneCanvas_onMouseCapture;
+   o.onMouseCaptureStop  = FE3dSceneCanvas_onMouseCaptureStop;
+   o.onResize            = FE3dSceneCanvas_onResize;
+   o.onSceneLoad         = FE3dSceneCanvas_onSceneLoad;
+   o.construct           = FE3dSceneCanvas_construct;
+   o.build               = FE3dSceneCanvas_build;
+   o.load                = FE3dSceneCanvas_load;
+   o.setPanel            = FE3dSceneCanvas_setPanel;
+   o.dispose             = FE3dSceneCanvas_dispose;
+   return o;
+}
+function FE3dSceneCanvas_onEnterFrame(){
+   var o = this;
+   var s = o._activeScene;
+   if(!s){
+      return;
+   }
+   var c = s.camera();
+   var d = 0.5;
+   var r = 0.05;
+   var kw = RKeyboard.isPress(EKeyCode.W);
+   var ks = RKeyboard.isPress(EKeyCode.S);
+   if(kw && !ks){
+      c.doWalk(d);
+   }
+   if(!kw && ks){
+      c.doWalk(-d);
+   }
+   var ka = RKeyboard.isPress(EKeyCode.A);
+   var kd = RKeyboard.isPress(EKeyCode.D);
+   if(ka && !kd){
+      c.doYaw(r);
+   }
+   if(!ka && kd){
+      c.doYaw(-r);
+   }
+   var kq = RKeyboard.isPress(EKeyCode.Q);
+   var ke = RKeyboard.isPress(EKeyCode.E);
+   if(kq && !ke){
+      c.doFly(d);
+   }
+   if(!kq && ke){
+      c.doFly(-d);
+   }
+   var kz = RKeyboard.isPress(EKeyCode.Z);
+   var kw = RKeyboard.isPress(EKeyCode.X);
+   if(kz && !kw){
+      c.doPitch(r);
+   }
+   if(!kz && kw){
+      c.doPitch(-r);
+   }
+   c.update();
+   if(o._optionRotation){
+      var r = o._rotation;
+      var ls = s.layers();
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         var l = ls.value(i);
+         var m = l.matrix();
+         m.setRotation(0, r.y, 0);
+         m.update();
+      }
+      r.y += 0.01;
+   }
+}
+function FE3dSceneCanvas_onMouseCaptureStart(p){
+   var o = this;
+   var s = o._activeScene;
+   if(!s){
+      return;
+   }
+   var r = o._activeScene.region();
+   var st = RConsole.find(FG3dTechniqueConsole).find(o._context, FG3dSelectTechnique);
+   var r = st.test(r, p.offsetX, p.offsetY);
+   o._capturePosition.set(p.clientX, p.clientY);
+   o._captureRotation.assign(s.camera()._rotation);
+}
+function FE3dSceneCanvas_onMouseCapture(p){
+   var o = this;
+   var s = o._activeScene;
+   if(!s){
+      return;
+   }
+   var cx = p.clientX - o._capturePosition.x;
+   var cy = p.clientY - o._capturePosition.y;
+   var c = o._activeScene.camera();
+   var r = c.rotation();
+   var cr = o._captureRotation;
+   r.x = cr.x + cy * 0.003;
+   r.y = cr.y + cx * 0.003;
+}
+function FE3dSceneCanvas_onMouseCaptureStop(p){
+}
+function FE3dSceneCanvas_onResize(){
+   var o = this;
+   var hp = o._hPanel;
+   var w = hp.offsetWidth;
+   var h = hp.offsetHeight;
+   var hc = o._hCanvas;
+   hc.width = w;
+   hc.height = h;
+   var c = o._context;
+   c.setViewport(0, 0, w, h);
+}
+function FE3dSceneCanvas_onSceneLoad(p){
+   var o = this;
+   var c = o._context;
+   var s = o._activeScene;
+   var cs = c.size();
+   var rp = s.camera().projection();
+   rp.size().set(cs.width, cs.height);
+   rp.update();
+   o.processLoadListener(o, s);
+}
+function FE3dSceneCanvas_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._rotation = new SVector3();
+   o._capturePosition = new SPoint2();
+   o._captureRotation = new SVector3();
+}
+function FE3dSceneCanvas_build(p){
+   var o = this;
+   var h = o._hCanvas = RBuilder.create(p, 'CANVAS');
+   h.__linker = o;
+   var c = o._context = REngine3d.createContext(FWglContext, h);
+   RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
+   RStage.start(1000 / 60);
+   RWindow.lsnsResize.register(o, o.onResize);
+   RConsole.find(FMouseConsole).register(o);
+}
+function FE3dSceneCanvas_load(p){
+   var o = this;
+   var c = o._context;
+   var sc = RConsole.find(FE3dSceneConsole);
+   if(o._activeScene != null){
+      sc.free(o._activeScene);
+   }
+   var s = sc.alloc(o._context, p);
+   s.addLoadListener(o, o.onSceneLoad);
+   s.selectTechnique(c, FG3dGeneralTechnique);
+   o._stage = o._activeScene = s;
+   RStage.register('stage3d', s);
+}
+function FE3dSceneCanvas_setPanel(p){
+   var o = this;
+   var c = o._context;
+   var hc = o._hCanvas;
+   o._hPanel = p;
+   p.appendChild(o._hCanvas);
+   o.onResize();
+}
+function FE3dSceneCanvas_dispose(){
+   var o = this;
+   var v = o._rotation;
+   if(v){
+      v.dispose();
+      o._rotation = null;
+   }
+   o.__base.FObject.dispose.call(o);
+}
 function FE3dSceneConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd    = EScope.Local;

@@ -50,7 +50,7 @@ function SUiColorBar(){
 //==========================================================
 function SUiColorBar_onMouseDown(p){
    var o = this;
-   var x = RHtml_clientX(p.hSender, o.hSlideForm) + p.offsetX;
+   var x = RHtml.clientX(p.hSender, o.hSlideForm) + p.offsetX;
    o._draging = true;
    RWindow.setOptionSelect(false);
    o.setSlideValue(x);
@@ -64,7 +64,7 @@ function SUiColorBar_onMouseDown(p){
 function SUiColorBar_onMouseMove(p){
    var o = this;
    if(o._draging){
-      var x = RHtml_clientX(p.hSender, o.hSlideForm) + p.offsetX;
+      var x = RHtml.clientX(p.hSender, o.hSlideForm) + p.offsetX;
       o.setSlideValue(x);
    }
 }

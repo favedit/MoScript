@@ -221,23 +221,17 @@ function FUiColorPower_construct(){
 function FUiColorPower_get(p){
    var o = this;
    var v = o._innerDataValue;
+   // 获得强度
+   var r = 1;
+   var h = o._barPower.hInput;
+   r = v.alpha = RFloat.parse(h.value) / 255;
    // 获得数据
    var h = o._barRed.hInput;
-   if(h){
-      v.red = RFloat.parse(h.value);
-   }
+   v.red = RInteger.parse(h.value) * r;
    var h = o._barGreen.hInput;
-   if(h){
-      v.green = RFloat.parse(h.value);
-   }
+   v.green = RInteger.parse(h.value) * r;
    var h = o._barBlue.hInput;
-   if(h){
-      v.blue = RFloat.parse(h.value);
-   }
-   var h = o._barPower.hInput;
-   if(h){
-      v.alpha = RFloat.parse(h.value);
-   }
+   v.blue = RInteger.parse(h.value) * r;
    return v;
 }
 

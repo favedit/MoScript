@@ -16,7 +16,10 @@ function SUiColorPower(){
    // @method
    o.setSlideValue = SUiColorPower_setSlideValue;
    o.setColorValue = SUiColorPower_setColorValue;
+   o.get           = SUiColorPower_get;
    o.set           = SUiColorPower_set;
+   // @method
+   o.changeInput   = SUiColorPower_changeInput;
    return o;
 }
 
@@ -28,11 +31,14 @@ function SUiColorPower(){
 //==========================================================
 function SUiColorPower_setSlideValue(p){
    var o = this;
-   var l = o.hSlideForm.offsetWidth;
-   o.hSlideRowML.width = p;
-   var r = p / l * o.maxValue;
-   o.hInput.value = RFloat.format(r, 0, null, 3, null);
+   // 设置宽度
+   var w = o.hSlideForm.offsetWidth;
+   o.hSlideRowML.width = RInteger.toRange(p, 1, w);
+   // 设置颜色
+   var r = p / w * o.maxValue;
+   o.hInput.value = RFloat.format(r, 0, null, 2, null);
    o.setColorValue(r);
+   // 刷新内容
    o.control.refreshValue();
 }
 
@@ -44,10 +50,21 @@ function SUiColorPower_setSlideValue(p){
 //==========================================================
 function SUiColorPower_setColorValue(p){
    var o = this;
-   var pv = parseInt(p * 255);
+   var pv = Math.min(parseInt(p * 255), 255);
    var v = RHex.format(pv, 2);
    // 设置颜色
    o.hColorImage.style.backgroundColor = '#' + v + v + v;
+}
+
+//==========================================================
+// <T>设置内容。</T>
+//
+// @method
+// @param p:value:Number 内容
+//==========================================================
+function SUiColorPower_get(){
+   var o = this;
+   return RFloat.parse(o.hInput.value);
 }
 
 //==========================================================
@@ -67,8 +84,19 @@ function SUiColorPower_set(p){
    // 设置颜色
    o.setColorValue(p);
    // 设置数字
-   var h = o.hInput;
-   if(h){
-      h.value = RFloat.format(p, 0, null, 2, null);
-   }
+   o.hInput.value = RFloat.format(p, 0, null, 2, null);
+}
+
+//==========================================================
+// <T>设置内容。</T>
+//
+// @method
+// @param p:value:Number 内容
+//==========================================================
+function SUiColorPower_changeInput(){
+   var o = this;
+   var v = Math.min(RFloat.parse(o.hInput.value), o.maxValue);
+   var w = o.hSlideForm.offsetWidth;
+   o.setSlideValue(v * w);
+   //o.setColorValue(v);
 }

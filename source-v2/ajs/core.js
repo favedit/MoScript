@@ -373,9 +373,11 @@ function AStyleIcon_toString(){
 }
 var EBrowser = new function EBrowser(){
    var o = this;
+   o.Unknown = 0;
    o.Explorer = 1;
-   o.FireFox  = 2;
-   o.Chrome  = 3;
+   o.FireFox = 2;
+   o.Chrome = 3;
+   o.Safari = 4;
    return o;
 }
 var EDataType = new function EDataType(){
@@ -393,6 +395,13 @@ var EDataType = new function EDataType(){
    o.Float   = 10;
    o.Double  = 11;
    o.String  = 12;
+   return o;
+}
+var EDevice = new function EDevice(){
+   var o = this;
+   o.Unknown = 0;
+   o.Pc = 1;
+   o.Mobile = 2;
    return o;
 }
 var EEvent = new function EEvent(){
@@ -535,6 +544,15 @@ var EMouseCursor = new function EMouseCursor(){
    var o = this;
    o.HSize = 'E-resize';
    o.VSize = 'N-resize';
+   return o;
+}
+var ESoftware = new function ESoftware(){
+   var o = this;
+   o.Unknown = 0;
+   o.Window = 1;
+   o.Linux = 2;
+   o.Android = 3;
+   o.Apple = 4;
    return o;
 }
 function FBytes(o){
@@ -1264,7 +1282,9 @@ function MProperty_propertySave(p){
 }
 var RBrowser = new function RBrowser(){
    var o = this;
-   o._typeCd        = 0;
+   o._deviceCd      = EDevice.Unknown;
+   o._softwareCd    = ESoftware.Unknown;
+   o._typeCd        = EBrowser.Unknown;
    o._hostPath      = '';
    o._contentPath   = '';
    o.construct      = RBrowser_construct;
@@ -1279,6 +1299,10 @@ var RBrowser = new function RBrowser(){
 function RBrowser_construct(){
    var o = this;
    var s = window.navigator.userAgent.toLowerCase();
+   if(s.indexOf("android") != -1){
+      o._typeCd = EDevice.Mobile;
+      o._softwareCd = ESoftware.Android;
+   }
    if(s.indexOf("chrome") != -1){
       o._typeCd = EBrowser.Chrome;
    }else if(s.indexOf("firefox") != -1){
@@ -1287,6 +1311,8 @@ function RBrowser_construct(){
       o._typeCd = EBrowser.Explorer;
    }else if(s.indexOf("windows") != -1){
       o._typeCd = EBrowser.Explorer;
+   }else if(s.indexOf("safari") != -1){
+      o._typeCd = EBrowser.Safari;
    }else{
       alert('Unknown browser.\n' + s);
       return;
@@ -2983,6 +3009,7 @@ var RWindow = new function RWindow(){
    o._optionSelect     = true;
    o._mouseEvent       = new SMouseEvent();
    o._keyEvent         = new SKeyboardEvent();
+   o._resizeEvent      = new SResizeEvent();
    o._hWindow          = null;
    o._hDocument        = null;
    o._hContainer       = null;
@@ -3003,6 +3030,7 @@ var RWindow = new function RWindow(){
    o.ohKeyDown         = RWindow_ohKeyDown;
    o.ohKeyUp           = RWindow_ohKeyUp;
    o.ohKeyPress        = RWindow_ohKeyPress;
+   o.ohResize          = RWindow_ohResize;
    o.ohSelect          = RWindow_ohSelect;
    o.connect           = RWindow_connect;
    o.optionSelect      = RWindow_optionSelect;
@@ -3095,6 +3123,15 @@ function RWindow_ohKeyPress(p){
    var e = o._keyEvent;
    e.attachEvent(p);
    o.lsnsKeyPress.process(e);
+}
+function RWindow_ohResize(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   var e = o._resizeEvent;
+   e.attachEvent(p);
+   o.lsnsResize.process(e);
 }
 function RWindow_ohSelect(p){
    return RWindow._optionSelect;
@@ -3667,8 +3704,8 @@ function RXml_unpack(s, n){
    }
    return n;
 }
-function SEvent(o){
-   if(!o){o = this;}
+function SEvent(){
+   var o = this;
    o.annotation = null;
    o.source     = null;
    o.hEvent     = null;
@@ -3686,9 +3723,9 @@ function SEvent_dispose(){
       o[n] = null;
    }
 }
-function SKeyboardEvent(o){
-   if(!o){o = this;}
-   SEvent(o);
+function SKeyboardEvent(){
+   var o = this;
+   SEvent.call(o);
    o.altKey      = false;
    o.shiftKey    = false;
    o.ctrlKey     = false;
@@ -3708,9 +3745,9 @@ function SKeyboardEvent_cancel(){
    var o = this;
    o.hEvent.returnValue = false;
 }
-function SMouseEvent(o){
-   if(!o){o = this;}
-   SEvent(o);
+function SMouseEvent(){
+   var o = this;
+   SEvent.call(o);
    o.button      = null;
    o.mouseLeft   = false;
    o.mouseMiddle = false;
@@ -3752,6 +3789,21 @@ function SMouseEvent_attachEvent(p){
    o.clientX = p.clientX;
    o.clientY = p.clientY;
 }
+function SResizeEvent(){
+   var o = this;
+   SEvent.call(o);
+   o.width       = null;
+   o.height      = null;
+   o.attachEvent = SResizeEvent_attachEvent;
+   return o;
+}
+function SResizeEvent_attachEvent(p){
+   var o = this;
+   var hs = o.hSource = RHtml.eventSource(p);
+   if(hs){
+      o.source = hs.__linker;
+   }
+}
 function SServiceInfo(){
    var o = this;
    o.service = null;
@@ -3759,9 +3811,9 @@ function SServiceInfo(){
    o.url     = null;
    return o;
 }
-function SXmlEvent(o){
-   if(!o){o = this;}
-   SEvent(o);
+function SXmlEvent(){
+   var o = this;
+   SEvent.call(o);
    o.connection = null;
    o.document   = null;
    o.root       = null;

@@ -415,7 +415,7 @@ function FWglContext_setProgram(p){
    if(o._program == p){
       return;
    }
-   if(p != null){
+   if(p){
       g.useProgram(p._native);
    }else{
       g.useProgram(null);

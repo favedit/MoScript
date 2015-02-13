@@ -13,6 +13,7 @@ var RWindow = new function RWindow(){
    // @attribute
    o._mouseEvent       = new SMouseEvent();
    o._keyEvent         = new SKeyboardEvent();
+   o._resizeEvent      = new SResizeEvent();
    //..........................................................
    // @html
    o._hWindow          = null;
@@ -39,6 +40,7 @@ var RWindow = new function RWindow(){
    o.ohKeyDown         = RWindow_ohKeyDown;
    o.ohKeyUp           = RWindow_ohKeyUp;
    o.ohKeyPress        = RWindow_ohKeyPress;
+   o.ohResize          = RWindow_ohResize;
    o.ohSelect          = RWindow_ohSelect;
    //..........................................................
    // @method
@@ -188,6 +190,22 @@ function RWindow_ohKeyPress(p){
    var e = o._keyEvent;
    e.attachEvent(p);
    o.lsnsKeyPress.process(e);
+}
+
+//==========================================================
+// <T>改变大小处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function RWindow_ohResize(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   var e = o._resizeEvent;
+   e.attachEvent(p);
+   o.lsnsResize.process(e);
 }
 
 //==========================================================
