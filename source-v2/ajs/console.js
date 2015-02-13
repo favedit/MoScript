@@ -487,11 +487,8 @@ function FMouseConsole(o){
 }
 function FMouseConsole_onMouseDown(p){
    var o = this;
-   var s = p.source;
+   var s = RHtml.searchLinker(p.hSource, MMouseCapture);
    if(!s){
-      return;
-   }
-   if(!RClass.isClass(s, MMouseCapture)){
       return;
    }
    if(!s.testMouseCapture()){

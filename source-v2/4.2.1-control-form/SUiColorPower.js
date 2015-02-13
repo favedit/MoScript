@@ -1,9 +1,9 @@
 //==========================================================
-// <T>颜色编辑框。</T>
+// <T>颜色强度编辑框。</T>
 //
 // @class
 // @author maocy
-// @version 150201
+// @version 150213
 //==========================================================
 function SUiColorPower(){
    var o = this;
@@ -14,32 +14,14 @@ function SUiColorPower(){
    o.maxValue      = 4;
    //..........................................................
    // @method
-   o.setSlideValue = SUiColorPower_setSlideValue;
    o.setColorValue = SUiColorPower_setColorValue;
-   o.get           = SUiColorPower_get;
-   o.set           = SUiColorPower_set;
+   o.setSlideValue = SUiColorPower_setSlideValue;
+   o.setInputValue = SUiColorPower_setInputValue;
    // @method
-   o.changeInput   = SUiColorPower_changeInput;
+   o.convertGet    = SUiColorPower_convertGet;
+   o.convertSet    = SUiColorPower_convertSet;
+   o.convertSlide  = SUiColorPower_convertSlide;
    return o;
-}
-
-//==========================================================
-// <T>设置滑动内容。</T>
-//
-// @method
-// @param p:value:Number 内容
-//==========================================================
-function SUiColorPower_setSlideValue(p){
-   var o = this;
-   // 设置宽度
-   var w = o.hSlideForm.offsetWidth;
-   o.hSlideRowML.width = RInteger.toRange(p, 1, w);
-   // 设置颜色
-   var r = p / w * o.maxValue;
-   o.hInput.value = RFloat.format(r, 0, null, 2, null);
-   o.setColorValue(r);
-   // 刷新内容
-   o.control.refreshValue();
 }
 
 //==========================================================
@@ -50,53 +32,66 @@ function SUiColorPower_setSlideValue(p){
 //==========================================================
 function SUiColorPower_setColorValue(p){
    var o = this;
-   var pv = Math.min(parseInt(p * 255), 255);
-   var v = RHex.format(pv, 2);
-   // 设置颜色
-   o.hColorImage.style.backgroundColor = '#' + v + v + v;
+   var v = RInteger.toRange(parseInt(p * 255), 0, 255);
+   var s = RHex.format(v, 2);
+   o.hColorImage.style.backgroundColor = '#' + s + s + s;
 }
 
 //==========================================================
-// <T>设置内容。</T>
+// <T>设置滑动内容。</T>
 //
 // @method
 // @param p:value:Number 内容
 //==========================================================
-function SUiColorPower_get(){
+function SUiColorPower_setSlideValue(p){
    var o = this;
-   return RFloat.parse(o.hInput.value);
-}
-
-//==========================================================
-// <T>设置内容。</T>
-//
-// @method
-// @param p:value:Number 内容
-//==========================================================
-function SUiColorPower_set(p){
-   var o = this;
-   var pv = parseInt(p * 255);
-   // 设置滑动
-   var r = pv / 255;
-   var l = o.hSlideForm.offsetWidth;
-   var d = parseInt(l * r / o.maxValue);
-   o.hSlideRowML.width = Math.max(d, 1);
-   // 设置颜色
-   o.setColorValue(p);
-   // 设置数字
-   o.hInput.value = RFloat.format(p, 0, null, 2, null);
-}
-
-//==========================================================
-// <T>设置内容。</T>
-//
-// @method
-// @param p:value:Number 内容
-//==========================================================
-function SUiColorPower_changeInput(){
-   var o = this;
-   var v = Math.min(RFloat.parse(o.hInput.value), o.maxValue);
    var w = o.hSlideForm.offsetWidth;
-   o.setSlideValue(v * w);
-   //o.setColorValue(v);
+   var v = p / o.maxValue * w;
+   o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
+}
+
+//==========================================================
+// <T>设置输入内容。</T>
+//
+// @method
+// @param p:value:Number 内容
+//==========================================================
+function SUiColorPower_setInputValue(p){
+   var o = this;
+   var h = o.hInput;
+   var v = RFloat.toRange(p, o.minValue, o.maxValue);
+   var t = RFloat.format(v, 0, null, 2, null);
+   if(h.value != t){
+      h.value = t;
+   }
+}
+
+//==========================================================
+// <T>获得转换。</T>
+//
+// @method
+// @param p:value:Number 内容
+//==========================================================
+function SUiColorPower_convertGet(p){
+   return RFloat.parse(p);
+}
+
+//==========================================================
+// <T>设置转换。</T>
+//
+// @method
+// @param p:value:Number 内容
+//==========================================================
+function SUiColorPower_convertSet(p){
+   return p;
+}
+
+//==========================================================
+// <T>滑动转换。</T>
+//
+// @method
+// @param p:value:Number 内容
+//==========================================================
+function SUiColorPower_convertSlide(p){
+   return p * this.maxValue;
 }

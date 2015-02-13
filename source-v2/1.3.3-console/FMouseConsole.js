@@ -42,12 +42,8 @@ function FMouseConsole(o){
 function FMouseConsole_onMouseDown(p){
    var o = this;
    // 检查来源
-   var s = p.source;
+   var s = RHtml.searchLinker(p.hSource, MMouseCapture);
    if(!s){
-      return;
-   }
-   // 检查类型
-   if(!RClass.isClass(s, MMouseCapture)){
       return;
    }
    // 检查测试

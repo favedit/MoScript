@@ -41,6 +41,9 @@ var RHtml = new function RHtml(){
    // @method
    o.eventSource    = RHtml_eventSource;
    // @method
+   o.searchLinker   = RHtml_searchLinker;
+   o.searchObject   = RHtml_searchObject;
+   // @method
    o.free           = RHtml_free;
 
 
@@ -409,6 +412,46 @@ function RHtml_toHtml(p){
 //==========================================================
 function RHtml_eventSource(p){
    return p.srcElement ? p.srcElement : p.target;
+}
+
+//==========================================================
+// <T>查找关联对象。</T>
+//
+// @method
+// @param h:html:HtmlEvent 页面元素
+// @param c:class:Class 类对象
+// @return FObject 对象
+//==========================================================
+function RHtml_searchLinker(h, c){
+   while(h){
+      var f = h.__linker;
+      if(f){
+         if(RClass.isClass(f, c)){
+            return f;
+         }
+      }
+      h = h.parentElement;
+   }
+   return null;
+}
+
+//==========================================================
+// <T>查找关联对象。</T>
+//
+// @method
+// @param h:html:HtmlEvent 页面元素
+// @param n:name:String 属性名称
+// @return FObject 对象
+//==========================================================
+function RHtml_searchObject(h, n){
+   while(h){
+      var f = h[n];
+      if(f){
+         return f;
+      }
+      h = h.parentElement;
+   }
+   return null;
 }
 
 //==========================================================

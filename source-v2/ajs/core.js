@@ -1889,6 +1889,8 @@ var RHtml = new function RHtml(){
    o.toText         = RHtml_toText;
    o.toHtml         = RHtml_toHtml;
    o.eventSource    = RHtml_eventSource;
+   o.searchLinker   = RHtml_searchLinker;
+   o.searchObject   = RHtml_searchObject;
    o.free           = RHtml_free;
    o.offsetPosition = RHtml_offsetPosition;
    o.offsetX        = RHtml_offsetX;
@@ -2084,6 +2086,28 @@ function RHtml_toHtml(p){
 }
 function RHtml_eventSource(p){
    return p.srcElement ? p.srcElement : p.target;
+}
+function RHtml_searchLinker(h, c){
+   while(h){
+      var f = h.__linker;
+      if(f){
+         if(RClass.isClass(f, c)){
+            return f;
+         }
+      }
+      h = h.parentElement;
+   }
+   return null;
+}
+function RHtml_searchObject(h, n){
+   while(h){
+      var f = h[n];
+      if(f){
+         return f;
+      }
+      h = h.parentElement;
+   }
+   return null;
 }
 function RHtml_free(p){
 }

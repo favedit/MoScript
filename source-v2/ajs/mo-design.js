@@ -2108,7 +2108,6 @@ function FDsSceneCanvas_loadScene(p){
    s.addLoadListener(o, o.onSceneLoad);
    s.selectTechnique(c, FG3dGeneralTechnique);
    o._stage = o._activeScene = s;
-   RStage.register('stage3d', s);
 }
 function FDsSceneCanvas_dispose(){
    var o = this;
@@ -2645,7 +2644,7 @@ function FDsSceneMenuBar_onRefreshClick(p){
 function FDsSceneMenuBar_onSaveClick(p){
    var o = this;
    var t = o._workspace._activeScene;
-   alert(t);
+   debugger
    return;
    var rt = t._resource;
    var ts = rt.themes();

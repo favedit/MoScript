@@ -66,7 +66,7 @@ function FDsSceneMenuBar_onRefreshClick(p){
 function FDsSceneMenuBar_onSaveClick(p){
    var o = this;
    var t = o._workspace._activeScene;
-   alert(t);
+   debugger
    return;
    var rt = t._resource;
    var ts = rt.themes();
