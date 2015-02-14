@@ -212,37 +212,37 @@ function SG3dMaterialInfo_calculate(p){
    o.alphaLevel = p.alphaLevel;
    o.alphaMerge = p.alphaMerge;
    // 存储属性
-   o.ambientColor.assign(p.ambientColor);
+   o.ambientColor.assignPower(p.ambientColor);
    o.ambientShadow = p.ambientShadow;
-   o.diffuseColor.assign(p.diffuseColor);
+   o.diffuseColor.assignPower(p.diffuseColor);
    o.diffuseShadow = p.diffuseShadow;
-   o.diffuseViewColor.assign(p.diffuseViewColor);
+   o.diffuseViewColor.assignPower(p.diffuseViewColor);
    o.diffuseViewShadow = p.diffuseViewShadow;
-   o.specularColor.assign(p.specularColor);
+   o.specularColor.assignPower(p.specularColor);
    o.specularBase = p.specularBase;
    o.specularLevel = p.specularLevel;
    o.specularAverage = p.specularAverage;
    o.specularShadow = p.specularShadow;
-   o.specularViewColor.assign(p.specularViewColor);
+   o.specularViewColor.assignPower(p.specularViewColor);
    o.specularViewBase = p.specularViewBase;
    o.specularViewRate = p.specularViewRate;
    o.specularViewAverage = p.specularViewAverage;
    o.specularViewShadow = p.specularViewShadow;
-   o.reflectColor.assign(p.reflectColor);
+   o.reflectColor.assignPower(p.reflectColor);
    o.reflectMerge = RFloat.toRange(p.reflectMerge, 0, 2);
    o.reflectShadow = p.reflectShadow;
-   o.refractFrontColor.assign(p.refractFrontColor);
+   o.refractFrontColor.assignPower(p.refractFrontColor);
    o.refractFrontMerge = p.refractFrontMerge;
    o.refractFrontShadow = p.refractFrontShadow;
-   o.refractBackColor.assign(p.refractBackColor);
+   o.refractBackColor.assignPower(p.refractBackColor);
    o.refractBackMerge = p.refractBackMerge;
    o.refractBackShadow = p.refractBackShadow;
-   o.opacityColor.assign(p.opacityColor);
+   o.opacityColor.assignPower(p.opacityColor);
    o.opacityRate = p.opacityRate;
    o.opacityAlpha = p.optionAlpha;
    o.opacityDepth = p.optionDepth;
    o.opacityTransmittance = p.optionTransmittance;
-   o.emissiveColor.assign(p.emissiveColor);
+   o.emissiveColor.assignPower(p.emissiveColor);
 }
 
 //==========================================================

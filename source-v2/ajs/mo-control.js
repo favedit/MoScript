@@ -2315,42 +2315,6 @@ function MHorizontal_setVisible(p){
       RHtml.displaySet(h, p);
    }
 }
-function MListener(o){
-   o = RClass.inherits(this, o);
-   o._listeners      = null;
-   o.addListener     = MListener_addListener;
-   o.removeListener  = MListener_removeListener;
-   o.processListener = MListener_processListener;
-   return o;
-}
-function MListener_addListener(n, w, m){
-   var o = this;
-   var lss = o._listeners;
-   if(!lss){
-      lss = o._listeners = new Object();
-   }
-   var ls = lss[n];
-   if(!ls){
-      ls = lss[n] = new TListeners();
-   }
-   return ls.register(w, m);
-}
-function MListener_removeListener(n, w, m){
-   var o = this;
-   var lss = o._listeners;
-   var ls = lss[n];
-   return ls.unregister(w, m);
-}
-function MListener_processListener(n, p1, p2, p3, p4, p5){
-   var o = this;
-   var lss = o._listeners;
-   if(lss){
-      var ls = lss[n];
-      if(ls){
-         ls.process(p1, p2, p3, p4, p5);
-      }
-   }
-}
 function MListenerBlur(o){
    o = RClass.inherits(this, o, MListener);
    o.addBlurListener     = MListenerBlur_addBlurListener;
@@ -2434,18 +2398,6 @@ function MListenerLeave_addLeaveListener(w, m){
 }
 function MListenerLeave_processLeaveListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.Leave, p1, p2, p3, p4, p5);
-}
-function MListenerLoad(o){
-   o = RClass.inherits(this, o, MListener);
-   o.addLoadListener     = MListenerLoad_addLoadListener;
-   o.processLoadListener = MListenerLoad_processLoadListener;
-   return o;
-}
-function MListenerLoad_addLoadListener(w, m){
-   return this.addListener(EEvent.Load, w, m);
-}
-function MListenerLoad_processLoadListener(p1, p2, p3, p4, p5){
-   this.processListener(EEvent.Load, p1, p2, p3, p4, p5);
 }
 function MListenerSelected(o){
    o = RClass.inherits(this, o, MListener);

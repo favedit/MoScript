@@ -80,6 +80,7 @@ function FRd3BitmapConsole(o){
 }
 function FRd3BitmapConsole_construct(){
    var o = this;
+   o.__base.FConsole.construct.call(o);
    o._bitmaps = new TDictionary();
 }
 function FRd3BitmapConsole_bitmaps(){
@@ -95,15 +96,12 @@ function FRd3BitmapConsole_load(pc, pg, pt){
    RLogger.info(o, 'Load texture from bitmap. (url={1})', u);
    if(RString.toLower(pt) == 'environment'){
       t = RClass.create(FRd3TextureCube);
-      t.linkContext(pc);
-      t._name = pg;
-      t.load(u);
    }else{
       t = RClass.create(FRd3Texture);
-      t.linkContext(pc);
-      t._name = pg;
-      t.load(u);
    }
+   t._name = pg;
+   t.linkGraphicContext(pc);
+   t.load(u);
    o._bitmaps.set(pg, t);
    return t;
 }
@@ -1056,33 +1054,31 @@ function FRd3Stream_loadResource(p){
    b.upload(p._data, p._dataStride, p._dataCount);
 }
 function FRd3Texture(o){
-   o = RClass.inherits(this, o, FObject);
-   o._context    = null;
-   o._ready      = false;
-   o._image      = null;
-   o._texture    = null;
-   o.onLoad      = FRd3Texture_onLoad;
-   o.construct   = FRd3Texture_construct;
-   o.linkContext = FRd3Texture_linkContext;
-   o.image       = FRd3Texture_image;
-   o.texture     = FRd3Texture_texture;
-   o.testReady   = FRd3Texture_testReady;
-   o.load        = FRd3Texture_load;
-   o.dispose     = FRd3Texture_dispose;
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
+   o._ready    = false;
+   o._image    = null;
+   o._texture  = null;
+   o.onLoad    = FRd3Texture_onLoad;
+   o.construct = FRd3Texture_construct;
+   o.image     = FRd3Texture_image;
+   o.texture   = FRd3Texture_texture;
+   o.testReady = FRd3Texture_testReady;
+   o.load      = FRd3Texture_load;
+   o.dispose   = FRd3Texture_dispose;
    return o;
 }
 function FRd3Texture_onLoad(p){
    var o = this;
-   var t = o._texture = o._context.createFlatTexture();
-   t.upload(p.image());
+   var c = o._graphicContext;
+   var t = o._texture = c.createFlatTexture();
+   t.upload(o._image);
+   t.makeMipmap();
+   o._image = RObject.dispose(o._image);
    o._ready  = true;
 }
 function FRd3Texture_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-}
-function FRd3Texture_linkContext(p){
-   this._context = p;
 }
 function FRd3Texture_image(){
    return this._image;
@@ -1095,16 +1091,19 @@ function FRd3Texture_testReady(){
 }
 function FRd3Texture_load(u){
    var o = this;
+   if(o._image){
+      throw new TError('Loading image.');
+   }
    var g = o._image = RClass.create(FImage);
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u);
 }
 function FRd3Texture_dispose(){
    var o = this;
    o._context = null;
    o._ready = false;
-   o._image = null;
-   o._texture = null;
+   o._image = RObject.dispose(o._image);
+   o._texture = RObject.dispose(o._texture);
 }
 function FRd3TextureConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -1150,65 +1149,66 @@ function FRd3TextureConsole_load(pc, pt, pb){
 }
 function FRd3TextureCube(o){
    o = RClass.inherits(this, o, FRd3Texture);
-   o.imageX1 = null;
-   o.imageX2 = null;
-   o.imageY1 = null;
-   o.imageY2 = null;
-   o.imageZ1 = null;
-   o.imageZ2 = null;
-   o.onLoad      = FRd3TextureCube_onLoad;
-   o.load        = FRd3TextureCube_load;
+   o._imageX1 = null;
+   o._imageX2 = null;
+   o._imageY1 = null;
+   o._imageY2 = null;
+   o._imageZ1 = null;
+   o._imageZ2 = null;
+   o.onLoad   = FRd3TextureCube_onLoad;
+   o.load     = FRd3TextureCube_load;
    return o;
 }
 function FRd3TextureCube_onLoad(p){
    var o = this;
-   if(!o.imageX1.testReady()){
+   var c = o._graphicContext;
+   if(!o._imageX1.testReady()){
       return;
    }
-   if(!o.imageX2.testReady()){
+   if(!o._imageX2.testReady()){
       return;
    }
-   if(!o.imageY1.testReady()){
+   if(!o._imageY1.testReady()){
       return;
    }
-   if(!o.imageY2.testReady()){
+   if(!o._imageY2.testReady()){
       return;
    }
-   if(!o.imageZ1.testReady()){
+   if(!o._imageZ1.testReady()){
       return;
    }
-   if(!o.imageZ2.testReady()){
+   if(!o._imageZ2.testReady()){
       return;
    }
-   var t = o._texture = o._context.createCubeTexture();
-   t.upload(o.imageX1, o.imageX2, o.imageY1, o.imageY2, o.imageZ1, o.imageZ2);
+   var t = o._texture = c.createCubeTexture();
+   t.upload(o._imageX1, o._imageX2, o._imageY1, o._imageY2, o._imageZ1, o._imageZ2);
    o._ready  = true;
 }
 function FRd3TextureCube_load(u){
    var o = this;
-   var g = o.imageX1 = RClass.create(FImage);
+   var g = o._imageX1 = RClass.create(FImage);
    g._name = 'x1'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-x1");
-   var g = o.imageX2 = RClass.create(FImage);
+   var g = o._imageX2 = RClass.create(FImage);
    g._name = 'x2'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-x2");
-   var g = o.imageY1 = RClass.create(FImage);
+   var g = o._imageY1 = RClass.create(FImage);
    g._name = 'y1'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-y1");
-   var g = o.imageY2 = RClass.create(FImage);
+   var g = o._imageY2 = RClass.create(FImage);
    g._name = 'y2'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-y2");
-   var g = o.imageZ1 = RClass.create(FImage);
+   var g = o._imageZ1 = RClass.create(FImage);
    g._name = 'z1'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-z1");
-   var g = o.imageZ2 = RClass.create(FImage);
+   var g = o._imageZ2 = RClass.create(FImage);
    g._name = 'z2'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-z2");
 }
 function FRd3Track(o){

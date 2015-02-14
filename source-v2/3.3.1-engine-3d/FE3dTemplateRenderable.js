@@ -101,11 +101,11 @@ function FE3dTemplateRenderable_loadResource(p){
    o._model = RConsole.find(FRd3ModelConsole).load(o._context, p.modelGuid());
    //............................................................
    // 加载材质
-   var m = o._materialResource = p._activeMaterial._material;
-   var mi = o._material.info();
-   mi.assign(m.info());
-   o._effectName = mi.effectName;
-   var rs = m.textures();
+   var mr = o._materialResource = p._activeMaterial._material;
+   o._effectName = mr.info().effectName;
+   o._material.calculate(mr);
+   // 加载纹理集合
+   var rs = mr.textures();
    if(rs){
       var bc = RConsole.find(FRd3BitmapConsole)
       var c = rs.count();
@@ -125,10 +125,8 @@ function FE3dTemplateRenderable_loadResource(p){
 //==========================================================
 function FE3dTemplateRenderable_reloadResource(){
    var o = this;
-   // 加载材质
-   var m = o._materialResource;
-   var mi = o._material.info();
-   mi.assign(m.info());
+   // 计算材质
+   o._material.calculate(o._materialResource);
 }
 
 //==========================================================

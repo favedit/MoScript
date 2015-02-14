@@ -5669,6 +5669,7 @@ function SColor4(o){
    o.blue         = 0;
    o.alpha        = 1;
    o.assign       = SColor4_assign;
+   o.assignPower  = SColor4_assignPower;
    o.set          = SColor4_set;
    o.serialize    = SColor4_serialize;
    o.unserialize  = SColor4_unserialize;
@@ -5681,6 +5682,13 @@ function SColor4_assign(p){
    o.red = p.red;
    o.green = p.green;
    o.blue = p.blue;
+   o.alpha = p.alpha;
+}
+function SColor4_assignPower(p){
+   var o = this;
+   o.red = p.red * p.alpha;
+   o.green = p.green * p.alpha;
+   o.blue = p.blue * p.alpha;
    o.alpha = p.alpha;
 }
 function SColor4_set(r, g, b, a){
@@ -8720,50 +8728,54 @@ function FHttpConnection_send(p, d){
    return o.content();
 }
 function FImage(o){
-   o = RClass.inherits(this, o, FObject);
-   o._image    = null;
-   o._width    = 0;
-   o._height   = 0;
+   o = RClass.inherits(this, o, FObject, MListenerLoad);
+   o._size     = null;
    o._ready    = false;
-   o.lsnsLoad  = null;
+   o._hImage   = null;
    o.ohLoad    = FImage_ohLoad;
    o.construct = FImage_construct;
-   o.testReady = FImage_testReady;
+   o.size      = FImage_size;
    o.image     = FImage_image;
+   o.testReady = FImage_testReady;
    o.loadUrl   = FImage_loadUrl;
    o.dispose   = FImage_dispose;
    return o;
 }
+function FImage_ohLoad(){
+   var o = this.__linker;
+   var m = o._hImage;
+   o._size.set(m.naturalWidth, m.naturalHeight);
+   o._ready = true;
+   o.processLoadListener(o);
+}
 function FImage_construct(){
    var o = this;
-   o.lsnsLoad = new TListeners();
+   o.__base.FObject.construct.call(o);
+   o._size = new SSize2();
 }
-function FImage_ohLoad(){
-   var o = this._linker;
-   o._ready = true;
-   o._width = o._image.naturalWidth;
-   o._height = o._image.naturalHeight;
-   o.lsnsLoad.process(o);
+function FImage_size(){
+   return this._size;
+}
+function FImage_image(){
+   return this._hImage;
 }
 function FImage_testReady(){
    return this._ready;
 }
-function FImage_image(){
-   return this._image;
-}
-function FImage_loadUrl(u){
+function FImage_loadUrl(p){
    var o = this;
-   var g = o._image;
-   if(g == null){
-      g = o._image = new Image();
-      g._linker = o;
+   var g = o._hImage;
+   if(!g){
+      g = o._hImage = new Image();
+      g.__linker = o;
       g.onload = o.ohLoad;
    }
-   g.src = u;
+   g.src = p;
 }
 function FImage_dispose(){
    var o = this;
-   o._image = null;
+   o._size = RObject.dispose(o._size);
+   o._hImage = null;
    o.__base.FObject.dispose.call(o);
 }
 function FXmlConnection(o){
@@ -9193,6 +9205,54 @@ function MDataView_setFloat(p, v){
 function MDataView_setDouble(p, v){
    var o = this;
    o._viewer.setDouble(p, v, o._endianCd);
+}
+function MListener(o){
+   o = RClass.inherits(this, o);
+   o._listeners      = null;
+   o.addListener     = MListener_addListener;
+   o.removeListener  = MListener_removeListener;
+   o.processListener = MListener_processListener;
+   return o;
+}
+function MListener_addListener(n, w, m){
+   var o = this;
+   var lss = o._listeners;
+   if(!lss){
+      lss = o._listeners = new Object();
+   }
+   var ls = lss[n];
+   if(!ls){
+      ls = lss[n] = new TListeners();
+   }
+   return ls.register(w, m);
+}
+function MListener_removeListener(n, w, m){
+   var o = this;
+   var lss = o._listeners;
+   var ls = lss[n];
+   return ls.unregister(w, m);
+}
+function MListener_processListener(n, p1, p2, p3, p4, p5){
+   var o = this;
+   var lss = o._listeners;
+   if(lss){
+      var ls = lss[n];
+      if(ls){
+         ls.process(p1, p2, p3, p4, p5);
+      }
+   }
+}
+function MListenerLoad(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addLoadListener     = MListenerLoad_addLoadListener;
+   o.processLoadListener = MListenerLoad_processLoadListener;
+   return o;
+}
+function MListenerLoad_addLoadListener(w, m){
+   return this.addListener(EEvent.Load, w, m);
+}
+function MListenerLoad_processLoadListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Load, p1, p2, p3, p4, p5);
 }
 function MMouseCapture(o){
    o = RClass.inherits(this, o);
@@ -13567,6 +13627,8 @@ function FG3dBaseMaterial(o){
    o.construct  = FG3dBaseMaterial_construct;
    o.info       = FG3dBaseMaterial_info;
    o.assignInfo = FG3dBaseMaterial_assignInfo;
+   o.assign     = FG3dBaseMaterial_assign;
+   o.calculate  = FG3dBaseMaterial_calculate;
    return o;
 }
 function FG3dBaseMaterial_construct(){
@@ -13579,6 +13641,12 @@ function FG3dBaseMaterial_info(){
 }
 function FG3dBaseMaterial_assignInfo(p){
    this._info.assign(p);
+}
+function FG3dBaseMaterial_assign(p){
+   this._info.assign(p.info());
+}
+function FG3dBaseMaterial_calculate(p){
+   this._info.calculate(p.info());
 }
 function FG3dBone(o){
    o = RClass.inherits(this, o, FObject);
@@ -15072,31 +15140,31 @@ function SG3dEffectInfo_reset(){
 }
 function SG3dMaterialInfo(o){
    if(!o){o = this;}
-   o.effectName    = 'automatic';
-   o.transformName = null;
-   o.optionLight = null;
-   o.optionMerge = null;
-   o.optionSort = null;
-   o.sortLevel = null;
-   o.optionAlpha = null;
-   o.optionDepth = null;
-   o.optionCompare = null;
-   o.optionDouble = null;
-   o.optionShadow = null;
-   o.optionShadowSelf = null;
-   o.optionDynamic = null;
-   o.optionTransmittance = null;
-   o.optionOpacity = null;
-   o.coordRateWidth  = 1.0;
-   o.coordRateHeight = 1.0;
-   o.colorMin        = 0.0;
-   o.colorMax        = 1.0;
-   o.colorRate       = 1.0;
-   o.colorMerge      = 1.0;
-   o.alphaBase       = 1.0;
-   o.alphaRate       = 1.0;
-   o.alphaLevel      = 1.0;
-   o.alphaMerge      = 1.0;
+   o.effectName           = 'automatic';
+   o.transformName        = null;
+   o.optionLight          = null;
+   o.optionMerge          = null;
+   o.optionSort           = null;
+   o.sortLevel            = null;
+   o.optionAlpha          = null;
+   o.optionDepth          = null;
+   o.optionCompare        = null;
+   o.optionDouble         = null;
+   o.optionShadow         = null;
+   o.optionShadowSelf     = null;
+   o.optionDynamic        = null;
+   o.optionTransmittance  = null;
+   o.optionOpacity        = null;
+   o.coordRateWidth       = 1.0;
+   o.coordRateHeight      = 1.0;
+   o.colorMin             = 0.0;
+   o.colorMax             = 1.0;
+   o.colorRate            = 1.0;
+   o.colorMerge           = 1.0;
+   o.alphaBase            = 1.0;
+   o.alphaRate            = 1.0;
+   o.alphaLevel           = 1.0;
+   o.alphaMerge           = 1.0;
    o.ambientColor         = new SColor4();
    o.ambientShadow        = 1.0;
    o.diffuseColor         = new SColor4();
@@ -15126,8 +15194,9 @@ function SG3dMaterialInfo(o){
    o.opacityDepth         = 1.0;
    o.opacityTransmittance = 1.0;
    o.emissiveColor        = new SColor4();
-   o.assign = SG3dMaterialInfo_assign;
-   o.reset  = SG3dMaterialInfo_reset;
+   o.assign               = SG3dMaterialInfo_assign;
+   o.calculate            = SG3dMaterialInfo_calculate;
+   o.reset                = SG3dMaterialInfo_reset;
    o.reset();
    return o;
 }
@@ -15185,6 +15254,61 @@ function SG3dMaterialInfo_assign(p){
    o.opacityDepth = p.optionDepth;
    o.opacityTransmittance = p.optionTransmittance;
    o.emissiveColor.assign(p.emissiveColor);
+}
+function SG3dMaterialInfo_calculate(p){
+   var o = this;
+   o.effectName = p.effectName;
+   o.transformName = p.transformName;
+   o.optionLight = p.optionLight;
+   o.optionMerge = p.optionMerge;
+   o.optionDepth = p.optionDepth;
+   o.optionCompare = p.optionCompare;
+   o.optionAlpha = p.optionAlpha;
+   o.optionDouble = p.optionDouble;
+   o.optionOpacity = p.optionOpacity;
+   o.optionShadow = p.optionShadow;
+   o.optionShadowSelf = p.optionShadowSelf;
+   o.optionTransmittance = p.optionTransmittance;
+   o.sortLevel = p.sortLevel;
+   o.colorMin = p.colorMin;
+   o.colorMax = p.colorMax;
+   o.colorRate = p.colorRate;
+   o.colorMerge = p.colorMerge;
+   o.alphaBase = p.alphaBase;
+   o.alphaRate = p.alphaRate;
+   o.alphaLevel = p.alphaLevel;
+   o.alphaMerge = p.alphaMerge;
+   o.ambientColor.assignPower(p.ambientColor);
+   o.ambientShadow = p.ambientShadow;
+   o.diffuseColor.assignPower(p.diffuseColor);
+   o.diffuseShadow = p.diffuseShadow;
+   o.diffuseViewColor.assignPower(p.diffuseViewColor);
+   o.diffuseViewShadow = p.diffuseViewShadow;
+   o.specularColor.assignPower(p.specularColor);
+   o.specularBase = p.specularBase;
+   o.specularLevel = p.specularLevel;
+   o.specularAverage = p.specularAverage;
+   o.specularShadow = p.specularShadow;
+   o.specularViewColor.assignPower(p.specularViewColor);
+   o.specularViewBase = p.specularViewBase;
+   o.specularViewRate = p.specularViewRate;
+   o.specularViewAverage = p.specularViewAverage;
+   o.specularViewShadow = p.specularViewShadow;
+   o.reflectColor.assignPower(p.reflectColor);
+   o.reflectMerge = RFloat.toRange(p.reflectMerge, 0, 2);
+   o.reflectShadow = p.reflectShadow;
+   o.refractFrontColor.assignPower(p.refractFrontColor);
+   o.refractFrontMerge = p.refractFrontMerge;
+   o.refractFrontShadow = p.refractFrontShadow;
+   o.refractBackColor.assignPower(p.refractBackColor);
+   o.refractBackMerge = p.refractBackMerge;
+   o.refractBackShadow = p.refractBackShadow;
+   o.opacityColor.assignPower(p.opacityColor);
+   o.opacityRate = p.opacityRate;
+   o.opacityAlpha = p.optionAlpha;
+   o.opacityDepth = p.optionDepth;
+   o.opacityTransmittance = p.optionTransmittance;
+   o.emissiveColor.assignPower(p.emissiveColor);
 }
 function SG3dMaterialInfo_reset(){
    var o = this;
@@ -17560,10 +17684,10 @@ function FWglContext_checkError(c, m, p1){
 }
 function FWglCubeTexture(o){
    o = RClass.inherits(this, o, FG3dCubeTexture);
-   o._native = null;
-   o.setup   = FWglCubeTexture_setup;
-   o.link    = FWglCubeTexture_link;
-   o.upload  = FWglCubeTexture_upload;
+   o._native    = null;
+   o.setup      = FWglCubeTexture_setup;
+   o.makeMipmap = FWglCubeTexture_makeMipmap;
+   o.upload     = FWglCubeTexture_upload;
    return o;
 }
 function FWglCubeTexture_setup(){
@@ -17572,8 +17696,12 @@ function FWglCubeTexture_setup(){
    o.__base.FG3dCubeTexture.setup.call(o);
    o._native = g.createTexture();
 }
-function FWglCubeTexture_link(v){
-   this._texture = v;
+function FWglCubeTexture_makeMipmap(){
+   var o = this;
+   var c = o._graphicContext;
+   var g = c._native;
+   g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
+   g.generateMipmap(g.TEXTURE_CUBE_MAP);
 }
 function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    var o = this;
@@ -17586,27 +17714,16 @@ function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, y2.image());
    g.texImage2D(g.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z1.image());
    g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z2.image());
-   var r = c.checkError("texImage2D", "Upload cube image failure.");
-   o._statusLoad = r;
+   o._statusLoad = c.checkError("texImage2D", "Upload cube image failure.");
 }
 function FWglFlatTexture(o){
    o = RClass.inherits(this, o, FG3dFlatTexture);
-   o._native     = null;
-   o.onImageLoad = FWglFlatTexture_onImageLoad;
-   o.setup       = FWglFlatTexture_setup;
-   o.loadUrl     = FWglFlatTexture_loadUrl;
-   o.uploadData  = FWglFlatTexture_uploadData;
-   o.upload      = FWglFlatTexture_upload;
+   o._native    = null;
+   o.setup      = FWglFlatTexture_setup;
+   o.makeMipmap = FWglFlatTexture_makeMipmap;
+   o.uploadData = FWglFlatTexture_uploadData;
+   o.upload     = FWglFlatTexture_upload;
    return o;
-}
-function FWglFlatTexture_onImageLoad(v){
-   var o = this;
-   var c = o._graphicContext;
-   var g = c._native;
-   g.bindTexture(g.TEXTURE_2D, o._native);
-   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, v);
-   var r = c.checkError("texImage2D", "");
-   o._statusLoad = r;
 }
 function FWglFlatTexture_setup(){
    var o = this;
@@ -17614,11 +17731,12 @@ function FWglFlatTexture_setup(){
    o.__base.FG3dFlatTexture.setup.call(o);
    o._native = g.createTexture();
 }
-function FWglFlatTexture_loadUrl(p){
+function FWglFlatTexture_makeMipmap(){
    var o = this;
-   var r = new Image();
-   r.src = p;
-   r.onload = function(){o.onImageLoad(o);}
+   var c = o._graphicContext;
+   var g = c._native;
+   g.bindTexture(g.TEXTURE_2D, o._native);
+   g.generateMipmap(g.TEXTURE_2D);
 }
 function FWglFlatTexture_uploadData(d, w, h){
    var o = this;
@@ -17634,8 +17752,16 @@ function FWglFlatTexture_upload(p){
    var o = this;
    var c = o._graphicContext;
    var g = c._native;
+   var m = null;
+   if(p.constructor == Image){
+      m = p;
+   }else if(RClass.isClass(p, FImage)){
+      m = p.image();
+   }else{
+      throw new TError('Invalid image format.');
+   }
    g.bindTexture(g.TEXTURE_2D, o._native);
-   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, p);
+   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
    o._statusLoad = c.checkError("texImage2D", "Upload image failure.");
 }
 function FWglFragmentShader(o){
@@ -19615,8 +19741,7 @@ function FE3dSceneDisplayRenderable(o){
 }
 function FE3dSceneDisplayRenderable_loadMaterial(p){
    var o = this;
-   var pi = p.info();
-   o._material.info().assign(pi);
+   o._material.calculate(p);
 }
 function FE3dSceneLayer(o){
    o = RClass.inherits(this, o, FDisplayLayer);
@@ -20318,11 +20443,10 @@ function FE3dTemplateRenderable_loadResource(p){
    o._resource = p;
    o._matrix.assign(p.matrix());
    o._model = RConsole.find(FRd3ModelConsole).load(o._context, p.modelGuid());
-   var m = o._materialResource = p._activeMaterial._material;
-   var mi = o._material.info();
-   mi.assign(m.info());
-   o._effectName = mi.effectName;
-   var rs = m.textures();
+   var mr = o._materialResource = p._activeMaterial._material;
+   o._effectName = mr.info().effectName;
+   o._material.calculate(mr);
+   var rs = mr.textures();
    if(rs){
       var bc = RConsole.find(FRd3BitmapConsole)
       var c = rs.count();
@@ -20336,9 +20460,7 @@ function FE3dTemplateRenderable_loadResource(p){
 }
 function FE3dTemplateRenderable_reloadResource(){
    var o = this;
-   var m = o._materialResource;
-   var mi = o._material.info();
-   mi.assign(m.info());
+   o._material.calculate(o._materialResource);
 }
 function FE3dTemplateRenderable_load(){
    var o = this;
@@ -22153,6 +22275,7 @@ function FRd3BitmapConsole(o){
 }
 function FRd3BitmapConsole_construct(){
    var o = this;
+   o.__base.FConsole.construct.call(o);
    o._bitmaps = new TDictionary();
 }
 function FRd3BitmapConsole_bitmaps(){
@@ -22168,15 +22291,12 @@ function FRd3BitmapConsole_load(pc, pg, pt){
    RLogger.info(o, 'Load texture from bitmap. (url={1})', u);
    if(RString.toLower(pt) == 'environment'){
       t = RClass.create(FRd3TextureCube);
-      t.linkContext(pc);
-      t._name = pg;
-      t.load(u);
    }else{
       t = RClass.create(FRd3Texture);
-      t.linkContext(pc);
-      t._name = pg;
-      t.load(u);
    }
+   t._name = pg;
+   t.linkGraphicContext(pc);
+   t.load(u);
    o._bitmaps.set(pg, t);
    return t;
 }
@@ -23129,33 +23249,31 @@ function FRd3Stream_loadResource(p){
    b.upload(p._data, p._dataStride, p._dataCount);
 }
 function FRd3Texture(o){
-   o = RClass.inherits(this, o, FObject);
-   o._context    = null;
-   o._ready      = false;
-   o._image      = null;
-   o._texture    = null;
-   o.onLoad      = FRd3Texture_onLoad;
-   o.construct   = FRd3Texture_construct;
-   o.linkContext = FRd3Texture_linkContext;
-   o.image       = FRd3Texture_image;
-   o.texture     = FRd3Texture_texture;
-   o.testReady   = FRd3Texture_testReady;
-   o.load        = FRd3Texture_load;
-   o.dispose     = FRd3Texture_dispose;
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
+   o._ready    = false;
+   o._image    = null;
+   o._texture  = null;
+   o.onLoad    = FRd3Texture_onLoad;
+   o.construct = FRd3Texture_construct;
+   o.image     = FRd3Texture_image;
+   o.texture   = FRd3Texture_texture;
+   o.testReady = FRd3Texture_testReady;
+   o.load      = FRd3Texture_load;
+   o.dispose   = FRd3Texture_dispose;
    return o;
 }
 function FRd3Texture_onLoad(p){
    var o = this;
-   var t = o._texture = o._context.createFlatTexture();
-   t.upload(p.image());
+   var c = o._graphicContext;
+   var t = o._texture = c.createFlatTexture();
+   t.upload(o._image);
+   t.makeMipmap();
+   o._image = RObject.dispose(o._image);
    o._ready  = true;
 }
 function FRd3Texture_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-}
-function FRd3Texture_linkContext(p){
-   this._context = p;
 }
 function FRd3Texture_image(){
    return this._image;
@@ -23168,16 +23286,19 @@ function FRd3Texture_testReady(){
 }
 function FRd3Texture_load(u){
    var o = this;
+   if(o._image){
+      throw new TError('Loading image.');
+   }
    var g = o._image = RClass.create(FImage);
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u);
 }
 function FRd3Texture_dispose(){
    var o = this;
    o._context = null;
    o._ready = false;
-   o._image = null;
-   o._texture = null;
+   o._image = RObject.dispose(o._image);
+   o._texture = RObject.dispose(o._texture);
 }
 function FRd3TextureConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -23223,65 +23344,66 @@ function FRd3TextureConsole_load(pc, pt, pb){
 }
 function FRd3TextureCube(o){
    o = RClass.inherits(this, o, FRd3Texture);
-   o.imageX1 = null;
-   o.imageX2 = null;
-   o.imageY1 = null;
-   o.imageY2 = null;
-   o.imageZ1 = null;
-   o.imageZ2 = null;
-   o.onLoad      = FRd3TextureCube_onLoad;
-   o.load        = FRd3TextureCube_load;
+   o._imageX1 = null;
+   o._imageX2 = null;
+   o._imageY1 = null;
+   o._imageY2 = null;
+   o._imageZ1 = null;
+   o._imageZ2 = null;
+   o.onLoad   = FRd3TextureCube_onLoad;
+   o.load     = FRd3TextureCube_load;
    return o;
 }
 function FRd3TextureCube_onLoad(p){
    var o = this;
-   if(!o.imageX1.testReady()){
+   var c = o._graphicContext;
+   if(!o._imageX1.testReady()){
       return;
    }
-   if(!o.imageX2.testReady()){
+   if(!o._imageX2.testReady()){
       return;
    }
-   if(!o.imageY1.testReady()){
+   if(!o._imageY1.testReady()){
       return;
    }
-   if(!o.imageY2.testReady()){
+   if(!o._imageY2.testReady()){
       return;
    }
-   if(!o.imageZ1.testReady()){
+   if(!o._imageZ1.testReady()){
       return;
    }
-   if(!o.imageZ2.testReady()){
+   if(!o._imageZ2.testReady()){
       return;
    }
-   var t = o._texture = o._context.createCubeTexture();
-   t.upload(o.imageX1, o.imageX2, o.imageY1, o.imageY2, o.imageZ1, o.imageZ2);
+   var t = o._texture = c.createCubeTexture();
+   t.upload(o._imageX1, o._imageX2, o._imageY1, o._imageY2, o._imageZ1, o._imageZ2);
    o._ready  = true;
 }
 function FRd3TextureCube_load(u){
    var o = this;
-   var g = o.imageX1 = RClass.create(FImage);
+   var g = o._imageX1 = RClass.create(FImage);
    g._name = 'x1'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-x1");
-   var g = o.imageX2 = RClass.create(FImage);
+   var g = o._imageX2 = RClass.create(FImage);
    g._name = 'x2'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-x2");
-   var g = o.imageY1 = RClass.create(FImage);
+   var g = o._imageY1 = RClass.create(FImage);
    g._name = 'y1'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-y1");
-   var g = o.imageY2 = RClass.create(FImage);
+   var g = o._imageY2 = RClass.create(FImage);
    g._name = 'y2'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-y2");
-   var g = o.imageZ1 = RClass.create(FImage);
+   var g = o._imageZ1 = RClass.create(FImage);
    g._name = 'z1'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-z1");
-   var g = o.imageZ2 = RClass.create(FImage);
+   var g = o._imageZ2 = RClass.create(FImage);
    g._name = 'z2'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-z2");
 }
 function FRd3Track(o){
@@ -23549,6 +23671,8 @@ function FG3dBaseMaterial(o){
    o.construct  = FG3dBaseMaterial_construct;
    o.info       = FG3dBaseMaterial_info;
    o.assignInfo = FG3dBaseMaterial_assignInfo;
+   o.assign     = FG3dBaseMaterial_assign;
+   o.calculate  = FG3dBaseMaterial_calculate;
    return o;
 }
 function FG3dBaseMaterial_construct(){
@@ -23561,6 +23685,12 @@ function FG3dBaseMaterial_info(){
 }
 function FG3dBaseMaterial_assignInfo(p){
    this._info.assign(p);
+}
+function FG3dBaseMaterial_assign(p){
+   this._info.assign(p.info());
+}
+function FG3dBaseMaterial_calculate(p){
+   this._info.calculate(p.info());
 }
 function FG3dBone(o){
    o = RClass.inherits(this, o, FObject);
@@ -25054,31 +25184,31 @@ function SG3dEffectInfo_reset(){
 }
 function SG3dMaterialInfo(o){
    if(!o){o = this;}
-   o.effectName    = 'automatic';
-   o.transformName = null;
-   o.optionLight = null;
-   o.optionMerge = null;
-   o.optionSort = null;
-   o.sortLevel = null;
-   o.optionAlpha = null;
-   o.optionDepth = null;
-   o.optionCompare = null;
-   o.optionDouble = null;
-   o.optionShadow = null;
-   o.optionShadowSelf = null;
-   o.optionDynamic = null;
-   o.optionTransmittance = null;
-   o.optionOpacity = null;
-   o.coordRateWidth  = 1.0;
-   o.coordRateHeight = 1.0;
-   o.colorMin        = 0.0;
-   o.colorMax        = 1.0;
-   o.colorRate       = 1.0;
-   o.colorMerge      = 1.0;
-   o.alphaBase       = 1.0;
-   o.alphaRate       = 1.0;
-   o.alphaLevel      = 1.0;
-   o.alphaMerge      = 1.0;
+   o.effectName           = 'automatic';
+   o.transformName        = null;
+   o.optionLight          = null;
+   o.optionMerge          = null;
+   o.optionSort           = null;
+   o.sortLevel            = null;
+   o.optionAlpha          = null;
+   o.optionDepth          = null;
+   o.optionCompare        = null;
+   o.optionDouble         = null;
+   o.optionShadow         = null;
+   o.optionShadowSelf     = null;
+   o.optionDynamic        = null;
+   o.optionTransmittance  = null;
+   o.optionOpacity        = null;
+   o.coordRateWidth       = 1.0;
+   o.coordRateHeight      = 1.0;
+   o.colorMin             = 0.0;
+   o.colorMax             = 1.0;
+   o.colorRate            = 1.0;
+   o.colorMerge           = 1.0;
+   o.alphaBase            = 1.0;
+   o.alphaRate            = 1.0;
+   o.alphaLevel           = 1.0;
+   o.alphaMerge           = 1.0;
    o.ambientColor         = new SColor4();
    o.ambientShadow        = 1.0;
    o.diffuseColor         = new SColor4();
@@ -25108,8 +25238,9 @@ function SG3dMaterialInfo(o){
    o.opacityDepth         = 1.0;
    o.opacityTransmittance = 1.0;
    o.emissiveColor        = new SColor4();
-   o.assign = SG3dMaterialInfo_assign;
-   o.reset  = SG3dMaterialInfo_reset;
+   o.assign               = SG3dMaterialInfo_assign;
+   o.calculate            = SG3dMaterialInfo_calculate;
+   o.reset                = SG3dMaterialInfo_reset;
    o.reset();
    return o;
 }
@@ -25167,6 +25298,61 @@ function SG3dMaterialInfo_assign(p){
    o.opacityDepth = p.optionDepth;
    o.opacityTransmittance = p.optionTransmittance;
    o.emissiveColor.assign(p.emissiveColor);
+}
+function SG3dMaterialInfo_calculate(p){
+   var o = this;
+   o.effectName = p.effectName;
+   o.transformName = p.transformName;
+   o.optionLight = p.optionLight;
+   o.optionMerge = p.optionMerge;
+   o.optionDepth = p.optionDepth;
+   o.optionCompare = p.optionCompare;
+   o.optionAlpha = p.optionAlpha;
+   o.optionDouble = p.optionDouble;
+   o.optionOpacity = p.optionOpacity;
+   o.optionShadow = p.optionShadow;
+   o.optionShadowSelf = p.optionShadowSelf;
+   o.optionTransmittance = p.optionTransmittance;
+   o.sortLevel = p.sortLevel;
+   o.colorMin = p.colorMin;
+   o.colorMax = p.colorMax;
+   o.colorRate = p.colorRate;
+   o.colorMerge = p.colorMerge;
+   o.alphaBase = p.alphaBase;
+   o.alphaRate = p.alphaRate;
+   o.alphaLevel = p.alphaLevel;
+   o.alphaMerge = p.alphaMerge;
+   o.ambientColor.assignPower(p.ambientColor);
+   o.ambientShadow = p.ambientShadow;
+   o.diffuseColor.assignPower(p.diffuseColor);
+   o.diffuseShadow = p.diffuseShadow;
+   o.diffuseViewColor.assignPower(p.diffuseViewColor);
+   o.diffuseViewShadow = p.diffuseViewShadow;
+   o.specularColor.assignPower(p.specularColor);
+   o.specularBase = p.specularBase;
+   o.specularLevel = p.specularLevel;
+   o.specularAverage = p.specularAverage;
+   o.specularShadow = p.specularShadow;
+   o.specularViewColor.assignPower(p.specularViewColor);
+   o.specularViewBase = p.specularViewBase;
+   o.specularViewRate = p.specularViewRate;
+   o.specularViewAverage = p.specularViewAverage;
+   o.specularViewShadow = p.specularViewShadow;
+   o.reflectColor.assignPower(p.reflectColor);
+   o.reflectMerge = RFloat.toRange(p.reflectMerge, 0, 2);
+   o.reflectShadow = p.reflectShadow;
+   o.refractFrontColor.assignPower(p.refractFrontColor);
+   o.refractFrontMerge = p.refractFrontMerge;
+   o.refractFrontShadow = p.refractFrontShadow;
+   o.refractBackColor.assignPower(p.refractBackColor);
+   o.refractBackMerge = p.refractBackMerge;
+   o.refractBackShadow = p.refractBackShadow;
+   o.opacityColor.assignPower(p.opacityColor);
+   o.opacityRate = p.opacityRate;
+   o.opacityAlpha = p.optionAlpha;
+   o.opacityDepth = p.optionDepth;
+   o.opacityTransmittance = p.optionTransmittance;
+   o.emissiveColor.assignPower(p.emissiveColor);
 }
 function SG3dMaterialInfo_reset(){
    var o = this;
@@ -27542,10 +27728,10 @@ function FWglContext_checkError(c, m, p1){
 }
 function FWglCubeTexture(o){
    o = RClass.inherits(this, o, FG3dCubeTexture);
-   o._native = null;
-   o.setup   = FWglCubeTexture_setup;
-   o.link    = FWglCubeTexture_link;
-   o.upload  = FWglCubeTexture_upload;
+   o._native    = null;
+   o.setup      = FWglCubeTexture_setup;
+   o.makeMipmap = FWglCubeTexture_makeMipmap;
+   o.upload     = FWglCubeTexture_upload;
    return o;
 }
 function FWglCubeTexture_setup(){
@@ -27554,8 +27740,12 @@ function FWglCubeTexture_setup(){
    o.__base.FG3dCubeTexture.setup.call(o);
    o._native = g.createTexture();
 }
-function FWglCubeTexture_link(v){
-   this._texture = v;
+function FWglCubeTexture_makeMipmap(){
+   var o = this;
+   var c = o._graphicContext;
+   var g = c._native;
+   g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
+   g.generateMipmap(g.TEXTURE_CUBE_MAP);
 }
 function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    var o = this;
@@ -27568,27 +27758,16 @@ function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, y2.image());
    g.texImage2D(g.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z1.image());
    g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z2.image());
-   var r = c.checkError("texImage2D", "Upload cube image failure.");
-   o._statusLoad = r;
+   o._statusLoad = c.checkError("texImage2D", "Upload cube image failure.");
 }
 function FWglFlatTexture(o){
    o = RClass.inherits(this, o, FG3dFlatTexture);
-   o._native     = null;
-   o.onImageLoad = FWglFlatTexture_onImageLoad;
-   o.setup       = FWglFlatTexture_setup;
-   o.loadUrl     = FWglFlatTexture_loadUrl;
-   o.uploadData  = FWglFlatTexture_uploadData;
-   o.upload      = FWglFlatTexture_upload;
+   o._native    = null;
+   o.setup      = FWglFlatTexture_setup;
+   o.makeMipmap = FWglFlatTexture_makeMipmap;
+   o.uploadData = FWglFlatTexture_uploadData;
+   o.upload     = FWglFlatTexture_upload;
    return o;
-}
-function FWglFlatTexture_onImageLoad(v){
-   var o = this;
-   var c = o._graphicContext;
-   var g = c._native;
-   g.bindTexture(g.TEXTURE_2D, o._native);
-   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, v);
-   var r = c.checkError("texImage2D", "");
-   o._statusLoad = r;
 }
 function FWglFlatTexture_setup(){
    var o = this;
@@ -27596,11 +27775,12 @@ function FWglFlatTexture_setup(){
    o.__base.FG3dFlatTexture.setup.call(o);
    o._native = g.createTexture();
 }
-function FWglFlatTexture_loadUrl(p){
+function FWglFlatTexture_makeMipmap(){
    var o = this;
-   var r = new Image();
-   r.src = p;
-   r.onload = function(){o.onImageLoad(o);}
+   var c = o._graphicContext;
+   var g = c._native;
+   g.bindTexture(g.TEXTURE_2D, o._native);
+   g.generateMipmap(g.TEXTURE_2D);
 }
 function FWglFlatTexture_uploadData(d, w, h){
    var o = this;
@@ -27616,8 +27796,16 @@ function FWglFlatTexture_upload(p){
    var o = this;
    var c = o._graphicContext;
    var g = c._native;
+   var m = null;
+   if(p.constructor == Image){
+      m = p;
+   }else if(RClass.isClass(p, FImage)){
+      m = p.image();
+   }else{
+      throw new TError('Invalid image format.');
+   }
    g.bindTexture(g.TEXTURE_2D, o._native);
-   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, p);
+   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
    o._statusLoad = c.checkError("texImage2D", "Upload image failure.");
 }
 function FWglFragmentShader(o){
@@ -30449,42 +30637,6 @@ function MHorizontal_setVisible(p){
       RHtml.displaySet(h, p);
    }
 }
-function MListener(o){
-   o = RClass.inherits(this, o);
-   o._listeners      = null;
-   o.addListener     = MListener_addListener;
-   o.removeListener  = MListener_removeListener;
-   o.processListener = MListener_processListener;
-   return o;
-}
-function MListener_addListener(n, w, m){
-   var o = this;
-   var lss = o._listeners;
-   if(!lss){
-      lss = o._listeners = new Object();
-   }
-   var ls = lss[n];
-   if(!ls){
-      ls = lss[n] = new TListeners();
-   }
-   return ls.register(w, m);
-}
-function MListener_removeListener(n, w, m){
-   var o = this;
-   var lss = o._listeners;
-   var ls = lss[n];
-   return ls.unregister(w, m);
-}
-function MListener_processListener(n, p1, p2, p3, p4, p5){
-   var o = this;
-   var lss = o._listeners;
-   if(lss){
-      var ls = lss[n];
-      if(ls){
-         ls.process(p1, p2, p3, p4, p5);
-      }
-   }
-}
 function MListenerBlur(o){
    o = RClass.inherits(this, o, MListener);
    o.addBlurListener     = MListenerBlur_addBlurListener;
@@ -30568,18 +30720,6 @@ function MListenerLeave_addLeaveListener(w, m){
 }
 function MListenerLeave_processLeaveListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.Leave, p1, p2, p3, p4, p5);
-}
-function MListenerLoad(o){
-   o = RClass.inherits(this, o, MListener);
-   o.addLoadListener     = MListenerLoad_addLoadListener;
-   o.processLoadListener = MListenerLoad_processLoadListener;
-   return o;
-}
-function MListenerLoad_addLoadListener(w, m){
-   return this.addListener(EEvent.Load, w, m);
-}
-function MListenerLoad_processLoadListener(p1, p2, p3, p4, p5){
-   this.processListener(EEvent.Load, p1, p2, p3, p4, p5);
 }
 function MListenerSelected(o){
    o = RClass.inherits(this, o, MListener);
@@ -47609,7 +47749,6 @@ function FDsSceneMaterialFrame_onDataChanged(p){
    mi.reflectMerge = v;
    var v = o._controlEmissiveColor.get();
    mi.emissiveColor.assign(v);
-   debugger
    var d = o._material._display;
    d.reloadResource();
 }

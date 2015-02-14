@@ -19,7 +19,6 @@ function FE3dSceneDisplayRenderable(o){
 //==========================================================
 function FE3dSceneDisplayRenderable_loadMaterial(p){
    var o = this;
-   // 设置资源
-   var pi = p.info();
-   o._material.info().assign(pi);
+   // 设置材质
+   o._material.calculate(p);
 }

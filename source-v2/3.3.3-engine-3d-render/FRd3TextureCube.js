@@ -7,17 +7,18 @@
 function FRd3TextureCube(o){
    o = RClass.inherits(this, o, FRd3Texture);
    //..........................................................
-   o.imageX1 = null;
-   o.imageX2 = null;
-   o.imageY1 = null;
-   o.imageY2 = null;
-   o.imageZ1 = null;
-   o.imageZ2 = null;
+   // @attribute
+   o._imageX1 = null;
+   o._imageX2 = null;
+   o._imageY1 = null;
+   o._imageY2 = null;
+   o._imageZ1 = null;
+   o._imageZ2 = null;
    //..........................................................
-   o.onLoad      = FRd3TextureCube_onLoad;
+   o.onLoad   = FRd3TextureCube_onLoad;
    //..........................................................
    // @method
-   o.load        = FRd3TextureCube_load;
+   o.load     = FRd3TextureCube_load;
    return o;
 }
 
@@ -29,27 +30,29 @@ function FRd3TextureCube(o){
 //==========================================================
 function FRd3TextureCube_onLoad(p){
    var o = this;
-   if(!o.imageX1.testReady()){
+   var c = o._graphicContext;
+   // 测试准备处理
+   if(!o._imageX1.testReady()){
       return;
    }
-   if(!o.imageX2.testReady()){
+   if(!o._imageX2.testReady()){
       return;
    }
-   if(!o.imageY1.testReady()){
+   if(!o._imageY1.testReady()){
       return;
    }
-   if(!o.imageY2.testReady()){
+   if(!o._imageY2.testReady()){
       return;
    }
-   if(!o.imageZ1.testReady()){
+   if(!o._imageZ1.testReady()){
       return;
    }
-   if(!o.imageZ2.testReady()){
+   if(!o._imageZ2.testReady()){
       return;
    }
    // 创建纹理
-   var t = o._texture = o._context.createCubeTexture();
-   t.upload(o.imageX1, o.imageX2, o.imageY1, o.imageY2, o.imageZ1, o.imageZ2);
+   var t = o._texture = c.createCubeTexture();
+   t.upload(o._imageX1, o._imageX2, o._imageY1, o._imageY2, o._imageZ1, o._imageZ2);
    // 加载完成
    o._ready  = true;
 }
@@ -63,33 +66,33 @@ function FRd3TextureCube_onLoad(p){
 function FRd3TextureCube_load(u){
    var o = this;
    // 加载图X1
-   var g = o.imageX1 = RClass.create(FImage);
+   var g = o._imageX1 = RClass.create(FImage);
    g._name = 'x1'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-x1");
    // 加载图X2
-   var g = o.imageX2 = RClass.create(FImage);
+   var g = o._imageX2 = RClass.create(FImage);
    g._name = 'x2'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-x2");
    // 加载图Y1
-   var g = o.imageY1 = RClass.create(FImage);
+   var g = o._imageY1 = RClass.create(FImage);
    g._name = 'y1'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-y1");
    // 加载图Y2
-   var g = o.imageY2 = RClass.create(FImage);
+   var g = o._imageY2 = RClass.create(FImage);
    g._name = 'y2'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-y2");
    // 加载图Z1
-   var g = o.imageZ1 = RClass.create(FImage);
+   var g = o._imageZ1 = RClass.create(FImage);
    g._name = 'z1'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-z1");
    // 加载图Z2
-   var g = o.imageZ2 = RClass.create(FImage);
+   var g = o._imageZ2 = RClass.create(FImage);
    g._name = 'z2'
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u + "-z2");
 }

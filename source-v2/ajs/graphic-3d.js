@@ -81,6 +81,8 @@ function FG3dBaseMaterial(o){
    o.construct  = FG3dBaseMaterial_construct;
    o.info       = FG3dBaseMaterial_info;
    o.assignInfo = FG3dBaseMaterial_assignInfo;
+   o.assign     = FG3dBaseMaterial_assign;
+   o.calculate  = FG3dBaseMaterial_calculate;
    return o;
 }
 function FG3dBaseMaterial_construct(){
@@ -93,6 +95,12 @@ function FG3dBaseMaterial_info(){
 }
 function FG3dBaseMaterial_assignInfo(p){
    this._info.assign(p);
+}
+function FG3dBaseMaterial_assign(p){
+   this._info.assign(p.info());
+}
+function FG3dBaseMaterial_calculate(p){
+   this._info.calculate(p.info());
 }
 function FG3dBone(o){
    o = RClass.inherits(this, o, FObject);
@@ -1586,31 +1594,31 @@ function SG3dEffectInfo_reset(){
 }
 function SG3dMaterialInfo(o){
    if(!o){o = this;}
-   o.effectName    = 'automatic';
-   o.transformName = null;
-   o.optionLight = null;
-   o.optionMerge = null;
-   o.optionSort = null;
-   o.sortLevel = null;
-   o.optionAlpha = null;
-   o.optionDepth = null;
-   o.optionCompare = null;
-   o.optionDouble = null;
-   o.optionShadow = null;
-   o.optionShadowSelf = null;
-   o.optionDynamic = null;
-   o.optionTransmittance = null;
-   o.optionOpacity = null;
-   o.coordRateWidth  = 1.0;
-   o.coordRateHeight = 1.0;
-   o.colorMin        = 0.0;
-   o.colorMax        = 1.0;
-   o.colorRate       = 1.0;
-   o.colorMerge      = 1.0;
-   o.alphaBase       = 1.0;
-   o.alphaRate       = 1.0;
-   o.alphaLevel      = 1.0;
-   o.alphaMerge      = 1.0;
+   o.effectName           = 'automatic';
+   o.transformName        = null;
+   o.optionLight          = null;
+   o.optionMerge          = null;
+   o.optionSort           = null;
+   o.sortLevel            = null;
+   o.optionAlpha          = null;
+   o.optionDepth          = null;
+   o.optionCompare        = null;
+   o.optionDouble         = null;
+   o.optionShadow         = null;
+   o.optionShadowSelf     = null;
+   o.optionDynamic        = null;
+   o.optionTransmittance  = null;
+   o.optionOpacity        = null;
+   o.coordRateWidth       = 1.0;
+   o.coordRateHeight      = 1.0;
+   o.colorMin             = 0.0;
+   o.colorMax             = 1.0;
+   o.colorRate            = 1.0;
+   o.colorMerge           = 1.0;
+   o.alphaBase            = 1.0;
+   o.alphaRate            = 1.0;
+   o.alphaLevel           = 1.0;
+   o.alphaMerge           = 1.0;
    o.ambientColor         = new SColor4();
    o.ambientShadow        = 1.0;
    o.diffuseColor         = new SColor4();
@@ -1640,8 +1648,9 @@ function SG3dMaterialInfo(o){
    o.opacityDepth         = 1.0;
    o.opacityTransmittance = 1.0;
    o.emissiveColor        = new SColor4();
-   o.assign = SG3dMaterialInfo_assign;
-   o.reset  = SG3dMaterialInfo_reset;
+   o.assign               = SG3dMaterialInfo_assign;
+   o.calculate            = SG3dMaterialInfo_calculate;
+   o.reset                = SG3dMaterialInfo_reset;
    o.reset();
    return o;
 }
@@ -1699,6 +1708,61 @@ function SG3dMaterialInfo_assign(p){
    o.opacityDepth = p.optionDepth;
    o.opacityTransmittance = p.optionTransmittance;
    o.emissiveColor.assign(p.emissiveColor);
+}
+function SG3dMaterialInfo_calculate(p){
+   var o = this;
+   o.effectName = p.effectName;
+   o.transformName = p.transformName;
+   o.optionLight = p.optionLight;
+   o.optionMerge = p.optionMerge;
+   o.optionDepth = p.optionDepth;
+   o.optionCompare = p.optionCompare;
+   o.optionAlpha = p.optionAlpha;
+   o.optionDouble = p.optionDouble;
+   o.optionOpacity = p.optionOpacity;
+   o.optionShadow = p.optionShadow;
+   o.optionShadowSelf = p.optionShadowSelf;
+   o.optionTransmittance = p.optionTransmittance;
+   o.sortLevel = p.sortLevel;
+   o.colorMin = p.colorMin;
+   o.colorMax = p.colorMax;
+   o.colorRate = p.colorRate;
+   o.colorMerge = p.colorMerge;
+   o.alphaBase = p.alphaBase;
+   o.alphaRate = p.alphaRate;
+   o.alphaLevel = p.alphaLevel;
+   o.alphaMerge = p.alphaMerge;
+   o.ambientColor.assignPower(p.ambientColor);
+   o.ambientShadow = p.ambientShadow;
+   o.diffuseColor.assignPower(p.diffuseColor);
+   o.diffuseShadow = p.diffuseShadow;
+   o.diffuseViewColor.assignPower(p.diffuseViewColor);
+   o.diffuseViewShadow = p.diffuseViewShadow;
+   o.specularColor.assignPower(p.specularColor);
+   o.specularBase = p.specularBase;
+   o.specularLevel = p.specularLevel;
+   o.specularAverage = p.specularAverage;
+   o.specularShadow = p.specularShadow;
+   o.specularViewColor.assignPower(p.specularViewColor);
+   o.specularViewBase = p.specularViewBase;
+   o.specularViewRate = p.specularViewRate;
+   o.specularViewAverage = p.specularViewAverage;
+   o.specularViewShadow = p.specularViewShadow;
+   o.reflectColor.assignPower(p.reflectColor);
+   o.reflectMerge = RFloat.toRange(p.reflectMerge, 0, 2);
+   o.reflectShadow = p.reflectShadow;
+   o.refractFrontColor.assignPower(p.refractFrontColor);
+   o.refractFrontMerge = p.refractFrontMerge;
+   o.refractFrontShadow = p.refractFrontShadow;
+   o.refractBackColor.assignPower(p.refractBackColor);
+   o.refractBackMerge = p.refractBackMerge;
+   o.refractBackShadow = p.refractBackShadow;
+   o.opacityColor.assignPower(p.opacityColor);
+   o.opacityRate = p.opacityRate;
+   o.opacityAlpha = p.optionAlpha;
+   o.opacityDepth = p.optionDepth;
+   o.opacityTransmittance = p.optionTransmittance;
+   o.emissiveColor.assignPower(p.emissiveColor);
 }
 function SG3dMaterialInfo_reset(){
    var o = this;

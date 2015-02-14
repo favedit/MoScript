@@ -15,6 +15,7 @@ function FRd3BitmapConsole(o){
    //..........................................................
    // @method
    o.construct = FRd3BitmapConsole_construct;
+   // @method
    o.bitmaps   = FRd3BitmapConsole_bitmaps;
    o.load      = FRd3BitmapConsole_load;
    return o;
@@ -27,6 +28,7 @@ function FRd3BitmapConsole(o){
 //==========================================================
 function FRd3BitmapConsole_construct(){
    var o = this;
+   o.__base.FConsole.construct.call(o);
    o._bitmaps = new TDictionary();
 }
 
@@ -62,15 +64,12 @@ function FRd3BitmapConsole_load(pc, pg, pt){
    // 加载模型
    if(RString.toLower(pt) == 'environment'){
       t = RClass.create(FRd3TextureCube);
-      t.linkContext(pc);
-      t._name = pg;
-      t.load(u);
    }else{
       t = RClass.create(FRd3Texture);
-      t.linkContext(pc);
-      t._name = pg;
-      t.load(u);
    }
+   t._name = pg;
+   t.linkGraphicContext(pc);
+   t.load(u);
    o._bitmaps.set(pg, t);
    return t;
 }

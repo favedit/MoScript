@@ -696,10 +696,10 @@ function FWglContext_checkError(c, m, p1){
 }
 function FWglCubeTexture(o){
    o = RClass.inherits(this, o, FG3dCubeTexture);
-   o._native = null;
-   o.setup   = FWglCubeTexture_setup;
-   o.link    = FWglCubeTexture_link;
-   o.upload  = FWglCubeTexture_upload;
+   o._native    = null;
+   o.setup      = FWglCubeTexture_setup;
+   o.makeMipmap = FWglCubeTexture_makeMipmap;
+   o.upload     = FWglCubeTexture_upload;
    return o;
 }
 function FWglCubeTexture_setup(){
@@ -708,8 +708,12 @@ function FWglCubeTexture_setup(){
    o.__base.FG3dCubeTexture.setup.call(o);
    o._native = g.createTexture();
 }
-function FWglCubeTexture_link(v){
-   this._texture = v;
+function FWglCubeTexture_makeMipmap(){
+   var o = this;
+   var c = o._graphicContext;
+   var g = c._native;
+   g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
+   g.generateMipmap(g.TEXTURE_CUBE_MAP);
 }
 function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    var o = this;
@@ -722,27 +726,16 @@ function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, y2.image());
    g.texImage2D(g.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z1.image());
    g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z2.image());
-   var r = c.checkError("texImage2D", "Upload cube image failure.");
-   o._statusLoad = r;
+   o._statusLoad = c.checkError("texImage2D", "Upload cube image failure.");
 }
 function FWglFlatTexture(o){
    o = RClass.inherits(this, o, FG3dFlatTexture);
-   o._native     = null;
-   o.onImageLoad = FWglFlatTexture_onImageLoad;
-   o.setup       = FWglFlatTexture_setup;
-   o.loadUrl     = FWglFlatTexture_loadUrl;
-   o.uploadData  = FWglFlatTexture_uploadData;
-   o.upload      = FWglFlatTexture_upload;
+   o._native    = null;
+   o.setup      = FWglFlatTexture_setup;
+   o.makeMipmap = FWglFlatTexture_makeMipmap;
+   o.uploadData = FWglFlatTexture_uploadData;
+   o.upload     = FWglFlatTexture_upload;
    return o;
-}
-function FWglFlatTexture_onImageLoad(v){
-   var o = this;
-   var c = o._graphicContext;
-   var g = c._native;
-   g.bindTexture(g.TEXTURE_2D, o._native);
-   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, v);
-   var r = c.checkError("texImage2D", "");
-   o._statusLoad = r;
 }
 function FWglFlatTexture_setup(){
    var o = this;
@@ -750,11 +743,12 @@ function FWglFlatTexture_setup(){
    o.__base.FG3dFlatTexture.setup.call(o);
    o._native = g.createTexture();
 }
-function FWglFlatTexture_loadUrl(p){
+function FWglFlatTexture_makeMipmap(){
    var o = this;
-   var r = new Image();
-   r.src = p;
-   r.onload = function(){o.onImageLoad(o);}
+   var c = o._graphicContext;
+   var g = c._native;
+   g.bindTexture(g.TEXTURE_2D, o._native);
+   g.generateMipmap(g.TEXTURE_2D);
 }
 function FWglFlatTexture_uploadData(d, w, h){
    var o = this;
@@ -770,8 +764,16 @@ function FWglFlatTexture_upload(p){
    var o = this;
    var c = o._graphicContext;
    var g = c._native;
+   var m = null;
+   if(p.constructor == Image){
+      m = p;
+   }else if(RClass.isClass(p, FImage)){
+      m = p.image();
+   }else{
+      throw new TError('Invalid image format.');
+   }
    g.bindTexture(g.TEXTURE_2D, o._native);
-   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, p);
+   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
    o._statusLoad = c.checkError("texImage2D", "Upload image failure.");
 }
 function FWglFragmentShader(o){

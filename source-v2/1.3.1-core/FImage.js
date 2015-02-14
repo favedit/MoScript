@@ -1,31 +1,47 @@
 //==========================================================
 // <T>图片。</T>
 //
+// @class
 // @author maocy
 // @history 150105
 //==========================================================
 function FImage(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MListenerLoad);
    //..........................................................
    // @attribute
-   o._image    = null;
-   o._width    = 0;
-   o._height   = 0;
+   o._size     = null;
    o._ready    = false;
    //..........................................................
-   // @event
-   o.lsnsLoad  = null;
+   // @html
+   o._hImage   = null;
    //..........................................................
    // @event
    o.ohLoad    = FImage_ohLoad;
    //..........................................................
    // @method
    o.construct = FImage_construct;
-   o.testReady = FImage_testReady;
+   // @method
+   o.size      = FImage_size;
    o.image     = FImage_image;
+   // @method
+   o.testReady = FImage_testReady;
    o.loadUrl   = FImage_loadUrl;
+   // @method
    o.dispose   = FImage_dispose;
    return o;
+}
+
+//==========================================================
+// <T>加载完成处理。</T>
+//
+// @method
+//==========================================================
+function FImage_ohLoad(){
+   var o = this.__linker;
+   var m = o._hImage;
+   o._size.set(m.naturalWidth, m.naturalHeight);
+   o._ready = true;
+   o.processLoadListener(o);
 }
 
 //==========================================================
@@ -35,25 +51,34 @@ function FImage(o){
 //==========================================================
 function FImage_construct(){
    var o = this;
-   o.lsnsLoad = new TListeners();
+   o.__base.FObject.construct.call(o);
+   o._size = new SSize2();
 }
 
 //==========================================================
-// <T>加载完成处理。</T>
+// <T>获得尺寸。</T>
 //
 // @method
+// @return 尺寸
 //==========================================================
-function FImage_ohLoad(){
-   var o = this._linker;
-   o._ready = true;
-   o._width = o._image.naturalWidth;
-   o._height = o._image.naturalHeight;
-   o.lsnsLoad.process(o);
+function FImage_size(){
+   return this._size;
+}
+
+//==========================================================
+// <T>获得位图。</T>
+//
+// @method
+// @return 位图
+//==========================================================
+function FImage_image(){
+   return this._hImage;
 }
 
 //==========================================================
 // <T>测试是否准备好。</T>
 //
+// @method
 // @return 是否准备好
 //==========================================================
 function FImage_testReady(){
@@ -61,39 +86,32 @@ function FImage_testReady(){
 }
 
 //==========================================================
-// <T>获得位图。</T>
-//
-// @return 位图
-//==========================================================
-function FImage_image(){
-   return this._image;
-}
-
-//==========================================================
 // <T>加载网络地址资源。</T>
 //
-// @param u:url:String 网络地址
+// @method
+// @param p:url:String 网络地址
 //==========================================================
-function FImage_loadUrl(u){
+function FImage_loadUrl(p){
    var o = this;
    // 创建图片
-   var g = o._image;
-   if(g == null){
-      g = o._image = new Image();
-      g._linker = o;
+   var g = o._hImage;
+   if(!g){
+      g = o._hImage = new Image();
+      g.__linker = o;
       g.onload = o.ohLoad;
    }
    // 加载图片
-   g.src = u;
+   g.src = p;
 }
 
 //==========================================================
 // <T>释放处理。</T>
 //
-// @author maocy
+// @method
 //==========================================================
 function FImage_dispose(){
    var o = this;
-   o._image = null;
+   o._size = RObject.dispose(o._size);
+   o._hImage = null;
    o.__base.FObject.dispose.call(o);
 }

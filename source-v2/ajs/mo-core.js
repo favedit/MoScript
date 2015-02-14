@@ -5669,6 +5669,7 @@ function SColor4(o){
    o.blue         = 0;
    o.alpha        = 1;
    o.assign       = SColor4_assign;
+   o.assignPower  = SColor4_assignPower;
    o.set          = SColor4_set;
    o.serialize    = SColor4_serialize;
    o.unserialize  = SColor4_unserialize;
@@ -5681,6 +5682,13 @@ function SColor4_assign(p){
    o.red = p.red;
    o.green = p.green;
    o.blue = p.blue;
+   o.alpha = p.alpha;
+}
+function SColor4_assignPower(p){
+   var o = this;
+   o.red = p.red * p.alpha;
+   o.green = p.green * p.alpha;
+   o.blue = p.blue * p.alpha;
    o.alpha = p.alpha;
 }
 function SColor4_set(r, g, b, a){
@@ -8720,50 +8728,54 @@ function FHttpConnection_send(p, d){
    return o.content();
 }
 function FImage(o){
-   o = RClass.inherits(this, o, FObject);
-   o._image    = null;
-   o._width    = 0;
-   o._height   = 0;
+   o = RClass.inherits(this, o, FObject, MListenerLoad);
+   o._size     = null;
    o._ready    = false;
-   o.lsnsLoad  = null;
+   o._hImage   = null;
    o.ohLoad    = FImage_ohLoad;
    o.construct = FImage_construct;
-   o.testReady = FImage_testReady;
+   o.size      = FImage_size;
    o.image     = FImage_image;
+   o.testReady = FImage_testReady;
    o.loadUrl   = FImage_loadUrl;
    o.dispose   = FImage_dispose;
    return o;
 }
+function FImage_ohLoad(){
+   var o = this.__linker;
+   var m = o._hImage;
+   o._size.set(m.naturalWidth, m.naturalHeight);
+   o._ready = true;
+   o.processLoadListener(o);
+}
 function FImage_construct(){
    var o = this;
-   o.lsnsLoad = new TListeners();
+   o.__base.FObject.construct.call(o);
+   o._size = new SSize2();
 }
-function FImage_ohLoad(){
-   var o = this._linker;
-   o._ready = true;
-   o._width = o._image.naturalWidth;
-   o._height = o._image.naturalHeight;
-   o.lsnsLoad.process(o);
+function FImage_size(){
+   return this._size;
+}
+function FImage_image(){
+   return this._hImage;
 }
 function FImage_testReady(){
    return this._ready;
 }
-function FImage_image(){
-   return this._image;
-}
-function FImage_loadUrl(u){
+function FImage_loadUrl(p){
    var o = this;
-   var g = o._image;
-   if(g == null){
-      g = o._image = new Image();
-      g._linker = o;
+   var g = o._hImage;
+   if(!g){
+      g = o._hImage = new Image();
+      g.__linker = o;
       g.onload = o.ohLoad;
    }
-   g.src = u;
+   g.src = p;
 }
 function FImage_dispose(){
    var o = this;
-   o._image = null;
+   o._size = RObject.dispose(o._size);
+   o._hImage = null;
    o.__base.FObject.dispose.call(o);
 }
 function FXmlConnection(o){
@@ -9193,6 +9205,54 @@ function MDataView_setFloat(p, v){
 function MDataView_setDouble(p, v){
    var o = this;
    o._viewer.setDouble(p, v, o._endianCd);
+}
+function MListener(o){
+   o = RClass.inherits(this, o);
+   o._listeners      = null;
+   o.addListener     = MListener_addListener;
+   o.removeListener  = MListener_removeListener;
+   o.processListener = MListener_processListener;
+   return o;
+}
+function MListener_addListener(n, w, m){
+   var o = this;
+   var lss = o._listeners;
+   if(!lss){
+      lss = o._listeners = new Object();
+   }
+   var ls = lss[n];
+   if(!ls){
+      ls = lss[n] = new TListeners();
+   }
+   return ls.register(w, m);
+}
+function MListener_removeListener(n, w, m){
+   var o = this;
+   var lss = o._listeners;
+   var ls = lss[n];
+   return ls.unregister(w, m);
+}
+function MListener_processListener(n, p1, p2, p3, p4, p5){
+   var o = this;
+   var lss = o._listeners;
+   if(lss){
+      var ls = lss[n];
+      if(ls){
+         ls.process(p1, p2, p3, p4, p5);
+      }
+   }
+}
+function MListenerLoad(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addLoadListener     = MListenerLoad_addLoadListener;
+   o.processLoadListener = MListenerLoad_processLoadListener;
+   return o;
+}
+function MListenerLoad_addLoadListener(w, m){
+   return this.addListener(EEvent.Load, w, m);
+}
+function MListenerLoad_processLoadListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Load, p1, p2, p3, p4, p5);
 }
 function MMouseCapture(o){
    o = RClass.inherits(this, o);

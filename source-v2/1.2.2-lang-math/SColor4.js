@@ -16,6 +16,7 @@ function SColor4(o){
    //..........................................................
    // @method
    o.assign       = SColor4_assign;
+   o.assignPower  = SColor4_assignPower;
    o.set          = SColor4_set;
    o.serialize    = SColor4_serialize;
    o.unserialize  = SColor4_unserialize;
@@ -35,6 +36,20 @@ function SColor4_assign(p){
    o.red = p.red;
    o.green = p.green;
    o.blue = p.blue;
+   o.alpha = p.alpha;
+}
+
+//============================================================
+// <T>接收强度数据。</T>
+//
+// @method
+// @param p:value:SColor4 颜色
+//============================================================
+function SColor4_assignPower(p){
+   var o = this;
+   o.red = p.red * p.alpha;
+   o.green = p.green * p.alpha;
+   o.blue = p.blue * p.alpha;
    o.alpha = p.alpha;
 }
 

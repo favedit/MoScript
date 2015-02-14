@@ -2563,7 +2563,6 @@ function FDsSceneMaterialFrame_onDataChanged(p){
    mi.reflectMerge = v;
    var v = o._controlEmissiveColor.get();
    mi.emissiveColor.assign(v);
-   debugger
    var d = o._material._display;
    d.reloadResource();
 }
