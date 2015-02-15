@@ -65,23 +65,13 @@ function FDsSceneMenuBar_onRefreshClick(p){
 //==========================================================
 function FDsSceneMenuBar_onSaveClick(p){
    var o = this;
-   var t = o._workspace._activeScene;
-   debugger
-   return;
-   var rt = t._resource;
-   var ts = rt.themes();
-   var tc = ts.count();
-   var xr = new TXmlNode();
-   for(var ti = 0; ti < tc; ti++){
-      var t = ts.get(ti);
-      var ms = t.materials();
-      var mc = ms.count();
-      for(var mi = 0; mi < mc; mi++){
-         var m = ms.value(mi);
-         m.saveConfig(xr.create('Material'));
-      }
-   }
-   RConsole.find(FRs3TemplateConsole).update(xr);
+   var s = o._workspace._activeScene;
+   var r = s._resource;
+   // 存储配置
+   var x = new TXmlNode();
+   r.saveConfig(x);
+   // 更新处理
+   RConsole.find(FRs3SceneConsole).update(x);
 }
 
 //==========================================================

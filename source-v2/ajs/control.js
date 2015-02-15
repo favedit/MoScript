@@ -941,7 +941,7 @@ function FUiControl_setVisible(p){
    o._statusVisible = p;
    var h = o.panel(EPanel.Container);
    if(h){
-      RHtml.displaySet(h, p);
+      RHtml.visibleSet(h, p);
    }
 }
 function FUiControl_show(){

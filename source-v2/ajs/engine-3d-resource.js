@@ -563,6 +563,7 @@ function FRs3Object(o){
    o.code        = FRs3Object_code;
    o.label       = FRs3Object_label;
    o.unserialize = FRs3Object_unserialize;
+   o.saveConfig  = FRs3Object_saveConfig;
    return o;
 }
 function FRs3Object_guid(){
@@ -580,6 +581,12 @@ function FRs3Object_unserialize(p){
    o._code = p.readString();
    o._label = p.readString();
 }
+function FRs3Object_saveConfig(p){
+   var o = this;
+   p.set('guid', o._guid);
+   p.set('code', o._code);
+   p.set('label', o._label);
+}
 function FRs3Resource(o){
    o = RClass.inherits(this, o, FResource);
    o._dataReady   = false;
@@ -589,6 +596,7 @@ function FRs3Resource(o){
    o.loadListener = FRs3Resource_loadListener;
    o.testReady    = FRs3Resource_testReady;
    o.unserialize  = FRs3Resource_unserialize;
+   o.saveConfig   = FRs3Resource_saveConfig;
    o.load         = FRs3Resource_load;
    return o;
 }
@@ -626,6 +634,12 @@ function FRs3Resource_unserialize(p){
    o._code = p.readString();
    o._label = p.readString();
 }
+function FRs3Resource_saveConfig(p){
+   var o = this;
+   p.set('guid', o._guid);
+   p.set('code', o._code);
+   p.set('label', o._label);
+}
 function FRs3Resource_load(u){
    var o = this;
    var hc = RConsole.find(FHttpConsole);
@@ -643,6 +657,7 @@ function FRs3Scene(o){
    o.region      = FRs3Scene_region;
    o.layers      = FRs3Scene_layers;
    o.unserialize = FRs3Scene_unserialize;
+   o.saveConfig  = FRs3Scene_saveConfig;
    return o;
 }
 function FRs3Scene_construct(){
@@ -672,6 +687,19 @@ function FRs3Scene_unserialize(p){
       var l = RClass.create(FRs3SceneLayer);
       l.unserialize(p);
       o._layers.set(l.code(), l);
+   }
+}
+function FRs3Scene_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Resource.saveConfig.call(o, p);
+   p.setName('Scene');
+   p.set('theme_code', o._themeCode);
+   var xls = p.create('LayerCollection');
+   var ls = o._layers;
+   var c = ls.count();
+   for(var i = 0; i < c; i++){
+      var l = ls.value(i);
+      l.saveConfig(xls.create('Layer'));
    }
 }
 function FRs3SceneCamera(o){
@@ -768,6 +796,7 @@ function FRs3SceneDisplay(o){
    o.materials            = FRs3SceneDisplay_materials;
    o.renderables          = FRs3SceneDisplay_renderables;
    o.unserialize          = FRs3SceneDisplay_unserialize;
+   o.saveConfig           = FRs3SceneDisplay_saveConfig;
    return o;
 }
 function FRs3SceneDisplay_construct(){
@@ -813,11 +842,24 @@ function FRs3SceneDisplay_unserialize(p){
       }
    }
 }
+function FRs3SceneDisplay_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Object.saveConfig.call(o, p);
+   var xms = p.create('MaterialCollection');
+   var s = o._materials;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.get(i).saveConfig(xms.create('Material'));
+      }
+   }
+}
 function FRs3SceneLayer(o){
    o = RClass.inherits(this, o, FRs3Object);
    o._displays   = null;
    o.displays    = FRs3SceneLayer_displays;
    o.unserialize = FRs3SceneLayer_unserialize;
+   o.saveConfig  = FRs3SceneLayer_saveConfig;
    return o;
 }
 function FRs3SceneLayer_displays(){
@@ -833,6 +875,18 @@ function FRs3SceneLayer_unserialize(p){
          var d = RClass.create(FRs3SceneDisplay);
          d.unserialize(p);
          s.push(d);
+      }
+   }
+}
+function FRs3SceneLayer_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Object.saveConfig.call(o, p);
+   var xds = p.create('DisplayCollection');
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.get(i).saveConfig(xds.create('Display'));
       }
    }
 }
@@ -906,6 +960,7 @@ function FRs3SceneMaterial(o){
    o.groupGuid           = FRs3SceneMaterial_groupGuid;
    o.info                = FRs3SceneMaterial_info;
    o.unserialize         = FRs3SceneMaterial_unserialize;
+   o.saveConfig          = FRs3SceneMaterial_saveConfig;
    return o;
 }
 function FRs3SceneMaterial_construct(){
@@ -925,6 +980,12 @@ function FRs3SceneMaterial_unserialize(p){
    o._groupGuid = p.readString();
    o._info.unserialize(p);
    o._textureCount = p.readInt16();
+}
+function FRs3SceneMaterial_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Object.saveConfig.call(o, p);
+   p.set('group_guid', o._groupGuid);
+   o._info.saveConfig(p);
 }
 function FRs3SceneMovie(o){
    o = RClass.inherits(this, o, FObject);
@@ -1612,6 +1673,7 @@ function SRs3MaterialInfo(o){
    if(!o){o = this;}
    SG3dMaterialInfo(o);
    o.unserialize = SRs3MaterialInfo_unserialize;
+   o.saveConfig  = SRs3MaterialInfo_saveConfig;
    return o;
 }
 function SRs3MaterialInfo_unserialize(p){
@@ -1631,6 +1693,29 @@ function SRs3MaterialInfo_unserialize(p){
    o.refractFrontColor.unserialize(p);
    o.refractBackColor.unserialize(p);
    o.emissiveColor.unserialize(p);
+}
+function SRs3MaterialInfo_saveConfig(p){
+   var o = this;
+   p.set('effect_code', o.effectName);
+   p.setBoolean('option_double', o.optionDouble);
+   var x = p.create('Alpha');
+   x.setFloat('base', o.alphaBase);
+   x.setFloat('rate', o.alphaRate);
+   o.ambientColor.savePower(p.create('Ambient'));
+   o.diffuseColor.savePower(p.create('Diffuse'));
+   o.diffuseViewColor.savePower(p.create('DiffuseView'));
+   var x = p.create('Specular');
+   o.specularColor.savePower(x);
+   x.setFloat('level', o.specularLevel);
+   var x = p.create('SpecularView');
+   o.specularViewColor.savePower(x);
+   x.setFloat('level', o.specularViewLevel);
+   var x = p.create('Reflect');
+   o.reflectColor.savePower(x);
+   x.setFloat('merge', o.reflectMerge);
+   o.refractFrontColor.savePower(p.create('RefractFront'));
+   o.refractBackColor.savePower(p.create('RefractBack'));
+   o.emissiveColor.savePower(p.create('Emissive'));
 }
 function SRs3SceneShadow(o){
    if(!o){o = this;}

@@ -16,6 +16,8 @@ function FRs3SceneLayer(o){
    // @method
    o.displays    = FRs3SceneLayer_displays;
    o.unserialize = FRs3SceneLayer_unserialize;
+   // @method
+   o.saveConfig  = FRs3SceneLayer_saveConfig;
    return o;
 }
 
@@ -48,6 +50,28 @@ function FRs3SceneLayer_unserialize(p){
          var d = RClass.create(FRs3SceneDisplay);
          d.unserialize(p);
          s.push(d);
+      }
+   }
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FRs3SceneLayer_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Object.saveConfig.call(o, p);
+   // 存储属性
+   //p.set('type', o._type);
+   // 存储显示集合
+   var xds = p.create('DisplayCollection');
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.get(i).saveConfig(xds.create('Display'));
       }
    }
 }

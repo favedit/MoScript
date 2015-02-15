@@ -343,7 +343,8 @@ function FUiControl_setVisible(p){
    // 设置控件底板的可见性
    var h = o.panel(EPanel.Container);
    if(h){
-      RHtml.displaySet(h, p);
+      //RHtml.displaySet(h, p);
+      RHtml.visibleSet(h, p);
    }
 }
 

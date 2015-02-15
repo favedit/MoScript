@@ -15,6 +15,7 @@ function FE3dSceneMaterial(o){
    o.groupGuid         = FE3dSceneMaterial_groupGuid
    o.resource          = FE3dSceneMaterial_resource;
    o.loadSceneResource = FE3dSceneMaterial_loadSceneResource;
+   o.reload            = FE3dSceneMaterial_reload;
    return o;
 }
 
@@ -48,4 +49,14 @@ function FE3dSceneMaterial_loadSceneResource(p){
    var o = this;
    o._resource = p;
    o._info.assign(p.info());
+}
+
+//==========================================================
+// <T>重新加载数据。</T>
+//
+// @method
+//==========================================================
+function FE3dSceneMaterial_reload(p){
+   var o = this;
+   o._info.assign(o._resource.info());
 }

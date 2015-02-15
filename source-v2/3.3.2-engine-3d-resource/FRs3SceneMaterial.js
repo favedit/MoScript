@@ -25,9 +25,12 @@ function FRs3SceneMaterial(o){
    //..........................................................
    // @method
    o.construct           = FRs3SceneMaterial_construct;
+   // @method
    o.groupGuid           = FRs3SceneMaterial_groupGuid;
    o.info                = FRs3SceneMaterial_info;
+   // @method
    o.unserialize         = FRs3SceneMaterial_unserialize;
+   o.saveConfig          = FRs3SceneMaterial_saveConfig;
    return o;
 }
 
@@ -88,3 +91,19 @@ function FRs3SceneMaterial_unserialize(p){
    //o._surfaceMerge = p.readFloat();
    //o._surfacePower = p.readFloat();
 }
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FRs3SceneMaterial_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Object.saveConfig.call(o, p);
+   // 存储属性
+   p.set('group_guid', o._groupGuid);
+   // 存储材质
+   o._info.saveConfig(p);
+}
+

@@ -5,38 +5,55 @@
 // @history 150106
 //==========================================================
 function FE3dTemplate(o){
-   o = RClass.inherits(this, o, FE3dDisplay, MListenerLoad);
+   o = RClass.inherits(this, o, FE3dDisplay, MGraphicObject, MListenerLoad);
    //..........................................................
    // @attribute
-   o._dataReady     = false;
-   o._ready         = false;
-   o._resource      = null;
+   o._dataReady       = false;
+   o._ready           = false;
+   o._resource        = null;
    // @attribute
-   o._skeletons     = null;
-   o._animations    = null;
+   o._meshRenderables = null;
+   o._skeletons       = null;
+   o._animations      = null;
    // @attribute
-   o._resource      = null;
+   o._resource        = null;
    //..........................................................
    // @method
-   o.testReady      = FE3dTemplate_testReady;
+   o.construct        = FE3dTemplate_construct;
    // @method
-   o.skeletons      = FE3dTemplate_skeletons;
-   o.pushSkeleton   = FE3dTemplate_pushSkeleton;
-   o.findAnimation  = FE3dTemplate_findAnimation;
-   o.animations     = FE3dTemplate_animations;
-   o.pushAnimation  = FE3dTemplate_pushAnimation;
+   o.testReady        = FE3dTemplate_testReady;
    // @method
-   o.resource       = FE3dTemplate_resource;
-   o.setResource    = FE3dTemplate_setResource;
-   o.loadSkeletons  = FE3dTemplate_loadSkeletons;
-   o.linkAnimation  = FE3dTemplate_linkAnimation;
-   o.loadAnimations = FE3dTemplate_loadAnimations;
-   o.loadResource   = FE3dTemplate_loadResource;
-   o.reloadResource = FE3dTemplate_reloadResource;
+   o.meshRenderables  = FE3dTemplate_meshRenderables;
+   o.skeletons        = FE3dTemplate_skeletons;
+   o.pushSkeleton     = FE3dTemplate_pushSkeleton;
+   o.findAnimation    = FE3dTemplate_findAnimation;
+   o.animations       = FE3dTemplate_animations;
+   o.pushAnimation    = FE3dTemplate_pushAnimation;
    // @method
-   o.processLoad    = FE3dTemplate_processLoad;
-   o.process        = FE3dTemplate_process;
+   o.resource         = FE3dTemplate_resource;
+   o.setResource      = FE3dTemplate_setResource;
+   o.loadSkeletons    = FE3dTemplate_loadSkeletons;
+   o.linkAnimation    = FE3dTemplate_linkAnimation;
+   o.loadAnimations   = FE3dTemplate_loadAnimations;
+   o.loadResource     = FE3dTemplate_loadResource;
+   o.reloadResource   = FE3dTemplate_reloadResource;
+   // @method
+   o.processLoad      = FE3dTemplate_processLoad;
+   o.process          = FE3dTemplate_process;
+   // @method
+   o.dispose          = FE3dTemplate_dispose;
    return o;
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FE3dTemplate_construct(){
+   var o = this;
+   o.__base.FE3dDisplay.construct.call(o);
+   o._meshRenderables = new TObjects();
 }
 
 //==========================================================
@@ -47,6 +64,16 @@ function FE3dTemplate(o){
 //==========================================================
 function FE3dTemplate_testReady(){
    return this._dataReady;
+}
+
+//==========================================================
+// <T>获得网格渲染集合。</T>
+//
+// @method
+// @return TObjects 网格渲染集合
+//==========================================================
+function FE3dTemplate_meshRenderables(){
+   return this._meshRenderables;
 }
 
 //==========================================================
@@ -192,10 +219,10 @@ function FE3dTemplate_loadAnimations(p){
          }
          // 创建渲染动画
          var a = null;
-         if(r.skeleton() == null){
-            a = RClass.create(FRd3MeshAnimation);
-         }else{
+         if(r.skeleton()){
             a = RClass.create(FRd3SkeletonAnimation);
+         }else{
+            a = RClass.create(FRd3MeshAnimation);
          }
          a.loadResource(r);
          o.pushAnimation(a);
@@ -215,14 +242,14 @@ function FE3dTemplate_loadResource(p){
    var ds = p.displays();
    var c = ds.count();
    if(c > 0){
-      var rs = o.renderables();
       for(var i = 0; i < c; i++){
          var d = ds.get(i);
          var r = RClass.create(FE3dTemplateRenderable);
          r._display = o;
-         r._context = o._context;
+         r.linkGraphicContext(o);
          r.loadResource(d);
-         rs.push(r);
+         o._meshRenderables.push(r);
+         o.pushRenderable(r);
       }
    }
 }
@@ -234,7 +261,7 @@ function FE3dTemplate_loadResource(p){
 //==========================================================
 function FE3dTemplate_reloadResource(){
    var o = this;
-   var s = o._renderables;
+   var s = o._meshRenderables;
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
@@ -319,4 +346,15 @@ function FE3dTemplate_process(){
          as.value(i).process(k);
       }
    }
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FE3dTemplate_dispose(){
+   var o = this;
+   o._meshRenderables = RObject.dispose(o._meshRenderables);
+   o.__base.FE3dDisplay.dispose.call(o);
 }

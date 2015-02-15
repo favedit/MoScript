@@ -57,7 +57,7 @@ function FDsSceneLightPropertyFrame_loadObject(s, l){
    o._controlCode.set(r.code());
    o._controlLabel.set(r._label);
    // 设置参数
-   o._frameMaterial.loadObject(s, rm);
+   //o._frameMaterial.loadObject(s, rm);
    o._frameCamera.loadObject(s, rc);
 }
 

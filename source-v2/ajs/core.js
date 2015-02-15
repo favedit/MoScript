@@ -574,6 +574,40 @@ function FBytes_dispose(){
    o._viewer = null;
    o.__base.FObject.dispose.call(o);
 }
+function FClassFactory(o){
+   o = RClass.inherits(this, o, FObject);
+   o._classes   = null;
+   o.construct  = FClassFactory_construct;
+   o.register   = FClassFactory_register;
+   o.unregister = FClassFactory_unregister;
+   o.create     = FClassFactory_create;
+   o.dispose    = FClassFactory_dispose;
+   return o;
+}
+function FClassFactory_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._classes = new TDictionary();
+}
+function FClassFactory_register(n, c){
+   this._classes.set(n, c);
+}
+function FClassFactory_unregister(n){
+   this._classes.set(n, null);
+}
+function FClassFactory_create(n){
+   var o = this;
+   var c = o._classes.get(n);
+   if(!c){
+      throw new TError('Create unregister class. (name={1})', n);
+   }
+   return RClass.create(c);
+}
+function FClassFactory_dispose(){
+   var o = this;
+   o._classes = RObject.dispose(o._classes);
+   o.__base.FObject.dispose.call(o);
+}
 function FDataStream(o){
    o = RClass.inherits(this, o, FObject, MDataView, MDataStream);
    o.construct = FDataStream_construct;
@@ -2013,7 +2047,7 @@ function RHtml_visibleGet(h){
 function RHtml_visibleSet(h, v){
    var s = null;
    if(RBrowser.isBrowser(EBrowser.Explorer)){
-      s = v ? 'block' : 'none';
+      s = v ? null : 'none';
    }else{
       s = v ? null : 'none';
    }

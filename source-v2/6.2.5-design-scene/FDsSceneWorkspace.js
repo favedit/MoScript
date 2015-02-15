@@ -164,18 +164,30 @@ function FDsSceneWorkspace_onCatalogSelected(p){
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dSceneLayer)){
+      // 选中场景层
+      o._canvas.selectLayer(p);
+      // 显示属性栏
       var f = o.findPropertyFrame(EDsFrame.SceneLayerPropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dSceneDisplay)){
+      // 选中显示对象
+      o._canvas.selectDisplay(p);
+      // 显示属性栏
       var f = o.findPropertyFrame(EDsFrame.SceneDisplayPropertyFrame);
       f.show();
       f.loadObject(s, p);
-   }else if(RClass.isClass(p, FG3dMaterial)){
+   }else if(RClass.isClass(p, FE3dSceneMaterial)){
+      // 选中材质
+      o._canvas.selectMaterial(p);
+      // 显示属性栏
       var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FRd3Renderable)){
+      // 选中渲染对象
+      o._canvas.selectRenderable(p);
+      // 显示属性栏
       var f = o.findPropertyFrame(EDsFrame.SceneRenderablePropertyFrame);
       f.show();
       f.loadObject(s, p);
@@ -195,6 +207,11 @@ function FDsSceneWorkspace_construct(){
    o.__base.FUiWorkspace.construct.call(o);
    // 设置属性
    o._propertyFrames = new TDictionary();
+   // 注册场景设置属性
+   var sf = RConsole.find(FE3dSceneConsole).factory();
+   sf.register(EE3dScene.Layer, FDsSceneLayer);
+   sf.register(EE3dScene.Display, FDsSceneDisplay);
+   sf.register(EE3dScene.Renderable, FDsSceneRenderable);
 }
 
 //==========================================================

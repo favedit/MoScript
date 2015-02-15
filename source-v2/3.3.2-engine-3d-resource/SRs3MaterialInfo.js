@@ -10,6 +10,7 @@ function SRs3MaterialInfo(o){
    //..........................................................
    // @method
    o.unserialize = SRs3MaterialInfo_unserialize;
+   o.saveConfig  = SRs3MaterialInfo_saveConfig;
    return o;
 }
 
@@ -83,4 +84,36 @@ function SRs3MaterialInfo_unserialize(p){
    //o.opacityTransmittance = p.readFloat();
    // 存储自发光
    o.emissiveColor.unserialize(p);
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function SRs3MaterialInfo_saveConfig(p){
+   var o = this;
+   // 存储属性
+   p.set('effect_code', o.effectName);
+   p.setBoolean('option_double', o.optionDouble);
+   // 存储材质
+   var x = p.create('Alpha');
+   x.setFloat('base', o.alphaBase);
+   x.setFloat('rate', o.alphaRate);
+   o.ambientColor.savePower(p.create('Ambient'));
+   o.diffuseColor.savePower(p.create('Diffuse'));
+   o.diffuseViewColor.savePower(p.create('DiffuseView'));
+   var x = p.create('Specular');
+   o.specularColor.savePower(x);
+   x.setFloat('level', o.specularLevel);
+   var x = p.create('SpecularView');
+   o.specularViewColor.savePower(x);
+   x.setFloat('level', o.specularViewLevel);
+   var x = p.create('Reflect');
+   o.reflectColor.savePower(x);
+   x.setFloat('merge', o.reflectMerge);
+   o.refractFrontColor.savePower(p.create('RefractFront'));
+   o.refractBackColor.savePower(p.create('RefractBack'));
+   o.emissiveColor.savePower(p.create('Emissive'));
 }

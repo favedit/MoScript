@@ -6159,8 +6159,10 @@ function SUiColorBar_setColorValue(p){
 function SUiColorBar_setSlideValue(p){
    var o = this;
    var w = o.hSlideForm.offsetWidth;
-   var v = p / o.maxValue * w;
-   o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
+   if(w > 0){
+      var v = p / o.maxValue * w;
+      o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
+   }
 }
 function SUiColorBar_setInputValue(p){
    this.hInput.value = p;
@@ -6254,8 +6256,10 @@ function SUiColorPower_setColorValue(p){
 function SUiColorPower_setSlideValue(p){
    var o = this;
    var w = o.hSlideForm.offsetWidth;
-   var v = p / o.maxValue * w;
-   o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
+   if(w > 0){
+      var v = p / o.maxValue * w;
+      o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
+   }
 }
 function SUiColorPower_setInputValue(p){
    var o = this;

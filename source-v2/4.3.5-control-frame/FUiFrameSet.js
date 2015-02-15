@@ -40,11 +40,11 @@ function FUiFrameSet(o){
 // <T>创建一个控件容器。</T>
 //
 // @method
-// @return HtmlTag 页面元素
+// @param p:event:TEventProcess 事件
 //==========================================================
-function FUiFrameSet_onBuildPanel(e){
+function FUiFrameSet_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
+   o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
 }
 
 //==========================================================

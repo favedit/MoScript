@@ -5,7 +5,7 @@
 // @history 150106
 //==========================================================
 function FE3dStage(o){
-   o = RClass.inherits(this, o, FStage);
+   o = RClass.inherits(this, o, FStage, MGraphicObject);
    //..........................................................
    // @attribute
    o._backgroundColor  = null;
@@ -65,7 +65,7 @@ function FE3dStage_setup(){
    var o = this;
    o.__base.FStage.construct.call(o);
    // 创建背景色
-   o._region.linkGraphicContext(o._context);
+   o._region.linkGraphicContext(o);
    o._region.setup();
 }
 

@@ -15,10 +15,13 @@ function FRs3Scene(o){
    //..........................................................
    // @method
    o.construct   = FRs3Scene_construct;
+   // @method
    o.technique   = FRs3Scene_technique;
    o.region      = FRs3Scene_region;
    o.layers      = FRs3Scene_layers;
+   // @method
    o.unserialize = FRs3Scene_unserialize;
+   o.saveConfig  = FRs3Scene_saveConfig;
    return o;
 }
 
@@ -66,7 +69,7 @@ function FRs3Scene_layers(){
 }
 
 //==========================================================
-// <T>从输入流里反序列化信息内容</T>
+// <T>从输入流里反序列化信息内容。</T>
 //
 // @param p:input:FByteStream 数据流
 //==========================================================
@@ -85,5 +88,31 @@ function FRs3Scene_unserialize(p){
       var l = RClass.create(FRs3SceneLayer);
       l.unserialize(p);
       o._layers.set(l.code(), l);
+   }
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FRs3Scene_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Resource.saveConfig.call(o, p);
+   // 存储属性
+   p.setName('Scene');
+   p.set('theme_code', o._themeCode);
+   // 存储技术
+   //o._technique.saveConfig(x.create('Technique'));
+   // 存储区域
+   //o._region.saveConfig(x.create('Region'));
+   // 存储场景层
+   var xls = p.create('LayerCollection');
+   var ls = o._layers;
+   var c = ls.count();
+   for(var i = 0; i < c; i++){
+      var l = ls.value(i);
+      l.saveConfig(xls.create('Layer'));
    }
 }

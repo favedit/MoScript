@@ -10,6 +10,7 @@ function FE3dSceneConsole(o){
    //..........................................................
    // @attribute
    o._scopeCd    = EScope.Local;
+   o._factory    = null;
    // @attribute
    o._loadScenes = null;
    o._scenes     = null;
@@ -22,6 +23,7 @@ function FE3dSceneConsole(o){
    //..........................................................
    // @method
    o.construct   = FE3dSceneConsole_construct;
+   o.factory     = FE3dSceneConsole_factory;
    o.scenes      = FE3dSceneConsole_scenes;
    o.alloc       = FE3dSceneConsole_alloc;
    return o;
@@ -34,12 +36,12 @@ function FE3dSceneConsole(o){
 //==========================================================
 function FE3dSceneConsole_onProcess(){
    var o = this;
-   var ms = o._loadScenes;
-   ms.record();
-   while(ms.next()){
-      var m = ms.current();
+   var s = o._loadScenes;
+   s.record();
+   while(s.next()){
+      var m = s.current();
       if(m.processLoad()){
-         ms.removeCurrent();
+         s.removeCurrent();
       }
    }
 }
@@ -54,11 +56,28 @@ function FE3dSceneConsole_construct(){
    // 设置属性
    o._loadScenes = new TLooper();
    o._scenes = new TDictionary();
+   // 注册默认类
+   var f = o._factory = RClass.create(FClassFactory);
+   f.register(EE3dScene.Scene, FE3dScene);
+   f.register(EE3dScene.Layer, FE3dSceneLayer);
+   f.register(EE3dScene.Display, FE3dSceneDisplay);
+   f.register(EE3dScene.Material, FE3dSceneMaterial);
+   f.register(EE3dScene.Renderable, FE3dSceneDisplayRenderable);
    // 创建线程
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
    t.lsnsProcess.register(o, o.onProcess);
    RConsole.find(FThreadConsole).start(t);
+}
+
+//==========================================================
+// <T>获得类工厂。</T>
+//
+// @method
+// @return FClassFactory 类工厂
+//==========================================================
+function FE3dSceneConsole_factory(){
+   return this._factory;
 }
 
 //==========================================================
@@ -77,7 +96,7 @@ function FE3dSceneConsole_scenes(){
 // @method
 // @param pc:content:FRenderContent 名称
 // @param pn:name:String 名称
-// @return FRenderModel 渲染模型
+// @return FE3dScene 渲染模型
 //==========================================================
 function FE3dSceneConsole_alloc(pc, pn){
    var o = this;
@@ -86,7 +105,7 @@ function FE3dSceneConsole_alloc(pc, pn){
    var rs = rsc.load(pn);
    // 加载模型
    var s = RClass.create(FE3dScene);
-   s._context = pc;
+   s.linkGraphicContext(pc);
    s._name = pn;
    s._resource = rs;
    s.setup();

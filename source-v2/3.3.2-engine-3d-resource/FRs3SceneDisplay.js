@@ -21,12 +21,15 @@ function FRs3SceneDisplay(o){
    //..........................................................
    // @method
    o.construct            = FRs3SceneDisplay_construct;
+   // @method
    o.code                 = FRs3SceneDisplay_code;
    o.matrix               = FRs3SceneDisplay_matrix;
    o.movies               = FRs3SceneDisplay_movies;
    o.materials            = FRs3SceneDisplay_materials;
    o.renderables          = FRs3SceneDisplay_renderables;
+   // @method
    o.unserialize          = FRs3SceneDisplay_unserialize;
+   o.saveConfig           = FRs3SceneDisplay_saveConfig;
    return o;
 }
 
@@ -136,3 +139,26 @@ function FRs3SceneDisplay_unserialize(p){
       }
    }
 }
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FRs3SceneDisplay_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Object.saveConfig.call(o, p);
+   // 存储属性
+   //p.set('theme_code', o._themeCode);
+   // 存储材质集合
+   var xms = p.create('MaterialCollection');
+   var s = o._materials;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.get(i).saveConfig(xms.create('Material'));
+      }
+   }
+}
+

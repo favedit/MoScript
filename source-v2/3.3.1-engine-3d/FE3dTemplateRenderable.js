@@ -98,7 +98,7 @@ function FE3dTemplateRenderable_loadResource(p){
    // 设置数据
    o._matrix.assign(p.matrix());
    // 加载模型
-   o._model = RConsole.find(FRd3ModelConsole).load(o._context, p.modelGuid());
+   o._model = RConsole.find(FRd3ModelConsole).load(o._graphicContext, p.modelGuid());
    //............................................................
    // 加载材质
    var mr = o._materialResource = p._activeMaterial._material;
@@ -112,7 +112,7 @@ function FE3dTemplateRenderable_loadResource(p){
       var ts = o._textures = new TDictionary();
       for(var i = 0; i < c; i++){
          var r = rs.get(i);
-         var t = bc.load(o._context, r.bitmapGuid(), r.code());
+         var t = bc.load(o._graphicContext, r.bitmapGuid(), r.code());
          ts.set(r.code(), t);
       }
    }

@@ -8,9 +8,21 @@
 var RBoolean = new function RBoolean(){
    var o = this;
    // @method
+   o.format   = RBoolean_format;
    o.parse    = RBoolean_parse;
    o.toString = RBoolean_toString;
    return o;
+}
+
+//==========================================================
+// <T>把布尔值转化为字符串。</T>
+//
+// @method
+// @param v:value:Boolean 
+// @return String 字符串
+//==========================================================
+function RBoolean_format(v){
+   return v ? EBoolean.True : EBoolean.False;
 }
 
 //==========================================================

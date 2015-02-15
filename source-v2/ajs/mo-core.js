@@ -1962,9 +1962,13 @@ function RArray_nameMaxLength(a){
 }
 var RBoolean = new function RBoolean(){
    var o = this;
+   o.format   = RBoolean_format;
    o.parse    = RBoolean_parse;
    o.toString = RBoolean_toString;
    return o;
+}
+function RBoolean_format(v){
+   return v ? EBoolean.True : EBoolean.False;
 }
 function RBoolean_parse(v){
    return (v == EBoolean.True);
@@ -3156,10 +3160,16 @@ function RFloat_parse(p){
 }
 function RFloat_format(v, l, lp, r, rp){
    var o = this;
-   if(!lp){
+   if(l == null){
+      l = 0;
+   }
+   if(lp == null){
       lp = o.LEFT_CHAR;
    }
-   if(!rp){
+   if(r == null){
+      r = 7;
+   }
+   if(rp == null){
       rp = o.LEFT_CHAR;
    }
    var s = v.toString();
@@ -3172,7 +3182,7 @@ function RFloat_format(v, l, lp, r, rp){
       var sr = s.substring(f + 1, f + r + 1);
    }
    var fl = RString.lpad(sl, l, lp);
-   var fr = RString.lpad(sr, r, rp);
+   var fr = RString.rpad(sr, r, rp);
    return fl + '.' + fr;
 }
 function RFloat_nvl(v, d){
@@ -3310,6 +3320,9 @@ function RInteger_format(v, l, p){
 }
 function RInteger_toRange(v, i, a){
    if(v == null){
+      v = 0;
+   }
+   if(isNaN(v)){
       v = 0;
    }
    if(v < i){
@@ -5112,7 +5125,9 @@ function TNode(o){
    o._nodes       = null;
    o.isName       = TNode_isName;
    o.name         = TNode_name;
+   o.setName      = TNode_setName;
    o.value        = TNode_value;
+   o.setValue     = TNode_setValue;
    o.contains     = TNode_contains;
    o.hasAttribute = TNode_hasAttribute;
    o.attributes   = TNode_attributes;
@@ -5121,6 +5136,8 @@ function TNode(o){
    o.nodes        = TNode_nodes;
    o.get          = TNode_get;
    o.set          = TNode_set;
+   o.setBoolean   = TNode_setBoolean;
+   o.setFloat     = TNode_setFloat;
    o.find         = TNode_find;
    o.findNode     = TNode_findNode;
    o.searchNode   = TNode_searchNode;
@@ -5136,8 +5153,14 @@ function TNode_isName(n){
 function TNode_name(){
    return this._name;
 }
+function TNode_setName(p){
+   this._name = p;
+}
 function TNode_value(){
    return this._value;
+}
+function TNode_setValue(p){
+   this._value = p;
 }
 function TNode_contains(n){
    var r = this._attributes;
@@ -5177,6 +5200,16 @@ function TNode_get(n, v){
 function TNode_set(n, v){
    if(v != null){
       this.attributes().set(n, v);
+   }
+}
+function TNode_setBoolean(n, v){
+   if(v != null){
+      this.attributes().set(n, RBoolean.format(v));
+   }
+}
+function TNode_setFloat(n, v){
+   if(v != null){
+      this.attributes().set(n, RFloat.format(v));
    }
 }
 function TNode_find(p){
@@ -5674,6 +5707,8 @@ function SColor4(o){
    o.serialize    = SColor4_serialize;
    o.unserialize  = SColor4_unserialize;
    o.unserialize3 = SColor4_unserialize3;
+   o.saveConfig   = SColor4_saveConfig;
+   o.savePower    = SColor4_savePower;
    o.toString     = SColor4_toString;
    return o;
 }
@@ -5718,6 +5753,20 @@ function SColor4_unserialize3(p){
    o.green = p.readFloat();
    o.blue = p.readFloat();
    o.alpha = 1.0;
+}
+function SColor4_saveConfig(p){
+   var o = this;
+   p.setFloat('r', o.red);
+   p.setFloat('g', o.green);
+   p.setFloat('b', o.blue);
+   p.setFloat('a', o.alpha);
+}
+function SColor4_savePower(p){
+   var o = this;
+   p.setFloat('r', o.red);
+   p.setFloat('g', o.green);
+   p.setFloat('b', o.blue);
+   p.setFloat('power', o.alpha);
 }
 function SColor4_toString(){
    var o = this;
@@ -8552,6 +8601,40 @@ function FBytes_dispose(){
    o._viewer = null;
    o.__base.FObject.dispose.call(o);
 }
+function FClassFactory(o){
+   o = RClass.inherits(this, o, FObject);
+   o._classes   = null;
+   o.construct  = FClassFactory_construct;
+   o.register   = FClassFactory_register;
+   o.unregister = FClassFactory_unregister;
+   o.create     = FClassFactory_create;
+   o.dispose    = FClassFactory_dispose;
+   return o;
+}
+function FClassFactory_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._classes = new TDictionary();
+}
+function FClassFactory_register(n, c){
+   this._classes.set(n, c);
+}
+function FClassFactory_unregister(n){
+   this._classes.set(n, null);
+}
+function FClassFactory_create(n){
+   var o = this;
+   var c = o._classes.get(n);
+   if(!c){
+      throw new TError('Create unregister class. (name={1})', n);
+   }
+   return RClass.create(c);
+}
+function FClassFactory_dispose(){
+   var o = this;
+   o._classes = RObject.dispose(o._classes);
+   o.__base.FObject.dispose.call(o);
+}
 function FDataStream(o){
    o = RClass.inherits(this, o, FObject, MDataView, MDataStream);
    o.construct = FDataStream_construct;
@@ -9991,7 +10074,7 @@ function RHtml_visibleGet(h){
 function RHtml_visibleSet(h, v){
    var s = null;
    if(RBrowser.isBrowser(EBrowser.Explorer)){
-      s = v ? 'block' : 'none';
+      s = v ? null : 'none';
    }else{
       s = v ? null : 'none';
    }

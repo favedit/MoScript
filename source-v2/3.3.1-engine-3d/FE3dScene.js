@@ -80,7 +80,7 @@ function FE3dScene_loadRegionResource(p){
    c.setDirection(rc.direction().x, rc.direction().y, rc.direction().z);
    c.update();
    // 设置投影
-   cp.size().assign(o._context.size());
+   cp.size().assign(o._graphicContext.size());
    cp._angle = rcv.angle();
    cp._znear = rcv.znear();
    cp._zfar = rcv.zfar();
@@ -121,8 +121,8 @@ function FE3dScene_loadRegionResource(p){
 function FE3dScene_loadDisplayResource(pl, pd){
    var o = this;
    // 加载场景显示资源
-   var d3 = RClass.create(FE3dSceneDisplay);
-   d3._context = o._context;
+   var d3 = RConsole.find(FE3dSceneConsole).factory().create(EE3dScene.Display);
+   d3.linkGraphicContext(o);
    d3.loadSceneResource(pd);
    RConsole.find(FE3dTemplateConsole).load(d3, pd.code());
    //............................................................
@@ -147,7 +147,7 @@ function FE3dScene_loadDisplayResource(pl, pd){
 //==========================================================
 function FE3dScene_loadLayerResource(p){
    var o = this;
-   var l = RClass.create(FE3dSceneLayer);
+   var l = RConsole.find(FE3dSceneConsole).factory().create(EE3dScene.Layer);
    l.loadResource(p);
    var s = p.displays();
    if(s){

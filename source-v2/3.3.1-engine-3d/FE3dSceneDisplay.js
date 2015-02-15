@@ -53,6 +53,7 @@ function FE3dSceneDisplay_resourceScene(){
 //==========================================================
 function FE3dSceneDisplay_loadSceneResource(p){
    var o = this;
+   var cf = RConsole.find(FE3dSceneConsole).factory();
    o._resourceScene = p;
    // 设置矩阵
    o._matrix.assign(p.matrix());
@@ -63,7 +64,7 @@ function FE3dSceneDisplay_loadSceneResource(p){
       var ms = o._materials = new TDictionary();
       for(var i = 0; i < c; i++){
          var rm = rms.get(i);
-         var m = RClass.create(FE3dSceneMaterial);
+         var m = cf.create(EE3dScene.Material);
          m._display = o;
          m.loadSceneResource(rm);
          ms.set(rm.groupGuid(), m);
@@ -90,19 +91,20 @@ function FE3dSceneDisplay_loadSceneResource(p){
 //==========================================================
 function FE3dSceneDisplay_loadResource(p){
    var o = this;
+   var cf = RConsole.find(FE3dSceneConsole).factory();
    // 加载渲染集合
    var ms = o._materials;
    var rds = p.displays();
    var c = rds.count();
    if(c > 0){
-      //var rs = o._templateRenderables = new TObjects();
       for(var i = 0; i < c; i++){
          var rd = rds.get(i);
          // 创建显示对象
-         var r = RClass.create(FE3dSceneDisplayRenderable);
+         var r = cf.create(EE3dScene.Renderable);
          r._display = o;
-         r._context = o._context;
+         r.linkGraphicContext(o);
          r.loadResource(rd);
+         o._meshRenderables.push(r);
          o.pushRenderable(r);
          // 加载材质
          var rdm = rd.materials().first();

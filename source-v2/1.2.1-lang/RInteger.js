@@ -110,6 +110,9 @@ function RInteger_toRange(v, i, a){
    if(v == null){
       v = 0;
    }
+   if(isNaN(v)){
+      v = 0;
+   }
    if(v < i){
       v = i;
    }

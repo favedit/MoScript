@@ -146,8 +146,7 @@ function FDsApplication_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 function FDsCanvas(o){
-   o = RClass.inherits(this, o, FUiCanvas, MListenerLoad, MMouseCapture);
-   o._context            = null;
+   o = RClass.inherits(this, o, FUiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);
    o._stage              = null;
    o._rotation           = null;
    o._rotationAble       = false;
@@ -155,7 +154,6 @@ function FDsCanvas(o){
    o._captureMatrix      = null;
    o._captureRotation    = null;
    o._dimensional        = null;
-   o._selectBoundBox     = null;
    o.onBuild             = FDsCanvas_onBuild;
    o.onMouseCaptureStart = FDsCanvas_onMouseCaptureStart;
    o.onMouseCapture      = FDsCanvas_onMouseCapture;
@@ -163,7 +161,6 @@ function FDsCanvas(o){
    o.onEnterFrame        = FDsCanvas_onEnterFrame;
    o.oeRefresh           = FDsCanvas_oeRefresh;
    o.construct           = FDsCanvas_construct;
-   o.selectRenderable    = FDsCanvas_selectRenderable;
    o.dispose             = FDsCanvas_dispose;
    return o;
 }
@@ -172,13 +169,10 @@ function FDsCanvas_onBuild(p){
    o.__base.FUiCanvas.onBuild.call(o, p);
    var h = o._hPanel;
    h.__linker = o;
-   var c = o._context = REngine3d.createContext(FWglContext, h);
+   var c = o._graphicContext = REngine3d.createContext(FWglContext, h);
    var dm = o._dimensional = RClass.create(FRd3Dimensional);
    dm.linkGraphicContext(c);
    dm.setup();
-   var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
-   bb.linkGraphicContext(o._context);
-   bb.setup();
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start(1000 / 60);
    RConsole.find(FMouseConsole).register(o);
@@ -262,7 +256,7 @@ function FDsCanvas_onEnterFrame(){
 }
 function FDsCanvas_oeRefresh(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    o.__base.FUiCanvas.oeRefresh.call(o, p);
    var w = o._hParent.offsetWidth;
    var h = o._hParent.offsetHeight;
@@ -279,19 +273,6 @@ function FDsCanvas_construct(){
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
    o._captureRotation = new SVector3();
-}
-function FDsCanvas_selectRenderable(p){
-   var o = this;
-   var b = o._selectBoundBox;
-   b.remove();
-   if(p){
-      var r = p.resource();
-      var rm = r.mesh();
-      var rl = rm.outline();
-      b.outline().assign(rl);
-      b.upload();
-      p._display.pushRenderable(b);
-   }
 }
 function FDsCanvas_dispose(){
    var o = this;
@@ -692,4 +673,40 @@ function FDsMainWorkspace_onBuild(p){
 function FDsMainWorkspace_dispose(){
    var o = this;
    o.__base.FWorkspace.dispose.call(o);
+}
+function MDsBoundBox(o){
+   o = RClass.inherits(this, o);
+   o._boundBox    = null;
+   o.boundBox     = MDsBoundBox_boundBox;
+   o.showBoundBox = MDsBoundBox_showBoundBox;
+   o.hideBoundBox = MDsBoundBox_hideBoundBox;
+   return o;
+}
+function MDsBoundBox_boundBox(){
+   var o = this;
+   var b = o._boundBox;
+   if(!b){
+      b = o._boundBox = RClass.create(FRd3BoundBox);
+      b.linkGraphicContext(o);
+      b.setup();
+   }
+   return b;
+}
+function MDsBoundBox_showBoundBox(){
+   var o = this;
+   var b = o.boundBox();
+   b.remove();
+   var r = o.resource();
+   var rm = r.mesh();
+   var rl = rm.outline();
+   b.outline().assign(rl);
+   b.upload();
+   o._display.pushRenderable(b);
+}
+function MDsBoundBox_hideBoundBox(){
+   var o = this;
+   var b = o._boundBox;
+   if(b){
+      b.remove();
+   }
 }

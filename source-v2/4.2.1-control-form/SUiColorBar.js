@@ -216,8 +216,10 @@ function SUiColorBar_setColorValue(p){
 function SUiColorBar_setSlideValue(p){
    var o = this;
    var w = o.hSlideForm.offsetWidth;
-   var v = p / o.maxValue * w;
-   o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
+   if(w > 0){
+      var v = p / o.maxValue * w;
+      o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
+   }
 }
 
 //==========================================================

@@ -18,6 +18,7 @@ function FRs3Object(o){
    o.label       = FRs3Object_label;
    // @method
    o.unserialize = FRs3Object_unserialize;
+   o.saveConfig  = FRs3Object_saveConfig;
    return o;
 }
 
@@ -61,4 +62,17 @@ function FRs3Object_unserialize(p){
    o._guid = p.readString();
    o._code = p.readString();
    o._label = p.readString();
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FRs3Object_saveConfig(p){
+   var o = this;
+   // 存储属性
+   p.set('guid', o._guid);
+   p.set('code', o._code);
+   p.set('label', o._label);
 }

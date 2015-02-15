@@ -27,9 +27,9 @@ function FUiFrameSet(o){
    o.dispose       = FUiFrameSet_dispose;
    return o;
 }
-function FUiFrameSet_onBuildPanel(e){
+function FUiFrameSet_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
+   o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
 }
 function FUiFrameSet_construct(){
    var o = this;

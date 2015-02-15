@@ -85,7 +85,7 @@ function FE3dTemplateConsole_alloc(c, n){
    var r = rc.load(n);
    // 创建模板
    var t = RClass.create(FE3dTemplate);
-   t._context = c;
+   t.linkGraphicContext(c);
    t.setName(n);
    t._resourceGuid = n;
    t.setResource(r);
@@ -127,10 +127,10 @@ function FE3dTemplateConsole_free(p){
    p.remove();
    // 放到缓冲池
    var n = p._resourceGuid;
-   var ts = o._templates.get(n);
-   if(ts == null){
-      ts = new TObjects();
-      o._templates.set(n, ts);
+   var s = o._templates.get(n);
+   if(!s){
+      s = new TObjects();
+      o._templates.set(n, s);
    }
-   ts.push(p);
+   s.push(p);
 }

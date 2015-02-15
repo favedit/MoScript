@@ -469,6 +469,15 @@ function FRenderRectangle_setup(p){
    o.indexBuffer = context.createIndexBuffer();
    o.indexBuffer.upload(id, 6);
 }
+var EE3dScene = new function EE3dScene(){
+   var o = this;
+   o.Scene      = 'scene';
+   o.Layer      = 'layer';
+   o.Display    = 'display';
+   o.Material   = 'material';
+   o.Renderable = 'renderable';
+   return o;
+}
 function FE3dCamera(o){
    o = RClass.inherits(this, o, FG3dPerspectiveCamera);
    o._rotation       = null;
@@ -1037,7 +1046,7 @@ function FE3dScene_loadRegionResource(p){
    c.position().assign(rc.position());
    c.setDirection(rc.direction().x, rc.direction().y, rc.direction().z);
    c.update();
-   cp.size().assign(o._context.size());
+   cp.size().assign(o._graphicContext.size());
    cp._angle = rcv.angle();
    cp._znear = rcv.znear();
    cp._zfar = rcv.zfar();
@@ -1061,15 +1070,15 @@ function FE3dScene_loadRegionResource(p){
 }
 function FE3dScene_loadDisplayResource(pl, pd){
    var o = this;
-   var d3 = RClass.create(FE3dSceneDisplay);
-   d3._context = o._context;
+   var d3 = RConsole.find(FE3dSceneConsole).factory().create(EE3dScene.Display);
+   d3.linkGraphicContext(o);
    d3.loadSceneResource(pd);
    RConsole.find(FE3dTemplateConsole).load(d3, pd.code());
    pl.pushDisplay(d3);
 }
 function FE3dScene_loadLayerResource(p){
    var o = this;
-   var l = RClass.create(FE3dSceneLayer);
+   var l = RConsole.find(FE3dSceneConsole).factory().create(EE3dScene.Layer);
    l.loadResource(p);
    var s = p.displays();
    if(s){
@@ -1284,24 +1293,26 @@ function FE3dSceneCanvas_dispose(){
 function FE3dSceneConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd    = EScope.Local;
+   o._factory    = null;
    o._loadScenes = null;
    o._scenes     = null;
    o._thread     = null;
    o._interval   = 100;
    o.onProcess   = FE3dSceneConsole_onProcess;
    o.construct   = FE3dSceneConsole_construct;
+   o.factory     = FE3dSceneConsole_factory;
    o.scenes      = FE3dSceneConsole_scenes;
    o.alloc       = FE3dSceneConsole_alloc;
    return o;
 }
 function FE3dSceneConsole_onProcess(){
    var o = this;
-   var ms = o._loadScenes;
-   ms.record();
-   while(ms.next()){
-      var m = ms.current();
+   var s = o._loadScenes;
+   s.record();
+   while(s.next()){
+      var m = s.current();
       if(m.processLoad()){
-         ms.removeCurrent();
+         s.removeCurrent();
       }
    }
 }
@@ -1309,10 +1320,19 @@ function FE3dSceneConsole_construct(){
    var o = this;
    o._loadScenes = new TLooper();
    o._scenes = new TDictionary();
+   var f = o._factory = RClass.create(FClassFactory);
+   f.register(EE3dScene.Scene, FE3dScene);
+   f.register(EE3dScene.Layer, FE3dSceneLayer);
+   f.register(EE3dScene.Display, FE3dSceneDisplay);
+   f.register(EE3dScene.Material, FE3dSceneMaterial);
+   f.register(EE3dScene.Renderable, FE3dSceneDisplayRenderable);
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
    t.lsnsProcess.register(o, o.onProcess);
    RConsole.find(FThreadConsole).start(t);
+}
+function FE3dSceneConsole_factory(){
+   return this._factory;
 }
 function FE3dSceneConsole_scenes(){
    return this._scenes;
@@ -1322,7 +1342,7 @@ function FE3dSceneConsole_alloc(pc, pn){
    var rsc = RConsole.find(FRs3SceneConsole);
    var rs = rsc.load(pn);
    var s = RClass.create(FE3dScene);
-   s._context = pc;
+   s.linkGraphicContext(pc);
    s._name = pn;
    s._resource = rs;
    s.setup();
@@ -1357,6 +1377,7 @@ function FE3dSceneDisplay_resourceScene(){
 }
 function FE3dSceneDisplay_loadSceneResource(p){
    var o = this;
+   var cf = RConsole.find(FE3dSceneConsole).factory();
    o._resourceScene = p;
    o._matrix.assign(p.matrix());
    var rms = p.materials();
@@ -1365,7 +1386,7 @@ function FE3dSceneDisplay_loadSceneResource(p){
       var ms = o._materials = new TDictionary();
       for(var i = 0; i < c; i++){
          var rm = rms.get(i);
-         var m = RClass.create(FE3dSceneMaterial);
+         var m = cf.create(EE3dScene.Material);
          m._display = o;
          m.loadSceneResource(rm);
          ms.set(rm.groupGuid(), m);
@@ -1385,16 +1406,18 @@ function FE3dSceneDisplay_loadSceneResource(p){
 }
 function FE3dSceneDisplay_loadResource(p){
    var o = this;
+   var cf = RConsole.find(FE3dSceneConsole).factory();
    var ms = o._materials;
    var rds = p.displays();
    var c = rds.count();
    if(c > 0){
       for(var i = 0; i < c; i++){
          var rd = rds.get(i);
-         var r = RClass.create(FE3dSceneDisplayRenderable);
+         var r = cf.create(EE3dScene.Renderable);
          r._display = o;
-         r._context = o._context;
+         r.linkGraphicContext(o);
          r.loadResource(rd);
+         o._meshRenderables.push(r);
          o.pushRenderable(r);
          var rdm = rd.materials().first();
          var m = ms.get(rdm.groupGuid());
@@ -1458,12 +1481,19 @@ function FE3dSceneDisplayMovie_process(p){
 }
 function FE3dSceneDisplayRenderable(o){
    o = RClass.inherits(this, o, FE3dTemplateRenderable);
-   o.loadMaterial = FE3dSceneDisplayRenderable_loadMaterial;
+   o._materialReference = null;
+   o.loadMaterial       = FE3dSceneDisplayRenderable_loadMaterial;
+   o.reloadResource     = FE3dSceneDisplayRenderable_reloadResource;
    return o;
 }
 function FE3dSceneDisplayRenderable_loadMaterial(p){
    var o = this;
+   o._materialReference = p;
    o._material.calculate(p);
+}
+function FE3dSceneDisplayRenderable_reloadResource(){
+   var o = this;
+   o._material.calculate(o._materialReference);
 }
 function FE3dSceneLayer(o){
    o = RClass.inherits(this, o, FDisplayLayer);
@@ -1486,6 +1516,7 @@ function FE3dSceneMaterial(o){
    o.groupGuid         = FE3dSceneMaterial_groupGuid
    o.resource          = FE3dSceneMaterial_resource;
    o.loadSceneResource = FE3dSceneMaterial_loadSceneResource;
+   o.reload            = FE3dSceneMaterial_reload;
    return o;
 }
 function FE3dSceneMaterial_groupGuid(p){
@@ -1498,6 +1529,10 @@ function FE3dSceneMaterial_loadSceneResource(p){
    var o = this;
    o._resource = p;
    o._info.assign(p.info());
+}
+function FE3dSceneMaterial_reload(p){
+   var o = this;
+   o._info.assign(o._resource.info());
 }
 function FE3dSimpleStage(o){
    o = RClass.inherits(this, o, FE3dStage);
@@ -1596,7 +1631,7 @@ function FE3dSprite_testVisible(p){
    return this._visible;
 }
 function FE3dStage(o){
-   o = RClass.inherits(this, o, FStage);
+   o = RClass.inherits(this, o, FStage, MGraphicObject);
    o._backgroundColor  = null;
    o._camera           = null;
    o._directionalLight = null
@@ -1633,7 +1668,7 @@ function FE3dStage_construct(){
 function FE3dStage_setup(){
    var o = this;
    o.__base.FStage.construct.call(o);
-   o._region.linkGraphicContext(o._context);
+   o._region.linkGraphicContext(o);
    o._region.setup();
 }
 function FE3dStage_backgroundColor(){
@@ -1685,32 +1720,44 @@ function FE3dStage_process(){
    t.present(r);
 }
 function FE3dTemplate(o){
-   o = RClass.inherits(this, o, FE3dDisplay, MListenerLoad);
-   o._dataReady     = false;
-   o._ready         = false;
-   o._resource      = null;
-   o._skeletons     = null;
-   o._animations    = null;
-   o._resource      = null;
-   o.testReady      = FE3dTemplate_testReady;
-   o.skeletons      = FE3dTemplate_skeletons;
-   o.pushSkeleton   = FE3dTemplate_pushSkeleton;
-   o.findAnimation  = FE3dTemplate_findAnimation;
-   o.animations     = FE3dTemplate_animations;
-   o.pushAnimation  = FE3dTemplate_pushAnimation;
-   o.resource       = FE3dTemplate_resource;
-   o.setResource    = FE3dTemplate_setResource;
-   o.loadSkeletons  = FE3dTemplate_loadSkeletons;
-   o.linkAnimation  = FE3dTemplate_linkAnimation;
-   o.loadAnimations = FE3dTemplate_loadAnimations;
-   o.loadResource   = FE3dTemplate_loadResource;
-   o.reloadResource = FE3dTemplate_reloadResource;
-   o.processLoad    = FE3dTemplate_processLoad;
-   o.process        = FE3dTemplate_process;
+   o = RClass.inherits(this, o, FE3dDisplay, MGraphicObject, MListenerLoad);
+   o._dataReady       = false;
+   o._ready           = false;
+   o._resource        = null;
+   o._meshRenderables = null;
+   o._skeletons       = null;
+   o._animations      = null;
+   o._resource        = null;
+   o.construct        = FE3dTemplate_construct;
+   o.testReady        = FE3dTemplate_testReady;
+   o.meshRenderables  = FE3dTemplate_meshRenderables;
+   o.skeletons        = FE3dTemplate_skeletons;
+   o.pushSkeleton     = FE3dTemplate_pushSkeleton;
+   o.findAnimation    = FE3dTemplate_findAnimation;
+   o.animations       = FE3dTemplate_animations;
+   o.pushAnimation    = FE3dTemplate_pushAnimation;
+   o.resource         = FE3dTemplate_resource;
+   o.setResource      = FE3dTemplate_setResource;
+   o.loadSkeletons    = FE3dTemplate_loadSkeletons;
+   o.linkAnimation    = FE3dTemplate_linkAnimation;
+   o.loadAnimations   = FE3dTemplate_loadAnimations;
+   o.loadResource     = FE3dTemplate_loadResource;
+   o.reloadResource   = FE3dTemplate_reloadResource;
+   o.processLoad      = FE3dTemplate_processLoad;
+   o.process          = FE3dTemplate_process;
+   o.dispose          = FE3dTemplate_dispose;
    return o;
+}
+function FE3dTemplate_construct(){
+   var o = this;
+   o.__base.FE3dDisplay.construct.call(o);
+   o._meshRenderables = new TObjects();
 }
 function FE3dTemplate_testReady(){
    return this._dataReady;
+}
+function FE3dTemplate_meshRenderables(){
+   return this._meshRenderables;
 }
 function FE3dTemplate_skeletons(){
    return this._skeletons;
@@ -1782,10 +1829,10 @@ function FE3dTemplate_loadAnimations(p){
             continue;
          }
          var a = null;
-         if(r.skeleton() == null){
-            a = RClass.create(FRd3MeshAnimation);
-         }else{
+         if(r.skeleton()){
             a = RClass.create(FRd3SkeletonAnimation);
+         }else{
+            a = RClass.create(FRd3MeshAnimation);
          }
          a.loadResource(r);
          o.pushAnimation(a);
@@ -1797,20 +1844,20 @@ function FE3dTemplate_loadResource(p){
    var ds = p.displays();
    var c = ds.count();
    if(c > 0){
-      var rs = o.renderables();
       for(var i = 0; i < c; i++){
          var d = ds.get(i);
          var r = RClass.create(FE3dTemplateRenderable);
          r._display = o;
-         r._context = o._context;
+         r.linkGraphicContext(o);
          r.loadResource(d);
-         rs.push(r);
+         o._meshRenderables.push(r);
+         o.pushRenderable(r);
       }
    }
 }
 function FE3dTemplate_reloadResource(){
    var o = this;
-   var s = o._renderables;
+   var s = o._meshRenderables;
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
@@ -1873,6 +1920,11 @@ function FE3dTemplate_process(){
          as.value(i).process(k);
       }
    }
+}
+function FE3dTemplate_dispose(){
+   var o = this;
+   o._meshRenderables = RObject.dispose(o._meshRenderables);
+   o.__base.FE3dDisplay.dispose.call(o);
 }
 function FE3dTemplateCanvas(o){
    o = RClass.inherits(this, o, FE3dCanvas);
@@ -2088,7 +2140,7 @@ function FE3dTemplateConsole_alloc(c, n){
    var rc = RConsole.find(FRs3TemplateConsole);
    var r = rc.load(n);
    var t = RClass.create(FE3dTemplate);
-   t._context = c;
+   t.linkGraphicContext(c);
    t.setName(n);
    t._resourceGuid = n;
    t.setResource(r);
@@ -2109,12 +2161,12 @@ function FE3dTemplateConsole_free(p){
    var o = this;
    p.remove();
    var n = p._resourceGuid;
-   var ts = o._templates.get(n);
-   if(ts == null){
-      ts = new TObjects();
-      o._templates.set(n, ts);
+   var s = o._templates.get(n);
+   if(!s){
+      s = new TObjects();
+      o._templates.set(n, s);
    }
-   ts.push(p);
+   s.push(p);
 }
 function FE3dTemplateRenderable(o){
    o = RClass.inherits(this, o, FE3dMeshRenderable);
@@ -2164,7 +2216,7 @@ function FE3dTemplateRenderable_loadResource(p){
    var o = this;
    o._resource = p;
    o._matrix.assign(p.matrix());
-   o._model = RConsole.find(FRd3ModelConsole).load(o._context, p.modelGuid());
+   o._model = RConsole.find(FRd3ModelConsole).load(o._graphicContext, p.modelGuid());
    var mr = o._materialResource = p._activeMaterial._material;
    o._effectName = mr.info().effectName;
    o._material.calculate(mr);
@@ -2175,7 +2227,7 @@ function FE3dTemplateRenderable_loadResource(p){
       var ts = o._textures = new TDictionary();
       for(var i = 0; i < c; i++){
          var r = rs.get(i);
-         var t = bc.load(o._context, r.bitmapGuid(), r.code());
+         var t = bc.load(o._graphicContext, r.bitmapGuid(), r.code());
          ts.set(r.code(), t);
       }
    }
@@ -2830,6 +2882,7 @@ function FRs3Object(o){
    o.code        = FRs3Object_code;
    o.label       = FRs3Object_label;
    o.unserialize = FRs3Object_unserialize;
+   o.saveConfig  = FRs3Object_saveConfig;
    return o;
 }
 function FRs3Object_guid(){
@@ -2847,6 +2900,12 @@ function FRs3Object_unserialize(p){
    o._code = p.readString();
    o._label = p.readString();
 }
+function FRs3Object_saveConfig(p){
+   var o = this;
+   p.set('guid', o._guid);
+   p.set('code', o._code);
+   p.set('label', o._label);
+}
 function FRs3Resource(o){
    o = RClass.inherits(this, o, FResource);
    o._dataReady   = false;
@@ -2856,6 +2915,7 @@ function FRs3Resource(o){
    o.loadListener = FRs3Resource_loadListener;
    o.testReady    = FRs3Resource_testReady;
    o.unserialize  = FRs3Resource_unserialize;
+   o.saveConfig   = FRs3Resource_saveConfig;
    o.load         = FRs3Resource_load;
    return o;
 }
@@ -2893,6 +2953,12 @@ function FRs3Resource_unserialize(p){
    o._code = p.readString();
    o._label = p.readString();
 }
+function FRs3Resource_saveConfig(p){
+   var o = this;
+   p.set('guid', o._guid);
+   p.set('code', o._code);
+   p.set('label', o._label);
+}
 function FRs3Resource_load(u){
    var o = this;
    var hc = RConsole.find(FHttpConsole);
@@ -2910,6 +2976,7 @@ function FRs3Scene(o){
    o.region      = FRs3Scene_region;
    o.layers      = FRs3Scene_layers;
    o.unserialize = FRs3Scene_unserialize;
+   o.saveConfig  = FRs3Scene_saveConfig;
    return o;
 }
 function FRs3Scene_construct(){
@@ -2939,6 +3006,19 @@ function FRs3Scene_unserialize(p){
       var l = RClass.create(FRs3SceneLayer);
       l.unserialize(p);
       o._layers.set(l.code(), l);
+   }
+}
+function FRs3Scene_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Resource.saveConfig.call(o, p);
+   p.setName('Scene');
+   p.set('theme_code', o._themeCode);
+   var xls = p.create('LayerCollection');
+   var ls = o._layers;
+   var c = ls.count();
+   for(var i = 0; i < c; i++){
+      var l = ls.value(i);
+      l.saveConfig(xls.create('Layer'));
    }
 }
 function FRs3SceneCamera(o){
@@ -3035,6 +3115,7 @@ function FRs3SceneDisplay(o){
    o.materials            = FRs3SceneDisplay_materials;
    o.renderables          = FRs3SceneDisplay_renderables;
    o.unserialize          = FRs3SceneDisplay_unserialize;
+   o.saveConfig           = FRs3SceneDisplay_saveConfig;
    return o;
 }
 function FRs3SceneDisplay_construct(){
@@ -3080,11 +3161,24 @@ function FRs3SceneDisplay_unserialize(p){
       }
    }
 }
+function FRs3SceneDisplay_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Object.saveConfig.call(o, p);
+   var xms = p.create('MaterialCollection');
+   var s = o._materials;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.get(i).saveConfig(xms.create('Material'));
+      }
+   }
+}
 function FRs3SceneLayer(o){
    o = RClass.inherits(this, o, FRs3Object);
    o._displays   = null;
    o.displays    = FRs3SceneLayer_displays;
    o.unserialize = FRs3SceneLayer_unserialize;
+   o.saveConfig  = FRs3SceneLayer_saveConfig;
    return o;
 }
 function FRs3SceneLayer_displays(){
@@ -3100,6 +3194,18 @@ function FRs3SceneLayer_unserialize(p){
          var d = RClass.create(FRs3SceneDisplay);
          d.unserialize(p);
          s.push(d);
+      }
+   }
+}
+function FRs3SceneLayer_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Object.saveConfig.call(o, p);
+   var xds = p.create('DisplayCollection');
+   var s = o._displays;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.get(i).saveConfig(xds.create('Display'));
       }
    }
 }
@@ -3173,6 +3279,7 @@ function FRs3SceneMaterial(o){
    o.groupGuid           = FRs3SceneMaterial_groupGuid;
    o.info                = FRs3SceneMaterial_info;
    o.unserialize         = FRs3SceneMaterial_unserialize;
+   o.saveConfig          = FRs3SceneMaterial_saveConfig;
    return o;
 }
 function FRs3SceneMaterial_construct(){
@@ -3192,6 +3299,12 @@ function FRs3SceneMaterial_unserialize(p){
    o._groupGuid = p.readString();
    o._info.unserialize(p);
    o._textureCount = p.readInt16();
+}
+function FRs3SceneMaterial_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Object.saveConfig.call(o, p);
+   p.set('group_guid', o._groupGuid);
+   o._info.saveConfig(p);
 }
 function FRs3SceneMovie(o){
    o = RClass.inherits(this, o, FObject);
@@ -3879,6 +3992,7 @@ function SRs3MaterialInfo(o){
    if(!o){o = this;}
    SG3dMaterialInfo(o);
    o.unserialize = SRs3MaterialInfo_unserialize;
+   o.saveConfig  = SRs3MaterialInfo_saveConfig;
    return o;
 }
 function SRs3MaterialInfo_unserialize(p){
@@ -3898,6 +4012,29 @@ function SRs3MaterialInfo_unserialize(p){
    o.refractFrontColor.unserialize(p);
    o.refractBackColor.unserialize(p);
    o.emissiveColor.unserialize(p);
+}
+function SRs3MaterialInfo_saveConfig(p){
+   var o = this;
+   p.set('effect_code', o.effectName);
+   p.setBoolean('option_double', o.optionDouble);
+   var x = p.create('Alpha');
+   x.setFloat('base', o.alphaBase);
+   x.setFloat('rate', o.alphaRate);
+   o.ambientColor.savePower(p.create('Ambient'));
+   o.diffuseColor.savePower(p.create('Diffuse'));
+   o.diffuseViewColor.savePower(p.create('DiffuseView'));
+   var x = p.create('Specular');
+   o.specularColor.savePower(x);
+   x.setFloat('level', o.specularLevel);
+   var x = p.create('SpecularView');
+   o.specularViewColor.savePower(x);
+   x.setFloat('level', o.specularViewLevel);
+   var x = p.create('Reflect');
+   o.reflectColor.savePower(x);
+   x.setFloat('merge', o.reflectMerge);
+   o.refractFrontColor.savePower(p.create('RefractFront'));
+   o.refractBackColor.savePower(p.create('RefractBack'));
+   o.emissiveColor.savePower(p.create('Emissive'));
 }
 function SRs3SceneShadow(o){
    if(!o){o = this;}

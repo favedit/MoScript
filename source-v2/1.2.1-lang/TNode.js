@@ -17,7 +17,9 @@ function TNode(o){
    // @method
    o.isName       = TNode_isName;
    o.name         = TNode_name;
+   o.setName      = TNode_setName;
    o.value        = TNode_value;
+   o.setValue     = TNode_setValue;
    o.contains     = TNode_contains;
    o.hasAttribute = TNode_hasAttribute;
    o.attributes   = TNode_attributes;
@@ -26,6 +28,8 @@ function TNode(o){
    o.nodes        = TNode_nodes;
    o.get          = TNode_get;
    o.set          = TNode_set;
+   o.setBoolean   = TNode_setBoolean;
+   o.setFloat     = TNode_setFloat;
    o.find         = TNode_find;
    o.findNode     = TNode_findNode;
    o.searchNode   = TNode_searchNode;
@@ -58,6 +62,16 @@ function TNode_name(){
 }
 
 //==========================================================
+// <T>设置名称。</T>
+//
+// @method
+// @param p:name:String 名称
+//==========================================================
+function TNode_setName(p){
+   this._name = p;
+}
+
+//==========================================================
 // <T>获得内容。</T>
 //
 // @method
@@ -65,6 +79,16 @@ function TNode_name(){
 //==========================================================
 function TNode_value(){
    return this._value;
+}
+
+//==========================================================
+// <T>设置内容。</T>
+//
+// @method
+// @param p:value:String 内容
+//==========================================================
+function TNode_setValue(p){
+   this._value = p;
 }
 
 //==========================================================
@@ -165,6 +189,32 @@ function TNode_get(n, v){
 function TNode_set(n, v){
    if(v != null){
       this.attributes().set(n, v);
+   }
+}
+
+//==========================================================
+// <T>设置属性对应的属性值。</T>
+//
+// @method
+// @param n:name:String 属性名称
+// @param v:value:String 属性值
+//==========================================================
+function TNode_setBoolean(n, v){
+   if(v != null){
+      this.attributes().set(n, RBoolean.format(v));
+   }
+}
+
+//==========================================================
+// <T>设置属性对应的属性值。</T>
+//
+// @method
+// @param n:name:String 属性名称
+// @param v:value:String 属性值
+//==========================================================
+function TNode_setFloat(n, v){
+   if(v != null){
+      this.attributes().set(n, RFloat.format(v));
    }
 }
 

@@ -603,9 +603,13 @@ function RArray_nameMaxLength(a){
 }
 var RBoolean = new function RBoolean(){
    var o = this;
+   o.format   = RBoolean_format;
    o.parse    = RBoolean_parse;
    o.toString = RBoolean_toString;
    return o;
+}
+function RBoolean_format(v){
+   return v ? EBoolean.True : EBoolean.False;
 }
 function RBoolean_parse(v){
    return (v == EBoolean.True);
@@ -1797,10 +1801,16 @@ function RFloat_parse(p){
 }
 function RFloat_format(v, l, lp, r, rp){
    var o = this;
-   if(!lp){
+   if(l == null){
+      l = 0;
+   }
+   if(lp == null){
       lp = o.LEFT_CHAR;
    }
-   if(!rp){
+   if(r == null){
+      r = 7;
+   }
+   if(rp == null){
       rp = o.LEFT_CHAR;
    }
    var s = v.toString();
@@ -1813,7 +1823,7 @@ function RFloat_format(v, l, lp, r, rp){
       var sr = s.substring(f + 1, f + r + 1);
    }
    var fl = RString.lpad(sl, l, lp);
-   var fr = RString.lpad(sr, r, rp);
+   var fr = RString.rpad(sr, r, rp);
    return fl + '.' + fr;
 }
 function RFloat_nvl(v, d){
@@ -1951,6 +1961,9 @@ function RInteger_format(v, l, p){
 }
 function RInteger_toRange(v, i, a){
    if(v == null){
+      v = 0;
+   }
+   if(isNaN(v)){
       v = 0;
    }
    if(v < i){
@@ -3753,7 +3766,9 @@ function TNode(o){
    o._nodes       = null;
    o.isName       = TNode_isName;
    o.name         = TNode_name;
+   o.setName      = TNode_setName;
    o.value        = TNode_value;
+   o.setValue     = TNode_setValue;
    o.contains     = TNode_contains;
    o.hasAttribute = TNode_hasAttribute;
    o.attributes   = TNode_attributes;
@@ -3762,6 +3777,8 @@ function TNode(o){
    o.nodes        = TNode_nodes;
    o.get          = TNode_get;
    o.set          = TNode_set;
+   o.setBoolean   = TNode_setBoolean;
+   o.setFloat     = TNode_setFloat;
    o.find         = TNode_find;
    o.findNode     = TNode_findNode;
    o.searchNode   = TNode_searchNode;
@@ -3777,8 +3794,14 @@ function TNode_isName(n){
 function TNode_name(){
    return this._name;
 }
+function TNode_setName(p){
+   this._name = p;
+}
 function TNode_value(){
    return this._value;
+}
+function TNode_setValue(p){
+   this._value = p;
 }
 function TNode_contains(n){
    var r = this._attributes;
@@ -3818,6 +3841,16 @@ function TNode_get(n, v){
 function TNode_set(n, v){
    if(v != null){
       this.attributes().set(n, v);
+   }
+}
+function TNode_setBoolean(n, v){
+   if(v != null){
+      this.attributes().set(n, RBoolean.format(v));
+   }
+}
+function TNode_setFloat(n, v){
+   if(v != null){
+      this.attributes().set(n, RFloat.format(v));
    }
 }
 function TNode_find(p){

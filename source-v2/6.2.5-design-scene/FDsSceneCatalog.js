@@ -148,13 +148,10 @@ function FDsSceneCatalog_buildRenderable(n, p){
          dn.setTypeName('material');
          dn.dataPropertySet('linker', m);
          n.appendNode(dn);
-         if(i == 0){
-            dn.click();
-         }
       }
    }
    // 创建渲染集合
-   var s = p.renderables();
+   var s = p.meshRenderables();
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){

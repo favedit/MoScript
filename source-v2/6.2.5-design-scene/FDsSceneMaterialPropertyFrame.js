@@ -49,7 +49,7 @@ function FDsSceneMaterialPropertyFrame_construct(){
 //==========================================================
 function FDsSceneMaterialPropertyFrame_loadObject(s, m){
    var o = this;
-   var r = m._resource;
+   var r = m.resource();
    // 设置属性
    o._activeMaterial = m;
    // 设置界面

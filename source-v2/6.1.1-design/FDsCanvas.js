@@ -5,9 +5,8 @@
 // @history 150130
 //==========================================================
 function FDsCanvas(o){
-   o = RClass.inherits(this, o, FUiCanvas, MListenerLoad, MMouseCapture);
+   o = RClass.inherits(this, o, FUiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);
    //..........................................................
-   o._context            = null;
    o._stage              = null;
    o._rotation           = null;
    o._rotationAble       = false;
@@ -15,7 +14,6 @@ function FDsCanvas(o){
    o._captureMatrix      = null;
    o._captureRotation    = null;
    o._dimensional        = null;
-   o._selectBoundBox     = null;
    //..........................................................
    // @event
    o.onBuild             = FDsCanvas_onBuild;
@@ -28,8 +26,6 @@ function FDsCanvas(o){
    //..........................................................
    // @method
    o.construct           = FDsCanvas_construct;
-   // @method
-   o.selectRenderable    = FDsCanvas_selectRenderable;
    // @method
    o.dispose             = FDsCanvas_dispose;
    return o;
@@ -47,15 +43,11 @@ function FDsCanvas_onBuild(p){
    // 创建渲染环境
    var h = o._hPanel;
    h.__linker = o;
-   var c = o._context = REngine3d.createContext(FWglContext, h);
+   var c = o._graphicContext = REngine3d.createContext(FWglContext, h);
    // 创建坐标系
    var dm = o._dimensional = RClass.create(FRd3Dimensional);
    dm.linkGraphicContext(c);
    dm.setup();
-   // 创建选取包围盒
-   var bb = o._selectBoundBox = RClass.create(FRd3BoundBox);
-   bb.linkGraphicContext(o._context);
-   bb.setup();
    // 启动处理
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start(1000 / 60);
@@ -205,7 +197,7 @@ function FDsCanvas_onEnterFrame(){
 //==========================================================
 function FDsCanvas_oeRefresh(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    o.__base.FUiCanvas.oeRefresh.call(o, p);
    // 获得大小
    var w = o._hParent.offsetWidth;
@@ -235,28 +227,6 @@ function FDsCanvas_construct(){
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
    o._captureRotation = new SVector3();
-}
-
-//==========================================================
-// <T>选中渲染对象处理。</T>
-//
-// @method
-// @param p:renderable:FG3dRenderable 渲染对象
-//==========================================================
-function FDsCanvas_selectRenderable(p){
-   var o = this;
-   // 隐藏包围盒
-   var b = o._selectBoundBox;
-   b.remove();
-   // 显示包围盒
-   if(p){
-      var r = p.resource();
-      var rm = r.mesh();
-      var rl = rm.outline();
-      b.outline().assign(rl);
-      b.upload();
-      p._display.pushRenderable(b);
-   }
 }
 
 //==========================================================

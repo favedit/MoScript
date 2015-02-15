@@ -83,10 +83,16 @@ function RFloat_parse(p){
 function RFloat_format(v, l, lp, r, rp){
    var o = this;
    // 校正参数
-   if(!lp){
+   if(l == null){
+      l = 0;
+   }
+   if(lp == null){
       lp = o.LEFT_CHAR;
    }
-   if(!rp){
+   if(r == null){
+      r = 7;
+   }
+   if(rp == null){
       rp = o.LEFT_CHAR;
    }
    // 分割内容
@@ -100,7 +106,7 @@ function RFloat_format(v, l, lp, r, rp){
       var sr = s.substring(f + 1, f + r + 1);
    }
    var fl = RString.lpad(sl, l, lp);
-   var fr = RString.lpad(sr, r, rp);
+   var fr = RString.rpad(sr, r, rp);
    return fl + '.' + fr;
 }
 

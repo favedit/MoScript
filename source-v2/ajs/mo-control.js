@@ -941,7 +941,7 @@ function FUiControl_setVisible(p){
    o._statusVisible = p;
    var h = o.panel(EPanel.Container);
    if(h){
-      RHtml.displaySet(h, p);
+      RHtml.visibleSet(h, p);
    }
 }
 function FUiControl_show(){
@@ -10723,8 +10723,10 @@ function SUiColorBar_setColorValue(p){
 function SUiColorBar_setSlideValue(p){
    var o = this;
    var w = o.hSlideForm.offsetWidth;
-   var v = p / o.maxValue * w;
-   o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
+   if(w > 0){
+      var v = p / o.maxValue * w;
+      o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
+   }
 }
 function SUiColorBar_setInputValue(p){
    this.hInput.value = p;
@@ -10818,8 +10820,10 @@ function SUiColorPower_setColorValue(p){
 function SUiColorPower_setSlideValue(p){
    var o = this;
    var w = o.hSlideForm.offsetWidth;
-   var v = p / o.maxValue * w;
-   o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
+   if(w > 0){
+      var v = p / o.maxValue * w;
+      o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
+   }
 }
 function SUiColorPower_setInputValue(p){
    var o = this;
@@ -16572,9 +16576,9 @@ function FUiFrameSet(o){
    o.dispose       = FUiFrameSet_dispose;
    return o;
 }
-function FUiFrameSet_onBuildPanel(e){
+function FUiFrameSet_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
+   o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
 }
 function FUiFrameSet_construct(){
    var o = this;
