@@ -46,6 +46,8 @@ function FDsSceneCanvas(o){
    o.selectMaterial       = FDsSceneCanvas_selectMaterial;
    o.selectRenderable     = FDsSceneCanvas_selectRenderable;
    o.switchMode           = FDsSceneCanvas_switchMode;
+   o.switchPlay           = FDsSceneCanvas_switchPlay;
+   o.switchMovie          = FDsSceneCanvas_switchMovie;
    o.loadScene            = FDsSceneCanvas_loadScene;
    // @method
    o.dispose              = FDsSceneCanvas_dispose;
@@ -534,6 +536,44 @@ function FDsSceneCanvas_switchMode(p){
    o._canvasModeCd = p;
    // 设置变量
    o.selectRenderable(o._selectRenderable);
+}
+
+//==========================================================
+// <T>切换播放模式。</T>
+//
+// @method
+// @param p:modeCd:Integer 
+//==========================================================
+function FDsSceneCanvas_switchPlay(p){
+   var o = this;
+   var s = o._activeScene;
+   var ds = s.allDisplays();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var d = ds.get(i);
+      if(d._movies){
+         d._optionPlay = p;
+      }
+   }
+}
+
+//==========================================================
+// <T>切换动画模式。</T>
+//
+// @method
+// @param p:modeCd:Integer 
+//==========================================================
+function FDsSceneCanvas_switchMovie(p){
+   var o = this;
+   var s = o._activeScene;
+   var ds = s.allDisplays();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var d = ds.get(i);
+      if(d._movies){
+         d._optionMovie = p;
+      }
+   }
 }
 
 //==========================================================

@@ -495,6 +495,7 @@ function FRd3Mesh(o){
    o.findTexture       = FRd3Mesh_findTexture;
    o.textures          = FRd3Mesh_textures;
    o.boneIds           = FRd3Mesh_boneIds;
+   o.resource          = FRd3Mesh_resource;
    o.loadResource      = FRd3Mesh_loadResource;
    return o;
 }
@@ -566,6 +567,9 @@ function FRd3Mesh_textures(){
 }
 function FRd3Mesh_boneIds(p){
    return this._boneIds;
+}
+function FRd3Mesh_resource(){
+   return this._resource;
 }
 function FRd3Mesh_loadResource(p){
    var o = this;

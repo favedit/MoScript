@@ -9,6 +9,8 @@ function FE3dSceneDisplay(o){
    //..........................................................
    // @attribute
    o._dataReady        = false;
+   o._optionPlay       = false;
+   o._optionMovie      = false;
    o._movieMatrix      = null;
    o._resourceScene    = null;
    o._materials        = null;
@@ -127,9 +129,11 @@ function FE3dSceneDisplay_updateMatrix(p){
    var m = o._currentMatrix.identity();
    var ms = o._movies;
    if(ms){
-      var c = ms.count();
-      for(var i = 0; i < c; i++){
-         ms.get(i).process(o._movieMatrix);
+      if(o._optionMovie){
+         var c = ms.count();
+         for(var i = 0; i < c; i++){
+            ms.get(i).process(o._movieMatrix);
+         }
       }
       m.append(o._movieMatrix);
    }

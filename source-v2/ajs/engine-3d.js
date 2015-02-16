@@ -261,6 +261,7 @@ function FE3dMeshRenderable(o){
    o._activeSkin      = null;
    o._activeTrack     = null;
    o._bones           = null;
+   o.renderable       = FE3dMeshRenderable_renderable;
    o.vertexCount      = FE3dMeshRenderable_vertexCount;
    o.indexBuffer      = FE3dMeshRenderable_indexBuffer;
    o.findTexture      = FE3dMeshRenderable_findTexture;
@@ -270,6 +271,9 @@ function FE3dMeshRenderable(o){
    o.process          = FE3dMeshRenderable_process;
    o.dispose          = FE3dMeshRenderable_dispose;
    return o;
+}
+function FE3dMeshRenderable_renderable(){
+   return this._renderable;
 }
 function FE3dMeshRenderable_vertexCount(){
    return this._renderable.vertexCount();
@@ -308,9 +312,11 @@ function FE3dMeshRenderable_process(p){
    o.__base.FRd3Renderable.process.call(p)
    var t = o._activeTrack;
    if(t){
-      var a = t._animation;
-      if(a){
-         a.process(t);
+      if(o._display._optionPlay){
+         var a = t._animation;
+         if(a){
+            a.process(t);
+         }
       }
    }
 }
@@ -885,6 +891,8 @@ function FE3dSceneConsole_alloc(pc, pn){
 function FE3dSceneDisplay(o){
    o = RClass.inherits(this, o, FE3dTemplate);
    o._dataReady        = false;
+   o._optionPlay       = false;
+   o._optionMovie      = false;
    o._movieMatrix      = null;
    o._resourceScene    = null;
    o._materials        = null;
@@ -961,9 +969,11 @@ function FE3dSceneDisplay_updateMatrix(p){
    var m = o._currentMatrix.identity();
    var ms = o._movies;
    if(ms){
-      var c = ms.count();
-      for(var i = 0; i < c; i++){
-         ms.get(i).process(o._movieMatrix);
+      if(o._optionMovie){
+         var c = ms.count();
+         for(var i = 0; i < c; i++){
+            ms.get(i).process(o._movieMatrix);
+         }
       }
       m.append(o._movieMatrix);
    }
@@ -1002,7 +1012,8 @@ function FE3dSceneDisplayMovie_process(p){
    var ct = RTimer.current();
    var sp = ct - o._lastTick;
    if(sp > o._interval){
-      if(o._resource._typeName == 'rotation'){
+      var c = o._resource.code();
+      if(c == 'rotation'){
          p.append(o._matrix);
       }
       o._lastTick = ct;
@@ -1011,9 +1022,13 @@ function FE3dSceneDisplayMovie_process(p){
 function FE3dSceneDisplayRenderable(o){
    o = RClass.inherits(this, o, FE3dTemplateRenderable);
    o._materialReference = null;
+   o.materialReference  = FE3dSceneDisplayRenderable_materialReference;
    o.loadMaterial       = FE3dSceneDisplayRenderable_loadMaterial;
    o.reloadResource     = FE3dSceneDisplayRenderable_reloadResource;
    return o;
+}
+function FE3dSceneDisplayRenderable_materialReference(p){
+   return this._materialReference;
 }
 function FE3dSceneDisplayRenderable_loadMaterial(p){
    var o = this;
@@ -1166,6 +1181,7 @@ function FE3dStage(o){
    o._directionalLight = null
    o._technique        = null;
    o._region           = null;
+   o._allDisplays      = null;
    o.construct         = FE3dStage_construct;
    o.setup             = FE3dStage_setup;
    o.backgroundColor   = FE3dStage_backgroundColor;
@@ -1175,6 +1191,8 @@ function FE3dStage(o){
    o.technique         = FE3dStage_technique;
    o.selectTechnique   = FE3dStage_selectTechnique;
    o.region            = FE3dStage_region;
+   o.filterDisplays    = FE3dStage_filterDisplays;
+   o.allDisplays       = FE3dStage_allDisplays;
    o.process           = FE3dStage_process;
    return o;
 }
@@ -1183,6 +1201,7 @@ function FE3dStage_construct(){
    o.__base.FStage.construct.call(o);
    o._backgroundColor = new SColor4();
    o._backgroundColor.set(0, 0, 0, 1);
+   o._allDisplays = new TObjects();
    var c = o._camera = RClass.create(FE3dCamera);
    c.position().set(0, 0, -100);
    c.lookAt(0, 0, 0);
@@ -1222,6 +1241,23 @@ function FE3dStage_selectTechnique(c, p){
 }
 function FE3dStage_region(){
    return this._region;
+}
+function FE3dStage_filterDisplays(p){
+   var o = this;
+   var s = o._layers;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.value(i).filterDisplays(p);
+      }
+   }
+}
+function FE3dStage_allDisplays(){
+   var o = this;
+   var s = o._allDisplays;
+   s.clear();
+   o.filterDisplays(s);
+   return s;
 }
 function FE3dStage_process(){
    var o = this;

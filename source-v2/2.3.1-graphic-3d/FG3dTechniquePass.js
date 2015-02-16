@@ -118,7 +118,7 @@ function FG3dTechniquePass_drawRegion(p){
    // 激活效果器
    o.activeEffects(p, rs);
    // 控件排序
-   rs.sort(o.sortRenderables);
+   //rs.sort(o.sortRenderables);
    // 渲染处理
    var c = rs.count();
    if(c > 0){

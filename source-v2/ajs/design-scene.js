@@ -93,6 +93,8 @@ function FDsSceneCanvas(o){
    o.selectMaterial       = FDsSceneCanvas_selectMaterial;
    o.selectRenderable     = FDsSceneCanvas_selectRenderable;
    o.switchMode           = FDsSceneCanvas_switchMode;
+   o.switchPlay           = FDsSceneCanvas_switchPlay;
+   o.switchMovie          = FDsSceneCanvas_switchMovie;
    o.loadScene            = FDsSceneCanvas_loadScene;
    o.dispose              = FDsSceneCanvas_dispose;
    return o;
@@ -445,6 +447,30 @@ function FDsSceneCanvas_switchMode(p){
    o._canvasModeCd = p;
    o.selectRenderable(o._selectRenderable);
 }
+function FDsSceneCanvas_switchPlay(p){
+   var o = this;
+   var s = o._activeScene;
+   var ds = s.allDisplays();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var d = ds.get(i);
+      if(d._movies){
+         d._optionPlay = p;
+      }
+   }
+}
+function FDsSceneCanvas_switchMovie(p){
+   var o = this;
+   var s = o._activeScene;
+   var ds = s.allDisplays();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var d = ds.get(i);
+      if(d._movies){
+         d._optionMovie = p;
+      }
+   }
+}
 function FDsSceneCanvas_loadScene(p){
    var o = this;
    var c = o._graphicContext;
@@ -532,12 +558,12 @@ function FDsSceneCanvasToolBar_onLookClick(p){
 function FDsSceneCanvasToolBar_onPlayClick(p, v){
    var o = this;
    var c = o._workspace._canvas;
-   c._optionPlay = v;
+   c.switchPlay(v);
 }
 function FDsSceneCanvasToolBar_onRotationClick(p, v){
    var o = this;
    var c = o._workspace._canvas;
-   c._optionRotation = v;
+   c.switchMovie(v);
 }
 function FDsSceneCanvasToolBar_construct(){
    var o = this;
@@ -756,11 +782,8 @@ function FDsSceneDisplayFrame_dispose(){
 function FDsSceneDisplayPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible        = false;
-   o._frameName      = 'design3d.scene.property.DisplayFrame';
    o._workspace      = null;
-   o._renderTemplate = null;
-   o._renderDisplay  = null;
-   o._renderMaterial = null;
+   o._activeDisplay  = null;
    o._controlGuid    = null;
    o._controlCode    = null;
    o._controlLabel   = null;
@@ -775,11 +798,6 @@ function FDsSceneDisplayPropertyFrame(o){
 function FDsSceneDisplayPropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlGuid = o.searchControl('guid');
-   o._controlCode = o.searchControl('code');
-   o._controlLabel = o.searchControl('label');
-   o._displayFrame = o.searchControl('design3d.template.DisplayFrame');
-   o._materialFrame = o.searchControl('design3d.template.MaterialFrame');
 }
 function FDsSceneDisplayPropertyFrame_construct(){
    var o = this;
@@ -1061,34 +1079,84 @@ function FDsSceneRenderable(o){
    o = RClass.inherits(this, o, FE3dSceneDisplayRenderable, MDsBoundBox);
    return o;
 }
+function FDsSceneRenderableFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._activeScene      = null;
+   o._activeRenderable = null;
+   o.onBuilded         = FDsSceneRenderableFrame_onBuilded;
+   o.onDataChanged     = FDsSceneRenderableFrame_onDataChanged;
+   o.construct         = FDsSceneRenderableFrame_construct;
+   o.loadObject        = FDsSceneRenderableFrame_loadObject;
+   o.dispose           = FDsSceneRenderableFrame_dispose;
+   return o;
+}
+function FDsSceneRenderableFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotation.addDataChangedListener(o, o.onDataChanged);
+   o._controlScale.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsSceneRenderableFrame_onDataChanged(p){
+   var o = this;
+   var r = o._activeRenderable;
+   var m = r.matrix();
+   var v = o._controlTranslate.get();
+   m.setTranslate(v.x, v.y, v.z);
+   var v = o._controlRotation.get();
+   m.setRotation(v.x, v.y, v.z);
+   var v = o._controlScale.get();
+   m.setScale(v.x, v.y, v.z);
+   m.update();
+}
+function FDsSceneRenderableFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsSceneRenderableFrame_loadObject(s, r){
+   var o = this;
+   o._activeScene = s;
+   o._activeRenderable = r;
+   var m = r.matrix();
+   o._controlTranslate.set(m.tx, m.ty, m.tz);
+   o._controlRotation.set(m.rx, m.ry, m.rz);
+   o._controlScale.set(m.sx, m.sy, m.sz);
+}
+function FDsSceneRenderableFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
 function FDsSceneRenderablePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._visible        = false;
-   o._workspace      = null;
-   o._renderTemplate = null;
-   o._renderDisplay  = null;
-   o._renderMaterial = null;
-   o._controlGuid    = null;
-   o._controlCode    = null;
-   o._controlLabel   = null;
-   o._displayFrame   = null;
-   o._materialFrame  = null;
-   o.construct       = FDsSceneRenderablePropertyFrame_construct;
-   o.loadObject      = FDsSceneRenderablePropertyFrame_loadObject;
-   o.dispose         = FDsSceneRenderablePropertyFrame_dispose;
+   o._visible          = false;
+   o._workspace        = null;
+   o._activeRenderable = null;
+   o._activeMaterial   = null;
+   o._controlGuid      = null;
+   o._controlCode      = null;
+   o._controlLabel     = null;
+   o._frameRenderable  = null;
+   o._frameMaterial    = null;
+   o.construct         = FDsSceneRenderablePropertyFrame_construct;
+   o.loadObject        = FDsSceneRenderablePropertyFrame_loadObject;
+   o.dispose           = FDsSceneRenderablePropertyFrame_dispose;
    return o;
 }
 function FDsSceneRenderablePropertyFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
-function FDsSceneRenderablePropertyFrame_loadObject(s, d){
+function FDsSceneRenderablePropertyFrame_loadObject(s, r){
    var o = this;
-   var r = d._renderable._resource;
-   o._controlGuid.set(r.guid());
-   o._controlCode.set(r.code());
-   o._controlLabel.set(r.label());
-   o._frameDisplay.loadObject(s, d);
+   var m = r.materialReference();
+   var s = r.renderable().resource();
+   o._activeRenderable = r;
+   o._activeMaterial = m;
+   o._controlGuid.set(s.guid());
+   o._controlCode.set(s.code());
+   o._controlLabel.set(s.label());
+   o._frameRenderable.loadObject(s, r);
+   o._frameMaterial.loadObject(s, m);
 }
 function FDsSceneRenderablePropertyFrame_dispose(){
    var o = this;

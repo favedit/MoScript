@@ -15,6 +15,7 @@ function FE3dMeshRenderable(o){
    o._bones           = null;
    //..........................................................
    // @method
+   o.renderable       = FE3dMeshRenderable_renderable;
    o.vertexCount      = FE3dMeshRenderable_vertexCount;
    o.indexBuffer      = FE3dMeshRenderable_indexBuffer;
    o.findTexture      = FE3dMeshRenderable_findTexture;
@@ -26,6 +27,16 @@ function FE3dMeshRenderable(o){
    // @method
    o.dispose          = FE3dMeshRenderable_dispose;
    return o;
+}
+
+//==========================================================
+// <T>获得渲染对象。</T>
+//
+// @method
+// @return FRd3Mesh 渲染对象
+//==========================================================
+function FE3dMeshRenderable_renderable(){
+   return this._renderable;
 }
 
 //==========================================================
@@ -116,9 +127,11 @@ function FE3dMeshRenderable_process(p){
    o.__base.FRd3Renderable.process.call(p)
    var t = o._activeTrack;
    if(t){
-      var a = t._animation;
-      if(a){
-         a.process(t);
+      if(o._display._optionPlay){
+         var a = t._animation;
+         if(a){
+            a.process(t);
+         }
       }
    }
 }

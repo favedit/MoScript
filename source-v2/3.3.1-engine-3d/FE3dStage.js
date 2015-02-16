@@ -14,6 +14,7 @@ function FE3dStage(o){
    o._technique        = null;
    // @attribute
    o._region           = null;
+   o._allDisplays      = null;
    //..........................................................
    // @method
    o.construct         = FE3dStage_construct;
@@ -26,6 +27,10 @@ function FE3dStage(o){
    o.technique         = FE3dStage_technique;
    o.selectTechnique   = FE3dStage_selectTechnique;
    o.region            = FE3dStage_region;
+   // @method
+   o.filterDisplays    = FE3dStage_filterDisplays;
+   o.allDisplays       = FE3dStage_allDisplays;
+   // @method
    o.process           = FE3dStage_process;
    return o;
 }
@@ -41,6 +46,7 @@ function FE3dStage_construct(){
    // 创建背景色
    o._backgroundColor = new SColor4();
    o._backgroundColor.set(0, 0, 0, 1);
+   o._allDisplays = new TObjects();
    // 创建相机
    var c = o._camera = RClass.create(FE3dCamera);
    c.position().set(0, 0, -100);
@@ -140,6 +146,38 @@ function FE3dStage_selectTechnique(c, p){
 //==========================================================
 function FE3dStage_region(){
    return this._region;
+}
+
+//==========================================================
+// <T>过滤显示集合。</T>
+//
+// @method
+// @param p:displays:TObjects 显示集合
+//==========================================================
+function FE3dStage_filterDisplays(p){
+   var o = this;
+   // 过滤显示层集合
+   var s = o._layers;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.value(i).filterDisplays(p);
+      }
+   }
+}
+
+//==========================================================
+// <T>获得所有显示集合。</T>
+//
+// @method
+// @return TObjects 显示集合
+//==========================================================
+function FE3dStage_allDisplays(){
+   var o = this;
+   var s = o._allDisplays;
+   s.clear();
+   o.filterDisplays(s);
+   return s;
 }
 
 //==========================================================

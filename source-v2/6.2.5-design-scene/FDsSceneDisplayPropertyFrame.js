@@ -10,13 +10,10 @@ function FDsSceneDisplayPropertyFrame(o){
    //..........................................................
    // @attribute
    o._visible        = false;
-   o._frameName      = 'design3d.scene.property.DisplayFrame';
    // @attribute
    o._workspace      = null;
    // @attribute
-   o._renderTemplate = null;
-   o._renderDisplay  = null;
-   o._renderMaterial = null;
+   o._activeDisplay  = null;
    // @attribute
    o._controlGuid    = null;
    o._controlCode    = null;
@@ -45,13 +42,6 @@ function FDsSceneDisplayPropertyFrame(o){
 function FDsSceneDisplayPropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
-   // 设置关联
-   o._controlGuid = o.searchControl('guid');
-   o._controlCode = o.searchControl('code');
-   o._controlLabel = o.searchControl('label');
-   // 设置关联
-   o._displayFrame = o.searchControl('design3d.template.DisplayFrame');
-   o._materialFrame = o.searchControl('design3d.template.MaterialFrame');
 }
 
 //==========================================================
@@ -81,7 +71,7 @@ function FDsSceneDisplayPropertyFrame_loadObject(s, d){
    //var rtm = rt.themes().first();
    //var m = rtm.materials().get(rdm.groupGuid());
    // 设置属性
-   //o._renderTemplate = t;
+   //o._activeDisplay = t;
    //o._renderDisplay = d;
    //o._renderMaterial = m;
    // 设置参数

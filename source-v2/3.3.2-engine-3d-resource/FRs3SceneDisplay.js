@@ -109,15 +109,15 @@ function FRs3SceneDisplay_unserialize(p){
    // 读取矩阵
    o._matrix.unserialize(p);
    // 读取动画集合
-   //var c = p.readUint16();
-   //if(c > 0){
-   //   var ms = o._movies = new TObjects();
-   //   for(var i = 0; i < c; i++){
-   //      var m = RClass.create(FRs3SceneMovie);
-   //      m.unserialize(p);
-   //      ms.push(m);
-   //   }
-   //}
+   var c = p.readUint16();
+   if(c > 0){
+      var s = o._movies = new TObjects();
+      for(var i = 0; i < c; i++){
+         var m = RClass.create(FRs3SceneMovie);
+         m.unserialize(p);
+         s.push(m);
+      }
+   }
    // 读取材质集合
    var c = p.readUint16();
    if(c > 0){

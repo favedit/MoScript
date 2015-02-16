@@ -1513,7 +1513,6 @@ function FG3dTechniquePass_drawRegion(p){
    var cb = o._graphicContext.capability();
    var rs = p.renderables();
    o.activeEffects(p, rs);
-   rs.sort(o.sortRenderables);
    var c = rs.count();
    if(c > 0){
       if(cb.optionMaterialMap){

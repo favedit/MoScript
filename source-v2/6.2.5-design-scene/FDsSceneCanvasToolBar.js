@@ -123,7 +123,7 @@ function FDsSceneCanvasToolBar_onLookClick(p){
 function FDsSceneCanvasToolBar_onPlayClick(p, v){
    var o = this;
    var c = o._workspace._canvas;
-   c._optionPlay = v;
+   c.switchPlay(v);
 }
 
 //==========================================================
@@ -135,7 +135,7 @@ function FDsSceneCanvasToolBar_onPlayClick(p, v){
 function FDsSceneCanvasToolBar_onRotationClick(p, v){
    var o = this;
    var c = o._workspace._canvas;
-   c._optionRotation = v;
+   c.switchMovie(v);
 }
 
 //==========================================================

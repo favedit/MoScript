@@ -21,10 +21,11 @@ function FDisplay(o){
    o.rotation          = FDisplay_rotation;
    o.scale             = FDisplay_scale;
    o.hasRenderable     = FDisplay_hasRenderable;
-   o.filterRenderables = FDisplay_filterRenderables;
    o.renderables       = FDisplay_renderables;
    o.pushRenderable    = FDisplay_pushRenderable;
    o.removeRenderable  = FDisplay_removeRenderable;
+   o.filterDisplays    = FDisplay_filterDisplays;
+   o.filterRenderables = FDisplay_filterRenderables;
    o.show              = FDisplay_show;
    o.hide              = FDisplay_hide;
    o.setVisible        = FDisplay_setVisible;
@@ -79,23 +80,6 @@ function FDisplay_hasRenderable(){
    var r = this._renderables;
    return r ? !r.isEmpty() : false;
 }
-function FDisplay_filterRenderables(p){
-   var o = this;
-   if(!o._visible){
-      return false;
-   }
-   var rs = o._renderables;
-   if(rs){
-      var c = rs.count();
-      for(var n = 0; n < c; n++){
-         var r = rs.get(n);
-         if(r.testVisible()){
-            p.pushRenderable(r);
-         }
-      }
-   }
-   return true;
-}
 function FDisplay_renderables(){
    var o = this;
    var r = o._renderables;
@@ -114,6 +98,29 @@ function FDisplay_removeRenderable(p){
    if(s){
       s.remove(p);
    }
+}
+function FDisplay_filterDisplays(p){
+   var o = this;
+   if(o._visible){
+      p.push(o);
+   }
+}
+function FDisplay_filterRenderables(p){
+   var o = this;
+   if(!o._visible){
+      return false;
+   }
+   var rs = o._renderables;
+   if(rs){
+      var c = rs.count();
+      for(var n = 0; n < c; n++){
+         var r = rs.get(n);
+         if(r.testVisible()){
+            p.pushRenderable(r);
+         }
+      }
+   }
+   return true;
 }
 function FDisplay_show(){
    this.setVisible(true);
@@ -173,10 +180,11 @@ function FDisplayContainer(o){
    o.hasDisplay        = FDisplayContainer_hasDisplay;
    o.findDisplay       = FDisplayContainer_findDisplay;
    o.searchDisplay     = FDisplayContainer_searchDisplay;
-   o.filterRenderables = FDisplayContainer_filterRenderables;
    o.displays          = FDisplayContainer_displays;
    o.pushDisplay       = FDisplayContainer_pushDisplay;
    o.removeDisplay     = FDisplayContainer_removeDisplay;
+   o.filterDisplays    = FDisplayContainer_filterDisplays;
+   o.filterRenderables = FDisplayContainer_filterRenderables;
    o.process           = FDisplayContainer_process;
    o.dispose           = FDisplayContainer_dispose;
    return o;
@@ -220,6 +228,37 @@ function FDisplayContainer_searchDisplay(p){
    }
    return null
 }
+function FDisplayContainer_displays(){
+   var o = this;
+   var r = o._displays;
+   if(!r){
+      r = o._displays = new TObjects();
+   }
+   return r;
+}
+function FDisplayContainer_pushDisplay(p){
+   var o = this;
+   p._parent = o;
+   o.displays().push(p);
+}
+function FDisplayContainer_removeDisplay(p){
+   var o = this;
+   o.displays().remove(p);
+   p._parent = null;
+}
+function FDisplayContainer_filterDisplays(p){
+   var o = this;
+   o.__base.FDisplay.filterDisplays.call(o, p);
+   if(o._visible){
+      var s = o._displays;
+      if(s){
+         var c = s.count();
+         for(var i = 0; i < c; i++){
+            s.get(i).filterDisplays(p);
+         }
+      }
+   }
+}
 function FDisplayContainer_filterRenderables(p){
    var o = this;
    o.__base.FDisplay.filterRenderables.call(o, p);
@@ -246,24 +285,6 @@ function FDisplayContainer_process(p){
          d.process(p);
       }
    }
-}
-function FDisplayContainer_displays(){
-   var o = this;
-   var r = o._displays;
-   if(!r){
-      r = o._displays = new TObjects();
-   }
-   return r;
-}
-function FDisplayContainer_pushDisplay(p){
-   var o = this;
-   p._parent = o;
-   o.displays().push(p);
-}
-function FDisplayContainer_removeDisplay(p){
-   var o = this;
-   o.displays().remove(p);
-   p._parent = null;
 }
 function FDisplayContainer_dispose(){
    var o = this;

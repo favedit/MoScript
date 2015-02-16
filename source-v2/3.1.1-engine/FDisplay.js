@@ -35,10 +35,12 @@ function FDisplay(o){
    o.scale             = FDisplay_scale;
    // @method
    o.hasRenderable     = FDisplay_hasRenderable;
-   o.filterRenderables = FDisplay_filterRenderables;
    o.renderables       = FDisplay_renderables;
    o.pushRenderable    = FDisplay_pushRenderable;
    o.removeRenderable  = FDisplay_removeRenderable;
+   // @method
+   o.filterDisplays    = FDisplay_filterDisplays;
+   o.filterRenderables = FDisplay_filterRenderables;
    // @method
    o.show              = FDisplay_show;
    o.hide              = FDisplay_hide;
@@ -181,32 +183,6 @@ function FDisplay_hasRenderable(){
 }
 
 //==========================================================
-// <T>过滤渲染集合。</T>
-//
-// @method
-// @param p:region:FRegion 渲染区域
-//==========================================================
-function FDisplay_filterRenderables(p){
-   var o = this;
-   // 检查可见性
-   if(!o._visible){
-      return false;
-   }
-   // 处理渲染集合
-   var rs = o._renderables;
-   if(rs){
-      var c = rs.count();
-      for(var n = 0; n < c; n++){
-         var r = rs.get(n);
-         if(r.testVisible()){
-            p.pushRenderable(r);
-         }
-      }
-   }
-   return true;
-}
-
-//==========================================================
 // <T>获得渲染集合。</T>
 //
 // @method
@@ -242,6 +218,45 @@ function FDisplay_removeRenderable(p){
    if(s){
       s.remove(p);
    }
+}
+
+//==========================================================
+// <T>过滤显示集合。</T>
+//
+// @method
+// @param p:displays:TObjects 显示集合
+//==========================================================
+function FDisplay_filterDisplays(p){
+   var o = this;
+   if(o._visible){
+      p.push(o);
+   }
+}
+
+//==========================================================
+// <T>过滤渲染集合。</T>
+//
+// @method
+// @param p:region:FRegion 渲染区域
+//==========================================================
+function FDisplay_filterRenderables(p){
+   var o = this;
+   // 检查可见性
+   if(!o._visible){
+      return false;
+   }
+   // 处理渲染集合
+   var rs = o._renderables;
+   if(rs){
+      var c = rs.count();
+      for(var n = 0; n < c; n++){
+         var r = rs.get(n);
+         if(r.testVisible()){
+            p.pushRenderable(r);
+         }
+      }
+   }
+   return true;
 }
 
 //==========================================================

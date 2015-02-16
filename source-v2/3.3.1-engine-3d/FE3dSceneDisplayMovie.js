@@ -52,7 +52,8 @@ function FE3dSceneDisplayMovie_process(p){
    var sp = ct - o._lastTick;
    if(sp > o._interval){
       // 数据处理
-      if(o._resource._typeName == 'rotation'){
+      var c = o._resource.code();
+      if(c == 'rotation'){
          //var t = (ct - o._firstTick) / 1000;
          //var r = o._resource._rotation;
          //o._matrix.setRotation((r.x * t), (r.y * t) % (Math.PI * 2.0), (r.z * t));

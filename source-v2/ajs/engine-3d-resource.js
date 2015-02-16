@@ -825,6 +825,15 @@ function FRs3SceneDisplay_unserialize(p){
    o._matrix.unserialize(p);
    var c = p.readUint16();
    if(c > 0){
+      var s = o._movies = new TObjects();
+      for(var i = 0; i < c; i++){
+         var m = RClass.create(FRs3SceneMovie);
+         m.unserialize(p);
+         s.push(m);
+      }
+   }
+   var c = p.readUint16();
+   if(c > 0){
       var s = o._materials = new TObjects();
       for(var i = 0; i < c; i++){
          var m = RClass.create(FRs3SceneMaterial);
@@ -988,26 +997,29 @@ function FRs3SceneMaterial_saveConfig(p){
    o._info.saveConfig(p);
 }
 function FRs3SceneMovie(o){
-   o = RClass.inherits(this, o, FObject);
-   o._typeName   = null;
+   o = RClass.inherits(this, o, FRs3Object);
    o._interval   = null;
    o._rotation   = null;
    o.construct   = FRs3SceneMovie_construct;
-   o.typeName    = FRs3SceneMovie_typeName;
+   o.interval    = FRs3SceneMovie_interval;
+   o.rotation    = FRs3SceneMovie_rotation;
    o.unserialize = FRs3SceneMovie_unserialize;
    return o;
 }
 function FRs3SceneMovie_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FRs3Object.construct.call(o);
    o._rotation = new SVector3();
 }
-function FRs3SceneMovie_typeName(){
-   return this._typeName;
+function FRs3SceneMovie_interval(){
+   return this._interval;
+}
+function FRs3SceneMovie_rotation(){
+   return this._rotation;
 }
 function FRs3SceneMovie_unserialize(p){
    var o = this;
-   o._typeName = p.readString();
+   o.__base.FRs3Object.unserialize.call(o, p);
    o._interval = p.readInt32();
    o._rotation.unserialize(p);
 }

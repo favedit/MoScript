@@ -36,6 +36,7 @@ function FRd3Mesh(o){
    o.textures          = FRd3Mesh_textures;
    o.boneIds           = FRd3Mesh_boneIds;
    // @method
+   o.resource          = FRd3Mesh_resource;
    o.loadResource      = FRd3Mesh_loadResource;
    return o;
 }
@@ -200,6 +201,16 @@ function FRd3Mesh_textures(){
 //==========================================================
 function FRd3Mesh_boneIds(p){
    return this._boneIds;
+}
+
+//==========================================================
+// <T>获得资源。</T>
+//
+// @method
+// @return FRs3Mesh 资源
+//==========================================================
+function FRd3Mesh_resource(){
+   return this._resource;
 }
 
 //==========================================================

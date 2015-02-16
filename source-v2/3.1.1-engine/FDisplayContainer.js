@@ -14,10 +14,12 @@ function FDisplayContainer(o){
    o.hasDisplay        = FDisplayContainer_hasDisplay;
    o.findDisplay       = FDisplayContainer_findDisplay;
    o.searchDisplay     = FDisplayContainer_searchDisplay;
-   o.filterRenderables = FDisplayContainer_filterRenderables;
    o.displays          = FDisplayContainer_displays;
    o.pushDisplay       = FDisplayContainer_pushDisplay;
    o.removeDisplay     = FDisplayContainer_removeDisplay;
+   // @method
+   o.filterDisplays    = FDisplayContainer_filterDisplays;
+   o.filterRenderables = FDisplayContainer_filterRenderables;
    // @method
    o.process           = FDisplayContainer_process;
    // @method
@@ -90,6 +92,67 @@ function FDisplayContainer_searchDisplay(p){
 }
 
 //==========================================================
+// <T>判断是否含有子节点。</T>
+//
+// @method
+// @return Boolean 是否含有
+//==========================================================
+function FDisplayContainer_displays(){
+   var o = this;
+   var r = o._displays;
+   if(!r){
+      r = o._displays = new TObjects();
+   }
+   return r;
+}
+
+//==========================================================
+// <T>增加一个显示对象。</T>
+//
+// @method
+// @param p:display:FDisplay 显示对象
+//==========================================================
+function FDisplayContainer_pushDisplay(p){
+   var o = this;
+   p._parent = o;
+   o.displays().push(p);
+}
+
+//==========================================================
+// <T>移除一个显示对象。</T>
+//
+// @method
+// @param p:display:FDisplay 显示对象
+//==========================================================
+function FDisplayContainer_removeDisplay(p){
+   var o = this;
+   o.displays().remove(p);
+   p._parent = null;
+}
+
+//==========================================================
+// <T>过滤显示集合。</T>
+//
+// @method
+// @param p:displays:TObjects 显示集合
+//==========================================================
+function FDisplayContainer_filterDisplays(p){
+   var o = this;
+   o.__base.FDisplay.filterDisplays.call(o, p);
+   // 检查可见性
+   if(o._visible){
+      // 过滤显示集合
+      var s = o._displays;
+      if(s){
+         var c = s.count();
+         for(var i = 0; i < c; i++){
+            s.get(i).filterDisplays(p);
+         }
+      }
+   }
+}
+
+//==========================================================
 // <T>过滤渲染集合。</T>
 //
 // @method
@@ -131,45 +194,6 @@ function FDisplayContainer_process(p){
          d.process(p);
       }
    }
-}
-
-//==========================================================
-// <T>判断是否含有子节点。</T>
-//
-// @method
-// @return Boolean 是否含有
-//==========================================================
-function FDisplayContainer_displays(){
-   var o = this;
-   var r = o._displays;
-   if(!r){
-      r = o._displays = new TObjects();
-   }
-   return r;
-}
-
-//==========================================================
-// <T>增加一个显示对象。</T>
-//
-// @method
-// @param p:display:FDisplay 显示对象
-//==========================================================
-function FDisplayContainer_pushDisplay(p){
-   var o = this;
-   p._parent = o;
-   o.displays().push(p);
-}
-
-//==========================================================
-// <T>移除一个显示对象。</T>
-//
-// @method
-// @param p:display:FDisplay 显示对象
-//==========================================================
-function FDisplayContainer_removeDisplay(p){
-   var o = this;
-   o.displays().remove(p);
-   p._parent = null;
 }
 
 //==========================================================

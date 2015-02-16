@@ -3,32 +3,31 @@
 //
 // @class
 // @author maocy
-// @history 150202
+// @history 150216
 //==========================================================
 function FDsSceneRenderablePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._visible        = false;
+   o._visible          = false;
    // @attribute
-   o._workspace      = null;
+   o._workspace        = null;
    // @attribute
-   o._renderTemplate = null;
-   o._renderDisplay  = null;
-   o._renderMaterial = null;
+   o._activeRenderable = null;
+   o._activeMaterial   = null;
    // @attribute
-   o._controlGuid    = null;
-   o._controlCode    = null;
-   o._controlLabel   = null;
-   o._displayFrame   = null;
-   o._materialFrame  = null;
+   o._controlGuid      = null;
+   o._controlCode      = null;
+   o._controlLabel     = null;
+   o._frameRenderable  = null;
+   o._frameMaterial    = null;
    //..........................................................
    // @method
-   o.construct       = FDsSceneRenderablePropertyFrame_construct;
+   o.construct         = FDsSceneRenderablePropertyFrame_construct;
    // @method
-   o.loadObject      = FDsSceneRenderablePropertyFrame_loadObject;
+   o.loadObject        = FDsSceneRenderablePropertyFrame_loadObject;
    // @method
-   o.dispose         = FDsSceneRenderablePropertyFrame_dispose;
+   o.dispose           = FDsSceneRenderablePropertyFrame_dispose;
    return o;
 }
 
@@ -44,30 +43,27 @@ function FDsSceneRenderablePropertyFrame_construct(){
 }
 
 //==========================================================
-// <T>加载显示信息。</T>
+// <T>加载渲染对象信息。</T>
 //
 // @method
 // @param s:scene:FE3dScene 场景
-// @param d:display:FRs3Display 显示
+// @param r:renderable:FE3dSceneRenderable 渲染对象
 //==========================================================
-function FDsSceneRenderablePropertyFrame_loadObject(s, d){
+function FDsSceneRenderablePropertyFrame_loadObject(s, r){
    var o = this;
    // 获得材质
-   var r = d._renderable._resource;
-   //var rdm = rd.materials().first();
-   //var rtm = rt.themes().first();
-   //var m = rtm.materials().get(rdm.groupGuid());
+   var m = r.materialReference();
+   var s = r.renderable().resource();
    // 设置属性
-   //o._renderTemplate = t;
-   //o._renderDisplay = d;
-   //o._renderMaterial = m;
+   o._activeRenderable = r;
+   o._activeMaterial = m;
    // 设置参数
-   o._controlGuid.set(r.guid());
-   o._controlCode.set(r.code());
-   o._controlLabel.set(r.label());
+   o._controlGuid.set(s.guid());
+   o._controlCode.set(s.code());
+   o._controlLabel.set(s.label());
    // 设置参数
-   o._frameDisplay.loadObject(s, d);
-   //o._materialFrame.loadObject(t, m);
+   o._frameRenderable.loadObject(s, r);
+   o._frameMaterial.loadObject(s, m);
 }
 
 //==========================================================

@@ -11,14 +11,26 @@ function FE3dSceneDisplayRenderable(o){
    o._materialReference = null;
    //..........................................................
    // @method
+   o.materialReference  = FE3dSceneDisplayRenderable_materialReference;
    o.loadMaterial       = FE3dSceneDisplayRenderable_loadMaterial;
    o.reloadResource     = FE3dSceneDisplayRenderable_reloadResource;
    return o;
 }
 
 //==========================================================
+// <T>获得材质引用。</T>
+//
+// @method
+// @return FE3dSceneMaterial 材质引用
+//==========================================================
+function FE3dSceneDisplayRenderable_materialReference(p){
+   return this._materialReference;
+}
+
+//==========================================================
 // <T>加载材质。</T>
 //
+// @method
 // @param p:resource:FRs3TemplateRenderable 资源
 //==========================================================
 function FE3dSceneDisplayRenderable_loadMaterial(p){
