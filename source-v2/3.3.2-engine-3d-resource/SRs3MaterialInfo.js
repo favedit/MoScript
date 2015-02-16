@@ -30,10 +30,10 @@ function SRs3MaterialInfo_unserialize(p){
    //o.optionMerge = p.readBoolean();
    //o.optionSort = p.readBoolean();
    //o.sortLevel = p.readInt32();
-   //o.optionAlpha = p.readBoolean();
+   o.optionAlpha = p.readBoolean();
    //o.optionDepth = p.readBoolean();
    //o.optionCompare = p.readString();
-   //o.optionDouble = p.readBoolean();
+   o.optionDouble = p.readBoolean();
    //o.optionShadow = p.readBoolean();
    //o.optionShadowSelf = p.readBoolean();
    //o.optionDynamic = p.readBoolean();
@@ -96,6 +96,8 @@ function SRs3MaterialInfo_saveConfig(p){
    var o = this;
    // 存储属性
    p.set('effect_code', o.effectName);
+   // 存储配置
+   p.setBoolean('option_double', o.optionAlpha);
    p.setBoolean('option_double', o.optionDouble);
    // 存储材质
    var x = p.create('Alpha');

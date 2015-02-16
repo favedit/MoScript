@@ -307,6 +307,8 @@ function FRs3Material_saveConfig(p){
    p.set('guid', o._guid);
    p.set('code', o._code);
    p.set('label', o._label);
+   p.set('option_alpha', mi.optionAlpha);
+   p.set('option_double', mi.optionDouble);
    p.set('alpha_base', mi.alphaBase);
    p.set('alpha_rate', mi.alphaRate);
    p.set('ambient_color', mi.ambientColor.toString());
@@ -1691,6 +1693,8 @@ function SRs3MaterialInfo(o){
 function SRs3MaterialInfo_unserialize(p){
    var o = this;
    o.effectName = p.readString();
+   o.optionAlpha = p.readBoolean();
+   o.optionDouble = p.readBoolean();
    o.alphaBase = p.readFloat();
    o.alphaRate = p.readFloat();
    o.ambientColor.unserialize(p);

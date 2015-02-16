@@ -3,11 +3,11 @@
 //
 // @class
 // @author maocy
-// @version 150123
+// @version 150216
 //==========================================================
-function FCheck(o){
-   //o = RClass.inherits(this, o, FEditControl, MDescCheck);
-   o = RClass.inherits(this, o, FEditControl);
+function FUiCheck(o){
+   //o = RClass.inherits(this, o, FUiEditControl, MDescCheck);
+   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
    //..........................................................
    // @style
    o._styleInput      = RClass.register(o, new AStyle('_styleInput', 'Input'));
@@ -16,7 +16,11 @@ function FCheck(o){
    o._hInput          = null;
    //..........................................................
    // @event
-   o.onBuildEditValue = FCheck_onBuildEditValue;
+   o.onBuildEditValue = FUiCheck_onBuildEditValue;
+   //..........................................................
+   // @method
+   o.get              = FUiCheck_get;
+   o.set              = FUiCheck_set;
 
    //..........................................................
    // @attribute
@@ -26,7 +30,7 @@ function FCheck(o){
    //o.onDataClick   = RMethod.emptyCall;
    //..........................................................
    // @method
-   //o.oeSaveValue   = FCheck_oeSaveValue;
+   //o.oeSaveValue   = FUiCheck_oeSaveValue;
    //..........................................................
    // @method
    //o.isDataChanged = RMethod.emptyTrue;
@@ -36,7 +40,7 @@ function FCheck(o){
    //o.text          = MDescCheck_text;
    //o.setText       = MDescCheck_setText
    //o.validText     = RMethod.empty;
-   //o.refreshStyle  = FCheck_refreshStyle;
+   //o.refreshStyle  = FUiCheck_refreshStyle;
    return o;
 }
 
@@ -46,11 +50,37 @@ function FCheck(o){
 // @method
 // @param p:argements:SArgements 参数集合
 //==========================================================
-function FCheck_onBuildEditValue(p){
+function FUiCheck_onBuildEditValue(p){
    var o = this;
    // 建立编辑控件
    o._hInput = RBuilder.appendCheck(o._hValuePanel, o.styleName('Input'));
 }
+
+//==========================================================
+// <T>获得数据。</T>
+//
+// @method
+// @return String 数据
+//==========================================================
+function FUiCheck_get(){
+   return this._hInput.checked;
+}
+
+//==========================================================
+// <T>设置数据。</T>
+//
+// @method
+// @param p:value:String 数据
+//==========================================================
+function FUiCheck_set(p){
+   this._hInput.checked = RBoolean.parse(p);
+}
+
+
+
+
+
+
 
 
 
@@ -62,7 +92,7 @@ function FCheck_onBuildEditValue(p){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FCheck_oeSaveValue(e){
+function FUiCheck_oeSaveValue(e){
    var o = this;
    // 数据准备模式
    if(EStore.Prepare == e.store){
@@ -71,7 +101,7 @@ function FCheck_oeSaveValue(e){
       }
       return EEventStatus.Stop;
    }
-   return o.base.FEditControl.oeSaveValue.call(o, e);
+   return o.base.FUiEditControl.oeSaveValue.call(o, e);
 }
 
 //==========================================================
@@ -79,7 +109,7 @@ function FCheck_oeSaveValue(e){
 //
 // @method
 //==========================================================
-function FCheck_refreshStyle(){
+function FUiCheck_refreshStyle(){
    var o = this;
    var h = o.panel(EPanel.Edit);
    h.disabled = !o._editable;

@@ -905,6 +905,10 @@ function FDsSceneMaterialFrame(o){
 function FDsSceneMaterialFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlOptionDouble.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionAlpha.addDataChangedListener(o, o.onDataChanged);
+   o._controlAlphaBase.addDataChangedListener(o, o.onDataChanged);
+   o._controlAlphaRate.addDataChangedListener(o, o.onDataChanged);
    o._controlAmbientColor.addDataChangedListener(o, o.onDataChanged);
    o._controlDiffuseColor.addDataChangedListener(o, o.onDataChanged);
    o._controlSpecularColor.addDataChangedListener(o, o.onDataChanged);
@@ -949,6 +953,10 @@ function FDsSceneMaterialFrame_loadObject(s, m){
    o._controlGuid.set(mr.guid());
    o._controlCode.set(mr.code());
    o._controlLabel.set(mr.label());
+   o._controlOptionDouble.set(mi.optionDouble);
+   o._controlOptionAlpha.set(mi.optionAlpha);
+   o._controlAlphaBase.set(mi.alphaBase);
+   o._controlAlphaRate.set(mi.alphaRate);
    o._controlAmbientColor.set(mi.ambientColor);
    o._controlDiffuseColor.set(mi.diffuseColor);
    o._controlSpecularColor.set(mi.specularColor);

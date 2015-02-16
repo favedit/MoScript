@@ -5563,35 +5563,6 @@ function FCalendarEditor_dispose(){
    o.hTime = null;
    o.hTimePanel = null;
 }
-function FCheck(o){
-   o = RClass.inherits(this, o, FEditControl);
-   o._styleInput      = RClass.register(o, new AStyle('_styleInput', 'Input'));
-   o._hInput          = null;
-   o.onBuildEditValue = FCheck_onBuildEditValue;
-   return o;
-}
-function FCheck_onBuildEditValue(p){
-   var o = this;
-   o._hInput = RBuilder.appendCheck(o._hValuePanel, o.styleName('Input'));
-}
-function FCheck_oeSaveValue(e){
-   var o = this;
-   if(EStore.Prepare == e.store){
-      if(RBoolean.isTrue(o.reget())){
-         e.values.set(o.dataName, EBoolean.True);
-      }
-      return EEventStatus.Stop;
-   }
-   return o.base.FEditControl.oeSaveValue.call(o, e);
-}
-function FCheck_refreshStyle(){
-   var o = this;
-   var h = o.panel(EPanel.Edit);
-   h.disabled = !o._editable;
-   if(!o._editable){
-      o.hEdit.style.cursor = 'normal';
-   }
-}
 function FCheckPicker(o){
    o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescCheckPicker, MDropable);
    o.stIconDropSelect = RClass.register(o, new TStyleIcon('DropSelect'));
@@ -7546,6 +7517,43 @@ function FSplit_dispose(){
    o.hIcon = null;
    o.hImage = null;
 }
+function FUiCheck(o){
+   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput', 'Input'));
+   o._hInput          = null;
+   o.onBuildEditValue = FUiCheck_onBuildEditValue;
+   o.get              = FUiCheck_get;
+   o.set              = FUiCheck_set;
+   return o;
+}
+function FUiCheck_onBuildEditValue(p){
+   var o = this;
+   o._hInput = RBuilder.appendCheck(o._hValuePanel, o.styleName('Input'));
+}
+function FUiCheck_get(){
+   return this._hInput.checked;
+}
+function FUiCheck_set(p){
+   this._hInput.checked = RBoolean.parse(p);
+}
+function FUiCheck_oeSaveValue(e){
+   var o = this;
+   if(EStore.Prepare == e.store){
+      if(RBoolean.isTrue(o.reget())){
+         e.values.set(o.dataName, EBoolean.True);
+      }
+      return EEventStatus.Stop;
+   }
+   return o.base.FUiEditControl.oeSaveValue.call(o, e);
+}
+function FUiCheck_refreshStyle(){
+   var o = this;
+   var h = o.panel(EPanel.Edit);
+   h.disabled = !o._editable;
+   if(!o._editable){
+      o.hEdit.style.cursor = 'normal';
+   }
+}
 function FUiColor(o){
    o = RClass.inherits(this, o, FEditControl);
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
@@ -8259,7 +8267,7 @@ function FUiColorPower_dispose(t){
    o.__base.FUiEditControl.dispose.call(o, t);
 }
 function FUiEdit(o){
-   o = RClass.inherits(this, o, FUiEditControl);
+   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
    o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
@@ -8293,9 +8301,9 @@ function FUiEdit_construct(){
    o.__base.FUiEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
 }
-function FUiEdit_get(p){
+function FUiEdit_get(){
    var o = this;
-   var r = o.__base.FUiEditControl.get.call(o, p);
+   var r = o.__base.FUiEditControl.get.call(o);
    var h = o._hInput;
    if(h){
       r = h.value;

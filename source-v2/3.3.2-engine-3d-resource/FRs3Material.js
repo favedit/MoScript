@@ -124,11 +124,17 @@ function FRs3Material_unserialize(p){
 function FRs3Material_saveConfig(p){
    var o = this;
    var mi = o._info;
+   // 存储属性
    p.set('guid', o._guid);
    p.set('code', o._code);
    p.set('label', o._label);
+   // 存储配置
+   p.set('option_alpha', mi.optionAlpha);
+   p.set('option_double', mi.optionDouble);
+   // 存储透明
    p.set('alpha_base', mi.alphaBase);
    p.set('alpha_rate', mi.alphaRate);
+   // 存储材质
    p.set('ambient_color', mi.ambientColor.toString());
    p.set('diffuse_color', mi.diffuseColor.toString());
    p.set('specular_color', mi.specularColor.toString());

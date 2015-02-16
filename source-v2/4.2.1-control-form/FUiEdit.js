@@ -7,7 +7,7 @@
 //==========================================================
 function FUiEdit(o){
    //o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit);
-   o = RClass.inherits(this, o, FUiEditControl);
+   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
    //..........................................................
    // @property
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
@@ -130,9 +130,9 @@ function FUiEdit_construct(){
 // @method
 // @return String 数据
 //==========================================================
-function FUiEdit_get(p){
+function FUiEdit_get(){
    var o = this;
-   var r = o.__base.FUiEditControl.get.call(o, p);
+   var r = o.__base.FUiEditControl.get.call(o);
    // 获得显示
    var h = o._hInput;
    if(h){
