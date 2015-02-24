@@ -1,6 +1,6 @@
 //==========================================================
 // <T>下拉编辑器。</T>
-// 模板:
+//
 //  hPanel<DIV>
 // ┌--------------------------------------------------------┐
 // │ border<TBorder>                                        │
@@ -14,40 +14,39 @@
 // │└----------------------------------------------------┘│
 // └--------------------------------------------------------┘
 //
-// @class FEditor, MShadow
-// @history 091103 MAOCY 创建
+// @class
+// @author maocy
+// @version 150224
 //==========================================================
-function FDropEditor(o){
-   o = RClass.inherits(this, o, FEditor, MShadow);
+function FUiDropEditor(o){
+   o = RClass.inherits(this, o, FUiEditor, MUiShadow);
    //..........................................................
    // @style
-   o.stDropForm      = RClass.register(o, new TStyle('DropForm'));
-   o.stDropPanel     = RClass.register(o, new TStyle('DropPanel'));
-   o.stButtonPanel   = RClass.register(o, new TStyle('ButtonPanel'));
+   o._styleDropForm    = RClass.register(o, new AStyle('_styleDropForm'));
+   o._styleDropPanel   = RClass.register(o, new AStyle('_styleDropPanel'));
+   o._styleButtonPanel = RClass.register(o, new AStyle('_styleButtonPanel'));
    //..........................................................
    // @attribute
-   o.__minHeight     = 300;
-   o.__minWidth      = null;
-   o.border          = null;
+   o.__minHeight       = 300;
+   o.__minWidth        = null;
+   o._border           = null;
    //..........................................................
    // @html
-   o.hDropForm       = null;
-   o.hDropPanel      = null;
-   o.hButtonPanel    = null;
+   o._hDropForm        = null;
+   o._hDropPanel       = null;
+   o._hButtonPanel     = null;
    //..........................................................
    // @event
-   o.onDropMouseDown = RClass.register(o, new HMouseDown('onDropMouseDown'));
-   o.onDropMouseUp   = RClass.register(o, new HMouseUp('onDropMouseUp'));
-   o.onBuildDrop     = RMethod.virtual(o, 'onBuildDrop');
-   o.onBuildButton   = RMethod.empty;
-   //..........................................................
-   // @process
-   o.oeBuild         = FDropEditor_oeBuild;
+   o.onBuildDrop       = RMethod.virtual(o, 'onBuildDrop');
+   o.onBuildButton     = RMethod.empty;
+   o.onBuild           = FUiDropEditor_onBuild;
+   o.onDropMouseDown   = RClass.register(o, new AEventMouseDown('onDropMouseDown'));
+   o.onDropMouseUp     = RClass.register(o, new AEventMouseUp('onDropMouseUp'));
    //..........................................................
    // @method
-   o.panel           = FDropEditor_panel;
-   o.hide            = FDropEditor_hide;
-   o.dispose         = FDropEditor_dispose;
+   o.panel             = FUiDropEditor_panel;
+   o.hide              = FUiDropEditor_hide;
+   o.dispose           = FUiDropEditor_dispose;
    return o;
 }
 
@@ -56,21 +55,16 @@ function FDropEditor(o){
 //
 // @method
 //==========================================================
-function FDropEditor_oeBuild(e){
+function FUiDropEditor_onBuild(e){
    var o = this;
-   o.base.FEditor.oeBuild.call(o, e)
-   /// 建立底层对象(1列x2行)，上面一行为标题容器，下面一行为下拉数据容器
-   var db = o.border = new TBorder(EBorder.Round);
-   db.hParent = o.hPanel;
-   RBorder.build(db);
-   var hbf = o.hBorderForm = db.hForm;
+   o.__base.FUiEditor.onBuild.call(o, e)
    // 建立表单
-   var hf = o.hDropForm = RBuilder.appendTable(db.hPanel);
-   hf.className = o.style('DropForm');
-   var hdp = o.hDropPanel = hf.insertRow().insertCell();
-   hdp.className = o.style('DropPanel');
-   var hbp = o.hButtonPanel = hf.insertRow().insertCell();
-   hbp.className = o.style('ButtonPanel');
+   var hf = o._hDropForm = RBuilder.appendTable(o._hPanel);
+   hf.className = o.styleName('DropForm');
+   var hdp = o._hDropPanel = hf.insertRow().insertCell();
+   hdp.className = o.styleName('DropPanel');
+   var hbp = o._hButtonPanel = hf.insertRow().insertCell();
+   hbp.className = o.styleName('ButtonPanel');
    // 建立下拉内容
    o.onBuildDrop();
    // 建立按键
@@ -83,12 +77,12 @@ function FDropEditor_oeBuild(e){
 //
 // @method
 //==========================================================
-function FDropEditor_panel(type){
+function FUiDropEditor_panel(type){
    var o = this;
    if(EPanel.Shadow == type){
       return o.hPanel;
    }
-   return o.base.FEditor.panel.call(o, type);
+   return o.__base.FUiEditor.panel.call(o, type);
 }
 
 //==========================================================
@@ -96,10 +90,10 @@ function FDropEditor_panel(type){
 //
 // @method
 //==========================================================
-function FDropEditor_hide(){
+function FUiDropEditor_hide(){
    var o = this;
-   o.base.FEditor.hide.call(o);
-   o.base.MShadow.hide.call(o);
+   o.__base.FUiEditor.hide.call(o);
+   o.__base.MUiShadow.hide.call(o);
 }
 
 //==========================================================
@@ -107,10 +101,10 @@ function FDropEditor_hide(){
 //
 // @method
 //==========================================================
-function FDropEditor_dispose(){
+function FUiDropEditor_dispose(){
    var o = this;
-   o.base.FControl.dispose.call(o);
-   o.hDropForm = null;
-   o.hDropPanel = null;
-   o.hButtonPanel = null;
+   o.__base.FControl.dispose.call(o);
+   o._hDropForm = null;
+   o._hDropPanel = null;
+   o._hButtonPanel = null;
 }

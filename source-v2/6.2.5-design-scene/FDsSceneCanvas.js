@@ -294,7 +294,7 @@ function FDsSceneCanvas_oeRefresh(p){
    o.__base.FDsCanvas.oeRefresh.call(o, p);
    // 获得大小
    var w = o._hParent.offsetWidth;
-   var h = o._hParent.offsetHeight;
+   var h = o._hParent.offsetHeight - 6;
    // 设置大小
    var hc = o._hPanel;
    hc.width = w;

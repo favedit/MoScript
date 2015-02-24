@@ -35,8 +35,8 @@ function FUiMenuButton(o){
    // @event
    o.onEnter       = FUiMenuButton_onEnter;
    o.onLeave       = FUiMenuButton_onLeave;
-   o.onMouseDown   = FUiMenuButton_onMouseDown;
-   o.onMouseUp     = FUiMenuButton_onMouseUp;
+   o.onMouseDown   = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiMenuButton_onMouseDown);
+   o.onMouseUp     = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiMenuButton_onMouseUp);
    //..........................................................
    // @method
    o.icon          = FUiMenuButton_icon;
@@ -76,13 +76,10 @@ function FUiMenuButton_onBuildPanel(p){
 function FUiMenuButton_onBuild(e){
    var o = this;
    o.__base.FUiControl.onBuild.call(o, e);
-   // 构建对象
-   //var hb = o._hButton = RBuilder.appendTable(o._hPanel, o.style('Button'));
-   //o.attachEvent('onButtonMouseDown', o._hButton);
-   //var hLine = o._hButtonLine = o._hButton.insertRow();
-   //var hCel = hLine.insertCell();
-   //hCel.noWrap = 'true';
+   // 设置面板
    var h = o._hPanel;
+   o.attachEvent('onMouseDown', h);
+   o.attachEvent('onMouseUp', h);
    // 建立图标
    if(o._icon){
       o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);

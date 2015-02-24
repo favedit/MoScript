@@ -1,50 +1,51 @@
 //==========================================================
 // <T>编辑器控件的基类。</T>
 //
-// @class FControl, MFocus
-// @history 091029 MAOCY 创建
+// @class
+// @author maocy
+// @version 150224
 //==========================================================
-function FEditor(o){
-   o = RClass.inherits(this, o, FControl, MFocus);
+function FUiEditor(o){
+   o = RClass.inherits(this, o, FUiControl, MFocus);
    //..........................................................
    // @style
-   o.styleEdit      = RClass.register(o, new TStyle('Edit'));
+   o._styleEdit     = RClass.register(o, new AStyle('_styleEdit'));
    //..........................................................
    // @attribute
-   o.inEdit         = false;
-   o.source         = null;
+   o._statusEditing = false;
+   o._source        = null;
    // @html
-   o.hEdit          = null;
+   o._hEdit         = null;
    // @listener
    o.lsnEditBegin   = null;
    o.lsnEditCancel  = null;
    o.lsnEditEnd     = null;
    //..........................................................
    // @event
-   o.onEditKeyDown  = RClass.register(o, new HKeyDown('onEditKeyDown'));
-   o.onEditKeyPress = RClass.register(o, new HKeyPress('onEditKeyPress'));
-   o.onEditKeyUp    = RClass.register(o, new HKeyUp('onEditKeyUp'));
-   o.onEditChange   = RClass.register(o, new HChange('onEditChange'));
-   o.onEditBegin    = FEditor_onEditBegin;
-   o.onEditChanged  = FEditor_onEditChanged;
-   o.onEditEnd      = FEditor_onEditEnd;
-   o.onBuildPanel   = FEditor_onBuildPanel;
+   o.onEditKeyDown  = RClass.register(o, new AEventKeyDown('onEditKeyDown'));
+   o.onEditKeyPress = RClass.register(o, new AEventKeyPress('onEditKeyPress'));
+   o.onEditKeyUp    = RClass.register(o, new AEventKeyUp('onEditKeyUp'));
+   o.onEditChange   = RClass.register(o, new AEventChange('onEditChange'));
+   o.onEditBegin    = FUiEditor_onEditBegin;
+   o.onEditChanged  = FUiEditor_onEditChanged;
+   o.onEditEnd      = FUiEditor_onEditEnd;
+   o.onBuildPanel   = FUiEditor_onBuildPanel;
    //..........................................................
    // @process
-   o.oeBuild        = FEditor_oeBuild;
+   o.onBuild        = FUiEditor_onBuild;
    //..........................................................
    // @method
    o.get            = RMethod.virtual(o, 'get');
    o.set            = RMethod.virtual(o, 'set');
-   o.doBlur         = FEditor_doBlur;
-   o.panel          = FEditor_panel;
-   o.linkControl    = FEditor_linkControl;
-   o.editBegin      = FEditor_editBegin;
-   o.editCancel     = FEditor_editCancel;
-   o.editEnd        = FEditor_editEnd;
-   o.reset          = FEditor_reset;
-   o.show           = FEditor_show;
-   o.dispose        = FEditor_dispose;
+   o.doBlur         = FUiEditor_doBlur;
+   o.panel          = FUiEditor_panel;
+   o.linkControl    = FUiEditor_linkControl;
+   o.editBegin      = FUiEditor_editBegin;
+   o.editCancel     = FUiEditor_editCancel;
+   o.editEnd        = FUiEditor_editEnd;
+   o.reset          = FUiEditor_reset;
+   o.show           = FUiEditor_show;
+   o.dispose        = FUiEditor_dispose;
    return o;
 }
 
@@ -53,7 +54,7 @@ function FEditor(o){
 //
 // @method
 //==========================================================
-function FEditor_onEditBegin(){
+function FUiEditor_onEditBegin(){
    this.editBegin();
 }
 
@@ -62,18 +63,18 @@ function FEditor_onEditBegin(){
 //
 // @method
 //==========================================================
-function FEditor_onEditChanged(){
+function FUiEditor_onEditChanged(){
    var o = this;
    RLogger.debug(o, 'Edit changed');
    var g = o.storage = RObject.nvlObj(o.storage);
    if(g.value == o.value()){
       if(o.changed){
-         //o.source.onEditChanged(o, false);
+         //o._source.onEditChanged(o, false);
          o.changed = false;
       }
    }else{
       if(!o.changed){
-         //o.source.onEditChanged(o, true);
+         //o._source.onEditChanged(o, true);
          o.changed = true;
       }
    }
@@ -84,7 +85,7 @@ function FEditor_onEditChanged(){
 //
 // @method
 //==========================================================
-function FEditor_onEditEnd(){
+function FUiEditor_onEditEnd(){
    this.editEnd();
 }
 
@@ -92,9 +93,10 @@ function FEditor_onEditEnd(){
 // <T>建立底板。</T>
 //
 // @method
+// @param p:event:TEventProcess 事件
 //==========================================================
-function FEditor_onBuildPanel(){
-   this.hPanel = RBuilder.append(null, 'SPAN');
+function FUiEditor_onBuildPanel(p){
+   this._hPanel = RBuilder.createSpan(p);
 }
 
 //==========================================================
@@ -102,12 +104,11 @@ function FEditor_onBuildPanel(){
 //
 // @method
 //==========================================================
-function FEditor_oeBuild(e){
+function FUiEditor_onBuild(e){
    var o = this;
-   o.base.FControl.oeBuild.call(o, e);
-   o.hPanel.style.zIndex = ELayer.Editor;
+   o.__base.FUiControl.onBuild.call(o, e);
+   o._hPanel.style.zIndex = EUiLayer.Editor;
    o.setVisible(false);
-   return EEventStatus.Stop;
 }
 
 //==========================================================
@@ -115,7 +116,7 @@ function FEditor_oeBuild(e){
 //
 // @method
 //==========================================================
-function FEditor_get(name){
+function FUiEditor_get(name){
 }
 
 //==========================================================
@@ -123,7 +124,7 @@ function FEditor_get(name){
 //
 // @method
 //==========================================================
-function FEditor_set(name, value){
+function FUiEditor_set(name, value){
 }
 
 //==========================================================
@@ -131,9 +132,9 @@ function FEditor_set(name, value){
 //
 // @method
 //==========================================================
-function FEditor_doBlur(){
+function FUiEditor_doBlur(){
    var o = this;
-   var s = o.source;
+   var s = o._source;
    if(s){
       o.editCancel();
       if(RClass.isClass(s, MFocus)){
@@ -147,14 +148,14 @@ function FEditor_doBlur(){
 //
 // @method
 //==========================================================
-function FEditor_panel(type){
+function FUiEditor_panel(type){
    var o = this;
    if(EPanel.Edit == type){
-      return o.hEdit;
+      return o._hEdit;
    }else if(EPanel.Focus == type){
-      return o.hEdit;
+      return o._hEdit;
    }
-   return o.base.FControl.panel.call(o, type);
+   return o.__base.FUiControl.panel.call(o, type);
 }
 
 //==========================================================
@@ -162,9 +163,9 @@ function FEditor_panel(type){
 //
 // @method
 //==========================================================
-function FEditor_linkControl(c){
+function FUiEditor_linkControl(c){
    var o = this;
-   o.source = c;
+   o._source = c;
 }
 
 //==========================================================
@@ -172,9 +173,9 @@ function FEditor_linkControl(c){
 //
 // @method
 //==========================================================
-function FEditor_editBegin(){
+function FUiEditor_editBegin(){
    var o = this;
-   var s = o.source;
+   var s = o._source;
    // 编辑开始
    RLogger.debug(o, 'Editor begin. (control={0})', RClass.dump(s));
    // 处理开始事件
@@ -183,7 +184,7 @@ function FEditor_editBegin(){
    }
    // 设置数据
    s.editor = o;
-   o.inEdit = true;
+   o._statusEditing = true;
 }
 
 //==========================================================
@@ -191,9 +192,9 @@ function FEditor_editBegin(){
 //
 // @method
 //==========================================================
-function FEditor_editCancel(){
+function FUiEditor_editCancel(){
    var o = this;
-   var s = o.source;
+   var s = o._source;
    // 编辑完成
    RLogger.debug(o, 'Editor cancel. (control={0})', RClass.dump(s));
    o.hide();
@@ -203,8 +204,8 @@ function FEditor_editCancel(){
    }
    // 清空数据
    s.editor = null;
-   o.source = null;
-   o.inEdit = false;
+   o._source = null;
+   o._statusEditing = false;
 }
 
 //==========================================================
@@ -212,9 +213,9 @@ function FEditor_editCancel(){
 //
 // @method
 //==========================================================
-function FEditor_editEnd(){
+function FUiEditor_editEnd(){
    var o = this;
-   var s = o.source;
+   var s = o._source;
    // 编辑完成
    RLogger.debug(o, 'Editor end. (control={0})', RClass.dump(s));
    o.hide();
@@ -224,8 +225,8 @@ function FEditor_editEnd(){
    }
    // 清空数据
    s.editor = null;
-   o.source = null;
-   o.inEdit = false;
+   o._source = null;
+   o._statusEditing = false;
 }
 
 //==========================================================
@@ -233,7 +234,7 @@ function FEditor_editEnd(){
 //
 // @method
 //==========================================================
-function FEditor_reset(){
+function FUiEditor_reset(){
    var o = this;
    o.lsnEditBegin = null;
    o.lsnEditCancel = null;
@@ -244,11 +245,11 @@ function FEditor_reset(){
 // <T>显示操作。</T>
 //
 // @method
-// @param c:control:FControl 控件
+// @param c:control:FUiControl 控件
 //==========================================================
-function FEditor_show(){
+function FUiEditor_show(){
    var o = this;
-   o.base.FControl.show.call(o);
+   o.__base.FUiControl.show.call(o);
    o.editBegin();
    o.focus();
 }
@@ -258,8 +259,8 @@ function FEditor_show(){
 //
 // @method
 //==========================================================
-function FEditor_dispose(){
+function FUiEditor_dispose(){
    var o = this;
-   o.base.FControl.dispose.call(o);
-   o.hEdit = null;
+   o.__base.FUiControl.dispose.call(o);
+   o._hEdit = null;
 }

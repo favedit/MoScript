@@ -14,6 +14,7 @@ function FDsSceneDisplayPropertyFrame(o){
    o._workspace      = null;
    // @attribute
    o._activeDisplay  = null;
+   o._activeResource = null;
    // @attribute
    o._controlGuid    = null;
    o._controlCode    = null;
@@ -23,6 +24,7 @@ function FDsSceneDisplayPropertyFrame(o){
    //..........................................................
    // @event
    o.onBuilded       = FDsSceneDisplayPropertyFrame_onBuilded;
+   o.onDataChanged   = FDsSceneDisplayPropertyFrame_onDataChanged;
    //..........................................................
    // @method
    o.construct       = FDsSceneDisplayPropertyFrame_construct;
@@ -42,6 +44,23 @@ function FDsSceneDisplayPropertyFrame(o){
 function FDsSceneDisplayPropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
+   // 增加对象
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+}
+
+//==========================================================
+// <T>数据改变处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsSceneDisplayPropertyFrame_onDataChanged(p){
+   var o = this;
+   var r = o._activeResource;
+   // 设置属性
+   r._code = o._controlCode.get();
+   r._label = o._controlLabel.get();
 }
 
 //==========================================================
@@ -64,23 +83,17 @@ function FDsSceneDisplayPropertyFrame_construct(){
 //==========================================================
 function FDsSceneDisplayPropertyFrame_loadObject(s, d){
    var o = this;
-   // 获得材质
-   var sr = s.resource();
-   var dr = d.resourceScene();
-   //var rdm = rd.materials().first();
-   //var rtm = rt.themes().first();
-   //var m = rtm.materials().get(rdm.groupGuid());
    // 设置属性
-   //o._activeDisplay = t;
-   //o._renderDisplay = d;
-   //o._renderMaterial = m;
+   o._activeDisplay = d;
+   var sr = s.resource();
+   var dr = o._activeResource = d.resourceScene();
    // 设置参数
    o._controlGuid.set(dr.guid());
    o._controlCode.set(dr.code());
    o._controlLabel.set(dr.label());
    // 设置参数
    o._frameDisplay.loadObject(s, d);
-   //o._materialFrame.loadObject(t, m);
+   //o._materialFrame.loadObject(s, dr);
 }
 
 //==========================================================

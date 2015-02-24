@@ -17,11 +17,12 @@ function FFocusConsole(o){
    o._focusClasses      = null;
    o._storeControl      = null;
    // @attribute FControl 获得热点的容器
-   o.hoverContainer     = null;
+   o._hoverContainer    = null;
    // @attribute FControl 获得热点的对象
    o._hoverControl      = null;
    // @attribute MFocus 获得焦点的对象
    o._focusControl      = null;
+   // @attribute MFocus 失去焦点的对象
    o._blurControl       = null;
    // @attribute MFocus 被激活的对象
    o._activeControl     = null;
@@ -77,9 +78,9 @@ function FFocusConsole_onWindowMouseDown(s, e){
 //==========================================================
 function FFocusConsole_onWindowMouseWheel(s, e){
    var o = this;
-   var fc = this._focusControl;
-   if(RClass.isClass(fc, MMouseWheel)){
-      fc.onMouseWheel(s, e);
+   var c = this._focusControl;
+   if(RClass.isClass(c, MMouseWheel)){
+      c.onMouseWheel(s, e);
    }
 }
 
@@ -98,8 +99,8 @@ function FFocusConsole_construct(){
    o.lsnsFocusClass = new TListeners();
    // 增加监听器
    RLogger.info(o, 'Add listener for window mouse down and wheel.');
-   RWindow.lsnsMouseDown.register(o, o.onWindowMouseDown);
-   RWindow.lsnsMouseWheel.register(o, o.onWindowMouseWheel);
+   //RWindow.lsnsMouseDown.register(o, o.onWindowMouseDown);
+   //RWindow.lsnsMouseWheel.register(o, o.onWindowMouseWheel);
 }
 
 //==========================================================
@@ -122,7 +123,7 @@ function FFocusConsole_isFocus(c){
 function FFocusConsole_enter(c){
    var o = this;
    if(RClass.isClass(c, MContainer)){
-      o.hoverContainer = c;
+      o._hoverContainer = c;
    }else{
       o._hoverControl = c;
    }
@@ -136,8 +137,8 @@ function FFocusConsole_enter(c){
 //==========================================================
 function FFocusConsole_leave(c){
    var o = this;
-   if(o.hoverContainer == c){
-      o.hoverContainer = null;
+   if(o._hoverContainer == c){
+      o._hoverContainer = null;
    }
    if(o._hoverControl == c){
       o._hoverControl = null;

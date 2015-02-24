@@ -952,6 +952,174 @@ function FDataSource_dump(s){
    o.dataset.dump(s);
    return s;
 }
+function FUiDataEdit(o){
+   o = RClass.inherits(this, o, FUiEdit);
+   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
+   o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
+   o._hInput          = null;
+   o.onBuildEditValue = FUiDataEdit_onBuildEditValue;
+   o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiDataEdit_onInputEdit);
+   o.construct        = FUiDataEdit_construct;
+   o.get              = FUiDataEdit_get;
+   o.set              = FUiDataEdit_set;
+   o.refreshValue     = FUiDataEdit_refreshValue;
+   return o;
+}
+function FUiDataEdit_oeDataLoad(p){
+   var o = this;
+   return EEventStatus.Stop;
+}
+function FUiDataEdit_oeDataSave(p){
+   var o = this;
+   return EEventStatus.Stop;
+}
+function FUiDataEdit_onBuildEditValue(p){
+   var o = this;
+   var h = o._hValuePanel;
+   h.className = o.styleName('InputPanel');
+   var he = o._hInput = RBuilder.appendEdit(h, o.styleName('Input'));
+   if(o._editLength){
+      he.maxLength = o._editLength;
+   }
+}
+function FUiDataEdit_onInputEdit(p){
+   var o = this;
+   var v = o._hInput.value;
+   o.refreshValue();
+}
+function FUiDataEdit_construct(){
+   var o = this;
+   o.__base.FUiEdit.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
+}
+function FUiDataEdit_get(){
+   var o = this;
+   var r = o.__base.FUiEdit.get.call(o);
+   var h = o._hInput;
+   if(h){
+      r = h.value;
+   }
+   return r;
+}
+function FUiDataEdit_set(p){
+   var o = this;
+   o.__base.FUiEdit.set.call(o, p);
+   var h = o._hInput;
+   if(h){
+      h.value = RString.nvl(p);
+   }
+}
+function FUiDataEdit_refreshValue(){
+   var o = this;
+   o.processDataChangedListener(o);
+}
+function FUiDataEdit_onDataKeyDown(s, e){
+   var o = this;
+   o.__base.FUiEdit.onDataKeyDown.call(o, s, e);
+   if(o.editCase){
+      RKey.fixCase(e, o.editCase);
+   }
+   if(o._editable){
+      return;
+      if(o.editComplete){
+         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
+            var ed = o.findEditor();
+            if(ed){
+               ed.onEditKeyDown(s, e);
+            }
+         }
+      }
+   }
+}
+function FUiDataEdit_formatValue(v){
+   var o = this;
+   var r = RString.nvl(v);
+   if(ECase.Upper == o.editCase){
+      r = RString.toUpper(r);
+   }else if(ECase.Lower == o.editCase){
+      r = RString.toLower(r);
+   }
+   return r;
+}
+function FUiDataEdit_setText(t){
+   var o = this;
+   if(!o.hEdit){
+      return;
+   }
+   if('U'== o.editCase){
+      o.hEdit.value = RString.toUpper(t);
+   }else if('L'== o.editCase){
+         o.hEdit.value = RString.toLower(t);
+   }else{
+      o.hEdit.value = t;
+   }
+   if('right' == o.editAlign){
+      o.hEdit.style.textAlign = 'right';
+   }else if('left' == o.editAlign ){
+      o.hEdit.style.textAlign = 'left';
+   }else{
+      o.hEdit.style.textAlign = 'center';
+   }
+}
+function FUiDataEdit_validText(t){
+   var o = this;
+   var r = o.__base.FUiEdit.validText.call(o, t);
+   if(!r){
+      if(o.validLenmin){
+         if(o.validLenmin > t.length){
+            return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
+         }
+      }
+      if(o.validLenmax){
+         if(o.validLenmax < t.length){
+            return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
+         }
+      }
+   }
+   return r;
+}
+function FUiDataEdit_findEditor(){
+   var o = this;
+   if(o.editComplete){
+      var de = o.editor;
+      if(!de){
+         o.dsControl = o.topControl(MDataset);
+         if(o.dsControl){
+            de = o.editor = RConsole.find(FUiDataEditConsole).focus(o, FUiDataEditEditor);
+         }
+      }
+      if(de){
+         de.linkControl(o);
+      }
+      return o.editor;
+   }
+}
+function FUiDataEdit_drop(){
+   var o = this;
+   var de = o.findEditor();
+   if(de){
+      var t = o.reget();
+      if(t.length > 0){
+         if(o.finded != t){
+            if(de.source != o){
+               de.linkControl(o);
+            }
+            de.search(t);
+         }
+         o.finded = t;
+      }
+   }
+}
+function FUiDataEdit_clone(){
+   var o = this;
+   var r = o._class.newInstance();
+   GHtml_clone(r, o.hPanel);
+   return r;
+}
+function FUiDataEdit_link(){
+   var o = this;
+}
 function FUiDataNumber(o){
    o = RClass.inherits(this, o, FEditControl);
    return o;

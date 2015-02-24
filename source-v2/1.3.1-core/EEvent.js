@@ -19,7 +19,15 @@ var EEvent = new function EEvent(){
    o.Focus       = 4;
    // @attribute 失去焦点
    o.Blur        = 5;
+   // @attribute 点击
+   o.Click       = 6;
+   // @attribute 双击
+   o.DoubleClick = 7;
+   // @attribute 项目点击
+   o.ItemClick   = 8;
+   // @attribute 选择
+   o.Selected    = 9;
    // @attribute 数据改变
-   o.DataChanged = 6;
+   o.DataChanged = 10;
    return o;
 }

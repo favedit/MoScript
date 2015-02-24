@@ -280,7 +280,7 @@ function FDsSceneCanvas_oeRefresh(p){
    var c = o._graphicContext;
    o.__base.FDsCanvas.oeRefresh.call(o, p);
    var w = o._hParent.offsetWidth;
-   var h = o._hParent.offsetHeight;
+   var h = o._hParent.offsetHeight - 6;
    var hc = o._hPanel;
    hc.width = w;
    hc.height = h;
@@ -642,8 +642,10 @@ function FDsSceneCatalog_buildRenderable(n, p){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var m = s.value(i);
+         var mr = m.resource();
          var dn = o.createNode();
-         dn.setLabel(m._resource._code);
+         dn.setLabel(mr.code());
+         dn.setNote(mr.label());
          dn.setTypeName('material');
          dn.dataPropertySet('linker', m);
          n.appendNode(dn);
@@ -675,6 +677,7 @@ function FDsSceneCatalog_buildDisplay(n, p){
          var dr = d.resourceScene();
          var dn = o.createNode();
          dn.setLabel(dr.code());
+         dn.setNote(dr.label());
          dn.setTypeName('display');
          dn.dataPropertySet('linker', d);
          n.appendNode(dn);
@@ -710,6 +713,7 @@ function FDsSceneCatalog_buildScene(p){
    var r = p._resource;
    var nr = o.createNode();
    nr.setLabel(r.code());
+   nr.setNote(r.label());
    nr.setTypeName('scene');
    nr.dataPropertySet('linker', p);
    o.appendNode(nr);
@@ -787,12 +791,14 @@ function FDsSceneDisplayPropertyFrame(o){
    o._visible        = false;
    o._workspace      = null;
    o._activeDisplay  = null;
+   o._activeResource = null;
    o._controlGuid    = null;
    o._controlCode    = null;
    o._controlLabel   = null;
    o._displayFrame   = null;
    o._materialFrame  = null;
    o.onBuilded       = FDsSceneDisplayPropertyFrame_onBuilded;
+   o.onDataChanged   = FDsSceneDisplayPropertyFrame_onDataChanged;
    o.construct       = FDsSceneDisplayPropertyFrame_construct;
    o.loadObject      = FDsSceneDisplayPropertyFrame_loadObject;
    o.dispose         = FDsSceneDisplayPropertyFrame_dispose;
@@ -801,6 +807,14 @@ function FDsSceneDisplayPropertyFrame(o){
 function FDsSceneDisplayPropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsSceneDisplayPropertyFrame_onDataChanged(p){
+   var o = this;
+   var r = o._activeResource;
+   r._code = o._controlCode.get();
+   r._label = o._controlLabel.get();
 }
 function FDsSceneDisplayPropertyFrame_construct(){
    var o = this;
@@ -808,8 +822,9 @@ function FDsSceneDisplayPropertyFrame_construct(){
 }
 function FDsSceneDisplayPropertyFrame_loadObject(s, d){
    var o = this;
+   o._activeDisplay = d;
    var sr = s.resource();
-   var dr = d.resourceScene();
+   var dr = o._activeResource = d.resourceScene();
    o._controlGuid.set(dr.guid());
    o._controlCode.set(dr.code());
    o._controlLabel.set(dr.label());

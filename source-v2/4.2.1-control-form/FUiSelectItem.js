@@ -2,121 +2,135 @@
 // <T>Select下拉列表中每个选项的控件</T>
 // <P>支持控件多选</P>
 //
-// @class FUiSelectItem
-// @face FControl
-// @author maochunyang
-// @version 1.0.1
-// 
 //  hPanel(TR)
 // ┌-----┬------------------------┬-------┐
 // │hIcon│hLabel                  │hText  │
 // │(TD) │(TD)                    │(TD)   │
 // └-----┴------------------------┴-------┘
+//
+// @class
+// @author maocy
+// @version 150224
 //==========================================================
 function FUiSelectItem(o){
-   o = RClass.inherits(this, o, FControl);
-   /// @property
-   o.icon              = RClass.register(o, new TPtyStr('icon'));
-   o.note              = RClass.register(o, new TPtyStr('note'));
-   /// @style
-   o.stHover           = RClass.register(o, new TStyle('Hover'));
-   o.stSelect          = RClass.register(o, new TStyle('Select'));
-   o.stIconChecked     = RClass.register(o, new TStyle('Icon'));
-   o.stLabel           = RClass.register(o, new TStyle('Label'));
-   o.stNote            = RClass.register(o, new TStyle('Note'));
-   // Html
-   o.hIcon             = null;
-   o.hIconPanel        = null;
-   o.hLabelPanel       = null;
-   o.hNotePanel        = null;
-   // attribute
-   o.checked           = false;
-   o.lsnsClick         = new TListeners();
-   // process
-   o.oeBuild           = FUiSelectItem_oeBuild;
-   // event
+   o = RClass.inherits(this, o, FUiControl);
+   //..........................................................
+   // @property
+   o._icon             = RClass.register(o, new APtyString('_icon'));
+   o._note             = RClass.register(o, new APtyString('_note'));
+   //..........................................................
+   // @style
+   o._styleHover       = RClass.register(o, new AStyle('_styleHover'));
+   o._styleSelect      = RClass.register(o, new AStyle('_styleSelect'));
+   o._styleIconChecked = RClass.register(o, new AStyle('_styleIcon'));
+   o._styleLabel       = RClass.register(o, new AStyle('_styleLabel'));
+   o._styleNote        = RClass.register(o, new AStyle('_styleNote'));
+   //..........................................................
+   // @html
+   o._hIcon            = null;
+   o._hIconPanel       = null;
+   o._hLabelPanel      = null;
+   o._hNotePanel       = null;
+   //..........................................................
+   // @attribute
+   o._checked          = false;
+   o._lsnsClick        = new TListeners();
+   //..........................................................
+   // @event
    o.onBuildPanel      = FUiSelectItem_onBuildPanel;
+   o.onBuild           = FUiSelectItem_onBuild;
    o.onMouseOver       = FUiSelectItem_onMouseOver;
    o.onMouseOut        = FUiSelectItem_onMouseOut;
    o.onMouseDown       = FUiSelectItem_onMouseDown;
-   // method
+   //..........................................................
+   // @method
    o.set               = FUiSelectItem_set;
    o.setChecked        = FUiSelectItem_setChecked;
    o.dispose           = FUiSelectItem_dispose;
    return o;
 }
+
 //==========================================================
-// <T>构建控件</T>
+// <T>建立控件面板。</T>
 //
 // @method
+// @param p:argements:SArgements 参数集合
 //==========================================================
-function FUiSelectItem_oeBuild(e){
+function FUiSelectItem_onBuildPanel(p){
    var o = this;
-   o.base.FControl.oeBuild.call(o,e);
-   var h = o.hPanel;
-   o.hIconPanel = RBuilder.append(h, 'TD', o.style("Icon"));
-   o.hLabelPanel = RBuilder.append(h, 'TD', o.style("Label"));
-   o.hNotePanel = RBuilder.append(h, 'TD', o.style("Note"));
-   return EEventStatus.Stop;
+   o._hPanel = RBuilder.createTableRow(p, o.styleName("Panel"));
 }
+
 //==========================================================
-// <T>建立控件的面板</T>
+// <T>建立显示框架。</T>
 //
 // @method
+// @param p:argements:SArgements 参数集合
 //==========================================================
-function FUiSelectItem_onBuildPanel(){
-   this.hPanel = RBuilder.create(null, 'TR', this.style("Panel"));
+function FUiSelectItem_onBuild(e){
+   var o = this;
+   o.__base.FControl.onBuild.call(o,e);
+   // 创建面板
+   var h = o._hPanel;
+   o._hIconPanel = RBuilder.appendTableCell(h, o.styleName("Icon"));
+   o._hLabelPanel = RBuilder.appendTableCell(h, o.styleName("Label"));
+   o._hNotePanel = RBuilder.appendTableCell(h, o.styleName("Note"));
 }
+
 //==========================================================
 // <T>响应鼠标悬停事件</T>
 //
 // @method
 //==========================================================
 function FUiSelectItem_onMouseOver(){
-   this.hPanel.className = RBool.isTrue(this.checked) ? this.style('Select') : this.style('Hover');
+   this._hPanel.className = RBool.isTrue(this._checked) ? this.style('Select') : this.style('Hover');
 }
+
 //==========================================================
 // <T>响应鼠标离开事件</T>
 //
 // @method
 //==========================================================
 function FUiSelectItem_onMouseOut(){
-   this.hPanel.className = RBool.isTrue(this.checked) ? this.style('Select') : this.style('Panel');
+   this._hPanel.className = RBool.isTrue(this._checked) ? this.style('Select') : this.style('Panel');
 }
+
 //==========================================================
 // <T>响应鼠标单击事件</T>
 //
 // @method
 //==========================================================
 function FUiSelectItem_onMouseDown(){
-   this.lsnsClick.process(this);
+   this._lsnsClick.process(this);
    /*var o = this;
-   o.checked = RBool.isTrue(o.checked) ? EBool.False : EBool.True;
-   RBool.isTrue(o.checked) ? o.setChecked(true) : o.setChecked(false); 
+   o._checked = RBool.isTrue(o._checked) ? EBool.False : EBool.True;
+   RBool.isTrue(o._checked) ? o.setChecked(true) : o.setChecked(false); 
    var p = o.parent;
-   p.hEdit.value = o.label;
+   p.hEdit._value = o._label;
    p.editStatus = EEditStatus.Ok;
    p.selectItem = o;
    p.inEdit = false;
    p.blur();*/
 }
-////==========================================================
-//* <T>设置数据值</T>
-//*
-//* @method
-///==========================================================/
+
+//==========================================================
+// <T>设置数据值</T>
+//
+// @method
+//==========================================================
 function FUiSelectItem_set(icon, label, value, note){
    var o = this;
-   o.icon = RString.nvl(icon);
-   if(!RString.isEmpty(o.icon)){
-      o.hIcon = RBuilder.appendIcon(o.hIconPanel, o.styleIcon(o.icon));
+   o._icon = RString.nvl(icon);
+   if(!RString.isEmpty(o._icon)){
+      o._hIcon = RBuilder.appendIcon(o._hIconPanel, o.styleIcon(o._icon));
    }
-   o.label = RString.nvl(label);
-   o.value = RString.nvl(value);
-   o.note = RString.nvl(note);
-   o.hLabelPanel.innerText = o.label;
-   o.hNotePanel.innerText = o.note;
+   o._label = RString.nvl(label);
+   o._value = RString.nvl(value);
+   o._note = RString.nvl(note);
+   o._hLabelPanel.innerText = o._label;
+   o._hNotePanel.innerText = o._note;
 }
+
 //==========================================================
 // <T>响应鼠标离开事件</T>
 //
@@ -124,22 +138,22 @@ function FUiSelectItem_set(icon, label, value, note){
 //==========================================================
 function FUiSelectItem_setChecked(f){
    var o = this;
-   o.checked = f;
-   if(o.hIcon){
-      o.hIcon.style.display = f ? 'block' : 'none';
+   o._checked = f;
+   if(o._hIcon){
+      o._hIcon.style.display = f ? 'block' : 'none';
    }else{
-      o.hIconPanel.innerText = f ? 'ü' : '';
+      o._hIconPanel.innerText = f ? 'ü' : '';
    }
-   o.hPanel.className = f ? o.style('Select') : o.style('Panel');
+   o._hPanel.className = f ? o.styleName('Select') : o.styleName('Panel');
 }
+
 //==========================================================
-// <T>响应鼠标离开事件</T>
+// <T>释放处理。</T>
 //
 // @method
 //==========================================================
 function FUiSelectItem_dispose(){
    var o = this;
-   o.base.FControl.dispose.call(o);
-   RMemory.freeHtml(o.hEdit);
-   o.hEdit = null;
+   o._hEdit = RHtml.free(o._hEdit);
+   o.__base.FControl.dispose.call(o);
 }

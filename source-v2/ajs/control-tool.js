@@ -77,8 +77,8 @@ function FUiToolButton(o){
    o.onBuild       = FUiToolButton_onBuild;
    o.onEnter       = FUiToolButton_onEnter;
    o.onLeave       = FUiToolButton_onLeave;
-   o.onMouseDown   = FUiToolButton_onMouseDown;
-   o.onMouseUp     = FUiToolButton_onMouseUp;
+   o.onMouseDown   = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiToolButton_onMouseDown);
+   o.onMouseUp     = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiToolButton_onMouseUp);
    o.icon          = FUiToolButton_icon;
    o.setIcon       = FUiToolButton_setIcon;
    o.setLabel      = FUiToolButton_setLabel;
@@ -95,6 +95,8 @@ function FUiToolButton_onBuild(p){
    var o = this;
    o.__base.FUiControl.onBuild.call(o, p);
    var h = o._hPanel;
+   o.attachEvent('onMouseDown', h);
+   o.attachEvent('onMouseUp', h);
    if(o._icon){
       o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);
    }

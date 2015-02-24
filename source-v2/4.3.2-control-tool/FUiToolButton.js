@@ -35,8 +35,8 @@ function FUiToolButton(o){
    // @event
    o.onEnter       = FUiToolButton_onEnter;
    o.onLeave       = FUiToolButton_onLeave;
-   o.onMouseDown   = FUiToolButton_onMouseDown;
-   o.onMouseUp     = FUiToolButton_onMouseUp;
+   o.onMouseDown   = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiToolButton_onMouseDown);
+   o.onMouseUp     = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiToolButton_onMouseUp);
    //..........................................................
    // @method
    o.icon          = FUiToolButton_icon;
@@ -108,18 +108,14 @@ function FUiToolButton_onBuild(p){
    //var hCel = o._hButtonPanel = hLine.insertCell();
    //o.attachEvent('onButtonClick', o._hButtonPanel);
    //hCel.className = t.styleName('Button');
-   //if(o._icon){
-   //   o._hIcon = RBuilder.appendIcon(hCel, o._icon);
-   //}
-   //if(o.label){
-   //   o._hLabel = RBuilder.append(hCel, 'SPAN');
-   //   o._hLabel.innerHTML = '&nbsp;' + o.label;
-   //}
    //if(o._hotkey){
    //   //o._hLabel.innerHTML = '&nbsp;' + o.label+"("+o._hotkey+")";
    //   RConsole.find(FKeyConsole).register(o._hotkey, new TListener(o, o.onButtonClick));
    //
+   // 设置面板
    var h = o._hPanel;
+   o.attachEvent('onMouseDown', h);
+   o.attachEvent('onMouseUp', h);
    // 建立图标
    if(o._icon){
       o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);

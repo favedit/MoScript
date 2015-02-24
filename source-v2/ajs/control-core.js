@@ -145,6 +145,255 @@ function FDescribeFrameConsole_findLov(n){
 function FDescribeFrameConsole_getEvents(n){
    return this.events.get(n);
 }
+function FEditorConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd     = EScope.Local;
+   o._hoverEditor = null;
+   o._focusEditor = null;
+   o._editors     = null;
+   o.construct    = FEditorConsole_construct;
+   o.makeName     = FEditorConsole_makeName;
+   o.enter        = FEditorConsole_enter;
+   o.leave        = FEditorConsole_leave;
+   o.focus        = FEditorConsole_focus;
+   o.blur         = FEditorConsole_blur;
+   o.lost         = FEditorConsole_lost;
+   return o;
+}
+function FEditorConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._editors = new TDictionary();
+}
+function FEditorConsole_makeName(cls, name){
+   return name ? name + '@' + RClass.name(cls) : RClass.name(cls);
+}
+function FEditorConsole_enter(editable, cls){
+   var name = RClass.name(cls);
+   var editor = this._hoverEditors.get(name);
+   if(!editor){
+      editor = RClass.create(cls);
+      editor.psBuild();
+      this._hoverEditors.set(name, editor);
+   }
+   this._hoverEditor = editor;
+   editor.editable = editable;
+   editor.show();
+   return editor;
+}
+function FEditorConsole_leave(editor){
+   var o = this;
+   if(o._hoverEditor != o._focusEditor){
+      editor = RObject.nvl(editor, o._hoverEditor);
+      o._hoverEditor = null;
+      RLog.debug(o, 'Leave {0}', RClass.dump(editor));
+   }
+}
+function FEditorConsole_focus(c, n, l){
+   var o = this;
+   var name = o.makeName(n, l);
+   var e = o._editors.get(l);
+   if(!e){
+      e = RClass.create(n);
+      e.build(c._hPanel);
+      o._editors.set(l, e);
+   }
+   RLogger.debug(o, 'Focus editor {1} (editable={2}, name={3})', RClass.dump(e), RClass.dump(c), l);
+   e.reset();
+   if(RClass.isClass(e, FUiDropEditor)){
+      e.linkControl(c);
+      o._focusEditor = e;
+   }
+   return e;
+}
+function FEditorConsole_blur(editor){
+   var o = this;
+   if(o._focusEditor){
+      RLogger.debug(o, 'Blur editor {1}', RClass.dump(editor));
+      editor = RObject.nvl(editor, o._focusEditor);
+      if(editor){
+         editor.onEditEnd();
+      }
+      o._focusEditor = null;
+   }
+}
+function FEditorConsole_lost(e){
+   var o = this;
+   o.leave(e);
+   o.blur(e);
+}
+function FFocusConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o.scope              = EScope.Page;
+   o._blurAble          = true;
+   o._focusAble         = true;
+   o._focusClasses      = null;
+   o._storeControl      = null;
+   o._hoverContainer    = null;
+   o._hoverControl      = null;
+   o._focusControl      = null;
+   o._blurControl       = null;
+   o._activeControl     = null;
+   o.lsnsFocus          = null;
+   o.lsnsBlur           = null;
+   o.lsnsFocusClass     = null;
+   o.onWindowMouseDown  = FFocusConsole_onWindowMouseDown;
+   o.onWindowMouseWheel = FFocusConsole_onWindowMouseWheel;
+   o.construct          = FFocusConsole_construct;
+   o.isFocus            = FFocusConsole_isFocus;
+   o.enter              = FFocusConsole_enter;
+   o.leave              = FFocusConsole_leave;
+   o.focus              = FFocusConsole_focus;
+   o.blur               = FFocusConsole_blur;
+   o.findClass          = FFocusConsole_findClass;
+   o.focusClass         = FFocusConsole_focusClass;
+   o.focusHtml          = FFocusConsole_focusHtml;
+   o.lockBlur           = FFocusConsole_lockBlur;
+   o.unlockBlur         = FFocusConsole_unlockBlur;
+   o.storeFocus         = FFocusConsole_storeFocus;
+   o.restoreFocus       = FFocusConsole_restoreFocus;
+   o.dispose            = FFocusConsole_dispose;
+   return o;
+}
+function FFocusConsole_onWindowMouseDown(s, e){
+   this.focusHtml(e);
+}
+function FFocusConsole_onWindowMouseWheel(s, e){
+   var o = this;
+   var c = this._focusControl;
+   if(RClass.isClass(c, MMouseWheel)){
+      c.onMouseWheel(s, e);
+   }
+}
+function FFocusConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._focusClasses = new Object();
+   o.lsnsFocus = new TListeners();
+   o.lsnsBlur = new TListeners();
+   o.lsnsFocusClass = new TListeners();
+   RLogger.info(o, 'Add listener for window mouse down and wheel.');
+}
+function FFocusConsole_isFocus(c){
+   return (this._focusControl == c);
+}
+function FFocusConsole_enter(c){
+   var o = this;
+   if(RClass.isClass(c, MContainer)){
+      o._hoverContainer = c;
+   }else{
+      o._hoverControl = c;
+   }
+}
+function FFocusConsole_leave(c){
+   var o = this;
+   if(o._hoverContainer == c){
+      o._hoverContainer = null;
+   }
+   if(o._hoverControl == c){
+      o._hoverControl = null;
+   }
+}
+function FFocusConsole_focus(c, e){
+   var o = this;
+   if(!RClass.isClass(c, MFocus)){
+      return;
+   }
+   var f = o._focusControl;
+   if(f == c){
+      return;
+   }
+   var bc = o._blurControl;
+   if(bc != f){
+      if(o._blurAble && f && f.testBlur(c)){
+         RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
+         o._blurControl = f;
+         f.doBlur(e);
+         o.lsnsBlur.process(f);
+      }
+   }
+   if(o._focusAble){
+      RLogger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
+      c.doFocus(e);
+      o._focusControl = o._activeControl = c;
+      o.lsnsFocus.process(c);
+   }
+}
+function FFocusConsole_blur(c, e){
+   var o = this;
+   var fc = o._focusControl;
+   var bc = o._blurControl;
+   if(fc && c && !fc.testBlur(c)){
+      return;
+   }
+   if(bc != c && RClass.isClass(c, MFocus)){
+      RLogger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
+      o._blurControl = c;
+      c.doBlur(e);
+   }
+   if(fc){
+      RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
+      fc.doBlur(e);
+      o._focusControl = null;
+   }
+}
+function FFocusConsole_findClass(c){
+   var o = this;
+   var n = RClass.name(c);
+   if(o._focusClasses[n]){
+      return o._focusClasses[n];
+   }
+   var p = o._activeControl;
+   if(RClass.isClass(p, FEditor)){
+      p = p.source;
+   }
+   if(p){
+      return p.topControl(c);
+   }
+}
+function FFocusConsole_focusClass(c, p){
+   var o = this;
+   var n = RClass.name(c);
+   if(o._focusClasses[n] != p){
+      o._focusClasses[n] = p;
+      RLogger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
+      o.lsnsFocusClass.process(p, c);
+   }
+}
+function FFocusConsole_focusHtml(he){
+   var o = this;
+   var c = RControl.htmlControl(he.srcElement);
+   RLogger.debug(o, 'Focus html control. (control={1},element={2})', RClass.dump(c), he.srcElement.tagName);
+   if(c){
+      if(o._focusControl != c){
+         o.blur(c, he);
+      }
+   }else{
+      o.blur(null, he);
+   }
+}
+function FFocusConsole_lockBlur(){
+   this._blurAble = false;
+}
+function FFocusConsole_unlockBlur(){
+   this._blurAble = true;
+}
+function FFocusConsole_storeFocus(){
+   var o = this;
+   o._storeControl = o._focusControl;
+}
+function FFocusConsole_restoreFocus(){
+   var o = this;
+   if(o._storeControl){
+      o._storeControl.focus();
+      o._storeControl = null;
+   }
+}
+function FFocusConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
+   o._focusClasses = null;
+}
 function FFrameConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd         = EScope.Local;

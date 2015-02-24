@@ -58,8 +58,8 @@ function FUiControl(o){
    o.onLeave        = RClass.register(o, new AEventMouseLeave('onLeave'), FUiControl_onLeave);
    //o.onMouseOver    = RClass.register(o, new AEventMouseOver('onMouseOver'));
    //o.onMouseOut     = RClass.register(o, new AEventMouseOut('onMouseOut'));
-   o.onMouseDown    = RClass.register(o, new AEventMouseDown('onMouseDown'));
-   o.onMouseUp      = RClass.register(o, new AEventMouseUp('onMouseUp'));
+   //o.onMouseDown    = RClass.register(o, new AEventMouseDown('onMouseDown'));
+   //o.onMouseUp      = RClass.register(o, new AEventMouseUp('onMouseUp'));
    //o.onClick        = RClass.register(o, new AEventClick('onClick'));
    //o.onDoubleClick  = RClass.register(o, new AEventDoubleClick('onDoubleClick'));
    //o.onResize       = RClass.register(o, new AEventResize('onResize'));
@@ -120,10 +120,10 @@ function FUiControl(o){
 //==========================================================
 function FUiControl_onEnter(e){
    var o = this;
-   //RConsole.find(FFocusConsole).enter(o);
-   //if(o.hint){
-      //window.status = o.hint;
-   //}
+   RConsole.find(FFocusConsole).enter(o);
+   if(o._hint){
+      RWindow.setStatus(o._hint);
+   }
 }
 
 //==========================================================
@@ -134,10 +134,10 @@ function FUiControl_onEnter(e){
 //==========================================================
 function FUiControl_onLeave(e){
    var o = this;
-   //RConsole.find(FFocusConsole).leave(o);
-   //if(o.hint){
-      //window.status = '';
-   //}
+   RConsole.find(FFocusConsole).leave(o);
+   if(o._hint){
+      RWindow.setStatus();
+   }
 }
 
 //==========================================================
@@ -172,8 +172,8 @@ function FUiControl_onBuild(p){
    o.attachEvent('onLeave', h);
    //o.attachEvent('onMouseOver', h);
    //o.attachEvent('onMouseOut', h);
-   o.attachEvent('onMouseDown', h);
-   o.attachEvent('onMouseUp', h);
+   //o.attachEvent('onMouseDown', h);
+   //o.attachEvent('onMouseUp', h);
    //o.attachEvent('onClick', h);
    //o.attachEvent('onDoubleClick', h);
    //o.attachEvent('onKeyDown', h);

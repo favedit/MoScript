@@ -85,8 +85,8 @@ function FUiMenuButton(o){
    o.onBuild       = FUiMenuButton_onBuild;
    o.onEnter       = FUiMenuButton_onEnter;
    o.onLeave       = FUiMenuButton_onLeave;
-   o.onMouseDown   = FUiMenuButton_onMouseDown;
-   o.onMouseUp     = FUiMenuButton_onMouseUp;
+   o.onMouseDown   = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiMenuButton_onMouseDown);
+   o.onMouseUp     = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiMenuButton_onMouseUp);
    o.icon          = FUiMenuButton_icon;
    o.setIcon       = FUiMenuButton_setIcon;
    o.setLabel      = FUiMenuButton_setLabel;
@@ -103,6 +103,8 @@ function FUiMenuButton_onBuild(e){
    var o = this;
    o.__base.FUiControl.onBuild.call(o, e);
    var h = o._hPanel;
+   o.attachEvent('onMouseDown', h);
+   o.attachEvent('onMouseUp', h);
    if(o._icon){
       o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);
    }

@@ -142,9 +142,11 @@ function FDsSceneCatalog_buildRenderable(n, p){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var m = s.value(i);
+         var mr = m.resource();
          // 创建节点
          var dn = o.createNode();
-         dn.setLabel(m._resource._code);
+         dn.setLabel(mr.code());
+         dn.setNote(mr.label());
          dn.setTypeName('material');
          dn.dataPropertySet('linker', m);
          n.appendNode(dn);
@@ -188,6 +190,7 @@ function FDsSceneCatalog_buildDisplay(n, p){
          // 创建节点
          var dn = o.createNode();
          dn.setLabel(dr.code());
+         dn.setNote(dr.label());
          dn.setTypeName('display');
          dn.dataPropertySet('linker', d);
          n.appendNode(dn);
@@ -245,6 +248,7 @@ function FDsSceneCatalog_buildScene(p){
    // 创建场景节点
    var nr = o.createNode();
    nr.setLabel(r.code());
+   nr.setNote(r.label());
    nr.setTypeName('scene');
    nr.dataPropertySet('linker', p);
    o.appendNode(nr);

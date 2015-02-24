@@ -1,32 +1,32 @@
 //==========================================================
-// <T>双击监听器接口。</T>
+// <T>项目点击监听器接口。</T>
 //
-// @console
+// @face
 // @author maocy
-// @version 150203
+// @version 150224
 //==========================================================
-function MListenerDoubleClick(o){
+function MListenerItemClick(o){
    o = RClass.inherits(this, o, MListener);
    //..........................................................
    // @method
-   o.addClickListener     = MListenerDoubleClick_addClickListener;
-   o.processClickListener = MListenerDoubleClick_processClickListener;
+   o.addItemClickListener     = MListenerItemClick_addItemClickListener;
+   o.processItemClickListener = MListenerItemClick_processItemClickListener;
    return o;
 }
 
 //==========================================================
-// <T>注册一个双击监听器。</T>
+// <T>注册一个点击监听器。</T>
 //
 // @method
 // @param w:owner:String 拥有者
 // @param m:method:Function 函数
 //==========================================================
-function MListenerDoubleClick_addClickListener(w, m){
-   return this.addListener(EEvent.DoubleClick, w, m);
+function MListenerItemClick_addItemClickListener(w, m){
+   return this.addListener(EEvent.ItemClick, w, m);
 }
 
 //==========================================================
-// <T>双击监听处理。</T>
+// <T>点击监听处理。</T>
 //
 // @method
 // @param p1:parameter1:Object 参数1
@@ -35,6 +35,6 @@ function MListenerDoubleClick_addClickListener(w, m){
 // @param p4:parameter4:Object 参数4
 // @param p5:parameter5:Object 参数5
 //==========================================================
-function MListenerDoubleClick_processClickListener(p1, p2, p3, p4, p5){
-   this.processListener(EEvent.DoubleClick, p1, p2, p3, p4, p5);
+function MListenerItemClick_processItemClickListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.ItemClick, p1, p2, p3, p4, p5);
 }

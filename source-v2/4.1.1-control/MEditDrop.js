@@ -51,6 +51,9 @@ function MEditDrop_onBuildEditDrop(p){
    var h = o._hDropPanel;
    h.className = o.styleName('DropPanel', MEditDrop);
    h.width = 11;
+   o.attachEvent('onDropEnter', h);
+   o.attachEvent('onDropLeave', h);
+   o.attachEvent('onDropClick', h);
    // 设置图标
    var hi = o._hDropIcon = RBuilder.appendIcon(h, o.styleName('DropIcon', MEditDrop), 'control.drop');
    hi.align = 'center';

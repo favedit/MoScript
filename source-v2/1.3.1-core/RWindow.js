@@ -48,6 +48,7 @@ var RWindow = new function RWindow(){
    o.optionSelect      = RWindow_optionSelect;
    o.setOptionSelect   = RWindow_setOptionSelect;
    o.setCaption        = RWindow_setCaption;
+   o.setStatus         = RWindow_setStatus;
 
 
 
@@ -284,6 +285,15 @@ function RWindow_setCaption(p){
    top.document.title = p;
 }
 
+//==========================================================
+// <T>设置状态。</T>
+//
+// @method
+// @param p:status:String 状态
+//==========================================================
+function RWindow_setStatus(p){
+   window.status = RString.nvl(p);
+}
 
 
 

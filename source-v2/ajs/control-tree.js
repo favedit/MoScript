@@ -453,6 +453,7 @@ function FUiTreeNode(o){
    o.typeName          = FUiTreeNode_typeName;
    o.setTypeName       = FUiTreeNode_setTypeName;
    o.setLabel          = FUiTreeNode_setLabel;
+   o.setNote           = FUiTreeNode_setNote;
    o.level             = FUiTreeNode_level;
    o.setLevel          = FUiTreeNode_setLevel;
    o.check             = FUiTreeNode_check;
@@ -639,6 +640,11 @@ function FUiTreeNode_setLabel(p){
       }
       h.innerHTML = s;
    }
+}
+function FUiTreeNode_setNote(p){
+   var o = this;
+   o._note = RString.empty(p);
+   o.setLabel(o._label);
 }
 function FUiTreeNode_level(){
    return this._level;

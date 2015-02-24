@@ -1,35 +1,141 @@
 //==========================================================
-// <T>下拉菜单选择框。</T>
+// <T>下拉选择框。</T>
 //
-// @class FEditControl, MEditBorder, MDescSelect, MDropable
-// @history 091028 MAOCY 创建
+// @class
+// @author maocy
+// @version 150224
 //==========================================================
 function FUiSelect(o){
-   o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescSelect, MDropable);
+   //o = RClass.inherits(this, o, FUiEditControl, MDescSelect, MDropable);
+   o = RClass.inherits(this, o, FUiEditControl);
    //..........................................................
-   // @attribute
-   o.borderStyle   = EBorder.RoundDrop;
-   o.items         = null;
-   o.lsnEditEnd    = null;
+   // @style
+   o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
    //..........................................................
    // @event
-   o.onDataKeyDown = FUiSelect_onDataKeyDown;
-   o.onDataClick   = FUiSelect_onDataClick;
-   o.onEditEnd     = FUiSelect_onEditEnd;
-   o.onBuildEdit   = FUiSelect_onBuildEdit;
-
+   o.onBuildEditValue = FUiSelect_onBuildEditValue;
+   o.onDropClick      = FUiSelect_onDropClick;
    //..........................................................
    // @method
-   o.construct     = FUiSelect_construct;
-   o.loadConfig    = FUiSelect_loadConfig;
-   o.formatValue   = FUiSelect_formatValue;
-   o.formatText    = FUiSelect_formatText;
-   o.refreshStyle  = FUiSelect_refreshStyle;
-   o.drop          = FUiSelect_drop;
-   o.doBlur        = FUiSelect_doBlur;
-   o.dispose       = FUiSelect_dispose;
+   o.construct        = FUiSelect_construct;
+   o.drop             = FUiSelect_drop;
+
+   //..........................................................
+   // @attribute
+   //o.borderStyle   = EBorder.RoundDrop;
+   //o.items         = null;
+   //o.lsnEditEnd    = null;
+   //..........................................................
+   // @event
+   //o.onDataKeyDown = FUiSelect_onDataKeyDown;
+   //o.onDataClick   = FUiSelect_onDataClick;
+   //o.onEditEnd     = FUiSelect_onEditEnd;
+   //o.onBuildEdit   = FUiSelect_onBuildEdit;
+   //o.loadConfig    = FUiSelect_loadConfig;
+   //o.formatValue   = FUiSelect_formatValue;
+   //o.formatText    = FUiSelect_formatText;
+   //o.refreshStyle  = FUiSelect_refreshStyle;
+   //o.doBlur        = FUiSelect_doBlur;
+   //o.dispose       = FUiSelect_dispose;
    return o;
 }
+
+//==========================================================
+// <T>建立编辑器内容。</T>
+//
+// @method
+// @param p:argements:SArgements 参数集合
+//==========================================================
+function FUiSelect_onBuildEditValue(p){
+   var o = this;
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = RBuilder.appendTable(hp);
+   hf.width = '100%';
+   var hl = o._hValueLine = RBuilder.appendTableRow(hf);
+   //..........................................................
+   // 建立改变栏
+   o._hChangePanel = RBuilder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   //..........................................................
+   // 建立输入栏
+   var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
+   var he = o._hInput = RBuilder.appendEdit(hep, o.styleName('Input'));
+   //o.attachEvent('onInputEdit', he, o.onInputEdit);
+   // 设置大小
+   //RHtml.setSize(hep, o._inputSize);
+   // 设置可以输入的最大长度
+   if(o._editLength){
+      he.maxLength = o._editLength;
+   }
+   //..........................................................
+   // 建立下拉栏
+   var hdp = o._hDropPanel = RBuilder.appendTableCell(hl);
+   hdp.style.borderLeft = '1px solid #666666';
+   o.onBuildEditDrop(p);
+}
+
+//==========================================================
+// <T>鼠标点击修改标志。</T>
+//
+// @method
+// @param e:event:TEvent 事件对象
+//==========================================================
+function FUiSelect_onDropClick(e){
+   var o = this;
+   o.drop();
+}
+
+//==========================================================
+// <T>构建对象。</T>
+//
+// @method
+//==========================================================
+function FUiSelect_construct(){
+   var o = this;
+   o.__base.FUiEditControl.construct.call(o);
+   //o.items = new TItems();
+   //o.lsnEditEnd = new TListener(o, o.onEditEnd);
+}
+
+//==========================================================
+// <T>下拉操作。</T>
+//
+// @method
+//==========================================================
+function FUiSelect_drop(){
+   var o = this;
+   //if(o.canDrop() && o.canEdit && o.items.count() > 0 && o._editable){
+      //if(!o._editRefer){
+      //   return RMessage.fatal(o, null, 'Edit refer is null.');
+      //}
+      o._editRefer = o._label;
+      var e = o._editor = RConsole.find(FEditorConsole).focus(o, FUiSelectEditor, o._editRefer);
+      if(o._editDynamic){
+         // 动态建立
+         return RMessage.fatal(o, null, 'Unsupport.');
+         //ed.fetch();
+         //ed.setItems(o.items);
+         //ed.set(o.reget());
+      }else{
+         // 直接建立
+         //e.__source = o;
+         //e.setItems(o.items);
+         //e.set(o.reget());
+      }
+      //e.lsnEditEnd = o.lsnEditEnd;
+      e.show();
+   //}
+}
+
+
+
+
+
+
+
+
 
 //==========================================================
 //<T>数据区域鼠标双击事件。</T>
@@ -53,10 +159,10 @@ function FUiSelect_onDataClick(){
 function FUiSelect_onDataKeyDown(s, e){
    var o = this;
    // 获得编辑中
-   var ed = o.editor;
+   var ed = o._editor;
    var ef = ed && ed.inEdit;
    // 父类处理
-   o.base.FEditControl.onDataKeyDown.call(o, s, e);
+   o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
    // 处理按键按下时，自动提示数据的处理
    if(ef && ed.source == o){
       ed.onEditKeyDown(s, e);
@@ -105,25 +211,13 @@ function FUiSelect_onBuildEdit(b){
 }
 
 //==========================================================
-// <T>构建对象。</T>
-//
-// @method
-//==========================================================
-function FUiSelect_construct(){
-   var o = this;
-   o.base.FEditControl.construct.call(o);
-   o.items = new TItems();
-   o.lsnEditEnd = new TListener(o, o.onEditEnd);
-}
-
-//==========================================================
 // <T>加载设置。</T>
 //
 // @method
 //==========================================================
 function FUiSelect_loadConfig(c){
    var o = this;
-   o.base.FEditControl.loadConfig.call(o, c);
+   o.__base.FUiEditControl.loadConfig.call(o, c);
    if(o.dataEmpty){
       o.items.create();
    }
@@ -187,7 +281,7 @@ function FUiSelect_formatText(v){
 //==========================================================
 function FUiSelect_refreshStyle(){
    var o = this;
-   o.base.FEditControl.refreshStyle.call(o);
+   o.__base.FUiEditControl.refreshStyle.call(o);
    //o.hDrop.src = o.styleIconPath(o.isEditHover(t) ? 'DropSelect' : 'Drop');
    if(!o.editCheck){
      //o.hEdit.style.cursor = 'hand';
@@ -197,45 +291,15 @@ function FUiSelect_refreshStyle(){
 }
 
 //==========================================================
-// <T>下拉操作。</T>
-//
-// @method
-//==========================================================
-function FUiSelect_drop(){
-   var o = this;
-   if(o.canDrop() && o.canEdit && o.items.count() > 0 && o._editable){
-      if(!o.editRefer){
-         return RMessage.fatal(o, null, 'Edit refer is null.');
-      }
-      var e = o.editor = RConsole.find(FEditConsole).focus(o, FUiSelectEditor, o.editRefer);
-      if(o.editDynamic){
-         // 动态建立
-         return RMessage.fatal(o, null, 'Unsupport.');
-         //ed.fetch();
-         //ed.setItems(o.items);
-         //ed.set(o.reget());
-      }else{
-         // 直接建立
-         // 事件的修改
-        e.__source = o;
-         e.setItems(o.items);
-         e.set(o.reget());
-      }
-      e.lsnEditEnd = o.lsnEditEnd;
-      e.show();
-   }
-}
-
-//==========================================================
 // <T>失去焦点。</T>
 //
 // @method
 //==========================================================
 function FUiSelect_doBlur(){
    var o = this;
-   o.base.FEditControl.doBlur.call(o);
-   if(o.editor){
-      o.editor.hide();
+   o.__base.FUiEditControl.doBlur.call(o);
+   if(o._editor){
+      o._editor.hide();
    }
 }
 
@@ -246,5 +310,5 @@ function FUiSelect_doBlur(){
 //==========================================================
 function FUiSelect_dispose(){
    var o = this;
-   o.base.FEditControl.dispose.call(o);
+   o.__base.FUiEditControl.dispose.call(o);
 }

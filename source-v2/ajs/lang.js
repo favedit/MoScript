@@ -2432,10 +2432,12 @@ var RString = new function RString(){
    o.findChars    = RString_findChars;
    o.inRange      = RString_inRange;
    o.nvl          = RString_nvl;
+   o.empty        = RString_empty;
    o.firstUpper   = RString_firstUpper;
    o.firstLower   = RString_firstLower;
    o.firstLine    = RString_firstLine;
    o.format       = RString_format;
+   o.formatLines  = RString_formatLines;
    o.repeat       = RString_repeat;
    o.pad          = RString_pad;
    o.lpad         = RString_lpad;
@@ -2454,7 +2456,6 @@ var RString = new function RString(){
    o.splitPattern = RString_splitPattern;
    o.remove       = RString_remove;
    o.removeChars  = RString_removeChars;
-   o.formatLines  = RString_formatLines;
    return o;
 }
 function RString_isEmpty(v){
@@ -2607,6 +2608,20 @@ function RString_nvl(v, d){
    }
    return this.EMPTY;
 }
+function RString_empty(v){
+   if(v != null){
+      var s = null;
+      if(v.constructor != String){
+         s = v.toString();
+      }else{
+         s = v;
+      }
+      if(s.length > 0){
+         return s;
+      }
+   }
+   return null;
+}
 function RString_firstUpper(v){
    return (v != null) ? v.charAt(0).toUpperCase() + v.substr(1) : v;
 }
@@ -2636,6 +2651,25 @@ function RString_format(s, p){
       s = s.replace('{' + (n-1) + '}', p);
    }
    return s;
+}
+function RString_formatLines(p){
+   var o = this;
+   p = p.replace(/\\r/g, '');
+   var ls = p.split('\n');
+   var c = ls.length;
+   var r = new TString();
+   for(var i = 0; i < c; i++){
+      var l = ls[i]
+      l = o.trim(l);
+      if(o.isEmpty(l)){
+         continue;
+      }
+      if(o.startsWith(l, '//')){
+         continue;
+      }
+      r.appendLine(l);
+   }
+   return r.toString();
 }
 function RString_repeat(v, c){
    return new Array(c + 1).join(v);
@@ -2863,25 +2897,6 @@ function RString_removeChars(v, s){
       return r.join('');
    }
    return v;
-}
-function RString_formatLines(p){
-   var o = this;
-   p = p.replace(/\\r/g, '');
-   var ls = p.split('\n');
-   var c = ls.length;
-   var r = new TString();
-   for(var i = 0; i < c; i++){
-      var l = ls[i]
-      l = o.trim(l);
-      if(o.isEmpty(l)){
-         continue;
-      }
-      if(o.startsWith(l, '//')){
-         continue;
-      }
-      r.appendLine(l);
-   }
-   return r.toString();
 }
 var RTimer = new function RTimer(){
    var o = this;

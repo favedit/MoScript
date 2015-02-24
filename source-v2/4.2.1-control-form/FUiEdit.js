@@ -6,13 +6,13 @@
 // @version 150102
 //==========================================================
 function FUiEdit(o){
-   //o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit);
-   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
+   o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit, MListenerDataChanged);
    //..........................................................
    // @property
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
    //..........................................................
    // @style
+   o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
    o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
    //..........................................................
@@ -21,70 +21,15 @@ function FUiEdit(o){
    //..........................................................
    // @event
    o.onBuildEditValue = FUiEdit_onBuildEditValue;
-   //..........................................................
-   // @process
-   //o.oeDataLoad       = FUiEdit_oeDataLoad;
-   //o.oeDataSave       = FUiEdit_oeDataSave;
+   o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiEdit_onInputEdit);
    //..........................................................
    // @method
    o.construct        = FUiEdit_construct;
    // @method
    o.get              = FUiEdit_get;
    o.set              = FUiEdit_set;
-
-
-
-
-
-
-
-
-   //o.onKeyDown    = RClass.register(o, new AEventKeyDown('onKeyDown'));
-   //o.onKeyPress   = RClass.register(o, new AEventKeyPress('onKeyPress'));
-   //o.onKeyUp      = RClass.register(o, new AEventKeyUp('onKeyUp'));
-   //o.stUnit        = RClass.register(o, new AStyle('Unit'));
-   //..........................................................
-   // @attribute
-   //o.borderStyle   = EBorder.Round;
-   //..........................................................
-   // @html
-   //o.hUnit         = null;
-   //..........................................................
-   // @event
-   //o.onDataKeyDown = FUiEdit_onDataKeyDown;
-   //..........................................................
-   // @method
-   //o.formatValue   = FUiEdit_formatValue;
-   //o.setText       = FUiEdit_setText;
-   //o.validText     = FUiEdit_validText;
-   //o.findEditor    = FUiEdit_findEditor;
-   //o.drop          = FUiEdit_drop;
-   //o.link          = FUiEdit_link;
-   //o.clone         = FUiEdit_clone;
+   o.refreshValue     = FUiEdit_refreshValue;
    return o;
-}
-
-//==========================================================
-// <T>数据源从加载数据处理。</T>
-//
-// @method
-// @param p:dataSource:FDataSource 数据源
-//==========================================================
-function FUiEdit_oeDataLoad(p){
-   var o = this;
-   alert(p);
-   return EEventStatus.Stop;
-}
-
-//==========================================================
-// <T>存储数据到数据源处理。</T>
-//
-// @method
-// @param p:dataSource:FDataSource 数据源
-//==========================================================
-function FUiEdit_oeDataSave(p){
-   var o = this;
-   return EEventStatus.Stop;
 }
 
 //==========================================================
@@ -95,22 +40,39 @@ function FUiEdit_oeDataSave(p){
 //==========================================================
 function FUiEdit_onBuildEditValue(p){
    var o = this;
-   var h = o._hValuePanel;
-   h.className = o.styleName('InputPanel');
-   //var h = o.hValue = RBuilder.appendTable(o._hInputPanel, o.styleName('ValuePanel'));
-   //htb.style.tableLayout = 'fixed';
-   //var hr = o.hEdit = htb.insertRow();
-   // 建立修改标志
-   //o.onBuildChange(hr.insertCell());
-   // 建立编辑控件
-   //var hep = hr.insertCell();
-   var he = o._hInput = RBuilder.appendEdit(h, o.styleName('Input'));
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = RBuilder.appendTable(hp);
+   hf.width = '100%';
+   var hl = o._hValueLine = RBuilder.appendTableRow(hf);
+   //..........................................................
+   // 建立改变栏
+   o._hChangePanel = RBuilder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   //..........................................................
+   // 建立输入栏
+   var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
+   var he = o._hInput = RBuilder.appendEdit(hep, o.styleName('Input'));
+   o.attachEvent('onInputEdit', he, o.onInputEdit);
    // 设置大小
-   //RHtml.setSize(he, o._inputSize);
+   RHtml.setSize(hep, o._inputSize);
    // 设置可以输入的最大长度
    if(o._editLength){
       he.maxLength = o._editLength;
    }
+}
+
+//==========================================================
+// <T>编辑控件中数据修改处理。 </T>
+//
+// @param p:event:SEvent 事件对象
+//==========================================================
+function FUiEdit_onInputEdit(p){
+   var o = this;
+   // 设置滑动栏
+   var v = o._hInput.value;
+   // 刷新数据
+   o.refreshValue();
 }
 
 //==========================================================
@@ -161,181 +123,13 @@ function FUiEdit_set(p){
    //}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 //==========================================================
-// <T>数据区按键按下事件。</T>
-//
-// @method
-// @param s:sender:FControl 控件对象
-// @param e:event:TEvent 事件对象
-//==========================================================
-function FUiEdit_onDataKeyDown(s, e){
-   var o = this;
-   o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
-   // 大小写限制
-   if(o.editCase){
-      RKey.fixCase(e, o.editCase);
-   }
-   // 自动提示
-   if(o._editable){
-      return;
-      if(o.editComplete){
-         if( 16 != e.keyCode && 17 != e.keyCode && 18 != e.keyCode && 20 != e.keyCode ){
-            var ed = o.findEditor();
-            if(ed){
-               ed.onEditKeyDown(s, e);
-            }
-         }
-      }
-   }
-}
-
-
-//==========================================================
-// <T>格式化数据。</T>
-//
-// @method
-// @param v:value:String 显示内容
-//==========================================================
-function FUiEdit_formatValue(v){
-   var o = this;
-   var r = RString.nvl(v);
-   if(ECase.Upper == o.editCase){
-      r = RString.toUpper(r);
-   }else if(ECase.Lower == o.editCase){
-      r = RString.toLower(r);
-   }
-   return r;
-}
-
-//==========================================================
-// <T>设置内容。</T>
-//
-// @method
-// @param t:text:String 内容
-//==========================================================
-function FUiEdit_setText(t){
-   var o = this;
-   if(!o.hEdit){
-      return;
-   }
-   if('U'== o.editCase){
-      o.hEdit.value = RString.toUpper(t);
-   }else if('L'== o.editCase){
-         o.hEdit.value = RString.toLower(t);
-   }else{
-      o.hEdit.value = t;
-   }
-   if('right' == o.editAlign ){
-      o.hEdit.style.textAlign = 'right';
-   }else if('left' == o.editAlign ){
-      o.hEdit.style.textAlign = 'left';
-   }else{
-      o.hEdit.style.textAlign = 'center';
-   }
-}
-
-//==========================================================
-// <T>校验内容。</T>
-//
-// @method
-// @param t:text:String 内容
-// @return 校验结果
-//==========================================================
-function FUiEdit_validText(t){
-   var o = this;
-   var r = o.__base.FUiEditControl.validText.call(o, t);
-   if(!r){
-      // 最小长度的校验
-      if(o.validLenmin){
-         if(o.validLenmin > t.length){
-            return RContext.get('MDescEdit:ValidMinLength', o.validLenmin);
-         }
-      }
-      // 最大长度的校验
-      if(o.validLenmax){
-         if(o.validLenmax < t.length){
-            return RContext.get('MDescEdit:ValidMaxLength', o.validLenmax);
-         }
-      }
-   }
-   return r;
-}
-
-//==========================================================
-// <T>查找编辑器。</T>
-//
-// @method
-// @return 编辑器
-//==========================================================
-function FUiEdit_findEditor(){
-   var o = this;
-   if(o.editComplete){
-      var de = o.editor;
-      if(!de){
-         o.dsControl = o.topControl(MDataset);
-         if(o.dsControl){
-            de = o.editor = RConsole.find(FUiEditConsole).focus(o, FUiEditEditor);
-         }
-      }
-      if(de){
-         de.linkControl(o);
-      }
-      return o.editor;
-   }
-}
-
-//==========================================================
-// <T>下拉处理。</T>
+// <T>刷新数据。</T>
 //
 // @method
 //==========================================================
-function FUiEdit_drop(){
+function FUiEdit_refreshValue(){
    var o = this;
-   var de = o.findEditor();
-   if(de){
-      var t = o.reget();
-      if(t.length > 0){
-         if(o.finded != t){
-            if(de.source != o){
-               de.linkControl(o);
-            }
-            de.search(t);
-         }
-         o.finded = t;
-      }
-   }
-}
-
-//==========================================================
-//<T>下拉处理。</T>
-//
-//@method
-//==========================================================
-function FUiEdit_clone(){
-   var o = this;
-   var r = o._class.newInstance();
-   GHtml_clone(r, o.hPanel);
-   return r;
-}
-
-//==========================================================
-//<T>下拉处理。</T>
-//
-//@method
-//==========================================================
-function FUiEdit_link(){
-   var o = this;
-   
+   // 内容改变通知
+   o.processDataChangedListener(o);
 }

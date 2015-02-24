@@ -1315,6 +1315,11 @@ function MMouseCapture(o){
    o.testMouseCapture    = RMethod.emptyTrue;
    return o;
 }
+function MMouseWheel(o){
+   o = RClass.inherits(this, o);
+   o.onMouseWheel = RClass.register(o, new AEventMouseWheel('onMouseWheel'), RMethod.empty);
+   return o;
+}
 function MProperty(o){
    o = RClass.inherits(this, o);
    o.propertyAssign = MProperty_propertyAssign;
@@ -3143,6 +3148,7 @@ var RWindow = new function RWindow(){
    o.optionSelect      = RWindow_optionSelect;
    o.setOptionSelect   = RWindow_setOptionSelect;
    o.setCaption        = RWindow_setCaption;
+   o.setStatus         = RWindow_setStatus;
    o._builder          = null;
    o._disableDeep      = 0;
    o.panels            = new TMap();
@@ -3277,6 +3283,9 @@ function RWindow_setOptionSelect(p){
 }
 function RWindow_setCaption(p){
    top.document.title = p;
+}
+function RWindow_setStatus(p){
+   window.status = RString.nvl(p);
 }
 function RWindow_onUnload(){
    RMemory.release();

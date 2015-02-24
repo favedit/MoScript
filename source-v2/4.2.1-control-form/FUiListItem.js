@@ -39,7 +39,7 @@ function FUiListItem(o){
 }
 
 //==========================================================
-// <T>建立编辑器内容。</T>
+// <T>建立控件面板。</T>
 //
 // @method
 // @param p:argements:SArgements 参数集合
