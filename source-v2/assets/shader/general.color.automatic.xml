@@ -218,10 +218,10 @@
          <shader:true source='support.diffuse.dump'>
          vec4 normal = texture2D(fs_normal, v_coord);
          normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
-         float normalFactor = dot(normal.xyz, -v_light_ts);
+         float normalFactor = dot(normal.xyz, <shader:false source='option.normal.invert'>-</shader:false>v_light_ts);
          </shader:true>
          <shader:false source='support.diffuse.dump'>
-         float normalFactor = dot(v_normal, -fc_light_direction);
+         float normalFactor = dot(v_normal, <shader:false source='option.normal.invert'>-</shader:false>fc_light_direction);
          </shader:false>
          normalFactor = max(normalFactor, 0.0);
          <shader:true source='option.material.map'>
@@ -245,8 +245,8 @@
          vec4 specularLevel = texture2D(fs_specular, v_coord);
          specularFactor *= specularLevel.r;
          </shader:true>
-         specularFactor = max(specularFactor, fc_specular.x);
-         specularFactor = min(specularFactor, 1.0);
+         specularFactor = max(specularFactor, 0.0);
+         specularFactor = min(specularFactor + fc_specular.x, 1.0);
          specularFactor = pow(specularFactor, fc_specular.y);
          <shader:true source='option.material.map'>
          vec4 specularColor = texture2D(fs_material, vec2(2.0 * fc_material.x, fc_material.y));
@@ -264,20 +264,19 @@
          vec4 reflect = texture2D(fs_reflect, v_coord);
          environmentColor *= reflect.r;
          </shader:true>
-         result.rgb *= fc_reflect.z;
-         result.rgb += environmentColor.rgb * fc_reflect_color.rgb * fc_reflect.w;
+         result.rgb = mix(result.rgb, environmentColor.rgb * fc_reflect_color.rgb, fc_reflect.www);
          </shader:true>
          //............................................................
          // 计算颜色
          <shader:true source='vertex.attribute.color'>
-         vec4 vertexColor = min(v_color, fc_color.y) - fc_color.x;
+         vec4 vertexColor = max(min(v_color, fc_color.y) - fc_color.x, 0.0);
          vertexColor = vertexColor / (fc_color.y - fc_color.x);
-         vertexColor = (vertexColor - fc_color.w) * fc_color.z;
-         vertexColor += 1.0;
-         //result.rgb *= vertexColor.rgb;
+         //vertexColor = (vertexColor - fc_color.w) * fc_color.z;
+         vertexColor = (vertexColor - 0.5) * 2.0 + 1.0;
+         result.rgb *= vertexColor.rgb;
          </shader:true>
          <shader:true source='support.alpha'>
-         //result.a = color.a * fc_alpha.z;
+         result.a = color.a * fc_alpha.y;
          </shader:true>
          //............................................................
          gl_FragColor = result;

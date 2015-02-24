@@ -33,7 +33,18 @@ function RBoolean_format(v){
 // @return Boolean 
 //==========================================================
 function RBoolean_parse(v){
-   return (v == EBoolean.True);
+   if(v != null){
+      if(v.constructor == Boolean){
+         return v;
+      }else if(v.constructor == String){
+         return (v == EBoolean.True);
+      }else if(v.constructor == Number){
+         return v > 0;
+      }else{
+         throw new TError(this, 'Unknown type.');
+      }
+   }
+   return false;
 }
 
 //==========================================================

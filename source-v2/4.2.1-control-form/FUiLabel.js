@@ -5,15 +5,15 @@
 // @author maocy
 // @version 150123
 //==========================================================
-function FLabel(o){
+function FUiLabel(o){
    o = RClass.inherits(this, o, FEditControl);
    //..........................................................
    // @event
-   o.onBuildEdit  = FLabel_onBuildEdit;
+   o.onBuildEdit  = FUiLabel_onBuildEdit;
    //..........................................................
    // @method
-   o.text         = FLabel_text;
-   o.setText      = FLabel_setText;
+   o.text         = FUiLabel_text;
+   o.setText      = FUiLabel_setText;
    o.refreshStyle = RMethod.empty;
    return o;
 }
@@ -23,7 +23,7 @@ function FLabel(o){
 //
 // @method
 //==========================================================
-function FLabel_onBuildEdit(){
+function FUiLabel_onBuildEdit(){
    var o = this;
    //o.hEdit = o.hEditCell;
    //if(o.dataDefault){
@@ -37,7 +37,7 @@ function FLabel_onBuildEdit(){
 // @method
 // @return String 文本内容
 //==========================================================
-function FLabel_text(){
+function FUiLabel_text(){
    //return this.hEdit.innerText;
 }
 
@@ -47,6 +47,6 @@ function FLabel_text(){
 // @method
 // @param t:text:String 文本内容
 //==========================================================
-function FLabel_setText(t){
+function FUiLabel_setText(t){
    //this.hEdit.innerHTML = RString.nvl(t);
 }

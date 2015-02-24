@@ -505,19 +505,16 @@ var EKeyCode = new function EKeyCode(){
    o.Y         = 89;
    o.Z         = 90;
    o.ControlKeys = [
-      o.Tab, o.Enter, o.BackSpace, o.Shift, o.Left, o.Up, o.Right, o.Down,
-      o.Insert, o.Delete, o.Home, o.End, o.PageUp, o.PageDown,o.Ctrl,
+      o.Tab, o.Enter, o.BackSpace, o.Left, o.Up, o.Right, o.Down,
+      o.Insert, o.Delete, o.Home, o.End, o.PageUp, o.PageDown,
       o.F1, o.F2, o.F3, o.F4, o.F5, o.F6, o.F7, o.F8, o.F9, o.F10, o.F11, o.F12];
+   var f = o.integerCodes  = new Object();
+   f[45] = true;
+   f[190] = true;
+   for(var n = o.N0; n <= o.N9; n++){
+      f[n] = true;
+   }
    var f = o.floatCodes  = new Object();
-   f[o.Tab] = true;
-   f[o.Enter] = true;
-   f[o.BackSpace] = true;
-   f[o.Left] = true;
-   f[o.Right] = true;
-   f[o.Esc] = true;
-   f[o.Delete] = true;
-   f[o.Home] = true;
-   f[o.End] = true;
    f[45] = true;
    f[190] = true;
    f[46] = true;
@@ -2196,6 +2193,7 @@ function RHtml_searchObject(h, n){
    return null;
 }
 function RHtml_free(p){
+   return null;
 }
 function RHtml_clone(o, s, t){
    if(!t){
@@ -2599,17 +2597,18 @@ function RHtml_tableMoveRow(ph, ps, pt){
 }
 var RKeyboard = new function RKeyboard(){
    var o = this;
-   o._status       = new Array();
-   o.onKeyDown     = RKeyboard_onKeyDown;
-   o.onKeyUp       = RKeyboard_onKeyUp;
-   o.construct     = RKeyboard_construct;
-   o.isCtlKey      = RKeyboard_isCtlKey;
-   o.isNumKey      = RKeyboard_isNumKey;
-   o.isPress       = RKeyboard_isPress;
-   o.isCtlKeyPress = RKeyboard_isCtlKeyPress;
-   o.fixCase       = RKeyboard_fixCase;
-   o.fixPattern    = RKeyboard_fixPattern;
-   o.fixChars      = RKeyboard_fixChars;
+   o._status      = new Array();
+   o.onKeyDown    = RKeyboard_onKeyDown;
+   o.onKeyUp      = RKeyboard_onKeyUp;
+   o.construct    = RKeyboard_construct;
+   o.isControlKey = RKeyboard_isControlKey;
+   o.isIntegerKey = RKeyboard_isIntegerKey;
+   o.isFloatKey   = RKeyboard_isFloatKey;
+   o.isNumKey     = RKeyboard_isNumKey;
+   o.isPress      = RKeyboard_isPress;
+   o.fixCase      = RKeyboard_fixCase;
+   o.fixPattern   = RKeyboard_fixPattern;
+   o.fixChars     = RKeyboard_fixChars;
    return o;
 }
 function RKeyboard_onKeyDown(p){
@@ -2631,7 +2630,7 @@ function RKeyboard_construct(){
    RWindow.lsnsKeyDown.register(o, o.onKeyDown);
    RWindow.lsnsKeyUp.register(o, o.onKeyUp);
 }
-function RKeyboard_isCtlKey(p){
+function RKeyboard_isControlKey(p){
    var s = EKeyCode.ControlKeys;
    for(var i = s.length - 1; i >= 0; i--){
       if(s[i] == p){
@@ -2639,6 +2638,12 @@ function RKeyboard_isCtlKey(p){
       }
    }
    return false;
+}
+function RKeyboard_isIntegerKey(c){
+   return EKeyCode.integerCodes[c];
+}
+function RKeyboard_isFloatKey(c){
+   return EKeyCode.floatCodes[c];
 }
 function RKeyboard_isNumKey(c){
    if(p >= 96 && p <= 105){
@@ -2650,14 +2655,6 @@ function RKeyboard_isPress(p){
    var o = this;
    var v = o._status[p];
    return v == EKeyStatus.Press;
-}
-function RKeyboard_isCtlKeyPress(p){
-   for(var n in EKeyCode.ControlKeys){
-      if(EKey.ControlKeys[n] == p){
-         return true;
-      }
-   }
-   return false;
 }
 function RKeyboard_fixCase(e, c){
    if(e && c){
@@ -2673,7 +2670,7 @@ function RKeyboard_fixCase(e, c){
 function RKeyboard_fixPattern(e, p){
    if(p){
       var k = e.keyCode;
-      if(!this.isCtlKeyPress(k)){
+      if(!this.isControlKeyPress(k)){
          if(!RString.isPattern(String.fromCharCode(k), p)){
             e.keyCode = 0;
             return false;
@@ -2688,7 +2685,7 @@ function RKeyboard_fixChars(e, p){
       if(this.isNumKey(k)){
     	  k = e.keyCode = e.keyCode - 48;
       }
-      if(!this.isCtlKeyPress(k)){
+      if(!this.isControlKeyPress(k)){
          if(!RString.inChars(String.fromCharCode(k), p)){
             e.keyCode = 0;
             e.returnValue = false;

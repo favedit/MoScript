@@ -56,13 +56,13 @@ function FUiControl(o){
    // @event
    o.onEnter        = RClass.register(o, new AEventMouseEnter('onEnter'), FUiControl_onEnter);
    o.onLeave        = RClass.register(o, new AEventMouseLeave('onLeave'), FUiControl_onLeave);
-   o.onMouseOver    = RClass.register(o, new AEventMouseOver('onMouseOver'));
-   o.onMouseOut     = RClass.register(o, new AEventMouseOut('onMouseOut'));
+   //o.onMouseOver    = RClass.register(o, new AEventMouseOver('onMouseOver'));
+   //o.onMouseOut     = RClass.register(o, new AEventMouseOut('onMouseOut'));
    o.onMouseDown    = RClass.register(o, new AEventMouseDown('onMouseDown'));
    o.onMouseUp      = RClass.register(o, new AEventMouseUp('onMouseUp'));
-   o.onClick        = RClass.register(o, new AEventClick('onClick'));
-   o.onDoubleClick  = RClass.register(o, new AEventDoubleClick('onDoubleClick'));
-   o.onResize       = RClass.register(o, new AEventResize('onResize'));
+   //o.onClick        = RClass.register(o, new AEventClick('onClick'));
+   //o.onDoubleClick  = RClass.register(o, new AEventDoubleClick('onDoubleClick'));
+   //o.onResize       = RClass.register(o, new AEventResize('onResize'));
    // @event
    o.onBuildPanel   = FUiControl_onBuildPanel;
    o.onBuild        = FUiControl_onBuild;
@@ -170,16 +170,16 @@ function FUiControl_onBuild(p){
    // 关联容器事件
    o.attachEvent('onEnter', h);
    o.attachEvent('onLeave', h);
-   o.attachEvent('onMouseOver', h);
-   o.attachEvent('onMouseOut', h);
+   //o.attachEvent('onMouseOver', h);
+   //o.attachEvent('onMouseOut', h);
    o.attachEvent('onMouseDown', h);
    o.attachEvent('onMouseUp', h);
-   o.attachEvent('onClick', h);
-   o.attachEvent('onDoubleClick', h);
+   //o.attachEvent('onClick', h);
+   //o.attachEvent('onDoubleClick', h);
    //o.attachEvent('onKeyDown', h);
    //o.attachEvent('onKeyPress', h);
    //o.attachEvent('onKeyUp', h);
-   o.attachEvent('onResize', h);
+   //o.attachEvent('onResize', h);
    // 设置容器位置/大小/空白
    o.refreshBounds();
    o.refreshPadding();
@@ -686,11 +686,7 @@ function FUiControl_dispose(){
    o._statusBuild = null;
    // 释放属性
    o._hParent = null;
-   var v = o._hPanel;
-   if(v){
-      RMemory.freel(v);
-      o._hPanel = null;
-   }
+   o._hPanel = RHtml.free(o._hPanel);
    // 释放处理
    o.__base.MPadding.dispose.call(o);
    o.__base.MSize.dispose.call(o);

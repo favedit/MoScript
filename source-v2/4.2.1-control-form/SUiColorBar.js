@@ -164,14 +164,10 @@ function SUiColorBar_build(p){
    hc.width = 2;
    hc.bgColor = '#EEEEEE';
    o.hSlideRowBR = RBuilder.appendTableCell(hl);
-   // 关联事件
-   //c.attachEvent('onSlideMouseDown', hf, c.onSlideMouseDown);
-   //c.attachEvent('onSlideMouseMove', hf, c.onSlideMouseMove);
-   //c.attachEvent('onSlideMouseUp', hf, c.onSlideMouseUp);
    //..........................................................
    // 创建输入块
    var hc = o.hInputPanel = RBuilder.appendTableCell(hr, o.control.styleName('InputPanel'));
-   hc.width = '36';
+   hc.width = 36;
    var he = o.hInput = RBuilder.appendEdit(hc, o.control.styleName('Input'));
    he._pbar = o;
    c.attachEvent('onInputKeyPress', he, c.onInputKeyPress);

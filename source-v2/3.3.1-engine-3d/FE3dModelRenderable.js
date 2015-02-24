@@ -142,7 +142,7 @@ function FE3dModelRenderable_load(p){
       m.assignInfo(mr.info());
    }
    // 设置属性
-   o._effectName = m.info().effectName;
+   o._effectCode = m.info().effectCode;
    o._renderable = p;
 }
 

@@ -48,7 +48,8 @@ function FDsSceneDisplayFrame_onBuilded(p){
 function FDsSceneDisplayFrame_onDataChanged(p){
    var o = this;
    var d = o._activeDisplay;
-   var m = d.matrix();
+   var r = o._activeResource;
+   var m = r.matrix();
    // 设置环境颜色
    var v = o._controlTranslate.get();
    m.setTranslate(v.x, v.y, v.z);
@@ -60,6 +61,7 @@ function FDsSceneDisplayFrame_onDataChanged(p){
    m.setScale(v.x, v.y, v.z);
    // 重新计算
    m.update();
+   d.matrix().assign(m);
 }
 
 //==========================================================
@@ -84,8 +86,9 @@ function FDsSceneDisplayFrame_loadObject(s, d){
    var o = this;
    o._activeScene = s;
    o._activeDisplay = d;
+   var c = o._activeResource = d.resourceScene();
    // 获得矩阵
-   var m = d.matrix();
+   var m = o._activeResource.matrix();
    // 设置参数
    o._controlTranslate.set(m.tx, m.ty, m.tz);
    o._controlRotation.set(m.rx, m.ry, m.rz);

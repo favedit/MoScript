@@ -30,7 +30,7 @@ function FDsTemplateCanvas_onBuild(p){
    o.__base.FDsCanvas.onBuild.call(o, p);
    var g = o._stage = RClass.create(FE3dSimpleStage);
    g.backgroundColor().set(0.5, 0.5, 0.5, 1);
-   g.selectTechnique(o._context, FG3dGeneralTechnique);
+   g.selectTechnique(o, FG3dGeneralTechnique);
    var sl = o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    var rc = g.camera();
@@ -157,7 +157,7 @@ function FDsTemplateCanvas_onTemplateLoad(p){
 }
 function FDsTemplateCanvas_oeRefresh(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    o.__base.FDsCanvas.oeRefresh.call(o, p);
    var w = o._hParent.offsetWidth;
    var h = o._hParent.offsetHeight;
@@ -183,11 +183,6 @@ function FDsTemplateCanvas_selectRenderable(p){
    var r = p.resource();
    var rm = r.mesh();
    var rl = rm.outline();
-   var b = o._selectBoundBox;
-   b.outline().assign(rl);
-   b.upload();
-   b.remove();
-   p._display.pushRenderable(b);
 }
 function FDsTemplateCanvas_loadTemplate(p){
    var o = this;
@@ -195,7 +190,7 @@ function FDsTemplateCanvas_loadTemplate(p){
    if(o._activeTemplate != null){
       rmc.free(o._activeTemplate);
    }
-   var m = rmc.alloc(o._context, p);
+   var m = rmc.alloc(o._graphicContext, p);
    m.addLoadListener(o, o.onTemplateLoad);
    o._layer.pushDisplay(m);
    o._activeTemplate = m;

@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150202
 //==========================================================
-function FButton(o){
+function FUiButton(o){
    o = RClass.inherits(this, o, FControl, MDisplay, MDesign);
    //..........................................................
    // @attribute
@@ -44,24 +44,24 @@ function FButton(o){
    o.hLabel             = null;
    //..........................................................
    // @event
-   o.onButtonEnter      = RClass.register(o, new HMouseEnter('onButtonEnter'), FButton_onButtonEnter);
-   o.onButtonLeave      = RClass.register(o, new HMouseLeave('onButtonLeave'), FButton_onButtonLeave);
-   o.onButtonDown       = RClass.register(o, new HMouseDown('onButtonDown'), FButton_onButtonDown);
-   o.onButtonUp         = RClass.register(o, new HMouseUp('onButtonUp'), FButton_onButtonUp);
-   o.onButtonClickDelay = FButton_onButtonClickDelay;
-   o.onClick            = FButton_onClick;
-   o.onButtonClick      = RClass.register(o, new HClick('onButtonClick'), FButton_onButtonClick);
+   o.onButtonEnter      = RClass.register(o, new HMouseEnter('onButtonEnter'), FUiButton_onButtonEnter);
+   o.onButtonLeave      = RClass.register(o, new HMouseLeave('onButtonLeave'), FUiButton_onButtonLeave);
+   o.onButtonDown       = RClass.register(o, new HMouseDown('onButtonDown'), FUiButton_onButtonDown);
+   o.onButtonUp         = RClass.register(o, new HMouseUp('onButtonUp'), FUiButton_onButtonUp);
+   o.onButtonClickDelay = FUiButton_onButtonClickDelay;
+   o.onClick            = FUiButton_onClick;
+   o.onButtonClick      = RClass.register(o, new HClick('onButtonClick'), FUiButton_onButtonClick);
    //..........................................................
    // @process
-   o.oeBuild            = FButton_oeBuild;
-   o.oeMode             = FButton_oeMode;
+   o.oeBuild            = FUiButton_oeBuild;
+   o.oeMode             = FUiButton_oeMode;
    //..........................................................
    // @method
-   o.setLabel           = FButton_setLabel;
-   o.setLabelColor      = FButton_setLabelColor;
-   o.setLabelStyle      = FButton_setLabelStyle;
-   o.doClick            = FButton_doClick;
-   o.dispose            = FButton_dispose;
+   o.setLabel           = FUiButton_setLabel;
+   o.setLabelColor      = FUiButton_setLabelColor;
+   o.setLabelStyle      = FUiButton_setLabelStyle;
+   o.doClick            = FUiButton_doClick;
+   o.dispose            = FUiButton_dispose;
    return o;
 }
 
@@ -72,7 +72,7 @@ function FButton(o){
 // @param event:event:TEvent
 // @return EEventStatus.Stop
 //==========================================================
-function FButton_onButtonEnter(e){
+function FUiButton_onButtonEnter(e){
    var o = this;
    if(!o._disabled){
 	  o.hLeftButton.background = o.styleIconPath('HoverLeft');
@@ -88,7 +88,7 @@ function FButton_onButtonEnter(e){
 // @param event:event:TEvent
 // @return EEventStatus.Stop
 //==========================================================
-function FButton_onButtonLeave(e){
+function FUiButton_onButtonLeave(e){
    var o = this;
    if(!o._disabled){
 	  o.hLeftButton.background = o.styleIconPath('ButtonLeft');
@@ -105,7 +105,7 @@ function FButton_onButtonLeave(e){
 //@param event:event:TEvent
 //@return EEventStatus.Stop
 //==========================================================
-function FButton_onButtonDown(e){
+function FUiButton_onButtonDown(e){
    var o = this;
    if(!o._disabled){
 	  o.hLeftButton.background = o.styleIconPath('PressLeft');
@@ -121,7 +121,7 @@ function FButton_onButtonDown(e){
 //@param event:event:TEvent
 //@return EEventStatus.Stop
 //==========================================================
-function FButton_onButtonUp(e){
+function FUiButton_onButtonUp(e){
    var o = this;
    if(!o._disabled){
 	  o.hLeftButton.background = o.styleIconPath('ButtonLeft');
@@ -136,7 +136,7 @@ function FButton_onButtonUp(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FButton_onButtonClickDelay(e){
+function FUiButton_onButtonClickDelay(e){
    var o = this;
    o.__process = false;
    o.clickActive.status = EActive.Sleep;
@@ -148,7 +148,7 @@ function FButton_onButtonClickDelay(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FButton_onClick(e){
+function FUiButton_onClick(e){
    this.doClick();
 }
 
@@ -158,7 +158,7 @@ function FButton_onClick(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FButton_onButtonClick(e){
+function FUiButton_onButtonClick(e){
    this.doClick();
 }
 
@@ -169,7 +169,7 @@ function FButton_onButtonClick(e){
 // @param e:event:TEvent 事件对象
 // @return EEventStatus 处理状态
 //==========================================================
-function FButton_oeBuild(e){
+function FUiButton_oeBuild(e){
    var o = this;
    o.base.FControl.oeBuild.call(o, e);
    // 设置底板
@@ -240,7 +240,7 @@ function FButton_oeBuild(e){
 // @param e:event:TEvent 事件对象
 // @return EEventStatus 处理状态
 //==========================================================
-function FButton_oeMode(e){
+function FUiButton_oeMode(e){
    var o = this;
    o.base.FControl.oeMode.call(o, e);
    o.base.MDisplay.oeMode.call(o, e);
@@ -253,7 +253,7 @@ function FButton_oeMode(e){
 // @method
 // @param label:label:label
 //==========================================================
-function FButton_setLabel(v){
+function FUiButton_setLabel(v){
    var o = this;
    o.label = v;
    o.hLabel.innerText = v;
@@ -266,7 +266,7 @@ function FButton_setLabel(v){
 //@method
 //@param label:label:label
 //==========================================================
-function FButton_setLabelColor(c){
+function FUiButton_setLabelColor(c){
    var o = this;
    o.hLabel.style.color = '#FF0000';
 }
@@ -277,7 +277,7 @@ function FButton_setLabelColor(c){
 //@method
 //@param label:label:label
 //==========================================================
-function FButton_setLabelStyle(c, w, s){
+function FUiButton_setLabelStyle(c, w, s){
    var o = this;
    o.hLabel.style.color = '#FF0000';
    o.hLabel.style.fontWeight = 'bold';
@@ -289,12 +289,12 @@ function FButton_setLabelStyle(c, w, s){
 //
 // @method
 //==========================================================
-function FButton_doClick(){
+function FUiButton_doClick(){
    var o = this;
    // 检查执行状态
    if(o.__process){
       return;
-      //return alert(RContext.get('FButton:process'));
+      //return alert(RContext.get('FUiButton:process'));
    }
    // 开始执行
    o.__process = true;
@@ -328,13 +328,13 @@ function FButton_doClick(){
    }
    // 执行编辑地址
    if(o.editUrl){
-      var w = RConsole.find(FButtonConsole).find();
+      var w = RConsole.find(FUiButtonConsole).find();
       w.linkUrl(o.editUrl);
       w.show();
    }
    // 弹出指定表单
    if(o.editForm){
-      var w = RConsole.find(FButtonFormConsole).find();
+      var w = RConsole.find(FUiButtonFormConsole).find();
       w.linkForm(o);
       w.show();
    }
@@ -345,7 +345,7 @@ function FButton_doClick(){
 //
 // @method
 //==========================================================
-function FButton_dispose(){
+function FUiButton_dispose(){
    var o = this;
    o.base.FControl.dispose.call(o);
    o.hForm = null;

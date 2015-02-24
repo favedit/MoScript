@@ -38,6 +38,7 @@ function SMatrix3d(){
    o.update         = SMatrix3d_update;
    o.serialize      = SMatrix3d_serialize;
    o.unserialize    = SMatrix3d_unserialize;
+   o.saveConfig     = SMatrix3d_saveConfig;
    //..........................................................
    // @construct
    o.identity();
@@ -310,4 +311,23 @@ function SMatrix3d_unserialize(p){
    o.sy = p.readFloat();
    o.sz = p.readFloat();
    o.updateForce();
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function SMatrix3d_saveConfig(p){
+   var o = this;
+   p.set('tx', RFloat.format(o.tx));
+   p.set('ty', RFloat.format(o.ty));
+   p.set('tz', RFloat.format(o.tz));
+   p.set('rx', RFloat.format(o.rx));
+   p.set('ry', RFloat.format(o.ry));
+   p.set('rz', RFloat.format(o.rz));
+   p.set('sx', RFloat.format(o.sx));
+   p.set('sy', RFloat.format(o.sy));
+   p.set('sz', RFloat.format(o.sz));
 }

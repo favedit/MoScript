@@ -18,7 +18,8 @@ function FDsSceneMaterialPropertyFrame(o){
    o._controlCode    = null;
    o._controlLabel   = null;
    o._displayFrame   = null;
-   o._materialFrame  = null;
+   o._materialFrame1 = null;
+   o._materialFrame2 = null;
    //..........................................................
    // @method
    o.construct       = FDsSceneMaterialPropertyFrame_construct;
@@ -57,7 +58,8 @@ function FDsSceneMaterialPropertyFrame_loadObject(s, m){
    o._controlCode.set(r.code());
    o._controlLabel.set(r.label());
    // 设置界面
-   o._frameMaterial.loadObject(s, m);
+   o._frameMaterial1.loadObject(s, m);
+   o._frameMaterial2.loadObject(s, m);
 }
 
 //==========================================================

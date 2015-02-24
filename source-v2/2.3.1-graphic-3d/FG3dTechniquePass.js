@@ -77,13 +77,19 @@ function FG3dTechniquePass_code(){
 // @param t:target:FG3dRenderable 目标
 //==========================================================
 function FG3dTechniquePass_sortRenderables(s, t){
-   //var se = s.activeEffect();
-   //var te = t.activeEffect();
-   return s.hashCode() - t.hashCode();
-   //if(se == te){
-   //   return 0;
-   //}
-   //return s._effectName.localeCompare(t._effectName);
+   var ms = s.material().info();
+   var mt = t.material().info();
+   if(ms.optionAlpha && mt.optionAlpha){
+      return 0;
+   }else if(ms.optionAlpha && !mt.optionAlpha){
+      return 1;
+   }else if(!ms.optionAlpha && mt.optionAlpha){
+      return -1;
+   }else{
+      var se = s.activeEffect();
+      var te = t.activeEffect();
+      return se.hashCode() - te.hashCode();
+   }
 }
 
 //==========================================================
@@ -118,7 +124,7 @@ function FG3dTechniquePass_drawRegion(p){
    // 激活效果器
    o.activeEffects(p, rs);
    // 控件排序
-   //rs.sort(o.sortRenderables);
+   rs.sort(o.sortRenderables);
    // 渲染处理
    var c = rs.count();
    if(c > 0){

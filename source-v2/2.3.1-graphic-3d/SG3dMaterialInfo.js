@@ -8,9 +8,24 @@ function SG3dMaterialInfo(o){
    if(!o){o = this;}
    //..........................................................
    // @attribute 效果名称
-   o.effectName           = 'automatic';
+   o.effectCode           = 'automatic';
    // @attribute 变换名称
    o.transformName        = null;
+   //..........................................................
+   // @attribute 设置深度
+   o.optionDepth          = null;
+   // @attribute 设置双面
+   o.optionDouble         = null;
+   // @attribute 设置透明
+   o.optionAlpha          = null;
+   // @attribute 设置视角
+   o.optionView           = null;
+   // @attribute 设置法线反向
+   o.optionNormalInvert   = null;
+   // @attribute 设置影子
+   o.optionShadow         = null;
+   // @attribute 设置自阴影
+   o.optionShadowSelf     = null;
    //..........................................................
    // @attribute 设置光源
    o.optionLight          = null;
@@ -20,18 +35,8 @@ function SG3dMaterialInfo(o){
    o.optionSort           = null;
    // @attribute 排序级别
    o.sortLevel            = null;
-   // @attribute 设置透明
-   o.optionAlpha          = null;
-   // @attribute 设置深度
-   o.optionDepth          = null;
    // @attribute 设置比较
    o.optionCompare        = null;
-   // @attribute 设置双面
-   o.optionDouble         = null;
-   // @attribute 设置影子
-   o.optionShadow         = null;
-   // @attribute 设置自阴影
-   o.optionShadowSelf     = null;
    // @attribute 设置动态
    o.optionDynamic        = null;
    // @attribute 设置投射
@@ -69,7 +74,7 @@ function SG3dMaterialInfo(o){
    o.specularColor        = new SColor4();
    // 高光信息
    o.specularBase         = 1.0;
-   o.specularLevel         = 1.0;
+   o.specularLevel        = 1.0;
    o.specularAverage      = 1.0;
    o.specularShadow       = 1.0;
    // 高光信息
@@ -118,18 +123,21 @@ function SG3dMaterialInfo(o){
 function SG3dMaterialInfo_assign(p){
    var o = this;
    // 存储属性
-   o.effectName = p.effectName;
+   o.effectCode = p.effectCode;
    o.transformName = p.transformName;
+   // 存储设置
+   o.optionDepth = p.optionDepth;
+   o.optionAlpha = p.optionAlpha;
+   o.optionDouble = p.optionDouble;
+   o.optionView = p.optionView;
+   o.optionNormalInvert = p.optionNormalInvert;
+   o.optionShadow = p.optionShadow;
+   o.optionShadowSelf = p.optionShadowSelf;
    // 存储设置
    o.optionLight = p.optionLight;
    o.optionMerge = p.optionMerge;
-   o.optionDepth = p.optionDepth;
    o.optionCompare = p.optionCompare;
-   o.optionAlpha = p.optionAlpha;
-   o.optionDouble = p.optionDouble;
    o.optionOpacity = p.optionOpacity;
-   o.optionShadow = p.optionShadow;
-   o.optionShadowSelf = p.optionShadowSelf;
    o.optionTransmittance = p.optionTransmittance;
    // 存储信息
    o.sortLevel = p.sortLevel;
@@ -186,18 +194,21 @@ function SG3dMaterialInfo_assign(p){
 function SG3dMaterialInfo_calculate(p){
    var o = this;
    // 存储属性
-   o.effectName = p.effectName;
+   o.effectCode = p.effectCode;
    o.transformName = p.transformName;
+   // 存储设置
+   o.optionDepth = p.optionDepth;
+   o.optionAlpha = p.optionAlpha;
+   o.optionDouble = p.optionDouble;
+   o.optionView = p.optionView;
+   o.optionNormalInvert = p.optionNormalInvert;
+   o.optionShadow = p.optionShadow;
+   o.optionShadowSelf = p.optionShadowSelf;
    // 存储设置
    o.optionLight = p.optionLight;
    o.optionMerge = p.optionMerge;
-   o.optionDepth = p.optionDepth;
    o.optionCompare = p.optionCompare;
-   o.optionAlpha = p.optionAlpha;
-   o.optionDouble = p.optionDouble;
    o.optionOpacity = p.optionOpacity;
-   o.optionShadow = p.optionShadow;
-   o.optionShadowSelf = p.optionShadowSelf;
    o.optionTransmittance = p.optionTransmittance;
    // 存储信息
    o.sortLevel = p.sortLevel;
@@ -258,7 +269,7 @@ function SG3dMaterialInfo_reset(){
    o.colorMax = 1.0;
    o.colorRate = 1.0;
    o.colorMerge = 1.0;
-   o.alphaBase = 1.0;
+   o.alphaBase = 0.1;
    o.alphaRate = 1.0;
    o.alphaLevel = 1.0;
    o.alphaMerge = 1.0;
@@ -270,12 +281,12 @@ function SG3dMaterialInfo_reset(){
    o.diffuseViewShadow = 1.0;
    o.specularColor.set(0.5, 0.5, 0.5, 1.0);
    o.specularBase = 0.0;
-   o.specularLevel = 32.0;
+   o.specularLevel = 16.0;
    o.specularAverage = 1.0;
    o.specularShadow = 1.0;
    o.specularViewColor.set(1.0, 1.0, 1.0, 1.0);
-   o.specularViewBase = 1.0;
-   o.specularViewRate = 1.0;
+   o.specularViewBase = 0.0;
+   o.specularViewRate = 16.0;
    o.specularViewAverage = 1.0;
    o.specularViewShadow = 1.0;
    o.reflectColor.set(1.0, 1.0, 1.0, 1.0);

@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-function FNumber2(o){
+function FUiNumber2(o){
    //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
    o = RClass.inherits(this, o, FEditControl);
    //..........................................................
@@ -20,17 +20,17 @@ function FNumber2(o){
    o._hInput          = null;
    //..........................................................
    // @event
-   o.onBuildEditValue = FNumber2_onBuildEditValue;
+   o.onBuildEditValue = FUiNumber2_onBuildEditValue;
    //..........................................................
    // @process
-   //o.oeDataLoad       = FNumber2_oeDataLoad;
-   //o.oeDataSave       = FNumber2_oeDataSave;
+   //o.oeDataLoad       = FUiNumber2_oeDataLoad;
+   //o.oeDataSave       = FUiNumber2_oeDataSave;
    //..........................................................
    // @method
-   o.construct        = FNumber2_construct;
+   o.construct        = FUiNumber2_construct;
    // @method
-   o.get              = FNumber2_get;
-   o.set              = FNumber2_set;
+   o.get              = FUiNumber2_get;
+   o.set              = FUiNumber2_set;
 
 
 
@@ -51,16 +51,16 @@ function FNumber2(o){
    //o.hUnit         = null;
    //..........................................................
    // @event
-   //o.onDataKeyDown = FNumber2_onDataKeyDown;
+   //o.onDataKeyDown = FUiNumber2_onDataKeyDown;
    //..........................................................
    // @method
-   //o.formatValue   = FNumber2_formatValue;
-   //o.setText       = FNumber2_setText;
-   //o.validText     = FNumber2_validText;
-   //o.findEditor    = FNumber2_findEditor;
-   //o.drop          = FNumber2_drop;
-   //o.link          = FNumber2_link;
-   //o.clone         = FNumber2_clone;
+   //o.formatValue   = FUiNumber2_formatValue;
+   //o.setText       = FUiNumber2_setText;
+   //o.validText     = FUiNumber2_validText;
+   //o.findEditor    = FUiNumber2_findEditor;
+   //o.drop          = FUiNumber2_drop;
+   //o.link          = FUiNumber2_link;
+   //o.clone         = FUiNumber2_clone;
    return o;
 }
 
@@ -70,7 +70,7 @@ function FNumber2(o){
 // @method
 // @param p:dataSource:FDataSource 数据源
 //==========================================================
-function FNumber2_oeDataLoad(p){
+function FUiNumber2_oeDataLoad(p){
    var o = this;
    alert(p);
    return EEventStatus.Stop;
@@ -82,7 +82,7 @@ function FNumber2_oeDataLoad(p){
 // @method
 // @param p:dataSource:FDataSource 数据源
 //==========================================================
-function FNumber2_oeDataSave(p){
+function FUiNumber2_oeDataSave(p){
    var o = this;
    return EEventStatus.Stop;
 }
@@ -93,7 +93,7 @@ function FNumber2_oeDataSave(p){
 // @method
 // @param p:argements:SArgements 参数集合
 //==========================================================
-function FNumber2_onBuildEditValue(p){
+function FUiNumber2_onBuildEditValue(p){
    var o = this;
    var h = o._hValuePanel;
    h.className = o.styleName('InputPanel');
@@ -129,7 +129,7 @@ function FNumber2_onBuildEditValue(p){
 //
 // @method
 //==========================================================
-function FNumber2_construct(){
+function FUiNumber2_construct(){
    var o = this;
    o.__base.FEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
@@ -141,7 +141,7 @@ function FNumber2_construct(){
 // @method
 // @return String 数据
 //==========================================================
-function FNumber2_get(p){
+function FUiNumber2_get(p){
    var o = this;
    var r = o.__base.FEditControl.get.call(o, p);
    // 获得显示
@@ -158,7 +158,7 @@ function FNumber2_get(p){
 // @method
 // @param p:value:String 数据
 //==========================================================
-function FNumber2_set(p){
+function FUiNumber2_set(p){
    var o = this;
    o.__base.FEditControl.set.call(o, p);
    // 设置显示
@@ -191,7 +191,7 @@ function FNumber2_set(p){
 // @param s:sender:FControl 控件对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FNumber2_onDataKeyDown(s, e){
+function FUiNumber2_onDataKeyDown(s, e){
    var o = this;
    o.__base.FEditControl.onDataKeyDown.call(o, s, e);
    // 大小写限制
@@ -219,7 +219,7 @@ function FNumber2_onDataKeyDown(s, e){
 // @method
 // @param v:value:String 显示内容
 //==========================================================
-function FNumber2_formatValue(v){
+function FUiNumber2_formatValue(v){
    var o = this;
    var r = RString.nvl(v);
    if(ECase.Upper == o.editCase){
@@ -236,7 +236,7 @@ function FNumber2_formatValue(v){
 // @method
 // @param t:text:String 内容
 //==========================================================
-function FNumber2_setText(t){
+function FUiNumber2_setText(t){
    var o = this;
    if(!o.hEdit){
       return;
@@ -264,7 +264,7 @@ function FNumber2_setText(t){
 // @param t:text:String 内容
 // @return 校验结果
 //==========================================================
-function FNumber2_validText(t){
+function FUiNumber2_validText(t){
    var o = this;
    var r = o.__base.FEditControl.validText.call(o, t);
    if(!r){
@@ -290,14 +290,14 @@ function FNumber2_validText(t){
 // @method
 // @return 编辑器
 //==========================================================
-function FNumber2_findEditor(){
+function FUiNumber2_findEditor(){
    var o = this;
    if(o.editComplete){
       var de = o.editor;
       if(!de){
          o.dsControl = o.topControl(MDataset);
          if(o.dsControl){
-            de = o.editor = RConsole.find(FNumber2Console).focus(o, FNumber2Editor);
+            de = o.editor = RConsole.find(FUiNumber2Console).focus(o, FUiNumber2Editor);
          }
       }
       if(de){
@@ -312,7 +312,7 @@ function FNumber2_findEditor(){
 //
 // @method
 //==========================================================
-function FNumber2_drop(){
+function FUiNumber2_drop(){
    var o = this;
    var de = o.findEditor();
    if(de){
@@ -334,7 +334,7 @@ function FNumber2_drop(){
 //
 //@method
 //==========================================================
-function FNumber2_clone(){
+function FUiNumber2_clone(){
    var o = this;
    var r = o._class.newInstance();
    GHtml_clone(r, o.hPanel);
@@ -346,7 +346,7 @@ function FNumber2_clone(){
 //
 //@method
 //==========================================================
-function FNumber2_link(){
+function FUiNumber2_link(){
    var o = this;
    
 }

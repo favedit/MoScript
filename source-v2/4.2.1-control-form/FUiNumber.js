@@ -145,12 +145,8 @@ function FUiNumber_onBuildEditValue(p){
 function FUiNumber_onInputKeyPress(p){
    var o = this;
    var c = p.keyCode;
-   // 允许输入百分号(%)
-   //if(he.shiftKey && 53 == kc){
-   //   return;
-   //}
-   // 检查输入字符是否为数字，否则给清除输入内容
-   if(!EKeyCode.floatCodes[c]){
+   // 检查输入字符是否为浮点数，否则给清除输入内容
+   if(!RKeyboard.isFloatKey(c)){
       p.cancel();
    }
 }

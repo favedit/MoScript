@@ -44,12 +44,12 @@ function FUiColorPower(o){
    // @event
    o.onBuildEditValue    = FUiColorPower_onBuildEditValue;
    // @event
-   o.onInputKeyPress     = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FUiColorPower_onInputKeyPress);
-   o.onInputEdit         = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiColorPower_onInputEdit);
-   o.onInputChange       = RClass.register(o, new AEventChange('onInputChange'), FUiColorPower_onInputChange);
    o.onMouseCaptureStart = FUiColorPower_onMouseCaptureStart;
    o.onMouseCapture      = FUiColorPower_onMouseCapture;
    o.onMouseCaptureStop  = FUiColorPower_onMouseCaptureStop;
+   o.onInputKeyPress     = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FUiColorPower_onInputKeyPress);
+   o.onInputEdit         = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiColorPower_onInputEdit);
+   o.onInputChange       = RClass.register(o, new AEventChange('onInputChange'), FUiColorPower_onInputChange);
    //..........................................................
    // @method
    o.construct           = FUiColorPower_construct;
@@ -119,52 +119,6 @@ function FUiColorPower_onBuildEditValue(p){
 }
 
 //==========================================================
-// <T>编辑控件中键盘按下处理。 </T>
-//
-// @param p:event:SEvent 事件对象
-//==========================================================
-function FUiColorPower_onInputKeyPress(p){
-   var o = this;
-   var c = p.keyCode;
-   // 检查输入字符是否为数字，否则给清除输入内容
-   if(!EKeyCode.floatCodes[c]){
-      p.cancel();
-   }
-}
-
-//==========================================================
-// <T>编辑控件中处理。 </T>
-//
-// @param p:event:SEvent 事件对象
-//==========================================================
-function FUiColorPower_onInputEdit(p){
-   var o = this;
-   var hs = p.hSender;
-   var b = hs._pbar;
-   if(b){
-      b.changeInputEdit();
-   }
-   // 内容改变通知
-   o.processDataChangedListener(o);
-}
-
-//==========================================================
-// <T>编辑控件完成处理。 </T>
-//
-// @param p:event:SEvent 事件对象
-//==========================================================
-function FUiColorPower_onInputChange(p){
-   var o = this;
-   var hs = p.hSender;
-   var b = hs._pbar;
-   if(b){
-      b.changeInputChange();
-   }
-   // 内容改变通知
-   o.processDataChangedListener(o);
-}
-
-//==========================================================
 // <T>滑动栏鼠标落下处理。 </T>
 //
 // @param p:event:SEvent 事件对象
@@ -201,6 +155,56 @@ function FUiColorPower_onMouseCaptureStop(p){
    if(b){
       b.onMouseUp(p);
    }
+}
+
+//==========================================================
+// <T>编辑控件中键盘按下处理。 </T>
+//
+// @param p:event:SEvent 事件对象
+//==========================================================
+function FUiColorPower_onInputKeyPress(p){
+   var o = this;
+   var c = p.keyCode;
+   // 检查输入字符是否控制按键
+   if(RKeyboard.isControlKey(c)){
+      return;
+   }
+   // 检查输入字符是否为浮点数，否则给清除输入内容
+   if(!RKeyboard.isFloatKey(c)){
+      p.cancel();
+   }
+}
+
+//==========================================================
+// <T>编辑控件中处理。 </T>
+//
+// @param p:event:SEvent 事件对象
+//==========================================================
+function FUiColorPower_onInputEdit(p){
+   var o = this;
+   var hs = p.hSender;
+   var b = hs._pbar;
+   if(b){
+      b.changeInputEdit();
+   }
+   // 内容改变通知
+   o.processDataChangedListener(o);
+}
+
+//==========================================================
+// <T>编辑控件完成处理。 </T>
+//
+// @param p:event:SEvent 事件对象
+//==========================================================
+function FUiColorPower_onInputChange(p){
+   var o = this;
+   var hs = p.hSender;
+   var b = hs._pbar;
+   if(b){
+      b.changeInputChange();
+   }
+   // 内容改变通知
+   o.processDataChangedListener(o);
 }
 
 //==========================================================

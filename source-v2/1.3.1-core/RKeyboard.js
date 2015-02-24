@@ -9,23 +9,24 @@ var RKeyboard = new function RKeyboard(){
    var o = this;
    //..........................................................
    // @attribute
-   o._status       = new Array();
+   o._status      = new Array();
    //..........................................................
    // @event
-   o.onKeyDown     = RKeyboard_onKeyDown;
-   o.onKeyUp       = RKeyboard_onKeyUp;
+   o.onKeyDown    = RKeyboard_onKeyDown;
+   o.onKeyUp      = RKeyboard_onKeyUp;
    //..........................................................
    // @method
-   o.construct     = RKeyboard_construct;
+   o.construct    = RKeyboard_construct;
    // @method
-   o.isCtlKey      = RKeyboard_isCtlKey;
-   o.isNumKey      = RKeyboard_isNumKey;
-   o.isPress       = RKeyboard_isPress;
-   o.isCtlKeyPress = RKeyboard_isCtlKeyPress;
+   o.isControlKey = RKeyboard_isControlKey;
+   o.isIntegerKey = RKeyboard_isIntegerKey;
+   o.isFloatKey   = RKeyboard_isFloatKey;
+   o.isNumKey     = RKeyboard_isNumKey;
+   o.isPress      = RKeyboard_isPress;
    // @method
-   o.fixCase       = RKeyboard_fixCase;
-   o.fixPattern    = RKeyboard_fixPattern;
-   o.fixChars      = RKeyboard_fixChars;
+   o.fixCase      = RKeyboard_fixCase;
+   o.fixPattern   = RKeyboard_fixPattern;
+   o.fixChars     = RKeyboard_fixChars;
    return o;
 }
 
@@ -77,7 +78,7 @@ function RKeyboard_construct(){
 // @param p:keyCode:Integer 按键代码
 // @return Boolean 是否
 //===========================================================
-function RKeyboard_isCtlKey(p){
+function RKeyboard_isControlKey(p){
    var s = EKeyCode.ControlKeys;
    for(var i = s.length - 1; i >= 0; i--){
       if(s[i] == p){
@@ -85,6 +86,28 @@ function RKeyboard_isCtlKey(p){
       }
    }
    return false;
+}
+
+//===========================================================
+// <T>判断按键是否整数键。</T>
+//
+// @method
+// @param p:keyCode:Integer 按键代码
+// @return Boolean 是否
+//===========================================================
+function RKeyboard_isIntegerKey(c){
+   return EKeyCode.integerCodes[c];
+}
+
+//===========================================================
+// <T>判断按键是否浮点数键。</T>
+//
+// @method
+// @param p:keyCode:Integer 按键代码
+// @return Boolean 是否
+//===========================================================
+function RKeyboard_isFloatKey(c){
+   return EKeyCode.floatCodes[c];
 }
 
 //===========================================================
@@ -113,22 +136,6 @@ function RKeyboard_isPress(p){
    // 设置状态
    var v = o._status[p];
    return v == EKeyStatus.Press;
-}
-
-//===========================================================
-// <T>判断控制键是否按下。</T>
-//
-// @method
-// @param p:keyCode:Integer 按键代码
-// @return Boolean 是否按下
-//===========================================================
-function RKeyboard_isCtlKeyPress(p){
-   for(var n in EKeyCode.ControlKeys){
-      if(EKey.ControlKeys[n] == p){
-         return true;
-      }
-   }
-   return false;
 }
 
 //===========================================================
@@ -162,7 +169,7 @@ function RKeyboard_fixCase(e, c){
 function RKeyboard_fixPattern(e, p){
    if(p){
       var k = e.keyCode;
-      if(!this.isCtlKeyPress(k)){
+      if(!this.isControlKeyPress(k)){
          if(!RString.isPattern(String.fromCharCode(k), p)){
             e.keyCode = 0;
             return false;
@@ -186,7 +193,7 @@ function RKeyboard_fixChars(e, p){
       if(this.isNumKey(k)){
     	  k = e.keyCode = e.keyCode - 48;
       }
-      if(!this.isCtlKeyPress(k)){
+      if(!this.isControlKeyPress(k)){
          if(!RString.inChars(String.fromCharCode(k), p)){
             e.keyCode = 0;
             e.returnValue = false;

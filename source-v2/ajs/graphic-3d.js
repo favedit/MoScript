@@ -416,6 +416,9 @@ function FG3dEffect_loadConfig(p){
 function FG3dEffect_loadUrl(u){
    var o = this;
    var x = RClass.create(FXmlConnection);
+   if(RRuntime.isDebug()){
+      u += '?' + RDate.format();
+   }
    var r = x.send(u);
    o.loadConfig(r);
 }
@@ -438,6 +441,9 @@ function FG3dEffect_load(){
    var cp = RBrowser.contentPath();
    var ec = RConsole.find(FG3dEffectConsole);
    var u = cp + ec.path() + o._code + ".xml";
+   if(RRuntime.isDebug()){
+      u += '?' + RDate.format();
+   }
    o.loadUrl(u);
 }
 function FG3dEffectConsole(o){
@@ -489,6 +495,8 @@ function FG3dEffectConsole_create(c, p){
 }
 function FG3dEffectConsole_buildEffectInfo(pc, pf, pr){
    var o = this;
+   var mi = pr.material().info();
+   pf.optionNormalInvert = mi.optionNormalInvert;
    pf.vertexCount = pr.vertexCount();
    var vs = pr.vertexBuffers();
    var c = vs.count();
@@ -536,7 +544,7 @@ function FG3dEffectConsole_findTemplate(pc, pn){
 }
 function FG3dEffectConsole_find(pc, pg, pr){
    var o = this;
-   var en = pr.material().info().effectName;
+   var en = pr.material().info().effectCode;
    if(RString.isEmpty(en)){
       en = 'automatic'
    }
@@ -1169,7 +1177,7 @@ function FG3dRenderable(o){
    o = RClass.inherits(this, o, FGraphicRenderable);
    o._currentMatrix  = null;
    o._matrix         = null;
-   o._effectName     = null;
+   o._effectCode     = null;
    o._materialName   = null;
    o._material       = null;
    o._activeInfo     = null;
@@ -1177,7 +1185,7 @@ function FG3dRenderable(o){
    o.construct       = FG3dRenderable_construct;
    o.currentMatrix   = FG3dRenderable_currentMatrix;
    o.matrix          = FG3dRenderable_matrix;
-   o.effectName      = FG3dRenderable_effectName;
+   o.effectCode      = FG3dRenderable_effectCode;
    o.material        = FG3dRenderable_material;
    o.activeEffect    = FG3dRenderable_activeEffect;
    o.activeInfo      = FG3dRenderable_activeInfo;
@@ -1203,8 +1211,8 @@ function FG3dRenderable_currentMatrix(){
 function FG3dRenderable_matrix(){
    return this._matrix;
 }
-function FG3dRenderable_effectName(){
-   return this._effectName;
+function FG3dRenderable_effectCode(){
+   return this._effectCode;
 }
 function FG3dRenderable_activeEffect(){
    var i = this._activeInfo;
@@ -1389,7 +1397,19 @@ function FG3dTechniquePass_code(){
    return this._code;
 }
 function FG3dTechniquePass_sortRenderables(s, t){
-   return s.hashCode() - t.hashCode();
+   var ms = s.material().info();
+   var mt = t.material().info();
+   if(ms.optionAlpha && mt.optionAlpha){
+      return 0;
+   }else if(ms.optionAlpha && !mt.optionAlpha){
+      return 1;
+   }else if(!ms.optionAlpha && mt.optionAlpha){
+      return -1;
+   }else{
+      var se = s.activeEffect();
+      var te = t.activeEffect();
+      return se.hashCode() - te.hashCode();
+   }
 }
 function FG3dTechniquePass_activeEffects(p, rs){
    var o = this;
@@ -1407,6 +1427,7 @@ function FG3dTechniquePass_drawRegion(p){
    var cb = o._graphicContext.capability();
    var rs = p.renderables();
    o.activeEffects(p, rs);
+   rs.sort(o.sortRenderables);
    var c = rs.count();
    if(c > 0){
       if(cb.optionMaterialMap){
@@ -1517,6 +1538,7 @@ function SG3dEffectInfo(o){
    o.blendSourceMode       = null;
    o.blendTargetMode       = null;
    o.optionAlphaTest       = null;
+   o.optionNormalInvert    = null;
    o.supportInstance       = null;
    o.vertexCount           = 0;
    o.vertexColor           = null;
@@ -1566,6 +1588,7 @@ function SG3dEffectInfo_reset(){
    o.blendSourceMode = EG3dBlendMode.SourceAlpha;
    o.blendTargetMode = EG3dBlendMode.OneMinusSourceAlpha;
    o.optionAlphaTest = false;
+   o.optionNormalInvert = false;
    o.supportInstance = false;
    o.vertexCount = 0;
    o.vertexColor = false;
@@ -1593,18 +1616,20 @@ function SG3dEffectInfo_reset(){
 }
 function SG3dMaterialInfo(o){
    if(!o){o = this;}
-   o.effectName           = 'automatic';
+   o.effectCode           = 'automatic';
    o.transformName        = null;
+   o.optionDepth          = null;
+   o.optionDouble         = null;
+   o.optionAlpha          = null;
+   o.optionView           = null;
+   o.optionNormalInvert   = null;
+   o.optionShadow         = null;
+   o.optionShadowSelf     = null;
    o.optionLight          = null;
    o.optionMerge          = null;
    o.optionSort           = null;
    o.sortLevel            = null;
-   o.optionAlpha          = null;
-   o.optionDepth          = null;
    o.optionCompare        = null;
-   o.optionDouble         = null;
-   o.optionShadow         = null;
-   o.optionShadowSelf     = null;
    o.optionDynamic        = null;
    o.optionTransmittance  = null;
    o.optionOpacity        = null;
@@ -1626,7 +1651,7 @@ function SG3dMaterialInfo(o){
    o.diffuseViewShadow    = 1.0;
    o.specularColor        = new SColor4();
    o.specularBase         = 1.0;
-   o.specularLevel         = 1.0;
+   o.specularLevel        = 1.0;
    o.specularAverage      = 1.0;
    o.specularShadow       = 1.0;
    o.specularInfo         = null;
@@ -1655,17 +1680,19 @@ function SG3dMaterialInfo(o){
 }
 function SG3dMaterialInfo_assign(p){
    var o = this;
-   o.effectName = p.effectName;
+   o.effectCode = p.effectCode;
    o.transformName = p.transformName;
-   o.optionLight = p.optionLight;
-   o.optionMerge = p.optionMerge;
    o.optionDepth = p.optionDepth;
-   o.optionCompare = p.optionCompare;
    o.optionAlpha = p.optionAlpha;
    o.optionDouble = p.optionDouble;
-   o.optionOpacity = p.optionOpacity;
+   o.optionView = p.optionView;
+   o.optionNormalInvert = p.optionNormalInvert;
    o.optionShadow = p.optionShadow;
    o.optionShadowSelf = p.optionShadowSelf;
+   o.optionLight = p.optionLight;
+   o.optionMerge = p.optionMerge;
+   o.optionCompare = p.optionCompare;
+   o.optionOpacity = p.optionOpacity;
    o.optionTransmittance = p.optionTransmittance;
    o.sortLevel = p.sortLevel;
    o.colorMin = p.colorMin;
@@ -1710,17 +1737,19 @@ function SG3dMaterialInfo_assign(p){
 }
 function SG3dMaterialInfo_calculate(p){
    var o = this;
-   o.effectName = p.effectName;
+   o.effectCode = p.effectCode;
    o.transformName = p.transformName;
-   o.optionLight = p.optionLight;
-   o.optionMerge = p.optionMerge;
    o.optionDepth = p.optionDepth;
-   o.optionCompare = p.optionCompare;
    o.optionAlpha = p.optionAlpha;
    o.optionDouble = p.optionDouble;
-   o.optionOpacity = p.optionOpacity;
+   o.optionView = p.optionView;
+   o.optionNormalInvert = p.optionNormalInvert;
    o.optionShadow = p.optionShadow;
    o.optionShadowSelf = p.optionShadowSelf;
+   o.optionLight = p.optionLight;
+   o.optionMerge = p.optionMerge;
+   o.optionCompare = p.optionCompare;
+   o.optionOpacity = p.optionOpacity;
    o.optionTransmittance = p.optionTransmittance;
    o.sortLevel = p.sortLevel;
    o.colorMin = p.colorMin;
@@ -1771,7 +1800,7 @@ function SG3dMaterialInfo_reset(){
    o.colorMax = 1.0;
    o.colorRate = 1.0;
    o.colorMerge = 1.0;
-   o.alphaBase = 1.0;
+   o.alphaBase = 0.1;
    o.alphaRate = 1.0;
    o.alphaLevel = 1.0;
    o.alphaMerge = 1.0;
@@ -1783,12 +1812,12 @@ function SG3dMaterialInfo_reset(){
    o.diffuseViewShadow = 1.0;
    o.specularColor.set(0.5, 0.5, 0.5, 1.0);
    o.specularBase = 0.0;
-   o.specularLevel = 32.0;
+   o.specularLevel = 16.0;
    o.specularAverage = 1.0;
    o.specularShadow = 1.0;
    o.specularViewColor.set(1.0, 1.0, 1.0, 1.0);
-   o.specularViewBase = 1.0;
-   o.specularViewRate = 1.0;
+   o.specularViewBase = 0.0;
+   o.specularViewRate = 16.0;
    o.specularViewAverage = 1.0;
    o.specularViewShadow = 1.0;
    o.reflectColor.set(1.0, 1.0, 1.0, 1.0);

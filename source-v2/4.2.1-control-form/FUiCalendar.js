@@ -1,7 +1,7 @@
 // ============================================================
-// FCalendar
+// FUiCalendar
 // ============================================================
-function FCalendar(o){
+function FUiCalendar(o){
    o = RClass.inherits(this, o, FEditControl, MEditBorder, MDropable, MDescCalendar);
    //..........................................................
    // @property
@@ -21,18 +21,18 @@ function FCalendar(o){
    o.hForm       = null;
    //..........................................................
    // @event
-   o.onKeyPress  = FCalendar_onKeyPress;
-   o.onDataClick   = FCalendar_onDataClick;
-   o.refreshStyle  = FCalendar_refreshStyle;
-   o.onEditEnd   = FCalendar_onEditEnd;
-   o.onBuildEdit = FCalendar_onBuildEdit;
+   o.onKeyPress  = FUiCalendar_onKeyPress;
+   o.onDataClick   = FUiCalendar_onDataClick;
+   o.refreshStyle  = FUiCalendar_refreshStyle;
+   o.onEditEnd   = FUiCalendar_onEditEnd;
+   o.onBuildEdit = FUiCalendar_onBuildEdit;
    //..........................................................
    // method
-   o.construct   = FCalendar_construct;
-   o.formatValue = FCalendar_formatValue;
-   o.formatText  = FCalendar_formatText;
-   o.drop        = FCalendar_drop;
-   o.doBlur      = FCalendar_doBlur;
+   o.construct   = FUiCalendar_construct;
+   o.formatValue = FUiCalendar_formatValue;
+   o.formatText  = FUiCalendar_formatText;
+   o.drop        = FUiCalendar_drop;
+   o.doBlur      = FUiCalendar_doBlur;
    return o;
 }
 
@@ -42,7 +42,7 @@ function FCalendar(o){
 //@method
 //@param e:event:TEvent 事件对象
 //==========================================================
-function FCalendar_onDataClick(){
+function FUiCalendar_onDataClick(){
    var o = this;
    // 展开下拉菜单
    if(!o.editCheck){
@@ -51,7 +51,7 @@ function FCalendar_onDataClick(){
 }
 
 // ------------------------------------------------------------
-function FCalendar_onBuildEdit(b){
+function FUiCalendar_onBuildEdit(b){
    var o = this;
    // 建立编辑控件
    var htb = RBuilder.appendTable(b.hPanel);
@@ -69,7 +69,7 @@ function FCalendar_onBuildEdit(b){
    }
 }
 // ------------------------------------------------------------
-function FCalendar_onEditEnd(e){
+function FUiCalendar_onEditEnd(e){
    var o = this;
    if(e){
       o.set(e.get());
@@ -80,7 +80,7 @@ function FCalendar_onEditEnd(e){
    o.onDataEditEnd(o);
 }
 // ------------------------------------------------------------
-function FCalendar_onKeyPress(e){
+function FUiCalendar_onKeyPress(e){
    if(!RString.inChars(String.fromCharCode(e.keyCode), RDate.Chars)){
       RKey.eventClear(e);
    }
@@ -91,7 +91,7 @@ function FCalendar_onKeyPress(e){
 //
 // @method
 //==========================================================
-function FCalendar_construct(){
+function FUiCalendar_construct(){
    var o = this;
    o.base.FEditControl.construct.call(o);
    o.date = new TDate();
@@ -100,7 +100,7 @@ function FCalendar_construct(){
 
 // ------------------------------------------------------------
 // text
-function FCalendar_formatValue(t){
+function FUiCalendar_formatValue(t){
    if(t){
       var o = this;
       if(t.toLowerCase() == '@now'){
@@ -114,7 +114,7 @@ function FCalendar_formatValue(t){
    return RString.nvl(t);
 }
 // ------------------------------------------------------------
-function FCalendar_formatText(value){
+function FUiCalendar_formatText(value){
    if(value){
       var o = this;
       RDate.autoParse(o.date, value);
@@ -128,7 +128,7 @@ function FCalendar_formatText(value){
 //
 //@method
 //==========================================================
-function FCalendar_refreshStyle(){
+function FUiCalendar_refreshStyle(){
    var o = this;
    o.base.FEditControl.refreshStyle.call(o);
    //o.hDrop.src = o.styleIconPath(o.isEditHover(t) ? 'DropSelect' : 'Drop');
@@ -139,10 +139,10 @@ function FCalendar_refreshStyle(){
 }
 
 // ------------------------------------------------------------
-function FCalendar_drop(){
+function FUiCalendar_drop(){
    var o = this;
    if(o.canDrop() && o._editable){
-      var e = o.editor = RConsole.find(FEditConsole).focus(o, FCalendarEditor, o.name);
+      var e = o.editor = RConsole.find(FEditConsole).focus(o, FUiCalendarEditor, o.name);
       e.set(o.reget(), o.editFormat);
       e.setHourEditable(o.editHour);
       e.setMinuteEditable(o.editMinute);
@@ -152,7 +152,7 @@ function FCalendar_drop(){
    }
 }
 // ------------------------------------------------------------
-function FCalendar_doBlur(){
+function FUiCalendar_doBlur(){
    var o = this;
    o.base.FEditControl.doBlur.call(o);
    if(o.editor){

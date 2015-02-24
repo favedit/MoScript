@@ -222,6 +222,9 @@ function FG3dEffect_loadUrl(u){
    var o = this;
    // 获得网络数据
    var x = RClass.create(FXmlConnection);
+   if(RRuntime.isDebug()){
+      u += '?' + RDate.format();
+   }
    var r = x.send(u);
    // 加载配置信息
    o.loadConfig(r);
@@ -262,5 +265,8 @@ function FG3dEffect_load(){
    var cp = RBrowser.contentPath();
    var ec = RConsole.find(FG3dEffectConsole);
    var u = cp + ec.path() + o._code + ".xml";
+   if(RRuntime.isDebug()){
+      u += '?' + RDate.format();
+   }
    o.loadUrl(u);
 }

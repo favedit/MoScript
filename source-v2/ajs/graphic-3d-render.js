@@ -581,8 +581,8 @@ function FG3dVertexShader(o){
    o = RClass.inherits(this, o, FG3dShader);
    return o;
 }
-function SG3dContextCapability(o){
-   if(!o){o = this;}
+function SG3dContextCapability(){
+   var o = this;
    o.vendor                 = null;
    o.version                = null;
    o.shaderVersion          = null;

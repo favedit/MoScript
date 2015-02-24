@@ -520,7 +520,7 @@ function FE3dModelRenderable_load(p){
    if(mr){
       m.assignInfo(mr.info());
    }
-   o._effectName = m.info().effectName;
+   o._effectCode = m.info().effectCode;
    o._renderable = p;
 }
 function FE3dModelRenderable_build(p){
@@ -1783,7 +1783,7 @@ function FE3dTemplateRenderable_loadResource(p){
    o._matrix.assign(p.matrix());
    o._model = RConsole.find(FRd3ModelConsole).load(o._graphicContext, p.modelGuid());
    var mr = o._materialResource = p._activeMaterial._material;
-   o._effectName = mr.info().effectName;
+   o._effectCode = mr.info().effectCode;
    o._material.calculate(mr);
    var rs = mr.textures();
    if(rs){

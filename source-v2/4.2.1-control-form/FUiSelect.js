@@ -4,7 +4,7 @@
 // @class FEditControl, MEditBorder, MDescSelect, MDropable
 // @history 091028 MAOCY 创建
 //==========================================================
-function FSelect(o){
+function FUiSelect(o){
    o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescSelect, MDropable);
    //..........................................................
    // @attribute
@@ -13,21 +13,21 @@ function FSelect(o){
    o.lsnEditEnd    = null;
    //..........................................................
    // @event
-   o.onDataKeyDown = FSelect_onDataKeyDown;
-   o.onDataClick   = FSelect_onDataClick;
-   o.onEditEnd     = FSelect_onEditEnd;
-   o.onBuildEdit   = FSelect_onBuildEdit;
+   o.onDataKeyDown = FUiSelect_onDataKeyDown;
+   o.onDataClick   = FUiSelect_onDataClick;
+   o.onEditEnd     = FUiSelect_onEditEnd;
+   o.onBuildEdit   = FUiSelect_onBuildEdit;
 
    //..........................................................
    // @method
-   o.construct     = FSelect_construct;
-   o.loadConfig    = FSelect_loadConfig;
-   o.formatValue   = FSelect_formatValue;
-   o.formatText    = FSelect_formatText;
-   o.refreshStyle  = FSelect_refreshStyle;
-   o.drop          = FSelect_drop;
-   o.doBlur        = FSelect_doBlur;
-   o.dispose       = FSelect_dispose;
+   o.construct     = FUiSelect_construct;
+   o.loadConfig    = FUiSelect_loadConfig;
+   o.formatValue   = FUiSelect_formatValue;
+   o.formatText    = FUiSelect_formatText;
+   o.refreshStyle  = FUiSelect_refreshStyle;
+   o.drop          = FUiSelect_drop;
+   o.doBlur        = FUiSelect_doBlur;
+   o.dispose       = FUiSelect_dispose;
    return o;
 }
 
@@ -37,7 +37,7 @@ function FSelect(o){
 //@method
 //@param e:event:TEvent 事件对象
 //==========================================================
-function FSelect_onDataClick(){
+function FUiSelect_onDataClick(){
    var o = this;
    // 展开下拉菜单
    if(!o.editCheck){
@@ -50,7 +50,7 @@ function FSelect_onDataClick(){
 // @method
 // @param e:editor:FEditor 编辑器
 //==========================================================
-function FSelect_onDataKeyDown(s, e){
+function FUiSelect_onDataKeyDown(s, e){
    var o = this;
    // 获得编辑中
    var ed = o.editor;
@@ -69,7 +69,7 @@ function FSelect_onDataKeyDown(s, e){
 // @method
 // @param e:editor:FEditor 编辑器
 //==========================================================
-function FSelect_onEditEnd(e){
+function FUiSelect_onEditEnd(e){
    var o = this;
    if(e){
       o.set(e.get());
@@ -86,7 +86,7 @@ function FSelect_onEditEnd(e){
 // @method
 // @param b:border:TBorder 边框
 //==========================================================
-function FSelect_onBuildEdit(b){
+function FUiSelect_onBuildEdit(b){
    var o = this;
    // 建立编辑控件
    var hf = RBuilder.appendTable(b.hPanel);
@@ -109,7 +109,7 @@ function FSelect_onBuildEdit(b){
 //
 // @method
 //==========================================================
-function FSelect_construct(){
+function FUiSelect_construct(){
    var o = this;
    o.base.FEditControl.construct.call(o);
    o.items = new TItems();
@@ -121,7 +121,7 @@ function FSelect_construct(){
 //
 // @method
 //==========================================================
-function FSelect_loadConfig(c){
+function FUiSelect_loadConfig(c){
    var o = this;
    o.base.FEditControl.loadConfig.call(o, c);
    if(o.dataEmpty){
@@ -153,7 +153,7 @@ function FSelect_loadConfig(c){
 // @method
 // @param t:text:String 内容
 //==========================================================
-function FSelect_formatValue(t){
+function FUiSelect_formatValue(t){
    var o = this;
    if(RBoolean.isTrue(o.editCheck)){
       var v = o.items.value(t);
@@ -172,7 +172,7 @@ function FSelect_formatValue(t){
 // @method
 // @param v:value:String 数据
 //==========================================================
-function FSelect_formatText(v){
+function FUiSelect_formatText(v){
    var o = this;
    if(RBoolean.isTrue(o.editCheck) && RString.isEmpty(o.items.label(v))){
       return v;
@@ -185,7 +185,7 @@ function FSelect_formatText(v){
 //
 // @method
 //==========================================================
-function FSelect_refreshStyle(){
+function FUiSelect_refreshStyle(){
    var o = this;
    o.base.FEditControl.refreshStyle.call(o);
    //o.hDrop.src = o.styleIconPath(o.isEditHover(t) ? 'DropSelect' : 'Drop');
@@ -201,13 +201,13 @@ function FSelect_refreshStyle(){
 //
 // @method
 //==========================================================
-function FSelect_drop(){
+function FUiSelect_drop(){
    var o = this;
    if(o.canDrop() && o.canEdit && o.items.count() > 0 && o._editable){
       if(!o.editRefer){
          return RMessage.fatal(o, null, 'Edit refer is null.');
       }
-      var e = o.editor = RConsole.find(FEditConsole).focus(o, FSelectEditor, o.editRefer);
+      var e = o.editor = RConsole.find(FEditConsole).focus(o, FUiSelectEditor, o.editRefer);
       if(o.editDynamic){
          // 动态建立
          return RMessage.fatal(o, null, 'Unsupport.');
@@ -231,7 +231,7 @@ function FSelect_drop(){
 //
 // @method
 //==========================================================
-function FSelect_doBlur(){
+function FUiSelect_doBlur(){
    var o = this;
    o.base.FEditControl.doBlur.call(o);
    if(o.editor){
@@ -244,7 +244,7 @@ function FSelect_doBlur(){
 //
 // @method
 //==========================================================
-function FSelect_dispose(){
+function FUiSelect_dispose(){
    var o = this;
    o.base.FEditControl.dispose.call(o);
 }

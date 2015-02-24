@@ -150,14 +150,14 @@ function FRs3SceneDisplay_saveConfig(p){
    var o = this;
    o.__base.FRs3Object.saveConfig.call(o, p);
    // 存储属性
-   //p.set('theme_code', o._themeCode);
+   o._matrix.saveConfig(p.create('Matrix'));
    // 存储材质集合
-   var xms = p.create('MaterialCollection');
+   var xs = p.create('MaterialCollection');
    var s = o._materials;
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         s.get(i).saveConfig(xms.create('Material'));
+         s.get(i).saveConfig(xs.create('Material'));
       }
    }
 }

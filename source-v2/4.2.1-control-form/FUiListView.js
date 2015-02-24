@@ -1,7 +1,7 @@
 // ============================================================
-// FListView
+// FUiListView
 // ============================================================
-function FListView(o){
+function FUiListView(o){
    o = RClass.inherits(this, o, FContainer, MShadow);
    // Attribute
    o.type           = null;
@@ -11,35 +11,35 @@ function FListView(o){
    o.hForm          = null;
    o.hMessages      = null;
    // Html Event
-   o.ohClearClick   = FListView_ohClearClick;
-   o.ohCloseClick   = FListView_ohCloseClick;
-   o.ohResetClick   = FListView_ohResetClick;
-   o.ohLoaded       = FListView_ohLoaded;
+   o.ohClearClick   = FUiListView_ohClearClick;
+   o.ohCloseClick   = FUiListView_ohCloseClick;
+   o.ohResetClick   = FUiListView_ohResetClick;
+   o.ohLoaded       = FUiListView_ohLoaded;
    // Process
-   o.oeBuild        = FListView_oeBuild;
+   o.oeBuild        = FUiListView_oeBuild;
    // Event
-   o.onBuildPanel   = FListView_onBuildPanel;
-   o.onBuildFields  = FListView_onBuildFields;
-   o.onBuildButton  = FListView_onBuildButton;
-   o.onBuildData    = FListView_onBuildData;
-   o.onKeyDown      = FListView_onKeyDown;
+   o.onBuildPanel   = FUiListView_onBuildPanel;
+   o.onBuildFields  = FUiListView_onBuildFields;
+   o.onBuildButton  = FUiListView_onBuildButton;
+   o.onBuildData    = FUiListView_onBuildData;
+   o.onKeyDown      = FUiListView_onKeyDown;
    // Method
-   o.buildField     = FListView_buildField;
-   o.linkLovControl = FListView_linkLovControl;
-   o.isBuilded      = FListView_isBuilded;
-   o.show           = FListView_show;
-   o.hide           = FListView_hide;
-   o.doSearch       = FListView_doSearch;
-   o.selectRow      = FListView_selectRow;
-   o.dispose        = FListView_dispose;
+   o.buildField     = FUiListView_buildField;
+   o.linkLovControl = FUiListView_linkLovControl;
+   o.isBuilded      = FUiListView_isBuilded;
+   o.show           = FUiListView_show;
+   o.hide           = FUiListView_hide;
+   o.doSearch       = FUiListView_doSearch;
+   o.selectRow      = FUiListView_selectRow;
+   o.dispose        = FUiListView_dispose;
    return o;
 }
 // ------------------------------------------------------------
-function FListView_ohCloseClick(){
+function FUiListView_ohCloseClick(){
    this.hide();
 }
 // ------------------------------------------------------------
-function FListView_ohClearClick(){
+function FUiListView_ohClearClick(){
    var o = this;
    var cs = o.fieldsPanel.components;
    if(cs){
@@ -49,14 +49,14 @@ function FListView_ohClearClick(){
    }
 }
 // ------------------------------------------------------------
-function FListView_ohResetClick(){
+function FUiListView_ohResetClick(){
 }
 // ------------------------------------------------------------
-function FListView_ohLoaded(){
+function FUiListView_ohLoaded(){
    this.lovControl.onBuildData(this.document.root());
 }
 // ------------------------------------------------------------
-function FListView_oeBuild(event){
+function FUiListView_oeBuild(event){
    var o = this;
    o.base.FContainer.oeBuild.call(o, event);
    // Form (2colx1row)
@@ -82,13 +82,13 @@ function FListView_oeBuild(event){
    return EEventStatus.Stop;
 }
 // ------------------------------------------------------------
-function FListView_onBuildPanel(){
+function FUiListView_onBuildPanel(){
    var o = this;
    o.hPanel = RBuilder.append(null, 'DIV');
    o.hPanel.style.zIndex = ELayer.Message;
 }
 // ------------------------------------------------------------
-function FListView_onBuildFields(){
+function FUiListView_onBuildFields(){
    return;
    var o = this;
    var hTab = o.hFieldsTab = RBuilder.appendTable(o.hFieldsPanel, null, 10, 10);
@@ -116,7 +116,7 @@ function FListView_onBuildFields(){
    hCel.className = this.style('Description');
 }
 // ------------------------------------------------------------
-function FListView_onBuildButton(){
+function FUiListView_onBuildButton(){
    var o = this;
    // Button Panel
    var hBtnTab = RBuilder.appendTable(o.hButtonPanel, null, 0, 0, 6);
@@ -147,7 +147,7 @@ function FListView_onBuildButton(){
 }
 // ------------------------------------------------------------
 // control
-function FListView_buildField(c){
+function FUiListView_buildField(c){
    var o = this;
    var hCell = o.hFieldsTab.insertRow().insertCell();
    hCell.innerText = c.label;
@@ -157,7 +157,7 @@ function FListView_buildField(c){
    o.fieldsPanel.setPanel(hCel);
 }
 // ------------------------------------------------------------
-function FListView_linkLovControl(ctl){
+function FUiListView_linkLovControl(ctl){
    var o = this;
    o.lovControl = ctl;
    o.lovRefer = ctl.lovRefer;
@@ -180,7 +180,7 @@ function FListView_linkLovControl(ctl){
    RConsole.find(FXmlConsole).process(e);
 }
 // ------------------------------------------------------------
-function FListView_onBuildData(config){
+function FUiListView_onBuildData(config){
    var o = this;
    var v = o.listView = RControl.fromNode(config, o.hFieldsPanel);
    v.hPanel.height = '100%';
@@ -191,13 +191,13 @@ function FListView_onBuildData(config){
    o.show();
 }
 // ------------------------------------------------------------
-function FListView_onKeyDown(sender, e){
+function FUiListView_onKeyDown(sender, e){
    if(EKey.Esc == e.keyCode){
       this.hide();
    }
 }
 // ------------------------------------------------------------
-function FListView_show(){
+function FUiListView_show(){
    var o = this;
    if(!o.isVisible()){
       o.base.FContainer.show.call(o);
@@ -209,7 +209,7 @@ function FListView_show(){
    }
 }
 // ------------------------------------------------------------
-function FListView_hide(){
+function FUiListView_hide(){
    var o = this;
    if(o.isVisible()){
       o.base.FContainer.hide.call(o);
@@ -219,7 +219,7 @@ function FListView_hide(){
    }
 }
 // ------------------------------------------------------------
-function FListView_doSearch(){
+function FUiListView_doSearch(){
    var o = this;
    var cs = o.fieldsPanel.components;
    if(cs){
@@ -232,7 +232,7 @@ function FListView_doSearch(){
    o.hide();
 }
 // ------------------------------------------------------------
-function FListView_selectRow(table, row){
+function FUiListView_selectRow(table, row){
    var o = this;
    var fields = o.lovControl.lovFields;
    var dsCtl = o.lovControl.topControl(MDataset);
@@ -252,11 +252,11 @@ function FListView_selectRow(table, row){
    o.hide();
 }
 // ------------------------------------------------------------
-function FListView_isBuilded(){
+function FUiListView_isBuilded(){
    return (null != this.listView);
 }
 // ------------------------------------------------------------
-function FListView_dispose(){
+function FUiListView_dispose(){
    var o = this;
    o.base.FContainer.dispose.call(o);
    RMemory.freeHtml(o.hEdit);

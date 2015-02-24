@@ -30,7 +30,7 @@ function FRd3BoundBox(o){
    // @attribute
    o._outline              = null;
    o._rate                 = 0.2;
-   o._effectName           = 'automatic';
+   o._effectCode           = 'automatic';
    // @attribute
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;

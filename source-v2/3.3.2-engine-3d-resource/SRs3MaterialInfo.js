@@ -23,35 +23,37 @@ function SRs3MaterialInfo(o){
 function SRs3MaterialInfo_unserialize(p){
    var o = this;
    // 读取信息
-   o.effectName = p.readString();
+   o.effectCode = p.readString();
    //o.transformName = p.readString();
    // 读取设置
+   o.optionDepth = p.readBoolean();
+   o.optionAlpha = p.readBoolean();
+   o.optionDouble = p.readBoolean();
+   o.optionView = p.readBoolean();
+   o.optionNormalInvert = p.readBoolean();
+   o.optionShadow = p.readBoolean();
+   o.optionShadowSelf = p.readBoolean();
    //o.optionLight = p.readBoolean();
    //o.optionMerge = p.readBoolean();
    //o.optionSort = p.readBoolean();
    //o.sortLevel = p.readInt32();
-   o.optionAlpha = p.readBoolean();
-   //o.optionDepth = p.readBoolean();
    //o.optionCompare = p.readString();
-   o.optionDouble = p.readBoolean();
-   //o.optionShadow = p.readBoolean();
-   //o.optionShadowSelf = p.readBoolean();
    //o.optionDynamic = p.readBoolean();
    //o.optionTransmittance = p.readBoolean();
    //o.optionOpacity = p.readBoolean();
    // 读取纹理
    //o.coordRateWidth = p.readFloat();
    //o.coordRateHeight = p.readFloat();
-   // 读取颜色
-   //o.colorMin = p.readFloat();
-   //o.colorMax = p.readFloat();
-   //o.colorRate = p.readFloat();
-   //o.colorMerge = p.readFloat();
    // 读取透明
    o.alphaBase = p.readFloat();
    o.alphaRate = p.readFloat();
    //o.alphaLevel = p.readFloat();
    //o.alphaMerge = p.readFloat();
+   // 读取颜色
+   o.colorMin = p.readFloat();
+   o.colorMax = p.readFloat();
+   o.colorRate = p.readFloat();
+   o.colorMerge = p.readFloat();
    // 存储属性
    o.ambientColor.unserialize(p);
    //o.ambientShadow = p.readFloat();
@@ -60,12 +62,12 @@ function SRs3MaterialInfo_unserialize(p){
    o.diffuseViewColor.unserialize(p);
    //o.diffuseViewShadow = p.readFloat();
    o.specularColor.unserialize(p);
-   //o.specularBase = p.readFloat();
+   o.specularBase = p.readFloat();
    o.specularLevel = p.readFloat();
    //o.specularAverage = p.readFloat();
    //o.specularShadow = p.readFloat();
    o.specularViewColor.unserialize(p);
-   //o.specularViewBase = p.readFloat();
+   o.specularViewBase = p.readFloat();
    o.specularViewLevel = p.readFloat();
    //o.specularViewAverage = p.readFloat();
    //o.specularViewShadow = p.readFloat();
@@ -95,22 +97,33 @@ function SRs3MaterialInfo_unserialize(p){
 function SRs3MaterialInfo_saveConfig(p){
    var o = this;
    // 存储属性
-   p.set('effect_code', o.effectName);
+   p.set('effect_code', o.effectCode);
    // 存储配置
-   p.setBoolean('option_double', o.optionAlpha);
+   p.setBoolean('option_alpha', o.optionAlpha);
    p.setBoolean('option_double', o.optionDouble);
+   p.setBoolean('option_view', o.optionView);
+   p.setBoolean('option_normal_invert', o.optionNormalInvert);
+   p.setBoolean('option_shadow', o.optionShadow);
+   p.setBoolean('option_shadow_self', o.optionShadowSelf);
    // 存储材质
    var x = p.create('Alpha');
    x.setFloat('base', o.alphaBase);
    x.setFloat('rate', o.alphaRate);
+   var x = p.create('Color');
+   x.setFloat('min', o.colorMin);
+   x.setFloat('max', o.colorMax);
+   x.setFloat('rate', o.colorRate);
+   x.setFloat('merge', o.colorMerge);
    o.ambientColor.savePower(p.create('Ambient'));
    o.diffuseColor.savePower(p.create('Diffuse'));
    o.diffuseViewColor.savePower(p.create('DiffuseView'));
    var x = p.create('Specular');
    o.specularColor.savePower(x);
+   x.setFloat('base', o.specularBase);
    x.setFloat('level', o.specularLevel);
    var x = p.create('SpecularView');
    o.specularViewColor.savePower(x);
+   x.setFloat('base', o.specularViewBase);
    x.setFloat('level', o.specularViewLevel);
    var x = p.create('Reflect');
    o.reflectColor.savePower(x);

@@ -47,6 +47,11 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
       pt.setBoolean("option.material.map", true);
       o._supportMaterialMap = true;
    }
+   if(pc.optionNormalInvert){
+      s.append("|ON");
+      pt.setBoolean("option.normal.invert", true);
+      o._supportNormalInvert = true;
+   }
    var ac = pc.attributeContains(EG3dAttribute.Color);
    o._dynamicVertexColor = (o._supportVertexColor && ac);
    if(o._dynamicVertexColor){
@@ -460,6 +465,12 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
       p.setParameter('fc_specular_color', mi.specularColor);
       p.setParameter('fc_reflect_color', mi.reflectColor);
       p.setParameter('fc_emissive_color', mi.emissiveColor);
+   }
+   p.setParameter4('fc_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   if(mi.optionAlpha){
+      p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, 0, 0);
+   }else{
+      p.setParameter4('fc_alpha', 0, 1, 0, 0);
    }
    p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
    p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);

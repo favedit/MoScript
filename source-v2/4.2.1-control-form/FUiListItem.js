@@ -1,75 +1,123 @@
 //==========================================================
 // <T>列表项控件。</T>
 //
-//  hForm<TABLE>                       
-// ┌-------------------------------------┐
-// │┌----------┐┌-------------------┐│
-// ││hIcon<IMG>││hLabel<SPAN>       ││
-// │└----------┘└-------------------┘│
-// └-------------------------------------┘
+//  hLine<TR>
+// ┌--------------┬-----------------------┐
+// │┌----------┐│┌-------------------┐│
+// ││hIcon<IMG>│││hLabel<SPAN>       ││
+// │└----------┘│└-------------------┘│
+// └--------------┴-----------------------┘
 //
 // @class
 // @author maocy
-// @history 150210
+// @history 150224
 //==========================================================
 function FUiListItem(o){
    o = RClass.inherits(this, o, FUiControl);
-   /// @style
-   o._styleForm    = RClass.register(o, new AStyle('_styleForm'));
-   o._styleIcon    = RClass.register(o, new AStyle('_styleIcon'));
-   o._styleLabel   = RClass.register(o, new AStyle('_styleLabel'));
-   // Process
-   o.onBuild       = FUiListItem_onBuild;
-   // Event
+   //..........................................................
+   // @style
+   o._styleForm   = RClass.register(o, new AStyle('_styleForm'));
+   o._styleIcon   = RClass.register(o, new AStyle('_styleIcon'));
+   o._styleLabel  = RClass.register(o, new AStyle('_styleLabel'));
+   //..........................................................
+   // @html
+   o._hPanel      = null;
+   o._hIcon       = null;
+   o._hLabel      = null;
+   //..........................................................
+   // @event
    o.onBuildPanel = FUiListItem_onBuildPanel;
-   // Method
-   o.formatValue  = FUiListItem_formatValue;
-   o.text         = FUiListItem_text;
-   o.setText      = FUiListItem_setText;
+   o.onBuild      = FUiListItem_onBuild;
+   o.onClick      = RClass.register(o, new AEventClick('onClick'), FUiListItem_onClick);
+   //..........................................................
+   // @method
+   o.label        = FUiListItem_label;
+   o.setLabel     = FUiListItem_setLabel;
+   // @method
    o.dispose      = FUiListItem_dispose;
    return o;
 }
-// ------------------------------------------------------------
-function FUiListItem_onBuild(e){
+
+//==========================================================
+// <T>建立编辑器内容。</T>
+//
+// @method
+// @param p:argements:SArgements 参数集合
+//==========================================================
+function FUiListItem_onBuildPanel(p){
    var o = this;
-   o.base.FControl.onBuild.call(o, e);
-   if(e.isBefore()){
-      var hf = o.hForm = RBuilder.appendTable(o.hPanel, o.style('Form'));
-      var hRow = hf.insertRow();
-      // Icon
-      var hc = hRow.insertCell();
-      hc.className = o.style('Icon');
-      hc.width = 20;
-      o.hIcon = RBuilder.appendIcon(hc, 'arrow');
-      // Label
-      var hc = hRow.insertCell();
-      var h = o.hLabel = RBuilder.append(hc, 'SPAN', o.style('Label'));
-      h.innerText = o.label;
+   // 建立编辑控件
+   o._hPanel = RBuilder.createTableRow(p, o.styleName('Form'));
+}
+
+//==========================================================
+// <T>建立显示框架。</T>
+//
+// @method
+// @param p:argements:SArgements 参数集合
+//==========================================================
+function FUiListItem_onBuild(p){
+   var o = this;
+   // 建立控件
+   o.__base.FUiControl.onBuild.call(o, p);
+   var h = o._hPanel;
+   //..........................................................
+   // 建立图标区域
+   if(o._icon){
+      o._hIconPanel = RBuilder.appendTableCell(h)
+      o._hIcon = RBuilder.appendIcon(o._hIconPanel, o.styleName('Icon'), o._icon);
    }
+   // 建立文本区域
+   o._hLabel = RBuilder.appendTableCell(h, o.styleName('Label'));
+   if(o._label){
+      o.setLabel(o._label);
+   }
+   // 关联事件
+   o.attachEvent('onClick', h);
 }
-// ------------------------------------------------------------
-function FUiListItem_onBuildPanel(){
-   this.hPanel = RBuilder.create(null, 'DIV');
+
+//==========================================================
+// <T>点击事件处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件信息
+//==========================================================
+function FUiListItem_onClick(p){
+   var o = this;
+   o._parent.clickItem(o);
 }
-// ------------------------------------------------------------
-function FUiListItem_formatValue(s){
-   return RString.nvl(s);
+
+//==========================================================
+// <T>获得标签。</T>
+//
+// @method
+// @return String 标签内容
+//==========================================================
+function FUiListItem_label(p){
+   return this._label;
 }
-// ------------------------------------------------------------
-function FUiListItem_text(){
-   return this.hEdit.value;
+
+//==========================================================
+// <T>设置标签。</T>
+//
+// @method
+// @param p:value:String 标签内容
+//==========================================================
+function FUiListItem_setLabel(p){
+   var o = this;
+   o._label = p;
+   o._hLabel.innerHTML = RString.nvl(p);
 }
-// ------------------------------------------------------------
-function FUiListItem_setText(text){
-   this.hEdit.value = text;
-}
-// ------------------------------------------------------------
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
 function FUiListItem_dispose(){
    var o = this;
-   o.base.FControl.dispose.call(o);
-   o.hForm = null;
-   o.hIcon = null;
-   o.hLabel = null;
-   o.hPanel = null;
-   o.hEdit = null;
+   o._hPanel = null;
+   o._hIcon = null;
+   o._hLabel = null;
+   o.__base.FUiControl.dispose.call(o);
 }

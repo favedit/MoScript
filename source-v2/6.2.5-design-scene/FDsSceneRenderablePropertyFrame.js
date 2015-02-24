@@ -20,7 +20,8 @@ function FDsSceneRenderablePropertyFrame(o){
    o._controlCode      = null;
    o._controlLabel     = null;
    o._frameRenderable  = null;
-   o._frameMaterial    = null;
+   o._frameMaterial1   = null;
+   o._frameMaterial2   = null;
    //..........................................................
    // @method
    o.construct         = FDsSceneRenderablePropertyFrame_construct;
@@ -63,7 +64,8 @@ function FDsSceneRenderablePropertyFrame_loadObject(s, r){
    o._controlLabel.set(s.label());
    // 设置参数
    o._frameRenderable.loadObject(s, r);
-   o._frameMaterial.loadObject(s, m);
+   o._frameMaterial1.loadObject(s, m);
+   o._frameMaterial2.loadObject(s, m);
 }
 
 //==========================================================

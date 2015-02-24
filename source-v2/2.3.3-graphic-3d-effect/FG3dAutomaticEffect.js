@@ -81,6 +81,12 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
       pt.setBoolean("option.material.map", true);
       o._supportMaterialMap = true;
    }
+   // 支持纹理材质映射
+   if(pc.optionNormalInvert){
+      s.append("|ON");
+      pt.setBoolean("option.normal.invert", true);
+      o._supportNormalInvert = true;
+   }
    //............................................................
    // 支持顶点颜色
    var ac = pc.attributeContains(EG3dAttribute.Color);

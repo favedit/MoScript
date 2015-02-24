@@ -4,12 +4,13 @@ FControl 控件
    PropertyLoad
    Build
    Push -> AppendChild
-
 FContainer 容器
 FLayout 布局
 FForm 表单
 FTable 表格
 
+Base Control: 基础控件功能 (Check/Radio/Number/Edit...)
+Data Control: 数据控件功能 (DataCheck/DataRadio/DataNumber/DataEdit...)
 
 内容        内容管道             资源
 FContent -> FContentPipeline - > FResource

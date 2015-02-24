@@ -94,21 +94,22 @@ var EKeyCode = new function EKeyCode(){
    //..........................................................
    // @attribute 控制按键
    o.ControlKeys = [
-      o.Tab, o.Enter, o.BackSpace, o.Shift, o.Left, o.Up, o.Right, o.Down,
-      o.Insert, o.Delete, o.Home, o.End, o.PageUp, o.PageDown,o.Ctrl,
+      o.Tab, o.Enter, o.BackSpace, o.Left, o.Up, o.Right, o.Down,
+      o.Insert, o.Delete, o.Home, o.End, o.PageUp, o.PageDown,
       o.F1, o.F2, o.F3, o.F4, o.F5, o.F6, o.F7, o.F8, o.F9, o.F10, o.F11, o.F12];
+   //..........................................................
+   // @attribute 整数按键
+   var f = o.integerCodes  = new Object();
+   // 减号(-)
+   f[45] = true;
+   f[190] = true;
+   // 数字键
+   for(var n = o.N0; n <= o.N9; n++){
+      f[n] = true;
+   }
    //..........................................................
    // @attribute 浮点数按键
    var f = o.floatCodes  = new Object();
-   f[o.Tab] = true;
-   f[o.Enter] = true;
-   f[o.BackSpace] = true;
-   f[o.Left] = true;
-   f[o.Right] = true;
-   f[o.Esc] = true;
-   f[o.Delete] = true;
-   f[o.Home] = true;
-   f[o.End] = true;
    // 减号(-)
    f[45] = true;
    f[190] = true;

@@ -14,6 +14,7 @@ function FDsSceneRenderableFrame(o){
    // @event
    o.onBuilded         = FDsSceneRenderableFrame_onBuilded;
    o.onDataChanged     = FDsSceneRenderableFrame_onDataChanged;
+   o.onEffectClick     = FDsSceneRenderableFrame_onEffectClick;
    //..........................................................
    // @method
    o.construct         = FDsSceneRenderableFrame_construct;
@@ -37,6 +38,8 @@ function FDsSceneRenderableFrame_onBuilded(p){
    o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
    o._controlRotation.addDataChangedListener(o, o.onDataChanged);
    o._controlScale.addDataChangedListener(o, o.onDataChanged);
+   // 增加对象
+   o._controlEffects.addClickListener(o, o.onEffectClick);
 }
 
 //==========================================================
@@ -60,6 +63,22 @@ function FDsSceneRenderableFrame_onDataChanged(p){
    m.setScale(v.x, v.y, v.z);
    // 重新计算
    m.update();
+}
+
+//==========================================================
+// <T>效果点击处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsSceneRenderableFrame_onEffectClick(ps, pi){
+   var o = this;
+   var e = pi._effect;
+   var p = e._program;
+   var s = p._vertexShader;
+   alert(s._source);
+   var s = p._fragmentShader;
+   alert(s._source);
 }
 
 //==========================================================
@@ -90,6 +109,17 @@ function FDsSceneRenderableFrame_loadObject(s, r){
    o._controlTranslate.set(m.tx, m.ty, m.tz);
    o._controlRotation.set(m.rx, m.ry, m.rz);
    o._controlScale.set(m.sx, m.sy, m.sz);
+   // 设置效果器
+   var ces = o._controlEffects;
+   ces.clear();
+   var es = r.infos();
+   var c = es.count();
+   for(var i = 0; i < c; i++){
+      var e = es.value(i).effect;
+      var l = ces.createItem(null, e.code());
+      l._effect = e;
+      ces.push(l);
+   }
 }
 
 //==========================================================

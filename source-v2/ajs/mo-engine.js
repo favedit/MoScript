@@ -420,6 +420,85 @@ function FStage_dispose(){
    }
    o.__base.FObject.dispose(o);
 }
+var RStage = new function RStage(){
+   var o = this;
+   o._active        = true;
+   o._interval      = 1000 / 40;
+   o._stages        = null;
+   o.lsnsEnterFrame = null;
+   o.lsnsLeaveFrame = null;
+   o.onProcess      = RStage_onProcess;
+   o.construct      = RStage_construct;
+   o.register       = RStage_register;
+   o.active         = RStage_active;
+   o.deactive       = RStage_deactive;
+   o.process        = RStage_process;
+   o.start          = RStage_start;
+   o.construct();
+   return o;
+}
+function RStage_onProcess(){
+   RStage.process();
+}
+function RStage_construct(){
+   var o = this;
+   o.lsnsEnterFrame = new TListeners();
+   o.lsnsLeaveFrame = new TListeners();
+}
+function RStage_register(n , s){
+   var o = this;
+   var ss = o._stages;
+   if(ss == null){
+      ss = o._stages = new TDictionary();
+   }
+   ss.set(n , s);
+}
+function RStage_active(){
+   var o = this;
+   var ss = o._stages;
+   if(ss != null){
+      var c = ss.count();
+      for(var i = 0; i < c; i++){
+         ss.value(i).active();
+      }
+   }
+}
+function RStage_deactive(){
+   var o = this;
+   var ss = o._stages;
+   if(ss != null){
+      var c = ss.count();
+      for(var i = 0; i < c; i++){
+         ss.value(i).deactive();
+      }
+   }
+}
+function RStage_process(){
+   var o = this;
+   if(o._active){
+      o.lsnsEnterFrame.process(o);
+      var ss = o._stages;
+      if(ss != null){
+         var c = ss.count();
+         for(var i = 0; i < c; i++){
+            ss.value(i).process();
+         }
+      }
+      o.lsnsLeaveFrame.process(o);
+      RTimer.update();
+   }
+}
+function RStage_start(v){
+   var o = this;
+   RE3dEngine.setup();
+   o.active();
+   o.process();
+   if(v == null){
+      v = o._interval;
+   }
+   RTimer.setup();
+   setInterval('RStage_onProcess()', parseInt(v));
+}
 function FRenderCube(o){
    o = RClass.inherits(this, o, FObject);
    o.vertexPositionBuffer = null;
@@ -1012,7 +1091,7 @@ function FE3dModelRenderable_load(p){
    if(mr){
       m.assignInfo(mr.info());
    }
-   o._effectName = m.info().effectName;
+   o._effectCode = m.info().effectCode;
    o._renderable = p;
 }
 function FE3dModelRenderable_build(p){
@@ -2275,7 +2354,7 @@ function FE3dTemplateRenderable_loadResource(p){
    o._matrix.assign(p.matrix());
    o._model = RConsole.find(FRd3ModelConsole).load(o._graphicContext, p.modelGuid());
    var mr = o._materialResource = p._activeMaterial._material;
-   o._effectName = mr.info().effectName;
+   o._effectCode = mr.info().effectCode;
    o._material.calculate(mr);
    var rs = mr.textures();
    if(rs){
@@ -2635,7 +2714,7 @@ function FRs3Material(o){
    o.construct   = FRs3Material_construct;
    o.groupGuid   = FRs3Material_groupGuid;
    o.group       = FRs3Material_group;
-   o.effectName  = FRs3Material_effectName;
+   o.effectCode  = FRs3Material_effectCode;
    o.info        = FRs3Material_info;
    o.textures    = FRs3Material_textures;
    o.unserialize = FRs3Material_unserialize;
@@ -2653,8 +2732,8 @@ function FRs3Material_groupGuid(){
 function FRs3Material_group(){
    return RConsole.find(FRs3MaterialConsole).findGroup(this._groupGuid);
 }
-function FRs3Material_effectName(){
-   return this._info.effectName;
+function FRs3Material_effectCode(){
+   return this._info.effectCode;
 }
 function FRs3Material_info(){
    return this._info;
@@ -2690,6 +2769,7 @@ function FRs3Material_saveConfig(p){
    p.set('ambient_color', mi.ambientColor.toString());
    p.set('diffuse_color', mi.diffuseColor.toString());
    p.set('specular_color', mi.specularColor.toString());
+   p.set('specular_base', mi.specularBase);
    p.set('specular_level', mi.specularLevel);
    p.set('reflect_color', mi.reflectColor.toString());
    p.set('reflect_merge', mi.reflectMerge);
@@ -3232,12 +3312,13 @@ function FRs3SceneDisplay_unserialize(p){
 function FRs3SceneDisplay_saveConfig(p){
    var o = this;
    o.__base.FRs3Object.saveConfig.call(o, p);
-   var xms = p.create('MaterialCollection');
+   o._matrix.saveConfig(p.create('Matrix'));
+   var xs = p.create('MaterialCollection');
    var s = o._materials;
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         s.get(i).saveConfig(xms.create('Material'));
+         s.get(i).saveConfig(xs.create('Material'));
       }
    }
 }
@@ -4068,17 +4149,28 @@ function SRs3MaterialInfo(o){
 }
 function SRs3MaterialInfo_unserialize(p){
    var o = this;
-   o.effectName = p.readString();
+   o.effectCode = p.readString();
+   o.optionDepth = p.readBoolean();
    o.optionAlpha = p.readBoolean();
    o.optionDouble = p.readBoolean();
+   o.optionView = p.readBoolean();
+   o.optionNormalInvert = p.readBoolean();
+   o.optionShadow = p.readBoolean();
+   o.optionShadowSelf = p.readBoolean();
    o.alphaBase = p.readFloat();
    o.alphaRate = p.readFloat();
+   o.colorMin = p.readFloat();
+   o.colorMax = p.readFloat();
+   o.colorRate = p.readFloat();
+   o.colorMerge = p.readFloat();
    o.ambientColor.unserialize(p);
    o.diffuseColor.unserialize(p);
    o.diffuseViewColor.unserialize(p);
    o.specularColor.unserialize(p);
+   o.specularBase = p.readFloat();
    o.specularLevel = p.readFloat();
    o.specularViewColor.unserialize(p);
+   o.specularViewBase = p.readFloat();
    o.specularViewLevel = p.readFloat();
    o.reflectColor.unserialize(p);
    o.reflectMerge = p.readFloat();
@@ -4088,19 +4180,31 @@ function SRs3MaterialInfo_unserialize(p){
 }
 function SRs3MaterialInfo_saveConfig(p){
    var o = this;
-   p.set('effect_code', o.effectName);
+   p.set('effect_code', o.effectCode);
+   p.setBoolean('option_alpha', o.optionAlpha);
    p.setBoolean('option_double', o.optionDouble);
+   p.setBoolean('option_view', o.optionView);
+   p.setBoolean('option_normal_invert', o.optionNormalInvert);
+   p.setBoolean('option_shadow', o.optionShadow);
+   p.setBoolean('option_shadow_self', o.optionShadowSelf);
    var x = p.create('Alpha');
    x.setFloat('base', o.alphaBase);
    x.setFloat('rate', o.alphaRate);
+   var x = p.create('Color');
+   x.setFloat('min', o.colorMin);
+   x.setFloat('max', o.colorMax);
+   x.setFloat('rate', o.colorRate);
+   x.setFloat('merge', o.colorMerge);
    o.ambientColor.savePower(p.create('Ambient'));
    o.diffuseColor.savePower(p.create('Diffuse'));
    o.diffuseViewColor.savePower(p.create('DiffuseView'));
    var x = p.create('Specular');
    o.specularColor.savePower(x);
+   x.setFloat('base', o.specularBase);
    x.setFloat('level', o.specularLevel);
    var x = p.create('SpecularView');
    o.specularViewColor.savePower(x);
+   x.setFloat('base', o.specularViewBase);
    x.setFloat('level', o.specularViewLevel);
    var x = p.create('Reflect');
    o.reflectColor.savePower(x);
@@ -4280,7 +4384,7 @@ function FRd3BoundBox(o){
    o = RClass.inherits(this, o, FRd3Renderable);
    o._outline              = null;
    o._rate                 = 0.2;
-   o._effectName           = 'automatic';
+   o._effectCode           = 'automatic';
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
    o.construct             = FRd3BoundBox_construct;
@@ -4429,7 +4533,7 @@ function FRd3Dimensional(o){
    o._size                 = null;
    o._lineColor            = null;
    o._lineCenterColor      = null;
-   o._effectName           = 'automatic';
+   o._effectCode           = 'automatic';
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
    o.construct             = FRd3Dimensional_construct;

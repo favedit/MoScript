@@ -745,7 +745,7 @@ function FDsTemplateCanvas_onBuild(p){
    o.__base.FDsCanvas.onBuild.call(o, p);
    var g = o._stage = RClass.create(FE3dSimpleStage);
    g.backgroundColor().set(0.5, 0.5, 0.5, 1);
-   g.selectTechnique(o._context, FG3dGeneralTechnique);
+   g.selectTechnique(o, FG3dGeneralTechnique);
    var sl = o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    var rc = g.camera();
@@ -872,7 +872,7 @@ function FDsTemplateCanvas_onTemplateLoad(p){
 }
 function FDsTemplateCanvas_oeRefresh(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    o.__base.FDsCanvas.oeRefresh.call(o, p);
    var w = o._hParent.offsetWidth;
    var h = o._hParent.offsetHeight;
@@ -898,11 +898,6 @@ function FDsTemplateCanvas_selectRenderable(p){
    var r = p.resource();
    var rm = r.mesh();
    var rl = rm.outline();
-   var b = o._selectBoundBox;
-   b.outline().assign(rl);
-   b.upload();
-   b.remove();
-   p._display.pushRenderable(b);
 }
 function FDsTemplateCanvas_loadTemplate(p){
    var o = this;
@@ -910,7 +905,7 @@ function FDsTemplateCanvas_loadTemplate(p){
    if(o._activeTemplate != null){
       rmc.free(o._activeTemplate);
    }
-   var m = rmc.alloc(o._context, p);
+   var m = rmc.alloc(o._graphicContext, p);
    m.addLoadListener(o, o.onTemplateLoad);
    o._layer.pushDisplay(m);
    o._activeTemplate = m;
@@ -2484,7 +2479,8 @@ function FDsSceneDisplayFrame_onBuilded(p){
 function FDsSceneDisplayFrame_onDataChanged(p){
    var o = this;
    var d = o._activeDisplay;
-   var m = d.matrix();
+   var r = o._activeResource;
+   var m = r.matrix();
    var v = o._controlTranslate.get();
    m.setTranslate(v.x, v.y, v.z);
    var v = o._controlRotation.get();
@@ -2492,6 +2488,7 @@ function FDsSceneDisplayFrame_onDataChanged(p){
    var v = o._controlScale.get();
    m.setScale(v.x, v.y, v.z);
    m.update();
+   d.matrix().assign(m);
 }
 function FDsSceneDisplayFrame_construct(){
    var o = this;
@@ -2501,7 +2498,8 @@ function FDsSceneDisplayFrame_loadObject(s, d){
    var o = this;
    o._activeScene = s;
    o._activeDisplay = d;
-   var m = d.matrix();
+   var c = o._activeResource = d.resourceScene();
+   var m = o._activeResource.matrix();
    o._controlTranslate.set(m.tx, m.ty, m.tz);
    o._controlRotation.set(m.rx, m.ry, m.rz);
    o._controlScale.set(m.sx, m.sy, m.sz);
@@ -2612,7 +2610,7 @@ function FDsSceneLightPropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }
-function FDsSceneMaterialFrame(o){
+function FDsSceneMaterial1Frame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._scene                = null;
    o._material             = null;
@@ -2622,46 +2620,60 @@ function FDsSceneMaterialFrame(o){
    o._controlAmbientColor  = null;
    o._controlDiffuseColor  = null;
    o._controlSpecularColor = null;
+   o._controlSpecularBase  = null;
    o._controlSpecularLevel = null;
    o._controlReflectColor  = null;
    o._controlReflectMerge  = null;
    o._controlEmissiveColor = null;
-   o.onBuilded             = FDsSceneMaterialFrame_onBuilded;
-   o.onDataChanged         = FDsSceneMaterialFrame_onDataChanged;
-   o.construct             = FDsSceneMaterialFrame_construct;
-   o.loadObject            = FDsSceneMaterialFrame_loadObject;
-   o.dispose               = FDsSceneMaterialFrame_dispose;
+   o.onBuilded             = FDsSceneMaterial1Frame_onBuilded;
+   o.onDataChanged         = FDsSceneMaterial1Frame_onDataChanged;
+   o.construct             = FDsSceneMaterial1Frame_construct;
+   o.loadObject            = FDsSceneMaterial1Frame_loadObject;
+   o.dispose               = FDsSceneMaterial1Frame_dispose;
    return o;
 }
-function FDsSceneMaterialFrame_onBuilded(p){
+function FDsSceneMaterial1Frame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlOptionDouble.addDataChangedListener(o, o.onDataChanged);
+   o._controlEffectCode.addDataChangedListener(o, o.onDataChanged);
    o._controlOptionAlpha.addDataChangedListener(o, o.onDataChanged);
    o._controlAlphaBase.addDataChangedListener(o, o.onDataChanged);
    o._controlAlphaRate.addDataChangedListener(o, o.onDataChanged);
+   o._controlColorMin.addDataChangedListener(o, o.onDataChanged);
+   o._controlColorMax.addDataChangedListener(o, o.onDataChanged);
+   o._controlColorRate.addDataChangedListener(o, o.onDataChanged);
+   o._controlColorMerge.addDataChangedListener(o, o.onDataChanged);
    o._controlAmbientColor.addDataChangedListener(o, o.onDataChanged);
    o._controlDiffuseColor.addDataChangedListener(o, o.onDataChanged);
    o._controlSpecularColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlSpecularBase.addDataChangedListener(o, o.onDataChanged);
    o._controlSpecularLevel.addDataChangedListener(o, o.onDataChanged);
    o._controlReflectColor.addDataChangedListener(o, o.onDataChanged);
    o._controlReflectMerge.addDataChangedListener(o, o.onDataChanged);
    o._controlEmissiveColor.addDataChangedListener(o, o.onDataChanged);
 }
-function FDsSceneMaterialFrame_onDataChanged(p){
+function FDsSceneMaterial1Frame_onDataChanged(p){
    var o = this;
    var t = o._scene;
    var m = o._material;
    var mr = m.resource();
    var mi = mr.info();
+   mi.effectCode = o._controlEffectCode.get();
+   mi.optionAlpha = o._controlOptionAlpha.get();
+   mi.alphaBase = o._controlAlphaBase.get();
+   mi.alphaRate = o._controlAlphaRate.get();
+   mi.colorMin = o._controlColorMin.get();
+   mi.colorMax = o._controlColorMax.get();
+   mi.colorRate = o._controlColorRate.get();
+   mi.colorMerge = o._controlColorMerge.get();
    var v = o._controlAmbientColor.get();
    mi.ambientColor.assign(v);
    var v = o._controlDiffuseColor.get();
    mi.diffuseColor.assign(v);
    var v = o._controlSpecularColor.get();
    mi.specularColor.assign(v);
-   var v = o._controlSpecularLevel.get();
-   mi.specularLevel = v;
+   mi.specularBase = o._controlSpecularBase.get();
+   mi.specularLevel = o._controlSpecularLevel.get();
    var v = o._controlReflectColor.get();
    mi.reflectColor.assign(v);
    var v = o._controlReflectMerge.get();
@@ -2671,11 +2683,97 @@ function FDsSceneMaterialFrame_onDataChanged(p){
    m.reload();
    m._display.reloadResource();
 }
-function FDsSceneMaterialFrame_construct(){
+function FDsSceneMaterial1Frame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
-function FDsSceneMaterialFrame_loadObject(s, m){
+function FDsSceneMaterial1Frame_loadObject(s, m){
+   var o = this;
+   o._scene = s;
+   o._material = m;
+   var mr = m.resource();
+   var mi = mr.info();
+   o._controlGuid.set(mr.guid());
+   o._controlCode.set(mr.code());
+   o._controlLabel.set(mr.label());
+   o._controlEffectCode.set(mi.effectCode);
+   o._controlOptionAlpha.set(mi.optionAlpha);
+   o._controlAlphaBase.set(mi.alphaBase);
+   o._controlAlphaRate.set(mi.alphaRate);
+   o._controlColorMin.set(mi.colorMin);
+   o._controlColorMax.set(mi.colorMax);
+   o._controlColorRate.set(mi.colorRate);
+   o._controlColorMerge.set(mi.colorMerge);
+   o._controlAmbientColor.set(mi.ambientColor);
+   o._controlDiffuseColor.set(mi.diffuseColor);
+   o._controlSpecularColor.set(mi.specularColor);
+   o._controlSpecularBase.set(mi.specularBase);
+   o._controlSpecularLevel.set(mi.specularLevel);
+   o._controlReflectColor.set(mi.reflectColor);
+   o._controlReflectMerge.set(mi.reflectMerge);
+   o._controlEmissiveColor.set(mi.emissiveColor);
+}
+function FDsSceneMaterial1Frame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsSceneMaterial2Frame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._scene                    = null;
+   o._material                 = null;
+   o._controlGuid              = null;
+   o._controlCode              = null;
+   o._controlLabel             = null;
+   o._controlOptionDouble      = null;
+   o._controlDiffuseViewColor  = null;
+   o._controlSpecularViewColor = null;
+   o._controlSpecularViewBase  = null;
+   o._controlSpecularViewLevel = null;
+   o.onBuilded                 = FDsSceneMaterial2Frame_onBuilded;
+   o.onDataChanged             = FDsSceneMaterial2Frame_onDataChanged;
+   o.construct                 = FDsSceneMaterial2Frame_construct;
+   o.loadObject                = FDsSceneMaterial2Frame_loadObject;
+   o.dispose                   = FDsSceneMaterial2Frame_dispose;
+   return o;
+}
+function FDsSceneMaterial2Frame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlOptionDouble.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionView.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionNormalInvert.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionShadow.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionShadowSelf.addDataChangedListener(o, o.onDataChanged);
+   o._controlDiffuseViewColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlSpecularViewColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlSpecularViewBase.addDataChangedListener(o, o.onDataChanged);
+   o._controlSpecularViewLevel.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsSceneMaterial2Frame_onDataChanged(p){
+   var o = this;
+   var t = o._scene;
+   var m = o._material;
+   var mr = m.resource();
+   var mi = mr.info();
+   mi.optionDouble = o._controlOptionDouble.get();
+   mi.optionView = o._controlOptionView.get();
+   mi.optionNormalInvert = o._controlOptionNormalInvert.get();
+   mi.optionShadow = o._controlOptionShadow.get();
+   mi.optionShadowSelf = o._controlOptionShadowSelf.get();
+   var v = o._controlDiffuseViewColor.get();
+   mi.diffuseViewColor.assign(v);
+   var v = o._controlSpecularViewColor.get();
+   mi.specularViewColor.assign(v);
+   mi.specularViewBase = o._controlSpecularViewBase.get();
+   mi.specularViewLevel = o._controlSpecularViewLevel.get();
+   m.reload();
+   m._display.reloadResource();
+}
+function FDsSceneMaterial2Frame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsSceneMaterial2Frame_loadObject(s, m){
    var o = this;
    o._scene = s;
    o._material = m;
@@ -2685,18 +2783,16 @@ function FDsSceneMaterialFrame_loadObject(s, m){
    o._controlCode.set(mr.code());
    o._controlLabel.set(mr.label());
    o._controlOptionDouble.set(mi.optionDouble);
-   o._controlOptionAlpha.set(mi.optionAlpha);
-   o._controlAlphaBase.set(mi.alphaBase);
-   o._controlAlphaRate.set(mi.alphaRate);
-   o._controlAmbientColor.set(mi.ambientColor);
-   o._controlDiffuseColor.set(mi.diffuseColor);
-   o._controlSpecularColor.set(mi.specularColor);
-   o._controlSpecularLevel.set(mi.specularLevel);
-   o._controlReflectColor.set(mi.reflectColor);
-   o._controlReflectMerge.set(mi.reflectMerge);
-   o._controlEmissiveColor.set(mi.emissiveColor);
+   o._controlOptionView.set(mi.optionView);
+   o._controlOptionNormalInvert.set(mi.optionNormalInvert);
+   o._controlOptionShadow.set(mi.optionShadow);
+   o._controlOptionShadowSelf.set(mi.optionShadowSelf);
+   o._controlDiffuseViewColor.set(mi.diffuseViewColor);
+   o._controlSpecularViewColor.set(mi.specularViewColor);
+   o._controlSpecularViewBase.set(mi.specularViewBase);
+   o._controlSpecularViewLevel.set(mi.specularViewLevel);
 }
-function FDsSceneMaterialFrame_dispose(){
+function FDsSceneMaterial2Frame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }
@@ -2709,7 +2805,8 @@ function FDsSceneMaterialPropertyFrame(o){
    o._controlCode    = null;
    o._controlLabel   = null;
    o._displayFrame   = null;
-   o._materialFrame  = null;
+   o._materialFrame1 = null;
+   o._materialFrame2 = null;
    o.construct       = FDsSceneMaterialPropertyFrame_construct;
    o.loadObject      = FDsSceneMaterialPropertyFrame_loadObject;
    o.dispose         = FDsSceneMaterialPropertyFrame_dispose;
@@ -2726,7 +2823,8 @@ function FDsSceneMaterialPropertyFrame_loadObject(s, m){
    o._controlGuid.set(r.guid());
    o._controlCode.set(r.code());
    o._controlLabel.set(r.label());
-   o._frameMaterial.loadObject(s, m);
+   o._frameMaterial1.loadObject(s, m);
+   o._frameMaterial2.loadObject(s, m);
 }
 function FDsSceneMaterialPropertyFrame_dispose(){
    var o = this;
@@ -2824,6 +2922,7 @@ function FDsSceneRenderableFrame(o){
    o._activeRenderable = null;
    o.onBuilded         = FDsSceneRenderableFrame_onBuilded;
    o.onDataChanged     = FDsSceneRenderableFrame_onDataChanged;
+   o.onEffectClick     = FDsSceneRenderableFrame_onEffectClick;
    o.construct         = FDsSceneRenderableFrame_construct;
    o.loadObject        = FDsSceneRenderableFrame_loadObject;
    o.dispose           = FDsSceneRenderableFrame_dispose;
@@ -2835,6 +2934,7 @@ function FDsSceneRenderableFrame_onBuilded(p){
    o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
    o._controlRotation.addDataChangedListener(o, o.onDataChanged);
    o._controlScale.addDataChangedListener(o, o.onDataChanged);
+   o._controlEffects.addClickListener(o, o.onEffectClick);
 }
 function FDsSceneRenderableFrame_onDataChanged(p){
    var o = this;
@@ -2848,6 +2948,15 @@ function FDsSceneRenderableFrame_onDataChanged(p){
    m.setScale(v.x, v.y, v.z);
    m.update();
 }
+function FDsSceneRenderableFrame_onEffectClick(ps, pi){
+   var o = this;
+   var e = pi._effect;
+   var p = e._program;
+   var s = p._vertexShader;
+   alert(s._source);
+   var s = p._fragmentShader;
+   alert(s._source);
+}
 function FDsSceneRenderableFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
@@ -2860,6 +2969,16 @@ function FDsSceneRenderableFrame_loadObject(s, r){
    o._controlTranslate.set(m.tx, m.ty, m.tz);
    o._controlRotation.set(m.rx, m.ry, m.rz);
    o._controlScale.set(m.sx, m.sy, m.sz);
+   var ces = o._controlEffects;
+   ces.clear();
+   var es = r.infos();
+   var c = es.count();
+   for(var i = 0; i < c; i++){
+      var e = es.value(i).effect;
+      var l = ces.createItem(null, e.code());
+      l._effect = e;
+      ces.push(l);
+   }
 }
 function FDsSceneRenderableFrame_dispose(){
    var o = this;
@@ -2875,7 +2994,8 @@ function FDsSceneRenderablePropertyFrame(o){
    o._controlCode      = null;
    o._controlLabel     = null;
    o._frameRenderable  = null;
-   o._frameMaterial    = null;
+   o._frameMaterial1   = null;
+   o._frameMaterial2   = null;
    o.construct         = FDsSceneRenderablePropertyFrame_construct;
    o.loadObject        = FDsSceneRenderablePropertyFrame_loadObject;
    o.dispose           = FDsSceneRenderablePropertyFrame_dispose;
@@ -2895,7 +3015,8 @@ function FDsSceneRenderablePropertyFrame_loadObject(s, r){
    o._controlCode.set(s.code());
    o._controlLabel.set(s.label());
    o._frameRenderable.loadObject(s, r);
-   o._frameMaterial.loadObject(s, m);
+   o._frameMaterial1.loadObject(s, m);
+   o._frameMaterial2.loadObject(s, m);
 }
 function FDsSceneRenderablePropertyFrame_dispose(){
    var o = this;

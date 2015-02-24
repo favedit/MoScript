@@ -23,7 +23,7 @@ function FRd3Dimensional(o){
    o._size                 = null;
    o._lineColor            = null;
    o._lineCenterColor      = null;
-   o._effectName           = 'automatic';
+   o._effectCode           = 'automatic';
    // @attribute
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;

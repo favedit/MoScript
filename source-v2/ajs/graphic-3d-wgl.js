@@ -369,6 +369,8 @@ function FWglContext_setBlendFactors(f, vs, vt){
          g.enable(g.BLEND);
       }else{
          g.disable(g.BLEND);
+         o._blendSourceCd = 0;
+         o._blendTargetCd = 0;
       }
       o._statusBlend = f;
    }
@@ -1283,8 +1285,8 @@ function RWglUtility_convertSamplerFilter(g, v){
    }
    throw new TError(this, "Convert sampler filter failure. (filter_cd={1})", v);
 }
-function SWglContextCapability(o){
-   if(!o){o = this;}
-   SG3dContextCapability(o);
+function SWglContextCapability(){
+   var o = this;
+   SG3dContextCapability.call(o);
    return o;
 }

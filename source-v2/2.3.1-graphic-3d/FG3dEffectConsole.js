@@ -106,6 +106,9 @@ function FG3dEffectConsole_create(c, p){
 //==========================================================
 function FG3dEffectConsole_buildEffectInfo(pc, pf, pr){
    var o = this;
+   // 设置材质
+   var mi = pr.material().info();
+   pf.optionNormalInvert = mi.optionNormalInvert;
    // 设置定点属性
    pf.vertexCount = pr.vertexCount();
    // 设置顶点信息
@@ -179,7 +182,7 @@ function FG3dEffectConsole_findTemplate(pc, pn){
 function FG3dEffectConsole_find(pc, pg, pr){
    var o = this;
    // 获得效果名称
-   var en = pr.material().info().effectName;
+   var en = pr.material().info().effectCode;
    if(RString.isEmpty(en)){
       en = 'automatic'
    }

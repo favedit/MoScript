@@ -11,7 +11,7 @@ function FG3dRenderable(o){
    o._currentMatrix  = null;
    o._matrix         = null;
    // @attribute
-   o._effectName     = null;
+   o._effectCode     = null;
    o._materialName   = null;
    o._material       = null;
    // @attribute
@@ -23,7 +23,7 @@ function FG3dRenderable(o){
    // @method
    o.currentMatrix   = FG3dRenderable_currentMatrix;
    o.matrix          = FG3dRenderable_matrix;
-   o.effectName      = FG3dRenderable_effectName;
+   o.effectCode      = FG3dRenderable_effectCode;
    o.material        = FG3dRenderable_material;
    // @method
    o.activeEffect    = FG3dRenderable_activeEffect;
@@ -80,8 +80,8 @@ function FG3dRenderable_matrix(){
 // @method
 // @return String 效果器名称
 //==========================================================
-function FG3dRenderable_effectName(){
-   return this._effectName;
+function FG3dRenderable_effectCode(){
+   return this._effectCode;
 }
 
 //==========================================================

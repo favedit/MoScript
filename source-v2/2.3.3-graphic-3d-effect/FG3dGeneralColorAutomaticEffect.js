@@ -51,9 +51,12 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
       p.setParameter('fc_reflect_color', mi.reflectColor);
       p.setParameter('fc_emissive_color', mi.emissiveColor);
    }
-   //p.setParameter('fc_color', mi.ambientColor);
-   //p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
-   //p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
+   p.setParameter4('fc_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   if(mi.optionAlpha){
+      p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, 0, 0);
+   }else{
+      p.setParameter4('fc_alpha', 0, 1, 0, 0);
+   }
    p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
    //p.setParameter('fc_specular_view_color', mi.specularViewColor);
    //p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);

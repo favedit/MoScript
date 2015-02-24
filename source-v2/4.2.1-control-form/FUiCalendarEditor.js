@@ -1,7 +1,7 @@
 //==========================================================
-// FCalendarEditor
+// FUiCalendarEditor
 //==========================================================
-function FCalendarEditor(o){
+function FUiCalendarEditor(o){
    o = RClass.inherits(this, o, FDropEditor, MFocusLooper);
    //..........................................................
    // @attribute
@@ -57,52 +57,52 @@ function FCalendarEditor(o){
    o.styleOk          = RClass.register(o, new TStyle('Ok'));
    //..........................................................
    // @event
-   o.onDaySelect      = RClass.register(o, new HMouseDown('onDaySelect'), FCalendarEditor_onDaySelect);
-   o.onButtonNow      = RClass.register(o, new HMouseDown('onButtonNow'), FCalendarEditor_onButtonNow);
-   o.onDateKeyDown    = RClass.register(o, new HKeyDown('onDateKeyDown'), FCalendarEditor_onDateKeyDown);
-   o.onDateBlur       = RClass.register(o, new HBlur('onDateBlur'), FCalendarEditor_onDateBlur);
-   o.onTimeBlur       = RClass.register(o, new HBlur('onTimeBlur'), FCalendarEditor_onTimeBlur);
-   o.onTimeClick      = RClass.register(o, new HClick('onTimeClick'), FCalendarEditor_onTimeClick);
-   o.onDayDbClick     = RClass.register(o, new HDoubleClick('onDayDbClick'), FCalendarEditor_onDayDbClick);
-   o.onDayEnter       = RClass.register(o, new HMouseEnter('onDayEnter'),    FCalendarEditor_onDayEnter);
-   o.onDayOut         = RClass.register(o, new HMouseOut('onDayOut'),        FCalendarEditor_onDayOut);
-   o.onButtonOk       = RClass.register(o, new HMouseDown('onButtonOk'),     FCalendarEditor_onButtonOk);
-   o.onButtonCancel   = RClass.register(o, new HMouseDown('onButtonCancel'), FCalendarEditor_onButtonCancel);
-   o.onButtonOver     = RClass.register(o, new HMouseEnter('onButtonOver'),  FCalendarEditor_onButtonOver);
-   o.onButtonOut      = RClass.register(o, new HMouseOut('onButtonOut'),     FCalendarEditor_onButtonOut);
-   o.onMdown          = RClass.register(o, new HMouseDown('onMdown'),        FCalendarEditor_onMdown);
-   o.onMup            = RClass.register(o, new HMouseUp('onMup'),            FCalendarEditor_onMup);
-   o.onBuildDrop      = FCalendarEditor_onBuildDrop;
+   o.onDaySelect      = RClass.register(o, new HMouseDown('onDaySelect'), FUiCalendarEditor_onDaySelect);
+   o.onButtonNow      = RClass.register(o, new HMouseDown('onButtonNow'), FUiCalendarEditor_onButtonNow);
+   o.onDateKeyDown    = RClass.register(o, new HKeyDown('onDateKeyDown'), FUiCalendarEditor_onDateKeyDown);
+   o.onDateBlur       = RClass.register(o, new HBlur('onDateBlur'), FUiCalendarEditor_onDateBlur);
+   o.onTimeBlur       = RClass.register(o, new HBlur('onTimeBlur'), FUiCalendarEditor_onTimeBlur);
+   o.onTimeClick      = RClass.register(o, new HClick('onTimeClick'), FUiCalendarEditor_onTimeClick);
+   o.onDayDbClick     = RClass.register(o, new HDoubleClick('onDayDbClick'), FUiCalendarEditor_onDayDbClick);
+   o.onDayEnter       = RClass.register(o, new HMouseEnter('onDayEnter'),    FUiCalendarEditor_onDayEnter);
+   o.onDayOut         = RClass.register(o, new HMouseOut('onDayOut'),        FUiCalendarEditor_onDayOut);
+   o.onButtonOk       = RClass.register(o, new HMouseDown('onButtonOk'),     FUiCalendarEditor_onButtonOk);
+   o.onButtonCancel   = RClass.register(o, new HMouseDown('onButtonCancel'), FUiCalendarEditor_onButtonCancel);
+   o.onButtonOver     = RClass.register(o, new HMouseEnter('onButtonOver'),  FUiCalendarEditor_onButtonOver);
+   o.onButtonOut      = RClass.register(o, new HMouseOut('onButtonOut'),     FUiCalendarEditor_onButtonOut);
+   o.onMdown          = RClass.register(o, new HMouseDown('onMdown'),        FUiCalendarEditor_onMdown);
+   o.onMup            = RClass.register(o, new HMouseUp('onMup'),            FUiCalendarEditor_onMup);
+   o.onBuildDrop      = FUiCalendarEditor_onBuildDrop;
    //..........................................................
    // @method
-   o.show             = FCalendarEditor_show;
-   o.setMinuteEditable = FCalendarEditor_setMinuteEditable;
-   o.setHourEditable   = FCalendarEditor_setHourEditable;
-   o.setSecondEditable = FCalendarEditor_setSecondEditable;
-   o.buildTitle       = FCalendarEditor_buildTitle;
-   o.buildDays        = FCalendarEditor_buildDays;
-   o.buildTime        = FCalendarEditor_buildTime;
-   o.testBlur         = FCalendarEditor_testBlur;
-   o.get              = FCalendarEditor_get;
-   o.set              = FCalendarEditor_set;
-   o.setDate          = FCalendarEditor_setDate;
-   o.storeChange      = FCalendarEditor_storeChange;
+   o.show             = FUiCalendarEditor_show;
+   o.setMinuteEditable = FUiCalendarEditor_setMinuteEditable;
+   o.setHourEditable   = FUiCalendarEditor_setHourEditable;
+   o.setSecondEditable = FUiCalendarEditor_setSecondEditable;
+   o.buildTitle       = FUiCalendarEditor_buildTitle;
+   o.buildDays        = FUiCalendarEditor_buildDays;
+   o.buildTime        = FUiCalendarEditor_buildTime;
+   o.testBlur         = FUiCalendarEditor_testBlur;
+   o.get              = FUiCalendarEditor_get;
+   o.set              = FUiCalendarEditor_set;
+   o.setDate          = FUiCalendarEditor_setDate;
+   o.storeChange      = FUiCalendarEditor_storeChange;
    o.daySelectLsns    = new TListeners();
-   o.onBuildButton    = FCalendarEditor_onBuildButton;
-   o.ohKdown          = FCalendarEditor_ohKdown;
-   o.ohDaysChange     = FCalendarEditor_ohDaysChange;
-   o.ohKeyCheck       = FCalendarEditor_ohKeyCheck;
+   o.onBuildButton    = FUiCalendarEditor_onBuildButton;
+   o.ohKdown          = FUiCalendarEditor_ohKdown;
+   o.ohDaysChange     = FUiCalendarEditor_ohDaysChange;
+   o.ohKeyCheck       = FUiCalendarEditor_ohKeyCheck;
    // Event
-   o.onDateAction     = FCalendarEditor_onDateAction;
+   o.onDateAction     = FUiCalendarEditor_onDateAction;
    // Method
-   o.panel            = FCalendarEditor_panel;
-   o.dispose          = FCalendarEditor_dispose;
+   o.panel            = FUiCalendarEditor_panel;
+   o.dispose          = FUiCalendarEditor_dispose;
    return o;
 }
 
 //------------------------------------------------------------
 //响应时间按键事件
-function FCalendarEditor_onTimeClick(e){
+function FUiCalendarEditor_onTimeClick(e){
    var o = this;
    var h = e.hSource;
    if(h.editAble){
@@ -112,7 +112,7 @@ function FCalendarEditor_onTimeClick(e){
 
 //------------------------------------------------------------
 //响应时间按键事件
-function FCalendarEditor_onTimeBlur(e){
+function FUiCalendarEditor_onTimeBlur(e){
 	var o = this;
     var h = e.hSource;
     if(h == o.hHour){
@@ -128,9 +128,9 @@ function FCalendarEditor_onTimeBlur(e){
 
 //------------------------------------------------------------
 //响应时间按键事件
-function FCalendarEditor_onDayDbClick(e){
+function FUiCalendarEditor_onDayDbClick(e){
    var o = e.source
-   if(RClass.isClass(o, FCalendarEditor) && 0 != RInteger.parse(e.hSource.innerText)){
+   if(RClass.isClass(o, FUiCalendarEditor) && 0 != RInteger.parse(e.hSource.innerText)){
       o.date.setDay(e.hSource.innerText);
       o.dataValue = RDate.formatDate(o.date);
       o.editEnd();
@@ -138,9 +138,9 @@ function FCalendarEditor_onDayDbClick(e){
 }
 
 //==========================================================
-function FCalendarEditor_onDaySelect(e){
+function FUiCalendarEditor_onDaySelect(e){
    var o = this;
-   if(RClass.isClass(o, FCalendarEditor) && 0 != RInteger.parse(e.hSource.innerText)){
+   if(RClass.isClass(o, FUiCalendarEditor) && 0 != RInteger.parse(e.hSource.innerText)){
 	  var h = e.hSource;
 	  if(o.hSelect){
 		  o.hSelect.style.border = '1 solid #FFFFFF';
@@ -151,16 +151,16 @@ function FCalendarEditor_onDaySelect(e){
    }
 }
 //==========================================================
-function FCalendarEditor_onButtonNow(e){
+function FUiCalendarEditor_onButtonNow(e){
    var o = e.source;
-   if(RClass.isClass(o, FCalendarEditor)){
+   if(RClass.isClass(o, FUiCalendarEditor)){
       o.dataValue = RDate.format();
       o.editEnd();
    }
 }
 
 //==========================================================
-function FCalendarEditor_onDateKeyDown(e, he){
+function FUiCalendarEditor_onDateKeyDown(e, he){
    var o = this;
    var h = e.hSource;
    var v = h.value;
@@ -234,13 +234,13 @@ function FCalendarEditor_onDateKeyDown(e, he){
    }
 }
 //==========================================================
-function FCalendarEditor_onDateBlur(){
+function FUiCalendarEditor_onDateBlur(){
    var o = this;
    o.storeChange();
    o.setDate(o.date);
 }
 //==========================================================
-function FCalendarEditor_onBuildDrop(){
+function FUiCalendarEditor_onBuildDrop(){
    var o = this;
    o.hDatePanel = RBuilder.appendTable(o.hDropPanel);
    //o.hDropPanel.style.border = '2px solid red';
@@ -273,7 +273,7 @@ function FCalendarEditor_onBuildDrop(){
    //o.pushFocus(o.hTime);
 }
 //==========================================================
-function FCalendarEditor_show(v){
+function FUiCalendarEditor_show(v){
    var o = this;
    // 父处理
    o.base.FDropEditor.show.call(o, v);
@@ -291,7 +291,7 @@ function FCalendarEditor_show(v){
    o.base.MShadow.show.call(o);
 }
 //==========================================================
-function FCalendarEditor_buildTitle(){
+function FUiCalendarEditor_buildTitle(){
    var o = this;
    // Panel
    var hTab = RBuilder.appendTable(o.hTitlePanel, null, 0, 5, 1);
@@ -321,7 +321,7 @@ function FCalendarEditor_buildTitle(){
    o.attachEvent('onDateKeyDown', h, o.onDateKeyDown);
    // Year Text
    var hCel = hRow.insertCell();
-   hCel.innerText = RContext.get('FCalendarEditor:year');
+   hCel.innerText = RContext.get('FUiCalendarEditor:year');
    hCel.className = o.style('YearMonth');
    // Year Next
    var hCel = hRow.insertCell();
@@ -362,7 +362,7 @@ function FCalendarEditor_buildTitle(){
    o.attachEvent('onDateKeyDown', h, o.onDateKeyDown);
    // Month Text
    var hCel = hRow.insertCell();
-   hCel.innerText = RContext.get('FCalendarEditor:month');
+   hCel.innerText = RContext.get('FUiCalendarEditor:month');
    hCel.className = o.style('YearMonth');
    // Month Next
    var hCel = hRow.insertCell();
@@ -380,12 +380,12 @@ function FCalendarEditor_buildTitle(){
    o.attachEvent("onMup", h);
 }
 //==========================================================
-function FCalendarEditor_buildDays(){
+function FUiCalendarEditor_buildDays(){
    var o = this;
    var hTab = RBuilder.appendTable(o.hDaysPanel, null, 0, 0, 1);
    hTab.width = '100%';
    // Week
-   var weekDays = RContext.get('FCalendarEditor:weekdays').split(',');
+   var weekDays = RContext.get('FUiCalendarEditor:weekdays').split(',');
    var count = weekDays.length;
    var hWeekRow = hTab.insertRow();
    for(var n=0; n<count; n++){
@@ -414,7 +414,7 @@ function FCalendarEditor_buildDays(){
    }
 }
 //==========================================================
-function FCalendarEditor_buildTime(){
+function FUiCalendarEditor_buildTime(){
    var o = this;
    var hTab = RBuilder.appendTable(o.hTimePanel, null, 0, 1, 1);
    var ht = o.hTimePanel;
@@ -471,7 +471,7 @@ function FCalendarEditor_buildTime(){
    var hNow = o.hNow = RBuilder.append(hn, 'SPAN', o.style('Now'));
    hNow.style.width = 50;
    hn.style.border='1 solid #2BD6F0';
-   hNow.innerText = RContext.get('FCalendarEditor:now');
+   hNow.innerText = RContext.get('FUiCalendarEditor:now');
    hNow.style.display = 'none';
    hNow.link = o;
    o.attachEvent("onButtonNow", hNow);
@@ -482,7 +482,7 @@ function FCalendarEditor_buildTime(){
    hc.style.border='1 solid #2BD6F0';
    hCl.link = o;
    o.attachEvent("onButtonCancel", hCl);
-   hCl.innerText = RContext.get('FCalendarEditor:cancel');
+   hCl.innerText = RContext.get('FUiCalendarEditor:cancel');
    // 建立OK按键
    var ho = hRow.insertCell();
    var hOk = o.hOk = RBuilder.append(ho, 'SPAN', o.style('Ok'));
@@ -490,18 +490,18 @@ function FCalendarEditor_buildTime(){
    ho.style.border='1 solid #2BD6F0';
    hOk.link = o;
    o.attachEvent("onButtonOk", hOk);
-   hOk.innerText = RContext.get('FCalendarEditor:ok');
+   hOk.innerText = RContext.get('FUiCalendarEditor:ok');
 }
 //==========================================================
-function FCalendarEditor_testBlur(c){
+function FUiCalendarEditor_testBlur(c){
    return this.source != c;
 }
 //==========================================================
-function FCalendarEditor_get(){
+function FUiCalendarEditor_get(){
    return this.dataValue;
 }
 //==========================================================
-function FCalendarEditor_set(value, format){
+function FUiCalendarEditor_set(value, format){
    var o = this;
    o.changed = false;
    o.skipBlur = 0;
@@ -519,7 +519,7 @@ function FCalendarEditor_set(value, format){
    o.setDate(o.date);
 }
 //==========================================================
-function FCalendarEditor_setDate(date){
+function FUiCalendarEditor_setDate(date){
    var o = this;
    // Set year
    o.hYear.value = date.year;
@@ -569,7 +569,7 @@ function FCalendarEditor_setDate(date){
 }
 
 //==========================================================
-function FCalendarEditor_setHourEditable(v){
+function FUiCalendarEditor_setHourEditable(v){
    var o = this;
    if(!v){
 	   o.hHour.value = '00';
@@ -582,7 +582,7 @@ function FCalendarEditor_setHourEditable(v){
 }
 
 //==========================================================
-function FCalendarEditor_setMinuteEditable(v){
+function FUiCalendarEditor_setMinuteEditable(v){
    var o = this;
    if(!v){
 	   o.hMinute.value = '00';
@@ -595,7 +595,7 @@ function FCalendarEditor_setMinuteEditable(v){
 }
 
 //==========================================================
-function FCalendarEditor_setSecondEditable(v){
+function FUiCalendarEditor_setSecondEditable(v){
    var o = this;
    if(!v){
 	   o.hSecond.value = '00';
@@ -608,7 +608,7 @@ function FCalendarEditor_setSecondEditable(v){
 }
 
 //==========================================================
-function FCalendarEditor_storeChange(){
+function FUiCalendarEditor_storeChange(){
    var o = this;
    o.date.setYear(o.hYear.value);
    o.date.setMonth(o.hMonth.value);
@@ -617,7 +617,7 @@ function FCalendarEditor_storeChange(){
    o.date.setSecond(Math.min(RInteger.parse(o.hSecond.value), 59));
 }
 
-function FCalendarEditor_onBuildButton(){
+function FUiCalendarEditor_onBuildButton(){
    var o = this;
    return;
    o.base.FDropEditor.onBuildButton.call(o);
@@ -626,13 +626,13 @@ function FCalendarEditor_onBuildButton(){
    hp.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#E5FAFE', gradientType='0')";
    hp.height = 20;
    //o.hButtonPanel.style.border = '1px solid blue';
-   h.innerText = RContext.get('FCalendarEditor:now');
+   h.innerText = RContext.get('FUiCalendarEditor:now');
    o.attachEvent("onButtonNow",h);
 }
 //==========================================================
-function FCalendarEditor_onMdown(e){
+function FUiCalendarEditor_onMdown(e){
    var o = e.source;
-   if(RClass.isClass(o, FCalendarEditor)){
+   if(RClass.isClass(o, FUiCalendarEditor)){
       o.isSkipBlur = true;
       if(e.hSource.linkAction){
          e.hSource.linkAction.call(o, e.hSource);
@@ -640,9 +640,9 @@ function FCalendarEditor_onMdown(e){
    }
 }
 //==========================================================
-function FCalendarEditor_onMup(e){
+function FUiCalendarEditor_onMup(e){
    var o = e.source;
-   if(RClass.isClass(o, FCalendarEditor)){
+   if(RClass.isClass(o, FUiCalendarEditor)){
       var f = o.focusObject;
       if(f && f.focus && f.select){
          f.focus();
@@ -651,9 +651,9 @@ function FCalendarEditor_onMup(e){
    }
 }
 ////==========================================================
-//function FCalendarEditor_ohMdown(){
+//function FUiCalendarEditor_ohMdown(){
 //   var o = this.link;
-//   if(RClass.isClass(o, FCalendarEditor)){
+//   if(RClass.isClass(o, FUiCalendarEditor)){
 //      o.isSkipBlur = true;
 //      if(this.linkAction){
 //         this.linkAction.call(o, this);
@@ -661,10 +661,10 @@ function FCalendarEditor_onMup(e){
 //   }
 //}
 ////==========================================================
-//function FCalendarEditor_ohMup(){
-//   alert(FCalendarEditor_ohMup);
+//function FUiCalendarEditor_ohMup(){
+//   alert(FUiCalendarEditor_ohMup);
 //   var o = this.link;
-//   if(RClass.isClass(o, FCalendarEditor)){
+//   if(RClass.isClass(o, FUiCalendarEditor)){
 //      var f = o.focusObject;
 //      if(f && f.focus && f.select){
 //         f.focus();
@@ -673,9 +673,9 @@ function FCalendarEditor_onMup(e){
 //   }
 //}
 //==========================================================
-function FCalendarEditor_ohKdown(){
+function FUiCalendarEditor_ohKdown(){
    var o = this.link;
-   if(RClass.isClass(o, FCalendarEditor)){
+   if(RClass.isClass(o, FUiCalendarEditor)){
       var e = RWindow.event(this);
       if(EKey.Esc == e.keyCode){
          o.dataValue = o.dateOrgValue;
@@ -700,74 +700,74 @@ function FCalendarEditor_ohKdown(){
    }
 }
 //==========================================================
-function FCalendarEditor_onButtonOver(e){
+function FUiCalendarEditor_onButtonOver(e){
    var o = e.source;
-   if(RClass.isClass(o, FCalendarEditor)){
+   if(RClass.isClass(o, FUiCalendarEditor)){
       e.hSource.className = o.style('ButtonHover');
    }
 }
 //==========================================================
-function FCalendarEditor_onButtonOut(e){
+function FUiCalendarEditor_onButtonOut(e){
    var o = e.source;
-   if(RClass.isClass(o, FCalendarEditor)){
+   if(RClass.isClass(o, FUiCalendarEditor)){
       e.hSource.className = o.style('Button');
    }
 }
 
 
 ////==========================================================
-//function FCalendarEditor_ohButtonOver(){
+//function FUiCalendarEditor_ohButtonOver(){
 //   var o = this.link;
-//   if(RClass.isClass(o, FCalendarEditor)){
+//   if(RClass.isClass(o, FUiCalendarEditor)){
 //      this.className = o.style('ButtonHover');
 //   }
 //}
 ////==========================================================
-//function FCalendarEditor_ohButtonOut(){
+//function FUiCalendarEditor_ohButtonOut(){
 //   var o = this.link;
-//   if(RClass.isClass(o, FCalendarEditor)){
+//   if(RClass.isClass(o, FUiCalendarEditor)){
 //      this.className = o.style('Button');
 //   }
 //}
 //==========================================================
-function FCalendarEditor_onButtonOk(e){
+function FUiCalendarEditor_onButtonOk(e){
    var o = e.source;
-   if(RClass.isClass(o, FCalendarEditor)){
+   if(RClass.isClass(o, FUiCalendarEditor)){
       o.editStatus = EEditStatus.Ok;
       o.dataValue = RDate.formatDate(o.date);
       o.editEnd();
    }
 }
 //==========================================================
-function FCalendarEditor_onButtonCancel(e) {
+function FUiCalendarEditor_onButtonCancel(e) {
    var o = e.source;
-   if(RClass.isClass(o, FCalendarEditor)){
+   if(RClass.isClass(o, FUiCalendarEditor)){
 	 o.editStatus = EEditStatus.Cancel;
      o.dataValue = '';
      o.editEnd();
    }
 }
 ////==========================================================
-//function FCalendarEditor_ohButtonNow(){
-//   alert(FCalendarEditor_ohButtonNow);
+//function FUiCalendarEditor_ohButtonNow(){
+//   alert(FUiCalendarEditor_ohButtonNow);
 //   var o = this.link;
-//   if(RClass.isClass(o, FCalendarEditor)){
+//   if(RClass.isClass(o, FUiCalendarEditor)){
 //      o.editStatus = EEditStatus.Ok;
 //      o.dataValue = RDate.format();
 //      o.endEdit();
 //   }
 //}
 //==========================================================
-function FCalendarEditor_ohDaysChange(){
+function FUiCalendarEditor_ohDaysChange(){
    var o = this.link;
-   if(RClass.isClass(o, FCalendarEditor)){
+   if(RClass.isClass(o, FUiCalendarEditor)){
       o.date.setYear(o.hYear.value);
       o.date.setMonth(o.hMonth.value);
       o.setDate(o.date);
    }
 }
 //==========================================================
-function FCalendarEditor_ohKeyCheck(){
+function FUiCalendarEditor_ohKeyCheck(){
    var e = RWindow.event(this)
    if(!RString.inChars(String.fromCharCode(e.keyCode), RDate.Chars)){
       e.keyCode = 0;
@@ -775,18 +775,18 @@ function FCalendarEditor_ohKeyCheck(){
 }
 
 //==========================================================
-function FCalendarEditor_onDayEnter(e){
+function FUiCalendarEditor_onDayEnter(e){
    var o = e.source;
-   if(RClass.isClass(o, FCalendarEditor) && e.hSource.innerText != '.'){
+   if(RClass.isClass(o, FUiCalendarEditor) && e.hSource.innerText != '.'){
       if(!e.hSource.isCurrent){
          e.hSource.className = o.style('DayHover');
       }
    }
 }
 //==========================================================
-function FCalendarEditor_onDayOut(e){
+function FUiCalendarEditor_onDayOut(e){
    var o = e.source;
-   if(RClass.isClass(o, FCalendarEditor) && e.hSource.innerText != '.'){
+   if(RClass.isClass(o, FUiCalendarEditor) && e.hSource.innerText != '.'){
       if(!e.hSource.isCurrent){
          e.hSource.className = e.hSource.isFree ? o.style('DayFree') : o.style('Day');
       }
@@ -794,9 +794,9 @@ function FCalendarEditor_onDayOut(e){
 }
 //
 ////==========================================================
-//function FCalendarEditor_ohDayOver(){
+//function FUiCalendarEditor_ohDayOver(){
 //   var o = this.link;
-//   if(RClass.isClass(o, FCalendarEditor) && this.innerText != '.'){
+//   if(RClass.isClass(o, FUiCalendarEditor) && this.innerText != '.'){
 //      if(!this.isCurrent){
 //         this.className = o.style('DayHover');
 //      }
@@ -804,18 +804,18 @@ function FCalendarEditor_onDayOut(e){
 //}
 //
 ////==========================================================
-//function FCalendarEditor_ohDayOut(){
+//function FUiCalendarEditor_ohDayOut(){
 //   var o = this.link;
-//   if(RClass.isClass(o, FCalendarEditor) && this.innerText != '.'){
+//   if(RClass.isClass(o, FUiCalendarEditor) && this.innerText != '.'){
 //      if(!this.isCurrent){
 //         this.className = this.isFree ? o.style('DayFree') : o.style('Day');
 //      }
 //   }
 //}
 ////==========================================================
-//function FCalendarEditor_ohDayClick(){
+//function FUiCalendarEditor_ohDayClick(){
 //   var o = this.link;
-//   if(RClass.isClass(o, FCalendarEditor)){
+//   if(RClass.isClass(o, FUiCalendarEditor)){
 //      o.date.setDay(this.innerText);
 //      o.dataValue = RDate.formatDate(o.date);
 //      o.editStatus = EEditStatus.Ok;
@@ -823,7 +823,7 @@ function FCalendarEditor_onDayOut(e){
 //   }
 //}
 //==========================================================
-function FCalendarEditor_onDateAction(h){
+function FUiCalendarEditor_onDateAction(h){
    var o = this;
    if(o.hYearPrior == h){
       o.date.addYear(-1);
@@ -858,7 +858,7 @@ function FCalendarEditor_onDateAction(h){
    }
 }
 //==========================================================
-function FCalendarEditor_panel(type){
+function FUiCalendarEditor_panel(type){
    var o = this;
    if(EPanel.Shadow == type){
       return o.hPanel;
@@ -866,7 +866,7 @@ function FCalendarEditor_panel(type){
    return o.base.FDropEditor.panel.call(o, type);
 }
 //==========================================================
-function FCalendarEditor_dispose(){
+function FUiCalendarEditor_dispose(){
    var o = this;
    o.base.FDropEditor.dispose.call(o);
    o.hDatePanel = null;

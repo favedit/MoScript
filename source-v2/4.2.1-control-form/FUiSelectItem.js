@@ -2,7 +2,7 @@
 // <T>Select下拉列表中每个选项的控件</T>
 // <P>支持控件多选</P>
 //
-// @class FSelectItem
+// @class FUiSelectItem
 // @face FControl
 // @author maochunyang
 // @version 1.0.1
@@ -13,7 +13,7 @@
 // │(TD) │(TD)                    │(TD)   │
 // └-----┴------------------------┴-------┘
 //==========================================================
-function FSelectItem(o){
+function FUiSelectItem(o){
    o = RClass.inherits(this, o, FControl);
    /// @property
    o.icon              = RClass.register(o, new TPtyStr('icon'));
@@ -33,16 +33,16 @@ function FSelectItem(o){
    o.checked           = false;
    o.lsnsClick         = new TListeners();
    // process
-   o.oeBuild           = FSelectItem_oeBuild;
+   o.oeBuild           = FUiSelectItem_oeBuild;
    // event
-   o.onBuildPanel      = FSelectItem_onBuildPanel;
-   o.onMouseOver       = FSelectItem_onMouseOver;
-   o.onMouseOut        = FSelectItem_onMouseOut;
-   o.onMouseDown       = FSelectItem_onMouseDown;
+   o.onBuildPanel      = FUiSelectItem_onBuildPanel;
+   o.onMouseOver       = FUiSelectItem_onMouseOver;
+   o.onMouseOut        = FUiSelectItem_onMouseOut;
+   o.onMouseDown       = FUiSelectItem_onMouseDown;
    // method
-   o.set               = FSelectItem_set;
-   o.setChecked        = FSelectItem_setChecked;
-   o.dispose           = FSelectItem_dispose;
+   o.set               = FUiSelectItem_set;
+   o.setChecked        = FUiSelectItem_setChecked;
+   o.dispose           = FUiSelectItem_dispose;
    return o;
 }
 //==========================================================
@@ -50,7 +50,7 @@ function FSelectItem(o){
 //
 // @method
 //==========================================================
-function FSelectItem_oeBuild(e){
+function FUiSelectItem_oeBuild(e){
    var o = this;
    o.base.FControl.oeBuild.call(o,e);
    var h = o.hPanel;
@@ -64,7 +64,7 @@ function FSelectItem_oeBuild(e){
 //
 // @method
 //==========================================================
-function FSelectItem_onBuildPanel(){
+function FUiSelectItem_onBuildPanel(){
    this.hPanel = RBuilder.create(null, 'TR', this.style("Panel"));
 }
 //==========================================================
@@ -72,7 +72,7 @@ function FSelectItem_onBuildPanel(){
 //
 // @method
 //==========================================================
-function FSelectItem_onMouseOver(){
+function FUiSelectItem_onMouseOver(){
    this.hPanel.className = RBool.isTrue(this.checked) ? this.style('Select') : this.style('Hover');
 }
 //==========================================================
@@ -80,7 +80,7 @@ function FSelectItem_onMouseOver(){
 //
 // @method
 //==========================================================
-function FSelectItem_onMouseOut(){
+function FUiSelectItem_onMouseOut(){
    this.hPanel.className = RBool.isTrue(this.checked) ? this.style('Select') : this.style('Panel');
 }
 //==========================================================
@@ -88,7 +88,7 @@ function FSelectItem_onMouseOut(){
 //
 // @method
 //==========================================================
-function FSelectItem_onMouseDown(){
+function FUiSelectItem_onMouseDown(){
    this.lsnsClick.process(this);
    /*var o = this;
    o.checked = RBool.isTrue(o.checked) ? EBool.False : EBool.True;
@@ -105,7 +105,7 @@ function FSelectItem_onMouseDown(){
 //*
 //* @method
 ///==========================================================/
-function FSelectItem_set(icon, label, value, note){
+function FUiSelectItem_set(icon, label, value, note){
    var o = this;
    o.icon = RString.nvl(icon);
    if(!RString.isEmpty(o.icon)){
@@ -122,7 +122,7 @@ function FSelectItem_set(icon, label, value, note){
 //
 // @method
 //==========================================================
-function FSelectItem_setChecked(f){
+function FUiSelectItem_setChecked(f){
    var o = this;
    o.checked = f;
    if(o.hIcon){
@@ -137,7 +137,7 @@ function FSelectItem_setChecked(f){
 //
 // @method
 //==========================================================
-function FSelectItem_dispose(){
+function FUiSelectItem_dispose(){
    var o = this;
    o.base.FControl.dispose.call(o);
    RMemory.freeHtml(o.hEdit);

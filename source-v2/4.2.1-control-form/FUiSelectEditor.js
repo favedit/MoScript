@@ -4,7 +4,7 @@
 // @class FDropEditor, MShadow
 // @history 091103 MAOCY ����
 //==========================================================
-function FSelectEditor(o){
+function FUiSelectEditor(o){
    o = RClass.inherits(this, o, FDropEditor);
    //..........................................................
    // @attribute
@@ -18,20 +18,20 @@ function FSelectEditor(o){
    o.hItemsForm    = null;
    //..........................................................
    // @event
-   o.onItemClick   = FSelectEditor_onItemClick;
-   o.onEditKeyDown = FSelectEditor_onEditKeyDown;
-   o.onBuildDrop   = FSelectEditor_onBuildDrop;
+   o.onItemClick   = FUiSelectEditor_onItemClick;
+   o.onEditKeyDown = FUiSelectEditor_onEditKeyDown;
+   o.onBuildDrop   = FUiSelectEditor_onBuildDrop;
    //..........................................................
    // @method
-   o.construct     = FSelectEditor_construct;
-   o.testBlur      = FSelectEditor_testBlur;
-   o.setItems      = FSelectEditor_setItems;
-   o.get           = FSelectEditor_get;
-   o.set           = FSelectEditor_set;
-   o.select        = FSelectEditor_select;
-   o.fetch         = FSelectEditor_fetch;
-   o.show          = FSelectEditor_show;
-   o.dispose       = FSelectEditor_dispose;
+   o.construct     = FUiSelectEditor_construct;
+   o.testBlur      = FUiSelectEditor_testBlur;
+   o.setItems      = FUiSelectEditor_setItems;
+   o.get           = FUiSelectEditor_get;
+   o.set           = FUiSelectEditor_set;
+   o.select        = FUiSelectEditor_select;
+   o.fetch         = FUiSelectEditor_fetch;
+   o.show          = FUiSelectEditor_show;
+   o.dispose       = FUiSelectEditor_dispose;
    o.__mouseDownEvent  = new TEvent();
    return o;
 }
@@ -41,7 +41,7 @@ function FSelectEditor(o){
 //
 // @method
 //==========================================================
-function FSelectEditor_onItemClick(s){
+function FUiSelectEditor_onItemClick(s){
    var o = this;
    var t = o.__source;
    o.position = o.items.indexOf(s);
@@ -57,7 +57,7 @@ function FSelectEditor_onItemClick(s){
 //
 // @method
 //==========================================================
-function FSelectEditor_onEditKeyDown(s, e){
+function FUiSelectEditor_onEditKeyDown(s, e){
    var o = this;
    switch(e.keyCode){
       case EKey.Up:
@@ -80,7 +80,7 @@ function FSelectEditor_onEditKeyDown(s, e){
 //
 // @method
 //==========================================================
-function FSelectEditor_onBuildDrop(){
+function FUiSelectEditor_onBuildDrop(){
    var o = this;
    // ��������������
    var hdl = o.hDropLayout = RBuilder.append(o.hDropPanel, 'DIV')
@@ -94,7 +94,7 @@ function FSelectEditor_onBuildDrop(){
 //
 // @method
 //==========================================================
-function FSelectEditor_construct(){
+function FUiSelectEditor_construct(){
    var o = this;
    o.lsnItemClick = new TListener(o, o.onItemClick);
 }
@@ -105,7 +105,7 @@ function FSelectEditor_construct(){
 // @method
 // @param c:control:FControl Ҫ��ý���Ŀؼ�
 //==========================================================
-function FSelectEditor_testBlur(c){
+function FUiSelectEditor_testBlur(c){
    var o = this;
    if(o.source == c){
       return false;
@@ -119,7 +119,7 @@ function FSelectEditor_testBlur(c){
 // @method
 // @param c:control:FControl �ؼ�
 //==========================================================
-function FSelectEditor_setItems(items){
+function FUiSelectEditor_setItems(items){
    var o = this;
    // ����Ƿ������
    if(o.items){
@@ -157,7 +157,7 @@ function FSelectEditor_setItems(items){
 //
 // @method
 //==========================================================
-function FSelectEditor_get(){
+function FUiSelectEditor_get(){
    var o = this;
    return o.items.get(o.position).value;
 }
@@ -167,7 +167,7 @@ function FSelectEditor_get(){
 //
 // @method
 //==========================================================
-function FSelectEditor_set(v){
+function FUiSelectEditor_set(v){
    var o = this;
    o.position = -1;
    var ps = o.items;
@@ -189,7 +189,7 @@ function FSelectEditor_set(v){
 // @method
 // @param p:position:Integer ����λ��
 //==========================================================
-function FSelectEditor_select(p){
+function FUiSelectEditor_select(p){
    var o = this;
    var is = o.items;
    var ic = is.count;
@@ -207,7 +207,7 @@ function FSelectEditor_select(p){
 //
 // @method
 //==========================================================
-function FSelectEditor_fetch(){
+function FUiSelectEditor_fetch(){
    var o = this;
    if(!o.hasFetched){
       var g = new TCodeListServiceArg();
@@ -229,7 +229,7 @@ function FSelectEditor_fetch(){
 //
 // @method
 //==========================================================
-function FSelectEditor_show(v){
+function FUiSelectEditor_show(v){
    var o = this;
    // ������
    o.base.FDropEditor.show.call(o, v);
@@ -260,7 +260,7 @@ function FSelectEditor_show(v){
 //
 // @method
 //==========================================================
-function FSelectEditor_dispose(){
+function FUiSelectEditor_dispose(){
    var o = this;
    o.base.FDropEditor.dispose.call(o);
    o.hDropLayout = null;

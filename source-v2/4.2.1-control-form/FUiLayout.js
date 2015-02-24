@@ -198,7 +198,7 @@ function FUiLayout_moveChild(cf, ct, pos, copy){
    switch(pos){
       case EPosition.Before:
          var hRow = hTable.rows[0];
-         for(var n=0; n<hRow.cells.length; n++){
+         for(var n = 0; n < hRow.cells.length; n++){
             if(hRow.cells[n] == hTd){
                var hCell = RBuilder.appendTableCell(hRow, null, hTd.cellIndex);
                hCell.appendChild(cf._hPanel);
@@ -212,7 +212,7 @@ function FUiLayout_moveChild(cf, ct, pos, copy){
          break;
       case EPosition.After:
          var hRow = hTable.rows[0];
-         for(var n=0; n<hRow.cells.length; n++){
+         for(var n = 0; n < hRow.cells.length; n++){
             if(hRow.cells[n] == hTd){
                var hCfTd = RHtml.parent(cf._hPanel, 'TD');
                var hCell = RBuilder.appendTableCell(hRow, null, hTd.cellIndex + 1);
@@ -240,7 +240,7 @@ function FUiLayout_moveChild(cf, ct, pos, copy){
             o.insertPosition(cf, ct, 0, copy);
          }else{
             var count = o._hContainer.children.length;
-            for(var n=0; n<count; n++){
+            for(var n = 0; n < count; n++){
                if(o._hContainer.children[n] == hTable){
                   if(cfh){
                      o._hContainer.insertBefore(cf._hPanel, hTable);
@@ -342,7 +342,7 @@ function FUiLayout_appendChild(ctl){
       ctl._hPanel.style.paddingBottom = 2;
       // 追加横向对象
       if(RSet.contains(ctl._sizeCd, ESize.Horizontal) || '100%' == ctl.width){
-         if(RClass.isClass(ctl, FSplit)){
+         if(RClass.isClass(ctl, FUiSplit)){
             o._lastSplit = ctl;
          }
          // 追加一个新行

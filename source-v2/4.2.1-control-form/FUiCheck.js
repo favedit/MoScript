@@ -6,41 +6,26 @@
 // @version 150216
 //==========================================================
 function FUiCheck(o){
-   //o = RClass.inherits(this, o, FUiEditControl, MDescCheck);
-   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
+   o = RClass.inherits(this, o, FUiEditControl, MPropertyCheck, MListenerDataChanged);
    //..........................................................
    // @style
-   o._styleInput      = RClass.register(o, new AStyle('_styleInput', 'Input'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
    //..........................................................
    // @html
    o._hInput          = null;
    //..........................................................
    // @event
    o.onBuildEditValue = FUiCheck_onBuildEditValue;
+   o.onInputClick     = RClass.register(o, new AEventClick('onInputClick'), FUiCheck_onInputClick);
+   //..........................................................
+   // @process
+   o.oeSaveValue      = FUiCheck_oeSaveValue;
    //..........................................................
    // @method
    o.get              = FUiCheck_get;
    o.set              = FUiCheck_set;
-
-   //..........................................................
-   // @attribute
-   //o._recordValue = EBoolean.False;
-   //o.borderStyle   = EBorder.None;
-   //o.onClick       = RMethod.emptyCall;
-   //o.onDataClick   = RMethod.emptyCall;
-   //..........................................................
-   // @method
-   //o.oeSaveValue   = FUiCheck_oeSaveValue;
-   //..........................................................
-   // @method
-   //o.isDataChanged = RMethod.emptyTrue;
-   //o.testFocus     = RMethod.emptyFalse;
-   //o.clearValue    = MDescCheck_clearValue;
-   //o.resetValue    = MDescCheck_resetValue;
-   //o.text          = MDescCheck_text;
-   //o.setText       = MDescCheck_setText
-   //o.validText     = RMethod.empty;
-   //o.refreshStyle  = FUiCheck_refreshStyle;
+   o.refreshValue     = FUiCheck_refreshValue;
+   o.refreshStyle     = FUiCheck_refreshStyle;
    return o;
 }
 
@@ -53,7 +38,36 @@ function FUiCheck(o){
 function FUiCheck_onBuildEditValue(p){
    var o = this;
    // 建立编辑控件
-   o._hInput = RBuilder.appendCheck(o._hValuePanel, o.styleName('Input'));
+   var h = o._hInput = RBuilder.appendCheck(o._hValuePanel, o.styleName('Input'));
+   o.attachEvent('onInputClick', h);
+}
+
+//==========================================================
+// <T>鼠标单击事件。</T>
+//
+// @method
+// @param p:argements:SArgements 参数集合
+//==========================================================
+function FUiCheck_onInputClick(p){
+   this.refreshValue();
+}
+
+//==========================================================
+// <T>存储内容。</T>
+//
+// @method
+// @param e:event:TEvent 事件对象
+//==========================================================
+function FUiCheck_oeSaveValue(e){
+   var o = this;
+   // 数据准备模式
+   if(EStore.Prepare == e.store){
+      if(RBoolean.isTrue(o.reget())){
+         e.values.set(o.dataName, EBoolean.True);
+      }
+      return EEventStatus.Stop;
+   }
+   return o.base.FUiEditControl.oeSaveValue.call(o, e);
 }
 
 //==========================================================
@@ -76,32 +90,15 @@ function FUiCheck_set(p){
    this._hInput.checked = RBoolean.parse(p);
 }
 
-
-
-
-
-
-
-
-
-
-
 //==========================================================
-// <T>存储内容。</T>
+// <T>刷新数据。</T>
 //
 // @method
-// @param e:event:TEvent 事件对象
 //==========================================================
-function FUiCheck_oeSaveValue(e){
+function FUiCheck_refreshValue(){
    var o = this;
-   // 数据准备模式
-   if(EStore.Prepare == e.store){
-      if(RBoolean.isTrue(o.reget())){
-         e.values.set(o.dataName, EBoolean.True);
-      }
-      return EEventStatus.Stop;
-   }
-   return o.base.FUiEditControl.oeSaveValue.call(o, e);
+   // 内容改变通知
+   o.processDataChangedListener(o);
 }
 
 //==========================================================

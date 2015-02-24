@@ -52,7 +52,7 @@ function FDsTemplateCanvas_onBuild(p){
    // 创建简单舞台
    var g = o._stage = RClass.create(FE3dSimpleStage);
    g.backgroundColor().set(0.5, 0.5, 0.5, 1);
-   g.selectTechnique(o._context, FG3dGeneralTechnique);
+   g.selectTechnique(o, FG3dGeneralTechnique);
    var sl = o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    // 设置相机
@@ -237,7 +237,7 @@ function FDsTemplateCanvas_onTemplateLoad(p){
 //==========================================================
 function FDsTemplateCanvas_oeRefresh(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    o.__base.FDsCanvas.oeRefresh.call(o, p);
    // 获得大小
    var w = o._hParent.offsetWidth;
@@ -280,11 +280,11 @@ function FDsTemplateCanvas_selectRenderable(p){
    var rm = r.mesh();
    var rl = rm.outline();
    // 显示包围盒
-   var b = o._selectBoundBox;
-   b.outline().assign(rl);
-   b.upload();
-   b.remove();
-   p._display.pushRenderable(b);
+   //var b = o._selectBoundBox;
+   //b.outline().assign(rl);
+   //b.upload();
+   //b.remove();
+   //p._display.pushRenderable(b);
 }
 
 //==========================================================
@@ -299,7 +299,7 @@ function FDsTemplateCanvas_loadTemplate(p){
       rmc.free(o._activeTemplate);
    }
    // 收集一个显示模板
-   var m = rmc.alloc(o._context, p);
+   var m = rmc.alloc(o._graphicContext, p);
    m.addLoadListener(o, o.onTemplateLoad);
    o._layer.pushDisplay(m);
    o._activeTemplate = m;

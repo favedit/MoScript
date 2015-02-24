@@ -524,6 +524,8 @@ function FWglContext_setBlendFactors(f, vs, vt){
          g.enable(g.BLEND);
       }else{
          g.disable(g.BLEND);
+         o._blendSourceCd = 0;
+         o._blendTargetCd = 0;
       }
       o._statusBlend = f;
    }

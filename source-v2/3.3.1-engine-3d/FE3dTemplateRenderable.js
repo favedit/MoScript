@@ -102,7 +102,7 @@ function FE3dTemplateRenderable_loadResource(p){
    //............................................................
    // 加载材质
    var mr = o._materialResource = p._activeMaterial._material;
-   o._effectName = mr.info().effectName;
+   o._effectCode = mr.info().effectCode;
    o._material.calculate(mr);
    // 加载纹理集合
    var rs = mr.textures();

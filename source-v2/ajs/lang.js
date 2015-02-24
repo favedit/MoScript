@@ -160,6 +160,24 @@ function APtyInteger_toString(){
    var o = this;
    return 'linker=' + o._linker + ',value=' + o._value;
 }
+function APtyNumber(n, l, v){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._value   = RInteger.nvl(v);
+   o.build    = APtyNumber_build;
+   o.toString = APtyNumber_toString;
+   return o;
+}
+function APtyNumber_build(v){
+   var o = this;
+   if(o._value != 0){
+      v[o._name] = o._value;
+   }
+}
+function APtyNumber_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._value;
+}
 function APtyPadding(n, l, vl, vt, vr, vb){
    var o = this;
    AProperty.call(o, n, l);
@@ -612,7 +630,18 @@ function RBoolean_format(v){
    return v ? EBoolean.True : EBoolean.False;
 }
 function RBoolean_parse(v){
-   return (v == EBoolean.True);
+   if(v != null){
+      if(v.constructor == Boolean){
+         return v;
+      }else if(v.constructor == String){
+         return (v == EBoolean.True);
+      }else if(v.constructor == Number){
+         return v > 0;
+      }else{
+         throw new TError(this, 'Unknown type.');
+      }
+   }
+   return false;
 }
 function RBoolean_toString(v){
    return v ? EBoolean.True : EBoolean.False;

@@ -462,6 +462,7 @@ function RHtml_searchObject(h, n){
 // @param p:html:HtmlTag 页面标签
 //==========================================================
 function RHtml_free(p){
+   return null;
 }
 
 

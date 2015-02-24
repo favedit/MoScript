@@ -317,8 +317,6 @@ function FUiEditControl_onBuild(p){
    if(hep){
       o.onBuildEdit(p);
    }
-   // 设置数据
-   return EEventStatus.Stop;
 }
 
 

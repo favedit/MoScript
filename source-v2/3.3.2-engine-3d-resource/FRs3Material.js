@@ -20,7 +20,7 @@ function FRs3Material(o){
    o.groupGuid   = FRs3Material_groupGuid;
    o.group       = FRs3Material_group;
    // @method
-   o.effectName  = FRs3Material_effectName;
+   o.effectCode  = FRs3Material_effectCode;
    o.info        = FRs3Material_info;
    o.textures    = FRs3Material_textures;
    // @method
@@ -66,8 +66,8 @@ function FRs3Material_group(){
 // @method
 // @return String 效果名称
 //==========================================================
-function FRs3Material_effectName(){
-   return this._info.effectName;
+function FRs3Material_effectCode(){
+   return this._info.effectCode;
 }
 
 //==========================================================
@@ -138,6 +138,7 @@ function FRs3Material_saveConfig(p){
    p.set('ambient_color', mi.ambientColor.toString());
    p.set('diffuse_color', mi.diffuseColor.toString());
    p.set('specular_color', mi.specularColor.toString());
+   p.set('specular_base', mi.specularBase);
    p.set('specular_level', mi.specularLevel);
    p.set('reflect_color', mi.reflectColor.toString());
    p.set('reflect_merge', mi.reflectMerge);

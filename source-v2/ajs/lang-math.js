@@ -501,6 +501,7 @@ function SMatrix3d(){
    o.update         = SMatrix3d_update;
    o.serialize      = SMatrix3d_serialize;
    o.unserialize    = SMatrix3d_unserialize;
+   o.saveConfig     = SMatrix3d_saveConfig;
    o.identity();
    return o;
 }
@@ -652,6 +653,18 @@ function SMatrix3d_unserialize(p){
    o.sy = p.readFloat();
    o.sz = p.readFloat();
    o.updateForce();
+}
+function SMatrix3d_saveConfig(p){
+   var o = this;
+   p.set('tx', RFloat.format(o.tx));
+   p.set('ty', RFloat.format(o.ty));
+   p.set('tz', RFloat.format(o.tz));
+   p.set('rx', RFloat.format(o.rx));
+   p.set('ry', RFloat.format(o.ry));
+   p.set('rz', RFloat.format(o.rz));
+   p.set('sx', RFloat.format(o.sx));
+   p.set('sy', RFloat.format(o.sy));
+   p.set('sz', RFloat.format(o.sz));
 }
 function SMatrix3x3(){
    var o = this;
