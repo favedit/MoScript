@@ -33,17 +33,16 @@ function FFocusConsole(o){
    o.lsnsFocusClass     = null;
    //..........................................................
    // @event
-   o.onWindowMouseDown  = FFocusConsole_onWindowMouseDown;
-   o.onWindowMouseWheel = FFocusConsole_onWindowMouseWheel;
+   o.onMouseDown        = FFocusConsole_onMouseDown;
+   o.onMouseWheel       = FFocusConsole_onMouseWheel;
    //..........................................................
    // @method
    o.construct          = FFocusConsole_construct;
    // @method
-   o.isFocus            = FFocusConsole_isFocus;
-   // @method
    o.enter              = FFocusConsole_enter;
    o.leave              = FFocusConsole_leave;
    // @method
+   o.isFocus            = FFocusConsole_isFocus;
    o.focus              = FFocusConsole_focus;
    o.blur               = FFocusConsole_blur;
    // @method
@@ -64,10 +63,10 @@ function FFocusConsole(o){
 // <T>处理鼠标按下事件。</T>
 //
 // @method
-// @param e:event:TEvent 事件对象
+// @param p:event:SEvent 事件对象
 //==========================================================
-function FFocusConsole_onWindowMouseDown(s, e){
-   this.focusHtml(e);
+function FFocusConsole_onMouseDown(p){
+   this.focusHtml(p.hSource);
 }
 
 //==========================================================
@@ -76,12 +75,12 @@ function FFocusConsole_onWindowMouseDown(s, e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FFocusConsole_onWindowMouseWheel(s, e){
+function FFocusConsole_onMouseWheel(s, e){
    var o = this;
-   var c = this._focusControl;
-   if(RClass.isClass(c, MMouseWheel)){
-      c.onMouseWheel(s, e);
-   }
+   //var c = this._focusControl;
+   //if(RClass.isClass(c, MMouseWheel)){
+   //   c.onMouseWheel(s, e);
+   //}
 }
 
 //==========================================================
@@ -99,19 +98,8 @@ function FFocusConsole_construct(){
    o.lsnsFocusClass = new TListeners();
    // 增加监听器
    RLogger.info(o, 'Add listener for window mouse down and wheel.');
-   //RWindow.lsnsMouseDown.register(o, o.onWindowMouseDown);
-   //RWindow.lsnsMouseWheel.register(o, o.onWindowMouseWheel);
-}
-
-//==========================================================
-// <T>判断一个控件是否获得焦点的控件。</T>
-//
-// @method
-// @param c:control:FControl 控件
-// @return true:是<B/>false:否
-//==========================================================
-function FFocusConsole_isFocus(c){
-   return (this._focusControl == c);
+   RWindow.lsnsMouseDown.register(o, o.onMouseDown);
+   RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
 }
 
 //==========================================================
@@ -143,6 +131,17 @@ function FFocusConsole_leave(c){
    if(o._hoverControl == c){
       o._hoverControl = null;
    }
+}
+
+//==========================================================
+// <T>判断一个控件是否获得焦点的控件。</T>
+//
+// @method
+// @param c:control:FControl 控件
+// @return true:是<B/>false:否
+//==========================================================
+function FFocusConsole_isFocus(c){
+   return (this._focusControl == c);
 }
 
 //==========================================================
@@ -267,18 +266,18 @@ function FFocusConsole_focusClass(c, p){
 // <T>设置页面对象焦点。</T>
 //
 // @method
-// @param he:element:HTML 页面对象
+// @param p:element:HtmlTag 页面元素
 //==========================================================
-function FFocusConsole_focusHtml(he){
+function FFocusConsole_focusHtml(p){
    var o = this;
-   var c = RControl.htmlControl(he.srcElement);
-   RLogger.debug(o, 'Focus html control. (control={1},element={2})', RClass.dump(c), he.srcElement.tagName);
+   var c = RHtml.searchLinker(p, FUiControl);
+   RLogger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
    if(c){
       if(o._focusControl != c){
-         o.blur(c, he);
+         o.blur(c, p);
       }
    }else{
-      o.blur(null, he);
+      o.blur(null, p);
    }
 }
 

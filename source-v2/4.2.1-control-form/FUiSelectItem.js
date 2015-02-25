@@ -13,13 +13,15 @@
 // @version 150224
 //==========================================================
 function FUiSelectItem(o){
-   o = RClass.inherits(this, o, FUiControl);
+   o = RClass.inherits(this, o, FUiControl, MListenerClick);
    //..........................................................
    // @property
    o._icon             = RClass.register(o, new APtyString('_icon'));
    o._note             = RClass.register(o, new APtyString('_note'));
+   o._dataValue        = RClass.register(o, new APtyString('_dataValue'));
    //..........................................................
    // @style
+   o._styleNormal      = RClass.register(o, new AStyle('_styleNormal'));
    o._styleHover       = RClass.register(o, new AStyle('_styleHover'));
    o._styleSelect      = RClass.register(o, new AStyle('_styleSelect'));
    o._styleIconChecked = RClass.register(o, new AStyle('_styleIcon'));
@@ -27,25 +29,25 @@ function FUiSelectItem(o){
    o._styleNote        = RClass.register(o, new AStyle('_styleNote'));
    //..........................................................
    // @html
-   o._hIcon            = null;
    o._hIconPanel       = null;
+   o._hIcon            = null;
    o._hLabelPanel      = null;
    o._hNotePanel       = null;
    //..........................................................
    // @attribute
    o._checked          = false;
-   o._lsnsClick        = new TListeners();
    //..........................................................
    // @event
    o.onBuildPanel      = FUiSelectItem_onBuildPanel;
    o.onBuild           = FUiSelectItem_onBuild;
-   o.onMouseOver       = FUiSelectItem_onMouseOver;
-   o.onMouseOut        = FUiSelectItem_onMouseOut;
-   o.onMouseDown       = FUiSelectItem_onMouseDown;
+   o.onEnter           = FUiSelectItem_onEnter;
+   o.onLeave           = FUiSelectItem_onLeave;
+   o.onMouseDown       = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiSelectItem_onMouseDown);
    //..........................................................
    // @method
-   o.set               = FUiSelectItem_set;
    o.setChecked        = FUiSelectItem_setChecked;
+   o.set               = FUiSelectItem_set;
+   // @method
    o.dispose           = FUiSelectItem_dispose;
    return o;
 }
@@ -58,7 +60,7 @@ function FUiSelectItem(o){
 //==========================================================
 function FUiSelectItem_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createTableRow(p, o.styleName("Panel"));
+   o._hPanel = RBuilder.createTableRow(p, o.styleName("Normal"));
 }
 
 //==========================================================
@@ -67,23 +69,36 @@ function FUiSelectItem_onBuildPanel(p){
 // @method
 // @param p:argements:SArgements 参数集合
 //==========================================================
-function FUiSelectItem_onBuild(e){
+function FUiSelectItem_onBuild(p){
    var o = this;
-   o.__base.FControl.onBuild.call(o,e);
-   // 创建面板
+   o.__base.FUiControl.onBuild.call(o, p);
+   // 设置面板
    var h = o._hPanel;
-   o._hIconPanel = RBuilder.appendTableCell(h, o.styleName("Icon"));
-   o._hLabelPanel = RBuilder.appendTableCell(h, o.styleName("Label"));
+   o.attachEvent('onMouseDown', h);
+   // 创建图标
+   var hp = o._hIconPanel = RBuilder.appendTableCell(h, o.styleName("Icon"));
+   hp.width = 18;
+   hp.align = 'center';
+   if(o._icon){
+   }
+   // 创建文本
+   var hp = o._hLabelPanel = RBuilder.appendTableCell(h, o.styleName("Label"));
+   if(o._label){
+      hp.innerText = o._label;
+   }
+   // 创建备注
    o._hNotePanel = RBuilder.appendTableCell(h, o.styleName("Note"));
 }
 
 //==========================================================
-// <T>响应鼠标悬停事件</T>
+// <T>响应鼠标进入事件</T>
 //
 // @method
 //==========================================================
-function FUiSelectItem_onMouseOver(){
-   this._hPanel.className = RBool.isTrue(this._checked) ? this.style('Select') : this.style('Hover');
+function FUiSelectItem_onEnter(){
+   var o = this;
+   o.__base.FUiControl.onEnter.call(o);
+   o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
 }
 
 //==========================================================
@@ -91,8 +106,10 @@ function FUiSelectItem_onMouseOver(){
 //
 // @method
 //==========================================================
-function FUiSelectItem_onMouseOut(){
-   this._hPanel.className = RBool.isTrue(this._checked) ? this.style('Select') : this.style('Panel');
+function FUiSelectItem_onLeave(){
+   var o = this;
+   o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Panel');
+   o.__base.FUiControl.onLeave.call(o);
 }
 
 //==========================================================
@@ -101,7 +118,8 @@ function FUiSelectItem_onMouseOut(){
 // @method
 //==========================================================
 function FUiSelectItem_onMouseDown(){
-   this._lsnsClick.process(this);
+   var o = this;
+   o.processClickListener(o);
    /*var o = this;
    o._checked = RBool.isTrue(o._checked) ? EBool.False : EBool.True;
    RBool.isTrue(o._checked) ? o.setChecked(true) : o.setChecked(false); 
@@ -111,6 +129,22 @@ function FUiSelectItem_onMouseDown(){
    p.selectItem = o;
    p.inEdit = false;
    p.blur();*/
+}
+
+//==========================================================
+// <T>设置选中状态。</T>
+//
+// @method
+//==========================================================
+function FUiSelectItem_setChecked(p){
+   var o = this;
+   o._checked = p;
+   if(o._hIcon){
+      o._hIcon.style.display = p ? 'block' : 'none';
+   }else{
+      o._hIconPanel.innerHTML = p ? 'O' : '';
+   }
+   o._hPanel.className = p ? o.styleName('Select') : o.styleName('Panel');
 }
 
 //==========================================================
@@ -132,28 +166,14 @@ function FUiSelectItem_set(icon, label, value, note){
 }
 
 //==========================================================
-// <T>响应鼠标离开事件</T>
-//
-// @method
-//==========================================================
-function FUiSelectItem_setChecked(f){
-   var o = this;
-   o._checked = f;
-   if(o._hIcon){
-      o._hIcon.style.display = f ? 'block' : 'none';
-   }else{
-      o._hIconPanel.innerText = f ? 'ü' : '';
-   }
-   o._hPanel.className = f ? o.styleName('Select') : o.styleName('Panel');
-}
-
-//==========================================================
 // <T>释放处理。</T>
 //
 // @method
 //==========================================================
 function FUiSelectItem_dispose(){
    var o = this;
-   o._hEdit = RHtml.free(o._hEdit);
-   o.__base.FControl.dispose.call(o);
+   o._hIconPanel = RHtml.free(o._hIconPanel);
+   o._hLabelPanel = RHtml.free(o._hLabelPanel);
+   o._hNotePanel = RHtml.free(o._hNotePanel);
+   o.__base.FUiControl.dispose.call(o);
 }

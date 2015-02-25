@@ -332,7 +332,7 @@ function FUiLayout_appendChild(ctl){
          ctl._hPanelLine = o._hPanelTable;
       }
       hCell.appendChild(ctl._hPanel);
-      ctl.hLayoutCell = hCell;
+      ctl._hLayoutCell = hCell;
       // 追加下一行
       if(!ctl.nowrap && (o.controls.last() != ctl)){
          o.innerAppendLine();
@@ -350,7 +350,7 @@ function FUiLayout_appendChild(ctl){
          var hc = RBuilder.appendTableCell(hr);
          hc.vAlign = 'top';
          hc.appendChild(ctl._hPanel);
-         ctl.hLayoutRow = hr;
+         ctl._hLayoutRow = hr;
          o._hPanelLast = hc;
          // 设置行高
          if(!RSet.contains(ctl._sizeCd, ESize.Vertical)){
@@ -376,10 +376,10 @@ function FUiLayout_appendChild(ctl){
          // 追加一个单元格
          var hc = RBuilder.appendTableCell(o._hPanelLine)
          // 追加一般控件
-         ctl.hLayoutRow = o._hPanelLine;
+         ctl._hLayoutRow = o._hPanelLine;
          o._hPanelLast = hc;
          hc.appendChild(ctl._hPanel);
-         ctl.hLayoutCell = hc;
+         ctl._hLayoutCell = hc;
          // 追加下一行
          if(!ctl.nowrap){
             o._hPanelLine = null;

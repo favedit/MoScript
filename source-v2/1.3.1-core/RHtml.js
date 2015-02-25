@@ -301,16 +301,16 @@ function RHtml_linkSet(h, n, v){
 // @param t:top:HtmlTag 顶层元素
 //==========================================================
 function RHtml_clientPosition(h, t){
+   var o = this;
    var p = o._clientPosition;
+   p.set(0, 0);
    while(h != t){
-      p.x += h.offsetLeft - h.scrollLeft;
-      p.y += h.offsetTop - h.scrollTop;
+      p.x += h.offsetLeft + h.clientLeft - h.scrollLeft;
+      p.y += h.offsetTop + h.clientTop - h.scrollTop;
       //if('absolute' != RHtml.currentStyle(h).position){
          //debugger;
          //break;
       //}
-      //p.x += h.clientLeft;
-      //p.y += h.clientTop;
       h = h.offsetParent;
    }
    return p;

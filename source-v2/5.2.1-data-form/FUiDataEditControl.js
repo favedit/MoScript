@@ -17,9 +17,9 @@
 // @author maocy
 // @version 150102
 //==========================================================
-function FUiEditControl(o){
-   //o = RClass.inherits(this, o, FUiControl, MEditDescriptor, , MDesign, MFocus, MDisplay, MProgress);
-   o = RClass.inherits(this, o, FUiControl, MDataField, MEditValue, MEditChange, MEditDrop);
+function FUiDataEditControl(o){
+   //o = RClass.inherits(this, o, FUiEditControl, MEditDescriptor, , MDesign, MFocus, MDisplay, MProgress);
+   o = RClass.inherits(this, o, FUiEditControl, MDataField, MEditValue, MEditChange, MEditDrop);
    //..........................................................
    // @property
    o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), ELabelMode.All);
@@ -62,50 +62,50 @@ function FUiEditControl(o){
    //o.hHintIcon       = null;
    //..........................................................
    // @event
-   //o.onDataDoubleClick = FUiEditControl_onDataDoubleClick;
-   //o.onDataKeyDown   = FUiEditControl_onDataKeyDown;
+   //o.onDataDoubleClick = FUiDataEditControl_onDataDoubleClick;
+   //o.onDataKeyDown   = FUiDataEditControl_onDataKeyDown;
    // @event
-   //o.onDesignBegin   = FUiEditControl_onDesignBegin;
-   //o.onDesignEnd     = FUiEditControl_onDesignEnd;
+   //o.onDesignBegin   = FUiDataEditControl_onDesignBegin;
+   //o.onDesignEnd     = FUiDataEditControl_onDesignEnd;
    // @event
-   o.onBuildLabelIcon  = FUiEditControl_onBuildLabelIcon;
-   o.onBuildLabelText  = FUiEditControl_onBuildLabelText;
-   o.onBuildLabel      = FUiEditControl_onBuildLabel;
+   o.onBuildLabelIcon  = FUiDataEditControl_onBuildLabelIcon;
+   o.onBuildLabelText  = FUiDataEditControl_onBuildLabelText;
+   o.onBuildLabel      = FUiDataEditControl_onBuildLabel;
    o.onBuildEditValue  = RMethod.virtual(o, 'onBuildEditValue');
-   o.onBuildEdit       = FUiEditControl_onBuildEdit;
-   o.onBuildPanel      = FUiEditControl_onBuildPanel;
-   o.onBuild           = FUiEditControl_onBuild;
+   o.onBuildEdit       = FUiDataEditControl_onBuildEdit;
+   o.onBuildPanel      = FUiDataEditControl_onBuildPanel;
+   o.onBuild           = FUiDataEditControl_onBuild;
    //..........................................................
    // @process
-   o.oeDataLoad        = FUiEditControl_oeDataLoad;
-   o.oeDataSave        = FUiEditControl_oeDataSave;
+   o.oeDataLoad        = FUiDataEditControl_oeDataLoad;
+   o.oeDataSave        = FUiDataEditControl_oeDataSave;
    // @process
-   o.oeDesign          = FUiEditControl_oeDesign;
-   o.oeMode            = FUiEditControl_oeMode;
-   //o.oeProgress      = FUiEditControl_oeProgress;
-   //o.oeLoadValue     = FUiEditControl_oeLoadValue;
-   //o.scalar          = FUiEditControl_scalar;
-   //o.onScalar        = FUiEditControl_onScalar;
+   o.oeDesign          = FUiDataEditControl_oeDesign;
+   o.oeMode            = FUiDataEditControl_oeMode;
+   //o.oeProgress      = FUiDataEditControl_oeProgress;
+   //o.oeLoadValue     = FUiDataEditControl_oeLoadValue;
+   //o.scalar          = FUiDataEditControl_scalar;
+   //o.onScalar        = FUiDataEditControl_onScalar;
    //..........................................................
    // @method
-   //o.doFocus         = FUiEditControl_doFocus;
-   //o.doBlur          = FUiEditControl_doBlur;
+   //o.doFocus         = FUiDataEditControl_doFocus;
+   //o.doBlur          = FUiDataEditControl_doBlur;
    //..........................................................
    // @method
-   o.construct         = FUiEditControl_construct;
+   o.construct         = FUiDataEditControl_construct;
    // @method
-   o.panel             = FUiEditControl_panel;
-   o.label             = FUiEditControl_label;
-   o.setLabel          = FUiEditControl_setLabel;
-   o.getValueRectangle = FUiEditControl_getValueRectangle;
-   //o.text            = FUiEditControl_text;
-   //o.setText         = FUiEditControl_setText;
-   //o.testFocus       = FUiEditControl_testFocus;
-   //o.setEditable     = FUiEditControl_setEditable;
-   //o.setVisible      = FUiEditControl_setVisible;
-   //o.focus           = FUiEditControl_focus;
-   //o.refreshStyle    = FUiEditControl_refreshStyle;
-   o.dispose           = FUiEditControl_dispose;
+   o.panel             = FUiDataEditControl_panel;
+   o.label             = FUiDataEditControl_label;
+   o.setLabel          = FUiDataEditControl_setLabel;
+   o.getEditRange    = FUiDataEditControl_getEditRange;
+   //o.text            = FUiDataEditControl_text;
+   //o.setText         = FUiDataEditControl_setText;
+   //o.testFocus       = FUiDataEditControl_testFocus;
+   //o.setEditable     = FUiDataEditControl_setEditable;
+   //o.setVisible      = FUiDataEditControl_setVisible;
+   //o.focus           = FUiDataEditControl_focus;
+   //o.refreshStyle    = FUiDataEditControl_refreshStyle;
+   o.dispose           = FUiDataEditControl_dispose;
    return o;
 }
 
@@ -115,10 +115,10 @@ function FUiEditControl(o){
 // @method
 // @param p:arguments:SArguments 参数集合
 //==========================================================
-function FUiEditControl_onBuildLabelIcon(p){
+function FUiDataEditControl_onBuildLabelIcon(p){
    var o = this;
    if(o._labelIcon){
-      o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, o._labelIcon);
+      o._hIcon = RBuilder.appendIcon(o._hIconPanel, o._labelIcon);
    }
 }
 
@@ -128,7 +128,7 @@ function FUiEditControl_onBuildLabelIcon(p){
 // @method
 // @param p:arguments:SArguments 参数集合
 //==========================================================
-function FUiEditControl_onBuildLabelText(p){
+function FUiDataEditControl_onBuildLabelText(p){
    var o = this;
    o._hText = RBuilder.appendSpan(o._hTextPanel, null, o._label);
 }
@@ -139,7 +139,7 @@ function FUiEditControl_onBuildLabelText(p){
 // @method
 // @param p:arguments:SArguments 参数集合
 //==========================================================
-function FUiEditControl_onBuildLabel(p){
+function FUiDataEditControl_onBuildLabel(p){
    var o = this;
    var h = o._hLabelForm = RBuilder.appendTable(o._hLabelPanel, o.styleName('LabelPanel'));
    var hr = RBuilder.appendTableRow(h);
@@ -169,7 +169,7 @@ function FUiEditControl_onBuildLabel(p){
 // @method
 // @param p:arguments:SArguments 参数集合
 //==========================================================
-function FUiEditControl_onBuildEdit(p){
+function FUiDataEditControl_onBuildEdit(p){
    var o = this;
    /// 建立控件表格
    var h = o._hEditForm = RBuilder.appendTable(o._hEditPanel, o.styleName('EditPanel'));
@@ -189,8 +189,8 @@ function FUiEditControl_onBuildEdit(p){
    //hccc.align = 'center';
    //var hCk1 = o.hRight = document.createElement('IMG');
    //var hCk2 = o.hError = document.createElement('IMG');
-   //hCk1.src = o.styleIconPath('Right', FUiEditControl);
-   //hCk2.src = o.styleIconPath('Error', FUiEditControl);
+   //hCk1.src = o.styleIconPath('Right', FUiDataEditControl);
+   //hCk2.src = o.styleIconPath('Error', FUiDataEditControl);
    //hccc.appendChild(hCk1);
    //hccc.appendChild(hCk2);
    //hCk2.style.padding = 10;
@@ -238,7 +238,7 @@ function FUiEditControl_onBuildEdit(p){
 // @method
 // @param p:arguments:SArguments 参数集合
 //==========================================================
-function FUiEditControl_onBuildPanel(p){
+function FUiDataEditControl_onBuildPanel(p){
    var o = this;
    o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
 }
@@ -249,7 +249,7 @@ function FUiEditControl_onBuildPanel(p){
 // @method
 // @param p:argements:SArgements 参数集合
 //==========================================================
-function FUiEditControl_onBuild(p){
+function FUiDataEditControl_onBuild(p){
    var o = this;
    // 处理宽度小于标签宽度和编辑框宽度的情况，将宽度值设置为空
    //if(o.labelWidth && o.editWidth && o.width){
@@ -258,7 +258,7 @@ function FUiEditControl_onBuild(p){
    //   }
    //}
    // 建立控件
-   o.__base.FUiControl.onBuild.call(o, p);
+   o.__base.FUiEditControl.onBuild.call(o, p);
    var hc = o._hPanel;
    //..........................................................
    // 建立标签和控件区域
@@ -319,23 +319,21 @@ function FUiEditControl_onBuild(p){
    }
 }
 
+
+
 //==========================================================
 // <T>获得编辑区大小。</T>
 //
 // @method
-// @param r:rectangle:SRectangle 矩形
-// @return SRectangle 矩形
+// @return TRange 范围对象
 //==========================================================
-function FUiEditControl_getValueRectangle(r){
+function FUiDataEditControl_getEditRange(){
    var o = this;
-   if(!r){
-      r = new SRectangle();
-   }
-   var h = o._hValuePanel;
-   var p = RHtml.clientPosition(h);
-   r.position.assign(p);
-   r.setSize(h.offsetWidth, h.offsetHeight);
-   return r;
+   var hc = o.hEditCell;
+   var p = RHtml.offsetPosition(hc);
+   var w = hc.offsetWidth;
+   var h = hc.offsetHeight;
+   return new TRange(p.x, p.y, w, h);
 }
 
 
@@ -355,7 +353,7 @@ function FUiEditControl_getValueRectangle(r){
 //@method
 //@param v:value:String 数据
 //==========================================================
-function FUiEditControl_onScalar(g){
+function FUiDataEditControl_onScalar(g){
    var o = this;
    o.set(g.result);
 }
@@ -363,10 +361,10 @@ function FUiEditControl_onScalar(g){
 //==========================================================
 //<T>响应焦点失去的操作。</T>
 //
-//@param s:sender:FUiControl 源控件
+//@param s:sender:FUiEditControl 源控件
 //@param e:event:HBlur 事件对象
 //==========================================================
-function FUiEditControl_scalar(a){
+function FUiDataEditControl_scalar(a){
    var o = this;
    var g = new TDatasetScalarArg(o, null, a);
    g.callback = new TInvoke(o, o.onScalar);
@@ -379,7 +377,7 @@ function FUiEditControl_scalar(a){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FUiEditControl_onDataDoubleClick(){
+function FUiDataEditControl_onDataDoubleClick(){
    var o = this;
    // 展开下拉菜单
    if(RClass.isClass(o, MDropable)){
@@ -397,7 +395,7 @@ function FUiEditControl_onDataDoubleClick(){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FUiEditControl_onDataKeyDown(s, e){
+function FUiDataEditControl_onDataKeyDown(s, e){
    var o = this;
    o.__base.MEditDescriptor.onDataKeyDown.call(o, s, e);
    // 设置修改图标
@@ -432,7 +430,7 @@ function FUiEditControl_onDataKeyDown(s, e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FUiEditControl_onDesignBegin(){
+function FUiDataEditControl_onDesignBegin(){
    var o = this;
    o.__base.MDesign.onDesignBegin.call(o);
    o._disbaled = true;
@@ -445,7 +443,7 @@ function FUiEditControl_onDesignBegin(){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FUiEditControl_onDesignEnd(){
+function FUiDataEditControl_onDesignEnd(){
    var o = this;
    o.__base.MDesign.onDesignEnd.call(o);
    o._disbaled = false;
@@ -458,7 +456,7 @@ function FUiEditControl_onDesignEnd(){
 // @method
 // @param p:dataSource:FDataSource 数据源
 //==========================================================
-function FUiEditControl_oeDataLoad(p){
+function FUiDataEditControl_oeDataLoad(p){
    var o = this;
    var ds = p.source;
    var r = ds.currentRow();
@@ -473,7 +471,7 @@ function FUiEditControl_oeDataLoad(p){
 // @method
 // @param p:dataSource:FDataSource 数据源
 //==========================================================
-function FUiEditControl_oeDataSave(p){
+function FUiDataEditControl_oeDataSave(p){
    var o = this;
    var ds = p.source;
    var r = ds.currentRow();
@@ -489,7 +487,7 @@ function FUiEditControl_oeDataSave(p){
 // @param p:event:TEventProcess 处理事件
 // @return EEventStatus 处理状态
 //==========================================================
-function FUiEditControl_oeDesign(p){
+function FUiDataEditControl_oeDesign(p){
    var o = this;
    o.__base.MDesign.oeDesign.call(o, e);
    var hlf = o.hLabelForm;
@@ -549,9 +547,9 @@ function FUiEditControl_oeDesign(p){
 // @param p:event:TEventProcess 处理事件
 // @return EEventStatus 处理状态
 //==========================================================
-function FUiEditControl_oeMode(e){
+function FUiDataEditControl_oeMode(e){
    var o = this;
-   o.__base.FUiControl.oeMode.call(o, e);
+   o.__base.FUiEditControl.oeMode.call(o, e);
    o.__base.MDisplay.oeMode.call(o, e);
    // 根据工作模式获得设置信息
    o._editable = o.canEdit(e.mode);
@@ -571,7 +569,7 @@ function FUiEditControl_oeMode(e){
 // @param p:event:TEventProcess 处理事件
 // @return EEventStatus 处理状态
 //==========================================================
-function FUiEditControl_oeProgress(e){
+function FUiDataEditControl_oeProgress(e){
    var o = this;
    // 加载中不做处理
    if(o._progress && e.enable){
@@ -596,7 +594,7 @@ function FUiEditControl_oeProgress(e){
 // @param p:event:TEventProcess 处理事件
 // @return EEventStatus 处理状态
 //==========================================================
-function FUiEditControl_oeLoadValue(e){
+function FUiDataEditControl_oeLoadValue(e){
    var o = this;
    var r = o.__base.MEditValue.oeLoadValue.call(o, e);
    // 设置修改标志为不显示
@@ -613,7 +611,7 @@ function FUiEditControl_oeLoadValue(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FUiEditControl_doFocus(e){
+function FUiDataEditControl_doFocus(e){
    var o = this;
    o.__base.MFocus.doFocus.call(o, e);
    o.__base.MEditValue.doFocus.call(o, e);
@@ -625,7 +623,7 @@ function FUiEditControl_doFocus(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FUiEditControl_doBlur(e){
+function FUiDataEditControl_doBlur(e){
    var o = this;
    o.__base.MFocus.doBlur.call(o, e);
    o.__base.MEditValue.doBlur.call(o, e);
@@ -636,10 +634,10 @@ function FUiEditControl_doBlur(e){
 //
 // @method
 //==========================================================
-function FUiEditControl_construct(){
+function FUiDataEditControl_construct(){
    var o = this;
    // 父处理
-   o.__base.FUiControl.construct.call(o);
+   o.__base.FUiEditControl.construct.call(o);
    o.__base.MEditChange.construct.call(o);
    o.__base.MEditDrop.construct.call(o);
    // 设置属性
@@ -654,14 +652,14 @@ function FUiEditControl_construct(){
 // @param t:type:EPanel 类型
 // @return HtmlTag 页面元素
 //==========================================================
-function FUiEditControl_panel(t){
+function FUiDataEditControl_panel(t){
    var o = this;
    if(EPanel.Edit == t){
       return o.hEdit;
    }else if(EPanel.Focus == t){
       return o.hEdit;
    }
-   return o.__base.FUiControl.panel.call(o, t);
+   return o.__base.FUiEditControl.panel.call(o, t);
 }
 
 //==========================================================
@@ -670,7 +668,7 @@ function FUiEditControl_panel(t){
 // @method
 // @return String 标签内容
 //==========================================================
-function FUiEditControl_label(p){
+function FUiDataEditControl_label(p){
    return this._label;
 }
 
@@ -680,7 +678,7 @@ function FUiEditControl_label(p){
 // @method
 // @param p:value:String 标签内容
 //==========================================================
-function FUiEditControl_setLabel(p){
+function FUiDataEditControl_setLabel(p){
    var o = this;
    o._label = p;
    if(o._hText){
@@ -694,7 +692,7 @@ function FUiEditControl_setLabel(p){
 // @method
 // @return Boolean 是否可以获得焦点
 //==========================================================
-function FUiEditControl_testFocus(){
+function FUiDataEditControl_testFocus(){
    return this._visible && this._editable && !this._disbaled;
 }
 
@@ -704,7 +702,7 @@ function FUiEditControl_testFocus(){
 // @method
 // @return String 显示内容
 //==========================================================
-function FUiEditControl_text(){
+function FUiDataEditControl_text(){
    return this.hEdit ? this.hEdit.value : '';
 }
 
@@ -714,7 +712,7 @@ function FUiEditControl_text(){
 // @method
 // @param t:text:String 显示内容
 //==========================================================
-function FUiEditControl_setText(t){
+function FUiDataEditControl_setText(t){
    this.hEdit.value = t;
 }
 
@@ -724,7 +722,7 @@ function FUiEditControl_setText(t){
 // @method
 // @param v:value:Boolean 可编辑性
 //==========================================================
-function FUiEditControl_setEditable(v){
+function FUiDataEditControl_setEditable(v){
    var o = this;
    o.__base.MEditValue.setEditable.call(o, v);
    if(o.hEdit){
@@ -751,9 +749,9 @@ function FUiEditControl_setEditable(v){
 // @method
 // @param v:visible:Boolean 是否显示
 //==========================================================
-function FUiEditControl_setVisible(v){
+function FUiDataEditControl_setVisible(v){
    var o = this;
-   o.__base.FUiControl.setVisible.call(o, v);
+   o.__base.FUiEditControl.setVisible.call(o, v);
    o.refreshStyle();
 }
 
@@ -762,7 +760,7 @@ function FUiEditControl_setVisible(v){
 //
 // @method
 //==========================================================
-function FUiEditControl_focus(){
+function FUiDataEditControl_focus(){
    var o = this;
    o.__base.MFocus.focus.call(o);
    if(o.hEdit){
@@ -780,7 +778,7 @@ function FUiEditControl_focus(){
 //
 // @method
 //==========================================================
-function FUiEditControl_refreshStyle(){
+function FUiDataEditControl_refreshStyle(){
    var o = this;
    // 检查可见性
    if(!o._visible){
@@ -843,7 +841,7 @@ function FUiEditControl_refreshStyle(){
 //
 // @method
 //==========================================================
-function FUiEditControl_dispose(){
+function FUiDataEditControl_dispose(){
    var o = this;
    // 释放属性
    o._labelModeCd = null;
@@ -885,5 +883,5 @@ function FUiEditControl_dispose(){
    // 父处理
    o.__base.MEditDrop.dispose.call(o);
    o.__base.MEditChange.dispose.call(o);
-   o.__base.FUiControl.dispose.call(o);
+   o.__base.FUiEditControl.dispose.call(o);
 }

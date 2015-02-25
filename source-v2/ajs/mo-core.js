@@ -5713,6 +5713,7 @@ var RValue = new function RValue(){
    o.double16  = null;
    o.double64  = null;
    o.vector3   = null;
+   o.rectangle = null;
    o.matrix    = null;
    o.construct = RValue_construct;
    o.construct();
@@ -5737,6 +5738,7 @@ function RValue_construct(){
       o.double16 = new Float64Array(16);
    }
    o.vector3 = new SVector3();
+   o.rectangle = new SRectangle();
    o.matrix = new SMatrix3d();
 }
 function SColor4(o){
@@ -7630,23 +7632,71 @@ function SRange_dump(d){
    d.append(' [', o.x, ',', o.y, '-', o.width, ',', o.height, '] ');
    return d;
 }
-function SRectangle(o){
-   if(!o){o = this;}
-   o.position  = new SPoint2();
-   o.size      = new SSize2();
-   o.set       = SRectangle_set;
-   o.assign    = SRectangle_assign;
+function SRectangle(){
+   var o = this;
+   o.position    = new SPoint2();
+   o.size        = new SSize2();
+   o.left        = SRectangle_left;
+   o.top         = SRectangle_top;
+   o.right       = SRectangle_right;
+   o.bottom      = SRectangle_bottom;
+   o.width       = SRectangle_width;
+   o.height      = SRectangle_height;
+   o.assign      = SRectangle_assign;
+   o.setPosition = SRectangle_setPosition;
+   o.setSize     = SRectangle_setSize;
+   o.set         = SRectangle_set;
+   o.toString    = SRectangle_toString;
+   o.dispose     = SRectangle_dispose;
+   o.dump        = SRectangle_dump;
    return o;
+}
+function SRectangle_left(){
+   return this.position.x;
+}
+function SRectangle_top(){
+   return this.position.y;
+}
+function SRectangle_right(){
+   return this.position.x + this.size.width;
+}
+function SRectangle_bottom(){
+   return this.position.y + this.size.height;
+}
+function SRectangle_width(){
+   return this.size.width;
+}
+function SRectangle_height(){
+   return this.size.height;
 }
 function SRectangle_assign(p){
    var o = this;
    o.position.assign(p.position);
    o.size.assign(p.size);
 }
+function SRectangle_setPosition(l, t, w, h){
+   this.position.set(l, t);
+}
+function SRectangle_setSize(w, h){
+   this.size.set(w, h);
+}
 function SRectangle_set(l, t, w, h){
    var o = this;
    o.position.set(l, t);
    o.size.set(w, h);
+}
+function SRectangle_toString(){
+   var o = this;
+   return o.position.x + ',' + o.position.y + ',' + o.size.width + ',' + o.size.height;
+}
+function SRectangle_dispose(){
+   var o = this;
+   o.position = o.position.dispose();
+   o.size = o.size.dispose();
+}
+function SRectangle_dump(){
+   var o = this;
+   return RClass.dump(o) + ' [' + o.position.x + ',' + o.position.y + '-' + o.size.width + ',' + o.size.height + ']';
 }
 function SSize2(w, h){
    var o = this;
@@ -8496,7 +8546,11 @@ var EEvent = new function EEvent(){
    o.Leave       = 3;
    o.Focus       = 4;
    o.Blur        = 5;
-   o.DataChanged = 6;
+   o.Click       = 6;
+   o.DoubleClick = 7;
+   o.ItemClick   = 8;
+   o.Selected    = 9;
+   o.DataChanged = 10;
    return o;
 }
 var EHttpContent = new function EHttpContent(){
@@ -10201,10 +10255,12 @@ function RHtml_linkSet(h, n, v){
    i.set(n, v);
 }
 function RHtml_clientPosition(h, t){
+   var o = this;
    var p = o._clientPosition;
+   p.set(0, 0);
    while(h != t){
-      p.x += h.offsetLeft - h.scrollLeft;
-      p.y += h.offsetTop - h.scrollTop;
+      p.x += h.offsetLeft + h.clientLeft - h.scrollLeft;
+      p.y += h.offsetTop + h.clientTop - h.scrollTop;
       h = h.offsetParent;
    }
    return p;

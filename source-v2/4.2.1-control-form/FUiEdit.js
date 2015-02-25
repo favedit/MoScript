@@ -1,6 +1,15 @@
 //==========================================================
 // <T>文本编辑框。</T>
 //
+//  hValuePanel<TD>
+//  hValueForm<TABLE>
+// ┌-----------------┬----------------------┐
+// │hChangePanel<TD> │ hInputPanel<TD>      │hValueLine<TR>
+// │hChangeIcon<IMG> │┌------------------┐│
+// │                 ││hInput<INPUT>     ││
+// │                 │└------------------┘│
+// └-----------------┴----------------------┘
+//
 // @class
 // @author maocy
 // @version 150102
@@ -17,6 +26,9 @@ function FUiEdit(o){
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
    //..........................................................
    // @html
+   o._hValueForm      = null;
+   o._hValueLine      = null;
+   o._hInputPanel     = null;
    o._hInput          = null;
    //..........................................................
    // @event
@@ -96,10 +108,7 @@ function FUiEdit_get(){
    var o = this;
    var r = o.__base.FUiEditControl.get.call(o);
    // 获得显示
-   var h = o._hInput;
-   if(h){
-      r = h.value;
-   }
+   var r = o._hInput.value;
    return r;
 }
 
@@ -113,10 +122,7 @@ function FUiEdit_set(p){
    var o = this;
    o.__base.FUiEditControl.set.call(o, p);
    // 设置显示
-   var h = o._hInput;
-   if(h){
-      h.value = RString.nvl(p);
-   }
+   o._hInput.value = RString.nvl(p);
    //o.finded = v;
    //if(o.hChangeIcon){
    //   o.hChangeIcon.style.display = 'none';

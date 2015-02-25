@@ -1,5 +1,5 @@
 //==========================================================
-// <T>点击监听器接口。</T>
+// <T>单击监听器接口。</T>
 //
 // @console
 // @author maocy
@@ -10,12 +10,13 @@ function MListenerClick(o){
    //..........................................................
    // @method
    o.addClickListener     = MListenerClick_addClickListener;
+   o.removeClickListener  = MListenerClick_removeClickListener;
    o.processClickListener = MListenerClick_processClickListener;
    return o;
 }
 
 //==========================================================
-// <T>注册一个点击监听器。</T>
+// <T>增加一个单击监听器。</T>
 //
 // @method
 // @param w:owner:String 拥有者
@@ -26,7 +27,18 @@ function MListenerClick_addClickListener(w, m){
 }
 
 //==========================================================
-// <T>点击监听处理。</T>
+// <T>移除一个单击监听器。</T>
+//
+// @method
+// @param w:owner:String 拥有者
+// @param m:method:Function 函数
+//==========================================================
+function MListenerClick_removeClickListener(w, m){
+   return this.removeListener(EEvent.Click, w, m);
+}
+
+//==========================================================
+// <T>单击监听处理。</T>
 //
 // @method
 // @param p1:parameter1:Object 参数1

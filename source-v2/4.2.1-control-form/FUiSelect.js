@@ -1,25 +1,52 @@
 //==========================================================
 // <T>下拉选择框。</T>
 //
+//  hValuePanel<TD>
+//  hValueForm<TABLE>
+// ┌-----------------┬----------------------┬-----------------┐
+// │hChangePanel<TD> │ hInputPanel<TD>      │ hDropPanel<TD>  │hValueLine<TR>
+// │hChangeIcon<IMG> │┌------------------┐│┌-------------┐│
+// │                 ││hInput<INPUT>     │││hDrop<IMG>   ││
+// │                 │└------------------┘│└-------------┘│
+// └-----------------┴----------------------┴-----------------┘
+//
 // @class
 // @author maocy
 // @version 150224
 //==========================================================
 function FUiSelect(o){
-   //o = RClass.inherits(this, o, FUiEditControl, MDescSelect, MDropable);
-   o = RClass.inherits(this, o, FUiEditControl);
+   o = RClass.inherits(this, o, FUiEditControl, MContainer, MPropertySelect, MDropable);
    //..........................................................
    // @style
    o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
    //..........................................................
+   // @html
+   o._hValueForm      = null;
+   o._hValueLine      = null;
+   o._hInputPanel     = null;
+   o._hInput          = null;
+   //..........................................................
    // @event
    o.onBuildEditValue = FUiSelect_onBuildEditValue;
+   o.onDoubleClick    = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FUiSelect_onDropClick);
    o.onDropClick      = FUiSelect_onDropClick;
    //..........................................................
    // @method
    o.construct        = FUiSelect_construct;
+   // @method
+   o.formatValue      = FUiSelect_formatValue;
+   o.formatDisplay    = FUiSelect_formatDisplay;
+   o.get              = FUiSelect_get;
+   o.set              = FUiSelect_set;
+   o.findItemByLabel  = FUiSelect_findItemByLabel;
+   o.findItemByData   = FUiSelect_findItemByData;
+   o.selectItem       = FUiSelect_selectItem;
+   o.refreshValue     = FUiSelect_refreshValue;
+   // @method
    o.drop             = FUiSelect_drop;
+   // @method
+   o.dispose          = FUiSelect_dispose;
 
    //..........................................................
    // @attribute
@@ -31,13 +58,9 @@ function FUiSelect(o){
    //o.onDataKeyDown = FUiSelect_onDataKeyDown;
    //o.onDataClick   = FUiSelect_onDataClick;
    //o.onEditEnd     = FUiSelect_onEditEnd;
-   //o.onBuildEdit   = FUiSelect_onBuildEdit;
    //o.loadConfig    = FUiSelect_loadConfig;
-   //o.formatValue   = FUiSelect_formatValue;
-   //o.formatText    = FUiSelect_formatText;
    //o.refreshStyle  = FUiSelect_refreshStyle;
    //o.doBlur        = FUiSelect_doBlur;
-   //o.dispose       = FUiSelect_dispose;
    return o;
 }
 
@@ -62,6 +85,7 @@ function FUiSelect_onBuildEditValue(p){
    // 建立输入栏
    var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
    var he = o._hInput = RBuilder.appendEdit(hep, o.styleName('Input'));
+   o.attachEvent('onDoubleClick', he);
    //o.attachEvent('onInputEdit', he, o.onInputEdit);
    // 设置大小
    //RHtml.setSize(hep, o._inputSize);
@@ -100,6 +124,143 @@ function FUiSelect_construct(){
 }
 
 //==========================================================
+// <T>格式化内容为数据。</T>
+//
+// @method
+// @param p:text:String 内容
+//==========================================================
+function FUiSelect_formatValue(p){
+   var o = this;
+   var cs = o._components;
+   if(cs){
+      for(var i = cs.count() - 1; i >= 0; i--){
+         var c = cs.value(i);
+         if(c._label == p){
+            return c._dataValue;
+         }
+      }
+   }
+   return null;
+}
+
+//==========================================================
+// <T>格式化数据为内容。</T>
+//
+// @method
+// @param p:value:String 数据
+//==========================================================
+function FUiSelect_formatDisplay(p){
+   var o = this;
+   var cs = o._components;
+   if(cs){
+      for(var i = cs.count() - 1; i >= 0; i--){
+         var c = cs.value(i);
+         if(c._dataValue == p){
+            return c._label;
+         }
+      }
+   }
+   return null;
+}
+
+//==========================================================
+// <T>获得数据。</T>
+//
+// @method
+// @return String 数据
+//==========================================================
+function FUiSelect_get(){
+   var o = this;
+   // 获得文本
+   var s = o._hInput.value;
+   // 获得内容
+   var v = o.formatValue(s);
+   return v;
+}
+
+//==========================================================
+// <T>设置数据。</T>
+//
+// @method
+// @param p:value:String 数据
+//==========================================================
+function FUiSelect_set(p){
+   var o = this;
+   o.__base.FUiEditControl.set.call(o, p);
+   // 设置显示
+   o._hInput.value = RString.nvl(p);
+   //o.finded = v;
+   //if(o.hChangeIcon){
+   //   o.hChangeIcon.style.display = 'none';
+   //}
+}
+
+//==========================================================
+// <T>根据项目名称查找项目。</T>
+//
+// @method
+// @param p:label:String 项目名称
+// @return FUiSelectItem 项目
+//==========================================================
+function FUiSelect_findItemByLabel(p){
+   var o = this;
+   var cs = o._components;
+   if(cs){
+      for(var i = cs.count() - 1; i >= 0; i--){
+         var c = cs.value(i);
+         if(c._label == p){
+            return c;
+         }
+      }
+   }
+   return null;
+}
+
+//==========================================================
+// <T>根据项目数据查找项目。</T>
+//
+// @method
+// @param p:dataValue:String 项目数据
+// @return FUiSelectItem 项目
+//==========================================================
+function FUiSelect_findItemByData(p){
+   var o = this;
+   var cs = o._components;
+   if(cs){
+      for(var i = cs.count() - 1; i >= 0; i--){
+         var c = cs.value(i);
+         if(c._dataValue == p){
+            return c;
+         }
+      }
+   }
+   return null;
+}
+
+//==========================================================
+// <T>设置数据。</T>
+//
+// @method
+// @param p:value:String 数据
+//==========================================================
+function FUiSelect_selectItem(p){
+   var o = this;
+   // 设置显示
+   o._hInput.value = p.label();
+}
+
+//==========================================================
+// <T>刷新数据。</T>
+//
+// @method
+//==========================================================
+function FUiSelect_refreshValue(){
+   var o = this;
+   // 内容改变通知
+   o.processDataChangedListener(o);
+}
+
+//==========================================================
 // <T>下拉操作。</T>
 //
 // @method
@@ -120,14 +281,24 @@ function FUiSelect_drop(){
          //ed.set(o.reget());
       }else{
          // 直接建立
-         //e.__source = o;
-         //e.setItems(o.items);
-         //e.set(o.reget());
+         e.buildItems(o);
+         e.set(o.get());
       }
       //e.lsnEditEnd = o.lsnEditEnd;
       e.show();
    //}
 }
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FUiSelect_dispose(){
+   var o = this;
+   o.__base.FUiEditControl.dispose.call(o);
+}
+
 
 
 
@@ -187,30 +358,6 @@ function FUiSelect_onEditEnd(e){
 }
 
 //==========================================================
-// <T>建立编辑框。</T>
-//
-// @method
-// @param b:border:TBorder 边框
-//==========================================================
-function FUiSelect_onBuildEdit(b){
-   var o = this;
-   // 建立编辑控件
-   var hf = RBuilder.appendTable(b.hPanel);
-   hf.style.tableLayout = 'fixed';
-   var hr = hf.insertRow(-1);
-   // 建立修改标志
-   o.onBuildChange(hr.insertCell(-1))
-   // 建立编辑控件
-   var hc = hr.insertCell(-1);
-   var se = o.style('Edit')
-   var he = o.hEdit = RBuilder.appendEdit(hc, o.style('Edit'));
-   // 设置可以输入的最大长度
-   if(o.editLength){
-      he.maxLength = o.editLength;
-   }
-}
-
-//==========================================================
 // <T>加载设置。</T>
 //
 // @method
@@ -242,39 +389,6 @@ function FUiSelect_loadConfig(c){
 }
 
 //==========================================================
-// <T>格式化内容为数据。</T>
-//
-// @method
-// @param t:text:String 内容
-//==========================================================
-function FUiSelect_formatValue(t){
-   var o = this;
-   if(RBoolean.isTrue(o.editCheck)){
-      var v = o.items.value(t);
-      if(v){
-         return v;
-      }else{
-         return RString.nvl(t);
-      }
-   }
-   return o.items.value(t);
-}
-
-//==========================================================
-// <T>格式化数据为内容。</T>
-//
-// @method
-// @param v:value:String 数据
-//==========================================================
-function FUiSelect_formatText(v){
-   var o = this;
-   if(RBoolean.isTrue(o.editCheck) && RString.isEmpty(o.items.label(v))){
-      return v;
-   }
-   return o.items.label(v);
-}
-
-//==========================================================
 // <T>设置编辑样式。</T>
 //
 // @method
@@ -301,14 +415,4 @@ function FUiSelect_doBlur(){
    if(o._editor){
       o._editor.hide();
    }
-}
-
-//==========================================================
-// <T>释放对象。</T>
-//
-// @method
-//==========================================================
-function FUiSelect_dispose(){
-   var o = this;
-   o.__base.FUiEditControl.dispose.call(o);
 }

@@ -1,34 +1,34 @@
 //==========================================================
-// <T>可下拉接口。</T>
+// <T>下拉接口。</T>
 //
 // @face
 // @author maocy
-// @version 150102
+// @version 150225
 //==========================================================
 function MDropable(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @style
-   o._styleDrop         = RClass.register(o, new AStyle('Drop'));
-   o._styleIconDrop     = RClass.register(o, new AStyleIcon('Drop'));
+   //o._styleDrop         = RClass.register(o, new AStyle('Drop'));
+   //o._styleIconDrop     = RClass.register(o, new AStyleIcon('Drop'));
    //..........................................................
    // @html
    // @html <TD> 下拉面板
-   o._hDropPanel        = null;
+   //o._hDropPanel        = null;
    // @html <TD> 下拉图标
-   o._hDrop             = null;
+   //o._hDrop             = null;
    //..........................................................
    // @event
-   o.onDropEnter       = RClass.register(o, new HMouseEnter('onDropEnter'));
-   o.onDropLeave       = RClass.register(o, new HMouseLeave('onDropLeave'));
-   o.onDropClick       = RClass.register(o, new HMouseDown('onDropClick'), MDropable_onDropClick);
-   o.onDropDoubleClick = RClass.register(o, new HDoubleClick('onDropDoubleClick'), MDropable_onDropDoubleClick);
+   //o.onDropEnter       = RClass.register(o, new AEventMouseEnter('onDropEnter'));
+   //o.onDropLeave       = RClass.register(o, new AEventMouseLeave('onDropLeave'));
+   //o.onDropClick       = RClass.register(o, new AEventMouseDown('onDropClick'), MDropable_onDropClick);
+   //o.onDropDoubleClick = RClass.register(o, new AEventDoubleClick('onDropDoubleClick'), MDropable_onDropDoubleClick);
    // @event
-   o.onBuildDrop       = MDropable_onBuildDrop;
+   //o.onBuildDrop       = MDropable_onBuildDrop;
    //..........................................................
    // Method
-   o.canDrop           = MDropable_canDrop;
-   o.drop              = RMethod.virtual(o, 'drop');
+   //o.canDrop           = MDropable_canDrop;
+   //o.drop              = RMethod.virtual(o, 'drop');
    return o;
 }
 // ------------------------------------------------------------

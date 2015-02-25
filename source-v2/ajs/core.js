@@ -412,7 +412,11 @@ var EEvent = new function EEvent(){
    o.Leave       = 3;
    o.Focus       = 4;
    o.Blur        = 5;
-   o.DataChanged = 6;
+   o.Click       = 6;
+   o.DoubleClick = 7;
+   o.ItemClick   = 8;
+   o.Selected    = 9;
+   o.DataChanged = 10;
    return o;
 }
 var EHttpContent = new function EHttpContent(){
@@ -2117,10 +2121,12 @@ function RHtml_linkSet(h, n, v){
    i.set(n, v);
 }
 function RHtml_clientPosition(h, t){
+   var o = this;
    var p = o._clientPosition;
+   p.set(0, 0);
    while(h != t){
-      p.x += h.offsetLeft - h.scrollLeft;
-      p.y += h.offsetTop - h.scrollTop;
+      p.x += h.offsetLeft + h.clientLeft - h.scrollLeft;
+      p.y += h.offsetTop + h.clientTop - h.scrollTop;
       h = h.offsetParent;
    }
    return p;

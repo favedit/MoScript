@@ -237,12 +237,12 @@ function FFocusConsole(o){
    o.lsnsFocus          = null;
    o.lsnsBlur           = null;
    o.lsnsFocusClass     = null;
-   o.onWindowMouseDown  = FFocusConsole_onWindowMouseDown;
-   o.onWindowMouseWheel = FFocusConsole_onWindowMouseWheel;
+   o.onMouseDown        = FFocusConsole_onMouseDown;
+   o.onMouseWheel       = FFocusConsole_onMouseWheel;
    o.construct          = FFocusConsole_construct;
-   o.isFocus            = FFocusConsole_isFocus;
    o.enter              = FFocusConsole_enter;
    o.leave              = FFocusConsole_leave;
+   o.isFocus            = FFocusConsole_isFocus;
    o.focus              = FFocusConsole_focus;
    o.blur               = FFocusConsole_blur;
    o.findClass          = FFocusConsole_findClass;
@@ -255,15 +255,11 @@ function FFocusConsole(o){
    o.dispose            = FFocusConsole_dispose;
    return o;
 }
-function FFocusConsole_onWindowMouseDown(s, e){
-   this.focusHtml(e);
+function FFocusConsole_onMouseDown(p){
+   this.focusHtml(p.hSource);
 }
-function FFocusConsole_onWindowMouseWheel(s, e){
+function FFocusConsole_onMouseWheel(s, e){
    var o = this;
-   var c = this._focusControl;
-   if(RClass.isClass(c, MMouseWheel)){
-      c.onMouseWheel(s, e);
-   }
 }
 function FFocusConsole_construct(){
    var o = this;
@@ -273,9 +269,8 @@ function FFocusConsole_construct(){
    o.lsnsBlur = new TListeners();
    o.lsnsFocusClass = new TListeners();
    RLogger.info(o, 'Add listener for window mouse down and wheel.');
-}
-function FFocusConsole_isFocus(c){
-   return (this._focusControl == c);
+   RWindow.lsnsMouseDown.register(o, o.onMouseDown);
+   RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
 }
 function FFocusConsole_enter(c){
    var o = this;
@@ -293,6 +288,9 @@ function FFocusConsole_leave(c){
    if(o._hoverControl == c){
       o._hoverControl = null;
    }
+}
+function FFocusConsole_isFocus(c){
+   return (this._focusControl == c);
 }
 function FFocusConsole_focus(c, e){
    var o = this;
@@ -360,16 +358,16 @@ function FFocusConsole_focusClass(c, p){
       o.lsnsFocusClass.process(p, c);
    }
 }
-function FFocusConsole_focusHtml(he){
+function FFocusConsole_focusHtml(p){
    var o = this;
-   var c = RControl.htmlControl(he.srcElement);
-   RLogger.debug(o, 'Focus html control. (control={1},element={2})', RClass.dump(c), he.srcElement.tagName);
+   var c = RHtml.searchLinker(p, FUiControl);
+   RLogger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
    if(c){
       if(o._focusControl != c){
-         o.blur(c, he);
+         o.blur(c, p);
       }
    }else{
-      o.blur(null, he);
+      o.blur(null, p);
    }
 }
 function FFocusConsole_lockBlur(){

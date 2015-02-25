@@ -8,34 +8,26 @@ function FUiContainer(o){
    o = RClass.inherits(this, o, FUiControl, MContainer);
    //..........................................................
    // @attributes
-   o._controls         = null;
+   o._controls           = null;
    //..........................................................
    // @process
-   o.oeDesign          = RMethod.empty;
+   o.oeDesign            = RMethod.empty;
    //..........................................................
    // @method
-   o.construct         = FUiContainer_construct;
+   o.construct           = FUiContainer_construct;
    // @method
-   o.hasControl        = FUiContainer_hasControl;
-   o.findControl       = FUiContainer_findControl;
-   o.searchControl     = FUiContainer_searchControl;
-   o.controls          = FUiContainer_controls;
-   o.panel             = FUiContainer_panel;
-   o.focusFirstControl = FUiContainer_focusFirstControl;
-   // @method
-   o.createChild       = FUiContainer_createChild;
-   o.appendChild       = FUiContainer_appendChild;
-   o.push              = FUiContainer_push;
-   // @method
-   o.dispose           = FUiContainer_dispose;
-
-
-
-   //..........................................................
-   // @method
+   o.hasControl          = FUiContainer_hasControl;
+   o.findControl         = FUiContainer_findControl;
+   o.searchControl       = FUiContainer_searchControl;
+   o.controls            = FUiContainer_controls;
+   o.panel               = FUiContainer_panel;
+   o.focusFirstControl   = FUiContainer_focusFirstControl;
+   o.setControlsProperty = FUiContainer_setControlsProperty;
    o.storeConfig         = FUiContainer_storeConfig;
-   o.psBuildChildren     = FUiContainer_psBuildChildren;
-   o.setChildrenProperty = FUiContainer_setChildrenProperty;
+   // @method
+   o.push                = FUiContainer_push;
+   // @method
+   o.dispose             = FUiContainer_dispose;
    return o;
 }
 
@@ -171,26 +163,48 @@ function FUiContainer_focusFirstControl(){
 }
 
 //==========================================================
-// <T>创建子节点。</T>
+//<T>给当前控件的所有子控件设置属性。</T>
 //
 // @method
-// @param p:config:TXmlNode 配置节点
-// @return FUiControl 控件
+// @param p:property:Stirng 属性名称
+// @param vs:values:Object 属性集合
 //==========================================================
-function FUiContainer_createChild(p){
-   // 创建实例
-   var c = RControl.newInstance(p);
-   c._parent = this;
-   return c;
+function FUiContainer_setControlsProperty(p, vs){
+   var o = this;
+   var cs = o._controls;
+   if(cs){
+      for(var i = cs.count() - 1; i >= 0; i--){
+         var c = cs.value(i);
+         c[p] = vs[n];
+      }
+   }
 }
 
 //==========================================================
-// <T>增加一个控件。</T>
+// <T>递归存储所有子对象到XML设置信息中。</T>
 //
 // @method
-// @param p:control:FUiControl 控件
+// @param x:config:TNode XML节点
 //==========================================================
-function FUiContainer_appendChild(p){
+function FUiContainer_storeConfig(x){
+   var o = this;
+   // 存储当前组件信息
+   x.name = RClass.name(o);
+   o.saveConfig(x);
+   // 存储所有子组件信息
+   var ps = o._components;
+   if(ps){
+      var c = ps.count();
+      for(var i = 0; i < c; i++){
+         var p = ps.value(i);
+         var xp = x.create(RClass.name(p));
+         if(RClass.isClass(p, FUiContainer)){
+            p.storeConfig(xp);
+         }else{
+            p.saveConfig(xp);
+         }
+      }
+   }
 }
 
 //==========================================================
@@ -227,70 +241,4 @@ function FUiContainer_dispose(){
    }
    // 释放处理
    o.__base.FUiControl.dispose.call(o);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//==========================================================
-// <T>递归存储所有子对象到XML设置信息中。</T>
-//
-// @method
-// @param x:config:TNode XML节点
-//==========================================================
-function FUiContainer_storeConfig(x){
-   var o = this;
-   // 存储当前组件信息
-   x.name = RClass.name(o);
-   o.saveConfig(x);
-   // 存储所有子组件信息
-   var ps = o.components;
-   if(ps){
-      for(var n=0; n<ps.count; n++){
-         var p = ps.value(n);
-         var xp = x.create(RClass.name(p));
-         if(RClass.isClass(p, FUiContainer)){
-            p.storeConfig(xp);
-         }else{
-            p.saveConfig(xp);
-         }
-      }
-   }
-}
-
-//==========================================================
-// <T>构建当前控件的所有子控件。</T>
-//
-// @method
-//==========================================================
-function FUiContainer_psBuildChildren(){
-   var o = this;
-   var e = REvent.alloc(o, EEvent.Build);
-   o.ps(e, null, true);
-   REvent.free(e);
-}
-
-//==========================================================
-//<T>给当前控件的所有子控件设置属性。</T>
-//
-// @method
-// @param p:property:Stirng 属性名称
-// @param vs:values:键值集合   属性集合
-//==========================================================
-function FUiContainer_setChildrenProperty(p, vs){
-   var o = this;
-   for(var n in vs){
-      o.component(n)[p] = vs[n];
-   }
 }

@@ -2,17 +2,14 @@
 // <T>下拉编辑器。</T>
 //
 //  hPanel<DIV>
-// ┌--------------------------------------------------------┐
-// │ border<TBorder>                                        │
-// │┌----------------------------------------------------┐│
-// ││ hDropForm<TABLE>                                   ││
-// ││┌------------------------------------------------┐││
-// │││hDropPanel<TD>                                  │││
-// ││├------------------------------------------------┤││
-// │││hButtonPanel<TD>                                │││
-// ││└------------------------------------------------┘││
-// │└----------------------------------------------------┘│
-// └--------------------------------------------------------┘
+// ┌----------------------------------------------------┐
+// │ hDropForm<TABLE>                                   │
+// │┌------------------------------------------------┐│
+// ││hDropPanel<TD>                                  ││
+// │├------------------------------------------------┤│
+// ││hButtonPanel<TD>                                ││
+// │└------------------------------------------------┘│
+// └----------------------------------------------------┘
 //
 // @class
 // @author maocy
@@ -22,14 +19,14 @@ function FUiDropEditor(o){
    o = RClass.inherits(this, o, FUiEditor, MUiShadow);
    //..........................................................
    // @style
+   o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
    o._styleDropForm    = RClass.register(o, new AStyle('_styleDropForm'));
    o._styleDropPanel   = RClass.register(o, new AStyle('_styleDropPanel'));
    o._styleButtonPanel = RClass.register(o, new AStyle('_styleButtonPanel'));
    //..........................................................
    // @attribute
-   o.__minHeight       = 300;
-   o.__minWidth        = null;
-   o._border           = null;
+   o._minWidth         = 160;
+   o._minHeight        = 300;
    //..........................................................
    // @html
    o._hDropForm        = null;
@@ -45,31 +42,32 @@ function FUiDropEditor(o){
    //..........................................................
    // @method
    o.panel             = FUiDropEditor_panel;
-   o.hide              = FUiDropEditor_hide;
+   o.setVisible        = FUiDropEditor_setVisible;
+   // @method
    o.dispose           = FUiDropEditor_dispose;
    return o;
 }
 
 //==========================================================
-// <T>建立底板。</T>
+// <T>建立显示框架。</T>
 //
 // @method
+// @param p:argements:SArgements 参数集合
 //==========================================================
-function FUiDropEditor_onBuild(e){
+function FUiDropEditor_onBuild(p){
    var o = this;
-   o.__base.FUiEditor.onBuild.call(o, e)
+   o.__base.FUiEditor.onBuild.call(o, p);
+   // 设置样式
+   var h = o._hPanel;
+   h.className = o.styleName('Panel');
    // 建立表单
-   var hf = o._hDropForm = RBuilder.appendTable(o._hPanel);
-   hf.className = o.styleName('DropForm');
-   var hdp = o._hDropPanel = hf.insertRow().insertCell();
-   hdp.className = o.styleName('DropPanel');
-   var hbp = o._hButtonPanel = hf.insertRow().insertCell();
-   hbp.className = o.styleName('ButtonPanel');
+   var hf = o._hDropForm = RBuilder.appendTable(h, o.styleName('DropForm'));
+   o._hDropPanel = RBuilder.appendTableRowCell(hf, o.styleName('DropPanel'));
+   o._hButtonPanel = RBuilder.appendTableRowCell(hf, o.styleName('ButtonPanel'));
    // 建立下拉内容
    o.onBuildDrop();
    // 建立按键
    o.onBuildButton();
-   return EEventStatus.Stop;
 }
 
 //==========================================================
@@ -77,34 +75,43 @@ function FUiDropEditor_onBuild(e){
 //
 // @method
 //==========================================================
-function FUiDropEditor_panel(type){
+function FUiDropEditor_panel(p){
    var o = this;
-   if(EPanel.Shadow == type){
+   if(p == EPanel.Shadow){
       return o.hPanel;
    }
-   return o.__base.FUiEditor.panel.call(o, type);
+   return o.__base.FUiEditor.panel.call(o, p);
 }
 
 //==========================================================
-// <T>隐藏对象。</T>
+// <T>设置控件的隐藏和显示。</T>
 //
 // @method
+// @param p:visible:Boolean 是否显示
 //==========================================================
-function FUiDropEditor_hide(){
+function FUiDropEditor_setVisible(p){
    var o = this;
-   o.__base.FUiEditor.hide.call(o);
-   o.__base.MUiShadow.hide.call(o);
+   // 页面元素显示和隐藏
+   var h = o._hPanel;
+   var hd = o._hPanel.ownerDocument;
+   if(p){
+      hd.body.appendChild(h);
+   }else{
+      hd.body.removeChild(h);
+   }
+   o.__base.FUiEditor.setVisible.call(o, p);
+   //o.__base.MUiShadow.setVisible.call(o, p);
 }
 
 //==========================================================
-// <T>释放对象。</T>
+// <T>释放处理。</T>
 //
 // @method
 //==========================================================
 function FUiDropEditor_dispose(){
    var o = this;
+   o._hButtonPanel = RHtml.free(o._hButtonPanel);
+   o._hDropPanel = RHtml.free(o._hDropPanel);
+   o._hDropForm = RHtml.free(o._hDropForm);
    o.__base.FControl.dispose.call(o);
-   o._hDropForm = null;
-   o._hDropPanel = null;
-   o._hButtonPanel = null;
 }

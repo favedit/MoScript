@@ -120,11 +120,10 @@ function SPoint2_dispose(){
 }
 
 //============================================================
-// 判断两个坐标是否相等
+// <T>获得运行信息。</T>
 //
-// @tool
-// @param p:position:SPoint2
-// @return boolean  是否相等，返回布尔值
+// @method
+// @return String 运行信息
 //============================================================
 function SPoint2_dump(){
    return RClass.dump(this) + ' [' + this.x + ',' + this.y + ']';

@@ -8,6 +8,10 @@
 function FUiEditor(o){
    o = RClass.inherits(this, o, FUiControl, MFocus);
    //..........................................................
+   // @property
+   o._visible       = false;
+   o._statusVisible = false;
+   //..........................................................
    // @style
    o._styleEdit     = RClass.register(o, new AStyle('_styleEdit'));
    //..........................................................
@@ -44,7 +48,7 @@ function FUiEditor(o){
    o.editCancel     = FUiEditor_editCancel;
    o.editEnd        = FUiEditor_editEnd;
    o.reset          = FUiEditor_reset;
-   o.show           = FUiEditor_show;
+   o.setVisible     = FUiEditor_setVisible;
    o.dispose        = FUiEditor_dispose;
    return o;
 }
@@ -86,7 +90,19 @@ function FUiEditor_onEditChanged(){
 // @method
 //==========================================================
 function FUiEditor_onEditEnd(){
-   this.editEnd();
+   var o = this;
+   var s = o._source;
+   // 编辑完成
+   RLogger.debug(o, 'Editor end. (control={1})', RClass.dump(s));
+   o.hide();
+   // 处理完成事件
+   if(o.lsnEditEnd){
+      o.lsnEditEnd.process(o);
+   }
+   // 清空数据
+   s._editor = null;
+   o._source = null;
+   o._statusEditing = false;
 }
 
 //==========================================================
@@ -96,19 +112,21 @@ function FUiEditor_onEditEnd(){
 // @param p:event:TEventProcess 事件
 //==========================================================
 function FUiEditor_onBuildPanel(p){
-   this._hPanel = RBuilder.createSpan(p);
+   var o = this;
+   var h = o._hPanel = RBuilder.createSpan(p);
+   h.__linker = o;
 }
 
 //==========================================================
-// <T>建立控件。</T>
+// <T>建立显示框架。</T>
 //
 // @method
+// @param p:argements:SArgements 参数集合
 //==========================================================
-function FUiEditor_onBuild(e){
+function FUiEditor_onBuild(p){
    var o = this;
-   o.__base.FUiControl.onBuild.call(o, e);
+   o.__base.FUiControl.onBuild.call(o, p);
    o._hPanel.style.zIndex = EUiLayer.Editor;
-   o.setVisible(false);
 }
 
 //==========================================================
@@ -148,14 +166,14 @@ function FUiEditor_doBlur(){
 //
 // @method
 //==========================================================
-function FUiEditor_panel(type){
+function FUiEditor_panel(p){
    var o = this;
-   if(EPanel.Edit == type){
+   if(p == EPanel.Edit){
       return o._hEdit;
-   }else if(EPanel.Focus == type){
+   }else if(p == EPanel.Focus){
       return o._hEdit;
    }
-   return o.__base.FUiControl.panel.call(o, type);
+   return o.__base.FUiControl.panel.call(o, p);
 }
 
 //==========================================================
@@ -177,13 +195,13 @@ function FUiEditor_editBegin(){
    var o = this;
    var s = o._source;
    // 编辑开始
-   RLogger.debug(o, 'Editor begin. (control={0})', RClass.dump(s));
+   RLogger.debug(o, 'Editor begin. (control={1})', RClass.dump(s));
    // 处理开始事件
    if(o.lsnEditCancel){
       o.lsnEditCancel.process(o);
    }
    // 设置数据
-   s.editor = o;
+   s._editor = o;
    o._statusEditing = true;
 }
 
@@ -196,14 +214,14 @@ function FUiEditor_editCancel(){
    var o = this;
    var s = o._source;
    // 编辑完成
-   RLogger.debug(o, 'Editor cancel. (control={0})', RClass.dump(s));
+   RLogger.debug(o, 'Editor cancel. (control={1})', RClass.dump(s));
    o.hide();
    // 处理取消事件
    if(o.lsnEditCancel){
       o.lsnEditCancel.process(o);
    }
    // 清空数据
-   s.editor = null;
+   s._editor = null;
    o._source = null;
    o._statusEditing = false;
 }
@@ -214,19 +232,7 @@ function FUiEditor_editCancel(){
 // @method
 //==========================================================
 function FUiEditor_editEnd(){
-   var o = this;
-   var s = o._source;
-   // 编辑完成
-   RLogger.debug(o, 'Editor end. (control={0})', RClass.dump(s));
-   o.hide();
-   // 处理完成事件
-   if(o.lsnEditEnd){
-      o.lsnEditEnd.process(o);
-   }
-   // 清空数据
-   s.editor = null;
-   o._source = null;
-   o._statusEditing = false;
+   this.onEditEnd();
 }
 
 //==========================================================
@@ -242,16 +248,18 @@ function FUiEditor_reset(){
 }
 
 //==========================================================
-// <T>显示操作。</T>
+// <T>设置控件的隐藏和显示。</T>
 //
 // @method
-// @param c:control:FUiControl 控件
+// @param p:visible:Boolean 是否显示
 //==========================================================
-function FUiEditor_show(){
+function FUiEditor_setVisible(p){
    var o = this;
-   o.__base.FUiControl.show.call(o);
-   o.editBegin();
-   o.focus();
+   o.__base.FUiControl.setVisible.call(o, p);
+   if(p){
+      o.editBegin();
+      o.focus();
+   }
 }
 
 //==========================================================

@@ -265,6 +265,9 @@ function RControl_innerbuild(pr, pc, px, pa, ph){
       for(var i = 0; i < nc; i++){
          var n = ns.get(i);
          var c = pc.createChild(n);
+         if(!c){
+            throw new TError('Invalid create child.');
+         }
          o.innerbuild(pr, c, n, pa, ph);
          pc.push(c);
       }

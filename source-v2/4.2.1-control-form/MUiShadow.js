@@ -17,14 +17,18 @@ function MUiShadow(o){
    o.setVisible = MUiShadow_setVisible;
    return o;
 }
-// ------------------------------------------------------------
-// x, y, width, height, flag
+
+//==========================================================
+// <T>显示处理。</T>
+//
+// @method
+//==========================================================
 function MUiShadow_show(v){
    var o = this;
    if(!o._hShadow){
-      o._hShadow = RBuilder.append(RWindow.hContainer, 'DIV', 'RWindow_Shadow');
+      o._hShadow = RBuilder.createDiv(o._hPanel, 'RWindow_Shadow');
    }
-   o._hShadow.style.zIndex = RLayer.next();
+   o._hShadow.style.zIndex = RUiLayer.next();
    if(v == false){
       o.hide();
    }else{
@@ -39,25 +43,36 @@ function MUiShadow_show(v){
       }
       var hp = o.panel(EPanel.Panel);
       if(hp){
-         hp.style.zIndex = RLayer.next();
+         hp.style.zIndex = RUiLayer.next();
       }
    }
 }
-// ------------------------------------------------------------
+
+//==========================================================
+// <T>隐藏处理。</T>
+//
+// @method
+//==========================================================
 function MUiShadow_hide(){
    var o = this;
    if(o._hShadow){
       o._hShadow.style.display = 'none';
    }
 }
-// ------------------------------------------------------------
-function MUiShadow_setVisible(v){
+
+//==========================================================
+// <T>设置显示状态。</T>
+//
+// @method
+// @param p:value:Boolean 可见
+//==========================================================
+function MUiShadow_setVisible(p){
    var o = this;
-   if(v){
+   if(p){
       if(!o._hShadow){
-         o._hShadow = RBuilder.append(null, 'DIV', 'RWindow_Shadow');
+         o._hShadow = RBuilder.createDiv(o._hPanel, 'RWindow_Shadow');
       }
-      o._hShadow.style.zIndex = RLayer.next();
+      o._hShadow.style.zIndex = RUiLayer.next();
       var hs = o.panel(EPanel.Shadow);
       if(hs){
          var r = RHtml.rect(hs);
@@ -70,7 +85,7 @@ function MUiShadow_setVisible(v){
       }
       var hp = o.panel(EPanel.Panel);
       if(hp){
-         hp.style.zIndex = RLayer.next();
+         hp.style.zIndex = RUiLayer.next();
       }
    }else{
       if(o._hShadow){
@@ -78,4 +93,3 @@ function MUiShadow_setVisible(v){
       }
    }
 }
-// ------------------------------------------------------------

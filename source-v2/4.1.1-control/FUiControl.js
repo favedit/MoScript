@@ -163,7 +163,9 @@ function FUiControl_onBuild(p){
    // 建立控件容器
    o.onBuildPanel(p);
    // 设置可见性
-   o.setVisible(o._visible);
+   if(o._statusVisible != o._visible){
+      o.setVisible(o._visible);
+   }
    // 设置容器样式
    var h = o._hPanel;
    RHtml.linkSet(h, 'control', o);
