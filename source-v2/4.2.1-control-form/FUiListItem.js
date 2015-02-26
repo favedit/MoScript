@@ -16,25 +16,34 @@ function FUiListItem(o){
    o = RClass.inherits(this, o, FUiControl);
    //..........................................................
    // @style
-   o._styleForm   = RClass.register(o, new AStyle('_styleForm'));
-   o._styleIcon   = RClass.register(o, new AStyle('_styleIcon'));
-   o._styleLabel  = RClass.register(o, new AStyle('_styleLabel'));
+   o._styleNormal    = RClass.register(o, new AStyle('_styleNormal'));
+   o._styleHover     = RClass.register(o, new AStyle('_styleHover'));
+   o._styleSelect    = RClass.register(o, new AStyle('_styleSelect'));
+   o._styleIconPanel = RClass.register(o, new AStyle('_styleIconPanel'));
+   o._styleIcon      = RClass.register(o, new AStyle('_styleIcon'));
+   o._styleLabel     = RClass.register(o, new AStyle('_styleLabel'));
+   //..........................................................
+   // @attribute
+   o._checked        = false;
    //..........................................................
    // @html
-   o._hPanel      = null;
-   o._hIcon       = null;
-   o._hLabel      = null;
+   o._hPanel         = null;
+   o._hIcon          = null;
+   o._hLabel         = null;
    //..........................................................
    // @event
-   o.onBuildPanel = FUiListItem_onBuildPanel;
-   o.onBuild      = FUiListItem_onBuild;
-   o.onClick      = RClass.register(o, new AEventClick('onClick'), FUiListItem_onClick);
+   o.onBuildPanel    = FUiListItem_onBuildPanel;
+   o.onBuild         = FUiListItem_onBuild;
+   o.onEnter         = FUiListItem_onEnter;
+   o.onLeave         = FUiListItem_onLeave;
+   o.onClick         = RClass.register(o, new AEventClick('onClick'), FUiListItem_onClick);
    //..........................................................
    // @method
-   o.label        = FUiListItem_label;
-   o.setLabel     = FUiListItem_setLabel;
+   o.label           = FUiListItem_label;
+   o.setLabel        = FUiListItem_setLabel;
+   o.setChecked      = FUiListItem_setChecked;
    // @method
-   o.dispose      = FUiListItem_dispose;
+   o.dispose         = FUiListItem_dispose;
    return o;
 }
 
@@ -47,7 +56,7 @@ function FUiListItem(o){
 function FUiListItem_onBuildPanel(p){
    var o = this;
    // 建立编辑控件
-   o._hPanel = RBuilder.createTableRow(p, o.styleName('Form'));
+   o._hPanel = RBuilder.createTableRow(p, o.styleName('Normal'));
 }
 
 //==========================================================
@@ -63,8 +72,8 @@ function FUiListItem_onBuild(p){
    var h = o._hPanel;
    //..........................................................
    // 建立图标区域
+   o._hIconPanel = RBuilder.appendTableCell(h, o.styleName('IconPanel'))
    if(o._icon){
-      o._hIconPanel = RBuilder.appendTableCell(h)
       o._hIcon = RBuilder.appendIcon(o._hIconPanel, o.styleName('Icon'), o._icon);
    }
    // 建立文本区域
@@ -74,6 +83,28 @@ function FUiListItem_onBuild(p){
    }
    // 关联事件
    o.attachEvent('onClick', h);
+}
+
+//==========================================================
+// <T>响应鼠标进入事件</T>
+//
+// @method
+//==========================================================
+function FUiListItem_onEnter(){
+   var o = this;
+   o.__base.FUiControl.onEnter.call(o);
+   o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
+}
+
+//==========================================================
+// <T>响应鼠标离开事件</T>
+//
+// @method
+//==========================================================
+function FUiListItem_onLeave(){
+   var o = this;
+   o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
+   o.__base.FUiControl.onLeave.call(o);
 }
 
 //==========================================================
@@ -107,6 +138,22 @@ function FUiListItem_setLabel(p){
    var o = this;
    o._label = p;
    o._hLabel.innerHTML = RString.nvl(p);
+}
+
+//==========================================================
+// <T>设置选中状态。</T>
+//
+// @method
+//==========================================================
+function FUiListItem_setChecked(p){
+   var o = this;
+   o._checked = p;
+   if(o._hIcon){
+      o._hIcon.style.display = p ? 'block' : 'none';
+   }else{
+      o._hIconPanel.innerHTML = p ? 'O' : '';
+   }
+   o._hPanel.className = p ? o.styleName('Select') : o.styleName('Normal');
 }
 
 //==========================================================

@@ -239,6 +239,7 @@ function FDsSceneWorkspace_findPropertyFrame(p){
 //==========================================================
 function FDsSceneWorkspace_loadScene(p){
    var o = this;
+   o._sceneCode = p;
    o._canvas.loadScene(p);
 }
 

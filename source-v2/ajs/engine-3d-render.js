@@ -153,7 +153,6 @@ function FRd3BoundBox(o){
    o = RClass.inherits(this, o, FRd3Renderable);
    o._outline              = null;
    o._rate                 = 0.2;
-   o._effectCode           = 'control';
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
    o.construct             = FRd3BoundBox_construct;
@@ -202,7 +201,7 @@ function FRd3BoundBox_setup(){
    ib.upload(id, 48);
    o.update();
    var mi = o.material().info();
-   mi.effectCode = o._effectCode;
+   mi.effectCode = 'control';
    mi.ambientColor.set(1, 1, 1, 1);
 }
 function FRd3BoundBox_upload(){
@@ -260,7 +259,7 @@ function FRd3Cube(o){
    o.vertexPositionBuffer = null;
    o.vertexColorBuffer    = null;
    o.indexBuffer          = null;
-   o.setup  = FRd3Cube_setup;
+   o.setup                = FRd3Cube_setup;
    return o;
 }
 function FRd3Cube_setup(p){
@@ -296,6 +295,9 @@ function FRd3Cube_setup(p){
       3, 2, 6, 3, 6, 7  ];
    o.indexBuffer = context.createIndexBuffer();
    o.indexBuffer.upload(id, 36);
+   var mi = o.material().info();
+   mi.effectCode = 'control';
+   mi.ambientColor.set(1, 1, 1, 1);
 }
 function FRd3Dimensional(o){
    o = RClass.inherits(this, o, FRd3Renderable);
@@ -303,7 +305,6 @@ function FRd3Dimensional(o){
    o._size                 = null;
    o._lineColor            = null;
    o._lineCenterColor      = null;
-   o._effectCode           = 'automatic';
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
    o.construct             = FRd3Dimensional_construct;
@@ -413,6 +414,7 @@ function FRd3Dimensional_setup(){
    ib._fillMode = EG3dFillMode.Line;
    ib.upload(id, it);
    var mi = o.material().info();
+   mi.effectCode = 'control';
    mi.ambientColor.set(1, 1, 1, 1);
 }
 function FRd3Material(o){

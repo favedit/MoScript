@@ -1,7 +1,7 @@
 //==========================================================
 // <T>列表控件。</T>
 //
-//  hValuePanel<TD>
+//  hPanel<TABLE>
 // ┌----------------------------------------┬-┐
 // │ hForm<TABLE>                           │ │
 // │┌------------------------------------┐│S│
@@ -24,7 +24,7 @@ function FUiListBox(o){
    o._sizeCd      = ESize.Horizontal
    //..........................................................
    // @style
-   o._styleForm   = RClass.register(o, new AStyle('_styleForm'));
+   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
    //..........................................................
    // @html
    o._hForm       = null;
@@ -50,7 +50,7 @@ function FUiListBox(o){
 function FUiListBox_onBuildPanel(p){
    var o = this;
    // 建立编辑控件
-   o._hPanel = RBuilder.createTable(p, o.styleName('Form'));
+   o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
 }
 
 //==========================================================
@@ -88,6 +88,18 @@ function FUiListBox_appendChild(p){
 //==========================================================
 function FUiListBox_clickItem(p){
    var o = this;
+   // 选中项目
+   var s = o._components;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var m = s.value(i);
+         if(RClass.isClass(m, FUiListItem)){
+            m.setChecked(m == p);
+         }
+      }
+   }
+   // 事件处理
    o.processClickListener(o, p);
 }
 

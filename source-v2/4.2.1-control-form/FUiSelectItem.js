@@ -3,10 +3,10 @@
 // <P>支持控件多选</P>
 //
 //  hPanel(TR)
-// ┌-----┬------------------------┬-------┐
-// │hIcon│hLabel                  │hText  │
-// │(TD) │(TD)                    │(TD)   │
-// └-----┴------------------------┴-------┘
+// ┌--------------┬---------------------------------┬----------------┐
+// │hIconPanel<TD>│hLabelPanel<TD>                  │hNotePanel<TD>  │
+// │hIcon<IMG>    │                                 │                │
+// └--------------┴---------------------------------┴----------------┘
 //
 // @class
 // @author maocy
@@ -28,14 +28,14 @@ function FUiSelectItem(o){
    o._styleLabel       = RClass.register(o, new AStyle('_styleLabel'));
    o._styleNote        = RClass.register(o, new AStyle('_styleNote'));
    //..........................................................
+   // @attribute
+   o._checked          = false;
+   //..........................................................
    // @html
    o._hIconPanel       = null;
    o._hIcon            = null;
    o._hLabelPanel      = null;
    o._hNotePanel       = null;
-   //..........................................................
-   // @attribute
-   o._checked          = false;
    //..........................................................
    // @event
    o.onBuildPanel      = FUiSelectItem_onBuildPanel;
@@ -110,7 +110,7 @@ function FUiSelectItem_onEnter(){
 //==========================================================
 function FUiSelectItem_onLeave(){
    var o = this;
-   o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Panel');
+   o._hPanel.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
    o.__base.FUiControl.onLeave.call(o);
 }
 
@@ -146,7 +146,7 @@ function FUiSelectItem_setChecked(p){
    }else{
       o._hIconPanel.innerHTML = p ? 'O' : '';
    }
-   o._hPanel.className = p ? o.styleName('Select') : o.styleName('Panel');
+   o._hPanel.className = p ? o.styleName('Select') : o.styleName('Normal');
 }
 
 //==========================================================

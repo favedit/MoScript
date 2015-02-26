@@ -50,24 +50,33 @@ function _load(){
    RRuntime.processCd = EProcess.Debug;
    RApplication.initialize();
    RBrowser.setContentPath('..');
-
+   // 获得代码
+   var u = window.location.toString();
+   var i = u.indexOf('code=');
+   var c = null;
+   if(i != -1){
+      c = u.substring(i + 5);
+   }
+   if(RString.isEmpty(c)){
+      c = 'pvw.show.item.001';
+      //c = 'pvw.show.item.004';
+      //c = 'pvw.show.item.006';
+      //c = 'pvw.show.item.007';
+      //c = 'pvw.show.item.008';
+      //c = 'pvw.show.item.009';
+      //c = 'pvw.sc.car.01.001';
+      //c = 'pvw.sc.car.01.002';
+      //c = 'pvw.sc.car.01.003';
+      //c = 'pvw.show.skeleton.01';
+      //c = 'pvw.sc.house.01.scene';
+   }
+   // 加载工作区
    var w = RApplication.findWorkspace(FDsSceneWorkspace);
    w.buildDefine(document.body);
-   //w.build(document.body);
    //w.setPanel(document.body);
    w.psRefresh();
+   w.loadScene(c);
 
-   w.loadScene('pvw.show.item.001');
-   //w.loadScene('pvw.show.item.004');
-   //w.loadScene('pvw.show.item.006');
-   //w.loadScene('pvw.show.item.007');
-   //w.loadScene('pvw.show.item.008');
-   //w.loadScene('pvw.show.item.009');
-   //w.loadScene('pvw.sc.car.01.001');
-   //w.loadScene('pvw.sc.car.01.002');
-   //w.loadScene('pvw.sc.car.01.003');
-   //w.loadScene('pvw.show.skeleton.01');
-   //w.loadScene('pvw.sc.house.01.scene');
    //RDump.dump(w, document.body);
 }
 </SCRIPT>

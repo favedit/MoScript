@@ -230,6 +230,8 @@
          float normalFactor = dot(v_normal, <shader:false source='option.normal.invert'>-</shader:false>fc_light_direction);
          </shader:false>
          normalFactor = max(normalFactor, 0.0);
+         normalFactor = min(normalFactor, 1.0);
+         //normalFactor = normalFactor * normalFactor;
          <shader:true source='option.material.map'>
          vec4 diffuseColor = texture2D(fs_material, vec2(1.0 * fc_material.x, fc_material.y));
          vec3 resultDiffuse = color.rgb * diffuseColor.rgb * normalFactor;
@@ -237,7 +239,6 @@
          <shader:false source='option.material.map'>
          vec3 resultDiffuse = color.rgb * fc_diffuse_color.rgb * normalFactor;
          </shader:false>
-         </shader:true>
          <shader:equals source='technique.mode' value='result'>
          result.rgb += resultDiffuse;
          </shader:equals>
@@ -247,6 +248,7 @@
          <shader:equals source='technique.mode' value='diffuse.color'>
          result.rgb = resultDiffuse;
          </shader:equals>
+         </shader:true>
          //............................................................
          <shader:true source='vertex.attribute.normal'>
          vec3 cameraDirection = normalize(fc_camera_position - v_model_position.xyz);

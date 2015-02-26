@@ -81,7 +81,8 @@ function FDsSceneMenuBar_onSaveClick(p){
 // @param p:event:SEvent 事件
 //==========================================================
 function FDsSceneMenuBar_onRunClick(p){
-   var u = '../view/scene.html';
+   var o = this;
+   var u = '../design/view.html?code=' + o._workspace._sceneCode;
    window.open(u);
 }
 

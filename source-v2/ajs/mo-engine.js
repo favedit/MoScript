@@ -1234,7 +1234,7 @@ function FE3dSceneCanvas(o){
    o._activeScene        = null;
    o._capturePosition    = null;
    o._captureRotation    = null;
-   o.onEnterFrame        = FDsSceneCanvas_onEnterFrame;
+   o.onEnterFrame        = FE3dSceneCanvas_onEnterFrame;
    o.onMouseCaptureStart = FE3dSceneCanvas_onMouseCaptureStart;
    o.onMouseCapture      = FE3dSceneCanvas_onMouseCapture;
    o.onMouseCaptureStop  = FE3dSceneCanvas_onMouseCaptureStop;
@@ -1244,6 +1244,8 @@ function FE3dSceneCanvas(o){
    o.build               = FE3dSceneCanvas_build;
    o.load                = FE3dSceneCanvas_load;
    o.setPanel            = FE3dSceneCanvas_setPanel;
+   o.switchPlay          = FE3dSceneCanvas_switchPlay;
+   o.switchMovie         = FE3dSceneCanvas_switchMovie;
    o.dispose             = FE3dSceneCanvas_dispose;
    return o;
 }
@@ -1388,6 +1390,30 @@ function FE3dSceneCanvas_setPanel(p){
    o._hPanel = p;
    p.appendChild(o._hCanvas);
    o.onResize();
+}
+function FE3dSceneCanvas_switchPlay(p){
+   var o = this;
+   var s = o._activeScene;
+   var ds = s.allDisplays();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var d = ds.get(i);
+      if(d._movies){
+         d._optionPlay = p;
+      }
+   }
+}
+function FE3dSceneCanvas_switchMovie(p){
+   var o = this;
+   var s = o._activeScene;
+   var ds = s.allDisplays();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var d = ds.get(i);
+      if(d._movies){
+         d._optionMovie = p;
+      }
+   }
 }
 function FE3dSceneCanvas_dispose(){
    var o = this;
@@ -2436,6 +2462,7 @@ var RE3dEngine = new function RE3dEngine(){
 }
 function RE3dEngine_onSetup(){
    var ec = RConsole.find(FG3dEffectConsole);
+   ec.register('select.select.control', FG3dSelectAutomaticEffect);
    ec.register('select.select.automatic', FG3dSelectAutomaticEffect);
    ec.register('select.select.skeleton', FG3dSelectSkeletonEffect);
    ec.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
@@ -4394,7 +4421,6 @@ function FRd3BoundBox(o){
    o = RClass.inherits(this, o, FRd3Renderable);
    o._outline              = null;
    o._rate                 = 0.2;
-   o._effectCode           = 'control';
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
    o.construct             = FRd3BoundBox_construct;
@@ -4443,7 +4469,7 @@ function FRd3BoundBox_setup(){
    ib.upload(id, 48);
    o.update();
    var mi = o.material().info();
-   mi.effectCode = o._effectCode;
+   mi.effectCode = 'control';
    mi.ambientColor.set(1, 1, 1, 1);
 }
 function FRd3BoundBox_upload(){
@@ -4501,7 +4527,7 @@ function FRd3Cube(o){
    o.vertexPositionBuffer = null;
    o.vertexColorBuffer    = null;
    o.indexBuffer          = null;
-   o.setup  = FRd3Cube_setup;
+   o.setup                = FRd3Cube_setup;
    return o;
 }
 function FRd3Cube_setup(p){
@@ -4537,6 +4563,9 @@ function FRd3Cube_setup(p){
       3, 2, 6, 3, 6, 7  ];
    o.indexBuffer = context.createIndexBuffer();
    o.indexBuffer.upload(id, 36);
+   var mi = o.material().info();
+   mi.effectCode = 'control';
+   mi.ambientColor.set(1, 1, 1, 1);
 }
 function FRd3Dimensional(o){
    o = RClass.inherits(this, o, FRd3Renderable);
@@ -4544,7 +4573,6 @@ function FRd3Dimensional(o){
    o._size                 = null;
    o._lineColor            = null;
    o._lineCenterColor      = null;
-   o._effectCode           = 'automatic';
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
    o.construct             = FRd3Dimensional_construct;
@@ -4654,6 +4682,7 @@ function FRd3Dimensional_setup(){
    ib._fillMode = EG3dFillMode.Line;
    ib.upload(id, it);
    var mi = o.material().info();
+   mi.effectCode = 'control';
    mi.ambientColor.set(1, 1, 1, 1);
 }
 function FRd3Material(o){

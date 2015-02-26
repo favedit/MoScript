@@ -19,6 +19,8 @@ function FUiColorPower(o){
    //..........................................................
    // @property
    o._inputSize          = RClass.register(o, new APtySize2('_inputSize'));
+   o._valueMin           = RClass.register(o, new APtyNumber('_valueMin'));
+   o._valueMax           = RClass.register(o, new APtyNumber('_valueMax'));
    //..........................................................
    // @style
    o._styleValuePanel    = RClass.register(o, new AStyle('_styleValuePanel'));
@@ -114,6 +116,7 @@ function FUiColorPower_onBuildEditValue(p){
    var b = o._barPower = new SUiColorPower();
    b.control = o;
    b.typeCd = 'power';
+   b.setRange(o._valueMin, o._valueMax);
    b.hPanel = hcf;
    b.build();
 }

@@ -423,11 +423,11 @@ function FG3dControlTechnique(o){
 function FG3dControlTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
-   var ps = o._passes;
+   o.registerMode(EG3dTechniqueMode.Result);
    var pd = o._passControl = RClass.create(FG3dControlPass);
    pd.linkGraphicContext(o);
    pd.setup();
-   ps.push(pd);
+   o._passes.push(pd);
 }
 function FG3dControlTechnique_passControl(){
    return this._passControl;
@@ -692,11 +692,11 @@ function FG3dSelectTechnique(o){
 function FG3dSelectTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
-   var ps = o._passes;
+   o.registerMode(EG3dTechniqueMode.Result);
    var pd = o._passSelect = RClass.create(FG3dSelectPass);
    pd.linkGraphicContext(o);
    pd.setup();
-   ps.push(pd);
+   o._passes.push(pd);
 }
 function FG3dSelectTechnique_passSelect(){
    return this._passSelect;

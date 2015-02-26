@@ -58,6 +58,7 @@ function SUiColorBar(){
    // @method
    o.build             = SUiColorBar_build;
    // @method
+   o.setRange          = SUiColorBar_setRange;
    o.setColorValue     = SUiColorBar_setColorValue;
    o.setSlideValue     = SUiColorBar_setSlideValue;
    o.setInputValue     = SUiColorBar_setInputValue;
@@ -173,6 +174,23 @@ function SUiColorBar_build(p){
    c.attachEvent('onInputKeyPress', he, c.onInputKeyPress);
    c.attachEvent('onInputEdit', he, c.onInputEdit);
    c.attachEvent('onInputChange', he, c.onInputChange);
+}
+
+//==========================================================
+// <T>设置范围。</T>
+//
+// @method
+// @param i:min:Number 最小值
+// @param a:max:Number 最大值
+//==========================================================
+function SUiColorBar_setRange(i, a){
+   var o = this;
+   if(i != null){
+      o.minValue = i;
+   }
+   if(a != null){
+      o.maxValue = a;
+   }
 }
 
 //==========================================================

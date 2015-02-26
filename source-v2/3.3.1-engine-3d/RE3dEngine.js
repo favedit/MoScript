@@ -26,14 +26,19 @@ var RE3dEngine = new function RE3dEngine(){
 //==========================================================
 function RE3dEngine_onSetup(){
    var ec = RConsole.find(FG3dEffectConsole);
+   // 选取效果器
+   ec.register('select.select.control', FG3dSelectAutomaticEffect);
    ec.register('select.select.automatic', FG3dSelectAutomaticEffect);
    ec.register('select.select.skeleton', FG3dSelectSkeletonEffect);
    ec.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
+   // 控件效果器
    ec.register('control.control.automatic', FG3dControlAutomaticEffect);
+   // 通用效果器
    ec.register('general.color.control', FG3dControlAutomaticEffect);
    ec.register('general.color.automatic', FG3dGeneralColorAutomaticEffect);
    ec.register('general.color.skeleton', FG3dGeneralColorSkeletonEffect);
    ec.register('general.color.skeleton.4', FG3dGeneralColorSkeletonEffect);
+   // 阴影效果器
    ec.register('shadow.depth.automatic', FG3dShadowDepthAutomaticEffect);
    ec.register('shadow.depth.skeleton', FG3dShadowDepthSkeletonEffect);
    ec.register('shadow.color.automatic', FG3dShadowColorAutomaticEffect);

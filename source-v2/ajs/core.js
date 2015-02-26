@@ -450,6 +450,7 @@ var EKeyCode = new function EKeyCode(){
    o.Alt       = 18;
    o.Ctrl      = 17;
    o.BackSpace = 8;
+   o.Space     = 32;
    o.Left      = 37;
    o.Up        = 38;
    o.Right     = 39;

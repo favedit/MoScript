@@ -2878,7 +2878,8 @@ function FDsSceneMenuBar_onSaveClick(p){
    RConsole.find(FRs3SceneConsole).update(x);
 }
 function FDsSceneMenuBar_onRunClick(p){
-   var u = '../view/scene.html';
+   var o = this;
+   var u = '../design/view.html?code=' + o._workspace._sceneCode;
    window.open(u);
 }
 function FDsSceneMenuBar_construct(){
@@ -3259,6 +3260,7 @@ function FDsSceneWorkspace_findPropertyFrame(p){
 }
 function FDsSceneWorkspace_loadScene(p){
    var o = this;
+   o._sceneCode = p;
    o._canvas.loadScene(p);
 }
 function FDsSceneWorkspace_dispose(){

@@ -23,7 +23,6 @@ function FRd3Dimensional(o){
    o._size                 = null;
    o._lineColor            = null;
    o._lineCenterColor      = null;
-   o._effectCode           = 'automatic';
    // @attribute
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
@@ -182,5 +181,6 @@ function FRd3Dimensional_setup(){
    //..........................................................
    // 设置材质
    var mi = o.material().info();
+   mi.effectCode = 'control';
    mi.ambientColor.set(1, 1, 1, 1);
 }

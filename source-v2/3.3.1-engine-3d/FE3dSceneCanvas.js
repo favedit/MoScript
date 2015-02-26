@@ -14,7 +14,7 @@ function FE3dSceneCanvas(o){
    o._captureRotation    = null;
    //..........................................................
    // @event
-   o.onEnterFrame        = FDsSceneCanvas_onEnterFrame;
+   o.onEnterFrame        = FE3dSceneCanvas_onEnterFrame;
    // @event
    o.onMouseCaptureStart = FE3dSceneCanvas_onMouseCaptureStart;
    o.onMouseCapture      = FE3dSceneCanvas_onMouseCapture;
@@ -30,6 +30,8 @@ function FE3dSceneCanvas(o){
    o.build               = FE3dSceneCanvas_build;
    o.load                = FE3dSceneCanvas_load;
    o.setPanel            = FE3dSceneCanvas_setPanel;
+   o.switchPlay          = FE3dSceneCanvas_switchPlay;
+   o.switchMovie         = FE3dSceneCanvas_switchMovie;
    // @method
    o.dispose             = FE3dSceneCanvas_dispose;
    return o;
@@ -264,6 +266,44 @@ function FE3dSceneCanvas_setPanel(p){
    p.appendChild(o._hCanvas);
    // 改变大小
    o.onResize();
+}
+
+//==========================================================
+// <T>切换播放模式。</T>
+//
+// @method
+// @param p:modeCd:Integer 
+//==========================================================
+function FE3dSceneCanvas_switchPlay(p){
+   var o = this;
+   var s = o._activeScene;
+   var ds = s.allDisplays();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var d = ds.get(i);
+      if(d._movies){
+         d._optionPlay = p;
+      }
+   }
+}
+
+//==========================================================
+// <T>切换动画模式。</T>
+//
+// @method
+// @param p:modeCd:Integer 
+//==========================================================
+function FE3dSceneCanvas_switchMovie(p){
+   var o = this;
+   var s = o._activeScene;
+   var ds = s.allDisplays();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var d = ds.get(i);
+      if(d._movies){
+         d._optionMovie = p;
+      }
+   }
 }
 
 //==========================================================

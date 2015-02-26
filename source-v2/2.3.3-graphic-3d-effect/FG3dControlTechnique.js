@@ -27,12 +27,15 @@ function FG3dControlTechnique(o){
 function FG3dControlTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
-   var ps = o._passes;
+   //..........................................................
+   // 创建支持模式
+   o.registerMode(EG3dTechniqueMode.Result);
+   //..........................................................
    // 创建选取处理过程
    var pd = o._passControl = RClass.create(FG3dControlPass);
    pd.linkGraphicContext(o);
    pd.setup();
-   ps.push(pd);
+   o._passes.push(pd);
 }
 
 //==========================================================

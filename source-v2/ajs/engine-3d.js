@@ -663,7 +663,7 @@ function FE3dSceneCanvas(o){
    o._activeScene        = null;
    o._capturePosition    = null;
    o._captureRotation    = null;
-   o.onEnterFrame        = FDsSceneCanvas_onEnterFrame;
+   o.onEnterFrame        = FE3dSceneCanvas_onEnterFrame;
    o.onMouseCaptureStart = FE3dSceneCanvas_onMouseCaptureStart;
    o.onMouseCapture      = FE3dSceneCanvas_onMouseCapture;
    o.onMouseCaptureStop  = FE3dSceneCanvas_onMouseCaptureStop;
@@ -673,6 +673,8 @@ function FE3dSceneCanvas(o){
    o.build               = FE3dSceneCanvas_build;
    o.load                = FE3dSceneCanvas_load;
    o.setPanel            = FE3dSceneCanvas_setPanel;
+   o.switchPlay          = FE3dSceneCanvas_switchPlay;
+   o.switchMovie         = FE3dSceneCanvas_switchMovie;
    o.dispose             = FE3dSceneCanvas_dispose;
    return o;
 }
@@ -817,6 +819,30 @@ function FE3dSceneCanvas_setPanel(p){
    o._hPanel = p;
    p.appendChild(o._hCanvas);
    o.onResize();
+}
+function FE3dSceneCanvas_switchPlay(p){
+   var o = this;
+   var s = o._activeScene;
+   var ds = s.allDisplays();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var d = ds.get(i);
+      if(d._movies){
+         d._optionPlay = p;
+      }
+   }
+}
+function FE3dSceneCanvas_switchMovie(p){
+   var o = this;
+   var s = o._activeScene;
+   var ds = s.allDisplays();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var d = ds.get(i);
+      if(d._movies){
+         d._optionMovie = p;
+      }
+   }
 }
 function FE3dSceneCanvas_dispose(){
    var o = this;
@@ -1865,6 +1891,7 @@ var RE3dEngine = new function RE3dEngine(){
 }
 function RE3dEngine_onSetup(){
    var ec = RConsole.find(FG3dEffectConsole);
+   ec.register('select.select.control', FG3dSelectAutomaticEffect);
    ec.register('select.select.automatic', FG3dSelectAutomaticEffect);
    ec.register('select.select.skeleton', FG3dSelectSkeletonEffect);
    ec.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);

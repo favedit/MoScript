@@ -380,23 +380,47 @@
 /* ------------------------------------------------------ */
 /* FUiListItem                                            */
 /* ------------------------------------------------------ */
+.FUiListItem_Normal{
+   cursor: pointer;
+   padding: 4px 2px;
+   background-color: #666666;
+}
+
+.FUiListItem_Hover{
+   cursor: pointer;
+   padding: 4px 2px;
+   background-color: #999999;
+}
+
+.FUiListItem_Select{
+   cursor: pointer;
+   padding: 4px 2px;
+   background-color: #333333;
+}
+
+.FUiListItem_IconPanel{
+   width: 16px;
+}
+
 .FUiListItem_Icon{
    width: 16px;
 }
 
 .FUiListItem_Label{
-   cursor: pointer;
-   padding-top: 1px;
-   padding-bottom: 1px;
    color: #EEEEEE;
-   background-color: #666666;
 }
 
 /* ------------------------------------------------------ */
 /* FUiListBox                                             */
 /* ------------------------------------------------------ */
-.FUiListBox_Form{
+.FUiListBox_Panel{
    width: 100%;
+   padding: 1px;
+   margin: 4px 0px;
+   border-left:1px solid #333333;
+   border-top:1px solid #333333;
+   border-right:1px solid #666666;
+   border-bottom:1px solid #666666;
 }
 
 /* ------------------------------------------------------ */

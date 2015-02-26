@@ -23,6 +23,8 @@ var EKeyCode = new function EKeyCode(){
    o.Ctrl      = 17;
    // @attribute Integer 定义BackSpace按键
    o.BackSpace = 8;
+   // @attribute Integer 定义空格按键
+   o.Space     = 32;
    // @attribute Integer 方向按键
    o.Left      = 37;
    o.Up        = 38;

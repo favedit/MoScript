@@ -30,7 +30,6 @@ function FRd3BoundBox(o){
    // @attribute
    o._outline              = null;
    o._rate                 = 0.2;
-   o._effectCode           = 'control';
    // @attribute
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
@@ -111,7 +110,7 @@ function FRd3BoundBox_setup(){
    //..........................................................
    // 设置材质
    var mi = o.material().info();
-   mi.effectCode = o._effectCode;
+   mi.effectCode = 'control';
    mi.ambientColor.set(1, 1, 1, 1);
 }
 
