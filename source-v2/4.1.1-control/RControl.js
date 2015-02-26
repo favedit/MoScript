@@ -150,7 +150,7 @@ function RControl_innerCreate(pc, px, pa){
       pc.propertyLoad(px)
    }
    // 构建子节点
-   if(RClass.isClass(pc, MContainer) && px.hasNode()){
+   if(RClass.isClass(pc, MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
@@ -259,7 +259,7 @@ function RControl_innerbuild(pr, pc, px, pa, ph){
       pr = pc;
    }
    // 建立子节点
-   if(RClass.isClass(pc, MContainer) && px.hasNode()){
+   if(RClass.isClass(pc, MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){

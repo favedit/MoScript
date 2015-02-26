@@ -569,6 +569,8 @@ function FE3dScene_resource(p){
    return this._resource;
 }
 function FE3dScene_loadTechniqueResource(p){
+   var o = this;
+   o._technique._resource = p;
 }
 function FE3dScene_loadRegionResource(p){
    var o = this;
@@ -1867,6 +1869,7 @@ function RE3dEngine_onSetup(){
    ec.register('select.select.skeleton', FG3dSelectSkeletonEffect);
    ec.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
    ec.register('control.control.automatic', FG3dControlAutomaticEffect);
+   ec.register('general.color.control', FG3dControlAutomaticEffect);
    ec.register('general.color.automatic', FG3dGeneralColorAutomaticEffect);
    ec.register('general.color.skeleton', FG3dGeneralColorSkeletonEffect);
    ec.register('general.color.skeleton.4', FG3dGeneralColorSkeletonEffect);

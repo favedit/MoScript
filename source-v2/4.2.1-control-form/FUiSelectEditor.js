@@ -82,10 +82,9 @@ function FUiSelectEditor_onItemClick(p){
 //
 // @method
 //==========================================================
-function FUiSelectEditor_onEditKeyDown(s, e){
+function FUiSelectEditor_onEditKeyDown(p){
    var o = this;
-   debugger
-   switch(e.keyCode){
+   switch(p.keyCode){
       case EKeyCode.Up:
          o.select(o._position - 1);
          break;
@@ -219,7 +218,7 @@ function FUiSelectEditor_set(v){
    var pc = ps.count();
    for(var i = 0; i < pc; i++){
       var p = ps.value(i);
-      if(p._dataValue == v){
+      if(RString.equals(p._dataValue, v, true)){
          o._position = i;
          p.setChecked(true);
       }else{
@@ -236,15 +235,15 @@ function FUiSelectEditor_set(v){
 //==========================================================
 function FUiSelectEditor_select(p){
    var o = this;
-   var is = o._items;
-   var ic = is.count;
-   // �����Чλ��
-   p = Math.min(Math.max(0, p), ic-1)
-   // ѡ����Ŀ
-   for(var n=0; n<ic; n++){
-      is.get(n).setChecked(n == p);
+   var s = o._items;
+   var c = s.count();
+   // 检查范围
+   var n = RInteger.toRange(p, 0, c - 1);
+   // 设置选中状态
+   for(var i = 0; i < c; i++){
+      s.value(i).setChecked(i == n);
    }
-   o._position = p;
+   o._position = n;
 }
 
 //==========================================================

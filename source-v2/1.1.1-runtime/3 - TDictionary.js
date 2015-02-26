@@ -6,8 +6,8 @@
 // @version 141229
 //==========================================================
 function TDictionary(o){
-   if(!o){o = this;}
-   TMap(o);
+   var o = this;
+   TMap.call(o);
    //..........................................................
    // @method
    o.dump = TDictionary_dump;
@@ -27,10 +27,10 @@ function TDictionary_dump(){
    r.append(RRuntime.className(o), ': ', c);
    if(c > 0){
       r.append(' {\n');
-      for(var n = 0; n < c; n++){
-         r.append('   ', o._names[n], '=[', o._values[n], ']\n');
+      for(var i = 0; i < c; i++){
+         r.append('   ', o._names[i], '=[', o._values[i], ']\n');
       }
       r.append('}');
    }
-   return r.toString();
+   return r.flush();
 }

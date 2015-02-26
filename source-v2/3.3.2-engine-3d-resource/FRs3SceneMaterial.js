@@ -106,4 +106,3 @@ function FRs3SceneMaterial_saveConfig(p){
    // 存储材质
    o._info.saveConfig(p);
 }
-

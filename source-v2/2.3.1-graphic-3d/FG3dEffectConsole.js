@@ -101,11 +101,15 @@ function FG3dEffectConsole_create(c, p){
 // @method
 // @param pc:context:FG3dContext 渲染环境
 // @param pf:effectInfo:SG3dEffectInfo 效果环境
+// @param pg:region:FG3dRegion 渲染区域
 // @param pr:renderable:FG3dRenderable 渲染对象
 // @return FG3dEffect 效果器
 //==========================================================
-function FG3dEffectConsole_buildEffectInfo(pc, pf, pr){
+function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    var o = this;
+   // 设置技术
+   var t = pg.technique();
+   pf.techniqueModeCode = t.activeMode().code();
    // 设置材质
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
@@ -192,7 +196,7 @@ function FG3dEffectConsole_find(pc, pg, pr){
    if(et){
       // 生成标志
       o._effectInfo.reset();
-      o.buildEffectInfo(pc, o._effectInfo, pr);
+      o.buildEffectInfo(pc, o._effectInfo, pg, pr);
       et.buildInfo(o._tagContext, o._effectInfo);
       var ec = ef + o._tagContext.code;
       // 查找效果器

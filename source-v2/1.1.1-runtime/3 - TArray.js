@@ -5,12 +5,14 @@
 // @author maocy
 // @version 141229
 //==========================================================
-function TArray(o){
-   if(!o){o = this;}
-   // Attribute
+function TArray(){
+   var o = this;
+   //..........................................................
+   // @attribute
    o._length  = 0;
    o._memory  = new Array();
-   // Method
+   //..........................................................
+   // @method
    o.isEmpty  = TArray_isEmpty;
    o.length   = TArray_length;
    o.contains = TArray_contains;
@@ -228,9 +230,9 @@ function TArray_dump(){
    var c = o._length;
    r.append(RRuntime.className(o), ':', c);
    if(c > 0){
-      for(var n = 0; n < c; n++){
-         r.append(' [', o._memory[n], ']');
+      for(var i = 0; i < c; i++){
+         r.append(' [', o._memory[i], ']');
       }
    }
-   return r.toString();
+   return r.flush();
 }

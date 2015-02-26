@@ -74,6 +74,8 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    var cb = c.capability();
    // 获得参数
    var s = new TString();
+   s.append(pc.techniqueModeCode)
+   pt.set("technique.mode", pc.techniqueModeCode);
    //............................................................
    // 支持纹理材质映射
    if(cb.optionMaterialMap){

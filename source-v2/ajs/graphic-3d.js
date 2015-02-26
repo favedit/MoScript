@@ -24,6 +24,19 @@ var EG3dRegionParameter = new function EG3dRegionParameter(){
    o.LightInfo                  = 11;
    return o;
 }
+var EG3dTechniqueMode = new function EG3dTechniqueMode(){
+   var o = this;
+   o.Color         = 'color';
+   o.Ambient       = 'ambient';
+   o.DiffuseLevel  = 'diffuse.level';
+   o.DiffuseColor  = 'diffuse.color';
+   o.SpecularLevel = 'specular.level';
+   o.SpecularColor = 'specular.color';
+   o.Reflect       = 'reflect';
+   o.Emissive      = 'emissive';
+   o.Result        = 'result';
+   return o;
+}
 function FG3dAnimation(o){
    o = RClass.inherits(this, o, FObject);
    o._baseTick    = 0;
@@ -493,8 +506,10 @@ function FG3dEffectConsole_create(c, p){
    e.setup();
    return e;
 }
-function FG3dEffectConsole_buildEffectInfo(pc, pf, pr){
+function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    var o = this;
+   var t = pg.technique();
+   pf.techniqueModeCode = t.activeMode().code();
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
    pf.vertexCount = pr.vertexCount();
@@ -552,7 +567,7 @@ function FG3dEffectConsole_find(pc, pg, pr){
    var et = o.findTemplate(pc, ef);
    if(et){
       o._effectInfo.reset();
-      o.buildEffectInfo(pc, o._effectInfo, pr);
+      o.buildEffectInfo(pc, o._effectInfo, pg, pr);
       et.buildInfo(o._tagContext, o._effectInfo);
       var ec = ef + o._tagContext.code;
       var es = o._effects;
@@ -1192,6 +1207,7 @@ function FG3dRenderable(o){
    o.effectFind      = FG3dRenderable_effectFind;
    o.effectSet       = FG3dRenderable_effectSet;
    o.infos           = FG3dRenderable_infos;
+   o.clearInfos      = FG3dRenderable_clearInfos;
    o.selectInfo      = FG3dRenderable_selectInfo;
    o.testVisible     = RMethod.virtual(o, 'testVisible');
    o.update          = FG3dRenderable_update;
@@ -1250,6 +1266,17 @@ function FG3dRenderable_infos(){
    }
    return r;
 }
+function FG3dRenderable_clearInfos(){
+   var o = this;
+   var s = o._infos;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var ri = s.valueAt(i);
+         ri.reset();
+      }
+   }
+}
 function FG3dRenderable_selectInfo(p){
    var o = this;
    var s = o.infos();
@@ -1286,10 +1313,16 @@ function FG3dSpotLight(o){
 function FG3dTechnique(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._code           = null;
+   o._activeMode     = null;
+   o._modes          = null;
    o._passes         = null;
    o.construct       = FG3dTechnique_construct;
    o.code            = FG3dTechnique_code;
+   o.activeMode      = FG3dTechnique_activeMode;
+   o.modes           = FG3dTechnique_modes;
    o.passes          = FG3dTechnique_passes;
+   o.registerMode    = FG3dTechnique_registerMode;
+   o.selectMode      = FG3dTechnique_selectMode;
    o.updateRegion    = RMethod.empty;
    o.clear           = FG3dTechnique_clear;
    o.sortRenderables = FG3dTechnique_sortRenderables;
@@ -1300,13 +1333,31 @@ function FG3dTechnique(o){
 function FG3dTechnique_construct(){
    var o = this;
    o.__base.FG3dObject.construct.call(o);
+   o._modes = new TObjects();
    o._passes = new TObjects();
 }
 function FG3dTechnique_code(){
    return this._code;
 }
+function FG3dTechnique_activeMode(){
+   return this._activeMode;
+}
+function FG3dTechnique_modes(){
+   return this._modes;
+}
 function FG3dTechnique_passes(){
    return this._passes;
+}
+function FG3dTechnique_registerMode(p){
+   var o = this;
+   var m = RClass.create(FG3dTechniqueMode);
+   m.setCode(p);
+   o._modes.push(m);
+   o._activeMode = m;
+   return m;
+}
+function FG3dTechnique_selectMode(p){
+   var o = this;
 }
 function FG3dTechnique_clear(p){
    var o = this;
@@ -1364,6 +1415,19 @@ function FG3dTechniqueConsole_find(c, p){
       ts.set(n, t);
    }
    return t;
+}
+function FG3dTechniqueMode(o){
+   o = RClass.inherits(this, o, FObject);
+   o._code   = null;
+   o.code    = FG3dTechniqueMode_code;
+   o.setCode = FG3dTechniqueMode_setCode;
+   return o;
+}
+function FG3dTechniqueMode_code(){
+   return this._code;
+}
+function FG3dTechniqueMode_setCode(p){
+   this._code = p;
 }
 function FG3dTechniquePass(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -1528,6 +1592,8 @@ function REngine3d_createContext(c, h){
 function SG3dEffectInfo(o){
    if(!o){o = this;}
    o.code                  = null;
+   o.techniqueCode         = null;
+   o.techniqueModeCode     = null;
    o.fillModeCd            = null;
    o.optionCullMode        = null;
    o.cullModeCd            = null;
@@ -1845,4 +1911,6 @@ function SG3dRenderableInfo(){
 }
 function SG3dRenderableInfo_reset(){
    var o = this;
+   o.effect = null;
+   o.layout = null;
 }

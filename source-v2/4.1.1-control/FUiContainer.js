@@ -5,7 +5,7 @@
 // @version 141231
 //==========================================================
 function FUiContainer(o){
-   o = RClass.inherits(this, o, FUiControl, MContainer);
+   o = RClass.inherits(this, o, FUiControl, MUiContainer);
    //..........................................................
    // @attributes
    o._controls           = null;

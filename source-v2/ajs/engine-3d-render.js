@@ -153,7 +153,7 @@ function FRd3BoundBox(o){
    o = RClass.inherits(this, o, FRd3Renderable);
    o._outline              = null;
    o._rate                 = 0.2;
-   o._effectCode           = 'automatic';
+   o._effectCode           = 'control';
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
    o.construct             = FRd3BoundBox_construct;
@@ -202,6 +202,7 @@ function FRd3BoundBox_setup(){
    ib.upload(id, 48);
    o.update();
    var mi = o.material().info();
+   mi.effectCode = o._effectCode;
    mi.ambientColor.set(1, 1, 1, 1);
 }
 function FRd3BoundBox_upload(){

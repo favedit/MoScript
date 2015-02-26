@@ -110,7 +110,7 @@ function FFocusConsole_construct(){
 //==========================================================
 function FFocusConsole_enter(c){
    var o = this;
-   if(RClass.isClass(c, MContainer)){
+   if(RClass.isClass(c, MUiContainer)){
       o._hoverContainer = c;
    }else{
       o._hoverControl = c;

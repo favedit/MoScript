@@ -15,7 +15,7 @@
 // @version 150224
 //==========================================================
 function FUiSelect(o){
-   o = RClass.inherits(this, o, FUiEditControl, MContainer, MPropertySelect, MDropable);
+   o = RClass.inherits(this, o, FUiEditControl, MUiContainer, MPropertySelect, MDropable, MListenerDataChanged);
    //..........................................................
    // @style
    o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
@@ -31,16 +31,17 @@ function FUiSelect(o){
    o.onBuildEditValue = FUiSelect_onBuildEditValue;
    o.onDoubleClick    = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FUiSelect_onDropClick);
    o.onDropClick      = FUiSelect_onDropClick;
+   o.onKeyDown        = RClass.register(o, new AEventKeyDown('onKeyDown'), FUiSelect_onKeyDown);
    //..........................................................
    // @method
    o.construct        = FUiSelect_construct;
    // @method
+   o.findItemByLabel  = FUiSelect_findItemByLabel;
+   o.findItemByData   = FUiSelect_findItemByData;
    o.formatValue      = FUiSelect_formatValue;
    o.formatDisplay    = FUiSelect_formatDisplay;
    o.get              = FUiSelect_get;
    o.set              = FUiSelect_set;
-   o.findItemByLabel  = FUiSelect_findItemByLabel;
-   o.findItemByData   = FUiSelect_findItemByData;
    o.selectItem       = FUiSelect_selectItem;
    o.refreshValue     = FUiSelect_refreshValue;
    // @method
@@ -49,14 +50,7 @@ function FUiSelect(o){
    o.dispose          = FUiSelect_dispose;
 
    //..........................................................
-   // @attribute
-   //o.borderStyle   = EBorder.RoundDrop;
-   //o.items         = null;
-   //o.lsnEditEnd    = null;
-   //..........................................................
    // @event
-   //o.onDataKeyDown = FUiSelect_onDataKeyDown;
-   //o.onDataClick   = FUiSelect_onDataClick;
    //o.onEditEnd     = FUiSelect_onEditEnd;
    //o.loadConfig    = FUiSelect_loadConfig;
    //o.refreshStyle  = FUiSelect_refreshStyle;
@@ -86,6 +80,7 @@ function FUiSelect_onBuildEditValue(p){
    var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
    var he = o._hInput = RBuilder.appendEdit(hep, o.styleName('Input'));
    o.attachEvent('onDoubleClick', he);
+   o.attachEvent('onKeyDown', he);
    //o.attachEvent('onInputEdit', he, o.onInputEdit);
    // 设置大小
    //RHtml.setSize(hep, o._inputSize);
@@ -98,17 +93,41 @@ function FUiSelect_onBuildEditValue(p){
    var hdp = o._hDropPanel = RBuilder.appendTableCell(hl);
    hdp.style.borderLeft = '1px solid #666666';
    o.onBuildEditDrop(p);
+   //..........................................................
+   // 创建空行
+   var c = o._emptyItem = RClass.create(FUiSelectItem);
+   c.build(p);
+   o.push(c);
 }
 
 //==========================================================
 // <T>鼠标点击修改标志。</T>
 //
 // @method
-// @param e:event:TEvent 事件对象
+// @param p:event:TEvent 事件对象
 //==========================================================
-function FUiSelect_onDropClick(e){
+function FUiSelect_onDropClick(p){
+   this.drop();
+}
+
+//==========================================================
+// <T>响应编辑按键事件。</T>
+//
+// @method
+// @param e:editor:FEditor 编辑器
+//==========================================================
+function FUiSelect_onKeyDown(p){
    var o = this;
-   o.drop();
+   // 获得编辑中
+   var e = o._editor;
+   if(e && e._statusEditing && (e._source == o)){
+      e.onEditKeyDown(p);
+      return;
+   }
+   // 下拉展开
+   if(p.keyCode == EKeyCode.Down){
+      o.drop();
+   }
 }
 
 //==========================================================
@@ -119,28 +138,64 @@ function FUiSelect_onDropClick(e){
 function FUiSelect_construct(){
    var o = this;
    o.__base.FUiEditControl.construct.call(o);
-   //o.items = new TItems();
-   //o.lsnEditEnd = new TListener(o, o.onEditEnd);
+}
+
+//==========================================================
+// <T>根据项目名称查找项目。</T>
+//
+// @method
+// @param p:label:String 项目名称
+// @return FUiSelectItem 项目
+//==========================================================
+function FUiSelect_findItemByLabel(p){
+   var o = this;
+   var s = o._components;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         var c = s.valueAt(i);
+         if(RString.equals(c._label, p, true)){
+            return c;
+         }
+      }
+   }
+   return null;
+}
+
+//==========================================================
+// <T>根据项目数据查找项目。</T>
+//
+// @method
+// @param p:dataValue:String 项目数据
+// @return FUiSelectItem 项目
+//==========================================================
+function FUiSelect_findItemByData(p){
+   var o = this;
+   var s = o._components;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         var c = s.valueAt(i);
+         if(RString.equals(c._dataValue, p, true)){
+            return c;
+         }
+      }
+   }
+   return null;
 }
 
 //==========================================================
 // <T>格式化内容为数据。</T>
 //
 // @method
-// @param p:text:String 内容
+// @param p:label:String 标签
+// @return String 数据
 //==========================================================
 function FUiSelect_formatValue(p){
    var o = this;
-   var cs = o._components;
-   if(cs){
-      for(var i = cs.count() - 1; i >= 0; i--){
-         var c = cs.value(i);
-         if(c._label == p){
-            return c._dataValue;
-         }
-      }
+   var c = o.findItemByLabel(p);
+   if(c){
+      return RString.nvl(c._dataValue);
    }
-   return null;
+   return p;
 }
 
 //==========================================================
@@ -148,19 +203,15 @@ function FUiSelect_formatValue(p){
 //
 // @method
 // @param p:value:String 数据
+// @return String 标签
 //==========================================================
 function FUiSelect_formatDisplay(p){
    var o = this;
-   var cs = o._components;
-   if(cs){
-      for(var i = cs.count() - 1; i >= 0; i--){
-         var c = cs.value(i);
-         if(c._dataValue == p){
-            return c._label;
-         }
-      }
+   var c = o.findItemByData(p);
+   if(c){
+      return RString.nvl(c._label);
    }
-   return null;
+   return p;
 }
 
 //==========================================================
@@ -186,55 +237,14 @@ function FUiSelect_get(){
 //==========================================================
 function FUiSelect_set(p){
    var o = this;
-   o.__base.FUiEditControl.set.call(o, p);
+   // 获得显示
+   var t = o.formatDisplay(p);
    // 设置显示
-   o._hInput.value = RString.nvl(p);
+   o._hInput.value = RString.nvl(t);
    //o.finded = v;
    //if(o.hChangeIcon){
    //   o.hChangeIcon.style.display = 'none';
    //}
-}
-
-//==========================================================
-// <T>根据项目名称查找项目。</T>
-//
-// @method
-// @param p:label:String 项目名称
-// @return FUiSelectItem 项目
-//==========================================================
-function FUiSelect_findItemByLabel(p){
-   var o = this;
-   var cs = o._components;
-   if(cs){
-      for(var i = cs.count() - 1; i >= 0; i--){
-         var c = cs.value(i);
-         if(c._label == p){
-            return c;
-         }
-      }
-   }
-   return null;
-}
-
-//==========================================================
-// <T>根据项目数据查找项目。</T>
-//
-// @method
-// @param p:dataValue:String 项目数据
-// @return FUiSelectItem 项目
-//==========================================================
-function FUiSelect_findItemByData(p){
-   var o = this;
-   var cs = o._components;
-   if(cs){
-      for(var i = cs.count() - 1; i >= 0; i--){
-         var c = cs.value(i);
-         if(c._dataValue == p){
-            return c;
-         }
-      }
-   }
-   return null;
 }
 
 //==========================================================
@@ -246,7 +256,9 @@ function FUiSelect_findItemByData(p){
 function FUiSelect_selectItem(p){
    var o = this;
    // 设置显示
-   o._hInput.value = p.label();
+   o._hInput.value = RString.nvl(p.label());
+   // 刷新数据
+   o.refreshValue();
 }
 
 //==========================================================
@@ -268,25 +280,15 @@ function FUiSelect_refreshValue(){
 function FUiSelect_drop(){
    var o = this;
    //if(o.canDrop() && o.canEdit && o.items.count() > 0 && o._editable){
+   if(o.hasComponent()){
       //if(!o._editRefer){
       //   return RMessage.fatal(o, null, 'Edit refer is null.');
       //}
-      o._editRefer = o._label;
-      var e = o._editor = RConsole.find(FEditorConsole).focus(o, FUiSelectEditor, o._editRefer);
-      if(o._editDynamic){
-         // 动态建立
-         return RMessage.fatal(o, null, 'Unsupport.');
-         //ed.fetch();
-         //ed.setItems(o.items);
-         //ed.set(o.reget());
-      }else{
-         // 直接建立
-         e.buildItems(o);
-         e.set(o.get());
-      }
-      //e.lsnEditEnd = o.lsnEditEnd;
+      var e = o._editor = RConsole.find(FEditorConsole).focus(o, FUiSelectEditor, o._name);
+      e.buildItems(o);
+      e.set(o.get());
       e.show();
-   //}
+   }
 }
 
 //==========================================================
@@ -307,38 +309,6 @@ function FUiSelect_dispose(){
 
 
 
-
-//==========================================================
-//<T>数据区域鼠标双击事件。</T>
-//
-//@method
-//@param e:event:TEvent 事件对象
-//==========================================================
-function FUiSelect_onDataClick(){
-   var o = this;
-   // 展开下拉菜单
-   if(!o.editCheck){
-      o.drop();
-   }
-}
-//==========================================================
-// <T>响应编辑按键事件。</T>
-//
-// @method
-// @param e:editor:FEditor 编辑器
-//==========================================================
-function FUiSelect_onDataKeyDown(s, e){
-   var o = this;
-   // 获得编辑中
-   var ed = o._editor;
-   var ef = ed && ed.inEdit;
-   // 父类处理
-   o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
-   // 处理按键按下时，自动提示数据的处理
-   if(ef && ed.source == o){
-      ed.onEditKeyDown(s, e);
-   }
-}
 
 //==========================================================
 // <T>响应编辑完成事件。</T>

@@ -15,6 +15,9 @@ var RBrowser = new function RBrowser(){
    o._hostPath      = '';
    o._contentPath   = '';
    //..........................................................
+   // @event
+   o.onLog          = RBrowser_onLog;
+   //..........................................................
    // @method
    o.construct      = RBrowser_construct;
    // @method
@@ -24,8 +27,14 @@ var RBrowser = new function RBrowser(){
    o.setContentPath = RBrowser_setContentPath;
    // @method
    o.isBrowser      = RBrowser_isBrowser;
-   o.log            = RBrowser_log;
    return o;
+}
+
+//===========================================================
+// <T>日志输出处理。</T>
+//===========================================================
+function RBrowser_onLog(s, p){
+   console.log(p);
 }
 
 //===========================================================
@@ -58,7 +67,7 @@ function RBrowser_construct(){
    }
    // 注册输出接口
    if(o._typeCd == EBrowser.Chrome){
-      RLogger.lsnsOutput.register(o, o.log);
+      RLogger.lsnsOutput.register(o, o.onLog);
    }
    // 输出日志
    RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
@@ -118,11 +127,4 @@ function RBrowser_setContentPath(p){
 //===========================================================
 function RBrowser_isBrowser(p){
    return this._typeCd == p;
-}
-
-//===========================================================
-// <T>构造处理。</T>
-//===========================================================
-function RBrowser_log(p){
-   console.log(p);
 }

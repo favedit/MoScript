@@ -26,6 +26,15 @@ function FG3dGeneralTechnique(o){
 function FG3dGeneralTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
+   //..........................................................
+   // 创建支持模式
+   o.registerMode(EG3dTechniqueMode.Ambient);
+   o.registerMode(EG3dTechniqueMode.DiffuseLevel);
+   o.registerMode(EG3dTechniqueMode.DiffuseColor);
+   o.registerMode(EG3dTechniqueMode.SpecularLevel);
+   o.registerMode(EG3dTechniqueMode.SpecularColor);
+   o.registerMode(EG3dTechniqueMode.Result);
+   //..........................................................
    // 创建颜色处理过程
    var p = o._passColor = RClass.create(FG3dGeneralColorPass);
    p.linkGraphicContext(o);

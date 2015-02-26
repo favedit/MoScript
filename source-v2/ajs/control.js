@@ -391,7 +391,7 @@ function FUiComponent_process(e){
          return r;
       }
    }
-   if(RClass.isClass(o, MContainer)){
+   if(RClass.isClass(o, MUiContainer)){
       var ps = o._components;
       if(ps){
          var pc = ps.count();
@@ -472,7 +472,7 @@ function FUiComponent_innerDump(s, l){
    return s;
 }
 function FUiContainer(o){
-   o = RClass.inherits(this, o, FUiControl, MContainer);
+   o = RClass.inherits(this, o, FUiControl, MUiContainer);
    o._controls           = null;
    o.oeDesign            = RMethod.empty;
    o.construct           = FUiContainer_construct;
@@ -924,17 +924,6 @@ function FUiControl_dispose(){
    o.__base.MSize.dispose.call(o);
    o.__base.MStyle.dispose.call(o);
    o.__base.FUiComponent.dispose.call(o);
-}
-function MContainer(o){
-   o = RClass.inherits(this, o);
-   o.createChild = MContainer_createChild;
-   o.appendChild = RMethod.empty;
-   return o;
-}
-function MContainer_createChild(p){
-   var c = RControl.newInstance(p);
-   c._parent = this;
-   return c;
 }
 function MDataContainer(o){
    o = RClass.inherits(this, o, MDataValue);
@@ -2244,6 +2233,17 @@ function MStyle_styleIcon(n, c){
 function MStyle_styleIconPath(n, c){
    return RResource.iconPath(RClass.name(c ? c : this, true) + '_' + n);
 }
+function MUiContainer(o){
+   o = RClass.inherits(this, o);
+   o.createChild = MUiContainer_createChild;
+   o.appendChild = RMethod.empty;
+   return o;
+}
+function MUiContainer_createChild(p){
+   var c = RControl.newInstance(p);
+   c._parent = this;
+   return c;
+}
 function MVertical(o){
    o = RClass.inherits(this, o);
    o.setVisible = MHorizontal_setVisible;
@@ -2378,7 +2378,7 @@ function RControl_innerCreate(pc, px, pa){
    if(RClass.isClass(pc, MProperty)){
       pc.propertyLoad(px)
    }
-   if(RClass.isClass(pc, MContainer) && px.hasNode()){
+   if(RClass.isClass(pc, MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
@@ -2424,7 +2424,7 @@ function RControl_innerbuild(pr, pc, px, pa, ph){
    if(pc.__typed){
       pr = pc;
    }
-   if(RClass.isClass(pc, MContainer) && px.hasNode()){
+   if(RClass.isClass(pc, MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){

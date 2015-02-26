@@ -93,8 +93,8 @@ function RRuntime_uid(v){
    }
    return r;
 }
-function SLooperEntry(o){
-   if(!o){o = this;}
+function SLooperEntry(){
+   var o = this;
    o.prior   = null;
    o.next    = null;
    o.value   = null;
@@ -107,15 +107,8 @@ function SLooperEntry_dispose(){
    o.next = null;
    o.value = null;
 }
-function SLoopEntry(o){
-   if(!o){o = this;}
-   o.prior = null;
-   o.next  = 0;
-   o.value = null;
-   return o;
-}
-function TArray(o){
-   if(!o){o = this;}
+function TArray(){
+   var o = this;
    o._length  = 0;
    o._memory  = new Array();
    o.isEmpty  = TArray_isEmpty;
@@ -227,15 +220,15 @@ function TArray_dump(){
    var c = o._length;
    r.append(RRuntime.className(o), ':', c);
    if(c > 0){
-      for(var n = 0; n < c; n++){
-         r.append(' [', o._memory[n], ']');
+      for(var i = 0; i < c; i++){
+         r.append(' [', o._memory[i], ']');
       }
    }
-   return r.toString();
+   return r.flush();
 }
 function TAttributes(o){
-   if(!o){o = this;}
-   TDictionary(o);
+   var o = this;
+   TDictionary.call(o);
    o.join   = TAttributes_join;
    o.split  = TAttributes_split;
    o.pack   = TAttributes_pack;
@@ -328,19 +321,19 @@ function TAttributes_dump(){
    r.append(RRuntime.className(o), ' : ', c);
    if(c > 0){
       r.append(' (');
-      for(var n = 0; n < c; n++){
-         if(n > 0){
+      for(var i = 0; i < c; i++){
+         if(i > 0){
             r.append(', ');
          }
-         r.append(o._names[n], '=', o._values[n]);
+         r.append(o._names[i], '=', o._values[i]);
       }
       r.append(')');
    }
    return r.flush();
 }
 function TDictionary(o){
-   if(!o){o = this;}
-   TMap(o);
+   var o = this;
+   TMap.call(o);
    o.dump = TDictionary_dump;
    return o;
 }
@@ -351,15 +344,15 @@ function TDictionary_dump(){
    r.append(RRuntime.className(o), ': ', c);
    if(c > 0){
       r.append(' {\n');
-      for(var n = 0; n < c; n++){
-         r.append('   ', o._names[n], '=[', o._values[n], ']\n');
+      for(var i = 0; i < c; i++){
+         r.append('   ', o._names[i], '=[', o._values[i], ']\n');
       }
       r.append('}');
    }
-   return r.toString();
+   return r.flush();
 }
-function TList(o){
-   if(!o){o = this;}
+function TList(){
+   var o = this;
    o.count      = 0;
    o.memory     = new Array();
    o.isEmpty    = TList_isEmpty;
@@ -540,8 +533,8 @@ function TList_dump(){
    }
    return r.toString();
 }
-function TLooper(o){
-   if(!o){o = this;}
+function TLooper(){
+   var o = this;
    o._count             = 0;
    o._recordCount       = 0;
    o._current           = null;
@@ -737,130 +730,8 @@ function TLooper_dump(){
    }
    return r.toString();
 }
-function TLoopList(o){
-   if(!o){o = this;}
-   o.count      = 0;
-   o.size       = 0;
-   o.start      = new Object();
-   o.ensureSize = TLoopList_ensureSize;
-   o.find       = TLoopList_find;
-   o.contains   = TLoopList_contains;
-   o.indexOf    = TLoopList_indexOf;
-   o.get        = TLoopList_get;
-   o.set        = TLoopList_set;
-   o.push       = TLoopList_push;
-   o.sync       = TLoopList_sync;
-   o.erase      = TLoopList_erase;
-   o.remove     = TLoopList_remove;
-   o.clear      = TLoopList_clear;
-   o.dump       = TLoopList_dump;
-   return o;
-}
-function TLoopList_ensureSize(v){
+function TMap(){
    var o = this;
-   var l = v - 1;
-   var e = o.start;
-   for(var n = 0; n < l; n++){
-      if(!e.next){
-         e.next = new Object();
-         e.value = null;
-      }
-      e = e.next;
-   }
-   e.next = o.start;
-   o.size = v;
-}
-function TLoopList_find(i){
-   var o = this;
-   var e = o.start;
-   if((i >= 0) && (i < o.count)){
-      for(var n = 0; n < o.count; n++){
-         if(n == i){
-            return e;
-         }
-         e = e.next;
-      }
-   }
-   return null;
-}
-function TLoopList_isEmpty(){
-   return (this.count == 0);
-}
-function TLoopList_contains(v){
-   return this.indexOf(v) != -1;
-}
-function TLoopList_indexOf(v){
-   if(v != null){
-      var o = this;
-      var c = o.count;
-      var e = o.start;
-      for(var n = 0; n < c; n++){
-         if(e.value == v){
-            return n;
-         }
-         e = e.next;
-      }
-   }
-   return -1;
-}
-function TLoopList_get(i){
-   var item = this.find(idx);
-   return (item != null) ? item.value : null;
-}
-function TLoopList_set(i, obj){
-   var item = this.find(i);
-   if(item != null){
-      item.value = obj;
-   }
-}
-function TLoopList_push(obj){
-   if(this.count + 1 > this.size){
-      this.start.value = obj;
-      this.start = this.start.next;
-   }else{
-      this.set(this.count++, obj);
-   }
-}
-function TLoopList_sync(obj){
-   var idx = this.indexOf(obj);
-   return (idx == -1) ? this.push(obj) : idx;
-}
-function TLoopList_erase(i){
-   var o = this;
-   var obj = null;
-   var item = this.find(i);
-   if(item != null){
-      obj = item.value;
-      for(var n = idx; n < this.count; n++){
-         item.value = item.next.value;
-      }
-   }
-   return obj;
-}
-function TLoopList_remove(v){
-   var o = this;
-   var i = o.indexOf(v);
-   if(i != -1){
-      o.remove(i);
-   }
-}
-function TLoopList_clear(){
-   this.count = 0;
-}
-function TLoopList_dump(){
-   var o = this;
-   var r = new TString();
-   var c = this.count;
-   r.append(RClass.name(this), ': ', c, '/', o.size);
-   var item = o.start;
-   for(var n = 0; n < c; n++){
-      r.append(' [', item.value, ']');
-      item = item.next;
-   }
-   return r.toString();
-}
-function TMap(o){
-   if(!o){o = this;}
    o._count        = 0;
    o._table        = new Object();
    o._names        = new Array();
@@ -873,8 +744,11 @@ function TMap(o){
    o.indexOfValue  = TMap_indexOfValue;
    o.first         = TMap_first;
    o.last          = TMap_last;
+   o.nameAt        = TMap_nameAt;
    o.name          = TMap_name;
+   o.valueAt       = TMap_valueAt;
    o.value         = TMap_value;
+   o.setValueAt    = TMap_setValueAt;
    o.setValue      = TMap_setValue;
    o.get           = TMap_get;
    o.set           = TMap_set;
@@ -943,11 +817,20 @@ function TMap_last(){
    }
    return null;
 }
+function TMap_nameAt(n){
+   return this._names[n];
+}
 function TMap_name(n){
    return ((n >= 0) && (n < this._count)) ? this._names[n] : null;
 }
+function TMap_valueAt(n){
+   return this._values[n];
+}
 function TMap_value(n){
    return ((n >= 0) && (n < this._count)) ? this._values[n] : null;
+}
+function TMap_setValueAt(n, v){
+   this._values[n] = v;
 }
 function TMap_setValue(n, v){
    if((n >= 0) && (n < this._count)){
@@ -1096,12 +979,205 @@ function TMap_dump(){
    r.appendLine(RRuntime.className(o), ': ', c);
    if(c > 0){
       r.append(' {');
-      for(var n = 0; n < c; n++){
-         r.appendLine(o._names[n], '=[', o._values[n], ']');
+      for(var i = 0; i < c; i++){
+         r.appendLine(o._names[i], '=[', o._values[i], ']');
       }
       r.append('}');
    }
-   return r.toString();
+   return r.flush();
+}
+function TObjects(){
+   var o = this;
+   o._count     = 0;
+   o._items     = new Array();
+   o.isEmpty    = TObjects_isEmpty;
+   o.count      = TObjects_count;
+   o.items      = TObjects_items;
+   o.contains   = TObjects_contains;
+   o.indexOf    = TObjects_indexOf;
+   o.first      = TObjects_first;
+   o.last       = TObjects_last;
+   o.getAt      = TObjects_getAt;
+   o.get        = TObjects_get;
+   o.setAt      = TObjects_setAt;
+   o.set        = TObjects_set;
+   o.assign     = TObjects_assign;
+   o.append     = TObjects_append;
+   o.insert     = TObjects_insert;
+   o.push       = TObjects_push;
+   o.pushUnique = TObjects_pushUnique;
+   o.pop        = TObjects_pop;
+   o.swap       = TObjects_swap;
+   o.sort       = TObjects_sort;
+   o.erase      = TObjects_erase;
+   o.remove     = TObjects_remove;
+   o.clear      = TObjects_clear;
+   o.dispose    = TObjects_dispose;
+   o.dump       = TObjects_dump;
+   return o;
+}
+function TObjects_isEmpty(){
+   return (this._count == 0);
+}
+function TObjects_count(){
+   return this._count;
+}
+function TObjects_items(){
+   return this._items;
+}
+function TObjects_contains(v){
+   return this.indexOf(v) != -1;
+}
+function TObjects_indexOf(v){
+   var o = this;
+   var c = o._count;
+   var s = o._items;
+   for(var i = 0; i < c; i++){
+      if(s[i] == v){
+         return i;
+      }
+   }
+   return -1;
+}
+function TObjects_first(){
+   var o = this;
+   return o._count ? this._items[0] : null;
+}
+function TObjects_last(){
+   var o = this;
+   return o._count ? this._items[o._count - 1] : null;
+}
+function TObjects_getAt(n){
+   return this._items[n];
+}
+function TObjects_get(n){
+   var o = this;
+   return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
+}
+function TObjects_setAt(n, v){
+   this._items[n] = v;
+}
+function TObjects_set(n, v){
+   var o = this;
+   if((n >= 0) && (n < o._count)){
+      o._items[n] = v;
+   }
+}
+function TObjects_assign(p){
+   var o = this;
+   var c = o._count = p._count;
+   for(var i = 0; i < c; i++){
+      o._items[i] = p._items[i];
+   }
+}
+function TObjects_append(v){
+   var o = this;
+   var c = v._count;
+   for(var i = 0; i < c; i++){
+      o.push(v.get(i));
+   }
+}
+function TObjects_insert(i, v){
+   var o = this;
+   var c = o._count;
+   if((i >= 0) && (i <= c)){
+      for(var n = c; n > i; n--){
+         o._items[n] = o._items[n - 1];
+      }
+      o._items[i] = v;
+   }
+}
+function TObjects_push(v){
+   var o = this;
+   var n = o._count++;
+   o._items[n] = v;
+   return n;
+}
+function TObjects_pushUnique(v){
+   var o = this;
+   for(var n = o._count - 1; n >= 0; n--){
+      if(o._items[n] == v){
+         return n;
+      }
+   }
+   var n = o._count++;
+   o._items[n] = v;
+   return n;
+}
+function TObjects_pop(){
+   var o = this;
+   if(o._count){
+      return o._items[--o._count];
+   }
+}
+function TObjects_swap(l, r){
+   var o = this;
+   if((l >= 0) && (l < o._count) && (r >= 0) && (r < o._count) && (l != r)){
+      var s = o._items;
+      var v = s[l];
+      s[l] = s[r];
+      s[r] = v;
+   }
+}
+function TObjects_sort(p){
+   this._items.sort(p);
+}
+function TObjects_erase(n){
+   var v = null;
+   var o = this;
+   if((n >= 0) && (n < o._count)){
+      v = o._items[n];
+      var c = --o._count;
+      var s = o._items;
+      for(var i = n; i < c; i++){
+         s[i] = s[i+1];
+      }
+      s[c] = null;
+   }
+   return v;
+}
+function TObjects_remove(v){
+   var o = this;
+   var c = o._count;
+   if(c){
+      var n = 0;
+      var s = o._items;
+      for(var i = n; i < c; i++){
+         if(s[i] != v){
+            s[n++] = s[i];
+         }
+      }
+      for(var i = n; i < c; i++){
+         s[i] = null;
+      }
+      o._count = n;
+   }
+   return v;
+}
+function TObjects_clear(){
+   var o = this;
+   o._items.length = 0;
+   o._count = 0;
+}
+function TObjects_dispose(){
+   var o = this;
+   for(var n in o._items){
+      o._items[n] = null;
+   }
+   o._count = 0;
+   o._items = null;
+}
+function TObjects_dump(){
+   var o = this;
+   var c = o._count;
+   var r = new TString();
+   r.append(RRuntime.className(o), ':', c);
+   if(c > 0){
+      for(var i = 0; i < c; i++){
+         r.append(' [', o._items[i], ']');
+      }
+   }
+   return r.flush();
 }
 function TString(o){
    if(!o){o = this;}
@@ -3391,6 +3467,7 @@ function RInteger_calculate(f, a, b){
 var RLogger = new function RLogger(){
    var o = this;
    o._statusError = false;
+   o._labelLength = 40;
    o.lsnsOutput   = new TListeners();
    o.output       = RLogger_output;
    o.debug        = RLogger_debug;
@@ -3400,15 +3477,16 @@ var RLogger = new function RLogger(){
    o.fatal        = RLogger_fatal;
    return o;
 }
-function RLogger_output(p){
-   this.lsnsOutput.process(p);
+function RLogger_output(s, p){
+   this.lsnsOutput.process(s, p);
 }
 function RLogger_debug(sf, ms, pm){
+   var o = this;
    var n = RMethod.name(RLogger_debug.caller);
    n = n.replace('_', '.');
    var r = new TString();
    r.append(RDate.format('yymmdd-hh24miss.ms'));
-   r.append('|D [' + RString.rpad(n, 40) + '] ');
+   r.append('|D [' + RString.rpad(n, o._labelLength) + '] ');
    var as = arguments;
    var c = as.length;
    for(var n = 2; n < c; n++){
@@ -3424,14 +3502,15 @@ function RLogger_debug(sf, ms, pm){
       ms = ms.replace('{' + (n - 1) + '}', s);
    }
    r.append(ms);
-   RLogger.output(r.toString());
+   o.output(sf, r.flush());
 }
 function RLogger_info(sf, ms, pm){
+   var o = this;
    var n = RMethod.name(RLogger_info.caller);
    n = n.replace('_', '.');
    var r = new TString();
    r.append(RDate.format('yymmdd-hh24miss.ms'));
-   r.append('|I [' + RString.rpad(n, 40) + '] ');
+   r.append('|I [' + RString.rpad(n, o._labelLength) + '] ');
    var as = arguments;
    var c = as.length;
    for(var n = 2; n < c; n++){
@@ -3447,14 +3526,15 @@ function RLogger_info(sf, ms, pm){
       ms = ms.replace('{' + (n - 1) + '}', s);
    }
    r.append(ms);
-   RLogger.output(r.toString());
+   o.output(sf, r.flush());
 }
 function RLogger_warn(sf, ms, pm){
+   var o = this;
    var n = RMethod.name(RLogger_warn.caller);
    n = n.replace('_', '.');
    var r = new TString();
    r.append(RDate.format('yymmdd-hh24miss.ms'));
-   r.append('|W [' + RString.rpad(n, 40) + '] ');
+   r.append('|W [' + RString.rpad(n, o._labelLength) + '] ');
    var as = arguments;
    var c = as.length;
    for(var n = 2; n < c; n++){
@@ -3470,7 +3550,7 @@ function RLogger_warn(sf, ms, pm){
       ms = ms.replace('{' + (n - 1) + '}', s);
    }
    r.append(ms);
-   RLogger.output(r.toString());
+   o.output(sf, r.flush());
 }
 function RLogger_error(self, method, msg, params){
    if(this._statusError){
@@ -3888,20 +3968,21 @@ function RString_contains(v, s){
    return false;
 }
 function RString_equals(s, t, f){
-   if((s != null) && (t != null)){
-      if(s.constructor != String){
-         s = s.toString();
-      }
-      if(t.constructor != String){
-         t = t.toString();
-      }
-      if(f){
-         return (s == t);
-      }else{
-         return (s.toLowerCase() == t.toLowerCase());
-      }
+   if(s == null){
+      s = '';
+   }else if(s.constructor != String){
+      s = s.toString();
    }
-   return false;
+   if(t == null){
+      t = '';
+   }else if(t.constructor != String){
+      t = t.toString();
+   }
+   if(f){
+      return (s == t);
+   }else{
+      return (s.toLowerCase() == t.toLowerCase());
+   }
 }
 function RString_startsWith(v, s){
    if(s == null){
@@ -4955,85 +5036,130 @@ function TInvoke_invoke(p1, p2, p3, p4, p5, p6){
       }
    }
 }
-function TListener(o){
-   if(!o){o = this;}
-   o.owner    = null;
-   o.callback = null;
-   o.process  = TListener_process;
-   o.dump     = TListener_dump;
+function TListener(){
+   var o = this;
+   o._owner    = null;
+   o._callback = null;
+   o.process   = TListener_process;
+   o.toString  = TListener_toString;
+   o.dispose   = TListener_dispose;
    return o;
 }
 function TListener_process(s, p1, p2, p3, p4, p5){
    var o = this;
-   if(o.callback){
-      o.callback.call(o.owner ? o.owner : o, s, p1, p2, p3, p4, p5);
-   }
+   var c = o._callback;
+   var w = o._owner ? o._owner : o;
+   o._callback.call(w, s, p1, p2, p3, p4, p5);
 }
-function TListener_dump(){
+function TListener_toString(){
    var o = this;
-   return RClass.name(o) + ' owner=' + RClass.name(o.owner);
+   return RClass.name(o) + '(owner=' + RClass.name(o._owner) + ', callback=' + RMethod.name(o._callback) + ')';
 }
-function TListeners(o){
-   if(!o){o = this;}
-   o.listeners = null;
-   o.isEmpty   = TListeners_isEmpty;
-   o.register  = TListeners_register;
-   o.push      = TListeners_push;
-   o.process   = TListeners_process;
-   o.clear     = TListeners_clear;
-   o.dump      = TListeners_dump;
+function TListener_dispose(){
+   var o = this;
+   o._owner = null;
+   o._callback = null;
+}
+function TListeners(){
+   var o = this;
+   o._listeners = null;
+   o.isEmpty    = TListeners_isEmpty;
+   o.find       = TListeners_find;
+   o.register   = TListeners_register;
+   o.unregister = TListeners_unregister;
+   o.push       = TListeners_push;
+   o.remove     = TListeners_remove;
+   o.process    = TListeners_process;
+   o.clear      = TListeners_clear;
+   o.dump       = TListeners_dump;
    return o;
 }
 function TListeners_isEmpty(){
-   var ls = this.listeners;
-   return ls ? (ls.count == 0) : false;
+   var s = this._listeners;
+   return s ? s.isEmpty() : true;
+}
+function TListeners_find(w, p){
+   var s = this._listeners;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var l = s.getAt(i);
+         if(l._owner == w){
+            if(l._callback == p){
+               return l;
+            }
+         }
+      }
+   }
+   return null;
 }
 function TListeners_register(w, p){
-   var l = new TListener();
-   l.owner = w;
-   l.callback = p;
-   this.push(l);
+   var o = this;
+   var l = o.find(w, p);
+   if(l){
+      throw new TError(o, 'Listener is already register. (owner={1}, process={2})', w, p);
+   }
+   l = new TListener();
+   l._owner = w;
+   l._callback = p;
+   o.push(l);
    return l;
+}
+function TListeners_unregister(w, p){
+   var o = this;
+   var l = o.find(w, p);
+   if(!l){
+      throw new TError(o, 'Listener is not register. (owner={1}, process={2})', w, p);
+   }
+   o.remove(l);
+   l.dispose();
 }
 function TListeners_push(l){
    var o = this;
    if(!l){
       throw new TError(o, 'Listener is null.');
    }
-   if(!l.callback){
+   if(!l._callback){
       throw new TError(o, 'Listener process is null.');
    }
-   if(!o.listeners){
-      o.listeners = new TList();
+   var s = o._listeners;
+   if(!s){
+      s = o._listeners = new TObjects();
    }
-   o.listeners.push(l);
+   s.push(l);
 }
-function TListeners_process(s, p1, p2, p3, p4, p5){
-   var ls = this.listeners;
-   if(ls){
-      var c = ls.count;
-      for(var n = 0; n < c; n++){
-         var l = ls.get(n);
-         l.process(s, p1, p2, p3, p4, p5);
+function TListeners_remove(l){
+   var o = this;
+   if(!l){
+      throw new TError(o, 'Listener is null.');
+   }
+   o._listeners.remove(l);
+}
+function TListeners_process(ps, p1, p2, p3, p4, p5){
+   var s = this._listeners;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.getAt(i).process(ps, p1, p2, p3, p4, p5);
       }
    }
 }
 function TListeners_clear(){
-   var o = this;
-   if(o.listeners){
-      o.listeners.clear();
+   var s = this._listeners;
+   if(s){
+      s.clear();
    }
 }
 function TListeners_dump(){
    var o = this;
    var r = new TString();
    r.append(RClass.name(o));
-   var ls = o.listeners;
-   var c = ls.length;
-   for(var n = 0; n < c; n++){
-      r.append('\n   ' + ls[n].dump());
+   var s = o._listeners;
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      r.append('\n   ' + s.getAt(i));
    }
-   return r;
+   return r.flush();
 }
 function TLoaderListener(o){
    if(!o){o = this;}
@@ -5367,211 +5493,6 @@ function TNode_innerDump(dump, node, space){
 function TNode_dump(d, space){
    d = RString.nvlStr(d);
    return this.innerDump(d, this, space);
-}
-function TObjects(o){
-   if(!o){o = this;}
-   o._count     = 0;
-   o._items     = new Array();
-   o.isEmpty    = TObjects_isEmpty;
-   o.count      = TObjects_count;
-   o.data       = TObjects_data;
-   o.contains   = TObjects_contains;
-   o.indexOf    = TObjects_indexOf;
-   o.first      = TObjects_first;
-   o.last       = TObjects_last;
-   o.get        = TObjects_get;
-   o.set        = TObjects_set;
-   o.directGet  = TObjects_directGet;
-   o.directSet  = TObjects_directSet;
-   o.assign     = TObjects_assign;
-   o.append     = TObjects_append;
-   o.insert     = TObjects_insert;
-   o.push       = TObjects_push;
-   o.pushUnique = TObjects_pushUnique;
-   o.pop        = TObjects_pop;
-   o.swap       = TObjects_swap;
-   o.sort       = TObjects_sort;
-   o.erase      = TObjects_erase;
-   o.remove     = TObjects_remove;
-   o.clear      = TObjects_clear;
-   o.disposeAll = TObjects_disposeAll;
-   o.dispose    = TObjects_dispose;
-   o.dump       = TObjects_dump;
-   return o;
-}
-function TObjects_isEmpty(){
-   return (this._count == 0);
-}
-function TObjects_count(){
-   return this._count;
-}
-function TObjects_data(){
-   return this._data;
-}
-function TObjects_contains(v){
-   return this.indexOf(v) != -1;
-}
-function TObjects_indexOf(v){
-   var o = this;
-   var c = o._count;
-   for(var n = 0; n < c; n++){
-      if(o._items[n] == v){
-         return n;
-      }
-   }
-   return -1;
-}
-function TObjects_first(){
-   var o = this;
-   return o._count ? this._items[0] : null;
-}
-function TObjects_last(){
-   var o = this;
-   return o._count ? this._items[o._count - 1] : null;
-}
-function TObjects_get(n){
-   var o = this;
-   return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
-}
-function TObjects_set(n, v){
-   var o = this;
-   if((n >= 0) && (n < o._count)){
-      o._items[n] = v;
-   }
-}
-function TObjects_directGet(n){
-   return this._items[n];
-}
-function TObjects_directSet(n, v){
-   this._items[n] = v;
-}
-function TObjects_assign(p){
-   var o = this;
-   var c = o._count = p._count;
-   for(var i = 0; i < c; i++){
-      o._items[i] = p._items[i];
-   }
-}
-function TObjects_append(v){
-   var o = this;
-   var c = v._count;
-   for(var n = 0; n < c; n++){
-      o.push(v.get(n));
-   }
-}
-function TObjects_insert(i, v){
-   var o = this;
-   var c = o._count;
-   if((i >= 0) && (i <= c)){
-      for(var n = c; n > i; n--){
-         o._items[n] = o._items[n - 1];
-      }
-      o._items[i] = v;
-   }
-}
-function TObjects_push(v){
-   var n = this._count++;
-   this._items[n] = v;
-   return n;
-}
-function TObjects_pushUnique(v){
-   var o = this;
-   for(var n = o._count-1; n >= 0; n--){
-      if(o._items[n] == v){
-         return n;
-      }
-   }
-   var n = o._count++;
-   o._items[n] = v;
-   return n;
-}
-function TObjects_pop(){
-   var o = this;
-   if(o._count){
-      return o._items[--o._count];
-   }
-}
-function TObjects_swap(l, r){
-   var o = this;
-   if((l >= 0) && (l < o._count) && (r >= 0) && (r < o._count) && (l != r)){
-      var v = o._items[l];
-      o._items[l] = this._items[r];
-      o._items[r] = v;
-   }
-}
-function TObjects_sort(p){
-   this._items.sort(p);
-}
-function TObjects_erase(n){
-   var v = null;
-   var o = this;
-   if((n >= 0) && (n < o._count)){
-      v = o._items[n];
-      var c = --o._count;
-      var s = o._items;
-      for(var i = n; i < c; i++){
-         s[i] = s[i+1];
-      }
-      s[c] = null;
-   }
-   return v;
-}
-function TObjects_remove(v){
-   if(v != null){
-      var o = this;
-      var c = o._count;
-      if(c > 0){
-         var n = 0;
-         var s = o._items;
-         for(var i = n; i < c; i++){
-            if(s[i] != v){
-               s[n++] = s[i];
-            }
-         }
-         for(var i = n; i < c; i++){
-            s[i] = null;
-         }
-         o._count = n;
-      }
-   }
-   return v;
-}
-function TObjects_clear(){
-   var o = this;
-   o._items.length = 0;
-   o._count = 0;
-}
-function TObjects_dispose(){
-   var o = this;
-   for(var n in o._items){
-      o._items[n] = null;
-   }
-   o._count = 0;
-   o._items = null;
-}
-function TObjects_disposeAll(){
-   var o = this;
-   for(var n in o._items){
-      var v = o._items[n];
-      if(v){
-         v.dispose();
-      }
-      o._items[n] = null;
-   }
-   o._count = 0;
-   o._items = null;
-}
-function TObjects_dump(){
-   var o = this;
-   var c = o._count;
-   var r = new TString();
-   r.append(RClass.name(o), ':', c);
-   if(c > 0){
-      for(var n = 0; n < c; n++){
-         r.append(' [', o._items[n], ']');
-      }
-   }
-   return r.toString();
 }
 function TRow(o){
    if(!o){o = this;}
@@ -9513,14 +9434,17 @@ var RBrowser = new function RBrowser(){
    o._typeCd        = EBrowser.Unknown;
    o._hostPath      = '';
    o._contentPath   = '';
+   o.onLog          = RBrowser_onLog;
    o.construct      = RBrowser_construct;
    o.hostPath       = RBrowser_hostPath;
    o.setHostPath    = RBrowser_setHostPath;
    o.contentPath    = RBrowser_contentPath;
    o.setContentPath = RBrowser_setContentPath;
    o.isBrowser      = RBrowser_isBrowser;
-   o.log            = RBrowser_log;
    return o;
+}
+function RBrowser_onLog(s, p){
+   console.log(p);
 }
 function RBrowser_construct(){
    var o = this;
@@ -9544,7 +9468,7 @@ function RBrowser_construct(){
       return;
    }
    if(o._typeCd == EBrowser.Chrome){
-      RLogger.lsnsOutput.register(o, o.log);
+      RLogger.lsnsOutput.register(o, o.onLog);
    }
    RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }
@@ -9570,9 +9494,6 @@ function RBrowser_setContentPath(p){
 }
 function RBrowser_isBrowser(p){
    return this._typeCd == p;
-}
-function RBrowser_log(p){
-   console.log(p);
 }
 var RBuilder = new function RBuilder(){
    var o = this;
@@ -12440,14 +12361,20 @@ function FTagDocument_create(p){
       case 'source':
          t = RClass.create(FTag);
          break;
+      case 'write':
+         t = RClass.create(FTagWrite);
+         break;
       case 'true':
          t = RClass.create(FTagTrue);
          break;
       case 'false':
          t = RClass.create(FTagFalse);
          break;
-      case 'write':
-         t = RClass.create(FTagWrite);
+      case 'equals':
+         t = RClass.create(FTagEquals);
+         break;
+      case 'notEquals':
+         t = RClass.create(FTagNotEquals);
          break;
       default:
          throw new TError(o, 'Unknown tag type. (name={1})', n);
@@ -12522,6 +12449,47 @@ function FTagDocument_dump(){
    r.appendLine(o.root().dump(r));
    return r.toString();
 }
+function FTagEquals(o){
+   o = RClass.inherits(this, o, FTag);
+   o._trimLeft = true;
+   o._source   = null;
+   o._value    = null;
+   o.onBegin   = FTagEquals_onBegin;
+   o.set       = FTagEquals_set;
+   o.toString  = FTagEquals_toString;
+   return o;
+}
+function FTagEquals_onBegin(p){
+   var o = this;
+   var r = false;
+   var s = p.get(o._source);
+   var vs = o._value.split('|');
+   var c = vs.length;
+   for(var i = 0; i < c; i++){
+      var v = vs[i]
+      if(s == v){
+         r = true;
+         break;
+      }
+   }
+   return r ? EResult.Continue : EResult.Skip;
+}
+function FTagEquals_set(n, v){
+   var o = this;
+   switch(n){
+      case 'source':
+         o._source = v;
+         return;
+      case 'value':
+         o._value = v;
+         return;
+   }
+   o.__base.FTag.set.call(o, n, v);
+}
+function FTagEquals_toString(){
+   var o = this;
+   return 'source=' + o._source + ', value=' + o._value;
+}
 function FTagFalse(o){
    o = RClass.inherits(this, o, FTag);
    o._trimLeft = true;
@@ -12548,6 +12516,47 @@ function FTagFalse_set(n, v){
 function FTagFalse_toString(){
    var o = this;
    return 'source=' + o._source;
+}
+function FTagNotEquals(o){
+   o = RClass.inherits(this, o, FTag);
+   o._trimLeft = true;
+   o._source   = null;
+   o._value    = null;
+   o.onBegin   = FTagNotEquals_onBegin;
+   o.set       = FTagNotEquals_set;
+   o.toString  = FTagNotEquals_toString;
+   return o;
+}
+function FTagNotEquals_onBegin(p){
+   var o = this;
+   var r = true;
+   var s = p.get(o._source);
+   var vs = o._value.split('|');
+   var c = vs.length;
+   for(var i = 0; i < c; i++){
+      var v = vs[i]
+      if(s == v){
+         r = false;
+         break;
+      }
+   }
+   return r ? EResult.Continue : EResult.Skip;
+}
+function FTagNotEquals_set(n, v){
+   var o = this;
+   switch(n){
+      case 'source':
+         o._source = v;
+         return;
+      case 'value':
+         o._value = v;
+         return;
+   }
+   o.__base.FTag.set.call(o, n, v);
+}
+function FTagNotEquals_toString(){
+   var o = this;
+   return 'source=' + o._source + ', value=' + o._value;
 }
 function FTagText(o){
    o = RClass.inherits(this, o, FTag);
@@ -13772,6 +13781,19 @@ var EG3dRegionParameter = new function EG3dRegionParameter(){
    o.LightInfo                  = 11;
    return o;
 }
+var EG3dTechniqueMode = new function EG3dTechniqueMode(){
+   var o = this;
+   o.Color         = 'color';
+   o.Ambient       = 'ambient';
+   o.DiffuseLevel  = 'diffuse.level';
+   o.DiffuseColor  = 'diffuse.color';
+   o.SpecularLevel = 'specular.level';
+   o.SpecularColor = 'specular.color';
+   o.Reflect       = 'reflect';
+   o.Emissive      = 'emissive';
+   o.Result        = 'result';
+   return o;
+}
 function FG3dAnimation(o){
    o = RClass.inherits(this, o, FObject);
    o._baseTick    = 0;
@@ -14241,8 +14263,10 @@ function FG3dEffectConsole_create(c, p){
    e.setup();
    return e;
 }
-function FG3dEffectConsole_buildEffectInfo(pc, pf, pr){
+function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    var o = this;
+   var t = pg.technique();
+   pf.techniqueModeCode = t.activeMode().code();
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
    pf.vertexCount = pr.vertexCount();
@@ -14300,7 +14324,7 @@ function FG3dEffectConsole_find(pc, pg, pr){
    var et = o.findTemplate(pc, ef);
    if(et){
       o._effectInfo.reset();
-      o.buildEffectInfo(pc, o._effectInfo, pr);
+      o.buildEffectInfo(pc, o._effectInfo, pg, pr);
       et.buildInfo(o._tagContext, o._effectInfo);
       var ec = ef + o._tagContext.code;
       var es = o._effects;
@@ -14940,6 +14964,7 @@ function FG3dRenderable(o){
    o.effectFind      = FG3dRenderable_effectFind;
    o.effectSet       = FG3dRenderable_effectSet;
    o.infos           = FG3dRenderable_infos;
+   o.clearInfos      = FG3dRenderable_clearInfos;
    o.selectInfo      = FG3dRenderable_selectInfo;
    o.testVisible     = RMethod.virtual(o, 'testVisible');
    o.update          = FG3dRenderable_update;
@@ -14998,6 +15023,17 @@ function FG3dRenderable_infos(){
    }
    return r;
 }
+function FG3dRenderable_clearInfos(){
+   var o = this;
+   var s = o._infos;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var ri = s.valueAt(i);
+         ri.reset();
+      }
+   }
+}
 function FG3dRenderable_selectInfo(p){
    var o = this;
    var s = o.infos();
@@ -15034,10 +15070,16 @@ function FG3dSpotLight(o){
 function FG3dTechnique(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._code           = null;
+   o._activeMode     = null;
+   o._modes          = null;
    o._passes         = null;
    o.construct       = FG3dTechnique_construct;
    o.code            = FG3dTechnique_code;
+   o.activeMode      = FG3dTechnique_activeMode;
+   o.modes           = FG3dTechnique_modes;
    o.passes          = FG3dTechnique_passes;
+   o.registerMode    = FG3dTechnique_registerMode;
+   o.selectMode      = FG3dTechnique_selectMode;
    o.updateRegion    = RMethod.empty;
    o.clear           = FG3dTechnique_clear;
    o.sortRenderables = FG3dTechnique_sortRenderables;
@@ -15048,13 +15090,31 @@ function FG3dTechnique(o){
 function FG3dTechnique_construct(){
    var o = this;
    o.__base.FG3dObject.construct.call(o);
+   o._modes = new TObjects();
    o._passes = new TObjects();
 }
 function FG3dTechnique_code(){
    return this._code;
 }
+function FG3dTechnique_activeMode(){
+   return this._activeMode;
+}
+function FG3dTechnique_modes(){
+   return this._modes;
+}
 function FG3dTechnique_passes(){
    return this._passes;
+}
+function FG3dTechnique_registerMode(p){
+   var o = this;
+   var m = RClass.create(FG3dTechniqueMode);
+   m.setCode(p);
+   o._modes.push(m);
+   o._activeMode = m;
+   return m;
+}
+function FG3dTechnique_selectMode(p){
+   var o = this;
 }
 function FG3dTechnique_clear(p){
    var o = this;
@@ -15112,6 +15172,19 @@ function FG3dTechniqueConsole_find(c, p){
       ts.set(n, t);
    }
    return t;
+}
+function FG3dTechniqueMode(o){
+   o = RClass.inherits(this, o, FObject);
+   o._code   = null;
+   o.code    = FG3dTechniqueMode_code;
+   o.setCode = FG3dTechniqueMode_setCode;
+   return o;
+}
+function FG3dTechniqueMode_code(){
+   return this._code;
+}
+function FG3dTechniqueMode_setCode(p){
+   this._code = p;
 }
 function FG3dTechniquePass(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -15276,6 +15349,8 @@ function REngine3d_createContext(c, h){
 function SG3dEffectInfo(o){
    if(!o){o = this;}
    o.code                  = null;
+   o.techniqueCode         = null;
+   o.techniqueModeCode     = null;
    o.fillModeCd            = null;
    o.optionCullMode        = null;
    o.cullModeCd            = null;
@@ -15593,6 +15668,8 @@ function SG3dRenderableInfo(){
 }
 function SG3dRenderableInfo_reset(){
    var o = this;
+   o.effect = null;
+   o.layout = null;
 }
 var EG3dAttribute = new function EG3dAttribute(){
    var o = this;
@@ -16272,6 +16349,8 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    var c = o._graphicContext;
    var cb = c.capability();
    var s = new TString();
+   s.append(pc.techniqueModeCode)
+   pt.set("technique.mode", pc.techniqueModeCode);
    if(cb.optionMaterialMap){
       s.append("|OM");
       pt.setBoolean("option.material.map", true);
@@ -16769,6 +16848,12 @@ function FG3dGeneralTechnique(o){
 function FG3dGeneralTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
+   o.registerMode(EG3dTechniqueMode.Ambient);
+   o.registerMode(EG3dTechniqueMode.DiffuseLevel);
+   o.registerMode(EG3dTechniqueMode.DiffuseColor);
+   o.registerMode(EG3dTechniqueMode.SpecularLevel);
+   o.registerMode(EG3dTechniqueMode.SpecularColor);
+   o.registerMode(EG3dTechniqueMode.Result);
    var p = o._passColor = RClass.create(FG3dGeneralColorPass);
    p.linkGraphicContext(o);
    p.setup();
@@ -18030,10 +18115,9 @@ function FWglFragmentShader_upload(v){
    var r = g.getShaderParameter(n, g.COMPILE_STATUS);
    if(!r){
       var i = g.getShaderInfoLog(n);
-      RLogger.fatal(o, null, 'Upload fragment shader source failure. (error={1})\n{2}', i, v);
       g.deleteShader(n);
       o._native = null;
-      return false;
+      throw new TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', i, v);
    }
    o._source = v;
    return true;
@@ -18409,10 +18493,9 @@ function FWglVertexShader_upload(v){
    var r = g.getShaderParameter(n, g.COMPILE_STATUS);
    if(!r){
       var i = g.getShaderInfoLog(n);
-      RLogger.fatal(o, null, 'Upload vertex shader source failure. (error={1})\n{2}', i, v);
       g.deleteShader(n);
       o._native = null;
-      return false;
+      throw new TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', i, v);
    }
    o._source = v;
    return true;
@@ -19661,6 +19744,8 @@ function FE3dScene_resource(p){
    return this._resource;
 }
 function FE3dScene_loadTechniqueResource(p){
+   var o = this;
+   o._technique._resource = p;
 }
 function FE3dScene_loadRegionResource(p){
    var o = this;
@@ -20959,6 +21044,7 @@ function RE3dEngine_onSetup(){
    ec.register('select.select.skeleton', FG3dSelectSkeletonEffect);
    ec.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
    ec.register('control.control.automatic', FG3dControlAutomaticEffect);
+   ec.register('general.color.control', FG3dControlAutomaticEffect);
    ec.register('general.color.automatic', FG3dGeneralColorAutomaticEffect);
    ec.register('general.color.skeleton', FG3dGeneralColorSkeletonEffect);
    ec.register('general.color.skeleton.4', FG3dGeneralColorSkeletonEffect);
@@ -22122,9 +22208,11 @@ function FRs3SceneSpace_unserialize(p){
 }
 function FRs3SceneTechnique(o){
    o = RClass.inherits(this, o, FRs3Object);
-   o._passes     = null;
-   o.passes      = FRs3SceneTechnique_passes;
-   o.unserialize = FRs3SceneTechnique_unserialize;
+   o._techniqueCode = null;
+   o._passes        = null;
+   o.passes         = FRs3SceneTechnique_passes;
+   o.unserialize    = FRs3SceneTechnique_unserialize;
+   o.saveConfig     = FRs3SceneTechnique_saveConfig;
    return o;
 }
 function FRs3SceneTechnique_passes(){
@@ -22142,6 +22230,11 @@ function FRs3SceneTechnique_unserialize(p){
          ss.push(s);
       }
    }
+}
+function FRs3SceneTechnique_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Object.saveConfig.call(o, p);
+   p.set('technique_code', o._techniqueCode);
 }
 function FRs3SceneTechniquePass(o){
    o = RClass.inherits(this, o, FRs3Object);
@@ -22905,7 +22998,7 @@ function FRd3BoundBox(o){
    o = RClass.inherits(this, o, FRd3Renderable);
    o._outline              = null;
    o._rate                 = 0.2;
-   o._effectCode           = 'automatic';
+   o._effectCode           = 'control';
    o._vertexPositionBuffer = null;
    o._vertexColorBuffer    = null;
    o.construct             = FRd3BoundBox_construct;
@@ -22954,6 +23047,7 @@ function FRd3BoundBox_setup(){
    ib.upload(id, 48);
    o.update();
    var mi = o.material().info();
+   mi.effectCode = o._effectCode;
    mi.ambientColor.set(1, 1, 1, 1);
 }
 function FRd3BoundBox_upload(){
@@ -24175,6 +24269,19 @@ var EG3dRegionParameter = new function EG3dRegionParameter(){
    o.LightInfo                  = 11;
    return o;
 }
+var EG3dTechniqueMode = new function EG3dTechniqueMode(){
+   var o = this;
+   o.Color         = 'color';
+   o.Ambient       = 'ambient';
+   o.DiffuseLevel  = 'diffuse.level';
+   o.DiffuseColor  = 'diffuse.color';
+   o.SpecularLevel = 'specular.level';
+   o.SpecularColor = 'specular.color';
+   o.Reflect       = 'reflect';
+   o.Emissive      = 'emissive';
+   o.Result        = 'result';
+   return o;
+}
 function FG3dAnimation(o){
    o = RClass.inherits(this, o, FObject);
    o._baseTick    = 0;
@@ -24644,8 +24751,10 @@ function FG3dEffectConsole_create(c, p){
    e.setup();
    return e;
 }
-function FG3dEffectConsole_buildEffectInfo(pc, pf, pr){
+function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    var o = this;
+   var t = pg.technique();
+   pf.techniqueModeCode = t.activeMode().code();
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
    pf.vertexCount = pr.vertexCount();
@@ -24703,7 +24812,7 @@ function FG3dEffectConsole_find(pc, pg, pr){
    var et = o.findTemplate(pc, ef);
    if(et){
       o._effectInfo.reset();
-      o.buildEffectInfo(pc, o._effectInfo, pr);
+      o.buildEffectInfo(pc, o._effectInfo, pg, pr);
       et.buildInfo(o._tagContext, o._effectInfo);
       var ec = ef + o._tagContext.code;
       var es = o._effects;
@@ -25343,6 +25452,7 @@ function FG3dRenderable(o){
    o.effectFind      = FG3dRenderable_effectFind;
    o.effectSet       = FG3dRenderable_effectSet;
    o.infos           = FG3dRenderable_infos;
+   o.clearInfos      = FG3dRenderable_clearInfos;
    o.selectInfo      = FG3dRenderable_selectInfo;
    o.testVisible     = RMethod.virtual(o, 'testVisible');
    o.update          = FG3dRenderable_update;
@@ -25401,6 +25511,17 @@ function FG3dRenderable_infos(){
    }
    return r;
 }
+function FG3dRenderable_clearInfos(){
+   var o = this;
+   var s = o._infos;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var ri = s.valueAt(i);
+         ri.reset();
+      }
+   }
+}
 function FG3dRenderable_selectInfo(p){
    var o = this;
    var s = o.infos();
@@ -25437,10 +25558,16 @@ function FG3dSpotLight(o){
 function FG3dTechnique(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._code           = null;
+   o._activeMode     = null;
+   o._modes          = null;
    o._passes         = null;
    o.construct       = FG3dTechnique_construct;
    o.code            = FG3dTechnique_code;
+   o.activeMode      = FG3dTechnique_activeMode;
+   o.modes           = FG3dTechnique_modes;
    o.passes          = FG3dTechnique_passes;
+   o.registerMode    = FG3dTechnique_registerMode;
+   o.selectMode      = FG3dTechnique_selectMode;
    o.updateRegion    = RMethod.empty;
    o.clear           = FG3dTechnique_clear;
    o.sortRenderables = FG3dTechnique_sortRenderables;
@@ -25451,13 +25578,31 @@ function FG3dTechnique(o){
 function FG3dTechnique_construct(){
    var o = this;
    o.__base.FG3dObject.construct.call(o);
+   o._modes = new TObjects();
    o._passes = new TObjects();
 }
 function FG3dTechnique_code(){
    return this._code;
 }
+function FG3dTechnique_activeMode(){
+   return this._activeMode;
+}
+function FG3dTechnique_modes(){
+   return this._modes;
+}
 function FG3dTechnique_passes(){
    return this._passes;
+}
+function FG3dTechnique_registerMode(p){
+   var o = this;
+   var m = RClass.create(FG3dTechniqueMode);
+   m.setCode(p);
+   o._modes.push(m);
+   o._activeMode = m;
+   return m;
+}
+function FG3dTechnique_selectMode(p){
+   var o = this;
 }
 function FG3dTechnique_clear(p){
    var o = this;
@@ -25515,6 +25660,19 @@ function FG3dTechniqueConsole_find(c, p){
       ts.set(n, t);
    }
    return t;
+}
+function FG3dTechniqueMode(o){
+   o = RClass.inherits(this, o, FObject);
+   o._code   = null;
+   o.code    = FG3dTechniqueMode_code;
+   o.setCode = FG3dTechniqueMode_setCode;
+   return o;
+}
+function FG3dTechniqueMode_code(){
+   return this._code;
+}
+function FG3dTechniqueMode_setCode(p){
+   this._code = p;
 }
 function FG3dTechniquePass(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -25679,6 +25837,8 @@ function REngine3d_createContext(c, h){
 function SG3dEffectInfo(o){
    if(!o){o = this;}
    o.code                  = null;
+   o.techniqueCode         = null;
+   o.techniqueModeCode     = null;
    o.fillModeCd            = null;
    o.optionCullMode        = null;
    o.cullModeCd            = null;
@@ -25996,6 +26156,8 @@ function SG3dRenderableInfo(){
 }
 function SG3dRenderableInfo_reset(){
    var o = this;
+   o.effect = null;
+   o.layout = null;
 }
 var EG3dAttribute = new function EG3dAttribute(){
    var o = this;
@@ -26675,6 +26837,8 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    var c = o._graphicContext;
    var cb = c.capability();
    var s = new TString();
+   s.append(pc.techniqueModeCode)
+   pt.set("technique.mode", pc.techniqueModeCode);
    if(cb.optionMaterialMap){
       s.append("|OM");
       pt.setBoolean("option.material.map", true);
@@ -27172,6 +27336,12 @@ function FG3dGeneralTechnique(o){
 function FG3dGeneralTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
+   o.registerMode(EG3dTechniqueMode.Ambient);
+   o.registerMode(EG3dTechniqueMode.DiffuseLevel);
+   o.registerMode(EG3dTechniqueMode.DiffuseColor);
+   o.registerMode(EG3dTechniqueMode.SpecularLevel);
+   o.registerMode(EG3dTechniqueMode.SpecularColor);
+   o.registerMode(EG3dTechniqueMode.Result);
    var p = o._passColor = RClass.create(FG3dGeneralColorPass);
    p.linkGraphicContext(o);
    p.setup();
@@ -28433,10 +28603,9 @@ function FWglFragmentShader_upload(v){
    var r = g.getShaderParameter(n, g.COMPILE_STATUS);
    if(!r){
       var i = g.getShaderInfoLog(n);
-      RLogger.fatal(o, null, 'Upload fragment shader source failure. (error={1})\n{2}', i, v);
       g.deleteShader(n);
       o._native = null;
-      return false;
+      throw new TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', i, v);
    }
    o._source = v;
    return true;
@@ -28812,10 +28981,9 @@ function FWglVertexShader_upload(v){
    var r = g.getShaderParameter(n, g.COMPILE_STATUS);
    if(!r){
       var i = g.getShaderInfoLog(n);
-      RLogger.fatal(o, null, 'Upload vertex shader source failure. (error={1})\n{2}', i, v);
       g.deleteShader(n);
       o._native = null;
-      return false;
+      throw new TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', i, v);
    }
    o._source = v;
    return true;
@@ -29315,7 +29483,7 @@ function FUiComponent_process(e){
          return r;
       }
    }
-   if(RClass.isClass(o, MContainer)){
+   if(RClass.isClass(o, MUiContainer)){
       var ps = o._components;
       if(ps){
          var pc = ps.count();
@@ -29396,7 +29564,7 @@ function FUiComponent_innerDump(s, l){
    return s;
 }
 function FUiContainer(o){
-   o = RClass.inherits(this, o, FUiControl, MContainer);
+   o = RClass.inherits(this, o, FUiControl, MUiContainer);
    o._controls           = null;
    o.oeDesign            = RMethod.empty;
    o.construct           = FUiContainer_construct;
@@ -29848,17 +30016,6 @@ function FUiControl_dispose(){
    o.__base.MSize.dispose.call(o);
    o.__base.MStyle.dispose.call(o);
    o.__base.FUiComponent.dispose.call(o);
-}
-function MContainer(o){
-   o = RClass.inherits(this, o);
-   o.createChild = MContainer_createChild;
-   o.appendChild = RMethod.empty;
-   return o;
-}
-function MContainer_createChild(p){
-   var c = RControl.newInstance(p);
-   c._parent = this;
-   return c;
 }
 function MDataContainer(o){
    o = RClass.inherits(this, o, MDataValue);
@@ -31168,6 +31325,17 @@ function MStyle_styleIcon(n, c){
 function MStyle_styleIconPath(n, c){
    return RResource.iconPath(RClass.name(c ? c : this, true) + '_' + n);
 }
+function MUiContainer(o){
+   o = RClass.inherits(this, o);
+   o.createChild = MUiContainer_createChild;
+   o.appendChild = RMethod.empty;
+   return o;
+}
+function MUiContainer_createChild(p){
+   var c = RControl.newInstance(p);
+   c._parent = this;
+   return c;
+}
 function MVertical(o){
    o = RClass.inherits(this, o);
    o.setVisible = MHorizontal_setVisible;
@@ -31302,7 +31470,7 @@ function RControl_innerCreate(pc, px, pa){
    if(RClass.isClass(pc, MProperty)){
       pc.propertyLoad(px)
    }
-   if(RClass.isClass(pc, MContainer) && px.hasNode()){
+   if(RClass.isClass(pc, MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
@@ -31348,7 +31516,7 @@ function RControl_innerbuild(pr, pc, px, pa, ph){
    if(pc.__typed){
       pr = pc;
    }
-   if(RClass.isClass(pc, MContainer) && px.hasNode()){
+   if(RClass.isClass(pc, MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
@@ -32195,7 +32363,7 @@ function FFocusConsole_construct(){
 }
 function FFocusConsole_enter(c){
    var o = this;
-   if(RClass.isClass(c, MContainer)){
+   if(RClass.isClass(c, MUiContainer)){
       o._hoverContainer = c;
    }else{
       o._hoverControl = c;
@@ -37932,7 +38100,7 @@ function FUiRadio_refreshStyle(){
    h.style.cursor = o._editable? 'hand':'normal';
 }
 function FUiSelect(o){
-   o = RClass.inherits(this, o, FUiEditControl, MContainer, MPropertySelect, MDropable);
+   o = RClass.inherits(this, o, FUiEditControl, MUiContainer, MPropertySelect, MDropable, MListenerDataChanged);
    o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
    o._hValueForm      = null;
@@ -37942,13 +38110,14 @@ function FUiSelect(o){
    o.onBuildEditValue = FUiSelect_onBuildEditValue;
    o.onDoubleClick    = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FUiSelect_onDropClick);
    o.onDropClick      = FUiSelect_onDropClick;
+   o.onKeyDown        = RClass.register(o, new AEventKeyDown('onKeyDown'), FUiSelect_onKeyDown);
    o.construct        = FUiSelect_construct;
+   o.findItemByLabel  = FUiSelect_findItemByLabel;
+   o.findItemByData   = FUiSelect_findItemByData;
    o.formatValue      = FUiSelect_formatValue;
    o.formatDisplay    = FUiSelect_formatDisplay;
    o.get              = FUiSelect_get;
    o.set              = FUiSelect_set;
-   o.findItemByLabel  = FUiSelect_findItemByLabel;
-   o.findItemByData   = FUiSelect_findItemByData;
    o.selectItem       = FUiSelect_selectItem;
    o.refreshValue     = FUiSelect_refreshValue;
    o.drop             = FUiSelect_drop;
@@ -37967,46 +38136,76 @@ function FUiSelect_onBuildEditValue(p){
    var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
    var he = o._hInput = RBuilder.appendEdit(hep, o.styleName('Input'));
    o.attachEvent('onDoubleClick', he);
+   o.attachEvent('onKeyDown', he);
    if(o._editLength){
       he.maxLength = o._editLength;
    }
    var hdp = o._hDropPanel = RBuilder.appendTableCell(hl);
    hdp.style.borderLeft = '1px solid #666666';
    o.onBuildEditDrop(p);
+   var c = o._emptyItem = RClass.create(FUiSelectItem);
+   c.build(p);
+   o.push(c);
 }
-function FUiSelect_onDropClick(e){
+function FUiSelect_onDropClick(p){
+   this.drop();
+}
+function FUiSelect_onKeyDown(p){
    var o = this;
-   o.drop();
+   var e = o._editor;
+   if(e && e._statusEditing && (e._source == o)){
+      e.onEditKeyDown(p);
+      return;
+   }
+   if(p.keyCode == EKeyCode.Down){
+      o.drop();
+   }
 }
 function FUiSelect_construct(){
    var o = this;
    o.__base.FUiEditControl.construct.call(o);
 }
-function FUiSelect_formatValue(p){
+function FUiSelect_findItemByLabel(p){
    var o = this;
-   var cs = o._components;
-   if(cs){
-      for(var i = cs.count() - 1; i >= 0; i--){
-         var c = cs.value(i);
-         if(c._label == p){
-            return c._dataValue;
+   var s = o._components;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         var c = s.valueAt(i);
+         if(RString.equals(c._label, p, true)){
+            return c;
          }
       }
    }
    return null;
 }
-function FUiSelect_formatDisplay(p){
+function FUiSelect_findItemByData(p){
    var o = this;
-   var cs = o._components;
-   if(cs){
-      for(var i = cs.count() - 1; i >= 0; i--){
-         var c = cs.value(i);
-         if(c._dataValue == p){
-            return c._label;
+   var s = o._components;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         var c = s.valueAt(i);
+         if(RString.equals(c._dataValue, p, true)){
+            return c;
          }
       }
    }
    return null;
+}
+function FUiSelect_formatValue(p){
+   var o = this;
+   var c = o.findItemByLabel(p);
+   if(c){
+      return RString.nvl(c._dataValue);
+   }
+   return p;
+}
+function FUiSelect_formatDisplay(p){
+   var o = this;
+   var c = o.findItemByData(p);
+   if(c){
+      return RString.nvl(c._label);
+   }
+   return p;
 }
 function FUiSelect_get(){
    var o = this;
@@ -38016,38 +38215,13 @@ function FUiSelect_get(){
 }
 function FUiSelect_set(p){
    var o = this;
-   o.__base.FUiEditControl.set.call(o, p);
-   o._hInput.value = RString.nvl(p);
-}
-function FUiSelect_findItemByLabel(p){
-   var o = this;
-   var cs = o._components;
-   if(cs){
-      for(var i = cs.count() - 1; i >= 0; i--){
-         var c = cs.value(i);
-         if(c._label == p){
-            return c;
-         }
-      }
-   }
-   return null;
-}
-function FUiSelect_findItemByData(p){
-   var o = this;
-   var cs = o._components;
-   if(cs){
-      for(var i = cs.count() - 1; i >= 0; i--){
-         var c = cs.value(i);
-         if(c._dataValue == p){
-            return c;
-         }
-      }
-   }
-   return null;
+   var t = o.formatDisplay(p);
+   o._hInput.value = RString.nvl(t);
 }
 function FUiSelect_selectItem(p){
    var o = this;
-   o._hInput.value = p.label();
+   o._hInput.value = RString.nvl(p.label());
+   o.refreshValue();
 }
 function FUiSelect_refreshValue(){
    var o = this;
@@ -38055,34 +38229,16 @@ function FUiSelect_refreshValue(){
 }
 function FUiSelect_drop(){
    var o = this;
-      o._editRefer = o._label;
-      var e = o._editor = RConsole.find(FEditorConsole).focus(o, FUiSelectEditor, o._editRefer);
-      if(o._editDynamic){
-         return RMessage.fatal(o, null, 'Unsupport.');
-      }else{
-         e.buildItems(o);
-         e.set(o.get());
-      }
+   if(o.hasComponent()){
+      var e = o._editor = RConsole.find(FEditorConsole).focus(o, FUiSelectEditor, o._name);
+      e.buildItems(o);
+      e.set(o.get());
       e.show();
+   }
 }
 function FUiSelect_dispose(){
    var o = this;
    o.__base.FUiEditControl.dispose.call(o);
-}
-function FUiSelect_onDataClick(){
-   var o = this;
-   if(!o.editCheck){
-      o.drop();
-   }
-}
-function FUiSelect_onDataKeyDown(s, e){
-   var o = this;
-   var ed = o._editor;
-   var ef = ed && ed.inEdit;
-   o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
-   if(ef && ed.source == o){
-      ed.onEditKeyDown(s, e);
-   }
 }
 function FUiSelect_onEditEnd(e){
    var o = this;
@@ -38165,10 +38321,9 @@ function FUiSelectEditor_onItemClick(p){
    o._position = o._items.indexOfValue(p);
    o.editEnd();
 }
-function FUiSelectEditor_onEditKeyDown(s, e){
+function FUiSelectEditor_onEditKeyDown(p){
    var o = this;
-   debugger
-   switch(e.keyCode){
+   switch(p.keyCode){
       case EKeyCode.Up:
          o.select(o._position - 1);
          break;
@@ -38243,7 +38398,7 @@ function FUiSelectEditor_set(v){
    var pc = ps.count();
    for(var i = 0; i < pc; i++){
       var p = ps.value(i);
-      if(p._dataValue == v){
+      if(RString.equals(p._dataValue, v, true)){
          o._position = i;
          p.setChecked(true);
       }else{
@@ -38253,13 +38408,13 @@ function FUiSelectEditor_set(v){
 }
 function FUiSelectEditor_select(p){
    var o = this;
-   var is = o._items;
-   var ic = is.count;
-   p = Math.min(Math.max(0, p), ic-1)
-   for(var n=0; n<ic; n++){
-      is.get(n).setChecked(n == p);
+   var s = o._items;
+   var c = s.count();
+   var n = RInteger.toRange(p, 0, c - 1);
+   for(var i = 0; i < c; i++){
+      s.value(i).setChecked(i == n);
    }
-   o._position = p;
+   o._position = n;
 }
 function FUiSelectEditor_fetch(){
    var o = this;
@@ -38345,7 +38500,9 @@ function FUiSelectItem_onBuild(p){
    }
    var hp = o._hLabelPanel = RBuilder.appendTableCell(h, o.styleName("Label"));
    if(o._label){
-      hp.innerText = o._label;
+      hp.innerHTML = o._label;
+   }else{
+      hp.innerHTML = '&nbsp;';
    }
    o._hNotePanel = RBuilder.appendTableCell(h, o.styleName("Note"));
 }
@@ -42750,7 +42907,7 @@ function FUiToolButtonCheck_dispose(){
    o.__base.FUiToolButton.dispose.call(o);
 }
 function FUiToolButtonMenu(o){
-   o = RClass.inherits(this, o, FUiToolButton, MContainer, MDropable, MFocus);
+   o = RClass.inherits(this, o, FUiToolButton, MUiContainer, MDropable, MFocus);
    o.popup         = null;
    o.hDropPanel    = null;
    o._styleDropHover = RClass.register(o, new AStyleIcon('DropHover'));
@@ -50433,16 +50590,50 @@ function FDsSceneRenderablePropertyFrame_dispose(){
 }
 function FDsSceneTechniquePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._visible      = false;
-   o._workspace    = null;
-   o._technique    = null;
-   o._controlGuid  = null;
-   o._controlCode  = null;
-   o._controlLabel = null;
-   o.construct     = FDsSceneTechniquePropertyFrame_construct;
-   o.loadObject    = FDsSceneTechniquePropertyFrame_loadObject;
-   o.dispose       = FDsSceneTechniquePropertyFrame_dispose;
+   o._visible           = false;
+   o._workspace         = null;
+   o._scene             = null;
+   o._technique         = null;
+   o._techniqueResource = null;
+   o._controlGuid       = null;
+   o._controlCode       = null;
+   o._controlLabel      = null;
+   o.onBuilded          = FDsSceneTechniquePropertyFrame_onBuilded;
+   o.onDataChanged      = FDsSceneTechniquePropertyFrame_onDataChanged;
+   o.onModeClick        = FDsSceneTechniquePropertyFrame_onModeClick;
+   o.construct          = FDsSceneTechniquePropertyFrame_construct;
+   o.loadObject         = FDsSceneTechniquePropertyFrame_loadObject;
+   o.dispose            = FDsSceneTechniquePropertyFrame_dispose;
    return o;
+}
+function FDsSceneTechniquePropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+   o._controlTechniqueCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlRenderModes.addClickListener(o, o.onModeClick);
+}
+function FDsSceneTechniquePropertyFrame_onDataChanged(p){
+   var o = this;
+   var r = o._technique;
+   r._code = o._controlCode.get();
+   r._label = o._controlLabel.get();
+   r._techniqueCode = o._controlTechniqueCode.get();
+}
+function FDsSceneTechniquePropertyFrame_onModeClick(ps, pi){
+   var o = this;
+   var m = pi._mode;
+   o._technique._activeMode = m;
+   var ds = o._scene.allDisplays();
+   for(var di = ds.count() - 1; di >= 0; di--){
+      var d = ds.getAt(di);
+      var rs = d.renderables();
+      for(var ri = rs.count() - 1; ri >= 0; ri--){
+         var r = rs.getAt(ri);
+         r.clearInfos();
+      }
+   }
 }
 function FDsSceneTechniquePropertyFrame_construct(){
    var o = this;
@@ -50451,8 +50642,22 @@ function FDsSceneTechniquePropertyFrame_construct(){
 function FDsSceneTechniquePropertyFrame_loadObject(s, t){
    var o = this;
    var r = t._resource;
+   o._scene = s;
    o._technique = t;
-   o._controlCode.set(t.code());
+   o._techniqueResource = r;
+   o._controlGuid.set(r.guid());
+   o._controlCode.set(r.code());
+   o._controlLabel.set(r.label());
+   var cms = o._controlRenderModes;
+   cms.clear();
+   var ms = t.modes();
+   var c = ms.count();
+   for(var i = 0; i < c; i++){
+      var m = ms.getAt(i);
+      var cm = cms.createItem(null, m.code());
+      cm._mode = m;
+      cms.push(cm);
+   }
 }
 function FDsSceneTechniquePropertyFrame_dispose(){
    var o = this;

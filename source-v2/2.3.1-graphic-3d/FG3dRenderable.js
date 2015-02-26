@@ -31,6 +31,7 @@ function FG3dRenderable(o){
    o.effectFind      = FG3dRenderable_effectFind;
    o.effectSet       = FG3dRenderable_effectSet;
    o.infos           = FG3dRenderable_infos;
+   o.clearInfos      = FG3dRenderable_clearInfos;
    o.selectInfo      = FG3dRenderable_selectInfo;
    // @method
    o.testVisible     = RMethod.virtual(o, 'testVisible');
@@ -155,6 +156,23 @@ function FG3dRenderable_infos(){
       r = o._infos = new TDictionary();
    }
    return r;
+}
+
+//==========================================================
+// <T>清除所有信息。</T>
+//
+// @method
+//==========================================================
+function FG3dRenderable_clearInfos(){
+   var o = this;
+   var s = o._infos;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var ri = s.valueAt(i);
+         ri.reset();
+      }
+   }
 }
 
 //==========================================================

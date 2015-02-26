@@ -239,7 +239,7 @@ function FUiComponent_process(e){
    }
    //..........................................................
    // 处理所有子对象
-   if(RClass.isClass(o, MContainer)){
+   if(RClass.isClass(o, MUiContainer)){
       var ps = o._components;
       if(ps){
          var pc = ps.count();

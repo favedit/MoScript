@@ -9,13 +9,20 @@ function FG3dTechnique(o){
    //..........................................................
    // @attribute
    o._code           = null;
+   o._activeMode     = null;
+   o._modes          = null;
    o._passes         = null;
    //..........................................................
    // @method
    o.construct       = FG3dTechnique_construct;
    // @method
    o.code            = FG3dTechnique_code;
+   o.activeMode      = FG3dTechnique_activeMode;
+   o.modes           = FG3dTechnique_modes;
    o.passes          = FG3dTechnique_passes;
+   // @method
+   o.registerMode    = FG3dTechnique_registerMode;
+   o.selectMode      = FG3dTechnique_selectMode;
    // @method
    o.updateRegion    = RMethod.empty;
    o.clear           = FG3dTechnique_clear;
@@ -33,6 +40,7 @@ function FG3dTechnique(o){
 function FG3dTechnique_construct(){
    var o = this;
    o.__base.FG3dObject.construct.call(o);
+   o._modes = new TObjects();
    o._passes = new TObjects();
 }
 
@@ -47,6 +55,26 @@ function FG3dTechnique_code(){
 }
 
 //==========================================================
+// <T>获得活动模式。</T>
+//
+// @method
+// @return FG3dTechniqueMode 模式
+//==========================================================
+function FG3dTechnique_activeMode(){
+   return this._activeMode;
+}
+
+//==========================================================
+// <T>获得模式集合。</T>
+//
+// @method
+// @return TObjects 模式集合
+//==========================================================
+function FG3dTechnique_modes(){
+   return this._modes;
+}
+
+//==========================================================
 // <T>获得过程集合。</T>
 //
 // @method
@@ -54,6 +82,33 @@ function FG3dTechnique_code(){
 //==========================================================
 function FG3dTechnique_passes(){
    return this._passes;
+}
+
+//==========================================================
+// <T>注册技术模式。</T>
+//
+// @method
+// @param p:code:String 代码
+// @return FG3dTechniqueMode 技术模式
+//==========================================================
+function FG3dTechnique_registerMode(p){
+   var o = this;
+   var m = RClass.create(FG3dTechniqueMode);
+   m.setCode(p);
+   o._modes.push(m);
+   o._activeMode = m;
+   return m;
+}
+
+//==========================================================
+// <T>选择技术模式。</T>
+//
+// @method
+// @param p:code:String 代码
+// @return FG3dTechniqueMode 技术模式
+//==========================================================
+function FG3dTechnique_selectMode(p){
+   var o = this;
 }
 
 //==========================================================

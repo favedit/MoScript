@@ -84,7 +84,9 @@ function FUiSelectItem_onBuild(p){
    // 创建文本
    var hp = o._hLabelPanel = RBuilder.appendTableCell(h, o.styleName("Label"));
    if(o._label){
-      hp.innerText = o._label;
+      hp.innerHTML = o._label;
+   }else{
+      hp.innerHTML = '&nbsp;';
    }
    // 创建备注
    o._hNotePanel = RBuilder.appendTableCell(h, o.styleName("Note"));

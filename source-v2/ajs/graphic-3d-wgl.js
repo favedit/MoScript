@@ -801,10 +801,9 @@ function FWglFragmentShader_upload(v){
    var r = g.getShaderParameter(n, g.COMPILE_STATUS);
    if(!r){
       var i = g.getShaderInfoLog(n);
-      RLogger.fatal(o, null, 'Upload fragment shader source failure. (error={1})\n{2}', i, v);
       g.deleteShader(n);
       o._native = null;
-      return false;
+      throw new TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', i, v);
    }
    o._source = v;
    return true;
@@ -1180,10 +1179,9 @@ function FWglVertexShader_upload(v){
    var r = g.getShaderParameter(n, g.COMPILE_STATUS);
    if(!r){
       var i = g.getShaderInfoLog(n);
-      RLogger.fatal(o, null, 'Upload vertex shader source failure. (error={1})\n{2}', i, v);
       g.deleteShader(n);
       o._native = null;
-      return false;
+      throw new TError(o, 'Upload vertex shader source failure. (error={1})\n{2}', i, v);
    }
    o._source = v;
    return true;

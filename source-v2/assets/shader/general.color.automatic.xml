@@ -206,12 +206,18 @@
          </shader:false>
          <shader:true source='option.material.map'>
          vec4 ambientColor = texture2D(fs_material, vec2(0.0 * fc_material.x, fc_material.y));
-         result.rgb += color.rgb * ambientColor.rgb;
+         vec3 resultAmbient = color.rgb * ambientColor.rgb;
          </shader:true>
          <shader:false source='option.material.map'>
-         result.rgb += color.rgb * fc_ambient_color.rgb;
+         vec3 resultAmbient = color.rgb * fc_ambient_color.rgb;
          </shader:false>
          </shader:true>
+         <shader:equals source='technique.mode' value='result'>
+         result.rgb += resultAmbient;
+         </shader:equals>
+         <shader:equals source='technique.mode' value='ambient'>
+         result.rgb = resultAmbient;
+         </shader:equals>
          //............................................................
          // 计算散射颜色
          <shader:true source='vertex.attribute.normal'>
@@ -226,12 +232,21 @@
          normalFactor = max(normalFactor, 0.0);
          <shader:true source='option.material.map'>
          vec4 diffuseColor = texture2D(fs_material, vec2(1.0 * fc_material.x, fc_material.y));
-         result.rgb += color.rgb * diffuseColor.rgb * normalFactor;
+         vec3 resultDiffuse = color.rgb * diffuseColor.rgb * normalFactor;
          </shader:true>
          <shader:false source='option.material.map'>
-         result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor;
+         vec3 resultDiffuse = color.rgb * fc_diffuse_color.rgb * normalFactor;
          </shader:false>
          </shader:true>
+         <shader:equals source='technique.mode' value='result'>
+         result.rgb += resultDiffuse;
+         </shader:equals>
+         <shader:equals source='technique.mode' value='diffuse.level'>
+         result.rgb = vec3(normalFactor, normalFactor, normalFactor);
+         </shader:equals>
+         <shader:equals source='technique.mode' value='diffuse.color'>
+         result.rgb = resultDiffuse;
+         </shader:equals>
          //............................................................
          <shader:true source='vertex.attribute.normal'>
          vec3 cameraDirection = normalize(fc_camera_position - v_model_position.xyz);
@@ -250,12 +265,21 @@
          specularFactor = pow(specularFactor, fc_specular.y);
          <shader:true source='option.material.map'>
          vec4 specularColor = texture2D(fs_material, vec2(2.0 * fc_material.x, fc_material.y));
-         result.rgb += color.rgb * specularColor.rgb * specularFactor;
+         vec3 resultSpecular = color.rgb * specularColor.rgb * specularFactor;
          </shader:true>
          <shader:false source='option.material.map'>
-         result.rgb += color.rgb * fc_specular_color.rgb * specularFactor;
+         vec3 resultSpecular = color.rgb * fc_specular_color.rgb * specularFactor;
          </shader:false>
          </shader:true>
+         <shader:equals source='technique.mode' value='result'>
+         result.rgb += resultSpecular;
+         </shader:equals>
+         <shader:equals source='technique.mode' value='specular.level'>
+         result.rgb = vec3(specularFactor, specularFactor, specularFactor);
+         </shader:equals>
+         <shader:equals source='technique.mode' value='specular.color'>
+         result.rgb = resultSpecular;
+         </shader:equals>
          //............................................................
          <shader:true source='support.environment'>
          vec3 reflectDirection = normalize(reflect(-cameraDirection, v_normal)); 

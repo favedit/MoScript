@@ -42,6 +42,8 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    var c = o._graphicContext;
    var cb = c.capability();
    var s = new TString();
+   s.append(pc.techniqueModeCode)
+   pt.set("technique.mode", pc.techniqueModeCode);
    if(cb.optionMaterialMap){
       s.append("|OM");
       pt.setBoolean("option.material.map", true);
@@ -539,6 +541,12 @@ function FG3dGeneralTechnique(o){
 function FG3dGeneralTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
+   o.registerMode(EG3dTechniqueMode.Ambient);
+   o.registerMode(EG3dTechniqueMode.DiffuseLevel);
+   o.registerMode(EG3dTechniqueMode.DiffuseColor);
+   o.registerMode(EG3dTechniqueMode.SpecularLevel);
+   o.registerMode(EG3dTechniqueMode.SpecularColor);
+   o.registerMode(EG3dTechniqueMode.Result);
    var p = o._passColor = RClass.create(FG3dGeneralColorPass);
    p.linkGraphicContext(o);
    p.setup();

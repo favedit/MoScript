@@ -230,26 +230,26 @@ function RString_contains(v, s){
 // @param s:source:String 源字符串
 // @param t:target:String 目标字符串
 // @param f:boolean:Boolean 是否忽略大小写(默认为忽略大小写)
-// @return Boolean
-//    <L value='true'>相等</L>
+// @return Boolean 是否相等
 //==========================================================
 function RString_equals(s, t, f){
-   if((s != null) && (t != null)){
-      // 强制转换为字符串
-      if(s.constructor != String){
-         s = s.toString();
-      }
-      if(t.constructor != String){
-         t = t.toString();
-      }
-      // 比较相同
-      if(f){
-         return (s == t);
-      }else{
-         return (s.toLowerCase() == t.toLowerCase());
-      }
+   // 获得参数
+   if(s == null){
+      s = '';
+   }else if(s.constructor != String){
+      s = s.toString();
    }
-   return false;
+   if(t == null){
+      t = '';
+   }else if(t.constructor != String){
+      t = t.toString();
+   }
+   // 比较相同
+   if(f){
+      return (s == t);
+   }else{
+      return (s.toLowerCase() == t.toLowerCase());
+   }
 }
 
 //==========================================================

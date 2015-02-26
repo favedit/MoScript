@@ -4,11 +4,11 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function MContainer(o){
+function MUiContainer(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @method
-   o.createChild = MContainer_createChild;
+   o.createChild = MUiContainer_createChild;
    /// @method
    o.appendChild = RMethod.empty;
    return o;
@@ -21,7 +21,7 @@ function MContainer(o){
 // @param p:config:TXmlNode 配置节点
 // @return FUiControl 控件
 //==========================================================
-function MContainer_createChild(p){
+function MUiContainer_createChild(p){
    // 创建实例
    var c = RControl.newInstance(p);
    c._parent = this;

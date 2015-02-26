@@ -2032,6 +2032,7 @@ function RInteger_calculate(f, a, b){
 var RLogger = new function RLogger(){
    var o = this;
    o._statusError = false;
+   o._labelLength = 40;
    o.lsnsOutput   = new TListeners();
    o.output       = RLogger_output;
    o.debug        = RLogger_debug;
@@ -2041,15 +2042,16 @@ var RLogger = new function RLogger(){
    o.fatal        = RLogger_fatal;
    return o;
 }
-function RLogger_output(p){
-   this.lsnsOutput.process(p);
+function RLogger_output(s, p){
+   this.lsnsOutput.process(s, p);
 }
 function RLogger_debug(sf, ms, pm){
+   var o = this;
    var n = RMethod.name(RLogger_debug.caller);
    n = n.replace('_', '.');
    var r = new TString();
    r.append(RDate.format('yymmdd-hh24miss.ms'));
-   r.append('|D [' + RString.rpad(n, 40) + '] ');
+   r.append('|D [' + RString.rpad(n, o._labelLength) + '] ');
    var as = arguments;
    var c = as.length;
    for(var n = 2; n < c; n++){
@@ -2065,14 +2067,15 @@ function RLogger_debug(sf, ms, pm){
       ms = ms.replace('{' + (n - 1) + '}', s);
    }
    r.append(ms);
-   RLogger.output(r.toString());
+   o.output(sf, r.flush());
 }
 function RLogger_info(sf, ms, pm){
+   var o = this;
    var n = RMethod.name(RLogger_info.caller);
    n = n.replace('_', '.');
    var r = new TString();
    r.append(RDate.format('yymmdd-hh24miss.ms'));
-   r.append('|I [' + RString.rpad(n, 40) + '] ');
+   r.append('|I [' + RString.rpad(n, o._labelLength) + '] ');
    var as = arguments;
    var c = as.length;
    for(var n = 2; n < c; n++){
@@ -2088,14 +2091,15 @@ function RLogger_info(sf, ms, pm){
       ms = ms.replace('{' + (n - 1) + '}', s);
    }
    r.append(ms);
-   RLogger.output(r.toString());
+   o.output(sf, r.flush());
 }
 function RLogger_warn(sf, ms, pm){
+   var o = this;
    var n = RMethod.name(RLogger_warn.caller);
    n = n.replace('_', '.');
    var r = new TString();
    r.append(RDate.format('yymmdd-hh24miss.ms'));
-   r.append('|W [' + RString.rpad(n, 40) + '] ');
+   r.append('|W [' + RString.rpad(n, o._labelLength) + '] ');
    var as = arguments;
    var c = as.length;
    for(var n = 2; n < c; n++){
@@ -2111,7 +2115,7 @@ function RLogger_warn(sf, ms, pm){
       ms = ms.replace('{' + (n - 1) + '}', s);
    }
    r.append(ms);
-   RLogger.output(r.toString());
+   o.output(sf, r.flush());
 }
 function RLogger_error(self, method, msg, params){
    if(this._statusError){
@@ -2529,20 +2533,21 @@ function RString_contains(v, s){
    return false;
 }
 function RString_equals(s, t, f){
-   if((s != null) && (t != null)){
-      if(s.constructor != String){
-         s = s.toString();
-      }
-      if(t.constructor != String){
-         t = t.toString();
-      }
-      if(f){
-         return (s == t);
-      }else{
-         return (s.toLowerCase() == t.toLowerCase());
-      }
+   if(s == null){
+      s = '';
+   }else if(s.constructor != String){
+      s = s.toString();
    }
-   return false;
+   if(t == null){
+      t = '';
+   }else if(t.constructor != String){
+      t = t.toString();
+   }
+   if(f){
+      return (s == t);
+   }else{
+      return (s.toLowerCase() == t.toLowerCase());
+   }
 }
 function RString_startsWith(v, s){
    if(s == null){
@@ -3596,85 +3601,130 @@ function TInvoke_invoke(p1, p2, p3, p4, p5, p6){
       }
    }
 }
-function TListener(o){
-   if(!o){o = this;}
-   o.owner    = null;
-   o.callback = null;
-   o.process  = TListener_process;
-   o.dump     = TListener_dump;
+function TListener(){
+   var o = this;
+   o._owner    = null;
+   o._callback = null;
+   o.process   = TListener_process;
+   o.toString  = TListener_toString;
+   o.dispose   = TListener_dispose;
    return o;
 }
 function TListener_process(s, p1, p2, p3, p4, p5){
    var o = this;
-   if(o.callback){
-      o.callback.call(o.owner ? o.owner : o, s, p1, p2, p3, p4, p5);
-   }
+   var c = o._callback;
+   var w = o._owner ? o._owner : o;
+   o._callback.call(w, s, p1, p2, p3, p4, p5);
 }
-function TListener_dump(){
+function TListener_toString(){
    var o = this;
-   return RClass.name(o) + ' owner=' + RClass.name(o.owner);
+   return RClass.name(o) + '(owner=' + RClass.name(o._owner) + ', callback=' + RMethod.name(o._callback) + ')';
 }
-function TListeners(o){
-   if(!o){o = this;}
-   o.listeners = null;
-   o.isEmpty   = TListeners_isEmpty;
-   o.register  = TListeners_register;
-   o.push      = TListeners_push;
-   o.process   = TListeners_process;
-   o.clear     = TListeners_clear;
-   o.dump      = TListeners_dump;
+function TListener_dispose(){
+   var o = this;
+   o._owner = null;
+   o._callback = null;
+}
+function TListeners(){
+   var o = this;
+   o._listeners = null;
+   o.isEmpty    = TListeners_isEmpty;
+   o.find       = TListeners_find;
+   o.register   = TListeners_register;
+   o.unregister = TListeners_unregister;
+   o.push       = TListeners_push;
+   o.remove     = TListeners_remove;
+   o.process    = TListeners_process;
+   o.clear      = TListeners_clear;
+   o.dump       = TListeners_dump;
    return o;
 }
 function TListeners_isEmpty(){
-   var ls = this.listeners;
-   return ls ? (ls.count == 0) : false;
+   var s = this._listeners;
+   return s ? s.isEmpty() : true;
+}
+function TListeners_find(w, p){
+   var s = this._listeners;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var l = s.getAt(i);
+         if(l._owner == w){
+            if(l._callback == p){
+               return l;
+            }
+         }
+      }
+   }
+   return null;
 }
 function TListeners_register(w, p){
-   var l = new TListener();
-   l.owner = w;
-   l.callback = p;
-   this.push(l);
+   var o = this;
+   var l = o.find(w, p);
+   if(l){
+      throw new TError(o, 'Listener is already register. (owner={1}, process={2})', w, p);
+   }
+   l = new TListener();
+   l._owner = w;
+   l._callback = p;
+   o.push(l);
    return l;
+}
+function TListeners_unregister(w, p){
+   var o = this;
+   var l = o.find(w, p);
+   if(!l){
+      throw new TError(o, 'Listener is not register. (owner={1}, process={2})', w, p);
+   }
+   o.remove(l);
+   l.dispose();
 }
 function TListeners_push(l){
    var o = this;
    if(!l){
       throw new TError(o, 'Listener is null.');
    }
-   if(!l.callback){
+   if(!l._callback){
       throw new TError(o, 'Listener process is null.');
    }
-   if(!o.listeners){
-      o.listeners = new TList();
+   var s = o._listeners;
+   if(!s){
+      s = o._listeners = new TObjects();
    }
-   o.listeners.push(l);
+   s.push(l);
 }
-function TListeners_process(s, p1, p2, p3, p4, p5){
-   var ls = this.listeners;
-   if(ls){
-      var c = ls.count;
-      for(var n = 0; n < c; n++){
-         var l = ls.get(n);
-         l.process(s, p1, p2, p3, p4, p5);
+function TListeners_remove(l){
+   var o = this;
+   if(!l){
+      throw new TError(o, 'Listener is null.');
+   }
+   o._listeners.remove(l);
+}
+function TListeners_process(ps, p1, p2, p3, p4, p5){
+   var s = this._listeners;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.getAt(i).process(ps, p1, p2, p3, p4, p5);
       }
    }
 }
 function TListeners_clear(){
-   var o = this;
-   if(o.listeners){
-      o.listeners.clear();
+   var s = this._listeners;
+   if(s){
+      s.clear();
    }
 }
 function TListeners_dump(){
    var o = this;
    var r = new TString();
    r.append(RClass.name(o));
-   var ls = o.listeners;
-   var c = ls.length;
-   for(var n = 0; n < c; n++){
-      r.append('\n   ' + ls[n].dump());
+   var s = o._listeners;
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      r.append('\n   ' + s.getAt(i));
    }
-   return r;
+   return r.flush();
 }
 function TLoaderListener(o){
    if(!o){o = this;}
@@ -4008,211 +4058,6 @@ function TNode_innerDump(dump, node, space){
 function TNode_dump(d, space){
    d = RString.nvlStr(d);
    return this.innerDump(d, this, space);
-}
-function TObjects(o){
-   if(!o){o = this;}
-   o._count     = 0;
-   o._items     = new Array();
-   o.isEmpty    = TObjects_isEmpty;
-   o.count      = TObjects_count;
-   o.data       = TObjects_data;
-   o.contains   = TObjects_contains;
-   o.indexOf    = TObjects_indexOf;
-   o.first      = TObjects_first;
-   o.last       = TObjects_last;
-   o.get        = TObjects_get;
-   o.set        = TObjects_set;
-   o.directGet  = TObjects_directGet;
-   o.directSet  = TObjects_directSet;
-   o.assign     = TObjects_assign;
-   o.append     = TObjects_append;
-   o.insert     = TObjects_insert;
-   o.push       = TObjects_push;
-   o.pushUnique = TObjects_pushUnique;
-   o.pop        = TObjects_pop;
-   o.swap       = TObjects_swap;
-   o.sort       = TObjects_sort;
-   o.erase      = TObjects_erase;
-   o.remove     = TObjects_remove;
-   o.clear      = TObjects_clear;
-   o.disposeAll = TObjects_disposeAll;
-   o.dispose    = TObjects_dispose;
-   o.dump       = TObjects_dump;
-   return o;
-}
-function TObjects_isEmpty(){
-   return (this._count == 0);
-}
-function TObjects_count(){
-   return this._count;
-}
-function TObjects_data(){
-   return this._data;
-}
-function TObjects_contains(v){
-   return this.indexOf(v) != -1;
-}
-function TObjects_indexOf(v){
-   var o = this;
-   var c = o._count;
-   for(var n = 0; n < c; n++){
-      if(o._items[n] == v){
-         return n;
-      }
-   }
-   return -1;
-}
-function TObjects_first(){
-   var o = this;
-   return o._count ? this._items[0] : null;
-}
-function TObjects_last(){
-   var o = this;
-   return o._count ? this._items[o._count - 1] : null;
-}
-function TObjects_get(n){
-   var o = this;
-   return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
-}
-function TObjects_set(n, v){
-   var o = this;
-   if((n >= 0) && (n < o._count)){
-      o._items[n] = v;
-   }
-}
-function TObjects_directGet(n){
-   return this._items[n];
-}
-function TObjects_directSet(n, v){
-   this._items[n] = v;
-}
-function TObjects_assign(p){
-   var o = this;
-   var c = o._count = p._count;
-   for(var i = 0; i < c; i++){
-      o._items[i] = p._items[i];
-   }
-}
-function TObjects_append(v){
-   var o = this;
-   var c = v._count;
-   for(var n = 0; n < c; n++){
-      o.push(v.get(n));
-   }
-}
-function TObjects_insert(i, v){
-   var o = this;
-   var c = o._count;
-   if((i >= 0) && (i <= c)){
-      for(var n = c; n > i; n--){
-         o._items[n] = o._items[n - 1];
-      }
-      o._items[i] = v;
-   }
-}
-function TObjects_push(v){
-   var n = this._count++;
-   this._items[n] = v;
-   return n;
-}
-function TObjects_pushUnique(v){
-   var o = this;
-   for(var n = o._count-1; n >= 0; n--){
-      if(o._items[n] == v){
-         return n;
-      }
-   }
-   var n = o._count++;
-   o._items[n] = v;
-   return n;
-}
-function TObjects_pop(){
-   var o = this;
-   if(o._count){
-      return o._items[--o._count];
-   }
-}
-function TObjects_swap(l, r){
-   var o = this;
-   if((l >= 0) && (l < o._count) && (r >= 0) && (r < o._count) && (l != r)){
-      var v = o._items[l];
-      o._items[l] = this._items[r];
-      o._items[r] = v;
-   }
-}
-function TObjects_sort(p){
-   this._items.sort(p);
-}
-function TObjects_erase(n){
-   var v = null;
-   var o = this;
-   if((n >= 0) && (n < o._count)){
-      v = o._items[n];
-      var c = --o._count;
-      var s = o._items;
-      for(var i = n; i < c; i++){
-         s[i] = s[i+1];
-      }
-      s[c] = null;
-   }
-   return v;
-}
-function TObjects_remove(v){
-   if(v != null){
-      var o = this;
-      var c = o._count;
-      if(c > 0){
-         var n = 0;
-         var s = o._items;
-         for(var i = n; i < c; i++){
-            if(s[i] != v){
-               s[n++] = s[i];
-            }
-         }
-         for(var i = n; i < c; i++){
-            s[i] = null;
-         }
-         o._count = n;
-      }
-   }
-   return v;
-}
-function TObjects_clear(){
-   var o = this;
-   o._items.length = 0;
-   o._count = 0;
-}
-function TObjects_dispose(){
-   var o = this;
-   for(var n in o._items){
-      o._items[n] = null;
-   }
-   o._count = 0;
-   o._items = null;
-}
-function TObjects_disposeAll(){
-   var o = this;
-   for(var n in o._items){
-      var v = o._items[n];
-      if(v){
-         v.dispose();
-      }
-      o._items[n] = null;
-   }
-   o._count = 0;
-   o._items = null;
-}
-function TObjects_dump(){
-   var o = this;
-   var c = o._count;
-   var r = new TString();
-   r.append(RClass.name(o), ':', c);
-   if(c > 0){
-      for(var n = 0; n < c; n++){
-         r.append(' [', o._items[n], ']');
-      }
-   }
-   return r.toString();
 }
 function TRow(o){
    if(!o){o = this;}

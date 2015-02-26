@@ -56,6 +56,8 @@ function FE3dScene_resource(p){
 // @param p:resource:FRs3SceneTechnique 技术资源
 //==========================================================
 function FE3dScene_loadTechniqueResource(p){
+   var o = this;
+   o._technique._resource = p;
 }
 
 //==========================================================

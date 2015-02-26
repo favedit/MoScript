@@ -9,6 +9,8 @@ function SG3dEffectInfo(o){
    //..........................................................
    // @attribute 代码
    o.code                  = null;
+   o.techniqueCode         = null;
+   o.techniqueModeCode     = null;
    // @attribute 状态
    o.fillModeCd            = null;
    o.optionCullMode        = null;

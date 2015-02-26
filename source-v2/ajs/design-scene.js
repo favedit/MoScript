@@ -1313,16 +1313,50 @@ function FDsSceneRenderablePropertyFrame_dispose(){
 }
 function FDsSceneTechniquePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._visible      = false;
-   o._workspace    = null;
-   o._technique    = null;
-   o._controlGuid  = null;
-   o._controlCode  = null;
-   o._controlLabel = null;
-   o.construct     = FDsSceneTechniquePropertyFrame_construct;
-   o.loadObject    = FDsSceneTechniquePropertyFrame_loadObject;
-   o.dispose       = FDsSceneTechniquePropertyFrame_dispose;
+   o._visible           = false;
+   o._workspace         = null;
+   o._scene             = null;
+   o._technique         = null;
+   o._techniqueResource = null;
+   o._controlGuid       = null;
+   o._controlCode       = null;
+   o._controlLabel      = null;
+   o.onBuilded          = FDsSceneTechniquePropertyFrame_onBuilded;
+   o.onDataChanged      = FDsSceneTechniquePropertyFrame_onDataChanged;
+   o.onModeClick        = FDsSceneTechniquePropertyFrame_onModeClick;
+   o.construct          = FDsSceneTechniquePropertyFrame_construct;
+   o.loadObject         = FDsSceneTechniquePropertyFrame_loadObject;
+   o.dispose            = FDsSceneTechniquePropertyFrame_dispose;
    return o;
+}
+function FDsSceneTechniquePropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+   o._controlTechniqueCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlRenderModes.addClickListener(o, o.onModeClick);
+}
+function FDsSceneTechniquePropertyFrame_onDataChanged(p){
+   var o = this;
+   var r = o._technique;
+   r._code = o._controlCode.get();
+   r._label = o._controlLabel.get();
+   r._techniqueCode = o._controlTechniqueCode.get();
+}
+function FDsSceneTechniquePropertyFrame_onModeClick(ps, pi){
+   var o = this;
+   var m = pi._mode;
+   o._technique._activeMode = m;
+   var ds = o._scene.allDisplays();
+   for(var di = ds.count() - 1; di >= 0; di--){
+      var d = ds.getAt(di);
+      var rs = d.renderables();
+      for(var ri = rs.count() - 1; ri >= 0; ri--){
+         var r = rs.getAt(ri);
+         r.clearInfos();
+      }
+   }
 }
 function FDsSceneTechniquePropertyFrame_construct(){
    var o = this;
@@ -1331,8 +1365,22 @@ function FDsSceneTechniquePropertyFrame_construct(){
 function FDsSceneTechniquePropertyFrame_loadObject(s, t){
    var o = this;
    var r = t._resource;
+   o._scene = s;
    o._technique = t;
-   o._controlCode.set(t.code());
+   o._techniqueResource = r;
+   o._controlGuid.set(r.guid());
+   o._controlCode.set(r.code());
+   o._controlLabel.set(r.label());
+   var cms = o._controlRenderModes;
+   cms.clear();
+   var ms = t.modes();
+   var c = ms.count();
+   for(var i = 0; i < c; i++){
+      var m = ms.getAt(i);
+      var cm = cms.createItem(null, m.code());
+      cm._mode = m;
+      cms.push(cm);
+   }
 }
 function FDsSceneTechniquePropertyFrame_dispose(){
    var o = this;

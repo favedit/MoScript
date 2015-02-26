@@ -24,4 +24,6 @@ function SG3dRenderableInfo(){
 //==========================================================
 function SG3dRenderableInfo_reset(){
    var o = this;
+   o.effect = null;
+   o.layout = null;
 }

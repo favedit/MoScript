@@ -5,14 +5,18 @@
 // @author maocy
 // @version 141229
 //==========================================================
-function TListener(o){
-   if(!o){o = this;}
+function TListener(){
+   var o = this;
+   //..........................................................
    // @attribute
-   o.owner    = null;
-   o.callback = null;
+   o._owner    = null;
+   o._callback = null;
+   //..........................................................
    // @method
-   o.process  = TListener_process;
-   o.dump     = TListener_dump;
+   o.process   = TListener_process;
+   // @method
+   o.toString  = TListener_toString;
+   o.dispose   = TListener_dispose;
    return o;
 }
 
@@ -30,18 +34,29 @@ function TListener(o){
 //==========================================================
 function TListener_process(s, p1, p2, p3, p4, p5){
    var o = this;
-   if(o.callback){
-      o.callback.call(o.owner ? o.owner : o, s, p1, p2, p3, p4, p5);
-   }
+   var c = o._callback;
+   var w = o._owner ? o._owner : o;
+   o._callback.call(w, s, p1, p2, p3, p4, p5);
 }
 
 //==========================================================
-// <T>获得监听器的内部信息。</T>
+// <T>获得字符串信息。</T>
 //
 // @method
-// @return String 内部信息
+// @return String 字符串信息
 //==========================================================
-function TListener_dump(){
+function TListener_toString(){
    var o = this;
-   return RClass.name(o) + ' owner=' + RClass.name(o.owner);
+   return RClass.name(o) + '(owner=' + RClass.name(o._owner) + ', callback=' + RMethod.name(o._callback) + ')';
+}
+
+//============================================================
+// <T>释放处理。</T>
+//
+// @method
+//============================================================
+function TListener_dispose(){
+   var o = this;
+   o._owner = null;
+   o._callback = null;
 }

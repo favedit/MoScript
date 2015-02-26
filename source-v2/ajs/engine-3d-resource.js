@@ -1146,9 +1146,11 @@ function FRs3SceneSpace_unserialize(p){
 }
 function FRs3SceneTechnique(o){
    o = RClass.inherits(this, o, FRs3Object);
-   o._passes     = null;
-   o.passes      = FRs3SceneTechnique_passes;
-   o.unserialize = FRs3SceneTechnique_unserialize;
+   o._techniqueCode = null;
+   o._passes        = null;
+   o.passes         = FRs3SceneTechnique_passes;
+   o.unserialize    = FRs3SceneTechnique_unserialize;
+   o.saveConfig     = FRs3SceneTechnique_saveConfig;
    return o;
 }
 function FRs3SceneTechnique_passes(){
@@ -1166,6 +1168,11 @@ function FRs3SceneTechnique_unserialize(p){
          ss.push(s);
       }
    }
+}
+function FRs3SceneTechnique_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Object.saveConfig.call(o, p);
+   p.set('technique_code', o._techniqueCode);
 }
 function FRs3SceneTechniquePass(o){
    o = RClass.inherits(this, o, FRs3Object);

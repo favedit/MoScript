@@ -1379,14 +1379,17 @@ var RBrowser = new function RBrowser(){
    o._typeCd        = EBrowser.Unknown;
    o._hostPath      = '';
    o._contentPath   = '';
+   o.onLog          = RBrowser_onLog;
    o.construct      = RBrowser_construct;
    o.hostPath       = RBrowser_hostPath;
    o.setHostPath    = RBrowser_setHostPath;
    o.contentPath    = RBrowser_contentPath;
    o.setContentPath = RBrowser_setContentPath;
    o.isBrowser      = RBrowser_isBrowser;
-   o.log            = RBrowser_log;
    return o;
+}
+function RBrowser_onLog(s, p){
+   console.log(p);
 }
 function RBrowser_construct(){
    var o = this;
@@ -1410,7 +1413,7 @@ function RBrowser_construct(){
       return;
    }
    if(o._typeCd == EBrowser.Chrome){
-      RLogger.lsnsOutput.register(o, o.log);
+      RLogger.lsnsOutput.register(o, o.onLog);
    }
    RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }
@@ -1436,9 +1439,6 @@ function RBrowser_setContentPath(p){
 }
 function RBrowser_isBrowser(p){
    return this._typeCd == p;
-}
-function RBrowser_log(p){
-   console.log(p);
 }
 var RBuilder = new function RBuilder(){
    var o = this;
