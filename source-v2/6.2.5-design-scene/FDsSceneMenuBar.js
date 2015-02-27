@@ -83,7 +83,8 @@ function FDsSceneMenuBar_onSaveClick(p){
 function FDsSceneMenuBar_onRunClick(p){
    var o = this;
    var u = '../design/view.html?code=' + o._workspace._sceneCode;
-   window.open(u);
+   //window.open(u);
+   window.location = u;
 }
 
 //==========================================================

@@ -231,7 +231,6 @@
          </shader:false>
          normalFactor = max(normalFactor, 0.0);
          normalFactor = min(normalFactor, 1.0);
-         //normalFactor = normalFactor * normalFactor;
          <shader:true source='option.material.map'>
          vec4 diffuseColor = texture2D(fs_material, vec2(1.0 * fc_material.x, fc_material.y));
          vec3 resultDiffuse = color.rgb * diffuseColor.rgb * normalFactor;
