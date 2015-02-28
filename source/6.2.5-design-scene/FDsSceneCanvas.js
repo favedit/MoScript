@@ -7,7 +7,8 @@
 function FDsSceneCanvas(o){
    o = RClass.inherits(this, o, FDsCanvas);
    //..........................................................
-   o._graphicContext             = null;
+   // @attribute
+   o._graphicContext      = null;
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
    o._activeScene         = null;
@@ -19,6 +20,8 @@ function FDsSceneCanvas(o){
    o._dimensional         = null;
    o._selectObject        = null;
    o._selectRenderables   = null;
+   // @attribute
+   o._templateMatrix      = null;
    o._templateRenderable  = null;
    o._templateFace        = null;
    o._templateTranslation = null;
@@ -100,6 +103,20 @@ function FDsSceneCanvas_onMouseCaptureStart(p){
       var d = r.display();
       o._captureMatrix.assign(d.matrix());
    }
+   // 记录坐标
+   o._templateMatrix.identity();
+   if(o._templateFace){
+      o._templateFaceMatrix.assign(o._templateFace.matrix());
+      // 记录选中坐标
+      var rs = o._selectRenderables;
+      for(var i = rs.count() - 1; i >= 0; i--){
+         var r = rs.getAt(i);
+         if(!r._dragMatrix){
+            r._dragMatrix = new SMatrix3d();
+         }
+         r._dragMatrix.assign(r.matrix());
+      }
+   }
 }
 
 //==========================================================
@@ -120,11 +137,13 @@ function FDsSceneCanvas_onMouseCapture(p){
    var mv = o._canvasMoveCd;
    var cm = o._captureMatrix;
    var sm = null;
-   var sr = o._selectRenderable;
-   if(sr){
-      var sd = sr.display();
-      sm = sd.matrix();
-   }
+   //var sr = o._templateRenderable;
+   //if(sr){
+   //   var sd = sr.display();
+   //   sm = sd.matrix();
+   //}
+   var tf = o._templateFace;
+   var tm = o._templateMatrix;
    switch(mc){
       case EDsCanvasMode.Drop:
          var c = o._activeScene.camera();
@@ -136,50 +155,52 @@ function FDsSceneCanvas_onMouseCapture(p){
       case EDsCanvasMode.Select:
          break;
       case EDsCanvasMode.Translate:
-         if(sr){
+         if(tf){
             if(mv == EDsCanvasDrag.X){
-               sm.tx = cm.tx + cx / 10;
+               tm.tx = cx / 10;
             }else if(mv == EDsCanvasDrag.Y){
-               sm.ty = cm.ty + -cy / 10;
+               tm.ty = -cy / 10;
             }else if(mv == EDsCanvasDrag.Z){
-               sm.tz = cm.tz + cx / 10;
+               tm.tz = cx / 10;
             }
          }
          break;
       case EDsCanvasMode.Rotation:
-         if(sr){
+         if(tf){
             if(mv == EDsCanvasDrag.X){
-               sm.rx = cm.rx + cx / 10;
+               tm.rx = cx / 10;
             }else if(mv == EDsCanvasDrag.Y){
-               sm.ry = cm.ry + -cy / 10;
+               tm.ry = -cy / 10;
             }else if(mv == EDsCanvasDrag.Z){
-               sm.rz = cm.rz + cx / 10;
+               tm.rz = cx / 10;
             }
          }
          break;
       case EDsCanvasMode.Scale:
-         if(sr){
+         if(tf){
             if(mv == EDsCanvasDrag.X){
-               sm.sx = cm.sx + cx / 10;
+               tm.sx = cx / 10;
             }else if(mv == EDsCanvasDrag.Y){
-               sm.sy = cm.sy + -cy / 10;
+               tm.sy = -cy / 10;
             }else if(mv == EDsCanvasDrag.Z){
-               sm.sz = cm.sz + cx / 10;
+               tm.sz = cx / 10;
             }else if(mv == EDsCanvasDrag.All){
-               sm.sx = cm.sx + cx / 10;
-               sm.sy = cm.sy + cx / 10;
-               sm.sz = cm.sz + cx / 10;
+               tm.sx = cx / 10;
+               tm.sy = cx / 10;
+               tm.sz = cx / 10;
             }
          }
          break;
    }
-   if(sm){
-      sm.updateForce();
-      if(o._templateFace){
-         var tm = o._templateFace.matrix();
-         tm.assign(sm);
-         tm.setScaleAll(o._templateViewScale);
-         tm.update();
+   // 移动选中集合
+   if(tf){
+      // 移动操作对象
+      tf.matrix().merge(o._templateFaceMatrix, tm);
+      // 移动选中对象
+      var rs = o._selectRenderables;
+      for(var i = rs.count() - 1; i >= 0; i--){
+         var r = rs.getAt(i);
+         r._matrix.merge(r._dragMatrix, tm);
       }
    }
 }
@@ -318,6 +339,8 @@ function FDsSceneCanvas_construct(){
    o.__base.FDsCanvas.construct.call(o);
    o._capturePosition = new SPoint2();
    o._captureMatrix = new SMatrix3d();
+   o._templateMatrix = new SMatrix3d();
+   o._templateFaceMatrix = new SMatrix3d();
    o._rotation = new SVector3();
    o._captureRotation = new SVector3();
    o._selectRenderables = new TObjects();

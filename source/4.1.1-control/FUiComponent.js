@@ -39,6 +39,8 @@ function FUiComponent(o){
    o.hasComponent  = FUiComponent_hasComponent;
    o.components    = FUiComponent_components;
    o.push          = FUiComponent_push;
+   o.remov         = FUiComponent_remove;
+   o.clear         = FUiComponent_clear;
    // @method
    o.process       = FUiComponent_process;
    o.psInitialize  = FUiComponent_psInitialize;
@@ -181,7 +183,7 @@ function FUiComponent_components(){
 }
 
 //==========================================================
-// <T>将子组件放入自己的哈希表中</T>
+// <T>将子组件放入自己的哈希表中。</T>
 // <P>如果子组件的名称为空，则给当前子组件创建一个数字的索引名。</P>
 // <P>保证子组件不会被其他未命名的子组件所覆盖。</P>
 // 
@@ -200,6 +202,40 @@ function FUiComponent_push(p){
       }
       // 存储子组件
       ps.set(p._name, p);
+   }
+}
+
+//==========================================================
+// <T>移除指定子组件。</T>
+// 
+// @method
+// @param p:component:FUiComponent 组件
+//==========================================================
+function FUiComponent_remove(p){
+   var o = this;
+   // 检查类型
+   if(RClass.isClass(p, FUiComponent)){
+      throw new TError(o, 'Parameter is not componet. (component={1})', p);
+   }
+   // 检查存在
+   var s = o._components;
+   if(!s || (s && !s.constanis(p.name()))){
+      throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
+   }
+   // 移除处理
+   s.remove(p);
+}
+
+//==========================================================
+// <T>清空所有子组件。</T>
+// 
+// @method
+//==========================================================
+function FUiComponent_clear(p){
+   var o = this;
+   var s = o._components;
+   if(s){
+      s.clear();
    }
 }
 

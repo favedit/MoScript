@@ -18,14 +18,13 @@
 // @version 150102
 //==========================================================
 function FUiEditControl(o){
-   //o = RClass.inherits(this, o, FUiControl, MEditDescriptor, , MDesign, MFocus, MDisplay, MProgress);
    o = RClass.inherits(this, o, FUiControl, MDataField, MEditValue, MEditChange, MEditDrop);
    //..........................................................
    // @property
-   o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), ELabelMode.All);
-   o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), ELabelPosition.Left);
+   o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
+   o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), EUiLabelPosition.Left);
    o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
-   o._labelAlignCd     = RClass.register(o, new APtyString('_labelAlignCd'), EAlign.Left);
+   o._labelAlignCd     = RClass.register(o, new APtyString('_labelAlignCd'), EUiAlign.Left);
    o._editSize         = RClass.register(o, new APtySize2('_editSize'));
    o._dataTypeCd       = RClass.register(o, new APtyString('_dataTypeCd'));
    //o.typeAble        = RClass.register(o, new APtyString('typeAble'), EBool.False);
@@ -265,23 +264,23 @@ function FUiEditControl_onBuild(p){
    var hlp = null;
    var hep = null;
    var lmc = o._labelModeCd;
-   if(lmc == ELabelMode.Label){
+   if(lmc == EUiLabelMode.Label){
       // 只建立标签的情况
       hlp = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
-   }else if(lmc == ELabelMode.Hidden){
+   }else if(lmc == EUiLabelMode.Hidden){
       // 只建立编辑框的情况
       hep = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
    }else{
       // 全部建立的情况
       var lpc = o._labelPositionCd;
-      if(lpc == ELabelPosition.Top){
+      if(lpc == EUiLabelPosition.Top){
          hlp = RBuilder.appendTableRowCell(hc);
          hep = RBuilder.appendTableRowCell(hc);
-      }else if(lpc == ELabelPosition.Right){
+      }else if(lpc == EUiLabelPosition.Right){
          var hr = RBuilder.appendTableRow(hc);
          hep = RBuilder.appendTableCell(hr);
          hlp = RBuilder.appendTableCell(hr);
-      }else if(lpc == ELabelPosition.Bottom){
+      }else if(lpc == EUiLabelPosition.Bottom){
          hep = RBuilder.appendTableRowCell(hc);
          hlp = RBuilder.appendTableRowCell(hc);
       }else{

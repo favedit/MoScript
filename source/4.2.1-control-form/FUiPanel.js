@@ -9,7 +9,7 @@ function FUiPanel(o){
    o = RClass.inherits(this, o, FUiLayout, MDesign, MFocus);
    //..........................................................
    // @style
-   o._sizeCd      = ESize.Horizontal;
+   o._sizeCd      = EUiSize.Horizontal;
    o._stylePanel  = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
    o._styleLabel  = RClass.register(o, new AStyle('_styleLabel', 'Label'));
    o._styleBody   = RClass.register(o, new AStyle('_styleBody', 'Body'));

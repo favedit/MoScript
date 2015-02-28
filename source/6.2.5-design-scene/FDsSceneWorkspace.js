@@ -74,44 +74,49 @@ function FDsSceneWorkspace_onBuilded(p){
    f._hPanel.className = o.styleName('Statusbar_Ground');
    // 设置分割
    var f = o._catalogSplitter = o.searchControl('catalogSpliter');
-   f._alignCd = EAlign.Left;
+   f._alignCd = EUiAlign.Left;
    f._hSize = o._frameCatalog._hPanel;
    var f = o._propertySpliter = o.searchControl('propertySpliter');
-   f._alignCd = EAlign.Right;
+   f._alignCd = EUiAlign.Right;
    f._hSize = o._frameStatusBar._hPanel;
    //..........................................................
    // 设置工具栏
    var c = o._toolbar = RClass.create(FDsSceneMenuBar);
    c._workspace = o;
    c.buildDefine(p);
-   c.setPanel(o._frameToolBar._hPanel);
-   o.push(c);
+   //c.setPanel(o._frameToolBar._hPanel);
+   //o.push(c);
+   o._frameToolBar.push(c);
    //..........................................................
    // 设置目录栏
    var c = o._catalog = RClass.create(FDsSceneCatalog);
    c._workspace = o;
    c.build(p);
-   c.setPanel(o._frameCatalog._hPanel);
+   //c.setPanel(o._frameCatalog._hPanel);
    c.addSelectedListener(o, o.onCatalogSelected);
-   o.push(c);
+   o._frameCatalog.push(c);
+   //o.push(c);
    //..........................................................
    // 设置画板工具栏
    var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
    var c = o._canvasToolbar = RClass.create(FDsSceneCanvasToolBar);
    c._workspace = o;
    c.buildDefine(p);
+   o._canvasToolbarFrame.push(c);
    //c.build(p);
-   c.setPanel(f._hPanel);
-   o.push(c);
+   //c.setPanel(f._hPanel);
+   //o.push(c);
    // 设置画板
    var f = o._canvasFrame = o.searchControl('canvasFrame');
    var c = o._canvas = RClass.create(FDsSceneCanvas);
    c._workspace = o;
    c._toolbar = o._canvasToolbar;
    c.addLoadListener(o, o.onSceneLoad);
+   c._hParent = f._hPanel;
    c.build(p);
-   c.setPanel(f._hPanel);
-   o.push(c);
+   o._canvasFrame.push(c);
+   //c.setPanel(f._hPanel);
+   //o.push(c);
 }
 
 //==========================================================
@@ -184,7 +189,7 @@ function FDsSceneWorkspace_onCatalogSelected(p){
       var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
       f.show();
       f.loadObject(s, p);
-   }else if(RClass.isClass(p, FRd3Renderable)){
+   }else if(RClass.isClass(p, FE3dRenderable)){
       // 选中渲染对象
       o._canvas.selectRenderable(p);
       // 显示属性栏
@@ -225,7 +230,8 @@ function FDsSceneWorkspace_findPropertyFrame(p){
    var f = o._propertyFrames.get(p);
    if(!f){
       var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._frameProperty._hPanel);
+      //f = fc.get(o, p, o._frameProperty._hPanel);
+      f = fc.get(o, p, o._frameProperty._hContainer);
       f._workspace = o;
       o._propertyFrames.set(p, f);
    }

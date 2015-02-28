@@ -109,9 +109,9 @@ function FDsTemplateWorkspace_onBuild(p){
    fs.appendFrame(f);
    fs.setPanel(o._frameBody._hPanel);
    // 设置分割
-   sp1._alignCd = EAlign.Left;
+   sp1._alignCd = EUiAlign.Left;
    sp1._hSize = o._frameCatalog._hPanel;
-   sp2._alignCd = EAlign.Right;
+   sp2._alignCd = EUiAlign.Right;
    sp2._hSize = o._frameStatusBar._hPanel;
    //..........................................................
    var c = o._catalog = RClass.create(FDsTemplateCatalog);

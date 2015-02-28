@@ -22,6 +22,7 @@
      <PathMerger source='/3.3.1-engine-3d'          target='/ajs/engine-3d.js'/>
      <PathMerger source='/3.3.2-engine-3d-resource' target='/ajs/engine-3d-resource.js'/>
      <PathMerger source='/3.3.3-engine-3d-render'   target='/ajs/engine-3d-render.js'/>
+     <PathMerger source='/3.3.4-engine-3d-instance' target='/ajs/engine-3d-instance.js'/>
 
      <PathMerger source='/4.1.1-control'            target='/ajs/control.js'/>
      <PathMerger source='/4.1.2-control-core'       target='/ajs/control-core.js'/>
@@ -69,6 +70,7 @@
         <File source='/ajs/engine-3d.js'/>
         <File source='/ajs/engine-3d-resource.js'/>
         <File source='/ajs/engine-3d-render.js'/>
+        <File source='/ajs/engine-3d-instance.js'/>
      </FileMerger>
      <FileMerger target='/ajs/mo-base-control.js'>
         <File source='/ajs/control.js'/>

@@ -1,48 +1,39 @@
 //==========================================================
-// <T>菜单栏。</T>
+// <T>界面菜单栏。</T>
 //
-// @class
+//  hPanel<TABLE>
+// ┌-----------------┬-----------------┬-----------------┬-----------------┐
+// │hButtonPanel<TD> │hButtonPanel<TD> │hButtonPanel<TD> │...              │hLine<TR>
+// │(Button1)        │(Button2)        │(Button3)        │                 │
+// └-----------------┴-----------------┴-----------------┴-----------------┘
+//
 // @author maocy
 // @history 150121
 //==========================================================
 function FUiMenuBar(o){
    o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
    //..........................................................
+   // @property EUiMerge 合并枚举
+   o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
+   //..........................................................
    // @style
-   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
+   o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
+   o._styleButtonPanel = RClass.register(o, new AStyle('_styleButtonPanel'));
    //..........................................................
    // @html
-   o._hLine       = null;
+   o._hLine            = null;
    //..........................................................
    // @event
-   o.onBuildPanel = FUiMenuBar_onBuildPanel;
+   o.onBuildPanel      = FUiMenuBar_onBuildPanel;
+   o.onEnter           = RMethod.empty;
+   o.onLeave           = RMethod.empty;
    //..........................................................
    // @method
-   o.appendChild = FUiMenuBar_appendChild;
-
-
-
-   //..........................................................
-   // @attribute
-   //o.service         = 'menu.xml';
-   //o.focusNode       = null;
-   //o.isLoading       = false;
-   //o.indent          = 16;
-   //o.nodes           = new TList();
-   //o.allNodes        = new TList();
-   //o.types           = new TMap();
-   //..........................................................
-   // @event
-   //o.onNodeLoaded    = null;
-   //o.onNodeClick     = null;
-   //o.onNodeDblClick  = null;
-   //o.onLoaded        = FUiMenuBar_onLoaded;
-   //..........................................................
+   o.appendChild       = FUiMenuBar_appendChild;
+   o.removeChild       = FUiMenuBar_removeChild;
    // @method
-   //o.connect         = FUiMenuBar_connect;
-   //o.release         = FUiMenuBar_release;
-   //o.dispose         = FUiMenuBar_dispose;
-   return this;
+   o.dispose           = FUiMenuBar_dispose;
+   return o;
 }
 
 //==========================================================
@@ -58,82 +49,52 @@ function FUiMenuBar_onBuildPanel(p){
 }
 
 //==========================================================
-// <T>追加一个按键控件。</T>
+// <T>追加一个子控件。</T>
 //
 // @method
-// @param p:button:FUiMenuButton 按键
+// @param p:control:FUiControl 子控件
 //==========================================================
 function FUiMenuBar_appendChild(p){
    var o = this;
+   // 父处理
    o.__base.FUiContainer.appendChild.call(o, p);
-   // 横向排布
+   // 按键处理
    if(RClass.isClass(p, FUiMenuButton)){
-      var hr = o._hLine;
-      var hc = RBuilder.appendTableCell(hr);
+      var hl = o._hLine;
+      // 建立按键
+      var hc = RBuilder.appendTableCell(hl, o.styleName('ButtonPanel'));
+      hc._hParentLine = hl;
       p.setPanel(hc);
    }
 }
 
-
-
-
-
-
-// ------------------------------------------------------------
-function FUiMenuBar_onBuild(builder){
-   var doc = builder.document;
-   // Bodu
-   this.hBody = doc.createDiv();
-   this.hBody.className = 'menu_panel';
-   // Build
-   this.hParent.insertBefore(this.hBody);
-   // Complete
-   builder.hParent = this.hBody;
-}
-
-// ------------------------------------------------------------
-function FUiMenuBar_onLoaded(cnn){
-   var doc = cnn.document;
-   if(doc && doc.node){
-      IControl.load(this, doc.node);
-      this.build();
+//==========================================================
+// <T>移除一个子控件。</T>
+//
+// @method
+// @param p:control:FUiControl 子控件
+//==========================================================
+function FUiMenuBar_removeChild(p){
+   var o = this;
+   // 按键处理
+   if(RClass.isClass(p, FUiMenuButton)){
+      var hp = p._hParent;
+      var hl = p._hParentLine;
+      hl.removeChild(hp);
+      p._hParentLine = null;
+      p._hParent = null;
    }
+   // 父处理
+   o.__base.FUiContainer.removeChild.call(o, p);
 }
-// ------------------------------------------------------------
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
 function FUiMenuBar_dispose(){
    var o = this;
-   o.base.FControl.dispose.call(o);
-   RMemory.freeHtml(o.hBody);
-   RMemory.freeHtml(o.hParent);
-   o.hBody = null;
-   o.hParent = null;
+   o._hLine = RHtml.free(o._hLine);
+   o.__base.FUiContainer.dispose.call(o);
 }
-// ------------------------------------------------------------
-function FUiMenuBar_connect(type, action, attrs){
-   // Build send info
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('type', type);
-   root.set('action', action);
-   root.create('Attributes').value = attrs;
-   // Build xml connection
-   var self = this;
-   var cnn = new TXmlCnn();
-   cnn.onLoad = function(){self.onLoaded(cnn)};
-   cnn.send(this.service, doc);
-}
-// ------------------------------------------------------------
-function FUiMenuBar_release(){
-   var nodes = this.allNodes;
-   for(var n=0; n<nodes.length; n++){
-      var node = nodes[n];
-      node.release();
-   }
-   this.allNodes = null;
-   this.allNodesUuid = null;
-   this.allNodesProperty = null;
-   this.allNodesPropertyExtend = null;
-   this.nodes = null;
-   return true;
-}
-// ------------------------------------------------------------

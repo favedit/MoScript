@@ -4,8 +4,8 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FG3dRenderable(o){
-   o = RClass.inherits(this, o, FGraphicRenderable);
+function MG3dRenderable(o){
+   o = RClass.inherits(this, o, MGraphicRenderable);
    //..........................................................
    // @attribute
    o._currentMatrix  = null;
@@ -19,26 +19,26 @@ function FG3dRenderable(o){
    o._infos          = null;
    //..........................................................
    // @method
-   o.construct       = FG3dRenderable_construct;
+   o.construct       = MG3dRenderable_construct;
    // @method
-   o.currentMatrix   = FG3dRenderable_currentMatrix;
-   o.matrix          = FG3dRenderable_matrix;
-   o.effectCode      = FG3dRenderable_effectCode;
-   o.material        = FG3dRenderable_material;
+   o.currentMatrix   = MG3dRenderable_currentMatrix;
+   o.matrix          = MG3dRenderable_matrix;
+   o.effectCode      = MG3dRenderable_effectCode;
+   o.material        = MG3dRenderable_material;
    // @method
-   o.activeEffect    = FG3dRenderable_activeEffect;
-   o.activeInfo      = FG3dRenderable_activeInfo;
-   o.effectFind      = FG3dRenderable_effectFind;
-   o.effectSet       = FG3dRenderable_effectSet;
-   o.infos           = FG3dRenderable_infos;
-   o.clearInfos      = FG3dRenderable_clearInfos;
-   o.selectInfo      = FG3dRenderable_selectInfo;
+   o.activeEffect    = MG3dRenderable_activeEffect;
+   o.activeInfo      = MG3dRenderable_activeInfo;
+   o.effectFind      = MG3dRenderable_effectFind;
+   o.effectSet       = MG3dRenderable_effectSet;
+   o.infos           = MG3dRenderable_infos;
+   o.clearInfos      = MG3dRenderable_clearInfos;
+   o.selectInfo      = MG3dRenderable_selectInfo;
    // @method
    o.testVisible     = RMethod.virtual(o, 'testVisible');
    // @method
-   o.update          = FG3dRenderable_update;
+   o.update          = MG3dRenderable_update;
    // @method
-   o.dispose         = FG3dRenderable_dispose;
+   o.dispose         = MG3dRenderable_dispose;
    return o;
 }
 
@@ -47,9 +47,8 @@ function FG3dRenderable(o){
 //
 // @method
 //==========================================================
-function FG3dRenderable_construct(){
+function MG3dRenderable_construct(){
    var o = this;
-   o.__base.FGraphicRenderable.construct.call(o);
    o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
    o._material = RClass.create(FG3dMaterial);
@@ -61,7 +60,7 @@ function FG3dRenderable_construct(){
 // @method
 // @return 当前矩阵
 //==========================================================
-function FG3dRenderable_currentMatrix(){
+function MG3dRenderable_currentMatrix(){
    return this._currentMatrix;
 }
 
@@ -71,7 +70,7 @@ function FG3dRenderable_currentMatrix(){
 // @method
 // @return 矩阵
 //==========================================================
-function FG3dRenderable_matrix(){
+function MG3dRenderable_matrix(){
    return this._matrix;
 }
 
@@ -81,7 +80,7 @@ function FG3dRenderable_matrix(){
 // @method
 // @return String 效果器名称
 //==========================================================
-function FG3dRenderable_effectCode(){
+function MG3dRenderable_effectCode(){
    return this._effectCode;
 }
 
@@ -91,7 +90,7 @@ function FG3dRenderable_effectCode(){
 // @method
 // @return FG3dEffect 效果器
 //==========================================================
-function FG3dRenderable_activeEffect(){
+function MG3dRenderable_activeEffect(){
    var i = this._activeInfo;
    return i ? i.effect : null;
 }
@@ -102,7 +101,7 @@ function FG3dRenderable_activeEffect(){
 // @method
 // @return SG3dRenderableInfo 信息
 //==========================================================
-function FG3dRenderable_activeInfo(){
+function MG3dRenderable_activeInfo(){
    return this._activeInfo;
 }
 
@@ -113,7 +112,7 @@ function FG3dRenderable_activeInfo(){
 // @param p:name:String 名称
 // @return SG3dRenderableInfo 效果器
 //==========================================================
-function FG3dRenderable_effectFind(p){
+function MG3dRenderable_effectFind(p){
    var o = this;
    var s = o._infos;
    if(s){
@@ -132,7 +131,7 @@ function FG3dRenderable_effectFind(p){
 // @param n:name:String 名称
 // @param e:effect:FG3dEffect 效果器
 //==========================================================
-function FG3dRenderable_effectSet(n, e){
+function MG3dRenderable_effectSet(n, e){
    var o = this;
    var s = o.infos();
    var i = s.get(n);
@@ -149,7 +148,7 @@ function FG3dRenderable_effectSet(n, e){
 // @method
 // @return TDictionary 信息字典
 //==========================================================
-function FG3dRenderable_infos(){
+function MG3dRenderable_infos(){
    var o = this;
    var r = o._infos;
    if(!r){
@@ -163,7 +162,7 @@ function FG3dRenderable_infos(){
 //
 // @method
 //==========================================================
-function FG3dRenderable_clearInfos(){
+function MG3dRenderable_clearInfos(){
    var o = this;
    var s = o._infos;
    if(s){
@@ -182,7 +181,7 @@ function FG3dRenderable_clearInfos(){
 // @param p:name:String 名称
 // @return SG3dRenderableInfo 信息
 //==========================================================
-function FG3dRenderable_selectInfo(p){
+function MG3dRenderable_selectInfo(p){
    var o = this;
    var s = o.infos();
    var i = s.get(p);
@@ -200,7 +199,7 @@ function FG3dRenderable_selectInfo(p){
 // @method
 // @return 材质
 //==========================================================
-function FG3dRenderable_material(){
+function MG3dRenderable_material(){
    return this._material;
 }
 
@@ -210,7 +209,7 @@ function FG3dRenderable_material(){
 // @method
 // @param p:region:FG3dRegion 区域
 //==========================================================
-function FG3dRenderable_update(p){
+function MG3dRenderable_update(p){
 }
 
 //==========================================================
@@ -218,13 +217,11 @@ function FG3dRenderable_update(p){
 //
 // @method
 //==========================================================
-function FG3dRenderable_dispose(){
+function MG3dRenderable_dispose(){
    var o = this;
    // 释放属性
    o._currentMatrix = RObject.dispose(o._currentMatrix);
    o._matrix = RObject.dispose(o._matrix);
    o._material = RObject.dispose(o._material);
    o._infos = RObject.dispose(o._infos);
-   // 父处理
-   o.__base.FGraphicRenderable.dispose.call(o);
 }

@@ -18,10 +18,24 @@ function APtyEnum(n, l, e, d){
    o._default = d;
    //..........................................................
    // @method
+   o.build    = APtyEnum_build;
    o.load     = APtyEnum_load;
    o.save     = APtyEnum_save;
    o.toString = APtyEnum_toString;
    return o;
+}
+
+//============================================================
+// <T>构建处理。</T>
+//
+// @method
+// @param v:value:Object 对象
+//============================================================
+function APtyEnum_build(v){
+   var o = this;
+   if(v[o._name] == null){
+      v[o._name] = o._default;
+   }
 }
 
 //============================================================

@@ -3,20 +3,20 @@
 //
 //  hParent<TD>
 //  hPanel<DIV>
-// ┌-------------------------------------------------------------┐
-// │ hForm<TABLE>                                                │
-// │┌--------------┬---------------┬---------------┐         │
-// ││hIconPanel<TD>│hSpacePanel<TD>│hLabelPanel<TD>│hLine<TR>│
-// ││hIcon<IMG>    │               │               │         │
-// │└--------------┴---------------┴---------------┘         │
-// └-------------------------------------------------------------┘
+// ┌---------------------------------------------┐
+// │ hForm<TABLE>                                │
+// │┌--------------┬----------------┐         │
+// ││hIconPanel<TD>│ hLabelPanel<TD>│hLine<TR>│
+// ││hIcon<IMG>    │                │         │
+// │└--------------┴----------------┘         │
+// └---------------------------------------------┘
 //
 // @class
 // @author maocy
 // @history 150121
 //==========================================================
-function FUiToolButton(o){
-   o = RClass.inherits(this, o, FUiControl, MUiToolButton, MListenerClick);
+function FUiDataToolButton(o){
+   o = RClass.inherits(this, o, FUiControl, MListenerClick);
    //..........................................................
    // @property
    o._icon            = RClass.register(o, new APtyString('_icon'));
@@ -25,42 +25,65 @@ function FUiToolButton(o){
    o._action          = RClass.register(o, new APtyString('_action'));
    //..........................................................
    // @style
-   o._styleNormal     = RClass.register(o, new AStyle('_styleNormal'));
-   o._styleHover      = RClass.register(o, new AStyle('_styleHover'));
-   o._stylePress      = RClass.register(o, new AStyle('_stylePress'));
-   o._styleDisable    = RClass.register(o, new AStyle('_styleDisable'));
-   o._styleIconPanel  = RClass.register(o, new AStyle('_styleIconPanel'));
-   o._styleSpacePanel = RClass.register(o, new AStyle('_styleSpacePanel'));
-   o._styleLabelPanel = RClass.register(o, new AStyle('_styleLabelPanel'));
+   o._styleNormal     = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
+   o._styleHover      = RClass.register(o, new AStyle('_styleHover', 'Hover'));
+   o._stylePress      = RClass.register(o, new AStyle('_stylePress', 'Press'));
+   o._styleDisable    = RClass.register(o, new AStyle('_styleDisable', 'Disable'));
+   o._styleIconPanel  = RClass.register(o, new AStyle('_styleIcon', 'Icon'));
+   o._styleIcon       = RClass.register(o, new AStyle('_styleIcon', 'Icon'));
+   o._styleLabelPanel = RClass.register(o, new AStyle('_styleLabel', 'Label'));
    //..........................................................
    // @attribute
    o._disabled        = false;
    //..........................................................
    // @html
-   o._hForm           = null;
-   o._hLine           = null;
    o._hIconPanel      = null;
    o._hIcon           = null;
-   o._hSpacePanel     = null;
    o._hLabelPanel     = null;
    //..........................................................
    // @event
-   o.onBuildPanel     = FUiToolButton_onBuildPanel;
-   o.onBuild          = FUiToolButton_onBuild;
+   o.onBuildPanel     = FUiDataToolButton_onBuildPanel;
+   o.onBuild          = FUiDataToolButton_onBuild;
    // @event
-   o.onEnter          = FUiToolButton_onEnter;
-   o.onLeave          = FUiToolButton_onLeave;
-   o.onMouseDown      = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiToolButton_onMouseDown);
-   o.onMouseUp        = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiToolButton_onMouseUp);
+   o.onEnter          = FUiDataToolButton_onEnter;
+   o.onLeave          = FUiDataToolButton_onLeave;
+   o.onMouseDown      = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiDataToolButton_onMouseDown);
+   o.onMouseUp        = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiDataToolButton_onMouseUp);
    //..........................................................
    // @method
-   o.icon             = FUiToolButton_icon;
-   o.setIcon          = FUiToolButton_setIcon;
-   o.setLabel         = FUiToolButton_setLabel;
-   o.setHint          = FUiToolButton_setHint;
-   o.setEnable        = FUiToolButton_setEnable;
-   o.click            = FUiToolButton_click;
-   o.dispose          = FUiToolButton_dispose;
+   o.icon             = FUiDataToolButton_icon;
+   o.setIcon          = FUiDataToolButton_setIcon;
+   o.setLabel         = FUiDataToolButton_setLabel;
+   o.setEnable        = FUiDataToolButton_setEnable;
+   o.click            = FUiDataToolButton_click;
+   o.dispose          = FUiDataToolButton_dispose;
+
+
+
+   //o._type            = RClass.register(o, new APtyString('_type'));
+   //o._dataAction      = RClass.register(o, new APtyString('_dataAction'));
+   //o._service         = RClass.register(o, new APtyString('_service'));
+   //o._target          = RClass.register(o, new APtyString('_target'));
+   //o._page            = RClass.register(o, new APtyString('_page'));
+   //o._method          = RClass.register(o, new APtyString('_method'));
+   //o._attributes      = RClass.register(o, new APtyString('_attributes'));
+   //..........................................................
+   // @event
+   //o.onButtonClick   = RClass.register(o, new AEventClick('onButtonClick'), FUiDataToolButton_onButtonClick);
+   //..........................................................
+   // @style
+   //o._styleIconDisable   = RClass.register(o, new AStyle('_styleIconDisable', 'IconDisable'));
+   //o._styleButton        = RClass.register(o, new AStyleIcon('_styleButton', 'Button'));
+   //o._styleButtonDisable = RClass.register(o, new AStyleIcon('_styleButtonDisable', 'ButtonDisable'));
+   //o._styleButtonHover   = RClass.register(o, new AStyleIcon('_styleButtonHover', 'ButtonHover'));
+   //..........................................................
+   // @html
+   //o._hButton         = null;
+   //o._hButtonLine     = null;
+   //o._hButtonPanel    = null;
+   //..........................................................
+   // @event
+   //o.onShowHint      = FUiDataToolButton_onShowHint;
    return o;
 }
 
@@ -70,7 +93,7 @@ function FUiToolButton(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FUiToolButton_onBuildPanel(p){
+function FUiDataToolButton_onBuildPanel(p){
    var o = this;
    o._hPanel = RBuilder.createDiv(p, o.styleName('Normal'));
 }
@@ -81,7 +104,7 @@ function FUiToolButton_onBuildPanel(p){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FUiToolButton_onBuild(p){
+function FUiDataToolButton_onBuild(p){
    var o = this;
    o.__base.FUiControl.onBuild.call(o, p);
    // 设置面板
@@ -89,31 +112,23 @@ function FUiToolButton_onBuild(p){
    o.attachEvent('onMouseDown', h);
    o.attachEvent('onMouseUp', h);
    // 建立表单
-   var hf = o._hForm = RBuilder.appendTable(h);
+   var hf = o._hForm = RBuilder.appendTable(p);
    var hl = o._hLine = RBuilder.appendTableRow(hf);
    // 建立图标
    if(o._icon){
-      var hc = o._hIconPanel = RBuilder.appendTableCell(hl, o.styleName('IconPanel'));
-      o._hIcon = RBuilder.appendIcon(hc, null, o._icon);
-   }
-   // 建立分割
-   if(o._icon && o._label){
-      o.hSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
+      var hl = o._hIconPanel = RBuilder.appendTableCell(hl);
+      o._hIcon = RBuilder.appendIcon(hl, o.styleName('Icon'), o._icon);
    }
    // 建立标签
    if(o._label){
-      var hlp = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
-      hlp.noWrap = true;
+      var hl = o._hLabelPanel = RBuilder.appendTableCell(hl);
       o.setLabel(o._label);
    }
    // 建立热键
-   if(o._hotkey){
-      RConsole.find(FKeyConsole).register(o._hotkey, o, o.onMouseDown);
-   }
-   // 建立提示
-   if(o._hint){
-      o.setHint(o._hint);
-   }
+   //if(o._hotkey){
+   //   //o._hLabel.innerHTML = '&nbsp;' + o.label+"("+o._hotkey+")";
+   //   RConsole.find(FKeyConsole).register(o._hotkey, new TListener(o, o.onButtonClick));
+   //
 }
 
 //==========================================================
@@ -122,7 +137,7 @@ function FUiToolButton_onBuild(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FUiToolButton_onEnter(e){
+function FUiDataToolButton_onEnter(e){
    var o = this;
    //if(o._hotkey || o.hint){
    //   if(!o.hintBox){
@@ -137,7 +152,7 @@ function FUiToolButton_onEnter(e){
    if(!o._disabled){
       // 消息提示
       o._hPanel.className = o.styleName('Hover');
-      //o._hButton.background = o.styleIconPath('ButtonHover', FUiToolButton);
+      //o._hButton.background = o.styleIconPath('ButtonHover', FUiDataToolButton);
    }
 }
 
@@ -147,7 +162,7 @@ function FUiToolButton_onEnter(e){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FUiToolButton_onLeave(e){
+function FUiDataToolButton_onLeave(e){
    var o = this;
    //if(o.hintBox){
    //   o.hintBox.hide();
@@ -155,7 +170,7 @@ function FUiToolButton_onLeave(e){
    //}
    if(!o._disabled){
       o._hPanel.className = o.styleName('Normal');
-      //o._hButton.background = o.styleIconPath('Button', FUiToolButton);
+      //o._hButton.background = o.styleIconPath('Button', FUiDataToolButton);
    }
 }
 
@@ -165,7 +180,7 @@ function FUiToolButton_onLeave(e){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FUiToolButton_onMouseDown(){
+function FUiDataToolButton_onMouseDown(){
    var o = this;
    //if(o.hintBox){
    //   o.hintBox.hide();
@@ -182,7 +197,7 @@ function FUiToolButton_onMouseDown(){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FUiToolButton_onMouseUp(h){
+function FUiDataToolButton_onMouseUp(h){
    var o = this;
    if(!o._disabled){
       o._hPanel.className = o.styleName('Hover');
@@ -195,7 +210,7 @@ function FUiToolButton_onMouseUp(h){
 // @method
 // @return String 图标
 //==========================================================
-function FUiToolButton_icon(){
+function FUiDataToolButton_icon(){
    return this._icon;
 }
 
@@ -205,12 +220,8 @@ function FUiToolButton_icon(){
 // @method
 // @param p:icon:String 图标
 //==========================================================
-function FUiToolButton_setIcon(p){
-   var o = this;
-   o._icon = p;
-   if(o._hIcon){
-      o._hIcon.src = o.styleIconPath(o._icon);
-   }
+function FUiDataToolButton_setIcon(p){
+   this._icon = p;
 }
 
 //==========================================================
@@ -219,29 +230,16 @@ function FUiToolButton_setIcon(p){
 // @method
 // @param p:label:String 标签
 //==========================================================
-function FUiToolButton_setLabel(p){
+function FUiDataToolButton_setLabel(p){
    var o = this;
    var s = RString.nvl(p);
    o._label = s;
-   RHtml.textSet(o._hLabelPanel, s);
-}
-
-//==========================================================
-// <T>设置提示。</T>
-//
-// @method
-// @param p:hint:String 提示
-//==========================================================
-function FUiToolButton_setHint(p){
-   var o = this;
-   o._hint = p;
-   var s = RString.nvl(p);
-   if(o._hint){
-      if(o._hotkey){
-         s += ' [' + o._hotkey + ']';
-      }
+   if(o._hIcon){
+      s = ' ' + o._label;
    }
-   o._hPanel.title = o._hint;
+   if(o._hLabel){
+      o._hLabel.innerText = s;
+   }
 }
 
 //==========================================================
@@ -250,7 +248,7 @@ function FUiToolButton_setHint(p){
 // @method
 // @param p:enable:Boolean 是否可操作
 //==========================================================
-function FUiToolButton_setEnable(p){
+function FUiDataToolButton_setEnable(p){
    var o = this;
    o.__base.FUiControl.oeEnable.call(o, e);
    o._disabled = !e.enable;
@@ -290,7 +288,7 @@ function FUiToolButton_setEnable(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FUiToolButton_click(){
+function FUiDataToolButton_click(){
    var o = this;
    RLogger.debug(o, 'Mouse button click. (label={1})' + o._label);
    //if(o.isVisible() && !o._disabled && (EAction.Design != o.inAction)){
@@ -357,15 +355,29 @@ function FUiToolButton_click(){
 //
 // @method
 //==========================================================
-function FUiToolButton_dispose(){
+function FUiDataToolButton_dispose(){
    var o = this;
+   o._hButton = null;
+   o._hButtonLine = null;
+   o._hButtonPanel = null;
    // 释放属性
-   o._hForm = RHtml.free(o._hForm);
-   o._hLine = RHtml.free(o._hLine);
-   o._hIconPanel = RHtml.free(o._hIconPanel);
-   o._hIcon = RHtml.free(o._hIcon);
-   o._hSpacePanel = RHtml.free(o._hSpacePanel);
-   o._hLabelPanel = RHtml.free(o._hLabelPanel);
+   o._hIcon = null;
+   o._hText = null;
    // 父处理
    o.__base.FUiControl.dispose.call(o);
+}
+
+
+/**************************************************************
+ * 相应点击事件
+ *
+ * @method
+ * @see FUiDataToolButton_onClick
+ **************************************************************/
+function FUiDataToolButton_onShowHint(a){
+   var o = this;
+   a.status = EActive.Finish;
+   if(o.hintBox){
+      o.hintBox.show();
+   }
 }

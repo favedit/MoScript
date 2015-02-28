@@ -1,11 +1,11 @@
 //==========================================================
-// <T>菜单按键接口。</T>
+// <T>界面工具栏按键接口。</T>
 //
 // @face
 // @author maocy
-// @history 150121
+// @history 150228
 //==========================================================
-function MMenuButton(o){
+function MUiToolButton(o){
    o = RClass.inherits(this, o);
    return o;
 }

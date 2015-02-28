@@ -1,17 +1,17 @@
 //==========================================================
 // <T>渲染立方体。</T>
-//      4 ──  5
-//    ╱│   ╱│
-//  0 ── 1   │
-//  │  7─│─ 6
-//  │╱   │ ╱
-//  3 ── 2
+//      04 ── 05
+//    ╱│    ╱ │
+//  00 ── 01   │
+//  │  07─│─ 06
+//  │╱    │ ╱
+//  03 ── 02
 //
 // @author maocy
 // @history 141231
 //==========================================================
-function FRenderCube(o){
-   o = RClass.inherits(this, o, FObject);
+function FE3dCube(o){
+   o = RClass.inherits(this, o, FE3dRenderable);
    //..........................................................
    // @attribute
    o.vertexPositionBuffer = null;
@@ -19,7 +19,7 @@ function FRenderCube(o){
    o.indexBuffer          = null;
    //..........................................................
    // @method
-   o.setup  = FRenderCube_setup;
+   o.setup                = FE3dCube_setup;
    return o;
 }
 
@@ -31,7 +31,7 @@ function FRenderCube(o){
 // @param w:width:Number 宽度
 // @param h:height:Number 高度
 //==========================================================
-function FRenderCube_setup(p){
+function FE3dCube_setup(p){
    var o = this;
    // 设置顶点数据
    var vp = [
@@ -67,4 +67,9 @@ function FRenderCube_setup(p){
       3, 2, 6, 3, 6, 7  ];
    o.indexBuffer = context.createIndexBuffer();
    o.indexBuffer.upload(id, 36);
+   //..........................................................
+   // 设置材质
+   var mi = o.material().info();
+   mi.effectCode = 'control';
+   mi.ambientColor.set(1, 1, 1, 1);
 }

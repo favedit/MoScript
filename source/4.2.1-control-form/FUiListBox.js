@@ -21,7 +21,7 @@ function FUiListBox(o){
    o = RClass.inherits(this, o, FUiContainer, MHorizontal, MListenerClick);
    //..........................................................
    // @property
-   o._sizeCd      = ESize.Horizontal
+   o._sizeCd      = EUiSize.Horizontal
    //..........................................................
    // @style
    o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));

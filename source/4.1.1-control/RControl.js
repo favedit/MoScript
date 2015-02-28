@@ -21,6 +21,8 @@ var RControl = new function RControl(){
    o.create             = RControl_create;
    o.innerbuild         = RControl_innerbuild;
    o.build              = RControl_build;
+   // @method
+   o.setStyleScroll     = RControl_setStyleScroll;
 
 
    //..........................................................
@@ -308,8 +310,42 @@ function RControl_build(c, x, a, h){
    return c;
 }
 
-
-
+//===========================================================
+// <T>设置页面元素滚动样式。</T>
+//
+// @method
+// @param h:html:HtmlTag 页面元素
+// @param c:scrollCd:EUiScroll 滚动枚举
+//===========================================================
+function RControl_setStyleScroll(h, c){
+   var s = h.style;
+   switch(c){
+      case EUiScroll.None:
+         s.overflowX = '';
+         s.overflowY = '';
+         break;
+      case EUiScroll.Horizontal:
+         s.overflowX = 'scroll';
+         break;
+      case EUiScroll.HorizontalAuto:
+         s.overflowX = 'auto';
+         break;
+      case EUiScroll.Vertical:
+         s.overflowY = 'scroll';
+         break;
+      case EUiScroll.VerticalAuto:
+         s.overflowY = 'auto';
+         break;
+      case EUiScroll.Both:
+         s.overflow = 'scroll';
+         break;
+      case EUiScroll.BothAuto:
+         s.overflow = 'auto';
+         break;
+      default:
+         throw new TError(o, 'Unknown scroll type. (scroll_cd={1})', c);
+   }
+}
 
 
 

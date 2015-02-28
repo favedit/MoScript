@@ -7,6 +7,9 @@
 function FUiContainer(o){
    o = RClass.inherits(this, o, FUiControl, MUiContainer);
    //..........................................................
+   // @property Boolean 是否禁止
+   o._scrollCd           = RClass.register(o, new APtyEnum('_scrollCd', null, EUiScroll, EUiScroll.None));
+   //..........................................................
    // @attributes
    o._controls           = null;
    //..........................................................
@@ -26,6 +29,8 @@ function FUiContainer(o){
    o.storeConfig         = FUiContainer_storeConfig;
    // @method
    o.push                = FUiContainer_push;
+   o.remove              = FUiContainer_remove;
+   o.clear               = FUiContainer_clear;
    // @method
    o.dispose             = FUiContainer_dispose;
    return o;
@@ -224,6 +229,47 @@ function FUiContainer_push(p){
       // 追加控件
       o.appendChild(p);
    }
+}
+
+//==========================================================
+// <T>移除指定子控件。</T>
+//
+// @method
+// @param p:component:FComponent 组件对象
+//==========================================================
+function FUiContainer_remove(p){
+   var o = this;
+   // 检查类型
+   if(RClass.isClass(p, FUiControl)){
+      // 检查存在
+      var s = o._controls;
+      if(!s || (s && !s.constanis(p.name()))){
+         throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
+      }
+      // 移除处理
+      s.remove(p);
+   }
+   // 父处理
+   o.__base.FUiControl.remove.call(o, p);
+}
+
+//==========================================================
+// <T>清空所有子控件。</T>
+//
+// @method
+//==========================================================
+function FUiContainer_clear(){
+   var o = this;
+   // 清空控件
+   var s = o._controls;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         o.removeChild(s.valueAt(i));
+      }
+      s.clear();
+   }
+   // 父处理
+   o.__base.FUiControl.clear.call(o);
 }
 
 //==========================================================

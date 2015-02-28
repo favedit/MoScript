@@ -4,8 +4,8 @@
 // @author maocy
 // @history 150207
 //==========================================================
-function FRd3Renderable(o){
-   o = RClass.inherits(this, o, FG3dRenderable, MGraphicObject);
+function FE3dRenderable(o){
+   o = RClass.inherits(this, o, FE3dDrawable, MG3dRenderable, MGraphicObject);
    //..........................................................
    // @attribute
    o._display         = null;
@@ -15,22 +15,22 @@ function FRd3Renderable(o){
    o._indexBuffer     = null;
    //..........................................................
    // @method
-   o.construct        = FRd3Renderable_construct;
+   o.construct        = FE3dRenderable_construct;
    // @method
    o.setup            = RMethod.empty;
    // @method
    o.testVisible      = RMethod.emptyTrue;
-   o.display          = FRd3Renderable_display;
-   o.setDisplay       = FRd3Renderable_setDisplay;
-   o.vertexCount      = FRd3Renderable_vertexCount;
-   o.findVertexBuffer = FRd3Renderable_findVertexBuffer;
-   o.vertexBuffers    = FRd3Renderable_vertexBuffers;
-   o.indexBuffer      = FRd3Renderable_indexBuffer;
+   o.display          = FE3dRenderable_display;
+   o.setDisplay       = FE3dRenderable_setDisplay;
+   o.vertexCount      = FE3dRenderable_vertexCount;
+   o.findVertexBuffer = FE3dRenderable_findVertexBuffer;
+   o.vertexBuffers    = FE3dRenderable_vertexBuffers;
+   o.indexBuffer      = FE3dRenderable_indexBuffer;
    o.textures         = RMethod.empty;
    o.bones            = RMethod.empty;
    // @method
-   o.update           = FRd3Renderable_update;
-   o.remove           = FRd3Renderable_remove;
+   o.update           = FE3dRenderable_update;
+   o.remove           = FE3dRenderable_remove;
    return o;
 }
 
@@ -39,9 +39,10 @@ function FRd3Renderable(o){
 //
 // @method
 //==========================================================
-function FRd3Renderable_construct(){
+function FE3dRenderable_construct(){
    var o = this;
-   o.__base.FG3dRenderable.construct.call(o);
+   o.__base.FE3dDrawable.construct.call(o);
+   o.__base.MG3dRenderable.construct.call(o);
    // 构造变量
    o._vertexBuffers = new TDictionary();
 }
@@ -52,7 +53,7 @@ function FRd3Renderable_construct(){
 // @method
 // @return FDisplay 显示对象
 //==========================================================
-function FRd3Renderable_display(){
+function FE3dRenderable_display(){
    return this._display;
 }
 
@@ -62,7 +63,7 @@ function FRd3Renderable_display(){
 // @method
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FRd3Renderable_setDisplay(p){
+function FE3dRenderable_setDisplay(p){
    this._display = p;
 }
 
@@ -72,7 +73,7 @@ function FRd3Renderable_setDisplay(p){
 // @method
 // @return Integer 顶点个数
 //==========================================================
-function FRd3Renderable_vertexCount(){
+function FE3dRenderable_vertexCount(){
    return this._vertexCount;
 }
 
@@ -83,7 +84,7 @@ function FRd3Renderable_vertexCount(){
 // @param p:code:String 代码
 // @return FG3dVertexBuffer 顶点缓冲
 //==========================================================
-function FRd3Renderable_findVertexBuffer(p){
+function FE3dRenderable_findVertexBuffer(p){
    return this._vertexBuffers.get(p);
 }
 
@@ -93,7 +94,7 @@ function FRd3Renderable_findVertexBuffer(p){
 // @method
 // @return TObjects 顶点缓冲集合
 //==========================================================
-function FRd3Renderable_vertexBuffers(){
+function FE3dRenderable_vertexBuffers(){
    return this._vertexBuffers;
 }
 
@@ -103,7 +104,7 @@ function FRd3Renderable_vertexBuffers(){
 // @method
 // @return FG3dIndexBuffer 索引缓冲
 //==========================================================
-function FRd3Renderable_indexBuffer(){
+function FE3dRenderable_indexBuffer(){
    return this._indexBuffer;
 }
 
@@ -113,7 +114,7 @@ function FRd3Renderable_indexBuffer(){
 // @method
 // @param p:region:FG3dRegion 区域
 //==========================================================
-function FRd3Renderable_update(p){
+function FE3dRenderable_update(p){
    var o = this;
    // 计算矩阵
    var m = o._currentMatrix;
@@ -130,7 +131,7 @@ function FRd3Renderable_update(p){
 //
 // @method
 //==========================================================
-function FRd3Renderable_remove(){
+function FE3dRenderable_remove(){
    var o = this;
    var d = o._display;
    if(d){

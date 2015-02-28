@@ -4,11 +4,11 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FGraphicRenderable(o){
+function MGraphicRenderable(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @method
-   o.process = FGraphicRenderable_process;
+   o.process = MGraphicRenderable_process;
    return o;
 }
 
@@ -17,5 +17,5 @@ function FGraphicRenderable(o){
 //
 // @method
 //==========================================================
-function FGraphicRenderable_process(){
+function MGraphicRenderable_process(){
 }

@@ -5,7 +5,7 @@
 // @history 150202
 //==========================================================
 function FE3dMeshRenderable(o){
-   o = RClass.inherits(this, o, FRd3Renderable);
+   o = RClass.inherits(this, o, FE3dRenderable);
    //..........................................................
    // @attribute
    o._renderable      = null;
@@ -124,7 +124,7 @@ function FE3dMeshRenderable_update(p){
 //==========================================================
 function FE3dMeshRenderable_process(p){
    var o = this;
-   o.__base.FRd3Renderable.process.call(p)
+   o.__base.FE3dRenderable.process.call(p)
    var t = o._activeTrack;
    if(t){
       if(o._display._optionPlay){
@@ -156,5 +156,5 @@ function FE3dMeshRenderable_dispose(){
       o._vertexBuffers = null;
    }
    // 父处理
-   o.__base.FRd3Renderable.dispose.call(o);
+   o.__base.FE3dRenderable.dispose.call(o);
 }

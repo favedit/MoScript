@@ -2439,10 +2439,10 @@ function FUiEdit_refreshValue(){
 }
 function FUiEditControl(o){
    o = RClass.inherits(this, o, FUiControl, MDataField, MEditValue, MEditChange, MEditDrop);
-   o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), ELabelMode.All);
-   o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), ELabelPosition.Left);
+   o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
+   o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), EUiLabelPosition.Left);
    o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
-   o._labelAlignCd     = RClass.register(o, new APtyString('_labelAlignCd'), EAlign.Left);
+   o._labelAlignCd     = RClass.register(o, new APtyString('_labelAlignCd'), EUiAlign.Left);
    o._editSize         = RClass.register(o, new APtySize2('_editSize'));
    o._dataTypeCd       = RClass.register(o, new APtyString('_dataTypeCd'));
    o._styleLabelPanel  = RClass.register(o, new AStyle('_styleLabelPanel'));
@@ -2522,20 +2522,20 @@ function FUiEditControl_onBuild(p){
    var hlp = null;
    var hep = null;
    var lmc = o._labelModeCd;
-   if(lmc == ELabelMode.Label){
+   if(lmc == EUiLabelMode.Label){
       hlp = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
-   }else if(lmc == ELabelMode.Hidden){
+   }else if(lmc == EUiLabelMode.Hidden){
       hep = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
    }else{
       var lpc = o._labelPositionCd;
-      if(lpc == ELabelPosition.Top){
+      if(lpc == EUiLabelPosition.Top){
          hlp = RBuilder.appendTableRowCell(hc);
          hep = RBuilder.appendTableRowCell(hc);
-      }else if(lpc == ELabelPosition.Right){
+      }else if(lpc == EUiLabelPosition.Right){
          var hr = RBuilder.appendTableRow(hc);
          hep = RBuilder.appendTableCell(hr);
          hlp = RBuilder.appendTableCell(hr);
-      }else if(lpc == ELabelPosition.Bottom){
+      }else if(lpc == EUiLabelPosition.Bottom){
          hep = RBuilder.appendTableRowCell(hc);
          hlp = RBuilder.appendTableRowCell(hc);
       }else{
@@ -3521,7 +3521,7 @@ function FUiLayout(o){
 function FUiLayout_onBuildPanel(p){
    var o = this;
    var h = o._hPanel = o._hPanelForm = RBuilder.createTable(p.hDocument, o.styleName('Form'), null, 0, 1);
-   if(o._layoutCd == ELayout.Design){
+   if(o._layoutCd == EUiLayout.Design){
       var hr = RBuilder.appendTableRow(h);
       var hc = RBuilder.appendTableCell(hr);
       o._hContainer = hc;
@@ -3686,7 +3686,7 @@ function FUiLayout_moveChild(cf, ct, pos, copy){
 function FUiLayout_innerAppendLine(){
    var o = this;
    var h = null;
-   if(o._layoutCd == ELayout.Design){
+   if(o._layoutCd == EUiLayout.Design){
       h = o._hPanelTable = RBuilder.appendTable(o._hContainer);
       h.style.paddingBottom = 4;
       o._hPanelLine = RBuilder.appendTableRow(h);
@@ -3698,7 +3698,7 @@ function FUiLayout_innerAppendLine(){
 }
 function FUiLayout_appendChild(ctl){
    var o = this;
-   if(o._layoutCd == ELayout.Design){
+   if(o._layoutCd == EUiLayout.Design){
       if(!o._hPanelLine){
          o.innerAppendLine();
       }
@@ -3723,7 +3723,7 @@ function FUiLayout_appendChild(ctl){
    }else{
       ctl._hPanel.style.paddingTop = 2;
       ctl._hPanel.style.paddingBottom = 2;
-      if(RSet.contains(ctl._sizeCd, ESize.Horizontal) || '100%' == ctl.width){
+      if(RSet.contains(ctl._sizeCd, EUiSize.Horizontal) || '100%' == ctl.width){
          if(RClass.isClass(ctl, FUiSplit)){
             o._lastSplit = ctl;
          }
@@ -3733,7 +3733,7 @@ function FUiLayout_appendChild(ctl){
          hc.appendChild(ctl._hPanel);
          ctl._hLayoutRow = hr;
          o._hPanelLast = hc;
-         if(!RSet.contains(ctl._sizeCd, ESize.Vertical)){
+         if(!RSet.contains(ctl._sizeCd, EUiSize.Vertical)){
             hc.height = 1;
          }else if(ctl.height){
             hc.height = ctl.height;
@@ -3787,7 +3787,7 @@ function FUiLayout_dispose(){
 }
 function FUiListBox(o){
    o = RClass.inherits(this, o, FUiContainer, MHorizontal, MListenerClick);
-   o._sizeCd      = ESize.Horizontal
+   o._sizeCd      = EUiSize.Horizontal
    o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
    o._hForm       = null;
    o.onBuildPanel = FUiListBox_onBuildPanel;
@@ -4910,7 +4910,7 @@ function FUiNumber4_link(){
 }
 function FUiPageControl(o){
    o = RClass.inherits(this, o, FUiContainer);
-   o._sizeCd          = ESize.Horizontal;
+   o._sizeCd          = EUiSize.Horizontal;
    o._stylePanel      = RClass.register(o, new AStyle('_stylePanel'));
    o._styleTitlePanel = RClass.register(o, new AStyle('_styleTitlePanel'));
    o._styleTitleForm  = RClass.register(o, new AStyle('_styleTitleForm'));
@@ -4921,7 +4921,7 @@ function FUiPageControl(o){
    o._styleForm       = RClass.register(o, new AStyle('_styleForm'));
    o._sheets          = null;
    o._activeSheet     = null;
-   o._esize           = ESize.Both;
+   o._esize           = EUiSize.Both;
    o._hTop             = null;
    o._hLine            = null;
    o._hBottom          = null;
@@ -5219,7 +5219,7 @@ function FUiPageSheet_innerDump(s, l){
 }
 function FUiPanel(o){
    o = RClass.inherits(this, o, FUiLayout, MDesign, MFocus);
-   o._sizeCd      = ESize.Horizontal;
+   o._sizeCd      = EUiSize.Horizontal;
    o._stylePanel  = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
    o._styleLabel  = RClass.register(o, new AStyle('_styleLabel', 'Label'));
    o._styleBody   = RClass.register(o, new AStyle('_styleBody', 'Body'));

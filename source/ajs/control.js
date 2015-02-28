@@ -1,15 +1,3 @@
-var EAlign = new function EAlign(){
-   var o = this;
-   o.Left        = 'left';
-   o.Center      = 'center';
-   o.Right       = 'right';
-   o.Top         = 'up';
-   o.Middle      = 'middle';
-   o.Bottom      = 'down';
-   o.BottomLeft  = 'bl';
-   o.BottomRight = 'br';
-   return o;
-}
 var EBorder = new function EBorder(){
    var o = this;
    o.None          = 0;
@@ -28,7 +16,110 @@ var EBorderStyle = new function EBorderStyle(){
    o.Hover    = 3;
    return o;
 }
-var EColor = new function EColor(){
+var EDataAction = new function EDataAction(){
+   var o = this;
+   o.Fetch     = 'fetch';
+   o.Search    = 'search';
+   o.Lov       = 'lov';
+   o.Zoom      = 'zoom';
+   o.Prepare   = 'prepare';
+   o.Insert    = 'insert';
+   o.Update    = 'update';
+   o.Delete    = 'delete';
+   o.First     = 'first';
+   o.Prior     = 'prior';
+   o.Next      = 'next';
+   o.Last      = 'last';
+   o.Action    = 'action';
+   o.FetchLov  = 'fetchLov';
+   o.EndFetch  = 'endfetch';
+   o.EndUpdate = 'endupdate';
+   o.DsChanged = 'dschanged';
+   o.Scalar    = 'scalar';
+   o.Complete  = 'complete';
+   o.Process   = 'process';
+   return o;
+}
+var EDataService = new function EDataService(){
+   var o = this;
+   o.Dataset    = 'database.dataset';
+   o.List       = 'design.list';
+   o.WebForm    = 'design.webform';
+   o.Translate  = 'design.translate';
+   o.WebDataset = 'logic.dataset';
+   return o;
+}
+var EEditConfig = new function(){
+   var o = this;
+   o.Search = 'S';
+   o.Copy   = 'C';
+   return o;
+}
+function EEditStatusFace(o){
+   if(!o){o=this;}
+   o.Blur   = 0;
+   o.Cancel = 1;
+   o.Ok     = 2;
+   return o;
+}
+var EEditStatus = new EEditStatusFace();
+var EEventInvoke = new function EEventInvoke(){
+   var o = this;
+   o.Unknown = 0;
+   o.Before  = 1;
+   o.After   = 2;
+   return o;
+}
+var EEventStatus = new function EEventStatus(){
+   var o = this;
+   o.Unknown  = 0;
+   o.Continue = 1;
+   o.Stop     = 2;
+   o.Cancel   = 3;
+   o.Failure  = 4;
+   return o;
+}
+var EEventType = new function EEventType(){
+   var o = this;
+   o.Unknown    = 0;
+   o.Construct  = 1;
+   o.Initialize = 2;
+   o.Build      = 3;
+   o.Refresh    = 4;
+   o.Resize     = 5;
+   o.Visible    = 6;
+   o.Show       = 7;
+   o.Hidden     = 8;
+   o.Enable     = 9;
+   o.Disable    = 10;
+   o.Release    = 11;
+   o.Design     = 12;
+   o.Action     = 13;
+   o.Valid      = 14;
+   o.Mode       = 15;
+   return o;
+}
+var ERowStatus = new function ERowStatusFace(){
+   var o = this;
+   o.Normal = 'N';
+   o.Insert = 'I';
+   o.Update = 'U';
+   o.Delete  = 'D';
+   return o;
+}
+var EUiAlign = new function EUiAlign(){
+   var o = this;
+   o.Left        = 'left';
+   o.Center      = 'center';
+   o.Right       = 'right';
+   o.Top         = 'up';
+   o.Middle      = 'middle';
+   o.Bottom      = 'down';
+   o.BottomLeft  = 'bl';
+   o.BottomRight = 'br';
+   return o;
+}
+var EUiColor = new function EUiColor(){
    var o = this;
    o.Normal        = '#FFFFFF';
    o.Select        = '#F8C59A';
@@ -88,103 +179,20 @@ var EColor = new function EColor(){
       ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
    return o;
 }
-var EDataAction = new function EDataAction(){
-   var o = this;
-   o.Fetch     = 'fetch';
-   o.Search    = 'search';
-   o.Lov       = 'lov';
-   o.Zoom      = 'zoom';
-   o.Prepare   = 'prepare';
-   o.Insert    = 'insert';
-   o.Update    = 'update';
-   o.Delete    = 'delete';
-   o.First     = 'first';
-   o.Prior     = 'prior';
-   o.Next      = 'next';
-   o.Last      = 'last';
-   o.Action    = 'action';
-   o.FetchLov  = 'fetchLov';
-   o.EndFetch  = 'endfetch';
-   o.EndUpdate = 'endupdate';
-   o.DsChanged = 'dschanged';
-   o.Scalar    = 'scalar';
-   o.Complete  = 'complete';
-   o.Process   = 'process';
-   return o;
-}
-var EDataService = new function EDataService(){
-   var o = this;
-   o.Dataset    = 'database.dataset';
-   o.List       = 'design.list';
-   o.WebForm    = 'design.webform';
-   o.Translate  = 'design.translate';
-   o.WebDataset = 'logic.dataset';
-   return o;
-}
-var EDirection = new function EDirection(){
+var EUiDirection = new function EUiDirection(){
    var o = this;
    o.Horizontal = 'H';
    o.Vertical   = 'V';
    return o;
 }
-var EEditConfig = new function(){
-   var o = this;
-   o.Search = 'S';
-   o.Copy   = 'C';
-   return o;
-}
-function EEditStatusFace(o){
-   if(!o){o=this;}
-   o.Blur   = 0;
-   o.Cancel = 1;
-   o.Ok     = 2;
-   return o;
-}
-var EEditStatus = new EEditStatusFace();
-var EEventInvoke = new function EEventInvoke(){
-   var o = this;
-   o.Unknown = 0;
-   o.Before  = 1;
-   o.After   = 2;
-   return o;
-}
-var EEventStatus = new function EEventStatus(){
-   var o = this;
-   o.Unknown  = 0;
-   o.Continue = 1;
-   o.Stop     = 2;
-   o.Cancel   = 3;
-   o.Failure  = 4;
-   return o;
-}
-var EEventType = new function EEventType(){
-   var o = this;
-   o.Unknown    = 0;
-   o.Construct  = 1;
-   o.Initialize = 2;
-   o.Build      = 3;
-   o.Refresh    = 4;
-   o.Resize     = 5;
-   o.Visible    = 6;
-   o.Show       = 7;
-   o.Hidden     = 8;
-   o.Enable     = 9;
-   o.Disable    = 10;
-   o.Release    = 11;
-   o.Design     = 12;
-   o.Action     = 13;
-   o.Valid      = 14;
-   o.Mode       = 15;
-   return o;
-}
-var ELabelMode = new function ELabelMode(){
+var EUiLabelMode = new function EUiLabelMode(){
    var o = this;
    o.All    = 'A';
    o.Label  = 'L';
    o.Hidden = 'H';
    return o;
 }
-var ELabelPosition = new function ELabelPosition(){
+var EUiLabelPosition = new function EUiLabelPosition(){
    var o = this;
    o.Left   = 'left';
    o.Right  = 'right';
@@ -192,7 +200,21 @@ var ELabelPosition = new function ELabelPosition(){
    o.Bottom = 'bottom';
    return o;
 }
-var ELayout = new function ELayout(){
+var EUiLayer = new function EUiLayer(){
+   var o = this;
+   o.Default = 20000;
+   o.Shadow  =  5000;
+   o.Disable =  5000;
+   o.Window  = 20000;
+   o.Drop    = 40000;
+   o.Editor  = 10000;
+   o.Border  = 20000;
+   o.Move    = 25000;
+   o.Search  = 45000;
+   o.Message = 45000;
+   return o;
+}
+var EUiLayout = new function EUiLayout(){
    var o = this;
    o.Display = 'P';
    o.Search  = 'S';
@@ -201,6 +223,13 @@ var ELayout = new function ELayout(){
    o.Update  = 'U';
    o.Delete  = 'D';
    o.Zoom    = 'Z';
+   return o;
+}
+var EUiMerge = new function EUiMerge(){
+   var o = this;
+   o.Append   = 'append';
+   o.Override = 'override';
+   o.Disable  = 'disable';
    return o;
 }
 var EPanel = new function EPanel(){
@@ -219,7 +248,7 @@ var EPanel = new function EPanel(){
    o.Drop      = 11;
    return o;
 }
-function EPositionFace(){
+var EUiPosition = new function EUiPosition(){
    var o = this;
    o.Left   = 'left';
    o.Right  = 'right';
@@ -231,35 +260,23 @@ function EPositionFace(){
    o.LineAfter  = 4;
    return o;
 }
-EPosition = new EPositionFace();
-var ERowStatus = new function ERowStatusFace(){
+var EUiScroll = new function EUiScroll(){
    var o = this;
-   o.Normal = 'N';
-   o.Insert = 'I';
-   o.Update = 'U';
-   o.Delete  = 'D';
+   o.None           = 'N';
+   o.Horizontal     = 'H';
+   o.HorizontalAuto = 'HA';
+   o.Vertical       = 'V';
+   o.VerticalAuto   = 'VA';
+   o.Both           = 'B';
+   o.BothAuto       = 'BA';
    return o;
 }
-var ESize = new function ESize(){
+var EUiSize = new function EUiSize(){
    var o = this;
    o.Normal     = 0
    o.Horizontal = 1
    o.Vertical   = 2
    o.Both       = 3;
-   return o;
-}
-var EUiLayer = new function EUiLayer(){
-   var o = this;
-   o.Default = 20000;
-   o.Shadow  =  5000;
-   o.Disable =  5000;
-   o.Window  = 20000;
-   o.Drop    = 40000;
-   o.Editor  = 10000;
-   o.Border  = 20000;
-   o.Move    = 25000;
-   o.Search  = 45000;
-   o.Message = 45000;
    return o;
 }
 function FUiCanvas(o){
@@ -305,6 +322,8 @@ function FUiComponent(o){
    o.hasComponent  = FUiComponent_hasComponent;
    o.components    = FUiComponent_components;
    o.push          = FUiComponent_push;
+   o.remov         = FUiComponent_remove;
+   o.clear         = FUiComponent_clear;
    o.process       = FUiComponent_process;
    o.psInitialize  = FUiComponent_psInitialize;
    o.psRelease     = FUiComponent_psRelease;
@@ -375,6 +394,24 @@ function FUiComponent_push(p){
          p._name = ps.count();
       }
       ps.set(p._name, p);
+   }
+}
+function FUiComponent_remove(p){
+   var o = this;
+   if(RClass.isClass(p, FUiComponent)){
+      throw new TError(o, 'Parameter is not componet. (component={1})', p);
+   }
+   var s = o._components;
+   if(!s || (s && !s.constanis(p.name()))){
+      throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
+   }
+   s.remove(p);
+}
+function FUiComponent_clear(p){
+   var o = this;
+   var s = o._components;
+   if(s){
+      s.clear();
    }
 }
 function FUiComponent_process(e){
@@ -473,6 +510,7 @@ function FUiComponent_innerDump(s, l){
 }
 function FUiContainer(o){
    o = RClass.inherits(this, o, FUiControl, MUiContainer);
+   o._scrollCd           = RClass.register(o, new APtyEnum('_scrollCd', null, EUiScroll, EUiScroll.None));
    o._controls           = null;
    o.oeDesign            = RMethod.empty;
    o.construct           = FUiContainer_construct;
@@ -485,6 +523,8 @@ function FUiContainer(o){
    o.setControlsProperty = FUiContainer_setControlsProperty;
    o.storeConfig         = FUiContainer_storeConfig;
    o.push                = FUiContainer_push;
+   o.remove              = FUiContainer_remove;
+   o.clear               = FUiContainer_clear;
    o.dispose             = FUiContainer_dispose;
    return o;
 }
@@ -599,6 +639,28 @@ function FUiContainer_push(p){
       o.appendChild(p);
    }
 }
+function FUiContainer_remove(p){
+   var o = this;
+   if(RClass.isClass(p, FUiControl)){
+      var s = o._controls;
+      if(!s || (s && !s.constanis(p.name()))){
+         throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
+      }
+      s.remove(p);
+   }
+   o.__base.FUiControl.remove.call(o, p);
+}
+function FUiContainer_clear(){
+   var o = this;
+   var s = o._controls;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         o.removeChild(s.valueAt(i));
+      }
+      s.clear();
+   }
+   o.__base.FUiControl.clear.call(o);
+}
 function FUiContainer_dispose(){
    var o = this;
    var v = o._controls;
@@ -615,8 +677,8 @@ function FUiControl(o){
    o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap'), false);
    o._hint          = RClass.register(o, new APtyString('_hint'));
    o._stylePanel    = RClass.register(o, new AStyle('_stylePanel'));
-   o._layoutCd      = ELayout.Display;
-   o._sizeCd        = ESize.Normal;
+   o._layoutCd      = EUiLayout.Display;
+   o._sizeCd        = EUiSize.Normal;
    o._statusVisible = true;
    o._statusEnable  = true;
    o._statusBuild   = false;
@@ -712,7 +774,7 @@ function FUiControl_oeVisible(e){
    }
    return EEventStatus.Continue;
 }
-function FUiControl_oeResize(e){
+function FUiControl_oeResize(p){
    return EEventStatus.Continue;
 }
 function FUiControl_oeRefresh(e){
@@ -2237,6 +2299,7 @@ function MUiContainer(o){
    o = RClass.inherits(this, o);
    o.createChild = MUiContainer_createChild;
    o.appendChild = RMethod.empty;
+   o.removeChild = RMethod.empty;
    return o;
 }
 function MUiContainer_createChild(p){
@@ -2297,6 +2360,7 @@ var RControl = new function RControl(){
    o.create             = RControl_create;
    o.innerbuild         = RControl_innerbuild;
    o.build              = RControl_build;
+   o.setStyleScroll     = RControl_setStyleScroll;
    o.inMoving           = false;
    o.inSizing           = false;
    o.inDesign           = false;
@@ -2448,6 +2512,35 @@ function RControl_build(c, x, a, h){
    }
    o.innerbuild(c, c, x, a, h);
    return c;
+}
+function RControl_setStyleScroll(h, c){
+   var s = h.style;
+   switch(c){
+      case EUiScroll.None:
+         s.overflowX = '';
+         s.overflowY = '';
+         break;
+      case EUiScroll.Horizontal:
+         s.overflowX = 'scroll';
+         break;
+      case EUiScroll.HorizontalAuto:
+         s.overflowX = 'auto';
+         break;
+      case EUiScroll.Vertical:
+         s.overflowY = 'scroll';
+         break;
+      case EUiScroll.VerticalAuto:
+         s.overflowY = 'auto';
+         break;
+      case EUiScroll.Both:
+         s.overflow = 'scroll';
+         break;
+      case EUiScroll.BothAuto:
+         s.overflow = 'auto';
+         break;
+      default:
+         throw new TError(o, 'Unknown scroll type. (scroll_cd={1})', c);
+   }
 }
 function RControl_linkEvent(tc, sc, n, h, m){
    var o = this;

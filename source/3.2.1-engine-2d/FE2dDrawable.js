@@ -1,10 +1,10 @@
 //==========================================================
-// <T>可绘制对象。</T>
+// <T>可绘制2D对象。</T>
 //
 // @author maocy
-// @history 141231
+// @history 150228
 //==========================================================
-function FDrawable(o){
-   o = RClass.inherits(this, o, FObject);
+function FE2dDrawable(o){
+   o = RClass.inherits(this, o, FDrawable);
    return o;
 }

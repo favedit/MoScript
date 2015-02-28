@@ -335,15 +335,7 @@ function FDisplayUiLayer(o){
 }
 function FDrawable(o){
    o = RClass.inherits(this, o, FObject);
-   o.left   = 0;
-   o.top    = 0;
-   o.set    = FDrawable_set;
    return o;
-}
-function FDrawable_set(l, t, w, h){
-   var o = this;
-   o.left = l;
-   o.top = t;
 }
 function FStage(o){
    o = RClass.inherits(this, o, FObject);

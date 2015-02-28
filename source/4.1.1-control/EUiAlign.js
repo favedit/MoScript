@@ -1,11 +1,11 @@
 //==========================================================
-// <T>对齐方式枚举。</T>
+// <T>界面对齐方式枚举。</T>
 //
 // @enum
 // @author maocy
 // @version 141231
 //==========================================================
-var EAlign = new function EAlign(){
+var EUiAlign = new function EUiAlign(){
    var o = this;
    // @attribute
    o.Left        = 'left';

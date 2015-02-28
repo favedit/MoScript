@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150123
 //==========================================================
-var EColor = new function EColor(){
+var EUiColor = new function EUiColor(){
    var o = this;
    // Attribute
    o.Normal        = '#FFFFFF';

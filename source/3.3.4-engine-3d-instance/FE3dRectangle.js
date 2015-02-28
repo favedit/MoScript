@@ -7,16 +7,16 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FRd3Rectangle(o){
-   o = RClass.inherits(this, o, FObject);
+function FE3dRectangle(o){
+   o = RClass.inherits(this, o, FE3dRenderable);
    //..........................................................
    // @attribute
-   o.vertexPositionBuffer = null;
-   o.vertexColorBuffer    = null;
-   o.indexBuffer          = null;
+   o._vertexPositionBuffer = null;
+   o._vertexColorBuffer    = null;
+   o._indexBuffer          = null;
    //..........................................................
    // @method
-   o.setup  = FRd3Rectangle_setup;
+   o.setup                 = FE3dRectangle_setup;
    return o;
 }
 
@@ -28,7 +28,7 @@ function FRd3Rectangle(o){
 // @param w:width:Number 宽度
 // @param h:height:Number 高度
 //==========================================================
-function FRd3Rectangle_setup(p){
+function FE3dRectangle_setup(p){
    var o = this;
    // 设置顶点数据
    var vp = [
@@ -36,18 +36,18 @@ function FRd3Rectangle_setup(p){
        1.0,  1.0, 0.0,
        1.0, -1.0, 0.0,
       -1.0, -1.0, 0.0 ];
-   o.vertexPositionBuffer = p.createVertexBuffer();
-   o.vertexPositionBuffer.upload(vp, 4 * 3, 4);
+   o._vertexPositionBuffer = p.createVertexBuffer();
+   o._vertexPositionBuffer.upload(vp, 4 * 3, 4);
    // 设置颜色数据
    var vc = [
       0.0, 1.0, 0.0, 1.0,
       1.0, 0.0, 0.0, 1.0,
       1.0, 0.0, 0.0, 1.0,
       0.0, 0.0, 0.0, 1.0 ];
-   o.vertexColorBuffer = p.createVertexBuffer();
-   o.vertexColorBuffer.upload(vc, 4 * 4, 4);
+   o._vertexColorBuffer = p.createVertexBuffer();
+   o._vertexColorBuffer.upload(vc, 4 * 4, 4);
    // 设置索引数据
    var id = [0, 1, 2, 0, 2, 3];
-   o.indexBuffer = context.createIndexBuffer();
-   o.indexBuffer.upload(id, 6);
+   o._indexBuffer = context.createIndexBuffer();
+   o._indexBuffer.upload(id, 6);
 }

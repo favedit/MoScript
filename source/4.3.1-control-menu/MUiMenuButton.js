@@ -1,10 +1,11 @@
 //==========================================================
-// <T>可绘制对象。</T>
+// <T>菜单按键接口。</T>
 //
+// @face
 // @author maocy
-// @history 141231
+// @history 150121
 //==========================================================
-function FDrawable(o){
-   o = RClass.inherits(this, o, FObject);
+function MUiMenuButton(o){
+   o = RClass.inherits(this, o);
    return o;
 }

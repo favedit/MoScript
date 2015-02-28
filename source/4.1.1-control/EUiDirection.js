@@ -1,11 +1,11 @@
 //==========================================================
-// <T>方向枚举。</T>
+// <T>界面方向枚举。</T>
 //
 // @enum
 // @author maocy
 // @version 150120
 //==========================================================
-var EDirection = new function EDirection(){
+var EUiDirection = new function EUiDirection(){
    var o = this;
    // @member 横向
    o.Horizontal = 'H';

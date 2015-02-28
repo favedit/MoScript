@@ -116,9 +116,11 @@ function FDsSceneRenderableFrame_loadObject(s, r){
    var c = es.count();
    for(var i = 0; i < c; i++){
       var e = es.value(i).effect;
-      var l = ces.createItem(null, e.code());
-      l._effect = e;
-      ces.push(l);
+      if(e){
+         var l = ces.createItem(null, e.code());
+         l._effect = e;
+         ces.push(l);
+      }
    }
 }
 

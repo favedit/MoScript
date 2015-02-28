@@ -1,10 +1,16 @@
 function FUiMenuBar(o){
    o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
-   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
-   o._hLine       = null;
-   o.onBuildPanel = FUiMenuBar_onBuildPanel;
-   o.appendChild = FUiMenuBar_appendChild;
-   return this;
+   o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
+   o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
+   o._styleButtonPanel = RClass.register(o, new AStyle('_styleButtonPanel'));
+   o._hLine            = null;
+   o.onBuildPanel      = FUiMenuBar_onBuildPanel;
+   o.onEnter           = RMethod.empty;
+   o.onLeave           = RMethod.empty;
+   o.appendChild       = FUiMenuBar_appendChild;
+   o.removeChild       = FUiMenuBar_removeChild;
+   o.dispose           = FUiMenuBar_dispose;
+   return o;
 }
 function FUiMenuBar_onBuildPanel(p){
    var o = this;
@@ -15,102 +21,92 @@ function FUiMenuBar_appendChild(p){
    var o = this;
    o.__base.FUiContainer.appendChild.call(o, p);
    if(RClass.isClass(p, FUiMenuButton)){
-      var hr = o._hLine;
-      var hc = RBuilder.appendTableCell(hr);
+      var hl = o._hLine;
+      var hc = RBuilder.appendTableCell(hl, o.styleName('ButtonPanel'));
+      hc._hParentLine = hl;
       p.setPanel(hc);
    }
 }
-function FUiMenuBar_onBuild(builder){
-   var doc = builder.document;
-   this.hBody = doc.createDiv();
-   this.hBody.className = 'menu_panel';
-   this.hParent.insertBefore(this.hBody);
-   builder.hParent = this.hBody;
-}
-function FUiMenuBar_onLoaded(cnn){
-   var doc = cnn.document;
-   if(doc && doc.node){
-      IControl.load(this, doc.node);
-      this.build();
+function FUiMenuBar_removeChild(p){
+   var o = this;
+   if(RClass.isClass(p, FUiMenuButton)){
+      var hp = p._hParent;
+      var hl = p._hParentLine;
+      hl.removeChild(hp);
+      p._hParentLine = null;
+      p._hParent = null;
    }
+   o.__base.FUiContainer.removeChild.call(o, p);
 }
 function FUiMenuBar_dispose(){
    var o = this;
-   o.base.FControl.dispose.call(o);
-   RMemory.freeHtml(o.hBody);
-   RMemory.freeHtml(o.hParent);
-   o.hBody = null;
-   o.hParent = null;
-}
-function FUiMenuBar_connect(type, action, attrs){
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('type', type);
-   root.set('action', action);
-   root.create('Attributes').value = attrs;
-   var self = this;
-   var cnn = new TXmlCnn();
-   cnn.onLoad = function(){self.onLoaded(cnn)};
-   cnn.send(this.service, doc);
-}
-function FUiMenuBar_release(){
-   var nodes = this.allNodes;
-   for(var n=0; n<nodes.length; n++){
-      var node = nodes[n];
-      node.release();
-   }
-   this.allNodes = null;
-   this.allNodesUuid = null;
-   this.allNodesProperty = null;
-   this.allNodesPropertyExtend = null;
-   this.nodes = null;
-   return true;
+   o._hLine = RHtml.free(o._hLine);
+   o.__base.FUiContainer.dispose.call(o);
 }
 function FUiMenuButton(o){
-   o = RClass.inherits(this, o, FUiControl, MMenuButton, MListenerClick);
-   o._icon         = RClass.register(o, new APtyString('_icon'));
-   o._iconDisable  = RClass.register(o, new APtyString('_iconDisable'));
-   o._hotkey       = RClass.register(o, new APtyString('_hotkey'));
-   o._action       = RClass.register(o, new APtyString('_action'));
-   o._styleNormal  = RClass.register(o, new AStyle('_styleNormal'));
-   o._styleHover   = RClass.register(o, new AStyle('_styleHover'));
-   o._stylePress   = RClass.register(o, new AStyle('_stylePress'));
-   o._styleDisable = RClass.register(o, new AStyle('_styleDisable'));
-   o._styleIcon    = RClass.register(o, new AStyle('_styleIcon'));
-   o._styleLabel   = RClass.register(o, new AStyle('_styleLabel'));
-   o._disabled     = false;
-   o._hIcon        = null;
-   o._hLabel       = null;
-   o.onBuildPanel  = FUiMenuButton_onBuildPanel
-   o.onBuild       = FUiMenuButton_onBuild;
-   o.onEnter       = FUiMenuButton_onEnter;
-   o.onLeave       = FUiMenuButton_onLeave;
-   o.onMouseDown   = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiMenuButton_onMouseDown);
-   o.onMouseUp     = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiMenuButton_onMouseUp);
-   o.icon          = FUiMenuButton_icon;
-   o.setIcon       = FUiMenuButton_setIcon;
-   o.setLabel      = FUiMenuButton_setLabel;
-   o.setEnable     = FUiMenuButton_setEnable;
-   o.click         = FUiMenuButton_click;
-   o.dispose       = FUiMenuButton_dispose;
+   o = RClass.inherits(this, o, FUiControl, MUiMenuButton, MListenerClick);
+   o._icon            = RClass.register(o, new APtyString('_icon'));
+   o._iconDisable     = RClass.register(o, new APtyString('_iconDisable'));
+   o._hotkey          = RClass.register(o, new APtyString('_hotkey'));
+   o._action          = RClass.register(o, new APtyString('_action'));
+   o._styleNormal     = RClass.register(o, new AStyle('_styleNormal'));
+   o._styleHover      = RClass.register(o, new AStyle('_styleHover'));
+   o._stylePress      = RClass.register(o, new AStyle('_stylePress'));
+   o._styleDisable    = RClass.register(o, new AStyle('_styleDisable'));
+   o._styleIconPanel  = RClass.register(o, new AStyle('_styleIconPanel'));
+   o._styleSpacePanel = RClass.register(o, new AStyle('_styleSpacePanel'));
+   o._styleLabelPanel = RClass.register(o, new AStyle('_styleLabelPanel'));
+   o._disabled        = false;
+   o._hForm           = null;
+   o._hLine           = null;
+   o._hIconPanel      = null;
+   o._hIcon           = null;
+   o._hSpacePanel     = null;
+   o._hLabelPanel     = null;
+   o.onBuildPanel     = FUiMenuButton_onBuildPanel
+   o.onBuild          = FUiMenuButton_onBuild;
+   o.onEnter          = FUiMenuButton_onEnter;
+   o.onLeave          = FUiMenuButton_onLeave;
+   o.onMouseDown      = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiMenuButton_onMouseDown);
+   o.onMouseUp        = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiMenuButton_onMouseUp);
+   o.icon             = FUiMenuButton_icon;
+   o.setIcon          = FUiMenuButton_setIcon;
+   o.setLabel         = FUiMenuButton_setLabel;
+   o.setHint          = FUiMenuButton_setHint;
+   o.setEnable        = FUiMenuButton_setEnable;
+   o.click            = FUiMenuButton_click;
+   o.dispose          = FUiMenuButton_dispose;
    return o;
 }
 function FUiMenuButton_onBuildPanel(p){
    var o = this;
    o._hPanel = RBuilder.createDiv(p, o.styleName('Normal'));
 }
-function FUiMenuButton_onBuild(e){
+function FUiMenuButton_onBuild(p){
    var o = this;
-   o.__base.FUiControl.onBuild.call(o, e);
+   o.__base.FUiControl.onBuild.call(o, p);
    var h = o._hPanel;
    o.attachEvent('onMouseDown', h);
    o.attachEvent('onMouseUp', h);
+   var hf = o._hForm = RBuilder.appendTable(h);
+   var hl = o._hLine = RBuilder.appendTableRow(hf);
    if(o._icon){
-      o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);
+      var hc = o._hIconPanel = RBuilder.appendTableCell(hl, o.styleName('IconPanel'));
+      o._hIcon = RBuilder.appendIcon(hc, null, o._icon);
+   }
+   if(o._icon && o._label){
+      o.hSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
    }
    if(o._label){
-      o._hLabel = RBuilder.appendText(h, o.styleName('Label'));
+      var hlp = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
+      hlp.noWrap = true;
       o.setLabel(o._label);
+   }
+   if(o._hotkey){
+      RConsole.find(FKeyConsole).register(o._hotkey, o, o.onMouseDown);
+   }
+   if(o._hint){
+      o.setHint(o._hint);
    }
 }
 function FUiMenuButton_onEnter(p){
@@ -142,18 +138,28 @@ function FUiMenuButton_icon(){
    return this._icon;
 }
 function FUiMenuButton_setIcon(p){
-   this._icon = p;
+   var o = this;
+   o._icon = p;
+   if(o._hIcon){
+      o._hIcon.src = o.styleIconPath(o._icon);
+   }
 }
 function FUiMenuButton_setLabel(p){
    var o = this;
    var s = RString.nvl(p);
    o._label = s;
-   if(o._hIcon){
-      s = ' ' + o._label;
+   RHtml.textSet(o._hLabelPanel, s);
+}
+function FUiMenuButton_setHint(p){
+   var o = this;
+   o._hint = p;
+   var s = RString.nvl(p);
+   if(o._hint){
+      if(o._hotkey){
+         s += ' [' + o._hotkey + ']';
+      }
    }
-   if(o._hLabel){
-      o._hLabel.innerText = s;
-   }
+   o._hPanel.title = o._hint;
 }
 function FUiMenuButton_setEnable(p){
    var o = this;
@@ -178,8 +184,12 @@ function FUiMenuButton_click(){
 }
 function FUiMenuButton_dispose(){
    var o = this;
-   o._hIcon = null;
-   o._hLabel = null;
+   o._hForm = RHtml.free(o._hForm);
+   o._hLine = RHtml.free(o._hLine);
+   o._hIconPanel = RHtml.free(o._hIconPanel);
+   o._hIcon = RHtml.free(o._hIcon);
+   o._hSpacePanel = RHtml.free(o._hSpacePanel);
+   o._hLabelPanel = RHtml.free(o._hLabelPanel);
    o.__base.FUiControl.dispose.call(o);
 }
 function FUiMenuButtonMenu(o){
@@ -308,35 +318,17 @@ function FUiMenuButtonMenu_dispose(){
    o.hLabel = null;
 }
 function FUiMenuButtonSplit(o){
-   o = RClass.inherits(this, o, FUiControl, MMenuButton);
-   o.styleUp      = RClass.register(o, new AStyle('Up'));
-   o.styleDown    = RClass.register(o, new AStyle('Down'));
-   o.disabled     = false;
-   o.oeBuild      = FUiMenuButtonSplit_oeBuild;
-   o.onBuildPanel = FUiMenuButtonSplit_onBuildPanel;
-   o.dispose      = FUiMenuButtonSplit_dispose;
+   o = RClass.inherits(this, o, FUiControl, MUiMenuButton);
+   o._stylePanel = RClass.register(o, new AStyle('_stylePanel'));
+   o.onBuild     = FUiMenuButtonSplit_onBuild;
    return o;
 }
-function FUiMenuButtonSplit_oeBuild(e){
+function FUiToolButtonSplit_onBuild(p){
    var o = this;
-   o.base.FUiControl.oeBuild.call(o, e);
-   var h = o.hPanel;
-   var hc = h.insertRow().insertCell();
-   hc.className = o.style('Up');
-   var hc = h.insertRow().insertCell();
-   hc.className = o.style('Down');
-   return EEventStatus.Stop;
+   o.__base.FUiControl.onBuild.call(o, p);
+   o._hPanel.className = o.styleName('Panel');
 }
-function FUiMenuButtonSplit_onBuildPanel(){
-   this.hPanel = RBuilder.newTable();
-}
-function FUiMenuButtonSplit_dispose(){
-   var o = this;
-   o.base.FUiControl.dispose.call(o);
-   RMemory.freeHtml(o.hPanel);
-   o.hPanel = null;
-}
-function MMenuButton(o){
+function MUiMenuButton(o){
    o = RClass.inherits(this, o);
    return o;
 }

@@ -1,57 +1,66 @@
 //==========================================================
-// <T>菜单按键。</T>
+// <T>界面菜单按键。</T>
+//
+//  hParent<TD>
+//  hPanel<DIV>
+// ┌-------------------------------------------------------------┐
+// │ hForm<TABLE>                                                │
+// │┌--------------┬---------------┬---------------┐         │
+// ││hIconPanel<TD>│hSpacePanel<TD>│hLabelPanel<TD>│hLine<TR>│
+// ││hIcon<IMG>    │               │               │         │
+// │└--------------┴---------------┴---------------┘         │
+// └-------------------------------------------------------------┘
 //
 // @face
 // @author maocy
 // @history 150121
 //==========================================================
 function FUiMenuButton(o){
-   o = RClass.inherits(this, o, FUiControl, MMenuButton, MListenerClick);
+   o = RClass.inherits(this, o, FUiControl, MUiMenuButton, MListenerClick);
    //..........................................................
    // @property
-   o._icon         = RClass.register(o, new APtyString('_icon'));
-   o._iconDisable  = RClass.register(o, new APtyString('_iconDisable'));
-   o._hotkey       = RClass.register(o, new APtyString('_hotkey'));
-   o._action       = RClass.register(o, new APtyString('_action'));
+   o._icon            = RClass.register(o, new APtyString('_icon'));
+   o._iconDisable     = RClass.register(o, new APtyString('_iconDisable'));
+   o._hotkey          = RClass.register(o, new APtyString('_hotkey'));
+   o._action          = RClass.register(o, new APtyString('_action'));
    //..........................................................
    // @style
-   o._styleNormal  = RClass.register(o, new AStyle('_styleNormal'));
-   o._styleHover   = RClass.register(o, new AStyle('_styleHover'));
-   o._stylePress   = RClass.register(o, new AStyle('_stylePress'));
-   o._styleDisable = RClass.register(o, new AStyle('_styleDisable'));
-   o._styleIcon    = RClass.register(o, new AStyle('_styleIcon'));
-   o._styleLabel   = RClass.register(o, new AStyle('_styleLabel'));
+   o._styleNormal     = RClass.register(o, new AStyle('_styleNormal'));
+   o._styleHover      = RClass.register(o, new AStyle('_styleHover'));
+   o._stylePress      = RClass.register(o, new AStyle('_stylePress'));
+   o._styleDisable    = RClass.register(o, new AStyle('_styleDisable'));
+   o._styleIconPanel  = RClass.register(o, new AStyle('_styleIconPanel'));
+   o._styleSpacePanel = RClass.register(o, new AStyle('_styleSpacePanel'));
+   o._styleLabelPanel = RClass.register(o, new AStyle('_styleLabelPanel'));
    //..........................................................
    // @attribute
-   o._disabled     = false;
+   o._disabled        = false;
    //..........................................................
    // @html
-   o._hIcon        = null;
-   o._hLabel       = null;
+   o._hForm           = null;
+   o._hLine           = null;
+   o._hIconPanel      = null;
+   o._hIcon           = null;
+   o._hSpacePanel     = null;
+   o._hLabelPanel     = null;
    //..........................................................
    // @event
-   o.onBuildPanel  = FUiMenuButton_onBuildPanel
-   o.onBuild       = FUiMenuButton_onBuild;
+   o.onBuildPanel     = FUiMenuButton_onBuildPanel
+   o.onBuild          = FUiMenuButton_onBuild;
    // @event
-   o.onEnter       = FUiMenuButton_onEnter;
-   o.onLeave       = FUiMenuButton_onLeave;
-   o.onMouseDown   = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiMenuButton_onMouseDown);
-   o.onMouseUp     = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiMenuButton_onMouseUp);
+   o.onEnter          = FUiMenuButton_onEnter;
+   o.onLeave          = FUiMenuButton_onLeave;
+   o.onMouseDown      = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiMenuButton_onMouseDown);
+   o.onMouseUp        = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiMenuButton_onMouseUp);
    //..........................................................
    // @method
-   o.icon          = FUiMenuButton_icon;
-   o.setIcon       = FUiMenuButton_setIcon;
-   o.setLabel      = FUiMenuButton_setLabel;
-   o.setEnable     = FUiMenuButton_setEnable;
-   o.click         = FUiMenuButton_click;
-   o.dispose       = FUiMenuButton_dispose;
-   //..........................................................
-   // @property
-   //o._target     = RClass.register(o, new APtyString('target'));
-   //o._page       = RClass.register(o, new APtyString('page'));
-   //o._method     = RClass.register(o, new APtyString('method'));
-   //o._attributes = RClass.register(o, new APtyString('attributes'));
-   //..........................................................
+   o.icon             = FUiMenuButton_icon;
+   o.setIcon          = FUiMenuButton_setIcon;
+   o.setLabel         = FUiMenuButton_setLabel;
+   o.setHint          = FUiMenuButton_setHint;
+   o.setEnable        = FUiMenuButton_setEnable;
+   o.click            = FUiMenuButton_click;
+   o.dispose          = FUiMenuButton_dispose;
    return o;
 }
 
@@ -70,24 +79,40 @@ function FUiMenuButton_onBuildPanel(p){
 // <T>建立当前控件的显示框架。</T>
 //
 // @method
-// @param e:event:TEventProcess 事件处理
-// @return EEventStatus 处理状态
+// @param p:event:TEventProcess 事件处理
 //==========================================================
-function FUiMenuButton_onBuild(e){
+function FUiMenuButton_onBuild(p){
    var o = this;
-   o.__base.FUiControl.onBuild.call(o, e);
+   o.__base.FUiControl.onBuild.call(o, p);
    // 设置面板
    var h = o._hPanel;
    o.attachEvent('onMouseDown', h);
    o.attachEvent('onMouseUp', h);
+   // 建立表单
+   var hf = o._hForm = RBuilder.appendTable(h);
+   var hl = o._hLine = RBuilder.appendTableRow(hf);
    // 建立图标
    if(o._icon){
-      o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);
+      var hc = o._hIconPanel = RBuilder.appendTableCell(hl, o.styleName('IconPanel'));
+      o._hIcon = RBuilder.appendIcon(hc, null, o._icon);
+   }
+   // 建立分割
+   if(o._icon && o._label){
+      o.hSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
    }
    // 建立标签
    if(o._label){
-      o._hLabel = RBuilder.appendText(h, o.styleName('Label'));
+      var hlp = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
+      hlp.noWrap = true;
       o.setLabel(o._label);
+   }
+   // 建立热键
+   if(o._hotkey){
+      RConsole.find(FKeyConsole).register(o._hotkey, o, o.onMouseDown);
+   }
+   // 建立提示
+   if(o._hint){
+      o.setHint(o._hint);
    }
 }
 
@@ -161,7 +186,11 @@ function FUiMenuButton_icon(){
 // @param p:icon:String 图标
 //==========================================================
 function FUiMenuButton_setIcon(p){
-   this._icon = p;
+   var o = this;
+   o._icon = p;
+   if(o._hIcon){
+      o._hIcon.src = o.styleIconPath(o._icon);
+   }
 }
 
 //==========================================================
@@ -174,12 +203,25 @@ function FUiMenuButton_setLabel(p){
    var o = this;
    var s = RString.nvl(p);
    o._label = s;
-   if(o._hIcon){
-      s = ' ' + o._label;
+   RHtml.textSet(o._hLabelPanel, s);
+}
+
+//==========================================================
+// <T>设置提示。</T>
+//
+// @method
+// @param p:hint:String 提示
+//==========================================================
+function FUiMenuButton_setHint(p){
+   var o = this;
+   o._hint = p;
+   var s = RString.nvl(p);
+   if(o._hint){
+      if(o._hotkey){
+         s += ' [' + o._hotkey + ']';
+      }
    }
-   if(o._hLabel){
-      o._hLabel.innerText = s;
-   }
+   o._hPanel.title = o._hint;
 }
 
 //==========================================================
@@ -242,8 +284,12 @@ function FUiMenuButton_click(){
 function FUiMenuButton_dispose(){
    var o = this;
    // 释放属性
-   o._hIcon = null;
-   o._hLabel = null;
+   o._hForm = RHtml.free(o._hForm);
+   o._hLine = RHtml.free(o._hLine);
+   o._hIconPanel = RHtml.free(o._hIconPanel);
+   o._hIcon = RHtml.free(o._hIcon);
+   o._hSpacePanel = RHtml.free(o._hSpacePanel);
+   o._hLabelPanel = RHtml.free(o._hLabelPanel);
    // 父处理
    o.__base.FUiControl.dispose.call(o);
 }

@@ -15,13 +15,6 @@ function FGraphicContext_dispose(){
    o._hCanvas = null;
    o.__base.FObject.dispose.call(o);
 }
-function FGraphicRenderable(o){
-   o = RClass.inherits(this, o, FObject);
-   o.process = FGraphicRenderable_process;
-   return o;
-}
-function FGraphicRenderable_process(){
-}
 function MGraphicObject(o){
    o = RClass.inherits(this, o);
    o._graphicContext    = null;
@@ -41,4 +34,11 @@ function MGraphicObject_linkGraphicContext(p){
    }else{
       throw new TError(o, 'Link graphic context failure. (context={1})', p);
    }
+}
+function MGraphicRenderable(o){
+   o = RClass.inherits(this, o, FObject);
+   o.process = MGraphicRenderable_process;
+   return o;
+}
+function MGraphicRenderable_process(){
 }

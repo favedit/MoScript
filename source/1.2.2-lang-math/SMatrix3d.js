@@ -36,6 +36,7 @@ function SMatrix3d(){
    o.append         = SMatrix3d_append;
    o.updateForce    = SMatrix3d_updateForce;
    o.update         = SMatrix3d_update;
+   o.merge          = SMatrix3d_merge;
    o.serialize      = SMatrix3d_serialize;
    o.unserialize    = SMatrix3d_unserialize;
    o.saveConfig     = SMatrix3d_saveConfig;
@@ -272,6 +273,25 @@ function SMatrix3d_update(){
       o.updateForce();
       o._dirty = false;
    }
+}
+
+//============================================================
+// <T>合并数据。</T>
+//
+// @method
+//============================================================
+function SMatrix3d_merge(bm, am){
+   var o = this;
+   o.tx = bm.tx + am.tx;
+   o.ty = bm.ty + am.ty;
+   o.tz = bm.tz + am.tz;
+   o.rx = bm.rx + am.rx;
+   o.ry = bm.ry + am.ry;
+   o.rz = bm.rz + am.rz;
+   o.sx = bm.sx * am.sx;
+   o.sy = bm.sy * am.sy;
+   o.sz = bm.sz * am.sz;
+   o.updateForce();
 }
 
 //==========================================================

@@ -634,6 +634,70 @@ function FFrameEventConsole_onlyCall(c, m){
    m.call(c);
    o._allow = true;
 }
+function FKeyConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd        = EScope.Local;
+   o._enable         = true;
+   o._enableRegister = true;
+   o._listeners      = new Object();
+   o._disableKeys    = new Object();
+   o.onKeyDown       = FKeyConsole_onKeyDown;
+   o.construct       = FKeyConsole_construct;
+   o.enable          = FKeyConsole_enable;
+   o.disable         = FKeyConsole_disable;
+   o.enableRegister  = FKeyConsole_enableRegister;
+   o.disableRegister = FKeyConsole_disableRegister;
+   o.register        = FKeyConsole_register;
+   return o;
+}
+function FKeyConsole_onKeyDown(s, e){
+   debugger
+   var o = this;
+   var k = REnum.tryDecode(EKey, e.keyCode);
+   if(k && o._enable){
+      var ls = o._listeners[k];
+      if(ls){
+         ls.process(o, e);
+         e.keyCode = null;
+         e.returnValue = false;
+      }
+   }
+   if(k && o._disableKeys[k]){
+      e.keyCode = null;
+      e.returnValue = false;
+   }
+}
+function FKeyConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+}
+function FKeyConsole_enable(){
+   this._enable = true;
+}
+function FKeyConsole_disable(){
+   this._enable = false;
+}
+function FKeyConsole_enableRegister(){
+   this._enableRegister = true;
+}
+function FKeyConsole_disableRegister(){
+   this._enableRegister = false;
+}
+function FKeyConsole_register(k, w, p){
+   var o = this;
+   if(o._enableRegister){
+      if(RInteger.isInteger(k)){
+         k = REnum.decode(EKeyCode, k);
+      }
+      var ks = o._listeners;
+      var s = ks[k];
+      if(!s){
+         s = ks[k] = new TListeners();
+      }
+      s.register(w, p);
+   }
+}
 function FMessageConsole(o){
    o = RClass.inherits(this, o, FConsole, MStyle);
    o.scope        = EScope.Global;

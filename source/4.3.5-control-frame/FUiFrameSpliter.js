@@ -15,8 +15,8 @@ function FUiFrameSpliter(o){
    o._styleDraging = RClass.register(o, new AStyle('_styleDraging', 'Draging'));
    //..........................................................
    // @attribute
-   o._directionCd  = EDirection.Horizontal;
-   o._alignCd      = EAlign.Left;
+   o._directionCd  = EUiDirection.Horizontal;
+   o._alignCd      = EUiAlign.Left;
    // @attribute
    o._dragClientX  = 0;
    o._dragClientY  = 0;
@@ -127,12 +127,12 @@ function FUiFrameSpliter_onDragStart(e){
    var hd = o._hDrag;
    var hds = hd.style;
    // 计算数据
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       o._dragClientX = e.clientX;
       o._dragPanelX = RHtml.clientX(hc);
       o._dragSizeX = o._hSize.offsetWidth;
       hds.cursor = EMouseCursor.HSize;
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       o._dragClientY = e.clientY;
       o._dragPanelY = RHtml.clientY(hc);
       o._sizeY = o._hSize.offsetHeight;
@@ -167,13 +167,13 @@ function FUiFrameSpliter_onDragMove(e){
    var o = this;
    var hd = o._hDrag;
    // 计算数据
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       var x = e.clientX - o._dragClientX;
       var cx = o._dragPanelX + x;
       if(cx > 40){
          hd.style.left = cx + 'px';
       }
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       var y = e.clientY - o._dragClientY;
       var cy = o._dragPanelY + y;
       if(cy > 40){
@@ -194,12 +194,12 @@ function FUiFrameSpliter_onDragStop(e){
    var o = this;
    var hd = o._hDrag;
    // 计算数据
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       var x = e.clientX - o._dragClientX;
       var cx = 0;
-      if(o._alignCd === EAlign.Left){
+      if(o._alignCd === EUiAlign.Left){
          cx = o._dragSizeX + x;
-      }else if(o._alignCd === EAlign.Right){
+      }else if(o._alignCd === EUiAlign.Right){
          cx = o._dragSizeX - x;
       }else{
          throw new TError(o, 'Unknown align type. (align_cd={1})', o._alignCd);
@@ -207,12 +207,12 @@ function FUiFrameSpliter_onDragStop(e){
       if(cx > 40){
          o._hSize.style.width = cx + 'px';
       }
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       var y = e.clientY - o._dragClientY;
       var cy = o._dragSizeY + y;
-      if(o._alignCd === EAlign.Top){
+      if(o._alignCd === EUiAlign.Top){
          cy = o._dragSizeY + y;
-      }else if(o._alignCd === EAlign.Bottom){
+      }else if(o._alignCd === EUiAlign.Bottom){
          cy = o._dragSizeY - y;
       }else{
          throw new TError(o, 'Unknown align type. (align_cd={1})', o._alignCd);
@@ -292,9 +292,9 @@ function FUiFrameSpliter_link(hDrag, hSize){
    o.attachEvent('onSplitMove', h, o.ohDragMove);
    o.attachEvent('onSplitUp', h, o.ohDragStop);
    o.attachEvent('onSplitDoubleClick', h, o.ohDragDoubleClick);
-   if(EDirection.Vertical == o.direction){
+   if(EUiDirection.Vertical == o.direction){
       h.style.cursor = 'N-resize'
-   }else if(EDirection.Horizontal == o.direction){
+   }else if(EUiDirection.Horizontal == o.direction){
       h.style.cursor = 'E-resize'
    }
    o.hSize = hSize;

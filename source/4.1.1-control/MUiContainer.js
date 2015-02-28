@@ -11,6 +11,7 @@ function MUiContainer(o){
    o.createChild = MUiContainer_createChild;
    /// @method
    o.appendChild = RMethod.empty;
+   o.removeChild = RMethod.empty;
    return o;
 }
 

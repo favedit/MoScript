@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-var ELabelMode = new function ELabelMode(){
+var EUiLabelMode = new function EUiLabelMode(){
    var o = this;
    // @attribute String 显示所有
    o.All    = 'A';

@@ -9,11 +9,10 @@ function FUiFrameSet(o){
    o = RClass.inherits(this, o, FUiContainer);
    //..........................................................
    // @property String 提示信息
-   o._directionCd  = RClass.register(o, new APtyEnum('_directionCd', null, EDirection), EDirection.Vertical);
-
+   o._directionCd  = RClass.register(o, new APtyEnum('_directionCd', null, EUiDirection), EUiDirection.Vertical);
    //..........................................................
    // @style
-   o._stylePanel   = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
+   o._stylePanel   = RClass.register(o, new AStyle('_stylePanel'));
    //..........................................................
    // @style
    o._frames       = null;
@@ -66,7 +65,7 @@ function FUiFrameSet_construct(){
 //==========================================================
 function FUiFrameSet_appendFrame(p){
    var o = this;
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       // 横向排布
       var hr = o._hLine;
       if(!hr){
@@ -74,16 +73,18 @@ function FUiFrameSet_appendFrame(p){
       }
       p.setPanel(hr);
       // 设置宽度
-      if(p._size.width){
-         p._hPanel.width = p._size.width;
+      var sw = p._size.width;
+      if(sw){
+         p._hPanel.width = sw;
       }
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       // 纵向排布
       var hr = RBuilder.appendTableRow(o._hPanel);
       p.setPanel(hr);
       // 设置高度
-      if(p._size.height){
-         p._hPanel.height = p._size.height;
+      var sh = p._size.height;
+      if(sh){
+         p._hPanel.height = sh;
       }
    }else{
       throw new TError(o, 'Unknown direcion type. (direction_cd={1})', o._directionCd);
@@ -105,11 +106,11 @@ function FUiFrameSet_appendSpliter(p){
       sp = RClass.create(FUiFrameSpliter);
       sp.build(o._hPanel);
    }
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       // 横向排布
       o._hLine.appendChild(sp._hPanel);
       sp._hPanel.style.width = '4px';
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       // 纵向排布
       var hr = RBuilder.appendTableRow(o._hPanel);
       hr.appendChild(sp._hPanel);

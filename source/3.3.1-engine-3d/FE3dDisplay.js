@@ -45,7 +45,7 @@ function FE3dDisplay_materials(){
 //==========================================================
 function FE3dDisplay_dispose(){
    var o = this;
-   o._materials = null;
+   o._materials = RObject.free(o._materials);
    // 父处理
    o.__base.FDisplay.dispose.call(o);
 }

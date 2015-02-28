@@ -1,50 +1,42 @@
 //==========================================================
-// <T>工具栏。</T>
+// <T>界面工具栏。</T>
+//
+//  hPanel<TABLE>
+// ┌-----------------┬-----------------┬-----------------┬-----------------┐
+// │hButtonPanel<TD> │hButtonPanel<TD> │hButtonPanel<TD> │...              │hLine<TR>
+// │(Button1)        │(Button2)        │(Button3)        │                 │
+// └-----------------┴-----------------┴-----------------┴-----------------┘
 //
 // @author maocy
 // @history 150121
 //==========================================================
 function FUiToolBar(o){
-   //o = RClass.inherits(this, o, FUiContainer, MDisplayAble, MTop);
    o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
    //..........................................................
+   // @property EUiAlign 对齐枚举
+   o._alignCd          = RClass.register(o, new APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));
+   // @property EUiDirection 方向枚举
+   o._directionCd      = RClass.register(o, new APtyEnum('_directionCd', null, EUiDirection, EUiDirection.Horizontal));
+   // @property EUiMerge 合并枚举
+   o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
+   //..........................................................
    // @style
-   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
+   o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
+   o._styleButtonPanel = RClass.register(o, new AStyle('_styleButtonPanel'));
    //..........................................................
    // @html
-   o._hLine       = null;
+   o._hLine            = null;
    //..........................................................
    // @event
-   o.onBuildPanel = FUiToolBar_onBuildPanel;
+   o.onBuildPanel      = FUiToolBar_onBuildPanel;
+   o.onEnter           = RMethod.empty;
+   o.onLeave           = RMethod.empty;
    //..........................................................
    // @method
-   o.appendChild  = FUiToolBar_appendChild;
-
-
-
-   //..........................................................
-   // @property EAlign 对齐方式
-   //o._alignCd            = RClass.register(o, new APtyString('align'));
-   /// @property Boolean 是否合并
-   //o._mergeCd          = RClass.register(o, new APtyBoolean('isMerge'));
-   /// @style
-   //o._styleButton      = RClass.register(o, new AStyle('Button'));
-   //..........................................................
-   // @attribute
-   //o._target           = null;
-   //..........................................................
-   // @event
-   //o.onEnter          = RMethod.empty;
-   //o.onLeave          = RMethod.empty;
-   //o.onBuildPanel     = FUiToolBar_onBuildPanel;
-   //..........................................................
+   o.appendChild       = FUiToolBar_appendChild;
+   o.removeChild       = FUiToolBar_removeChild;
    // @method
-   //o.addClickListener = FUiToolBar_addClickListener;
-   //o.button           = FUiToolBar_button;
-   //o.setEnables       = FUiToolBar_setEnables;
-   //o.setVisibles      = FUiToolBar_setVisibles;
-   //o.clear            = FUiToolBar_clear;
-   //o.dispose          = FUiToolBar_dispose;
+   o.dispose           = FUiToolBar_dispose;
    return o;
 }
 
@@ -56,115 +48,67 @@ function FUiToolBar(o){
 //==========================================================
 function FUiToolBar_onBuildPanel(p){
    var o = this;
-   var h = o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
-   o._hLine = RBuilder.appendTableRow(h);
+   o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
 }
 
 //==========================================================
-// <T>追加一个按键控件。</T>
+// <T>追加一个子控件。</T>
 //
 // @method
-// @param p:button:FUiToolButton 按键
+// @param p:control:FUiControl 子控件
 //==========================================================
 function FUiToolBar_appendChild(p){
    var o = this;
+   // 父处理
    o.__base.FUiContainer.appendChild.call(o, p);
-   // 横向排布
-   if(RClass.isClass(p, FUiToolButton)){
-      var hr = o._hLine;
-      var hc = RBuilder.appendTableCell(hr);
+   // 按键处理
+   if(RClass.isClass(p, MUiToolButton)){
+      var h = o._hPanel;
+      var hl = o._hLine;
+      // 横向排布
+      if(o._directionCd == EUiDirection.Horizontal){
+         if(!hl){
+            hl = o._hLine = RBuilder.appendTableRow(h);
+         }
+      }
+      // 纵向排布
+      if(o._directionCd == EUiDirection.Vertical){
+         hl = o._hLine = RBuilder.appendTableRow(h);
+      }
+      // 建立按键
+      var hc = RBuilder.appendTableCell(hl, o.styleName('ButtonPanel'));
+      hc._hParentLine = hl;
       p.setPanel(hc);
    }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-/**************************************************************
- * 给工具栏里的一个控件添加一个事件监听
- *
- * @method
- * @param event:Event:TEvent 构建事件
- * @param method:method:Function 事件处理函数
- * @return EEventStatus 构建事件的状态
- **************************************************************/
-function FUiToolBar_addClickListener(name, method){
-   var btn = this.component(name);
-   if(btn){
-      btn.addClickListener(new TListener(this, method));
-   }
-}
-
-/**************************************************************
- * 得到指定名称的按钮
- *
- * @method
- * @param name:name:String 按钮的名称
- * @return Object FUiToolButton
- **************************************************************/
-function FUiToolBar_button(name){
-   return this.components.get(name);
-}
-
-/**************************************************************
- * 
- *
- * @method
- **************************************************************/
-function FUiToolBar_setVisibles(vs){
+//==========================================================
+// <T>移除一个子控件。</T>
+//
+// @method
+// @param p:control:FUiControl 子控件
+//==========================================================
+function FUiToolBar_removeChild(p){
    var o = this;
-   for(var n in vs){
-      o.button(n).setVisible(vs[n]);
+   // 按键处理
+   if(RClass.isClass(p, MUiToolButton)){
+      var hp = p._hParent;
+      var hl = p._hParentLine;
+      hl.removeChild(hp);
+      p._hParent = null;
+      p._hParentLine = null;
    }
+   // 父处理
+   o.__base.FUiContainer.removeChild.call(o, p);
 }
 
-/**************************************************************
- * 
- *
- * @method
- **************************************************************/
-function FUiToolBar_setEnables(vs){
-   var o = this;
-   for(var n in vs){
-      o.button(n).psEnable(vs[n]);
-   }
-}
-
-/**************************************************************
- * 清空按钮容器
- *
- * @method
- **************************************************************/
-function FUiToolBar_clear(){
-   if(this.hTable && this._hLine){
-      this._hLine.removeNode(true);
-      this._hLine = this.hTable.insertRow();
-   }
-   this.buttons = new Array();
-}
-
-/**************************************************************
- * 清空按钮容器
- *
- * @method
- **************************************************************/
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
 function FUiToolBar_dispose(){
    var o = this;
+   o._hLine = RHtml.free(o._hLine);
    o.__base.FUiContainer.dispose.call(o);
-   RMemory.freeHtml(o.hTable);
-   RMemory.freeHtml(o._hLine);
-   RMemory.freeHtml(o.hParent);
-   o.hTable = null;
-   o._hLine = null;
-   o.hParent = null;
 }
-

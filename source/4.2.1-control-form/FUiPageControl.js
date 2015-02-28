@@ -24,11 +24,10 @@
 // @history 150202
 //==========================================================
 function FUiPageControl(o){
-   //o = RClass.inherits(this, o, FUiContainer, MDesign, MHorizontal);
    o = RClass.inherits(this, o, FUiContainer);
    //..........................................................
    // @property
-   o._sizeCd          = ESize.Horizontal;
+   o._sizeCd          = EUiSize.Horizontal;
    //..........................................................
    // @style
    o._stylePanel      = RClass.register(o, new AStyle('_stylePanel'));
@@ -45,7 +44,7 @@ function FUiPageControl(o){
    // @attribute
    o._sheets          = null;
    o._activeSheet     = null;
-   o._esize           = ESize.Both;
+   o._esize           = EUiSize.Both;
    //..........................................................
    // @html
    o._hTop             = null;

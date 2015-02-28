@@ -38,8 +38,8 @@ function FUiControl(o){
    //o._styleDesignMove  = RClass.register(o, new AStyle('DesignMove'));
    //..........................................................
    // @attribute
-   o._layoutCd      = ELayout.Display;
-   o._sizeCd        = ESize.Normal;
+   o._layoutCd      = EUiLayout.Display;
+   o._sizeCd        = EUiSize.Normal;
    // @attribute
    o._statusVisible = true;
    o._statusEnable  = true;
@@ -238,10 +238,10 @@ function FUiControl_oeVisible(e){
 // <T>改变当前控件的显示大小。</T>
 //
 // @method
-// @param e:event:TEventProcess 事件处理
+// @param p:event:TEventProcess 事件处理
 // @return EEventStatus 处理状态
 //==========================================================
-function FUiControl_oeResize(e){
+function FUiControl_oeResize(p){
    return EEventStatus.Continue;
 }
 

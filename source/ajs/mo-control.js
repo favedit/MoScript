@@ -1,15 +1,3 @@
-var EAlign = new function EAlign(){
-   var o = this;
-   o.Left        = 'left';
-   o.Center      = 'center';
-   o.Right       = 'right';
-   o.Top         = 'up';
-   o.Middle      = 'middle';
-   o.Bottom      = 'down';
-   o.BottomLeft  = 'bl';
-   o.BottomRight = 'br';
-   return o;
-}
 var EBorder = new function EBorder(){
    var o = this;
    o.None          = 0;
@@ -28,7 +16,110 @@ var EBorderStyle = new function EBorderStyle(){
    o.Hover    = 3;
    return o;
 }
-var EColor = new function EColor(){
+var EDataAction = new function EDataAction(){
+   var o = this;
+   o.Fetch     = 'fetch';
+   o.Search    = 'search';
+   o.Lov       = 'lov';
+   o.Zoom      = 'zoom';
+   o.Prepare   = 'prepare';
+   o.Insert    = 'insert';
+   o.Update    = 'update';
+   o.Delete    = 'delete';
+   o.First     = 'first';
+   o.Prior     = 'prior';
+   o.Next      = 'next';
+   o.Last      = 'last';
+   o.Action    = 'action';
+   o.FetchLov  = 'fetchLov';
+   o.EndFetch  = 'endfetch';
+   o.EndUpdate = 'endupdate';
+   o.DsChanged = 'dschanged';
+   o.Scalar    = 'scalar';
+   o.Complete  = 'complete';
+   o.Process   = 'process';
+   return o;
+}
+var EDataService = new function EDataService(){
+   var o = this;
+   o.Dataset    = 'database.dataset';
+   o.List       = 'design.list';
+   o.WebForm    = 'design.webform';
+   o.Translate  = 'design.translate';
+   o.WebDataset = 'logic.dataset';
+   return o;
+}
+var EEditConfig = new function(){
+   var o = this;
+   o.Search = 'S';
+   o.Copy   = 'C';
+   return o;
+}
+function EEditStatusFace(o){
+   if(!o){o=this;}
+   o.Blur   = 0;
+   o.Cancel = 1;
+   o.Ok     = 2;
+   return o;
+}
+var EEditStatus = new EEditStatusFace();
+var EEventInvoke = new function EEventInvoke(){
+   var o = this;
+   o.Unknown = 0;
+   o.Before  = 1;
+   o.After   = 2;
+   return o;
+}
+var EEventStatus = new function EEventStatus(){
+   var o = this;
+   o.Unknown  = 0;
+   o.Continue = 1;
+   o.Stop     = 2;
+   o.Cancel   = 3;
+   o.Failure  = 4;
+   return o;
+}
+var EEventType = new function EEventType(){
+   var o = this;
+   o.Unknown    = 0;
+   o.Construct  = 1;
+   o.Initialize = 2;
+   o.Build      = 3;
+   o.Refresh    = 4;
+   o.Resize     = 5;
+   o.Visible    = 6;
+   o.Show       = 7;
+   o.Hidden     = 8;
+   o.Enable     = 9;
+   o.Disable    = 10;
+   o.Release    = 11;
+   o.Design     = 12;
+   o.Action     = 13;
+   o.Valid      = 14;
+   o.Mode       = 15;
+   return o;
+}
+var ERowStatus = new function ERowStatusFace(){
+   var o = this;
+   o.Normal = 'N';
+   o.Insert = 'I';
+   o.Update = 'U';
+   o.Delete  = 'D';
+   return o;
+}
+var EUiAlign = new function EUiAlign(){
+   var o = this;
+   o.Left        = 'left';
+   o.Center      = 'center';
+   o.Right       = 'right';
+   o.Top         = 'up';
+   o.Middle      = 'middle';
+   o.Bottom      = 'down';
+   o.BottomLeft  = 'bl';
+   o.BottomRight = 'br';
+   return o;
+}
+var EUiColor = new function EUiColor(){
    var o = this;
    o.Normal        = '#FFFFFF';
    o.Select        = '#F8C59A';
@@ -88,103 +179,20 @@ var EColor = new function EColor(){
       ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
    return o;
 }
-var EDataAction = new function EDataAction(){
-   var o = this;
-   o.Fetch     = 'fetch';
-   o.Search    = 'search';
-   o.Lov       = 'lov';
-   o.Zoom      = 'zoom';
-   o.Prepare   = 'prepare';
-   o.Insert    = 'insert';
-   o.Update    = 'update';
-   o.Delete    = 'delete';
-   o.First     = 'first';
-   o.Prior     = 'prior';
-   o.Next      = 'next';
-   o.Last      = 'last';
-   o.Action    = 'action';
-   o.FetchLov  = 'fetchLov';
-   o.EndFetch  = 'endfetch';
-   o.EndUpdate = 'endupdate';
-   o.DsChanged = 'dschanged';
-   o.Scalar    = 'scalar';
-   o.Complete  = 'complete';
-   o.Process   = 'process';
-   return o;
-}
-var EDataService = new function EDataService(){
-   var o = this;
-   o.Dataset    = 'database.dataset';
-   o.List       = 'design.list';
-   o.WebForm    = 'design.webform';
-   o.Translate  = 'design.translate';
-   o.WebDataset = 'logic.dataset';
-   return o;
-}
-var EDirection = new function EDirection(){
+var EUiDirection = new function EUiDirection(){
    var o = this;
    o.Horizontal = 'H';
    o.Vertical   = 'V';
    return o;
 }
-var EEditConfig = new function(){
-   var o = this;
-   o.Search = 'S';
-   o.Copy   = 'C';
-   return o;
-}
-function EEditStatusFace(o){
-   if(!o){o=this;}
-   o.Blur   = 0;
-   o.Cancel = 1;
-   o.Ok     = 2;
-   return o;
-}
-var EEditStatus = new EEditStatusFace();
-var EEventInvoke = new function EEventInvoke(){
-   var o = this;
-   o.Unknown = 0;
-   o.Before  = 1;
-   o.After   = 2;
-   return o;
-}
-var EEventStatus = new function EEventStatus(){
-   var o = this;
-   o.Unknown  = 0;
-   o.Continue = 1;
-   o.Stop     = 2;
-   o.Cancel   = 3;
-   o.Failure  = 4;
-   return o;
-}
-var EEventType = new function EEventType(){
-   var o = this;
-   o.Unknown    = 0;
-   o.Construct  = 1;
-   o.Initialize = 2;
-   o.Build      = 3;
-   o.Refresh    = 4;
-   o.Resize     = 5;
-   o.Visible    = 6;
-   o.Show       = 7;
-   o.Hidden     = 8;
-   o.Enable     = 9;
-   o.Disable    = 10;
-   o.Release    = 11;
-   o.Design     = 12;
-   o.Action     = 13;
-   o.Valid      = 14;
-   o.Mode       = 15;
-   return o;
-}
-var ELabelMode = new function ELabelMode(){
+var EUiLabelMode = new function EUiLabelMode(){
    var o = this;
    o.All    = 'A';
    o.Label  = 'L';
    o.Hidden = 'H';
    return o;
 }
-var ELabelPosition = new function ELabelPosition(){
+var EUiLabelPosition = new function EUiLabelPosition(){
    var o = this;
    o.Left   = 'left';
    o.Right  = 'right';
@@ -192,7 +200,21 @@ var ELabelPosition = new function ELabelPosition(){
    o.Bottom = 'bottom';
    return o;
 }
-var ELayout = new function ELayout(){
+var EUiLayer = new function EUiLayer(){
+   var o = this;
+   o.Default = 20000;
+   o.Shadow  =  5000;
+   o.Disable =  5000;
+   o.Window  = 20000;
+   o.Drop    = 40000;
+   o.Editor  = 10000;
+   o.Border  = 20000;
+   o.Move    = 25000;
+   o.Search  = 45000;
+   o.Message = 45000;
+   return o;
+}
+var EUiLayout = new function EUiLayout(){
    var o = this;
    o.Display = 'P';
    o.Search  = 'S';
@@ -201,6 +223,13 @@ var ELayout = new function ELayout(){
    o.Update  = 'U';
    o.Delete  = 'D';
    o.Zoom    = 'Z';
+   return o;
+}
+var EUiMerge = new function EUiMerge(){
+   var o = this;
+   o.Append   = 'append';
+   o.Override = 'override';
+   o.Disable  = 'disable';
    return o;
 }
 var EPanel = new function EPanel(){
@@ -219,7 +248,7 @@ var EPanel = new function EPanel(){
    o.Drop      = 11;
    return o;
 }
-function EPositionFace(){
+var EUiPosition = new function EUiPosition(){
    var o = this;
    o.Left   = 'left';
    o.Right  = 'right';
@@ -231,35 +260,23 @@ function EPositionFace(){
    o.LineAfter  = 4;
    return o;
 }
-EPosition = new EPositionFace();
-var ERowStatus = new function ERowStatusFace(){
+var EUiScroll = new function EUiScroll(){
    var o = this;
-   o.Normal = 'N';
-   o.Insert = 'I';
-   o.Update = 'U';
-   o.Delete  = 'D';
+   o.None           = 'N';
+   o.Horizontal     = 'H';
+   o.HorizontalAuto = 'HA';
+   o.Vertical       = 'V';
+   o.VerticalAuto   = 'VA';
+   o.Both           = 'B';
+   o.BothAuto       = 'BA';
    return o;
 }
-var ESize = new function ESize(){
+var EUiSize = new function EUiSize(){
    var o = this;
    o.Normal     = 0
    o.Horizontal = 1
    o.Vertical   = 2
    o.Both       = 3;
-   return o;
-}
-var EUiLayer = new function EUiLayer(){
-   var o = this;
-   o.Default = 20000;
-   o.Shadow  =  5000;
-   o.Disable =  5000;
-   o.Window  = 20000;
-   o.Drop    = 40000;
-   o.Editor  = 10000;
-   o.Border  = 20000;
-   o.Move    = 25000;
-   o.Search  = 45000;
-   o.Message = 45000;
    return o;
 }
 function FUiCanvas(o){
@@ -305,6 +322,8 @@ function FUiComponent(o){
    o.hasComponent  = FUiComponent_hasComponent;
    o.components    = FUiComponent_components;
    o.push          = FUiComponent_push;
+   o.remov         = FUiComponent_remove;
+   o.clear         = FUiComponent_clear;
    o.process       = FUiComponent_process;
    o.psInitialize  = FUiComponent_psInitialize;
    o.psRelease     = FUiComponent_psRelease;
@@ -375,6 +394,24 @@ function FUiComponent_push(p){
          p._name = ps.count();
       }
       ps.set(p._name, p);
+   }
+}
+function FUiComponent_remove(p){
+   var o = this;
+   if(RClass.isClass(p, FUiComponent)){
+      throw new TError(o, 'Parameter is not componet. (component={1})', p);
+   }
+   var s = o._components;
+   if(!s || (s && !s.constanis(p.name()))){
+      throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
+   }
+   s.remove(p);
+}
+function FUiComponent_clear(p){
+   var o = this;
+   var s = o._components;
+   if(s){
+      s.clear();
    }
 }
 function FUiComponent_process(e){
@@ -473,6 +510,7 @@ function FUiComponent_innerDump(s, l){
 }
 function FUiContainer(o){
    o = RClass.inherits(this, o, FUiControl, MUiContainer);
+   o._scrollCd           = RClass.register(o, new APtyEnum('_scrollCd', null, EUiScroll, EUiScroll.None));
    o._controls           = null;
    o.oeDesign            = RMethod.empty;
    o.construct           = FUiContainer_construct;
@@ -485,6 +523,8 @@ function FUiContainer(o){
    o.setControlsProperty = FUiContainer_setControlsProperty;
    o.storeConfig         = FUiContainer_storeConfig;
    o.push                = FUiContainer_push;
+   o.remove              = FUiContainer_remove;
+   o.clear               = FUiContainer_clear;
    o.dispose             = FUiContainer_dispose;
    return o;
 }
@@ -599,6 +639,28 @@ function FUiContainer_push(p){
       o.appendChild(p);
    }
 }
+function FUiContainer_remove(p){
+   var o = this;
+   if(RClass.isClass(p, FUiControl)){
+      var s = o._controls;
+      if(!s || (s && !s.constanis(p.name()))){
+         throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
+      }
+      s.remove(p);
+   }
+   o.__base.FUiControl.remove.call(o, p);
+}
+function FUiContainer_clear(){
+   var o = this;
+   var s = o._controls;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         o.removeChild(s.valueAt(i));
+      }
+      s.clear();
+   }
+   o.__base.FUiControl.clear.call(o);
+}
 function FUiContainer_dispose(){
    var o = this;
    var v = o._controls;
@@ -615,8 +677,8 @@ function FUiControl(o){
    o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap'), false);
    o._hint          = RClass.register(o, new APtyString('_hint'));
    o._stylePanel    = RClass.register(o, new AStyle('_stylePanel'));
-   o._layoutCd      = ELayout.Display;
-   o._sizeCd        = ESize.Normal;
+   o._layoutCd      = EUiLayout.Display;
+   o._sizeCd        = EUiSize.Normal;
    o._statusVisible = true;
    o._statusEnable  = true;
    o._statusBuild   = false;
@@ -712,7 +774,7 @@ function FUiControl_oeVisible(e){
    }
    return EEventStatus.Continue;
 }
-function FUiControl_oeResize(e){
+function FUiControl_oeResize(p){
    return EEventStatus.Continue;
 }
 function FUiControl_oeRefresh(e){
@@ -2237,6 +2299,7 @@ function MUiContainer(o){
    o = RClass.inherits(this, o);
    o.createChild = MUiContainer_createChild;
    o.appendChild = RMethod.empty;
+   o.removeChild = RMethod.empty;
    return o;
 }
 function MUiContainer_createChild(p){
@@ -2297,6 +2360,7 @@ var RControl = new function RControl(){
    o.create             = RControl_create;
    o.innerbuild         = RControl_innerbuild;
    o.build              = RControl_build;
+   o.setStyleScroll     = RControl_setStyleScroll;
    o.inMoving           = false;
    o.inSizing           = false;
    o.inDesign           = false;
@@ -2448,6 +2512,35 @@ function RControl_build(c, x, a, h){
    }
    o.innerbuild(c, c, x, a, h);
    return c;
+}
+function RControl_setStyleScroll(h, c){
+   var s = h.style;
+   switch(c){
+      case EUiScroll.None:
+         s.overflowX = '';
+         s.overflowY = '';
+         break;
+      case EUiScroll.Horizontal:
+         s.overflowX = 'scroll';
+         break;
+      case EUiScroll.HorizontalAuto:
+         s.overflowX = 'auto';
+         break;
+      case EUiScroll.Vertical:
+         s.overflowY = 'scroll';
+         break;
+      case EUiScroll.VerticalAuto:
+         s.overflowY = 'auto';
+         break;
+      case EUiScroll.Both:
+         s.overflow = 'scroll';
+         break;
+      case EUiScroll.BothAuto:
+         s.overflow = 'auto';
+         break;
+      default:
+         throw new TError(o, 'Unknown scroll type. (scroll_cd={1})', c);
+   }
 }
 function RControl_linkEvent(tc, sc, n, h, m){
    var o = this;
@@ -3630,6 +3723,70 @@ function FFrameEventConsole_onlyCall(c, m){
    o._allow = false;
    m.call(c);
    o._allow = true;
+}
+function FKeyConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd        = EScope.Local;
+   o._enable         = true;
+   o._enableRegister = true;
+   o._listeners      = new Object();
+   o._disableKeys    = new Object();
+   o.onKeyDown       = FKeyConsole_onKeyDown;
+   o.construct       = FKeyConsole_construct;
+   o.enable          = FKeyConsole_enable;
+   o.disable         = FKeyConsole_disable;
+   o.enableRegister  = FKeyConsole_enableRegister;
+   o.disableRegister = FKeyConsole_disableRegister;
+   o.register        = FKeyConsole_register;
+   return o;
+}
+function FKeyConsole_onKeyDown(s, e){
+   debugger
+   var o = this;
+   var k = REnum.tryDecode(EKey, e.keyCode);
+   if(k && o._enable){
+      var ls = o._listeners[k];
+      if(ls){
+         ls.process(o, e);
+         e.keyCode = null;
+         e.returnValue = false;
+      }
+   }
+   if(k && o._disableKeys[k]){
+      e.keyCode = null;
+      e.returnValue = false;
+   }
+}
+function FKeyConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+}
+function FKeyConsole_enable(){
+   this._enable = true;
+}
+function FKeyConsole_disable(){
+   this._enable = false;
+}
+function FKeyConsole_enableRegister(){
+   this._enableRegister = true;
+}
+function FKeyConsole_disableRegister(){
+   this._enableRegister = false;
+}
+function FKeyConsole_register(k, w, p){
+   var o = this;
+   if(o._enableRegister){
+      if(RInteger.isInteger(k)){
+         k = REnum.decode(EKeyCode, k);
+      }
+      var ks = o._listeners;
+      var s = ks[k];
+      if(!s){
+         s = ks[k] = new TListeners();
+      }
+      s.register(w, p);
+   }
 }
 function FMessageConsole(o){
    o = RClass.inherits(this, o, FConsole, MStyle);
@@ -6196,10 +6353,10 @@ function FUiEdit_refreshValue(){
 }
 function FUiEditControl(o){
    o = RClass.inherits(this, o, FUiControl, MDataField, MEditValue, MEditChange, MEditDrop);
-   o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), ELabelMode.All);
-   o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), ELabelPosition.Left);
+   o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
+   o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), EUiLabelPosition.Left);
    o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
-   o._labelAlignCd     = RClass.register(o, new APtyString('_labelAlignCd'), EAlign.Left);
+   o._labelAlignCd     = RClass.register(o, new APtyString('_labelAlignCd'), EUiAlign.Left);
    o._editSize         = RClass.register(o, new APtySize2('_editSize'));
    o._dataTypeCd       = RClass.register(o, new APtyString('_dataTypeCd'));
    o._styleLabelPanel  = RClass.register(o, new AStyle('_styleLabelPanel'));
@@ -6279,20 +6436,20 @@ function FUiEditControl_onBuild(p){
    var hlp = null;
    var hep = null;
    var lmc = o._labelModeCd;
-   if(lmc == ELabelMode.Label){
+   if(lmc == EUiLabelMode.Label){
       hlp = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
-   }else if(lmc == ELabelMode.Hidden){
+   }else if(lmc == EUiLabelMode.Hidden){
       hep = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
    }else{
       var lpc = o._labelPositionCd;
-      if(lpc == ELabelPosition.Top){
+      if(lpc == EUiLabelPosition.Top){
          hlp = RBuilder.appendTableRowCell(hc);
          hep = RBuilder.appendTableRowCell(hc);
-      }else if(lpc == ELabelPosition.Right){
+      }else if(lpc == EUiLabelPosition.Right){
          var hr = RBuilder.appendTableRow(hc);
          hep = RBuilder.appendTableCell(hr);
          hlp = RBuilder.appendTableCell(hr);
-      }else if(lpc == ELabelPosition.Bottom){
+      }else if(lpc == EUiLabelPosition.Bottom){
          hep = RBuilder.appendTableRowCell(hc);
          hlp = RBuilder.appendTableRowCell(hc);
       }else{
@@ -7278,7 +7435,7 @@ function FUiLayout(o){
 function FUiLayout_onBuildPanel(p){
    var o = this;
    var h = o._hPanel = o._hPanelForm = RBuilder.createTable(p.hDocument, o.styleName('Form'), null, 0, 1);
-   if(o._layoutCd == ELayout.Design){
+   if(o._layoutCd == EUiLayout.Design){
       var hr = RBuilder.appendTableRow(h);
       var hc = RBuilder.appendTableCell(hr);
       o._hContainer = hc;
@@ -7443,7 +7600,7 @@ function FUiLayout_moveChild(cf, ct, pos, copy){
 function FUiLayout_innerAppendLine(){
    var o = this;
    var h = null;
-   if(o._layoutCd == ELayout.Design){
+   if(o._layoutCd == EUiLayout.Design){
       h = o._hPanelTable = RBuilder.appendTable(o._hContainer);
       h.style.paddingBottom = 4;
       o._hPanelLine = RBuilder.appendTableRow(h);
@@ -7455,7 +7612,7 @@ function FUiLayout_innerAppendLine(){
 }
 function FUiLayout_appendChild(ctl){
    var o = this;
-   if(o._layoutCd == ELayout.Design){
+   if(o._layoutCd == EUiLayout.Design){
       if(!o._hPanelLine){
          o.innerAppendLine();
       }
@@ -7480,7 +7637,7 @@ function FUiLayout_appendChild(ctl){
    }else{
       ctl._hPanel.style.paddingTop = 2;
       ctl._hPanel.style.paddingBottom = 2;
-      if(RSet.contains(ctl._sizeCd, ESize.Horizontal) || '100%' == ctl.width){
+      if(RSet.contains(ctl._sizeCd, EUiSize.Horizontal) || '100%' == ctl.width){
          if(RClass.isClass(ctl, FUiSplit)){
             o._lastSplit = ctl;
          }
@@ -7490,7 +7647,7 @@ function FUiLayout_appendChild(ctl){
          hc.appendChild(ctl._hPanel);
          ctl._hLayoutRow = hr;
          o._hPanelLast = hc;
-         if(!RSet.contains(ctl._sizeCd, ESize.Vertical)){
+         if(!RSet.contains(ctl._sizeCd, EUiSize.Vertical)){
             hc.height = 1;
          }else if(ctl.height){
             hc.height = ctl.height;
@@ -7544,7 +7701,7 @@ function FUiLayout_dispose(){
 }
 function FUiListBox(o){
    o = RClass.inherits(this, o, FUiContainer, MHorizontal, MListenerClick);
-   o._sizeCd      = ESize.Horizontal
+   o._sizeCd      = EUiSize.Horizontal
    o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
    o._hForm       = null;
    o.onBuildPanel = FUiListBox_onBuildPanel;
@@ -8667,7 +8824,7 @@ function FUiNumber4_link(){
 }
 function FUiPageControl(o){
    o = RClass.inherits(this, o, FUiContainer);
-   o._sizeCd          = ESize.Horizontal;
+   o._sizeCd          = EUiSize.Horizontal;
    o._stylePanel      = RClass.register(o, new AStyle('_stylePanel'));
    o._styleTitlePanel = RClass.register(o, new AStyle('_styleTitlePanel'));
    o._styleTitleForm  = RClass.register(o, new AStyle('_styleTitleForm'));
@@ -8678,7 +8835,7 @@ function FUiPageControl(o){
    o._styleForm       = RClass.register(o, new AStyle('_styleForm'));
    o._sheets          = null;
    o._activeSheet     = null;
-   o._esize           = ESize.Both;
+   o._esize           = EUiSize.Both;
    o._hTop             = null;
    o._hLine            = null;
    o._hBottom          = null;
@@ -8976,7 +9133,7 @@ function FUiPageSheet_innerDump(s, l){
 }
 function FUiPanel(o){
    o = RClass.inherits(this, o, FUiLayout, MDesign, MFocus);
-   o._sizeCd      = ESize.Horizontal;
+   o._sizeCd      = EUiSize.Horizontal;
    o._stylePanel  = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
    o._styleLabel  = RClass.register(o, new AStyle('_styleLabel', 'Label'));
    o._styleBody   = RClass.register(o, new AStyle('_styleBody', 'Body'));
@@ -13226,11 +13383,17 @@ function FTable_oeResize(e){
 }
 function FUiMenuBar(o){
    o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
-   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
-   o._hLine       = null;
-   o.onBuildPanel = FUiMenuBar_onBuildPanel;
-   o.appendChild = FUiMenuBar_appendChild;
-   return this;
+   o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
+   o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
+   o._styleButtonPanel = RClass.register(o, new AStyle('_styleButtonPanel'));
+   o._hLine            = null;
+   o.onBuildPanel      = FUiMenuBar_onBuildPanel;
+   o.onEnter           = RMethod.empty;
+   o.onLeave           = RMethod.empty;
+   o.appendChild       = FUiMenuBar_appendChild;
+   o.removeChild       = FUiMenuBar_removeChild;
+   o.dispose           = FUiMenuBar_dispose;
+   return o;
 }
 function FUiMenuBar_onBuildPanel(p){
    var o = this;
@@ -13241,102 +13404,92 @@ function FUiMenuBar_appendChild(p){
    var o = this;
    o.__base.FUiContainer.appendChild.call(o, p);
    if(RClass.isClass(p, FUiMenuButton)){
-      var hr = o._hLine;
-      var hc = RBuilder.appendTableCell(hr);
+      var hl = o._hLine;
+      var hc = RBuilder.appendTableCell(hl, o.styleName('ButtonPanel'));
+      hc._hParentLine = hl;
       p.setPanel(hc);
    }
 }
-function FUiMenuBar_onBuild(builder){
-   var doc = builder.document;
-   this.hBody = doc.createDiv();
-   this.hBody.className = 'menu_panel';
-   this.hParent.insertBefore(this.hBody);
-   builder.hParent = this.hBody;
-}
-function FUiMenuBar_onLoaded(cnn){
-   var doc = cnn.document;
-   if(doc && doc.node){
-      IControl.load(this, doc.node);
-      this.build();
+function FUiMenuBar_removeChild(p){
+   var o = this;
+   if(RClass.isClass(p, FUiMenuButton)){
+      var hp = p._hParent;
+      var hl = p._hParentLine;
+      hl.removeChild(hp);
+      p._hParentLine = null;
+      p._hParent = null;
    }
+   o.__base.FUiContainer.removeChild.call(o, p);
 }
 function FUiMenuBar_dispose(){
    var o = this;
-   o.base.FControl.dispose.call(o);
-   RMemory.freeHtml(o.hBody);
-   RMemory.freeHtml(o.hParent);
-   o.hBody = null;
-   o.hParent = null;
-}
-function FUiMenuBar_connect(type, action, attrs){
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('type', type);
-   root.set('action', action);
-   root.create('Attributes').value = attrs;
-   var self = this;
-   var cnn = new TXmlCnn();
-   cnn.onLoad = function(){self.onLoaded(cnn)};
-   cnn.send(this.service, doc);
-}
-function FUiMenuBar_release(){
-   var nodes = this.allNodes;
-   for(var n=0; n<nodes.length; n++){
-      var node = nodes[n];
-      node.release();
-   }
-   this.allNodes = null;
-   this.allNodesUuid = null;
-   this.allNodesProperty = null;
-   this.allNodesPropertyExtend = null;
-   this.nodes = null;
-   return true;
+   o._hLine = RHtml.free(o._hLine);
+   o.__base.FUiContainer.dispose.call(o);
 }
 function FUiMenuButton(o){
-   o = RClass.inherits(this, o, FUiControl, MMenuButton, MListenerClick);
-   o._icon         = RClass.register(o, new APtyString('_icon'));
-   o._iconDisable  = RClass.register(o, new APtyString('_iconDisable'));
-   o._hotkey       = RClass.register(o, new APtyString('_hotkey'));
-   o._action       = RClass.register(o, new APtyString('_action'));
-   o._styleNormal  = RClass.register(o, new AStyle('_styleNormal'));
-   o._styleHover   = RClass.register(o, new AStyle('_styleHover'));
-   o._stylePress   = RClass.register(o, new AStyle('_stylePress'));
-   o._styleDisable = RClass.register(o, new AStyle('_styleDisable'));
-   o._styleIcon    = RClass.register(o, new AStyle('_styleIcon'));
-   o._styleLabel   = RClass.register(o, new AStyle('_styleLabel'));
-   o._disabled     = false;
-   o._hIcon        = null;
-   o._hLabel       = null;
-   o.onBuildPanel  = FUiMenuButton_onBuildPanel
-   o.onBuild       = FUiMenuButton_onBuild;
-   o.onEnter       = FUiMenuButton_onEnter;
-   o.onLeave       = FUiMenuButton_onLeave;
-   o.onMouseDown   = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiMenuButton_onMouseDown);
-   o.onMouseUp     = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiMenuButton_onMouseUp);
-   o.icon          = FUiMenuButton_icon;
-   o.setIcon       = FUiMenuButton_setIcon;
-   o.setLabel      = FUiMenuButton_setLabel;
-   o.setEnable     = FUiMenuButton_setEnable;
-   o.click         = FUiMenuButton_click;
-   o.dispose       = FUiMenuButton_dispose;
+   o = RClass.inherits(this, o, FUiControl, MUiMenuButton, MListenerClick);
+   o._icon            = RClass.register(o, new APtyString('_icon'));
+   o._iconDisable     = RClass.register(o, new APtyString('_iconDisable'));
+   o._hotkey          = RClass.register(o, new APtyString('_hotkey'));
+   o._action          = RClass.register(o, new APtyString('_action'));
+   o._styleNormal     = RClass.register(o, new AStyle('_styleNormal'));
+   o._styleHover      = RClass.register(o, new AStyle('_styleHover'));
+   o._stylePress      = RClass.register(o, new AStyle('_stylePress'));
+   o._styleDisable    = RClass.register(o, new AStyle('_styleDisable'));
+   o._styleIconPanel  = RClass.register(o, new AStyle('_styleIconPanel'));
+   o._styleSpacePanel = RClass.register(o, new AStyle('_styleSpacePanel'));
+   o._styleLabelPanel = RClass.register(o, new AStyle('_styleLabelPanel'));
+   o._disabled        = false;
+   o._hForm           = null;
+   o._hLine           = null;
+   o._hIconPanel      = null;
+   o._hIcon           = null;
+   o._hSpacePanel     = null;
+   o._hLabelPanel     = null;
+   o.onBuildPanel     = FUiMenuButton_onBuildPanel
+   o.onBuild          = FUiMenuButton_onBuild;
+   o.onEnter          = FUiMenuButton_onEnter;
+   o.onLeave          = FUiMenuButton_onLeave;
+   o.onMouseDown      = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiMenuButton_onMouseDown);
+   o.onMouseUp        = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiMenuButton_onMouseUp);
+   o.icon             = FUiMenuButton_icon;
+   o.setIcon          = FUiMenuButton_setIcon;
+   o.setLabel         = FUiMenuButton_setLabel;
+   o.setHint          = FUiMenuButton_setHint;
+   o.setEnable        = FUiMenuButton_setEnable;
+   o.click            = FUiMenuButton_click;
+   o.dispose          = FUiMenuButton_dispose;
    return o;
 }
 function FUiMenuButton_onBuildPanel(p){
    var o = this;
    o._hPanel = RBuilder.createDiv(p, o.styleName('Normal'));
 }
-function FUiMenuButton_onBuild(e){
+function FUiMenuButton_onBuild(p){
    var o = this;
-   o.__base.FUiControl.onBuild.call(o, e);
+   o.__base.FUiControl.onBuild.call(o, p);
    var h = o._hPanel;
    o.attachEvent('onMouseDown', h);
    o.attachEvent('onMouseUp', h);
+   var hf = o._hForm = RBuilder.appendTable(h);
+   var hl = o._hLine = RBuilder.appendTableRow(hf);
    if(o._icon){
-      o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);
+      var hc = o._hIconPanel = RBuilder.appendTableCell(hl, o.styleName('IconPanel'));
+      o._hIcon = RBuilder.appendIcon(hc, null, o._icon);
+   }
+   if(o._icon && o._label){
+      o.hSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
    }
    if(o._label){
-      o._hLabel = RBuilder.appendText(h, o.styleName('Label'));
+      var hlp = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
+      hlp.noWrap = true;
       o.setLabel(o._label);
+   }
+   if(o._hotkey){
+      RConsole.find(FKeyConsole).register(o._hotkey, o, o.onMouseDown);
+   }
+   if(o._hint){
+      o.setHint(o._hint);
    }
 }
 function FUiMenuButton_onEnter(p){
@@ -13368,18 +13521,28 @@ function FUiMenuButton_icon(){
    return this._icon;
 }
 function FUiMenuButton_setIcon(p){
-   this._icon = p;
+   var o = this;
+   o._icon = p;
+   if(o._hIcon){
+      o._hIcon.src = o.styleIconPath(o._icon);
+   }
 }
 function FUiMenuButton_setLabel(p){
    var o = this;
    var s = RString.nvl(p);
    o._label = s;
-   if(o._hIcon){
-      s = ' ' + o._label;
+   RHtml.textSet(o._hLabelPanel, s);
+}
+function FUiMenuButton_setHint(p){
+   var o = this;
+   o._hint = p;
+   var s = RString.nvl(p);
+   if(o._hint){
+      if(o._hotkey){
+         s += ' [' + o._hotkey + ']';
+      }
    }
-   if(o._hLabel){
-      o._hLabel.innerText = s;
-   }
+   o._hPanel.title = o._hint;
 }
 function FUiMenuButton_setEnable(p){
    var o = this;
@@ -13404,8 +13567,12 @@ function FUiMenuButton_click(){
 }
 function FUiMenuButton_dispose(){
    var o = this;
-   o._hIcon = null;
-   o._hLabel = null;
+   o._hForm = RHtml.free(o._hForm);
+   o._hLine = RHtml.free(o._hLine);
+   o._hIconPanel = RHtml.free(o._hIconPanel);
+   o._hIcon = RHtml.free(o._hIcon);
+   o._hSpacePanel = RHtml.free(o._hSpacePanel);
+   o._hLabelPanel = RHtml.free(o._hLabelPanel);
    o.__base.FUiControl.dispose.call(o);
 }
 function FUiMenuButtonMenu(o){
@@ -13534,125 +13701,108 @@ function FUiMenuButtonMenu_dispose(){
    o.hLabel = null;
 }
 function FUiMenuButtonSplit(o){
-   o = RClass.inherits(this, o, FUiControl, MMenuButton);
-   o.styleUp      = RClass.register(o, new AStyle('Up'));
-   o.styleDown    = RClass.register(o, new AStyle('Down'));
-   o.disabled     = false;
-   o.oeBuild      = FUiMenuButtonSplit_oeBuild;
-   o.onBuildPanel = FUiMenuButtonSplit_onBuildPanel;
-   o.dispose      = FUiMenuButtonSplit_dispose;
+   o = RClass.inherits(this, o, FUiControl, MUiMenuButton);
+   o._stylePanel = RClass.register(o, new AStyle('_stylePanel'));
+   o.onBuild     = FUiMenuButtonSplit_onBuild;
    return o;
 }
-function FUiMenuButtonSplit_oeBuild(e){
+function FUiToolButtonSplit_onBuild(p){
    var o = this;
-   o.base.FUiControl.oeBuild.call(o, e);
-   var h = o.hPanel;
-   var hc = h.insertRow().insertCell();
-   hc.className = o.style('Up');
-   var hc = h.insertRow().insertCell();
-   hc.className = o.style('Down');
-   return EEventStatus.Stop;
+   o.__base.FUiControl.onBuild.call(o, p);
+   o._hPanel.className = o.styleName('Panel');
 }
-function FUiMenuButtonSplit_onBuildPanel(){
-   this.hPanel = RBuilder.newTable();
-}
-function FUiMenuButtonSplit_dispose(){
-   var o = this;
-   o.base.FUiControl.dispose.call(o);
-   RMemory.freeHtml(o.hPanel);
-   o.hPanel = null;
-}
-function MMenuButton(o){
+function MUiMenuButton(o){
    o = RClass.inherits(this, o);
    return o;
 }
 function FUiToolBar(o){
    o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
-   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
-   o._hLine       = null;
-   o.onBuildPanel = FUiToolBar_onBuildPanel;
-   o.appendChild  = FUiToolBar_appendChild;
+   o._alignCd          = RClass.register(o, new APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));
+   o._directionCd      = RClass.register(o, new APtyEnum('_directionCd', null, EUiDirection, EUiDirection.Horizontal));
+   o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
+   o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
+   o._styleButtonPanel = RClass.register(o, new AStyle('_styleButtonPanel'));
+   o._hLine            = null;
+   o.onBuildPanel      = FUiToolBar_onBuildPanel;
+   o.onEnter           = RMethod.empty;
+   o.onLeave           = RMethod.empty;
+   o.appendChild       = FUiToolBar_appendChild;
+   o.removeChild       = FUiToolBar_removeChild;
+   o.dispose           = FUiToolBar_dispose;
    return o;
 }
 function FUiToolBar_onBuildPanel(p){
    var o = this;
-   var h = o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
-   o._hLine = RBuilder.appendTableRow(h);
+   o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
 }
 function FUiToolBar_appendChild(p){
    var o = this;
    o.__base.FUiContainer.appendChild.call(o, p);
-   if(RClass.isClass(p, FUiToolButton)){
-      var hr = o._hLine;
-      var hc = RBuilder.appendTableCell(hr);
+   if(RClass.isClass(p, MUiToolButton)){
+      var h = o._hPanel;
+      var hl = o._hLine;
+      if(o._directionCd == EUiDirection.Horizontal){
+         if(!hl){
+            hl = o._hLine = RBuilder.appendTableRow(h);
+         }
+      }
+      if(o._directionCd == EUiDirection.Vertical){
+         hl = o._hLine = RBuilder.appendTableRow(h);
+      }
+      var hc = RBuilder.appendTableCell(hl, o.styleName('ButtonPanel'));
+      hc._hParentLine = hl;
       p.setPanel(hc);
    }
 }
-function FUiToolBar_addClickListener(name, method){
-   var btn = this.component(name);
-   if(btn){
-      btn.addClickListener(new TListener(this, method));
-   }
-}
-function FUiToolBar_button(name){
-   return this.components.get(name);
-}
-function FUiToolBar_setVisibles(vs){
+function FUiToolBar_removeChild(p){
    var o = this;
-   for(var n in vs){
-      o.button(n).setVisible(vs[n]);
+   if(RClass.isClass(p, MUiToolButton)){
+      var hp = p._hParent;
+      var hl = p._hParentLine;
+      hl.removeChild(hp);
+      p._hParent = null;
+      p._hParentLine = null;
    }
-}
-function FUiToolBar_setEnables(vs){
-   var o = this;
-   for(var n in vs){
-      o.button(n).psEnable(vs[n]);
-   }
-}
-function FUiToolBar_clear(){
-   if(this.hTable && this._hLine){
-      this._hLine.removeNode(true);
-      this._hLine = this.hTable.insertRow();
-   }
-   this.buttons = new Array();
+   o.__base.FUiContainer.removeChild.call(o, p);
 }
 function FUiToolBar_dispose(){
    var o = this;
+   o._hLine = RHtml.free(o._hLine);
    o.__base.FUiContainer.dispose.call(o);
-   RMemory.freeHtml(o.hTable);
-   RMemory.freeHtml(o._hLine);
-   RMemory.freeHtml(o.hParent);
-   o.hTable = null;
-   o._hLine = null;
-   o.hParent = null;
 }
 function FUiToolButton(o){
-   o = RClass.inherits(this, o, FUiControl, MListenerClick);
-   o._icon         = RClass.register(o, new APtyString('_icon'));
-   o._iconDisable  = RClass.register(o, new APtyString('_iconDisable'));
-   o._hotkey       = RClass.register(o, new APtyString('_hotkey'));
-   o._action       = RClass.register(o, new APtyString('_action'));
-   o._styleNormal  = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
-   o._styleHover   = RClass.register(o, new AStyle('_styleHover', 'Hover'));
-   o._stylePress   = RClass.register(o, new AStyle('_stylePress', 'Press'));
-   o._styleDisable = RClass.register(o, new AStyle('_styleDisable', 'Disable'));
-   o._styleIcon    = RClass.register(o, new AStyle('_styleIcon', 'Icon'));
-   o._styleLabel   = RClass.register(o, new AStyle('_styleLabel', 'Label'));
-   o._disabled     = false;
-   o._hIcon        = null;
-   o._hLabel       = null;
-   o.onBuildPanel  = FUiToolButton_onBuildPanel;
-   o.onBuild       = FUiToolButton_onBuild;
-   o.onEnter       = FUiToolButton_onEnter;
-   o.onLeave       = FUiToolButton_onLeave;
-   o.onMouseDown   = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiToolButton_onMouseDown);
-   o.onMouseUp     = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiToolButton_onMouseUp);
-   o.icon          = FUiToolButton_icon;
-   o.setIcon       = FUiToolButton_setIcon;
-   o.setLabel      = FUiToolButton_setLabel;
-   o.setEnable     = FUiToolButton_setEnable;
-   o.click         = FUiToolButton_click;
-   o.dispose       = FUiToolButton_dispose;
+   o = RClass.inherits(this, o, FUiControl, MUiToolButton, MListenerClick);
+   o._icon            = RClass.register(o, new APtyString('_icon'));
+   o._iconDisable     = RClass.register(o, new APtyString('_iconDisable'));
+   o._hotkey          = RClass.register(o, new APtyString('_hotkey'));
+   o._action          = RClass.register(o, new APtyString('_action'));
+   o._styleNormal     = RClass.register(o, new AStyle('_styleNormal'));
+   o._styleHover      = RClass.register(o, new AStyle('_styleHover'));
+   o._stylePress      = RClass.register(o, new AStyle('_stylePress'));
+   o._styleDisable    = RClass.register(o, new AStyle('_styleDisable'));
+   o._styleIconPanel  = RClass.register(o, new AStyle('_styleIconPanel'));
+   o._styleSpacePanel = RClass.register(o, new AStyle('_styleSpacePanel'));
+   o._styleLabelPanel = RClass.register(o, new AStyle('_styleLabelPanel'));
+   o._disabled        = false;
+   o._hForm           = null;
+   o._hLine           = null;
+   o._hIconPanel      = null;
+   o._hIcon           = null;
+   o._hSpacePanel     = null;
+   o._hLabelPanel     = null;
+   o.onBuildPanel     = FUiToolButton_onBuildPanel;
+   o.onBuild          = FUiToolButton_onBuild;
+   o.onEnter          = FUiToolButton_onEnter;
+   o.onLeave          = FUiToolButton_onLeave;
+   o.onMouseDown      = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiToolButton_onMouseDown);
+   o.onMouseUp        = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiToolButton_onMouseUp);
+   o.icon             = FUiToolButton_icon;
+   o.setIcon          = FUiToolButton_setIcon;
+   o.setLabel         = FUiToolButton_setLabel;
+   o.setHint          = FUiToolButton_setHint;
+   o.setEnable        = FUiToolButton_setEnable;
+   o.click            = FUiToolButton_click;
+   o.dispose          = FUiToolButton_dispose;
    return o;
 }
 function FUiToolButton_onBuildPanel(p){
@@ -13665,12 +13815,25 @@ function FUiToolButton_onBuild(p){
    var h = o._hPanel;
    o.attachEvent('onMouseDown', h);
    o.attachEvent('onMouseUp', h);
+   var hf = o._hForm = RBuilder.appendTable(h);
+   var hl = o._hLine = RBuilder.appendTableRow(hf);
    if(o._icon){
-      o._hIcon = RBuilder.appendIcon(h, o.styleName('Icon'), o._icon);
+      var hc = o._hIconPanel = RBuilder.appendTableCell(hl, o.styleName('IconPanel'));
+      o._hIcon = RBuilder.appendIcon(hc, null, o._icon);
+   }
+   if(o._icon && o._label){
+      o.hSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
    }
    if(o._label){
-      o._hLabel = RBuilder.appendText(h, o.styleName('Label'));
+      var hlp = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
+      hlp.noWrap = true;
       o.setLabel(o._label);
+   }
+   if(o._hotkey){
+      RConsole.find(FKeyConsole).register(o._hotkey, o, o.onMouseDown);
+   }
+   if(o._hint){
+      o.setHint(o._hint);
    }
 }
 function FUiToolButton_onEnter(e){
@@ -13702,18 +13865,28 @@ function FUiToolButton_icon(){
    return this._icon;
 }
 function FUiToolButton_setIcon(p){
-   this._icon = p;
+   var o = this;
+   o._icon = p;
+   if(o._hIcon){
+      o._hIcon.src = o.styleIconPath(o._icon);
+   }
 }
 function FUiToolButton_setLabel(p){
    var o = this;
    var s = RString.nvl(p);
    o._label = s;
-   if(o._hIcon){
-      s = ' ' + o._label;
+   RHtml.textSet(o._hLabelPanel, s);
+}
+function FUiToolButton_setHint(p){
+   var o = this;
+   o._hint = p;
+   var s = RString.nvl(p);
+   if(o._hint){
+      if(o._hotkey){
+         s += ' [' + o._hotkey + ']';
+      }
    }
-   if(o._hLabel){
-      o._hLabel.innerText = s;
-   }
+   o._hPanel.title = o._hint;
 }
 function FUiToolButton_setEnable(p){
    var o = this;
@@ -13751,19 +13924,13 @@ function FUiToolButton_click(){
 }
 function FUiToolButton_dispose(){
    var o = this;
-   o._hButton = null;
-   o._hButtonLine = null;
-   o._hButtonPanel = null;
-   o._hIcon = null;
-   o._hText = null;
+   o._hForm = RHtml.free(o._hForm);
+   o._hLine = RHtml.free(o._hLine);
+   o._hIconPanel = RHtml.free(o._hIconPanel);
+   o._hIcon = RHtml.free(o._hIcon);
+   o._hSpacePanel = RHtml.free(o._hSpacePanel);
+   o._hLabelPanel = RHtml.free(o._hLabelPanel);
    o.__base.FUiControl.dispose.call(o);
-}
-function FUiToolButton_onShowHint(a){
-   var o = this;
-   a.status = EActive.Finish;
-   if(o.hintBox){
-      o.hintBox.show();
-   }
 }
 function FUiToolButtonCheck(o){
    o = RClass.inherits(this, o, FUiToolButton);
@@ -13960,7 +14127,7 @@ function FUiToolButtonMenu_dispose(){
    o.hDropPanel = null;
 }
 function FUiToolButtonSplit(o){
-   o = RClass.inherits(this, o, FUiToolButton);
+   o = RClass.inherits(this, o, FUiToolButton, MUiToolButton);
    o._stylePanel = RClass.register(o, new AStyle('_stylePanel'));
    o.onBuild     = FUiToolButtonSplit_onBuild;
    return o;
@@ -13972,6 +14139,10 @@ function FUiToolButtonSplit_onBuild(p){
 }
 function FUiToolButtonText(o){
    o = RClass.inherits(this, o, FUiToolButton);
+   return o;
+}
+function MUiToolButton(o){
+   o = RClass.inherits(this, o);
    return o;
 }
 function FPageBar(o){
@@ -15937,23 +16108,48 @@ function FUiTreeView_dispose(){
 }
 function FUiFramePage(o){
    o = RClass.inherits(this, o, FUiContainer);
-   o.onBuildPanel = FUiFramePage_onBuildPanel
-   o.appendChild  = FUiFramePage_appendChild;
+   o._styleContainer = RClass.register(o, new AStyle('_styleContainer'));
+   o._hContainer     = null;
+   o.onBuildPanel    = FUiFramePage_onBuildPanel;
+   o.onBuild         = FUiFramePage_onBuild;
+   o.oeResize        = FUiFramePage_oeResize;
+   o.appendChild     = FUiFramePage_appendChild;
    return o;
 }
-function FUiFramePage_onBuildPanel(e){
+function FUiFramePage_onBuildPanel(p){
    var o = this;
-   var h = o._hPanel = RBuilder.createTableCell(e.hDocument, o.styleName('Panel'));
+   var h = o._hPanel = RBuilder.createTableCell(p, o.styleName('Panel'));
    h.vAlign = 'top';
+}
+function FUiFramePage_onBuild(p){
+   var o = this;
+   o.__base.FUiContainer.onBuild.call(o, p);
+   var h = o._hPanel;
+   if(o._scrollCd != EUiScroll.None){
+      var hc = o._hContainer = RBuilder.appendDiv(h, o.styleName('Container'));
+      RControl.setStyleScroll(hc, o._scrollCd);
+   }else{
+      o._hContainer = h;
+   }
+}
+function FUiFramePage_oeResize(p){
+   var o = this;
+   var p = o._parent;
+   if(p._directionCd == EUiDirection.Horizontal){
+   }else if(p._directionCd == EUiDirection.Vertical){
+   }else{
+      throw new TError(o, 'Unknown direcion type. (direction_cd={1})', o._directionCd);
+   }
+   return EEventStatus.Continue;
 }
 function FUiFramePage_appendChild(p){
    var o = this;
-   o._hPanel.appendChild(p._hPanel);
+   o._hContainer.appendChild(p._hPanel);
 }
 function FUiFrameSet(o){
    o = RClass.inherits(this, o, FUiContainer);
-   o._directionCd  = RClass.register(o, new APtyEnum('_directionCd', null, EDirection), EDirection.Vertical);
-   o._stylePanel   = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
+   o._directionCd  = RClass.register(o, new APtyEnum('_directionCd', null, EUiDirection), EUiDirection.Vertical);
+   o._stylePanel   = RClass.register(o, new AStyle('_stylePanel'));
    o._frames       = null;
    o._hLine        = null;
    o.onBuildPanel  = FUiFrameSet_onBuildPanel;
@@ -15975,20 +16171,22 @@ function FUiFrameSet_construct(){
 }
 function FUiFrameSet_appendFrame(p){
    var o = this;
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       var hr = o._hLine;
       if(!hr){
          hr = o._hLine = RBuilder.appendTableRow(o._hPanel);
       }
       p.setPanel(hr);
-      if(p._size.width){
-         p._hPanel.width = p._size.width;
+      var sw = p._size.width;
+      if(sw){
+         p._hPanel.width = sw;
       }
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       var hr = RBuilder.appendTableRow(o._hPanel);
       p.setPanel(hr);
-      if(p._size.height){
-         p._hPanel.height = p._size.height;
+      var sh = p._size.height;
+      if(sh){
+         p._hPanel.height = sh;
       }
    }else{
       throw new TError(o, 'Unknown direcion type. (direction_cd={1})', o._directionCd);
@@ -16004,10 +16202,10 @@ function FUiFrameSet_appendSpliter(p){
       sp = RClass.create(FUiFrameSpliter);
       sp.build(o._hPanel);
    }
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       o._hLine.appendChild(sp._hPanel);
       sp._hPanel.style.width = '4px';
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       var hr = RBuilder.appendTableRow(o._hPanel);
       hr.appendChild(sp._hPanel);
       sp._hPanel.style.height = '4px';
@@ -16038,8 +16236,8 @@ function FUiFrameSpliter(o){
    o._styleNormal  = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
    o._styleHover   = RClass.register(o, new AStyle('_styleHover', 'Hover'));
    o._styleDraging = RClass.register(o, new AStyle('_styleDraging', 'Draging'));
-   o._directionCd  = EDirection.Horizontal;
-   o._alignCd      = EAlign.Left;
+   o._directionCd  = EUiDirection.Horizontal;
+   o._alignCd      = EUiAlign.Left;
    o._dragClientX  = 0;
    o._dragClientY  = 0;
    o._dragPanelX   = 0;
@@ -16095,12 +16293,12 @@ function FUiFrameSpliter_onDragStart(e){
    var hc = o._hPanel;
    var hd = o._hDrag;
    var hds = hd.style;
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       o._dragClientX = e.clientX;
       o._dragPanelX = RHtml.clientX(hc);
       o._dragSizeX = o._hSize.offsetWidth;
       hds.cursor = EMouseCursor.HSize;
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       o._dragClientY = e.clientY;
       o._dragPanelY = RHtml.clientY(hc);
       o._sizeY = o._hSize.offsetHeight;
@@ -16117,13 +16315,13 @@ function FUiFrameSpliter_onDragStart(e){
 function FUiFrameSpliter_onDragMove(e){
    var o = this;
    var hd = o._hDrag;
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       var x = e.clientX - o._dragClientX;
       var cx = o._dragPanelX + x;
       if(cx > 40){
          hd.style.left = cx + 'px';
       }
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       var y = e.clientY - o._dragClientY;
       var cy = o._dragPanelY + y;
       if(cy > 40){
@@ -16136,12 +16334,12 @@ function FUiFrameSpliter_onDragMove(e){
 function FUiFrameSpliter_onDragStop(e){
    var o = this;
    var hd = o._hDrag;
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       var x = e.clientX - o._dragClientX;
       var cx = 0;
-      if(o._alignCd === EAlign.Left){
+      if(o._alignCd === EUiAlign.Left){
          cx = o._dragSizeX + x;
-      }else if(o._alignCd === EAlign.Right){
+      }else if(o._alignCd === EUiAlign.Right){
          cx = o._dragSizeX - x;
       }else{
          throw new TError(o, 'Unknown align type. (align_cd={1})', o._alignCd);
@@ -16149,12 +16347,12 @@ function FUiFrameSpliter_onDragStop(e){
       if(cx > 40){
          o._hSize.style.width = cx + 'px';
       }
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       var y = e.clientY - o._dragClientY;
       var cy = o._dragSizeY + y;
-      if(o._alignCd === EAlign.Top){
+      if(o._alignCd === EUiAlign.Top){
          cy = o._dragSizeY + y;
-      }else if(o._alignCd === EAlign.Bottom){
+      }else if(o._alignCd === EUiAlign.Bottom){
          cy = o._dragSizeY - y;
       }else{
          throw new TError(o, 'Unknown align type. (align_cd={1})', o._alignCd);
@@ -16204,9 +16402,9 @@ function FUiFrameSpliter_link(hDrag, hSize){
    o.attachEvent('onSplitMove', h, o.ohDragMove);
    o.attachEvent('onSplitUp', h, o.ohDragStop);
    o.attachEvent('onSplitDoubleClick', h, o.ohDragDoubleClick);
-   if(EDirection.Vertical == o.direction){
+   if(EUiDirection.Vertical == o.direction){
       h.style.cursor = 'N-resize'
-   }else if(EDirection.Horizontal == o.direction){
+   }else if(EUiDirection.Horizontal == o.direction){
       h.style.cursor = 'E-resize'
    }
    o.hSize = hSize;

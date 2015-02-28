@@ -60,7 +60,7 @@ function FDsSceneCameraPropertyFrame_dispose(){
 }
 function FDsSceneCanvas(o){
    o = RClass.inherits(this, o, FDsCanvas);
-   o._graphicContext             = null;
+   o._graphicContext      = null;
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
    o._activeScene         = null;
@@ -72,6 +72,7 @@ function FDsSceneCanvas(o){
    o._dimensional         = null;
    o._selectObject        = null;
    o._selectRenderables   = null;
+   o._templateMatrix      = null;
    o._templateRenderable  = null;
    o._templateFace        = null;
    o._templateTranslation = null;
@@ -130,6 +131,18 @@ function FDsSceneCanvas_onMouseCaptureStart(p){
       var d = r.display();
       o._captureMatrix.assign(d.matrix());
    }
+   o._templateMatrix.identity();
+   if(o._templateFace){
+      o._templateFaceMatrix.assign(o._templateFace.matrix());
+      var rs = o._selectRenderables;
+      for(var i = rs.count() - 1; i >= 0; i--){
+         var r = rs.getAt(i);
+         if(!r._dragMatrix){
+            r._dragMatrix = new SMatrix3d();
+         }
+         r._dragMatrix.assign(r.matrix());
+      }
+   }
 }
 function FDsSceneCanvas_onMouseCapture(p){
    var o = this;
@@ -143,11 +156,8 @@ function FDsSceneCanvas_onMouseCapture(p){
    var mv = o._canvasMoveCd;
    var cm = o._captureMatrix;
    var sm = null;
-   var sr = o._selectRenderable;
-   if(sr){
-      var sd = sr.display();
-      sm = sd.matrix();
-   }
+   var tf = o._templateFace;
+   var tm = o._templateMatrix;
    switch(mc){
       case EDsCanvasMode.Drop:
          var c = o._activeScene.camera();
@@ -159,50 +169,49 @@ function FDsSceneCanvas_onMouseCapture(p){
       case EDsCanvasMode.Select:
          break;
       case EDsCanvasMode.Translate:
-         if(sr){
+         if(tf){
             if(mv == EDsCanvasDrag.X){
-               sm.tx = cm.tx + cx / 10;
+               tm.tx = cx / 10;
             }else if(mv == EDsCanvasDrag.Y){
-               sm.ty = cm.ty + -cy / 10;
+               tm.ty = -cy / 10;
             }else if(mv == EDsCanvasDrag.Z){
-               sm.tz = cm.tz + cx / 10;
+               tm.tz = cx / 10;
             }
          }
          break;
       case EDsCanvasMode.Rotation:
-         if(sr){
+         if(tf){
             if(mv == EDsCanvasDrag.X){
-               sm.rx = cm.rx + cx / 10;
+               tm.rx = cx / 10;
             }else if(mv == EDsCanvasDrag.Y){
-               sm.ry = cm.ry + -cy / 10;
+               tm.ry = -cy / 10;
             }else if(mv == EDsCanvasDrag.Z){
-               sm.rz = cm.rz + cx / 10;
+               tm.rz = cx / 10;
             }
          }
          break;
       case EDsCanvasMode.Scale:
-         if(sr){
+         if(tf){
             if(mv == EDsCanvasDrag.X){
-               sm.sx = cm.sx + cx / 10;
+               tm.sx = cx / 10;
             }else if(mv == EDsCanvasDrag.Y){
-               sm.sy = cm.sy + -cy / 10;
+               tm.sy = -cy / 10;
             }else if(mv == EDsCanvasDrag.Z){
-               sm.sz = cm.sz + cx / 10;
+               tm.sz = cx / 10;
             }else if(mv == EDsCanvasDrag.All){
-               sm.sx = cm.sx + cx / 10;
-               sm.sy = cm.sy + cx / 10;
-               sm.sz = cm.sz + cx / 10;
+               tm.sx = cx / 10;
+               tm.sy = cx / 10;
+               tm.sz = cx / 10;
             }
          }
          break;
    }
-   if(sm){
-      sm.updateForce();
-      if(o._templateFace){
-         var tm = o._templateFace.matrix();
-         tm.assign(sm);
-         tm.setScaleAll(o._templateViewScale);
-         tm.update();
+   if(tf){
+      tf.matrix().merge(o._templateFaceMatrix, tm);
+      var rs = o._selectRenderables;
+      for(var i = rs.count() - 1; i >= 0; i--){
+         var r = rs.getAt(i);
+         r._matrix.merge(r._dragMatrix, tm);
       }
    }
 }
@@ -292,6 +301,8 @@ function FDsSceneCanvas_construct(){
    o.__base.FDsCanvas.construct.call(o);
    o._capturePosition = new SPoint2();
    o._captureMatrix = new SMatrix3d();
+   o._templateMatrix = new SMatrix3d();
+   o._templateFaceMatrix = new SMatrix3d();
    o._rotation = new SVector3();
    o._captureRotation = new SVector3();
    o._selectRenderables = new TObjects();
@@ -1265,9 +1276,11 @@ function FDsSceneRenderableFrame_loadObject(s, r){
    var c = es.count();
    for(var i = 0; i < c; i++){
       var e = es.value(i).effect;
-      var l = ces.createItem(null, e.code());
-      l._effect = e;
-      ces.push(l);
+      if(e){
+         var l = ces.createItem(null, e.code());
+         l._effect = e;
+         ces.push(l);
+      }
    }
 }
 function FDsSceneRenderableFrame_dispose(){
@@ -1427,36 +1440,33 @@ function FDsSceneWorkspace_onBuilded(p){
    var f = o._frameStatusBar = o.searchControl('statusFrame');
    f._hPanel.className = o.styleName('Statusbar_Ground');
    var f = o._catalogSplitter = o.searchControl('catalogSpliter');
-   f._alignCd = EAlign.Left;
+   f._alignCd = EUiAlign.Left;
    f._hSize = o._frameCatalog._hPanel;
    var f = o._propertySpliter = o.searchControl('propertySpliter');
-   f._alignCd = EAlign.Right;
+   f._alignCd = EUiAlign.Right;
    f._hSize = o._frameStatusBar._hPanel;
    var c = o._toolbar = RClass.create(FDsSceneMenuBar);
    c._workspace = o;
    c.buildDefine(p);
-   c.setPanel(o._frameToolBar._hPanel);
-   o.push(c);
+   o._frameToolBar.push(c);
    var c = o._catalog = RClass.create(FDsSceneCatalog);
    c._workspace = o;
    c.build(p);
-   c.setPanel(o._frameCatalog._hPanel);
    c.addSelectedListener(o, o.onCatalogSelected);
-   o.push(c);
+   o._frameCatalog.push(c);
    var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
    var c = o._canvasToolbar = RClass.create(FDsSceneCanvasToolBar);
    c._workspace = o;
    c.buildDefine(p);
-   c.setPanel(f._hPanel);
-   o.push(c);
+   o._canvasToolbarFrame.push(c);
    var f = o._canvasFrame = o.searchControl('canvasFrame');
    var c = o._canvas = RClass.create(FDsSceneCanvas);
    c._workspace = o;
    c._toolbar = o._canvasToolbar;
    c.addLoadListener(o, o.onSceneLoad);
+   c._hParent = f._hPanel;
    c.build(p);
-   c.setPanel(f._hPanel);
-   o.push(c);
+   o._canvasFrame.push(c);
 }
 function FDsSceneWorkspace_onSceneLoad(p){
    var o = this;
@@ -1503,7 +1513,7 @@ function FDsSceneWorkspace_onCatalogSelected(p){
       var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
       f.show();
       f.loadObject(s, p);
-   }else if(RClass.isClass(p, FRd3Renderable)){
+   }else if(RClass.isClass(p, FE3dRenderable)){
       o._canvas.selectRenderable(p);
       var f = o.findPropertyFrame(EDsFrame.SceneRenderablePropertyFrame);
       f.show();
@@ -1526,7 +1536,7 @@ function FDsSceneWorkspace_findPropertyFrame(p){
    var f = o._propertyFrames.get(p);
    if(!f){
       var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._frameProperty._hPanel);
+      f = fc.get(o, p, o._frameProperty._hContainer);
       f._workspace = o;
       o._propertyFrames.set(p, f);
    }

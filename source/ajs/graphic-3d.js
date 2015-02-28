@@ -1188,119 +1188,6 @@ function FG3dRegion_dispose(){
    o._allRenderables = RObject.free(o._allRenderables);
    o.__base.FObject.dispose.call(o);
 }
-function FG3dRenderable(o){
-   o = RClass.inherits(this, o, FGraphicRenderable);
-   o._currentMatrix  = null;
-   o._matrix         = null;
-   o._effectCode     = null;
-   o._materialName   = null;
-   o._material       = null;
-   o._activeInfo     = null;
-   o._infos          = null;
-   o.construct       = FG3dRenderable_construct;
-   o.currentMatrix   = FG3dRenderable_currentMatrix;
-   o.matrix          = FG3dRenderable_matrix;
-   o.effectCode      = FG3dRenderable_effectCode;
-   o.material        = FG3dRenderable_material;
-   o.activeEffect    = FG3dRenderable_activeEffect;
-   o.activeInfo      = FG3dRenderable_activeInfo;
-   o.effectFind      = FG3dRenderable_effectFind;
-   o.effectSet       = FG3dRenderable_effectSet;
-   o.infos           = FG3dRenderable_infos;
-   o.clearInfos      = FG3dRenderable_clearInfos;
-   o.selectInfo      = FG3dRenderable_selectInfo;
-   o.testVisible     = RMethod.virtual(o, 'testVisible');
-   o.update          = FG3dRenderable_update;
-   o.dispose         = FG3dRenderable_dispose;
-   return o;
-}
-function FG3dRenderable_construct(){
-   var o = this;
-   o.__base.FGraphicRenderable.construct.call(o);
-   o._currentMatrix = new SMatrix3d();
-   o._matrix = new SMatrix3d();
-   o._material = RClass.create(FG3dMaterial);
-}
-function FG3dRenderable_currentMatrix(){
-   return this._currentMatrix;
-}
-function FG3dRenderable_matrix(){
-   return this._matrix;
-}
-function FG3dRenderable_effectCode(){
-   return this._effectCode;
-}
-function FG3dRenderable_activeEffect(){
-   var i = this._activeInfo;
-   return i ? i.effect : null;
-}
-function FG3dRenderable_activeInfo(){
-   return this._activeInfo;
-}
-function FG3dRenderable_effectFind(p){
-   var o = this;
-   var s = o._infos;
-   if(s){
-      var i = s.get(p);
-      if(i){
-         return i.effect;
-      }
-   }
-   return null;
-}
-function FG3dRenderable_effectSet(n, e){
-   var o = this;
-   var s = o.infos();
-   var i = s.get(n);
-   if(!i){
-      i = new SG3dRenderableInfo();
-      es.set(n, i)
-   }
-   i.effect = e;
-}
-function FG3dRenderable_infos(){
-   var o = this;
-   var r = o._infos;
-   if(!r){
-      r = o._infos = new TDictionary();
-   }
-   return r;
-}
-function FG3dRenderable_clearInfos(){
-   var o = this;
-   var s = o._infos;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var ri = s.valueAt(i);
-         ri.reset();
-      }
-   }
-}
-function FG3dRenderable_selectInfo(p){
-   var o = this;
-   var s = o.infos();
-   var i = s.get(p);
-   if(!i){
-      i = new SG3dRenderableInfo();
-      s.set(p, i)
-   }
-   o._activeInfo = i;
-   return i;
-}
-function FG3dRenderable_material(){
-   return this._material;
-}
-function FG3dRenderable_update(p){
-}
-function FG3dRenderable_dispose(){
-   var o = this;
-   o._currentMatrix = RObject.dispose(o._currentMatrix);
-   o._matrix = RObject.dispose(o._matrix);
-   o._material = RObject.dispose(o._material);
-   o._infos = RObject.dispose(o._infos);
-   o.__base.FGraphicRenderable.dispose.call(o);
-}
 function FG3dShaderTemplate(o){
    o = RClass.inherits(this, o, FTagDocument);
    o._space  = 'shader';
@@ -1575,6 +1462,117 @@ function FG3dViewport_set(l, t, w, h){
    o.top = t;
    o.width = w;
    o.height= h;
+}
+function MG3dRenderable(o){
+   o = RClass.inherits(this, o, MGraphicRenderable);
+   o._currentMatrix  = null;
+   o._matrix         = null;
+   o._effectCode     = null;
+   o._materialName   = null;
+   o._material       = null;
+   o._activeInfo     = null;
+   o._infos          = null;
+   o.construct       = MG3dRenderable_construct;
+   o.currentMatrix   = MG3dRenderable_currentMatrix;
+   o.matrix          = MG3dRenderable_matrix;
+   o.effectCode      = MG3dRenderable_effectCode;
+   o.material        = MG3dRenderable_material;
+   o.activeEffect    = MG3dRenderable_activeEffect;
+   o.activeInfo      = MG3dRenderable_activeInfo;
+   o.effectFind      = MG3dRenderable_effectFind;
+   o.effectSet       = MG3dRenderable_effectSet;
+   o.infos           = MG3dRenderable_infos;
+   o.clearInfos      = MG3dRenderable_clearInfos;
+   o.selectInfo      = MG3dRenderable_selectInfo;
+   o.testVisible     = RMethod.virtual(o, 'testVisible');
+   o.update          = MG3dRenderable_update;
+   o.dispose         = MG3dRenderable_dispose;
+   return o;
+}
+function MG3dRenderable_construct(){
+   var o = this;
+   o._currentMatrix = new SMatrix3d();
+   o._matrix = new SMatrix3d();
+   o._material = RClass.create(FG3dMaterial);
+}
+function MG3dRenderable_currentMatrix(){
+   return this._currentMatrix;
+}
+function MG3dRenderable_matrix(){
+   return this._matrix;
+}
+function MG3dRenderable_effectCode(){
+   return this._effectCode;
+}
+function MG3dRenderable_activeEffect(){
+   var i = this._activeInfo;
+   return i ? i.effect : null;
+}
+function MG3dRenderable_activeInfo(){
+   return this._activeInfo;
+}
+function MG3dRenderable_effectFind(p){
+   var o = this;
+   var s = o._infos;
+   if(s){
+      var i = s.get(p);
+      if(i){
+         return i.effect;
+      }
+   }
+   return null;
+}
+function MG3dRenderable_effectSet(n, e){
+   var o = this;
+   var s = o.infos();
+   var i = s.get(n);
+   if(!i){
+      i = new SG3dRenderableInfo();
+      es.set(n, i)
+   }
+   i.effect = e;
+}
+function MG3dRenderable_infos(){
+   var o = this;
+   var r = o._infos;
+   if(!r){
+      r = o._infos = new TDictionary();
+   }
+   return r;
+}
+function MG3dRenderable_clearInfos(){
+   var o = this;
+   var s = o._infos;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var ri = s.valueAt(i);
+         ri.reset();
+      }
+   }
+}
+function MG3dRenderable_selectInfo(p){
+   var o = this;
+   var s = o.infos();
+   var i = s.get(p);
+   if(!i){
+      i = new SG3dRenderableInfo();
+      s.set(p, i)
+   }
+   o._activeInfo = i;
+   return i;
+}
+function MG3dRenderable_material(){
+   return this._material;
+}
+function MG3dRenderable_update(p){
+}
+function MG3dRenderable_dispose(){
+   var o = this;
+   o._currentMatrix = RObject.dispose(o._currentMatrix);
+   o._matrix = RObject.dispose(o._matrix);
+   o._material = RObject.dispose(o._material);
+   o._infos = RObject.dispose(o._infos);
 }
 var REngine3d = new function REngine3d(){
    var o = this;

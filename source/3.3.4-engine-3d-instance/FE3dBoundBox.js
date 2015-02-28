@@ -24,8 +24,8 @@
 // @author maocy
 // @history 150207
 //==========================================================
-function FRd3BoundBox(o){
-   o = RClass.inherits(this, o, FRd3Renderable);
+function FE3dBoundBox(o){
+   o = RClass.inherits(this, o, FE3dRenderable);
    //..........................................................
    // @attribute
    o._outline              = null;
@@ -35,12 +35,12 @@ function FRd3BoundBox(o){
    o._vertexColorBuffer    = null;
    //..........................................................
    // @method
-   o.construct             = FRd3BoundBox_construct;
+   o.construct             = FE3dBoundBox_construct;
    // @method
-   o.outline               = FRd3BoundBox_outline;
+   o.outline               = FE3dBoundBox_outline;
    // @method
-   o.setup                 = FRd3BoundBox_setup;
-   o.upload                = FRd3BoundBox_upload;
+   o.setup                 = FE3dBoundBox_setup;
+   o.upload                = FE3dBoundBox_upload;
    return o;
 }
 
@@ -49,9 +49,9 @@ function FRd3BoundBox(o){
 //
 // @method
 //==========================================================
-function FRd3BoundBox_construct(){
+function FE3dBoundBox_construct(){
    var o = this;
-   o.__base.FRd3Renderable.construct.call(o);
+   o.__base.FE3dRenderable.construct.call(o);
    o._outline = new SOutline3();
 }
 
@@ -61,7 +61,7 @@ function FRd3BoundBox_construct(){
 // @method
 // @return SOutline 轮廓
 //==========================================================
-function FRd3BoundBox_outline(){
+function FE3dBoundBox_outline(){
    return this._outline;
 }
 
@@ -70,7 +70,7 @@ function FRd3BoundBox_outline(){
 //
 // @method
 //==========================================================
-function FRd3BoundBox_setup(){
+function FE3dBoundBox_setup(){
    var o = this;
    var c = o._graphicContext;
    // 创建顶点缓冲
@@ -119,7 +119,7 @@ function FRd3BoundBox_setup(){
 //
 // @method
 //==========================================================
-function FRd3BoundBox_upload(){
+function FE3dBoundBox_upload(){
    var o = this;
    // 设置变量
    var l = o._outline;

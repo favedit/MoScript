@@ -724,6 +724,10 @@
 /* FUiMenuBar                                             */
 /* ------------------------------------------------------ */
 .FUiMenuBar_Panel{
+   padding:2px 0px 2px 0px;
+}
+
+.FUiMenuBar_ButtonPanel{
 }
 
 /* ------------------------------------------------------ */
@@ -758,12 +762,20 @@
    cursor: pointer;
 }
 
-.FUiMenuButton_Icon{
-   border: 0px;
+.FUiMenuButton_IconPanel{
+   padding-right: 4px;
 }
 
-.FUiMenuButton_Label{
-   padding-left: 6px;
+.FUiMenuButton_LabelPanel{
+   white-space: nowrap;
+}
+
+/* ------------------------------------------------------ */
+/* FUiMenuButtonSplit                                     */
+/* ------------------------------------------------------ */
+.FUiMenuButtonSplit_Panel{
+   width: 4px;
+   height: 4px;
 }
 
 /* ------------------------------------------------------ */
@@ -771,6 +783,9 @@
 /* ------------------------------------------------------ */
 .FUiToolBar_Panel{
    padding:2px 0px 2px 0px;
+}
+
+.FUiToolBar_ButtonPanel{
 }
 
 /* ------------------------------------------------------ */
@@ -820,19 +835,22 @@
    cursor: pointer;
 }
 
-.FUiToolButton_Icon{
-   border: 0px;
+.FUiToolButton_IconPanel{
 }
 
-.FUiToolButton_Label{
-   paddingt: 0px 4px 0px 4px;
+.FUiToolButton_SpacePanel{
+   width: 4px;
+}
+
+.FUiToolButton_LabelPanel{
+   white-space: nowrap;
 }
 
 /* ------------------------------------------------------ */
 /* FUiToolButtonSplit                                     */
 /* ------------------------------------------------------ */
 .FUiToolButtonSplit_Panel{
-   width: 8px;
+   width: 4px;
 }
 
 /* ------------------------------------------------------ */
@@ -888,6 +906,17 @@
 }
 
 .FUiTreeNode_Cell{
+}
+
+/* ------------------------------------------------------ */
+/* FUiFramePage                                           */
+/* ------------------------------------------------------ */
+.FUiFramePage_Panel{
+}
+
+.FUiFramePage_Container{
+   width: 100%;
+   height: 100%;
 }
 
 /* ------------------------------------------------------ */

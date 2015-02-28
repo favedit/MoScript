@@ -29,7 +29,9 @@ function APtyString(n, l, v){
 //============================================================
 function APtyString_build(v){
    var o = this;
-   v[o._name] = o._value;
+   if(v[o._name] == null){
+      v[o._name] = o._value;
+   }
 }
 
 //============================================================

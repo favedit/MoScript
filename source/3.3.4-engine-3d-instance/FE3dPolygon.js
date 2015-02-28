@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150206
 //==========================================================
-function FRd3Polygon(o){
-   o = RClass.inherits(this, o, FRd3Renderable);
+function FE3dPolygon(o){
+   o = RClass.inherits(this, o, FE3dRenderable);
    return o;
 }

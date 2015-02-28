@@ -28,7 +28,7 @@ function MDsBoundBox_boundBox(){
    var b = o._boundBox;
    if(!b){
       // 创建包围盒
-      b = o._boundBox = RClass.create(FRd3BoundBox);
+      b = o._boundBox = RClass.create(FE3dBoundBox);
       b.linkGraphicContext(o);
       b.setup();
    }

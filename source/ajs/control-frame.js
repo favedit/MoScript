@@ -1,22 +1,47 @@
 function FUiFramePage(o){
    o = RClass.inherits(this, o, FUiContainer);
-   o.onBuildPanel = FUiFramePage_onBuildPanel
-   o.appendChild  = FUiFramePage_appendChild;
+   o._styleContainer = RClass.register(o, new AStyle('_styleContainer'));
+   o._hContainer     = null;
+   o.onBuildPanel    = FUiFramePage_onBuildPanel;
+   o.onBuild         = FUiFramePage_onBuild;
+   o.oeResize        = FUiFramePage_oeResize;
+   o.appendChild     = FUiFramePage_appendChild;
    return o;
 }
-function FUiFramePage_onBuildPanel(e){
+function FUiFramePage_onBuildPanel(p){
    var o = this;
-   var h = o._hPanel = RBuilder.createTableCell(e.hDocument, o.styleName('Panel'));
+   var h = o._hPanel = RBuilder.createTableCell(p, o.styleName('Panel'));
    h.vAlign = 'top';
+}
+function FUiFramePage_onBuild(p){
+   var o = this;
+   o.__base.FUiContainer.onBuild.call(o, p);
+   var h = o._hPanel;
+   if(o._scrollCd != EUiScroll.None){
+      var hc = o._hContainer = RBuilder.appendDiv(h, o.styleName('Container'));
+      RControl.setStyleScroll(hc, o._scrollCd);
+   }else{
+      o._hContainer = h;
+   }
+}
+function FUiFramePage_oeResize(p){
+   var o = this;
+   var p = o._parent;
+   if(p._directionCd == EUiDirection.Horizontal){
+   }else if(p._directionCd == EUiDirection.Vertical){
+   }else{
+      throw new TError(o, 'Unknown direcion type. (direction_cd={1})', o._directionCd);
+   }
+   return EEventStatus.Continue;
 }
 function FUiFramePage_appendChild(p){
    var o = this;
-   o._hPanel.appendChild(p._hPanel);
+   o._hContainer.appendChild(p._hPanel);
 }
 function FUiFrameSet(o){
    o = RClass.inherits(this, o, FUiContainer);
-   o._directionCd  = RClass.register(o, new APtyEnum('_directionCd', null, EDirection), EDirection.Vertical);
-   o._stylePanel   = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
+   o._directionCd  = RClass.register(o, new APtyEnum('_directionCd', null, EUiDirection), EUiDirection.Vertical);
+   o._stylePanel   = RClass.register(o, new AStyle('_stylePanel'));
    o._frames       = null;
    o._hLine        = null;
    o.onBuildPanel  = FUiFrameSet_onBuildPanel;
@@ -38,20 +63,22 @@ function FUiFrameSet_construct(){
 }
 function FUiFrameSet_appendFrame(p){
    var o = this;
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       var hr = o._hLine;
       if(!hr){
          hr = o._hLine = RBuilder.appendTableRow(o._hPanel);
       }
       p.setPanel(hr);
-      if(p._size.width){
-         p._hPanel.width = p._size.width;
+      var sw = p._size.width;
+      if(sw){
+         p._hPanel.width = sw;
       }
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       var hr = RBuilder.appendTableRow(o._hPanel);
       p.setPanel(hr);
-      if(p._size.height){
-         p._hPanel.height = p._size.height;
+      var sh = p._size.height;
+      if(sh){
+         p._hPanel.height = sh;
       }
    }else{
       throw new TError(o, 'Unknown direcion type. (direction_cd={1})', o._directionCd);
@@ -67,10 +94,10 @@ function FUiFrameSet_appendSpliter(p){
       sp = RClass.create(FUiFrameSpliter);
       sp.build(o._hPanel);
    }
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       o._hLine.appendChild(sp._hPanel);
       sp._hPanel.style.width = '4px';
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       var hr = RBuilder.appendTableRow(o._hPanel);
       hr.appendChild(sp._hPanel);
       sp._hPanel.style.height = '4px';
@@ -101,8 +128,8 @@ function FUiFrameSpliter(o){
    o._styleNormal  = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
    o._styleHover   = RClass.register(o, new AStyle('_styleHover', 'Hover'));
    o._styleDraging = RClass.register(o, new AStyle('_styleDraging', 'Draging'));
-   o._directionCd  = EDirection.Horizontal;
-   o._alignCd      = EAlign.Left;
+   o._directionCd  = EUiDirection.Horizontal;
+   o._alignCd      = EUiAlign.Left;
    o._dragClientX  = 0;
    o._dragClientY  = 0;
    o._dragPanelX   = 0;
@@ -158,12 +185,12 @@ function FUiFrameSpliter_onDragStart(e){
    var hc = o._hPanel;
    var hd = o._hDrag;
    var hds = hd.style;
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       o._dragClientX = e.clientX;
       o._dragPanelX = RHtml.clientX(hc);
       o._dragSizeX = o._hSize.offsetWidth;
       hds.cursor = EMouseCursor.HSize;
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       o._dragClientY = e.clientY;
       o._dragPanelY = RHtml.clientY(hc);
       o._sizeY = o._hSize.offsetHeight;
@@ -180,13 +207,13 @@ function FUiFrameSpliter_onDragStart(e){
 function FUiFrameSpliter_onDragMove(e){
    var o = this;
    var hd = o._hDrag;
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       var x = e.clientX - o._dragClientX;
       var cx = o._dragPanelX + x;
       if(cx > 40){
          hd.style.left = cx + 'px';
       }
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       var y = e.clientY - o._dragClientY;
       var cy = o._dragPanelY + y;
       if(cy > 40){
@@ -199,12 +226,12 @@ function FUiFrameSpliter_onDragMove(e){
 function FUiFrameSpliter_onDragStop(e){
    var o = this;
    var hd = o._hDrag;
-   if(o._directionCd == EDirection.Horizontal){
+   if(o._directionCd == EUiDirection.Horizontal){
       var x = e.clientX - o._dragClientX;
       var cx = 0;
-      if(o._alignCd === EAlign.Left){
+      if(o._alignCd === EUiAlign.Left){
          cx = o._dragSizeX + x;
-      }else if(o._alignCd === EAlign.Right){
+      }else if(o._alignCd === EUiAlign.Right){
          cx = o._dragSizeX - x;
       }else{
          throw new TError(o, 'Unknown align type. (align_cd={1})', o._alignCd);
@@ -212,12 +239,12 @@ function FUiFrameSpliter_onDragStop(e){
       if(cx > 40){
          o._hSize.style.width = cx + 'px';
       }
-   }else if(o._directionCd == EDirection.Vertical){
+   }else if(o._directionCd == EUiDirection.Vertical){
       var y = e.clientY - o._dragClientY;
       var cy = o._dragSizeY + y;
-      if(o._alignCd === EAlign.Top){
+      if(o._alignCd === EUiAlign.Top){
          cy = o._dragSizeY + y;
-      }else if(o._alignCd === EAlign.Bottom){
+      }else if(o._alignCd === EUiAlign.Bottom){
          cy = o._dragSizeY - y;
       }else{
          throw new TError(o, 'Unknown align type. (align_cd={1})', o._alignCd);
@@ -267,9 +294,9 @@ function FUiFrameSpliter_link(hDrag, hSize){
    o.attachEvent('onSplitMove', h, o.ohDragMove);
    o.attachEvent('onSplitUp', h, o.ohDragStop);
    o.attachEvent('onSplitDoubleClick', h, o.ohDragDoubleClick);
-   if(EDirection.Vertical == o.direction){
+   if(EUiDirection.Vertical == o.direction){
       h.style.cursor = 'N-resize'
-   }else if(EDirection.Horizontal == o.direction){
+   }else if(EUiDirection.Horizontal == o.direction){
       h.style.cursor = 'E-resize'
    }
    o.hSize = hSize;

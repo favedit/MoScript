@@ -125,10 +125,17 @@ function APtyEnum(n, l, e, d){
    AProperty.call(o, n, l);
    o._enum    = e;
    o._default = d;
+   o.build    = APtyEnum_build;
    o.load     = APtyEnum_load;
    o.save     = APtyEnum_save;
    o.toString = APtyEnum_toString;
    return o;
+}
+function APtyEnum_build(v){
+   var o = this;
+   if(v[o._name] == null){
+      v[o._name] = o._default;
+   }
 }
 function APtyEnum_load(v, x){
    var o = this;
@@ -300,7 +307,9 @@ function APtyString(n, l, v){
 }
 function APtyString_build(v){
    var o = this;
-   v[o._name] = o._value;
+   if(v[o._name] == null){
+      v[o._name] = o._value;
+   }
 }
 function APtyString_toString(){
    var o = this;

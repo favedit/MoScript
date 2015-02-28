@@ -6,38 +6,24 @@
 // @history 150121
 //==========================================================
 function FUiMenuButtonSplit(o){
-   o = RClass.inherits(this, o, FUiControl, MMenuButton);
-   /// @style
-   o.styleUp      = RClass.register(o, new AStyle('Up'));
-   /// @style
-   o.styleDown    = RClass.register(o, new AStyle('Down'));
-   // Attribute
-   o.disabled     = false;
-   // Method
-   o.oeBuild      = FUiMenuButtonSplit_oeBuild;
-   o.onBuildPanel = FUiMenuButtonSplit_onBuildPanel;
-   o.dispose      = FUiMenuButtonSplit_dispose;
+   o = RClass.inherits(this, o, FUiControl, MUiMenuButton);
+   //..........................................................
+   // @style
+   o._stylePanel = RClass.register(o, new AStyle('_stylePanel'));
+   //..........................................................
+   // @method
+   o.onBuild     = FUiMenuButtonSplit_onBuild;
    return o;
 }
-// ------------------------------------------------------------
-function FUiMenuButtonSplit_oeBuild(e){
+
+//==========================================================
+// <T>建立当前控件的显示框架。</T>
+//
+// @method
+// @param p:event:TEventProcess 事件处理
+//==========================================================
+function FUiToolButtonSplit_onBuild(p){
    var o = this;
-   o.base.FUiControl.oeBuild.call(o, e);
-   var h = o.hPanel;
-   var hc = h.insertRow().insertCell();
-   hc.className = o.style('Up');
-   var hc = h.insertRow().insertCell();
-   hc.className = o.style('Down');
-   return EEventStatus.Stop;
-}
-// ------------------------------------------------------------
-function FUiMenuButtonSplit_onBuildPanel(){
-   this.hPanel = RBuilder.newTable();
-}
-// ------------------------------------------------------------
-function FUiMenuButtonSplit_dispose(){
-   var o = this;
-   o.base.FUiControl.dispose.call(o);
-   RMemory.freeHtml(o.hPanel);
-   o.hPanel = null;
+   o.__base.FUiControl.onBuild.call(o, p);
+   o._hPanel.className = o.styleName('Panel');
 }

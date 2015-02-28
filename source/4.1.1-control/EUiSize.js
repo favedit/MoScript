@@ -1,11 +1,11 @@
 //==========================================================
-// <T>尺寸模式</T>
+// <T>界面尺寸枚举。</T>
 //
 // @enum
 // @author maocy
 // @version 150101
 //==========================================================
-var ESize = new function ESize(){
+var EUiSize = new function EUiSize(){
    var o = this;
    // @attribute 普通
    o.Normal     = 0

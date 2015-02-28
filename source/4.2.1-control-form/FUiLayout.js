@@ -69,7 +69,7 @@ function FUiLayout_onBuildPanel(p){
    var o = this;
    var h = o._hPanel = o._hPanelForm = RBuilder.createTable(p.hDocument, o.styleName('Form'), null, 0, 1);
    // 设计模式
-   if(o._layoutCd == ELayout.Design){
+   if(o._layoutCd == EUiLayout.Design){
       var hr = RBuilder.appendTableRow(h);
       var hc = RBuilder.appendTableCell(hr);
       o._hContainer = hc;
@@ -291,7 +291,7 @@ function FUiLayout_moveChild(cf, ct, pos, copy){
 function FUiLayout_innerAppendLine(){
    var o = this;
    var h = null;
-   if(o._layoutCd == ELayout.Design){
+   if(o._layoutCd == EUiLayout.Design){
       h = o._hPanelTable = RBuilder.appendTable(o._hContainer);
       h.style.paddingBottom = 4;
       o._hPanelLine = RBuilder.appendTableRow(h);
@@ -311,7 +311,7 @@ function FUiLayout_innerAppendLine(){
 function FUiLayout_appendChild(ctl){
    var o = this;
    // 设计模式时
-   if(o._layoutCd == ELayout.Design){
+   if(o._layoutCd == EUiLayout.Design){
       // 追加第一行
       if(!o._hPanelLine){
          o.innerAppendLine();
@@ -341,7 +341,7 @@ function FUiLayout_appendChild(ctl){
       ctl._hPanel.style.paddingTop = 2;
       ctl._hPanel.style.paddingBottom = 2;
       // 追加横向对象
-      if(RSet.contains(ctl._sizeCd, ESize.Horizontal) || '100%' == ctl.width){
+      if(RSet.contains(ctl._sizeCd, EUiSize.Horizontal) || '100%' == ctl.width){
          if(RClass.isClass(ctl, FUiSplit)){
             o._lastSplit = ctl;
          }
@@ -353,7 +353,7 @@ function FUiLayout_appendChild(ctl){
          ctl._hLayoutRow = hr;
          o._hPanelLast = hc;
          // 设置行高
-         if(!RSet.contains(ctl._sizeCd, ESize.Vertical)){
+         if(!RSet.contains(ctl._sizeCd, EUiSize.Vertical)){
             hc.height = 1;
          }else if(ctl.height){
             hc.height = ctl.height;

@@ -1560,10 +1560,17 @@ function APtyEnum(n, l, e, d){
    AProperty.call(o, n, l);
    o._enum    = e;
    o._default = d;
+   o.build    = APtyEnum_build;
    o.load     = APtyEnum_load;
    o.save     = APtyEnum_save;
    o.toString = APtyEnum_toString;
    return o;
+}
+function APtyEnum_build(v){
+   var o = this;
+   if(v[o._name] == null){
+      v[o._name] = o._default;
+   }
 }
 function APtyEnum_load(v, x){
    var o = this;
@@ -1735,7 +1742,9 @@ function APtyString(n, l, v){
 }
 function APtyString_build(v){
    var o = this;
-   v[o._name] = o._value;
+   if(v[o._name] == null){
+      v[o._name] = o._value;
+   }
 }
 function APtyString_toString(){
    var o = this;
@@ -6079,6 +6088,7 @@ function SMatrix3d(){
    o.append         = SMatrix3d_append;
    o.updateForce    = SMatrix3d_updateForce;
    o.update         = SMatrix3d_update;
+   o.merge          = SMatrix3d_merge;
    o.serialize      = SMatrix3d_serialize;
    o.unserialize    = SMatrix3d_unserialize;
    o.saveConfig     = SMatrix3d_saveConfig;
@@ -6208,6 +6218,19 @@ function SMatrix3d_update(){
       o.updateForce();
       o._dirty = false;
    }
+}
+function SMatrix3d_merge(bm, am){
+   var o = this;
+   o.tx = bm.tx + am.tx;
+   o.ty = bm.ty + am.ty;
+   o.tz = bm.tz + am.tz;
+   o.rx = bm.rx + am.rx;
+   o.ry = bm.ry + am.ry;
+   o.rz = bm.rz + am.rz;
+   o.sx = bm.sx * am.sx;
+   o.sy = bm.sy * am.sy;
+   o.sz = bm.sz * am.sz;
+   o.updateForce();
 }
 function SMatrix3d_serialize(p){
    var o = this;

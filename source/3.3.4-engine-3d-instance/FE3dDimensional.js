@@ -15,8 +15,8 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FRd3Dimensional(o){
-   o = RClass.inherits(this, o, FRd3Renderable);
+function FE3dDimensional(o){
+   o = RClass.inherits(this, o, FE3dRenderable);
    //..........................................................
    // @attribute
    o._cellSize             = null;
@@ -28,9 +28,9 @@ function FRd3Dimensional(o){
    o._vertexColorBuffer    = null;
    //..........................................................
    // @method
-   o.construct             = FRd3Dimensional_construct;
+   o.construct             = FE3dDimensional_construct;
    // @method
-   o.setup                 = FRd3Dimensional_setup;
+   o.setup                 = FE3dDimensional_setup;
    return o;
 }
 
@@ -39,9 +39,9 @@ function FRd3Dimensional(o){
 //
 // @method
 //==========================================================
-function FRd3Dimensional_construct(){
+function FE3dDimensional_construct(){
    var o = this;
-   o.__base.FRd3Renderable.construct.call(o);
+   o.__base.FE3dRenderable.construct.call(o);
    o._cellSize = new SSize2();
    o._cellSize.set(1, 1);
    o._size = new SSize2();
@@ -56,7 +56,7 @@ function FRd3Dimensional_construct(){
 // @param w:width:Number 宽度
 // @param h:height:Number 高度
 //==========================================================
-function FRd3Dimensional_setup(){
+function FE3dDimensional_setup(){
    var o = this;
    var c = o._graphicContext;
    // 设置变量

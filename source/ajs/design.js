@@ -170,7 +170,7 @@ function FDsCanvas_onBuild(p){
    var h = o._hPanel;
    h.__linker = o;
    var c = o._graphicContext = REngine3d.createContext(FWglContext, h);
-   var dm = o._dimensional = RClass.create(FRd3Dimensional);
+   var dm = o._dimensional = RClass.create(FE3dDimensional);
    dm.linkGraphicContext(c);
    dm.setup();
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
@@ -686,7 +686,7 @@ function MDsBoundBox_boundBox(){
    var o = this;
    var b = o._boundBox;
    if(!b){
-      b = o._boundBox = RClass.create(FRd3BoundBox);
+      b = o._boundBox = RClass.create(FE3dBoundBox);
       b.linkGraphicContext(o);
       b.setup();
    }
