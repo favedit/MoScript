@@ -5,10 +5,10 @@
 // @author maocy
 // @version 150224
 //==========================================================
-function MMouseWheel(o){
+MO.MMouseWheel = function MMouseWheel(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @event
-   o.onMouseWheel = RClass.register(o, new AEventMouseWheel('onMouseWheel'), RMethod.empty);
+   o.onMouseWheel = RClass.register(o, new MO.AEventMouseWheel('onMouseWheel'), MO.RMethod.empty);
    return o;
 }

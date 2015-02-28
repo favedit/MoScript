@@ -6,9 +6,9 @@
 // @author maocy
 // @version 150119
 //==========================================================
-function AEventMouseEnter(n){
+MO.AEventMouseEnter = function AEventMouseEnter(n){
    var o = this;
-   AEvent.call(o, n, 'mouseenter', 'onmouseenter');
+   MO.AEvent.call(o, n, 'mouseenter', 'onmouseenter');
    //..........................................................
    // @attribute
    o._logger = false;
@@ -16,14 +16,14 @@ function AEventMouseEnter(n){
    // @method
    o.attach  = AEventMouseEnter_attach;
    return o;
-}
 
-//==========================================================
-// <T>接收事件信息。</T>
-//
-// @method
-// @param e:event:Event 事件
-// @param h:htmlEvent:HtmlEvent 页面事件
-//==========================================================
-function AEventMouseEnter_attach(e, h){
+   //==========================================================
+   // <T>接收事件信息。</T>
+   //
+   // @method
+   // @param e:event:Event 事件
+   // @param h:htmlEvent:HtmlEvent 页面事件
+   //==========================================================
+   function AEventMouseEnter_attach(e, h){
+   }
 }

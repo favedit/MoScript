@@ -6,21 +6,21 @@
 // @author maocy
 // @version 150119
 //==========================================================
-function AEventFocus(n){
+MO.AEventFocus = function AEventFocus(n){
    var o = this;
-   AEvent.call(o, n, 'focus', 'onfocus');
+   MO.AEvent.call(o, n, 'focus', 'onfocus');
    //..........................................................
    // @method
    o.attach = AEventFocus_attach;
    return o;
-}
 
-//==========================================================
-// <T>接收事件信息。</T>
-//
-// @method
-// @param e:event:Event 事件
-// @param h:htmlEvent:HtmlEvent 页面事件
-//==========================================================
-function AEventFocus_attach(e, h){
+   //==========================================================
+   // <T>接收事件信息。</T>
+   //
+   // @method
+   // @param e:event:Event 事件
+   // @param h:htmlEvent:HtmlEvent 页面事件
+   //==========================================================
+   function AEventFocus_attach(e, h){
+   }
 }

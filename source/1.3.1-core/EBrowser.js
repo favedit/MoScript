@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141229
 //==========================================================
-var EBrowser = new function EBrowser(){
+MO.EBrowser = new function EBrowser(){
    var o = this;
    // @member
    o.Unknown = 0;

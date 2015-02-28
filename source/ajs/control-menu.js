@@ -1,3 +1,7 @@
+function MUiMenuButton(o){
+   o = RClass.inherits(this, o);
+   return o;
+}
 function FUiMenuBar(o){
    o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
    o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
@@ -327,8 +331,4 @@ function FUiToolButtonSplit_onBuild(p){
    var o = this;
    o.__base.FUiControl.onBuild.call(o, p);
    o._hPanel.className = o.styleName('Panel');
-}
-function MUiMenuButton(o){
-   o = RClass.inherits(this, o);
-   return o;
 }

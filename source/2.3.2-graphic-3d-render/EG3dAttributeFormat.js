@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //==========================================================
-var EG3dAttributeFormat = new function EG3dAttributeFormat(){
+MO.Graphic3d.EG3dAttributeFormat = new function EG3dAttributeFormat(){
    var o = this;
    // @member 未知
    o.Unknown = 0;

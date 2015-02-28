@@ -8,9 +8,9 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function APtyNumber(n, l, v){
+MO.APtyNumber = function APtyNumber(n, l, v){
    var o = this;
-   AProperty.call(o, n, l);
+   MO.AProperty.call(o, n, l);
    //..........................................................
    // @attribute
    o._value   = RInteger.nvl(v);
@@ -19,28 +19,28 @@ function APtyNumber(n, l, v){
    o.build    = APtyNumber_build;
    o.toString = APtyNumber_toString;
    return o;
-}
 
-//============================================================
-// <T>构建处理。</T>
-//
-// @method
-// @param v:value:Object 对象
-//============================================================
-function APtyNumber_build(v){
-   var o = this;
-   if(o._value != 0){
-      v[o._name] = o._value;
+   //============================================================
+   // <T>构建处理。</T>
+   //
+   // @method
+   // @param v:value:Object 对象
+   //============================================================
+   function APtyNumber_build(v){
+      var o = this;
+      if(o._value != 0){
+         v[o._name] = o._value;
+      }
    }
-}
 
-//============================================================
-// <T>获得字符串。</T>
-//
-// @method
-// @return String 字符串
-//============================================================
-function APtyNumber_toString(){
-   var o = this;
-   return 'linker=' + o._linker + ',value=' + o._value;
+   //============================================================
+   // <T>获得字符串。</T>
+   //
+   // @method
+   // @return String 字符串
+   //============================================================
+   function APtyNumber_toString(){
+      var o = this;
+      return 'linker=' + o._linker + ',value=' + o._value;
+   }
 }

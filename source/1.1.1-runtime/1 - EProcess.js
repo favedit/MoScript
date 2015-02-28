@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141226
 //==========================================================
-var EProcess = new function EProcess(){
+MO.EProcess = new function EProcess(){
    var o = this;
    // @member 调试模式
    o.Debug = 1;

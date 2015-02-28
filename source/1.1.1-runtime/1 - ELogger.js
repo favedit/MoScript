@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141226
 //==========================================================
-var ELogger = new function ELogger(){
+MO.ELogger = new function ELogger(){
    var o = this;
    // @member 调试模式
    o.Debug = 'D';

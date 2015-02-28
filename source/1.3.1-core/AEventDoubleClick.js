@@ -6,21 +6,21 @@
 // @author maocy
 // @version 150119
 //==========================================================
-function AEventDoubleClick(n){
+MO.AEventDoubleClick = function AEventDoubleClick(n){
    var o = this;
-   AEvent.call(o, n, 'dblclick', 'ondblclick');
+   MO.AEvent.call(o, n, 'dblclick', 'ondblclick');
    //..........................................................
    // @method
    o.attach = AEventDoubleClick_attach;
    return o;
-}
 
-//==========================================================
-// <T>接收事件信息。</T>
-//
-// @method
-// @param e:event:Event 事件
-// @param h:htmlEvent:HtmlEvent 页面事件
-//==========================================================
-function AEventDoubleClick_attach(e, h){
+   //==========================================================
+   // <T>接收事件信息。</T>
+   //
+   // @method
+   // @param e:event:Event 事件
+   // @param h:htmlEvent:HtmlEvent 页面事件
+   //==========================================================
+   function AEventDoubleClick_attach(e, h){
+   }
 }

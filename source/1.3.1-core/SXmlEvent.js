@@ -5,9 +5,9 @@
 // @author maocy
 // @version 150120
 //==========================================================
-function SXmlEvent(){
+MO.SXmlEvent = function SXmlEvent(){
    var o = this;
-   SEvent.call(o);
+   MO.SEvent.call(o);
    //..........................................................
    // @attribute
    o.connection = null;

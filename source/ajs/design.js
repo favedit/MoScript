@@ -29,6 +29,42 @@ var EDsFrame = new function EDsFrame(){
    o.SceneRenderablePropertyFrame = 'design3d.scene.property.RenderableFrame';
    return o;
 }
+function MDsBoundBox(o){
+   o = RClass.inherits(this, o);
+   o._boundBox    = null;
+   o.boundBox     = MDsBoundBox_boundBox;
+   o.showBoundBox = MDsBoundBox_showBoundBox;
+   o.hideBoundBox = MDsBoundBox_hideBoundBox;
+   return o;
+}
+function MDsBoundBox_boundBox(){
+   var o = this;
+   var b = o._boundBox;
+   if(!b){
+      b = o._boundBox = RClass.create(FE3dBoundBox);
+      b.linkGraphicContext(o);
+      b.setup();
+   }
+   return b;
+}
+function MDsBoundBox_showBoundBox(){
+   var o = this;
+   var b = o.boundBox();
+   b.remove();
+   var r = o.resource();
+   var rm = r.mesh();
+   var rl = rm.outline();
+   b.outline().assign(rl);
+   b.upload();
+   o._display.pushRenderable(b);
+}
+function MDsBoundBox_hideBoundBox(){
+   var o = this;
+   var b = o._boundBox;
+   if(b){
+      b.remove();
+   }
+}
 function FDsApplication(o){
    o = RClass.inherits(this, o, FObject);
    o._name             = null;
@@ -673,40 +709,4 @@ function FDsMainWorkspace_onBuild(p){
 function FDsMainWorkspace_dispose(){
    var o = this;
    o.__base.FWorkspace.dispose.call(o);
-}
-function MDsBoundBox(o){
-   o = RClass.inherits(this, o);
-   o._boundBox    = null;
-   o.boundBox     = MDsBoundBox_boundBox;
-   o.showBoundBox = MDsBoundBox_showBoundBox;
-   o.hideBoundBox = MDsBoundBox_hideBoundBox;
-   return o;
-}
-function MDsBoundBox_boundBox(){
-   var o = this;
-   var b = o._boundBox;
-   if(!b){
-      b = o._boundBox = RClass.create(FE3dBoundBox);
-      b.linkGraphicContext(o);
-      b.setup();
-   }
-   return b;
-}
-function MDsBoundBox_showBoundBox(){
-   var o = this;
-   var b = o.boundBox();
-   b.remove();
-   var r = o.resource();
-   var rm = r.mesh();
-   var rl = rm.outline();
-   b.outline().assign(rl);
-   b.upload();
-   o._display.pushRenderable(b);
-}
-function MDsBoundBox_hideBoundBox(){
-   var o = this;
-   var b = o._boundBox;
-   if(b){
-      b.remove();
-   }
 }

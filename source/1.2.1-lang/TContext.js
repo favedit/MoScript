@@ -8,13 +8,14 @@
 // @author maocy
 // @version 141229
 //==========================================================
-function TContext(n, c, t){
+MO.TContext = function TContext(n, c, t){
    var o = this;
-   /// @attribute String 名称
+   //..........................................................
+   // @attribute String 名称
    o.name = n;
-   /// @attribute String 代码
+   // @attribute String 代码
    o.code = c;
-   /// @attribute String 内容
+   // @attribute String 内容
    o.text = t;
    return o;
 }

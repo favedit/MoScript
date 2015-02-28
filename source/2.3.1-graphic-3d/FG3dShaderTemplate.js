@@ -4,8 +4,8 @@
 // @author maocy
 // @history 150116
 //==========================================================
-function FG3dShaderTemplate(o){
-   o = RClass.inherits(this, o, FTagDocument);
+MO.Graphic3d.FG3dShaderTemplate = function FG3dShaderTemplate(o){
+   o = RClass.inherits(this, o, MO.FTagDocument);
    //..........................................................
    // @attribute
    o._space  = 'shader';

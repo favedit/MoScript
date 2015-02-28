@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //===========================================================
-var ENumber = new function ENumber(){
+MO.ENumber = new function ENumber(){
    var o = this;
    // @member 整数
    o.Integer              = 'I';

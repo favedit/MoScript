@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150107
 //==========================================================
-function FGraphicContext(o){
+MO.Graphic.FGraphicContext = function FGraphicContext(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
@@ -15,25 +15,25 @@ function FGraphicContext(o){
    o.linkCanvas = RMethod.virtual(o, 'linkCanvas');
    o.dispose    = FGraphicContext_dispose;
    return o;
-}
 
-//==========================================================
-// <T>构造处理。</T>
-//
-// @method
-//==========================================================
-function FGraphicContext_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-}
+   //==========================================================
+   // <T>构造处理。</T>
+   //
+   // @method
+   //==========================================================
+   function FGraphicContext_construct(){
+      var o = this;
+      o.__base.FObject.construct.call(o);
+   }
 
-//==========================================================
-// <T>释放处理。</T>
-//
-// @method
-//==========================================================
-function FGraphicContext_dispose(){
-   var o = this;
-   o._hCanvas = null;
-   o.__base.FObject.dispose.call(o);
+   //==========================================================
+   // <T>释放处理。</T>
+   //
+   // @method
+   //==========================================================
+   function FGraphicContext_dispose(){
+      var o = this;
+      o._hCanvas = null;
+      o.__base.FObject.dispose.call(o);
+   }
 }

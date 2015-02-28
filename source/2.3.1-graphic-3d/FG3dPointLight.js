@@ -4,7 +4,7 @@
 // @author maocy
 // @history 141230
 //==========================================================
-function FG3dPointLight(o){
+MO.Graphic3d.FG3dPointLight = function FG3dPointLight(o){
    o = RClass.inherits(this, o, FG3dLight);
    //..........................................................
    // @method

@@ -7,13 +7,13 @@
 // @author maocy
 // @version 141231
 //============================================================
-function AProperty(n, l){
+MO.AProperty = function AProperty(n, l){
    var o = this;
    AAnnotation.call(o, n);
    //..........................................................
    // @declare
    o._inherit      = true;
-   o._annotationCd = EAnnotation.Property;
+   o._annotationCd = MO.EAnnotation.Property;
    //..........................................................
    // @attribute
    o._linker       = null;
@@ -40,58 +40,58 @@ function AProperty(n, l){
    }
    o._linker = ln;
    return o;
-}
 
-//============================================================
-// <T>获得代码。</T>
-//
-// @method
-// @return String 代码
-//============================================================
-function AProperty_code(){
-   return this._linker;
-}
+   //============================================================
+   // <T>获得代码。</T>
+   //
+   // @method
+   // @return String 代码
+   //============================================================
+   function AProperty_code(){
+      return this._linker;
+   }
 
-//============================================================
-// <T>构建处理。</T>
-//
-// @method
-// @param v:value:Object 对象
-//============================================================
-function AProperty_build(){
-}
+   //============================================================
+   // <T>构建处理。</T>
+   //
+   // @method
+   // @param v:value:Object 对象
+   //============================================================
+   function AProperty_build(){
+   }
 
-//============================================================
-// <T>加载属性值。</T>
-//
-// @method
-// @param v:value:Object 对象
-// @param x:config:TNode 节点
-//============================================================
-function AProperty_load(v, x){
-   var o = this;
-   v[o._name] = x.get(o._linker);
-}
+   //============================================================
+   // <T>加载属性值。</T>
+   //
+   // @method
+   // @param v:value:Object 对象
+   // @param x:config:TNode 节点
+   //============================================================
+   function AProperty_load(v, x){
+      var o = this;
+      v[o._name] = x.get(o._linker);
+   }
 
-//============================================================
-// <T>存储属性值。</T>
-//
-// @method
-// @param v:value:Object 对象
-// @param x:config:TNode 节点
-//============================================================
-function AProperty_save(v, x){
-   var o = this;
-   x.set(o._linker, v[o._name]);
-}
+   //============================================================
+   // <T>存储属性值。</T>
+   //
+   // @method
+   // @param v:value:Object 对象
+   // @param x:config:TNode 节点
+   //============================================================
+   function AProperty_save(v, x){
+      var o = this;
+      x.set(o._linker, v[o._name]);
+   }
 
-//============================================================
-// <T>获得字符串。</T>
-//
-// @method
-// @return String 字符串
-//============================================================
-function AProperty_toString(){
-   var o = this;
-   return '<' + o._annotationCd + ',linker=' + o._linker + '>';
+   //============================================================
+   // <T>获得字符串。</T>
+   //
+   // @method
+   // @return String 字符串
+   //============================================================
+   function AProperty_toString(){
+      var o = this;
+      return '<' + o._annotationCd + ',linker=' + o._linker + '>';
+   }
 }

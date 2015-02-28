@@ -5,13 +5,13 @@
 // @author maocy
 // @version 150104
 //==========================================================
-function FHttpConnection(o){
-   o = RClass.inherits(this, o, FObject);
+MO.FHttpConnection = function FHttpConnection(o){
+   o = RClass.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
    o._asynchronous        = false;
-   o._methodCd            = EHttpMethod.Get;
-   o._contentCd           = EHttpContent.Binary;
+   o._methodCd            = MO.EHttpMethod.Get;
+   o._contentCd           = MO.EHttpContent.Binary;
    o._url                 = null;
    // @attribute
    o._input               = null;
@@ -43,185 +43,185 @@ function FHttpConnection(o){
    o.sendAsync            = FHttpConnection_sendAsync;
    o.send                 = FHttpConnection_send;
    return o;
-}
 
-//==========================================================
-// <T>响应链接发送处理。</T>
-//==========================================================
-function FHttpConnection_onConnectionSend(){
-   var o = this;
-   if(o._inputData){
-      o._contentLength = o._inputData.length;
+   //==========================================================
+   // <T>响应链接发送处理。</T>
+   //==========================================================
+   function FHttpConnection_onConnectionSend(){
+      var o = this;
+      if(o._inputData){
+         o._contentLength = o._inputData.length;
+      }
    }
-}
 
-//==========================================================
-// <T>响应链接准备处理。</T>
-//==========================================================
-function FHttpConnection_onConnectionReady(){
-   var o = this._linker;
-   if(o._asynchronous){
-      var c = o._connection;
-      if(c.readyState == EHttpStatus.Finish){
-         if(c.status == 200){
-            o.setOutputData();
-            o.onConnectionComplete();
-         }else{
-            throw new TError(o, 'Connection failure. (url={1})', o._url);
+   //==========================================================
+   // <T>响应链接准备处理。</T>
+   //==========================================================
+   function FHttpConnection_onConnectionReady(){
+      var o = this._linker;
+      if(o._asynchronous){
+         var c = o._connection;
+         if(c.readyState == EHttpStatus.Finish){
+            if(c.status == 200){
+               o.setOutputData();
+               o.onConnectionComplete();
+            }else{
+               throw new TError(o, 'Connection failure. (url={1})', o._url);
+            }
          }
       }
    }
-}
 
-//==========================================================
-// <T>响应链接完成处理。</T>
-//==========================================================
-function FHttpConnection_onConnectionComplete(){
-   var o = this;
-   o._statusFree = true;
-   // 完成处理
-   o.lsnsLoad.process(o);
-}
+   //==========================================================
+   // <T>响应链接完成处理。</T>
+   //==========================================================
+   function FHttpConnection_onConnectionComplete(){
+      var o = this;
+      o._statusFree = true;
+      // 完成处理
+      o.lsnsLoad.process(o);
+   }
 
-//==========================================================
-// <T>构造处理。</T>
-//==========================================================
-function FHttpConnection_construct(){
-   var o = this;
-   o.lsnsLoad = new TListeners();
-   var c = o._connection = RXml.createConnection();
-   c._linker = o;
-   c.onreadystatechange = o.onConnectionReady;
-}
+   //==========================================================
+   // <T>构造处理。</T>
+   //==========================================================
+   function FHttpConnection_construct(){
+      var o = this;
+      o.lsnsLoad = new TListeners();
+      var c = o._connection = RXml.createConnection();
+      c._linker = o;
+      c.onreadystatechange = o.onConnectionReady;
+   }
 
-//==========================================================
-// <T>设置头信息集合。</T>
-//==========================================================
-function FHttpConnection_setHeaders(){
-   var o = this;
-   var c = o._connection;
-   // 传输格式
-   if(o._contentCd == EHttpContent.Binary){
-      if(RBrowser.isBrowser(EBrowser.Chrome)){
-         c.overrideMimeType('text/plain; charset=x-user-defined');
-         if(o._asynchronous){
+   //==========================================================
+   // <T>设置头信息集合。</T>
+   //==========================================================
+   function FHttpConnection_setHeaders(){
+      var o = this;
+      var c = o._connection;
+      // 传输格式
+      if(o._contentCd == EHttpContent.Binary){
+         if(RBrowser.isBrowser(EBrowser.Chrome)){
+            c.overrideMimeType('text/plain; charset=x-user-defined');
+            if(o._asynchronous){
+               c.responseType = 'arraybuffer';
+            }
+         }else{
+            c.setRequestHeader('Accept-Charset', 'x-user-defined');
             c.responseType = 'arraybuffer';
          }
       }else{
-         c.setRequestHeader('Accept-Charset', 'x-user-defined');
-         c.responseType = 'arraybuffer';
+         c.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
       }
-   }else{
-      c.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
-   }
-   // 数据长度
-   if(!RBrowser.isBrowser(EBrowser.Chrome)){
-      if(o._contentLength > 0){
-         c.setRequestHeader('content-length', o._contentLength);
+      // 数据长度
+      if(!RBrowser.isBrowser(EBrowser.Chrome)){
+         if(o._contentLength > 0){
+            c.setRequestHeader('content-length', o._contentLength);
+         }
       }
    }
-}
 
-//==========================================================
-// <T>获得发送信息。</T>
-//
-// @param p:value:String 内容
-//==========================================================
-function FHttpConnection_inputData(){
-   return this._inputData;
-}
+   //==========================================================
+   // <T>获得发送信息。</T>
+   //
+   // @param p:value:String 内容
+   //==========================================================
+   function FHttpConnection_inputData(){
+      return this._inputData;
+   }
 
-//==========================================================
-// <T>设置发送信息。</T>
-//
-// @param p:value:String 内容
-//==========================================================
-function FHttpConnection_setInputData(p){
-   this._inputData = p;
-}
+   //==========================================================
+   // <T>设置发送信息。</T>
+   //
+   // @param p:value:String 内容
+   //==========================================================
+   function FHttpConnection_setInputData(p){
+      this._inputData = p;
+   }
 
-//==========================================================
-// <T>获得接收信息。</T>
-//
-// @param p:value:String 内容
-//==========================================================
-function FHttpConnection_outputData(){
-   return this._outputData;
-}
+   //==========================================================
+   // <T>获得接收信息。</T>
+   //
+   // @param p:value:String 内容
+   //==========================================================
+   function FHttpConnection_outputData(){
+      return this._outputData;
+   }
 
-//==========================================================
-// <T>设置接收信息。</T>
-//==========================================================
-function FHttpConnection_setOutputData(){
-   var o = this;
-   var c = o._connection;
-   // 传输格式
-   if(o._contentCd == EHttpContent.Binary){
-      if(RBrowser.isBrowser(EBrowser.Chrome)){
-         o._outputData = c.response;
+   //==========================================================
+   // <T>设置接收信息。</T>
+   //==========================================================
+   function FHttpConnection_setOutputData(){
+      var o = this;
+      var c = o._connection;
+      // 传输格式
+      if(o._contentCd == EHttpContent.Binary){
+         if(RBrowser.isBrowser(EBrowser.Chrome)){
+            o._outputData = c.response;
+         }else{
+            //o._outputData = c.responseBody.toArray();
+            o._outputData = c.response;
+         }
       }else{
-         //o._outputData = c.responseBody.toArray();
-         o._outputData = c.response;
+         o._outputData = c.responseText;
       }
-   }else{
-      o._outputData = c.responseText;
    }
-}
 
-//==========================================================
-// <T>获得内容。</T>
-//
-// @return Object 内容
-//==========================================================
-function FHttpConnection_content(){
-   return this._outputData;
-}
-
-//==========================================================
-// <T>同步发送页面请求。</T>
-//==========================================================
-function FHttpConnection_sendSync(){
-   var o = this;
-   var c = o._connection;
-   c.open(o._methodCd, o._url, false);
-   o.setHeaders(c, 0);
-   c.send(o._inputData);
-   o.setOutputData();
-   o.onConnectionComplete();
-   RLogger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
-}
-
-//==========================================================
-// <T>异步发送页面请求。</T>
-//==========================================================
-function FHttpConnection_sendAsync(){
-   var o = this;
-   var c = o._connection;
-   c.open(o._methodCd, o._url, true);
-   o.setHeaders(c, 0);
-   c.send(o._inputData);
-   RLogger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
-}
-
-//==========================================================
-// <T>发送页面请求。</T>
-//
-// @param p:url:String 页面地址
-//==========================================================
-function FHttpConnection_send(p, d){
-   var o = this;
-   // 设置参数
-   o._url = p;
-   o._input = d;
-   // 设置状态
-   o._methodCd = (d != null) ? EHttpMethod.Post : EHttpMethod.Get;
-   o._statusFree = false;
-   // 发送信息
-   o.onConnectionSend();
-   if(o._asynchronous){
-      o.sendAsync();
-   }else{
-      o.sendSync();
+   //==========================================================
+   // <T>获得内容。</T>
+   //
+   // @return Object 内容
+   //==========================================================
+   function FHttpConnection_content(){
+      return this._outputData;
    }
-   return o.content();
+
+   //==========================================================
+   // <T>同步发送页面请求。</T>
+   //==========================================================
+   function FHttpConnection_sendSync(){
+      var o = this;
+      var c = o._connection;
+      c.open(o._methodCd, o._url, false);
+      o.setHeaders(c, 0);
+      c.send(o._inputData);
+      o.setOutputData();
+      o.onConnectionComplete();
+      RLogger.info(this, 'Send http sync request. (method={1}, url={2})', o._methodCd, o._url);
+   }
+
+   //==========================================================
+   // <T>异步发送页面请求。</T>
+   //==========================================================
+   function FHttpConnection_sendAsync(){
+      var o = this;
+      var c = o._connection;
+      c.open(o._methodCd, o._url, true);
+      o.setHeaders(c, 0);
+      c.send(o._inputData);
+      RLogger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
+   }
+
+   //==========================================================
+   // <T>发送页面请求。</T>
+   //
+   // @param p:url:String 页面地址
+   //==========================================================
+   function FHttpConnection_send(p, d){
+      var o = this;
+      // 设置参数
+      o._url = p;
+      o._input = d;
+      // 设置状态
+      o._methodCd = (d != null) ? EHttpMethod.Post : EHttpMethod.Get;
+      o._statusFree = false;
+      // 发送信息
+      o.onConnectionSend();
+      if(o._asynchronous){
+         o.sendAsync();
+      }else{
+         o.sendSync();
+      }
+      return o.content();
+   }
 }

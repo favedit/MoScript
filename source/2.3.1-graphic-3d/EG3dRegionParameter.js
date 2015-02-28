@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150114
 //==========================================================
-var EG3dRegionParameter = new function EG3dRegionParameter(){
+MO.Graphic3d.EG3dRegionParameter = new function EG3dRegionParameter(){
    var o = this;
    o.Unknown                    = 0;
    o.CameraPosition             = 1;

@@ -5,6 +5,453 @@ var ESplitStyle = new function ESplitStyle(){
    o.HollowLine = 'H';
    return o;
 }
+function MUiShadow(o){
+   o = RClass.inherits(this, o);
+   o._hShadow   = null;
+   o.show       = MUiShadow_show;
+   o.hide       = MUiShadow_hide;
+   o.setVisible = MUiShadow_setVisible;
+   return o;
+}
+function MUiShadow_show(v){
+   var o = this;
+   if(!o._hShadow){
+      o._hShadow = RBuilder.createDiv(o._hPanel, 'RWindow_Shadow');
+   }
+   o._hShadow.style.zIndex = RUiLayer.next();
+   if(v == false){
+      o.hide();
+   }else{
+      var hs = o.panel(EPanel.Shadow);
+      if(hs){
+         var s = o._hShadow.style;
+         s.pixelLeft = hs.offsetLeft + 2;
+         s.pixelTop = hs.offsetTop + 2;
+         s.pixelWidth = hs.offsetWidth;
+         s.pixelHeight = hs.offsetHeight;
+         s.display = 'block';
+      }
+      var hp = o.panel(EPanel.Panel);
+      if(hp){
+         hp.style.zIndex = RUiLayer.next();
+      }
+   }
+}
+function MUiShadow_hide(){
+   var o = this;
+   if(o._hShadow){
+      o._hShadow.style.display = 'none';
+   }
+}
+function MUiShadow_setVisible(p){
+   var o = this;
+   if(p){
+      if(!o._hShadow){
+         o._hShadow = RBuilder.createDiv(o._hPanel, 'RWindow_Shadow');
+      }
+      o._hShadow.style.zIndex = RUiLayer.next();
+      var hs = o.panel(EPanel.Shadow);
+      if(hs){
+         var r = RHtml.rect(hs);
+         var s = o._hShadow.style;
+         s.pixelLeft = r.left + 2;
+         s.pixelTop = r.top + 2;
+         s.pixelWidth = r.width();
+         s.pixelHeight = r.height();
+         s.display = 'block';
+      }
+      var hp = o.panel(EPanel.Panel);
+      if(hp){
+         hp.style.zIndex = RUiLayer.next();
+      }
+   }else{
+      if(o._hShadow){
+         o._hShadow.style.display = 'none';
+      }
+   }
+}
+function SUiColorBar(){
+   var o = this;
+   o._draging          = false;
+   o.control           = null;
+   o.typeCd            = null;
+   o.minValue          = 0;
+   o.maxValue          = 1;
+   o.hPanel            = null;
+   o.hColorPanel       = null;
+   o.hColorImage       = null;
+   o.hSlidePanel       = null;
+   o.hSlideForm        = null;
+   o.hSlideRowUL       = null;
+   o.hSlideRowUM       = null;
+   o.hSlideRowUR       = null;
+   o.hSlideRowML       = null;
+   o.hSlideRowMM       = null;
+   o.hSlideRowMR       = null;
+   o.hSlideRowBL       = null;
+   o.hSlideRowBM       = null;
+   o.hSlideRowBR       = null;
+   o.hInputPanel       = null;
+   o.hInput            = null;
+   o.onMouseDown       = SUiColorBar_onMouseDown;
+   o.onMouseMove       = SUiColorBar_onMouseMove;
+   o.onMouseUp         = SUiColorBar_onMouseUp;
+   o.build             = SUiColorBar_build;
+   o.setRange          = SUiColorBar_setRange;
+   o.setColorValue     = SUiColorBar_setColorValue;
+   o.setSlideValue     = SUiColorBar_setSlideValue;
+   o.setInputValue     = SUiColorBar_setInputValue;
+   o.convertSlide      = SUiColorBar_convertSlide;
+   o.convertGet        = SUiColorBar_convertGet;
+   o.convertSet        = SUiColorBar_convertSet;
+   o.get               = SUiColorBar_get;
+   o.set               = SUiColorBar_set;
+   o.changeSlide       = SUiColorBar_changeSlide;
+   o.changeInputEdit   = SUiColorBar_changeInputEdit;
+   o.changeInputChange = SUiColorBar_changeInputChange;
+   return o;
+}
+function SUiColorBar_onMouseDown(p){
+   var o = this;
+   var x = RHtml.clientX(p.hSource, o.hSlideForm) + p.offsetX;
+   o._draging = true;
+   RWindow.setOptionSelect(false);
+   o.changeSlide(x);
+}
+function SUiColorBar_onMouseMove(p){
+   var o = this;
+   if(o._draging){
+      var x = RHtml.clientX(p.hSource, o.hSlideForm) + p.offsetX;
+      o.changeSlide(x);
+   }
+}
+function SUiColorBar_onMouseUp(p){
+   var o = this;
+   o._draging = false;
+   RWindow.setOptionSelect(true);
+}
+function SUiColorBar_build(p){
+   var o = this;
+   var c = o.control;
+   var hcf = o.hPanel;
+   var hr = RBuilder.appendTableRow(hcf);
+   var hc = o.hColorPanel = RBuilder.appendTableCell(hr);
+   hc.width = 13;
+   hc.style.padding = '2px';
+   o.hColorImage = RBuilder.appendIcon(hc, null, 'n', 11, 11);
+   var hc = o.hSlidePanel = RBuilder.appendTableCell(hr);
+   hc.style.padding = '2px';
+   hc.vAlign = 'middle';
+   var hf = o.hSlideForm = RBuilder.appendTable(hc);
+   hf.__pbar = o;
+   hf.width = '100%';
+   hf.style.height = '9px';
+   hf.style.cursor = 'pointer';
+   var hl = o.hSlideRowUp = RBuilder.appendTableRow(hf);
+   hl.style.height = '3px';
+   o.hSlideRowUL = RBuilder.appendTableCell(hl);
+   var hc = o.hSlideRowUM = RBuilder.appendTableCell(hl);
+   hc.width = 2;
+   hc.bgColor = '#EEEEEE';
+   var hc = o.hSlideRowUR = RBuilder.appendTableCell(hl);
+   var hl = o.hSlideRow = RBuilder.appendTableRow(hf);
+   hl.style.height = '3px';
+   var hc = o.hSlideRowML = RBuilder.appendTableCell(hl);
+   hc.bgColor = '#999999';
+   var hc = o.hSlideRowMM = RBuilder.appendTableCell(hl);
+   hc.width = 2;
+   hc.bgColor = '#EEEEEE';
+   var hc = o.hSlideRowMR = RBuilder.appendTableCell(hl);
+   hc.bgColor = '#999999';
+   var hl = o.hSlideRowDown = RBuilder.appendTableRow(hf);
+   hl.style.height = '3px';
+   o.hSlideRowBL = RBuilder.appendTableCell(hl);
+   var hc = o.hSlideRowBM = RBuilder.appendTableCell(hl);
+   hc.width = 2;
+   hc.bgColor = '#EEEEEE';
+   o.hSlideRowBR = RBuilder.appendTableCell(hl);
+   var hc = o.hInputPanel = RBuilder.appendTableCell(hr, o.control.styleName('InputPanel'));
+   hc.width = 36;
+   var he = o.hInput = RBuilder.appendEdit(hc, o.control.styleName('Input'));
+   he._pbar = o;
+   c.attachEvent('onInputKeyPress', he, c.onInputKeyPress);
+   c.attachEvent('onInputEdit', he, c.onInputEdit);
+   c.attachEvent('onInputChange', he, c.onInputChange);
+}
+function SUiColorBar_setRange(i, a){
+   var o = this;
+   if(i != null){
+      o.minValue = i;
+   }
+   if(a != null){
+      o.maxValue = a;
+   }
+}
+function SUiColorBar_setColorValue(p){
+   var o = this;
+   var v = RHex.format(p, 2);
+   var c = null;
+   switch(o.typeCd){
+      case 'red':
+         c = v + '0000';
+         break;
+      case 'green':
+         c = '00' + v + '00';
+         break;
+      case 'blue':
+         c = '0000' + v;
+         break;
+      default:
+         throw new TError(o, 'Invalid type.');
+   }
+   o.hColorImage.style.backgroundColor = '#' + c;
+}
+function SUiColorBar_setSlideValue(p){
+   var o = this;
+   var w = o.hSlideForm.offsetWidth;
+   if(w > 0){
+      var v = p / o.maxValue * w;
+      o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
+   }
+}
+function SUiColorBar_setInputValue(p){
+   this.hInput.value = p;
+}
+function SUiColorBar_convertGet(p){
+   return p;
+}
+function SUiColorBar_get(){
+   var o = this;
+   return o.convertGet(o.hInput.value);
+}
+function SUiColorBar_convertSet(p){
+   return p;
+}
+function SUiColorBar_set(p){
+   var o = this;
+   var v = o.convertSet(p);
+   o.setColorValue(v);
+   o.setSlideValue(v);
+   o.setInputValue(v);
+}
+function SUiColorBar_convertSlide(p){
+   return p;
+}
+function SUiColorBar_changeSlide(p){
+   var o = this;
+   var w = o.hSlideForm.offsetWidth - 3;
+   var v = o.convertSlide(p / w);
+   o.set(v);
+   o.control.refreshValue();
+}
+function SUiColorBar_changeInputEdit(){
+   var o = this;
+   var v = o.convertGet(o.hInput.value);
+   o.setColorValue(v);
+   o.setSlideValue(v);
+   o.control.refreshValue();
+}
+function SUiColorBar_changeInputChange(){
+   var o = this;
+   var v = o.convertGet(o.hInput.value);
+   o.set(v);
+   o.control.refreshValue();
+}
+function SUiColorChannel(){
+   var o = this;
+   SUiColorBar.call(o);
+   o.minValue      = 0;
+   o.maxValue      = 255;
+   o.setInputValue = SUiColorChannel_setInputValue;
+   o.convertGet    = SUiColorChannel_convertGet;
+   o.convertSet    = SUiColorChannel_convertSet;
+   return o;
+}
+function SUiColorChannel_setInputValue(p){
+   var o = this;
+   var v = RInteger.toRange(p, o.minValue, o.maxValue);
+   var t = RInteger.format(v);
+   var h = o.hInput;
+   if(h.value != t){
+      h.value = t;
+   }
+}
+function SUiColorChannel_convertGet(p){
+   var o = this;
+   var v = RInteger.parse(RString.nvl(p, '0'));
+   return RInteger.toRange(v, o.minValue, o.maxValue) / 255;
+}
+function SUiColorChannel_convertSet(p){
+   return parseInt(p * 255);
+}
+function SUiColorPower(){
+   var o = this;
+   SUiColorBar.call(o);
+   o.minValue      = 0;
+   o.maxValue      = 4;
+   o.setColorValue = SUiColorPower_setColorValue;
+   o.setSlideValue = SUiColorPower_setSlideValue;
+   o.setInputValue = SUiColorPower_setInputValue;
+   o.convertGet    = SUiColorPower_convertGet;
+   o.convertSet    = SUiColorPower_convertSet;
+   o.convertSlide  = SUiColorPower_convertSlide;
+   return o;
+}
+function SUiColorPower_setColorValue(p){
+   var o = this;
+   var v = RInteger.toRange(parseInt(p * 255), 0, 255);
+   var s = RHex.format(v, 2);
+   o.hColorImage.style.backgroundColor = '#' + s + s + s;
+}
+function SUiColorPower_setSlideValue(p){
+   var o = this;
+   var w = o.hSlideForm.offsetWidth;
+   if(w > 0){
+      var v = p / o.maxValue * w;
+      o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
+   }
+}
+function SUiColorPower_setInputValue(p){
+   var o = this;
+   var h = o.hInput;
+   var v = RFloat.toRange(p, o.minValue, o.maxValue);
+   var t = RFloat.format(v, 0, null, 2, null);
+   if(h.value != t){
+      h.value = t;
+   }
+}
+function SUiColorPower_convertGet(p){
+   return RFloat.parse(p);
+}
+function SUiColorPower_convertSet(p){
+   return p;
+}
+function SUiColorPower_convertSlide(p){
+   return p * this.maxValue;
+}
+function SUiSlide(){
+   var o = this;
+   o._draging      = false;
+   o.control       = null;
+   o.stepValue     = 1;
+   o.minValue      = 0;
+   o.maxValue      = 100;
+   o.range         = 100;
+   o.hPanel        = null;
+   o.hSlidePanel   = null;
+   o.hSlideForm    = null;
+   o.hSlideU       = null;
+   o.hSlideUL      = null;
+   o.hSlideUM      = null;
+   o.hSlideUR      = null;
+   o.hSlideM       = null;
+   o.hSlideML      = null;
+   o.hSlideMM      = null;
+   o.hSlideMR      = null;
+   o.hSlideB       = null;
+   o.hSlideBL      = null;
+   o.hSlideBM      = null;
+   o.hSlideBR      = null;
+   o.onMouseDown   = SUiSlide_onMouseDown;
+   o.onMouseMove   = SUiSlide_onMouseMove;
+   o.onMouseUp     = SUiSlide_onMouseUp;
+   o.onSlideChange = RMethod.empty;
+   o.build          = SUiSlide_build;
+   o.setRange       = SUiSlide_setRange;
+   o.setSlideValue  = SUiSlide_setSlideValue;
+   o.get            = SUiSlide_get;
+   o.set            = SUiSlide_set;
+   o.changeSlide    = SUiSlide_changeSlide;
+   return o;
+}
+function SUiSlide_onMouseDown(p){
+   var o = this;
+   var x = RHtml.clientX(p.hSource, o.hSlideForm) + p.offsetX;
+   o._draging = true;
+   RWindow.setOptionSelect(false);
+   o.changeSlide(x);
+}
+function SUiSlide_onMouseMove(p){
+   var o = this;
+   if(o._draging){
+      var x = RHtml.clientX(p.hSource, o.hSlideForm) + p.offsetX;
+      o.changeSlide(x);
+   }
+}
+function SUiSlide_onMouseUp(p){
+   var o = this;
+   o._draging = false;
+   RWindow.setOptionSelect(true);
+}
+function SUiSlide_build(p){
+   var o = this;
+   var c = o.control;
+   var hf = o.hSlideForm = RBuilder.appendTable(o.hPanel);
+   hf.__pcapture = o;
+   hf.width = '100%';
+   hf.style.height = '9px';
+   hf.style.cursor = 'pointer';
+   var hl = o.hSlideU = RBuilder.appendTableRow(hf);
+   hl.style.height = '3px';
+   o.hSlideUL = RBuilder.appendTableCell(hl);
+   var hc = o.hSlideUM = RBuilder.appendTableCell(hl);
+   hc.width = 2;
+   hc.bgColor = '#EEEEEE';
+   var hc = o.hSlideUR = RBuilder.appendTableCell(hl);
+   var hl = o.hSlideM = RBuilder.appendTableRow(hf);
+   hl.style.height = '3px';
+   var hc = o.hSlideML = RBuilder.appendTableCell(hl);
+   hc.bgColor = '#999999';
+   var hc = o.hSlideMM = RBuilder.appendTableCell(hl);
+   hc.width = 2;
+   hc.bgColor = '#EEEEEE';
+   var hc = o.hSlideMR = RBuilder.appendTableCell(hl);
+   hc.bgColor = '#999999';
+   var hl = o.hSlideB = RBuilder.appendTableRow(hf);
+   hl.style.height = '3px';
+   o.hSlideBL = RBuilder.appendTableCell(hl);
+   var hc = o.hSlideBM = RBuilder.appendTableCell(hl);
+   hc.width = 2;
+   hc.bgColor = '#EEEEEE';
+   o.hSlideBR = RBuilder.appendTableCell(hl);
+}
+function SUiSlide_setRange(i, a){
+   var o = this;
+   if(i != null){
+      o.minValue = RFloat.parse(i);
+   }
+   if(a != null){
+      o.maxValue = RFloat.parse(a);
+   }
+   o.range = o.maxValue - o.minValue;
+}
+function SUiSlide_setSlideValue(p){
+   var o = this;
+   var w = o.hSlideForm.offsetWidth;
+   if(w > 0){
+      var v = (p - o.minValue) / o.range * w;
+      o.hSlideML.width = RInteger.toRange(v, 1, w - 1);
+   }
+}
+function SUiSlide_get(){
+   var o = this;
+   var w = o.hSlideForm.offsetWidth - 3;
+   var v = (p / w) * o.range + o.minValue;
+   return v;
+}
+function SUiSlide_set(p){
+   var o = this;
+   o.setSlideValue(p);
+}
+function SUiSlide_changeSlide(p){
+   var o = this;
+   var c = o.control;
+   var w = o.hSlideForm.offsetWidth - 3;
+   o.hSlideML.width = RInteger.toRange(p, 1, w - 1);
+   var v = (p / w) * o.range + o.minValue;
+   v = RFloat.toRange(v, o.minValue, o.maxValue);
+   o.onSlideChange.call(c, v);
+}
 function FListItem(o){
    o = RClass.inherits(this, o, FControl, MDesign, MHorizontal);
    o.styleForm    = RClass.register(o, new TStyle('Form'));
@@ -6016,451 +6463,4 @@ function FUiSplit_dispose(){
    o.hText = null;
    o.hIcon = null;
    o.hImage = null;
-}
-function MUiShadow(o){
-   o = RClass.inherits(this, o);
-   o._hShadow   = null;
-   o.show       = MUiShadow_show;
-   o.hide       = MUiShadow_hide;
-   o.setVisible = MUiShadow_setVisible;
-   return o;
-}
-function MUiShadow_show(v){
-   var o = this;
-   if(!o._hShadow){
-      o._hShadow = RBuilder.createDiv(o._hPanel, 'RWindow_Shadow');
-   }
-   o._hShadow.style.zIndex = RUiLayer.next();
-   if(v == false){
-      o.hide();
-   }else{
-      var hs = o.panel(EPanel.Shadow);
-      if(hs){
-         var s = o._hShadow.style;
-         s.pixelLeft = hs.offsetLeft + 2;
-         s.pixelTop = hs.offsetTop + 2;
-         s.pixelWidth = hs.offsetWidth;
-         s.pixelHeight = hs.offsetHeight;
-         s.display = 'block';
-      }
-      var hp = o.panel(EPanel.Panel);
-      if(hp){
-         hp.style.zIndex = RUiLayer.next();
-      }
-   }
-}
-function MUiShadow_hide(){
-   var o = this;
-   if(o._hShadow){
-      o._hShadow.style.display = 'none';
-   }
-}
-function MUiShadow_setVisible(p){
-   var o = this;
-   if(p){
-      if(!o._hShadow){
-         o._hShadow = RBuilder.createDiv(o._hPanel, 'RWindow_Shadow');
-      }
-      o._hShadow.style.zIndex = RUiLayer.next();
-      var hs = o.panel(EPanel.Shadow);
-      if(hs){
-         var r = RHtml.rect(hs);
-         var s = o._hShadow.style;
-         s.pixelLeft = r.left + 2;
-         s.pixelTop = r.top + 2;
-         s.pixelWidth = r.width();
-         s.pixelHeight = r.height();
-         s.display = 'block';
-      }
-      var hp = o.panel(EPanel.Panel);
-      if(hp){
-         hp.style.zIndex = RUiLayer.next();
-      }
-   }else{
-      if(o._hShadow){
-         o._hShadow.style.display = 'none';
-      }
-   }
-}
-function SUiColorBar(){
-   var o = this;
-   o._draging          = false;
-   o.control           = null;
-   o.typeCd            = null;
-   o.minValue          = 0;
-   o.maxValue          = 1;
-   o.hPanel            = null;
-   o.hColorPanel       = null;
-   o.hColorImage       = null;
-   o.hSlidePanel       = null;
-   o.hSlideForm        = null;
-   o.hSlideRowUL       = null;
-   o.hSlideRowUM       = null;
-   o.hSlideRowUR       = null;
-   o.hSlideRowML       = null;
-   o.hSlideRowMM       = null;
-   o.hSlideRowMR       = null;
-   o.hSlideRowBL       = null;
-   o.hSlideRowBM       = null;
-   o.hSlideRowBR       = null;
-   o.hInputPanel       = null;
-   o.hInput            = null;
-   o.onMouseDown       = SUiColorBar_onMouseDown;
-   o.onMouseMove       = SUiColorBar_onMouseMove;
-   o.onMouseUp         = SUiColorBar_onMouseUp;
-   o.build             = SUiColorBar_build;
-   o.setRange          = SUiColorBar_setRange;
-   o.setColorValue     = SUiColorBar_setColorValue;
-   o.setSlideValue     = SUiColorBar_setSlideValue;
-   o.setInputValue     = SUiColorBar_setInputValue;
-   o.convertSlide      = SUiColorBar_convertSlide;
-   o.convertGet        = SUiColorBar_convertGet;
-   o.convertSet        = SUiColorBar_convertSet;
-   o.get               = SUiColorBar_get;
-   o.set               = SUiColorBar_set;
-   o.changeSlide       = SUiColorBar_changeSlide;
-   o.changeInputEdit   = SUiColorBar_changeInputEdit;
-   o.changeInputChange = SUiColorBar_changeInputChange;
-   return o;
-}
-function SUiColorBar_onMouseDown(p){
-   var o = this;
-   var x = RHtml.clientX(p.hSource, o.hSlideForm) + p.offsetX;
-   o._draging = true;
-   RWindow.setOptionSelect(false);
-   o.changeSlide(x);
-}
-function SUiColorBar_onMouseMove(p){
-   var o = this;
-   if(o._draging){
-      var x = RHtml.clientX(p.hSource, o.hSlideForm) + p.offsetX;
-      o.changeSlide(x);
-   }
-}
-function SUiColorBar_onMouseUp(p){
-   var o = this;
-   o._draging = false;
-   RWindow.setOptionSelect(true);
-}
-function SUiColorBar_build(p){
-   var o = this;
-   var c = o.control;
-   var hcf = o.hPanel;
-   var hr = RBuilder.appendTableRow(hcf);
-   var hc = o.hColorPanel = RBuilder.appendTableCell(hr);
-   hc.width = 13;
-   hc.style.padding = '2px';
-   o.hColorImage = RBuilder.appendIcon(hc, null, 'n', 11, 11);
-   var hc = o.hSlidePanel = RBuilder.appendTableCell(hr);
-   hc.style.padding = '2px';
-   hc.vAlign = 'middle';
-   var hf = o.hSlideForm = RBuilder.appendTable(hc);
-   hf.__pbar = o;
-   hf.width = '100%';
-   hf.style.height = '9px';
-   hf.style.cursor = 'pointer';
-   var hl = o.hSlideRowUp = RBuilder.appendTableRow(hf);
-   hl.style.height = '3px';
-   o.hSlideRowUL = RBuilder.appendTableCell(hl);
-   var hc = o.hSlideRowUM = RBuilder.appendTableCell(hl);
-   hc.width = 2;
-   hc.bgColor = '#EEEEEE';
-   var hc = o.hSlideRowUR = RBuilder.appendTableCell(hl);
-   var hl = o.hSlideRow = RBuilder.appendTableRow(hf);
-   hl.style.height = '3px';
-   var hc = o.hSlideRowML = RBuilder.appendTableCell(hl);
-   hc.bgColor = '#999999';
-   var hc = o.hSlideRowMM = RBuilder.appendTableCell(hl);
-   hc.width = 2;
-   hc.bgColor = '#EEEEEE';
-   var hc = o.hSlideRowMR = RBuilder.appendTableCell(hl);
-   hc.bgColor = '#999999';
-   var hl = o.hSlideRowDown = RBuilder.appendTableRow(hf);
-   hl.style.height = '3px';
-   o.hSlideRowBL = RBuilder.appendTableCell(hl);
-   var hc = o.hSlideRowBM = RBuilder.appendTableCell(hl);
-   hc.width = 2;
-   hc.bgColor = '#EEEEEE';
-   o.hSlideRowBR = RBuilder.appendTableCell(hl);
-   var hc = o.hInputPanel = RBuilder.appendTableCell(hr, o.control.styleName('InputPanel'));
-   hc.width = 36;
-   var he = o.hInput = RBuilder.appendEdit(hc, o.control.styleName('Input'));
-   he._pbar = o;
-   c.attachEvent('onInputKeyPress', he, c.onInputKeyPress);
-   c.attachEvent('onInputEdit', he, c.onInputEdit);
-   c.attachEvent('onInputChange', he, c.onInputChange);
-}
-function SUiColorBar_setRange(i, a){
-   var o = this;
-   if(i != null){
-      o.minValue = i;
-   }
-   if(a != null){
-      o.maxValue = a;
-   }
-}
-function SUiColorBar_setColorValue(p){
-   var o = this;
-   var v = RHex.format(p, 2);
-   var c = null;
-   switch(o.typeCd){
-      case 'red':
-         c = v + '0000';
-         break;
-      case 'green':
-         c = '00' + v + '00';
-         break;
-      case 'blue':
-         c = '0000' + v;
-         break;
-      default:
-         throw new TError(o, 'Invalid type.');
-   }
-   o.hColorImage.style.backgroundColor = '#' + c;
-}
-function SUiColorBar_setSlideValue(p){
-   var o = this;
-   var w = o.hSlideForm.offsetWidth;
-   if(w > 0){
-      var v = p / o.maxValue * w;
-      o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
-   }
-}
-function SUiColorBar_setInputValue(p){
-   this.hInput.value = p;
-}
-function SUiColorBar_convertGet(p){
-   return p;
-}
-function SUiColorBar_get(){
-   var o = this;
-   return o.convertGet(o.hInput.value);
-}
-function SUiColorBar_convertSet(p){
-   return p;
-}
-function SUiColorBar_set(p){
-   var o = this;
-   var v = o.convertSet(p);
-   o.setColorValue(v);
-   o.setSlideValue(v);
-   o.setInputValue(v);
-}
-function SUiColorBar_convertSlide(p){
-   return p;
-}
-function SUiColorBar_changeSlide(p){
-   var o = this;
-   var w = o.hSlideForm.offsetWidth - 3;
-   var v = o.convertSlide(p / w);
-   o.set(v);
-   o.control.refreshValue();
-}
-function SUiColorBar_changeInputEdit(){
-   var o = this;
-   var v = o.convertGet(o.hInput.value);
-   o.setColorValue(v);
-   o.setSlideValue(v);
-   o.control.refreshValue();
-}
-function SUiColorBar_changeInputChange(){
-   var o = this;
-   var v = o.convertGet(o.hInput.value);
-   o.set(v);
-   o.control.refreshValue();
-}
-function SUiColorChannel(){
-   var o = this;
-   SUiColorBar.call(o);
-   o.minValue      = 0;
-   o.maxValue      = 255;
-   o.setInputValue = SUiColorChannel_setInputValue;
-   o.convertGet    = SUiColorChannel_convertGet;
-   o.convertSet    = SUiColorChannel_convertSet;
-   return o;
-}
-function SUiColorChannel_setInputValue(p){
-   var o = this;
-   var v = RInteger.toRange(p, o.minValue, o.maxValue);
-   var t = RInteger.format(v);
-   var h = o.hInput;
-   if(h.value != t){
-      h.value = t;
-   }
-}
-function SUiColorChannel_convertGet(p){
-   var o = this;
-   var v = RInteger.parse(RString.nvl(p, '0'));
-   return RInteger.toRange(v, o.minValue, o.maxValue) / 255;
-}
-function SUiColorChannel_convertSet(p){
-   return parseInt(p * 255);
-}
-function SUiColorPower(){
-   var o = this;
-   SUiColorBar.call(o);
-   o.minValue      = 0;
-   o.maxValue      = 4;
-   o.setColorValue = SUiColorPower_setColorValue;
-   o.setSlideValue = SUiColorPower_setSlideValue;
-   o.setInputValue = SUiColorPower_setInputValue;
-   o.convertGet    = SUiColorPower_convertGet;
-   o.convertSet    = SUiColorPower_convertSet;
-   o.convertSlide  = SUiColorPower_convertSlide;
-   return o;
-}
-function SUiColorPower_setColorValue(p){
-   var o = this;
-   var v = RInteger.toRange(parseInt(p * 255), 0, 255);
-   var s = RHex.format(v, 2);
-   o.hColorImage.style.backgroundColor = '#' + s + s + s;
-}
-function SUiColorPower_setSlideValue(p){
-   var o = this;
-   var w = o.hSlideForm.offsetWidth;
-   if(w > 0){
-      var v = p / o.maxValue * w;
-      o.hSlideRowML.width = RInteger.toRange(v, 1, w - 1);
-   }
-}
-function SUiColorPower_setInputValue(p){
-   var o = this;
-   var h = o.hInput;
-   var v = RFloat.toRange(p, o.minValue, o.maxValue);
-   var t = RFloat.format(v, 0, null, 2, null);
-   if(h.value != t){
-      h.value = t;
-   }
-}
-function SUiColorPower_convertGet(p){
-   return RFloat.parse(p);
-}
-function SUiColorPower_convertSet(p){
-   return p;
-}
-function SUiColorPower_convertSlide(p){
-   return p * this.maxValue;
-}
-function SUiSlide(){
-   var o = this;
-   o._draging      = false;
-   o.control       = null;
-   o.stepValue     = 1;
-   o.minValue      = 0;
-   o.maxValue      = 100;
-   o.range         = 100;
-   o.hPanel        = null;
-   o.hSlidePanel   = null;
-   o.hSlideForm    = null;
-   o.hSlideU       = null;
-   o.hSlideUL      = null;
-   o.hSlideUM      = null;
-   o.hSlideUR      = null;
-   o.hSlideM       = null;
-   o.hSlideML      = null;
-   o.hSlideMM      = null;
-   o.hSlideMR      = null;
-   o.hSlideB       = null;
-   o.hSlideBL      = null;
-   o.hSlideBM      = null;
-   o.hSlideBR      = null;
-   o.onMouseDown   = SUiSlide_onMouseDown;
-   o.onMouseMove   = SUiSlide_onMouseMove;
-   o.onMouseUp     = SUiSlide_onMouseUp;
-   o.onSlideChange = RMethod.empty;
-   o.build          = SUiSlide_build;
-   o.setRange       = SUiSlide_setRange;
-   o.setSlideValue  = SUiSlide_setSlideValue;
-   o.get            = SUiSlide_get;
-   o.set            = SUiSlide_set;
-   o.changeSlide    = SUiSlide_changeSlide;
-   return o;
-}
-function SUiSlide_onMouseDown(p){
-   var o = this;
-   var x = RHtml.clientX(p.hSource, o.hSlideForm) + p.offsetX;
-   o._draging = true;
-   RWindow.setOptionSelect(false);
-   o.changeSlide(x);
-}
-function SUiSlide_onMouseMove(p){
-   var o = this;
-   if(o._draging){
-      var x = RHtml.clientX(p.hSource, o.hSlideForm) + p.offsetX;
-      o.changeSlide(x);
-   }
-}
-function SUiSlide_onMouseUp(p){
-   var o = this;
-   o._draging = false;
-   RWindow.setOptionSelect(true);
-}
-function SUiSlide_build(p){
-   var o = this;
-   var c = o.control;
-   var hf = o.hSlideForm = RBuilder.appendTable(o.hPanel);
-   hf.__pcapture = o;
-   hf.width = '100%';
-   hf.style.height = '9px';
-   hf.style.cursor = 'pointer';
-   var hl = o.hSlideU = RBuilder.appendTableRow(hf);
-   hl.style.height = '3px';
-   o.hSlideUL = RBuilder.appendTableCell(hl);
-   var hc = o.hSlideUM = RBuilder.appendTableCell(hl);
-   hc.width = 2;
-   hc.bgColor = '#EEEEEE';
-   var hc = o.hSlideUR = RBuilder.appendTableCell(hl);
-   var hl = o.hSlideM = RBuilder.appendTableRow(hf);
-   hl.style.height = '3px';
-   var hc = o.hSlideML = RBuilder.appendTableCell(hl);
-   hc.bgColor = '#999999';
-   var hc = o.hSlideMM = RBuilder.appendTableCell(hl);
-   hc.width = 2;
-   hc.bgColor = '#EEEEEE';
-   var hc = o.hSlideMR = RBuilder.appendTableCell(hl);
-   hc.bgColor = '#999999';
-   var hl = o.hSlideB = RBuilder.appendTableRow(hf);
-   hl.style.height = '3px';
-   o.hSlideBL = RBuilder.appendTableCell(hl);
-   var hc = o.hSlideBM = RBuilder.appendTableCell(hl);
-   hc.width = 2;
-   hc.bgColor = '#EEEEEE';
-   o.hSlideBR = RBuilder.appendTableCell(hl);
-}
-function SUiSlide_setRange(i, a){
-   var o = this;
-   if(i != null){
-      o.minValue = RFloat.parse(i);
-   }
-   if(a != null){
-      o.maxValue = RFloat.parse(a);
-   }
-   o.range = o.maxValue - o.minValue;
-}
-function SUiSlide_setSlideValue(p){
-   var o = this;
-   var w = o.hSlideForm.offsetWidth;
-   if(w > 0){
-      var v = (p - o.minValue) / o.range * w;
-      o.hSlideML.width = RInteger.toRange(v, 1, w - 1);
-   }
-}
-function SUiSlide_get(){
-   var o = this;
-   var w = o.hSlideForm.offsetWidth - 3;
-   var v = (p / w) * o.range + o.minValue;
-   return v;
-}
-function SUiSlide_set(p){
-   var o = this;
-   o.setSlideValue(p);
-}
-function SUiSlide_changeSlide(p){
-   var o = this;
-   var c = o.control;
-   var w = o.hSlideForm.offsetWidth - 3;
-   o.hSlideML.width = RInteger.toRange(p, 1, w - 1);
-   var v = (p / w) * o.range + o.minValue;
-   v = RFloat.toRange(v, o.minValue, o.maxValue);
-   o.onSlideChange.call(c, v);
 }

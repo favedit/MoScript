@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150213
 //==========================================================
-var EDevice = new function EDevice(){
+MO.EDevice = new function EDevice(){
    var o = this;
    // @member
    o.Unknown = 0;

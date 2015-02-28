@@ -6,25 +6,25 @@
 // @author maocy
 // @version 150119
 //==========================================================
-function AEventKeyDown(n){
+MO.AEventKeyDown = function AEventKeyDown(n){
    var o = this;
-   AEvent.call(o, n, 'keydown', 'onkeydown');
+   MO.AEvent.call(o, n, 'keydown', 'onkeydown');
    //..........................................................
    // @method
    o.attach = AEventKeyDown_attach;
    return o;
-}
 
-//==========================================================
-// <T>接收事件信息。</T>
-//
-// @method
-// @param e:event:Event 事件
-// @param h:htmlEvent:HtmlEvent 页面事件
-//==========================================================
-function AEventKeyDown_attach(e, h){
-   e.altKey = h.altKey;
-   e.shiftKey = h.shiftKey;
-   e.ctrlKey = h.ctrlKey;
-   e.keyCode = h.keyCode;
+   //==========================================================
+   // <T>接收事件信息。</T>
+   //
+   // @method
+   // @param e:event:Event 事件
+   // @param h:htmlEvent:HtmlEvent 页面事件
+   //==========================================================
+   function AEventKeyDown_attach(e, h){
+      e.altKey = h.altKey;
+      e.shiftKey = h.shiftKey;
+      e.ctrlKey = h.ctrlKey;
+      e.keyCode = h.keyCode;
+   }
 }

@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150107
 //==========================================================
-function FG3dLightMaterial(o){
-   o = RClass.inherits(this, o, FG3dBaseMaterial);
+MO.Graphic3d.FG3dLightMaterial = function FG3dLightMaterial(o){
+   o = RClass.inherits(this, o, MO.Graphic3d.FG3dBaseMaterial);
    return o;
 }

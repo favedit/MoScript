@@ -6,21 +6,21 @@
 // @author maocy
 // @version 150119
 //==========================================================
-function AEventReadyStateChange(n){
+MO.AEventReadyStateChange = function AEventReadyStateChange(n){
    var o = this;
-   AEvent.call(o, n, 'readystatechange', 'onreadystatechange');
+   MO.AEvent.call(o, n, 'readystatechange', 'onreadystatechange');
    //..........................................................
    // @method
    o.attach = AEventReadyStateChange_attach;
    return o;
-}
 
-//==========================================================
-// <T>接收事件信息。</T>
-//
-// @method
-// @param e:event:Event 事件
-// @param h:htmlEvent:HtmlEvent 页面事件
-//==========================================================
-function AEventReadyStateChange_attach(e, h){
+   //==========================================================
+   // <T>接收事件信息。</T>
+   //
+   // @method
+   // @param e:event:Event 事件
+   // @param h:htmlEvent:HtmlEvent 页面事件
+   //==========================================================
+   function AEventReadyStateChange_attach(e, h){
+   }
 }

@@ -5,8 +5,8 @@
 // @author maocy
 // @history 141230
 //==========================================================
-function FG3dVertexBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject);
+MO.Graphic3d.FG3dVertexBuffer = function FG3dVertexBuffer(o){
+   o = RClass.inherits(this, o, MO.Graphic3d.FG3dObject);
    //..........................................................
    // @attribute
    o._name     = 0;
@@ -18,13 +18,13 @@ function FG3dVertexBuffer(o){
    o.name   = FG3dVertexBuffer_name;
    o.upload = RMethod.virtual(o, 'upload');
    return o;
-}
 
-//==========================================================
-// <T>获得名称。</T>
-//
-// @return 名称
-//==========================================================
-function FG3dVertexBuffer_name(){
-   return this._name;
+   //==========================================================
+   // <T>获得名称。</T>
+   //
+   // @return 名称
+   //==========================================================
+   function FG3dVertexBuffer_name(){
+      return this._name;
+   }
 }

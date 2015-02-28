@@ -5,7 +5,7 @@
 // @history 150121
 //==========================================================
 function FDsSceneWorkspace(o){
-   o = RClass.inherits(this, o, FUiWorkspace);
+   o = MO.RClass.inherits(this, o, FUiWorkspace);
    //..........................................................
    // @property
    o._frameName            = 'design3d.scene.Workspace';

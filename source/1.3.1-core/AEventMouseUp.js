@@ -6,8 +6,8 @@
 // @author maocy
 // @version 150119
 //==========================================================
-function AEventMouseUp(n){
+MO.AEventMouseUp = function AEventMouseUp(n){
    var o = this;
-   AEventMouse.call(o, n, 'mouseup', 'onmouseup');
+   MO.AEventMouse.call(o, n, 'mouseup', 'onmouseup');
    return o;
 }

@@ -5,8 +5,8 @@
 // @author maocy
 // @version 150124
 //==========================================================
-function SArguments(o){
-   if(!o){o = this;}
+MO.SArguments = function SArguments(){
+   var o = this;
    //..........................................................
    // @attribute
    o.owner = null;

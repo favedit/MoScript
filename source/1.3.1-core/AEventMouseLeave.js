@@ -6,9 +6,9 @@
 // @author maocy
 // @version 150119
 //==========================================================
-function AEventMouseLeave(n){
+MO.AEventMouseLeave = function AEventMouseLeave(n){
    var o = this;
-   AEvent.call(o, n, 'mouseleave', 'onmouseleave');
+   MO.AEvent.call(o, n, 'mouseleave', 'onmouseleave');
    //..........................................................
    // @attribute
    o._logger = false;
@@ -16,14 +16,14 @@ function AEventMouseLeave(n){
    // @method
    o.attach  = AEventMouseLeave_attach;
    return o;
-}
 
-//==========================================================
-// <T>接收事件信息。</T>
-//
-// @method
-// @param e:event:Event 事件
-// @param h:htmlEvent:HtmlEvent 页面事件
-//==========================================================
-function AEventMouseLeave_attach(e, h){
+   //==========================================================
+   // <T>接收事件信息。</T>
+   //
+   // @method
+   // @param e:event:Event 事件
+   // @param h:htmlEvent:HtmlEvent 页面事件
+   //==========================================================
+   function AEventMouseLeave_attach(e, h){
+   }
 }

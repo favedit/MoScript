@@ -7,12 +7,12 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function AEnum(n, l){
+MO.AEnum = function AEnum(n, l){
    var o = this;
    //..........................................................
    // @declare
    o.inherit    = true;
-   o.annotation = EAnnotation.Enum;
+   o.annotation = MO.EAnnotation.Enum;
    //..........................................................
    // @attribute
    o.name       = n;

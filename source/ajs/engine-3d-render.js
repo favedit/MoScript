@@ -1,3 +1,43 @@
+function SRd3PlayInfo(o){
+   if(!o){o = this;}
+   o.tick         = 0;
+   o.playRate     = 1.0;
+   o.currentFrame = null;
+   o.nextFrame    = null;
+   o.rate         = 1.0;
+   o.alpha        = 1.0;
+   o.translation  = new SPoint3();
+   o.quaternion   = new SQuaternion();
+   o.scale        = new SVector3();
+   o.matrix       = new SMatrix3d();
+   o.update       = SRd3PlayInfo_update;
+   return o;
+}
+function SRd3PlayInfo_update(){
+   var o = this;
+   var cf = o.currentFrame;
+   if(cf == null){
+      return false;
+   }
+   var nf = o.nextFrame;
+   if(nf == null){
+      return false;
+   }
+   var m = o.matrix;
+   var ct = cf.translation();
+   var cr = cf.quaternion();
+   var cs = cf.scale();
+   var r = o.rate;
+   if((r > 0) && (r < 1)){
+      o.translation.slerp(ct, nf.translation(), r);
+      o.quaternion.slerp(cr, nf.quaternion(), r);
+      o.scale.slerp(cs, nf.scale(), r);
+      m.build(o.translation, o.quaternion, o.scale);
+   }else{
+      m.build(ct, cr, cs);
+   }
+   return true;
+}
 function FRd3Animation(o){
    o = RClass.inherits(this, o, FObject);
    o._baseTick    = 0;
@@ -892,44 +932,4 @@ function FRd3Track_dispose(){
    var o = this;
    o._resource = null;
    o.__base.FG3dTrack.dispose.call(o);
-}
-function SRd3PlayInfo(o){
-   if(!o){o = this;}
-   o.tick         = 0;
-   o.playRate     = 1.0;
-   o.currentFrame = null;
-   o.nextFrame    = null;
-   o.rate         = 1.0;
-   o.alpha        = 1.0;
-   o.translation  = new SPoint3();
-   o.quaternion   = new SQuaternion();
-   o.scale        = new SVector3();
-   o.matrix       = new SMatrix3d();
-   o.update       = SRd3PlayInfo_update;
-   return o;
-}
-function SRd3PlayInfo_update(){
-   var o = this;
-   var cf = o.currentFrame;
-   if(cf == null){
-      return false;
-   }
-   var nf = o.nextFrame;
-   if(nf == null){
-      return false;
-   }
-   var m = o.matrix;
-   var ct = cf.translation();
-   var cr = cf.quaternion();
-   var cs = cf.scale();
-   var r = o.rate;
-   if((r > 0) && (r < 1)){
-      o.translation.slerp(ct, nf.translation(), r);
-      o.quaternion.slerp(cr, nf.quaternion(), r);
-      o.scale.slerp(cs, nf.scale(), r);
-      m.build(o.translation, o.quaternion, o.scale);
-   }else{
-      m.build(ct, cr, cs);
-   }
-   return true;
 }

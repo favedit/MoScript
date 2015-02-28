@@ -1,3 +1,12 @@
+var MO.Engine = new function EngineSpace(){
+   return this;
+}
+var MO.Engine2d = new function Engine2dSpace(){
+   return this;
+}
+var MO.Engine3d = new function Engine3dSpace(){
+   return this;
+}
 function FDisplay(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
    o._parent           = null;
@@ -755,6 +764,95 @@ function RE3dEngine_setup(){
       o.onSetup();
       o._setuped = true;
    }
+}
+function SRs3MaterialInfo(o){
+   if(!o){o = this;}
+   SG3dMaterialInfo(o);
+   o.unserialize = SRs3MaterialInfo_unserialize;
+   o.saveConfig  = SRs3MaterialInfo_saveConfig;
+   return o;
+}
+function SRs3MaterialInfo_unserialize(p){
+   var o = this;
+   o.effectCode = p.readString();
+   o.optionDepth = p.readBoolean();
+   o.optionAlpha = p.readBoolean();
+   o.optionDouble = p.readBoolean();
+   o.optionView = p.readBoolean();
+   o.optionNormalInvert = p.readBoolean();
+   o.optionShadow = p.readBoolean();
+   o.optionShadowSelf = p.readBoolean();
+   o.alphaBase = p.readFloat();
+   o.alphaRate = p.readFloat();
+   o.colorMin = p.readFloat();
+   o.colorMax = p.readFloat();
+   o.colorRate = p.readFloat();
+   o.colorMerge = p.readFloat();
+   o.ambientColor.unserialize(p);
+   o.diffuseColor.unserialize(p);
+   o.diffuseViewColor.unserialize(p);
+   o.specularColor.unserialize(p);
+   o.specularBase = p.readFloat();
+   o.specularLevel = p.readFloat();
+   o.specularViewColor.unserialize(p);
+   o.specularViewBase = p.readFloat();
+   o.specularViewLevel = p.readFloat();
+   o.reflectColor.unserialize(p);
+   o.reflectMerge = p.readFloat();
+   o.refractFrontColor.unserialize(p);
+   o.refractBackColor.unserialize(p);
+   o.emissiveColor.unserialize(p);
+}
+function SRs3MaterialInfo_saveConfig(p){
+   var o = this;
+   p.set('effect_code', o.effectCode);
+   p.setBoolean('option_alpha', o.optionAlpha);
+   p.setBoolean('option_double', o.optionDouble);
+   p.setBoolean('option_view', o.optionView);
+   p.setBoolean('option_normal_invert', o.optionNormalInvert);
+   p.setBoolean('option_shadow', o.optionShadow);
+   p.setBoolean('option_shadow_self', o.optionShadowSelf);
+   var x = p.create('Alpha');
+   x.setFloat('base', o.alphaBase);
+   x.setFloat('rate', o.alphaRate);
+   var x = p.create('Color');
+   x.setFloat('min', o.colorMin);
+   x.setFloat('max', o.colorMax);
+   x.setFloat('rate', o.colorRate);
+   x.setFloat('merge', o.colorMerge);
+   o.ambientColor.savePower(p.create('Ambient'));
+   o.diffuseColor.savePower(p.create('Diffuse'));
+   o.diffuseViewColor.savePower(p.create('DiffuseView'));
+   var x = p.create('Specular');
+   o.specularColor.savePower(x);
+   x.setFloat('base', o.specularBase);
+   x.setFloat('level', o.specularLevel);
+   var x = p.create('SpecularView');
+   o.specularViewColor.savePower(x);
+   x.setFloat('base', o.specularViewBase);
+   x.setFloat('level', o.specularViewLevel);
+   var x = p.create('Reflect');
+   o.reflectColor.savePower(x);
+   x.setFloat('merge', o.reflectMerge);
+   o.refractFrontColor.savePower(p.create('RefractFront'));
+   o.refractBackColor.savePower(p.create('RefractBack'));
+   o.emissiveColor.savePower(p.create('Emissive'));
+}
+function SRs3SceneShadow(o){
+   if(!o){o = this;}
+   o.base        = null;
+   o.rate        = null;
+   o.level       = null;
+   o.range       = null;
+   o.unserialize = SRs3SceneShadow_unserialize;
+   return o;
+}
+function SRs3SceneShadow_unserialize(p){
+   var o = this;
+   o.base = p.readFloat();
+   o.rate = p.readFloat();
+   o.level = p.readFloat();
+   o.range = p.readFloat();
 }
 function FRs3Animation(o){
    o = RClass.inherits(this, o, FRs3Object);
@@ -2450,94 +2548,45 @@ function FRs3Track_unserialize(p){
       }
    }
 }
-function SRs3MaterialInfo(o){
+function SRd3PlayInfo(o){
    if(!o){o = this;}
-   SG3dMaterialInfo(o);
-   o.unserialize = SRs3MaterialInfo_unserialize;
-   o.saveConfig  = SRs3MaterialInfo_saveConfig;
+   o.tick         = 0;
+   o.playRate     = 1.0;
+   o.currentFrame = null;
+   o.nextFrame    = null;
+   o.rate         = 1.0;
+   o.alpha        = 1.0;
+   o.translation  = new SPoint3();
+   o.quaternion   = new SQuaternion();
+   o.scale        = new SVector3();
+   o.matrix       = new SMatrix3d();
+   o.update       = SRd3PlayInfo_update;
    return o;
 }
-function SRs3MaterialInfo_unserialize(p){
+function SRd3PlayInfo_update(){
    var o = this;
-   o.effectCode = p.readString();
-   o.optionDepth = p.readBoolean();
-   o.optionAlpha = p.readBoolean();
-   o.optionDouble = p.readBoolean();
-   o.optionView = p.readBoolean();
-   o.optionNormalInvert = p.readBoolean();
-   o.optionShadow = p.readBoolean();
-   o.optionShadowSelf = p.readBoolean();
-   o.alphaBase = p.readFloat();
-   o.alphaRate = p.readFloat();
-   o.colorMin = p.readFloat();
-   o.colorMax = p.readFloat();
-   o.colorRate = p.readFloat();
-   o.colorMerge = p.readFloat();
-   o.ambientColor.unserialize(p);
-   o.diffuseColor.unserialize(p);
-   o.diffuseViewColor.unserialize(p);
-   o.specularColor.unserialize(p);
-   o.specularBase = p.readFloat();
-   o.specularLevel = p.readFloat();
-   o.specularViewColor.unserialize(p);
-   o.specularViewBase = p.readFloat();
-   o.specularViewLevel = p.readFloat();
-   o.reflectColor.unserialize(p);
-   o.reflectMerge = p.readFloat();
-   o.refractFrontColor.unserialize(p);
-   o.refractBackColor.unserialize(p);
-   o.emissiveColor.unserialize(p);
-}
-function SRs3MaterialInfo_saveConfig(p){
-   var o = this;
-   p.set('effect_code', o.effectCode);
-   p.setBoolean('option_alpha', o.optionAlpha);
-   p.setBoolean('option_double', o.optionDouble);
-   p.setBoolean('option_view', o.optionView);
-   p.setBoolean('option_normal_invert', o.optionNormalInvert);
-   p.setBoolean('option_shadow', o.optionShadow);
-   p.setBoolean('option_shadow_self', o.optionShadowSelf);
-   var x = p.create('Alpha');
-   x.setFloat('base', o.alphaBase);
-   x.setFloat('rate', o.alphaRate);
-   var x = p.create('Color');
-   x.setFloat('min', o.colorMin);
-   x.setFloat('max', o.colorMax);
-   x.setFloat('rate', o.colorRate);
-   x.setFloat('merge', o.colorMerge);
-   o.ambientColor.savePower(p.create('Ambient'));
-   o.diffuseColor.savePower(p.create('Diffuse'));
-   o.diffuseViewColor.savePower(p.create('DiffuseView'));
-   var x = p.create('Specular');
-   o.specularColor.savePower(x);
-   x.setFloat('base', o.specularBase);
-   x.setFloat('level', o.specularLevel);
-   var x = p.create('SpecularView');
-   o.specularViewColor.savePower(x);
-   x.setFloat('base', o.specularViewBase);
-   x.setFloat('level', o.specularViewLevel);
-   var x = p.create('Reflect');
-   o.reflectColor.savePower(x);
-   x.setFloat('merge', o.reflectMerge);
-   o.refractFrontColor.savePower(p.create('RefractFront'));
-   o.refractBackColor.savePower(p.create('RefractBack'));
-   o.emissiveColor.savePower(p.create('Emissive'));
-}
-function SRs3SceneShadow(o){
-   if(!o){o = this;}
-   o.base        = null;
-   o.rate        = null;
-   o.level       = null;
-   o.range       = null;
-   o.unserialize = SRs3SceneShadow_unserialize;
-   return o;
-}
-function SRs3SceneShadow_unserialize(p){
-   var o = this;
-   o.base = p.readFloat();
-   o.rate = p.readFloat();
-   o.level = p.readFloat();
-   o.range = p.readFloat();
+   var cf = o.currentFrame;
+   if(cf == null){
+      return false;
+   }
+   var nf = o.nextFrame;
+   if(nf == null){
+      return false;
+   }
+   var m = o.matrix;
+   var ct = cf.translation();
+   var cr = cf.quaternion();
+   var cs = cf.scale();
+   var r = o.rate;
+   if((r > 0) && (r < 1)){
+      o.translation.slerp(ct, nf.translation(), r);
+      o.quaternion.slerp(cr, nf.quaternion(), r);
+      o.scale.slerp(cs, nf.scale(), r);
+      m.build(o.translation, o.quaternion, o.scale);
+   }else{
+      m.build(ct, cr, cs);
+   }
+   return true;
 }
 function FRd3Animation(o){
    o = RClass.inherits(this, o, FObject);
@@ -3433,46 +3482,6 @@ function FRd3Track_dispose(){
    var o = this;
    o._resource = null;
    o.__base.FG3dTrack.dispose.call(o);
-}
-function SRd3PlayInfo(o){
-   if(!o){o = this;}
-   o.tick         = 0;
-   o.playRate     = 1.0;
-   o.currentFrame = null;
-   o.nextFrame    = null;
-   o.rate         = 1.0;
-   o.alpha        = 1.0;
-   o.translation  = new SPoint3();
-   o.quaternion   = new SQuaternion();
-   o.scale        = new SVector3();
-   o.matrix       = new SMatrix3d();
-   o.update       = SRd3PlayInfo_update;
-   return o;
-}
-function SRd3PlayInfo_update(){
-   var o = this;
-   var cf = o.currentFrame;
-   if(cf == null){
-      return false;
-   }
-   var nf = o.nextFrame;
-   if(nf == null){
-      return false;
-   }
-   var m = o.matrix;
-   var ct = cf.translation();
-   var cr = cf.quaternion();
-   var cs = cf.scale();
-   var r = o.rate;
-   if((r > 0) && (r < 1)){
-      o.translation.slerp(ct, nf.translation(), r);
-      o.quaternion.slerp(cr, nf.quaternion(), r);
-      o.scale.slerp(cs, nf.scale(), r);
-      m.build(o.translation, o.quaternion, o.scale);
-   }else{
-      m.build(ct, cr, cs);
-   }
-   return true;
 }
 var EE3dScene = new function EE3dScene(){
    var o = this;

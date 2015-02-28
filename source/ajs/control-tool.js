@@ -1,3 +1,7 @@
+function MUiToolButton(o){
+   o = RClass.inherits(this, o);
+   return o;
+}
 function FUiToolBar(o){
    o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
    o._alignCd          = RClass.register(o, new APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));
@@ -422,9 +426,5 @@ function FUiToolButtonSplit_onBuild(p){
 }
 function FUiToolButtonText(o){
    o = RClass.inherits(this, o, FUiToolButton);
-   return o;
-}
-function MUiToolButton(o){
-   o = RClass.inherits(this, o);
    return o;
 }

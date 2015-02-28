@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150213
 //==========================================================
-var ESoftware = new function ESoftware(){
+MO.ESoftware = new function ESoftware(){
    var o = this;
    // @member
    o.Unknown = 0;

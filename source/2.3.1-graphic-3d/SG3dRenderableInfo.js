@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150212
 //==========================================================
-function SG3dRenderableInfo(){
+MO.Graphic3d.SG3dRenderableInfo = function SG3dRenderableInfo(){
    var o = this;
    //..........................................................
    // @attribute 代码
@@ -15,15 +15,15 @@ function SG3dRenderableInfo(){
    // @method
    o.reset  = SG3dRenderableInfo_reset;
    return o;
-}
 
-//==========================================================
-// <T>重置处理。</T>
-//
-// @method
-//==========================================================
-function SG3dRenderableInfo_reset(){
-   var o = this;
-   o.effect = null;
-   o.layout = null;
+   //==========================================================
+   // <T>重置处理。</T>
+   //
+   // @method
+   //==========================================================
+   function SG3dRenderableInfo_reset(){
+      var o = this;
+      o.effect = null;
+      o.layout = null;
+   }
 }

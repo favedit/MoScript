@@ -1,5 +1,5 @@
-function FTag(o){
-   o = RClass.inherits(this, o, FObject);
+MO.FTag = function FTag(o){
+   o = RClass.inherits(this, o, MO.FObject);
    o._name      = 'Tag';
    o._children  = null;
    o._trimLeft  = false;
@@ -14,79 +14,79 @@ function FTag(o){
    o.innerDump  = FTag_innerDump;
    o.dump       = FTag_dump;
    return o;
-}
-function FTag_onBegin(p){
-   return EResult.Continue;
-}
-function FTag_onEnd(p){
-   return EResult.Continue;
-}
-function FTag_name(){
-   return this._name;
-}
-function FTag_set(n, v){
-   throw new TError(this, 'Unknown attribute name. (name={1}, value={2})', n, v);
-}
-function FTag_push(p){
-   var o = this;
-   var ts = o._children;
-   if(ts == null){
-      ts = o._children = new TObjects();
+   function FTag_onBegin(p){
+      return EResult.Continue;
    }
-   ts.push(p);
-}
-function FTag_parse(p){
-   var o = this;
-   var r = o.onBegin(p);
-   if(r == EResult.Continue){
+   function FTag_onEnd(p){
+      return EResult.Continue;
+   }
+   function FTag_name(){
+      return this._name;
+   }
+   function FTag_set(n, v){
+      throw new TError(this, 'Unknown attribute name. (name={1}, value={2})', n, v);
+   }
+   function FTag_push(p){
+      var o = this;
       var ts = o._children;
+      if(ts == null){
+         ts = o._children = new TObjects();
+      }
+      ts.push(p);
+   }
+   function FTag_parse(p){
+      var o = this;
+      var r = o.onBegin(p);
+      if(r == EResult.Continue){
+         var ts = o._children;
+         if(ts){
+            var c = ts.count();
+            for(var i = 0; i < c; i++){
+               var t = ts.get(i);
+               r = t.parse(p);
+               if(r == EResult.Cancel){
+                  return r;
+               }
+               p._trimLeft = t._trimLeft;
+               p._trimRight = t._trimRight;
+            }
+         }
+         return o.onEnd(p);
+      }
+      return r;
+   }
+   function FTag_toString(){
+      return null;
+   }
+   function FTag_innerDump(ps, pt, pl){
+      var o = this;
+      ps.appendRepeat('   ', pl);
+      ps.append(RClass.dump(pt));
+      var s = pt.toString();
+      if(!RString.isEmpty(s)){
+         ps.append(' [', s, ']');
+      }
+      var ts = pt._children;
       if(ts){
+         ps.append('\n');
          var c = ts.count();
          for(var i = 0; i < c; i++){
             var t = ts.get(i);
-            r = t.parse(p);
-            if(r == EResult.Cancel){
-               return r;
+            o.innerDump(ps, t, pl + 1);
+            if(i < c - 1){
+               ps.append('\n');
             }
-            p._trimLeft = t._trimLeft;
-            p._trimRight = t._trimRight;
-         }
-      }
-      return o.onEnd(p);
-   }
-   return r;
-}
-function FTag_toString(){
-   return null;
-}
-function FTag_innerDump(ps, pt, pl){
-   var o = this;
-   ps.appendRepeat('   ', pl);
-   ps.append(RClass.dump(pt));
-   var s = pt.toString();
-   if(!RString.isEmpty(s)){
-      ps.append(' [', s, ']');
-   }
-   var ts = pt._children;
-   if(ts){
-      ps.append('\n');
-      var c = ts.count();
-      for(var i = 0; i < c; i++){
-         var t = ts.get(i);
-         o.innerDump(ps, t, pl + 1);
-         if(i < c - 1){
-            ps.append('\n');
          }
       }
    }
+   function FTag_dump(){
+      var r = new TString();
+      this.innerDump(r, this, 0);
+      return r.toString();
+   }
 }
-function FTag_dump(){
-   var r = new TString();
-   this.innerDump(r, this, 0);
-   return r.toString();
-}
-function FTagContext(o){
-   o = RClass.inherits(this, o, FObject, MInstance);
+MO.FTagContext = function FTagContext(o){
+   o = RClass.inherits(this, o, MO.FObject, MO.MInstance);
    o._trimLeft       = false;
    o._trimRight      = false;
    o._attributes     = null;
@@ -102,49 +102,49 @@ function FTagContext(o){
    o.resetSource     = FTagContext_resetSource;
    o.dispose         = FTagContext_dispose;
    return o;
-}
-function FTagContext_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-   o._attributes = new TAttributes();
-   o._source = new TString();
-}
-function FTagContext_instanceAlloc(p){
-   this._attributes.clear();
-}
-function FTagContext_attributes(){
-   return this._attributes;
-}
-function FTagContext_get(n, v){
-   return this._attributes.get(n, v);
-}
-function FTagContext_set(n, v){
-   this._attributes.set(n, v);
-}
-function FTagContext_setBoolean(n, v){
-   this._attributes.set(n, RBoolean.toString(v));
-}
-function FTagContext_source(){
-   return this._source.toString();
-}
-function FTagContext_write(p){
-   if(!RString.isEmpty(p)){
-      this._source.append(p);
+   function FTagContext_construct(){
+      var o = this;
+      o.__base.FObject.construct.call(o);
+      o._attributes = new TAttributes();
+      o._source = new TString();
+   }
+   function FTagContext_instanceAlloc(p){
+      this._attributes.clear();
+   }
+   function FTagContext_attributes(){
+      return this._attributes;
+   }
+   function FTagContext_get(n, v){
+      return this._attributes.get(n, v);
+   }
+   function FTagContext_set(n, v){
+      this._attributes.set(n, v);
+   }
+   function FTagContext_setBoolean(n, v){
+      this._attributes.set(n, RBoolean.toString(v));
+   }
+   function FTagContext_source(){
+      return this._source.toString();
+   }
+   function FTagContext_write(p){
+      if(!RString.isEmpty(p)){
+         this._source.append(p);
+      }
+   }
+   function FTagContext_resetSource(p){
+      this._source.clear();
+   }
+   function FTagContext_dispose(){
+      var o = this;
+      o._attributes.dispose();
+      o._attributes = null;
+      o._source.dispose();
+      o._source = null;
+      o.__base.FObject.dispose.call(o);
    }
 }
-function FTagContext_resetSource(p){
-   this._source.clear();
-}
-function FTagContext_dispose(){
-   var o = this;
-   o._attributes.dispose();
-   o._attributes = null;
-   o._source.dispose();
-   o._source = null;
-   o.__base.FObject.dispose.call(o);
-}
-function FTagDocument(o){
-   o = RClass.inherits(this, o, FObject);
+MO.FTagDocument = function FTagDocument(o){
+   o = RClass.inherits(this, o, MO.FObject);
    o._space  = null;
    o._root   = null;
    o.space    = FTagDocument_space;
@@ -156,117 +156,117 @@ function FTagDocument(o){
    o.parse    = FTagDocument_parse;
    o.dump     = FTagDocument_dump;
    return o;
-}
-function FTagDocument_space(){
-   return this._space;
-}
-function FTagDocument_setSpace(p){
-   this._space = p;
-}
-function FTagDocument_create(p){
-   var o = this;
-   var sn = o._space + '_';
-   var n = null;
-   if(RString.startsWith(p, sn)){
-      n = p.substring(sn.length);
-   }else{
-      n = p;
+   function FTagDocument_space(){
+      return this._space;
    }
-   var t = null;
-   switch(n){
-      case 'source':
-         t = RClass.create(FTag);
-         break;
-      case 'write':
-         t = RClass.create(FTagWrite);
-         break;
-      case 'true':
-         t = RClass.create(FTagTrue);
-         break;
-      case 'false':
-         t = RClass.create(FTagFalse);
-         break;
-      case 'equals':
-         t = RClass.create(FTagEquals);
-         break;
-      case 'notEquals':
-         t = RClass.create(FTagNotEquals);
-         break;
-      default:
-         throw new TError(o, 'Unknown tag type. (name={1})', n);
+   function FTagDocument_setSpace(p){
+      this._space = p;
    }
-   return t;
-}
-function FTagDocument_root(){
-   return this._root;
-}
-function FTagDocument_loadNode(pn, pe){
-   var o = this;
-   var x = o.create(pe.nodeName);
-   if(pn){
-      pn.push(x);
-   }else{
-      o._root = x;
+   function FTagDocument_create(p){
+      var o = this;
+      var sn = o._space + '_';
+      var n = null;
+      if(RString.startsWith(p, sn)){
+         n = p.substring(sn.length);
+      }else{
+         n = p;
+      }
+      var t = null;
+      switch(n){
+         case 'source':
+            t = RClass.create(FTag);
+            break;
+         case 'write':
+            t = RClass.create(FTagWrite);
+            break;
+         case 'true':
+            t = RClass.create(FTagTrue);
+            break;
+         case 'false':
+            t = RClass.create(FTagFalse);
+            break;
+         case 'equals':
+            t = RClass.create(FTagEquals);
+            break;
+         case 'notEquals':
+            t = RClass.create(FTagNotEquals);
+            break;
+         default:
+            throw new TError(o, 'Unknown tag type. (name={1})', n);
+      }
+      return t;
    }
-   var eas = pe.attributes;
-   if(eas){
-      var c = eas.length;
-      for(var i = 0; i < c; i++){
-         var ea = eas[i];
-         if(ea.nodeName){
-            x.set(ea.nodeName, RXml.formatText(ea.value));
+   function FTagDocument_root(){
+      return this._root;
+   }
+   function FTagDocument_loadNode(pn, pe){
+      var o = this;
+      var x = o.create(pe.nodeName);
+      if(pn){
+         pn.push(x);
+      }else{
+         o._root = x;
+      }
+      var eas = pe.attributes;
+      if(eas){
+         var c = eas.length;
+         for(var i = 0; i < c; i++){
+            var ea = eas[i];
+            if(ea.nodeName){
+               x.set(ea.nodeName, RXml.formatText(ea.value));
+            }
+         }
+      }
+      var ens = pe.childNodes
+      if(ens){
+         var c = ens.length;
+         for(var i = 0; i < c; i++){
+            var en = ens[i];
+            switch(en.nodeType){
+               case ENodeType.Text:
+                  var xt = RClass.create(FTagText);
+                  xt.setText(en.nodeValue);
+                  x.push(xt);
+                  break;
+               case ENodeType.Data:
+                  var xt = RClass.create(FTagText);
+                  xt.setText(en.data);
+                  x.push(xt);
+                  break;
+               case ENodeType.Node:
+                  o.loadNode(x, en);
+                  break;
+            }
          }
       }
    }
-   var ens = pe.childNodes
-   if(ens){
-      var c = ens.length;
-      for(var i = 0; i < c; i++){
-         var en = ens[i];
-         switch(en.nodeType){
-            case ENodeType.Text:
-               var xt = RClass.create(FTagText);
-               xt.setText(en.nodeValue);
-               x.push(xt);
-               break;
-            case ENodeType.Data:
-               var xt = RClass.create(FTagText);
-               xt.setText(en.data);
-               x.push(xt);
-               break;
-            case ENodeType.Node:
-               o.loadNode(x, en);
-               break;
-         }
-      }
+   function FTagDocument_load(p){
+      var o = this;
+      var s = '<source>' + p + '</source>'
+      s = s.replace(new RegExp('<' + o._space + ':', 'g'), '<' + o._space + '_');
+      s = s.replace(new RegExp('</' + o._space + ':', 'g'), '</' + o._space + '_');
+      s = s.replace(new RegExp(' & ', 'g'), ' &amp; ');
+      s = s.replace(new RegExp(' < ', 'g'), ' &lt; ');
+      s = s.replace(new RegExp(' > ', 'g'), ' &gt; ');
+      var xr = RXml.makeString(s);
+      o.loadNode(null, xr.firstChild);
+   }
+   function FTagDocument_parse(p){
+      var o = this;
+      p.resetSource();
+      o._root.parse(p);
+      return p.source();
+   }
+   function FTagDocument_dump(){
+      var o = this;
+      var r = new TString();
+      r.appendLine(RClass.dump(o));
+      r.appendLine(o.root().dump(r));
+      return r.toString();
    }
 }
-function FTagDocument_load(p){
-   var o = this;
-   var s = '<source>' + p + '</source>'
-   s = s.replace(new RegExp('<' + o._space + ':', 'g'), '<' + o._space + '_');
-   s = s.replace(new RegExp('</' + o._space + ':', 'g'), '</' + o._space + '_');
-   s = s.replace(new RegExp(' & ', 'g'), ' &amp; ');
-   s = s.replace(new RegExp(' < ', 'g'), ' &lt; ');
-   s = s.replace(new RegExp(' > ', 'g'), ' &gt; ');
-   var xr = RXml.makeString(s);
-   o.loadNode(null, xr.firstChild);
-}
-function FTagDocument_parse(p){
-   var o = this;
-   p.resetSource();
-   o._root.parse(p);
-   return p.source();
-}
-function FTagDocument_dump(){
-   var o = this;
-   var r = new TString();
-   r.appendLine(RClass.dump(o));
-   r.appendLine(o.root().dump(r));
-   return r.toString();
-}
-function FTagEquals(o){
-   o = RClass.inherits(this, o, FTag);
+MO.FTagEquals = function FTagEquals(o){
+   o = RClass.inherits(this, o, MO.FTag);
    o._trimLeft = true;
    o._source   = null;
    o._value    = null;
@@ -274,67 +274,67 @@ function FTagEquals(o){
    o.set       = FTagEquals_set;
    o.toString  = FTagEquals_toString;
    return o;
-}
-function FTagEquals_onBegin(p){
-   var o = this;
-   var r = false;
-   var s = p.get(o._source);
-   var vs = o._value.split('|');
-   var c = vs.length;
-   for(var i = 0; i < c; i++){
-      var v = vs[i]
-      if(s == v){
-         r = true;
-         break;
+   function FTagEquals_onBegin(p){
+      var o = this;
+      var r = false;
+      var s = p.get(o._source);
+      var vs = o._value.split('|');
+      var c = vs.length;
+      for(var i = 0; i < c; i++){
+         var v = vs[i]
+         if(s == v){
+            r = true;
+            break;
+         }
       }
+      return r ? EResult.Continue : EResult.Skip;
    }
-   return r ? EResult.Continue : EResult.Skip;
-}
-function FTagEquals_set(n, v){
-   var o = this;
-   switch(n){
-      case 'source':
-         o._source = v;
-         return;
-      case 'value':
-         o._value = v;
-         return;
+   function FTagEquals_set(n, v){
+      var o = this;
+      switch(n){
+         case 'source':
+            o._source = v;
+            return;
+         case 'value':
+            o._value = v;
+            return;
+      }
+      o.__base.FTag.set.call(o, n, v);
    }
-   o.__base.FTag.set.call(o, n, v);
+   function FTagEquals_toString(){
+      var o = this;
+      return 'source=' + o._source + ', value=' + o._value;
+   }
 }
-function FTagEquals_toString(){
-   var o = this;
-   return 'source=' + o._source + ', value=' + o._value;
-}
-function FTagFalse(o){
-   o = RClass.inherits(this, o, FTag);
+MO.FTagFalse = function FTagFalse(o){
+   o = RClass.inherits(this, o, MO.FTag);
    o._trimLeft = true;
    o._source   = null;
    o.onBegin   = FTagFalse_onBegin;
    o.set       = FTagFalse_set;
    o.toString  = FTagFalse_toString;
    return o;
-}
-function FTagFalse_onBegin(p){
-   var o = this;
-   var v = p.get(o._source);
-   return RBoolean.parse(v) ? EResult.Skip : EResult.Continue;
-}
-function FTagFalse_set(n, v){
-   var o = this;
-   switch(n){
-      case 'source':
-         o._source = v;
-         return;
+   function FTagFalse_onBegin(p){
+      var o = this;
+      var v = p.get(o._source);
+      return RBoolean.parse(v) ? EResult.Skip : EResult.Continue;
    }
-   o.__base.FTag.set.call(o, n, v);
+   function FTagFalse_set(n, v){
+      var o = this;
+      switch(n){
+         case 'source':
+            o._source = v;
+            return;
+      }
+      o.__base.FTag.set.call(o, n, v);
+   }
+   function FTagFalse_toString(){
+      var o = this;
+      return 'source=' + o._source;
+   }
 }
-function FTagFalse_toString(){
-   var o = this;
-   return 'source=' + o._source;
-}
-function FTagNotEquals(o){
-   o = RClass.inherits(this, o, FTag);
+MO.FTagNotEquals = function FTagNotEquals(o){
+   o = RClass.inherits(this, o, MO.FTag);
    o._trimLeft = true;
    o._source   = null;
    o._value    = null;
@@ -342,139 +342,139 @@ function FTagNotEquals(o){
    o.set       = FTagNotEquals_set;
    o.toString  = FTagNotEquals_toString;
    return o;
-}
-function FTagNotEquals_onBegin(p){
-   var o = this;
-   var r = true;
-   var s = p.get(o._source);
-   var vs = o._value.split('|');
-   var c = vs.length;
-   for(var i = 0; i < c; i++){
-      var v = vs[i]
-      if(s == v){
-         r = false;
-         break;
+   function FTagNotEquals_onBegin(p){
+      var o = this;
+      var r = true;
+      var s = p.get(o._source);
+      var vs = o._value.split('|');
+      var c = vs.length;
+      for(var i = 0; i < c; i++){
+         var v = vs[i]
+         if(s == v){
+            r = false;
+            break;
+         }
       }
+      return r ? EResult.Continue : EResult.Skip;
    }
-   return r ? EResult.Continue : EResult.Skip;
-}
-function FTagNotEquals_set(n, v){
-   var o = this;
-   switch(n){
-      case 'source':
-         o._source = v;
-         return;
-      case 'value':
-         o._value = v;
-         return;
+   function FTagNotEquals_set(n, v){
+      var o = this;
+      switch(n){
+         case 'source':
+            o._source = v;
+            return;
+         case 'value':
+            o._value = v;
+            return;
+      }
+      o.__base.FTag.set.call(o, n, v);
    }
-   o.__base.FTag.set.call(o, n, v);
+   function FTagNotEquals_toString(){
+      var o = this;
+      return 'source=' + o._source + ', value=' + o._value;
+   }
 }
-function FTagNotEquals_toString(){
-   var o = this;
-   return 'source=' + o._source + ', value=' + o._value;
-}
-function FTagText(o){
-   o = RClass.inherits(this, o, FTag);
+MO.FTagText = function FTagText(o){
+   o = RClass.inherits(this, o, MO.FTag);
    o._text    = null;
    o.onBegin  = FTagText_onBegin;
    o.text     = FTagText_text;
    o.setText  = FTagText_setText;
    o.toString = FTagText_toString;
    return o;
-}
-function FTagText_onBegin(p){
-   var t = this._text;
-   if(p._trimLeft){
-      if(RString.startsWith(t, '\r')){
-         t = t.substring(1);
+   function FTagText_onBegin(p){
+      var t = this._text;
+      if(p._trimLeft){
+         if(RString.startsWith(t, '\r')){
+            t = t.substring(1);
+         }
+         if(RString.startsWith(t, '\n')){
+            t = t.substring(1);
+         }
       }
-      if(RString.startsWith(t, '\n')){
-         t = t.substring(1);
+      if(p._trimRight){
+         if(RString.endsWith(t, '\r')){
+            t = t.substring(0, t.length - 1);
+         }
+         if(RString.endsWith(t, '\n')){
+            t = t.substring(0, t.length - 1);
+         }
       }
+      p.write(t);
+      return EResult.Skip;
    }
-   if(p._trimRight){
-      if(RString.endsWith(t, '\r')){
-         t = t.substring(0, t.length - 1);
-      }
-      if(RString.endsWith(t, '\n')){
-         t = t.substring(0, t.length - 1);
-      }
+   function FTagText_text(){
+      return this._text;
    }
-   p.write(t);
-   return EResult.Skip;
+   function FTagText_setText(p){
+      this._text = p;
+   }
+   function FTagText_toString(){
+      var o = this;
+      return '{' + o._text + '}';
+   }
 }
-function FTagText_text(){
-   return this._text;
-}
-function FTagText_setText(p){
-   this._text = p;
-}
-function FTagText_toString(){
-   var o = this;
-   return '{' + o._text + '}';
-}
-function FTagTrue(o){
-   o = RClass.inherits(this, o, FTag);
+MO.FTagTrue = function FTagTrue(o){
+   o = RClass.inherits(this, o, MO.FTag);
    o._trimLeft = true;
    o._source   = null;
    o.onBegin   = FTagTrue_onBegin;
    o.set       = FTagTrue_set;
    o.toString  = FTagTrue_toString;
    return o;
-}
-function FTagTrue_onBegin(p){
-   var o = this;
-   var r = false;
-   var ns = o._source.split('|');
-   var c = ns.length;
-   for(var i = 0; i < c; i++){
-      var n = ns[i]
-      var v = p.get(n);
-      if(RBoolean.parse(v)){
-         r = true;
-         break;
+   function FTagTrue_onBegin(p){
+      var o = this;
+      var r = false;
+      var ns = o._source.split('|');
+      var c = ns.length;
+      for(var i = 0; i < c; i++){
+         var n = ns[i]
+         var v = p.get(n);
+         if(RBoolean.parse(v)){
+            r = true;
+            break;
+         }
       }
+      return r ? EResult.Continue : EResult.Skip;
    }
-   return r ? EResult.Continue : EResult.Skip;
-}
-function FTagTrue_set(n, v){
-   var o = this;
-   switch(n){
-      case 'source':
-         o._source = v;
-         return;
+   function FTagTrue_set(n, v){
+      var o = this;
+      switch(n){
+         case 'source':
+            o._source = v;
+            return;
+      }
+      o.__base.FTag.set.call(o, n, v);
    }
-   o.__base.FTag.set.call(o, n, v);
+   function FTagTrue_toString(){
+      var o = this;
+      return 'source=' + o._source;
+   }
 }
-function FTagTrue_toString(){
-   var o = this;
-   return 'source=' + o._source;
-}
-function FTagWrite(o){
-   o = RClass.inherits(this, o, FTag);
+MO.FTagWrite = function FTagWrite(o){
+   o = RClass.inherits(this, o, MO.FTag);
    o._source  = null;
    o.onBegin  = FTagWrite_onBegin;
    o.set      = FTagWrite_set;
    o.toString = FTagWrite_toString;
    return o;
-}
-function FTagWrite_onBegin(p){
-   var o = this;
-   var v = p.get(o._source);
-   p.write(v);
-   return EResult.Skip;
-}
-function FTagWrite_set(n, v){
-   var o = this;
-   switch(n){
-      case 'source':
-         o._source = v;
-         return;
+   function FTagWrite_onBegin(p){
+      var o = this;
+      var v = p.get(o._source);
+      p.write(v);
+      return EResult.Skip;
    }
-   o.__base.FTag.set.call(o, n, v);
-}
-function FTagWrite_toString(){
-   var o = this;
-   return 'source=' + o._source;
+   function FTagWrite_set(n, v){
+      var o = this;
+      switch(n){
+         case 'source':
+            o._source = v;
+            return;
+      }
+      o.__base.FTag.set.call(o, n, v);
+   }
+   function FTagWrite_toString(){
+      var o = this;
+      return 'source=' + o._source;
+   }
 }

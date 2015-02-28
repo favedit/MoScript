@@ -4,7 +4,7 @@
 // @author maocy
 // @history 141230
 //==========================================================
-function FG3dVertexShader(o){
-   o = RClass.inherits(this, o, FG3dShader);
+MO.Graphic3d.FG3dVertexShader = function FG3dVertexShader(o){
+   o = RClass.inherits(this, o, MO.Graphic3d.FG3dShader);
    return o;
 }

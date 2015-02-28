@@ -5,8 +5,8 @@
 // @author maocy
 // @version 150105
 //==========================================================
-function FResourceGroup(o){
-   o = RClass.inherits(this, o, FObject);
+MO.FResourceGroup = function FResourceGroup(o){
+   o = RClass.inherits(this, o, MO.FObject);
    //..........................................................
    // @attribute
    o._name = null;
@@ -14,14 +14,14 @@ function FResourceGroup(o){
    // @method
    o.name  = FResourceGroup_name;
    return o;
-}
 
-//==========================================================
-// <T>获得名称。</T>
-//
-// @method
-// @return 名称
-//==========================================================
-function FResourceGroup_name(){
-   return this._name;
+   //==========================================================
+   // <T>获得名称。</T>
+   //
+   // @method
+   // @return 名称
+   //==========================================================
+   function FResourceGroup_name(){
+      return this._name;
+   }
 }

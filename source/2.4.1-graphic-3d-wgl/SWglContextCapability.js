@@ -5,7 +5,7 @@
 // @author maocy
 // @history 141230
 //==========================================================
-function SWglContextCapability(){
+MO.Graphic3d.SWglContextCapability = function SWglContextCapability(){
    var o = this;
    SG3dContextCapability.call(o);
    return o;

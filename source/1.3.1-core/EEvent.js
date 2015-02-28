@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150130
 //==========================================================
-var EEvent = new function EEvent(){
+MO.EEvent = new function EEvent(){
    var o = this;
    // @attribute 未知
    o.Unknown     = 0;

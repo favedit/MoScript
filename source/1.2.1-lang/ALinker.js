@@ -7,12 +7,12 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function ALinker(n, l){
+MO.ALinker = function ALinker(n, l){
    var o = this;
    //..........................................................
    // @declare
    o.inherit    = true;
-   o.annotation = EAnnotation.Linker;
+   o.annotation = MO.EAnnotation.Linker;
    //..........................................................
    // @attribute
    o.name       = n;

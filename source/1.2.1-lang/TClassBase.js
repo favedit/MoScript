@@ -5,8 +5,9 @@
 // @author maocy
 // @version 141229
 //==========================================================
-function TClassBase(o){
-   if(!o){o = this;}
+MO.TClassBase = function TClassBase(){
+   var o = this;
+   //..........................................................
    // @attribute
    o.__disposed = true;
    return o;

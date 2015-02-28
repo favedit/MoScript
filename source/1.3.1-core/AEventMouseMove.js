@@ -6,9 +6,9 @@
 // @author maocy
 // @version 150119
 //==========================================================
-function AEventMouseMove(n){
+MO.AEventMouseMove = function AEventMouseMove(n){
    var o = this;
-   AEventMouse.call(o, n, 'mousemove', 'onmousemove');
+   MO.AEventMouse.call(o, n, 'mousemove', 'onmousemove');
    //..........................................................
    // @attribute
    o._logger = false;

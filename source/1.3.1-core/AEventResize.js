@@ -6,23 +6,23 @@
 // @author maocy
 // @version 150119
 //==========================================================
-function AEventResize(n){
+MO.AEventResize = function AEventResize(n){
    var o = this;
-   AEvent.call(o, n, 'resize', 'onresize');
+   MO.AEvent.call(o, n, 'resize', 'onresize');
    //..........................................................
    // @method
    o.attach = AEventResize_attach;
    return o;
-}
 
-//==========================================================
-// <T>接收事件信息。</T>
-//
-// @method
-// @param e:event:Event 事件
-// @param h:htmlEvent:HtmlEvent 页面事件
-//==========================================================
-function AEventResize_attach(e, h){
-   e.x = h.x;
-   e.y = h.y;
+   //==========================================================
+   // <T>接收事件信息。</T>
+   //
+   // @method
+   // @param e:event:Event 事件
+   // @param h:htmlEvent:HtmlEvent 页面事件
+   //==========================================================
+   function AEventResize_attach(e, h){
+      e.x = h.x;
+      e.y = h.y;
+   }
 }

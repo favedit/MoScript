@@ -4,7 +4,7 @@
 // @author maocy
 // @history 141230
 //==========================================================
-function FG3dFragmentShader(o){
-   o = RClass.inherits(this, o, FG3dShader);
+MO.Graphic3d.FG3dFragmentShader = function FG3dFragmentShader(o){
+   o = RClass.inherits(this, o, MO.Graphic3d.FG3dShader);
    return o;
 }

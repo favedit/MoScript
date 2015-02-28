@@ -5,9 +5,9 @@
 // @author maocy
 // @version 150213
 //==========================================================
-function SResizeEvent(){
+MO.SResizeEvent = function SResizeEvent(){
    var o = this;
-   SEvent.call(o);
+   MO.SEvent.call(o);
    //..........................................................
    // @attribute
    o.width       = null;
@@ -16,18 +16,18 @@ function SResizeEvent(){
    // @method
    o.attachEvent = SResizeEvent_attachEvent;
    return o;
-}
 
-//==========================================================
-// <T>接收事件信息。</T>
-//
-// @method
-// @param p:event:HtmlEvent 页面事件
-//==========================================================
-function SResizeEvent_attachEvent(p){
-   var o = this;
-   var hs = o.hSource = RHtml.eventSource(p);
-   if(hs){
-      o.source = hs.__linker;
+   //==========================================================
+   // <T>接收事件信息。</T>
+   //
+   // @method
+   // @param p:event:HtmlEvent 页面事件
+   //==========================================================
+   function SResizeEvent_attachEvent(p){
+      var o = this;
+      var hs = o.hSource = RHtml.eventSource(p);
+      if(hs){
+         o.source = hs.__linker;
+      }
    }
 }

@@ -6,8 +6,8 @@
 // @author maocy
 // @version 150119
 //==========================================================
-function AEventMouseDown(n){
+MO.AEventMouseDown = function AEventMouseDown(n){
    var o = this;
-   AEventMouse.call(o, n, 'mousedown', 'onmousedown');
+   MO.AEventMouse.call(o, n, 'mousedown', 'onmousedown');
    return o;
 }

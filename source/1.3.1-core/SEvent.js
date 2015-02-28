@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150113
 //==========================================================
-function SEvent(){
+MO.SEvent = function SEvent(){
    var o = this;
    //..........................................................
    // @attribute
@@ -25,16 +25,16 @@ function SEvent(){
    // @method
    o.dispose    = SEvent_dispose;
    return o;
-}
 
-//==========================================================
-// <T>释放处理。</T>
-//
-// @method
-//==========================================================
-function SEvent_dispose(){
-   var o = this;
-   for(var n in o){
-      o[n] = null;
+   //==========================================================
+   // <T>释放处理。</T>
+   //
+   // @method
+   //==========================================================
+   function SEvent_dispose(){
+      var o = this;
+      for(var n in o){
+         o[n] = null;
+      }
    }
 }
