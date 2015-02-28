@@ -12,7 +12,7 @@ function FUiDataNumber(o){
    //o.editAlign         = EAlign.Right;
    //..........................................................
    // @attribute
-   //o.borderStyle       = EBorder.RoundDrop;
+   //o.borderStyle       = EUiBorder.RoundDrop;
    //..........................................................
    // @event
    //o.onEditFocus       = RClass.register(o, new HFocus('onEditFocus'), FUiDataNumber_onEditFocus);

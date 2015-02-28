@@ -3,7 +3,7 @@
 // <P>显示当前记录的一些即时信息。</P>
 // *********************************************************
 function FFormInformationBar(o){
-   o = RClass.inherits(this, o, FEditControl, MHorizontal);
+   o = RClass.inherits(this, o, FEditControl, MUiHorizontal);
    // @attribute
    o._esize      = ESize.Horizontal;
    // @event

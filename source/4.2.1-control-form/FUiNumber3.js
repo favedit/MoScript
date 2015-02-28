@@ -45,7 +45,7 @@ function FUiNumber3(o){
    //o.stUnit        = RClass.register(o, new AStyle('Unit'));
    //..........................................................
    // @attribute
-   //o.borderStyle   = EBorder.Round;
+   //o.borderStyle   = EUiBorder.Round;
    //..........................................................
    // @html
    //o.hUnit         = null;

@@ -6,7 +6,7 @@
 // @version 1.0.1
 //==========================================================
 function FCellCalendar(o){
-   o = RClass.inherits(this, o, FCellEditControl, MFocus, MCellDropable);
+   o = RClass.inherits(this, o, FCellEditControl, MUiFocus, MCellDropable);
    //..........................................................
    // @css
    o.stForm           = RClass.register(o, new TStyle('Form'));

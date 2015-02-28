@@ -56,7 +56,7 @@ function FCalendarDay_oeBuild(e){
    //
    var heb = o.hEventBorder = hp.insertRow().insertCell();
    heb.style.padding = 3;
-   var eb = o.eventBorder = new TBorder(EBorder.Round);
+   var eb = o.eventBorder = new TBorder(EUiBorder.Round);
    eb.hParent = heb;
    RBorder.build(eb);
    eb.hTopLine.className = 'FCalendarDay_BorderTop';

@@ -20,11 +20,11 @@ function FFocusConsole(o){
    o._hoverContainer    = null;
    // @attribute FControl 获得热点的对象
    o._hoverControl      = null;
-   // @attribute MFocus 获得焦点的对象
+   // @attribute MUiFocus 获得焦点的对象
    o._focusControl      = null;
-   // @attribute MFocus 失去焦点的对象
+   // @attribute MUiFocus 失去焦点的对象
    o._blurControl       = null;
-   // @attribute MFocus 被激活的对象
+   // @attribute MUiFocus 被激活的对象
    o._activeControl     = null;
    //..........................................................
    // @listeners
@@ -146,7 +146,7 @@ function FFocusConsole_isFocus(c){
 
 //==========================================================
 // <T>指定的焦点对象获得焦点。</T>
-// <P>1. 只有焦点接口(MFocus)可以获得焦点。</P>
+// <P>1. 只有焦点接口(MUiFocus)可以获得焦点。</P>
 // <P>2. 同一焦点对象只能获得一次焦点。</P>
 // <P>3. 焦点对象能获得焦点的时候，上一个焦点对象失去焦点。</P>
 //
@@ -157,7 +157,7 @@ function FFocusConsole_isFocus(c){
 function FFocusConsole_focus(c, e){
    var o = this;
    // 检查传入对象是否可拥有焦点的对象
-   if(!RClass.isClass(c, MFocus)){
+   if(!RClass.isClass(c, MUiFocus)){
       return;
    }
    // 禁止获得两次焦点
@@ -189,7 +189,7 @@ function FFocusConsole_focus(c, e){
 
 //==========================================================
 // <T>指定的焦点对象失去焦点。</T>
-// <P>1. 只有焦点接口(MFocus)可以失去焦点。</P>
+// <P>1. 只有焦点接口(MUiFocus)可以失去焦点。</P>
 // <P>2. 上个焦点对象和焦点对象相同则失去一次焦点。</P>
 // <P>3. 上个焦点对象和焦点对象不相同则都失去焦点。</P>
 //
@@ -206,7 +206,7 @@ function FFocusConsole_blur(c, e){
       return;
    }
    // 检查传入对象是否焦点对象
-   if(bc != c && RClass.isClass(c, MFocus)){
+   if(bc != c && RClass.isClass(c, MUiFocus)){
       // 不存在时直接失去焦点
       RLogger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
       o._blurControl = c;

@@ -17,7 +17,7 @@ function FHtmlEditor(o){
    o.onEditBlur     = RClass.register(o, new HBlur('onEditBlur'), FHtmlEditor_onEditBlur);
    //Attribute
    o.hUnit          = null;
-   o.borderStyle    = EBorder.Round;
+   o.borderStyle    = EUiBorder.Round;
    // Event
    o.onBuildEdit    = FHtmlEditor_onBuildEdit;
    o.onEditKeyPress = FHtmlEditor_onEditKeyPress;

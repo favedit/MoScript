@@ -11,7 +11,7 @@ function FEdit11(o){
    o.stUnit        = RClass.register(o, new TStyle('Unit'));
    //..........................................................
    // @attribute
-   o.borderStyle   = EBorder.Round;
+   o.borderStyle   = EUiBorder.Round;
    //..........................................................
    // @html
    o.hUnit         = null;

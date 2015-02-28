@@ -5,11 +5,11 @@
 // @author maocy
 // @version 150122
 //==========================================================
-function MFocus(o){
+function MUiFocus(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @event
-   o.onFocus   = RClass.register(o, new AEventFocus('onFocus'), MFocus_onFocus);
+   o.onFocus   = RClass.register(o, new AEventFocus('onFocus'), MUiFocus_onFocus);
    o.onBlur    = RClass.register(o, new AEventBlur('onBlur'));
    //..........................................................
    // @method
@@ -17,8 +17,8 @@ function MFocus(o){
    o.testBlur  = RMethod.emptyTrue;
    o.doFocus   = RMethod.empty;
    o.doBlur    = RMethod.empty;
-   o.focus     = MFocus_focus;
-   o.blur      = MFocus_blur;
+   o.focus     = MUiFocus_focus;
+   o.blur      = MUiFocus_blur;
    return o;
 }
 
@@ -28,7 +28,7 @@ function MFocus(o){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MFocus_onFocus(e){
+function MUiFocus_onFocus(e){
    RConsole.find(FFocusConsole).focus(this, e);
 }
 
@@ -37,7 +37,7 @@ function MFocus_onFocus(e){
 //
 // @method
 //==========================================================
-function MFocus_focus(){
+function MUiFocus_focus(){
    RConsole.find(FFocusConsole).focus(this);
 }
 
@@ -46,6 +46,6 @@ function MFocus_focus(){
 //
 // @method
 //==========================================================
-function MFocus_blur(){
+function MUiFocus_blur(){
    RConsole.find(FFocusConsole).blur(this);
 }

@@ -6,7 +6,7 @@
 // @version 150123
 //==========================================================
 function FCellEdit(o){
-   //o = RClass.inherits(this, o, FCellEditControl, MFocus);
+   //o = RClass.inherits(this, o, FCellEditControl, MUiFocus);
    o = RClass.inherits(this, o, FCellEditControl);
    //..........................................................
    // @style

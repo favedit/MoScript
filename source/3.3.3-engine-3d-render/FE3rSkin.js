@@ -4,8 +4,8 @@
 // @author maocy
 // @history 150130
 //==========================================================
-function FRd3Skin(o){
-   o = RClass.inherits(this, o, FRd3Object);
+function FE3rSkin(o){
+   o = RClass.inherits(this, o, FE3rObject);
    //..........................................................
    // @attribute
    o._resource    = null;
@@ -13,10 +13,10 @@ function FRd3Skin(o){
    o._streams     = null;
    //..........................................................
    // @method
-   o.resource     = FRd3Skin_resource;
-   o.streams      = FRd3Skin_streams;
+   o.resource     = FE3rSkin_resource;
+   o.streams      = FE3rSkin_streams;
    // @method
-   o.loadResource = FRd3Skin_loadResource;
+   o.loadResource = FE3rSkin_loadResource;
    return o;
 }
 
@@ -25,7 +25,7 @@ function FRd3Skin(o){
 //
 // @return FE3sSkeletonSkin 资源信息
 //==========================================================
-function FRd3Skin_resource(){
+function FE3rSkin_resource(){
    return this._resource;
 }
 
@@ -34,7 +34,7 @@ function FRd3Skin_resource(){
 //
 // @return TObjects 渲染数据流集合
 //==========================================================
-function FRd3Skin_streams(){
+function FE3rSkin_streams(){
    return this._streams;
 }
 
@@ -44,7 +44,7 @@ function FRd3Skin_streams(){
 // @method
 // @param p:resource:FRsModel 资源信息
 //==========================================================
-function FRd3Skin_loadResource(p){
+function FE3rSkin_loadResource(p){
    var o = this;
    // 设置属性
    o._resource = p;
@@ -54,7 +54,7 @@ function FRd3Skin_loadResource(p){
       var ss = o._streams = new TObjects();
       var c = rs.count();
       for(var i = 0; i < c; i++){
-         var s = RClass.create(FRd3Stream);
+         var s = RClass.create(FE3rStream);
          s.linkGraphicContext(o);
          s.loadResource(rs.get(i));
          ss.push(s);

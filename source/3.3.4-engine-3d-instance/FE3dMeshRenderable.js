@@ -33,7 +33,7 @@ function FE3dMeshRenderable(o){
 // <T>获得渲染对象。</T>
 //
 // @method
-// @return FRd3Mesh 渲染对象
+// @return FE3rMesh 渲染对象
 //==========================================================
 function FE3dMeshRenderable_renderable(){
    return this._renderable;

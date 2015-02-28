@@ -4,8 +4,8 @@
 // @author maocy
 // @history 150106
 //==========================================================
-function FRd3TextureCube(o){
-   o = RClass.inherits(this, o, FRd3Texture);
+function FE3rTextureCube(o){
+   o = RClass.inherits(this, o, FE3rTexture);
    //..........................................................
    // @attribute
    o._imageX1 = null;
@@ -15,10 +15,10 @@ function FRd3TextureCube(o){
    o._imageZ1 = null;
    o._imageZ2 = null;
    //..........................................................
-   o.onLoad   = FRd3TextureCube_onLoad;
+   o.onLoad   = FE3rTextureCube_onLoad;
    //..........................................................
    // @method
-   o.load     = FRd3TextureCube_load;
+   o.load     = FE3rTextureCube_load;
    return o;
 }
 
@@ -28,7 +28,7 @@ function FRd3TextureCube(o){
 // @param p:region:FRegion 区域
 // @return Boolean 是否可见
 //==========================================================
-function FRd3TextureCube_onLoad(p){
+function FE3rTextureCube_onLoad(p){
    var o = this;
    var c = o._graphicContext;
    // 测试准备处理
@@ -63,7 +63,7 @@ function FRd3TextureCube_onLoad(p){
 // @method
 // @param p:name:String 名称
 //==========================================================
-function FRd3TextureCube_load(u){
+function FE3rTextureCube_load(u){
    var o = this;
    // 加载图X1
    var g = o._imageX1 = RClass.create(FImage);

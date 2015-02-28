@@ -1,15 +1,15 @@
 //==========================================================
-// <T>纵向部署控件。</T>
+// <T>横向部署控件。</T>
 //
 // @class
 // @author maocy
 // @version 150123
 //==========================================================
-function MVertical(o){
+function MUiHorizontal(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @method
-   o.setVisible = MHorizontal_setVisible;
+   o.setVisible = MUiHorizontal_setVisible;
    return o;
 }
 
@@ -19,7 +19,7 @@ function MVertical(o){
 // @method
 // @param p:visible:Boolean 是否可见
 //==========================================================
-function MHorizontal_setVisible(p){
+function MUiHorizontal_setVisible(p){
    var o = this;
    // 布局行
    var h = o.hPanelLine;

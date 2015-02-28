@@ -100,7 +100,7 @@ function FFormWindow_onSelect(row){
       }
    }else if(RClass.isClass(ds, FRow)){
    }
-   if(RClass.isClass(lov, MFocus)){
+   if(RClass.isClass(lov, MUiFocus)){
       RConsole.find(FFocusConsole).focusClass(MDataset, ds);
       RConsole.find(FEventConsole).add(lov, lov.focus);
    }

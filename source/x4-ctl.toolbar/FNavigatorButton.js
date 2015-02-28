@@ -2,12 +2,12 @@
  * <T>功能导航菜单栏中的条目信息组。</T>
  *
  * @class 
- * @face FControl,MContainer,MFocus
+ * @face FControl,MContainer,MUiFocus
  * @author MAOCY
  * @version 1.0.1
  **************************************************************/
 function FNavigatorButton(o){
-   o = RClass.inherits(this, o, FControl, MContainer, MFocus);
+   o = RClass.inherits(this, o, FControl, MContainer, MUiFocus);
    o.icon            = RClass.register(o, new TPtyStr('icon'));
    o.page            = RClass.register(o, new TPtyStr('page'));
    o.action          = RClass.register(o, new TPtyStr('action'));

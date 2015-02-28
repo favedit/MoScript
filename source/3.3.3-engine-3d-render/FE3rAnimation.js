@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150107
 //==========================================================
-function FRd3Animation(o){
+function FE3rAnimation(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
@@ -18,17 +18,17 @@ function FRd3Animation(o){
    o._playInfo    = null;
    //..........................................................
    // @method
-   o.construct    = FRd3Animation_construct;
+   o.construct    = FE3rAnimation_construct;
    // @method
-   o.findTrack    = FRd3Animation_findTrack;
-   o.tracks       = FRd3Animation_tracks;
-   o.resource     = FRd3Animation_resource;
-   o.loadResource = FRd3Animation_loadResource;
+   o.findTrack    = FE3rAnimation_findTrack;
+   o.tracks       = FE3rAnimation_tracks;
+   o.resource     = FE3rAnimation_resource;
+   o.loadResource = FE3rAnimation_loadResource;
    // @method
-   o.record       = FRd3Animation_record;
+   o.record       = FE3rAnimation_record;
    o.process      = RMethod.virtual(o, 'process');
    // @method
-   o.dispose      = FRd3Animation_dispose;
+   o.dispose      = FE3rAnimation_dispose;
    return o;
 }
 
@@ -37,11 +37,11 @@ function FRd3Animation(o){
 //
 // @method
 //==========================================================
-function FRd3Animation_construct(){
+function FE3rAnimation_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._tracks = new TObjects();
-   o._playInfo = new SRd3PlayInfo();
+   o._playInfo = new SE3rPlayInfo();
 }
 
 //==========================================================
@@ -49,9 +49,9 @@ function FRd3Animation_construct(){
 //
 // @method
 // @param p:boneId:Integer 编号
-// @return FRd3Track 跟踪
+// @return FE3rTrack 跟踪
 //==========================================================
-function FRd3Animation_findTrack(p){
+function FE3rAnimation_findTrack(p){
    var o = this;
    var ts = o._tracks;
    var c = ts.count();
@@ -70,7 +70,7 @@ function FRd3Animation_findTrack(p){
 // @method
 // @return TObjects 跟踪集合
 //==========================================================
-function FRd3Animation_tracks(){
+function FE3rAnimation_tracks(){
    return this._tracks;
 }
 
@@ -80,7 +80,7 @@ function FRd3Animation_tracks(){
 // @method
 // @return FE3sAnimation 动画资源
 //==========================================================
-function FRd3Animation_resource(){
+function FE3rAnimation_resource(){
    return this._resource;
 }
 
@@ -90,7 +90,7 @@ function FRd3Animation_resource(){
 // @method
 // @param p:resource:FE3sAnimation 动画资源
 //==========================================================
-function FRd3Animation_loadResource(p){
+function FE3rAnimation_loadResource(p){
    var o = this;
    // 设置属性
    o._resource = p;
@@ -99,7 +99,7 @@ function FRd3Animation_loadResource(p){
    var c = rts.count();
    for(var i = 0; i < c; i++){
       var rt = rts.get(i);
-      var t = RClass.create(FRd3Track);
+      var t = RClass.create(FE3rTrack);
       t._animation = o;
       t.loadResource(rt);
       o._tracks.push(t);
@@ -111,7 +111,7 @@ function FRd3Animation_loadResource(p){
 //
 // @method
 //==========================================================
-function FRd3Animation_record(){
+function FE3rAnimation_record(){
    var o = this;
    // 获得时间
    var t = RTimer.current();
@@ -126,7 +126,7 @@ function FRd3Animation_record(){
 //
 // @method
 //==========================================================
-function FRd3Animation_dispose(){
+function FE3rAnimation_dispose(){
    var o = this;
    o._tracks = null;
    o._resource = null;

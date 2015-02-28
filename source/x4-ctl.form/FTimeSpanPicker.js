@@ -14,7 +14,7 @@ function FTimeSpanPicker(o){
    //Attribute
    o.rows            = new TList();
    o.checks          = new TList();
-   o.borderStyle     = EBorder.Round;
+   o.borderStyle     = EUiBorder.Round;
    o.amSelectAll     = null;
    o.pmSelectAll     = null;
    o.hAm             = null;

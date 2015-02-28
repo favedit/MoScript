@@ -25,7 +25,7 @@ function FAttachment(o){
    // @attribute
    o.editWidth        = '100%';
    o.editHeight       = '100%';
-   o.borderStyle      = EBorder.Round;
+   o.borderStyle      = EUiBorder.Round;
    o.toolBar          = null;
    o.type             = null;
    o.perpareItem      = null;

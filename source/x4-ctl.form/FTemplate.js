@@ -2,7 +2,7 @@
 // FTemplate
 // ============================================================
 function FTemplate(o){
-   o = RClass.inherits(this, o, FControl, MDisplayAble, MDesign, MHorizontal);
+   o = RClass.inherits(this, o, FControl, MDisplayAble, MDesign, MUiHorizontal);
    // Property
    o.icon         = RClass.register(o, new TPtyStr('icon'));
    /// @style

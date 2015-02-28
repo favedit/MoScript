@@ -4,18 +4,18 @@
 // @author maocy
 // @history 150206
 //==========================================================
-function FRd3Stream(o){
-   o = RClass.inherits(this, o, FRd3Object);
+function FE3rStream(o){
+   o = RClass.inherits(this, o, FE3rObject);
    //..........................................................
    // @attribute
    o._buffer      = null;
    o._resource    = null;
    //..........................................................
    // @method
-   o.resource     = FRd3Stream_resource;
-   o.buffer       = FRd3Stream_buffer;
+   o.resource     = FE3rStream_resource;
+   o.buffer       = FE3rStream_buffer;
    // @method
-   o.loadResource = FRd3Stream_loadResource;
+   o.loadResource = FE3rStream_loadResource;
    return o;
 }
 
@@ -24,7 +24,7 @@ function FRd3Stream(o){
 //
 // @return String 名称
 //==========================================================
-function FRd3Stream_resource(){
+function FE3rStream_resource(){
    return this._resource;
 }
 
@@ -33,7 +33,7 @@ function FRd3Stream_resource(){
 //
 // @return FG3dVertexBuffer 缓冲
 //==========================================================
-function FRd3Stream_buffer(){
+function FE3rStream_buffer(){
    return this._buffer;
 }
 
@@ -43,7 +43,7 @@ function FRd3Stream_buffer(){
 // @method
 // @param p:resource:FRsModel 资源信息
 //==========================================================
-function FRd3Stream_loadResource(p){
+function FE3rStream_loadResource(p){
    var o = this;
    // 设置属性
    var c = p._code;

@@ -453,7 +453,7 @@ function SUiSlide_changeSlide(p){
    o.onSlideChange.call(c, v);
 }
 function FListItem(o){
-   o = RClass.inherits(this, o, FControl, MDesign, MHorizontal);
+   o = RClass.inherits(this, o, FControl, MDesign, MUiHorizontal);
    o.styleForm    = RClass.register(o, new TStyle('Form'));
    o.styleIcon    = RClass.register(o, new TStyle('Icon'));
    o.styleLabel   = RClass.register(o, new TStyle('Label'));
@@ -712,7 +712,7 @@ function FUiCalendar(o){
    o.editHour     = RClass.register(o, new TPtyBoolSet('editHour', 'editDate', EDateTimeMode.Hour));
    o.editMinute   = RClass.register(o, new TPtyBoolSet('editMinute', 'editDate', EDateTimeMode.Minute));
    o.editSecond   = RClass.register(o, new TPtyBoolSet('editSecond', 'editDate', EDateTimeMode.Second));
-   o.borderStyle = EBorder.RoundDrop;
+   o.borderStyle = EUiBorder.RoundDrop;
    o.date        = null;
    o.lsnEditEnd  = null;
    o.hForm       = null;
@@ -817,7 +817,7 @@ function FUiCalendar_doBlur(){
    }
 }
 function FUiCalendarEditor(o){
-   o = RClass.inherits(this, o, FDropEditor, MFocusLooper);
+   o = RClass.inherits(this, o, FDropEditor, MUiFocusLooper);
    o.editFormat       = null;
    o.dataValue        = null;
    o.date             = new TDate();
@@ -1548,7 +1548,7 @@ function FCheckPicker(o){
    o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescCheckPicker, MDropable);
    o.stIconDropSelect = RClass.register(o, new TStyleIcon('DropSelect'));
    o.items            = new TItems();
-   o.borderStyle      = EBorder.RoundDrop;
+   o.borderStyle      = EUiBorder.RoundDrop;
    o.onBuildEdit      = FCheckPicker_onBuildEdit;
    o.onEditEnd        = FCheckPicker_onEditEnd;
    o.onDataKeyDown    = FCheckPicker_onDataKeyDown;
@@ -2369,7 +2369,7 @@ function FUiColor4_link(){
 }
 function FColorPicker(o){
    o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescColor, MDropable);
-   o.borderStyle = EBorder.RoundDrop;
+   o.borderStyle = EUiBorder.RoundDrop;
    o.onBuildEdit = FColorPicker_onBuildEdit;
    o.onEditEnd   = FColorPicker_onEditEnd;
    o.onDataKeyDown   = FColorPicker_onDataKeyDown;
@@ -3168,12 +3168,12 @@ function FUiEditControl_oeLoadValue(e){
 }
 function FUiEditControl_doFocus(e){
    var o = this;
-   o.__base.MFocus.doFocus.call(o, e);
+   o.__base.MUiFocus.doFocus.call(o, e);
    o.__base.MEditValue.doFocus.call(o, e);
 }
 function FUiEditControl_doBlur(e){
    var o = this;
-   o.__base.MFocus.doBlur.call(o, e);
+   o.__base.MUiFocus.doBlur.call(o, e);
    o.__base.MEditValue.doBlur.call(o, e);
 }
 function FUiEditControl_construct(){
@@ -3236,7 +3236,7 @@ function FUiEditControl_setVisible(v){
 }
 function FUiEditControl_focus(){
    var o = this;
-   o.__base.MFocus.focus.call(o);
+   o.__base.MUiFocus.focus.call(o);
    if(o.hEdit){
       try{
          o.hEdit.focus();
@@ -3281,12 +3281,12 @@ function FUiEditControl_refreshStyle(){
       hd.style.cursor = cr;
    }
    if(o.editBorder){
-      var bs = EBorderStyle.Readonly;
+      var bs = EUiBorderStyle.Readonly;
       if(o._editable){
-         bs = EBorderStyle.Edit;
+         bs = EUiBorderStyle.Edit;
       }
       if(o._hover){
-         bs = EBorderStyle.Hover;
+         bs = EUiBorderStyle.Hover;
       }
       o.setEditBorderStyle(bs, bc);
    }
@@ -3332,7 +3332,7 @@ function FUiEditControl_dispose(){
    o.__base.FUiControl.dispose.call(o);
 }
 function FUiEditor(o){
-   o = RClass.inherits(this, o, FUiControl, MFocus);
+   o = RClass.inherits(this, o, FUiControl, MUiFocus);
    o._visible       = false;
    o._statusVisible = false;
    o._styleEdit     = RClass.register(o, new AStyle('_styleEdit'));
@@ -3412,7 +3412,7 @@ function FUiEditor_doBlur(){
    var s = o._source;
    if(s){
       o.editCancel();
-      if(RClass.isClass(s, MFocus)){
+      if(RClass.isClass(s, MUiFocus)){
          s.doBlur();
       }
    }
@@ -3681,7 +3681,7 @@ function FUiForm_toAttributes(r, m){
 }
 function FUiForm_focus(){
    var o = this;
-   o.__base.MFocus.focus.call(o);
+   o.__base.MUiFocus.focus.call(o);
    o.focusControl();
    RConsole.find(FFocusConsole).focusClass(MDataset, o);
 }
@@ -3883,7 +3883,7 @@ function FIconPicker(o){
    o.iconDefault    = RClass.register(o, new TPtyStr('iconDefault'));
    o.stIconDefault  = RClass.register(o, new TStyleIcon('Default'));
    o.hEditIcon      = null;
-   o.borderStyle    = EBorder.RoundIcon;
+   o.borderStyle    = EUiBorder.RoundIcon;
    o.onEditKeyDown  = FIconPicker_onEditKeyDown;
    o.onEditKeyPress = FIconPicker_onEditKeyPress;
    o.onBuildEdit    = FIconPicker_onBuildEdit;
@@ -4038,10 +4038,10 @@ function FUiLayout_moveChild(cf, ct, pos, copy){
    var o = this;
    var hPanel = o._hPanel;
    var moved = false;
-   var cfh = RClass.isClass(cf, MHorizontal);
+   var cfh = RClass.isClass(cf, MUiHorizontal);
    var hCfTd = RHtml.parent(cf._hPanel, 'TD');
    var hCfTab = RHtml.parent(cf._hPanel, 'TABLE');
-   var cth = RClass.isClass(ct, MHorizontal);
+   var cth = RClass.isClass(ct, MUiHorizontal);
    var hTd = RHtml.parent(ct._hPanel, 'TD');
    var hTable = RHtml.parent(hTd, 'TABLE');
    switch(pos){
@@ -4149,7 +4149,7 @@ function FUiLayout_appendChild(ctl){
       if(!o._hPanelLine){
          o.innerAppendLine();
       }
-      if(RClass.isClass(ctl, MHorizontal)){
+      if(RClass.isClass(ctl, MUiHorizontal)){
          if(o._hPanelTable.rows[0].cells.length == 0){
             o._hContainer.insertBefore(ctl._hPanel, o._hPanelTable);
          }else{
@@ -4233,7 +4233,7 @@ function FUiLayout_dispose(){
    o.__base.FUiContainer.dispose.call(o);
 }
 function FUiListBox(o){
-   o = RClass.inherits(this, o, FUiContainer, MHorizontal, MListenerClick);
+   o = RClass.inherits(this, o, FUiContainer, MUiHorizontal, MListenerClick);
    o._sizeCd      = EUiSize.Horizontal
    o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
    o._hForm       = null;
@@ -5665,7 +5665,7 @@ function FUiPageSheet_innerDump(s, l){
    s.append('action=', o.action, ']');
 }
 function FUiPanel(o){
-   o = RClass.inherits(this, o, FUiLayout, MDesign, MFocus);
+   o = RClass.inherits(this, o, FUiLayout, MDesign, MUiFocus);
    o._sizeCd      = EUiSize.Horizontal;
    o._stylePanel  = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
    o._styleLabel  = RClass.register(o, new AStyle('_styleLabel', 'Label'));

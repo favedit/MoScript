@@ -6,7 +6,7 @@ function FProgressBar(o){
    // Property
    //Attribute
    o.hUnit          = null;
-   o.borderStyle    = EBorder.Round;
+   o.borderStyle    = EUiBorder.Round;
    // Event
    o.onBuildEdit    = FProgressBar_onBuildEdit;
    o.onBuildControl = FProgressBar_onBuildControl;

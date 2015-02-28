@@ -118,7 +118,7 @@ function FBrowserControl_oeBuild(e){
       var hp = o.hPanel;
       var hpl = o.hPanel.insertRow();
       // 建立外边框
-      var b = o.border = new TBorder(EBorder.Round);
+      var b = o.border = new TBorder(EUiBorder.Round);
       b.hParent = hpl.insertCell();
       RBorder.build(b);
       var hbf = b.hForm;

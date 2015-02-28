@@ -22,7 +22,7 @@ function FConfigAction_onLoaded(e){
    if(r){
       RWindow.setEnable(true);
       var v = o.valuable;
-      if(RClass.isClass(v, MFocus)){
+      if(RClass.isClass(v, MUiFocus)){
          v.focus();
       }
    }

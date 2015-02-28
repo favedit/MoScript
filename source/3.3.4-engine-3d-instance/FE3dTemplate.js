@@ -90,7 +90,7 @@ function FE3dTemplate_skeletons(){
 // <T>增加一个渲染骨骼。</T>
 //
 // @method
-// @param p:skeleton:FRd3Skeleton 渲染骨骼
+// @param p:skeleton:FE3rSkeleton 渲染骨骼
 //==========================================================
 function FE3dTemplate_pushSkeleton(p){
    var o = this;
@@ -109,7 +109,7 @@ function FE3dTemplate_pushSkeleton(p){
 //
 // @method
 // @param p:guid:String 唯一编号
-// @return FRd3Animation 渲染动画
+// @return FE3rAnimation 渲染动画
 //==========================================================
 function FE3dTemplate_findAnimation(p){
    var s = this._animations;
@@ -130,7 +130,7 @@ function FE3dTemplate_animations(){
 // <T>增加一个渲染动画。</T>
 //
 // @method
-// @param p:animation:FRd3Animation 渲染动画
+// @param p:animation:FE3rAnimation 渲染动画
 //==========================================================
 function FE3dTemplate_pushAnimation(p){
    var o = this;
@@ -176,7 +176,7 @@ function FE3dTemplate_loadSkeletons(p){
       for(var i = 0; i < c; i++){
          var r = p.get(i);
          // 创建骨骼
-         var s = RClass.create(FRd3Skeleton);
+         var s = RClass.create(FE3rSkeleton);
          s.loadResource(r);
          o.pushSkeleton(s);
       }
@@ -187,7 +187,7 @@ function FE3dTemplate_loadSkeletons(p){
 // <T>关联渲染动画。</T>
 //
 // @method
-// @param p:animation:FRd3Animation 渲染动画
+// @param p:animation:FE3rAnimation 渲染动画
 //==========================================================
 function FE3dTemplate_linkAnimation(p){
    var o = this;
@@ -220,9 +220,9 @@ function FE3dTemplate_loadAnimations(p){
          // 创建渲染动画
          var a = null;
          if(r.skeleton()){
-            a = RClass.create(FRd3SkeletonAnimation);
+            a = RClass.create(FE3rSkeletonAnimation);
          }else{
-            a = RClass.create(FRd3MeshAnimation);
+            a = RClass.create(FE3rMeshAnimation);
          }
          a.loadResource(r);
          o.pushAnimation(a);

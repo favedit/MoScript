@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150106
 //==========================================================
-function FRd3Texture(o){
+function FE3rTexture(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
    //..........................................................
    // @attribute
@@ -12,18 +12,18 @@ function FRd3Texture(o){
    o._image    = null;
    o._texture  = null;
    //..........................................................
-   o.onLoad    = FRd3Texture_onLoad;
+   o.onLoad    = FE3rTexture_onLoad;
    //..........................................................
    // @method
-   o.construct = FRd3Texture_construct;
+   o.construct = FE3rTexture_construct;
    // @method
-   o.image     = FRd3Texture_image;
-   o.texture   = FRd3Texture_texture;
+   o.image     = FE3rTexture_image;
+   o.texture   = FE3rTexture_texture;
    // @method
-   o.testReady = FRd3Texture_testReady;
-   o.load      = FRd3Texture_load;
+   o.testReady = FE3rTexture_testReady;
+   o.load      = FE3rTexture_load;
    // @method
-   o.dispose   = FRd3Texture_dispose;
+   o.dispose   = FE3rTexture_dispose;
    return o;
 }
 
@@ -33,7 +33,7 @@ function FRd3Texture(o){
 // @param p:region:FRegion 区域
 // @return Boolean 是否可见
 //==========================================================
-function FRd3Texture_onLoad(p){
+function FE3rTexture_onLoad(p){
    var o = this;
    var c = o._graphicContext;
    // 创建纹理
@@ -51,7 +51,7 @@ function FRd3Texture_onLoad(p){
 //
 // @method
 //==========================================================
-function FRd3Texture_construct(){
+function FE3rTexture_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
 }
@@ -61,7 +61,7 @@ function FRd3Texture_construct(){
 //
 // @return 位图
 //==========================================================
-function FRd3Texture_image(){
+function FE3rTexture_image(){
    return this._image;
 }
 
@@ -70,7 +70,7 @@ function FRd3Texture_image(){
 //
 // @return 纹理
 //==========================================================
-function FRd3Texture_texture(){
+function FE3rTexture_texture(){
    return this._texture;
 }
 
@@ -79,7 +79,7 @@ function FRd3Texture_texture(){
 //
 // @return 是否准备好
 //==========================================================
-function FRd3Texture_testReady(){
+function FE3rTexture_testReady(){
    return this._ready;
 }
 
@@ -89,7 +89,7 @@ function FRd3Texture_testReady(){
 // @method
 // @param p:name:String 名称
 //==========================================================
-function FRd3Texture_load(u){
+function FE3rTexture_load(u){
    var o = this;
    if(o._image){
       throw new TError('Loading image.');
@@ -104,7 +104,7 @@ function FRd3Texture_load(u){
 //
 // @method
 //==========================================================
-function FRd3Texture_dispose(){
+function FE3rTexture_dispose(){
    var o = this;
    o._context = null;
    o._ready = false;

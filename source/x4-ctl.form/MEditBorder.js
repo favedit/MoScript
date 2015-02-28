@@ -9,7 +9,7 @@ function MEditBorder(o){
    o = RClass.inherits(this, o);
    /// @attribute TBorder
    o.editBorder         = null;
-   o.borderStyle        = EBorder.None;
+   o.borderStyle        = EUiBorder.None;
    /// @event
    o.onBuildEditBorder  = MEditBorder_onBuildEditBorder;
    // method
@@ -51,7 +51,7 @@ function MEditBorder_onBuildEditBorder(hp){
 // <T>建立边框对象的样式。</T>
 //
 // @method
-// @param s:style:EBorderStyle 样式
+// @param s:style:EUiBorderStyle 样式
 // @param c:color:String 边框颜色
 // @see RClass.isClass
 //==========================================================
@@ -59,9 +59,9 @@ function MEditBorder_setEditBorderStyle(s, c){
    var o = this;
    var b = o.editBorder;
    switch(b.style){
-      case EBorder.Round:
-      case EBorder.RoundDrop:
-         if(EBorderStyle.Readonly == s){
+      case EUiBorder.Round:
+      case EUiBorder.RoundDrop:
+         if(EUiBorderStyle.Readonly == s){
             b.hTopLine.className = 'RBorder_TopReadony';
             b.hBeforeLine.className = 'RBorder_BeforeReadony';
             b.hFormLine.className = 'RBorder_PanelReadony';
@@ -77,7 +77,7 @@ function MEditBorder_setEditBorderStyle(s, c){
             b.hPanel.style.backgroundColor = EColor.Edit;
          }
          break;
-      case EBorder.RoundIcon:
+      case EUiBorder.RoundIcon:
          b.hIcon.style.backgroundColor = c;
          b.hPanel.style.backgroundColor = c;
          break;

@@ -4,11 +4,11 @@
 // @author maocy
 // @history 150107
 //==========================================================
-function FRd3SkeletonAnimation(o){
-   o = RClass.inherits(this, o, FRd3Animation);
+function FE3rSkeletonAnimation(o){
+   o = RClass.inherits(this, o, FE3rAnimation);
    //..........................................................
    // @method
-   o.process = FRd3SkeletonAnimation_process;
+   o.process = FE3rSkeletonAnimation_process;
    return o;
 }
 
@@ -17,7 +17,7 @@ function FRd3SkeletonAnimation(o){
 //
 // @method
 //==========================================================
-function FRd3SkeletonAnimation_process(p){
+function FE3rSkeletonAnimation_process(p){
    var o = this;
    // 获得间隔
    var ct = o._currentTick;

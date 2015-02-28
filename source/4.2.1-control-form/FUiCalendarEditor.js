@@ -2,7 +2,7 @@
 // FUiCalendarEditor
 //==========================================================
 function FUiCalendarEditor(o){
-   o = RClass.inherits(this, o, FDropEditor, MFocusLooper);
+   o = RClass.inherits(this, o, FDropEditor, MUiFocusLooper);
    //..........................................................
    // @attribute
    o.editFormat       = null;

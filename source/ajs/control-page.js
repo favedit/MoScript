@@ -93,7 +93,7 @@ function FPageTab(o){
 function FPageTab_oeBuild(e){
    var o = this;
    o.base.FControl.oeBuild.call(o, e);
-   var b = o.border = RBorder.create(EBorder.Round, o.hPanel);
+   var b = o.border = RBorder.create(EUiBorder.Round, o.hPanel);
    var hb = b.hPanel;
    o.hPanel.width = '90'
    hb.align = 'center';

@@ -35,7 +35,7 @@ function FE3dModel_testReady(){
 //==========================================================
 // <T>加载渲染对象。</T>
 //
-// @param p:renderable:FRd3Model 渲染对象
+// @param p:renderable:FE3rModel 渲染对象
 //==========================================================
 function FE3dModel_loadRenderable(p){
    var o = this;

@@ -4,7 +4,7 @@
 function FChart(o){
    o = RClass.inherits(this, o, FEditControl, MEditBorder);
    //Attribute
-   o.borderStyle    = EBorder.Round;
+   o.borderStyle    = EUiBorder.Round;
    o.dataService    = RClass.register(o, new TPtyStr('dataService'));
    // Event
    o.onBuildEdit    = FChart_onBuildEdit;

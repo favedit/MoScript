@@ -10,12 +10,12 @@
  * │└--------------------------------┘│
  * └------------------------------------┘
  *
- * @class FControl, MDesign, MHorizontal
+ * @class FControl, MDesign, MUiHorizontal
  * @author maochunyang
  * @version 1.0.1
  **************************************************************/
 function FListItem(o){
-   o = RClass.inherits(this, o, FControl, MDesign, MHorizontal);
+   o = RClass.inherits(this, o, FControl, MDesign, MUiHorizontal);
    /// @style
    o.styleForm    = RClass.register(o, new TStyle('Form'));
    o.styleIcon    = RClass.register(o, new TStyle('Icon'));

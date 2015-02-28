@@ -2,12 +2,12 @@
  * Window提示框
  *
  * @class 
- * @face FContainer, MDisplayAble, MSizeable, MMoveable, MWinBorder
+ * @face FContainer, MDisplayAble, MUiSizeable, MMoveable, MWinBorder
  * @author maochunyang
  * @version 1.0.1
  **************************************************************/
 function FWindow(o){
-   o = RClass.inherits(this, o, FContainer, MFocus, MDisplayAble, MSizeable, MMoveable, MWinBorder);
+   o = RClass.inherits(this, o, FContainer, MUiFocus, MDisplayAble, MUiSizeable, MMoveable, MWinBorder);
    // Property
    o.caption      = RClass.register(o, new TPtyStr('caption'));
    // Attribute
@@ -40,7 +40,7 @@ function FWindow_oeBuild(e){
    o.base.FContainer.oeBuild.call(o, e);
    if(e.isBefore()){
       var fb = o.borderFloat = RBorder.createFloat(o.hPanel);
-      var b = o.border = RBorder.create(EBorder.RoundTitle, fb.hPanel);
+      var b = o.border = RBorder.create(EUiBorder.RoundTitle, fb.hPanel);
       b.hForm.width = '100%';
       // 注册改变大小样式
       var sc = RConsole.find(FSizeConsole);

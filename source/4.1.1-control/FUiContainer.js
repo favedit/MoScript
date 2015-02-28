@@ -144,7 +144,7 @@ function FUiContainer_panel(t){
 // <P>若有能获得焦点的控件，则返回第一个获得焦点的控件，若没有，则或什么都不返回。。</P>
 //
 // @method
-// @return MFocus 获得焦点的控件
+// @return MUiFocus 获得焦点的控件
 //==========================================================
 function FUiContainer_focusFirstControl(){
    return null;
@@ -155,7 +155,7 @@ function FUiContainer_focusFirstControl(){
       var c = cs.count();
       for(var i = 0; i < c; i++){
          var p = cs.value(i);
-         if(RClass.isClass(c, MFocus) && c.testFocus()){
+         if(RClass.isClass(c, MUiFocus) && c.testFocus()){
             // 不允许下拉控件获得第一个焦点
             if(!RClass.isClass(c, FCalendar) && !RClass.isClass(c, FSelect)  && !RClass.isClass(c, FNumber)){
                 return c.focus();

@@ -1,21 +1,3 @@
-var EBorder = new function EBorder(){
-   var o = this;
-   o.None          = 0;
-   o.Square        = 1;
-   o.Round         = 2;
-   o.RoundIcon     = 3;
-   o.RoundDrop     = 4;
-   o.RoundTitle    = 5;
-   o.RoundIconDrop = 6;
-   return o;
-}
-var EBorderStyle = new function EBorderStyle(){
-   var o = this;
-   o.Readonly = 1;
-   o.Edit     = 2;
-   o.Hover    = 3;
-   return o;
-}
 var EDataAction = new function EDataAction(){
    var o = this;
    o.Fetch     = 'fetch';
@@ -117,6 +99,24 @@ var EUiAlign = new function EUiAlign(){
    o.Bottom      = 'down';
    o.BottomLeft  = 'bl';
    o.BottomRight = 'br';
+   return o;
+}
+var EUiBorder = new function EUiBorder(){
+   var o = this;
+   o.None          = 0;
+   o.Square        = 1;
+   o.Round         = 2;
+   o.RoundIcon     = 3;
+   o.RoundDrop     = 4;
+   o.RoundTitle    = 5;
+   o.RoundIconDrop = 6;
+   return o;
+}
+var EUiBorderStyle = new function EUiBorderStyle(){
+   var o = this;
+   o.Readonly = 1;
+   o.Edit     = 2;
+   o.Hover    = 3;
    return o;
 }
 var EUiColor = new function EUiColor(){
@@ -932,39 +932,6 @@ function MEditZoom_testZoom(){
 function MEditZoom_doZoom(p){
    RFormSpace.doZoom(this, p);
 }
-function MFocus(o){
-   o = RClass.inherits(this, o);
-   o.onFocus   = RClass.register(o, new AEventFocus('onFocus'), MFocus_onFocus);
-   o.onBlur    = RClass.register(o, new AEventBlur('onBlur'));
-   o.testFocus = RMethod.emptyTrue;
-   o.testBlur  = RMethod.emptyTrue;
-   o.doFocus   = RMethod.empty;
-   o.doBlur    = RMethod.empty;
-   o.focus     = MFocus_focus;
-   o.blur      = MFocus_blur;
-   return o;
-}
-function MFocus_onFocus(e){
-   RConsole.find(FFocusConsole).focus(this, e);
-}
-function MFocus_focus(){
-   RConsole.find(FFocusConsole).focus(this);
-}
-function MFocus_blur(){
-   RConsole.find(FFocusConsole).blur(this);
-}
-function MHorizontal(o){
-   o = RClass.inherits(this, o);
-   o.setVisible = MHorizontal_setVisible;
-   return o;
-}
-function MHorizontal_setVisible(p){
-   var o = this;
-   var h = o.hPanelLine;
-   if(h){
-      RHtml.displaySet(h, p);
-   }
-}
 function MListenerBlur(o){
    o = RClass.inherits(this, o, MListener);
    o.addBlurListener     = MListenerBlur_addBlurListener;
@@ -1077,70 +1044,6 @@ function MListenerSelected_addSelectedListener(w, m){
 function MListenerSelected_processSelectedListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.Selected, p1, p2, p3, p4, p5);
 }
-function MPadding(o){
-   o = RClass.inherits(this, o);
-   o._padding       = RClass.register(o, new APtyPadding('_padding'));
-   o.construct      = MPadding_construct;
-   o.padding        = MPadding_padding;
-   o.setPadding     = MPadding_setPadding;
-   o.refreshPadding = MPadding_refreshPadding;
-   o.dispose        = MPadding_dispose;
-   return o;
-}
-function MPadding_construct(){
-   var o = this;
-   o._padding = new SPadding();
-}
-function MPadding_padding(){
-   return this._padding;
-}
-function MPadding_setPadding(l, t, r, b){
-   var o = this;
-   var p = o._padding;
-   var h = o.panel(EPanel.Container);
-   if(l != null){
-      p.left = l;
-      if(h){
-         h.style.paddingLeft = (l == 0) ? null : l + 'px';
-      }
-   }
-   if(t != null){
-      p.top = t;
-      if(h){
-         h.style.paddingTop = (t == 0) ? null : t + 'px';
-      }
-   }
-   if(r != null){
-      p.right= r;
-      if(h){
-         h.style.paddingRight = (r == 0) ? null : r + 'px';
-      }
-   }
-   if(b != null){
-      p.bottom = b;
-      if(h){
-         h.style.paddingBottom = (b == 0) ? null : b + 'px';
-      }
-   }
-}
-function MPadding_refreshPadding(){
-   var o = this;
-   var p = o._padding;
-   o.setPadding(p.left, p.top, p.right, p.bottom);
-}
-function MPadding_dispose(){
-   var o = this;
-   var v = o._padding;
-   if(v){
-      v.dispose();
-      o._padding = null;
-   }
-}
-function MProgress(o){
-   o = RClass.inherits(this, o);
-   o.oeProgress = RMethod.virtual(o, 'oeProgress');
-   return o;
-}
 function MPropertyCheck(o){
    o = RClass.inherits(this, o);
    o._valueTrue  = RClass.register(o, new APtyNumber('_valueTrue'));
@@ -1207,52 +1110,161 @@ function MPropertySelect_oeValid(e){
    }
    return r;
 }
-function MSize(o){
+function MUiContainer(o){
+   o = RClass.inherits(this, o);
+   o.createChild = MUiContainer_createChild;
+   o.appendChild = RMethod.empty;
+   o.removeChild = RMethod.empty;
+   return o;
+}
+function MUiContainer_createChild(p){
+   var c = RControl.newInstance(p);
+   c._parent = this;
+   return c;
+}
+function MUiFocus(o){
+   o = RClass.inherits(this, o);
+   o.onFocus   = RClass.register(o, new AEventFocus('onFocus'), MUiFocus_onFocus);
+   o.onBlur    = RClass.register(o, new AEventBlur('onBlur'));
+   o.testFocus = RMethod.emptyTrue;
+   o.testBlur  = RMethod.emptyTrue;
+   o.doFocus   = RMethod.empty;
+   o.doBlur    = RMethod.empty;
+   o.focus     = MUiFocus_focus;
+   o.blur      = MUiFocus_blur;
+   return o;
+}
+function MUiFocus_onFocus(e){
+   RConsole.find(FFocusConsole).focus(this, e);
+}
+function MUiFocus_focus(){
+   RConsole.find(FFocusConsole).focus(this);
+}
+function MUiFocus_blur(){
+   RConsole.find(FFocusConsole).blur(this);
+}
+function MUiHorizontal(o){
+   o = RClass.inherits(this, o);
+   o.setVisible = MUiHorizontal_setVisible;
+   return o;
+}
+function MUiHorizontal_setVisible(p){
+   var o = this;
+   var h = o.hPanelLine;
+   if(h){
+      RHtml.displaySet(h, p);
+   }
+}
+function MUiPadding(o){
+   o = RClass.inherits(this, o);
+   o._padding       = RClass.register(o, new APtyPadding('_padding'));
+   o.construct      = MUiPadding_construct;
+   o.padding        = MUiPadding_padding;
+   o.setPadding     = MUiPadding_setPadding;
+   o.refreshPadding = MUiPadding_refreshPadding;
+   o.dispose        = MUiPadding_dispose;
+   return o;
+}
+function MUiPadding_construct(){
+   var o = this;
+   o._padding = new SPadding();
+}
+function MUiPadding_padding(){
+   return this._padding;
+}
+function MUiPadding_setPadding(l, t, r, b){
+   var o = this;
+   var p = o._padding;
+   var h = o.panel(EPanel.Container);
+   if(l != null){
+      p.left = l;
+      if(h){
+         h.style.paddingLeft = (l == 0) ? null : l + 'px';
+      }
+   }
+   if(t != null){
+      p.top = t;
+      if(h){
+         h.style.paddingTop = (t == 0) ? null : t + 'px';
+      }
+   }
+   if(r != null){
+      p.right= r;
+      if(h){
+         h.style.paddingRight = (r == 0) ? null : r + 'px';
+      }
+   }
+   if(b != null){
+      p.bottom = b;
+      if(h){
+         h.style.paddingBottom = (b == 0) ? null : b + 'px';
+      }
+   }
+}
+function MUiPadding_refreshPadding(){
+   var o = this;
+   var p = o._padding;
+   o.setPadding(p.left, p.top, p.right, p.bottom);
+}
+function MUiPadding_dispose(){
+   var o = this;
+   var v = o._padding;
+   if(v){
+      v.dispose();
+      o._padding = null;
+   }
+}
+function MUiProgress(o){
+   o = RClass.inherits(this, o);
+   o.oeProgress = RMethod.virtual(o, 'oeProgress');
+   return o;
+}
+function MUiSize(o){
    o = RClass.inherits(this, o);
    o._location       = RClass.register(o, new APtyPoint2('_location'));
    o._size           = RClass.register(o, new APtySize2('_size'));
-   o.construct       = MSize_construct;
-   o.left            = MSize_left;
-   o.setLeft         = MSize_setLeft;
-   o.top             = MSize_top;
-   o.setTop          = MSize_setTop;
-   o.location        = MSize_location;
-   o.setLocation     = MSize_setLocation;
-   o.refreshLocation = MSize_refreshLocation;
-   o.width           = MSize_width;
-   o.setWidth        = MSize_setWidth;
-   o.height          = MSize_height;
-   o.setHeight       = MSize_setHeight;
-   o.size            = MSize_size;
-   o.setSize         = MSize_setSize;
-   o.refreshSize     = MSize_refreshSize;
-   o.setBounds       = MSize_setBounds;
-   o.refreshBounds   = MSize_refreshBounds;
-   o.dispose         = MSize_dispose;
-   o.innerDump       = MSize_innerDump;
+   o.construct       = MUiSize_construct;
+   o.left            = MUiSize_left;
+   o.setLeft         = MUiSize_setLeft;
+   o.top             = MUiSize_top;
+   o.setTop          = MUiSize_setTop;
+   o.location        = MUiSize_location;
+   o.setLocation     = MUiSize_setLocation;
+   o.refreshLocation = MUiSize_refreshLocation;
+   o.width           = MUiSize_width;
+   o.setWidth        = MUiSize_setWidth;
+   o.height          = MUiSize_height;
+   o.setHeight       = MUiSize_setHeight;
+   o.size            = MUiSize_size;
+   o.setSize         = MUiSize_setSize;
+   o.refreshSize     = MUiSize_refreshSize;
+   o.setBounds       = MUiSize_setBounds;
+   o.refreshBounds   = MUiSize_refreshBounds;
+   o.dispose         = MUiSize_dispose;
+   o.innerDump       = MUiSize_innerDump;
    return o;
 }
-function MSize_construct(){
+function MUiSize_construct(){
    var o = this;
    o._location = new SPoint2();
    o._size = new SSize2();
 }
-function MSize_left(){
+function MUiSize_left(){
    return this._location.x;
 }
-function MSize_setLeft(p){
+function MUiSize_setLeft(p){
    this.setLocation(p, null);
 }
-function MSize_top(){
+function MUiSize_top(){
    return this._location.y;
 }
-function MSize_setTop(p){
+function MUiSize_setTop(p){
    this.setLocation(null, p);
 }
-function MSize_location(){
+function MUiSize_location(){
    return this._location;
 }
-function MSize_setLocation(x, y){
+function MUiSize_setLocation(x, y){
    var o = this;
    var t = o.panel(EPanel.Size);
    if(x != null){
@@ -1268,31 +1280,31 @@ function MSize_setLocation(x, y){
       }
    }
 }
-function MSize_refreshLocation(){
+function MUiSize_refreshLocation(){
    var o = this;
    o.setLocation(o._location.x, o._location.y);
 }
-function MSize_construct(){
+function MUiSize_construct(){
    var o = this;
    o._location = new SPoint2();
    o._size = new SSize2();
 }
-function MSize_width(){
+function MUiSize_width(){
    return this._size.width;
 }
-function MSize_setWidth(p){
+function MUiSize_setWidth(p){
    this.setSize(p, null);
 }
-function MSize_height(){
+function MUiSize_height(){
    return this._size.width;
 }
-function MSize_setHeight(p){
+function MUiSize_setHeight(p){
    this.setSize(null, p);
 }
-function MSize_size(){
+function MUiSize_size(){
    return this._size;
 }
-function MSize_setSize(w, h){
+function MUiSize_setSize(w, h){
    var o = this;
    var t = o.panel(EPanel.Size);
    if(w != null){
@@ -1320,21 +1332,21 @@ function MSize_setSize(w, h){
       }
    }
 }
-function MSize_refreshSize(){
+function MUiSize_refreshSize(){
    var o = this;
    o.setSize(o._size.width, o._size.height);
 }
-function MSize_setBounds(l, t, w, h){
+function MUiSize_setBounds(l, t, w, h){
    var o = this;
    o.setLocation(l, t);
    o.setSize(w, h);
 }
-function MSize_refreshBounds(){
+function MUiSize_refreshBounds(){
    var o = this;
    o.refreshLocation();
    o.refreshSize();
 }
-function MSize_dispose(){
+function MUiSize_dispose(){
    var o = this;
    var v = o._location;
    if(v){
@@ -1347,12 +1359,12 @@ function MSize_dispose(){
       o._size = null;
    }
 }
-function MSize_innerDump(s, l){
+function MUiSize_innerDump(s, l){
    var o = this;
-   s.append('MSize:');
+   s.append('MUiSize:');
    s.append(o.left, ',', o.top, '-', o.width, ',', o.height, ']');
 }
-function MSize_resize(width, height){
+function MUiSize_resize(width, height){
    var sizeable = false;
    var hStyle = this.htmlPanel(EPanel.Border).style;
    if(null != width){
@@ -1375,16 +1387,16 @@ function MSize_resize(width, height){
       this.onSize();
    }
 }
-function MSize_resetSize(){
+function MUiSize_resetSize(){
    var o = this;
    o.setBounds(o.left, o.top, o.left+o.width-1, o.top+o.height-1, true)
 }
-function MSize_calcRect(){
+function MUiSize_calcRect(){
    this.rect = RRect.nvl(this.rect);
    RHtml.toRect(this.rect, this.hPanel);
    return this.rect;
 }
-function MSize_setBounds2(l, t, r, b, force){
+function MUiSize_setBounds2(l, t, r, b, force){
    var o = this;
    var h = o.panel(EPanel.Size);
    if(!h){
@@ -1426,20 +1438,20 @@ function MSize_setBounds2(l, t, r, b, force){
       o.onSize();
    }
 }
-function MSizeable(o){
+function MUiSizeable(o){
    o = RClass.inherits(this, o);
    o.isSizeable  = true;
    o.onSize      = null;
    o.inSizeRange = RMethod.virtual(o, 'inSizeRange');
-   o.cursor      = MSizeable_cursor;
-   o.setCursor   = MSizeable_setCursor;
-   o.resize      = MSizeable_resize;
-   o.setBounds   = MSizeable_setBounds;
-   o.startDrag   = MSizeable_startDrag;
-   o.stopDrag    = MSizeable_stopDrag;
+   o.cursor      = MUiSizeable_cursor;
+   o.setCursor   = MUiSizeable_setCursor;
+   o.resize      = MUiSizeable_resize;
+   o.setBounds   = MUiSizeable_setBounds;
+   o.startDrag   = MUiSizeable_startDrag;
+   o.stopDrag    = MUiSizeable_stopDrag;
    return o;
 }
-function MSizeable_cursor(){
+function MUiSizeable_cursor(){
    var o = this;
    var src = RWindow.source();
    if(!o.inSizeRange(src)){
@@ -1482,7 +1494,7 @@ function MSizeable_cursor(){
    }
    return ECursor.Default;
 }
-function MSizeable_setCursor(cursor){
+function MUiSizeable_setCursor(cursor){
    if(!cursor){
       cursor = this.cursor();
    }
@@ -1491,7 +1503,7 @@ function MSizeable_setCursor(cursor){
       h.style.cursor = (cursor == null || cursor == 'default') ? 'default' : cursor + '-resize';
    }
 }
-function MSizeable_resize(width, height){
+function MUiSizeable_resize(width, height){
    var sizeable = false;
    var hStyle = this.htmlPanel(EPanel.Border).style;
    if(width != null){
@@ -1514,7 +1526,7 @@ function MSizeable_resize(width, height){
       this.onSize();
    }
 }
-function MSizeable_setBounds(left, top, right, bottom, force){
+function MUiSizeable_setBounds(left, top, right, bottom, force){
    var sizeable = false;
    var st = this.htmlPanel(EPanel.Border).style;
    if(left != null){
@@ -1561,50 +1573,38 @@ function MSizeable_setBounds(left, top, right, bottom, force){
       this.onSize();
    }
 }
-function MSizeable_startDrag(){
+function MUiSizeable_startDrag(){
 }
-function MSizeable_stopDrag(){
+function MUiSizeable_stopDrag(){
 }
-function MStyle(o){
+function MUiStyle(o){
    o = RClass.inherits(this, o);
    o.construct     = RMethod.empty;
-   o.styleName     = MStyle_styleName;
-   o.styleIcon     = MStyle_styleIcon;
-   o.styleIconPath = MStyle_styleIconPath;
+   o.styleName     = MUiStyle_styleName;
+   o.styleIcon     = MUiStyle_styleIcon;
+   o.styleIconPath = MUiStyle_styleIconPath;
    o.dispose       = RMethod.empty;
    return o;
 }
-function MStyle_styleName(n, c){
+function MUiStyle_styleName(n, c){
    var o = this;
    var f = c ? c : o;
    var tn = RClass.name(f);
    var t = RClass.forName(tn);
    return t.style(n);
 }
-function MStyle_styleIcon(n, c){
+function MUiStyle_styleIcon(n, c){
    return RClass.name(c ? c : this, true) + '_' + n;
 }
-function MStyle_styleIconPath(n, c){
+function MUiStyle_styleIconPath(n, c){
    return RResource.iconPath(RClass.name(c ? c : this, true) + '_' + n);
 }
-function MUiContainer(o){
+function MUiVertical(o){
    o = RClass.inherits(this, o);
-   o.createChild = MUiContainer_createChild;
-   o.appendChild = RMethod.empty;
-   o.removeChild = RMethod.empty;
+   o.setVisible = MUiHorizontal_setVisible;
    return o;
 }
-function MUiContainer_createChild(p){
-   var c = RControl.newInstance(p);
-   c._parent = this;
-   return c;
-}
-function MVertical(o){
-   o = RClass.inherits(this, o);
-   o.setVisible = MHorizontal_setVisible;
-   return o;
-}
-function MHorizontal_setVisible(p){
+function MUiHorizontal_setVisible(p){
    var o = this;
    var h = o.hPanelLine;
    if(h){
@@ -2231,7 +2231,7 @@ function FUiContainer_focusFirstControl(){
       var c = cs.count();
       for(var i = 0; i < c; i++){
          var p = cs.value(i);
-         if(RClass.isClass(c, MFocus) && c.testFocus()){
+         if(RClass.isClass(c, MUiFocus) && c.testFocus()){
             if(!RClass.isClass(c, FCalendar) && !RClass.isClass(c, FSelect)  && !RClass.isClass(c, FNumber)){
                 return c.focus();
             }
@@ -2308,7 +2308,7 @@ function FUiContainer_dispose(){
    o.__base.FUiControl.dispose.call(o);
 }
 function FUiControl(o){
-   o = RClass.inherits(this, o, FUiComponent, MStyle, MSize, MPadding);
+   o = RClass.inherits(this, o, FUiComponent, MUiStyle, MUiSize, MUiPadding);
    o._visible       = RClass.register(o, new APtyBoolean('_visible'), true);
    o._disable       = RClass.register(o, new APtyBoolean('_disable'), false);
    o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap'), false);
@@ -2420,9 +2420,9 @@ function FUiControl_oeRefresh(e){
 function FUiControl_construct(){
    var o = this;
    o.__base.FUiComponent.construct.call(o);
-   o.__base.MStyle.construct.call(o);
-   o.__base.MSize.construct.call(o);
-   o.__base.MPadding.construct.call(o);
+   o.__base.MUiStyle.construct.call(o);
+   o.__base.MUiSize.construct.call(o);
+   o.__base.MUiPadding.construct.call(o);
 }
 function FUiControl_topControl(c){
    var r = this;
@@ -2619,9 +2619,9 @@ function FUiControl_dispose(){
    o._statusBuild = null;
    o._hParent = null;
    o._hPanel = RHtml.free(o._hPanel);
-   o.__base.MPadding.dispose.call(o);
-   o.__base.MSize.dispose.call(o);
-   o.__base.MStyle.dispose.call(o);
+   o.__base.MUiPadding.dispose.call(o);
+   o.__base.MUiSize.dispose.call(o);
+   o.__base.MUiStyle.dispose.call(o);
    o.__base.FUiComponent.dispose.call(o);
 }
 var RApplication = new function RApplication(){

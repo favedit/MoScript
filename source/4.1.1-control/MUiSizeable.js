@@ -1,24 +1,27 @@
 // ============================================================
-// MSizeable
+// MUiSizeable
 // ============================================================
-function MSizeable(o){
+function MUiSizeable(o){
    o = RClass.inherits(this, o);
-   // Attribute
+   //..........................................................
+   // @attribute
    o.isSizeable  = true;
-   // Event
+   //..........................................................
+   // @event
    o.onSize      = null;
-   // Method
+   //..........................................................
+   // @method
    o.inSizeRange = RMethod.virtual(o, 'inSizeRange');
-   o.cursor      = MSizeable_cursor;
-   o.setCursor   = MSizeable_setCursor;
-   o.resize      = MSizeable_resize;
-   o.setBounds   = MSizeable_setBounds;
-   o.startDrag   = MSizeable_startDrag;
-   o.stopDrag    = MSizeable_stopDrag;
+   o.cursor      = MUiSizeable_cursor;
+   o.setCursor   = MUiSizeable_setCursor;
+   o.resize      = MUiSizeable_resize;
+   o.setBounds   = MUiSizeable_setBounds;
+   o.startDrag   = MUiSizeable_startDrag;
+   o.stopDrag    = MUiSizeable_stopDrag;
    return o;
 }
 // ------------------------------------------------------------
-function MSizeable_cursor(){
+function MUiSizeable_cursor(){
    var o = this;
    var src = RWindow.source();
    if(!o.inSizeRange(src)){
@@ -64,7 +67,7 @@ function MSizeable_cursor(){
    return ECursor.Default;
 }
 // ------------------------------------------------------------
-function MSizeable_setCursor(cursor){
+function MUiSizeable_setCursor(cursor){
    if(!cursor){
       cursor = this.cursor();
    }
@@ -74,7 +77,7 @@ function MSizeable_setCursor(cursor){
    }
 }
 // ------------------------------------------------------------
-function MSizeable_resize(width, height){
+function MUiSizeable_resize(width, height){
    var sizeable = false;
    var hStyle = this.htmlPanel(EPanel.Border).style;
    if(width != null){
@@ -98,7 +101,7 @@ function MSizeable_resize(width, height){
    }
 }
 // ------------------------------------------------------------
-function MSizeable_setBounds(left, top, right, bottom, force){
+function MUiSizeable_setBounds(left, top, right, bottom, force){
    var sizeable = false;
    var st = this.htmlPanel(EPanel.Border).style;
    if(left != null){
@@ -146,10 +149,10 @@ function MSizeable_setBounds(left, top, right, bottom, force){
    }
 }
 // ------------------------------------------------------------
-function MSizeable_startDrag(){
+function MUiSizeable_startDrag(){
    
 }
 // ------------------------------------------------------------
-function MSizeable_stopDrag(){
+function MUiSizeable_stopDrag(){
 }
 // ------------------------------------------------------------

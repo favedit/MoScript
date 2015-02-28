@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150106
 //==========================================================
-function FRd3TextureConsole(o){
+function FE3rTextureConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
@@ -15,9 +15,9 @@ function FRd3TextureConsole(o){
    o._path     = '/assets/texture/';
    //..........................................................
    // @method
-   o.construct = FRd3TextureConsole_construct;
-   o.textures  = FRd3TextureConsole_textures;
-   o.load      = FRd3TextureConsole_load;
+   o.construct = FE3rTextureConsole_construct;
+   o.textures  = FE3rTextureConsole_textures;
+   o.load      = FE3rTextureConsole_load;
    return o;
 }
 
@@ -26,7 +26,7 @@ function FRd3TextureConsole(o){
 //
 // @method
 //==========================================================
-function FRd3TextureConsole_construct(){
+function FE3rTextureConsole_construct(){
    var o = this;
    o._images = new TDictionary();
    o._textures = new TDictionary();
@@ -38,7 +38,7 @@ function FRd3TextureConsole_construct(){
 // @method
 // @return TDictionary 渲染纹理集合
 //==========================================================
-function FRd3TextureConsole_textures(){
+function FE3rTextureConsole_textures(){
    return this._textures;
 }
 
@@ -49,9 +49,9 @@ function FRd3TextureConsole_textures(){
 // @param pc:content:FRenderContent 名称
 // @param pt:textureCode:String 纹理代码
 // @param pb:bitmapCode:String 位图代码
-// @return FRd3Texture 渲染模型
+// @return FE3rTexture 渲染模型
 //==========================================================
-function FRd3TextureConsole_load(pc, pt, pb){
+function FE3rTextureConsole_load(pc, pt, pb){
    var o = this;
    var c = RString.toLower(pt + '/' + pb);
    // 查找模型
@@ -64,12 +64,12 @@ function FRd3TextureConsole_load(pc, pt, pb){
    RLogger.info(o, 'Load texture from bitmap. (url={1})', u);
    // 加载模型
    if(RString.toLower(pb) == 'environment'){
-      t = RClass.create(FRd3TextureCube);
+      t = RClass.create(FE3rTextureCube);
       t.linkContext(pc);
       t._name = c;
       t.load(RBrowser.contentPath(o._path + c));
    }else{
-      t = RClass.create(FRd3Texture);
+      t = RClass.create(FE3rTexture);
       t.linkContext(pc);
       t._name = c;
       t.load(u);

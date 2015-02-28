@@ -1,11 +1,11 @@
 //==========================================================
 // <T>数字输入单元格。</T>
 //
-// @class FCellEditControl, MFocus
+// @class FCellEditControl, MUiFocus
 // @history 091106 MAOCY 创建
 //==========================================================
 function FCellNumber(o){
-   o = RClass.inherits(this, o, FCellEditControl, MDescNumber, MFocus);
+   o = RClass.inherits(this, o, FCellEditControl, MDescNumber, MUiFocus);
    //..........................................................
    // @property
    o.editAlign   = EAlign.Right;

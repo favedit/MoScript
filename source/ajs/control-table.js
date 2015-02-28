@@ -2280,7 +2280,7 @@ function FGridControl_pack(){
 function FGridControl_setVisible(v){
    var o = this;
    o.__base.FContainer.setVisible.call(o, v);
-   o.__base.MHorizontal.setVisible.call(o, v);
+   o.__base.MUiHorizontal.setVisible.call(o, v);
 }
 function FGridControl_setButtonVisible(n, v){
    var o = this;

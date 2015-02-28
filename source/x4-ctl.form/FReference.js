@@ -30,7 +30,7 @@ function FReference(o){
    //Attribute
    o.border         = null;
    o.hClearCell   = null;
-   o.borderStyle    = EBorder.Round;
+   o.borderStyle    = EUiBorder.Round;
    // Method
    o.formatValue    = FReference_formatValue;
    o.refreshStyle   = FReference_refreshStyle;

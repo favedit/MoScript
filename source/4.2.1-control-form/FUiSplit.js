@@ -6,7 +6,7 @@
 // @version 150123
 //==========================================================
 function FUiSplit(o){
-   //o = RClass.inherits(this, o, FControl, MDesign, MDisplay, MHorizontal);
+   //o = RClass.inherits(this, o, FControl, MDesign, MDisplay, MUiHorizontal);
    o = RClass.inherits(this, o, FControl);
    //..........................................................
    // @property

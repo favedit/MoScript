@@ -22,11 +22,11 @@
 // │└------------┴--------------------------------------┘              │
 // └----------------------------------------------------------------------┘
 //
-// @class FContainer, MForm, MDataset, MValue, MHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey
+// @class FContainer, MForm, MDataset, MValue, MUiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey
 // @history 090922 MAOCY 创建
 //==========================================================
 function FGridControl(o) {
-   //o = RClass.inherits(this, o, FContainer, MValue, MDataset, MDisplay, MFocus, MForm, MProgress, MHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey);
+   //o = RClass.inherits(this, o, FContainer, MValue, MDataset, MDisplay, MUiFocus, MForm, MProgress, MUiHorizontal, MLsnLoaded, MLsnSelect, MLsnClick, MLsnKey);
    o = RClass.inherits(this, o, FContainer);
    //..........................................................
    // @property
@@ -1594,7 +1594,7 @@ function FGridControl_pack(){
 function FGridControl_setVisible(v){
    var o = this;
    o.__base.FContainer.setVisible.call(o, v);
-   o.__base.MHorizontal.setVisible.call(o, v);
+   o.__base.MUiHorizontal.setVisible.call(o, v);
 }
 
 //==========================================================

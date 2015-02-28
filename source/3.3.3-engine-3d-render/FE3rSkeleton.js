@@ -4,8 +4,8 @@
 // @author maocy
 // @history 150130
 //==========================================================
-function FRd3Skeleton(o){
-   o = RClass.inherits(this, o, FRd3Object);
+function FE3rSkeleton(o){
+   o = RClass.inherits(this, o, FE3rObject);
    //..........................................................
    // @attribute
    o._resource    = null;
@@ -14,11 +14,11 @@ function FRd3Skeleton(o){
    o._skins       = null;
    //..........................................................
    // @method
-   o.resource     = FRd3Skeleton_resource;
-   o.bones        = FRd3Skeleton_bones;
-   o.skins        = FRd3Skeleton_skins;
+   o.resource     = FE3rSkeleton_resource;
+   o.bones        = FE3rSkeleton_bones;
+   o.skins        = FE3rSkeleton_skins;
    // @method
-   o.loadResource = FRd3Skeleton_loadResource;
+   o.loadResource = FE3rSkeleton_loadResource;
    return o;
 }
 
@@ -28,7 +28,7 @@ function FRd3Skeleton(o){
 // @method
 // @return FE3sModel 资源
 //==========================================================
-function FRd3Skeleton_resource(){
+function FE3rSkeleton_resource(){
    return this._resource;
 }
 
@@ -38,7 +38,7 @@ function FRd3Skeleton_resource(){
 // @method
 // @return TObjects 骨头集合
 //==========================================================
-function FRd3Skeleton_bones(){
+function FE3rSkeleton_bones(){
    return this._bones;
 }
 
@@ -48,7 +48,7 @@ function FRd3Skeleton_bones(){
 // @method
 // @return TObjects 蒙皮集合
 //==========================================================
-function FRd3Skeleton_skins(){
+function FE3rSkeleton_skins(){
    return this._skins;
 }
 
@@ -58,7 +58,7 @@ function FRd3Skeleton_skins(){
 // @method
 // @param p:resource:FRsModel 资源信息
 //==========================================================
-function FRd3Skeleton_loadResource(p){
+function FE3rSkeleton_loadResource(p){
    var o = this;
    // 设置属性
    o._resource = p;
@@ -69,7 +69,7 @@ function FRd3Skeleton_loadResource(p){
       var bs = o._bones = new TObjects();
       for(var i = 0; i < c; i++){
          var r = rs.value(i);
-         var b = RClass.create(FRd3Bone);
+         var b = RClass.create(FE3rBone);
          b.loadResource(r);
          bs.push(b);
       }

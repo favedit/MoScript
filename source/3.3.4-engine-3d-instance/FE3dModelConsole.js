@@ -90,7 +90,7 @@ function FE3dModelConsole_alloc(pc, pn){
       }
    }
    // 加载渲染对象
-   var rmc = RConsole.find(FRd3ModelConsole);
+   var rmc = RConsole.find(FE3rModelConsole);
    var rm = rmc.load(pc, pn);
    // 加载模型
    var m = RClass.create(FModel3d);

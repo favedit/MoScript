@@ -18,7 +18,7 @@
 // @history 150224
 //==========================================================
 function FUiListBox(o){
-   o = RClass.inherits(this, o, FUiContainer, MHorizontal, MListenerClick);
+   o = RClass.inherits(this, o, FUiContainer, MUiHorizontal, MListenerClick);
    //..........................................................
    // @property
    o._sizeCd      = EUiSize.Horizontal

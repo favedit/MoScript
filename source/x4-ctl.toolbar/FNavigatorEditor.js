@@ -2,12 +2,12 @@
  * <T>功能导航按钮的弹出框。</T>
  *
  * @class 
- * @face FControl,MFocus
+ * @face FControl,MUiFocus
  * @author MAOCY
  * @version 1.0.1
  **************************************************************/
 function FNavigatorEditor(o){
-   o = RClass.inherits(this, o, FControl, MFocus);
+   o = RClass.inherits(this, o, FControl, MUiFocus);
    // Listener
    // Method
    o.construct         = FNavigatorEditor_construct;

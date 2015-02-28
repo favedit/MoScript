@@ -14,7 +14,7 @@ function FDate(o){
    o.editDay      = RClass.register(o, new TPtyBoolSet('editDay', 'editDate', EDateTimeMode.Day));
    // @attribute
    o._date        = null;
-   o.borderStyle  = EBorder.RoundDrop;
+   o.borderStyle  = EUiBorder.RoundDrop;
    //..........................................................
    // @listener
    o.lsnEditEnd   = null;

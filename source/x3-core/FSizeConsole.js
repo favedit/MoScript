@@ -27,7 +27,7 @@ function FSizeConsole(o){
 function FSizeConsole_ohStartDrag(){
    var o = this.link;
    var sc = this.linkSc;
-   if(sc && RClass.isClass(o, MSizeable)){
+   if(sc && RClass.isClass(o, MUiSizeable)){
       if(!o.isDraging){
          if(sc.startDrag(o)){
             o.startDrag(EDrag.Size);
@@ -39,7 +39,7 @@ function FSizeConsole_ohStartDrag(){
 function FSizeConsole_ohDrag(){
    var o = this.link;
    var sc = this.linkSc;
-   if(sc && RClass.isClass(o, MSizeable)){
+   if(sc && RClass.isClass(o, MUiSizeable)){
       sc.drag(o);
    }
 }

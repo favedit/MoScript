@@ -19,7 +19,7 @@ function FPicture(o){
    o.__seed            = 0;
    o.attributes        = null;
    o.border            = null;
-   o.borderStyle       = EBorder.Round;
+   o.borderStyle       = EUiBorder.Round;
    //..........................................................
    // @event
    o.onUploadMouseDown = RClass.register(o, new HMouseDown('onUploadMouseDown'), FPicture_onUploadMouseDown);

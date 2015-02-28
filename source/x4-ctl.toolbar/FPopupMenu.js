@@ -2,7 +2,7 @@
 // FPopupMenu
 // ============================================================
 function FPopupMenu(o){
-   o = RClass.inherits(this, o, FContainer, MFocus, MShadow);
+   o = RClass.inherits(this, o, FContainer, MUiFocus, MShadow);
    /// @style
    o.styleLabel   = RClass.register(o, new TStyle('Label'));
    o.styleButton  = RClass.register(o, new TStyle('Button'));

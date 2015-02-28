@@ -42,7 +42,7 @@ function FButton_setLabel(label){
 function FCalendar(o){
 	o = RClass.inherits(this, o, FEditControl, MEditBorder, MDropable, MDescCalendar);
 	o.date        = new TDate();
-	o.borderStyle = EBorderStyle.RoundDrop;
+	o.borderStyle = EUiBorderStyle.RoundDrop;
 	o.dropIcon    = 'drop';
 	o.hForm       = null;
 	o.hDrop       = null;
@@ -122,7 +122,7 @@ function FCalendar_drop(){
 	}
 }
 function FCalendarEditor(o){
-	o = RClass.inherits(this, o, FDropEditor, MFocusLooper, MShadow);
+	o = RClass.inherits(this, o, FDropEditor, MUiFocusLooper, MShadow);
 	o.editFormat    = RDate.DisplayFormat;
    o.onDayEnter    = RClass.register(o, new HMouseEnter('onDayEnter'),    FCalendarEditor_onDayEnter);
    o.onDayOut      = RClass.register(o, new HMouseOut('onDayOut'),        FCalendarEditor_onDayOut);
@@ -572,7 +572,7 @@ function FCalendarEditor_makeChange(){
 }
 function FCheck(o){
    o = RClass.inherits(this, o, FEditControl, MDescCheck);
-   o.borderStyle   = EBorderStyle.None;
+   o.borderStyle   = EUiBorderStyle.None;
    o.onBuildEdit   = FCheck_onBuildEdit;
 	o.isTextChanged = RMethod.emptyTrue;
    o.text          = FCheck_text;
@@ -618,7 +618,7 @@ function FCheckPicker(o){
    o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescCheckPicker, MDropable);
    o.stIconDropSelect = RClass.register(o, new TStyleIcon('DropSelect'));
    o.items            = new TItems();
-   o.borderStyle      = EBorderStyle.RoundDrop;
+   o.borderStyle      = EUiBorderStyle.RoundDrop;
    o.onBuildEdit      = FCheckPicker_onBuildEdit;
    o.onEditEnd        = FCheckPicker_onEditEnd;
    o.onDataKeyDown    = FCheckPicker_onDataKeyDown;
@@ -880,7 +880,7 @@ function FCheckPickerEditor_hide(){
 }
 function FColorPicker(o){
 	o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescColor, MDropable);
-	o.borderStyle = EBorderStyle.RoundDrop;
+	o.borderStyle = EUiBorderStyle.RoundDrop;
 	o.onBuildEdit = FColorPicker_onBuildEdit;
 	o.onEditEnd   = FColorPicker_onEditEnd;
 	o.setText     = FColorPicker_setText;
@@ -1052,7 +1052,7 @@ function FConfigAction_onLoaded(e){
 	if(r){
 		RWindow.setEnable(true);
 		var v = o.valuable;
-		if(RClass.isClass(v, MFocus)){
+		if(RClass.isClass(v, MUiFocus)){
 			v.focus();
 		}
 	}
@@ -1100,7 +1100,7 @@ function FDataAction_onLoaded(e){
 	if(r){
 		RWindow.setEnable(true);
 		var v = o.valuable;
-		if(RClass.isClass(v, MFocus)){
+		if(RClass.isClass(v, MUiFocus)){
 			v.focus();
 		}
 	}
@@ -1133,7 +1133,7 @@ function FEdit(o){
 	o.styleUnit      = RClass.register(o, new TStyle('Unit'));
 	o.hUnit          = null;
 	o.border         = null;
-	o.borderStyle    = EBorderStyle.Round;
+	o.borderStyle    = EUiBorderStyle.Round;
 	o.onBuildEdit    = FEdit_onBuildEdit;
 	o.onDataKeyDown  = FEdit_onDataKeyDown;
 	o.onBuildControl = FEdit_onBuildControl;
@@ -1208,7 +1208,7 @@ function FEdit_set(v){
 	o.finded = v;
 }
 function FEditControl(o){
-   o = RClass.inherits(this, o, FControl, MDesign, MFocus, MMode, MEditDescriptor, MEditValue);
+   o = RClass.inherits(this, o, FControl, MDesign, MUiFocus, MMode, MEditDescriptor, MEditValue);
    o.dataType          = RClass.register(o, new TPtyStr('dataType'));
    o.labelType         = RClass.register(o, new TPtyStr('labelType', ELabel.All));
    o.labelPosition     = RClass.register(o, new TPtyStr('labelPosition', EPosition.Left));
@@ -1232,7 +1232,7 @@ function FEditControl(o){
    o.hControlForm      = null;
    o.hControlRow       = null;
    o.border            = null;
-   o.borderStyle       = EBorderStyle.None;
+   o.borderStyle       = EUiBorderStyle.None;
    o.oeBuild           = FEditControl_oeBuild;
    o.oeDesign          = FEditControl_oeDesign;
    o.oeMode            = FEditControl_oeMode;
@@ -1459,12 +1459,12 @@ function FEditControl_onBuildPanel(){
 }
 function FEditControl_doFocus(e){
    var o = this;
-   o.base.MFocus.doFocus.call(o, e);
+   o.base.MUiFocus.doFocus.call(o, e);
    o.base.MEditValue.doFocus.call(o, e);
 }
 function FEditControl_doBlur(e){
    var o = this;
-   o.base.MFocus.doBlur.call(o, e);
+   o.base.MUiFocus.doBlur.call(o, e);
    o.base.MEditValue.doBlur.call(o, e);
 }
 function FEditControl_panel(type){
@@ -1505,7 +1505,7 @@ function FEditControl_testFocus(){
 }
 function FEditControl_focus(e){
    var o = this;
-   o.base.MFocus.focus.call(o, e);
+   o.base.MUiFocus.focus.call(o, e);
    o.hEdit.focus();
 }
 function FEditControl_text(){
@@ -1903,7 +1903,7 @@ function FIconPicker(o){
 	o.iconDefault    = RClass.register(o, new TPtyStr('iconDefault'));
 	o.stIconDefault  = RClass.register(o, new TStyleIcon('Default'));
    o.hEditIcon      = null;
-   o.borderStyle    = EBorderStyle.RoundIcon;
+   o.borderStyle    = EUiBorderStyle.RoundIcon;
 	o.onEditKeyDown  = FIconPicker_onEditKeyDown;
 	o.onEditKeyPress = FIconPicker_onEditKeyPress;
 	o.onBuildEdit    = FIconPicker_onBuildEdit;
@@ -1965,7 +1965,7 @@ function FLabel_setText(text){
 	this.hEdit.value = text;
 }
 function FListBox(o){
-	o = RClass.inherits(this, o, FPanel, MHorizontal);
+	o = RClass.inherits(this, o, FPanel, MUiHorizontal);
 	o.lsnsClick   = new TListeners();
 	o.appendLine  = FListBox_appendLine;
 	return o;
@@ -1976,7 +1976,7 @@ function FListBox_appendLine(){
 	return h;
 }
 function FListItem(o){
-	o = RClass.inherits(this, o, FControl, MDesign, MHorizontal);
+	o = RClass.inherits(this, o, FControl, MDesign, MUiHorizontal);
 	o.styleForm    = RClass.register(o, new TStyle('Form'));
 	o.styleIcon    = RClass.register(o, new TStyle('Icon'));
 	o.styleLabel   = RClass.register(o, new TStyle('Label'));
@@ -2235,7 +2235,7 @@ function FMemo(o){
 	o.validLenmax    = RClass.register(o, new TPtyStr('validLenmax'));
 	o.editOverflow   = RClass.register(o, new TPtyStr('editOverflow'));
 	o.hUnit          = null;
-	o.borderStyle    = EBorderStyle.Round;
+	o.borderStyle    = EUiBorderStyle.Round;
 	o.onBuildEdit    = FMemo_onBuildEdit;
 	o.onEditKeyPress = FMemo_onEditKeyPress;
 	o.onBuildControl = FMemo_onBuildControl;
@@ -2430,7 +2430,7 @@ function FNumber(o){
    o.stIconDownSelect = RClass.register(o, new TStyleIcon('DownSelect'));
    o.hUpIcon          = null;
    o.hDownIcon        = null;
-   o.borderStyle      = EBorderStyle.RoundDrop;
+   o.borderStyle      = EUiBorderStyle.RoundDrop;
    o.onUpIconMdown    = RClass.register(o, new HMouseDown('onUpIconMdown'),      FNumber_onUpIconMdown);
    o.onUpIconMup      = RClass.register(o, new HMouseUp('onUpIconMup'),          FNumber_onUpIconMup);
    o.onDownIconMdown  = RClass.register(o, new HMouseDown('onDownIconMdown'),    FNumber_onDownIconMdown);
@@ -2825,7 +2825,7 @@ function FNumber_ohEditBlur(e){
    o.setText(o.formatText(o.text()));
 }
 function FPanel(o){
-	o = RClass.inherits(this, o, FContainer, MFocus);
+	o = RClass.inherits(this, o, FContainer, MUiFocus);
 	o.hContainer     = null;
 	o.hPanelTable    = null;
 	o.hPanelLine     = null;
@@ -2879,7 +2879,7 @@ function FPanel_appendChild(ctl){
 	if(!o.hPanelLine){
 		o.appendLine();
 	}
-	if(RClass.isClass(ctl, MHorizontal)){
+	if(RClass.isClass(ctl, MUiHorizontal)){
 		if(o.hPanelTable.rows[0].cells.length == 0){
 			o.hContainer.insertBefore(ctl.hPanel, o.hPanelTable);
 		}else{
@@ -2918,10 +2918,10 @@ function FPanel_moveChild(cf, ct, pos, copy){
 	var o = this;
 	var hPanel = o.hPanel;
 	var moved = false;
-	var cfh = RClass.isClass(cf, MHorizontal);
+	var cfh = RClass.isClass(cf, MUiHorizontal);
 	var hCfTd = RHtml.parent(cf.hPanel, 'TD');
 	var hCfTab = RHtml.parent(cf.hPanel, 'TABLE');
-	var cth = RClass.isClass(ct, MHorizontal);
+	var cth = RClass.isClass(ct, MUiHorizontal);
 	var hTd = RHtml.parent(ct.hPanel, 'TD');
 	var hTable = RHtml.parent(hTd, 'TABLE');
 	switch(pos){
@@ -3295,7 +3295,7 @@ function FPickerEditor_setValue(value){
 	o.select(o.selectIndex);
 }
 function FPicture(o){
-	o = RClass.inherits(this, o, FDataEditControl, MFocus);
+	o = RClass.inherits(this, o, FDataEditControl, MUiFocus);
    o.picSrc = RClass.register(o, new TPtyStr('picSrc'));
    o.picWidth = RClass.register(o, new TPtyStr('picWidth'));
    o.picHeight = RClass.register(o, new TPtyStr('picHeight'));
@@ -3488,7 +3488,7 @@ function FSelect(o){
 	o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescSelect, MDropable);
 	o.stIconDropSelect = RClass.register(o, new TStyleIcon('DropSelect'));
 	o.items            = new TItems();
-	o.borderStyle      = EBorderStyle.RoundDrop;
+	o.borderStyle      = EUiBorderStyle.RoundDrop;
 	o.onBuildEdit      = FSelect_onBuildEdit;
 	o.onEditEnd        = FSelect_onEditEnd;
 	o.onDataKeyDown    = FSelect_onDataKeyDown;
@@ -3797,7 +3797,7 @@ function FSelectItem_setChecked(f){
 	o.hPanel.className = f ? o.style('Select') : o.style('Panel');
 }
 function FSplit(o){
-	o = RClass.inherits(this, o, FControl, MDisplayAble, MDesign, MHorizontal);
+	o = RClass.inherits(this, o, FControl, MDisplayAble, MDesign, MUiHorizontal);
 	o.styleTitle   = RClass.register(o, new TStyle('Title'));
 	o.onSplitHover = RClass.register(o, new HMouseOver('onSplitHover'),    FSplit_onSplitHover);
 	o.onSplitOut   = RClass.register(o, new HMouseOut('onSplitOut'),    FSplit_onSplitOut);
@@ -3873,7 +3873,7 @@ function FSplit_extend(v){
 			continue;
 		}
 		if(start){
-			if(RClass.isClass(c, MHorizontal)){
+			if(RClass.isClass(c, MUiHorizontal)){
 				break;
 			}
 			c.setVisible(this.extended);
@@ -3881,7 +3881,7 @@ function FSplit_extend(v){
 	}
 }
 function FTemplate(o){
-	o = RClass.inherits(this, o, FControl, MDisplayAble, MDesign, MHorizontal);
+	o = RClass.inherits(this, o, FControl, MDisplayAble, MDesign, MUiHorizontal);
 	o.icon         = RClass.register(o, new TPtyStr('icon'));
 	o.styleTitle   = RClass.register(o, new TStyle('Title'));
 	o.extended     = true;
@@ -3924,7 +3924,7 @@ function FWebTemplate(o){
 function MEditBorder(o){
    o = RClass.inherits(this, o);
    o.editBorder         = null;
-   o.borderStyle        = EBorderStyle.None;
+   o.borderStyle        = EUiBorderStyle.None;
    o.onBuildEditBorder  = MEditBorder_onBuildEditBorder;
    o.setEditBorderStyle = MEditBorder_setEditBorderStyle;
    return o;
@@ -3953,15 +3953,15 @@ function MEditBorder_setEditBorderStyle(t, c){
    var o = this;
    var b = o.editBorder;
    var s = b.style;
-   if(EBorderStyle.Round == s){
+   if(EUiBorderStyle.Round == s){
       if(EStyle.Readonly == t){
       }else if(EStyle.Hover == t){
       }else{
       }
-   }else if(EBorderStyle.RoundIcon == s){
+   }else if(EUiBorderStyle.RoundIcon == s){
       b.hIcon.style.backgroundColor = c;
       b.hPanel.style.backgroundColor = c;
-   }else if(EBorderStyle.RoundDrop == s){
+   }else if(EUiBorderStyle.RoundDrop == s){
       if(EStyle.Readonly == t){
       }else if(EStyle.Hover == t){
       }else{

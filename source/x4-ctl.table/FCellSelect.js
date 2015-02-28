@@ -6,7 +6,7 @@
 // @version 1.0.1
 //==========================================================
 function FCellSelect(o){
-   o = RClass.inherits(this, o, FCellEditControl, MFocus, MCellDropable);
+   o = RClass.inherits(this, o, FCellEditControl, MUiFocus, MCellDropable);
    // Css
    o.stForm          = RClass.register(o, new TStyle('Form'));
    o.stEditForm      = RClass.register(o, new TStyle('EditForm'));

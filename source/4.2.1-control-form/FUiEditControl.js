@@ -614,7 +614,7 @@ function FUiEditControl_oeLoadValue(e){
 //==========================================================
 function FUiEditControl_doFocus(e){
    var o = this;
-   o.__base.MFocus.doFocus.call(o, e);
+   o.__base.MUiFocus.doFocus.call(o, e);
    o.__base.MEditValue.doFocus.call(o, e);
 }
 
@@ -626,7 +626,7 @@ function FUiEditControl_doFocus(e){
 //==========================================================
 function FUiEditControl_doBlur(e){
    var o = this;
-   o.__base.MFocus.doBlur.call(o, e);
+   o.__base.MUiFocus.doBlur.call(o, e);
    o.__base.MEditValue.doBlur.call(o, e);
 }
 
@@ -763,7 +763,7 @@ function FUiEditControl_setVisible(v){
 //==========================================================
 function FUiEditControl_focus(){
    var o = this;
-   o.__base.MFocus.focus.call(o);
+   o.__base.MUiFocus.focus.call(o);
    if(o.hEdit){
       // 获得焦点，忽略错误
       try{
@@ -826,12 +826,12 @@ function FUiEditControl_refreshStyle(){
    }
    // 设置边框显示方式
    if(o.editBorder){
-      var bs = EBorderStyle.Readonly;
+      var bs = EUiBorderStyle.Readonly;
       if(o._editable){
-         bs = EBorderStyle.Edit;
+         bs = EUiBorderStyle.Edit;
       }
       if(o._hover){
-         bs = EBorderStyle.Hover;
+         bs = EUiBorderStyle.Hover;
       }
       o.setEditBorderStyle(bs, bc);
    }

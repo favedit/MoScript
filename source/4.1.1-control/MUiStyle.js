@@ -5,15 +5,15 @@
 // @author maocy
 // @version 150101
 //==========================================================
-function MStyle(o){
+function MUiStyle(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @method
    o.construct     = RMethod.empty;
    // @method
-   o.styleName     = MStyle_styleName;
-   o.styleIcon     = MStyle_styleIcon;
-   o.styleIconPath = MStyle_styleIconPath;
+   o.styleName     = MUiStyle_styleName;
+   o.styleIcon     = MUiStyle_styleIcon;
+   o.styleIconPath = MUiStyle_styleIconPath;
    // @method
    o.dispose       = RMethod.empty;
    return o;
@@ -27,7 +27,7 @@ function MStyle(o){
 // @param c:class:TClass 类对象
 // @return String 样式名称
 //==========================================================
-function MStyle_styleName(n, c){
+function MUiStyle_styleName(n, c){
    var o = this;
    var f = c ? c : o;
    var tn = RClass.name(f);
@@ -42,7 +42,7 @@ function MStyle_styleName(n, c){
 // @param c:class:TClass 类对象
 // @return String 图标名称
 //==========================================================
-function MStyle_styleIcon(n, c){
+function MUiStyle_styleIcon(n, c){
    return RClass.name(c ? c : this, true) + '_' + n;
 }
 
@@ -53,6 +53,6 @@ function MStyle_styleIcon(n, c){
 // @param c:class:TClass 类对象
 // @return String 图标路径
 //==========================================================
-function MStyle_styleIconPath(n, c){
+function MUiStyle_styleIconPath(n, c){
    return RResource.iconPath(RClass.name(c ? c : this, true) + '_' + n);
 }

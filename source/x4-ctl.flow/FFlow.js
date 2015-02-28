@@ -18,7 +18,7 @@ function FFlow_oeBuild(e){
    var hp = o.hPanel;
    if(e.isBefore()){
       // 建立边框
-      //var b = o.border = new TBorder(EBorder.Round, hp);
+      //var b = o.border = new TBorder(EUiBorder.Round, hp);
       //b.build();
       //b.setBorderColor('#CFCF29');
       //b.hPanel.style.filter = 'progid:DXImageTransform.Microsoft.Gradient(gradienttype=0,startcolorstr=#FFFFFF,endcolorstr=#F8F8E0)';

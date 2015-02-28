@@ -14,7 +14,7 @@ function FLogicUserPicker(o){
    //Attribute
    o.hUnit          = null;
    o.lable          = null;
-   o.borderStyle    = EBorder.Round;
+   o.borderStyle    = EUiBorder.Round;
    // Event
    o.onBuildEdit    = FLogicUserPicker_onBuildEdit;
    o.onEditKeyPress = FLogicUserPicker_onEditKeyPress;

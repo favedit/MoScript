@@ -4,7 +4,7 @@
 function FColorPicker(o){
    o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescColor, MDropable);
    // Html
-   o.borderStyle = EBorder.RoundDrop;
+   o.borderStyle = EUiBorder.RoundDrop;
    // Event
    o.onBuildEdit = FColorPicker_onBuildEdit;
    o.onEditEnd   = FColorPicker_onEditEnd;

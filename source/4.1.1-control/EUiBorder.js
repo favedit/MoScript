@@ -4,12 +4,16 @@
 // @enum
 // @history 091105 创建
 //==========================================================
-var EBorderStyle = new function EBorderStyle(){
+var EUiBorder = new function EUiBorder(){
    var o = this;
    //..........................................................
    // @member
-   o.Readonly = 1;
-   o.Edit     = 2;
-   o.Hover    = 3;
+   o.None          = 0;
+   o.Square        = 1;
+   o.Round         = 2;
+   o.RoundIcon     = 3;
+   o.RoundDrop     = 4;
+   o.RoundTitle    = 5;
+   o.RoundIconDrop = 6;
    return o;
 }

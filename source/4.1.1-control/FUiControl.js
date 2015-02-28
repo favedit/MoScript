@@ -15,7 +15,7 @@
 // @version 141231
 //==========================================================
 function FUiControl(o){
-   o = RClass.inherits(this, o, FUiComponent, MStyle, MSize, MPadding);
+   o = RClass.inherits(this, o, FUiComponent, MUiStyle, MUiSize, MUiPadding);
    //..........................................................
    // @property Boolean 是否禁止
    o._visible       = RClass.register(o, new APtyBoolean('_visible'), true);
@@ -264,9 +264,9 @@ function FUiControl_oeRefresh(e){
 function FUiControl_construct(){
    var o = this;
    o.__base.FUiComponent.construct.call(o);
-   o.__base.MStyle.construct.call(o);
-   o.__base.MSize.construct.call(o);
-   o.__base.MPadding.construct.call(o);
+   o.__base.MUiStyle.construct.call(o);
+   o.__base.MUiSize.construct.call(o);
+   o.__base.MUiPadding.construct.call(o);
 }
 
 //==========================================================
@@ -690,8 +690,8 @@ function FUiControl_dispose(){
    o._hParent = null;
    o._hPanel = RHtml.free(o._hPanel);
    // 释放处理
-   o.__base.MPadding.dispose.call(o);
-   o.__base.MSize.dispose.call(o);
-   o.__base.MStyle.dispose.call(o);
+   o.__base.MUiPadding.dispose.call(o);
+   o.__base.MUiSize.dispose.call(o);
+   o.__base.MUiStyle.dispose.call(o);
    o.__base.FUiComponent.dispose.call(o);
 }

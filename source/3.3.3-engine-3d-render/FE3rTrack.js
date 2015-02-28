@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150107
 //==========================================================
-function FRd3Track(o){
+function FE3rTrack(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
@@ -12,13 +12,13 @@ function FRd3Track(o){
    o._resource    = null;
    //..........................................................
    // @method
-   o.construct    = FRd3Track_construct;
+   o.construct    = FE3rTrack_construct;
    // @method
-   o.matrix       = FRd3Track_matrix;
-   o.resource     = FRd3Track_resource;
-   o.loadResource = FRd3Track_loadResource;
+   o.matrix       = FE3rTrack_matrix;
+   o.resource     = FE3rTrack_resource;
+   o.loadResource = FE3rTrack_loadResource;
    // @method
-   o.dispose      = FRd3Track_dispose;
+   o.dispose      = FE3rTrack_dispose;
    return o;
 }
 
@@ -27,7 +27,7 @@ function FRd3Track(o){
 //
 // @method
 //==========================================================
-function FRd3Track_construct(){
+function FE3rTrack_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._matrix = new SMatrix3d();
@@ -39,7 +39,7 @@ function FRd3Track_construct(){
 // @method
 // @return SMatrix3d 矩阵
 //==========================================================
-function FRd3Track_matrix(){
+function FE3rTrack_matrix(){
    return this._matrix;
 }
 
@@ -49,7 +49,7 @@ function FRd3Track_matrix(){
 // @method
 // @return FE3sTrack 资源
 //==========================================================
-function FRd3Track_resource(){
+function FE3rTrack_resource(){
    return this._resource;
 }
 
@@ -59,7 +59,7 @@ function FRd3Track_resource(){
 // @method
 // @return FE3sBone 资源
 //==========================================================
-function FRd3Track_loadResource(p){
+function FE3rTrack_loadResource(p){
    var o = this;
    o._resource = p;
    // 设置属性
@@ -75,7 +75,7 @@ function FRd3Track_loadResource(p){
 //
 // @method
 //==========================================================
-function FRd3Track_dispose(){
+function FE3rTrack_dispose(){
    var o = this;
    // 释放内容
    o._resource = null;

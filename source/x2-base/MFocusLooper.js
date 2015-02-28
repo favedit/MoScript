@@ -1,19 +1,19 @@
 // ============================================================
-// MFocusLooper
+// MUiFocusLooper
 // ============================================================
-function MFocusLooper(o){
+function MUiFocusLooper(o){
    o = RClass.inherits(this, o);
    // Attribute
    o.focusIndex   = 0;
    o.focusObjects = new TList();
    // Method
-   o.focusNext    = MFocusLooper_focusNext;
-   o.focusPrior   = MFocusLooper_focusPrior;
-   o.pushFocus    = MFocusLooper_pushFocus;
+   o.focusNext    = MUiFocusLooper_focusNext;
+   o.focusPrior   = MUiFocusLooper_focusPrior;
+   o.pushFocus    = MUiFocusLooper_pushFocus;
    return o;
 }
 // ------------------------------------------------------------
-function MFocusLooper_focusPrior(){
+function MUiFocusLooper_focusPrior(){
    var o = this;
    o.focusIndex--;
    if(o.focusIndex < 0){
@@ -25,7 +25,7 @@ function MFocusLooper_focusPrior(){
    }
 }
 // ------------------------------------------------------------
-function MFocusLooper_focusNext(){
+function MUiFocusLooper_focusNext(){
    var o = this;
    o.focusIndex++;
    if(o.focusIndex >= o.focusObjects.count){
@@ -37,7 +37,7 @@ function MFocusLooper_focusNext(){
    }
 }
 // ------------------------------------------------------------
-function MFocusLooper_pushFocus(h){
+function MUiFocusLooper_pushFocus(h){
    this.focusObjects.push(h);
 }
 // ------------------------------------------------------------

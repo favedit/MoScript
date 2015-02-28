@@ -6,7 +6,7 @@
 // @version 150224
 //==========================================================
 function FUiEditor(o){
-   o = RClass.inherits(this, o, FUiControl, MFocus);
+   o = RClass.inherits(this, o, FUiControl, MUiFocus);
    //..........................................................
    // @property
    o._visible       = false;
@@ -155,7 +155,7 @@ function FUiEditor_doBlur(){
    var s = o._source;
    if(s){
       o.editCancel();
-      if(RClass.isClass(s, MFocus)){
+      if(RClass.isClass(s, MUiFocus)){
          s.doBlur();
       }
    }

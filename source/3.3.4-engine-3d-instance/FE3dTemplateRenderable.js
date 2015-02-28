@@ -98,7 +98,7 @@ function FE3dTemplateRenderable_loadResource(p){
    // 设置数据
    o._matrix.assign(p.matrix());
    // 加载模型
-   o._model = RConsole.find(FRd3ModelConsole).load(o._graphicContext, p.modelGuid());
+   o._model = RConsole.find(FE3rModelConsole).load(o._graphicContext, p.modelGuid());
    //............................................................
    // 加载材质
    var mr = o._materialResource = p._activeMaterial._material;
@@ -107,7 +107,7 @@ function FE3dTemplateRenderable_loadResource(p){
    // 加载纹理集合
    var rs = mr.textures();
    if(rs){
-      var bc = RConsole.find(FRd3BitmapConsole)
+      var bc = RConsole.find(FE3rBitmapConsole)
       var c = rs.count();
       var ts = o._textures = new TDictionary();
       for(var i = 0; i < c; i++){
@@ -152,7 +152,7 @@ function FE3dTemplateRenderable_load(){
    }
    // 设置网格
    var rm = r.mesh();
-   var rd = o._renderable = RConsole.find(FRd3ModelConsole).findMesh(r.meshGuid());
+   var rd = o._renderable = RConsole.find(FE3rModelConsole).findMesh(r.meshGuid());
    var vbs = rd._vertexBuffers;
    var c = vbs.count();
    for(var i = 0; i < c; i++){

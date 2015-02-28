@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150106
 //==========================================================
-function FRd3ModelConsole(o){
+function FE3rModelConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
@@ -19,17 +19,17 @@ function FRd3ModelConsole(o){
    o._interval   = 200;
    //..........................................................
    // @event
-   o.onProcess   = FRd3ModelConsole_onProcess;
+   o.onProcess   = FE3rModelConsole_onProcess;
    //..........................................................
    // @method
-   o.construct   = FRd3ModelConsole_construct;
+   o.construct   = FE3rModelConsole_construct;
    // @method
-   o.findModel   = FRd3ModelConsole_findModel;
-   o.models      = FRd3ModelConsole_models;
-   o.findMesh    = FRd3ModelConsole_findMesh;
-   o.meshs       = FRd3ModelConsole_meshs;
+   o.findModel   = FE3rModelConsole_findModel;
+   o.models      = FE3rModelConsole_models;
+   o.findMesh    = FE3rModelConsole_findMesh;
+   o.meshs       = FE3rModelConsole_meshs;
    // @method
-   o.load        = FRd3ModelConsole_load;
+   o.load        = FE3rModelConsole_load;
    return o;
 }
 
@@ -38,7 +38,7 @@ function FRd3ModelConsole(o){
 //
 // @method
 //==========================================================
-function FRd3ModelConsole_onProcess(){
+function FE3rModelConsole_onProcess(){
    var o = this;
    var ms = o._loadModels;
    ms.record();
@@ -55,7 +55,7 @@ function FRd3ModelConsole_onProcess(){
 //
 // @method
 //==========================================================
-function FRd3ModelConsole_construct(){
+function FE3rModelConsole_construct(){
    var o = this;
    // 设置属性
    o._loadModels = new TLooper();
@@ -75,7 +75,7 @@ function FRd3ModelConsole_construct(){
 // @param p:guid:String 唯一编号
 // @return FE3sModel 渲染模型
 //==========================================================
-function FRd3ModelConsole_findModel(p){
+function FE3rModelConsole_findModel(p){
    return this._models.get(p);
 }
 
@@ -85,7 +85,7 @@ function FRd3ModelConsole_findModel(p){
 // @method
 // @return TDictionary 渲染模型集合
 //==========================================================
-function FRd3ModelConsole_models(){
+function FE3rModelConsole_models(){
    return this._models;
 }
 
@@ -96,7 +96,7 @@ function FRd3ModelConsole_models(){
 // @param p:guid:String 唯一编号
 // @return FE3sMesh 渲染网格
 //==========================================================
-function FRd3ModelConsole_findMesh(p){
+function FE3rModelConsole_findMesh(p){
    return this._meshs.get(p);
 }
 
@@ -106,7 +106,7 @@ function FRd3ModelConsole_findMesh(p){
 // @method
 // @return TDictionary 渲染网格集合
 //==========================================================
-function FRd3ModelConsole_meshs(){
+function FE3rModelConsole_meshs(){
    return this._meshs;
 }
 
@@ -118,7 +118,7 @@ function FRd3ModelConsole_meshs(){
 // @param pn:name:String 名称
 // @return FRenderModel 渲染模型
 //==========================================================
-function FRd3ModelConsole_load(pc, pn){
+function FE3rModelConsole_load(pc, pn){
    var o = this;
    // 检查参数
    if(pc == null){
@@ -136,7 +136,7 @@ function FRd3ModelConsole_load(pc, pn){
    var rmc = RConsole.find(FE3sModelConsole);
    var rm = rmc.load(pn);
    // 加载模型
-   m = RClass.create(FRd3Model);
+   m = RClass.create(FE3rModel);
    m.linkGraphicContext(pc);
    m.setName(pn);
    m.setResource(rm);

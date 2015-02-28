@@ -7,7 +7,7 @@ function FCheckPicker(o){
    o.stIconDropSelect = RClass.register(o, new TStyleIcon('DropSelect'));
    // Attribute
    o.items            = new TItems();
-   o.borderStyle      = EBorder.RoundDrop;
+   o.borderStyle      = EUiBorder.RoundDrop;
    // Event
    o.onBuildEdit      = FCheckPicker_onBuildEdit;
    o.onEditEnd        = FCheckPicker_onEditEnd;

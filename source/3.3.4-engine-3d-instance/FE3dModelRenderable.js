@@ -150,7 +150,7 @@ function FE3dModelRenderable_load(p){
 // <T>构建处理。</T>
 //
 // @method
-// @param p:animation:FRd3Animation 动画
+// @param p:animation:FE3rAnimation 动画
 //==========================================================
 function FE3dModelRenderable_build(p){
    var o = this;

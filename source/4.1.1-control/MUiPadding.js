@@ -5,20 +5,20 @@
 // @author maocy
 // @version 150101
 //==========================================================
-function MPadding(o){
+function MUiPadding(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property SPadding 填充结构
    o._padding       = RClass.register(o, new APtyPadding('_padding'));
    //..........................................................
    // @method
-   o.construct      = MPadding_construct;
+   o.construct      = MUiPadding_construct;
    // @method
-   o.padding        = MPadding_padding;
-   o.setPadding     = MPadding_setPadding;
-   o.refreshPadding = MPadding_refreshPadding;
+   o.padding        = MUiPadding_padding;
+   o.setPadding     = MUiPadding_setPadding;
+   o.refreshPadding = MUiPadding_refreshPadding;
    // @method
-   o.dispose        = MPadding_dispose;
+   o.dispose        = MUiPadding_dispose;
    return o;
 }
 
@@ -27,7 +27,7 @@ function MPadding(o){
 //
 // @method
 //==========================================================
-function MPadding_construct(){
+function MUiPadding_construct(){
    var o = this;
    o._padding = new SPadding();
 }
@@ -38,7 +38,7 @@ function MPadding_construct(){
 // @method
 // @return 填充空白
 //==========================================================
-function MPadding_padding(){
+function MUiPadding_padding(){
    return this._padding;
 }
 
@@ -51,7 +51,7 @@ function MPadding_padding(){
 // @param r:right:Integer 右空白
 // @param b:bottom:Integer 下空白
 //==========================================================
-function MPadding_setPadding(l, t, r, b){
+function MUiPadding_setPadding(l, t, r, b){
    var o = this;
    var p = o._padding;
    var h = o.panel(EPanel.Container);
@@ -90,7 +90,7 @@ function MPadding_setPadding(l, t, r, b){
 //
 // @method
 //==========================================================
-function MPadding_refreshPadding(){
+function MUiPadding_refreshPadding(){
    var o = this;
    var p = o._padding;
    o.setPadding(p.left, p.top, p.right, p.bottom);
@@ -101,7 +101,7 @@ function MPadding_refreshPadding(){
 //
 // @method
 //==========================================================
-function MPadding_dispose(){
+function MUiPadding_dispose(){
    var o = this;
    // 释放属性
    var v = o._padding;

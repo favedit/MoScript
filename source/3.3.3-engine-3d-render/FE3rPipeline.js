@@ -2,21 +2,19 @@
 // <T>渲染几何体。</T>
 //
 // @author maocy
-// @history 150106
+// @history 141231
 //==========================================================
-function FRd3Material(o){
-   o = RClass.inherits(this, o, FG3dObject);
+function FE3rPipeline(o){
+   o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._vertexBuffers   = null;
-   o._indexBuffer     = null;
-   o._material        = null;
+   o._vertexBuffers = null;
+   o._indexBuffer   = null;
    //..........................................................
    // @method
-   o.construct        = FRd3Material_construct;
-   o.findVertexBuffer = FRd3Material_findVertexBuffer;
-   o.indexBuffer      = FRd3Material_indexBuffer;
-   o.loadResource     = FRd3Material_loadResource;
+   o.construct        = FE3rPipeline_construct;
+   o.findVertexBuffer = FE3rPipeline_findVertexBuffer;
+   o.loadResource     = FE3rPipeline_loadResource;
    return o;
 }
 
@@ -25,9 +23,9 @@ function FRd3Material(o){
 //
 // @method
 //==========================================================
-function FRd3Material_construct(){
+function FE3rPipeline_construct(){
    var o = this;
-   o.__base.FG3dObject.construct.call(o);
+   o.__base.FRenderable.construct.call(o);
    o._vertexBuffers = new TObjects();
 }
 
@@ -37,7 +35,7 @@ function FRd3Material_construct(){
 // @method
 // @param p:name:String 名称
 //==========================================================
-function FRd3Material_findVertexBuffer(p){
+function FE3rPipeline_findVertexBuffer(p){
    var o = this;
    var vs = o._vertexBuffers;
    var c = vs.count();
@@ -51,21 +49,11 @@ function FRd3Material_findVertexBuffer(p){
 }
 
 //==========================================================
-// <T>获得索引缓冲。</T>
-//
-// @method
-// @return FRenderIndexBuffer 索引缓冲
-//==========================================================
-function FRd3Material_indexBuffer(){
-   return this._indexBuffer;
-}
-
-//==========================================================
 // <T>加载资源。</T>
 //
 // @param p:resource:FE3sGeometry 资源
 //==========================================================
-function FRd3Material_loadResource(p){
+function FE3rPipeline_loadResource(p){
    var o = this;
    var c = o._context;
    // 创建顶点缓冲集合
@@ -75,7 +63,6 @@ function FRd3Material_loadResource(p){
       var rv = rvs.get(n);
       var vb = context.createVertexBuffer();
       vb._name = rv.name();
-      vb._formatCd = rv.formatCd();
       vb.upload(new Float32Array(rv._data), rv._stride, rv._vertexCount);
       o._vertexBuffers.push(vb);
    }
@@ -83,13 +70,4 @@ function FRd3Material_loadResource(p){
    var rib = p.indexBuffer();
    var ib = o._indexBuffer = c.createIndexBuffer();
    ib.upload(rib.data(), rib.count());
-   // 关联材质
-   var materialCode = p.materialCode();
-   var themeConsole = RConsole.find(FE3sThemeConsole);
-   var material = o._material = themeConsole.find(materialCode);
-   var textures = material.textures();
-   var textureCount = textures.count();
-   for(var n = 0; n < textureCount; n++){
-      var texture = textures.get(n);
-   }
 }

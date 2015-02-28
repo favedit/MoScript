@@ -5,7 +5,7 @@
 // @history 150121
 //==========================================================
 function FUiToolButtonMenu(o){
-   o = RClass.inherits(this, o, FUiToolButton, MUiContainer, MDropable, MFocus);
+   o = RClass.inherits(this, o, FUiToolButton, MUiContainer, MDropable, MUiFocus);
    //..........................................................
    // @attribute
    o.popup         = null;

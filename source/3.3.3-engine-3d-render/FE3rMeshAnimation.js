@@ -4,11 +4,11 @@
 // @author maocy
 // @history 150107
 //==========================================================
-function FRd3MeshAnimation(o){
-   o = RClass.inherits(this, o, FRd3Animation);
+function FE3rMeshAnimation(o){
+   o = RClass.inherits(this, o, FE3rAnimation);
    //..........................................................
    // @method
-   o.process = FRd3MeshAnimation_process;
+   o.process = FE3rMeshAnimation_process;
    return o;
 }
 
@@ -16,9 +16,9 @@ function FRd3MeshAnimation(o){
 // <T>更新处理。</T>
 //
 // @method
-// @param p:track:FRd3Track 跟踪器
+// @param p:track:FE3rTrack 跟踪器
 //==========================================================
-function FRd3MeshAnimation_process(p){
+function FE3rMeshAnimation_process(p){
    var o = this;
    // 获得间隔
    var ct = o._currentTick;

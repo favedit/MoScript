@@ -683,7 +683,7 @@ function FE3dModelConsole_alloc(pc, pn){
          return ms.pop();
       }
    }
-   var rmc = RConsole.find(FRd3ModelConsole);
+   var rmc = RConsole.find(FE3rModelConsole);
    var rm = rmc.load(pc, pn);
    var m = RClass.create(FModel3d);
    m._context = pc;
@@ -1530,7 +1530,7 @@ function FE3dTemplate_loadSkeletons(p){
       var ks = o.skeletons();
       for(var i = 0; i < c; i++){
          var r = p.get(i);
-         var s = RClass.create(FRd3Skeleton);
+         var s = RClass.create(FE3rSkeleton);
          s.loadResource(r);
          o.pushSkeleton(s);
       }
@@ -1558,9 +1558,9 @@ function FE3dTemplate_loadAnimations(p){
          }
          var a = null;
          if(r.skeleton()){
-            a = RClass.create(FRd3SkeletonAnimation);
+            a = RClass.create(FE3rSkeletonAnimation);
          }else{
-            a = RClass.create(FRd3MeshAnimation);
+            a = RClass.create(FE3rMeshAnimation);
          }
          a.loadResource(r);
          o.pushAnimation(a);
@@ -1944,13 +1944,13 @@ function FE3dTemplateRenderable_loadResource(p){
    var o = this;
    o._resource = p;
    o._matrix.assign(p.matrix());
-   o._model = RConsole.find(FRd3ModelConsole).load(o._graphicContext, p.modelGuid());
+   o._model = RConsole.find(FE3rModelConsole).load(o._graphicContext, p.modelGuid());
    var mr = o._materialResource = p._activeMaterial._material;
    o._effectCode = mr.info().effectCode;
    o._material.calculate(mr);
    var rs = mr.textures();
    if(rs){
-      var bc = RConsole.find(FRd3BitmapConsole)
+      var bc = RConsole.find(FE3rBitmapConsole)
       var c = rs.count();
       var ts = o._textures = new TDictionary();
       for(var i = 0; i < c; i++){
@@ -1978,7 +1978,7 @@ function FE3dTemplateRenderable_load(){
       d.loadAnimations(rda);
    }
    var rm = r.mesh();
-   var rd = o._renderable = RConsole.find(FRd3ModelConsole).findMesh(r.meshGuid());
+   var rd = o._renderable = RConsole.find(FE3rModelConsole).findMesh(r.meshGuid());
    var vbs = rd._vertexBuffers;
    var c = vbs.count();
    for(var i = 0; i < c; i++){

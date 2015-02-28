@@ -120,7 +120,7 @@ function FDesignConsole_onInterval(){
    var c = o.moveControl;
    if(c && !o.movePosOrg.equals(o.movePos)){
       o.movePosOrg.assign(o.movePos);
-      if(RClass.isClass(c, MHorizontal)){
+      if(RClass.isClass(c, MUiHorizontal)){
          c.setBounds(o.controlPos.x, o.movePos.y - o.clickPos.y-o.parentPos.y);
       }else{
          c.setBounds(o.movePos.x-o.parentPos.x-2, o.movePos.y-o.parentPos.y-2);
@@ -291,7 +291,7 @@ function FDesignConsole_startDrag(cnt, ctl){
    for(var n=0; n<cs.count; n++){
       var c = cs.value(n);
       var r = RHtml.rect(c.panel(EPanel.Design));
-      if(!RClass.isClass(c, MHorizontal)){
+      if(!RClass.isClass(c, MUiHorizontal)){
          var pr = RHtml.rect(c.hPanelLine);
          r.top = pr.top;
          r.bottom = pr.bottom;
@@ -348,7 +348,7 @@ function FDesignConsole_showSplit(x, y){
    var cs = o.actContainer.controls;
    if(cs){
       var sr = o.splitRect;
-      var vpos = RClass.isClass(this.activeControl, MHorizontal);
+      var vpos = RClass.isClass(this.activeControl, MUiHorizontal);
       for(var n=0; n<o.activeLines.count; n++){
          var lc = o.activeLines.get(n);
          var ln = o.activeLines.get(n+1);
@@ -379,7 +379,7 @@ function FDesignConsole_showSplit(x, y){
             var rcount = o.activeRects.count;
             for(var i=0; i<rcount; i++){
                var r = o.activeRects.get(i);
-               if(r.top == lc && !RClass.isClass(r.control, MHorizontal)){
+               if(r.top == lc && !RClass.isClass(r.control, MUiHorizontal)){
                   o.activeLnRects.push(r);
                }
             }

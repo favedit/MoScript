@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150112
 //==========================================================
-function SRd3PlayInfo(o){
+function SE3rPlayInfo(o){
    if(!o){o = this;}
    //..........................................................
    // @attribute
@@ -20,7 +20,7 @@ function SRd3PlayInfo(o){
    o.scale        = new SVector3();
    o.matrix       = new SMatrix3d();
    //..........................................................
-   o.update       = SRd3PlayInfo_update;
+   o.update       = SE3rPlayInfo_update;
    return o;
 }
 
@@ -29,7 +29,7 @@ function SRd3PlayInfo(o){
 //
 // @method
 //============================================================
-function SRd3PlayInfo_update(){
+function SE3rPlayInfo_update(){
    var o = this;
    // 检查参数
    var cf = o.currentFrame;

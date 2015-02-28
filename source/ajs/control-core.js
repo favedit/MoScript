@@ -294,7 +294,7 @@ function FFocusConsole_isFocus(c){
 }
 function FFocusConsole_focus(c, e){
    var o = this;
-   if(!RClass.isClass(c, MFocus)){
+   if(!RClass.isClass(c, MUiFocus)){
       return;
    }
    var f = o._focusControl;
@@ -324,7 +324,7 @@ function FFocusConsole_blur(c, e){
    if(fc && c && !fc.testBlur(c)){
       return;
    }
-   if(bc != c && RClass.isClass(c, MFocus)){
+   if(bc != c && RClass.isClass(c, MUiFocus)){
       RLogger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
       o._blurControl = c;
       c.doBlur(e);
@@ -699,7 +699,7 @@ function FKeyConsole_register(k, w, p){
    }
 }
 function FMessageConsole(o){
-   o = RClass.inherits(this, o, FConsole, MStyle);
+   o = RClass.inherits(this, o, FConsole, MUiStyle);
    o.scope        = EScope.Global;
    o.result       = new Array();
    o.attributes   = new Array();

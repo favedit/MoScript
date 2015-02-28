@@ -319,7 +319,7 @@ function FUiToolButtonCheck_dispose(){
    o.__base.FUiToolButton.dispose.call(o);
 }
 function FUiToolButtonMenu(o){
-   o = RClass.inherits(this, o, FUiToolButton, MUiContainer, MDropable, MFocus);
+   o = RClass.inherits(this, o, FUiToolButton, MUiContainer, MDropable, MUiFocus);
    o.popup         = null;
    o.hDropPanel    = null;
    o._styleDropHover = RClass.register(o, new AStyleIcon('DropHover'));

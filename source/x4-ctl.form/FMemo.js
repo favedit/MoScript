@@ -15,7 +15,7 @@ function FMemo(o){
    o.onEditBlur     = RClass.register(o, new HBlur('onEditBlur'), FMemo_onEditBlur);
    //Attribute
    o.hUnit          = null;
-   o.borderStyle    = EBorder.Round;
+   o.borderStyle    = EUiBorder.Round;
    // Event
    o.onBuildEdit    = FMemo_onBuildEdit;
    o.onEditKeyPress = FMemo_onEditKeyPress;

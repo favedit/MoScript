@@ -18,7 +18,7 @@
 // @version 150102
 //==========================================================
 function FUiDataEditControl(o){
-   //o = RClass.inherits(this, o, FUiEditControl, MEditDescriptor, , MDesign, MFocus, MDisplay, MProgress);
+   //o = RClass.inherits(this, o, FUiEditControl, MEditDescriptor, , MDesign, MUiFocus, MDisplay, MProgress);
    o = RClass.inherits(this, o, FUiEditControl, MDataField, MEditValue, MEditChange, MEditDrop);
    //..........................................................
    // @property
@@ -613,7 +613,7 @@ function FUiDataEditControl_oeLoadValue(e){
 //==========================================================
 function FUiDataEditControl_doFocus(e){
    var o = this;
-   o.__base.MFocus.doFocus.call(o, e);
+   o.__base.MUiFocus.doFocus.call(o, e);
    o.__base.MEditValue.doFocus.call(o, e);
 }
 
@@ -625,7 +625,7 @@ function FUiDataEditControl_doFocus(e){
 //==========================================================
 function FUiDataEditControl_doBlur(e){
    var o = this;
-   o.__base.MFocus.doBlur.call(o, e);
+   o.__base.MUiFocus.doBlur.call(o, e);
    o.__base.MEditValue.doBlur.call(o, e);
 }
 
@@ -762,7 +762,7 @@ function FUiDataEditControl_setVisible(v){
 //==========================================================
 function FUiDataEditControl_focus(){
    var o = this;
-   o.__base.MFocus.focus.call(o);
+   o.__base.MUiFocus.focus.call(o);
    if(o.hEdit){
       // 获得焦点，忽略错误
       try{
@@ -825,12 +825,12 @@ function FUiDataEditControl_refreshStyle(){
    }
    // 设置边框显示方式
    if(o.editBorder){
-      var bs = EBorderStyle.Readonly;
+      var bs = EUiBorderStyle.Readonly;
       if(o._editable){
-         bs = EBorderStyle.Edit;
+         bs = EUiBorderStyle.Edit;
       }
       if(o._hover){
-         bs = EBorderStyle.Hover;
+         bs = EUiBorderStyle.Hover;
       }
       o.setEditBorderStyle(bs, bc);
    }

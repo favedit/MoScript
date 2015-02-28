@@ -6,7 +6,7 @@
 // @version 150123
 //==========================================================
 function FUiPanel(o){
-   o = RClass.inherits(this, o, FUiLayout, MDesign, MFocus);
+   o = RClass.inherits(this, o, FUiLayout, MDesign, MUiFocus);
    //..........................................................
    // @style
    o._sizeCd      = EUiSize.Horizontal;

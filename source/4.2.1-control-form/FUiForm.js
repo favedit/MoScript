@@ -7,7 +7,7 @@
 //==========================================================
 function FUiForm(o){
    //o = RClass.inherits(this, o, FUiLayout, MForm, MDisplayAble, MValue, MAction);
-   //o = RClass.inherits(this, o, FUiLayout, MFocus, MDataset);
+   //o = RClass.inherits(this, o, FUiLayout, MUiFocus, MDataset);
    o = RClass.inherits(this, o, FUiLayout, MDataset, MDescribeFrame);
    //..........................................................
    // @event
@@ -456,7 +456,7 @@ function FUiForm_toAttributes(r, m){
 //==========================================================
 function FUiForm_focus(){
    var o = this;
-   o.__base.MFocus.focus.call(o);
+   o.__base.MUiFocus.focus.call(o);
    o.focusControl();
    RConsole.find(FFocusConsole).focusClass(MDataset, o);
 }

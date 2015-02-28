@@ -1,12 +1,12 @@
 ﻿/**************************************************************
  * 列表控件
  *
- * @class FPanel, MHorizontal
+ * @class FPanel, MUiHorizontal
  * @author maochunyang
  * @version 1.0.1
  **************************************************************/
 function FListBox(o){
-   o = RClass.inherits(this, o, FPanel, MHorizontal);
+   o = RClass.inherits(this, o, FPanel, MUiHorizontal);
    // Listener
    o.lsnsClick  = new TListeners();
    // Method

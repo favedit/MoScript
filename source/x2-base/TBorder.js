@@ -40,7 +40,7 @@ function TBorder_build(hp){
    }
    // 创建底板
    var ht = o.hForm = RBuilder.newTable();
-   if(EBorder.None == o.style){
+   if(EUiBorder.None == o.style){
       var hr = o.hRow = ht.insertRow();
       o.hPanel = hr.insertCell();
       return;
@@ -51,12 +51,12 @@ function TBorder_build(hp){
    s.append("<TABLE class='RBorder_InnerForm' width='100%' height='100%' border=0 cellspacing=0 cellpadding=0><TR>");
    // 将建立中间区域
    switch(o.style){
-      case EBorder.Round:
+      case EUiBorder.Round:
          s.append("<TD color='#CFF6F6' width='1'></TD>");
          s.append("<TD color='#F1FFFF'></TD>");
          s.append("<TD color='#FFFFFF' width='1'></TD>");
          break;
-      case EBorder.RoundTitle:
+      case EUiBorder.RoundTitle:
          // 建立标题栏
          s.append("<TD color='#FAFDFE' width='1'></TD>");
          s.append("<TD></TD>");
@@ -70,8 +70,8 @@ function TBorder_build(hp){
          s.append("<TD></TD>");
          s.append("<TD color='#FAFDFE' width='1'></TD>");
          break;
-      case EBorder.RoundIcon:
-      case EBorder.RoundDrop:
+      case EUiBorder.RoundIcon:
+      case EUiBorder.RoundDrop:
          s.append("<TD color='#CFF6F6' width='1'></TD>");
          s.append("<TD color='#F1FFFF'></TD>");
          s.append("<TD color='#F1FFFF' width='1'></TD>");
@@ -108,12 +108,12 @@ function TBorder_build(hp){
    o.hBottom = hf.rows[4].cells[0];
    o.hBottomLine = o.hBottom.children[0];
    switch(o.style){
-      case EBorder.Round:
+      case EUiBorder.Round:
          o.hLeft = hpr.cells[0];
          o.hPanel = hpr.cells[1];
          o.hRight = hpr.cells[2];
          break;
-      case EBorder.RoundTitle:
+      case EUiBorder.RoundTitle:
          // 建立标题栏(第3行)
          var hpr = hpf.rows[0];
          o.hTitleL = hpr.cells[0];
@@ -130,14 +130,14 @@ function TBorder_build(hp){
          o.hPanel = hpr.cells[1];
          o.hPanelR = hpr.cells[2];
          break;
-      case EBorder.RoundIcon:
+      case EUiBorder.RoundIcon:
          o.hLeft = hpr.cells[0];
          o.hIcon = hpr.cells[1];
          o.hSplit = hpr.cells[2];
          o.hPanel = hpr.cells[3];
          o.hRight = hpr.cells[4];
          break;
-      case EBorder.RoundDrop:
+      case EUiBorder.RoundDrop:
          o.hLeft = hpr.cells[0];
          o.hPanel = hpr.cells[1];
          o.hSplit = hpr.cells[2];
@@ -157,13 +157,13 @@ function TBorder_build(hp){
 function TBorder_setStyle(d, c){
    var o = this;
    var s = o.style;
-   if(EBorder.Round == s){
+   if(EUiBorder.Round == s){
       o.hPanelL.style.backgroundColor = c;
       o.hPanelT.style.backgroundColor = c;
       o.hPanel.style.backgroundColor = c;
       o.hPanelB.style.backgroundColor = c;
       o.hPanelR.style.backgroundColor = c;
-   }else if(EBorder.RoundIcon == s){
+   }else if(EUiBorder.RoundIcon == s){
       o.hIconT.style.backgroundColor = c;
       o.hIcon.style.backgroundColor = c;
       o.hIconB.style.backgroundColor = c;
@@ -172,7 +172,7 @@ function TBorder_setStyle(d, c){
       o.hPanel.style.backgroundColor = c;
       o.hPanelB.style.backgroundColor = c;
       o.hPanelR.style.backgroundColor = c;
-   }else if(EBorder.RoundDrop == s){
+   }else if(EUiBorder.RoundDrop == s){
       o.hPanelL.style.backgroundColor = c;
       o.hPanelT.style.backgroundColor = c;
       o.hPanel.style.backgroundColor = c;
@@ -219,7 +219,7 @@ function TBorder_setStyle(d, c){
 function TBorder_setBorderColor(c){
    var o = this;
    switch(o.style){
-      case EBorder.Round:
+      case EUiBorder.Round:
          o.hTopLine.style.backgroundColor = c;
          o.hBeforeLine.style.borderLeftColor = c;
          o.hBeforeLine.style.borderRightColor = c;
@@ -242,7 +242,7 @@ function TBorder_setBorderColor(c){
 function TBorder_setBackgroundColor(c){
    var o = this;
    switch(o.style){
-      case EBorder.Round:
+      case EUiBorder.Round:
          o.hBeforeLine.style.backgroundColor = c;
          o.hLeft.style.backgroundColor = c;
          o.hPanel.style.backgroundColor = c;
@@ -261,7 +261,7 @@ function TBorder_setBackgroundColor(c){
 function TBorder_setVisible(v){
    var o = this;
    switch(o.style){
-      case EBorder.Round:
+      case EUiBorder.Round:
          o.hTopRow.style.display = v ? 'block' : 'none';
          o.hBeforeRow.style.display = v ? 'block' : 'none';
          o.hBody.style.borderLeft = '';

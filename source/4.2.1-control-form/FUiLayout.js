@@ -189,10 +189,10 @@ function FUiLayout_moveChild(cf, ct, pos, copy){
    var o = this;   
    var hPanel = o._hPanel;
    var moved = false;
-   var cfh = RClass.isClass(cf, MHorizontal);
+   var cfh = RClass.isClass(cf, MUiHorizontal);
    var hCfTd = RHtml.parent(cf._hPanel, 'TD');
    var hCfTab = RHtml.parent(cf._hPanel, 'TABLE');
-   var cth = RClass.isClass(ct, MHorizontal);
+   var cth = RClass.isClass(ct, MUiHorizontal);
    var hTd = RHtml.parent(ct._hPanel, 'TD');
    var hTable = RHtml.parent(hTd, 'TABLE');
    switch(pos){
@@ -317,7 +317,7 @@ function FUiLayout_appendChild(ctl){
          o.innerAppendLine();
       }
       // 建立分割符
-      if(RClass.isClass(ctl, MHorizontal)){
+      if(RClass.isClass(ctl, MUiHorizontal)){
          if(o._hPanelTable.rows[0].cells.length == 0){
             o._hContainer.insertBefore(ctl._hPanel, o._hPanelTable);
          }else{

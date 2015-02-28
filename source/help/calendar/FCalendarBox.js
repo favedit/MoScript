@@ -47,7 +47,7 @@ function FCalendarBox_oeBuild(e){
    o.base.FContainer.oeBuild.call(o, e);
    var hp = o.hPanel;
    //
-   var b = o.border = new TBorder(EBorder.Round);
+   var b = o.border = new TBorder(EUiBorder.Round);
    b.hParent = hp;
    RBorder.build(b);
    var bp = o.hBorderPanel = b.hPanel;

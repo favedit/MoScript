@@ -12,7 +12,7 @@ function FTime(o){
    o.editSecond   = RClass.register(o, new TPtyBoolSet('editSecond', 'editDate', EDateTimeMode.Second));
    // @attribute
    o._date        = null;
-   o.borderStyle  = EBorder.RoundDrop;
+   o.borderStyle  = EUiBorder.RoundDrop;
    //..........................................................
    // @listener
    o.lsnEditEnd   = null;

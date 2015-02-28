@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-function MProgress(o){
+function MUiProgress(o){
    o = RClass.inherits(this, o);
    // @method
    o.oeProgress = RMethod.virtual(o, 'oeProgress');

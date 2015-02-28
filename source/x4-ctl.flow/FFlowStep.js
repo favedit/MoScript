@@ -20,7 +20,7 @@ function FFlowStep_oeBuild(e){
    var hp = o.hPanel;
    if(e.isBefore()){
       // 建立边框
-      var b = o.border = new TBorder(EBorder.Round, hp);
+      var b = o.border = new TBorder(EUiBorder.Round, hp);
       b.build();
       // 建立底板
       var hf = o.hForm = RBuilder.appendTable(b.hPanel, null, 0, 3);
@@ -32,7 +32,7 @@ function FFlowStep_oeBuild(e){
       var hr = hf.insertRow();
       var hc = hr.insertCell();
       // 建立边框
-      var b = o.labelBorder = new TBorder(EBorder.Round, hc);
+      var b = o.labelBorder = new TBorder(EUiBorder.Round, hc);
       b.build();
       b.setBorderColor('#999999');
       b.setBackgroundColor('#BBBBBB');

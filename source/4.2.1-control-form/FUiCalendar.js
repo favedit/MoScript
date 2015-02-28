@@ -11,7 +11,7 @@ function FUiCalendar(o){
    o.editSecond   = RClass.register(o, new TPtyBoolSet('editSecond', 'editDate', EDateTimeMode.Second));
    //..........................................................
    // @attribute
-   o.borderStyle = EBorder.RoundDrop;
+   o.borderStyle = EUiBorder.RoundDrop;
    o.date        = null;
    o.lsnEditEnd  = null;
    //..........................................................

@@ -11,7 +11,7 @@ function FGroup(o){
    o.stUnit        = RClass.register(o, new TStyle('Unit'));
    //..........................................................
    // @attribute
-   o.borderStyle        = EBorder.Round;
+   o.borderStyle        = EUiBorder.Round;
    o.itemType           = RClass.register(o, new TPtyStr('itemType'));
    o.itemLabelWidth     = RClass.register(o, new TPtyStr('itemLabelWidth'));
    o.itemControlWidth   = RClass.register(o, new TPtyStr('itemControlWidth'));

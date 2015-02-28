@@ -2,7 +2,7 @@
 // FMessageConsole
 // ============================================================
 function FMessageConsole(o){
-   o = RClass.inherits(this, o, FConsole, MStyle);
+   o = RClass.inherits(this, o, FConsole, MUiStyle);
    // Constant
    o.scope        = EScope.Global;
    // Attribute

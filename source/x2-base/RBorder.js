@@ -51,7 +51,7 @@ function RBorder_build(t){
    var ts = t.style;
    var hp = t.hParent
    var ht = t.hForm = RBuilder.newTable();
-   if(EBorder.None == ts){
+   if(EUiBorder.None == ts){
       var hr = o.hRow = ht.insertRow();
       t.hPanel = hr.insertCell();
       return;
@@ -61,11 +61,11 @@ function RBorder_build(t){
    s.append("<TABLE class='RBorder_Form' border=0 cellspacing=0 cellpadding=0><TR><TD height=1><SPAN class='RBorder_Top'></SPAN></TD></TR><TR><TD height=1><SPAN class='RBorder_Before'></SPAN></TD></TR><TR><TD class='RBorder_Panel'>");
    s.append("<TABLE class='RBorder_InnerForm' width='100%' height='100%' border=0 cellspacing=0 cellpadding=0><TR>");
    // 将建立中间区域
-   if(EBorder.Round == ts){
+   if(EUiBorder.Round == ts){
       s.append("<TD color='#CFF6F6' width='1'></TD>");
       s.append("<TD color='#F1FFFF'></TD>");
       s.append("<TD color='#FFFFFF' width='1'></TD>");
-   }else if(EBorder.RoundTitle == ts){
+   }else if(EUiBorder.RoundTitle == ts){
       // 建立标题栏
       s.append("<TD color='#FAFDFE' width='1'></TD>");
       s.append("<TD></TD>");
@@ -78,7 +78,7 @@ function RBorder_build(t){
       s.append("<TR><TD color='#FAFDFE' width='1'></TD>");
       s.append("<TD></TD>");
       s.append("<TD color='#FAFDFE' width='1'></TD>");
-   }else if((EBorder.RoundIcon == ts) || (EBorder.RoundDrop == ts)){
+   }else if((EUiBorder.RoundIcon == ts) || (EUiBorder.RoundDrop == ts)){
       s.append("<TD color='#CFF6F6' width='1'></TD>");
       s.append("<TD color='#F1FFFF'></TD>");
       s.append("<TD color='#F1FFFF' width='1'></TD>");
@@ -103,11 +103,11 @@ function RBorder_build(t){
    t.hAfterLine = t.hAfter.children[0];
    t.hBottom = hf.rows[4].cells[0];
    t.hBottomLine = t.hBottom.children[0];
-   if(EBorder.Round == ts){
+   if(EUiBorder.Round == ts){
       t.hLeft = hpr.cells[0];
       t.hPanel = hpr.cells[1];
       t.hRight = hpr.cells[2];
-   }else if(EBorder.RoundTitle == ts){
+   }else if(EUiBorder.RoundTitle == ts){
       // 建立标题栏(第3行)
       var hpr = hpf.rows[0];
       t.hTitleL = hpr.cells[0];
@@ -123,13 +123,13 @@ function RBorder_build(t){
       t.hPanelL = hpr.cells[0];
       t.hPanel = hpr.cells[1];
       t.hPanelR = hpr.cells[2];
-   }else if(EBorder.RoundIcon == ts){
+   }else if(EUiBorder.RoundIcon == ts){
       t.hLeft = hpr.cells[0];
       t.hIcon = hpr.cells[1];
       t.hSplit = hpr.cells[2];
       t.hPanel = hpr.cells[3];
       t.hRight = hpr.cells[4];
-   }else if(EBorder.RoundDrop == ts){
+   }else if(EUiBorder.RoundDrop == ts){
       t.hLeft = hpr.cells[0];
       t.hPanel = hpr.cells[1];
       t.hSplit = hpr.cells[2];

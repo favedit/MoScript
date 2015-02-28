@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150107
 //==========================================================
-function FRd3Bone(o){
+function FE3rBone(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
@@ -13,14 +13,14 @@ function FRd3Bone(o){
    o._trackResource = null;
    //..........................................................
    // @method
-   o.construct      = FRd3Bone_construct;
+   o.construct      = FE3rBone_construct;
    // @method
-   o.matrix         = FRd3Bone_matrix;
-   o.trackResource  = FRd3Bone_trackResource;
-   o.loadResource   = FRd3Bone_loadResource;
-   o.update         = FRd3Bone_update;
+   o.matrix         = FE3rBone_matrix;
+   o.trackResource  = FE3rBone_trackResource;
+   o.loadResource   = FE3rBone_loadResource;
+   o.update         = FE3rBone_update;
    // @method
-   o.dispose        = FRd3Bone_dispose;
+   o.dispose        = FE3rBone_dispose;
    return o;
 }
 
@@ -29,7 +29,7 @@ function FRd3Bone(o){
 //
 // @method
 //==========================================================
-function FRd3Bone_construct(){
+function FE3rBone_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._matrix = new SMatrix3d();
@@ -41,7 +41,7 @@ function FRd3Bone_construct(){
 // @method
 // @return SMatrix3d 矩阵
 //==========================================================
-function FRd3Bone_matrix(){
+function FE3rBone_matrix(){
    return this._matrix;
 }
 
@@ -51,7 +51,7 @@ function FRd3Bone_matrix(){
 // @method
 // @return FE3sTrack 资源跟踪
 //==========================================================
-function FRd3Bone_trackResource(){
+function FE3rBone_trackResource(){
    return this._trackResource;
 }
 
@@ -61,7 +61,7 @@ function FRd3Bone_trackResource(){
 // @method
 // @return FE3sBone 资源
 //==========================================================
-function FRd3Bone_loadResource(p){
+function FE3rBone_loadResource(p){
    var o = this;
    o._boneResource = p;
    o._trackResource = p.track();
@@ -71,10 +71,10 @@ function FRd3Bone_loadResource(p){
 // <T>更新处理。</T>
 //
 // @method
-// @param pi:playInfo:SRd3PlayInfo 播放信息
+// @param pi:playInfo:SE3rPlayInfo 播放信息
 // @param pt:tick:Integer 时刻
 //==========================================================
-function FRd3Bone_update(pi, pt){
+function FE3rBone_update(pi, pt){
    var o = this;
    // 计算帧信息
    var t = o._trackResource;
@@ -91,7 +91,7 @@ function FRd3Bone_update(pi, pt){
 //
 // @method
 //==========================================================
-function FRd3Bone_dispose(){
+function FE3rBone_dispose(){
    var o = this;
    // 释放内容
    o._boneResource = null;

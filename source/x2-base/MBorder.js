@@ -9,7 +9,7 @@ function MBorder(o){
    o = RClass.inherits(this, o);
    /// @attribute
    o.border         = null;
-   o.borderStyle    = EBorder.None;
+   o.borderStyle    = EUiBorder.None;
    /// @event
    o.onBuildBorder  = MBorder_onBuildBorder;
    o.setBorderStyle = MBorder_setBorderStyle;
@@ -40,13 +40,13 @@ function MBorder_setBorderStyle(s, c, r){
    var o = this;
    var t = o.border;
    var bs = o.borderStyle;
-   if(EBorder.Round == bs){
+   if(EUiBorder.Round == bs){
       t.hPanelL.style.backgroundColor = c;
       t.hPanelT.style.backgroundColor = c;
       t.hPanel.style.backgroundColor = c;
       t.hPanelB.style.backgroundColor = c;
       t.hPanelR.style.backgroundColor = c;
-   }else if(EBorder.RoundIcon == bs){
+   }else if(EUiBorder.RoundIcon == bs){
       t.hIconT.style.backgroundColor = c;
       t.hIcon.style.backgroundColor = c;
       t.hIconB.style.backgroundColor = c;
@@ -55,7 +55,7 @@ function MBorder_setBorderStyle(s, c, r){
       t.hPanel.style.backgroundColor = c;
       t.hPanelB.style.backgroundColor = c;
       t.hPanelR.style.backgroundColor = c;
-   }else if(EBorder.RoundDrop == bs){
+   }else if(EUiBorder.RoundDrop == bs){
       t.hPanelL.style.backgroundColor = c;
       t.hPanelT.style.backgroundColor = c;
       t.hPanel.style.backgroundColor = c;

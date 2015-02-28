@@ -15,7 +15,7 @@ function FIconPicker(o){
    //..........................................................
    // @attribute
    o.hEditIcon      = null;
-   o.borderStyle    = EBorder.RoundIcon;
+   o.borderStyle    = EUiBorder.RoundIcon;
    //..........................................................
    // @event
    o.onEditKeyDown  = FIconPicker_onEditKeyDown;

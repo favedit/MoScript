@@ -119,7 +119,7 @@ function FListWindow_onSelect(row){
       lov.onListSelected(v);
    }
    // ����ѡ��󽹵�
-   if(RClass.isClass(lov, MFocus)){
+   if(RClass.isClass(lov, MUiFocus)){
       RConsole.find(FFocusConsole).focusClass(MDataset, ds);
       RConsole.find(FEventConsole).add(lov, lov.focus);
    }

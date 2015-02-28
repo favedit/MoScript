@@ -1,12 +1,12 @@
 /**************************************************************
  * Window提示框
  *
- * @class FContainer, MDisplayAble, MSizeable, MMoveable, MWinBorder
+ * @class FContainer, MDisplayAble, MUiSizeable, MMoveable, MWinBorder
  * @author maochunyang
  * @version 1.0.1
  **************************************************************/
 function FPop(o){
-   o = RClass.inherits(this, o, FContainer, MDisplayAble, MSizeable, MMoveable, MPopBorder);
+   o = RClass.inherits(this, o, FContainer, MDisplayAble, MUiSizeable, MMoveable, MPopBorder);
    // Property
    o.caption      = RClass.register(o, new TPtyStr('caption'));
    // Attribute

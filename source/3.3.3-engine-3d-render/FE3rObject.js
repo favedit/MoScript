@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150206
 //==========================================================
-function FRd3Object(o){
+function FE3rObject(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
    return o;
 }
