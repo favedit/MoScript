@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150212
 //==========================================================
-MO.Graphic3d.EG3dMaterialMap = new function EG3dMaterialMap(){
+var EG3dMaterialMap = new function EG3dMaterialMap(){
    var o = this;
    o.AmbientColor = 0;
    o.DiffuseColor = 1;

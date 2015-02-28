@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //==========================================================
-MO.Graphic3d.EG3dFillMode = new function EG3dFillMode(){
+var EG3dFillMode = new function EG3dFillMode(){
    var o = this;
    // @member 未知
    o.Unknown = 0;

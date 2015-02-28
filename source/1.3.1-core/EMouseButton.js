@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150121
 //==========================================================
-MO.EMouseButton = new function EMouseButton(){
+var EMouseButton = new function EMouseButton(){
    var o = this;
    // @member 左键
    o.Left   = 0;

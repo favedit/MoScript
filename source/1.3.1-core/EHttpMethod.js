@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150104
 //==========================================================
-MO.EHttpMethod = new function EHttpMethod(){
+var EHttpMethod = new function EHttpMethod(){
    var o = this;
    // @member GET请求
    o.Get  = 'GET';

@@ -5,8 +5,8 @@
 // @author maocy
 // @history 150212
 //==========================================================
-MO.Graphic3d.FG3dLayoutElement = function FG3dLayoutElement(o){
-   o = RClass.inherits(this, o, MO.FObject);
+function FG3dLayoutElement(o){
+   o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
    o._name   = 0;
@@ -15,13 +15,13 @@ MO.Graphic3d.FG3dLayoutElement = function FG3dLayoutElement(o){
    // @method
    o.name   = FG3dLayoutElement_name;
    return o;
+}
 
-   //==========================================================
-   // <T>获得名称。</T>
-   //
-   // @return 名称
-   //==========================================================
-   function FG3dLayoutElement_name(){
-      return this._name;
-   }
+//==========================================================
+// <T>获得名称。</T>
+//
+// @return 名称
+//==========================================================
+function FG3dLayoutElement_name(){
+   return this._name;
 }

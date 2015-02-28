@@ -5,9 +5,9 @@
 // @author maocy
 // @version 150113
 //==========================================================
-MO.SKeyboardEvent = function SKeyboardEvent(){
+function SKeyboardEvent(){
    var o = this;
-   MO.SEvent.call(o);
+   SEvent.call(o);
    //..........................................................
    // @attribute
    o.altKey      = false;
@@ -19,28 +19,28 @@ MO.SKeyboardEvent = function SKeyboardEvent(){
    o.attachEvent = SKeyboardEvent_attachEvent;
    o.cancel      = SKeyboardEvent_cancel;
    return o;
+}
 
-   //==========================================================
-   // <T>接收事件信息。</T>
-   //
-   // @method
-   // @param p:event:HtmlEvent 页面事件
-   //==========================================================
-   function SKeyboardEvent_attachEvent(p){
-      var o = this;
-      o.altKey = p.altKey;
-      o.shiftKey = p.shiftKey;
-      o.ctrlKey = p.ctrlKey;
-      o.keyCode = p.keyCode;
-   }
+//==========================================================
+// <T>接收事件信息。</T>
+//
+// @method
+// @param p:event:HtmlEvent 页面事件
+//==========================================================
+function SKeyboardEvent_attachEvent(p){
+   var o = this;
+   o.altKey = p.altKey;
+   o.shiftKey = p.shiftKey;
+   o.ctrlKey = p.ctrlKey;
+   o.keyCode = p.keyCode;
+}
 
-   //==========================================================
-   // <T>取消处理。</T>
-   //
-   // @method
-   //==========================================================
-   function SKeyboardEvent_cancel(){
-      var o = this;
-      o.hEvent.returnValue = false;
-   }
+//==========================================================
+// <T>取消处理。</T>
+//
+// @method
+//==========================================================
+function SKeyboardEvent_cancel(){
+   var o = this;
+   o.hEvent.returnValue = false;
 }

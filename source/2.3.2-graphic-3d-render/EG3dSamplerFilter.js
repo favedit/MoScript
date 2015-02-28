@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150116
 //==========================================================
-MO.Graphic3d.EG3dSamplerFilter = new function EG3dSamplerFilter(){
+var EG3dSamplerFilter = new function EG3dSamplerFilter(){
    var o = this;
    o.Unknown       = 0;
    o.Nearest       = 1;

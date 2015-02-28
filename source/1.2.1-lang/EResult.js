@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150114
  //===========================================================
-MO.EResult = new function EResult(){
+var EResult = new function EResult(){
    var o = this;
    // @attribute Integer 成功
    o.Success  = 0;

@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //==========================================================
-MO.EScope = new function EScope(){
+var EScope = new function EScope(){
    var o = this;
    // @member 本地空间
    o.Local = 1;

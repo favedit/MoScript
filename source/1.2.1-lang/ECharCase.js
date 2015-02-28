@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //===========================================================
-MO.ECharCase = function ECharCase(){
+var ECharCase = function ECharCase(){
    var o = this;
    ///@Attribute String 字符大写
    o.Upper = 'U';

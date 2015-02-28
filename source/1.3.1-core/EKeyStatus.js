@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150203
 //===========================================================
-MO.EKeyStatus = new function EKeyStatus(){
+var EKeyStatus = new function EKeyStatus(){
    var o = this;
    // @attribute 普通
    o.Normal = 0;

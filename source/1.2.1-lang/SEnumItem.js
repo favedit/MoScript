@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150116
 //===========================================================
-MO.SEnumItem = function SEnumItem(o){
+function SEnumItem(){
    var o = this;
    //..........................................................
    // @property

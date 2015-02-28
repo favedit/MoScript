@@ -8,7 +8,7 @@
 // @author maocy
 // @version 150101
 //==========================================================
-MO.TFatalError = function TFatalError(po, pe, pm, pp){
+function TFatalError(po, pe, pm, pp){
    var o = this;
    //..........................................................
    // @construct

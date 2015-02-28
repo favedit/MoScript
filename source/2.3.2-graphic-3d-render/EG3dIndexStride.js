@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //==========================================================
-MO.Graphic3d.EG3dIndexStride = new function EG3dIndexStride(){
+var EG3dIndexStride = new function EG3dIndexStride(){
    var o = this;
    // @member 未知
    o.Unknown = 0;

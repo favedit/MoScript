@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150110
 //==========================================================
-MO.SLooperEntry = function SLooperEntry(){
+function SLooperEntry(){
    var o = this;
    //..........................................................
    // @attribute

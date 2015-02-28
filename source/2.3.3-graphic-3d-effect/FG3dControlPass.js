@@ -4,8 +4,8 @@
 // @author maocy
 // @history 150211
 //==========================================================
-MO.Graphic3d.FG3dControlPass = function FG3dControlPass(o){
-   o = RClass.inherits(this, o, MO.Graphic3d.FG3dTechniquePass);
+function FG3dControlPass(o){
+   o = RClass.inherits(this, o, FG3dTechniquePass);
    //..........................................................
    // @attribute
    o._code = 'control';

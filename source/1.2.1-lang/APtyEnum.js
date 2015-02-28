@@ -9,9 +9,9 @@
 // @author maocy
 // @version 150210
 //==========================================================
-MO.APtyEnum = function APtyEnum(n, l, e, d){
+function APtyEnum(n, l, e, d){
    var o = this;
-   MO.AProperty.call(o, n, l);
+   AProperty.call(o, n, l);
    //..........................................................
    // @attribute
    o._enum    = e;
@@ -23,52 +23,52 @@ MO.APtyEnum = function APtyEnum(n, l, e, d){
    o.save     = APtyEnum_save;
    o.toString = APtyEnum_toString;
    return o;
+}
 
-   //============================================================
-   // <T>构建处理。</T>
-   //
-   // @method
-   // @param v:value:Object 对象
-   //============================================================
-   function APtyEnum_build(v){
-      var o = this;
-      if(v[o._name] == null){
-         v[o._name] = o._default;
-      }
+//============================================================
+// <T>构建处理。</T>
+//
+// @method
+// @param v:value:Object 对象
+//============================================================
+function APtyEnum_build(v){
+   var o = this;
+   if(v[o._name] == null){
+      v[o._name] = o._default;
    }
+}
 
-   //============================================================
-   // <T>加载属性值。</T>
-   //
-   // @method
-   // @param v:value:Object 对象
-   // @param x:config:TNode 节点
-   //============================================================
-   function APtyEnum_load(v, x){
-      var o = this;
-      v[o._name] = x.get(o._linker);
-   }
+//============================================================
+// <T>加载属性值。</T>
+//
+// @method
+// @param v:value:Object 对象
+// @param x:config:TNode 节点
+//============================================================
+function APtyEnum_load(v, x){
+   var o = this;
+   v[o._name] = x.get(o._linker);
+}
 
-   //============================================================
-   // <T>存储属性值。</T>
-   //
-   // @method
-   // @param v:value:Object 对象
-   // @param x:config:TNode 节点
-   //============================================================
-   function APtyEnum_save(v, x){
-      var o = this;
-      x.set(o._linker, v[o._name]);
-   }
+//============================================================
+// <T>存储属性值。</T>
+//
+// @method
+// @param v:value:Object 对象
+// @param x:config:TNode 节点
+//============================================================
+function APtyEnum_save(v, x){
+   var o = this;
+   x.set(o._linker, v[o._name]);
+}
 
-   //============================================================
-   // <T>获得字符串。</T>
-   //
-   // @method
-   // @return String 字符串
-   //============================================================
-   function APtyEnum_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',enum=' + o._enum + ',default=' + o._default;
-   }
+//============================================================
+// <T>获得字符串。</T>
+//
+// @method
+// @return String 字符串
+//============================================================
+function APtyEnum_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',enum=' + o._enum + ',default=' + o._default;
 }

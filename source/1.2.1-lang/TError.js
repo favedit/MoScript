@@ -8,7 +8,7 @@
 // @author maocy
 // @version 150101
 //==========================================================
-MO.TError = function TError(po, pm, pp){
+function TError(po, pm, pp){
    var o = this;
    //..........................................................
    // @construct

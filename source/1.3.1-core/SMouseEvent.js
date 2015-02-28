@@ -5,9 +5,9 @@
 // @author maocy
 // @version 150113
 //==========================================================
-MO.SMouseEvent = function SMouseEvent(){
+function SMouseEvent(){
    var o = this;
-   MO.SEvent.call(o);
+   SEvent.call(o);
    //..........................................................
    // @attribute
    o.button      = null;
@@ -26,37 +26,37 @@ MO.SMouseEvent = function SMouseEvent(){
    // @method
    o.attachEvent = SMouseEvent_attachEvent;
    return o;
+}
 
-   //==========================================================
-   // <T>接收事件信息。</T>
-   //
-   // @method
-   // @param p:event:HtmlEvent 页面事件
-   //==========================================================
-   function SMouseEvent_attachEvent(p){
-      var o = this;
-      var hs = o.hSource = RHtml.eventSource(p);
-      if(hs){
-         o.source = hs.__linker;
-      }
-      o.button = p.button;
-      o.mouseLeft = (p.button == EMouseButton.Left);
-      o.mouseMiddle = (p.button == EMouseButton.Middle);
-      o.mouseRight = (p.button == EMouseButton.Right);
-      o.altKey = p.altKey;
-      o.ctrlKey = p.ctrlKey;
-      if(RBrowser.isBrowser(EBrowser.FireFox)){
-         o.x = p.pageX;
-         o.y = p.pageY;
-         o.offsetX = p.layerX;
-         o.offsetY = p.layerY;
-      }else{
-         o.x = p.x;
-         o.y = p.y;
-         o.offsetX = p.offsetX;
-         o.offsetY = p.offsetY;
-      }
-      o.clientX = p.clientX;
-      o.clientY = p.clientY;
+//==========================================================
+// <T>接收事件信息。</T>
+//
+// @method
+// @param p:event:HtmlEvent 页面事件
+//==========================================================
+function SMouseEvent_attachEvent(p){
+   var o = this;
+   var hs = o.hSource = RHtml.eventSource(p);
+   if(hs){
+      o.source = hs.__linker;
    }
+   o.button = p.button;
+   o.mouseLeft = (p.button == EMouseButton.Left);
+   o.mouseMiddle = (p.button == EMouseButton.Middle);
+   o.mouseRight = (p.button == EMouseButton.Right);
+   o.altKey = p.altKey;
+   o.ctrlKey = p.ctrlKey;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      o.x = p.pageX;
+      o.y = p.pageY;
+      o.offsetX = p.layerX;
+      o.offsetY = p.layerY;
+   }else{
+      o.x = p.x;
+      o.y = p.y;
+      o.offsetX = p.offsetX;
+      o.offsetY = p.offsetY;
+   }
+   o.clientX = p.clientX;
+   o.clientY = p.clientY;
 }

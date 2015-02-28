@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //===========================================================
-MO.EHttpStatus = new function EHttpStatus(){
+var EHttpStatus = new function EHttpStatus(){
    var o = this;
    // @attribute Integer 准备连接
    o.Begin   = 0;

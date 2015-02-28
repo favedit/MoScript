@@ -4,8 +4,8 @@
 // @author maocy
 // @history 141230
 //==========================================================
-MO.Graphic3d.FG3dLight = function FG3dLight(o){
-   o = RClass.inherits(this, o, MO.FObject);
+function FG3dLight(o){
+   o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @method
    return o;

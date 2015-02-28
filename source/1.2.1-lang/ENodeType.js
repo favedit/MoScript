@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150104
 //==========================================================
-MO.ENodeType = new function ENodeType(){
+var ENodeType = new function ENodeType(){
    var o = this;
    // @attribute 节点
    o.Node = 1;

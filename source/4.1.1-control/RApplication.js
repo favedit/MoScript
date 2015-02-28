@@ -9,7 +9,7 @@ var RApplication = new function RApplication(){
    var o = this;
    //..........................................................
    // @attribute
-   o._workspaces   = new MO.TDictionary();
+   o._workspaces   = new TDictionary();
    //..........................................................
    // @method
    o.initialize    = RApplication_initialize;
@@ -26,11 +26,11 @@ var RApplication = new function RApplication(){
 function RApplication_initialize(){
    var o = this;
    // 构造浏览管理器
-   MO.RBrowser.construct();
+   RBrowser.construct();
    // 构造窗口管理器
-   MO.RWindow.connect(window);
+   RWindow.connect(window);
    // 构造键盘管理器
-   MO.RKeyboard.construct();
+   RKeyboard.construct();
 }
 
 //==========================================================
@@ -42,11 +42,11 @@ function RApplication_initialize(){
 // =========================================================
 function RApplication_findWorkspace(p){
    var o = this;
-   var n = MO.RClass.name(p);
+   var n = RClass.name(p);
    var ws = o._workspaces;
    var w = ws.get(n);
    if(w == null){
-      w = MO.RClass.create(p);
+      w = RClass.create(p);
       ws.set(n, w);
    }
    return w;

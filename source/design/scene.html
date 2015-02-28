@@ -47,9 +47,9 @@
 <SCRIPT>
 // http://localhost:92/script2/design/template.html
 function _load(){
-   MO.RRuntime.processCd = MO.EProcess.Debug;
+   RRuntime.processCd = EProcess.Debug;
    RApplication.initialize();
-   MO.RBrowser.setContentPath('..');
+   RBrowser.setContentPath('..');
    // 获得代码
    var u = window.location.toString();
    var i = u.indexOf('code=');
@@ -57,7 +57,7 @@ function _load(){
    if(i != -1){
       c = u.substring(i + 5);
    }
-   if(MO.RString.isEmpty(c)){
+   if(RString.isEmpty(c)){
       c = 'pvw.show.item.001';
       //c = 'pvw.show.item.004';
       //c = 'pvw.show.item.006';

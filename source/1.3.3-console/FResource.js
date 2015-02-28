@@ -5,8 +5,8 @@
 // @author maocy
 // @version 150105
 //==========================================================
-MO.FResource = function FResource(o){
-   o = RClass.inherits(this, o, MO.FObject);
+function FResource(o){
+   o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
    o._guid  = null;
@@ -18,34 +18,34 @@ MO.FResource = function FResource(o){
    o.code   = FResource_code;
    o.label  = FResource_label;
    return o;
+}
 
-   //==========================================================
-   // <T>获得唯一编号。</T>
-   //
-   // @method
-   // @return String 唯一编号
-   //==========================================================
-   function FResource_guid(){
-      return this._guid;
-   }
+//==========================================================
+// <T>获得唯一编号。</T>
+//
+// @method
+// @return String 唯一编号
+//==========================================================
+function FResource_guid(){
+   return this._guid;
+}
 
-   //==========================================================
-   // <T>获得代码。</T>
-   //
-   // @method
-   // @return String 代码
-   //==========================================================
-   function FResource_code(){
-      return this._code;
-   }
+//==========================================================
+// <T>获得代码。</T>
+//
+// @method
+// @return String 代码
+//==========================================================
+function FResource_code(){
+   return this._code;
+}
 
-   //==========================================================
-   // <T>获得标签。</T>
-   //
-   // @method
-   // @return String 标签
-   //==========================================================
-   function FResource_label(){
-      return this._label;
-   }
+//==========================================================
+// <T>获得标签。</T>
+//
+// @method
+// @return String 标签
+//==========================================================
+function FResource_label(){
+   return this._label;
 }

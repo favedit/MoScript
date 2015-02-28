@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //==========================================================
-MO.Graphic3d.EG3dCullMode = new function EG3dCullMode(){
+var EG3dCullMode = new function EG3dCullMode(){
    var o = this;
    // @member 不剔除
    o.None = 0;

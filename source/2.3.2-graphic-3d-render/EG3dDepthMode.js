@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //==========================================================
-MO.Graphic3d.EG3dDepthMode = new function EG3dDepthMode(){
+var EG3dDepthMode = new function EG3dDepthMode(){
    var o = this;
    // @member 未知
    o.None = 0;

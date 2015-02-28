@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141231
 //==========================================================
-MO.Graphic3d.EG3dParameterFormat = new function EG3dParameterFormat(){
+var EG3dParameterFormat = new function EG3dParameterFormat(){
    var o = this;
    // @member 未知
    o.Unknown = 0;

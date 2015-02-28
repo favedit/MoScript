@@ -2626,7 +2626,7 @@ function FUiControl_dispose(){
 }
 var RApplication = new function RApplication(){
    var o = this;
-   o._workspaces   = new MO.TDictionary();
+   o._workspaces   = new TDictionary();
    o.initialize    = RApplication_initialize;
    o.findWorkspace = RApplication_findWorkspace;
    o.release       = RApplication_release;
@@ -2634,17 +2634,17 @@ var RApplication = new function RApplication(){
 }
 function RApplication_initialize(){
    var o = this;
-   MO.RBrowser.construct();
-   MO.RWindow.connect(window);
-   MO.RKeyboard.construct();
+   RBrowser.construct();
+   RWindow.connect(window);
+   RKeyboard.construct();
 }
 function RApplication_findWorkspace(p){
    var o = this;
-   var n = MO.RClass.name(p);
+   var n = RClass.name(p);
    var ws = o._workspaces;
    var w = ws.get(n);
    if(w == null){
-      w = MO.RClass.create(p);
+      w = RClass.create(p);
       ws.set(n, w);
    }
    return w;
@@ -2669,9 +2669,9 @@ var RControl = new function RControl(){
    o.inMoving           = false;
    o.inSizing           = false;
    o.inDesign           = false;
-   o.instances          = new MO.TList();
-   o.events             = new MO.TMap();
-   o.controls           = new MO.TMap();
+   o.instances          = new TList();
+   o.events             = new TMap();
+   o.controls           = new TMap();
    o.linkEvent          = RControl_linkEvent;
    o.find               = RControl_find;
    o.fromNode           = RControl_fromNode;

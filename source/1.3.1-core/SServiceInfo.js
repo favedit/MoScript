@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150113
 //==========================================================
-MO.SServiceInfo = function SServiceInfo(){
+function SServiceInfo(){
    var o = this;
    //..........................................................
    // @attribute 服务名称

@@ -5,8 +5,8 @@
 // @author maocy
 // @version 150105
 //==========================================================
-MO.FProcess = function FProcess(o){
-   o = RClass.inherits(this, o, MO.FObject);
+function FProcess(o){
+   o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
    o._typeName  = null;
@@ -16,14 +16,14 @@ MO.FProcess = function FProcess(o){
    // @method
    o.name  = FProcess_name;
    return o;
+}
 
-   //==========================================================
-   // <T>获得名称。</T>
-   //
-   // @method
-   // @return 名称
-   //==========================================================
-   function FProcess_name(){
-      return this._name;
-   }
+//==========================================================
+// <T>获得名称。</T>
+//
+// @method
+// @return 名称
+//==========================================================
+function FProcess_name(){
+   return this._name;
 }

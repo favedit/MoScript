@@ -5,11 +5,11 @@
 // @author maocy
 // @version 150203
 //==========================================================
-MO.FMouseConsole = function FMouseConsole(o){
-   o = RClass.inherits(this, o, MO.FConsole);
+function FMouseConsole(o){
+   o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._scopeCd       = MO.EScope.Local;
+   o._scopeCd       = EScope.Local;
    // @attribute
    o._activeCapture = null;
    o._captures      = null;
@@ -31,152 +31,152 @@ MO.FMouseConsole = function FMouseConsole(o){
    o.clear          = FMouseConsole_clear;
    // method
    return o;
+}
 
-   //==========================================================
-   // <T>鼠标按下处理。</T>
-   //
-   // @method
-   // @param p:event:htmlEvent 事件
-   //==========================================================
-   function FMouseConsole_onMouseDown(p){
-      var o = this;
-      // 检查来源
-      var s = RHtml.searchLinker(p.hSource, MMouseCapture);
-      if(!s){
-         return;
+//==========================================================
+// <T>鼠标按下处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function FMouseConsole_onMouseDown(p){
+   var o = this;
+   // 检查来源
+   var s = RHtml.searchLinker(p.hSource, MMouseCapture);
+   if(!s){
+      return;
+   }
+   // 检查测试
+   if(!s.testMouseCapture()){
+      return;
+   }
+   // 捕捉开始处理
+   o._activeCapture = s;
+   o.captureStart(p);
+}
+
+//==========================================================
+// <T>鼠标移动处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function FMouseConsole_onMouseMove(p){
+   var o = this;
+   // 检查拖拽处理
+   if(!o._activeCapture){
+      return;
+   }
+   // 拖拽处理
+   o.capture(p);
+}
+
+//==========================================================
+// <T>鼠标抬起处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function FMouseConsole_onMouseUp(p){
+   var o = this;
+   // 检查拖拽处理
+   if(!o._activeCapture){
+      return;
+   }
+   // 捕捉结束处理
+   o.captureStop(p);
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FMouseConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   // 创建属性
+   o._captures = new TObjects();
+   // 注册事件
+   RWindow.lsnsMouseDown.register(o, o.onMouseDown);
+   RWindow.lsnsMouseMove.register(o, o.onMouseMove);
+   RWindow.lsnsMouseUp.register(o, o.onMouseUp);
+}
+
+//==========================================================
+// <T>捕捉开始处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function FMouseConsole_captureStart(p){
+   var o = this;
+   var c = o._activeCapture;
+   if(c){
+      RWindow.setOptionSelect(false);
+      c.onMouseCaptureStart(p);
+   }
+}
+
+//==========================================================
+// <T>捕捉处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function FMouseConsole_capture(p){
+   var o = this;
+   var c = o._activeCapture;
+   if(c){
+      if(c.testMouseCapture()){
+         c.onMouseCapture(p);
+      }else{
+         o.captureStop(p)
       }
-      // 检查测试
-      if(!s.testMouseCapture()){
-         return;
-      }
-      // 捕捉开始处理
-      o._activeCapture = s;
-      o.captureStart(p);
    }
+}
 
-   //==========================================================
-   // <T>鼠标移动处理。</T>
-   //
-   // @method
-   // @param p:event:htmlEvent 事件
-   //==========================================================
-   function FMouseConsole_onMouseMove(p){
-      var o = this;
-      // 检查拖拽处理
-      if(!o._activeCapture){
-         return;
-      }
-      // 拖拽处理
-      o.capture(p);
+//==========================================================
+// <T>捕捉结束处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function FMouseConsole_captureStop(p){
+   var o = this;
+   var c = o._activeCapture;
+   if(c){
+      c.onMouseCaptureStop(p);
+      o._activeCapture = null;
    }
+   RWindow.setOptionSelect(true);
+}
 
-   //==========================================================
-   // <T>鼠标抬起处理。</T>
-   //
-   // @method
-   // @param p:event:htmlEvent 事件
-   //==========================================================
-   function FMouseConsole_onMouseUp(p){
-      var o = this;
-      // 检查拖拽处理
-      if(!o._activeCapture){
-         return;
-      }
-      // 捕捉结束处理
-      o.captureStop(p);
-   }
+//==========================================================
+// <T>注册一个鼠标捕捉对象。</T>
+//
+// @method
+// @param p:capture:MMouseCapture 鼠标捕捉
+//==========================================================
+function FMouseConsole_register(p){
+   this._captures.push(p);
+}
 
-   //==========================================================
-   // <T>构造处理。</T>
-   //
-   // @method
-   //==========================================================
-   function FMouseConsole_construct(){
-      var o = this;
-      o.__base.FConsole.construct.call(o);
-      // 创建属性
-      o._captures = new TObjects();
-      // 注册事件
-      RWindow.lsnsMouseDown.register(o, o.onMouseDown);
-      RWindow.lsnsMouseMove.register(o, o.onMouseMove);
-      RWindow.lsnsMouseUp.register(o, o.onMouseUp);
-   }
+//==========================================================
+// <T>注销一个鼠标捕捉对象。</T>
+//
+// @method
+// @param p:capture:MMouseCapture 鼠标捕捉
+//==========================================================
+function FMouseConsole_unregister(p){
+   this._captures.remove(p);
+}
 
-   //==========================================================
-   // <T>捕捉开始处理。</T>
-   //
-   // @method
-   // @param p:event:htmlEvent 事件
-   //==========================================================
-   function FMouseConsole_captureStart(p){
-      var o = this;
-      var c = o._activeCapture;
-      if(c){
-         RWindow.setOptionSelect(false);
-         c.onMouseCaptureStart(p);
-      }
-   }
-
-   //==========================================================
-   // <T>捕捉处理。</T>
-   //
-   // @method
-   // @param p:event:htmlEvent 事件
-   //==========================================================
-   function FMouseConsole_capture(p){
-      var o = this;
-      var c = o._activeCapture;
-      if(c){
-         if(c.testMouseCapture()){
-            c.onMouseCapture(p);
-         }else{
-            o.captureStop(p)
-         }
-      }
-   }
-
-   //==========================================================
-   // <T>捕捉结束处理。</T>
-   //
-   // @method
-   // @param p:event:htmlEvent 事件
-   //==========================================================
-   function FMouseConsole_captureStop(p){
-      var o = this;
-      var c = o._activeCapture;
-      if(c){
-         c.onMouseCaptureStop(p);
-         o._activeCapture = null;
-      }
-      RWindow.setOptionSelect(true);
-   }
-
-   //==========================================================
-   // <T>注册一个鼠标捕捉对象。</T>
-   //
-   // @method
-   // @param p:capture:MMouseCapture 鼠标捕捉
-   //==========================================================
-   function FMouseConsole_register(p){
-      this._captures.push(p);
-   }
-
-   //==========================================================
-   // <T>注销一个鼠标捕捉对象。</T>
-   //
-   // @method
-   // @param p:capture:MMouseCapture 鼠标捕捉
-   //==========================================================
-   function FMouseConsole_unregister(p){
-      this._captures.remove(p);
-   }
-
-   //==========================================================
-   // <T>清空处理。</T>
-   //
-   // @method
-   //==========================================================
-   function FMouseConsole_clear(){
-      this._captures.clear();
-   }
+//==========================================================
+// <T>清空处理。</T>
+//
+// @method
+//==========================================================
+function FMouseConsole_clear(){
+   this._captures.clear();
 }

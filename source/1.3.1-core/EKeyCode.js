@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //===========================================================
-MO.EKeyCode = new function EKeyCode(){
+var EKeyCode = new function EKeyCode(){
    var o = this;
    // @attribute Integer 
    o.None      = 0;

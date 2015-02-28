@@ -9,9 +9,9 @@
 // @author maocy
 // @version 141231
 //==========================================================
-MO.APtySet = function APtySet(n, l, s, v){
+function APtySet(n, l, s, v){
    var o = this;
-   MO.AProperty.call(o, n, l);
+   AProperty.call(o, n, l);
    //..........................................................
    // @attribute
    o._search = s;
@@ -23,58 +23,60 @@ MO.APtySet = function APtySet(n, l, s, v){
    o.save     = APtySet_save;
    o.toString = APtySet_toString;
    return o;
+}
 
-   //============================================================
-   // <T>构建处理。</T>
-   //
-   // @method
-   // @param v:value:Object 对象
-   //============================================================
-   function APtySet_build(v){
-      var o = this;
+//============================================================
+// <T>构建处理。</T>
+//
+// @method
+// @param v:value:Object 对象
+//============================================================
+function APtySet_build(v){
+   var o = this;
+   if(v[o.name] == null){
       v[o.name] = o._value;
    }
+}
 
-   //============================================================
-   // <T>加载属性值。</T>
-   //
-   // @method
-   // @param v:value:Object 对象
-   // @param x:config:TNode 节点
-   //============================================================
-   function APtySet_load(v, x){
-      var o = this;
-      v[o.name] = RSet.containsString(x.get(o.linker), o.search);
-   }
+//============================================================
+// <T>加载属性值。</T>
+//
+// @method
+// @param v:value:Object 对象
+// @param x:config:TNode 节点
+//============================================================
+function APtySet_load(v, x){
+   var o = this;
+   v[o.name] = RSet.containsString(x.get(o.linker), o.search);
+}
 
-   //============================================================
-   // <T>存储属性值。</T>
-   //
-   // @method
-   // @param v:value:Object 对象
-   // @param x:config:TNode 节点
-   //============================================================
-   function APtySet_save(v, x){
-      var o = this;
-      var n = o.name;
-      var vs = v[n];
-      var xs = x.get(o.linker);
-      var e = RSet.containsString(xs, o._search);
-      if(vs && !e){
-         x.set(n, vs + o._search);
-      }else if(!v && e){
-         x.set(n, RString.remove(vs, o._search));
-      }
+//============================================================
+// <T>存储属性值。</T>
+//
+// @method
+// @param v:value:Object 对象
+// @param x:config:TNode 节点
+//============================================================
+function APtySet_save(v, x){
+   var o = this;
+   var n = o.name;
+   var vs = v[n];
+   var xs = x.get(o.linker);
+   var e = RSet.containsString(xs, o._search);
+   if(vs && !e){
+      x.set(n, vs + o._search);
+   }else if(!v && e){
+      x.set(n, RString.remove(vs, o._search));
    }
+}
 
-   //============================================================
-   // <T>获得字符串。</T>
-   //
-   // @method
-   // @return String 字符串
-   //============================================================
-   function APtySet_toString(){
-      var o = this;
-      return '<SetProperty:linker=' + o.linker + ',value=' + o._value + ',search=' + o._search +  '>';
-   }
+//============================================================
+// <T>获得字符串。</T>
+//
+// @method
+// @return String 字符串
+//============================================================
+function APtySet_toString(){
+   var o = this;
+   return 'linker=' + o.linker + ',value=' + o._value + ',search=' + o._search;
 }

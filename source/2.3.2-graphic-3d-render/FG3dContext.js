@@ -4,14 +4,14 @@
 // @author maocy
 // @history 141230
 //==========================================================
-MO.Graphic3d.FG3dContext = function FG3dContext(o){
-   o = RClass.inherits(this, o, MO.Graphic.FGraphicContext);
+function FG3dContext(o){
+   o = RClass.inherits(this, o, FGraphicContext);
    //..........................................................
    // @attribute
    o._size               = null;
    o._capability         = null;
    // @attribute
-   o._fillModeCd         = MO.Graphic3d.EG3dFillMode.Face;
+   o._fillModeCd         = EG3dFillMode.Face;
    o._optionDepth        = false;
    o._optionCull         = false;
    o._depthModeCd        = 0;
@@ -56,57 +56,57 @@ MO.Graphic3d.FG3dContext = function FG3dContext(o){
    // @method
    o.dispose             = FG3dContext_dispose;
    return o;
+}
 
-   //==========================================================
-   // <T>构造处理。</T>
-   //
-   // @method
-   //==========================================================
-   function FG3dContext_construct(){
-      var o = this;
-      o.__base.FGraphicContext.construct.call(o);
-      o._size = new SSize2();
-   }
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FG3dContext_construct(){
+   var o = this;
+   o.__base.FGraphicContext.construct.call(o);
+   o._size = new SSize2();
+}
 
-   //==========================================================
-   // <T>关联页面画布标签。</T>
-   //
-   // @method
-   // @param h:hCanvas:HtmlCanvasTag 页面画布标签
-   //==========================================================
-   function FG3dContext_linkCanvas(h){
-      var o = this;
-      o._size.set(h.width, h.height);
-   }
+//==========================================================
+// <T>关联页面画布标签。</T>
+//
+// @method
+// @param h:hCanvas:HtmlCanvasTag 页面画布标签
+//==========================================================
+function FG3dContext_linkCanvas(h){
+   var o = this;
+   o._size.set(h.width, h.height);
+}
 
-   //==========================================================
-   // <T>获得尺寸。</T>
-   //
-   // @method
-   // @return SSize2 尺寸
-   //==========================================================
-   function FG3dContext_size(){
-      return this._size;
-   }
+//==========================================================
+// <T>获得尺寸。</T>
+//
+// @method
+// @return SSize2 尺寸
+//==========================================================
+function FG3dContext_size(){
+   return this._size;
+}
 
-   //==========================================================
-   // <T>获得环境信息。</T>
-   //
-   // @method
-   // @return SG3dContextCapability 环境信息
-   //==========================================================
-   function FG3dContext_capability(){
-      return this._capability;
-   }
+//==========================================================
+// <T>获得环境信息。</T>
+//
+// @method
+// @return SG3dContextCapability 环境信息
+//==========================================================
+function FG3dContext_capability(){
+   return this._capability;
+}
 
-   //==========================================================
-   // <T>释放处理。</T>
-   //
-   // @method
-   //==========================================================
-   function FG3dContext_dispose(){
-      var o = this;
-      o._program = null;
-      o.__base.FGraphicContext.dispose.call(o);
-   }
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FG3dContext_dispose(){
+   var o = this;
+   o._program = null;
+   o.__base.FGraphicContext.dispose.call(o);
 }

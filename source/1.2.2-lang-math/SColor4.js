@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141231
 //==========================================================
-MO.SColor4 = function SColor4(){
+function SColor4(){
    var o = this;
    //..........................................................
    // @attribute
@@ -25,128 +25,128 @@ MO.SColor4 = function SColor4(){
    o.savePower    = SColor4_savePower;
    o.toString     = SColor4_toString;
    return o;
+}
 
-   //============================================================
-   // <T>接收数据。</T>
-   //
-   // @method
-   // @param p:value:SColor4 颜色
-   //============================================================
-   function SColor4_assign(p){
-      var o = this;
-      o.red = p.red;
-      o.green = p.green;
-      o.blue = p.blue;
-      o.alpha = p.alpha;
-   }
+//============================================================
+// <T>接收数据。</T>
+//
+// @method
+// @param p:value:SColor4 颜色
+//============================================================
+function SColor4_assign(p){
+   var o = this;
+   o.red = p.red;
+   o.green = p.green;
+   o.blue = p.blue;
+   o.alpha = p.alpha;
+}
 
-   //============================================================
-   // <T>接收强度数据。</T>
-   //
-   // @method
-   // @param p:value:SColor4 颜色
-   //============================================================
-   function SColor4_assignPower(p){
-      var o = this;
-      o.red = p.red * p.alpha;
-      o.green = p.green * p.alpha;
-      o.blue = p.blue * p.alpha;
-      o.alpha = p.alpha;
-   }
+//============================================================
+// <T>接收强度数据。</T>
+//
+// @method
+// @param p:value:SColor4 颜色
+//============================================================
+function SColor4_assignPower(p){
+   var o = this;
+   o.red = p.red * p.alpha;
+   o.green = p.green * p.alpha;
+   o.blue = p.blue * p.alpha;
+   o.alpha = p.alpha;
+}
 
-   //============================================================
-   // <T>设置数据内容。</T>
-   //
-   // @param r:red:Number 红色
-   // @param g:green:Number 绿色
-   // @param b:blue:Number 蓝色
-   // @param a:alpha:Number 透明
-   //============================================================
-   function SColor4_set(r, g, b, a){
-      var o = this;
-      o.red = r;
-      o.green = g;
-      o.blue = b;
-      o.alpha = a;
-   }
+//============================================================
+// <T>设置数据内容。</T>
+//
+// @param r:red:Number 红色
+// @param g:green:Number 绿色
+// @param b:blue:Number 蓝色
+// @param a:alpha:Number 透明
+//============================================================
+function SColor4_set(r, g, b, a){
+   var o = this;
+   o.red = r;
+   o.green = g;
+   o.blue = b;
+   o.alpha = a;
+}
 
-   //==========================================================
-   // <T>序列化数据到输出流里。</T>
-   //
-   // @method
-   // @param p:input:FByteStream 数据流
-   //==========================================================
-   function SColor4_serialize(p){
-      var o = this;
-      p.writeFloat(o.red);
-      p.writeFloat(o.green);
-      p.writeFloat(o.blue);
-      p.writeFloat(o.alpha);
-   }
+//==========================================================
+// <T>序列化数据到输出流里。</T>
+//
+// @method
+// @param p:input:FByteStream 数据流
+//==========================================================
+function SColor4_serialize(p){
+   var o = this;
+   p.writeFloat(o.red);
+   p.writeFloat(o.green);
+   p.writeFloat(o.blue);
+   p.writeFloat(o.alpha);
+}
 
-   //==========================================================
-   // <T>从输入流里反序列化数据。</T>
-   //
-   // @method
-   // @param p:input:FByteStream 数据流
-   //==========================================================
-   function SColor4_unserialize(p){
-      var o = this;
-      o.red = p.readFloat();
-      o.green = p.readFloat();
-      o.blue = p.readFloat();
-      o.alpha = p.readFloat();
-   }
+//==========================================================
+// <T>从输入流里反序列化数据。</T>
+//
+// @method
+// @param p:input:FByteStream 数据流
+//==========================================================
+function SColor4_unserialize(p){
+   var o = this;
+   o.red = p.readFloat();
+   o.green = p.readFloat();
+   o.blue = p.readFloat();
+   o.alpha = p.readFloat();
+}
 
-   //==========================================================
-   // <T>从输入流里反序列化数据。</T>
-   //
-   // @method
-   // @param p:input:FByteStream 数据流
-   //==========================================================
-   function SColor4_unserialize3(p){
-      var o = this;
-      o.red = p.readFloat();
-      o.green = p.readFloat();
-      o.blue = p.readFloat();
-      o.alpha = 1.0;
-   }
+//==========================================================
+// <T>从输入流里反序列化数据。</T>
+//
+// @method
+// @param p:input:FByteStream 数据流
+//==========================================================
+function SColor4_unserialize3(p){
+   var o = this;
+   o.red = p.readFloat();
+   o.green = p.readFloat();
+   o.blue = p.readFloat();
+   o.alpha = 1.0;
+}
 
-   //==========================================================
-   // <T>数据内容存储到配置节点中。</T>
-   //
-   // @method
-   // @param p:config:TXmlNode 配置节点
-   //==========================================================
-   function SColor4_saveConfig(p){
-      var o = this;
-      p.setFloat('r', o.red);
-      p.setFloat('g', o.green);
-      p.setFloat('b', o.blue);
-      p.setFloat('a', o.alpha);
-   }
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function SColor4_saveConfig(p){
+   var o = this;
+   p.setFloat('r', o.red);
+   p.setFloat('g', o.green);
+   p.setFloat('b', o.blue);
+   p.setFloat('a', o.alpha);
+}
 
-   //==========================================================
-   // <T>数据内容存储到配置节点中。</T>
-   //
-   // @method
-   // @param p:config:TXmlNode 配置节点
-   //==========================================================
-   function SColor4_savePower(p){
-      var o = this;
-      p.setFloat('r', o.red);
-      p.setFloat('g', o.green);
-      p.setFloat('b', o.blue);
-      p.setFloat('power', o.alpha);
-   }
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function SColor4_savePower(p){
+   var o = this;
+   p.setFloat('r', o.red);
+   p.setFloat('g', o.green);
+   p.setFloat('b', o.blue);
+   p.setFloat('power', o.alpha);
+}
 
-   //============================================================
-   // <T>获得字符串。</T>
-   //
-   // @return String 字符串
-   //============================================================
-   function SColor4_toString(){
-      var o = this;
-      return o.red + ',' + o.green + ',' + o.blue + ',' + o.alpha;
-   }
+//============================================================
+// <T>获得字符串。</T>
+//
+// @return String 字符串
+//============================================================
+function SColor4_toString(){
+   var o = this;
+   return o.red + ',' + o.green + ',' + o.blue + ',' + o.alpha;
 }

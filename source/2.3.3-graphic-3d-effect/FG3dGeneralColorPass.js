@@ -4,8 +4,8 @@
 // @author maocy
 // @history 150119
 //==========================================================
-MO.Graphic3d.FG3dGeneralColorPass = function FG3dGeneralColorPass(o){
-   o = RClass.inherits(this, o, MO.Graphic3d.FG3dTechniquePass);
+function FG3dGeneralColorPass(o){
+   o = RClass.inherits(this, o, FG3dTechniquePass);
    //..........................................................
    // @attribute
    o._code = 'color';

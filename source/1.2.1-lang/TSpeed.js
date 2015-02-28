@@ -5,28 +5,30 @@
 // @author maocy
 // @version 141229
 //==========================================================
-MO.TSpeed = function TSpeed(o){
-   if(!o){o = this;}
-   // Attribute
+function TSpeed(){
+   var o = this;
+   //..........................................................
+   // @attribute
    o.arguments  = arguments;
    o.start      = new Date().getTime();
-   o.callerName = MO.RMethod.name(MO.TSpeed.caller);
-   // Method
+   o.callerName = RMethod.name(TSpeed.caller);
+   //..........................................................
+   // @method
    o.record     = TSpeed_record
    return o;
+}
 
-   //==========================================================
-   // <T>记录运行信息。</T>
-   //
-   // @method
-   //==========================================================
-   function TSpeed_record(){
-      var o = this;
-      var sp = new Date().getTime() - o.start;
-      RLogger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
-      o.arguments = null;
-      o.start = null;
-      o.callerName = null;
-      o.record = null;
-   }
+//==========================================================
+// <T>记录运行信息。</T>
+//
+// @method
+//==========================================================
+function TSpeed_record(){
+   var o = this;
+   var sp = new Date().getTime() - o.start;
+   RLogger.debug(o, 'Speed test. (caller={1}, speed={2}, arguments={3})', o.callerName, sp, o.arguments);
+   o.arguments = null;
+   o.start = null;
+   o.callerName = null;
+   o.record = null;
 }

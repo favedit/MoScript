@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141229
 //==========================================================
-MO.TClassBase = function TClassBase(){
+function TClassBase(){
    var o = this;
    //..........................................................
    // @attribute

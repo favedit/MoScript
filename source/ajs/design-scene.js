@@ -1401,7 +1401,7 @@ function FDsSceneTechniquePropertyFrame_dispose(){
    o.__base.FUiForm.dispose.call(o);
 }
 function FDsSceneWorkspace(o){
-   o = MO.RClass.inherits(this, o, FUiWorkspace);
+   o = RClass.inherits(this, o, FUiWorkspace);
    o._frameName            = 'design3d.scene.Workspace';
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));

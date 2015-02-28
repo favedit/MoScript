@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //==========================================================
-MO.Graphic3d.EG3dTexture = new function EG3dTexture(){
+var EG3dTexture = new function EG3dTexture(){
    var o = this;
    // @member 未知
    o.Unknown = 0;

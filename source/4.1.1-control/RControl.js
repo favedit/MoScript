@@ -31,9 +31,9 @@ var RControl = new function RControl(){
    o.inSizing           = false;
    o.inDesign           = false;
    // @attribute TList 存放所有的控件
-   o.instances          = new MO.TList();
-   o.events             = new MO.TMap();
-   o.controls           = new MO.TMap();
+   o.instances          = new TList();
+   o.events             = new TMap();
+   o.controls           = new TMap();
    //..........................................................
    // @member
    o.linkEvent          = RControl_linkEvent;

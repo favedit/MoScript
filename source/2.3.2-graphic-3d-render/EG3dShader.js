@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141229
 //==========================================================
-MO.Graphic3d.EG3dShader = new function EG3dShader(){
+var EG3dShader = new function EG3dShader(){
    var o = this;
    // @member 未知
    o.Unknown = 0;

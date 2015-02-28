@@ -7,12 +7,12 @@
 // @author maocy
 // @version 141231
 //==========================================================
-MO.AStyleIcon = function AStyleIcon(n, s){
+function AStyleIcon(n, s){
    var o = this;
-   MO.AAnnotation.call(o, n);
+   AAnnotation.call(o, n);
    //..........................................................
    // @declare
-   o._annotationCd = MO.EAnnotation.Style;
+   o._annotationCd = EAnnotation.Style;
    //..........................................................
    // @attribute
    o._style        = s;
@@ -37,46 +37,46 @@ MO.AStyleIcon = function AStyleIcon(n, s){
       o._style = v;
    }
    return o;
+}
 
-   //============================================================
-   // <T>获得代码。</T>
-   //
-   // @method
-   // @return String 代码
-   //============================================================
-   function AStyleIcon_code(){
-      return this._style;
-   }
+//============================================================
+// <T>获得代码。</T>
+//
+// @method
+// @return String 代码
+//============================================================
+function AStyleIcon_code(){
+   return this._style;
+}
 
-   //============================================================
-   // <T>获得样式。</T>
-   //
-   // @method
-   // @return String 样式
-   //============================================================
-   function AStyleIcon_style(){
-      return this._style;
-   }
+//============================================================
+// <T>获得样式。</T>
+//
+// @method
+// @return String 样式
+//============================================================
+function AStyleIcon_style(){
+   return this._style;
+}
 
-   //============================================================
-   // <T>构建处理。</T>
-   //
-   // @method
-   // @param v:value:Object 对象
-   //============================================================
-   function AStyleIcon_build(v){
-      var o = this;
-      v[o._name] = null;
-   }
+//============================================================
+// <T>构建处理。</T>
+//
+// @method
+// @param v:value:Object 对象
+//============================================================
+function AStyleIcon_build(v){
+   var o = this;
+   v[o._name] = null;
+}
 
-   //============================================================
-   // <T>获得字符串。</T>
-   //
-   // @method
-   // @return String 字符串
-   //============================================================
-   function AStyleIcon_toString(){
-      var o = this;
-      return 'style=' + o._style;
-   }
+//============================================================
+// <T>获得字符串。</T>
+//
+// @method
+// @return String 字符串
+//============================================================
+function AStyleIcon_toString(){
+   var o = this;
+   return 'style=' + o._style;
 }

@@ -8,7 +8,7 @@
 // @author maocy
 // @version 141229
 //==========================================================
-MO.TContext = function TContext(n, c, t){
+function TContext(n, c, t){
    var o = this;
    //..........................................................
    // @attribute String 名称

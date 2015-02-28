@@ -1,12 +1,3 @@
-var MO.Engine = new function EngineSpace(){
-   return this;
-}
-var MO.Engine2d = new function Engine2dSpace(){
-   return this;
-}
-var MO.Engine3d = new function Engine3dSpace(){
-   return this;
-}
 function FDisplay(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
    o._parent           = null;

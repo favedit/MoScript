@@ -5,7 +5,7 @@
 // @author maocy
 // @version 141230
 //==========================================================
-MO.Graphic3d.EG3dSampler = new function EG3dSampler(){
+var EG3dSampler = new function EG3dSampler(){
    var o = this;
    o.Diffuse       = 'diffuse';
    o.Alpha         = 'alpha';

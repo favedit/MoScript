@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150105
 //==========================================================
-MO.EThreadStatus = new function EThreadStatus(){
+var EThreadStatus = new function EThreadStatus(){
    var o = this;
    // @attribute 睡眠
    o.Sleep  = 0;

@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150124
 //==========================================================
-MO.SArguments = function SArguments(){
+function SArguments(){
    var o = this;
    //..........................................................
    // @attribute

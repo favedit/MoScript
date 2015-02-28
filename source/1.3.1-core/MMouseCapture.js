@@ -5,15 +5,15 @@
 // @author maocy
 // @version 150203
 //==========================================================
-MO.MMouseCapture = function MMouseCapture(o){
+function MMouseCapture(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @event
-   o.onMouseCaptureStart = MO.RMethod.virtual(o, 'onMouseCaptureStart');
-   o.onMouseCapture      = MO.RMethod.virtual(o, 'onMouseCapture');
-   o.onMouseCaptureStop  = MO.RMethod.virtual(o, 'onMouseCaptureStop');
+   o.onMouseCaptureStart = RMethod.virtual(o, 'onMouseCaptureStart');
+   o.onMouseCapture      = RMethod.virtual(o, 'onMouseCapture');
+   o.onMouseCaptureStop  = RMethod.virtual(o, 'onMouseCaptureStop');
    //..........................................................
    // @method
-   o.testMouseCapture    = MO.RMethod.emptyTrue;
+   o.testMouseCapture    = RMethod.emptyTrue;
    return o;
 }

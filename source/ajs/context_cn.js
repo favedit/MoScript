@@ -1,4 +1,4 @@
-MO.RContext.initialize({
+RContext.initialize({
    'RMessage' :
       {
       'fatal' : '例外',

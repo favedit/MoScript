@@ -5,19 +5,19 @@
 // @author maocy
 // @version 141230
 //===========================================================
-MO.ENumber = new function ENumber(){
+var ENumber = new function ENumber(){
    var o = this;
    // @member 整数
-   o.Integer              = 'I';
+   o.Integer         = 'I';
    // @member 正整数
-   o.PositiveInteger      = 'PI';
+   o.PositiveInteger = 'PI';
    // @member 负整数
-   o.NegativeInteger      = 'NI';
+   o.NegativeInteger = 'NI';
    // @member 浮点数
-   o.Float                = 'F';
+   o.Float           = 'F';
    // @member 正浮点数
-   o.PositiveFloat        = 'PF';
+   o.PositiveFloat   = 'PF';
    // @member 负浮点数
-   o.NegativeFloat        = 'NF';
+   o.NegativeFloat   = 'NF';
    return o;
 }

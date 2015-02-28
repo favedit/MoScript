@@ -5,8 +5,8 @@
 // @author maocy
 // @version 150113
 //==========================================================
-MO.SXmlEvent = function SXmlEvent(){
-   var o = this;
+function SXmlEvent(o){
+   if(!o){o = this;}
    //..........................................................
    // @attribute
    o.owner          = null;
@@ -22,37 +22,37 @@ MO.SXmlEvent = function SXmlEvent(){
    // @method
    o.dispose        = SXmlEvent_dispose;
    return o;
+}
 
-   //==========================================================
-   // <T>加载处理。</T>
-   //
-   // @method
-   //==========================================================
-   function SXmlEvent_process(p){
-      var o = this;
-      o.outputDocument = p.document;
-      o.outputNode = p.root;
-      if(o.owner){
-         o.callback.call(o.owner, o);
-      }else{
-         o.callback(o);
-      }
+//==========================================================
+// <T>加载处理。</T>
+//
+// @method
+//==========================================================
+function SXmlEvent_process(p){
+   var o = this;
+   o.outputDocument = p.document;
+   o.outputNode = p.root;
+   if(o.owner){
+      o.callback.call(o.owner, o);
+   }else{
+      o.callback(o);
    }
+}
 
 
-   //==========================================================
-   // <T>释放处理。</T>
-   //
-   // @method
-   //==========================================================
-   function SXmlEvent_dispose(){
-      var o = this;
-      o.owner = null;
-      o.url = null;
-      o.action = null;
-      o.parameter = null;
-      o.inputDocument = null;
-      o.outputDocument = null;
-      o.callback = null;
-   }
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function SXmlEvent_dispose(){
+   var o = this;
+   o.owner = null;
+   o.url = null;
+   o.action = null;
+   o.parameter = null;
+   o.inputDocument = null;
+   o.outputDocument = null;
+   o.callback = null;
 }

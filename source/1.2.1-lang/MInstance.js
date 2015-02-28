@@ -6,16 +6,16 @@
 // @author maocy
 // @version 150116
 //==========================================================
-MO.MInstance = function MInstance(o){
+function MInstance(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @method
    o.__free          = false;
    //..........................................................
    // @method
-   o.instanceCreate  = MO.RMethod.empty;
-   o.instanceAlloc   = MO.RMethod.empty;
-   o.instanceFree    = MO.RMethod.empty;
-   o.instanceRelease = MO.RMethod.empty;
+   o.instanceCreate  = RMethod.empty;
+   o.instanceAlloc   = RMethod.empty;
+   o.instanceFree    = RMethod.empty;
+   o.instanceRelease = RMethod.empty;
    return o;
 }

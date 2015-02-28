@@ -5,8 +5,8 @@
 // @author maocy
 // @version 150105
 //==========================================================
-MO.FPipeline = function FPipeline(o){
-   o = RClass.inherits(this, o, MO.FObject);
+function FPipeline(o){
+   o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
    o._name = null;
@@ -14,14 +14,14 @@ MO.FPipeline = function FPipeline(o){
    // @method
    o.name  = FPipeline_name;
    return o;
+}
 
-   //==========================================================
-   // <T>获得名称。</T>
-   //
-   // @method
-   // @return 名称
-   //==========================================================
-   function FPipeline_name(){
-      return this._name;
-   }
+//==========================================================
+// <T>获得名称。</T>
+//
+// @method
+// @return 名称
+//==========================================================
+function FPipeline_name(){
+   return this._name;
 }

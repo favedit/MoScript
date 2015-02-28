@@ -8,39 +8,39 @@
 // @author maocy
 // @version 141231
 //==========================================================
-MO.APtyInteger = function APtyInteger(n, l, v){
+function APtyInteger(n, l, v){
    var o = this;
-   MO.AProperty.call(o, n, l);
+   AProperty.call(o, n, l);
    //..........................................................
    // @attribute
-   o._value   = MO.RInteger.nvl(v);
+   o._value   = RInteger.nvl(v);
    //..........................................................
    // @method
    o.build    = APtyInteger_build;
    o.toString = APtyInteger_toString;
    return o;
+}
 
-   //============================================================
-   // <T>构建处理。</T>
-   //
-   // @method
-   // @param v:value:Object 对象
-   //============================================================
-   function APtyInteger_build(v){
-      var o = this;
-      if(o._value != 0){
-         v[o._name] = o._value;
-      }
+//============================================================
+// <T>构建处理。</T>
+//
+// @method
+// @param v:value:Object 对象
+//============================================================
+function APtyInteger_build(v){
+   var o = this;
+   if(v[o._name] == null){
+      v[o._name] = o._value;
    }
+}
 
-   //============================================================
-   // <T>获得字符串。</T>
-   //
-   // @method
-   // @return String 字符串
-   //============================================================
-   function APtyInteger_toString(){
-      var o = this;
-      return 'linker=' + o._linker + ',value=' + o._value;
-   }
+//============================================================
+// <T>获得字符串。</T>
+//
+// @method
+// @return String 字符串
+//============================================================
+function APtyInteger_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._value;
 }
