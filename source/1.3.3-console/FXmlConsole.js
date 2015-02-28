@@ -7,12 +7,15 @@
 //==========================================================
 function FXmlConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   // Attribute
+   //..........................................................
+   // @attribute
    o._scopeCd    = EScope.Local;
    o.connections = null;
-   // Event
+   //..........................................................
+   // @event
    o.onLoad      = FXmlConsole_onLoad;
-   // Method
+   //..........................................................
+   // @method
    o.construct   = FXmlConsole_construct;
    o.alloc       = FXmlConsole_alloc;
    o.send        = FXmlConsole_send;

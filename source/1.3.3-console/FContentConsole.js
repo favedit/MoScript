@@ -7,12 +7,15 @@
 //==========================================================
 function FContentConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   // Attribute
+   //..........................................................
+   // @attribute
    o._scopeCd    = EScope.Local;
    o.connections = null;
-   // Event
+   //..........................................................
+   // @event
    o.onLoad      = FContentConsole_onLoad;
-   // Method
+   //..........................................................
+   // @method
    o.construct   = FContentConsole_construct;
    o.alloc       = FContentConsole_alloc;
    o.process     = FContentConsole_process;

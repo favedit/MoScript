@@ -3,10 +3,12 @@
 // ============================================================
 function FEnvironmentConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   // Attribute
-   o.scope       = EScope.Page;
+   //..........................................................
+   // @attribute
+   o.scope       = EScope.Local;
    o.environment = null;
-   // Method
+   //..........................................................
+   // @method
    o.connect     = FEnvironmentConsole_connect;
    o.build       = FEnvironmentConsole_build;
    o.buildValue  = FEnvironmentConsole_buildValue;

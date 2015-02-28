@@ -7,17 +7,21 @@
 //==========================================================
 function FMonitorConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   // Attribute
+   //..........................................................
+   // @attribute
    o.scope      = EScope.Global;
    o.working    = false;
    o.interval   = 10;
    o.intervalId = null;
    o.monitors   = new TList();
-   // Html
+   //..........................................................
+   // @html
    o.hWindow    = null;
-   // Event
+   //..........................................................
+   // @event
    o.doInterval = FMonitorConsole_doInterval;
-   // Method
+   //..........................................................
+   // @method
    o.push       = FMonitorConsole_push;
    o.process    = FMonitorConsole_process;
    o.processAll = FMonitorConsole_processAll;

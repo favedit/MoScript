@@ -3,12 +3,15 @@
 // ============================================================
 function FLoggerConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   // Attribute
+   //..........................................................
+   // @attribute
    o.scope      = EScope.Page;
    o.iLogger    = null;
-   // Event
+   //..........................................................
+   // @event
    o.onKeyDown  = FLoggerConsole_onKeyDown;
-   // Method
+   //..........................................................
+   // @method
    o.construct  = FLoggerConsole_construct;
    o.connect    = FLoggerConsole_connect;
    o.disconnect = FLoggerConsole_disconnect;

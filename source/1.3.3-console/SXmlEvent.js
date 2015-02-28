@@ -5,8 +5,8 @@
 // @author maocy
 // @version 150113
 //==========================================================
-function SXmlEvent(o){
-   if(!o){o = this;}
+function SXmlEvent(){
+   var o = this;
    //..........................................................
    // @attribute
    o.owner          = null;
