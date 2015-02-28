@@ -81,7 +81,7 @@ function FE3dTemplateConsole_alloc(c, n){
       }
    }
    // 获得模板资源
-   var rc = RConsole.find(FRs3TemplateConsole);
+   var rc = RConsole.find(FE3sTemplateConsole);
    var r = rc.load(n);
    // 创建模板
    var t = RClass.create(FE3dTemplate);
@@ -104,7 +104,7 @@ function FE3dTemplateConsole_alloc(c, n){
 function FE3dTemplateConsole_load(t, n){
    var o = this;
    // 获得模板资源
-   var rc = RConsole.find(FRs3TemplateConsole);
+   var rc = RConsole.find(FE3sTemplateConsole);
    var r = rc.load(n);
    // 创建模板
    t._resourceGuid = n;

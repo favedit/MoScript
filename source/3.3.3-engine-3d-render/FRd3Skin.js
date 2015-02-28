@@ -23,7 +23,7 @@ function FRd3Skin(o){
 //==========================================================
 // <T>获得资源信息。</T>
 //
-// @return FRs3SkeletonSkin 资源信息
+// @return FE3sSkeletonSkin 资源信息
 //==========================================================
 function FRd3Skin_resource(){
    return this._resource;

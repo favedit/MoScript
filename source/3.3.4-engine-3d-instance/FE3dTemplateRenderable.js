@@ -78,7 +78,7 @@ function FE3dTemplateRenderable_testVisible(p){
 // <T>获得资源。</T>
 //
 // @method
-// @return FRs3TemplateRenderable 资源
+// @return FE3sTemplateRenderable 资源
 //==========================================================
 function FE3dTemplateRenderable_resource(p){
    return this._resource;
@@ -88,7 +88,7 @@ function FE3dTemplateRenderable_resource(p){
 // <T>加载资源。</T>
 //
 // @method
-// @param p:resource:FRs3TemplateRenderable 资源
+// @param p:resource:FE3sTemplateRenderable 资源
 //==========================================================
 function FE3dTemplateRenderable_loadResource(p){
    var o = this;
@@ -133,7 +133,7 @@ function FE3dTemplateRenderable_reloadResource(){
 // <T>加载资源。</T>
 //
 // @method
-// @param p:resource:FRs3TemplateRenderable 资源
+// @param p:resource:FE3sTemplateRenderable 资源
 //==========================================================
 function FE3dTemplateRenderable_load(){
    var o = this;

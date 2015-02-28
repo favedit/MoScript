@@ -43,7 +43,7 @@ function FE3dScene_construct(){
 // <T>获得资源。</T>
 //
 // @method
-// @param FRs3Scene 资源
+// @param FE3sScene 资源
 //==========================================================
 function FE3dScene_resource(p){
    return this._resource;
@@ -53,7 +53,7 @@ function FE3dScene_resource(p){
 // <T>加载技术资源。</T>
 //
 // @method
-// @param p:resource:FRs3SceneTechnique 技术资源
+// @param p:resource:FE3sSceneTechnique 技术资源
 //==========================================================
 function FE3dScene_loadTechniqueResource(p){
    var o = this;
@@ -64,7 +64,7 @@ function FE3dScene_loadTechniqueResource(p){
 // <T>加载区域资源。</T>
 //
 // @method
-// @param p:resource:FRs3SceneRegion 区域资源
+// @param p:resource:FE3sSceneRegion 区域资源
 //==========================================================
 function FE3dScene_loadRegionResource(p){
    var o = this;
@@ -118,7 +118,7 @@ function FE3dScene_loadRegionResource(p){
 // <T>加载显示资源。</T>
 //
 // @method
-// @param p:resource:FRs3SceneDisplay 显示资源
+// @param p:resource:FE3sSceneDisplay 显示资源
 //==========================================================
 function FE3dScene_loadDisplayResource(pl, pd){
    var o = this;
@@ -145,7 +145,7 @@ function FE3dScene_loadDisplayResource(pl, pd){
 // <T>加载天空资源。</T>
 //
 // @method
-// @param p:resource:FRs3SceneSky 天空资源
+// @param p:resource:FE3sSceneSky 天空资源
 //==========================================================
 function FE3dScene_loadLayerResource(p){
    var o = this;

@@ -23,7 +23,7 @@ function FE3dSceneDisplayMovie(o){
 //==========================================================
 // <T>加载资源。</T>
 //
-// @param p:resource:FRs3SceneMovie 资源
+// @param p:resource:FE3sSceneMovie 资源
 //==========================================================
 function FE3dSceneDisplayMovie_loadResource(p){
    var o = this;

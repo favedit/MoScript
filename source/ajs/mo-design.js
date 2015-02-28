@@ -375,7 +375,7 @@ function FDsMainCanvas_onThemeLoad(){
 function FDsMainCanvas_onBuild(p){
    var o = this;
    o.__base.FCanvas.onBuild.call(o, p);
-   var tc = RConsole.find(FRs3ThemeConsole);
+   var tc = RConsole.find(FE3sThemeConsole);
    var m = tc.select('color');
    m.loadListener().register(o, o.onThemeLoad);
 }
@@ -1082,7 +1082,7 @@ function FDsTemplateCatalog_buildTheme(pn, pt){
    var s = pt.materials();
    var c = s.count();
    if(c > 0){
-      var mc = RConsole.find(FRs3MaterialConsole);
+      var mc = RConsole.find(FE3sMaterialConsole);
       for(var i = 0; i < c; i++){
          var m = s.value(i);
          var mg = mc.findGroup(m.groupGuid());
@@ -1104,7 +1104,7 @@ function FDsTemplateCatalog_buildDisplay(pn, pt){
    var s = pt.materials();
    var c = s.count();
    if(c > 0){
-      var mgc = RConsole.find(FRs3MaterialGroupConsole);
+      var mgc = RConsole.find(FE3sMaterialGroupConsole);
       for(var i = 0; i < c; i++){
          var m = s.value(i);
          var mg = mgc.find(m.groupGuid());
@@ -1509,7 +1509,7 @@ function FDsTemplateToolBar_onSaveClick(p){
          m.saveConfig(xr.create('Material'));
       }
    }
-   RConsole.find(FRs3TemplateConsole).update(xr);
+   RConsole.find(FE3sTemplateConsole).update(xr);
 }
 function FDsTemplateToolBar_construct(){
    var o = this;
@@ -1651,11 +1651,11 @@ function FDsTemplateWorkspace_onCatalogSelected(p){
       var f = o.templatePropertyFrame();
       f.show();
       f.loadObject(t);
-   }else if(RClass.isClass(p, FRs3TemplateTheme)){
+   }else if(RClass.isClass(p, FE3sTemplateTheme)){
       var f = o.themePropertyFrame();
       f.show();
       f.loadObject(t, p);
-   }else if(RClass.isClass(p, FRs3Material)){
+   }else if(RClass.isClass(p, FE3sMaterial)){
       var f = o.materialPropertyFrame();
       f.show();
       f.loadObject(t, p);
@@ -2886,7 +2886,7 @@ function FDsSceneMenuBar_onSaveClick(p){
    var r = s._resource;
    var x = new TXmlNode();
    r.saveConfig(x);
-   RConsole.find(FRs3SceneConsole).update(x);
+   RConsole.find(FE3sSceneConsole).update(x);
 }
 function FDsSceneMenuBar_onRunClick(p){
    var o = this;

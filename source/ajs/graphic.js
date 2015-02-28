@@ -1,6 +1,3 @@
-MO.Graphic = new function GraphicSpace(){
-   return this;
-}
 function MGraphicObject(o){
    o = RClass.inherits(this, o);
    o._graphicContext    = null;

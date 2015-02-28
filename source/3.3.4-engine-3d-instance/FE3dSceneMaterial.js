@@ -33,7 +33,7 @@ function FE3dSceneMaterial_groupGuid(p){
 // <T>获得资源。</T>
 //
 // @method
-// @return FRs3Resource 资源
+// @return FE3sResource 资源
 //==========================================================
 function FE3dSceneMaterial_resource(p){
    return this._resource;
@@ -43,7 +43,7 @@ function FE3dSceneMaterial_resource(p){
 // <T>加载区域资源。</T>
 //
 // @method
-// @param p:resource:FRs3SceneRegion 区域资源
+// @param p:resource:FE3sSceneRegion 区域资源
 //==========================================================
 function FE3dSceneMaterial_loadSceneResource(p){
    var o = this;

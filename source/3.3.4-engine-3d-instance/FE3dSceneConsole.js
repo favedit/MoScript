@@ -101,7 +101,7 @@ function FE3dSceneConsole_scenes(){
 function FE3dSceneConsole_alloc(pc, pn){
    var o = this;
    // 加载渲染对象
-   var rsc = RConsole.find(FRs3SceneConsole);
+   var rsc = RConsole.find(FE3sSceneConsole);
    var rs = rsc.load(pn);
    // 加载模型
    var s = RClass.create(FE3dScene);

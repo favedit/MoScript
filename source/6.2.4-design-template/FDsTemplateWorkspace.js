@@ -197,11 +197,11 @@ function FDsTemplateWorkspace_onCatalogSelected(p){
       var f = o.templatePropertyFrame();
       f.show();
       f.loadObject(t);
-   }else if(RClass.isClass(p, FRs3TemplateTheme)){
+   }else if(RClass.isClass(p, FE3sTemplateTheme)){
       var f = o.themePropertyFrame();
       f.show();
       f.loadObject(t, p);
-   }else if(RClass.isClass(p, FRs3Material)){
+   }else if(RClass.isClass(p, FE3sMaterial)){
       var f = o.materialPropertyFrame();
       f.show();
       f.loadObject(t, p);

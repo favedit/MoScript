@@ -31,7 +31,7 @@ function FE3dSceneDisplayRenderable_materialReference(p){
 // <T>加载材质。</T>
 //
 // @method
-// @param p:resource:FRs3TemplateRenderable 资源
+// @param p:resource:FE3sTemplateRenderable 资源
 //==========================================================
 function FE3dSceneDisplayRenderable_loadMaterial(p){
    var o = this;

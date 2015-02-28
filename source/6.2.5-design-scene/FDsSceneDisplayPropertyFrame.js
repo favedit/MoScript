@@ -79,7 +79,7 @@ function FDsSceneDisplayPropertyFrame_construct(){
 //
 // @method
 // @param s:scene:FE3dScene 场景
-// @param d:display:FRs3Display 显示
+// @param d:display:FE3sDisplay 显示
 //==========================================================
 function FDsSceneDisplayPropertyFrame_loadObject(s, d){
    var o = this;

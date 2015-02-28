@@ -12693,8 +12693,8 @@ var EThreadStatus = new function EThreadStatus(){
    o.Finish = 2;
    return o;
 }
-function SXmlEvent(o){
-   if(!o){o = this;}
+function SXmlEvent(){
+   var o = this;
    o.owner          = null;
    o.url            = null;
    o.action         = null;
@@ -12873,7 +12873,7 @@ function FDragConsole_clear(){
 }
 function FEnvironmentConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o.scope       = EScope.Page;
+   o.scope       = EScope.Local;
    o.environment = null;
    o.connect     = FEnvironmentConsole_connect;
    o.build       = FEnvironmentConsole_build;

@@ -26,7 +26,7 @@ function FRd3Skeleton(o){
 // <T>获得资源。</T>
 //
 // @method
-// @return FRs3Model 资源
+// @return FE3sModel 资源
 //==========================================================
 function FRd3Skeleton_resource(){
    return this._resource;

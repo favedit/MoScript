@@ -104,7 +104,7 @@ function FDsSceneCatalog_buildTechnique(n, p){
 //
 // @method
 // @param n:node:FTreeNode 父节点
-// @param p:theme:FRs3TemplateTheme 模板主题
+// @param p:theme:FE3sTemplateTheme 模板主题
 //==========================================================
 function FDsSceneCatalog_buildRegion(n, p){
    var o = this;

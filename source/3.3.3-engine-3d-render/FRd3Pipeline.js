@@ -51,7 +51,7 @@ function FRd3Pipeline_findVertexBuffer(p){
 //==========================================================
 // <T>加载资源。</T>
 //
-// @param p:resource:FRs3Geometry 资源
+// @param p:resource:FE3sGeometry 资源
 //==========================================================
 function FRd3Pipeline_loadResource(p){
    var o = this;

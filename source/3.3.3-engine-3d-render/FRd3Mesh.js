@@ -207,7 +207,7 @@ function FRd3Mesh_boneIds(p){
 // <T>获得资源。</T>
 //
 // @method
-// @return FRs3Mesh 资源
+// @return FE3sMesh 资源
 //==========================================================
 function FRd3Mesh_resource(){
    return this._resource;
@@ -216,7 +216,7 @@ function FRd3Mesh_resource(){
 //==========================================================
 // <T>加载资源。</T>
 //
-// @param p:resource:FRs3Geometry 资源
+// @param p:resource:FE3sGeometry 资源
 //==========================================================
 function FRd3Mesh_loadResource(p){
    var o = this;

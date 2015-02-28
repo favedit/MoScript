@@ -70,7 +70,7 @@ function FDsTemplateDisplayPropertyFrame_construct(){
 //
 // @method
 // @param t:template:FTemplate3d 模板
-// @param d:display:FRs3Display 显示
+// @param d:display:FE3sDisplay 显示
 //==========================================================
 function FDsTemplateDisplayPropertyFrame_loadObject(t, d){
    var o = this;

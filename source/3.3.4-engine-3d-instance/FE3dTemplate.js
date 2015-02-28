@@ -146,7 +146,7 @@ function FE3dTemplate_pushAnimation(p){
 // <T>获得资源。</T>
 //
 // @method
-// @param FRs3Template 资源
+// @param FE3sTemplate 资源
 //==========================================================
 function FE3dTemplate_resource(p){
    return this._resource;
@@ -156,7 +156,7 @@ function FE3dTemplate_resource(p){
 // <T>设置资源模板。</T>
 //
 // @method
-// @param p:resource:FRs3Template 资源模板
+// @param p:resource:FE3sTemplate 资源模板
 //==========================================================
 function FE3dTemplate_setResource(p){
    this._resource = p;
@@ -234,7 +234,7 @@ function FE3dTemplate_loadAnimations(p){
 // <T>加载资源模板。</T>
 //
 // @method
-// @param p:resource:FRs3Template 资源模板
+// @param p:resource:FE3sTemplate 资源模板
 //==========================================================
 function FE3dTemplate_loadResource(p){
    var o = this;

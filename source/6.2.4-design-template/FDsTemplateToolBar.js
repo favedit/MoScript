@@ -83,7 +83,7 @@ function FDsTemplateToolBar_onSaveClick(p){
          m.saveConfig(xr.create('Material'));
       }
    }
-   RConsole.find(FRs3TemplateConsole).update(xr);
+   RConsole.find(FE3sTemplateConsole).update(xr);
 }
 
 //==========================================================

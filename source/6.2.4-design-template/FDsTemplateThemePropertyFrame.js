@@ -64,7 +64,7 @@ function FDsTemplateThemePropertyFrame_construct(){
 //
 // @method
 // @param t:template:FTemplate3d 模板
-// @param m:material:FRs3Material 材质
+// @param m:material:FE3sMaterial 材质
 //==========================================================
 function FDsTemplateThemePropertyFrame_loadObject(t, m){
    var o = this;

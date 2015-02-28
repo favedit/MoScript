@@ -237,7 +237,7 @@ function FRd3Material_loadResource(p){
    var ib = o._indexBuffer = c.createIndexBuffer();
    ib.upload(rib.data(), rib.count());
    var materialCode = p.materialCode();
-   var themeConsole = RConsole.find(FRs3ThemeConsole);
+   var themeConsole = RConsole.find(FE3sThemeConsole);
    var material = o._material = themeConsole.find(materialCode);
    var textures = material.textures();
    var textureCount = textures.count();
@@ -566,7 +566,7 @@ function FRd3ModelConsole_load(pc, pn){
    if(m){
       return m;
    }
-   var rmc = RConsole.find(FRs3ModelConsole);
+   var rmc = RConsole.find(FE3sModelConsole);
    var rm = rmc.load(pn);
    m = RClass.create(FRd3Model);
    m.linkGraphicContext(pc);

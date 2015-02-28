@@ -375,7 +375,7 @@ function FDsMainCanvas_onThemeLoad(){
 function FDsMainCanvas_onBuild(p){
    var o = this;
    o.__base.FCanvas.onBuild.call(o, p);
-   var tc = RConsole.find(FRs3ThemeConsole);
+   var tc = RConsole.find(FE3sThemeConsole);
    var m = tc.select('color');
    m.loadListener().register(o, o.onThemeLoad);
 }

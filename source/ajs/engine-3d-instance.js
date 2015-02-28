@@ -1243,7 +1243,7 @@ function FE3dSceneConsole_scenes(){
 }
 function FE3dSceneConsole_alloc(pc, pn){
    var o = this;
-   var rsc = RConsole.find(FRs3SceneConsole);
+   var rsc = RConsole.find(FE3sSceneConsole);
    var rs = rsc.load(pn);
    var s = RClass.create(FE3dScene);
    s.linkGraphicContext(pc);
@@ -1865,7 +1865,7 @@ function FE3dTemplateConsole_alloc(c, n){
          return ts.pop();
       }
    }
-   var rc = RConsole.find(FRs3TemplateConsole);
+   var rc = RConsole.find(FE3sTemplateConsole);
    var r = rc.load(n);
    var t = RClass.create(FE3dTemplate);
    t.linkGraphicContext(c);
@@ -1877,7 +1877,7 @@ function FE3dTemplateConsole_alloc(c, n){
 }
 function FE3dTemplateConsole_load(t, n){
    var o = this;
-   var rc = RConsole.find(FRs3TemplateConsole);
+   var rc = RConsole.find(FE3sTemplateConsole);
    var r = rc.load(n);
    t._resourceGuid = n;
    t.setName(n);

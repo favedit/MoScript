@@ -21,7 +21,7 @@ function FE3dSceneLayer(o){
 // <T>获得资源。</T>
 //
 // @method
-// @return FRs3SceneLayer 层资源
+// @return FE3sSceneLayer 层资源
 //==========================================================
 function FE3dSceneLayer_resource(){
    return this._resource;
@@ -31,7 +31,7 @@ function FE3dSceneLayer_resource(){
 // <T>加载空间资源。</T>
 //
 // @method
-// @param p:resource:FRs3SceneLayer 层资源
+// @param p:resource:FE3sSceneLayer 层资源
 //==========================================================
 function FE3dSceneLayer_loadResource(p){
    var o = this;

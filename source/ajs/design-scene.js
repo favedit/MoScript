@@ -1160,7 +1160,7 @@ function FDsSceneMenuBar_onSaveClick(p){
    var r = s._resource;
    var x = new TXmlNode();
    r.saveConfig(x);
-   RConsole.find(FRs3SceneConsole).update(x);
+   RConsole.find(FE3sSceneConsole).update(x);
 }
 function FDsSceneMenuBar_onRunClick(p){
    var o = this;

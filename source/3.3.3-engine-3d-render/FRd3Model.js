@@ -81,7 +81,7 @@ function FRd3Model_geometrys(){
 //==========================================================
 // <T>获得资源。</T>
 //
-// @return FRs3Model 资源
+// @return FE3sModel 资源
 //==========================================================
 function FRd3Model_resource(){
    return this._resource;
@@ -90,7 +90,7 @@ function FRd3Model_resource(){
 //==========================================================
 // <T>设置资源。</T>
 //
-// @param p:resource:FRs3Model 资源
+// @param p:resource:FE3sModel 资源
 //==========================================================
 function FRd3Model_setResource(p){
    this._resource = p;
@@ -109,7 +109,7 @@ function FRd3Model_testReady(){
 // <T>加载骨骼资源。</T>
 //
 // @method
-// @param p:resource:FRs3Skeleton 骨骼资源
+// @param p:resource:FE3sSkeleton 骨骼资源
 //==========================================================
 function FRd3Model_loadSkeletonResource(p){
    var o = this;
@@ -135,7 +135,7 @@ function FRd3Model_loadSkeletonResource(p){
 // <T>加载模型资源。</T>
 //
 // @method
-// @param p:resource:FRs3Model 模型资源
+// @param p:resource:FE3sModel 模型资源
 //==========================================================
 function FRd3Model_loadResource(p){
    var o = this;

@@ -63,7 +63,7 @@ function FRd3Material_indexBuffer(){
 //==========================================================
 // <T>加载资源。</T>
 //
-// @param p:resource:FRs3Geometry 资源
+// @param p:resource:FE3sGeometry 资源
 //==========================================================
 function FRd3Material_loadResource(p){
    var o = this;
@@ -85,7 +85,7 @@ function FRd3Material_loadResource(p){
    ib.upload(rib.data(), rib.count());
    // 关联材质
    var materialCode = p.materialCode();
-   var themeConsole = RConsole.find(FRs3ThemeConsole);
+   var themeConsole = RConsole.find(FE3sThemeConsole);
    var material = o._material = themeConsole.find(materialCode);
    var textures = material.textures();
    var textureCount = textures.count();

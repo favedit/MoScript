@@ -73,7 +73,7 @@ function FRd3ModelConsole_construct(){
 //
 // @method
 // @param p:guid:String 唯一编号
-// @return FRs3Model 渲染模型
+// @return FE3sModel 渲染模型
 //==========================================================
 function FRd3ModelConsole_findModel(p){
    return this._models.get(p);
@@ -94,7 +94,7 @@ function FRd3ModelConsole_models(){
 //
 // @method
 // @param p:guid:String 唯一编号
-// @return FRs3Mesh 渲染网格
+// @return FE3sMesh 渲染网格
 //==========================================================
 function FRd3ModelConsole_findMesh(p){
    return this._meshs.get(p);
@@ -133,7 +133,7 @@ function FRd3ModelConsole_load(pc, pn){
       return m;
    }
    // 获得路径
-   var rmc = RConsole.find(FRs3ModelConsole);
+   var rmc = RConsole.find(FE3sModelConsole);
    var rm = rmc.load(pn);
    // 加载模型
    m = RClass.create(FRd3Model);

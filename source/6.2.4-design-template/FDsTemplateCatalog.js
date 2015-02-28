@@ -70,7 +70,7 @@ function FDsTemplateCatalog_construct(){
 //
 // @method
 // @param r:node:FTreeNode 父节点
-// @param t:theme:FRs3TemplateTheme 模板主题
+// @param t:theme:FE3sTemplateTheme 模板主题
 //==========================================================
 function FDsTemplateCatalog_buildTheme(pn, pt){
    var o = this;
@@ -84,7 +84,7 @@ function FDsTemplateCatalog_buildTheme(pn, pt){
    var s = pt.materials();
    var c = s.count();
    if(c > 0){
-      var mc = RConsole.find(FRs3MaterialConsole);
+      var mc = RConsole.find(FE3sMaterialConsole);
       for(var i = 0; i < c; i++){
          var m = s.value(i);
          var mg = mc.findGroup(m.groupGuid());
@@ -103,7 +103,7 @@ function FDsTemplateCatalog_buildTheme(pn, pt){
 //
 // @method
 // @param r:node:FTreeNode 父节点
-// @param t:theme:FRs3TemplateTheme 模板主题
+// @param t:theme:FE3sTemplateTheme 模板主题
 //==========================================================
 function FDsTemplateCatalog_buildDisplay(pn, pt){
    var o = this;
@@ -117,7 +117,7 @@ function FDsTemplateCatalog_buildDisplay(pn, pt){
    var s = pt.materials();
    var c = s.count();
    if(c > 0){
-      var mgc = RConsole.find(FRs3MaterialGroupConsole);
+      var mgc = RConsole.find(FE3sMaterialGroupConsole);
       for(var i = 0; i < c; i++){
          var m = s.value(i);
          var mg = mgc.find(m.groupGuid());

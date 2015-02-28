@@ -78,7 +78,7 @@ function FRd3Animation_tracks(){
 // <T>获得动画资源。</T>
 //
 // @method
-// @return FRs3Animation 动画资源
+// @return FE3sAnimation 动画资源
 //==========================================================
 function FRd3Animation_resource(){
    return this._resource;
@@ -88,7 +88,7 @@ function FRd3Animation_resource(){
 // <T>加载动画资源。</T>
 //
 // @method
-// @param p:resource:FRs3Animation 动画资源
+// @param p:resource:FE3sAnimation 动画资源
 //==========================================================
 function FRd3Animation_loadResource(p){
    var o = this;

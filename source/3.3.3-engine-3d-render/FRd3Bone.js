@@ -49,7 +49,7 @@ function FRd3Bone_matrix(){
 // <T>获得资源跟踪。</T>
 //
 // @method
-// @return FRs3Track 资源跟踪
+// @return FE3sTrack 资源跟踪
 //==========================================================
 function FRd3Bone_trackResource(){
    return this._trackResource;
@@ -59,7 +59,7 @@ function FRd3Bone_trackResource(){
 // <T>获得资源。</T>
 //
 // @method
-// @return FRs3Bone 资源
+// @return FE3sBone 资源
 //==========================================================
 function FRd3Bone_loadResource(p){
    var o = this;

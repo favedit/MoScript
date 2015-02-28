@@ -41,7 +41,7 @@ function FE3dSceneDisplay_construct(){
 // <T>获得资源。</T>
 //
 // @method
-// @return FRs3SceneDisplay 资源
+// @return FE3sSceneDisplay 资源
 //==========================================================
 function FE3dSceneDisplay_resourceScene(){
    return this._resourceScene;
@@ -51,7 +51,7 @@ function FE3dSceneDisplay_resourceScene(){
 // <T>加载空间资源。</T>
 //
 // @method
-// @param p:resource:FRs3SceneSpace 空间资源
+// @param p:resource:FE3sSceneSpace 空间资源
 //==========================================================
 function FE3dSceneDisplay_loadSceneResource(p){
    var o = this;
@@ -89,7 +89,7 @@ function FE3dSceneDisplay_loadSceneResource(p){
 //==========================================================
 // <T>加载资源。</T>
 //
-// @param p:resource:FRs3Template 资源
+// @param p:resource:FE3sTemplate 资源
 //==========================================================
 function FE3dSceneDisplay_loadResource(p){
    var o = this;

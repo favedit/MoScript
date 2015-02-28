@@ -101,7 +101,7 @@ function FDsSceneMaterial2Frame_construct(){
 //
 // @method
 // @param s:scene:FE3dScene 场景
-// @param m:material:FRs3Material 材质
+// @param m:material:FE3sMaterial 材质
 //==========================================================
 function FDsSceneMaterial2Frame_loadObject(s, m){
    var o = this;

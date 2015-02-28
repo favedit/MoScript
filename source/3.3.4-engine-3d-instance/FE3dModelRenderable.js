@@ -131,7 +131,7 @@ function FE3dModelRenderable_bones(p){
 //==========================================================
 // <T>加载资源。</T>
 //
-// @param p:resource:FRs3Geometry 资源
+// @param p:resource:FE3sGeometry 资源
 //==========================================================
 function FE3dModelRenderable_load(p){
    var o = this;

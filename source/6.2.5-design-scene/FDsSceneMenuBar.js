@@ -71,7 +71,7 @@ function FDsSceneMenuBar_onSaveClick(p){
    var x = new TXmlNode();
    r.saveConfig(x);
    // 更新处理
-   RConsole.find(FRs3SceneConsole).update(x);
+   RConsole.find(FE3sSceneConsole).update(x);
 }
 
 //==========================================================

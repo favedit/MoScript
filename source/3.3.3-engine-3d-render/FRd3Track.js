@@ -47,7 +47,7 @@ function FRd3Track_matrix(){
 // <T>获得资源。</T>
 //
 // @method
-// @return FRs3Track 资源
+// @return FE3sTrack 资源
 //==========================================================
 function FRd3Track_resource(){
    return this._resource;
@@ -57,7 +57,7 @@ function FRd3Track_resource(){
 // <T>获得资源。</T>
 //
 // @method
-// @return FRs3Bone 资源
+// @return FE3sBone 资源
 //==========================================================
 function FRd3Track_loadResource(p){
    var o = this;
