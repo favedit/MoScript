@@ -149,51 +149,6 @@ function FRd3Bone_dispose(){
    o._trackResource = null;
    o.__base.FG3dBone.dispose.call(o);
 }
-function FRd3Cube(o){
-   o = RClass.inherits(this, o, FG3dRenderable);
-   o.vertexPositionBuffer = null;
-   o.vertexColorBuffer    = null;
-   o.indexBuffer          = null;
-   o.setup                = FRd3Cube_setup;
-   return o;
-}
-function FRd3Cube_setup(p){
-   var o = this;
-   var vp = [
-      -1.0,  1.0, -1.0,
-       1.0,  1.0, -1.0,
-       1.0, -1.0, -1.0,
-      -1.0, -1.0, -1.0,
-      -1.0,  1.0,  1.0,
-       1.0,  1.0,  1.0,
-       1.0, -1.0,  1.0,
-      -1.0, -1.0,  1.0 ];
-   o.vertexPositionBuffer = p.createVertexBuffer();
-   o.vertexPositionBuffer.upload(vp, 4 * 3, 8);
-   var vc = [
-      0.0, 1.0, 0.0, 1.0,
-      1.0, 0.0, 0.0, 1.0,
-      1.0, 0.0, 0.0, 1.0,
-      0.0, 0.0, 0.0, 1.0,
-      0.0, 1.0, 0.0, 1.0,
-      1.0, 0.0, 1.0, 1.0,
-      1.0, 0.0, 1.0, 1.0,
-      0.0, 0.0, 1.0, 1.0 ];
-   o.vertexColorBuffer = p.createVertexBuffer();
-   o.vertexColorBuffer.upload(vc, 4 * 4, 8);
-   var id = [
-      0, 1, 2, 0, 2, 3,
-      1, 5, 6, 1, 6, 2,
-      5, 4, 7, 5, 7, 6,
-      4, 0, 3, 4, 3, 7,
-      0, 4, 5, 0, 5, 1,
-      3, 2, 6, 3, 6, 7  ];
-   o.indexBuffer = context.createIndexBuffer();
-   o.indexBuffer.upload(id, 36);
-   var mi = o.material().info();
-   mi.effectCode = 'control';
-   mi.ambientColor.set(1, 1, 1, 1);
-}
 function FRd3Material(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._vertexBuffers   = null;
