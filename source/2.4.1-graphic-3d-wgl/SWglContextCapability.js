@@ -1,13 +1,12 @@
 //==========================================================
-// <T>渲染环境信息。</T>
+// <T>WebGL渲染环境信息。</T>
 //
+// @class
 // @author maocy
 // @history 141230
 //==========================================================
-function SWglContextCapability(o){
-   if(!o){o = this;}
-   SG3dContextCapability(o);
-   //..........................................................
-   // @attribute
+function SWglContextCapability(){
+   var o = this;
+   SG3dContextCapability.call(o);
    return o;
 }

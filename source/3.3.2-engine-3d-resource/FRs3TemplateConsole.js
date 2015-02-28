@@ -8,12 +8,14 @@ function FRs3TemplateConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._templates = null;
-   o._path      = '/assets/template/'
+   o._templates  = null;
+   o._serviceUrl = '/cloud.content.template.ws'
+   o._dataUrl    = '/cloud.content.template.wv'
    //..........................................................
    // @method
-   o.construct = FRs3TemplateConsole_construct;
-   o.load      = FRs3TemplateConsole_load;
+   o.construct   = FRs3TemplateConsole_construct;
+   o.load        = FRs3TemplateConsole_load;
+   o.update      = FRs3TemplateConsole_update;
    return o;
 }
 
@@ -34,16 +36,31 @@ function FRs3TemplateConsole_construct(){
 // @param p:input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FRs3TemplateConsole_load(p){
+function FRs3TemplateConsole_load(c, v){
    var o = this;
-   var r = o._templates.get(p);
-   if(r == null){
+   var s = o._templates;
+   var t = s.get(c);
+   if(t == null){
       // 生成地址
-      var u = RBrowser.contentPath(o._path + p + '.ser');
+      var u = RBrowser.hostPath(o._dataUrl + '?code=' + c + '&version=' + RString.nvl(v) + '&date=' + RDate.format());
       // 创建主题
-      r = RClass.create(FRs3Template);
-      r.load(u);
-      o._templates.set(p, r);
+      t = RClass.create(FRs3Template);
+      t.load(u);
+      s.set(c, t);
    }
-   return r;
+   return t;
+}
+
+//==========================================================
+// <T>更新处理。</T>
+//
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FRs3TemplateConsole_update(p){
+   var o = this;
+   // 生成地址
+   var u = RBrowser.hostPath(o._serviceUrl + '?action=update');
+   // 发送数据
+   var xc = RConsole.find(FXmlConsole);
+   var r = xc.send(u, p);
 }

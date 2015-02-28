@@ -5,17 +5,24 @@
 // @author maocy
 // @version 141229
 //==========================================================
-function TListeners(o){
-   if(!o){o = this;}
+function TListeners(){
+   var o = this;
+   //..........................................................
    // @attribute
-   o.listeners = null;
+   o._listeners = null;
+   //..........................................................
    // @method
-   o.isEmpty   = TListeners_isEmpty;
-   o.register  = TListeners_register;
-   o.push      = TListeners_push;
-   o.process   = TListeners_process;
-   o.clear     = TListeners_clear;
-   o.dump      = TListeners_dump;
+   o.isEmpty    = TListeners_isEmpty;
+   o.find       = TListeners_find;
+   o.register   = TListeners_register;
+   o.unregister = TListeners_unregister;
+   o.push       = TListeners_push;
+   o.remove     = TListeners_remove;
+   o.process    = TListeners_process;
+   o.clear      = TListeners_clear;
+   //..........................................................
+   // @method
+   o.dump       = TListeners_dump;
    return o;
 }
 
@@ -26,12 +33,36 @@ function TListeners(o){
 // @return Boolean 是否为空
 //==========================================================
 function TListeners_isEmpty(){
-   var ls = this.listeners;
-   return ls ? (ls.count == 0) : false;
+   var s = this._listeners;
+   return s ? s.isEmpty() : true;
 }
 
 //==========================================================
-// <T>注册一个监听对象到当前管理器内。</T>
+// <T>查找一个监听器。</T>
+//
+// @method
+// @param w:owner:Object 处理对象
+// @param p:process:Function 处理函数
+// @return TListener 监听器
+//==========================================================
+function TListeners_find(w, p){
+   var s = this._listeners;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var l = s.getAt(i);
+         if(l._owner == w){
+            if(l._callback == p){
+               return l;
+            }
+         }
+      }
+   }
+   return null;
+}
+
+//==========================================================
+// <T>注册一个监听器。</T>
 //
 // @method
 // @param w:owner:Object 处理对象
@@ -39,11 +70,39 @@ function TListeners_isEmpty(){
 // @return TListener 监听器
 //==========================================================
 function TListeners_register(w, p){
-   var l = new TListener();
-   l.owner = w;
-   l.callback = p;
-   this.push(l);
+   var o = this;
+   // 检查是否已经注册
+   var l = o.find(w, p);
+   if(l){
+      throw new TError(o, 'Listener is already register. (owner={1}, process={2})', w, p);
+   }
+   // 注册监听器
+   l = new TListener();
+   l._owner = w;
+   l._callback = p;
+   o.push(l);
+   // 返回监听器
    return l;
+}
+
+//==========================================================
+// <T>注销一个监听器。</T>
+//
+// @method
+// @param w:owner:Object 处理对象
+// @param p:process:Function 处理函数
+//==========================================================
+function TListeners_unregister(w, p){
+   var o = this;
+   // 检查是否已经注册
+   var l = o.find(w, p);
+   if(!l){
+      throw new TError(o, 'Listener is not register. (owner={1}, process={2})', w, p);
+   }
+   // 注销监听器
+   o.remove(l);
+   // 返回监听器
+   l.dispose();
 }
 
 //==========================================================
@@ -54,38 +113,54 @@ function TListeners_register(w, p){
 //==========================================================
 function TListeners_push(l){
    var o = this;
-   // 检查监听器有效性
+   // 检查参数
    if(!l){
-      return RLogger.fatal(o, null, 'Listener is null.');
+      throw new TError(o, 'Listener is null.');
    }
-   if(!l.callback){
-      return RLogger.fatal(o, null, 'Listener process is null.');
+   if(!l._callback){
+      throw new TError(o, 'Listener process is null.');
    }
    // 增加监听器
-   if(!o.listeners){
-      o.listeners = new TList();
+   var s = o._listeners;
+   if(!s){
+      s = o._listeners = new TObjects();
    }
-   o.listeners.push(l);
+   s.push(l);
+}
+
+//==========================================================
+// <T>移除一个监听器对象到当前管理器内。</T>
+//
+// @method
+// @param l:listener:TListener 监听器对象
+//==========================================================
+function TListeners_remove(l){
+   var o = this;
+   // 检查参数
+   if(!l){
+      throw new TError(o, 'Listener is null.');
+   }
+   // 移除监听器
+   o._listeners.remove(l);
 }
 
 //==========================================================
 // <T>向所有监视器发出调用处理。</T>
 //
 // @method
-// @param s:sender:发出对象
+// @param ps:sender:Object 发出对象
 // @param p1:parameter1:Object 参数1
 // @param p2:parameter2:Object 参数2
 // @param p3:parameter3:Object 参数3
 // @param p4:parameter4:Object 参数4
 // @param p5:parameter5:Object 参数5
 //==========================================================
-function TListeners_process(s, p1, p2, p3, p4, p5){
-   var ls = this.listeners;
-   if(ls){
-      var c = ls.count;
-      for(var n = 0; n < c; n++){
-         var l = ls.get(n);
-         l.process(s, p1, p2, p3, p4, p5);
+function TListeners_process(ps, p1, p2, p3, p4, p5){
+   var s = this._listeners;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.getAt(i).process(ps, p1, p2, p3, p4, p5);
       }
    }
 }
@@ -94,26 +169,26 @@ function TListeners_process(s, p1, p2, p3, p4, p5){
 // <T>清空处理。</T>
 //==========================================================
 function TListeners_clear(){
-   var o = this;
-   if(o.listeners){
-      o.listeners.clear();
+   var s = this._listeners;
+   if(s){
+      s.clear();
    }
 }
 
 //==========================================================
-// <T>获得监听器集合管理器的内部信息。</T>
+// <T>获得运行信息。</T>
 //
 // @method
-// @return String 内部信息
+// @return String 运行信息
 //==========================================================
 function TListeners_dump(){
    var o = this;
    var r = new TString();
    r.append(RClass.name(o));
-   var ls = o.listeners;
-   var c = ls.length;
-   for(var n = 0; n < c; n++){
-      r.append('\n   ' + ls[n].dump());
+   var s = o._listeners;
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      r.append('\n   ' + s.getAt(i));
    }
-   return r;
+   return r.flush();
 }

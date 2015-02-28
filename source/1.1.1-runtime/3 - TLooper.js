@@ -5,8 +5,8 @@
 // @author maocy
 // @version 150110
 //==========================================================
-function TLooper(o){
-   if(!o){o = this;}
+function TLooper(){
+   var o = this;
    //..........................................................
    // @attribute
    o._count             = 0;

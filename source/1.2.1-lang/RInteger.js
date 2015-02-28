@@ -61,6 +61,9 @@ function RInteger_parse(v, d){
    if(v == null){
       return d;
    }
+   if(v == ''){
+      return d;
+   }
    v = RString.trim(v.toString());
    // 去掉左边0字符
    while(true){
@@ -105,6 +108,9 @@ function RInteger_format(v, l, p){
 //==========================================================
 function RInteger_toRange(v, i, a){
    if(v == null){
+      v = 0;
+   }
+   if(isNaN(v)){
       v = 0;
    }
    if(v < i){

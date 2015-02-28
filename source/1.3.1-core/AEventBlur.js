@@ -8,7 +8,7 @@
 //==========================================================
 function AEventBlur(n, m){
    var o = this;
-   AEvent(o, n, 'blur', 'onblur');
+   AEvent.call(o, n, 'blur', 'onblur');
    //..........................................................
    // @method
    o.attach = AEventBlur_attach;

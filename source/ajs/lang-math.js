@@ -11,39 +11,59 @@ var EFrustumPlane = new function EFrustumPlane(){
 }
 var RMath = new function RMath(){
    var o = this;
-   o.PI           = null;
-   o.PI2          = null;
-   o.RADIAN_RATE  = null;
-   o.DEGREE_RATE  = null;
-   o.PERCENT_1000 = 1.0 / 1000.0;
-   o.float1       = null;
-   o.float2       = null;
-   o.float3       = null;
-   o.float4       = null;
-   o.float9       = null;
-   o.float12      = null;
-   o.float16      = null;
-   o.double1      = null;
-   o.double2      = null;
-   o.double3      = null;
-   o.double4      = null;
-   o.double16     = null;
-   o.double16     = null;
-   o.double64     = null;
-   o.matrix       = null;
-   o.vectorAxisX  = null;
-   o.vectorAxisY  = null;
-   o.vectorAxisZ  = null;
-   o.construct    = RMath_construct;
+   o.PI             = Math.PI;
+   o.PI2            = Math.PI * 2;
+   o.RADIAN_RATE    = 180 / Math.PI;
+   o.DEGREE_RATE    = Math.PI / 180;
+   o.PERCENT_10     = 1 / 10;
+   o.PERCENT_100    = 1 / 100;
+   o.PERCENT_1000   = 1 / 1000;
+   o.vectorAxisX    = null;
+   o.vectorAxisY    = null;
+   o.vectorAxisZ    = null;
+   o.vectorScale    = null;
+   o.vectorForward  = null;
+   o.vectorBackward = null;
+   o.identity4x4    = null;
+   o.construct      = RMath_construct;
    o.construct();
    return o;
 }
 function RMath_construct(){
    var o = this;
-   o.PI = Math.PI;
-   o.PI2 = Math.PI * 2;
-   o.RADIAN_RATE = 180.0 / Math.PI;
-   o.DEGREE_RATE = Math.PI / 180.0;
+   o.vectorAxisX = new SVector3(1, 0, 0);
+   o.vectorAxisY = new SVector3(0, 1, 0);
+   o.vectorAxisZ = new SVector3(0, 0, 1);
+   o.vectorScale = new SVector3(1, 1, 1);
+   o.vectorForward = new SVector3(0, 0, 1);
+   o.vectorBackward = new SVector3(0, 0, -1);
+   o.identity4x4 = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+}
+var RValue = new function RValue(){
+   var o = this;
+   o.float1    = null;
+   o.float2    = null;
+   o.float3    = null;
+   o.float4    = null;
+   o.float9    = null;
+   o.float12   = null;
+   o.float16   = null;
+   o.double1   = null;
+   o.double2   = null;
+   o.double3   = null;
+   o.double4   = null;
+   o.double16  = null;
+   o.double16  = null;
+   o.double64  = null;
+   o.vector3   = null;
+   o.rectangle = null;
+   o.matrix    = null;
+   o.construct = RValue_construct;
+   o.construct();
+   return o;
+}
+function RValue_construct(){
+   var o = this;
    if(RRuntime.supportHtml5()){
       o.float1 = new Float32Array(1);
       o.float2 = new Float32Array(2);
@@ -60,13 +80,9 @@ function RMath_construct(){
       o.double12 = new Float64Array(12);
       o.double16 = new Float64Array(16);
    }
+   o.vector3 = new SVector3();
+   o.rectangle = new SRectangle();
    o.matrix = new SMatrix3d();
-   o.vectorAxisX = new SVector3();
-   o.vectorAxisX.set(1.0, 0.0, 0.0);
-   o.vectorAxisY = new SVector3();
-   o.vectorAxisY.set(0.0, 1.0, 0.0);
-   o.vectorAxisZ = new SVector3();
-   o.vectorAxisZ.set(0.0, 0.0, 1.0);
 }
 function SColor4(o){
    if(!o){o = this;}
@@ -75,10 +91,13 @@ function SColor4(o){
    o.blue         = 0;
    o.alpha        = 1;
    o.assign       = SColor4_assign;
+   o.assignPower  = SColor4_assignPower;
    o.set          = SColor4_set;
    o.serialize    = SColor4_serialize;
    o.unserialize  = SColor4_unserialize;
    o.unserialize3 = SColor4_unserialize3;
+   o.saveConfig   = SColor4_saveConfig;
+   o.savePower    = SColor4_savePower;
    o.toString     = SColor4_toString;
    return o;
 }
@@ -87,6 +106,13 @@ function SColor4_assign(p){
    o.red = p.red;
    o.green = p.green;
    o.blue = p.blue;
+   o.alpha = p.alpha;
+}
+function SColor4_assignPower(p){
+   var o = this;
+   o.red = p.red * p.alpha;
+   o.green = p.green * p.alpha;
+   o.blue = p.blue * p.alpha;
    o.alpha = p.alpha;
 }
 function SColor4_set(r, g, b, a){
@@ -116,6 +142,20 @@ function SColor4_unserialize3(p){
    o.green = p.readFloat();
    o.blue = p.readFloat();
    o.alpha = 1.0;
+}
+function SColor4_saveConfig(p){
+   var o = this;
+   p.setFloat('r', o.red);
+   p.setFloat('g', o.green);
+   p.setFloat('b', o.blue);
+   p.setFloat('a', o.alpha);
+}
+function SColor4_savePower(p){
+   var o = this;
+   p.setFloat('r', o.red);
+   p.setFloat('g', o.green);
+   p.setFloat('b', o.blue);
+   p.setFloat('power', o.alpha);
 }
 function SColor4_toString(){
    var o = this;
@@ -435,46 +475,57 @@ function SFrustumPlanes_updateVision(p){
    pb.d = p[4 * 3 + 3] + p[4 * 3 + 1];
    pb.normalize();
 }
-function SMatrix3d(o){
-   if(!o){o = this;}
-   SMatrix4x4(o);
+function SMatrix3d(){
+   var o = this;
+   SMatrix4x4.call(o);
    o._dirty         = false;
-   o.tx             = 0.0;
-   o.ty             = 0.0;
-   o.tz             = 0.0;
-   o.rx             = 0.0;
-   o.ry             = 0.0;
-   o.rz             = 0.0;
-   o.sx             = 1.0;
-   o.sy             = 1.0;
-   o.sz             = 1.0;
+   o.tx             = 0;
+   o.ty             = 0;
+   o.tz             = 0;
+   o.rx             = 0;
+   o.ry             = 0;
+   o.rz             = 0;
+   o.sx             = 1;
+   o.sy             = 1;
+   o.sz             = 1;
+   o.isIdentity     = SMatrix3d_isIdentity;
    o.identity       = SMatrix3d_identity;
    o.setTranslate   = SMatrix3d_setTranslate;
    o.setRotation    = SMatrix3d_setRotation;
    o.setScale       = SMatrix3d_setScale;
+   o.setScaleAll    = SMatrix3d_setScaleAll;
    o.set            = SMatrix3d_set;
    o.setAll         = SMatrix3d_setAll;
    o.equals         = SMatrix3d_equals;
    o.assign         = SMatrix3d_assign;
    o.append         = SMatrix3d_append;
-   o.build          = SMatrix3d_build;
    o.updateForce    = SMatrix3d_updateForce;
    o.update         = SMatrix3d_update;
    o.serialize      = SMatrix3d_serialize;
    o.unserialize    = SMatrix3d_unserialize;
+   o.saveConfig     = SMatrix3d_saveConfig;
    o.identity();
    return o;
+}
+function SMatrix3d_isIdentity(){
+   var o = this;
+   if((o.tx != 0) || (o.ty != 0) || (o.tz != 0)){
+      return false;
+   }
+   if((o.rx != 0) || (o.ry != 0) || (o.rz != 0)){
+      return false;
+   }
+   if((o.sx != 1) || (o.sy != 1) || (o.sz != 1)){
+      return false;
+   }
+   return o.isIdentityData();
 }
 function SMatrix3d_identity(){
    var o = this;
    o.tx = o.ty = o.tz = 0;
    o.rx = o.ry = o.rz = 0;
    o.sx = o.sy = o.sz = 1;
-   var d = o._data;
-   d[ 0] = 1; d[ 1] = 0; d[ 2] = 0; d[ 3] = 0;
-   d[ 4] = 0; d[ 5] = 1; d[ 6] = 0; d[ 7] = 0;
-   d[ 8] = 0; d[ 9] = 0; d[10] = 1; d[11] = 0;
-   d[12] = 0; d[13] = 0; d[14] = 0; d[15] = 1;
+   return o.identityData();
 }
 function SMatrix3d_setTranslate(x, y, z){
    var o = this;
@@ -495,6 +546,11 @@ function SMatrix3d_setScale(x, y, z){
    o.sx = x;
    o.sy = y;
    o.sz = z;
+   o._dirty = true;
+}
+function SMatrix3d_setScaleAll(p){
+   var o = this;
+   o.sz = o.sy = o.sx = p;
    o._dirty = true;
 }
 function SMatrix3d_set(pt, pr, ps){
@@ -527,38 +583,20 @@ function SMatrix3d_equals(p){
    return this.equalsData(p._data);
 }
 function SMatrix3d_assign(p){
-   this.assignData(p._data);
+   var o = this;
+   o.tx = p.tx;
+   o.ty = p.ty;
+   o.tz = p.tz;
+   o.rx = p.rx;
+   o.ry = p.ry;
+   o.rz = p.rz;
+   o.sx = p.sx;
+   o.sy = p.sy;
+   o.sz = p.sz;
+   o.assignData(p._data);
 }
 function SMatrix3d_append(p){
    this.appendData(p._data);
-}
-function SMatrix3d_build(t, r, s){
-   var d = this._data;
-   var x2 = r.x * r.x;
-   var y2 = r.y * r.y;
-   var z2 = r.z * r.z;
-   var xy = r.x * r.y;
-   var xz = r.x * r.z;
-   var yz = r.y * r.z;
-   var wx = r.w * r.x;
-   var wy = r.w * r.y;
-   var wz = r.w * r.z;
-   d[ 0] = (1.0 - 2.0 * (y2 + z2)) * s.x;
-   d[ 1] = 2.0 * (xy - wz) * s.x;
-   d[ 2] = 2.0 * (xz + wy) * s.x;
-   d[ 3] = 0.0;
-   d[ 4] = 2.0 * (xy + wz) * s.y;
-   d[ 5] = (1.0 - 2.0 * (x2 + z2)) * s.y;
-   d[ 6] = 2.0 * (yz - wx) * s.x;
-   d[ 7] = 0.0;
-   d[ 8] = 2.0 * (xz - wy) * s.z;
-   d[ 9] = 2.0 * (yz + wx) * s.z;
-   d[10] = (1.0 - 2.0 * (x2 + y2)) * s.z;
-   d[11] = 0.0;
-   d[12] = t.x;
-   d[13] = t.y;
-   d[14] = t.z;
-   d[15] = 1.0;
 }
 function SMatrix3d_updateForce(){
    var o = this;
@@ -572,19 +610,19 @@ function SMatrix3d_updateForce(){
    d[ 0] = rcy * rcz * o.sx;
    d[ 1] = rcy * rsz * o.sx;
    d[ 2] = -rsy * o.sx;
-   d[ 3] = 0.0;
+   d[ 3] = 0;
    d[ 4] = (rsx * rsy * rcz - rcx * rsz) * o.sy;
    d[ 5] = (rsx * rsy * rsz + rcx * rcz) * o.sy;
    d[ 6] = rsx * rcy * o.sy;
-   d[ 7] = 0.0;
+   d[ 7] = 0;
    d[ 8] = (rcx * rsy * rcz + rsx * rsz) * o.sz;
    d[ 9] = (rcx * rsy * rsz - rsx * rcz) * o.sz;
    d[10] = rcx * rcy * o.sz;
-   d[11] = 0.0;
+   d[11] = 0;
    d[12] = o.tx;
    d[13] = o.ty;
    d[14] = o.tz;
-   d[15] = 1.0;
+   d[15] = 1;
 }
 function SMatrix3d_update(){
    var o = this;
@@ -618,26 +656,283 @@ function SMatrix3d_unserialize(p){
    o.sz = p.readFloat();
    o.updateForce();
 }
-function SMatrix4x4(o){
-   if(!o){o = this;}
-   o._data      = new Array(16);
-   o.data       = SMatrix4x4_data;
-   o.equalsData = SMatrix4x4_equalsData;
-   o.assignData = SMatrix4x4_assignData;
-   o.appendData = SMatrix4x4_appendData;
-   o.translate  = SMatrix4x4_translate;
-   o.rotationX  = SMatrix4x4_rotationX;
-   o.rotationY  = SMatrix4x4_rotationY;
-   o.rotationZ  = SMatrix4x4_rotationZ;
-   o.rotation   = SMatrix4x4_rotation;
-   o.scale      = SMatrix4x4_scale;
-   o.invert     = SMatrix4x4_invert;
-   o.transform  = SMatrix4x4_transform;
-   o.writeData  = SMatrix4x4_writeData;
+function SMatrix3d_saveConfig(p){
+   var o = this;
+   p.set('tx', RFloat.format(o.tx));
+   p.set('ty', RFloat.format(o.ty));
+   p.set('tz', RFloat.format(o.tz));
+   p.set('rx', RFloat.format(o.rx));
+   p.set('ry', RFloat.format(o.ry));
+   p.set('rz', RFloat.format(o.rz));
+   p.set('sx', RFloat.format(o.sx));
+   p.set('sy', RFloat.format(o.sy));
+   p.set('sz', RFloat.format(o.sz));
+}
+function SMatrix3x3(){
+   var o = this;
+   o._data           = new Array(9);
+   o.data            = SMatrix3x3_data;
+   o.equalsData      = SMatrix3x3_equalsData;
+   o.assignData      = SMatrix3x3_assignData;
+   o.appendData      = SMatrix3x3_appendData;
+   o.rotationX       = SMatrix3x3_rotationX;
+   o.rotationY       = SMatrix3x3_rotationY;
+   o.rotationZ       = SMatrix3x3_rotationZ;
+   o.rotation        = SMatrix3x3_rotation;
+   o.invert          = SMatrix3x3_invert;
+   o.transform       = SMatrix3x3_transform;
+   o.transformPoint3 = SMatrix3x3_transformPoint3;
+   o.build           = SMatrix3x3_build;
+   o.writeData       = SMatrix3x3_writeData;
+   o.toString        = SMatrix3x3_toString;
+   return o;
+}
+function SMatrix3x3_data(){
+   return this._data;
+}
+function SMatrix3x3_equalsData(p){
+   var d = this._data;
+   for(var i = 0; i < 9; i++){
+      if(d[i] != p[i]){
+         return false;
+      }
+   }
+   return true;
+}
+function SMatrix3x3_assignData(p){
+   var d = this._data;
+   for(var n = 0; n < 9; n++){
+      d[n] = p[n];
+   }
+}
+function SMatrix3x3_appendData(p){
+   var d = this._data;
+   var v0 = (d[0] * p[0]) + (d[1] * p[3]) + (d[2] * p[6]);
+   var v1 = (d[0] * p[1]) + (d[1] * p[4]) + (d[2] * p[7]);
+   var v2 = (d[0] * p[2]) + (d[1] * p[5]) + (d[2] * p[8]);
+   var v3 = (d[3] * p[0]) + (d[4] * p[3]) + (d[5] * p[6]);
+   var v4 = (d[3] * p[1]) + (d[4] * p[4]) + (d[5] * p[7]);
+   var v5 = (d[3] * p[2]) + (d[4] * p[5]) + (d[5] * p[8]);
+   var v6 = (d[6] * p[0]) + (d[7] * p[3]) + (d[8] * p[6]);
+   var v7 = (d[6] * p[1]) + (d[7] * p[4]) + (d[8] * p[7]);
+   var v8 = (d[6] * p[2]) + (d[7] * p[5]) + (d[8] * p[8]);
+   d[0] = v0;
+   d[1] = v1;
+   d[2] = v2;
+   d[3] = v3;
+   d[4] = v4;
+   d[5] = v5;
+   d[6] = v6;
+   d[7] = v7;
+   d[8] = v8;
+}
+function SMatrix3x3_rotationX(p){
+   var rs = Math.sin(p);
+   var rc = Math.cos(p);
+   var v = RMath.float9;
+   v[0] = 1;
+   v[1] = 0;
+   v[2] = 0;
+   v[3] = 0;
+   v[4] = rc;
+   v[5] = rs;
+   v[6] = 0;
+   v[7] = -rs;
+   v[8] = rc;
+   this.appendData(v);
+}
+function SMatrix3x3_rotationY(p){
+   var rs = Math.sin(p);
+   var rc = Math.cos(p);
+   var v = RMath.float9;
+   v[0] = rc;
+   v[1] = 0;
+   v[2] = rs;
+   v[3] = 0;
+   v[4] = 1;
+   v[5] = 0;
+   v[6] = -rs;
+   v[7] = 0;
+   v[8] = rc;
+   this.appendData(v);
+}
+function SMatrix3x3_rotationZ(p){
+   var rs = Math.sin(p);
+   var rc = Math.cos(p);
+   var v = RMath.float9;
+   v[0] = rc;
+   v[1] = rs;
+   v[2] = 0;
+   v[3] = -rs;
+   v[4] = rc;
+   v[5] = 1;
+   v[6] = 0;
+   v[7] = 0;
+   v[8] = 1;
+   this.appendData(v);
+}
+function SMatrix3x3_rotation(x, y, z){
+   var rsx = Math.sin(x);
+   var rcx = Math.cos(x);
+   var rsy = Math.sin(y);
+   var rcy = Math.cos(y);
+   var rsz = Math.sin(z);
+   var rcz = Math.cos(z);
+   var v = RMath.float9;
+   v[0] = rcy * rcz;
+   v[1] = rcy * rsz;
+   v[2] = -rsy;
+   v[3] = rsx * rsy * rcz - rcx * rsz;
+   v[4] = rsx * rsy * rsz + rcx * rcz;
+   v[5] = rsx * rcy;
+   v[6] = rcx * rsy * rcz + rsx * rsz;
+   v[7] = rcx * rsy * rsz - rsx * rcx;
+   v[8] = rcx * rcy;
+   this.appendData(v);
+}
+function SMatrix3x3_invert(){
+   var o = this;
+   var d = o._data;
+   var v = RValue.float9;
+   v[0] = (d[4] * d[8]) - (d[5] * d[7]);
+   v[1] = (d[2] * d[7]) - (d[1] * d[8]);
+   v[2] = (d[1] * d[5]) - (d[2] * d[4]);
+   v[3] = (d[5] * d[6]) - (d[3] * d[8]);
+   v[4] = (d[0] * d[8]) - (d[2] * d[6]);
+   v[5] = (d[2] * d[3]) - (d[0] * d[5]);
+   v[6] = (d[3] * d[7]) - (d[4] * d[6]);
+   v[7] = (d[1] * d[6]) - (d[0] * d[7]);
+   v[8] = (d[0] * d[4]) - (d[1] * d[3]);
+   var r = (d[0] * v[0]) + (d[1] * v[3]) + (d[2] * v[6]);
+   if(r == 0){
+      return false;
+   }
+   r = 1 / r;
+   for(var i = 0; i < 9; i++){
+      d[i] = v[i] * r;
+   }
+   return true;
+}
+function SMatrix3x3_transform(po, pi, pc){
+   var d = this._data;
+   for(var i = 0; i < pc; i++){
+      var n = (i << 1) + i;
+      po[n    ] = (pi[n] * d[0]) + (pi[n + 1] * d[3]) +(pi[n + 2] * d[6]);
+      po[n + 1] = (pi[n] * d[1]) + (pi[n + 1] * d[4]) +(pi[n + 2] * d[7]);
+      po[n + 2] = (pi[n] * d[2]) + (pi[n + 1] * d[5]) +(pi[n + 2] * d[8]);
+   }
+}
+function SMatrix3x3_transformPoint3(pi, po){
+   var d = this._data;
+   var x = (pi.x * d[0]) + (pi.y * d[3]) +(pi.z * d[6]);
+   var y = (pi.x * d[1]) + (pi.y * d[4]) +(pi.z * d[7]);
+   var z = (pi.x * d[2]) + (pi.y * d[5]) +(pi.z * d[8]);
+   var r = null;
+   if(po){
+      r = po;
+   }else{
+      r = new SPoint3();
+   }
+   r.set(x, y, z);
+   return r;
+}
+function SMatrix3x3_build(r){
+   var d = this._data;
+   var x2 = r.x * r.x;
+   var y2 = r.y * r.y;
+   var z2 = r.z * r.z;
+   var xy = r.x * r.y;
+   var xz = r.x * r.z;
+   var yz = r.y * r.z;
+   var wx = r.w * r.x;
+   var wy = r.w * r.y;
+   var wz = r.w * r.z;
+   d[0] = 1 - 2 * (y2 + z2);
+   d[1] = 2 * (xy - wz);
+   d[2] = 2 * (xz + wy);
+   d[3] = 2 * (xy + wz);
+   d[4] = 1 - 2 * (x2 + z2);
+   d[5] = 2 * (yz - wx);
+   d[6] = 2 * (xz - wy);
+   d[7] = 2 * (yz + wx);
+   d[8] = 1 - 2 * (x2 + y2);
+}
+function SMatrix3x3_writeData(d, i){
+   var o = this;
+   var pd = o._data;
+   d[i++] = pd[0];
+   d[i++] = pd[3];
+   d[i++] = pd[6];
+   d[i++] = pd[1];
+   d[i++] = pd[4];
+   d[i++] = pd[7];
+   d[i++] = pd[2];
+   d[i++] = pd[5];
+   d[i++] = pd[8];
+}
+function SMatrix3x3_toString(){
+   var d = this._data;
+   var r = new TString();
+   for(var y = 0; y < 3; y++){
+      if(y > 0){
+         r.append('|');
+      }
+      for(var x = 0; x < 3; x++){
+         var i = y * 3 + x;
+         var v = d[i];
+         if(x > 0){
+            r.append(',');
+         }
+         r.append(RFloat.format(v, 0, null, 3, null));
+      }
+   }
+   return r.flush();
+}
+function SMatrix4x4(){
+   var o = this;
+   o._data           = new Array(16);
+   o.data            = SMatrix4x4_data;
+   o.isIdentityData  = SMatrix3d_isIdentityData;
+   o.identityData    = SMatrix3d_identityData;
+   o.equalsData      = SMatrix4x4_equalsData;
+   o.assignData      = SMatrix4x4_assignData;
+   o.appendData      = SMatrix4x4_appendData;
+   o.translate       = SMatrix4x4_translate;
+   o.rotationX       = SMatrix4x4_rotationX;
+   o.rotationY       = SMatrix4x4_rotationY;
+   o.rotationZ       = SMatrix4x4_rotationZ;
+   o.rotation        = SMatrix4x4_rotation;
+   o.scale           = SMatrix4x4_scale;
+   o.invert          = SMatrix4x4_invert;
+   o.transform       = SMatrix4x4_transform;
+   o.transformPoint3 = SMatrix4x4_transformPoint3;
+   o.buildQuaternion = SMatrix4x4_buildQuaternion;
+   o.build           = SMatrix4x4_build;
+   o.writeData       = SMatrix4x4_writeData;
+   o.toString        = SMatrix4x4_toString;
    return o;
 }
 function SMatrix4x4_data(){
    return this._data;
+}
+function SMatrix3d_isIdentityData(){
+   var d = this._data;
+   var v = RMath.identity4x4;
+   for(var i = 0; i < 16; i++){
+      if(d[i] != v[i]){
+         return false;
+      }
+   }
+   return true;
+}
+function SMatrix3d_identityData(){
+   var o = this;
+   var d = o._data;
+   var v = RMath.identity4x4;
+   for(var i = 0; i < 16; i++){
+      d[i] = v[i];
+   }
+   return o;
 }
 function SMatrix4x4_equalsData(p){
    var d = this._data;
@@ -824,7 +1119,7 @@ function SMatrix4x4_scale(x, y, z){
 function SMatrix4x4_invert(){
    var o = this;
    var d = o._data;
-   var v = RMath.float16;
+   var v = RValue.float16;
    v[ 0] =  (d[ 5] * d[10] * d[15]) - (d[ 5] * d[11] * d[14]) - (d[ 9] * d[ 6] * d[15]) + (d[ 9] * d[ 7] * d[14]) + (d[13] * d[ 6] * d[11]) - (d[13] * d[ 7] * d[10]);
    v[ 4] = -(d[ 4] * d[10] * d[15]) + (d[ 4] * d[11] * d[14]) + (d[ 8] * d[ 6] * d[15]) - (d[ 8] * d[ 7] * d[14]) - (d[12] * d[ 6] * d[11]) + (d[12] * d[ 7] * d[10]);
    v[ 8] =  (d[ 4] * d[ 9] * d[15]) - (d[ 4] * d[11] * d[13]) - (d[ 8] * d[ 5] * d[15]) + (d[ 8] * d[ 7] * d[13]) + (d[12] * d[ 5] * d[11]) - (d[12] * d[ 7] * d[ 9]);
@@ -842,18 +1137,17 @@ function SMatrix4x4_invert(){
    v[11] = -(d[ 0] * d[ 5] * d[11]) + (d[ 0] * d[ 7] * d[ 9]) + (d[ 4] * d[ 1] * d[11]) - (d[ 4] * d[ 3] * d[ 9]) - (d[ 8] * d[ 1] * d[ 7]) + (d[ 8] * d[ 3] * d[ 5]);
    v[15] =  (d[ 0] * d[ 5] * d[10]) - (d[ 0] * d[ 6] * d[ 9]) - (d[ 4] * d[ 1] * d[10]) + (d[ 4] * d[ 2] * d[ 9]) + (d[ 8] * d[ 1] * d[ 6]) - (d[ 8] * d[ 2] * d[ 5]);
    var r = d[ 0] * v[ 0] + d[ 1] * v[ 4] + d[ 2] * v[ 8] + d[ 3] * v[12];
-   if(r == 0.0){
+   if(r == 0){
      return false;
    }
-   r = 1.0 / r;
+   r = 1 / r;
    for(var i = 0; i < 16; i++){
       d[i] = v[i] * r;
    }
    return true;
 }
 function SMatrix4x4_transform(po, pi, pc){
-   var o = this;
-   var d = o._data;
+   var d = this._data;
    for(var i = 0; i < pc; i++){
       var n = (i << 1) + i;
       po[n    ] = (pi[n] * d[ 0]) + (pi[n + 1] * d[ 4]) +(pi[n + 2] * d[ 8]) + d[12];
@@ -861,29 +1155,117 @@ function SMatrix4x4_transform(po, pi, pc){
       po[n + 2] = (pi[n] * d[ 2]) + (pi[n + 1] * d[ 6]) +(pi[n + 2] * d[10]) + d[14];
    }
 }
+function SMatrix4x4_transformPoint3(pi, po){
+   var d = this._data;
+   var x = (pi.x * d[ 0]) + (pi.y * d[ 4]) +(pi.z * d[ 8]) + d[12];
+   var y = (pi.x * d[ 1]) + (pi.y * d[ 5]) +(pi.z * d[ 9]) + d[13];
+   var z = (pi.x * d[ 2]) + (pi.y * d[ 6]) +(pi.z * d[10]) + d[14];
+   var r = null;
+   if(po){
+      r = po;
+   }else{
+      r = new SPoint3();
+   }
+   r.set(x, y, z);
+   return r;
+}
+function SMatrix4x4_build(t, r, s){
+   var d = this._data;
+   var x2 = r.x * r.x;
+   var y2 = r.y * r.y;
+   var z2 = r.z * r.z;
+   var xy = r.x * r.y;
+   var xz = r.x * r.z;
+   var yz = r.y * r.z;
+   var wx = r.w * r.x;
+   var wy = r.w * r.y;
+   var wz = r.w * r.z;
+   d[ 0] = (1 - 2 * (y2 + z2)) * s.x;
+   d[ 1] = 2 * (xy - wz) * s.x;
+   d[ 2] = 2 * (xz + wy) * s.x;
+   d[ 3] = 0;
+   d[ 4] = 2 * (xy + wz) * s.y;
+   d[ 5] = (1 - 2 * (x2 + z2)) * s.y;
+   d[ 6] = 2 * (yz - wx) * s.y;
+   d[ 7] = 0;
+   d[ 8] = 2 * (xz - wy) * s.z;
+   d[ 9] = 2 * (yz + wx) * s.z;
+   d[10] = (1 - 2 * (x2 + y2)) * s.z;
+   d[11] = 0;
+   d[12] = t.x;
+   d[13] = t.y;
+   d[14] = t.z;
+   d[15] = 1;
+}
+function SMatrix4x4_buildQuaternion(r){
+   var d = this._data;
+   var x2 = r.x * r.x;
+   var y2 = r.y * r.y;
+   var z2 = r.z * r.z;
+   var xy = r.x * r.y;
+   var xz = r.x * r.z;
+   var yz = r.y * r.z;
+   var wx = r.w * r.x;
+   var wy = r.w * r.y;
+   var wz = r.w * r.z;
+   d[ 0] = 1 - 2 * (y2 + z2);
+   d[ 1] = 2 * (xy - wz);
+   d[ 2] = 2 * (xz + wy);
+   d[ 3] = 0;
+   d[ 4] = 2 * (xy + wz);
+   d[ 5] = 1 - 2 * (x2 + z2);
+   d[ 6] = 2 * (yz - wx);
+   d[ 7] = 0;
+   d[ 8] = 2 * (xz - wy);
+   d[ 9] = 2 * (yz + wx);
+   d[10] = 1 - 2 * (x2 + y2);
+   d[11] = 0;
+   d[12] = 0;
+   d[13] = 0;
+   d[14] = 0;
+   d[15] = 1;
+}
 function SMatrix4x4_writeData(d, i){
    var o = this;
    var pd = o._data;
-   d[i + 0] = pd[ 0];
-   d[i + 1] = pd[ 4];
-   d[i + 2] = pd[ 8];
-   d[i + 3] = pd[12];
-   d[i + 4] = pd[ 1];
-   d[i + 5] = pd[ 5];
-   d[i + 6] = pd[ 9];
-   d[i + 7] = pd[13];
-   d[i + 8] = pd[ 2];
-   d[i + 9] = pd[ 6];
-   d[i +10] = pd[10];
-   d[i +11] = pd[14];
-   d[i +12] = pd[ 3];
-   d[i +13] = pd[ 7];
-   d[i +14] = pd[11];
-   d[i +15] = pd[15];
+   d[i++] = pd[ 0];
+   d[i++] = pd[ 4];
+   d[i++] = pd[ 8];
+   d[i++] = pd[12];
+   d[i++] = pd[ 1];
+   d[i++] = pd[ 5];
+   d[i++] = pd[ 9];
+   d[i++] = pd[13];
+   d[i++] = pd[ 2];
+   d[i++] = pd[ 6];
+   d[i++] = pd[10];
+   d[i++] = pd[14];
+   d[i++] = pd[ 3];
+   d[i++] = pd[ 7];
+   d[i++] = pd[11];
+   d[i++] = pd[15];
 }
-function SOrthoMatrix3d(o){
-   if(!o){o = this;}
-   SMatrix3d(o);
+function SMatrix4x4_toString(){
+   var d = this._data;
+   var r = new TString();
+   for(var y = 0; y < 4; y++){
+      if(y > 0){
+         r.append('|');
+      }
+      for(var x = 0; x < 4; x++){
+         var i = y * 4 + x;
+         var v = d[i];
+         if(x > 0){
+            r.append(',');
+         }
+         r.append(RFloat.format(v, 0, null, 3, null));
+      }
+   }
+   return r.flush();
+}
+function SOrthoMatrix3d(){
+   var o = this;
+   SMatrix3d.call(o);
    o.perspectiveLH            = SOrthoMatrix3d_perspectiveLH;
    o.perspectiveRH            = SOrthoMatrix3d_perspectiveRH;
    o.perspectiveFieldOfViewLH = SOrthoMatrix3d_perspectiveFieldOfViewLH;
@@ -972,8 +1354,8 @@ function SOrthoMatrix3d_perspectiveFieldOfViewRH(pv, pr, pn, pf){
 }
 function SOutline3(o){
    if(!o){o = this;}
-   o.min = new SPoint3();
-   o.max = new SPoint3();
+   o.min         = new SPoint3();
+   o.max         = new SPoint3();
    o.assign      = SOutline3_assign;
    o.serialize   = SOutline3_serialize
    o.unserialize = SOutline3_unserialize
@@ -1067,9 +1449,9 @@ function SPadding_dump(d){
    var o = this;
    return RClass.dump(o) + ' [' + o.left + ',' + o.top + ',' + o.right + ',' + o.bottom + ']';
 }
-function SPerspectiveMatrix3d(o){
-   if(!o){o = this;}
-   SMatrix3d(o);
+function SPerspectiveMatrix3d(){
+   var o = this;
+   SMatrix3d.call(o);
    o.perspectiveLH            = SPerspectiveMatrix3d_perspectiveLH;
    o.perspectiveRH            = SPerspectiveMatrix3d_perspectiveRH;
    o.perspectiveFieldOfViewLH = SPerspectiveMatrix3d_perspectiveFieldOfViewLH;
@@ -1260,36 +1642,24 @@ function SPoint2_dump(){
 }
 function SPoint3(x, y, z){
    var o = this;
-   o.x           = x;
-   o.y           = y;
-   o.z           = z;
-   o.assign      = SPoint3_assign;
-   o.set         = SPoint3_set;
-   o.resize      = SPoint3_resize;
-   o.slerp       = SPoint3_slerp;
-   o.serialize   = SPoint3_serialize;
-   o.unserialize = SPoint3_unserialize;
-   o.toString    = SPoint3_toString;
-   o.dump        = SPoint3_dump;
+   SValue3.call(o, x, y, z);
+   o.conjugate = SPoint3_conjugate;
+   o.resize    = SPoint3_resize;
+   o.slerp     = SPoint3_slerp;
    return o;
 }
-function SPoint3_assign(p){
+function SPoint3_conjugate(p){
    var o = this;
-   o.x = p.x;
-   o.y = p.y;
-   o.z = p.z;
-}
-function SPoint3_set(x, y, z){
-   var o = this;
-   if(x != null){
-      o.x = x;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SPoint3();
    }
-   if(y != null){
-      o.y = y;
-   }
-   if(z != null){
-      o.z = z;
-   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   return r;
 }
 function SPoint3_resize(x, y, z){
    var o = this;
@@ -1309,95 +1679,54 @@ function SPoint3_slerp(v1, v2, r){
    o.y = (v2.y - v1.y) * r + v1.y;
    o.z = (v2.z - v1.z) * r + v1.z;
 }
-function SPoint3_serialize(p){
-   var o = this;
-   p.writeFloat(o.x);
-   p.writeFloat(o.y);
-   p.writeFloat(o.z);
-}
-function SPoint3_unserialize(p){
-   var o = this;
-   o.x = p.readFloat();
-   o.y = p.readFloat();
-   o.z = p.readFloat();
-}
-function SPoint3_toString(){
-   var o = this;
-   return o.x + ',' + o.y + ',' + o.z;
-}
-function SPoint3_dump(){
-   return RClass.dump(this) + ' [' + this.x + ',' + this.y + ',' + this.z + ']';
-}
 function SPoint4(x, y, z, w){
    var o = this;
-   o.x           = x;
-   o.y           = y;
-   o.z           = z;
-   o.w           = w;
-   o.assign      = SPoint4_assign;
-   o.set         = SPoint4_set;
-   o.serialize   = SPoint4_serialize;
-   o.unserialize = SPoint4_unserialize;
-   o.toString    = SPoint4_toString;
+   SValue4.call(o, x, y, z, w);
+   o.serialize3   = SPoint4_serialize3;
+   o.unserialize3 = SPoint4_unserialize3;
    return o;
 }
-function SPoint4_assign(p){
-   var o = this;
-   o.x = p.x;
-   o.y = p.y;
-   o.z = p.z;
-   o.w = p.w;
-}
-function SPoint4_set(x, y, z, w){
-   var o = this;
-   if(x != null){
-      o.x = x;
-   }
-   if(y != null){
-      o.y = y;
-   }
-   if(z != null){
-      o.z = z;
-   }
-   if(w != null){
-      o.w = w;
-   }
-}
-function SPoint4_serialize(p){
+function SPoint4_serialize3(p){
    var o = this;
    p.writeFloat(o.x);
    p.writeFloat(o.y);
    p.writeFloat(o.z);
-   p.writeFloat(o.w);
 }
-function SPoint4_unserialize(p){
+function SPoint4_unserialize3(p){
    var o = this;
    o.x = p.readFloat();
    o.y = p.readFloat();
    o.z = p.readFloat();
-   o.w = p.readFloat();
-}
-function SPoint4_toString(){
-   var o = this;
-   return o.x + ',' + o.y + ',' + o.z + ',' + o.w;
 }
 function SQuaternion(o){
    if(!o){o = this;}
-   o.x             = 0.0;
-   o.y             = 0.0;
-   o.z             = 0.0;
-   o.w             = 1.0;
+   o.x             = 0;
+   o.y             = 0;
+   o.z             = 0;
+   o.w             = 1;
+   o.identity      = SQuaternion_identity;
    o.assign        = SQuaternion_assign;
    o.set           = SQuaternion_set;
    o.absolute      = SQuaternion_absolute;
    o.normalize     = SQuaternion_normalize;
+   o.conjugate     = SQuaternion_conjugate;
    o.mul           = SQuaternion_mul;
    o.mul2          = SQuaternion_mul2;
+   o.translate     = SQuaternion_translate;
    o.slerp         = SQuaternion_slerp;
    o.fromAxisAngle = SQuaternion_fromAxisAngle;
+   o.fromEuler     = SQuaternion_fromEuler;
+   o.parseEuler    = SQuaternion_parseEuler;
    o.serialize     = SQuaternion_serialize;
    o.unserialize   = SQuaternion_unserialize;
+   o.clone         = SQuaternion_clone;
    o.toString      = SQuaternion_toString;
+   return o;
+}
+function SQuaternion_identity(){
+   var o = this;
+   o.x = o.y = o.z = 0;
+   o.w = 1;
    return o;
 }
 function SQuaternion_assign(p){
@@ -1421,11 +1750,27 @@ function SQuaternion_absolute(){
 function SQuaternion_normalize(){
    var o = this;
    var a = o.absolute();
-   var v = 1.0 / a;
-   o.x *= v;
-   o.y *= v;
-   o.z *= v;
-   o.w *= v;
+   if(a != 0){
+      var v = 1 / a;
+      o.x *= v;
+      o.y *= v;
+      o.z *= v;
+      o.w *= v;
+   }
+}
+function SQuaternion_conjugate(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SQuaternion();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   r.w = o.w;
+   return r;
 }
 function SQuaternion_mul(p){
    var o = this;
@@ -1445,23 +1790,41 @@ function SQuaternion_mul2(p1, p2){
    o.z = (p1.w * p2.z) + (p1.z * p2.w) + (p1.x * p2.y) - (p1.y * p2.x);
    o.w = (p1.w * p2.w) - (p1.x * p2.x) - (p1.y * p2.y) - (p1.z * p2.z);
 }
+function SQuaternion_translate(pi, po){
+   var o = this;
+   var q1 = new SQuaternion();
+   q1.set(pi.x, pi.y, pi.z, 0);
+   q1.normalize();
+   var q2 = o.conjugate();
+   q1.mul(q2);
+   var q = o.clone();
+   q.mul(q1);
+   var r = null;
+   if(po){
+      r = po;
+   }else{
+      r = new SVector3();
+   }
+   r.set(q.x, q.y, q.z);
+   return r;
+}
 function SQuaternion_slerp(v1, v2, r){
    var o = this;
    var rv = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
    var rf = false;
-   if (rv < 0.0){
+   if (rv < 0){
       rf = true;
       rv = -rv;
    }
-   var r1 = 0.0;
-   var r2 = 0.0;
+   var r1 = 0;
+   var r2 = 0;
    if(rv > 0.999999){
-      r1 = 1.0 - r;
+      r1 = 1 - r;
       r2 = rf ? -r : r;
    }else{
       var ra = Math.acos(rv);
-      var rb = 1.0 / Math.sin(ra);
-      r1 = Math.sin((1.0 - r) * ra) * rb;
+      var rb = 1 / Math.sin(ra);
+      r1 = Math.sin((1 - r) * ra) * rb;
       r2 = rf ? (-Math.sin(r * ra) * rb) : (Math.sin(r * ra) * rb);
    }
    o.x = (r1 * v1.x) + (r2 * v2.x);
@@ -1478,6 +1841,35 @@ function SQuaternion_fromAxisAngle(a, g){
    o.z = a.z * s;
    o.w = Math.cos(r);
 }
+function SQuaternion_fromEuler(p, y, r){
+   var o = this;
+   var sr = Math.sin(r * 0.5);
+   var cr = Math.cos(r * 0.5);
+   var sp = Math.sin(p * 0.5);
+   var cp = Math.cos(p * 0.5);
+   var sy = Math.sin(y * 0.5);
+   var cy = Math.cos(y * 0.5);
+   o.x = cr * sp * cy + sr * cp * sy;
+   o.y = cr * cp * sy - sr * sp * cy;
+   o.z = sr * cp * cy - cr * sp * sy;
+   o.w = cr * cp * cy + sr * sp * sy;
+}
+function SQuaternion_parseEuler(p){
+   var o = this;
+   var x2 = o.x * o.x;
+   var y2 = o.y * o.y;
+   var z2 = o.z * o.z;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SVector3();
+   }
+   r.x = Math.asin(RFloat.toRange((o.w * o.x - o.y * o.z) * 2, -1, 1));
+   r.y = Math.atan2(2 * (o.w * o.y + o.z * o.x) , 1 - 2 * (x2 + y2));
+   r.z = Math.atan2(2 * (o.w * o.z + o.x * o.y) , 1 - 2 * (z2 + x2));
+   return r;
+}
 function SQuaternion_serialize(p){
    var o = this;
    p.writeFloat(o.x);
@@ -1491,6 +1883,15 @@ function SQuaternion_unserialize(p){
    o.y = p.readFloat();
    o.z = p.readFloat();
    o.w = p.readFloat();
+}
+function SQuaternion_clone(){
+   var o = this;
+   var r = new SQuaternion();
+   r.x = o.x;
+   r.y = o.y;
+   r.z = o.z;
+   r.w = o.w;
+   return r;
 }
 function SQuaternion_toString(){
    var o = this;
@@ -1574,102 +1975,78 @@ function SRange_dump(d){
    d.append(' [', o.x, ',', o.y, '-', o.width, ',', o.height, '] ');
    return d;
 }
-function SRectangle(l, t, r, b){
+function SRectangle(){
    var o = this;
-   o.left      = RInteger.nvl(left);
-   o.top       = RInteger.nvl(top);
-   o.right     = RInteger.nvl(right);
-   o.bottom    = RInteger.nvl(bottom);
-   o.reset     = SRectangle_reset;
-   o.assign    = SRectangle_assign;
-   o.set       = SRectangle_set;
-   o.setBounds = SRectangle_setBounds;
-   o.width     = SRectangle_width;
-   o.setWidth  = SRectangle_setWidth;
-   o.height    = SRectangle_height;
-   o.setHeight = SRectangle_setHeight;
-   o.move      = SRectangle_move;
-   o.inc       = SRectangle_inc;
-   o.dec       = SRectangle_dec;
-   o.pack      = SRectangle_dump;
-   o.unpack    = SRectangle_dump;
-   o.dump      = SRectangle_dump;
+   o.position    = new SPoint2();
+   o.size        = new SSize2();
+   o.left        = SRectangle_left;
+   o.top         = SRectangle_top;
+   o.right       = SRectangle_right;
+   o.bottom      = SRectangle_bottom;
+   o.width       = SRectangle_width;
+   o.height      = SRectangle_height;
+   o.assign      = SRectangle_assign;
+   o.setPosition = SRectangle_setPosition;
+   o.setSize     = SRectangle_setSize;
+   o.set         = SRectangle_set;
+   o.toString    = SRectangle_toString;
+   o.dispose     = SRectangle_dispose;
+   o.dump        = SRectangle_dump;
    return o;
 }
-function SRectangle_reset(){
-   var o = this;
-   o.left = 0;
-   o.top = 0;
-   o.right = 0;
-   o.bottom = 0;
+function SRectangle_left(){
+   return this.position.x;
 }
-function SRectangle_assign(rect){
-   this.left = rect.left;
-   this.top = rect.top;
-   this.right = rect.right;
-   this.bottom = rect.bottom;
+function SRectangle_top(){
+   return this.position.y;
 }
-function SRectangle_set(left, top, right, bottom){
-   this.left = left;
-   this.top = top;
-   this.right = right;
-   this.bottom = bottom;
+function SRectangle_right(){
+   return this.position.x + this.size.width;
 }
-function SRectangle_setBounds(left, top, width, height){
-   var o = this;
-   o.left = left;
-   o.top = top;
-   o.right = o.left + width - 1;
-   o.bottom = o.top + height - 1;
+function SRectangle_bottom(){
+   return this.position.y + this.size.height;
 }
 function SRectangle_width(){
-   return this.right - this.left + 1;
-}
-function SRectangle_setWidth(width){
-   if(width){
-      this.right = this.left + width - 1;
-   }
+   return this.size.width;
 }
 function SRectangle_height(){
-   return this.bottom - this.top + 1;
+   return this.size.height;
 }
-function SRectangle_setHeight(height){
-   if(height){
-      this.bottom = this.top + height - 1;
-   }
+function SRectangle_assign(p){
+   var o = this;
+   o.position.assign(p.position);
+   o.size.assign(p.size);
 }
-function SRectangle_move(x, y){
-   this.left += x;
-   this.top += y;
-   this.right += x;
-   this.bottom += y;
+function SRectangle_setPosition(l, t, w, h){
+   this.position.set(l, t);
 }
-function SRectangle_inc(border){
-   var n = RInt.nvl(border, 1);
-   this.left -= n;
-   this.top -= n;
-   this.right += n;
-   this.bottom += n;
+function SRectangle_setSize(w, h){
+   this.size.set(w, h);
 }
-function SRectangle_dec(border){
-   var n = RInt.nvl(border, 1);
-   this.left += n;
-   this.top += n;
-   this.right -= n;
-   this.bottom -= n;
+function SRectangle_set(l, t, w, h){
+   var o = this;
+   o.position.set(l, t);
+   o.size.set(w, h);
 }
-function SRectangle_dump(d){
-   d = RString.nvlStr(d);
-   d.append(RClass.name(this));
-   d.append(' [', this.left, ',', this.top, '-', this.right, ',', this.bottom, '] ');
-   d.append('(', this.width(), '-', this.height(), ')');
-   return d;
+function SRectangle_toString(){
+   var o = this;
+   return o.position.x + ',' + o.position.y + ',' + o.size.width + ',' + o.size.height;
+}
+function SRectangle_dispose(){
+   var o = this;
+   o.position = o.position.dispose();
+   o.size = o.size.dispose();
+}
+function SRectangle_dump(){
+   var o = this;
+   return RClass.dump(o) + ' [' + o.position.x + ',' + o.position.y + '-' + o.size.width + ',' + o.size.height + ']';
 }
 function SSize2(w, h){
    var o = this;
    o.width    = RInteger.nvl(w);
    o.height   = RInteger.nvl(h);
    o.isEmpty  = SSize2_isEmpty;
+   o.square   = SSize2_square;
    o.assign   = SSize2_assign;
    o.set      = SSize2_set;
    o.parse    = SSize2_parse;
@@ -1681,6 +2058,9 @@ function SSize2(w, h){
 function SSize2_isEmpty(){
    var o = this;
    return (o.width == 0) && (o.height == 0);
+}
+function SSize2_square(){
+   return this.width * this.height;
 }
 function SSize2_assign(v){
    var o = this;
@@ -1758,48 +2138,290 @@ function SSize3_dump(){
    var o = this;
    return RClass.dump(o) + ' [' + o.width + ',' + o.height + ',' + o.deep + ']';
 }
-function SVector3(o){
-   if(!o){o = this;}
-   o.x           = 0;
-   o.y           = 0;
-   o.z           = 0;
-   o.assign      = SVector3_assign;
-   o.set         = SVector3_set;
-   o.absolute    = SVector3_absolute;
-   o.normalize   = SVector3_normalize;
-   o.dotPoint3   = SVector3_dotPoint3;
-   o.cross       = SVector3_cross;
-   o.cross2      = SVector3_cross2;
-   o.slerp       = SVector3_slerp;
-   o.serialize   = SVector3_serialize;
-   o.unserialize = SVector3_unserialize;
-   o.toString    = SVector3_toString;
+function SSquare(l, t, r, b){
+   var o = this;
+   o.left      = RInteger.nvl(left);
+   o.top       = RInteger.nvl(top);
+   o.right     = RInteger.nvl(right);
+   o.bottom    = RInteger.nvl(bottom);
+   o.reset     = SSquare_reset;
+   o.assign    = SSquare_assign;
+   o.set       = SSquare_set;
+   o.setBounds = SSquare_setBounds;
+   o.width     = SSquare_width;
+   o.setWidth  = SSquare_setWidth;
+   o.height    = SSquare_height;
+   o.setHeight = SSquare_setHeight;
+   o.move      = SSquare_move;
+   o.inc       = SSquare_inc;
+   o.dec       = SSquare_dec;
+   o.pack      = SSquare_dump;
+   o.unpack    = SSquare_dump;
+   o.dump      = SSquare_dump;
    return o;
 }
-function SVector3_assign(p){
+function SSquare_reset(){
+   var o = this;
+   o.left = 0;
+   o.top = 0;
+   o.right = 0;
+   o.bottom = 0;
+}
+function SSquare_assign(rect){
+   this.left = rect.left;
+   this.top = rect.top;
+   this.right = rect.right;
+   this.bottom = rect.bottom;
+}
+function SSquare_set(left, top, right, bottom){
+   this.left = left;
+   this.top = top;
+   this.right = right;
+   this.bottom = bottom;
+}
+function SSquare_setBounds(left, top, width, height){
+   var o = this;
+   o.left = left;
+   o.top = top;
+   o.right = o.left + width - 1;
+   o.bottom = o.top + height - 1;
+}
+function SSquare_width(){
+   return this.right - this.left + 1;
+}
+function SSquare_setWidth(width){
+   if(width){
+      this.right = this.left + width - 1;
+   }
+}
+function SSquare_height(){
+   return this.bottom - this.top + 1;
+}
+function SSquare_setHeight(height){
+   if(height){
+      this.bottom = this.top + height - 1;
+   }
+}
+function SSquare_move(x, y){
+   this.left += x;
+   this.top += y;
+   this.right += x;
+   this.bottom += y;
+}
+function SSquare_inc(border){
+   var n = RInt.nvl(border, 1);
+   this.left -= n;
+   this.top -= n;
+   this.right += n;
+   this.bottom += n;
+}
+function SSquare_dec(border){
+   var n = RInt.nvl(border, 1);
+   this.left += n;
+   this.top += n;
+   this.right -= n;
+   this.bottom -= n;
+}
+function SSquare_dump(d){
+   d = RString.nvlStr(d);
+   d.append(RClass.name(this));
+   d.append(' [', this.left, ',', this.top, '-', this.right, ',', this.bottom, '] ');
+   d.append('(', this.width(), '-', this.height(), ')');
+   return d;
+}
+function SValue3(x, y, z){
+   var o = this;
+   o.x           = RRuntime.nvl(x, 0);
+   o.y           = RRuntime.nvl(y, 0);
+   o.z           = RRuntime.nvl(z, 0);
+   o.assign      = SValue3_assign;
+   o.set         = SValue3_set;
+   o.absolute    = SValue3_absolute;
+   o.normalize   = SValue3_normalize;
+   o.negative    = SValue3_negative;
+   o.serialize   = SValue3_serialize;
+   o.unserialize = SValue3_unserialize;
+   o.parse       = SValue3_parse;
+   o.toString    = SValue3_toString;
+   return o;
+}
+function SValue3_assign(p){
    var o = this;
    o.x = p.x;
    o.y = p.y;
    o.z = p.z;
 }
-function SVector3_set(x, y, z){
+function SValue3_set(x, y, z){
    var o = this;
    o.x = x;
    o.y = y;
    o.z = z;
 }
-function SVector3_absolute(){
-   var o = this;
-   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z));
-}
-function SVector3_normalize(){
+function SValue3_normalize(){
    var o = this;
    var v = o.absolute();
-   if(v != 0.0){
+   if(v != 0){
       o.x /= v;
       o.y /= v;
       o.z /= v;
    }
+}
+function SValue3_absolute(){
+   var o = this;
+   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z));
+}
+function SValue3_negative(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new o.constructor();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   return r;
+}
+function SValue3_serialize(p){
+   var o = this;
+   p.writeFloat(o.x);
+   p.writeFloat(o.y);
+   p.writeFloat(o.z);
+}
+function SValue3_unserialize(p){
+   var o = this;
+   o.x = p.readFloat();
+   o.y = p.readFloat();
+   o.z = p.readFloat();
+}
+function SValue3_parse(p){
+   var o = this;
+   var r = p.split(',')
+   if(r.length == 3){
+      o.x = parseFloat(r[0]);
+      o.y = parseFloat(r[1]);
+      o.z = parseFloat(r[2]);
+   }else{
+      throw new TError(o, "Parse value failure. (value={1})", p);
+   }
+}
+function SValue3_toString(){
+   var o = this;
+   return o.x + ',' + o.y + ',' + o.z;
+}
+function SValue4(x, y, z, w){
+   var o = this;
+   o.x           = RRuntime.nvl(x, 0);
+   o.y           = RRuntime.nvl(y, 0);
+   o.z           = RRuntime.nvl(z, 0);
+   o.w           = RRuntime.nvl(w, 1);
+   o.assign      = SValue4_assign;
+   o.set         = SValue4_set;
+   o.absolute    = SValue4_absolute;
+   o.normalize   = SValue4_normalize;
+   o.negative    = SValue4_negative;
+   o.serialize   = SValue4_serialize;
+   o.unserialize = SValue4_unserialize;
+   o.parse       = SValue4_parse;
+   o.toString    = SValue4_toString;
+   return o;
+}
+function SValue4_assign(p){
+   var o = this;
+   o.x = p.x;
+   o.y = p.y;
+   o.z = p.z;
+   o.w = p.w;
+}
+function SValue4_set(x, y, z, w){
+   var o = this;
+   o.x = x;
+   o.y = y;
+   o.z = z;
+   o.w = w;
+}
+function SValue4_absolute(){
+   var o = this;
+   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z) + (o.w * o.w));
+}
+function SValue4_normalize(){
+   var o = this;
+   var v = o.absolute();
+   if(v != 0){
+      o.x /= v;
+      o.y /= v;
+      o.z /= v;
+      o.w /= w;
+   }
+}
+function SValue4_negative(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new o.constructor();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   r.w = -o.w;
+   return r;
+}
+function SValue4_serialize(p){
+   var o = this;
+   p.writeFloat(o.x);
+   p.writeFloat(o.y);
+   p.writeFloat(o.z);
+   p.writeFloat(o.w);
+}
+function SValue4_unserialize(p){
+   var o = this;
+   o.x = p.readFloat();
+   o.y = p.readFloat();
+   o.z = p.readFloat();
+   o.w = p.readFloat();
+}
+function SValue4_parse(p){
+   var o = this;
+   var r = p.split(',')
+   if(r.length == 4){
+      o.x = parseFloat(r[0]);
+      o.y = parseFloat(r[1]);
+      o.z = parseFloat(r[2]);
+      o.w = parseFloat(r[3]);
+   }else{
+      throw new TError(o, "Parse value failure. (value={1})", p);
+   }
+}
+function SValue4_toString(){
+   var o = this;
+   return o.x + ',' + o.y + ',' + o.z + ',' + o.w;
+}
+function SVector3(x, y, z){
+   var o = this;
+   SValue3.call(o, x, y, z);
+   o.conjugate = SVector3_conjugate;
+   o.dotPoint3 = SVector3_dotPoint3;
+   o.cross     = SVector3_cross;
+   o.cross2    = SVector3_cross2;
+   o.slerp     = SVector3_slerp;
+   o.clone     = SVector3_clone;
+   return o;
+}
+function SVector3_conjugate(p){
+   var o = this;
+   var r = null;
+   if(p){
+      r = p;
+   }else{
+      r = new SVector3();
+   }
+   r.x = -o.x;
+   r.y = -o.y;
+   r.z = -o.z;
+   return r;
 }
 function SVector3_dotPoint3(v){
    var o = this;
@@ -1826,80 +2448,30 @@ function SVector3_slerp(v1, v2, r){
    o.y = (v2.y - v1.y) * r + v1.y;
    o.z = (v2.z - v1.z) * r + v1.z;
 }
-function SVector3_serialize(p){
+function SVector3_clone(){
    var o = this;
-   p.writeFloat(o.x);
-   p.writeFloat(o.y);
-   p.writeFloat(o.z);
+   var r = new SVector3();
+   r.x = o.x;
+   r.y = o.y;
+   r.z = o.z;
+   return r;
 }
-function SVector3_unserialize(p){
+function SVector4(x, y, z, w){
    var o = this;
-   o.x = p.readFloat();
-   o.y = p.readFloat();
-   o.z = p.readFloat();
-}
-function SVector3_toString(){
-   var o = this;
-   return o.x + ',' + o.y + ',' + o.z;
-}
-function SVector4(o){
-   if(!o){o = this;}
-   o.x           = 0;
-   o.y           = 0;
-   o.z           = 0;
-   o.w           = 0;
-   o.assign      = SVector4_assign;
-   o.set         = SVector4_set;
-   o.absolute    = SVector4_absolute;
-   o.normalize   = SVector4_normalize;
-   o.serialize   = SVector4_serialize;
-   o.unserialize = SVector4_unserialize;
-   o.toString    = SVector4_toString;
+   SValue4.call(o, x, y, z, w);
+   o.serialize3   = SVector4_serialize3;
+   o.unserialize3 = SVector4_unserialize3;
    return o;
 }
-function SVector4_assign(p){
-   var o = this;
-   o.x = p.x;
-   o.y = p.y;
-   o.z = p.z;
-   o.w = p.w;
-}
-function SVector4_set(x, y, z, w){
-   var o = this;
-   o.x = x;
-   o.y = y;
-   o.z = z;
-   o.w = w;
-}
-function SVector4_absolute(){
-   var o = this;
-   return Math.sqrt((o.x * o.x) + (o.y * o.y) + (o.z * o.z) + (o.w * o.w));
-}
-function SVector4_normalize(){
-   var o = this;
-   var v = o.absolute();
-   if(v != 0.0){
-      o.x /= v;
-      o.y /= v;
-      o.z /= v;
-      o.w /= w;
-   }
-}
-function SVector4_serialize(p){
+function SVector4_serialize3(p){
    var o = this;
    p.writeFloat(o.x);
    p.writeFloat(o.y);
    p.writeFloat(o.z);
-   p.writeFloat(o.w);
 }
-function SVector4_unserialize(p){
+function SVector4_unserialize3(p){
    var o = this;
    o.x = p.readFloat();
    o.y = p.readFloat();
    o.z = p.readFloat();
-   o.w = p.readFloat();
-}
-function SVector4_toString(){
-   var o = this;
-   return o.x + ',' + o.y + ',' + o.z + ',' + o.w;
 }

@@ -5,8 +5,8 @@
 // @author maocy
 // @version 141226
 //==========================================================
-function TMap(o){
-   if(!o){o = this;}
+function TMap(){
+   var o = this;
    //..........................................................
    // @attribute
    o._count        = 0;
@@ -23,8 +23,11 @@ function TMap(o){
    o.indexOfValue  = TMap_indexOfValue;
    o.first         = TMap_first;
    o.last          = TMap_last;
+   o.nameAt        = TMap_nameAt;
    o.name          = TMap_name;
+   o.valueAt       = TMap_valueAt;
    o.value         = TMap_value;
+   o.setValueAt    = TMap_setValueAt;
    o.setValue      = TMap_setValue;
    o.get           = TMap_get;
    o.set           = TMap_set;
@@ -161,6 +164,17 @@ function TMap_last(){
 // @param n:index:Integer 索引位置
 // @return String 名称
 //==========================================================
+function TMap_nameAt(n){
+   return this._names[n];
+}
+
+//==========================================================
+// <T>根据索引位置获得名称。</T>
+//
+// @method
+// @param n:index:Integer 索引位置
+// @return String 名称
+//==========================================================
 function TMap_name(n){
    return ((n >= 0) && (n < this._count)) ? this._names[n] : null;
 }
@@ -172,8 +186,30 @@ function TMap_name(n){
 // @param n:index:Integer 索引位置
 // @return Object 内容
 //==========================================================
+function TMap_valueAt(n){
+   return this._values[n];
+}
+
+//==========================================================
+// <T>根据索引位置获得内容。</T>
+//
+// @method
+// @param n:index:Integer 索引位置
+// @return Object 内容
+//==========================================================
 function TMap_value(n){
    return ((n >= 0) && (n < this._count)) ? this._values[n] : null;
+}
+
+//==========================================================
+// <T>根据索引位置设置内容。</T>
+//
+// @method
+// @param n:index:Integer 索引位置
+// @param v:value:Object 内容
+//==========================================================
+function TMap_setValueAt(n, v){
+   this._values[n] = v;
 }
 
 //==========================================================
@@ -433,10 +469,10 @@ function TMap_dump(){
    r.appendLine(RRuntime.className(o), ': ', c);
    if(c > 0){
       r.append(' {');
-      for(var n = 0; n < c; n++){
-         r.appendLine(o._names[n], '=[', o._values[n], ']');
+      for(var i = 0; i < c; i++){
+         r.appendLine(o._names[i], '=[', o._values[i], ']');
       }
       r.append('}');
    }
-   return r.toString();
+   return r.flush();
 }

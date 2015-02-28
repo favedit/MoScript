@@ -8,11 +8,14 @@ function FG3dFlatTexture(o){
    o = RClass.inherits(this, o, FG3dTexture);
    //..........................................................
    // @attribute
-   o.width        = 0;
-   o.height       = 0;
+   o.width      = 0;
+   o.height     = 0;
    //..........................................................
    // @method
-   o.construct    = FG3dFlatTexture_construct;
+   o.construct  = FG3dFlatTexture_construct;
+   // @method
+   o.uploadData = RMethod.virtual(o, 'uploadData');
+   o.upload     = RMethod.virtual(o, 'upload');
    return o;
 }
 

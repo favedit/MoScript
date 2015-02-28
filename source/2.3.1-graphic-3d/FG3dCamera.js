@@ -8,51 +8,48 @@ function FG3dCamera(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute 变换矩阵
-   o._matrix      = null;
+   o._matrix          = null;
    // @attribute 相机位置
-   o._position    = null;
+   o._position        = null;
+   o._target          = null;
    // @attribute 相机方向
-   o._direction   = null;
-   // @attribute 相机旋转
-   o._rotation    = null;
+   o._direction       = null;
+   o._directionTarget = null;
    // @attribute 中心位置
-   o._centerFront = 0.6;
-   o._centerBack  = 1.0;
+   o._centerFront     = 0.6;
+   o._centerBack      = 1.0;
    // @attribute 焦平面
-   o._focalNear   = 0.1;
-   o._focalFar    = 200.0;
+   o._focalNear       = 0.1;
+   o._focalFar        = 200.0;
    // @attribute 视截体
-   o._planes      = null;
-   o._frustum     = null;
-   o._viewport    = null;
+   o._planes          = null;
+   o._frustum         = null;
+   o._viewport        = null;
    // @attribute 轴线
-   o.__axisUp     = null;
-   o.__axisX      = null;
-   o.__axisY      = null;
-   o.__axisZ      = null;
-   // @attribute 旋转
-   o.__rotationX  = null;
-   o.__rotationY  = null;
-   o.__rotationZ  = null;
+   o.__axisUp         = null;
+   o.__axisX          = null;
+   o.__axisY          = null;
+   o.__axisZ          = null;
    //..........................................................
    // @method
-   o.construct    = FG3dCamera_construct;
+   o.construct        = FG3dCamera_construct;
    // @method
-   o.matrix       = FG3dCamera_matrix;
-   o.position     = FG3dCamera_position;
-   o.setPosition  = FG3dCamera_setPosition;
-   o.direction    = FG3dCamera_direction;
-   o.setDirection = FG3dCamera_setDirection;
-   o.frustum      = FG3dCamera_frustum;
+   o.matrix           = FG3dCamera_matrix;
+   o.position         = FG3dCamera_position;
+   o.setPosition      = FG3dCamera_setPosition;
+   o.direction        = FG3dCamera_direction;
+   o.setDirection     = FG3dCamera_setDirection;
+   o.frustum          = FG3dCamera_frustum;
    // @method
-   o.doWalk       = FG3dCamera_doWalk;
-   o.doStrafe     = FG3dCamera_doStrafe;
-   o.doFly        = FG3dCamera_doFly;
-   o.doYaw        = FG3dCamera_doYaw;
-   o.doPitch      = FG3dCamera_doPitch;
+   o.doWalk           = FG3dCamera_doWalk;
+   o.doStrafe         = FG3dCamera_doStrafe;
+   o.doFly            = FG3dCamera_doFly;
+   o.doPitch          = FG3dCamera_doPitch;
+   o.doYaw            = FG3dCamera_doYaw;
+   o.doRoll           = FG3dCamera_doRoll;
    // @method
-   o.lookAt       = FG3dCamera_lookAt;
-   o.update       = FG3dCamera_update;
+   o.lookAt           = FG3dCamera_lookAt;
+   o.update           = FG3dCamera_update;
    return o;
 }
 
@@ -67,10 +64,11 @@ function FG3dCamera_construct(){
    // 初始化变量
    o._matrix = new SMatrix3d();
    o._position = new SPoint3();
+   o._target = new SPoint3();
    o._direction = new SVector3();
-   o._rotation = new SQuaternion();
+   o._directionTarget = new SVector3();
    // 初始化变量
-   //o._planes = null;
+   o._planes = new Array();
    o._frustum = new SFrustum();
    o._viewport = RClass.create(FG3dViewport);
    // 初始化变量
@@ -79,10 +77,6 @@ function FG3dCamera_construct(){
    o.__axisX = new SVector3();
    o.__axisY = new SVector3();
    o.__axisZ = new SVector3();
-   // 初始化变量
-   o.__rotationX = new SQuaternion();
-   o.__rotationY = new SQuaternion();
-   o.__rotationZ = new SQuaternion();
 }
 
 //==========================================================
@@ -136,7 +130,9 @@ function FG3dCamera_direction(){
 // @param z:Number Z坐标
 //==========================================================
 function FG3dCamera_setDirection(x, y, z){
-   this._direction.set(x, y, z);
+   var o = this;
+   o._direction.set(x, y, z);
+   o._directionTarget.set(x, y, z);
 }
 
 //==========================================================
@@ -185,35 +181,36 @@ function FG3dCamera_doFly(p){
 }
 
 //==========================================================
-// <T>向左/向右旋转</T>
+// <T>向上/向下旋转。</T>
 //
 // @method
-// @param p:value:Number 弧度
-//==========================================================
-function FG3dCamera_doYaw(p){
-   var o = this;
-   //o.__rotationZ.fromAxisAngle(RMath.vectorAxisZ, p);
-   //o._rotation.mul(o.__rotationZ);
-   // 旋转Y轴
-   //var matrix = new SFloatMatrix3d();
-   //matrix.rotationY(angle);
-   // 旋转方向
-   //var direction = o._direction;
-   //direction.mormalize();
-   //_direction = matrix.TransformVector3(direction);
-   //_direction.Normalize();
-}
-
-//==========================================================
-// <T>向上/向下旋转</T>
-//
-// @method
-// @param p:value:Number 弧度
+// @param p:radian:Number 弧度
 //==========================================================
 function FG3dCamera_doPitch(p){
    var o = this;
-   //o.__rotationX.fromAxisAngle(RMath.vectorAxisX, p);
-   //o._rotation.mul(o.__rotationX);
+   throw new TFatal(o, 'Unsupport.')
+}
+
+//==========================================================
+// <T>向左/向右旋转。</T>
+//
+// @method
+// @param p:radian:Number 弧度
+//==========================================================
+function FG3dCamera_doYaw(p){
+   var o = this;
+   throw new TFatal(o, 'Unsupport.')
+}
+
+//==========================================================
+// <T>向左/向右转向。</T>
+//
+// @method
+// @param p:radian:Number 弧度
+//==========================================================
+function FG3dCamera_doRoll(p){
+   var o = this;
+   throw new TFatal(o, 'Unsupport.')
 }
 
 //==========================================================
@@ -225,8 +222,10 @@ function FG3dCamera_lookAt(x, y, z){
    var o = this;
    var p = o._position;
    var d = o._direction;
+   o._target.set(x, y, z);
    d.set(x - p.x, y - p.y, z - p.z);
    d.normalize();
+   o._directionTarget.assign(d);
 }
 
 //==========================================================

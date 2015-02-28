@@ -31,8 +31,8 @@ function FWglProgram(o){
 //==========================================================
 function FWglProgram_setup(){
    var o = this;
-   var g = o._context._native;
-   o._native = g.createProgram();
+   var c = g = o._graphicContext;
+   o._native = c._native.createProgram();
 }
 
 //==========================================================
@@ -44,11 +44,10 @@ function FWglProgram_setup(){
 function FWglProgram_vertexShader(){
    var o = this;
    var s = o._vertexShader;
-   if(s == null){
-      s = RClass.create(FWglVertexShader);
-      s.linkContext(o._context);
+   if(!s){
+      s = o._vertexShader = RClass.create(FWglVertexShader);
+      s.linkGraphicContext(o);
       s.setup();
-      o._vertexShader = s;
    }
    return s;
 }
@@ -62,11 +61,10 @@ function FWglProgram_vertexShader(){
 function FWglProgram_fragmentShader(){
    var o = this;
    var s = o._fragmentShader;
-   if(s == null){
-      s = RClass.create(FWglFragmentShader);
-      s.linkContext(o._context);
+   if(!s){
+      s = o._fragmentShader = RClass.create(FWglFragmentShader);
+      s.linkGraphicContext(o);
       s.setup();
-      o._fragmentShader = s;
    }
    return s;
 }
@@ -96,7 +94,7 @@ function FWglProgram_upload(t, s){
 //==========================================================
 function FWglProgram_build(){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var g = c._native;
    var pn = o._native;
    // 设置顶点渲染器
@@ -136,7 +134,7 @@ function FWglProgram_build(){
 //==========================================================
 function FWglProgram_link(){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var g = c._native;
    var r = false;
    // 关联处理
@@ -149,7 +147,7 @@ function FWglProgram_link(){
       RLogger.fatal(this, null, "Link program failure. (status={1}, reason={2})", pr, pi);
       // 释放程序
       g.deleteProgram(o._native);
-      o._native = null;;
+      o._native = null;
       return false;
    }
    //............................................................
@@ -162,7 +160,7 @@ function FWglProgram_link(){
       //RLogger.fatal(this, null, "Validate program failure. (reason={1})", pi);
       // 释放程序
       //g.deleteProgram(o._native);
-      //o._native = null;;
+      //o._native = null;
       //return false;
    }
    //............................................................
@@ -217,7 +215,7 @@ function FWglProgram_link(){
          }
          p._slot = i;
          if(i != null){
-            p._statusUsed = true;;
+            p._statusUsed = true;
          }
       }
       var si = 0;
@@ -239,7 +237,7 @@ function FWglProgram_link(){
 function FWglProgram_dispose(){
    var o = this;
    if(o._program){
-      o._context._context.deleteProgram(o._program);
+      o._graphicContext._native.deleteProgram(o._program);
    }
    o._program = null;
    o.base.FProgram3d.dispose.call(o);

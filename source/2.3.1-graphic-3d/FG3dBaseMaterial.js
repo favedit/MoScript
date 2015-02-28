@@ -14,8 +14,12 @@ function FG3dBaseMaterial(o){
    //..........................................................
    // @method
    o.construct  = FG3dBaseMaterial_construct;
+   // @method
    o.info       = FG3dBaseMaterial_info;
+   // @method
    o.assignInfo = FG3dBaseMaterial_assignInfo;
+   o.assign     = FG3dBaseMaterial_assign;
+   o.calculate  = FG3dBaseMaterial_calculate;
    return o;
 }
 
@@ -49,4 +53,24 @@ function FG3dBaseMaterial_info(){
 //==========================================================
 function FG3dBaseMaterial_assignInfo(p){
    this._info.assign(p);
+}
+
+//==========================================================
+// <T>接收材质信息。</T>
+//
+// @method
+// @param p:materialInfo:SG3dMaterialInfo 材质信息
+//==========================================================
+function FG3dBaseMaterial_assign(p){
+   this._info.assign(p.info());
+}
+
+//==========================================================
+// <T>计算材质信息。</T>
+//
+// @method
+// @param p:materialInfo:SG3dMaterialInfo 材质信息
+//==========================================================
+function FG3dBaseMaterial_calculate(p){
+   this._info.calculate(p.info());
 }

@@ -11,6 +11,7 @@ function FG3dContext(o){
    o._size               = null;
    o._capability         = null;
    // @attribute
+   o._fillModeCd         = EG3dFillMode.Face;
    o._optionDepth        = false;
    o._optionCull         = false;
    o._depthModeCd        = 0;
@@ -35,6 +36,7 @@ function FG3dContext(o){
    o.createCubeTexture   = RMethod.virtual(o, 'createCubeTexture');
    o.createRenderTarget  = RMethod.virtual(o, 'createRenderTarget');
    // @method
+   o.setViewport         = RMethod.virtual(o, 'setViewport');
    o.setFillMode         = RMethod.virtual(o, 'setFillMode');
    o.setDepthMode        = RMethod.virtual(o, 'setDepthMode');
    o.setCullingMode      = RMethod.virtual(o, 'setCullingMode');
@@ -47,6 +49,8 @@ function FG3dContext(o){
    o.bindTexture         = RMethod.virtual(o, 'bindTexture');
    // @method
    o.clear               = RMethod.virtual(o, 'clear');
+   o.clearColor          = RMethod.virtual(o, 'clearColor');
+   o.clearDepth          = RMethod.virtual(o, 'clearDepth');
    o.drawTriangles       = RMethod.virtual(o, 'drawTriangles');
    o.present             = RMethod.virtual(o, 'present');
    // @method

@@ -22,3 +22,23 @@ function FGraphicRenderable(o){
 }
 function FGraphicRenderable_process(){
 }
+function MGraphicObject(o){
+   o = RClass.inherits(this, o);
+   o._graphicContext    = null;
+   o.graphicContext     = MGraphicObject_graphicContext;
+   o.linkGraphicContext = MGraphicObject_linkGraphicContext;
+   return o;
+}
+function MGraphicObject_graphicContext(){
+   return this._graphicContext;
+}
+function MGraphicObject_linkGraphicContext(p){
+   var o = this;
+   if(RClass.isClass(p, FGraphicContext)){
+      o._graphicContext = p;
+   }else if(RClass.isClass(p, MGraphicObject)){
+      o._graphicContext = p._graphicContext;
+   }else{
+      throw new TError(o, 'Link graphic context failure. (context={1})', p);
+   }
+}

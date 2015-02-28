@@ -5,8 +5,8 @@
 // @author maocy
 // @version 141230
 // =========================================================
-function TObjects(o){
-   if(!o){o = this;}
+function TObjects(){
+   var o = this;
    //..........................................................
    // @attribute
    o._count     = 0;
@@ -15,11 +15,14 @@ function TObjects(o){
    // @method
    o.isEmpty    = TObjects_isEmpty;
    o.count      = TObjects_count;
+   o.items      = TObjects_items;
    o.contains   = TObjects_contains;
    o.indexOf    = TObjects_indexOf;
    o.first      = TObjects_first;
    o.last       = TObjects_last;
+   o.getAt      = TObjects_getAt;
    o.get        = TObjects_get;
+   o.setAt      = TObjects_setAt;
    o.set        = TObjects_set;
    // @method
    o.assign     = TObjects_assign;
@@ -50,13 +53,23 @@ function TObjects_isEmpty(){
 }
 
 //===========================================================
-// <T>判断集合总数。</T>
+// <T>获得总数。</T>
 //
 // @method
 // @return Integer 总数
 //===========================================================
 function TObjects_count(){
    return this._count;
+}
+
+//===========================================================
+// <T>获得数据。</T>
+//
+// @method
+// @return Array 数据
+//===========================================================
+function TObjects_items(){
+   return this._items;
 }
 
 //===========================================================
@@ -80,9 +93,10 @@ function TObjects_contains(v){
 function TObjects_indexOf(v){
    var o = this;
    var c = o._count;
-   for(var n = 0; n < c; n++){
-      if(o._items[n] == v){
-         return n;
+   var s = o._items;
+   for(var i = 0; i < c; i++){
+      if(s[i] == v){
+         return i;
       }
    }
    return -1;
@@ -117,9 +131,31 @@ function TObjects_last(){
 // @param n:index:Integer 索引位置
 // @return 当前位置上的对象
 //===========================================================
+function TObjects_getAt(n){
+   return this._items[n];
+}
+
+//===========================================================
+// <T>取得指定索引对应的对象。</T>
+//
+// @method
+// @param n:index:Integer 索引位置
+// @return 当前位置上的对象
+//===========================================================
 function TObjects_get(n){
    var o = this;
    return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
+}
+
+//===========================================================
+// <T>把对象存储在指定的索引处。</T>
+//
+// @method
+// @param n:index:Integer 索引位置
+// @param v:value:Object 对象
+//===========================================================
+function TObjects_setAt(n, v){
+   this._items[n] = v;
 }
 
 //===========================================================
@@ -159,8 +195,8 @@ function TObjects_assign(p){
 function TObjects_append(v){
    var o = this;
    var c = v._count;
-   for(var n = 0; n < c; n++){
-      o.push(v.get(n));
+   for(var i = 0; i < c; i++){
+      o.push(v.get(i));
    }
 }
 
@@ -190,8 +226,9 @@ function TObjects_insert(i, v){
 // @return Integer 索引值
 //===========================================================
 function TObjects_push(v){
-   var n = this._count++;
-   this._items[n] = v;
+   var o = this;
+   var n = o._count++;
+   o._items[n] = v;
    return n;
 }
 
@@ -205,7 +242,7 @@ function TObjects_push(v){
 function TObjects_pushUnique(v){
    var o = this;
    // 查询存在性
-   for(var n = o._count-1; n >= 0; n--){
+   for(var n = o._count - 1; n >= 0; n--){
       if(o._items[n] == v){
          return n;
       }
@@ -239,9 +276,10 @@ function TObjects_pop(){
 function TObjects_swap(l, r){
    var o = this;
    if((l >= 0) && (l < o._count) && (r >= 0) && (r < o._count) && (l != r)){
-      var v = o._items[l];
-      o._items[l] = this._items[r];
-      o._items[r] = v;
+      var s = o._items;
+      var v = s[l];
+      s[l] = s[r];
+      s[r] = v;
    }
 }
 
@@ -250,8 +288,8 @@ function TObjects_swap(l, r){
 //
 // @method
 //===========================================================
-function TObjects_sort(){
-   this._items.sort();
+function TObjects_sort(p){
+   this._items.sort(p);
 }
 
 //===========================================================
@@ -283,25 +321,23 @@ function TObjects_erase(n){
 // @param v:value:Object 指定对象
 //===========================================================
 function TObjects_remove(v){
-   if(v != null){
-      var o = this;
-      var c = o._count;
-      if(c > 0){
-         var n = 0;
-         var s = o._items;
-         // 移除对象
-         for(var i = n; i < c; i++){
-            if(s[i] != v){
-               s[n++] = s[i];
-            }
+   var o = this;
+   var c = o._count;
+   if(c){
+      var n = 0;
+      var s = o._items;
+      // 移除对象
+      for(var i = n; i < c; i++){
+         if(s[i] != v){
+            s[n++] = s[i];
          }
-         // 清除尾部
-         for(var i = n; i < c; i++){
-            s[i] = null;
-         }
-         // 设置大小
-         o._count = n;
       }
+      // 清除尾部
+      for(var i = n; i < c; i++){
+         s[i] = null;
+      }
+      // 设置大小
+      o._count = n;
    }
    return v;
 }
@@ -324,10 +360,10 @@ function TObjects_clear(){
 //===========================================================
 function TObjects_dispose(){
    var o = this;
-   o._count = 0;
    for(var n in o._items){
-      delete o._items[n];
+      o._items[n] = null;
    }
+   o._count = 0;
    o._items = null;
 }
 
@@ -341,11 +377,11 @@ function TObjects_dump(){
    var o = this;
    var c = o._count;
    var r = new TString();
-   r.append(RClass.name(o), ':', c);
+   r.append(RRuntime.className(o), ':', c);
    if(c > 0){
-      for(var n = 0; n < c; n++){
-         r.append(' [', o._items[n], ']');
+      for(var i = 0; i < c; i++){
+         r.append(' [', o._items[i], ']');
       }
    }
-   return r.toString();
+   return r.flush();
 }

@@ -5,7 +5,7 @@
 // @history 150105
 //==========================================================
 function FRs3SceneCamera(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute 属性
    o._typeName    = null;
@@ -20,14 +20,16 @@ function FRs3SceneCamera(o){
    o._focalNear   = null;
    o._focalFar    = null;
    // @attribute 视角
-   o._viewport    = null;
+   o._projection  = null;
    //..........................................................
    // @method
    o.construct    = FRs3SceneCamera_construct;
+   // @method
    o.typeName     = FRs3SceneCamera_typeName;
    o.position     = FRs3SceneCamera_position;
    o.direction    = FRs3SceneCamera_direction;
-   o.viewport     = FRs3SceneCamera_viewport;
+   o.projection   = FRs3SceneCamera_projection;
+   // @method
    o.unserialize  = FRs3SceneCamera_unserialize;
    return o;
 }
@@ -39,10 +41,10 @@ function FRs3SceneCamera(o){
 //==========================================================
 function FRs3SceneCamera_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FRs3Object.construct.call(o);
    o._position = new SPoint3();
    o._direction = new SVector3();
-   o._viewport = RClass.create(FRs3SceneViewport);
+   o._projection = RClass.create(FRs3SceneProjection);
 }
 
 //==========================================================
@@ -81,8 +83,8 @@ function FRs3SceneCamera_direction(){
 // @method
 // @return FRs3SceneViewport 视角
 //==========================================================
-function FRs3SceneCamera_viewport(){
-   return this._viewport;
+function FRs3SceneCamera_projection(){
+   return this._projection;
 }
 
 //==========================================================
@@ -93,18 +95,19 @@ function FRs3SceneCamera_viewport(){
 //==========================================================
 function FRs3SceneCamera_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    // 读取属性
    o._typeName = p.readString();
    // 读取中心
-   o._centerFront = p.readFloat();
-   o._centerBack = p.readFloat();
+   //o._centerFront = p.readFloat();
+   //o._centerBack = p.readFloat();
    // 读取位置
    o._position.unserialize(p);
    // 读取方向
    o._direction.unserialize(p);
    // 读取焦平面
-   o._focalNear = p.readFloat();
-   o._focalFar = p.readFloat();
+   //o._focalNear = p.readFloat();
+   //o._focalFar = p.readFloat();
    // 读取视角
-   o._viewport.unserialize(p);
+   o._projection.unserialize(p);
 }

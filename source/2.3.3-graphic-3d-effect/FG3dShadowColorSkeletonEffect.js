@@ -25,7 +25,7 @@ function FG3dShadowColorSkeletonEffect(o){
 //==========================================================
 function FG3dShadowColorSkeletonEffect_drawRenderable(pr, r){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    var prvp = pr.matrixViewProjection();
    var prcp = pr.cameraPosition();
@@ -63,7 +63,7 @@ function FG3dShadowColorSkeletonEffect_drawRenderable(pr, r){
       }
    }
    // 绑定所有属性流
-   p.setParameter('vc_model_matrix', r.matrix());
+   p.setParameter('vc_model_matrix', r.currentMatrix());
    p.setParameter('vc_vp_matrix', prvp);
    p.setParameter('vc_camera_position', prcp);
    p.setParameter('vc_light_direction', prld);
@@ -78,7 +78,7 @@ function FG3dShadowColorSkeletonEffect_drawRenderable(pr, r){
    p.setParameter('fc_ambient_color', mi.ambientColor);
    p.setParameter('fc_diffuse_color', mi.diffuseColor);
    p.setParameter('fc_specular_color', mi.specularColor);
-   p.setParameter4('fc_specular', mi.specularBase, mi.specularRate, mi.specularAverage, mi.specularShadow);
+   p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);

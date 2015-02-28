@@ -5,7 +5,7 @@
 // @history 150106
 //==========================================================
 function FG3dRegion(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
    //..........................................................
    // @attribute
    o._spaceName                  = null;
@@ -15,6 +15,7 @@ function FG3dRegion(o){
    o._projection                 = null;
    o._directionalLight           = null
    o._lights                     = null
+   o._allRenderables             = null;
    o._renderables                = null;
    // @attribute
    o._cameraPosition             = null;
@@ -22,12 +23,15 @@ function FG3dRegion(o){
    o._cameraViewMatrix           = null;
    o._cameraProjectionMatrix     = null;
    o._cameraViewProjectionMatrix = null;
+   // @attribute
    o._lightPosition              = null;
    o._lightDirection             = null;
    o._lightViewMatrix            = null;
    o._lightProjectionMatrix      = null;
    o._lightViewProjectionMatrix  = null;
    o._lightInfo                  = null;
+   // @attribute
+   o._materialMap                = null;
    //..........................................................
    // @method
    o.construct                   = FG3dRegion_construct;
@@ -40,11 +44,15 @@ function FG3dRegion(o){
    o.camera                      = FG3dRegion_camera;
    o.directionalLight            = FG3dRegion_directionalLight;
    o.lights                      = FG3dRegion_lights;
+   o.materialMap                 = FG3dRegion_materialMap;
    // @method
+   o.allRenderables              = FG3dRegion_allRenderables;
    o.renderables                 = FG3dRegion_renderables;
    o.pushRenderable              = FG3dRegion_pushRenderable;
    // @method
+   o.setup                       = FG3dRegion_setup;
    o.prepare                     = FG3dRegion_prepare;
+   o.reset                       = FG3dRegion_reset;
    o.calculate                   = FG3dRegion_calculate;
    o.update                      = FG3dRegion_update;
    o.dispose                     = FG3dRegion_dispose;
@@ -62,6 +70,7 @@ function FG3dRegion_construct(){
    // 初始化参数
    o._lights = new TObjects();
    o._renderables = new TObjects();
+   o._allRenderables = new TObjects();
    // 初始化参数
    o._cameraPosition = new SPoint3();
    o._cameraDirection = new SVector3();
@@ -74,6 +83,7 @@ function FG3dRegion_construct(){
    o._lightProjectionMatrix = new SMatrix3d();
    o._lightViewProjectionMatrix = new SMatrix3d();
    o._lightInfo = new SVector4();
+   //o._materialMap = RClass.create(FG3dMaterialMap);
 }
 
 //==========================================================
@@ -122,10 +132,11 @@ function FG3dRegion_techniquePass(){
 // @method
 // @param p:pass:FG3dTechniquePass 技术过程
 //==========================================================
-function FG3dRegion_setTechniquePass(p){
+function FG3dRegion_setTechniquePass(p, f){
    var o = this;
    o._techniquePass = p;
-   o._spaceName = o._technique.name() + '.' + p.name();
+   o._spaceName = p.fullCode();
+   o._finish = f;
 }
 
 //==========================================================
@@ -159,6 +170,25 @@ function FG3dRegion_lights(){
 }
 
 //==========================================================
+// <T>获得材质映射。</T>
+//
+// @method
+// @return FG3dMaterialMap 材质映射
+//==========================================================
+function FG3dRegion_materialMap(){
+   return this._materialMap;
+}
+
+//==========================================================
+// <T>获得全部渲染对象集合。</T>
+//
+// @return FRenderables 渲染对象集合
+//==========================================================
+function FG3dRegion_allRenderables(p){
+   return this._allRenderables;
+}
+
+//==========================================================
 // <T>获得渲染对象集合。</T>
 //
 // @return FRenderables 渲染对象集合
@@ -173,7 +203,21 @@ function FG3dRegion_renderables(p){
 // @param p:renderable:FRenderable 渲染对象
 //==========================================================
 function FG3dRegion_pushRenderable(p){
-   this._renderables.push(p);
+   var o = this;
+   o._renderables.push(p);
+   o._allRenderables.push(p);
+}
+
+//==========================================================
+// <T>配置处理。</T>
+//
+// @method
+//==========================================================
+function FG3dRegion_setup(){
+   var o = this;
+   //var mm = o._materialMap;
+   //mm.linkGraphicContext(o);
+   //mm.setup(32, 512);
 }
 
 //==========================================================
@@ -204,6 +248,17 @@ function FG3dRegion_prepare(){
    o._lightViewProjectionMatrix.assign(lc.matrix());
    o._lightViewProjectionMatrix.append(lp.matrix());
    o._lightInfo.set(0, 0, lp._znear, 1.0 / lp.distance());
+   // 清空全部渲染对象
+   o._allRenderables.clear();
+}
+
+//==========================================================
+// <T>重置处理。</T>
+//
+// @method
+//==========================================================
+function FG3dRegion_reset(){
+   var o = this;
    // 清空渲染集合
    o._renderables.clear();
 }
@@ -265,6 +320,7 @@ function FG3dRegion_update(){
 //==========================================================
 function FG3dRegion_dispose(){
    var o = this;
-   o._renderables = null;
+   o._renderables = RObject.free(o._renderables);
+   o._allRenderables = RObject.free(o._allRenderables);
    o.__base.FObject.dispose.call(o);
 }

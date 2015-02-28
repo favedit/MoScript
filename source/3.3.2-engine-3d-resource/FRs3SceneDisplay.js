@@ -5,7 +5,7 @@
 // @history 150115
 //==========================================================
 function FRs3SceneDisplay(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute 属性
    o._code                = null;
@@ -21,12 +21,15 @@ function FRs3SceneDisplay(o){
    //..........................................................
    // @method
    o.construct            = FRs3SceneDisplay_construct;
+   // @method
    o.code                 = FRs3SceneDisplay_code;
    o.matrix               = FRs3SceneDisplay_matrix;
    o.movies               = FRs3SceneDisplay_movies;
    o.materials            = FRs3SceneDisplay_materials;
    o.renderables          = FRs3SceneDisplay_renderables;
+   // @method
    o.unserialize          = FRs3SceneDisplay_unserialize;
+   o.saveConfig           = FRs3SceneDisplay_saveConfig;
    return o;
 }
 
@@ -37,7 +40,7 @@ function FRs3SceneDisplay(o){
 //==========================================================
 function FRs3SceneDisplay_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FRs3Object.construct.call(o);
    o._matrix = new SMatrix3d();
 }
 
@@ -99,41 +102,63 @@ function FRs3SceneDisplay_renderables(){
 //==========================================================
 function FRs3SceneDisplay_unserialize(p){
    var o = this;
-   // 读取属性
-   o._code = p.readString();
+   o.__base.FRs3Object.unserialize.call(o, p);
    // 读取配置
-   o._optionMergeVertex = p.readBoolean();
-   o._optionMergeMaterial = p.readBoolean();
+   //o._optionMergeVertex = p.readBoolean();
+   //o._optionMergeMaterial = p.readBoolean();
    // 读取矩阵
    o._matrix.unserialize(p);
    // 读取动画集合
    var c = p.readUint16();
    if(c > 0){
-      var ms = o._movies = new TObjects();
+      var s = o._movies = new TObjects();
       for(var i = 0; i < c; i++){
          var m = RClass.create(FRs3SceneMovie);
          m.unserialize(p);
-         ms.push(m);
+         s.push(m);
       }
    }
-   // 读取动画集合
+   // 读取材质集合
    var c = p.readUint16();
    if(c > 0){
-      var ms = o._materials = new TObjects();
+      var s = o._materials = new TObjects();
       for(var i = 0; i < c; i++){
          var m = RClass.create(FRs3SceneMaterial);
          m.unserialize(p);
-         ms.push(m);
+         s.push(m);
       }
    }
    // 读取动画集合
    var c = p.readUint16();
    if(c > 0){
-      var rs = o._renderables = new TObjects();
+      var s = o._renderables = new TObjects();
       for(var i = 0; i < c; i++){
          var r = RClass.create(FRs3TemplateRenderable);
          r.unserialize(p);
-         rs.push(r);
+         s.push(r);
       }
    }
 }
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FRs3SceneDisplay_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Object.saveConfig.call(o, p);
+   // 存储属性
+   o._matrix.saveConfig(p.create('Matrix'));
+   // 存储材质集合
+   var xs = p.create('MaterialCollection');
+   var s = o._materials;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.get(i).saveConfig(xs.create('Material'));
+      }
+   }
+}
+

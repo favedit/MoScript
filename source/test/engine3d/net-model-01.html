@@ -8,12 +8,6 @@
 <SCRIPT language='javascript' src='../../ajs/mo-engine.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
-
-<SCRIPT language='javascript' src='../../3.3.2-engine-3d-resource/FNetRs3ModelStream.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../3.3.2-engine-3d-resource/FNetRs3ModelMesh.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../3.3.2-engine-3d-resource/FNetRs3Model.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../3.3.2-engine-3d-resource/FNetRs3ModelConsole.js'></SCRIPT>
-
 </HEAD>
 
 <SCRIPT>
@@ -69,12 +63,8 @@ function onThemeLoad(){
    layer = stage.spriteLayer();
    RStage.register('stage3d', stage);
 
-   //var nrm = RConsole.find(FNetRs3ModelConsole);
-   //var rm = nrm.load('876457BFB45E4804A2CEF9AA79AD1E2B', 'BBDE7E5AFBA5468B9225A45CD5B7A715');
-   //return;
-
-   var rmc = RConsole.find(FNetModel3dConsole);
-   var model3d = rmc.alloc(context, '2091A7BD886C4B0096C79CF686D3EE2F');
+   var rmc = RConsole.find(FModel3dConsole);
+   var model3d = rmc.alloc(context, 'E14803A7BAAF4799B93B5C573AE5066E');
    layer.pushDisplay(model3d);
    models.push(model3d);
    RDump.dump(model3d, _dump);
@@ -112,7 +102,7 @@ function _load(){
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
-<CANVAS id="_canvas" style='padding-left:20px' width="800" height="1000">您的浏览器不支持HTML5</CANVAS>
+<CANVAS id="_canvas" style='padding-left:20px' width="100" height="200">您的浏览器不支持HTML5</CANVAS>
 <DIV id='_info'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

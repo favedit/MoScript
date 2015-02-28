@@ -9,8 +9,8 @@ function SOutline3(o){
    if(!o){o = this;}
    //..........................................................
    // @attribute
-   o.min = new SPoint3();
-   o.max = new SPoint3();
+   o.min         = new SPoint3();
+   o.max         = new SPoint3();
    //..........................................................
    // @method
    o.assign      = SOutline3_assign;

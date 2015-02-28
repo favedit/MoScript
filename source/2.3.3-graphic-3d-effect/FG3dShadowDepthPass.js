@@ -8,7 +8,7 @@ function FG3dShadowDepthPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
    //..........................................................
    // @attribute
-   o._name         = 'depth';
+   o._code         = 'depth';
    o._renderTarget = null;
    o._textureDepth = null;
    o._renderTarget = null;

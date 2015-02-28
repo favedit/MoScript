@@ -1,16 +1,21 @@
 //==========================================================
 // <T>渲染环境信息。</T>
 //
+// @class
 // @author maocy
 // @history 141230
 //==========================================================
-function SG3dContextCapability(o){
-   if(!o){o = this;}
+function SG3dContextCapability(){
+   var o = this;
    //..........................................................
    // @attribute
    o.vendor                 = null;
    o.version                = null;
    o.shaderVersion          = null;
+   // @attribute
+   o.optionInstance         = false;
+   o.optionLayout           = false;
+   o.optionMaterialMap      = false;
    // @attribute
    o.attributeCount         = null;
    o.vertexCount            = 65536;

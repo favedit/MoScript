@@ -13,7 +13,7 @@
 //==========================================================
 function APtyPadding(n, l, vl, vt, vr, vb){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    //..........................................................
    // @attribute
    o._left    = RInteger.nvl(vl);

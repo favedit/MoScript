@@ -8,7 +8,7 @@
 //==========================================================
 function AEventLoad(n){
    var o = this;
-   AEvent(o, n, 'load', 'onload');
+   AEvent.call(o, n, 'load', 'onload');
    //..........................................................
    // @method
    o.attach = AEventLoad_attach;

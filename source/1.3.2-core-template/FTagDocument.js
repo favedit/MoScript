@@ -71,14 +71,20 @@ function FTagDocument_create(p){
       case 'source':
          t = RClass.create(FTag);
          break;
+      case 'write':
+         t = RClass.create(FTagWrite);
+         break;
       case 'true':
          t = RClass.create(FTagTrue);
          break;
       case 'false':
          t = RClass.create(FTagFalse);
          break;
-      case 'write':
-         t = RClass.create(FTagWrite);
+      case 'equals':
+         t = RClass.create(FTagEquals);
+         break;
+      case 'notEquals':
+         t = RClass.create(FTagNotEquals);
          break;
       default:
          throw new TError(o, 'Unknown tag type. (name={1})', n);

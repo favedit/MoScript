@@ -10,6 +10,8 @@ function FWglContext(o){
    //..........................................................
    // @attribute
    o._native             = null;
+   o._nativeInstance     = null;
+   o._nativeLayout       = null;
    o._activeRenderTarget = null;
    o._activeTextureSlot  = 0;
    // @attribute
@@ -28,13 +30,14 @@ function FWglContext(o){
    o.extensions          = FWglContext_extensions;
    // @method
    o.createProgram       = FWglContext_createProgram;
+   o.createLayout        = FWglContext_createLayout;
    o.createVertexBuffer  = FWglContext_createVertexBuffer;
    o.createIndexBuffer   = FWglContext_createIndexBuffer;
    o.createFlatTexture   = FWglContext_createFlatTexture;
    o.createCubeTexture   = FWglContext_createCubeTexture;
    o.createRenderTarget  = FWglContext_createRenderTarget;
    // @method
-   o.setViewPort         = FWglContext_setViewPort;
+   o.setViewport         = FWglContext_setViewport;
    o.setFillMode         = FWglContext_setFillMode;
    o.setDepthMode        = FWglContext_setDepthMode;
    o.setCullingMode      = FWglContext_setCullingMode;
@@ -48,6 +51,8 @@ function FWglContext(o){
    o.bindTexture         = FWglContext_bindTexture;
    // @method
    o.clear               = FWglContext_clear;
+   o.clearColor          = FWglContext_clearColor;
+   o.clearDepth          = FWglContext_clearDepth;
    o.drawTriangles       = FWglContext_drawTriangles;
    o.present             = FWglContext_present;
    // @method
@@ -80,7 +85,7 @@ function FWglContext_linkCanvas(h){
    // 获得环境
    o._hCanvas = h;
    if(h.getContext){
-      var n = h.getContext('webgl');
+      var n = h.getContext('webgl', {antialias:true});
       if(n == null){
          n = h.getContext('experimental-webgl', {antialias:true});
       }
@@ -91,7 +96,7 @@ function FWglContext_linkCanvas(h){
    }
    var g = o._native;
    // 设置状态
-   o.setViewPort(h.width, h.height);
+   o.setViewport(h.width, h.height);
    o.setDepthMode(true, EG3dDepthMode.LessEqual);
    o.setCullingMode(true, EG3dCullMode.Front);
    // 获得渲染信息
@@ -105,6 +110,15 @@ function FWglContext_linkCanvas(h){
    c.fragmentConst = g.getParameter(g.MAX_FRAGMENT_UNIFORM_VECTORS);
    c.samplerCount = g.getParameter(g.MAX_VERTEX_TEXTURE_IMAGE_UNITS);
    c.samplerSize = g.getParameter(g.MAX_TEXTURE_SIZE);
+   // 测试实例绘制支持
+   var e = o._nativeInstance = g.getExtension('ANGLE_instanced_arrays');
+   if(e){
+      c.optionInstance = true;
+   }
+   var e = o._nativeLayout = g.getExtension('OES_vertex_array_object');
+   if(e){
+      c.optionLayout = true;
+   }
 }
 
 //==========================================================
@@ -288,7 +302,25 @@ function FWglContext_extensions(){
 function FWglContext_createProgram(){
    var o = this;
    var r = RClass.create(FWglProgram);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
+   r.setup();
+   return r;
+}
+
+//==========================================================
+// <T>创建布局。</T>
+//
+// @method
+// @return FProgram3d 顶点缓冲
+//==========================================================
+function FWglContext_createLayout(){
+   var o = this;
+   // 检查标志
+   if(!o._capability.optionLayout){
+      throw new TError(o, 'Unsupport layout.');
+   }
+   var r = RClass.create(FWglLayout);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
@@ -302,7 +334,7 @@ function FWglContext_createProgram(){
 function FWglContext_createVertexBuffer(){
    var o = this;
    var r = RClass.create(FWglVertexBuffer);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
@@ -316,7 +348,7 @@ function FWglContext_createVertexBuffer(){
 function FWglContext_createIndexBuffer(){
    var o = this;
    var r = RClass.create(FWglIndexBuffer);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
@@ -330,7 +362,7 @@ function FWglContext_createIndexBuffer(){
 function FWglContext_createFlatTexture(){
    var o = this;
    var r = RClass.create(FWglFlatTexture);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
@@ -344,7 +376,7 @@ function FWglContext_createFlatTexture(){
 function FWglContext_createCubeTexture(){
    var o = this;
    var r = RClass.create(FWglCubeTexture);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
@@ -358,7 +390,7 @@ function FWglContext_createCubeTexture(){
 function FWglContext_createRenderTarget(){
    var o = this;
    var r = RClass.create(FWglRenderTarget);
-   r.linkContext(o);
+   r.linkGraphicContext(o);
    r.setup();
    return r;
 }
@@ -366,23 +398,45 @@ function FWglContext_createRenderTarget(){
 //============================================================
 // <T>设置视角大小。</T>
 //
+// @param l:left:Integer 左位置
+// @param t:top:Integer 上位置
 // @param w:width:Integer 宽度
 // @param h:height:Integer 高度
 //============================================================
-function FWglContext_setViewPort(w, h){
-   var g = this._native;
-   g.viewportWidth = w;
-   g.viewportHeight = h;
-   g.viewport(0, 0, w, h);
+function FWglContext_setViewport(l, t, w, h){
+   var o = this;
+   o._size.set(w, h);
+   o._native.viewport(l, t, w, h);
 }
 
 //============================================================
 // <T>设置填充模式。</T>
 //
-// @param fillModeCd 填充模式
-// @return 处理结果
+// @param p:fillModeCd:EG3dFillMode 填充模式
 //============================================================
-function FWglContext_setFillMode(){
+function FWglContext_setFillMode(p){
+   var o = this;
+   var g = o._native;
+   // 检查状态
+   if(o._fillModeCd == p){
+      return;
+   }
+   // 设置开关
+   switch(p){
+      case EG3dFillMode.Point:
+         g.polygonMode(g.FRONT_AND_BACK, g.POINT);
+         break;
+      case EG3dFillMode.Line:
+         g.polygonMode(g.FRONT_AND_BACK, g.LINE);
+         break;
+      case EG3dFillMode.Face:
+         g.polygonMode(g.FRONT, g.FILL);
+         break;
+      default:
+         throw new TError('Invalid parameter. (fill_mode={1})', p);
+   }
+   o._fillModeCd = p;
+   return true;
 }
 
 //============================================================
@@ -470,6 +524,8 @@ function FWglContext_setBlendFactors(f, vs, vt){
          g.enable(g.BLEND);
       }else{
          g.disable(g.BLEND);
+         o._blendSourceCd = 0;
+         o._blendTargetCd = 0;
       }
       o._statusBlend = f;
    }
@@ -506,6 +562,10 @@ function FWglContext_setScissorRectangle(l, t, w, h){
 function FWglContext_setRenderTarget(p){
    var o = this;
    var g = o._native;
+   // 检查是否需要切换
+   if(o._activeRenderTarget == p){
+      return;
+   }
    // 设置程序
    var r = true;
    if(p == null){
@@ -534,20 +594,24 @@ function FWglContext_setRenderTarget(p){
 //============================================================
 // <T>设置渲染程序。</T>
 //
-// @param v:program:FG3dProgram 渲染程序
+// @param p:program:FG3dProgram 渲染程序
 //============================================================
-function FWglContext_setProgram(v){
+function FWglContext_setProgram(p){
    var o = this;
    var g = o._native;
+   // 检查参数
+   if(o._program == p){
+      return;
+   }
    // 设置程序
-   if(v != null){
-      g.useProgram(v._native);
+   if(p){
+      g.useProgram(p._native);
    }else{
       g.useProgram(null);
    }
-   _program = v;
+   o._program = p;
    // 检查错误
-   var r = o.checkError("useProgram", "Set program failure. (program={1}, program_id={2})", v, v._native);
+   var r = o.checkError("useProgram", "Set program failure. (program={1}, program_native={2})", p, p._native);
    return r;
 }
 
@@ -813,6 +877,34 @@ function FWglContext_clear(r, g, b, a, d){
 }
 
 //============================================================
+// <T>清空颜色内容。</T>
+//
+// @param r:red:Float 红色
+// @param g:green:Float 绿色
+// @param b:blue:Float 蓝色
+// @param a:alpha:Float 透明
+// @param d:depth:Float 深度
+//============================================================
+function FWglContext_clearColor(r, g, b, a){
+   var o = this;
+   var c = o._native;
+   c.clearColor(r, g, b, a);
+   c.clear(c.COLOR_BUFFER_BIT);
+}
+
+//============================================================
+// <T>清空深度内容。</T>
+//
+// @param d:depth:Float 深度
+//============================================================
+function FWglContext_clearDepth(d){
+   var o = this;
+   var c = o._native;
+   c.clearDepth(d);
+   c.clear(c.DEPTH_BUFFER_BIT);
+}
+
+//============================================================
 // <T>绘制三角形。</T>
 //
 // @param b:indexBuffer:FIndexBuffer3d 索引缓冲
@@ -837,7 +929,27 @@ function FWglContext_drawTriangles(b, i, c){
        return r;
    }
    var strideCd = RWglUtility.convertIndexStride(g, b.strideCd());
-   g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+   //GL_POINTS,  
+   //GL_LINE_STRIP,  
+   //GL_LINE_LOOP,  
+   //GL_LINES,  
+   //GL_TRIANGLE_STRIP,  
+   //GL_TRIANGLE_FAN,  
+   //GL_TRIANGLES,  
+   //GL_QUAD_STRIP,  
+   //GL_QUADS, 
+   if(b._fillMode == EG3dFillMode.Line){
+      //if(b._lineWidth){
+      //   g.lineWidth(b._lineWidth);
+      //}
+      //g.enable(g.BLEND);
+      //g.enable(g.LINE_SMOOTH);
+      //g.hint(g.LINE_SMOOTH_HINT, g.FASTEST);
+      //g.blendFunc(g.SRC_ALPHA, g.ONE_MINUS_SRC_ALPHA); 
+      g.drawElements(g.LINES, c, strideCd, 2 * i);
+   }else{
+      g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
+   }
    r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
    if(!r){
        return r;

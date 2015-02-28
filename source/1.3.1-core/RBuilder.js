@@ -84,10 +84,10 @@ function RBuilder_createIcon(d, s, u, w, h){
       r.src = RResource.iconPath(u);
    }
    if(w){
-      r.style.width = w;
+      r.style.width = w + 'px';
    }
    if(h){
-      r.style.height = h;
+      r.style.height = h + 'px';
    }
    return r;
 }
@@ -213,7 +213,9 @@ function RBuilder_createDiv(d, s){
 //==========================================================
 function RBuilder_createTable(d, s, b, cs, cp){
    var h = this.create(d, 'TABLE', s);
-   h.border = RInteger.nvl(b);
+   if(b){
+      h.border = RInteger.nvl(b);
+   }
    h.cellSpacing = RInteger.nvl(cs);
    h.cellPadding = RInteger.nvl(cp);
    return h;

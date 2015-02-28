@@ -7,20 +7,37 @@
 //==========================================================
 var RObject = new function RObject(){
    var o = this;
+   //..........................................................
+   // @attribute
+   o._hash   = 1;
+   //..........................................................
    // @method
+   o.nextId  = RObject_nextId;
    o.nvl     = RObject_nvl;
    // @method
    o.clone   = RObject_clone;
    o.copy    = RObject_copy;
    // @method
    o.free    = RObject_free;
+   o.dispose = RObject_dispose;
    o.release = RObject_release;
    return o;
 }
 
 //==========================================================
+// <T>获得下一个编号。</T>
+//
+// @method
+// @return Integer 编号
+//==========================================================
+function RObject_nextId(v){
+   return this._hash++;
+}
+
+//==========================================================
 // <T>获得第一个非空对象。</T>
 //
+// @method
 // @param v:values:Object[] 对象集合
 // @return Object 非空对象
 //==========================================================
@@ -38,6 +55,7 @@ function RObject_nvl(v){
 //==========================================================
 // <T>生成一个克隆对象。</T>
 //
+// @method
 // @param v:value:Object 对象
 // @return Object 克隆对象
 //==========================================================
@@ -58,6 +76,7 @@ function RObject_clone(o){
 //==========================================================
 // <T>复制一个对象。</T>
 //
+// @method
 // @param s:source:Object 来源对象
 // @param t:target:Object 目标对象
 //==========================================================
@@ -82,6 +101,7 @@ function RObject_copy(s, t){
 // <T>释放一个对象。</T>
 // <P>不递归释放，只清空当前层属性。</P>
 //
+// @method
 // @param p:obejct:Object 对象
 //==========================================================
 function RObject_free(p){
@@ -94,8 +114,22 @@ function RObject_free(p){
 
 //==========================================================
 // <T>释放一个对象。</T>
+//
+// @method
+// @param p:obejct:Object 对象
+//==========================================================
+function RObject_dispose(p){
+   if(p){
+      p.dispose();
+   }
+   return null;
+}
+
+//==========================================================
+// <T>释放一个对象。</T>
 // <P>递归释放所有对象。</P>
 //
+// @method
 // @param p:obejct:Object 对象
 //==========================================================
 function RObject_release(p){

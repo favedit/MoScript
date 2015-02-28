@@ -5,49 +5,26 @@
 // @history 150108
 //==========================================================
 function FRs3MaterialTexture(o){
-   o = RClass.inherits(this, o, FRs3Resource);
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute
-   o._code        = null;
-   o._textureCode = null;
-   o._bitmapCode  = null;
+   o._bitmapGuid = null;
    //..........................................................
    // @method
-   o.code         = FRs3MaterialTexture_code;
-   o.textureCode  = FRs3MaterialTexture_textureCode;
-   o.bitmapCode   = FRs3MaterialTexture_bitmapCode;
-   o.unserialize  = FRs3MaterialTexture_unserialize;
+   o.bitmapGuid  = FRs3MaterialTexture_bitmapGuid;
+   // @method
+   o.unserialize = FRs3MaterialTexture_unserialize;
    return o;
 }
 
 //==========================================================
-// <T>获得代码。</T>
+// <T>获得图片唯一代码。</T>
 //
 // @method
-// @return String 代码
+// @return String 唯一代码
 //==========================================================
-function FRs3MaterialTexture_code(){
-   return this._code;
-}
-
-//==========================================================
-// <T>获得纹理代码。</T>
-//
-// @method
-// @return String 纹理代码
-//==========================================================
-function FRs3MaterialTexture_textureCode(){
-   return this._textureCode;
-}
-
-//==========================================================
-// <T>获得位图代码。</T>
-//
-// @method
-// @return String 位图代码
-//==========================================================
-function FRs3MaterialTexture_bitmapCode(){
-   return this._bitmapCode;
+function FRs3MaterialTexture_bitmapGuid(){
+   return this._bitmapGuid;
 }
 
 //==========================================================
@@ -57,9 +34,8 @@ function FRs3MaterialTexture_bitmapCode(){
 // @return 处理结果
 //==========================================================
 function FRs3MaterialTexture_unserialize(p){
-   // 读取父信息
    var o = this;
-   o._code = p.readString();
-   o._textureCode = p.readString();
-   o._bitmapCode = p.readString();
+   o.__base.FRs3Object.unserialize.call(o, p);
+   // 读取属性
+   o._bitmapGuid = p.readString();
 }

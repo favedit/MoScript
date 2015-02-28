@@ -8,7 +8,7 @@ function FG3dShadowColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
    //..........................................................
    // @attribute
-   o._name           = 'color';
+   o._code           = 'color';
    o._textureDepth   = null;
    // @attribute
    //..........................................................

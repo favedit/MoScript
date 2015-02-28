@@ -248,77 +248,91 @@ var ESize = new function ESize(){
    o.Both       = 3;
    return o;
 }
-function FCanvas(o){
-   o = RClass.inherits(this, o, FControl);
-   o._styleCanvas = RClass.register(o, new AStyle('_styleCanvas'));
-   o.onBuildPanel = FCanvas_onBuildPanel;
-   o.onBuild      = FCanvas_onBuild;
-   o.construct    = FCanvas_construct;
-   o.dispose      = FCanvas_dispose;
+var EUiLayer = new function EUiLayer(){
+   var o = this;
+   o.Default = 20000;
+   o.Shadow  =  5000;
+   o.Disable =  5000;
+   o.Window  = 20000;
+   o.Drop    = 40000;
+   o.Editor  = 10000;
+   o.Border  = 20000;
+   o.Move    = 25000;
+   o.Search  = 45000;
+   o.Message = 45000;
    return o;
 }
-function FCanvas_onBuildPanel(p){
+function FUiCanvas(o){
+   o = RClass.inherits(this, o, FUiControl);
+   o._styleCanvas = RClass.register(o, new AStyle('_styleCanvas'));
+   o.onBuildPanel = FUiCanvas_onBuildPanel;
+   o.onBuild      = FUiCanvas_onBuild;
+   o.construct    = FUiCanvas_construct;
+   o.dispose      = FUiCanvas_dispose;
+   return o;
+}
+function FUiCanvas_onBuildPanel(p){
    var o = this;
    o._hPanel = RBuilder.create(p, 'CANVAS', o.styleName('Canvas'));
 }
-function FCanvas_onBuild(p){
+function FUiCanvas_onBuild(p){
    var o = this;
    var t = o._tree;
-   var r = o.__base.FControl.onBuild.call(o, p);
+   var r = o.__base.FUiControl.onBuild.call(o, p);
 }
-function FCanvas_construct(){
+function FUiCanvas_construct(){
    var o = this;
-   o.__base.FControl.construct.call(o);
+   o.__base.FUiControl.construct.call(o);
 }
-function FCanvas_dispose(){
+function FUiCanvas_dispose(){
    var o = this;
-   o.__base.FControl.dispose.call(o);
+   o.__base.FUiControl.dispose.call(o);
 }
-function FComponent(o){
+function FUiComponent(o){
    o = RClass.inherits(this, o, FObject, MProperty, MClone);
    o._parent       = null;
    o._components   = null;
    o._name         = RClass.register(o, new APtyString('_name'));
    o._label        = RClass.register(o, new APtyString('_label'));
-   o.oeInitialize  = FComponent_oeInitialize;
-   o.oeRelease     = FComponent_oeRelease;
-   o.name          = FComponent_name;
-   o.setName       = FComponent_setName;
-   o.label         = FComponent_label;
-   o.setLabel      = FComponent_setLabel;
-   o.isParent      = FComponent_isParent;
-   o.topComponent  = FComponent_topComponent;
-   o.hasComponent  = FComponent_hasComponent;
-   o.components    = FComponent_components;
-   o.push          = FComponent_push;
-   o.process       = FComponent_process;
-   o.psInitialize  = FComponent_psInitialize;
-   o.psRelease     = FComponent_psRelease;
-   o.toString      = FComponent_toString;
-   o.dispose       = FComponent_dispose;
-   o.innerDumpInfo = FComponent_innerDumpInfo;
-   o.innerDump     = FComponent_innerDump;
+   o.oeInitialize  = FUiComponent_oeInitialize;
+   o.oeRelease     = FUiComponent_oeRelease;
+   o.name          = FUiComponent_name;
+   o.setName       = FUiComponent_setName;
+   o.label         = FUiComponent_label;
+   o.setLabel      = FUiComponent_setLabel;
+   o.isParent      = FUiComponent_isParent;
+   o.topComponent  = FUiComponent_topComponent;
+   o.hasComponent  = FUiComponent_hasComponent;
+   o.components    = FUiComponent_components;
+   o.push          = FUiComponent_push;
+   o.process       = FUiComponent_process;
+   o.psInitialize  = FUiComponent_psInitialize;
+   o.psRelease     = FUiComponent_psRelease;
+   o.toString      = FUiComponent_toString;
+   o.dispose       = FUiComponent_dispose;
+   o.innerDumpInfo = FUiComponent_innerDumpInfo;
+   o.innerDump     = FUiComponent_innerDump;
    return o;
 }
-function FComponent_oeInitialize(e){
+function FUiComponent_oeInitialize(e){
    return EEventStatus.Continue;
 }
-function FComponent_oeRelease(e){
+function FUiComponent_oeRelease(e){
    return EEventStatus.Continue;
 }
-function FComponent_name(){
+function FUiComponent_name(){
    return this._name;
 }
-function FComponent_setName(p){
+function FUiComponent_setName(p){
    this._name = p;
 }
-function FComponent_label(){
+function FUiComponent_label(){
    return this._label;
 }
-function FComponent_setLabel(p){
+function FUiComponent_setLabel(p){
    this._label = p;
 }
-function FComponent_isParent(p){
+function FUiComponent_isParent(p){
    while(p){
       if(p == this){
          return true;
@@ -326,7 +340,7 @@ function FComponent_isParent(p){
       p = p._parent;
    }
 }
-function FComponent_topComponent(c){
+function FUiComponent_topComponent(c){
    var p = this;
    if(c){
       while(RClass.isClass(p._parent, c)){
@@ -339,11 +353,11 @@ function FComponent_topComponent(c){
    }
    return p;
 }
-function FComponent_hasComponent(){
+function FUiComponent_hasComponent(){
    var ps = this._components;
    return ps ? !ps.isEmpty() : false;
 }
-function FComponent_components(){
+function FUiComponent_components(){
    var o = this;
    var r = o._components;
    if(r == null){
@@ -352,9 +366,9 @@ function FComponent_components(){
    }
    return r;
 }
-function FComponent_push(p){
+function FUiComponent_push(p){
    var o = this;
-   if(RClass.isClass(p, FComponent)){
+   if(RClass.isClass(p, FUiComponent)){
       var ps = o.components();
       p._parent = o;
       if(p._name == null){
@@ -363,7 +377,7 @@ function FComponent_push(p){
       ps.set(p._name, p);
    }
 }
-function FComponent_process(e){
+function FUiComponent_process(e){
    var o = this;
    var v = o.__base[e.clazz];
    if(v){
@@ -377,7 +391,7 @@ function FComponent_process(e){
          return r;
       }
    }
-   if(RClass.isClass(o, MContainer)){
+   if(RClass.isClass(o, MUiContainer)){
       var ps = o._components;
       if(ps){
          var pc = ps.count();
@@ -407,23 +421,23 @@ function FComponent_process(e){
    }
    return EEventStatus.Continue;
 }
-function FComponent_psInitialize(){
+function FUiComponent_psInitialize(){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeInitialize', FComponent);
+   var e = new TEventProcess(null, o, 'oeInitialize', FUiComponent);
    o.process(e);
    e.dispose();
 }
-function FComponent_psRelease(){
+function FUiComponent_psRelease(){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeRelease', FComponent);
+   var e = new TEventProcess(null, o, 'oeRelease', FUiComponent);
    o.process(e);
    e.dispose();
 }
-function FComponent_toString(){
+function FUiComponent_toString(){
    var o = this;
    return RClass.dump(o) + ':label=' + o._label;
 }
-function FComponent_dispose(){
+function FUiComponent_dispose(){
    var o = this;
    o._parent = null;
    o._name = null;
@@ -435,13 +449,13 @@ function FComponent_dispose(){
    }
    o.__base.FObject.dispose.call(o);
 }
-function FComponent_innerDumpInfo(s){
+function FUiComponent_innerDumpInfo(s){
    var o = this;
    s.append(RClass.dump(o));
    s.append(',name=', o._name);
    s.append(',label=', o._label);
 }
-function FComponent_innerDump(s, l){
+function FUiComponent_innerDump(s, l){
    var o = this;
    o.innerdumpInfo(s);
    var ps = o.components;
@@ -457,35 +471,32 @@ function FComponent_innerDump(s, l){
    }
    return s;
 }
-function FContainer(o){
-   o = RClass.inherits(this, o, FControl, MContainer);
-   o._controls         = null;
-   o.oeDesign          = RMethod.empty;
-   o.construct         = FContainer_construct;
-   o.hasControl        = FContainer_hasControl;
-   o.findControl       = FContainer_findControl;
-   o.searchControl     = FContainer_searchControl;
-   o.controls          = FContainer_controls;
-   o.panel             = FContainer_panel;
-   o.focusFirstControl = FContainer_focusFirstControl;
-   o.createChild       = FContainer_createChild;
-   o.appendChild       = FContainer_appendChild;
-   o.push              = FContainer_push;
-   o.dispose           = FContainer_dispose;
-   o.storeConfig         = FContainer_storeConfig;
-   o.psBuildChildren     = FContainer_psBuildChildren;
-   o.setChildrenProperty = FContainer_setChildrenProperty;
+function FUiContainer(o){
+   o = RClass.inherits(this, o, FUiControl, MUiContainer);
+   o._controls           = null;
+   o.oeDesign            = RMethod.empty;
+   o.construct           = FUiContainer_construct;
+   o.hasControl          = FUiContainer_hasControl;
+   o.findControl         = FUiContainer_findControl;
+   o.searchControl       = FUiContainer_searchControl;
+   o.controls            = FUiContainer_controls;
+   o.panel               = FUiContainer_panel;
+   o.focusFirstControl   = FUiContainer_focusFirstControl;
+   o.setControlsProperty = FUiContainer_setControlsProperty;
+   o.storeConfig         = FUiContainer_storeConfig;
+   o.push                = FUiContainer_push;
+   o.dispose             = FUiContainer_dispose;
    return o;
 }
-function FContainer_construct(){
+function FUiContainer_construct(){
    var o = this;
-   o.__base.FControl.construct.call(o);
+   o.__base.FUiControl.construct.call(o);
 }
-function FContainer_hasControl(){
+function FUiContainer_hasControl(){
    var cs = this._controls;
    return cs ? !cs.isEmpty() : false;
 }
-function FContainer_findControl(p){
+function FUiContainer_findControl(p){
    var o = this;
    var cs = o._controls;
    if(cs){
@@ -499,7 +510,7 @@ function FContainer_findControl(p){
    }
    return null;
 }
-function FContainer_searchControl(p){
+function FUiContainer_searchControl(p){
    var o = this;
    var cs = o._controls;
    if(cs){
@@ -509,7 +520,7 @@ function FContainer_searchControl(p){
          if(c.name() == p){
             return c;
          }
-         if(RClass.isClass(c, FContainer)){
+         if(RClass.isClass(c, FUiContainer)){
             var f = c.searchControl(p);
             if(f){
                return f;
@@ -519,7 +530,7 @@ function FContainer_searchControl(p){
    }
    return null;
 }
-function FContainer_controls(){
+function FUiContainer_controls(){
    var o = this;
    var r = o._controls;
    if(r == null){
@@ -528,14 +539,14 @@ function FContainer_controls(){
    }
    return r;
 }
-function FContainer_panel(t){
+function FUiContainer_panel(t){
    var o = this;
    if(t == EPanel.Container){
-      return o.hPanel;
+      return o._hPanel;
    }
-   return o.__base.FControl.panel.call(o, t);
+   return o.__base.FUiControl.panel.call(o, t);
 }
-function FContainer_focusFirstControl(){
+function FUiContainer_focusFirstControl(){
    return null;
    var o = this;
    var cs = o._components;
@@ -552,40 +563,27 @@ function FContainer_focusFirstControl(){
       RConsole.find(FFocusConsole).focus(o);
    }
 }
-function FContainer_createChild(p){
-   var c = RControl.newInstance(p.name());
-   c._parent = this;
-   return c;
-}
-function FContainer_appendChild(p){
-}
-function FContainer_push(p){
+function FUiContainer_setControlsProperty(p, vs){
    var o = this;
-   o.__base.FControl.push.call(o, p);
-   if(RClass.isClass(p, FControl)){
-      o.controls().set(p._name, p);
-      o.appendChild(p);
+   var cs = o._controls;
+   if(cs){
+      for(var i = cs.count() - 1; i >= 0; i--){
+         var c = cs.value(i);
+         c[p] = vs[n];
+      }
    }
 }
-function FContainer_dispose(){
-   var o = this;
-   var v = o._controls;
-   if(v){
-      v.dispose();
-      o._controls = null;
-   }
-   o.__base.FControl.dispose.call(o);
-}
-function FContainer_storeConfig(x){
+function FUiContainer_storeConfig(x){
    var o = this;
    x.name = RClass.name(o);
    o.saveConfig(x);
-   var ps = o.components;
+   var ps = o._components;
    if(ps){
-      for(var n=0; n<ps.count; n++){
-         var p = ps.value(n);
+      var c = ps.count();
+      for(var i = 0; i < c; i++){
+         var p = ps.value(i);
          var xp = x.create(RClass.name(p));
-         if(RClass.isClass(p, FContainer)){
+         if(RClass.isClass(p, FUiContainer)){
             p.storeConfig(xp);
          }else{
             p.saveConfig(xp);
@@ -593,22 +591,28 @@ function FContainer_storeConfig(x){
       }
    }
 }
-function FContainer_psBuildChildren(){
+function FUiContainer_push(p){
    var o = this;
-   var e = REvent.alloc(o, EEvent.Build);
-   o.ps(e, null, true);
-   REvent.free(e);
-}
-function FContainer_setChildrenProperty(p, vs){
-   var o = this;
-   for(var n in vs){
-      o.component(n)[p] = vs[n];
+   o.__base.FUiControl.push.call(o, p);
+   if(RClass.isClass(p, FUiControl)){
+      o.controls().set(p._name, p);
+      o.appendChild(p);
    }
 }
-function FControl(o){
-   o = RClass.inherits(this, o, FComponent, MStyle, MSize, MPadding);
-   o._disable       = RClass.register(o, new APtyBoolean('_disable', null, false));
-   o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap', null, false));
+function FUiContainer_dispose(){
+   var o = this;
+   var v = o._controls;
+   if(v){
+      v.dispose();
+      o._controls = null;
+   }
+   o.__base.FUiControl.dispose.call(o);
+}
+function FUiControl(o){
+   o = RClass.inherits(this, o, FUiComponent, MStyle, MSize, MPadding);
+   o._visible       = RClass.register(o, new APtyBoolean('_visible'), true);
+   o._disable       = RClass.register(o, new APtyBoolean('_disable'), false);
+   o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap'), false);
    o._hint          = RClass.register(o, new APtyString('_hint'));
    o._stylePanel    = RClass.register(o, new AStyle('_stylePanel'));
    o._layoutCd      = ELayout.Display;
@@ -616,112 +620,112 @@ function FControl(o){
    o._statusVisible = true;
    o._statusEnable  = true;
    o._statusBuild   = false;
+   o._statusBuilded = false;
    o._storage       = null;
    o._hParent       = null;
    o._hPanel        = null;
-   o.onEnter        = RClass.register(o, new AEventMouseEnter('onEnter'), FControl_onEnter);
-   o.onLeave        = RClass.register(o, new AEventMouseLeave('onLeave'), FControl_onLeave);
-   o.onMouseOver    = RClass.register(o, new AEventMouseOver('onMouseOver'));
-   o.onMouseOut     = RClass.register(o, new AEventMouseOut('onMouseOut'));
-   o.onMouseDown    = RClass.register(o, new AEventMouseDown('onMouseDown'));
-   o.onMouseUp      = RClass.register(o, new AEventMouseUp('onMouseUp'));
-   o.onClick        = RClass.register(o, new AEventClick('onClick'));
-   o.onDoubleClick  = RClass.register(o, new AEventDoubleClick('onDoubleClick'));
-   o.onResize       = RClass.register(o, new AEventResize('onResize'));
-   o.onBuildPanel   = FControl_onBuildPanel;
-   o.onBuild        = FControl_onBuild;
-   o.oeMode         = FControl_oeMode;
-   o.oeEnable       = FControl_oeEnable;
-   o.oeVisible      = FControl_oeVisible;
-   o.oeResize       = FControl_oeResize;
-   o.oeRefresh      = FControl_oeRefresh;
-   o.construct      = FControl_construct;
-   o.topControl     = FControl_topControl;
-   o.panel          = FControl_panel;
-   o.isVisible      = FControl_isVisible;
-   o.setVisible     = FControl_setVisible;
-   o.show           = FControl_show;
-   o.hide           = FControl_hide;
-   o.isEnable       = FControl_isEnable;
-   o.setEnable      = FControl_setEnable;
-   o.enable         = FControl_enable;
-   o.disable        = FControl_disable;
-   o.attachEvent    = FControl_attachEvent;
-   o.linkEvent      = FControl_linkEvent;
-   o.callEvent      = FControl_callEvent;
-   o.psMode         = FControl_psMode;
-   o.psDesign       = FControl_psDesign;
-   o.psEnable       = FControl_psEnable;
-   o.psVisible      = FControl_psVisible;
-   o.psResize       = FControl_psResize;
-   o.psRefresh      = FControl_psRefresh;
-   o.isBuild        = FControl_isBuild;
-   o.build          = FControl_build;
-   o.refresh        = FControl_refresh;
-   o.setPanel       = FControl_setPanel;
-   o.dispose        = FControl_dispose;
+   o.onEnter        = RClass.register(o, new AEventMouseEnter('onEnter'), FUiControl_onEnter);
+   o.onLeave        = RClass.register(o, new AEventMouseLeave('onLeave'), FUiControl_onLeave);
+   o.onBuildPanel   = FUiControl_onBuildPanel;
+   o.onBuild        = FUiControl_onBuild;
+   o.onBuilded      = RMethod.empty;
+   o.oeMode         = FUiControl_oeMode;
+   o.oeEnable       = FUiControl_oeEnable;
+   o.oeVisible      = FUiControl_oeVisible;
+   o.oeResize       = FUiControl_oeResize;
+   o.oeRefresh      = FUiControl_oeRefresh;
+   o.construct      = FUiControl_construct;
+   o.topControl     = FUiControl_topControl;
+   o.panel          = FUiControl_panel;
+   o.isVisible      = FUiControl_isVisible;
+   o.setVisible     = FUiControl_setVisible;
+   o.show           = FUiControl_show;
+   o.hide           = FUiControl_hide;
+   o.isEnable       = FUiControl_isEnable;
+   o.setEnable      = FUiControl_setEnable;
+   o.enable         = FUiControl_enable;
+   o.disable        = FUiControl_disable;
+   o.attachEvent    = FUiControl_attachEvent;
+   o.linkEvent      = FUiControl_linkEvent;
+   o.callEvent      = FUiControl_callEvent;
+   o.psMode         = FUiControl_psMode;
+   o.psDesign       = FUiControl_psDesign;
+   o.psEnable       = FUiControl_psEnable;
+   o.psVisible      = FUiControl_psVisible;
+   o.psResize       = FUiControl_psResize;
+   o.psRefresh      = FUiControl_psRefresh;
+   o.isBuild        = FUiControl_isBuild;
+   o.build          = FUiControl_build;
+   o.builded        = FUiControl_builded;
+   o.refresh        = FUiControl_refresh;
+   o.setPanel       = FUiControl_setPanel;
+   o.dispose        = FUiControl_dispose;
    return o;
 }
-function FControl_onEnter(e){
+function FUiControl_onEnter(e){
    var o = this;
+   RConsole.find(FFocusConsole).enter(o);
+   if(o._hint){
+      RWindow.setStatus(o._hint);
+   }
 }
-function FControl_onLeave(e){
+function FUiControl_onLeave(e){
    var o = this;
+   RConsole.find(FFocusConsole).leave(o);
+   if(o._hint){
+      RWindow.setStatus();
+   }
 }
-function FControl_onBuildPanel(p){
+function FUiControl_onBuildPanel(p){
    var o = this;
    o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
 }
-function FControl_onBuild(p){
+function FUiControl_onBuild(p){
    var o = this;
    o.onBuildPanel(p);
+   if(o._statusVisible != o._visible){
+      o.setVisible(o._visible);
+   }
    var h = o._hPanel;
    RHtml.linkSet(h, 'control', o);
    o.attachEvent('onEnter', h);
    o.attachEvent('onLeave', h);
-   o.attachEvent('onMouseOver', h);
-   o.attachEvent('onMouseOut', h);
-   o.attachEvent('onMouseDown', h);
-   o.attachEvent('onMouseUp', h);
-   o.attachEvent('onClick', h);
-   o.attachEvent('onDoubleClick', h);
-   o.attachEvent('onResize', h);
    o.refreshBounds();
    o.refreshPadding();
 }
-function FControl_oeMode(e){
+function FUiControl_oeMode(e){
    var o = this;
    o._displayCd = e.displayCd;
    return EEventStatus.Continue;
 }
-function FControl_oeEnable(e){
+function FUiControl_oeEnable(e){
    var o = this;
    if(e.isBefore()){
       o.setEnable(e.enable);
    }
    return EEventStatus.Continue;
 }
-function FControl_oeVisible(e){
+function FUiControl_oeVisible(e){
    var o = this;
    if(e.isBefore()){
       o.setVisible(e.visible);
    }
    return EEventStatus.Continue;
 }
-function FControl_oeResize(e){
+function FUiControl_oeResize(e){
    return EEventStatus.Continue;
 }
-function FControl_oeRefresh(e){
+function FUiControl_oeRefresh(e){
    return EEventStatus.Continue;
 }
-function FControl_construct(){
+function FUiControl_construct(){
    var o = this;
-   o.__base.FComponent.construct.call(o);
+   o.__base.FUiComponent.construct.call(o);
    o.__base.MStyle.construct.call(o);
    o.__base.MSize.construct.call(o);
    o.__base.MPadding.construct.call(o);
 }
-function FControl_topControl(c){
+function FUiControl_topControl(c){
    var r = this;
    if(c){
       while(r._parent){
@@ -735,7 +739,7 @@ function FControl_topControl(c){
       }
    }else{
       while(r._parent){
-         if(!RClass.isClass(r._parent, FControl)){
+         if(!RClass.isClass(r._parent, FUiControl)){
             break;
          }
          r = r._parent;
@@ -743,7 +747,7 @@ function FControl_topControl(c){
    }
    return r;
 }
-function FControl_panel(p){
+function FUiControl_panel(p){
    var o = this;
    switch(p){
       case EPanel.Parent:
@@ -754,33 +758,33 @@ function FControl_panel(p){
    }
    return null;
 }
-function FControl_isVisible(){
+function FUiControl_isVisible(){
    return _statusVisible;
 }
-function FControl_setVisible(p){
+function FUiControl_setVisible(p){
    var o = this;
-   o._visible = p;
+   o._statusVisible = p;
    var h = o.panel(EPanel.Container);
    if(h){
-      RHtml.displaySet(h, p);
+      RHtml.visibleSet(h, p);
    }
 }
-function FControl_show(){
+function FUiControl_show(){
    var o = this;
    if(!o._statusVisible){
       o.setVisible(true);
    }
 }
-function FControl_hide(){
+function FUiControl_hide(){
    var o = this;
    if(o._statusVisible){
       o.setVisible(false);
    }
 }
-function FControl_isEnable(){
+function FUiControl_isEnable(){
    return this._statusEnable;
 }
-function FControl_setEnable(p){
+function FUiControl_setEnable(p){
    var o = this;
    o._statusEnable = p;
    var h = o.panel(EPanel.Container);
@@ -788,25 +792,25 @@ function FControl_setEnable(p){
       h.style.disabled = !p;
    }
 }
-function FControl_enable(){
+function FUiControl_enable(){
    var o = this;
    if(!o._statusEnable){
       o.setEnable(true);
    }
 }
-function FControl_disable(){
+function FUiControl_disable(){
    var o = this;
    if(o._statusEnable){
       o.setEnable(false);
    }
 }
-function FControl_attachEvent(n, h, m, u){
+function FUiControl_attachEvent(n, h, m, u){
    return RControl.attachEvent(this, n, h, m, u);
 }
-function FControl_linkEvent(t, n, h, m){
+function FUiControl_linkEvent(t, n, h, m){
    return RControl.linkEvent(this, t, n, h, m);
 }
-function FControl_callEvent(n, s, e){
+function FUiControl_callEvent(n, s, e){
    var o = this;
    var es = o._events;
    if(es){
@@ -816,14 +820,14 @@ function FControl_callEvent(n, s, e){
       }
    }
 }
-function FControl_psMode(p){
+function FUiControl_psMode(p){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeMode', FControl);
+   var e = new TEventProcess(null, o, 'oeMode', FUiControl);
    e.displayCd = p;
    o.process(e);
    e.dispose();
 }
-function FControl_psDesign(m, f){
+function FUiControl_psDesign(m, f){
    var o = this;
    RConsole.find(FDesignConsole).setFlag(m, f, o);
    var e = new TEventProcess(null, o, 'oeDesign', MDesign)
@@ -832,36 +836,36 @@ function FControl_psDesign(m, f){
    o.process(e);
    e.dispose();
 }
-function FControl_psEnable(v){
+function FUiControl_psEnable(v){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeEnable', FControl)
+   var e = new TEventProcess(null, o, 'oeEnable', FUiControl)
    e.enable = v;
    o.process(e);
    e.dispose();
 }
-function FControl_psVisible(v){
+function FUiControl_psVisible(v){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeVisible', FControl);
+   var e = new TEventProcess(null, o, 'oeVisible', FUiControl);
    e.visible = v;
    o.process(e);
    e.dispose();
 }
-function FControl_psResize(){
+function FUiControl_psResize(){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeResize', FControl);
+   var e = new TEventProcess(null, o, 'oeResize', FUiControl);
    o.process(e);
    e.dispose();
 }
-function FControl_psRefresh(t){
+function FUiControl_psRefresh(t){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeRefresh', FControl);
+   var e = new TEventProcess(null, o, 'oeRefresh', FUiControl);
    o.process(e);
    e.dispose();
 }
-function FControl_isBuild(){
+function FUiControl_isBuild(){
    return this._statusBuild;
 }
-function FControl_build(p){
+function FUiControl_build(p){
    var o = this;
    if(o._statusBuild){
       throw new TError(o, 'Current control is already builded.');
@@ -883,18 +887,29 @@ function FControl_build(p){
    RObject.free(a);
    o._statusBuild = true;
 }
-function FControl_refresh(){
+function FUiControl_builded(p){
+   var o = this;
+   if(!o._statusBuild){
+      throw new TError(o, 'Current control is not build.');
+   }
+   if(o._statusBuilded){
+      throw new TError(o, 'Current control is already builded.');
+   }
+   o.onBuilded(p);
+   o._statusBuilded = true;
+}
+function FUiControl_refresh(){
    var o = this;
    if(!o._statusBuild){
       throw new TError(o, 'Current control is not build.');
    }
 }
-function FControl_setPanel(h){
+function FUiControl_setPanel(h){
    var o = this;
    o._hParent = h;
    h.appendChild(o._hPanel);
 }
-function FControl_dispose(){
+function FUiControl_dispose(){
    var o = this;
    o._disable = null;
    o._nowrap = null;
@@ -904,195 +919,11 @@ function FControl_dispose(){
    o._statusEnable = null;
    o._statusBuild = null;
    o._hParent = null;
-   var v = o._hPanel;
-   if(v){
-      RMemory.freel(v);
-      o._hPanel = null;
-   }
+   o._hPanel = RHtml.free(o._hPanel);
    o.__base.MPadding.dispose.call(o);
    o.__base.MSize.dispose.call(o);
    o.__base.MStyle.dispose.call(o);
-   o.__base.FComponent.dispose.call(o);
-}
-function FFocusConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o.scope              = EScope.Page;
-   o._blurAble          = true;
-   o._focusAble         = true;
-   o._focusClasses      = null;
-   o._storeControl      = null;
-   o.hoverContainer     = null;
-   o._hoverControl      = null;
-   o._focusControl      = null;
-   o._blurControl       = null;
-   o._activeControl     = null;
-   o.lsnsFocus          = null;
-   o.lsnsBlur           = null;
-   o.lsnsFocusClass     = null;
-   o.onWindowMouseDown  = FFocusConsole_onWindowMouseDown;
-   o.onWindowMouseWheel = FFocusConsole_onWindowMouseWheel;
-   o.construct          = FFocusConsole_construct;
-   o.isFocus            = FFocusConsole_isFocus;
-   o.enter              = FFocusConsole_enter;
-   o.leave              = FFocusConsole_leave;
-   o.focus              = FFocusConsole_focus;
-   o.blur               = FFocusConsole_blur;
-   o.findClass          = FFocusConsole_findClass;
-   o.focusClass         = FFocusConsole_focusClass;
-   o.focusHtml          = FFocusConsole_focusHtml;
-   o.lockBlur           = FFocusConsole_lockBlur;
-   o.unlockBlur         = FFocusConsole_unlockBlur;
-   o.storeFocus         = FFocusConsole_storeFocus;
-   o.restoreFocus       = FFocusConsole_restoreFocus;
-   o.dispose            = FFocusConsole_dispose;
-   return o;
-}
-function FFocusConsole_onWindowMouseDown(s, e){
-   this.focusHtml(e);
-}
-function FFocusConsole_onWindowMouseWheel(s, e){
-   var o = this;
-   var fc = this._focusControl;
-   if(RClass.isClass(fc, MMouseWheel)){
-      fc.onMouseWheel(s, e);
-   }
-}
-function FFocusConsole_construct(){
-   var o = this;
-   o.__base.FConsole.construct.call(o);
-   o._focusClasses = new Object();
-   o.lsnsFocus = new TListeners();
-   o.lsnsBlur = new TListeners();
-   o.lsnsFocusClass = new TListeners();
-   RLogger.info(o, 'Add listener for window mouse down and wheel.');
-   RWindow.lsnsMouseDown.register(o, o.onWindowMouseDown);
-   RWindow.lsnsMouseWheel.register(o, o.onWindowMouseWheel);
-}
-function FFocusConsole_isFocus(c){
-   return (this._focusControl == c);
-}
-function FFocusConsole_enter(c){
-   var o = this;
-   if(RClass.isClass(c, MContainer)){
-      o.hoverContainer = c;
-   }else{
-      o._hoverControl = c;
-   }
-}
-function FFocusConsole_leave(c){
-   var o = this;
-   if(o.hoverContainer == c){
-      o.hoverContainer = null;
-   }
-   if(o._hoverControl == c){
-      o._hoverControl = null;
-   }
-}
-function FFocusConsole_focus(c, e){
-   var o = this;
-   if(!RClass.isClass(c, MFocus)){
-      return;
-   }
-   var f = o._focusControl;
-   if(f == c){
-      return;
-   }
-   var bc = o._blurControl;
-   if(bc != f){
-      if(o._blurAble && f && f.testBlur(c)){
-         RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
-         o._blurControl = f;
-         f.doBlur(e);
-         o.lsnsBlur.process(f);
-      }
-   }
-   if(o._focusAble){
-      RLogger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
-      c.doFocus(e);
-      o._focusControl = o._activeControl = c;
-      o.lsnsFocus.process(c);
-   }
-}
-function FFocusConsole_blur(c, e){
-   var o = this;
-   var fc = o._focusControl;
-   var bc = o._blurControl;
-   if(fc && c && !fc.testBlur(c)){
-      return;
-   }
-   if(bc != c && RClass.isClass(c, MFocus)){
-      RLogger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
-      o._blurControl = c;
-      c.doBlur(e);
-   }
-   if(fc){
-      RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
-      fc.doBlur(e);
-      o._focusControl = null;
-   }
-}
-function FFocusConsole_findClass(c){
-   var o = this;
-   var n = RClass.name(c);
-   if(o._focusClasses[n]){
-      return o._focusClasses[n];
-   }
-   var p = o._activeControl;
-   if(RClass.isClass(p, FEditor)){
-      p = p.source;
-   }
-   if(p){
-      return p.topControl(c);
-   }
-}
-function FFocusConsole_focusClass(c, p){
-   var o = this;
-   var n = RClass.name(c);
-   if(o._focusClasses[n] != p){
-      o._focusClasses[n] = p;
-      RLogger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
-      o.lsnsFocusClass.process(p, c);
-   }
-}
-function FFocusConsole_focusHtml(he){
-   var o = this;
-   var c = RControl.htmlControl(he.srcElement);
-   RLogger.debug(o, 'Focus html control. (control={1},element={2})', RClass.dump(c), he.srcElement.tagName);
-   if(c){
-      if(o._focusControl != c){
-         o.blur(c, he);
-      }
-   }else{
-      o.blur(null, he);
-   }
-}
-function FFocusConsole_lockBlur(){
-   this._blurAble = false;
-}
-function FFocusConsole_unlockBlur(){
-   this._blurAble = true;
-}
-function FFocusConsole_storeFocus(){
-   var o = this;
-   o._storeControl = o._focusControl;
-}
-function FFocusConsole_restoreFocus(){
-   var o = this;
-   if(o._storeControl){
-      o._storeControl.focus();
-      o._storeControl = null;
-   }
-}
-function FFocusConsole_dispose(){
-   var o = this;
-   o.__base.FConsole.dispose.call(o);
-   o._focusClasses = null;
-}
-function MContainer(o){
-   o = RClass.inherits(this, o);
-   o.createChild = RMethod.empty;
-   o.appendChild = RMethod.empty;
-   return o;
+   o.__base.FUiComponent.dispose.call(o);
 }
 function MDataContainer(o){
    o = RClass.inherits(this, o, MDataValue);
@@ -1114,522 +945,50 @@ function MDataContainer_dsDataSave(p){
    o.process(e);
    e.dispose();
 }
-function MDataField(o){
-   o = RClass.inherits(this, o, MDataValue);
-   o._dataName = RClass.register(o, new APtyString('_dataName'));
+function MDataProperties(o){
+   o = RClass.inherits(this, o);
+   o._dataProperties = null;
+   o.dataProperties  = MDataProperties_dataProperties;
+   o.dataPropertyGet = MDataProperties_dataPropertyGet;
+   o.dataPropertySet = MDataProperties_dataPropertySet;
    return o;
 }
-function MDataset(o){
-   o = RClass.inherits(this, o, MDataContainer);
-   o._dsDataset         = RClass.register(o, new APtyString('_dsDataset', 'dataset'));
-   o._dsPageSize        = RClass.register(o, new APtyInteger('_dsPageSize', 'page_size'), 20);
-   o._dsInsertAction    = RClass.register(o, new APtyString('_dsInsertAction', 'insert_action'));
-   o._dsUpdateAction    = RClass.register(o, new APtyString('_dsUpdateAction', 'update_action'));
-   o._dsDeleteAction    = RClass.register(o, new APtyString('_dsDeleteAction', 'delete_action'));
-   o._dataSource        = null;
-   o.onDsFetch          = MDataset_onDsFetch;
-   o.onDatasetLoadBegin = RMethod.empty;
-   o.onDatasetLoad      = RMethod.empty;
-   o.onDatasetLoadEnd   = RMethod.empty;
-   o.oeDataLoad         = MDataset_oeDataLoad;
-   o.oeDataSave         = MDataset_oeDataSave;
-   o.oeDatasetLoad      = MDataset_oeDatasetLoad;
-   o.construct          = MDataset_construct;
-   o.loadDataset        = MDataset_loadDataset;
-   o.loadDatasets       = MDataset_loadDatasets;
-   o.dsDatasetLoad      = MDataset_dsDatasetLoad;
-   o.dsFetch            = MDataset_dsFetch;
-   return o;
-}
-function MDataset_onDsFetch(g){
+function MDataProperties_dataProperties(n, c){
    var o = this;
-   var ds = g.datasets;
-   o.dsDatasetLoad(ds);
+   var d = o._dataProperties;
+   if(d == null){
+      d = o._dataProperties = new TDictionary();
+   }
+   return d;
 }
-function MDataset_oeDataLoad(p){
+function MDataProperties_dataPropertyGet(n){
    var o = this;
-   if(p.isBefore()){
-      var ds = p.source;
-      ds.selectDataset();
-      ds.selectRow();
-   }
-   return EEventStatus.Contine;
+   var d = o._dataProperties;
+   return d ? d.get(n) : null;
 }
-function MDataset_oeDataSave(p){
-   var o = this;
-   if(p.isBefore()){
-      var ds = p.source;
-      ds.selectDataset();
-      ds.selectRow();
-   }
-   return EEventStatus.Contine;
-}
-function MDataset_oeDatasetLoad(p){
-   var o = this;
-   if(p.isBefore()){
-      var ds = p.datasets;
-      var d = ds.get(o._name);
-      o._dataset = d;
-      o.onDatasetLoad(d);
-   }
-   return EEventStatus.Contine;
-}
-function MDataset_construct(){
-   var o = this;
-}
-function MDataset_loadDataset(d){
-   var o = this;
-   o.dsStore = d;
-   d.saveViewer(o.dsViewer);
-   o.onLoadDataset(d);
-}
-function MDataset_loadDatasets(p){
-   var o = this;
-   var c = p.count();
-   for(var i = 0; i < c; i++){
-      var d = p.value(n);
-      var dc = o.findByPath(d.name)
-      if(!dc){
-         return RMessage.fatal(o, null, 'Load dataset failed. (dataset={1}', d.name);
-      }
-      dc.loadDataset(d);
-   }
-}
-function MDataset_dsDatasetLoad(p){
-   var o = this;
-   var e = new TEventProcess(null, o, 'oeDatasetLoad', MDataset);
-   e.datasets = p;
-   o.process(e);
-   e.dispose();
-}
-function MDataset_dsFetch(){
-   var o = this;
-   var g = new TDatasetFetchArg();
-   g.owner = o;
-   g.name = o._name;
-   g.callback = o.onDsFetch;
-   RConsole.find(FDatasetConsole).fetch(g);
-}
-function MDataset_onDsPrepare(g){
-   var o = this;
-   g.resultDatasets.set('/', null);
-   o.loadDatasets(g.resultDatasets);
-   o.doPrepare(g.resultRow);
-   if(g.invokeSuccess()){
-	   return;
-   }
-   o.onLoadDatasetEnd();
-   o.focus();
-}
-function MDataset_onDsUpdate(g){
-   var o = this;
-   o.loadDatasets(g.resultDatasets);
-   o.onLoadDatasetEnd();
-   o.focus();
-}
-function MDataset_onDsCopy(g){
-   var o = this;
-   o.loadDatasets(g.resultDatasets);
-   o.onLoadDatasetEnd();
-   o.focus();
-}
-function MDataset_onDsDelete(g){
-   var o = this;
-   o.loadDatasets(g.resultDatasets);
-   o.doDelete(g.resultRow);
-   o.onLoadDatasetEnd();
-   o.focus();
-}
-function MDataset_onDsProcess(g){
-   var o = this;
-   var cb = g.resultCallback;
-   if(cb){
-      cb.invoke(o, g);
-   }
-}
-function MDataset_toDeepAttributes(a, m){
-   var o = this;
-   if(!a){
-      a = new TAttributes();
-   }
-   var ts = new TList();
-   var p = o;
-   while(p){
-      if(RClass.isClass(p, MDataset)){
-         ts.push(p);
-      }
-      if(!p.parent){
-         break;
-      }
-      p = p.topControl(MDataset);
-   }
-   for(var n=ts.count; n>=0; n--){
-      var p = ts.get(n);
-      if(RClass.isClass(p, FForm)){
-         p.toAttributes(a, m);
-      }else if(RClass.isClass(m, FTable)){
-         var r = p.getCurrentRow();
-         if(r){
-            r.toAttributes(a, m);
-         }
-      }
-   }
-   return a;
-}
-function MDataset_onDsDoUpdate(g){
-   var o = this;
-   if(!g.invokeSuccess()){
-      o.psRefresh();
-   }
-   if(!g.processFinish){
-      o.focus();
-      o.lsnsUpdateEnd.process(g);
-   }
-   o.onLoadDatasetEnd();
-}
-function MDataset_dsInitialize(){
-   this.callEvent('onFormInitialize', this, this.__initializeEvent);
-}
-function MDataset_dsShow(){
-   this.callEvent('onFormShow', this, this.__showEvent);
-}
-function MDataset_dsLoaded(){
-   this.callEvent('onDatasetLoaded', this, this.__loadedEvent);
-}
-function MDataset_dsSearch(s){
-   var o = this;
-   o.psProgress(true);
-   var tc = o.topControl();
-   var pth = o.fullPath();
-   if(s){
-      pth = s.fullPath();
-   }
-   var g = new TDatasetFetchArg(tc.name, tc.formId, o.dsPageSize, 0, true, false, pth);
-   g.mode = tc._emode;
-   g.searchs.append(o.dsGlobalSearchs);
-   g.searchs.append(o.dsSearchs);
-   g.orders.append(o.dsGlobalOrders);
-   g.orders.append(o.dsOrders);
-   o.toDeepAttributes(g.values);
-   g.values.append(o.dsValues);
-   g.callback = new TInvoke(o, o.onDsFetch);
-   RConsole.find(FDatasetConsole).fetch(g);
-}
-function MDataset_dsCopy(r){
-   var o = this;
-   o.psProgress(true);
-   o.psMode(EMode.Insert);
-   var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
-   g.form = o;
-   g.mode = EMode.Insert;
-   o.dsSearchs.clear();
-   o.dsSearchs.push(new TSearchItem('OUID', r.get("OUID")));
-   g.searchs = o.dsSearchs;
-   g.callback = new TInvoke(o, o.onDsCopy);
-   if(o.onDsUpdateCheck(g)){
-      RConsole.find(FDatasetConsole).fetch(g);
-   }
-   return;
-}
-function MDataset_dsPrepare(cb){
-   var o = this;
-   o.psProgress(true);
-   o.psMode(EMode.Insert);
-   var g = new TDatasetPrepareArg(o.name, o.formId);
-   g.form = o;
-   g.values.append(o.dsValues);
-   g.callbackSuccess = cb;
-   if(o.onDsPrepareCheck(g)){
-      g.callback = new TInvoke(o, o.onDsPrepare);
-      RConsole.find(FDatasetConsole).prepare(g);
-   }
-}
-function MDataset_dsUpdate(u, v){
-   var o = this;
-   o.psProgress(true);
-   o.psMode(EMode.Update);
-   o.dsFetch(true);
-}
-function MDataset_dsDelete(u, v){
-   var o = this;
-   o.psProgress(true);
-   o.psMode(EMode.Delete);
-   var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
-   g.callback = new TInvoke(o, o.onDsDelete);
-   g.form = o;
-   g.mode = EMode.Delete;
-   if(u){
-      g.searchs.push(new TSearchItem('OUID', u));
-   }
-   if(v){
-       g.searchs.push(new TSearchItem('OVER', v));
-   }
-   g.values = o.dsValues;
-   if(o.onDsDeleteCheck(g)){
-      RConsole.find(FDatasetConsole).fetch(g);
-   }
-   return;
-}
-function MDataset_dsMode(m){
-   var o = this;
-   switch(m){
-      case EMode.Insert:
-         o.dsPrepare();
-         break;
-      case EMode.Update:
-         o.dsUpdate();
-         break;
-      case EMode.Delete:
-         o.dsDelete();
-         break;
-   }
-}
-function MDataset_dsDoUpdate(cb, ck){
-   var o = this;
-   if(!o.psValid()){
-      return;
-   }
-   var t = o.topControl();
-   var g = new TDatasetUpdateArg(t.name, o.formId, o.dsName);
-   g.form = o;
-   g.path = o.fullPath();
-   g.mode = o._emode;
-   g.codes = o.getDataCodes();
-   g.callback = new TInvoke(o, o.onDsDoUpdate);
-   g.callbackSuccess = cb;
-   if(EMode.Insert == o._emode || EMode.Delete == o._emode){
-      g.dataset.rows.append(o.getCurrentRows());
-   }else{
-      g.dataset.rows.append(o.getChangedRows());
-      if(!ck){
-         if(!g.hasData()){
-            return RMessage.warn(o, RContext.get('MDataset:nochange'));
-         }
-      }
-   }
-   o.psProgress(true);
-   RConsole.find(FDatasetConsole).update(g);
-}
-function MDataset_dsProcess(da, cb){
-   var o = this;
-   if(!o.psValid()){
-      return;
-   }
-   var g = new TDatasetServiceArg(o.topControl().name, da);
-   g.form = o;
-   g.controlName = o.name;
-   o.toDeepAttributes(g.attributes);
-   g.codes = o.getDataCodes();
-   g.push(o.getCurrentRow());
-   g.resultCallback = cb;
-   o.psProgress(true);
-   g.callback = new TInvoke(o, o.onDsProcess);
-   RConsole.find(FFormConsole).process(g);
-}
-function MDataset_dsProcessCustom(pm, da, cb, cc){
-	var o = this;
-	if(!cc){
-	if(!o.psValid()){
-	   return;
-	}
-	}
-	var g = new TDatasetServiceArg(o.topControl().name, da);
-	g.form = o;
-	g.controlName = o.name;
-	g.attributes = pm;
-	g.codes = o.getDataCodes();
-	g.push(o.getCurrentRow());
-	g.resultCallback = cb;
-	if(!cc){
-	   if(!g.hasData()){
-	      return RMessage.warn(o, RContext.get('MDataset:nodata'));
-	   }
-	}
-	o.psProgress(true);
-	g.callback = new TInvoke(o, o.onDsProcess);
-	RConsole.find(FFormConsole).process(g);
-}
-function MDataset_dsProcessSelected(da, cb){
-	var o = this;
-	if(!o.psValid()){
-	   return;
-	}
-	   var g = new TDatasetServiceArg(o.topControl().name, da);
-	   g.form = o;
-	   g.controlName = o.name;
-	   o.toDeepAttributes(g.attributes);
-	   g.codes = o.getDataCodes();
-	   g.rows = o.getSelectedRows();
-	   if(g.rows.count > 0){
-		  g.resultCallback = cb;
-		  o.psProgress(true);
-		  g.callback = new TInvoke(o, o.onDsProcess);
-		  RConsole.find(FFormConsole).process(g);
-		  o.clearSelectRows();
-	   }else{
-	      return RMessage.warn(o, RContext.get('MDataset:norows'));
-	   }
-}
-function MDataset_dsProcessChanged(da, cb){
-   var o = this;
-   if(!o.psValid()){
-      return;
-   }
-   var g = new TDatasetServiceArg(o.topControl().name, da);
-   g.form = o;
-   g.controlName = o.name;
-   o.toDeepAttributes(g.attributes);
-   g.codes = o.getDataCodes();
-   g.rows = o.getChangedRows();
-   g.resultCallback = cb;
-   if(!g.hasData()){
-      return RMessage.warn(o, RContext.get('MDataset:nochange'));
-   }
-   o.psProgress(true);
-   g.callback = new TInvoke(o, o.onDsProcess);
-   RConsole.find(FFormConsole).process(g);
-}
-function MDataset_dsProcessAll(da, cb){
-   var o = this;
-   if(!o.psValid()){
-      return;
-   }
-   var g = new TDatasetServiceArg(o.topControl().name, da);
-   g.form = o;
-   g.controlName = o.name;
-   o.toDeepAttributes(g.attributes);
-   g.codes = o.getDataCodes();
-   g.rows = o.getRows();
-   g.resultCallback = cb;
-   o.psProgress(true);
-   g.callback = new TInvoke(o, o.onDsProcess);
-   RConsole.find(FFormConsole).process(g);
-}
-function MDataset_psProgress(v){
-   var o = this;
-   if(o.__progress == v){
-      return;
-   }
-   o.__progress = v;
-   var e = o.__progressProcess;
-   e.enable = v;
-   o.process(e);
-}
-function MDataset_psValid(){
-   var o = this;
-   var e = o.__validProcess;
-   var cs = e.controls;
-   cs.clear();
-   o.process(e);
-   if(!cs.isEmpty()){
-      var cw = RConsole.find(FCheckWindowConsole).find();
-      cw.set(cs);
-      cw.show();
-      return false;
-   }
-   return true;
-}
-function MDataset_dsCurrent(){
-   var o = this;
-   var ds = o.dsStore;
-}
-function MDataset_dsIsChanged(){
-   var ds = this.dsStore;
-   return ds ? ds.isChanged() : false;
-}
-function MDataset_dsCount(){
-   return this.dsStore ? this.dsStore.count : 0;
-}
-function MDataset_dsMove(p){
-   var o = this;
-   var ds = o.dsStore;
-   if(null == p && !ds){
-      return;
-   }
-   if(!RInt.isInt(p)){
-      if(EDataAction.First == p){
-         ds.moveFirst();
-      }else if(EDataAction.Prior == p){
-         ds.movePrior();
-      }else if(EDataAction.Next == p){
-         ds.moveNext();
-      }else if(EDataAction.Last == p){
-         ds.moveLast();
-      }else{
-         RMessage.fatal(o, null, 'Unknown position (postion={0})', p);
-      }
-   }else{
-      ds.move(p);
-   }
-   if(RClass.isClass(o, MValue)){
-      o.loadValue(ds.current());
-   }
-}
-function MDataset_dsMovePage(p){
-   var o = this;
-   var ds = o.dsStore;
-   if(!RInt.isInt(p)){
-      if(EDataAction.First == p){
-         p = 0;
-      }else if(EDataAction.Prior == p){
-         p = ds.pageIndex;
-         if(p > 0){
-            p--;
-         }
-      }else if(EDataAction.Next == p){
-         p = ds.pageIndex;
-         if(p < ds.pageCount - 1){
-            p++;
-         }
-      }else if(EDataAction.Last == p){
-         p = ds.pageCount - 1;
-      }else{
-         RMessage.fatal(o, null, 'Unknown page (page={0})', p);
-      }
-   }
-   if(p != ds.pageIndex){
-      o.psProgress(true);
-      var t = o.topControl(MDataset);
-      var g = new TDatasetFetchArg(t.name, t.formId, o.dsPageSize, p, true);
-      g.path =  o.fullPath();
-      g.mode = t._emode;
-      g.searchs.append(o.dsGlobalSearchs);
-      g.searchs.append(o.dsSearchs);
-      g.orders.append(o.dsGlobalOrders);
-      g.orders.append(o.dsOrders);
-      g.values = o.toDeepAttributes();
-      g.values.append(o.dsValues);
-      g.callback = new TInvoke(o, o.onDsFetch);
-      RConsole.find(FDatasetConsole).fetch(g);
-   }
-}
-function MDataset_dsGet(n){
-   return this.dsStore ? this.dsStore.get(n) : '';
-}
-function MDataset_dsSet(n, v){
-   if(this.dsStore){
-      this.dsStore.set(n, v);
-   }
-}
-function MDataset_dsRefresh(){
-   if(this.dsService){
-      this.dsMove(this.dsPage, true);
-   }
-}
-function MDataset_doSearch(){
-   var o = this;
-   var sw = o.dsSearchWindow;
-   if(!sw){
-      sw = o.dsSearchWindow = top.RControl.create(top.FSearchWindow);
-      sw.linkDsControl(o);
-   }
-   sw.show();
+function MDataProperties_dataPropertySet(n, v){
+   this.dataProperties().set(n, v);
 }
 function MDataValue(o){
    o = RClass.inherits(this, o);
    o.oeDataLoad = RMethod.empty;
    o.oeDataSave = RMethod.empty;
    return o;
+}
+function MDescribeFrame(o){
+   o = RClass.inherits(this, o);
+   o._frameName  = null;
+   o.buildDefine = MDescribeFrame_buildDefine;
+   return o;
+}
+function MDescribeFrame_buildDefine(h, n){
+   var o = this;
+   if(RString.isEmpty(n)){
+      n = o._frameName;
+   }
+   var fc = RConsole.find(FDescribeFrameConsole);
+   var x = fc.load(n);
+   RControl.build(o, x, null, h);
 }
 function MDesign(o){
    o = RClass.inherits(this, o);
@@ -1747,17 +1106,6 @@ function MDragable(o){
 }
 function MDropable(o){
    o = RClass.inherits(this, o);
-   o._styleDrop         = RClass.register(o, new AStyle('Drop'));
-   o._styleIconDrop     = RClass.register(o, new AStyleIcon('Drop'));
-   o._hDropPanel        = null;
-   o._hDrop             = null;
-   o.onDropEnter       = RClass.register(o, new HMouseEnter('onDropEnter'));
-   o.onDropLeave       = RClass.register(o, new HMouseLeave('onDropLeave'));
-   o.onDropClick       = RClass.register(o, new HMouseDown('onDropClick'), MDropable_onDropClick);
-   o.onDropDoubleClick = RClass.register(o, new HDoubleClick('onDropDoubleClick'), MDropable_onDropDoubleClick);
-   o.onBuildDrop       = MDropable_onBuildDrop;
-   o.canDrop           = MDropable_canDrop;
-   o.drop              = RMethod.virtual(o, 'drop');
    return o;
 }
 function MDropable_onDropDoubleClick(){
@@ -1806,6 +1154,52 @@ function MEditable_testEdit(m){
       case EMode.Zoom:
          return o.editZoom;
    }
+}
+function MEditChange(o){
+   o = RClass.inherits(this, o);
+   o._styleChangePanel = RClass.register(o, new AStyle('_styleChangePanel'));
+   o._styleChangeIcon  = RClass.register(o, new AStyle('_styleChangeIcon'));
+   o._hChangePanel     = null;
+   o._hChangeIcon      = null;
+   o.onBuildEditChange = MEditChange_onBuildEditChange;
+   o.onChangeEnter     = RClass.register(o, new AEventMouseEnter('onChangeEnter'), MEditChange_onChangeEnter);
+   o.onChangeLeave     = RClass.register(o, new AEventMouseLeave('onChangeLeave'), MEditChange_onChangeLeave);
+   o.onChangeClick     = RClass.register(o, new AEventClick('onChangeClick'), MEditChange_onChangeClick);
+   o.construct         = MEditChange_construct;
+   o.changeSet         = MEditChange_changeSet;
+   o.dispose           = MEditChange_dispose;
+   return o;
+}
+function MEditChange_onBuildEditChange(p){
+   var o = this;
+   var h = o._hChangePanel;
+   h.className = o.styleName('ChangePanel', MEditChange);
+   h.vAlign = 'top';
+   h.width = 5;
+   o.attachEvent('onChangeEnter', h, o.onChangeEnter);
+   o.attachEvent('onChangeLeave', h, o.onChangeLeave);
+   o.attachEvent('onChangeClick', h, o.onChangeClick);
+   var hi = o._hChangeIcon = RBuilder.appendIcon(h, o.styleName('ChangeIcon', MEditChange), 'control.change');
+   hi._pname = 'change.icon';
+}
+function MEditChange_onChangeEnter(e){
+   var o = this;
+}
+function MEditChange_onChangeLeave(e){
+   var o = this;
+}
+function MEditChange_onChangeClick(e){
+}
+function MEditChange_construct(){
+}
+function MEditChange_changeSet(p){
+}
+function MEditChange_dispose(){
+   var o = this;
+   RHtml.free(o._hChangeIcon);
+   o._hChangeIcon = null;
+   RHtml.free(o._hChangePanel);
+   o._hChangePanel = null;
 }
 function MEditDescriptor(o){
    o = RClass.inherits(this, o, MEditable);
@@ -1916,6 +1310,48 @@ function MEditDescriptor_formatText(t){
 }
 function MEditDescriptor_validText(t){
    var o = this;
+}
+function MEditDrop(o){
+   o = RClass.inherits(this, o);
+   o._styleDropPanel = RClass.register(o, new AStyle('_styleDropPanel'));
+   o._styleDropIcon  = RClass.register(o, new AStyle('_styleDropIcon'));
+   o._hDropPanel     = null;
+   o._hDropIcon      = null;
+   o.onBuildEditDrop = MEditDrop_onBuildEditDrop;
+   o.onDropEnter     = RClass.register(o, new AEventMouseEnter('onDropEnter'), MEditDrop_onDropEnter);
+   o.onDropLeave     = RClass.register(o, new AEventMouseLeave('onDropLeave'), MEditDrop_onDropLeave);
+   o.onDropClick     = RClass.register(o, new AEventClick('onDropClick'), MEditDrop_onDropClick);
+   o.construct       = MEditDrop_construct;
+   o.dispose         = MEditDrop_dispose;
+   return o;
+}
+function MEditDrop_onBuildEditDrop(p){
+   var o = this;
+   var h = o._hDropPanel;
+   h.className = o.styleName('DropPanel', MEditDrop);
+   h.width = 11;
+   o.attachEvent('onDropEnter', h);
+   o.attachEvent('onDropLeave', h);
+   o.attachEvent('onDropClick', h);
+   var hi = o._hDropIcon = RBuilder.appendIcon(h, o.styleName('DropIcon', MEditDrop), 'control.drop');
+   hi.align = 'center';
+}
+function MEditDrop_onDropEnter(e){
+   var o = this;
+}
+function MEditDrop_onDropLeave(e){
+   var o = this;
+}
+function MEditDrop_onDropClick(e){
+}
+function MEditDrop_construct(){
+}
+function MEditDrop_dispose(){
+   var o = this;
+   RHtml.free(o._hDropIcon);
+   o._hDropIcon = null;
+   RHtml.free(o._hDropPanel);
+   o._hDropPanel = null;
 }
 function MEditReference(o){
    o = RClass.inherits(this, o);
@@ -2175,6 +1611,118 @@ function MHorizontal_setVisible(p){
       RHtml.displaySet(h, p);
    }
 }
+function MListenerBlur(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addBlurListener     = MListenerBlur_addBlurListener;
+   o.processBlurListener = MListenerBlur_processBlurListener;
+   return o;
+}
+function MListenerBlur_addBlurListener(w, m){
+   return this.addListener(EEvent.Blur, w, m);
+}
+function MListenerBlur_processBlurListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Blur, p1, p2, p3, p4, p5);
+}
+function MListenerClick(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addClickListener     = MListenerClick_addClickListener;
+   o.removeClickListener  = MListenerClick_removeClickListener;
+   o.processClickListener = MListenerClick_processClickListener;
+   return o;
+}
+function MListenerClick_addClickListener(w, m){
+   return this.addListener(EEvent.Click, w, m);
+}
+function MListenerClick_removeClickListener(w, m){
+   return this.removeListener(EEvent.Click, w, m);
+}
+function MListenerClick_processClickListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Click, p1, p2, p3, p4, p5);
+}
+function MListenerDataChanged(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addDataChangedListener     = MListenerDataChanged_addDataChangedListener;
+   o.processDataChangedListener = MListenerDataChanged_processDataChangedListener;
+   return o;
+}
+function MListenerDataChanged_addDataChangedListener(w, m){
+   return this.addListener(EEvent.DataChanged, w, m);
+}
+function MListenerDataChanged_processDataChangedListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.DataChanged, p1, p2, p3, p4, p5);
+}
+function MListenerDoubleClick(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addClickListener     = MListenerDoubleClick_addClickListener;
+   o.processClickListener = MListenerDoubleClick_processClickListener;
+   return o;
+}
+function MListenerDoubleClick_addClickListener(w, m){
+   return this.addListener(EEvent.DoubleClick, w, m);
+}
+function MListenerDoubleClick_processClickListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.DoubleClick, p1, p2, p3, p4, p5);
+}
+function MListenerEnter(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addEnterListener     = MListenerEnter_addEnterListener;
+   o.processEnterListener = MListenerEnter_processEnterListener;
+   return o;
+}
+function MListenerEnter_addEnterListener(w, m){
+   return this.addListener(EEvent.Enter, w, m);
+}
+function MListenerEnter_processEnterListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Enter, p1, p2, p3, p4, p5);
+}
+function MListenerFocus(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addFocusListener     = MListenerFocus_addFocusListener;
+   o.processFocusListener = MListenerFocus_processFocusListener;
+   return o;
+}
+function MListenerFocus_addFocusListener(w, m){
+   return this.addListener(EEvent.Focus, w, m);
+}
+function MListenerFocus_processFocusListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Focus, p1, p2, p3, p4, p5);
+}
+function MListenerItemClick(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addItemClickListener     = MListenerItemClick_addItemClickListener;
+   o.processItemClickListener = MListenerItemClick_processItemClickListener;
+   return o;
+}
+function MListenerItemClick_addItemClickListener(w, m){
+   return this.addListener(EEvent.ItemClick, w, m);
+}
+function MListenerItemClick_processItemClickListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.ItemClick, p1, p2, p3, p4, p5);
+}
+function MListenerLeave(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addLeaveListener     = MListenerLeave_addLeaveListener;
+   o.processLeaveListener = MListenerLeave_processLeaveListener;
+   return o;
+}
+function MListenerLeave_addLeaveListener(w, m){
+   return this.addListener(EEvent.Leave, w, m);
+}
+function MListenerLeave_processLeaveListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Leave, p1, p2, p3, p4, p5);
+}
+function MListenerSelected(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addSelectedListener     = MListenerSelected_addSelectedListener;
+   o.processSelectedListener = MListenerSelected_processSelectedListener;
+   return o;
+}
+function MListenerSelected_addSelectedListener(w, m){
+   return this.addListener(EEvent.Selected, w, m);
+}
+function MListenerSelected_processSelectedListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Selected, p1, p2, p3, p4, p5);
+}
 function MPadding(o){
    o = RClass.inherits(this, o);
    o._padding       = RClass.register(o, new APtyPadding('_padding'));
@@ -2239,6 +1787,12 @@ function MProgress(o){
    o.oeProgress = RMethod.virtual(o, 'oeProgress');
    return o;
 }
+function MPropertyCheck(o){
+   o = RClass.inherits(this, o);
+   o._valueTrue  = RClass.register(o, new APtyNumber('_valueTrue'));
+   o._valueFalse = RClass.register(o, new APtyNumber('_valueFalse'));
+   return o;
+}
 function MPropertyEdit(o){
    o = RClass.inherits(this, o, MEditValidator, MEditReference, MEditZoom);
    o._editCaseCd     = RClass.register(o, new APtyString('_editCaseCd'));
@@ -2251,6 +1805,39 @@ function MPropertyEdit(o){
    return o;
 }
 function MPropertyEdit_oeValid(e){
+   var o = this;
+   var r = EEventStatus.Stop;
+   if(o._visible && o._validable){
+      var t = o.text();
+      if(o.validRequire && !RValidator.validRequire(o, t)){
+         e.controls.push(o);
+         return r;
+      }
+      if(o.editLength && !RValidator.validTextLength(o, t, o.editLength)){
+         e.controls.push(o);
+         return r;
+      }
+   }
+   return r;
+}
+function MPropertyNumber(o){
+   o = RClass.inherits(this, o);
+   o._valueMin = RClass.register(o, new APtyNumber('_valueMin'));
+   o._valueMax = RClass.register(o, new APtyNumber('_valueMax'));
+   return o;
+}
+function MPropertySelect(o){
+   o = RClass.inherits(this, o, MEditValidator, MEditReference, MEditZoom);
+   o._editCaseCd     = RClass.register(o, new APtyString('_editCaseCd'));
+   o._editPattern    = RClass.register(o, new APtyString('_editPattern'));
+   o._editLength     = RClass.register(o, new APtyInteger('_editLength'));
+   o._editComplete   = RClass.register(o, new APtyBoolean('_editComplete'));
+   o._validLengthMin = RClass.register(o, new APtyInteger('_validLengthMin'));
+   o._validLengthMax = RClass.register(o, new APtyInteger('_validLengthMax'));
+   o.oeValid         = MPropertySelect_oeValid;
+   return o;
+}
+function MPropertySelect_oeValid(e){
    var o = this;
    var r = EEventStatus.Stop;
    if(o._visible && o._validable){
@@ -2357,13 +1944,25 @@ function MSize_setSize(w, h){
    if(w != null){
       o._size.width = w;
       if(t){
-         t.style.width = (w == 0) ? null : w + 'px';
+         if(t.tagName == 'TD'){
+            if(w != 0){
+               t.width = w;
+            }
+         }else{
+            t.style.width = (w == 0) ? null : w + 'px';
+         }
       }
    }
    if(h != null){
       o._size.height = h;
       if(t){
-         t.style.height = (h == 0) ? null : h + 'px';
+         if(t.tagName == 'TD'){
+            if(h != 0){
+               t.height = h;
+            }
+         }else{
+            t.style.height = (h == 0) ? null : h + 'px';
+         }
       }
    }
 }
@@ -2622,14 +2221,28 @@ function MStyle(o){
    return o;
 }
 function MStyle_styleName(n, c){
-   var r = RClass.find(c ? c : this, true);
-   return r.style(n);
+   var o = this;
+   var f = c ? c : o;
+   var tn = RClass.name(f);
+   var t = RClass.forName(tn);
+   return t.style(n);
 }
 function MStyle_styleIcon(n, c){
-   return 'ctl.' + RClass.name(c ? c : this, true) + '_' + n;
+   return RClass.name(c ? c : this, true) + '_' + n;
 }
 function MStyle_styleIconPath(n, c){
-   return RResource.iconPath('ctl.' + RClass.name(c ? c : this, true) + '_' + n);
+   return RResource.iconPath(RClass.name(c ? c : this, true) + '_' + n);
+}
+function MUiContainer(o){
+   o = RClass.inherits(this, o);
+   o.createChild = MUiContainer_createChild;
+   o.appendChild = RMethod.empty;
+   return o;
+}
+function MUiContainer_createChild(p){
+   var c = RControl.newInstance(p);
+   c._parent = this;
+   return c;
 }
 function MVertical(o){
    o = RClass.inherits(this, o);
@@ -2643,9 +2256,41 @@ function MHorizontal_setVisible(p){
       RHtml.displaySet(h, p);
    }
 }
+var RApplication = new function RApplication(){
+   var o = this;
+   o._workspaces   = new TDictionary();
+   o.initialize    = RApplication_initialize;
+   o.findWorkspace = RApplication_findWorkspace;
+   o.release       = RApplication_release;
+   return o;
+}
+function RApplication_initialize(){
+   var o = this;
+   RBrowser.construct();
+   RWindow.connect(window);
+   RKeyboard.construct();
+}
+function RApplication_findWorkspace(p){
+   var o = this;
+   var n = RClass.name(p);
+   var ws = o._workspaces;
+   var w = ws.get(n);
+   if(w == null){
+      w = RClass.create(p);
+      ws.set(n, w);
+   }
+   return w;
+}
+function RApplication_release(){
+   try{
+      CollectGarbage();
+   }catch(e){
+      RLogger.error(e);
+   }
+}
 var RControl = new function RControl(){
    var o = this;
-   o.PREFIX             = 'F';
+   o.PREFIX             = 'FUi';
    o.newInstance        = RControl_newInstance;
    o.attachEvent        = RControl_attachEvent;
    o.innerCreate        = RControl_innerCreate;
@@ -2676,14 +2321,28 @@ function RControl_newInstance(p){
    var o = this;
    var r = null;
    if(p){
+      var n = null
+      var tn = null;
       if(p.constructor == String){
-         var n = null
-         if(RString.startsWith(p, o.PREFIX)){
-            n = p;
-         }else{
+         if(!RString.startsWith(p, o.PREFIX)){
             n = o.PREFIX + p;
          }
-         r = RClass.create(n);
+      }else if(p.constructor == TXmlNode){
+         n = p.get('type');
+         if(RString.isEmpty(n)){
+            n = p.name();
+            if(!RString.startsWith(n, o.PREFIX)){
+               n = o.PREFIX + n;
+            }
+         }else{
+            tn = n;
+         }
+      }else{
+         throw new TError(o, 'Unknown parameter. (name={p})', p);
+      }
+      r = RClass.create(n);
+      if(tn){
+         r.__typed = true;
       }
    }
    if(r == null){
@@ -2698,8 +2357,6 @@ function RControl_attachEvent(c, n, h, m, u){
    if(!RMethod.isEmpty(p) || m){
       var cz = RClass.find(c.constructor);
       var a = cz.annotation(EAnnotation.Event, n);
-      var al = a.linker();
-      var ah = a.handle();
       e = a.create();
       e.annotation = a;
       e.source = c;
@@ -2707,14 +2364,9 @@ function RControl_attachEvent(c, n, h, m, u){
       e.ohProcess = m;
       e.onProcess = p;
       e.process = REvent.onProcess;
-      var es = REvent.find(h);
-      es.push(al, e);
-      if(u){
-         h.addEventListener(a._linker, REvent.ohEvent, true);
-      }else{
-         h[ah] = REvent.ohEvent;
-      }
+      REvent.find(h).push(a.linker(), e);
       RHtml.linkSet(h, '_plink', c);
+      a.bind(h, u);
    }
    return e;
 }
@@ -2726,7 +2378,7 @@ function RControl_innerCreate(pc, px, pa){
    if(RClass.isClass(pc, MProperty)){
       pc.propertyLoad(px)
    }
-   if(RClass.isClass(pc, MContainer) && px.hasNode()){
+   if(RClass.isClass(pc, MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
@@ -2750,7 +2402,7 @@ function RControl_create(pc, px, pa){
    o.innerCreate(c, px, pa);
    return c;
 }
-function RControl_innerbuild(pc, px, pa, ph){
+function RControl_innerbuild(pr, pc, px, pa, ph){
    var o = this;
    if((pc == null) || (px == null)){
       return;
@@ -2758,27 +2410,44 @@ function RControl_innerbuild(pc, px, pa, ph){
    if(RClass.isClass(pc, MProperty)){
       pc.propertyLoad(px);
    }
-   if(RClass.isClass(pc, FControl)){
+   var l = px.get('linker');
+   if(l && pr){
+      pr[l] = pc;
+   }
+   if(RClass.isClass(pc, FUiControl)){
       if(!pc.isBuild()){
          pc.build(ph);
       }else{
          pc.refresh();
       }
    }
-   if(RClass.isClass(pc, MContainer) && px.hasNode()){
+   if(pc.__typed){
+      pr = pc;
+   }
+   if(RClass.isClass(pc, MUiContainer) && px.hasNode()){
       var ns = px.nodes();
       var nc = ns.count();
       for(var i = 0; i < nc; i++){
          var n = ns.get(i);
          var c = pc.createChild(n);
-         o.innerbuild(c, n, pa, ph);
+         if(!c){
+            throw new TError('Invalid create child.');
+         }
+         o.innerbuild(pr, c, n, pa, ph);
          pc.push(c);
       }
    }
+   if(RClass.isClass(pc, FUiControl)){
+      pc.builded(ph);
+   }
 }
-function RControl_build(pc, px, pa, ph){
+function RControl_build(c, x, a, h){
    var o = this;
-   o.innerbuild(pc, px, pa, ph);
+   if(!c){
+      c = RControl.newInstance(x);
+   }
+   o.innerbuild(c, c, x, a, h);
+   return c;
 }
 function RControl_linkEvent(tc, sc, n, h, m){
    var o = this;
@@ -2896,13 +2565,12 @@ var REvent = new function(){
    o.onProcess = REvent_onProcess;
    o.find      = REvent_find;
    o.process   = REvent_process;
+   o.release   = REvent_release;
    o.current   = 0;
    o.events    = new Array();
    o.nvl       = REvent_nvl;
    o.alloc     = REvent_alloc;
    o.free      = REvent_free;
-   o.release   = REvent_release;
-   RMemory.register('REvent', o);
    return o;
 }
 function REvent_ohEvent(e){
@@ -2962,6 +2630,14 @@ function REvent_process(hs, he){
    }
    return false;
 }
+function REvent_release(){
+   var o = this;
+   var v = o._objects;
+   if(v){
+      RMemory.free(v);
+      o._objects = null;
+   }
+}
 function REvent_nvl(event, sender, code){
    if(!event){
       event = new TEvent();
@@ -2990,12 +2666,29 @@ function REvent_alloc(s, c){
 function REvent_free(e){
    e.inUsing = false;
 }
-function REvent_release(){
+var RUiLayer = new function RUiLayer(){
    var o = this;
-   RMemory.free(o.events);
-   RMemory.free(o._objects);
-   o.events = null;
-   o._objects = null;
+   o._layers = new Array();
+   o.next    = RUiLayer_next;
+   o.free    = RUiLayer_free;
+   return o;
+}
+function RUiLayer_next(p){
+   var o = this;
+   var n = RInteger.nvl(p, EUiLayer.Default);
+   var c = RInteger.nvl(o._layers[n], n);
+   o._layers[n] = ++c;
+   return c;
+}
+function RUiLayer_free(p, l){
+   var o = this;
+   var n = RInteger.nvl(p, EUiLayer.Default);
+   var c = RInteger.nvl(o._layers[n], n);
+   --c;
+   if(c > n){
+      o._layers[n] = c;
+   }
+   return c;
 }
 function TDatasetFetchArg(o){
    if(!o){o = this;}

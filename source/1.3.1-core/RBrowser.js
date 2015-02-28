@@ -9,9 +9,14 @@ var RBrowser = new function RBrowser(){
    var o = this;
    //..........................................................
    // @attribute
-   o._typeCd        = 0;
+   o._deviceCd      = EDevice.Unknown;
+   o._softwareCd    = ESoftware.Unknown;
+   o._typeCd        = EBrowser.Unknown;
    o._hostPath      = '';
    o._contentPath   = '';
+   //..........................................................
+   // @event
+   o.onLog          = RBrowser_onLog;
    //..........................................................
    // @method
    o.construct      = RBrowser_construct;
@@ -22,8 +27,14 @@ var RBrowser = new function RBrowser(){
    o.setContentPath = RBrowser_setContentPath;
    // @method
    o.isBrowser      = RBrowser_isBrowser;
-   o.log            = RBrowser_log;
    return o;
+}
+
+//===========================================================
+// <T>日志输出处理。</T>
+//===========================================================
+function RBrowser_onLog(s, p){
+   console.log(p);
 }
 
 //===========================================================
@@ -33,8 +44,13 @@ var RBrowser = new function RBrowser(){
 //===========================================================
 function RBrowser_construct(){
    var o = this;
-   // 判断浏览器类型
    var s = window.navigator.userAgent.toLowerCase();
+   // 判断设备类型
+   if(s.indexOf("android") != -1){
+      o._typeCd = EDevice.Mobile;
+      o._softwareCd = ESoftware.Android;
+   }
+   // 判断浏览器类型
    if(s.indexOf("chrome") != -1){
       o._typeCd = EBrowser.Chrome;
    }else if(s.indexOf("firefox") != -1){
@@ -43,16 +59,18 @@ function RBrowser_construct(){
       o._typeCd = EBrowser.Explorer;
    }else if(s.indexOf("windows") != -1){
       o._typeCd = EBrowser.Explorer;
+   }else if(s.indexOf("safari") != -1){
+      o._typeCd = EBrowser.Safari;
    }else{
       alert('Unknown browser.\n' + s);
       return;
    }
    // 注册输出接口
    if(o._typeCd == EBrowser.Chrome){
-      RLogger.lsnsOutput.register(o, o.log);
+      RLogger.lsnsOutput.register(o, o.onLog);
    }
    // 输出日志
-   RLogger.info(o, 'Parse browser confirm. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+   RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }
 
 //===========================================================
@@ -109,11 +127,4 @@ function RBrowser_setContentPath(p){
 //===========================================================
 function RBrowser_isBrowser(p){
    return this._typeCd == p;
-}
-
-//===========================================================
-// <T>构造处理。</T>
-//===========================================================
-function RBrowser_log(p){
-   console.log(p);
 }

@@ -1,40 +1,46 @@
-function FFrame(o){
-   o = RClass.inherits(this, o, FContainer);
-   o.onBuildPanel = FFrame_onBuildPanel
+function FUiFramePage(o){
+   o = RClass.inherits(this, o, FUiContainer);
+   o.onBuildPanel = FUiFramePage_onBuildPanel
+   o.appendChild  = FUiFramePage_appendChild;
    return o;
 }
-function FFrame_onBuildPanel(e){
+function FUiFramePage_onBuildPanel(e){
    var o = this;
-   o._hPanel = RBuilder.createTableCell(e.hDocument, o.styleName('Panel'));
-   o._hPanel.vAlign = 'top';
+   var h = o._hPanel = RBuilder.createTableCell(e.hDocument, o.styleName('Panel'));
+   h.vAlign = 'top';
 }
-function FFrameSet(o){
-   o = RClass.inherits(this, o, FContainer);
+function FUiFramePage_appendChild(p){
+   var o = this;
+   o._hPanel.appendChild(p._hPanel);
+}
+function FUiFrameSet(o){
+   o = RClass.inherits(this, o, FUiContainer);
+   o._directionCd  = RClass.register(o, new APtyEnum('_directionCd', null, EDirection), EDirection.Vertical);
    o._stylePanel   = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
-   o._directionCd  = EDirection.Vertical;
    o._frames       = null;
    o._hLine        = null;
-   o.onBuildPanel  = FFrameSet_onBuildPanel;
-   o.construct     = FFrameSet_construct;
-   o.appendFrame   = FFrameSet_appendFrame;
-   o.appendSpliter = FFrameSet_appendSpliter;
-   o.dispose       = FFrameSet_dispose;
+   o.onBuildPanel  = FUiFrameSet_onBuildPanel;
+   o.construct     = FUiFrameSet_construct;
+   o.appendFrame   = FUiFrameSet_appendFrame;
+   o.appendSpliter = FUiFrameSet_appendSpliter;
+   o.appendChild   = FUiFrameSet_appendChild;
+   o.dispose       = FUiFrameSet_dispose;
    return o;
 }
-function FFrameSet_onBuildPanel(e){
+function FUiFrameSet_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
+   o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
 }
-function FFrameSet_construct(){
+function FUiFrameSet_construct(){
    var o = this;
-   o.__base.FContainer.construct.call(o);
+   o.__base.FUiContainer.construct.call(o);
    o._frames = new TObjects();
 }
-function FFrameSet_appendFrame(p){
+function FUiFrameSet_appendFrame(p){
    var o = this;
    if(o._directionCd == EDirection.Horizontal){
       var hr = o._hLine;
-      if(hr == null){
+      if(!hr){
          hr = o._hLine = RBuilder.appendTableRow(o._hPanel);
       }
       p.setPanel(hr);
@@ -52,11 +58,15 @@ function FFrameSet_appendFrame(p){
    }
    o._frames.push(p);
 }
-function FFrameSet_appendSpliter(){
+function FUiFrameSet_appendSpliter(p){
    var o = this;
-   var sp = RClass.create(FFrameSpliter);
-   sp._frameset = o;
-   sp.build(o._hPanel);
+   var sp = null;
+   if(p){
+      sp = p;
+   }else{
+      sp = RClass.create(FUiFrameSpliter);
+      sp.build(o._hPanel);
+   }
    if(o._directionCd == EDirection.Horizontal){
       o._hLine.appendChild(sp._hPanel);
       sp._hPanel.style.width = '4px';
@@ -70,12 +80,24 @@ function FFrameSet_appendSpliter(){
    o._frames.push(sp);
    return sp;
 }
-function FFrameSet_dispose(){
+function FUiFrameSet_appendChild(p){
    var o = this;
-   o.__base.FContainer.dispose.call(o);
+   p._frameset = o;
+   if(RClass.isClass(p, FUiFramePage)){
+      o.appendFrame(p);
+      return;
+   }else if(RClass.isClass(p, FUiFrameSpliter)){
+      o.appendSpliter(p);
+      return;
+   }
+   o.__base.FUiContainer.appendChild.call(o, p);
 }
-function FFrameSpliter(o){
-   o = RClass.inherits(this, o, FControl, MDragable);
+function FUiFrameSet_dispose(){
+   var o = this;
+   o.__base.FUiContainer.dispose.call(o);
+}
+function FUiFrameSpliter(o){
+   o = RClass.inherits(this, o, FUiControl, MDragable);
    o._styleNormal  = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
    o._styleHover   = RClass.register(o, new AStyle('_styleHover', 'Hover'));
    o._styleDraging = RClass.register(o, new AStyle('_styleDraging', 'Draging'));
@@ -89,24 +111,24 @@ function FFrameSpliter(o){
    o._dragSizeY    = 0;
    o._hDrag        = null;
    o._hSize        = null;
-   o.onBuildPanel  = FFrameSpliter_onBuildPanel
-   o.onBuild       = FFrameSpliter_onBuild;
-   o.onMouseEnter  = RClass.register(o, new AEventMouseEnter('onMouseEnter'), FFrameSpliter_onMouseEnter);
-   o.onMouseLeave  = RClass.register(o, new AEventMouseLeave('onMouseLeave'), FFrameSpliter_onMouseLeave);
-   o.onDragStart   = FFrameSpliter_onDragStart;
-   o.onDragMove    = FFrameSpliter_onDragMove;
-   o.onDragStop    = FFrameSpliter_onDragStop;
-   o.construct     = FFrameSpliter_construct;
-   o.dispose       = FFrameSpliter_dispose;
+   o.onBuildPanel  = FUiFrameSpliter_onBuildPanel
+   o.onBuild       = FUiFrameSpliter_onBuild;
+   o.onMouseEnter  = RClass.register(o, new AEventMouseEnter('onMouseEnter'), FUiFrameSpliter_onMouseEnter);
+   o.onMouseLeave  = RClass.register(o, new AEventMouseLeave('onMouseLeave'), FUiFrameSpliter_onMouseLeave);
+   o.onDragStart   = FUiFrameSpliter_onDragStart;
+   o.onDragMove    = FUiFrameSpliter_onDragMove;
+   o.onDragStop    = FUiFrameSpliter_onDragStop;
+   o.construct     = FUiFrameSpliter_construct;
+   o.dispose       = FUiFrameSpliter_dispose;
    return o;
 }
-function FFrameSpliter_onBuildPanel(p){
+function FUiFrameSpliter_onBuildPanel(p){
    var o = this;
    o._hPanel = RBuilder.createTableCell(p, o.styleName('Normal'));
 }
-function FFrameSpliter_onBuild(p){
+function FUiFrameSpliter_onBuild(p){
    var o = this;
-   o.__base.FControl.onBuild.call(o, p)
+   o.__base.FUiControl.onBuild.call(o, p)
    var fs = o._frameset;
    var h = o._hPanel;
    h.__linker = o;
@@ -121,17 +143,17 @@ function FFrameSpliter_onBuild(p){
    o.attachEvent('onMouseEnter', h, o.onMouseEnter);
    o.attachEvent('onMouseLeave', h, o.onMouseLeave);
 }
-function FFrameSpliter_onMouseEnter(p){
+function FUiFrameSpliter_onMouseEnter(p){
    var o = this;
    var hc = o._hPanel;
    hc.className = o.styleName('Hover');
 }
-function FFrameSpliter_onMouseLeave(p){
+function FUiFrameSpliter_onMouseLeave(p){
    var o = this;
    var hc = o._hPanel;
    hc.className = o.styleName('Normal');
 }
-function FFrameSpliter_onDragStart(e){
+function FUiFrameSpliter_onDragStart(e){
    var o = this;
    var hc = o._hPanel;
    var hd = o._hDrag;
@@ -155,7 +177,7 @@ function FFrameSpliter_onDragStart(e){
    hds.height = hc.offsetHeight + 'px';
    RHtml.visibleSet(hd, true);
 }
-function FFrameSpliter_onDragMove(e){
+function FUiFrameSpliter_onDragMove(e){
    var o = this;
    var hd = o._hDrag;
    if(o._directionCd == EDirection.Horizontal){
@@ -174,7 +196,7 @@ function FFrameSpliter_onDragMove(e){
       throw new TError(o, 'Unknown direction type. (direction_cd={1})', o._directionCd);
    }
 }
-function FFrameSpliter_onDragStop(e){
+function FUiFrameSpliter_onDragStop(e){
    var o = this;
    var hd = o._hDrag;
    if(o._directionCd == EDirection.Horizontal){
@@ -208,11 +230,11 @@ function FFrameSpliter_onDragStop(e){
    }
    RHtml.visibleSet(hd, false);
 }
-function FFrameSpliter_construct(){
+function FUiFrameSpliter_construct(){
    var o = this;
-   o.__base.FControl.construct.call(o);
+   o.__base.FUiControl.construct.call(o);
 }
-function FFrameSpliter_dispose(){
+function FUiFrameSpliter_dispose(){
    var o = this;
    var h = o._hDrag;
    if(h){
@@ -224,9 +246,9 @@ function FFrameSpliter_dispose(){
       RHtml.free(h);
       o._hSize = null;
    }
-   o.__base.FControl.dispose.call(o);
+   o.__base.FUiControl.dispose.call(o);
 }
-function FFrameSpliter_build(){
+function FUiFrameSpliter_build(){
    var o = this;
    var hf = o.hForm = RBuilder.appendTable(o.hDrag);
    hf.height = 36;
@@ -238,7 +260,7 @@ function FFrameSpliter_build(){
    o.attachEvent('onSplitButtonLeave', hc, o.ohDragButtonLeave);
    o.attachEvent('onSplitButtonClick', hc, o.ohDragButtonClick);
 }
-function FFrameSpliter_link(hDrag, hSize){
+function FUiFrameSpliter_link(hDrag, hSize){
    var o = this;
    var h = o.hDrag = hDrag;
    o.attachEvent('onSplitDown', h, o.ohDragStart);
@@ -259,7 +281,7 @@ function FFrameSpliter_link(hDrag, hSize){
    h.zIndex = 30000;
    RBuilder.appendEmpty(h, 1, 1);
 }
-function FFrameSpliter_click(){
+function FUiFrameSpliter_click(){
    var o = this;
    var hs = o.hSize;
    if(hs){
@@ -276,13 +298,22 @@ function FFrameSpliter_click(){
       }
    }
 }
-function FWorkspace(o){
-   o = RClass.inherits(this, o, FContainer);
+function FUiWorkspace(o){
+   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
+   o._hContainer  = null;
    o._frames      = null;
-   o.onBuildPanel = FWorkspace_onBuildPanel
+   o.onBuildPanel = FUiWorkspace_onBuildPanel;
+   o.appendChild  = FUiWorkspace_appendChild;
    return o;
 }
-function FWorkspace_onBuildPanel(p){
+function FUiWorkspace_onBuildPanel(p){
    var o = this;
+   o._hContainer = p.hDocument.body;
    o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+}
+function FUiWorkspace_appendChild(p){
+   var o = this;
+   if(RClass.isClass(p, FUiFrameSet)){
+      o._hContainer.appendChild(p._hPanel);
+   }
 }

@@ -5,8 +5,8 @@
 // @author maocy
 // @version 141229
 // =========================================================
-function TList(o){
-   if(!o){o = this;}
+function TList(){
+   var o = this;
    // Attribute
    o.count      = 0;
    o.memory     = new Array();

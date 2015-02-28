@@ -23,21 +23,21 @@ RContext.initialize({
       'order.asc'     : '升序',
       'order.desc'    : '降序'
       },
-   'FButton' :
+   'FUiButton' :
       {
       'process' : '正在处理中，请稍候再点击按键。'
       },
-   'FEditControl' :
+   'FUiEditControl' :
       {
       'change.restore' : '单击恢复为原始数据[{0}]。',
       'change.empty'   : '单击清空数据。'
       },
-   'FTreeView' :
+   'FUiTreeView' :
       {
       'loading' : '正在加载中，请稍候...',
       'waiting' : '当前树目录正在加载节点中，请稍候。'
       },
-   'FCalendarEditor' :
+   'FUiCalendarEditor' :
       {
       'year'     : '年',
       'month'    : '月',
@@ -47,17 +47,17 @@ RContext.initialize({
       'cancel'   : '清空'
       
       },
-   'FListWindow' :
+   'FUiListWindow' :
       {
       'caption' : '数据选取'
       },
-   'FCalendarBox' :
+   'FUiCalendarBox' :
       {
       'month.prior': '<< 上一个月',
       'month.next' : '下一个月 >>',
       'now'        : '现在'
       },
-   'FToolButton' :
+   'FUiToolButton' :
       {
       'ok'      : '确定',
       'cancel'  : '取消',
@@ -68,32 +68,32 @@ RContext.initialize({
       'clear'   : '清除',
       'reset'   : '重置'
       },
-   'FGridControl' :
+   'FUiGridControl' :
       {
       'Loading'  : '正在加载数据中,请等候...',
       'Row'      : '行号: ',
       'Page'     : '页码: ',
-      'First'    : '首页',
+      'FUiirst'    : '首页',
       'Last'     : '末页',
       'Prior'    : '前一页',
       'Next'     : '后一页'
       },
-   'FCellStatus' :
+   'FUiCellStatus' :
       {
       'Code'     : '编号：{0}',
       'Detail'   : '编号：{0}，单击察看详细。'
       },
-   'FColumnStatus' :
+   'FUiColumnStatus' :
       {
       'Search'     : '在搜索栏内输入要搜索的内容，回车后搜索相关数据。'
       },
-   'FBrowser' :
+   'FUiBrowser' :
       {
       'Upload'   : '上传',
       'Download' : '下载',
       'Delete'   : '删除'
       },
-   'FAttachment' :
+   'FUiAttachment' :
       {
       'delete.confim': '您要确认删除下面文件么？\n{0}',
       'Upload'       : '上传',
@@ -101,7 +101,7 @@ RContext.initialize({
       'Delete'       : '删除',
       'Config'       : '权限'
       },
-   'FDate' :
+   'FUiDate' :
       {
       'Year'    : '年',
       'Month'   : '月',
@@ -109,7 +109,7 @@ RContext.initialize({
       'Now'     : '当前时间',
       'Confirm' : '确定'
       },
-   'FTime' :
+   'FUiTime' :
       {
       'Hour'    : '时',
       'Minute'  : '分',
@@ -117,26 +117,26 @@ RContext.initialize({
       'Now'     : '当前时间',
       'Confirm' : '确定'
       },
-   'FUploadWindow' :
+   'FUiUploadWindow' :
       {
       'Caption'  : '上传文件',
       'Browser'  : '选择文件..',
       'Close'    : '关闭'
       },
-   'FMessageWindow' :
+   'FUiMessageWindow' :
       {
       'MessageContext'  : '消息内容',
       'MessageDetail'   : '消息详细',
-      'Fatal'           : '例外',
+      'FUiatal'           : '例外',
       'Error'           : '错误',
       'Warn'            : '警告',
       'Info'            : '消息'
       },
-   'FTimer' :
+   'FUiTimer' :
       {
       'Country' : '中国'
       },
-   'FRowBar' :
+   'FUiRowBar' :
       {
       'Insert' : '新建',
       'Copy'   : '复制',
@@ -174,15 +174,15 @@ RContext.initialize({
       {
       'ValidValue'     : '输入时间内容不合法。'
       },
-   'FHistoryBar' :
+   'FUiHistoryBar' :
       {
       'caption'    : '导航栏:'
       },
-   'FFormSheet' :
+   'FUiFormSheet' :
       {
       'history'     : '导航栏：'
       },
-   'FCheckWindow' :
+   'FUiCheckWindow' :
       {
       'Title'           : '下面的控件内容值不合法，请重新填写.'
       },

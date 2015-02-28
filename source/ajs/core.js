@@ -1,6 +1,6 @@
-function AEvent(o, n, l, h){
-   if(!o){o = this;}
-   AAnnotation(o, n);
+function AEvent(n, l, h){
+   var o = this;
+   AAnnotation.call(o, n);
    o._annotationCd = EAnnotation.Event;
    o._inherit      = true;
    o._logger       = true;
@@ -12,6 +12,7 @@ function AEvent(o, n, l, h){
    o.value         = AEvent_value;
    o.create        = AEvent_create;
    o.attach        = RMethod.empty;
+   o.bind          = AEvent_bind;
    o.toString      = AEvent_toString;
    return o;
 }
@@ -27,13 +28,21 @@ function AEvent_value(){
 function AEvent_create(){
    return new SEvent();
 }
+function AEvent_bind(h, u){
+   var o = this;
+   if(u){
+      h.addEventListener(o._linker, REvent.ohEvent, true);
+   }else{
+      h[o._handle] = REvent.ohEvent;
+   }
+}
 function AEvent_toString(){
    var o = this;
    return 'linker=' + o._linker + ',handle=' + o._handle;
 }
 function AEventBlur(n, m){
    var o = this;
-   AEvent(o, n, 'blur', 'onblur');
+   AEvent.call(o, n, 'blur', 'onblur');
    o.attach = AEventBlur_attach;
    return o;
 }
@@ -41,7 +50,7 @@ function AEventBlur_attach(e, h){
 }
 function AEventChange(n){
    var o = this;
-   AEvent(o, n, 'change', 'onchange');
+   AEvent.call(o, n, 'change', 'onchange');
    o.attach = AEventChange_attach;
    return o;
 }
@@ -49,7 +58,7 @@ function AEventChange_attach(e, h){
 }
 function AEventClick(n){
    var o = this;
-   AEvent(o, n, 'click', 'onclick');
+   AEvent.call(o, n, 'click', 'onclick');
    o.attach = AEventClick_attach;
    return o;
 }
@@ -57,7 +66,7 @@ function AEventClick_attach(e, h){
 }
 function AEventDoubleClick(n){
    var o = this;
-   AEvent(o, n, 'dblclick', 'ondblclick');
+   AEvent.call(o, n, 'dblclick', 'ondblclick');
    o.attach = AEventDoubleClick_attach;
    return o;
 }
@@ -65,15 +74,32 @@ function AEventDoubleClick_attach(e, h){
 }
 function AEventFocus(n){
    var o = this;
-   AEvent(o, n, 'focus', 'onfocus');
+   AEvent.call(o, n, 'focus', 'onfocus');
    o.attach = AEventFocus_attach;
    return o;
 }
 function AEventFocus_attach(e, h){
 }
+function AEventInputChanged(n){
+   var o = this;
+   AEvent.call(o, n, 'input', 'oninput');
+   o.attach = AEventInputChanged_attach;
+   o.bind   = AEventInputChanged_bind;
+   return o;
+}
+function AEventInputChanged_attach(e, h){
+}
+function AEventInputChanged_bind(h, u){
+   var o = this;
+   if(RBrowser.isBrowser(EBrowser.Explorer)){
+      h.onpropertychange = REvent.ohEvent;
+   }else{
+      h.addEventListener('input', REvent.ohEvent);
+   }
+}
 function AEventKeyDown(n){
    var o = this;
-   AEvent(o, n, 'keydown', 'onkeydown');
+   AEvent.call(o, n, 'keydown', 'onkeydown');
    o.attach = AEventKeyDown_attach;
    return o;
 }
@@ -85,19 +111,21 @@ function AEventKeyDown_attach(e, h){
 }
 function AEventKeyPress(n){
    var o = this;
-   AEvent(o, n, 'keypress', 'onkeypress');
+   AEvent.call(o, n, 'keypress', 'onkeypress');
+   o.create = AEventKeyPress_create;
    o.attach = AEventKeyPress_attach;
    return o;
 }
+function AEventKeyPress_create(){
+   return new SKeyboardEvent();
+}
 function AEventKeyPress_attach(e, h){
-   e.altKey = h.altKey;
-   e.shiftKey = h.shiftKey;
-   e.ctrlKey = h.ctrlKey;
-   e.keyCode = h.keyCode;
+   e.hEvent = h;
+   e.attachEvent(h);
 }
 function AEventKeyUp(n){
    var o = this;
-   AEvent(o, n, 'keyup', 'onkeyup');
+   AEvent.call(o, n, 'keyup', 'onkeyup');
    o.attach = AEventKeyUp_attach;
    return o;
 }
@@ -109,15 +137,15 @@ function AEventKeyUp_attach(e, h){
 }
 function AEventLoad(n){
    var o = this;
-   AEvent(o, n, 'load', 'onload');
+   AEvent.call(o, n, 'load', 'onload');
    o.attach = AEventLoad_attach;
    return o;
 }
 function AEventLoad_attach(e, h){
 }
-function AEventMouse(o, n, l, h){
-   if(!o){o = this;}
-   AEvent(o, n, l, h);
+function AEventMouse(n, l, h){
+   var o = this;
+   AEvent.call(o, n, l, h);
    o.attach = AEventMouse_attach;
    return o;
 }
@@ -144,12 +172,12 @@ function AEventMouse_attach(e, h){
 }
 function AEventMouseDown(n){
    var o = this;
-   AEventMouse(o, n, 'mousedown', 'onmousedown');
+   AEventMouse.call(o, n, 'mousedown', 'onmousedown');
    return o;
 }
 function AEventMouseEnter(n){
    var o = this;
-   AEvent(o, n, 'mouseenter', 'onmouseenter');
+   AEvent.call(o, n, 'mouseenter', 'onmouseenter');
    o._logger = false;
    o.attach  = AEventMouseEnter_attach;
    return o;
@@ -158,7 +186,7 @@ function AEventMouseEnter_attach(e, h){
 }
 function AEventMouseLeave(n){
    var o = this;
-   AEvent(o, n, 'mouseleave', 'onmouseleave');
+   AEvent.call(o, n, 'mouseleave', 'onmouseleave');
    o._logger = false;
    o.attach  = AEventMouseLeave_attach;
    return o;
@@ -167,13 +195,13 @@ function AEventMouseLeave_attach(e, h){
 }
 function AEventMouseMove(n){
    var o = this;
-   AEventMouse(o, n, 'mousemove', 'onmousemove');
+   AEventMouse.call(o, n, 'mousemove', 'onmousemove');
    o._logger = false;
    return o;
 }
 function AEventMouseOut(n){
    var o = this;
-   AEvent(o, n, 'mouseout', 'onmouseout');
+   AEvent.call(o, n, 'mouseout', 'onmouseout');
    o._hSource = null;
    o._altKey  = null;
    o._ctrlKey = null;
@@ -197,7 +225,7 @@ function AEventMouseOut_attach(p){
 }
 function AEventMouseOver(n){
    var o = this;
-   AEvent(o, n, 'mouseover', 'onmouseover');
+   AEvent.call(o, n, 'mouseover', 'onmouseover');
    o._hSource = null;
    o._altKey  = null;
    o._ctrlKey = null;
@@ -221,12 +249,12 @@ function AEventMouseOver_attach(p){
 }
 function AEventMouseUp(n){
    var o = this;
-   AEventMouse(o, n, 'mouseup', 'onmouseup');
+   AEventMouse.call(o, n, 'mouseup', 'onmouseup');
    return o;
 }
 function AEventMouseWheel(n){
    var o = this;
-   AEvent(o, n, 'mousewheel', 'onmousewheel');
+   AEvent.call(o, n, 'mousewheel', 'onmousewheel');
    o.attach = AEventMouseWheel_attach;
    return o;
 }
@@ -244,7 +272,7 @@ function AEventMouseWheel_attach(e, h){
 }
 function AEventReadyStateChange(n){
    var o = this;
-   AEvent(o, n, 'readystatechange', 'onreadystatechange');
+   AEvent.call(o, n, 'readystatechange', 'onreadystatechange');
    o.attach = AEventReadyStateChange_attach;
    return o;
 }
@@ -252,7 +280,7 @@ function AEventReadyStateChange_attach(e, h){
 }
 function AEventResize(n){
    var o = this;
-   AEvent(o, n, 'resize', 'onresize');
+   AEvent.call(o, n, 'resize', 'onresize');
    o.attach = AEventResize_attach;
    return o;
 }
@@ -262,7 +290,7 @@ function AEventResize_attach(e, h){
 }
 function AEventScroll(n){
    var o = this;
-   AEvent(o, n, 'scroll', 'onscroll');
+   AEvent.call(o, n, 'scroll', 'onscroll');
    o.attach = AEventScroll_attach;
    return o;
 }
@@ -270,7 +298,7 @@ function AEventScroll_attach(e, h){
 }
 function AStyle(n, s){
    var o = this;
-   AAnnotation(o, n);
+   AAnnotation.call(o, n);
    o._annotationCd = EAnnotation.Style;
    o._duplicate    = true;
    o._style        = s;
@@ -308,7 +336,7 @@ function AStyle_toString(){
 }
 function AStyleIcon(n, s){
    var o = this;
-   AAnnotation(o, n);
+   AAnnotation.call(o, n);
    o._annotationCd = EAnnotation.Style;
    o._style        = s;
    o.code          = AStyleIcon_code;
@@ -345,9 +373,11 @@ function AStyleIcon_toString(){
 }
 var EBrowser = new function EBrowser(){
    var o = this;
+   o.Unknown = 0;
    o.Explorer = 1;
-   o.FireFox  = 2;
-   o.Chrome  = 3;
+   o.FireFox = 2;
+   o.Chrome = 3;
+   o.Safari = 4;
    return o;
 }
 var EDataType = new function EDataType(){
@@ -365,6 +395,28 @@ var EDataType = new function EDataType(){
    o.Float   = 10;
    o.Double  = 11;
    o.String  = 12;
+   return o;
+}
+var EDevice = new function EDevice(){
+   var o = this;
+   o.Unknown = 0;
+   o.Pc = 1;
+   o.Mobile = 2;
+   return o;
+}
+var EEvent = new function EEvent(){
+   var o = this;
+   o.Unknown     = 0;
+   o.Load        = 1;
+   o.Enter       = 2;
+   o.Leave       = 3;
+   o.Focus       = 4;
+   o.Blur        = 5;
+   o.Click       = 6;
+   o.DoubleClick = 7;
+   o.ItemClick   = 8;
+   o.Selected    = 9;
+   o.DataChanged = 10;
    return o;
 }
 var EHttpContent = new function EHttpContent(){
@@ -398,6 +450,7 @@ var EKeyCode = new function EKeyCode(){
    o.Alt       = 18;
    o.Ctrl      = 17;
    o.BackSpace = 8;
+   o.Space     = 32;
    o.Left      = 37;
    o.Up        = 38;
    o.Right     = 39;
@@ -420,6 +473,16 @@ var EKeyCode = new function EKeyCode(){
    o.F10       = 121;
    o.F11       = 122;
    o.F12       = 123;
+   o.N0        = 48;
+   o.N1        = 49;
+   o.N2        = 50;
+   o.N3        = 51;
+   o.N4        = 52;
+   o.N5        = 53;
+   o.N6        = 54;
+   o.N7        = 55;
+   o.N8        = 56;
+   o.N9        = 57;
    o.A         = 65;
    o.B         = 66;
    o.C         = 67;
@@ -447,27 +510,29 @@ var EKeyCode = new function EKeyCode(){
    o.Y         = 89;
    o.Z         = 90;
    o.ControlKeys = [
-      o.Tab, o.Enter, o.BackSpace, o.Shift, o.Left, o.Up, o.Right, o.Down,
-      o.Insert, o.Delete, o.Home, o.End, o.PageUp, o.PageDown,o.Ctrl,
+      o.Tab, o.Enter, o.BackSpace, o.Left, o.Up, o.Right, o.Down,
+      o.Insert, o.Delete, o.Home, o.End, o.PageUp, o.PageDown,
       o.F1, o.F2, o.F3, o.F4, o.F5, o.F6, o.F7, o.F8, o.F9, o.F10, o.F11, o.F12];
-   o.floatCodes  = new Object();
-   var f = o.floatCodes;
-   f[o.Tab] = true;
-   f[o.Enter] = true;
-   f[o.BackSpace] = true;
-   f[o.Left] = true;
-   f[o.Right] = true;
-   f[o.Esc] = true;
-   f[o.Delete] = true;
-   f[o.Home] = true;
-   f[o.End] = true;
+   var f = o.integerCodes  = new Object();
+   f[45] = true;
+   f[190] = true;
+   for(var n = o.N0; n <= o.N9; n++){
+      f[n] = true;
+   }
+   var f = o.floatCodes  = new Object();
    f[45] = true;
    f[190] = true;
    f[46] = true;
    f[189] = true;
-   for(var n = 48; n <= 57; n++){
+   for(var n = o.N0; n <= o.N9; n++){
       f[n] = true;
    }
+   return o;
+}
+var EKeyStatus = new function EKeyStatus(){
+   var o = this;
+   o.Normal = 0;
+   o.Press  = 1;
    return o;
 }
 var EMouseButton = new function EMouseButton(){
@@ -481,6 +546,15 @@ var EMouseCursor = new function EMouseCursor(){
    var o = this;
    o.HSize = 'E-resize';
    o.VSize = 'N-resize';
+   return o;
+}
+var ESoftware = new function ESoftware(){
+   var o = this;
+   o.Unknown = 0;
+   o.Window = 1;
+   o.Linux = 2;
+   o.Android = 3;
+   o.Apple = 4;
    return o;
 }
 function FBytes(o){
@@ -500,6 +574,40 @@ function FBytes_dispose(){
    var o = this;
    o._memory = null;
    o._viewer = null;
+   o.__base.FObject.dispose.call(o);
+}
+function FClassFactory(o){
+   o = RClass.inherits(this, o, FObject);
+   o._classes   = null;
+   o.construct  = FClassFactory_construct;
+   o.register   = FClassFactory_register;
+   o.unregister = FClassFactory_unregister;
+   o.create     = FClassFactory_create;
+   o.dispose    = FClassFactory_dispose;
+   return o;
+}
+function FClassFactory_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._classes = new TDictionary();
+}
+function FClassFactory_register(n, c){
+   this._classes.set(n, c);
+}
+function FClassFactory_unregister(n){
+   this._classes.set(n, null);
+}
+function FClassFactory_create(n){
+   var o = this;
+   var c = o._classes.get(n);
+   if(!c){
+      throw new TError('Create unregister class. (name={1})', n);
+   }
+   return RClass.create(c);
+}
+function FClassFactory_dispose(){
+   var o = this;
+   o._classes = RObject.dispose(o._classes);
    o.__base.FObject.dispose.call(o);
 }
 function FDataStream(o){
@@ -678,50 +786,54 @@ function FHttpConnection_send(p, d){
    return o.content();
 }
 function FImage(o){
-   o = RClass.inherits(this, o, FObject);
-   o._image    = null;
-   o._width    = 0;
-   o._height   = 0;
+   o = RClass.inherits(this, o, FObject, MListenerLoad);
+   o._size     = null;
    o._ready    = false;
-   o.lsnsLoad  = null;
+   o._hImage   = null;
    o.ohLoad    = FImage_ohLoad;
    o.construct = FImage_construct;
-   o.testReady = FImage_testReady;
+   o.size      = FImage_size;
    o.image     = FImage_image;
+   o.testReady = FImage_testReady;
    o.loadUrl   = FImage_loadUrl;
    o.dispose   = FImage_dispose;
    return o;
 }
+function FImage_ohLoad(){
+   var o = this.__linker;
+   var m = o._hImage;
+   o._size.set(m.naturalWidth, m.naturalHeight);
+   o._ready = true;
+   o.processLoadListener(o);
+}
 function FImage_construct(){
    var o = this;
-   o.lsnsLoad = new TListeners();
+   o.__base.FObject.construct.call(o);
+   o._size = new SSize2();
 }
-function FImage_ohLoad(){
-   var o = this._linker;
-   o._ready = true;
-   o._width = o._image.naturalWidth;
-   o._height = o._image.naturalHeight;
-   o.lsnsLoad.process(o);
+function FImage_size(){
+   return this._size;
+}
+function FImage_image(){
+   return this._hImage;
 }
 function FImage_testReady(){
    return this._ready;
 }
-function FImage_image(){
-   return this._image;
-}
-function FImage_loadUrl(u){
+function FImage_loadUrl(p){
    var o = this;
-   var g = o._image;
-   if(g == null){
-      g = o._image = new Image();
-      g._linker = o;
+   var g = o._hImage;
+   if(!g){
+      g = o._hImage = new Image();
+      g.__linker = o;
       g.onload = o.ohLoad;
    }
-   g.src = u;
+   g.src = p;
 }
 function FImage_dispose(){
    var o = this;
-   o._image = null;
+   o._size = RObject.dispose(o._size);
+   o._hImage = null;
    o.__base.FObject.dispose.call(o);
 }
 function FXmlConnection(o){
@@ -776,7 +888,7 @@ function FXmlConnection_onConnectionComplete(){
    var r = o._outputNode = d.root();
    o._statusFree = true;
    var e = new SXmlEvent();
-   e.connection = o;;
+   e.connection = o;
    e.document = d;
    e.root = r;
    e.parameters = o._parameters;
@@ -1152,6 +1264,67 @@ function MDataView_setDouble(p, v){
    var o = this;
    o._viewer.setDouble(p, v, o._endianCd);
 }
+function MListener(o){
+   o = RClass.inherits(this, o);
+   o._listeners      = null;
+   o.addListener     = MListener_addListener;
+   o.removeListener  = MListener_removeListener;
+   o.processListener = MListener_processListener;
+   return o;
+}
+function MListener_addListener(n, w, m){
+   var o = this;
+   var lss = o._listeners;
+   if(!lss){
+      lss = o._listeners = new Object();
+   }
+   var ls = lss[n];
+   if(!ls){
+      ls = lss[n] = new TListeners();
+   }
+   return ls.register(w, m);
+}
+function MListener_removeListener(n, w, m){
+   var o = this;
+   var lss = o._listeners;
+   var ls = lss[n];
+   return ls.unregister(w, m);
+}
+function MListener_processListener(n, p1, p2, p3, p4, p5){
+   var o = this;
+   var lss = o._listeners;
+   if(lss){
+      var ls = lss[n];
+      if(ls){
+         ls.process(p1, p2, p3, p4, p5);
+      }
+   }
+}
+function MListenerLoad(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addLoadListener     = MListenerLoad_addLoadListener;
+   o.processLoadListener = MListenerLoad_processLoadListener;
+   return o;
+}
+function MListenerLoad_addLoadListener(w, m){
+   return this.addListener(EEvent.Load, w, m);
+}
+function MListenerLoad_processLoadListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Load, p1, p2, p3, p4, p5);
+}
+function MMouseCapture(o){
+   o = RClass.inherits(this, o);
+   o.onMouseCaptureStart = RMethod.virtual(o, 'onMouseCaptureStart');
+   o.onMouseCapture      = RMethod.virtual(o, 'onMouseCapture');
+   o.onMouseCaptureStop  = RMethod.virtual(o, 'onMouseCaptureStop');
+   o.testMouseCapture    = RMethod.emptyTrue;
+   return o;
+}
+function MMouseWheel(o){
+   o = RClass.inherits(this, o);
+   o.onMouseWheel = RClass.register(o, new AEventMouseWheel('onMouseWheel'), RMethod.empty);
+   return o;
+}
 function MProperty(o){
    o = RClass.inherits(this, o);
    o.propertyAssign = MProperty_propertyAssign;
@@ -1202,21 +1375,30 @@ function MProperty_propertySave(p){
 }
 var RBrowser = new function RBrowser(){
    var o = this;
-   o._typeCd        = 0;
+   o._deviceCd      = EDevice.Unknown;
+   o._softwareCd    = ESoftware.Unknown;
+   o._typeCd        = EBrowser.Unknown;
    o._hostPath      = '';
    o._contentPath   = '';
+   o.onLog          = RBrowser_onLog;
    o.construct      = RBrowser_construct;
    o.hostPath       = RBrowser_hostPath;
    o.setHostPath    = RBrowser_setHostPath;
    o.contentPath    = RBrowser_contentPath;
    o.setContentPath = RBrowser_setContentPath;
    o.isBrowser      = RBrowser_isBrowser;
-   o.log            = RBrowser_log;
    return o;
+}
+function RBrowser_onLog(s, p){
+   console.log(p);
 }
 function RBrowser_construct(){
    var o = this;
    var s = window.navigator.userAgent.toLowerCase();
+   if(s.indexOf("android") != -1){
+      o._typeCd = EDevice.Mobile;
+      o._softwareCd = ESoftware.Android;
+   }
    if(s.indexOf("chrome") != -1){
       o._typeCd = EBrowser.Chrome;
    }else if(s.indexOf("firefox") != -1){
@@ -1225,14 +1407,16 @@ function RBrowser_construct(){
       o._typeCd = EBrowser.Explorer;
    }else if(s.indexOf("windows") != -1){
       o._typeCd = EBrowser.Explorer;
+   }else if(s.indexOf("safari") != -1){
+      o._typeCd = EBrowser.Safari;
    }else{
       alert('Unknown browser.\n' + s);
       return;
    }
    if(o._typeCd == EBrowser.Chrome){
-      RLogger.lsnsOutput.register(o, o.log);
+      RLogger.lsnsOutput.register(o, o.onLog);
    }
-   RLogger.info(o, 'Parse browser confirm. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+   RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }
 function RBrowser_hostPath(p){
    var o = this;
@@ -1256,9 +1440,6 @@ function RBrowser_setContentPath(p){
 }
 function RBrowser_isBrowser(p){
    return this._typeCd == p;
-}
-function RBrowser_log(p){
-   console.log(p);
 }
 var RBuilder = new function RBuilder(){
    var o = this;
@@ -1314,10 +1495,10 @@ function RBuilder_createIcon(d, s, u, w, h){
       r.src = RResource.iconPath(u);
    }
    if(w){
-      r.style.width = w;
+      r.style.width = w + 'px';
    }
    if(h){
-      r.style.height = h;
+      r.style.height = h + 'px';
    }
    return r;
 }
@@ -1364,7 +1545,9 @@ function RBuilder_createDiv(d, s){
 }
 function RBuilder_createTable(d, s, b, cs, cp){
    var h = this.create(d, 'TABLE', s);
-   h.border = RInteger.nvl(b);
+   if(b){
+      h.border = RInteger.nvl(b);
+   }
    h.cellSpacing = RInteger.nvl(cs);
    h.cellPadding = RInteger.nvl(cp);
    return h;
@@ -1779,7 +1962,7 @@ var RHtml = new function RHtml(){
    o._nextUid        = 1;
    o._links          = new Object();
    o._clientPosition = new SPoint2();
-   o.uid            = RHtml_uid;
+   o.uid            = RRuntime_uid;
    o.displayGet     = RHtml_displayGet;
    o.displaySet     = RHtml_displaySet;
    o.visibleGet     = RHtml_visibleGet;
@@ -1799,6 +1982,8 @@ var RHtml = new function RHtml(){
    o.toText         = RHtml_toText;
    o.toHtml         = RHtml_toHtml;
    o.eventSource    = RHtml_eventSource;
+   o.searchLinker   = RHtml_searchLinker;
+   o.searchObject   = RHtml_searchObject;
    o.free           = RHtml_free;
    o.offsetPosition = RHtml_offsetPosition;
    o.offsetX        = RHtml_offsetX;
@@ -1837,13 +2022,6 @@ var RHtml = new function RHtml(){
    o.clone          = RHtml_clone;
    return o;
 }
-function RHtml_uid(v){
-   var r = v.uniqueNumber;
-   if(r == null){
-      r = v.uniqueNumber = this._nextUid++;
-   }
-   return r;
-}
 function RHtml_displayGet(h){
    var r = null;
    var s = h.style.display;
@@ -1876,7 +2054,7 @@ function RHtml_visibleGet(h){
 function RHtml_visibleSet(h, v){
    var s = null;
    if(RBrowser.isBrowser(EBrowser.Explorer)){
-      s = v ? 'block' : 'none';
+      s = v ? null : 'none';
    }else{
       s = v ? null : 'none';
    }
@@ -1944,25 +2122,27 @@ function RHtml_linkSet(h, n, v){
    i.set(n, v);
 }
 function RHtml_clientPosition(h, t){
+   var o = this;
    var p = o._clientPosition;
+   p.set(0, 0);
    while(h != t){
-      p.x += h.offsetLeft - h.scrollLeft;
-      p.y += h.offsetTop - h.scrollTop;
+      p.x += h.offsetLeft + h.clientLeft - h.scrollLeft;
+      p.y += h.offsetTop + h.clientTop - h.scrollTop;
       h = h.offsetParent;
    }
    return p;
 }
-function RHtml_clientX(p){
+function RHtml_clientX(p, t){
    var r = 0;
-   while(p){
+   while(p != t){
       r += p.offsetLeft - p.scrollLeft;
       p = p.offsetParent;
    }
    return r;
 }
-function RHtml_clientY(p){
+function RHtml_clientY(p, t){
    var r = 0;
-   while(p){
+   while(p != t){
       r += p.offsetTop - p.scrollTop;
       p = p.offsetParent;
    }
@@ -2002,7 +2182,30 @@ function RHtml_toHtml(p){
 function RHtml_eventSource(p){
    return p.srcElement ? p.srcElement : p.target;
 }
+function RHtml_searchLinker(h, c){
+   while(h){
+      var f = h.__linker;
+      if(f){
+         if(RClass.isClass(f, c)){
+            return f;
+         }
+      }
+      h = h.parentElement;
+   }
+   return null;
+}
+function RHtml_searchObject(h, n){
+   while(h){
+      var f = h[n];
+      if(f){
+         return f;
+      }
+      h = h.parentElement;
+   }
+   return null;
+}
 function RHtml_free(p){
+   return null;
 }
 function RHtml_clone(o, s, t){
    if(!t){
@@ -2399,6 +2602,106 @@ function RHtml_tableMoveRow(ph, ps, pt){
             hb.appendChild(sr);
          }else{
             hb.insertBefore(sr, nr);
+         }
+      }
+   }
+   return true;
+}
+var RKeyboard = new function RKeyboard(){
+   var o = this;
+   o._status      = new Array();
+   o.onKeyDown    = RKeyboard_onKeyDown;
+   o.onKeyUp      = RKeyboard_onKeyUp;
+   o.construct    = RKeyboard_construct;
+   o.isControlKey = RKeyboard_isControlKey;
+   o.isIntegerKey = RKeyboard_isIntegerKey;
+   o.isFloatKey   = RKeyboard_isFloatKey;
+   o.isNumKey     = RKeyboard_isNumKey;
+   o.isPress      = RKeyboard_isPress;
+   o.fixCase      = RKeyboard_fixCase;
+   o.fixPattern   = RKeyboard_fixPattern;
+   o.fixChars     = RKeyboard_fixChars;
+   return o;
+}
+function RKeyboard_onKeyDown(p){
+   var o = this;
+   var c = p.keyCode;
+   o._status[c] = EKeyStatus.Press;
+}
+function RKeyboard_onKeyUp(p){
+   var o = this;
+   var c = p.keyCode;
+   o._status[c] = EKeyStatus.Normal;
+}
+function RKeyboard_construct(){
+   var o = this;
+   var s = o._status;
+   for(var i = 0; i < 256; i++){
+      s[i] = EKeyStatus.Normal;
+   }
+   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   RWindow.lsnsKeyUp.register(o, o.onKeyUp);
+}
+function RKeyboard_isControlKey(p){
+   var s = EKeyCode.ControlKeys;
+   for(var i = s.length - 1; i >= 0; i--){
+      if(s[i] == p){
+         return true;
+      }
+   }
+   return false;
+}
+function RKeyboard_isIntegerKey(c){
+   return EKeyCode.integerCodes[c];
+}
+function RKeyboard_isFloatKey(c){
+   return EKeyCode.floatCodes[c];
+}
+function RKeyboard_isNumKey(c){
+   if(p >= 96 && p <= 105){
+      return true;
+   }
+   return false;
+}
+function RKeyboard_isPress(p){
+   var o = this;
+   var v = o._status[p];
+   return v == EKeyStatus.Press;
+}
+function RKeyboard_fixCase(e, c){
+   if(e && c){
+      var k = e.keyCode;
+      if(ECase.Upper == c){
+         k = String.fromCharCode(k).toUpperCase().charCodeAt(0)
+      }else if(ECase.Lower == c){
+         k = String.fromCharCode(k).toLowerCase().charCodeAt(0)
+      }
+      e.keyCode = k;
+   }
+}
+function RKeyboard_fixPattern(e, p){
+   if(p){
+      var k = e.keyCode;
+      if(!this.isControlKeyPress(k)){
+         if(!RString.isPattern(String.fromCharCode(k), p)){
+            e.keyCode = 0;
+            return false;
+         }
+      }
+   }
+   return true;
+}
+function RKeyboard_fixChars(e, p){
+   if(p){
+      var k = e.keyCode;
+      if(this.isNumKey(k)){
+    	  k = e.keyCode = e.keyCode - 48;
+      }
+      if(!this.isControlKeyPress(k)){
+         if(!RString.inChars(String.fromCharCode(k), p)){
+            e.keyCode = 0;
+            e.returnValue = false;
+            return false;
          }
       }
    }
@@ -2825,6 +3128,7 @@ var RWindow = new function RWindow(){
    o._optionSelect     = true;
    o._mouseEvent       = new SMouseEvent();
    o._keyEvent         = new SKeyboardEvent();
+   o._resizeEvent      = new SResizeEvent();
    o._hWindow          = null;
    o._hDocument        = null;
    o._hContainer       = null;
@@ -2845,11 +3149,13 @@ var RWindow = new function RWindow(){
    o.ohKeyDown         = RWindow_ohKeyDown;
    o.ohKeyUp           = RWindow_ohKeyUp;
    o.ohKeyPress        = RWindow_ohKeyPress;
+   o.ohResize          = RWindow_ohResize;
    o.ohSelect          = RWindow_ohSelect;
    o.connect           = RWindow_connect;
    o.optionSelect      = RWindow_optionSelect;
    o.setOptionSelect   = RWindow_setOptionSelect;
    o.setCaption        = RWindow_setCaption;
+   o.setStatus         = RWindow_setStatus;
    o._builder          = null;
    o._disableDeep      = 0;
    o.panels            = new TMap();
@@ -2889,48 +3195,63 @@ function RWindow_ohMouseDown(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._mouseEvent.attachEvent(p);
-   o.lsnsMouseDown.process(o._mouseEvent);
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseDown.process(e);
 }
 function RWindow_ohMouseMove(p){
    var o = RWindow;
    if(!p){
       p = o._hWindow.event;
    }
-   o._mouseEvent.attachEvent(p);
-   o.lsnsMouseMove.process(o._mouseEvent);
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseMove.process(e);
 }
 function RWindow_ohMouseUp(p){
    var o = RWindow;
    if(!p){
       p = o._hWindow.event;
    }
-   o._mouseEvent.attachEvent(p);
-   o.lsnsMouseUp.process(o._mouseEvent);
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseUp.process(e);
 }
 function RWindow_ohKeyDown(p){
    var o = RWindow;
    if(!p){
       p = o._hWindow.event;
    }
-   o._keyEvent.attachEvent(p);
-   o.lsnsKeyDown.process(o._keyEvent);
+   var e = o._keyEvent;
+   e.attachEvent(p);
+   o.lsnsKeyDown.process(e);
 }
 function RWindow_ohKeyUp(p){
    var o = RWindow;
    if(!p){
       p = o._hWindow.event;
    }
-   o._keyEvent.attachEvent(p);
-   o.lsnsKeyUp.process(o._keyEvent);
+   var e = o._keyEvent;
+   e.attachEvent(p);
+   o.lsnsKeyUp.process(e);
 }
 function RWindow_ohKeyPress(p){
    var o = RWindow;
    if(!p){
       p = o._hWindow.event;
    }
-   o._keyEvent.attachEvent(p);
-   o.lsnsKeyPress.process(o._keyEvent);
+   var e = o._keyEvent;
+   e.attachEvent(p);
+   o.lsnsKeyPress.process(e);
+}
+function RWindow_ohResize(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   var e = o._resizeEvent;
+   e.attachEvent(p);
+   o.lsnsResize.process(e);
 }
 function RWindow_ohSelect(p){
    return RWindow._optionSelect;
@@ -2969,6 +3290,9 @@ function RWindow_setOptionSelect(p){
 }
 function RWindow_setCaption(p){
    top.document.title = p;
+}
+function RWindow_setStatus(p){
+   window.status = RString.nvl(p);
 }
 function RWindow_onUnload(){
    RMemory.release();
@@ -3503,10 +3827,11 @@ function RXml_unpack(s, n){
    }
    return n;
 }
-function SEvent(o){
-   if(!o){o = this;}
+function SEvent(){
+   var o = this;
    o.annotation = null;
    o.source     = null;
+   o.hEvent     = null;
    o.hSender    = null;
    o.hSource    = null;
    o.ohProcess  = null;
@@ -3521,24 +3846,31 @@ function SEvent_dispose(){
       o[n] = null;
    }
 }
-function SKeyboardEvent(o){
-   if(!o){o = this;}
-   SEvent(o);
+function SKeyboardEvent(){
+   var o = this;
+   SEvent.call(o);
+   o.altKey      = false;
    o.shiftKey    = false;
    o.ctrlKey     = false;
    o.keyCode     = 0;
    o.attachEvent = SKeyboardEvent_attachEvent;
+   o.cancel      = SKeyboardEvent_cancel;
    return o;
 }
 function SKeyboardEvent_attachEvent(p){
    var o = this;
+   o.altKey = p.altKey;
    o.shiftKey = p.shiftKey;
    o.ctrlKey = p.ctrlKey;
    o.keyCode = p.keyCode;
 }
-function SMouseEvent(o){
-   if(!o){o = this;}
-   SEvent(o);
+function SKeyboardEvent_cancel(){
+   var o = this;
+   o.hEvent.returnValue = false;
+}
+function SMouseEvent(){
+   var o = this;
+   SEvent.call(o);
    o.button      = null;
    o.mouseLeft   = false;
    o.mouseMiddle = false;
@@ -3580,6 +3912,21 @@ function SMouseEvent_attachEvent(p){
    o.clientX = p.clientX;
    o.clientY = p.clientY;
 }
+function SResizeEvent(){
+   var o = this;
+   SEvent.call(o);
+   o.width       = null;
+   o.height      = null;
+   o.attachEvent = SResizeEvent_attachEvent;
+   return o;
+}
+function SResizeEvent_attachEvent(p){
+   var o = this;
+   var hs = o.hSource = RHtml.eventSource(p);
+   if(hs){
+      o.source = hs.__linker;
+   }
+}
 function SServiceInfo(){
    var o = this;
    o.service = null;
@@ -3587,9 +3934,9 @@ function SServiceInfo(){
    o.url     = null;
    return o;
 }
-function SXmlEvent(o){
-   if(!o){o = this;}
-   SEvent(o);
+function SXmlEvent(){
+   var o = this;
+   SEvent.call(o);
    o.connection = null;
    o.document   = null;
    o.root       = null;
@@ -3649,7 +3996,7 @@ function TDumpItem_show(v){
    var o = this;
    o.display = v;
    var label = RString.repeat('   ', o.level-1) + (v ? ' -' : ' +') + ' ' + o.caption;
-   o.hText.innerHTML = RHtml.toHtml(label);;
+   o.hText.innerHTML = RHtml.toHtml(label);
    o.innerShow(v);
 }
 function THtmlItem(o){

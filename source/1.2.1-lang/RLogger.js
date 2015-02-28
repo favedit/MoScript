@@ -10,6 +10,7 @@ var RLogger = new function RLogger(){
    //..........................................................
    // @attribute
    o._statusError = false;
+   o._labelLength = 40;
    //..........................................................
    // @listener
    o.lsnsOutput   = new TListeners();
@@ -30,8 +31,8 @@ var RLogger = new function RLogger(){
 // @method
 // @param p:value:Object 消息内容
 //==========================================================
-function RLogger_output(p){
-   this.lsnsOutput.process(p);
+function RLogger_output(s, p){
+   this.lsnsOutput.process(s, p);
 }
 
 //==========================================================
@@ -43,13 +44,14 @@ function RLogger_output(p){
 // @param pm:params:Object... 消息参数列表
 //==========================================================
 function RLogger_debug(sf, ms, pm){
+   var o = this;
    // 获得函数名称
    var n = RMethod.name(RLogger_debug.caller);
    n = n.replace('_', '.');
    //..........................................................
    var r = new TString();
    r.append(RDate.format('yymmdd-hh24miss.ms'));
-   r.append('|D [' + RString.rpad(n, 40) + '] ');
+   r.append('|D [' + RString.rpad(n, o._labelLength) + '] ');
    // 格式化参数
    var as = arguments;
    var c = as.length;
@@ -67,7 +69,7 @@ function RLogger_debug(sf, ms, pm){
    }
    r.append(ms);
    //..........................................................
-   RLogger.output(r.toString());
+   o.output(sf, r.flush());
 }
 
 //==========================================================
@@ -79,13 +81,14 @@ function RLogger_debug(sf, ms, pm){
 // @param pm:params:Object... 消息参数列表
 //==========================================================
 function RLogger_info(sf, ms, pm){
+   var o = this;
    // 获得函数名称
    var n = RMethod.name(RLogger_info.caller);
    n = n.replace('_', '.');
    //..........................................................
    var r = new TString();
    r.append(RDate.format('yymmdd-hh24miss.ms'));
-   r.append('|I [' + RString.rpad(n, 40) + '] ');
+   r.append('|I [' + RString.rpad(n, o._labelLength) + '] ');
    // 格式化参数
    var as = arguments;
    var c = as.length;
@@ -103,7 +106,7 @@ function RLogger_info(sf, ms, pm){
    }
    r.append(ms);
    //..........................................................
-   RLogger.output(r.toString());
+   o.output(sf, r.flush());
 }
 
 //==========================================================
@@ -112,13 +115,14 @@ function RLogger_info(sf, ms, pm){
 // @method
 //==========================================================
 function RLogger_warn(sf, ms, pm){
+   var o = this;
    // 获得函数名称
    var n = RMethod.name(RLogger_warn.caller);
    n = n.replace('_', '.');
    //..........................................................
    var r = new TString();
    r.append(RDate.format('yymmdd-hh24miss.ms'));
-   r.append('|W [' + RString.rpad(n, 40) + '] ');
+   r.append('|W [' + RString.rpad(n, o._labelLength) + '] ');
    // 格式化参数
    var as = arguments;
    var c = as.length;
@@ -136,7 +140,7 @@ function RLogger_warn(sf, ms, pm){
    }
    r.append(ms);
    //..........................................................
-   RLogger.output(r.toString());
+   o.output(sf, r.flush());
 }
 
 //==========================================================

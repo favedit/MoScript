@@ -1,446 +1,3 @@
-function FDatasetConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._scopeCd = EScope.Local;
-   o._service = 'cloud.data.frame';
-   o._datasets        = null;
-   o.onFetch  = FDatasetConsole_onFetch;
-   o.construct        = FDatasetConsole_construct;
-   o.loadDataset      = FDatasetConsole_loadDataset;
-   o.loadDatasets     = FDatasetConsole_loadDatasets;
-   o.fetch    = FDatasetConsole_fetch;
-   return o;
-}
-function FDatasetConsole_onFetch(p){
-   var o = this;
-   var g = p.parameter;
-   var x = p.outputNode;
-   if(x.hasNode()){
-      o.loadDatasets(x);
-      var dss = g.datasets;
-      var xns = x.nodes();
-      var xnc = xns.count();
-      for(var i = 0; i < xnc; i++){
-         var xn = xns.get(i);
-         var n = xn.get('name');
-         var d = o._datasets.get(n);
-         dss.set(n, d);
-      }
-   }
-   g.process();
-}
-function FDatasetConsole_construct(){
-   var o = this;
-   o.__base.FConsole.construct.call(o);
-   o._datasets = new TDictionary();
-}
-function FDatasetConsole_loadDataset(x){
-   var o = this;
-   var n = x.get('name');
-   if(RString.isEmpty(n)){
-      throw new TError('Unknown dataset name.');
-   }
-   var d = o._datasets.get(n);
-   if(!d){
-      d = new TDataset();
-      d.name = n;
-      o._datasets.set(n, d);
-   }
-   d.clear();
-   d.loadConfig(x);
-   return d;
-}
-function FDatasetConsole_loadDatasets(p){
-   var o = this;
-   if(p.hasNode()){
-      var xs = p.nodes();
-      var c = xs.count();
-      for(var i = 0; i < c; i++){
-         var x = xs.get(i);
-         if(x.isName('Dataset')){
-            o.loadDataset(x);
-         }
-      }
-   }
-}
-function FDatasetConsole_fetch(p){
-   var o = this;
-   var xd = new TXmlDocument();
-   var xr = xd.root();
-   xr.set('action', 'fetch');
-   p.saveConfig(xr.create('Frame'));
-   var e = new SXmlEvent();
-   e.owner = o;
-   e.url = RService.url(o._service);
-   e.action = EDataAction.Fetch;
-   e.parameter = p;
-   e.inputDocument = xd;
-   e.callback = o.onFetch;
-   RConsole.find(FXmlConsole).process(e);
-}
-function FDatasetConsole_onScalarLoaded(g, r){
-   var o = this;
-   if(r.hasNode()){
-      var rc = g.resultConfig = r.find('Control');
-      if(rc){
-         g.result = rc.get('result');
-      }
-   }
-   g.invoke();
-}
-function FDatasetConsole_scalar(g){
-   var o = this;
-   var doc = new TXmlDocument();
-   var r = doc.root();
-   r.set('action', EDataAction.Scalar);
-   r.push(g.toNode());
-   var e = new TEvent(o, EXmlEvent.Send, o.onLoaded);
-   e.url = RService.url('logic.webform.dataset');
-   e.action = EDataAction.Scalar;
-   e.argument = g;
-   e.document = doc;
-   RConsole.find(FXmlConsole).process(e);
-}
-function FDatasetConsole_onCompleteLoaded(g, root){
-   var o = this;
-   if(root.hasNode()){
-      var nc = root.find('Control');
-      if(nc){
-         g.resultConfig = nc;
-      }
-   }
-   g.invoke();
-}
-function FDatasetConsole_onLovLoadeded(arg, root){
-   var o = this;
-   arg.lovNode = root;
-   arg.invoke();
-}
-function FDatasetConsole_onPrepareLoaded(g, x){
-   var o = this;
-   var rds = g.resultDatasets;
-   if(x.hasNode()){
-      var xfs = x.nodes;
-      var xfc = xfs.count;
-      for(var n = 0; n < xfc; n ++){
-         var xf = xfs.get(n);
-         var fd = xf.get('id');
-         if(!RString.isEmpty(fd)){
-            o.loadDatasets(rds, fd, xf);
-         }
-      }
-   }
-   if(!rds.isEmpty()){
-      var c = rds.count;
-      for(var n=0; n<c; n++){
-         var rd = rds.value(n);
-         if('/' == rd.name){
-            g.resultRow = rd.row(0);
-            break;
-         }
-      }
-   }
-   g.invoke();
-}
-function FDatasetConsole_onUpdateLoaded(g, x){
-   var o = this;
-   var xf = x.find('Form');
-   if(!xf){
-      return;
-   }
-   var fd = xf.get('id');
-   var xd = xf.find('Dataset');
-   if(!xd){
-      return;
-   }
-   var ds = g.resultDataset = o.loadDataset(fd, xd);
-   g.resultRow = ds.row(0);
-   g.invoke();
-   RWindow.setEnable(true);
-}
-function FDatasetConsole_onLoaded(e){
-   var o = this;
-   var r = e.document.root();
-   var g = e.argument;
-   if(!e.messageChecked){
-      var m = new TMessageArg();
-      m.argument = g;
-      m.form = g.form;
-      m.config = r;
-      m.invokeCaller = new TInvoke(o, o.onLoaded);
-      m.invokeParam = e;
-      m.event = e;
-      if(!RConsole.find(FMessageConsole).checkResult(m)){
-         return;
-      }
-   }
-   g.configResult = r;
-   switch(e.action){
-      case EDataAction.Fetch:
-         o.onFetchLoaded(g, r);
-         break;
-      case EDataAction.Prepare:
-         o.onPrepareLoaded(g, r);
-         break;
-      case EDataAction.Update:
-         o.onUpdateLoaded(g, r);
-         break;
-      case EDataAction.Lov:
-         o.onLovLoaded(g, r);
-         break;
-      case EDataAction.Scalar:
-         o.onScalarLoaded(g, r);
-         break;
-      case EDataAction.Complete:
-         o.onCompleteLoaded(g, r);
-         break;
-   }
-   RConsole.find(FListenerConsole).process(MDataset, EAction.Changed, e, e)
-}
-function FDatasetConsole_complete(g){
-   var o = this;
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('action', 'complete');
-   root.push(g.toNode());
-   var e = new TEvent(o, EXmlEvent.Send, o.onLoaded);
-   e.url = RService.url('logic.webform.dataset');
-   e.action = EDataAction.Complete;
-   e.argument = g;
-   e.document = doc;
-   RConsole.find(FXmlConsole).process(e);
-}
-function FDatasetConsole_lov(g){
-   var o = this;
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('action', 'lov');
-   root.push(g.toNode());
-   var e = new TEvent(o, EXmlEvent.Send, o.onLoaded);
-   e.url = RService.url('logic.webform.dataset');
-   e.action = EDataAction.Lov;
-   e.argument = g;
-   e.document = doc;
-   RConsole.find(FXmlConsole).process(e);
-}
-function FDatasetConsole_prepare(g){
-   var o = this;
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('action', 'prepare');
-   root.push(g.toNode());
-   var e = new TEvent(o, EXmlEvent.Send, o.onLoaded);
-   e.url = RService.url('logic.webform.dataset');
-   e.action = EDataAction.Prepare;
-   e.argument = g;
-   e.document = doc;
-   RConsole.find(FXmlConsole).process(e);
-}
-function FDatasetConsole_update(g){
-   var o = this;
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('action', 'update');
-   if(g.checked){
-      root.set('checked', g.checked);
-   }
-   root.push(g.toNode());
-   var e = new TEvent(o, EXmlEvent.Send, o.onLoaded);
-   e.url = RService.url('logic.webform.dataset');
-   e.action = EDataAction.Update;
-   e.argument = g;
-   e.document = doc;
-   RConsole.find(FXmlConsole).process(e);
-}
-function FDatasetConsole_get(id){
-   var o = this;
-   var ds = o.forms.get(id);
-   return ds;
-}
-function FDatasetConsole_getById(id){
-   var o = this;
-   var d = o._datasets.get(id);
-   return d;
-}
-function FDatasetConsole_getByPath(formId, path){
-   var o = this;
-   var ds = o.get(formId);
-   return ds ? ds.get(path) : null;
-}
-function FDatasetConsole_onTreeLoaded(g){
-   var o = this;
-   alert(1);
-}
-function FDatasetConsole_onColumnFetch(e){
-   var o = this;
-   var root = e.document.root();
-   var mc = RConsole.find(FMessageConsole);
-   var r = mc.checkResult(root);
-   if(r){
-      var g = e.arg;
-      if(root.hasNode()){
-         var fs = root.nodes;
-         var ct = fs.count;
-         for(var k = 0; k < ct; k++){
-            var f = fs.get(k);
-            if(f.hasNode()){
-               var ns = f.nodes;
-               var nt = ns.count;
-               for( n = 0; n < nt; n++){
-                  var d = ns.get(n);
-                  if(d.name == 'Data'){
-                     g.resultConfig = d;
-                     break;
-                  }
-               }
-            }
-         }
-      }
-      g.invoke();
-   }
-}
-function FDatasetConsole_columnNodeFetch(g){
-   var o = this;
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('action', g.action);
-   var nd = g.toNode();
-   root.push(nd);
-   var url = RService.url(g.service);
-   var e = new TEvent(o, EXmlEvent.Send, o.onColumnFetch);
-   e.url = url;
-   e.document = doc;
-   e.arg = g;
-   e.action = EDataAction.Fetch;
-   RConsole.find(FXmlConsole).process(e);
-}
-function FDatasetConsole_treeUpdate(g){
-   var o = this;
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('action', g.action);
-   var nd = g.toNode();
-   root.push(nd);
-   var url = RService.url(g.service);
-   var e = new TEvent(o, EXmlEvent.Send, o.onTreeLoaded);
-   e.url = url;
-   e.document = doc;
-   e.arg = g;
-   e.action = EDataAction.TreeUpdate;
-   RConsole.find(FXmlConsole).process(e);
-}
-function FDataSource(o){
-   o = RClass.inherits(this, o, FObject);
-   o._currentRow     = null;
-   o._currentDataset = null;
-   o._datasets       = null;
-   o.construct       = FDataSource_construct;
-   o.selectDataset   = FDataSource_selectDataset;
-   o.currentDataset  = FDataSource_currentDataset;
-   o.selectRow       = FDataSource_selectRow;
-   o.currentRow      = FDataSource_currentRow;
-   return o;
-}
-function FDataSource_construct(){
-   var o = this;
-   o.__base.FObject.construct.call(o);
-   o._datasets = new TDictionary();
-}
-function FDataSource_selectDataset(p){
-   var o = this;
-   var dn = RString.nvl(p, 'default');
-   var d = o._datasets.get(dn);
-   if(d == null){
-      d = new TDataset();
-      d._name = dn;
-      o._datasets.set(dn, d);
-   }
-   o._currentDataset = d;
-}
-function FDataSource_currentDataset(){
-   return this._currentDataset;
-}
-function FDataSource_selectRow(p){
-   var o = this;
-   if(p){
-      o._currentRow = p;
-      return;
-   }
-   var d = o._currentDataset;
-   var r = d.rows().first();
-   if(r == null){
-      r = d.createRow();
-   }
-   o._currentRow = r;
-   return r;
-}
-function FDataSource_currentRow(){
-   return this._currentRow;
-}
-function FDataSource_create(c){
-   return this.dataset.create(c);
-}
-function FDataSource_count(){
-   return this.dataset.count;
-}
-function FDataSource_row(n){
-   return this.dataset.get(n);
-}
-function FDataSource_current(){
-   return this.row(this._position);
-}
-function FDataSource_isChanged(){
-   var o = this;
-   var d = o.dataset;
-   for(var n=0; n<d.count; n++){
-      var r = d.get(n);
-      if(r && r.isSave()){
-         return true;
-      }
-   }
-   return false;
-}
-function FDataSource_get(n){
-   var r = this.current();
-   return r ? r.get(n) : '';
-}
-function FDataSource_set(n, v){
-   var r = this.current();
-   if(r){
-      r.set(n, v);
-   }
-}
-function FDataSource_move(p){
-   this._position = p;
-}
-function FDataSource_moveToRow(row){
-   var p = this.dataset.indexOf(row);
-   if(-1 != p){
-      this._position = p;
-   }
-}
-function FDataSource_find(){
-   return this.dataset.findByArgs(arguments);
-}
-function FDataSource_loadNode(config){
-   if(config && config.nodes){
-      var nodes = config.nodes;
-      for(var n=0; n<nodes.count; n++){
-         var node = nodes.get(n);
-         if(node && node.isName('Row')){
-            var row = this.dataset.create();
-            row.loadNode(node);
-            row.store();
-         }
-      }
-   }
-}
-function FDataSource_dump(s){
-   var o = this;
-   s = RString.nvlStr(s);
-   s.appendLine(RClass.dump(o));
-   o.dataset.dump(s);
-   return s;
-}
 function FDescribeFrameConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd       = EScope.Global;
@@ -588,88 +145,293 @@ function FDescribeFrameConsole_findLov(n){
 function FDescribeFrameConsole_getEvents(n){
    return this.events.get(n);
 }
+function FEditorConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd     = EScope.Local;
+   o._hoverEditor = null;
+   o._focusEditor = null;
+   o._editors     = null;
+   o.construct    = FEditorConsole_construct;
+   o.makeName     = FEditorConsole_makeName;
+   o.enter        = FEditorConsole_enter;
+   o.leave        = FEditorConsole_leave;
+   o.focus        = FEditorConsole_focus;
+   o.blur         = FEditorConsole_blur;
+   o.lost         = FEditorConsole_lost;
+   return o;
+}
+function FEditorConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._editors = new TDictionary();
+}
+function FEditorConsole_makeName(cls, name){
+   return name ? name + '@' + RClass.name(cls) : RClass.name(cls);
+}
+function FEditorConsole_enter(editable, cls){
+   var name = RClass.name(cls);
+   var editor = this._hoverEditors.get(name);
+   if(!editor){
+      editor = RClass.create(cls);
+      editor.psBuild();
+      this._hoverEditors.set(name, editor);
+   }
+   this._hoverEditor = editor;
+   editor.editable = editable;
+   editor.show();
+   return editor;
+}
+function FEditorConsole_leave(editor){
+   var o = this;
+   if(o._hoverEditor != o._focusEditor){
+      editor = RObject.nvl(editor, o._hoverEditor);
+      o._hoverEditor = null;
+      RLog.debug(o, 'Leave {0}', RClass.dump(editor));
+   }
+}
+function FEditorConsole_focus(c, n, l){
+   var o = this;
+   var name = o.makeName(n, l);
+   var e = o._editors.get(l);
+   if(!e){
+      e = RClass.create(n);
+      e.build(c._hPanel);
+      o._editors.set(l, e);
+   }
+   RLogger.debug(o, 'Focus editor {1} (editable={2}, name={3})', RClass.dump(e), RClass.dump(c), l);
+   e.reset();
+   if(RClass.isClass(e, FUiDropEditor)){
+      e.linkControl(c);
+      o._focusEditor = e;
+   }
+   return e;
+}
+function FEditorConsole_blur(editor){
+   var o = this;
+   if(o._focusEditor){
+      RLogger.debug(o, 'Blur editor {1}', RClass.dump(editor));
+      editor = RObject.nvl(editor, o._focusEditor);
+      if(editor){
+         editor.onEditEnd();
+      }
+      o._focusEditor = null;
+   }
+}
+function FEditorConsole_lost(e){
+   var o = this;
+   o.leave(e);
+   o.blur(e);
+}
+function FFocusConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o.scope              = EScope.Page;
+   o._blurAble          = true;
+   o._focusAble         = true;
+   o._focusClasses      = null;
+   o._storeControl      = null;
+   o._hoverContainer    = null;
+   o._hoverControl      = null;
+   o._focusControl      = null;
+   o._blurControl       = null;
+   o._activeControl     = null;
+   o.lsnsFocus          = null;
+   o.lsnsBlur           = null;
+   o.lsnsFocusClass     = null;
+   o.onMouseDown        = FFocusConsole_onMouseDown;
+   o.onMouseWheel       = FFocusConsole_onMouseWheel;
+   o.construct          = FFocusConsole_construct;
+   o.enter              = FFocusConsole_enter;
+   o.leave              = FFocusConsole_leave;
+   o.isFocus            = FFocusConsole_isFocus;
+   o.focus              = FFocusConsole_focus;
+   o.blur               = FFocusConsole_blur;
+   o.findClass          = FFocusConsole_findClass;
+   o.focusClass         = FFocusConsole_focusClass;
+   o.focusHtml          = FFocusConsole_focusHtml;
+   o.lockBlur           = FFocusConsole_lockBlur;
+   o.unlockBlur         = FFocusConsole_unlockBlur;
+   o.storeFocus         = FFocusConsole_storeFocus;
+   o.restoreFocus       = FFocusConsole_restoreFocus;
+   o.dispose            = FFocusConsole_dispose;
+   return o;
+}
+function FFocusConsole_onMouseDown(p){
+   this.focusHtml(p.hSource);
+}
+function FFocusConsole_onMouseWheel(s, e){
+   var o = this;
+}
+function FFocusConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._focusClasses = new Object();
+   o.lsnsFocus = new TListeners();
+   o.lsnsBlur = new TListeners();
+   o.lsnsFocusClass = new TListeners();
+   RLogger.info(o, 'Add listener for window mouse down and wheel.');
+   RWindow.lsnsMouseDown.register(o, o.onMouseDown);
+   RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
+}
+function FFocusConsole_enter(c){
+   var o = this;
+   if(RClass.isClass(c, MUiContainer)){
+      o._hoverContainer = c;
+   }else{
+      o._hoverControl = c;
+   }
+}
+function FFocusConsole_leave(c){
+   var o = this;
+   if(o._hoverContainer == c){
+      o._hoverContainer = null;
+   }
+   if(o._hoverControl == c){
+      o._hoverControl = null;
+   }
+}
+function FFocusConsole_isFocus(c){
+   return (this._focusControl == c);
+}
+function FFocusConsole_focus(c, e){
+   var o = this;
+   if(!RClass.isClass(c, MFocus)){
+      return;
+   }
+   var f = o._focusControl;
+   if(f == c){
+      return;
+   }
+   var bc = o._blurControl;
+   if(bc != f){
+      if(o._blurAble && f && f.testBlur(c)){
+         RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
+         o._blurControl = f;
+         f.doBlur(e);
+         o.lsnsBlur.process(f);
+      }
+   }
+   if(o._focusAble){
+      RLogger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
+      c.doFocus(e);
+      o._focusControl = o._activeControl = c;
+      o.lsnsFocus.process(c);
+   }
+}
+function FFocusConsole_blur(c, e){
+   var o = this;
+   var fc = o._focusControl;
+   var bc = o._blurControl;
+   if(fc && c && !fc.testBlur(c)){
+      return;
+   }
+   if(bc != c && RClass.isClass(c, MFocus)){
+      RLogger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
+      o._blurControl = c;
+      c.doBlur(e);
+   }
+   if(fc){
+      RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
+      fc.doBlur(e);
+      o._focusControl = null;
+   }
+}
+function FFocusConsole_findClass(c){
+   var o = this;
+   var n = RClass.name(c);
+   if(o._focusClasses[n]){
+      return o._focusClasses[n];
+   }
+   var p = o._activeControl;
+   if(RClass.isClass(p, FEditor)){
+      p = p.source;
+   }
+   if(p){
+      return p.topControl(c);
+   }
+}
+function FFocusConsole_focusClass(c, p){
+   var o = this;
+   var n = RClass.name(c);
+   if(o._focusClasses[n] != p){
+      o._focusClasses[n] = p;
+      RLogger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
+      o.lsnsFocusClass.process(p, c);
+   }
+}
+function FFocusConsole_focusHtml(p){
+   var o = this;
+   var c = RHtml.searchLinker(p, FUiControl);
+   RLogger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
+   if(c){
+      if(o._focusControl != c){
+         o.blur(c, p);
+      }
+   }else{
+      o.blur(null, p);
+   }
+}
+function FFocusConsole_lockBlur(){
+   this._blurAble = false;
+}
+function FFocusConsole_unlockBlur(){
+   this._blurAble = true;
+}
+function FFocusConsole_storeFocus(){
+   var o = this;
+   o._storeControl = o._focusControl;
+}
+function FFocusConsole_restoreFocus(){
+   var o = this;
+   if(o._storeControl){
+      o._storeControl.focus();
+      o._storeControl = null;
+   }
+}
+function FFocusConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
+   o._focusClasses = null;
+}
 function FFrameConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o.scope            = EScope.Page;
-   o.forms            = null;
-   o.freeForms        = null;
-   o.formsLoaded      = null;
-   o.formIds          = null;
-   o.lsnsLoaded       = null;
-   o.events           = null;
-   o.onProcessLoaded  = FFrameConsole_onProcessLoaded;
+   o._scopeCd         = EScope.Local;
+   o._frames          = null;
    o.construct        = FFrameConsole_construct;
-   o.createFromName   = FFrameConsole_createFromName;
-   o.get              = FFrameConsole_get;
+   o.create           = FFrameConsole_create;
    o.find             = FFrameConsole_find;
-   o.hiddenAll        = FFrameConsole_hiddenAll;
-   o.process          = FFrameConsole_process;
-   o.loadEvents       = FFrameConsole_loadEvents;
-   o.processEvent     = FFrameConsole_processEvent;
-   o.free             = FFrameConsole_free;
-   o.dispose          = FFrameConsole_dispose;
+   o.get              = FFrameConsole_get;
    return o;
 }
 function FFrameConsole_construct(){
    var o = this;
-   o.forms = new TMap();
-   o.formIds = new TMap();
-   o.formsLoaded = new TMap();
-   o.lsnsLoaded = new TListeners();
-   o.freeForms = new TList();
-   o.events = new TMap();
+   o._frames = new TMap();
 }
-function FFrameConsole_createFromName(n, h, b, t){
+function FFrameConsole_create(c, n){
    var o = this;
-   var fs = o.freeForms;
-   if(!fs.isEmpty()){
-      var c = fs.count;
-      for(var i=0; i<c; i++){
-         if(fs.get(i).name == n){
-            var f = fs.remove(i);
-            f.setPanel(h);
-            return f;
-         }
-      }
-   }
-   var fdc = RConsole.find(FFormDefineConsole);
-   var fx = fdc.find(n, t);
-   var fd = t + ':' + n;
-   if(!o.formsLoaded.contains(fd)){
-      var es = fdc.getEvents(n);
-      if(es){
-         o.loadEvents(es);
-      }
-      o.formsLoaded.set(fd, true);
-   }
-   var c = RClass.create('F' + fx.name);
-   RControl.innerCreate(c, fx);
-   c.psInitialize();
-   if(!b){
-      b = RWindow.builder();
-   }
-   c.psBuild(h, b);
-   c.dsInitialize();
-   c.setVisible(false);
-   c.formId = fdc.nextFormId();
-   o.formIds.set(c.formId, c);
-   o.forms.set(n, c);
-   return c;
+   var dc = RConsole.find(FDescribeFrameConsole);
+   var x = dc.load(n);
+   var f = RControl.build(null, x, null, c._hPanel);
+   return f;
 }
-function FFrameConsole_get(id){
-   return o.formIds.get(id);
+function FFrameConsole_find(n){
+   return this._frames.get(n);
 }
-function FFrameConsole_find(n, h, b){
+function FFrameConsole_get(c, n, h){
    var o = this;
-   var f = o.forms.get(n);
+   var fs = o._frames;
+   var f = fs.get(n);
    if(!f){
-      f = o.createFromName(n, h, b);
+      f = o.create(c, n);
+      if(h){
+         f.setPanel(h);
+      }
+      fs.set(n, f);
    }
    return f;
 }
 function FFrameConsole_hiddenAll(){
    var o = this;
-   var fs = o.forms;
+   var fs = o._frames;
    var fc = fs.count;
    for(var n=0; n<fc; n++){
       fs.value(n).setVisible(false);
@@ -763,16 +525,16 @@ function FFrameConsole_processEvent(e){
 }
 function FFrameConsole_free(f){
    f.setVisible(false);
-   this.freeForms.push(f);
+   this._freeFrames.push(f);
 }
 function FFrameConsole_dispose(){
    var o = this;
-   RMemory.free(o.forms);
-   RMemory.free(o.formIds);
-   RMemory.free(o.formsLoaded);
-   o.forms = null;
-   o.formIds = null;
-   o.formsLoaded = null;
+   RMemory.free(o._frames);
+   RMemory.free(o._formIds);
+   RMemory.free(o._framesLoaded);
+   o._frames = null;
+   o._formIds = null;
+   o._framesLoaded = null;
 }
 function FFrameEventConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -871,4 +633,128 @@ function FFrameEventConsole_onlyCall(c, m){
    o._allow = false;
    m.call(c);
    o._allow = true;
+}
+function FMessageConsole(o){
+   o = RClass.inherits(this, o, FConsole, MStyle);
+   o.scope        = EScope.Global;
+   o.result       = new Array();
+   o.attributes   = new Array();
+   o.messageBox   = null;
+   o.messageWindow = null;
+   o.parse        = FMessageConsole_parse;
+   o.popupMessage = FMessageConsole_popupMessage;
+   o.closeMessage = FMessageConsole_closeMessage;
+   o.checkResult  = FMessageConsole_checkResult;
+   return o;
+}
+function FMessageConsole_parse(config){
+   var msgs = null;
+   var msgsNode = config.find('Messages');
+   if(msgsNode && msgsNode.nodes && msgsNode.nodes.count){
+      msgs = new TMessages();
+      for(var n=0; n<msgsNode.nodes.count; n++){
+         var node = msgsNode.node(n);
+         var msg = new TMessage();
+         msg.loadConfig(msgsNode.node(n));
+         msgs.push(msg);
+      }
+   }
+   return msgs;
+}
+function FMessageConsole_popupMessage(g){
+   var o = this;
+   var w = o.messageWindow;
+   if(!w){
+      w = o.messageWindow = RControl.create('FMessageWindow');
+   }
+   w.loadMessages(g);
+   w.show();
+}
+function FMessageConsole_closeMessage(){
+   RWindow.setEnable(true);
+}
+function FMessageConsole_checkResult(g){
+   var o = this;
+   var ms = g.messages = o.parse(g.config);
+   if(ms){
+      var m = ms.message(EMessage.Fatal);
+      if(m && m.attrType == "session.timeout"){
+         var ss = RString.splitTwo(m.redirect, '@');
+         var s = RContext.context(ss[1] + '?do='+ss[0]);
+         fmMain.action = s;
+         fmMain.target = '_self';
+         fmMain.submit();
+      }else{
+         o.popupMessage(g);
+      }
+      return false;
+   }
+   return true;
+}
+function FResultConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o.scope          = EScope.Page;
+   o.executeCommand = FResultConsole_executeCommand;
+   o.checkService   = FResultConsole_checkService;
+   return o;
+}
+function FResultConsole_executeCommand(command){
+   var name = command.get('name');
+   if(EResultCommand.TreeReload == name){
+      var tv = RGlobal.get('catalog.tree');
+      if(tv){
+         tv.reload();
+      }
+   }else if(EResultCommand.TreeNodeRefresh == name){
+      var tv = RGlobal.get('catalog.tree');
+      if(tv){
+         var uuid = command.get('uuid');
+         if(uuid){
+            var fn = tv.findByUuid(uuid);
+            if(fn){
+               tv.reloadNode(fn);
+            }else{
+               return alert("Can't find tree node. (uuid="+uuid+")");
+            }
+         }else{
+            tv.reloadNode();
+         }
+      }
+   }else if(EResultCommand.TreeParentRefresh == name){
+      var tv = RGlobal.get('catalog.tree');
+      if(tv){
+         var fn = tv.focusNode;
+         if(fn){
+            tv.reloadNode(fn.parentNode);
+         }
+      }
+   }else if(EResultCommand.PageRedirect == name){
+      var action = command.get('action');
+      var page = top.RContext.context(command.get('page'));
+      if(action){
+         page += '?do=' + action;
+      }
+      fmMain.action = page;
+      fmMain.target = '';
+      fmMain.submit();
+   }
+}
+function FResultConsole_checkService(config){
+   var o = this;
+   if(config){
+      if(!RConsole.find(FMessageConsole).checkResult(new TMessageArg(config))){
+         return false;
+      }
+      var cmdsNode = config.find('Commands');
+      if(cmdsNode && cmdsNode.nodes && cmdsNode.nodes.count){
+         for(var n=0; n<cmdsNode.nodes.count; n++){
+            var node = cmdsNode.node(n);
+            if(node.isName('Command')){
+               o.executeCommand(node);
+            }
+         }
+      }
+      RConsole.find(FFocusConsole).restoreFocus();
+   }
+   return true;
 }

@@ -10,7 +10,7 @@
 //==========================================================
 function APtyBoolean(n, l, v){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    //..........................................................
    // @attribute
    o._value    = v ? v : false;
@@ -31,7 +31,7 @@ function APtyBoolean(n, l, v){
 //============================================================
 function APtyBoolean_build(v){
    var o = this;
-   v[o._name] = o._value;
+   //v[o._name] = o._value;
 }
 
 //============================================================

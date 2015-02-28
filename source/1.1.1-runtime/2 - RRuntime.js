@@ -74,14 +74,14 @@ function RRuntime_supportHtml5(){
 }
 
 //==========================================================
-// <T>获得两个对象中的第一个非空对象。</T>
+// <T>获得非空对象。</T>
 //
-// @param a:valueA:Object 对象A
-// @param b:valueB:Object 对象B
+// @param v:value:Object 对象A
+// @param d:default:Object 对象B
 // @return Object 非空对象
 //==========================================================
-function RRuntime_nvl(a, b){
-   return (a != null) ? a : b;
+function RRuntime_nvl(v, d){
+   return (v != null) ? v : d;
 }
 
 //==========================================================
@@ -140,16 +140,16 @@ function RRuntime_className(v){
 
 //==========================================================
 // <T>获得对象的唯一编号。</T>
+// <P>外部会引用这个函数，不要在内部使用this对象。</P>
 //
 // @method
 // @param v:value:Object 对象
 // @return Integer 编号
 //==========================================================
 function RRuntime_uid(v){
-   var r = v.uniqueNumber;
+   var r = v.__puuid;
    if(r == null){
-      r = v.uniqueNumber = RRuntime._nextUid;
-      RRuntime._nextUid++;
+      r = v.__puuid = RRuntime._nextUid++;
    }
    return r;
 }

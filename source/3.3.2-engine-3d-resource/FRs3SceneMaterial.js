@@ -5,11 +5,10 @@
 // @history 150115
 //==========================================================
 function FRs3SceneMaterial(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute 属性
-   o._code               = null;
-   o._label              = null;
+   o._groupGuid          = null;
    // @attribute 设置
    o._info               = null;
    // @attribute 高度
@@ -26,9 +25,12 @@ function FRs3SceneMaterial(o){
    //..........................................................
    // @method
    o.construct           = FRs3SceneMaterial_construct;
-   o.code                = FRs3SceneMaterial_code;
+   // @method
+   o.groupGuid           = FRs3SceneMaterial_groupGuid;
    o.info                = FRs3SceneMaterial_info;
+   // @method
    o.unserialize         = FRs3SceneMaterial_unserialize;
+   o.saveConfig          = FRs3SceneMaterial_saveConfig;
    return o;
 }
 
@@ -39,18 +41,18 @@ function FRs3SceneMaterial(o){
 //==========================================================
 function FRs3SceneMaterial_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FRs3Object.construct.call(o);
    o._info = new SRs3MaterialInfo();
 }
 
 //==========================================================
-// <T>获得代码。</T>
+// <T>获得分组唯一编号。</T>
 //
 // @method
-// @return String 代码
+// @return String 分组唯一编号
 //==========================================================
-function FRs3SceneMaterial_code(){
-   return this._code;
+function FRs3SceneMaterial_groupGuid(){
+   return this._groupGuid;
 }
 
 //==========================================================
@@ -71,20 +73,36 @@ function FRs3SceneMaterial_info(){
 //==========================================================
 function FRs3SceneMaterial_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    // 读取属性
-   o._code = p.readString();
-   o._label = p.readString();
+   o._groupGuid = p.readString();
    // 读取设置
    o._info.unserialize(p);
+   o._textureCount = p.readInt16();
    // 读取高度
-   o._heightDepth = p.readFloat();
+   //o._heightDepth = p.readFloat();
    // 读取表面
-   o._surfaceRate = p.readFloat();
-   o._surfaceReflect = p.readFloat();
-   o._surfaceBright = p.readFloat();
-   o._surfaceBrightLevel = p.readFloat();
-   o._surfaceCoarse = p.readFloat();
-   o._surfaceCoarseLevel = p.readFloat();
-   o._surfaceMerge = p.readFloat();
-   o._surfacePower = p.readFloat();
+   //o._surfaceRate = p.readFloat();
+   //o._surfaceReflect = p.readFloat();
+   //o._surfaceBright = p.readFloat();
+   //o._surfaceBrightLevel = p.readFloat();
+   //o._surfaceCoarse = p.readFloat();
+   //o._surfaceCoarseLevel = p.readFloat();
+   //o._surfaceMerge = p.readFloat();
+   //o._surfacePower = p.readFloat();
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FRs3SceneMaterial_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Object.saveConfig.call(o, p);
+   // 存储属性
+   p.set('group_guid', o._groupGuid);
+   // 存储材质
+   o._info.saveConfig(p);
 }

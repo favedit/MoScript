@@ -8,19 +8,19 @@ function FRd3Bone(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._matrix          = null
-   o._boneResource    = null
-   o._trackResource   = null;
+   o._matrix        = null
+   o._boneResource  = null
+   o._trackResource = null;
    //..........................................................
    // @method
-   o.construct        = FRd3Bone_construct;
-   o.id               = FRd3Bone_id;
-   o.matrix           = FRd3Bone_matrix;
-   o.trackResource    = FRd3Bone_trackResource;
-   o.setTrackResource = FRd3Bone_setTrackResource;
-   o.loadResource     = FRd3Bone_loadResource;
-   o.update           = FRd3Bone_update;
-   o.dispose          = FRd3Bone_dispose;
+   o.construct      = FRd3Bone_construct;
+   // @method
+   o.matrix         = FRd3Bone_matrix;
+   o.trackResource  = FRd3Bone_trackResource;
+   o.loadResource   = FRd3Bone_loadResource;
+   o.update         = FRd3Bone_update;
+   // @method
+   o.dispose        = FRd3Bone_dispose;
    return o;
 }
 
@@ -33,16 +33,6 @@ function FRd3Bone_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._matrix = new SMatrix3d();
-}
-
-//==========================================================
-// <T>获得编号。</T>
-//
-// @method
-// @return Integer 编号
-//==========================================================
-function FRd3Bone_id(){
-   return this._boneResource.id();
 }
 
 //==========================================================
@@ -66,23 +56,15 @@ function FRd3Bone_trackResource(){
 }
 
 //==========================================================
-// <T>设置资源跟踪。</T>
-//
-// @method
-// @param p:track:FRs3Track 资源跟踪
-//==========================================================
-function FRd3Bone_setTrackResource(p){
-   this._trackResource = p;
-}
-
-//==========================================================
 // <T>获得资源。</T>
 //
 // @method
 // @return FRs3Bone 资源
 //==========================================================
 function FRd3Bone_loadResource(p){
-   this._boneResource = p;
+   var o = this;
+   o._boneResource = p;
+   o._trackResource = p.track();
 }
 
 //==========================================================
@@ -99,8 +81,9 @@ function FRd3Bone_update(pi, pt){
    t.calculate(pi, pt);
    pi.update();
    // 计算矩阵
-   o._matrix.assign(t.matrixInvert());
-   o._matrix.append(pi.matrix);
+   var m = o._matrix;
+   m.assign(t.matrixInvert());
+   m.append(pi.matrix);
 }
 
 //==========================================================

@@ -5,24 +5,25 @@
 // @history 150106
 //==========================================================
 function FRd3Texture(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
    //..........................................................
    // @attribute
-   o._context    = null;
-   o._ready      = false;
-   o._image      = null;
-   o._texture    = null;
+   o._ready    = false;
+   o._image    = null;
+   o._texture  = null;
    //..........................................................
-   o.onLoad      = FRd3Texture_onLoad;
+   o.onLoad    = FRd3Texture_onLoad;
    //..........................................................
    // @method
-   o.construct   = FRd3Texture_construct;
-   o.linkContext = FRd3Texture_linkContext;
-   o.image       = FRd3Texture_image;
-   o.texture     = FRd3Texture_texture;
-   o.testReady   = FRd3Texture_testReady;
-   o.load        = FRd3Texture_load;
-   o.dispose     = FRd3Texture_dispose;
+   o.construct = FRd3Texture_construct;
+   // @method
+   o.image     = FRd3Texture_image;
+   o.texture   = FRd3Texture_texture;
+   // @method
+   o.testReady = FRd3Texture_testReady;
+   o.load      = FRd3Texture_load;
+   // @method
+   o.dispose   = FRd3Texture_dispose;
    return o;
 }
 
@@ -34,9 +35,13 @@ function FRd3Texture(o){
 //==========================================================
 function FRd3Texture_onLoad(p){
    var o = this;
+   var c = o._graphicContext;
    // 创建纹理
-   var t = o._texture = o._context.createFlatTexture();
-   t.upload(p.image());
+   var t = o._texture = c.createFlatTexture();
+   t.upload(o._image);
+   t.makeMipmap();
+   // 释放位图
+   o._image = RObject.dispose(o._image);
    // 加载完成
    o._ready  = true;
 }
@@ -49,15 +54,6 @@ function FRd3Texture_onLoad(p){
 function FRd3Texture_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-}
-
-//==========================================================
-// <T>关联环境。</T>
-//
-// @method
-//==========================================================
-function FRd3Texture_linkContext(p){
-   this._context = p;
 }
 
 //==========================================================
@@ -88,15 +84,18 @@ function FRd3Texture_testReady(){
 }
 
 //==========================================================
-// <T>查找顶点缓冲。</T>
+// <T>加载网络地址。</T>
 //
 // @method
 // @param p:name:String 名称
 //==========================================================
 function FRd3Texture_load(u){
    var o = this;
+   if(o._image){
+      throw new TError('Loading image.');
+   }
    var g = o._image = RClass.create(FImage);
-   g.lsnsLoad.register(o, o.onLoad);
+   g.addLoadListener(o, o.onLoad);
    g.loadUrl(u);
 }
 
@@ -109,6 +108,6 @@ function FRd3Texture_dispose(){
    var o = this;
    o._context = null;
    o._ready = false;
-   o._image = null;
-   o._texture = null;
+   o._image = RObject.dispose(o._image);
+   o._texture = RObject.dispose(o._texture);
 }

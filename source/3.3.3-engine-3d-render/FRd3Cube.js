@@ -1,17 +1,17 @@
 //==========================================================
 // <T>渲染立方体。</T>
-//      4 ──  5
-//    ╱│   ╱│
-//  0 ── 1   │
-//  │  7─│─ 6
-//  │╱   │ ╱
-//  3 ── 2
+//      04 ── 05
+//    ╱│    ╱ │
+//  00 ── 01   │
+//  │  07─│─ 06
+//  │╱    │ ╱
+//  03 ── 02
 //
 // @author maocy
 // @history 141231
 //==========================================================
 function FRd3Cube(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FG3dRenderable);
    //..........................................................
    // @attribute
    o.vertexPositionBuffer = null;
@@ -19,7 +19,7 @@ function FRd3Cube(o){
    o.indexBuffer          = null;
    //..........................................................
    // @method
-   o.setup  = FRd3Cube_setup;
+   o.setup                = FRd3Cube_setup;
    return o;
 }
 
@@ -67,4 +67,9 @@ function FRd3Cube_setup(p){
       3, 2, 6, 3, 6, 7  ];
    o.indexBuffer = context.createIndexBuffer();
    o.indexBuffer.upload(id, 36);
+   //..........................................................
+   // 设置材质
+   var mi = o.material().info();
+   mi.effectCode = 'control';
+   mi.ambientColor.set(1, 1, 1, 1);
 }

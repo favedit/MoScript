@@ -49,11 +49,11 @@ function FRs3Theme_unserialize(p){
    var o = this;
    var c = p.readInt32();
    if(c > 0){
-      var ms = o._materials = new TDictionary();
+      var s = o._materials = new TDictionary();
       for(var n = 0; n < c; n++){
          var m = RClass.create(FRs3Material);
          m.unserialize(p);
-         ms.set(m.code(), m);
+         s.set(m.code(), m);
       }
    }
 }

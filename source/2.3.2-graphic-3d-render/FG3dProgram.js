@@ -220,7 +220,7 @@ function FG3dProgram_setAttribute(pn, pb, pf){
       throw new TError(o, 'Bind invalid attribute. (name={1})', pn);
    }
    // 设置内容
-   o._context.bindVertexBuffer(p._slot, pb, 0, pf);
+   o._graphicContext.bindVertexBuffer(p._slot, pb, 0, pf);
 }
 
 //==========================================================
@@ -264,7 +264,7 @@ function FG3dProgram_setParameter(pn, pv, pc){
       throw new TError(o, 'Bind invalid parameter type. (name={1}, type={2})', pn, t);
    }
    // 设置内容
-   o._context.bindConst(null, p._slot, p._formatCd, d, pc);
+   o._graphicContext.bindConst(null, p._slot, p._formatCd, d, pc);
 }
 
 //==========================================================
@@ -301,5 +301,5 @@ function FG3dProgram_setSampler(pn, pt){
       throw new TError(o, 'Bind invalid sampler. (name={1})', pn);
    }
    // 设置内容
-   o._context.bindTexture(p._slot, p._index, pt);
+   o._graphicContext.bindTexture(p._slot, p._index, pt);
 }

@@ -23,13 +23,12 @@ var EKeyCode = new function EKeyCode(){
    o.Ctrl      = 17;
    // @attribute Integer 定义BackSpace按键
    o.BackSpace = 8;
-   // @attribute Integer 定义Left按键
+   // @attribute Integer 定义空格按键
+   o.Space     = 32;
+   // @attribute Integer 方向按键
    o.Left      = 37;
-   // @attribute Integer 定义Up按键
    o.Up        = 38;
-   // @attribute Integer 定义Right按键
    o.Right     = 39;
-   // @attribute Integer 定义Down按键
    o.Down      = 40;
    // @attribute Integer 定义Insert按键
    o.Insert    = 45;
@@ -56,6 +55,17 @@ var EKeyCode = new function EKeyCode(){
    o.F10       = 121;
    o.F11       = 122;
    o.F12       = 123;
+   // @attribute Integer 定义0~9按键
+   o.N0        = 48;
+   o.N1        = 49;
+   o.N2        = 50;
+   o.N3        = 51;
+   o.N4        = 52;
+   o.N5        = 53;
+   o.N6        = 54;
+   o.N7        = 55;
+   o.N8        = 56;
+   o.N9        = 57;
    // @attribute Integer 定义A~Z按键
    o.A         = 65;
    o.B         = 66;
@@ -83,24 +93,25 @@ var EKeyCode = new function EKeyCode(){
    o.X         = 88;
    o.Y         = 89;
    o.Z         = 90;
-   // @attribute Enum 各个按键的枚举
+   //..........................................................
+   // @attribute 控制按键
    o.ControlKeys = [
-      o.Tab, o.Enter, o.BackSpace, o.Shift, o.Left, o.Up, o.Right, o.Down,
-      o.Insert, o.Delete, o.Home, o.End, o.PageUp, o.PageDown,o.Ctrl,
+      o.Tab, o.Enter, o.BackSpace, o.Left, o.Up, o.Right, o.Down,
+      o.Insert, o.Delete, o.Home, o.End, o.PageUp, o.PageDown,
       o.F1, o.F2, o.F3, o.F4, o.F5, o.F6, o.F7, o.F8, o.F9, o.F10, o.F11, o.F12];
-   // @attribute Enum 浮点数的枚举
-   o.floatCodes  = new Object();
-   // 控制符
-   var f = o.floatCodes;
-   f[o.Tab] = true;
-   f[o.Enter] = true;
-   f[o.BackSpace] = true;
-   f[o.Left] = true;
-   f[o.Right] = true;
-   f[o.Esc] = true;
-   f[o.Delete] = true;
-   f[o.Home] = true;
-   f[o.End] = true;
+   //..........................................................
+   // @attribute 整数按键
+   var f = o.integerCodes  = new Object();
+   // 减号(-)
+   f[45] = true;
+   f[190] = true;
+   // 数字键
+   for(var n = o.N0; n <= o.N9; n++){
+      f[n] = true;
+   }
+   //..........................................................
+   // @attribute 浮点数按键
+   var f = o.floatCodes  = new Object();
    // 减号(-)
    f[45] = true;
    f[190] = true;
@@ -108,7 +119,7 @@ var EKeyCode = new function EKeyCode(){
    f[46] = true;
    f[189] = true;
    // 数字键
-   for(var n = 48; n <= 57; n++){
+   for(var n = o.N0; n <= o.N9; n++){
       f[n] = true;
    }
    return o;

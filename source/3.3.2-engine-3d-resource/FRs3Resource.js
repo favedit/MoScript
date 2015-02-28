@@ -18,7 +18,10 @@ function FRs3Resource(o){
    // @method
    o.loadListener = FRs3Resource_loadListener;
    o.testReady    = FRs3Resource_testReady;
+   // @method
    o.unserialize  = FRs3Resource_unserialize;
+   o.saveConfig   = FRs3Resource_saveConfig;
+   // @method
    o.load         = FRs3Resource_load;
    return o;
 }
@@ -76,10 +79,32 @@ function FRs3Resource_testReady(){
 // <T>从输入流里反序列化信息内容</T>
 //
 // @param p:input:FByteStream 数据流
-// @return 处理结果
 //==========================================================
 function FRs3Resource_unserialize(p){
-   this._name = p.readString();
+   var o = this;
+   // 检查结果
+   var r = p.readInt32();
+   if(r != EResult.Success){
+      var s = p.readString();
+      throw new TError('Unserial resource failure.\n{1}', s);
+   }
+   // 读取属性
+   o._guid = p.readString();
+   o._code = p.readString();
+   o._label = p.readString();
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FRs3Resource_saveConfig(p){
+   var o = this;
+   // 存储属性
+   p.set('guid', o._guid);
+   p.set('code', o._code);
+   p.set('label', o._label);
 }
 
 //==========================================================

@@ -87,6 +87,6 @@ function TDumpItem_show(v){
    var o = this;
    o.display = v;
    var label = RString.repeat('   ', o.level-1) + (v ? ' -' : ' +') + ' ' + o.caption;
-   o.hText.innerHTML = RHtml.toHtml(label);;
+   o.hText.innerHTML = RHtml.toHtml(label);
    o.innerShow(v);
 }

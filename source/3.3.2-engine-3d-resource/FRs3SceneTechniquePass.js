@@ -5,29 +5,17 @@
 // @history 150115
 //==========================================================
 function FRs3SceneTechniquePass(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute
-   o._name         = null;
    o._targetWidth  = null;
    o._targetHeight = null;
    //..........................................................
    // @method
-   o.name          = FRs3SceneTechniquePass_name;
    o.targetWidth   = FRs3SceneTechniquePass_targetWidth;
    o.targetHeight  = FRs3SceneTechniquePass_targetHeight;
    o.unserialize   = FRs3SceneTechniquePass_unserialize;
    return o;
-}
-
-//==========================================================
-// <T>获得名称。</T>
-//
-// @method
-// @return 名称
-//==========================================================
-function FRs3SceneTechniquePass_name(){
-   return this._name;
 }
 
 //==========================================================
@@ -58,8 +46,8 @@ function FRs3SceneTechniquePass_targetHeight(){
 //==========================================================
 function FRs3SceneTechniquePass_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    // 读取属性
-   o._name = p.readString();
    o._targetWidth = p.readUint16();
    o._targetHeight = p.readUint16();
 }

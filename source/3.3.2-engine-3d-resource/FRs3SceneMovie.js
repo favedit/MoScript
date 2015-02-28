@@ -5,16 +5,18 @@
 // @history 150115
 //==========================================================
 function FRs3SceneMovie(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute
-   o._typeName   = null;
    o._interval   = null;
    o._rotation   = null;
    //..........................................................
    // @method
    o.construct   = FRs3SceneMovie_construct;
-   o.typeName    = FRs3SceneMovie_typeName;
+   // @method
+   o.interval    = FRs3SceneMovie_interval;
+   o.rotation    = FRs3SceneMovie_rotation;
+   // @method
    o.unserialize = FRs3SceneMovie_unserialize;
    return o;
 }
@@ -26,18 +28,28 @@ function FRs3SceneMovie(o){
 //==========================================================
 function FRs3SceneMovie_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FRs3Object.construct.call(o);
    o._rotation = new SVector3();
 }
 
 //==========================================================
-// <T>获得类型名称。</T>
+// <T>获得间隔。</T>
 //
 // @method
-// @return String 类型名称
+// @return Integer 间隔
 //==========================================================
-function FRs3SceneMovie_typeName(){
-   return this._typeName;
+function FRs3SceneMovie_interval(){
+   return this._interval;
+}
+
+//==========================================================
+// <T>获得旋转。</T>
+//
+// @method
+// @return SVector3 旋转
+//==========================================================
+function FRs3SceneMovie_rotation(){
+   return this._rotation;
 }
 
 //==========================================================
@@ -47,7 +59,7 @@ function FRs3SceneMovie_typeName(){
 //==========================================================
 function FRs3SceneMovie_unserialize(p){
    var o = this;
-   o._typeName = p.readString();
+   o.__base.FRs3Object.unserialize.call(o, p);
    o._interval = p.readInt32();
    o._rotation.unserialize(p);
 }

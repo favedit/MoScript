@@ -5,42 +5,64 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function SMatrix3d(o){
-   if(!o){o = this;}
-   SMatrix4x4(o);
+function SMatrix3d(){
+   var o = this;
+   SMatrix4x4.call(o);
    //..........................................................
    // @attribute
    o._dirty         = false;
    // @attribute
-   o.tx             = 0.0;
-   o.ty             = 0.0;
-   o.tz             = 0.0;
-   o.rx             = 0.0;
-   o.ry             = 0.0;
-   o.rz             = 0.0;
-   o.sx             = 1.0;
-   o.sy             = 1.0;
-   o.sz             = 1.0;
+   o.tx             = 0;
+   o.ty             = 0;
+   o.tz             = 0;
+   o.rx             = 0;
+   o.ry             = 0;
+   o.rz             = 0;
+   o.sx             = 1;
+   o.sy             = 1;
+   o.sz             = 1;
    //..........................................................
    // @method
+   o.isIdentity     = SMatrix3d_isIdentity;
    o.identity       = SMatrix3d_identity;
    o.setTranslate   = SMatrix3d_setTranslate;
    o.setRotation    = SMatrix3d_setRotation;
    o.setScale       = SMatrix3d_setScale;
+   o.setScaleAll    = SMatrix3d_setScaleAll;
    o.set            = SMatrix3d_set;
    o.setAll         = SMatrix3d_setAll;
    o.equals         = SMatrix3d_equals;
    o.assign         = SMatrix3d_assign;
    o.append         = SMatrix3d_append;
-   o.build          = SMatrix3d_build;
    o.updateForce    = SMatrix3d_updateForce;
    o.update         = SMatrix3d_update;
    o.serialize      = SMatrix3d_serialize;
    o.unserialize    = SMatrix3d_unserialize;
+   o.saveConfig     = SMatrix3d_saveConfig;
    //..........................................................
    // @construct
    o.identity();
    return o;
+}
+
+//============================================================
+// <T>是否为单位化数据。</T>
+//
+// @method
+// @return 是否单位化
+//============================================================
+function SMatrix3d_isIdentity(){
+   var o = this;
+   if((o.tx != 0) || (o.ty != 0) || (o.tz != 0)){
+      return false;
+   }
+   if((o.rx != 0) || (o.ry != 0) || (o.rz != 0)){
+      return false;
+   }
+   if((o.sx != 1) || (o.sy != 1) || (o.sz != 1)){
+      return false;
+   }
+   return o.isIdentityData();
 }
 
 //============================================================
@@ -53,11 +75,7 @@ function SMatrix3d_identity(){
    o.tx = o.ty = o.tz = 0;
    o.rx = o.ry = o.rz = 0;
    o.sx = o.sy = o.sz = 1;
-   var d = o._data;
-   d[ 0] = 1; d[ 1] = 0; d[ 2] = 0; d[ 3] = 0;
-   d[ 4] = 0; d[ 5] = 1; d[ 6] = 0; d[ 7] = 0;
-   d[ 8] = 0; d[ 9] = 0; d[10] = 1; d[11] = 0;
-   d[12] = 0; d[13] = 0; d[14] = 0; d[15] = 1;
+   return o.identityData();
 }
 
 //============================================================
@@ -105,6 +123,18 @@ function SMatrix3d_setScale(x, y, z){
    o.sx = x;
    o.sy = y;
    o.sz = z;
+   o._dirty = true;
+}
+
+//============================================================
+// <T>设置全部缩放内容。</T>
+//
+// @method
+// @param p:value:Float 缩放
+//============================================================
+function SMatrix3d_setScaleAll(p){
+   var o = this;
+   o.sz = o.sy = o.sx = p;
    o._dirty = true;
 }
 
@@ -176,7 +206,17 @@ function SMatrix3d_equals(p){
 // @param p:matrix:SMatrix3d 矩阵
 //============================================================
 function SMatrix3d_assign(p){
-   this.assignData(p._data);
+   var o = this;
+   o.tx = p.tx;
+   o.ty = p.ty;
+   o.tz = p.tz;
+   o.rx = p.rx;
+   o.ry = p.ry;
+   o.rz = p.rz;
+   o.sx = p.sx;
+   o.sy = p.sy;
+   o.sz = p.sz;
+   o.assignData(p._data);
 }
 
 //============================================================
@@ -187,43 +227,6 @@ function SMatrix3d_assign(p){
 //============================================================
 function SMatrix3d_append(p){
    this.appendData(p._data);
-}
-
-//============================================================
-// <T>构建一个矩阵。</T>
-//
-// @method
-// @param t:translation:SPoint3 位移
-// @param r:quaternion:SQuaternion 旋转
-// @param s:scale:SVector3 缩放
-//============================================================
-function SMatrix3d_build(t, r, s){
-   var d = this._data;
-   var x2 = r.x * r.x;
-   var y2 = r.y * r.y;
-   var z2 = r.z * r.z;
-   var xy = r.x * r.y;
-   var xz = r.x * r.z;
-   var yz = r.y * r.z;
-   var wx = r.w * r.x;
-   var wy = r.w * r.y;
-   var wz = r.w * r.z;
-   d[ 0] = (1.0 - 2.0 * (y2 + z2)) * s.x;
-   d[ 1] = 2.0 * (xy - wz) * s.x;
-   d[ 2] = 2.0 * (xz + wy) * s.x;
-   d[ 3] = 0.0;
-   d[ 4] = 2.0 * (xy + wz) * s.y;
-   d[ 5] = (1.0 - 2.0 * (x2 + z2)) * s.y;
-   d[ 6] = 2.0 * (yz - wx) * s.x;
-   d[ 7] = 0.0;
-   d[ 8] = 2.0 * (xz - wy) * s.z;
-   d[ 9] = 2.0 * (yz + wx) * s.z;
-   d[10] = (1.0 - 2.0 * (x2 + y2)) * s.z;
-   d[11] = 0.0;
-   d[12] = t.x;
-   d[13] = t.y;
-   d[14] = t.z;
-   d[15] = 1.0;
 }
 
 //============================================================
@@ -243,19 +246,19 @@ function SMatrix3d_updateForce(){
    d[ 0] = rcy * rcz * o.sx;
    d[ 1] = rcy * rsz * o.sx;
    d[ 2] = -rsy * o.sx;
-   d[ 3] = 0.0;
+   d[ 3] = 0;
    d[ 4] = (rsx * rsy * rcz - rcx * rsz) * o.sy;
    d[ 5] = (rsx * rsy * rsz + rcx * rcz) * o.sy;
    d[ 6] = rsx * rcy * o.sy;
-   d[ 7] = 0.0;
+   d[ 7] = 0;
    d[ 8] = (rcx * rsy * rcz + rsx * rsz) * o.sz;
    d[ 9] = (rcx * rsy * rsz - rsx * rcz) * o.sz;
    d[10] = rcx * rcy * o.sz;
-   d[11] = 0.0;
+   d[11] = 0;
    d[12] = o.tx;
    d[13] = o.ty;
    d[14] = o.tz;
-   d[15] = 1.0;
+   d[15] = 1;
 }
 
 //============================================================
@@ -308,4 +311,23 @@ function SMatrix3d_unserialize(p){
    o.sy = p.readFloat();
    o.sz = p.readFloat();
    o.updateForce();
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function SMatrix3d_saveConfig(p){
+   var o = this;
+   p.set('tx', RFloat.format(o.tx));
+   p.set('ty', RFloat.format(o.ty));
+   p.set('tz', RFloat.format(o.tz));
+   p.set('rx', RFloat.format(o.rx));
+   p.set('ry', RFloat.format(o.ry));
+   p.set('rz', RFloat.format(o.rz));
+   p.set('sx', RFloat.format(o.sx));
+   p.set('sy', RFloat.format(o.sy));
+   p.set('sz', RFloat.format(o.sz));
 }

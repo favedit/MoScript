@@ -24,7 +24,7 @@ function FG3dShadowDepthAutomaticEffect(o){
 //==========================================================
 function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    // 获得参数
    var lvm = pg.calculate(EG3dRegionParameter.LightViewMatrix);
@@ -34,7 +34,7 @@ function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    c.setBlendFactors(false);
    // 绑定所有属性流
    p.setParameter('vc_camera', lci);
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_view_matrix', lvm);
    p.setParameter('vc_vp_matrix', lvpm);
    // 设置材质

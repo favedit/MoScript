@@ -51,8 +51,8 @@ function RRuntime_isRelease(){
 function RRuntime_supportHtml5(){
    return this._supportHtml5;
 }
-function RRuntime_nvl(a, b){
-   return (a != null) ? a : b;
+function RRuntime_nvl(v, d){
+   return (v != null) ? v : d;
 }
 function RRuntime_subString(v, b, e){
    if(v == null){
@@ -87,15 +87,14 @@ function RRuntime_className(v){
    return null;
 }
 function RRuntime_uid(v){
-   var r = v.uniqueNumber;
+   var r = v.__puuid;
    if(r == null){
-      r = v.uniqueNumber = RRuntime._nextUid;
-      RRuntime._nextUid++;
+      r = v.__puuid = RRuntime._nextUid++;
    }
    return r;
 }
-function SLooperEntry(o){
-   if(!o){o = this;}
+function SLooperEntry(){
+   var o = this;
    o.prior   = null;
    o.next    = null;
    o.value   = null;
@@ -108,15 +107,8 @@ function SLooperEntry_dispose(){
    o.next = null;
    o.value = null;
 }
-function SLoopEntry(o){
-   if(!o){o = this;}
-   o.prior = null;
-   o.next  = 0;
-   o.value = null;
-   return o;
-}
-function TArray(o){
-   if(!o){o = this;}
+function TArray(){
+   var o = this;
    o._length  = 0;
    o._memory  = new Array();
    o.isEmpty  = TArray_isEmpty;
@@ -228,15 +220,15 @@ function TArray_dump(){
    var c = o._length;
    r.append(RRuntime.className(o), ':', c);
    if(c > 0){
-      for(var n = 0; n < c; n++){
-         r.append(' [', o._memory[n], ']');
+      for(var i = 0; i < c; i++){
+         r.append(' [', o._memory[i], ']');
       }
    }
-   return r.toString();
+   return r.flush();
 }
 function TAttributes(o){
-   if(!o){o = this;}
-   TDictionary(o);
+   var o = this;
+   TDictionary.call(o);
    o.join   = TAttributes_join;
    o.split  = TAttributes_split;
    o.pack   = TAttributes_pack;
@@ -329,19 +321,19 @@ function TAttributes_dump(){
    r.append(RRuntime.className(o), ' : ', c);
    if(c > 0){
       r.append(' (');
-      for(var n = 0; n < c; n++){
-         if(n > 0){
+      for(var i = 0; i < c; i++){
+         if(i > 0){
             r.append(', ');
          }
-         r.append(o._names[n], '=', o._values[n]);
+         r.append(o._names[i], '=', o._values[i]);
       }
       r.append(')');
    }
    return r.flush();
 }
 function TDictionary(o){
-   if(!o){o = this;}
-   TMap(o);
+   var o = this;
+   TMap.call(o);
    o.dump = TDictionary_dump;
    return o;
 }
@@ -352,15 +344,15 @@ function TDictionary_dump(){
    r.append(RRuntime.className(o), ': ', c);
    if(c > 0){
       r.append(' {\n');
-      for(var n = 0; n < c; n++){
-         r.append('   ', o._names[n], '=[', o._values[n], ']\n');
+      for(var i = 0; i < c; i++){
+         r.append('   ', o._names[i], '=[', o._values[i], ']\n');
       }
       r.append('}');
    }
-   return r.toString();
+   return r.flush();
 }
-function TList(o){
-   if(!o){o = this;}
+function TList(){
+   var o = this;
    o.count      = 0;
    o.memory     = new Array();
    o.isEmpty    = TList_isEmpty;
@@ -541,8 +533,8 @@ function TList_dump(){
    }
    return r.toString();
 }
-function TLooper(o){
-   if(!o){o = this;}
+function TLooper(){
+   var o = this;
    o._count             = 0;
    o._recordCount       = 0;
    o._current           = null;
@@ -738,130 +730,8 @@ function TLooper_dump(){
    }
    return r.toString();
 }
-function TLoopList(o){
-   if(!o){o = this;}
-   o.count      = 0;
-   o.size       = 0;
-   o.start      = new Object();
-   o.ensureSize = TLoopList_ensureSize;
-   o.find       = TLoopList_find;
-   o.contains   = TLoopList_contains;
-   o.indexOf    = TLoopList_indexOf;
-   o.get        = TLoopList_get;
-   o.set        = TLoopList_set;
-   o.push       = TLoopList_push;
-   o.sync       = TLoopList_sync;
-   o.erase      = TLoopList_erase;
-   o.remove     = TLoopList_remove;
-   o.clear      = TLoopList_clear;
-   o.dump       = TLoopList_dump;
-   return o;
-}
-function TLoopList_ensureSize(v){
+function TMap(){
    var o = this;
-   var l = v - 1;
-   var e = o.start;
-   for(var n = 0; n < l; n++){
-      if(!e.next){
-         e.next = new Object();
-         e.value = null;
-      }
-      e = e.next;
-   }
-   e.next = o.start;
-   o.size = v;
-}
-function TLoopList_find(i){
-   var o = this;
-   var e = o.start;
-   if((i >= 0) && (i < o.count)){
-      for(var n = 0; n < o.count; n++){
-         if(n == i){
-            return e;
-         }
-         e = e.next;
-      }
-   }
-   return null;
-}
-function TLoopList_isEmpty(){
-   return (this.count == 0);
-}
-function TLoopList_contains(v){
-   return this.indexOf(v) != -1;
-}
-function TLoopList_indexOf(v){
-   if(v != null){
-      var o = this;
-      var c = o.count;
-      var e = o.start;
-      for(var n = 0; n < c; n++){
-         if(e.value == v){
-            return n;
-         }
-         e = e.next;
-      }
-   }
-   return -1;
-}
-function TLoopList_get(i){
-   var item = this.find(idx);
-   return (item != null) ? item.value : null;
-}
-function TLoopList_set(i, obj){
-   var item = this.find(i);
-   if(item != null){
-      item.value = obj;
-   }
-}
-function TLoopList_push(obj){
-   if(this.count + 1 > this.size){
-      this.start.value = obj;
-      this.start = this.start.next;
-   }else{
-      this.set(this.count++, obj);
-   }
-}
-function TLoopList_sync(obj){
-   var idx = this.indexOf(obj);
-   return (idx == -1) ? this.push(obj) : idx;
-}
-function TLoopList_erase(i){
-   var o = this;
-   var obj = null;
-   var item = this.find(i);
-   if(item != null){
-      obj = item.value;
-      for(var n = idx; n < this.count; n++){
-         item.value = item.next.value;
-      }
-   }
-   return obj;
-}
-function TLoopList_remove(v){
-   var o = this;
-   var i = o.indexOf(v);
-   if(i != -1){
-      o.remove(i);
-   }
-}
-function TLoopList_clear(){
-   this.count = 0;
-}
-function TLoopList_dump(){
-   var o = this;
-   var r = new TString();
-   var c = this.count;
-   r.append(RClass.name(this), ': ', c, '/', o.size);
-   var item = o.start;
-   for(var n = 0; n < c; n++){
-      r.append(' [', item.value, ']');
-      item = item.next;
-   }
-   return r.toString();
-}
-function TMap(o){
-   if(!o){o = this;}
    o._count        = 0;
    o._table        = new Object();
    o._names        = new Array();
@@ -874,8 +744,11 @@ function TMap(o){
    o.indexOfValue  = TMap_indexOfValue;
    o.first         = TMap_first;
    o.last          = TMap_last;
+   o.nameAt        = TMap_nameAt;
    o.name          = TMap_name;
+   o.valueAt       = TMap_valueAt;
    o.value         = TMap_value;
+   o.setValueAt    = TMap_setValueAt;
    o.setValue      = TMap_setValue;
    o.get           = TMap_get;
    o.set           = TMap_set;
@@ -944,11 +817,20 @@ function TMap_last(){
    }
    return null;
 }
+function TMap_nameAt(n){
+   return this._names[n];
+}
 function TMap_name(n){
    return ((n >= 0) && (n < this._count)) ? this._names[n] : null;
 }
+function TMap_valueAt(n){
+   return this._values[n];
+}
 function TMap_value(n){
    return ((n >= 0) && (n < this._count)) ? this._values[n] : null;
+}
+function TMap_setValueAt(n, v){
+   this._values[n] = v;
 }
 function TMap_setValue(n, v){
    if((n >= 0) && (n < this._count)){
@@ -1097,24 +979,27 @@ function TMap_dump(){
    r.appendLine(RRuntime.className(o), ': ', c);
    if(c > 0){
       r.append(' {');
-      for(var n = 0; n < c; n++){
-         r.appendLine(o._names[n], '=[', o._values[n], ']');
+      for(var i = 0; i < c; i++){
+         r.appendLine(o._names[i], '=[', o._values[i], ']');
       }
       r.append('}');
    }
-   return r.toString();
+   return r.flush();
 }
-function TObjects(o){
-   if(!o){o = this;}
+function TObjects(){
+   var o = this;
    o._count     = 0;
    o._items     = new Array();
    o.isEmpty    = TObjects_isEmpty;
    o.count      = TObjects_count;
+   o.items      = TObjects_items;
    o.contains   = TObjects_contains;
    o.indexOf    = TObjects_indexOf;
    o.first      = TObjects_first;
    o.last       = TObjects_last;
+   o.getAt      = TObjects_getAt;
    o.get        = TObjects_get;
+   o.setAt      = TObjects_setAt;
    o.set        = TObjects_set;
    o.assign     = TObjects_assign;
    o.append     = TObjects_append;
@@ -1137,15 +1022,19 @@ function TObjects_isEmpty(){
 function TObjects_count(){
    return this._count;
 }
+function TObjects_items(){
+   return this._items;
+}
 function TObjects_contains(v){
    return this.indexOf(v) != -1;
 }
 function TObjects_indexOf(v){
    var o = this;
    var c = o._count;
-   for(var n = 0; n < c; n++){
-      if(o._items[n] == v){
-         return n;
+   var s = o._items;
+   for(var i = 0; i < c; i++){
+      if(s[i] == v){
+         return i;
       }
    }
    return -1;
@@ -1158,9 +1047,15 @@ function TObjects_last(){
    var o = this;
    return o._count ? this._items[o._count - 1] : null;
 }
+function TObjects_getAt(n){
+   return this._items[n];
+}
 function TObjects_get(n){
    var o = this;
    return ((n >= 0) && (n < o._count)) ? o._items[n] : null;
+}
+function TObjects_setAt(n, v){
+   this._items[n] = v;
 }
 function TObjects_set(n, v){
    var o = this;
@@ -1178,8 +1073,8 @@ function TObjects_assign(p){
 function TObjects_append(v){
    var o = this;
    var c = v._count;
-   for(var n = 0; n < c; n++){
-      o.push(v.get(n));
+   for(var i = 0; i < c; i++){
+      o.push(v.get(i));
    }
 }
 function TObjects_insert(i, v){
@@ -1193,13 +1088,14 @@ function TObjects_insert(i, v){
    }
 }
 function TObjects_push(v){
-   var n = this._count++;
-   this._items[n] = v;
+   var o = this;
+   var n = o._count++;
+   o._items[n] = v;
    return n;
 }
 function TObjects_pushUnique(v){
    var o = this;
-   for(var n = o._count-1; n >= 0; n--){
+   for(var n = o._count - 1; n >= 0; n--){
       if(o._items[n] == v){
          return n;
       }
@@ -1217,13 +1113,14 @@ function TObjects_pop(){
 function TObjects_swap(l, r){
    var o = this;
    if((l >= 0) && (l < o._count) && (r >= 0) && (r < o._count) && (l != r)){
-      var v = o._items[l];
-      o._items[l] = this._items[r];
-      o._items[r] = v;
+      var s = o._items;
+      var v = s[l];
+      s[l] = s[r];
+      s[r] = v;
    }
 }
-function TObjects_sort(){
-   this._items.sort();
+function TObjects_sort(p){
+   this._items.sort(p);
 }
 function TObjects_erase(n){
    var v = null;
@@ -1240,22 +1137,20 @@ function TObjects_erase(n){
    return v;
 }
 function TObjects_remove(v){
-   if(v != null){
-      var o = this;
-      var c = o._count;
-      if(c > 0){
-         var n = 0;
-         var s = o._items;
-         for(var i = n; i < c; i++){
-            if(s[i] != v){
-               s[n++] = s[i];
-            }
+   var o = this;
+   var c = o._count;
+   if(c){
+      var n = 0;
+      var s = o._items;
+      for(var i = n; i < c; i++){
+         if(s[i] != v){
+            s[n++] = s[i];
          }
-         for(var i = n; i < c; i++){
-            s[i] = null;
-         }
-         o._count = n;
       }
+      for(var i = n; i < c; i++){
+         s[i] = null;
+      }
+      o._count = n;
    }
    return v;
 }
@@ -1266,23 +1161,23 @@ function TObjects_clear(){
 }
 function TObjects_dispose(){
    var o = this;
-   o._count = 0;
    for(var n in o._items){
-      delete o._items[n];
+      o._items[n] = null;
    }
+   o._count = 0;
    o._items = null;
 }
 function TObjects_dump(){
    var o = this;
    var c = o._count;
    var r = new TString();
-   r.append(RClass.name(o), ':', c);
+   r.append(RRuntime.className(o), ':', c);
    if(c > 0){
-      for(var n = 0; n < c; n++){
-         r.append(' [', o._items[n], ']');
+      for(var i = 0; i < c; i++){
+         r.append(' [', o._items[i], ']');
       }
    }
-   return r.toString();
+   return r.flush();
 }
 function TString(o){
    if(!o){o = this;}

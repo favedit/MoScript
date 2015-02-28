@@ -2,29 +2,14 @@
 // <T>渲染对象。</T>
 //
 // @author maocy
-// @history 141230
+// @history 150212
 //==========================================================
 function FG3dObject(o){
-   o = RClass.inherits(this, o, FObject);
-   //..........................................................
-   // @attribute
-   o._context = null;
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
    //..........................................................
    // @method
-   o.linkContext = FG3dObject_linkContext;
-   // @method
-   o.setup       = FG3dObject_setup;
+   o.setup = FG3dObject_setup;
    return o;
-}
-
-//==========================================================
-// <T>关联环境处理。</T>
-//
-// @method
-// @param c:context:FContext3d 渲染环境
-//==========================================================
-function FG3dObject_linkContext(c){
-   this._context = c;
 }
 
 //==========================================================

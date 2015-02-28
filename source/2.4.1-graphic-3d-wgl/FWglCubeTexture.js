@@ -8,14 +8,13 @@ function FWglCubeTexture(o){
    o = RClass.inherits(this, o, FG3dCubeTexture);
    //..........................................................
    // @attribute
-   o._native = null;
+   o._native    = null;
    //..........................................................
    // @method
-   o.setup   = FWglCubeTexture_setup;
+   o.setup      = FWglCubeTexture_setup;
    // @method
-   o.link    = FWglCubeTexture_link;
-   // @method
-   o.upload  = FWglCubeTexture_upload;
+   o.makeMipmap = FWglCubeTexture_makeMipmap;
+   o.upload     = FWglCubeTexture_upload;
    return o;
 }
 
@@ -26,20 +25,26 @@ function FWglCubeTexture(o){
 //==========================================================
 function FWglCubeTexture_setup(){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    o.__base.FG3dCubeTexture.setup.call(o);
    o._native = g.createTexture();
 }
 
 //==========================================================
-// <T>关联内容处理。</T>
+// <T>生成位图的缩放图片。</T>
 //
 // @method
-// @param v:value:Object 渲染程序
 //==========================================================
-function FWglCubeTexture_link(v){
-   this._texture = v;
+function FWglCubeTexture_makeMipmap(){
+   var o = this;
+   var c = o._graphicContext;
+   var g = c._native;
+   // 绑定数据
+   g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
+   // 生成MIP
+   g.generateMipmap(g.TEXTURE_CUBE_MAP);
 }
+
 
 //==========================================================
 // <T>上传图片内容。</T>
@@ -49,7 +54,7 @@ function FWglCubeTexture_link(v){
 //==========================================================
 function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    var o = this;
-   var c = o._context;;
+   var c = o._graphicContext;
    var g = c._native;
    // 绑定数据
    g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
@@ -60,6 +65,6 @@ function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, y2.image());
    g.texImage2D(g.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z1.image());
    g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z2.image()); 
-   var r = c.checkError("texImage2D", "Upload cube image failure.");
-   o._statusLoad = r;
+   // 检查结果
+   o._statusLoad = c.checkError("texImage2D", "Upload cube image failure.");
 }

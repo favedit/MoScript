@@ -1,35 +1,35 @@
-function FDataTreeView(o){
-   o = RClass.inherits(this, o, FTreeView);
+function FUiDataTreeView(o){
+   o = RClass.inherits(this, o, FUiTreeView);
    o._serviceName     = RClass.register(o, new APtyString('_serviceName', 'service'));
    o._statusLoading   = false;
    o.lsnsLoaded       = new TListeners();
    o.lsnsNodeLoad     = new TListeners();
    o.lsnsNodeLoaded   = new TListeners();
-   o.onLoaded         = FDataTreeView_onLoaded;
-   o.onNodeLoaded     = FDataTreeView_onNodeLoaded;
-   o.construct        = FDataTreeView_construct;
-   o.buildNode        = FDataTreeView_buildNode;
-   o.loadNode         = FDataTreeView_loadNode;
-   o.loadUrl          = FDataTreeView_loadUrl;
-   o.loadNodeUrl      = FDataTreeView_loadNodeUrl;
-   o.loadService      = FDataTreeView_loadService;
-   o.loadNodeService  = FDataTreeView_loadNodeService;
-   o.reloadNode       = FDataTreeView_reloadNode;
-   o.reload           = FDataTreeView_reload;
-   o.dispose          = FDataTreeView_dispose;
+   o.onLoaded         = FUiDataTreeView_onLoaded;
+   o.onNodeLoaded     = FUiDataTreeView_onNodeLoaded;
+   o.construct        = FUiDataTreeView_construct;
+   o.buildNode        = FUiDataTreeView_buildNode;
+   o.loadNode         = FUiDataTreeView_loadNode;
+   o.loadUrl          = FUiDataTreeView_loadUrl;
+   o.loadNodeUrl      = FUiDataTreeView_loadNodeUrl;
+   o.loadService      = FUiDataTreeView_loadService;
+   o.loadNodeService  = FUiDataTreeView_loadNodeService;
+   o.reloadNode       = FUiDataTreeView_reloadNode;
+   o.reload           = FUiDataTreeView_reload;
+   o.dispose          = FUiDataTreeView_dispose;
    o._queryService    = RClass.register(o, new APtyString('_queryService'));
-   o.onQueryLoaded    = FDataTreeView_onQueryLoaded;
-   o.doQuery          = FDataTreeView_doQuery;
-   o.removeNode       = FDataTreeView_removeNode;
-   o.clearNodes       = FDataTreeView_clearNodes;
-   o.getChangedChecks = FDataTreeView_getChangedChecks;
-   o.fetchExtendsAll  = FDataTreeView_fetchExtendsAll;
-   o.tempAppendNodes  = FDataTreeView_tempAppendNodes;
-   o.removeNodes      = FDataTreeView_removeNodes;
-   o.tempAppendChild  = FDataTreeView_tempAppendChild;
+   o.onQueryLoaded    = FUiDataTreeView_onQueryLoaded;
+   o.doQuery          = FUiDataTreeView_doQuery;
+   o.removeNode       = FUiDataTreeView_removeNode;
+   o.clearNodes       = FUiDataTreeView_clearNodes;
+   o.getChangedChecks = FUiDataTreeView_getChangedChecks;
+   o.fetchExtendsAll  = FUiDataTreeView_fetchExtendsAll;
+   o.tempAppendNodes  = FUiDataTreeView_tempAppendNodes;
+   o.removeNodes      = FUiDataTreeView_removeNodes;
+   o.tempAppendChild  = FUiDataTreeView_tempAppendChild;
    return o;
 }
-function FDataTreeView_onLoaded(p){
+function FUiDataTreeView_onLoaded(p){
    var o = this;
    var x = p.root;
    if(x == null){
@@ -39,9 +39,11 @@ function FDataTreeView_onLoaded(p){
    RControl.build(o, xt, null, o._hPanel);
    o.lsnsLoaded.process(p);
    var s = xt.get('service');
-   o.loadNodeService(s);
+   if(s){
+      o.loadNodeService(s);
+   }
 }
-function FDataTreeView_onNodeLoaded(p){
+function FUiDataTreeView_onNodeLoaded(p){
    var o = this;
    var x = p.root;
    if(x == null){
@@ -53,11 +55,11 @@ function FDataTreeView_onNodeLoaded(p){
    o.buildNode(np, x);
    o.lsnsNodeLoaded.process(p);
 }
-function FDataTreeView_construct(){
+function FUiDataTreeView_construct(){
    var o = this;
-   o.__base.FTreeView.construct.call(o);
+   o.__base.FUiTreeView.construct.call(o);
 }
-function FDataTreeView_buildNode(pn, px){
+function FUiDataTreeView_buildNode(pn, px){
    var o = this;
    var xns = px._nodes;
    if(xns){
@@ -81,7 +83,7 @@ function FDataTreeView_buildNode(pn, px){
       }
    }
 }
-function FDataTreeView_loadNode(pn, pf){
+function FUiDataTreeView_loadNode(pn, pf){
    var o = this;
    o._statusLoading = true;
    var nt = null;
@@ -128,20 +130,20 @@ function FDataTreeView_loadNode(pn, pf){
    c.parentNode = pn;
    c.lsnsLoad.register(o, o.onNodeLoaded);
 }
-function FDataTreeView_loadUrl(p){
+function FUiDataTreeView_loadUrl(p){
    var o = this;
    var xc = RConsole.find(FXmlConsole);
    var c = xc.sendAsync(p);
    c.lsnsLoad.register(o, o.onLoaded);
 }
-function FDataTreeView_loadNodeUrl(p, n){
+function FUiDataTreeView_loadNodeUrl(p, n){
    var o = this;
    var xc = RConsole.find(FXmlConsole);
    var c = xc.sendAsync(p);
    c.parentNode = RObject.nvl(n, o._focusNode);
    c.lsnsLoad.register(o, o.onNodeLoaded);
 }
-function FDataTreeView_loadService(service, attrs){
+function FUiDataTreeView_loadService(service, attrs){
    var o = this;
    var svc = RService.parse(RString.nvl(service, this._service));
    if(!svc){
@@ -165,7 +167,7 @@ function FDataTreeView_loadService(service, attrs){
    }
    var ln = o._loadingNode;
 }
-function FDataTreeView_loadNodeService(ps, pa){
+function FUiDataTreeView_loadNodeService(ps, pa){
    var o = this;
    var svc = RService.parse(RString.nvl(ps, o._service));
    if(!svc){
@@ -188,7 +190,7 @@ function FDataTreeView_loadNodeService(ps, pa){
    c.parentNode = o._focusNode;
    c.lsnsLoad.register(o, o.onNodeLoaded);
 }
-function FDataTreeView_reloadNode(n){
+function FUiDataTreeView_reloadNode(n){
    var o = this;
    n = RObject.nvl(n, o._focusNode);
    if(!n){
@@ -197,16 +199,16 @@ function FDataTreeView_reloadNode(n){
    n.removeChildren();
    o.loadNode(n);
 }
-function FDataTreeView_reload(){
+function FUiDataTreeView_reload(){
    var o = this;
    o.clear();
    o.loadUrl();
 }
-function FDataTreeView_dispose(){
+function FUiDataTreeView_dispose(){
    var o = this;
-   o.__base.FTreeView.dispose.call(o);
+   o.__base.FUiTreeView.dispose.call(o);
 }
-function FDataTreeView_onQueryLoaded(e){
+function FUiDataTreeView_onQueryLoaded(e){
    var o = this;
    var doc = e.document;
    if(doc){
@@ -226,7 +228,7 @@ function FDataTreeView_onQueryLoaded(e){
       }
    }
 }
-function FDataTreeView_doQuery(){
+function FUiDataTreeView_doQuery(){
    var o = this;
    var svc = RService.parse(o._queryService);
    if(!svc){
@@ -241,7 +243,7 @@ function FDataTreeView_doQuery(){
    e.document = doc;
    RConsole.find(FXmlConsole).process(e);
 }
-function FDataTreeView_removeNode(oNode){
+function FUiDataTreeView_removeNode(oNode){
    if(oNode){
       var nodes = new Array();
       var oLoopNode = null;
@@ -273,10 +275,10 @@ function FDataTreeView_removeNode(oNode){
    }
    return false;
 }
-function FDataTreeView_haveNodes(){
+function FUiDataTreeView_haveNodes(){
    return this.rootNode.hasChild();
 }
-function FDataTreeView_clearNodes(node){
+function FUiDataTreeView_clearNodes(node){
    if(node){
       node.removeChildren();
    }
@@ -296,7 +298,7 @@ function FDataTreeView_clearNodes(node){
    this._allNodes = nodes;
    return true;
 }
-function FDataTreeView_fetchExtendsAll(s){
+function FUiDataTreeView_fetchExtendsAll(s){
    var o = this;
    if(s && RClass.isClass(s, FTreeNode)){
       fmMain.target = 'frmMain';
@@ -315,7 +317,7 @@ function FDataTreeView_fetchExtendsAll(s){
    }else{
    }
 }
-function FDataTreeView_getChangedChecks(){
+function FUiDataTreeView_getChangedChecks(){
    var o = this;
    var treeView = new TNode('TreeView');
    treeView.set('name', o.name);
@@ -327,7 +329,7 @@ function FDataTreeView_getChangedChecks(){
    }
    return treeView;
 }
-function FDataTreeView_tempAppendNodes(parent, config){
+function FUiDataTreeView_tempAppendNodes(parent, config){
    parent = RObject.nvl(parent, this.workNode, this.rootNode);
    if(config && config._nodes){
       var count = config._nodes.count;
@@ -359,14 +361,14 @@ function FDataTreeView_tempAppendNodes(parent, config){
    }
    this.rootNode.extend(true);
 }
-function FDataTreeView_removeNodes(node){
+function FUiDataTreeView_removeNodes(node){
    node = RObject.nvl(node, this.workNode, this.rootNode);
    if(node.hasChild()){
       node.removeChildren();
    }
    node.remove();
 }
-function FDataTreeView_tempAppendChild(child){
+function FUiDataTreeView_tempAppendChild(child){
    var o = this;
    var hc = o._hHeadLine.insertCell();
    hc.height = '100%';
@@ -374,19 +376,19 @@ function FDataTreeView_tempAppendChild(child){
       hc.appendChild(child._hPanel);
    }
 }
-function FTreeColumn(o){
-   o = RClass.inherits(this, o, FControl);
+function FUiTreeColumn(o){
+   o = RClass.inherits(this, o, FUiControl);
    o._icon        = RClass.register(o, new APtyString('_icon'));
    o._dataName    = RClass.register(o, new APtyString('_dataName'));
    o._display     = RClass.register(o, new APtyBoolean('_display'), EBoolean.False);
    o._config      = RClass.register(o, new APtyConfig('_config'));
-   o.oeBuild      = FTreeColumn_oeBuild;
-   o.onBuildPanel = FTreeColumn_onBuildPanel;
+   o.oeBuild      = FUiTreeColumn_oeBuild;
+   o.onBuildPanel = FUiTreeColumn_onBuildPanel;
    return o;
 }
-function FTreeColumn_oeBuild(event){
+function FUiTreeColumn_oeBuild(event){
    var o = this;
-   var r = o.__base.FControl.oeBuild.call(o, event);
+   var r = o.__base.FUiControl.oeBuild.call(o, event);
    var h = o.hPanel;
    h.innerText = RString.nvl(o.label);
    h.noWrap = true;
@@ -398,18 +400,18 @@ function FTreeColumn_oeBuild(event){
    }
    return EEventStatus.Stop;
 }
-function FTreeColumn_onBuildPanel(){
+function FUiTreeColumn_onBuildPanel(){
    this.hPanel = RBuilder.create(null, 'TD');
 }
-function FTreeLevel(o){
-   o = RClass.inherits(this, o, FControl);
+function FUiTreeLevel(o){
+   o = RClass.inherits(this, o, FUiControl);
    o._id        = RClass.register(o, new APtyString('_id'));
    o._color     = RClass.register(o, new APtyString('_color'));
    o._backColor = RClass.register(o, new APtyString('_backColor'));
    return o;
 }
-function FTreeNode(o){
-   o = RClass.inherits(this, o, FContainer);
+function FUiTreeNode(o){
+   o = RClass.inherits(this, o, FUiContainer, MDataProperties);
    o._valid            = RClass.register(o, new APtyBoolean('_isValid'), true);
    o._typeName         = RClass.register(o, new APtyString('_typeName', 'type'));
    o._uuid             = RClass.register(o, new APtyString('_uuid'));
@@ -441,62 +443,66 @@ function FTreeNode(o){
    o._hImage           = null;
    o._hIcon            = null;
    o._hLabel           = null;
-   o.onBuildPanel      = FTreeNode_onBuildPanel;
-   o.onBuild           = FTreeNode_onBuild;
-   o.onNodeEnter       = RClass.register(o, new AEventMouseEnter('onNodeEnter'), FTreeNode_onNodeEnter);
-   o.onNodeLeave       = RClass.register(o, new AEventMouseLeave('onNodeLeave'), FTreeNode_onNodeLeave);
-   o.onNodeClick       = RClass.register(o, new AEventClick('onNodeClick'), FTreeNode_onNodeClick);
-   o.construct         = FTreeNode_construct;
-   o.type              = FTreeNode_type;
-   o.setLabel          = FTreeNode_setLabel;
-   o.level             = FTreeNode_level;
-   o.setLevel          = FTreeNode_setLevel;
-   o.check             = FTreeNode_check;
-   o.setCheck          = FTreeNode_setCheck;
-   o.setImage          = FTreeNode_setImage;
-   o.setIcon           = FTreeNode_setIcon;
-   o.get               = FTreeNode_get;
-   o.set               = FTreeNode_set;
-   o.hasChild          = FTreeNode_hasChild;
-   o.topNode           = FTreeNode_topNode;
-   o.topNodeByType     = FTreeNode_topNodeByType;
-   o.show              = FTreeNode_show;
-   o.hide              = FTreeNode_hide;
-   o.select            = FTreeNode_select;
-   o.extend            = FTreeNode_extend;
-   o.extendAll         = FTreeNode_extendAll;
-   o.createChild       = FTreeNode_createChild;
-   o.appendNode        = FTreeNode_appendNode;
-   o.push              = FTreeNode_push;
-   o.remove            = FTreeNode_remove;
-   o.removeChildren    = FTreeNode_removeChildren;
-   o.reset             = FTreeNode_reset;
-   o.click             = FTreeNode_click;
-   o.refreshStyle      = FTreeNode_refreshStyle;
-   o.propertyLoad      = FTreeNode_propertyLoad;
-   o.propertySave      = FTreeNode_propertySave;
-   o.loadConfig        = FTreeNode_loadConfig;
-   o.reload           = FTreeNode_reload;
-   o.reloadParent     = FTreeNode_reloadParent;
-   o.loadQuery        = FTreeNode_loadQuery;
-   o.isFolder         = FTreeNode_isFolder;
-   o.dispose          = FTreeNode_dispose;
-   o.innerDump        = FTreeNode_innerDump;
-   o.findByName       = FTreeNode_findByName;
-   o.findByUuid       = FTreeNode_findByUuid;
-   o.checkChanged     = FTreeNode_checkChanged;
-   o.pushChanged      = FTreeNode_pushChanged;
-   o.getFullPath      = FTreeNode_getFullPath;
+   o.onBuildPanel      = FUiTreeNode_onBuildPanel;
+   o.onBuild           = FUiTreeNode_onBuild;
+   o.onNodeEnter       = RClass.register(o, new AEventMouseEnter('onNodeEnter'), FUiTreeNode_onNodeEnter);
+   o.onNodeLeave       = RClass.register(o, new AEventMouseLeave('onNodeLeave'), FUiTreeNode_onNodeLeave);
+   o.onNodeClick       = RClass.register(o, new AEventClick('onNodeClick'), FUiTreeNode_onNodeClick);
+   o.construct         = FUiTreeNode_construct;
+   o.type              = FUiTreeNode_type;
+   o.typeName          = FUiTreeNode_typeName;
+   o.setTypeName       = FUiTreeNode_setTypeName;
+   o.setLabel          = FUiTreeNode_setLabel;
+   o.setNote           = FUiTreeNode_setNote;
+   o.level             = FUiTreeNode_level;
+   o.setLevel          = FUiTreeNode_setLevel;
+   o.check             = FUiTreeNode_check;
+   o.setCheck          = FUiTreeNode_setCheck;
+   o.setImage          = FUiTreeNode_setImage;
+   o.setIcon           = FUiTreeNode_setIcon;
+   o.get               = FUiTreeNode_get;
+   o.set               = FUiTreeNode_set;
+   o.hasChild          = FUiTreeNode_hasChild;
+   o.topNode           = FUiTreeNode_topNode;
+   o.topNodeByType     = FUiTreeNode_topNodeByType;
+   o.show              = FUiTreeNode_show;
+   o.hide              = FUiTreeNode_hide;
+   o.select            = FUiTreeNode_select;
+   o.extend            = FUiTreeNode_extend;
+   o.extendAll         = FUiTreeNode_extendAll;
+   o.searchLast        = FUiTreeNode_searchLast;
+   o.createChild       = FUiTreeNode_createChild;
+   o.appendNode        = FUiTreeNode_appendNode;
+   o.push              = FUiTreeNode_push;
+   o.remove            = FUiTreeNode_remove;
+   o.removeChildren    = FUiTreeNode_removeChildren;
+   o.reset             = FUiTreeNode_reset;
+   o.click             = FUiTreeNode_click;
+   o.refreshStyle      = FUiTreeNode_refreshStyle;
+   o.propertyLoad      = FUiTreeNode_propertyLoad;
+   o.propertySave      = FUiTreeNode_propertySave;
+   o.loadConfig        = FUiTreeNode_loadConfig;
+   o.reload           = FUiTreeNode_reload;
+   o.reloadParent     = FUiTreeNode_reloadParent;
+   o.loadQuery        = FUiTreeNode_loadQuery;
+   o.isFolder         = FUiTreeNode_isFolder;
+   o.dispose          = FUiTreeNode_dispose;
+   o.innerDump        = FUiTreeNode_innerDump;
+   o.findByName       = FUiTreeNode_findByName;
+   o.findByUuid       = FUiTreeNode_findByUuid;
+   o.checkChanged     = FUiTreeNode_checkChanged;
+   o.pushChanged      = FUiTreeNode_pushChanged;
+   o.getFullPath      = FUiTreeNode_getFullPath;
    return o;
 }
-function FTreeNode_onBuildPanel(p){
+function FUiTreeNode_onBuildPanel(p){
    var o = this;
    o._hPanel = RBuilder.createTableRow(p, o.styleName('Panel'));
 }
-function FTreeNode_onBuild(p){
+function FUiTreeNode_onBuild(p){
    var o = this;
    var t = o._tree;
-   var r = o.__base.FContainer.onBuild.call(o, p);
+   var r = o.__base.FUiContainer.onBuild.call(o, p);
    var hp = o._hPanel;
    hp.style.border = '1 solid red';
    o.attachEvent('onNodeEnter', hp, o.onNodeEnter);
@@ -533,7 +539,7 @@ function FTreeNode_onBuild(p){
       }
    }
 }
-function FTreeNode_onNodeEnter(e){
+function FUiTreeNode_onNodeEnter(e){
    var o = this;
    var t = o._tree;
    if(!t._focusNode || (t._focusNode && (t._focusNode != o))){
@@ -542,7 +548,7 @@ function FTreeNode_onNodeEnter(e){
       t.lsnsEnter.process(t, o);
    }
 }
-function FTreeNode_onNodeLeave(e){
+function FUiTreeNode_onNodeLeave(e){
    var o = this;
    var t = o._tree;
    if(!t._focusNode || (t._focusNode && (t._focusNode != o))){
@@ -551,7 +557,7 @@ function FTreeNode_onNodeLeave(e){
       t.lsnsLeave.process(t, o);
    }
 }
-function FTreeNode_onNodeClick(e){
+function FUiTreeNode_onNodeClick(e){
    var o = this;
    var t = o._tree;
    var esn = e.hSender.tagName;
@@ -596,12 +602,12 @@ function FTreeNode_onNodeClick(e){
       }
    }
 }
-function FTreeNode_construct(){
+function FUiTreeNode_construct(){
    var o = this;
-   o.__base.FContainer.construct.call(o);
+   o.__base.FUiContainer.construct.call(o);
    o._attributes = new TAttributes();
 }
-function FTreeNode_type(){
+function FUiTreeNode_type(){
    var o = this;
    var t = o._tree;
    if(RString.isEmpty(o._typeName)){
@@ -609,9 +615,17 @@ function FTreeNode_type(){
    }
    return t.findType(o._typeName);
 }
-function FTreeNode_setLabel(p){
+function FUiTreeNode_typeName(){
+   return this._typeName;
+}
+function FUiTreeNode_setTypeName(p){
    var o = this;
-   o.__base.FContainer.setLabel.call(o, p)
+   o._typeName = p;
+   o.setIcon();
+}
+function FUiTreeNode_setLabel(p){
+   var o = this;
+   o.__base.FUiContainer.setLabel.call(o, p)
    var h = o._hLabel;
    if(h){
       var s = '';
@@ -627,10 +641,15 @@ function FTreeNode_setLabel(p){
       h.innerHTML = s;
    }
 }
-function FTreeNode_level(){
+function FUiTreeNode_setNote(p){
+   var o = this;
+   o._note = RString.empty(p);
+   o.setLabel(o._label);
+}
+function FUiTreeNode_level(){
    return this._level;
 }
-function FTreeNode_setLevel(p){
+function FUiTreeNode_setLevel(p){
    var o = this;
    o._level = p;
    var h = o._hNodePanel;
@@ -638,10 +657,10 @@ function FTreeNode_setLevel(p){
       h.style.paddingLeft = (o._tree._indent * p) + 'px';
    }
 }
-function FTreeNode_check(){
+function FUiTreeNode_check(){
    return this._checked;
 }
-function FTreeNode_setCheck(p){
+function FUiTreeNode_setCheck(p){
    var o = this;
    o._checked = p;
    if(!RString.isEmpty(o._attributes.get('checked'))){
@@ -651,7 +670,7 @@ function FTreeNode_setCheck(p){
      }
    }
 }
-function FTreeNode_setImage(){
+function FUiTreeNode_setImage(){
    var o = this;
    var t = o._tree;
    var h = o._hImage;
@@ -660,7 +679,7 @@ function FTreeNode_setImage(){
       h.src = RResource.iconPath(ni);
    }
 }
-function FTreeNode_setIcon(p){
+function FUiTreeNode_setIcon(p){
    var o = this;
    o._icon = p;
    var h = o._hIcon;
@@ -685,13 +704,13 @@ function FTreeNode_setIcon(p){
       }
    }
 }
-function FTreeNode_get(n){
+function FUiTreeNode_get(n){
    return this._attributes.get(n);
 }
-function FTreeNode_set(n, v){
+function FUiTreeNode_set(n, v){
    this._attributes.set(n, v);
 }
-function FTreeNode_hasChild(){
+function FUiTreeNode_hasChild(){
    var o = this;
    if(o._child){
       var ns = o._nodes;
@@ -701,14 +720,14 @@ function FTreeNode_hasChild(){
    }
    return false;
 }
-function FTreeNode_topNode(){
+function FUiTreeNode_topNode(){
    var r = this;
    while(r._parent){
       r = r._parent;
    }
    return r;
 }
-function FTreeNode_topNodeByType(t){
+function FUiTreeNode_topNodeByType(t){
    var r = this;
    while(r){
       if(r._typeName == t){
@@ -718,7 +737,7 @@ function FTreeNode_topNodeByType(t){
    }
    return null;
 }
-function FTreeNode_show(){
+function FUiTreeNode_show(){
    var o = this;
    var t = o._tree;
    RHtml.visibleSet(o._hPanel, true);
@@ -739,7 +758,7 @@ function FTreeNode_show(){
       }
    }
 }
-function FTreeNode_hide(){
+function FUiTreeNode_hide(){
    var o = this;
    var t = o._tree;
    if(o._hPanel){
@@ -756,7 +775,7 @@ function FTreeNode_hide(){
       }
    }
 }
-function FTreeNode_select(v){
+function FUiTreeNode_select(v){
    var o = this;
    o._statusSelected = v;
    if(v){
@@ -764,7 +783,7 @@ function FTreeNode_select(v){
    }
    o.refreshStyle();
 }
-function FTreeNode_extend(p){
+function FUiTreeNode_extend(p){
    var o = this;
    var t = o._tree;
    if(!o._statusLoaded && o._child){
@@ -793,7 +812,7 @@ function FTreeNode_extend(p){
    }
    t.refresh();
 }
-function FTreeNode_extendAll(p){
+function FUiTreeNode_extendAll(p){
    var o = this;
    o.extend(p);
    var cs = o._components;
@@ -805,26 +824,39 @@ function FTreeNode_extendAll(p){
       }
    }
 }
-function FTreeNode_createChild(x){
+function FUiTreeNode_searchLast(){
+   var o = this;
+   var s = o._nodes;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         var n = s.get(i)
+         if(n._statusLinked){
+            return n.searchLast();
+         }
+      }
+   }
+   return o;
+}
+function FUiTreeNode_createChild(x){
    var r = null;
    if(x.isName('Node') || x.isName('TreeNode')){
-      r = RClass.create(FTreeNode);
+      r = RClass.create(FUiTreeNode);
       r._tree = this._tree;
    }
    return r;
 }
-function FTreeNode_appendNode(p){
+function FUiTreeNode_appendNode(p){
    var o = this;
    var t = o._tree;
    o.push(p);
    t.appendNode(p, o);
    o.extend(true);
 }
-function FTreeNode_push(c){
+function FUiTreeNode_push(c){
    var o = this;
    var t = o._tree;
-   o.__base.FContainer.push.call(o, c);
-   if(RClass.isClass(c, FTreeNode)){
+   o.__base.FUiContainer.push.call(o, c);
+   if(RClass.isClass(c, FUiTreeNode)){
       o._child = true;
       o._statusLoaded = true;
       var ns = o._nodes;
@@ -837,7 +869,7 @@ function FTreeNode_push(c){
       t._allNodes.pushUnique(c);
    }
 }
-function FTreeNode_remove(){
+function FUiTreeNode_remove(){
    var o = this;
    var t = o._tree;
    if(o._statusLinked){
@@ -845,7 +877,7 @@ function FTreeNode_remove(){
       t.freeNode(o);
    }
 }
-function FTreeNode_removeChildren(){
+function FUiTreeNode_removeChildren(){
    var ns = this._nodes;
    if(ns){
       var c = ns.count();
@@ -858,7 +890,7 @@ function FTreeNode_removeChildren(){
       ns.clear();
    }
 }
-function FTreeNode_reset(){
+function FUiTreeNode_reset(){
    var o = this;
    o._typeName = null;
    o._uuid = null;
@@ -877,13 +909,13 @@ function FTreeNode_reset(){
    o._statusLoaded = false;
    o._level = 0;
 }
-function FTreeNode_click(){
+function FUiTreeNode_click(){
    var o = this;
    var t = o._tree;
    t.selectNode(o, true);
    t.lsnsClick.process(t, o);
 }
-function FTreeNode_refreshStyle(){
+function FUiTreeNode_refreshStyle(){
    var o = this;
    var cs = o._hPanel.cells;
    var c = cs.length;
@@ -903,23 +935,23 @@ function FTreeNode_refreshStyle(){
       }
    }
 }
-function FTreeNode_propertyLoad(x){
+function FUiTreeNode_propertyLoad(x){
    var o = this;
    var t = o._tree;
-   o.__base.FContainer.propertyLoad.call(o, x);
+   o.__base.FUiContainer.propertyLoad.call(o, x);
    o._attributes.append(x.attrs);
    var ap = x.get('attributes')
    if(ap){
       o._attributes.unpack(ap);
    }
 }
-function FTreeNode_propertySave(x){
+function FUiTreeNode_propertySave(x){
    var o = this;
-   o.__base.FContainer.propertySave.call(o, x);
+   o.__base.FUiContainer.propertySave.call(o, x);
    x.set('type_name', o._typeName);
    x.set('attributes', o._attributes.pack());
 }
-function FTreeNode_loadConfig(x){
+function FUiTreeNode_loadConfig(x){
    var o = this;
    o.reset();
    o.propertyLoad(x);
@@ -928,7 +960,7 @@ function FTreeNode_loadConfig(x){
    o.setImage();
    o.setIcon(o._icon);
 }
-function FTreeNode_reload(t){
+function FUiTreeNode_reload(t){
    var o = this;
    if(t){
       o._tree.reload();
@@ -936,7 +968,7 @@ function FTreeNode_reload(t){
       o._tree.reloadNode(o);
    }
 }
-function FTreeNode_reloadParent(){
+function FUiTreeNode_reloadParent(){
    var o = this;
    if(o.parentNode){
       o._tree.reloadNode(o.parentNode);
@@ -944,7 +976,7 @@ function FTreeNode_reloadParent(){
       o._tree.reload();
    }
 }
-function FTreeNode_loadQuery(x){
+function FUiTreeNode_loadQuery(x){
    var o = this;
    var sl = RString.nvl(x.get('label'), o._label);
    var sn = RString.nvl(x.get('note'), o._note);
@@ -958,16 +990,16 @@ function FTreeNode_loadQuery(x){
       o.setVisible(o._statusDisplay);
    }
 }
-function FTreeNode_dispose(){
+function FUiTreeNode_dispose(){
    var o = this;
-   o.__base.FContainer.dispose.call(o);
+   o.__base.FUiContainer.dispose.call(o);
    o._hNodePanel = null;
    o._hImage = null;
    o._hIcon = null;
    o._hCheck = null;
    o._hLabel = null;
 }
-function FTreeNode_innerDump(s){
+function FUiTreeNode_innerDump(s){
    var o = this;
    s.append(RClass._typeNameOf(o));
    s.append('[level=',  o._level);
@@ -979,7 +1011,7 @@ function FTreeNode_innerDump(s){
    s.append(', child=', o._child);
    s.append(']');
 }
-function FTreeNode_findByName(n){
+function FUiTreeNode_findByName(n){
    var o = this;
    if(o.name == n){
       return o;
@@ -1004,7 +1036,7 @@ function FTreeNode_findByName(n){
    }
    return null;
 }
-function FTreeNode_findByUuid(u){
+function FUiTreeNode_findByUuid(u){
    var o = this;
    if(o._uuid == u){
       return o;
@@ -1028,7 +1060,7 @@ function FTreeNode_findByUuid(u){
    }
    return null;
 }
-function FTreeNode_pushChanged(trd){
+function FUiTreeNode_pushChanged(trd){
    var o = this;
     var d = new TNode();
     d.attrs = o._attributes;
@@ -1040,20 +1072,20 @@ function FTreeNode_pushChanged(trd){
       var cc = o.components.count;
       for(var n = 0; n < cc; n++){
          var c = o.components.value(n);
-         if(RClass.isClass(c, FTreeNode)){
+         if(RClass.isClass(c, FUiTreeNode)){
             c.pushChanged(trd);
          }
       }
    }
 }
-function FTreeNode_checkChanged(){
+function FUiTreeNode_checkChanged(){
    var o = this;
    if(o._checked != o.check()){
       return true;
    }
    return false;
 }
-function FTreeNode_getFullPath(){
+function FUiTreeNode_getFullPath(){
    var o = this;
    var path = '';
    if(o._label){
@@ -1067,50 +1099,50 @@ function FTreeNode_getFullPath(){
     }
     return path;
 }
-function FTreeNode_isFolder(){
+function FUiTreeNode_isFolder(){
    if(this._typeName){
        return (this._typeName._typeNameName == 'collections') ? true : false;
    }
 }
-function FTreeNodeType(o){
-   o = RClass.inherits(this, o, FComponent);
+function FUiTreeNodeType(o){
+   o = RClass.inherits(this, o, FUiComponent);
    o._linker   = RClass.register(o, new APtyString('_linker'));
    o._icon     = RClass.register(o, new APtyString('_icon'));
    o._service  = RClass.register(o, new APtyString('_service'));
    o._action   = RClass.register(o, new APtyString('_action'));
    o._config   = RClass.register(o, new APtyConfig('_config'));
-   o.linker    = FTreeNodeType_linker;
-   o.icon      = FTreeNodeType_icon;
-   o.service   = FTreeNodeType_service;
-   o.action    = FTreeNodeType_action;
-   o.get       = FTreeNodeType_get;
-   o.set       = FTreeNodeType_set;
-   o.innerDump = FTreeNodeType_innerDump;
+   o.linker    = FUiTreeNodeType_linker;
+   o.icon      = FUiTreeNodeType_icon;
+   o.service   = FUiTreeNodeType_service;
+   o.action    = FUiTreeNodeType_action;
+   o.get       = FUiTreeNodeType_get;
+   o.set       = FUiTreeNodeType_set;
+   o.innerDump = FUiTreeNodeType_innerDump;
    return o;
 }
-function FTreeNodeType_linker(){
+function FUiTreeNodeType_linker(){
    return this._linker;
 }
-function FTreeNodeType_icon(){
+function FUiTreeNodeType_icon(){
    return this._icon;
 }
-function FTreeNodeType_service(){
+function FUiTreeNodeType_service(){
    return this._service;
 }
-function FTreeNodeType_action(){
+function FUiTreeNodeType_action(){
    return this._action;
 }
-function FTreeNodeType_get(n){
+function FUiTreeNodeType_get(n){
    var o = this;
    return o._config ? o._config.get(n) : null;
 }
-function FTreeNodeType_set(n, v){
+function FUiTreeNodeType_set(n, v){
    var o = this;
    if(o._config){
       o._config.set(n, v)
    }
 }
-function FTreeNodeType_innerDump(s){
+function FUiTreeNodeType_innerDump(s){
    var o = this;
    s.append(RClass.dump(o));
    s.append('[linker=',  o._linker);
@@ -1119,8 +1151,8 @@ function FTreeNodeType_innerDump(s){
    s.append(', action=', o._action);
    s.append(']');
 }
-function FTreeView(o){
-   o = RClass.inherits(this, o, FContainer);
+function FUiTreeView(o){
+   o = RClass.inherits(this, o, FUiContainer);
    o._optionCheck     = RClass.register(o, new APtyBoolean('_optionCheck'), false);
    o._indent          = RClass.register(o, new APtyInteger('_indent'), 16);
    o._stylePanel      = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
@@ -1147,41 +1179,41 @@ function FTreeView(o){
    o.lsnsEnter        = new TListeners();
    o.lsnsLeave        = new TListeners();
    o.lsnsClick        = new TListeners();
-   o.onBuildPanel     = FTreeView_onBuildPanel;
-   o.onBuild          = FTreeView_onBuild;
-   o.onNodeCheckClick = RClass.register(o, new AEventClick('onNodeCheckClick'), FTreeView_onNodeCheckClick);
-   o.construct        = FTreeView_construct;
-   o.attributes       = FTreeView_attributes;
-   o.nodeTypes        = FTreeView_nodeTypes;
-   o.nodeColumns      = FTreeView_nodeColumns;
-   o.nodeLevels       = FTreeView_nodeLevels;
-   o.nodes            = FTreeView_nodes;
-   o.findType         = FTreeView_findType;
-   o.findByName       = FTreeView_findByName;
-   o.findByUuid       = FTreeView_findByUuid;
-   o.createChild      = FTreeView_createChild;
-   o.createNode       = FTreeView_createNode;
-   o.appendNode       = FTreeView_appendNode;
-   o.selectNode       = FTreeView_selectNode;
-   o.push             = FTreeView_push;
-   o.freeNode         = FTreeView_freeNode;
-   o.calculateHeight  = FTreeView_calculateHeight;
-   o.extendAuto       = FTreeView_extendAuto;
-   o.extendAll        = FTreeView_extendAll;
+   o.onBuildPanel     = FUiTreeView_onBuildPanel;
+   o.onBuild          = FUiTreeView_onBuild;
+   o.onNodeCheckClick = RClass.register(o, new AEventClick('onNodeCheckClick'), FUiTreeView_onNodeCheckClick);
+   o.construct        = FUiTreeView_construct;
+   o.attributes       = FUiTreeView_attributes;
+   o.nodeTypes        = FUiTreeView_nodeTypes;
+   o.nodeColumns      = FUiTreeView_nodeColumns;
+   o.nodeLevels       = FUiTreeView_nodeLevels;
+   o.nodes            = FUiTreeView_nodes;
+   o.findType         = FUiTreeView_findType;
+   o.findByName       = FUiTreeView_findByName;
+   o.findByUuid       = FUiTreeView_findByUuid;
+   o.createChild      = FUiTreeView_createChild;
+   o.createNode       = FUiTreeView_createNode;
+   o.appendNode       = FUiTreeView_appendNode;
+   o.selectNode       = FUiTreeView_selectNode;
+   o.push             = FUiTreeView_push;
+   o.freeNode         = FUiTreeView_freeNode;
+   o.calculateHeight  = FUiTreeView_calculateHeight;
+   o.extendAuto       = FUiTreeView_extendAuto;
+   o.extendAll        = FUiTreeView_extendAll;
    o.loadNode         = RMethod.empty;
-   o.refresh          = FTreeView_refresh;
-   o.filterNode       = FTreeView_filterNode;
-   o.clear            = FTreeView_clear;
-   o.dispose          = FTreeView_dispose;
+   o.refresh          = FUiTreeView_refresh;
+   o.filterNode       = FUiTreeView_filterNode;
+   o.clear            = FUiTreeView_clear;
+   o.dispose          = FUiTreeView_dispose;
    return o;
 }
-function FTreeView_onBuildPanel(e){
+function FUiTreeView_onBuildPanel(e){
    var o = this;
    o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
 }
-function FTreeView_onBuild(p){
+function FUiTreeView_onBuild(p){
    var o = this;
-   o.__base.FContainer.onBuild.call(o, p);
+   o.__base.FUiContainer.onBuild.call(o, p);
    var hr = RBuilder.appendTableRow(o._hPanel);
    var hc = RBuilder.appendTableCell(hr);
    var hnp = o._hNodePanel = RBuilder.appendDiv(hc, o.styleName('NodePanel'));
@@ -1189,9 +1221,9 @@ function FTreeView_onBuild(p){
    hnf.width = '100%';
    o._hHeadLine = RBuilder.appendTableRow(hnf);
    o._hNodeRows = hnf.children[0];
-   var ln = o._loadingNode = RClass.create(FTreeNode);
+   var ln = o._loadingNode = RClass.create(FUiTreeNode);
    ln._tree = o;
-   ln._label = RContext.get('FTreeView:loading');
+   ln._label = RContext.get('FUiTreeView:loading');
    ln._icon = o._iconLoading;
    ln.build(p);
    o.appendNode(ln);
@@ -1205,15 +1237,15 @@ function FTreeView_onBuild(p){
    }
    o.extendAuto();
 }
-function FTreeView_onNodeCheckClick(s, e){
+function FUiTreeView_onNodeCheckClick(s, e){
    var o = this;
-   if(s && RClass.isClass(s, FTreeNode)){
+   if(s && RClass.isClass(s, FUiTreeNode)){
       var f = s.check();
       var cs = s.controls;
       if(cs){
          for(var n = 0; n < cs.count; n++){
             var nd = cs.value(n);
-            if(nd && RClass.isClass(nd, FTreeNode)){
+            if(nd && RClass.isClass(nd, FUiTreeNode)){
                nd.setCheck(f);
             }
          }
@@ -1228,7 +1260,7 @@ function FTreeView_onNodeCheckClick(s, e){
             var pcc = pcs.count;
             for(var n=0; n<pcc; n++){
               var pnd = pcs.value(n);
-               if(pnd && RClass.isClass(pnd, FTreeNode)){
+               if(pnd && RClass.isClass(pnd, FUiTreeNode)){
                   if(pnd.check()){
                      return;
                   }
@@ -1240,9 +1272,9 @@ function FTreeView_onNodeCheckClick(s, e){
       }
    }
 }
-function FTreeView_construct(){
+function FUiTreeView_construct(){
    var o = this;
-   o.__base.FContainer.construct.call(o);
+   o.__base.FUiContainer.construct.call(o);
    o._attributes = new TAttributes();
    o._nodeTypes = new TDictionary();
    o._nodeColumns = new TDictionary();
@@ -1250,27 +1282,27 @@ function FTreeView_construct(){
    o._nodes = new TObjects();
    o._allNodes = new TObjects();
    o._freeNodes = new TObjects();
-   o._defaultNodeType = RClass.create(FTreeNodeType);
+   o._defaultNodeType = RClass.create(FUiTreeNodeType);
 }
-function FTreeView_attributes(){
+function FUiTreeView_attributes(){
    return this._attributes;
 }
-function FTreeView_nodeTypes(){
+function FUiTreeView_nodeTypes(){
    return this._nodeTypes;
 }
-function FTreeView_nodeColumns(){
+function FUiTreeView_nodeColumns(){
    return this._nodeColumns;
 }
-function FTreeView_nodeLevels(){
+function FUiTreeView_nodeLevels(){
    return this._nodeLevels;
 }
-function FTreeView_nodes(){
+function FUiTreeView_nodes(){
    return this._nodes;
 }
-function FTreeView_findType(p){
+function FUiTreeView_findType(p){
    return this._nodeTypes.get(p);
 }
-function FTreeView_findByName(p){
+function FUiTreeView_findByName(p){
    var o = this;
    var ns = o._allNodes;
    var c = ns.count();
@@ -1283,7 +1315,7 @@ function FTreeView_findByName(p){
       }
    }
 }
-function FTreeView_findByUuid(p){
+function FUiTreeView_findByUuid(p){
    var o = this;
    var ns = o._allNodes;
    var c = ns.count();
@@ -1296,22 +1328,22 @@ function FTreeView_findByUuid(p){
       }
    }
 }
-function FTreeView_createChild(x){
+function FUiTreeView_createChild(x){
    var o = this;
    var r = null;
    var n = x.name();
    switch(n){
       case 'TreeColumn':
-         r = RClass.create(FTreeColumn);
+         r = RClass.create(FUiTreeColumn);
          break;
       case 'TreeLevel':
-         r = RClass.create(FTreeLevel);
+         r = RClass.create(FUiTreeLevel);
          break;
       case 'TreeNodeType':
-         r = RClass.create(FTreeNodeType);
+         r = RClass.create(FUiTreeNodeType);
          break;
       case 'TreeNode':
-         r = RClass.create(FTreeNode);
+         r = RClass.create(FUiTreeNode);
          break;
       default:
          throw new TError(o, 'Unknown child type. (config={1})', x.xml());
@@ -1319,11 +1351,11 @@ function FTreeView_createChild(x){
    r._tree = o;
    return r;
 }
-function FTreeView_createNode(){
+function FUiTreeView_createNode(){
    var o = this;
    var n = o._freeNodes.pop();
    if(!n){
-      var n = RClass.create(FTreeNode);
+      var n = RClass.create(FUiTreeNode);
       n._tree = o;
       n.build(o._hPanel);
    }
@@ -1331,23 +1363,13 @@ function FTreeView_createNode(){
    o._allNodes.push(n);
    return n;
 }
-function FTreeView_appendNode(n, p){
+function FUiTreeView_appendNode(n, p){
    var o = this;
    if(!n._statusLinked){
       var nh = n._hPanel;
       if(p){
-         var nr = p._hPanel.rowIndex;
-         var ns = p._nodes;
-         if(ns){
-            var nc = ns.count();
-            for(var i = nc - 1; i >= 0; i--){
-               var pn = ns.get(i)
-               if(pn._statusLinked){
-                  nr = pn._hPanel.rowIndex;
-                  break;
-               }
-            }
-         }
+         var nl = p.searchLast();
+         var nr = nl._hPanel.rowIndex;
          if(nh.parentElement){
             if(nh.rowIndex > nr){
                nr++;
@@ -1365,7 +1387,7 @@ function FTreeView_appendNode(n, p){
       n._statusLinked = true;
    }
 }
-function FTreeView_selectNode(n, s){
+function FUiTreeView_selectNode(n, s){
    var o = this;
    var fn = o._focusNode;
    if(s){
@@ -1394,22 +1416,22 @@ function FTreeView_selectNode(n, s){
       }
    }
 }
-function FTreeView_push(p){
+function FUiTreeView_push(p){
    var o = this;
-   o.__base.FContainer.push.call(o, p);
+   o.__base.FUiContainer.push.call(o, p);
    p._tree = o;
-   if(RClass.isClass(p, FTreeColumn)){
+   if(RClass.isClass(p, FUiTreeColumn)){
       o._nodeColumns.set(p.name(), p);
-   }else if(RClass.isClass(p, FTreeLevel)){
+   }else if(RClass.isClass(p, FUiTreeLevel)){
       o._nodeLevels.set(p.id(), p);
-   }else if(RClass.isClass(p, FTreeNodeType)){
+   }else if(RClass.isClass(p, FUiTreeNodeType)){
       o._nodeTypes.set(p.linker(), p);
-   }else if(RClass.isClass(p, FTreeNode)){
+   }else if(RClass.isClass(p, FUiTreeNode)){
       o._nodes.push(p);
       o._allNodes.push(p);
    }
 }
-function FTreeView_freeNode(p){
+function FUiTreeView_freeNode(p){
    var o = this;
    if(p._statusLinked){
       p._statusLinked = false;
@@ -1418,7 +1440,7 @@ function FTreeView_freeNode(p){
       o._freeNodes.push(p);
    }
 }
-function FTreeView_calculateHeight(){
+function FUiTreeView_calculateHeight(){
    var o = this;
    var ns = o._allNodes;
    var c = ns.count();
@@ -1430,7 +1452,7 @@ function FTreeView_calculateHeight(){
    }
    return c * 29;
 }
-function FTreeView_extendAuto(n){
+function FUiTreeView_extendAuto(n){
    var o = this;
    var ns = n ? n._nodes : o._nodes;
    if(ns){
@@ -1446,7 +1468,7 @@ function FTreeView_extendAuto(n){
       }
    }
 }
-function FTreeView_extendAll(n, f){
+function FUiTreeView_extendAll(n, f){
    var o = this;
    var ns = n ? n._nodes : o._nodes;
    if(ns){
@@ -1460,13 +1482,13 @@ function FTreeView_extendAll(n, f){
       }
    }
 }
-function FTreeView_refresh(){
+function FUiTreeView_refresh(){
    var o = this;
    if(o.parentObj){
       o.parentObj.style.height = o.calculateHeight();
    }
 }
-function FTreeView_filterNode(pl, pa){
+function FUiTreeView_filterNode(pl, pa){
    var o = this;
    var nc = o._allNodes.count();
    var nl = null;
@@ -1506,7 +1528,7 @@ function FTreeView_filterNode(pl, pa){
       }
    }
 }
-function FTreeView_clear(){
+function FUiTreeView_clear(){
    var o = this;
    var ns = o._nodes;
    if(ns){
@@ -1518,9 +1540,9 @@ function FTreeView_clear(){
    }
    o._allNodes.clear();
 }
-function FTreeView_dispose(){
+function FUiTreeView_dispose(){
    var o = this;
-   o.__base.FContainer.dispose.call(o);
+   o.__base.FUiContainer.dispose.call(o);
    var ns = o._nodes;
    if(ns){
       ns.dispose();

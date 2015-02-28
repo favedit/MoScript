@@ -33,7 +33,17 @@
      <PathMerger source='/4.3.4-control-page'       target='/ajs/control-page.js'/>
      <PathMerger source='/4.3.5-control-frame'      target='/ajs/control-frame.js'/>
 
-     <PathMerger source='/5.1.1-stage'              target='/ajs/stage.js'/>
+     <PathMerger source='/5.1.1-data-control'       target='/ajs/data-control.js'/>
+     <PathMerger source='/5.1.2-data-core'          target='/ajs/data-core.js'/>
+     <PathMerger source='/5.2.1-data-form'          target='/ajs/data-form.js'/>
+     <PathMerger source='/5.2.2-data-table'         target='/ajs/data-table.js'/>
+
+     <PathMerger source='/6.1.1-design'             target='/ajs/design.js'/>
+     <PathMerger source='/6.2.1-design-texture'     target='/ajs/design-texture.js'/>
+     <PathMerger source='/6.2.2-design-model'       target='/ajs/design-model.js'/>
+     <PathMerger source='/6.2.3-design-material'    target='/ajs/design-material.js'/>
+     <PathMerger source='/6.2.4-design-template'    target='/ajs/design-template.js'/>
+     <PathMerger source='/6.2.5-design-scene'       target='/ajs/design-scene.js'/>
   </PathMergerCollection>
    <!-- 文件合并 -->
   <FileMergerCollection>
@@ -60,7 +70,7 @@
         <File source='/ajs/engine-3d-resource.js'/>
         <File source='/ajs/engine-3d-render.js'/>
      </FileMerger>
-     <FileMerger target='/ajs/mo-control.js'>
+     <FileMerger target='/ajs/mo-base-control.js'>
         <File source='/ajs/control.js'/>
         <File source='/ajs/control-core.js'/>
         <File source='/ajs/control-form.js'/>
@@ -71,12 +81,31 @@
         <File source='/ajs/control-tree.js'/>
         <File source='/ajs/control-frame.js'/>
      </FileMerger>
+     <FileMerger target='/ajs/mo-data-control.js'>
+        <File source='/ajs/data-control.js'/>
+        <File source='/ajs/data-core.js'/>
+        <File source='/ajs/data-form.js'/>
+        <File source='/ajs/data-table.js'/>
+     </FileMerger>
+     <FileMerger target='/ajs/mo-control.js'>
+        <File source='/ajs/mo-base-control.js'/>
+        <File source='/ajs/mo-data-control.js'/>
+     </FileMerger>
+     <FileMerger target='/ajs/mo-design.js'>
+        <File source='/ajs/design.js'/>
+        <File source='/ajs/design-texture.js'/>
+        <File source='/ajs/design-model.js'/>
+        <File source='/ajs/design-material.js'/>
+        <File source='/ajs/design-template.js'/>
+        <File source='/ajs/design-scene.js'/>
+     </FileMerger>
      <FileMerger target='/ajs/mo.js'>
         <File source='/ajs/mo-core.js'/>
         <File source='/ajs/mo-graphic.js'/>
         <File source='/ajs/mo-engine.js'/>
         <File source='/ajs/mo-graphic.js'/>
         <File source='/ajs/mo-control.js'/>
+        <File source='/ajs/mo-design.js'/>
      </FileMerger>
   </FileMergerCollection>
 </Configuration>

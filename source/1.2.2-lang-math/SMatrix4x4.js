@@ -5,27 +5,39 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function SMatrix4x4(o){
-   if(!o){o = this;}
+function SMatrix4x4(){
+   var o = this;
    //..........................................................
    // @attribute
-   o._data      = new Array(16);
+   o._data           = new Array(16);
    //..........................................................
    // @method
-   o.data       = SMatrix4x4_data;
+   o.data            = SMatrix4x4_data;
    // @method
-   o.equalsData = SMatrix4x4_equalsData;
-   o.assignData = SMatrix4x4_assignData;
-   o.appendData = SMatrix4x4_appendData;
-   o.translate  = SMatrix4x4_translate;
-   o.rotationX  = SMatrix4x4_rotationX;
-   o.rotationY  = SMatrix4x4_rotationY;
-   o.rotationZ  = SMatrix4x4_rotationZ;
-   o.rotation   = SMatrix4x4_rotation;
-   o.scale      = SMatrix4x4_scale;
-   o.invert     = SMatrix4x4_invert;
-   o.transform  = SMatrix4x4_transform;
-   o.writeData  = SMatrix4x4_writeData;
+   o.isIdentityData  = SMatrix3d_isIdentityData;
+   o.identityData    = SMatrix3d_identityData;
+   // @method
+   o.equalsData      = SMatrix4x4_equalsData;
+   o.assignData      = SMatrix4x4_assignData;
+   o.appendData      = SMatrix4x4_appendData;
+   // @method
+   o.translate       = SMatrix4x4_translate;
+   o.rotationX       = SMatrix4x4_rotationX;
+   o.rotationY       = SMatrix4x4_rotationY;
+   o.rotationZ       = SMatrix4x4_rotationZ;
+   o.rotation        = SMatrix4x4_rotation;
+   o.scale           = SMatrix4x4_scale;
+   // @method
+   o.invert          = SMatrix4x4_invert;
+   o.transform       = SMatrix4x4_transform;
+   o.transformPoint3 = SMatrix4x4_transformPoint3;
+   // @method
+   o.buildQuaternion = SMatrix4x4_buildQuaternion;
+   o.build           = SMatrix4x4_build;
+   // @method
+   o.writeData       = SMatrix4x4_writeData;
+   // @method
+   o.toString        = SMatrix4x4_toString;
    return o;
 }
 
@@ -37,6 +49,38 @@ function SMatrix4x4(o){
 //============================================================
 function SMatrix4x4_data(){
    return this._data;
+}
+
+//============================================================
+// <T>是否为单位化数据。</T>
+//
+// @method
+// @return 是否单位化
+//============================================================
+function SMatrix3d_isIdentityData(){
+   var d = this._data;
+   var v = RMath.identity4x4;
+   for(var i = 0; i < 16; i++){
+      if(d[i] != v[i]){
+         return false;
+      }
+   }
+   return true;
+}
+
+//============================================================
+// <T>单位化处理。</T>
+//
+// @method
+//============================================================
+function SMatrix3d_identityData(){
+   var o = this;
+   var d = o._data;
+   var v = RMath.identity4x4;
+   for(var i = 0; i < 16; i++){
+      d[i] = v[i];
+   }
+   return o;
 }
 
 //============================================================
@@ -326,7 +370,7 @@ function SMatrix4x4_scale(x, y, z){
 function SMatrix4x4_invert(){
    var o = this;
    var d = o._data;
-   var v = RMath.float16;
+   var v = RValue.float16;
    // 计算矩阵
    v[ 0] =  (d[ 5] * d[10] * d[15]) - (d[ 5] * d[11] * d[14]) - (d[ 9] * d[ 6] * d[15]) + (d[ 9] * d[ 7] * d[14]) + (d[13] * d[ 6] * d[11]) - (d[13] * d[ 7] * d[10]);
    v[ 4] = -(d[ 4] * d[10] * d[15]) + (d[ 4] * d[11] * d[14]) + (d[ 8] * d[ 6] * d[15]) - (d[ 8] * d[ 7] * d[14]) - (d[12] * d[ 6] * d[11]) + (d[12] * d[ 7] * d[10]);
@@ -346,10 +390,10 @@ function SMatrix4x4_invert(){
    v[15] =  (d[ 0] * d[ 5] * d[10]) - (d[ 0] * d[ 6] * d[ 9]) - (d[ 4] * d[ 1] * d[10]) + (d[ 4] * d[ 2] * d[ 9]) + (d[ 8] * d[ 1] * d[ 6]) - (d[ 8] * d[ 2] * d[ 5]);
    // 计算内容
    var r = d[ 0] * v[ 0] + d[ 1] * v[ 4] + d[ 2] * v[ 8] + d[ 3] * v[12];
-   if(r == 0.0){
+   if(r == 0){
      return false;
    }
-   r = 1.0 / r;
+   r = 1 / r;
    // 设置内容
    for(var i = 0; i < 16; i++){
       d[i] = v[i] * r;
@@ -366,14 +410,109 @@ function SMatrix4x4_invert(){
 // @param pc:count:Integer 个数
 //==========================================================
 function SMatrix4x4_transform(po, pi, pc){
-   var o = this;
-   var d = o._data;
+   var d = this._data;
    for(var i = 0; i < pc; i++){
       var n = (i << 1) + i;
       po[n    ] = (pi[n] * d[ 0]) + (pi[n + 1] * d[ 4]) +(pi[n + 2] * d[ 8]) + d[12];
       po[n + 1] = (pi[n] * d[ 1]) + (pi[n + 1] * d[ 5]) +(pi[n + 2] * d[ 9]) + d[13];
       po[n + 2] = (pi[n] * d[ 2]) + (pi[n + 1] * d[ 6]) +(pi[n + 2] * d[10]) + d[14];
    }
+}
+
+//==========================================================
+// <T>变换顶点数据。</T>
+//
+// @method
+// @param pi:inputPoint:SPoint3 输入顶点
+// @param po:inputPoint:SPoint3 输出顶点
+//==========================================================
+function SMatrix4x4_transformPoint3(pi, po){
+   var d = this._data;
+   var x = (pi.x * d[ 0]) + (pi.y * d[ 4]) +(pi.z * d[ 8]) + d[12];
+   var y = (pi.x * d[ 1]) + (pi.y * d[ 5]) +(pi.z * d[ 9]) + d[13];
+   var z = (pi.x * d[ 2]) + (pi.y * d[ 6]) +(pi.z * d[10]) + d[14];
+   var r = null;
+   if(po){
+      r = po;
+   }else{
+      r = new SPoint3();
+   }
+   r.set(x, y, z);
+   return r;
+}
+
+//============================================================
+// <T>构建一个矩阵。</T>
+//
+// @method
+// @param t:translation:SPoint3 位移
+// @param r:quaternion:SQuaternion 旋转
+// @param s:scale:SVector3 缩放
+//============================================================
+function SMatrix4x4_build(t, r, s){
+   var d = this._data;
+   var x2 = r.x * r.x;
+   var y2 = r.y * r.y;
+   var z2 = r.z * r.z;
+   var xy = r.x * r.y;
+   var xz = r.x * r.z;
+   var yz = r.y * r.z;
+   var wx = r.w * r.x;
+   var wy = r.w * r.y;
+   var wz = r.w * r.z;
+   d[ 0] = (1 - 2 * (y2 + z2)) * s.x;
+   d[ 1] = 2 * (xy - wz) * s.x;
+   d[ 2] = 2 * (xz + wy) * s.x;
+   d[ 3] = 0;
+   d[ 4] = 2 * (xy + wz) * s.y;
+   d[ 5] = (1 - 2 * (x2 + z2)) * s.y;
+   d[ 6] = 2 * (yz - wx) * s.y;
+   d[ 7] = 0;
+   d[ 8] = 2 * (xz - wy) * s.z;
+   d[ 9] = 2 * (yz + wx) * s.z;
+   d[10] = (1 - 2 * (x2 + y2)) * s.z;
+   d[11] = 0;
+   d[12] = t.x;
+   d[13] = t.y;
+   d[14] = t.z;
+   d[15] = 1;
+}
+
+//============================================================
+// <T>构建一个矩阵。</T>
+//
+// @method
+// @param t:translation:SPoint3 位移
+// @param r:quaternion:SQuaternion 旋转
+// @param s:scale:SVector3 缩放
+//============================================================
+function SMatrix4x4_buildQuaternion(r){
+   var d = this._data;
+   var x2 = r.x * r.x;
+   var y2 = r.y * r.y;
+   var z2 = r.z * r.z;
+   var xy = r.x * r.y;
+   var xz = r.x * r.z;
+   var yz = r.y * r.z;
+   var wx = r.w * r.x;
+   var wy = r.w * r.y;
+   var wz = r.w * r.z;
+   d[ 0] = 1 - 2 * (y2 + z2);
+   d[ 1] = 2 * (xy - wz);
+   d[ 2] = 2 * (xz + wy);
+   d[ 3] = 0;
+   d[ 4] = 2 * (xy + wz);
+   d[ 5] = 1 - 2 * (x2 + z2);
+   d[ 6] = 2 * (yz - wx);
+   d[ 7] = 0;
+   d[ 8] = 2 * (xz - wy);
+   d[ 9] = 2 * (yz + wx);
+   d[10] = 1 - 2 * (x2 + y2);
+   d[11] = 0;
+   d[12] = 0;
+   d[13] = 0;
+   d[14] = 0;
+   d[15] = 1;
 }
 
 //==========================================================
@@ -386,20 +525,45 @@ function SMatrix4x4_transform(po, pi, pc){
 function SMatrix4x4_writeData(d, i){
    var o = this;
    var pd = o._data;
-   d[i + 0] = pd[ 0];
-   d[i + 1] = pd[ 4];
-   d[i + 2] = pd[ 8];
-   d[i + 3] = pd[12];
-   d[i + 4] = pd[ 1];
-   d[i + 5] = pd[ 5];
-   d[i + 6] = pd[ 9];
-   d[i + 7] = pd[13];
-   d[i + 8] = pd[ 2];
-   d[i + 9] = pd[ 6];
-   d[i +10] = pd[10];
-   d[i +11] = pd[14];
-   d[i +12] = pd[ 3];
-   d[i +13] = pd[ 7];
-   d[i +14] = pd[11];
-   d[i +15] = pd[15];
+   d[i++] = pd[ 0];
+   d[i++] = pd[ 4];
+   d[i++] = pd[ 8];
+   d[i++] = pd[12];
+   d[i++] = pd[ 1];
+   d[i++] = pd[ 5];
+   d[i++] = pd[ 9];
+   d[i++] = pd[13];
+   d[i++] = pd[ 2];
+   d[i++] = pd[ 6];
+   d[i++] = pd[10];
+   d[i++] = pd[14];
+   d[i++] = pd[ 3];
+   d[i++] = pd[ 7];
+   d[i++] = pd[11];
+   d[i++] = pd[15];
+}
+
+//==========================================================
+// <T>获得字符串。</T>
+//
+// @method
+// @return String 字符串
+//==========================================================
+function SMatrix4x4_toString(){
+   var d = this._data;
+   var r = new TString();
+   for(var y = 0; y < 4; y++){
+      if(y > 0){
+         r.append('|');
+      }
+      for(var x = 0; x < 4; x++){
+         var i = y * 4 + x;
+         var v = d[i];
+         if(x > 0){
+            r.append(',');
+         }
+         r.append(RFloat.format(v, 0, null, 3, null));
+      }
+   }
+   return r.flush();
 }

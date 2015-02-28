@@ -28,8 +28,11 @@ function MStyle(o){
 // @return String 样式名称
 //==========================================================
 function MStyle_styleName(n, c){
-   var r = RClass.find(c ? c : this, true);
-   return r.style(n);
+   var o = this;
+   var f = c ? c : o;
+   var tn = RClass.name(f);
+   var t = RClass.forName(tn);
+   return t.style(n);
 }
 
 //==========================================================
@@ -40,7 +43,7 @@ function MStyle_styleName(n, c){
 // @return String 图标名称
 //==========================================================
 function MStyle_styleIcon(n, c){
-   return 'ctl.' + RClass.name(c ? c : this, true) + '_' + n;
+   return RClass.name(c ? c : this, true) + '_' + n;
 }
 
 //==========================================================
@@ -51,5 +54,5 @@ function MStyle_styleIcon(n, c){
 // @return String 图标路径
 //==========================================================
 function MStyle_styleIconPath(n, c){
-   return RResource.iconPath('ctl.' + RClass.name(c ? c : this, true) + '_' + n);
+   return RResource.iconPath(RClass.name(c ? c : this, true) + '_' + n);
 }

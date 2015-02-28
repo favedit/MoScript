@@ -2,6 +2,7 @@
 /* html                                                   */
 /* ------------------------------------------------------ */
 html{
+   width:100%;
    height:100%;
 }
 
@@ -13,6 +14,7 @@ body{
    height:100%;
    margin: 0px;
 }
+
 /*body
    {
    font-size:9pt;
@@ -24,8 +26,7 @@ body{
    scrollbar-arrow-color:#666666;
    scrollbar-track-color:#F0F0F0;
    scrollbar-darkshadow-color:#FFFFFF;
-   }
-*/
+   }*/
 
 /* ------------------------------------------------------ */
 /* Href                                                   */
@@ -34,6 +35,7 @@ a{
    text-decoration:none;
    color :blue;
 }
+
 a:hover{
    text-decoration:underline;
 }
@@ -43,17 +45,19 @@ a:hover{
 /* ------------------------------------------------------ */
 td{
    font-family:"Microsoft YaHei"; 
-   font-family:"NSimSun";
    font-size:9pt;
 }
+
 div{
    font-family:"Microsoft YaHei";
    font-size:9pt;
 }
+
 span{
    font-family:"Microsoft YaHei";
    font-size:9pt;
 }
+
 th{
    font-family:"Microsoft YaHei"; 
    font-size:9pt;
@@ -63,15 +67,16 @@ th{
 /* Input                                                  */
 /* ------------------------------------------------------ */
 input{
-   font-family:"Microsoft YaHei"; 
+   font-family:"NSimSun";
    font-size:9pt;
-   border:1px solid #999999;
 }
+
 select{
    font-family:"NSimSun";
    font-size:9pt;
    border:1px solid #999999;
 }
+
 textarea{
    font-family:"NSimSun"; font-size:9pt;
    border:1px solid #999999;
@@ -80,23 +85,19 @@ textarea{
 /* ------------------------------------------------------ */
 /* Body                                                   */
 /* ------------------------------------------------------ */
-.bodyCatalog
-   {
+.bodyCatalog{
    margin:0; padding:0;
-   }
-.bodyMain
-   {
+}
+
+.bodyMain{
    margin:0; padding:0;
    background-color:#FFFFDD;
-   }
+}
 
-.bodyLogic
-   {
+.bodyLogic{
    margin:0; padding:0;
-   }
+}
 
-.Tag_Check
-   {
+.Tag_Check{
    border:0; cursor:hand;
-   }
-   
+}

@@ -8,7 +8,7 @@
 //==========================================================
 function AEventMouseLeave(n){
    var o = this;
-   AEvent(o, n, 'mouseleave', 'onmouseleave');
+   AEvent.call(o, n, 'mouseleave', 'onmouseleave');
    //..........................................................
    // @attribute
    o._logger = false;

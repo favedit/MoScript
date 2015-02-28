@@ -8,31 +8,32 @@ function FFrameConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o.scope            = EScope.Page;
+   o._scopeCd         = EScope.Local;
    // @attribute TMap<String, MForm> 按照名称保存表单的集合
-   o.forms            = null;
-   o.freeForms        = null;
-   o.formsLoaded      = null;
+   o._frames          = null;
+   //o._freeFrames      = null;
+   //o._framesLoaded    = null;
    // @attribute TMap<String, MForm> 按照标识保存表单的集合
-   o.formIds          = null;
+   //o._formIds          = null;
    // @listener
-   o.lsnsLoaded       = null;
-   o.events           = null;
+   //o.lsnsLoaded       = null;
+   //o.events           = null;
    //..........................................................
    // @event
-   o.onProcessLoaded  = FFrameConsole_onProcessLoaded;
+   //o.onProcessLoaded  = FFrameConsole_onProcessLoaded;
    //..........................................................
    // @method
    o.construct        = FFrameConsole_construct;
-   o.createFromName   = FFrameConsole_createFromName;
-   o.get              = FFrameConsole_get;
+   // @method
+   o.create           = FFrameConsole_create;
    o.find             = FFrameConsole_find;
-   o.hiddenAll        = FFrameConsole_hiddenAll;
-   o.process          = FFrameConsole_process;
-   o.loadEvents       = FFrameConsole_loadEvents;
-   o.processEvent     = FFrameConsole_processEvent;
-   o.free             = FFrameConsole_free;
-   o.dispose          = FFrameConsole_dispose;
+   o.get              = FFrameConsole_get;
+   //o.hiddenAll        = FFrameConsole_hiddenAll;
+   //o.process          = FFrameConsole_process;
+   //o.loadEvents       = FFrameConsole_loadEvents;
+   //o.processEvent     = FFrameConsole_processEvent;
+   //o.free             = FFrameConsole_free;
+   //o.dispose          = FFrameConsole_dispose;
    return o;
 }
 
@@ -43,91 +44,98 @@ function FFrameConsole(o){
 //==========================================================
 function FFrameConsole_construct(){
    var o = this;
-   o.forms = new TMap();
-   o.formIds = new TMap();
-   o.formsLoaded = new TMap();
-   o.lsnsLoaded = new TListeners();
-   o.freeForms = new TList();
-   o.events = new TMap();
+   o._frames = new TMap();
+   //o._formIds = new TMap();
+   //o._framesLoaded = new TMap();
+   //o.lsnsLoaded = new TListeners();
+   //o._freeFrames = new TList();
+   //o.events = new TMap();
 }
 
 //==========================================================
 // <T>构建指定表单名称的控件对象，并放置在指定HTML页面ID的位置。</T>
 //
 // @method
-// @param n:name:String 表单名称
-// @param h:html:HTML 页面元素的放置位置
-// @param b:Builder:Builder 构建器
-// @param t:type:String 表单类型
-// @return MForm 表单实例
+// @param c:control:FUiControl 控件
+// @param n:name:String 名称
+// @return FUiFrame 页面控件
 //==========================================================
-function FFrameConsole_createFromName(n, h, b, t){
+function FFrameConsole_create(c, n){
    var o = this;
    // 检查是否有未使用的表单
-   var fs = o.freeForms;
-   if(!fs.isEmpty()){
-      var c = fs.count;
-      for(var i=0; i<c; i++){
-         if(fs.get(i).name == n){
-            var f = fs.remove(i);
-            f.setPanel(h);
-            return f;
-         }
-      }
-   }
+   //var fs = o._freeFrames;
+   //if(!fs.isEmpty()){
+   //   var c = fs.count();
+   //   for(var i = 0; i < c; i++){
+   //      var f = fs.get(i);
+   //      if(f.name() == n){
+   //         var f = fs.remove(i);
+   //         f.setPanel(h);
+   //         return f;
+   //      }
+   //   }
+   //}
    // 获得表单定义
-   var fdc = RConsole.find(FFormDefineConsole);
-   var fx = fdc.find(n, t);
-   var fd = t + ':' + n;
-   if(!o.formsLoaded.contains(fd)){
-      var es = fdc.getEvents(n);
-      if(es){
-         o.loadEvents(es);
-      }
-      o.formsLoaded.set(fd, true);
-   }
+   var dc = RConsole.find(FDescribeFrameConsole);
+   var x = dc.load(n);
+   // 构建处理
+   var f = RControl.build(null, x, null, c._hPanel);
+   //var fx = fdc.find(n, t);
+   //var fd = t + ':' + n;
+   //if(!o._framesLoaded.contains(fd)){
+   //   var es = fdc.getEvents(n);
+   //   if(es){
+   //      o.loadEvents(es);
+   //   }
+   //   o._framesLoaded.set(fd, true);
+   //}
    // 创建表单实例
-   var c = RClass.create('F' + fx.name);
-   RControl.innerCreate(c, fx);
-   c.psInitialize();
-   if(!b){
-      b = RWindow.builder();
-   }
-   c.psBuild(h, b);
-   c.dsInitialize();
-   c.setVisible(false);
+   //var c = RClass.create('F' + fx.name);
+   //RControl.innerCreate(c, fx);
+   //c.psInitialize();
+   //if(!b){
+   //   b = RWindow.builder();
+   //}
+   //c.psBuild(h, b);
+   //c.dsInitialize();
+   //c.setVisible(false);
    // 存储表单实例
-   c.formId = fdc.nextFormId();
-   o.formIds.set(c.formId, c);
-   o.forms.set(n, c);
-   return c;
+   //c.formId = fdc.nextFormId();
+   //o._formIds.set(c.formId, c);
+   //o._frames.set(n, c);
+   return f;
 }
 
 //==========================================================
-// <T>获取指定表单名称的控件。</T>
+// <T>根据名称查找表单实例，如果不存在则返回空。</T>
 //
 // @method
-// @param id:id:Integer 表单id
-// @return FWebForm 表单控件结构
+// @param n:name:String 名称
+// @return FUiFrame 页面控件
 //==========================================================
-function FFrameConsole_get(id){
-   return o.formIds.get(id); 
+function FFrameConsole_find(n){
+   return this._frames.get(n); 
 }
 
 //==========================================================
 // <T>根据名称查找表单实例，如果不存在则创建一个。</T>
 //
 // @method
-// @param n:name:String 表单名称
-// @param h:html:HTML 页面元素的放置位置
-// @param b:Builder:Builder 构建器
-// @return MForm 表单实例
+// @param c:control:FUiControl 控件
+// @param n:name:String 名称
+// @param h:html:HtmlTag 页面元素
+// @return FUiFrame 页面控件
 //==========================================================
-function FFrameConsole_find(n, h, b){
+function FFrameConsole_get(c, n, h){
    var o = this;
-   var f = o.forms.get(n);
+   var fs = o._frames;
+   var f = fs.get(n);
    if(!f){
-      f = o.createFromName(n, h, b);
+      f = o.create(c, n);
+      if(h){
+         f.setPanel(h);
+      }
+      fs.set(n, f);
    }
    return f;
 }
@@ -135,7 +143,7 @@ function FFrameConsole_find(n, h, b){
 //==========================================================
 function FFrameConsole_hiddenAll(){
    var o = this;
-   var fs = o.forms;
+   var fs = o._frames;
    var fc = fs.count;
    for(var n=0; n<fc; n++){
       fs.value(n).setVisible(false);
@@ -283,7 +291,7 @@ function FFrameConsole_processEvent(e){
 //==========================================================
 function FFrameConsole_free(f){
    f.setVisible(false);
-   this.freeForms.push(f);
+   this._freeFrames.push(f);
 }
 
 //==========================================================
@@ -297,10 +305,10 @@ function FFrameConsole_free(f){
 //==========================================================
 function FFrameConsole_dispose(){
    var o = this;
-   RMemory.free(o.forms);
-   RMemory.free(o.formIds);
-   RMemory.free(o.formsLoaded);
-   o.forms = null;
-   o.formIds = null;
-   o.formsLoaded = null;
+   RMemory.free(o._frames);
+   RMemory.free(o._formIds);
+   RMemory.free(o._framesLoaded);
+   o._frames = null;
+   o._formIds = null;
+   o._framesLoaded = null;
 }

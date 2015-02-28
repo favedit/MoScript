@@ -5,7 +5,7 @@
 // @history 150115
 //==========================================================
 function FRs3SceneLight(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @attribute 属性
    o._typeName           = null;
@@ -44,7 +44,7 @@ function FRs3SceneLight(o){
 //==========================================================
 function FRs3SceneLight_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FRs3Object.construct.call(o);
    o._shadow1 = new SRs3SceneShadow();
    o._shadow2 = new SRs3SceneShadow();
    o._shadow3 = new SRs3SceneShadow();
@@ -90,22 +90,23 @@ function FRs3SceneLight_camera(){
 //==========================================================
 function FRs3SceneLight_unserialize(p){
    var o = this;
+   o.__base.FRs3Object.unserialize.call(o, p);
    // 读取属性
    o._typeName = p.readString();
    // 读取配置
-   o._optionTrack = p.readInt32();
+   //o._optionTrack = p.readInt32();
    // 读取阴影
-   o._shadow1.unserialize(p);
-   o._shadow2.unserialize(p);
-   o._shadow3.unserialize(p);
-   o._shadowAmbientMin = p.readFloat();
-   o._shadowAmbientMax = p.readFloat();
-   o._shadowAmbientThick = p.readFloat();
-   o._shadowAmbientRange = p.readFloat();
-   o._shadowMerge1Base = p.readFloat();
-   o._shadowMerge1Rate = p.readFloat();
-   o._shadowMerge2Base = p.readFloat();
-   o._shadowMerge2Rate = p.readFloat();
+   //o._shadow1.unserialize(p);
+   //o._shadow2.unserialize(p);
+   //o._shadow3.unserialize(p);
+   //o._shadowAmbientMin = p.readFloat();
+   //o._shadowAmbientMax = p.readFloat();
+   //o._shadowAmbientThick = p.readFloat();
+   //o._shadowAmbientRange = p.readFloat();
+   //o._shadowMerge1Base = p.readFloat();
+   //o._shadowMerge1Rate = p.readFloat();
+   //o._shadowMerge2Base = p.readFloat();
+   //o._shadowMerge2Rate = p.readFloat();
    // 读取材质
    o._material.unserialize(p);
    // 读取相机

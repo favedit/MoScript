@@ -8,7 +8,7 @@
 //==========================================================
 function AEventResize(n){
    var o = this;
-   AEvent(o, n, 'resize', 'onresize');
+   AEvent.call(o, n, 'resize', 'onresize');
    //..........................................................
    // @method
    o.attach = AEventResize_attach;

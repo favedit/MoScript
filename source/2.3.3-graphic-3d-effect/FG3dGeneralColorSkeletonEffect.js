@@ -8,7 +8,7 @@ function FG3dGeneralColorSkeletonEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    //..........................................................
    // @attribute
-   o._code            = 'shadow.color.skeleton';
+   o._code            = 'general.color.skeleton';
    // @attribute
    o._supportSkeleton = true;
    //..........................................................
@@ -26,7 +26,7 @@ function FG3dGeneralColorSkeletonEffect(o){
 //==========================================================
 function FG3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    // 获得参数
    var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
@@ -36,7 +36,7 @@ function FG3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    var mi = m.info();
    o.bindMaterial(m);
    // 绑定所有属性流
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -49,7 +49,7 @@ function FG3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    p.setParameter('fc_ambient_color', mi.ambientColor);
    p.setParameter('fc_diffuse_color', mi.diffuseColor);
    p.setParameter('fc_specular_color', mi.specularColor);
-   p.setParameter4('fc_specular', mi.specularBase, mi.specularRate, mi.specularAverage, mi.specularShadow);
+   p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);

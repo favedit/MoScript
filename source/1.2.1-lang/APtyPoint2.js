@@ -9,7 +9,7 @@
 //==========================================================
 function APtyPoint2(n, l, x, y){
    var o = this;
-   AProperty(o, n, l);
+   AProperty.call(o, n, l);
    //..........................................................
    // @attribute
    o._x       = RInteger.nvl(x);

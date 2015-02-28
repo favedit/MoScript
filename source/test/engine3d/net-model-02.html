@@ -8,12 +8,6 @@
 <SCRIPT language='javascript' src='../../ajs/mo-engine.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/stage.js'></SCRIPT>
 <SCRIPT language='javascript' src='../../ajs/context_cn.js'></SCRIPT>
-
-<SCRIPT language='javascript' src='../../3.3.2-engine-3d-resource/FNetRs3ModelStream.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../3.3.2-engine-3d-resource/FNetRs3ModelMesh.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../3.3.2-engine-3d-resource/FNetRs3Model.js'></SCRIPT>
-<SCRIPT language='javascript' src='../../3.3.2-engine-3d-resource/FNetRs3ModelConsole.js'></SCRIPT>
-
 </HEAD>
 
 <SCRIPT>
@@ -57,24 +51,23 @@ function onEnterFrame(){
    }
 }
 //----------------------------------------------------------
-function onThemeLoad(){
+function _load(){
+   RRuntime.processCd = EProcess.Debug;
+   RBrowser.construct();
+   RBrowser.setContentPath('../..');
+
    var hCanvas = document.getElementById('_canvas');
    context = REngine3d.createContext(FWglContext, hCanvas);
 
    stage = RClass.create(FSimpleStage3d);
    stage.backgroundColor().set(1, 1, 1, 1);
    stage.selectTechnique(context, FG3dGeneralTechnique);
-   //RDump.dump(stage, _dump);
 
    layer = stage.spriteLayer();
    RStage.register('stage3d', stage);
 
-   //var nrm = RConsole.find(FNetRs3ModelConsole);
-   //var rm = nrm.load('876457BFB45E4804A2CEF9AA79AD1E2B', 'BBDE7E5AFBA5468B9225A45CD5B7A715');
-   //return;
-
-   var rtc = RConsole.find(FNetTemplate3dConsole);
-   var rt = rtc.alloc(context, '63092C14B1E644A7999D298975C50622');
+   var rtc = RConsole.find(FTemplate3dConsole);
+   var rt = rtc.alloc(context, '24219F2C47F341B8BC2CD3191DA2A02D');
    layer.pushDisplay(rt);
    models.push(rt);
    RDump.dump(rt, _dump);
@@ -84,35 +77,25 @@ function onThemeLoad(){
    rc.setPosition(0, 8, -8);
    rc.lookAt(0, 0, 0);
    rc.update();
+   // 设置投影
+   var rp = rc.projection();
+   rp.size().set(hCanvas.width, hCanvas.height);
+   rp.update();
    // 设置光源
    var l = stage.directionalLight();
    var lc = l.camera();
    lc.setPosition(10, 10, 0);
    lc.lookAt(0, 0, 0);
    lc.update();
-   // 设置投影
-   var rp = stage.camera().projection();
-   rp.size().set(hCanvas.width, hCanvas.height);
-   rp.update();
    // 启动处理
    RStage.lsnsEnterFrame.register(null, onEnterFrame);
    RStage.start(15);
    //RDump.dump(stage, _dump);
 }
-//----------------------------------------------------------
-function _load(){
-   RRuntime.processCd = EProcess.Debug;
-   RBrowser.construct();
-   RBrowser.setContentPath('../..');
-
-   var tc = RConsole.find(FRs3ThemeConsole);
-   var m = tc.select('color');
-   m.loadListener().register(m, onThemeLoad);
-}
 </SCRIPT>
 
 <BODY scroll='auto' onload='_load()'>
-<CANVAS id="_canvas" style='padding-left:20px' width="600" height="800">您的浏览器不支持HTML5</CANVAS>
+<CANVAS id="_canvas" style='padding-left:20px' width="60" height="80">您的浏览器不支持HTML5</CANVAS>
 <DIV id='_info'></DIV><br>
 <DIV id='_dump'></DIV><br>
 <DIV id='_msg'></DIV><br>

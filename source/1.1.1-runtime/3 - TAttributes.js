@@ -6,8 +6,8 @@
 // @version 141229
 //==========================================================
 function TAttributes(o){
-   if(!o){o = this;}
-   TDictionary(o);
+   var o = this;
+   TDictionary.call(o);
    //..........................................................
    // @method
    o.join   = TAttributes_join;
@@ -146,11 +146,11 @@ function TAttributes_dump(){
    r.append(RRuntime.className(o), ' : ', c);
    if(c > 0){
       r.append(' (');
-      for(var n = 0; n < c; n++){
-         if(n > 0){
+      for(var i = 0; i < c; i++){
+         if(i > 0){
             r.append(', ');
          }
-         r.append(o._names[n], '=', o._values[n]);
+         r.append(o._names[i], '=', o._values[i]);
       }
       r.append(')');
    }

@@ -8,7 +8,7 @@
 //==========================================================
 function AEventKeyDown(n){
    var o = this;
-   AEvent(o, n, 'keydown', 'onkeydown');
+   AEvent.call(o, n, 'keydown', 'onkeydown');
    //..........................................................
    // @method
    o.attach = AEventKeyDown_attach;

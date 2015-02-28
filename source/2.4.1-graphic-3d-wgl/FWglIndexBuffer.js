@@ -23,7 +23,7 @@ function FWglIndexBuffer(o){
 function FWglIndexBuffer_setup(){
    var o = this;
    o.__base.FG3dIndexBuffer.setup.call(o);
-   o._native = o._context._native.createBuffer();
+   o._native = o._graphicContext._native.createBuffer();
 }
 
 //==========================================================
@@ -35,7 +35,7 @@ function FWglIndexBuffer_setup(){
 //==========================================================
 function FWglIndexBuffer_upload(pd, pc){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var g = c._native;
    // 设置数据
    o._count = pc;

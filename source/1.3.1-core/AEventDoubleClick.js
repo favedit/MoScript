@@ -8,7 +8,7 @@
 //==========================================================
 function AEventDoubleClick(n){
    var o = this;
-   AEvent(o, n, 'dblclick', 'ondblclick');
+   AEvent.call(o, n, 'dblclick', 'ondblclick');
    //..........................................................
    // @method
    o.attach = AEventDoubleClick_attach;

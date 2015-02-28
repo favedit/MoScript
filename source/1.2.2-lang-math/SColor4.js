@@ -16,10 +16,13 @@ function SColor4(o){
    //..........................................................
    // @method
    o.assign       = SColor4_assign;
+   o.assignPower  = SColor4_assignPower;
    o.set          = SColor4_set;
    o.serialize    = SColor4_serialize;
    o.unserialize  = SColor4_unserialize;
    o.unserialize3 = SColor4_unserialize3;
+   o.saveConfig   = SColor4_saveConfig;
+   o.savePower    = SColor4_savePower;
    o.toString     = SColor4_toString;
    return o;
 }
@@ -35,6 +38,20 @@ function SColor4_assign(p){
    o.red = p.red;
    o.green = p.green;
    o.blue = p.blue;
+   o.alpha = p.alpha;
+}
+
+//============================================================
+// <T>接收强度数据。</T>
+//
+// @method
+// @param p:value:SColor4 颜色
+//============================================================
+function SColor4_assignPower(p){
+   var o = this;
+   o.red = p.red * p.alpha;
+   o.green = p.green * p.alpha;
+   o.blue = p.blue * p.alpha;
    o.alpha = p.alpha;
 }
 
@@ -94,6 +111,34 @@ function SColor4_unserialize3(p){
    o.green = p.readFloat();
    o.blue = p.readFloat();
    o.alpha = 1.0;
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function SColor4_saveConfig(p){
+   var o = this;
+   p.setFloat('r', o.red);
+   p.setFloat('g', o.green);
+   p.setFloat('b', o.blue);
+   p.setFloat('a', o.alpha);
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function SColor4_savePower(p){
+   var o = this;
+   p.setFloat('r', o.red);
+   p.setFloat('g', o.green);
+   p.setFloat('b', o.blue);
+   p.setFloat('power', o.alpha);
 }
 
 //============================================================

@@ -104,7 +104,7 @@ function FG3dEffect_buildInfo(f, r){
 //==========================================================
 function FG3dEffect_drawRenderable(r){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    // 绑定程序
    c.setProgram(p);
@@ -116,7 +116,7 @@ function FG3dEffect_drawRenderable(r){
          var a = as.value(n);
          if(a._statusUsed){
             var vb = r.findVertexBuffer(a._linker);
-            if(vb == null){
+            if(!vb){
                throw new TError("Can't find renderable vertex buffer. (linker={1})", a._linker);
             }
             p.setAttribute(a._name, vb, vb._formatCd);
@@ -136,7 +136,7 @@ function FG3dEffect_drawRenderable(r){
 //==========================================================
 function FG3dEffect_loadConfig(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var g = o._program = c.createProgram();
    // 加载配置
    var xs = p.nodes();
@@ -158,8 +158,10 @@ function FG3dEffect_loadConfig(p){
             o._stateDepthWrite = RBoolean.parse(v);
          }else if(n == 'blend_mode'){
             o._stateBlend = RBoolean.parse(v);
-            o._stateBlendSourceCd = REnum.parse(EG3dBlendMode, x.get('source'));
-            o._stateBlendTargetCd = REnum.parse(EG3dBlendMode, x.get('target'));
+            if(o._stateBlend){
+               o._stateBlendSourceCd = REnum.parse(EG3dBlendMode, x.get('source'));
+               o._stateBlendTargetCd = REnum.parse(EG3dBlendMode, x.get('target'));
+            }
          }else if(n == 'alpha_test'){
             o._stateAlphaTest = RBoolean.parse(v);
          }
@@ -220,6 +222,9 @@ function FG3dEffect_loadUrl(u){
    var o = this;
    // 获得网络数据
    var x = RClass.create(FXmlConnection);
+   if(RRuntime.isDebug()){
+      u += '?' + RDate.format();
+   }
    var r = x.send(u);
    // 加载配置信息
    o.loadConfig(r);
@@ -260,5 +265,8 @@ function FG3dEffect_load(){
    var cp = RBrowser.contentPath();
    var ec = RConsole.find(FG3dEffectConsole);
    var u = cp + ec.path() + o._code + ".xml";
+   if(RRuntime.isDebug()){
+      u += '?' + RDate.format();
+   }
    o.loadUrl(u);
 }

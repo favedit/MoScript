@@ -13,6 +13,7 @@ var RWindow = new function RWindow(){
    // @attribute
    o._mouseEvent       = new SMouseEvent();
    o._keyEvent         = new SKeyboardEvent();
+   o._resizeEvent      = new SResizeEvent();
    //..........................................................
    // @html
    o._hWindow          = null;
@@ -39,6 +40,7 @@ var RWindow = new function RWindow(){
    o.ohKeyDown         = RWindow_ohKeyDown;
    o.ohKeyUp           = RWindow_ohKeyUp;
    o.ohKeyPress        = RWindow_ohKeyPress;
+   o.ohResize          = RWindow_ohResize;
    o.ohSelect          = RWindow_ohSelect;
    //..........................................................
    // @method
@@ -46,6 +48,7 @@ var RWindow = new function RWindow(){
    o.optionSelect      = RWindow_optionSelect;
    o.setOptionSelect   = RWindow_setOptionSelect;
    o.setCaption        = RWindow_setCaption;
+   o.setStatus         = RWindow_setStatus;
 
 
 
@@ -105,8 +108,9 @@ function RWindow_ohMouseDown(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._mouseEvent.attachEvent(p);
-   o.lsnsMouseDown.process(o._mouseEvent);
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseDown.process(e);
 }
 
 //==========================================================
@@ -120,8 +124,9 @@ function RWindow_ohMouseMove(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._mouseEvent.attachEvent(p);
-   o.lsnsMouseMove.process(o._mouseEvent);
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseMove.process(e);
 }
 
 //==========================================================
@@ -135,8 +140,9 @@ function RWindow_ohMouseUp(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._mouseEvent.attachEvent(p);
-   o.lsnsMouseUp.process(o._mouseEvent);
+   var e = o._mouseEvent;
+   e.attachEvent(p);
+   o.lsnsMouseUp.process(e);
 }
 
 //==========================================================
@@ -150,8 +156,9 @@ function RWindow_ohKeyDown(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._keyEvent.attachEvent(p);
-   o.lsnsKeyDown.process(o._keyEvent);
+   var e = o._keyEvent;
+   e.attachEvent(p);
+   o.lsnsKeyDown.process(e);
 }
 
 //==========================================================
@@ -165,8 +172,9 @@ function RWindow_ohKeyUp(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._keyEvent.attachEvent(p);
-   o.lsnsKeyUp.process(o._keyEvent);
+   var e = o._keyEvent;
+   e.attachEvent(p);
+   o.lsnsKeyUp.process(e);
 }
 
 //==========================================================
@@ -180,8 +188,25 @@ function RWindow_ohKeyPress(p){
    if(!p){
       p = o._hWindow.event;
    }
-   o._keyEvent.attachEvent(p);
-   o.lsnsKeyPress.process(o._keyEvent);
+   var e = o._keyEvent;
+   e.attachEvent(p);
+   o.lsnsKeyPress.process(e);
+}
+
+//==========================================================
+// <T>改变大小处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function RWindow_ohResize(p){
+   var o = RWindow;
+   if(!p){
+      p = o._hWindow.event;
+   }
+   var e = o._resizeEvent;
+   e.attachEvent(p);
+   o.lsnsResize.process(e);
 }
 
 //==========================================================
@@ -260,6 +285,15 @@ function RWindow_setCaption(p){
    top.document.title = p;
 }
 
+//==========================================================
+// <T>设置状态。</T>
+//
+// @method
+// @param p:status:String 状态
+//==========================================================
+function RWindow_setStatus(p){
+   window.status = RString.nvl(p);
+}
 
 
 

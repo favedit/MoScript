@@ -7,9 +7,9 @@
 // @author maocy
 // @version 150119
 //==========================================================
-function AEvent(o, n, l, h){
-   if(!o){o = this;}
-   AAnnotation(o, n);
+function AEvent(n, l, h){
+   var o = this;
+   AAnnotation.call(o, n);
    //..........................................................
    // @attribute
    o._annotationCd = EAnnotation.Event;
@@ -25,7 +25,10 @@ function AEvent(o, n, l, h){
    o.handle        = AEvent_handle;
    o.value         = AEvent_value;
    o.create        = AEvent_create;
+   // @method
    o.attach        = RMethod.empty;
+   o.bind          = AEvent_bind;
+   // @method
    o.toString      = AEvent_toString;
    return o;
 }
@@ -68,6 +71,23 @@ function AEvent_value(){
 //==========================================================
 function AEvent_create(){
    return new SEvent();
+}
+
+//==========================================================
+// <T>绑定事件。</T>
+//
+// @method
+// @return SEvent 事件对象
+// @param h:html:HtmlTag 页面元素
+// @param u:capture:Boolean 是否捕捉
+//==========================================================
+function AEvent_bind(h, u){
+   var o = this;
+   if(u){
+      h.addEventListener(o._linker, REvent.ohEvent, true);
+   }else{
+      h[o._handle] = REvent.ohEvent;
+   }
 }
 
 //============================================================

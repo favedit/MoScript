@@ -2,52 +2,53 @@
 // <T>模型资源。</T>
 //
 // @author maocy
-// @history 150105
+// @history 150128
 //==========================================================
 function FRs3Model(o){
    o = RClass.inherits(this, o, FRs3Resource);
    //..........................................................
    // @attribute
-   o._geometrys  = null;
-   o._skeleton   = null;
-   o._animation  = null;
+   o._meshes     = null;
+   o._skeletons  = null;
+   o._animations = null;
    //..........................................................
    // @method
-   o.geometrys   = FRs3Model_geometrys;
-   o.skeleton    = FRs3Model_skeleton;
-   o.animation   = FRs3Model_animation;
+   o.meshes      = FRs3Model_meshes;
+   o.skeletons   = FRs3Model_skeletons;
+   o.animations  = FRs3Model_animations;
+   // @method
    o.unserialize = FRs3Model_unserialize;
    return o;
 }
 
 //==========================================================
-// <T>获得几何体集合。</T>
+// <T>获得网格集合。</T>
 //
 // @method
-// @return TObjects 几何体集合
+// @return TObjects 网格集合
 //==========================================================
-function FRs3Model_geometrys(){
-   return this._geometrys;
+function FRs3Model_meshes(){
+   return this._meshes;
 }
 
 //==========================================================
-// <T>获得骨骼信息。</T>
+// <T>获得骨骼集合。</T>
 //
 // @method
-// @return FRs3Skeleton 骨骼信息
+// @return TObjects 骨骼集合
 //==========================================================
-function FRs3Model_skeleton(){
-   return this._skeleton;
+function FRs3Model_skeletons(){
+   return this._skeletons;
 }
 
 //==========================================================
-// <T>获得动画信息。</T>
+// <T>获得动画集合。</T>
 //
 // @method
-// @return FRs3Animation 动画信息
+// @return TObjects 动画集合
 //==========================================================
-function FRs3Model_animation(){
-   return this._animation;
+function FRs3Model_animations(){
+   return this._animations;
 }
 
 //==========================================================
@@ -61,37 +62,35 @@ function FRs3Model_unserialize(p){
    var o = this;
    o.__base.FRs3Resource.unserialize.call(o, p);
    //..........................................................
+   // 存储模型
+   var mc = RConsole.find(FRs3ModelConsole);
+   mc.models().set(o.guid(), o);
+   //..........................................................
    // 读取几何体集合
-   var gc = p.readInt16();
-   if(gc > 0){
-      var gs = o._geometrys = new TObjects();
-      for(var i = 0; i < gc; i++){
-         var g = RClass.create(FRs3Geometry);
-         g.unserialize(p);
-         gs.push(g);
+   var c = p.readInt16();
+   if(c > 0){
+      var s = o._meshes = new TObjects();
+      for(var i = 0; i < c; i++){
+         s.push(mc.unserialMesh(p));
       }
    }
    //..........................................................
-   // 读取骨骼
-   var sk = null;
-   if(p.readBoolean()){
-      sk = o._skeleton = RClass.create(FRs3Skeleton);
-      sk.unserialize(p);
-   }
-   //..........................................................
-   // 读取动画
-   var tc = 0;
-   if(p.readBoolean()){
-      var am = o._animation = RClass.create(FRs3Animation);
-      am.unserialize(p);
-      // 关联骨头和跟踪
-      var ts = am.tracks();
-      tc = ts.count();
-      for(var i = 0; i < tc; i++){
-         var t = ts.get(i);
-         var b = sk.find(t.boneId());
-         b.setTrack(t);
+   // 读取骨骼集合
+   var c = p.readInt16();
+   if(c > 0){
+      var s = o._skeletons = new TObjects();
+      for(var i = 0; i < c; i++){
+         s.push(mc.unserialSkeleton(p));
       }
    }
-   RLogger.info(o, "Unserialize model success. (code={1}, geometry_count={2}, track_count={3})", o._name, gc, tc);
+   //..........................................................
+   // 读取动画集合
+   var c = p.readInt16();
+   if(c > 0){
+      var s = o._animations = new TObjects();
+      for(var i = 0; i < c; i++){
+         s.push(mc.unserialAnimation(p));
+      }
+   }
+   RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
 }

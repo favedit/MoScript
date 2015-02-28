@@ -8,6 +8,6 @@
 //==========================================================
 function AEventMouseDown(n){
    var o = this;
-   AEventMouse(o, n, 'mousedown', 'onmousedown');
+   AEventMouse.call(o, n, 'mousedown', 'onmousedown');
    return o;
 }

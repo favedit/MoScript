@@ -8,7 +8,7 @@
 //==========================================================
 function AEventScroll(n){
    var o = this;
-   AEvent(o, n, 'scroll', 'onscroll');
+   AEvent.call(o, n, 'scroll', 'onscroll');
    //..........................................................
    // @method
    o.attach = AEventScroll_attach;

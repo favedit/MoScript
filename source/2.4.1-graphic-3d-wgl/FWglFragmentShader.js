@@ -24,7 +24,7 @@ function FWglFragmentShader(o){
 function FWglFragmentShader_setup(){
    var o = this;
    o.__base.FG3dFragmentShader.setup.call(o);
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    o._native = g.createShader(g.FRAGMENT_SHADER);
 }
 
@@ -36,7 +36,7 @@ function FWglFragmentShader_setup(){
 //==========================================================
 function FWglFragmentShader_upload(v){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    var n = o._native;
    // 上传代码
    g.shaderSource(n, v);
@@ -45,10 +45,9 @@ function FWglFragmentShader_upload(v){
    var r = g.getShaderParameter(n, g.COMPILE_STATUS);
    if(!r){
       var i = g.getShaderInfoLog(n);
-      RLogger.fatal(o, null, 'Upload fragment shader source failure. (error={1})\n{2}', i, v);
       g.deleteShader(n); 
       o._native = null;
-      return false;
+      throw new TError(o, 'Upload fragment shader source failure. (error={1})\n{2}', i, v);
    }
    o._source = v;
    return true;
@@ -61,7 +60,7 @@ function FWglFragmentShader_upload(v){
 //==========================================================
 function FWglFragmentShader_dispose(){
    var o = this;
-   var g = o._context._native;
+   var g = o._graphicContext._native;
    if(o._native){
       g.deleteShader(o._native);
    }

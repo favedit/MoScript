@@ -8,50 +8,49 @@ function FRd3Track(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._frameCount  = 0;
-   o._frameTick   = 0;
+   o._matrix      = null
    o._resource    = null;
    //..........................................................
    // @method
-   o.boneId       = FRd3Track_boneId;
-   o.matrix       = FRd3Track_matrix;
-   o.matrixInvert = FRd3Track_matrixInvert;
-   o.loadResource = FRd3Track_loadResource;
+   o.construct    = FRd3Track_construct;
    // @method
-   o.calculate    = FRd3Track_calculate;
+   o.matrix       = FRd3Track_matrix;
+   o.resource     = FRd3Track_resource;
+   o.loadResource = FRd3Track_loadResource;
    // @method
    o.dispose      = FRd3Track_dispose;
    return o;
 }
 
 //==========================================================
-// <T>获得骨头编号。</T>
+// <T>构造处理。</T>
 //
 // @method
-// @return Integer 骨头编号
 //==========================================================
-function FRd3Track_boneId(){
-   return this._resource.boneId();
+function FRd3Track_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new SMatrix3d();
 }
 
 //==========================================================
 // <T>获得矩阵。</T>
 //
 // @method
-// @return SMatrix 矩阵
+// @return SMatrix3d 矩阵
 //==========================================================
 function FRd3Track_matrix(){
-   return this._resource.matrix();
+   return this._matrix;
 }
 
 //==========================================================
-// <T>获得逆矩阵。</T>
+// <T>获得资源。</T>
 //
 // @method
-// @return SMatrix 矩阵
+// @return FRs3Track 资源
 //==========================================================
-function FRd3Track_matrixInvert(){
-   return this._resource.matrixInvert();
+function FRd3Track_resource(){
+   return this._resource;
 }
 
 //==========================================================
@@ -69,44 +68,6 @@ function FRd3Track_loadResource(p){
       o._frameCount = fs.count();
    }
    o._frameTick = p.frameTick();
-}
-
-//==========================================================
-// <T>释放处理。</T>
-//
-// @method
-// @param p:tick:Integer 时刻
-//==========================================================
-function FRd3Track_calculate(pi, pt){
-   var o = this;
-   // 检查帧数
-   var fc = o._frameCount;
-   if(fc == 0){
-      return false;
-   }
-   // 去掉负数
-   if(pt < 0){
-      pt = -pt;
-   }
-   // 计算间隔
-   var ft = o._frameTick;
-   var i = parseInt(pt / ft) % fc;
-   // 获得当前帧和下一帧
-   var r = o._resource;
-   var fs = r.frames();
-   var cf = fs.get(i);
-   var nf = null;
-   if(i < fc -1){
-      nf = fs.get(i + 1);
-   }else{
-      nf = fs.get(0);
-   }
-   // 设置结果
-   pi.tick = pt;
-   pi.rate = (pt % ft) / ft;
-   pi.currentFrame = cf;
-   pi.nextFrame = nf;
-   return true;
 }
 
 //==========================================================

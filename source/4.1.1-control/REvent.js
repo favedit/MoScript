@@ -28,6 +28,8 @@ var REvent = new function(){
    // @method
    o.find      = REvent_find;
    o.process   = REvent_process;
+   // @method
+   o.release   = REvent_release;
 
 
 
@@ -38,9 +40,6 @@ var REvent = new function(){
    o.nvl       = REvent_nvl;
    o.alloc     = REvent_alloc;
    o.free      = REvent_free;
-   o.release   = REvent_release;
-   // Construct
-   RMemory.register('REvent', o);
    return o;
 }
 
@@ -149,6 +148,27 @@ function REvent_process(hs, he){
    return false;
 }
 
+//==========================================================
+// <T>响应一次事件处理。</T>
+//
+// @method
+// @param hs:htmlSource:<Html> 发出者对象
+// @param he:htmlEvent:<Event> 事件对象
+// =========================================================
+function REvent_release(){
+   var o = this;
+   // 释放对象集合
+   var v = o._objects;
+   if(v){
+      RMemory.free(v);
+      o._objects = null;
+   }
+   //RMemory.free(o.events);
+   //o.events = null;
+}
+// ------------------------------------------------------------
+
+
 
 
 
@@ -192,12 +212,3 @@ function REvent_alloc(s, c){
 function REvent_free(e){
    e.inUsing = false;
 }
-// ------------------------------------------------------------
-function REvent_release(){
-   var o = this;
-   RMemory.free(o.events);
-   RMemory.free(o._objects);
-   o.events = null;
-   o._objects = null;
-}
-// ------------------------------------------------------------

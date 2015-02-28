@@ -48,11 +48,11 @@ function FStage_construct(){
 //==========================================================
 function RStage_registerLayer(n, l){
    var o = this;
-   var ls = o._layers;
-   if(ls == null){
-      ls = o._layers = new TDictionary();
+   var s = o._layers;
+   if(!s){
+      s = o._layers = new TDictionary();
    }
-   ls.set(n , l);
+   s.set(n , l);
 }
 
 //==========================================================

@@ -27,6 +27,7 @@ var RString = new function RString(){
    o.isDbcs       = RString_isDbcs;
    o.isPattern    = RString_isPattern;
    o.inChars      = RString_inChars;
+   // @method
    o.contains     = RString_contains;
    o.equals       = RString_equals;
    o.startsWith   = RString_startsWith;
@@ -34,10 +35,12 @@ var RString = new function RString(){
    o.findChars    = RString_findChars;
    o.inRange      = RString_inRange;
    o.nvl          = RString_nvl;
+   o.empty        = RString_empty;
    o.firstUpper   = RString_firstUpper;
    o.firstLower   = RString_firstLower;
    o.firstLine    = RString_firstLine;
    o.format       = RString_format;
+   o.formatLines  = RString_formatLines;
    o.repeat       = RString_repeat;
    o.pad          = RString_pad;
    o.lpad         = RString_lpad;
@@ -56,7 +59,6 @@ var RString = new function RString(){
    o.splitPattern = RString_splitPattern;
    o.remove       = RString_remove;
    o.removeChars  = RString_removeChars;
-   o.formatLines  = RString_formatLines;
    return o;
 }
 
@@ -228,26 +230,26 @@ function RString_contains(v, s){
 // @param s:source:String 源字符串
 // @param t:target:String 目标字符串
 // @param f:boolean:Boolean 是否忽略大小写(默认为忽略大小写)
-// @return Boolean
-//    <L value='true'>相等</L>
+// @return Boolean 是否相等
 //==========================================================
 function RString_equals(s, t, f){
-   if((s != null) && (t != null)){
-      // 强制转换为字符串
-      if(s.constructor != String){
-         s = s.toString();
-      }
-      if(t.constructor != String){
-         t = t.toString();
-      }
-      // 比较相同
-      if(f){
-         return (s == t);
-      }else{
-         return (s.toLowerCase() == t.toLowerCase());
-      }
+   // 获得参数
+   if(s == null){
+      s = '';
+   }else if(s.constructor != String){
+      s = s.toString();
    }
-   return false;
+   if(t == null){
+      t = '';
+   }else if(t.constructor != String){
+      t = t.toString();
+   }
+   // 比较相同
+   if(f){
+      return (s == t);
+   }else{
+      return (s.toLowerCase() == t.toLowerCase());
+   }
 }
 
 //==========================================================
@@ -346,7 +348,7 @@ function RString_inRange(v, rs, f){
 // @method
 // @param v:value:String 字符串
 // @param d:default:String 缺省字符串
-// @return Boolean 非空字符串
+// @return String 非空字符串
 //==========================================================
 function RString_nvl(v, d){
    if(v != null){
@@ -364,6 +366,28 @@ function RString_nvl(v, d){
       return d;
    }
    return this.EMPTY;
+}
+
+//==========================================================
+// <T>如果字符串为空，则返回空。</T>
+//
+// @method
+// @param v:value:String 字符串
+// @return String 空字符串
+//==========================================================
+function RString_empty(v){
+   if(v != null){
+      var s = null;
+      if(v.constructor != String){
+         s = v.toString();
+      }else{
+         s = v;
+      }
+      if(s.length > 0){
+         return s;
+      }
+   }
+   return null;
 }
 
 //==========================================================
@@ -427,6 +451,33 @@ function RString_format(s, p){
       s = s.replace('{' + (n-1) + '}', p);
    }
    return s;
+}
+
+//==========================================================
+// <T>格式化多行文本。</T>
+//
+// @method
+// @param s:source:String 字符串
+// @return String 字符串
+//==========================================================
+function RString_formatLines(p){
+   var o = this;
+   p = p.replace(/\\r/g, '');
+   var ls = p.split('\n');
+   var c = ls.length;
+   var r = new TString();
+   for(var i = 0; i < c; i++){
+      var l = ls[i]
+      l = o.trim(l);
+      if(o.isEmpty(l)){
+         continue;
+      }
+      if(o.startsWith(l, '//')){
+         continue;
+      }
+      r.appendLine(l);
+   }
+   return r.toString();
 }
 
 //==========================================================
@@ -818,31 +869,4 @@ function RString_removeChars(v, s){
       return r.join('');
    }
    return v;
-}
-
-//==========================================================
-// <T>格式化多行文本。</T>
-//
-// @method
-// @param s:source:String 字符串
-// @return String 字符串
-//==========================================================
-function RString_formatLines(p){
-   var o = this;
-   p = p.replace(/\\r/g, '');
-   var ls = p.split('\n');
-   var c = ls.length;
-   var r = new TString();
-   for(var i = 0; i < c; i++){
-      var l = ls[i]
-      l = o.trim(l);
-      if(o.isEmpty(l)){
-         continue;
-      }
-      if(o.startsWith(l, '//')){
-         continue;
-      }
-      r.appendLine(l);
-   }
-   return r.toString();
 }

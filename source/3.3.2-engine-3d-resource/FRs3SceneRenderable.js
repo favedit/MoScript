@@ -5,25 +5,11 @@
 // @history 150115
 //==========================================================
 function FRs3SceneRenderable(o){
-   o = RClass.inherits(this, o, FObject);
-   //..........................................................
-   // @attribute
-   o._code       = null;
+   o = RClass.inherits(this, o, FRs3Object);
    //..........................................................
    // @method
-   o.code        = FRs3SceneRenderable_code;
    o.unserialize = FRs3SceneRenderable_unserialize;
    return o;
-}
-
-//==========================================================
-// <T>获得代码。</T>
-//
-// @method
-// @return SColor4 颜色
-//==========================================================
-function FRs3SceneRenderable_code(){
-   return this._code;
 }
 
 //==========================================================
@@ -34,6 +20,5 @@ function FRs3SceneRenderable_code(){
 //==========================================================
 function FRs3SceneRenderable_unserialize(p){
    var o = this;
-   // 读取属性
-   o._code = p.readString();
+   o.__base.FRs3Object.unserialize.call(o, p);
 }

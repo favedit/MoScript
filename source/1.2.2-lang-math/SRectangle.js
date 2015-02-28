@@ -2,171 +2,173 @@
 // <T>矩形结构。</T>
 //
 // @struct
-// @param l:width:Number 宽度
-// @param t:height:Number 高度
-// @param r:deep:Number 深度
-// @param b:deep:Number 深度
 // @author maocy
-// @version 141230
+// @version 150130
 //==========================================================
-function SRectangle(l, t, r, b){
+function SRectangle(){
    var o = this;
+   //..........................................................
    // @attribute
-   o.left      = RInteger.nvl(left);
-   o.top       = RInteger.nvl(top);
-   o.right     = RInteger.nvl(right);
-   o.bottom    = RInteger.nvl(bottom);
+   o.position    = new SPoint2();
+   o.size        = new SSize2();
+   //..........................................................
    // @method
-   o.reset     = SRectangle_reset;
-   o.assign    = SRectangle_assign;
-   o.set       = SRectangle_set;
-   o.setBounds = SRectangle_setBounds;
-   o.width     = SRectangle_width;
-   o.setWidth  = SRectangle_setWidth;
-   o.height    = SRectangle_height;
-   o.setHeight = SRectangle_setHeight;
-   o.move      = SRectangle_move;
-   o.inc       = SRectangle_inc;
-   o.dec       = SRectangle_dec;
-   o.pack      = SRectangle_dump;
-   o.unpack    = SRectangle_dump;
-   o.dump      = SRectangle_dump;
+   o.left        = SRectangle_left;
+   o.top         = SRectangle_top;
+   o.right       = SRectangle_right;
+   o.bottom      = SRectangle_bottom;
+   o.width       = SRectangle_width;
+   o.height      = SRectangle_height;
+   // @method
+   o.assign      = SRectangle_assign;
+   o.setPosition = SRectangle_setPosition;
+   o.setSize     = SRectangle_setSize;
+   o.set         = SRectangle_set;
+   o.toString    = SRectangle_toString;
+   // @method
+   o.dispose     = SRectangle_dispose;
+   // @method
+   o.dump        = SRectangle_dump;
    return o;
 }
 
-function SRectangle_reset(){
-   var o = this;
-   o.left = 0;
-   o.top = 0;
-   o.right = 0;
-   o.bottom = 0;
+//============================================================
+// <T>获得左位置。</T>
+//
+// @method
+// @return Number 左位置
+//============================================================
+function SRectangle_left(){
+   return this.position.x;
 }
 
 //============================================================
-// 指定矩形坐标类
+// <T>获得上位置。</T>
 //
 // @method
-// @param rect:rectangle:rectangle 矩形对象
+// @return Number 上位置
 //============================================================
-function SRectangle_assign(rect){
-   this.left = rect.left;
-   this.top = rect.top;
-   this.right = rect.right;
-   this.bottom = rect.bottom;
+function SRectangle_top(){
+   return this.position.y;
 }
 
 //============================================================
-// 指定当前矩形的四个坐标
+// <T>获得右位置。</T>
 //
 // @method
+// @return Number 右位置
 //============================================================
-function SRectangle_set(left, top, right, bottom){
-   this.left = left;
-   this.top = top;
-   this.right = right;
-   this.bottom = bottom;
-}
-//============================================================
-// 设定边框的位置
-//
-// @method
-//============================================================
-function SRectangle_setBounds(left, top, width, height){
-   var o = this;
-   o.left = left;
-   o.top = top;
-   o.right = o.left + width - 1;
-   o.bottom = o.top + height - 1;
+function SRectangle_right(){
+   return this.position.x + this.size.width;
 }
 
 //============================================================
-// 取得宽度
+// <T>获得下位置。</T>
 //
 // @method
+// @return Number 下位置
+//============================================================
+function SRectangle_bottom(){
+   return this.position.y + this.size.height;
+}
+
+//============================================================
+// <T>获得宽度。</T>
+//
+// @method
+// @return Number 宽度
 //============================================================
 function SRectangle_width(){
-   return this.right - this.left + 1;
+   return this.size.width;
 }
 
 //============================================================
-// 设定矩形宽度
+// <T>获得高度。</T>
 //
 // @method
-// @param width:width:Integer 设置的宽度
-//============================================================
-function SRectangle_setWidth(width){
-   if(width){
-      this.right = this.left + width - 1;
-   }
-}
-
-//============================================================
-// 得到矩形的高度
-//
-// @method
+// @return Number 高度
 //============================================================
 function SRectangle_height(){
-   return this.bottom - this.top + 1;
+   return this.size.height;
 }
 
 //============================================================
-// 设定矩形的高度
+// <T>接收一个矩形数据。</T>
 //
 // @method
+// @param p:rectangle:SRectangle 矩形
 //============================================================
-function SRectangle_setHeight(height){
-   if(height){
-      this.bottom = this.top + height - 1;
-   }
+function SRectangle_assign(p){
+   var o = this;
+   o.position.assign(p.position);
+   o.size.assign(p.size);
 }
 
 //============================================================
-// 把矩形移动到某个位置
+// <T>设置位置。</T>
 //
 // @method
-// @param x:xPosition:Integ
+// @param l:left:Number 左位置
+// @param t:top:Number 上位置
 //============================================================
-function SRectangle_move(x, y){
-   this.left += x;
-   this.top += y;
-   this.right += x;
-   this.bottom += y;
+function SRectangle_setPosition(l, t, w, h){
+   this.position.set(l, t);
 }
 
 //============================================================
-// 放大指定的大小
+// <T>设置大小。</T>
 //
 // @method
+// @param w:width:Number 宽度
+// @param h:height:Number 高度
 //============================================================
-function SRectangle_inc(border){
-   var n = RInt.nvl(border, 1);
-   this.left -= n;
-   this.top -= n;
-   this.right += n;
-   this.bottom += n;
+function SRectangle_setSize(w, h){
+   this.size.set(w, h);
 }
 
 //============================================================
-// 把矩形缩小指定的宽度和高度
+// <T>设置位置和大小。</T>
 //
 // @method
+// @param l:left:Number 左位置
+// @param t:top:Number 上位置
+// @param w:width:Number 宽度
+// @param h:height:Number 高度
 //============================================================
-function SRectangle_dec(border){
-   var n = RInt.nvl(border, 1);
-   this.left += n;
-   this.top += n;
-   this.right -= n;
-   this.bottom -= n;
+function SRectangle_set(l, t, w, h){
+   var o = this;
+   o.position.set(l, t);
+   o.size.set(w, h);
 }
+
 //============================================================
-// ???
+// <T>获得字符串。</T>
+//
+// @return String 字符串
+//============================================================
+function SRectangle_toString(){
+   var o = this;
+   return o.position.x + ',' + o.position.y + ',' + o.size.width + ',' + o.size.height;
+}
+
+//============================================================
+// <T>释放处理。</T>
 //
 // @method
 //============================================================
-function SRectangle_dump(d){
-   d = RString.nvlStr(d);
-   d.append(RClass.name(this));
-   d.append(' [', this.left, ',', this.top, '-', this.right, ',', this.bottom, '] ');
-   d.append('(', this.width(), '-', this.height(), ')');
-   return d;
+function SRectangle_dispose(){
+   var o = this;
+   o.position = o.position.dispose();
+   o.size = o.size.dispose();
+}
+
+//============================================================
+// <T>获得运行信息。</T>
+//
+// @method
+// @return String 运行信息
+//============================================================
+function SRectangle_dump(){
+   var o = this;
+   return RClass.dump(o) + ' [' + o.position.x + ',' + o.position.y + '-' + o.size.width + ',' + o.size.height + ']';
 }

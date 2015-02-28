@@ -14,7 +14,7 @@ var RHtml = new function RHtml(){
    o._clientPosition = new SPoint2();
    //..........................................................
    // @method
-   o.uid            = RHtml_uid;
+   o.uid            = RRuntime_uid;
    // @method
    o.displayGet     = RHtml_displayGet;
    o.displaySet     = RHtml_displaySet;
@@ -40,6 +40,9 @@ var RHtml = new function RHtml(){
    o.toHtml         = RHtml_toHtml;
    // @method
    o.eventSource    = RHtml_eventSource;
+   // @method
+   o.searchLinker   = RHtml_searchLinker;
+   o.searchObject   = RHtml_searchObject;
    // @method
    o.free           = RHtml_free;
 
@@ -85,21 +88,6 @@ var RHtml = new function RHtml(){
    o.tableMoveRow   = RHtml_tableMoveRow;
    o.clone          = RHtml_clone;
    return o;
-}
-
-//==========================================================
-// <T>获得页面元素的唯一编号。</T>
-//
-// @method
-// @param v:html:HtmlTag 页面元素
-// @return Integer 唯一编号
-//==========================================================
-function RHtml_uid(v){
-   var r = v.uniqueNumber;
-   if(r == null){
-      r = v.uniqueNumber = this._nextUid++;
-   }
-   return r;
 }
 
 //==========================================================
@@ -165,7 +153,8 @@ function RHtml_visibleGet(h){
 function RHtml_visibleSet(h, v){
    var s = null;
    if(RBrowser.isBrowser(EBrowser.Explorer)){
-      s = v ? 'block' : 'none';
+      //s = v ? 'block' : 'none';
+      s = v ? null : 'none';
    }else{
       s = v ? null : 'none';
    }
@@ -312,16 +301,16 @@ function RHtml_linkSet(h, n, v){
 // @param t:top:HtmlTag 顶层元素
 //==========================================================
 function RHtml_clientPosition(h, t){
+   var o = this;
    var p = o._clientPosition;
+   p.set(0, 0);
    while(h != t){
-      p.x += h.offsetLeft - h.scrollLeft;
-      p.y += h.offsetTop - h.scrollTop;
+      p.x += h.offsetLeft + h.clientLeft - h.scrollLeft;
+      p.y += h.offsetTop + h.clientTop - h.scrollTop;
       //if('absolute' != RHtml.currentStyle(h).position){
          //debugger;
          //break;
       //}
-      //p.x += h.clientLeft;
-      //p.y += h.clientTop;
       h = h.offsetParent;
    }
    return p;
@@ -332,11 +321,12 @@ function RHtml_clientPosition(h, t){
 //
 // @method
 // @param p:html:HtmlTag 页面元素
+// @param t:top:HtmlTag 顶层元素
 // @return Intger 距离
 //==========================================================
-function RHtml_clientX(p){
+function RHtml_clientX(p, t){
    var r = 0;
-   while(p){
+   while(p != t){
       r += p.offsetLeft - p.scrollLeft;
       p = p.offsetParent;
    }
@@ -348,11 +338,12 @@ function RHtml_clientX(p){
 //
 // @method
 // @param p:html:HtmlTag 页面元素
+// @param t:top:HtmlTag 顶层元素
 // @return Intger 距离
 //==========================================================
-function RHtml_clientY(p){
+function RHtml_clientY(p, t){
    var r = 0;
-   while(p){
+   while(p != t){
       r += p.offsetTop - p.scrollTop;
       p = p.offsetParent;
    }
@@ -425,12 +416,53 @@ function RHtml_eventSource(p){
 }
 
 //==========================================================
+// <T>查找关联对象。</T>
+//
+// @method
+// @param h:html:HtmlEvent 页面元素
+// @param c:class:Class 类对象
+// @return FObject 对象
+//==========================================================
+function RHtml_searchLinker(h, c){
+   while(h){
+      var f = h.__linker;
+      if(f){
+         if(RClass.isClass(f, c)){
+            return f;
+         }
+      }
+      h = h.parentElement;
+   }
+   return null;
+}
+
+//==========================================================
+// <T>查找关联对象。</T>
+//
+// @method
+// @param h:html:HtmlEvent 页面元素
+// @param n:name:String 属性名称
+// @return FObject 对象
+//==========================================================
+function RHtml_searchObject(h, n){
+   while(h){
+      var f = h[n];
+      if(f){
+         return f;
+      }
+      h = h.parentElement;
+   }
+   return null;
+}
+
+//==========================================================
 // <T>释放处理。</T>
 //
 // @method
 // @param p:html:HtmlTag 页面标签
 //==========================================================
 function RHtml_free(p){
+   return null;
 }
 
 

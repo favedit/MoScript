@@ -6,8 +6,8 @@
 // @author maocy
 // @version 150104
 //============================================================
-function AAnnotation(o, n){
-   if(!o){o = this;}
+function AAnnotation(n){
+   var o = this;
    //..........................................................
    // @attribute
    o._annotationCd = null;

@@ -24,7 +24,7 @@ function FG3dGeneralColorAutomaticEffect(o){
 //==========================================================
 function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var p = o._program;
    // 获得参数
    var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
@@ -34,27 +34,33 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var mi = m.info();
    o.bindMaterial(m);
    // 绑定所有属性流
-   p.setParameter('vc_model_matrix', pr.matrix());
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
    p.setParameter('fc_camera_position', vcp);
    p.setParameter('fc_light_direction', vld);
    // 设置材质
-   p.setParameter('fc_color', mi.ambientColor);
-   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
-   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
-   p.setParameter('fc_ambient_color', mi.ambientColor);
-   p.setParameter('fc_diffuse_color', mi.diffuseColor);
-   p.setParameter('fc_specular_color', mi.specularColor);
-   p.setParameter4('fc_specular', mi.specularBase, mi.specularRate, mi.specularAverage, mi.specularShadow);
-   p.setParameter('fc_specular_view_color', mi.specularViewColor);
-   p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
-   p.setParameter('fc_reflect_color', mi.reflectColor);
-   // 绑定所有属性流
-   o.bindAttributes(pr);
-   // 绑定所有取样器
-   o.bindSamplers(pr);
+   if(o._supportMaterialMap){
+      var i = pr._materialId;
+      p.setParameter4('fc_material', 1/32, i/512, 0, 0);
+   }else{
+      p.setParameter('fc_ambient_color', mi.ambientColor);
+      p.setParameter('fc_diffuse_color', mi.diffuseColor);
+      p.setParameter('fc_specular_color', mi.specularColor);
+      p.setParameter('fc_reflect_color', mi.reflectColor);
+      p.setParameter('fc_emissive_color', mi.emissiveColor);
+   }
+   p.setParameter4('fc_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   if(mi.optionAlpha){
+      p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, 0, 0);
+   }else{
+      p.setParameter4('fc_alpha', 0, 1, 0, 0);
+   }
+   p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
+   //p.setParameter('fc_specular_view_color', mi.specularViewColor);
+   //p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
+   p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
    // 绘制处理
-   c.drawTriangles(pr.indexBuffer());
+   o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }

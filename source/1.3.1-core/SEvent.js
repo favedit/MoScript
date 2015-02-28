@@ -5,13 +5,15 @@
 // @author maocy
 // @version 150113
 //==========================================================
-function SEvent(o){
-   if(!o){o = this;}
+function SEvent(){
+   var o = this;
    //..........................................................
    // @attribute
    o.annotation = null;
    // @attribute
    o.source     = null;
+   // @attribute
+   o.hEvent     = null;
    o.hSender    = null;
    o.hSource    = null;
    //..........................................................

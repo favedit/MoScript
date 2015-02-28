@@ -11,18 +11,17 @@ function FRs3Scene(o){
    o._themeCode  = null;
    o._technique  = null;
    o._region     = null;
-   o._sky        = null;
-   o._map        = null;
-   o._space      = null;
+   o._layers     = null;
    //..........................................................
    // @method
    o.construct   = FRs3Scene_construct;
+   // @method
    o.technique   = FRs3Scene_technique;
    o.region      = FRs3Scene_region;
-   o.sky         = FRs3Scene_sky;
-   o.map         = FRs3Scene_map;
-   o.space       = FRs3Scene_space;
+   o.layers      = FRs3Scene_layers;
+   // @method
    o.unserialize = FRs3Scene_unserialize;
+   o.saveConfig  = FRs3Scene_saveConfig;
    return o;
 }
 
@@ -36,9 +35,7 @@ function FRs3Scene_construct(){
    o.__base.FRs3Resource.construct.call(o);
    o._technique = RClass.create(FRs3SceneTechnique);
    o._region = RClass.create(FRs3SceneRegion);
-   o._sky = RClass.create(FRs3SceneSky);
-   o._map = RClass.create(FRs3SceneMap);
-   o._space = RClass.create(FRs3SceneSpace);
+   o._layers = new TDictionary();
 }
 
 //==========================================================
@@ -62,37 +59,17 @@ function FRs3Scene_region(){
 }
 
 //==========================================================
-// <T>获得天空。</T>
+// <T>获得层集合。</T>
 //
 // @method
-// @return 天空
+// @return TDictionary 层集合
 //==========================================================
-function FRs3Scene_sky(){
-   return this._sky;
+function FRs3Scene_layers(){
+   return this._layers;
 }
 
 //==========================================================
-// <T>获得地图。</T>
-//
-// @method
-// @return 地图
-//==========================================================
-function FRs3Scene_map(){
-   return this._map;
-}
-
-//==========================================================
-// <T>获得空间。</T>
-//
-// @method
-// @return 空间
-//==========================================================
-function FRs3Scene_space(){
-   return this._space;
-}
-
-//==========================================================
-// <T>从输入流里反序列化信息内容</T>
+// <T>从输入流里反序列化信息内容。</T>
 //
 // @param p:input:FByteStream 数据流
 //==========================================================
@@ -105,10 +82,37 @@ function FRs3Scene_unserialize(p){
    o._technique.unserialize(p);
    // 读取区域
    o._region.unserialize(p);
-   // 读取天空
-   o._sky.unserialize(p);
-   // 读取地区
-   o._map.unserialize(p);
-   // 读取空间
-   o._space.unserialize(p);
+   // 读取场景层
+   var c = p.readInt16();
+   for(var i = 0; i < c; i++){
+      var l = RClass.create(FRs3SceneLayer);
+      l.unserialize(p);
+      o._layers.set(l.code(), l);
+   }
+}
+
+//==========================================================
+// <T>数据内容存储到配置节点中。</T>
+//
+// @method
+// @param p:config:TXmlNode 配置节点
+//==========================================================
+function FRs3Scene_saveConfig(p){
+   var o = this;
+   o.__base.FRs3Resource.saveConfig.call(o, p);
+   // 存储属性
+   p.setName('Scene');
+   p.set('theme_code', o._themeCode);
+   // 存储技术
+   //o._technique.saveConfig(x.create('Technique'));
+   // 存储区域
+   //o._region.saveConfig(x.create('Region'));
+   // 存储场景层
+   var xls = p.create('LayerCollection');
+   var ls = o._layers;
+   var c = ls.count();
+   for(var i = 0; i < c; i++){
+      var l = ls.value(i);
+      l.saveConfig(xls.create('Layer'));
+   }
 }

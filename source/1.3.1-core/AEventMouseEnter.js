@@ -8,7 +8,7 @@
 //==========================================================
 function AEventMouseEnter(n){
    var o = this;
-   AEvent(o, n, 'mouseenter', 'onmouseenter');
+   AEvent.call(o, n, 'mouseenter', 'onmouseenter');
    //..........................................................
    // @attribute
    o._logger = false;

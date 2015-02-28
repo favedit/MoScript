@@ -5,9 +5,11 @@
 // @history 141231
 //==========================================================
 function FDisplay(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
    //..........................................................
    // @attribute
+   o._parent           = null;
+   o._currentMatrix    = null;
    o._name             = null;
    o._matrix           = null;
    o._location         = null;
@@ -21,20 +23,32 @@ function FDisplay(o){
    // @method
    o.construct         = FDisplay_construct;
    // @method
+   o.parent            = FDisplay_parent;
+   o.setParent         = FDisplay_setParent;
    o.isName            = FDisplay_isName;
    o.name              = FDisplay_name;
+   o.setName           = FDisplay_setName;
+   o.currentMatrix     = FDisplay_currentMatrix;
    o.matrix            = FDisplay_matrix;
    o.location          = FDisplay_location;
    o.rotation          = FDisplay_rotation;
    o.scale             = FDisplay_scale;
    // @method
    o.hasRenderable     = FDisplay_hasRenderable;
-   o.filterRenderables = FDisplay_filterRenderables;
    o.renderables       = FDisplay_renderables;
    o.pushRenderable    = FDisplay_pushRenderable;
+   o.removeRenderable  = FDisplay_removeRenderable;
    // @method
-   o.process           = FDisplay_process;
+   o.filterDisplays    = FDisplay_filterDisplays;
+   o.filterRenderables = FDisplay_filterRenderables;
+   // @method
+   o.show              = FDisplay_show;
+   o.hide              = FDisplay_hide;
+   o.setVisible        = FDisplay_setVisible;
+   // @method
    o.update            = FDisplay_update;
+   o.updateMatrix      = FDisplay_updateMatrix;
+   o.process           = FDisplay_process;
    o.remove            = FDisplay_remove;
    // @method
    o.dispose           = FDisplay_dispose;
@@ -49,11 +63,32 @@ function FDisplay(o){
 function FDisplay_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
    o._location = new SPoint3();
    o._rotation = new SVector3();
    o._scale = new SVector3();
    o._scale.set(1, 1, 1);
+}
+
+//==========================================================
+// <T>获得父对象。</T>
+//
+// @method
+// @return FDisplay 父对象
+//==========================================================
+function FDisplay_parent(){
+   return this._parent;
+}
+
+//==========================================================
+// <T>设置父对象。</T>
+//
+// @method
+// @param p:parent:FDisplay 父对象
+//==========================================================
+function FDisplay_setParent(p){
+   this._parent = p;
 }
 
 //==========================================================
@@ -74,6 +109,26 @@ function FDisplay_isName(p){
 //==========================================================
 function FDisplay_name(){
    return this._name;
+}
+
+//==========================================================
+// <T>设置名称。</T>
+//
+// @method
+// @param p:value:String 名称
+//==========================================================
+function FDisplay_setName(p){
+   this._name = p;
+}
+
+//==========================================================
+// <T>获得当前矩阵。</T>
+//
+// @method
+// @return 当前矩阵
+//==========================================================
+function FDisplay_currentMatrix(){
+   return this._currentMatrix;
 }
 
 //==========================================================
@@ -124,10 +179,58 @@ function FDisplay_scale(){
 //==========================================================
 function FDisplay_hasRenderable(){
    var r = this._renderables;
-   if(r != null){
-      return !r.isEmpty();
+   return r ? !r.isEmpty() : false;
+}
+
+//==========================================================
+// <T>获得渲染集合。</T>
+//
+// @method
+// @return TObjects 渲染集合
+//==========================================================
+function FDisplay_renderables(){
+   var o = this;
+   var r = o._renderables;
+   if(!r){
+      r = o._renderables = new TObjects();
    }
-   return false;
+   return r;
+}
+
+//==========================================================
+// <T>增加一个渲染对象。</T>
+//
+// @param p:renderable:FRenderable 渲染对象
+//==========================================================
+function FDisplay_pushRenderable(p){
+   var o = this;
+   p._display = o;
+   o.renderables().push(p);
+}
+
+//==========================================================
+// <T>移除一个渲染对象。</T>
+//
+// @param p:renderable:FRenderable 渲染对象
+//==========================================================
+function FDisplay_removeRenderable(p){
+   var s = this._renderables;
+   if(s){
+      s.remove(p);
+   }
+}
+
+//==========================================================
+// <T>过滤显示集合。</T>
+//
+// @method
+// @param p:displays:TObjects 显示集合
+//==========================================================
+function FDisplay_filterDisplays(p){
+   var o = this;
+   if(o._visible){
+      p.push(o);
+   }
 }
 
 //==========================================================
@@ -144,7 +247,7 @@ function FDisplay_filterRenderables(p){
    }
    // 处理渲染集合
    var rs = o._renderables;
-   if(rs != null){
+   if(rs){
       var c = rs.count();
       for(var n = 0; n < c; n++){
          var r = rs.get(n);
@@ -157,27 +260,31 @@ function FDisplay_filterRenderables(p){
 }
 
 //==========================================================
-// <T>获得渲染集合。</T>
+// <T>显示处理。</T>
 //
 // @method
-// @return TObjects 渲染集合
 //==========================================================
-function FDisplay_renderables(){
-   var o = this;
-   var r = o._renderables;
-   if(r == null){
-      r = o._renderables = new TObjects();
-   }
-   return r;
+function FDisplay_show(){
+   this.setVisible(true);
 }
 
 //==========================================================
-// <T>增加一个渲染对象。</T>
+// <T>隐藏处理。</T>
 //
-// @param p:renderable:FRenderable 渲染对象
+// @method
 //==========================================================
-function FDisplay_pushRenderable(p){
-   this.renderables().push(p);
+function FDisplay_hide(){
+   this.setVisible(false);
+}
+
+//==========================================================
+// <T>设置显示状态。</T>
+//
+// @method
+// @param p:value:Boolean 显示状态
+//==========================================================
+function FDisplay_setVisible(p){
+   this._visible = p;
 }
 
 //==========================================================
@@ -194,18 +301,37 @@ function FDisplay_update(){
 }
 
 //==========================================================
-// <T>逻辑处理。</T>
+// <T>更新矩阵。</T>
 //
 // @method
 //==========================================================
-function FDisplay_process(){
+function FDisplay_updateMatrix(){
    var o = this;
+   // 更新矩阵
+   o._currentMatrix.assign(o._matrix);
+   // 计算父矩阵
+   var t = o._parent;
+   if(t){
+      o._currentMatrix.append(t._currentMatrix);
+   }
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+// @param p:region:FG3dReigon 区域
+//==========================================================
+function FDisplay_process(p){
+   var o = this;
+   // 更新矩阵
+   o.updateMatrix();
    // 处理渲染集合
-   var rs = o._renderables;
-   if(rs != null){
-      var c = rs.count();
+   var s = o._renderables;
+   if(s){
+      var c = s.count();
       for(var i = 0; i < c; i++){
-         rs.get(i).process();
+         s.get(i).process(p);
       }
    }
 }
@@ -217,10 +343,10 @@ function FDisplay_process(){
 //==========================================================
 function FDisplay_remove(){
    var o = this;
-   var c = o._displayContainer;
+   var c = o._parent;
    if(c){
       c.removeDisplay(o);
-      o._displayContainer = null;
+      o._parent = null;
    }
 }
 
@@ -232,16 +358,13 @@ function FDisplay_remove(){
 function FDisplay_dispose(){
    var o = this;
    // 释放属性
-   o._matrix = null;
-   o._position = null;
-   o._direction = null;
-   o._scale = null;
+   RObject.dispose(o._currentMatrix);
+   RObject.dispose(o._matrix);
+   RObject.dispose(o._position);
+   RObject.dispose(o._direction);
+   RObject.dispose(o._scale);
    // 释放渲染集合（不释放渲染对象）
-   var rs = o._renderables;
-   if(rs != null){
-      rs.dispose();
-      o._renderables = null
-   }
+   RObject.dispose(o._renderables)
    // 父处理
    o.__base.FObject.dispose.call(o);
 }
