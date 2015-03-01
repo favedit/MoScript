@@ -1,14 +1,20 @@
-O - Design - Toolbar - 文字回行
+﻿O - Design - Toolbar - 文字回行
 O - Design - Toolbar - Button - Hint提示
+O - Design - 编辑对象选取
+
+1 - Design - 文档
+2 - Engine - 动态刷新，降低效率
+3 - Engine - 纹理合并（透明纹理）
+4 - Engine - 缩放投影（Canvas自己支持）
 
 1 - Runtime - JavaScript压缩器
 1 - Runtime - Class的NameSpace化处理
 1 - Design - ListView 控件
 1 - Design - Data 数据控件体系
-2 - Engine - 纹理合并（透明纹理）
 3 - Engine - 纹理压缩
-4 - Design - 编辑对象选取
 5 - Engine - Touch 事件
 6 - Engine - Instance 绘制
 7 - Engine - 同材质物件合并
 8 - Engine - Multi物件绘制 drawRenderables
+7 - Engine - 阴影渲染（浮点数纹理）
+7 - Engine - 延迟渲染
