@@ -90,6 +90,7 @@ function FE3rTexture_testReady(){
 // @param p:name:String 名称
 //==========================================================
 function FE3rTexture_load(u){
+   debugger
    var o = this;
    if(o._image){
       throw new TError('Loading image.');

@@ -8,12 +8,16 @@ function FE3sTextureConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._themes   = null;
-   o._path     = '/assets/theme/'
+   o._textures = null;
+   // @attribute
+   o._dataUrl  = '/cloud.content.texture.wv';
    //..........................................................
    // @method
    o.construct = FE3sTextureConsole_construct;
+   // @method
    o.load      = FE3sTextureConsole_load;
+   // @method
+   o.dispose   = FE3sModelConsole_dispose;
    return o;
 }
 
@@ -25,25 +29,41 @@ function FE3sTextureConsole(o){
 function FE3sTextureConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._themes = new TDictionary();
+   o._textures = new TDictionary();
 }
 
 //==========================================================
-// <T>从输入流里反序列化信息内容</T>
+// <T>加载指定代码的纹理资源。</T>
 //
-// @param p:input:FByteStream 数据流
+// @param p:code:String 代码
 // @return 处理结果
 //==========================================================
 function FE3sTextureConsole_load(p){
    var o = this;
-   var r = o._themes.get(p);
-   if(r == null){
-      // 生成地址
-      var u = RBrowser.contentPath(o._path + p + '.ser');
-      // 创建主题
-      r = RClass.create(FE3sTheme);
-      r.load(u);
-      o._themes.set(p, r);
+   var s = o._textures;
+   var t = s.get(p);
+   if(!t){
+      // 生成网络地址
+      var u = RBrowser.hostPath(o._dataUrl + '?code=' + p);
+      if(RRuntime.isDebug()){
+         u += '&date=' + RDate.format();
+      }
+      // 创建纹理资源
+      t = RClass.create(FE3sTexture);
+      t.load(u);
+      s.set(p, t);
    }
-   return r;
+   return t;
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FE3sTextureConsole_dispose(){
+   var o = this;
+   o._textures = RObject.free(o._textures);
+   // 父处理
+   o.__base.FConsole.dispose.call(o);
 }

@@ -1,19 +1,21 @@
 //==========================================================
 // <T>资源主题管理器。</T>
 //
+// @class
 // @author maocy
-// @history 150108
+// @history 150302
 //==========================================================
 function FE3sTexture(o){
-   o = RClass.inherits(this, o, FConsole);
+   o = RClass.inherits(this, o, FE3sResource);
    //..........................................................
    // @attribute
-   o._themes   = null;
-   o._path     = '/assets/theme/'
+   o._bitmaps     = null;
+   o._bitmapPacks = null;
    //..........................................................
    // @method
-   o.construct = FE3sTexture_construct;
-   o.load      = FE3sTexture_load;
+   o.construct    = FE3sTexture_construct;
+   // @method
+   o.unserialize  = FE3sTexture_unserialize;
    return o;
 }
 
@@ -34,16 +36,27 @@ function FE3sTexture_construct(){
 // @param p:input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FE3sTexture_load(p){
+function FE3sTexture_unserialize(p){
    var o = this;
-   var r = o._themes.get(p);
-   if(r == null){
-      // 生成地址
-      var u = RBrowser.contentPath(o._path + p + '.ser');
-      // 创建主题
-      r = RClass.create(FE3sTheme);
-      r.load(u);
-      o._themes.set(p, r);
+   o.__base.FE3sResource.unserialize.call(o, p);
+   // 读取纹理位图集合
+   var c = p.readInt16();
+   if(c > 0){
+      var s = o._bitmaps = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var b = RClass.create(FE3sTextureBitmap);
+         b.unserialize(p);
+         s.set(b.code(), b);
+      }
    }
-   return r;
+   // 输出纹理位图打包集合
+   var c = p.readInt16();
+   if(c > 0){
+      var s = o._bitmapPacks = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var b = RClass.create(FE3sTextureBitmapPack);
+         b.unserialize(p);
+         s.set(b.code(), b);
+      }
+   }
 }

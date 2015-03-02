@@ -181,23 +181,25 @@ function FE3sModelConsole_unserialAnimation(p){
 }
 
 //==========================================================
-// <T>从输入流里反序列化信息内容</T>
+// <T>加载指定代码的模型资源。</T>
 //
-// @param c:code:String 代码
-// @param v:version:String 版本
+// @param p:code:String 代码
 // @return 处理结果
 //==========================================================
-function FE3sModelConsole_load(c, v){
+function FE3sModelConsole_load(p){
    var o = this;
-   var ms = o._models;
-   var m = ms.get(c);
-   if(m == null){
-      // 生成地址
-      var u = RBrowser.hostPath(o._dataUrl + '?code=' + c + '&version=' + RString.nvl(v) + '&date=' + RDate.format());
-      // 创建模型
+   var s = o._models;
+   var m = s.get(p);
+   if(!m){
+      // 生成网络地址
+      var u = RBrowser.hostPath(o._dataUrl + '?code=' + p);
+      if(RRuntime.isDebug()){
+         u += '&date=' + RDate.format();
+      }
+      // 创建模型资源
       m = RClass.create(FE3sModel);
       m.load(u);
-      ms.set(c, m);
+      s.set(p, m);
    }
    return m;
 }
@@ -209,7 +211,7 @@ function FE3sModelConsole_load(c, v){
 //==========================================================
 function FE3sModelConsole_dispose(){
    var o = this;
-   o._materials = null;
+   o._materials = RObject.free(o._materials);
    // 父处理
-   o.__base.FDisplay.dispose.call(o);
+   o.__base.FConsole.dispose.call(o);
 }

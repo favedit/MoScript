@@ -8,13 +8,25 @@ function FE3sMaterialTexture(o){
    o = RClass.inherits(this, o, FE3sObject);
    //..........................................................
    // @attribute
-   o._bitmapGuid = null;
+   o._textureGuid = null;
+   o._bitmapGuid  = null;
    //..........................................................
    // @method
-   o.bitmapGuid  = FE3sMaterialTexture_bitmapGuid;
+   o.textureGuid  = FE3sMaterialTexture_textureGuid;
+   o.bitmapGuid   = FE3sMaterialTexture_bitmapGuid;
    // @method
-   o.unserialize = FE3sMaterialTexture_unserialize;
+   o.unserialize  = FE3sMaterialTexture_unserialize;
    return o;
+}
+
+//==========================================================
+// <T>获得纹理唯一代码。</T>
+//
+// @method
+// @return String 唯一代码
+//==========================================================
+function FE3sMaterialTexture_textureGuid(){
+   return this._textureGuid;
 }
 
 //==========================================================
@@ -37,5 +49,6 @@ function FE3sMaterialTexture_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
    // 读取属性
+   o._textureGuid = p.readString();
    o._bitmapGuid = p.readString();
 }

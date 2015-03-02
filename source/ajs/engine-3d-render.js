@@ -776,6 +776,7 @@ function FE3rTexture_testReady(){
    return this._ready;
 }
 function FE3rTexture_load(u){
+   debugger
    var o = this;
    if(o._image){
       throw new TError('Loading image.');

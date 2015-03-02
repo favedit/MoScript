@@ -452,10 +452,15 @@ function FE3sMaterialGroup(o){
 }
 function FE3sMaterialTexture(o){
    o = RClass.inherits(this, o, FE3sObject);
-   o._bitmapGuid = null;
-   o.bitmapGuid  = FE3sMaterialTexture_bitmapGuid;
-   o.unserialize = FE3sMaterialTexture_unserialize;
+   o._textureGuid = null;
+   o._bitmapGuid  = null;
+   o.textureGuid  = FE3sMaterialTexture_textureGuid;
+   o.bitmapGuid   = FE3sMaterialTexture_bitmapGuid;
+   o.unserialize  = FE3sMaterialTexture_unserialize;
    return o;
+}
+function FE3sMaterialTexture_textureGuid(){
+   return this._textureGuid;
 }
 function FE3sMaterialTexture_bitmapGuid(){
    return this._bitmapGuid;
@@ -463,6 +468,7 @@ function FE3sMaterialTexture_bitmapGuid(){
 function FE3sMaterialTexture_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
+   o._textureGuid = p.readString();
    o._bitmapGuid = p.readString();
 }
 function FE3sMesh(o){
@@ -629,22 +635,25 @@ function FE3sModelConsole_unserialAnimation(p){
    o._animations.set(r.guid(), r);
    return r;
 }
-function FE3sModelConsole_load(c, v){
+function FE3sModelConsole_load(p){
    var o = this;
-   var ms = o._models;
-   var m = ms.get(c);
-   if(m == null){
-      var u = RBrowser.hostPath(o._dataUrl + '?code=' + c + '&version=' + RString.nvl(v) + '&date=' + RDate.format());
+   var s = o._models;
+   var m = s.get(p);
+   if(!m){
+      var u = RBrowser.hostPath(o._dataUrl + '?code=' + p);
+      if(RRuntime.isDebug()){
+         u += '&date=' + RDate.format();
+      }
       m = RClass.create(FE3sModel);
       m.load(u);
-      ms.set(c, m);
+      s.set(p, m);
    }
    return m;
 }
 function FE3sModelConsole_dispose(){
    var o = this;
-   o._materials = null;
-   o.__base.FDisplay.dispose.call(o);
+   o._materials = RObject.free(o._materials);
+   o.__base.FConsole.dispose.call(o);
 }
 function FE3sObject(o){
    o = RClass.inherits(this, o, FObject);
@@ -1562,11 +1571,11 @@ function FE3sTemplateTheme_unserialize(p){
    }
 }
 function FE3sTexture(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._themes   = null;
-   o._path     = '/assets/theme/'
-   o.construct = FE3sTexture_construct;
-   o.load      = FE3sTexture_load;
+   o = RClass.inherits(this, o, FE3sResource);
+   o._bitmaps     = null;
+   o._bitmapPacks = null;
+   o.construct    = FE3sTexture_construct;
+   o.unserialize  = FE3sTexture_unserialize;
    return o;
 }
 function FE3sTexture_construct(){
@@ -1574,64 +1583,83 @@ function FE3sTexture_construct(){
    o.__base.FConsole.construct.call(o);
    o._themes = new TDictionary();
 }
-function FE3sTexture_load(p){
+function FE3sTexture_unserialize(p){
    var o = this;
-   var r = o._themes.get(p);
-   if(r == null){
-      var u = RBrowser.contentPath(o._path + p + '.ser');
-      r = RClass.create(FE3sTheme);
-      r.load(u);
-      o._themes.set(p, r);
+   o.__base.FE3sResource.unserialize.call(o, p);
+   var c = p.readInt16();
+   if(c > 0){
+      var s = o._bitmaps = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var b = RClass.create(FE3sTextureBitmap);
+         b.unserialize(p);
+         s.set(b.code(), b);
+      }
    }
-   return r;
+   var c = p.readInt16();
+   if(c > 0){
+      var s = o._bitmapPacks = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var b = RClass.create(FE3sTextureBitmapPack);
+         b.unserialize(p);
+         s.set(b.code(), b);
+      }
+   }
 }
 function FE3sTextureBitmap(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._themes   = null;
-   o._path     = '/assets/theme/'
-   o.construct = FE3sTextureBitmap_construct;
-   o.load      = FE3sTextureBitmap_load;
+   o = RClass.inherits(this, o, FE3sObject);
+   o.unserialize = FE3sTextureBitmap_unserialize;
    return o;
 }
-function FE3sTextureBitmap_construct(){
+function FE3sTextureBitmap_unserialize(p){
    var o = this;
-   o.__base.FConsole.construct.call(o);
-   o._themes = new TDictionary();
+   o.__base.FE3sObject.unserialize.call(o, p);
 }
-function FE3sTextureBitmap_load(p){
+function FE3sTextureBitmapPack(o){
+   o = RClass.inherits(this, o, FE3sObject);
+   o._data       = null;
+   o.unserialize = FE3sTextureBitmap_unserialize;
+   return o;
+}
+function FE3sTextureBitmap_unserialize(p){
    var o = this;
-   var r = o._themes.get(p);
-   if(r == null){
-      var u = RBrowser.contentPath(o._path + p + '.ser');
-      r = RClass.create(FE3sTheme);
-      r.load(u);
-      o._themes.set(p, r);
-   }
-   return r;
+   o.__base.FE3sObject.unserialize.call(o, p);
+   var c = p.readInt32();
+   var d = o._data = new Uint8Array(c);
+   p.readBytes(d, 0, c);
 }
 function FE3sTextureConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._themes   = null;
-   o._path     = '/assets/theme/'
+   o._textures = null;
+   o._dataUrl  = '/cloud.content.texture.wv';
    o.construct = FE3sTextureConsole_construct;
    o.load      = FE3sTextureConsole_load;
+   o.dispose   = FE3sModelConsole_dispose;
    return o;
 }
 function FE3sTextureConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._themes = new TDictionary();
+   o._textures = new TDictionary();
 }
 function FE3sTextureConsole_load(p){
    var o = this;
-   var r = o._themes.get(p);
-   if(r == null){
-      var u = RBrowser.contentPath(o._path + p + '.ser');
-      r = RClass.create(FE3sTheme);
-      r.load(u);
-      o._themes.set(p, r);
+   var s = o._textures;
+   var t = s.get(p);
+   if(!t){
+      var u = RBrowser.hostPath(o._dataUrl + '?code=' + p);
+      if(RRuntime.isDebug()){
+         u += '&date=' + RDate.format();
+      }
+      t = RClass.create(FE3sTexture);
+      t.load(u);
+      s.set(p, t);
    }
-   return r;
+   return t;
+}
+function FE3sTextureConsole_dispose(){
+   var o = this;
+   o._textures = RObject.free(o._textures);
+   o.__base.FConsole.dispose.call(o);
 }
 function FE3sTheme(o){
    o = RClass.inherits(this, o, FE3sResource);
