@@ -30,6 +30,8 @@ function FE3rModel(o){
    o.loadResource         = FE3rModel_loadResource;
    o.loadSkeletonResource = FE3rModel_loadSkeletonResource;
    o.processLoad          = FE3rModel_processLoad;
+   // @method
+   o.dispose              = FE3rModel_dispose;
    return o;
 }
 
@@ -185,4 +187,18 @@ function FE3rModel_processLoad(){
    // 加载资源
    o.loadResource(o._resource);
    return true;
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FE3rModel_dispose(){
+   var o = this;
+   o._ready = false;
+   o._resource = null;
+   o._meshes = RObject.dispose(o._meshes);
+   o._skeletons = RObject.dispose(o._skeletons);
+   o.__base.FObject.dispose.call(o);
 }

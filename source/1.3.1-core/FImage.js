@@ -17,6 +17,7 @@ function FImage(o){
    //..........................................................
    // @event
    o.ohLoad    = FImage_ohLoad;
+   o.ohError   = FImage_ohError;
    //..........................................................
    // @method
    o.construct = FImage_construct;
@@ -42,6 +43,16 @@ function FImage_ohLoad(){
    o._size.set(m.naturalWidth, m.naturalHeight);
    o._ready = true;
    o.processLoadListener(o);
+}
+
+//==========================================================
+// <T>加载完成处理。</T>
+//
+// @method
+//==========================================================
+function FImage_ohError(p){
+   var o = this.__linker;
+   debugger;
 }
 
 //==========================================================
@@ -99,6 +110,7 @@ function FImage_loadUrl(p){
       g = o._hImage = new Image();
       g.__linker = o;
       g.onload = o.ohLoad;
+      g.onerror = o.ohError;
    }
    // 加载图片
    g.src = p;

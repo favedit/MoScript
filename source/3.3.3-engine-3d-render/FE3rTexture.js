@@ -8,42 +8,28 @@ function FE3rTexture(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
    //..........................................................
    // @attribute
-   o._ready    = false;
-   o._image    = null;
-   o._texture  = null;
+   o._resource    = null;
+   o._bitmaps     = null;
+   o._bitmapPacks = null;
+   // @attribute
+   o._ready       = false;
+   o._dataReady   = false;
    //..........................................................
-   o.onLoad    = FE3rTexture_onLoad;
-   //..........................................................
    // @method
-   o.construct = FE3rTexture_construct;
+   o.construct    = FE3rTexture_construct;
    // @method
-   o.image     = FE3rTexture_image;
-   o.texture   = FE3rTexture_texture;
+   o.resource     = FE3rTexture_resource;
+   o.setResource  = FE3rTexture_setResource;
+   o.bitmaps      = FE3rTexture_bitmaps;
    // @method
-   o.testReady = FE3rTexture_testReady;
-   o.load      = FE3rTexture_load;
+   o.testReady    = FE3rTexture_testReady;
+   o.loadBitmap   = FE3rTexture_loadBitmap;
+   o.loadResource = FE3rTexture_loadResource;
+   o.load         = FE3rTexture_load;
+   o.processLoad  = FE3rTexture_processLoad;
    // @method
-   o.dispose   = FE3rTexture_dispose;
+   o.dispose      = FE3rTexture_dispose;
    return o;
-}
-
-//==========================================================
-// <T>数据加载处理。</T>
-//
-// @param p:region:FRegion 区域
-// @return Boolean 是否可见
-//==========================================================
-function FE3rTexture_onLoad(p){
-   var o = this;
-   var c = o._graphicContext;
-   // 创建纹理
-   var t = o._texture = c.createFlatTexture();
-   t.upload(o._image);
-   t.makeMipmap();
-   // 释放位图
-   o._image = RObject.dispose(o._image);
-   // 加载完成
-   o._ready  = true;
 }
 
 //==========================================================
@@ -54,24 +40,36 @@ function FE3rTexture_onLoad(p){
 function FE3rTexture_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._bitmaps = new TDictionary();
 }
 
 //==========================================================
-// <T>获得位图。</T>
+// <T>获得资源。</T>
 //
-// @return 位图
+// @method
+// @return FE3sTexture 资源
 //==========================================================
-function FE3rTexture_image(){
-   return this._image;
+function FE3rTexture_resource(){
+   return this._resource;
 }
 
 //==========================================================
-// <T>获得纹理。</T>
+// <T>设置资源。</T>
 //
-// @return 纹理
+// @method
+// @param p:resource:FE3sTexture 资源
 //==========================================================
-function FE3rTexture_texture(){
-   return this._texture;
+function FE3rTexture_setResource(p){
+   this._resource = p;
+}
+
+//==========================================================
+// <T>获得位图集合。</T>
+//
+// @return 位图集合
+//==========================================================
+function FE3rTexture_bitmaps(){
+   return this._bitmaps;
 }
 
 //==========================================================
@@ -84,20 +82,104 @@ function FE3rTexture_testReady(){
 }
 
 //==========================================================
-// <T>加载网络地址。</T>
+// <T>加载位图。</T>
+//
+// @param p:guid:String 位图唯一编号
+//==========================================================
+function FE3rTexture_loadBitmap(p){
+   var o = this;
+   var s = o._bitmaps;
+   var b = s.get(p);
+   if(!b){
+      b = RClass.create(FE3rTextureBitmap);
+      s.set(p, b);
+   }
+   return b;
+}
+
+//==========================================================
+// <T>加载模型资源。</T>
 //
 // @method
-// @param p:name:String 名称
+// @param p:resource:FE3sModel 模型资源
 //==========================================================
-function FE3rTexture_load(u){
-   debugger
+function FE3rTexture_loadResource(p){
    var o = this;
-   if(o._image){
-      throw new TError('Loading image.');
+   var rbps = p.bitmapPacks();
+   if(rbps){
+      var bps = o._bitmapPacks = new TDictionary();
+      var c = rbps.count();
+      for(var i = 0; i < c; i++){
+         var rbp = rbps.valueAt(i);
+         // 创建渲染位图打包
+         var bp = null;
+         if(rbp._typeName == 'flat'){
+            bp = RClass.create(FE3rTextureBitmapFlatPack);
+         }else if(rbp._typeName == 'cube'){
+            bp = RClass.create(FE3rTextureBitmapCubePack);
+         }else{
+            throw new TError(o, 'Load resource failure.');
+         }
+         bp.linkGraphicContext(o);
+         bp.loadResource(rbp);
+         o._bitmapPacks.set(rbp.code(), bp);
+      }
    }
-   var g = o._image = RClass.create(FImage);
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u);
+   // 加载完成
+   o._dataReady = true;
+}
+
+//==========================================================
+// <T>加载数据。</T>
+//
+// @method
+//==========================================================
+function FE3rTexture_load(){
+   var o = this;
+   var r = o._resource;
+   // 加载纹理
+   var rbs = r.bitmaps();
+   for(var i = rbs.count() - 1; i >= 0; i--){
+      var rb = rbs.value(i);
+      var b = o._bitmaps.get(rb.guid());
+      var bp = o._bitmapPacks.get(rb.packCode());
+      if(!bp){
+         throw new TError('Link pack is not eists.');
+      }
+      b.load(bp);
+   }
+   // 加载完成
+   o._ready = true;
+}
+
+//==========================================================
+// <T>加载处理。</T>
+//
+// @method
+//==========================================================
+function FE3rTexture_processLoad(){
+   var o = this;
+   // 检查是否已加载
+   if(!o._dataReady){
+      // 检查资源是否准备好
+      if(!o._resource.testReady()){
+         return false;
+      }
+      // 加载资源
+      o.loadResource(o._resource);
+   }else{
+      // 测试所有位图加载完成
+      var s = o._bitmapPacks;
+      for(var i = s.count() - 1; i >= 0; i--){
+         var b = s.valueAt(i);
+         if(!b.testReady()){
+            return false;
+         }
+      }
+      // 加载完成
+      o.load();
+   }
+   return o._ready;
 }
 
 //==========================================================
@@ -107,8 +189,8 @@ function FE3rTexture_load(u){
 //==========================================================
 function FE3rTexture_dispose(){
    var o = this;
-   o._context = null;
    o._ready = false;
-   o._image = RObject.dispose(o._image);
-   o._texture = RObject.dispose(o._texture);
+   o._resource = null;
+   o._bitmaps = RObject.dispose(o._bitmaps);
+   o.__base.FObject.dispose.call(o);
 }

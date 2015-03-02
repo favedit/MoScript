@@ -1950,12 +1950,12 @@ function FE3dTemplateRenderable_loadResource(p){
    o._material.calculate(mr);
    var rs = mr.textures();
    if(rs){
-      var bc = RConsole.find(FE3rBitmapConsole)
-      var c = rs.count();
+      var tc = RConsole.find(FE3rTextureConsole)
       var ts = o._textures = new TDictionary();
+      var c = rs.count();
       for(var i = 0; i < c; i++){
          var r = rs.get(i);
-         var t = bc.load(o._graphicContext, r.bitmapGuid(), r.code());
+         var t = tc.loadBitmap(o._graphicContext, r.textureGuid(), r.bitmapGuid());
          ts.set(r.code(), t);
       }
    }

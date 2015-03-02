@@ -1560,6 +1560,7 @@ function FImage(o){
    o._ready    = false;
    o._hImage   = null;
    o.ohLoad    = FImage_ohLoad;
+   o.ohError   = FImage_ohError;
    o.construct = FImage_construct;
    o.size      = FImage_size;
    o.image     = FImage_image;
@@ -1574,6 +1575,10 @@ function FImage_ohLoad(){
    o._size.set(m.naturalWidth, m.naturalHeight);
    o._ready = true;
    o.processLoadListener(o);
+}
+function FImage_ohError(p){
+   var o = this.__linker;
+   debugger;
 }
 function FImage_construct(){
    var o = this;
@@ -1596,6 +1601,7 @@ function FImage_loadUrl(p){
       g = o._hImage = new Image();
       g.__linker = o;
       g.onload = o.ohLoad;
+      g.onerror = o.ohError;
    }
    g.src = p;
 }

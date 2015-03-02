@@ -107,12 +107,12 @@ function FE3dTemplateRenderable_loadResource(p){
    // 加载纹理集合
    var rs = mr.textures();
    if(rs){
-      var bc = RConsole.find(FE3rBitmapConsole)
-      var c = rs.count();
+      var tc = RConsole.find(FE3rTextureConsole)
       var ts = o._textures = new TDictionary();
+      var c = rs.count();
       for(var i = 0; i < c; i++){
          var r = rs.get(i);
-         var t = bc.load(o._graphicContext, r.bitmapGuid(), r.code());
+         var t = tc.loadBitmap(o._graphicContext, r.textureGuid(), r.bitmapGuid());
          ts.set(r.code(), t);
       }
    }
@@ -199,7 +199,6 @@ function FE3dTemplateRenderable_load(){
 //==========================================================
 function FE3dTemplateRenderable_dispose(){
    var o = this;
-   // 设置属性
    // 父处理
    o.__base.FE3dMeshRenderable.dispose.call(o);
 }

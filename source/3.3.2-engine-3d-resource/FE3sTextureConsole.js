@@ -44,7 +44,7 @@ function FE3sTextureConsole_load(p){
    var t = s.get(p);
    if(!t){
       // 生成网络地址
-      var u = RBrowser.hostPath(o._dataUrl + '?code=' + p);
+      var u = RBrowser.hostPath(o._dataUrl + '?guid=' + p);
       if(RRuntime.isDebug()){
          u += '&date=' + RDate.format();
       }

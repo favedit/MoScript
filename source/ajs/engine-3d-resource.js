@@ -1575,13 +1575,21 @@ function FE3sTexture(o){
    o._bitmaps     = null;
    o._bitmapPacks = null;
    o.construct    = FE3sTexture_construct;
+   o.bitmaps      = FE3sTexture_bitmaps;
+   o.bitmapPacks  = FE3sTexture_bitmapPacks;
    o.unserialize  = FE3sTexture_unserialize;
+   o.dispose      = FE3sTexture_dispose;
    return o;
 }
 function FE3sTexture_construct(){
    var o = this;
-   o.__base.FConsole.construct.call(o);
-   o._themes = new TDictionary();
+   o.__base.FE3sResource.construct.call(o);
+}
+function FE3sTexture_bitmaps(){
+   return this._bitmaps;
+}
+function FE3sTexture_bitmapPacks(){
+   return this._bitmapPacks;
 }
 function FE3sTexture_unserialize(p){
    var o = this;
@@ -1605,27 +1613,64 @@ function FE3sTexture_unserialize(p){
       }
    }
 }
+function FE3sTexture_dispose(){
+   var o = this;
+   o._bitmaps = RObject.free(o._bitmaps);
+   o._bitmapPacks = RObject.free(o._bitmapPacks);
+   o.__base.FE3sResource.dispose.call(o);
+}
 function FE3sTextureBitmap(o){
    o = RClass.inherits(this, o, FE3sObject);
+   o._packCode   = null;
+   o.packCode    = FE3sTextureBitmap_packCode;
    o.unserialize = FE3sTextureBitmap_unserialize;
    return o;
+}
+function FE3sTextureBitmap_packCode(){
+   return this._packCode;
 }
 function FE3sTextureBitmap_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
+   o._packCode = p.readString();
 }
 function FE3sTextureBitmapPack(o){
    o = RClass.inherits(this, o, FE3sObject);
    o._data       = null;
-   o.unserialize = FE3sTextureBitmap_unserialize;
+   o._typeName   = null;
+   o._formatName = null;
+   o.data        = FE3sTextureBitmapPack_data;
+   o.unserialize = FE3sTextureBitmapPack_unserialize;
+   o.dispose     = FE3sTextureBitmapPack_dispose;
    return o;
 }
-function FE3sTextureBitmap_unserialize(p){
+function FE3sTextureBitmapPack_data(){
+   return this._data;
+}
+function FE3sTextureBitmapPack_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
-   var c = p.readInt32();
-   var d = o._data = new Uint8Array(c);
-   p.readBytes(d, 0, c);
+   o._typeName = p.readString();
+   o._formatName = p.readString();
+   if(o._typeName == 'flat'){
+      var c = p.readInt32();
+      var d = o._data = new ArrayBuffer(c);
+      p.readBytes(d, 0, c);
+   }else if(o._typeName == 'cube'){
+      o._data = new Array();
+      for(var i = 0; i < 6; i++){
+         var c = p.readInt32();
+         var d = o._data[i] = new ArrayBuffer(c);
+         p.readBytes(d, 0, c);
+      }
+   }else{
+      throw new TError(o, 'Unserial texture failure ');
+   }
+}
+function FE3sTextureBitmapPack_dispose(){
+   var o = this;
+   o._data = null;
+   o.__base.FE3sObject.dispose.call(o);
 }
 function FE3sTextureConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -1646,7 +1691,7 @@ function FE3sTextureConsole_load(p){
    var s = o._textures;
    var t = s.get(p);
    if(!t){
-      var u = RBrowser.hostPath(o._dataUrl + '?code=' + p);
+      var u = RBrowser.hostPath(o._dataUrl + '?guid=' + p);
       if(RRuntime.isDebug()){
          u += '&date=' + RDate.format();
       }

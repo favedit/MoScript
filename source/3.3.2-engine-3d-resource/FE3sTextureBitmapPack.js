@@ -10,23 +10,63 @@ function FE3sTextureBitmapPack(o){
    //..........................................................
    // @attribute
    o._data       = null;
+   o._typeName   = null;
+   o._formatName = null;
    //..........................................................
    // @method
-   o.unserialize = FE3sTextureBitmap_unserialize;
+   o.data        = FE3sTextureBitmapPack_data;
+   o.unserialize = FE3sTextureBitmapPack_unserialize;
+   // @method
+   o.dispose     = FE3sTextureBitmapPack_dispose;
    return o;
+}
+
+//==========================================================
+// <T>获得数据。</T>
+//
+// @method
+// @return Uint8Array 数据
+//==========================================================
+function FE3sTextureBitmapPack_data(){
+   return this._data;
 }
 
 //==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
 // @param p:input:FByteStream 数据流
-// @return 处理结果
 //==========================================================
-function FE3sTextureBitmap_unserialize(p){
+function FE3sTextureBitmapPack_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
+   // 读取属性
+   o._typeName = p.readString();
+   o._formatName = p.readString();
    // 读取数据
-   var c = p.readInt32();
-   var d = o._data = new Uint8Array(c);
-   p.readBytes(d, 0, c);
+   if(o._typeName == 'flat'){
+      var c = p.readInt32();
+      var d = o._data = new ArrayBuffer(c);
+      p.readBytes(d, 0, c);
+   }else if(o._typeName == 'cube'){
+      o._data = new Array();
+      for(var i = 0; i < 6; i++){
+         var c = p.readInt32();
+         var d = o._data[i] = new ArrayBuffer(c);
+         p.readBytes(d, 0, c);
+      }
+   }else{
+      throw new TError(o, 'Unserial texture failure ');
+   }
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FE3sTextureBitmapPack_dispose(){
+   var o = this;
+   o._data = null;
+   // 父处理
+   o.__base.FE3sObject.dispose.call(o);
 }

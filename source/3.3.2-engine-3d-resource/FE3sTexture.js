@@ -15,7 +15,11 @@ function FE3sTexture(o){
    // @method
    o.construct    = FE3sTexture_construct;
    // @method
+   o.bitmaps      = FE3sTexture_bitmaps;
+   o.bitmapPacks  = FE3sTexture_bitmapPacks;
    o.unserialize  = FE3sTexture_unserialize;
+   // @method
+   o.dispose      = FE3sTexture_dispose;
    return o;
 }
 
@@ -26,8 +30,27 @@ function FE3sTexture(o){
 //==========================================================
 function FE3sTexture_construct(){
    var o = this;
-   o.__base.FConsole.construct.call(o);
-   o._themes = new TDictionary();
+   o.__base.FE3sResource.construct.call(o);
+}
+
+//==========================================================
+// <T>获得资源位图集合。</T>
+//
+// @method
+// @return TDictionary 资源位图集合
+//==========================================================
+function FE3sTexture_bitmaps(){
+   return this._bitmaps;
+}
+
+//==========================================================
+// <T>获得资源位图打包集合。</T>
+//
+// @method
+// @return TDictionary 资源位图打包集合
+//==========================================================
+function FE3sTexture_bitmapPacks(){
+   return this._bitmapPacks;
 }
 
 //==========================================================
@@ -59,4 +82,17 @@ function FE3sTexture_unserialize(p){
          s.set(b.code(), b);
       }
    }
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FE3sTexture_dispose(){
+   var o = this;
+   o._bitmaps = RObject.free(o._bitmaps);
+   o._bitmapPacks = RObject.free(o._bitmapPacks);
+   // 父处理
+   o.__base.FE3sResource.dispose.call(o);
 }

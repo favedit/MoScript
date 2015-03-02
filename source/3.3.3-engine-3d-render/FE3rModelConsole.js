@@ -40,12 +40,12 @@ function FE3rModelConsole(o){
 //==========================================================
 function FE3rModelConsole_onProcess(){
    var o = this;
-   var ms = o._loadModels;
-   ms.record();
-   while(ms.next()){
-      var m = ms.current();
+   var s = o._loadModels;
+   s.record();
+   while(s.next()){
+      var m = s.current();
       if(m.processLoad()){
-         ms.removeCurrent();
+         s.removeCurrent();
       }
    }
 }
@@ -57,6 +57,7 @@ function FE3rModelConsole_onProcess(){
 //==========================================================
 function FE3rModelConsole_construct(){
    var o = this;
+   o.__base.FConsole.construct.call(o);
    // 设置属性
    o._loadModels = new TLooper();
    o._models = new TDictionary();

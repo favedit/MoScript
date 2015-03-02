@@ -2333,13 +2333,21 @@ function FE3sTexture(o){
    o._bitmaps     = null;
    o._bitmapPacks = null;
    o.construct    = FE3sTexture_construct;
+   o.bitmaps      = FE3sTexture_bitmaps;
+   o.bitmapPacks  = FE3sTexture_bitmapPacks;
    o.unserialize  = FE3sTexture_unserialize;
+   o.dispose      = FE3sTexture_dispose;
    return o;
 }
 function FE3sTexture_construct(){
    var o = this;
-   o.__base.FConsole.construct.call(o);
-   o._themes = new TDictionary();
+   o.__base.FE3sResource.construct.call(o);
+}
+function FE3sTexture_bitmaps(){
+   return this._bitmaps;
+}
+function FE3sTexture_bitmapPacks(){
+   return this._bitmapPacks;
 }
 function FE3sTexture_unserialize(p){
    var o = this;
@@ -2363,27 +2371,64 @@ function FE3sTexture_unserialize(p){
       }
    }
 }
+function FE3sTexture_dispose(){
+   var o = this;
+   o._bitmaps = RObject.free(o._bitmaps);
+   o._bitmapPacks = RObject.free(o._bitmapPacks);
+   o.__base.FE3sResource.dispose.call(o);
+}
 function FE3sTextureBitmap(o){
    o = RClass.inherits(this, o, FE3sObject);
+   o._packCode   = null;
+   o.packCode    = FE3sTextureBitmap_packCode;
    o.unserialize = FE3sTextureBitmap_unserialize;
    return o;
+}
+function FE3sTextureBitmap_packCode(){
+   return this._packCode;
 }
 function FE3sTextureBitmap_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
+   o._packCode = p.readString();
 }
 function FE3sTextureBitmapPack(o){
    o = RClass.inherits(this, o, FE3sObject);
    o._data       = null;
-   o.unserialize = FE3sTextureBitmap_unserialize;
+   o._typeName   = null;
+   o._formatName = null;
+   o.data        = FE3sTextureBitmapPack_data;
+   o.unserialize = FE3sTextureBitmapPack_unserialize;
+   o.dispose     = FE3sTextureBitmapPack_dispose;
    return o;
 }
-function FE3sTextureBitmap_unserialize(p){
+function FE3sTextureBitmapPack_data(){
+   return this._data;
+}
+function FE3sTextureBitmapPack_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
-   var c = p.readInt32();
-   var d = o._data = new Uint8Array(c);
-   p.readBytes(d, 0, c);
+   o._typeName = p.readString();
+   o._formatName = p.readString();
+   if(o._typeName == 'flat'){
+      var c = p.readInt32();
+      var d = o._data = new ArrayBuffer(c);
+      p.readBytes(d, 0, c);
+   }else if(o._typeName == 'cube'){
+      o._data = new Array();
+      for(var i = 0; i < 6; i++){
+         var c = p.readInt32();
+         var d = o._data[i] = new ArrayBuffer(c);
+         p.readBytes(d, 0, c);
+      }
+   }else{
+      throw new TError(o, 'Unserial texture failure ');
+   }
+}
+function FE3sTextureBitmapPack_dispose(){
+   var o = this;
+   o._data = null;
+   o.__base.FE3sObject.dispose.call(o);
 }
 function FE3sTextureConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -2404,7 +2449,7 @@ function FE3sTextureConsole_load(p){
    var s = o._textures;
    var t = s.get(p);
    if(!t){
-      var u = RBrowser.hostPath(o._dataUrl + '?code=' + p);
+      var u = RBrowser.hostPath(o._dataUrl + '?guid=' + p);
       if(RRuntime.isDebug()){
          u += '&date=' + RDate.format();
       }
@@ -2988,6 +3033,7 @@ function FE3rModel(o){
    o.loadResource         = FE3rModel_loadResource;
    o.loadSkeletonResource = FE3rModel_loadSkeletonResource;
    o.processLoad          = FE3rModel_processLoad;
+   o.dispose              = FE3rModel_dispose;
    return o;
 }
 function FE3rModel_name(){
@@ -3073,6 +3119,14 @@ function FE3rModel_processLoad(){
    o.loadResource(o._resource);
    return true;
 }
+function FE3rModel_dispose(){
+   var o = this;
+   o._ready = false;
+   o._resource = null;
+   o._meshes = RObject.dispose(o._meshes);
+   o._skeletons = RObject.dispose(o._skeletons);
+   o.__base.FObject.dispose.call(o);
+}
 function FE3rModelConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd    = EScope.Local;
@@ -3092,17 +3146,18 @@ function FE3rModelConsole(o){
 }
 function FE3rModelConsole_onProcess(){
    var o = this;
-   var ms = o._loadModels;
-   ms.record();
-   while(ms.next()){
-      var m = ms.current();
+   var s = o._loadModels;
+   s.record();
+   while(s.next()){
+      var m = s.current();
       if(m.processLoad()){
-         ms.removeCurrent();
+         s.removeCurrent();
       }
    }
 }
 function FE3rModelConsole_construct(){
    var o = this;
+   o.__base.FConsole.construct.call(o);
    o._loadModels = new TLooper();
    o._models = new TDictionary();
    o._meshs = new TDictionary();
@@ -3310,19 +3365,211 @@ function FE3rStream_loadResource(p){
 }
 function FE3rTexture(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
-   o._ready    = false;
-   o._image    = null;
-   o._texture  = null;
-   o.onLoad    = FE3rTexture_onLoad;
-   o.construct = FE3rTexture_construct;
-   o.image     = FE3rTexture_image;
-   o.texture   = FE3rTexture_texture;
-   o.testReady = FE3rTexture_testReady;
-   o.load      = FE3rTexture_load;
-   o.dispose   = FE3rTexture_dispose;
+   o._resource    = null;
+   o._bitmaps     = null;
+   o._bitmapPacks = null;
+   o._ready       = false;
+   o._dataReady   = false;
+   o.construct    = FE3rTexture_construct;
+   o.resource     = FE3rTexture_resource;
+   o.setResource  = FE3rTexture_setResource;
+   o.bitmaps      = FE3rTexture_bitmaps;
+   o.testReady    = FE3rTexture_testReady;
+   o.loadBitmap   = FE3rTexture_loadBitmap;
+   o.loadResource = FE3rTexture_loadResource;
+   o.load         = FE3rTexture_load;
+   o.processLoad  = FE3rTexture_processLoad;
+   o.dispose      = FE3rTexture_dispose;
    return o;
 }
-function FE3rTexture_onLoad(p){
+function FE3rTexture_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._bitmaps = new TDictionary();
+}
+function FE3rTexture_resource(){
+   return this._resource;
+}
+function FE3rTexture_setResource(p){
+   this._resource = p;
+}
+function FE3rTexture_bitmaps(){
+   return this._bitmaps;
+}
+function FE3rTexture_testReady(){
+   return this._ready;
+}
+function FE3rTexture_loadBitmap(p){
+   var o = this;
+   var s = o._bitmaps;
+   var b = s.get(p);
+   if(!b){
+      b = RClass.create(FE3rTextureBitmap);
+      s.set(p, b);
+   }
+   return b;
+}
+function FE3rTexture_loadResource(p){
+   var o = this;
+   var rbps = p.bitmapPacks();
+   if(rbps){
+      var bps = o._bitmapPacks = new TDictionary();
+      var c = rbps.count();
+      for(var i = 0; i < c; i++){
+         var rbp = rbps.valueAt(i);
+         var bp = null;
+         if(rbp._typeName == 'flat'){
+            bp = RClass.create(FE3rTextureBitmapFlatPack);
+         }else if(rbp._typeName == 'cube'){
+            bp = RClass.create(FE3rTextureBitmapCubePack);
+         }else{
+            throw new TError(o, 'Load resource failure.');
+         }
+         bp.linkGraphicContext(o);
+         bp.loadResource(rbp);
+         o._bitmapPacks.set(rbp.code(), bp);
+      }
+   }
+   o._dataReady = true;
+}
+function FE3rTexture_load(){
+   var o = this;
+   var r = o._resource;
+   var rbs = r.bitmaps();
+   for(var i = rbs.count() - 1; i >= 0; i--){
+      var rb = rbs.value(i);
+      var b = o._bitmaps.get(rb.guid());
+      var bp = o._bitmapPacks.get(rb.packCode());
+      if(!bp){
+         throw new TError('Link pack is not eists.');
+      }
+      b.load(bp);
+   }
+   o._ready = true;
+}
+function FE3rTexture_processLoad(){
+   var o = this;
+   if(!o._dataReady){
+      if(!o._resource.testReady()){
+         return false;
+      }
+      o.loadResource(o._resource);
+   }else{
+      var s = o._bitmapPacks;
+      for(var i = s.count() - 1; i >= 0; i--){
+         var b = s.valueAt(i);
+         if(!b.testReady()){
+            return false;
+         }
+      }
+      o.load();
+   }
+   return o._ready;
+}
+function FE3rTexture_dispose(){
+   var o = this;
+   o._ready = false;
+   o._resource = null;
+   o._bitmaps = RObject.dispose(o._bitmaps);
+   o.__base.FObject.dispose.call(o);
+}
+function FE3rTextureBitmap(o){
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
+   o._ready      = false;
+   o._bitmapPack = null;
+   o.construct   = FE3rTextureBitmap_construct;
+   o.texture     = FE3rTextureBitmap_texture;
+   o.testReady   = FE3rTextureBitmap_testReady;
+   o.load        = FE3rTextureBitmap_load;
+   o.dispose     = FE3rTextureBitmap_dispose;
+   return o;
+}
+function FE3rTextureBitmap_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+function FE3rTextureBitmap_texture(){
+   return this._bitmapPack.texture();
+}
+function FE3rTextureBitmap_testReady(){
+   return this._ready;
+}
+function FE3rTextureBitmap_load(p){
+   var o = this;
+   o._bitmapPack = p;
+   o._ready = true;
+}
+function FE3rTextureBitmap_dispose(){
+   var o = this;
+   o._context = null;
+   o._ready = false;
+   o._bitmapPack = null;
+   o.__base.FObject.dispose.call(o);
+}
+function FE3rTextureBitmapCubePack(o){
+   o = RClass.inherits(this, o, FE3rTextureBitmapPack);
+   o._ready       = false;
+   o._resource    = null;
+   o._images      = null;
+   o.onLoad       = FE3rTextureBitmapCubePack_onLoad;
+   o.construct    = FE3rTextureBitmapCubePack_construct;
+   o.loadResource = FE3rTextureBitmapCubePack_loadResource;
+   o.dispose      = FE3rTextureBitmapCubePack_dispose;
+   return o;
+}
+function FE3rTextureBitmapCubePack_onLoad(p){
+   var o = this;
+   var c = o._graphicContext;
+   var is = o._images;
+   for(var i = 0; i < 6; i++){
+      if(!is[i].testReady()){
+         return;
+      }
+   }
+   var t = o._texture = c.createCubeTexture();
+   t.upload(is[0], is[1], is[2], is[3], is[4], is[5]);
+   for(var i = 0; i < 6; i++){
+      is[i] = RObject.dispose(is[i]);
+   }
+   o._images = RObject.dispose(o._image);
+   o._ready  = true;
+}
+function FE3rTextureBitmapCubePack_construct(){
+   var o = this;
+   o.__base.FE3rTextureBitmapPack.construct.call(o);
+}
+function FE3rTextureBitmapCubePack_loadResource(p){
+   var o = this;
+   o._resource = p;
+   var d = p.data();
+   var t = p._formatName;
+   o._images = new TObjects();
+   for(var i = 0; i < 6; i++){
+      var b = new Blob([d[i]], {type: 'image/' + t});
+      var u = window.URL.createObjectURL(b);
+      var g = o._images[i] = RClass.create(FImage);
+      g.loadUrl(u);
+      g.addLoadListener(o, o.onLoad);
+   }
+}
+function FE3rTextureBitmapCubePack_dispose(){
+   var o = this;
+   o._ready = false;
+   o._images = RObject.dispose(o._images);
+   o.__base.FE3rTextureBitmapPack.dispose.call(o);
+}
+function FE3rTextureBitmapFlatPack(o){
+   o = RClass.inherits(this, o, FE3rTextureBitmapPack);
+   o._ready       = false;
+   o._resource    = null;
+   o._image       = null;
+   o.onLoad       = FE3rTextureBitmapFlatPack_onLoad;
+   o.construct    = FE3rTextureBitmapFlatPack_construct;
+   o.loadResource = FE3rTextureBitmapFlatPack_loadResource;
+   o.dispose      = FE3rTextureBitmapFlatPack_dispose;
+   return o;
+}
+function FE3rTextureBitmapFlatPack_onLoad(p){
    var o = this;
    var c = o._graphicContext;
    var t = o._texture = c.createFlatTexture();
@@ -3331,77 +3578,121 @@ function FE3rTexture_onLoad(p){
    o._image = RObject.dispose(o._image);
    o._ready  = true;
 }
-function FE3rTexture_construct(){
+function FE3rTextureBitmapFlatPack_construct(){
+   var o = this;
+   o.__base.FE3rTextureBitmapPack.construct.call(o);
+}
+function FE3rTextureBitmapFlatPack_loadResource(p){
+   var o = this;
+   o._resource = p;
+   var d = p.data();
+   var t = p._formatName;
+   var b = new Blob([d], {type: 'image/' + t});
+   var u = window.URL.createObjectURL(b);
+   var g = o._image = RClass.create(FImage);
+   g.loadUrl(u);
+   g.addLoadListener(o, o.onLoad);
+}
+function FE3rTextureBitmapFlatPack_dispose(){
+   var o = this;
+   o._image = RObject.dispose(o._image);
+   o.__base.FE3rTextureBitmapPack.dispose.call(o);
+}
+function FE3rTextureBitmapPack(o){
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
+   o._ready       = false;
+   o._resource    = null;
+   o._image       = null;
+   o.onLoad       = RMethod.virtual(o, 'onLoad');
+   o.construct    = FE3rTextureBitmapPack_construct;
+   o.texture      = FE3rTextureBitmapPack_texture;
+   o.testReady    = FE3rTextureBitmapPack_testReady;
+   o.loadResource = RMethod.virtual(o, 'loadResource');
+   o.dispose      = FE3rTextureBitmapPack_dispose;
+   return o;
+}
+function FE3rTextureBitmapPack_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
 }
-function FE3rTexture_image(){
-   return this._image;
-}
-function FE3rTexture_texture(){
+function FE3rTextureBitmapPack_texture(){
    return this._texture;
 }
-function FE3rTexture_testReady(){
+function FE3rTextureBitmapPack_testReady(){
    return this._ready;
 }
-function FE3rTexture_load(u){
-   debugger
+function FE3rTextureBitmapPack_dispose(){
    var o = this;
-   if(o._image){
-      throw new TError('Loading image.');
-   }
-   var g = o._image = RClass.create(FImage);
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u);
-}
-function FE3rTexture_dispose(){
-   var o = this;
-   o._context = null;
    o._ready = false;
-   o._image = RObject.dispose(o._image);
-   o._texture = RObject.dispose(o._texture);
+   o.__base.FObject.dispose.call(o);
 }
 function FE3rTextureConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._scopeCd  = EScope.Local;
-   o._images   = null;
-   o._textures = null;
-   o._path     = '/assets/texture/';
-   o.construct = FE3rTextureConsole_construct;
-   o.textures  = FE3rTextureConsole_textures;
-   o.load      = FE3rTextureConsole_load;
+   o._scopeCd      = EScope.Local;
+   o._loadTextures = null;
+   o._bitmaps      = null;
+   o._textures     = null;
+   o._thread       = null;
+   o._interval     = 200;
+   o.onProcess     = FE3rTextureConsole_onProcess;
+   o.construct     = FE3rTextureConsole_construct;
+   o.bitmaps       = FE3rTextureConsole_bitmaps;
+   o.textures      = FE3rTextureConsole_textures;
+   o.load          = FE3rTextureConsole_load;
+   o.loadBitmap    = FE3rTextureConsole_loadBitmap;
    return o;
+}
+function FE3rTextureConsole_onProcess(){
+   var o = this;
+   var s = o._loadTextures;
+   s.record();
+   while(s.next()){
+      var m = s.current();
+      if(m.processLoad()){
+         s.removeCurrent();
+      }
+   }
 }
 function FE3rTextureConsole_construct(){
    var o = this;
-   o._images = new TDictionary();
+   o.__base.FConsole.construct.call(o);
+   o._loadTextures = new TLooper();
+   o._bitmaps = new TDictionary();
    o._textures = new TDictionary();
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.lsnsProcess.register(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(t);
+}
+function FE3rTextureConsole_bitmaps(){
+   return this._bitmaps;
 }
 function FE3rTextureConsole_textures(){
    return this._textures;
 }
-function FE3rTextureConsole_load(pc, pt, pb){
+function FE3rTextureConsole_load(pc, pt){
    var o = this;
-   var c = RString.toLower(pt + '/' + pb);
-   var t = o._textures.get(c);
-   if(t != null){
+   var t = o._textures.get(pt);
+   if(t){
       return t;
    }
-   var u = RBrowser.contentPath(o._path + c + '.jpg');
-   RLogger.info(o, 'Load texture from bitmap. (url={1})', u);
-   if(RString.toLower(pb) == 'environment'){
-      t = RClass.create(FE3rTextureCube);
-      t.linkContext(pc);
-      t._name = c;
-      t.load(RBrowser.contentPath(o._path + c));
-   }else{
-      t = RClass.create(FE3rTexture);
-      t.linkContext(pc);
-      t._name = c;
-      t.load(u);
-   }
-   o._textures.set(c, t);
+   var rc = RConsole.find(FE3sTextureConsole);
+   var r = rc.load(pt);
+   t = RClass.create(FE3rTexture);
+   t.linkGraphicContext(pc);
+   t.setResource(r);
+   o._textures.set(pt, t);
+   o._loadTextures.push(t);
    return t;
+}
+function FE3rTextureConsole_loadBitmap(pc, pt, pb){
+   var o = this;
+   var b = o._bitmaps.get(pb);
+   if(b){
+      return b;
+   }
+   var t = o.load(pc, pt);
+   return t.loadBitmap(pb);
 }
 function FE3rTextureCube(o){
    o = RClass.inherits(this, o, FE3rTexture);
@@ -5455,12 +5746,12 @@ function FE3dTemplateRenderable_loadResource(p){
    o._material.calculate(mr);
    var rs = mr.textures();
    if(rs){
-      var bc = RConsole.find(FE3rBitmapConsole)
-      var c = rs.count();
+      var tc = RConsole.find(FE3rTextureConsole)
       var ts = o._textures = new TDictionary();
+      var c = rs.count();
       for(var i = 0; i < c; i++){
          var r = rs.get(i);
-         var t = bc.load(o._graphicContext, r.bitmapGuid(), r.code());
+         var t = tc.loadBitmap(o._graphicContext, r.textureGuid(), r.bitmapGuid());
          ts.set(r.code(), t);
       }
    }
