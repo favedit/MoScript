@@ -211,23 +211,34 @@ function FE3dStage_process(){
    o.__base.FStage.process.call(o);
    t.updateRegion(r);
    r.prepare();
-   t.clear(o._backgroundColor);
    var ls = o._layers;
    if(ls){
       var c = ls.count();
       for(var i = 0; i < c; i++){
          var l = ls.value(i);
-         var lt = l.technique();
-         if(!lt){
-            lt = t;
-         }
          r.reset();
          l.filterRenderables(r);
+         l._renderables.assign(r._renderables);
          r.update();
-         lt.drawRegion(r);
       }
    }
-   t.present(r);
+   if(r.isChanged()){
+      t.clear(o._backgroundColor);
+      if(ls){
+         var c = ls.count();
+         for(var i = 0; i < c; i++){
+            var l = ls.value(i);
+            var lt = l.technique();
+            if(!lt){
+               lt = t;
+            }
+            r.reset();
+            r._renderables.assign(l._renderables);
+            lt.drawRegion(r);
+         }
+      }
+      t.present(r);
+   }
 }
 var RE3dEngine = new function RE3dEngine(){
    var o = this;

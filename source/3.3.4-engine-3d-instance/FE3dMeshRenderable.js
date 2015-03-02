@@ -22,8 +22,8 @@ function FE3dMeshRenderable(o){
    o.textures         = FE3dMeshRenderable_textures;
    o.bones            = FE3dMeshRenderable_bones;
    // @method
-   o.update           = FE3dMeshRenderable_update;
    o.process          = FE3dMeshRenderable_process;
+   o.update           = FE3dMeshRenderable_update;
    // @method
    o.dispose          = FE3dMeshRenderable_dispose;
    return o;
@@ -91,32 +91,6 @@ function FE3dMeshRenderable_bones(p){
 }
 
 //==========================================================
-// <T>更新处理。</T>
-//
-// @method
-// @param p:region:FG3dRegion 区域
-//==========================================================
-function FE3dMeshRenderable_update(p){
-   var o = this;
-   var d = o._display;
-   var mm = o._matrix
-   var t = o._activeTrack;
-   // 计算矩阵
-   var m = o._currentMatrix;
-   if(t){
-      m.assign(t.matrix());
-      m.append(mm);
-   }else{
-      m.assign(mm);
-   }
-   // 计算显示矩阵
-   if(d){
-      var dm = o._display.currentMatrix();
-      m.append(dm);
-   }
-}
-
-//==========================================================
 // <T>逻辑处理。</T>
 //
 // @method
@@ -133,6 +107,37 @@ function FE3dMeshRenderable_process(p){
             a.process(t);
          }
       }
+   }
+}
+
+//==========================================================
+// <T>更新处理。</T>
+//
+// @method
+// @param p:region:FG3dRegion 区域
+//==========================================================
+function FE3dMeshRenderable_update(p){
+   var o = this;
+   var d = o._display;
+   var mm = o._matrix
+   var t = o._activeTrack;
+   // 计算矩阵
+   var m = o._calculateMatrix;
+   if(t){
+      m.assign(t.matrix());
+      m.append(mm);
+   }else{
+      m.assign(mm);
+   }
+   // 计算显示矩阵
+   if(d){
+      var dm = o._display.currentMatrix();
+      m.append(dm);
+   }
+   // 接收数据
+   var c = o._currentMatrix.attachData(m.data());
+   if(c){
+      p.change();
    }
 }
 

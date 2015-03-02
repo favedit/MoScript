@@ -1,13 +1,12 @@
 ﻿O - Design - Toolbar - 文字回行
 O - Design - Toolbar - Button - Hint提示
 O - Design - 编辑对象选取
-
-1 - Design - 文档（20%）
 3 - Engine - 纹理合并（透明纹理）
 
-2 - Engine - 动态刷新，降低效率
-4 - Engine - 缩放投影（Canvas自己支持）
+1 - Design - 文档（20%）
+2 - Engine - 动态刷新，降低效率（进行中...）
 
+4 - Engine - 缩放投影（Canvas自己支持）
 1 - Runtime - JavaScript压缩器
 1 - Runtime - Class的NameSpace化处理
 1 - Design - ListView 控件

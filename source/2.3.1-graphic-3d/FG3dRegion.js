@@ -5,9 +5,10 @@
 // @history 150106
 //==========================================================
 function FG3dRegion(o){
-   o = RClass.inherits(this, o, FObject, MGraphicObject);
+   o = RClass.inherits(this, o, FG3dObject);
    //..........................................................
    // @attribute
+   o._changed                    = false;
    o._spaceName                  = null;
    o._technique                  = null;
    o._techniquePass              = null;
@@ -36,6 +37,7 @@ function FG3dRegion(o){
    // @method
    o.construct                   = FG3dRegion_construct;
    // @method
+   o.isChanged                   = FG3dRegion_isChanged;
    o.spaceName                   = FG3dRegion_spaceName;
    o.technique                   = FG3dRegion_technique;
    o.setTechnique                = FG3dRegion_setTechnique;
@@ -51,6 +53,7 @@ function FG3dRegion(o){
    o.pushRenderable              = FG3dRegion_pushRenderable;
    // @method
    o.setup                       = FG3dRegion_setup;
+   o.change                      = FG3dRegion_change;
    o.prepare                     = FG3dRegion_prepare;
    o.reset                       = FG3dRegion_reset;
    o.calculate                   = FG3dRegion_calculate;
@@ -66,7 +69,7 @@ function FG3dRegion(o){
 //==========================================================
 function FG3dRegion_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FG3dObject.construct.call(o);
    // 初始化参数
    o._lights = new TObjects();
    o._renderables = new TObjects();
@@ -84,6 +87,16 @@ function FG3dRegion_construct(){
    o._lightViewProjectionMatrix = new SMatrix3d();
    o._lightInfo = new SVector4();
    //o._materialMap = RClass.create(FG3dMaterialMap);
+}
+
+//==========================================================
+// <T>判断是否变更过。</T>
+//
+// @method
+// @return Boolean 变更过
+//==========================================================
+function FG3dRegion_isChanged(){
+   return this._changed;
 }
 
 //==========================================================
@@ -221,12 +234,23 @@ function FG3dRegion_setup(){
 }
 
 //==========================================================
+// <T>变更处理。</T>
+//
+// @method
+//==========================================================
+function FG3dRegion_change(){
+   this._changed = true;
+}
+
+//==========================================================
 // <T>清空处理。</T>
 //
 // @method
 //==========================================================
 function FG3dRegion_prepare(){
    var o = this;
+   // 数据未改变
+   o._changed = false;
    // 设置相机信息
    var c = o._camera;
    var cp = c.projection();
@@ -309,7 +333,7 @@ function FG3dRegion_update(){
    var rs = o._renderables;
    var c = rs.count();
    for(var i = 0; i < c; i++){
-      rs.get(i).update(o);
+      rs.getAt(i).update(o);
    }
 }
 
@@ -322,5 +346,5 @@ function FG3dRegion_dispose(){
    var o = this;
    o._renderables = RObject.free(o._renderables);
    o._allRenderables = RObject.free(o._allRenderables);
-   o.__base.FObject.dispose.call(o);
+   o.__base.FG3dObject.dispose.call(o);
 }

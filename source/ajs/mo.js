@@ -6414,6 +6414,7 @@ function SMatrix4x4(){
    o.identityData    = SMatrix4x4_identityData;
    o.equalsData      = SMatrix4x4_equalsData;
    o.assignData      = SMatrix4x4_assignData;
+   o.attachData      = SMatrix4x4_attachData;
    o.appendData      = SMatrix4x4_appendData;
    o.translate       = SMatrix4x4_translate;
    o.rotationX       = SMatrix4x4_rotationX;
@@ -6466,6 +6467,20 @@ function SMatrix4x4_assignData(p){
    for(var n = 0; n < 16; n++){
       d[n] = p[n];
    }
+}
+function SMatrix4x4_attachData(p){
+   var r = false;
+   var d = this._data;
+   for(var i = 0; i < 16; i++){
+      var v = p[i];
+      if(!r){
+         if(d[i] != v){
+            r = true;
+         }
+      }
+      d[i] = v;
+   }
+   return r;
 }
 function SMatrix4x4_appendData(p){
    var d = this._data;
@@ -15237,7 +15252,8 @@ function FG3dProjection_distance(){
    return this._zfar - this._znear;
 }
 function FG3dRegion(o){
-   o = RClass.inherits(this, o, FObject, MGraphicObject);
+   o = RClass.inherits(this, o, FG3dObject);
+   o._changed                    = false;
    o._spaceName                  = null;
    o._technique                  = null;
    o._techniquePass              = null;
@@ -15260,6 +15276,7 @@ function FG3dRegion(o){
    o._lightInfo                  = null;
    o._materialMap                = null;
    o.construct                   = FG3dRegion_construct;
+   o.isChanged                   = FG3dRegion_isChanged;
    o.spaceName                   = FG3dRegion_spaceName;
    o.technique                   = FG3dRegion_technique;
    o.setTechnique                = FG3dRegion_setTechnique;
@@ -15273,6 +15290,7 @@ function FG3dRegion(o){
    o.renderables                 = FG3dRegion_renderables;
    o.pushRenderable              = FG3dRegion_pushRenderable;
    o.setup                       = FG3dRegion_setup;
+   o.change                      = FG3dRegion_change;
    o.prepare                     = FG3dRegion_prepare;
    o.reset                       = FG3dRegion_reset;
    o.calculate                   = FG3dRegion_calculate;
@@ -15282,7 +15300,7 @@ function FG3dRegion(o){
 }
 function FG3dRegion_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FG3dObject.construct.call(o);
    o._lights = new TObjects();
    o._renderables = new TObjects();
    o._allRenderables = new TObjects();
@@ -15297,6 +15315,9 @@ function FG3dRegion_construct(){
    o._lightProjectionMatrix = new SMatrix3d();
    o._lightViewProjectionMatrix = new SMatrix3d();
    o._lightInfo = new SVector4();
+}
+function FG3dRegion_isChanged(){
+   return this._changed;
 }
 function FG3dRegion_spaceName(){
    return this._spaceName;
@@ -15342,8 +15363,12 @@ function FG3dRegion_pushRenderable(p){
 function FG3dRegion_setup(){
    var o = this;
 }
+function FG3dRegion_change(){
+   this._changed = true;
+}
 function FG3dRegion_prepare(){
    var o = this;
+   o._changed = false;
    var c = o._camera;
    var cp = c.projection();
    o._cameraPosition.assign(c.position());
@@ -15402,14 +15427,14 @@ function FG3dRegion_update(){
    var rs = o._renderables;
    var c = rs.count();
    for(var i = 0; i < c; i++){
-      rs.get(i).update(o);
+      rs.getAt(i).update(o);
    }
 }
 function FG3dRegion_dispose(){
    var o = this;
    o._renderables = RObject.free(o._renderables);
    o._allRenderables = RObject.free(o._allRenderables);
-   o.__base.FObject.dispose.call(o);
+   o.__base.FG3dObject.dispose.call(o);
 }
 function FG3dShaderTemplate(o){
    o = RClass.inherits(this, o, FTagDocument);
@@ -18901,7 +18926,7 @@ function FDisplayContainer_filterRenderables(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         s.get(i).filterRenderables(p);
+         s.getAt(i).filterRenderables(p);
       }
    }
    return true;
@@ -18934,6 +18959,7 @@ function FDisplayLayer(o){
    o = RClass.inherits(this, o, FDisplayContainer);
    o._statusActive   = false;
    o._technique      = null;
+   o._renderables    = null;
    o.construct       = FDisplayLayer_construct;
    o.technique       = FDisplayLayer_technique;
    o.setTechnique    = FDisplayLayer_setTechnique;
@@ -18945,6 +18971,7 @@ function FDisplayLayer(o){
 function FDisplayLayer_construct(){
    var o = this;
    o.__base.FDisplayContainer.construct.call(o);
+   o._renderables = new TObjects();
 }
 function FDisplayLayer_technique(){
    return this._technique;
@@ -19340,23 +19367,34 @@ function FE3dStage_process(){
    o.__base.FStage.process.call(o);
    t.updateRegion(r);
    r.prepare();
-   t.clear(o._backgroundColor);
    var ls = o._layers;
    if(ls){
       var c = ls.count();
       for(var i = 0; i < c; i++){
          var l = ls.value(i);
-         var lt = l.technique();
-         if(!lt){
-            lt = t;
-         }
          r.reset();
          l.filterRenderables(r);
+         l._renderables.assign(r._renderables);
          r.update();
-         lt.drawRegion(r);
       }
    }
-   t.present(r);
+   if(r.isChanged()){
+      t.clear(o._backgroundColor);
+      if(ls){
+         var c = ls.count();
+         for(var i = 0; i < c; i++){
+            var l = ls.value(i);
+            var lt = l.technique();
+            if(!lt){
+               lt = t;
+            }
+            r.reset();
+            r._renderables.assign(l._renderables);
+            lt.drawRegion(r);
+         }
+      }
+      t.present(r);
+   }
 }
 var RE3dEngine = new function RE3dEngine(){
    var o = this;
@@ -22942,8 +22980,8 @@ function FE3dMeshRenderable(o){
    o.findTexture      = FE3dMeshRenderable_findTexture;
    o.textures         = FE3dMeshRenderable_textures;
    o.bones            = FE3dMeshRenderable_bones;
-   o.update           = FE3dMeshRenderable_update;
    o.process          = FE3dMeshRenderable_process;
+   o.update           = FE3dMeshRenderable_update;
    o.dispose          = FE3dMeshRenderable_dispose;
    return o;
 }
@@ -22965,23 +23003,6 @@ function FE3dMeshRenderable_textures(){
 function FE3dMeshRenderable_bones(p){
    return this._bones;
 }
-function FE3dMeshRenderable_update(p){
-   var o = this;
-   var d = o._display;
-   var mm = o._matrix
-   var t = o._activeTrack;
-   var m = o._currentMatrix;
-   if(t){
-      m.assign(t.matrix());
-      m.append(mm);
-   }else{
-      m.assign(mm);
-   }
-   if(d){
-      var dm = o._display.currentMatrix();
-      m.append(dm);
-   }
-}
 function FE3dMeshRenderable_process(p){
    var o = this;
    o.__base.FE3dRenderable.process.call(p)
@@ -22993,6 +23014,27 @@ function FE3dMeshRenderable_process(p){
             a.process(t);
          }
       }
+   }
+}
+function FE3dMeshRenderable_update(p){
+   var o = this;
+   var d = o._display;
+   var mm = o._matrix
+   var t = o._activeTrack;
+   var m = o._calculateMatrix;
+   if(t){
+      m.assign(t.matrix());
+      m.append(mm);
+   }else{
+      m.assign(mm);
+   }
+   if(d){
+      var dm = o._display.currentMatrix();
+      m.append(dm);
+   }
+   var c = o._currentMatrix.attachData(m.data());
+   if(c){
+      p.change();
    }
 }
 function FE3dMeshRenderable_dispose(){
@@ -23255,6 +23297,7 @@ function FE3dRectangle_setup(p){
 function FE3dRenderable(o){
    o = RClass.inherits(this, o, FE3dDrawable, MG3dRenderable, MGraphicObject);
    o._display         = null;
+   o._calculateMatrix = null;
    o._vertexCount     = 0;
    o._vertexBuffers   = null;
    o._indexBuffer     = null;
@@ -23277,6 +23320,7 @@ function FE3dRenderable_construct(){
    var o = this;
    o.__base.FE3dDrawable.construct.call(o);
    o.__base.MG3dRenderable.construct.call(o);
+   o._calculateMatrix = new SMatrix3d();
    o._vertexBuffers = new TDictionary();
 }
 function FE3dRenderable_display(){
@@ -23299,11 +23343,15 @@ function FE3dRenderable_indexBuffer(){
 }
 function FE3dRenderable_update(p){
    var o = this;
-   var m = o._currentMatrix;
+   var m = o._calculateMatrix;
    m.assign(o._matrix);
    var d = o._display;
    if(d){
       m.append(d.currentMatrix());
+   }
+   var c = o._currentMatrix.attachData(m.data());
+   if(c && p){
+      p.change();
    }
 }
 function FE3dRenderable_remove(){
@@ -26003,7 +26051,8 @@ function FG3dProjection_distance(){
    return this._zfar - this._znear;
 }
 function FG3dRegion(o){
-   o = RClass.inherits(this, o, FObject, MGraphicObject);
+   o = RClass.inherits(this, o, FG3dObject);
+   o._changed                    = false;
    o._spaceName                  = null;
    o._technique                  = null;
    o._techniquePass              = null;
@@ -26026,6 +26075,7 @@ function FG3dRegion(o){
    o._lightInfo                  = null;
    o._materialMap                = null;
    o.construct                   = FG3dRegion_construct;
+   o.isChanged                   = FG3dRegion_isChanged;
    o.spaceName                   = FG3dRegion_spaceName;
    o.technique                   = FG3dRegion_technique;
    o.setTechnique                = FG3dRegion_setTechnique;
@@ -26039,6 +26089,7 @@ function FG3dRegion(o){
    o.renderables                 = FG3dRegion_renderables;
    o.pushRenderable              = FG3dRegion_pushRenderable;
    o.setup                       = FG3dRegion_setup;
+   o.change                      = FG3dRegion_change;
    o.prepare                     = FG3dRegion_prepare;
    o.reset                       = FG3dRegion_reset;
    o.calculate                   = FG3dRegion_calculate;
@@ -26048,7 +26099,7 @@ function FG3dRegion(o){
 }
 function FG3dRegion_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FG3dObject.construct.call(o);
    o._lights = new TObjects();
    o._renderables = new TObjects();
    o._allRenderables = new TObjects();
@@ -26063,6 +26114,9 @@ function FG3dRegion_construct(){
    o._lightProjectionMatrix = new SMatrix3d();
    o._lightViewProjectionMatrix = new SMatrix3d();
    o._lightInfo = new SVector4();
+}
+function FG3dRegion_isChanged(){
+   return this._changed;
 }
 function FG3dRegion_spaceName(){
    return this._spaceName;
@@ -26108,8 +26162,12 @@ function FG3dRegion_pushRenderable(p){
 function FG3dRegion_setup(){
    var o = this;
 }
+function FG3dRegion_change(){
+   this._changed = true;
+}
 function FG3dRegion_prepare(){
    var o = this;
+   o._changed = false;
    var c = o._camera;
    var cp = c.projection();
    o._cameraPosition.assign(c.position());
@@ -26168,14 +26226,14 @@ function FG3dRegion_update(){
    var rs = o._renderables;
    var c = rs.count();
    for(var i = 0; i < c; i++){
-      rs.get(i).update(o);
+      rs.getAt(i).update(o);
    }
 }
 function FG3dRegion_dispose(){
    var o = this;
    o._renderables = RObject.free(o._renderables);
    o._allRenderables = RObject.free(o._allRenderables);
-   o.__base.FObject.dispose.call(o);
+   o.__base.FG3dObject.dispose.call(o);
 }
 function FG3dShaderTemplate(o){
    o = RClass.inherits(this, o, FTagDocument);

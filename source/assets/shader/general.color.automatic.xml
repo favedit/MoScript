@@ -287,7 +287,7 @@
          vec4 environmentColor = textureCube(fs_environment, reflectDirection); 
          <shader:true source='support.reflect'>
          vec4 reflect = texture2D(fs_reflect, v_coord);
-         environmentColor *= reflect.r;
+         environmentColor *= reflect.g;
          </shader:true>
          result.rgb = mix(result.rgb, environmentColor.rgb * fc_reflect_color.rgb, fc_reflect.www);
          </shader:true>
@@ -296,8 +296,8 @@
          <shader:true source='vertex.attribute.color'>
          vec4 vertexColor = max(min(v_color, fc_color.y) - fc_color.x, 0.0);
          vertexColor = vertexColor / (fc_color.y - fc_color.x);
-         //vertexColor = (vertexColor - fc_color.w) * fc_color.z;
-         vertexColor = (vertexColor - 0.5) * 2.0 + 1.0;
+         vertexColor = (vertexColor - fc_color.w) * fc_color.z + 1.0;
+         //vertexColor = (vertexColor - 0.5) * 2.0 + 1.0;
          result.rgb *= vertexColor.rgb;
          </shader:true>
          <shader:true source='support.alpha'>

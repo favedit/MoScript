@@ -10,6 +10,7 @@ function FE3dRenderable(o){
    // @attribute
    o._display         = null;
    // @attribute
+   o._calculateMatrix = null;
    o._vertexCount     = 0;
    o._vertexBuffers   = null;
    o._indexBuffer     = null;
@@ -44,6 +45,7 @@ function FE3dRenderable_construct(){
    o.__base.FE3dDrawable.construct.call(o);
    o.__base.MG3dRenderable.construct.call(o);
    // 构造变量
+   o._calculateMatrix = new SMatrix3d();
    o._vertexBuffers = new TDictionary();
 }
 
@@ -117,12 +119,17 @@ function FE3dRenderable_indexBuffer(){
 function FE3dRenderable_update(p){
    var o = this;
    // 计算矩阵
-   var m = o._currentMatrix;
+   var m = o._calculateMatrix;
    m.assign(o._matrix);
    // 计算显示矩阵
    var d = o._display;
    if(d){
       m.append(d.currentMatrix());
+   }
+   // 接收数据
+   var c = o._currentMatrix.attachData(m.data());
+   if(c && p){
+      p.change();
    }
 }
 

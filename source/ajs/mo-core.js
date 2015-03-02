@@ -6414,6 +6414,7 @@ function SMatrix4x4(){
    o.identityData    = SMatrix4x4_identityData;
    o.equalsData      = SMatrix4x4_equalsData;
    o.assignData      = SMatrix4x4_assignData;
+   o.attachData      = SMatrix4x4_attachData;
    o.appendData      = SMatrix4x4_appendData;
    o.translate       = SMatrix4x4_translate;
    o.rotationX       = SMatrix4x4_rotationX;
@@ -6466,6 +6467,20 @@ function SMatrix4x4_assignData(p){
    for(var n = 0; n < 16; n++){
       d[n] = p[n];
    }
+}
+function SMatrix4x4_attachData(p){
+   var r = false;
+   var d = this._data;
+   for(var i = 0; i < 16; i++){
+      var v = p[i];
+      if(!r){
+         if(d[i] != v){
+            r = true;
+         }
+      }
+      d[i] = v;
+   }
+   return r;
 }
 function SMatrix4x4_appendData(p){
    var d = this._data;

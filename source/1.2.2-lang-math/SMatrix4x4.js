@@ -19,6 +19,7 @@ function SMatrix4x4(){
    // @method
    o.equalsData      = SMatrix4x4_equalsData;
    o.assignData      = SMatrix4x4_assignData;
+   o.attachData      = SMatrix4x4_attachData;
    o.appendData      = SMatrix4x4_appendData;
    // @method
    o.translate       = SMatrix4x4_translate;
@@ -111,6 +112,27 @@ function SMatrix4x4_assignData(p){
    for(var n = 0; n < 16; n++){
       d[n] = p[n];
    }
+}
+
+//============================================================
+// <T>接收一个数据内容，返回是否修改。</T>
+//
+// @method
+// @param p:data:Array 数据
+//============================================================
+function SMatrix4x4_attachData(p){
+   var r = false;
+   var d = this._data;
+   for(var i = 0; i < 16; i++){
+      var v = p[i];
+      if(!r){
+         if(d[i] != v){
+            r = true;
+         }
+      }
+      d[i] = v;
+   }
+   return r;
 }
 
 //============================================================

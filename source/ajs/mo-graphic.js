@@ -1556,7 +1556,8 @@ function FG3dProjection_distance(){
    return this._zfar - this._znear;
 }
 function FG3dRegion(o){
-   o = RClass.inherits(this, o, FObject, MGraphicObject);
+   o = RClass.inherits(this, o, FG3dObject);
+   o._changed                    = false;
    o._spaceName                  = null;
    o._technique                  = null;
    o._techniquePass              = null;
@@ -1579,6 +1580,7 @@ function FG3dRegion(o){
    o._lightInfo                  = null;
    o._materialMap                = null;
    o.construct                   = FG3dRegion_construct;
+   o.isChanged                   = FG3dRegion_isChanged;
    o.spaceName                   = FG3dRegion_spaceName;
    o.technique                   = FG3dRegion_technique;
    o.setTechnique                = FG3dRegion_setTechnique;
@@ -1592,6 +1594,7 @@ function FG3dRegion(o){
    o.renderables                 = FG3dRegion_renderables;
    o.pushRenderable              = FG3dRegion_pushRenderable;
    o.setup                       = FG3dRegion_setup;
+   o.change                      = FG3dRegion_change;
    o.prepare                     = FG3dRegion_prepare;
    o.reset                       = FG3dRegion_reset;
    o.calculate                   = FG3dRegion_calculate;
@@ -1601,7 +1604,7 @@ function FG3dRegion(o){
 }
 function FG3dRegion_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FG3dObject.construct.call(o);
    o._lights = new TObjects();
    o._renderables = new TObjects();
    o._allRenderables = new TObjects();
@@ -1616,6 +1619,9 @@ function FG3dRegion_construct(){
    o._lightProjectionMatrix = new SMatrix3d();
    o._lightViewProjectionMatrix = new SMatrix3d();
    o._lightInfo = new SVector4();
+}
+function FG3dRegion_isChanged(){
+   return this._changed;
 }
 function FG3dRegion_spaceName(){
    return this._spaceName;
@@ -1661,8 +1667,12 @@ function FG3dRegion_pushRenderable(p){
 function FG3dRegion_setup(){
    var o = this;
 }
+function FG3dRegion_change(){
+   this._changed = true;
+}
 function FG3dRegion_prepare(){
    var o = this;
+   o._changed = false;
    var c = o._camera;
    var cp = c.projection();
    o._cameraPosition.assign(c.position());
@@ -1721,14 +1731,14 @@ function FG3dRegion_update(){
    var rs = o._renderables;
    var c = rs.count();
    for(var i = 0; i < c; i++){
-      rs.get(i).update(o);
+      rs.getAt(i).update(o);
    }
 }
 function FG3dRegion_dispose(){
    var o = this;
    o._renderables = RObject.free(o._renderables);
    o._allRenderables = RObject.free(o._allRenderables);
-   o.__base.FObject.dispose.call(o);
+   o.__base.FG3dObject.dispose.call(o);
 }
 function FG3dShaderTemplate(o){
    o = RClass.inherits(this, o, FTagDocument);

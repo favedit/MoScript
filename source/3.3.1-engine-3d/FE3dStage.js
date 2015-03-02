@@ -194,25 +194,38 @@ function FE3dStage_process(){
    t.updateRegion(r);
    // 清空区域
    r.prepare();
-   t.clear(o._backgroundColor);
    // 处理所有层
    var ls = o._layers;
    if(ls){
       var c = ls.count();
       for(var i = 0; i < c; i++){
          var l = ls.value(i);
-         // 获得技术
-         var lt = l.technique();
-         if(!lt){
-            lt = t;
-         }
          // 渲染单个层
          r.reset();
          l.filterRenderables(r);
+         l._renderables.assign(r._renderables);
          r.update();
-         lt.drawRegion(r);
       }
    }
-   // 绘制处理
-   t.present(r);
+   // 处理所有层
+   if(r.isChanged()){
+      t.clear(o._backgroundColor);
+      if(ls){
+         var c = ls.count();
+         for(var i = 0; i < c; i++){
+            var l = ls.value(i);
+            // 获得技术
+            var lt = l.technique();
+            if(!lt){
+               lt = t;
+            }
+            // 渲染单个层
+            r.reset();
+            r._renderables.assign(l._renderables);
+            lt.drawRegion(r);
+         }
+      }
+      // 绘制处理
+      t.present(r);
+   }
 }

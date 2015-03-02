@@ -10,6 +10,7 @@ function FDisplayLayer(o){
    // @attribute
    o._statusActive   = false;
    o._technique      = null;
+   o._renderables    = null;
    //..........................................................
    // @method
    o.construct       = FDisplayLayer_construct;
@@ -29,6 +30,8 @@ function FDisplayLayer(o){
 function FDisplayLayer_construct(){
    var o = this;
    o.__base.FDisplayContainer.construct.call(o);
+   // 设置参数
+   o._renderables = new TObjects();
 }
 
 //==========================================================

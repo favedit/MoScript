@@ -514,8 +514,8 @@ function FE3dMeshRenderable(o){
    o.findTexture      = FE3dMeshRenderable_findTexture;
    o.textures         = FE3dMeshRenderable_textures;
    o.bones            = FE3dMeshRenderable_bones;
-   o.update           = FE3dMeshRenderable_update;
    o.process          = FE3dMeshRenderable_process;
+   o.update           = FE3dMeshRenderable_update;
    o.dispose          = FE3dMeshRenderable_dispose;
    return o;
 }
@@ -537,23 +537,6 @@ function FE3dMeshRenderable_textures(){
 function FE3dMeshRenderable_bones(p){
    return this._bones;
 }
-function FE3dMeshRenderable_update(p){
-   var o = this;
-   var d = o._display;
-   var mm = o._matrix
-   var t = o._activeTrack;
-   var m = o._currentMatrix;
-   if(t){
-      m.assign(t.matrix());
-      m.append(mm);
-   }else{
-      m.assign(mm);
-   }
-   if(d){
-      var dm = o._display.currentMatrix();
-      m.append(dm);
-   }
-}
 function FE3dMeshRenderable_process(p){
    var o = this;
    o.__base.FE3dRenderable.process.call(p)
@@ -565,6 +548,27 @@ function FE3dMeshRenderable_process(p){
             a.process(t);
          }
       }
+   }
+}
+function FE3dMeshRenderable_update(p){
+   var o = this;
+   var d = o._display;
+   var mm = o._matrix
+   var t = o._activeTrack;
+   var m = o._calculateMatrix;
+   if(t){
+      m.assign(t.matrix());
+      m.append(mm);
+   }else{
+      m.assign(mm);
+   }
+   if(d){
+      var dm = o._display.currentMatrix();
+      m.append(dm);
+   }
+   var c = o._currentMatrix.attachData(m.data());
+   if(c){
+      p.change();
    }
 }
 function FE3dMeshRenderable_dispose(){
@@ -827,6 +831,7 @@ function FE3dRectangle_setup(p){
 function FE3dRenderable(o){
    o = RClass.inherits(this, o, FE3dDrawable, MG3dRenderable, MGraphicObject);
    o._display         = null;
+   o._calculateMatrix = null;
    o._vertexCount     = 0;
    o._vertexBuffers   = null;
    o._indexBuffer     = null;
@@ -849,6 +854,7 @@ function FE3dRenderable_construct(){
    var o = this;
    o.__base.FE3dDrawable.construct.call(o);
    o.__base.MG3dRenderable.construct.call(o);
+   o._calculateMatrix = new SMatrix3d();
    o._vertexBuffers = new TDictionary();
 }
 function FE3dRenderable_display(){
@@ -871,11 +877,15 @@ function FE3dRenderable_indexBuffer(){
 }
 function FE3dRenderable_update(p){
    var o = this;
-   var m = o._currentMatrix;
+   var m = o._calculateMatrix;
    m.assign(o._matrix);
    var d = o._display;
    if(d){
       m.append(d.currentMatrix());
+   }
+   var c = o._currentMatrix.attachData(m.data());
+   if(c && p){
+      p.change();
    }
 }
 function FE3dRenderable_remove(){

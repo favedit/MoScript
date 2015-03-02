@@ -269,7 +269,7 @@ function FDisplayContainer_filterRenderables(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         s.get(i).filterRenderables(p);
+         s.getAt(i).filterRenderables(p);
       }
    }
    return true;
@@ -302,6 +302,7 @@ function FDisplayLayer(o){
    o = RClass.inherits(this, o, FDisplayContainer);
    o._statusActive   = false;
    o._technique      = null;
+   o._renderables    = null;
    o.construct       = FDisplayLayer_construct;
    o.technique       = FDisplayLayer_technique;
    o.setTechnique    = FDisplayLayer_setTechnique;
@@ -313,6 +314,7 @@ function FDisplayLayer(o){
 function FDisplayLayer_construct(){
    var o = this;
    o.__base.FDisplayContainer.construct.call(o);
+   o._renderables = new TObjects();
 }
 function FDisplayLayer_technique(){
    return this._technique;

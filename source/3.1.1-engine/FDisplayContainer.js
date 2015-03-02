@@ -170,7 +170,7 @@ function FDisplayContainer_filterRenderables(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         s.get(i).filterRenderables(p);
+         s.getAt(i).filterRenderables(p);
       }
    }
    return true;
