@@ -922,34 +922,46 @@ function MListener(o){
    o.addListener     = MListener_addListener;
    o.removeListener  = MListener_removeListener;
    o.processListener = MListener_processListener;
+   o.dispose         = MListener_dispose;
    return o;
 }
 function MListener_addListener(n, w, m){
    var o = this;
    var lss = o._listeners;
    if(!lss){
-      lss = o._listeners = new Object();
+      lss = o._listeners = new TDictionary();
    }
-   var ls = lss[n];
+   var ls = lss.get(n);
    if(!ls){
-      ls = lss[n] = new TListeners();
+      ls = new TListeners();
+      lss.set(n, ls);
    }
    return ls.register(w, m);
 }
 function MListener_removeListener(n, w, m){
    var o = this;
    var lss = o._listeners;
-   var ls = lss[n];
+   var ls = lss.get(n);
    return ls.unregister(w, m);
 }
 function MListener_processListener(n, p1, p2, p3, p4, p5){
    var o = this;
    var lss = o._listeners;
    if(lss){
-      var ls = lss[n];
+      var ls = lss.get(n);
       if(ls){
          ls.process(p1, p2, p3, p4, p5);
       }
+   }
+}
+function MListener_dispose(){
+   var o = this;
+   var lss = o._listeners;
+   if(lss){
+      for(var i = lss.count() - 1; i >= 0; i--){
+         lss.valueAt(i).dispose();
+      }
+      o._listeners = RObject.dispose(lss);
    }
 }
 function MListenerLoad(o){
@@ -1556,17 +1568,20 @@ function FHttpConnection_send(p, d){
 }
 function FImage(o){
    o = RClass.inherits(this, o, FObject, MListenerLoad);
-   o._size     = null;
-   o._ready    = false;
-   o._hImage   = null;
-   o.ohLoad    = FImage_ohLoad;
-   o.ohError   = FImage_ohError;
-   o.construct = FImage_construct;
-   o.size      = FImage_size;
-   o.image     = FImage_image;
-   o.testReady = FImage_testReady;
-   o.loadUrl   = FImage_loadUrl;
-   o.dispose   = FImage_dispose;
+   o._optionAlpha   = true;
+   o._ready         = false;
+   o._size          = null;
+   o._hImage        = null;
+   o.ohLoad         = FImage_ohLoad;
+   o.ohError        = FImage_ohError;
+   o.construct      = FImage_construct;
+   o.optionAlpha    = FImage_optionAlpha;
+   o.setOptionAlpha = FImage_setOptionAlpha;
+   o.size           = FImage_size;
+   o.image          = FImage_image;
+   o.testReady      = FImage_testReady;
+   o.loadUrl        = FImage_loadUrl;
+   o.dispose        = FImage_dispose;
    return o;
 }
 function FImage_ohLoad(){
@@ -1584,6 +1599,12 @@ function FImage_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._size = new SSize2();
+}
+function FImage_optionAlpha(){
+   return this._optionAlpha;
+}
+function FImage_setOptionAlpha(p){
+   this._optionAlpha = p;
 }
 function FImage_size(){
    return this._size;
@@ -1608,7 +1629,8 @@ function FImage_loadUrl(p){
 function FImage_dispose(){
    var o = this;
    o._size = RObject.dispose(o._size);
-   o._hImage = null;
+   o._hImage = RHtml.free(o._hImage);
+   o.__base.MListenerLoad.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
 function FXmlConnection(o){

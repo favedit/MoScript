@@ -77,18 +77,30 @@ function FWglFlatTexture_uploadData(d, w, h){
 function FWglFlatTexture_upload(p){
    var o = this;
    var c = o._graphicContext;
+   var cp = c.capability();
    var g = c._native;
    var m = null;
+   var f = null;
    if(p.constructor == Image){
       m = p;
    }else if(RClass.isClass(p, FImage)){
       m = p.image();
+      if(p.optionAlpha()){
+         f = cp.samplerCompressRgba;
+      }else{
+         f = cp.samplerCompressRgb;
+      }
    }else{
       throw new TError('Invalid image format.');
    }
    // 绑定数据
    g.bindTexture(g.TEXTURE_2D, o._native);
    // 上传内容
+   //if(f){
+      //g.compressedTexImage2D(g.TEXTURE_2D, 0, f, p.size().width, p.size().height, 0, m);
+   //}else{
+      //g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
+   //}
    g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
    o._statusLoad = c.checkError("texImage2D", "Upload image failure.");
 }

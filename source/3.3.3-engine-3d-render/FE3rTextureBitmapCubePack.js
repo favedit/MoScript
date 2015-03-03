@@ -78,6 +78,7 @@ function FE3rTextureBitmapCubePack_loadResource(p){
       var b = new Blob([d[i]], {type: 'image/' + t});
       var u = window.URL.createObjectURL(b);
       var g = o._images[i] = RClass.create(FImage);
+      g.setOptionAlpha(false);
       g.loadUrl(u);
       g.addLoadListener(o, o.onLoad);
    }

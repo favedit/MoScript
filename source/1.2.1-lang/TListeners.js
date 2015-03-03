@@ -20,6 +20,7 @@ function TListeners(){
    o.remove     = TListeners_remove;
    o.process    = TListeners_process;
    o.clear      = TListeners_clear;
+   o.dispose    = TListeners_dispose;
    //..........................................................
    // @method
    o.dump       = TListeners_dump;
@@ -173,6 +174,23 @@ function TListeners_clear(){
    if(s){
       s.clear();
    }
+}
+
+//============================================================
+// <T>释放处理。</T>
+//
+// @method
+//============================================================
+function TListeners_dispose(){
+   var o = this;
+   var s = o._listeners;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         s.getAt(i).dispose();
+      }
+      o._listeners = RObject.dispose(s);
+   }
+   RObject.free(o);
 }
 
 //==========================================================

@@ -1084,6 +1084,7 @@ function TListener_dispose(){
    var o = this;
    o._owner = null;
    o._callback = null;
+   RObject.free(o);
 }
 function TListeners(){
    var o = this;
@@ -1096,6 +1097,7 @@ function TListeners(){
    o.remove     = TListeners_remove;
    o.process    = TListeners_process;
    o.clear      = TListeners_clear;
+   o.dispose    = TListeners_dispose;
    o.dump       = TListeners_dump;
    return o;
 }
@@ -1174,6 +1176,17 @@ function TListeners_clear(){
    if(s){
       s.clear();
    }
+}
+function TListeners_dispose(){
+   var o = this;
+   var s = o._listeners;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         s.getAt(i).dispose();
+      }
+      o._listeners = RObject.dispose(s);
+   }
+   RObject.free(o);
 }
 function TListeners_dump(){
    var o = this;

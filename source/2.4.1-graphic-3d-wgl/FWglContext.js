@@ -68,7 +68,7 @@ function FWglContext(o){
 function FWglContext_construct(){
    var o = this;
    o.__base.FG3dContext.construct.call(o);
-   o._capability = new SWglContextCapability();
+   o._capability = new SG3dContextCapability();
    o._data9 = new Float32Array(9);
    o._data16 = new Float32Array(16);
 }
@@ -115,9 +115,16 @@ function FWglContext_linkCanvas(h){
    if(e){
       c.optionInstance = true;
    }
+   // 测试顶点布局支持
    var e = o._nativeLayout = g.getExtension('OES_vertex_array_object');
    if(e){
       c.optionLayout = true;
+   }
+   // 测试纹理压缩支持
+   var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
+   if(e){
+      c.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
+      c.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
    }
 }
 

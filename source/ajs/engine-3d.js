@@ -23,6 +23,33 @@ function FE3dDrawable(o){
    o = RClass.inherits(this, o, FDrawable);
    return o;
 }
+function FE3dRegion(o){
+   o = RClass.inherits(this, o, FRegion, MG3dRegion, MGraphicObject);
+   o._calculateCameraMatrix = null;
+   o.construct = FE3dRegion_construct;
+   o.prepare   = FE3dRegion_prepare;
+   o.dispose   = FE3dRegion_dispose;
+   return o;
+}
+function FE3dRegion_construct(){
+   var o = this;
+   o.__base.FRegion.construct.call(o);
+   o.__base.MG3dRegion.construct.call(o);
+   o._calculateCameraMatrix = new SMatrix3d();
+}
+function FE3dRegion_prepare(){
+   var o = this;
+   o.__base.MG3dRegion.prepare.call(o);
+   var r = o._calculateCameraMatrix.attach(o._camera.matrix());
+   if(r){
+      o._changed = true;
+   }
+}
+function FE3dRegion_dispose(){
+   var o = this;
+   o.__base.FRegion.dispose.call(o);
+   o.__base.MG3dRegion.dispose.call(o);
+}
 function FE3dSimpleStage(o){
    o = RClass.inherits(this, o, FE3dStage);
    o._optionKeyboard = true;
@@ -154,7 +181,7 @@ function FE3dStage_construct(){
    c._projection.update();
    var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
    l.direction().set(0, -1, 0);
-   var r = o._region = RClass.create(FG3dRegion);
+   var r = o._region = RClass.create(FE3dRegion);
    r._camera = c;
    r._directionalLight = l;
 }
@@ -218,7 +245,6 @@ function FE3dStage_process(){
          var l = ls.value(i);
          r.reset();
          l.filterRenderables(r);
-         l._renderables.assign(r._renderables);
          r.update();
       }
    }
@@ -233,7 +259,7 @@ function FE3dStage_process(){
                lt = t;
             }
             r.reset();
-            r._renderables.assign(l._renderables);
+            r.renderables().assign(l.visibleRenderables());
             lt.drawRegion(r);
          }
       }

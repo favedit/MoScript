@@ -22,8 +22,11 @@ function SG3dContextCapability(){
    o.vertexConst            = null;
    o.fragmentConst          = null;
    o.varyingCount           = null;
+   // @attribute
    o.samplerCount           = null;
    o.samplerSize            = null;
+   o.samplerCompressRgb     = null;
+   o.samplerCompressRgba    = null;
    //..........................................................
    // @method
    o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;

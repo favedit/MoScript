@@ -300,21 +300,23 @@ function FDisplayContainer_dispose(){
 }
 function FDisplayLayer(o){
    o = RClass.inherits(this, o, FDisplayContainer);
-   o._statusActive   = false;
-   o._technique      = null;
-   o._renderables    = null;
-   o.construct       = FDisplayLayer_construct;
-   o.technique       = FDisplayLayer_technique;
-   o.setTechnique    = FDisplayLayer_setTechnique;
-   o.selectTechnique = FDisplayLayer_selectTechnique;
-   o.active          = FDisplayLayer_active;
-   o.deactive        = FDisplayLayer_deactive;
+   o._statusActive       = false;
+   o._technique          = null;
+   o._visibleRenderables = null;
+   o.construct           = FDisplayLayer_construct;
+   o.technique           = FDisplayLayer_technique;
+   o.setTechnique        = FDisplayLayer_setTechnique;
+   o.selectTechnique     = FDisplayLayer_selectTechnique;
+   o.visibleRenderables  = FDisplayLayer_visibleRenderables;
+   o.filterRenderables   = FDisplayLayer_filterRenderables;
+   o.active              = FDisplayLayer_active;
+   o.deactive            = FDisplayLayer_deactive;
    return o;
 }
 function FDisplayLayer_construct(){
    var o = this;
    o.__base.FDisplayContainer.construct.call(o);
-   o._renderables = new TObjects();
+   o._visibleRenderables = new TObjects();
 }
 function FDisplayLayer_technique(){
    return this._technique;
@@ -324,6 +326,14 @@ function FDisplayLayer_setTechnique(p){
 }
 function FDisplayLayer_selectTechnique(c, n){
    this._technique = RConsole.find(FG3dTechniqueConsole).find(c, n);
+}
+function FDisplayLayer_visibleRenderables(){
+   return this._visibleRenderables;
+}
+function FDisplayLayer_filterRenderables(p){
+   var o = this;
+   o.__base.FDisplayContainer.filterRenderables.call(o, p);
+   o._visibleRenderables.assign(p.renderables());
 }
 function FDisplayLayer_active(){
    this._statusActive = true;
@@ -336,6 +346,10 @@ function FDisplayUiLayer(o){
    return o;
 }
 function FDrawable(o){
+   o = RClass.inherits(this, o, FObject);
+   return o;
+}
+function FRegion(o){
    o = RClass.inherits(this, o, FObject);
    return o;
 }
@@ -522,6 +536,33 @@ function FE3dDrawable(o){
    o = RClass.inherits(this, o, FDrawable);
    return o;
 }
+function FE3dRegion(o){
+   o = RClass.inherits(this, o, FRegion, MG3dRegion, MGraphicObject);
+   o._calculateCameraMatrix = null;
+   o.construct = FE3dRegion_construct;
+   o.prepare   = FE3dRegion_prepare;
+   o.dispose   = FE3dRegion_dispose;
+   return o;
+}
+function FE3dRegion_construct(){
+   var o = this;
+   o.__base.FRegion.construct.call(o);
+   o.__base.MG3dRegion.construct.call(o);
+   o._calculateCameraMatrix = new SMatrix3d();
+}
+function FE3dRegion_prepare(){
+   var o = this;
+   o.__base.MG3dRegion.prepare.call(o);
+   var r = o._calculateCameraMatrix.attach(o._camera.matrix());
+   if(r){
+      o._changed = true;
+   }
+}
+function FE3dRegion_dispose(){
+   var o = this;
+   o.__base.FRegion.dispose.call(o);
+   o.__base.MG3dRegion.dispose.call(o);
+}
 function FE3dSimpleStage(o){
    o = RClass.inherits(this, o, FE3dStage);
    o._optionKeyboard = true;
@@ -653,7 +694,7 @@ function FE3dStage_construct(){
    c._projection.update();
    var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
    l.direction().set(0, -1, 0);
-   var r = o._region = RClass.create(FG3dRegion);
+   var r = o._region = RClass.create(FE3dRegion);
    r._camera = c;
    r._directionalLight = l;
 }
@@ -717,7 +758,6 @@ function FE3dStage_process(){
          var l = ls.value(i);
          r.reset();
          l.filterRenderables(r);
-         l._renderables.assign(r._renderables);
          r.update();
       }
    }
@@ -732,7 +772,7 @@ function FE3dStage_process(){
                lt = t;
             }
             r.reset();
-            r._renderables.assign(l._renderables);
+            r.renderables().assign(l.visibleRenderables());
             lt.drawRegion(r);
          }
       }
@@ -3561,6 +3601,7 @@ function FE3rTextureBitmapCubePack_loadResource(p){
       var b = new Blob([d[i]], {type: 'image/' + t});
       var u = window.URL.createObjectURL(b);
       var g = o._images[i] = RClass.create(FImage);
+      g.setOptionAlpha(false);
       g.loadUrl(u);
       g.addLoadListener(o, o.onLoad);
    }
@@ -3603,6 +3644,13 @@ function FE3rTextureBitmapFlatPack_loadResource(p){
    var b = new Blob([d], {type: 'image/' + t});
    var u = window.URL.createObjectURL(b);
    var g = o._image = RClass.create(FImage);
+   if(t == 'png'){
+      g.setOptionAlpha(true);
+   }else if(t == 'jpg'){
+      g.setOptionAlpha(false);
+   }else{
+      throw new TError(o, 'Unknown image.');
+   }
    g.loadUrl(u);
    g.addLoadListener(o, o.onLoad);
 }
@@ -3706,70 +3754,6 @@ function FE3rTextureConsole_loadBitmap(pc, pt, pb){
    }
    var t = o.load(pc, pt);
    return t.loadBitmap(pb);
-}
-function FE3rTextureCube(o){
-   o = RClass.inherits(this, o, FE3rTexture);
-   o._imageX1 = null;
-   o._imageX2 = null;
-   o._imageY1 = null;
-   o._imageY2 = null;
-   o._imageZ1 = null;
-   o._imageZ2 = null;
-   o.onLoad   = FE3rTextureCube_onLoad;
-   o.load     = FE3rTextureCube_load;
-   return o;
-}
-function FE3rTextureCube_onLoad(p){
-   var o = this;
-   var c = o._graphicContext;
-   if(!o._imageX1.testReady()){
-      return;
-   }
-   if(!o._imageX2.testReady()){
-      return;
-   }
-   if(!o._imageY1.testReady()){
-      return;
-   }
-   if(!o._imageY2.testReady()){
-      return;
-   }
-   if(!o._imageZ1.testReady()){
-      return;
-   }
-   if(!o._imageZ2.testReady()){
-      return;
-   }
-   var t = o._texture = c.createCubeTexture();
-   t.upload(o._imageX1, o._imageX2, o._imageY1, o._imageY2, o._imageZ1, o._imageZ2);
-   o._ready  = true;
-}
-function FE3rTextureCube_load(u){
-   var o = this;
-   var g = o._imageX1 = RClass.create(FImage);
-   g._name = 'x1'
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u + "-x1");
-   var g = o._imageX2 = RClass.create(FImage);
-   g._name = 'x2'
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u + "-x2");
-   var g = o._imageY1 = RClass.create(FImage);
-   g._name = 'y1'
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u + "-y1");
-   var g = o._imageY2 = RClass.create(FImage);
-   g._name = 'y2'
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u + "-y2");
-   var g = o._imageZ1 = RClass.create(FImage);
-   g._name = 'z1'
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u + "-z1");
-   var g = o._imageZ2 = RClass.create(FImage);
-   g._name = 'z2'
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u + "-z2");
 }
 function FE3rTrack(o){
    o = RClass.inherits(this, o, FObject);

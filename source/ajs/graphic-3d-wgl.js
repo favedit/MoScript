@@ -1,8 +1,3 @@
-function SWglContextCapability(){
-   var o = this;
-   SG3dContextCapability.call(o);
-   return o;
-}
 function FWglContext(o){
    o = RClass.inherits(this, o, FG3dContext);
    o._native             = null;
@@ -47,7 +42,7 @@ function FWglContext(o){
 function FWglContext_construct(){
    var o = this;
    o.__base.FG3dContext.construct.call(o);
-   o._capability = new SWglContextCapability();
+   o._capability = new SG3dContextCapability();
    o._data9 = new Float32Array(9);
    o._data16 = new Float32Array(16);
 }
@@ -86,6 +81,11 @@ function FWglContext_linkCanvas(h){
    var e = o._nativeLayout = g.getExtension('OES_vertex_array_object');
    if(e){
       c.optionLayout = true;
+   }
+   var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
+   if(e){
+      c.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
+      c.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
    }
 }
 function FWglContext_parameters(){
@@ -770,12 +770,19 @@ function FWglFlatTexture_uploadData(d, w, h){
 function FWglFlatTexture_upload(p){
    var o = this;
    var c = o._graphicContext;
+   var cp = c.capability();
    var g = c._native;
    var m = null;
+   var f = null;
    if(p.constructor == Image){
       m = p;
    }else if(RClass.isClass(p, FImage)){
       m = p.image();
+      if(p.optionAlpha()){
+         f = cp.samplerCompressRgba;
+      }else{
+         f = cp.samplerCompressRgb;
+      }
    }else{
       throw new TError('Invalid image format.');
    }

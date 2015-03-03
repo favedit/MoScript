@@ -8,19 +8,22 @@ function FDisplayLayer(o){
    o = RClass.inherits(this, o, FDisplayContainer);
    //..........................................................
    // @attribute
-   o._statusActive   = false;
-   o._technique      = null;
-   o._renderables    = null;
+   o._statusActive       = false;
+   o._technique          = null;
+   o._visibleRenderables = null;
    //..........................................................
    // @method
-   o.construct       = FDisplayLayer_construct;
+   o.construct           = FDisplayLayer_construct;
    // @method
-   o.technique       = FDisplayLayer_technique;
-   o.setTechnique    = FDisplayLayer_setTechnique;
-   o.selectTechnique = FDisplayLayer_selectTechnique;
+   o.technique           = FDisplayLayer_technique;
+   o.setTechnique        = FDisplayLayer_setTechnique;
+   o.selectTechnique     = FDisplayLayer_selectTechnique;
    // @method
-   o.active          = FDisplayLayer_active;
-   o.deactive        = FDisplayLayer_deactive;
+   o.visibleRenderables  = FDisplayLayer_visibleRenderables;
+   o.filterRenderables   = FDisplayLayer_filterRenderables;
+   // @method
+   o.active              = FDisplayLayer_active;
+   o.deactive            = FDisplayLayer_deactive;
    return o;
 }
 
@@ -31,7 +34,7 @@ function FDisplayLayer_construct(){
    var o = this;
    o.__base.FDisplayContainer.construct.call(o);
    // 设置参数
-   o._renderables = new TObjects();
+   o._visibleRenderables = new TObjects();
 }
 
 //==========================================================
@@ -63,6 +66,29 @@ function FDisplayLayer_setTechnique(p){
 //==========================================================
 function FDisplayLayer_selectTechnique(c, n){
    this._technique = RConsole.find(FG3dTechniqueConsole).find(c, n);
+}
+
+//==========================================================
+// <T>获得可见渲染集合。</T>
+//
+// @method
+// @return TObjects<MG3dRenderable> 可见渲染集合
+//==========================================================
+function FDisplayLayer_visibleRenderables(){
+   return this._visibleRenderables;
+}
+
+//==========================================================
+// <T>过滤渲染集合。</T>
+//
+// @method
+// @param p:region:FRegion 渲染区域
+//==========================================================
+function FDisplayLayer_filterRenderables(p){
+   var o = this;
+   o.__base.FDisplayContainer.filterRenderables.call(o, p);
+   // 复制可见列表
+   o._visibleRenderables.assign(p.renderables());
 }
 
 //==========================================================

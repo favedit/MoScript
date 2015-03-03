@@ -1,12 +1,11 @@
 //==========================================================
-// <T>WebGL渲染环境信息。</T>
+// <T>区域。</T>
 //
 // @class
 // @author maocy
-// @history 141230
+// @history 150303
 //==========================================================
-function SWglContextCapability(){
-   var o = this;
-   SG3dContextCapability.call(o);
+function FRegion(o){
+   o = RClass.inherits(this, o, FObject);
    return o;
 }

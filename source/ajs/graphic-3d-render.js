@@ -130,6 +130,8 @@ function SG3dContextCapability(){
    o.varyingCount           = null;
    o.samplerCount           = null;
    o.samplerSize            = null;
+   o.samplerCompressRgb     = null;
+   o.samplerCompressRgba    = null;
    o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
    o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
    return o;

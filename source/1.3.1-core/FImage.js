@@ -9,26 +9,29 @@ function FImage(o){
    o = RClass.inherits(this, o, FObject, MListenerLoad);
    //..........................................................
    // @attribute
-   o._size     = null;
-   o._ready    = false;
+   o._optionAlpha   = true;
+   o._ready         = false;
+   o._size          = null;
    //..........................................................
    // @html
-   o._hImage   = null;
+   o._hImage        = null;
    //..........................................................
    // @event
-   o.ohLoad    = FImage_ohLoad;
-   o.ohError   = FImage_ohError;
+   o.ohLoad         = FImage_ohLoad;
+   o.ohError        = FImage_ohError;
    //..........................................................
    // @method
-   o.construct = FImage_construct;
+   o.construct      = FImage_construct;
    // @method
-   o.size      = FImage_size;
-   o.image     = FImage_image;
+   o.optionAlpha    = FImage_optionAlpha;
+   o.setOptionAlpha = FImage_setOptionAlpha;
+   o.size           = FImage_size;
+   o.image          = FImage_image;
    // @method
-   o.testReady = FImage_testReady;
-   o.loadUrl   = FImage_loadUrl;
+   o.testReady      = FImage_testReady;
+   o.loadUrl        = FImage_loadUrl;
    // @method
-   o.dispose   = FImage_dispose;
+   o.dispose        = FImage_dispose;
    return o;
 }
 
@@ -64,6 +67,26 @@ function FImage_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._size = new SSize2();
+}
+
+//==========================================================
+// <T>获得透明配置。</T>
+//
+// @method
+// @return Boolean 透明配置
+//==========================================================
+function FImage_optionAlpha(){
+   return this._optionAlpha;
+}
+
+//==========================================================
+// <T>设置透明配置。</T>
+//
+// @method
+// @param p:alpha:Boolean 透明配置
+//==========================================================
+function FImage_setOptionAlpha(p){
+   this._optionAlpha = p;
 }
 
 //==========================================================
@@ -123,7 +146,10 @@ function FImage_loadUrl(p){
 //==========================================================
 function FImage_dispose(){
    var o = this;
+   // 清空属性
    o._size = RObject.dispose(o._size);
-   o._hImage = null;
+   o._hImage = RHtml.free(o._hImage);
+   // 父处理
+   o.__base.MListenerLoad.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }

@@ -67,6 +67,13 @@ function FE3rTextureBitmapFlatPack_loadResource(p){
    var b = new Blob([d], {type: 'image/' + t});
    var u = window.URL.createObjectURL(b);
    var g = o._image = RClass.create(FImage);
+   if(t == 'png'){
+      g.setOptionAlpha(true);
+   }else if(t == 'jpg'){
+      g.setOptionAlpha(false);
+   }else{
+      throw new TError(o, 'Unknown image.');
+   }
    g.loadUrl(u);
    g.addLoadListener(o, o.onLoad);
 }

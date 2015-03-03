@@ -57,7 +57,7 @@ function FE3dStage_construct(){
    var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
    l.direction().set(0, -1, 0);
    // 创建区域
-   var r = o._region = RClass.create(FG3dRegion);
+   var r = o._region = RClass.create(FE3dRegion);
    r._camera = c;
    r._directionalLight = l;
 }
@@ -203,7 +203,6 @@ function FE3dStage_process(){
          // 渲染单个层
          r.reset();
          l.filterRenderables(r);
-         l._renderables.assign(r._renderables);
          r.update();
       }
    }
@@ -221,7 +220,7 @@ function FE3dStage_process(){
             }
             // 渲染单个层
             r.reset();
-            r._renderables.assign(l._renderables);
+            r.renderables().assign(l.visibleRenderables());
             lt.drawRegion(r);
          }
       }

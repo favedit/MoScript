@@ -59,4 +59,5 @@ function TListener_dispose(){
    var o = this;
    o._owner = null;
    o._callback = null;
+   RObject.free(o);
 }

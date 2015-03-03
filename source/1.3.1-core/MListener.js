@@ -16,6 +16,8 @@ function MListener(o){
    o.removeListener  = MListener_removeListener;
    // @method
    o.processListener = MListener_processListener;
+   // @method
+   o.dispose         = MListener_dispose;
    return o;
 }
 
@@ -32,12 +34,13 @@ function MListener_addListener(n, w, m){
    // 获得监听器集合对象
    var lss = o._listeners;
    if(!lss){
-      lss = o._listeners = new Object();
+      lss = o._listeners = new TDictionary();
    }
    // 获得监听器集合
-   var ls = lss[n];
+   var ls = lss.get(n);
    if(!ls){
-      ls = lss[n] = new TListeners();
+      ls = new TListeners();
+      lss.set(n, ls);
    }
    return ls.register(w, m);
 }
@@ -53,7 +56,7 @@ function MListener_addListener(n, w, m){
 function MListener_removeListener(n, w, m){
    var o = this;
    var lss = o._listeners;
-   var ls = lss[n];
+   var ls = lss.get(n);
    return ls.unregister(w, m);
 }
 
@@ -72,9 +75,26 @@ function MListener_processListener(n, p1, p2, p3, p4, p5){
    var o = this;
    var lss = o._listeners;
    if(lss){
-      var ls = lss[n];
+      var ls = lss.get(n);
       if(ls){
          ls.process(p1, p2, p3, p4, p5);
       }
+   }
+}
+
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function MListener_dispose(){
+   var o = this;
+   var lss = o._listeners;
+   if(lss){
+      for(var i = lss.count() - 1; i >= 0; i--){
+         lss.valueAt(i).dispose();
+      }
+      o._listeners = RObject.dispose(lss);
    }
 }

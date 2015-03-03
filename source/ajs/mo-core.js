@@ -2514,6 +2514,7 @@ function TListener_dispose(){
    var o = this;
    o._owner = null;
    o._callback = null;
+   RObject.free(o);
 }
 function TListeners(){
    var o = this;
@@ -2526,6 +2527,7 @@ function TListeners(){
    o.remove     = TListeners_remove;
    o.process    = TListeners_process;
    o.clear      = TListeners_clear;
+   o.dispose    = TListeners_dispose;
    o.dump       = TListeners_dump;
    return o;
 }
@@ -2604,6 +2606,17 @@ function TListeners_clear(){
    if(s){
       s.clear();
    }
+}
+function TListeners_dispose(){
+   var o = this;
+   var s = o._listeners;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         s.getAt(i).dispose();
+      }
+      o._listeners = RObject.dispose(s);
+   }
+   RObject.free(o);
 }
 function TListeners_dump(){
    var o = this;
@@ -6002,6 +6015,7 @@ function SMatrix3d(){
    o.setAll         = SMatrix3d_setAll;
    o.equals         = SMatrix3d_equals;
    o.assign         = SMatrix3d_assign;
+   o.attach         = SMatrix3d_attach;
    o.append         = SMatrix3d_append;
    o.updateForce    = SMatrix3d_updateForce;
    o.update         = SMatrix3d_update;
@@ -6099,6 +6113,19 @@ function SMatrix3d_assign(p){
    o.sy = p.sy;
    o.sz = p.sz;
    o.assignData(p._data);
+}
+function SMatrix3d_attach(p){
+   var o = this;
+   o.tx = p.tx;
+   o.ty = p.ty;
+   o.tz = p.tz;
+   o.rx = p.rx;
+   o.ry = p.ry;
+   o.rz = p.rz;
+   o.sx = p.sx;
+   o.sy = p.sy;
+   o.sz = p.sz;
+   return o.attachData(p._data);
 }
 function SMatrix3d_append(p){
    this.appendData(p._data);
@@ -9007,34 +9034,46 @@ function MListener(o){
    o.addListener     = MListener_addListener;
    o.removeListener  = MListener_removeListener;
    o.processListener = MListener_processListener;
+   o.dispose         = MListener_dispose;
    return o;
 }
 function MListener_addListener(n, w, m){
    var o = this;
    var lss = o._listeners;
    if(!lss){
-      lss = o._listeners = new Object();
+      lss = o._listeners = new TDictionary();
    }
-   var ls = lss[n];
+   var ls = lss.get(n);
    if(!ls){
-      ls = lss[n] = new TListeners();
+      ls = new TListeners();
+      lss.set(n, ls);
    }
    return ls.register(w, m);
 }
 function MListener_removeListener(n, w, m){
    var o = this;
    var lss = o._listeners;
-   var ls = lss[n];
+   var ls = lss.get(n);
    return ls.unregister(w, m);
 }
 function MListener_processListener(n, p1, p2, p3, p4, p5){
    var o = this;
    var lss = o._listeners;
    if(lss){
-      var ls = lss[n];
+      var ls = lss.get(n);
       if(ls){
          ls.process(p1, p2, p3, p4, p5);
       }
+   }
+}
+function MListener_dispose(){
+   var o = this;
+   var lss = o._listeners;
+   if(lss){
+      for(var i = lss.count() - 1; i >= 0; i--){
+         lss.valueAt(i).dispose();
+      }
+      o._listeners = RObject.dispose(lss);
    }
 }
 function MListenerLoad(o){
@@ -9641,17 +9680,20 @@ function FHttpConnection_send(p, d){
 }
 function FImage(o){
    o = RClass.inherits(this, o, FObject, MListenerLoad);
-   o._size     = null;
-   o._ready    = false;
-   o._hImage   = null;
-   o.ohLoad    = FImage_ohLoad;
-   o.ohError   = FImage_ohError;
-   o.construct = FImage_construct;
-   o.size      = FImage_size;
-   o.image     = FImage_image;
-   o.testReady = FImage_testReady;
-   o.loadUrl   = FImage_loadUrl;
-   o.dispose   = FImage_dispose;
+   o._optionAlpha   = true;
+   o._ready         = false;
+   o._size          = null;
+   o._hImage        = null;
+   o.ohLoad         = FImage_ohLoad;
+   o.ohError        = FImage_ohError;
+   o.construct      = FImage_construct;
+   o.optionAlpha    = FImage_optionAlpha;
+   o.setOptionAlpha = FImage_setOptionAlpha;
+   o.size           = FImage_size;
+   o.image          = FImage_image;
+   o.testReady      = FImage_testReady;
+   o.loadUrl        = FImage_loadUrl;
+   o.dispose        = FImage_dispose;
    return o;
 }
 function FImage_ohLoad(){
@@ -9669,6 +9711,12 @@ function FImage_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._size = new SSize2();
+}
+function FImage_optionAlpha(){
+   return this._optionAlpha;
+}
+function FImage_setOptionAlpha(p){
+   this._optionAlpha = p;
 }
 function FImage_size(){
    return this._size;
@@ -9693,7 +9741,8 @@ function FImage_loadUrl(p){
 function FImage_dispose(){
    var o = this;
    o._size = RObject.dispose(o._size);
-   o._hImage = null;
+   o._hImage = RHtml.free(o._hImage);
+   o.__base.MListenerLoad.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
 function FXmlConnection(o){

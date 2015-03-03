@@ -91,7 +91,9 @@ function FG3dSelectPass_drawRegion(p){
       var e = r.activeEffect();
       c.setProgram(e.program());
       var d = r.display();
-      if(!d._optionFace){
+      if(!d){
+         e.drawRenderable(p, r, i);
+      }else if(!d._optionFace){
          e.drawRenderable(p, r, i);
       }
    }
@@ -102,7 +104,7 @@ function FG3dSelectPass_drawRegion(p){
       var e = r.activeEffect();
       c.setProgram(e.program());
       var d = r.display();
-      if(d._optionFace){
+      if(d && d._optionFace){
          e.drawRenderable(p, r, i);
       }
    }

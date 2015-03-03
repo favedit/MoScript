@@ -300,21 +300,23 @@ function FDisplayContainer_dispose(){
 }
 function FDisplayLayer(o){
    o = RClass.inherits(this, o, FDisplayContainer);
-   o._statusActive   = false;
-   o._technique      = null;
-   o._renderables    = null;
-   o.construct       = FDisplayLayer_construct;
-   o.technique       = FDisplayLayer_technique;
-   o.setTechnique    = FDisplayLayer_setTechnique;
-   o.selectTechnique = FDisplayLayer_selectTechnique;
-   o.active          = FDisplayLayer_active;
-   o.deactive        = FDisplayLayer_deactive;
+   o._statusActive       = false;
+   o._technique          = null;
+   o._visibleRenderables = null;
+   o.construct           = FDisplayLayer_construct;
+   o.technique           = FDisplayLayer_technique;
+   o.setTechnique        = FDisplayLayer_setTechnique;
+   o.selectTechnique     = FDisplayLayer_selectTechnique;
+   o.visibleRenderables  = FDisplayLayer_visibleRenderables;
+   o.filterRenderables   = FDisplayLayer_filterRenderables;
+   o.active              = FDisplayLayer_active;
+   o.deactive            = FDisplayLayer_deactive;
    return o;
 }
 function FDisplayLayer_construct(){
    var o = this;
    o.__base.FDisplayContainer.construct.call(o);
-   o._renderables = new TObjects();
+   o._visibleRenderables = new TObjects();
 }
 function FDisplayLayer_technique(){
    return this._technique;
@@ -324,6 +326,14 @@ function FDisplayLayer_setTechnique(p){
 }
 function FDisplayLayer_selectTechnique(c, n){
    this._technique = RConsole.find(FG3dTechniqueConsole).find(c, n);
+}
+function FDisplayLayer_visibleRenderables(){
+   return this._visibleRenderables;
+}
+function FDisplayLayer_filterRenderables(p){
+   var o = this;
+   o.__base.FDisplayContainer.filterRenderables.call(o, p);
+   o._visibleRenderables.assign(p.renderables());
 }
 function FDisplayLayer_active(){
    this._statusActive = true;
@@ -336,6 +346,10 @@ function FDisplayUiLayer(o){
    return o;
 }
 function FDrawable(o){
+   o = RClass.inherits(this, o, FObject);
+   return o;
+}
+function FRegion(o){
    o = RClass.inherits(this, o, FObject);
    return o;
 }

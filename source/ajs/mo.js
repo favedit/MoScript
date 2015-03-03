@@ -2514,6 +2514,7 @@ function TListener_dispose(){
    var o = this;
    o._owner = null;
    o._callback = null;
+   RObject.free(o);
 }
 function TListeners(){
    var o = this;
@@ -2526,6 +2527,7 @@ function TListeners(){
    o.remove     = TListeners_remove;
    o.process    = TListeners_process;
    o.clear      = TListeners_clear;
+   o.dispose    = TListeners_dispose;
    o.dump       = TListeners_dump;
    return o;
 }
@@ -2604,6 +2606,17 @@ function TListeners_clear(){
    if(s){
       s.clear();
    }
+}
+function TListeners_dispose(){
+   var o = this;
+   var s = o._listeners;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         s.getAt(i).dispose();
+      }
+      o._listeners = RObject.dispose(s);
+   }
+   RObject.free(o);
 }
 function TListeners_dump(){
    var o = this;
@@ -6002,6 +6015,7 @@ function SMatrix3d(){
    o.setAll         = SMatrix3d_setAll;
    o.equals         = SMatrix3d_equals;
    o.assign         = SMatrix3d_assign;
+   o.attach         = SMatrix3d_attach;
    o.append         = SMatrix3d_append;
    o.updateForce    = SMatrix3d_updateForce;
    o.update         = SMatrix3d_update;
@@ -6099,6 +6113,19 @@ function SMatrix3d_assign(p){
    o.sy = p.sy;
    o.sz = p.sz;
    o.assignData(p._data);
+}
+function SMatrix3d_attach(p){
+   var o = this;
+   o.tx = p.tx;
+   o.ty = p.ty;
+   o.tz = p.tz;
+   o.rx = p.rx;
+   o.ry = p.ry;
+   o.rz = p.rz;
+   o.sx = p.sx;
+   o.sy = p.sy;
+   o.sz = p.sz;
+   return o.attachData(p._data);
 }
 function SMatrix3d_append(p){
    this.appendData(p._data);
@@ -9007,34 +9034,46 @@ function MListener(o){
    o.addListener     = MListener_addListener;
    o.removeListener  = MListener_removeListener;
    o.processListener = MListener_processListener;
+   o.dispose         = MListener_dispose;
    return o;
 }
 function MListener_addListener(n, w, m){
    var o = this;
    var lss = o._listeners;
    if(!lss){
-      lss = o._listeners = new Object();
+      lss = o._listeners = new TDictionary();
    }
-   var ls = lss[n];
+   var ls = lss.get(n);
    if(!ls){
-      ls = lss[n] = new TListeners();
+      ls = new TListeners();
+      lss.set(n, ls);
    }
    return ls.register(w, m);
 }
 function MListener_removeListener(n, w, m){
    var o = this;
    var lss = o._listeners;
-   var ls = lss[n];
+   var ls = lss.get(n);
    return ls.unregister(w, m);
 }
 function MListener_processListener(n, p1, p2, p3, p4, p5){
    var o = this;
    var lss = o._listeners;
    if(lss){
-      var ls = lss[n];
+      var ls = lss.get(n);
       if(ls){
          ls.process(p1, p2, p3, p4, p5);
       }
+   }
+}
+function MListener_dispose(){
+   var o = this;
+   var lss = o._listeners;
+   if(lss){
+      for(var i = lss.count() - 1; i >= 0; i--){
+         lss.valueAt(i).dispose();
+      }
+      o._listeners = RObject.dispose(lss);
    }
 }
 function MListenerLoad(o){
@@ -9641,17 +9680,20 @@ function FHttpConnection_send(p, d){
 }
 function FImage(o){
    o = RClass.inherits(this, o, FObject, MListenerLoad);
-   o._size     = null;
-   o._ready    = false;
-   o._hImage   = null;
-   o.ohLoad    = FImage_ohLoad;
-   o.ohError   = FImage_ohError;
-   o.construct = FImage_construct;
-   o.size      = FImage_size;
-   o.image     = FImage_image;
-   o.testReady = FImage_testReady;
-   o.loadUrl   = FImage_loadUrl;
-   o.dispose   = FImage_dispose;
+   o._optionAlpha   = true;
+   o._ready         = false;
+   o._size          = null;
+   o._hImage        = null;
+   o.ohLoad         = FImage_ohLoad;
+   o.ohError        = FImage_ohError;
+   o.construct      = FImage_construct;
+   o.optionAlpha    = FImage_optionAlpha;
+   o.setOptionAlpha = FImage_setOptionAlpha;
+   o.size           = FImage_size;
+   o.image          = FImage_image;
+   o.testReady      = FImage_testReady;
+   o.loadUrl        = FImage_loadUrl;
+   o.dispose        = FImage_dispose;
    return o;
 }
 function FImage_ohLoad(){
@@ -9669,6 +9711,12 @@ function FImage_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._size = new SSize2();
+}
+function FImage_optionAlpha(){
+   return this._optionAlpha;
+}
+function FImage_setOptionAlpha(p){
+   this._optionAlpha = p;
 }
 function FImage_size(){
    return this._size;
@@ -9693,7 +9741,8 @@ function FImage_loadUrl(p){
 function FImage_dispose(){
    var o = this;
    o._size = RObject.dispose(o._size);
-   o._hImage = null;
+   o._hImage = RHtml.free(o._hImage);
+   o.__base.MListenerLoad.dispose.call(o);
    o.__base.FObject.dispose.call(o);
 }
 function FXmlConnection(o){
@@ -13839,6 +13888,189 @@ var EG3dTechniqueMode = new function EG3dTechniqueMode(){
    o.Result        = 'result';
    return o;
 }
+function MG3dRegion(o){
+   o = RClass.inherits(this, o);
+   o._changed                    = false;
+   o._spaceName                  = null;
+   o._technique                  = null;
+   o._techniquePass              = null;
+   o._camera                     = null;
+   o._projection                 = null;
+   o._directionalLight           = null
+   o._lights                     = null
+   o._allRenderables             = null;
+   o._renderables                = null;
+   o._cameraPosition             = null;
+   o._cameraDirection            = null;
+   o._cameraViewMatrix           = null;
+   o._cameraProjectionMatrix     = null;
+   o._cameraViewProjectionMatrix = null;
+   o._lightPosition              = null;
+   o._lightDirection             = null;
+   o._lightViewMatrix            = null;
+   o._lightProjectionMatrix      = null;
+   o._lightViewProjectionMatrix  = null;
+   o._lightInfo                  = null;
+   o._materialMap                = null;
+   o.construct                   = MG3dRegion_construct;
+   o.isChanged                   = MG3dRegion_isChanged;
+   o.spaceName                   = MG3dRegion_spaceName;
+   o.technique                   = MG3dRegion_technique;
+   o.setTechnique                = MG3dRegion_setTechnique;
+   o.techniquePass               = MG3dRegion_techniquePass;
+   o.setTechniquePass            = MG3dRegion_setTechniquePass;
+   o.camera                      = MG3dRegion_camera;
+   o.directionalLight            = MG3dRegion_directionalLight;
+   o.lights                      = MG3dRegion_lights;
+   o.materialMap                 = MG3dRegion_materialMap;
+   o.allRenderables              = MG3dRegion_allRenderables;
+   o.renderables                 = MG3dRegion_renderables;
+   o.pushRenderable              = MG3dRegion_pushRenderable;
+   o.setup                       = MG3dRegion_setup;
+   o.change                      = MG3dRegion_change;
+   o.prepare                     = MG3dRegion_prepare;
+   o.reset                       = MG3dRegion_reset;
+   o.calculate                   = MG3dRegion_calculate;
+   o.update                      = MG3dRegion_update;
+   o.dispose                     = MG3dRegion_dispose;
+   return o;
+}
+function MG3dRegion_construct(){
+   var o = this;
+   o._lights = new TObjects();
+   o._renderables = new TObjects();
+   o._allRenderables = new TObjects();
+   o._cameraPosition = new SPoint3();
+   o._cameraDirection = new SVector3();
+   o._cameraViewMatrix = new SMatrix3d();
+   o._cameraProjectionMatrix = new SMatrix3d();
+   o._cameraViewProjectionMatrix = new SMatrix3d();
+   o._lightPosition = new SPoint3();
+   o._lightDirection = new SVector3();
+   o._lightViewMatrix = new SMatrix3d();
+   o._lightProjectionMatrix = new SMatrix3d();
+   o._lightViewProjectionMatrix = new SMatrix3d();
+   o._lightInfo = new SVector4();
+}
+function MG3dRegion_isChanged(){
+   return this._changed;
+}
+function MG3dRegion_spaceName(){
+   return this._spaceName;
+}
+function MG3dRegion_technique(){
+   return this._technique;
+}
+function MG3dRegion_setTechnique(p){
+   this._technique = p;
+}
+function MG3dRegion_techniquePass(){
+   return this._techniquePass;
+}
+function MG3dRegion_setTechniquePass(p, f){
+   var o = this;
+   o._techniquePass = p;
+   o._spaceName = p.fullCode();
+   o._finish = f;
+}
+function MG3dRegion_camera(){
+   return this._camera;
+}
+function MG3dRegion_directionalLight(){
+   return this._directionalLight;
+}
+function MG3dRegion_lights(){
+   return this._lights;
+}
+function MG3dRegion_materialMap(){
+   return this._materialMap;
+}
+function MG3dRegion_allRenderables(p){
+   return this._allRenderables;
+}
+function MG3dRegion_renderables(p){
+   return this._renderables;
+}
+function MG3dRegion_pushRenderable(p){
+   var o = this;
+   o._renderables.push(p);
+   o._allRenderables.push(p);
+}
+function MG3dRegion_setup(){
+   var o = this;
+}
+function MG3dRegion_change(){
+   this._changed = true;
+}
+function MG3dRegion_prepare(){
+   var o = this;
+   o._changed = false;
+   var c = o._camera;
+   var cp = c.projection();
+   o._cameraPosition.assign(c.position());
+   o._cameraDirection.assign(c.direction());
+   o._cameraViewMatrix.assign(c.matrix());
+   o._cameraProjectionMatrix.assign(cp.matrix());
+   o._cameraViewProjectionMatrix.assign(c.matrix());
+   o._cameraViewProjectionMatrix.append(cp.matrix());
+   var l = o._directionalLight;
+   var lc = l.camera();
+   var lcp = lc.position();
+   var lp = lc.projection();
+   o._lightPosition.assign(lc.position());
+   o._lightDirection.assign(lc.direction());
+   o._lightViewMatrix.assign(lc.matrix());
+   o._lightProjectionMatrix.assign(lp.matrix());
+   o._lightViewProjectionMatrix.assign(lc.matrix());
+   o._lightViewProjectionMatrix.append(lp.matrix());
+   o._lightInfo.set(0, 0, lp._znear, 1.0 / lp.distance());
+   o._allRenderables.clear();
+}
+function MG3dRegion_reset(){
+   var o = this;
+   o._renderables.clear();
+}
+function MG3dRegion_calculate(p){
+   var o = this;
+   switch(p){
+      case EG3dRegionParameter.CameraPosition:
+         return o._cameraPosition;
+      case EG3dRegionParameter.CameraDirection:
+         return o._cameraDirection;
+      case EG3dRegionParameter.CameraViewMatrix:
+         return o._cameraViewMatrix;
+      case EG3dRegionParameter.CameraProjectionMatrix:
+         return o._cameraProjectionMatrix;
+      case EG3dRegionParameter.CameraViewProjectionMatrix:
+         return o._cameraViewProjectionMatrix;
+      case EG3dRegionParameter.LightPosition:
+         return o._lightPosition;
+      case EG3dRegionParameter.LightDirection:
+         return o._lightDirection;
+      case EG3dRegionParameter.LightViewMatrix:
+         return o._lightViewMatrix;
+      case EG3dRegionParameter.LightProjectionMatrix:
+         return o._lightProjectionMatrix;
+      case EG3dRegionParameter.LightViewProjectionMatrix:
+         return o._lightViewProjectionMatrix;
+      case EG3dRegionParameter.LightInfo:
+         return o._lightInfo;
+   }
+   throw new TError(o, 'Unknown parameter type. (type_cd={1})', p);
+}
+function MG3dRegion_update(){
+   var o = this;
+   var rs = o._renderables;
+   var c = rs.count();
+   for(var i = 0; i < c; i++){
+      rs.getAt(i).update(o);
+   }
+}
+function MG3dRegion_dispose(){
+   var o = this;
+   o._renderables = RObject.free(o._renderables);
+   o._allRenderables = RObject.free(o._allRenderables);
+}
 function MG3dRenderable(o){
    o = RClass.inherits(this, o, MGraphicRenderable);
    o._currentMatrix  = null;
@@ -15251,191 +15483,6 @@ function FG3dProjection_zfar(){
 function FG3dProjection_distance(){
    return this._zfar - this._znear;
 }
-function FG3dRegion(o){
-   o = RClass.inherits(this, o, FG3dObject);
-   o._changed                    = false;
-   o._spaceName                  = null;
-   o._technique                  = null;
-   o._techniquePass              = null;
-   o._camera                     = null;
-   o._projection                 = null;
-   o._directionalLight           = null
-   o._lights                     = null
-   o._allRenderables             = null;
-   o._renderables                = null;
-   o._cameraPosition             = null;
-   o._cameraDirection            = null;
-   o._cameraViewMatrix           = null;
-   o._cameraProjectionMatrix     = null;
-   o._cameraViewProjectionMatrix = null;
-   o._lightPosition              = null;
-   o._lightDirection             = null;
-   o._lightViewMatrix            = null;
-   o._lightProjectionMatrix      = null;
-   o._lightViewProjectionMatrix  = null;
-   o._lightInfo                  = null;
-   o._materialMap                = null;
-   o.construct                   = FG3dRegion_construct;
-   o.isChanged                   = FG3dRegion_isChanged;
-   o.spaceName                   = FG3dRegion_spaceName;
-   o.technique                   = FG3dRegion_technique;
-   o.setTechnique                = FG3dRegion_setTechnique;
-   o.techniquePass               = FG3dRegion_techniquePass;
-   o.setTechniquePass            = FG3dRegion_setTechniquePass;
-   o.camera                      = FG3dRegion_camera;
-   o.directionalLight            = FG3dRegion_directionalLight;
-   o.lights                      = FG3dRegion_lights;
-   o.materialMap                 = FG3dRegion_materialMap;
-   o.allRenderables              = FG3dRegion_allRenderables;
-   o.renderables                 = FG3dRegion_renderables;
-   o.pushRenderable              = FG3dRegion_pushRenderable;
-   o.setup                       = FG3dRegion_setup;
-   o.change                      = FG3dRegion_change;
-   o.prepare                     = FG3dRegion_prepare;
-   o.reset                       = FG3dRegion_reset;
-   o.calculate                   = FG3dRegion_calculate;
-   o.update                      = FG3dRegion_update;
-   o.dispose                     = FG3dRegion_dispose;
-   return o;
-}
-function FG3dRegion_construct(){
-   var o = this;
-   o.__base.FG3dObject.construct.call(o);
-   o._lights = new TObjects();
-   o._renderables = new TObjects();
-   o._allRenderables = new TObjects();
-   o._cameraPosition = new SPoint3();
-   o._cameraDirection = new SVector3();
-   o._cameraViewMatrix = new SMatrix3d();
-   o._cameraProjectionMatrix = new SMatrix3d();
-   o._cameraViewProjectionMatrix = new SMatrix3d();
-   o._lightPosition = new SPoint3();
-   o._lightDirection = new SVector3();
-   o._lightViewMatrix = new SMatrix3d();
-   o._lightProjectionMatrix = new SMatrix3d();
-   o._lightViewProjectionMatrix = new SMatrix3d();
-   o._lightInfo = new SVector4();
-}
-function FG3dRegion_isChanged(){
-   return this._changed;
-}
-function FG3dRegion_spaceName(){
-   return this._spaceName;
-}
-function FG3dRegion_technique(){
-   return this._technique;
-}
-function FG3dRegion_setTechnique(p){
-   this._technique = p;
-}
-function FG3dRegion_techniquePass(){
-   return this._techniquePass;
-}
-function FG3dRegion_setTechniquePass(p, f){
-   var o = this;
-   o._techniquePass = p;
-   o._spaceName = p.fullCode();
-   o._finish = f;
-}
-function FG3dRegion_camera(){
-   return this._camera;
-}
-function FG3dRegion_directionalLight(){
-   return this._directionalLight;
-}
-function FG3dRegion_lights(){
-   return this._lights;
-}
-function FG3dRegion_materialMap(){
-   return this._materialMap;
-}
-function FG3dRegion_allRenderables(p){
-   return this._allRenderables;
-}
-function FG3dRegion_renderables(p){
-   return this._renderables;
-}
-function FG3dRegion_pushRenderable(p){
-   var o = this;
-   o._renderables.push(p);
-   o._allRenderables.push(p);
-}
-function FG3dRegion_setup(){
-   var o = this;
-}
-function FG3dRegion_change(){
-   this._changed = true;
-}
-function FG3dRegion_prepare(){
-   var o = this;
-   o._changed = false;
-   var c = o._camera;
-   var cp = c.projection();
-   o._cameraPosition.assign(c.position());
-   o._cameraDirection.assign(c.direction());
-   o._cameraViewMatrix.assign(c.matrix());
-   o._cameraProjectionMatrix.assign(cp.matrix());
-   o._cameraViewProjectionMatrix.assign(c.matrix());
-   o._cameraViewProjectionMatrix.append(cp.matrix());
-   var l = o._directionalLight;
-   var lc = l.camera();
-   var lcp = lc.position();
-   var lp = lc.projection();
-   o._lightPosition.assign(lc.position());
-   o._lightDirection.assign(lc.direction());
-   o._lightViewMatrix.assign(lc.matrix());
-   o._lightProjectionMatrix.assign(lp.matrix());
-   o._lightViewProjectionMatrix.assign(lc.matrix());
-   o._lightViewProjectionMatrix.append(lp.matrix());
-   o._lightInfo.set(0, 0, lp._znear, 1.0 / lp.distance());
-   o._allRenderables.clear();
-}
-function FG3dRegion_reset(){
-   var o = this;
-   o._renderables.clear();
-}
-function FG3dRegion_calculate(p){
-   var o = this;
-   switch(p){
-      case EG3dRegionParameter.CameraPosition:
-         return o._cameraPosition;
-      case EG3dRegionParameter.CameraDirection:
-         return o._cameraDirection;
-      case EG3dRegionParameter.CameraViewMatrix:
-         return o._cameraViewMatrix;
-      case EG3dRegionParameter.CameraProjectionMatrix:
-         return o._cameraProjectionMatrix;
-      case EG3dRegionParameter.CameraViewProjectionMatrix:
-         return o._cameraViewProjectionMatrix;
-      case EG3dRegionParameter.LightPosition:
-         return o._lightPosition;
-      case EG3dRegionParameter.LightDirection:
-         return o._lightDirection;
-      case EG3dRegionParameter.LightViewMatrix:
-         return o._lightViewMatrix;
-      case EG3dRegionParameter.LightProjectionMatrix:
-         return o._lightProjectionMatrix;
-      case EG3dRegionParameter.LightViewProjectionMatrix:
-         return o._lightViewProjectionMatrix;
-      case EG3dRegionParameter.LightInfo:
-         return o._lightInfo;
-   }
-   throw new TError(o, 'Unknown parameter type. (type_cd={1})', p);
-}
-function FG3dRegion_update(){
-   var o = this;
-   var rs = o._renderables;
-   var c = rs.count();
-   for(var i = 0; i < c; i++){
-      rs.getAt(i).update(o);
-   }
-}
-function FG3dRegion_dispose(){
-   var o = this;
-   o._renderables = RObject.free(o._renderables);
-   o._allRenderables = RObject.free(o._allRenderables);
-   o.__base.FG3dObject.dispose.call(o);
-}
 function FG3dShaderTemplate(o){
    o = RClass.inherits(this, o, FTagDocument);
    o._space  = 'shader';
@@ -15856,6 +15903,8 @@ function SG3dContextCapability(){
    o.varyingCount           = null;
    o.samplerCount           = null;
    o.samplerSize            = null;
+   o.samplerCompressRgb     = null;
+   o.samplerCompressRgba    = null;
    o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
    o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
    return o;
@@ -16991,7 +17040,9 @@ function FG3dSelectPass_drawRegion(p){
       var e = r.activeEffect();
       c.setProgram(e.program());
       var d = r.display();
-      if(!d._optionFace){
+      if(!d){
+         e.drawRenderable(p, r, i);
+      }else if(!d._optionFace){
          e.drawRenderable(p, r, i);
       }
    }
@@ -17001,7 +17052,7 @@ function FG3dSelectPass_drawRegion(p){
       var e = r.activeEffect();
       c.setProgram(e.program());
       var d = r.display();
-      if(d._optionFace){
+      if(d && d._optionFace){
          e.drawRenderable(p, r, i);
       }
    }
@@ -17365,11 +17416,6 @@ function FG3dShadowTechnique_updateRegion(p){
    var l = p.directionalLight();
    l.camera().updateFlatCamera(c);
 }
-function SWglContextCapability(){
-   var o = this;
-   SG3dContextCapability.call(o);
-   return o;
-}
 function FWglContext(o){
    o = RClass.inherits(this, o, FG3dContext);
    o._native             = null;
@@ -17414,7 +17460,7 @@ function FWglContext(o){
 function FWglContext_construct(){
    var o = this;
    o.__base.FG3dContext.construct.call(o);
-   o._capability = new SWglContextCapability();
+   o._capability = new SG3dContextCapability();
    o._data9 = new Float32Array(9);
    o._data16 = new Float32Array(16);
 }
@@ -17453,6 +17499,11 @@ function FWglContext_linkCanvas(h){
    var e = o._nativeLayout = g.getExtension('OES_vertex_array_object');
    if(e){
       c.optionLayout = true;
+   }
+   var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
+   if(e){
+      c.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
+      c.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
    }
 }
 function FWglContext_parameters(){
@@ -18137,12 +18188,19 @@ function FWglFlatTexture_uploadData(d, w, h){
 function FWglFlatTexture_upload(p){
    var o = this;
    var c = o._graphicContext;
+   var cp = c.capability();
    var g = c._native;
    var m = null;
+   var f = null;
    if(p.constructor == Image){
       m = p;
    }else if(RClass.isClass(p, FImage)){
       m = p.image();
+      if(p.optionAlpha()){
+         f = cp.samplerCompressRgba;
+      }else{
+         f = cp.samplerCompressRgb;
+      }
    }else{
       throw new TError('Invalid image format.');
    }
@@ -18957,21 +19015,23 @@ function FDisplayContainer_dispose(){
 }
 function FDisplayLayer(o){
    o = RClass.inherits(this, o, FDisplayContainer);
-   o._statusActive   = false;
-   o._technique      = null;
-   o._renderables    = null;
-   o.construct       = FDisplayLayer_construct;
-   o.technique       = FDisplayLayer_technique;
-   o.setTechnique    = FDisplayLayer_setTechnique;
-   o.selectTechnique = FDisplayLayer_selectTechnique;
-   o.active          = FDisplayLayer_active;
-   o.deactive        = FDisplayLayer_deactive;
+   o._statusActive       = false;
+   o._technique          = null;
+   o._visibleRenderables = null;
+   o.construct           = FDisplayLayer_construct;
+   o.technique           = FDisplayLayer_technique;
+   o.setTechnique        = FDisplayLayer_setTechnique;
+   o.selectTechnique     = FDisplayLayer_selectTechnique;
+   o.visibleRenderables  = FDisplayLayer_visibleRenderables;
+   o.filterRenderables   = FDisplayLayer_filterRenderables;
+   o.active              = FDisplayLayer_active;
+   o.deactive            = FDisplayLayer_deactive;
    return o;
 }
 function FDisplayLayer_construct(){
    var o = this;
    o.__base.FDisplayContainer.construct.call(o);
-   o._renderables = new TObjects();
+   o._visibleRenderables = new TObjects();
 }
 function FDisplayLayer_technique(){
    return this._technique;
@@ -18981,6 +19041,14 @@ function FDisplayLayer_setTechnique(p){
 }
 function FDisplayLayer_selectTechnique(c, n){
    this._technique = RConsole.find(FG3dTechniqueConsole).find(c, n);
+}
+function FDisplayLayer_visibleRenderables(){
+   return this._visibleRenderables;
+}
+function FDisplayLayer_filterRenderables(p){
+   var o = this;
+   o.__base.FDisplayContainer.filterRenderables.call(o, p);
+   o._visibleRenderables.assign(p.renderables());
 }
 function FDisplayLayer_active(){
    this._statusActive = true;
@@ -18993,6 +19061,10 @@ function FDisplayUiLayer(o){
    return o;
 }
 function FDrawable(o){
+   o = RClass.inherits(this, o, FObject);
+   return o;
+}
+function FRegion(o){
    o = RClass.inherits(this, o, FObject);
    return o;
 }
@@ -19179,6 +19251,33 @@ function FE3dDrawable(o){
    o = RClass.inherits(this, o, FDrawable);
    return o;
 }
+function FE3dRegion(o){
+   o = RClass.inherits(this, o, FRegion, MG3dRegion, MGraphicObject);
+   o._calculateCameraMatrix = null;
+   o.construct = FE3dRegion_construct;
+   o.prepare   = FE3dRegion_prepare;
+   o.dispose   = FE3dRegion_dispose;
+   return o;
+}
+function FE3dRegion_construct(){
+   var o = this;
+   o.__base.FRegion.construct.call(o);
+   o.__base.MG3dRegion.construct.call(o);
+   o._calculateCameraMatrix = new SMatrix3d();
+}
+function FE3dRegion_prepare(){
+   var o = this;
+   o.__base.MG3dRegion.prepare.call(o);
+   var r = o._calculateCameraMatrix.attach(o._camera.matrix());
+   if(r){
+      o._changed = true;
+   }
+}
+function FE3dRegion_dispose(){
+   var o = this;
+   o.__base.FRegion.dispose.call(o);
+   o.__base.MG3dRegion.dispose.call(o);
+}
 function FE3dSimpleStage(o){
    o = RClass.inherits(this, o, FE3dStage);
    o._optionKeyboard = true;
@@ -19310,7 +19409,7 @@ function FE3dStage_construct(){
    c._projection.update();
    var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
    l.direction().set(0, -1, 0);
-   var r = o._region = RClass.create(FG3dRegion);
+   var r = o._region = RClass.create(FE3dRegion);
    r._camera = c;
    r._directionalLight = l;
 }
@@ -19374,7 +19473,6 @@ function FE3dStage_process(){
          var l = ls.value(i);
          r.reset();
          l.filterRenderables(r);
-         l._renderables.assign(r._renderables);
          r.update();
       }
    }
@@ -19389,7 +19487,7 @@ function FE3dStage_process(){
                lt = t;
             }
             r.reset();
-            r._renderables.assign(l._renderables);
+            r.renderables().assign(l.visibleRenderables());
             lt.drawRegion(r);
          }
       }
@@ -22218,6 +22316,7 @@ function FE3rTextureBitmapCubePack_loadResource(p){
       var b = new Blob([d[i]], {type: 'image/' + t});
       var u = window.URL.createObjectURL(b);
       var g = o._images[i] = RClass.create(FImage);
+      g.setOptionAlpha(false);
       g.loadUrl(u);
       g.addLoadListener(o, o.onLoad);
    }
@@ -22260,6 +22359,13 @@ function FE3rTextureBitmapFlatPack_loadResource(p){
    var b = new Blob([d], {type: 'image/' + t});
    var u = window.URL.createObjectURL(b);
    var g = o._image = RClass.create(FImage);
+   if(t == 'png'){
+      g.setOptionAlpha(true);
+   }else if(t == 'jpg'){
+      g.setOptionAlpha(false);
+   }else{
+      throw new TError(o, 'Unknown image.');
+   }
    g.loadUrl(u);
    g.addLoadListener(o, o.onLoad);
 }
@@ -22363,70 +22469,6 @@ function FE3rTextureConsole_loadBitmap(pc, pt, pb){
    }
    var t = o.load(pc, pt);
    return t.loadBitmap(pb);
-}
-function FE3rTextureCube(o){
-   o = RClass.inherits(this, o, FE3rTexture);
-   o._imageX1 = null;
-   o._imageX2 = null;
-   o._imageY1 = null;
-   o._imageY2 = null;
-   o._imageZ1 = null;
-   o._imageZ2 = null;
-   o.onLoad   = FE3rTextureCube_onLoad;
-   o.load     = FE3rTextureCube_load;
-   return o;
-}
-function FE3rTextureCube_onLoad(p){
-   var o = this;
-   var c = o._graphicContext;
-   if(!o._imageX1.testReady()){
-      return;
-   }
-   if(!o._imageX2.testReady()){
-      return;
-   }
-   if(!o._imageY1.testReady()){
-      return;
-   }
-   if(!o._imageY2.testReady()){
-      return;
-   }
-   if(!o._imageZ1.testReady()){
-      return;
-   }
-   if(!o._imageZ2.testReady()){
-      return;
-   }
-   var t = o._texture = c.createCubeTexture();
-   t.upload(o._imageX1, o._imageX2, o._imageY1, o._imageY2, o._imageZ1, o._imageZ2);
-   o._ready  = true;
-}
-function FE3rTextureCube_load(u){
-   var o = this;
-   var g = o._imageX1 = RClass.create(FImage);
-   g._name = 'x1'
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u + "-x1");
-   var g = o._imageX2 = RClass.create(FImage);
-   g._name = 'x2'
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u + "-x2");
-   var g = o._imageY1 = RClass.create(FImage);
-   g._name = 'y1'
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u + "-y1");
-   var g = o._imageY2 = RClass.create(FImage);
-   g._name = 'y2'
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u + "-y2");
-   var g = o._imageZ1 = RClass.create(FImage);
-   g._name = 'z1'
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u + "-z1");
-   var g = o._imageZ2 = RClass.create(FImage);
-   g._name = 'z2'
-   g.addLoadListener(o, o.onLoad);
-   g.loadUrl(u + "-z2");
 }
 function FE3rTrack(o){
    o = RClass.inherits(this, o, FObject);
@@ -24638,6 +24680,189 @@ var EG3dTechniqueMode = new function EG3dTechniqueMode(){
    o.Result        = 'result';
    return o;
 }
+function MG3dRegion(o){
+   o = RClass.inherits(this, o);
+   o._changed                    = false;
+   o._spaceName                  = null;
+   o._technique                  = null;
+   o._techniquePass              = null;
+   o._camera                     = null;
+   o._projection                 = null;
+   o._directionalLight           = null
+   o._lights                     = null
+   o._allRenderables             = null;
+   o._renderables                = null;
+   o._cameraPosition             = null;
+   o._cameraDirection            = null;
+   o._cameraViewMatrix           = null;
+   o._cameraProjectionMatrix     = null;
+   o._cameraViewProjectionMatrix = null;
+   o._lightPosition              = null;
+   o._lightDirection             = null;
+   o._lightViewMatrix            = null;
+   o._lightProjectionMatrix      = null;
+   o._lightViewProjectionMatrix  = null;
+   o._lightInfo                  = null;
+   o._materialMap                = null;
+   o.construct                   = MG3dRegion_construct;
+   o.isChanged                   = MG3dRegion_isChanged;
+   o.spaceName                   = MG3dRegion_spaceName;
+   o.technique                   = MG3dRegion_technique;
+   o.setTechnique                = MG3dRegion_setTechnique;
+   o.techniquePass               = MG3dRegion_techniquePass;
+   o.setTechniquePass            = MG3dRegion_setTechniquePass;
+   o.camera                      = MG3dRegion_camera;
+   o.directionalLight            = MG3dRegion_directionalLight;
+   o.lights                      = MG3dRegion_lights;
+   o.materialMap                 = MG3dRegion_materialMap;
+   o.allRenderables              = MG3dRegion_allRenderables;
+   o.renderables                 = MG3dRegion_renderables;
+   o.pushRenderable              = MG3dRegion_pushRenderable;
+   o.setup                       = MG3dRegion_setup;
+   o.change                      = MG3dRegion_change;
+   o.prepare                     = MG3dRegion_prepare;
+   o.reset                       = MG3dRegion_reset;
+   o.calculate                   = MG3dRegion_calculate;
+   o.update                      = MG3dRegion_update;
+   o.dispose                     = MG3dRegion_dispose;
+   return o;
+}
+function MG3dRegion_construct(){
+   var o = this;
+   o._lights = new TObjects();
+   o._renderables = new TObjects();
+   o._allRenderables = new TObjects();
+   o._cameraPosition = new SPoint3();
+   o._cameraDirection = new SVector3();
+   o._cameraViewMatrix = new SMatrix3d();
+   o._cameraProjectionMatrix = new SMatrix3d();
+   o._cameraViewProjectionMatrix = new SMatrix3d();
+   o._lightPosition = new SPoint3();
+   o._lightDirection = new SVector3();
+   o._lightViewMatrix = new SMatrix3d();
+   o._lightProjectionMatrix = new SMatrix3d();
+   o._lightViewProjectionMatrix = new SMatrix3d();
+   o._lightInfo = new SVector4();
+}
+function MG3dRegion_isChanged(){
+   return this._changed;
+}
+function MG3dRegion_spaceName(){
+   return this._spaceName;
+}
+function MG3dRegion_technique(){
+   return this._technique;
+}
+function MG3dRegion_setTechnique(p){
+   this._technique = p;
+}
+function MG3dRegion_techniquePass(){
+   return this._techniquePass;
+}
+function MG3dRegion_setTechniquePass(p, f){
+   var o = this;
+   o._techniquePass = p;
+   o._spaceName = p.fullCode();
+   o._finish = f;
+}
+function MG3dRegion_camera(){
+   return this._camera;
+}
+function MG3dRegion_directionalLight(){
+   return this._directionalLight;
+}
+function MG3dRegion_lights(){
+   return this._lights;
+}
+function MG3dRegion_materialMap(){
+   return this._materialMap;
+}
+function MG3dRegion_allRenderables(p){
+   return this._allRenderables;
+}
+function MG3dRegion_renderables(p){
+   return this._renderables;
+}
+function MG3dRegion_pushRenderable(p){
+   var o = this;
+   o._renderables.push(p);
+   o._allRenderables.push(p);
+}
+function MG3dRegion_setup(){
+   var o = this;
+}
+function MG3dRegion_change(){
+   this._changed = true;
+}
+function MG3dRegion_prepare(){
+   var o = this;
+   o._changed = false;
+   var c = o._camera;
+   var cp = c.projection();
+   o._cameraPosition.assign(c.position());
+   o._cameraDirection.assign(c.direction());
+   o._cameraViewMatrix.assign(c.matrix());
+   o._cameraProjectionMatrix.assign(cp.matrix());
+   o._cameraViewProjectionMatrix.assign(c.matrix());
+   o._cameraViewProjectionMatrix.append(cp.matrix());
+   var l = o._directionalLight;
+   var lc = l.camera();
+   var lcp = lc.position();
+   var lp = lc.projection();
+   o._lightPosition.assign(lc.position());
+   o._lightDirection.assign(lc.direction());
+   o._lightViewMatrix.assign(lc.matrix());
+   o._lightProjectionMatrix.assign(lp.matrix());
+   o._lightViewProjectionMatrix.assign(lc.matrix());
+   o._lightViewProjectionMatrix.append(lp.matrix());
+   o._lightInfo.set(0, 0, lp._znear, 1.0 / lp.distance());
+   o._allRenderables.clear();
+}
+function MG3dRegion_reset(){
+   var o = this;
+   o._renderables.clear();
+}
+function MG3dRegion_calculate(p){
+   var o = this;
+   switch(p){
+      case EG3dRegionParameter.CameraPosition:
+         return o._cameraPosition;
+      case EG3dRegionParameter.CameraDirection:
+         return o._cameraDirection;
+      case EG3dRegionParameter.CameraViewMatrix:
+         return o._cameraViewMatrix;
+      case EG3dRegionParameter.CameraProjectionMatrix:
+         return o._cameraProjectionMatrix;
+      case EG3dRegionParameter.CameraViewProjectionMatrix:
+         return o._cameraViewProjectionMatrix;
+      case EG3dRegionParameter.LightPosition:
+         return o._lightPosition;
+      case EG3dRegionParameter.LightDirection:
+         return o._lightDirection;
+      case EG3dRegionParameter.LightViewMatrix:
+         return o._lightViewMatrix;
+      case EG3dRegionParameter.LightProjectionMatrix:
+         return o._lightProjectionMatrix;
+      case EG3dRegionParameter.LightViewProjectionMatrix:
+         return o._lightViewProjectionMatrix;
+      case EG3dRegionParameter.LightInfo:
+         return o._lightInfo;
+   }
+   throw new TError(o, 'Unknown parameter type. (type_cd={1})', p);
+}
+function MG3dRegion_update(){
+   var o = this;
+   var rs = o._renderables;
+   var c = rs.count();
+   for(var i = 0; i < c; i++){
+      rs.getAt(i).update(o);
+   }
+}
+function MG3dRegion_dispose(){
+   var o = this;
+   o._renderables = RObject.free(o._renderables);
+   o._allRenderables = RObject.free(o._allRenderables);
+}
 function MG3dRenderable(o){
    o = RClass.inherits(this, o, MGraphicRenderable);
    o._currentMatrix  = null;
@@ -26050,191 +26275,6 @@ function FG3dProjection_zfar(){
 function FG3dProjection_distance(){
    return this._zfar - this._znear;
 }
-function FG3dRegion(o){
-   o = RClass.inherits(this, o, FG3dObject);
-   o._changed                    = false;
-   o._spaceName                  = null;
-   o._technique                  = null;
-   o._techniquePass              = null;
-   o._camera                     = null;
-   o._projection                 = null;
-   o._directionalLight           = null
-   o._lights                     = null
-   o._allRenderables             = null;
-   o._renderables                = null;
-   o._cameraPosition             = null;
-   o._cameraDirection            = null;
-   o._cameraViewMatrix           = null;
-   o._cameraProjectionMatrix     = null;
-   o._cameraViewProjectionMatrix = null;
-   o._lightPosition              = null;
-   o._lightDirection             = null;
-   o._lightViewMatrix            = null;
-   o._lightProjectionMatrix      = null;
-   o._lightViewProjectionMatrix  = null;
-   o._lightInfo                  = null;
-   o._materialMap                = null;
-   o.construct                   = FG3dRegion_construct;
-   o.isChanged                   = FG3dRegion_isChanged;
-   o.spaceName                   = FG3dRegion_spaceName;
-   o.technique                   = FG3dRegion_technique;
-   o.setTechnique                = FG3dRegion_setTechnique;
-   o.techniquePass               = FG3dRegion_techniquePass;
-   o.setTechniquePass            = FG3dRegion_setTechniquePass;
-   o.camera                      = FG3dRegion_camera;
-   o.directionalLight            = FG3dRegion_directionalLight;
-   o.lights                      = FG3dRegion_lights;
-   o.materialMap                 = FG3dRegion_materialMap;
-   o.allRenderables              = FG3dRegion_allRenderables;
-   o.renderables                 = FG3dRegion_renderables;
-   o.pushRenderable              = FG3dRegion_pushRenderable;
-   o.setup                       = FG3dRegion_setup;
-   o.change                      = FG3dRegion_change;
-   o.prepare                     = FG3dRegion_prepare;
-   o.reset                       = FG3dRegion_reset;
-   o.calculate                   = FG3dRegion_calculate;
-   o.update                      = FG3dRegion_update;
-   o.dispose                     = FG3dRegion_dispose;
-   return o;
-}
-function FG3dRegion_construct(){
-   var o = this;
-   o.__base.FG3dObject.construct.call(o);
-   o._lights = new TObjects();
-   o._renderables = new TObjects();
-   o._allRenderables = new TObjects();
-   o._cameraPosition = new SPoint3();
-   o._cameraDirection = new SVector3();
-   o._cameraViewMatrix = new SMatrix3d();
-   o._cameraProjectionMatrix = new SMatrix3d();
-   o._cameraViewProjectionMatrix = new SMatrix3d();
-   o._lightPosition = new SPoint3();
-   o._lightDirection = new SVector3();
-   o._lightViewMatrix = new SMatrix3d();
-   o._lightProjectionMatrix = new SMatrix3d();
-   o._lightViewProjectionMatrix = new SMatrix3d();
-   o._lightInfo = new SVector4();
-}
-function FG3dRegion_isChanged(){
-   return this._changed;
-}
-function FG3dRegion_spaceName(){
-   return this._spaceName;
-}
-function FG3dRegion_technique(){
-   return this._technique;
-}
-function FG3dRegion_setTechnique(p){
-   this._technique = p;
-}
-function FG3dRegion_techniquePass(){
-   return this._techniquePass;
-}
-function FG3dRegion_setTechniquePass(p, f){
-   var o = this;
-   o._techniquePass = p;
-   o._spaceName = p.fullCode();
-   o._finish = f;
-}
-function FG3dRegion_camera(){
-   return this._camera;
-}
-function FG3dRegion_directionalLight(){
-   return this._directionalLight;
-}
-function FG3dRegion_lights(){
-   return this._lights;
-}
-function FG3dRegion_materialMap(){
-   return this._materialMap;
-}
-function FG3dRegion_allRenderables(p){
-   return this._allRenderables;
-}
-function FG3dRegion_renderables(p){
-   return this._renderables;
-}
-function FG3dRegion_pushRenderable(p){
-   var o = this;
-   o._renderables.push(p);
-   o._allRenderables.push(p);
-}
-function FG3dRegion_setup(){
-   var o = this;
-}
-function FG3dRegion_change(){
-   this._changed = true;
-}
-function FG3dRegion_prepare(){
-   var o = this;
-   o._changed = false;
-   var c = o._camera;
-   var cp = c.projection();
-   o._cameraPosition.assign(c.position());
-   o._cameraDirection.assign(c.direction());
-   o._cameraViewMatrix.assign(c.matrix());
-   o._cameraProjectionMatrix.assign(cp.matrix());
-   o._cameraViewProjectionMatrix.assign(c.matrix());
-   o._cameraViewProjectionMatrix.append(cp.matrix());
-   var l = o._directionalLight;
-   var lc = l.camera();
-   var lcp = lc.position();
-   var lp = lc.projection();
-   o._lightPosition.assign(lc.position());
-   o._lightDirection.assign(lc.direction());
-   o._lightViewMatrix.assign(lc.matrix());
-   o._lightProjectionMatrix.assign(lp.matrix());
-   o._lightViewProjectionMatrix.assign(lc.matrix());
-   o._lightViewProjectionMatrix.append(lp.matrix());
-   o._lightInfo.set(0, 0, lp._znear, 1.0 / lp.distance());
-   o._allRenderables.clear();
-}
-function FG3dRegion_reset(){
-   var o = this;
-   o._renderables.clear();
-}
-function FG3dRegion_calculate(p){
-   var o = this;
-   switch(p){
-      case EG3dRegionParameter.CameraPosition:
-         return o._cameraPosition;
-      case EG3dRegionParameter.CameraDirection:
-         return o._cameraDirection;
-      case EG3dRegionParameter.CameraViewMatrix:
-         return o._cameraViewMatrix;
-      case EG3dRegionParameter.CameraProjectionMatrix:
-         return o._cameraProjectionMatrix;
-      case EG3dRegionParameter.CameraViewProjectionMatrix:
-         return o._cameraViewProjectionMatrix;
-      case EG3dRegionParameter.LightPosition:
-         return o._lightPosition;
-      case EG3dRegionParameter.LightDirection:
-         return o._lightDirection;
-      case EG3dRegionParameter.LightViewMatrix:
-         return o._lightViewMatrix;
-      case EG3dRegionParameter.LightProjectionMatrix:
-         return o._lightProjectionMatrix;
-      case EG3dRegionParameter.LightViewProjectionMatrix:
-         return o._lightViewProjectionMatrix;
-      case EG3dRegionParameter.LightInfo:
-         return o._lightInfo;
-   }
-   throw new TError(o, 'Unknown parameter type. (type_cd={1})', p);
-}
-function FG3dRegion_update(){
-   var o = this;
-   var rs = o._renderables;
-   var c = rs.count();
-   for(var i = 0; i < c; i++){
-      rs.getAt(i).update(o);
-   }
-}
-function FG3dRegion_dispose(){
-   var o = this;
-   o._renderables = RObject.free(o._renderables);
-   o._allRenderables = RObject.free(o._allRenderables);
-   o.__base.FG3dObject.dispose.call(o);
-}
 function FG3dShaderTemplate(o){
    o = RClass.inherits(this, o, FTagDocument);
    o._space  = 'shader';
@@ -26655,6 +26695,8 @@ function SG3dContextCapability(){
    o.varyingCount           = null;
    o.samplerCount           = null;
    o.samplerSize            = null;
+   o.samplerCompressRgb     = null;
+   o.samplerCompressRgba    = null;
    o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
    o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
    return o;
@@ -27790,7 +27832,9 @@ function FG3dSelectPass_drawRegion(p){
       var e = r.activeEffect();
       c.setProgram(e.program());
       var d = r.display();
-      if(!d._optionFace){
+      if(!d){
+         e.drawRenderable(p, r, i);
+      }else if(!d._optionFace){
          e.drawRenderable(p, r, i);
       }
    }
@@ -27800,7 +27844,7 @@ function FG3dSelectPass_drawRegion(p){
       var e = r.activeEffect();
       c.setProgram(e.program());
       var d = r.display();
-      if(d._optionFace){
+      if(d && d._optionFace){
          e.drawRenderable(p, r, i);
       }
    }
@@ -28164,11 +28208,6 @@ function FG3dShadowTechnique_updateRegion(p){
    var l = p.directionalLight();
    l.camera().updateFlatCamera(c);
 }
-function SWglContextCapability(){
-   var o = this;
-   SG3dContextCapability.call(o);
-   return o;
-}
 function FWglContext(o){
    o = RClass.inherits(this, o, FG3dContext);
    o._native             = null;
@@ -28213,7 +28252,7 @@ function FWglContext(o){
 function FWglContext_construct(){
    var o = this;
    o.__base.FG3dContext.construct.call(o);
-   o._capability = new SWglContextCapability();
+   o._capability = new SG3dContextCapability();
    o._data9 = new Float32Array(9);
    o._data16 = new Float32Array(16);
 }
@@ -28252,6 +28291,11 @@ function FWglContext_linkCanvas(h){
    var e = o._nativeLayout = g.getExtension('OES_vertex_array_object');
    if(e){
       c.optionLayout = true;
+   }
+   var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
+   if(e){
+      c.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
+      c.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
    }
 }
 function FWglContext_parameters(){
@@ -28936,12 +28980,19 @@ function FWglFlatTexture_uploadData(d, w, h){
 function FWglFlatTexture_upload(p){
    var o = this;
    var c = o._graphicContext;
+   var cp = c.capability();
    var g = c._native;
    var m = null;
+   var f = null;
    if(p.constructor == Image){
       m = p;
    }else if(RClass.isClass(p, FImage)){
       m = p.image();
+      if(p.optionAlpha()){
+         f = cp.samplerCompressRgba;
+      }else{
+         f = cp.samplerCompressRgb;
+      }
    }else{
       throw new TError('Invalid image format.');
    }

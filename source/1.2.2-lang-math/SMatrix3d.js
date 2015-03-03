@@ -33,6 +33,7 @@ function SMatrix3d(){
    o.setAll         = SMatrix3d_setAll;
    o.equals         = SMatrix3d_equals;
    o.assign         = SMatrix3d_assign;
+   o.attach         = SMatrix3d_attach;
    o.append         = SMatrix3d_append;
    o.updateForce    = SMatrix3d_updateForce;
    o.update         = SMatrix3d_update;
@@ -218,6 +219,26 @@ function SMatrix3d_assign(p){
    o.sy = p.sy;
    o.sz = p.sz;
    o.assignData(p._data);
+}
+
+//============================================================
+// <T>接收一个矩阵，返回是否修改。</T>
+//
+// @method
+// @param p:matrix:SMatrix3d 矩阵
+//============================================================
+function SMatrix3d_attach(p){
+   var o = this;
+   o.tx = p.tx;
+   o.ty = p.ty;
+   o.tz = p.tz;
+   o.rx = p.rx;
+   o.ry = p.ry;
+   o.rz = p.rz;
+   o.sx = p.sx;
+   o.sy = p.sy;
+   o.sz = p.sz;
+   return o.attachData(p._data);
 }
 
 //============================================================
