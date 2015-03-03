@@ -289,7 +289,7 @@ function FE3dTemplate_processLoad(){
       o._dataReady = true;
    }
    // 加载渲染对象
-   var s = o._renderables;
+   var s = o._meshRenderables;
    if(s){
       // 测试渲染对象
       var c = s.count();

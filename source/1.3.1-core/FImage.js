@@ -12,6 +12,7 @@ function FImage(o){
    o._optionAlpha   = true;
    o._ready         = false;
    o._size          = null;
+   o._url           = null;
    //..........................................................
    // @html
    o._hImage        = null;
@@ -27,6 +28,7 @@ function FImage(o){
    o.setOptionAlpha = FImage_setOptionAlpha;
    o.size           = FImage_size;
    o.image          = FImage_image;
+   o.url            = FImage_url;
    // @method
    o.testReady      = FImage_testReady;
    o.loadUrl        = FImage_loadUrl;
@@ -110,6 +112,16 @@ function FImage_image(){
 }
 
 //==========================================================
+// <T>获得网络地址。</T>
+//
+// @method
+// @return 网络地址
+//==========================================================
+function FImage_url(){
+   return this._url;
+}
+
+//==========================================================
 // <T>测试是否准备好。</T>
 //
 // @method
@@ -127,6 +139,7 @@ function FImage_testReady(){
 //==========================================================
 function FImage_loadUrl(p){
    var o = this;
+   o._url = p;
    // 创建图片
    var g = o._hImage;
    if(!g){

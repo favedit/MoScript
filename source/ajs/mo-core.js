@@ -31,6 +31,7 @@ var RRuntime = new function RRuntime(){
    o.construct     = RRuntime_construct;
    o.isDebug       = RRuntime_isDebug;
    o.isRelease     = RRuntime_isRelease;
+   o.setProcessCd  = RRuntime_setProcessCd;
    o.supportHtml5  = RRuntime_supportHtml5;
    o.nvl           = RRuntime_nvl;
    o.subString     = RRuntime_subString;
@@ -49,6 +50,9 @@ function RRuntime_isDebug(){
 }
 function RRuntime_isRelease(){
    return (this._processCd == EProcess.Release);
+}
+function RRuntime_setProcessCd(p){
+   this._processCd = p;
 }
 function RRuntime_supportHtml5(){
    return this._supportHtml5;
@@ -3714,7 +3718,7 @@ function RClass_dump(v){
       case 'Function':
          return t + '<' + RMethod.name(v) + '>@' + o.code(v);
       case 'Html':
-         return t + '<' + v.tagName + '>@' + RRuntime.uid(v);
+         return t + '<' + v.tagName + '>@' + o.code(v);
       default:
          if(v.__name){
             return t + '<' + v.__name + '>@' + o.code(v);
@@ -4962,8 +4966,24 @@ function RObject_copy(s, t){
 }
 function RObject_free(p){
    if(p){
-      for(var n in p){
-         p[n] = null;
+      if(RRuntime.isDebug()){
+         for(var n in p){
+            if((n == '__base') || (n == '__inherits') || (n == '__class')){
+               p[n] = null;
+               continue;
+            }
+            var v = p[n];
+            if(v != null){
+               if(!RClass.isBaseType(v.constructor)){
+                  throw new TError(RObject, 'Free object is not base object.');
+               }
+               p[n] = null;
+            }
+         }
+      }else{
+         for(var n in p){
+            p[n] = null;
+         }
       }
    }
 }
@@ -9683,6 +9703,7 @@ function FImage(o){
    o._optionAlpha   = true;
    o._ready         = false;
    o._size          = null;
+   o._url           = null;
    o._hImage        = null;
    o.ohLoad         = FImage_ohLoad;
    o.ohError        = FImage_ohError;
@@ -9691,6 +9712,7 @@ function FImage(o){
    o.setOptionAlpha = FImage_setOptionAlpha;
    o.size           = FImage_size;
    o.image          = FImage_image;
+   o.url            = FImage_url;
    o.testReady      = FImage_testReady;
    o.loadUrl        = FImage_loadUrl;
    o.dispose        = FImage_dispose;
@@ -9724,11 +9746,15 @@ function FImage_size(){
 function FImage_image(){
    return this._hImage;
 }
+function FImage_url(){
+   return this._url;
+}
 function FImage_testReady(){
    return this._ready;
 }
 function FImage_loadUrl(p){
    var o = this;
+   o._url = p;
    var g = o._hImage;
    if(!g){
       g = o._hImage = new Image();
@@ -10502,7 +10528,7 @@ function RHtml_visibleGet(h){
 function RHtml_visibleSet(h, v){
    var s = null;
    if(RBrowser.isBrowser(EBrowser.Explorer)){
-      s = v ? null : 'none';
+      s = v ? '' : 'none';
    }else{
       s = v ? null : 'none';
    }

@@ -118,6 +118,9 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
          }
       }
    }
+   if(pc.samplerContains(EG3dSampler.Alpha)){
+      pt.setBoolean("support.alpha.sampler", true);
+   }
    var snr = pc.samplerContains(EG3dSampler.Normal);
    o._dynamicDiffuse = o._supportDiffuse && (o._dynamicVertexNormal || snr);
    if(o._supportDiffuse){

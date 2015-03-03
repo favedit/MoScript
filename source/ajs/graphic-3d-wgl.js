@@ -761,10 +761,18 @@ function FWglFlatTexture_uploadData(d, w, h){
    var o = this;
    var c = o._graphicContext;
    var g = c._native;
+   var m = null;
+   if(d.constructor == ArrayBuffer){
+      m = new Uint8Array(d);
+   }else if(d.constructor == Uint8Array){
+      m = d;
+   }else{
+      throw new TError('Invalid data format.');
+   }
    o.width = w;
    o.height = h;
    g.bindTexture(g.TEXTURE_2D, o._native);
-   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, w, h, 0, g.RGBA, g.UNSIGNED_BYTE, d);
+   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, w, h, 0, g.RGBA, g.UNSIGNED_BYTE, m);
    o._statusLoad = c.checkError("texImage2D", "Upload data failure.");
 }
 function FWglFlatTexture_upload(p){

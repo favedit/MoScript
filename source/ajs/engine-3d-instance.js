@@ -1615,7 +1615,7 @@ function FE3dTemplate_processLoad(){
       o.loadResource(o._resource);
       o._dataReady = true;
    }
-   var s = o._renderables;
+   var s = o._meshRenderables;
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){

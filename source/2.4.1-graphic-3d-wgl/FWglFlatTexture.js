@@ -58,13 +58,22 @@ function FWglFlatTexture_uploadData(d, w, h){
    var o = this;
    var c = o._graphicContext;
    var g = c._native;
+   // 检查参数
+   var m = null;
+   if(d.constructor == ArrayBuffer){
+      m = new Uint8Array(d);
+   }else if(d.constructor == Uint8Array){
+      m = d;
+   }else{
+      throw new TError('Invalid data format.');
+   }
    // 设置属性
    o.width = w;
    o.height = h;
    // 绑定数据
    g.bindTexture(g.TEXTURE_2D, o._native);
    // 上传内容
-   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, w, h, 0, g.RGBA, g.UNSIGNED_BYTE, d);
+   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, w, h, 0, g.RGBA, g.UNSIGNED_BYTE, m);
    o._statusLoad = c.checkError("texImage2D", "Upload data failure.");
 }
 
@@ -79,6 +88,7 @@ function FWglFlatTexture_upload(p){
    var c = o._graphicContext;
    var cp = c.capability();
    var g = c._native;
+   // 检查参数
    var m = null;
    var f = null;
    if(p.constructor == Image){

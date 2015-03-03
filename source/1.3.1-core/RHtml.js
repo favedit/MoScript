@@ -169,8 +169,7 @@ function RHtml_visibleGet(h){
 function RHtml_visibleSet(h, v){
    var s = null;
    if(RBrowser.isBrowser(EBrowser.Explorer)){
-      //s = v ? 'block' : 'none';
-      s = v ? null : 'none';
+      s = v ? '' : 'none';
    }else{
       s = v ? null : 'none';
    }

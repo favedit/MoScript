@@ -106,8 +106,28 @@ function RObject_copy(s, t){
 //==========================================================
 function RObject_free(p){
    if(p){
-      for(var n in p){
-         p[n] = null;
+      if(RRuntime.isDebug()){
+         // 调试模式
+         for(var n in p){
+            // 基础类型
+            if((n == '__base') || (n == '__inherits') || (n == '__class')){
+               p[n] = null;
+               continue;
+            }
+            // 检查类型
+            var v = p[n];
+            if(v != null){
+               if(!RClass.isBaseType(v.constructor)){
+                  throw new TError(RObject, 'Free object is not base object.');
+               }
+               p[n] = null;
+            }
+         }
+      }else{
+         // 运行模式
+         for(var n in p){
+            p[n] = null;
+         }
       }
    }
 }

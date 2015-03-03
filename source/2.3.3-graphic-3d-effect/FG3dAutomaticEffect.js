@@ -167,6 +167,11 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
       }
    }
    //............................................................
+   // 支持透明纹理
+   if(pc.samplerContains(EG3dSampler.Alpha)){
+      pt.setBoolean("support.alpha.sampler", true);
+   }
+   //............................................................
    // 支持散射技术
    var snr = pc.samplerContains(EG3dSampler.Normal);
    o._dynamicDiffuse = o._supportDiffuse && (o._dynamicVertexNormal || snr);

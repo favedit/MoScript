@@ -751,6 +751,7 @@ function FE3dStage_process(){
    o.__base.FStage.process.call(o);
    t.updateRegion(r);
    r.prepare();
+   r.change();
    var ls = o._layers;
    if(ls){
       var c = ls.count();
@@ -2447,13 +2448,29 @@ function FE3sTextureBitmap_unserialize(p){
 }
 function FE3sTextureBitmapPack(o){
    o = RClass.inherits(this, o, FE3sObject);
-   o._data       = null;
-   o._typeName   = null;
-   o._formatName = null;
-   o.data        = FE3sTextureBitmapPack_data;
-   o.unserialize = FE3sTextureBitmapPack_unserialize;
-   o.dispose     = FE3sTextureBitmapPack_dispose;
+   o._optionCompress = null;
+   o._size           = null;
+   o._data           = null;
+   o._typeName       = null;
+   o._formatName     = null;
+   o.construct       = FE3sTextureBitmapPack_construct;
+   o.optionCompress  = FE3sTextureBitmapPack_optionCompress;
+   o.size            = FE3sTextureBitmapPack_size;
+   o.data            = FE3sTextureBitmapPack_data;
+   o.unserialize     = FE3sTextureBitmapPack_unserialize;
+   o.dispose         = FE3sTextureBitmapPack_dispose;
    return o;
+}
+function FE3sTextureBitmapPack_construct(){
+   var o = this;
+   o.__base.FE3sObject.construct.call(o);
+   o._size = new SSize2();
+}
+function FE3sTextureBitmapPack_optionCompress(){
+   return this._optionCompress;
+}
+function FE3sTextureBitmapPack_size(){
+   return this._size;
 }
 function FE3sTextureBitmapPack_data(){
    return this._data;
@@ -2461,8 +2478,11 @@ function FE3sTextureBitmapPack_data(){
 function FE3sTextureBitmapPack_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
+   o._optionCompress = p.readBoolean();
    o._typeName = p.readString();
    o._formatName = p.readString();
+   o._size.width = p.readUint16();
+   o._size.height = p.readUint16();
    if(o._typeName == 'flat'){
       var c = p.readInt32();
       var d = o._data = new ArrayBuffer(c);
@@ -3180,6 +3200,118 @@ function FE3rModel_dispose(){
    o._skeletons = RObject.dispose(o._skeletons);
    o.__base.FObject.dispose.call(o);
 }
+function FE3rModel(o){
+   o = RClass.inherits(this, o, FE3rObject);
+   o._name                = null;
+   o._resource            = null;
+   o._meshes              = null;
+   o._skeletons           = null;
+   o._dataReady           = false;
+   o.name                 = FE3rModel_name;
+   o.setName              = FE3rModel_setName;
+   o.findMeshByGuid       = FE3rModel_findMeshByGuid;
+   o.geometrys            = FE3rModel_geometrys;
+   o.resource             = FE3rModel_resource;
+   o.resource             = FE3rModel_resource;
+   o.setResource          = FE3rModel_setResource;
+   o.testReady            = FE3rModel_testReady;
+   o.loadResource         = FE3rModel_loadResource;
+   o.loadSkeletonResource = FE3rModel_loadSkeletonResource;
+   o.processLoad          = FE3rModel_processLoad;
+   o.dispose              = FE3rModel_dispose;
+   return o;
+}
+function FE3rModel_name(){
+   return this._name;
+}
+function FE3rModel_setName(p){
+   this._name = p;
+}
+function FE3rModel_findMeshByGuid(p){
+   var o = this;
+   var s = o._meshes;
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      var m = s.get(i);
+      if(m._guid == p){
+         return m;
+      }
+   }
+   return null;
+}
+function FE3rModel_geometrys(){
+   return this._meshes;
+}
+function FE3rModel_resource(){
+   return this._resource;
+}
+function FE3rModel_setResource(p){
+   this._resource = p;
+}
+function FE3rModel_testReady(){
+   return this._dataReady;
+}
+function FE3rModel_loadSkeletonResource(p){
+   var o = this;
+   var rmc = RConsole.find(FE3rModelConsole);
+   var ss = p.skins();
+   if(ss){
+      var c = ss.count();
+      for(var i = 0; i < c; i++){
+         var s = ss.get(i);
+         var rs = RClass.create(FE3rSkin);
+         rs.linkGraphicContext(o);
+         rs.loadResource(s)
+         var m = rmc.findMesh(s.meshGuid());
+         m.pushSkin(rs);
+      }
+   }
+}
+function FE3rModel_loadResource(p){
+   var o = this;
+   var rmc = RConsole.find(FE3rModelConsole);
+   var rgs = p.meshes();
+   if(rgs){
+      var gs = o._meshes = new TObjects();
+      var c = rgs.count();
+      for(var i = 0; i < c; i++){
+         var rg = rgs.get(i);
+         var g = RClass.create(FE3rMesh);
+         g.linkGraphicContext(o);
+         g.loadResource(rg);
+         gs.push(g);
+         rmc.meshs().set(g.guid(), g);
+      }
+   }
+   var rks = p.skeletons();
+   if(rks){
+      var c = rks.count();
+      for(var i = 0; i < c; i++){
+         var rk = rks.get(i);
+         o.loadSkeletonResource(rk);
+      }
+   }
+   o._dataReady = true;
+}
+function FE3rModel_processLoad(){
+   var o = this;
+   if(o._dataReady){
+      return true;
+   }
+   if(!o._resource.testReady()){
+      return false;
+   }
+   o.loadResource(o._resource);
+   return true;
+}
+function FE3rModel_dispose(){
+   var o = this;
+   o._ready = false;
+   o._resource = null;
+   o._meshes = RObject.dispose(o._meshes);
+   o._skeletons = RObject.dispose(o._skeletons);
+   o.__base.FObject.dispose.call(o);
+}
 function FE3rModelConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd    = EScope.Local;
@@ -3582,9 +3714,11 @@ function FE3rTextureBitmapCubePack_onLoad(p){
    var t = o._texture = c.createCubeTexture();
    t.upload(is[0], is[1], is[2], is[3], is[4], is[5]);
    for(var i = 0; i < 6; i++){
-      is[i] = RObject.dispose(is[i]);
+      var m = is[i];
+      window.URL.revokeObjectURL(m.url());
+      is[i] = RObject.dispose(m);
    }
-   o._images = RObject.dispose(o._image);
+   o._images = RObject.dispose(o._images);
    o._ready  = true;
 }
 function FE3rTextureBitmapCubePack_construct(){
@@ -3629,6 +3763,7 @@ function FE3rTextureBitmapFlatPack_onLoad(p){
    var t = o._texture = c.createFlatTexture();
    t.upload(o._image);
    t.makeMipmap();
+   window.URL.revokeObjectURL(o._image.url());
    o._image = RObject.dispose(o._image);
    o._ready  = true;
 }
@@ -3639,20 +3774,30 @@ function FE3rTextureBitmapFlatPack_construct(){
 function FE3rTextureBitmapFlatPack_loadResource(p){
    var o = this;
    o._resource = p;
+   var oc = p.optionCompress();
    var d = p.data();
-   var t = p._formatName;
-   var b = new Blob([d], {type: 'image/' + t});
-   var u = window.URL.createObjectURL(b);
-   var g = o._image = RClass.create(FImage);
-   if(t == 'png'){
-      g.setOptionAlpha(true);
-   }else if(t == 'jpg'){
-      g.setOptionAlpha(false);
+   var s = p.size();
+   if(oc){
+      var t = p._formatName;
+      var b = new Blob([d], {type: 'image/' + t});
+      var u = window.URL.createObjectURL(b);
+      var g = o._image = RClass.create(FImage);
+      if(t == 'png'){
+         g.setOptionAlpha(true);
+      }else if(t == 'jpg'){
+         g.setOptionAlpha(false);
+      }else{
+         throw new TError(o, 'Unknown image.');
+      }
+      g.loadUrl(u);
+      g.addLoadListener(o, o.onLoad);
    }else{
-      throw new TError(o, 'Unknown image.');
+      var c = o._graphicContext;
+      var t = o._texture = c.createFlatTexture();
+      t.uploadData(d, s.width, s.height);
+      t.makeMipmap();
+      o._ready  = true;
    }
-   g.loadUrl(u);
-   g.addLoadListener(o, o.onLoad);
 }
 function FE3rTextureBitmapFlatPack_dispose(){
    var o = this;
@@ -5408,7 +5553,7 @@ function FE3dTemplate_processLoad(){
       o.loadResource(o._resource);
       o._dataReady = true;
    }
-   var s = o._renderables;
+   var s = o._meshRenderables;
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){

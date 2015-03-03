@@ -19,6 +19,7 @@ var RRuntime = new function RRuntime(){
    // @method
    o.isDebug       = RRuntime_isDebug;
    o.isRelease     = RRuntime_isRelease;
+   o.setProcessCd  = RRuntime_setProcessCd;
    o.supportHtml5  = RRuntime_supportHtml5;
    // @method
    o.nvl           = RRuntime_nvl;
@@ -60,6 +61,16 @@ function RRuntime_isDebug(){
 //==========================================================
 function RRuntime_isRelease(){
    return (this._processCd == EProcess.Release);
+}
+
+//==========================================================
+// <T>设置运行模式。</T>
+//
+// @method
+// @param p:processCd:EProcess 运行模式
+//==========================================================
+function RRuntime_setProcessCd(p){
+   this._processCd = p;
 }
 
 //==========================================================

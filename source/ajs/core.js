@@ -1571,6 +1571,7 @@ function FImage(o){
    o._optionAlpha   = true;
    o._ready         = false;
    o._size          = null;
+   o._url           = null;
    o._hImage        = null;
    o.ohLoad         = FImage_ohLoad;
    o.ohError        = FImage_ohError;
@@ -1579,6 +1580,7 @@ function FImage(o){
    o.setOptionAlpha = FImage_setOptionAlpha;
    o.size           = FImage_size;
    o.image          = FImage_image;
+   o.url            = FImage_url;
    o.testReady      = FImage_testReady;
    o.loadUrl        = FImage_loadUrl;
    o.dispose        = FImage_dispose;
@@ -1612,11 +1614,15 @@ function FImage_size(){
 function FImage_image(){
    return this._hImage;
 }
+function FImage_url(){
+   return this._url;
+}
 function FImage_testReady(){
    return this._ready;
 }
 function FImage_loadUrl(p){
    var o = this;
+   o._url = p;
    var g = o._hImage;
    if(!g){
       g = o._hImage = new Image();
@@ -2390,7 +2396,7 @@ function RHtml_visibleGet(h){
 function RHtml_visibleSet(h, v){
    var s = null;
    if(RBrowser.isBrowser(EBrowser.Explorer)){
-      s = v ? null : 'none';
+      s = v ? '' : 'none';
    }else{
       s = v ? null : 'none';
    }

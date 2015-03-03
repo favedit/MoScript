@@ -1636,13 +1636,29 @@ function FE3sTextureBitmap_unserialize(p){
 }
 function FE3sTextureBitmapPack(o){
    o = RClass.inherits(this, o, FE3sObject);
-   o._data       = null;
-   o._typeName   = null;
-   o._formatName = null;
-   o.data        = FE3sTextureBitmapPack_data;
-   o.unserialize = FE3sTextureBitmapPack_unserialize;
-   o.dispose     = FE3sTextureBitmapPack_dispose;
+   o._optionCompress = null;
+   o._size           = null;
+   o._data           = null;
+   o._typeName       = null;
+   o._formatName     = null;
+   o.construct       = FE3sTextureBitmapPack_construct;
+   o.optionCompress  = FE3sTextureBitmapPack_optionCompress;
+   o.size            = FE3sTextureBitmapPack_size;
+   o.data            = FE3sTextureBitmapPack_data;
+   o.unserialize     = FE3sTextureBitmapPack_unserialize;
+   o.dispose         = FE3sTextureBitmapPack_dispose;
    return o;
+}
+function FE3sTextureBitmapPack_construct(){
+   var o = this;
+   o.__base.FE3sObject.construct.call(o);
+   o._size = new SSize2();
+}
+function FE3sTextureBitmapPack_optionCompress(){
+   return this._optionCompress;
+}
+function FE3sTextureBitmapPack_size(){
+   return this._size;
 }
 function FE3sTextureBitmapPack_data(){
    return this._data;
@@ -1650,8 +1666,11 @@ function FE3sTextureBitmapPack_data(){
 function FE3sTextureBitmapPack_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
+   o._optionCompress = p.readBoolean();
    o._typeName = p.readString();
    o._formatName = p.readString();
+   o._size.width = p.readUint16();
+   o._size.height = p.readUint16();
    if(o._typeName == 'flat'){
       var c = p.readInt32();
       var d = o._data = new ArrayBuffer(c);

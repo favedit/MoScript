@@ -31,6 +31,7 @@ var RRuntime = new function RRuntime(){
    o.construct     = RRuntime_construct;
    o.isDebug       = RRuntime_isDebug;
    o.isRelease     = RRuntime_isRelease;
+   o.setProcessCd  = RRuntime_setProcessCd;
    o.supportHtml5  = RRuntime_supportHtml5;
    o.nvl           = RRuntime_nvl;
    o.subString     = RRuntime_subString;
@@ -49,6 +50,9 @@ function RRuntime_isDebug(){
 }
 function RRuntime_isRelease(){
    return (this._processCd == EProcess.Release);
+}
+function RRuntime_setProcessCd(p){
+   this._processCd = p;
 }
 function RRuntime_supportHtml5(){
    return this._supportHtml5;

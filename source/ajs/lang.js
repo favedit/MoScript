@@ -2284,7 +2284,7 @@ function RClass_dump(v){
       case 'Function':
          return t + '<' + RMethod.name(v) + '>@' + o.code(v);
       case 'Html':
-         return t + '<' + v.tagName + '>@' + RRuntime.uid(v);
+         return t + '<' + v.tagName + '>@' + o.code(v);
       default:
          if(v.__name){
             return t + '<' + v.__name + '>@' + o.code(v);
@@ -3532,8 +3532,24 @@ function RObject_copy(s, t){
 }
 function RObject_free(p){
    if(p){
-      for(var n in p){
-         p[n] = null;
+      if(RRuntime.isDebug()){
+         for(var n in p){
+            if((n == '__base') || (n == '__inherits') || (n == '__class')){
+               p[n] = null;
+               continue;
+            }
+            var v = p[n];
+            if(v != null){
+               if(!RClass.isBaseType(v.constructor)){
+                  throw new TError(RObject, 'Free object is not base object.');
+               }
+               p[n] = null;
+            }
+         }
+      }else{
+         for(var n in p){
+            p[n] = null;
+         }
       }
    }
 }

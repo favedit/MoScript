@@ -36,7 +36,7 @@ function onKeydown(p){
 }
 function onLoad(){
    // 环境设置
-   RRuntime.processCd = EProcess.Debug;
+   RRuntime.setProcessCd(EProcess.Release);
    RApplication.initialize();
    RBrowser.setContentPath('..');
    // 获得代码

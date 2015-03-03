@@ -650,7 +650,7 @@ function RClass_dump(v){
          return t + '<' + RMethod.name(v) + '>@' + o.code(v);
       case 'Html':
          // HTML对象的情况
-         return t + '<' + v.tagName + '>@' + RRuntime.uid(v);
+         return t + '<' + v.tagName + '>@' + o.code(v);
       default:
          if(v.__name){
             return t + '<' + v.__name + '>@' + o.code(v);

@@ -44,9 +44,11 @@ function FE3rTextureBitmapCubePack_onLoad(p){
    t.upload(is[0], is[1], is[2], is[3], is[4], is[5]);
    // 释放资源
    for(var i = 0; i < 6; i++){
-      is[i] = RObject.dispose(is[i]);
+      var m = is[i];
+      window.URL.revokeObjectURL(m.url());
+      is[i] = RObject.dispose(m);
    }
-   o._images = RObject.dispose(o._image);
+   o._images = RObject.dispose(o._images);
    // 加载完成
    o._ready  = true;
 }

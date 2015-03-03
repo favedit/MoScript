@@ -222,8 +222,8 @@
          // 计算散射颜色
          <shader:true source='vertex.attribute.normal'>
          <shader:true source='support.diffuse.dump'>
-         vec4 normal = texture2D(fs_normal, v_coord);
-         normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
+         vec4 normal = texture2D(fs_normal, vec2(v_coord.x, v_coord.y));
+         normal.xyz = normalize(normal.rgb * 2.0 - 1.0);
          float normalFactor = dot(normal.xyz, <shader:false source='option.normal.invert'>-</shader:false>v_light_ts);
          </shader:true>
          <shader:false source='support.diffuse.dump'>
@@ -259,7 +259,7 @@
          float specularFactor = dot(cameraDirection, reflectionDirection);
          <shader:true source='support.specular.level'>
          vec4 specularLevel = texture2D(fs_specular, v_coord);
-         specularFactor *= specularLevel.r;
+         specularFactor *= specularLevel.w;
          </shader:true>
          specularFactor = max(specularFactor, 0.0);
          specularFactor = min(specularFactor + fc_specular.x, 1.0);

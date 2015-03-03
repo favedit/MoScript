@@ -616,6 +616,8 @@ function FUiControl_build(p){
    a.owner = o;
    a.hDocument = d;
    o.onBuild(a);
+   a.owner = null;
+   a.hDocument = null;
    RObject.free(a);
    // 设置状态
    o._statusBuild = true;

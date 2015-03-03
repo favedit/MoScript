@@ -194,6 +194,7 @@ function FE3dStage_process(){
    t.updateRegion(r);
    // 清空区域
    r.prepare();
+   r.change();
    // 处理所有层
    var ls = o._layers;
    if(ls){

@@ -238,6 +238,7 @@ function FE3dStage_process(){
    o.__base.FStage.process.call(o);
    t.updateRegion(r);
    r.prepare();
+   r.change();
    var ls = o._layers;
    if(ls){
       var c = ls.count();
