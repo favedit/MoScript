@@ -3311,6 +3311,16 @@ function RBoolean_parse(v){
 function RBoolean_toString(v){
    return v ? EBoolean.True : EBoolean.False;
 }
+var RByte = new function RByte(){
+   var o = this;
+   o.copyArray = RByte_copyArray;
+   return o;
+}
+function RByte_copyArray(po, poi, pi, pii, pc){
+   for(var i = 0; i < pc; i++){
+      po[poi++] = pi[pii++];
+   }
+}
 var RChar = new function RChar(){
    var o = this;
    o.parse    = RChar_parse;
@@ -4468,6 +4478,7 @@ var RFloat = new function RFloat(){
    o.toRange   = RFloat_toRange;
    o.sum       = RFloat_sum;
    o.calculate = RFloat_calculate;
+   o.copyArray = RFloat_copyArray;
    return o;
 }
 function RFloat_isFloat(p){
@@ -4550,6 +4561,11 @@ function RFloat_calculate(f,a,b){
   }else{
      return (a - b).toString();
   }
+}
+function RFloat_copyArray(po, poi, pi, pii, pc){
+   for(var i = 0; i < pc; i++){
+      po[poi++] = pi[pii++];
+   }
 }
 var RHex = new function RHex(){
    var o = this;
@@ -4722,7 +4738,7 @@ function RLogger_debug(sf, ms, pm){
    for(var n = 2; n < c; n++){
       var a = as[n];
       var s = '';
-      if(a){
+      if(a != null){
          if(typeof(a) == 'function'){
             s = RMethod.name(a);
          }else{
@@ -4746,7 +4762,7 @@ function RLogger_info(sf, ms, pm){
    for(var n = 2; n < c; n++){
       var a = as[n];
       var s = '';
-      if(a){
+      if(a != null){
          if(typeof(a) == 'function'){
             s = RMethod.name(a);
          }else{
@@ -4770,7 +4786,7 @@ function RLogger_warn(sf, ms, pm){
    for(var n = 2; n < c; n++){
       var a = as[n];
       var s = '';
-      if(a){
+      if(a != null){
          if(typeof(a) == 'function'){
             s = RMethod.name(a);
          }else{
@@ -6726,13 +6742,15 @@ function SMatrix4x4_invert(){
    }
    return true;
 }
-function SMatrix4x4_transform(po, pi, pc){
+function SMatrix4x4_transform(po, poi, pi, pii, pc){
    var d = this._data;
    for(var i = 0; i < pc; i++){
-      var n = (i << 1) + i;
-      po[n    ] = (pi[n] * d[ 0]) + (pi[n + 1] * d[ 4]) +(pi[n + 2] * d[ 8]) + d[12];
-      po[n + 1] = (pi[n] * d[ 1]) + (pi[n + 1] * d[ 5]) +(pi[n + 2] * d[ 9]) + d[13];
-      po[n + 2] = (pi[n] * d[ 2]) + (pi[n + 1] * d[ 6]) +(pi[n + 2] * d[10]) + d[14];
+      var x = pi[pii++];
+      var y = pi[pii++];
+      var z = pi[pii++];
+      po[poi++] = (x * d[ 0]) + (y * d[ 4]) +(z * d[ 8]) + d[12];
+      po[poi++] = (x * d[ 1]) + (y * d[ 5]) +(z * d[ 9]) + d[13];
+      po[poi++] = (x * d[ 2]) + (y * d[ 6]) +(z * d[10]) + d[14];
    }
 }
 function SMatrix4x4_transformPoint3(pi, po){
@@ -13579,6 +13597,58 @@ function FResourceType_resource(p){
 }
 function FResourceType_resources(){
    return this._resources;
+}
+function FStatistics(o){
+   o = RClass.inherits(this, o, FObject);
+   o._code      = null;
+   o.reset      = FStatistics_reset;
+   o.resetFrame = FStatistics_resetFrame;
+   return o;
+}
+function FStatistics_reset(){
+}
+function FStatistics_resetFrame(){
+}
+function FStatisticsConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd      = EScope.Local;
+   o._statisticses = null;
+   o.construct     = FStatisticsConsole_construct;
+   o.register      = FStatisticsConsole_register;
+   o.unregister    = FStatisticsConsole_unregister;
+   o.find          = FStatisticsConsole_find;
+   o.statisticses  = FStatisticsConsole_statisticses;
+   o.reset         = FStatisticsConsole_reset;
+   o.resetFrame    = FStatisticsConsole_resetFrame;
+   return o;
+}
+function FStatisticsConsole_construct(){
+   var o = this;
+   o._statisticses = new TDictionary();
+}
+function FStatisticsConsole_register(n, s){
+   this._statisticses.set(n, s);
+}
+function FStatisticsConsole_unregister(n){
+   return this._statisticses.remove(n);
+}
+function FStatisticsConsole_find(n){
+   return this._statisticses.get(n);
+}
+function FStatisticsConsole_statisticses(){
+   return this._statisticses;
+}
+function FStatisticsConsole_reset(e){
+   var s = this._statisticses;
+   for(var i = s.count() - 1; i >= 0; i--){
+      s.getAt(i).reset();
+   }
+}
+function FStatisticsConsole_resetFrame(u, d){
+   var s = this._statisticses;
+   for(var i = s.count() - 1; i >= 0; i--){
+      s.getAt(i).resetFrame();
+   }
 }
 function FThread(o){
    o = RClass.inherits(this, o, FObject);

@@ -58,7 +58,7 @@ function RLogger_debug(sf, ms, pm){
    for(var n = 2; n < c; n++){
       var a = as[n];
       var s = '';
-      if(a){
+      if(a != null){
          if(typeof(a) == 'function'){
             s = RMethod.name(a);
          }else{
@@ -95,7 +95,7 @@ function RLogger_info(sf, ms, pm){
    for(var n = 2; n < c; n++){
       var a = as[n];
       var s = '';
-      if(a){
+      if(a != null){
          if(typeof(a) == 'function'){
             s = RMethod.name(a);
          }else{
@@ -129,7 +129,7 @@ function RLogger_warn(sf, ms, pm){
    for(var n = 2; n < c; n++){
       var a = as[n];
       var s = '';
-      if(a){
+      if(a != null){
          if(typeof(a) == 'function'){
             s = RMethod.name(a);
          }else{

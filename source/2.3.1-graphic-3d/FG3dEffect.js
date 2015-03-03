@@ -35,6 +35,7 @@ function FG3dEffect(o){
    o.setParameter        = FG3dEffect_setParameter;
    o.setSampler          = FG3dEffect_setSampler;
    o.drawRenderable      = FG3dEffect_drawRenderable;
+   o.drawGroup           = FG3dEffect_drawGroup;
    o.buildInfo           = FG3dEffect_buildInfo;
    o.loadConfig          = FG3dEffect_loadConfig;
    o.loadUrl             = FG3dEffect_loadUrl;
@@ -100,9 +101,10 @@ function FG3dEffect_buildInfo(f, r){
 // <T>绘制渲染对象。</T>
 //
 // @method
-// @param p:renderable:FG3dable 渲染对象
+// @param pg:region:MG3dRegion 渲染区域
+// @param pr:renderable:MG3dRenderable 渲染对象
 //==========================================================
-function FG3dEffect_drawRenderable(r){
+function FG3dEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
@@ -126,6 +128,24 @@ function FG3dEffect_drawRenderable(r){
    // 绘制处理
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
+}
+
+//==========================================================
+// <T>绘制渲染集合。</T>
+//
+// @method
+// @param pg:region:MG3dRegion 渲染区域
+// @param pi:offset:Integer 开始位置
+// @param pc:count:Integer 总数
+//==========================================================
+function FG3dEffect_drawGroup(pg, pi, pc){
+   var o = this;
+   var rs = pg.renderables();
+   //RLogger.info(o, 'Draw group. (offset={1}, count={2})', pi, pc);
+   for(var i = 0; i < pc; i++){
+      var r = rs.get(pi + i);
+      o.drawRenderable(pg, r);
+   }
 }
 
 //==========================================================

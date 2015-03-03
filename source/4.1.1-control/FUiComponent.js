@@ -14,15 +14,17 @@
 function FUiComponent(o){
    o = RClass.inherits(this, o, FObject, MProperty, MClone);
    //..........................................................
-   // @attribute FUiComponent 父组件
-   o._parent       = null;
-   // @attribute TDictionary 组件字典
-   o._components   = null;
-   //..........................................................
    // @property String 名称
    o._name         = RClass.register(o, new APtyString('_name'));
    // @property String 标签
    o._label        = RClass.register(o, new APtyString('_label'));
+   //..........................................................
+   // @attribute FUiComponent 父组件
+   o._parent       = null;
+   // @attribute TDictionary 组件字典
+   o._components   = null;
+   // @attribute Object 附加数据
+   o._tag          = null;
    //..........................................................
    // @process
    o.oeInitialize  = FUiComponent_oeInitialize;
@@ -33,6 +35,8 @@ function FUiComponent(o){
    o.setName       = FUiComponent_setName;
    o.label         = FUiComponent_label;
    o.setLabel      = FUiComponent_setLabel;
+   o.tag           = FUiComponent_tag;
+   o.setTag        = FUiComponent_setTag;
    // @method
    o.isParent      = FUiComponent_isParent;
    o.topComponent  = FUiComponent_topComponent;
@@ -115,6 +119,26 @@ function FUiComponent_label(){
 //==========================================================
 function FUiComponent_setLabel(p){
    this._label = p;
+}
+
+//==========================================================
+// <T>获得附加数据。</T>
+//
+// @method
+// @return Object 附加数据
+//==========================================================
+function FUiComponent_tag(){
+   return this._tag;
+}
+
+//==========================================================
+// <T>设置附加数据。</T>
+//
+// @method
+// @param p:tag:Object 附加数据
+//==========================================================
+function FUiComponent_setTag(p){
+   this._tag = p;
 }
 
 //==========================================================
@@ -354,6 +378,7 @@ function FUiComponent_dispose(){
    o._parent = null;
    o._name = null;
    o._label = null;
+   o._tag = null;
    // 清空组件集合
    var cs = o._components
    if(cs){

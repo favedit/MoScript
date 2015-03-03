@@ -796,6 +796,58 @@ function FResourceType_resource(p){
 function FResourceType_resources(){
    return this._resources;
 }
+function FStatistics(o){
+   o = RClass.inherits(this, o, FObject);
+   o._code      = null;
+   o.reset      = FStatistics_reset;
+   o.resetFrame = FStatistics_resetFrame;
+   return o;
+}
+function FStatistics_reset(){
+}
+function FStatistics_resetFrame(){
+}
+function FStatisticsConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd      = EScope.Local;
+   o._statisticses = null;
+   o.construct     = FStatisticsConsole_construct;
+   o.register      = FStatisticsConsole_register;
+   o.unregister    = FStatisticsConsole_unregister;
+   o.find          = FStatisticsConsole_find;
+   o.statisticses  = FStatisticsConsole_statisticses;
+   o.reset         = FStatisticsConsole_reset;
+   o.resetFrame    = FStatisticsConsole_resetFrame;
+   return o;
+}
+function FStatisticsConsole_construct(){
+   var o = this;
+   o._statisticses = new TDictionary();
+}
+function FStatisticsConsole_register(n, s){
+   this._statisticses.set(n, s);
+}
+function FStatisticsConsole_unregister(n){
+   return this._statisticses.remove(n);
+}
+function FStatisticsConsole_find(n){
+   return this._statisticses.get(n);
+}
+function FStatisticsConsole_statisticses(){
+   return this._statisticses;
+}
+function FStatisticsConsole_reset(e){
+   var s = this._statisticses;
+   for(var i = s.count() - 1; i >= 0; i--){
+      s.getAt(i).reset();
+   }
+}
+function FStatisticsConsole_resetFrame(u, d){
+   var s = this._statisticses;
+   for(var i = s.count() - 1; i >= 0; i--){
+      s.getAt(i).resetFrame();
+   }
+}
 function FThread(o){
    o = RClass.inherits(this, o, FObject);
    o._name       = null;

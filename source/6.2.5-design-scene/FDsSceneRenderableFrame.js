@@ -73,7 +73,7 @@ function FDsSceneRenderableFrame_onDataChanged(p){
 //==========================================================
 function FDsSceneRenderableFrame_onEffectClick(ps, pi){
    var o = this;
-   var e = pi._effect;
+   var e = pi.tag();
    var p = e._program;
    var s = p._vertexShader;
    alert(s._source);
@@ -118,7 +118,7 @@ function FDsSceneRenderableFrame_loadObject(s, r){
       var e = es.value(i).effect;
       if(e){
          var l = ces.createItem(null, e.code());
-         l._effect = e;
+         l.setTag(e);
          ces.push(l);
       }
    }

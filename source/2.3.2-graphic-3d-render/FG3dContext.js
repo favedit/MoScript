@@ -10,6 +10,7 @@ function FG3dContext(o){
    // @attribute
    o._size               = null;
    o._capability         = null;
+   o._statistics         = null;
    // @attribute
    o._fillModeCd         = EG3dFillMode.Face;
    o._optionDepth        = false;
@@ -28,6 +29,7 @@ function FG3dContext(o){
    // @method
    o.size                = FG3dContext_size;
    o.capability          = FG3dContext_capability;
+   o.statistics          = FG3dContext_statistics;
    // @method
    o.createProgram       = RMethod.virtual(o, 'createProgram');
    o.createVertexBuffer  = RMethod.virtual(o, 'createVertexBuffer');
@@ -48,6 +50,7 @@ function FG3dContext(o){
    o.bindVertexBuffer    = RMethod.virtual(o, 'bindVertexBuffer');
    o.bindTexture         = RMethod.virtual(o, 'bindTexture');
    // @method
+   o.prepare             = FG3dContext_prepare;
    o.clear               = RMethod.virtual(o, 'clear');
    o.clearColor          = RMethod.virtual(o, 'clearColor');
    o.clearDepth          = RMethod.virtual(o, 'clearDepth');
@@ -66,7 +69,10 @@ function FG3dContext(o){
 function FG3dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
+   // 设置属性
    o._size = new SSize2();
+   o._statistics = RClass.create(FG3dStatistics);
+   RConsole.find(FStatisticsConsole).register('graphic3d.context', o._statistics);
 }
 
 //==========================================================
@@ -98,6 +104,25 @@ function FG3dContext_size(){
 //==========================================================
 function FG3dContext_capability(){
    return this._capability;
+}
+
+//==========================================================
+// <T>获得统计信息。</T>
+//
+// @method
+// @return FG3dStatistics 统计信息
+//==========================================================
+function FG3dContext_statistics(){
+   return this._statistics;
+}
+
+//============================================================
+// <T>准备处理。</T>
+//
+// @return 处理结果
+//============================================================
+function FG3dContext_prepare(){
+   this._statistics.resetFrame();
 }
 
 //==========================================================

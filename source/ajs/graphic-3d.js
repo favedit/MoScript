@@ -933,6 +933,7 @@ function FG3dEffect(o){
    o.setParameter        = FG3dEffect_setParameter;
    o.setSampler          = FG3dEffect_setSampler;
    o.drawRenderable      = FG3dEffect_drawRenderable;
+   o.drawGroup           = FG3dEffect_drawGroup;
    o.buildInfo           = FG3dEffect_buildInfo;
    o.loadConfig          = FG3dEffect_loadConfig;
    o.loadUrl             = FG3dEffect_loadUrl;
@@ -954,7 +955,7 @@ function FG3dEffect_setSampler(pn, pt){
 }
 function FG3dEffect_buildInfo(f, r){
 }
-function FG3dEffect_drawRenderable(r){
+function FG3dEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
@@ -975,6 +976,14 @@ function FG3dEffect_drawRenderable(r){
    }
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
+}
+function FG3dEffect_drawGroup(pg, pi, pc){
+   var o = this;
+   var rs = pg.renderables();
+   for(var i = 0; i < pc; i++){
+      var r = rs.get(pi + i);
+      o.drawRenderable(pg, r);
+   }
 }
 function FG3dEffect_loadConfig(p){
    var o = this;
@@ -1193,6 +1202,7 @@ function FG3dEffectConsole_find(pc, pg, pr){
       var e = es.get(ec);
       if(e == null){
          var e = o.create(pc, ef);
+         e._flag = ec;
          e.load();
          e.build(o._effectInfo);
          RLogger.info(o, 'Create effect. (name={1}, instance={2})', en, e);
@@ -1795,7 +1805,9 @@ function FG3dTechniquePass_sortRenderables(s, t){
    var ms = s.material().info();
    var mt = t.material().info();
    if(ms.optionAlpha && mt.optionAlpha){
-      return 0;
+      var se = s.activeEffect();
+      var te = t.activeEffect();
+      return se.hashCode() - te.hashCode();
    }else if(ms.optionAlpha && !mt.optionAlpha){
       return 1;
    }else if(!ms.optionAlpha && mt.optionAlpha){
@@ -1819,35 +1831,45 @@ function FG3dTechniquePass_activeEffects(p, rs){
 }
 function FG3dTechniquePass_drawRegion(p){
    var o = this;
-   var cb = o._graphicContext.capability();
    var rs = p.renderables();
+   var c = rs.count();
+   if(c == 0){
+      return;
+   }
    o.activeEffects(p, rs);
    rs.sort(o.sortRenderables);
-   var c = rs.count();
-   if(c > 0){
-      if(cb.optionMaterialMap){
-         var mm = o._materialMap;
-         mm.resize(EG3dMaterialMap.Count, c);
-         for(var i = 0; i < c; i++){
-            var r = rs.get(i);
-            r._materialId = i;
-            var m = r.material();
-            var mi = m.info();
-            mm.setUint8(i, EG3dMaterialMap.AmbientColor, mi.ambientColor);
-            mm.setUint8(i, EG3dMaterialMap.DiffuseColor, mi.diffuseColor);
-            mm.setUint8(i, EG3dMaterialMap.SpecularColor, mi.specularColor);
-            mm.setUint8(i, EG3dMaterialMap.ReflectColor, mi.reflectColor);
-            mm.setUint8(i, EG3dMaterialMap.EmissiveColor, mi.emissiveColor);
-         }
-         mm.update();
-         p._materialMap = mm;
-      }
+   var cb = o._graphicContext.capability();
+   if(cb.optionMaterialMap){
+      var mm = o._materialMap;
+      mm.resize(EG3dMaterialMap.Count, c);
       for(var i = 0; i < c; i++){
          var r = rs.get(i);
-         var e = r.activeEffect();
-         o._graphicContext.setProgram(e.program());
-         e.drawRenderable(p, r, i);
+         r._materialId = i;
+         var m = r.material();
+         var mi = m.info();
+         mm.setUint8(i, EG3dMaterialMap.AmbientColor, mi.ambientColor);
+         mm.setUint8(i, EG3dMaterialMap.DiffuseColor, mi.diffuseColor);
+         mm.setUint8(i, EG3dMaterialMap.SpecularColor, mi.specularColor);
+         mm.setUint8(i, EG3dMaterialMap.ReflectColor, mi.reflectColor);
+         mm.setUint8(i, EG3dMaterialMap.EmissiveColor, mi.emissiveColor);
       }
+      mm.update();
+      p._materialMap = mm;
+   }
+   for(var n = 0; n < c; ){
+      var gb = n;
+      var ge = c;
+      var ga = rs.getAt(gb).activeEffect();
+      for(var i = n; i < c; i++){
+         var a = rs.getAt(i).activeEffect();
+         if(ga != a){
+            ge = i;
+            break;
+         }
+         n++;
+      }
+      o._graphicContext.setProgram(ga.program());
+      ga.drawGroup(p, gb, ge - gb);
    }
 }
 function FG3dTrack(o){

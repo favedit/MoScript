@@ -19,6 +19,9 @@ function FDsSceneTechniquePropertyFrame(o){
    o._controlGuid       = null;
    o._controlCode       = null;
    o._controlLabel      = null;
+   // @attribute
+   o._controlTriangleCount = null;
+   o._controlDrawCount     = null;
    //..........................................................
    // @event
    o.onBuilded          = FDsSceneTechniquePropertyFrame_onBuilded;
@@ -73,7 +76,7 @@ function FDsSceneTechniquePropertyFrame_onDataChanged(p){
 //==========================================================
 function FDsSceneTechniquePropertyFrame_onModeClick(ps, pi){
    var o = this;
-   var m = pi._mode;
+   var m = pi.tag();
    o._technique._activeMode = m;
    // 释放所有关联的效果器
    var ds = o._scene.allDisplays();
@@ -124,9 +127,14 @@ function FDsSceneTechniquePropertyFrame_loadObject(s, t){
    for(var i = 0; i < c; i++){
       var m = ms.getAt(i);
       var cm = cms.createItem(null, m.code());
-      cm._mode = m;
+      cm.setTag(m);
       cms.push(cm);
    }
+   // 设置统计数据
+   var gc = s._graphicContext;
+   var gs = gc.statistics();
+   o._controlTriangleCount.set(gs._frameTriangleCount);
+   o._controlDrawCount.set(gs._frameDrawCount);
 }
 
 //==========================================================

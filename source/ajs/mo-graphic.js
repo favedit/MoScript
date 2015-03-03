@@ -1039,6 +1039,7 @@ function FG3dEffect(o){
    o.setParameter        = FG3dEffect_setParameter;
    o.setSampler          = FG3dEffect_setSampler;
    o.drawRenderable      = FG3dEffect_drawRenderable;
+   o.drawGroup           = FG3dEffect_drawGroup;
    o.buildInfo           = FG3dEffect_buildInfo;
    o.loadConfig          = FG3dEffect_loadConfig;
    o.loadUrl             = FG3dEffect_loadUrl;
@@ -1060,7 +1061,7 @@ function FG3dEffect_setSampler(pn, pt){
 }
 function FG3dEffect_buildInfo(f, r){
 }
-function FG3dEffect_drawRenderable(r){
+function FG3dEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
@@ -1081,6 +1082,14 @@ function FG3dEffect_drawRenderable(r){
    }
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
+}
+function FG3dEffect_drawGroup(pg, pi, pc){
+   var o = this;
+   var rs = pg.renderables();
+   for(var i = 0; i < pc; i++){
+      var r = rs.get(pi + i);
+      o.drawRenderable(pg, r);
+   }
 }
 function FG3dEffect_loadConfig(p){
    var o = this;
@@ -1299,6 +1308,7 @@ function FG3dEffectConsole_find(pc, pg, pr){
       var e = es.get(ec);
       if(e == null){
          var e = o.create(pc, ef);
+         e._flag = ec;
          e.load();
          e.build(o._effectInfo);
          RLogger.info(o, 'Create effect. (name={1}, instance={2})', en, e);
@@ -1901,7 +1911,9 @@ function FG3dTechniquePass_sortRenderables(s, t){
    var ms = s.material().info();
    var mt = t.material().info();
    if(ms.optionAlpha && mt.optionAlpha){
-      return 0;
+      var se = s.activeEffect();
+      var te = t.activeEffect();
+      return se.hashCode() - te.hashCode();
    }else if(ms.optionAlpha && !mt.optionAlpha){
       return 1;
    }else if(!ms.optionAlpha && mt.optionAlpha){
@@ -1925,35 +1937,45 @@ function FG3dTechniquePass_activeEffects(p, rs){
 }
 function FG3dTechniquePass_drawRegion(p){
    var o = this;
-   var cb = o._graphicContext.capability();
    var rs = p.renderables();
+   var c = rs.count();
+   if(c == 0){
+      return;
+   }
    o.activeEffects(p, rs);
    rs.sort(o.sortRenderables);
-   var c = rs.count();
-   if(c > 0){
-      if(cb.optionMaterialMap){
-         var mm = o._materialMap;
-         mm.resize(EG3dMaterialMap.Count, c);
-         for(var i = 0; i < c; i++){
-            var r = rs.get(i);
-            r._materialId = i;
-            var m = r.material();
-            var mi = m.info();
-            mm.setUint8(i, EG3dMaterialMap.AmbientColor, mi.ambientColor);
-            mm.setUint8(i, EG3dMaterialMap.DiffuseColor, mi.diffuseColor);
-            mm.setUint8(i, EG3dMaterialMap.SpecularColor, mi.specularColor);
-            mm.setUint8(i, EG3dMaterialMap.ReflectColor, mi.reflectColor);
-            mm.setUint8(i, EG3dMaterialMap.EmissiveColor, mi.emissiveColor);
-         }
-         mm.update();
-         p._materialMap = mm;
-      }
+   var cb = o._graphicContext.capability();
+   if(cb.optionMaterialMap){
+      var mm = o._materialMap;
+      mm.resize(EG3dMaterialMap.Count, c);
       for(var i = 0; i < c; i++){
          var r = rs.get(i);
-         var e = r.activeEffect();
-         o._graphicContext.setProgram(e.program());
-         e.drawRenderable(p, r, i);
+         r._materialId = i;
+         var m = r.material();
+         var mi = m.info();
+         mm.setUint8(i, EG3dMaterialMap.AmbientColor, mi.ambientColor);
+         mm.setUint8(i, EG3dMaterialMap.DiffuseColor, mi.diffuseColor);
+         mm.setUint8(i, EG3dMaterialMap.SpecularColor, mi.specularColor);
+         mm.setUint8(i, EG3dMaterialMap.ReflectColor, mi.reflectColor);
+         mm.setUint8(i, EG3dMaterialMap.EmissiveColor, mi.emissiveColor);
       }
+      mm.update();
+      p._materialMap = mm;
+   }
+   for(var n = 0; n < c; ){
+      var gb = n;
+      var ge = c;
+      var ga = rs.getAt(gb).activeEffect();
+      for(var i = n; i < c; i++){
+         var a = rs.getAt(i).activeEffect();
+         if(ga != a){
+            ge = i;
+            break;
+         }
+         n++;
+      }
+      o._graphicContext.setProgram(ga.program());
+      ga.drawGroup(p, gb, ge - gb);
    }
 }
 function FG3dTrack(o){
@@ -2196,10 +2218,64 @@ function SG3dContextCapability_calculateInstanceCount(bc, vc){
    }
    return r;
 }
+function SG3dContextCapability(){
+   var o = this;
+   o.vendor                 = null;
+   o.version                = null;
+   o.shaderVersion          = null;
+   o.optionInstance         = false;
+   o.optionLayout           = false;
+   o.optionMaterialMap      = false;
+   o.attributeCount         = null;
+   o.vertexCount            = 65536;
+   o.vertexConst            = null;
+   o.fragmentConst          = null;
+   o.varyingCount           = null;
+   o.samplerCount           = null;
+   o.samplerSize            = null;
+   o.samplerCompressRgb     = null;
+   o.samplerCompressRgba    = null;
+   o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
+   o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
+   return o;
+}
+function SG3dContextCapability_calculateBoneCount(bc, vc){
+   var o = this;
+   var rb = 0;
+   var bi = bc % 8;
+   if(bi != 0){
+      rb = bc + 8 - bi;
+   }else{
+      rb = bc;
+   }
+   var r = 0;
+   var ib = (o.vertexConst - 16) / 4;
+   if(rb > ib){
+      r = ib;
+   }else{
+      r = rb;
+   }
+   return r;
+}
+function SG3dContextCapability_calculateInstanceCount(bc, vc){
+   var o = this;
+   var cr = (4 * bc) + 4;
+   var ib = (o.vertexConst - 16) / cr;
+   var r = cl;
+   if(vc > 0){
+      var iv = o.vertexCount / vc;
+      r = Math.min(ib, iv);
+   }
+   if(r > 64){
+      r = 64;
+   }
+   return r;
+}
 function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
    o._size               = null;
    o._capability         = null;
+   o._statistics         = null;
    o._fillModeCd         = EG3dFillMode.Face;
    o._optionDepth        = false;
    o._optionCull         = false;
@@ -2213,6 +2289,7 @@ function FG3dContext(o){
    o.linkCanvas          = FG3dContext_linkCanvas;
    o.size                = FG3dContext_size;
    o.capability          = FG3dContext_capability;
+   o.statistics          = FG3dContext_statistics;
    o.createProgram       = RMethod.virtual(o, 'createProgram');
    o.createVertexBuffer  = RMethod.virtual(o, 'createVertexBuffer');
    o.createIndexBuffer   = RMethod.virtual(o, 'createIndexBuffer');
@@ -2229,6 +2306,7 @@ function FG3dContext(o){
    o.setProgram          = RMethod.virtual(o, 'setProgram');
    o.bindVertexBuffer    = RMethod.virtual(o, 'bindVertexBuffer');
    o.bindTexture         = RMethod.virtual(o, 'bindTexture');
+   o.prepare             = FG3dContext_prepare;
    o.clear               = RMethod.virtual(o, 'clear');
    o.clearColor          = RMethod.virtual(o, 'clearColor');
    o.clearDepth          = RMethod.virtual(o, 'clearDepth');
@@ -2241,6 +2319,8 @@ function FG3dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
    o._size = new SSize2();
+   o._statistics = RClass.create(FG3dStatistics);
+   RConsole.find(FStatisticsConsole).register('graphic3d.context', o._statistics);
 }
 function FG3dContext_linkCanvas(h){
    var o = this;
@@ -2251,6 +2331,12 @@ function FG3dContext_size(){
 }
 function FG3dContext_capability(){
    return this._capability;
+}
+function FG3dContext_statistics(){
+   return this._statistics;
+}
+function FG3dContext_prepare(){
+   this._statistics.resetFrame();
 }
 function FG3dContext_dispose(){
    var o = this;
@@ -2602,6 +2688,21 @@ function FG3dShader(o){
 }
 function FG3dShader_source(){
    return this._source;
+}
+function FG3dStatistics(o){
+   o = RClass.inherits(this, o, FStatistics);
+   o._frameTriangleCount = 0;
+   o._frameDrawCount     = 0;
+   o.reset      = FG3dStatistics_reset;
+   o.resetFrame = FG3dStatistics_resetFrame;
+   return o;
+}
+function FG3dStatistics_reset(){
+}
+function FG3dStatistics_resetFrame(){
+   var o = this;
+   o._frameTriangleCount = 0;
+   o._frameDrawCount = 0;
 }
 function FG3dTexture(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -4323,6 +4424,8 @@ function FWglContext_drawTriangles(b, i, c){
    }else{
       g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
    }
+   o._statistics._frameTriangleCount += c;
+   o._statistics._frameDrawCount++;
    r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
    if(!r){
        return r;

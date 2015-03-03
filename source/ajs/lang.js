@@ -1877,6 +1877,16 @@ function RBoolean_parse(v){
 function RBoolean_toString(v){
    return v ? EBoolean.True : EBoolean.False;
 }
+var RByte = new function RByte(){
+   var o = this;
+   o.copyArray = RByte_copyArray;
+   return o;
+}
+function RByte_copyArray(po, poi, pi, pii, pc){
+   for(var i = 0; i < pc; i++){
+      po[poi++] = pi[pii++];
+   }
+}
 var RChar = new function RChar(){
    var o = this;
    o.parse    = RChar_parse;
@@ -3034,6 +3044,7 @@ var RFloat = new function RFloat(){
    o.toRange   = RFloat_toRange;
    o.sum       = RFloat_sum;
    o.calculate = RFloat_calculate;
+   o.copyArray = RFloat_copyArray;
    return o;
 }
 function RFloat_isFloat(p){
@@ -3116,6 +3127,11 @@ function RFloat_calculate(f,a,b){
   }else{
      return (a - b).toString();
   }
+}
+function RFloat_copyArray(po, poi, pi, pii, pc){
+   for(var i = 0; i < pc; i++){
+      po[poi++] = pi[pii++];
+   }
 }
 var RHex = new function RHex(){
    var o = this;
@@ -3288,7 +3304,7 @@ function RLogger_debug(sf, ms, pm){
    for(var n = 2; n < c; n++){
       var a = as[n];
       var s = '';
-      if(a){
+      if(a != null){
          if(typeof(a) == 'function'){
             s = RMethod.name(a);
          }else{
@@ -3312,7 +3328,7 @@ function RLogger_info(sf, ms, pm){
    for(var n = 2; n < c; n++){
       var a = as[n];
       var s = '';
-      if(a){
+      if(a != null){
          if(typeof(a) == 'function'){
             s = RMethod.name(a);
          }else{
@@ -3336,7 +3352,7 @@ function RLogger_warn(sf, ms, pm){
    for(var n = 2; n < c; n++){
       var a = as[n];
       var s = '';
-      if(a){
+      if(a != null){
          if(typeof(a) == 'function'){
             s = RMethod.name(a);
          }else{

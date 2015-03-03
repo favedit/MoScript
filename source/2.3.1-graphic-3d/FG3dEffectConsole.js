@@ -205,6 +205,7 @@ function FG3dEffectConsole_find(pc, pg, pr){
       if(e == null){
          // 创建效果器
          var e = o.create(pc, ef);
+         e._flag = ec;
          e.load();
          e.build(o._effectInfo);
          RLogger.info(o, 'Create effect. (name={1}, instance={2})', en, e);

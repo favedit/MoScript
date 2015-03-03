@@ -35,7 +35,7 @@ function RE3dEngine_onSetup(){
    ec.register('control.control.automatic', FG3dControlAutomaticEffect);
    // 通用效果器
    ec.register('general.color.control', FG3dControlAutomaticEffect);
-   ec.register('general.color.automatic', FG3dGeneralColorAutomaticEffect);
+   ec.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
    ec.register('general.color.skeleton', FG3dGeneralColorSkeletonEffect);
    ec.register('general.color.skeleton.4', FG3dGeneralColorSkeletonEffect);
    // 阴影效果器

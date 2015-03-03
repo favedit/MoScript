@@ -22,6 +22,7 @@ var RFloat = new function RFloat(){
    o.toRange   = RFloat_toRange;
    o.sum       = RFloat_sum;
    o.calculate = RFloat_calculate;
+   o.copyArray = RFloat_copyArray;
    return o;
 }
 
@@ -175,4 +176,20 @@ function RFloat_calculate(f,a,b){
   }else{
      return (a - b).toString();
   }
+}
+
+//===========================================================
+// <T>复制浮点数数组。</T>
+//
+// @method
+// @param po:outputData:Array 输出数据
+// @param poi:outputIndex:Integer 输出位置
+// @param pi:inputData:Array 输入数据
+// @param pii:inputIndex:Integer 输入位置
+// @param pc:count:Integer 总数
+//===========================================================
+function RFloat_copyArray(po, poi, pi, pii, pc){
+   for(var i = 0; i < pc; i++){
+      po[poi++] = pi[pii++];
+   }
 }

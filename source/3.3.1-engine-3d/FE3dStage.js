@@ -191,6 +191,7 @@ function FE3dStage_process(){
    var t = o._technique;
    o.__base.FStage.process.call(o);
    // 更新区域（更新光源相机等特殊处理）
+   t._graphicContext.prepare();
    t.updateRegion(r);
    // 清空区域
    r.prepare();

@@ -50,6 +50,74 @@ function FE3dRegion_dispose(){
    o.__base.FRegion.dispose.call(o);
    o.__base.MG3dRegion.dispose.call(o);
 }
+function FE3dRenderable(o){
+   o = RClass.inherits(this, o, FE3dDrawable, MG3dRenderable, MGraphicObject);
+   o._display         = null;
+   o._calculateMatrix = null;
+   o._vertexCount     = 0;
+   o._vertexBuffers   = null;
+   o._indexBuffer     = null;
+   o.construct        = FE3dRenderable_construct;
+   o.setup            = RMethod.empty;
+   o.testVisible      = RMethod.emptyTrue;
+   o.display          = FE3dRenderable_display;
+   o.setDisplay       = FE3dRenderable_setDisplay;
+   o.vertexCount      = FE3dRenderable_vertexCount;
+   o.findVertexBuffer = FE3dRenderable_findVertexBuffer;
+   o.vertexBuffers    = FE3dRenderable_vertexBuffers;
+   o.indexBuffer      = FE3dRenderable_indexBuffer;
+   o.textures         = RMethod.empty;
+   o.bones            = RMethod.empty;
+   o.update           = FE3dRenderable_update;
+   o.remove           = FE3dRenderable_remove;
+   return o;
+}
+function FE3dRenderable_construct(){
+   var o = this;
+   o.__base.FE3dDrawable.construct.call(o);
+   o.__base.MG3dRenderable.construct.call(o);
+   o._calculateMatrix = new SMatrix3d();
+   o._vertexBuffers = new TDictionary();
+}
+function FE3dRenderable_display(){
+   return this._display;
+}
+function FE3dRenderable_setDisplay(p){
+   this._display = p;
+}
+function FE3dRenderable_vertexCount(){
+   return this._vertexCount;
+}
+function FE3dRenderable_findVertexBuffer(p){
+   return this._vertexBuffers.get(p);
+}
+function FE3dRenderable_vertexBuffers(){
+   return this._vertexBuffers;
+}
+function FE3dRenderable_indexBuffer(){
+   return this._indexBuffer;
+}
+function FE3dRenderable_update(p){
+   var o = this;
+   var m = o._calculateMatrix;
+   m.assign(o._matrix);
+   var d = o._display;
+   if(d){
+      m.append(d.currentMatrix());
+   }
+   var c = o._currentMatrix.attachData(m.data());
+   if(c && p){
+      p.change();
+   }
+}
+function FE3dRenderable_remove(){
+   var o = this;
+   var d = o._display;
+   if(d){
+      d.removeRenderable(o);
+      o._display = null;
+   }
+}
 function FE3dSimpleStage(o){
    o = RClass.inherits(this, o, FE3dStage);
    o._optionKeyboard = true;
@@ -236,6 +304,7 @@ function FE3dStage_process(){
    var r = o._region;
    var t = o._technique;
    o.__base.FStage.process.call(o);
+   t._graphicContext.prepare();
    t.updateRegion(r);
    r.prepare();
    r.change();
@@ -282,7 +351,7 @@ function RE3dEngine_onSetup(){
    ec.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
    ec.register('control.control.automatic', FG3dControlAutomaticEffect);
    ec.register('general.color.control', FG3dControlAutomaticEffect);
-   ec.register('general.color.automatic', FG3dGeneralColorAutomaticEffect);
+   ec.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
    ec.register('general.color.skeleton', FG3dGeneralColorSkeletonEffect);
    ec.register('general.color.skeleton.4', FG3dGeneralColorSkeletonEffect);
    ec.register('shadow.depth.automatic', FG3dShadowDepthAutomaticEffect);

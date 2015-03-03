@@ -168,10 +168,64 @@ function SG3dContextCapability_calculateInstanceCount(bc, vc){
    }
    return r;
 }
+function SG3dContextCapability(){
+   var o = this;
+   o.vendor                 = null;
+   o.version                = null;
+   o.shaderVersion          = null;
+   o.optionInstance         = false;
+   o.optionLayout           = false;
+   o.optionMaterialMap      = false;
+   o.attributeCount         = null;
+   o.vertexCount            = 65536;
+   o.vertexConst            = null;
+   o.fragmentConst          = null;
+   o.varyingCount           = null;
+   o.samplerCount           = null;
+   o.samplerSize            = null;
+   o.samplerCompressRgb     = null;
+   o.samplerCompressRgba    = null;
+   o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
+   o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
+   return o;
+}
+function SG3dContextCapability_calculateBoneCount(bc, vc){
+   var o = this;
+   var rb = 0;
+   var bi = bc % 8;
+   if(bi != 0){
+      rb = bc + 8 - bi;
+   }else{
+      rb = bc;
+   }
+   var r = 0;
+   var ib = (o.vertexConst - 16) / 4;
+   if(rb > ib){
+      r = ib;
+   }else{
+      r = rb;
+   }
+   return r;
+}
+function SG3dContextCapability_calculateInstanceCount(bc, vc){
+   var o = this;
+   var cr = (4 * bc) + 4;
+   var ib = (o.vertexConst - 16) / cr;
+   var r = cl;
+   if(vc > 0){
+      var iv = o.vertexCount / vc;
+      r = Math.min(ib, iv);
+   }
+   if(r > 64){
+      r = 64;
+   }
+   return r;
+}
 function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
    o._size               = null;
    o._capability         = null;
+   o._statistics         = null;
    o._fillModeCd         = EG3dFillMode.Face;
    o._optionDepth        = false;
    o._optionCull         = false;
@@ -185,6 +239,7 @@ function FG3dContext(o){
    o.linkCanvas          = FG3dContext_linkCanvas;
    o.size                = FG3dContext_size;
    o.capability          = FG3dContext_capability;
+   o.statistics          = FG3dContext_statistics;
    o.createProgram       = RMethod.virtual(o, 'createProgram');
    o.createVertexBuffer  = RMethod.virtual(o, 'createVertexBuffer');
    o.createIndexBuffer   = RMethod.virtual(o, 'createIndexBuffer');
@@ -201,6 +256,7 @@ function FG3dContext(o){
    o.setProgram          = RMethod.virtual(o, 'setProgram');
    o.bindVertexBuffer    = RMethod.virtual(o, 'bindVertexBuffer');
    o.bindTexture         = RMethod.virtual(o, 'bindTexture');
+   o.prepare             = FG3dContext_prepare;
    o.clear               = RMethod.virtual(o, 'clear');
    o.clearColor          = RMethod.virtual(o, 'clearColor');
    o.clearDepth          = RMethod.virtual(o, 'clearDepth');
@@ -213,6 +269,8 @@ function FG3dContext_construct(){
    var o = this;
    o.__base.FGraphicContext.construct.call(o);
    o._size = new SSize2();
+   o._statistics = RClass.create(FG3dStatistics);
+   RConsole.find(FStatisticsConsole).register('graphic3d.context', o._statistics);
 }
 function FG3dContext_linkCanvas(h){
    var o = this;
@@ -223,6 +281,12 @@ function FG3dContext_size(){
 }
 function FG3dContext_capability(){
    return this._capability;
+}
+function FG3dContext_statistics(){
+   return this._statistics;
+}
+function FG3dContext_prepare(){
+   this._statistics.resetFrame();
 }
 function FG3dContext_dispose(){
    var o = this;
@@ -574,6 +638,21 @@ function FG3dShader(o){
 }
 function FG3dShader_source(){
    return this._source;
+}
+function FG3dStatistics(o){
+   o = RClass.inherits(this, o, FStatistics);
+   o._frameTriangleCount = 0;
+   o._frameDrawCount     = 0;
+   o.reset      = FG3dStatistics_reset;
+   o.resetFrame = FG3dStatistics_resetFrame;
+   return o;
+}
+function FG3dStatistics_reset(){
+}
+function FG3dStatistics_resetFrame(){
+   var o = this;
+   o._frameTriangleCount = 0;
+   o._frameDrawCount = 0;
 }
 function FG3dTexture(o){
    o = RClass.inherits(this, o, FG3dObject);

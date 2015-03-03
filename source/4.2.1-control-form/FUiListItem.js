@@ -28,6 +28,7 @@ function FUiListItem(o){
    //..........................................................
    // @html
    o._hPanel         = null;
+   o._hIconPanel     = null;
    o._hIcon          = null;
    o._hLabel         = null;
    //..........................................................
@@ -163,8 +164,9 @@ function FUiListItem_setChecked(p){
 //==========================================================
 function FUiListItem_dispose(){
    var o = this;
-   o._hPanel = null;
-   o._hIcon = null;
-   o._hLabel = null;
+   o._hPanel = RHtml.free(o._hPanel);
+   o._hIconPanel = RHtml.free(o._hIconPanel);
+   o._hIcon = RHtml.free(o._hIcon);
+   o._hLabel = RHtml.free(o._hLabel);
    o.__base.FUiControl.dispose.call(o);
 }

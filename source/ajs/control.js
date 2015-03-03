@@ -1944,16 +1944,19 @@ function FUiCanvas_dispose(){
 }
 function FUiComponent(o){
    o = RClass.inherits(this, o, FObject, MProperty, MClone);
-   o._parent       = null;
-   o._components   = null;
    o._name         = RClass.register(o, new APtyString('_name'));
    o._label        = RClass.register(o, new APtyString('_label'));
+   o._parent       = null;
+   o._components   = null;
+   o._tag          = null;
    o.oeInitialize  = FUiComponent_oeInitialize;
    o.oeRelease     = FUiComponent_oeRelease;
    o.name          = FUiComponent_name;
    o.setName       = FUiComponent_setName;
    o.label         = FUiComponent_label;
    o.setLabel      = FUiComponent_setLabel;
+   o.tag           = FUiComponent_tag;
+   o.setTag        = FUiComponent_setTag;
    o.isParent      = FUiComponent_isParent;
    o.topComponent  = FUiComponent_topComponent;
    o.hasComponent  = FUiComponent_hasComponent;
@@ -1987,6 +1990,12 @@ function FUiComponent_label(){
 }
 function FUiComponent_setLabel(p){
    this._label = p;
+}
+function FUiComponent_tag(){
+   return this._tag;
+}
+function FUiComponent_setTag(p){
+   this._tag = p;
 }
 function FUiComponent_isParent(p){
    while(p){
@@ -2116,6 +2125,7 @@ function FUiComponent_dispose(){
    o._parent = null;
    o._name = null;
    o._label = null;
+   o._tag = null;
    var cs = o._components
    if(cs){
       cs.dispose();

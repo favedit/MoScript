@@ -1251,7 +1251,7 @@ function FDsSceneRenderableFrame_onDataChanged(p){
 }
 function FDsSceneRenderableFrame_onEffectClick(ps, pi){
    var o = this;
-   var e = pi._effect;
+   var e = pi.tag();
    var p = e._program;
    var s = p._vertexShader;
    alert(s._source);
@@ -1278,7 +1278,7 @@ function FDsSceneRenderableFrame_loadObject(s, r){
       var e = es.value(i).effect;
       if(e){
          var l = ces.createItem(null, e.code());
-         l._effect = e;
+         l.setTag(e);
          ces.push(l);
       }
    }
@@ -1335,6 +1335,8 @@ function FDsSceneTechniquePropertyFrame(o){
    o._controlGuid       = null;
    o._controlCode       = null;
    o._controlLabel      = null;
+   o._controlTriangleCount = null;
+   o._controlDrawCount     = null;
    o.onBuilded          = FDsSceneTechniquePropertyFrame_onBuilded;
    o.onDataChanged      = FDsSceneTechniquePropertyFrame_onDataChanged;
    o.onModeClick        = FDsSceneTechniquePropertyFrame_onModeClick;
@@ -1360,7 +1362,7 @@ function FDsSceneTechniquePropertyFrame_onDataChanged(p){
 }
 function FDsSceneTechniquePropertyFrame_onModeClick(ps, pi){
    var o = this;
-   var m = pi._mode;
+   var m = pi.tag();
    o._technique._activeMode = m;
    var ds = o._scene.allDisplays();
    for(var di = ds.count() - 1; di >= 0; di--){
@@ -1392,9 +1394,13 @@ function FDsSceneTechniquePropertyFrame_loadObject(s, t){
    for(var i = 0; i < c; i++){
       var m = ms.getAt(i);
       var cm = cms.createItem(null, m.code());
-      cm._mode = m;
+      cm.setTag(m);
       cms.push(cm);
    }
+   var gc = s._graphicContext;
+   var gs = gc.statistics();
+   o._controlTriangleCount.set(gs._frameTriangleCount);
+   o._controlDrawCount.set(gs._frameDrawCount);
 }
 function FDsSceneTechniquePropertyFrame_dispose(){
    var o = this;

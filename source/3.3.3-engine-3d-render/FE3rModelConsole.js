@@ -9,27 +9,29 @@ function FE3rModelConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._scopeCd    = EScope.Local;
+   o._scopeCd      = EScope.Local;
    // @attribute
-   o._loadModels = null;
-   o._models     = null;
-   o._meshs      = null;
+   o._loadModels   = null;
+   o._models       = null;
+   o._meshs        = null;
+   o._dynamicMeshs = null;
    // @attribute
-   o._thread     = null;
-   o._interval   = 200;
+   o._thread       = null;
+   o._interval     = 200;
    //..........................................................
    // @event
-   o.onProcess   = FE3rModelConsole_onProcess;
+   o.onProcess     = FE3rModelConsole_onProcess;
    //..........................................................
    // @method
-   o.construct   = FE3rModelConsole_construct;
+   o.construct     = FE3rModelConsole_construct;
    // @method
-   o.findModel   = FE3rModelConsole_findModel;
-   o.models      = FE3rModelConsole_models;
-   o.findMesh    = FE3rModelConsole_findMesh;
-   o.meshs       = FE3rModelConsole_meshs;
+   o.findModel     = FE3rModelConsole_findModel;
+   o.models        = FE3rModelConsole_models;
+   o.findMesh      = FE3rModelConsole_findMesh;
+   o.meshs         = FE3rModelConsole_meshs;
    // @method
-   o.load        = FE3rModelConsole_load;
+   o.load          = FE3rModelConsole_load;
+   o.merge         = FE3rModelConsole_merge;
    return o;
 }
 
@@ -62,6 +64,7 @@ function FE3rModelConsole_construct(){
    o._loadModels = new TLooper();
    o._models = new TDictionary();
    o._meshs = new TDictionary();
+   o._dynamicMeshs = new TDictionary();
    // 创建线程
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
@@ -150,4 +153,36 @@ function FE3rModelConsole_load(pc, pn){
       o._loadModels.push(m);
    }
    return m;
+}
+
+//==========================================================
+// <T>获得渲染网格集合。</T>
+//
+// @method
+// @return TDictionary 渲染网格集合
+//==========================================================
+function FE3rModelConsole_merge(pe, pg, pi, pc){
+   var o = this;
+   // 获得代码
+   var f = 'merge';
+   var rs = pg.renderables();
+   for(var i = 0; i < pc; i++){
+      var r = rs.getAt(pi + i);
+      f += '|' + r.hashCode();
+   }
+   // 合并网格
+   var mr = o._dynamicMeshs.get(f);
+   if(!mr){
+      mr = RClass.create(FE3rDynamicMesh);
+      var ef = mr.selectInfo(pg.spaceName());
+      ef.effect = pe;
+      mr.linkGraphicContext(pg);
+      for(var i = 0; i < pc; i++){
+         var r = rs.getAt(pi + i);
+         mr.mergeRenderable(r);
+      }
+      mr.build();
+      o._dynamicMeshs.set(f, mr);
+   }
+   return mr;
 }

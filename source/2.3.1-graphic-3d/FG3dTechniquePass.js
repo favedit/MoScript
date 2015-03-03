@@ -80,7 +80,9 @@ function FG3dTechniquePass_sortRenderables(s, t){
    var ms = s.material().info();
    var mt = t.material().info();
    if(ms.optionAlpha && mt.optionAlpha){
-      return 0;
+      var se = s.activeEffect();
+      var te = t.activeEffect();
+      return se.hashCode() - te.hashCode();
    }else if(ms.optionAlpha && !mt.optionAlpha){
       return 1;
    }else if(!ms.optionAlpha && mt.optionAlpha){
@@ -119,40 +121,55 @@ function FG3dTechniquePass_activeEffects(p, rs){
 //==========================================================
 function FG3dTechniquePass_drawRegion(p){
    var o = this;
-   var cb = o._graphicContext.capability();
+   // 获得渲染集合
    var rs = p.renderables();
+   var c = rs.count();
+   if(c == 0){
+      return;
+   }
+   //..........................................................
    // 激活效果器
    o.activeEffects(p, rs);
    // 控件排序
    rs.sort(o.sortRenderables);
-   // 渲染处理
-   var c = rs.count();
-   if(c > 0){
-      // 材质影射处理
-      if(cb.optionMaterialMap){
-         var mm = o._materialMap;
-         mm.resize(EG3dMaterialMap.Count, c);
-         //var mm = p.materialMap();
-         for(var i = 0; i < c; i++){
-            var r = rs.get(i);
-            r._materialId = i;
-            var m = r.material();
-            var mi = m.info();
-            mm.setUint8(i, EG3dMaterialMap.AmbientColor, mi.ambientColor);
-            mm.setUint8(i, EG3dMaterialMap.DiffuseColor, mi.diffuseColor);
-            mm.setUint8(i, EG3dMaterialMap.SpecularColor, mi.specularColor);
-            mm.setUint8(i, EG3dMaterialMap.ReflectColor, mi.reflectColor);
-            mm.setUint8(i, EG3dMaterialMap.EmissiveColor, mi.emissiveColor);
-         }
-         mm.update();
-         p._materialMap = mm;
-      }
-      // 绘制处理
+   //..........................................................
+   // 材质映射
+   var cb = o._graphicContext.capability();
+   if(cb.optionMaterialMap){
+      var mm = o._materialMap;
+      mm.resize(EG3dMaterialMap.Count, c);
+      //var mm = p.materialMap();
       for(var i = 0; i < c; i++){
          var r = rs.get(i);
-         var e = r.activeEffect();
-         o._graphicContext.setProgram(e.program());
-         e.drawRenderable(p, r, i);
+         r._materialId = i;
+         var m = r.material();
+         var mi = m.info();
+         mm.setUint8(i, EG3dMaterialMap.AmbientColor, mi.ambientColor);
+         mm.setUint8(i, EG3dMaterialMap.DiffuseColor, mi.diffuseColor);
+         mm.setUint8(i, EG3dMaterialMap.SpecularColor, mi.specularColor);
+         mm.setUint8(i, EG3dMaterialMap.ReflectColor, mi.reflectColor);
+         mm.setUint8(i, EG3dMaterialMap.EmissiveColor, mi.emissiveColor);
       }
+      mm.update();
+      p._materialMap = mm;
+   }
+   //..........................................................
+   // 根据效果类型进行分组
+   for(var n = 0; n < c; ){
+      // 获得分组
+      var gb = n;
+      var ge = c;
+      var ga = rs.getAt(gb).activeEffect();
+      for(var i = n; i < c; i++){
+         var a = rs.getAt(i).activeEffect();
+         if(ga != a){
+            ge = i;
+            break;
+         }
+         n++;
+      }
+      // 绘制当前渲染组
+      o._graphicContext.setProgram(ga.program());
+      ga.drawGroup(p, gb, ge - gb);
    }
 }

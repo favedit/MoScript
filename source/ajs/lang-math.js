@@ -1114,13 +1114,15 @@ function SMatrix4x4_invert(){
    }
    return true;
 }
-function SMatrix4x4_transform(po, pi, pc){
+function SMatrix4x4_transform(po, poi, pi, pii, pc){
    var d = this._data;
    for(var i = 0; i < pc; i++){
-      var n = (i << 1) + i;
-      po[n    ] = (pi[n] * d[ 0]) + (pi[n + 1] * d[ 4]) +(pi[n + 2] * d[ 8]) + d[12];
-      po[n + 1] = (pi[n] * d[ 1]) + (pi[n + 1] * d[ 5]) +(pi[n + 2] * d[ 9]) + d[13];
-      po[n + 2] = (pi[n] * d[ 2]) + (pi[n + 1] * d[ 6]) +(pi[n + 2] * d[10]) + d[14];
+      var x = pi[pii++];
+      var y = pi[pii++];
+      var z = pi[pii++];
+      po[poi++] = (x * d[ 0]) + (y * d[ 4]) +(z * d[ 8]) + d[12];
+      po[poi++] = (x * d[ 1]) + (y * d[ 5]) +(z * d[ 9]) + d[13];
+      po[poi++] = (x * d[ 2]) + (y * d[ 6]) +(z * d[10]) + d[14];
    }
 }
 function SMatrix4x4_transformPoint3(pi, po){

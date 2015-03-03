@@ -957,6 +957,8 @@ function FWglContext_drawTriangles(b, i, c){
    }else{
       g.drawElements(g.TRIANGLES, c, strideCd, 2 * i);
    }
+   o._statistics._frameTriangleCount += c;
+   o._statistics._frameDrawCount++;
    r = o.checkError("drawElements", "Draw triangles failure. (index=0x%08X, offset=%d, count=%d)", b, i, c);
    if(!r){
        return r;

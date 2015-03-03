@@ -232,11 +232,13 @@ function FE3rMesh_loadResource(p){
       if((rc == 'index16') || (rc == 'index32')){
          // 创建索引缓冲
          var b = o._indexBuffer = c.createIndexBuffer();
+         b._resource = rs;
          b.upload(rs._data, rs._dataCount * 3);
       }else{
          // 创建顶点缓冲
          var b = c.createVertexBuffer();
          b._name = rc;
+         b._resource = rs;
          o._vertexCount = rs._dataCount;
          switch(rc){
             case "position":
