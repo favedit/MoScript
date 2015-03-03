@@ -171,18 +171,17 @@ function FE3rModelConsole_merge(pe, pg, pi, pc){
       f += '|' + r.hashCode();
    }
    // 合并网格
-   var mr = o._dynamicMeshs.get(f);
-   if(!mr){
-      mr = RClass.create(FE3rDynamicMesh);
-      var ef = mr.selectInfo(pg.spaceName());
-      ef.effect = pe;
-      mr.linkGraphicContext(pg);
+   var md = o._dynamicMeshs.get(f);
+   if(!md){
+      md = RClass.create(FE3rDynamicModel);
       for(var i = 0; i < pc; i++){
          var r = rs.getAt(pi + i);
-         mr.mergeRenderable(r);
+         md.pushRenderable(r);
       }
-      mr.build();
-      o._dynamicMeshs.set(f, mr);
+      md.linkGraphicContext(pg);
+      md.build();
+      o._dynamicMeshs.set(f, md);
    }
-   return mr;
+   md.update();
+   return md;
 }

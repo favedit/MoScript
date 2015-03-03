@@ -8,19 +8,24 @@ function FE3rDynamicMesh(o){
    o = RClass.inherits(this, o, FE3dRenderable);
    //..........................................................
    // @attribute
-   o._merges         = null;
-   o._indexBuffer    = null;
+   o._optionMerge      = true;
+   o._vertexPosition   = 0;
+   o._vertexTotal      = 0;
+   o._indexPosition    = 0;
+   o._indexTotal       = 0;
+   o._merges           = null;
+   o._indexBuffer      = null;
    //..........................................................
    // @method
-   o.construct       = FE3rDynamicMesh_construct;
+   o.construct         = FE3rDynamicMesh_construct;
    // @method
-   o.syncVertexBuffer = FE3rDynamicMesh_syncVertexBuffer;
-   o.findTexture      = FE3rDynamicMesh_findTexture;
-   o.textures         = FE3rDynamicMesh_textures;
-   o.mergeRenderable = FE3rDynamicMesh_mergeRenderable;
+   o.findTexture       = FE3rDynamicMesh_findTexture;
+   o.textures          = FE3rDynamicMesh_textures;
+   o.syncVertexBuffer  = FE3rDynamicMesh_syncVertexBuffer;
+   o.mergeRenderable   = FE3rDynamicMesh_mergeRenderable;
    o.mergeVertexBuffer = FE3rDynamicMesh_mergeVertexBuffer;
    o.mergeIndexBuffer  = FE3rDynamicMesh_mergeIndexBuffer;
-   o.build           = FE3rDynamicMesh_build;
+   o.build             = FE3rDynamicMesh_build;
    return o;
 }
 
@@ -33,6 +38,27 @@ function FE3rDynamicMesh_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
    o._merges = new TObjects();
+}
+
+//==========================================================
+// <T>根据名称查找纹理。</T>
+//
+// @method
+// @param p:name:String 名称
+// @return FRenderIndexBuffer 纹理
+//==========================================================
+function FE3rDynamicMesh_findTexture(p){
+   return this._textures.get(p);
+}
+
+//==========================================================
+// <T>获得纹理集合。</T>
+//
+// @method
+// @return TDictionary 纹理集合
+//==========================================================
+function FE3rDynamicMesh_textures(){
+   return this._textures;
 }
 
 //==========================================================
@@ -75,36 +101,27 @@ function FE3rDynamicMesh_syncVertexBuffer(p){
 }
 
 //==========================================================
-// <T>根据名称查找纹理。</T>
-//
-// @method
-// @param p:name:String 名称
-// @return FRenderIndexBuffer 纹理
-//==========================================================
-function FE3rDynamicMesh_findTexture(p){
-   return this._textures.get(p);
-}
-
-//==========================================================
-// <T>获得纹理集合。</T>
-//
-// @method
-// @return TDictionary 纹理集合
-//==========================================================
-function FE3rDynamicMesh_textures(){
-   return this._textures;
-}
-
-//==========================================================
 // <T>合并一个渲染对象。</T>
 //
 // @method
+// @return 是否可以合并
 //==========================================================
 function FE3rDynamicMesh_mergeRenderable(p){
    var o = this;
-   if(o._material){
+   // 检查个数
+   if(o._merges.count() > 24){
+      return false;
    }
-   this._merges.push(p);
+   // 检查顶点总数
+   var vt = o._vertexTotal + p.vertexCount();
+   if(vt > 65535){
+      return false;
+   }
+   // 重新计算总数
+   o._vertexTotal = vt;
+   o._indexTotal += p.indexBuffer().count();
+   o._merges.push(p);
+   return true;
 }
 
 //==========================================================
@@ -120,22 +137,23 @@ function FE3rDynamicMesh_mergeVertexBuffer(r, bc, b, rs){
    switch(bc){
       case 'position':
          var d = new Float32Array(rs._data);
-         var m = r.currentMatrix();
-         m.transform(rd, 3 * ri, d, 0, c);
+         //var m = r.currentMatrix();
+         //m.transform(rd, 3 * ri, d, 0, c);
+         RFloat.copy(rd, 3 * ri, d, 0, 3 * c);
          break;
       case 'color':
          var d = new Uint8Array(rs._data);
-         RByte.copyArray(rd, 4 * ri, d, 0, 4 * c);
+         RByte.copy(rd, 4 * ri, d, 0, 4 * c);
          break;
       case 'coord':
          var d = new Float32Array(rs._data);
-         RFloat.copyArray(rd, 2 * ri, d, 0, 2 * c);
+         RFloat.copy(rd, 2 * ri, d, 0, 2 * c);
          break;
       case "normal":
       case "binormal":
       case "tangent":
          var d = new Uint8Array(rs._data);
-         RByte.copyArray(rd, 4 * ri, d, 0, 4 * c);
+         RByte.copy(rd, 4 * ri, d, 0, 4 * c);
          break;
       default:
          throw new TError("Unknown code");
@@ -170,22 +188,20 @@ function FE3rDynamicMesh_build(){
    var o = this;
    var gc = o._graphicContext;
    var rs = o._merges;
+   var vt = o._vertexTotal;
+   var ft = o._indexTotal;
    var rc = rs.count();
+   // 获得首个渲染对象
    var rf = rs.first();
    o._material = rf._material;
    o._textures = rf._textures;
-   // 计算顶点和索引总数
-   var vt = 0;
-   var ft = 0;
-   for(var i = 0; i < rc; i++){
-      var r = rs.getAt(i);
-      vt += r.vertexCount();
-      ft += r.indexBuffer().count();
-   }
-   o._vertexPosition = 0;
-   o._vertexTotal = vt;
-   o._indexPosition = 0;
-   o._indexTotal = ft;
+   // 创建顶点实例流
+   var b = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
+   b._name = 'instance';
+   b._formatCd = EG3dAttributeFormat.Float1;
+   b._data = new Float32Array(vt);
+   b.stride = 4;
+   o._vertexBuffers.set(b._name, b);
    // 创建索引流
    var b = o._indexBuffer = gc.createIndexBuffer();
    b._data = new Uint16Array(ft);
@@ -203,7 +219,9 @@ function FE3rDynamicMesh_build(){
          var b = o.syncVertexBuffer(vb);
          o.mergeVertexBuffer(r, vbrc, b, vbr);
       }
-      // 合并顶点
+      // 生成顶点实例数据
+      RFloat.fill(o._instanceVertexBuffer._data, o._vertexPosition, r.vertexCount(), i);
+      // 生成索引数据
       var ib = r.indexBuffer();
       var ir = ib._resource;
       o.mergeIndexBuffer(ir);

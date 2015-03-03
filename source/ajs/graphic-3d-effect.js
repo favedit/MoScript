@@ -1,6 +1,7 @@
 function FG3dAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dEffect);
-   o._optionBlendMode = true;
+   o._optionMerge             = false;
+   o._optionBlendMode         = true;
    o._supportInstance         = false;
    o._supportLayout           = false;
    o._supportMaterialMap      = false;
@@ -44,6 +45,11 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    var s = new TString();
    s.append(pc.techniqueModeCode)
    pt.set("technique.mode", pc.techniqueModeCode);
+   var om = o._optionMerge = pc.optionMerge;
+   if(om){
+      s.append("|OI");
+      pt.setBoolean("option.instance", true);
+   }
    if(cb.optionMaterialMap){
       s.append("|OM");
       pt.setBoolean("option.material.map", true);

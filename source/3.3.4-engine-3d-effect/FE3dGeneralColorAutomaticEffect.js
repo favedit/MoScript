@@ -35,7 +35,19 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var mi = m.info();
    o.bindMaterial(m);
    // 绑定所有属性流
-   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   // 设置骨头集合
+   if(pr._optionMerge){
+      var ms = pr._merges;
+      var mc = ms.count();
+      var d = RTypeArray.findTemp(EDataType.Float, 16 * mc);
+      for(var i = 0; i < mc; i++){
+         var m = ms.get(i);
+         m.currentMatrix().writeData(d, 16 * i);
+      }
+      p.setParameter('vc_model_matrix', d);
+   }else{
+      p.setParameter('vc_model_matrix', pr.currentMatrix());
+   }
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -71,18 +83,30 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
 //
 // @method
 // @param pg:region:MG3dRegion 渲染区域
+// @param pm:material:FG3dMaterial 材质
 // @param pi:offset:Integer 开始位置
 // @param pc:count:Integer 总数
 //==========================================================
-function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pi, pc){
+function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pm, pi, pc){
    var o = this;
    if(pc > 1){
       var mc = RConsole.find(FE3rModelConsole);
-      var mr = mc.merge(o, pg, pi, pc);
-      if(mr){
-         o.drawRenderable(pg, mr);
+      var md = mc.merge(o, pg, pi, pc);
+      if(md){
+         var rs = md.meshes();
+         var c = rs.count();
+         for(var i = 0; i < c; i++){
+            var r = rs.getAt(i);
+            var f = r.selectInfo(pg.spaceName());
+            var e = f.effect;
+            if(!e){
+               e = f.effect = RConsole.find(FG3dEffectConsole).find(o._graphicContext, pg, r);
+            }
+            o._graphicContext.setProgram(e.program());
+            e.drawRenderable(pg, r);
+         }
          return;
       }
    }
-   o.__base.FG3dAutomaticEffect.drawGroup.call(o, pg, pi, pc)
+   o.__base.FG3dAutomaticEffect.drawGroup.call(o, pg, pm, pi, pc)
 }

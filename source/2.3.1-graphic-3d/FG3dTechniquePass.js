@@ -169,7 +169,6 @@ function FG3dTechniquePass_drawRegion(p){
          n++;
       }
       // 绘制当前渲染组
-      o._graphicContext.setProgram(ga.program());
-      ga.drawGroup(p, gb, ge - gb);
+      ga.drawRegion(p, gb, ge - gb);
    }
 }

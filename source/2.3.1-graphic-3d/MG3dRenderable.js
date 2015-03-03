@@ -8,6 +8,8 @@ function MG3dRenderable(o){
    o = RClass.inherits(this, o, MGraphicRenderable);
    //..........................................................
    // @attribute
+   o._optionMerge    = false;
+   // @attribute
    o._currentMatrix  = null;
    o._matrix         = null;
    // @attribute

@@ -3053,22 +3053,25 @@ function FDsSceneRenderablePropertyFrame_dispose(){
 }
 function FDsSceneTechniquePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._visible           = false;
-   o._workspace         = null;
-   o._scene             = null;
-   o._technique         = null;
-   o._techniqueResource = null;
-   o._controlGuid       = null;
-   o._controlCode       = null;
-   o._controlLabel      = null;
+   o._visible              = false;
+   o._thread               = null;
+   o._interval             = 2000;
+   o._workspace            = null;
+   o._scene                = null;
+   o._technique            = null;
+   o._techniqueResource    = null;
+   o._controlGuid          = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
    o._controlTriangleCount = null;
    o._controlDrawCount     = null;
-   o.onBuilded          = FDsSceneTechniquePropertyFrame_onBuilded;
-   o.onDataChanged      = FDsSceneTechniquePropertyFrame_onDataChanged;
-   o.onModeClick        = FDsSceneTechniquePropertyFrame_onModeClick;
-   o.construct          = FDsSceneTechniquePropertyFrame_construct;
-   o.loadObject         = FDsSceneTechniquePropertyFrame_loadObject;
-   o.dispose            = FDsSceneTechniquePropertyFrame_dispose;
+   o.onBuilded             = FDsSceneTechniquePropertyFrame_onBuilded;
+   o.onDataChanged         = FDsSceneTechniquePropertyFrame_onDataChanged;
+   o.onModeClick           = FDsSceneTechniquePropertyFrame_onModeClick;
+   o.onRefresh             = FDsSceneTechniquePropertyFrame_onRefresh;
+   o.construct             = FDsSceneTechniquePropertyFrame_construct;
+   o.loadObject            = FDsSceneTechniquePropertyFrame_loadObject;
+   o.dispose               = FDsSceneTechniquePropertyFrame_dispose;
    return o;
 }
 function FDsSceneTechniquePropertyFrame_onBuilded(p){
@@ -3100,9 +3103,27 @@ function FDsSceneTechniquePropertyFrame_onModeClick(ps, pi){
       }
    }
 }
+function FDsSceneTechniquePropertyFrame_onRefresh(){
+   var o = this;
+   if(!o._statusVisible){
+      return;
+   }
+   var s = o._scene;
+   var ss = s.statistics();
+   var gs = s._graphicContext.statistics();
+   o._controlFrameTick.set(ss._frame._span);
+   o._controlProcessTick.set(ss._frameProcess._span);
+   o._controlDrawTick.set(ss._frameDraw._span);
+   o._controlTriangleCount.set(gs._frameTriangleCount);
+   o._controlDrawCount.set(gs._frameDrawCount);
+}
 function FDsSceneTechniquePropertyFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.lsnsProcess.register(o, o.onRefresh);
+   RConsole.find(FThreadConsole).start(t);
 }
 function FDsSceneTechniquePropertyFrame_loadObject(s, t){
    var o = this;
@@ -3123,10 +3144,7 @@ function FDsSceneTechniquePropertyFrame_loadObject(s, t){
       cm.setTag(m);
       cms.push(cm);
    }
-   var gc = s._graphicContext;
-   var gs = gc.statistics();
-   o._controlTriangleCount.set(gs._frameTriangleCount);
-   o._controlDrawCount.set(gs._frameDrawCount);
+   o.onRefresh();
 }
 function FDsSceneTechniquePropertyFrame_dispose(){
    var o = this;

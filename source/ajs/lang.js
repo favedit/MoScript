@@ -1600,10 +1600,31 @@ function TRow_dump(s){
 function TSpeed(){
    var o = this;
    o.arguments  = arguments;
+   o._start     = 0;
+   o._end       = 0;
+   o._span      = 0;
    o.start      = new Date().getTime();
    o.callerName = RMethod.name(TSpeed.caller);
+   o.reset      = TSpeed_reset;
+   o.begin      = TSpeed_begin;
+   o.end        = TSpeed_end;
    o.record     = TSpeed_record
    return o;
+}
+function TSpeed_reset(){
+   var o = this;
+   o._start = 0;
+   o._end = 0;
+   o._span = 0;
+}
+function TSpeed_begin(){
+   var o = this;
+   o._start = new Date().getTime();
+}
+function TSpeed_end(){
+   var o = this;
+   o._end = new Date().getTime();
+   o._span = o._end - o._start;
 }
 function TSpeed_record(){
    var o = this;
@@ -1879,10 +1900,10 @@ function RBoolean_toString(v){
 }
 var RByte = new function RByte(){
    var o = this;
-   o.copyArray = RByte_copyArray;
+   o.copy = RByte_copy;
    return o;
 }
-function RByte_copyArray(po, poi, pi, pii, pc){
+function RByte_copy(po, poi, pi, pii, pc){
    for(var i = 0; i < pc; i++){
       po[poi++] = pi[pii++];
    }
@@ -3044,7 +3065,8 @@ var RFloat = new function RFloat(){
    o.toRange   = RFloat_toRange;
    o.sum       = RFloat_sum;
    o.calculate = RFloat_calculate;
-   o.copyArray = RFloat_copyArray;
+   o.fill      = RFloat_fill;
+   o.copy      = RFloat_copy;
    return o;
 }
 function RFloat_isFloat(p){
@@ -3128,7 +3150,12 @@ function RFloat_calculate(f,a,b){
      return (a - b).toString();
   }
 }
-function RFloat_copyArray(po, poi, pi, pii, pc){
+function RFloat_fill(d, i, c, v){
+   for(var n = 0; n < c; n++){
+      d[i++] = v;
+   }
+}
+function RFloat_copy(po, poi, pi, pii, pc){
    for(var i = 0; i < pc; i++){
       po[poi++] = pi[pii++];
    }

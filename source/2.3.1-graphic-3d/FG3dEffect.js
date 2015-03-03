@@ -36,6 +36,7 @@ function FG3dEffect(o){
    o.setSampler          = FG3dEffect_setSampler;
    o.drawRenderable      = FG3dEffect_drawRenderable;
    o.drawGroup           = FG3dEffect_drawGroup;
+   o.drawRegion          = FG3dEffect_drawRegion;
    o.buildInfo           = FG3dEffect_buildInfo;
    o.loadConfig          = FG3dEffect_loadConfig;
    o.loadUrl             = FG3dEffect_loadUrl;
@@ -138,13 +139,45 @@ function FG3dEffect_drawRenderable(pg, pr){
 // @param pi:offset:Integer 开始位置
 // @param pc:count:Integer 总数
 //==========================================================
-function FG3dEffect_drawGroup(pg, pi, pc){
+function FG3dEffect_drawGroup(pg, pm, pi, pc){
    var o = this;
    var rs = pg.renderables();
-   //RLogger.info(o, 'Draw group. (offset={1}, count={2})', pi, pc);
    for(var i = 0; i < pc; i++){
       var r = rs.get(pi + i);
       o.drawRenderable(pg, r);
+   }
+   //RLogger.info(o, 'Draw group. (offset={1}, count={2})', pi, pc);
+}
+
+//==========================================================
+// <T>绘制渲染集合。</T>
+//
+// @method
+// @param pg:region:MG3dRegion 渲染区域
+// @param pi:offset:Integer 开始位置
+// @param pc:count:Integer 总数
+//==========================================================
+function FG3dEffect_drawRegion(pg, pi, pc){
+   var o = this;
+   // 选择技术
+   o._graphicContext.setProgram(o._program);
+   // 根据效果类型进行分组
+   var rs = pg.renderables();
+   for(var n = 0; n < pc; ){
+      // 获得分组
+      var gb = n;
+      var ge = pc;
+      var gm = rs.getAt(pi + gb)._materialReference;
+      for(var i = n; i < pc; i++){
+         var m = rs.getAt(pi + i)._materialReference;
+         if(gm != m){
+            ge = i;
+            break;
+         }
+         n++;
+      }
+      // 绘制当前渲染组
+      o.drawGroup(pg, gm, pi + gb, ge - gb);
    }
 }
 

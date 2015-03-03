@@ -8,7 +8,8 @@ function FG3dAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dEffect);
    //..........................................................
    // @attribute
-   o._optionBlendMode = true;
+   o._optionMerge             = false;
+   o._optionBlendMode         = true;
    // @attribute
    o._supportInstance         = false;
    o._supportLayout           = false;
@@ -76,6 +77,13 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    var s = new TString();
    s.append(pc.techniqueModeCode)
    pt.set("technique.mode", pc.techniqueModeCode);
+   //............................................................
+   // 支持纹理材质映射
+   var om = o._optionMerge = pc.optionMerge;
+   if(om){
+      s.append("|OI");
+      pt.setBoolean("option.instance", true);
+   }
    //............................................................
    // 支持纹理材质映射
    if(cb.optionMaterialMap){

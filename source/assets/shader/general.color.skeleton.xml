@@ -50,8 +50,8 @@
       //..........................................................
       // 变换矩阵声明
       uniform mat4 vc_model_matrix;
-      //uniform mat4 vc_bone_matrix[<shader:write source='bone.count'/>];
-      uniform mat4 vc_bone_matrix[40];
+      uniform mat4 vc_bone_matrix[<shader:write source='bone.count'/>];
+      //uniform mat4 vc_bone_matrix[40];
       uniform mat4 vc_vp_matrix;
       uniform vec3 vc_camera_position;
       uniform vec3 vc_light_direction;

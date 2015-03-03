@@ -9,7 +9,7 @@ var RByte = new function RByte(){
    var o = this;
    //..........................................................
    // @method
-   o.copyArray = RByte_copyArray;
+   o.copy = RByte_copy;
    return o;
 }
 
@@ -23,7 +23,7 @@ var RByte = new function RByte(){
 // @param pii:inputIndex:Integer 输入位置
 // @param pc:count:Integer 总数
 //===========================================================
-function RByte_copyArray(po, poi, pi, pii, pc){
+function RByte_copy(po, poi, pi, pii, pc){
    for(var i = 0; i < pc; i++){
       po[poi++] = pi[pii++];
    }

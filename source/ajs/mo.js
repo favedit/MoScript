@@ -3034,10 +3034,31 @@ function TRow_dump(s){
 function TSpeed(){
    var o = this;
    o.arguments  = arguments;
+   o._start     = 0;
+   o._end       = 0;
+   o._span      = 0;
    o.start      = new Date().getTime();
    o.callerName = RMethod.name(TSpeed.caller);
+   o.reset      = TSpeed_reset;
+   o.begin      = TSpeed_begin;
+   o.end        = TSpeed_end;
    o.record     = TSpeed_record
    return o;
+}
+function TSpeed_reset(){
+   var o = this;
+   o._start = 0;
+   o._end = 0;
+   o._span = 0;
+}
+function TSpeed_begin(){
+   var o = this;
+   o._start = new Date().getTime();
+}
+function TSpeed_end(){
+   var o = this;
+   o._end = new Date().getTime();
+   o._span = o._end - o._start;
 }
 function TSpeed_record(){
    var o = this;
@@ -3313,10 +3334,10 @@ function RBoolean_toString(v){
 }
 var RByte = new function RByte(){
    var o = this;
-   o.copyArray = RByte_copyArray;
+   o.copy = RByte_copy;
    return o;
 }
-function RByte_copyArray(po, poi, pi, pii, pc){
+function RByte_copy(po, poi, pi, pii, pc){
    for(var i = 0; i < pc; i++){
       po[poi++] = pi[pii++];
    }
@@ -4478,7 +4499,8 @@ var RFloat = new function RFloat(){
    o.toRange   = RFloat_toRange;
    o.sum       = RFloat_sum;
    o.calculate = RFloat_calculate;
-   o.copyArray = RFloat_copyArray;
+   o.fill      = RFloat_fill;
+   o.copy      = RFloat_copy;
    return o;
 }
 function RFloat_isFloat(p){
@@ -4562,7 +4584,12 @@ function RFloat_calculate(f,a,b){
      return (a - b).toString();
   }
 }
-function RFloat_copyArray(po, poi, pi, pii, pc){
+function RFloat_fill(d, i, c, v){
+   for(var n = 0; n < c; n++){
+      d[i++] = v;
+   }
+}
+function RFloat_copy(po, poi, pi, pii, pc){
    for(var i = 0; i < pc; i++){
       po[poi++] = pi[pii++];
    }
@@ -14169,6 +14196,7 @@ function MG3dRegion_dispose(){
 }
 function MG3dRenderable(o){
    o = RClass.inherits(this, o, MGraphicRenderable);
+   o._optionMerge    = false;
    o._currentMatrix  = null;
    o._matrix         = null;
    o._effectCode     = null;
@@ -14881,6 +14909,7 @@ function FG3dEffect(o){
    o.setSampler          = FG3dEffect_setSampler;
    o.drawRenderable      = FG3dEffect_drawRenderable;
    o.drawGroup           = FG3dEffect_drawGroup;
+   o.drawRegion          = FG3dEffect_drawRegion;
    o.buildInfo           = FG3dEffect_buildInfo;
    o.loadConfig          = FG3dEffect_loadConfig;
    o.loadUrl             = FG3dEffect_loadUrl;
@@ -14924,12 +14953,31 @@ function FG3dEffect_drawRenderable(pg, pr){
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
 }
-function FG3dEffect_drawGroup(pg, pi, pc){
+function FG3dEffect_drawGroup(pg, pm, pi, pc){
    var o = this;
    var rs = pg.renderables();
    for(var i = 0; i < pc; i++){
       var r = rs.get(pi + i);
       o.drawRenderable(pg, r);
+   }
+}
+function FG3dEffect_drawRegion(pg, pi, pc){
+   var o = this;
+   o._graphicContext.setProgram(o._program);
+   var rs = pg.renderables();
+   for(var n = 0; n < pc; ){
+      var gb = n;
+      var ge = pc;
+      var gm = rs.getAt(pi + gb)._materialReference;
+      for(var i = n; i < pc; i++){
+         var m = rs.getAt(pi + i)._materialReference;
+         if(gm != m){
+            ge = i;
+            break;
+         }
+         n++;
+      }
+      o.drawGroup(pg, gm, pi + gb, ge - gb);
    }
 }
 function FG3dEffect_loadConfig(p){
@@ -15085,6 +15133,7 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    var o = this;
    var t = pg.technique();
    pf.techniqueModeCode = t.activeMode().code();
+   pf.optionMerge = pr._optionMerge;
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
    pf.vertexCount = pr.vertexCount();
@@ -15815,8 +15864,7 @@ function FG3dTechniquePass_drawRegion(p){
          }
          n++;
       }
-      o._graphicContext.setProgram(ga.program());
-      ga.drawGroup(p, gb, ge - gb);
+      ga.drawRegion(p, gb, ge - gb);
    }
 }
 function FG3dTrack(o){
@@ -16606,7 +16654,8 @@ function FG3dVertexShader(o){
 }
 function FG3dAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dEffect);
-   o._optionBlendMode = true;
+   o._optionMerge             = false;
+   o._optionBlendMode         = true;
    o._supportInstance         = false;
    o._supportLayout           = false;
    o._supportMaterialMap      = false;
@@ -16650,6 +16699,11 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    var s = new TString();
    s.append(pc.techniqueModeCode)
    pt.set("technique.mode", pc.techniqueModeCode);
+   var om = o._optionMerge = pc.optionMerge;
+   if(om){
+      s.append("|OI");
+      pt.setBoolean("option.instance", true);
+   }
    if(cb.optionMaterialMap){
       s.append("|OM");
       pt.setBoolean("option.material.map", true);
@@ -19654,6 +19708,7 @@ function FE3dSprite_testVisible(p){
 }
 function FE3dStage(o){
    o = RClass.inherits(this, o, FStage, MGraphicObject);
+   o._statistics       = null;
    o._backgroundColor  = null;
    o._camera           = null;
    o._directionalLight = null
@@ -19662,6 +19717,7 @@ function FE3dStage(o){
    o._allDisplays      = null;
    o.construct         = FE3dStage_construct;
    o.setup             = FE3dStage_setup;
+   o.statistics        = FE3dStage_statistics;
    o.backgroundColor   = FE3dStage_backgroundColor;
    o.camera            = FE3dStage_camera;
    o.projection        = FE3dStage_projection;
@@ -19677,6 +19733,8 @@ function FE3dStage(o){
 function FE3dStage_construct(){
    var o = this;
    o.__base.FStage.construct.call(o);
+   o._statistics = RClass.create(FE3dStageStatistics);
+   RConsole.find(FStatisticsConsole).register('engine.stage', o._statistics);
    o._backgroundColor = new SColor4();
    o._backgroundColor.set(0, 0, 0, 1);
    o._allDisplays = new TObjects();
@@ -19696,6 +19754,9 @@ function FE3dStage_setup(){
    o.__base.FStage.construct.call(o);
    o._region.linkGraphicContext(o);
    o._region.setup();
+}
+function FE3dStage_statistics(){
+   return this._statistics;
 }
 function FE3dStage_backgroundColor(){
    return this._backgroundColor;
@@ -19741,11 +19802,15 @@ function FE3dStage_process(){
    var o = this;
    var r = o._region;
    var t = o._technique;
+   var ss = o._statistics;
+   ss.resetFrame();
+   ss._frame.begin();
    o.__base.FStage.process.call(o);
    t._graphicContext.prepare();
    t.updateRegion(r);
    r.prepare();
    r.change();
+   ss._frameProcess.begin();
    var ls = o._layers;
    if(ls){
       var c = ls.count();
@@ -19756,6 +19821,8 @@ function FE3dStage_process(){
          r.update();
       }
    }
+   ss._frameProcess.end();
+   ss._frameDraw.begin();
    if(r.isChanged()){
       t.clear(o._backgroundColor);
       if(ls){
@@ -19773,6 +19840,33 @@ function FE3dStage_process(){
       }
       t.present(r);
    }
+   ss._frameDraw.end();
+   ss._frame.end();
+}
+function FE3dStageStatistics(o){
+   o = RClass.inherits(this, o, FStatistics);
+   o._frame        = null;
+   o._frameProcess = null;
+   o._frameDraw    = null;
+   o.construct     = FE3dStageStatistics_construct;
+   o.reset         = FE3dStageStatistics_reset;
+   o.resetFrame    = FE3dStageStatistics_resetFrame;
+   return o;
+}
+function FE3dStageStatistics_construct(){
+   var o = this;
+   o.__base.FStatistics.construct.call(o);
+   o._frame = new TSpeed();
+   o._frameProcess = new TSpeed();
+   o._frameDraw = new TSpeed();
+}
+function FE3dStageStatistics_reset(){
+}
+function FE3dStageStatistics_resetFrame(){
+   var o = this;
+   o._frame.reset();
+   o._frameProcess.reset();
+   o._frameDraw.reset();
 }
 var RE3dEngine = new function RE3dEngine(){
    var o = this;
@@ -21872,22 +21966,33 @@ function FE3rBone_dispose(){
 }
 function FE3rDynamicMesh(o){
    o = RClass.inherits(this, o, FE3dRenderable);
-   o._merges         = null;
-   o._indexBuffer    = null;
-   o.construct       = FE3rDynamicMesh_construct;
-   o.syncVertexBuffer = FE3rDynamicMesh_syncVertexBuffer;
-   o.findTexture      = FE3rDynamicMesh_findTexture;
-   o.textures         = FE3rDynamicMesh_textures;
-   o.mergeRenderable = FE3rDynamicMesh_mergeRenderable;
+   o._optionMerge      = true;
+   o._vertexPosition   = 0;
+   o._vertexTotal      = 0;
+   o._indexPosition    = 0;
+   o._indexTotal       = 0;
+   o._merges           = null;
+   o._indexBuffer      = null;
+   o.construct         = FE3rDynamicMesh_construct;
+   o.findTexture       = FE3rDynamicMesh_findTexture;
+   o.textures          = FE3rDynamicMesh_textures;
+   o.syncVertexBuffer  = FE3rDynamicMesh_syncVertexBuffer;
+   o.mergeRenderable   = FE3rDynamicMesh_mergeRenderable;
    o.mergeVertexBuffer = FE3rDynamicMesh_mergeVertexBuffer;
    o.mergeIndexBuffer  = FE3rDynamicMesh_mergeIndexBuffer;
-   o.build           = FE3rDynamicMesh_build;
+   o.build             = FE3rDynamicMesh_build;
    return o;
 }
 function FE3rDynamicMesh_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
    o._merges = new TObjects();
+}
+function FE3rDynamicMesh_findTexture(p){
+   return this._textures.get(p);
+}
+function FE3rDynamicMesh_textures(){
+   return this._textures;
 }
 function FE3rDynamicMesh_syncVertexBuffer(p){
    var o = this;
@@ -21918,17 +22023,19 @@ function FE3rDynamicMesh_syncVertexBuffer(p){
    }
    return b;
 }
-function FE3rDynamicMesh_findTexture(p){
-   return this._textures.get(p);
-}
-function FE3rDynamicMesh_textures(){
-   return this._textures;
-}
 function FE3rDynamicMesh_mergeRenderable(p){
    var o = this;
-   if(o._material){
+   if(o._merges.count() > 24){
+      return false;
    }
-   this._merges.push(p);
+   var vt = o._vertexTotal + p.vertexCount();
+   if(vt > 65535){
+      return false;
+   }
+   o._vertexTotal = vt;
+   o._indexTotal += p.indexBuffer().count();
+   o._merges.push(p);
+   return true;
 }
 function FE3rDynamicMesh_mergeVertexBuffer(r, bc, b, rs){
    var o = this;
@@ -21938,22 +22045,21 @@ function FE3rDynamicMesh_mergeVertexBuffer(r, bc, b, rs){
    switch(bc){
       case 'position':
          var d = new Float32Array(rs._data);
-         var m = r.currentMatrix();
-         m.transform(rd, 3 * ri, d, 0, c);
+         RFloat.copy(rd, 3 * ri, d, 0, 3 * c);
          break;
       case 'color':
          var d = new Uint8Array(rs._data);
-         RByte.copyArray(rd, 4 * ri, d, 0, 4 * c);
+         RByte.copy(rd, 4 * ri, d, 0, 4 * c);
          break;
       case 'coord':
          var d = new Float32Array(rs._data);
-         RFloat.copyArray(rd, 2 * ri, d, 0, 2 * c);
+         RFloat.copy(rd, 2 * ri, d, 0, 2 * c);
          break;
       case "normal":
       case "binormal":
       case "tangent":
          var d = new Uint8Array(rs._data);
-         RByte.copyArray(rd, 4 * ri, d, 0, 4 * c);
+         RByte.copy(rd, 4 * ri, d, 0, 4 * c);
          break;
       default:
          throw new TError("Unknown code");
@@ -21976,21 +22082,18 @@ function FE3rDynamicMesh_build(){
    var o = this;
    var gc = o._graphicContext;
    var rs = o._merges;
+   var vt = o._vertexTotal;
+   var ft = o._indexTotal;
    var rc = rs.count();
    var rf = rs.first();
    o._material = rf._material;
    o._textures = rf._textures;
-   var vt = 0;
-   var ft = 0;
-   for(var i = 0; i < rc; i++){
-      var r = rs.getAt(i);
-      vt += r.vertexCount();
-      ft += r.indexBuffer().count();
-   }
-   o._vertexPosition = 0;
-   o._vertexTotal = vt;
-   o._indexPosition = 0;
-   o._indexTotal = ft;
+   var b = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
+   b._name = 'instance';
+   b._formatCd = EG3dAttributeFormat.Float1;
+   b._data = new Float32Array(vt);
+   b.stride = 4;
+   o._vertexBuffers.set(b._name, b);
    var b = o._indexBuffer = gc.createIndexBuffer();
    b._data = new Uint16Array(ft);
    b._count = ft;
@@ -22005,6 +22108,7 @@ function FE3rDynamicMesh_build(){
          var b = o.syncVertexBuffer(vb);
          o.mergeVertexBuffer(r, vbrc, b, vbr);
       }
+      RFloat.fill(o._instanceVertexBuffer._data, o._vertexPosition, r.vertexCount(), i);
       var ib = r.indexBuffer();
       var ir = ib._resource;
       o.mergeIndexBuffer(ir);
@@ -22017,6 +22121,67 @@ function FE3rDynamicMesh_build(){
       vb.upload(vb._data, vb.stride, vt);
    }
    o._indexBuffer.upload(o._indexBuffer._data, ft);
+}
+function FE3rDynamicModel(o){
+   o = RClass.inherits(this, o, FE3rObject);
+   o._renderables      = null;
+   o._meshes           = null;
+   o._updateDate       = 0;
+   o.construct         = FE3rDynamicModel_construct;
+   o._renderables      = FE3rDynamicModel_renderables;
+   o.meshes            = FE3rDynamicModel_meshes;
+   o.pushRenderable    = FE3rDynamicModel_pushRenderable;
+   o.build             = FE3rDynamicModel_build;
+   o.update            = FE3rDynamicModel_update;
+   return o;
+}
+function FE3rDynamicModel_construct(){
+   var o = this;
+   o.__base.FE3rObject.construct.call(o);
+   o._renderables = new TObjects();
+   o._meshes = new TObjects();
+}
+function FE3rDynamicModel_renderables(){
+   return this._renderables;
+}
+function FE3rDynamicModel_meshes(){
+   return this._meshes;
+}
+function FE3rDynamicModel_pushRenderable(p){
+   this._renderables.push(p);
+}
+function FE3rDynamicModel_build(){
+   var o = this;
+   var rs = o._renderables;
+   var ms = o._meshes;
+   var rc = rs.count();
+   var mr = null;
+   for(var i = 0; i < rc; i++){
+      var r = rs.getAt(i);
+      if(!mr){
+         mr = RClass.create(FE3rDynamicMesh);
+         ms.push(mr);
+      }
+      if(mr.mergeRenderable(r)){
+         continue;
+      }else{
+         mr = RClass.create(FE3rDynamicMesh);
+         ms.push(mr);
+         if(!mr.mergeRenderable(r)){
+            throw new TError(o, 'Merge renderable failure.');
+         }
+      }
+   }
+   var mc = ms.count();
+   for(var i = 0; i < mc; i++){
+      var m = ms.getAt(i);
+      m.linkGraphicContext(o);
+      m.build();
+   }
+}
+function FE3rDynamicModel_update(p){
+   var o = this;
+   o._updateDate = RTimer.current();
 }
 function FE3rInstanceMesh(o){
    o = RClass.inherits(this, o, FE3rMesh);
@@ -22450,20 +22615,19 @@ function FE3rModelConsole_merge(pe, pg, pi, pc){
       var r = rs.getAt(pi + i);
       f += '|' + r.hashCode();
    }
-   var mr = o._dynamicMeshs.get(f);
-   if(!mr){
-      mr = RClass.create(FE3rDynamicMesh);
-      var ef = mr.selectInfo(pg.spaceName());
-      ef.effect = pe;
-      mr.linkGraphicContext(pg);
+   var md = o._dynamicMeshs.get(f);
+   if(!md){
+      md = RClass.create(FE3rDynamicModel);
       for(var i = 0; i < pc; i++){
          var r = rs.getAt(pi + i);
-         mr.mergeRenderable(r);
+         md.pushRenderable(r);
       }
-      mr.build();
-      o._dynamicMeshs.set(f, mr);
+      md.linkGraphicContext(pg);
+      md.build();
+      o._dynamicMeshs.set(f, md);
    }
-   return mr;
+   md.update();
+   return md;
 }
 function FE3rObject(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
@@ -23028,7 +23192,18 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var m = pr.material();
    var mi = m.info();
    o.bindMaterial(m);
-   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   if(pr._optionMerge){
+      var ms = pr._merges;
+      var mc = ms.count();
+      var d = RTypeArray.findTemp(EDataType.Float, 16 * mc);
+      for(var i = 0; i < mc; i++){
+         var m = ms.get(i);
+         m.currentMatrix().writeData(d, 16 * i);
+      }
+      p.setParameter('vc_model_matrix', d);
+   }else{
+      p.setParameter('vc_model_matrix', pr.currentMatrix());
+   }
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
@@ -23054,17 +23229,28 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
    o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }
-function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pi, pc){
+function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pm, pi, pc){
    var o = this;
    if(pc > 1){
       var mc = RConsole.find(FE3rModelConsole);
-      var mr = mc.merge(o, pg, pi, pc);
-      if(mr){
-         o.drawRenderable(pg, mr);
+      var md = mc.merge(o, pg, pi, pc);
+      if(md){
+         var rs = md.meshes();
+         var c = rs.count();
+         for(var i = 0; i < c; i++){
+            var r = rs.getAt(i);
+            var f = r.selectInfo(pg.spaceName());
+            var e = f.effect;
+            if(!e){
+               e = f.effect = RConsole.find(FG3dEffectConsole).find(o._graphicContext, pg, r);
+            }
+            o._graphicContext.setProgram(e.program());
+            e.drawRenderable(pg, r);
+         }
          return;
       }
    }
-   o.__base.FG3dAutomaticEffect.drawGroup.call(o, pg, pi, pc)
+   o.__base.FG3dAutomaticEffect.drawGroup.call(o, pg, pm, pi, pc)
 }
 var EE3dScene = new function EE3dScene(){
    var o = this;
@@ -25357,6 +25543,7 @@ function MG3dRegion_dispose(){
 }
 function MG3dRenderable(o){
    o = RClass.inherits(this, o, MGraphicRenderable);
+   o._optionMerge    = false;
    o._currentMatrix  = null;
    o._matrix         = null;
    o._effectCode     = null;
@@ -26069,6 +26256,7 @@ function FG3dEffect(o){
    o.setSampler          = FG3dEffect_setSampler;
    o.drawRenderable      = FG3dEffect_drawRenderable;
    o.drawGroup           = FG3dEffect_drawGroup;
+   o.drawRegion          = FG3dEffect_drawRegion;
    o.buildInfo           = FG3dEffect_buildInfo;
    o.loadConfig          = FG3dEffect_loadConfig;
    o.loadUrl             = FG3dEffect_loadUrl;
@@ -26112,12 +26300,31 @@ function FG3dEffect_drawRenderable(pg, pr){
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
 }
-function FG3dEffect_drawGroup(pg, pi, pc){
+function FG3dEffect_drawGroup(pg, pm, pi, pc){
    var o = this;
    var rs = pg.renderables();
    for(var i = 0; i < pc; i++){
       var r = rs.get(pi + i);
       o.drawRenderable(pg, r);
+   }
+}
+function FG3dEffect_drawRegion(pg, pi, pc){
+   var o = this;
+   o._graphicContext.setProgram(o._program);
+   var rs = pg.renderables();
+   for(var n = 0; n < pc; ){
+      var gb = n;
+      var ge = pc;
+      var gm = rs.getAt(pi + gb)._materialReference;
+      for(var i = n; i < pc; i++){
+         var m = rs.getAt(pi + i)._materialReference;
+         if(gm != m){
+            ge = i;
+            break;
+         }
+         n++;
+      }
+      o.drawGroup(pg, gm, pi + gb, ge - gb);
    }
 }
 function FG3dEffect_loadConfig(p){
@@ -26273,6 +26480,7 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    var o = this;
    var t = pg.technique();
    pf.techniqueModeCode = t.activeMode().code();
+   pf.optionMerge = pr._optionMerge;
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
    pf.vertexCount = pr.vertexCount();
@@ -27003,8 +27211,7 @@ function FG3dTechniquePass_drawRegion(p){
          }
          n++;
       }
-      o._graphicContext.setProgram(ga.program());
-      ga.drawGroup(p, gb, ge - gb);
+      ga.drawRegion(p, gb, ge - gb);
    }
 }
 function FG3dTrack(o){
@@ -27794,7 +28001,8 @@ function FG3dVertexShader(o){
 }
 function FG3dAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dEffect);
-   o._optionBlendMode = true;
+   o._optionMerge             = false;
+   o._optionBlendMode         = true;
    o._supportInstance         = false;
    o._supportLayout           = false;
    o._supportMaterialMap      = false;
@@ -27838,6 +28046,11 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    var s = new TString();
    s.append(pc.techniqueModeCode)
    pt.set("technique.mode", pc.techniqueModeCode);
+   var om = o._optionMerge = pc.optionMerge;
+   if(om){
+      s.append("|OI");
+      pt.setBoolean("option.instance", true);
+   }
    if(cb.optionMaterialMap){
       s.append("|OM");
       pt.setBoolean("option.material.map", true);
@@ -51887,22 +52100,25 @@ function FDsSceneRenderablePropertyFrame_dispose(){
 }
 function FDsSceneTechniquePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._visible           = false;
-   o._workspace         = null;
-   o._scene             = null;
-   o._technique         = null;
-   o._techniqueResource = null;
-   o._controlGuid       = null;
-   o._controlCode       = null;
-   o._controlLabel      = null;
+   o._visible              = false;
+   o._thread               = null;
+   o._interval             = 2000;
+   o._workspace            = null;
+   o._scene                = null;
+   o._technique            = null;
+   o._techniqueResource    = null;
+   o._controlGuid          = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
    o._controlTriangleCount = null;
    o._controlDrawCount     = null;
-   o.onBuilded          = FDsSceneTechniquePropertyFrame_onBuilded;
-   o.onDataChanged      = FDsSceneTechniquePropertyFrame_onDataChanged;
-   o.onModeClick        = FDsSceneTechniquePropertyFrame_onModeClick;
-   o.construct          = FDsSceneTechniquePropertyFrame_construct;
-   o.loadObject         = FDsSceneTechniquePropertyFrame_loadObject;
-   o.dispose            = FDsSceneTechniquePropertyFrame_dispose;
+   o.onBuilded             = FDsSceneTechniquePropertyFrame_onBuilded;
+   o.onDataChanged         = FDsSceneTechniquePropertyFrame_onDataChanged;
+   o.onModeClick           = FDsSceneTechniquePropertyFrame_onModeClick;
+   o.onRefresh             = FDsSceneTechniquePropertyFrame_onRefresh;
+   o.construct             = FDsSceneTechniquePropertyFrame_construct;
+   o.loadObject            = FDsSceneTechniquePropertyFrame_loadObject;
+   o.dispose               = FDsSceneTechniquePropertyFrame_dispose;
    return o;
 }
 function FDsSceneTechniquePropertyFrame_onBuilded(p){
@@ -51934,9 +52150,27 @@ function FDsSceneTechniquePropertyFrame_onModeClick(ps, pi){
       }
    }
 }
+function FDsSceneTechniquePropertyFrame_onRefresh(){
+   var o = this;
+   if(!o._statusVisible){
+      return;
+   }
+   var s = o._scene;
+   var ss = s.statistics();
+   var gs = s._graphicContext.statistics();
+   o._controlFrameTick.set(ss._frame._span);
+   o._controlProcessTick.set(ss._frameProcess._span);
+   o._controlDrawTick.set(ss._frameDraw._span);
+   o._controlTriangleCount.set(gs._frameTriangleCount);
+   o._controlDrawCount.set(gs._frameDrawCount);
+}
 function FDsSceneTechniquePropertyFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.lsnsProcess.register(o, o.onRefresh);
+   RConsole.find(FThreadConsole).start(t);
 }
 function FDsSceneTechniquePropertyFrame_loadObject(s, t){
    var o = this;
@@ -51957,10 +52191,7 @@ function FDsSceneTechniquePropertyFrame_loadObject(s, t){
       cm.setTag(m);
       cms.push(cm);
    }
-   var gc = s._graphicContext;
-   var gs = gc.statistics();
-   o._controlTriangleCount.set(gs._frameTriangleCount);
-   o._controlDrawCount.set(gs._frameDrawCount);
+   o.onRefresh();
 }
 function FDsSceneTechniquePropertyFrame_dispose(){
    var o = this;

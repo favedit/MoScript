@@ -9,31 +9,35 @@ function FDsSceneTechniquePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._visible           = false;
+   o._visible              = false;
    // @attribute
-   o._workspace         = null;
-   o._scene             = null;
-   o._technique         = null;
-   o._techniqueResource = null;
+   o._thread               = null;
+   o._interval             = 2000;
    // @attribute
-   o._controlGuid       = null;
-   o._controlCode       = null;
-   o._controlLabel      = null;
+   o._workspace            = null;
+   o._scene                = null;
+   o._technique            = null;
+   o._techniqueResource    = null;
+   // @attribute
+   o._controlGuid          = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
    // @attribute
    o._controlTriangleCount = null;
    o._controlDrawCount     = null;
    //..........................................................
    // @event
-   o.onBuilded          = FDsSceneTechniquePropertyFrame_onBuilded;
-   o.onDataChanged      = FDsSceneTechniquePropertyFrame_onDataChanged;
-   o.onModeClick        = FDsSceneTechniquePropertyFrame_onModeClick;
+   o.onBuilded             = FDsSceneTechniquePropertyFrame_onBuilded;
+   o.onDataChanged         = FDsSceneTechniquePropertyFrame_onDataChanged;
+   o.onModeClick           = FDsSceneTechniquePropertyFrame_onModeClick;
+   o.onRefresh             = FDsSceneTechniquePropertyFrame_onRefresh;
    //..........................................................
    // @method
-   o.construct          = FDsSceneTechniquePropertyFrame_construct;
+   o.construct             = FDsSceneTechniquePropertyFrame_construct;
    // @method
-   o.loadObject         = FDsSceneTechniquePropertyFrame_loadObject;
+   o.loadObject            = FDsSceneTechniquePropertyFrame_loadObject;
    // @method
-   o.dispose            = FDsSceneTechniquePropertyFrame_dispose;
+   o.dispose               = FDsSceneTechniquePropertyFrame_dispose;
    return o;
 }
 
@@ -91,6 +95,29 @@ function FDsSceneTechniquePropertyFrame_onModeClick(ps, pi){
 }
 
 //==========================================================
+// <T>数据刷新处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsSceneTechniquePropertyFrame_onRefresh(){
+   var o = this;
+   // 检查可见性
+   if(!o._statusVisible){
+      return;
+   }
+   // 设置统计数据
+   var s = o._scene;
+   var ss = s.statistics();
+   var gs = s._graphicContext.statistics();
+   o._controlFrameTick.set(ss._frame._span);
+   o._controlProcessTick.set(ss._frameProcess._span);
+   o._controlDrawTick.set(ss._frameDraw._span);
+   o._controlTriangleCount.set(gs._frameTriangleCount);
+   o._controlDrawCount.set(gs._frameDrawCount);
+}
+
+//==========================================================
 // <T>构造处理。</T>
 //
 // @method
@@ -99,6 +126,11 @@ function FDsSceneTechniquePropertyFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
+   // 创建线程
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.lsnsProcess.register(o, o.onRefresh);
+   RConsole.find(FThreadConsole).start(t);
 }
 
 //==========================================================
@@ -130,11 +162,8 @@ function FDsSceneTechniquePropertyFrame_loadObject(s, t){
       cm.setTag(m);
       cms.push(cm);
    }
-   // 设置统计数据
-   var gc = s._graphicContext;
-   var gs = gc.statistics();
-   o._controlTriangleCount.set(gs._frameTriangleCount);
-   o._controlDrawCount.set(gs._frameDrawCount);
+   // 刷新统计数据
+   o.onRefresh();
 }
 
 //==========================================================

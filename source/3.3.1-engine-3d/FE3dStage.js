@@ -8,6 +8,8 @@ function FE3dStage(o){
    o = RClass.inherits(this, o, FStage, MGraphicObject);
    //..........................................................
    // @attribute
+   o._statistics       = null;
+   // @attribute
    o._backgroundColor  = null;
    o._camera           = null;
    o._directionalLight = null
@@ -20,6 +22,7 @@ function FE3dStage(o){
    o.construct         = FE3dStage_construct;
    o.setup             = FE3dStage_setup;
    // @method
+   o.statistics        = FE3dStage_statistics;
    o.backgroundColor   = FE3dStage_backgroundColor;
    o.camera            = FE3dStage_camera;
    o.projection        = FE3dStage_projection;
@@ -43,6 +46,9 @@ function FE3dStage(o){
 function FE3dStage_construct(){
    var o = this;
    o.__base.FStage.construct.call(o);
+   /// 创建统计
+   o._statistics = RClass.create(FE3dStageStatistics);
+   RConsole.find(FStatisticsConsole).register('engine.stage', o._statistics);
    // 创建背景色
    o._backgroundColor = new SColor4();
    o._backgroundColor.set(0, 0, 0, 1);
@@ -73,6 +79,16 @@ function FE3dStage_setup(){
    // 创建背景色
    o._region.linkGraphicContext(o);
    o._region.setup();
+}
+
+//==========================================================
+// <T>获得统计信息。</T>
+//
+// @method
+// @return FG3dStatistics 统计信息
+//==========================================================
+function FE3dStage_statistics(){
+   return this._statistics;
 }
 
 //==========================================================
@@ -189,6 +205,11 @@ function FE3dStage_process(){
    var o = this;
    var r = o._region;
    var t = o._technique;
+   // 统计处理
+   var ss = o._statistics;
+   ss.resetFrame();
+   ss._frame.begin();
+   // 父处理
    o.__base.FStage.process.call(o);
    // 更新区域（更新光源相机等特殊处理）
    t._graphicContext.prepare();
@@ -197,6 +218,7 @@ function FE3dStage_process(){
    r.prepare();
    r.change();
    // 处理所有层
+   ss._frameProcess.begin();
    var ls = o._layers;
    if(ls){
       var c = ls.count();
@@ -208,7 +230,9 @@ function FE3dStage_process(){
          r.update();
       }
    }
+   ss._frameProcess.end();
    // 处理所有层
+   ss._frameDraw.begin();
    if(r.isChanged()){
       t.clear(o._backgroundColor);
       if(ls){
@@ -229,4 +253,6 @@ function FE3dStage_process(){
       // 绘制处理
       t.present(r);
    }
+   ss._frameDraw.end();
+   ss._frame.end();
 }

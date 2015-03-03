@@ -222,6 +222,7 @@ function MG3dRegion_dispose(){
 }
 function MG3dRenderable(o){
    o = RClass.inherits(this, o, MGraphicRenderable);
+   o._optionMerge    = false;
    o._currentMatrix  = null;
    o._matrix         = null;
    o._effectCode     = null;
@@ -934,6 +935,7 @@ function FG3dEffect(o){
    o.setSampler          = FG3dEffect_setSampler;
    o.drawRenderable      = FG3dEffect_drawRenderable;
    o.drawGroup           = FG3dEffect_drawGroup;
+   o.drawRegion          = FG3dEffect_drawRegion;
    o.buildInfo           = FG3dEffect_buildInfo;
    o.loadConfig          = FG3dEffect_loadConfig;
    o.loadUrl             = FG3dEffect_loadUrl;
@@ -977,12 +979,31 @@ function FG3dEffect_drawRenderable(pg, pr){
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib._count);
 }
-function FG3dEffect_drawGroup(pg, pi, pc){
+function FG3dEffect_drawGroup(pg, pm, pi, pc){
    var o = this;
    var rs = pg.renderables();
    for(var i = 0; i < pc; i++){
       var r = rs.get(pi + i);
       o.drawRenderable(pg, r);
+   }
+}
+function FG3dEffect_drawRegion(pg, pi, pc){
+   var o = this;
+   o._graphicContext.setProgram(o._program);
+   var rs = pg.renderables();
+   for(var n = 0; n < pc; ){
+      var gb = n;
+      var ge = pc;
+      var gm = rs.getAt(pi + gb)._materialReference;
+      for(var i = n; i < pc; i++){
+         var m = rs.getAt(pi + i)._materialReference;
+         if(gm != m){
+            ge = i;
+            break;
+         }
+         n++;
+      }
+      o.drawGroup(pg, gm, pi + gb, ge - gb);
    }
 }
 function FG3dEffect_loadConfig(p){
@@ -1138,6 +1159,7 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    var o = this;
    var t = pg.technique();
    pf.techniqueModeCode = t.activeMode().code();
+   pf.optionMerge = pr._optionMerge;
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
    pf.vertexCount = pr.vertexCount();
@@ -1868,8 +1890,7 @@ function FG3dTechniquePass_drawRegion(p){
          }
          n++;
       }
-      o._graphicContext.setProgram(ga.program());
-      ga.drawGroup(p, gb, ge - gb);
+      ga.drawRegion(p, gb, ge - gb);
    }
 }
 function FG3dTrack(o){

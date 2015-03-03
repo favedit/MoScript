@@ -110,6 +110,7 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    // 设置技术
    var t = pg.technique();
    pf.techniqueModeCode = t.activeMode().code();
+   pf.optionMerge = pr._optionMerge;
    // 设置材质
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;

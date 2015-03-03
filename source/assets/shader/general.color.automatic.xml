@@ -32,6 +32,7 @@
    <Parameter name='fc_reflect'             format='Float4'/>
    <Parameter name='fc_emissive_color'      format='Float4'/>
    <!--=====================================================-->
+   <Attribute name='va_instance'    linker='instance'    format='Float1'/>
    <Attribute name='va_position'    linker='position'    format='Float4'/>
    <Attribute name='va_color'       linker='color'       format='Byte4Normal'/>
    <Attribute name='va_coord'       linker='coord'       format='Float2'/>
@@ -49,12 +50,20 @@
    <Source name='vertex'><![CDATA[
       //..........................................................
       // 变换矩阵声明
+      <shader:true source='option.instance'>
+      uniform mat4 vc_model_matrix[24];
+      </shader:true>
+      <shader:false source='option.instance'>
       uniform mat4 vc_model_matrix;
+      </shader:false>
       uniform mat4 vc_vp_matrix;
       uniform vec3 vc_camera_position;
       uniform vec3 vc_light_direction;
       //..........................................................
       // 属性流声明
+      <shader:true source='option.instance'>
+      attribute float va_instance;
+      </shader:true>
       attribute vec3 va_position;
       <shader:true source='vertex.attribute.color'>
       attribute vec4 va_color;
@@ -89,7 +98,14 @@
       // 处理
       void main(){
          // 计算模型坐标
-         vec4 modelPosition = vec4(va_position, 1.0) * vc_model_matrix;
+         mat4 modelMatrix;
+         <shader:true source='option.instance'>
+         modelMatrix = vc_model_matrix[int(va_instance)];
+         </shader:true>
+         <shader:false source='option.instance'>
+         modelMatrix = vc_model_matrix;
+         </shader:false>
+         vec4 modelPosition = vec4(va_position, 1.0) * modelMatrix ;
          // 计算最终坐标
          gl_Position = modelPosition * vc_vp_matrix;
          v_model_position = modelPosition;
@@ -103,12 +119,12 @@
          </shader:true>
          // 设置法线
          <shader:true source='vertex.attribute.normal'>
-         vec3 normal = normalize((va_normal.xyz - 0.5) * 2.0 * mat3(vc_model_matrix));
+         vec3 normal = normalize((va_normal.xyz - 0.5) * 2.0 * mat3(modelMatrix));
          v_normal = normal;
          // 设置法线空间
          <shader:true source='support.dump'>
-         vec3 binormal = normalize((va_binormal - 0.5) * 2.0 * mat3(vc_model_matrix));
-         vec3 tangent = normalize((va_tangent - 0.5) * 2.0 * mat3(vc_model_matrix));
+         vec3 binormal = normalize((va_binormal - 0.5) * 2.0 * mat3(modelMatrix));
+         vec3 tangent = normalize((va_tangent - 0.5) * 2.0 * mat3(modelMatrix));
          mat3 matrixTs = mat3(tangent, binormal, normal);
          v_camera_ts = normalize((vc_camera_position - modelPosition.xyz) * matrixTs);
          v_light_ts = normalize(vc_light_direction * matrixTs);
