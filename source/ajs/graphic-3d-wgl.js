@@ -3,8 +3,9 @@ function FWglContext(o){
    o._native             = null;
    o._nativeInstance     = null;
    o._nativeLayout       = null;
+   o._nativeDebugShader  = null;
    o._activeRenderTarget = null;
-   o._activeTextureSlot  = 0;
+   o._activeTextureSlot  = null;
    o._parameters         = null;
    o._extensions         = null;
    o._data9              = null;
@@ -84,12 +85,15 @@ function FWglContext_linkCanvas(h){
    }
    var e = g.getExtension('OES_element_index_uint');
    if(e){
-      c.optionIndex32 = true;
    }
    var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
    if(e){
       c.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
       c.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+   }
+   var e = o._nativeDebugShader = g.getExtension('WEBGL_debug_shaders');
+   if(e){
+      c.optionShaderSource = true;
    }
 }
 function FWglContext_parameters(){
@@ -191,6 +195,11 @@ function FWglContext_parameters(){
    for(var i = 0; i < c; i++){
       var n = ns[i];
       r[n] = g.getParameter(g[n]);
+   }
+   var e = g.getExtension('WEBGL_debug_renderer_info');
+   if(e){
+      r['UNMASKED_RENDERER_WEBGL'] = g.getParameter(e.UNMASKED_RENDERER_WEBGL);
+      r['UNMASKED_VENDOR_WEBGL'] = g.getParameter(e.UNMASKED_VENDOR_WEBGL);
    }
    o._parameters = r;
    return r;
@@ -489,7 +498,7 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
       r = o.checkError("disableVertexAttribArray", "Disable vertex attribute array. (slot=%d)", s);
       return r;
    }
-   var bs = b.stride;
+   var bs = b._stride;
    switch(f){
       case EG3dAttributeFormat.Float1:
          g.vertexAttribPointer(s, 1, g.FLOAT, false, bs, i);
@@ -532,7 +541,6 @@ function FWglContext_bindTexture(ps, pi, pt){
       if(!r){
          return r;
       }
-      o._renderTextureActiveSlot = ps;
    }
    var gt = null;
    switch(pt.textureCd()){
@@ -792,10 +800,11 @@ function FWglFlatTexture_dispose(){
 }
 function FWglFragmentShader(o){
    o = RClass.inherits(this, o, FG3dFragmentShader);
-   o._native = null;
-   o.setup   = FWglFragmentShader_setup;
-   o.upload  = FWglFragmentShader_upload;
-   o.dispose = FWglFragmentShader_dispose;
+   o._native      = null;
+   o.setup        = FWglFragmentShader_setup;
+   o.targetSource = FWglFragmentShader_targetSource;
+   o.upload       = FWglFragmentShader_upload;
+   o.dispose      = FWglFragmentShader_dispose;
    return o;
 }
 function FWglFragmentShader_setup(){
@@ -803,6 +812,15 @@ function FWglFragmentShader_setup(){
    o.__base.FG3dFragmentShader.setup.call(o);
    var g = o._graphicContext._native;
    o._native = g.createShader(g.FRAGMENT_SHADER);
+}
+function FWglFragmentShader_targetSource(){
+   var o = this;
+   var c = o._graphicContext;
+   var cp = c.capability();
+   if(cp.optionShaderSource){
+      return c._nativeDebugShader.getTranslatedShaderSource(o._native);
+   }
+   return o._source;
 }
 function FWglFragmentShader_upload(v){
    var o = this;
@@ -1201,8 +1219,8 @@ function FWglVertexBuffer_upload(v, s, c){
    var o = this;
    var c = o._graphicContext;
    var g = c._native;
-   o.stride = s;
-   o.count  = c;
+   o._stride = s;
+   o._count  = c;
    var d = null;
    if((v.constructor == Array) || (v.constructor == ArrayBuffer)){
       d = new Float32Array(v);
@@ -1231,9 +1249,10 @@ function FWglVertexBuffer_dispose(){
 function FWglVertexShader(o){
    o = RClass.inherits(this, o, FG3dVertexShader);
    o._native = null;
-   o.setup   = FWglVertexShader_setup;
-   o.upload  = FWglVertexShader_upload;
-   o.dispose = FWglVertexShader_dispose;
+   o.setup        = FWglVertexShader_setup;
+   o.targetSource = FWglVertexShader_targetSource;
+   o.upload       = FWglVertexShader_upload;
+   o.dispose      = FWglVertexShader_dispose;
    return o;
 }
 function FWglVertexShader_setup(){
@@ -1241,6 +1260,15 @@ function FWglVertexShader_setup(){
    o.__base.FG3dVertexShader.setup.call(o);
    var g = o._graphicContext._native;
    o._native = g.createShader(g.VERTEX_SHADER);
+}
+function FWglVertexShader_targetSource(){
+   var o = this;
+   var c = o._graphicContext;
+   var cp = c.capability();
+   if(cp.optionShaderSource){
+      return c._nativeDebugShader.getTranslatedShaderSource(o._native);
+   }
+   return o._source;
 }
 function FWglVertexShader_upload(v){
    var o = this;

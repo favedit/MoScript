@@ -44,8 +44,8 @@ function FWglVertexBuffer_upload(v, s, c){
    var c = o._graphicContext;
    var g = c._native;
    // 设置数据
-   o.stride = s;
-   o.count  = c;
+   o._stride = s;
+   o._count  = c;
    // 获得数据
    var d = null;
    if((v.constructor == Array) || (v.constructor == ArrayBuffer)){

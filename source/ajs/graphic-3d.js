@@ -337,6 +337,8 @@ function SG3dEffectInfo(o){
    o.code                  = null;
    o.techniqueCode         = null;
    o.techniqueModeCode     = null;
+   o.optionMerge           = null;
+   o.mergeCount            = null;
    o.fillModeCd            = null;
    o.optionCullMode        = null;
    o.cullModeCd            = null;
@@ -387,6 +389,8 @@ function SG3dEffectInfo_samplerContains(p){
 function SG3dEffectInfo_reset(){
    var o = this;
    o.code = null;
+   o.optionMerge = false;
+   o.mergeCount = 0;
    o.fillModeCd = EG3dFillMode.Fill;
    o.optionCullMode = true;
    o.cullModeCd = EG3dCullMode.Front;
@@ -995,7 +999,7 @@ function FG3dEffect_drawRegion(pg, pi, pc){
       var gb = n;
       var ge = pc;
       var gm = rs.getAt(pi + gb)._materialReference;
-      for(var i = n; i < pc; i++){
+      for(var i = n + 1; i < pc; i++){
          var m = rs.getAt(pi + i)._materialReference;
          if(gm != m){
             ge = i;
@@ -1160,6 +1164,9 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    var t = pg.technique();
    pf.techniqueModeCode = t.activeMode().code();
    pf.optionMerge = pr._optionMerge;
+   if(pf.optionMerge){
+      pf.mergeCount = pr.mergeCount();
+   }
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
    pf.vertexCount = pr.vertexCount();
@@ -1829,6 +1836,13 @@ function FG3dTechniquePass_sortRenderables(s, t){
    if(ms.optionAlpha && mt.optionAlpha){
       var se = s.activeEffect();
       var te = t.activeEffect();
+      if(se == te){
+         sm = s._materialReference;
+         tm = t._materialReference;
+         if(sm && tm){
+            return sm.hashCode() - tm.hashCode();
+         }
+      }
       return se.hashCode() - te.hashCode();
    }else if(ms.optionAlpha && !mt.optionAlpha){
       return 1;
@@ -1837,6 +1851,13 @@ function FG3dTechniquePass_sortRenderables(s, t){
    }else{
       var se = s.activeEffect();
       var te = t.activeEffect();
+      if(se == te){
+         sm = s._materialReference;
+         tm = t._materialReference;
+         if(sm && tm){
+            return sm.hashCode() - tm.hashCode();
+         }
+      }
       return se.hashCode() - te.hashCode();
    }
 }
@@ -1882,7 +1903,7 @@ function FG3dTechniquePass_drawRegion(p){
       var gb = n;
       var ge = c;
       var ga = rs.getAt(gb).activeEffect();
-      for(var i = n; i < c; i++){
+      for(var i = n + 1; i < c; i++){
          var a = rs.getAt(i).activeEffect();
          if(ga != a){
             ge = i;

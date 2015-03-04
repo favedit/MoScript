@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.show.skeleton.004">
+    <ThemeCollection>
+      <Theme code="color">
+        <MaterialCollection />
+      </Theme>
+      <Theme code="shadow">
+        <MaterialCollection />
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection />
+  </Template>
+</Configuration>

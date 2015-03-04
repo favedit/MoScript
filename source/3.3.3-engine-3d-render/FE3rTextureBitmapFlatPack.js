@@ -88,6 +88,7 @@ function FE3rTextureBitmapFlatPack_loadResource(p){
       var t = o._texture = c.createFlatTexture();
       t.uploadData(d, s.width, s.height);
       t.makeMipmap();
+      o._graphicContext._native.finish();
       // 加载完成
       o._ready  = true;
    }

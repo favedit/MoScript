@@ -3002,6 +3002,7 @@ function FE3rDynamicMesh(o){
    o._indexTotal       = 0;
    o._mergeRenderables = null;
    o.construct         = FE3rDynamicMesh_construct;
+   o.mergeCount        = FE3rDynamicMesh_mergeCount;
    o.mergeRenderables  = FE3rDynamicMesh_mergeRenderables;
    o.syncVertexBuffer  = FE3rDynamicMesh_syncVertexBuffer;
    o.mergeRenderable   = FE3rDynamicMesh_mergeRenderable;
@@ -3014,6 +3015,9 @@ function FE3rDynamicMesh_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
    o._mergeRenderables = new TObjects();
+}
+function FE3rDynamicMesh_mergeCount(){
+   return this._mergeRenderables.count();
 }
 function FE3rDynamicMesh_mergeRenderables(){
    return this._mergeRenderables;
@@ -3029,7 +3033,7 @@ function FE3rDynamicMesh_syncVertexBuffer(p){
       b._name = rc;
       b._position = 0;
       b._formatCd = p._formatCd;
-      b.stride = p.stride;
+      b._stride = p._stride;
       switch(p._formatCd){
          case EG3dAttributeFormat.Float2:
             b._data = new Float32Array(2 * vt);
@@ -3037,6 +3041,7 @@ function FE3rDynamicMesh_syncVertexBuffer(p){
          case EG3dAttributeFormat.Float3:
             b._data = new Float32Array(3 * vt);
             break;
+         case EG3dAttributeFormat.Byte4:
          case EG3dAttributeFormat.Byte4Normal:
             b._data = new Uint8Array(4 * vt);
             break;
@@ -3051,8 +3056,8 @@ function FE3rDynamicMesh_mergeRenderable(p){
    var o = this;
    var c = o._graphicContext;
    var cp = c.capability();
-   var cl = parseInt((cp.vertexConst - 32) / 4);
-   if(o._mergeRenderables.count() >= cl){
+   var mc = cp.calculateMergeCount();
+   if(o._mergeRenderables.count() >= mc){
       return false;
    }
    var vt = o._vertexTotal + p.vertexCount();
@@ -3080,17 +3085,16 @@ function FE3rDynamicMesh_mergeVertexBuffer(r, bc, b, rs){
          var d = new Float32Array(rs._data);
          RFloat.copy(rd, 3 * ri, d, 0, 3 * c);
          break;
-      case 'color':
-         var d = new Uint8Array(rs._data);
-         RByte.copy(rd, 4 * ri, d, 0, 4 * c);
-         break;
       case 'coord':
          var d = new Float32Array(rs._data);
          RFloat.copy(rd, 2 * ri, d, 0, 2 * c);
          break;
+      case 'color':
       case "normal":
       case "binormal":
       case "tangent":
+      case "bone_index":
+      case "bone_weight":
          var d = new Uint8Array(rs._data);
          RByte.copy(rd, 4 * ri, d, 0, 4 * c);
          break;
@@ -3126,7 +3130,7 @@ function FE3rDynamicMesh_build(){
    b._name = 'instance';
    b._formatCd = EG3dAttributeFormat.Float1;
    b._data = new Float32Array(vt);
-   b.stride = 4;
+   b._stride = 4;
    o._vertexBuffers.set(b._name, b);
    var b = o._indexBuffer = gc.createIndexBuffer();
    if(gp.optionIndex32){
@@ -3158,7 +3162,7 @@ function FE3rDynamicMesh_build(){
    var vbc = vbs.count();
    for(var vbi = 0; vbi < vbc; vbi++){
       var vb = vbs.valueAt(vbi);
-      vb.upload(vb._data, vb.stride, vt);
+      vb.upload(vb._data, vb._stride, vt);
       vb._position = null;
       vb._data = null;
    }
@@ -3820,6 +3824,7 @@ function FE3rStream_loadResource(p){
    o._vertexCount = p._dataCount;
    var b = o._buffer = o._graphicContext.createVertexBuffer();
    b._name = c;
+   b._resource = p;
    switch(c){
       case "bone_index":
          b._formatCd = EG3dAttributeFormat.Byte4;
@@ -3906,8 +3911,8 @@ function FE3rTexture_load(){
    var r = o._resource;
    var rbs = r.bitmaps();
    for(var i = rbs.count() - 1; i >= 0; i--){
-      var rb = rbs.value(i);
-      var b = o._bitmaps.get(rb.guid());
+      var rb = rbs.valueAt(i);
+      var b = o.loadBitmap(rb.guid());
       var bp = o._bitmapPacks.get(rb.packCode());
       if(!bp){
          throw new TError('Link pack is not eists.');
@@ -4080,6 +4085,7 @@ function FE3rTextureBitmapFlatPack_loadResource(p){
       var t = o._texture = c.createFlatTexture();
       t.uploadData(d, s.width, s.height);
       t.makeMipmap();
+      o._graphicContext._native.finish();
       o._ready  = true;
    }
 }
@@ -4851,7 +4857,7 @@ function FE3dMeshRenderable_process(p){
 function FE3dMeshRenderable_update(p){
    var o = this;
    var d = o._display;
-   var mm = o._matrix
+   var mm = o._matrix;
    var t = o._activeTrack;
    var m = o._calculateMatrix;
    if(t){

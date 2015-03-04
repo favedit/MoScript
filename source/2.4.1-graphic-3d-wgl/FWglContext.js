@@ -12,8 +12,9 @@ function FWglContext(o){
    o._native             = null;
    o._nativeInstance     = null;
    o._nativeLayout       = null;
+   o._nativeDebugShader  = null;
    o._activeRenderTarget = null;
-   o._activeTextureSlot  = 0;
+   o._activeTextureSlot  = null;
    // @attribute
    o._parameters         = null;
    o._extensions         = null;
@@ -123,13 +124,18 @@ function FWglContext_linkCanvas(h){
    // 测试32位索引支持
    var e = g.getExtension('OES_element_index_uint');
    if(e){
-      c.optionIndex32 = true;
+      //c.optionIndex32 = true;
    }
    // 测试纹理压缩支持
    var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
    if(e){
       c.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
       c.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+   }
+   // 测试调试渲染器支持
+   var e = o._nativeDebugShader = g.getExtension('WEBGL_debug_shaders');
+   if(e){
+      c.optionShaderSource = true;
    }
 }
 
@@ -241,6 +247,13 @@ function FWglContext_parameters(){
       var n = ns[i];
       r[n] = g.getParameter(g[n]);
    }
+   // 获得调试信息
+   var e = g.getExtension('WEBGL_debug_renderer_info');
+   if(e){
+      r['UNMASKED_RENDERER_WEBGL'] = g.getParameter(e.UNMASKED_RENDERER_WEBGL);
+      r['UNMASKED_VENDOR_WEBGL'] = g.getParameter(e.UNMASKED_VENDOR_WEBGL);
+   }
+   // 设置参数
    o._parameters = r;
    return r;
 }
@@ -727,7 +740,7 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
    }
    //............................................................
    // 设置顶点流
-   var bs = b.stride;
+   var bs = b._stride;
    switch(f){
       case EG3dAttributeFormat.Float1:
          g.vertexAttribPointer(s, 1, g.FLOAT, false, bs, i);
@@ -753,14 +766,13 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
    }
    // 检查错误
    r = o.checkError("glVertexAttribPointer", "Bind vertex attribute pointer. (slot=%d, format_cd=%d)", s, f);
-   // MO_INFO("Bind vertex buffer. (slot=%d, offset=%d, format_cd=%d, stride=%d, buffer_id=%d, count=%d, length=%d)", slot, offset, formatCd, stride, bufferId, pVertexBuffer->Count(), pVertexBuffer->DataLength());
    return r;
 }
 
 //============================================================
 // <T>绑定纹理。</T>
 //
-// @param ps:slo:Integer 插槽
+// @param ps:slot:Integer 插槽
 // @param pi:index:Integer 索引
 // @param pt:texture:FG3dTexture 纹理
 // @return 处理结果
@@ -785,7 +797,7 @@ function FWglContext_bindTexture(ps, pi, pt){
       if(!r){
          return r;
       }
-      o._renderTextureActiveSlot = ps;
+      //o._activeTextureSlot = ps;
    }
    //............................................................
    // 绑定纹理

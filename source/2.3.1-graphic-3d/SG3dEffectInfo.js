@@ -12,6 +12,9 @@ function SG3dEffectInfo(o){
    o.techniqueCode         = null;
    o.techniqueModeCode     = null;
    // @attribute 状态
+   o.optionMerge           = null;
+   o.mergeCount            = null;
+   // @attribute 状态
    o.fillModeCd            = null;
    o.optionCullMode        = null;
    o.cullModeCd            = null;
@@ -93,6 +96,9 @@ function SG3dEffectInfo_reset(){
    var o = this;
    // @attribute 代码
    o.code = null;
+   // @attribute 状态
+   o.optionMerge = false;
+   o.mergeCount = 0;
    // @attribute 状态
    o.fillModeCd = EG3dFillMode.Fill;
    o.optionCullMode = true;

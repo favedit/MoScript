@@ -123,60 +123,8 @@ function SG3dContextCapability(){
    o.optionInstance         = false;
    o.optionLayout           = false;
    o.optionMaterialMap      = false;
-   o.attributeCount         = null;
-   o.vertexCount            = 65536;
-   o.vertexConst            = null;
-   o.fragmentConst          = null;
-   o.varyingCount           = null;
-   o.samplerCount           = null;
-   o.samplerSize            = null;
-   o.samplerCompressRgb     = null;
-   o.samplerCompressRgba    = null;
-   o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
-   o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
-   return o;
-}
-function SG3dContextCapability_calculateBoneCount(bc, vc){
-   var o = this;
-   var rb = 0;
-   var bi = bc % 8;
-   if(bi != 0){
-      rb = bc + 8 - bi;
-   }else{
-      rb = bc;
-   }
-   var r = 0;
-   var ib = (o.vertexConst - 16) / 4;
-   if(rb > ib){
-      r = ib;
-   }else{
-      r = rb;
-   }
-   return r;
-}
-function SG3dContextCapability_calculateInstanceCount(bc, vc){
-   var o = this;
-   var cr = (4 * bc) + 4;
-   var ib = (o.vertexConst - 16) / cr;
-   var r = cl;
-   if(vc > 0){
-      var iv = o.vertexCount / vc;
-      r = Math.min(ib, iv);
-   }
-   if(r > 64){
-      r = 64;
-   }
-   return r;
-}
-function SG3dContextCapability(){
-   var o = this;
-   o.vendor                 = null;
-   o.version                = null;
-   o.shaderVersion          = null;
-   o.optionInstance         = false;
-   o.optionLayout           = false;
-   o.optionMaterialMap      = false;
    o.optionIndex32          = false;
+   o.optionShaderSource     = false;
    o.attributeCount         = null;
    o.vertexCount            = 65536;
    o.vertexConst            = null;
@@ -186,9 +134,13 @@ function SG3dContextCapability(){
    o.samplerSize            = null;
    o.samplerCompressRgb     = null;
    o.samplerCompressRgba    = null;
+   o.calculateMergeCount    = SG3dContextCapability_calculateMergeCount;
    o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
    o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
    return o;
+}
+function SG3dContextCapability_calculateMergeCount(){
+   return parseInt((this.vertexConst - 32) / 4);
 }
 function SG3dContextCapability_calculateBoneCount(bc, vc){
    var o = this;
@@ -701,10 +653,10 @@ function FG3dVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._name     = 0;
    o._formatCd = EG3dAttributeFormat.Unknown;
-   o.stride    = 0;
-   o.count     = 0;
-   o.name   = FG3dVertexBuffer_name;
-   o.upload = RMethod.virtual(o, 'upload');
+   o._stride   = 0;
+   o._count    = 0;
+   o.name      = FG3dVertexBuffer_name;
+   o.upload    = RMethod.virtual(o, 'upload');
    return o;
 }
 function FG3dVertexBuffer_name(){

@@ -168,7 +168,7 @@ function FG3dEffect_drawRegion(pg, pi, pc){
       var gb = n;
       var ge = pc;
       var gm = rs.getAt(pi + gb)._materialReference;
-      for(var i = n; i < pc; i++){
+      for(var i = n + 1; i < pc; i++){
          var m = rs.getAt(pi + i)._materialReference;
          if(gm != m){
             ge = i;

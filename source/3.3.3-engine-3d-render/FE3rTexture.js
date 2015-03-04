@@ -140,8 +140,9 @@ function FE3rTexture_load(){
    // 加载纹理
    var rbs = r.bitmaps();
    for(var i = rbs.count() - 1; i >= 0; i--){
-      var rb = rbs.value(i);
-      var b = o._bitmaps.get(rb.guid());
+      var rb = rbs.valueAt(i);
+      var b = o.loadBitmap(rb.guid());
+      // 关联纹理和位图包
       var bp = o._bitmapPacks.get(rb.packCode());
       if(!bp){
          throw new TError('Link pack is not eists.');

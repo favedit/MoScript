@@ -79,9 +79,18 @@ function FG3dTechniquePass_code(){
 function FG3dTechniquePass_sortRenderables(s, t){
    var ms = s.material().info();
    var mt = t.material().info();
+   // 按照效果排序
    if(ms.optionAlpha && mt.optionAlpha){
       var se = s.activeEffect();
       var te = t.activeEffect();
+      if(se == te){
+         // 按照材质排序
+         sm = s._materialReference;
+         tm = t._materialReference;
+         if(sm && tm){
+            return sm.hashCode() - tm.hashCode();
+         }
+      }
       return se.hashCode() - te.hashCode();
    }else if(ms.optionAlpha && !mt.optionAlpha){
       return 1;
@@ -90,6 +99,14 @@ function FG3dTechniquePass_sortRenderables(s, t){
    }else{
       var se = s.activeEffect();
       var te = t.activeEffect();
+      if(se == te){
+         // 按照材质排序
+         sm = s._materialReference;
+         tm = t._materialReference;
+         if(sm && tm){
+            return sm.hashCode() - tm.hashCode();
+         }
+      }
       return se.hashCode() - te.hashCode();
    }
 }
@@ -160,7 +177,7 @@ function FG3dTechniquePass_drawRegion(p){
       var gb = n;
       var ge = c;
       var ga = rs.getAt(gb).activeEffect();
-      for(var i = n; i < c; i++){
+      for(var i = n + 1; i < c; i++){
          var a = rs.getAt(i).activeEffect();
          if(ga != a){
             ge = i;

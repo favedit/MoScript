@@ -6,15 +6,16 @@
 //==========================================================
 function FWglVertexShader(o){
    o = RClass.inherits(this, o, FG3dVertexShader);
-   //..........................................................
    // @attribute
    o._native = null;
+   //..........................................................
    // @method
-   o.setup   = FWglVertexShader_setup;
+   o.setup        = FWglVertexShader_setup;
    // @method
-   o.upload  = FWglVertexShader_upload;
+   o.targetSource = FWglVertexShader_targetSource;
+   o.upload       = FWglVertexShader_upload;
    // @method
-   o.dispose = FWglVertexShader_dispose;
+   o.dispose      = FWglVertexShader_dispose;
    return o;
 }
 
@@ -28,6 +29,22 @@ function FWglVertexShader_setup(){
    o.__base.FG3dVertexShader.setup.call(o);
    var g = o._graphicContext._native;
    o._native = g.createShader(g.VERTEX_SHADER);
+}
+
+//==========================================================
+// <T>获得目标代码。</T>
+//
+// @method
+// @return String 目标代码
+//==========================================================
+function FWglVertexShader_targetSource(){
+   var o = this;
+   var c = o._graphicContext;
+   var cp = c.capability();
+   if(cp.optionShaderSource){
+      return c._nativeDebugShader.getTranslatedShaderSource(o._native);
+   }
+   return o._source;
 }
 
 //==========================================================

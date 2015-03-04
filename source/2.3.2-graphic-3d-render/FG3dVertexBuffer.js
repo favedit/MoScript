@@ -11,12 +11,12 @@ function FG3dVertexBuffer(o){
    // @attribute
    o._name     = 0;
    o._formatCd = EG3dAttributeFormat.Unknown;
-   o.stride    = 0;
-   o.count     = 0;
+   o._stride   = 0;
+   o._count    = 0;
    //..........................................................
    // @method
-   o.name   = FG3dVertexBuffer_name;
-   o.upload = RMethod.virtual(o, 'upload');
+   o.name      = FG3dVertexBuffer_name;
+   o.upload    = RMethod.virtual(o, 'upload');
    return o;
 }
 

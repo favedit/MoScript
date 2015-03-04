@@ -553,7 +553,7 @@ function FE3dMeshRenderable_process(p){
 function FE3dMeshRenderable_update(p){
    var o = this;
    var d = o._display;
-   var mm = o._matrix
+   var mm = o._matrix;
    var t = o._activeTrack;
    var m = o._calculateMatrix;
    if(t){

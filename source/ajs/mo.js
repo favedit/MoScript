@@ -14313,6 +14313,8 @@ function SG3dEffectInfo(o){
    o.code                  = null;
    o.techniqueCode         = null;
    o.techniqueModeCode     = null;
+   o.optionMerge           = null;
+   o.mergeCount            = null;
    o.fillModeCd            = null;
    o.optionCullMode        = null;
    o.cullModeCd            = null;
@@ -14363,6 +14365,8 @@ function SG3dEffectInfo_samplerContains(p){
 function SG3dEffectInfo_reset(){
    var o = this;
    o.code = null;
+   o.optionMerge = false;
+   o.mergeCount = 0;
    o.fillModeCd = EG3dFillMode.Fill;
    o.optionCullMode = true;
    o.cullModeCd = EG3dCullMode.Front;
@@ -14971,7 +14975,7 @@ function FG3dEffect_drawRegion(pg, pi, pc){
       var gb = n;
       var ge = pc;
       var gm = rs.getAt(pi + gb)._materialReference;
-      for(var i = n; i < pc; i++){
+      for(var i = n + 1; i < pc; i++){
          var m = rs.getAt(pi + i)._materialReference;
          if(gm != m){
             ge = i;
@@ -15136,6 +15140,9 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    var t = pg.technique();
    pf.techniqueModeCode = t.activeMode().code();
    pf.optionMerge = pr._optionMerge;
+   if(pf.optionMerge){
+      pf.mergeCount = pr.mergeCount();
+   }
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
    pf.vertexCount = pr.vertexCount();
@@ -15805,6 +15812,13 @@ function FG3dTechniquePass_sortRenderables(s, t){
    if(ms.optionAlpha && mt.optionAlpha){
       var se = s.activeEffect();
       var te = t.activeEffect();
+      if(se == te){
+         sm = s._materialReference;
+         tm = t._materialReference;
+         if(sm && tm){
+            return sm.hashCode() - tm.hashCode();
+         }
+      }
       return se.hashCode() - te.hashCode();
    }else if(ms.optionAlpha && !mt.optionAlpha){
       return 1;
@@ -15813,6 +15827,13 @@ function FG3dTechniquePass_sortRenderables(s, t){
    }else{
       var se = s.activeEffect();
       var te = t.activeEffect();
+      if(se == te){
+         sm = s._materialReference;
+         tm = t._materialReference;
+         if(sm && tm){
+            return sm.hashCode() - tm.hashCode();
+         }
+      }
       return se.hashCode() - te.hashCode();
    }
 }
@@ -15858,7 +15879,7 @@ function FG3dTechniquePass_drawRegion(p){
       var gb = n;
       var ge = c;
       var ga = rs.getAt(gb).activeEffect();
-      for(var i = n; i < c; i++){
+      for(var i = n + 1; i < c; i++){
          var a = rs.getAt(i).activeEffect();
          if(ga != a){
             ge = i;
@@ -16064,60 +16085,8 @@ function SG3dContextCapability(){
    o.optionInstance         = false;
    o.optionLayout           = false;
    o.optionMaterialMap      = false;
-   o.attributeCount         = null;
-   o.vertexCount            = 65536;
-   o.vertexConst            = null;
-   o.fragmentConst          = null;
-   o.varyingCount           = null;
-   o.samplerCount           = null;
-   o.samplerSize            = null;
-   o.samplerCompressRgb     = null;
-   o.samplerCompressRgba    = null;
-   o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
-   o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
-   return o;
-}
-function SG3dContextCapability_calculateBoneCount(bc, vc){
-   var o = this;
-   var rb = 0;
-   var bi = bc % 8;
-   if(bi != 0){
-      rb = bc + 8 - bi;
-   }else{
-      rb = bc;
-   }
-   var r = 0;
-   var ib = (o.vertexConst - 16) / 4;
-   if(rb > ib){
-      r = ib;
-   }else{
-      r = rb;
-   }
-   return r;
-}
-function SG3dContextCapability_calculateInstanceCount(bc, vc){
-   var o = this;
-   var cr = (4 * bc) + 4;
-   var ib = (o.vertexConst - 16) / cr;
-   var r = cl;
-   if(vc > 0){
-      var iv = o.vertexCount / vc;
-      r = Math.min(ib, iv);
-   }
-   if(r > 64){
-      r = 64;
-   }
-   return r;
-}
-function SG3dContextCapability(){
-   var o = this;
-   o.vendor                 = null;
-   o.version                = null;
-   o.shaderVersion          = null;
-   o.optionInstance         = false;
-   o.optionLayout           = false;
-   o.optionMaterialMap      = false;
    o.optionIndex32          = false;
+   o.optionShaderSource     = false;
    o.attributeCount         = null;
    o.vertexCount            = 65536;
    o.vertexConst            = null;
@@ -16127,9 +16096,13 @@ function SG3dContextCapability(){
    o.samplerSize            = null;
    o.samplerCompressRgb     = null;
    o.samplerCompressRgba    = null;
+   o.calculateMergeCount    = SG3dContextCapability_calculateMergeCount;
    o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
    o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
    return o;
+}
+function SG3dContextCapability_calculateMergeCount(){
+   return parseInt((this.vertexConst - 32) / 4);
 }
 function SG3dContextCapability_calculateBoneCount(bc, vc){
    var o = this;
@@ -16642,10 +16615,10 @@ function FG3dVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._name     = 0;
    o._formatCd = EG3dAttributeFormat.Unknown;
-   o.stride    = 0;
-   o.count     = 0;
-   o.name   = FG3dVertexBuffer_name;
-   o.upload = RMethod.virtual(o, 'upload');
+   o._stride   = 0;
+   o._count    = 0;
+   o.name      = FG3dVertexBuffer_name;
+   o.upload    = RMethod.virtual(o, 'upload');
    return o;
 }
 function FG3dVertexBuffer_name(){
@@ -16698,16 +16671,18 @@ function FG3dAutomaticEffect_setup(){
 function FG3dAutomaticEffect_buildInfo(pt, pc){
    var o = this;
    var c = o._graphicContext;
-   var cb = c.capability();
+   var cp = c.capability();
    var s = new TString();
    s.append(pc.techniqueModeCode)
    pt.set("technique.mode", pc.techniqueModeCode);
    var om = o._optionMerge = pc.optionMerge;
    if(om){
-      s.append("|OI");
+      var mc = pc.mergeCount;
+      s.append("|OI" + mc);
       pt.setBoolean("option.instance", true);
+      pt.set("instance.count", mc);
    }
-   if(cb.optionMaterialMap){
+   if(cp.optionMaterialMap){
       s.append("|OM");
       pt.setBoolean("option.material.map", true);
       o._supportMaterialMap = true;
@@ -16743,7 +16718,7 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
       s.append("|AF");
       pt.setBoolean("vertex.attribute.normal.full", true);
    }
-   o._dynamicInstance = (o._supportInstance && cb.optionInstance);
+   o._dynamicInstance = (o._supportInstance && cp.optionInstance);
    if(o._dynamicInstance){
       s.append("|SI");
       if(pc){
@@ -16926,11 +16901,11 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    }
    o._dynamicInstance = o._supportInstance;
    if(o._dynamicInstance){
-      var ic = cb.calculateInstanceCount(pc.vertexBoneCount, pc.vertexCount);
+      var ic = cp.calculateInstanceCount(pc.vertexBoneCount, pc.vertexCount);
       pt.set("instance.count", ic);
    }
    if(o._dynamicSkeleton){
-      var bc = cb.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
+      var bc = cp.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
       s.append("|B" + bc);
       pt.set("bone.count", bc);
       pt.setBoolean("support.bone.weight.1", true);
@@ -17678,8 +17653,9 @@ function FWglContext(o){
    o._native             = null;
    o._nativeInstance     = null;
    o._nativeLayout       = null;
+   o._nativeDebugShader  = null;
    o._activeRenderTarget = null;
-   o._activeTextureSlot  = 0;
+   o._activeTextureSlot  = null;
    o._parameters         = null;
    o._extensions         = null;
    o._data9              = null;
@@ -17759,12 +17735,15 @@ function FWglContext_linkCanvas(h){
    }
    var e = g.getExtension('OES_element_index_uint');
    if(e){
-      c.optionIndex32 = true;
    }
    var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
    if(e){
       c.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
       c.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+   }
+   var e = o._nativeDebugShader = g.getExtension('WEBGL_debug_shaders');
+   if(e){
+      c.optionShaderSource = true;
    }
 }
 function FWglContext_parameters(){
@@ -17866,6 +17845,11 @@ function FWglContext_parameters(){
    for(var i = 0; i < c; i++){
       var n = ns[i];
       r[n] = g.getParameter(g[n]);
+   }
+   var e = g.getExtension('WEBGL_debug_renderer_info');
+   if(e){
+      r['UNMASKED_RENDERER_WEBGL'] = g.getParameter(e.UNMASKED_RENDERER_WEBGL);
+      r['UNMASKED_VENDOR_WEBGL'] = g.getParameter(e.UNMASKED_VENDOR_WEBGL);
    }
    o._parameters = r;
    return r;
@@ -18164,7 +18148,7 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
       r = o.checkError("disableVertexAttribArray", "Disable vertex attribute array. (slot=%d)", s);
       return r;
    }
-   var bs = b.stride;
+   var bs = b._stride;
    switch(f){
       case EG3dAttributeFormat.Float1:
          g.vertexAttribPointer(s, 1, g.FLOAT, false, bs, i);
@@ -18207,7 +18191,6 @@ function FWglContext_bindTexture(ps, pi, pt){
       if(!r){
          return r;
       }
-      o._renderTextureActiveSlot = ps;
    }
    var gt = null;
    switch(pt.textureCd()){
@@ -18467,10 +18450,11 @@ function FWglFlatTexture_dispose(){
 }
 function FWglFragmentShader(o){
    o = RClass.inherits(this, o, FG3dFragmentShader);
-   o._native = null;
-   o.setup   = FWglFragmentShader_setup;
-   o.upload  = FWglFragmentShader_upload;
-   o.dispose = FWglFragmentShader_dispose;
+   o._native      = null;
+   o.setup        = FWglFragmentShader_setup;
+   o.targetSource = FWglFragmentShader_targetSource;
+   o.upload       = FWglFragmentShader_upload;
+   o.dispose      = FWglFragmentShader_dispose;
    return o;
 }
 function FWglFragmentShader_setup(){
@@ -18478,6 +18462,15 @@ function FWglFragmentShader_setup(){
    o.__base.FG3dFragmentShader.setup.call(o);
    var g = o._graphicContext._native;
    o._native = g.createShader(g.FRAGMENT_SHADER);
+}
+function FWglFragmentShader_targetSource(){
+   var o = this;
+   var c = o._graphicContext;
+   var cp = c.capability();
+   if(cp.optionShaderSource){
+      return c._nativeDebugShader.getTranslatedShaderSource(o._native);
+   }
+   return o._source;
 }
 function FWglFragmentShader_upload(v){
    var o = this;
@@ -18876,8 +18869,8 @@ function FWglVertexBuffer_upload(v, s, c){
    var o = this;
    var c = o._graphicContext;
    var g = c._native;
-   o.stride = s;
-   o.count  = c;
+   o._stride = s;
+   o._count  = c;
    var d = null;
    if((v.constructor == Array) || (v.constructor == ArrayBuffer)){
       d = new Float32Array(v);
@@ -18906,9 +18899,10 @@ function FWglVertexBuffer_dispose(){
 function FWglVertexShader(o){
    o = RClass.inherits(this, o, FG3dVertexShader);
    o._native = null;
-   o.setup   = FWglVertexShader_setup;
-   o.upload  = FWglVertexShader_upload;
-   o.dispose = FWglVertexShader_dispose;
+   o.setup        = FWglVertexShader_setup;
+   o.targetSource = FWglVertexShader_targetSource;
+   o.upload       = FWglVertexShader_upload;
+   o.dispose      = FWglVertexShader_dispose;
    return o;
 }
 function FWglVertexShader_setup(){
@@ -18916,6 +18910,15 @@ function FWglVertexShader_setup(){
    o.__base.FG3dVertexShader.setup.call(o);
    var g = o._graphicContext._native;
    o._native = g.createShader(g.VERTEX_SHADER);
+}
+function FWglVertexShader_targetSource(){
+   var o = this;
+   var c = o._graphicContext;
+   var cp = c.capability();
+   if(cp.optionShaderSource){
+      return c._nativeDebugShader.getTranslatedShaderSource(o._native);
+   }
+   return o._source;
 }
 function FWglVertexShader_upload(v){
    var o = this;
@@ -22035,6 +22038,7 @@ function FE3rDynamicMesh(o){
    o._indexTotal       = 0;
    o._mergeRenderables = null;
    o.construct         = FE3rDynamicMesh_construct;
+   o.mergeCount        = FE3rDynamicMesh_mergeCount;
    o.mergeRenderables  = FE3rDynamicMesh_mergeRenderables;
    o.syncVertexBuffer  = FE3rDynamicMesh_syncVertexBuffer;
    o.mergeRenderable   = FE3rDynamicMesh_mergeRenderable;
@@ -22047,6 +22051,9 @@ function FE3rDynamicMesh_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
    o._mergeRenderables = new TObjects();
+}
+function FE3rDynamicMesh_mergeCount(){
+   return this._mergeRenderables.count();
 }
 function FE3rDynamicMesh_mergeRenderables(){
    return this._mergeRenderables;
@@ -22062,7 +22069,7 @@ function FE3rDynamicMesh_syncVertexBuffer(p){
       b._name = rc;
       b._position = 0;
       b._formatCd = p._formatCd;
-      b.stride = p.stride;
+      b._stride = p._stride;
       switch(p._formatCd){
          case EG3dAttributeFormat.Float2:
             b._data = new Float32Array(2 * vt);
@@ -22070,6 +22077,7 @@ function FE3rDynamicMesh_syncVertexBuffer(p){
          case EG3dAttributeFormat.Float3:
             b._data = new Float32Array(3 * vt);
             break;
+         case EG3dAttributeFormat.Byte4:
          case EG3dAttributeFormat.Byte4Normal:
             b._data = new Uint8Array(4 * vt);
             break;
@@ -22084,8 +22092,8 @@ function FE3rDynamicMesh_mergeRenderable(p){
    var o = this;
    var c = o._graphicContext;
    var cp = c.capability();
-   var cl = parseInt((cp.vertexConst - 32) / 4);
-   if(o._mergeRenderables.count() >= cl){
+   var mc = cp.calculateMergeCount();
+   if(o._mergeRenderables.count() >= mc){
       return false;
    }
    var vt = o._vertexTotal + p.vertexCount();
@@ -22113,17 +22121,16 @@ function FE3rDynamicMesh_mergeVertexBuffer(r, bc, b, rs){
          var d = new Float32Array(rs._data);
          RFloat.copy(rd, 3 * ri, d, 0, 3 * c);
          break;
-      case 'color':
-         var d = new Uint8Array(rs._data);
-         RByte.copy(rd, 4 * ri, d, 0, 4 * c);
-         break;
       case 'coord':
          var d = new Float32Array(rs._data);
          RFloat.copy(rd, 2 * ri, d, 0, 2 * c);
          break;
+      case 'color':
       case "normal":
       case "binormal":
       case "tangent":
+      case "bone_index":
+      case "bone_weight":
          var d = new Uint8Array(rs._data);
          RByte.copy(rd, 4 * ri, d, 0, 4 * c);
          break;
@@ -22159,7 +22166,7 @@ function FE3rDynamicMesh_build(){
    b._name = 'instance';
    b._formatCd = EG3dAttributeFormat.Float1;
    b._data = new Float32Array(vt);
-   b.stride = 4;
+   b._stride = 4;
    o._vertexBuffers.set(b._name, b);
    var b = o._indexBuffer = gc.createIndexBuffer();
    if(gp.optionIndex32){
@@ -22191,7 +22198,7 @@ function FE3rDynamicMesh_build(){
    var vbc = vbs.count();
    for(var vbi = 0; vbi < vbc; vbi++){
       var vb = vbs.valueAt(vbi);
-      vb.upload(vb._data, vb.stride, vt);
+      vb.upload(vb._data, vb._stride, vt);
       vb._position = null;
       vb._data = null;
    }
@@ -22853,6 +22860,7 @@ function FE3rStream_loadResource(p){
    o._vertexCount = p._dataCount;
    var b = o._buffer = o._graphicContext.createVertexBuffer();
    b._name = c;
+   b._resource = p;
    switch(c){
       case "bone_index":
          b._formatCd = EG3dAttributeFormat.Byte4;
@@ -22939,8 +22947,8 @@ function FE3rTexture_load(){
    var r = o._resource;
    var rbs = r.bitmaps();
    for(var i = rbs.count() - 1; i >= 0; i--){
-      var rb = rbs.value(i);
-      var b = o._bitmaps.get(rb.guid());
+      var rb = rbs.valueAt(i);
+      var b = o.loadBitmap(rb.guid());
       var bp = o._bitmapPacks.get(rb.packCode());
       if(!bp){
          throw new TError('Link pack is not eists.');
@@ -23113,6 +23121,7 @@ function FE3rTextureBitmapFlatPack_loadResource(p){
       var t = o._texture = c.createFlatTexture();
       t.uploadData(d, s.width, s.height);
       t.makeMipmap();
+      o._graphicContext._native.finish();
       o._ready  = true;
    }
 }
@@ -23884,7 +23893,7 @@ function FE3dMeshRenderable_process(p){
 function FE3dMeshRenderable_update(p){
    var o = this;
    var d = o._display;
-   var mm = o._matrix
+   var mm = o._matrix;
    var t = o._activeTrack;
    var m = o._calculateMatrix;
    if(t){
@@ -25735,6 +25744,8 @@ function SG3dEffectInfo(o){
    o.code                  = null;
    o.techniqueCode         = null;
    o.techniqueModeCode     = null;
+   o.optionMerge           = null;
+   o.mergeCount            = null;
    o.fillModeCd            = null;
    o.optionCullMode        = null;
    o.cullModeCd            = null;
@@ -25785,6 +25796,8 @@ function SG3dEffectInfo_samplerContains(p){
 function SG3dEffectInfo_reset(){
    var o = this;
    o.code = null;
+   o.optionMerge = false;
+   o.mergeCount = 0;
    o.fillModeCd = EG3dFillMode.Fill;
    o.optionCullMode = true;
    o.cullModeCd = EG3dCullMode.Front;
@@ -26393,7 +26406,7 @@ function FG3dEffect_drawRegion(pg, pi, pc){
       var gb = n;
       var ge = pc;
       var gm = rs.getAt(pi + gb)._materialReference;
-      for(var i = n; i < pc; i++){
+      for(var i = n + 1; i < pc; i++){
          var m = rs.getAt(pi + i)._materialReference;
          if(gm != m){
             ge = i;
@@ -26558,6 +26571,9 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    var t = pg.technique();
    pf.techniqueModeCode = t.activeMode().code();
    pf.optionMerge = pr._optionMerge;
+   if(pf.optionMerge){
+      pf.mergeCount = pr.mergeCount();
+   }
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
    pf.vertexCount = pr.vertexCount();
@@ -27227,6 +27243,13 @@ function FG3dTechniquePass_sortRenderables(s, t){
    if(ms.optionAlpha && mt.optionAlpha){
       var se = s.activeEffect();
       var te = t.activeEffect();
+      if(se == te){
+         sm = s._materialReference;
+         tm = t._materialReference;
+         if(sm && tm){
+            return sm.hashCode() - tm.hashCode();
+         }
+      }
       return se.hashCode() - te.hashCode();
    }else if(ms.optionAlpha && !mt.optionAlpha){
       return 1;
@@ -27235,6 +27258,13 @@ function FG3dTechniquePass_sortRenderables(s, t){
    }else{
       var se = s.activeEffect();
       var te = t.activeEffect();
+      if(se == te){
+         sm = s._materialReference;
+         tm = t._materialReference;
+         if(sm && tm){
+            return sm.hashCode() - tm.hashCode();
+         }
+      }
       return se.hashCode() - te.hashCode();
    }
 }
@@ -27280,7 +27310,7 @@ function FG3dTechniquePass_drawRegion(p){
       var gb = n;
       var ge = c;
       var ga = rs.getAt(gb).activeEffect();
-      for(var i = n; i < c; i++){
+      for(var i = n + 1; i < c; i++){
          var a = rs.getAt(i).activeEffect();
          if(ga != a){
             ge = i;
@@ -27486,60 +27516,8 @@ function SG3dContextCapability(){
    o.optionInstance         = false;
    o.optionLayout           = false;
    o.optionMaterialMap      = false;
-   o.attributeCount         = null;
-   o.vertexCount            = 65536;
-   o.vertexConst            = null;
-   o.fragmentConst          = null;
-   o.varyingCount           = null;
-   o.samplerCount           = null;
-   o.samplerSize            = null;
-   o.samplerCompressRgb     = null;
-   o.samplerCompressRgba    = null;
-   o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
-   o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
-   return o;
-}
-function SG3dContextCapability_calculateBoneCount(bc, vc){
-   var o = this;
-   var rb = 0;
-   var bi = bc % 8;
-   if(bi != 0){
-      rb = bc + 8 - bi;
-   }else{
-      rb = bc;
-   }
-   var r = 0;
-   var ib = (o.vertexConst - 16) / 4;
-   if(rb > ib){
-      r = ib;
-   }else{
-      r = rb;
-   }
-   return r;
-}
-function SG3dContextCapability_calculateInstanceCount(bc, vc){
-   var o = this;
-   var cr = (4 * bc) + 4;
-   var ib = (o.vertexConst - 16) / cr;
-   var r = cl;
-   if(vc > 0){
-      var iv = o.vertexCount / vc;
-      r = Math.min(ib, iv);
-   }
-   if(r > 64){
-      r = 64;
-   }
-   return r;
-}
-function SG3dContextCapability(){
-   var o = this;
-   o.vendor                 = null;
-   o.version                = null;
-   o.shaderVersion          = null;
-   o.optionInstance         = false;
-   o.optionLayout           = false;
-   o.optionMaterialMap      = false;
    o.optionIndex32          = false;
+   o.optionShaderSource     = false;
    o.attributeCount         = null;
    o.vertexCount            = 65536;
    o.vertexConst            = null;
@@ -27549,9 +27527,13 @@ function SG3dContextCapability(){
    o.samplerSize            = null;
    o.samplerCompressRgb     = null;
    o.samplerCompressRgba    = null;
+   o.calculateMergeCount    = SG3dContextCapability_calculateMergeCount;
    o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
    o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
    return o;
+}
+function SG3dContextCapability_calculateMergeCount(){
+   return parseInt((this.vertexConst - 32) / 4);
 }
 function SG3dContextCapability_calculateBoneCount(bc, vc){
    var o = this;
@@ -28064,10 +28046,10 @@ function FG3dVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._name     = 0;
    o._formatCd = EG3dAttributeFormat.Unknown;
-   o.stride    = 0;
-   o.count     = 0;
-   o.name   = FG3dVertexBuffer_name;
-   o.upload = RMethod.virtual(o, 'upload');
+   o._stride   = 0;
+   o._count    = 0;
+   o.name      = FG3dVertexBuffer_name;
+   o.upload    = RMethod.virtual(o, 'upload');
    return o;
 }
 function FG3dVertexBuffer_name(){
@@ -28120,16 +28102,18 @@ function FG3dAutomaticEffect_setup(){
 function FG3dAutomaticEffect_buildInfo(pt, pc){
    var o = this;
    var c = o._graphicContext;
-   var cb = c.capability();
+   var cp = c.capability();
    var s = new TString();
    s.append(pc.techniqueModeCode)
    pt.set("technique.mode", pc.techniqueModeCode);
    var om = o._optionMerge = pc.optionMerge;
    if(om){
-      s.append("|OI");
+      var mc = pc.mergeCount;
+      s.append("|OI" + mc);
       pt.setBoolean("option.instance", true);
+      pt.set("instance.count", mc);
    }
-   if(cb.optionMaterialMap){
+   if(cp.optionMaterialMap){
       s.append("|OM");
       pt.setBoolean("option.material.map", true);
       o._supportMaterialMap = true;
@@ -28165,7 +28149,7 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
       s.append("|AF");
       pt.setBoolean("vertex.attribute.normal.full", true);
    }
-   o._dynamicInstance = (o._supportInstance && cb.optionInstance);
+   o._dynamicInstance = (o._supportInstance && cp.optionInstance);
    if(o._dynamicInstance){
       s.append("|SI");
       if(pc){
@@ -28348,11 +28332,11 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    }
    o._dynamicInstance = o._supportInstance;
    if(o._dynamicInstance){
-      var ic = cb.calculateInstanceCount(pc.vertexBoneCount, pc.vertexCount);
+      var ic = cp.calculateInstanceCount(pc.vertexBoneCount, pc.vertexCount);
       pt.set("instance.count", ic);
    }
    if(o._dynamicSkeleton){
-      var bc = cb.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
+      var bc = cp.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
       s.append("|B" + bc);
       pt.set("bone.count", bc);
       pt.setBoolean("support.bone.weight.1", true);
@@ -29100,8 +29084,9 @@ function FWglContext(o){
    o._native             = null;
    o._nativeInstance     = null;
    o._nativeLayout       = null;
+   o._nativeDebugShader  = null;
    o._activeRenderTarget = null;
-   o._activeTextureSlot  = 0;
+   o._activeTextureSlot  = null;
    o._parameters         = null;
    o._extensions         = null;
    o._data9              = null;
@@ -29181,12 +29166,15 @@ function FWglContext_linkCanvas(h){
    }
    var e = g.getExtension('OES_element_index_uint');
    if(e){
-      c.optionIndex32 = true;
    }
    var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
    if(e){
       c.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
       c.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
+   }
+   var e = o._nativeDebugShader = g.getExtension('WEBGL_debug_shaders');
+   if(e){
+      c.optionShaderSource = true;
    }
 }
 function FWglContext_parameters(){
@@ -29288,6 +29276,11 @@ function FWglContext_parameters(){
    for(var i = 0; i < c; i++){
       var n = ns[i];
       r[n] = g.getParameter(g[n]);
+   }
+   var e = g.getExtension('WEBGL_debug_renderer_info');
+   if(e){
+      r['UNMASKED_RENDERER_WEBGL'] = g.getParameter(e.UNMASKED_RENDERER_WEBGL);
+      r['UNMASKED_VENDOR_WEBGL'] = g.getParameter(e.UNMASKED_VENDOR_WEBGL);
    }
    o._parameters = r;
    return r;
@@ -29586,7 +29579,7 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
       r = o.checkError("disableVertexAttribArray", "Disable vertex attribute array. (slot=%d)", s);
       return r;
    }
-   var bs = b.stride;
+   var bs = b._stride;
    switch(f){
       case EG3dAttributeFormat.Float1:
          g.vertexAttribPointer(s, 1, g.FLOAT, false, bs, i);
@@ -29629,7 +29622,6 @@ function FWglContext_bindTexture(ps, pi, pt){
       if(!r){
          return r;
       }
-      o._renderTextureActiveSlot = ps;
    }
    var gt = null;
    switch(pt.textureCd()){
@@ -29889,10 +29881,11 @@ function FWglFlatTexture_dispose(){
 }
 function FWglFragmentShader(o){
    o = RClass.inherits(this, o, FG3dFragmentShader);
-   o._native = null;
-   o.setup   = FWglFragmentShader_setup;
-   o.upload  = FWglFragmentShader_upload;
-   o.dispose = FWglFragmentShader_dispose;
+   o._native      = null;
+   o.setup        = FWglFragmentShader_setup;
+   o.targetSource = FWglFragmentShader_targetSource;
+   o.upload       = FWglFragmentShader_upload;
+   o.dispose      = FWglFragmentShader_dispose;
    return o;
 }
 function FWglFragmentShader_setup(){
@@ -29900,6 +29893,15 @@ function FWglFragmentShader_setup(){
    o.__base.FG3dFragmentShader.setup.call(o);
    var g = o._graphicContext._native;
    o._native = g.createShader(g.FRAGMENT_SHADER);
+}
+function FWglFragmentShader_targetSource(){
+   var o = this;
+   var c = o._graphicContext;
+   var cp = c.capability();
+   if(cp.optionShaderSource){
+      return c._nativeDebugShader.getTranslatedShaderSource(o._native);
+   }
+   return o._source;
 }
 function FWglFragmentShader_upload(v){
    var o = this;
@@ -30298,8 +30300,8 @@ function FWglVertexBuffer_upload(v, s, c){
    var o = this;
    var c = o._graphicContext;
    var g = c._native;
-   o.stride = s;
-   o.count  = c;
+   o._stride = s;
+   o._count  = c;
    var d = null;
    if((v.constructor == Array) || (v.constructor == ArrayBuffer)){
       d = new Float32Array(v);
@@ -30328,9 +30330,10 @@ function FWglVertexBuffer_dispose(){
 function FWglVertexShader(o){
    o = RClass.inherits(this, o, FG3dVertexShader);
    o._native = null;
-   o.setup   = FWglVertexShader_setup;
-   o.upload  = FWglVertexShader_upload;
-   o.dispose = FWglVertexShader_dispose;
+   o.setup        = FWglVertexShader_setup;
+   o.targetSource = FWglVertexShader_targetSource;
+   o.upload       = FWglVertexShader_upload;
+   o.dispose      = FWglVertexShader_dispose;
    return o;
 }
 function FWglVertexShader_setup(){
@@ -30338,6 +30341,15 @@ function FWglVertexShader_setup(){
    o.__base.FG3dVertexShader.setup.call(o);
    var g = o._graphicContext._native;
    o._native = g.createShader(g.VERTEX_SHADER);
+}
+function FWglVertexShader_targetSource(){
+   var o = this;
+   var c = o._graphicContext;
+   var cp = c.capability();
+   if(cp.optionShaderSource){
+      return c._nativeDebugShader.getTranslatedShaderSource(o._native);
+   }
+   return o._source;
 }
 function FWglVertexShader_upload(v){
    var o = this;

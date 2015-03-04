@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.sc.science.item.002">
+    <ThemeCollection>
+      <Theme code="color">
+        <MaterialCollection>
+          <Material effect_code="" option_double="0" code="pvw.sc.science.002.01">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0" g="0.294118" b="0.490196" power="1" />
+            <Diffuse r="0" g="0.294118" b="0.490196" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="" option_double="0" code="pvw.sc.science.002.02">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.898039" g="0.266667" b="0.062745" power="1" />
+            <Diffuse r="0.898039" g="0.266667" b="0.062745" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="" option_double="0" code="pvw.sc.science.002.03">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.066667" g="0.529412" b="0.772549" power="1" />
+            <Diffuse r="0.066667" g="0.529412" b="0.772549" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="" option_double="0" code="pvw.sc.science.002.04">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.898039" g="0.066667" b="0.262745" power="1" />
+            <Diffuse r="0.898039" g="0.066667" b="0.262745" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="" option_double="0" code="pvw.sc.science.002.05">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.070588" g="0.368627" b="0.215686" power="1" />
+            <Diffuse r="0.070588" g="0.368627" b="0.215686" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="" option_double="0" code="pvw.sc.science.002.06">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.94902" g="0.690196" b="0.117647" power="1" />
+            <Diffuse r="0.94902" g="0.690196" b="0.117647" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+        </MaterialCollection>
+      </Theme>
+      <Theme code="shadow">
+        <MaterialCollection>
+          <Material effect_code="" option_double="0" code="pvw.sc.science.002.01">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0" g="0.294118" b="0.490196" power="1" />
+            <Diffuse r="0" g="0.294118" b="0.490196" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="" option_double="0" code="pvw.sc.science.002.02">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.898039" g="0.266667" b="0.062745" power="1" />
+            <Diffuse r="0.898039" g="0.266667" b="0.062745" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="" option_double="0" code="pvw.sc.science.002.03">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.066667" g="0.529412" b="0.772549" power="1" />
+            <Diffuse r="0.066667" g="0.529412" b="0.772549" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="" option_double="0" code="pvw.sc.science.002.04">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.898039" g="0.066667" b="0.262745" power="1" />
+            <Diffuse r="0.898039" g="0.066667" b="0.262745" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="" option_double="0" code="pvw.sc.science.002.05">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.070588" g="0.368627" b="0.215686" power="1" />
+            <Diffuse r="0.070588" g="0.368627" b="0.215686" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="" option_double="0" code="pvw.sc.science.002.06">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.94902" g="0.690196" b="0.117647" power="1" />
+            <Diffuse r="0.94902" g="0.690196" b="0.117647" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+        </MaterialCollection>
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection>
+      <Sprite model_code="pvw.sc.science.item.002" mesh_code="ms_001_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.science.002.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.science.item.002" mesh_code="ms_002_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.science.002.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.science.item.002" mesh_code="ms_003_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.science.002.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.science.item.002" mesh_code="ms_004_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.science.002.04" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.science.item.002" mesh_code="ms_005_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.science.002.05" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.science.item.002" mesh_code="ms_006_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.science.002.06" />
+        </MaterialCollection>
+      </Sprite>
+    </DisplayCollection>
+  </Template>
+</Configuration>

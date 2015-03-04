@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.sc.courtyard.item.046">
+    <ThemeCollection>
+      <Theme code="color">
+        <MaterialCollection>
+          <Material effect_code="" option_double="0" code="pvw.sc.courtyard.046">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.79" level="0.79" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.sc.courtyard.046" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.sc.courtyard.046" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.sc.courtyard.046" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+      <Theme code="shadow">
+        <MaterialCollection>
+          <Material effect_code="" option_double="0" code="pvw.sc.courtyard.046">
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.79" level="0.79" />
+            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.sc.courtyard.046" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.sc.courtyard.046" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.sc.courtyard.046" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection>
+      <Sprite model_code="pvw.sc.courtyard.item.046" mesh_code="ms_046">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.courtyard.046" />
+        </MaterialCollection>
+      </Sprite>
+    </DisplayCollection>
+  </Template>
+</Configuration>

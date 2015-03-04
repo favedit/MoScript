@@ -72,7 +72,7 @@ function FG3dAutomaticEffect_setup(){
 function FG3dAutomaticEffect_buildInfo(pt, pc){
    var o = this;
    var c = o._graphicContext;
-   var cb = c.capability();
+   var cp = c.capability();
    // 获得参数
    var s = new TString();
    s.append(pc.techniqueModeCode)
@@ -81,12 +81,14 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    // 支持纹理材质映射
    var om = o._optionMerge = pc.optionMerge;
    if(om){
-      s.append("|OI");
+      var mc = pc.mergeCount;
+      s.append("|OI" + mc);
       pt.setBoolean("option.instance", true);
+      pt.set("instance.count", mc);
    }
    //............................................................
    // 支持纹理材质映射
-   if(cb.optionMaterialMap){
+   if(cp.optionMaterialMap){
       s.append("|OM");
       pt.setBoolean("option.material.map", true);
       o._supportMaterialMap = true;
@@ -130,7 +132,7 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    }
    //............................................................
    // 支持实例技术
-   o._dynamicInstance = (o._supportInstance && cb.optionInstance);
+   o._dynamicInstance = (o._supportInstance && cp.optionInstance);
    if(o._dynamicInstance){
       s.append("|SI");
       if(pc){
@@ -342,12 +344,12 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    // 计算最大实例个数
    o._dynamicInstance = o._supportInstance;
    if(o._dynamicInstance){
-      var ic = cb.calculateInstanceCount(pc.vertexBoneCount, pc.vertexCount);
+      var ic = cp.calculateInstanceCount(pc.vertexBoneCount, pc.vertexCount);
       pt.set("instance.count", ic);
    }
    // 计算骨头实例个数
    if(o._dynamicSkeleton){
-      var bc = cb.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
+      var bc = cp.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
       s.append("|B" + bc);
       pt.set("bone.count", bc);
       pt.setBoolean("support.bone.weight.1", true);

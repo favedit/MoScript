@@ -18,6 +18,7 @@ function FE3rDynamicMesh(o){
    // @method
    o.construct         = FE3rDynamicMesh_construct;
    // @method
+   o.mergeCount        = FE3rDynamicMesh_mergeCount;
    o.mergeRenderables  = FE3rDynamicMesh_mergeRenderables;
    o.syncVertexBuffer  = FE3rDynamicMesh_syncVertexBuffer;
    o.mergeRenderable   = FE3rDynamicMesh_mergeRenderable;
@@ -36,6 +37,16 @@ function FE3rDynamicMesh_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
    o._mergeRenderables = new TObjects();
+}
+
+//==========================================================
+// <T>获得合并渲染总数。</T>
+//
+// @method
+// @return Integer 总数
+//==========================================================
+function FE3rDynamicMesh_mergeCount(){
+   return this._mergeRenderables.count();
 }
 
 //==========================================================
@@ -68,7 +79,7 @@ function FE3rDynamicMesh_syncVertexBuffer(p){
       b._name = rc;
       b._position = 0;
       b._formatCd = p._formatCd;
-      b.stride = p.stride;
+      b._stride = p._stride;
       switch(p._formatCd){
          case EG3dAttributeFormat.Float2:
             b._data = new Float32Array(2 * vt);
@@ -76,6 +87,7 @@ function FE3rDynamicMesh_syncVertexBuffer(p){
          case EG3dAttributeFormat.Float3:
             b._data = new Float32Array(3 * vt);
             break;
+         case EG3dAttributeFormat.Byte4:
          case EG3dAttributeFormat.Byte4Normal:
             b._data = new Uint8Array(4 * vt);
             break;
@@ -98,8 +110,8 @@ function FE3rDynamicMesh_mergeRenderable(p){
    var c = o._graphicContext;
    var cp = c.capability();
    // 检查个数限制
-   var cl = parseInt((cp.vertexConst - 32) / 4);
-   if(o._mergeRenderables.count() >= cl){
+   var mc = cp.calculateMergeCount();
+   if(o._mergeRenderables.count() >= mc){
       return false;
    }
    // 检查顶点总数限制
@@ -133,19 +145,19 @@ function FE3rDynamicMesh_mergeVertexBuffer(r, bc, b, rs){
    switch(bc){
       case 'position':
          var d = new Float32Array(rs._data);
+         //r.currentMatrix().transform(rd, 3 * ri, d, 0, c);
          RFloat.copy(rd, 3 * ri, d, 0, 3 * c);
-         break;
-      case 'color':
-         var d = new Uint8Array(rs._data);
-         RByte.copy(rd, 4 * ri, d, 0, 4 * c);
          break;
       case 'coord':
          var d = new Float32Array(rs._data);
          RFloat.copy(rd, 2 * ri, d, 0, 2 * c);
          break;
+      case 'color':
       case "normal":
       case "binormal":
       case "tangent":
+      case "bone_index":
+      case "bone_weight":
          var d = new Uint8Array(rs._data);
          RByte.copy(rd, 4 * ri, d, 0, 4 * c);
          break;
@@ -195,7 +207,7 @@ function FE3rDynamicMesh_build(){
    b._name = 'instance';
    b._formatCd = EG3dAttributeFormat.Float1;
    b._data = new Float32Array(vt);
-   b.stride = 4;
+   b._stride = 4;
    o._vertexBuffers.set(b._name, b);
    // 创建索引流
    var b = o._indexBuffer = gc.createIndexBuffer();
@@ -233,7 +245,7 @@ function FE3rDynamicMesh_build(){
    var vbc = vbs.count();
    for(var vbi = 0; vbi < vbc; vbi++){
       var vb = vbs.valueAt(vbi);
-      vb.upload(vb._data, vb.stride, vt);
+      vb.upload(vb._data, vb._stride, vt);
       vb._position = null;
       vb._data = null;
    }

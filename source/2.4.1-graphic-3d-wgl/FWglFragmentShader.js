@@ -8,14 +8,15 @@ function FWglFragmentShader(o){
    o = RClass.inherits(this, o, FG3dFragmentShader);
    //..........................................................
    // @attribute
-   o._native = null;
+   o._native      = null;
    //..........................................................
    // @method
-   o.setup   = FWglFragmentShader_setup;
+   o.setup        = FWglFragmentShader_setup;
    // @method
-   o.upload  = FWglFragmentShader_upload;
+   o.targetSource = FWglFragmentShader_targetSource;
+   o.upload       = FWglFragmentShader_upload;
    // @method
-   o.dispose = FWglFragmentShader_dispose;
+   o.dispose      = FWglFragmentShader_dispose;
    return o;
 }
 
@@ -29,6 +30,22 @@ function FWglFragmentShader_setup(){
    o.__base.FG3dFragmentShader.setup.call(o);
    var g = o._graphicContext._native;
    o._native = g.createShader(g.FRAGMENT_SHADER);
+}
+
+//==========================================================
+// <T>获得目标代码。</T>
+//
+// @method
+// @return String 目标代码
+//==========================================================
+function FWglFragmentShader_targetSource(){
+   var o = this;
+   var c = o._graphicContext;
+   var cp = c.capability();
+   if(cp.optionShaderSource){
+      return c._nativeDebugShader.getTranslatedShaderSource(o._native);
+   }
+   return o._source;
 }
 
 //==========================================================

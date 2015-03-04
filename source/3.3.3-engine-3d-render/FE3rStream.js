@@ -52,6 +52,7 @@ function FE3rStream_loadResource(p){
    // 创建顶点缓冲
    var b = o._buffer = o._graphicContext.createVertexBuffer();
    b._name = c;
+   b._resource = p;
    switch(c){
       case "bone_index":
          b._formatCd = EG3dAttributeFormat.Byte4;
