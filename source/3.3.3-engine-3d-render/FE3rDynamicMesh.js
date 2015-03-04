@@ -184,7 +184,6 @@ function FE3rDynamicMesh_mergeIndexBuffer(ir){
    for(var i = 0; i < rc; i++){
       id[ip++] = vp + rd[i]
    }
-   o._indexPosition = ip;
 }
 
 //==========================================================
@@ -224,7 +223,7 @@ function FE3rDynamicMesh_build(){
    // 合并顶点
    for(var i = 0; i < rc; i++){
       var r = rs.getAt(i);
-      var vc = r.vertexCount()
+      var vc = r.vertexCount();
       var vbs = r.vertexBuffers();
       var vbc = vbs.count();
       for(var vbi = 0; vbi < vbc; vbi++){
@@ -239,9 +238,12 @@ function FE3rDynamicMesh_build(){
       RFloat.fill(vnid, o._vertexPosition, vc, i);
       // 生成索引数据
       var ib = r.indexBuffer();
+      var ic = ib.count();
       var ir = ib._resource;
       o.mergeIndexBuffer(ir);
+      // 移动顶点位置
       o._vertexPosition += vc;
+      o._indexPosition += ic;
    }
    // 上传顶点数据
    var vbs = o._vertexBuffers;

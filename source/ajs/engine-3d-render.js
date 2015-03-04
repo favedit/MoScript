@@ -311,7 +311,6 @@ function FE3rDynamicMesh_mergeIndexBuffer(ir){
    for(var i = 0; i < rc; i++){
       id[ip++] = vp + rd[i]
    }
-   o._indexPosition = ip;
 }
 function FE3rDynamicMesh_build(){
    var o = this;
@@ -341,7 +340,7 @@ function FE3rDynamicMesh_build(){
    b._count = ft;
    for(var i = 0; i < rc; i++){
       var r = rs.getAt(i);
-      var vc = r.vertexCount()
+      var vc = r.vertexCount();
       var vbs = r.vertexBuffers();
       var vbc = vbs.count();
       for(var vbi = 0; vbi < vbc; vbi++){
@@ -353,9 +352,11 @@ function FE3rDynamicMesh_build(){
       }
       RFloat.fill(vnid, o._vertexPosition, vc, i);
       var ib = r.indexBuffer();
+      var ic = ib.count();
       var ir = ib._resource;
       o.mergeIndexBuffer(ir);
       o._vertexPosition += vc;
+      o._indexPosition += ic;
    }
    var vbs = o._vertexBuffers;
    var vbc = vbs.count();
