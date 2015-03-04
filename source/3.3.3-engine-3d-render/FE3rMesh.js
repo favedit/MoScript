@@ -233,7 +233,7 @@ function FE3rMesh_loadResource(p){
          // 创建索引缓冲
          var b = o._indexBuffer = c.createIndexBuffer();
          b._resource = rs;
-         b.upload(rs._data, rs._dataCount * 3);
+         b.upload(rs._data, 3 * rs._dataCount);
       }else{
          // 创建顶点缓冲
          var b = c.createVertexBuffer();

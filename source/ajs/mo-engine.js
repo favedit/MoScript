@@ -3056,11 +3056,13 @@ function FE3rDynamicMesh_mergeRenderable(p){
    var o = this;
    var c = o._graphicContext;
    var cp = c.capability();
+   var vc = p.vertexCount();
+   var ic = p.indexBuffer().count();
    var mc = cp.calculateMergeCount();
    if(o._mergeRenderables.count() >= mc){
       return false;
    }
-   var vt = o._vertexTotal + p.vertexCount();
+   var vt = o._vertexTotal + vc;
    if(cp.optionIndex32){
       if(vt > RInteger.MAX_UINT32){
          return false;
@@ -3070,8 +3072,8 @@ function FE3rDynamicMesh_mergeRenderable(p){
          return false;
       }
    }
-   o._vertexTotal = vt;
-   o._indexTotal += p.indexBuffer().count();
+   o._vertexTotal += vc;
+   o._indexTotal += ic;
    o._mergeRenderables.push(p);
    return true;
 }
@@ -3129,7 +3131,7 @@ function FE3rDynamicMesh_build(){
    var b = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
    b._name = 'instance';
    b._formatCd = EG3dAttributeFormat.Float1;
-   b._data = new Float32Array(vt);
+   var vnid = b._data = new Float32Array(vt);
    b._stride = 4;
    o._vertexBuffers.set(b._name, b);
    var b = o._indexBuffer = gc.createIndexBuffer();
@@ -3143,6 +3145,7 @@ function FE3rDynamicMesh_build(){
    b._count = ft;
    for(var i = 0; i < rc; i++){
       var r = rs.getAt(i);
+      var vc = r.vertexCount()
       var vbs = r.vertexBuffers();
       var vbc = vbs.count();
       for(var vbi = 0; vbi < vbc; vbi++){
@@ -3152,11 +3155,11 @@ function FE3rDynamicMesh_build(){
          var b = o.syncVertexBuffer(vb);
          o.mergeVertexBuffer(r, vbrc, b, vbr);
       }
-      RFloat.fill(o._instanceVertexBuffer._data, o._vertexPosition, r.vertexCount(), i);
+      RFloat.fill(vnid, o._vertexPosition, vc, i);
       var ib = r.indexBuffer();
       var ir = ib._resource;
       o.mergeIndexBuffer(ir);
-      o._vertexPosition += r.vertexCount();
+      o._vertexPosition += vc;
    }
    var vbs = o._vertexBuffers;
    var vbc = vbs.count();
@@ -3176,7 +3179,8 @@ function FE3rDynamicModel(o){
    o._meshes           = null;
    o._updateDate       = 0;
    o.construct         = FE3rDynamicModel_construct;
-   o._renderables      = FE3rDynamicModel_renderables;
+   o.createMesh        = FE3rDynamicModel_createMesh;
+   o.renderables       = FE3rDynamicModel_renderables;
    o.meshes            = FE3rDynamicModel_meshes;
    o.pushRenderable    = FE3rDynamicModel_pushRenderable;
    o.build             = FE3rDynamicModel_build;
@@ -3188,6 +3192,13 @@ function FE3rDynamicModel_construct(){
    o.__base.FE3rObject.construct.call(o);
    o._renderables = new TObjects();
    o._meshes = new TObjects();
+}
+function FE3rDynamicModel_createMesh(){
+   var o = this;
+   var m = RClass.create(FE3rDynamicMesh);
+   m.linkGraphicContext(o);
+   o._meshes.push(m);
+   return m;
 }
 function FE3rDynamicModel_renderables(){
    return this._renderables;
@@ -3203,22 +3214,17 @@ function FE3rDynamicModel_build(){
    var rs = o._renderables;
    var ms = o._meshes;
    var rc = rs.count();
-   var mr = null;
-   for(var i = 0; i < rc; i++){
-      var r = rs.getAt(i);
-      if(!mr){
-         mr = RClass.create(FE3rDynamicMesh);
-         mr.linkGraphicContext(o);
-         ms.push(mr);
-      }
-      if(mr.mergeRenderable(r)){
-         continue;
-      }else{
-         mr = RClass.create(FE3rDynamicMesh);
-         mr.linkGraphicContext(o);
-         ms.push(mr);
-         if(!mr.mergeRenderable(r)){
-            throw new TError(o, 'Merge renderable failure.');
+   if(rc > 0){
+      var mr = o.createMesh();
+      for(var i = 0; i < rc; i++){
+         var r = rs.getAt(i);
+         if(mr.mergeRenderable(r)){
+            continue;
+         }else{
+            mr = o.createMesh();
+            if(!mr.mergeRenderable(r)){
+               throw new TError(o, 'Merge renderable failure.');
+            }
          }
       }
    }
@@ -3418,7 +3424,7 @@ function FE3rMesh_loadResource(p){
       if((rc == 'index16') || (rc == 'index32')){
          var b = o._indexBuffer = c.createIndexBuffer();
          b._resource = rs;
-         b.upload(rs._data, rs._dataCount * 3);
+         b.upload(rs._data, 3 * rs._dataCount);
       }else{
          var b = c.createVertexBuffer();
          b._name = rc;
@@ -4247,7 +4253,7 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
       var mc = ms.count();
       var d = RTypeArray.findTemp(EDataType.Float, 16 * mc);
       for(var i = 0; i < mc; i++){
-         var m = ms.get(i);
+         var m = ms.getAt(i);
          m.currentMatrix().writeData(d, 16 * i);
       }
       p.setParameter('vc_model_matrix', d);

@@ -999,7 +999,7 @@ function FG3dEffect_drawRegion(pg, pi, pc){
       var gb = n;
       var ge = pc;
       var gm = rs.getAt(pi + gb)._materialReference;
-      for(var i = n + 1; i < pc; i++){
+      for(var i = n; i < pc; i++){
          var m = rs.getAt(pi + i)._materialReference;
          if(gm != m){
             ge = i;
@@ -1903,7 +1903,7 @@ function FG3dTechniquePass_drawRegion(p){
       var gb = n;
       var ge = c;
       var ga = rs.getAt(gb).activeEffect();
-      for(var i = n + 1; i < c; i++){
+      for(var i = n; i < c; i++){
          var a = rs.getAt(i).activeEffect();
          if(ga != a){
             ge = i;

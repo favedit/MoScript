@@ -109,13 +109,15 @@ function FE3rDynamicMesh_mergeRenderable(p){
    var o = this;
    var c = o._graphicContext;
    var cp = c.capability();
+   var vc = p.vertexCount();
+   var ic = p.indexBuffer().count();
    // 检查个数限制
    var mc = cp.calculateMergeCount();
    if(o._mergeRenderables.count() >= mc){
       return false;
    }
    // 检查顶点总数限制
-   var vt = o._vertexTotal + p.vertexCount();
+   var vt = o._vertexTotal + vc;
    if(cp.optionIndex32){
       if(vt > RInteger.MAX_UINT32){
          return false;
@@ -126,8 +128,8 @@ function FE3rDynamicMesh_mergeRenderable(p){
       }
    }
    // 重新计算总数
-   o._vertexTotal = vt;
-   o._indexTotal += p.indexBuffer().count();
+   o._vertexTotal += vc;
+   o._indexTotal += ic;
    o._mergeRenderables.push(p);
    return true;
 }
@@ -206,7 +208,7 @@ function FE3rDynamicMesh_build(){
    var b = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
    b._name = 'instance';
    b._formatCd = EG3dAttributeFormat.Float1;
-   b._data = new Float32Array(vt);
+   var vnid = b._data = new Float32Array(vt);
    b._stride = 4;
    o._vertexBuffers.set(b._name, b);
    // 创建索引流
@@ -222,6 +224,7 @@ function FE3rDynamicMesh_build(){
    // 合并顶点
    for(var i = 0; i < rc; i++){
       var r = rs.getAt(i);
+      var vc = r.vertexCount()
       var vbs = r.vertexBuffers();
       var vbc = vbs.count();
       for(var vbi = 0; vbi < vbc; vbi++){
@@ -233,12 +236,12 @@ function FE3rDynamicMesh_build(){
          o.mergeVertexBuffer(r, vbrc, b, vbr);
       }
       // 生成顶点实例数据
-      RFloat.fill(o._instanceVertexBuffer._data, o._vertexPosition, r.vertexCount(), i);
+      RFloat.fill(vnid, o._vertexPosition, vc, i);
       // 生成索引数据
       var ib = r.indexBuffer();
       var ir = ib._resource;
       o.mergeIndexBuffer(ir);
-      o._vertexPosition += r.vertexCount();
+      o._vertexPosition += vc;
    }
    // 上传顶点数据
    var vbs = o._vertexBuffers;

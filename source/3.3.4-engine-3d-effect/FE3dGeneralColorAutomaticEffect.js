@@ -41,7 +41,7 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
       var mc = ms.count();
       var d = RTypeArray.findTemp(EDataType.Float, 16 * mc);
       for(var i = 0; i < mc; i++){
-         var m = ms.get(i);
+         var m = ms.getAt(i);
          m.currentMatrix().writeData(d, 16 * i);
       }
       p.setParameter('vc_model_matrix', d);

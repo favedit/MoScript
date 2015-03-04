@@ -177,7 +177,7 @@ function FG3dTechniquePass_drawRegion(p){
       var gb = n;
       var ge = c;
       var ga = rs.getAt(gb).activeEffect();
-      for(var i = n + 1; i < c; i++){
+      for(var i = n; i < c; i++){
          var a = rs.getAt(i).activeEffect();
          if(ga != a){
             ge = i;

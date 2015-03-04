@@ -236,12 +236,6 @@
          //............................................................
          // 计算散射颜色
          <shader:true source='vertex.attribute.normal'>
-         <shader:true source='option.instance'>
-         //result.rgb = v_normal.xxx;
-         </shader:true>
-         <shader:false source='option.instance'>
-         //discard;
-         </shader:false>
          <shader:true source='support.diffuse.dump'>
          vec4 normal = texture2D(fs_normal, vec2(v_coord.x, v_coord.y));
          normal.xyz = normalize(normal.rgb * 2.0 - 1.0);

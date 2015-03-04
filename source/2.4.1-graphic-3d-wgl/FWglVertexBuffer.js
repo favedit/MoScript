@@ -35,27 +35,27 @@ function FWglVertexBuffer_setup(){
 // <T>上传数据</T>
 //
 // @method
-// @param v:data:Array 数据
-// @param s:stride:Integer 宽度
-// @param c:count:Integer 总数
+// @param pv:data:Array 数据
+// @param ps:stride:Integer 宽度
+// @param pc:count:Integer 总数
 //==========================================================
-function FWglVertexBuffer_upload(v, s, c){
+function FWglVertexBuffer_upload(pd, ps, pc){
    var o = this;
    var c = o._graphicContext;
    var g = c._native;
    // 设置数据
-   o._stride = s;
-   o._count  = c;
+   o._stride = ps;
+   o._count = pc;
    // 获得数据
    var d = null;
-   if((v.constructor == Array) || (v.constructor == ArrayBuffer)){
-      d = new Float32Array(v);
-   }else if(v.constructor == Uint8Array){
-      d = v;
-   }else if(v.constructor == Float32Array){
-      d = v;
+   if((pd.constructor == Array) || (pd.constructor == ArrayBuffer)){
+      d = new Float32Array(pd);
+   }else if(pd.constructor == Uint8Array){
+      d = pd;
+   }else if(pd.constructor == Float32Array){
+      d = pd;
    }else{
-      throw new TError(o, 'Upload vertex data type is invalid. (value={1})', v);
+      throw new TError(o, 'Upload vertex data type is invalid. (data={1})', pd);
    }
    // 上传数据
    g.bindBuffer(g.ARRAY_BUFFER, o._native);

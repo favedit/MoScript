@@ -15,7 +15,8 @@ function FE3rDynamicModel(o){
    // @method
    o.construct         = FE3rDynamicModel_construct;
    // @method
-   o._renderables      = FE3rDynamicModel_renderables;
+   o.createMesh        = FE3rDynamicModel_createMesh;
+   o.renderables       = FE3rDynamicModel_renderables;
    o.meshes            = FE3rDynamicModel_meshes;
    o.pushRenderable    = FE3rDynamicModel_pushRenderable;
    o.build             = FE3rDynamicModel_build;
@@ -33,6 +34,20 @@ function FE3rDynamicModel_construct(){
    o.__base.FE3rObject.construct.call(o);
    o._renderables = new TObjects();
    o._meshes = new TObjects();
+}
+
+//==========================================================
+// <T>创建网格。</T>
+//
+// @method
+// @return FE3rDynamicMesh 动态网格
+//==========================================================
+function FE3rDynamicModel_createMesh(){
+   var o = this;
+   var m = RClass.create(FE3rDynamicMesh);
+   m.linkGraphicContext(o);
+   o._meshes.push(m);
+   return m;
 }
 
 //==========================================================
@@ -75,22 +90,19 @@ function FE3rDynamicModel_build(){
    var ms = o._meshes;
    // 生成渲染对象
    var rc = rs.count();
-   var mr = null;
-   for(var i = 0; i < rc; i++){
-      var r = rs.getAt(i);
-      if(!mr){
-         mr = RClass.create(FE3rDynamicMesh);
-         mr.linkGraphicContext(o);
-         ms.push(mr);
-      }
-      if(mr.mergeRenderable(r)){
-         continue;
-      }else{
-         mr = RClass.create(FE3rDynamicMesh);
-         mr.linkGraphicContext(o);
-         ms.push(mr);
-         if(!mr.mergeRenderable(r)){
-            throw new TError(o, 'Merge renderable failure.');
+   if(rc > 0){
+      // 创建动态网格
+      var mr = o.createMesh();
+      // 增加到动态网格中
+      for(var i = 0; i < rc; i++){
+         var r = rs.getAt(i);
+         if(mr.mergeRenderable(r)){
+            continue;
+         }else{
+            mr = o.createMesh();
+            if(!mr.mergeRenderable(r)){
+               throw new TError(o, 'Merge renderable failure.');
+            }
          }
       }
    }

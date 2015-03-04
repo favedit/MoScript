@@ -124,7 +124,7 @@ function FWglContext_linkCanvas(h){
    // 测试32位索引支持
    var e = g.getExtension('OES_element_index_uint');
    if(e){
-      //c.optionIndex32 = true;
+      c.optionIndex32 = true;
    }
    // 测试纹理压缩支持
    var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');

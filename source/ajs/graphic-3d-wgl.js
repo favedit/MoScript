@@ -85,6 +85,7 @@ function FWglContext_linkCanvas(h){
    }
    var e = g.getExtension('OES_element_index_uint');
    if(e){
+      c.optionIndex32 = true;
    }
    var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
    if(e){
@@ -1215,21 +1216,21 @@ function FWglVertexBuffer_setup(){
    var g = o._graphicContext._native;
    o._native = g.createBuffer();
 }
-function FWglVertexBuffer_upload(v, s, c){
+function FWglVertexBuffer_upload(pd, ps, pc){
    var o = this;
    var c = o._graphicContext;
    var g = c._native;
-   o._stride = s;
-   o._count  = c;
+   o._stride = ps;
+   o._count = pc;
    var d = null;
-   if((v.constructor == Array) || (v.constructor == ArrayBuffer)){
-      d = new Float32Array(v);
-   }else if(v.constructor == Uint8Array){
-      d = v;
-   }else if(v.constructor == Float32Array){
-      d = v;
+   if((pd.constructor == Array) || (pd.constructor == ArrayBuffer)){
+      d = new Float32Array(pd);
+   }else if(pd.constructor == Uint8Array){
+      d = pd;
+   }else if(pd.constructor == Float32Array){
+      d = pd;
    }else{
-      throw new TError(o, 'Upload vertex data type is invalid. (value={1})', v);
+      throw new TError(o, 'Upload vertex data type is invalid. (data={1})', pd);
    }
    g.bindBuffer(g.ARRAY_BUFFER, o._native);
    c.checkError('bindBuffer', 'Bindbuffer');
