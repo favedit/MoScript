@@ -9,9 +9,12 @@ function FWglFragmentShader(o){
    //..........................................................
    // @attribute
    o._native = null;
+   //..........................................................
    // @method
    o.setup   = FWglFragmentShader_setup;
+   // @method
    o.upload  = FWglFragmentShader_upload;
+   // @method
    o.dispose = FWglFragmentShader_dispose;
    return o;
 }
@@ -60,10 +63,13 @@ function FWglFragmentShader_upload(v){
 //==========================================================
 function FWglFragmentShader_dispose(){
    var o = this;
-   var g = o._graphicContext._native;
-   if(o._native){
-      g.deleteShader(o._native);
+   var c = o._graphicContext;
+   // 释放对象
+   var n = o._native;
+   if(n){
+      c._native.deleteShader(n);
+      o._native = null;
    }
-   o._native = null;
+   // 父处理
    o.__base.FG3dFragmentShader.dispose.call(o);
 }

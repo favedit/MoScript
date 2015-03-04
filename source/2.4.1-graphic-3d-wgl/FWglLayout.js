@@ -8,6 +8,9 @@
 function FWglLayout(o){
    o = RClass.inherits(this, o, FG3dLayout);
    //..........................................................
+   // @attribute
+   o._native  = null;
+   //..........................................................
    // @method
    o.setup    = FWglLayout_setup;
    // @method
@@ -29,6 +32,7 @@ function FWglLayout(o){
 function FWglLayout_setup(){
    var o = this;
    o.__base.FG3dLayout.setup.call(o);
+   // 创建层
    var c = o._graphicContext;
    o._native = c._nativeLayout.createVertexArrayOES();
 }
@@ -85,9 +89,12 @@ function FWglLayout_deactive(){
 function FWglLayout_dispose(){
    var o = this;
    var c = o._graphicContext;
+   // 释放对象
    var n = o._native;
    if(n){
       c._nativeLayout.deleteVertexArrayOES(n);
       o._native = null;
    }
+   // 父处理
+   o.__base.FG3dLayout.dispose.call(o);
 }

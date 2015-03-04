@@ -57,6 +57,7 @@ function FE3dRenderable(o){
    o._vertexCount     = 0;
    o._vertexBuffers   = null;
    o._indexBuffer     = null;
+   o._textures        = null;
    o.construct        = FE3dRenderable_construct;
    o.setup            = RMethod.empty;
    o.testVisible      = RMethod.emptyTrue;
@@ -66,7 +67,8 @@ function FE3dRenderable(o){
    o.findVertexBuffer = FE3dRenderable_findVertexBuffer;
    o.vertexBuffers    = FE3dRenderable_vertexBuffers;
    o.indexBuffer      = FE3dRenderable_indexBuffer;
-   o.textures         = RMethod.empty;
+   o.findTexture      = FE3dRenderable_findTexture;
+   o.textures         = FE3dRenderable_textures;
    o.bones            = RMethod.empty;
    o.update           = FE3dRenderable_update;
    o.remove           = FE3dRenderable_remove;
@@ -96,6 +98,12 @@ function FE3dRenderable_vertexBuffers(){
 }
 function FE3dRenderable_indexBuffer(){
    return this._indexBuffer;
+}
+function FE3dRenderable_findTexture(p){
+   return this._textures.get(p);
+}
+function FE3dRenderable_textures(){
+   return this._textures;
 }
 function FE3dRenderable_update(p){
    var o = this;

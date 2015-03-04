@@ -80,12 +80,14 @@ function FE3rDynamicModel_build(){
       var r = rs.getAt(i);
       if(!mr){
          mr = RClass.create(FE3rDynamicMesh);
+         mr.linkGraphicContext(o);
          ms.push(mr);
       }
       if(mr.mergeRenderable(r)){
          continue;
       }else{
          mr = RClass.create(FE3rDynamicMesh);
+         mr.linkGraphicContext(o);
          ms.push(mr);
          if(!mr.mergeRenderable(r)){
             throw new TError(o, 'Merge renderable failure.');
@@ -95,9 +97,7 @@ function FE3rDynamicModel_build(){
    // 生成渲染对象
    var mc = ms.count();
    for(var i = 0; i < mc; i++){
-      var m = ms.getAt(i);
-      m.linkGraphicContext(o);
-      m.build();
+      ms.getAt(i).build();
    }
 }
 

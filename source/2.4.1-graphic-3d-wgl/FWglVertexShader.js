@@ -11,7 +11,9 @@ function FWglVertexShader(o){
    o._native = null;
    // @method
    o.setup   = FWglVertexShader_setup;
+   // @method
    o.upload  = FWglVertexShader_upload;
+   // @method
    o.dispose = FWglVertexShader_dispose;
    return o;
 }
@@ -60,10 +62,13 @@ function FWglVertexShader_upload(v){
 //==========================================================
 function FWglVertexShader_dispose(){
    var o = this;
-   var g = o._graphicContext._native;
-   if(o._native){
-      g.deleteShader(o._native);
+   var c = o._graphicContext;
+   // 释放对象
+   var n = o._native;
+   if(n){
+      c._native.deleteShader(n);
+      o._native = null;
    }
-   o._native = null;
+   // 父处理
    o.__base.FG3dVertexShader.dispose.call(o);
 }

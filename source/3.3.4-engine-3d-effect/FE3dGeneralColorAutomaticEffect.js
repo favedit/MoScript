@@ -37,7 +37,7 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    // 绑定所有属性流
    // 设置骨头集合
    if(pr._optionMerge){
-      var ms = pr._merges;
+      var ms = pr.mergeRenderables();
       var mc = ms.count();
       var d = RTypeArray.findTemp(EDataType.Float, 16 * mc);
       for(var i = 0; i < mc; i++){

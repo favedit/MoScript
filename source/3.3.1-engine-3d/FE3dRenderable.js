@@ -14,6 +14,7 @@ function FE3dRenderable(o){
    o._vertexCount     = 0;
    o._vertexBuffers   = null;
    o._indexBuffer     = null;
+   o._textures        = null;
    //..........................................................
    // @method
    o.construct        = FE3dRenderable_construct;
@@ -27,7 +28,8 @@ function FE3dRenderable(o){
    o.findVertexBuffer = FE3dRenderable_findVertexBuffer;
    o.vertexBuffers    = FE3dRenderable_vertexBuffers;
    o.indexBuffer      = FE3dRenderable_indexBuffer;
-   o.textures         = RMethod.empty;
+   o.findTexture      = FE3dRenderable_findTexture;
+   o.textures         = FE3dRenderable_textures;
    o.bones            = RMethod.empty;
    // @method
    o.update           = FE3dRenderable_update;
@@ -108,6 +110,27 @@ function FE3dRenderable_vertexBuffers(){
 //==========================================================
 function FE3dRenderable_indexBuffer(){
    return this._indexBuffer;
+}
+
+//==========================================================
+// <T>根据名称查找纹理。</T>
+//
+// @method
+// @param p:name:String 名称
+// @return FRenderIndexBuffer 纹理
+//==========================================================
+function FE3dRenderable_findTexture(p){
+   return this._textures.get(p);
+}
+
+//==========================================================
+// <T>获得纹理集合。</T>
+//
+// @method
+// @return TDictionary 纹理集合
+//==========================================================
+function FE3dRenderable_textures(){
+   return this._textures;
 }
 
 //==========================================================

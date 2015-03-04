@@ -13,14 +13,12 @@ function FE3rDynamicMesh(o){
    o._vertexTotal      = 0;
    o._indexPosition    = 0;
    o._indexTotal       = 0;
-   o._merges           = null;
-   o._indexBuffer      = null;
+   o._mergeRenderables = null;
    //..........................................................
    // @method
    o.construct         = FE3rDynamicMesh_construct;
    // @method
-   o.findTexture       = FE3rDynamicMesh_findTexture;
-   o.textures          = FE3rDynamicMesh_textures;
+   o.mergeRenderables  = FE3rDynamicMesh_mergeRenderables;
    o.syncVertexBuffer  = FE3rDynamicMesh_syncVertexBuffer;
    o.mergeRenderable   = FE3rDynamicMesh_mergeRenderable;
    o.mergeVertexBuffer = FE3rDynamicMesh_mergeVertexBuffer;
@@ -37,28 +35,17 @@ function FE3rDynamicMesh(o){
 function FE3rDynamicMesh_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
-   o._merges = new TObjects();
+   o._mergeRenderables = new TObjects();
 }
 
 //==========================================================
-// <T>根据名称查找纹理。</T>
+// <T>获得合并渲染集合。</T>
 //
 // @method
-// @param p:name:String 名称
-// @return FRenderIndexBuffer 纹理
+// @return TObjects 渲染集合
 //==========================================================
-function FE3rDynamicMesh_findTexture(p){
-   return this._textures.get(p);
-}
-
-//==========================================================
-// <T>获得纹理集合。</T>
-//
-// @method
-// @return TDictionary 纹理集合
-//==========================================================
-function FE3rDynamicMesh_textures(){
-   return this._textures;
+function FE3rDynamicMesh_mergeRenderables(){
+   return this._mergeRenderables;
 }
 
 //==========================================================
@@ -108,19 +95,28 @@ function FE3rDynamicMesh_syncVertexBuffer(p){
 //==========================================================
 function FE3rDynamicMesh_mergeRenderable(p){
    var o = this;
-   // 检查个数
-   if(o._merges.count() > 24){
+   var c = o._graphicContext;
+   var cp = c.capability();
+   // 检查个数限制
+   var cl = parseInt((cp.vertexConst - 32) / 4);
+   if(o._mergeRenderables.count() >= cl){
       return false;
    }
-   // 检查顶点总数
+   // 检查顶点总数限制
    var vt = o._vertexTotal + p.vertexCount();
-   if(vt > 65535){
-      return false;
+   if(cp.optionIndex32){
+      if(vt > RInteger.MAX_UINT32){
+         return false;
+      }
+   }else{
+      if(vt > RInteger.MAX_UINT16){
+         return false;
+      }
    }
    // 重新计算总数
    o._vertexTotal = vt;
    o._indexTotal += p.indexBuffer().count();
-   o._merges.push(p);
+   o._mergeRenderables.push(p);
    return true;
 }
 
@@ -137,8 +133,6 @@ function FE3rDynamicMesh_mergeVertexBuffer(r, bc, b, rs){
    switch(bc){
       case 'position':
          var d = new Float32Array(rs._data);
-         //var m = r.currentMatrix();
-         //m.transform(rd, 3 * ri, d, 0, c);
          RFloat.copy(rd, 3 * ri, d, 0, 3 * c);
          break;
       case 'color':
@@ -187,9 +181,10 @@ function FE3rDynamicMesh_mergeIndexBuffer(ir){
 function FE3rDynamicMesh_build(){
    var o = this;
    var gc = o._graphicContext;
-   var rs = o._merges;
+   var gp = gc.capability();
    var vt = o._vertexTotal;
    var ft = o._indexTotal;
+   var rs = o._mergeRenderables;
    var rc = rs.count();
    // 获得首个渲染对象
    var rf = rs.first();
@@ -204,7 +199,13 @@ function FE3rDynamicMesh_build(){
    o._vertexBuffers.set(b._name, b);
    // 创建索引流
    var b = o._indexBuffer = gc.createIndexBuffer();
-   b._data = new Uint16Array(ft);
+   if(gp.optionIndex32){
+      b._strideCd = EG3dIndexStride.Uint32;
+      b._data = new Uint32Array(ft);
+   }else{
+      b._strideCd = EG3dIndexStride.Uint16;
+      b._data = new Uint16Array(ft);
+   }
    b._count = ft;
    // 合并顶点
    for(var i = 0; i < rc; i++){
@@ -233,7 +234,11 @@ function FE3rDynamicMesh_build(){
    for(var vbi = 0; vbi < vbc; vbi++){
       var vb = vbs.valueAt(vbi);
       vb.upload(vb._data, vb.stride, vt);
+      vb._position = null;
+      vb._data = null;
    }
    // 上传索引数据
    o._indexBuffer.upload(o._indexBuffer._data, ft);
+   o._indexBuffer._position = null;
+   o._indexBuffer._data = null;
 }

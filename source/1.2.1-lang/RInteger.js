@@ -9,18 +9,20 @@ var RInteger = new function RInteger(){
    var o = this;
    //..........................................................
    // @define
-   o.Chars     = '0123456789-%';
-   o.NUMBER    = '0123456789-%';
-   o.LEFT_CHAR = '0';
+   o.Chars      = '0123456789-%';
+   o.NUMBER     = '0123456789-%';
+   o.LEFT_CHAR  = '0';
+   o.MAX_UINT16 = 65535;
+   o.MAX_UINT32 = 4294967295;
    //..........................................................
    // @method
-   o.isInt     = RInteger_isInt;
-   o.nvl       = RInteger_nvl;
-   o.parse     = RInteger_parse;
-   o.format    = RInteger_format;
-   o.toRange   = RInteger_toRange;
-   o.sum       = RInteger_sum;
-   o.calculate = RInteger_calculate;
+   o.isInt      = RInteger_isInt;
+   o.nvl        = RInteger_nvl;
+   o.parse      = RInteger_parse;
+   o.format     = RInteger_format;
+   o.toRange    = RInteger_toRange;
+   o.sum        = RInteger_sum;
+   o.calculate  = RInteger_calculate;
    return o;
 }
 

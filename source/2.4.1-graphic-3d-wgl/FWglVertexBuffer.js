@@ -7,10 +7,15 @@
 function FWglVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dVertexBuffer);
    //..........................................................
+   // @attribute
+   o._native = null;
+   //..........................................................
    // @method
-   o.setup  = FWglVertexBuffer_setup;
+   o.setup   = FWglVertexBuffer_setup;
    // @method
-   o.upload = FWglVertexBuffer_upload;
+   o.upload  = FWglVertexBuffer_upload;
+   // @method
+   o.dispose = FWglVertexBuffer_dispose;
    return o;
 }
 
@@ -57,4 +62,22 @@ function FWglVertexBuffer_upload(v, s, c){
    c.checkError('bindBuffer', 'Bindbuffer');
    g.bufferData(g.ARRAY_BUFFER, d, g.STATIC_DRAW);
    c.checkError('bufferData', 'bufferData');
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FWglVertexBuffer_dispose(){
+   var o = this;
+   var c = o._graphicContext;
+   // 释放对象
+   var n = o._native;
+   if(n){
+      c._native.deleteBuffer(n);
+      o._native = null;
+   }
+   // 父处理
+   o.__base.FG3dVertexBuffer.dispose.call(o);
 }

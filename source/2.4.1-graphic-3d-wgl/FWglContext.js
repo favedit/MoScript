@@ -120,6 +120,11 @@ function FWglContext_linkCanvas(h){
    if(e){
       c.optionLayout = true;
    }
+   // 测试32位索引支持
+   var e = g.getExtension('OES_element_index_uint');
+   if(e){
+      c.optionIndex32 = true;
+   }
    // 测试纹理压缩支持
    var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
    if(e){
@@ -250,53 +255,17 @@ function FWglContext_extensions(){
    var o = this;
    // 获得属性
    var r = o._extensions;
-   if(r){
-      return r;
+   if(!r){
+      r = o._extensions = new Object();
+      // 获得参数
+      var g = o._native;
+      var s = g.getSupportedExtensions();
+      var c = s.length;
+      for(var i = 0; i < c; i++){
+         var n = s[i];
+         r[n] = g.getExtension(n);
+      }
    }
-   // 获得参数
-   var ns =[
-      'ANGLE_instanced_arrays',
-      'EXT_blend_minmax',
-      'EXT_color_buffer_float',
-      'EXT_color_buffer_half_float',
-      'EXT_disjoint_timer_query',
-      'EXT_frag_depth',
-      'EXT_sRGB',
-      'EXT_shader_texture_lod',
-      'EXT_texture_filter_anisotropic',
-      'OES_element_index_uint',
-      'OES_standard_derivatives',
-      'OES_texture_float',
-      'OES_texture_float_linear',
-      'OES_texture_half_float',
-      'OES_texture_half_float_linear',
-      'OES_vertex_array_object',
-      'WEBGL_color_buffer_float',
-      'WEBGL_compressed_texture_atc',
-      'WEBGL_compressed_texture_es3',
-      'WEBGL_compressed_texture_etc1',
-      'WEBGL_compressed_texture_pvrtc',
-      'WEBGL_compressed_texture_s3tc',
-      'WEBGL_debug_renderer_info',
-      'WEBGL_debug_shader_precision',
-      'WEBGL_debug_shaders',
-      'WEBGL_depth_texture',
-      'WEBGL_draw_buffers',
-      'WEBGL_draw_elements_no_range_check',
-      'WEBGL_dynamic_texture',
-      'WEBGL_lose_context',
-      'WEBGL_security_sensitive_resources',
-      'WEBGL_shared_resources',
-      'WEBGL_subscribe_uniform',
-      'WEBGL_texture_from_depth_video'];
-   var g = o._native;
-   var c = ns.length;
-   r = new Object();
-   for(var i = 0; i < c; i++){
-      var n = ns[i];
-      r[n] = g.getExtension(n);
-   }
-   o._extensions = r;
    return r;
 }
 

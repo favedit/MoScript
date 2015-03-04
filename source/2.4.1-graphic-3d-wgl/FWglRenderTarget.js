@@ -15,6 +15,8 @@ function FWglRenderTarget(o){
    o.setup        = FWglRenderTarget_setup;
    // @method
    o.build        = FWglRenderTarget_build;
+   // @method
+   o.dispose      = FWglRenderTarget_dispose;
    return o;
 }
 
@@ -41,6 +43,7 @@ function FWglRenderTarget_setup(){
 //==========================================================
 function FWglRenderTarget_build(){
    var o = this;
+   var s = o._size;
    var c = o._graphicContext;
    var g = c._native;
    //............................................................
@@ -64,7 +67,7 @@ function FWglRenderTarget_build(){
       if(!r){
          return r;
       }
-      g.renderbufferStorage(g.RENDERBUFFER, g.DEPTH_COMPONENT16, o._size.width, o._size.height);
+      g.renderbufferStorage(g.RENDERBUFFER, g.DEPTH_COMPONENT16, s.width, s.height);
       var r = c.checkError('renderbufferStorage', 'Set render buffer storage format failure.');
       if(!r){
          return r;
@@ -87,17 +90,40 @@ function FWglRenderTarget_build(){
       g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
       g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
       // 设置存储
-      g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, o._size.width, o._size.height, 0, g.RGBA, g.UNSIGNED_BYTE, null);
-      //g.texImage2D(g.TEXTURE_2D, 0, g.R32F, _size.width, _size.height, 0, g.RGBA, g.UNSIGNED_BYTE, null);
+      g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, s.width, s.height, 0, g.RGBA, g.UNSIGNED_BYTE, null);
       var r = c.checkError('texImage2D', "Alloc texture storage. (texture_id, size=%dx%d)", t._native, o._size.width, o._size.height);
       if(!r){
          return r;
       }
       // 绑定数据
-      g.framebufferTexture2D(g.FRAMEBUFFER, g.COLOR_ATTACHMENT0, g.TEXTURE_2D, t._native, 0);
+      g.framebufferTexture2D(g.FRAMEBUFFER, g.COLOR_ATTACHMENT0 + i, g.TEXTURE_2D, t._native, 0);
       var r = c.checkError('framebufferTexture2D', "Set color buffer into frame buffer failure. (framebuffer_id=%d, texture_id=%d)", o._native, t._native);
       if(!r){
          return r;
       }
    }
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FWglRenderTarget_dispose(){
+   var o = this;
+   var c = o._graphicContext;
+   // 释放深度对象
+   var n = o._nativeDepth;
+   if(n){
+      c._native.deleteRenderbuffer(n);
+      o._nativeDepth = null;
+   }
+   // 释放对象
+   var n = o._native;
+   if(n){
+      c._native.deleteFramebuffer(n);
+      o._native = null;
+   }
+   // 父处理
+   o.__base.FG3dRenderTarget.dispose.call(o);
 }

@@ -570,6 +570,7 @@ function FE3dRenderable(o){
    o._vertexCount     = 0;
    o._vertexBuffers   = null;
    o._indexBuffer     = null;
+   o._textures        = null;
    o.construct        = FE3dRenderable_construct;
    o.setup            = RMethod.empty;
    o.testVisible      = RMethod.emptyTrue;
@@ -579,7 +580,8 @@ function FE3dRenderable(o){
    o.findVertexBuffer = FE3dRenderable_findVertexBuffer;
    o.vertexBuffers    = FE3dRenderable_vertexBuffers;
    o.indexBuffer      = FE3dRenderable_indexBuffer;
-   o.textures         = RMethod.empty;
+   o.findTexture      = FE3dRenderable_findTexture;
+   o.textures         = FE3dRenderable_textures;
    o.bones            = RMethod.empty;
    o.update           = FE3dRenderable_update;
    o.remove           = FE3dRenderable_remove;
@@ -609,6 +611,12 @@ function FE3dRenderable_vertexBuffers(){
 }
 function FE3dRenderable_indexBuffer(){
    return this._indexBuffer;
+}
+function FE3dRenderable_findTexture(p){
+   return this._textures.get(p);
+}
+function FE3dRenderable_textures(){
+   return this._textures;
 }
 function FE3dRenderable_update(p){
    var o = this;
@@ -2992,11 +3000,9 @@ function FE3rDynamicMesh(o){
    o._vertexTotal      = 0;
    o._indexPosition    = 0;
    o._indexTotal       = 0;
-   o._merges           = null;
-   o._indexBuffer      = null;
+   o._mergeRenderables = null;
    o.construct         = FE3rDynamicMesh_construct;
-   o.findTexture       = FE3rDynamicMesh_findTexture;
-   o.textures          = FE3rDynamicMesh_textures;
+   o.mergeRenderables  = FE3rDynamicMesh_mergeRenderables;
    o.syncVertexBuffer  = FE3rDynamicMesh_syncVertexBuffer;
    o.mergeRenderable   = FE3rDynamicMesh_mergeRenderable;
    o.mergeVertexBuffer = FE3rDynamicMesh_mergeVertexBuffer;
@@ -3007,13 +3013,10 @@ function FE3rDynamicMesh(o){
 function FE3rDynamicMesh_construct(){
    var o = this;
    o.__base.FE3dRenderable.construct.call(o);
-   o._merges = new TObjects();
+   o._mergeRenderables = new TObjects();
 }
-function FE3rDynamicMesh_findTexture(p){
-   return this._textures.get(p);
-}
-function FE3rDynamicMesh_textures(){
-   return this._textures;
+function FE3rDynamicMesh_mergeRenderables(){
+   return this._mergeRenderables;
 }
 function FE3rDynamicMesh_syncVertexBuffer(p){
    var o = this;
@@ -3046,16 +3049,25 @@ function FE3rDynamicMesh_syncVertexBuffer(p){
 }
 function FE3rDynamicMesh_mergeRenderable(p){
    var o = this;
-   if(o._merges.count() > 24){
+   var c = o._graphicContext;
+   var cp = c.capability();
+   var cl = parseInt((cp.vertexConst - 32) / 4);
+   if(o._mergeRenderables.count() >= cl){
       return false;
    }
    var vt = o._vertexTotal + p.vertexCount();
-   if(vt > 65535){
-      return false;
+   if(cp.optionIndex32){
+      if(vt > RInteger.MAX_UINT32){
+         return false;
+      }
+   }else{
+      if(vt > RInteger.MAX_UINT16){
+         return false;
+      }
    }
    o._vertexTotal = vt;
    o._indexTotal += p.indexBuffer().count();
-   o._merges.push(p);
+   o._mergeRenderables.push(p);
    return true;
 }
 function FE3rDynamicMesh_mergeVertexBuffer(r, bc, b, rs){
@@ -3102,9 +3114,10 @@ function FE3rDynamicMesh_mergeIndexBuffer(ir){
 function FE3rDynamicMesh_build(){
    var o = this;
    var gc = o._graphicContext;
-   var rs = o._merges;
+   var gp = gc.capability();
    var vt = o._vertexTotal;
    var ft = o._indexTotal;
+   var rs = o._mergeRenderables;
    var rc = rs.count();
    var rf = rs.first();
    o._material = rf._material;
@@ -3116,7 +3129,13 @@ function FE3rDynamicMesh_build(){
    b.stride = 4;
    o._vertexBuffers.set(b._name, b);
    var b = o._indexBuffer = gc.createIndexBuffer();
-   b._data = new Uint16Array(ft);
+   if(gp.optionIndex32){
+      b._strideCd = EG3dIndexStride.Uint32;
+      b._data = new Uint32Array(ft);
+   }else{
+      b._strideCd = EG3dIndexStride.Uint16;
+      b._data = new Uint16Array(ft);
+   }
    b._count = ft;
    for(var i = 0; i < rc; i++){
       var r = rs.getAt(i);
@@ -3140,8 +3159,12 @@ function FE3rDynamicMesh_build(){
    for(var vbi = 0; vbi < vbc; vbi++){
       var vb = vbs.valueAt(vbi);
       vb.upload(vb._data, vb.stride, vt);
+      vb._position = null;
+      vb._data = null;
    }
    o._indexBuffer.upload(o._indexBuffer._data, ft);
+   o._indexBuffer._position = null;
+   o._indexBuffer._data = null;
 }
 function FE3rDynamicModel(o){
    o = RClass.inherits(this, o, FE3rObject);
@@ -3181,12 +3204,14 @@ function FE3rDynamicModel_build(){
       var r = rs.getAt(i);
       if(!mr){
          mr = RClass.create(FE3rDynamicMesh);
+         mr.linkGraphicContext(o);
          ms.push(mr);
       }
       if(mr.mergeRenderable(r)){
          continue;
       }else{
          mr = RClass.create(FE3rDynamicMesh);
+         mr.linkGraphicContext(o);
          ms.push(mr);
          if(!mr.mergeRenderable(r)){
             throw new TError(o, 'Merge renderable failure.');
@@ -3195,9 +3220,7 @@ function FE3rDynamicModel_build(){
    }
    var mc = ms.count();
    for(var i = 0; i < mc; i++){
-      var m = ms.getAt(i);
-      m.linkGraphicContext(o);
-      m.build();
+      ms.getAt(i).build();
    }
 }
 function FE3rDynamicModel_update(p){
@@ -4214,7 +4237,7 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var mi = m.info();
    o.bindMaterial(m);
    if(pr._optionMerge){
-      var ms = pr._merges;
+      var ms = pr.mergeRenderables();
       var mc = ms.count();
       var d = RTypeArray.findTemp(EDataType.Float, 16 * mc);
       for(var i = 0; i < mc; i++){

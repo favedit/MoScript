@@ -2247,6 +2247,7 @@ function SG3dContextCapability(){
    o.optionInstance         = false;
    o.optionLayout           = false;
    o.optionMaterialMap      = false;
+   o.optionIndex32          = false;
    o.attributeCount         = null;
    o.vertexCount            = 65536;
    o.vertexConst            = null;
@@ -3886,6 +3887,10 @@ function FWglContext_linkCanvas(h){
    if(e){
       c.optionLayout = true;
    }
+   var e = g.getExtension('OES_element_index_uint');
+   if(e){
+      c.optionIndex32 = true;
+   }
    var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
    if(e){
       c.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
@@ -3998,52 +4003,16 @@ function FWglContext_parameters(){
 function FWglContext_extensions(){
    var o = this;
    var r = o._extensions;
-   if(r){
-      return r;
+   if(!r){
+      r = o._extensions = new Object();
+      var g = o._native;
+      var s = g.getSupportedExtensions();
+      var c = s.length;
+      for(var i = 0; i < c; i++){
+         var n = s[i];
+         r[n] = g.getExtension(n);
+      }
    }
-   var ns =[
-      'ANGLE_instanced_arrays',
-      'EXT_blend_minmax',
-      'EXT_color_buffer_float',
-      'EXT_color_buffer_half_float',
-      'EXT_disjoint_timer_query',
-      'EXT_frag_depth',
-      'EXT_sRGB',
-      'EXT_shader_texture_lod',
-      'EXT_texture_filter_anisotropic',
-      'OES_element_index_uint',
-      'OES_standard_derivatives',
-      'OES_texture_float',
-      'OES_texture_float_linear',
-      'OES_texture_half_float',
-      'OES_texture_half_float_linear',
-      'OES_vertex_array_object',
-      'WEBGL_color_buffer_float',
-      'WEBGL_compressed_texture_atc',
-      'WEBGL_compressed_texture_es3',
-      'WEBGL_compressed_texture_etc1',
-      'WEBGL_compressed_texture_pvrtc',
-      'WEBGL_compressed_texture_s3tc',
-      'WEBGL_debug_renderer_info',
-      'WEBGL_debug_shader_precision',
-      'WEBGL_debug_shaders',
-      'WEBGL_depth_texture',
-      'WEBGL_draw_buffers',
-      'WEBGL_draw_elements_no_range_check',
-      'WEBGL_dynamic_texture',
-      'WEBGL_lose_context',
-      'WEBGL_security_sensitive_resources',
-      'WEBGL_shared_resources',
-      'WEBGL_subscribe_uniform',
-      'WEBGL_texture_from_depth_video'];
-   var g = o._native;
-   var c = ns.length;
-   r = new Object();
-   for(var i = 0; i < c; i++){
-      var n = ns[i];
-      r[n] = g.getExtension(n);
-   }
-   o._extensions = r;
    return r;
 }
 function FWglContext_createProgram(){
@@ -4513,6 +4482,7 @@ function FWglCubeTexture(o){
    o.setup      = FWglCubeTexture_setup;
    o.makeMipmap = FWglCubeTexture_makeMipmap;
    o.upload     = FWglCubeTexture_upload;
+   o.dispose    = FWglCubeTexture_dispose;
    return o;
 }
 function FWglCubeTexture_setup(){
@@ -4541,6 +4511,16 @@ function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z2.image());
    o._statusLoad = c.checkError("texImage2D", "Upload cube image failure.");
 }
+function FWglCubeTexture_dispose(){
+   var o = this;
+   var c = o._graphicContext;
+   var n = o._native;
+   if(n){
+      c._native.deleteTexture(n);
+      o._native = null;
+   }
+   o.__base.FG3dCubeTexture.dispose.call(o);
+}
 function FWglFlatTexture(o){
    o = RClass.inherits(this, o, FG3dFlatTexture);
    o._native    = null;
@@ -4548,6 +4528,7 @@ function FWglFlatTexture(o){
    o.makeMipmap = FWglFlatTexture_makeMipmap;
    o.uploadData = FWglFlatTexture_uploadData;
    o.upload     = FWglFlatTexture_upload;
+   o.dispose    = FWglFlatTexture_dispose;
    return o;
 }
 function FWglFlatTexture_setup(){
@@ -4604,6 +4585,16 @@ function FWglFlatTexture_upload(p){
    g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
    o._statusLoad = c.checkError("texImage2D", "Upload image failure.");
 }
+function FWglFlatTexture_dispose(){
+   var o = this;
+   var c = o._graphicContext;
+   var n = o._native;
+   if(n){
+      c._native.deleteTexture(n);
+      o._native = null;
+   }
+   o.__base.FG3dFlatTexture.dispose.call(o);
+}
 function FWglFragmentShader(o){
    o = RClass.inherits(this, o, FG3dFragmentShader);
    o._native = null;
@@ -4636,17 +4627,20 @@ function FWglFragmentShader_upload(v){
 }
 function FWglFragmentShader_dispose(){
    var o = this;
-   var g = o._graphicContext._native;
-   if(o._native){
-      g.deleteShader(o._native);
+   var c = o._graphicContext;
+   var n = o._native;
+   if(n){
+      c._native.deleteShader(n);
+      o._native = null;
    }
-   o._native = null;
    o.__base.FG3dFragmentShader.dispose.call(o);
 }
 function FWglIndexBuffer(o){
    o = RClass.inherits(this, o, FG3dIndexBuffer);
-   o.setup  = FWglIndexBuffer_setup;
-   o.upload = FWglIndexBuffer_upload;
+   o._native = null;
+   o.setup   = FWglIndexBuffer_setup;
+   o.upload  = FWglIndexBuffer_upload;
+   o.dispose = FWglIndexBuffer_dispose;
    return o;
 }
 function FWglIndexBuffer_setup(){
@@ -4661,19 +4655,44 @@ function FWglIndexBuffer_upload(pd, pc){
    o._count = pc;
    var d = null;
    if((pd.constructor == Array) || (pd.constructor == ArrayBuffer)){
-      d = new Uint16Array(pd);
+      if(o._strideCd == EG3dIndexStride.Uint16){
+         d = new Uint16Array(pd);
+      }else if(o._strideCd == EG3dIndexStride.Uint32){
+         d = new Uint32Array(pd);
+      }else{
+         throw new TError(o, 'Index stride is invalid.');
+      }
    }else if(pd.constructor == Uint16Array){
+      if(o._strideCd != EG3dIndexStride.Uint16){
+         throw new TError(o, 'Index stride16 is invalid.');
+      }
+      d = pd;
+   }else if(pd.constructor == Uint32Array){
+      if(o._strideCd != EG3dIndexStride.Uint32){
+         throw new TError(o, 'Index stride16 is invalid.');
+      }
       d = pd;
    }else{
-      RLogger.fatal(o, null, 'Upload index data type is invalid. (value={1})', pd);
+      throw new TError(o, 'Upload index data type is invalid. (value={1})', pd);
    }
    g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, o._native);
    c.checkError('bindBuffer', 'Bind buffer failure.');
    g.bufferData(g.ELEMENT_ARRAY_BUFFER, d, g.STATIC_DRAW);
    c.checkError('bufferData', 'Upload buffer data. (count={1})', pc);
 }
+function FWglIndexBuffer_dispose(){
+   var o = this;
+   var c = o._graphicContext;
+   var n = o._native;
+   if(n){
+      c._native.deleteBuffer(n);
+      o._native = null;
+   }
+   o.__base.FG3dIndexBuffer.dispose.call(o);
+}
 function FWglLayout(o){
    o = RClass.inherits(this, o, FG3dLayout);
+   o._native  = null;
    o.setup    = FWglLayout_setup;
    o.bind     = FWglLayout_bind;
    o.unbind   = FWglLayout_unbind;
@@ -4716,6 +4735,7 @@ function FWglLayout_dispose(){
       c._nativeLayout.deleteVertexArrayOES(n);
       o._native = null;
    }
+   o.__base.FG3dLayout.dispose.call(o);
 }
 function FWglProgram(o){
    o = RClass.inherits(this, o, FG3dProgram);
@@ -4876,11 +4896,13 @@ function FWglProgram_link(){
 }
 function FWglProgram_dispose(){
    var o = this;
-   if(o._program){
-      o._graphicContext._native.deleteProgram(o._program);
+   var c = o._graphicContext;
+   var n = o._native;
+   if(n){
+      c._native.deleteProgram(n);
+      o._native = null;
    }
-   o._program = null;
-   o.base.FProgram3d.dispose.call(o);
+   o.__base.FProgram3d.dispose.call(o);
 }
 function FWglRenderTarget(o){
    o = RClass.inherits(this, o, FG3dRenderTarget);
@@ -4889,6 +4911,7 @@ function FWglRenderTarget(o){
    o._nativeDepth = null;
    o.setup        = FWglRenderTarget_setup;
    o.build        = FWglRenderTarget_build;
+   o.dispose      = FWglRenderTarget_dispose;
    return o;
 }
 function FWglRenderTarget_setup(){
@@ -4901,6 +4924,7 @@ function FWglRenderTarget_setup(){
 }
 function FWglRenderTarget_build(){
    var o = this;
+   var s = o._size;
    var c = o._graphicContext;
    var g = c._native;
    g.bindFramebuffer(g.FRAMEBUFFER, o._native);
@@ -4919,7 +4943,7 @@ function FWglRenderTarget_build(){
       if(!r){
          return r;
       }
-      g.renderbufferStorage(g.RENDERBUFFER, g.DEPTH_COMPONENT16, o._size.width, o._size.height);
+      g.renderbufferStorage(g.RENDERBUFFER, g.DEPTH_COMPONENT16, s.width, s.height);
       var r = c.checkError('renderbufferStorage', 'Set render buffer storage format failure.');
       if(!r){
          return r;
@@ -4937,22 +4961,39 @@ function FWglRenderTarget_build(){
       g.bindTexture(g.TEXTURE_2D, t._native);
       g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
       g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR);
-      g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, o._size.width, o._size.height, 0, g.RGBA, g.UNSIGNED_BYTE, null);
+      g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, s.width, s.height, 0, g.RGBA, g.UNSIGNED_BYTE, null);
       var r = c.checkError('texImage2D', "Alloc texture storage. (texture_id, size=%dx%d)", t._native, o._size.width, o._size.height);
       if(!r){
          return r;
       }
-      g.framebufferTexture2D(g.FRAMEBUFFER, g.COLOR_ATTACHMENT0, g.TEXTURE_2D, t._native, 0);
+      g.framebufferTexture2D(g.FRAMEBUFFER, g.COLOR_ATTACHMENT0 + i, g.TEXTURE_2D, t._native, 0);
       var r = c.checkError('framebufferTexture2D', "Set color buffer into frame buffer failure. (framebuffer_id=%d, texture_id=%d)", o._native, t._native);
       if(!r){
          return r;
       }
    }
 }
+function FWglRenderTarget_dispose(){
+   var o = this;
+   var c = o._graphicContext;
+   var n = o._nativeDepth;
+   if(n){
+      c._native.deleteRenderbuffer(n);
+      o._nativeDepth = null;
+   }
+   var n = o._native;
+   if(n){
+      c._native.deleteFramebuffer(n);
+      o._native = null;
+   }
+   o.__base.FG3dRenderTarget.dispose.call(o);
+}
 function FWglVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dVertexBuffer);
-   o.setup  = FWglVertexBuffer_setup;
-   o.upload = FWglVertexBuffer_upload;
+   o._native = null;
+   o.setup   = FWglVertexBuffer_setup;
+   o.upload  = FWglVertexBuffer_upload;
+   o.dispose = FWglVertexBuffer_dispose;
    return o;
 }
 function FWglVertexBuffer_setup(){
@@ -4981,6 +5022,16 @@ function FWglVertexBuffer_upload(v, s, c){
    c.checkError('bindBuffer', 'Bindbuffer');
    g.bufferData(g.ARRAY_BUFFER, d, g.STATIC_DRAW);
    c.checkError('bufferData', 'bufferData');
+}
+function FWglVertexBuffer_dispose(){
+   var o = this;
+   var c = o._graphicContext;
+   var n = o._native;
+   if(n){
+      c._native.deleteBuffer(n);
+      o._native = null;
+   }
+   o.__base.FG3dVertexBuffer.dispose.call(o);
 }
 function FWglVertexShader(o){
    o = RClass.inherits(this, o, FG3dVertexShader);
@@ -5014,11 +5065,12 @@ function FWglVertexShader_upload(v){
 }
 function FWglVertexShader_dispose(){
    var o = this;
-   var g = o._graphicContext._native;
-   if(o._native){
-      g.deleteShader(o._native);
+   var c = o._graphicContext;
+   var n = o._native;
+   if(n){
+      c._native.deleteShader(n);
+      o._native = null;
    }
-   o._native = null;
    o.__base.FG3dVertexShader.dispose.call(o);
 }
 var RWglUtility = new function RWglUtility(){

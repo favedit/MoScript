@@ -15,6 +15,8 @@ function FWglCubeTexture(o){
    // @method
    o.makeMipmap = FWglCubeTexture_makeMipmap;
    o.upload     = FWglCubeTexture_upload;
+   // @method
+   o.dispose    = FWglCubeTexture_dispose;
    return o;
 }
 
@@ -45,7 +47,6 @@ function FWglCubeTexture_makeMipmap(){
    g.generateMipmap(g.TEXTURE_CUBE_MAP);
 }
 
-
 //==========================================================
 // <T>上传图片内容。</T>
 //
@@ -67,4 +68,22 @@ function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z2.image()); 
    // 检查结果
    o._statusLoad = c.checkError("texImage2D", "Upload cube image failure.");
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FWglCubeTexture_dispose(){
+   var o = this;
+   var c = o._graphicContext;
+   // 释放对象
+   var n = o._native;
+   if(n){
+      c._native.deleteTexture(n);
+      o._native = null;
+   }
+   // 父处理
+   o.__base.FG3dCubeTexture.dispose.call(o);
 }

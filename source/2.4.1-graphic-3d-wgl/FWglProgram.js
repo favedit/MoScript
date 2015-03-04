@@ -236,9 +236,13 @@ function FWglProgram_link(){
 //==========================================================
 function FWglProgram_dispose(){
    var o = this;
-   if(o._program){
-      o._graphicContext._native.deleteProgram(o._program);
+   var c = o._graphicContext;
+   // 释放对象
+   var n = o._native;
+   if(n){
+      c._native.deleteProgram(n);
+      o._native = null;
    }
-   o._program = null;
-   o.base.FProgram3d.dispose.call(o);
+   // 父处理
+   o.__base.FProgram3d.dispose.call(o);
 }

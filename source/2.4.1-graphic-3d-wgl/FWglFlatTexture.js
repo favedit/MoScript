@@ -16,6 +16,8 @@ function FWglFlatTexture(o){
    o.makeMipmap = FWglFlatTexture_makeMipmap;
    o.uploadData = FWglFlatTexture_uploadData;
    o.upload     = FWglFlatTexture_upload;
+   // @method
+   o.dispose    = FWglFlatTexture_dispose;
    return o;
 }
 
@@ -113,4 +115,22 @@ function FWglFlatTexture_upload(p){
    //}
    g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
    o._statusLoad = c.checkError("texImage2D", "Upload image failure.");
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FWglFlatTexture_dispose(){
+   var o = this;
+   var c = o._graphicContext;
+   // 释放对象
+   var n = o._native;
+   if(n){
+      c._native.deleteTexture(n);
+      o._native = null;
+   }
+   // 父处理
+   o.__base.FG3dFlatTexture.dispose.call(o);
 }

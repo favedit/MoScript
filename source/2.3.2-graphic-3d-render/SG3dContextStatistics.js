@@ -16,6 +16,7 @@ function SG3dContextCapability(){
    o.optionInstance         = false;
    o.optionLayout           = false;
    o.optionMaterialMap      = false;
+   o.optionIndex32          = false;
    // @attribute
    o.attributeCount         = null;
    o.vertexCount            = 65536;
