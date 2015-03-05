@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.show.008.02" name="\pvw\show\008.02" label="编钟" full_label="\展示\展示\编钟">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-008.02-编钟\diffuse.jpg" />
+  </Texture>
+</Configuration>

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="lbl.dec.0007" name="\lbl\dec\0007" label="排气孔_01" full_label="\亮宝楼\装饰\排气孔_01">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-lbl-亮宝楼\fd-dec-装饰\tx-0007-排气孔_01\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-lbl-亮宝楼\fd-dec-装饰\tx-0007-排气孔_01\normal.jpg" />
+  </Texture>
+</Configuration>

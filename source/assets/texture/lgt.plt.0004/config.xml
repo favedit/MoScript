@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="lgt.plt.0004" name="\lgt\plt\0004" label="松树树干" full_label="\楼观台\植物\松树树干">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-lgt-楼观台\fd-plt-植物\tx-0004-松树树干\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-lgt-楼观台\fd-plt-植物\tx-0004-松树树干\normal.jpg" />
+    <Bitmap type_name="specular.level" index="2" tick="100" source="\fd-lgt-楼观台\fd-plt-植物\tx-0004-松树树干\specular.level.jpg" />
+  </Texture>
+</Configuration>

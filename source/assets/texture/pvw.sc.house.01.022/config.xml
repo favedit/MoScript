@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.sc.house.01.022" name="\pvw\sc.house.01\022" label="贴图" full_label="\展示\室内展示.01 (2LDK)\贴图">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-sc.house.01-室内展示.01 (2LDK)\tx-022-贴图\diffuse.jpg" />
+  </Texture>
+</Configuration>

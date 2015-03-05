@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="ui.flag.001" name="\ui\flag.001" label="地球标志" full_label="\界面\地球标志">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-ui-界面\tx-flag.001-地球标志\diffuse.jpg" />
+  </Texture>
+</Configuration>

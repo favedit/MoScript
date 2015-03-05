@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.show.013.02" name="\pvw\show\013.02" label="女精灵动画" full_label="\展示\展示\女精灵动画">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-013.02-女精灵动画\diffuse.jpg" />
+    <Bitmap type_name="alpha" index="1" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-013.02-女精灵动画\alpha.jpg" />
+    <Bitmap type_name="normal" index="2" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-013.02-女精灵动画\normal.jpg" />
+    <Bitmap type_name="specular.level" index="3" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-013.02-女精灵动画\specular.level.jpg" />
+  </Texture>
+</Configuration>

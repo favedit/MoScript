@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="lgt.sta.0003" name="\lgt\sta\0003" label="龙头" full_label="\楼观台\雕塑\龙头">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-lgt-楼观台\fd-sta-雕塑\tx-0003-龙头\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-lgt-楼观台\fd-sta-雕塑\tx-0003-龙头\normal.jpg" />
+    <Bitmap type_name="specular.level" index="2" tick="100" source="\fd-lgt-楼观台\fd-sta-雕塑\tx-0003-龙头\specular.level.jpg" />
+  </Texture>
+</Configuration>

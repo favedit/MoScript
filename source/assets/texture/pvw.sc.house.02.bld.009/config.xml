@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.sc.house.02.bld.009" name="\pvw\sc.house.02\bld\009" label="通用木材" full_label="\展示\室内展示.02 (3LDK)\建筑\通用木材">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-sc.house.02-室内展示.02 (3LDK)\fd-bld-建筑\tx-009-通用木材\diffuse.jpg" />
+  </Texture>
+</Configuration>

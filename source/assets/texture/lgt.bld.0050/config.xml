@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="lgt.bld.0050" name="\lgt\bld\0050" label="走廊横梁07" full_label="\楼观台\建筑\走廊横梁07">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-lgt-楼观台\fd-bld-建筑\tx-0050-走廊横梁07\diffuse.jpg" />
+    <Bitmap type_name="alpha" index="1" tick="100" source="\fd-lgt-楼观台\fd-bld-建筑\tx-0050-走廊横梁07\alpha.jpg" />
+    <Bitmap type_name="normal" index="2" tick="100" source="\fd-lgt-楼观台\fd-bld-建筑\tx-0050-走廊横梁07\normal.jpg" />
+    <Bitmap type_name="specular.level" index="3" tick="100" source="\fd-lgt-楼观台\fd-bld-建筑\tx-0050-走廊横梁07\specular.level.jpg" />
+  </Texture>
+</Configuration>

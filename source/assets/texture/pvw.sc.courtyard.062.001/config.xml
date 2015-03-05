@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.sc.courtyard.062.001" name="\pvw\sc.courtyard\062.001" label="贴图" full_label="\展示\场景.四合院\贴图">
+    <Bitmap type_name="environment" index="0" tick="100" source="\fd-pvw-展示\fd-sc.courtyard-场景.四合院\tx-062.001-贴图\environment.jpg" />
+  </Texture>
+</Configuration>

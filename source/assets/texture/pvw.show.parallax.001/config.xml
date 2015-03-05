@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.show.parallax.001" name="\pvw\show\parallax.001" label="视差贴图" full_label="\展示\展示\视差贴图">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-parallax.001-视差贴图\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-parallax.001-视差贴图\normal.jpg" />
+    <Bitmap type_name="height" index="2" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-parallax.001-视差贴图\height.jpg" />
+    <Bitmap type_name="specular.level" index="3" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-parallax.001-视差贴图\specular.level.jpg" />
+  </Texture>
+</Configuration>

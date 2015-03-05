@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="lgt.bld.0033" name="\lgt\bld\0033" label="门01" full_label="\楼观台\建筑\门01">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-lgt-楼观台\fd-bld-建筑\tx-0033-门01\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-lgt-楼观台\fd-bld-建筑\tx-0033-门01\normal.jpg" />
+    <Bitmap type_name="specular.level" index="2" tick="100" source="\fd-lgt-楼观台\fd-bld-建筑\tx-0033-门01\specular.level.jpg" />
+  </Texture>
+</Configuration>

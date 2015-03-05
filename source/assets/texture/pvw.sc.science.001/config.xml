@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.sc.science.001" name="\pvw\sc.science\001" label="环境" full_label="\展示\场景.科学\环境">
+    <Bitmap type_name="environment" index="0" tick="100" source="\fd-pvw-展示\fd-sc.science-场景.科学\tx-001-环境\environment.jpg" />
+  </Texture>
+</Configuration>

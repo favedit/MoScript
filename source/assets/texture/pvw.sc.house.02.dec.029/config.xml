@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.sc.house.02.dec.029" name="\pvw\sc.house.02\dec\029" label="窗帘" full_label="\展示\室内展示.02 (3LDK)\装饰\窗帘">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-sc.house.02-室内展示.02 (3LDK)\fd-dec-装饰\tx-029-窗帘\diffuse.jpg" />
+    <Bitmap type_name="alpha" index="1" tick="100" source="\fd-pvw-展示\fd-sc.house.02-室内展示.02 (3LDK)\fd-dec-装饰\tx-029-窗帘\alpha.jpg" />
+    <Bitmap type_name="normal" index="2" tick="100" source="\fd-pvw-展示\fd-sc.house.02-室内展示.02 (3LDK)\fd-dec-装饰\tx-029-窗帘\normal.jpg" />
+  </Texture>
+</Configuration>

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="trn.001.002" name="\trn\001\002" label="地面" full_label="\地形\山地\地面">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-trn-地形\fd-001-山地\tx-002-地面\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-trn-地形\fd-001-山地\tx-002-地面\normal.jpg" />
+    <Bitmap type_name="height" index="2" tick="100" source="\fd-trn-地形\fd-001-山地\tx-002-地面\height.jpg" />
+    <Bitmap type_name="specular.level" index="3" tick="100" source="\fd-trn-地形\fd-001-山地\tx-002-地面\specular.level.jpg" />
+  </Texture>
+</Configuration>

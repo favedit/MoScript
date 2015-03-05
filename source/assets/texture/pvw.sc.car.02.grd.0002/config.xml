@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.sc.car.02.grd.0002" name="\pvw\sc.car.02\grd\0002" label="加油站" full_label="\展示\场景.汽车.02\展台及相关\加油站">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-sc.car.02-场景.汽车.02\fd-grd-展台及相关\tx-0002-加油站\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-pvw-展示\fd-sc.car.02-场景.汽车.02\fd-grd-展台及相关\tx-0002-加油站\normal.jpg" />
+  </Texture>
+</Configuration>

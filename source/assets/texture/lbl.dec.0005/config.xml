@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="lbl.dec.0005" name="\lbl\dec\0005" label="柱子" full_label="\亮宝楼\装饰\柱子">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-lbl-亮宝楼\fd-dec-装饰\tx-0005-柱子\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-lbl-亮宝楼\fd-dec-装饰\tx-0005-柱子\normal.jpg" />
+    <Bitmap type_name="specular.level" index="2" tick="100" source="\fd-lbl-亮宝楼\fd-dec-装饰\tx-0005-柱子\specular.level.jpg" />
+  </Texture>
+</Configuration>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.show.004.02" name="\pvw\show\004.02" label="人头像" full_label="\展示\展示\人头像">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-004.02-人头像\diffuse.jpg" />
+    <Bitmap type_name="alpha" index="1" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-004.02-人头像\alpha.jpg" />
+    <Bitmap type_name="normal" index="2" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-004.02-人头像\normal.jpg" />
+    <Bitmap type_name="height" index="3" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-004.02-人头像\height.jpg" />
+    <Bitmap type_name="specular" index="4" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-004.02-人头像\specular.jpg" />
+    <Bitmap type_name="specular.level" index="5" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-004.02-人头像\specular.level.jpg" />
+    <Bitmap type_name="transmittance.color" index="6" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-004.02-人头像\transmittance.color.jpg" />
+    <Bitmap type_name="transmittance.level" index="7" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-004.02-人头像\transmittance.level.jpg" />
+  </Texture>
+</Configuration>

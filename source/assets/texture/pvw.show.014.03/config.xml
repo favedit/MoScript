@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.show.014.03" name="\pvw\show\014.03" label="女战士动画" full_label="\展示\展示\女战士动画">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-014.03-女战士动画\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-014.03-女战士动画\normal.jpg" />
+  </Texture>
+</Configuration>

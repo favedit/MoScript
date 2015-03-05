@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="tst.001" name="\tst\001" label="对称" full_label="\测试\对称">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-tst-测试\tx-001-对称\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-tst-测试\tx-001-对称\normal.jpg" />
+    <Bitmap type_name="specular" index="2" tick="100" source="\fd-tst-测试\tx-001-对称\specular.jpg" />
+  </Texture>
+</Configuration>

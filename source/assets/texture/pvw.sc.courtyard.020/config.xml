@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.sc.courtyard.020" name="\pvw\sc.courtyard\020" label="贴图" full_label="\展示\场景.四合院\贴图">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-sc.courtyard-场景.四合院\tx-020-贴图\diffuse.jpg" />
+    <Bitmap type_name="alpha" index="1" tick="100" source="\fd-pvw-展示\fd-sc.courtyard-场景.四合院\tx-020-贴图\alpha.jpg" />
+    <Bitmap type_name="normal" index="2" tick="100" source="\fd-pvw-展示\fd-sc.courtyard-场景.四合院\tx-020-贴图\normal.jpg" />
+    <Bitmap type_name="specular.level" index="3" tick="100" source="\fd-pvw-展示\fd-sc.courtyard-场景.四合院\tx-020-贴图\specular.level.jpg" />
+  </Texture>
+</Configuration>

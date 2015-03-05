@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="lgt.dec.0011" name="\lgt\dec\0011" label="香炉1" full_label="\楼观台\装饰\香炉1">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-lgt-楼观台\fd-dec-装饰\tx-0011-香炉1\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-lgt-楼观台\fd-dec-装饰\tx-0011-香炉1\normal.jpg" />
+    <Bitmap type_name="specular.level" index="2" tick="100" source="\fd-lgt-楼观台\fd-dec-装饰\tx-0011-香炉1\specular.level.jpg" />
+  </Texture>
+</Configuration>

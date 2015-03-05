@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="lgt.bld.0053" name="\lgt\bld\0053" label="门03" full_label="\楼观台\建筑\门03">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-lgt-楼观台\fd-bld-建筑\tx-0053-门03\diffuse.jpg" />
+  </Texture>
+</Configuration>

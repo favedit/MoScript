@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.sc.car.01.001.03" name="\pvw\sc.car.01\001.03" label="汽车.网罩" full_label="\展示\场景.汽车.01\汽车.网罩">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-sc.car.01-场景.汽车.01\tx-001.03-汽车.网罩\diffuse.jpg" />
+  </Texture>
+</Configuration>

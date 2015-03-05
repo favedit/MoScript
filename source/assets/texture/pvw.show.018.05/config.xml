@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.show.018.05" name="\pvw\show\018.05" label="卡通人物.可爱女孩" full_label="\展示\展示\卡通人物.可爱女孩">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-018.05-卡通人物.可爱女孩\diffuse.jpg" />
+  </Texture>
+</Configuration>

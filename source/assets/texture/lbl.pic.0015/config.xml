@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="lbl.pic.0015" name="\lbl\pic\0015" label="画15" full_label="\亮宝楼\画\画15">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-lbl-亮宝楼\fd-pic-画\tx-0015-画15\diffuse.jpg" />
+  </Texture>
+</Configuration>

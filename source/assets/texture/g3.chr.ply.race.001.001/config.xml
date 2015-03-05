@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="g3.chr.ply.race.001.001" name="\g3\chr\ply\race.001\001" label="头部" full_label="\游戏3D\角色\玩家\猫族男\头部">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-g3-游戏3D\fd-chr-角色\fd-ply-玩家\fd-race.001-猫族男\tx-001-头部\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-g3-游戏3D\fd-chr-角色\fd-ply-玩家\fd-race.001-猫族男\tx-001-头部\normal.jpg" />
+  </Texture>
+</Configuration>

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.sc.house.02.dec.003" name="\pvw\sc.house.02\dec\003" label="植物土壤" full_label="\展示\室内展示.02 (3LDK)\装饰\植物土壤">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-sc.house.02-室内展示.02 (3LDK)\fd-dec-装饰\tx-003-植物土壤\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-pvw-展示\fd-sc.house.02-室内展示.02 (3LDK)\fd-dec-装饰\tx-003-植物土壤\normal.jpg" />
+    <Bitmap type_name="specular.level" index="2" tick="100" source="\fd-pvw-展示\fd-sc.house.02-室内展示.02 (3LDK)\fd-dec-装饰\tx-003-植物土壤\specular.level.jpg" />
+  </Texture>
+</Configuration>

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.sc.house.02.bld.005" name="\pvw\sc.house.02\bld\005" label="卫生间地板" full_label="\展示\室内展示.02 (3LDK)\建筑\卫生间地板">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-sc.house.02-室内展示.02 (3LDK)\fd-bld-建筑\tx-005-卫生间地板\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-pvw-展示\fd-sc.house.02-室内展示.02 (3LDK)\fd-bld-建筑\tx-005-卫生间地板\normal.jpg" />
+  </Texture>
+</Configuration>

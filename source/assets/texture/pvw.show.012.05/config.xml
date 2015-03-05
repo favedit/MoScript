@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.show.012.05" name="\pvw\show\012.05" label="女人" full_label="\展示\展示\女人">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-012.05-女人\diffuse.jpg" />
+  </Texture>
+</Configuration>

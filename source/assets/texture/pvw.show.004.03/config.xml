@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="pvw.show.004.03" name="\pvw\show\004.03" label="人头像" full_label="\展示\展示\人头像">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-004.03-人头像\diffuse.jpg" />
+    <Bitmap type_name="alpha" index="1" tick="100" source="\fd-pvw-展示\fd-show-展示\tx-004.03-人头像\alpha.jpg" />
+  </Texture>
+</Configuration>

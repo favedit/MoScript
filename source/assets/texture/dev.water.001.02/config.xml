@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="dev.water.001.02" name="\dev\water.001\02" label="材质02" full_label="\开发\水效果\材质02">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-dev-开发\fd-water.001-水效果\tx-02-材质02\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-dev-开发\fd-water.001-水效果\tx-02-材质02\normal.jpg" />
+  </Texture>
+</Configuration>

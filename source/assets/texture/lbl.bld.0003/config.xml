@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="lbl.bld.0003" name="\lbl\bld\0003" label="墙" full_label="\亮宝楼\建筑\墙">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-lbl-亮宝楼\fd-bld-建筑\tx-0003-墙\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-lbl-亮宝楼\fd-bld-建筑\tx-0003-墙\normal.jpg" />
+    <Bitmap type_name="specular.level" index="2" tick="100" source="\fd-lbl-亮宝楼\fd-bld-建筑\tx-0003-墙\specular.level.jpg" />
+  </Texture>
+</Configuration>

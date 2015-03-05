@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Texture code="g3.chr.npc.race.001.001" name="\g3\chr\npc\race.001\001" label="身体" full_label="\游戏3D\角色\NPC\牛\身体">
+    <Bitmap type_name="diffuse" index="0" tick="100" source="\fd-g3-游戏3D\fd-chr-角色\fd-npc-NPC\fd-race.001-牛\tx-001-身体\diffuse.jpg" />
+    <Bitmap type_name="normal" index="1" tick="100" source="\fd-g3-游戏3D\fd-chr-角色\fd-npc-NPC\fd-race.001-牛\tx-001-身体\normal.png" />
+    <Bitmap type_name="specular" index="2" tick="100" source="\fd-g3-游戏3D\fd-chr-角色\fd-npc-NPC\fd-race.001-牛\tx-001-身体\specular.jpg" />
+  </Texture>
+</Configuration>
