@@ -12,6 +12,7 @@ var RBrowser = new function RBrowser(){
    o._deviceCd      = EDevice.Unknown;
    o._softwareCd    = ESoftware.Unknown;
    o._typeCd        = EBrowser.Unknown;
+   o._supportHtml5  = false;
    o._hostPath      = '';
    o._contentPath   = '';
    //..........................................................
@@ -21,6 +22,7 @@ var RBrowser = new function RBrowser(){
    // @method
    o.construct      = RBrowser_construct;
    // @method
+   o.supportHtml5   = RBrowser_supportHtml5;
    o.hostPath       = RBrowser_hostPath;
    o.setHostPath    = RBrowser_setHostPath;
    o.contentPath    = RBrowser_contentPath;
@@ -69,8 +71,22 @@ function RBrowser_construct(){
    if(o._typeCd == EBrowser.Chrome){
       RLogger.lsnsOutput.register(o, o.onLog);
    }
+   // 是否支持HTML5
+   if(window.applicationCache){
+      o._supportHtml5 = true;
+   }
    // 输出日志
    RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+}
+
+//==========================================================
+// <T>测试是否支持HTML5规范。</T>
+//
+// @method
+// @return 是否支持
+//==========================================================
+function RBrowser_supportHtml5(){
+   return this._supportHtml5;
 }
 
 //===========================================================

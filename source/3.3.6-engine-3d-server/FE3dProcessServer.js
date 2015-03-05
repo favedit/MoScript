@@ -1,12 +1,12 @@
 //==========================================================
-// <T>进程。</T>
+// <T>引擎服务进程。</T>
 //
 // @class
 // @author maocy
-// @version 150105
+// @version 150305
 //==========================================================
 function FE3dProcessServer(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FProcessServer);
    //..........................................................
    // @attribute
    o._typeName  = null;
@@ -27,3 +27,10 @@ function FE3dProcessServer(o){
 function FE3dProcessServer_name(){
    return this._name;
 }
+
+//==========================================================
+// <T>启动服务。</T>
+//==========================================================
+var server = RClass.create(FE3dProcessServer);
+server.registerProcessor('engine3d.mesh.merge', RClass.create(FE3dMeshMergeProcessor));
+server.process();

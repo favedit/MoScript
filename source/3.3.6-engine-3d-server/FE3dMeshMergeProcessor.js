@@ -1,12 +1,12 @@
 //==========================================================
-// <T>进程。</T>
+// <T>引擎服务进程。</T>
 //
 // @class
 // @author maocy
-// @version 150105
+// @version 150305
 //==========================================================
-function FProcessServer(o){
-   o = RClass.inherits(this, o, FObject);
+function FE3dMeshMergeProcessor(o){
+   o = RClass.inherits(this, o, FProcessor);
    //..........................................................
    // @attribute
    o._typeName  = null;
@@ -14,7 +14,7 @@ function FProcessServer(o){
    o._name      = null;
    //..........................................................
    // @method
-   o.name  = FProcessServer_name;
+   o.name  = FE3dMeshMergeProcessor_name;
    return o;
 }
 
@@ -24,6 +24,6 @@ function FProcessServer(o){
 // @method
 // @return 名称
 //==========================================================
-function FProcessServer_name(){
+function FE3dMeshMergeProcessor_name(){
    return this._name;
 }

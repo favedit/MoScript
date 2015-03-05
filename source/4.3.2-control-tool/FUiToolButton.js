@@ -222,8 +222,13 @@ function FUiToolButton_setIcon(p){
 function FUiToolButton_setLabel(p){
    var o = this;
    var s = RString.nvl(p);
+   // 设置属性
    o._label = s;
-   RHtml.textSet(o._hLabelPanel, s);
+   // 设置显示
+   var h = o._hLabelPanel;
+   if(h){
+      RHtml.textSet(h, s);
+   }
 }
 
 //==========================================================

@@ -9,38 +9,17 @@ var RRuntime = new function RRuntime(){
    var o = this;
    //..........................................................
    // @attribute
-   o._processCd    = EProcess.Release;
-   o._supportHtml5 = false;
-   // @attribute
-   o._nextUid      = 1;
+   o._processCd   = EProcess.Release;
    //..........................................................
    // @method
-   o.construct     = RRuntime_construct;
+   o.isDebug      = RRuntime_isDebug;
+   o.isRelease    = RRuntime_isRelease;
+   o.setProcessCd = RRuntime_setProcessCd;
    // @method
-   o.isDebug       = RRuntime_isDebug;
-   o.isRelease     = RRuntime_isRelease;
-   o.setProcessCd  = RRuntime_setProcessCd;
-   o.supportHtml5  = RRuntime_supportHtml5;
-   // @method
-   o.nvl           = RRuntime_nvl;
-   o.subString     = RRuntime_subString;
-   o.className     = RRuntime_className;
-   //..........................................................
-   // @construct
-   o.construct();
+   o.nvl          = RRuntime_nvl;
+   o.subString    = RRuntime_subString;
+   o.className    = RRuntime_className;
    return o;
-}
-
-//===========================================================
-// <T>构造处理。</T>
-//
-// @method
-//===========================================================
-function RRuntime_construct(){
-   var o = this;
-   if(window.applicationCache){
-      o._supportHtml5 = true;
-   }
 }
 
 //==========================================================
@@ -71,16 +50,6 @@ function RRuntime_isRelease(){
 //==========================================================
 function RRuntime_setProcessCd(p){
    this._processCd = p;
-}
-
-//==========================================================
-// <T>测试是否支持HTML5规范。</T>
-//
-// @method
-// @return 是否支持
-//==========================================================
-function RRuntime_supportHtml5(){
-   return this._supportHtml5;
 }
 
 //==========================================================
@@ -134,15 +103,16 @@ function RRuntime_subString(v, b, e){
 // @return String 类名称
 //==========================================================
 function RRuntime_className(v){
+   var o = this;
    if(v){
       // 如果对象是函数的情况
       if(typeof(v) == 'function'){
-         return this.subString(v.toString(), 'function ', '(');
+         return o.subString(v.toString(), 'function ', '(');
       }
       // 如果对象是普通对象的情况
       var c = v.constructor;
       if(c){
-         return this.subString(c.toString(), 'function ', '(');
+         return o.subString(c.toString(), 'function ', '(');
       }
    }
    return null;

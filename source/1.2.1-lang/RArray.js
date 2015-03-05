@@ -8,6 +8,15 @@
 var RArray = new function RArray(){
    var o = this;
    //..........................................................
+   // @attribute
+   o.array1        = new Array(1);
+   o.array2        = new Array(2);
+   o.array3        = new Array(3);
+   o.array4        = new Array(4);
+   o.array9        = new Array(9);
+   o.array12       = new Array(12);
+   o.array16       = new Array(16);
+   //..........................................................
    // @method
    o.equals        = RArray_equals;
    o.count         = RArray_count;

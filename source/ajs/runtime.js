@@ -25,25 +25,14 @@ var EScope = new function EScope(){
 }
 var RRuntime = new function RRuntime(){
    var o = this;
-   o._processCd    = EProcess.Release;
-   o._supportHtml5 = false;
-   o._nextUid      = 1;
-   o.construct     = RRuntime_construct;
-   o.isDebug       = RRuntime_isDebug;
-   o.isRelease     = RRuntime_isRelease;
-   o.setProcessCd  = RRuntime_setProcessCd;
-   o.supportHtml5  = RRuntime_supportHtml5;
-   o.nvl           = RRuntime_nvl;
-   o.subString     = RRuntime_subString;
-   o.className     = RRuntime_className;
-   o.construct();
+   o._processCd   = EProcess.Release;
+   o.isDebug      = RRuntime_isDebug;
+   o.isRelease    = RRuntime_isRelease;
+   o.setProcessCd = RRuntime_setProcessCd;
+   o.nvl          = RRuntime_nvl;
+   o.subString    = RRuntime_subString;
+   o.className    = RRuntime_className;
    return o;
-}
-function RRuntime_construct(){
-   var o = this;
-   if(window.applicationCache){
-      o._supportHtml5 = true;
-   }
 }
 function RRuntime_isDebug(){
    return (this._processCd == EProcess.Debug);
@@ -53,9 +42,6 @@ function RRuntime_isRelease(){
 }
 function RRuntime_setProcessCd(p){
    this._processCd = p;
-}
-function RRuntime_supportHtml5(){
-   return this._supportHtml5;
 }
 function RRuntime_nvl(v, d){
    return (v != null) ? v : d;
@@ -81,13 +67,14 @@ function RRuntime_subString(v, b, e){
    return v.substring(l, r);
 }
 function RRuntime_className(v){
+   var o = this;
    if(v){
       if(typeof(v) == 'function'){
-         return this.subString(v.toString(), 'function ', '(');
+         return o.subString(v.toString(), 'function ', '(');
       }
       var c = v.constructor;
       if(c){
-         return this.subString(c.toString(), 'function ', '(');
+         return o.subString(c.toString(), 'function ', '(');
       }
    }
    return null;

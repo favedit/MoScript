@@ -1750,6 +1750,13 @@ function FObjectPool_dispose(){
 }
 var RArray = new function RArray(){
    var o = this;
+   o.array1        = new Array(1);
+   o.array2        = new Array(2);
+   o.array3        = new Array(3);
+   o.array4        = new Array(4);
+   o.array9        = new Array(9);
+   o.array12       = new Array(12);
+   o.array16       = new Array(16);
    o.equals        = RArray_equals;
    o.count         = RArray_count;
    o.contains      = RArray_contains;
@@ -2467,90 +2474,6 @@ function RConsole_release(){
       o._consoles.dispose();
    }
    o._consoles = null;
-}
-var RContext = new function(){
-   var o = this;
-   o.optionGarbage = true;
-   o._location     = null;
-   o._contexts     = new Object();
-   o.contextPath   = null;
-   o.contextTag    = null;
-   o.themeId       = null;
-   o.languageId    = null;
-   o.construct     = RContext_construct;
-   o.initialize    = RContext_initialize;
-   o.get           = RContext_get;
-   o.find          = RContext_find;
-   o.location      = RContext_location;
-   o.context       = RContext_context;
-   o.construct();
-   return o;
-}
-function RContext_construct(){
-   var o = this;
-   if(window.ActiveXObject){
-      o.optionGarbage = true;
-   }else{
-      o.optionGarbage = false;
-   }
-}
-function RContext_location(s){
-   var o = this;
-   var r = o._location;
-   if(r == null){
-      var l = window.location;
-      var hr = l.href;
-      var pn = l.pathname;
-      r = hr.substring(0, hr.indexOf(pn))
-      if(o.contextPath){
-         r += o.contextPath;
-      }
-      o._location = r;
-   }
-   if(s){
-      r += s;
-   }
-   return r;
-}
-function RContext_context(s){
-   var o = this;
-   if(s != null){
-      if(RString.endsWith(s, '.wv')){
-         return o.contextPath + '/' + s;
-      }else if(RString.startsWith(s, '#')){
-         return o.contextPath + o.contextTag + s.substr(1);
-      }
-      return o.contextPath + s;
-   }
-   return o.contextPath;
-}
-function RContext_initialize(s){
-   var o = this;
-   for(var n in s){
-      var ls = s[n];
-      for(var nc in ls){
-         var v = ls[nc];
-         var fn = n + ':' + nc;
-         o._contexts[fn] = new TContext(n, nc, v);
-      }
-   }
-}
-function RContext_get(p, p1, p2, p3, p4, p5){
-   var o = this;
-   var r = o._contexts[p];
-   if(!r){
-      return RLogger.fatal(o, null, 'Can not find context (path={1})', p);
-   }
-   return RString.format(r.text, p1, p2, p3, p4, p5)
-}
-function RContext_find(s, c){
-   var o = this;
-   var id = s + ':' + c;
-   var r = o._contexts[id];
-   if(!r){
-      return RLogger.fatal(o, null, 'Can not find context (id={1})', id);
-   }
-   return r.text;
 }
 var RDate = new function RDate(){
    var o = this;

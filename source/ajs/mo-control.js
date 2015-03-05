@@ -13893,7 +13893,10 @@ function FUiToolButton_setLabel(p){
    var o = this;
    var s = RString.nvl(p);
    o._label = s;
-   RHtml.textSet(o._hLabelPanel, s);
+   var h = o._hLabelPanel;
+   if(h){
+      RHtml.textSet(h, s);
+   }
 }
 function FUiToolButton_setHint(p){
    var o = this;

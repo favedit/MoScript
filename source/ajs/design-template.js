@@ -857,7 +857,7 @@ function FDsTemplateWorkspace_onBuild(p){
    fs.appendFrame(f);
    fs.setPanel(o._hPanel);
    var fs = RClass.create(FUiFrameSet);
-   fs._directionCd = EDirection.Horizontal;
+   fs._directionCd = EUiDirection.Horizontal;
    fs.build(p);
    var f = o._frameCatalog = RClass.create(FUiFramePage);
    f.setWidth(400);
@@ -944,7 +944,7 @@ function FDsTemplateWorkspace_onCatalogSelected(p){
       var f = o.materialPropertyFrame();
       f.show();
       f.loadObject(t, p);
-   }else if(RClass.isClass(p, FG3dRenderable)){
+   }else if(RClass.isClass(p, MG3dRenderable)){
       var f = o.displayPropertyFrame();
       f.show();
       f.loadObject(t, p);

@@ -84,7 +84,7 @@ function FDsTemplateWorkspace_onBuild(p){
    //..........................................................
    // 建立内容框架
    var fs = RClass.create(FUiFrameSet);
-   fs._directionCd = EDirection.Horizontal;
+   fs._directionCd = EUiDirection.Horizontal;
    fs.build(p);
    // 建立目录区
    var f = o._frameCatalog = RClass.create(FUiFramePage);
@@ -205,7 +205,7 @@ function FDsTemplateWorkspace_onCatalogSelected(p){
       var f = o.materialPropertyFrame();
       f.show();
       f.loadObject(t, p);
-   }else if(RClass.isClass(p, FG3dRenderable)){
+   }else if(RClass.isClass(p, MG3dRenderable)){
       var f = o.displayPropertyFrame();
       f.show();
       f.loadObject(t, p);

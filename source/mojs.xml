@@ -8,7 +8,8 @@
 
      <PathMerger source='/1.3.1-core'               target='/ajs/core.js'/>
      <PathMerger source='/1.3.2-core-template'      target='/ajs/core-template.js'/>
-     <PathMerger source='/1.3.3-console'            target='/ajs/console.js'/>
+     <PathMerger source='/1.3.3-core-window'        target='/ajs/core-window.js'/>
+     <PathMerger source='/1.4.1-console'            target='/ajs/console.js'/>
 
      <PathMerger source='/2.1.1-graphic'            target='/ajs/graphic.js'/>
      <PathMerger source='/2.2.1-graphic-2d'         target='/ajs/graphic-2d.js'/>
@@ -107,6 +108,7 @@
      </FileMerger>
      <FileMerger target='/ajs/mo.js'>
         <File source='/ajs/mo-core.js'/>
+        <File source='/ajs/core-window.js'/>
         <File source='/ajs/mo-graphic.js'/>
         <File source='/ajs/mo-engine.js'/>
         <File source='/ajs/mo-control.js'/>

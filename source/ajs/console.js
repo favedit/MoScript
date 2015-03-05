@@ -5,6 +5,13 @@ var EThreadStatus = new function EThreadStatus(){
    o.Finish = 2;
    return o;
 }
+function SProcessEvent(){
+   var o = this;
+   o.index = null;
+   o.code  = null;
+   o.data  = null;
+   return o;
+}
 function SXmlEvent(){
    var o = this;
    o.owner          = null;
@@ -600,14 +607,52 @@ function FPipeline_name(){
 }
 function FProcess(o){
    o = RClass.inherits(this, o, FObject);
-   o._typeName  = null;
-   o._groupName = null;
-   o._name      = null;
-   o.name  = FProcess_name;
+   o._name     = null;
+   o._source   = null;
+   o._worker   = null;
+   o._events   = null;
+   o.ohMessage = FProcess_ohMessage;
+   o.onMessage = FProcess_onMessage;
+   o.construct = FProcess_construct;
+   o.name      = FProcess_name;
+   o.start     = FProcess_start;
+   o.process   = FProcess_process;
    return o;
+}
+function FProcess_ohMessage(){
+   var o = this.__linker;
+   o.onMessage(this);
+}
+function FProcess_onMessage(p){
 }
 function FProcess_name(){
    return this._name;
+}
+function FProcess_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._events = new TObjects();
+}
+function FProcess_start(p){
+   var o = this;
+   if(o._worker){
+      throw new TError(o, 'Process is already start.');
+   }
+   o._source = p;
+   var w = o._worker = new Worker(p);
+   w.__linker = o;
+   w.onmessage = o.ohMessage;
+}
+function FProcess_process(p){
+   var o = this;
+   var es = o._events;
+   var c = es.count();
+   es.push(p);
+   var e = new SProcessEvent();
+   e.index = c;
+   e.code = p.code();
+   e.data = p.data();
+   o._worker.postMessage(e);
 }
 function FProcessConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -676,16 +721,141 @@ function FProcessConsole_send(u, d){
    c._statusFree = true;
    return r;
 }
+function FProcessEvent(o){
+   o = RClass.inherits(this, o, FObject);
+   o._code      = null;
+   o._data      = null;
+   o._listeners = null;
+   o.code       = FProcessEvent_code;
+   o.setCode    = FProcessEvent_setCode;
+   o.data       = FProcessEvent_data;
+   o.setData    = FProcessEvent_setData;
+   o.register   = FProcessEvent_register;
+   return o;
+}
+function FProcessEvent_name(){
+   return this._name;
+}
+function FProcessEvent_code(){
+   return this._code;
+}
+function FProcessEvent_setCode(p){
+   this._code = p;
+}
+function FProcessEvent_data(){
+   return this._data;
+}
+function FProcessEvent_setData(p){
+   this._data = p;
+}
+function FProcessEvent_register(po, pf){
+   var o = this;
+   if(!o._listeners){
+      o._listeners = new TListeners();
+   }
+   o._listeners.register(po, pf);
+}
+function FProcessor(o){
+   o = RClass.inherits(this, o, FObject);
+   o._name     = null;
+   o._source   = null;
+   o._worker   = null;
+   o._events   = null;
+   o.ohMessage = FProcessor_ohMessage;
+   o.onMessage = FProcessor_onMessage;
+   o.construct = FProcessor_construct;
+   o.name      = FProcessor_name;
+   o.start     = FProcessor_start;
+   o.process   = FProcessor_process;
+   return o;
+}
+function FProcessor_ohMessage(){
+   var o = this.__linker;
+   o.onMessage(this);
+}
+function FProcessor_onMessage(p){
+}
+function FProcessor_name(){
+   return this._name;
+}
+function FProcessor_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._events = new TObjects();
+}
+function FProcessor_start(p){
+   var o = this;
+   if(o._worker){
+      throw new TError(o, 'Process is already start.');
+   }
+   o._source = p;
+   var w = o._worker = new Worker(p);
+   w.__linker = o;
+   w.onmessage = o.ohMessage;
+}
+function FProcessor_process(p){
+   var o = this;
+   var es = o._events;
+   var c = es.count();
+   es.push(p);
+   var e = new SProcessEvent();
+   e.index = c;
+   e.code = p.code();
+   e.data = p.data();
+   o._worker.postMessage(e);
+}
 function FProcessServer(o){
    o = RClass.inherits(this, o, FObject);
-   o._typeName  = null;
-   o._groupName = null;
-   o._name      = null;
-   o.name  = FProcessServer_name;
+   o._name               = null;
+   o._handle             = null;
+   o._processors         = null;
+   o.ohInterval          = FProcessServer_ohInterval;
+   o.onInterval          = FProcessServer_onInterval;
+   o.ohMessage           = FProcessServer_ohMessage;
+   o.onMessage           = FProcessServer_onMessage;
+   o.construct           = FProcessServer_construct;
+   o.name                = FProcessServer_name;
+   o.registerProcessor   = FProcessServer_registerProcessor;
+   o.unregisterProcessor = FProcessServer_unregisterProcessor;
+   o.send                = FProcessServer_send;
+   o.process             = FProcessServer_process;
    return o;
+}
+function FProcessServer_ohInterval(){
+   FProcessServer.__linker.onInterval();
+}
+function FProcessServer_onInterval(){
+   var o = this;
+}
+function FProcessServer_ohMessage(p){
+   FProcessServer.__linker.onMessage(p.data);
+}
+function FProcessServer_onMessage(p){
+   var o = this;
+   console.log('messgae', this, p);
+}
+function FProcessServer_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._processors = new TDictionary();
 }
 function FProcessServer_name(){
    return this._name;
+}
+function FProcessServer_registerProcessor(c, p){
+   this._processors.set(c, p);
+}
+function FProcessServer_unregisterProcessor(c){
+   this._processors.set(c, null);
+}
+function FProcessServer_send(p){
+   var o = this;
+   postMessage(p);
+}
+function FProcessServer_process(){
+   var o = this;
+   onmessage = o.ohMessage;
+   FProcessServer.__linker = o;
 }
 function FResource(o){
    o = RClass.inherits(this, o, FObject);

@@ -51,7 +51,7 @@ var RValue = new function RValue(){
 function RValue_construct(){
    var o = this;
    // 支持类型数组
-   if(RRuntime.supportHtml5()){
+   if(RBrowser.supportHtml5()){
       // 初始化临时数组
       o.float1 = new Float32Array(1);
       o.float2 = new Float32Array(2);

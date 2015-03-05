@@ -233,7 +233,7 @@ function RWindow_connect(w){
    var hd = o._hDocument = hw.document;
    var hc = o._hContainer = hd.body;
    // 关联鼠标事件
-   if(RRuntime.supportHtml5()){
+   if(RBrowser.supportHtml5()){
       hc.addEventListener('mousedown', o.ohMouseDown, true);
       hc.addEventListener('mousemove', o.ohMouseMove, true);
       hc.addEventListener('mouseup', o.ohMouseUp, true);
