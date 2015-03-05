@@ -9,17 +9,21 @@ function FG3dTexture(o){
    //..........................................................
    // @attribute
    o._textureCd   = EG3dTexture.Unknown;
-   o._statusLoad  = false;
    o._filterMinCd = EG3dSamplerFilter.Linear;
    o._filterMagCd = EG3dSamplerFilter.Linear;
    o._wrapS       = EG3dSamplerFilter.Unknown;
    o._wrapT       = EG3dSamplerFilter.Unknown;
+   // @attribute
+   o._statusLoad  = false;
    //..........................................................
    // @method
+   o.isValid      = RMethod.virtual(o, 'isValid');
    o.textureCd    = FG3dTexture_textureCd;
+   // @method
    o.filterMinCd  = FG3dTexture_filterMinCd;
    o.filterMagCd  = FG3dTexture_filterMagCd;
    o.setFilter    = FG3dTexture_setFilter;
+   // @method
    o.wrapS        = FG3dTexture_wrapS;
    o.wrapT        = FG3dTexture_wrapT;
    o.setWrap      = FG3dTexture_setWrap;

@@ -1179,7 +1179,6 @@ function FE3rTextureBitmap_dispose(){
 }
 function FE3rTextureBitmapCubePack(o){
    o = RClass.inherits(this, o, FE3rTextureBitmapPack);
-   o._ready       = false;
    o._resource    = null;
    o._images      = null;
    o.onLoad       = FE3rTextureBitmapCubePack_onLoad;
@@ -1205,7 +1204,7 @@ function FE3rTextureBitmapCubePack_onLoad(p){
       is[i] = RObject.dispose(m);
    }
    o._images = RObject.dispose(o._images);
-   o._ready  = true;
+   o._dataReady = true;
 }
 function FE3rTextureBitmapCubePack_construct(){
    var o = this;
@@ -1228,13 +1227,11 @@ function FE3rTextureBitmapCubePack_loadResource(p){
 }
 function FE3rTextureBitmapCubePack_dispose(){
    var o = this;
-   o._ready = false;
    o._images = RObject.dispose(o._images);
    o.__base.FE3rTextureBitmapPack.dispose.call(o);
 }
 function FE3rTextureBitmapFlatPack(o){
    o = RClass.inherits(this, o, FE3rTextureBitmapPack);
-   o._ready       = false;
    o._resource    = null;
    o._image       = null;
    o.onLoad       = FE3rTextureBitmapFlatPack_onLoad;
@@ -1251,7 +1248,7 @@ function FE3rTextureBitmapFlatPack_onLoad(p){
    t.makeMipmap();
    window.URL.revokeObjectURL(o._image.url());
    o._image = RObject.dispose(o._image);
-   o._ready  = true;
+   o._dataReady = true;
 }
 function FE3rTextureBitmapFlatPack_construct(){
    var o = this;
@@ -1283,7 +1280,7 @@ function FE3rTextureBitmapFlatPack_loadResource(p){
       t.uploadData(d, s.width, s.height);
       t.makeMipmap();
       o._graphicContext._native.finish();
-      o._ready  = true;
+      o._dataReady = true;
    }
 }
 function FE3rTextureBitmapFlatPack_dispose(){
@@ -1293,9 +1290,11 @@ function FE3rTextureBitmapFlatPack_dispose(){
 }
 function FE3rTextureBitmapPack(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
-   o._ready       = false;
    o._resource    = null;
    o._image       = null;
+   o._texture     = null;
+   o._ready       = false;
+   o._dataReady   = false;
    o.onLoad       = RMethod.virtual(o, 'onLoad');
    o.construct    = FE3rTextureBitmapPack_construct;
    o.texture      = FE3rTextureBitmapPack_texture;
@@ -1312,11 +1311,16 @@ function FE3rTextureBitmapPack_texture(){
    return this._texture;
 }
 function FE3rTextureBitmapPack_testReady(){
-   return this._ready;
+   var o = this;
+   if(o._dataReady){
+      o._ready = o._texture.isValid();
+   }
+   return o._ready;
 }
 function FE3rTextureBitmapPack_dispose(){
    var o = this;
    o._ready = false;
+   o._dataReady = false;
    o.__base.FObject.dispose.call(o);
 }
 function FE3rTextureConsole(o){

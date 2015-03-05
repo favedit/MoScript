@@ -24,6 +24,7 @@
      <PathMerger source='/3.3.3-engine-3d-render'   target='/ajs/engine-3d-render.js'/>
      <PathMerger source='/3.3.4-engine-3d-effect'   target='/ajs/engine-3d-effect.js'/>
      <PathMerger source='/3.3.5-engine-3d-instance' target='/ajs/engine-3d-instance.js'/>
+     <PathMerger source='/3.3.6-engine-3d-server'   target='/ajs/engine-3d-server.js'/>
 
      <PathMerger source='/4.1.1-control'            target='/ajs/control.js'/>
      <PathMerger source='/4.1.2-control-core'       target='/ajs/control-core.js'/>
@@ -90,6 +91,7 @@
         <File source='/ajs/data-core.js'/>
         <File source='/ajs/data-form.js'/>
         <File source='/ajs/data-table.js'/>
+        <File source='/ajs/data-tool.js'/>
      </FileMerger>
      <FileMerger target='/ajs/mo-control.js'>
         <File source='/ajs/mo-base-control.js'/>
@@ -107,9 +109,14 @@
         <File source='/ajs/mo-core.js'/>
         <File source='/ajs/mo-graphic.js'/>
         <File source='/ajs/mo-engine.js'/>
-        <File source='/ajs/mo-graphic.js'/>
         <File source='/ajs/mo-control.js'/>
         <File source='/ajs/mo-design.js'/>
+     </FileMerger>
+     <FileMerger target='/ajs/mo-engine-server.js'>
+        <File source='/ajs/mo-core.js'/>
+        <File source='/ajs/mo-graphic.js'/>
+        <File source='/ajs/mo-engine.js'/>
+        <File source='/ajs/engine-3d-server.js'/>
      </FileMerger>
   </FileMergerCollection>
 </Configuration>

@@ -8,39 +8,39 @@ function MG3dRenderable(o){
    o = RClass.inherits(this, o, MGraphicRenderable);
    //..........................................................
    // @attribute
-   o._optionMerge    = false;
+   o._optionMerge   = false;
    // @attribute
-   o._currentMatrix  = null;
-   o._matrix         = null;
+   o._currentMatrix = null;
+   o._matrix        = null;
    // @attribute
-   o._effectCode     = null;
-   o._materialName   = null;
-   o._material       = null;
+   o._effectCode    = null;
+   o._materialName  = null;
+   o._material      = null;
    // @attribute
-   o._activeInfo     = null;
-   o._infos          = null;
+   o._activeInfo    = null;
+   o._infos         = null;
    //..........................................................
    // @method
-   o.construct       = MG3dRenderable_construct;
+   o.construct      = MG3dRenderable_construct;
    // @method
-   o.currentMatrix   = MG3dRenderable_currentMatrix;
-   o.matrix          = MG3dRenderable_matrix;
-   o.effectCode      = MG3dRenderable_effectCode;
-   o.material        = MG3dRenderable_material;
+   o.currentMatrix  = MG3dRenderable_currentMatrix;
+   o.matrix         = MG3dRenderable_matrix;
+   o.effectCode     = MG3dRenderable_effectCode;
+   o.material       = MG3dRenderable_material;
    // @method
-   o.activeEffect    = MG3dRenderable_activeEffect;
-   o.activeInfo      = MG3dRenderable_activeInfo;
-   o.effectFind      = MG3dRenderable_effectFind;
-   o.effectSet       = MG3dRenderable_effectSet;
-   o.infos           = MG3dRenderable_infos;
-   o.clearInfos      = MG3dRenderable_clearInfos;
-   o.selectInfo      = MG3dRenderable_selectInfo;
+   o.activeEffect   = MG3dRenderable_activeEffect;
+   o.activeInfo     = MG3dRenderable_activeInfo;
+   o.effectFind     = MG3dRenderable_effectFind;
+   o.effectSet      = MG3dRenderable_effectSet;
+   o.infos          = MG3dRenderable_infos;
+   o.clearInfos     = MG3dRenderable_clearInfos;
+   o.selectInfo     = MG3dRenderable_selectInfo;
    // @method
-   o.testVisible     = RMethod.virtual(o, 'testVisible');
+   o.testVisible    = RMethod.virtual(o, 'testVisible');
    // @method
-   o.update          = MG3dRenderable_update;
+   o.update         = MG3dRenderable_update;
    // @method
-   o.dispose         = MG3dRenderable_dispose;
+   o.dispose        = MG3dRenderable_dispose;
    return o;
 }
 
@@ -170,8 +170,7 @@ function MG3dRenderable_clearInfos(){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         var ri = s.valueAt(i);
-         ri.reset();
+         s.valueAt(i).reset();
       }
    }
 }

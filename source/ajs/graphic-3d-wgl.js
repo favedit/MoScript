@@ -698,6 +698,7 @@ function FWglCubeTexture(o){
    o = RClass.inherits(this, o, FG3dCubeTexture);
    o._native    = null;
    o.setup      = FWglCubeTexture_setup;
+   o.isValid    = FWglCubeTexture_isValid;
    o.makeMipmap = FWglCubeTexture_makeMipmap;
    o.upload     = FWglCubeTexture_upload;
    o.dispose    = FWglCubeTexture_dispose;
@@ -708,6 +709,11 @@ function FWglCubeTexture_setup(){
    var g = o._graphicContext._native;
    o.__base.FG3dCubeTexture.setup.call(o);
    o._native = g.createTexture();
+}
+function FWglCubeTexture_isValid(){
+   var o = this;
+   var g = o._graphicContext._native;
+   return g.isTexture(o._native);
 }
 function FWglCubeTexture_makeMipmap(){
    var o = this;
@@ -743,6 +749,7 @@ function FWglFlatTexture(o){
    o = RClass.inherits(this, o, FG3dFlatTexture);
    o._native    = null;
    o.setup      = FWglFlatTexture_setup;
+   o.isValid    = FWglFlatTexture_isValid;
    o.makeMipmap = FWglFlatTexture_makeMipmap;
    o.uploadData = FWglFlatTexture_uploadData;
    o.upload     = FWglFlatTexture_upload;
@@ -754,6 +761,11 @@ function FWglFlatTexture_setup(){
    var g = o._graphicContext._native;
    o.__base.FG3dFlatTexture.setup.call(o);
    o._native = g.createTexture();
+}
+function FWglFlatTexture_isValid(){
+   var o = this;
+   var g = o._graphicContext._native;
+   return g.isTexture(o._native);
 }
 function FWglFlatTexture_makeMipmap(){
    var o = this;
@@ -867,6 +879,7 @@ function FWglIndexBuffer(o){
    o = RClass.inherits(this, o, FG3dIndexBuffer);
    o._native = null;
    o.setup   = FWglIndexBuffer_setup;
+   o.isValid = FWglIndexBuffer_isValid;
    o.upload  = FWglIndexBuffer_upload;
    o.dispose = FWglIndexBuffer_dispose;
    return o;
@@ -875,6 +888,11 @@ function FWglIndexBuffer_setup(){
    var o = this;
    o.__base.FG3dIndexBuffer.setup.call(o);
    o._native = o._graphicContext._native.createBuffer();
+}
+function FWglIndexBuffer_isValid(){
+   var o = this;
+   var g = o._graphicContext._native;
+   return g.isBuffer(o._native);
 }
 function FWglIndexBuffer_upload(pd, pc){
    var o = this;
@@ -1220,6 +1238,7 @@ function FWglVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dVertexBuffer);
    o._native = null;
    o.setup   = FWglVertexBuffer_setup;
+   o.isValid = FWglVertexBuffer_isValid;
    o.upload  = FWglVertexBuffer_upload;
    o.dispose = FWglVertexBuffer_dispose;
    return o;
@@ -1229,6 +1248,11 @@ function FWglVertexBuffer_setup(){
    o.__base.FG3dVertexBuffer.setup.call(o);
    var g = o._graphicContext._native;
    o._native = g.createBuffer();
+}
+function FWglVertexBuffer_isValid(){
+   var o = this;
+   var g = o._graphicContext._native;
+   return g.isBuffer(o._native);
 }
 function FWglVertexBuffer_upload(pd, ps, pc){
    var o = this;

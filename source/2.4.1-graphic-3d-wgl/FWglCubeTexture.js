@@ -13,6 +13,7 @@ function FWglCubeTexture(o){
    // @method
    o.setup      = FWglCubeTexture_setup;
    // @method
+   o.isValid    = FWglCubeTexture_isValid;
    o.makeMipmap = FWglCubeTexture_makeMipmap;
    o.upload     = FWglCubeTexture_upload;
    // @method
@@ -30,6 +31,18 @@ function FWglCubeTexture_setup(){
    var g = o._graphicContext._native;
    o.__base.FG3dCubeTexture.setup.call(o);
    o._native = g.createTexture();
+}
+
+//==========================================================
+// <T>当前缓冲是否有效。</T>
+//
+// @method
+// @return Boolean 是否有效
+//==========================================================
+function FWglCubeTexture_isValid(){
+   var o = this;
+   var g = o._graphicContext._native;
+   return g.isTexture(o._native);
 }
 
 //==========================================================

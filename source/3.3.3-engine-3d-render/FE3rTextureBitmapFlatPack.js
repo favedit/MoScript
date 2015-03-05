@@ -8,7 +8,6 @@ function FE3rTextureBitmapFlatPack(o){
    o = RClass.inherits(this, o, FE3rTextureBitmapPack);
    //..........................................................
    // @attribute
-   o._ready       = false;
    o._resource    = null;
    o._image       = null;
    //..........................................................
@@ -40,7 +39,7 @@ function FE3rTextureBitmapFlatPack_onLoad(p){
    window.URL.revokeObjectURL(o._image.url());
    o._image = RObject.dispose(o._image);
    // 加载完成
-   o._ready  = true;
+   o._dataReady = true;
 }
 
 //==========================================================
@@ -90,7 +89,7 @@ function FE3rTextureBitmapFlatPack_loadResource(p){
       t.makeMipmap();
       o._graphicContext._native.finish();
       // 加载完成
-      o._ready  = true;
+      o._dataReady = true;
    }
 }
 

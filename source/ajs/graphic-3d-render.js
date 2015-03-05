@@ -174,6 +174,16 @@ function SG3dContextCapability_calculateInstanceCount(bc, vc){
    }
    return r;
 }
+function FG3dBuffer(o){
+   o = RClass.inherits(this, o, FG3dObject);
+   o._name   = null;
+   o.name    = FG3dBuffer_name;
+   o.isValid = RMethod.virtual(o, 'isValid');
+   return o;
+}
+function FG3dBuffer_name(){
+   return this._name;
+}
 function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
    o._size               = null;
@@ -276,7 +286,7 @@ function FG3dFragmentShader(o){
    return o;
 }
 function FG3dIndexBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject);
+   o = RClass.inherits(this, o, FG3dBuffer);
    o._strideCd = EG3dIndexStride.Uint16;
    o._count    = 0;
    o.strideCd  = FG3dIndexBuffer_strideCd;
@@ -610,11 +620,12 @@ function FG3dStatistics_resetFrame(){
 function FG3dTexture(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._textureCd   = EG3dTexture.Unknown;
-   o._statusLoad  = false;
    o._filterMinCd = EG3dSamplerFilter.Linear;
    o._filterMagCd = EG3dSamplerFilter.Linear;
    o._wrapS       = EG3dSamplerFilter.Unknown;
    o._wrapT       = EG3dSamplerFilter.Unknown;
+   o._statusLoad  = false;
+   o.isValid      = RMethod.virtual(o, 'isValid');
    o.textureCd    = FG3dTexture_textureCd;
    o.filterMinCd  = FG3dTexture_filterMinCd;
    o.filterMagCd  = FG3dTexture_filterMagCd;
@@ -650,17 +661,24 @@ function FG3dTexture_setWrap(ps, pt){
    o._wrapT = pt;
 }
 function FG3dVertexBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject);
-   o._name     = 0;
+   o = RClass.inherits(this, o, FG3dBuffer);
    o._formatCd = EG3dAttributeFormat.Unknown;
    o._stride   = 0;
    o._count    = 0;
-   o.name      = FG3dVertexBuffer_name;
+   o.formatCd  = FG3dVertexBuffer_formatCd;
+   o.stride    = FG3dVertexBuffer_stride;
+   o.count     = FG3dVertexBuffer_count;
    o.upload    = RMethod.virtual(o, 'upload');
    return o;
 }
-function FG3dVertexBuffer_name(){
-   return this._name;
+function FG3dVertexBuffer_formatCd(){
+   return this._formatCd;
+}
+function FG3dVertexBuffer_stride(){
+   return this._stride;
+}
+function FG3dVertexBuffer_count(){
+   return this._count;
 }
 function FG3dVertexShader(o){
    o = RClass.inherits(this, o, FG3dShader);

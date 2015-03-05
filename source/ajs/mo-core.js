@@ -13507,6 +13507,17 @@ function FProcessConsole_send(u, d){
    c._statusFree = true;
    return r;
 }
+function FProcessServer(o){
+   o = RClass.inherits(this, o, FObject);
+   o._typeName  = null;
+   o._groupName = null;
+   o._name      = null;
+   o.name  = FProcessServer_name;
+   return o;
+}
+function FProcessServer_name(){
+   return this._name;
+}
 function FResource(o){
    o = RClass.inherits(this, o, FObject);
    o._guid  = null;

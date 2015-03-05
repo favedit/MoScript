@@ -328,29 +328,29 @@ function MG3dRegion_dispose(){
 }
 function MG3dRenderable(o){
    o = RClass.inherits(this, o, MGraphicRenderable);
-   o._optionMerge    = false;
-   o._currentMatrix  = null;
-   o._matrix         = null;
-   o._effectCode     = null;
-   o._materialName   = null;
-   o._material       = null;
-   o._activeInfo     = null;
-   o._infos          = null;
-   o.construct       = MG3dRenderable_construct;
-   o.currentMatrix   = MG3dRenderable_currentMatrix;
-   o.matrix          = MG3dRenderable_matrix;
-   o.effectCode      = MG3dRenderable_effectCode;
-   o.material        = MG3dRenderable_material;
-   o.activeEffect    = MG3dRenderable_activeEffect;
-   o.activeInfo      = MG3dRenderable_activeInfo;
-   o.effectFind      = MG3dRenderable_effectFind;
-   o.effectSet       = MG3dRenderable_effectSet;
-   o.infos           = MG3dRenderable_infos;
-   o.clearInfos      = MG3dRenderable_clearInfos;
-   o.selectInfo      = MG3dRenderable_selectInfo;
-   o.testVisible     = RMethod.virtual(o, 'testVisible');
-   o.update          = MG3dRenderable_update;
-   o.dispose         = MG3dRenderable_dispose;
+   o._optionMerge   = false;
+   o._currentMatrix = null;
+   o._matrix        = null;
+   o._effectCode    = null;
+   o._materialName  = null;
+   o._material      = null;
+   o._activeInfo    = null;
+   o._infos         = null;
+   o.construct      = MG3dRenderable_construct;
+   o.currentMatrix  = MG3dRenderable_currentMatrix;
+   o.matrix         = MG3dRenderable_matrix;
+   o.effectCode     = MG3dRenderable_effectCode;
+   o.material       = MG3dRenderable_material;
+   o.activeEffect   = MG3dRenderable_activeEffect;
+   o.activeInfo     = MG3dRenderable_activeInfo;
+   o.effectFind     = MG3dRenderable_effectFind;
+   o.effectSet      = MG3dRenderable_effectSet;
+   o.infos          = MG3dRenderable_infos;
+   o.clearInfos     = MG3dRenderable_clearInfos;
+   o.selectInfo     = MG3dRenderable_selectInfo;
+   o.testVisible    = RMethod.virtual(o, 'testVisible');
+   o.update         = MG3dRenderable_update;
+   o.dispose        = MG3dRenderable_dispose;
    return o;
 }
 function MG3dRenderable_construct(){
@@ -410,8 +410,7 @@ function MG3dRenderable_clearInfos(){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         var ri = s.valueAt(i);
-         ri.reset();
+         s.valueAt(i).reset();
       }
    }
 }
@@ -765,7 +764,7 @@ function SG3dRenderableInfo(){
 function SG3dRenderableInfo_reset(){
    var o = this;
    o.effect = null;
-   o.layout = null;
+   o.layout = RObject.dispose(o.layout);
 }
 function FG3dAnimation(o){
    o = RClass.inherits(this, o, FObject);
@@ -2263,6 +2262,16 @@ function SG3dContextCapability_calculateInstanceCount(bc, vc){
    }
    return r;
 }
+function FG3dBuffer(o){
+   o = RClass.inherits(this, o, FG3dObject);
+   o._name   = null;
+   o.name    = FG3dBuffer_name;
+   o.isValid = RMethod.virtual(o, 'isValid');
+   return o;
+}
+function FG3dBuffer_name(){
+   return this._name;
+}
 function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
    o._size               = null;
@@ -2365,7 +2374,7 @@ function FG3dFragmentShader(o){
    return o;
 }
 function FG3dIndexBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject);
+   o = RClass.inherits(this, o, FG3dBuffer);
    o._strideCd = EG3dIndexStride.Uint16;
    o._count    = 0;
    o.strideCd  = FG3dIndexBuffer_strideCd;
@@ -2699,11 +2708,12 @@ function FG3dStatistics_resetFrame(){
 function FG3dTexture(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._textureCd   = EG3dTexture.Unknown;
-   o._statusLoad  = false;
    o._filterMinCd = EG3dSamplerFilter.Linear;
    o._filterMagCd = EG3dSamplerFilter.Linear;
    o._wrapS       = EG3dSamplerFilter.Unknown;
    o._wrapT       = EG3dSamplerFilter.Unknown;
+   o._statusLoad  = false;
+   o.isValid      = RMethod.virtual(o, 'isValid');
    o.textureCd    = FG3dTexture_textureCd;
    o.filterMinCd  = FG3dTexture_filterMinCd;
    o.filterMagCd  = FG3dTexture_filterMagCd;
@@ -2739,17 +2749,24 @@ function FG3dTexture_setWrap(ps, pt){
    o._wrapT = pt;
 }
 function FG3dVertexBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject);
-   o._name     = 0;
+   o = RClass.inherits(this, o, FG3dBuffer);
    o._formatCd = EG3dAttributeFormat.Unknown;
    o._stride   = 0;
    o._count    = 0;
-   o.name      = FG3dVertexBuffer_name;
+   o.formatCd  = FG3dVertexBuffer_formatCd;
+   o.stride    = FG3dVertexBuffer_stride;
+   o.count     = FG3dVertexBuffer_count;
    o.upload    = RMethod.virtual(o, 'upload');
    return o;
 }
-function FG3dVertexBuffer_name(){
-   return this._name;
+function FG3dVertexBuffer_formatCd(){
+   return this._formatCd;
+}
+function FG3dVertexBuffer_stride(){
+   return this._stride;
+}
+function FG3dVertexBuffer_count(){
+   return this._count;
 }
 function FG3dVertexShader(o){
    o = RClass.inherits(this, o, FG3dShader);
@@ -4475,6 +4492,7 @@ function FWglCubeTexture(o){
    o = RClass.inherits(this, o, FG3dCubeTexture);
    o._native    = null;
    o.setup      = FWglCubeTexture_setup;
+   o.isValid    = FWglCubeTexture_isValid;
    o.makeMipmap = FWglCubeTexture_makeMipmap;
    o.upload     = FWglCubeTexture_upload;
    o.dispose    = FWglCubeTexture_dispose;
@@ -4485,6 +4503,11 @@ function FWglCubeTexture_setup(){
    var g = o._graphicContext._native;
    o.__base.FG3dCubeTexture.setup.call(o);
    o._native = g.createTexture();
+}
+function FWglCubeTexture_isValid(){
+   var o = this;
+   var g = o._graphicContext._native;
+   return g.isTexture(o._native);
 }
 function FWglCubeTexture_makeMipmap(){
    var o = this;
@@ -4520,6 +4543,7 @@ function FWglFlatTexture(o){
    o = RClass.inherits(this, o, FG3dFlatTexture);
    o._native    = null;
    o.setup      = FWglFlatTexture_setup;
+   o.isValid    = FWglFlatTexture_isValid;
    o.makeMipmap = FWglFlatTexture_makeMipmap;
    o.uploadData = FWglFlatTexture_uploadData;
    o.upload     = FWglFlatTexture_upload;
@@ -4531,6 +4555,11 @@ function FWglFlatTexture_setup(){
    var g = o._graphicContext._native;
    o.__base.FG3dFlatTexture.setup.call(o);
    o._native = g.createTexture();
+}
+function FWglFlatTexture_isValid(){
+   var o = this;
+   var g = o._graphicContext._native;
+   return g.isTexture(o._native);
 }
 function FWglFlatTexture_makeMipmap(){
    var o = this;
@@ -4644,6 +4673,7 @@ function FWglIndexBuffer(o){
    o = RClass.inherits(this, o, FG3dIndexBuffer);
    o._native = null;
    o.setup   = FWglIndexBuffer_setup;
+   o.isValid = FWglIndexBuffer_isValid;
    o.upload  = FWglIndexBuffer_upload;
    o.dispose = FWglIndexBuffer_dispose;
    return o;
@@ -4652,6 +4682,11 @@ function FWglIndexBuffer_setup(){
    var o = this;
    o.__base.FG3dIndexBuffer.setup.call(o);
    o._native = o._graphicContext._native.createBuffer();
+}
+function FWglIndexBuffer_isValid(){
+   var o = this;
+   var g = o._graphicContext._native;
+   return g.isBuffer(o._native);
 }
 function FWglIndexBuffer_upload(pd, pc){
    var o = this;
@@ -4997,6 +5032,7 @@ function FWglVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dVertexBuffer);
    o._native = null;
    o.setup   = FWglVertexBuffer_setup;
+   o.isValid = FWglVertexBuffer_isValid;
    o.upload  = FWglVertexBuffer_upload;
    o.dispose = FWglVertexBuffer_dispose;
    return o;
@@ -5006,6 +5042,11 @@ function FWglVertexBuffer_setup(){
    o.__base.FG3dVertexBuffer.setup.call(o);
    var g = o._graphicContext._native;
    o._native = g.createBuffer();
+}
+function FWglVertexBuffer_isValid(){
+   var o = this;
+   var g = o._graphicContext._native;
+   return g.isBuffer(o._native);
 }
 function FWglVertexBuffer_upload(pd, ps, pc){
    var o = this;

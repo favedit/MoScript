@@ -8,7 +8,6 @@ function FE3rTextureBitmapCubePack(o){
    o = RClass.inherits(this, o, FE3rTextureBitmapPack);
    //..........................................................
    // @attribute
-   o._ready       = false;
    o._resource    = null;
    o._images      = null;
    //..........................................................
@@ -50,7 +49,7 @@ function FE3rTextureBitmapCubePack_onLoad(p){
    }
    o._images = RObject.dispose(o._images);
    // 加载完成
-   o._ready  = true;
+   o._dataReady = true;
 }
 
 //==========================================================
@@ -93,7 +92,6 @@ function FE3rTextureBitmapCubePack_loadResource(p){
 //==========================================================
 function FE3rTextureBitmapCubePack_dispose(){
    var o = this;
-   o._ready = false;
    o._images = RObject.dispose(o._images);
    o.__base.FE3rTextureBitmapPack.dispose.call(o);
 }

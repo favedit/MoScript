@@ -13,6 +13,7 @@ function FWglFlatTexture(o){
    // @method
    o.setup      = FWglFlatTexture_setup;
    // @method
+   o.isValid    = FWglFlatTexture_isValid;
    o.makeMipmap = FWglFlatTexture_makeMipmap;
    o.uploadData = FWglFlatTexture_uploadData;
    o.upload     = FWglFlatTexture_upload;
@@ -31,6 +32,18 @@ function FWglFlatTexture_setup(){
    var g = o._graphicContext._native;
    o.__base.FG3dFlatTexture.setup.call(o);
    o._native = g.createTexture();
+}
+
+//==========================================================
+// <T>当前缓冲是否有效。</T>
+//
+// @method
+// @return Boolean 是否有效
+//==========================================================
+function FWglFlatTexture_isValid(){
+   var o = this;
+   var g = o._graphicContext._native;
+   return g.isTexture(o._native);
 }
 
 //==========================================================

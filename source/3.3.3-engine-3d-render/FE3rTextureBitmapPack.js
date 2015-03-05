@@ -8,9 +8,12 @@ function FE3rTextureBitmapPack(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
    //..........................................................
    // @attribute
-   o._ready       = false;
    o._resource    = null;
    o._image       = null;
+   o._texture     = null;
+   // @attribute
+   o._ready       = false;
+   o._dataReady   = false;
    //..........................................................
    o.onLoad       = RMethod.virtual(o, 'onLoad');
    //..........................................................
@@ -51,7 +54,11 @@ function FE3rTextureBitmapPack_texture(){
 // @return 是否准备好
 //==========================================================
 function FE3rTextureBitmapPack_testReady(){
-   return this._ready;
+   var o = this;
+   if(o._dataReady){
+      o._ready = o._texture.isValid();
+   }
+   return o._ready;
 }
 
 //==========================================================
@@ -62,5 +69,6 @@ function FE3rTextureBitmapPack_testReady(){
 function FE3rTextureBitmapPack_dispose(){
    var o = this;
    o._ready = false;
+   o._dataReady = false;
    o.__base.FObject.dispose.call(o);
 }

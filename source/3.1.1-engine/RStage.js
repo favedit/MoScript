@@ -111,11 +111,11 @@ function RStage_process(){
       // 前处理
       o.lsnsEnterFrame.process(o);
       // 舞台处理
-      var ss = o._stages;
-      if(ss != null){
-         var c = ss.count();
+      var s = o._stages;
+      if(s){
+         var c = s.count();
          for(var i = 0; i < c; i++){
-            ss.value(i).process();
+            s.valueAt(i).process();
          }
       }
       // 后处理

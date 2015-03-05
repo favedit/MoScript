@@ -38,7 +38,7 @@ function FWglIndexBuffer_setup(){
 // @method
 // @return Boolean 是否有效
 //==========================================================
-function FWglVertexBuffer_isValid(){
+function FWglIndexBuffer_isValid(){
    var o = this;
    var g = o._graphicContext._native;
    return g.isBuffer(o._native);
