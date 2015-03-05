@@ -56,6 +56,9 @@ function FG3dControlTechnique_passControl(){
 //==========================================================
 function FG3dControlTechnique_drawRegion(p){
    var o = this;
+   if(p.renderables().isEmpty()){
+      return;
+   }
    // 清空深度
    o._graphicContext.clearDepth(1);
    // 绘制区域

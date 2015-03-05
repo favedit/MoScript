@@ -485,11 +485,11 @@ function RStage_process(){
    var o = this;
    if(o._active){
       o.lsnsEnterFrame.process(o);
-      var ss = o._stages;
-      if(ss != null){
-         var c = ss.count();
+      var s = o._stages;
+      if(s){
+         var c = s.count();
          for(var i = 0; i < c; i++){
-            ss.value(i).process();
+            s.valueAt(i).process();
          }
       }
       o.lsnsLeaveFrame.process(o);

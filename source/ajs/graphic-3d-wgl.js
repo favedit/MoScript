@@ -240,6 +240,7 @@ function FWglContext_createProgram(){
    var r = RClass.create(FWglProgram);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._programTotal++;
    return r;
 }
 function FWglContext_createLayout(){
@@ -250,6 +251,7 @@ function FWglContext_createLayout(){
    var r = RClass.create(FWglLayout);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._layoutTotal++;
    return r;
 }
 function FWglContext_createVertexBuffer(){
@@ -257,6 +259,7 @@ function FWglContext_createVertexBuffer(){
    var r = RClass.create(FWglVertexBuffer);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._vertexBufferTotal++;
    return r;
 }
 function FWglContext_createIndexBuffer(){
@@ -264,6 +267,7 @@ function FWglContext_createIndexBuffer(){
    var r = RClass.create(FWglIndexBuffer);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._indexBufferTotal++;
    return r;
 }
 function FWglContext_createFlatTexture(){
@@ -271,6 +275,7 @@ function FWglContext_createFlatTexture(){
    var r = RClass.create(FWglFlatTexture);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._flatTextureTotal++;
    return r;
 }
 function FWglContext_createCubeTexture(){
@@ -278,6 +283,7 @@ function FWglContext_createCubeTexture(){
    var r = RClass.create(FWglCubeTexture);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._cubeTextureTotal++;
    return r;
 }
 function FWglContext_createRenderTarget(){
@@ -285,6 +291,7 @@ function FWglContext_createRenderTarget(){
    var r = RClass.create(FWglRenderTarget);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._targetTotal++;
    return r;
 }
 function FWglContext_setViewport(l, t, w, h){
@@ -298,6 +305,7 @@ function FWglContext_setFillMode(p){
    if(o._fillModeCd == p){
       return;
    }
+   o._statistics._frameFillModeCount++;
    switch(p){
       case EG3dFillMode.Point:
          g.polygonMode(g.FRONT_AND_BACK, g.POINT);
@@ -320,6 +328,7 @@ function FWglContext_setDepthMode(f, v){
    if((o._optionDepth == f) && (o._depthModeCd == v)){
       return true;
    }
+   o._statistics._frameDepthModeCount++;
    if(o._optionDepth != f){
       if(f){
          g.enable(g.DEPTH_TEST);
@@ -341,6 +350,7 @@ function FWglContext_setCullingMode(f, v){
    if((o._optionCull == f) && (o._optionCull == v)){
       return true;
    }
+   o._statistics._frameCullModeCount++;
    if(o._optionCull != f){
       if(f){
          g.enable(g.CULL_FACE);
@@ -362,6 +372,7 @@ function FWglContext_setBlendFactors(f, vs, vt){
    if((o._statusBlend == f) && (o._blendSourceCd == vs) && (o._blendTargetCd == vt)){
       return true;
    }
+   o._statistics._frameBlendModeCount++;
    if(o._statusBlend != f){
       if(f){
          g.enable(g.BLEND);
@@ -390,6 +401,7 @@ function FWglContext_setRenderTarget(p){
    if(o._activeRenderTarget == p){
       return;
    }
+   o._statistics._frameTargetCount++;
    var r = true;
    if(p == null){
       g.bindFramebuffer(g.FRAMEBUFFER, null);
@@ -415,6 +427,7 @@ function FWglContext_setProgram(p){
    if(o._program == p){
       return;
    }
+   o._statistics._frameProgramCount++;
    if(p){
       g.useProgram(p._native);
    }else{
@@ -427,24 +440,29 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
    var o = this;
    var g = o._native;
    var r = true;
+   o._statistics._frameConstCount++;
    switch(pdf){
       case EG3dParameterFormat.Float1:{
          g.uniform1fv(psl, pdt);
+         o._statistics._frameConstLength += 4;
          r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float2:{
          g.uniform2fv(psl, pdt);
+         o._statistics._frameConstLength += 8;
          r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float3:{
          g.uniform3fv(psl, pdt);
+         o._statistics._frameConstLength += 12;
          r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float4:{
          g.uniform4fv(psl, pdt);
+         o._statistics._frameConstLength += 16;
          r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
@@ -460,6 +478,7 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
          dt[ 7] = pdt[ 6];
          dt[ 8] = pdt[10];
          g.uniformMatrix3fv(psl, g.FALSE, dt);
+         o._statistics._frameConstLength += 36;
          r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
@@ -468,18 +487,20 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
             RLogger.fatal(o, null, "Count is invalid. (count=%d)", pdc);
             return false;
          }
-         var count = length / 48;
          g.uniform4fv(psl, g.FALSE, pd);
+         o._statistics._frameConstLength += 48;
          r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float4x4:{
          if(pdt.constructor == Float32Array){
             g.uniformMatrix4fv(psl, g.FALSE, pdt);
+            o._statistics._frameConstLength += pdt.byteLength;
          }else if(pdt.writeData){
             var d = o._data16;
             pdt.writeData(d, 0);
             g.uniformMatrix4fv(psl, g.FALSE, d);
+            o._statistics._frameConstLength += 48;
          }else{
             throw new TError('Unknown data type.');
          }
@@ -493,6 +514,7 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
    var o = this;
    var g = o._native;
    var r = true;
+   o._statistics._frameBufferCount++;
    var n = null;
    if(b != null){
       n = b._native;
@@ -544,6 +566,7 @@ function FWglContext_bindTexture(ps, pi, pt){
    var o = this;
    var g = o._native;
    var r = true;
+   o._statistics._frameTextureCount++;
    if(pt == null){
       g.bindTexture(g.TEXTURE_2D, null);
       r = o.checkError("bindTexture", "Bind texture clear failure. (slot=%d)", ps);
@@ -604,18 +627,21 @@ function FWglContext_clear(r, g, b, a, d){
    c.clearColor(r, g, b, a);
    c.clearDepth(d);
    c.clear(c.COLOR_BUFFER_BIT | c.DEPTH_BUFFER_BIT);
+   o._statistics._frameClearCount++;
 }
 function FWglContext_clearColor(r, g, b, a){
    var o = this;
    var c = o._native;
    c.clearColor(r, g, b, a);
    c.clear(c.COLOR_BUFFER_BIT);
+   o._statistics._frameClearCount++;
 }
 function FWglContext_clearDepth(d){
    var o = this;
    var c = o._native;
    c.clearDepth(d);
    c.clear(c.DEPTH_BUFFER_BIT);
+   o._statistics._frameClearCount++;
 }
 function FWglContext_drawTriangles(b, i, c){
    var o = this;

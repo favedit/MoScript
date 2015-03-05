@@ -34,7 +34,6 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var m = pr.material();
    var mi = m.info();
    o.bindMaterial(m);
-   // 绑定所有属性流
    // 设置骨头集合
    if(pr._optionMerge){
       var ms = pr.mergeRenderables();
@@ -48,11 +47,13 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    }else{
       p.setParameter('vc_model_matrix', pr.currentMatrix());
    }
+   pg._statistics._frameDrawRenderable.begin();
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
    p.setParameter('fc_camera_position', vcp);
    p.setParameter('fc_light_direction', vld);
+   pg._statistics._frameDrawRenderable.end();
    // 设置材质
    if(o._supportMaterialMap){
       var i = pr._materialId;
@@ -108,8 +109,12 @@ function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pr, pi, pc){
             }
          }
          // 绘制渲染集合
+         //pg._statistics._frameDrawRenderable.begin();
          return e.drawGroup(pg, rs, 0, c)
+         //pg._statistics._frameDrawRenderable.end();
       }
    }
+   //pg._statistics._frameDrawRenderable.begin();
    o.__base.FG3dAutomaticEffect.drawGroup.call(o, pg, pr, pi, pc)
+   //pg._statistics._frameDrawRenderable.end();
 }

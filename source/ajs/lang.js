@@ -1603,12 +1603,15 @@ function TSpeed(){
    o._start     = 0;
    o._end       = 0;
    o._span      = 0;
+   o._spanMin   = Number.MAX_VALUE;
+   o._spanMax   = 0;
    o.start      = new Date().getTime();
    o.callerName = RMethod.name(TSpeed.caller);
    o.reset      = TSpeed_reset;
    o.begin      = TSpeed_begin;
    o.end        = TSpeed_end;
-   o.record     = TSpeed_record
+   o.record     = TSpeed_record;
+   o.toString   = TSpeed_toString;
    return o;
 }
 function TSpeed_reset(){
@@ -1624,7 +1627,13 @@ function TSpeed_begin(){
 function TSpeed_end(){
    var o = this;
    o._end = new Date().getTime();
-   o._span = o._end - o._start;
+   o._span += o._end - o._start;
+   if(o._span < o._spanMin){
+      o._spanMin = o._span;
+   }
+   if(o._span > o._spanMax){
+      o._spanMax = o._span;
+   }
 }
 function TSpeed_record(){
    var o = this;
@@ -1634,6 +1643,10 @@ function TSpeed_record(){
    o.start = null;
    o.callerName = null;
    o.record = null;
+}
+function TSpeed_toString(){
+   var o = this;
+   return o._span + ' (' + o._spanMin + ' - ' + o._spanMax + ')';
 }
 function FConsole(o){
    o = RClass.inherits(this, o, FObject);

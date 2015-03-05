@@ -1385,11 +1385,26 @@ function FDsSceneTechniquePropertyFrame_onRefresh(){
    var s = o._scene;
    var ss = s.statistics();
    var gs = s._graphicContext.statistics();
-   o._controlFrameTick.set(ss._frame._span);
-   o._controlProcessTick.set(ss._frameProcess._span);
-   o._controlDrawTick.set(ss._frameDraw._span);
-   o._controlTriangleCount.set(gs._frameTriangleCount);
-   o._controlDrawCount.set(gs._frameDrawCount);
+   o._controlFrameTick.set(ss._frame.toString());
+   o._controlProcessTick.set(ss._frameProcess.toString() + ' | ' + ss._frameDrawRenderable.toString());
+   o._controlDrawTick.set(ss._frameDraw.toString() + ' | ' + ss._frameDrawSort.toString());
+   o._controlClearCount.set(gs._frameClearCount);
+   o._controlModeInfo.set(
+      'FIL:' + gs._frameFillModeCount +
+      ' | DEP:' + gs._frameDepthModeCount +
+      ' | CUL:' + gs._frameCullModeCount +
+      ' | BLD:' + gs._frameBlendModeCount);
+   o._controlProgramCount.set(gs._frameProgramCount);
+   o._controlConstInfo.set(gs._frameConstCount + ' : length=' + gs._frameConstLength);
+   o._controlBufferCount.set(gs._frameBufferCount);
+   o._controlTextureCount.set(gs._frameTextureCount);
+   o._controlTargetCount.set(gs._frameTargetCount);
+   o._controlDrawInfo.set(gs._frameDrawCount + ' : triangle=' + gs._frameTriangleCount);
+   o._controlProgramTotal.set(gs._programTotal);
+   o._controlLayoutTotal.set(gs._layoutTotal);
+   o._controlBufferInfo.set('Vertex:' + gs._vertexBufferTotal + ' Index:' + gs._indexBufferTotal);
+   o._controlTextureInfo.set('Flat:' + gs._flatTextureTotal + ' Cube:' + gs._cubeTextureTotal);
+   o._controlTargetTotal.set(gs._targetTotal);
 }
 function FDsSceneTechniquePropertyFrame_construct(){
    var o = this;

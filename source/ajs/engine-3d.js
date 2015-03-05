@@ -318,7 +318,7 @@ function FE3dStage_process(){
    var o = this;
    var r = o._region;
    var t = o._technique;
-   var ss = o._statistics;
+   var ss = r._statistics = o._statistics;
    ss.resetFrame();
    ss._frame.begin();
    o.__base.FStage.process.call(o);
@@ -361,12 +361,14 @@ function FE3dStage_process(){
 }
 function FE3dStageStatistics(o){
    o = RClass.inherits(this, o, FStatistics);
-   o._frame        = null;
-   o._frameProcess = null;
-   o._frameDraw    = null;
-   o.construct     = FE3dStageStatistics_construct;
-   o.reset         = FE3dStageStatistics_reset;
-   o.resetFrame    = FE3dStageStatistics_resetFrame;
+   o._frame         = null;
+   o._frameProcess  = null;
+   o._frameDraw     = null;
+   o._frameDrawSort = null;
+   o._frameDrawRenderable = null;
+   o.construct      = FE3dStageStatistics_construct;
+   o.reset          = FE3dStageStatistics_reset;
+   o.resetFrame     = FE3dStageStatistics_resetFrame;
    return o;
 }
 function FE3dStageStatistics_construct(){
@@ -375,6 +377,8 @@ function FE3dStageStatistics_construct(){
    o._frame = new TSpeed();
    o._frameProcess = new TSpeed();
    o._frameDraw = new TSpeed();
+   o._frameDrawSort = new TSpeed();
+   o._frameDrawRenderable = new TSpeed();
 }
 function FE3dStageStatistics_reset(){
 }
@@ -383,6 +387,8 @@ function FE3dStageStatistics_resetFrame(){
    o._frame.reset();
    o._frameProcess.reset();
    o._frameDraw.reset();
+   o._frameDrawSort.reset();
+   o._frameDrawRenderable.reset();
 }
 var RE3dEngine = new function RE3dEngine(){
    var o = this;

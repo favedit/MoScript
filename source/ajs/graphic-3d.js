@@ -1875,8 +1875,10 @@ function FG3dTechniquePass_drawRegion(p){
    if(c == 0){
       return;
    }
+   p._statistics._frameDrawSort.begin();
    o.activeEffects(p, rs);
    rs.sort(o.sortRenderables);
+   p._statistics._frameDrawSort.end();
    var cb = o._graphicContext.capability();
    if(cb.optionMaterialMap){
       var mm = o._materialMap;

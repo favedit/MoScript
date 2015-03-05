@@ -145,10 +145,12 @@ function FG3dTechniquePass_drawRegion(p){
       return;
    }
    //..........................................................
+   p._statistics._frameDrawSort.begin();
    // 激活效果器
    o.activeEffects(p, rs);
    // 控件排序
    rs.sort(o.sortRenderables);
+   p._statistics._frameDrawSort.end();
    //..........................................................
    // 材质映射
    var cb = o._graphicContext.capability();

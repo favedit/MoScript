@@ -485,11 +485,11 @@ function RStage_process(){
    var o = this;
    if(o._active){
       o.lsnsEnterFrame.process(o);
-      var ss = o._stages;
-      if(ss != null){
-         var c = ss.count();
+      var s = o._stages;
+      if(s){
+         var c = s.count();
          for(var i = 0; i < c; i++){
-            ss.value(i).process();
+            s.valueAt(i).process();
          }
       }
       o.lsnsLeaveFrame.process(o);
@@ -831,7 +831,7 @@ function FE3dStage_process(){
    var o = this;
    var r = o._region;
    var t = o._technique;
-   var ss = o._statistics;
+   var ss = r._statistics = o._statistics;
    ss.resetFrame();
    ss._frame.begin();
    o.__base.FStage.process.call(o);
@@ -874,12 +874,14 @@ function FE3dStage_process(){
 }
 function FE3dStageStatistics(o){
    o = RClass.inherits(this, o, FStatistics);
-   o._frame        = null;
-   o._frameProcess = null;
-   o._frameDraw    = null;
-   o.construct     = FE3dStageStatistics_construct;
-   o.reset         = FE3dStageStatistics_reset;
-   o.resetFrame    = FE3dStageStatistics_resetFrame;
+   o._frame         = null;
+   o._frameProcess  = null;
+   o._frameDraw     = null;
+   o._frameDrawSort = null;
+   o._frameDrawRenderable = null;
+   o.construct      = FE3dStageStatistics_construct;
+   o.reset          = FE3dStageStatistics_reset;
+   o.resetFrame     = FE3dStageStatistics_resetFrame;
    return o;
 }
 function FE3dStageStatistics_construct(){
@@ -888,6 +890,8 @@ function FE3dStageStatistics_construct(){
    o._frame = new TSpeed();
    o._frameProcess = new TSpeed();
    o._frameDraw = new TSpeed();
+   o._frameDrawSort = new TSpeed();
+   o._frameDrawRenderable = new TSpeed();
 }
 function FE3dStageStatistics_reset(){
 }
@@ -896,6 +900,8 @@ function FE3dStageStatistics_resetFrame(){
    o._frame.reset();
    o._frameProcess.reset();
    o._frameDraw.reset();
+   o._frameDrawSort.reset();
+   o._frameDrawRenderable.reset();
 }
 var RE3dEngine = new function RE3dEngine(){
    var o = this;
@@ -4259,11 +4265,13 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    }else{
       p.setParameter('vc_model_matrix', pr.currentMatrix());
    }
+   pg._statistics._frameDrawRenderable.begin();
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
    p.setParameter('fc_camera_position', vcp);
    p.setParameter('fc_light_direction', vld);
+   pg._statistics._frameDrawRenderable.end();
    if(o._supportMaterialMap){
       var i = pr._materialId;
       p.setParameter4('fc_material', 1/32, i/512, 0, 0);

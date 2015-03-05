@@ -26,11 +26,13 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    }else{
       p.setParameter('vc_model_matrix', pr.currentMatrix());
    }
+   pg._statistics._frameDrawRenderable.begin();
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
    p.setParameter('fc_camera_position', vcp);
    p.setParameter('fc_light_direction', vld);
+   pg._statistics._frameDrawRenderable.end();
    if(o._supportMaterialMap){
       var i = pr._materialId;
       p.setParameter4('fc_material', 1/32, i/512, 0, 0);

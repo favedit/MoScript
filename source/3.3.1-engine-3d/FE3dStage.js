@@ -206,7 +206,7 @@ function FE3dStage_process(){
    var r = o._region;
    var t = o._technique;
    // 统计处理
-   var ss = o._statistics;
+   var ss = r._statistics = o._statistics;
    ss.resetFrame();
    ss._frame.begin();
    // 父处理

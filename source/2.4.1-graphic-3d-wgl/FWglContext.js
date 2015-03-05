@@ -309,6 +309,7 @@ function FWglContext_createProgram(){
    var r = RClass.create(FWglProgram);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._programTotal++;
    return r;
 }
 
@@ -327,6 +328,7 @@ function FWglContext_createLayout(){
    var r = RClass.create(FWglLayout);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._layoutTotal++;
    return r;
 }
 
@@ -341,6 +343,7 @@ function FWglContext_createVertexBuffer(){
    var r = RClass.create(FWglVertexBuffer);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._vertexBufferTotal++;
    return r;
 }
 
@@ -355,6 +358,7 @@ function FWglContext_createIndexBuffer(){
    var r = RClass.create(FWglIndexBuffer);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._indexBufferTotal++;
    return r;
 }
 
@@ -369,6 +373,7 @@ function FWglContext_createFlatTexture(){
    var r = RClass.create(FWglFlatTexture);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._flatTextureTotal++;
    return r;
 }
 
@@ -383,6 +388,7 @@ function FWglContext_createCubeTexture(){
    var r = RClass.create(FWglCubeTexture);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._cubeTextureTotal++;
    return r;
 }
 
@@ -397,28 +403,29 @@ function FWglContext_createRenderTarget(){
    var r = RClass.create(FWglRenderTarget);
    r.linkGraphicContext(o);
    r.setup();
+   o._statistics._targetTotal++;
    return r;
 }
 
-//============================================================
+//==========================================================
 // <T>设置视角大小。</T>
 //
 // @param l:left:Integer 左位置
 // @param t:top:Integer 上位置
 // @param w:width:Integer 宽度
 // @param h:height:Integer 高度
-//============================================================
+//==========================================================
 function FWglContext_setViewport(l, t, w, h){
    var o = this;
    o._size.set(w, h);
    o._native.viewport(l, t, w, h);
 }
 
-//============================================================
+//==========================================================
 // <T>设置填充模式。</T>
 //
 // @param p:fillModeCd:EG3dFillMode 填充模式
-//============================================================
+//==========================================================
 function FWglContext_setFillMode(p){
    var o = this;
    var g = o._native;
@@ -426,6 +433,8 @@ function FWglContext_setFillMode(p){
    if(o._fillModeCd == p){
       return;
    }
+   o._statistics._frameFillModeCount++;
+   //..........................................................
    // 设置开关
    switch(p){
       case EG3dFillMode.Point:
@@ -444,13 +453,13 @@ function FWglContext_setFillMode(p){
    return true;
 }
 
-//============================================================
+//==========================================================
 // <T>设置深度模式。</T>
 //
 // @param f:depthFlag:Boolean 深度开关
 // @param v:depthCd:EG3dDepthMode 深度模式
 // @return 处理结果
-//============================================================
+//==========================================================
 function FWglContext_setDepthMode(f, v){
    var o = this;
    var g = o._native;
@@ -458,6 +467,8 @@ function FWglContext_setDepthMode(f, v){
    if((o._optionDepth == f) && (o._depthModeCd == v)){
       return true;
    }
+   o._statistics._frameDepthModeCount++;
+   //..........................................................
    // 设置开关
    if(o._optionDepth != f){
       if(f){
@@ -476,13 +487,13 @@ function FWglContext_setDepthMode(f, v){
    return true;
 }
 
-//============================================================
+//==========================================================
 // <T>设置剪裁模式。</T>
 //
 // @param f:cullFlag:Boolean 剪裁开关
 // @param v:cullCd:EG3dCullMode 剪裁模式
 // @return 处理结果
-//============================================================
+//==========================================================
 function FWglContext_setCullingMode(f, v){
    var o = this;
    var g = o._native;
@@ -490,6 +501,8 @@ function FWglContext_setCullingMode(f, v){
    if((o._optionCull == f) && (o._optionCull == v)){
       return true;
    }
+   o._statistics._frameCullModeCount++;
+   //..........................................................
    // 设置开关
    if(o._optionCull != f){
       if(f){
@@ -508,14 +521,14 @@ function FWglContext_setCullingMode(f, v){
    return true;
 }
 
-//============================================================
+//==========================================================
 // <T>设置融合方式。</T>
 //
 // @param f:blendFlag:Boolean 剪裁开关
 // @param vs:sourceCd:EG3dBlendMode 来源融合模式
 // @param vt:tagetCd:EG3dBlendMode 目标融合模式
 // @return 处理结果
-//============================================================
+//==========================================================
 function FWglContext_setBlendFactors(f, vs, vt){
    var o = this;
    var g = o._native;
@@ -523,6 +536,8 @@ function FWglContext_setBlendFactors(f, vs, vt){
    if((o._statusBlend == f) && (o._blendSourceCd == vs) && (o._blendTargetCd == vt)){
       return true;
    }
+   o._statistics._frameBlendModeCount++;
+   //..........................................................
    // 设置开关
    if(o._statusBlend != f){
       if(f){
@@ -545,7 +560,7 @@ function FWglContext_setBlendFactors(f, vs, vt){
    return true;
 }
 
-//============================================================
+//==========================================================
 // <T>设置有效区域。</T>
 //
 // @param l:left:Integer 左位置
@@ -553,17 +568,17 @@ function FWglContext_setBlendFactors(f, vs, vt){
 // @param w:width:Integer 宽度
 // @param h:height:Integer 高度
 // @return 处理结果
-//============================================================
+//==========================================================
 function FWglContext_setScissorRectangle(l, t, w, h){
    this._native.scissor(l, t, w, h);
 }
 
-//============================================================
+//==========================================================
 // <T>设置渲染目标。</T>
 //
 // @method
 // @param p:renderTarget:FG3dRenderTarget 渲染目标
-//============================================================
+//==========================================================
 function FWglContext_setRenderTarget(p){
    var o = this;
    var g = o._native;
@@ -571,6 +586,8 @@ function FWglContext_setRenderTarget(p){
    if(o._activeRenderTarget == p){
       return;
    }
+   o._statistics._frameTargetCount++;
+   //............................................................
    // 设置程序
    var r = true;
    if(p == null){
@@ -596,11 +613,11 @@ function FWglContext_setRenderTarget(p){
    o._activeRenderTarget = p;
 }
 
-//============================================================
+//==========================================================
 // <T>设置渲染程序。</T>
 //
 // @param p:program:FG3dProgram 渲染程序
-//============================================================
+//==========================================================
 function FWglContext_setProgram(p){
    var o = this;
    var g = o._native;
@@ -608,6 +625,8 @@ function FWglContext_setProgram(p){
    if(o._program == p){
       return;
    }
+   o._statistics._frameProgramCount++;
+   //............................................................
    // 设置程序
    if(p){
       g.useProgram(p._native);
@@ -619,7 +638,7 @@ function FWglContext_setProgram(p){
    return o.checkError("useProgram", "Set program failure. (program={1}, program_native={2})", p, p._native);
 }
 
-//============================================================
+//==========================================================
 // <T>绑定常量数据。</T>
 //
 // @param psc:shaderCd:EG3dShader 渲染器类型
@@ -628,11 +647,13 @@ function FWglContext_setProgram(p){
 // @param pdt:data:Float32Array 数据
 // @param pdc:count:Integer 数据个数
 // @return Boolean 处理结果
-//============================================================
+//==========================================================
 function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
    var o = this;
    var g = o._native;
    var r = true;
+   o._statistics._frameConstCount++;
+   //............................................................
    // 检查变更
    //TBool changed = UpdateConsts(psc, psl, pData, pdc);
    //if(!changed){
@@ -643,6 +664,7 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
       case EG3dParameterFormat.Float1:{
          // 修改数据
          g.uniform1fv(psl, pdt);
+         o._statistics._frameConstLength += 4;
          // 检查错误
          r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
@@ -650,6 +672,7 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
       case EG3dParameterFormat.Float2:{
          // 修改数据
          g.uniform2fv(psl, pdt);
+         o._statistics._frameConstLength += 8;
          // 检查错误
          r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
@@ -657,6 +680,7 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
       case EG3dParameterFormat.Float3:{
          // 修改数据
          g.uniform3fv(psl, pdt);
+         o._statistics._frameConstLength += 12;
          // 检查错误
          r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
@@ -664,6 +688,7 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
       case EG3dParameterFormat.Float4:{
          // 修改数据
          g.uniform4fv(psl, pdt);
+         o._statistics._frameConstLength += 16;
          // 检查错误
          r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
@@ -681,6 +706,7 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
          dt[ 7] = pdt[ 6];
          dt[ 8] = pdt[10];
          g.uniformMatrix3fv(psl, g.FALSE, dt);
+         o._statistics._frameConstLength += 36;
          // 检查错误
          r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
@@ -692,8 +718,8 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
             return false;
          }
          // 修改数据
-         var count = length / 48;
          g.uniform4fv(psl, g.FALSE, pd);
+         o._statistics._frameConstLength += 48;
          // 检查错误
          r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
@@ -702,10 +728,12 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
          // 修改数据
          if(pdt.constructor == Float32Array){
             g.uniformMatrix4fv(psl, g.FALSE, pdt);
+            o._statistics._frameConstLength += pdt.byteLength;
          }else if(pdt.writeData){
             var d = o._data16;
             pdt.writeData(d, 0);
             g.uniformMatrix4fv(psl, g.FALSE, d);
+            o._statistics._frameConstLength += 48;
          }else{
             throw new TError('Unknown data type.');
          }
@@ -717,18 +745,20 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
    return r;
 }
 
-//============================================================
+//==========================================================
 // <T>绑定顶点缓冲。</T>
 //
 // @param s:slot:Integer 插槽
 // @param b:vertexBuffer:FG3dVertexBuffer 顶点缓冲
 // @param i:offset:Integer 偏移位置
 // @param f:formatCd:String 格式
-//============================================================
+//==========================================================
 function FWglContext_bindVertexBuffer(s, b, i, f){
    var o = this;
    var g = o._native;
    var r = true;
+   o._statistics._frameBufferCount++;
+   //............................................................
    // 设定顶点流
    var n = null;
    if(b != null){
@@ -784,18 +814,19 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
    return r;
 }
 
-//============================================================
+//==========================================================
 // <T>绑定纹理。</T>
 //
 // @param ps:slot:Integer 插槽
 // @param pi:index:Integer 索引
 // @param pt:texture:FG3dTexture 纹理
 // @return 处理结果
-//============================================================
+//==========================================================
 function FWglContext_bindTexture(ps, pi, pt){
    var o = this;
    var g = o._native;
    var r = true;
+   o._statistics._frameTextureCount++;
    //............................................................
    // 空纹理处理
    if(pt == null){
@@ -862,7 +893,7 @@ function FWglContext_bindTexture(ps, pi, pt){
    return r;
 }
 
-//============================================================
+//==========================================================
 // <T>清空内容。</T>
 //
 // @param r:red:Float 红色
@@ -870,16 +901,17 @@ function FWglContext_bindTexture(ps, pi, pt){
 // @param b:blue:Float 蓝色
 // @param a:alpha:Float 透明
 // @param d:depth:Float 深度
-//============================================================
+//==========================================================
 function FWglContext_clear(r, g, b, a, d){
    var o = this;
    var c = o._native;
    c.clearColor(r, g, b, a);
    c.clearDepth(d);
    c.clear(c.COLOR_BUFFER_BIT | c.DEPTH_BUFFER_BIT);
+   o._statistics._frameClearCount++;
 }
 
-//============================================================
+//==========================================================
 // <T>清空颜色内容。</T>
 //
 // @param r:red:Float 红色
@@ -887,33 +919,35 @@ function FWglContext_clear(r, g, b, a, d){
 // @param b:blue:Float 蓝色
 // @param a:alpha:Float 透明
 // @param d:depth:Float 深度
-//============================================================
+//==========================================================
 function FWglContext_clearColor(r, g, b, a){
    var o = this;
    var c = o._native;
    c.clearColor(r, g, b, a);
    c.clear(c.COLOR_BUFFER_BIT);
+   o._statistics._frameClearCount++;
 }
 
-//============================================================
+//==========================================================
 // <T>清空深度内容。</T>
 //
 // @param d:depth:Float 深度
-//============================================================
+//==========================================================
 function FWglContext_clearDepth(d){
    var o = this;
    var c = o._native;
    c.clearDepth(d);
    c.clear(c.DEPTH_BUFFER_BIT);
+   o._statistics._frameClearCount++;
 }
 
-//============================================================
+//==========================================================
 // <T>绘制三角形。</T>
 //
 // @param b:indexBuffer:FIndexBuffer3d 索引缓冲
 // @param i:offset:Integer 开始位置
 // @param c:count:Integer 索引总数
-//============================================================
+//==========================================================
 function FWglContext_drawTriangles(b, i, c){
    var o = this;
    var g = o._native;
@@ -967,21 +1001,21 @@ function FWglContext_drawTriangles(b, i, c){
    return r;
 }
 
-//============================================================
+//==========================================================
 // <T>绘制处理。</T>
 //
 // @return 处理结果
-//============================================================
+//==========================================================
 function FWglContext_present(){
 }
 
-//============================================================
+//==========================================================
 // <T>检查执行错误。</T>
 //
 // @param c:code:String 代码
 // @param m:message:String 消息
 // @param p1:parameter1:String 参数1
-//============================================================
+//==========================================================
 function FWglContext_checkError(c, m, p1){
    // 检查运行模式
    if(!RRuntime.isDebug()){

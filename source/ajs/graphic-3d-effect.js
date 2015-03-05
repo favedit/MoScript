@@ -445,6 +445,9 @@ function FG3dControlTechnique_passControl(){
 }
 function FG3dControlTechnique_drawRegion(p){
    var o = this;
+   if(p.renderables().isEmpty()){
+      return;
+   }
    o._graphicContext.clearDepth(1);
    o.__base.FG3dTechnique.drawRegion.call(o, p);
 }
