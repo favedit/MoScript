@@ -227,7 +227,6 @@ function FE3rDynamicMesh_syncVertexBuffer(p){
       var vt = o._vertexTotal;
       b = o._graphicContext.createVertexBuffer();
       b._name = rc;
-      b._position = 0;
       b._formatCd = p._formatCd;
       b._stride = p._stride;
       switch(p._formatCd){
@@ -275,17 +274,17 @@ function FE3rDynamicMesh_mergeRenderable(p){
 }
 function FE3rDynamicMesh_mergeVertexBuffer(r, bc, b, rs){
    var o = this;
-   var ri = b._position;
-   var rd = b._data;
+   var vp = o._vertexPosition;
+   var vd = b._data;
    var c = rs._dataCount;
    switch(bc){
       case 'position':
          var d = new Float32Array(rs._data);
-         RFloat.copy(rd, 3 * ri, d, 0, 3 * c);
+         RFloat.copy(vd, 3 * vp, d, 0, 3 * c);
          break;
       case 'coord':
          var d = new Float32Array(rs._data);
-         RFloat.copy(rd, 2 * ri, d, 0, 2 * c);
+         RFloat.copy(vd, 2 * vp, d, 0, 2 * c);
          break;
       case 'color':
       case "normal":
@@ -294,18 +293,17 @@ function FE3rDynamicMesh_mergeVertexBuffer(r, bc, b, rs){
       case "bone_index":
       case "bone_weight":
          var d = new Uint8Array(rs._data);
-         RByte.copy(rd, 4 * ri, d, 0, 4 * c);
+         RByte.copy(vd, 4 * vp, d, 0, 4 * c);
          break;
       default:
          throw new TError("Unknown code");
    }
-   b._position += c;
 }
 function FE3rDynamicMesh_mergeIndexBuffer(ir){
    var o = this;
    var vp = o._vertexPosition;
-   var id = o._indexBuffer._data;
    var ip = o._indexPosition;
+   var id = o._indexBuffer._data;
    var rd = new Uint16Array(ir._data);
    var rc = 3 * ir._dataCount;
    for(var i = 0; i < rc; i++){
@@ -325,9 +323,9 @@ function FE3rDynamicMesh_build(){
    o._textures = rf._textures;
    var b = o._instanceVertexBuffer = o._graphicContext.createVertexBuffer();
    b._name = 'instance';
-   b._formatCd = EG3dAttributeFormat.Float1;
-   var vnid = b._data = new Float32Array(vt);
    b._stride = 4;
+   b._formatCd = EG3dAttributeFormat.Float1;
+   var vdi = b._data = new Float32Array(vt);
    o._vertexBuffers.set(b._name, b);
    var b = o._indexBuffer = gc.createIndexBuffer();
    if(gp.optionIndex32){
@@ -350,7 +348,7 @@ function FE3rDynamicMesh_build(){
          var b = o.syncVertexBuffer(vb);
          o.mergeVertexBuffer(r, vbrc, b, vbr);
       }
-      RFloat.fill(vnid, o._vertexPosition, vc, i);
+      RFloat.fill(vdi, o._vertexPosition, vc, i);
       var ib = r.indexBuffer();
       var ic = ib.count();
       var ir = ib._resource;
@@ -363,11 +361,9 @@ function FE3rDynamicMesh_build(){
    for(var vbi = 0; vbi < vbc; vbi++){
       var vb = vbs.valueAt(vbi);
       vb.upload(vb._data, vb._stride, vt);
-      vb._position = null;
       vb._data = null;
    }
    o._indexBuffer.upload(o._indexBuffer._data, ft);
-   o._indexBuffer._position = null;
    o._indexBuffer._data = null;
 }
 function FE3rDynamicModel(o){
@@ -415,9 +411,7 @@ function FE3rDynamicModel_build(){
       var mr = o.createMesh();
       for(var i = 0; i < rc; i++){
          var r = rs.getAt(i);
-         if(mr.mergeRenderable(r)){
-            continue;
-         }else{
+         if(!mr.mergeRenderable(r)){
             mr = o.createMesh();
             if(!mr.mergeRenderable(r)){
                throw new TError(o, 'Merge renderable failure.');

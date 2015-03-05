@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.show.item.002" full_code="\pvw\show\item.002" label="金属文物" keywords="\展示\展示\金属文物">
+    <ThemeCollection>
+      <Theme code="color" label="低配.颜色">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.002.01" label="金属文物">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="1" g="1" b="1" power="1" shadow="1" />
+            <Diffuse r="1" g="1" b="1" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="1" g="1" b="1" power="1" base="0" level="1" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="1" g="1" b="1" power="1" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.002.01" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.show.002.01" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.show.002.01" bitmap="specular.level" index="0" />
+              <Texture type="environment" texture="pvw.show.002.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.002.02" label="金属文物">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="1.25" base="0" level="1.25" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.002.02" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.show.002.02" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.show.002.02" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+      <Theme code="shadow" label="高配.影子">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.002.01" label="金属文物">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="1" g="1" b="1" power="1" shadow="1" />
+            <Diffuse r="1" g="1" b="1" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="1" g="1" b="1" power="1" base="0" level="1" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="1" g="1" b="1" power="1" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.002.01" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.show.002.01" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.show.002.01" bitmap="specular.level" index="0" />
+              <Texture type="environment" texture="pvw.show.002.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.002.02" label="金属文物">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="1.25" base="0" level="1.25" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.002.02" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.show.002.02" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.show.002.02" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection>
+      <Sprite model_code="pvw.show.item.002" mesh_code="ms_001_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.002.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.002" mesh_code="ms_001_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.002.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.002" mesh_code="ms_001_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.002.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.002" mesh_code="ms_001_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.002.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.002" mesh_code="ms_001_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.002.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.002" mesh_code="ms_001_006">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.002.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.item.002" mesh_code="ms_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.002.02" />
+        </MaterialCollection>
+      </Sprite>
+    </DisplayCollection>
+  </Template>
+</Configuration>

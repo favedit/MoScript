@@ -6,7 +6,7 @@
 // @history 141230
 //==========================================================
 function FG3dIndexBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject);
+   o = RClass.inherits(this, o, FG3dBuffer);
    //..........................................................
    // @attribute
    o._strideCd = EG3dIndexStride.Uint16;

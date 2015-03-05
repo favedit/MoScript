@@ -6,25 +6,48 @@
 // @history 141230
 //==========================================================
 function FG3dVertexBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject);
+   o = RClass.inherits(this, o, FG3dBuffer);
    //..........................................................
    // @attribute
-   o._name     = 0;
    o._formatCd = EG3dAttributeFormat.Unknown;
    o._stride   = 0;
    o._count    = 0;
    //..........................................................
    // @method
-   o.name      = FG3dVertexBuffer_name;
+   o.formatCd  = FG3dVertexBuffer_formatCd;
+   o.stride    = FG3dVertexBuffer_stride;
+   o.count     = FG3dVertexBuffer_count;
+   // @method
    o.upload    = RMethod.virtual(o, 'upload');
    return o;
 }
 
 //==========================================================
-// <T>获得名称。</T>
+// <T>获得格式类型。</T>
 //
-// @return 名称
+// @method
+// @return EG3dAttributeFormat 格式
 //==========================================================
-function FG3dVertexBuffer_name(){
-   return this._name;
+function FG3dVertexBuffer_formatCd(){
+   return this._formatCd;
+}
+
+//==========================================================
+// <T>获得宽度。</T>
+//
+// @method
+// @return Integer 宽度
+//==========================================================
+function FG3dVertexBuffer_stride(){
+   return this._stride;
+}
+
+//==========================================================
+// <T>获得总数。</T>
+//
+// @method
+// @return Integer 总数
+//==========================================================
+function FG3dVertexBuffer_count(){
+   return this._count;
 }

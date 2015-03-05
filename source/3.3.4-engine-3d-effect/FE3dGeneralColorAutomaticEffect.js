@@ -83,30 +83,33 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
 //
 // @method
 // @param pg:region:MG3dRegion 渲染区域
-// @param pm:material:FG3dMaterial 材质
+// @param pr:renderables:TObjects 渲染集合
 // @param pi:offset:Integer 开始位置
 // @param pc:count:Integer 总数
 //==========================================================
-function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pm, pi, pc){
+function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pr, pi, pc){
    var o = this;
    if(pc > 1){
       var mc = RConsole.find(FE3rModelConsole);
       var md = mc.merge(o, pg, pi, pc);
       if(md){
+         var e = null;
+         var gc = o._graphicContext;
          var rs = md.meshes();
          var c = rs.count();
+         var sn = pg.spaceName();
+         // 激活效果器
          for(var i = 0; i < c; i++){
             var r = rs.getAt(i);
-            var f = r.selectInfo(pg.spaceName());
-            var e = f.effect;
+            var f = r.selectInfo(sn);
+            e = f.effect;
             if(!e){
-               e = f.effect = RConsole.find(FG3dEffectConsole).find(o._graphicContext, pg, r);
+               e = f.effect = RConsole.find(FG3dEffectConsole).find(gc, pg, r);
             }
-            o._graphicContext.setProgram(e.program());
-            e.drawRenderable(pg, r);
          }
-         return;
+         // 绘制渲染集合
+         return e.drawGroup(pg, rs, 0, c)
       }
    }
-   o.__base.FG3dAutomaticEffect.drawGroup.call(o, pg, pm, pi, pc)
+   o.__base.FG3dAutomaticEffect.drawGroup.call(o, pg, pr, pi, pc)
 }

@@ -1,19 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Configuration>
-  <Template code="lgt.item.003">
+  <Template code="lgt.item.003" full_code="\lgt\item.003" label="赵公明神像" keywords="\楼观台\赵公明神像">
     <ThemeCollection>
-      <Theme code="color">
+      <Theme code="color" label="低配.颜色">
         <MaterialCollection>
-          <Material effect_code="automatic" option_double="0" code="lgt.sta.0004">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="1" code="lgt.sta.0004" label="赵公明神像">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5843" g="0.5843" b="0.5843" power="1" />
-            <Diffuse r="0.5843" g="0.5843" b="0.5843" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5843" g="0.5843" b="0.5843" power="1" shadow="1" />
+            <Diffuse r="0.5843" g="0.5843" b="0.5843" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lgt.sta.0004" bitmap="diffuse" index="0" />
@@ -24,18 +27,21 @@
           </Material>
         </MaterialCollection>
       </Theme>
-      <Theme code="shadow">
+      <Theme code="shadow" label="高配.影子">
         <MaterialCollection>
-          <Material effect_code="automatic" option_double="0" code="lgt.sta.0004">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="1" code="lgt.sta.0004" label="赵公明神像">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5843" g="0.5843" b="0.5843" power="1" />
-            <Diffuse r="0.5843" g="0.5843" b="0.5843" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5843" g="0.5843" b="0.5843" power="1" shadow="1" />
+            <Diffuse r="0.5843" g="0.5843" b="0.5843" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lgt.sta.0004" bitmap="diffuse" index="0" />

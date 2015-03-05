@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.sc.house.03.scene" full_code="\pvw\sc.house.03\scene" label="场景" keywords="\展示\小区\场景">
+    <ThemeCollection>
+      <Theme code="color" label="低配.颜色">
+        <MaterialCollection />
+      </Theme>
+      <Theme code="shadow" label="高配.影子">
+        <MaterialCollection />
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection />
+  </Template>
+</Configuration>

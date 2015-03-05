@@ -109,8 +109,6 @@ function FG3dEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
-   // 绑定程序
-   c.setProgram(p);
    // 绑定所有属性流
    if(p.hasAttribute()){
       var as = p.attributes();
@@ -128,7 +126,7 @@ function FG3dEffect_drawRenderable(pg, pr){
    }
    // 绘制处理
    var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   c.drawTriangles(ib, 0, ib.count());
 }
 
 //==========================================================
@@ -136,17 +134,18 @@ function FG3dEffect_drawRenderable(pg, pr){
 //
 // @method
 // @param pg:region:MG3dRegion 渲染区域
+// @param pr:renderables:TObjects 渲染集合
 // @param pi:offset:Integer 开始位置
 // @param pc:count:Integer 总数
 //==========================================================
-function FG3dEffect_drawGroup(pg, pm, pi, pc){
+function FG3dEffect_drawGroup(pg, pr, pi, pc){
    var o = this;
-   var rs = pg.renderables();
+   // 选择技术
+   o._graphicContext.setProgram(o._program);
+   // 绘制所有对象
    for(var i = 0; i < pc; i++){
-      var r = rs.get(pi + i);
-      o.drawRenderable(pg, r);
+      o.drawRenderable(pg, pr.getAt(pi + i));
    }
-   //RLogger.info(o, 'Draw group. (offset={1}, count={2})', pi, pc);
 }
 
 //==========================================================
@@ -159,8 +158,6 @@ function FG3dEffect_drawGroup(pg, pm, pi, pc){
 //==========================================================
 function FG3dEffect_drawRegion(pg, pi, pc){
    var o = this;
-   // 选择技术
-   o._graphicContext.setProgram(o._program);
    // 根据效果类型进行分组
    var rs = pg.renderables();
    for(var n = 0; n < pc; ){
@@ -177,7 +174,7 @@ function FG3dEffect_drawRegion(pg, pi, pc){
          n++;
       }
       // 绘制当前渲染组
-      o.drawGroup(pg, gm, pi + gb, ge - gb);
+      o.drawGroup(pg, rs, pi + gb, ge - gb);
    }
 }
 

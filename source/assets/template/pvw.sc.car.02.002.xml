@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.sc.car.02.002" full_code="\pvw\sc.car.02\002" label="展示台" keywords="\展示\场景.汽车.02\展示台">
+    <ThemeCollection>
+      <Theme code="color" label="低配.颜色">
+        <MaterialCollection />
+      </Theme>
+      <Theme code="shadow" label="高配.影子">
+        <MaterialCollection />
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection />
+  </Template>
+</Configuration>

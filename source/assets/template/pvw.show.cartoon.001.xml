@@ -1,0 +1,485 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.show.cartoon.001" full_code="\pvw\show\cartoon.001" label="卡通人物.可爱女孩" keywords="\展示\展示\卡通人物.可爱女孩">
+    <ThemeCollection>
+      <Theme code="color" label="低配.颜色">
+        <MaterialCollection>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.01" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.01" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.02" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.02" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.03" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.03" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.04" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.04" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.05" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.05" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.06" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.06" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.07" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.07" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.08" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.08" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.09" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.09" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.10" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.10" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.11" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.309804" g="0.309804" b="0.309804" power="1" shadow="1" />
+            <Diffuse r="0.309804" g="0.309804" b="0.309804" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+        </MaterialCollection>
+      </Theme>
+      <Theme code="shadow" label="高配.影子">
+        <MaterialCollection>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.01" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.01" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.02" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.02" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.03" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.03" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.04" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.04" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.05" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.05" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.06" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.06" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.07" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.07" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.08" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.08" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.09" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.09" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="skeleton.4" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.10" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.show.018.10" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="1" code="pvw.show.018.11" label="卡通人物.可爱女孩">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.309804" g="0.309804" b="0.309804" power="1" shadow="1" />
+            <Diffuse r="0.309804" g="0.309804" b="0.309804" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+        </MaterialCollection>
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection>
+      <Sprite model_code="pvw.show.cartoon.001" mesh_code="ms_001_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.018.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.cartoon.001" mesh_code="ms_002_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.018.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.cartoon.001" mesh_code="ms_002_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.018.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.cartoon.001" mesh_code="ms_002_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.018.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.cartoon.001" mesh_code="ms_003_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.018.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.cartoon.001" mesh_code="ms_004_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.018.04" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.cartoon.001" mesh_code="ms_005_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.018.05" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.cartoon.001" mesh_code="ms_006_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.018.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.cartoon.001" mesh_code="ms_007_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.018.07" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.cartoon.001" mesh_code="ms_008_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.018.08" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.cartoon.001" mesh_code="ms_009_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.018.09" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.cartoon.001" mesh_code="ms_010_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.018.10" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.show.cartoon.001" mesh_code="ms_011_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.show.018.11" />
+        </MaterialCollection>
+      </Sprite>
+    </DisplayCollection>
+  </Template>
+</Configuration>

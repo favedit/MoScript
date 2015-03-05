@@ -51,26 +51,27 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
    o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }
-function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pm, pi, pc){
+function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pr, pi, pc){
    var o = this;
    if(pc > 1){
       var mc = RConsole.find(FE3rModelConsole);
       var md = mc.merge(o, pg, pi, pc);
       if(md){
+         var e = null;
+         var gc = o._graphicContext;
          var rs = md.meshes();
          var c = rs.count();
+         var sn = pg.spaceName();
          for(var i = 0; i < c; i++){
             var r = rs.getAt(i);
-            var f = r.selectInfo(pg.spaceName());
-            var e = f.effect;
+            var f = r.selectInfo(sn);
+            e = f.effect;
             if(!e){
-               e = f.effect = RConsole.find(FG3dEffectConsole).find(o._graphicContext, pg, r);
+               e = f.effect = RConsole.find(FG3dEffectConsole).find(gc, pg, r);
             }
-            o._graphicContext.setProgram(e.program());
-            e.drawRenderable(pg, r);
          }
-         return;
+         return e.drawGroup(pg, rs, 0, c)
       }
    }
-   o.__base.FG3dAutomaticEffect.drawGroup.call(o, pg, pm, pi, pc)
+   o.__base.FG3dAutomaticEffect.drawGroup.call(o, pg, pr, pi, pc)
 }

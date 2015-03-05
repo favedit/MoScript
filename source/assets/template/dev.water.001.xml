@@ -1,19 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Configuration>
-  <Template code="dev.water.001">
+  <Template code="dev.water.001" full_code="\dev\water.001" label="水效果01" keywords="\开发\水效果01">
     <ThemeCollection>
-      <Theme code="color">
+      <Theme code="color" label="低配.颜色">
         <MaterialCollection>
-          <Material effect_code="water" option_double="0" code="dev.water.001.01">
+          <Material effect_code="water" option_double="0" option_shadow="2" option_shadow_self="2" code="dev.water.001.01" label="材质01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="1.65" level="1.65" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="1.65" base="0" level="1.65" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="dev.water.001.01" bitmap="diffuse" index="0" />
@@ -21,32 +24,38 @@
               <Texture type="environment" texture="dev.water.001.01" bitmap="environment" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="automatic" option_double="0" code="dev.water.001.02">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="dev.water.001.02" label="材质02">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="dev.water.001.02" bitmap="diffuse" index="0" />
               <Texture type="normal" texture="dev.water.001.02" bitmap="normal" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="automatic" option_double="0" code="dev.water.001.03">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="dev.water.001.03" label="材质03">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="dev.water.001.03" bitmap="diffuse" index="0" />
@@ -54,16 +63,19 @@
               <Texture type="specular.level" texture="dev.water.001.03" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="automatic" option_double="0" code="dev.water.001.04">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="dev.water.001.04" label="材质04">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0.38" level="0.38" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.38" base="0" level="0.38" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="dev.water.001.04" bitmap="diffuse" index="0" />
@@ -73,18 +85,21 @@
           </Material>
         </MaterialCollection>
       </Theme>
-      <Theme code="shadow">
+      <Theme code="shadow" label="高配.影子">
         <MaterialCollection>
-          <Material effect_code="water" option_double="0" code="dev.water.001.01">
+          <Material effect_code="water" option_double="0" option_shadow="2" option_shadow_self="2" code="dev.water.001.01" label="材质01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="1.65" level="1.65" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="1.65" base="0" level="1.65" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="dev.water.001.01" bitmap="diffuse" index="0" />
@@ -92,32 +107,38 @@
               <Texture type="environment" texture="dev.water.001.01" bitmap="environment" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="automatic" option_double="0" code="dev.water.001.02">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="dev.water.001.02" label="材质02">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="dev.water.001.02" bitmap="diffuse" index="0" />
               <Texture type="normal" texture="dev.water.001.02" bitmap="normal" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="automatic" option_double="0" code="dev.water.001.03">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="dev.water.001.03" label="材质03">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="dev.water.001.03" bitmap="diffuse" index="0" />
@@ -125,16 +146,19 @@
               <Texture type="specular.level" texture="dev.water.001.03" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="automatic" option_double="0" code="dev.water.001.04">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="dev.water.001.04" label="材质04">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0.38" level="0.38" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.38" base="0" level="0.38" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="dev.water.001.04" bitmap="diffuse" index="0" />

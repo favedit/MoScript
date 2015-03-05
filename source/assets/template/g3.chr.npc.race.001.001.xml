@@ -1,19 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Configuration>
-  <Template code="g3.chr.npc.race.001.001">
+  <Template code="g3.chr.npc.race.001.001" full_code="\g3\chr\npc\race.001\001" label="基础" keywords="\游戏3D\角色\NPC\牛\基础">
     <ThemeCollection>
-      <Theme code="color">
+      <Theme code="color" label="低配.颜色">
         <MaterialCollection>
-          <Material effect_code="automatic" option_double="0" code="g3.chr.npc.race.001.001">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="1" code="g3.chr.npc.race.001.001" label="身体">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0.18" level="0.18" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.18" base="0" level="0.18" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="g3.chr.npc.race.001.001" bitmap="diffuse" index="0" />
@@ -23,18 +26,21 @@
           </Material>
         </MaterialCollection>
       </Theme>
-      <Theme code="shadow">
+      <Theme code="shadow" label="高配.影子">
         <MaterialCollection>
-          <Material effect_code="automatic" option_double="0" code="g3.chr.npc.race.001.001">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="1" code="g3.chr.npc.race.001.001" label="身体">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0.18" level="0.18" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.18" base="0" level="0.18" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="g3.chr.npc.race.001.001" bitmap="diffuse" index="0" />

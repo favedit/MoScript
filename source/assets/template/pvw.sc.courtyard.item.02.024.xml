@@ -1,35 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Configuration>
-  <Template code="pvw.sc.courtyard.item.02.024">
+  <Template code="pvw.sc.courtyard.item.02.024" full_code="\pvw\sc.courtyard\item.02.024" label="四合院.树2" keywords="\展示\场景.四合院\四合院.树2">
     <ThemeCollection>
-      <Theme code="color">
+      <Theme code="color" label="低配.颜色">
         <MaterialCollection>
-          <Material effect_code="automatic" option_double="2" code="pvw.sc.courtyard.021">
+          <Material effect_code="automatic" option_double="2" option_shadow="2" option_shadow_self="2" code="pvw.sc.courtyard.021" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0.66" level="0.66" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.66" base="0" level="0.66" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.courtyard.021" bitmap="diffuse" index="0" />
               <Texture type="alpha" texture="pvw.sc.courtyard.021" bitmap="alpha" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.courtyard.022">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.courtyard.022" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.courtyard.022" bitmap="diffuse" index="0" />
@@ -39,34 +45,40 @@
           </Material>
         </MaterialCollection>
       </Theme>
-      <Theme code="shadow">
+      <Theme code="shadow" label="高配.影子">
         <MaterialCollection>
-          <Material effect_code="automatic" option_double="2" code="pvw.sc.courtyard.021">
+          <Material effect_code="automatic" option_double="2" option_shadow="2" option_shadow_self="2" code="pvw.sc.courtyard.021" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0.66" level="0.66" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.66" base="0" level="0.66" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.courtyard.021" bitmap="diffuse" index="0" />
               <Texture type="alpha" texture="pvw.sc.courtyard.021" bitmap="alpha" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.courtyard.022">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.courtyard.022" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.courtyard.022" bitmap="diffuse" index="0" />

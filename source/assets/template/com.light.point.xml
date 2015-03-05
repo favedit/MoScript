@@ -1,35 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Configuration>
-  <Template code="com.light.point">
+  <Template code="com.light.point" full_code="\com\light\point" label="点光源" keywords="\共通\光源\点光源">
     <ThemeCollection>
-      <Theme code="color">
+      <Theme code="color" label="低配.颜色">
         <MaterialCollection>
-          <Material effect_code="" option_double="2" code="com.light.point">
+          <Material effect_code="automatic" option_double="2" option_shadow="1" option_shadow_self="2" code="com.light.point" label="点光源">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="1" g="1" b="1" power="1" />
-            <Diffuse r="1" g="1" b="1" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="1" g="1" b="1" power="1" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="1" g="1" b="1" power="1" shadow="1" />
+            <Diffuse r="1" g="1" b="1" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="1" g="1" b="1" power="1" />
           </Material>
         </MaterialCollection>
       </Theme>
-      <Theme code="shadow">
+      <Theme code="shadow" label="高配.影子">
         <MaterialCollection>
-          <Material effect_code="" option_double="2" code="com.light.point">
+          <Material effect_code="automatic" option_double="2" option_shadow="1" option_shadow_self="2" code="com.light.point" label="点光源">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="1" g="1" b="1" power="1" />
-            <Diffuse r="1" g="1" b="1" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="1" g="1" b="1" power="1" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="1" g="1" b="1" power="1" shadow="1" />
+            <Diffuse r="1" g="1" b="1" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="1" g="1" b="1" power="1" />
           </Material>
         </MaterialCollection>

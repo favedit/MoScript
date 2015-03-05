@@ -1,0 +1,695 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.sc.car.01.scene" full_code="\pvw\sc.car.01\scene" label="汽车展厅" keywords="\展示\场景.汽车.01\汽车展厅">
+    <ThemeCollection>
+      <Theme code="color" label="低配.颜色">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.01" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.176471" g="0.368627" b="0.654902" power="1" shadow="1" />
+            <Diffuse r="0.176471" g="0.368627" b="0.654902" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.62" base="0" level="0.62" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.02" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.666667" g="0.666667" b="0.666667" power="1" shadow="1" />
+            <Diffuse r="0.666667" g="0.666667" b="0.666667" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.03" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.843137" g="0.945098" b="0.968628" power="1" shadow="1" />
+            <Diffuse r="0.843137" g="0.945098" b="0.968628" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.83" base="0" level="0.83" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.002.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.04" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.270588" g="0.270588" b="0.270588" power="1" shadow="1" />
+            <Diffuse r="0.270588" g="0.270588" b="0.270588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.45" base="0" level="0.45" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.05" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.203922" g="0.203922" b="0.203922" power="1" shadow="1" />
+            <Diffuse r="0.203922" g="0.203922" b="0.203922" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.06" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.039216" g="0.039216" b="0.039216" power="1" shadow="1" />
+            <Diffuse r="0.039216" g="0.039216" b="0.039216" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.07" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.184314" g="0.184314" b="0.184314" power="1" shadow="1" />
+            <Diffuse r="0.184314" g="0.184314" b="0.184314" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.08" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.176471" g="0.368627" b="0.654902" power="1" shadow="1" />
+            <Diffuse r="0.176471" g="0.368627" b="0.654902" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.09" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.886275" g="0.886275" b="0.886275" power="1" shadow="1" />
+            <Diffuse r="0.886275" g="0.886275" b="0.886275" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.10" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.179083" g="0.065359" b="0.065359" power="1" shadow="1" />
+            <Diffuse r="1" g="0.635294" b="0" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.3" base="0" level="0.3" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.11" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.560784" g="0.639216" b="0.686275" power="1" shadow="1" />
+            <Diffuse r="0.560784" g="0.639216" b="0.686275" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.002.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.12" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.027451" g="0.611765" b="0" power="1" shadow="1" />
+            <Diffuse r="0.027451" g="0.611765" b="0" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.898039" g="0.898039" b="0.898039" power="0.05" base="0" level="0.05" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.13" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.301961" g="0.301961" b="0.301961" power="1" shadow="1" />
+            <Diffuse r="0.301961" g="0.301961" b="0.301961" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.21" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.sc.car.01.002.02" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.22" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.sc.car.01.002.03" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+      <Theme code="shadow" label="高配.影子">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.01" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.176471" g="0.368627" b="0.654902" power="1" shadow="1" />
+            <Diffuse r="0.176471" g="0.368627" b="0.654902" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.62" base="0" level="0.62" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.02" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.666667" g="0.666667" b="0.666667" power="1" shadow="1" />
+            <Diffuse r="0.666667" g="0.666667" b="0.666667" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.03" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.843137" g="0.945098" b="0.968628" power="1" shadow="1" />
+            <Diffuse r="0.843137" g="0.945098" b="0.968628" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.83" base="0" level="0.83" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.002.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.04" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.270588" g="0.270588" b="0.270588" power="1" shadow="1" />
+            <Diffuse r="0.270588" g="0.270588" b="0.270588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.45" base="0" level="0.45" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.05" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.203922" g="0.203922" b="0.203922" power="1" shadow="1" />
+            <Diffuse r="0.203922" g="0.203922" b="0.203922" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.06" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.039216" g="0.039216" b="0.039216" power="1" shadow="1" />
+            <Diffuse r="0.039216" g="0.039216" b="0.039216" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.07" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.184314" g="0.184314" b="0.184314" power="1" shadow="1" />
+            <Diffuse r="0.184314" g="0.184314" b="0.184314" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.08" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.176471" g="0.368627" b="0.654902" power="1" shadow="1" />
+            <Diffuse r="0.176471" g="0.368627" b="0.654902" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.09" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.886275" g="0.886275" b="0.886275" power="1" shadow="1" />
+            <Diffuse r="0.886275" g="0.886275" b="0.886275" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.10" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.179083" g="0.065359" b="0.065359" power="1" shadow="1" />
+            <Diffuse r="1" g="0.635294" b="0" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.3" base="0" level="0.3" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.11" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.560784" g="0.639216" b="0.686275" power="1" shadow="1" />
+            <Diffuse r="0.560784" g="0.639216" b="0.686275" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="environment" texture="pvw.sc.car.01.002.01" bitmap="environment" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.12" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.027451" g="0.611765" b="0" power="1" shadow="1" />
+            <Diffuse r="0.027451" g="0.611765" b="0" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.898039" g="0.898039" b="0.898039" power="0.05" base="0" level="0.05" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.13" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.301961" g="0.301961" b="0.301961" power="1" shadow="1" />
+            <Diffuse r="0.301961" g="0.301961" b="0.301961" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.21" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.sc.car.01.002.02" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.car.01.004.22" label="汽车展厅">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.sc.car.01.002.03" bitmap="diffuse" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_001_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_002_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_003_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_003_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_003_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_003_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_003_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_003_006">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_004_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.04" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_005_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.05" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_005_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.05" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_006_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_006_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_007_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.07" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_008_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.08" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_008_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.08" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_008_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.08" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_008_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.08" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_008_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.08" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_008_006">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.08" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_009_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.09" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_010_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.10" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_010_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.10" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_010_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.10" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_010_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.10" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_010_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.10" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_011_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.11" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_011_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.11" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_012_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.12" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_012_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.12" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_012_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.12" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_013_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.13" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_021_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.21" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.sc.car.01.surface" mesh_code="ms_022_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.sc.car.01.004.22" />
+        </MaterialCollection>
+      </Sprite>
+    </DisplayCollection>
+  </Template>
+</Configuration>

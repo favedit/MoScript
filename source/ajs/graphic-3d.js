@@ -965,7 +965,6 @@ function FG3dEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
-   c.setProgram(p);
    if(p.hasAttribute()){
       var as = p.attributes();
       var ac = as.count();
@@ -981,19 +980,17 @@ function FG3dEffect_drawRenderable(pg, pr){
       }
    }
    var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   c.drawTriangles(ib, 0, ib.count());
 }
-function FG3dEffect_drawGroup(pg, pm, pi, pc){
+function FG3dEffect_drawGroup(pg, pr, pi, pc){
    var o = this;
-   var rs = pg.renderables();
+   o._graphicContext.setProgram(o._program);
    for(var i = 0; i < pc; i++){
-      var r = rs.get(pi + i);
-      o.drawRenderable(pg, r);
+      o.drawRenderable(pg, pr.getAt(pi + i));
    }
 }
 function FG3dEffect_drawRegion(pg, pi, pc){
    var o = this;
-   o._graphicContext.setProgram(o._program);
    var rs = pg.renderables();
    for(var n = 0; n < pc; ){
       var gb = n;
@@ -1007,7 +1004,7 @@ function FG3dEffect_drawRegion(pg, pi, pc){
          }
          n++;
       }
-      o.drawGroup(pg, gm, pi + gb, ge - gb);
+      o.drawGroup(pg, rs, pi + gb, ge - gb);
    }
 }
 function FG3dEffect_loadConfig(p){

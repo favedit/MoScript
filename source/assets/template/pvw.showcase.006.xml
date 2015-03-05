@@ -1,0 +1,423 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Template code="pvw.showcase.006" full_code="\pvw\showcase\006" label="体积光.树林" keywords="\展示\展台\体积光.树林">
+    <ThemeCollection>
+      <Theme code="color" label="低配.颜色">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.01" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.01" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.showcase.006.01" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.showcase.006.01" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.02" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.02" bitmap="diffuse" index="0" />
+              <Texture type="alpha" texture="pvw.showcase.006.02" bitmap="alpha" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.03" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.27" base="0" level="0.27" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.03" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.showcase.006.03" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.showcase.006.03" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.04" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.41" base="0" level="0.41" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.04" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.showcase.006.04" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.showcase.006.04" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.06" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.189" g="0.189" b="0.189" power="1" base="0" level="1" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.06" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.showcase.006.06" bitmap="normal" index="0" />
+              <Texture type="alpha" texture="pvw.showcase.006.06" bitmap="alpha" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.07" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.25" base="0" level="0.25" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.07" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.showcase.006.07" bitmap="normal" index="0" />
+              <Texture type="alpha" texture="pvw.showcase.006.07" bitmap="alpha" index="0" />
+              <Texture type="specular.level" texture="pvw.showcase.006.07" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.08" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.08" bitmap="diffuse" index="0" />
+              <Texture type="alpha" texture="pvw.showcase.006.08" bitmap="alpha" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.09" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.09" bitmap="diffuse" index="0" />
+              <Texture type="alpha" texture="pvw.showcase.006.09" bitmap="alpha" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+      <Theme code="shadow" label="高配.影子">
+        <MaterialCollection>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.01" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.01" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.showcase.006.01" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.showcase.006.01" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.02" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.02" bitmap="diffuse" index="0" />
+              <Texture type="alpha" texture="pvw.showcase.006.02" bitmap="alpha" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.03" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.27" base="0" level="0.27" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.03" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.showcase.006.03" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.showcase.006.03" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.04" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.41" base="0" level="0.41" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.04" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.showcase.006.04" bitmap="normal" index="0" />
+              <Texture type="specular.level" texture="pvw.showcase.006.04" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.06" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.189" g="0.189" b="0.189" power="1" base="0" level="1" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.06" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.showcase.006.06" bitmap="normal" index="0" />
+              <Texture type="alpha" texture="pvw.showcase.006.06" bitmap="alpha" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.07" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.25" base="0" level="0.25" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.07" bitmap="diffuse" index="0" />
+              <Texture type="normal" texture="pvw.showcase.006.07" bitmap="normal" index="0" />
+              <Texture type="alpha" texture="pvw.showcase.006.07" bitmap="alpha" index="0" />
+              <Texture type="specular.level" texture="pvw.showcase.006.07" bitmap="specular.level" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.08" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.08" bitmap="diffuse" index="0" />
+              <Texture type="alpha" texture="pvw.showcase.006.08" bitmap="alpha" index="0" />
+            </TextureCollection>
+          </Material>
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.showcase.006.09" label="体积光.树林">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
+            <Alpha base="0.4" rate="1" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
+            <Reflect r="1" g="1" b="1" power="1" merge="1" />
+            <RefractFront r="1" g="1" b="1" power="1" />
+            <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
+            <Emissive r="0" g="0" b="0" power="0" />
+            <TextureCollection>
+              <Texture type="diffuse" texture="pvw.showcase.006.09" bitmap="diffuse" index="0" />
+              <Texture type="alpha" texture="pvw.showcase.006.09" bitmap="alpha" index="0" />
+            </TextureCollection>
+          </Material>
+        </MaterialCollection>
+      </Theme>
+    </ThemeCollection>
+    <DisplayCollection>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.01" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_002_001">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_002_002">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_002_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_002_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_002_005">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_002_006">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_002_007">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_002_008">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.02" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_003">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.03" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_004">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.04" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_006">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.06" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_007">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.07" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_008">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.08" />
+        </MaterialCollection>
+      </Sprite>
+      <Sprite model_code="pvw.showcase.006" mesh_code="ms_009">
+        <Matrix tx="0" ty="0" tz="0" rx="0" ry="0" rz="0" sx="1" sy="1" sz="1" />
+        <MaterialCollection>
+          <Material code="pvw.showcase.006.09" />
+        </MaterialCollection>
+      </Sprite>
+    </DisplayCollection>
+  </Template>
+</Configuration>

@@ -1071,7 +1071,6 @@ function FG3dEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
-   c.setProgram(p);
    if(p.hasAttribute()){
       var as = p.attributes();
       var ac = as.count();
@@ -1087,19 +1086,17 @@ function FG3dEffect_drawRenderable(pg, pr){
       }
    }
    var ib = r.indexBuffer();
-   c.drawTriangles(ib, 0, ib._count);
+   c.drawTriangles(ib, 0, ib.count());
 }
-function FG3dEffect_drawGroup(pg, pm, pi, pc){
+function FG3dEffect_drawGroup(pg, pr, pi, pc){
    var o = this;
-   var rs = pg.renderables();
+   o._graphicContext.setProgram(o._program);
    for(var i = 0; i < pc; i++){
-      var r = rs.get(pi + i);
-      o.drawRenderable(pg, r);
+      o.drawRenderable(pg, pr.getAt(pi + i));
    }
 }
 function FG3dEffect_drawRegion(pg, pi, pc){
    var o = this;
-   o._graphicContext.setProgram(o._program);
    var rs = pg.renderables();
    for(var n = 0; n < pc; ){
       var gb = n;
@@ -1113,7 +1110,7 @@ function FG3dEffect_drawRegion(pg, pi, pc){
          }
          n++;
       }
-      o.drawGroup(pg, gm, pi + gb, ge - gb);
+      o.drawGroup(pg, rs, pi + gb, ge - gb);
    }
 }
 function FG3dEffect_loadConfig(p){
@@ -3872,6 +3869,21 @@ function FWglContext_linkCanvas(h){
       c.samplerCompressRgb = e.COMPRESSED_RGB_S3TC_DXT1_EXT;
       c.samplerCompressRgba = e.COMPRESSED_RGBA_S3TC_DXT5_EXT;
    }
+   var s = c.shader = new Object();
+   var sv = s.vertexPrecision = new Object();
+   sv.floatLow = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.LOW_FLOAT);
+   sv.floatMedium = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.MEDIUM_FLOAT);
+   sv.floatHigh = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.HIGH_FLOAT);
+   sv.intLow = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.LOW_INT);
+   sv.intMedium = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.MEDIUM_INT);
+   sv.intHigh = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.HIGH_INT);
+   var sf = s.fragmentPrecision = new Object();
+   sf.floatLow = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.LOW_FLOAT);
+   sf.floatMedium = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.MEDIUM_FLOAT);
+   sf.floatHigh = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_FLOAT);
+   sf.intLow = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.LOW_INT);
+   sf.intMedium = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.MEDIUM_INT);
+   sf.intHigh = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_INT);
    var e = o._nativeDebugShader = g.getExtension('WEBGL_debug_shaders');
    if(e){
       c.optionShaderSource = true;
@@ -4186,8 +4198,7 @@ function FWglContext_setProgram(p){
       g.useProgram(null);
    }
    o._program = p;
-   var r = o.checkError("useProgram", "Set program failure. (program={1}, program_native={2})", p, p._native);
-   return r;
+   return o.checkError("useProgram", "Set program failure. (program={1}, program_native={2})", p, p._native);
 }
 function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
    var o = this;

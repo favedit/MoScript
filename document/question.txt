@@ -30,5 +30,6 @@
 1 - Design - ListView 控件
 1 - Design - Data 数据控件体系
 8 - Engine - Multi物件绘制 drawRenderables
+1 - Design - Mesh和Track的动画关联关系
 7 - Engine - 阴影渲染（浮点数纹理，Fragment渲染器的浮点精度不够，暂时无法解决）
 7 - Engine - 延迟渲染（浮点数纹理，Fragment渲染器的浮点精度不够，暂时无法解决）

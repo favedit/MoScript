@@ -14,6 +14,7 @@ function FWglIndexBuffer(o){
    // @method
    o.setup   = FWglIndexBuffer_setup;
    // @method
+   o.isValid = FWglIndexBuffer_isValid;
    o.upload  = FWglIndexBuffer_upload;
    // @method
    o.dispose = FWglIndexBuffer_dispose;
@@ -29,6 +30,18 @@ function FWglIndexBuffer_setup(){
    var o = this;
    o.__base.FG3dIndexBuffer.setup.call(o);
    o._native = o._graphicContext._native.createBuffer();
+}
+
+//==========================================================
+// <T>当前缓冲是否有效。</T>
+//
+// @method
+// @return Boolean 是否有效
+//==========================================================
+function FWglVertexBuffer_isValid(){
+   var o = this;
+   var g = o._graphicContext._native;
+   return g.isBuffer(o._native);
 }
 
 //==========================================================

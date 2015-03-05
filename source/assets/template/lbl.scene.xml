@@ -1,19 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Configuration>
-  <Template code="lbl.scene">
+  <Template code="lbl.scene" full_code="\lbl\scene" label="整体场景" keywords="\亮宝楼\整体场景">
     <ThemeCollection>
-      <Theme code="color">
+      <Theme code="color" label="低配.颜色">
         <MaterialCollection>
-          <Material effect_code="" option_double="0" code="lbl.bld.0002">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.bld.0002" label="地面">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="1" g="1" b="1" power="1" />
-            <Diffuse r="1" g="1" b="1" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="1" g="1" b="1" power="1" level="1" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="1" g="1" b="1" power="1" shadow="1" />
+            <Diffuse r="1" g="1" b="1" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="1" g="1" b="1" power="1" base="0" level="1" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="1" g="1" b="1" power="1" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.bld.0002" bitmap="diffuse" index="0" />
@@ -21,16 +24,19 @@
               <Texture type="specular.level" texture="lbl.bld.0002" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.bld.0001">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.bld.0001" label="地面">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="1" g="1" b="1" power="1" />
-            <Diffuse r="1" g="1" b="1" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="1" g="1" b="1" power="1" level="1" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="1" g="1" b="1" power="1" shadow="1" />
+            <Diffuse r="1" g="1" b="1" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="1" g="1" b="1" power="1" base="0" level="1" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="1" g="1" b="1" power="1" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.bld.0001" bitmap="diffuse" index="0" />
@@ -38,16 +44,19 @@
               <Texture type="specular.level" texture="lbl.bld.0001" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.bld.0003">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.bld.0003" label="墙">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.bld.0003" bitmap="diffuse" index="0" />
@@ -55,91 +64,112 @@
               <Texture type="specular.level" texture="lbl.bld.0003" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.bld.0004">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.bld.0004" label="吊顶">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.bld.0005">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.bld.0005" label="格子">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="automatic" option_double="0" code="lbl.dec.0006">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0006" label="玻璃01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0" g="0" b="0" power="1" />
-            <Diffuse r="0.5" g="0.5" b="0.5" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0" g="0" b="0" power="1" shadow="1" />
+            <Diffuse r="0.5" g="0.5" b="0.5" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="environment" texture="lbl.dec.0010" bitmap="environment" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0011">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0011" label="金属栏杆01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0014">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0014" label="金属栏杆踢脚线">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0015">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0015" label="金属管">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0002">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0002" label="门框">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0002" bitmap="diffuse" index="0" />
@@ -147,52 +177,64 @@
               <Texture type="specular.level" texture="lbl.dec.0002" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0012">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0012" label="栏杆踢脚线01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0013">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0013" label="栏杆踢脚线02">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0018">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0018" label="墙踢脚线01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0003">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0003" label="栏杆扶手">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0003" bitmap="diffuse" index="0" />
@@ -200,16 +242,19 @@
               <Texture type="specular.level" texture="lbl.dec.0003" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0004">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0004" label="展示牌">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0004" bitmap="diffuse" index="0" />
@@ -217,16 +262,19 @@
               <Texture type="specular.level" texture="lbl.dec.0004" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0005">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0005" label="柱子">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0005" bitmap="diffuse" index="0" />
@@ -234,169 +282,202 @@
               <Texture type="specular.level" texture="lbl.dec.0005" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0021">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0021" label="吊灯">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0006" bitmap="diffuse" index="0" />
               <Texture type="normal" texture="lbl.dec.0006" bitmap="normal" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0016">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0016" label="排气孔_01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0007" bitmap="diffuse" index="0" />
               <Texture type="normal" texture="lbl.dec.0007" bitmap="normal" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0017">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0017" label="排气孔_02">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0008" bitmap="diffuse" index="0" />
               <Texture type="normal" texture="lbl.dec.0008" bitmap="normal" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0007">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0007" label="画框">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0031" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0001">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0001" label="画01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0001" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0002">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0002" label="画02">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0006" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0003">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0003" label="画03">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0007" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0004">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0004" label="画04">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0011" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0005">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0005" label="画05">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0018" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0006">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0006" label="画06">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0030" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0020">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0020" label="展示灯">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0009" bitmap="diffuse" index="0" />
@@ -404,16 +485,19 @@
               <Texture type="specular.level" texture="lbl.dec.0009" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0001">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0001" label="栏杆">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0" g="0" b="0" power="1" />
-            <Diffuse r="0" g="0" b="0" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.5" g="0.5" b="0.5" power="1" level="1" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0" g="0" b="0" power="1" shadow="1" />
+            <Diffuse r="0" g="0" b="0" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.5" g="0.5" b="0.5" power="1" base="0" level="1" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0001" bitmap="diffuse" index="0" />
@@ -421,32 +505,38 @@
               <Texture type="specular.level" texture="lbl.dec.0001" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0019">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0019" label="墙踢脚线02">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
         </MaterialCollection>
       </Theme>
-      <Theme code="shadow">
+      <Theme code="shadow" label="高配.影子">
         <MaterialCollection>
-          <Material effect_code="" option_double="0" code="lbl.bld.0002">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.bld.0002" label="地面">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="1" g="1" b="1" power="1" />
-            <Diffuse r="1" g="1" b="1" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="1" g="1" b="1" power="1" level="1" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="1" g="1" b="1" power="1" shadow="1" />
+            <Diffuse r="1" g="1" b="1" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="1" g="1" b="1" power="1" base="0" level="1" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="1" g="1" b="1" power="1" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.bld.0002" bitmap="diffuse" index="0" />
@@ -454,16 +544,19 @@
               <Texture type="specular.level" texture="lbl.bld.0002" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.bld.0001">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.bld.0001" label="地面">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="1" g="1" b="1" power="1" />
-            <Diffuse r="1" g="1" b="1" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="1" g="1" b="1" power="1" level="1" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="1" g="1" b="1" power="1" shadow="1" />
+            <Diffuse r="1" g="1" b="1" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="1" g="1" b="1" power="1" base="0" level="1" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="1" g="1" b="1" power="1" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.bld.0001" bitmap="diffuse" index="0" />
@@ -471,16 +564,19 @@
               <Texture type="specular.level" texture="lbl.bld.0001" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.bld.0003">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.bld.0003" label="墙">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.bld.0003" bitmap="diffuse" index="0" />
@@ -488,91 +584,112 @@
               <Texture type="specular.level" texture="lbl.bld.0003" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.bld.0004">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.bld.0004" label="吊顶">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.bld.0005">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.bld.0005" label="格子">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="automatic" option_double="0" code="lbl.dec.0006">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0006" label="玻璃01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0" g="0" b="0" power="1" />
-            <Diffuse r="0.5" g="0.5" b="0.5" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0" g="0" b="0" power="1" shadow="1" />
+            <Diffuse r="0.5" g="0.5" b="0.5" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="environment" texture="lbl.dec.0010" bitmap="environment" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0011">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0011" label="金属栏杆01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0014">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0014" label="金属栏杆踢脚线">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0015">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0015" label="金属管">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0002">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0002" label="门框">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0002" bitmap="diffuse" index="0" />
@@ -580,52 +697,64 @@
               <Texture type="specular.level" texture="lbl.dec.0002" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0012">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0012" label="栏杆踢脚线01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0013">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0013" label="栏杆踢脚线02">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0018">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0018" label="墙踢脚线01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0003">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0003" label="栏杆扶手">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0003" bitmap="diffuse" index="0" />
@@ -633,16 +762,19 @@
               <Texture type="specular.level" texture="lbl.dec.0003" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0004">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0004" label="展示牌">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0004" bitmap="diffuse" index="0" />
@@ -650,16 +782,19 @@
               <Texture type="specular.level" texture="lbl.dec.0004" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0005">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0005" label="柱子">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0005" bitmap="diffuse" index="0" />
@@ -667,169 +802,202 @@
               <Texture type="specular.level" texture="lbl.dec.0005" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0021">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0021" label="吊灯">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0006" bitmap="diffuse" index="0" />
               <Texture type="normal" texture="lbl.dec.0006" bitmap="normal" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0016">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0016" label="排气孔_01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0007" bitmap="diffuse" index="0" />
               <Texture type="normal" texture="lbl.dec.0007" bitmap="normal" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0017">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0017" label="排气孔_02">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0008" bitmap="diffuse" index="0" />
               <Texture type="normal" texture="lbl.dec.0008" bitmap="normal" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0007">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0007" label="画框">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0031" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0001">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0001" label="画01">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0001" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0002">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0002" label="画02">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0006" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0003">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0003" label="画03">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0007" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0004">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0004" label="画04">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0011" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0005">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0005" label="画05">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0018" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.pic.0006">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.pic.0006" label="画06">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.pic.0030" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0020">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0020" label="展示灯">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0009" bitmap="diffuse" index="0" />
@@ -837,16 +1005,19 @@
               <Texture type="specular.level" texture="lbl.dec.0009" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0001">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0001" label="栏杆">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0" g="0" b="0" power="1" />
-            <Diffuse r="0" g="0" b="0" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.5" g="0.5" b="0.5" power="1" level="1" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0" g="0" b="0" power="1" shadow="1" />
+            <Diffuse r="0" g="0" b="0" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.5" g="0.5" b="0.5" power="1" base="0" level="1" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="lbl.dec.0001" bitmap="diffuse" index="0" />
@@ -854,16 +1025,19 @@
               <Texture type="specular.level" texture="lbl.dec.0001" bitmap="specular.level" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="lbl.dec.0019">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="lbl.dec.0019" label="墙踢脚线02">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <Diffuse r="0.5882" g="0.5882" b="0.5882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
         </MaterialCollection>

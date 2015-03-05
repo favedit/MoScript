@@ -13,6 +13,7 @@ function FWglVertexBuffer(o){
    // @method
    o.setup   = FWglVertexBuffer_setup;
    // @method
+   o.isValid = FWglVertexBuffer_isValid;
    o.upload  = FWglVertexBuffer_upload;
    // @method
    o.dispose = FWglVertexBuffer_dispose;
@@ -29,6 +30,18 @@ function FWglVertexBuffer_setup(){
    o.__base.FG3dVertexBuffer.setup.call(o);
    var g = o._graphicContext._native;
    o._native = g.createBuffer();
+}
+
+//==========================================================
+// <T>当前缓冲是否有效。</T>
+//
+// @method
+// @return Boolean 是否有效
+//==========================================================
+function FWglVertexBuffer_isValid(){
+   var o = this;
+   var g = o._graphicContext._native;
+   return g.isBuffer(o._native);
 }
 
 //==========================================================

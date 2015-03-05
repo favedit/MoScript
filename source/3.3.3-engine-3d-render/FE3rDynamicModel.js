@@ -96,9 +96,7 @@ function FE3rDynamicModel_build(){
       // 增加到动态网格中
       for(var i = 0; i < rc; i++){
          var r = rs.getAt(i);
-         if(mr.mergeRenderable(r)){
-            continue;
-         }else{
+         if(!mr.mergeRenderable(r)){
             mr = o.createMesh();
             if(!mr.mergeRenderable(r)){
                throw new TError(o, 'Merge renderable failure.');

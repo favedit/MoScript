@@ -1,355 +1,427 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Configuration>
-  <Template code="pvw.sc.house.01.scene">
+  <Template code="pvw.sc.house.01.scene" full_code="\pvw\sc.house.01\scene" label="场景" keywords="\展示\室内展示.01 (2LDK)\场景">
     <ThemeCollection>
-      <Theme code="color">
+      <Theme code="color" label="低配.颜色">
         <MaterialCollection>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.001">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.001" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.001" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.002">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.002" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.002" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.003">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.003" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.003" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.004">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.004" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.004" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.005">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.005" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.090196" g="0.090196" b="0.090196" power="1" />
-            <Diffuse r="0.090196" g="0.090196" b="0.090196" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0.58" level="0.58" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.090196" g="0.090196" b="0.090196" power="1" shadow="1" />
+            <Diffuse r="0.090196" g="0.090196" b="0.090196" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.58" base="0" level="0.58" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.006">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.006" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="1" g="1" b="1" power="1" />
-            <Diffuse r="1" g="1" b="1" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0.64" level="0.64" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="1" g="1" b="1" power="1" shadow="1" />
+            <Diffuse r="1" g="1" b="1" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.64" base="0" level="0.64" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.007">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.007" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.007" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.008">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.008" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.008" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.009">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.009" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.009" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.010">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.010" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.010" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.011">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.011" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.011" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.012">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.012" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.980392" g="0.980392" b="0.980392" power="1" />
-            <Diffuse r="0.980392" g="0.980392" b="0.980392" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.980392" g="0.980392" b="0.980392" power="1" shadow="1" />
+            <Diffuse r="0.980392" g="0.980392" b="0.980392" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="environment" texture="pvw.sc.house.01.012" bitmap="environment" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.013">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.013" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.013" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.014">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.014" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.345098" g="0.227451" b="0.133333" power="1" />
-            <Diffuse r="0.345098" g="0.227451" b="0.133333" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0.68" level="0.68" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.345098" g="0.227451" b="0.133333" power="1" shadow="1" />
+            <Diffuse r="0.345098" g="0.227451" b="0.133333" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.68" base="0" level="0.68" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.015">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.015" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.015" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.016">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.016" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.016" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.017">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.017" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.017" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.018">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.018" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.018" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="automatic" option_double="0" code="pvw.sc.house.01.019">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.019" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.513726" g="0.603922" b="0.611765" power="1" />
-            <Diffuse r="0.513726" g="0.603922" b="0.611765" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.513726" g="0.603922" b="0.611765" power="1" shadow="1" />
+            <Diffuse r="0.513726" g="0.603922" b="0.611765" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="environment" texture="pvw.sc.house.01.012" bitmap="environment" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.020">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.020" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.020" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.021">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.021" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.705882" g="0.705882" b="0.705882" power="1" />
-            <Diffuse r="0.705882" g="0.705882" b="0.705882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.705882" g="0.705882" b="0.705882" power="1" shadow="1" />
+            <Diffuse r="0.705882" g="0.705882" b="0.705882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="environment" texture="pvw.sc.house.01.012" bitmap="environment" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.022">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.022" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.022" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.023">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.023" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.023" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.024">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.024" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.024" bitmap="diffuse" index="0" />
@@ -357,354 +429,426 @@
           </Material>
         </MaterialCollection>
       </Theme>
-      <Theme code="shadow">
+      <Theme code="shadow" label="高配.影子">
         <MaterialCollection>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.001">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.001" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.001" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.002">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.002" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.002" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.003">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.003" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.003" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.004">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.004" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.004" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.005">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.005" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.090196" g="0.090196" b="0.090196" power="1" />
-            <Diffuse r="0.090196" g="0.090196" b="0.090196" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0.58" level="0.58" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.090196" g="0.090196" b="0.090196" power="1" shadow="1" />
+            <Diffuse r="0.090196" g="0.090196" b="0.090196" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.58" base="0" level="0.58" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.006">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.006" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="1" g="1" b="1" power="1" />
-            <Diffuse r="1" g="1" b="1" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0.64" level="0.64" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="1" g="1" b="1" power="1" shadow="1" />
+            <Diffuse r="1" g="1" b="1" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.64" base="0" level="0.64" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.007">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.007" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.007" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.008">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.008" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.008" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.009">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.009" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <Diffuse r="0.588235" g="0.588235" b="0.588235" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.009" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.010">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.010" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.010" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.011">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.011" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.011" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.012">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.012" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.980392" g="0.980392" b="0.980392" power="1" />
-            <Diffuse r="0.980392" g="0.980392" b="0.980392" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.980392" g="0.980392" b="0.980392" power="1" shadow="1" />
+            <Diffuse r="0.980392" g="0.980392" b="0.980392" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="environment" texture="pvw.sc.house.01.012" bitmap="environment" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.013">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.013" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.013" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.014">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.014" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.345098" g="0.227451" b="0.133333" power="1" />
-            <Diffuse r="0.345098" g="0.227451" b="0.133333" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0.68" level="0.68" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.345098" g="0.227451" b="0.133333" power="1" shadow="1" />
+            <Diffuse r="0.345098" g="0.227451" b="0.133333" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0.68" base="0" level="0.68" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.015">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.015" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.015" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.016">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.016" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.016" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.017">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.017" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.017" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.018">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.018" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.018" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="automatic" option_double="0" code="pvw.sc.house.01.019">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.019" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.513726" g="0.603922" b="0.611765" power="1" />
-            <Diffuse r="0.513726" g="0.603922" b="0.611765" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.513726" g="0.603922" b="0.611765" power="1" shadow="1" />
+            <Diffuse r="0.513726" g="0.603922" b="0.611765" power="1" shadow="1111" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="1111" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="1" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="environment" texture="pvw.sc.house.01.012" bitmap="environment" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.020">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.020" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.020" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.021">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.021" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.705882" g="0.705882" b="0.705882" power="1" />
-            <Diffuse r="0.705882" g="0.705882" b="0.705882" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.705882" g="0.705882" b="0.705882" power="1" shadow="1" />
+            <Diffuse r="0.705882" g="0.705882" b="0.705882" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="environment" texture="pvw.sc.house.01.012" bitmap="environment" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.022">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.022" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.022" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.023">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.023" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.023" bitmap="diffuse" index="0" />
             </TextureCollection>
           </Material>
-          <Material effect_code="" option_double="0" code="pvw.sc.house.01.024">
+          <Material effect_code="automatic" option_double="0" option_shadow="2" option_shadow_self="2" code="pvw.sc.house.01.024" label="室内">
+            <Coord rate_width="1" rate_height="1" />
+            <Color min="0" max="0" rate="0" merge="0" />
             <Alpha base="0.4" rate="1" />
-            <Ambient r="0.588" g="0.588" b="0.588" power="1" />
-            <Diffuse r="0.588" g="0.588" b="0.588" power="1" />
-            <DiffuseView r="1" g="1" b="1" power="1" />
-            <Specular r="0.9" g="0.9" b="0.9" power="0" level="0" />
-            <SpecularView r="1" g="1" b="1" power="1" level="0" />
+            <Ambient r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <Diffuse r="0.588" g="0.588" b="0.588" power="1" shadow="1" />
+            <DiffuseView r="1" g="1" b="1" power="1" shadow="1" />
+            <Specular r="0.9" g="0.9" b="0.9" power="0" base="0" level="0" shadow="0" />
+            <SpecularView r="1" g="1" b="1" power="1" base="0" level="0" shadow="0" />
             <Reflect r="1" g="1" b="1" power="1" merge="1" />
             <RefractFront r="1" g="1" b="1" power="1" />
             <RefractBack r="1" g="1" b="1" power="1" />
+            <Opacity r="1" g="1" b="1" power="1" rate="1" alpha="1" depth="1" transmittance="1" />
             <Emissive r="0" g="0" b="0" power="0" />
             <TextureCollection>
               <Texture type="diffuse" texture="pvw.sc.house.01.024" bitmap="diffuse" index="0" />
