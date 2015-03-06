@@ -231,16 +231,16 @@
          <shader:equals source='technique.mode' value='ambient'>
          result.rgb = resultAmbient;
          </shader:equals>
-         //result.rgb = resultAmbient.xyz;
          //............................................................
          // 计算散射颜色
          <shader:true source='vertex.attribute.normal'>
          <shader:true source='support.diffuse.dump'>
          vec4 normal = texture2D(fs_normal, v_coord);
-         result.rgb = normal.rgb;
          normal.xyz = normalize(normal.rgb * 2.0 - 1.0);
-         //result.rgb = vec3(normalFactor, normalFactor, normalFactor);
-         float normalFactor = dot(normal.xyz, <shader:false source='option.normal.invert'>-</shader:false>v_light_ts);
+         //float normalFactor = dot(normal.xyz, normalize(<shader:false source='option.normal.invert'>-</shader:false>v_light_ts));
+         //float normalFactor = dot(normal.xyz, -normalize(v_light_ts));
+         float normalFactor = dot(abs(v_normal), abs(-fc_light_direction));
+         result.rgb = vec3(normalFactor, normalFactor, normalFactor);
          </shader:true>
          <shader:false source='support.diffuse.dump'>
          float normalFactor = dot(v_normal, <shader:false source='option.normal.invert'>-</shader:false>fc_light_direction);

@@ -91,7 +91,6 @@ function FWglContext_linkCanvas(h){
       //a.antialias = true;
       //a.premultipliedAlpha = false;
       //a.alpha = false;
-      //a.antialias = false;
       // 初始化对象
       var n = h.getContext('webgl', a);
       if(n == null){

@@ -36,7 +36,7 @@ function FE3rTextureBitmapFlatPack_onLoad(p){
    t.upload(o._image);
    t.makeMipmap();
    // 释放位图
-   window.URL.revokeObjectURL(o._image.url());
+   //window.URL.revokeObjectURL(o._image.url());
    o._image = RObject.dispose(o._image);
    // 加载完成
    o._dataReady = true;
@@ -61,36 +61,54 @@ function FE3rTextureBitmapFlatPack_construct(){
 function FE3rTextureBitmapFlatPack_loadResource(p){
    var o = this;
    o._resource = p;
-   var oc = p.optionCompress();
-   var d = p.data();
-   var s = p.size();
-   // 获得压缩方式
-   if(oc){
-      // 转换数据为位图
-      var t = p._formatName;
-      var b = new Blob([d], {type: 'image/' + t});
-      var u = window.URL.createObjectURL(b);
-      var g = o._image = RClass.create(FImage);
-      if(t == 'png'){
-         g.setOptionAlpha(true);
-      }else if(t == 'jpg'){
-         g.setOptionAlpha(false);
-      }else{
-         throw new TError(o, 'Unknown image.');
-      }
-      g.loadUrl(u);
-      g.addLoadListener(o, o.onLoad);
-   }else{
-      // 加载二进制数据
-      var c = o._graphicContext;
-      // 创建纹理
-      var t = o._texture = c.createFlatTexture();
-      t.uploadData(d, s.width, s.height);
-      //t.makeMipmap();
-      o._graphicContext._native.finish();
-      // 加载完成
-      o._dataReady = true;
+   var rt = p._texture;
+   var c = p.code();
+   // 加载位图
+   var u = RBrowser.hostPath('/cloud.content.texture.bitmap.wv?guid=' + rt._guid + '&code=' + c);
+   if(RRuntime.isDebug()){
+      u += '&date=' + RDate.format();
    }
+   var g = o._image = RClass.create(FImage);
+   g.loadUrl(u);
+   g.addLoadListener(o, o.onLoad);
+
+   //var oc = p.optionCompress();
+   //var d = p.data();
+   //var s = p.size();
+   //if(t == 'png'){
+   //   g.setOptionAlpha(true);
+   //   }else if(t == 'jpg'){
+   //      g.setOptionAlpha(false);
+   //   }else{
+   //      throw new TError(o, 'Unknown image.');
+   //   }
+   // 获得压缩方式
+   //if(oc){
+   //   // 转换数据为位图
+   //   var t = p._formatName;
+   //   var b = new Blob([d], {type: 'image/' + t});
+   //   var u = window.URL.createObjectURL(b);
+   //   var g = o._image = RClass.create(FImage);
+   //   if(t == 'png'){
+   //      g.setOptionAlpha(true);
+   //   }else if(t == 'jpg'){
+   //      g.setOptionAlpha(false);
+   //   }else{
+   //      throw new TError(o, 'Unknown image.');
+   //   }
+   //   g.loadUrl(u);
+   //   g.addLoadListener(o, o.onLoad);
+   //}else{
+   //   // 加载二进制数据
+   //   var c = o._graphicContext;
+   //   // 创建纹理
+   //   var t = o._texture = c.createFlatTexture();
+   //   t.uploadData(d, s.width, s.height);
+   //   //t.makeMipmap();
+   //   o._graphicContext._native.finish();
+   //   // 加载完成
+   //   o._dataReady = true;
+   //}
 }
 
 //==========================================================

@@ -1213,17 +1213,6 @@ function FE3rTextureBitmapCubePack_construct(){
 function FE3rTextureBitmapCubePack_loadResource(p){
    var o = this;
    o._resource = p;
-   var d = p.data();
-   var t = p._formatName;
-   o._images = new TObjects();
-   for(var i = 0; i < 6; i++){
-      var b = new Blob([d[i]], {type: 'image/' + t});
-      var u = window.URL.createObjectURL(b);
-      var g = o._images[i] = RClass.create(FImage);
-      g.setOptionAlpha(false);
-      g.loadUrl(u);
-      g.addLoadListener(o, o.onLoad);
-   }
 }
 function FE3rTextureBitmapCubePack_dispose(){
    var o = this;
@@ -1246,7 +1235,6 @@ function FE3rTextureBitmapFlatPack_onLoad(p){
    var t = o._texture = c.createFlatTexture();
    t.upload(o._image);
    t.makeMipmap();
-   window.URL.revokeObjectURL(o._image.url());
    o._image = RObject.dispose(o._image);
    o._dataReady = true;
 }
@@ -1257,30 +1245,15 @@ function FE3rTextureBitmapFlatPack_construct(){
 function FE3rTextureBitmapFlatPack_loadResource(p){
    var o = this;
    o._resource = p;
-   var oc = p.optionCompress();
-   var d = p.data();
-   var s = p.size();
-   if(oc){
-      var t = p._formatName;
-      var b = new Blob([d], {type: 'image/' + t});
-      var u = window.URL.createObjectURL(b);
-      var g = o._image = RClass.create(FImage);
-      if(t == 'png'){
-         g.setOptionAlpha(true);
-      }else if(t == 'jpg'){
-         g.setOptionAlpha(false);
-      }else{
-         throw new TError(o, 'Unknown image.');
-      }
-      g.loadUrl(u);
-      g.addLoadListener(o, o.onLoad);
-   }else{
-      var c = o._graphicContext;
-      var t = o._texture = c.createFlatTexture();
-      t.uploadData(d, s.width, s.height);
-      o._graphicContext._native.finish();
-      o._dataReady = true;
+   var rt = p._texture;
+   var c = p.code();
+   var u = RBrowser.hostPath('/cloud.content.texture.bitmap.wv?guid=' + rt._guid + '&code=' + c);
+   if(RRuntime.isDebug()){
+      u += '&date=' + RDate.format();
    }
+   var g = o._image = RClass.create(FImage);
+   g.loadUrl(u);
+   g.addLoadListener(o, o.onLoad);
 }
 function FE3rTextureBitmapFlatPack_dispose(){
    var o = this;

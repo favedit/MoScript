@@ -1628,6 +1628,7 @@ function FE3sTexture_unserialize(p){
       var s = o._bitmapPacks = new TDictionary();
       for(var i = 0; i < c; i++){
          var b = RClass.create(FE3sTextureBitmapPack);
+         b._texture = o;
          b.unserialize(p);
          s.set(b.code(), b);
       }
@@ -1686,15 +1687,12 @@ function FE3sTextureBitmapPack_data(){
 function FE3sTextureBitmapPack_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
-   o._optionCompress = p.readBoolean();
    o._typeName = p.readString();
    o._formatName = p.readString();
    o._size.width = p.readUint16();
    o._size.height = p.readUint16();
    if(o._typeName == 'flat'){
       var c = p.readInt32();
-      var d = o._data = new ArrayBuffer(c);
-      p.readBytes(d, 0, c);
    }else if(o._typeName == 'cube'){
       o._data = new Array();
       for(var i = 0; i < 6; i++){

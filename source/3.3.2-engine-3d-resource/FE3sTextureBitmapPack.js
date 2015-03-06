@@ -77,7 +77,7 @@ function FE3sTextureBitmapPack_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
    // 读取属性
-   o._optionCompress = p.readBoolean();
+   //o._optionCompress = p.readBoolean();
    o._typeName = p.readString();
    o._formatName = p.readString();
    o._size.width = p.readUint16();
@@ -85,8 +85,8 @@ function FE3sTextureBitmapPack_unserialize(p){
    // 读取数据
    if(o._typeName == 'flat'){
       var c = p.readInt32();
-      var d = o._data = new ArrayBuffer(c);
-      p.readBytes(d, 0, c);
+   //   var d = o._data = new ArrayBuffer(c);
+   //   p.readBytes(d, 0, c);
    }else if(o._typeName == 'cube'){
       o._data = new Array();
       for(var i = 0; i < 6; i++){

@@ -78,6 +78,7 @@ function FE3sTexture_unserialize(p){
       var s = o._bitmapPacks = new TDictionary();
       for(var i = 0; i < c; i++){
          var b = RClass.create(FE3sTextureBitmapPack);
+         b._texture = o;
          b.unserialize(p);
          s.set(b.code(), b);
       }
