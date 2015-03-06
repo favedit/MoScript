@@ -7,7 +7,8 @@
 150303 - Engine - IE浏览器，属性不显示。
 150304 - Engine - 渲染对象释放。
 150304 - Engine - 扩展信息获得修正，使用getSupportedExtensions获得集合。
-150304 - Engine - 同材质物件合并
+150305 - Engine - 同材质物件合并
+150306 - Design - Mesh和Track的动画关联关系
 
 进行中
 ------------------------------------------------------------
@@ -15,6 +16,7 @@
 2 - Engine - 动态刷新，降低效率（进行中...）
 3 - Engine - 纹理压缩 （调查中）
 4 - Engine - 合并物件自动延时释放处理。
+4 - Engine - 材质参数合并
 
 准备中
 ------------------------------------------------------------
@@ -30,6 +32,5 @@
 1 - Design - ListView 控件
 1 - Design - Data 数据控件体系
 8 - Engine - Multi物件绘制 drawRenderables
-1 - Design - Mesh和Track的动画关联关系
 7 - Engine - 阴影渲染（浮点数纹理，Fragment渲染器的浮点精度不够，暂时无法解决）
 7 - Engine - 延迟渲染（浮点数纹理，Fragment渲染器的浮点精度不够，暂时无法解决）

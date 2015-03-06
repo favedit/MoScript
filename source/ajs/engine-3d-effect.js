@@ -1,9 +1,49 @@
 function FE3dGeneralColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    o._code          = 'general.color.automatic';
+   o.buildMaterial  = FE3dGeneralColorAutomaticEffect_buildMaterial;
    o.drawRenderable = FE3dGeneralColorAutomaticEffect_drawRenderable;
    o.drawGroup      = FE3dGeneralColorAutomaticEffect_drawGroup;
    return o;
+}
+function FE3dGeneralColorAutomaticEffect_buildMaterial(p){
+   var o = this;
+   var f = p.activeInfo();
+   var d = f.material;
+   if(!d){
+      d = f.material = new Float32Array(4 * 10);
+   }
+   var m = p.material();
+   if(m._dirty){
+      var mi = m.info();
+      var i = 0;
+      d[i++] = mi.colorMin;
+      d[i++] = mi.colorMax;
+      d[i++] = mi.colorRate;
+      d[i++] = mi.colorMerge;
+      d[i++] = mi.alphaBase;
+      if(mi.optionAlpha){
+         d[i++] = mi.alphaRate;
+      }else{
+         d[i++] = 1;
+      }
+      d[i++] = 0;
+      d[i++] = 0;
+      i += mi.ambientColor.copyArray(d, i);
+      i += mi.diffuseColor.copyArray(d, i);
+      i += mi.specularColor.copyArray(d, i);
+      d[i++] = mi.specularBase;
+      d[i++] = mi.specularLevel;
+      d[i++] = mi.specularAverage;
+      d[i++] = mi.specularShadow;
+      i += mi.reflectColor.copyArray(d, i);
+      d[i++] = 0;
+      d[i++] = 0;
+      d[i++] = 1.0 - mi.reflectMerge;
+      d[i++] = mi.reflectMerge;
+      i += mi.emissiveColor.copyArray(d, i);
+      m._dirty = false;
+   }
 }
 function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
@@ -26,31 +66,18 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    }else{
       p.setParameter('vc_model_matrix', pr.currentMatrix());
    }
-   pg._statistics._frameDrawRenderable.begin();
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
    p.setParameter('fc_camera_position', vcp);
    p.setParameter('fc_light_direction', vld);
-   pg._statistics._frameDrawRenderable.end();
    if(o._supportMaterialMap){
       var i = pr._materialId;
       p.setParameter4('fc_material', 1/32, i/512, 0, 0);
    }else{
-      p.setParameter('fc_ambient_color', mi.ambientColor);
-      p.setParameter('fc_diffuse_color', mi.diffuseColor);
-      p.setParameter('fc_specular_color', mi.specularColor);
-      p.setParameter('fc_reflect_color', mi.reflectColor);
-      p.setParameter('fc_emissive_color', mi.emissiveColor);
+      o.buildMaterial(pr);
+      p.setParameter('fc_materials', pr.activeInfo().material);
    }
-   p.setParameter4('fc_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
-   if(mi.optionAlpha){
-      p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, 0, 0);
-   }else{
-      p.setParameter4('fc_alpha', 0, 1, 0, 0);
-   }
-   p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
-   p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
    o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }
 function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pr, pi, pc){

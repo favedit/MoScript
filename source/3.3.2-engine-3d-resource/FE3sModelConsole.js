@@ -169,12 +169,14 @@ function FE3sModelConsole_unserialSkeleton(p){
 // <T>反序列化动画。</T>
 //
 // @method
+// @param m:model:FEs3Model 模型
 // @param p:input:FByteStream 数据流
 // @return FE3sAnimation 动画
 //==========================================================
-function FE3sModelConsole_unserialAnimation(p){
+function FE3sModelConsole_unserialAnimation(m, p){
    var o = this;
    var r = RClass.create(FE3sAnimation);
+   r._model = m;
    r.unserialize(p);
    o._animations.set(r.guid(), r);
    return r;

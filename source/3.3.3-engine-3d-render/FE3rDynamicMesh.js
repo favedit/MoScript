@@ -111,7 +111,7 @@ function FE3rDynamicMesh_mergeRenderable(p){
    var vc = p.vertexCount();
    var ic = p.indexBuffer().count();
    // 检查个数限制
-   var mc = cp.calculateMergeCount();
+   var mc = cp.mergeCount;
    if(o._mergeRenderables.count() >= mc){
       return false;
    }

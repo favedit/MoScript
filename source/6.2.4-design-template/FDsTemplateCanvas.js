@@ -206,10 +206,10 @@ function FDsTemplateCanvas_onEnterFrame(){
    if(m){
       var r = o._rotation;
       //m.location().set(0, -8.0, 0);
-      m.rotation().set(0, r.y, 0);
+      //m.rotation().set(0, r.y, 0);
       //m.scale().set(3.0, 3.0, 3.0);
-      //m.scale().set(0.002, 0.002, 0.002);
-      //m.scale().set(0.2, 0.2, 0.2);
+      m.scale().set(0.002, 0.002, 0.002); // Car01
+      //m.scale().set(0.05, 0.05, 0.05);
       m.update();
       // 设置变量
       if(o._rotationAble){

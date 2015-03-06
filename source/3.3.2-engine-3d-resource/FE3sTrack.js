@@ -8,7 +8,7 @@ function FE3sTrack(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._optionBoneScale = false;
+   o._meshCode        = null;
    o._boneIndex       = 0;
    o._frameTick       = 0;
    o._matrix          = null;
@@ -139,7 +139,7 @@ function FE3sTrack_calculate(pi, pt){
 function FE3sTrack_unserialize(p){
    var o = this;
    // 读取属性
-   //o._optionBoneScale = p.readBoolean();
+   o._meshCode = p.readString();
    o._boneIndex = p.readUint8();
    o._frameTick = p.readUint16();
    o._matrix.unserialize(p);

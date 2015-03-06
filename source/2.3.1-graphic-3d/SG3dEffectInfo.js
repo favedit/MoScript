@@ -4,8 +4,8 @@
 // @author maocy
 // @history 150113
 //==========================================================
-function SG3dEffectInfo(o){
-   if(!o){o = this;}
+function SG3dEffectInfo(){
+   var o = this;
    //..........................................................
    // @attribute 代码
    o.code                  = null;

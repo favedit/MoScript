@@ -23,6 +23,7 @@ function SColor4(){
    o.unserialize3 = SColor4_unserialize3;
    o.saveConfig   = SColor4_saveConfig;
    o.savePower    = SColor4_savePower;
+   o.copyArray    = SColor4_copyArray;
    o.toString     = SColor4_toString;
    return o;
 }
@@ -139,6 +140,22 @@ function SColor4_savePower(p){
    p.setFloat('g', o.green);
    p.setFloat('b', o.blue);
    p.setFloat('power', o.alpha);
+}
+
+//============================================================
+// <T>复制内容到数组中。</T>
+//
+// @method
+// @param d:data:Array 数组
+// @param i:index:Integer 索引
+//============================================================
+function SColor4_copyArray(d, i){
+   var o = this;
+   d[i++] = o.red;
+   d[i++] = o.green;
+   d[i++] = o.blue;
+   d[i++] = o.alpha;
+   return 4;
 }
 
 //============================================================

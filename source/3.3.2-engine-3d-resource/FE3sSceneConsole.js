@@ -59,7 +59,7 @@ function FE3sSceneConsole_load(p){
 function FE3sSceneConsole_update(p){
    var o = this;
    // 生成地址
-   var u = RBrowser.hostPath(o._serviceUrl + '?action=update&date=' + RDate.format());
+   var u = RBrowser.hostPath(o._serviceUrl + '?action=updateTheme&date=' + RDate.format());
    // 发送数据
    var xc = RConsole.find(FXmlConsole);
    var r = xc.send(u, p);

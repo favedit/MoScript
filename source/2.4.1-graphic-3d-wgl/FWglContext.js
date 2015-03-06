@@ -86,14 +86,22 @@ function FWglContext_linkCanvas(h){
    // 获得环境
    o._hCanvas = h;
    if(h.getContext){
-      var n = h.getContext('webgl', {antialias:true});
+      // 设置参数
+      var a = new Object();
+      //a.antialias = true;
+      //a.premultipliedAlpha = false;
+      //a.alpha = false;
+      //a.antialias = false;
+      // 初始化对象
+      var n = h.getContext('webgl', a);
       if(n == null){
-         n = h.getContext('experimental-webgl', {antialias:true});
+         n = h.getContext('experimental-webgl', a);
       }
       if(n == null){
          throw new TError("Current browser can't support WebGL technique.");
       }
       o._native = n;
+      o._contextAttributes = n.getContextAttributes();
    }
    var g = o._native;
    // 设置状态
@@ -116,6 +124,7 @@ function FWglContext_linkCanvas(h){
    if(e){
       c.optionInstance = true;
    }
+   c.mergeCount = parseInt((c.vertexConst - 32) / 4);
    // 测试顶点布局支持
    var e = o._nativeLayout = g.getExtension('OES_vertex_array_object');
    if(e){
@@ -1017,12 +1026,15 @@ function FWglContext_present(){
 // @param p1:parameter1:String 参数1
 //==========================================================
 function FWglContext_checkError(c, m, p1){
+   var o = this;
    // 检查运行模式
+   if(!o._capability.optionDebug){
+      return true;
+   }
    if(!RRuntime.isDebug()){
       return true;
    }
    // 获得错误原因
-   var o = this;
    var g = o._native;
    var r = false;
    var e = null;

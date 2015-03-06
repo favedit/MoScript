@@ -125,8 +125,9 @@ function FE3dTemplateRenderable_loadResource(p){
 //==========================================================
 function FE3dTemplateRenderable_reloadResource(){
    var o = this;
-   // 计算材质
-   o._material.calculate(o._materialResource);
+   var m = o._material;
+   m.calculate(o._materialResource);
+   m.update();
 }
 
 //==========================================================

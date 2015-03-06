@@ -8,18 +8,33 @@ function FG3dMaterial(o){
    o = RClass.inherits(this, o, FG3dBaseMaterial);
    //..........................................................
    // @attribute
+   o._dirty    = true;
+   // @attribute
    o._textures = null;
    //..........................................................
    // @method
    o.textures  = FG3dMaterial_textures;
+   o.update    = FG3dMaterial_update;
    return o;
 }
 
 //==========================================================
 // <T>获得纹理集合。</T>
 //
+// @method
 // @return 纹理集合
 //==========================================================
 function FG3dMaterial_textures(){
    return this._textures;
+}
+
+//==========================================================
+// <T>获得纹理集合。</T>
+//
+// @method
+// @return 纹理集合
+//==========================================================
+function FG3dMaterial_update(){
+   var o = this;
+   o._dirty = true;
 }

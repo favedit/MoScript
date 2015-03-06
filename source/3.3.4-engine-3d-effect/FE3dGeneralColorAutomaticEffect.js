@@ -11,9 +11,65 @@ function FE3dGeneralColorAutomaticEffect(o){
    o._code          = 'general.color.automatic';
    //..........................................................
    // @method
+   o.buildMaterial  = FE3dGeneralColorAutomaticEffect_buildMaterial;
    o.drawRenderable = FE3dGeneralColorAutomaticEffect_drawRenderable;
    o.drawGroup      = FE3dGeneralColorAutomaticEffect_drawGroup;
    return o;
+}
+
+//==========================================================
+// <T>建立材质数据。</T>
+//
+// @method
+// @param p:renderable:FG3dRenderable 渲染对象
+//==========================================================
+function FE3dGeneralColorAutomaticEffect_buildMaterial(p){
+   var o = this;
+   // 建立容器
+   var f = p.activeInfo();
+   var d = f.material;
+   if(!d){
+      d = f.material = new Float32Array(4 * 10);
+   }
+   // 建立数据
+   var m = p.material();
+   if(m._dirty){
+      var mi = m.info();
+      var i = 0;
+      // fc_color
+      d[i++] = mi.colorMin;
+      d[i++] = mi.colorMax;
+      d[i++] = mi.colorRate;
+      d[i++] = mi.colorMerge;
+      // fc_alpha
+      d[i++] = mi.alphaBase;
+      if(mi.optionAlpha){
+         d[i++] = mi.alphaRate;
+      }else{
+         d[i++] = 1;
+      }
+      d[i++] = 0;
+      d[i++] = 0;
+      // fc_ambient_color
+      i += mi.ambientColor.copyArray(d, i);
+      // fc_diffuse_color
+      i += mi.diffuseColor.copyArray(d, i);
+      // fc_specular_color
+      i += mi.specularColor.copyArray(d, i);
+      d[i++] = mi.specularBase;
+      d[i++] = mi.specularLevel;
+      d[i++] = mi.specularAverage;
+      d[i++] = mi.specularShadow;
+      // fc_reflect_color
+      i += mi.reflectColor.copyArray(d, i);
+      d[i++] = 0;
+      d[i++] = 0;
+      d[i++] = 1.0 - mi.reflectMerge;
+      d[i++] = mi.reflectMerge;
+      // fc_emissive_color
+      i += mi.emissiveColor.copyArray(d, i);
+      m._dirty = false;
+   }
 }
 
 //==========================================================
@@ -47,34 +103,24 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    }else{
       p.setParameter('vc_model_matrix', pr.currentMatrix());
    }
-   pg._statistics._frameDrawRenderable.begin();
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
    p.setParameter('fc_camera_position', vcp);
    p.setParameter('fc_light_direction', vld);
-   pg._statistics._frameDrawRenderable.end();
    // 设置材质
    if(o._supportMaterialMap){
       var i = pr._materialId;
       p.setParameter4('fc_material', 1/32, i/512, 0, 0);
    }else{
-      p.setParameter('fc_ambient_color', mi.ambientColor);
-      p.setParameter('fc_diffuse_color', mi.diffuseColor);
-      p.setParameter('fc_specular_color', mi.specularColor);
-      p.setParameter('fc_reflect_color', mi.reflectColor);
-      p.setParameter('fc_emissive_color', mi.emissiveColor);
+      o.buildMaterial(pr);
+      p.setParameter('fc_materials', pr.activeInfo().material);
    }
-   p.setParameter4('fc_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
-   if(mi.optionAlpha){
-      p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, 0, 0);
-   }else{
-      p.setParameter4('fc_alpha', 0, 1, 0, 0);
-   }
-   p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
+   //p.setParameter4('fc_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   //p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
    //p.setParameter('fc_specular_view_color', mi.specularViewColor);
    //p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
-   p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
+   //p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
    // 绘制处理
    o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }
@@ -109,12 +155,8 @@ function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pr, pi, pc){
             }
          }
          // 绘制渲染集合
-         //pg._statistics._frameDrawRenderable.begin();
          return e.drawGroup(pg, rs, 0, c)
-         //pg._statistics._frameDrawRenderable.end();
       }
    }
-   //pg._statistics._frameDrawRenderable.begin();
    o.__base.FG3dAutomaticEffect.drawGroup.call(o, pg, pr, pi, pc)
-   //pg._statistics._frameDrawRenderable.end();
 }

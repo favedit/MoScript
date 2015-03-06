@@ -1024,6 +1024,7 @@ function SE3sSceneShadow_unserialize(p){
 }
 function FE3sAnimation(o){
    o = RClass.inherits(this, o, FE3sObject);
+   o._model        = null;
    o._skeletonGuid = null;
    o._skeleton     = null;
    o._frameCount   = 0;
@@ -1448,14 +1449,25 @@ function FE3sMesh_unserialize(p){
 }
 function FE3sModel(o){
    o = RClass.inherits(this, o, FE3sResource);
-   o._meshes     = null;
-   o._skeletons  = null;
-   o._animations = null;
-   o.meshes      = FE3sModel_meshes;
-   o.skeletons   = FE3sModel_skeletons;
-   o.animations  = FE3sModel_animations;
-   o.unserialize = FE3sModel_unserialize;
+   o._meshes        = null;
+   o._skeletons     = null;
+   o._animations    = null;
+   o.findMeshByCode = FE3sModel_findMeshByCode;
+   o.meshes         = FE3sModel_meshes;
+   o.skeletons      = FE3sModel_skeletons;
+   o.animations     = FE3sModel_animations;
+   o.unserialize    = FE3sModel_unserialize;
    return o;
+}
+function FE3sModel_findMeshByCode(p){
+   var s = this._meshes;
+   for(var i = s.count() - 1; i >= 0; i--){
+      var m = s.getAt(i);
+      if(m._code == p){
+         return m;
+      }
+   }
+   return null;
 }
 function FE3sModel_meshes(){
    return this._meshes;
@@ -1489,7 +1501,7 @@ function FE3sModel_unserialize(p){
    if(c > 0){
       var s = o._animations = new TObjects();
       for(var i = 0; i < c; i++){
-         s.push(mc.unserialAnimation(p));
+         s.push(mc.unserialAnimation(o, p));
       }
    }
    RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
@@ -1563,9 +1575,10 @@ function FE3sModelConsole_unserialSkeleton(p){
    o._skeletons.set(r.guid(), r);
    return r;
 }
-function FE3sModelConsole_unserialAnimation(p){
+function FE3sModelConsole_unserialAnimation(m, p){
    var o = this;
    var r = RClass.create(FE3sAnimation);
+   r._model = m;
    r.unserialize(p);
    o._animations.set(r.guid(), r);
    return r;
@@ -1598,6 +1611,7 @@ function FE3sObject(o){
    o.guid        = FE3sObject_guid;
    o.code        = FE3sObject_code;
    o.label       = FE3sObject_label;
+   o.setLabel    = FE3sObject_setLabel;
    o.unserialize = FE3sObject_unserialize;
    o.saveConfig  = FE3sObject_saveConfig;
    return o;
@@ -1610,6 +1624,9 @@ function FE3sObject_code(){
 }
 function FE3sObject_label(){
    return this._label;
+}
+function FE3sObject_setLabel(p){
+   this._label = p;
 }
 function FE3sObject_unserialize(p){
    var o = this;
@@ -1684,6 +1701,7 @@ function FE3sResource_load(u){
 }
 function FE3sScene(o){
    o = RClass.inherits(this, o, FE3sResource);
+   o._themeGuid  = null;
    o._themeCode  = null;
    o._technique  = null;
    o._region     = null;
@@ -1715,6 +1733,7 @@ function FE3sScene_layers(){
 function FE3sScene_unserialize(p){
    var o = this;
    o.__base.FE3sResource.unserialize.call(o, p);
+   o._themeGuid = p.readString();
    o._themeCode = p.readString();
    o._technique.unserialize(p);
    o._region.unserialize(p);
@@ -1729,6 +1748,7 @@ function FE3sScene_saveConfig(p){
    var o = this;
    o.__base.FE3sResource.saveConfig.call(o, p);
    p.setName('Scene');
+   p.set('theme_guid', o._themeGuid);
    p.set('theme_code', o._themeCode);
    var xls = p.create('LayerCollection');
    var ls = o._layers;
@@ -1812,7 +1832,7 @@ function FE3sSceneConsole_load(p){
 }
 function FE3sSceneConsole_update(p){
    var o = this;
-   var u = RBrowser.hostPath(o._serviceUrl + '?action=update&date=' + RDate.format());
+   var u = RBrowser.hostPath(o._serviceUrl + '?action=updateTheme&date=' + RDate.format());
    var xc = RConsole.find(FXmlConsole);
    var r = xc.send(u, p);
 }
@@ -2727,7 +2747,7 @@ function FE3sThemeConsole_select(p){
 }
 function FE3sTrack(o){
    o = RClass.inherits(this, o, FObject);
-   o._optionBoneScale = false;
+   o._meshCode        = null;
    o._boneIndex       = 0;
    o._frameTick       = 0;
    o._matrix          = null;
@@ -2792,6 +2812,7 @@ function FE3sTrack_calculate(pi, pt){
 }
 function FE3sTrack_unserialize(p){
    var o = this;
+   o._meshCode = p.readString();
    o._boneIndex = p.readUint8();
    o._frameTick = p.readUint16();
    o._matrix.unserialize(p);
@@ -3063,7 +3084,7 @@ function FE3rDynamicMesh_mergeRenderable(p){
    var cp = c.capability();
    var vc = p.vertexCount();
    var ic = p.indexBuffer().count();
-   var mc = cp.calculateMergeCount();
+   var mc = cp.mergeCount;
    if(o._mergeRenderables.count() >= mc){
       return false;
    }
@@ -4088,7 +4109,6 @@ function FE3rTextureBitmapFlatPack_loadResource(p){
       var c = o._graphicContext;
       var t = o._texture = c.createFlatTexture();
       t.uploadData(d, s.width, s.height);
-      t.makeMipmap();
       o._graphicContext._native.finish();
       o._dataReady = true;
    }
@@ -4240,9 +4260,49 @@ function FE3rTrack_dispose(){
 function FE3dGeneralColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    o._code          = 'general.color.automatic';
+   o.buildMaterial  = FE3dGeneralColorAutomaticEffect_buildMaterial;
    o.drawRenderable = FE3dGeneralColorAutomaticEffect_drawRenderable;
    o.drawGroup      = FE3dGeneralColorAutomaticEffect_drawGroup;
    return o;
+}
+function FE3dGeneralColorAutomaticEffect_buildMaterial(p){
+   var o = this;
+   var f = p.activeInfo();
+   var d = f.material;
+   if(!d){
+      d = f.material = new Float32Array(4 * 10);
+   }
+   var m = p.material();
+   if(m._dirty){
+      var mi = m.info();
+      var i = 0;
+      d[i++] = mi.colorMin;
+      d[i++] = mi.colorMax;
+      d[i++] = mi.colorRate;
+      d[i++] = mi.colorMerge;
+      d[i++] = mi.alphaBase;
+      if(mi.optionAlpha){
+         d[i++] = mi.alphaRate;
+      }else{
+         d[i++] = 1;
+      }
+      d[i++] = 0;
+      d[i++] = 0;
+      i += mi.ambientColor.copyArray(d, i);
+      i += mi.diffuseColor.copyArray(d, i);
+      i += mi.specularColor.copyArray(d, i);
+      d[i++] = mi.specularBase;
+      d[i++] = mi.specularLevel;
+      d[i++] = mi.specularAverage;
+      d[i++] = mi.specularShadow;
+      i += mi.reflectColor.copyArray(d, i);
+      d[i++] = 0;
+      d[i++] = 0;
+      d[i++] = 1.0 - mi.reflectMerge;
+      d[i++] = mi.reflectMerge;
+      i += mi.emissiveColor.copyArray(d, i);
+      m._dirty = false;
+   }
 }
 function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
@@ -4265,31 +4325,18 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    }else{
       p.setParameter('vc_model_matrix', pr.currentMatrix());
    }
-   pg._statistics._frameDrawRenderable.begin();
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
    p.setParameter('vc_camera_position', vcp);
    p.setParameter('vc_light_direction', vld);
    p.setParameter('fc_camera_position', vcp);
    p.setParameter('fc_light_direction', vld);
-   pg._statistics._frameDrawRenderable.end();
    if(o._supportMaterialMap){
       var i = pr._materialId;
       p.setParameter4('fc_material', 1/32, i/512, 0, 0);
    }else{
-      p.setParameter('fc_ambient_color', mi.ambientColor);
-      p.setParameter('fc_diffuse_color', mi.diffuseColor);
-      p.setParameter('fc_specular_color', mi.specularColor);
-      p.setParameter('fc_reflect_color', mi.reflectColor);
-      p.setParameter('fc_emissive_color', mi.emissiveColor);
+      o.buildMaterial(pr);
+      p.setParameter('fc_materials', pr.activeInfo().material);
    }
-   p.setParameter4('fc_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
-   if(mi.optionAlpha){
-      p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, 0, 0);
-   }else{
-      p.setParameter4('fc_alpha', 0, 1, 0, 0);
-   }
-   p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
-   p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
    o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }
 function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pr, pi, pc){
@@ -5666,7 +5713,9 @@ function FE3dSceneDisplayRenderable_loadMaterial(p){
 }
 function FE3dSceneDisplayRenderable_reloadResource(){
    var o = this;
-   o._material.calculate(o._materialReference);
+   var m = o._material;
+   m.calculate(o._materialReference);
+   m.update();
 }
 function FE3dSceneLayer(o){
    o = RClass.inherits(this, o, FDisplayLayer);
@@ -5718,6 +5767,7 @@ function FE3dTemplate(o){
    o._resource        = null;
    o.construct        = FE3dTemplate_construct;
    o.testReady        = FE3dTemplate_testReady;
+   o.findMeshByCode   = FE3dTemplate_findMeshByCode;
    o.meshRenderables  = FE3dTemplate_meshRenderables;
    o.skeletons        = FE3dTemplate_skeletons;
    o.pushSkeleton     = FE3dTemplate_pushSkeleton;
@@ -5743,6 +5793,16 @@ function FE3dTemplate_construct(){
 }
 function FE3dTemplate_testReady(){
    return this._dataReady;
+}
+function FE3dTemplate_findMeshByCode(p){
+   var s = this._meshRenderables;
+   for(var i = s.count() - 1; i >= 0; i--){
+      var m = s.getAt(i);
+      if(m._renderable._resource._code == p){
+         return m;
+      }
+   }
+   return null;
 }
 function FE3dTemplate_meshRenderables(){
    return this._meshRenderables;
@@ -5802,8 +5862,11 @@ function FE3dTemplate_linkAnimation(p){
    var c = ts.count();
    for(var i = 0; i < c; i++){
       var t = ts.get(i);
-      var r = o._renderables.get(i);
-      r._activeTrack = t;
+      var mc = t._resource._meshCode;
+      if(mc){
+         var m = o.findMeshByCode(mc);
+         m._activeTrack = t;
+      }
    }
 }
 function FE3dTemplate_loadAnimations(p){
@@ -6222,7 +6285,9 @@ function FE3dTemplateRenderable_loadResource(p){
 }
 function FE3dTemplateRenderable_reloadResource(){
    var o = this;
-   o._material.calculate(o._materialResource);
+   var m = o._material;
+   m.calculate(o._materialResource);
+   m.update();
 }
 function FE3dTemplateRenderable_load(){
    var o = this;

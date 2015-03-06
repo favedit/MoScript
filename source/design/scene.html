@@ -8,6 +8,7 @@
 <LINK rel="stylesheet" href='../acs/lang_cn.css' type="text/css" media="all"/>
 
 <SCRIPT language='javascript' src='../ajs/mo-core.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/core-window.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/mo-graphic.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/mo-engine.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/mo-control.js'></SCRIPT>
@@ -47,8 +48,7 @@
 <SCRIPT>
 // http://localhost:92/script2/design/template.html
 function _load(){
-   //RRuntime.setProcessCd(EProcess.Debug);
-   RRuntime.setProcessCd(EProcess.Release);
+   RRuntime.setProcessCd(EProcess.Debug);
    RApplication.initialize();
    RBrowser.setContentPath('..');
    // 获得代码

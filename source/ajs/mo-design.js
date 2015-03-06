@@ -859,7 +859,7 @@ function FDsTemplateCanvas_onEnterFrame(){
    var m = o._activeTemplate;
    if(m){
       var r = o._rotation;
-      m.rotation().set(0, r.y, 0);
+      m.scale().set(0.002, 0.002, 0.002); // Car01
       m.update();
       if(o._rotationAble){
          r.y += 0.01;
@@ -2640,9 +2640,7 @@ function FDsSceneMaterial1Frame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._scene                = null;
    o._material             = null;
-   o._controlGuid          = null;
-   o._controlCode          = null;
-   o._controlLabel         = null;
+   o._controlOptionDouble  = null;
    o._controlAmbientColor  = null;
    o._controlDiffuseColor  = null;
    o._controlSpecularColor = null;
@@ -2661,6 +2659,7 @@ function FDsSceneMaterial1Frame(o){
 function FDsSceneMaterial1Frame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlOptionDouble.addDataChangedListener(o, o.onDataChanged);
    o._controlEffectCode.addDataChangedListener(o, o.onDataChanged);
    o._controlOptionAlpha.addDataChangedListener(o, o.onDataChanged);
    o._controlAlphaBase.addDataChangedListener(o, o.onDataChanged);
@@ -2684,6 +2683,7 @@ function FDsSceneMaterial1Frame_onDataChanged(p){
    var m = o._material;
    var mr = m.resource();
    var mi = mr.info();
+   mi.optionDouble = o._controlOptionDouble.get();
    mi.effectCode = o._controlEffectCode.get();
    mi.optionAlpha = o._controlOptionAlpha.get();
    mi.alphaBase = o._controlAlphaBase.get();
@@ -2719,9 +2719,7 @@ function FDsSceneMaterial1Frame_loadObject(s, m){
    o._material = m;
    var mr = m.resource();
    var mi = mr.info();
-   o._controlGuid.set(mr.guid());
-   o._controlCode.set(mr.code());
-   o._controlLabel.set(mr.label());
+   o._controlOptionDouble.set(mi.optionDouble);
    o._controlEffectCode.set(mi.effectCode);
    o._controlOptionAlpha.set(mi.optionAlpha);
    o._controlAlphaBase.set(mi.alphaBase);
@@ -2747,10 +2745,6 @@ function FDsSceneMaterial2Frame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._scene                    = null;
    o._material                 = null;
-   o._controlGuid              = null;
-   o._controlCode              = null;
-   o._controlLabel             = null;
-   o._controlOptionDouble      = null;
    o._controlDiffuseViewColor  = null;
    o._controlSpecularViewColor = null;
    o._controlSpecularViewBase  = null;
@@ -2765,7 +2759,6 @@ function FDsSceneMaterial2Frame(o){
 function FDsSceneMaterial2Frame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlOptionDouble.addDataChangedListener(o, o.onDataChanged);
    o._controlOptionView.addDataChangedListener(o, o.onDataChanged);
    o._controlOptionNormalInvert.addDataChangedListener(o, o.onDataChanged);
    o._controlOptionShadow.addDataChangedListener(o, o.onDataChanged);
@@ -2781,7 +2774,6 @@ function FDsSceneMaterial2Frame_onDataChanged(p){
    var m = o._material;
    var mr = m.resource();
    var mi = mr.info();
-   mi.optionDouble = o._controlOptionDouble.get();
    mi.optionView = o._controlOptionView.get();
    mi.optionNormalInvert = o._controlOptionNormalInvert.get();
    mi.optionShadow = o._controlOptionShadow.get();
@@ -2805,10 +2797,6 @@ function FDsSceneMaterial2Frame_loadObject(s, m){
    o._material = m;
    var mr = m.resource();
    var mi = mr.info();
-   o._controlGuid.set(mr.guid());
-   o._controlCode.set(mr.code());
-   o._controlLabel.set(mr.label());
-   o._controlOptionDouble.set(mi.optionDouble);
    o._controlOptionView.set(mi.optionView);
    o._controlOptionNormalInvert.set(mi.optionNormalInvert);
    o._controlOptionShadow.set(mi.optionShadow);
@@ -2826,17 +2814,29 @@ function FDsSceneMaterialPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible        = false;
    o._workspace      = null;
-   o._activeMaterial = null;
+   o._material       = null;
    o._controlGuid    = null;
    o._controlCode    = null;
    o._controlLabel   = null;
-   o._displayFrame   = null;
-   o._materialFrame1 = null;
-   o._materialFrame2 = null;
+   o._frameMaterial1 = null;
+   o._frameMaterial2 = null;
+   o.onBuilded       = FDsSceneMaterialPropertyFrame_onBuilded;
+   o.onDataChanged   = FDsSceneMaterialPropertyFrame_onDataChanged;
    o.construct       = FDsSceneMaterialPropertyFrame_construct;
    o.loadObject      = FDsSceneMaterialPropertyFrame_loadObject;
    o.dispose         = FDsSceneMaterialPropertyFrame_dispose;
    return o;
+}
+function FDsSceneMaterialPropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsSceneMaterialPropertyFrame_onDataChanged(p){
+   var o = this;
+   var m = o._material;
+   var mr = m.resource();
+   mr.setLabel(o._controlLabel.get());
 }
 function FDsSceneMaterialPropertyFrame_construct(){
    var o = this;
@@ -2845,7 +2845,7 @@ function FDsSceneMaterialPropertyFrame_construct(){
 function FDsSceneMaterialPropertyFrame_loadObject(s, m){
    var o = this;
    var r = m.resource();
-   o._activeMaterial = m;
+   o._material = m;
    o._controlGuid.set(r.guid());
    o._controlCode.set(r.code());
    o._controlLabel.set(r.label());

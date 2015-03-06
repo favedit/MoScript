@@ -52,14 +52,16 @@ function FWglContext_linkCanvas(h){
    o.__base.FG3dContext.linkCanvas.call(o, h)
    o._hCanvas = h;
    if(h.getContext){
-      var n = h.getContext('webgl', {antialias:true});
+      var a = new Object();
+      var n = h.getContext('webgl', a);
       if(n == null){
-         n = h.getContext('experimental-webgl', {antialias:true});
+         n = h.getContext('experimental-webgl', a);
       }
       if(n == null){
          throw new TError("Current browser can't support WebGL technique.");
       }
       o._native = n;
+      o._contextAttributes = n.getContextAttributes();
    }
    var g = o._native;
    o.setViewport(h.width, h.height);
@@ -79,6 +81,7 @@ function FWglContext_linkCanvas(h){
    if(e){
       c.optionInstance = true;
    }
+   c.mergeCount = parseInt((c.vertexConst - 32) / 4);
    var e = o._nativeLayout = g.getExtension('OES_vertex_array_object');
    if(e){
       c.optionLayout = true;
@@ -680,10 +683,13 @@ function FWglContext_drawTriangles(b, i, c){
 function FWglContext_present(){
 }
 function FWglContext_checkError(c, m, p1){
+   var o = this;
+   if(!o._capability.optionDebug){
+      return true;
+   }
    if(!RRuntime.isDebug()){
       return true;
    }
-   var o = this;
    var g = o._native;
    var r = false;
    var e = null;

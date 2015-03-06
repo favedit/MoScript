@@ -11,14 +11,14 @@ function FG3dProgramParameter(o){
    o._name       = null;
    // @attribute 关联名称
    o._linker     = null;
-   // @attribute 使用标志
-   o._statusUsed = false;
-   // @attribute 渲染器类型
-   o._shaderCd   = -1;
    // @attribute 格式
    o._formatCd   = EG3dParameterFormat.Unknown;
+   // @attribute 关联名称
+   o._define     = null;
+   // @attribute 使用标志
+   o._statusUsed = false;
    // @attribute 插槽
-   o._slot       = -1;
+   o._slot       = null;
    // @attribute 大小
    o._size       = 0;
    // @attribute 缓冲
@@ -27,6 +27,7 @@ function FG3dProgramParameter(o){
    // @method
    o.name        = FG3dProgramParameter_name;
    o.linker      = FG3dProgramParameter_linker;
+   o.define      = FG3dProgramParameter_define;
    o.loadConfig  = FG3dProgramParameter_loadConfig;
    return o;
 }
@@ -52,6 +53,16 @@ function FG3dProgramParameter_linker(){
 }
 
 //==========================================================
+// <T>获得定义。</T>
+//
+// @method
+// @return String 定义
+//==========================================================
+function FG3dProgramParameter_define(){
+   return this._define;
+}
+
+//==========================================================
 // <T>从配置节点钟加载信息。</T>
 //
 // @method
@@ -62,4 +73,5 @@ function FG3dProgramParameter_loadConfig(p){
    o._name = p.get('name');
    o._linker = p.get('linker');
    o._formatCd = REnum.encode(EG3dParameterFormat, p.get('format'));
+   o._define = p.get('define');
 }

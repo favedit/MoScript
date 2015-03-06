@@ -289,6 +289,8 @@ function FG3dEffect_loadUrl(u){
 function FG3dEffect_build(p){
    var o = this;
    var g = o._program;
+   var ms = g._parameters
+   var mc = ms.count();
    // 设置环境
    var c = RInstance.get(FTagContext);
    o.buildInfo(c, p);
@@ -298,6 +300,14 @@ function FG3dEffect_build(p){
    g.upload(EG3dShader.Vertex, vsf);
    // 生成像素代码
    var fs = o._fragmentTemplate.parse(c);
+   for(var i = 0; i < mc; i++){
+      var m = ms.value(i);
+      var mn = m.name();
+      var md = m.define();
+      if(md){
+         fs = fs.replace(new RegExp(mn, 'g'), md);
+      }
+   }
    var fsf = RString.formatLines(fs);
    g.upload(EG3dShader.Fragment, fsf);
    // 编译处理
@@ -314,7 +324,7 @@ function FG3dEffect_load(){
    var o = this;
    var cp = RBrowser.contentPath();
    var ec = RConsole.find(FG3dEffectConsole);
-   var u = cp + ec.path() + o._code + ".xml";
+   var u = cp + ec.path() + o._code + ".xml?" + RDate.format();
    if(RRuntime.isDebug()){
       u += '?' + RDate.format();
    }

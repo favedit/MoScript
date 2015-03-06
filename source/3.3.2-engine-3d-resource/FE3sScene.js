@@ -8,7 +8,9 @@ function FE3sScene(o){
    o = RClass.inherits(this, o, FE3sResource);
    //..........................................................
    // @attribute
+   o._themeGuid  = null;
    o._themeCode  = null;
+   // @attribute
    o._technique  = null;
    o._region     = null;
    o._layers     = null;
@@ -77,6 +79,7 @@ function FE3sScene_unserialize(p){
    var o = this;
    o.__base.FE3sResource.unserialize.call(o, p);
    // 读取属性
+   o._themeGuid = p.readString();
    o._themeCode = p.readString();
    // 读取技术
    o._technique.unserialize(p);
@@ -102,6 +105,7 @@ function FE3sScene_saveConfig(p){
    o.__base.FE3sResource.saveConfig.call(o, p);
    // 存储属性
    p.setName('Scene');
+   p.set('theme_guid', o._themeGuid);
    p.set('theme_code', o._themeCode);
    // 存储技术
    //o._technique.saveConfig(x.create('Technique'));

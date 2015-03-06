@@ -1348,7 +1348,9 @@ function FE3dSceneDisplayRenderable_loadMaterial(p){
 }
 function FE3dSceneDisplayRenderable_reloadResource(){
    var o = this;
-   o._material.calculate(o._materialReference);
+   var m = o._material;
+   m.calculate(o._materialReference);
+   m.update();
 }
 function FE3dSceneLayer(o){
    o = RClass.inherits(this, o, FDisplayLayer);
@@ -1400,6 +1402,7 @@ function FE3dTemplate(o){
    o._resource        = null;
    o.construct        = FE3dTemplate_construct;
    o.testReady        = FE3dTemplate_testReady;
+   o.findMeshByCode   = FE3dTemplate_findMeshByCode;
    o.meshRenderables  = FE3dTemplate_meshRenderables;
    o.skeletons        = FE3dTemplate_skeletons;
    o.pushSkeleton     = FE3dTemplate_pushSkeleton;
@@ -1425,6 +1428,16 @@ function FE3dTemplate_construct(){
 }
 function FE3dTemplate_testReady(){
    return this._dataReady;
+}
+function FE3dTemplate_findMeshByCode(p){
+   var s = this._meshRenderables;
+   for(var i = s.count() - 1; i >= 0; i--){
+      var m = s.getAt(i);
+      if(m._renderable._resource._code == p){
+         return m;
+      }
+   }
+   return null;
 }
 function FE3dTemplate_meshRenderables(){
    return this._meshRenderables;
@@ -1484,8 +1497,11 @@ function FE3dTemplate_linkAnimation(p){
    var c = ts.count();
    for(var i = 0; i < c; i++){
       var t = ts.get(i);
-      var r = o._renderables.get(i);
-      r._activeTrack = t;
+      var mc = t._resource._meshCode;
+      if(mc){
+         var m = o.findMeshByCode(mc);
+         m._activeTrack = t;
+      }
    }
 }
 function FE3dTemplate_loadAnimations(p){
@@ -1904,7 +1920,9 @@ function FE3dTemplateRenderable_loadResource(p){
 }
 function FE3dTemplateRenderable_reloadResource(){
    var o = this;
-   o._material.calculate(o._materialResource);
+   var m = o._material;
+   m.calculate(o._materialResource);
+   m.update();
 }
 function FE3dTemplateRenderable_load(){
    var o = this;

@@ -253,7 +253,7 @@ function FE3rDynamicMesh_mergeRenderable(p){
    var cp = c.capability();
    var vc = p.vertexCount();
    var ic = p.indexBuffer().count();
-   var mc = cp.calculateMergeCount();
+   var mc = cp.mergeCount;
    if(o._mergeRenderables.count() >= mc){
       return false;
    }
@@ -1278,7 +1278,6 @@ function FE3rTextureBitmapFlatPack_loadResource(p){
       var c = o._graphicContext;
       var t = o._texture = c.createFlatTexture();
       t.uploadData(d, s.width, s.height);
-      t.makeMipmap();
       o._graphicContext._native.finish();
       o._dataReady = true;
    }

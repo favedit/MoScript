@@ -144,7 +144,7 @@ function FDsTemplateCanvas_onEnterFrame(){
    var m = o._activeTemplate;
    if(m){
       var r = o._rotation;
-      m.rotation().set(0, r.y, 0);
+      m.scale().set(0.002, 0.002, 0.002); // Car01
       m.update();
       if(o._rotationAble){
          r.y += 0.01;

@@ -437,8 +437,8 @@ function MG3dRenderable_dispose(){
    o._material = RObject.dispose(o._material);
    o._infos = RObject.dispose(o._infos);
 }
-function SG3dEffectInfo(o){
-   if(!o){o = this;}
+function SG3dEffectInfo(){
+   var o = this;
    o.code                  = null;
    o.techniqueCode         = null;
    o.techniqueModeCode     = null;
@@ -756,9 +756,10 @@ function SG3dMaterialInfo_reset(){
 }
 function SG3dRenderableInfo(){
    var o = this;
-   o.effect = null;
-   o.layout = null;
-   o.reset  = SG3dRenderableInfo_reset;
+   o.effect   = null;
+   o.layout   = null;
+   o.material = null;
+   o.reset    = SG3dRenderableInfo_reset;
    return o;
 }
 function SG3dRenderableInfo_reset(){
@@ -1193,12 +1194,22 @@ function FG3dEffect_loadUrl(u){
 function FG3dEffect_build(p){
    var o = this;
    var g = o._program;
+   var ms = g._parameters
+   var mc = ms.count();
    var c = RInstance.get(FTagContext);
    o.buildInfo(c, p);
    var vs = o._vertexTemplate.parse(c);
    var vsf = RString.formatLines(vs);
    g.upload(EG3dShader.Vertex, vsf);
    var fs = o._fragmentTemplate.parse(c);
+   for(var i = 0; i < mc; i++){
+      var m = ms.value(i);
+      var mn = m.name();
+      var md = m.define();
+      if(md){
+         fs = fs.replace(new RegExp(mn, 'g'), md);
+      }
+   }
    var fsf = RString.formatLines(fs);
    g.upload(EG3dShader.Fragment, fsf);
    g.build();
@@ -1208,7 +1219,7 @@ function FG3dEffect_load(){
    var o = this;
    var cp = RBrowser.contentPath();
    var ec = RConsole.find(FG3dEffectConsole);
-   var u = cp + ec.path() + o._code + ".xml";
+   var u = cp + ec.path() + o._code + ".xml?" + RDate.format();
    if(RRuntime.isDebug()){
       u += '?' + RDate.format();
    }
@@ -1352,12 +1363,18 @@ function FG3dLightMaterial(o){
 }
 function FG3dMaterial(o){
    o = RClass.inherits(this, o, FG3dBaseMaterial);
+   o._dirty    = true;
    o._textures = null;
    o.textures  = FG3dMaterial_textures;
+   o.update    = FG3dMaterial_update;
    return o;
 }
 function FG3dMaterial_textures(){
    return this._textures;
+}
+function FG3dMaterial_update(){
+   var o = this;
+   o._dirty = true;
 }
 function FG3dMaterialMap(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
@@ -2210,11 +2227,13 @@ function SG3dContextCapability(){
    o.vendor                 = null;
    o.version                = null;
    o.shaderVersion          = null;
+   o.optionDebug            = false;
    o.optionInstance         = false;
    o.optionLayout           = false;
    o.optionMaterialMap      = false;
    o.optionIndex32          = false;
    o.optionShaderSource     = false;
+   o.mergeCount             = 0;
    o.attributeCount         = null;
    o.vertexCount            = 65536;
    o.vertexConst            = null;
@@ -2224,13 +2243,9 @@ function SG3dContextCapability(){
    o.samplerSize            = null;
    o.samplerCompressRgb     = null;
    o.samplerCompressRgba    = null;
-   o.calculateMergeCount    = SG3dContextCapability_calculateMergeCount;
    o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
    o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
    return o;
-}
-function SG3dContextCapability_calculateMergeCount(){
-   return parseInt((this.vertexConst - 32) / 4);
 }
 function SG3dContextCapability_calculateBoneCount(bc, vc){
    var o = this;
@@ -2595,14 +2610,15 @@ function FG3dProgramParameter(o){
    o = RClass.inherits(this, o, FObject);
    o._name       = null;
    o._linker     = null;
-   o._statusUsed = false;
-   o._shaderCd   = -1;
    o._formatCd   = EG3dParameterFormat.Unknown;
-   o._slot       = -1;
+   o._define     = null;
+   o._statusUsed = false;
+   o._slot       = null;
    o._size       = 0;
    o._buffer     = null;
    o.name        = FG3dProgramParameter_name;
    o.linker      = FG3dProgramParameter_linker;
+   o.define      = FG3dProgramParameter_define;
    o.loadConfig  = FG3dProgramParameter_loadConfig;
    return o;
 }
@@ -2612,11 +2628,15 @@ function FG3dProgramParameter_name(){
 function FG3dProgramParameter_linker(){
    return this._linker;
 }
+function FG3dProgramParameter_define(){
+   return this._define;
+}
 function FG3dProgramParameter_loadConfig(p){
    var o = this;
    o._name = p.get('name');
    o._linker = p.get('linker');
    o._formatCd = REnum.encode(EG3dParameterFormat, p.get('format'));
+   o._define = p.get('define');
 }
 function FG3dProgramSampler(o){
    o = RClass.inherits(this, o, FObject);
@@ -3887,14 +3907,16 @@ function FWglContext_linkCanvas(h){
    o.__base.FG3dContext.linkCanvas.call(o, h)
    o._hCanvas = h;
    if(h.getContext){
-      var n = h.getContext('webgl', {antialias:true});
+      var a = new Object();
+      var n = h.getContext('webgl', a);
       if(n == null){
-         n = h.getContext('experimental-webgl', {antialias:true});
+         n = h.getContext('experimental-webgl', a);
       }
       if(n == null){
          throw new TError("Current browser can't support WebGL technique.");
       }
       o._native = n;
+      o._contextAttributes = n.getContextAttributes();
    }
    var g = o._native;
    o.setViewport(h.width, h.height);
@@ -3914,6 +3936,7 @@ function FWglContext_linkCanvas(h){
    if(e){
       c.optionInstance = true;
    }
+   c.mergeCount = parseInt((c.vertexConst - 32) / 4);
    var e = o._nativeLayout = g.getExtension('OES_vertex_array_object');
    if(e){
       c.optionLayout = true;
@@ -4515,10 +4538,13 @@ function FWglContext_drawTriangles(b, i, c){
 function FWglContext_present(){
 }
 function FWglContext_checkError(c, m, p1){
+   var o = this;
+   if(!o._capability.optionDebug){
+      return true;
+   }
    if(!RRuntime.isDebug()){
       return true;
    }
-   var o = this;
    var g = o._native;
    var r = false;
    var e = null;

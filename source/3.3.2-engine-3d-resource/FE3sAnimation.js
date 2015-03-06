@@ -8,6 +8,7 @@ function FE3sAnimation(o){
    o = RClass.inherits(this, o, FE3sObject);
    //..........................................................
    // @attribute
+   o._model        = null;
    o._skeletonGuid = null;
    o._skeleton     = null;
    o._frameCount   = 0;
@@ -86,6 +87,11 @@ function FE3sAnimation_unserialize(p){
          var t = RClass.create(FE3sTrack);
          t.unserialize(p);
          ts.push(t);
+         // 关联模型
+         //if(t._meshCode){
+         //   var m = o._model.findMeshByCode(t._meshCode);
+         //   m._track = t;
+         //}
          // 关联骨头
          if(k){
             var bi = t.boneIndex();

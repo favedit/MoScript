@@ -9,11 +9,12 @@ function SG3dRenderableInfo(){
    var o = this;
    //..........................................................
    // @attribute 代码
-   o.effect = null;
-   o.layout = null;
+   o.effect   = null;
+   o.layout   = null;
+   o.material = null;
    //..........................................................
    // @method
-   o.reset  = SG3dRenderableInfo_reset;
+   o.reset    = SG3dRenderableInfo_reset;
    return o;
 }
 

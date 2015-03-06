@@ -16,6 +16,7 @@ function FE3sObject(o){
    o.guid        = FE3sObject_guid;
    o.code        = FE3sObject_code;
    o.label       = FE3sObject_label;
+   o.setLabel    = FE3sObject_setLabel;
    // @method
    o.unserialize = FE3sObject_unserialize;
    o.saveConfig  = FE3sObject_saveConfig;
@@ -50,6 +51,16 @@ function FE3sObject_code(){
 //==========================================================
 function FE3sObject_label(){
    return this._label;
+}
+
+//==========================================================
+// <T>设置标签。</T>
+//
+// @method
+// @param p:label:String 标签
+//==========================================================
+function FE3sObject_setLabel(p){
+   this._label = p;
 }
 
 //==========================================================

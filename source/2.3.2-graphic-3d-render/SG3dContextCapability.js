@@ -13,12 +13,14 @@ function SG3dContextCapability(){
    o.version                = null;
    o.shaderVersion          = null;
    // @attribute
+   o.optionDebug            = false;
    o.optionInstance         = false;
    o.optionLayout           = false;
    o.optionMaterialMap      = false;
    o.optionIndex32          = false;
    o.optionShaderSource     = false;
    // @attribute
+   o.mergeCount             = 0;
    o.attributeCount         = null;
    o.vertexCount            = 65536;
    o.vertexConst            = null;
@@ -31,19 +33,9 @@ function SG3dContextCapability(){
    o.samplerCompressRgba    = null;
    //..........................................................
    // @method
-   o.calculateMergeCount    = SG3dContextCapability_calculateMergeCount;
    o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
    o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
    return o;
-}
-
-//============================================================
-// <T>计算当前设备支持合并最大个数。</T>
-//
-// @param 合并最大个数
-//============================================================
-function SG3dContextCapability_calculateMergeCount(){
-   return parseInt((this.vertexConst - 32) / 4);
 }
 
 //============================================================

@@ -8,17 +8,36 @@ function FE3sModel(o){
    o = RClass.inherits(this, o, FE3sResource);
    //..........................................................
    // @attribute
-   o._meshes     = null;
-   o._skeletons  = null;
-   o._animations = null;
+   o._meshes        = null;
+   o._skeletons     = null;
+   o._animations    = null;
    //..........................................................
    // @method
-   o.meshes      = FE3sModel_meshes;
-   o.skeletons   = FE3sModel_skeletons;
-   o.animations  = FE3sModel_animations;
+   o.findMeshByCode = FE3sModel_findMeshByCode;
+   o.meshes         = FE3sModel_meshes;
+   o.skeletons      = FE3sModel_skeletons;
+   o.animations     = FE3sModel_animations;
    // @method
-   o.unserialize = FE3sModel_unserialize;
+   o.unserialize    = FE3sModel_unserialize;
    return o;
+}
+
+//==========================================================
+// <T>根据代码查找网格。</T>
+//
+// @method
+// @param p:code:String 代码
+// @return FE3sMesh 网格
+//==========================================================
+function FE3sModel_findMeshByCode(p){
+   var s = this._meshes;
+   for(var i = s.count() - 1; i >= 0; i--){
+      var m = s.getAt(i);
+      if(m._code == p){
+         return m;
+      }
+   }
+   return null;
 }
 
 //==========================================================
@@ -89,7 +108,7 @@ function FE3sModel_unserialize(p){
    if(c > 0){
       var s = o._animations = new TObjects();
       for(var i = 0; i < c; i++){
-         s.push(mc.unserialAnimation(p));
+         s.push(mc.unserialAnimation(o, p));
       }
    }
    RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);

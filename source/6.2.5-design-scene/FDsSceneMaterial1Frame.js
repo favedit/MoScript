@@ -11,9 +11,7 @@ function FDsSceneMaterial1Frame(o){
    o._scene                = null;
    o._material             = null;
    // @attribute
-   o._controlGuid          = null;
-   o._controlCode          = null;
-   o._controlLabel         = null;
+   o._controlOptionDouble  = null;
    o._controlAmbientColor  = null;
    o._controlDiffuseColor  = null;
    o._controlSpecularColor = null;
@@ -46,21 +44,29 @@ function FDsSceneMaterial1Frame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 关联对象
+   o._controlOptionDouble.addDataChangedListener(o, o.onDataChanged);
    o._controlEffectCode.addDataChangedListener(o, o.onDataChanged);
+   // 关联对象
    o._controlOptionAlpha.addDataChangedListener(o, o.onDataChanged);
    o._controlAlphaBase.addDataChangedListener(o, o.onDataChanged);
    o._controlAlphaRate.addDataChangedListener(o, o.onDataChanged);
+   // 关联对象
    o._controlColorMin.addDataChangedListener(o, o.onDataChanged);
    o._controlColorMax.addDataChangedListener(o, o.onDataChanged);
    o._controlColorRate.addDataChangedListener(o, o.onDataChanged);
    o._controlColorMerge.addDataChangedListener(o, o.onDataChanged);
+   // 关联对象
    o._controlAmbientColor.addDataChangedListener(o, o.onDataChanged);
+   // 关联对象
    o._controlDiffuseColor.addDataChangedListener(o, o.onDataChanged);
+   // 关联对象
    o._controlSpecularColor.addDataChangedListener(o, o.onDataChanged);
    o._controlSpecularBase.addDataChangedListener(o, o.onDataChanged);
    o._controlSpecularLevel.addDataChangedListener(o, o.onDataChanged);
+   // 关联对象
    o._controlReflectColor.addDataChangedListener(o, o.onDataChanged);
    o._controlReflectMerge.addDataChangedListener(o, o.onDataChanged);
+   // 关联对象
    o._controlEmissiveColor.addDataChangedListener(o, o.onDataChanged);
 }
 
@@ -77,6 +83,7 @@ function FDsSceneMaterial1Frame_onDataChanged(p){
    var mr = m.resource();
    var mi = mr.info();
    // 设置效果
+   mi.optionDouble = o._controlOptionDouble.get();
    mi.effectCode = o._controlEffectCode.get();
    // 设置透明
    mi.optionAlpha = o._controlOptionAlpha.get();
@@ -133,12 +140,10 @@ function FDsSceneMaterial1Frame_loadObject(s, m){
    var o = this;
    o._scene = s;
    o._material = m;
-   // 设置参数
    var mr = m.resource();
    var mi = mr.info();
-   o._controlGuid.set(mr.guid());
-   o._controlCode.set(mr.code());
-   o._controlLabel.set(mr.label());
+   // 设置参数
+   o._controlOptionDouble.set(mi.optionDouble);
    o._controlEffectCode.set(mi.effectCode);
    // 设置透明
    o._controlOptionAlpha.set(mi.optionAlpha);
@@ -151,12 +156,16 @@ function FDsSceneMaterial1Frame_loadObject(s, m){
    o._controlColorMerge.set(mi.colorMerge);
    // 设置颜色
    o._controlAmbientColor.set(mi.ambientColor);
+   // 设置颜色
    o._controlDiffuseColor.set(mi.diffuseColor);
+   // 设置颜色
    o._controlSpecularColor.set(mi.specularColor);
    o._controlSpecularBase.set(mi.specularBase);
    o._controlSpecularLevel.set(mi.specularLevel);
+   // 设置颜色
    o._controlReflectColor.set(mi.reflectColor);
    o._controlReflectMerge.set(mi.reflectMerge);
+   // 设置颜色
    o._controlEmissiveColor.set(mi.emissiveColor);
 }
 

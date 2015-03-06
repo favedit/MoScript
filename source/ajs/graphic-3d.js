@@ -331,8 +331,8 @@ function MG3dRenderable_dispose(){
    o._material = RObject.dispose(o._material);
    o._infos = RObject.dispose(o._infos);
 }
-function SG3dEffectInfo(o){
-   if(!o){o = this;}
+function SG3dEffectInfo(){
+   var o = this;
    o.code                  = null;
    o.techniqueCode         = null;
    o.techniqueModeCode     = null;
@@ -650,9 +650,10 @@ function SG3dMaterialInfo_reset(){
 }
 function SG3dRenderableInfo(){
    var o = this;
-   o.effect = null;
-   o.layout = null;
-   o.reset  = SG3dRenderableInfo_reset;
+   o.effect   = null;
+   o.layout   = null;
+   o.material = null;
+   o.reset    = SG3dRenderableInfo_reset;
    return o;
 }
 function SG3dRenderableInfo_reset(){
@@ -1087,12 +1088,22 @@ function FG3dEffect_loadUrl(u){
 function FG3dEffect_build(p){
    var o = this;
    var g = o._program;
+   var ms = g._parameters
+   var mc = ms.count();
    var c = RInstance.get(FTagContext);
    o.buildInfo(c, p);
    var vs = o._vertexTemplate.parse(c);
    var vsf = RString.formatLines(vs);
    g.upload(EG3dShader.Vertex, vsf);
    var fs = o._fragmentTemplate.parse(c);
+   for(var i = 0; i < mc; i++){
+      var m = ms.value(i);
+      var mn = m.name();
+      var md = m.define();
+      if(md){
+         fs = fs.replace(new RegExp(mn, 'g'), md);
+      }
+   }
    var fsf = RString.formatLines(fs);
    g.upload(EG3dShader.Fragment, fsf);
    g.build();
@@ -1102,7 +1113,7 @@ function FG3dEffect_load(){
    var o = this;
    var cp = RBrowser.contentPath();
    var ec = RConsole.find(FG3dEffectConsole);
-   var u = cp + ec.path() + o._code + ".xml";
+   var u = cp + ec.path() + o._code + ".xml?" + RDate.format();
    if(RRuntime.isDebug()){
       u += '?' + RDate.format();
    }
@@ -1246,12 +1257,18 @@ function FG3dLightMaterial(o){
 }
 function FG3dMaterial(o){
    o = RClass.inherits(this, o, FG3dBaseMaterial);
+   o._dirty    = true;
    o._textures = null;
    o.textures  = FG3dMaterial_textures;
+   o.update    = FG3dMaterial_update;
    return o;
 }
 function FG3dMaterial_textures(){
    return this._textures;
+}
+function FG3dMaterial_update(){
+   var o = this;
+   o._dirty = true;
 }
 function FG3dMaterialMap(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);

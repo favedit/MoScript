@@ -188,7 +188,7 @@ function SMatrix4x4_appendData(p){
 // @param z:Float Z坐标
 //============================================================
 function SMatrix4x4_translate(x, y, z){
-   var v = RMath.float16;
+   var v = RArray.array16;
    v[ 0] = 1;
    v[ 1] = 0;
    v[ 2] = 0;
@@ -223,7 +223,7 @@ function SMatrix4x4_rotationX(p){
    var rs = Math.sin(p);
    var rc = Math.cos(p);
    // 追加内容
-   var v = RMath.float16;
+   var v = RArray.array16;
    v[ 0] = 1;
    v[ 1] = 0;
    v[ 2] = 0;
@@ -258,7 +258,7 @@ function SMatrix4x4_rotationY(p){
    var rs = Math.sin(p);
    var rc = Math.cos(p);
    // 追加内容
-   var v = RMath.float16;
+   var v = RArray.array16;
    v[ 0] = rc;
    v[ 1] = 0;
    v[ 2] = rs;
@@ -293,7 +293,7 @@ function SMatrix4x4_rotationZ(p){
    var rs = Math.sin(p);
    var rc = Math.cos(p);
    // 追加内容
-   var v = RMath.float16;
+   var v = RArray.array16;
    v[ 0] = rc;
    v[ 1] = rs;
    v[ 2] = 0;
@@ -334,7 +334,7 @@ function SMatrix4x4_rotation(x, y, z){
    var rsz = Math.sin(z);
    var rcz = Math.cos(z);
    // 追加内容
-   var v = RMath.float16;
+   var v = RArray.array16;
    v[ 0] = rcy * rcz;
    v[ 1] = rcy * rsz;
    v[ 2] = -rsy;
@@ -363,7 +363,7 @@ function SMatrix4x4_rotation(x, y, z){
 // @param z:Float Z比例
 //============================================================
 function SMatrix4x4_scale(x, y, z){
-   var v = RMath.float16;
+   var v = RArray.array16;
    v[ 0] = x;
    v[ 1] = 0;
    v[ 2] = 0;
@@ -392,7 +392,7 @@ function SMatrix4x4_scale(x, y, z){
 function SMatrix4x4_invert(){
    var o = this;
    var d = o._data;
-   var v = RValue.float16;
+   var v = RArray.array16;
    // 计算矩阵
    v[ 0] =  (d[ 5] * d[10] * d[15]) - (d[ 5] * d[11] * d[14]) - (d[ 9] * d[ 6] * d[15]) + (d[ 9] * d[ 7] * d[14]) + (d[13] * d[ 6] * d[11]) - (d[13] * d[ 7] * d[10]);
    v[ 4] = -(d[ 4] * d[10] * d[15]) + (d[ 4] * d[11] * d[14]) + (d[ 8] * d[ 6] * d[15]) - (d[ 8] * d[ 7] * d[14]) - (d[12] * d[ 6] * d[11]) + (d[12] * d[ 7] * d[10]);

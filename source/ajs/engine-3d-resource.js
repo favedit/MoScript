@@ -89,6 +89,7 @@ function SE3sSceneShadow_unserialize(p){
 }
 function FE3sAnimation(o){
    o = RClass.inherits(this, o, FE3sObject);
+   o._model        = null;
    o._skeletonGuid = null;
    o._skeleton     = null;
    o._frameCount   = 0;
@@ -513,14 +514,25 @@ function FE3sMesh_unserialize(p){
 }
 function FE3sModel(o){
    o = RClass.inherits(this, o, FE3sResource);
-   o._meshes     = null;
-   o._skeletons  = null;
-   o._animations = null;
-   o.meshes      = FE3sModel_meshes;
-   o.skeletons   = FE3sModel_skeletons;
-   o.animations  = FE3sModel_animations;
-   o.unserialize = FE3sModel_unserialize;
+   o._meshes        = null;
+   o._skeletons     = null;
+   o._animations    = null;
+   o.findMeshByCode = FE3sModel_findMeshByCode;
+   o.meshes         = FE3sModel_meshes;
+   o.skeletons      = FE3sModel_skeletons;
+   o.animations     = FE3sModel_animations;
+   o.unserialize    = FE3sModel_unserialize;
    return o;
+}
+function FE3sModel_findMeshByCode(p){
+   var s = this._meshes;
+   for(var i = s.count() - 1; i >= 0; i--){
+      var m = s.getAt(i);
+      if(m._code == p){
+         return m;
+      }
+   }
+   return null;
 }
 function FE3sModel_meshes(){
    return this._meshes;
@@ -554,7 +566,7 @@ function FE3sModel_unserialize(p){
    if(c > 0){
       var s = o._animations = new TObjects();
       for(var i = 0; i < c; i++){
-         s.push(mc.unserialAnimation(p));
+         s.push(mc.unserialAnimation(o, p));
       }
    }
    RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
@@ -628,9 +640,10 @@ function FE3sModelConsole_unserialSkeleton(p){
    o._skeletons.set(r.guid(), r);
    return r;
 }
-function FE3sModelConsole_unserialAnimation(p){
+function FE3sModelConsole_unserialAnimation(m, p){
    var o = this;
    var r = RClass.create(FE3sAnimation);
+   r._model = m;
    r.unserialize(p);
    o._animations.set(r.guid(), r);
    return r;
@@ -663,6 +676,7 @@ function FE3sObject(o){
    o.guid        = FE3sObject_guid;
    o.code        = FE3sObject_code;
    o.label       = FE3sObject_label;
+   o.setLabel    = FE3sObject_setLabel;
    o.unserialize = FE3sObject_unserialize;
    o.saveConfig  = FE3sObject_saveConfig;
    return o;
@@ -675,6 +689,9 @@ function FE3sObject_code(){
 }
 function FE3sObject_label(){
    return this._label;
+}
+function FE3sObject_setLabel(p){
+   this._label = p;
 }
 function FE3sObject_unserialize(p){
    var o = this;
@@ -749,6 +766,7 @@ function FE3sResource_load(u){
 }
 function FE3sScene(o){
    o = RClass.inherits(this, o, FE3sResource);
+   o._themeGuid  = null;
    o._themeCode  = null;
    o._technique  = null;
    o._region     = null;
@@ -780,6 +798,7 @@ function FE3sScene_layers(){
 function FE3sScene_unserialize(p){
    var o = this;
    o.__base.FE3sResource.unserialize.call(o, p);
+   o._themeGuid = p.readString();
    o._themeCode = p.readString();
    o._technique.unserialize(p);
    o._region.unserialize(p);
@@ -794,6 +813,7 @@ function FE3sScene_saveConfig(p){
    var o = this;
    o.__base.FE3sResource.saveConfig.call(o, p);
    p.setName('Scene');
+   p.set('theme_guid', o._themeGuid);
    p.set('theme_code', o._themeCode);
    var xls = p.create('LayerCollection');
    var ls = o._layers;
@@ -877,7 +897,7 @@ function FE3sSceneConsole_load(p){
 }
 function FE3sSceneConsole_update(p){
    var o = this;
-   var u = RBrowser.hostPath(o._serviceUrl + '?action=update&date=' + RDate.format());
+   var u = RBrowser.hostPath(o._serviceUrl + '?action=updateTheme&date=' + RDate.format());
    var xc = RConsole.find(FXmlConsole);
    var r = xc.send(u, p);
 }
@@ -1792,7 +1812,7 @@ function FE3sThemeConsole_select(p){
 }
 function FE3sTrack(o){
    o = RClass.inherits(this, o, FObject);
-   o._optionBoneScale = false;
+   o._meshCode        = null;
    o._boneIndex       = 0;
    o._frameTick       = 0;
    o._matrix          = null;
@@ -1857,6 +1877,7 @@ function FE3sTrack_calculate(pi, pt){
 }
 function FE3sTrack_unserialize(p){
    var o = this;
+   o._meshCode = p.readString();
    o._boneIndex = p.readUint8();
    o._frameTick = p.readUint16();
    o._matrix.unserialize(p);

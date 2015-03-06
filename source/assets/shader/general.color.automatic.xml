@@ -19,18 +19,16 @@
    <Parameter name='fc_material'            format='Float4'/>
    <Parameter name='fc_camera_position'     format='Float3'/>
    <Parameter name='fc_light_direction'     format='Float3'/>
-   <Parameter name='fc_color'               format='Float4'/>
-   <Parameter name='fc_alpha'               format='Float4'/>
-   <Parameter name='fc_vertex_color'        format='Float4'/>
-   <Parameter name='fc_ambient_color'       format='Float4'/>
-   <Parameter name='fc_diffuse_color'       format='Float4'/>
-   <Parameter name='fc_specular_color'      format='Float4'/>
-   <Parameter name='fc_specular'            format='Float4'/>
-   <Parameter name='fc_specular_view_color' format='Float4'/>
-   <Parameter name='fc_specular_view'       format='Float4'/>
-   <Parameter name='fc_reflect_color'       format='Float4'/>
-   <Parameter name='fc_reflect'             format='Float4'/>
-   <Parameter name='fc_emissive_color'      format='Float4'/>
+   <Parameter name='fc_materials'           format='Float4'/>
+   <Parameter name='fc_color'               format='Float4' define='fc_materials[0]'/>
+   <Parameter name='fc_alpha'               format='Float4' define='fc_materials[1]'/>
+   <Parameter name='fc_ambient_color'       format='Float4' define='fc_materials[2]'/>
+   <Parameter name='fc_diffuse_color'       format='Float4' define='fc_materials[3]'/>
+   <Parameter name='fc_specular_color'      format='Float4' define='fc_materials[4]'/>
+   <Parameter name='fc_specular'            format='Float4' define='fc_materials[5]'/>
+   <Parameter name='fc_reflect_color'       format='Float4' define='fc_materials[6]'/>
+   <Parameter name='fc_reflect'             format='Float4' define='fc_materials[7]'/>
+   <Parameter name='fc_emissive_color'      format='Float4' define='fc_materials[8]'/>
    <!--=====================================================-->
    <Attribute name='va_instance'    linker='instance'    format='Float1'/>
    <Attribute name='va_position'    linker='position'    format='Float4'/>
@@ -143,28 +141,28 @@
       </shader:true>
       uniform vec3 fc_camera_position;
       uniform vec3 fc_light_direction;
-      uniform vec4 fc_color;
-      uniform vec4 fc_alpha;
+      uniform vec4 fc_materials[10];
+      //uniform vec4 fc_alpha;
       <shader:true source='vertex.attribute.color'>
-      uniform vec4 fc_vertex_color;
+      //uniform vec4 fc_color;
       </shader:true>
       <shader:true source='support.ambient'>
-      uniform vec4 fc_ambient_color;
+      //uniform vec4 fc_ambient_color;
       </shader:true>
       <shader:true source='support.diffuse'>
-      uniform vec4 fc_diffuse_color;
+      //uniform vec4 fc_diffuse_color;
       </shader:true>
       <shader:true source='vertex.attribute.normal'>
-      uniform vec4 fc_specular_color;
-      uniform vec4 fc_specular;
+      //uniform vec4 fc_specular_color;
+      //uniform vec4 fc_specular;
       </shader:true>
       <shader:true source='support.specular.view'>
-      uniform vec4 fc_specular_view_color;
-      uniform vec4 fc_specular_view;
+      //uniform vec4 fc_specular_view_color;
+      //uniform vec4 fc_specular_view;
       </shader:true>
       <shader:true source='support.environment'>
-      uniform vec4 fc_reflect_color;
-      uniform vec4 fc_reflect;
+      //uniform vec4 fc_reflect_color;
+      //uniform vec4 fc_reflect;
       </shader:true>
       //..........................................................
       // 声明插值器
@@ -213,7 +211,7 @@
          <shader:true source='support.ambient.sampler'>
          vec4 color = texture2D(fs_diffuse, v_coord);
          if(color.a < fc_alpha.x){
-            discard;
+            //discard;
          }
          </shader:true>
          <shader:false source='support.ambient.sampler'>
@@ -233,12 +231,15 @@
          <shader:equals source='technique.mode' value='ambient'>
          result.rgb = resultAmbient;
          </shader:equals>
+         //result.rgb = resultAmbient.xyz;
          //............................................................
          // 计算散射颜色
          <shader:true source='vertex.attribute.normal'>
          <shader:true source='support.diffuse.dump'>
-         vec4 normal = texture2D(fs_normal, vec2(v_coord.x, v_coord.y));
+         vec4 normal = texture2D(fs_normal, v_coord);
+         result.rgb = normal.rgb;
          normal.xyz = normalize(normal.rgb * 2.0 - 1.0);
+         //result.rgb = vec3(normalFactor, normalFactor, normalFactor);
          float normalFactor = dot(normal.xyz, <shader:false source='option.normal.invert'>-</shader:false>v_light_ts);
          </shader:true>
          <shader:false source='support.diffuse.dump'>
@@ -254,13 +255,13 @@
          vec3 resultDiffuse = color.rgb * fc_diffuse_color.rgb * normalFactor;
          </shader:false>
          <shader:equals source='technique.mode' value='result'>
-         result.rgb += resultDiffuse;
+         //result.rgb += resultDiffuse;
          </shader:equals>
          <shader:equals source='technique.mode' value='diffuse.level'>
-         result.rgb = vec3(normalFactor, normalFactor, normalFactor);
+         //result.rgb = vec3(normalFactor, normalFactor, normalFactor);
          </shader:equals>
          <shader:equals source='technique.mode' value='diffuse.color'>
-         result.rgb = resultDiffuse;
+         //result.rgb = resultDiffuse;
          </shader:equals>
          </shader:true>
          //............................................................
@@ -288,13 +289,13 @@
          </shader:false>
          </shader:true>
          <shader:equals source='technique.mode' value='result'>
-         result.rgb += resultSpecular;
+         //result.rgb += resultSpecular;
          </shader:equals>
          <shader:equals source='technique.mode' value='specular.level'>
-         result.rgb = vec3(specularFactor, specularFactor, specularFactor);
+         //result.rgb = vec3(specularFactor, specularFactor, specularFactor);
          </shader:equals>
          <shader:equals source='technique.mode' value='specular.color'>
-         result.rgb = resultSpecular;
+         //result.rgb = resultSpecular;
          </shader:equals>
          //............................................................
          <shader:true source='support.environment'>
@@ -304,7 +305,7 @@
          vec4 reflect = texture2D(fs_reflect, v_coord);
          environmentColor *= reflect.g;
          </shader:true>
-         result.rgb = mix(result.rgb, environmentColor.rgb * fc_reflect_color.rgb, fc_reflect.www);
+         //result.rgb = mix(result.rgb, environmentColor.rgb * fc_reflect_color.rgb, fc_reflect.www);
          </shader:true>
          //............................................................
          // 计算颜色
@@ -312,12 +313,13 @@
          vec4 vertexColor = max(min(v_color, fc_color.y) - fc_color.x, 0.0);
          vertexColor = vertexColor / (fc_color.y - fc_color.x);
          vertexColor = (vertexColor - fc_color.w) * fc_color.z + 1.0;
-         result.rgb *= vertexColor.rgb;
+         //result.rgb *= vertexColor.rgb;
          </shader:true>
          <shader:true source='support.alpha'>
-         result.a = color.a * fc_alpha.y;
+         //result.a = color.a * fc_alpha.y;
          </shader:true>
          //............................................................
+         result.a = 1.0;
          gl_FragColor = result;
       }
    ]]></Source>

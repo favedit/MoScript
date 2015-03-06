@@ -120,11 +120,13 @@ function SG3dContextCapability(){
    o.vendor                 = null;
    o.version                = null;
    o.shaderVersion          = null;
+   o.optionDebug            = false;
    o.optionInstance         = false;
    o.optionLayout           = false;
    o.optionMaterialMap      = false;
    o.optionIndex32          = false;
    o.optionShaderSource     = false;
+   o.mergeCount             = 0;
    o.attributeCount         = null;
    o.vertexCount            = 65536;
    o.vertexConst            = null;
@@ -134,13 +136,9 @@ function SG3dContextCapability(){
    o.samplerSize            = null;
    o.samplerCompressRgb     = null;
    o.samplerCompressRgba    = null;
-   o.calculateMergeCount    = SG3dContextCapability_calculateMergeCount;
    o.calculateBoneCount     = SG3dContextCapability_calculateBoneCount;
    o.calculateInstanceCount = SG3dContextCapability_calculateInstanceCount;
    return o;
-}
-function SG3dContextCapability_calculateMergeCount(){
-   return parseInt((this.vertexConst - 32) / 4);
 }
 function SG3dContextCapability_calculateBoneCount(bc, vc){
    var o = this;
@@ -505,14 +503,15 @@ function FG3dProgramParameter(o){
    o = RClass.inherits(this, o, FObject);
    o._name       = null;
    o._linker     = null;
-   o._statusUsed = false;
-   o._shaderCd   = -1;
    o._formatCd   = EG3dParameterFormat.Unknown;
-   o._slot       = -1;
+   o._define     = null;
+   o._statusUsed = false;
+   o._slot       = null;
    o._size       = 0;
    o._buffer     = null;
    o.name        = FG3dProgramParameter_name;
    o.linker      = FG3dProgramParameter_linker;
+   o.define      = FG3dProgramParameter_define;
    o.loadConfig  = FG3dProgramParameter_loadConfig;
    return o;
 }
@@ -522,11 +521,15 @@ function FG3dProgramParameter_name(){
 function FG3dProgramParameter_linker(){
    return this._linker;
 }
+function FG3dProgramParameter_define(){
+   return this._define;
+}
 function FG3dProgramParameter_loadConfig(p){
    var o = this;
    o._name = p.get('name');
    o._linker = p.get('linker');
    o._formatCd = REnum.encode(EG3dParameterFormat, p.get('format'));
+   o._define = p.get('define');
 }
 function FG3dProgramSampler(o){
    o = RClass.inherits(this, o, FObject);

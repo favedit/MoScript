@@ -47,6 +47,7 @@ function FE3dSceneDisplayRenderable_loadMaterial(p){
 //==========================================================
 function FE3dSceneDisplayRenderable_reloadResource(){
    var o = this;
-   // 计算材质
-   o._material.calculate(o._materialReference);
+   var m = o._material;
+   m.calculate(o._materialReference);
+   m.update();
 }

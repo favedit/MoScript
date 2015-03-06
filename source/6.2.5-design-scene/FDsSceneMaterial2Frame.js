@@ -11,10 +11,6 @@ function FDsSceneMaterial2Frame(o){
    o._scene                    = null;
    o._material                 = null;
    // @attribute
-   o._controlGuid              = null;
-   o._controlCode              = null;
-   o._controlLabel             = null;
-   o._controlOptionDouble      = null;
    o._controlDiffuseViewColor  = null;
    o._controlSpecularViewColor = null;
    o._controlSpecularViewBase  = null;
@@ -43,7 +39,6 @@ function FDsSceneMaterial2Frame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 关联对象
-   o._controlOptionDouble.addDataChangedListener(o, o.onDataChanged);
    o._controlOptionView.addDataChangedListener(o, o.onDataChanged);
    o._controlOptionNormalInvert.addDataChangedListener(o, o.onDataChanged);
    o._controlOptionShadow.addDataChangedListener(o, o.onDataChanged);
@@ -67,7 +62,6 @@ function FDsSceneMaterial2Frame_onDataChanged(p){
    var mr = m.resource();
    var mi = mr.info();
    // 设置配置
-   mi.optionDouble = o._controlOptionDouble.get();
    mi.optionView = o._controlOptionView.get();
    mi.optionNormalInvert = o._controlOptionNormalInvert.get();
    mi.optionShadow = o._controlOptionShadow.get();
@@ -110,11 +104,7 @@ function FDsSceneMaterial2Frame_loadObject(s, m){
    // 设置参数
    var mr = m.resource();
    var mi = mr.info();
-   o._controlGuid.set(mr.guid());
-   o._controlCode.set(mr.code());
-   o._controlLabel.set(mr.label());
    // 设置配置
-   o._controlOptionDouble.set(mi.optionDouble);
    o._controlOptionView.set(mi.optionView);
    o._controlOptionNormalInvert.set(mi.optionNormalInvert);
    o._controlOptionShadow.set(mi.optionShadow);

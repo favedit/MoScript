@@ -12,14 +12,17 @@ function FDsSceneMaterialPropertyFrame(o){
    o._visible        = false;
    // @attribute
    o._workspace      = null;
-   o._activeMaterial = null;
+   o._material       = null;
    // @attribute
    o._controlGuid    = null;
    o._controlCode    = null;
    o._controlLabel   = null;
-   o._displayFrame   = null;
-   o._materialFrame1 = null;
-   o._materialFrame2 = null;
+   o._frameMaterial1 = null;
+   o._frameMaterial2 = null;
+   //..........................................................
+   // @event
+   o.onBuilded       = FDsSceneMaterialPropertyFrame_onBuilded;
+   o.onDataChanged   = FDsSceneMaterialPropertyFrame_onDataChanged;
    //..........................................................
    // @method
    o.construct       = FDsSceneMaterialPropertyFrame_construct;
@@ -28,6 +31,33 @@ function FDsSceneMaterialPropertyFrame(o){
    // @method
    o.dispose         = FDsSceneMaterialPropertyFrame_dispose;
    return o;
+}
+
+//==========================================================
+// <T>构建完成处理。</T>
+//
+// @method
+// @param p:event:TEventProcess 事件处理
+//==========================================================
+function FDsSceneMaterialPropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   // 关联对象
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+}
+
+//==========================================================
+// <T>数据改变处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsSceneMaterialPropertyFrame_onDataChanged(p){
+   var o = this;
+   var m = o._material;
+   var mr = m.resource();
+   // 设置配置
+   mr.setLabel(o._controlLabel.get());
 }
 
 //==========================================================
@@ -52,7 +82,7 @@ function FDsSceneMaterialPropertyFrame_loadObject(s, m){
    var o = this;
    var r = m.resource();
    // 设置属性
-   o._activeMaterial = m;
+   o._material = m;
    // 设置界面
    o._controlGuid.set(r.guid());
    o._controlCode.set(r.code());

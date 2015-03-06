@@ -88,6 +88,7 @@ function FWglFlatTexture_uploadData(d, w, h){
    // 绑定数据
    g.bindTexture(g.TEXTURE_2D, o._native);
    // 上传内容
+   // g.pixelStorei(g.UNPACK_FLIP_Y_WEBGL, true);
    g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, w, h, 0, g.RGBA, g.UNSIGNED_BYTE, m);
    o._statusLoad = c.checkError("texImage2D", "Upload data failure.");
 }

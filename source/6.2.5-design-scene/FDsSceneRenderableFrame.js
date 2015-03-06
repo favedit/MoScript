@@ -76,6 +76,7 @@ function FDsSceneRenderableFrame_onEffectClick(ps, pi){
    var e = pi.tag();
    var p = e._program;
    var s = p._vertexShader;
+   // s.targetSource()
    alert(s._source);
    var s = p._fragmentShader;
    alert(s._source);

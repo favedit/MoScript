@@ -23,6 +23,7 @@ function FE3dTemplate(o){
    // @method
    o.testReady        = FE3dTemplate_testReady;
    // @method
+   o.findMeshByCode   = FE3dTemplate_findMeshByCode;
    o.meshRenderables  = FE3dTemplate_meshRenderables;
    o.skeletons        = FE3dTemplate_skeletons;
    o.pushSkeleton     = FE3dTemplate_pushSkeleton;
@@ -64,6 +65,24 @@ function FE3dTemplate_construct(){
 //==========================================================
 function FE3dTemplate_testReady(){
    return this._dataReady;
+}
+
+//==========================================================
+// <T>根据代码查找网格。</T>
+//
+// @method
+// @param p:code:String 代码
+// @return FE3sMesh 网格
+//==========================================================
+function FE3dTemplate_findMeshByCode(p){
+   var s = this._meshRenderables;
+   for(var i = s.count() - 1; i >= 0; i--){
+      var m = s.getAt(i);
+      if(m._renderable._resource._code == p){
+         return m;
+      }
+   }
+   return null;
 }
 
 //==========================================================
@@ -195,8 +214,11 @@ function FE3dTemplate_linkAnimation(p){
    var c = ts.count();
    for(var i = 0; i < c; i++){
       var t = ts.get(i);
-      var r = o._renderables.get(i);
-      r._activeTrack = t;
+      var mc = t._resource._meshCode;
+      if(mc){
+         var m = o.findMeshByCode(mc);
+         m._activeTrack = t;
+      }
    }
 }
 
