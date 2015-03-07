@@ -30,11 +30,9 @@ function RBrowser_construct(){
       o._typeCd = EBrowser.Chrome;
    }else if(s.indexOf("firefox") != -1){
       o._typeCd = EBrowser.FireFox;
-   }else if(s.indexOf("msie") != -1){
+   }else if((s.indexOf("msie") != -1) || (s.indexOf("windows") != -1)){
       o._typeCd = EBrowser.Explorer;
-   }else if(s.indexOf("windows") != -1){
-      o._typeCd = EBrowser.Explorer;
-   }else if(s.indexOf("safari") != -1){
+   }else if((s.indexOf("safari") != -1) || (s.indexOf("applewebkit") != -1)){
       o._typeCd = EBrowser.Safari;
    }else{
       alert('Unknown browser.\n' + s);
@@ -436,6 +434,7 @@ var RWindow = new function RWindow(){
    o._mouseEvent       = new SMouseEvent();
    o._keyEvent         = new SKeyboardEvent();
    o._resizeEvent      = new SResizeEvent();
+   o._orientationEvent = new SEvent();
    o._hWindow          = null;
    o._hDocument        = null;
    o._hContainer       = null;
@@ -450,6 +449,7 @@ var RWindow = new function RWindow(){
    o.lsnsKeyUp         = new TListeners();
    o.lsnsKeyPress      = new TListeners();
    o.lsnsResize        = new TListeners();
+   o.lsnsOrientation   = new TListeners();
    o.ohMouseDown       = RWindow_ohMouseDown;
    o.ohMouseMove       = RWindow_ohMouseMove;
    o.ohMouseUp         = RWindow_ohMouseUp;
@@ -458,6 +458,7 @@ var RWindow = new function RWindow(){
    o.ohKeyPress        = RWindow_ohKeyPress;
    o.ohResize          = RWindow_ohResize;
    o.ohSelect          = RWindow_ohSelect;
+   o.ohOrientation     = RWindow_ohOrientation;
    o.connect           = RWindow_connect;
    o.optionSelect      = RWindow_optionSelect;
    o.setOptionSelect   = RWindow_setOptionSelect;
@@ -563,6 +564,18 @@ function RWindow_ohResize(p){
 function RWindow_ohSelect(p){
    return RWindow._optionSelect;
 }
+function RWindow_ohOrientation(p){
+   var o = RWindow;
+   var e = o._orientationEvent;
+   if((window.orientation == 180) || (window.orientation == 0)){
+      e.orientationCd = EOrientation.Vertical;
+   }else if((window.orientation == 90) || (window.orientation == -90)){
+      e.orientationCd = EOrientation.Horizontal;
+   }else{
+      throw new TError(o, 'Unknown orientation mode.');
+   }
+   o.lsnsOrientation.process(e);
+}
 function RWindow_connect(w){
    var o = this;
    var hw = o._hWindow = w;
@@ -575,6 +588,7 @@ function RWindow_connect(w){
       hc.addEventListener('keydown', o.ohKeyDown, true);
       hc.addEventListener('keyup', o.ohKeyUp, true);
       hc.addEventListener('keypress', o.ohKeyPress, true);
+      hw.addEventListener('orientationchange', o.ohOrientation);
    }else{
       hc.onmousedown = o.ohMouseDown;
       hc.onmousemove = o.ohMouseMove;

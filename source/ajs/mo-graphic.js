@@ -819,13 +819,19 @@ function FG3dAnimation_dispose(){
 }
 function FG3dBaseMaterial(o){
    o = RClass.inherits(this, o, FObject);
-   o._name      = null;
-   o._info      = null;
-   o.construct  = FG3dBaseMaterial_construct;
-   o.info       = FG3dBaseMaterial_info;
-   o.assignInfo = FG3dBaseMaterial_assignInfo;
-   o.assign     = FG3dBaseMaterial_assign;
-   o.calculate  = FG3dBaseMaterial_calculate;
+   o._name       = null;
+   o._visible    = true;
+   o._info       = null;
+   o._reference  = null;
+   o.construct   = FG3dBaseMaterial_construct;
+   o.visible     = FG3dBaseMaterial_visible;
+   o.setVisible  = FG3dBaseMaterial_setVisible;
+   o.info        = FG3dBaseMaterial_info;
+   o.reference   = FG3dBaseMaterial_reference;
+   o.testVisible = FG3dBaseMaterial_testVisible;
+   o.assignInfo  = FG3dBaseMaterial_assignInfo;
+   o.assign      = FG3dBaseMaterial_assign;
+   o.calculate   = FG3dBaseMaterial_calculate;
    return o;
 }
 function FG3dBaseMaterial_construct(){
@@ -833,17 +839,38 @@ function FG3dBaseMaterial_construct(){
    o.__base.FObject.construct.call(o);
    o._info = new SG3dMaterialInfo();
 }
+function FG3dBaseMaterial_visible(){
+   return this._visible;
+}
+function FG3dBaseMaterial_setVisible(p){
+   this._visible = p;
+}
 function FG3dBaseMaterial_info(){
    return this._info;
+}
+function FG3dBaseMaterial_reference(){
+   return this._reference;
+}
+function FG3dBaseMaterial_testVisible(){
+   var o = this;
+   var r = o._visible;
+   if(r && o._reference){
+      r = o._reference.testVisible();
+   }
+   return r;
 }
 function FG3dBaseMaterial_assignInfo(p){
    this._info.assign(p);
 }
 function FG3dBaseMaterial_assign(p){
-   this._info.assign(p.info());
+   var o = this;
+   o._reference = p;
+   o._info.assign(p.info());
 }
 function FG3dBaseMaterial_calculate(p){
-   this._info.calculate(p.info());
+   var o = this;
+   o._reference = p;
+   o._info.calculate(p.info());
 }
 function FG3dBone(o){
    o = RClass.inherits(this, o, FObject);
@@ -3908,6 +3935,8 @@ function FWglContext_linkCanvas(h){
    o._hCanvas = h;
    if(h.getContext){
       var a = new Object();
+      a.antialias = true;
+      a.premultipliedAlpha = false;
       var n = h.getContext('webgl', a);
       if(n == null){
          n = h.getContext('experimental-webgl', a);
@@ -4414,7 +4443,7 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
          g.vertexAttribPointer(s, 4, g.UNSIGNED_BYTE, true, bs, i);
          break;
       default:
-         RLogger.fatal(o, null, "Unknown vertex format. (format_cd=%d)", formatCd);
+         throw new TError(o, "Unknown vertex format. (format_cd=%d)", formatCd);
          break;
    }
    r = o.checkError("glVertexAttribPointer", "Bind vertex attribute pointer. (slot=%d, format_cd=%d)", s, f);

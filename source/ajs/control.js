@@ -974,14 +974,14 @@ function MListenerDataChanged_processDataChangedListener(p1, p2, p3, p4, p5){
 }
 function MListenerDoubleClick(o){
    o = RClass.inherits(this, o, MListener);
-   o.addClickListener     = MListenerDoubleClick_addClickListener;
-   o.processClickListener = MListenerDoubleClick_processClickListener;
+   o.addDoubleClickListener     = MListenerDoubleClick_addDoubleClickListener;
+   o.processDoubleClickListener = MListenerDoubleClick_processDoubleClickListener;
    return o;
 }
-function MListenerDoubleClick_addClickListener(w, m){
+function MListenerDoubleClick_addDoubleClickListener(w, m){
    return this.addListener(EEvent.DoubleClick, w, m);
 }
-function MListenerDoubleClick_processClickListener(p1, p2, p3, p4, p5){
+function MListenerDoubleClick_processDoubleClickListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.DoubleClick, p1, p2, p3, p4, p5);
 }
 function MListenerEnter(o){

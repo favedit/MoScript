@@ -240,25 +240,30 @@ function FE3rMesh_loadResource(p){
          b._name = rc;
          b._resource = rs;
          o._vertexCount = rs._dataCount;
+         var d = null;
          switch(rc){
             case "position":
+               d = new Float32Array(rs._data);
                b._formatCd = EG3dAttributeFormat.Float3;
                break;
-            case "color":
-               b._formatCd = EG3dAttributeFormat.Byte4Normal;
-               break;
             case "coord":
+               d = new Float32Array(rs._data);
                b._formatCd = EG3dAttributeFormat.Float2;
+               break;
+            case "color":
+               d = new Uint8Array(rs._data);
+               b._formatCd = EG3dAttributeFormat.Byte4Normal;
                break;
             case "normal":
             case "binormal":
             case "tangent":
+               d = new Uint8Array(rs._data);
                b._formatCd = EG3dAttributeFormat.Byte4Normal;
                break;
             default:
                throw new TError("Unknown code");
          }
-         b.upload(rs._data, rs._dataStride, rs._dataCount);
+         b.upload(d, rs._dataStride, rs._dataCount);
          o._vertexBuffers.push(b);
       }
    }

@@ -57,11 +57,9 @@ function RBrowser_construct(){
       o._typeCd = EBrowser.Chrome;
    }else if(s.indexOf("firefox") != -1){
       o._typeCd = EBrowser.FireFox;
-   }else if(s.indexOf("msie") != -1){
+   }else if((s.indexOf("msie") != -1) || (s.indexOf("windows") != -1)){
       o._typeCd = EBrowser.Explorer;
-   }else if(s.indexOf("windows") != -1){
-      o._typeCd = EBrowser.Explorer;
-   }else if(s.indexOf("safari") != -1){
+   }else if((s.indexOf("safari") != -1) || (s.indexOf("applewebkit") != -1)){
       o._typeCd = EBrowser.Safari;
    }else{
       alert('Unknown browser.\n' + s);

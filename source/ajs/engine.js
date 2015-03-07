@@ -112,11 +112,18 @@ function FDisplay_filterRenderables(p){
    }
    var rs = o._renderables;
    if(rs){
+      var m = RRuntime.isDebug();
       var c = rs.count();
       for(var n = 0; n < c; n++){
          var r = rs.get(n);
          if(r.testVisible()){
-            p.pushRenderable(r);
+            if(m){
+               if(r.material().testVisible()){
+                  p.pushRenderable(r);
+               }
+            }else{
+               p.pushRenderable(r);
+            }
          }
       }
    }
@@ -347,6 +354,7 @@ function FDisplayUiLayer(o){
 }
 function FDrawable(o){
    o = RClass.inherits(this, o, FObject);
+   o._visible = true;
    return o;
 }
 function FRegion(o){

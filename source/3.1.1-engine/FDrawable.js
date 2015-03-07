@@ -6,5 +6,8 @@
 //==========================================================
 function FDrawable(o){
    o = RClass.inherits(this, o, FObject);
+   //..........................................................
+   // @attribute
+   o._visible = true;
    return o;
 }

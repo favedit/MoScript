@@ -14,6 +14,7 @@ var RWindow = new function RWindow(){
    o._mouseEvent       = new SMouseEvent();
    o._keyEvent         = new SKeyboardEvent();
    o._resizeEvent      = new SResizeEvent();
+   o._orientationEvent = new SEvent();
    //..........................................................
    // @html
    o._hWindow          = null;
@@ -32,6 +33,7 @@ var RWindow = new function RWindow(){
    o.lsnsKeyUp         = new TListeners();
    o.lsnsKeyPress      = new TListeners();
    o.lsnsResize        = new TListeners();
+   o.lsnsOrientation   = new TListeners();
    //..........................................................
    // @event
    o.ohMouseDown       = RWindow_ohMouseDown;
@@ -42,6 +44,7 @@ var RWindow = new function RWindow(){
    o.ohKeyPress        = RWindow_ohKeyPress;
    o.ohResize          = RWindow_ohResize;
    o.ohSelect          = RWindow_ohSelect;
+   o.ohOrientation     = RWindow_ohOrientation;
    //..........................................................
    // @method
    o.connect           = RWindow_connect;
@@ -220,6 +223,25 @@ function RWindow_ohSelect(p){
 }
 
 //==========================================================
+// <T>选取处理。</T>
+//
+// @method
+// @param p:event:htmlEvent 事件
+//==========================================================
+function RWindow_ohOrientation(p){
+   var o = RWindow;
+   var e = o._orientationEvent;
+   if((window.orientation == 180) || (window.orientation == 0)){
+      e.orientationCd = EOrientation.Vertical;
+   }else if((window.orientation == 90) || (window.orientation == -90)){
+      e.orientationCd = EOrientation.Horizontal;
+   }else{
+      throw new TError(o, 'Unknown orientation mode.');
+   }
+   o.lsnsOrientation.process(e);
+}
+
+//==========================================================
 // <T>关联当前窗口。</T>
 // <P>接管当前窗口对象的各种加载，鼠标，键盘的处理事件。</P>
 //
@@ -240,6 +262,7 @@ function RWindow_connect(w){
       hc.addEventListener('keydown', o.ohKeyDown, true);
       hc.addEventListener('keyup', o.ohKeyUp, true);
       hc.addEventListener('keypress', o.ohKeyPress, true);
+      hw.addEventListener('orientationchange', o.ohOrientation);
    }else{
       hc.onmousedown = o.ohMouseDown;
       hc.onmousemove = o.ohMouseMove;

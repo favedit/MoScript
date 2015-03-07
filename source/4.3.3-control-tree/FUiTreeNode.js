@@ -29,20 +29,21 @@ function FUiTreeNode(o){
    o._tag              = RClass.register(o, new APtyString('_tag'));
    //..........................................................
    // @style
-   o._styleNormal      = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
-   o._styleHover       = RClass.register(o, new AStyle('_styleHover', 'Hover'));
-   o._styleSelect      = RClass.register(o, new AStyle('_styleSelect', 'Select'));
-   o._styleImage       = RClass.register(o, new AStyle('_styleImage', 'Image'));
-   o._styleIcon        = RClass.register(o, new AStyle('_styleIcon', 'Icon'));
-   o._styleIconDisable = RClass.register(o, new AStyle('_styleIconDisable', 'IconDisable'));
-   o._styleLabel       = RClass.register(o, new AStyle('_styleLabel', 'Label'));
-   o._styleCell        = RClass.register(o, new AStyle('_styleCell', 'Cell'));
+   o._styleNormal      = RClass.register(o, new AStyle('_styleNormal'));
+   o._styleHover       = RClass.register(o, new AStyle('_styleHover'));
+   o._styleSelect      = RClass.register(o, new AStyle('_styleSelect'));
+   o._styleImage       = RClass.register(o, new AStyle('_styleImage'));
+   o._styleIcon        = RClass.register(o, new AStyle('_styleIcon'));
+   o._styleIconDisable = RClass.register(o, new AStyle('_styleIconDisable'));
+   o._styleLabel       = RClass.register(o, new AStyle('_styleLabel'));
+   o._styleCell        = RClass.register(o, new AStyle('_styleCell'));
    //..........................................................
    // @attribute
    o._tree             = null;
    o._level            = 0;
    o._attributes       = null;
    o._nodes            = null;
+   o._cells            = null;
    // @attribute
    o._statusLinked     = false;
    o._statusDisplay    = true;
@@ -75,6 +76,8 @@ function FUiTreeNode(o){
    o.setNote           = FUiTreeNode_setNote;
    o.level             = FUiTreeNode_level;
    o.setLevel          = FUiTreeNode_setLevel;
+   o.cell              = FUiTreeNode_cell;
+   o.cells             = FUiTreeNode_cells;
    o.check             = FUiTreeNode_check;
    o.setCheck          = FUiTreeNode_setCheck;
    o.setImage          = FUiTreeNode_setImage;
@@ -92,6 +95,7 @@ function FUiTreeNode(o){
    o.extendAll         = FUiTreeNode_extendAll;
    o.searchLast        = FUiTreeNode_searchLast;
    o.createChild       = FUiTreeNode_createChild;
+   o.appendChild       = FUiTreeNode_appendChild;
    o.appendNode        = FUiTreeNode_appendNode;
    o.push              = FUiTreeNode_push;
    o.remove            = FUiTreeNode_remove;
@@ -150,7 +154,6 @@ function FUiTreeNode_onBuild(p){
    var r = o.__base.FUiContainer.onBuild.call(o, p);
    // 建立底板
    var hp = o._hPanel;
-   hp.style.border = '1 solid red';
    o.attachEvent('onNodeEnter', hp, o.onNodeEnter);
    o.attachEvent('onNodeLeave', hp, o.onNodeLeave);
    o.attachEvent('onNodeClick', hp);
@@ -178,16 +181,15 @@ function FUiTreeNode_onBuild(p){
    o._hLabel = RBuilder.appendText(hnp, o.styleName('Label'));
    o.setLabel(o._label);
    // 建立关联列
-   var cs = t.columns;
+   var cs = t._nodeColumns;
    if(cs){
       var cc = cs.count();
-      for(var n = 1; n < cc; n++){
+      for(var n = 0; n < cc; n++){
          var c = cs.value(n);
-         var hc = RBuilder.appendTableCell(hp, o.styleName('Cell'));
-         hc.align='center';
-         hc.noWrap = true;
-         hc.innerText = RString.nvl(o.get(c.dataName));
-         RHtml.visibleSet(hc, c.display);
+         var nc = RClass.create(FUiTreeNodeCell);
+         nc._column = c;
+         nc.build(p);
+         o.push(nc);
       }
    }
 }
@@ -394,6 +396,27 @@ function FUiTreeNode_setLevel(p){
    if(h){
       h.style.paddingLeft = (o._tree._indent * p) + 'px';
    }
+}
+
+//==========================================================
+// <T>获取指定名称的格子。</T>
+//
+// @method
+// @param p:name:String 名称
+// @return FUiTreeNodeCell 格子
+//==========================================================
+function FUiTreeNode_cell(p){
+   return this._cells.get(p);
+}
+
+//==========================================================
+// <T>获取格子集合。</T>
+//
+// @method
+// @return TObjects 格子集合
+//==========================================================
+function FUiTreeNode_cells(){
+   return this._cells;
 }
 
 //==========================================================
@@ -711,6 +734,19 @@ function FUiTreeNode_createChild(x){
 }
 
 //==========================================================
+// <T>追加一个字控件。</T>
+//
+// @method
+// @param p:control:FUiControl 控件
+//==========================================================
+function FUiTreeNode_appendChild(p){
+   var o = this;
+   if(RClass.isClass(p, FUiTreeNodeCell)){
+      o._hPanel.appendChild(p._hPanel);
+   }
+}
+
+//==========================================================
 // <T>追加一个子目录节点。</T>
 //
 // @method
@@ -747,6 +783,17 @@ function FUiTreeNode_push(c){
       c._parent = o;
       ns.push(c);
       t._allNodes.pushUnique(c);
+   }
+   // 增加一个节点格子
+   if(RClass.isClass(c, FUiTreeNodeCell)){
+      var cs = o._cells;
+      if(!cs){
+         cs = o._cells = new TDictionary();
+      }
+      c._parent = o;
+      c._tree = t;
+      c._node = o;
+      cs.set(c._column._name, c);
    }
 }
 

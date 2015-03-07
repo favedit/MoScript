@@ -63,6 +63,9 @@ function AEventClick(n){
    return o;
 }
 function AEventClick_attach(e, h){
+   e.altKey = h.altKey;
+   e.ctrlKey = h.ctrlKey;
+   e.shiftKey = h.shiftKey;
 }
 function AEventDoubleClick(n){
    var o = this;
@@ -71,6 +74,9 @@ function AEventDoubleClick(n){
    return o;
 }
 function AEventDoubleClick_attach(e, h){
+   e.altKey = h.altKey;
+   e.ctrlKey = h.ctrlKey;
+   e.shiftKey = h.shiftKey;
 }
 function AEventFocus(n){
    var o = this;
@@ -295,6 +301,30 @@ function AEventScroll(n){
    return o;
 }
 function AEventScroll_attach(e, h){
+}
+function AEventTouchEnd(n){
+   var o = this;
+   AEvent.call(o, n, 'touchstart', 'ontouchstart');
+   o.attach = AEventTouchEnd_attach;
+   return o;
+}
+function AEventTouchEnd_attach(e, h){
+}
+function AEventTouchMove(n){
+   var o = this;
+   AEvent.call(o, n, 'touchstart', 'ontouchstart');
+   o.attach = AEventTouchMove_attach;
+   return o;
+}
+function AEventTouchMove_attach(e, h){
+}
+function AEventTouchStart(n){
+   var o = this;
+   AEvent.call(o, n, 'touchstart', 'ontouchstart');
+   o.attach = AEventTouchStart_attach;
+   return o;
+}
+function AEventTouchStart_attach(e, h){
 }
 function AStyle(n, s){
    var o = this;
@@ -546,6 +576,13 @@ var EMouseCursor = new function EMouseCursor(){
    var o = this;
    o.HSize = 'E-resize';
    o.VSize = 'N-resize';
+   return o;
+}
+var EOrientation = new function EOrientation(){
+   var o = this;
+   o.Unknown = 0;
+   o.Horizontal = 'H';
+   o.Vertical   = 'V';
    return o;
 }
 var ESoftware = new function ESoftware(){
@@ -1491,14 +1528,14 @@ function FHttpConnection_setHeaders(){
    var o = this;
    var c = o._connection;
    if(o._contentCd == EHttpContent.Binary){
-      if(RBrowser.isBrowser(EBrowser.Chrome)){
+      if(RBrowser.isBrowser(EBrowser.Explorer)){
+         c.setRequestHeader('Accept-Charset', 'x-user-defined');
+         c.responseType = 'arraybuffer';
+      }else{
          c.overrideMimeType('text/plain; charset=x-user-defined');
          if(o._asynchronous){
             c.responseType = 'arraybuffer';
          }
-      }else{
-         c.setRequestHeader('Accept-Charset', 'x-user-defined');
-         c.responseType = 'arraybuffer';
       }
    }else{
       c.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
@@ -2003,6 +2040,7 @@ var RHtml = new function RHtml(){
    o._links          = new Object();
    o._clientPosition = new SPoint2();
    o.uid            = RHtml_uid;
+   o.fullscreen     = RHtml_fullscreen;
    o.displayGet     = RHtml_displayGet;
    o.displaySet     = RHtml_displaySet;
    o.visibleGet     = RHtml_visibleGet;
@@ -2068,6 +2106,25 @@ function RHtml_uid(v){
       r = v.__puuid = RHtml._nextUid++;
    }
    return r;
+}
+function RHtml_fullscreen(h, f){
+   if(f){
+      if (h.requestFullscreen){
+         h.requestFullscreen();
+      }else if(h.mozRequestFullScreen){
+         h.mozRequestFullScreen();
+      }else if(h.webkitRequestFullScreen){
+         h.webkitRequestFullScreen();
+      }
+   }else{
+      if (h.exitFullscreen){
+         h.exitFullscreen();
+      }else if(h.mozCancelFullScreen){
+         h.mozCancelFullScreen();
+      }else if(h.webkitCancelFullScreen){
+         h.webkitCancelFullScreen();
+      }
+   }
 }
 function RHtml_displayGet(h){
    var r = null;

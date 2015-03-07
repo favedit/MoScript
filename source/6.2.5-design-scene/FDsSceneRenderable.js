@@ -7,6 +7,8 @@
 //==========================================================
 function FDsSceneRenderable(o){
    o = RClass.inherits(this, o, FE3dSceneDisplayRenderable, MDsBoundBox);
-   // o._a
+   //..........................................................
+   // @attribute
+   o._optionSelected = false;
    return o;
 }

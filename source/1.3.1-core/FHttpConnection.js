@@ -102,14 +102,14 @@ function FHttpConnection_setHeaders(){
    var c = o._connection;
    // 传输格式
    if(o._contentCd == EHttpContent.Binary){
-      if(RBrowser.isBrowser(EBrowser.Chrome)){
+      if(RBrowser.isBrowser(EBrowser.Explorer)){
+         c.setRequestHeader('Accept-Charset', 'x-user-defined');
+         c.responseType = 'arraybuffer';
+      }else{
          c.overrideMimeType('text/plain; charset=x-user-defined');
          if(o._asynchronous){
             c.responseType = 'arraybuffer';
          }
-      }else{
-         c.setRequestHeader('Accept-Charset', 'x-user-defined');
-         c.responseType = 'arraybuffer';
       }
    }else{
       c.setRequestHeader('content-type', 'application/x-www-form-urlencoded');

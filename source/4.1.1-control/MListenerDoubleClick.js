@@ -9,8 +9,8 @@ function MListenerDoubleClick(o){
    o = RClass.inherits(this, o, MListener);
    //..........................................................
    // @method
-   o.addClickListener     = MListenerDoubleClick_addClickListener;
-   o.processClickListener = MListenerDoubleClick_processClickListener;
+   o.addDoubleClickListener     = MListenerDoubleClick_addDoubleClickListener;
+   o.processDoubleClickListener = MListenerDoubleClick_processDoubleClickListener;
    return o;
 }
 
@@ -21,7 +21,7 @@ function MListenerDoubleClick(o){
 // @param w:owner:String 拥有者
 // @param m:method:Function 函数
 //==========================================================
-function MListenerDoubleClick_addClickListener(w, m){
+function MListenerDoubleClick_addDoubleClickListener(w, m){
    return this.addListener(EEvent.DoubleClick, w, m);
 }
 
@@ -35,6 +35,6 @@ function MListenerDoubleClick_addClickListener(w, m){
 // @param p4:parameter4:Object 参数4
 // @param p5:parameter5:Object 参数5
 //==========================================================
-function MListenerDoubleClick_processClickListener(p1, p2, p3, p4, p5){
+function MListenerDoubleClick_processDoubleClickListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.DoubleClick, p1, p2, p3, p4, p5);
 }

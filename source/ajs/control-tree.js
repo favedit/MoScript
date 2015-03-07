@@ -421,18 +421,19 @@ function FUiTreeNode(o){
    o._child            = RClass.register(o, new APtyBoolean('_child'), false);
    o._note             = RClass.register(o, new APtyString('_note'));
    o._tag              = RClass.register(o, new APtyString('_tag'));
-   o._styleNormal      = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
-   o._styleHover       = RClass.register(o, new AStyle('_styleHover', 'Hover'));
-   o._styleSelect      = RClass.register(o, new AStyle('_styleSelect', 'Select'));
-   o._styleImage       = RClass.register(o, new AStyle('_styleImage', 'Image'));
-   o._styleIcon        = RClass.register(o, new AStyle('_styleIcon', 'Icon'));
-   o._styleIconDisable = RClass.register(o, new AStyle('_styleIconDisable', 'IconDisable'));
-   o._styleLabel       = RClass.register(o, new AStyle('_styleLabel', 'Label'));
-   o._styleCell        = RClass.register(o, new AStyle('_styleCell', 'Cell'));
+   o._styleNormal      = RClass.register(o, new AStyle('_styleNormal'));
+   o._styleHover       = RClass.register(o, new AStyle('_styleHover'));
+   o._styleSelect      = RClass.register(o, new AStyle('_styleSelect'));
+   o._styleImage       = RClass.register(o, new AStyle('_styleImage'));
+   o._styleIcon        = RClass.register(o, new AStyle('_styleIcon'));
+   o._styleIconDisable = RClass.register(o, new AStyle('_styleIconDisable'));
+   o._styleLabel       = RClass.register(o, new AStyle('_styleLabel'));
+   o._styleCell        = RClass.register(o, new AStyle('_styleCell'));
    o._tree             = null;
    o._level            = 0;
    o._attributes       = null;
    o._nodes            = null;
+   o._cells            = null;
    o._statusLinked     = false;
    o._statusDisplay    = true;
    o._statusSelected   = false;
@@ -456,6 +457,8 @@ function FUiTreeNode(o){
    o.setNote           = FUiTreeNode_setNote;
    o.level             = FUiTreeNode_level;
    o.setLevel          = FUiTreeNode_setLevel;
+   o.cell              = FUiTreeNode_cell;
+   o.cells             = FUiTreeNode_cells;
    o.check             = FUiTreeNode_check;
    o.setCheck          = FUiTreeNode_setCheck;
    o.setImage          = FUiTreeNode_setImage;
@@ -472,6 +475,7 @@ function FUiTreeNode(o){
    o.extendAll         = FUiTreeNode_extendAll;
    o.searchLast        = FUiTreeNode_searchLast;
    o.createChild       = FUiTreeNode_createChild;
+   o.appendChild       = FUiTreeNode_appendChild;
    o.appendNode        = FUiTreeNode_appendNode;
    o.push              = FUiTreeNode_push;
    o.remove            = FUiTreeNode_remove;
@@ -504,7 +508,6 @@ function FUiTreeNode_onBuild(p){
    var t = o._tree;
    var r = o.__base.FUiContainer.onBuild.call(o, p);
    var hp = o._hPanel;
-   hp.style.border = '1 solid red';
    o.attachEvent('onNodeEnter', hp, o.onNodeEnter);
    o.attachEvent('onNodeLeave', hp, o.onNodeLeave);
    o.attachEvent('onNodeClick', hp);
@@ -526,16 +529,15 @@ function FUiTreeNode_onBuild(p){
    }
    o._hLabel = RBuilder.appendText(hnp, o.styleName('Label'));
    o.setLabel(o._label);
-   var cs = t.columns;
+   var cs = t._nodeColumns;
    if(cs){
       var cc = cs.count();
-      for(var n = 1; n < cc; n++){
+      for(var n = 0; n < cc; n++){
          var c = cs.value(n);
-         var hc = RBuilder.appendTableCell(hp, o.styleName('Cell'));
-         hc.align='center';
-         hc.noWrap = true;
-         hc.innerText = RString.nvl(o.get(c.dataName));
-         RHtml.visibleSet(hc, c.display);
+         var nc = RClass.create(FUiTreeNodeCell);
+         nc._column = c;
+         nc.build(p);
+         o.push(nc);
       }
    }
 }
@@ -656,6 +658,12 @@ function FUiTreeNode_setLevel(p){
    if(h){
       h.style.paddingLeft = (o._tree._indent * p) + 'px';
    }
+}
+function FUiTreeNode_cell(p){
+   return this._cells.get(p);
+}
+function FUiTreeNode_cells(){
+   return this._cells;
 }
 function FUiTreeNode_check(){
    return this._checked;
@@ -845,6 +853,12 @@ function FUiTreeNode_createChild(x){
    }
    return r;
 }
+function FUiTreeNode_appendChild(p){
+   var o = this;
+   if(RClass.isClass(p, FUiTreeNodeCell)){
+      o._hPanel.appendChild(p._hPanel);
+   }
+}
 function FUiTreeNode_appendNode(p){
    var o = this;
    var t = o._tree;
@@ -867,6 +881,16 @@ function FUiTreeNode_push(c){
       c._parent = o;
       ns.push(c);
       t._allNodes.pushUnique(c);
+   }
+   if(RClass.isClass(c, FUiTreeNodeCell)){
+      var cs = o._cells;
+      if(!cs){
+         cs = o._cells = new TDictionary();
+      }
+      c._parent = o;
+      c._tree = t;
+      c._node = o;
+      cs.set(c._column._name, c);
    }
 }
 function FUiTreeNode_remove(){
@@ -1103,6 +1127,74 @@ function FUiTreeNode_isFolder(){
    if(this._typeName){
        return (this._typeName._typeNameName == 'collections') ? true : false;
    }
+}
+function FUiTreeNodeCell(o){
+   o = RClass.inherits(this, o, FUiControl, MListenerClick, MListenerDoubleClick);
+   o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
+   o._styleCell        = RClass.register(o, new AStyle('_styleCell', 'Cell'));
+   o._tree             = null;
+   o._column           = null;
+   o._level            = 0;
+   o._node             = null;
+   o._hImage           = null;
+   o._hIcon            = null;
+   o._hLabel           = null;
+   o.onBuildPanel      = FUiTreeNodeCell_onBuildPanel;
+   o.onBuild           = FUiTreeNodeCell_onBuild;
+   o.onClick           = RClass.register(o, new AEventClick('onClick'), FUiTreeNodeCell_onClick);
+   o.onDoubleClick     = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FUiTreeNodeCell_onDoubleClick);
+   o.construct         = FUiTreeNodeCell_construct;
+   o.icon              = FUiTreeNodeCell_icon;
+   o.setIcon           = FUiTreeNodeCell_setIcon;
+   o.get               = FUiTreeNodeCell_get;
+   o.set               = FUiTreeNodeCell_set;
+   return o;
+}
+function FUiTreeNodeCell_onBuildPanel(p){
+   var o = this;
+   o._hPanel = RBuilder.createTableCell(p, o.styleName('Panel'));
+}
+function FUiTreeNodeCell_onBuild(p){
+   var o = this;
+   var t = o._tree;
+   var r = o.__base.FUiControl.onBuild.call(o, p);
+   var h = o._hPanel;
+   o.attachEvent('onClick', h);
+   o.attachEvent('onDoubleClick', h);
+}
+function FUiTreeNodeCell_onClick(p){
+   var o = this;
+   p.treeNode = o._node;
+   p.treeColumn = o._column;
+   p.treeNodeCell = o;
+   o.processClickListener(p);
+}
+function FUiTreeNodeCell_onDoubleClick(p){
+   var o = this;
+   p.treeNode = o._node;
+   p.treeColumn = o._column;
+   p.treeNodeCell = o;
+   o.processDoubleClickListener(p);
+}
+function FUiTreeNodeCell_construct(){
+   var o = this;
+   o.__base.FUiControl.construct.call(o);
+   o._attributes = new TAttributes();
+}
+function FUiTreeNodeCell_icon(){
+   return o._icon;
+}
+function FUiTreeNodeCell_setIcon(p){
+   var o = this;
+   var h = o._hIcon;
+   if(!h){
+      h = o._hIcon = RBuilder.appendIcon(o._hPanel, null, null, 16, 16)
+   }
+   h.src = RResource.iconPath(p);
+}
+function FUiTreeNodeCell_get(){
+}
+function FUiTreeNodeCell_set(p){
 }
 function FUiTreeNodeType(o){
    o = RClass.inherits(this, o, FUiComponent);

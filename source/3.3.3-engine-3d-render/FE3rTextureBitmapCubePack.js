@@ -72,17 +72,17 @@ function FE3rTextureBitmapCubePack_loadResource(p){
    var o = this;
    o._resource = p;
    // 加载二进制数据
-   //var d = p.data();
-   //var t = p._formatName;
-   //o._images = new TObjects();
-   //for(var i = 0; i < 6; i++){
-   //   var b = new Blob([d[i]], {type: 'image/' + t});
-   //   var u = window.URL.createObjectURL(b);
-   //   var g = o._images[i] = RClass.create(FImage);
-   //   g.setOptionAlpha(false);
-   //   g.loadUrl(u);
-   //   g.addLoadListener(o, o.onLoad);
-   //}
+   var d = p.data();
+   var t = p._formatName;
+   o._images = new TObjects();
+   for(var i = 0; i < 6; i++){
+      var b = new Blob([d[i]], {type: 'image/' + t});
+      var u = window.URL.createObjectURL(b);
+      var g = o._images[i] = RClass.create(FImage);
+      g.setOptionAlpha(false);
+      g.loadUrl(u);
+      g.addLoadListener(o, o.onLoad);
+   }
 }
 
 //==========================================================

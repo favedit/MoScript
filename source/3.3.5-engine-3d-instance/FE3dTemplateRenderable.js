@@ -71,7 +71,8 @@ function FE3dTemplateRenderable_testReady(){
 // @return Boolean 是否可见
 //==========================================================
 function FE3dTemplateRenderable_testVisible(p){
-   return this._ready;
+   var o = this;
+   return o._visible && o._ready;
 }
 
 //==========================================================

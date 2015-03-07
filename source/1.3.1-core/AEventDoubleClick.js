@@ -23,4 +23,7 @@ function AEventDoubleClick(n){
 // @param h:htmlEvent:HtmlEvent 页面事件
 //==========================================================
 function AEventDoubleClick_attach(e, h){
+   e.altKey = h.altKey;
+   e.ctrlKey = h.ctrlKey;
+   e.shiftKey = h.shiftKey;
 }

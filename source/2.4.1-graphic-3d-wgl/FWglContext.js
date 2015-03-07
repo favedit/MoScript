@@ -88,9 +88,8 @@ function FWglContext_linkCanvas(h){
    if(h.getContext){
       // 设置参数
       var a = new Object();
-      //a.antialias = true;
-      //a.premultipliedAlpha = false;
-      //a.alpha = false;
+      a.antialias = true;
+      a.premultipliedAlpha = false;
       // 初始化对象
       var n = h.getContext('webgl', a);
       if(n == null){
@@ -814,7 +813,7 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
          g.vertexAttribPointer(s, 4, g.UNSIGNED_BYTE, true, bs, i);
          break;
       default:
-         RLogger.fatal(o, null, "Unknown vertex format. (format_cd=%d)", formatCd);
+         throw new TError(o, "Unknown vertex format. (format_cd=%d)", formatCd);
          break;
    }
    // 检查错误

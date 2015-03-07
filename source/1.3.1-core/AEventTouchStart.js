@@ -1,17 +1,17 @@
 ﻿//==========================================================
-// <T>点击事件描述类。</T>
+// <T>焦点获得事件描述类。</T>
 //
 // @event
 // @param n:name:String 名称
 // @author maocy
 // @version 150119
 //==========================================================
-function AEventClick(n){
+function AEventTouchStart(n){
    var o = this;
-   AEvent.call(o, n, 'click', 'onclick');
+   AEvent.call(o, n, 'touchstart', 'ontouchstart');
    //..........................................................
    // @method
-   o.attach = AEventClick_attach;
+   o.attach = AEventTouchStart_attach;
    return o;
 }
 
@@ -22,8 +22,5 @@ function AEventClick(n){
 // @param e:event:Event 事件
 // @param h:htmlEvent:HtmlEvent 页面事件
 //==========================================================
-function AEventClick_attach(e, h){
-   e.altKey = h.altKey;
-   e.ctrlKey = h.ctrlKey;
-   e.shiftKey = h.shiftKey;
+function AEventTouchStart_attach(e, h){
 }

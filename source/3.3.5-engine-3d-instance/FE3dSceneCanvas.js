@@ -8,32 +8,43 @@ function FE3dSceneCanvas(o){
    o = RClass.inherits(this, o, FE3dCanvas);
    //..........................................................
    // @attribute
-   o._activeScene        = null;
+   o._activeScene           = null;
    // @attribute
-   o._capturePosition    = null;
-   o._captureRotation    = null;
+   o._captureStatus         = false;
+   o._capturePosition       = null;
+   o._captureCameraPosition = null;
+   o._captureCameraRotation = null;
+   o._actionFullScreen      = false;
+   o._actionPlay            = false;
+   o._actionMovie           = false;
+   o._actionUp              = false;
+   o._actionDown            = false;
+   o._actionForward         = false;
+   o._actionBack            = false;
    //..........................................................
    // @event
-   o.onEnterFrame        = FE3dSceneCanvas_onEnterFrame;
+   o.onEnterFrame           = FE3dSceneCanvas_onEnterFrame;
    // @event
-   o.onMouseCaptureStart = FE3dSceneCanvas_onMouseCaptureStart;
-   o.onMouseCapture      = FE3dSceneCanvas_onMouseCapture;
-   o.onMouseCaptureStop  = FE3dSceneCanvas_onMouseCaptureStop;
+   o.onMouseCaptureStart    = FE3dSceneCanvas_onMouseCaptureStart;
+   o.onMouseCapture         = FE3dSceneCanvas_onMouseCapture;
+   o.onMouseCaptureStop     = FE3dSceneCanvas_onMouseCaptureStop;
    // @event
-   o.onResize            = FE3dSceneCanvas_onResize;
+   o.onTouchStart           = FE3dSceneCanvas_onTouchStart;
+   o.onTouchMove            = FE3dSceneCanvas_onTouchMove;
+   o.onTouchStop            = FE3dSceneCanvas_onTouchStop;
    // @event
-   o.onSceneLoad         = FE3dSceneCanvas_onSceneLoad;
+   o.onSceneLoad            = FE3dSceneCanvas_onSceneLoad;
+   o.onResize               = FE3dSceneCanvas_onResize;
    //..........................................................
    // @method
-   o.construct           = FE3dSceneCanvas_construct;
+   o.construct              = FE3dSceneCanvas_construct;
    // @method
-   o.build               = FE3dSceneCanvas_build;
-   o.load                = FE3dSceneCanvas_load;
-   o.setPanel            = FE3dSceneCanvas_setPanel;
-   o.switchPlay          = FE3dSceneCanvas_switchPlay;
-   o.switchMovie         = FE3dSceneCanvas_switchMovie;
+   o.load                   = FE3dSceneCanvas_load;
+   o.switchPlay             = FE3dSceneCanvas_switchPlay;
+   o.switchMovie            = FE3dSceneCanvas_switchMovie;
+   o.doAction               = FE3dSceneCanvas_doAction;
    // @method
-   o.dispose             = FE3dSceneCanvas_dispose;
+   o.dispose                = FE3dSceneCanvas_dispose;
    return o;
 }
 
@@ -51,14 +62,14 @@ function FE3dSceneCanvas_onEnterFrame(){
    //..........................................................
    // 按键处理
    var c = s.camera();
-   var d = 0.5;
+   var d = 0.1;
    var r = 0.05;
    var kw = RKeyboard.isPress(EKeyCode.W);
    var ks = RKeyboard.isPress(EKeyCode.S);
-   if(kw && !ks){
+   if((kw && !ks) || o._actionForward){
       c.doWalk(d);
    }
-   if(!kw && ks){
+   if((!kw && ks) || o._actionBack){
       c.doWalk(-d);
    }
    var ka = RKeyboard.isPress(EKeyCode.A);
@@ -73,10 +84,10 @@ function FE3dSceneCanvas_onEnterFrame(){
    }
    var kq = RKeyboard.isPress(EKeyCode.Q);
    var ke = RKeyboard.isPress(EKeyCode.E);
-   if(kq && !ke){
+   if((kq && !ke) || o._actionUp){
       c.doFly(d);
    }
-   if(!kq && ke){
+   if((!kq && ke) || o._actionDown){
       c.doFly(-d);
    }
    var kz = RKeyboard.isPress(EKeyCode.Z);
@@ -114,6 +125,8 @@ function FE3dSceneCanvas_onEnterFrame(){
 //==========================================================
 function FE3dSceneCanvas_onMouseCaptureStart(p){
    var o = this;
+   return;
+   debugger
    var s = o._activeScene;
    if(!s){
       return;
@@ -134,6 +147,8 @@ function FE3dSceneCanvas_onMouseCaptureStart(p){
 //==========================================================
 function FE3dSceneCanvas_onMouseCapture(p){
    var o = this;
+   return;
+   debugger
    var s = o._activeScene;
    if(!s){
       return;
@@ -157,24 +172,73 @@ function FE3dSceneCanvas_onMouseCaptureStop(p){
 }
 
 //==========================================================
-// <T>加载模板处理。</T>
+// <T>触摸事件开始处理。</T>
 //
 // @method
-// @param p:template:FTemplate3d 模板
+// @param p:event:TouchEvent 触摸事件
 //==========================================================
-function FE3dSceneCanvas_onResize(){
+function FE3dSceneCanvas_onTouchStart(p){
    var o = this;
-   // 获得大小
-   var hp = o._hPanel;
-   var w = hp.offsetWidth;
-   var h = hp.offsetHeight;
-   // 设置大小
-   var hc = o._hCanvas;
-   hc.width = w;
-   hc.height = h;
-   // 设置范围
-   var c = o._context;
-   c.setViewport(0, 0, w, h);
+   // 检查场景加载完成
+   var s = o._activeScene;
+   if(!s){
+      return;
+   }
+   var r = o._activeScene.region();
+   // 获得事件
+   var ts = p.touches;
+   var c = ts.length;
+   // 单个触点事件处理
+   if(c == 1){
+      p.preventDefault();
+      // 处理事件
+      var t = ts[0];
+      o._captureStatus = true;
+      o._capturePosition.set(t.clientX, t.clientY);
+      o._captureCameraPosition.assign(s.camera().position());
+      o._captureCameraRotation.assign(s.camera().rotation());
+   }
+}
+
+//==========================================================
+// <T>触摸事件移动处理。</T>
+//
+// @method
+// @param p:event:TouchEvent 触摸事件
+//==========================================================
+function FE3dSceneCanvas_onTouchMove(p){
+   var o = this;
+   // 检查状态
+   if(!o._captureStatus){
+      return;
+   }
+   // 获得事件
+   var ts = p.touches;
+   var c = ts.length;
+   // 单个触点事件处理
+   if(c == 1){
+      p.preventDefault();
+      // 处理事件
+      var t = ts[0];
+      var cm = o._activeScene.camera();
+      var cr = cm.rotation();
+      // 计算偏移
+      var cx = t.clientX - o._capturePosition.x;
+      var cy = t.clientY - o._capturePosition.y;
+      cr.x = o._captureCameraRotation.x + (-cy * 0.003);
+      cr.y = o._captureCameraRotation.y + (-cx * 0.003);
+   }
+}
+
+//==========================================================
+// <T>触摸事件结束处理。</T>
+//
+// @method
+// @param p:event:TouchEvent 触摸事件
+//==========================================================
+function FE3dSceneCanvas_onTouchStop(p){
+   var o = this;
+   o._captureStatus = false;
 }
 
 //==========================================================
@@ -197,38 +261,37 @@ function FE3dSceneCanvas_onSceneLoad(p){
 }
 
 //==========================================================
+// <T>改变大小事件处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件信息
+//==========================================================
+function FE3dSceneCanvas_onResize(p){
+   var o = this;
+   o.__base.FE3dCanvas.onResize.call(o, p);
+   // 获得相机信息
+   var c = o._context;
+   var cs = c.size();
+   var s = o._activeScene;
+   if(s){
+      var rp = s.camera().projection();
+      rp.size().set(cs.width, cs.height);
+      rp.update();
+   }
+}
+
+//==========================================================
 // <T>构造处理。</T>
 //
 // @method
 //==========================================================
 function FE3dSceneCanvas_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FE3dCanvas.construct.call(o);
    o._rotation = new SVector3();
    o._capturePosition = new SPoint2();
-   o._captureRotation = new SVector3();
-}
-
-//==========================================================
-// <T>构建处理。</T>
-//
-// @method
-// @param p:document:HtmlTag 页面元素
-//==========================================================
-function FE3dSceneCanvas_build(p){
-   var o = this;
-   // 创建画板
-   var h = o._hCanvas = RBuilder.create(p, 'CANVAS');
-   h.__linker = o;
-   // 创建渲染环境
-   var c = o._context = REngine3d.createContext(FWglContext, h);
-   // 启动处理
-   RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
-   RStage.start(1000 / 60);
-   // 监听大小改变
-   RWindow.lsnsResize.register(o, o.onResize);
-   // 注册鼠标捕捉监听
-   RConsole.find(FMouseConsole).register(o);
+   o._captureCameraPosition = new SPoint3();
+   o._captureCameraRotation = new SVector3();
 }
 
 //==========================================================
@@ -253,22 +316,6 @@ function FE3dSceneCanvas_load(p){
 }
 
 //==========================================================
-// <T>设置面板处理。</T>
-//
-// @method
-//==========================================================
-function FE3dSceneCanvas_setPanel(p){
-   var o = this;
-   var c = o._context;
-   var hc = o._hCanvas;
-   // 放入父容器
-   o._hPanel = p;
-   p.appendChild(o._hCanvas);
-   // 改变大小
-   o.onResize();
-}
-
-//==========================================================
 // <T>切换播放模式。</T>
 //
 // @method
@@ -285,6 +332,7 @@ function FE3dSceneCanvas_switchPlay(p){
          d._optionPlay = p;
       }
    }
+   o._actionPlay = p;
 }
 
 //==========================================================
@@ -304,6 +352,50 @@ function FE3dSceneCanvas_switchMovie(p){
          d._optionMovie = p;
       }
    }
+   o._actionMovie = p;
+}
+
+//==========================================================
+// <T>切换动画模式。</T>
+//
+// @method
+// @param p:modeCd:Integer 
+//==========================================================
+function FE3dSceneCanvas_doAction(e, p, f){
+   var o = this;
+   var s = o._activeScene;
+   if(!s){
+      return;
+   }
+   // 获得事件
+   e.preventDefault();
+   o._actionUp = false;
+   o._actionDown = false;
+   o._actionForward = false;
+   o._actionBack = false;
+   // 设置数据
+   switch(p){
+      case 'fullscreen':
+         var v = o._actionFullScreen = !o._actionFullScreen;
+         RHtml.fullscreen(o._hPanel, v);
+         break;
+      case 'play':
+         o.switchMovie(!o._actionMovie);
+         o.switchPlay(o._actionMovie);
+         break;
+      case 'up':
+         o._actionUp = f;
+         break;
+      case 'down':
+         o._actionDown = f;
+         break;
+      case 'forward':
+         o._actionForward = f;
+         break;
+      case 'back':
+         o._actionBack = f;
+         break;
+   }
 }
 
 //==========================================================
@@ -313,6 +405,13 @@ function FE3dSceneCanvas_switchMovie(p){
 //==========================================================
 function FE3dSceneCanvas_dispose(){
    var o = this;
+   // 移除事件
+   var h = o._hCanvas;
+   if(h){
+      h.removeEventListener('touchstart', FE3dSceneCanvas_ohTouchStart);
+      h.removeEventListener('touchmove', FE3dSceneCanvas_ohTouchMove);
+      h.removeEventListener('touchend', FE3dSceneCanvas_ohTouchStop);
+   }
    // 释放旋转
    var v = o._rotation;
    if(v){
@@ -320,5 +419,5 @@ function FE3dSceneCanvas_dispose(){
       o._rotation = null;
    }
    // 父处理
-   o.__base.FObject.dispose.call(o);
+   o.__base.FE3dCanvas.dispose.call(o);
 }

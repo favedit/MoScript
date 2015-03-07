@@ -439,6 +439,7 @@ function FDsSceneCanvas_selectMaterial(p){
       var r = s.get(i);
       if(r._materialReference == p){
          o._selectRenderables.push(r);
+         r._optionSelected = true;
          r.showBoundBox();
       }
    }
@@ -505,6 +506,7 @@ function FDsSceneCanvas_selectRenderable(p){
    o.selectNone();
    if(p){
       o._selectRenderables.push(p);
+      p._optionSelected = true;
       p.showBoundBox();
    }
    // 设置变量
@@ -586,7 +588,7 @@ function FDsSceneCanvas_switchPlay(p){
 // @method
 // @param p:modeCd:Integer 
 //==========================================================
-function FDsSceneCanvas_switchMovie(p){
+function FDsSceneCanvas_switchMovie(p, f){
    var o = this;
    var s = o._activeScene;
    var ds = s.allDisplays();

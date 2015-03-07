@@ -53,6 +53,8 @@ function FWglContext_linkCanvas(h){
    o._hCanvas = h;
    if(h.getContext){
       var a = new Object();
+      a.antialias = true;
+      a.premultipliedAlpha = false;
       var n = h.getContext('webgl', a);
       if(n == null){
          n = h.getContext('experimental-webgl', a);
@@ -559,7 +561,7 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
          g.vertexAttribPointer(s, 4, g.UNSIGNED_BYTE, true, bs, i);
          break;
       default:
-         RLogger.fatal(o, null, "Unknown vertex format. (format_cd=%d)", formatCd);
+         throw new TError(o, "Unknown vertex format. (format_cd=%d)", formatCd);
          break;
    }
    r = o.checkError("glVertexAttribPointer", "Bind vertex attribute pointer. (slot=%d, format_cd=%d)", s, f);
