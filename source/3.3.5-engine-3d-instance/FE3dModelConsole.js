@@ -58,7 +58,7 @@ function FE3dModelConsole_construct(){
    // 创建线程
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
-   t.lsnsProcess.register(o, o.onProcess);
+   t.addProcessListener(o, o.onProcess);
    RConsole.find(FThreadConsole).start(t);
 }
 

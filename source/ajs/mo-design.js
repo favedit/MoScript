@@ -3258,7 +3258,7 @@ function FDsSceneTechniquePropertyFrame_construct(){
    o.__base.FUiForm.construct.call(o);
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
-   t.lsnsProcess.register(o, o.onRefresh);
+   t.addProcessListener(o, o.onRefresh);
    RConsole.find(FThreadConsole).start(t);
 }
 function FDsSceneTechniquePropertyFrame_loadObject(s, t){

@@ -671,7 +671,7 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
       case EG3dParameterFormat.Float1:{
          // 修改数据
          g.uniform1fv(psl, pdt);
-         o._statistics._frameConstLength += 4;
+         o._statistics._frameConstLength += pdt.byteLength;
          // 检查错误
          r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
@@ -679,7 +679,7 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
       case EG3dParameterFormat.Float2:{
          // 修改数据
          g.uniform2fv(psl, pdt);
-         o._statistics._frameConstLength += 8;
+         o._statistics._frameConstLength += pdt.byteLength;
          // 检查错误
          r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
@@ -687,7 +687,7 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
       case EG3dParameterFormat.Float3:{
          // 修改数据
          g.uniform3fv(psl, pdt);
-         o._statistics._frameConstLength += 12;
+         o._statistics._frameConstLength += pdt.byteLength;
          // 检查错误
          r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
@@ -695,7 +695,7 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
       case EG3dParameterFormat.Float4:{
          // 修改数据
          g.uniform4fv(psl, pdt);
-         o._statistics._frameConstLength += 16;
+         o._statistics._frameConstLength += pdt.byteLength;
          // 检查错误
          r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
@@ -713,37 +713,32 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
          dt[ 7] = pdt[ 6];
          dt[ 8] = pdt[10];
          g.uniformMatrix3fv(psl, g.FALSE, dt);
-         o._statistics._frameConstLength += 36;
+         o._statistics._frameConstLength += dt.byteLength;
          // 检查错误
          r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float4x3:{
-         // 检查长度
-         if(length % 48 != 0){
-            RLogger.fatal(o, null, "Count is invalid. (count=%d)", pdc);
-            return false;
-         }
          // 修改数据
          g.uniform4fv(psl, g.FALSE, pd);
-         o._statistics._frameConstLength += 48;
+         o._statistics._frameConstLength += dt.byteLength;
          // 检查错误
          r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float4x4:{
          // 修改数据
+         var d = null;
          if(pdt.constructor == Float32Array){
-            g.uniformMatrix4fv(psl, g.FALSE, pdt);
-            o._statistics._frameConstLength += pdt.byteLength;
+            d = pdt;
          }else if(pdt.writeData){
-            var d = o._data16;
+            d = o._data16;
             pdt.writeData(d, 0);
-            g.uniformMatrix4fv(psl, g.FALSE, d);
-            o._statistics._frameConstLength += 48;
          }else{
             throw new TError('Unknown data type.');
          }
+         g.uniformMatrix4fv(psl, g.FALSE, d);
+         o._statistics._frameConstLength += d.byteLength;
          // 检查错误
          r = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd=%d, slot=%d, pData=0x%08X, count=%d)", psc, psl, pdt, pdc);
          break;

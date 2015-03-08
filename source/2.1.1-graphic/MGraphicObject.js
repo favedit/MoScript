@@ -14,6 +14,7 @@ function MGraphicObject(o){
    // @method
    o.graphicContext     = MGraphicObject_graphicContext;
    o.linkGraphicContext = MGraphicObject_linkGraphicContext;
+   o.dispose            = MGraphicObject_dispose;
    return o;
 }
 
@@ -42,4 +43,14 @@ function MGraphicObject_linkGraphicContext(p){
    }else{
       throw new TError(o, 'Link graphic context failure. (context={1})', p);
    }
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function MGraphicObject_dispose(){
+   var o = this;
+   o._graphicContext = null;
 }

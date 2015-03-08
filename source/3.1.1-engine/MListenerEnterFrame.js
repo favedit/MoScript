@@ -1,45 +1,45 @@
 //==========================================================
-// <T>加载监听器接口。</T>
+// <T>进入帧监听器接口。</T>
 //
 // @console
 // @author maocy
 // @version 150130
 //==========================================================
-function MListenerLoad(o){
+function MListenerEnterFrame(o){
    o = RClass.inherits(this, o, MListener);
    //..........................................................
    // @method
-   o.addLoadListener     = MListenerLoad_addLoadListener;
-   o.removeLoadListener  = MListenerLoad_removeLoadListener;
+   o.addEnterFrameListener     = MListenerEnterFrame_addEnterFrameListener;
+   o.removeEnterFrameListener  = MListenerEnterFrame_removeEnterFrameListener;
    // @method
-   o.processLoadListener = MListenerLoad_processLoadListener;
+   o.processEnterFrameListener = MListenerEnterFrame_processEnterFrameListener;
    return o;
 }
 
 //==========================================================
-// <T>注册一个加载监听器。</T>
+// <T>注册一个进入帧监听器。</T>
 //
 // @method
 // @param w:owner:String 拥有者
 // @param m:method:Function 函数
 //==========================================================
-function MListenerLoad_addLoadListener(w, m){
-   return this.addListener(EEvent.Load, w, m);
+function MListenerEnterFrame_addEnterFrameListener(w, m){
+   return this.addListener(EEvent.EnterFrame, w, m);
 }
 
 //==========================================================
-// <T>注销一个加载监听器。</T>
+// <T>注销一个进入帧监听器。</T>
 //
 // @method
 // @param w:owner:String 拥有者
 // @param m:method:Function 函数
 //==========================================================
-function MListenerLoad_removeLoadListener(w, m){
-   this.removeListener(EEvent.Load, w, m);
+function MListenerEnterFrame_removeEnterFrameListener(w, m){
+   this.removeListener(EEvent.EnterFrame, w, m);
 }
 
 //==========================================================
-// <T>加载监听处理。</T>
+// <T>进入帧监听处理。</T>
 //
 // @method
 // @param p1:parameter1:Object 参数1
@@ -48,6 +48,6 @@ function MListenerLoad_removeLoadListener(w, m){
 // @param p4:parameter4:Object 参数4
 // @param p5:parameter5:Object 参数5
 //==========================================================
-function MListenerLoad_processLoadListener(p1, p2, p3, p4, p5){
-   this.processListener(EEvent.Load, p1, p2, p3, p4, p5);
+function MListenerEnterFrame_processEnterFrameListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.EnterFrame, p1, p2, p3, p4, p5);
 }

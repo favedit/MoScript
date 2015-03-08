@@ -343,6 +343,7 @@ function FE3dMeshRenderable(o){
    o.textures         = FE3dMeshRenderable_textures;
    o.bones            = FE3dMeshRenderable_bones;
    o.process          = FE3dMeshRenderable_process;
+   o.processDelay     = FE3dMeshRenderable_processDelay;
    o.update           = FE3dMeshRenderable_update;
    o.dispose          = FE3dMeshRenderable_dispose;
    return o;
@@ -377,6 +378,9 @@ function FE3dMeshRenderable_process(p){
          }
       }
    }
+}
+function FE3dMeshRenderable_processDelay(){
+   var o = this;
 }
 function FE3dMeshRenderable_update(p){
    var o = this;
@@ -501,7 +505,7 @@ function FE3dModelConsole_construct(){
    o._models = new TDictionary();
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
-   t.lsnsProcess.register(o, o.onProcess);
+   t.addProcessListener(o, o.onProcess);
    RConsole.find(FThreadConsole).start(t);
 }
 function FE3dModelConsole_models(){
@@ -857,8 +861,6 @@ function FE3dSceneCanvas_onEnterFrame(){
 }
 function FE3dSceneCanvas_onMouseCaptureStart(p){
    var o = this;
-   return;
-   debugger
    var s = o._activeScene;
    if(!s){
       return;
@@ -867,12 +869,10 @@ function FE3dSceneCanvas_onMouseCaptureStart(p){
    var st = RConsole.find(FG3dTechniqueConsole).find(o._context, FG3dSelectTechnique);
    var r = st.test(r, p.offsetX, p.offsetY);
    o._capturePosition.set(p.clientX, p.clientY);
-   o._captureRotation.assign(s.camera()._rotation);
+   o._captureCameraRotation.assign(s.camera()._rotation);
 }
 function FE3dSceneCanvas_onMouseCapture(p){
    var o = this;
-   return;
-   debugger
    var s = o._activeScene;
    if(!s){
       return;
@@ -881,7 +881,7 @@ function FE3dSceneCanvas_onMouseCapture(p){
    var cy = p.clientY - o._capturePosition.y;
    var c = o._activeScene.camera();
    var r = c.rotation();
-   var cr = o._captureRotation;
+   var cr = o._captureCameraRotation;
    r.x = cr.x + cy * 0.003;
    r.y = cr.y + cx * 0.003;
 }
@@ -1083,7 +1083,7 @@ function FE3dSceneConsole_construct(){
    f.register(EE3dScene.Renderable, FE3dSceneDisplayRenderable);
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
-   t.lsnsProcess.register(o, o.onProcess);
+   t.addProcessListener(o, o.onProcess);
    RConsole.find(FThreadConsole).start(t);
 }
 function FE3dSceneConsole_factory(){
@@ -1721,7 +1721,7 @@ function FE3dTemplateConsole_construct(){
    o._templates = new TDictionary();
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
-   t.lsnsProcess.register(o, o.onProcess);
+   t.addProcessListener(o, o.onProcess);
    RConsole.find(FThreadConsole).start(t);
 }
 function FE3dTemplateConsole_alloc(c, n){

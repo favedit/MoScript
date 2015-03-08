@@ -1030,12 +1030,11 @@ function FStatisticsConsole_resetFrame(u, d){
    }
 }
 function FThread(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MListenerProcess);
    o._name       = null;
    o._statusCd   = EThreadStatus.Sleep;
    o._interval   = 100;
    o._delay      = 0;
-   o.lsnsProcess = null;
    o.construct   = FThread_construct;
    o.name        = FThread_name;
    o.statusCd    = FThread_statusCd;
@@ -1049,7 +1048,6 @@ function FThread(o){
 function FThread_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o.lsnsProcess = new TListeners();
 }
 function FThread_name(){
    return this._name;
@@ -1072,7 +1070,7 @@ function FThread_stop(){
 function FThread_process(p){
    var o = this;
    if(o._delay <= 0){
-      o.lsnsProcess.process(o);
+      o.processProcessListener(o);
       o._delay = o._interval;
    }else{
       o._delay -= p;

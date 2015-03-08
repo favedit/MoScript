@@ -816,7 +816,7 @@ function FE3rModelConsole_construct(){
    o._dynamicMeshs = new TDictionary();
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
-   t.lsnsProcess.register(o, o.onProcess);
+   t.addProcessListener(o, o.onProcess);
    RConsole.find(FThreadConsole).start(t);
 }
 function FE3rModelConsole_findModel(p){
@@ -1346,7 +1346,7 @@ function FE3rTextureConsole_construct(){
    o._textures = new TDictionary();
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
-   t.lsnsProcess.register(o, o.onProcess);
+   t.addProcessListener(o, o.onProcess);
    RConsole.find(FThreadConsole).start(t);
 }
 function FE3rTextureConsole_bitmaps(){

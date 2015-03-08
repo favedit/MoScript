@@ -18,6 +18,9 @@ function FE3dStage(o){
    o._region           = null;
    o._allDisplays      = null;
    //..........................................................
+   // @event
+   o.onProcess         = FE3dStage_onProcess;
+   //..........................................................
    // @method
    o.construct         = FE3dStage_construct;
    o.setup             = FE3dStage_setup;
@@ -33,9 +36,69 @@ function FE3dStage(o){
    // @method
    o.filterDisplays    = FE3dStage_filterDisplays;
    o.allDisplays       = FE3dStage_allDisplays;
-   // @method
-   o.process           = FE3dStage_process;
    return o;
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+function FE3dStage_onProcess(){
+   var o = this;
+   var r = o._region;
+   var t = o._technique;
+   var g = t._graphicContext;
+   // 统计处理
+   var ss = r._statistics = o._statistics;
+   ss.resetFrame();
+   ss._frame.begin();
+   //..........................................................
+   ss._frameProcess.begin();
+   // 更新区域（更新光源相机等特殊处理）
+   g.prepare();
+   t.updateRegion(r);
+   // 清空区域
+   r.prepare();
+   r.change();
+   // 处理所有层
+   var ls = o._layers;
+   var lc = ls.count();
+   for(var i = 0; i < lc; i++){
+      var l = ls.value(i);
+      // 过滤单个层渲染信息
+      r.reset();
+      l.process();
+      l.filterRenderables(r);
+      r.update();
+   }
+   // 处理所有渲染集合
+   RConsole.find(FE3dStageConsole).process(r);
+   ss._frameProcess.end();
+   //..........................................................
+   ss._frameDraw.begin();
+   // 处理所有层
+   if(r.isChanged()){
+      t.clear(o._backgroundColor);
+      for(var i = 0; i < lc; i++){
+         var l = ls.value(i);
+         // 选用技术
+         var lt = l.technique();
+         if(!lt){
+            lt = t;
+         }
+         // 渲染单个层
+         r.reset();
+         r.renderables().assign(l.visibleRenderables());
+         lt.drawRegion(r);
+      }
+      // 绘制处理
+      t.present(r);
+   }
+   ss._frameDraw.end();
+   //..........................................................
+   // 处理完成
+   ss._frame.end();
 }
 
 //==========================================================
@@ -174,11 +237,9 @@ function FE3dStage_filterDisplays(p){
    var o = this;
    // 过滤显示层集合
    var s = o._layers;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.value(i).filterDisplays(p);
-      }
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      s.value(i).filterDisplays(p);
    }
 }
 
@@ -194,65 +255,4 @@ function FE3dStage_allDisplays(){
    s.clear();
    o.filterDisplays(s);
    return s;
-}
-
-//==========================================================
-// <T>逻辑处理。</T>
-//
-// @method
-//==========================================================
-function FE3dStage_process(){
-   var o = this;
-   var r = o._region;
-   var t = o._technique;
-   // 统计处理
-   var ss = r._statistics = o._statistics;
-   ss.resetFrame();
-   ss._frame.begin();
-   // 父处理
-   o.__base.FStage.process.call(o);
-   // 更新区域（更新光源相机等特殊处理）
-   t._graphicContext.prepare();
-   t.updateRegion(r);
-   // 清空区域
-   r.prepare();
-   r.change();
-   // 处理所有层
-   ss._frameProcess.begin();
-   var ls = o._layers;
-   if(ls){
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         var l = ls.value(i);
-         // 渲染单个层
-         r.reset();
-         l.filterRenderables(r);
-         r.update();
-      }
-   }
-   ss._frameProcess.end();
-   // 处理所有层
-   ss._frameDraw.begin();
-   if(r.isChanged()){
-      t.clear(o._backgroundColor);
-      if(ls){
-         var c = ls.count();
-         for(var i = 0; i < c; i++){
-            var l = ls.value(i);
-            // 获得技术
-            var lt = l.technique();
-            if(!lt){
-               lt = t;
-            }
-            // 渲染单个层
-            r.reset();
-            r.renderables().assign(l.visibleRenderables());
-            lt.drawRegion(r);
-         }
-      }
-      // 绘制处理
-      t.present(r);
-   }
-   ss._frameDraw.end();
-   ss._frame.end();
 }

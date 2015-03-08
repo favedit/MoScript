@@ -1464,10 +1464,16 @@ function FG3dMaterialTexture_construct(){
 }
 function FG3dObject(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
-   o.setup = FG3dObject_setup;
+   o.setup   = FG3dObject_setup;
+   o.dispose = FG3dObject_dispose;
    return o;
 }
 function FG3dObject_setup(){
+}
+function FG3dObject_dispose(){
+   var o = this;
+   o.__base.MGraphicObject.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 function FG3dOrthoCamera(o){
    o = RClass.inherits(this, o, FG3dCamera);

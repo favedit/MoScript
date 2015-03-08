@@ -23,51 +23,42 @@ function FE3dGeneralColorAutomaticEffect(o){
 // @method
 // @param p:renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FE3dGeneralColorAutomaticEffect_buildMaterial(p){
+function FE3dGeneralColorAutomaticEffect_buildMaterial(f, p){
    var o = this;
+   var m = p.material();
    // 建立容器
-   var f = p.activeInfo();
    var d = f.material;
    if(!d){
-      d = f.material = new Float32Array(4 * 10);
+      d = f.material = RClass.create(FFloatStream);
+      d.setLength(40);
+      m._dirty = true;
    }
    // 建立数据
-   var m = p.material();
    if(m._dirty){
       var mi = m.info();
-      var i = 0;
-      // fc_color
-      d[i++] = mi.colorMin;
-      d[i++] = mi.colorMax;
-      d[i++] = mi.colorRate;
-      d[i++] = mi.colorMerge;
-      // fc_alpha
-      d[i++] = mi.alphaBase;
+      d.reset();
+      // 颜色设置（索引0）
+      d.writeFloat4(mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+      // 颜色透明（索引1）
       if(mi.optionAlpha){
-         d[i++] = mi.alphaRate;
+         d.writeFloat4(mi.alphaBase, mi.alphaRate, 0, 0);
       }else{
-         d[i++] = 1;
+         d.writeFloat4(mi.alphaBase, 1, 0, 0);
       }
-      d[i++] = 0;
-      d[i++] = 0;
-      // fc_ambient_color
-      i += mi.ambientColor.copyArray(d, i);
-      // fc_diffuse_color
-      i += mi.diffuseColor.copyArray(d, i);
-      // fc_specular_color
-      i += mi.specularColor.copyArray(d, i);
-      d[i++] = mi.specularBase;
-      d[i++] = mi.specularLevel;
-      d[i++] = mi.specularAverage;
-      d[i++] = mi.specularShadow;
-      // fc_reflect_color
-      i += mi.reflectColor.copyArray(d, i);
-      d[i++] = 0;
-      d[i++] = 0;
-      d[i++] = 1.0 - mi.reflectMerge;
-      d[i++] = mi.reflectMerge;
-      // fc_emissive_color
-      i += mi.emissiveColor.copyArray(d, i);
+      // 环境颜色（索引2）
+      d.writeColor4(mi.ambientColor);
+      // 散射颜色（索引3）
+      d.writeColor4(mi.diffuseColor);
+      // 高光颜色（索引4）
+      d.writeColor4(mi.specularColor);
+      // 高光参数（索引5）
+      d.writeFloat4(mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
+      // 反射颜色（索引6）
+      d.writeColor4(mi.reflectColor);
+      // 反射参数（索引7）
+      d.writeFloat4(0, 0, 1 - mi.reflectMerge, mi.reflectMerge);
+      // 发光颜色（索引8）
+      d.writeColor4(mi.emissiveColor);
       m._dirty = false;
    }
 }
@@ -113,8 +104,9 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
       var i = pr._materialId;
       p.setParameter4('fc_material', 1/32, i/512, 0, 0);
    }else{
-      o.buildMaterial(pr);
-      p.setParameter('fc_materials', pr.activeInfo().material);
+      var f = pr.activeInfo();
+      o.buildMaterial(f, pr);
+      p.setParameter('fc_materials', f.material.memory());
    }
    //p.setParameter4('fc_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
    //p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);

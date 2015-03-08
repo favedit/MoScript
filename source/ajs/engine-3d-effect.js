@@ -6,42 +6,31 @@ function FE3dGeneralColorAutomaticEffect(o){
    o.drawGroup      = FE3dGeneralColorAutomaticEffect_drawGroup;
    return o;
 }
-function FE3dGeneralColorAutomaticEffect_buildMaterial(p){
+function FE3dGeneralColorAutomaticEffect_buildMaterial(f, p){
    var o = this;
-   var f = p.activeInfo();
+   var m = p.material();
    var d = f.material;
    if(!d){
-      d = f.material = new Float32Array(4 * 10);
+      d = f.material = RClass.create(FFloatStream);
+      d.setLength(40);
+      m._dirty = true;
    }
-   var m = p.material();
    if(m._dirty){
       var mi = m.info();
-      var i = 0;
-      d[i++] = mi.colorMin;
-      d[i++] = mi.colorMax;
-      d[i++] = mi.colorRate;
-      d[i++] = mi.colorMerge;
-      d[i++] = mi.alphaBase;
+      d.reset();
+      d.writeFloat4(mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
       if(mi.optionAlpha){
-         d[i++] = mi.alphaRate;
+         d.writeFloat4(mi.alphaBase, mi.alphaRate, 0, 0);
       }else{
-         d[i++] = 1;
+         d.writeFloat4(mi.alphaBase, 1, 0, 0);
       }
-      d[i++] = 0;
-      d[i++] = 0;
-      i += mi.ambientColor.copyArray(d, i);
-      i += mi.diffuseColor.copyArray(d, i);
-      i += mi.specularColor.copyArray(d, i);
-      d[i++] = mi.specularBase;
-      d[i++] = mi.specularLevel;
-      d[i++] = mi.specularAverage;
-      d[i++] = mi.specularShadow;
-      i += mi.reflectColor.copyArray(d, i);
-      d[i++] = 0;
-      d[i++] = 0;
-      d[i++] = 1.0 - mi.reflectMerge;
-      d[i++] = mi.reflectMerge;
-      i += mi.emissiveColor.copyArray(d, i);
+      d.writeColor4(mi.ambientColor);
+      d.writeColor4(mi.diffuseColor);
+      d.writeColor4(mi.specularColor);
+      d.writeFloat4(mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
+      d.writeColor4(mi.reflectColor);
+      d.writeFloat4(0, 0, 1 - mi.reflectMerge, mi.reflectMerge);
+      d.writeColor4(mi.emissiveColor);
       m._dirty = false;
    }
 }
@@ -75,8 +64,9 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
       var i = pr._materialId;
       p.setParameter4('fc_material', 1/32, i/512, 0, 0);
    }else{
-      o.buildMaterial(pr);
-      p.setParameter('fc_materials', pr.activeInfo().material);
+      var f = pr.activeInfo();
+      o.buildMaterial(f, pr);
+      p.setParameter('fc_materials', f.material.memory());
    }
    o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }

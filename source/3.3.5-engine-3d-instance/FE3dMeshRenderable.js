@@ -23,6 +23,7 @@ function FE3dMeshRenderable(o){
    o.bones            = FE3dMeshRenderable_bones;
    // @method
    o.process          = FE3dMeshRenderable_process;
+   o.processDelay     = FE3dMeshRenderable_processDelay;
    o.update           = FE3dMeshRenderable_update;
    // @method
    o.dispose          = FE3dMeshRenderable_dispose;
@@ -108,6 +109,15 @@ function FE3dMeshRenderable_process(p){
          }
       }
    }
+}
+
+//==========================================================
+// <T>延迟处理。</T>
+//
+// @method
+//==========================================================
+function FE3dMeshRenderable_processDelay(){
+   var o = this;
 }
 
 //==========================================================

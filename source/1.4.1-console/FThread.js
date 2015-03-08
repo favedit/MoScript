@@ -6,16 +6,13 @@
 // @version 150105
 //==========================================================
 function FThread(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MListenerProcess);
    //..........................................................
    // @attribute
    o._name       = null;
    o._statusCd   = EThreadStatus.Sleep;
    o._interval   = 100;
    o._delay      = 0;
-   //..........................................................
-   // @listener
-   o.lsnsProcess = null;
    //..........................................................
    // @method
    o.construct   = FThread_construct;
@@ -37,7 +34,6 @@ function FThread(o){
 function FThread_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o.lsnsProcess = new TListeners();
 }
 
 //==========================================================
@@ -108,7 +104,7 @@ function FThread_stop(){
 function FThread_process(p){
    var o = this;
    if(o._delay <= 0){
-      o.lsnsProcess.process(o);
+      o.processProcessListener(o);
       o._delay = o._interval;
    }else{
       o._delay -= p;

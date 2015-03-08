@@ -8504,15 +8504,18 @@ var EEvent = new function EEvent(){
    var o = this;
    o.Unknown     = 0;
    o.Load        = 1;
-   o.Enter       = 2;
-   o.Leave       = 3;
-   o.Focus       = 4;
-   o.Blur        = 5;
-   o.Click       = 6;
-   o.DoubleClick = 7;
-   o.ItemClick   = 8;
-   o.Selected    = 9;
-   o.DataChanged = 10;
+   o.Process     = 2;
+   o.EnterFrame  = 3;
+   o.LeaveFrame  = 4;
+   o.Enter       = 5;
+   o.Leave       = 6;
+   o.Focus       = 7;
+   o.Blur        = 8;
+   o.Click       = 9;
+   o.DoubleClick = 10;
+   o.ItemClick   = 11;
+   o.Selected    = 12;
+   o.DataChanged = 13;
    return o;
 }
 var EHttpContent = new function EHttpContent(){
@@ -9070,14 +9073,34 @@ function MListener_dispose(){
 function MListenerLoad(o){
    o = RClass.inherits(this, o, MListener);
    o.addLoadListener     = MListenerLoad_addLoadListener;
+   o.removeLoadListener  = MListenerLoad_removeLoadListener;
    o.processLoadListener = MListenerLoad_processLoadListener;
    return o;
 }
 function MListenerLoad_addLoadListener(w, m){
    return this.addListener(EEvent.Load, w, m);
 }
+function MListenerLoad_removeLoadListener(w, m){
+   this.removeListener(EEvent.Load, w, m);
+}
 function MListenerLoad_processLoadListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.Load, p1, p2, p3, p4, p5);
+}
+function MListenerProcess(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addProcessListener     = MListenerProcess_addProcessListener;
+   o.removeProcessListener  = MListenerProcess_removeProcessListener;
+   o.processProcessListener = MListenerProcess_processProcessListener;
+   return o;
+}
+function MListenerProcess_addProcessListener(w, m){
+   return this.addListener(EEvent.Process, w, m);
+}
+function MListenerProcess_removeProcessListener(w, m){
+   this.removeListener(EEvent.Process, w, m);
+}
+function MListenerProcess_processProcessListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Process, p1, p2, p3, p4, p5);
 }
 function MMouseCapture(o){
    o = RClass.inherits(this, o);
@@ -9496,20 +9519,36 @@ function FClassFactory_dispose(){
 }
 function FDataStream(o){
    o = RClass.inherits(this, o, FObject, MDataView, MDataStream);
+   o._length   = 0;
+   o._memory   = null;
+   o._viewer   = null;
    o.construct = FDataStream_construct;
+   o.length    = FDataStream_length;
+   o.setLength = FDataStream_setLength;
+   o.memory    = FDataStream_memory;
    o.dispose   = FDataStream_dispose;
    return o;
 }
 function FDataStream_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o._memory = new ArrayBuffer();
+}
+function FDataStream_length(){
+   return this._length;
+}
+function FDataStream_setLength(p){
+   var o = this;
+   o._length = p;
+   o._memory = new ArrayBuffer(p);
    o._viewer = new DataView(o._memory);
+}
+function FDataStream_memory(){
+   return this._memory;
 }
 function FDataStream_dispose(){
    var o = this;
-   o._memory = null;
    o._viewer = null;
+   o._memory = null;
    o.__base.FObject.dispose.call(o);
 }
 function FDataView(o){
@@ -12806,12 +12845,11 @@ function FStatisticsConsole_resetFrame(u, d){
    }
 }
 function FThread(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MListenerProcess);
    o._name       = null;
    o._statusCd   = EThreadStatus.Sleep;
    o._interval   = 100;
    o._delay      = 0;
-   o.lsnsProcess = null;
    o.construct   = FThread_construct;
    o.name        = FThread_name;
    o.statusCd    = FThread_statusCd;
@@ -12825,7 +12863,6 @@ function FThread(o){
 function FThread_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
-   o.lsnsProcess = new TListeners();
 }
 function FThread_name(){
    return this._name;
@@ -12848,7 +12885,7 @@ function FThread_stop(){
 function FThread_process(p){
    var o = this;
    if(o._delay <= 0){
-      o.lsnsProcess.process(o);
+      o.processProcessListener(o);
       o._delay = o._interval;
    }else{
       o._delay -= p;

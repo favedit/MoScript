@@ -3,6 +3,7 @@ function MGraphicObject(o){
    o._graphicContext    = null;
    o.graphicContext     = MGraphicObject_graphicContext;
    o.linkGraphicContext = MGraphicObject_linkGraphicContext;
+   o.dispose            = MGraphicObject_dispose;
    return o;
 }
 function MGraphicObject_graphicContext(){
@@ -18,12 +19,68 @@ function MGraphicObject_linkGraphicContext(p){
       throw new TError(o, 'Link graphic context failure. (context={1})', p);
    }
 }
+function MGraphicObject_dispose(){
+   var o = this;
+   o._graphicContext = null;
+}
 function MGraphicRenderable(o){
    o = RClass.inherits(this, o, FObject);
    o.process = MGraphicRenderable_process;
    return o;
 }
 function MGraphicRenderable_process(){
+}
+function FFloatStream(o){
+   o = RClass.inherits(this, o, FObject);
+   o._length     = 0;
+   o._memory     = null;
+   o._position   = 0;
+   o.construct   = FFloatStream_construct;
+   o.length      = FFloatStream_length;
+   o.setLength   = FFloatStream_setLength;
+   o.memory      = FFloatStream_memory;
+   o.writeFloat4 = FFloatStream_writeFloat4;
+   o.writeColor4 = FFloatStream_writeColor4;
+   o.reset       = FFloatStream_reset;
+   o.clear       = FFloatStream_clear;
+   o.dispose     = FFloatStream_dispose;
+   return o;
+}
+function FFloatStream_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+function FFloatStream_length(){
+   return this._length;
+}
+function FFloatStream_setLength(p){
+   var o = this;
+   o._length = p;
+   o._memory = new Float32Array(p);
+}
+function FFloatStream_memory(){
+   return this._memory;
+}
+function FFloatStream_writeFloat4(a, b, c, d){
+   var o = this;
+   o._memory[o._position++] = a;
+   o._memory[o._position++] = b;
+   o._memory[o._position++] = c;
+   o._memory[o._position++] = d;
+}
+function FFloatStream_writeColor4(p){
+   this.writeFloat4(p.red, p.green, p.blue, p.alpha);
+}
+function FFloatStream_reset(){
+   this._position = 0;
+}
+function FFloatStream_clear(){
+   this._position = 0;
+}
+function FFloatStream_dispose(){
+   var o = this;
+   o._memory = null;
+   o.__base.FObject.dispose.call(o);
 }
 function FGraphicContext(o){
    o = RClass.inherits(this, o, FObject);
@@ -41,6 +98,26 @@ function FGraphicContext_dispose(){
    var o = this;
    o._hCanvas = null;
    o.__base.FObject.dispose.call(o);
+}
+function FGraphicData(o){
+   o = RClass.inherits(this, o, FDataStream);
+   o.writeFloat4 = FDataStream_writeFloat4;
+   o.writeColor4 = FDataStream_writeColor4;
+   return o;
+}
+function FDataStream_writeFloat4(a, b, c, d){
+   var o = this;
+   var p = o._position;
+   var v = o._viewer;
+   var e = o._endianCd;
+   v.setFloat32(p,      a, e);
+   v.setFloat32(p +  4, b, e);
+   v.setFloat32(p +  8, c, e);
+   v.setFloat32(p + 12, d, e);
+   p += 16;
+}
+function FDataStream_writeColor4(p){
+   this.writeFloat4(p.red, p.green, p.blue, p.alpha);
 }
 function FG2dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
@@ -1570,10 +1647,16 @@ function FG3dMaterialTexture_construct(){
 }
 function FG3dObject(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
-   o.setup = FG3dObject_setup;
+   o.setup   = FG3dObject_setup;
+   o.dispose = FG3dObject_dispose;
    return o;
 }
 function FG3dObject_setup(){
+}
+function FG3dObject_dispose(){
+   var o = this;
+   o.__base.MGraphicObject.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 function FG3dOrthoCamera(o){
    o = RClass.inherits(this, o, FG3dCamera);
@@ -4331,25 +4414,25 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
    switch(pdf){
       case EG3dParameterFormat.Float1:{
          g.uniform1fv(psl, pdt);
-         o._statistics._frameConstLength += 4;
+         o._statistics._frameConstLength += pdt.byteLength;
          r = o.checkError("uniform1fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float2:{
          g.uniform2fv(psl, pdt);
-         o._statistics._frameConstLength += 8;
+         o._statistics._frameConstLength += pdt.byteLength;
          r = o.checkError("uniform2fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float3:{
          g.uniform3fv(psl, pdt);
-         o._statistics._frameConstLength += 12;
+         o._statistics._frameConstLength += pdt.byteLength;
          r = o.checkError("uniform3fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float4:{
          g.uniform4fv(psl, pdt);
-         o._statistics._frameConstLength += 16;
+         o._statistics._frameConstLength += pdt.byteLength;
          r = o.checkError("uniform4fv", "Bind const data failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
@@ -4365,32 +4448,28 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
          dt[ 7] = pdt[ 6];
          dt[ 8] = pdt[10];
          g.uniformMatrix3fv(psl, g.FALSE, dt);
-         o._statistics._frameConstLength += 36;
+         o._statistics._frameConstLength += dt.byteLength;
          r = o.checkError("uniformMatrix3fv", "Bind const matrix3x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float4x3:{
-         if(length % 48 != 0){
-            RLogger.fatal(o, null, "Count is invalid. (count=%d)", pdc);
-            return false;
-         }
          g.uniform4fv(psl, g.FALSE, pd);
-         o._statistics._frameConstLength += 48;
+         o._statistics._frameConstLength += dt.byteLength;
          r = o.checkError("uniform4fv", "Bind const matrix4x3 failure. (shader_cd={1}, slot={2}, data={3}, count={4})", psc, psl, pdt, pdc);
          break;
       }
       case EG3dParameterFormat.Float4x4:{
+         var d = null;
          if(pdt.constructor == Float32Array){
-            g.uniformMatrix4fv(psl, g.FALSE, pdt);
-            o._statistics._frameConstLength += pdt.byteLength;
+            d = pdt;
          }else if(pdt.writeData){
-            var d = o._data16;
+            d = o._data16;
             pdt.writeData(d, 0);
-            g.uniformMatrix4fv(psl, g.FALSE, d);
-            o._statistics._frameConstLength += 48;
          }else{
             throw new TError('Unknown data type.');
          }
+         g.uniformMatrix4fv(psl, g.FALSE, d);
+         o._statistics._frameConstLength += d.byteLength;
          r = o.checkError("uniformMatrix4fv", "Bind const matrix4x4 failure. (shader_cd=%d, slot=%d, pData=0x%08X, count=%d)", psc, psl, pdt, pdc);
          break;
       }

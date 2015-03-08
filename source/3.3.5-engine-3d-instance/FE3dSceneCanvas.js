@@ -125,8 +125,6 @@ function FE3dSceneCanvas_onEnterFrame(){
 //==========================================================
 function FE3dSceneCanvas_onMouseCaptureStart(p){
    var o = this;
-   return;
-   debugger
    var s = o._activeScene;
    if(!s){
       return;
@@ -136,7 +134,7 @@ function FE3dSceneCanvas_onMouseCaptureStart(p){
    var st = RConsole.find(FG3dTechniqueConsole).find(o._context, FG3dSelectTechnique);
    var r = st.test(r, p.offsetX, p.offsetY);
    o._capturePosition.set(p.clientX, p.clientY);
-   o._captureRotation.assign(s.camera()._rotation);
+   o._captureCameraRotation.assign(s.camera()._rotation);
 }
 
 //==========================================================
@@ -147,8 +145,6 @@ function FE3dSceneCanvas_onMouseCaptureStart(p){
 //==========================================================
 function FE3dSceneCanvas_onMouseCapture(p){
    var o = this;
-   return;
-   debugger
    var s = o._activeScene;
    if(!s){
       return;
@@ -157,7 +153,7 @@ function FE3dSceneCanvas_onMouseCapture(p){
    var cy = p.clientY - o._capturePosition.y;
    var c = o._activeScene.camera();
    var r = c.rotation();
-   var cr = o._captureRotation;
+   var cr = o._captureCameraRotation;
    r.x = cr.x + cy * 0.003;
    r.y = cr.y + cx * 0.003;
 }

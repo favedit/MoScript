@@ -1,3 +1,35 @@
+function MListenerEnterFrame(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addEnterFrameListener     = MListenerEnterFrame_addEnterFrameListener;
+   o.removeEnterFrameListener  = MListenerEnterFrame_removeEnterFrameListener;
+   o.processEnterFrameListener = MListenerEnterFrame_processEnterFrameListener;
+   return o;
+}
+function MListenerEnterFrame_addEnterFrameListener(w, m){
+   return this.addListener(EEvent.EnterFrame, w, m);
+}
+function MListenerEnterFrame_removeEnterFrameListener(w, m){
+   this.removeListener(EEvent.EnterFrame, w, m);
+}
+function MListenerEnterFrame_processEnterFrameListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.EnterFrame, p1, p2, p3, p4, p5);
+}
+function MListenerLeaveFrame(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addLeaveFrameListener     = MListenerLeaveFrame_addLeaveFrameListener;
+   o.removeLeaveFrameListener  = MListenerLeaveFrame_removeLeaveFrameListener;
+   o.processLeaveFrameListener = MListenerLeaveFrame_processLeaveFrameListener;
+   return o;
+}
+function MListenerLeaveFrame_addLeaveFrameListener(w, m){
+   return this.addListener(EEvent.LeaveFrame, w, m);
+}
+function MListenerLeaveFrame_removeLeaveFrameListener(w, m){
+   this.removeListener(EEvent.LeaveFrame, w, m);
+}
+function MListenerLeaveFrame_processLeaveFrameListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.LeaveFrame, p1, p2, p3, p4, p5);
+}
 function FDisplay(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
    o._parent           = null;
@@ -362,34 +394,38 @@ function FRegion(o){
    return o;
 }
 function FStage(o){
-   o = RClass.inherits(this, o, FObject);
-   o._statusActive  = false;
-   o._layers        = null;
-   o.lsnsEnterFrame = null;
-   o.lsnsLeaveFrame = null;
-   o.construct     = FStage_construct;
-   o.registerLayer = RStage_registerLayer;
-   o.layers        = FStage_layers;
-   o.active        = FStage_active;
-   o.deactive      = FStage_deactive;
-   o.process       = FStage_process;
-   o.dispose       = FStage_dispose;
+   o = RClass.inherits(this, o, FObject, MListenerEnterFrame, MListenerLeaveFrame);
+   o._statusActive   = false;
+   o._layers         = null;
+   o.onProcess       = FStage_onProcess;
+   o.construct       = FStage_construct;
+   o.registerLayer   = RStage_registerLayer;
+   o.unregisterLayer = RStage_unregisterLayer;
+   o.layers          = FStage_layers;
+   o.active          = FStage_active;
+   o.deactive        = FStage_deactive;
+   o.process         = FStage_process;
+   o.dispose         = FStage_dispose;
    return o;
+}
+function FStage_onProcess(){
+   var o = this;
+   var s = o._layers;
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      s.valueAt(i).process();
+   }
 }
 function FStage_construct(){
    var o = this;
-   o.__base.FObject.construct(o);
+   o.__base.FObject.construct.call(o);
    o._layers = new TDictionary();
-   o.lsnsEnterFrame = new TListeners();
-   o.lsnsLeaveFrame = new TListeners();
 }
 function RStage_registerLayer(n, l){
-   var o = this;
-   var s = o._layers;
-   if(!s){
-      s = o._layers = new TDictionary();
-   }
-   s.set(n , l);
+   this._layers.set(n, l);
+}
+function RStage_unregisterLayer(n){
+   this._layers.set(n, null);
 }
 function FStage_layers(){
    return this._layers;
@@ -398,43 +434,32 @@ function FStage_active(){
    var o = this;
    o._statusActive = true;
    var ls = o._layers;
-   if(ls != null){
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         ls.value(i).active();
-      }
+   var c = ls.count();
+   for(var i = 0; i < c; i++){
+      ls.value(i).active();
    }
 }
 function FStage_deactive(){
    var o = this;
    var ls = o._layers;
-   if(ls != null){
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         ls.value(i).deactive();
-      }
+   var c = ls.count();
+   for(var i = 0; i < c; i++){
+      ls.value(i).deactive();
    }
    o._statusActive = false;
 }
 function FStage_process(){
    var o = this;
-   o.lsnsEnterFrame.process(o);
-   var ls = o._layers;
-   if(ls != null){
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         ls.value(i).process();
-      }
-   }
-   o.lsnsLeaveFrame.process(o);
+   o.processEnterFrameListener(o);
+   o.onProcess();
+   o.processLeaveFrameListener(o);
 }
 function FStage_dispose(){
    var o = this;
-   if(o._layers){
-      o._layers.dispose();
-      o._layers = null;
-   }
-   o.__base.FObject.dispose(o);
+   o._layers = RObject.dispose(o._layers);
+   o.__base.MListenerEnterFrame.dispose.call(o);
+   o.__base.MListenerLeaveFrame.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
 }
 var RStage = new function RStage(){
    var o = this;

@@ -21,7 +21,7 @@ function onEnterFrame(){
 }
 //------------------------------------------------------------
 function onSceneLoad(c, s){
-   s.lsnsEnterFrame.register(null, onEnterFrame);
+   s.addEnterFrameListener(null, onEnterFrame);
    //var l = s.layers().get('space');
    //var l = s.layers().get('map');
    //display = l.displays().get(0);
@@ -73,10 +73,10 @@ function onLoad(){
    <TABLE width='100%'>
       <TR>
          <TD align='left'>
-            <IMG src='../ars/picture/fullscreen.png' style='width:5em; height:5em;' ontouchstart='doCanvasAction("fullscreen")'>
+            <IMG src='../ars/picture/fullscreen.png' style='width:5em; height:5em;' onmousedown='doCanvasAction("fullscreen")' ontouchstart='doCanvasAction("fullscreen")'>
          </TD>
          <TD align='right'>
-            <IMG src='../ars/picture/play.png' style='width:5em; height:5em;' ontouchstart='doCanvasAction("play")'>
+            <IMG src='../ars/picture/play.png' style='width:5em; height:5em;' onmousedown='doCanvasAction("play")' ontouchstart='doCanvasAction("play")'>
          </TD>
       </TR>
    </TABLE>
@@ -87,26 +87,26 @@ function onLoad(){
          <TD align='left'>
             <TABLE>
                <TR>
-                  <TD><IMG src='../ars/picture/arrow_up.png' style='width:5em; height:5em;' ontouchstart='doCanvasAction("up", true)' ontouchend='doCanvasAction("up", false)'></TD>
+                  <TD><IMG src='../ars/picture/arrow_up.png' style='width:5em; height:5em;' onmousedown='doCanvasAction("up", true)' onmouseup='doCanvasAction("up", false)' ontouchstart='doCanvasAction("up", true)' ontouchend='doCanvasAction("up", false)'></TD>
                </TR>
                <TR>
                   <TD height='10px'></TD>
                </TR>
                <TR>
-                  <TD><IMG src='../ars/picture/arrow_down.png' style='width:5em; height:5em;' ontouchstart='doCanvasAction("down", true)' ontouchend='doCanvasAction("down", false)'></TD>
+                  <TD><IMG src='../ars/picture/arrow_down.png' style='width:5em; height:5em;' onmousedown='doCanvasAction("down", true)' onmouseup='doCanvasAction("down", false)' ontouchstart='doCanvasAction("down", true)' ontouchend='doCanvasAction("down", false)'></TD>
                </TR>
             </TABLE>
          </TD>
          <TD align='right'>
             <TABLE>
                <TR>
-                  <TD><IMG src='../ars/picture/arrow_up.png' style='width:5em; height:5em;'ontouchstart='doCanvasAction("forward", true)' ontouchend='doCanvasAction("forward", false)'></TD>
+                  <TD><IMG src='../ars/picture/arrow_up.png' style='width:5em; height:5em;'onmousedown='doCanvasAction("forward", true)' onmouseup='doCanvasAction("forward", false)' ontouchstart='doCanvasAction("forward", true)' ontouchend='doCanvasAction("forward", false)'></TD>
                </TR>
                <TR>
                   <TD height='10px'></TD>
                </TR>
                <TR>
-                  <TD><IMG src='../ars/picture/arrow_down.png' style='width:5em; height:5em;' ontouchstart='doCanvasAction("back", true)' ontouchend='doCanvasAction("back", false)'></TD>
+                  <TD><IMG src='../ars/picture/arrow_down.png' style='width:5em; height:5em;' onmousedown='doCanvasAction("back", true)' onmouseup='doCanvasAction("back", false)' ontouchstart='doCanvasAction("back", true)' ontouchend='doCanvasAction("back", false)'></TD>
                </TR>
             </TABLE>
          </TD>

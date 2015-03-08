@@ -95,7 +95,7 @@ function FFrameEventConsole_construct(){
    // 创建线程
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
-   t.lsnsProcess.register(o, o.onProcess);
+   t.addProcessListener(o, o.onProcess);
    RConsole.find(FThreadConsole).start(t);
    RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
 }

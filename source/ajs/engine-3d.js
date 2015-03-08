@@ -313,6 +313,7 @@ function FE3dStage(o){
    o._technique        = null;
    o._region           = null;
    o._allDisplays      = null;
+   o.onProcess         = FE3dStage_onProcess;
    o.construct         = FE3dStage_construct;
    o.setup             = FE3dStage_setup;
    o.statistics        = FE3dStage_statistics;
@@ -325,8 +326,49 @@ function FE3dStage(o){
    o.region            = FE3dStage_region;
    o.filterDisplays    = FE3dStage_filterDisplays;
    o.allDisplays       = FE3dStage_allDisplays;
-   o.process           = FE3dStage_process;
    return o;
+}
+function FE3dStage_onProcess(){
+   var o = this;
+   var r = o._region;
+   var t = o._technique;
+   var g = t._graphicContext;
+   var ss = r._statistics = o._statistics;
+   ss.resetFrame();
+   ss._frame.begin();
+   ss._frameProcess.begin();
+   g.prepare();
+   t.updateRegion(r);
+   r.prepare();
+   r.change();
+   var ls = o._layers;
+   var lc = ls.count();
+   for(var i = 0; i < lc; i++){
+      var l = ls.value(i);
+      r.reset();
+      l.process();
+      l.filterRenderables(r);
+      r.update();
+   }
+   RConsole.find(FE3dStageConsole).process(r);
+   ss._frameProcess.end();
+   ss._frameDraw.begin();
+   if(r.isChanged()){
+      t.clear(o._backgroundColor);
+      for(var i = 0; i < lc; i++){
+         var l = ls.value(i);
+         var lt = l.technique();
+         if(!lt){
+            lt = t;
+         }
+         r.reset();
+         r.renderables().assign(l.visibleRenderables());
+         lt.drawRegion(r);
+      }
+      t.present(r);
+   }
+   ss._frameDraw.end();
+   ss._frame.end();
 }
 function FE3dStage_construct(){
    var o = this;
@@ -382,11 +424,9 @@ function FE3dStage_region(){
 function FE3dStage_filterDisplays(p){
    var o = this;
    var s = o._layers;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.value(i).filterDisplays(p);
-      }
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      s.value(i).filterDisplays(p);
    }
 }
 function FE3dStage_allDisplays(){
@@ -396,50 +436,41 @@ function FE3dStage_allDisplays(){
    o.filterDisplays(s);
    return s;
 }
-function FE3dStage_process(){
+function FE3dStageConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd     = EScope.Local;
+   o._looper      = null;
+   o._renderables = null;
+   o._thread      = null;
+   o._interval    = 50;
+   o._limit       = 16;
+   o.onProcess   = FE3dStageConsole_onProcess;
+   o.construct   = FE3dStageConsole_construct;
+   o.process     = FE3dStageConsole_process;
+   return o;
+}
+function FE3dStageConsole_onProcess(){
    var o = this;
-   var r = o._region;
-   var t = o._technique;
-   var ss = r._statistics = o._statistics;
-   ss.resetFrame();
-   ss._frame.begin();
-   o.__base.FStage.process.call(o);
-   t._graphicContext.prepare();
-   t.updateRegion(r);
-   r.prepare();
-   r.change();
-   ss._frameProcess.begin();
-   var ls = o._layers;
-   if(ls){
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         var l = ls.value(i);
-         r.reset();
-         l.filterRenderables(r);
-         r.update();
+   var s = o._looper;
+   s.record();
+   for(var i = o._limit - 1; i >= 0; i--){
+      var r = s.next();
+      if(r){
+         r.processDelay();
       }
    }
-   ss._frameProcess.end();
-   ss._frameDraw.begin();
-   if(r.isChanged()){
-      t.clear(o._backgroundColor);
-      if(ls){
-         var c = ls.count();
-         for(var i = 0; i < c; i++){
-            var l = ls.value(i);
-            var lt = l.technique();
-            if(!lt){
-               lt = t;
-            }
-            r.reset();
-            r.renderables().assign(l.visibleRenderables());
-            lt.drawRegion(r);
-         }
-      }
-      t.present(r);
-   }
-   ss._frameDraw.end();
-   ss._frame.end();
+}
+function FE3dStageConsole_construct(){
+   var o = this;
+   o._looper = new TLooper();
+   o._renderables = new TDictionary();
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.addProcessListener(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(t);
+}
+function FE3dStageConsole_process(p){
+   var o = this;
 }
 function FE3dStageStatistics(o){
    o = RClass.inherits(this, o, FStatistics);
