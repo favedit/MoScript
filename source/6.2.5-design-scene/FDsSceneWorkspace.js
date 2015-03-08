@@ -142,7 +142,7 @@ function FDsSceneWorkspace_onSceneLoad(p){
 // @method
 // @param p:value:Object 对象
 //==========================================================
-function FDsSceneWorkspace_onCatalogSelected(p){
+function FDsSceneWorkspace_onCatalogSelected(p, pc){
    var o = this;
    var s = o._activeScene;
    // 隐藏所有属性面板
@@ -169,30 +169,43 @@ function FDsSceneWorkspace_onCatalogSelected(p){
       var f = o.findPropertyFrame(EDsFrame.SceneLightPropertyFrame);
       f.show();
       f.loadObject(s, p);
+   }else if(p == 'layers'){
+      // 选中场景所有层
+      if(pc){
+         o._canvas.selectLayers(p);
+      }
    }else if(RClass.isClass(p, FE3dSceneLayer)){
       // 选中场景层
-      o._canvas.selectLayer(p);
+      if(pc){
+         o._canvas.selectLayer(p);
+      }
       // 显示属性栏
       var f = o.findPropertyFrame(EDsFrame.SceneLayerPropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dSceneDisplay)){
       // 选中显示对象
-      o._canvas.selectDisplay(p);
+      if(pc){
+         o._canvas.selectDisplay(p);
+      }
       // 显示属性栏
       var f = o.findPropertyFrame(EDsFrame.SceneDisplayPropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dSceneMaterial)){
       // 选中材质
-      o._canvas.selectMaterial(p);
+      if(pc){
+         o._canvas.selectMaterial(p);
+      }
       // 显示属性栏
       var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dRenderable)){
       // 选中渲染对象
-      o._canvas.selectRenderable(p);
+      if(pc){
+         o._canvas.selectRenderable(p);
+      }
       // 显示属性栏
       var f = o.findPropertyFrame(EDsFrame.SceneRenderablePropertyFrame);
       f.show();

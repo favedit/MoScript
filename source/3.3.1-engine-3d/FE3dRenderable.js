@@ -21,7 +21,7 @@ function FE3dRenderable(o){
    // @method
    o.setup            = RMethod.empty;
    // @method
-   o.testVisible      = RMethod.emptyTrue;
+   o.testVisible      = FE3dRenderable_testVisible;
    o.display          = FE3dRenderable_display;
    o.setDisplay       = FE3dRenderable_setDisplay;
    o.vertexCount      = FE3dRenderable_vertexCount;
@@ -49,6 +49,27 @@ function FE3dRenderable_construct(){
    // 构造变量
    o._calculateMatrix = new SMatrix3d();
    o._vertexBuffers = new TDictionary();
+}
+
+//==========================================================
+// <T>测试可见性。</T>
+//
+// @method
+// @return Boolean 可见性
+//==========================================================
+function FE3dRenderable_testVisible(){
+   var o = this;
+   var r = o.__base.FE3dDrawable.testVisible.call(o);
+   if(r){
+      // 测试模式时候，可见性依赖材质
+      if(RRuntime.isDebug()){
+         var m = o.material();
+         if(!m.testVisible()){
+            return false;
+         }
+      }
+   }
+   return r;
 }
 
 //==========================================================
@@ -144,6 +165,11 @@ function FE3dRenderable_update(p){
    // 计算矩阵
    var m = o._calculateMatrix;
    m.assign(o._matrix);
+   // 计算显示矩阵
+   var d = o._drawable;
+   if(d){
+      m.append(d.currentMatrix());
+   }
    // 计算显示矩阵
    var d = o._display;
    if(d){

@@ -246,23 +246,11 @@ function FDisplay_filterRenderables(p){
       return false;
    }
    // 处理渲染集合
-   var rs = o._renderables;
-   if(rs){
-      var m = RRuntime.isDebug();
-      var c = rs.count();
-      for(var n = 0; n < c; n++){
-         var r = rs.get(n);
-         if(r.testVisible()){
-            if(m){
-               // 测试模式时候，可见性依赖材质
-               if(r.material().testVisible()){
-                  p.pushRenderable(r);
-               }
-            }else{
-               // 运行模式时，材质可见性无效
-               p.pushRenderable(r);
-            }
-         }
+   var s = o._renderables;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.getAt(i).filterDrawables(p);
       }
    }
    return true;
@@ -340,7 +328,7 @@ function FDisplay_process(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         s.get(i).process(p);
+         s.getAt(i).process(p);
       }
    }
 }

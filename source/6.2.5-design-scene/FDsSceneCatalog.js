@@ -39,6 +39,7 @@ function FDsSceneCatalog(o){
    o.buildScene            = FDsSceneCatalog_buildScene;
    // @method
    o.selectObject          = FDsSceneCatalog_selectObject;
+   o.showObject            = FDsSceneCatalog_showObject;
    // @method
    o.dispose               = FDsSceneCatalog_dispose;
    return o;
@@ -363,6 +364,7 @@ function FDsSceneCatalog_buildLayer(n, p){
    var ns = o.createNode();
    ns.setLabel('Layers');
    ns.setTypeName('layers');
+   ns.dataPropertySet('linker', 'layers');
    o.buildNodeView(ns, true);
    n.appendNode(ns);
    // 创建显示层集合
@@ -422,7 +424,28 @@ function FDsSceneCatalog_buildScene(p){
 function FDsSceneCatalog_selectObject(p){
    var o = this;
    if(p != null){
-      o.processSelectedListener(p)
+      o.processSelectedListener(p, true);
+   }
+}
+
+//==========================================================
+// <T>选中对象。</T>
+//
+// @method
+// @param p:value:Object 对象
+//==========================================================
+function FDsSceneCatalog_showObject(p){
+   var o = this;
+   if(RClass.isClass(p, FDsSceneRenderable)){
+      var s = o._renderables;
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var nr = s.getAt(i);
+         var r = nr.dataPropertyGet('linker');
+         if(r == p){
+            o.processSelectedListener(p, false);
+         }
+      }
    }
 }
 

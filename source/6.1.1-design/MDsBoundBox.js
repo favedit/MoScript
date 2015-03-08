@@ -8,12 +8,13 @@ function MDsBoundBox(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @attribute
-   o._boundBox    = null;
+   o._boundVisible = false;
+   o._boundBox     = null;
    //..........................................................
    // @method
-   o.boundBox     = MDsBoundBox_boundBox;
-   o.showBoundBox = MDsBoundBox_showBoundBox;
-   o.hideBoundBox = MDsBoundBox_hideBoundBox;
+   o.boundBox      = MDsBoundBox_boundBox;
+   o.showBoundBox  = MDsBoundBox_showBoundBox;
+   o.hideBoundBox  = MDsBoundBox_hideBoundBox;
    return o;
 }
 
@@ -51,7 +52,9 @@ function MDsBoundBox_showBoundBox(){
    var rl = rm.outline();
    b.outline().assign(rl);
    b.upload();
-   o._display.pushRenderable(b);
+   // 放入绘制集合
+   o.pushDrawable(b);
+   o._boundVisible = true;
 }
 
 //==========================================================
@@ -61,9 +64,8 @@ function MDsBoundBox_showBoundBox(){
 //==========================================================
 function MDsBoundBox_hideBoundBox(){
    var o = this;
-   // 隐藏包围盒
    var b = o._boundBox;
-   if(b){
-      b.remove();
-   }
+   // 移除绘制集合
+   o.removeDrawable(b);
+   o._boundVisible = false;
 }

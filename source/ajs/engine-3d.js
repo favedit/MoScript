@@ -154,7 +154,7 @@ function FE3dRenderable(o){
    o._textures        = null;
    o.construct        = FE3dRenderable_construct;
    o.setup            = RMethod.empty;
-   o.testVisible      = RMethod.emptyTrue;
+   o.testVisible      = FE3dRenderable_testVisible;
    o.display          = FE3dRenderable_display;
    o.setDisplay       = FE3dRenderable_setDisplay;
    o.vertexCount      = FE3dRenderable_vertexCount;
@@ -174,6 +174,19 @@ function FE3dRenderable_construct(){
    o.__base.MG3dRenderable.construct.call(o);
    o._calculateMatrix = new SMatrix3d();
    o._vertexBuffers = new TDictionary();
+}
+function FE3dRenderable_testVisible(){
+   var o = this;
+   var r = o.__base.FE3dDrawable.testVisible.call(o);
+   if(r){
+      if(RRuntime.isDebug()){
+         var m = o.material();
+         if(!m.testVisible()){
+            return false;
+         }
+      }
+   }
+   return r;
 }
 function FE3dRenderable_display(){
    return this._display;
@@ -203,6 +216,10 @@ function FE3dRenderable_update(p){
    var o = this;
    var m = o._calculateMatrix;
    m.assign(o._matrix);
+   var d = o._drawable;
+   if(d){
+      m.append(d.currentMatrix());
+   }
    var d = o._display;
    if(d){
       m.append(d.currentMatrix());

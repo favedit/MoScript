@@ -47,7 +47,9 @@ function FDsSceneCanvas(o){
    o.construct            = FDsSceneCanvas_construct;
    // @method
    o.innerSelectDisplay   = FDsSceneCanvas_innerSelectDisplay;
+   o.innerSelectLayer     = FDsSceneCanvas_innerSelectLayer;
    o.selectNone           = FDsSceneCanvas_selectNone;
+   o.selectLayers         = FDsSceneCanvas_selectLayers;
    o.selectLayer          = FDsSceneCanvas_selectLayer;
    o.selectDisplay        = FDsSceneCanvas_selectDisplay;
    o.selectMaterial       = FDsSceneCanvas_selectMaterial;
@@ -362,9 +364,28 @@ function FDsSceneCanvas_innerSelectDisplay(p){
    var s = p.renderables();
    var c = s.count();
    for(var i = 0; i < c; i++){
-      var r = s.get(i);
-      o._selectRenderables.push(r);
-      r.showBoundBox();
+      var r = s.getAt(i);
+      if(RClass.isClass(r, FDsSceneRenderable)){
+         o._selectRenderables.push(r);
+         r.showBoundBox();
+      }
+   }
+}
+
+//==========================================================
+// <T>选中渲染显示对象处理。</T>
+//
+// @method
+// @param p:display:FDisplay 显示对象
+//==========================================================
+function FDsSceneCanvas_innerSelectLayer(p){
+   var o = this;
+   // 选中集合
+   var s = p.displays();
+   var c = s.count();
+   for(var i = 0; i < c; i++){
+      var d = s.getAt(i);
+      o.innerSelectDisplay(d)
    }
 }
 
@@ -392,6 +413,23 @@ function FDsSceneCanvas_selectNone(){
 // @method
 // @param p:layer:FDisplayLayer 渲染层
 //==========================================================
+function FDsSceneCanvas_selectLayers(p){
+   var o = this;
+   // 取消选中
+   o.selectNone();
+   // 选中集合
+   var s = o._activeScene.layers();
+   for(var i = s.count() - 1; i >= 0; i--){
+      o.innerSelectLayer(s.valueAt(i));
+   }
+}
+
+//==========================================================
+// <T>选中渲染层处理。</T>
+//
+// @method
+// @param p:layer:FDisplayLayer 渲染层
+//==========================================================
 function FDsSceneCanvas_selectLayer(p){
    var o = this;
    // 取消选中
@@ -399,12 +437,7 @@ function FDsSceneCanvas_selectLayer(p){
    // 选中对象
    o._selectObject = p;
    // 选中集合
-   var s = p.displays();
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      var d = s.get(i);
-      o.innerSelectDisplay(d)
-   }
+   o.innerSelectLayer(p);
 }
 
 //==========================================================
@@ -512,6 +545,7 @@ function FDsSceneCanvas_selectRenderable(p){
       o._selectRenderables.push(p);
       p._optionSelected = true;
       p.showBoundBox();
+      o._workspace._catalog.showObject(p);
    }
    // 设置变量
    var t = o._templateTranslation;

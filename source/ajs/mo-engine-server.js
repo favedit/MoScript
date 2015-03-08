@@ -18585,21 +18585,11 @@ function FDisplay_filterRenderables(p){
    if(!o._visible){
       return false;
    }
-   var rs = o._renderables;
-   if(rs){
-      var m = RRuntime.isDebug();
-      var c = rs.count();
-      for(var n = 0; n < c; n++){
-         var r = rs.get(n);
-         if(r.testVisible()){
-            if(m){
-               if(r.material().testVisible()){
-                  p.pushRenderable(r);
-               }
-            }else{
-               p.pushRenderable(r);
-            }
-         }
+   var s = o._renderables;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         s.getAt(i).filterDrawables(p);
       }
    }
    return true;
@@ -18634,7 +18624,7 @@ function FDisplay_process(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         s.get(i).process(p);
+         s.getAt(i).process(p);
       }
    }
 }
@@ -18829,8 +18819,77 @@ function FDisplayUiLayer(o){
 }
 function FDrawable(o){
    o = RClass.inherits(this, o, FObject);
-   o._visible = true;
+   o._visible        = true;
+   o._drawables      = null;
+   o.testVisible     = FDrawable_testVisible;
+   o.visible         = FDrawable_visible;
+   o.setVisible      = FDrawable_setVisible;
+   o.hasDrawable     = FDrawable_hasDrawable;
+   o.drawables       = FDrawable_drawables;
+   o.pushDrawable    = FDrawable_pushDrawable;
+   o.removeDrawable  = FDrawable_removeDrawable;
+   o.filterDrawables = FDrawable_filterDrawables;
+   o.process         = FDrawable_process;
    return o;
+}
+function FDrawable_testVisible(){
+   return this._visible;
+}
+function FDrawable_visible(){
+   return this._visible;
+}
+function FDrawable_setVisible(p){
+   this._visible = p;
+}
+function FDrawable_hasDrawable(){
+   var s = this._drawables;
+   return s ? !s.isEmpty() : false;
+}
+function FDrawable_drawables(){
+   var o = this;
+   var s = o._drawables;
+   if(!s){
+      s = o._drawables = new TObjects();
+   }
+   return s;
+}
+function FDrawable_pushDrawable(p){
+   var o = this;
+   p._parent = o;
+   p._drawable = o;
+   o.drawables().push(p);
+}
+function FDrawable_removeDrawable(p){
+   var s = this._drawables;
+   if(s){
+      s.remove(p);
+   }
+}
+function FDrawable_filterDrawables(p){
+   var o = this;
+   if(!o.testVisible()){
+      return false;
+   }
+   p.pushRenderable(o);
+   var s = o._drawables;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var r = s.getAt(i);
+         if(r.testVisible()){
+            p.pushRenderable(r);
+         }
+      }
+   }
+}
+function FDrawable_process(p){
+   var o = this;
+   var s = o._drawables;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         s.getAt(i).process(p);
+      }
+   }
 }
 function FRegion(o){
    o = RClass.inherits(this, o, FObject);
@@ -19143,7 +19202,7 @@ function FE3dRenderable(o){
    o._textures        = null;
    o.construct        = FE3dRenderable_construct;
    o.setup            = RMethod.empty;
-   o.testVisible      = RMethod.emptyTrue;
+   o.testVisible      = FE3dRenderable_testVisible;
    o.display          = FE3dRenderable_display;
    o.setDisplay       = FE3dRenderable_setDisplay;
    o.vertexCount      = FE3dRenderable_vertexCount;
@@ -19163,6 +19222,19 @@ function FE3dRenderable_construct(){
    o.__base.MG3dRenderable.construct.call(o);
    o._calculateMatrix = new SMatrix3d();
    o._vertexBuffers = new TDictionary();
+}
+function FE3dRenderable_testVisible(){
+   var o = this;
+   var r = o.__base.FE3dDrawable.testVisible.call(o);
+   if(r){
+      if(RRuntime.isDebug()){
+         var m = o.material();
+         if(!m.testVisible()){
+            return false;
+         }
+      }
+   }
+   return r;
 }
 function FE3dRenderable_display(){
    return this._display;
@@ -19192,6 +19264,10 @@ function FE3dRenderable_update(p){
    var o = this;
    var m = o._calculateMatrix;
    m.assign(o._matrix);
+   var d = o._drawable;
+   if(d){
+      m.append(d.currentMatrix());
+   }
    var d = o._display;
    if(d){
       m.append(d.currentMatrix());
