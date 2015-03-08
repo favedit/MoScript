@@ -65,7 +65,7 @@ function FE3dStage_onProcess(){
    var ls = o._layers;
    var lc = ls.count();
    for(var i = 0; i < lc; i++){
-      var l = ls.value(i);
+      var l = ls.valueAt(i);
       // 过滤单个层渲染信息
       r.reset();
       l.process();
@@ -81,7 +81,7 @@ function FE3dStage_onProcess(){
    if(r.isChanged()){
       t.clear(o._backgroundColor);
       for(var i = 0; i < lc; i++){
-         var l = ls.value(i);
+         var l = ls.valueAt(i);
          // 选用技术
          var lt = l.technique();
          if(!lt){

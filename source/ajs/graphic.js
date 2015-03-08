@@ -99,23 +99,3 @@ function FGraphicContext_dispose(){
    o._hCanvas = null;
    o.__base.FObject.dispose.call(o);
 }
-function FGraphicData(o){
-   o = RClass.inherits(this, o, FDataStream);
-   o.writeFloat4 = FDataStream_writeFloat4;
-   o.writeColor4 = FDataStream_writeColor4;
-   return o;
-}
-function FDataStream_writeFloat4(a, b, c, d){
-   var o = this;
-   var p = o._position;
-   var v = o._viewer;
-   var e = o._endianCd;
-   v.setFloat32(p,      a, e);
-   v.setFloat32(p +  4, b, e);
-   v.setFloat32(p +  8, c, e);
-   v.setFloat32(p + 12, d, e);
-   p += 16;
-}
-function FDataStream_writeColor4(p){
-   this.writeFloat4(p.red, p.green, p.blue, p.alpha);
-}

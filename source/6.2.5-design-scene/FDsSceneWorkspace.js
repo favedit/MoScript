@@ -113,6 +113,7 @@ function FDsSceneWorkspace_onBuilded(p){
    c._toolbar = o._canvasToolbar;
    c.addLoadListener(o, o.onSceneLoad);
    c._hParent = f._hPanel;
+   c._hParent.style.backgroundColor = '#000000';
    c.build(p);
    o._canvasFrame.push(c);
    //c.setPanel(f._hPanel);

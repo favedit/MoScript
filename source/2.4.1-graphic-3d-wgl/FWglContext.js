@@ -88,12 +88,13 @@ function FWglContext_linkCanvas(h){
    if(h.getContext){
       // 设置参数
       var a = new Object();
-      a.antialias = true;
-      a.premultipliedAlpha = false;
+      a.alpha = o._optionAlpha;
+      a.antialias = o._optionAntialias;
+      //a.premultipliedAlpha = false;
       // 初始化对象
-      var n = h.getContext('webgl', a);
+      var n = h.getContext('experimental-webgl', a);
       if(n == null){
-         n = h.getContext('experimental-webgl', a);
+         n = h.getContext('webgl', a);
       }
       if(n == null){
          throw new TError("Current browser can't support WebGL technique.");
@@ -505,7 +506,7 @@ function FWglContext_setCullingMode(f, v){
    var o = this;
    var g = o._native;
    // 检查状态
-   if((o._optionCull == f) && (o._optionCull == v)){
+   if((o._optionCull == f) && (o._cullModeCd == v)){
       return true;
    }
    o._statistics._frameCullModeCount++;

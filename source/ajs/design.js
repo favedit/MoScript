@@ -205,7 +205,10 @@ function FDsCanvas_onBuild(p){
    o.__base.FUiCanvas.onBuild.call(o, p);
    var h = o._hPanel;
    h.__linker = o;
-   var c = o._graphicContext = REngine3d.createContext(FWglContext, h);
+   var a = new Object();
+   a.alpha = false;
+   a.antialias = true;
+   var c = o._graphicContext = REngine3d.createContext(FWglContext, h, a);
    var dm = o._dimensional = RClass.create(FE3dDimensional);
    dm.linkGraphicContext(c);
    dm.setup();

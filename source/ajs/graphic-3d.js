@@ -2025,9 +2025,13 @@ var REngine3d = new function REngine3d(){
    o.createContext = REngine3d_createContext;
    return o;
 }
-function REngine3d_createContext(c, h){
+function REngine3d_createContext(c, h, a){
    var o = this;
    var r = RClass.create(c);
+   if(a){
+      r._optionAlpha = a.alpha;
+      r._optionAntialias = a.antialias;
+   }
    r.linkCanvas(h);
    o.contexts.push(r);
    return r;

@@ -1106,7 +1106,12 @@ function TObjects_swap(l, r){
    }
 }
 function TObjects_sort(p){
-   this._items.sort(p);
+   var o = this;
+   var s = o._items;
+   if(s.length != o._count){
+      s.length = o._count;
+   }
+   s.sort(p);
 }
 function TObjects_erase(n){
    var v = null;
@@ -1142,7 +1147,6 @@ function TObjects_remove(v){
 }
 function TObjects_clear(){
    var o = this;
-   o._items.length = 0;
    o._count = 0;
 }
 function TObjects_dispose(){

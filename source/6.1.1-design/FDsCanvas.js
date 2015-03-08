@@ -43,7 +43,10 @@ function FDsCanvas_onBuild(p){
    // 创建渲染环境
    var h = o._hPanel;
    h.__linker = o;
-   var c = o._graphicContext = REngine3d.createContext(FWglContext, h);
+   var a = new Object();
+   a.alpha = false;
+   a.antialias = true;
+   var c = o._graphicContext = REngine3d.createContext(FWglContext, h, a);
    // 创建坐标系
    var dm = o._dimensional = RClass.create(FE3dDimensional);
    dm.linkGraphicContext(c);

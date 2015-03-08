@@ -108,11 +108,8 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
       o.buildMaterial(f, pr);
       p.setParameter('fc_materials', f.material.memory());
    }
-   //p.setParameter4('fc_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
-   //p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
    //p.setParameter('fc_specular_view_color', mi.specularViewColor);
    //p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
-   //p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
    // 绘制处理
    o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }

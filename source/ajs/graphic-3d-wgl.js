@@ -53,11 +53,11 @@ function FWglContext_linkCanvas(h){
    o._hCanvas = h;
    if(h.getContext){
       var a = new Object();
-      a.antialias = true;
-      a.premultipliedAlpha = false;
-      var n = h.getContext('webgl', a);
+      a.alpha = o._optionAlpha;
+      a.antialias = o._optionAntialias;
+      var n = h.getContext('experimental-webgl', a);
       if(n == null){
-         n = h.getContext('experimental-webgl', a);
+         n = h.getContext('webgl', a);
       }
       if(n == null){
          throw new TError("Current browser can't support WebGL technique.");
@@ -352,7 +352,7 @@ function FWglContext_setDepthMode(f, v){
 function FWglContext_setCullingMode(f, v){
    var o = this;
    var g = o._native;
-   if((o._optionCull == f) && (o._optionCull == v)){
+   if((o._optionCull == f) && (o._cullModeCd == v)){
       return true;
    }
    o._statistics._frameCullModeCount++;

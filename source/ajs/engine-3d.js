@@ -1,21 +1,23 @@
 function FE3dCanvas(o){
    o = RClass.inherits(this, o, FObject, MListenerLoad, MMouseCapture);
-   o._context     = null;
-   o._scaleRate   = 1;
-   o._interval    = 1000 / 60;
-   o._hPanel      = null;
-   o._hCanvas     = null;
-   o.ohTouchStart = FE3dCanvas_ohTouchStart;
-   o.ohTouchMove  = FE3dCanvas_ohTouchMove;
-   o.ohTouchStop  = FE3dCanvas_ohTouchStop;
-   o.onTouchStart = RMethod.empty;
-   o.onTouchMove  = RMethod.empty;
-   o.onTouchStop  = RMethod.empty;
-   o.onResize     = FE3dCanvas_onResize;
-   o.construct    = FE3dCanvas_construct;
-   o.build        = FE3dCanvas_build;
-   o.setPanel     = FE3dCanvas_setPanel;
-   o.dispose      = FE3dCanvas_dispose;
+   o._optionAlpha     = true;
+   o._optionAntialias = false;
+   o._context         = null;
+   o._scaleRate       = 1;
+   o._interval        = 1000 / 60;
+   o._hPanel          = null;
+   o._hCanvas         = null;
+   o.ohTouchStart     = FE3dCanvas_ohTouchStart;
+   o.ohTouchMove      = FE3dCanvas_ohTouchMove;
+   o.ohTouchStop      = FE3dCanvas_ohTouchStop;
+   o.onTouchStart     = RMethod.empty;
+   o.onTouchMove      = RMethod.empty;
+   o.onTouchStop      = RMethod.empty;
+   o.onResize         = FE3dCanvas_onResize;
+   o.construct        = FE3dCanvas_construct;
+   o.build            = FE3dCanvas_build;
+   o.setPanel         = FE3dCanvas_setPanel;
+   o.dispose          = FE3dCanvas_dispose;
    return o;
 }
 function FE3dCanvas_ohTouchStart(p){
@@ -58,7 +60,10 @@ function FE3dCanvas_build(p){
    if(!RMethod.isEmpty(o.onTouchStop)){
       h.addEventListener('touchend', o.ohTouchStop, false);
    }
-   var c = o._context = REngine3d.createContext(FWglContext, h);
+   var a = new Object();
+   a.alpha = o._optionAlpha;
+   a.antialias = o._optionAntialias;
+   var c = o._context = REngine3d.createContext(FWglContext, h, a);
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start(o._interval);
    RWindow.lsnsResize.register(o, o.onResize);
@@ -75,6 +80,13 @@ function FE3dCanvas_setPanel(p){
 }
 function FE3dCanvas_dispose(){
    var o = this;
+   var h = o._hCanvas;
+   if(h){
+      h.__linker = null;
+      h.removeEventListener('touchstart', o.ohTouchStart);
+      h.removeEventListener('touchmove', o.ohTouchMove);
+      h.removeEventListener('touchend', o.ohTouchStop);
+   }
    o._context = RObject.dispose(o._context);
    o._hPanel = RHtml.free(o._hPanel);
    o._hCanvas = RHtml.free(o._hCanvas);
@@ -344,7 +356,7 @@ function FE3dStage_onProcess(){
    var ls = o._layers;
    var lc = ls.count();
    for(var i = 0; i < lc; i++){
-      var l = ls.value(i);
+      var l = ls.valueAt(i);
       r.reset();
       l.process();
       l.filterRenderables(r);
@@ -356,7 +368,7 @@ function FE3dStage_onProcess(){
    if(r.isChanged()){
       t.clear(o._backgroundColor);
       for(var i = 0; i < lc; i++){
-         var l = ls.value(i);
+         var l = ls.valueAt(i);
          var lt = l.technique();
          if(!lt){
             lt = t;

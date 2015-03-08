@@ -99,26 +99,6 @@ function FGraphicContext_dispose(){
    o._hCanvas = null;
    o.__base.FObject.dispose.call(o);
 }
-function FGraphicData(o){
-   o = RClass.inherits(this, o, FDataStream);
-   o.writeFloat4 = FDataStream_writeFloat4;
-   o.writeColor4 = FDataStream_writeColor4;
-   return o;
-}
-function FDataStream_writeFloat4(a, b, c, d){
-   var o = this;
-   var p = o._position;
-   var v = o._viewer;
-   var e = o._endianCd;
-   v.setFloat32(p,      a, e);
-   v.setFloat32(p +  4, b, e);
-   v.setFloat32(p +  8, c, e);
-   v.setFloat32(p + 12, d, e);
-   p += 16;
-}
-function FDataStream_writeColor4(p){
-   this.writeFloat4(p.red, p.green, p.blue, p.alpha);
-}
 function FG2dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
    o._native       = null;
@@ -2208,9 +2188,13 @@ var REngine3d = new function REngine3d(){
    o.createContext = REngine3d_createContext;
    return o;
 }
-function REngine3d_createContext(c, h){
+function REngine3d_createContext(c, h, a){
    var o = this;
    var r = RClass.create(c);
+   if(a){
+      r._optionAlpha = a.alpha;
+      r._optionAntialias = a.antialias;
+   }
    r.linkCanvas(h);
    o.contexts.push(r);
    return r;
@@ -2401,6 +2385,8 @@ function FG3dBuffer_name(){
 }
 function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
+   o._optionAlpha        = true;
+   o._optionAntialias    = false;
    o._size               = null;
    o._capability         = null;
    o._statistics         = null;
@@ -4018,11 +4004,11 @@ function FWglContext_linkCanvas(h){
    o._hCanvas = h;
    if(h.getContext){
       var a = new Object();
-      a.antialias = true;
-      a.premultipliedAlpha = false;
-      var n = h.getContext('webgl', a);
+      a.alpha = o._optionAlpha;
+      a.antialias = o._optionAntialias;
+      var n = h.getContext('experimental-webgl', a);
       if(n == null){
-         n = h.getContext('experimental-webgl', a);
+         n = h.getContext('webgl', a);
       }
       if(n == null){
          throw new TError("Current browser can't support WebGL technique.");
@@ -4317,7 +4303,7 @@ function FWglContext_setDepthMode(f, v){
 function FWglContext_setCullingMode(f, v){
    var o = this;
    var g = o._native;
-   if((o._optionCull == f) && (o._optionCull == v)){
+   if((o._optionCull == f) && (o._cullModeCd == v)){
       return true;
    }
    o._statistics._frameCullModeCount++;

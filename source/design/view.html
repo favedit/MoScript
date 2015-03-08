@@ -21,12 +21,9 @@ function onEnterFrame(){
 }
 //------------------------------------------------------------
 function onSceneLoad(c, s){
-   s.addEnterFrameListener(null, onEnterFrame);
-   //var l = s.layers().get('space');
-   //var l = s.layers().get('map');
-   //display = l.displays().get(0);
-   canvas.switchPlay(true);
-   canvas.switchMovie(true);
+   //s.addEnterFrameListener(null, onEnterFrame);
+   //canvas.switchPlay(true);
+   //canvas.switchMovie(true);
 }
 //------------------------------------------------------------
 function onKeydown(p){
@@ -44,7 +41,8 @@ function doCanvasAction(p, f){
 //------------------------------------------------------------
 function onLoad(){
    // 环境设置
-   RRuntime.setProcessCd(EProcess.Release);
+   //RRuntime.setProcessCd(EProcess.Release);
+   RRuntime.setProcessCd(EProcess.Debug);
    RApplication.initialize();
    RBrowser.setContentPath('..');
    // 获得场景代码
@@ -60,6 +58,7 @@ function onLoad(){
    // 创建场景画板
    var w = canvas = RClass.create(FE3dSceneCanvas);
    w._scaleRate = 1;
+   w._optionAlpha = false;
    w.build(document);
    w.setPanel(document.body);
    w.load(c);
@@ -68,7 +67,7 @@ function onLoad(){
 }
 </SCRIPT>
 </HEAD>
-<BODY scroll='no' style='overflow:hidden;' onload='onLoad()' onkeydown='onKeydown()'>
+<BODY scroll='no' style='background-color:#000000;overflow:hidden;' onload='onLoad()' onkeydown='onKeydown()'>
 <DIV style='position:absolute; left:5%; top:2%; width:90%;'>
    <TABLE width='100%'>
       <TR>

@@ -184,6 +184,8 @@ function FG3dBuffer_name(){
 }
 function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
+   o._optionAlpha        = true;
+   o._optionAntialias    = false;
    o._size               = null;
    o._capability         = null;
    o._statistics         = null;

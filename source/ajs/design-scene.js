@@ -72,6 +72,9 @@ function FDsSceneCanvas(o){
    o._dimensional         = null;
    o._selectObject        = null;
    o._selectRenderables   = null;
+   o._cameraMoveRate      = 0.8;
+   o._cameraKeyRotation   = 0.03;
+   o._cameraMouseRotation = 0.005;
    o._templateMatrix      = null;
    o._templateRenderable  = null;
    o._templateFace        = null;
@@ -163,8 +166,8 @@ function FDsSceneCanvas_onMouseCapture(p){
          var c = o._activeScene.camera();
          var r = c.rotation();
          var cr = o._captureRotation;
-         r.x = cr.x + cy * 0.003;
-         r.y = cr.y + cx * 0.003;
+         r.x = cr.x - cy * o._cameraMouseRotation;
+         r.y = cr.y - cx * o._cameraMouseRotation;
          break;
       case EDsCanvasMode.Select:
          break;
@@ -224,8 +227,8 @@ function FDsSceneCanvas_onEnterFrame(){
       return;
    }
    var c = s.camera();
-   var d = 0.5;
-   var r = 0.05;
+   var d = o._cameraMoveRate;
+   var r = o._cameraKeyRotation;
    var kw = RKeyboard.isPress(EKeyCode.W);
    var ks = RKeyboard.isPress(EKeyCode.S);
    if(kw && !ks){
@@ -1625,6 +1628,7 @@ function FDsSceneWorkspace_onBuilded(p){
    c._toolbar = o._canvasToolbar;
    c.addLoadListener(o, o.onSceneLoad);
    c._hParent = f._hPanel;
+   c._hParent.style.backgroundColor = '#000000';
    c.build(p);
    o._canvasFrame.push(c);
 }

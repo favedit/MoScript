@@ -8,32 +8,35 @@ function FE3dCanvas(o){
    o = RClass.inherits(this, o, FObject, MListenerLoad, MMouseCapture);
    //..........................................................
    // @attribute
-   o._context     = null;
-   o._scaleRate   = 1;
-   o._interval    = 1000 / 60;
+   o._optionAlpha     = true;
+   o._optionAntialias = false;
+   // @attribute
+   o._context         = null;
+   o._scaleRate       = 1;
+   o._interval        = 1000 / 60;
    //..........................................................
    // @html
-   o._hPanel      = null;
-   o._hCanvas     = null;
+   o._hPanel          = null;
+   o._hCanvas         = null;
    //..........................................................
    // @event
-   o.ohTouchStart = FE3dCanvas_ohTouchStart;
-   o.ohTouchMove  = FE3dCanvas_ohTouchMove;
-   o.ohTouchStop  = FE3dCanvas_ohTouchStop;
+   o.ohTouchStart     = FE3dCanvas_ohTouchStart;
+   o.ohTouchMove      = FE3dCanvas_ohTouchMove;
+   o.ohTouchStop      = FE3dCanvas_ohTouchStop;
    // @event
-   o.onTouchStart = RMethod.empty;
-   o.onTouchMove  = RMethod.empty;
-   o.onTouchStop  = RMethod.empty;
+   o.onTouchStart     = RMethod.empty;
+   o.onTouchMove      = RMethod.empty;
+   o.onTouchStop      = RMethod.empty;
    // @event
-   o.onResize     = FE3dCanvas_onResize;
+   o.onResize         = FE3dCanvas_onResize;
    //..........................................................
    // @method
-   o.construct    = FE3dCanvas_construct;
+   o.construct        = FE3dCanvas_construct;
    // @method
-   o.build        = FE3dCanvas_build;
-   o.setPanel     = FE3dCanvas_setPanel;
+   o.build            = FE3dCanvas_build;
+   o.setPanel         = FE3dCanvas_setPanel;
    // @method
-   o.dispose      = FE3dCanvas_dispose;
+   o.dispose          = FE3dCanvas_dispose;
    return o;
 }
 
@@ -122,7 +125,10 @@ function FE3dCanvas_build(p){
       h.addEventListener('touchend', o.ohTouchStop, false);
    }
    // 创建渲染环境
-   var c = o._context = REngine3d.createContext(FWglContext, h);
+   var a = new Object();
+   a.alpha = o._optionAlpha;
+   a.antialias = o._optionAntialias;
+   var c = o._context = REngine3d.createContext(FWglContext, h, a);
    // 启动处理
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start(o._interval);
@@ -156,6 +162,14 @@ function FE3dCanvas_setPanel(p){
 //==========================================================
 function FE3dCanvas_dispose(){
    var o = this;
+   // 移除事件
+   var h = o._hCanvas;
+   if(h){
+      h.__linker = null;
+      h.removeEventListener('touchstart', o.ohTouchStart);
+      h.removeEventListener('touchmove', o.ohTouchMove);
+      h.removeEventListener('touchend', o.ohTouchStop);
+   }
    // 释放属性
    o._context = RObject.dispose(o._context);
    o._hPanel = RHtml.free(o._hPanel);

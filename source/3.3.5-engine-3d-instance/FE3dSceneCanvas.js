@@ -14,6 +14,7 @@ function FE3dSceneCanvas(o){
    o._capturePosition       = null;
    o._captureCameraPosition = null;
    o._captureCameraRotation = null;
+   // @attribute
    o._actionFullScreen      = false;
    o._actionPlay            = false;
    o._actionMovie           = false;
@@ -21,6 +22,10 @@ function FE3dSceneCanvas(o){
    o._actionDown            = false;
    o._actionForward         = false;
    o._actionBack            = false;
+   // @attribute
+   o._cameraMoveRate        = 0.8;
+   o._cameraKeyRotation     = 0.03;
+   o._cameraMouseRotation   = 0.005;
    //..........................................................
    // @event
    o.onEnterFrame           = FE3dSceneCanvas_onEnterFrame;
@@ -62,8 +67,8 @@ function FE3dSceneCanvas_onEnterFrame(){
    //..........................................................
    // 按键处理
    var c = s.camera();
-   var d = 0.1;
-   var r = 0.05;
+   var d = o._cameraMoveRate;
+   var r = o._cameraKeyRotation;
    var kw = RKeyboard.isPress(EKeyCode.W);
    var ks = RKeyboard.isPress(EKeyCode.S);
    if((kw && !ks) || o._actionForward){
@@ -154,8 +159,8 @@ function FE3dSceneCanvas_onMouseCapture(p){
    var c = o._activeScene.camera();
    var r = c.rotation();
    var cr = o._captureCameraRotation;
-   r.x = cr.x + cy * 0.003;
-   r.y = cr.y + cx * 0.003;
+   r.x = cr.x + cy * o._cameraMouseRotation;
+   r.y = cr.y + cx * o._cameraMouseRotation;
 }
 
 //==========================================================
@@ -221,8 +226,8 @@ function FE3dSceneCanvas_onTouchMove(p){
       // 计算偏移
       var cx = t.clientX - o._capturePosition.x;
       var cy = t.clientY - o._capturePosition.y;
-      cr.x = o._captureCameraRotation.x + (-cy * 0.003);
-      cr.y = o._captureCameraRotation.y + (-cx * 0.003);
+      cr.x = o._captureCameraRotation.x + (-cy * o._cameraMouseRotation);
+      cr.y = o._captureCameraRotation.y + (-cx * o._cameraMouseRotation);
    }
 }
 
@@ -401,13 +406,6 @@ function FE3dSceneCanvas_doAction(e, p, f){
 //==========================================================
 function FE3dSceneCanvas_dispose(){
    var o = this;
-   // 移除事件
-   var h = o._hCanvas;
-   if(h){
-      h.removeEventListener('touchstart', FE3dSceneCanvas_ohTouchStart);
-      h.removeEventListener('touchmove', FE3dSceneCanvas_ohTouchMove);
-      h.removeEventListener('touchend', FE3dSceneCanvas_ohTouchStop);
-   }
    // 释放旋转
    var v = o._rotation;
    if(v){
