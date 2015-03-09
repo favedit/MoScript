@@ -10,6 +10,10 @@ function FE3dScene(o){
    // @attribute
    o._dataReady            = false;
    o._resource             = null;
+   o._dirty                = false;
+   //..........................................................
+   // @event
+   o.onProcess             = FE3dScene_onProcess;
    //..........................................................
    // @method
    o.construct             = FE3dScene_construct;
@@ -22,11 +26,32 @@ function FE3dScene(o){
    o.loadLayerResource     = FE3dScene_loadLayerResource;
    o.loadResource          = FE3dScene_loadResource;
    // @method
+   o.dirty                 = FE3dScene_dirty;
    o.processLoad           = FE3dScene_processLoad;
    // @method
    o.active                = FE3dScene_active;
    o.deactive              = FE3dScene_deactive;
    return o;
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+function FE3dScene_onProcess(){
+   var o = this;
+   o.__base.FE3dStage.onProcess.call(o);
+   //..........................................................
+   // 脏处理
+   if(o._dirty){
+      var s = o._region.allRenderables();
+      for(var i = s.count() - 1; i >= 0; i--){
+         var r = s.getAt(i);
+         r.resetInfos();
+      }
+      o._dirty = false;
+   }
 }
 
 //==========================================================
@@ -180,6 +205,15 @@ function FE3dScene_loadResource(p){
       var l = ls.value(i);
       o.loadLayerResource(l);
    }
+}
+
+//==========================================================
+// <T>场景脏处理。</T>
+//
+// @method
+//==========================================================
+function FE3dScene_dirty(){
+   this._dirty = true;
 }
 
 //==========================================================

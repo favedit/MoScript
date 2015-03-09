@@ -13,7 +13,6 @@ function MG3dRenderable(o){
    o._currentMatrix = null;
    o._matrix        = null;
    // @attribute
-   o._effectCode    = null;
    o._materialName  = null;
    o._material      = null;
    // @attribute
@@ -25,7 +24,6 @@ function MG3dRenderable(o){
    // @method
    o.currentMatrix  = MG3dRenderable_currentMatrix;
    o.matrix         = MG3dRenderable_matrix;
-   o.effectCode     = MG3dRenderable_effectCode;
    o.material       = MG3dRenderable_material;
    // @method
    o.activeEffect   = MG3dRenderable_activeEffect;
@@ -33,8 +31,8 @@ function MG3dRenderable(o){
    o.effectFind     = MG3dRenderable_effectFind;
    o.effectSet      = MG3dRenderable_effectSet;
    o.infos          = MG3dRenderable_infos;
-   o.clearInfos     = MG3dRenderable_clearInfos;
    o.selectInfo     = MG3dRenderable_selectInfo;
+   o.resetInfos     = MG3dRenderable_resetInfos;
    // @method
    o.testVisible    = RMethod.virtual(o, 'testVisible');
    // @method
@@ -74,16 +72,6 @@ function MG3dRenderable_currentMatrix(){
 //==========================================================
 function MG3dRenderable_matrix(){
    return this._matrix;
-}
-
-//==========================================================
-// <T>获得效果器名称。</T>
-//
-// @method
-// @return String 效果器名称
-//==========================================================
-function MG3dRenderable_effectCode(){
-   return this._effectCode;
 }
 
 //==========================================================
@@ -160,22 +148,6 @@ function MG3dRenderable_infos(){
 }
 
 //==========================================================
-// <T>清除所有信息。</T>
-//
-// @method
-//==========================================================
-function MG3dRenderable_clearInfos(){
-   var o = this;
-   var s = o._infos;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.valueAt(i).reset();
-      }
-   }
-}
-
-//==========================================================
 // <T>选中一个信息。</T>
 //
 // @method
@@ -192,6 +164,21 @@ function MG3dRenderable_selectInfo(p){
    }
    o._activeInfo = i;
    return i;
+}
+
+//==========================================================
+// <T>重置所有信息。</T>
+//
+// @method
+//==========================================================
+function MG3dRenderable_resetInfos(){
+   var o = this;
+   var s = o._infos;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         s.valueAt(i).reset();
+      }
+   }
 }
 
 //==========================================================

@@ -17,12 +17,14 @@ function FStage(o){
    //..........................................................
    // @method
    o.construct       = FStage_construct;
+   // @method
    o.registerLayer   = RStage_registerLayer;
    o.unregisterLayer = RStage_unregisterLayer;
    o.layers          = FStage_layers;
    o.active          = FStage_active;
    o.deactive        = FStage_deactive;
    o.process         = FStage_process;
+   // @method
    o.dispose         = FStage_dispose;
    return o;
 }

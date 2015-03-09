@@ -120,6 +120,11 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    // 设置材质
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
+   pf.optionAmbient = mi.optionAmbient;
+   pf.optionDiffuse = mi.optionDiffuse;
+   pf.optionSpecular = mi.optionSpecular;
+   pf.optionReflect = mi.optionReflect;
+   pf.optionRefract = mi.optionRefract;
    // 设置定点属性
    pf.vertexCount = pr.vertexCount();
    // 设置顶点信息

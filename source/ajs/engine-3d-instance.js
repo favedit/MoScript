@@ -664,6 +664,8 @@ function FE3dScene(o){
    o = RClass.inherits(this, o, FE3dStage, MListenerLoad);
    o._dataReady            = false;
    o._resource             = null;
+   o._dirty                = false;
+   o.onProcess             = FE3dScene_onProcess;
    o.construct             = FE3dScene_construct;
    o.createRegion          = FE3dScene_createRegion;
    o.resource              = FE3dScene_resource;
@@ -672,10 +674,23 @@ function FE3dScene(o){
    o.loadDisplayResource   = FE3dScene_loadDisplayResource;
    o.loadLayerResource     = FE3dScene_loadLayerResource;
    o.loadResource          = FE3dScene_loadResource;
+   o.dirty                 = FE3dScene_dirty;
    o.processLoad           = FE3dScene_processLoad;
    o.active                = FE3dScene_active;
    o.deactive              = FE3dScene_deactive;
    return o;
+}
+function FE3dScene_onProcess(){
+   var o = this;
+   o.__base.FE3dStage.onProcess.call(o);
+   if(o._dirty){
+      var s = o._region.allRenderables();
+      for(var i = s.count() - 1; i >= 0; i--){
+         var r = s.getAt(i);
+         r.resetInfos();
+      }
+      o._dirty = false;
+   }
 }
 function FE3dScene_construct(){
    var o = this;
@@ -756,6 +771,9 @@ function FE3dScene_loadResource(p){
       var l = ls.value(i);
       o.loadLayerResource(l);
    }
+}
+function FE3dScene_dirty(){
+   this._dirty = true;
 }
 function FE3dScene_processLoad(){
    var o = this;

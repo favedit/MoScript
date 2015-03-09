@@ -99,6 +99,19 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
       pt.setBoolean("option.normal.invert", true);
       o._supportNormalInvert = true;
    }
+   // 支持纹理材质映射
+   if(pc.optionAmbient){
+      s.append("|OA");
+      pt.setBoolean("option.ambient", true);
+      o._supportAmbient = true;
+   }
+
+   pf.optionAmbient = mi.optionAmbient;
+   pf.optionDiffuse = mi.optionDiffuse;
+   pf.optionSpecular = mi.optionSpecular;
+   pf.optionReflect = mi.optionReflect;
+   pf.optionRefract = mi.optionRefract;
+
    //............................................................
    // 支持顶点颜色
    var ac = pc.attributeContains(EG3dAttribute.Color);

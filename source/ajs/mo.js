@@ -14596,7 +14596,6 @@ function MG3dRenderable(o){
    o._optionMerge   = false;
    o._currentMatrix = null;
    o._matrix        = null;
-   o._effectCode    = null;
    o._materialName  = null;
    o._material      = null;
    o._activeInfo    = null;
@@ -14604,15 +14603,14 @@ function MG3dRenderable(o){
    o.construct      = MG3dRenderable_construct;
    o.currentMatrix  = MG3dRenderable_currentMatrix;
    o.matrix         = MG3dRenderable_matrix;
-   o.effectCode     = MG3dRenderable_effectCode;
    o.material       = MG3dRenderable_material;
    o.activeEffect   = MG3dRenderable_activeEffect;
    o.activeInfo     = MG3dRenderable_activeInfo;
    o.effectFind     = MG3dRenderable_effectFind;
    o.effectSet      = MG3dRenderable_effectSet;
    o.infos          = MG3dRenderable_infos;
-   o.clearInfos     = MG3dRenderable_clearInfos;
    o.selectInfo     = MG3dRenderable_selectInfo;
+   o.resetInfos     = MG3dRenderable_resetInfos;
    o.testVisible    = RMethod.virtual(o, 'testVisible');
    o.update         = MG3dRenderable_update;
    o.dispose        = MG3dRenderable_dispose;
@@ -14629,9 +14627,6 @@ function MG3dRenderable_currentMatrix(){
 }
 function MG3dRenderable_matrix(){
    return this._matrix;
-}
-function MG3dRenderable_effectCode(){
-   return this._effectCode;
 }
 function MG3dRenderable_activeEffect(){
    var i = this._activeInfo;
@@ -14669,16 +14664,6 @@ function MG3dRenderable_infos(){
    }
    return r;
 }
-function MG3dRenderable_clearInfos(){
-   var o = this;
-   var s = o._infos;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.valueAt(i).reset();
-      }
-   }
-}
 function MG3dRenderable_selectInfo(p){
    var o = this;
    var s = o.infos();
@@ -14689,6 +14674,15 @@ function MG3dRenderable_selectInfo(p){
    }
    o._activeInfo = i;
    return i;
+}
+function MG3dRenderable_resetInfos(){
+   var o = this;
+   var s = o._infos;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         s.valueAt(i).reset();
+      }
+   }
 }
 function MG3dRenderable_material(){
    return this._material;
@@ -25051,6 +25045,8 @@ function FE3dScene(o){
    o = RClass.inherits(this, o, FE3dStage, MListenerLoad);
    o._dataReady            = false;
    o._resource             = null;
+   o._dirty                = false;
+   o.onProcess             = FE3dScene_onProcess;
    o.construct             = FE3dScene_construct;
    o.createRegion          = FE3dScene_createRegion;
    o.resource              = FE3dScene_resource;
@@ -25059,10 +25055,23 @@ function FE3dScene(o){
    o.loadDisplayResource   = FE3dScene_loadDisplayResource;
    o.loadLayerResource     = FE3dScene_loadLayerResource;
    o.loadResource          = FE3dScene_loadResource;
+   o.dirty                 = FE3dScene_dirty;
    o.processLoad           = FE3dScene_processLoad;
    o.active                = FE3dScene_active;
    o.deactive              = FE3dScene_deactive;
    return o;
+}
+function FE3dScene_onProcess(){
+   var o = this;
+   o.__base.FE3dStage.onProcess.call(o);
+   if(o._dirty){
+      var s = o._region.allRenderables();
+      for(var i = s.count() - 1; i >= 0; i--){
+         var r = s.getAt(i);
+         r.resetInfos();
+      }
+      o._dirty = false;
+   }
 }
 function FE3dScene_construct(){
    var o = this;
@@ -25143,6 +25152,9 @@ function FE3dScene_loadResource(p){
       var l = ls.value(i);
       o.loadLayerResource(l);
    }
+}
+function FE3dScene_dirty(){
+   this._dirty = true;
 }
 function FE3dScene_processLoad(){
    var o = this;
@@ -48488,15 +48500,7 @@ function FDsSceneTechniquePropertyFrame_onModeClick(ps, pi){
    var o = this;
    var m = pi.tag();
    o._technique._activeMode = m;
-   var ds = o._scene.allDisplays();
-   for(var di = ds.count() - 1; di >= 0; di--){
-      var d = ds.getAt(di);
-      var rs = d.renderables();
-      for(var ri = rs.count() - 1; ri >= 0; ri--){
-         var r = rs.getAt(ri);
-         r.clearInfos();
-      }
-   }
+   o._scene.dirty();
 }
 function FDsSceneTechniquePropertyFrame_onRefresh(){
    var o = this;

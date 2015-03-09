@@ -225,7 +225,6 @@ function MG3dRenderable(o){
    o._optionMerge   = false;
    o._currentMatrix = null;
    o._matrix        = null;
-   o._effectCode    = null;
    o._materialName  = null;
    o._material      = null;
    o._activeInfo    = null;
@@ -233,15 +232,14 @@ function MG3dRenderable(o){
    o.construct      = MG3dRenderable_construct;
    o.currentMatrix  = MG3dRenderable_currentMatrix;
    o.matrix         = MG3dRenderable_matrix;
-   o.effectCode     = MG3dRenderable_effectCode;
    o.material       = MG3dRenderable_material;
    o.activeEffect   = MG3dRenderable_activeEffect;
    o.activeInfo     = MG3dRenderable_activeInfo;
    o.effectFind     = MG3dRenderable_effectFind;
    o.effectSet      = MG3dRenderable_effectSet;
    o.infos          = MG3dRenderable_infos;
-   o.clearInfos     = MG3dRenderable_clearInfos;
    o.selectInfo     = MG3dRenderable_selectInfo;
+   o.resetInfos     = MG3dRenderable_resetInfos;
    o.testVisible    = RMethod.virtual(o, 'testVisible');
    o.update         = MG3dRenderable_update;
    o.dispose        = MG3dRenderable_dispose;
@@ -258,9 +256,6 @@ function MG3dRenderable_currentMatrix(){
 }
 function MG3dRenderable_matrix(){
    return this._matrix;
-}
-function MG3dRenderable_effectCode(){
-   return this._effectCode;
 }
 function MG3dRenderable_activeEffect(){
    var i = this._activeInfo;
@@ -298,16 +293,6 @@ function MG3dRenderable_infos(){
    }
    return r;
 }
-function MG3dRenderable_clearInfos(){
-   var o = this;
-   var s = o._infos;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.valueAt(i).reset();
-      }
-   }
-}
 function MG3dRenderable_selectInfo(p){
    var o = this;
    var s = o.infos();
@@ -318,6 +303,15 @@ function MG3dRenderable_selectInfo(p){
    }
    o._activeInfo = i;
    return i;
+}
+function MG3dRenderable_resetInfos(){
+   var o = this;
+   var s = o._infos;
+   if(s){
+      for(var i = s.count() - 1; i >= 0; i--){
+         s.valueAt(i).reset();
+      }
+   }
 }
 function MG3dRenderable_material(){
    return this._material;

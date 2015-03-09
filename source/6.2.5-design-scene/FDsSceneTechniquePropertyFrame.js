@@ -81,17 +81,9 @@ function FDsSceneTechniquePropertyFrame_onDataChanged(p){
 function FDsSceneTechniquePropertyFrame_onModeClick(ps, pi){
    var o = this;
    var m = pi.tag();
+   // 场景脏处理
    o._technique._activeMode = m;
-   // 释放所有关联的效果器
-   var ds = o._scene.allDisplays();
-   for(var di = ds.count() - 1; di >= 0; di--){
-      var d = ds.getAt(di);
-      var rs = d.renderables();
-      for(var ri = rs.count() - 1; ri >= 0; ri--){
-         var r = rs.getAt(ri);
-         r.clearInfos();
-      }
-   }
+   o._scene.dirty();
 }
 
 //==========================================================
