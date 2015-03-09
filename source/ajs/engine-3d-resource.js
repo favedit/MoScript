@@ -9,67 +9,102 @@ function SE3sMaterialInfo_unserialize(p){
    var o = this;
    o.effectCode = p.readString();
    o.optionDepth = p.readBoolean();
-   o.optionAlpha = p.readBoolean();
    o.optionDouble = p.readBoolean();
-   o.optionView = p.readBoolean();
    o.optionNormalInvert = p.readBoolean();
    o.optionShadow = p.readBoolean();
    o.optionShadowSelf = p.readBoolean();
+   o.optionAlpha = p.readBoolean();
    o.alphaBase = p.readFloat();
    o.alphaRate = p.readFloat();
+   o.optionColor = p.readBoolean();
    o.colorMin = p.readFloat();
    o.colorMax = p.readFloat();
    o.colorRate = p.readFloat();
    o.colorMerge = p.readFloat();
+   o.optionAmbient = p.readBoolean();
    o.ambientColor.unserialize(p);
+   o.optionDiffuse = p.readBoolean();
    o.diffuseColor.unserialize(p);
+   o.optionDiffuseView = p.readBoolean();
    o.diffuseViewColor.unserialize(p);
+   o.optionSpecular = p.readBoolean();
    o.specularColor.unserialize(p);
    o.specularBase = p.readFloat();
    o.specularLevel = p.readFloat();
+   o.optionSpecularView = p.readBoolean();
    o.specularViewColor.unserialize(p);
    o.specularViewBase = p.readFloat();
    o.specularViewLevel = p.readFloat();
+   o.optionReflect = p.readBoolean();
    o.reflectColor.unserialize(p);
    o.reflectMerge = p.readFloat();
+   o.optionRefract = p.readBoolean();
    o.refractFrontColor.unserialize(p);
    o.refractBackColor.unserialize(p);
+   o.optionOpacity = p.readBoolean();
+   o.opacityColor.unserialize(p);
+   o.opacityRate = p.readFloat();
+   o.opacityAlpha = p.readFloat();
+   o.opacityDepth = p.readFloat();
+   o.opacityTransmittance = p.readFloat();
+   o.optionEmissive = p.readBoolean();
    o.emissiveColor.unserialize(p);
 }
 function SE3sMaterialInfo_saveConfig(p){
    var o = this;
    p.set('effect_code', o.effectCode);
-   p.setBoolean('option_alpha', o.optionAlpha);
    p.setBoolean('option_double', o.optionDouble);
-   p.setBoolean('option_view', o.optionView);
+   p.setBoolean('option_alpha', o.optionAlpha);
    p.setBoolean('option_normal_invert', o.optionNormalInvert);
    p.setBoolean('option_shadow', o.optionShadow);
    p.setBoolean('option_shadow_self', o.optionShadowSelf);
    var x = p.create('Alpha');
+   x.setBoolean('valid', o.optionAlpha);
    x.setFloat('base', o.alphaBase);
    x.setFloat('rate', o.alphaRate);
    var x = p.create('Color');
+   x.setBoolean('valid', o.optionColor);
    x.setFloat('min', o.colorMin);
    x.setFloat('max', o.colorMax);
    x.setFloat('rate', o.colorRate);
    x.setFloat('merge', o.colorMerge);
-   o.ambientColor.savePower(p.create('Ambient'));
-   o.diffuseColor.savePower(p.create('Diffuse'));
-   o.diffuseViewColor.savePower(p.create('DiffuseView'));
+   var x = p.create('Ambient')
+   x.setBoolean('valid', o.optionAmbient);
+   o.ambientColor.savePower(x);
+   var x = p.create('Diffuse');
+   x.setBoolean('valid', o.optionDiffuse);
+   o.diffuseColor.savePower(x);
+   var x = p.create('DiffuseView');
+   x.setBoolean('valid', o.optionDiffuseView);
+   o.diffuseViewColor.savePower(x);
    var x = p.create('Specular');
+   x.setBoolean('valid', o.optionSpecular);
    o.specularColor.savePower(x);
    x.setFloat('base', o.specularBase);
    x.setFloat('level', o.specularLevel);
    var x = p.create('SpecularView');
+   x.setBoolean('valid', o.optionSpecularView);
    o.specularViewColor.savePower(x);
    x.setFloat('base', o.specularViewBase);
    x.setFloat('level', o.specularViewLevel);
    var x = p.create('Reflect');
+   x.setBoolean('valid', o.optionReflect);
    o.reflectColor.savePower(x);
    x.setFloat('merge', o.reflectMerge);
-   o.refractFrontColor.savePower(p.create('RefractFront'));
-   o.refractBackColor.savePower(p.create('RefractBack'));
-   o.emissiveColor.savePower(p.create('Emissive'));
+   var x = p.create('Refract')
+   x.setBoolean('valid', o.optionRefract);
+   o.refractFrontColor.savePower(x.create('Front'));
+   o.refractBackColor.savePower(x.create('Back'));
+   var x = p.create('Opacity')
+   x.setBoolean('valid', o.optionOpacity);
+   o.opacityColor.savePower(x);
+   x.setFloat('rate', o.opacityRate);
+   x.setFloat('alpha', o.opacityAlpha);
+   x.setFloat('depth', o.opacityDepth);
+   x.setFloat('transmittance', o.opacityTransmittance);
+   var x = p.create('Emissive')
+   x.setBoolean('valid', o.optionEmissive);
+   o.emissiveColor.savePower(x);
 }
 function SE3sSceneShadow(){
    var o = this;
@@ -1199,41 +1234,50 @@ function FE3sSceneProjection_unserialize(p){
 }
 function FE3sSceneRegion(o){
    o = RClass.inherits(this, o, FE3sObject);
-   o._color          = null;
-   o._colorLevel     = null;
-   o._fogNear        = null;
-   o._fogFar         = null;
-   o._fogRate        = null;
-   o._fogAttenuation = null;
-   o._fogColor       = null;
-   o._edgeRate       = null;
-   o._edgeLevel      = null;
-   o._edgeWidth      = null;
-   o._edgeColor      = null;
-   o._faceRange      = null;
-   o._faceLimit      = null;
-   o._faceRate       = null;
-   o._camera         = null;
-   o._light          = null;
-   o.construct       = FE3sSceneRegion_construct;
-   o.color           = FE3sSceneRegion_color;
-   o.camera          = FE3sSceneRegion_camera;
-   o.light           = FE3sSceneRegion_light;
-   o.unserialize     = FE3sSceneRegion_unserialize;
+   o._optionBackground   = true;
+   o._backgroundColor    = null;
+   o._colorLevel         = null;
+   o._fogNear            = null;
+   o._fogFar             = null;
+   o._fogRate            = null;
+   o._fogAttenuation     = null;
+   o._fogColor           = null;
+   o._edgeRate           = null;
+   o._edgeLevel          = null;
+   o._edgeWidth          = null;
+   o._edgeColor          = null;
+   o._faceRange          = null;
+   o._faceLimit          = null;
+   o._faceRate           = null;
+   o._camera             = null;
+   o._light              = null;
+   o.construct           = FE3sSceneRegion_construct;
+   o.optionBackground    = FE3sSceneRegion_optionBackground;
+   o.setOptionBackground = FE3sSceneRegion_setOptionBackground;
+   o.backgroundColor     = FE3sSceneRegion_backgroundColor;
+   o.camera              = FE3sSceneRegion_camera;
+   o.light               = FE3sSceneRegion_light;
+   o.unserialize         = FE3sSceneRegion_unserialize;
    return o;
 }
 function FE3sSceneRegion_construct(){
    var o = this;
    o.__base.FE3sObject.construct.call(o);
-   o._color = new SColor4();
+   o._backgroundColor = new SColor4();
    o._colorLevel = new SColor4();
    o._fogColor = new SColor4();
    o._edgeColor = new SColor4();
    o._camera = RClass.create(FE3sSceneCamera);
    o._light = RClass.create(FE3sSceneLight);
 }
-function FE3sSceneRegion_color(){
-   return this._color;
+function FE3sSceneRegion_optionBackground(){
+   return this._optionBackground;
+}
+function FE3sSceneRegion_setOptionBackground(p){
+   this._optionBackground = p;
+}
+function FE3sSceneRegion_backgroundColor(){
+   return this._backgroundColor;
 }
 function FE3sSceneRegion_camera(){
    return this._camera;
@@ -1244,7 +1288,7 @@ function FE3sSceneRegion_light(){
 function FE3sSceneRegion_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
-   o._color.unserialize(p);
+   o._backgroundColor.unserialize(p);
    o._camera.unserialize(p);
    o._light.unserialize(p);
 }

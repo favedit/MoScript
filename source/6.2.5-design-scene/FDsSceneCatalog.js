@@ -256,6 +256,7 @@ function FDsSceneCatalog_buildRegion(n, p){
    var nr = o.createNode();
    nr.setLabel('Region');
    nr.setTypeName('region');
+   nr.dataPropertySet('linker', p);
    n.appendNode(nr);
    // 新建区域相机节点
    var nc = o.createNode();

@@ -724,17 +724,23 @@ function FE3dDrawable(o){
 }
 function FE3dRegion(o){
    o = RClass.inherits(this, o, FRegion, MG3dRegion, MGraphicObject);
-   o._calculateCameraMatrix = null;
-   o.construct = FE3dRegion_construct;
-   o.prepare   = FE3dRegion_prepare;
-   o.dispose   = FE3dRegion_dispose;
+   o._backgroundColor = null;
+   o.construct        = FE3dRegion_construct;
+   o.backgroundColor  = FE3dRegion_backgroundColor;
+   o.prepare          = FE3dRegion_prepare;
+   o.dispose          = FE3dRegion_dispose;
    return o;
 }
 function FE3dRegion_construct(){
    var o = this;
    o.__base.FRegion.construct.call(o);
    o.__base.MG3dRegion.construct.call(o);
+   var c = o._backgroundColor = new SColor4();
+   c.set(0, 0, 0, 1);
    o._calculateCameraMatrix = new SMatrix3d();
+}
+function FE3dRegion_backgroundColor(){
+   return this._backgroundColor;
 }
 function FE3dRegion_prepare(){
    var o = this;
@@ -941,7 +947,6 @@ function FE3dSprite_testVisible(p){
 function FE3dStage(o){
    o = RClass.inherits(this, o, FStage, MGraphicObject);
    o._statistics       = null;
-   o._backgroundColor  = null;
    o._camera           = null;
    o._directionalLight = null
    o._technique        = null;
@@ -949,9 +954,9 @@ function FE3dStage(o){
    o._allDisplays      = null;
    o.onProcess         = FE3dStage_onProcess;
    o.construct         = FE3dStage_construct;
+   o.createRegion      = FE3dStage_createRegion;
    o.setup             = FE3dStage_setup;
    o.statistics        = FE3dStage_statistics;
-   o.backgroundColor   = FE3dStage_backgroundColor;
    o.camera            = FE3dStage_camera;
    o.projection        = FE3dStage_projection;
    o.directionalLight  = FE3dStage_directionalLight;
@@ -988,7 +993,7 @@ function FE3dStage_onProcess(){
    ss._frameProcess.end();
    ss._frameDraw.begin();
    if(r.isChanged()){
-      t.clear(o._backgroundColor);
+      t.clear(r.backgroundColor());
       for(var i = 0; i < lc; i++){
          var l = ls.valueAt(i);
          var lt = l.technique();
@@ -1009,8 +1014,6 @@ function FE3dStage_construct(){
    o.__base.FStage.construct.call(o);
    o._statistics = RClass.create(FE3dStageStatistics);
    RConsole.find(FStatisticsConsole).register('engine.stage', o._statistics);
-   o._backgroundColor = new SColor4();
-   o._backgroundColor.set(0, 0, 0, 1);
    o._allDisplays = new TObjects();
    var c = o._camera = RClass.create(FE3dCamera);
    c.position().set(0, 0, -100);
@@ -1019,9 +1022,12 @@ function FE3dStage_construct(){
    c._projection.update();
    var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
    l.direction().set(0, -1, 0);
-   var r = o._region = RClass.create(FE3dRegion);
+   var r = o._region = o.createRegion();
    r._camera = c;
    r._directionalLight = l;
+}
+function FE3dStage_createRegion(){
+   return RClass.create(FE3dRegion);
 }
 function FE3dStage_setup(){
    var o = this;
@@ -1031,9 +1037,6 @@ function FE3dStage_setup(){
 }
 function FE3dStage_statistics(){
    return this._statistics;
-}
-function FE3dStage_backgroundColor(){
-   return this._backgroundColor;
 }
 function FE3dStage_camera(){
    return this._camera;
@@ -1178,67 +1181,102 @@ function SE3sMaterialInfo_unserialize(p){
    var o = this;
    o.effectCode = p.readString();
    o.optionDepth = p.readBoolean();
-   o.optionAlpha = p.readBoolean();
    o.optionDouble = p.readBoolean();
-   o.optionView = p.readBoolean();
    o.optionNormalInvert = p.readBoolean();
    o.optionShadow = p.readBoolean();
    o.optionShadowSelf = p.readBoolean();
+   o.optionAlpha = p.readBoolean();
    o.alphaBase = p.readFloat();
    o.alphaRate = p.readFloat();
+   o.optionColor = p.readBoolean();
    o.colorMin = p.readFloat();
    o.colorMax = p.readFloat();
    o.colorRate = p.readFloat();
    o.colorMerge = p.readFloat();
+   o.optionAmbient = p.readBoolean();
    o.ambientColor.unserialize(p);
+   o.optionDiffuse = p.readBoolean();
    o.diffuseColor.unserialize(p);
+   o.optionDiffuseView = p.readBoolean();
    o.diffuseViewColor.unserialize(p);
+   o.optionSpecular = p.readBoolean();
    o.specularColor.unserialize(p);
    o.specularBase = p.readFloat();
    o.specularLevel = p.readFloat();
+   o.optionSpecularView = p.readBoolean();
    o.specularViewColor.unserialize(p);
    o.specularViewBase = p.readFloat();
    o.specularViewLevel = p.readFloat();
+   o.optionReflect = p.readBoolean();
    o.reflectColor.unserialize(p);
    o.reflectMerge = p.readFloat();
+   o.optionRefract = p.readBoolean();
    o.refractFrontColor.unserialize(p);
    o.refractBackColor.unserialize(p);
+   o.optionOpacity = p.readBoolean();
+   o.opacityColor.unserialize(p);
+   o.opacityRate = p.readFloat();
+   o.opacityAlpha = p.readFloat();
+   o.opacityDepth = p.readFloat();
+   o.opacityTransmittance = p.readFloat();
+   o.optionEmissive = p.readBoolean();
    o.emissiveColor.unserialize(p);
 }
 function SE3sMaterialInfo_saveConfig(p){
    var o = this;
    p.set('effect_code', o.effectCode);
-   p.setBoolean('option_alpha', o.optionAlpha);
    p.setBoolean('option_double', o.optionDouble);
-   p.setBoolean('option_view', o.optionView);
+   p.setBoolean('option_alpha', o.optionAlpha);
    p.setBoolean('option_normal_invert', o.optionNormalInvert);
    p.setBoolean('option_shadow', o.optionShadow);
    p.setBoolean('option_shadow_self', o.optionShadowSelf);
    var x = p.create('Alpha');
+   x.setBoolean('valid', o.optionAlpha);
    x.setFloat('base', o.alphaBase);
    x.setFloat('rate', o.alphaRate);
    var x = p.create('Color');
+   x.setBoolean('valid', o.optionColor);
    x.setFloat('min', o.colorMin);
    x.setFloat('max', o.colorMax);
    x.setFloat('rate', o.colorRate);
    x.setFloat('merge', o.colorMerge);
-   o.ambientColor.savePower(p.create('Ambient'));
-   o.diffuseColor.savePower(p.create('Diffuse'));
-   o.diffuseViewColor.savePower(p.create('DiffuseView'));
+   var x = p.create('Ambient')
+   x.setBoolean('valid', o.optionAmbient);
+   o.ambientColor.savePower(x);
+   var x = p.create('Diffuse');
+   x.setBoolean('valid', o.optionDiffuse);
+   o.diffuseColor.savePower(x);
+   var x = p.create('DiffuseView');
+   x.setBoolean('valid', o.optionDiffuseView);
+   o.diffuseViewColor.savePower(x);
    var x = p.create('Specular');
+   x.setBoolean('valid', o.optionSpecular);
    o.specularColor.savePower(x);
    x.setFloat('base', o.specularBase);
    x.setFloat('level', o.specularLevel);
    var x = p.create('SpecularView');
+   x.setBoolean('valid', o.optionSpecularView);
    o.specularViewColor.savePower(x);
    x.setFloat('base', o.specularViewBase);
    x.setFloat('level', o.specularViewLevel);
    var x = p.create('Reflect');
+   x.setBoolean('valid', o.optionReflect);
    o.reflectColor.savePower(x);
    x.setFloat('merge', o.reflectMerge);
-   o.refractFrontColor.savePower(p.create('RefractFront'));
-   o.refractBackColor.savePower(p.create('RefractBack'));
-   o.emissiveColor.savePower(p.create('Emissive'));
+   var x = p.create('Refract')
+   x.setBoolean('valid', o.optionRefract);
+   o.refractFrontColor.savePower(x.create('Front'));
+   o.refractBackColor.savePower(x.create('Back'));
+   var x = p.create('Opacity')
+   x.setBoolean('valid', o.optionOpacity);
+   o.opacityColor.savePower(x);
+   x.setFloat('rate', o.opacityRate);
+   x.setFloat('alpha', o.opacityAlpha);
+   x.setFloat('depth', o.opacityDepth);
+   x.setFloat('transmittance', o.opacityTransmittance);
+   var x = p.create('Emissive')
+   x.setBoolean('valid', o.optionEmissive);
+   o.emissiveColor.savePower(x);
 }
 function SE3sSceneShadow(){
    var o = this;
@@ -2368,41 +2406,50 @@ function FE3sSceneProjection_unserialize(p){
 }
 function FE3sSceneRegion(o){
    o = RClass.inherits(this, o, FE3sObject);
-   o._color          = null;
-   o._colorLevel     = null;
-   o._fogNear        = null;
-   o._fogFar         = null;
-   o._fogRate        = null;
-   o._fogAttenuation = null;
-   o._fogColor       = null;
-   o._edgeRate       = null;
-   o._edgeLevel      = null;
-   o._edgeWidth      = null;
-   o._edgeColor      = null;
-   o._faceRange      = null;
-   o._faceLimit      = null;
-   o._faceRate       = null;
-   o._camera         = null;
-   o._light          = null;
-   o.construct       = FE3sSceneRegion_construct;
-   o.color           = FE3sSceneRegion_color;
-   o.camera          = FE3sSceneRegion_camera;
-   o.light           = FE3sSceneRegion_light;
-   o.unserialize     = FE3sSceneRegion_unserialize;
+   o._optionBackground   = true;
+   o._backgroundColor    = null;
+   o._colorLevel         = null;
+   o._fogNear            = null;
+   o._fogFar             = null;
+   o._fogRate            = null;
+   o._fogAttenuation     = null;
+   o._fogColor           = null;
+   o._edgeRate           = null;
+   o._edgeLevel          = null;
+   o._edgeWidth          = null;
+   o._edgeColor          = null;
+   o._faceRange          = null;
+   o._faceLimit          = null;
+   o._faceRate           = null;
+   o._camera             = null;
+   o._light              = null;
+   o.construct           = FE3sSceneRegion_construct;
+   o.optionBackground    = FE3sSceneRegion_optionBackground;
+   o.setOptionBackground = FE3sSceneRegion_setOptionBackground;
+   o.backgroundColor     = FE3sSceneRegion_backgroundColor;
+   o.camera              = FE3sSceneRegion_camera;
+   o.light               = FE3sSceneRegion_light;
+   o.unserialize         = FE3sSceneRegion_unserialize;
    return o;
 }
 function FE3sSceneRegion_construct(){
    var o = this;
    o.__base.FE3sObject.construct.call(o);
-   o._color = new SColor4();
+   o._backgroundColor = new SColor4();
    o._colorLevel = new SColor4();
    o._fogColor = new SColor4();
    o._edgeColor = new SColor4();
    o._camera = RClass.create(FE3sSceneCamera);
    o._light = RClass.create(FE3sSceneLight);
 }
-function FE3sSceneRegion_color(){
-   return this._color;
+function FE3sSceneRegion_optionBackground(){
+   return this._optionBackground;
+}
+function FE3sSceneRegion_setOptionBackground(p){
+   this._optionBackground = p;
+}
+function FE3sSceneRegion_backgroundColor(){
+   return this._backgroundColor;
 }
 function FE3sSceneRegion_camera(){
    return this._camera;
@@ -2413,7 +2460,7 @@ function FE3sSceneRegion_light(){
 function FE3sSceneRegion_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
-   o._color.unserialize(p);
+   o._backgroundColor.unserialize(p);
    o._camera.unserialize(p);
    o._light.unserialize(p);
 }
@@ -5371,6 +5418,7 @@ function FE3dScene(o){
    o._dataReady            = false;
    o._resource             = null;
    o.construct             = FE3dScene_construct;
+   o.createRegion          = FE3dScene_createRegion;
    o.resource              = FE3dScene_resource;
    o.loadTechniqueResource = FE3dScene_loadTechniqueResource;
    o.loadRegionResource    = FE3dScene_loadRegionResource;
@@ -5386,6 +5434,9 @@ function FE3dScene_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
 }
+function FE3dScene_createRegion(){
+   return RClass.create(FE3dSceneRegion);
+}
 function FE3dScene_resource(p){
    return this._resource;
 }
@@ -5395,7 +5446,7 @@ function FE3dScene_loadTechniqueResource(p){
 }
 function FE3dScene_loadRegionResource(p){
    var o = this;
-   o._backgroundColor.assign(p.color());
+   o._region.loadResource(p);
    var rc = p.camera();
    var rcv = rc.projection();
    var c = o._camera;
@@ -6002,6 +6053,44 @@ function FE3dSceneMaterial_loadSceneResource(p){
 function FE3dSceneMaterial_reload(p){
    var o = this;
    o._info.assign(o._resource.info());
+}
+function FE3dSceneRegion(o){
+   o = RClass.inherits(this, o, FE3dRegion);
+   o._resource      = null;
+   o.construct      = FE3dSceneRegion_construct;
+   o.resource       = FE3dSceneRegion_resource;
+   o.loadResource   = FE3dSceneRegion_loadResource;
+   o.reloadResource = FE3dSceneRegion_reloadResource;
+   o.dispose        = FE3dSceneRegion_dispose;
+   return o;
+}
+function FE3dSceneRegion_construct(){
+   var o = this;
+   o.__base.FE3dRegion.construct.call(o);
+}
+function FE3dSceneRegion_resource(){
+   return this._resource;
+}
+function FE3dSceneRegion_loadResource(p){
+   var o = this;
+   o._resource = p;
+   o.reloadResource();
+}
+function FE3dSceneRegion_reloadResource(){
+   var o = this;
+   var r = o._resource;
+   var f = r.optionBackground();
+   if(f){
+      o._backgroundColor.assignPower(r.backgroundColor());
+      o._backgroundColor.alpha = 1;
+   }else{
+      o._backgroundColor.set(0, 0, 0, 0);
+   }
+}
+function FE3dSceneRegion_dispose(){
+   var o = this;
+   o._resource = null;
+   o.__base.FE3dRegion.dispose.call(o);
 }
 function FE3dTemplate(o){
    o = RClass.inherits(this, o, FE3dDisplay, MGraphicObject, MListenerLoad);

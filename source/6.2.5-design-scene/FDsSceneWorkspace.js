@@ -161,6 +161,10 @@ function FDsSceneWorkspace_onCatalogSelected(p, pc){
       var f = o.findPropertyFrame(EDsFrame.SceneTechniquePropertyFrame);
       f.show();
       f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3dRegion)){
+      var f = o.findPropertyFrame(EDsFrame.SceneRegionPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dCamera)){
       var f = o.findPropertyFrame(EDsFrame.SceneCameraPropertyFrame);
       f.show();

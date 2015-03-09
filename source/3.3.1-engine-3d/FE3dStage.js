@@ -10,7 +10,6 @@ function FE3dStage(o){
    // @attribute
    o._statistics       = null;
    // @attribute
-   o._backgroundColor  = null;
    o._camera           = null;
    o._directionalLight = null
    o._technique        = null;
@@ -23,10 +22,10 @@ function FE3dStage(o){
    //..........................................................
    // @method
    o.construct         = FE3dStage_construct;
+   o.createRegion      = FE3dStage_createRegion;
    o.setup             = FE3dStage_setup;
    // @method
    o.statistics        = FE3dStage_statistics;
-   o.backgroundColor   = FE3dStage_backgroundColor;
    o.camera            = FE3dStage_camera;
    o.projection        = FE3dStage_projection;
    o.directionalLight  = FE3dStage_directionalLight;
@@ -79,7 +78,7 @@ function FE3dStage_onProcess(){
    ss._frameDraw.begin();
    // 处理所有层
    if(r.isChanged()){
-      t.clear(o._backgroundColor);
+      t.clear(r.backgroundColor());
       for(var i = 0; i < lc; i++){
          var l = ls.valueAt(i);
          // 选用技术
@@ -112,9 +111,7 @@ function FE3dStage_construct(){
    /// 创建统计
    o._statistics = RClass.create(FE3dStageStatistics);
    RConsole.find(FStatisticsConsole).register('engine.stage', o._statistics);
-   // 创建背景色
-   o._backgroundColor = new SColor4();
-   o._backgroundColor.set(0, 0, 0, 1);
+   // 创建显示集合
    o._allDisplays = new TObjects();
    // 创建相机
    var c = o._camera = RClass.create(FE3dCamera);
@@ -126,9 +123,19 @@ function FE3dStage_construct(){
    var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
    l.direction().set(0, -1, 0);
    // 创建区域
-   var r = o._region = RClass.create(FE3dRegion);
+   var r = o._region = o.createRegion();
    r._camera = c;
    r._directionalLight = l;
+}
+
+//==========================================================
+// <T>创建区域。</T>
+//
+// @method
+// @return FE3dRegion 区域
+//==========================================================
+function FE3dStage_createRegion(){
+   return RClass.create(FE3dRegion);
 }
 
 //==========================================================
@@ -152,16 +159,6 @@ function FE3dStage_setup(){
 //==========================================================
 function FE3dStage_statistics(){
    return this._statistics;
-}
-
-//==========================================================
-// <T>获得背景色。</T>
-//
-// @method
-// @return SColor4 背景色
-//==========================================================
-function FE3dStage_backgroundColor(){
-   return this._backgroundColor;
 }
 
 //==========================================================

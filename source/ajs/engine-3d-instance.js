@@ -665,6 +665,7 @@ function FE3dScene(o){
    o._dataReady            = false;
    o._resource             = null;
    o.construct             = FE3dScene_construct;
+   o.createRegion          = FE3dScene_createRegion;
    o.resource              = FE3dScene_resource;
    o.loadTechniqueResource = FE3dScene_loadTechniqueResource;
    o.loadRegionResource    = FE3dScene_loadRegionResource;
@@ -680,6 +681,9 @@ function FE3dScene_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
 }
+function FE3dScene_createRegion(){
+   return RClass.create(FE3dSceneRegion);
+}
 function FE3dScene_resource(p){
    return this._resource;
 }
@@ -689,7 +693,7 @@ function FE3dScene_loadTechniqueResource(p){
 }
 function FE3dScene_loadRegionResource(p){
    var o = this;
-   o._backgroundColor.assign(p.color());
+   o._region.loadResource(p);
    var rc = p.camera();
    var rcv = rc.projection();
    var c = o._camera;
@@ -1296,6 +1300,44 @@ function FE3dSceneMaterial_loadSceneResource(p){
 function FE3dSceneMaterial_reload(p){
    var o = this;
    o._info.assign(o._resource.info());
+}
+function FE3dSceneRegion(o){
+   o = RClass.inherits(this, o, FE3dRegion);
+   o._resource      = null;
+   o.construct      = FE3dSceneRegion_construct;
+   o.resource       = FE3dSceneRegion_resource;
+   o.loadResource   = FE3dSceneRegion_loadResource;
+   o.reloadResource = FE3dSceneRegion_reloadResource;
+   o.dispose        = FE3dSceneRegion_dispose;
+   return o;
+}
+function FE3dSceneRegion_construct(){
+   var o = this;
+   o.__base.FE3dRegion.construct.call(o);
+}
+function FE3dSceneRegion_resource(){
+   return this._resource;
+}
+function FE3dSceneRegion_loadResource(p){
+   var o = this;
+   o._resource = p;
+   o.reloadResource();
+}
+function FE3dSceneRegion_reloadResource(){
+   var o = this;
+   var r = o._resource;
+   var f = r.optionBackground();
+   if(f){
+      o._backgroundColor.assignPower(r.backgroundColor());
+      o._backgroundColor.alpha = 1;
+   }else{
+      o._backgroundColor.set(0, 0, 0, 0);
+   }
+}
+function FE3dSceneRegion_dispose(){
+   var o = this;
+   o._resource = null;
+   o.__base.FE3dRegion.dispose.call(o);
 }
 function FE3dTemplate(o){
    o = RClass.inherits(this, o, FE3dDisplay, MGraphicObject, MListenerLoad);

@@ -119,17 +119,23 @@ function FE3dDrawable(o){
 }
 function FE3dRegion(o){
    o = RClass.inherits(this, o, FRegion, MG3dRegion, MGraphicObject);
-   o._calculateCameraMatrix = null;
-   o.construct = FE3dRegion_construct;
-   o.prepare   = FE3dRegion_prepare;
-   o.dispose   = FE3dRegion_dispose;
+   o._backgroundColor = null;
+   o.construct        = FE3dRegion_construct;
+   o.backgroundColor  = FE3dRegion_backgroundColor;
+   o.prepare          = FE3dRegion_prepare;
+   o.dispose          = FE3dRegion_dispose;
    return o;
 }
 function FE3dRegion_construct(){
    var o = this;
    o.__base.FRegion.construct.call(o);
    o.__base.MG3dRegion.construct.call(o);
+   var c = o._backgroundColor = new SColor4();
+   c.set(0, 0, 0, 1);
    o._calculateCameraMatrix = new SMatrix3d();
+}
+function FE3dRegion_backgroundColor(){
+   return this._backgroundColor;
 }
 function FE3dRegion_prepare(){
    var o = this;
@@ -336,7 +342,6 @@ function FE3dSprite_testVisible(p){
 function FE3dStage(o){
    o = RClass.inherits(this, o, FStage, MGraphicObject);
    o._statistics       = null;
-   o._backgroundColor  = null;
    o._camera           = null;
    o._directionalLight = null
    o._technique        = null;
@@ -344,9 +349,9 @@ function FE3dStage(o){
    o._allDisplays      = null;
    o.onProcess         = FE3dStage_onProcess;
    o.construct         = FE3dStage_construct;
+   o.createRegion      = FE3dStage_createRegion;
    o.setup             = FE3dStage_setup;
    o.statistics        = FE3dStage_statistics;
-   o.backgroundColor   = FE3dStage_backgroundColor;
    o.camera            = FE3dStage_camera;
    o.projection        = FE3dStage_projection;
    o.directionalLight  = FE3dStage_directionalLight;
@@ -383,7 +388,7 @@ function FE3dStage_onProcess(){
    ss._frameProcess.end();
    ss._frameDraw.begin();
    if(r.isChanged()){
-      t.clear(o._backgroundColor);
+      t.clear(r.backgroundColor());
       for(var i = 0; i < lc; i++){
          var l = ls.valueAt(i);
          var lt = l.technique();
@@ -404,8 +409,6 @@ function FE3dStage_construct(){
    o.__base.FStage.construct.call(o);
    o._statistics = RClass.create(FE3dStageStatistics);
    RConsole.find(FStatisticsConsole).register('engine.stage', o._statistics);
-   o._backgroundColor = new SColor4();
-   o._backgroundColor.set(0, 0, 0, 1);
    o._allDisplays = new TObjects();
    var c = o._camera = RClass.create(FE3dCamera);
    c.position().set(0, 0, -100);
@@ -414,9 +417,12 @@ function FE3dStage_construct(){
    c._projection.update();
    var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
    l.direction().set(0, -1, 0);
-   var r = o._region = RClass.create(FE3dRegion);
+   var r = o._region = o.createRegion();
    r._camera = c;
    r._directionalLight = l;
+}
+function FE3dStage_createRegion(){
+   return RClass.create(FE3dRegion);
 }
 function FE3dStage_setup(){
    var o = this;
@@ -426,9 +432,6 @@ function FE3dStage_setup(){
 }
 function FE3dStage_statistics(){
    return this._statistics;
-}
-function FE3dStage_backgroundColor(){
-   return this._backgroundColor;
 }
 function FE3dStage_camera(){
    return this._camera;

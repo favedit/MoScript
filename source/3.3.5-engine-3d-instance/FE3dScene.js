@@ -11,9 +11,9 @@ function FE3dScene(o){
    o._dataReady            = false;
    o._resource             = null;
    //..........................................................
-   //..........................................................
    // @method
    o.construct             = FE3dScene_construct;
+   o.createRegion          = FE3dScene_createRegion;
    // @method
    o.resource              = FE3dScene_resource;
    o.loadTechniqueResource = FE3dScene_loadTechniqueResource;
@@ -37,6 +37,16 @@ function FE3dScene(o){
 function FE3dScene_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
+}
+
+//==========================================================
+// <T>创建区域。</T>
+//
+// @method
+// @return FE3dRegion 区域
+//==========================================================
+function FE3dScene_createRegion(){
+   return RClass.create(FE3dSceneRegion);
 }
 
 //==========================================================
@@ -68,8 +78,7 @@ function FE3dScene_loadTechniqueResource(p){
 //==========================================================
 function FE3dScene_loadRegionResource(p){
    var o = this;
-   // 设置颜色
-   o._backgroundColor.assign(p.color());
+   o._region.loadResource(p);
    //............................................................
    // 设置相机
    var rc = p.camera();
