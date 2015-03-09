@@ -9,6 +9,7 @@ function FE3sSceneConsole(o){
    //..........................................................
    // @attribute
    o._scenes     = null;
+   o._venderCode = 'scene';
    o._serviceUrl = '/cloud.content.scene.ws'
    o._dataUrl    = '/cloud.content.scene.wv'
    //..........................................................
@@ -42,9 +43,11 @@ function FE3sSceneConsole_load(p){
    var r = s.get(p);
    if(r == null){
       // 生成地址
-      var u = RBrowser.hostPath(o._dataUrl + '?code=' + p + '&date=' + RDate.format());
+      var v = RConsole.find(FE3sVendorConsole).find(o._venderCode);
+      var u = v.makeUrl(p);
       // 创建主题
       r = RClass.create(FE3sScene);
+      r.setVendor(v);
       r.load(u);
       s.set(p, r);
    }

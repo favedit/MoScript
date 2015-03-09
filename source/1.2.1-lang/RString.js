@@ -57,6 +57,8 @@ var RString = new function RString(){
    o.splitTwo     = RString_splitTwo;
    o.splitParts   = RString_splitParts;
    o.splitPattern = RString_splitPattern;
+   o.replace      = RString_replace;
+   o.replaceChar  = RString_replaceChar;
    o.remove       = RString_remove;
    o.removeChars  = RString_removeChars;
    return o;
@@ -833,6 +835,45 @@ function RString_splitPattern(s, p){
       }
    }
    return r;
+}
+
+//==========================================================
+// <T>替换字符串全部内容。</T>
+//
+// @method
+// @param v:value:String 字符串
+// @param s:source:String 源字符串
+// @param t:target:String 目标字符串
+// @return String 字符串
+//==========================================================
+function RString_replace(v, s, t){
+   return v.replace(new RegExp(s, 'g'), t);
+}
+
+//==========================================================
+// <T>替换全部指定字符。</T>
+//
+// @method
+// @param v:value:String 字符串
+// @param s:sourceChar:String 源字符
+// @param t:targetChar:String 目标字符
+// @return String 字符串
+//==========================================================
+function RString_replaceChar(v, s, t){
+   if(v != null){
+      var c = v.length;
+      var r = new Array();
+      for(var n = 0; n < c; n++){
+         var a = v.charAt(n);
+         if(a == s){
+            r[r.length] = t;
+         }else{
+            r[r.length] = a;
+         }
+      }
+      return r.join('');
+   }
+   return v;
 }
 
 //==========================================================

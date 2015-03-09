@@ -63,13 +63,7 @@ function FE3rTextureBitmapFlatPack_loadResource(p){
    o._resource = p;
    var rt = p._texture;
    var c = p.code();
-   // 加载位图
-   var u = RBrowser.hostPath('/cloud.content.texture.bitmap.wv?guid=' + rt._guid + '&code=' + c);
-   if(RRuntime.isDebug()){
-      u += '&date=' + RDate.format();
-   }
-   var g = o._image = RClass.create(FImage);
-   g.loadUrl(u);
+   var g = o._image = RConsole.find(FE3sTextureConsole).loadBitmap(rt._guid, c, p._formatName);
    g.addLoadListener(o, o.onLoad);
 
    //var oc = p.optionCompress();

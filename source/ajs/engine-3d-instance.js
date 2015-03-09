@@ -725,7 +725,7 @@ function FE3dScene_loadDisplayResource(pl, pd){
    var d3 = RConsole.find(FE3dSceneConsole).factory().create(EE3dScene.Display);
    d3.linkGraphicContext(o);
    d3.loadSceneResource(pd);
-   RConsole.find(FE3dTemplateConsole).load(d3, pd.code());
+   RConsole.find(FE3dTemplateConsole).loadByGuid(d3, pd.templateGuid());
    pl.pushDisplay(d3);
 }
 function FE3dScene_loadLayerResource(p){
@@ -1697,7 +1697,8 @@ function FE3dTemplateConsole(o){
    o.onProcess      = FE3dTemplateConsole_onProcess;
    o.construct      = FE3dTemplateConsole_construct;
    o.alloc          = FE3dTemplateConsole_alloc;
-   o.load           = FE3dTemplateConsole_load;
+   o.loadByGuid     = FE3dTemplateConsole_loadByGuid;
+   o.loadByCode     = FE3dTemplateConsole_loadByCode;
    o.free           = FE3dTemplateConsole_free;
    return o;
 }
@@ -1739,12 +1740,22 @@ function FE3dTemplateConsole_alloc(c, n){
    o._loadTemplates.push(t);
    return t;
 }
-function FE3dTemplateConsole_load(t, n){
+function FE3dTemplateConsole_loadByGuid(t, p){
    var o = this;
    var rc = RConsole.find(FE3sTemplateConsole);
-   var r = rc.load(n);
-   t._resourceGuid = n;
-   t.setName(n);
+   var r = rc.loadByGuid(p);
+   t._resourceGuid = p;
+   t.setName(p);
+   t.setResource(r);
+   o._loadTemplates.push(t);
+   return t;
+}
+function FE3dTemplateConsole_loadByCode(t, p){
+   var o = this;
+   var rc = RConsole.find(FE3sTemplateConsole);
+   var r = rc.load(g, p);
+   t._resourceGuid = g;
+   t.setName(c);
    t.setResource(r);
    o._loadTemplates.push(t);
    return t;

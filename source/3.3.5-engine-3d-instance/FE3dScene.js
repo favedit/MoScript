@@ -126,17 +126,7 @@ function FE3dScene_loadDisplayResource(pl, pd){
    var d3 = RConsole.find(FE3dSceneConsole).factory().create(EE3dScene.Display);
    d3.linkGraphicContext(o);
    d3.loadSceneResource(pd);
-   RConsole.find(FE3dTemplateConsole).load(d3, pd.code());
-   //............................................................
-   // 读取渲染对象集合
-   //FMaterial* pLightMaterial = _directionalLight->Material();
-   //if(pDisplay->Renderables() != NULL){
-   //   GRenderablePtrs::TIteratorC iterator = pDisplay->Renderables().IteratorC();
-   //   while(iterator.Next()){
-   //      FTemplate3dRenderable* pRenderable = (*iterator)->Convert<FTemplate3dRenderable>();
-   //      pRenderable->UpdateMaterial(pLightMaterial);
-   //   }
-   //}
+   RConsole.find(FE3dTemplateConsole).loadByGuid(d3, pd.templateGuid());
    // 放入集合
    pl.pushDisplay(d3);
 }

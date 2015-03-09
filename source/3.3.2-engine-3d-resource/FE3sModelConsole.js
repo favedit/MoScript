@@ -193,13 +193,12 @@ function FE3sModelConsole_load(p){
    var s = o._models;
    var m = s.get(p);
    if(!m){
-      // 生成网络地址
-      var u = RBrowser.hostPath(o._dataUrl + '?code=' + p);
-      if(RRuntime.isDebug()){
-         u += '&date=' + RDate.format();
-      }
+      // 生成地址
+      var v = RConsole.find(FE3sVendorConsole).find('model');
+      var u = v.makeUrl(p);
       // 创建模型资源
       m = RClass.create(FE3sModel);
+      m.setVendor(v);
       m.load(u);
       s.set(p, m);
    }

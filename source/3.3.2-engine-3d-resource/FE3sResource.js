@@ -11,10 +11,14 @@ function FE3sResource(o){
    o._dataReady   = false;
    o._dataSize    = 0;
    o._lsnsLoad    = null;
+   o._vendor      = null;
    //..........................................................
    // @event
    o.onLoad       = FE3sResource_onLoad;
    //..........................................................
+   // @method
+   o.vendor       = FE3sResource_vendor;
+   o.setVendor    = FE3sResource_setVendor;
    // @method
    o.loadListener = FE3sResource_loadListener;
    o.testReady    = FE3sResource_testReady;
@@ -23,6 +27,8 @@ function FE3sResource(o){
    o.saveConfig   = FE3sResource_saveConfig;
    // @method
    o.load         = FE3sResource_load;
+   // @method
+   o.dispose      = FE3sResource_dispose;
    return o;
 }
 
@@ -48,6 +54,26 @@ function FE3sResource_onLoad(p){
    if(o._lsnsLoad){
       o._lsnsLoad.process();
    }
+}
+
+//==========================================================
+// <T>获得资源提供商。</T>
+//
+// @method
+// @return Boolean 资源提供商
+//==========================================================
+function FE3sResource_vendor(){
+   return this._vendor;
+}
+
+//==========================================================
+// <T>设置资源提供商。</T>
+//
+// @method
+// @param p:vendor:FE3sVendor 资源提供商
+//==========================================================
+function FE3sResource_setVendor(p){
+   this._vendor = p;
 }
 
 //==========================================================
@@ -82,11 +108,17 @@ function FE3sResource_testReady(){
 //==========================================================
 function FE3sResource_unserialize(p){
    var o = this;
+   var f = true;
+   if(o._vendor){
+      f = o._vendor._optionFlag;
+   }
    // 检查结果
-   var r = p.readInt32();
-   if(r != EResult.Success){
-      var s = p.readString();
-      throw new TError('Unserial resource failure.\n{1}', s);
+   if(f){
+      var r = p.readInt32();
+      if(r != EResult.Success){
+         var s = p.readString();
+         throw new TError('Unserial resource failure.\n{1}', s);
+      }
    }
    // 读取属性
    o._guid = p.readString();
@@ -118,4 +150,17 @@ function FE3sResource_load(u){
    var hc = RConsole.find(FHttpConsole);
    var c = hc.send(u);
    c.lsnsLoad.register(o, o.onLoad);
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FE3sResource_dispose(){
+   var o = this;
+   o._lsnsLoad = null;
+   o._vendor = null;
+   // 父处理
+   o.__base.FConsole.dispose.call(o);
 }

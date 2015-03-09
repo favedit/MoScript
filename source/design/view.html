@@ -54,6 +54,8 @@ function onLoad(){
    if(RString.isEmpty(c)){
       throw new TFatal(this, 'Scnee code is empty.');
    }
+   // 设置资源获取方式
+   RConsole.find(FE3sVendorConsole).setup('net');
    // 创建场景画板
    var w = canvas = RClass.create(FE3dSceneCanvas);
    w._scaleRate = 1;

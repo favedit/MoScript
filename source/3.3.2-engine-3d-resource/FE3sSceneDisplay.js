@@ -8,7 +8,7 @@ function FE3sSceneDisplay(o){
    o = RClass.inherits(this, o, FE3sObject);
    //..........................................................
    // @attribute 属性
-   o._code                = null;
+   o._templateGuid        = null;
    // @attribute 配置
    o._optionMergeVertex   = null;
    o._optionMergeMaterial = null;
@@ -22,7 +22,7 @@ function FE3sSceneDisplay(o){
    // @method
    o.construct            = FE3sSceneDisplay_construct;
    // @method
-   o.code                 = FE3sSceneDisplay_code;
+   o.templateGuid         = FE3sSceneDisplay_templateGuid;
    o.matrix               = FE3sSceneDisplay_matrix;
    o.movies               = FE3sSceneDisplay_movies;
    o.materials            = FE3sSceneDisplay_materials;
@@ -45,13 +45,13 @@ function FE3sSceneDisplay_construct(){
 }
 
 //==========================================================
-// <T>获得代码。</T>
+// <T>获得模板唯一编号。</T>
 //
 // @method
-// @return String 代码
+// @return String 唯一编号
 //==========================================================
-function FE3sSceneDisplay_code(){
-   return this._code;
+function FE3sSceneDisplay_templateGuid(){
+   return this._templateGuid;
 }
 
 //==========================================================
@@ -104,8 +104,7 @@ function FE3sSceneDisplay_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
    // 读取配置
-   //o._optionMergeVertex = p.readBoolean();
-   //o._optionMergeMaterial = p.readBoolean();
+   o._templateGuid = p.readString();
    // 读取矩阵
    o._matrix.unserialize(p);
    // 读取动画集合

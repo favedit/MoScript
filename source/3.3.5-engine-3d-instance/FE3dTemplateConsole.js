@@ -24,7 +24,8 @@ function FE3dTemplateConsole(o){
    o.construct      = FE3dTemplateConsole_construct;
    // @method
    o.alloc          = FE3dTemplateConsole_alloc;
-   o.load           = FE3dTemplateConsole_load;
+   o.loadByGuid     = FE3dTemplateConsole_loadByGuid;
+   o.loadByCode     = FE3dTemplateConsole_loadByCode;
    o.free           = FE3dTemplateConsole_free;
    return o;
 }
@@ -99,16 +100,39 @@ function FE3dTemplateConsole_alloc(c, n){
 //
 // @method
 // @param t:template:FTemplate3d 渲染模板
-// @param n:name:String 名称
+// @param g:guid:String 唯一编码
+// @param c:code:String 代码
 //==========================================================
-function FE3dTemplateConsole_load(t, n){
+function FE3dTemplateConsole_loadByGuid(t, p){
    var o = this;
    // 获得模板资源
    var rc = RConsole.find(FE3sTemplateConsole);
-   var r = rc.load(n);
+   var r = rc.loadByGuid(p);
    // 创建模板
-   t._resourceGuid = n;
-   t.setName(n);
+   t._resourceGuid = p;
+   t.setName(p);
+   t.setResource(r);
+   // 加载处理
+   o._loadTemplates.push(t);
+   return t;
+}
+
+//==========================================================
+// <T>加载一个渲染模板。</T>
+//
+// @method
+// @param t:template:FTemplate3d 渲染模板
+// @param g:guid:String 唯一编码
+// @param c:code:String 代码
+//==========================================================
+function FE3dTemplateConsole_loadByCode(t, p){
+   var o = this;
+   // 获得模板资源
+   var rc = RConsole.find(FE3sTemplateConsole);
+   var r = rc.load(g, p);
+   // 创建模板
+   t._resourceGuid = g;
+   t.setName(c);
    t.setResource(r);
    // 加载处理
    o._loadTemplates.push(t);

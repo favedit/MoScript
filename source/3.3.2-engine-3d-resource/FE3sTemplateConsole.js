@@ -14,7 +14,8 @@ function FE3sTemplateConsole(o){
    //..........................................................
    // @method
    o.construct   = FE3sTemplateConsole_construct;
-   o.load        = FE3sTemplateConsole_load;
+   o.loadByGuid  = FE3sTemplateConsole_loadByGuid;
+   o.loadByCode  = FE3sTemplateConsole_loadByCode;
    o.update      = FE3sTemplateConsole_update;
    return o;
 }
@@ -31,22 +32,46 @@ function FE3sTemplateConsole_construct(){
 }
 
 //==========================================================
-// <T>从输入流里反序列化信息内容</T>
+// <T>加载指定模板。</T>
 //
-// @param p:input:FByteStream 数据流
-// @return 处理结果
+// @param p:guid:String 唯一编码
+// @return FE3sTemplate 模板
 //==========================================================
-function FE3sTemplateConsole_load(c, v){
+function FE3sTemplateConsole_loadByGuid(p){
    var o = this;
    var s = o._templates;
-   var t = s.get(c);
+   var t = s.get(p);
    if(t == null){
       // 生成地址
-      var u = RBrowser.hostPath(o._dataUrl + '?code=' + c + '&version=' + RString.nvl(v) + '&date=' + RDate.format());
+      var v = RConsole.find(FE3sVendorConsole).find('template');
+      var u = v.makeUrl(p);
+      // 创建主题
+      t = RClass.create(FE3sTemplate);
+      t.setVendor(v);
+      t.load(u);
+      s.set(p, t);
+   }
+   return t;
+}
+
+//==========================================================
+// <T>加载指定模板。</T>
+//
+// @param p:guid:String 唯一编码
+// @return FE3sTemplate 模板
+//==========================================================
+function FE3sTemplateConsole_loadByCode(p){
+   var o = this;
+   var s = o._templates;
+   var t = s.get(p);
+   if(t == null){
+      // 生成地址
+      var v = RConsole.find(FE3sVendorConsole).find('template');
+      var u = v.makeUrl(p);
       // 创建主题
       t = RClass.create(FE3sTemplate);
       t.load(u);
-      s.set(c, t);
+      s.set(p, t);
    }
    return t;
 }
@@ -61,6 +86,5 @@ function FE3sTemplateConsole_update(p){
    // 生成地址
    var u = RBrowser.hostPath(o._serviceUrl + '?action=update');
    // 发送数据
-   var xc = RConsole.find(FXmlConsole);
-   var r = xc.send(u, p);
+   RConsole.find(FXmlConsole).send(u, p);
 }

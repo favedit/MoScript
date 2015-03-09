@@ -3678,6 +3678,8 @@ var RString = new function RString(){
    o.splitTwo     = RString_splitTwo;
    o.splitParts   = RString_splitParts;
    o.splitPattern = RString_splitPattern;
+   o.replace      = RString_replace;
+   o.replaceChar  = RString_replaceChar;
    o.remove       = RString_remove;
    o.removeChars  = RString_removeChars;
    return o;
@@ -4104,6 +4106,25 @@ function RString_splitPattern(s, p){
       }
    }
    return r;
+}
+function RString_replace(v, s, t){
+   return v.replace(new RegExp(s, 'g'), t);
+}
+function RString_replaceChar(v, s, t){
+   if(v != null){
+      var c = v.length;
+      var r = new Array();
+      for(var n = 0; n < c; n++){
+         var a = v.charAt(n);
+         if(a == s){
+            r[r.length] = t;
+         }else{
+            r[r.length] = a;
+         }
+      }
+      return r.join('');
+   }
+   return v;
 }
 function RString_remove(s, t){
    return s.replace(t, '');
