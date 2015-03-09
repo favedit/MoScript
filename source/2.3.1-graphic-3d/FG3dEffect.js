@@ -39,7 +39,6 @@ function FG3dEffect(o){
    o.drawRegion          = FG3dEffect_drawRegion;
    o.buildInfo           = FG3dEffect_buildInfo;
    o.loadConfig          = FG3dEffect_loadConfig;
-   o.loadUrl             = FG3dEffect_loadUrl;
    o.load                = FG3dEffect_load;
    o.build               = FG3dEffect_build;
    return o;
@@ -263,24 +262,6 @@ function FG3dEffect_loadConfig(p){
 }
 
 //==========================================================
-// <T>从网络地址加载渲染器。</T>
-//
-// @method
-// @param u:url:String 网络地址
-//==========================================================
-function FG3dEffect_loadUrl(u){
-   var o = this;
-   // 获得网络数据
-   var x = RClass.create(FXmlConnection);
-   if(RRuntime.isDebug()){
-      u += '?' + RDate.format();
-   }
-   var r = x.send(u);
-   // 加载配置信息
-   o.loadConfig(r);
-}
-
-//==========================================================
 // <T>构建处理。</T>
 //
 // @method
@@ -322,11 +303,6 @@ function FG3dEffect_build(p){
 //==========================================================
 function FG3dEffect_load(){
    var o = this;
-   var cp = RBrowser.contentPath();
-   var ec = RConsole.find(FG3dEffectConsole);
-   var u = cp + ec.path() + o._code + ".xml?" + RDate.format();
-   if(RRuntime.isDebug()){
-      u += '?' + RDate.format();
-   }
-   o.loadUrl(u);
+   var x = RConsole.find(FG3dEffectConsole).loadConfig(o._code);
+   o.loadConfig(x);
 }

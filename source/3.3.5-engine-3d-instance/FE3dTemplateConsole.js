@@ -23,7 +23,8 @@ function FE3dTemplateConsole(o){
    // @method
    o.construct      = FE3dTemplateConsole_construct;
    // @method
-   o.alloc          = FE3dTemplateConsole_alloc;
+   o.allocByGuid    = FE3dTemplateConsole_allocByGuid;
+   o.allocByCode    = FE3dTemplateConsole_allocByCode;
    o.loadByGuid     = FE3dTemplateConsole_loadByGuid;
    o.loadByCode     = FE3dTemplateConsole_loadByCode;
    o.free           = FE3dTemplateConsole_free;
@@ -72,7 +73,7 @@ function FE3dTemplateConsole_construct(){
 // @param n:name:String 名称
 // @return FE3dTemplate 渲染模板
 //==========================================================
-function FE3dTemplateConsole_alloc(c, n){
+function FE3dTemplateConsole_allocByGuid(c, n){
    var o = this;
    // 尝试从缓冲池中取出
    var ts = o._templates.get(n);
@@ -83,7 +84,38 @@ function FE3dTemplateConsole_alloc(c, n){
    }
    // 获得模板资源
    var rc = RConsole.find(FE3sTemplateConsole);
-   var r = rc.load(n);
+   var r = rc.loadByGuid(n);
+   // 创建模板
+   var t = RClass.create(FE3dTemplate);
+   t.linkGraphicContext(c);
+   t.setName(n);
+   t._resourceGuid = n;
+   t.setResource(r);
+   // 加载处理
+   o._loadTemplates.push(t);
+   return t;
+}
+
+//==========================================================
+// <T>收集一个渲染模板。</T>
+//
+// @method
+// @param c:content:FRenderContent 渲染环境
+// @param n:name:String 名称
+// @return FE3dTemplate 渲染模板
+//==========================================================
+function FE3dTemplateConsole_allocByCode(c, n){
+   var o = this;
+   // 尝试从缓冲池中取出
+   var ts = o._templates.get(n);
+   if(ts){
+      if(!ts.isEmpty()){
+         return ts.pop();
+      }
+   }
+   // 获得模板资源
+   var rc = RConsole.find(FE3sTemplateConsole);
+   var r = rc.loadByCode(n);
    // 创建模板
    var t = RClass.create(FE3dTemplate);
    t.linkGraphicContext(c);
@@ -129,7 +161,7 @@ function FE3dTemplateConsole_loadByCode(t, p){
    var o = this;
    // 获得模板资源
    var rc = RConsole.find(FE3sTemplateConsole);
-   var r = rc.load(g, p);
+   var r = rc.loadByCode(g, p);
    // 创建模板
    t._resourceGuid = g;
    t.setName(c);

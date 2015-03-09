@@ -14190,7 +14190,6 @@ function FG3dEffect(o){
    o.drawRegion          = FG3dEffect_drawRegion;
    o.buildInfo           = FG3dEffect_buildInfo;
    o.loadConfig          = FG3dEffect_loadConfig;
-   o.loadUrl             = FG3dEffect_loadUrl;
    o.load                = FG3dEffect_load;
    o.build               = FG3dEffect_build;
    return o;
@@ -14324,15 +14323,6 @@ function FG3dEffect_loadConfig(p){
    var ft = o._fragmentTemplate = RClass.create(FG3dShaderTemplate);
    ft.load(o._fragmentSource);
 }
-function FG3dEffect_loadUrl(u){
-   var o = this;
-   var x = RClass.create(FXmlConnection);
-   if(RRuntime.isDebug()){
-      u += '?' + RDate.format();
-   }
-   var r = x.send(u);
-   o.loadConfig(r);
-}
 function FG3dEffect_build(p){
    var o = this;
    var g = o._program;
@@ -14359,16 +14349,12 @@ function FG3dEffect_build(p){
 }
 function FG3dEffect_load(){
    var o = this;
-   var cp = RBrowser.contentPath();
-   var ec = RConsole.find(FG3dEffectConsole);
-   var u = cp + ec.path() + o._code + ".xml?" + RDate.format();
-   if(RRuntime.isDebug()){
-      u += '?' + RDate.format();
-   }
-   o.loadUrl(u);
+   var x = RConsole.find(FG3dEffectConsole).loadConfig(o._code);
+   o.loadConfig(x);
 }
 function FG3dEffectConsole(o){
    o = RClass.inherits(this, o, FConsole);
+   o._configs         = null;
    o._registerEffects = null;
    o._templateEffects = null;
    o._effects         = null;
@@ -14383,11 +14369,13 @@ function FG3dEffectConsole(o){
    o.buildEffectInfo  = FG3dEffectConsole_buildEffectInfo;
    o.findTemplate     = FG3dEffectConsole_findTemplate;
    o.find             = FG3dEffectConsole_find;
+   o.loadConfig       = FG3dEffectConsole_loadConfig;
    return o;
 }
 function FG3dEffectConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   o._configs = new TDictionary();
    o._registerEffects = new TDictionary();
    o._templateEffects = new TDictionary();
    o._effects = new TDictionary();
@@ -14494,6 +14482,20 @@ function FG3dEffectConsole_find(pc, pg, pr){
       es.set(ec, e);
    }
    return e;
+}
+function FG3dEffectConsole_loadConfig(p){
+   var o = this;
+   var x = o._configs.get(p);
+   if(x){
+      return x;
+   }
+   var u = RBrowser.contentPath(o._path + p + ".xml");
+   if(RRuntime.isDebug()){
+      u += '?' + RDate.format();
+   }
+   x = RClass.create(FXmlConnection).send(u);
+   o._configs.set(p, x);
+   return x;
 }
 function FG3dLight(o){
    o = RClass.inherits(this, o, FObject);
@@ -21210,7 +21212,7 @@ function FE3sTemplateConsole_loadByGuid(p){
    var t = s.get(p);
    if(t == null){
       var v = RConsole.find(FE3sVendorConsole).find('template');
-      var u = v.makeUrl(p);
+      var u = v.makeUrl(p, '');
       t = RClass.create(FE3sTemplate);
       t.setVendor(v);
       t.load(u);
@@ -21224,7 +21226,7 @@ function FE3sTemplateConsole_loadByCode(p){
    var t = s.get(p);
    if(t == null){
       var v = RConsole.find(FE3sVendorConsole).find('template');
-      var u = v.makeUrl(p);
+      var u = v.makeUrl('', p);
       t = RClass.create(FE3sTemplate);
       t.load(u);
       s.set(p, t);
@@ -21611,6 +21613,7 @@ function FE3sVendor_makeUrl(){
 }
 function FE3sVendorConsole(o){
    o = RClass.inherits(this, o, FConsole);
+   o._setuped     = false;
    o._vendors     = null;
    o.construct    = FE3sVendorConsole_construct;
    o.createVendor = FE3sVendorConsole_createVendor;
@@ -21634,6 +21637,10 @@ function FE3sVendorConsole_register(n, p){
    this._vendors.set(n, p);
 }
 function FE3sVendorConsole_find(p){
+   var o = this;
+   if(!o._setuped){
+      o.setup('net');
+   }
    return this._vendors.get(p);
 }
 function FE3sVendorConsole_setup(p){
@@ -21642,7 +21649,7 @@ function FE3sVendorConsole_setup(p){
       o._vendors.set('texture.bitmap', o.createVendor(true, RBrowser.hostPath('/cloud.content.texture.bitmap.wv?guid={1}&code={2}')));
       o._vendors.set('texture', o.createVendor(true, RBrowser.hostPath('/cloud.content.texture.wv?guid={1}')));
       o._vendors.set('model', o.createVendor(true, RBrowser.hostPath('/cloud.content.model.wv?guid={1}')));
-      o._vendors.set('template', o.createVendor(true, RBrowser.hostPath('/cloud.content.template.wv?guid={1}')));
+      o._vendors.set('template', o.createVendor(true, RBrowser.hostPath('/cloud.content.template.wv?guid={1}&code={2}')));
       o._vendors.set('scene', o.createVendor(true, RBrowser.hostPath('/cloud.content.scene.wv?code={1}')));
    }else if(p == 'local'){
       o._vendors.set('texture.bitmap', o.createVendor(false, RBrowser.contentPath('/ar3/texture/{1}/{2}.{3}')));
@@ -21650,7 +21657,10 @@ function FE3sVendorConsole_setup(p){
       o._vendors.set('model', o.createVendor(false, RBrowser.contentPath('/ar3/model/{1}.bin')));
       o._vendors.set('template', o.createVendor(false, RBrowser.contentPath('/ar3/template/{1}.bin')));
       o._vendors.set('scene', o.createVendor(false, RBrowser.contentPath('/ar3/scene/{1}.bin')));
+   }else{
+      throw new TError(o, 'Unknown setup code. (code={1})', p);
    }
+   o._setuped = true;
 }
 function SE3rPlayInfo(o){
    if(!o){o = this;}
@@ -24858,7 +24868,8 @@ function FE3dTemplateConsole(o){
    o._interval      = 200;
    o.onProcess      = FE3dTemplateConsole_onProcess;
    o.construct      = FE3dTemplateConsole_construct;
-   o.alloc          = FE3dTemplateConsole_alloc;
+   o.allocByGuid    = FE3dTemplateConsole_allocByGuid;
+   o.allocByCode    = FE3dTemplateConsole_allocByCode;
    o.loadByGuid     = FE3dTemplateConsole_loadByGuid;
    o.loadByCode     = FE3dTemplateConsole_loadByCode;
    o.free           = FE3dTemplateConsole_free;
@@ -24884,7 +24895,7 @@ function FE3dTemplateConsole_construct(){
    t.addProcessListener(o, o.onProcess);
    RConsole.find(FThreadConsole).start(t);
 }
-function FE3dTemplateConsole_alloc(c, n){
+function FE3dTemplateConsole_allocByGuid(c, n){
    var o = this;
    var ts = o._templates.get(n);
    if(ts){
@@ -24893,7 +24904,25 @@ function FE3dTemplateConsole_alloc(c, n){
       }
    }
    var rc = RConsole.find(FE3sTemplateConsole);
-   var r = rc.load(n);
+   var r = rc.loadByGuid(n);
+   var t = RClass.create(FE3dTemplate);
+   t.linkGraphicContext(c);
+   t.setName(n);
+   t._resourceGuid = n;
+   t.setResource(r);
+   o._loadTemplates.push(t);
+   return t;
+}
+function FE3dTemplateConsole_allocByCode(c, n){
+   var o = this;
+   var ts = o._templates.get(n);
+   if(ts){
+      if(!ts.isEmpty()){
+         return ts.pop();
+      }
+   }
+   var rc = RConsole.find(FE3sTemplateConsole);
+   var r = rc.loadByCode(n);
    var t = RClass.create(FE3dTemplate);
    t.linkGraphicContext(c);
    t.setName(n);
@@ -24915,7 +24944,7 @@ function FE3dTemplateConsole_loadByGuid(t, p){
 function FE3dTemplateConsole_loadByCode(t, p){
    var o = this;
    var rc = RConsole.find(FE3sTemplateConsole);
-   var r = rc.load(g, p);
+   var r = rc.loadByCode(g, p);
    t._resourceGuid = g;
    t.setName(c);
    t.setResource(r);

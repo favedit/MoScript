@@ -1577,7 +1577,7 @@ function FE3sTemplateConsole_loadByGuid(p){
    var t = s.get(p);
    if(t == null){
       var v = RConsole.find(FE3sVendorConsole).find('template');
-      var u = v.makeUrl(p);
+      var u = v.makeUrl(p, '');
       t = RClass.create(FE3sTemplate);
       t.setVendor(v);
       t.load(u);
@@ -1591,7 +1591,7 @@ function FE3sTemplateConsole_loadByCode(p){
    var t = s.get(p);
    if(t == null){
       var v = RConsole.find(FE3sVendorConsole).find('template');
-      var u = v.makeUrl(p);
+      var u = v.makeUrl('', p);
       t = RClass.create(FE3sTemplate);
       t.load(u);
       s.set(p, t);
@@ -1978,6 +1978,7 @@ function FE3sVendor_makeUrl(){
 }
 function FE3sVendorConsole(o){
    o = RClass.inherits(this, o, FConsole);
+   o._setuped     = false;
    o._vendors     = null;
    o.construct    = FE3sVendorConsole_construct;
    o.createVendor = FE3sVendorConsole_createVendor;
@@ -2001,6 +2002,10 @@ function FE3sVendorConsole_register(n, p){
    this._vendors.set(n, p);
 }
 function FE3sVendorConsole_find(p){
+   var o = this;
+   if(!o._setuped){
+      o.setup('net');
+   }
    return this._vendors.get(p);
 }
 function FE3sVendorConsole_setup(p){
@@ -2009,7 +2014,7 @@ function FE3sVendorConsole_setup(p){
       o._vendors.set('texture.bitmap', o.createVendor(true, RBrowser.hostPath('/cloud.content.texture.bitmap.wv?guid={1}&code={2}')));
       o._vendors.set('texture', o.createVendor(true, RBrowser.hostPath('/cloud.content.texture.wv?guid={1}')));
       o._vendors.set('model', o.createVendor(true, RBrowser.hostPath('/cloud.content.model.wv?guid={1}')));
-      o._vendors.set('template', o.createVendor(true, RBrowser.hostPath('/cloud.content.template.wv?guid={1}')));
+      o._vendors.set('template', o.createVendor(true, RBrowser.hostPath('/cloud.content.template.wv?guid={1}&code={2}')));
       o._vendors.set('scene', o.createVendor(true, RBrowser.hostPath('/cloud.content.scene.wv?code={1}')));
    }else if(p == 'local'){
       o._vendors.set('texture.bitmap', o.createVendor(false, RBrowser.contentPath('/ar3/texture/{1}/{2}.{3}')));
@@ -2017,5 +2022,8 @@ function FE3sVendorConsole_setup(p){
       o._vendors.set('model', o.createVendor(false, RBrowser.contentPath('/ar3/model/{1}.bin')));
       o._vendors.set('template', o.createVendor(false, RBrowser.contentPath('/ar3/template/{1}.bin')));
       o._vendors.set('scene', o.createVendor(false, RBrowser.contentPath('/ar3/scene/{1}.bin')));
+   }else{
+      throw new TError(o, 'Unknown setup code. (code={1})', p);
    }
+   o._setuped = true;
 }

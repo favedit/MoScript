@@ -110,13 +110,13 @@ function FDsSceneCanvas_onBuild(p){
    o.__base.FDsCanvas.onBuild.call(o, p);
    var c = o._graphicContext;
    var tc = RConsole.find(FE3dTemplateConsole);
-   var t = o._templateTranslation = tc.alloc(c, 'com.design.translation');
+   var t = o._templateTranslation = tc.allocByCode(c, 'com.design.translation');
    t._optionFace = true;
    t.hide();
-   var t = o._templateRotation = tc.alloc(c, 'com.design.rotation');
+   var t = o._templateRotation = tc.allocByCode(c, 'com.design.rotation');
    t._optionFace = true;
    t.hide();
-   var t = o._templateScale = tc.alloc(c, 'com.design.scale');
+   var t = o._templateScale = tc.allocByCode(c, 'com.design.scale');
    t._optionFace = true;
    t.hide();
 }

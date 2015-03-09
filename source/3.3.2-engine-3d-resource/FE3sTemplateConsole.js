@@ -44,7 +44,7 @@ function FE3sTemplateConsole_loadByGuid(p){
    if(t == null){
       // 生成地址
       var v = RConsole.find(FE3sVendorConsole).find('template');
-      var u = v.makeUrl(p);
+      var u = v.makeUrl(p, '');
       // 创建主题
       t = RClass.create(FE3sTemplate);
       t.setVendor(v);
@@ -67,7 +67,7 @@ function FE3sTemplateConsole_loadByCode(p){
    if(t == null){
       // 生成地址
       var v = RConsole.find(FE3sVendorConsole).find('template');
-      var u = v.makeUrl(p);
+      var u = v.makeUrl('', p);
       // 创建主题
       t = RClass.create(FE3sTemplate);
       t.load(u);

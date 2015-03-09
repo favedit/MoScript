@@ -1696,7 +1696,8 @@ function FE3dTemplateConsole(o){
    o._interval      = 200;
    o.onProcess      = FE3dTemplateConsole_onProcess;
    o.construct      = FE3dTemplateConsole_construct;
-   o.alloc          = FE3dTemplateConsole_alloc;
+   o.allocByGuid    = FE3dTemplateConsole_allocByGuid;
+   o.allocByCode    = FE3dTemplateConsole_allocByCode;
    o.loadByGuid     = FE3dTemplateConsole_loadByGuid;
    o.loadByCode     = FE3dTemplateConsole_loadByCode;
    o.free           = FE3dTemplateConsole_free;
@@ -1722,7 +1723,7 @@ function FE3dTemplateConsole_construct(){
    t.addProcessListener(o, o.onProcess);
    RConsole.find(FThreadConsole).start(t);
 }
-function FE3dTemplateConsole_alloc(c, n){
+function FE3dTemplateConsole_allocByGuid(c, n){
    var o = this;
    var ts = o._templates.get(n);
    if(ts){
@@ -1731,7 +1732,25 @@ function FE3dTemplateConsole_alloc(c, n){
       }
    }
    var rc = RConsole.find(FE3sTemplateConsole);
-   var r = rc.load(n);
+   var r = rc.loadByGuid(n);
+   var t = RClass.create(FE3dTemplate);
+   t.linkGraphicContext(c);
+   t.setName(n);
+   t._resourceGuid = n;
+   t.setResource(r);
+   o._loadTemplates.push(t);
+   return t;
+}
+function FE3dTemplateConsole_allocByCode(c, n){
+   var o = this;
+   var ts = o._templates.get(n);
+   if(ts){
+      if(!ts.isEmpty()){
+         return ts.pop();
+      }
+   }
+   var rc = RConsole.find(FE3sTemplateConsole);
+   var r = rc.loadByCode(n);
    var t = RClass.create(FE3dTemplate);
    t.linkGraphicContext(c);
    t.setName(n);
@@ -1753,7 +1772,7 @@ function FE3dTemplateConsole_loadByGuid(t, p){
 function FE3dTemplateConsole_loadByCode(t, p){
    var o = this;
    var rc = RConsole.find(FE3sTemplateConsole);
-   var r = rc.load(g, p);
+   var r = rc.loadByCode(g, p);
    t._resourceGuid = g;
    t.setName(c);
    t.setResource(r);

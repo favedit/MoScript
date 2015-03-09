@@ -8,6 +8,7 @@ function FG3dEffectConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
+   o._configs         = null;
    o._registerEffects = null;
    o._templateEffects = null;
    o._effects         = null;
@@ -27,6 +28,7 @@ function FG3dEffectConsole(o){
    o.buildEffectInfo  = FG3dEffectConsole_buildEffectInfo;
    o.findTemplate     = FG3dEffectConsole_findTemplate;
    o.find             = FG3dEffectConsole_find;
+   o.loadConfig       = FG3dEffectConsole_loadConfig;
    return o;
 }
 
@@ -38,6 +40,7 @@ function FG3dEffectConsole(o){
 function FG3dEffectConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   o._configs = new TDictionary();
    o._registerEffects = new TDictionary();
    o._templateEffects = new TDictionary();
    o._effects = new TDictionary();
@@ -218,4 +221,30 @@ function FG3dEffectConsole_find(pc, pg, pr){
       es.set(ec, e);
    }
    return e;
+}
+
+//==========================================================
+// <T>加载配置文件。</T>
+//
+// @method
+// @param p:url:String 路径
+// @return TXmlNode 节点
+//==========================================================
+function FG3dEffectConsole_loadConfig(p){
+   var o = this;
+   // 查找配置
+   var x = o._configs.get(p);
+   if(x){
+      return x;
+   }
+   // 生成地址
+   var u = RBrowser.contentPath(o._path + p + ".xml");
+   if(RRuntime.isDebug()){
+      u += '?' + RDate.format();
+   }
+   // 获得网络数据
+   x = RClass.create(FXmlConnection).send(u);
+   // 加载配置信息
+   o._configs.set(p, x);
+   return x;
 }

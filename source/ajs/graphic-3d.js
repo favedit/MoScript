@@ -969,7 +969,6 @@ function FG3dEffect(o){
    o.drawRegion          = FG3dEffect_drawRegion;
    o.buildInfo           = FG3dEffect_buildInfo;
    o.loadConfig          = FG3dEffect_loadConfig;
-   o.loadUrl             = FG3dEffect_loadUrl;
    o.load                = FG3dEffect_load;
    o.build               = FG3dEffect_build;
    return o;
@@ -1103,15 +1102,6 @@ function FG3dEffect_loadConfig(p){
    var ft = o._fragmentTemplate = RClass.create(FG3dShaderTemplate);
    ft.load(o._fragmentSource);
 }
-function FG3dEffect_loadUrl(u){
-   var o = this;
-   var x = RClass.create(FXmlConnection);
-   if(RRuntime.isDebug()){
-      u += '?' + RDate.format();
-   }
-   var r = x.send(u);
-   o.loadConfig(r);
-}
 function FG3dEffect_build(p){
    var o = this;
    var g = o._program;
@@ -1138,16 +1128,12 @@ function FG3dEffect_build(p){
 }
 function FG3dEffect_load(){
    var o = this;
-   var cp = RBrowser.contentPath();
-   var ec = RConsole.find(FG3dEffectConsole);
-   var u = cp + ec.path() + o._code + ".xml?" + RDate.format();
-   if(RRuntime.isDebug()){
-      u += '?' + RDate.format();
-   }
-   o.loadUrl(u);
+   var x = RConsole.find(FG3dEffectConsole).loadConfig(o._code);
+   o.loadConfig(x);
 }
 function FG3dEffectConsole(o){
    o = RClass.inherits(this, o, FConsole);
+   o._configs         = null;
    o._registerEffects = null;
    o._templateEffects = null;
    o._effects         = null;
@@ -1162,11 +1148,13 @@ function FG3dEffectConsole(o){
    o.buildEffectInfo  = FG3dEffectConsole_buildEffectInfo;
    o.findTemplate     = FG3dEffectConsole_findTemplate;
    o.find             = FG3dEffectConsole_find;
+   o.loadConfig       = FG3dEffectConsole_loadConfig;
    return o;
 }
 function FG3dEffectConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   o._configs = new TDictionary();
    o._registerEffects = new TDictionary();
    o._templateEffects = new TDictionary();
    o._effects = new TDictionary();
@@ -1273,6 +1261,20 @@ function FG3dEffectConsole_find(pc, pg, pr){
       es.set(ec, e);
    }
    return e;
+}
+function FG3dEffectConsole_loadConfig(p){
+   var o = this;
+   var x = o._configs.get(p);
+   if(x){
+      return x;
+   }
+   var u = RBrowser.contentPath(o._path + p + ".xml");
+   if(RRuntime.isDebug()){
+      u += '?' + RDate.format();
+   }
+   x = RClass.create(FXmlConnection).send(u);
+   o._configs.set(p, x);
+   return x;
 }
 function FG3dLight(o){
    o = RClass.inherits(this, o, FObject);
