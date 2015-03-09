@@ -93,25 +93,42 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
       pt.setBoolean("option.material.map", true);
       o._supportMaterialMap = true;
    }
-   // 支持纹理材质映射
+   // 支持纹理法线反响
    if(pc.optionNormalInvert){
       s.append("|ON");
       pt.setBoolean("option.normal.invert", true);
       o._supportNormalInvert = true;
    }
-   // 支持纹理材质映射
+   // 支持纹理换几个你
    if(pc.optionAmbient){
       s.append("|OA");
       pt.setBoolean("option.ambient", true);
-      o._supportAmbient = true;
+      o.optionAmbient = true;
    }
-
-   pf.optionAmbient = mi.optionAmbient;
-   pf.optionDiffuse = mi.optionDiffuse;
-   pf.optionSpecular = mi.optionSpecular;
-   pf.optionReflect = mi.optionReflect;
-   pf.optionRefract = mi.optionRefract;
-
+   // 支持纹理散射
+   if(pc.optionDiffuse){
+      s.append("|OD");
+      pt.setBoolean("option.diffuse", true);
+      o.optionDiffuse = true;
+   }
+   // 支持纹理高光
+   if(pc.optionSpecular){
+      s.append("|OS");
+      pt.setBoolean("option.specular", true);
+      o.optionSpecular = true;
+   }
+   // 支持纹理反射
+   if(pc.optionReflect){
+      s.append("|ORL");
+      pt.setBoolean("option.reflect", true);
+      o.optionReflect = true;
+   }
+   // 支持纹理折射
+   if(pc.optionRefract){
+      s.append("|ORF");
+      pt.setBoolean("option.refract", true);
+      o.optionRefract = true;
+   }
    //............................................................
    // 支持顶点颜色
    var ac = pc.attributeContains(EG3dAttribute.Color);

@@ -1203,6 +1203,11 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    }
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
+   pf.optionAmbient = mi.optionAmbient;
+   pf.optionDiffuse = mi.optionDiffuse;
+   pf.optionSpecular = mi.optionSpecular;
+   pf.optionReflect = mi.optionReflect;
+   pf.optionRefract = mi.optionRefract;
    pf.vertexCount = pr.vertexCount();
    var vs = pr.vertexBuffers();
    var c = vs.count();

@@ -62,6 +62,31 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
       pt.setBoolean("option.normal.invert", true);
       o._supportNormalInvert = true;
    }
+   if(pc.optionAmbient){
+      s.append("|OA");
+      pt.setBoolean("option.ambient", true);
+      o.optionAmbient = true;
+   }
+   if(pc.optionDiffuse){
+      s.append("|OD");
+      pt.setBoolean("option.diffuse", true);
+      o.optionDiffuse = true;
+   }
+   if(pc.optionSpecular){
+      s.append("|OS");
+      pt.setBoolean("option.specular", true);
+      o.optionSpecular = true;
+   }
+   if(pc.optionReflect){
+      s.append("|ORL");
+      pt.setBoolean("option.reflect", true);
+      o.optionReflect = true;
+   }
+   if(pc.optionRefract){
+      s.append("|ORF");
+      pt.setBoolean("option.refract", true);
+      o.optionRefract = true;
+   }
    var ac = pc.attributeContains(EG3dAttribute.Color);
    o._dynamicVertexColor = (o._supportVertexColor && ac);
    if(o._dynamicVertexColor){
