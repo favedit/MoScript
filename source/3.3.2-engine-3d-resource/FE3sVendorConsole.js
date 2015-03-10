@@ -30,6 +30,7 @@ function FE3sVendorConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 设置属性
+   o._compresses = new TDictionary();
    o._vendors = new TDictionary();
 }
 

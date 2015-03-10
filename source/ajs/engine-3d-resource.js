@@ -549,6 +549,7 @@ function FE3sMesh_unserialize(p){
 }
 function FE3sModel(o){
    o = RClass.inherits(this, o, FE3sResource);
+   o._dataCompress  = true;
    o._meshes        = null;
    o._skeletons     = null;
    o._animations    = null;
@@ -691,6 +692,7 @@ function FE3sModelConsole_load(p){
       var v = RConsole.find(FE3sVendorConsole).find('model');
       var u = v.makeUrl(p);
       m = RClass.create(FE3sModel);
+      m._guid = p;
       m.setVendor(v);
       m.load(u);
       s.set(p, m);
@@ -741,32 +743,44 @@ function FE3sObject_saveConfig(p){
 }
 function FE3sResource(o){
    o = RClass.inherits(this, o, FResource);
-   o._dataReady   = false;
-   o._dataSize    = 0;
-   o._lsnsLoad    = null;
-   o._vendor      = null;
-   o.onLoad       = FE3sResource_onLoad;
-   o.vendor       = FE3sResource_vendor;
-   o.setVendor    = FE3sResource_setVendor;
-   o.loadListener = FE3sResource_loadListener;
-   o.testReady    = FE3sResource_testReady;
-   o.unserialize  = FE3sResource_unserialize;
-   o.saveConfig   = FE3sResource_saveConfig;
-   o.load         = FE3sResource_load;
-   o.dispose      = FE3sResource_dispose;
+   o._dataReady    = false;
+   o._dataSize     = 0;
+   o._dataCompress = false;
+   o._lsnsLoad     = null;
+   o._vendor       = null;
+   o.onComplete    = FE3sResource_onComplete;
+   o.onLoad        = FE3sResource_onLoad;
+   o.vendor        = FE3sResource_vendor;
+   o.setVendor     = FE3sResource_setVendor;
+   o.loadListener  = FE3sResource_loadListener;
+   o.testReady     = FE3sResource_testReady;
+   o.unserialize   = FE3sResource_unserialize;
+   o.saveConfig    = FE3sResource_saveConfig;
+   o.load          = FE3sResource_load;
+   o.dispose       = FE3sResource_dispose;
    return o;
 }
-function FE3sResource_onLoad(p){
+function FE3sResource_onComplete(p){
    var o = this;
    var v = RClass.create(FDataView);
    v.setEndianCd(true);
-   v.link(p.outputData());
+   if(p.constructor == Array){
+      var pb = new Uint8Array(p);
+      v.link(pb.buffer);
+   }else{
+      v.link(p.outputData());
+   }
    o.unserialize(v);
    v.dispose();
    o._dataReady = true;
    if(o._lsnsLoad){
       o._lsnsLoad.process();
    }
+}
+function FE3sResource_onLoad(p){
+   var o = this;
+   var d = p.outputData();
+   LZMA.decompress(new Uint8Array(d), function(p){o.onComplete(p);}, null);
 }
 function FE3sResource_vendor(){
    return this._vendor;
@@ -791,7 +805,7 @@ function FE3sResource_unserialize(p){
    if(o._vendor){
       f = o._vendor._optionFlag;
    }
-   if(f){
+   if(f && !o._dataCompress){
       var r = p.readInt32();
       if(r != EResult.Success){
          var s = p.readString();
@@ -812,7 +826,11 @@ function FE3sResource_load(u){
    var o = this;
    var hc = RConsole.find(FHttpConsole);
    var c = hc.send(u);
-   c.lsnsLoad.register(o, o.onLoad);
+   if(o._dataCompress){
+      c.lsnsLoad.register(o, o.onLoad);
+   }else{
+      c.lsnsLoad.register(o, o.onComplete);
+   }
 }
 function FE3sResource_dispose(){
    var o = this;
@@ -2034,6 +2052,7 @@ function FE3sVendorConsole(o){
 function FE3sVendorConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   o._compresses = new TDictionary();
    o._vendors = new TDictionary();
 }
 function FE3sVendorConsole_createVendor(f, u){

@@ -8,27 +8,29 @@ function FE3sResource(o){
    o = RClass.inherits(this, o, FResource);
    //..........................................................
    // @attribute
-   o._dataReady   = false;
-   o._dataSize    = 0;
-   o._lsnsLoad    = null;
-   o._vendor      = null;
+   o._dataReady    = false;
+   o._dataSize     = 0;
+   o._dataCompress = false;
+   o._lsnsLoad     = null;
+   o._vendor       = null;
    //..........................................................
    // @event
-   o.onLoad       = FE3sResource_onLoad;
+   o.onComplete    = FE3sResource_onComplete;
+   o.onLoad        = FE3sResource_onLoad;
    //..........................................................
    // @method
-   o.vendor       = FE3sResource_vendor;
-   o.setVendor    = FE3sResource_setVendor;
+   o.vendor        = FE3sResource_vendor;
+   o.setVendor     = FE3sResource_setVendor;
    // @method
-   o.loadListener = FE3sResource_loadListener;
-   o.testReady    = FE3sResource_testReady;
+   o.loadListener  = FE3sResource_loadListener;
+   o.testReady     = FE3sResource_testReady;
    // @method
-   o.unserialize  = FE3sResource_unserialize;
-   o.saveConfig   = FE3sResource_saveConfig;
+   o.unserialize   = FE3sResource_unserialize;
+   o.saveConfig    = FE3sResource_saveConfig;
    // @method
-   o.load         = FE3sResource_load;
+   o.load          = FE3sResource_load;
    // @method
-   o.dispose      = FE3sResource_dispose;
+   o.dispose       = FE3sResource_dispose;
    return o;
 }
 
@@ -38,12 +40,17 @@ function FE3sResource(o){
 // @param p:input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FE3sResource_onLoad(p){
+function FE3sResource_onComplete(p){
    var o = this;
    // 创建读取流
    var v = RClass.create(FDataView);
    v.setEndianCd(true);
-   v.link(p.outputData());
+   if(p.constructor == Array){
+      var pb = new Uint8Array(p);
+      v.link(pb.buffer);
+   }else{
+      v.link(p.outputData());
+   }
    // 反序列化数据
    o.unserialize(v);
    // 释放资源
@@ -54,6 +61,18 @@ function FE3sResource_onLoad(p){
    if(o._lsnsLoad){
       o._lsnsLoad.process();
    }
+}
+
+//==========================================================
+// <T>从输入流里反序列化信息内容</T>
+//
+// @param p:input:FByteStream 数据流
+// @return 处理结果
+//==========================================================
+function FE3sResource_onLoad(p){
+   var o = this;
+   var d = p.outputData();
+   LZMA.decompress(new Uint8Array(d), function(p){o.onComplete(p);}, null);
 }
 
 //==========================================================
@@ -113,7 +132,7 @@ function FE3sResource_unserialize(p){
       f = o._vendor._optionFlag;
    }
    // 检查结果
-   if(f){
+   if(f && !o._dataCompress){
       var r = p.readInt32();
       if(r != EResult.Success){
          var s = p.readString();
@@ -149,7 +168,11 @@ function FE3sResource_load(u){
    var o = this;
    var hc = RConsole.find(FHttpConsole);
    var c = hc.send(u);
-   c.lsnsLoad.register(o, o.onLoad);
+   if(o._dataCompress){
+      c.lsnsLoad.register(o, o.onLoad);
+   }else{
+      c.lsnsLoad.register(o, o.onComplete);
+   }
 }
 
 //==========================================================

@@ -198,6 +198,7 @@ function FE3sModelConsole_load(p){
       var u = v.makeUrl(p);
       // 创建模型资源
       m = RClass.create(FE3sModel);
+      m._guid = p;
       m.setVendor(v);
       m.load(u);
       s.set(p, m);

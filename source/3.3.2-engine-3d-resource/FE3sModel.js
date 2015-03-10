@@ -8,6 +8,8 @@ function FE3sModel(o){
    o = RClass.inherits(this, o, FE3sResource);
    //..........................................................
    // @attribute
+   o._dataCompress  = true;
+   // @attribute
    o._meshes        = null;
    o._skeletons     = null;
    o._animations    = null;
