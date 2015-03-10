@@ -2234,13 +2234,12 @@ function FUiContainer_panel(t){
    return o.__base.FUiControl.panel.call(o, t);
 }
 function FUiContainer_focusFirstControl(){
-   return null;
    var o = this;
    var cs = o._components;
    if(cs){
       var c = cs.count();
       for(var i = 0; i < c; i++){
-         var p = cs.value(i);
+         var p = cs.valueAt(i);
          if(RClass.isClass(c, MUiFocus) && c.testFocus()){
             if(!RClass.isClass(c, FCalendar) && !RClass.isClass(c, FSelect)  && !RClass.isClass(c, FNumber)){
                 return c.focus();
@@ -2635,38 +2634,6 @@ function FUiControl_dispose(){
    o.__base.MUiSize.dispose.call(o);
    o.__base.MUiStyle.dispose.call(o);
    o.__base.FUiComponent.dispose.call(o);
-}
-var RApplication = new function RApplication(){
-   var o = this;
-   o._workspaces   = new TDictionary();
-   o.initialize    = RApplication_initialize;
-   o.findWorkspace = RApplication_findWorkspace;
-   o.release       = RApplication_release;
-   return o;
-}
-function RApplication_initialize(){
-   var o = this;
-   RBrowser.construct();
-   RWindow.connect(window);
-   RKeyboard.construct();
-}
-function RApplication_findWorkspace(p){
-   var o = this;
-   var n = RClass.name(p);
-   var ws = o._workspaces;
-   var w = ws.get(n);
-   if(w == null){
-      w = RClass.create(p);
-      ws.set(n, w);
-   }
-   return w;
-}
-function RApplication_release(){
-   try{
-      CollectGarbage();
-   }catch(e){
-      RLogger.error(e);
-   }
 }
 var RControl = new function RControl(){
    var o = this;
@@ -6821,11 +6788,11 @@ function FUiEditControl(o){
    o._styleLabelPanel  = RClass.register(o, new AStyle('_styleLabelPanel'));
    o._styleEditPanel   = RClass.register(o, new AStyle('_styleEditPanel'));
    o._hLabelPanel      = null;
-   o,_hLabelForm       = null;
-   o,_hIconPanel       = null;
-   o,_hIcon            = null;
-   o,_hTextPanel       = null;
-   o,_hText            = null;
+   o._hLabelForm       = null;
+   o._hIconPanel       = null;
+   o._hIcon            = null;
+   o._hTextPanel       = null;
+   o._hText            = null;
    o._hEditPanel       = null;
    o._hEditForm        = null;
    o._hValuePanel      = null;
@@ -7023,8 +6990,6 @@ function FUiEditControl_oeDesign(p){
             if(hlf){
                hlf.cellPadding = 1;
             }
-            if(hef){
-            }
             if(o.hEdit){
                o.hEdit.disabled = true;
             }
@@ -7033,8 +6998,6 @@ function FUiEditControl_oeDesign(p){
             if(hlf){
                hlf.border = 0;
                hlf.cellPadding = 0;
-            }
-            if(hef){
             }
             if(o.hEdit){
                o.hEdit.disabled = false;
@@ -7235,16 +7198,16 @@ function FUiEditControl_dispose(){
    }
    RHtml.free(o._hLabelPanel);
    o._hLabelPanel = null;
-   RHtml.free(o,_hLabelForm);
-   o,_hLabelForm = null;
-   RHtml.free(o,_hIconPanel);
-   o,_hIconPanel = null;
-   RHtml.free(o,_hIcon);
-   o,_hIcon = null;
-   RHtml.free(o,_hTextPanel);
-   o,_hTextPanel = null;
-   RHtml.free(o,_hText);
-   o,_hText = null;
+   RHtml.free(o._hLabelForm);
+   o._hLabelForm = null;
+   RHtml.free(o._hIconPanel);
+   o._hIconPanel = null;
+   RHtml.free(o._hIcon);
+   o._hIcon = null;
+   RHtml.free(o._hTextPanel);
+   o._hTextPanel = null;
+   RHtml.free(o._hText);
+   o._hText = null;
    RHtml.free(o._hEditPanel);
    o._hEditPanel = null;
    RHtml.free(o._hEditForm);
@@ -10062,8 +10025,6 @@ function FUiSelectItem_onBuild(p){
    var hp = o._hIconPanel = RBuilder.appendTableCell(h, o.styleName("Icon"));
    hp.width = 18;
    hp.align = 'center';
-   if(o._icon){
-   }
    var hp = o._hLabelPanel = RBuilder.appendTableCell(h, o.styleName("Label"));
    if(o._label){
       hp.innerHTML = o._label;
@@ -11554,12 +11515,8 @@ function FColumnEdit(o){
    return o;
 }
 function FColumnEdit_onCellMouseEnter(s, e){
-   if(s.hLovImage){
-   }
 }
 function FColumnEdit_onCellMouseLeave(s, e){
-   if(s.hLovImage){
-   }
 }
 function FColumnEdit_onListClick(s, e){
    var o = this;
@@ -11710,7 +11667,6 @@ function FColumnStatus_createCell(p){
    return c;
 }
 function FColumnStatus_onCellClick(s, e){
-	return;
    if(this.table.callEvent('onTableRowDoubleClick', s.row)){
       return;
    }

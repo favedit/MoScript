@@ -1861,7 +1861,6 @@ function RDump_typeInfo(v, t){
          }catch(e){}
          return '<Object@' + RClass.code(v) + '>';
    }
-   return v;
 }
 function RDump_dumpInner(di){
    var hTable  = di.hTable;
@@ -2570,9 +2569,9 @@ function RHtml_setRect(h, r){
       s.height = r.height();
    }
 }
-function RHtml_setBounds(h, l, t, w, h){
-   if(h && h.style){
-      var s = o.style;
+function RHtml_setBounds(r, l, t, w, h){
+   if(r && r.style){
+      var s = r.style;
       if(null != l){
          s.left = l;
       }
@@ -2669,7 +2668,7 @@ function RHtml_get(name){
    return document.getElementById(name);
 }
 function RHtml_parent(o, t){
-   if(o, t){
+   if(o && t){
       t = t.toLowerCase();
       while(o){
          if(o.tagName.toLowerCase() == t){

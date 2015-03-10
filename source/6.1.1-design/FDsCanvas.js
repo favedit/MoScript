@@ -178,7 +178,7 @@ function FDsCanvas_onEnterFrame(){
    c.update();
    //..........................................................
    // 旋转模型
-   if(s){
+   //if(s){
       //var r = o._rotation;
       //m.location().set(0, -8.0, 0);
       //m.rotation().set(0, r.y, 0);
@@ -190,7 +190,7 @@ function FDsCanvas_onEnterFrame(){
       //if(o._rotationAble){
       //   r.y += 0.01;
       //}
-   }
+   //}
 }
 
 //==========================================================

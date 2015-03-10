@@ -20,7 +20,7 @@ function TClass(){
    o.base           = null;
    o.clazz          = null;
    o.instance       = null;
-   o.abstract       = false;
+   o._abstract      = false;
    o.styles         = new Array();
    o.instances      = new Array();
    //..........................................................
@@ -237,7 +237,7 @@ function TClass_build(){
       var v = o.instance[n];
       if(v != null){
          if((v.constructor == Function) && v.__virtual){
-            o.abstract = true;
+            o._abstract = true;
             break;
          }
       }
@@ -266,7 +266,7 @@ function TClass_newInstance(){
    var r = o.alloc();
    if(!r){
       // 判断是否为虚类
-      if(o.abstract){
+      if(o._abstract){
          var s = new TString();
          for(var n in o.instance){
             var v = o.instance[n];

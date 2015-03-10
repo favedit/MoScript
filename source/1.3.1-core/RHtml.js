@@ -829,9 +829,9 @@ function RHtml_setRect(h, r){
 // HtmlObject, left, top, width, height
 //
 //==========================================================
-function RHtml_setBounds(h, l, t, w, h){
-   if(h && h.style){
-      var s = o.style;
+function RHtml_setBounds(r, l, t, w, h){
+   if(r && r.style){
+      var s = r.style;
       if(null != l){
          s.left = l;
       }
@@ -971,7 +971,7 @@ function RHtml_get(name){
 //
 //==========================================================
 function RHtml_parent(o, t){
-   if(o, t){
+   if(o && t){
       t = t.toLowerCase();
       while(o){
          if(o.tagName.toLowerCase() == t){

@@ -140,7 +140,6 @@ function FColumnStatus_createCell(p){
 //==========================================================
 function FColumnStatus_onCellClick(s, e){
    // �����¼�
-	return;
    if(this.table.callEvent('onTableRowDoubleClick', s.row)){
       return;
    }

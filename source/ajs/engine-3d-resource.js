@@ -1,3 +1,10 @@
+function SE3sCompressEvent(w, f, d){
+   var o = this;
+   o.owner   = w;
+   o.process = f;
+   o.data    = d;
+   return o;
+}
 function SE3sMaterialInfo(){
    var o = this;
    SG3dMaterialInfo.call(o);
@@ -780,7 +787,7 @@ function FE3sResource_onComplete(p){
 function FE3sResource_onLoad(p){
    var o = this;
    var d = p.outputData();
-   LZMA.decompress(new Uint8Array(d), function(p){o.onComplete(p);}, null);
+   RConsole.find(FE3sVendorConsole).pushCompress(o, o.onComplete, new Uint8Array(d));
 }
 function FE3sResource_vendor(){
    return this._vendor;
@@ -2040,20 +2047,53 @@ function FE3sVendor_makeUrl(){
 }
 function FE3sVendorConsole(o){
    o = RClass.inherits(this, o, FConsole);
+   o._activeEvent = null;
+   o._events      = null;
    o._setuped     = false;
    o._vendors     = null;
+   o._thread      = null;
+   o._interval    = 100;
+   o.onProcess    = FE3sVendorConsole_onProcess;
+   o.onComplete   = FE3sVendorConsole_onComplete;
    o.construct    = FE3sVendorConsole_construct;
+   o.pushCompress = FE3sVendorConsole_pushCompress;
    o.createVendor = FE3sVendorConsole_createVendor;
    o.register     = FE3sVendorConsole_register;
    o.find         = FE3sVendorConsole_find;
    o.setup        = FE3sVendorConsole_setup;
    return o;
 }
+function FE3sVendorConsole_onProcess(){
+   var o = this;
+   var s = o._events;
+   if(!o._activeEvent){
+      if(!s.isEmpty()){
+         var e = o._activeEvent = s.erase(0);
+         LZMA.decompress(e.data, o.onComplete, null);
+         e.data = null;
+      }
+   }
+}
+function FE3sVendorConsole_onComplete(p){
+   var o = RConsole.find(FE3sVendorConsole);
+   var e = o._activeEvent;
+   e.process.call(e.owner, p);
+   e.owner = null;
+   e.process = null;
+   o._activeEvent = null;
+}
 function FE3sVendorConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._compresses = new TDictionary();
+   o._events = new TObjects();
    o._vendors = new TDictionary();
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.addProcessListener(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(t);
+}
+function FE3sVendorConsole_pushCompress(w, f, d){
+   this._events.push(new SE3sCompressEvent(w, f, d));
 }
 function FE3sVendorConsole_createVendor(f, u){
    var v = RClass.create(FE3sVendor);

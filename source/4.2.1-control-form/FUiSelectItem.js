@@ -79,8 +79,8 @@ function FUiSelectItem_onBuild(p){
    var hp = o._hIconPanel = RBuilder.appendTableCell(h, o.styleName("Icon"));
    hp.width = 18;
    hp.align = 'center';
-   if(o._icon){
-   }
+   //if(o._icon){
+   //}
    // 创建文本
    var hp = o._hLabelPanel = RBuilder.appendTableCell(h, o.styleName("Label"));
    if(o._label){

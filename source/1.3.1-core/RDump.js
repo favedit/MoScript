@@ -113,7 +113,6 @@ function RDump_typeInfo(v, t){
          }catch(e){}
          return '<Object@' + RClass.code(v) + '>';
    }
-   return v;
 }
 
 //===========================================================

@@ -23,7 +23,7 @@ function FE3dSceneCanvas(o){
    o._actionForward         = false;
    o._actionBack            = false;
    // @attribute
-   o._cameraMoveRate        = 0.8;
+   o._cameraMoveRate        = 0.4;
    o._cameraKeyRotation     = 0.03;
    o._cameraMouseRotation   = 0.005;
    //..........................................................

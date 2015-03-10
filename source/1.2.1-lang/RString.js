@@ -817,7 +817,7 @@ function RString_splitPattern(s, p){
          var v = false;
          for(var i = 0; i < pl; i++){
             var f = p[i];
-            if(s.indexOf(f) == 01){
+            if(s.indexOf(f) == -1){
                if(t.length){
                   r[r.length] = t;
                   t = '';

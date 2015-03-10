@@ -147,14 +147,13 @@ function FUiContainer_panel(t){
 // @return MUiFocus 获得焦点的控件
 //==========================================================
 function FUiContainer_focusFirstControl(){
-   return null;
    var o = this;
    var cs = o._components;
    if(cs){
       // 选择自己第一个可以获得焦点的控件
       var c = cs.count();
       for(var i = 0; i < c; i++){
-         var p = cs.value(i);
+         var p = cs.valueAt(i);
          if(RClass.isClass(c, MUiFocus) && c.testFocus()){
             // 不允许下拉控件获得第一个焦点
             if(!RClass.isClass(c, FCalendar) && !RClass.isClass(c, FSelect)  && !RClass.isClass(c, FNumber)){

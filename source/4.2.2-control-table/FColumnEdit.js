@@ -28,15 +28,15 @@ function FColumnEdit(o){
 }
 //==========================================================
 function FColumnEdit_onCellMouseEnter(s, e){
-   if(s.hLovImage){
+   //if(s.hLovImage){
       //s.hLovImage.style.display = 'block';
-   }
+   //}
 }
 //==========================================================
 function FColumnEdit_onCellMouseLeave(s, e){
-   if(s.hLovImage){
+   //if(s.hLovImage){
       //s.hLovImage.style.display = 'none';
-   }
+   //}
 }
 //==========================================================
 function FColumnEdit_onListClick(s, e){

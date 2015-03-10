@@ -33,10 +33,10 @@ function FLoggerConsole_construct(){
 }
 // ------------------------------------------------------------
 function FLoggerConsole_connect(){
-   var o = this;
-   if(!o.iLogger){
+   //var o = this;
+   //if(!o.iLogger){
       // o.iLogger = new ActiveXObject('MobjLibrary.Logger');
-   }
+   //}
 }
 // ------------------------------------------------------------
 function FLoggerConsole_disconnect(){

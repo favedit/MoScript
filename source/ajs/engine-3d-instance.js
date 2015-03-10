@@ -45,10 +45,10 @@ function FE3dBoundBox_setup(){
    o._vertexBuffers.set(vb._name, vb);
    o._vertexCount = 32;
    var id = [
-      00, 01, 00, 04, 00, 12,
-      03, 02, 03, 05, 03, 13,
-      08, 06, 08, 09, 08, 14,
-      11, 07, 11, 10, 11, 15,
+       0,  1,  0,  4,  0, 12,
+       3,  2,  3,  5,  3, 13,
+       8,  6,  8,  9,  8, 14,
+      11,  7, 11, 10, 11, 15,
       20, 16, 20, 21, 20, 24,
       23, 17, 23, 22, 23, 25,
       28, 18, 28, 26, 28, 29,
@@ -809,7 +809,7 @@ function FE3dSceneCanvas(o){
    o._actionDown            = false;
    o._actionForward         = false;
    o._actionBack            = false;
-   o._cameraMoveRate        = 0.8;
+   o._cameraMoveRate        = 0.4;
    o._cameraKeyRotation     = 0.03;
    o._cameraMouseRotation   = 0.005;
    o.onEnterFrame           = FE3dSceneCanvas_onEnterFrame;

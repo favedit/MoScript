@@ -1844,7 +1844,7 @@ function TClass(){
    o.base           = null;
    o.clazz          = null;
    o.instance       = null;
-   o.abstract       = false;
+   o._abstract      = false;
    o.styles         = new Array();
    o.instances      = new Array();
    o.register       = TClass_register;
@@ -1982,7 +1982,7 @@ function TClass_build(){
       var v = o.instance[n];
       if(v != null){
          if((v.constructor == Function) && v.__virtual){
-            o.abstract = true;
+            o._abstract = true;
             break;
          }
       }
@@ -1999,7 +1999,7 @@ function TClass_newInstance(){
    var o = this;
    var r = o.alloc();
    if(!r){
-      if(o.abstract){
+      if(o._abstract){
          var s = new TString();
          for(var n in o.instance){
             var v = o.instance[n];
@@ -3276,8 +3276,10 @@ function RArray_sortPartition(a, l, r){
    var e = r + 1;
    var t = a[s];
    while(true){
-      while(a[++s] < t);
-      while(a[--e] > t);
+      while(a[++s] < t){
+      }
+      while(a[--e] > t){
+      }
       if(s > e){
          break;
       }
@@ -3606,7 +3608,7 @@ function RClass_createClass(n){
    c.name = n;
    c.base = o.createBase(n);
    c.clazz = new c.base.constructor();
-   eval(n + '(c.clazz)');
+   eval(n)(c.clazz);
    return c;
 }
 function RClass_create(n){
@@ -5513,7 +5515,7 @@ function RString_splitPattern(s, p){
          var v = false;
          for(var i = 0; i < pl; i++){
             var f = p[i];
-            if(s.indexOf(f) == 01){
+            if(s.indexOf(f) == -1){
                if(t.length){
                   r[r.length] = t;
                   t = '';
@@ -9952,7 +9954,6 @@ function RDump_typeInfo(v, t){
          }catch(e){}
          return '<Object@' + RClass.code(v) + '>';
    }
-   return v;
 }
 function RDump_dumpInner(di){
    var hTable  = di.hTable;
@@ -10661,9 +10662,9 @@ function RHtml_setRect(h, r){
       s.height = r.height();
    }
 }
-function RHtml_setBounds(h, l, t, w, h){
-   if(h && h.style){
-      var s = o.style;
+function RHtml_setBounds(r, l, t, w, h){
+   if(r && r.style){
+      var s = r.style;
       if(null != l){
          s.left = l;
       }
@@ -10760,7 +10761,7 @@ function RHtml_get(name){
    return document.getElementById(name);
 }
 function RHtml_parent(o, t){
-   if(o, t){
+   if(o && t){
       t = t.toLowerCase();
       while(o){
          if(o.tagName.toLowerCase() == t){
@@ -12252,9 +12253,6 @@ function FLoggerConsole_construct(){
    RWindow.lsnsKeyDown.register(o, o.onKeyDown);
 }
 function FLoggerConsole_connect(){
-   var o = this;
-   if(!o.iLogger){
-   }
 }
 function FLoggerConsole_disconnect(){
    this.iLogger = null;
@@ -13055,6 +13053,38 @@ function FXmlConsole_process(p){
    c.send(p.url, p.inputDocument);
    c.lsnsLoad.register(p, p.process);
    return c;
+}
+var RApplication = new function RApplication(){
+   var o = this;
+   o._workspaces   = new TDictionary();
+   o.initialize    = RApplication_initialize;
+   o.findWorkspace = RApplication_findWorkspace;
+   o.release       = RApplication_release;
+   return o;
+}
+function RApplication_initialize(){
+   var o = this;
+   RBrowser.construct();
+   RWindow.connect(window);
+   RKeyboard.construct();
+}
+function RApplication_findWorkspace(p){
+   var o = this;
+   var n = RClass.name(p);
+   var ws = o._workspaces;
+   var w = ws.get(n);
+   if(w == null){
+      w = RClass.create(p);
+      ws.set(n, w);
+   }
+   return w;
+}
+function RApplication_release(){
+   try{
+      CollectGarbage();
+   }catch(e){
+      RLogger.error(e);
+   }
 }
 var RBrowser = new function RBrowser(){
    var o = this;
@@ -18818,11 +18848,7 @@ function FWglContext_bindTexture(ps, pi, pt){
       g.texParameteri(gt, g.TEXTURE_MAG_FILTER, fc);
    }
    var ws = RWglUtility.convertSamplerFilter(g, pt.wrapS());
-   if(ws){
-   }
    var wt = RWglUtility.convertSamplerFilter(g, pt.wrapT());
-   if(wt){
-   }
    return r;
 }
 function FWglContext_clear(r, g, b, a, d){
@@ -20828,6 +20854,13 @@ function RE3dEngine_setup(){
       o._setuped = true;
    }
 }
+function SE3sCompressEvent(w, f, d){
+   var o = this;
+   o.owner   = w;
+   o.process = f;
+   o.data    = d;
+   return o;
+}
 function SE3sMaterialInfo(){
    var o = this;
    SG3dMaterialInfo.call(o);
@@ -21610,7 +21643,7 @@ function FE3sResource_onComplete(p){
 function FE3sResource_onLoad(p){
    var o = this;
    var d = p.outputData();
-   LZMA.decompress(new Uint8Array(d), function(p){o.onComplete(p);}, null);
+   RConsole.find(FE3sVendorConsole).pushCompress(o, o.onComplete, new Uint8Array(d));
 }
 function FE3sResource_vendor(){
    return this._vendor;
@@ -22870,20 +22903,53 @@ function FE3sVendor_makeUrl(){
 }
 function FE3sVendorConsole(o){
    o = RClass.inherits(this, o, FConsole);
+   o._activeEvent = null;
+   o._events      = null;
    o._setuped     = false;
    o._vendors     = null;
+   o._thread      = null;
+   o._interval    = 100;
+   o.onProcess    = FE3sVendorConsole_onProcess;
+   o.onComplete   = FE3sVendorConsole_onComplete;
    o.construct    = FE3sVendorConsole_construct;
+   o.pushCompress = FE3sVendorConsole_pushCompress;
    o.createVendor = FE3sVendorConsole_createVendor;
    o.register     = FE3sVendorConsole_register;
    o.find         = FE3sVendorConsole_find;
    o.setup        = FE3sVendorConsole_setup;
    return o;
 }
+function FE3sVendorConsole_onProcess(){
+   var o = this;
+   var s = o._events;
+   if(!o._activeEvent){
+      if(!s.isEmpty()){
+         var e = o._activeEvent = s.erase(0);
+         LZMA.decompress(e.data, o.onComplete, null);
+         e.data = null;
+      }
+   }
+}
+function FE3sVendorConsole_onComplete(p){
+   var o = RConsole.find(FE3sVendorConsole);
+   var e = o._activeEvent;
+   e.process.call(e.owner, p);
+   e.owner = null;
+   e.process = null;
+   o._activeEvent = null;
+}
 function FE3sVendorConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._compresses = new TDictionary();
+   o._events = new TObjects();
    o._vendors = new TDictionary();
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.addProcessListener(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(t);
+}
+function FE3sVendorConsole_pushCompress(w, f, d){
+   this._events.push(new SE3sCompressEvent(w, f, d));
 }
 function FE3sVendorConsole_createVendor(f, u){
    var v = RClass.create(FE3sVendor);
@@ -24475,10 +24541,10 @@ function FE3dBoundBox_setup(){
    o._vertexBuffers.set(vb._name, vb);
    o._vertexCount = 32;
    var id = [
-      00, 01, 00, 04, 00, 12,
-      03, 02, 03, 05, 03, 13,
-      08, 06, 08, 09, 08, 14,
-      11, 07, 11, 10, 11, 15,
+       0,  1,  0,  4,  0, 12,
+       3,  2,  3,  5,  3, 13,
+       8,  6,  8,  9,  8, 14,
+      11,  7, 11, 10, 11, 15,
       20, 16, 20, 21, 20, 24,
       23, 17, 23, 22, 23, 25,
       28, 18, 28, 26, 28, 29,
@@ -25239,7 +25305,7 @@ function FE3dSceneCanvas(o){
    o._actionDown            = false;
    o._actionForward         = false;
    o._actionBack            = false;
-   o._cameraMoveRate        = 0.8;
+   o._cameraMoveRate        = 0.4;
    o._cameraKeyRotation     = 0.03;
    o._cameraMouseRotation   = 0.005;
    o.onEnterFrame           = FE3dSceneCanvas_onEnterFrame;
@@ -28640,13 +28706,12 @@ function FUiContainer_panel(t){
    return o.__base.FUiControl.panel.call(o, t);
 }
 function FUiContainer_focusFirstControl(){
-   return null;
    var o = this;
    var cs = o._components;
    if(cs){
       var c = cs.count();
       for(var i = 0; i < c; i++){
-         var p = cs.value(i);
+         var p = cs.valueAt(i);
          if(RClass.isClass(c, MUiFocus) && c.testFocus()){
             if(!RClass.isClass(c, FCalendar) && !RClass.isClass(c, FSelect)  && !RClass.isClass(c, FNumber)){
                 return c.focus();
@@ -29041,38 +29106,6 @@ function FUiControl_dispose(){
    o.__base.MUiSize.dispose.call(o);
    o.__base.MUiStyle.dispose.call(o);
    o.__base.FUiComponent.dispose.call(o);
-}
-var RApplication = new function RApplication(){
-   var o = this;
-   o._workspaces   = new TDictionary();
-   o.initialize    = RApplication_initialize;
-   o.findWorkspace = RApplication_findWorkspace;
-   o.release       = RApplication_release;
-   return o;
-}
-function RApplication_initialize(){
-   var o = this;
-   RBrowser.construct();
-   RWindow.connect(window);
-   RKeyboard.construct();
-}
-function RApplication_findWorkspace(p){
-   var o = this;
-   var n = RClass.name(p);
-   var ws = o._workspaces;
-   var w = ws.get(n);
-   if(w == null){
-      w = RClass.create(p);
-      ws.set(n, w);
-   }
-   return w;
-}
-function RApplication_release(){
-   try{
-      CollectGarbage();
-   }catch(e){
-      RLogger.error(e);
-   }
 }
 var RControl = new function RControl(){
    var o = this;
@@ -33227,11 +33260,11 @@ function FUiEditControl(o){
    o._styleLabelPanel  = RClass.register(o, new AStyle('_styleLabelPanel'));
    o._styleEditPanel   = RClass.register(o, new AStyle('_styleEditPanel'));
    o._hLabelPanel      = null;
-   o,_hLabelForm       = null;
-   o,_hIconPanel       = null;
-   o,_hIcon            = null;
-   o,_hTextPanel       = null;
-   o,_hText            = null;
+   o._hLabelForm       = null;
+   o._hIconPanel       = null;
+   o._hIcon            = null;
+   o._hTextPanel       = null;
+   o._hText            = null;
    o._hEditPanel       = null;
    o._hEditForm        = null;
    o._hValuePanel      = null;
@@ -33429,8 +33462,6 @@ function FUiEditControl_oeDesign(p){
             if(hlf){
                hlf.cellPadding = 1;
             }
-            if(hef){
-            }
             if(o.hEdit){
                o.hEdit.disabled = true;
             }
@@ -33439,8 +33470,6 @@ function FUiEditControl_oeDesign(p){
             if(hlf){
                hlf.border = 0;
                hlf.cellPadding = 0;
-            }
-            if(hef){
             }
             if(o.hEdit){
                o.hEdit.disabled = false;
@@ -33641,16 +33670,16 @@ function FUiEditControl_dispose(){
    }
    RHtml.free(o._hLabelPanel);
    o._hLabelPanel = null;
-   RHtml.free(o,_hLabelForm);
-   o,_hLabelForm = null;
-   RHtml.free(o,_hIconPanel);
-   o,_hIconPanel = null;
-   RHtml.free(o,_hIcon);
-   o,_hIcon = null;
-   RHtml.free(o,_hTextPanel);
-   o,_hTextPanel = null;
-   RHtml.free(o,_hText);
-   o,_hText = null;
+   RHtml.free(o._hLabelForm);
+   o._hLabelForm = null;
+   RHtml.free(o._hIconPanel);
+   o._hIconPanel = null;
+   RHtml.free(o._hIcon);
+   o._hIcon = null;
+   RHtml.free(o._hTextPanel);
+   o._hTextPanel = null;
+   RHtml.free(o._hText);
+   o._hText = null;
    RHtml.free(o._hEditPanel);
    o._hEditPanel = null;
    RHtml.free(o._hEditForm);
@@ -36468,8 +36497,6 @@ function FUiSelectItem_onBuild(p){
    var hp = o._hIconPanel = RBuilder.appendTableCell(h, o.styleName("Icon"));
    hp.width = 18;
    hp.align = 'center';
-   if(o._icon){
-   }
    var hp = o._hLabelPanel = RBuilder.appendTableCell(h, o.styleName("Label"));
    if(o._label){
       hp.innerHTML = o._label;
@@ -37960,12 +37987,8 @@ function FColumnEdit(o){
    return o;
 }
 function FColumnEdit_onCellMouseEnter(s, e){
-   if(s.hLovImage){
-   }
 }
 function FColumnEdit_onCellMouseLeave(s, e){
-   if(s.hLovImage){
-   }
 }
 function FColumnEdit_onListClick(s, e){
    var o = this;
@@ -38116,7 +38139,6 @@ function FColumnStatus_createCell(p){
    return c;
 }
 function FColumnStatus_onCellClick(s, e){
-	return;
    if(this.table.callEvent('onTableRowDoubleClick', s.row)){
       return;
    }
@@ -44100,11 +44122,11 @@ function FUiDataEditControl(o){
    o._styleLabelPanel  = RClass.register(o, new AStyle('_styleLabelPanel'));
    o._styleEditPanel   = RClass.register(o, new AStyle('_styleEditPanel'));
    o._hLabelPanel      = null;
-   o,_hLabelForm       = null;
-   o,_hIconPanel       = null;
-   o,_hIcon            = null;
-   o,_hTextPanel       = null;
-   o,_hText            = null;
+   o._hLabelForm       = null;
+   o._hIconPanel       = null;
+   o._hIcon            = null;
+   o._hTextPanel       = null;
+   o._hText            = null;
    o._hEditPanel       = null;
    o._hEditForm        = null;
    o._hValuePanel      = null;
@@ -44511,16 +44533,16 @@ function FUiDataEditControl_dispose(){
    }
    RHtml.free(o._hLabelPanel);
    o._hLabelPanel = null;
-   RHtml.free(o,_hLabelForm);
-   o,_hLabelForm = null;
-   RHtml.free(o,_hIconPanel);
-   o,_hIconPanel = null;
-   RHtml.free(o,_hIcon);
-   o,_hIcon = null;
-   RHtml.free(o,_hTextPanel);
-   o,_hTextPanel = null;
-   RHtml.free(o,_hText);
-   o,_hText = null;
+   RHtml.free(o._hLabelForm);
+   o._hLabelForm = null;
+   RHtml.free(o._hIconPanel);
+   o._hIconPanel = null;
+   RHtml.free(o._hIcon);
+   o._hIcon = null;
+   RHtml.free(o._hTextPanel);
+   o._hTextPanel = null;
+   RHtml.free(o._hText);
+   o._hText = null;
    RHtml.free(o._hEditPanel);
    o._hEditPanel = null;
    RHtml.free(o._hEditForm);
@@ -45514,8 +45536,6 @@ function FDsCanvas_onEnterFrame(){
       c.doPitch(-r);
    }
    c.update();
-   if(s){
-   }
 }
 function FDsCanvas_oeRefresh(p){
    var o = this;

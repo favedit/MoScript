@@ -206,8 +206,10 @@ function RArray_sortPartition(a, l, r){
    var e = r + 1;
    var t = a[s];
    while(true){
-      while(a[++s] < t);
-      while(a[--e] > t);
+      while(a[++s] < t){
+      }
+      while(a[--e] > t){
+      }
       if(s > e){
          break;
       }

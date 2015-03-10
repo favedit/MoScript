@@ -72,7 +72,10 @@ function FE3sResource_onComplete(p){
 function FE3sResource_onLoad(p){
    var o = this;
    var d = p.outputData();
-   LZMA.decompress(new Uint8Array(d), function(p){o.onComplete(p);}, null);
+   //var lzma = new LZMA("../ejs/lzma_worker.js");
+   //lzma.decompress(new Uint8Array(d), function(p){o.onComplete(p);}, null);
+   //LZMA.decompress(new Uint8Array(d), function(p){o.onComplete(p);}, null);
+   RConsole.find(FE3sVendorConsole).pushCompress(o, o.onComplete, new Uint8Array(d));
 }
 
 //==========================================================

@@ -42,15 +42,15 @@ function FUiEditControl(o){
    // @html <TD> 标签面板
    o._hLabelPanel      = null;
    // @html <TABLE> 标签容器
-   o,_hLabelForm       = null;
+   o._hLabelForm       = null;
    // @html <TD> 标签图标面板
-   o,_hIconPanel       = null;
+   o._hIconPanel       = null;
    // @html <IMG> 标签图标
-   o,_hIcon            = null;
+   o._hIcon            = null;
    // @html <TD> 标签文字面板
-   o,_hTextPanel       = null;
+   o._hTextPanel       = null;
    // @html <SPAN> 标签文字
-   o,_hText            = null;
+   o._hText            = null;
    // @html <TD> 编辑面板
    o._hEditPanel       = null;
    // @html <TABLE> 编辑容器
@@ -503,10 +503,10 @@ function FUiEditControl_oeDesign(p){
                //hlf.style.border = '1 solid #8800FF';
                hlf.cellPadding = 1;
             }
-            if(hef){
+            //if(hef){
                //hef.border = 1;
                //hef.style.border = '1 solid #FF8800';
-            }
+            //}
             if(o.hEdit){
                o.hEdit.disabled = true;
             }
@@ -516,9 +516,9 @@ function FUiEditControl_oeDesign(p){
                hlf.border = 0;
                hlf.cellPadding = 0;
             }
-            if(hef){
+            //if(hef){
                //hef.border = 0;
-            }
+            //}
             if(o.hEdit){
                o.hEdit.disabled = false;
             }
@@ -863,16 +863,16 @@ function FUiEditControl_dispose(){
    // 释放页面元素
    RHtml.free(o._hLabelPanel);
    o._hLabelPanel = null;
-   RHtml.free(o,_hLabelForm);
-   o,_hLabelForm = null;
-   RHtml.free(o,_hIconPanel);
-   o,_hIconPanel = null;
-   RHtml.free(o,_hIcon);
-   o,_hIcon = null;
-   RHtml.free(o,_hTextPanel);
-   o,_hTextPanel = null;
-   RHtml.free(o,_hText);
-   o,_hText = null;
+   RHtml.free(o._hLabelForm);
+   o._hLabelForm = null;
+   RHtml.free(o._hIconPanel);
+   o._hIconPanel = null;
+   RHtml.free(o._hIcon);
+   o._hIcon = null;
+   RHtml.free(o._hTextPanel);
+   o._hTextPanel = null;
+   RHtml.free(o._hText);
+   o._hText = null;
    RHtml.free(o._hEditPanel);
    o._hEditPanel = null;
    RHtml.free(o._hEditForm);

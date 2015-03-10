@@ -412,9 +412,6 @@ function FLoggerConsole_construct(){
    RWindow.lsnsKeyDown.register(o, o.onKeyDown);
 }
 function FLoggerConsole_connect(){
-   var o = this;
-   if(!o.iLogger){
-   }
 }
 function FLoggerConsole_disconnect(){
    this.iLogger = null;

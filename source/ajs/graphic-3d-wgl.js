@@ -615,11 +615,7 @@ function FWglContext_bindTexture(ps, pi, pt){
       g.texParameteri(gt, g.TEXTURE_MAG_FILTER, fc);
    }
    var ws = RWglUtility.convertSamplerFilter(g, pt.wrapS());
-   if(ws){
-   }
    var wt = RWglUtility.convertSamplerFilter(g, pt.wrapT());
-   if(wt){
-   }
    return r;
 }
 function FWglContext_clear(r, g, b, a, d){

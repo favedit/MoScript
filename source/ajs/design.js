@@ -292,8 +292,6 @@ function FDsCanvas_onEnterFrame(){
       c.doPitch(-r);
    }
    c.update();
-   if(s){
-   }
 }
 function FDsCanvas_oeRefresh(p){
    var o = this;

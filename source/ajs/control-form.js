@@ -2895,11 +2895,11 @@ function FUiEditControl(o){
    o._styleLabelPanel  = RClass.register(o, new AStyle('_styleLabelPanel'));
    o._styleEditPanel   = RClass.register(o, new AStyle('_styleEditPanel'));
    o._hLabelPanel      = null;
-   o,_hLabelForm       = null;
-   o,_hIconPanel       = null;
-   o,_hIcon            = null;
-   o,_hTextPanel       = null;
-   o,_hText            = null;
+   o._hLabelForm       = null;
+   o._hIconPanel       = null;
+   o._hIcon            = null;
+   o._hTextPanel       = null;
+   o._hText            = null;
    o._hEditPanel       = null;
    o._hEditForm        = null;
    o._hValuePanel      = null;
@@ -3097,8 +3097,6 @@ function FUiEditControl_oeDesign(p){
             if(hlf){
                hlf.cellPadding = 1;
             }
-            if(hef){
-            }
             if(o.hEdit){
                o.hEdit.disabled = true;
             }
@@ -3107,8 +3105,6 @@ function FUiEditControl_oeDesign(p){
             if(hlf){
                hlf.border = 0;
                hlf.cellPadding = 0;
-            }
-            if(hef){
             }
             if(o.hEdit){
                o.hEdit.disabled = false;
@@ -3309,16 +3305,16 @@ function FUiEditControl_dispose(){
    }
    RHtml.free(o._hLabelPanel);
    o._hLabelPanel = null;
-   RHtml.free(o,_hLabelForm);
-   o,_hLabelForm = null;
-   RHtml.free(o,_hIconPanel);
-   o,_hIconPanel = null;
-   RHtml.free(o,_hIcon);
-   o,_hIcon = null;
-   RHtml.free(o,_hTextPanel);
-   o,_hTextPanel = null;
-   RHtml.free(o,_hText);
-   o,_hText = null;
+   RHtml.free(o._hLabelForm);
+   o._hLabelForm = null;
+   RHtml.free(o._hIconPanel);
+   o._hIconPanel = null;
+   RHtml.free(o._hIcon);
+   o._hIcon = null;
+   RHtml.free(o._hTextPanel);
+   o._hTextPanel = null;
+   RHtml.free(o._hText);
+   o._hText = null;
    RHtml.free(o._hEditPanel);
    o._hEditPanel = null;
    RHtml.free(o._hEditForm);
@@ -6136,8 +6132,6 @@ function FUiSelectItem_onBuild(p){
    var hp = o._hIconPanel = RBuilder.appendTableCell(h, o.styleName("Icon"));
    hp.width = 18;
    hp.align = 'center';
-   if(o._icon){
-   }
    var hp = o._hLabelPanel = RBuilder.appendTableCell(h, o.styleName("Label"));
    if(o._label){
       hp.innerHTML = o._label;

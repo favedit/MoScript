@@ -9,16 +9,60 @@ function FE3sVendorConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
+   o._activeEvent = null;
+   o._events      = null;
    o._setuped     = false;
    o._vendors     = null;
+   // @attribute
+   o._thread      = null;
+   o._interval    = 100;
+   //..........................................................
+   // @event
+   o.onProcess    = FE3sVendorConsole_onProcess;
+   o.onComplete   = FE3sVendorConsole_onComplete;
    //..........................................................
    // @method
    o.construct    = FE3sVendorConsole_construct;
+   o.pushCompress = FE3sVendorConsole_pushCompress;
    o.createVendor = FE3sVendorConsole_createVendor;
    o.register     = FE3sVendorConsole_register;
    o.find         = FE3sVendorConsole_find;
    o.setup        = FE3sVendorConsole_setup;
    return o;
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+// <P>只保证一个事件在执行，多个执行时，引用库有错误。</P>
+//
+// @method
+//==========================================================
+function FE3sVendorConsole_onProcess(){
+   var o = this;
+   var s = o._events;
+   if(!o._activeEvent){
+      if(!s.isEmpty()){
+         var e = o._activeEvent = s.erase(0);
+         LZMA.decompress(e.data, o.onComplete, null);
+         e.data = null;
+      }
+   }
+}
+
+//==========================================================
+// <T>完成处理。</T>
+//
+// @method
+//==========================================================
+function FE3sVendorConsole_onComplete(p){
+   var o = RConsole.find(FE3sVendorConsole);
+   // 回调处理
+   var e = o._activeEvent;
+   e.process.call(e.owner, p);
+   e.owner = null;
+   e.process = null;
+   // 删除事件
+   o._activeEvent = null;
 }
 
 //==========================================================
@@ -30,8 +74,22 @@ function FE3sVendorConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 设置属性
-   o._compresses = new TDictionary();
+   o._events = new TObjects();
    o._vendors = new TDictionary();
+   // 创建线程
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.addProcessListener(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(t);
+}
+
+//==========================================================
+// <T>增加一个解压缩数据事件。</T>
+//
+// @method
+//==========================================================
+function FE3sVendorConsole_pushCompress(w, f, d){
+   this._events.push(new SE3sCompressEvent(w, f, d));
 }
 
 //==========================================================

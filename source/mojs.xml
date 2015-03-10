@@ -114,6 +114,12 @@
         <File source='/ajs/mo-control.js'/>
         <File source='/ajs/mo-design.js'/>
      </FileMerger>
+     <FileMerger target='/ajs/me.js'>
+        <File source='/ajs/mo-core.js'/>
+        <File source='/ajs/core-window.js'/>
+        <File source='/ajs/mo-graphic.js'/>
+        <File source='/ajs/mo-engine.js'/>
+     </FileMerger>
      <FileMerger target='/ajs/mo-engine-server.js'>
         <File source='/ajs/mo-core.js'/>
         <File source='/ajs/mo-graphic.js'/>

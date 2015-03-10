@@ -1160,12 +1160,8 @@ function FColumnEdit(o){
    return o;
 }
 function FColumnEdit_onCellMouseEnter(s, e){
-   if(s.hLovImage){
-   }
 }
 function FColumnEdit_onCellMouseLeave(s, e){
-   if(s.hLovImage){
-   }
 }
 function FColumnEdit_onListClick(s, e){
    var o = this;
@@ -1316,7 +1312,6 @@ function FColumnStatus_createCell(p){
    return c;
 }
 function FColumnStatus_onCellClick(s, e){
-	return;
    if(this.table.callEvent('onTableRowDoubleClick', s.row)){
       return;
    }

@@ -886,13 +886,13 @@ function FWglContext_bindTexture(ps, pi, pt){
       g.texParameteri(gt, g.TEXTURE_MAG_FILTER, fc);
    }
    var ws = RWglUtility.convertSamplerFilter(g, pt.wrapS());
-   if(ws){
+   //if(ws){
       //g.texParameteri(gt, g.TEXTURE_WRAP_S, ws);
-   }
+   //}
    var wt = RWglUtility.convertSamplerFilter(g, pt.wrapT());
-   if(wt){
+   //if(wt){
       //g.texParameteri(gt, g.TEXTURE_WRAP_T, wt);
-   }
+   //}
    return r;
 }
 

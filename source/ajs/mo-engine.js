@@ -1170,6 +1170,13 @@ function RE3dEngine_setup(){
       o._setuped = true;
    }
 }
+function SE3sCompressEvent(w, f, d){
+   var o = this;
+   o.owner   = w;
+   o.process = f;
+   o.data    = d;
+   return o;
+}
 function SE3sMaterialInfo(){
    var o = this;
    SG3dMaterialInfo.call(o);
@@ -1952,7 +1959,7 @@ function FE3sResource_onComplete(p){
 function FE3sResource_onLoad(p){
    var o = this;
    var d = p.outputData();
-   LZMA.decompress(new Uint8Array(d), function(p){o.onComplete(p);}, null);
+   RConsole.find(FE3sVendorConsole).pushCompress(o, o.onComplete, new Uint8Array(d));
 }
 function FE3sResource_vendor(){
    return this._vendor;
@@ -3212,20 +3219,53 @@ function FE3sVendor_makeUrl(){
 }
 function FE3sVendorConsole(o){
    o = RClass.inherits(this, o, FConsole);
+   o._activeEvent = null;
+   o._events      = null;
    o._setuped     = false;
    o._vendors     = null;
+   o._thread      = null;
+   o._interval    = 100;
+   o.onProcess    = FE3sVendorConsole_onProcess;
+   o.onComplete   = FE3sVendorConsole_onComplete;
    o.construct    = FE3sVendorConsole_construct;
+   o.pushCompress = FE3sVendorConsole_pushCompress;
    o.createVendor = FE3sVendorConsole_createVendor;
    o.register     = FE3sVendorConsole_register;
    o.find         = FE3sVendorConsole_find;
    o.setup        = FE3sVendorConsole_setup;
    return o;
 }
+function FE3sVendorConsole_onProcess(){
+   var o = this;
+   var s = o._events;
+   if(!o._activeEvent){
+      if(!s.isEmpty()){
+         var e = o._activeEvent = s.erase(0);
+         LZMA.decompress(e.data, o.onComplete, null);
+         e.data = null;
+      }
+   }
+}
+function FE3sVendorConsole_onComplete(p){
+   var o = RConsole.find(FE3sVendorConsole);
+   var e = o._activeEvent;
+   e.process.call(e.owner, p);
+   e.owner = null;
+   e.process = null;
+   o._activeEvent = null;
+}
 function FE3sVendorConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._compresses = new TDictionary();
+   o._events = new TObjects();
    o._vendors = new TDictionary();
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.addProcessListener(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(t);
+}
+function FE3sVendorConsole_pushCompress(w, f, d){
+   this._events.push(new SE3sCompressEvent(w, f, d));
 }
 function FE3sVendorConsole_createVendor(f, u){
    var v = RClass.create(FE3sVendor);
@@ -4817,10 +4857,10 @@ function FE3dBoundBox_setup(){
    o._vertexBuffers.set(vb._name, vb);
    o._vertexCount = 32;
    var id = [
-      00, 01, 00, 04, 00, 12,
-      03, 02, 03, 05, 03, 13,
-      08, 06, 08, 09, 08, 14,
-      11, 07, 11, 10, 11, 15,
+       0,  1,  0,  4,  0, 12,
+       3,  2,  3,  5,  3, 13,
+       8,  6,  8,  9,  8, 14,
+      11,  7, 11, 10, 11, 15,
       20, 16, 20, 21, 20, 24,
       23, 17, 23, 22, 23, 25,
       28, 18, 28, 26, 28, 29,
@@ -5581,7 +5621,7 @@ function FE3dSceneCanvas(o){
    o._actionDown            = false;
    o._actionForward         = false;
    o._actionBack            = false;
-   o._cameraMoveRate        = 0.8;
+   o._cameraMoveRate        = 0.4;
    o._cameraKeyRotation     = 0.03;
    o._cameraMouseRotation   = 0.005;
    o.onEnterFrame           = FE3dSceneCanvas_onEnterFrame;

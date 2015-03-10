@@ -2234,13 +2234,12 @@ function FUiContainer_panel(t){
    return o.__base.FUiControl.panel.call(o, t);
 }
 function FUiContainer_focusFirstControl(){
-   return null;
    var o = this;
    var cs = o._components;
    if(cs){
       var c = cs.count();
       for(var i = 0; i < c; i++){
-         var p = cs.value(i);
+         var p = cs.valueAt(i);
          if(RClass.isClass(c, MUiFocus) && c.testFocus()){
             if(!RClass.isClass(c, FCalendar) && !RClass.isClass(c, FSelect)  && !RClass.isClass(c, FNumber)){
                 return c.focus();
@@ -2635,38 +2634,6 @@ function FUiControl_dispose(){
    o.__base.MUiSize.dispose.call(o);
    o.__base.MUiStyle.dispose.call(o);
    o.__base.FUiComponent.dispose.call(o);
-}
-var RApplication = new function RApplication(){
-   var o = this;
-   o._workspaces   = new TDictionary();
-   o.initialize    = RApplication_initialize;
-   o.findWorkspace = RApplication_findWorkspace;
-   o.release       = RApplication_release;
-   return o;
-}
-function RApplication_initialize(){
-   var o = this;
-   RBrowser.construct();
-   RWindow.connect(window);
-   RKeyboard.construct();
-}
-function RApplication_findWorkspace(p){
-   var o = this;
-   var n = RClass.name(p);
-   var ws = o._workspaces;
-   var w = ws.get(n);
-   if(w == null){
-      w = RClass.create(p);
-      ws.set(n, w);
-   }
-   return w;
-}
-function RApplication_release(){
-   try{
-      CollectGarbage();
-   }catch(e){
-      RLogger.error(e);
-   }
 }
 var RControl = new function RControl(){
    var o = this;

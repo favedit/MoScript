@@ -420,7 +420,7 @@ function RClass_createClass(n){
    c.name = n;
    c.base = o.createBase(n);
    c.clazz = new c.base.constructor();
-   eval(n + '(c.clazz)');
+   eval(n)(c.clazz);
    return c;
 }
 

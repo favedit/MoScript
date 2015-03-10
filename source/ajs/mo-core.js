@@ -1844,7 +1844,7 @@ function TClass(){
    o.base           = null;
    o.clazz          = null;
    o.instance       = null;
-   o.abstract       = false;
+   o._abstract      = false;
    o.styles         = new Array();
    o.instances      = new Array();
    o.register       = TClass_register;
@@ -1982,7 +1982,7 @@ function TClass_build(){
       var v = o.instance[n];
       if(v != null){
          if((v.constructor == Function) && v.__virtual){
-            o.abstract = true;
+            o._abstract = true;
             break;
          }
       }
@@ -1999,7 +1999,7 @@ function TClass_newInstance(){
    var o = this;
    var r = o.alloc();
    if(!r){
-      if(o.abstract){
+      if(o._abstract){
          var s = new TString();
          for(var n in o.instance){
             var v = o.instance[n];
@@ -3276,8 +3276,10 @@ function RArray_sortPartition(a, l, r){
    var e = r + 1;
    var t = a[s];
    while(true){
-      while(a[++s] < t);
-      while(a[--e] > t);
+      while(a[++s] < t){
+      }
+      while(a[--e] > t){
+      }
       if(s > e){
          break;
       }
@@ -3606,7 +3608,7 @@ function RClass_createClass(n){
    c.name = n;
    c.base = o.createBase(n);
    c.clazz = new c.base.constructor();
-   eval(n + '(c.clazz)');
+   eval(n)(c.clazz);
    return c;
 }
 function RClass_create(n){
@@ -5513,7 +5515,7 @@ function RString_splitPattern(s, p){
          var v = false;
          for(var i = 0; i < pl; i++){
             var f = p[i];
-            if(s.indexOf(f) == 01){
+            if(s.indexOf(f) == -1){
                if(t.length){
                   r[r.length] = t;
                   t = '';
@@ -9952,7 +9954,6 @@ function RDump_typeInfo(v, t){
          }catch(e){}
          return '<Object@' + RClass.code(v) + '>';
    }
-   return v;
 }
 function RDump_dumpInner(di){
    var hTable  = di.hTable;
@@ -10661,9 +10662,9 @@ function RHtml_setRect(h, r){
       s.height = r.height();
    }
 }
-function RHtml_setBounds(h, l, t, w, h){
-   if(h && h.style){
-      var s = o.style;
+function RHtml_setBounds(r, l, t, w, h){
+   if(r && r.style){
+      var s = r.style;
       if(null != l){
          s.left = l;
       }
@@ -10760,7 +10761,7 @@ function RHtml_get(name){
    return document.getElementById(name);
 }
 function RHtml_parent(o, t){
-   if(o, t){
+   if(o && t){
       t = t.toLowerCase();
       while(o){
          if(o.tagName.toLowerCase() == t){
@@ -12252,9 +12253,6 @@ function FLoggerConsole_construct(){
    RWindow.lsnsKeyDown.register(o, o.onKeyDown);
 }
 function FLoggerConsole_connect(){
-   var o = this;
-   if(!o.iLogger){
-   }
 }
 function FLoggerConsole_disconnect(){
    this.iLogger = null;
