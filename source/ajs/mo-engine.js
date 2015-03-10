@@ -1922,6 +1922,7 @@ function FE3sObject_saveConfig(p){
 }
 function FE3sResource(o){
    o = RClass.inherits(this, o, FResource);
+   o._dataLoad     = false;
    o._dataReady    = false;
    o._dataSize     = 0;
    o._dataCompress = false;
@@ -1980,17 +1981,6 @@ function FE3sResource_testReady(){
 }
 function FE3sResource_unserialize(p){
    var o = this;
-   var f = true;
-   if(o._vendor){
-      f = o._vendor._optionFlag;
-   }
-   if(f && !o._dataCompress){
-      var r = p.readInt32();
-      if(r != EResult.Success){
-         var s = p.readString();
-         throw new TError('Unserial resource failure.\n{1}', s);
-      }
-   }
    o._guid = p.readString();
    o._code = p.readString();
    o._label = p.readString();
@@ -2010,6 +2000,7 @@ function FE3sResource_load(u){
    }else{
       c.lsnsLoad.register(o, o.onComplete);
    }
+   o._dataLoad = true;
 }
 function FE3sResource_dispose(){
    var o = this;
@@ -2023,6 +2014,8 @@ function FE3sScene(o){
    o._themeCode  = null;
    o._technique  = null;
    o._region     = null;
+   o._textures   = null;
+   o._templates  = null;
    o._layers     = null;
    o.construct   = FE3sScene_construct;
    o.technique   = FE3sScene_technique;
@@ -2037,7 +2030,6 @@ function FE3sScene_construct(){
    o.__base.FE3sResource.construct.call(o);
    o._technique = RClass.create(FE3sSceneTechnique);
    o._region = RClass.create(FE3sSceneRegion);
-   o._layers = new TDictionary();
 }
 function FE3sScene_technique(){
    return this._technique;
@@ -2056,10 +2048,31 @@ function FE3sScene_unserialize(p){
    o._technique.unserialize(p);
    o._region.unserialize(p);
    var c = p.readInt16();
-   for(var i = 0; i < c; i++){
-      var l = RClass.create(FE3sSceneLayer);
-      l.unserialize(p);
-      o._layers.set(l.code(), l);
+   if(c > 0){
+      var tc = RConsole.find(FE3sTextureConsole);
+      var s = o._textures = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var t = tc.unserialize(p);
+         s.set(t.guid(), t);
+      }
+   }
+   var c = p.readInt16();
+   if(c > 0){
+      var tc = RConsole.find(FE3sTemplateConsole);
+      var s = o._templates = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var t = tc.unserialize(p);
+         s.set(t.guid(), t);
+      }
+   }
+   var c = p.readInt16();
+   if(c > 0){
+      var s = o._layers = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var l = RClass.create(FE3sSceneLayer);
+         l.unserialize(p);
+         s.set(l.code(), l);
+      }
    }
 }
 function FE3sScene_saveConfig(p){
@@ -2802,6 +2815,7 @@ function FE3sTemplateConsole(o){
    o._serviceUrl = '/cloud.content.template.ws'
    o._dataUrl    = '/cloud.content.template.wv'
    o.construct   = FE3sTemplateConsole_construct;
+   o.unserialize = FE3sTemplateConsole_unserialize;
    o.loadByGuid  = FE3sTemplateConsole_loadByGuid;
    o.loadByCode  = FE3sTemplateConsole_loadByCode;
    o.update      = FE3sTemplateConsole_update;
@@ -2811,6 +2825,14 @@ function FE3sTemplateConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._templates = new TDictionary();
+}
+function FE3sTemplateConsole_unserialize(p){
+   var o = this;
+   var r = RClass.create(FE3sTemplate);
+   r._dataReady = true;
+   r.unserialize(p);
+   o._templates.set(r.guid(), r);
+   return r;
 }
 function FE3sTemplateConsole_loadByGuid(p){
    var o = this;
@@ -2992,12 +3014,12 @@ function FE3sTextureBitmapPack_dispose(){
 }
 function FE3sTextureConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._textures  = null;
-   o._dataUrl   = '/cloud.content.texture.wv';
-   o.construct  = FE3sTextureConsole_construct;
-   o.load       = FE3sTextureConsole_load;
-   o.loadBitmap = FE3sTextureConsole_loadBitmap;
-   o.dispose    = FE3sModelConsole_dispose;
+   o._textures   = null;
+   o.construct   = FE3sTextureConsole_construct;
+   o.unserialize = FE3sTextureConsole_unserialize;
+   o.load        = FE3sTextureConsole_load;
+   o.loadBitmap  = FE3sTextureConsole_loadBitmap;
+   o.dispose     = FE3sModelConsole_dispose;
    return o;
 }
 function FE3sTextureConsole_construct(){
@@ -3005,18 +3027,27 @@ function FE3sTextureConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._textures = new TDictionary();
 }
+function FE3sTextureConsole_unserialize(p){
+   var o = this;
+   var r = RClass.create(FE3sTexture);
+   r._dataReady = true;
+   r.unserialize(p);
+   o._textures.set(r.guid(), r);
+   return r;
+}
 function FE3sTextureConsole_load(p){
    var o = this;
    var s = o._textures;
    var t = s.get(p);
-   if(!t){
-      var v = RConsole.find(FE3sVendorConsole).find('texture');
-      var u = v.makeUrl(p);
-      t = RClass.create(FE3sTexture);
-      t.setVendor(v);
-      t.load(u);
-      s.set(p, t);
+   if(t){
+      return t;
    }
+   var v = RConsole.find(FE3sVendorConsole).find('texture');
+   var u = v.makeUrl(p);
+   t = RClass.create(FE3sTexture);
+   t.setVendor(v);
+   t.load(u);
+   s.set(p, t);
    return t;
 }
 function FE3sTextureConsole_loadBitmap(pg, pc, pf){
@@ -4656,7 +4687,8 @@ function FE3rTextureConsole_textures(){
 }
 function FE3rTextureConsole_load(pc, pt){
    var o = this;
-   var t = o._textures.get(pt);
+   var s = o._textures;
+   var t = s.get(pt);
    if(t){
       return t;
    }
@@ -4665,7 +4697,7 @@ function FE3rTextureConsole_load(pc, pt){
    t = RClass.create(FE3rTexture);
    t.linkGraphicContext(pc);
    t.setResource(r);
-   o._textures.set(pt, t);
+   s.set(pt, t);
    o._loadTextures.push(t);
    return t;
 }
@@ -6009,9 +6041,7 @@ function FE3dSceneDisplay_loadResource(p){
          o.pushRenderable(r);
          var rdm = rd.materials().first();
          var m = ms.get(rdm.groupGuid());
-         if(m){
-            r.loadMaterial(m);
-         }
+         r.loadMaterial(m);
       }
    }
 }

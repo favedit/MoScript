@@ -13,6 +13,8 @@ function FE3sScene(o){
    // @attribute
    o._technique  = null;
    o._region     = null;
+   o._textures   = null;
+   o._templates  = null;
    o._layers     = null;
    //..........................................................
    // @method
@@ -37,7 +39,6 @@ function FE3sScene_construct(){
    o.__base.FE3sResource.construct.call(o);
    o._technique = RClass.create(FE3sSceneTechnique);
    o._region = RClass.create(FE3sSceneRegion);
-   o._layers = new TDictionary();
 }
 
 //==========================================================
@@ -85,12 +86,35 @@ function FE3sScene_unserialize(p){
    o._technique.unserialize(p);
    // 读取区域
    o._region.unserialize(p);
+   // 读取纹理集合
+   var c = p.readInt16();
+   if(c > 0){
+      var tc = RConsole.find(FE3sTextureConsole);
+      var s = o._textures = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var t = tc.unserialize(p);
+         s.set(t.guid(), t);
+      }
+   }
+   // 读取模板集合
+   var c = p.readInt16();
+   if(c > 0){
+      var tc = RConsole.find(FE3sTemplateConsole);
+      var s = o._templates = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var t = tc.unserialize(p);
+         s.set(t.guid(), t);
+      }
+   }
    // 读取场景层
    var c = p.readInt16();
-   for(var i = 0; i < c; i++){
-      var l = RClass.create(FE3sSceneLayer);
-      l.unserialize(p);
-      o._layers.set(l.code(), l);
+   if(c > 0){
+      var s = o._layers = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var l = RClass.create(FE3sSceneLayer);
+         l.unserialize(p);
+         s.set(l.code(), l);
+      }
    }
 }
 

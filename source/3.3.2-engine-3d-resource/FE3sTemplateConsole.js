@@ -14,8 +14,11 @@ function FE3sTemplateConsole(o){
    //..........................................................
    // @method
    o.construct   = FE3sTemplateConsole_construct;
+   // @method
+   o.unserialize = FE3sTemplateConsole_unserialize;
    o.loadByGuid  = FE3sTemplateConsole_loadByGuid;
    o.loadByCode  = FE3sTemplateConsole_loadByCode;
+   // @method
    o.update      = FE3sTemplateConsole_update;
    return o;
 }
@@ -29,6 +32,24 @@ function FE3sTemplateConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._templates = new TDictionary();
+}
+
+//==========================================================
+// <T>反序列化一个模板。</T>
+//
+// @method
+// @param p:input:FByteStream 输入流
+// @return FE3sTemplate 材质
+//==========================================================
+function FE3sTemplateConsole_unserialize(p){
+   var o = this;
+   // 创建材质组
+   var r = RClass.create(FE3sTemplate);
+   r._dataReady = true;
+   r.unserialize(p);
+   // 存储材质组
+   o._templates.set(r.guid(), r);
+   return r;
 }
 
 //==========================================================

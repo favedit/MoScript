@@ -133,7 +133,7 @@ function FG3dMaterialMap_resize(w, h){
    // 分配内存
    var t = 4 * w * h;
    o._data = new Uint8Array(t);
-   console.log('Resize material map.', w, h);
+   //console.log('Resize material map.', w, h);
 }
 
 //==========================================================

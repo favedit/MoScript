@@ -1352,7 +1352,8 @@ function FE3rTextureConsole_textures(){
 }
 function FE3rTextureConsole_load(pc, pt){
    var o = this;
-   var t = o._textures.get(pt);
+   var s = o._textures;
+   var t = s.get(pt);
    if(t){
       return t;
    }
@@ -1361,7 +1362,7 @@ function FE3rTextureConsole_load(pc, pt){
    t = RClass.create(FE3rTexture);
    t.linkGraphicContext(pc);
    t.setResource(r);
-   o._textures.set(pt, t);
+   s.set(pt, t);
    o._loadTextures.push(t);
    return t;
 }

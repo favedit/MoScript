@@ -111,9 +111,7 @@ function FE3dSceneDisplay_loadResource(p){
          // 加载材质
          var rdm = rd.materials().first();
          var m = ms.get(rdm.groupGuid());
-         if(m){
-            r.loadMaterial(m);
-         }
+         r.loadMaterial(m);
       }
    }
 }

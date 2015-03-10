@@ -8,6 +8,7 @@ function FE3sResource(o){
    o = RClass.inherits(this, o, FResource);
    //..........................................................
    // @attribute
+   o._dataLoad     = false;
    o._dataReady    = false;
    o._dataSize     = 0;
    o._dataCompress = false;
@@ -130,19 +131,6 @@ function FE3sResource_testReady(){
 //==========================================================
 function FE3sResource_unserialize(p){
    var o = this;
-   var f = true;
-   if(o._vendor){
-      f = o._vendor._optionFlag;
-   }
-   // 检查结果
-   if(f && !o._dataCompress){
-      var r = p.readInt32();
-      if(r != EResult.Success){
-         var s = p.readString();
-         throw new TError('Unserial resource failure.\n{1}', s);
-      }
-   }
-   // 读取属性
    o._guid = p.readString();
    o._code = p.readString();
    o._label = p.readString();
@@ -176,6 +164,7 @@ function FE3sResource_load(u){
    }else{
       c.lsnsLoad.register(o, o.onComplete);
    }
+   o._dataLoad = true;
 }
 
 //==========================================================

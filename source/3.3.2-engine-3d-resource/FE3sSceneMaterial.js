@@ -79,17 +79,6 @@ function FE3sSceneMaterial_unserialize(p){
    // 读取设置
    o._info.unserialize(p);
    o._textureCount = p.readInt16();
-   // 读取高度
-   //o._heightDepth = p.readFloat();
-   // 读取表面
-   //o._surfaceRate = p.readFloat();
-   //o._surfaceReflect = p.readFloat();
-   //o._surfaceBright = p.readFloat();
-   //o._surfaceBrightLevel = p.readFloat();
-   //o._surfaceCoarse = p.readFloat();
-   //o._surfaceCoarseLevel = p.readFloat();
-   //o._surfaceMerge = p.readFloat();
-   //o._surfacePower = p.readFloat();
 }
 
 //==========================================================

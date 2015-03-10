@@ -1197,9 +1197,7 @@ function FE3dSceneDisplay_loadResource(p){
          o.pushRenderable(r);
          var rdm = rd.materials().first();
          var m = ms.get(rdm.groupGuid());
-         if(m){
-            r.loadMaterial(m);
-         }
+         r.loadMaterial(m);
       }
    }
 }

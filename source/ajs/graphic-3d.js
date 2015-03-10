@@ -1389,7 +1389,6 @@ function FG3dMaterialMap_resize(w, h){
    o._stride = 4 * w;
    var t = 4 * w * h;
    o._data = new Uint8Array(t);
-   console.log('Resize material map.', w, h);
 }
 function FG3dMaterialMap_setUint8(n, i, v1, v2, v3, v4){
    var o = this;
