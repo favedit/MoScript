@@ -4613,6 +4613,7 @@ var RInteger = new function RInteger(){
    o.toRange    = RInteger_toRange;
    o.sum        = RInteger_sum;
    o.calculate  = RInteger_calculate;
+   o.copy       = RInteger_copy;
    return o;
 }
 function RInteger_isInt(v){
@@ -4691,6 +4692,11 @@ function RInteger_calculate(f, a, b){
      r = a / b;
    }
    return r.toString();
+}
+function RInteger_copy(po, poi, pi, pii, pc){
+   for(var i = 0; i < pc; i++){
+      po[poi++] = pi[pii++];
+   }
 }
 var RLogger = new function RLogger(){
    var o = this;
@@ -6970,6 +6976,7 @@ function SOutline3(){
    o.min         = new SPoint3();
    o.max         = new SPoint3();
    o.assign      = SOutline3_assign;
+   o.set         = SOutline3_set;
    o.serialize   = SOutline3_serialize
    o.unserialize = SOutline3_unserialize
    o.toString    = SOutline3_toString;
@@ -6979,6 +6986,11 @@ function SOutline3_assign(p){
    var o = this;
    o.min.assign(p.min);
    o.max.assign(p.max);
+}
+function SOutline3_set(ix, iy, iz, ax, ay, az){
+   var o = this;
+   o.min.set(ix, iy, iz);
+   o.max.set(ax, ay, az);
 }
 function SOutline3_serialize(p){
    var o = this;

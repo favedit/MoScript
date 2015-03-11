@@ -23,6 +23,7 @@ var RInteger = new function RInteger(){
    o.toRange    = RInteger_toRange;
    o.sum        = RInteger_sum;
    o.calculate  = RInteger_calculate;
+   o.copy       = RInteger_copy;
    return o;
 }
 
@@ -168,4 +169,20 @@ function RInteger_calculate(f, a, b){
      r = a / b;
    }
    return r.toString();
+}
+
+//===========================================================
+// <T>复制整数数组。</T>
+//
+// @method
+// @param po:outputData:Array 输出数据
+// @param poi:outputIndex:Integer 输出位置
+// @param pi:inputData:Array 输入数据
+// @param pii:inputIndex:Integer 输入位置
+// @param pc:count:Integer 总数
+//===========================================================
+function RInteger_copy(po, poi, pi, pii, pc){
+   for(var i = 0; i < pc; i++){
+      po[poi++] = pi[pii++];
+   }
 }

@@ -14,6 +14,7 @@ function SOutline3(){
    //..........................................................
    // @method
    o.assign      = SOutline3_assign;
+   o.set         = SOutline3_set;
    o.serialize   = SOutline3_serialize
    o.unserialize = SOutline3_unserialize
    o.toString    = SOutline3_toString;
@@ -30,6 +31,23 @@ function SOutline3_assign(p){
    var o = this;
    o.min.assign(p.min);
    o.max.assign(p.max);
+}
+
+//==========================================================
+// <T>设置参数。</T>
+//
+// @method
+// @param ix:minX:Number 最小X坐标
+// @param iy:minY:Number 最小Y坐标
+// @param iz:minZ:Number 最小Z坐标
+// @param ax:maxX:Number 最大X坐标
+// @param ay:maxY:Number 最大Y坐标
+// @param az:maxZ:Number 最大Z坐标
+//==========================================================
+function SOutline3_set(ix, iy, iz, ax, ay, az){
+   var o = this;
+   o.min.set(ix, iy, iz);
+   o.max.set(ax, ay, az);
 }
 
 //==========================================================

@@ -612,9 +612,13 @@ function FE3dCanvas(o){
    o._interval        = 1000 / 60;
    o._hPanel          = null;
    o._hCanvas         = null;
+   o.onEnterFrame           = RMethod.empty;
    o.ohTouchStart     = FE3dCanvas_ohTouchStart;
    o.ohTouchMove      = FE3dCanvas_ohTouchMove;
    o.ohTouchStop      = FE3dCanvas_ohTouchStop;
+   o.onMouseCaptureStart = RMethod.empty;
+   o.onMouseCapture      = RMethod.empty;
+   o.onMouseCaptureStop  = RMethod.empty;
    o.onTouchStart     = RMethod.empty;
    o.onTouchMove      = RMethod.empty;
    o.onTouchStop      = RMethod.empty;
@@ -1154,6 +1158,7 @@ function RE3dEngine_onSetup(){
    ec.register('select.select.skeleton', FG3dSelectSkeletonEffect);
    ec.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
    ec.register('control.control.automatic', FG3dControlAutomaticEffect);
+   ec.register('control.control.control', FG3dControlAutomaticEffect);
    ec.register('general.color.control', FG3dControlAutomaticEffect);
    ec.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
    ec.register('general.color.skeleton', FG3dGeneralColorSkeletonEffect);
@@ -1162,6 +1167,7 @@ function RE3dEngine_onSetup(){
    ec.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
    ec.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
    ec.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
+   ec.register('control.control.galaxy', FE3dGalaxyEffect);
 }
 function RE3dEngine_setup(){
    var o = this;
@@ -4877,6 +4883,27 @@ function FE3rTrack_dispose(){
    o._resource = null;
    o.__base.FG3dTrack.dispose.call(o);
 }
+function FE3dGalaxyEffect(o){
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o._code          = 'galaxy.automatic';
+   o.drawRenderable = FE3dGalaxyEffect_drawRenderable;
+   return o;
+}
+function FE3dGalaxyEffect_drawRenderable(pg, pr){
+   var o = this;
+   var c = o._graphicContext;
+   var p = o._program;
+   var m = pr.material();
+   var mi = m.info();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
+   p.setParameter('fc_ambient_color', mi.ambientColor);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
+}
 function FE3dGeneralColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    o._code          = 'general.color.automatic';
@@ -6639,6 +6666,262 @@ function FE3dSceneRegion_dispose(){
    var o = this;
    o._resource = null;
    o.__base.FE3dRegion.dispose.call(o);
+}
+function FE3dSimpleCanvas(o){
+   o = RClass.inherits(this, o, FE3dCanvas);
+   o._activeStage           = null;
+   o._captureStatus         = false;
+   o._capturePosition       = null;
+   o._captureCameraPosition = null;
+   o._captureCameraRotation = null;
+   o._actionFullScreen      = false;
+   o._actionPlay            = false;
+   o._actionMovie           = false;
+   o._actionUp              = false;
+   o._actionDown            = false;
+   o._actionForward         = false;
+   o._actionBack            = false;
+   o._cameraMoveRate        = 0.4;
+   o._cameraKeyRotation     = 0.03;
+   o._cameraMouseRotation   = 0.005;
+   o.onEnterFrame           = FE3dSimpleCanvas_onEnterFrame;
+   o.onMouseCaptureStart    = FE3dSimpleCanvas_onMouseCaptureStart;
+   o.onMouseCapture         = FE3dSimpleCanvas_onMouseCapture;
+   o.onMouseCaptureStop     = FE3dSimpleCanvas_onMouseCaptureStop;
+   o.onTouchStart           = FE3dSimpleCanvas_onTouchStart;
+   o.onTouchMove            = FE3dSimpleCanvas_onTouchMove;
+   o.onTouchStop            = FE3dSimpleCanvas_onTouchStop;
+   o.onSceneLoad            = FE3dSimpleCanvas_onSceneLoad;
+   o.onResize               = FE3dSimpleCanvas_onResize;
+   o.construct              = FE3dSimpleCanvas_construct;
+   o.switchPlay             = FE3dSimpleCanvas_switchPlay;
+   o.switchMovie            = FE3dSimpleCanvas_switchMovie;
+   o.doAction               = FE3dSimpleCanvas_doAction;
+   o.dispose                = FE3dSimpleCanvas_dispose;
+   return o;
+}
+function FE3dSimpleCanvas_onEnterFrame(){
+   var o = this;
+   var s = o._activeStage;
+   if(!s){
+      return;
+   }
+   var c = s.camera();
+   var d = o._cameraMoveRate;
+   var r = o._cameraKeyRotation;
+   var kw = RKeyboard.isPress(EKeyCode.W);
+   var ks = RKeyboard.isPress(EKeyCode.S);
+   if((kw && !ks) || o._actionForward){
+      c.doWalk(d);
+   }
+   if((!kw && ks) || o._actionBack){
+      c.doWalk(-d);
+   }
+   var ka = RKeyboard.isPress(EKeyCode.A);
+   var kd = RKeyboard.isPress(EKeyCode.D);
+   if(ka && !kd){
+      c.doYaw(r);
+   }
+   if(!ka && kd){
+      c.doYaw(-r);
+   }
+   var kq = RKeyboard.isPress(EKeyCode.Q);
+   var ke = RKeyboard.isPress(EKeyCode.E);
+   if((kq && !ke) || o._actionUp){
+      c.doFly(d);
+   }
+   if((!kq && ke) || o._actionDown){
+      c.doFly(-d);
+   }
+   var kz = RKeyboard.isPress(EKeyCode.Z);
+   var kw = RKeyboard.isPress(EKeyCode.X);
+   if(kz && !kw){
+      c.doPitch(r);
+   }
+   if(!kz && kw){
+      c.doPitch(-r);
+   }
+   c.update();
+   if(o._optionRotation){
+      var r = o._rotation;
+      var ls = s.layers();
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         var l = ls.value(i);
+         var m = l.matrix();
+         m.setRotation(0, r.y, 0);
+         m.update();
+      }
+      r.y += 0.01;
+   }
+}
+function FE3dSimpleCanvas_onMouseCaptureStart(p){
+   var o = this;
+   var s = o._activeStage;
+   if(!s){
+      return;
+   }
+   o._capturePosition.set(p.clientX, p.clientY);
+   o._captureCameraRotation.assign(s.camera()._rotation);
+}
+function FE3dSimpleCanvas_onMouseCapture(p){
+   var o = this;
+   var s = o._activeStage;
+   if(!s){
+      return;
+   }
+   var cx = p.clientX - o._capturePosition.x;
+   var cy = p.clientY - o._capturePosition.y;
+   var c = o._activeStage.camera();
+   var r = c.rotation();
+   var cr = o._captureCameraRotation;
+   r.x = cr.x + cy * o._cameraMouseRotation;
+   r.y = cr.y + cx * o._cameraMouseRotation;
+}
+function FE3dSimpleCanvas_onMouseCaptureStop(p){
+}
+function FE3dSimpleCanvas_onTouchStart(p){
+   var o = this;
+   var s = o._activeStage;
+   if(!s){
+      return;
+   }
+   var r = o._activeStage.region();
+   var ts = p.touches;
+   var c = ts.length;
+   if(c == 1){
+      p.preventDefault();
+      var t = ts[0];
+      o._captureStatus = true;
+      o._capturePosition.set(t.clientX, t.clientY);
+      o._captureCameraPosition.assign(s.camera().position());
+      o._captureCameraRotation.assign(s.camera().rotation());
+   }
+}
+function FE3dSimpleCanvas_onTouchMove(p){
+   var o = this;
+   if(!o._captureStatus){
+      return;
+   }
+   var ts = p.touches;
+   var c = ts.length;
+   if(c == 1){
+      p.preventDefault();
+      var t = ts[0];
+      var cm = o._activeStage.camera();
+      var cr = cm.rotation();
+      var cx = t.clientX - o._capturePosition.x;
+      var cy = t.clientY - o._capturePosition.y;
+      cr.x = o._captureCameraRotation.x + (-cy * o._cameraMouseRotation);
+      cr.y = o._captureCameraRotation.y + (-cx * o._cameraMouseRotation);
+   }
+}
+function FE3dSimpleCanvas_onTouchStop(p){
+   var o = this;
+   o._captureStatus = false;
+}
+function FE3dSimpleCanvas_onSceneLoad(p){
+   var o = this;
+   var c = o._context;
+   var s = o._activeStage;
+   var cs = c.size();
+   var rp = s.camera().projection();
+   rp.size().set(cs.width, cs.height);
+   rp.update();
+   var gr = s._region._resource;
+   o._cameraMoveRate = gr.moveSpeed();
+   o._cameraKeyRotation = gr.rotationKeySpeed();
+   o._cameraMouseRotation = gr.rotationMouseSpeed();
+   o.processLoadListener(o, s);
+}
+function FE3dSimpleCanvas_onResize(p){
+   var o = this;
+   o.__base.FE3dCanvas.onResize.call(o, p);
+   var c = o._context;
+   var cs = c.size();
+   var s = o._activeStage;
+   if(s){
+      var rp = s.camera().projection();
+      rp.size().set(cs.width, cs.height);
+      rp.update();
+   }
+}
+function FE3dSimpleCanvas_construct(){
+   var o = this;
+   o.__base.FE3dCanvas.construct.call(o);
+   o._rotation = new SVector3();
+   o._capturePosition = new SPoint2();
+   o._captureCameraPosition = new SPoint3();
+   o._captureCameraRotation = new SVector3();
+}
+function FE3dSimpleCanvas_switchPlay(p){
+   var o = this;
+   var s = o._activeStage;
+   var ds = s.allDisplays();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var d = ds.get(i);
+      if(d._movies){
+         d._optionPlay = p;
+      }
+   }
+   o._actionPlay = p;
+}
+function FE3dSimpleCanvas_switchMovie(p){
+   var o = this;
+   var s = o._activeStage;
+   var ds = s.allDisplays();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var d = ds.get(i);
+      if(d._movies){
+         d._optionMovie = p;
+      }
+   }
+   o._actionMovie = p;
+}
+function FE3dSimpleCanvas_doAction(e, p, f){
+   var o = this;
+   var s = o._activeStage;
+   if(!s){
+      return;
+   }
+   e.preventDefault();
+   o._actionUp = false;
+   o._actionDown = false;
+   o._actionForward = false;
+   o._actionBack = false;
+   switch(p){
+      case 'fullscreen':
+         var v = o._actionFullScreen = !o._actionFullScreen;
+         RHtml.fullscreen(o._hPanel, v);
+         break;
+      case 'play':
+         o.switchMovie(!o._actionMovie);
+         o.switchPlay(o._actionMovie);
+         break;
+      case 'up':
+         o._actionUp = f;
+         break;
+      case 'down':
+         o._actionDown = f;
+         break;
+      case 'forward':
+         o._actionForward = f;
+         break;
+      case 'back':
+         o._actionBack = f;
+         break;
+   }
+}
+function FE3dSimpleCanvas_dispose(){
+   var o = this;
+   var v = o._rotation;
+   if(v){
+      v.dispose();
+      o._rotation = null;
+   }
+   o.__base.FE3dCanvas.dispose.call(o);
 }
 function FE3dTemplate(o){
    o = RClass.inherits(this, o, FE3dDisplay, MGraphicObject, MListenerLoad);

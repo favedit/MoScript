@@ -1339,6 +1339,7 @@ function SOutline3(){
    o.min         = new SPoint3();
    o.max         = new SPoint3();
    o.assign      = SOutline3_assign;
+   o.set         = SOutline3_set;
    o.serialize   = SOutline3_serialize
    o.unserialize = SOutline3_unserialize
    o.toString    = SOutline3_toString;
@@ -1348,6 +1349,11 @@ function SOutline3_assign(p){
    var o = this;
    o.min.assign(p.min);
    o.max.assign(p.max);
+}
+function SOutline3_set(ix, iy, iz, ax, ay, az){
+   var o = this;
+   o.min.set(ix, iy, iz);
+   o.max.set(ax, ay, az);
 }
 function SOutline3_serialize(p){
    var o = this;

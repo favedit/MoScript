@@ -33,6 +33,7 @@ function RE3dEngine_onSetup(){
    ec.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
    // 控件效果器
    ec.register('control.control.automatic', FG3dControlAutomaticEffect);
+   ec.register('control.control.control', FG3dControlAutomaticEffect);
    // 通用效果器
    ec.register('general.color.control', FG3dControlAutomaticEffect);
    ec.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
@@ -43,6 +44,8 @@ function RE3dEngine_onSetup(){
    ec.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
    ec.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
    ec.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
+   // 阴影效果器
+   ec.register('control.control.galaxy', FE3dGalaxyEffect);
 }
 
 //==========================================================

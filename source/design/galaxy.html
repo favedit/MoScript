@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+<TITLE>CoolLight Designer</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<META content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+<LINK rel="stylesheet" href='../acs/mobile.css' type="text/css" media="all"/>
+
+<SCRIPT language='javascript' src='../ejs/lzma-d.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/me.js'></SCRIPT>
+<SCRIPT language='javascript' src='../7.1.1-engine-demo/FE3dGalaxy.js'></SCRIPT>
+<SCRIPT>
+var context = null;
+var canvas = null;
+var stage = null;
+var display = null;
+var movie = false;
+//------------------------------------------------------------
+function onEnterFrame(){
+   if(display){
+      var m = display.matrix();
+      m.ry -= 0.004;
+      m.updateForce();
+   }
+}
+//------------------------------------------------------------
+function onKeydown(p){
+   var e = window.event;
+   var c = e.keyCode;
+   if(c == EKeyCode.Space){
+      movie = !movie;
+      canvas.switchMovie(movie);
+   }
+}
+var c2d = null;
+//------------------------------------------------------------
+function onLoadImage(p){
+   var hc2d = document.createElement('CANVAS');
+   c2d = hc2d.getContext('2d'); 
+   var s = p.size();
+   c2d.width = s.width;
+   c2d.height = s.height;
+   c2d.drawImage(p._hImage, 0, 0, s.width, s.height);
+   var d = c2d.getImageData(0, 0, s.width, s.height);
+
+   var galaxy = RClass.create(FE3dGalaxy);
+   galaxy.linkGraphicContext(context);
+   galaxy._size.assign(s);
+   galaxy._cellSize.set(1, 1);
+   galaxy.setup(d.data);
+   galaxy.matrix().setScale(0.2, 0.2, 0.2);
+   galaxy.matrix().update();
+   stage.spriteLayer().pushRenderable(galaxy);
+}
+//------------------------------------------------------------
+function onLoad(){
+   // 环境设置
+   RRuntime.setProcessCd(EProcess.Release);
+   RApplication.initialize();
+   RBrowser.setContentPath('..');
+
+   var size = new SSize2();
+   size.set(document.body.offsetWidth, document.body.offsetHeight);
+   // 创建场景画板
+   var w = canvas = RClass.create(FE3dSimpleCanvas);
+   w.build(document);
+   w.setPanel(document.body);
+   w.onResize();
+
+   context = w._context;
+   
+   stage = RClass.create(FE3dSimpleStage);
+   stage.linkGraphicContext(context);
+   stage.selectTechnique(context, FG3dControlTechnique);
+   RStage.register('stage3d', stage);
+   canvas._activeStage = stage;
+
+   // 创建包围盒
+   boundBox = RClass.create(FE3dBoundBox);
+   boundBox.linkGraphicContext(context);
+   boundBox.setup();
+   boundBox.outline().set(-128, -128, -128, 128, 128, 128);
+   boundBox.matrix().setScale(0.1, 0.1, 0.1);
+   boundBox.matrix().update();
+   boundBox.upload();
+
+   stage.spriteLayer().pushRenderable(boundBox);
+
+   // 创建相机
+   var camera = stage.camera();
+   camera.position().set(0, 30, -30);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   camera.projection().size().assign(size);
+   camera.projection().update();
+   //RDump.dump(w, document.body);
+
+   var img = RClass.create(FImage);
+   //img.loadUrl('../ars/picture/galaxy.jpg');
+   //img.loadUrl('../ars/picture/galaxy-64.png');
+   //img.loadUrl('../ars/picture/galaxy-128.png');
+   img.loadUrl('../ars/picture/galaxy-256.png');
+   //img.loadUrl('../ars/picture/galaxy-512.png');
+   img.addLoadListener(null, onLoadImage);
+}
+</SCRIPT>
+</HEAD>
+<BODY style='background-color:#000000;' onload='onLoad()' ></BODY>
+</HTML>

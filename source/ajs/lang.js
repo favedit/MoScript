@@ -3188,6 +3188,7 @@ var RInteger = new function RInteger(){
    o.toRange    = RInteger_toRange;
    o.sum        = RInteger_sum;
    o.calculate  = RInteger_calculate;
+   o.copy       = RInteger_copy;
    return o;
 }
 function RInteger_isInt(v){
@@ -3266,6 +3267,11 @@ function RInteger_calculate(f, a, b){
      r = a / b;
    }
    return r.toString();
+}
+function RInteger_copy(po, poi, pi, pii, pc){
+   for(var i = 0; i < pc; i++){
+      po[poi++] = pi[pii++];
+   }
 }
 var RLogger = new function RLogger(){
    var o = this;

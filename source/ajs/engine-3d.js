@@ -7,9 +7,13 @@ function FE3dCanvas(o){
    o._interval        = 1000 / 60;
    o._hPanel          = null;
    o._hCanvas         = null;
+   o.onEnterFrame           = RMethod.empty;
    o.ohTouchStart     = FE3dCanvas_ohTouchStart;
    o.ohTouchMove      = FE3dCanvas_ohTouchMove;
    o.ohTouchStop      = FE3dCanvas_ohTouchStop;
+   o.onMouseCaptureStart = RMethod.empty;
+   o.onMouseCapture      = RMethod.empty;
+   o.onMouseCaptureStop  = RMethod.empty;
    o.onTouchStart     = RMethod.empty;
    o.onTouchMove      = RMethod.empty;
    o.onTouchStop      = RMethod.empty;
@@ -549,6 +553,7 @@ function RE3dEngine_onSetup(){
    ec.register('select.select.skeleton', FG3dSelectSkeletonEffect);
    ec.register('select.select.skeleton.4', FG3dSelectSkeletonEffect);
    ec.register('control.control.automatic', FG3dControlAutomaticEffect);
+   ec.register('control.control.control', FG3dControlAutomaticEffect);
    ec.register('general.color.control', FG3dControlAutomaticEffect);
    ec.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
    ec.register('general.color.skeleton', FG3dGeneralColorSkeletonEffect);
@@ -557,6 +562,7 @@ function RE3dEngine_onSetup(){
    ec.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
    ec.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
    ec.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
+   ec.register('control.control.galaxy', FE3dGalaxyEffect);
 }
 function RE3dEngine_setup(){
    var o = this;

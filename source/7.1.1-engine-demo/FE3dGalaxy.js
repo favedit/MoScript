@@ -27,9 +27,11 @@ function FE3dGalaxy(o){
    o._vertexInstanceData   = null;
    o._vertexPositionData   = null;
    o._vertexColorData      = null;
+   o._indexData            = null;
    //..........................................................
    // @method
    o.construct             = FE3dGalaxy_construct;
+   o.generatePixel             = FE3dGalaxy_generatePixel;
    // @method
    o.setup                 = FE3dGalaxy_setup;
    return o;
@@ -47,8 +49,6 @@ function FE3dGalaxy_construct(){
    o._cellSize.set(2, 2);
    o._size = new SSize2();
    o._size.set(16, 16);
-   o._vertexData = new Float32Array();
-   o._indexData = new Uint16Array();
 }
 
 //==========================================================
@@ -59,73 +59,96 @@ function FE3dGalaxy_construct(){
 // @param w:width:Number 宽度
 // @param h:height:Number 高度
 //==========================================================
-function FE3dGalaxy_generatePixel(i, x, y, v){
+function FE3dGalaxy_generatePixel(i, ix, iy, x, y, d){
    var o = this;
-   var cr = (v >> 16) & 0xFF
-   var cg = (v >>  8) & 0xFF
-   var cb = (v      ) & 0xFF
-   //var cv = parseInt((cr + cg + cb) / 64);
+   var di = (o._size.width * iy + ix) * 4;
+   var cr = d[di++];
+   var cg = d[di++];
+   var cb = d[di++];
    // 产生一个随机位置矩形
    for(var ci = 0; ci < 1; ci++){
+      // 写入顶点实例数据
+      RFloat.fill(o._vertexInstanceData, 4 * i, 4, i);
+      // 写入顶点坐标数据
+      var s = 0.4;
       var vd = [
-         i, -1,  1, 0, cr, cg, cb, 1
-         i,  1,  1, 0, cr, cg, cb, 1
-         i,  1, -1, 0, cr, cg, cb, 1
-         i, -1, -1, 0, cr, cg, cb, 1 ];
-      var l = vd.length;
-      for(var i = 0; i < l; i++){
-         o._vertexData.push(vd[i]);
-      }
-      var id = [0, 1, 2, 0, 2, 3];
-      var l = id.length;
-      for(var i = 0; i < l; i++){
-         o._indexData.push(id[i]);
-      }
+         x - s, 0, y + s,
+         x + s, 0, y + s,
+         x + s, 0, y - s,
+         x - s, 0, y - s];
+      RFloat.copy(o._vertexPositionData, 4 * 3 * i, vd, 0, 12);
+      // 写入顶点颜色数据
+      var vd = [
+         cr, cg, cb, 1,
+         cr, cg, cb, 1,
+         cr, cg, cb, 1,
+         cr, cg, cb, 1];
+      RFloat.copy(o._vertexColorData, 4 * 4 * i, vd, 0, 16);
+      // 写入索引数据
+      var ib = i * 4;
+      var id = [ib + 0, ib + 1, ib + 2, ib + 0, ib + 2, ib + 3];
+      RInteger.copy(o._indexData, 6 * i, id, 0, 6);
    }
 }
 
 //==========================================================
 // <T>设置信息。</T>
 //
-// @param l:left:Number 左边
-// @param t:top:Number 上边
-// @param w:width:Number 宽度
-// @param h:height:Number 高度
+// @param p:data:Uint8Array 数据
 //==========================================================
-function FE3dGalaxy_setup(){
+function FE3dGalaxy_setup(p){
    var o = this;
    var c = o._graphicContext;
+   // 获得位图数据
+   var dw = o._size.width;
+   var dw2 = dw / 2;
+   var dh = o._size.height;
+   var dh2 = dh / 2;
    var sw = o._cellSize.width;
    var sh = o._cellSize.height;
-   // 获得位图数据
-   var d = o._bitmapData;
-   var ds = o._bitmapSize;
-   var dw = ds.width;
-   var dw2 = ds.width / 2;
-   var dh = ds.height;
-   var dh2 = ds.height / 2;
+   // 计算顶点数据
+   var tc = (dw / sw) * (dh / sh);
+   var vc = 4 * tc;
+   o._vertexCount = vc;
+   o._vertexInstanceData = new Float32Array(vc);
+   o._vertexPositionData = new Float32Array(3 * vc);
+   o._vertexColorData = new Uint8Array(4 * vc);
+   o._indexData = new Uint32Array(6 * tc);
+   // 生成点数据
    var i = 0;
    for(var y = 0; y < dh; y += sh){
       for(var x = 0; x < dw; x += sw){
-         o.generatePixel(i++, x - dw2, y - dh2, d[i]);
+         o.generatePixel(i++, x, y, x - dw2, y - dh2, p);
       }
    }
    //..........................................................
-   o._vertexCount = vc;
-   // 上传顶点数据
-   var vb = o._vertexBuffer = c.createVertexBuffer();
-   vb.upload(o._vertexData, 4 * 5, i);
-   // 上传颜色数据
+   // 上传顶点实例数据
+   var vb = o._vertexInstanceBuffer = c.createVertexBuffer();
+   vb._name = 'instance';
+   vb._formatCd = EG3dAttributeFormat.Float1;
+   vb.upload(o._vertexInstanceData, 4, vc);
+   o._vertexBuffers.set(vb._name, vb);
+   // 上传顶点坐标数据
+   var vb = o._vertexPositionBuffer = c.createVertexBuffer();
+   vb._name = 'position';
+   vb._formatCd = EG3dAttributeFormat.Float3;
+   vb.upload(o._vertexPositionData, 4 * 3, vc);
+   o._vertexBuffers.set(vb._name, vb);
+   // 上传顶点颜色数据
    var vb = o._vertexColorBuffer = c.createVertexBuffer();
    vb._name = 'color';
    vb._formatCd = EG3dAttributeFormat.Byte4Normal;
-   vb.upload(vcd, 4, vc);
+   vb.upload(o._vertexColorData, 4, vc);
    o._vertexBuffers.set(vb._name, vb);
    // 上传索引数据
    var ib = o._indexBuffer = c.createIndexBuffer();
-   ib.upload(o._indexData, i);
+   //ib._fillMode = EG3dFillMode.Line;
+   //ib._lineWidth = 1;
+   ib._strideCd = EG3dIndexStride.Uint32;
+   ib.upload(o._indexData, 6 * tc);
    //..........................................................
    // 设置材质
    var mi = o.material().info();
    mi.effectCode = 'galaxy';
+   mi.ambientColor.set(1, 1, 1, 1);
 }

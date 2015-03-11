@@ -20,10 +20,16 @@ function FE3dCanvas(o){
    o._hCanvas         = null;
    //..........................................................
    // @event
+   o.onEnterFrame           = RMethod.empty;
+   // @event
    o.ohTouchStart     = FE3dCanvas_ohTouchStart;
    o.ohTouchMove      = FE3dCanvas_ohTouchMove;
    o.ohTouchStop      = FE3dCanvas_ohTouchStop;
    // @event
+   // @event
+   o.onMouseCaptureStart = RMethod.empty;
+   o.onMouseCapture      = RMethod.empty;
+   o.onMouseCaptureStop  = RMethod.empty;
    o.onTouchStart     = RMethod.empty;
    o.onTouchMove      = RMethod.empty;
    o.onTouchStop      = RMethod.empty;
