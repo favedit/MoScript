@@ -9,14 +9,17 @@ function FResource(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._guid  = null;
-   o._code  = null;
-   o._label = null;
+   o._guid    = null;
+   o._code    = null;
+   o._label   = null;
    //..........................................................
    // @method
-   o.guid   = FResource_guid;
-   o.code   = FResource_code;
-   o.label  = FResource_label;
+   o.guid     = FResource_guid;
+   o.setGuid  = FResource_setGuid;
+   o.code     = FResource_code;
+   o.setCode  = FResource_setCode;
+   o.label    = FResource_label;
+   o.setLabel = FResource_setLabel;
    return o;
 }
 
@@ -31,6 +34,16 @@ function FResource_guid(){
 }
 
 //==========================================================
+// <T>设置唯一编号。</T>
+//
+// @method
+// @param p:guid:String 唯一编号
+//==========================================================
+function FResource_setGuid(p){
+   this._guid = p;
+}
+
+//==========================================================
 // <T>获得代码。</T>
 //
 // @method
@@ -41,6 +54,16 @@ function FResource_code(){
 }
 
 //==========================================================
+// <T>设置代码。</T>
+//
+// @method
+// @param p:code:String 代码
+//==========================================================
+function FResource_setCode(p){
+   this._code = p;
+}
+
+//==========================================================
 // <T>获得标签。</T>
 //
 // @method
@@ -48,4 +71,14 @@ function FResource_code(){
 //==========================================================
 function FResource_label(){
    return this._label;
+}
+
+//==========================================================
+// <T>设置标签。</T>
+//
+// @method
+// @param p:label:String 标签
+//==========================================================
+function FResource_setLabel(p){
+   this._label = p;
 }

@@ -44,7 +44,8 @@ function FE3sSceneConsole_load(p){
    if(r == null){
       // 生成地址
       var v = RConsole.find(FE3sVendorConsole).find(o._venderCode);
-      var u = v.makeUrl(p);
+      v.set('code', p);
+      var u = v.makeUrl();
       // 创建主题
       r = RClass.create(FE3sScene);
       r.setVendor(v);

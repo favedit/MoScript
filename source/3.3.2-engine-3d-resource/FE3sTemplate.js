@@ -8,6 +8,8 @@ function FE3sTemplate(o){
    o = RClass.inherits(this, o, FE3sResource);
    //..........................................................
    // @attribute
+   o._dataCompress   = true;
+   // @attribute
    o._materialGroups = null;
    o._themes         = null;
    o._displays       = null;

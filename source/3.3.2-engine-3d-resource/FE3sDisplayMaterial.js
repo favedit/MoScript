@@ -9,9 +9,11 @@ function FE3sDisplayMaterial(o){
    //..........................................................
    // @attribute
    o._groupGuid  = null;
+   o._material   = null;
    //..........................................................
    // @method
    o.groupGuid   = FE3sDisplayMaterial_groupGuid;
+   o.material    = FE3sDisplayMaterial_material;
    // @method
    o.unserialize = FE3sDisplayMaterial_unserialize;
    return o;
@@ -25,6 +27,16 @@ function FE3sDisplayMaterial(o){
 //==========================================================
 function FE3sDisplayMaterial_groupGuid(){
    return this._groupGuid;
+}
+
+//==========================================================
+// <T>获得材质。</T>
+//
+// @method
+// @return FE3sMaterial 材质
+//==========================================================
+function FE3sDisplayMaterial_material(){
+   return this._material;
 }
 
 //==========================================================

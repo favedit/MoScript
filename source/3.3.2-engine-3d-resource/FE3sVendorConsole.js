@@ -1,9 +1,9 @@
 //==========================================================
-// <T>资源主题管理器。</T>
+// <T>资源提供商管理器。</T>
 //
 // @class
 // @author maocy
-// @history 150309
+// @history 15031
 //==========================================================
 function FE3sVendorConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -98,9 +98,8 @@ function FE3sVendorConsole_pushCompress(w, f, d){
 // @param p:name:String 名称
 // @return 主题
 //==========================================================
-function FE3sVendorConsole_createVendor(f, u){
-   var v = RClass.create(FE3sVendor);
-   v.setOptionFlag(f);
+function FE3sVendorConsole_createVendor(c, u){
+   var v = RClass.create(c);
    v.setContentUrl(u);
    return v;
 }
@@ -126,7 +125,9 @@ function FE3sVendorConsole_find(p){
    if(!o._setuped){
       o.setup('net');
    }
-   return this._vendors.get(p);
+   var v = o._vendors.get(p);
+   v.reset();
+   return v;
 }
 
 //==========================================================
@@ -138,17 +139,17 @@ function FE3sVendorConsole_find(p){
 function FE3sVendorConsole_setup(p){
    var o = this;
    if(p == 'net'){
-      o._vendors.set('texture.bitmap', o.createVendor(true, RBrowser.hostPath('/cloud.content.texture.bitmap.wv?guid={1}&code={2}')));
-      o._vendors.set('texture', o.createVendor(true, RBrowser.hostPath('/cloud.content.texture.wv?guid={1}')));
-      o._vendors.set('model', o.createVendor(true, RBrowser.hostPath('/cloud.content.model.wv?guid={1}')));
-      o._vendors.set('template', o.createVendor(true, RBrowser.hostPath('/cloud.content.template.wv?guid={1}&code={2}')));
-      o._vendors.set('scene', o.createVendor(true, RBrowser.hostPath('/cloud.content.scene.wv?code={1}')));
+      o._vendors.set('texture.bitmap', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.texture.bitmap.wv'), 'guid|code'));
+      o._vendors.set('texture', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.texture.wv'), 'guid'));
+      o._vendors.set('model', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.model.wv'), 'guid'));
+      o._vendors.set('template', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.template.wv'), 'guid|code'));
+      o._vendors.set('scene', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.scene.wv'), 'guid|code'));
    }else if(p == 'local'){
-      o._vendors.set('texture.bitmap', o.createVendor(false, RBrowser.contentPath('/ar3/texture/{1}/{2}.{3}')));
-      o._vendors.set('texture', o.createVendor(false, RBrowser.contentPath('/ar3/texture/{1}.bin')));
-      o._vendors.set('model', o.createVendor(false, RBrowser.contentPath('/ar3/model/{1}.bin')));
-      o._vendors.set('template', o.createVendor(false, RBrowser.contentPath('/ar3/template/{1}.bin')));
-      o._vendors.set('scene', o.createVendor(false, RBrowser.contentPath('/ar3/scene/{1}.bin')));
+      o._vendors.set('texture.bitmap', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/texture/{guid}/{code}.{format}')));
+      o._vendors.set('texture', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/texture/{guid}.bin')));
+      o._vendors.set('model', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/model/{guid}.bin')));
+      o._vendors.set('template', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/template/{guid}.bin')));
+      o._vendors.set('scene', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/scene/{guid}.bin')));
    }else{
       throw new TError(o, 'Unknown setup code. (code={1})', p);
    }

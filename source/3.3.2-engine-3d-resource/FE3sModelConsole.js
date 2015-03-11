@@ -13,8 +13,6 @@ function FE3sModelConsole(o){
    o._meshs            = null;
    o._skeletons        = null;
    o._animations       = null;
-   // @attribute
-   o._dataUrl          = '/cloud.content.model.wv';
    //..........................................................
    // @method
    o.construct         = FE3sModelConsole_construct;
@@ -185,7 +183,7 @@ function FE3sModelConsole_unserialAnimation(m, p){
 //==========================================================
 // <T>加载指定代码的模型资源。</T>
 //
-// @param p:code:String 代码
+// @param pg:guid:String 唯一编号
 // @return 处理结果
 //==========================================================
 function FE3sModelConsole_load(p){
@@ -195,12 +193,14 @@ function FE3sModelConsole_load(p){
    if(!m){
       // 生成地址
       var v = RConsole.find(FE3sVendorConsole).find('model');
-      var u = v.makeUrl(p);
+      v.set('guid', p);
+      var u = v.makeUrl();
       // 创建模型资源
       m = RClass.create(FE3sModel);
-      m._guid = p;
+      m.setGuid(p);
       m.setVendor(v);
       m.load(u);
+      // 存储模型
       s.set(p, m);
    }
    return m;

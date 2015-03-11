@@ -25,6 +25,7 @@ function FE3sDisplay(o){
    o.meshGuid        = FE3sDisplay_meshGuid;
    o.mesh            = FE3sDisplay_mesh;
    o.matrix          = FE3sDisplay_matrix;
+   o.activeMaterial  = FE3sDisplay_activeMaterial;
    o.materials       = FE3sDisplay_materials;
    // @method
    o.unserialize     = FE3sDisplay_unserialize;
@@ -100,6 +101,16 @@ function FE3sDisplay_mesh(){
 //==========================================================
 function FE3sDisplay_matrix(){
    return this._matrix;
+}
+
+//==========================================================
+// <T>获得激活材质。</T>
+//
+// @method
+// @return FE3sDisplayMaterial 材质
+//==========================================================
+function FE3sDisplay_activeMaterial(){
+   return this._activeMaterial;
 }
 
 //==========================================================

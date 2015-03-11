@@ -12697,22 +12697,34 @@ function FProcessServer_process(){
 }
 function FResource(o){
    o = RClass.inherits(this, o, FObject);
-   o._guid  = null;
-   o._code  = null;
-   o._label = null;
-   o.guid   = FResource_guid;
-   o.code   = FResource_code;
-   o.label  = FResource_label;
+   o._guid    = null;
+   o._code    = null;
+   o._label   = null;
+   o.guid     = FResource_guid;
+   o.setGuid  = FResource_setGuid;
+   o.code     = FResource_code;
+   o.setCode  = FResource_setCode;
+   o.label    = FResource_label;
+   o.setLabel = FResource_setLabel;
    return o;
 }
 function FResource_guid(){
    return this._guid;
 }
+function FResource_setGuid(p){
+   this._guid = p;
+}
 function FResource_code(){
    return this._code;
 }
+function FResource_setCode(p){
+   this._code = p;
+}
 function FResource_label(){
    return this._label;
+}
+function FResource_setLabel(p){
+   this._label = p;
 }
 function FResourceConsole(o){
    o = RClass.inherits(this, o, FConsole);

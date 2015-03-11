@@ -86,7 +86,10 @@ function FE3sTextureConsole_loadBitmap(pg, pc, pf){
    var o = this;
    // 生成地址
    var v = RConsole.find(FE3sVendorConsole).find('texture.bitmap');
-   var u = v.makeUrl(pg, pc, pf);
+   v.set('guid', pg);
+   v.set('code', pc);
+   v.set('format', pf);
+   var u = v.makeUrl();
    // 加载位图
    var g = o._image = RClass.create(FImage);
    g.loadUrl(u);

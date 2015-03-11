@@ -8,24 +8,26 @@ function FE3sScene(o){
    o = RClass.inherits(this, o, FE3sResource);
    //..........................................................
    // @attribute
-   o._themeGuid  = null;
-   o._themeCode  = null;
+   o._dataCompress = true;
    // @attribute
-   o._technique  = null;
-   o._region     = null;
-   o._textures   = null;
-   o._templates  = null;
-   o._layers     = null;
+   o._themeGuid    = null;
+   o._themeCode    = null;
+   // @attribute
+   o._technique    = null;
+   o._region       = null;
+   o._textures     = null;
+   o._templates    = null;
+   o._layers       = null;
    //..........................................................
    // @method
-   o.construct   = FE3sScene_construct;
+   o.construct     = FE3sScene_construct;
    // @method
-   o.technique   = FE3sScene_technique;
-   o.region      = FE3sScene_region;
-   o.layers      = FE3sScene_layers;
+   o.technique     = FE3sScene_technique;
+   o.region        = FE3sScene_region;
+   o.layers        = FE3sScene_layers;
    // @method
-   o.unserialize = FE3sScene_unserialize;
-   o.saveConfig  = FE3sScene_saveConfig;
+   o.unserialize   = FE3sScene_unserialize;
+   o.saveConfig    = FE3sScene_saveConfig;
    return o;
 }
 

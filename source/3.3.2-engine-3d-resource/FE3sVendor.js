@@ -9,37 +9,35 @@ function FE3sVendor(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._optionFlag   = true;
    o._contentUrl   = null;
+   o._parameters   = null;
    //..........................................................
    // @method
-   o.optionFlag    = FE3sVendor_optionFlag;
-   o.setOptionFlag = FE3sVendor_setOptionFlag;
+   o.construct     = FE3sVendor_construct;
+   // @method
    o.contentUrl    = FE3sVendor_contentUrl;
    o.setContentUrl = FE3sVendor_setContentUrl;
    // @method
+   o.get           = FE3sVendor_get;
+   o.set           = FE3sVendor_set;
+   o.makeSource    = RMethod.virtual(o, 'makeSource');
    o.makeUrl       = FE3sVendor_makeUrl;
+   o.reset         = FE3sVendor_reset;
+   // @method
+   o.dispose       = FE3sVendor_dispose;
    return o;
 }
 
 //==========================================================
-// <T>获得配置标志。</T>
+// <T>构造处理。</T>
 //
 // @method
-// @return Boolean 配置标志
 //==========================================================
-function FE3sVendor_optionFlag(p){
-   return this._optionFlag;
-}
-
-//==========================================================
-// <T>设置配置标志。</T>
-//
-// @method
-// @param p:flag:Boolean 配置标志
-//==========================================================
-function FE3sVendor_setOptionFlag(p){
-   this._optionFlag = p;
+function FE3sVendor_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   // 设置属性
+   o._parameters = new TAttributes();
 }
 
 //==========================================================
@@ -63,23 +61,64 @@ function FE3sVendor_setContentUrl(p){
 }
 
 //==========================================================
-// <T>获得分组唯一编号。</T>
+// <T>获得参数。</T>
 //
 // @method
-// @return String 唯一编号
+// @param p:name:String 名称
+//==========================================================
+function FE3sVendor_get(n){
+   return this._parameters.get(n);
+}
+
+//==========================================================
+// <T>设置参数。</T>
+//
+// @method
+// @param n:name:String 名称
+// @param v:value:String 内容
+//==========================================================
+function FE3sVendor_set(n, v){
+   this._parameters.set(n, v);
+}
+
+//==========================================================
+// <T>生成网络地址。</T>
+// <P>调试模式，追加时间，总是获得新内容。</P>
+//
+// @method
+// @return 时间内容
 //==========================================================
 function FE3sVendor_makeUrl(){
    var o = this;
-   // 生成地址
-   var u = o._contentUrl;
-   var as = arguments;
-   var ac = as.length;
-   for(var i = 0; i < ac; i++){
-      u = u.replace('{' + (i + 1) + '}', as[i]);
-   }
-   // 调试模式，追加时间，总是获得新内容
+   var r = o.makeSource();
    if(RRuntime.isDebug()){
-      u += '&date=' + RDate.format();
+      if(r.indexOf('?') == -1){
+         r += '?';
+      }else{
+         r += '&';
+      }
+      r += 'date=' + RDate.format();
    }
-   return u;
+   return r;
+}
+
+//==========================================================
+// <T>重置处理。</T>
+//
+// @method
+//==========================================================
+function FE3sVendor_reset(){
+   this._parameters.clear();
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FE3sVendor_dispose(){
+   var o = this;
+   o._parameters = RObject.dispose(o._parameters);
+   // 父处理
+   o.__base.FObject.dispose.call(o);
 }

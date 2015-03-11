@@ -831,25 +831,25 @@ function FE3rModelConsole_findMesh(p){
 function FE3rModelConsole_meshs(){
    return this._meshs;
 }
-function FE3rModelConsole_load(pc, pn){
+function FE3rModelConsole_load(pc, pg){
    var o = this;
-   if(pc == null){
+   if(!RClass.isClass(pc, FGraphicContext)){
       throw new TError('Graphics context is empty');
    }
-   if(RString.isEmpty(pn)){
-      throw new TError('Model name is empty');
+   if(RString.isEmpty(pg)){
+      throw new TError('Model guid is empty');
    }
-   var m = o._models.get(pn);
+   var m = o._models.get(pg);
    if(m){
       return m;
    }
    var rmc = RConsole.find(FE3sModelConsole);
-   var rm = rmc.load(pn);
+   var rm = rmc.load(pg);
    m = RClass.create(FE3rModel);
    m.linkGraphicContext(pc);
-   m.setName(pn);
+   m.setName(pg);
    m.setResource(rm);
-   o._models.set(pn, m);
+   o._models.set(pg, m);
    if(rm.testReady()){
       m.loadResource(rm);
    }else{

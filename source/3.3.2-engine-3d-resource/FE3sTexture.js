@@ -9,17 +9,19 @@ function FE3sTexture(o){
    o = RClass.inherits(this, o, FE3sResource);
    //..........................................................
    // @attribute
-   o._bitmaps     = null;
-   o._bitmapPacks = null;
+   o._dataCompress = true;
+   // @attribute
+   o._bitmaps      = null;
+   o._bitmapPacks  = null;
    //..........................................................
    // @method
-   o.construct    = FE3sTexture_construct;
+   o.construct     = FE3sTexture_construct;
    // @method
-   o.bitmaps      = FE3sTexture_bitmaps;
-   o.bitmapPacks  = FE3sTexture_bitmapPacks;
-   o.unserialize  = FE3sTexture_unserialize;
+   o.bitmaps       = FE3sTexture_bitmaps;
+   o.bitmapPacks   = FE3sTexture_bitmapPacks;
+   o.unserialize   = FE3sTexture_unserialize;
    // @method
-   o.dispose      = FE3sTexture_dispose;
+   o.dispose       = FE3sTexture_dispose;
    return o;
 }
 
