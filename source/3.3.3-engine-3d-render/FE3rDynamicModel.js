@@ -9,6 +9,7 @@ function FE3rDynamicModel(o){
    //..........................................................
    // @attribute
    o._renderables      = null;
+   o._mergeMaxCount    = 0;
    o._meshes           = null;
    o._updateDate       = 0;
    //..........................................................
@@ -45,6 +46,7 @@ function FE3rDynamicModel_construct(){
 function FE3rDynamicModel_createMesh(){
    var o = this;
    var m = RClass.create(FE3rDynamicMesh);
+   m._model = o;
    m.linkGraphicContext(o);
    o._meshes.push(m);
    return m;
@@ -105,10 +107,14 @@ function FE3rDynamicModel_build(){
       }
    }
    // 生成渲染对象
+   var mx = 0;
    var mc = ms.count();
    for(var i = 0; i < mc; i++){
-      ms.getAt(i).build();
+      var m = ms.getAt(i);
+      m.build();
+      mx = Math.max(mx, m.mergeCount());
    }
+   o._mergeMaxCount = mx;
 }
 
 //==========================================================

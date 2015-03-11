@@ -37,6 +37,7 @@ function FG3dEffect(o){
    o.setParameter        = FG3dEffect_setParameter;
    o.setSampler          = FG3dEffect_setSampler;
    o.drawRenderable      = FG3dEffect_drawRenderable;
+   o.drawRenderables     = FG3dEffect_drawRenderables;
    o.drawGroup           = FG3dEffect_drawGroup;
    o.drawRegion          = FG3dEffect_drawRegion;
    o.buildInfo           = FG3dEffect_buildInfo;
@@ -149,7 +150,7 @@ function FG3dEffect_drawRenderable(pg, pr){
 // @param pi:offset:Integer 开始位置
 // @param pc:count:Integer 总数
 //==========================================================
-function FG3dEffect_drawGroup(pg, pr, pi, pc){
+function FG3dEffect_drawRenderables(pg, pr, pi, pc){
    var o = this;
    // 选择技术
    o._graphicContext.setProgram(o._program);
@@ -157,6 +158,19 @@ function FG3dEffect_drawGroup(pg, pr, pi, pc){
    for(var i = 0; i < pc; i++){
       o.drawRenderable(pg, pr.getAt(pi + i));
    }
+}
+
+//==========================================================
+// <T>绘制渲染集合。</T>
+//
+// @method
+// @param pg:region:MG3dRegion 渲染区域
+// @param pr:renderables:TObjects 渲染集合
+// @param pi:offset:Integer 开始位置
+// @param pc:count:Integer 总数
+//==========================================================
+function FG3dEffect_drawGroup(pg, pr, pi, pc){
+   this.drawRenderables(pg, pr, pi, pc);
 }
 
 //==========================================================

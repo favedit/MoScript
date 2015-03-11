@@ -140,7 +140,7 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    pf.techniqueModeCode = t.activeMode().code();
    pf.optionMerge = pr._optionMerge;
    if(pf.optionMerge){
-      pf.mergeCount = pr.mergeCount();
+      pf.mergeCount = pr.mergeMaxCount();
    }
    // 设置材质
    var mi = pr.material().info();

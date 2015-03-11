@@ -979,6 +979,7 @@ function FG3dEffect(o){
    o.setParameter        = FG3dEffect_setParameter;
    o.setSampler          = FG3dEffect_setSampler;
    o.drawRenderable      = FG3dEffect_drawRenderable;
+   o.drawRenderables     = FG3dEffect_drawRenderables;
    o.drawGroup           = FG3dEffect_drawGroup;
    o.drawRegion          = FG3dEffect_drawRegion;
    o.buildInfo           = FG3dEffect_buildInfo;
@@ -1025,12 +1026,15 @@ function FG3dEffect_drawRenderable(pg, pr){
    var ib = r.indexBuffer();
    c.drawTriangles(ib, 0, ib.count());
 }
-function FG3dEffect_drawGroup(pg, pr, pi, pc){
+function FG3dEffect_drawRenderables(pg, pr, pi, pc){
    var o = this;
    o._graphicContext.setProgram(o._program);
    for(var i = 0; i < pc; i++){
       o.drawRenderable(pg, pr.getAt(pi + i));
    }
+}
+function FG3dEffect_drawGroup(pg, pr, pi, pc){
+   this.drawRenderables(pg, pr, pi, pc);
 }
 function FG3dEffect_drawRegion(pg, pi, pc){
    var o = this;
@@ -1220,7 +1224,7 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    pf.techniqueModeCode = t.activeMode().code();
    pf.optionMerge = pr._optionMerge;
    if(pf.optionMerge){
-      pf.mergeCount = pr.mergeCount();
+      pf.mergeCount = pr.mergeMaxCount();
    }
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;

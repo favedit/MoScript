@@ -299,11 +299,6 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
          pt.setBoolean("support.environment", true);
       }
    }
-   o._dynamicInstance = o._supportInstance;
-   if(o._dynamicInstance){
-      var ic = cp.calculateInstanceCount(pc.vertexBoneCount, pc.vertexCount);
-      pt.set("instance.count", ic);
-   }
    if(o._dynamicSkeleton){
       var bc = cp.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);
       s.append("|B" + bc);

@@ -99,6 +99,7 @@ function FWglContext_linkCanvas(h){
    }
    var e = g.getExtension('OES_element_index_uint');
    if(e){
+      c.optionIndex32 = true;
    }
    var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
    if(e){

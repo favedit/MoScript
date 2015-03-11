@@ -378,11 +378,11 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
    }
    //............................................................
    // 计算最大实例个数
-   o._dynamicInstance = o._supportInstance;
-   if(o._dynamicInstance){
-      var ic = cp.calculateInstanceCount(pc.vertexBoneCount, pc.vertexCount);
-      pt.set("instance.count", ic);
-   }
+   //o._dynamicInstance = o._supportInstance;
+   //if(o._dynamicInstance){
+      //var ic = cp.calculateInstanceCount(pc.vertexBoneCount, pc.vertexCount);
+      //pt.set("instance.count", ic);
+   //}
    // 计算骨头实例个数
    if(o._dynamicSkeleton){
       var bc = cp.calculateBoneCount(pc.vertexBoneCount, pc.vertexCount);

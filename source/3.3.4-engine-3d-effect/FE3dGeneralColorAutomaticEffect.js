@@ -129,23 +129,27 @@ function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pr, pi, pc){
       var mc = RConsole.find(FE3rModelConsole);
       var md = mc.merge(o, pg, pi, pc);
       if(md){
-         var e = null;
          var gc = o._graphicContext;
          var rs = md.meshes();
          var c = rs.count();
          var sn = pg.spaceName();
+         // 获得首个渲染器
+         var r = rs.first();
+         var f = r.selectInfo(sn);
+         var e = f.effect;
+         if(!e){
+            e = f.effect = RConsole.find(FG3dEffectConsole).find(gc, pg, r);
+         }
          // 激活效果器
-         for(var i = 0; i < c; i++){
+         for(var i = 1; i < c; i++){
             var r = rs.getAt(i);
             var f = r.selectInfo(sn);
-            e = f.effect;
-            if(!e){
-               e = f.effect = RConsole.find(FG3dEffectConsole).find(gc, pg, r);
-            }
+            f.effect = e;
          }
          // 绘制渲染集合
-         return e.drawGroup(pg, rs, 0, c)
+         e.drawRenderables(pg, rs, 0, c);
+         return;
       }
    }
-   o.__base.FG3dAutomaticEffect.drawGroup.call(o, pg, pr, pi, pc)
+   o.drawRenderables(pg, pr, pi, pc);
 }

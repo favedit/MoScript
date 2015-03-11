@@ -8,6 +8,7 @@ function FE3rDynamicMesh(o){
    o = RClass.inherits(this, o, FE3dRenderable);
    //..........................................................
    // @attribute
+   o._model            = null;
    o._optionMerge      = true;
    o._vertexPosition   = 0;
    o._vertexTotal      = 0;
@@ -19,6 +20,7 @@ function FE3rDynamicMesh(o){
    o.construct         = FE3rDynamicMesh_construct;
    // @method
    o.mergeCount        = FE3rDynamicMesh_mergeCount;
+   o.mergeMaxCount     = FE3rDynamicMesh_mergeMaxCount;
    o.mergeRenderables  = FE3rDynamicMesh_mergeRenderables;
    o.syncVertexBuffer  = FE3rDynamicMesh_syncVertexBuffer;
    o.mergeRenderable   = FE3rDynamicMesh_mergeRenderable;
@@ -47,6 +49,16 @@ function FE3rDynamicMesh_construct(){
 //==========================================================
 function FE3rDynamicMesh_mergeCount(){
    return this._mergeRenderables.count();
+}
+
+//==========================================================
+// <T>获得合并最大渲染数。</T>
+//
+// @method
+// @return Integer 总数
+//==========================================================
+function FE3rDynamicMesh_mergeMaxCount(){
+   return this._model._mergeMaxCount;
 }
 
 //==========================================================
@@ -146,7 +158,6 @@ function FE3rDynamicMesh_mergeVertexBuffer(r, bc, b, rs){
    switch(bc){
       case 'position':
          var d = new Float32Array(rs._data);
-         //r.currentMatrix().transform(rd, 3 * ri, d, 0, c);
          RFloat.copy(vd, 3 * vp, d, 0, 3 * c);
          break;
       case 'coord':

@@ -149,7 +149,7 @@ function FE3rModelConsole_load(pc, pg){
    if(rm.testReady()){
       m.loadResource(rm);
    }else{
-      // 增加加载中
+      // 追加到加载队列
       o._loadModels.push(m);
    }
    return m;
