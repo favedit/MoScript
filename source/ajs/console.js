@@ -1161,19 +1161,22 @@ function FThreadConsole_dispose(){
 }
 function FXmlConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._scopeCd    = EScope.Local;
-   o.connections = null;
-   o.onLoad      = FXmlConsole_onLoad;
-   o.construct   = FXmlConsole_construct;
-   o.alloc       = FXmlConsole_alloc;
-   o.send        = FXmlConsole_send;
-   o.sendAsync   = FXmlConsole_sendAsync;
-   o.process     = FXmlConsole_process;
+   o._scopeCd     = EScope.Local;
+   o._connections = null;
+   o._caches      = null;
+   o.onLoad       = FXmlConsole_onLoad;
+   o.construct    = FXmlConsole_construct;
+   o.alloc        = FXmlConsole_alloc;
+   o.send         = FXmlConsole_send;
+   o.sendAsync    = FXmlConsole_sendAsync;
+   o.load         = FXmlConsole_load;
+   o.process      = FXmlConsole_process;
    return o;
 }
 function FXmlConsole_construct(){
    var o = this;
-   o.connections = new TObjects();
+   o._connections = new TObjects();
+   o._caches = new TDictionary();
 }
 function FXmlConsole_onLoad(p){
    var o = this;
@@ -1182,7 +1185,7 @@ function FXmlConsole_onLoad(p){
 function FXmlConsole_alloc(){
    var o = this;
    var a = null;
-   var cs = o.connections;
+   var cs = o._connections;
    for(var n = cs.count - 1; n >= 0; n--){
       var c = cs.get(n);
       if(c._statusFree){
@@ -1213,6 +1216,20 @@ function FXmlConsole_sendAsync(u, d, p){
    c._parameters = p;
    c.send(u, d);
    return c;
+}
+function FXmlConsole_load(u, d, p){
+   var o = this;
+   var v = o._caches.get(u);
+   if(v){
+      return v;
+   }
+   var c = o.alloc();
+   c._asynchronous = true;
+   c._parameters = p;
+   v = c._cache = RClass.create(FXmlData);
+   c.send(u, d);
+   o._caches.set(u, v);
+   return v;
 }
 function FXmlConsole_process(p){
    var o = this;

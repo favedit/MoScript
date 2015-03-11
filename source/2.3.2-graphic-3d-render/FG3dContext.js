@@ -34,6 +34,7 @@ function FG3dContext(o){
    o.statistics          = FG3dContext_statistics;
    // @method
    o.createProgram       = RMethod.virtual(o, 'createProgram');
+   o.createLayout        = RMethod.virtual(o, 'createLayout');
    o.createVertexBuffer  = RMethod.virtual(o, 'createVertexBuffer');
    o.createIndexBuffer   = RMethod.virtual(o, 'createIndexBuffer');
    o.createFlatTexture   = RMethod.virtual(o, 'createFlatTexture');

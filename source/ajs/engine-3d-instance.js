@@ -960,6 +960,10 @@ function FE3dSceneCanvas_onSceneLoad(p){
    var rp = s.camera().projection();
    rp.size().set(cs.width, cs.height);
    rp.update();
+   var gr = s._region._resource;
+   o._cameraMoveRate = gr.moveSpeed();
+   o._cameraKeyRotation = gr.rotationKeySpeed();
+   o._cameraMouseRotation = gr.rotationMouseSpeed();
    o.processLoadListener(o, s);
 }
 function FE3dSceneCanvas_onResize(p){

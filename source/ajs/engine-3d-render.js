@@ -860,24 +860,23 @@ function FE3rModelConsole_load(pc, pg){
 function FE3rModelConsole_merge(pe, pg, pi, pc){
    var o = this;
    var f = 'merge';
-   var rs = pg.renderables();
+   var s = pg.renderables();
    for(var i = 0; i < pc; i++){
-      var r = rs.getAt(pi + i);
+      var r = s.getAt(pi + i);
       f += '|' + r.hashCode();
    }
-   var md = o._dynamicMeshs.get(f);
-   if(!md){
-      md = RClass.create(FE3rDynamicModel);
+   var m = o._dynamicMeshs.get(f);
+   if(!m){
+      m = RClass.create(FE3rDynamicModel);
+      m.linkGraphicContext(pg);
       for(var i = 0; i < pc; i++){
-         var r = rs.getAt(pi + i);
-         md.pushRenderable(r);
+         m.pushRenderable(s.getAt(pi + i));
       }
-      md.linkGraphicContext(pg);
-      md.build();
-      o._dynamicMeshs.set(f, md);
+      m.build();
+      o._dynamicMeshs.set(f, m);
    }
-   md.update();
-   return md;
+   m.update();
+   return m;
 }
 function FE3rObject(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);

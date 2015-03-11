@@ -431,9 +431,6 @@ var RValue = new function RValue(){
    o.double16  = null;
    o.double16  = null;
    o.double64  = null;
-   o.vector3   = null;
-   o.rectangle = null;
-   o.matrix    = null;
    o.construct = RValue_construct;
    o.construct();
    return o;
@@ -456,9 +453,6 @@ function RValue_construct(){
       o.double12 = new Float64Array(12);
       o.double16 = new Float64Array(16);
    }
-   o.vector3 = new SVector3();
-   o.rectangle = new SRectangle();
-   o.matrix = new SMatrix3d();
 }
 var RWindow = new function RWindow(){
    var o = this;

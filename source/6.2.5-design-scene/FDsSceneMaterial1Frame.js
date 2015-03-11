@@ -44,6 +44,7 @@ function FDsSceneMaterial1Frame(o){
    //..........................................................
    // @event
    o.onBuilded              = FDsSceneMaterial1Frame_onBuilded;
+   o.onOptionChanged        = FDsSceneMaterial1Frame_onOptionChanged;
    o.onDataChanged          = FDsSceneMaterial1Frame_onDataChanged;
    //..........................................................
    // @method
@@ -72,33 +73,62 @@ function FDsSceneMaterial1Frame_onBuilded(p){
    o._controlAlphaBase.addDataChangedListener(o, o.onDataChanged);
    o._controlAlphaRate.addDataChangedListener(o, o.onDataChanged);
    // 关联对象
-   o._controlOptionColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionColor.addDataChangedListener(o, o.onOptionChanged);
    o._controlColorMin.addDataChangedListener(o, o.onDataChanged);
    o._controlColorMax.addDataChangedListener(o, o.onDataChanged);
    o._controlColorRate.addDataChangedListener(o, o.onDataChanged);
    o._controlColorMerge.addDataChangedListener(o, o.onDataChanged);
    // 关联对象
-   o._controlOptionAmbient.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionAmbient.addDataChangedListener(o, o.onOptionChanged);
    o._controlAmbientColor.addDataChangedListener(o, o.onDataChanged);
    // 关联对象
-   o._controlOptionDiffuse.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionDiffuse.addDataChangedListener(o, o.onOptionChanged);
    o._controlDiffuseColor.addDataChangedListener(o, o.onDataChanged);
    // 关联对象
-   o._controlOptionSpecular.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionSpecular.addDataChangedListener(o, o.onOptionChanged);
    o._controlSpecularColor.addDataChangedListener(o, o.onDataChanged);
    o._controlSpecularBase.addDataChangedListener(o, o.onDataChanged);
    o._controlSpecularLevel.addDataChangedListener(o, o.onDataChanged);
    // 关联对象
-   o._controlOptionReflect.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionReflect.addDataChangedListener(o, o.onOptionChanged);
    o._controlReflectColor.addDataChangedListener(o, o.onDataChanged);
    o._controlReflectMerge.addDataChangedListener(o, o.onDataChanged);
    // 关联对象
-   o._controlOptionEmissive.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionEmissive.addDataChangedListener(o, o.onOptionChanged);
    o._controlEmissiveColor.addDataChangedListener(o, o.onDataChanged);
 }
 
 //==========================================================
+// <T>配置改变处理。</T>
+// <P>需要动态修正渲染器代码。</P>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsSceneMaterial1Frame_onOptionChanged(p){
+   var o = this;
+   var t = o._scene;
+   var m = o._material;
+   var mr = m.resource();
+   var mi = mr.info();
+   // 设置效果（修改错误会无法运行）
+   // mi.effectCode = o._controlEffectCode.get();
+   // 设置配置
+   mi.optionColor = o._controlOptionColor.get();
+   mi.optionAmbient = o._controlOptionAmbient.get();
+   mi.optionDiffuse = o._controlOptionDiffuse.get();
+   mi.optionSpecular = o._controlOptionSpecular.get();
+   mi.optionReflect = o._controlOptionReflect.get();
+   mi.optionEmissive = o._controlOptionEmissive.get();
+   // 重新加载资源
+   m.reload();
+   m._display.reloadResource();
+   o._scene.dirty();
+}
+
+//==========================================================
 // <T>数据改变处理。</T>
+// <P>不改变渲染器代码。</P>
 //
 // @method
 // @param p:event:SEvent 事件
@@ -117,28 +147,22 @@ function FDsSceneMaterial1Frame_onDataChanged(p){
    mi.alphaBase = o._controlAlphaBase.get();
    mi.alphaRate = o._controlAlphaRate.get();
    // 设置颜色
-   mi.optionColor = o._controlOptionAmbient.get();
    mi.colorMin = o._controlColorMin.get();
    mi.colorMax = o._controlColorMax.get();
    mi.colorRate = o._controlColorRate.get();
    mi.colorMerge = o._controlColorMerge.get();
    // 设置环境颜色
-   mi.optionAmbient = o._controlOptionAmbient.get();
    mi.ambientColor.assign(o._controlAmbientColor.get());
    // 设置散射颜色
-   mi.optionDiffuse = o._controlOptionDiffuse.get();
    mi.diffuseColor.assign(o._controlDiffuseColor.get());
    // 设置高光颜色
-   mi.optionSpecular = o._controlOptionSpecular.get();
    mi.specularColor.assign(o._controlSpecularColor.get());
    mi.specularBase = o._controlSpecularBase.get();
    mi.specularLevel = o._controlSpecularLevel.get();
    // 设置反射颜色
-   mi.optionReflect = o._controlOptionReflect.get();
    mi.reflectColor.assign(o._controlReflectColor.get());
    mi.reflectMerge = o._controlReflectMerge.get();
    // 设置发光颜色
-   mi.optionEmissive = o._controlOptionEmissive.get();
    mi.emissiveColor.assign(o._controlEmissiveColor.get());
    // 重新加载资源
    m.reload();

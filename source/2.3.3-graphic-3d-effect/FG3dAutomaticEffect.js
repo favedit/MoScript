@@ -99,7 +99,13 @@ function FG3dAutomaticEffect_buildInfo(pt, pc){
       pt.setBoolean("option.normal.invert", true);
       o._supportNormalInvert = true;
    }
-   // 支持纹理换几个你
+   // 支持纹理颜色
+   if(pc.optionColor){
+      s.append("|OC");
+      pt.setBoolean("option.color", true);
+      o.optionAmbient = true;
+   }
+   // 支持纹理环境
    if(pc.optionAmbient){
       s.append("|OA");
       pt.setBoolean("option.ambient", true);
@@ -424,6 +430,11 @@ function FG3dAutomaticEffect_bindAttributes(p){
 function FG3dAutomaticEffect_bindSamplers(p){
    var o = this;
    var g = o._program;
+   // 绑定特定取样器
+   if(o._supportMaterialMap){
+      g.setSampler('fs_material', pg.materialMap().texture());
+   }
+   // 绑定取样器集合
    if(g.hasSampler()){
       var ss = g.samplers();
       var sc = ss.count();
@@ -474,30 +485,42 @@ function FG3dAutomaticEffect_drawRenderable(pg, pr){
    var c = o._graphicContext;
    var g = o._program;
    // 绘制准备
-   var l = null;
-   if(o._supportLayout){
-      var f = pr.activeInfo();
-      l = f.layout;
-      if(!l){
-         l = f.layout = c.createLayout();
+   var f = pr.activeInfo();
+   var l = f.layout;
+   if(!l){
+      l = f.layout = c.createLayout();
+      // 绑定属性流集合
+      if(o._supportLayout){
          l.bind();
-         // 绑定所有属性流
          o.bindAttributes(pr);
          l.unbind();
+         l.active();
+      }else{
+         c.recordBegin();
+         o.bindAttributes(pr);
+         c.recordEnd();
+         l.linkBuffers(c.recordBuffers());
       }
-      l.active();
+      // 绑定取样器集合
+      c.recordBegin();
+      o.bindSamplers(pr);
+      c.recordEnd();
+      l.linkSamplers(c.recordSamplers());
    }else{
       // 绑定所有属性流
-      o.bindAttributes(pr);
+      if(o._supportLayout){
+         l.active();
+      }else{
+         l.bindBuffers();
+      }
+      // 绑定取样器集合
+      l.bindSamplers();
    }
-   // 绑定所有取样器
-   if(o._supportMaterialMap){
-      g.setSampler('fs_material', pg.materialMap().texture());
-   }
-   o.bindSamplers(pr);
    //..........................................................
    // 绘制处理
    c.drawTriangles(pr.indexBuffer());
+   // 取消绑定取样器集合
+   //l.unbindSamplers();
    //..........................................................
    // 绘制完成
    if(o._supportLayout){

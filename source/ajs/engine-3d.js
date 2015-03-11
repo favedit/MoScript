@@ -553,10 +553,10 @@ function RE3dEngine_onSetup(){
    ec.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
    ec.register('general.color.skeleton', FG3dGeneralColorSkeletonEffect);
    ec.register('general.color.skeleton.4', FG3dGeneralColorSkeletonEffect);
-   ec.register('shadow.depth.automatic', FG3dShadowDepthAutomaticEffect);
-   ec.register('shadow.depth.skeleton', FG3dShadowDepthSkeletonEffect);
-   ec.register('shadow.color.automatic', FG3dShadowColorAutomaticEffect);
-   ec.register('shadow.color.skeleton', FG3dShadowColorSkeletonEffect);
+   ec.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
+   ec.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
+   ec.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
+   ec.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
 }
 function RE3dEngine_setup(){
    var o = this;

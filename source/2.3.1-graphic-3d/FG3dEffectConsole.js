@@ -9,12 +9,19 @@ function FG3dEffectConsole(o){
    //..........................................................
    // @attribute
    o._configs         = null;
+   o._loadEffects     = null;
    o._registerEffects = null;
    o._templateEffects = null;
    o._effects         = null;
    o._path            = "/ar3/shader/";
    o._effectInfo      = null;
    o._tagContext      = null;
+   // @attribute
+   o._thread          = null;
+   o._interval        = 300;
+   //..........................................................
+   // @event
+   o.onProcess        = FG3dEffectConsole_onProcess;
    //..........................................................
    // @method
    o.construct        = FG3dEffectConsole_construct;
@@ -33,6 +40,23 @@ function FG3dEffectConsole(o){
 }
 
 //==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+//==========================================================
+function FG3dEffectConsole_onProcess(){
+   var o = this;
+   var s = o._loadEffects;
+   s.record();
+   while(s.next()){
+      var m = s.current();
+      if(m.processLoad()){
+         s.removeCurrent();
+      }
+   }
+}
+
+//==========================================================
 // <T>构造处理。</T>
 //
 // @method
@@ -41,6 +65,7 @@ function FG3dEffectConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._configs = new TDictionary();
+   o._loadEffects = new TLooper();
    o._registerEffects = new TDictionary();
    o._templateEffects = new TDictionary();
    o._effects = new TDictionary();
@@ -120,6 +145,7 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    // 设置材质
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
+   pf.optionColor = mi.optionColor;
    pf.optionAmbient = mi.optionAmbient;
    pf.optionDiffuse = mi.optionDiffuse;
    pf.optionSpecular = mi.optionSpecular;

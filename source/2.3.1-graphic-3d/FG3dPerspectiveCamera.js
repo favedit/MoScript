@@ -85,10 +85,10 @@ function FG3dPerspectiveCamera_updateFlatFrustum(){
 //==========================================================
 function FG3dPerspectiveCamera_updateFromCamera(p){
    var o = this;
-   var f = o._frustum
+   var f = o._frustum;
    var pf = p.updateFrustum();
    // 计算距离 (求出圆球的切线)
-   var angle = RMath.DEGREE_RATE * o._projection.angle();
+   var angle = RConst.DEGREE_RATE * o._projection.angle();
    var distance = pf.radius / Math.sin(angle * 0.5);
    distance = Math.max(distance, p._projection._zfar);
    // 计算观察点
@@ -102,7 +102,7 @@ function FG3dPerspectiveCamera_updateFromCamera(p){
    // 更新矩阵
    o.update();
    // 将顶点转换到当前相机空间
-   o._matrix.transform(f.coners, pf.coners, 8);
+   o._matrix.transform(f.coners, 0, pf.coners, 0, 8);
    // 计算当前相机内空间内位置
    f.updateCenter();
    //f.minZ += p._projection._zfar;
@@ -119,10 +119,10 @@ function FG3dPerspectiveCamera_updateFromCamera(p){
 //==========================================================
 function FG3dPerspectiveCamera_updateFlatCamera(p){
    var o = this;
-   var f = o._frustum
+   var f = o._frustum;
    var pf = p.updateFlatFrustum();
    // 计算距离 (求出圆球的切线)
-   var angle = RMath.DEGREE_RATE * o._projection.angle();
+   var angle = RConst.DEGREE_RATE * o._projection.angle();
    var distance = pf.radius / Math.sin(angle * 0.5);
    distance = Math.max(distance, p._projection._zfar);
    // 计算观察点

@@ -17,6 +17,7 @@ function FWglFlatTexture(o){
    o.makeMipmap = FWglFlatTexture_makeMipmap;
    o.uploadData = FWglFlatTexture_uploadData;
    o.upload     = FWglFlatTexture_upload;
+   o.update     = FWglFlatTexture_update;
    // @method
    o.dispose    = FWglFlatTexture_dispose;
    return o;
@@ -53,8 +54,7 @@ function FWglFlatTexture_isValid(){
 //==========================================================
 function FWglFlatTexture_makeMipmap(){
    var o = this;
-   var c = o._graphicContext;
-   var g = c._native;
+   var g = o._graphicContext._native;
    // 绑定数据
    g.bindTexture(g.TEXTURE_2D, o._native);
    // 生成MIP
@@ -88,9 +88,10 @@ function FWglFlatTexture_uploadData(d, w, h){
    // 绑定数据
    g.bindTexture(g.TEXTURE_2D, o._native);
    // 上传内容
-   // g.pixelStorei(g.UNPACK_FLIP_Y_WEBGL, true);
    g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, w, h, 0, g.RGBA, g.UNSIGNED_BYTE, m);
    o._statusLoad = c.checkError("texImage2D", "Upload data failure.");
+   // 更新处理
+   o.update();
 }
 
 //==========================================================
@@ -128,7 +129,39 @@ function FWglFlatTexture_upload(p){
       //g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
    //}
    g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
+   // 更新处理
+   o.update();
    o._statusLoad = c.checkError("texImage2D", "Upload image failure.");
+}
+
+//==========================================================
+// <T>更新处理。</T>
+//
+// @method
+//==========================================================
+function FWglFlatTexture_update(){
+   var o = this;
+   o.__base.FG3dFlatTexture.update.call(o);
+   // 绑定数据
+   var g = o._graphicContext._native;
+   g.bindTexture(g.TEXTURE_2D, o._native);
+   // 设置过滤器
+   var c = RWglUtility.convertSamplerFilter(g, o._filterMinCd);
+   if(c){
+      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, c);
+   }
+   var c = RWglUtility.convertSamplerFilter(g, o._filterMagCd);
+   if(c){
+      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, c);
+   }
+   //var c = RWglUtility.convertSamplerFilter(g, pt.wrapS());
+   //if(c){
+      //g.texParameteri(gt, g.TEXTURE_WRAP_S, c);
+   //}
+   //var c = RWglUtility.convertSamplerFilter(g, pt.wrapT());
+   //if(c){
+      //g.texParameteri(gt, g.TEXTURE_WRAP_T, c);
+   //}
 }
 
 //==========================================================

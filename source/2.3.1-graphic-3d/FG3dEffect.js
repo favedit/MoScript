@@ -8,6 +8,7 @@ function FG3dEffect(o){
    o = RClass.inherits(this, o, FG3dObject);
    //..........................................................
    // @attribute
+   o._ready              = null;
    o._code               = null;
    // @attribute
    o._stateFillCd        = EG3dFillMode.Face;
@@ -30,6 +31,7 @@ function FG3dEffect(o){
    //..........................................................
    // @method
    o.setup               = RMethod.empty;
+   o.testReady           = FG3dEffect_testReady;
    o.code                = FG3dEffect_code;
    o.program             = FG3dEffect_program;
    o.setParameter        = FG3dEffect_setParameter;
@@ -42,6 +44,16 @@ function FG3dEffect(o){
    o.load                = FG3dEffect_load;
    o.build               = FG3dEffect_build;
    return o;
+}
+
+//==========================================================
+// <T>测试是否准备好x。</T>
+//
+// @method
+// @return Boolean 是否准备好
+//==========================================================
+function FG3dEffect_testReady(){
+   return this._ready;
 }
 
 //==========================================================

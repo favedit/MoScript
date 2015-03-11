@@ -99,7 +99,7 @@ function FG3dOrthoCamera_updateFlatCamera(p){
    var f = o._frustum
    var pf = p.updateFlatFrustum();
    // 计算距离 (求出圆球的切线)
-   var angle = RMath.DEGREE_RATE * o._projection.angle();
+   var angle = RConst.DEGREE_RATE * o._projection.angle();
    var distance = pf.radius / Math.sin(angle * 0.5);
    distance = Math.max(distance, p._projection._zfar);
    // 计算观察点

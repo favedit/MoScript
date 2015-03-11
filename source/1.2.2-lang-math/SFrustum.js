@@ -74,7 +74,11 @@ function SFrustum_updateCenter(){
    o.center.x = (o.minX + o.maxX) * 0.5;
    o.center.y = (o.minY + o.maxY) * 0.5;
    o.center.z = (o.minZ + o.maxZ) * 0.5;
-   o.radius = Math.sqrt((o.minX - o.minY) * (o.minX - o.minY) + (o.minZ - o.maxX) * (o.minZ - o.maxX) + (o.maxY - o.maxZ) * (o.maxY - o.maxZ)) * 0.5;
+   // 计算半径
+   var cx = o.maxX - o.minX;
+   var cy = o.maxY - o.minY;
+   var cz = o.maxZ - o.minZ;
+   o.radius = Math.sqrt(cx * cx + cy * cy + cz * cz) * 0.5;
 }
 
 //============================================================
@@ -97,7 +101,7 @@ function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    var znear = pvn;
    //var zfar = pvf * pfr;
    var zfar = pvf;
-   var fov = Math.tan(RMath.DEGREE_RATE * pva * 0.5);
+   var fov = Math.tan(RConst.DEGREE_RATE * pva * 0.5);
    var nearY = znear * fov;
    var nearX = nearY * aspect;
    var farY = zfar * fov;
@@ -158,7 +162,7 @@ function SFrustum_updateFlat(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    //var znear = pvn;
    var zfar = pvf * pfr;
    //var zfar = pvf;
-   var fov = Math.tan(RMath.DEGREE_RATE * pva * 0.5);
+   var fov = Math.tan(RConst.DEGREE_RATE * pva * 0.5);
    var nearY = znear * fov;
    var nearX = nearY * aspect;
    var farY = zfar * fov;
@@ -193,7 +197,7 @@ function SFrustum_updateFlat(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    var m = RMath.matrix;
    m.assign(pm);
    m.invert();
-   m.transform(o.coners, ps, 8);
+   m.transform(o.coners, 0, ps, 0, 8);
    o.coners[ 1] = 0.0;
    o.coners[ 4] = 0.0;
    o.coners[ 7] = 0.0;

@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150119
 //==========================================================
-function FG3dShadowTechnique(o){
+function FE3dShadowTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
    //..........................................................
    // @attribute
@@ -14,10 +14,10 @@ function FG3dShadowTechnique(o){
    o._passColor   = null;
    //..........................................................
    // @method
-   o.setup        = FG3dShadowTechnique_setup;
-   o.passDepth    = FG3dShadowTechnique_passDepth;
-   o.passColor    = FG3dShadowTechnique_passColor;
-   o.updateRegion = FG3dShadowTechnique_updateRegion;
+   o.setup        = FE3dShadowTechnique_setup;
+   o.passDepth    = FE3dShadowTechnique_passDepth;
+   o.passColor    = FE3dShadowTechnique_passColor;
+   o.updateRegion = FE3dShadowTechnique_updateRegion;
    return o;
 }
 
@@ -26,17 +26,26 @@ function FG3dShadowTechnique(o){
 //
 // @method
 //==========================================================
-function FG3dShadowTechnique_setup(){
+function FE3dShadowTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
+   //..........................................................
+   // 创建支持模式
+   o.registerMode(EG3dTechniqueMode.Ambient);
+   o.registerMode(EG3dTechniqueMode.DiffuseLevel);
+   o.registerMode(EG3dTechniqueMode.DiffuseColor);
+   o.registerMode(EG3dTechniqueMode.SpecularLevel);
+   o.registerMode(EG3dTechniqueMode.SpecularColor);
+   o.registerMode(EG3dTechniqueMode.Result);
+   //..........................................................
    var ps = o._passes;
    // 创建光深处理过程
-   var pd = o._passDepth = RClass.create(FG3dShadowDepthPass);
+   var pd = o._passDepth = RClass.create(FE3dShadowDepthPass);
    pd.linkGraphicContext(o);
    pd.setup();
-   ps.push(pd);
+   //ps.push(pd);
    // 创建颜色处理过程
-   var pc = o._passColor = RClass.create(FG3dShadowColorPass);
+   var pc = o._passColor = RClass.create(FE3dShadowColorPass);
    pc.linkGraphicContext(o);
    pc.setup();
    ps.push(pc);
@@ -48,9 +57,9 @@ function FG3dShadowTechnique_setup(){
 // <T>获得深度渲染过程。</T>
 //
 // @method
-// @return FG3dShadowDepthPass 深度渲染过程
+// @return FE3dShadowDepthPass 深度渲染过程
 //==========================================================
-function FG3dShadowTechnique_passDepth(){
+function FE3dShadowTechnique_passDepth(){
    return this._passDepth;
 }
 
@@ -58,9 +67,9 @@ function FG3dShadowTechnique_passDepth(){
 // <T>获得颜色渲染过程。</T>
 //
 // @method
-// @return FG3dShadowColorPass 颜色渲染过程
+// @return FE3dShadowColorPass 颜色渲染过程
 //==========================================================
-function FG3dShadowTechnique_passColor(){
+function FE3dShadowTechnique_passColor(){
    return this._passColor;
 }
 
@@ -70,11 +79,17 @@ function FG3dShadowTechnique_passColor(){
 // @method
 // @param p:region:FG3dRetion 区域
 //==========================================================
-function FG3dShadowTechnique_updateRegion(p){
+function FE3dShadowTechnique_updateRegion(p){
    var o = this;
    o.__base.FG3dTechnique.updateRegion.call(o, p);
-   // 计算光照相机
+   var g = o._graphicContext;
+   var gs = g.size();
+   // 更新相机
    var c = p.camera();
+   //c.projection().size().assign(gs);
+   // 更新光照
    var l = p.directionalLight();
-   l.camera().updateFlatCamera(c);
+   var lc = l.camera();
+   //lc.projection().size().assign(gs);
+   //lc.updateFlatCamera(c);
 }

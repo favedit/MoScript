@@ -36,7 +36,6 @@ function FE3rTextureBitmapFlatPack_onLoad(p){
    t.upload(o._image);
    t.makeMipmap();
    // 释放位图
-   //window.URL.revokeObjectURL(o._image.url());
    o._image = RObject.dispose(o._image);
    // 加载完成
    o._dataReady = true;

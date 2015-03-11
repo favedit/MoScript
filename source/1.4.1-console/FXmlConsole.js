@@ -9,18 +9,21 @@ function FXmlConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._scopeCd    = EScope.Local;
-   o.connections = null;
+   o._scopeCd     = EScope.Local;
+   o._connections = null;
+   o._caches      = null;
    //..........................................................
    // @event
-   o.onLoad      = FXmlConsole_onLoad;
+   o.onLoad       = FXmlConsole_onLoad;
    //..........................................................
    // @method
-   o.construct   = FXmlConsole_construct;
-   o.alloc       = FXmlConsole_alloc;
-   o.send        = FXmlConsole_send;
-   o.sendAsync   = FXmlConsole_sendAsync;
-   o.process     = FXmlConsole_process;
+   o.construct    = FXmlConsole_construct;
+   // @method
+   o.alloc        = FXmlConsole_alloc;
+   o.send         = FXmlConsole_send;
+   o.sendAsync    = FXmlConsole_sendAsync;
+   o.load         = FXmlConsole_load;
+   o.process      = FXmlConsole_process;
    return o;
 }
 
@@ -31,7 +34,8 @@ function FXmlConsole(o){
 //==========================================================
 function FXmlConsole_construct(){
    var o = this;
-   o.connections = new TObjects();
+   o._connections = new TObjects();
+   o._caches = new TDictionary();
 }
 
 //==========================================================
@@ -60,7 +64,7 @@ function FXmlConsole_alloc(){
    var o = this;
    // 查找一个未使用的节点链接
    var a = null;
-   var cs = o.connections;
+   var cs = o._connections;
    for(var n = cs.count - 1; n >= 0; n--){
       var c = cs.get(n);
       if(c._statusFree){
@@ -112,6 +116,33 @@ function FXmlConsole_sendAsync(u, d, p){
    c._parameters = p;
    c.send(u, d);
    return c;
+}
+
+//==========================================================
+// <T>异步获加载一个XML信息，返回XML信息。</T>
+//
+// @method
+// @param u:url:String 发送地址
+// @param d:document:TXmlDocument 发送文档
+// @param p:parameters:Object 参数
+// @return TXmlDocument 接收文档
+//==========================================================
+function FXmlConsole_load(u, d, p){
+   var o = this;
+   // 查找缓冲数据
+   var v = o._caches.get(u);
+   if(v){
+      return v;
+   }
+   // 加载缓冲数据
+   var c = o.alloc();
+   c._asynchronous = true;
+   c._parameters = p;
+   v = c._cache = RClass.create(FXmlData);
+   c.send(u, d);
+   // 记住缓冲数据
+   o._caches.set(u, v);
+   return v;
 }
 
 //==========================================================

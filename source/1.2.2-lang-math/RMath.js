@@ -9,16 +9,13 @@ var RMath = new function RMath(){
    var o = this;
    //..........................................................
    // @attribute
-   o.PI             = Math.PI;
-   o.PI2            = Math.PI * 2;
-   // @attribute
-   o.RADIAN_RATE    = 180 / Math.PI;
-   o.DEGREE_RATE    = Math.PI / 180;
-   // @attribute
-   o.PERCENT_10     = 1 / 10;
-   o.PERCENT_100    = 1 / 100;
-   o.PERCENT_1000   = 1 / 1000;
-   //..........................................................
+   o.value1         = new Array(1);
+   o.value2         = new Array(2);
+   o.value3         = new Array(3);
+   o.value4         = new Array(4);
+   o.value9         = new Array(9);
+   o.value12        = new Array(12);
+   o.value16        = new Array(16);
    // @attribute
    o.vectorAxisX    = null;
    o.vectorAxisY    = null;
@@ -27,7 +24,9 @@ var RMath = new function RMath(){
    o.vectorForward  = null;
    o.vectorBackward = null;
    // @attribute
-   o.identity4x4    = null;
+   o.vector3        = null;
+   o.rectangle      = null;
+   o.matrix         = null;
    //..........................................................
    // @method
    o.construct      = RMath_construct;
@@ -57,5 +56,7 @@ function RMath_construct(){
    o.vectorForward = new SVector3(0, 0, 1);
    o.vectorBackward = new SVector3(0, 0, -1);
    // 初始化属性
-   o.identity4x4 = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+   o.vector3 = new SVector3();
+   o.rectangle = new SRectangle();
+   o.matrix = new SMatrix3d();
 }

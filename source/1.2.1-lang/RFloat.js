@@ -22,6 +22,7 @@ var RFloat = new function RFloat(){
    o.toRange   = RFloat_toRange;
    o.sum       = RFloat_sum;
    o.calculate = RFloat_calculate;
+   o.attach    = RFloat_attach;
    o.fill      = RFloat_fill;
    o.copy      = RFloat_copy;
    return o;
@@ -92,7 +93,7 @@ function RFloat_format(v, l, lp, r, rp){
       lp = o.LEFT_CHAR;
    }
    if(r == null){
-      r = 7;
+      r = 6;
    }
    if(rp == null){
       rp = o.LEFT_CHAR;
@@ -177,6 +178,26 @@ function RFloat_calculate(f,a,b){
   }else{
      return (a - b).toString();
   }
+}
+
+//===========================================================
+// <T>接收浮点数数组。</T>
+//
+// @method
+// @param t:targetData:Array 目标数据
+// @param s:sourceData:Array 来源数据
+// @param c:count:Integer 总数
+// @return 是否相等
+//===========================================================
+function RFloat_attach(t, s, c){
+   var r = false;
+   for(var i = 0; i < c; i++){
+      if(t[i] != s[i]){
+         t[i] = s[i];
+         r = true;
+      }
+   }
+   return r;
 }
 
 //===========================================================

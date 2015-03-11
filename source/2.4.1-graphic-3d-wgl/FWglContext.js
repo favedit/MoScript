@@ -19,6 +19,10 @@ function FWglContext(o){
    o._parameters         = null;
    o._extensions         = null;
    // @attribute
+   o._statusRecord       = false;
+   o._recordBuffers      = null;
+   o._recordSamplers     = null;
+   // @attribute
    o._data9              = null;
    o._data16             = null;
    //..........................................................
@@ -29,6 +33,11 @@ function FWglContext(o){
    // @method
    o.parameters          = FWglContext_parameters;
    o.extensions          = FWglContext_extensions;
+   // @method
+   o.recordBuffers       = FWglContext_recordBuffers;
+   o.recordSamplers      = FWglContext_recordSamplers;
+   o.recordBegin         = FWglContext_recordBegin;
+   o.recordEnd           = FWglContext_recordEnd;
    // @method
    o.createProgram       = FWglContext_createProgram;
    o.createLayout        = FWglContext_createLayout;
@@ -72,6 +81,8 @@ function FWglContext_construct(){
    o._capability = new SG3dContextCapability();
    o._data9 = new Float32Array(9);
    o._data16 = new Float32Array(16);
+   o._recordBuffers = new TObjects();
+   o._recordSamplers = new TObjects();
 }
 
 //==========================================================
@@ -132,7 +143,7 @@ function FWglContext_linkCanvas(h){
    // 测试32位索引支持
    var e = g.getExtension('OES_element_index_uint');
    if(e){
-      c.optionIndex32 = true;
+      //c.optionIndex32 = true;
    }
    // 测试纹理压缩支持
    var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
@@ -307,6 +318,47 @@ function FWglContext_extensions(){
 }
 
 //==========================================================
+// <T>获得记录缓冲集合。</T>
+//
+// @method
+// @return TObjects 缓冲集合
+//==========================================================
+function FWglContext_recordBuffers(){
+   return this._recordBuffers;
+}
+
+//==========================================================
+// <T>获得记录取样集合。</T>
+//
+// @method
+// @return TObjects 取样集合
+//==========================================================
+function FWglContext_recordSamplers(){
+   return this._recordSamplers;
+}
+
+//==========================================================
+// <T>开始记录操作。</T>
+//
+// @method
+//==========================================================
+function FWglContext_recordBegin(){
+   var o = this;
+   o._recordBuffers.clear();
+   o._recordSamplers.clear();
+   o._statusRecord = true;
+}
+
+//==========================================================
+// <T>解除记录操作。</T>
+//
+// @method
+//==========================================================
+function FWglContext_recordEnd(){
+   this._statusRecord = false;
+}
+
+//==========================================================
 // <T>创建渲染程序。</T>
 //
 // @method
@@ -329,13 +381,11 @@ function FWglContext_createProgram(){
 //==========================================================
 function FWglContext_createLayout(){
    var o = this;
-   // 检查标志
-   if(!o._capability.optionLayout){
-      throw new TError(o, 'Unsupport layout.');
-   }
    var r = RClass.create(FWglLayout);
    r.linkGraphicContext(o);
-   r.setup();
+   if(o._capability.optionLayout){
+      r.setup();
+   }
    o._statistics._layoutTotal++;
    return r;
 }
@@ -662,11 +712,6 @@ function FWglContext_bindConst(psc, psl, pdf, pdt, pdc){
    var r = true;
    o._statistics._frameConstCount++;
    //............................................................
-   // 检查变更
-   //TBool changed = UpdateConsts(psc, psl, pData, pdc);
-   //if(!changed){
-   //   return EContinue;
-   //}
    // 修改数据
    switch(pdf){
       case EG3dParameterFormat.Float1:{
@@ -762,6 +807,16 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
    var r = true;
    o._statistics._frameBufferCount++;
    //............................................................
+   // 录制模式
+   if(o._statusRecord){
+      var l = new SG3dLayoutBuffer();
+      l.slot = s;
+      l.buffer = b;
+      l.index = i;
+      l.formatCd = f;
+      o._recordBuffers.push(l);
+   }
+   //............................................................
    // 设定顶点流
    var n = null;
    if(b != null){
@@ -820,7 +875,7 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
 //==========================================================
 // <T>绑定纹理。</T>
 //
-// @param ps:slot:Integer 插槽
+// @param ps:slot:Object 插槽
 // @param pi:index:Integer 索引
 // @param pt:texture:FG3dTexture 纹理
 // @return 处理结果
@@ -831,11 +886,13 @@ function FWglContext_bindTexture(ps, pi, pt){
    var r = true;
    o._statistics._frameTextureCount++;
    //............................................................
-   // 空纹理处理
-   if(pt == null){
-      g.bindTexture(g.TEXTURE_2D, null);
-      r = o.checkError("bindTexture", "Bind texture clear failure. (slot=%d)", ps);
-      return r;
+   // 录制模式
+   if(o._statusRecord){
+      var l = new SG3dLayoutSampler();
+      l.slot = ps;
+      l.index = pi;
+      l.texture = pt;
+      o._recordSamplers.push(l);
    }
    //............................................................
    // 激活纹理
@@ -846,16 +903,24 @@ function FWglContext_bindTexture(ps, pi, pt){
       if(!r){
          return r;
       }
-      //o._activeTextureSlot = ps;
+      o._activeTextureSlot = ps;
+   }
+   //............................................................
+   // 空纹理处理
+   if(pt == null){
+      g.bindTexture(g.TEXTURE_2D, null);
+      r = o.checkError("bindTexture", "Bind texture clear failure. (slot=%d)", ps);
+      return r;
    }
    //............................................................
    // 绑定纹理
    var gt = null;
+   var gn = pt._native;
    switch(pt.textureCd()){
       case EG3dTexture.Flat2d:{
          gt = g.TEXTURE_2D;
          g.bindTexture(g.TEXTURE_2D, pt._native);
-         r = o.checkError("glBindTexture", "Bind flag texture failure. (texture_id=%d)", pt._native);
+         r = o.checkError("glBindTexture", "Bind flag texture failure. (texture_id=%d)", gn);
          if(!r){
             return r;
          }
@@ -864,7 +929,7 @@ function FWglContext_bindTexture(ps, pi, pt){
       case EG3dTexture.Cube:{
          gt = g.TEXTURE_CUBE_MAP;
          g.bindTexture(g.TEXTURE_CUBE_MAP, pt._native);
-         r = o.checkError("glBindTexture", "Bind cube texture failure. (texture_id=%d)", pt._native);
+         r = o.checkError("glBindTexture", "Bind cube texture failure. (texture_id=%d)", gn);
          if(!r){
             return r;
          }
@@ -875,24 +940,6 @@ function FWglContext_bindTexture(ps, pi, pt){
          break;
       }
    }
-   //............................................................
-   // 设置过滤器
-   var fc = RWglUtility.convertSamplerFilter(g, pt.filterMinCd());
-   if(fc){
-      g.texParameteri(gt, g.TEXTURE_MIN_FILTER, fc);
-   }
-   var fc = RWglUtility.convertSamplerFilter(g, pt.filterMagCd());
-   if(fc){
-      g.texParameteri(gt, g.TEXTURE_MAG_FILTER, fc);
-   }
-   var ws = RWglUtility.convertSamplerFilter(g, pt.wrapS());
-   //if(ws){
-      //g.texParameteri(gt, g.TEXTURE_WRAP_S, ws);
-   //}
-   var wt = RWglUtility.convertSamplerFilter(g, pt.wrapT());
-   //if(wt){
-      //g.texParameteri(gt, g.TEXTURE_WRAP_T, wt);
-   //}
    return r;
 }
 

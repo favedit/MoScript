@@ -165,5 +165,5 @@ function SColor4_copyArray(d, i){
 //============================================================
 function SColor4_toString(){
    var o = this;
-   return o.red + ',' + o.green + ',' + o.blue + ',' + o.alpha;
+   return RFloat.format(o.red) + ',' + RFloat.format(o.green) + ',' + RFloat.format(o.blue) + ',' + RFloat.format(o.alpha);
 }

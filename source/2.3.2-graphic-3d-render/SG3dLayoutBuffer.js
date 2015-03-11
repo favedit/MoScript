@@ -1,27 +1,33 @@
 //==========================================================
-// <T>渲染布局元素。</T>
+// <T>渲染布局取样器。</T>
 //
 // @class
 // @author maocy
-// @history 150212
+// @history 150311
 //==========================================================
-function FG3dLayoutElement(o){
-   o = RClass.inherits(this, o, FObject);
+function SG3dLayoutBuffer(){
+   var o = this;
    //..........................................................
    // @attribute
-   o._name   = 0;
-   o._buffer = null;
+   o.slot     = null;
+   o.buffer   = null;
+   o.index    = null;
+   o.formatCd = null;
    //..........................................................
    // @method
-   o.name   = FG3dLayoutElement_name;
+   o.dispose  = SG3dLayoutBuffer_dispose;
    return o;
 }
 
 //==========================================================
-// <T>获得名称。</T>
+// <T>释放处理。</T>
 //
-// @return 名称
+// @method
 //==========================================================
-function FG3dLayoutElement_name(){
-   return this._name;
+function SG3dLayoutBuffer_dispose(){
+   var o = this;
+   o.slot = null;
+   o.buffer = null;
+   o.index = null;
+   o.formatCd = null;
 }

@@ -94,14 +94,15 @@
          <shader:true source='support.ambient'>
          <shader:true source='support.ambient.sampler'>
          vec4 color = texture2D(fs_diffuse, v_coord);
-         if(color.a < fc_alpha.x){
-            discard;
-         }
+         //if(color.a < fc_alpha.x){
+         //   discard;
+         //}
          </shader:true>
          </shader:true>
          //............................................................
          // 返回颜色
-         gl_FragColor = v_position;
+         //gl_FragColor = v_position;
+         gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
       }
    ]]></Source>
 </Configuration>

@@ -23,11 +23,14 @@ function FG3dProgramParameter(o){
    o._size       = 0;
    // @attribute 缓冲
    o._buffer     = null;
+   // @attribute 内存
+   o._memory     = null;
    //..........................................................
    // @method
    o.name        = FG3dProgramParameter_name;
    o.linker      = FG3dProgramParameter_linker;
    o.define      = FG3dProgramParameter_define;
+   o.attachData  = FG3dProgramParameter_attachData;
    o.loadConfig  = FG3dProgramParameter_loadConfig;
    return o;
 }
@@ -60,6 +63,38 @@ function FG3dProgramParameter_linker(){
 //==========================================================
 function FG3dProgramParameter_define(){
    return this._define;
+}
+
+//==========================================================
+// <T>接收数据，返回是否发生变更。</T>
+//
+// @method
+// @param p:value:Object 数据
+// @return Boolean 是否变更
+//==========================================================
+function FG3dProgramParameter_attachData(p){
+   var o = this;
+   var r = false;
+   var c = p.constructor;
+   if(c == SMatrix3d){
+      // 矩阵数据
+      var m = o._memory;
+      if(!m){
+         m = o._memory = new Float32Array(16);
+      }
+      r = RFloat.attach(m, p._data, 16);
+   }else if(c == Float32Array){
+      // 浮点数据
+      var l = p.length;
+      var m = o._memory;
+      if(!m){
+         m = o._memory = new Float32Array(l);
+      }
+      r = RFloat.attach(m, p, l);
+   }else{
+      throw new TError(o, 'Unknown data type.');
+   }
+   return r;
 }
 
 //==========================================================

@@ -93,7 +93,7 @@ function SColor4_copyArray(d, i){
 }
 function SColor4_toString(){
    var o = this;
-   return o.red + ',' + o.green + ',' + o.blue + ',' + o.alpha;
+   return RFloat.format(o.red) + ',' + RFloat.format(o.green) + ',' + RFloat.format(o.blue) + ',' + RFloat.format(o.alpha);
 }
 function SFrustum(){
    var o = this;
@@ -144,14 +144,17 @@ function SFrustum_updateCenter(){
    o.center.x = (o.minX + o.maxX) * 0.5;
    o.center.y = (o.minY + o.maxY) * 0.5;
    o.center.z = (o.minZ + o.maxZ) * 0.5;
-   o.radius = Math.sqrt((o.minX - o.minY) * (o.minX - o.minY) + (o.minZ - o.maxX) * (o.minZ - o.maxX) + (o.maxY - o.maxZ) * (o.maxY - o.maxZ)) * 0.5;
+   var cx = o.maxX - o.minX;
+   var cy = o.maxY - o.minY;
+   var cz = o.maxZ - o.minZ;
+   o.radius = Math.sqrt(cx * cx + cy * cy + cz * cz) * 0.5;
 }
 function SFrustum_update(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    var o = this;
    var aspect = pvw / pvh;
    var znear = pvn;
    var zfar = pvf;
-   var fov = Math.tan(RMath.DEGREE_RATE * pva * 0.5);
+   var fov = Math.tan(RConst.DEGREE_RATE * pva * 0.5);
    var nearY = znear * fov;
    var nearX = nearY * aspect;
    var farY = zfar * fov;
@@ -192,7 +195,7 @@ function SFrustum_updateFlat(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    var aspect = pvw / pvh;
    var znear = pvn * pbr;
    var zfar = pvf * pfr;
-   var fov = Math.tan(RMath.DEGREE_RATE * pva * 0.5);
+   var fov = Math.tan(RConst.DEGREE_RATE * pva * 0.5);
    var nearY = znear * fov;
    var nearX = nearY * aspect;
    var farY = zfar * fov;
@@ -225,7 +228,7 @@ function SFrustum_updateFlat(pva, pvw, pvh, pvn, pvf, pfr, pbr, pm){
    var m = RMath.matrix;
    m.assign(pm);
    m.invert();
-   m.transform(o.coners, ps, 8);
+   m.transform(o.coners, 0, ps, 0, 8);
    o.coners[ 1] = 0.0;
    o.coners[ 4] = 0.0;
    o.coners[ 7] = 0.0;
@@ -691,7 +694,7 @@ function SMatrix3x3_appendData(p){
 function SMatrix3x3_rotationX(p){
    var rs = Math.sin(p);
    var rc = Math.cos(p);
-   var v = RMath.float9;
+   var v = RMath.value9;
    v[0] = 1;
    v[1] = 0;
    v[2] = 0;
@@ -706,7 +709,7 @@ function SMatrix3x3_rotationX(p){
 function SMatrix3x3_rotationY(p){
    var rs = Math.sin(p);
    var rc = Math.cos(p);
-   var v = RMath.float9;
+   var v = RMath.value9;
    v[0] = rc;
    v[1] = 0;
    v[2] = rs;
@@ -721,7 +724,7 @@ function SMatrix3x3_rotationY(p){
 function SMatrix3x3_rotationZ(p){
    var rs = Math.sin(p);
    var rc = Math.cos(p);
-   var v = RMath.float9;
+   var v = RMath.value9;
    v[0] = rc;
    v[1] = rs;
    v[2] = 0;
@@ -740,7 +743,7 @@ function SMatrix3x3_rotation(x, y, z){
    var rcy = Math.cos(y);
    var rsz = Math.sin(z);
    var rcz = Math.cos(z);
-   var v = RMath.float9;
+   var v = RMath.value9;
    v[0] = rcy * rcz;
    v[1] = rcy * rsz;
    v[2] = -rsy;
@@ -755,7 +758,7 @@ function SMatrix3x3_rotation(x, y, z){
 function SMatrix3x3_invert(){
    var o = this;
    var d = o._data;
-   var v = RValue.float9;
+   var v = RValue.value9;
    v[0] = (d[4] * d[8]) - (d[5] * d[7]);
    v[1] = (d[2] * d[7]) - (d[1] * d[8]);
    v[2] = (d[1] * d[5]) - (d[2] * d[4]);
@@ -880,7 +883,7 @@ function SMatrix4x4_data(){
 }
 function SMatrix4x4_isIdentityData(){
    var d = this._data;
-   var v = RMath.identity4x4;
+   var v = RConst.identity4x4;
    for(var i = 0; i < 16; i++){
       if(d[i] != v[i]){
          return false;
@@ -891,7 +894,7 @@ function SMatrix4x4_isIdentityData(){
 function SMatrix4x4_identityData(){
    var o = this;
    var d = o._data;
-   var v = RMath.identity4x4;
+   var v = RConst.identity4x4;
    for(var i = 0; i < 16; i++){
       d[i] = v[i];
    }
@@ -2456,20 +2459,22 @@ function SVector4_unserialize3(p){
 }
 var RMath = new function RMath(){
    var o = this;
-   o.PI             = Math.PI;
-   o.PI2            = Math.PI * 2;
-   o.RADIAN_RATE    = 180 / Math.PI;
-   o.DEGREE_RATE    = Math.PI / 180;
-   o.PERCENT_10     = 1 / 10;
-   o.PERCENT_100    = 1 / 100;
-   o.PERCENT_1000   = 1 / 1000;
+   o.value1         = new Array(1);
+   o.value2         = new Array(2);
+   o.value3         = new Array(3);
+   o.value4         = new Array(4);
+   o.value9         = new Array(9);
+   o.value12        = new Array(12);
+   o.value16        = new Array(16);
    o.vectorAxisX    = null;
    o.vectorAxisY    = null;
    o.vectorAxisZ    = null;
    o.vectorScale    = null;
    o.vectorForward  = null;
    o.vectorBackward = null;
-   o.identity4x4    = null;
+   o.vector3        = null;
+   o.rectangle      = null;
+   o.matrix         = null;
    o.construct      = RMath_construct;
    o.construct();
    return o;
@@ -2482,5 +2487,7 @@ function RMath_construct(){
    o.vectorScale = new SVector3(1, 1, 1);
    o.vectorForward = new SVector3(0, 0, 1);
    o.vectorBackward = new SVector3(0, 0, -1);
-   o.identity4x4 = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+   o.vector3 = new SVector3();
+   o.rectangle = new SRectangle();
+   o.matrix = new SMatrix3d();
 }

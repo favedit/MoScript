@@ -57,6 +57,7 @@ function FDsSceneCanvas(o){
    o.switchMode           = FDsSceneCanvas_switchMode;
    o.switchPlay           = FDsSceneCanvas_switchPlay;
    o.switchMovie          = FDsSceneCanvas_switchMovie;
+   o.reloadRegion         = FDsSceneCanvas_reloadRegion;
    o.loadScene            = FDsSceneCanvas_loadScene;
    // @method
    o.dispose              = FDsSceneCanvas_dispose;
@@ -247,11 +248,9 @@ function FDsSceneCanvas_onEnterFrame(){
    var ka = RKeyboard.isPress(EKeyCode.A);
    var kd = RKeyboard.isPress(EKeyCode.D);
    if(ka && !kd){
-      //c.doStrafe(r);
       c.doYaw(r);
    }
    if(!ka && kd){
-      //c.doStrafe(-r);
       c.doYaw(-r);
    }
    var kq = RKeyboard.isPress(EKeyCode.Q);
@@ -306,6 +305,8 @@ function FDsSceneCanvas_onSceneLoad(p){
    l.pushDisplay(o._templateRotation);
    l.pushDisplay(o._templateScale);
    s.registerLayer('ui', l);
+   // 加载区域
+   o.reloadRegion();
    // 加载完成
    o.processLoadListener(o);
 }
@@ -637,6 +638,20 @@ function FDsSceneCanvas_switchMovie(p, f){
          d._optionMovie = p;
       }
    }
+}
+
+//==========================================================
+// <T>重新加载区域。</T>
+//
+// @method
+//==========================================================
+function FDsSceneCanvas_reloadRegion(p){
+   var o = this;
+   var s = o._activeScene;
+   var r = s._region._resource;
+   o._cameraMoveRate = r.moveSpeed();
+   o._cameraKeyRotation = r.rotationKeySpeed();
+   o._cameraMouseRotation = r.rotationMouseSpeed();
 }
 
 //==========================================================

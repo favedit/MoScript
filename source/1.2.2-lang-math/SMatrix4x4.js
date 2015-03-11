@@ -60,7 +60,7 @@ function SMatrix4x4_data(){
 //============================================================
 function SMatrix4x4_isIdentityData(){
    var d = this._data;
-   var v = RMath.identity4x4;
+   var v = RConst.identity4x4;
    for(var i = 0; i < 16; i++){
       if(d[i] != v[i]){
          return false;
@@ -77,7 +77,7 @@ function SMatrix4x4_isIdentityData(){
 function SMatrix4x4_identityData(){
    var o = this;
    var d = o._data;
-   var v = RMath.identity4x4;
+   var v = RConst.identity4x4;
    for(var i = 0; i < 16; i++){
       d[i] = v[i];
    }

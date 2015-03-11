@@ -16,6 +16,7 @@ function FG3dFlatTexture(o){
    // @method
    o.uploadData = RMethod.virtual(o, 'uploadData');
    o.upload     = RMethod.virtual(o, 'upload');
+   o.update     = RMethod.empty;
    return o;
 }
 

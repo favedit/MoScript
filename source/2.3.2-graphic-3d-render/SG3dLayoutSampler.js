@@ -1,28 +1,31 @@
 //==========================================================
-// <T>立方渲染纹理。</T>
+// <T>渲染布局取样器。</T>
 //
+// @class
 // @author maocy
-// @history 141231
+// @history 150311
 //==========================================================
-function FG3dCubeTexture(o){
-   o = RClass.inherits(this, o, FG3dTexture);
+function SG3dLayoutSampler(){
+   var o = this;
    //..........................................................
    // @attribute
-   o.size = 0;
+   o.slot    = null;
+   o.index   = -1;
+   o.texture = null;
    //..........................................................
    // @method
-   o.construct = FG3dTexture_construct;
-   // @method
-   o.upload    = RMethod.virtual(o, 'upload');
-   o.update    = RMethod.empty;
+   o.dispose = SG3dLayoutSampler_dispose;
    return o;
 }
 
 //==========================================================
-// <T>构造处理。</T>
+// <T>释放处理。</T>
+//
+// @method
 //==========================================================
-function FG3dTexture_construct(){
+function SG3dLayoutSampler_dispose(){
    var o = this;
-   o.__base.FG3dTexture.construct();
-   o._textureCd = EG3dTexture.Cube;
+   o.slot = null;
+   o.index = -1;
+   o.texture = null;
 }

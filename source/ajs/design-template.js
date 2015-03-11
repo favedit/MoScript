@@ -87,7 +87,7 @@ function FDsTemplateCanvas_onMouseCapture(p){
          m.ty = cm.ty + cy / 360 * 3.14;
          break;
       case EDsCanvasMode.Rotation:
-         m.ry = cm.ry + cx * RMath.DEGREE_RATE;
+         m.ry = cm.ry + cx * RConst.DEGREE_RATE;
          break;
       case EDsCanvasMode.Scale:
          m.sx = cm.sx + cx / 100;

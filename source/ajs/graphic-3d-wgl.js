@@ -8,12 +8,19 @@ function FWglContext(o){
    o._activeTextureSlot  = null;
    o._parameters         = null;
    o._extensions         = null;
+   o._statusRecord       = false;
+   o._recordBuffers      = null;
+   o._recordSamplers     = null;
    o._data9              = null;
    o._data16             = null;
    o.construct           = FWglContext_construct;
    o.linkCanvas          = FWglContext_linkCanvas;
    o.parameters          = FWglContext_parameters;
    o.extensions          = FWglContext_extensions;
+   o.recordBuffers       = FWglContext_recordBuffers;
+   o.recordSamplers      = FWglContext_recordSamplers;
+   o.recordBegin         = FWglContext_recordBegin;
+   o.recordEnd           = FWglContext_recordEnd;
    o.createProgram       = FWglContext_createProgram;
    o.createLayout        = FWglContext_createLayout;
    o.createVertexBuffer  = FWglContext_createVertexBuffer;
@@ -46,6 +53,8 @@ function FWglContext_construct(){
    o._capability = new SG3dContextCapability();
    o._data9 = new Float32Array(9);
    o._data16 = new Float32Array(16);
+   o._recordBuffers = new TObjects();
+   o._recordSamplers = new TObjects();
 }
 function FWglContext_linkCanvas(h){
    var o = this;
@@ -90,7 +99,6 @@ function FWglContext_linkCanvas(h){
    }
    var e = g.getExtension('OES_element_index_uint');
    if(e){
-      c.optionIndex32 = true;
    }
    var e = o._nativeSamplerS3tc = g.getExtension('WEBGL_compressed_texture_s3tc');
    if(e){
@@ -240,6 +248,21 @@ function FWglContext_extensions(){
    }
    return r;
 }
+function FWglContext_recordBuffers(){
+   return this._recordBuffers;
+}
+function FWglContext_recordSamplers(){
+   return this._recordSamplers;
+}
+function FWglContext_recordBegin(){
+   var o = this;
+   o._recordBuffers.clear();
+   o._recordSamplers.clear();
+   o._statusRecord = true;
+}
+function FWglContext_recordEnd(){
+   this._statusRecord = false;
+}
 function FWglContext_createProgram(){
    var o = this;
    var r = RClass.create(FWglProgram);
@@ -250,12 +273,11 @@ function FWglContext_createProgram(){
 }
 function FWglContext_createLayout(){
    var o = this;
-   if(!o._capability.optionLayout){
-      throw new TError(o, 'Unsupport layout.');
-   }
    var r = RClass.create(FWglLayout);
    r.linkGraphicContext(o);
-   r.setup();
+   if(o._capability.optionLayout){
+      r.setup();
+   }
    o._statistics._layoutTotal++;
    return r;
 }
@@ -516,6 +538,14 @@ function FWglContext_bindVertexBuffer(s, b, i, f){
    var g = o._native;
    var r = true;
    o._statistics._frameBufferCount++;
+   if(o._statusRecord){
+      var l = new SG3dLayoutBuffer();
+      l.slot = s;
+      l.buffer = b;
+      l.index = i;
+      l.formatCd = f;
+      o._recordBuffers.push(l);
+   }
    var n = null;
    if(b != null){
       n = b._native;
@@ -568,10 +598,12 @@ function FWglContext_bindTexture(ps, pi, pt){
    var g = o._native;
    var r = true;
    o._statistics._frameTextureCount++;
-   if(pt == null){
-      g.bindTexture(g.TEXTURE_2D, null);
-      r = o.checkError("bindTexture", "Bind texture clear failure. (slot=%d)", ps);
-      return r;
+   if(o._statusRecord){
+      var l = new SG3dLayoutSampler();
+      l.slot = ps;
+      l.index = pi;
+      l.texture = pt;
+      o._recordSamplers.push(l);
    }
    if(o._activeTextureSlot != ps){
       g.uniform1i(ps, pi);
@@ -580,13 +612,20 @@ function FWglContext_bindTexture(ps, pi, pt){
       if(!r){
          return r;
       }
+      o._activeTextureSlot = ps;
+   }
+   if(pt == null){
+      g.bindTexture(g.TEXTURE_2D, null);
+      r = o.checkError("bindTexture", "Bind texture clear failure. (slot=%d)", ps);
+      return r;
    }
    var gt = null;
+   var gn = pt._native;
    switch(pt.textureCd()){
       case EG3dTexture.Flat2d:{
          gt = g.TEXTURE_2D;
          g.bindTexture(g.TEXTURE_2D, pt._native);
-         r = o.checkError("glBindTexture", "Bind flag texture failure. (texture_id=%d)", pt._native);
+         r = o.checkError("glBindTexture", "Bind flag texture failure. (texture_id=%d)", gn);
          if(!r){
             return r;
          }
@@ -595,7 +634,7 @@ function FWglContext_bindTexture(ps, pi, pt){
       case EG3dTexture.Cube:{
          gt = g.TEXTURE_CUBE_MAP;
          g.bindTexture(g.TEXTURE_CUBE_MAP, pt._native);
-         r = o.checkError("glBindTexture", "Bind cube texture failure. (texture_id=%d)", pt._native);
+         r = o.checkError("glBindTexture", "Bind cube texture failure. (texture_id=%d)", gn);
          if(!r){
             return r;
          }
@@ -606,16 +645,6 @@ function FWglContext_bindTexture(ps, pi, pt){
          break;
       }
    }
-   var fc = RWglUtility.convertSamplerFilter(g, pt.filterMinCd());
-   if(fc){
-      g.texParameteri(gt, g.TEXTURE_MIN_FILTER, fc);
-   }
-   var fc = RWglUtility.convertSamplerFilter(g, pt.filterMagCd());
-   if(fc){
-      g.texParameteri(gt, g.TEXTURE_MAG_FILTER, fc);
-   }
-   var ws = RWglUtility.convertSamplerFilter(g, pt.wrapS());
-   var wt = RWglUtility.convertSamplerFilter(g, pt.wrapT());
    return r;
 }
 function FWglContext_clear(r, g, b, a, d){
@@ -727,6 +756,7 @@ function FWglCubeTexture(o){
    o.isValid    = FWglCubeTexture_isValid;
    o.makeMipmap = FWglCubeTexture_makeMipmap;
    o.upload     = FWglCubeTexture_upload;
+   o.update     = FWglCubeTexture_update;
    o.dispose    = FWglCubeTexture_dispose;
    return o;
 }
@@ -743,8 +773,7 @@ function FWglCubeTexture_isValid(){
 }
 function FWglCubeTexture_makeMipmap(){
    var o = this;
-   var c = o._graphicContext;
-   var g = c._native;
+   var g = o._graphicContext._native;
    g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
    g.generateMipmap(g.TEXTURE_CUBE_MAP);
 }
@@ -760,6 +789,21 @@ function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    g.texImage2D(g.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z1.image());
    g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z2.image());
    o._statusLoad = c.checkError("texImage2D", "Upload cube image failure.");
+   o.update();
+}
+function FWglCubeTexture_update(){
+   var o = this;
+   o.__base.FG3dCubeTexture.update.call(o);
+   var g = o._graphicContext._native;
+   g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
+   var c = RWglUtility.convertSamplerFilter(g, o._filterMinCd);
+   if(c){
+      g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MIN_FILTER, c);
+   }
+   var c = RWglUtility.convertSamplerFilter(g, o._filterMagCd);
+   if(c){
+      g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MAG_FILTER, c);
+   }
 }
 function FWglCubeTexture_dispose(){
    var o = this;
@@ -779,6 +823,7 @@ function FWglFlatTexture(o){
    o.makeMipmap = FWglFlatTexture_makeMipmap;
    o.uploadData = FWglFlatTexture_uploadData;
    o.upload     = FWglFlatTexture_upload;
+   o.update     = FWglFlatTexture_update;
    o.dispose    = FWglFlatTexture_dispose;
    return o;
 }
@@ -795,8 +840,7 @@ function FWglFlatTexture_isValid(){
 }
 function FWglFlatTexture_makeMipmap(){
    var o = this;
-   var c = o._graphicContext;
-   var g = c._native;
+   var g = o._graphicContext._native;
    g.bindTexture(g.TEXTURE_2D, o._native);
    g.generateMipmap(g.TEXTURE_2D);
 }
@@ -817,6 +861,7 @@ function FWglFlatTexture_uploadData(d, w, h){
    g.bindTexture(g.TEXTURE_2D, o._native);
    g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, w, h, 0, g.RGBA, g.UNSIGNED_BYTE, m);
    o._statusLoad = c.checkError("texImage2D", "Upload data failure.");
+   o.update();
 }
 function FWglFlatTexture_upload(p){
    var o = this;
@@ -839,7 +884,22 @@ function FWglFlatTexture_upload(p){
    }
    g.bindTexture(g.TEXTURE_2D, o._native);
    g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
+   o.update();
    o._statusLoad = c.checkError("texImage2D", "Upload image failure.");
+}
+function FWglFlatTexture_update(){
+   var o = this;
+   o.__base.FG3dFlatTexture.update.call(o);
+   var g = o._graphicContext._native;
+   g.bindTexture(g.TEXTURE_2D, o._native);
+   var c = RWglUtility.convertSamplerFilter(g, o._filterMinCd);
+   if(c){
+      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, c);
+   }
+   var c = RWglUtility.convertSamplerFilter(g, o._filterMagCd);
+   if(c){
+      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, c);
+   }
 }
 function FWglFlatTexture_dispose(){
    var o = this;

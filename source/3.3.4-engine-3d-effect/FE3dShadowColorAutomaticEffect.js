@@ -1,19 +1,17 @@
 ﻿//==========================================================
-// <T>阴影深度骨骼渲染器。</T>
+// <T>阴影颜色自动渲染器。</T>
 //
 // @author maocy
-// @history 150109
+// @history 141230
 //==========================================================
-function FG3dShadowDepthSkeletonEffect(o){
+function FE3dShadowColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    //..........................................................
    // @attribute
-   o._code            = 'shadow.depth.skeleton';
-   // @attribute
-   o._supportSkeleton = true;
+   o._code          = 'shadow.color.automatic';
    //..........................................................
    // @method
-   o.drawRenderable   = FG3dShadowDepthSkeletonEffect_drawRenderable;
+   o.drawRenderable = FE3dShadowColorAutomaticEffect_drawRenderable;
    return o;
 }
 
@@ -24,19 +22,33 @@ function FG3dShadowDepthSkeletonEffect(o){
 // @param pg:region:FG3dRegion 渲染区域
 // @param pr:renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FG3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
+function FE3dShadowColorAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
-   // 绑定所有属性流
-   p.setParameter('vc_model_matrix', r.currentMatrix());
-   p.setParameter('vc_vp_matrix', prvp);
-   p.setParameter('vc_camera_position', prcp);
-   p.setParameter('vc_light_direction', prld);
-   p.setParameter('fc_camera_position', prcp);
-   p.setParameter('fc_light_direction', prld);
-   // 设置材质
-   var m = r.material();
+   // 获得参数
+   var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
+   var vcvpm = pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix);
+   var vld = pg.calculate(EG3dRegionParameter.LightDirection);
+   var vlvm = pg.calculate(EG3dRegionParameter.LightViewMatrix);
+   var vlvpm = pg.calculate(EG3dRegionParameter.LightViewProjectionMatrix);
+   var vlci = pg.calculate(EG3dRegionParameter.LightInfo);
+   var tp = pg.techniquePass();
+   // 绑定材质
+   var m = pr.material();
+   o.bindMaterial(m);
+   // 绑定顶点常量
+   p.setParameter('vc_light_depth', vlci);
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   p.setParameter('vc_vp_matrix', vcvpm);
+   p.setParameter('vc_camera_position', vcp);
+   p.setParameter('vc_light_direction', vld);
+   p.setParameter('vc_light_view_matrix', vlvm);
+   p.setParameter('vc_light_vp_matrix', vlvpm);
+   p.setParameter('fc_camera_position', vcp);
+   p.setParameter('fc_light_direction', vld);
+   p.setParameter4('fc_light_depth', 1.0 / 4096.0, 0.0, -1.0 / 4096.0, vlci.w);
+   // 绑定像素常量
    var mi = m.info();
    p.setParameter('fc_color', mi.ambientColor);
    p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
@@ -44,28 +56,14 @@ function FG3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
    p.setParameter('fc_ambient_color', mi.ambientColor);
    p.setParameter('fc_diffuse_color', mi.diffuseColor);
    p.setParameter('fc_specular_color', mi.specularColor);
-   p.setParameter4('fc_specular', mi.specularBase, mi.specularRate, mi.specularAverage, mi.specularShadow);
+   p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
    p.setParameter('fc_specular_view_color', mi.specularViewColor);
    p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
    p.setParameter('fc_reflect_color', mi.reflectColor);
-   // 设置骨头集合
-   var bs = pr.bones();
-   if(bs){
-      var bc = bs.count();
-      if(bc > 32){
-         bc = 32;
-      }
-      var d = RTypeArray.findTemp(EDataType.Float, 16 * bc);
-      for(var i = 0; i < bc; i++){
-         var b = bs.get(i);
-         var m = b.matrix();
-         m.writeData(d, 16 * i);
-      }
-      p.setParameter('vc_bone_matrix', d);
-   }
    // 绑定所有属性流
    o.bindAttributes(pr);
    // 绑定所有取样器
+   p.setSampler('fs_light_depth', tp.textureDepth());
    o.bindSamplers(pr);
    // 绘制处理
    c.drawTriangles(pr.indexBuffer());

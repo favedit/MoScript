@@ -47,7 +47,7 @@ function FG3dPerspectiveProjection_matrix(){
 function FG3dPerspectiveProjection_update(){
    var o = this;
    var s = o._size;
-   o._fieldOfView = RMath.DEGREE_RATE * o._angle;
+   o._fieldOfView = RConst.DEGREE_RATE * o._angle;
    o._matrix.perspectiveFieldOfViewLH(o._fieldOfView, s.width / s.height, o._znear, o._zfar);
 }
 

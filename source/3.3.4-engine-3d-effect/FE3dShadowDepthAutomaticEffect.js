@@ -4,14 +4,14 @@
 // @author maocy
 // @history 141230
 //==========================================================
-function FG3dShadowDepthAutomaticEffect(o){
+function FE3dShadowDepthAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    //..........................................................
    // @attribute
    o._code          = 'shadow.depth.automatic';
    //..........................................................
    // @method
-   o.drawRenderable = FG3dShadowDepthAutomaticEffect_drawRenderable;
+   o.drawRenderable = FE3dShadowDepthAutomaticEffect_drawRenderable;
    return o;
 }
 
@@ -22,7 +22,7 @@ function FG3dShadowDepthAutomaticEffect(o){
 // @param pg:region:FG3dRegion 渲染区域
 // @param pr:renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FG3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
+function FE3dShadowDepthAutomaticEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;

@@ -101,6 +101,7 @@ function FDsSceneCanvas(o){
    o.switchMode           = FDsSceneCanvas_switchMode;
    o.switchPlay           = FDsSceneCanvas_switchPlay;
    o.switchMovie          = FDsSceneCanvas_switchMovie;
+   o.reloadRegion         = FDsSceneCanvas_reloadRegion;
    o.loadScene            = FDsSceneCanvas_loadScene;
    o.dispose              = FDsSceneCanvas_dispose;
    return o;
@@ -287,6 +288,7 @@ function FDsSceneCanvas_onSceneLoad(p){
    l.pushDisplay(o._templateRotation);
    l.pushDisplay(o._templateScale);
    s.registerLayer('ui', l);
+   o.reloadRegion();
    o.processLoadListener(o);
 }
 function FDsSceneCanvas_oeRefresh(p){
@@ -503,6 +505,14 @@ function FDsSceneCanvas_switchMovie(p, f){
          d._optionMovie = p;
       }
    }
+}
+function FDsSceneCanvas_reloadRegion(p){
+   var o = this;
+   var s = o._activeScene;
+   var r = s._region._resource;
+   o._cameraMoveRate = r.moveSpeed();
+   o._cameraKeyRotation = r.rotationKeySpeed();
+   o._cameraMouseRotation = r.rotationMouseSpeed();
 }
 function FDsSceneCanvas_loadScene(p){
    var o = this;
@@ -1095,6 +1105,7 @@ function FDsSceneMaterial1Frame(o){
    o._controlOptionEmissive = null;
    o._controlEmissiveColor  = null;
    o.onBuilded              = FDsSceneMaterial1Frame_onBuilded;
+   o.onOptionChanged        = FDsSceneMaterial1Frame_onOptionChanged;
    o.onDataChanged          = FDsSceneMaterial1Frame_onDataChanged;
    o.construct              = FDsSceneMaterial1Frame_construct;
    o.loadObject             = FDsSceneMaterial1Frame_loadObject;
@@ -1109,24 +1120,40 @@ function FDsSceneMaterial1Frame_onBuilded(p){
    o._controlOptionAlpha.addDataChangedListener(o, o.onDataChanged);
    o._controlAlphaBase.addDataChangedListener(o, o.onDataChanged);
    o._controlAlphaRate.addDataChangedListener(o, o.onDataChanged);
-   o._controlOptionColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionColor.addDataChangedListener(o, o.onOptionChanged);
    o._controlColorMin.addDataChangedListener(o, o.onDataChanged);
    o._controlColorMax.addDataChangedListener(o, o.onDataChanged);
    o._controlColorRate.addDataChangedListener(o, o.onDataChanged);
    o._controlColorMerge.addDataChangedListener(o, o.onDataChanged);
-   o._controlOptionAmbient.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionAmbient.addDataChangedListener(o, o.onOptionChanged);
    o._controlAmbientColor.addDataChangedListener(o, o.onDataChanged);
-   o._controlOptionDiffuse.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionDiffuse.addDataChangedListener(o, o.onOptionChanged);
    o._controlDiffuseColor.addDataChangedListener(o, o.onDataChanged);
-   o._controlOptionSpecular.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionSpecular.addDataChangedListener(o, o.onOptionChanged);
    o._controlSpecularColor.addDataChangedListener(o, o.onDataChanged);
    o._controlSpecularBase.addDataChangedListener(o, o.onDataChanged);
    o._controlSpecularLevel.addDataChangedListener(o, o.onDataChanged);
-   o._controlOptionReflect.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionReflect.addDataChangedListener(o, o.onOptionChanged);
    o._controlReflectColor.addDataChangedListener(o, o.onDataChanged);
    o._controlReflectMerge.addDataChangedListener(o, o.onDataChanged);
-   o._controlOptionEmissive.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionEmissive.addDataChangedListener(o, o.onOptionChanged);
    o._controlEmissiveColor.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsSceneMaterial1Frame_onOptionChanged(p){
+   var o = this;
+   var t = o._scene;
+   var m = o._material;
+   var mr = m.resource();
+   var mi = mr.info();
+   mi.optionColor = o._controlOptionColor.get();
+   mi.optionAmbient = o._controlOptionAmbient.get();
+   mi.optionDiffuse = o._controlOptionDiffuse.get();
+   mi.optionSpecular = o._controlOptionSpecular.get();
+   mi.optionReflect = o._controlOptionReflect.get();
+   mi.optionEmissive = o._controlOptionEmissive.get();
+   m.reload();
+   m._display.reloadResource();
+   o._scene.dirty();
 }
 function FDsSceneMaterial1Frame_onDataChanged(p){
    var o = this;
@@ -1139,23 +1166,17 @@ function FDsSceneMaterial1Frame_onDataChanged(p){
    mi.optionAlpha = o._controlOptionAlpha.get();
    mi.alphaBase = o._controlAlphaBase.get();
    mi.alphaRate = o._controlAlphaRate.get();
-   mi.optionColor = o._controlOptionAmbient.get();
    mi.colorMin = o._controlColorMin.get();
    mi.colorMax = o._controlColorMax.get();
    mi.colorRate = o._controlColorRate.get();
    mi.colorMerge = o._controlColorMerge.get();
-   mi.optionAmbient = o._controlOptionAmbient.get();
    mi.ambientColor.assign(o._controlAmbientColor.get());
-   mi.optionDiffuse = o._controlOptionDiffuse.get();
    mi.diffuseColor.assign(o._controlDiffuseColor.get());
-   mi.optionSpecular = o._controlOptionSpecular.get();
    mi.specularColor.assign(o._controlSpecularColor.get());
    mi.specularBase = o._controlSpecularBase.get();
    mi.specularLevel = o._controlSpecularLevel.get();
-   mi.optionReflect = o._controlOptionReflect.get();
    mi.reflectColor.assign(o._controlReflectColor.get());
    mi.reflectMerge = o._controlReflectMerge.get();
-   mi.optionEmissive = o._controlOptionEmissive.get();
    mi.emissiveColor.assign(o._controlEmissiveColor.get());
    m.reload();
    m._display.reloadResource();
@@ -1415,6 +1436,9 @@ function FDsSceneRegionPropertyFrame(o){
 function FDsSceneRegionPropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlMoveSpeed.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotationKeySpeed.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotationMouseSpeed.addDataChangedListener(o, o.onDataChanged);
    o._controlOptionBackground.addDataChangedListener(o, o.onDataChanged);
    o._controlBackgroundColor.addDataChangedListener(o, o.onDataChanged);
 }
@@ -1423,7 +1447,11 @@ function FDsSceneRegionPropertyFrame_onDataChanged(p){
    var r = o._regionResource;
    r.setOptionBackground(o._controlOptionBackground.get());
    r.backgroundColor().assign(o._controlBackgroundColor.get());
+   r.setMoveSpeed(o._controlMoveSpeed.get());
+   r.setRotationKeySpeed(o._controlRotationKeySpeed.get());
+   r.setRotationMouseSpeed(o._controlRotationMouseSpeed.get());
    o._region.reloadResource();
+   o._workspace._canvas.reloadRegion();
 }
 function FDsSceneRegionPropertyFrame_construct(){
    var o = this;
@@ -1434,6 +1462,9 @@ function FDsSceneRegionPropertyFrame_loadObject(s, t){
    o._scene = s;
    o._region = t;
    var r = o._regionResource = t._resource;
+   o._controlMoveSpeed.set(r.moveSpeed());
+   o._controlRotationKeySpeed.set(r.rotationKeySpeed());
+   o._controlRotationMouseSpeed.set(r.rotationMouseSpeed());
    o._controlOptionBackground.set(r.optionBackground());
    o._controlBackgroundColor.set(r.backgroundColor());
 }

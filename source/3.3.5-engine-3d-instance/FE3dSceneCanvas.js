@@ -257,6 +257,11 @@ function FE3dSceneCanvas_onSceneLoad(p){
    var rp = s.camera().projection();
    rp.size().set(cs.width, cs.height);
    rp.update();
+   // 设置移动
+   var gr = s._region._resource;
+   o._cameraMoveRate = gr.moveSpeed();
+   o._cameraKeyRotation = gr.rotationKeySpeed();
+   o._cameraMouseRotation = gr.rotationMouseSpeed();
    // 加载完成
    o.processLoadListener(o, s);
 }
@@ -312,6 +317,7 @@ function FE3dSceneCanvas_load(p){
    var s = sc.alloc(o._context, p);
    s.addLoadListener(o, o.onSceneLoad);
    s.selectTechnique(c, FG3dGeneralTechnique);
+   //s.selectTechnique(c, FE3dShadowTechnique);
    o._stage = o._activeScene = s;
    RStage.register('stage3d', s);
 }

@@ -134,9 +134,9 @@ function FE3sScene_saveConfig(p){
    p.set('theme_guid', o._themeGuid);
    p.set('theme_code', o._themeCode);
    // 存储技术
-   //o._technique.saveConfig(x.create('Technique'));
+   o._technique.saveConfig(p.create('Technique'));
    // 存储区域
-   //o._region.saveConfig(x.create('Region'));
+   o._region.saveConfig(p.create('Region'));
    // 存储场景层
    var xls = p.create('LayerCollection');
    var ls = o._layers;

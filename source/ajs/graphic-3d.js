@@ -955,6 +955,7 @@ function FG3dDirectionalLight_direction(){
 }
 function FG3dEffect(o){
    o = RClass.inherits(this, o, FG3dObject);
+   o._ready              = null;
    o._code               = null;
    o._stateFillCd        = EG3dFillMode.Face;
    o._stateCullCd        = EG3dCullMode.Front;
@@ -972,6 +973,7 @@ function FG3dEffect(o){
    o._vertexTemplate     = null;
    o._fragmentTemplate   = null;
    o.setup               = RMethod.empty;
+   o.testReady           = FG3dEffect_testReady;
    o.code                = FG3dEffect_code;
    o.program             = FG3dEffect_program;
    o.setParameter        = FG3dEffect_setParameter;
@@ -984,6 +986,9 @@ function FG3dEffect(o){
    o.load                = FG3dEffect_load;
    o.build               = FG3dEffect_build;
    return o;
+}
+function FG3dEffect_testReady(){
+   return this._ready;
 }
 function FG3dEffect_code(){
    return this._code;
@@ -1146,12 +1151,16 @@ function FG3dEffect_load(){
 function FG3dEffectConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._configs         = null;
+   o._loadEffects     = null;
    o._registerEffects = null;
    o._templateEffects = null;
    o._effects         = null;
    o._path            = "/ar3/shader/";
    o._effectInfo      = null;
    o._tagContext      = null;
+   o._thread          = null;
+   o._interval        = 300;
+   o.onProcess        = FG3dEffectConsole_onProcess;
    o.construct        = FG3dEffectConsole_construct;
    o.path             = FG3dEffectConsole_path;
    o.register         = FG3dEffectConsole_register;
@@ -1163,10 +1172,22 @@ function FG3dEffectConsole(o){
    o.loadConfig       = FG3dEffectConsole_loadConfig;
    return o;
 }
+function FG3dEffectConsole_onProcess(){
+   var o = this;
+   var s = o._loadEffects;
+   s.record();
+   while(s.next()){
+      var m = s.current();
+      if(m.processLoad()){
+         s.removeCurrent();
+      }
+   }
+}
 function FG3dEffectConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._configs = new TDictionary();
+   o._loadEffects = new TLooper();
    o._registerEffects = new TDictionary();
    o._templateEffects = new TDictionary();
    o._effects = new TDictionary();
@@ -1203,6 +1224,7 @@ function FG3dEffectConsole_buildEffectInfo(pc, pf, pg, pr){
    }
    var mi = pr.material().info();
    pf.optionNormalInvert = mi.optionNormalInvert;
+   pf.optionColor = mi.optionColor;
    pf.optionAmbient = mi.optionAmbient;
    pf.optionDiffuse = mi.optionDiffuse;
    pf.optionSpecular = mi.optionSpecular;
@@ -1539,7 +1561,7 @@ function FG3dOrthoCamera_updateFlatCamera(p){
    var o = this;
    var f = o._frustum
    var pf = p.updateFlatFrustum();
-   var angle = RMath.DEGREE_RATE * o._projection.angle();
+   var angle = RConst.DEGREE_RATE * o._projection.angle();
    var distance = pf.radius / Math.sin(angle * 0.5);
    distance = Math.max(distance, p._projection._zfar);
    var d = o._direction;
@@ -1630,9 +1652,9 @@ function FG3dPerspectiveCamera_updateFlatFrustum(){
 }
 function FG3dPerspectiveCamera_updateFromCamera(p){
    var o = this;
-   var f = o._frustum
+   var f = o._frustum;
    var pf = p.updateFrustum();
-   var angle = RMath.DEGREE_RATE * o._projection.angle();
+   var angle = RConst.DEGREE_RATE * o._projection.angle();
    var distance = pf.radius / Math.sin(angle * 0.5);
    distance = Math.max(distance, p._projection._zfar);
    var d = o._direction;
@@ -1643,15 +1665,15 @@ function FG3dPerspectiveCamera_updateFromCamera(p){
    o._position.set(vx, vy, vz);
    o.lookAt(pf.center.x, pf.center.y, pf.center.z);
    o.update();
-   o._matrix.transform(f.coners, pf.coners, 8);
+   o._matrix.transform(f.coners, 0, pf.coners, 0, 8);
    f.updateCenter();
    o._projection.updateFrustum(f);
 }
 function FG3dPerspectiveCamera_updateFlatCamera(p){
    var o = this;
-   var f = o._frustum
+   var f = o._frustum;
    var pf = p.updateFlatFrustum();
-   var angle = RMath.DEGREE_RATE * o._projection.angle();
+   var angle = RConst.DEGREE_RATE * o._projection.angle();
    var distance = pf.radius / Math.sin(angle * 0.5);
    distance = Math.max(distance, p._projection._zfar);
    var d = o._direction;
@@ -1686,7 +1708,7 @@ function FG3dPerspectiveProjection_matrix(){
 function FG3dPerspectiveProjection_update(){
    var o = this;
    var s = o._size;
-   o._fieldOfView = RMath.DEGREE_RATE * o._angle;
+   o._fieldOfView = RConst.DEGREE_RATE * o._angle;
    o._matrix.perspectiveFieldOfViewLH(o._fieldOfView, s.width / s.height, o._znear, o._zfar);
 }
 function FG3dPerspectiveProjection_updateFrustum(p){

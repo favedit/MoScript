@@ -1784,6 +1784,16 @@ function FXmlConnection_onConnectionComplete(){
 function FXmlConnection_content(){
    return this._outputNode;
 }
+function FXmlData(o){
+   o = RClass.inherits(this, o, FObject);
+   o._ready    = null;
+   o._config   = null;
+   o.testReady = FXmlData_testReady;
+   return o;
+}
+function FXmlData_testReady(){
+   return this._ready;
+}
 var RDump = new function RDump(){
    var o = this;
    o.LINE_SINGLE = '------------------------------';

@@ -25,10 +25,6 @@ var RValue = new function RValue(){
    o.double16  = null;
    o.double16  = null;
    o.double64  = null;
-   // @attribute
-   o.vector3   = null;
-   o.rectangle = null;
-   o.matrix    = null;
    //..........................................................
    // @method
    o.construct = RValue_construct;
@@ -69,8 +65,4 @@ function RValue_construct(){
       o.double12 = new Float64Array(12);
       o.double16 = new Float64Array(16);
    }
-   // 初始化属性
-   o.vector3 = new SVector3();
-   o.rectangle = new SRectangle();
-   o.matrix = new SMatrix3d();
 }

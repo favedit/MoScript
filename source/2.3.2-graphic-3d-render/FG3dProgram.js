@@ -263,8 +263,11 @@ function FG3dProgram_setParameter(pn, pv, pc){
    }else{
       throw new TError(o, 'Bind invalid parameter type. (name={1}, type={2})', pn, t);
    }
-   // 设置内容
-   o._graphicContext.bindConst(null, p._slot, p._formatCd, d, pc);
+   // 检查数据变更
+   if(p.attachData(d)){
+      // 设置内容
+      o._graphicContext.bindConst(null, p._slot, p._formatCd, d, pc);
+   }
 }
 
 //==========================================================

@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150109
 //==========================================================
-function FG3dShadowColorSkeletonEffect(o){
+function FE3dShadowColorSkeletonEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    //..........................................................
    // @attribute
@@ -13,7 +13,7 @@ function FG3dShadowColorSkeletonEffect(o){
    o._supportSkeleton = true;
    //..........................................................
    // @method
-   o.drawRenderable   = FG3dShadowColorSkeletonEffect_drawRenderable;
+   o.drawRenderable   = FE3dShadowColorSkeletonEffect_drawRenderable;
    return o;
 }
 
@@ -23,7 +23,7 @@ function FG3dShadowColorSkeletonEffect(o){
 // @method
 // @param p:renderable:FRenderable 渲染对象
 //==========================================================
-function FG3dShadowColorSkeletonEffect_drawRenderable(pr, r){
+function FE3dShadowColorSkeletonEffect_drawRenderable(pr, r){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;

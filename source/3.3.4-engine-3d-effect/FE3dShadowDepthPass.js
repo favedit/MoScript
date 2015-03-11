@@ -4,7 +4,7 @@
 // @author maocy
 // @history 141230
 //==========================================================
-function FG3dShadowDepthPass(o){
+function FE3dShadowDepthPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
    //..........................................................
    // @attribute
@@ -14,9 +14,9 @@ function FG3dShadowDepthPass(o){
    o._renderTarget = null;
    //..........................................................
    // @method
-   o.setup         = FG3dShadowDepthPass_setup;
-   o.textureDepth  = FG3dShadowDepthPass_textureDepth;
-   o.drawRegion    = FG3dShadowDepthPass_drawRegion;
+   o.setup         = FE3dShadowDepthPass_setup;
+   o.textureDepth  = FE3dShadowDepthPass_textureDepth;
+   o.drawRegion    = FE3dShadowDepthPass_drawRegion;
    return o;
 }
 
@@ -25,10 +25,10 @@ function FG3dShadowDepthPass(o){
 //
 // @method
 //==========================================================
-function FG3dShadowDepthPass_setup(){
+function FE3dShadowDepthPass_setup(){
    var o = this;
    o.__base.FG3dTechniquePass.setup.call(o);
-   var c = o._context;
+   var c = o._graphicContext;
    // 创建平面
    var d = o._textureDepth = c.createFlatTexture();
    d.setFilter(EG3dSamplerFilter.Linear, EG3dSamplerFilter.Linear);
@@ -46,7 +46,7 @@ function FG3dShadowDepthPass_setup(){
 // @method
 // @return 深度纹理
 //==========================================================
-function FG3dShadowDepthPass_textureDepth(){
+function FE3dShadowDepthPass_textureDepth(){
    return this._textureDepth;
 }
 
@@ -56,9 +56,9 @@ function FG3dShadowDepthPass_textureDepth(){
 // @method
 // @param p:region:FG3dRetion 区域
 //==========================================================
-function FG3dShadowDepthPass_drawRegion(p){
+function FE3dShadowDepthPass_drawRegion(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    // 设置渲染目标
    if(o._finish){
       c.setRenderTarget(null);

@@ -7,7 +7,7 @@
 150303 - Engine - IE浏览器，属性不显示。
 150304 - Engine - 渲染对象释放。
 150304 - Engine - 扩展信息获得修正，使用getSupportedExtensions获得集合。
-150305 - Engine - 同材质物件合并
+150305 - Engine - 同材质物件合并渲染
 150306 - Design - Mesh和Track的动画关联关系
 150306 - Engine - 材质参数合并
 150307 - Design - 增加只查看选中物件功能(Ctrl+View查看，双击恢复)。
@@ -19,15 +19,20 @@
 150310 - Server - 合并Template和Texture描述到场景里，减少网络文件数量。
 150310 - Engine - 模型数据LZMA-Javascript解压缩
 150310 - Engine - 使用Google(closure-compiler)压缩JavaScript代码。
+150311 - Design - 场景背景颜色设置
+150311 - Design - 场景内相机移动速度设置
+150311 - Engine - 颜色/散射/高光/反射 开关控制
+150311 - Engine - 绑定缓冲优化(使用SG3dLayoutBuffer存储，快速绑定)
+150311 - Engine - 绑定取样优化(使用SG3dLayoutSampler存储，快速绑定)
+150311 - Engine - 绑定参数优化(FG3dProgramParemeter内数据变更检测)
+150311 - Engine - 纹理加载报绑定警告。(需要设置texParameteri)
 
 进行中
 ------------------------------------------------------------
-7 - Design - 场景背景设置
-4 - Engine - 颜色/散射/高光/反射 开关控制
-7 - Engine - 绑定纹理优化
-7 - Engine - 动画帧数据压缩（位移/旋转/缩放数据分离）
+1 - Engine - 效果器异步加载
 
 1 - Design - 文档（30%）
+7 - Engine - 动画帧数据压缩（位移/旋转/缩放数据分离）
 7 - Engine - 物件选取表现方式。
 2 - Engine - 动态刷新，降低效率（进行中...）
 3 - Engine - 纹理压缩 （调查中）
@@ -44,10 +49,7 @@
 6 - Engine - Instance 绘制
 4 - Engine - 合并物件自动延时释放处理。
 7 - Demo   - 银河系模拟
-7 - Engine - 绑定缓冲优化
-7 - Engine - 绑定参数优化
-1 - Design - 场景，背景颜色设置
-1 - Design - 场景，相机移动速度设置
+7 - Engine - 数据多线程加载。
 
 排期中
 ------------------------------------------------------------
@@ -56,7 +58,6 @@
 1 - Runtime - Class的NameSpace化处理
 1 - Design - ListView 控件
 1 - Design - Data 数据控件体系
-8 - Engine - Multi物件绘制 drawRenderables
 7 - Engine - 阴影渲染（浮点数纹理，Fragment渲染器的浮点精度不够，暂时无法解决）
 7 - Engine - 延迟渲染（浮点数纹理，Fragment渲染器的浮点精度不够，暂时无法解决）
 7 - Demo   - 跑酷游戏

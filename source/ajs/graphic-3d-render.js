@@ -172,6 +172,36 @@ function SG3dContextCapability_calculateInstanceCount(bc, vc){
    }
    return r;
 }
+function SG3dLayoutBuffer(){
+   var o = this;
+   o.slot     = null;
+   o.buffer   = null;
+   o.index    = null;
+   o.formatCd = null;
+   o.dispose  = SG3dLayoutBuffer_dispose;
+   return o;
+}
+function SG3dLayoutBuffer_dispose(){
+   var o = this;
+   o.slot = null;
+   o.buffer = null;
+   o.index = null;
+   o.formatCd = null;
+}
+function SG3dLayoutSampler(){
+   var o = this;
+   o.slot    = null;
+   o.index   = -1;
+   o.texture = null;
+   o.dispose = SG3dLayoutSampler_dispose;
+   return o;
+}
+function SG3dLayoutSampler_dispose(){
+   var o = this;
+   o.slot = null;
+   o.index = -1;
+   o.texture = null;
+}
 function FG3dBuffer(o){
    o = RClass.inherits(this, o, FG3dObject);
    o._name   = null;
@@ -204,6 +234,7 @@ function FG3dContext(o){
    o.capability          = FG3dContext_capability;
    o.statistics          = FG3dContext_statistics;
    o.createProgram       = RMethod.virtual(o, 'createProgram');
+   o.createLayout        = RMethod.virtual(o, 'createLayout');
    o.createVertexBuffer  = RMethod.virtual(o, 'createVertexBuffer');
    o.createIndexBuffer   = RMethod.virtual(o, 'createIndexBuffer');
    o.createFlatTexture   = RMethod.virtual(o, 'createFlatTexture');
@@ -260,6 +291,8 @@ function FG3dCubeTexture(o){
    o = RClass.inherits(this, o, FG3dTexture);
    o.size = 0;
    o.construct = FG3dTexture_construct;
+   o.upload    = RMethod.virtual(o, 'upload');
+   o.update    = RMethod.empty;
    return o;
 }
 function FG3dTexture_construct(){
@@ -274,6 +307,7 @@ function FG3dFlatTexture(o){
    o.construct  = FG3dFlatTexture_construct;
    o.uploadData = RMethod.virtual(o, 'uploadData');
    o.upload     = RMethod.virtual(o, 'upload');
+   o.update     = RMethod.empty;
    return o;
 }
 function FG3dFlatTexture_construct(){
@@ -302,25 +336,83 @@ function FG3dIndexBuffer_count(){
 }
 function FG3dLayout(o){
    o = RClass.inherits(this, o, FG3dObject);
-   o._elemets = null;
-   o.elemets  = FG3dLayout_elemets;
-   o.update   = FG3dLayout_update;
+   o._buffers     = null;
+   o._samplers    = null;
+   o.buffers      = FG3dLayout_buffers;
+   o.linkBuffers  = FG3dLayout_linkBuffers;
+   o.bindBuffers  = FG3dLayout_bindBuffers;
+   o.samplers     = FG3dLayout_samplers;
+   o.linkSamplers = FG3dLayout_linkSamplers;
+   o.bindSamplers = FG3dLayout_bindSamplers;
+   o.unbindSamplers = FG3dLayout_unbindSamplers;
+   o.dispose      = FG3dLayout_dispose;
    return o;
 }
-function FG3dLayout_elemets(){
-   return this._elemets;
+function FG3dLayout_construct(){
+   var o = this;
+   o.__base.FG3dObject.construct.call(o);
 }
-function FG3dLayout_update(){
+function FG3dLayout_buffers(){
+   return this._buffers;
 }
-function FG3dLayoutElement(o){
-   o = RClass.inherits(this, o, FObject);
-   o._name   = 0;
-   o._buffer = null;
-   o.name   = FG3dLayoutElement_name;
-   return o;
+function FG3dLayout_linkBuffers(p){
+   var o = this;
+   if(!p.isEmpty()){
+      var s = o._buffers = new TObjects();
+      s.assign(p);
+   }
 }
-function FG3dLayoutElement_name(){
-   return this._name;
+function FG3dLayout_bindBuffers(){
+   var o = this;
+   var g = o._graphicContext;
+   var s = o._buffers;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var v = s.getAt(i);
+         g.bindVertexBuffer(v.slot, v.buffer, v.index, v.formatCd);
+      }
+   }
+}
+function FG3dLayout_samplers(){
+   return this._samplers;
+}
+function FG3dLayout_linkSamplers(p){
+   var o = this;
+   if(!p.isEmpty()){
+      var s = o._samplers = new TObjects();
+      s.assign(p);
+   }
+}
+function FG3dLayout_bindSamplers(){
+   var o = this;
+   var g = o._graphicContext;
+   var s = o._samplers;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var v = s.getAt(i);
+         g.bindTexture(v.slot, v.index, v.texture);
+      }
+   }
+}
+function FG3dLayout_unbindSamplers(){
+   var o = this;
+   var g = o._graphicContext;
+   var s = o._samplers;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var v = s.getAt(i);
+         g.bindTexture(v.slot, v.index, null);
+      }
+   }
+}
+function FG3dLayout_dispose(){
+   var o = this;
+   o._buffers = RObject.dispose(o._buffers);
+   o._samplers = RObject.dispose(o._samplers);
+   o.__base.FG3dLayout.dispose.call(o);
 }
 function FG3dProgram(o){
    o = RClass.inherits(this, o, FG3dObject);
@@ -458,7 +550,9 @@ function FG3dProgram_setParameter(pn, pv, pc){
    }else{
       throw new TError(o, 'Bind invalid parameter type. (name={1}, type={2})', pn, t);
    }
-   o._graphicContext.bindConst(null, p._slot, p._formatCd, d, pc);
+   if(p.attachData(d)){
+      o._graphicContext.bindConst(null, p._slot, p._formatCd, d, pc);
+   }
 }
 function FG3dProgram_setParameter4(pn, px, py, pz, pw){
    var v = RTypeArray.float4();
@@ -511,9 +605,11 @@ function FG3dProgramParameter(o){
    o._slot       = null;
    o._size       = 0;
    o._buffer     = null;
+   o._memory     = null;
    o.name        = FG3dProgramParameter_name;
    o.linker      = FG3dProgramParameter_linker;
    o.define      = FG3dProgramParameter_define;
+   o.attachData  = FG3dProgramParameter_attachData;
    o.loadConfig  = FG3dProgramParameter_loadConfig;
    return o;
 }
@@ -525,6 +621,28 @@ function FG3dProgramParameter_linker(){
 }
 function FG3dProgramParameter_define(){
    return this._define;
+}
+function FG3dProgramParameter_attachData(p){
+   var o = this;
+   var r = false;
+   var c = p.constructor;
+   if(c == SMatrix3d){
+      var m = o._memory;
+      if(!m){
+         m = o._memory = new Float32Array(16);
+      }
+      r = RFloat.attach(m, p._data, 16);
+   }else if(c == Float32Array){
+      var l = p.length;
+      var m = o._memory;
+      if(!m){
+         m = o._memory = new Float32Array(l);
+      }
+      r = RFloat.attach(m, p, l);
+   }else{
+      throw new TError(o, 'Unknown data type.');
+   }
+   return r;
 }
 function FG3dProgramParameter_loadConfig(p){
    var o = this;

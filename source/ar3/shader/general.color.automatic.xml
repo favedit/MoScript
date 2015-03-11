@@ -49,10 +49,10 @@
       //..........................................................
       // 变换矩阵声明
       <shader:true source='option.instance'>
-      uniform mat4 vc_model_matrix[<shader:write source='instance.count'/>];
+         uniform mat4 vc_model_matrix[<shader:write source='instance.count'/>];
       </shader:true>
       <shader:false source='option.instance'>
-      uniform mat4 vc_model_matrix;
+         uniform mat4 vc_model_matrix;
       </shader:false>
       uniform mat4 vc_vp_matrix;
       uniform vec3 vc_camera_position;
@@ -60,21 +60,21 @@
       //..........................................................
       // 属性流声明
       <shader:true source='option.instance'>
-      attribute float va_instance;
+         attribute float va_instance;
       </shader:true>
       attribute vec3 va_position;
       <shader:true source='vertex.attribute.color'>
-      attribute vec4 va_color;
+         attribute vec4 va_color;
       </shader:true>
       <shader:true source='vertex.attribute.coord'>
-      attribute vec2 va_coord;
+         attribute vec2 va_coord;
       </shader:true>
       <shader:true source='vertex.attribute.normal'>
-      attribute vec3 va_normal;
-      <shader:true source='vertex.attribute.normal.full'>
-      attribute vec3 va_binormal;
-      attribute vec3 va_tangent;
-      </shader:true>
+         attribute vec3 va_normal;
+         <shader:true source='vertex.attribute.normal.full'>
+            attribute vec3 va_binormal;
+            attribute vec3 va_tangent;
+         </shader:true>
       </shader:true>
       //..........................................................
       // 属性流声明
@@ -97,10 +97,10 @@
       void main(){
          // 计算模型坐标
          <shader:true source='option.instance'>
-         mat4 modelMatrix = vc_model_matrix[int(va_instance)];
+            mat4 modelMatrix = vc_model_matrix[int(va_instance)];
          </shader:true>
          <shader:false source='option.instance'>
-         mat4 modelMatrix = vc_model_matrix;
+            mat4 modelMatrix = vc_model_matrix;
          </shader:false>
          vec4 modelPosition = vec4(va_position, 1.0) * modelMatrix ;
          // 计算最终坐标
@@ -108,25 +108,25 @@
          v_model_position = modelPosition;
          // 设置颜色
          <shader:true source='vertex.attribute.color'>
-         v_color = va_color * 1.0625;
+            v_color = va_color * 1.0625;
          </shader:true>
          // 设置纹理
          <shader:true source='vertex.attribute.coord'>
-         v_coord = va_coord;
+            v_coord = va_coord;
          </shader:true>
          // 设置法线
          <shader:true source='vertex.attribute.normal'>
-         mat3 modelMatrix3 = mat3(modelMatrix);
-         vec3 normal = normalize((va_normal.xyz - 0.470588) * 2.125 * modelMatrix3);
-         v_normal = normal;
-         // 设置法线空间
-         <shader:true source='support.dump'>
-         vec3 binormal = normalize((va_binormal - 0.470588) * 2.125 * modelMatrix3);
-         vec3 tangent = normalize((va_tangent - 0.470588) * 2.125 * modelMatrix3);
-         mat3 matrixTs = mat3(tangent, binormal, normal);
-         v_camera_ts = normalize((vc_camera_position - modelPosition.xyz) * matrixTs);
-         v_light_ts = normalize(vc_light_direction * matrixTs);
-         </shader:true>
+            mat3 modelMatrix3 = mat3(modelMatrix);
+            vec3 normal = normalize((va_normal.xyz - 0.470588) * 2.125 * modelMatrix3);
+            v_normal = normal;
+            // 设置法线空间
+            <shader:true source='support.dump'>
+               vec3 binormal = normalize((va_binormal - 0.470588) * 2.125 * modelMatrix3);
+               vec3 tangent = normalize((va_tangent - 0.470588) * 2.125 * modelMatrix3);
+               mat3 matrixTs = mat3(tangent, binormal, normal);
+               v_camera_ts = normalize((vc_camera_position - modelPosition.xyz) * matrixTs);
+               v_light_ts = normalize(vc_light_direction * matrixTs);
+            </shader:true>
          </shader:true>
       }
    ]]></Source>
@@ -206,115 +206,128 @@
       // 处理
       void main(void){
          vec4 result = vec4(0.0, 0.0, 0.0, 1.0);
+         vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
          //............................................................
          // 计算环境颜色
-         <shader:true source='support.ambient'>
-         <shader:true source='support.ambient.sampler'>
-         vec4 color = texture2D(fs_diffuse, v_coord);
-         if(color.a < fc_alpha.x){
-            discard;
-         }
+         <shader:true source='option.ambient'>
+            <shader:true source='support.ambient'>
+               <shader:true source='support.ambient.sampler'>
+                  color = texture2D(fs_diffuse, v_coord);
+                  if(color.a < fc_alpha.x){
+                     discard;
+                  }
+               </shader:true>
+               <shader:false source='support.ambient.sampler'>
+                  color = vec4(1.0, 1.0, 1.0, 1.0);
+               </shader:false>
+               <shader:true source='option.material.map'>
+                  vec4 ambientColor = texture2D(fs_material, vec2(0.0 * fc_material.x, fc_material.y));
+                  vec3 resultAmbient = color.rgb * ambientColor.rgb;
+               </shader:true>
+               <shader:false source='option.material.map'>
+                  vec3 resultAmbient = color.rgb * fc_ambient_color.rgb;
+               </shader:false>
+            </shader:true>
+            <shader:equals source='technique.mode' value='result'>
+               result.rgb += resultAmbient;
+            </shader:equals>
+            <shader:equals source='technique.mode' value='ambient'>
+               result.rgb = resultAmbient;
+            </shader:equals>
          </shader:true>
-         <shader:false source='support.ambient.sampler'>
-         vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
-         </shader:false>
-         <shader:true source='option.material.map'>
-         vec4 ambientColor = texture2D(fs_material, vec2(0.0 * fc_material.x, fc_material.y));
-         vec3 resultAmbient = color.rgb * ambientColor.rgb;
-         </shader:true>
-         <shader:false source='option.material.map'>
-         vec3 resultAmbient = color.rgb * fc_ambient_color.rgb;
-         </shader:false>
-         </shader:true>
-         <shader:equals source='technique.mode' value='result'>
-         result.rgb += resultAmbient;
-         </shader:equals>
-         <shader:equals source='technique.mode' value='ambient'>
-         result.rgb = resultAmbient;
-         </shader:equals>
          //............................................................
          // 计算散射颜色
-         <shader:true source='vertex.attribute.normal'>
-         <shader:true source='support.diffuse.dump'>
-         vec4 normal = texture2D(fs_normal, v_coord);
-         normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
-         float normalFactor = dot(normal.xyz, <shader:false source='option.normal.invert'>-</shader:false>v_light_ts);
-         </shader:true>
-         <shader:false source='support.diffuse.dump'>
-         float normalFactor = dot(v_normal, <shader:false source='option.normal.invert'>-</shader:false>fc_light_direction);
-         </shader:false>
-         normalFactor = max(normalFactor, 0.0);
-         normalFactor = min(normalFactor, 1.0);
-         <shader:true source='option.material.map'>
-         vec4 diffuseColor = texture2D(fs_material, vec2(1.0 * fc_material.x, fc_material.y));
-         vec3 resultDiffuse = color.rgb * diffuseColor.rgb * normalFactor;
-         </shader:true>
-         <shader:false source='option.material.map'>
-         vec3 resultDiffuse = color.rgb * fc_diffuse_color.rgb * normalFactor;
-         </shader:false>
-         <shader:equals source='technique.mode' value='result'>
-         result.rgb += resultDiffuse;
-         </shader:equals>
-         <shader:equals source='technique.mode' value='diffuse.level'>
-         result.rgb = vec3(normalFactor, normalFactor, normalFactor);
-         </shader:equals>
-         <shader:equals source='technique.mode' value='diffuse.color'>
-         result.rgb = resultDiffuse;
-         </shader:equals>
+         <shader:true source='option.diffuse'>
+            <shader:true source='vertex.attribute.normal'>
+               <shader:true source='support.diffuse.dump'>
+                  vec4 normal = texture2D(fs_normal, v_coord);
+                  normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
+                  float normalFactor = dot(normal.xyz, <shader:false source='option.normal.invert'>-</shader:false>v_light_ts);
+               </shader:true>
+               <shader:false source='support.diffuse.dump'>
+                  float normalFactor = dot(v_normal, <shader:false source='option.normal.invert'>-</shader:false>fc_light_direction);
+               </shader:false>
+               normalFactor = max(normalFactor, 0.0);
+               normalFactor = min(normalFactor, 1.0);
+               <shader:true source='option.material.map'>
+                  vec4 diffuseColor = texture2D(fs_material, vec2(1.0 * fc_material.x, fc_material.y));
+                  vec3 resultDiffuse = color.rgb * diffuseColor.rgb * normalFactor;
+               </shader:true>
+               <shader:false source='option.material.map'>
+                  vec3 resultDiffuse = color.rgb * fc_diffuse_color.rgb * normalFactor;
+               </shader:false>
+               <shader:equals source='technique.mode' value='result'>
+                  result.rgb += resultDiffuse;
+               </shader:equals>
+               <shader:equals source='technique.mode' value='diffuse.level'>
+                  result.rgb = vec3(normalFactor, normalFactor, normalFactor);
+               </shader:equals>
+               <shader:equals source='technique.mode' value='diffuse.color'>
+                  result.rgb = resultDiffuse;
+               </shader:equals>
+            </shader:true>
          </shader:true>
          //............................................................
          <shader:true source='vertex.attribute.normal'>
-         vec3 cameraDirection = normalize(fc_camera_position - v_model_position.xyz);
+            vec3 cameraDirection = normalize(fc_camera_position - v_model_position.xyz);
          </shader:true>
          //............................................................
          // 计算高光颜色
-         <shader:true source='vertex.attribute.normal'>
-         vec3 reflectionDirection = normalize(reflect(fc_light_direction, v_normal));
-         float specularFactor = dot(cameraDirection, reflectionDirection);
-         <shader:true source='support.specular.level'>
-         vec4 specularLevel = texture2D(fs_specular, v_coord);
-         specularFactor *= specularLevel.w;
+         <shader:true source='option.specular'>
+            <shader:true source='vertex.attribute.normal'>
+            vec3 reflectionDirection = normalize(reflect(fc_light_direction, v_normal));
+            float specularFactor = dot(cameraDirection, reflectionDirection);
+            <shader:true source='support.specular.level'>
+               vec4 specularLevel = texture2D(fs_specular, v_coord);
+               specularFactor *= specularLevel.w;
+            </shader:true>
+            specularFactor = max(specularFactor, 0.0);
+            specularFactor = min(specularFactor + fc_specular.x, 1.0);
+            specularFactor = pow(specularFactor, fc_specular.y);
+            <shader:true source='option.material.map'>
+               vec4 specularColor = texture2D(fs_material, vec2(2.0 * fc_material.x, fc_material.y));
+               vec3 resultSpecular = color.rgb * specularColor.rgb * specularFactor;
+            </shader:true>
+            <shader:false source='option.material.map'>
+               vec3 resultSpecular = color.rgb * fc_specular_color.rgb * specularFactor;
+            </shader:false>
+            </shader:true>
+            <shader:equals source='technique.mode' value='result'>
+               result.rgb += resultSpecular;
+            </shader:equals>
+            <shader:equals source='technique.mode' value='specular.level'>
+               result.rgb = vec3(specularFactor, specularFactor, specularFactor);
+            </shader:equals>
+            <shader:equals source='technique.mode' value='specular.color'>
+               result.rgb = resultSpecular;
+            </shader:equals>
          </shader:true>
-         specularFactor = max(specularFactor, 0.0);
-         specularFactor = min(specularFactor + fc_specular.x, 1.0);
-         specularFactor = pow(specularFactor, fc_specular.y);
-         <shader:true source='option.material.map'>
-         vec4 specularColor = texture2D(fs_material, vec2(2.0 * fc_material.x, fc_material.y));
-         vec3 resultSpecular = color.rgb * specularColor.rgb * specularFactor;
-         </shader:true>
-         <shader:false source='option.material.map'>
-         vec3 resultSpecular = color.rgb * fc_specular_color.rgb * specularFactor;
-         </shader:false>
-         </shader:true>
-         <shader:equals source='technique.mode' value='result'>
-         result.rgb += resultSpecular;
-         </shader:equals>
-         <shader:equals source='technique.mode' value='specular.level'>
-         result.rgb = vec3(specularFactor, specularFactor, specularFactor);
-         </shader:equals>
-         <shader:equals source='technique.mode' value='specular.color'>
-         result.rgb = resultSpecular;
-         </shader:equals>
          //............................................................
-         <shader:true source='support.environment'>
-         vec3 reflectDirection = normalize(reflect(-cameraDirection, v_normal)); 
-         vec4 environmentColor = textureCube(fs_environment, reflectDirection); 
-         <shader:true source='support.reflect'>
-         vec4 reflect = texture2D(fs_reflect, v_coord);
-         environmentColor *= reflect.g;
-         </shader:true>
-         result.rgb = mix(result.rgb, environmentColor.rgb * fc_reflect_color.rgb, fc_reflect.www);
+         // 计算环境颜色
+         <shader:true source='option.reflect'>
+            <shader:true source='support.environment'>
+               vec3 reflectDirection = normalize(reflect(-cameraDirection, v_normal)); 
+               vec4 environmentColor = textureCube(fs_environment, reflectDirection); 
+               <shader:true source='support.reflect'>
+                  vec4 reflect = texture2D(fs_reflect, v_coord);
+                  environmentColor *= reflect.g;
+               </shader:true>
+               result.rgb = mix(result.rgb, environmentColor.rgb * fc_reflect_color.rgb, fc_reflect.www);
+            </shader:true>
          </shader:true>
          //............................................................
          // 计算颜色
-         <shader:true source='vertex.attribute.color'>
-         vec4 vertexColor = max(min(v_color, fc_color.y) - fc_color.x, 0.0);
-         vertexColor = vertexColor / (fc_color.y - fc_color.x);
-         vertexColor = (vertexColor - fc_color.w) * fc_color.z + 1.0;
-         result.rgb *= vertexColor.rgb;
+         <shader:true source='option.color'>
+            <shader:true source='vertex.attribute.color'>
+               vec4 vertexColor = max(min(v_color, fc_color.y) - fc_color.x, 0.0);
+               vertexColor = vertexColor / (fc_color.y - fc_color.x);
+               vertexColor = (vertexColor - fc_color.w) * fc_color.z + 1.0;
+               result.rgb *= vertexColor.rgb;
+            </shader:true>
          </shader:true>
+         //............................................................
          <shader:true source='support.alpha'>
-         result.a = color.a * fc_alpha.y;
+            result.a = color.a * fc_alpha.y;
          </shader:true>
          //............................................................
          gl_FragColor = result;

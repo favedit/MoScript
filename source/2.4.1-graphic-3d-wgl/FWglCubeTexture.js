@@ -16,6 +16,7 @@ function FWglCubeTexture(o){
    o.isValid    = FWglCubeTexture_isValid;
    o.makeMipmap = FWglCubeTexture_makeMipmap;
    o.upload     = FWglCubeTexture_upload;
+   o.update     = FWglCubeTexture_update;
    // @method
    o.dispose    = FWglCubeTexture_dispose;
    return o;
@@ -52,8 +53,7 @@ function FWglCubeTexture_isValid(){
 //==========================================================
 function FWglCubeTexture_makeMipmap(){
    var o = this;
-   var c = o._graphicContext;
-   var g = c._native;
+   var g = o._graphicContext._native;
    // 绑定数据
    g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
    // 生成MIP
@@ -81,6 +81,38 @@ function FWglCubeTexture_upload(x1, x2, y1, y2, z1, z2){
    g.texImage2D(g.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, z2.image()); 
    // 检查结果
    o._statusLoad = c.checkError("texImage2D", "Upload cube image failure.");
+   // 更新处理
+   o.update();
+}
+
+//==========================================================
+// <T>更新处理。</T>
+//
+// @method
+//==========================================================
+function FWglCubeTexture_update(){
+   var o = this;
+   o.__base.FG3dCubeTexture.update.call(o);
+   // 绑定数据
+   var g = o._graphicContext._native;
+   g.bindTexture(g.TEXTURE_CUBE_MAP, o._native);
+   // 设置过滤器
+   var c = RWglUtility.convertSamplerFilter(g, o._filterMinCd);
+   if(c){
+      g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MIN_FILTER, c);
+   }
+   var c = RWglUtility.convertSamplerFilter(g, o._filterMagCd);
+   if(c){
+      g.texParameteri(g.TEXTURE_CUBE_MAP, g.TEXTURE_MAG_FILTER, c);
+   }
+   //var c = RWglUtility.convertSamplerFilter(g, pt.wrapS());
+   //if(c){
+      //g.texParameteri(gt, g.TEXTURE_WRAP_S, c);
+   //}
+   //var c = RWglUtility.convertSamplerFilter(g, pt.wrapT());
+   //if(c){
+      //g.texParameteri(gt, g.TEXTURE_WRAP_T, c);
+   //}
 }
 
 //==========================================================

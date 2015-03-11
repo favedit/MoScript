@@ -42,6 +42,10 @@ function FDsSceneRegionPropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 关联对象
+   o._controlMoveSpeed.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotationKeySpeed.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotationMouseSpeed.addDataChangedListener(o, o.onDataChanged);
+   // 关联对象
    o._controlOptionBackground.addDataChangedListener(o, o.onDataChanged);
    o._controlBackgroundColor.addDataChangedListener(o, o.onDataChanged);
 }
@@ -58,8 +62,12 @@ function FDsSceneRegionPropertyFrame_onDataChanged(p){
    var r = o._regionResource;
    r.setOptionBackground(o._controlOptionBackground.get());
    r.backgroundColor().assign(o._controlBackgroundColor.get());
+   r.setMoveSpeed(o._controlMoveSpeed.get());
+   r.setRotationKeySpeed(o._controlRotationKeySpeed.get());
+   r.setRotationMouseSpeed(o._controlRotationMouseSpeed.get());
    // 重新加载资源
    o._region.reloadResource();
+   o._workspace._canvas.reloadRegion();
 }
 
 //==========================================================
@@ -85,7 +93,11 @@ function FDsSceneRegionPropertyFrame_loadObject(s, t){
    o._scene = s;
    o._region = t;
    var r = o._regionResource = t._resource;
-   // 设置效果器
+   // 设置速度
+   o._controlMoveSpeed.set(r.moveSpeed());
+   o._controlRotationKeySpeed.set(r.rotationKeySpeed());
+   o._controlRotationMouseSpeed.set(r.rotationMouseSpeed());
+   // 设置背景
    o._controlOptionBackground.set(r.optionBackground());
    o._controlBackgroundColor.set(r.backgroundColor());
 }
