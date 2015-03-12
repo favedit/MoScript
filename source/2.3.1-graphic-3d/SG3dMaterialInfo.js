@@ -13,7 +13,7 @@ function SG3dMaterialInfo(o){
    //o.transformName        = null;
    //..........................................................
    // @attribute 设置深度
-   o.optionDepth          = false;
+   o.optionDepth          = null;
    // @attribute 设置双面
    o.optionDouble         = null;
    // @attribute 设置法线反向

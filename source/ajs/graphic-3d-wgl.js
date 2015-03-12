@@ -875,7 +875,7 @@ function FWglFlatTexture_upload(p){
    var g = c._native;
    var m = null;
    var f = null;
-   if(p.constructor == Image){
+   if(p.tagName == 'IMG'){
       m = p;
    }else if(RClass.isClass(p, FImage)){
       m = p.image();
@@ -1479,12 +1479,28 @@ function RWglUtility_convertDepthMode(g, v){
 }
 function RWglUtility_convertBlendFactors(g, v){
    switch(v){
-      case EG3dBlendMode.SourceAlpha:
+      case EG3dBlendMode.Zero:
+         return g.ZERO;
+      case EG3dBlendMode.One:
+         return g.ONE;
+      case EG3dBlendMode.SrcColor:
+         return g.SRC_COLOR;
+      case EG3dBlendMode.OneMinusSrcColor:
+         return g.ONE_MINUS_SRC_COLOR;
+      case EG3dBlendMode.DstColor:
+         return g.DST_COLOR;
+      case EG3dBlendMode.OneMinusDstColor:
+         return g.ONE_MINUS_DST_COLOR;
+      case EG3dBlendMode.SrcAlpha:
          return g.SRC_ALPHA;
-      case EG3dBlendMode.OneMinusSourceAlpha:
+      case EG3dBlendMode.OneMinusSrcAlpha:
          return g.ONE_MINUS_SRC_ALPHA;
-      default:
-         break;
+      case EG3dBlendMode.DstAlpha:
+         return g.DST_ALPHA;
+      case EG3dBlendMode.OneMinusDstAlpha:
+         return g.ONE_MINUS_DST_ALPHA;
+      case EG3dBlendMode.SrcAlphaSaturate:
+         return g.SRC_ALPHA_SATURATE;
    }
    throw new TError(this, "Convert blend factors failure. (blend_cd={1})", v);
 }

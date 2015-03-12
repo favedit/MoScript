@@ -14038,7 +14038,7 @@ function SG3dEffectInfo_reset(){
 function SG3dMaterialInfo(o){
    if(!o){o = this;}
    o.effectCode           = 'automatic';
-   o.optionDepth          = false;
+   o.optionDepth          = null;
    o.optionDouble         = null;
    o.optionNormalInvert   = null;
    o.optionShadow         = null;
@@ -15731,9 +15731,17 @@ var EG3dAttributeFormat = new function EG3dAttributeFormat(){
 }
 var EG3dBlendMode = new function EG3dBlendMode(){
    var o = this;
-   o.None = 0;
-   o.SourceAlpha= 1;
-   o.OneMinusSourceAlpha = 2;
+   o.Zero             = 0;
+   o.One              = 1;
+   o.SrcColor         = 2;
+   o.OneMinusSrcColor = 3;
+   o.DstColor         = 4;
+   o.OneMinusDstColor = 5;
+   o.SrcAlpha         = 6;
+   o.OneMinusSrcAlpha = 7;
+   o.DstAlpha         = 8;
+   o.OneMinusDstAlpha = 9;
+   o.SrcAlphaSaturate = 10;
    return o;
 }
 var EG3dCullMode = new function EG3dCullMode(){
@@ -16331,6 +16339,7 @@ function FG3dProgramParameter_define(){
    return this._define;
 }
 function FG3dProgramParameter_attachData(p){
+   return true;
    var o = this;
    var r = false;
    var c = p.constructor;
@@ -16902,6 +16911,11 @@ function FG3dAutomaticEffect_bindMaterial(p){
    var o = this;
    var c = o._graphicContext;
    var m = p.info();
+   if(m.optionDepth){
+      c.setDepthMode(o._stateDepth, o._stateDepthCd);
+   }else{
+      c.setDepthMode(false);
+   }
    if(m.optionAlpha){
       c.setBlendFactors(o._stateBlend, o._stateBlendSourceCd, o._stateBlendTargetCd);
    }else{
@@ -18192,7 +18206,7 @@ function FWglFlatTexture_upload(p){
    var g = c._native;
    var m = null;
    var f = null;
-   if(p.constructor == Image){
+   if(p.tagName == 'IMG'){
       m = p;
    }else if(RClass.isClass(p, FImage)){
       m = p.image();
@@ -18796,12 +18810,28 @@ function RWglUtility_convertDepthMode(g, v){
 }
 function RWglUtility_convertBlendFactors(g, v){
    switch(v){
-      case EG3dBlendMode.SourceAlpha:
+      case EG3dBlendMode.Zero:
+         return g.ZERO;
+      case EG3dBlendMode.One:
+         return g.ONE;
+      case EG3dBlendMode.SrcColor:
+         return g.SRC_COLOR;
+      case EG3dBlendMode.OneMinusSrcColor:
+         return g.ONE_MINUS_SRC_COLOR;
+      case EG3dBlendMode.DstColor:
+         return g.DST_COLOR;
+      case EG3dBlendMode.OneMinusDstColor:
+         return g.ONE_MINUS_DST_COLOR;
+      case EG3dBlendMode.SrcAlpha:
          return g.SRC_ALPHA;
-      case EG3dBlendMode.OneMinusSourceAlpha:
+      case EG3dBlendMode.OneMinusSrcAlpha:
          return g.ONE_MINUS_SRC_ALPHA;
-      default:
-         break;
+      case EG3dBlendMode.DstAlpha:
+         return g.DST_ALPHA;
+      case EG3dBlendMode.OneMinusDstAlpha:
+         return g.ONE_MINUS_DST_ALPHA;
+      case EG3dBlendMode.SrcAlphaSaturate:
+         return g.SRC_ALPHA_SATURATE;
    }
    throw new TError(this, "Convert blend factors failure. (blend_cd={1})", v);
 }
@@ -23818,14 +23848,14 @@ function FE3dGalaxyEffect_drawRenderable(pg, pr){
    var c = o._graphicContext;
    var g = c._native;
    var p = o._program;
-   g.disable(g.DEPTH_TEST);
+   var vp = pg.calculate(EG3dRegionParameter.CameraPosition);
    var m = pr.material();
    var mi = m.info();
    o.bindMaterial(m);
    p.setParameter4('vc_rotation', pr._seed, 0, 0, 0);
    p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
-   p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
+   p.setParameter('vc_camera_position', vp);
    p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
    p.setParameter('fc_ambient_color', mi.ambientColor);
    o.bindAttributes(pr);

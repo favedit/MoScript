@@ -23,9 +23,17 @@ var EG3dAttributeFormat = new function EG3dAttributeFormat(){
 }
 var EG3dBlendMode = new function EG3dBlendMode(){
    var o = this;
-   o.None = 0;
-   o.SourceAlpha= 1;
-   o.OneMinusSourceAlpha = 2;
+   o.Zero             = 0;
+   o.One              = 1;
+   o.SrcColor         = 2;
+   o.OneMinusSrcColor = 3;
+   o.DstColor         = 4;
+   o.OneMinusDstColor = 5;
+   o.SrcAlpha         = 6;
+   o.OneMinusSrcAlpha = 7;
+   o.DstAlpha         = 8;
+   o.OneMinusDstAlpha = 9;
+   o.SrcAlphaSaturate = 10;
    return o;
 }
 var EG3dCullMode = new function EG3dCullMode(){
@@ -623,6 +631,7 @@ function FG3dProgramParameter_define(){
    return this._define;
 }
 function FG3dProgramParameter_attachData(p){
+   return true;
    var o = this;
    var r = false;
    var c = p.constructor;

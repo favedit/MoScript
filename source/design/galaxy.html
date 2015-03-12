@@ -14,19 +14,12 @@ var context = null;
 var canvas = null;
 var stage = null;
 var galaxy = null;
+var scale = 0.4;
+var rotation = 0.001;
 //------------------------------------------------------------
 function onEnterFrame(){
    if(galaxy){
-      galaxy._seed -= 0.002;
-   }
-}
-//------------------------------------------------------------
-function onKeydown(p){
-   var e = window.event;
-   var c = e.keyCode;
-   if(c == EKeyCode.Space){
-      movie = !movie;
-      canvas.switchMovie(movie);
+      galaxy._seed -= rotation;
    }
 }
 //------------------------------------------------------------
@@ -54,9 +47,9 @@ function onLoadImage(p){
    galaxy._size.assign(s);
    galaxy._cellSize.set(1, 1);
    galaxy.setup(d.data);
-   galaxy.matrix().setScaleAll(0.2);
+   galaxy.matrix().setScaleAll(scale);
    galaxy.matrix().update();
-
+   // 加载单个图片
    var img = RClass.create(FImage);
    img.loadUrl('../ars/picture/star.png');
    img.addLoadListener(null, onLoadStarImage);
@@ -67,24 +60,24 @@ function onLoad(){
    RRuntime.setProcessCd(EProcess.Release);
    RApplication.initialize();
    RBrowser.setContentPath('..');
-
+   // 设置大小
    var size = new SSize2();
    size.set(document.body.offsetWidth, document.body.offsetHeight);
    // 创建场景画板
    var w = canvas = RClass.create(FE3dSimpleCanvas);
    w._optionAlpha = false;
    w.build(document);
-   w.setPanel(document.body);
+   //w.setPanel(document.body);
+   w.setPanel(id_canvas);
    w.onResize();
    context = w._context;
-   
+   // 创建舞台
    stage = RClass.create(FE3dSimpleStage);
    stage.linkGraphicContext(context);
    stage.selectTechnique(context, FG3dControlTechnique);
    stage.addEnterFrameListener(null, onEnterFrame);
    RStage.register('stage3d', stage);
    canvas._activeStage = stage;
-
    // 创建包围盒
    boundBox = RClass.create(FE3dBoundBox);
    boundBox.linkGraphicContext(context);
@@ -94,7 +87,6 @@ function onLoad(){
    boundBox.matrix().update();
    boundBox.upload();
    //stage.spriteLayer().pushRenderable(boundBox);
-
    // 创建相机
    var camera = stage.camera();
    camera.position().set(0, 40, -60);
@@ -102,17 +94,25 @@ function onLoad(){
    camera.update();
    camera.projection().size().assign(size);
    camera.projection().update();
-   //RDump.dump(w, document.body);
-
+   // 加载位图
    var img = RClass.create(FImage);
-   //img.loadUrl('../ars/picture/galaxy.jpg');
-   //img.loadUrl('../ars/picture/galaxy-64.png');
-   //img.loadUrl('../ars/picture/galaxy-128.png');
-   //img.loadUrl('../ars/picture/galaxy-256.png');
-   img.loadUrl('../ars/picture/galaxy-512.png');
+   var i32 = context.capability().optionIndex32;
+   if(i32){
+      scale = 0.1;
+      img.loadUrl('../ars/picture/galaxy.jpg');
+      //img.loadUrl('../ars/picture/galaxy-512.png');
+   }else{
+      scale = 0.8;
+      //img.loadUrl('../ars/picture/galaxy-64.png');
+      img.loadUrl('../ars/picture/galaxy-128.png');
+      //img.loadUrl('../ars/picture/galaxy-256.png');
+   }
    img.addLoadListener(null, onLoadImage);
 }
 </SCRIPT>
 </HEAD>
-<BODY style='background-color:#000000;' onload='onLoad()' ></BODY>
+<BODY style='background-color:#000000;' onload='onLoad()'>
+<DIV style='width:100%;color:#FFFFFF;text-align:center'>按键:（WASD控制方向，QE控制上下，ZX控制视角）鼠标:（屏幕拖拽）</DIV>
+<DIV id='id_canvas' style='width:100%;height:100%'></DIV>
+</BODY>
 </HTML>

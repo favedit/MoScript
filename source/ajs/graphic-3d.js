@@ -424,7 +424,7 @@ function SG3dEffectInfo_reset(){
 function SG3dMaterialInfo(o){
    if(!o){o = this;}
    o.effectCode           = 'automatic';
-   o.optionDepth          = false;
+   o.optionDepth          = null;
    o.optionDouble         = null;
    o.optionNormalInvert   = null;
    o.optionShadow         = null;

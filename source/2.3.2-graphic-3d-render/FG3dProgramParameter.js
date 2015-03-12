@@ -73,6 +73,7 @@ function FG3dProgramParameter_define(){
 // @return Boolean 是否变更
 //==========================================================
 function FG3dProgramParameter_attachData(p){
+   return true;
    var o = this;
    var r = false;
    var c = p.constructor;

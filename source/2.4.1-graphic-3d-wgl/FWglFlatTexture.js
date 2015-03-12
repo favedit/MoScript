@@ -118,7 +118,7 @@ function FWglFlatTexture_upload(p){
    // 检查参数
    var m = null;
    var f = null;
-   if(p.constructor == Image){
+   if(p.tagName == 'IMG'){
       m = p;
    }else if(RClass.isClass(p, FImage)){
       m = p.image();

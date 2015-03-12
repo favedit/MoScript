@@ -5,7 +5,7 @@
    <State name='cull_mode'   value='Front'/>
    <State name='depth_mode'  value='LessEqual'/>
    <State name='depth_write' value='Y'/>
-   <State name='blend_mode'  value='Y' source='SourceAlpha' target='OneMinusSourceAlpha'/>
+   <State name='blend_mode'  value='Y' source='SrcAlpha' target='OneMinusSrcAlpha'/>
    <State name='alpha_test'  value='N'/>
    <!--=====================================================-->
    <Option name='shadow'   value='N'/>

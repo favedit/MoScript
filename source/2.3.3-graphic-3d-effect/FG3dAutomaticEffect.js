@@ -459,6 +459,12 @@ function FG3dAutomaticEffect_bindMaterial(p){
    var o = this;
    var c = o._graphicContext;
    var m = p.info();
+   // 设置深度
+   if(m.optionDepth){
+      c.setDepthMode(o._stateDepth, o._stateDepthCd);
+   }else{
+      c.setDepthMode(false);
+   }
    // 设置透明
    if(m.optionAlpha){
       c.setBlendFactors(o._stateBlend, o._stateBlendSourceCd, o._stateBlendTargetCd);

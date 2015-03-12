@@ -132,7 +132,7 @@ function FE3dGalaxy_setup(p){
    o._vertexPositionData = new Float32Array(3 * vc);
    o._vertexCoordData = new Float32Array(2 * vc);
    o._vertexColorData = new Uint8Array(4 * vc);
-   o._indexData = new Uint32Array(6 * tc);
+   o._indexData = new Array(6 * tc);
    // 生成点数据
    var i = 0;
    for(var y = 0; y < dh; y += sh){
@@ -167,15 +167,21 @@ function FE3dGalaxy_setup(p){
    o._vertexBuffers.set(vb._name, vb);
    // 上传索引数据
    var ib = o._indexBuffer = c.createIndexBuffer();
+   var i32 = context.capability().optionIndex32;
+   if(i32){
+      ib._strideCd = EG3dIndexStride.Uint32;
+      ib.upload(new Uint32Array(o._indexData), 6 * tc);
+   }else{
+      ib._strideCd = EG3dIndexStride.Uint16;
+      ib.upload(new Uint16Array(o._indexData), 6 * tc);
+   }
    //ib._fillMode = EG3dFillMode.Line;
    //ib._lineWidth = 1;
-   ib._strideCd = EG3dIndexStride.Uint32;
-   ib.upload(o._indexData, 6 * tc);
    //..........................................................
    // 设置材质
    var mi = o.material().info();
    mi.effectCode = 'galaxy';
-   mi.optionDouble = true;
-   mi.optionAlpha = true;
+   //mi.optionDouble = true;
+   //mi.optionAlpha = true;
    mi.ambientColor.set(1, 1, 1, 1);
 }
