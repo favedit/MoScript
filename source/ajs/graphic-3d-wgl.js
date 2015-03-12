@@ -821,6 +821,7 @@ function FWglFlatTexture(o){
    o._native    = null;
    o.setup      = FWglFlatTexture_setup;
    o.isValid    = FWglFlatTexture_isValid;
+   o.texture    = FWglFlatTexture_texture;
    o.makeMipmap = FWglFlatTexture_makeMipmap;
    o.uploadData = FWglFlatTexture_uploadData;
    o.upload     = FWglFlatTexture_upload;
@@ -838,6 +839,9 @@ function FWglFlatTexture_isValid(){
    var o = this;
    var g = o._graphicContext._native;
    return g.isTexture(o._native);
+}
+function FWglFlatTexture_texture(){
+   return this;
 }
 function FWglFlatTexture_makeMipmap(){
    var o = this;

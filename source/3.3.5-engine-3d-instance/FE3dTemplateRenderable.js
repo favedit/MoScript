@@ -72,7 +72,11 @@ function FE3dTemplateRenderable_testReady(){
 //==========================================================
 function FE3dTemplateRenderable_testVisible(p){
    var o = this;
-   return o._visible && o._ready;
+   var r = false;
+   if(o._ready){
+      r = o.__base.FE3dMeshRenderable.testVisible.call(o);
+   }
+   return r;
 }
 
 //==========================================================

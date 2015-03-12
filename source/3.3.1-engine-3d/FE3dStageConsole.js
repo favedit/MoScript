@@ -9,21 +9,20 @@ function FE3dStageConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._scopeCd     = EScope.Local;
+   o._scopeCd  = EScope.Local;
    // @attribute
-   o._looper      = null;
-   o._renderables = null;
+   o._looper   = null;
    // @attribute
-   o._thread      = null;
-   o._interval    = 50;
-   o._limit       = 16;
+   o._thread   = null;
+   o._interval = 50;
+   o._limit    = 16;
    //..........................................................
    // @event
-   o.onProcess   = FE3dStageConsole_onProcess;
+   o.onProcess = FE3dStageConsole_onProcess;
    //..........................................................
    // @method
-   o.construct   = FE3dStageConsole_construct;
-   o.process     = FE3dStageConsole_process;
+   o.construct = FE3dStageConsole_construct;
+   o.process   = FE3dStageConsole_process;
    return o;
 }
 
@@ -39,7 +38,9 @@ function FE3dStageConsole_onProcess(){
    for(var i = o._limit - 1; i >= 0; i--){
       var r = s.next();
       if(r){
-         r.processDelay();
+         r.processDelay(r._linkRegion);
+      }else{
+         break;
       }
    }
 }
@@ -69,4 +70,14 @@ function FE3dStageConsole_construct(){
 //==========================================================
 function FE3dStageConsole_process(p){
    var o = this;
+   // 放入处理队列中
+   var s = p.allRenderables();
+   for(var i = s.count() - 1; i >= 0; i--){
+      var r = s.getAt(i);
+      if(!r._linkStageLooper){
+         o._looper.push(r);
+         r._linkRegion = p;
+         r._linkStageLooper = o._looper;
+      }
+   }
 }

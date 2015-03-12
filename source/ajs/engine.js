@@ -376,17 +376,11 @@ function FDisplayUiLayer(o){
 }
 function FDrawable(o){
    o = RClass.inherits(this, o, FObject);
-   o._visible        = true;
-   o._drawables      = null;
-   o.testVisible     = FDrawable_testVisible;
-   o.visible         = FDrawable_visible;
-   o.setVisible      = FDrawable_setVisible;
-   o.hasDrawable     = FDrawable_hasDrawable;
-   o.drawables       = FDrawable_drawables;
-   o.pushDrawable    = FDrawable_pushDrawable;
-   o.removeDrawable  = FDrawable_removeDrawable;
-   o.filterDrawables = FDrawable_filterDrawables;
-   o.process         = FDrawable_process;
+   o._visible    = true;
+   o.testVisible = FDrawable_testVisible;
+   o.visible     = FDrawable_visible;
+   o.setVisible  = FDrawable_setVisible;
+   o.process     = RMethod.empty;
    return o;
 }
 function FDrawable_testVisible(){
@@ -398,11 +392,26 @@ function FDrawable_visible(){
 function FDrawable_setVisible(p){
    this._visible = p;
 }
-function FDrawable_hasDrawable(){
+function FRegion(o){
+   o = RClass.inherits(this, o, FObject);
+   return o;
+}
+function FRenderable(o){
+   o = RClass.inherits(this, o, FDrawable);
+   o._drawables      = null;
+   o.hasDrawable     = FRenderable_hasDrawable;
+   o.drawables       = FRenderable_drawables;
+   o.pushDrawable    = FRenderable_pushDrawable;
+   o.removeDrawable  = FRenderable_removeDrawable;
+   o.filterDrawables = FRenderable_filterDrawables;
+   o.process         = FRenderable_process;
+   return o;
+}
+function FRenderable_hasDrawable(){
    var s = this._drawables;
    return s ? !s.isEmpty() : false;
 }
-function FDrawable_drawables(){
+function FRenderable_drawables(){
    var o = this;
    var s = o._drawables;
    if(!s){
@@ -410,19 +419,19 @@ function FDrawable_drawables(){
    }
    return s;
 }
-function FDrawable_pushDrawable(p){
+function FRenderable_pushDrawable(p){
    var o = this;
    p._parent = o;
    p._drawable = o;
    o.drawables().push(p);
 }
-function FDrawable_removeDrawable(p){
+function FRenderable_removeDrawable(p){
    var s = this._drawables;
    if(s){
       s.remove(p);
    }
 }
-function FDrawable_filterDrawables(p){
+function FRenderable_filterDrawables(p){
    var o = this;
    if(!o.testVisible()){
       return false;
@@ -439,18 +448,16 @@ function FDrawable_filterDrawables(p){
       }
    }
 }
-function FDrawable_process(p){
+function FRenderable_process(p){
    var o = this;
+   o.__base.FDrawable.process.call(o, p);
    var s = o._drawables;
    if(s){
-      for(var i = s.count() - 1; i >= 0; i--){
+      var c = s.count();
+      for(var i = 0; i <= 0; i++){
          s.getAt(i).process(p);
       }
    }
-}
-function FRegion(o){
-   o = RClass.inherits(this, o, FObject);
-   return o;
 }
 function FStage(o){
    o = RClass.inherits(this, o, FObject, MListenerEnterFrame, MListenerLeaveFrame);

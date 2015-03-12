@@ -253,6 +253,8 @@ function MG3dRegion_prepare(){
    // 设置相机信息
    var c = o._camera;
    var cp = c.projection();
+   c.updateFrustum();
+   // 设置视角内容
    o._cameraPosition.assign(c.position());
    o._cameraDirection.assign(c.direction());
    o._cameraViewMatrix.assign(c.matrix());

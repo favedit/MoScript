@@ -1648,6 +1648,44 @@ function TSpeed_toString(){
    var o = this;
    return o._span + ' (' + o._spanMin + ' - ' + o._spanMax + ')';
 }
+function TUnsupportError(po, pm, pp){
+   var o = this;
+   var r = new TString();
+   var f = TUnsupportError.caller;
+   var s = new TString();
+   var t = new Array();
+   while(f){
+      if(RArray.contains(t, f)){
+         break;
+      }
+      t.push(f);
+      f = f.caller;
+   }
+   var c = t.length;
+   for(var n = 0; n < c; n++){
+      f = t[n];
+      if(n > 0){
+         s.appendLine();
+      }
+      s.append('   ' + (c - n) + ': ' + RMethod.name(f));
+   }
+   var a = arguments;
+   var c = a.length;
+   for(var n = 2; n < c; n++){
+      var v = a[n];
+      var vs = null;
+      if(typeof(v) == 'function'){
+         vs = RMethod.name(v);
+      }else{
+         vs = v;
+      }
+      pm = pm.replace('{' + (n - 1) + '}', vs);
+   }
+   r.appendLine(pm);
+   r.appendLine('------------------------------------------------------------');
+   r.append(s);
+   throw new Error(r);
+}
 function FConsole(o){
    o = RClass.inherits(this, o, FObject);
    o._scopeCd = EScope.Global;

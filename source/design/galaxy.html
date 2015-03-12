@@ -13,14 +13,11 @@
 var context = null;
 var canvas = null;
 var stage = null;
-var display = null;
-var movie = false;
+var galaxy = null;
 //------------------------------------------------------------
 function onEnterFrame(){
-   if(display){
-      var m = display.matrix();
-      m.ry -= 0.004;
-      m.updateForce();
+   if(galaxy){
+      galaxy._seed -= 0.002;
    }
 }
 //------------------------------------------------------------
@@ -32,25 +29,37 @@ function onKeydown(p){
       canvas.switchMovie(movie);
    }
 }
-var c2d = null;
+//------------------------------------------------------------
+function onLoadStarImage(p){
+   var t = context.createFlatTexture();
+   t._name = 'diffuse';
+   t.upload(p.image());
+   galaxy.pushTexture(t);
+   stage.spriteLayer().pushRenderable(galaxy);
+}
 //------------------------------------------------------------
 function onLoadImage(p){
-   var hc2d = document.createElement('CANVAS');
-   c2d = hc2d.getContext('2d'); 
    var s = p.size();
-   c2d.width = s.width;
-   c2d.height = s.height;
-   c2d.drawImage(p._hImage, 0, 0, s.width, s.height);
-   var d = c2d.getImageData(0, 0, s.width, s.height);
-
-   var galaxy = RClass.create(FE3dGalaxy);
+   // 创建画布
+   var cvs = RClass.create(FE2dCanvas);
+   cvs.size().assign(s);
+   cvs.build(document);
+   // 获得数据
+   var c2d = cvs.context();
+   c2d.drawImage(p);
+   var d = c2d.toBytes();
+   // 创建渲染对象
+   galaxy = RClass.create(FE3dGalaxy);
    galaxy.linkGraphicContext(context);
    galaxy._size.assign(s);
    galaxy._cellSize.set(1, 1);
    galaxy.setup(d.data);
-   galaxy.matrix().setScale(0.2, 0.2, 0.2);
+   galaxy.matrix().setScaleAll(0.2);
    galaxy.matrix().update();
-   stage.spriteLayer().pushRenderable(galaxy);
+
+   var img = RClass.create(FImage);
+   img.loadUrl('../ars/picture/star.png');
+   img.addLoadListener(null, onLoadStarImage);
 }
 //------------------------------------------------------------
 function onLoad(){
@@ -63,15 +72,16 @@ function onLoad(){
    size.set(document.body.offsetWidth, document.body.offsetHeight);
    // 创建场景画板
    var w = canvas = RClass.create(FE3dSimpleCanvas);
+   w._optionAlpha = false;
    w.build(document);
    w.setPanel(document.body);
    w.onResize();
-
    context = w._context;
    
    stage = RClass.create(FE3dSimpleStage);
    stage.linkGraphicContext(context);
    stage.selectTechnique(context, FG3dControlTechnique);
+   stage.addEnterFrameListener(null, onEnterFrame);
    RStage.register('stage3d', stage);
    canvas._activeStage = stage;
 
@@ -79,17 +89,16 @@ function onLoad(){
    boundBox = RClass.create(FE3dBoundBox);
    boundBox.linkGraphicContext(context);
    boundBox.setup();
-   boundBox.outline().set(-128, -128, -128, 128, 128, 128);
-   boundBox.matrix().setScale(0.1, 0.1, 0.1);
+   boundBox.outline().set(-1, -1, -1, 1, 1, 1);
+   boundBox.matrix().setScaleAll(24);
    boundBox.matrix().update();
    boundBox.upload();
-
-   stage.spriteLayer().pushRenderable(boundBox);
+   //stage.spriteLayer().pushRenderable(boundBox);
 
    // 创建相机
    var camera = stage.camera();
-   camera.position().set(0, 30, -30);
-   camera.lookAt(0, 0, 0);
+   camera.position().set(0, 40, -60);
+   camera.lookAt(0, -20, 0);
    camera.update();
    camera.projection().size().assign(size);
    camera.projection().update();
@@ -99,8 +108,8 @@ function onLoad(){
    //img.loadUrl('../ars/picture/galaxy.jpg');
    //img.loadUrl('../ars/picture/galaxy-64.png');
    //img.loadUrl('../ars/picture/galaxy-128.png');
-   img.loadUrl('../ars/picture/galaxy-256.png');
-   //img.loadUrl('../ars/picture/galaxy-512.png');
+   //img.loadUrl('../ars/picture/galaxy-256.png');
+   img.loadUrl('../ars/picture/galaxy-512.png');
    img.addLoadListener(null, onLoadImage);
 }
 </SCRIPT>

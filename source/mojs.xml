@@ -13,6 +13,8 @@
 
      <PathMerger source='/2.1.1-graphic'            target='/ajs/graphic.js'/>
      <PathMerger source='/2.2.1-graphic-2d'         target='/ajs/graphic-2d.js'/>
+     <PathMerger source='/2.2.2-graphic-2d-render'  target='/ajs/graphic-2d-render.js'/>
+     <PathMerger source='/2.2.3-graphic-2d-canvas'  target='/ajs/graphic-2d-canvas.js'/>
      <PathMerger source='/2.3.1-graphic-3d'         target='/ajs/graphic-3d.js'/>
      <PathMerger source='/2.3.2-graphic-3d-render'  target='/ajs/graphic-3d-render.js'/>
      <PathMerger source='/2.3.3-graphic-3d-effect'  target='/ajs/graphic-3d-effect.js'/>
@@ -62,6 +64,8 @@
      <FileMerger target='/ajs/mo-graphic.js'>
         <File source='/ajs/graphic.js'/>
         <File source='/ajs/graphic-2d.js'/>
+        <File source='/ajs/graphic-2d-render.js'/>
+        <File source='/ajs/graphic-2d-canvas.js'/>
         <File source='/ajs/graphic-3d.js'/>
         <File source='/ajs/graphic-3d-render.js'/>
         <File source='/ajs/graphic-3d-effect.js'/>

@@ -99,7 +99,7 @@ function FE3dMeshRenderable_bones(p){
 //==========================================================
 function FE3dMeshRenderable_process(p){
    var o = this;
-   o.__base.FE3dRenderable.process.call(p)
+   o.__base.FE3dRenderable.process.call(o, p)
    var t = o._activeTrack;
    if(t){
       if(o._display._optionPlay){
@@ -115,9 +115,22 @@ function FE3dMeshRenderable_process(p){
 // <T>延迟处理。</T>
 //
 // @method
+// @param p:region:FG3dRegion 区域
 //==========================================================
-function FE3dMeshRenderable_processDelay(){
+function FE3dMeshRenderable_processDelay(p){
    var o = this;
+   o.__base.FE3dRenderable.processDelay.call(o, p);
+   // 可视性计算后，数据无法合并（空间需要分割才行）
+   //var cm = p.camera();
+   // 根据资源信息计算现在相机空间位置
+   //var r = o._renderable.resource();
+   //var ro = r.outline();
+   //var so = o._outline;
+   //o._currentMatrix.transform(so.points, 0, ro.points, 0, 8);
+   //so.calculate();
+   // 计算相机可见性
+   //var ps = cm.planes();
+   //o._outlineVisible = ps.containsCorners(so.points)
 }
 
 //==========================================================

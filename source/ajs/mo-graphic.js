@@ -161,6 +161,76 @@ function FG2dContext_dispose(){
    o._native = null;
    o.__base.FGraphicContext.dispose.call(o);
 }
+function FG2dContext(o){
+   o = RClass.inherits(this, o, FGraphicContext);
+   o._size      = null;
+   o.construct  = FG2dContext_construct;
+   o.linkCanvas = FG2dContext_linkCanvas;
+   o.size       = FG2dContext_size;
+   o.dispose    = FG2dContext_dispose;
+   return o;
+}
+function FG2dContext_construct(){
+   var o = this;
+   o.__base.FGraphicContext.construct.call(o);
+   o._size = new SSize2();
+}
+function FG2dContext_linkCanvas(h){
+   var o = this;
+   o._size.set(h.width, h.height);
+}
+function FG2dContext_size(){
+   return this._size;
+}
+function FG2dContext_dispose(){
+   var o = this;
+   o._size = RObject.dispose(o._size);
+   o.__base.FGraphicContext.dispose.call(o);
+}
+function FG2dCanvasContext(o){
+   o = RClass.inherits(this, o, FG2dContext);
+   o._native    = null;
+   o.construct  = FG2dCanvasContext_construct;
+   o.linkCanvas = FG2dCanvasContext_linkCanvas;
+   o.clear      = FG2dCanvasContext_clear;
+   o.drawImage  = FG2dCanvasContext_drawImage;
+   o.toBytes    = FG2dCanvasContext_toBytes;
+   return o;
+}
+function FG2dCanvasContext_construct(){
+   var o = this;
+   o.__base.FG2dContext.construct.call(o);
+}
+function FG2dCanvasContext_linkCanvas(h){
+   var o = this;
+   o.__base.FG2dContext.linkCanvas.call(o, h)
+   o._hCanvas = h;
+   if(h.getContext){
+      var n = h.getContext('2d');
+      if(!n){
+         throw new TError("Current browser can't support Context2D technique.");
+      }
+      o._native = n;
+   }
+}
+function FG2dCanvasContext_clear(r, g, b, a, d){
+   var o = this;
+   var c = o._native;
+}
+function FG2dCanvasContext_drawImage(m){
+   var o = this;
+   var g = o._native;
+   if(RClass.isClass(m, FImage)){
+      g.drawImage(m.image(), 0, 0, o._size.width, o._size.height);
+   }else{
+      throw new TError(o, 'Unknown data type');
+   }
+}
+function FG2dCanvasContext_toBytes(){
+   var o = this;
+   var s = o._size;
+   return o._native.getImageData(0, 0, s.width, s.height);
+}
 var EG3dMaterialMap = new function EG3dMaterialMap(){
    var o = this;
    o.AmbientColor = 0;
@@ -319,6 +389,7 @@ function MG3dRegion_prepare(){
    o._changed = false;
    var c = o._camera;
    var cp = c.projection();
+   c.updateFrustum();
    o._cameraPosition.assign(c.position());
    o._cameraDirection.assign(c.direction());
    o._cameraViewMatrix.assign(c.matrix());
@@ -961,8 +1032,8 @@ function FG3dCamera(o){
    o._centerBack      = 1.0;
    o._focalNear       = 0.1;
    o._focalFar        = 200.0;
-   o._planes          = null;
    o._frustum         = null;
+   o._planes          = null;
    o._viewport        = null;
    o.__axisUp         = null;
    o.__axisX          = null;
@@ -975,6 +1046,7 @@ function FG3dCamera(o){
    o.direction        = FG3dCamera_direction;
    o.setDirection     = FG3dCamera_setDirection;
    o.frustum          = FG3dCamera_frustum;
+   o.planes           = FG3dCamera_planes;
    o.doWalk           = FG3dCamera_doWalk;
    o.doStrafe         = FG3dCamera_doStrafe;
    o.doFly            = FG3dCamera_doFly;
@@ -983,6 +1055,7 @@ function FG3dCamera(o){
    o.doRoll           = FG3dCamera_doRoll;
    o.lookAt           = FG3dCamera_lookAt;
    o.update           = FG3dCamera_update;
+   o.updateFrustum    = FG3dCamera_updateFrustum;
    return o;
 }
 function FG3dCamera_construct(){
@@ -993,8 +1066,8 @@ function FG3dCamera_construct(){
    o._target = new SPoint3();
    o._direction = new SVector3();
    o._directionTarget = new SVector3();
-   o._planes = new Array();
    o._frustum = new SFrustum();
+   o._planes = new SFrustumPlanes();
    o._viewport = RClass.create(FG3dViewport);
    o.__axisUp = new SVector3();
    o.__axisUp.set(0, 1, 0);
@@ -1022,6 +1095,9 @@ function FG3dCamera_setDirection(x, y, z){
 function FG3dCamera_frustum(){
    return this._frustum;
 }
+function FG3dCamera_planes(){
+   return this._planes;
+}
 function FG3dCamera_doWalk(p){
    var o = this;
    o._position.x += o._direction.x * p;
@@ -1037,15 +1113,12 @@ function FG3dCamera_doFly(p){
    o._position.y += p;
 }
 function FG3dCamera_doPitch(p){
-   var o = this;
    throw new TFatal(o, 'Unsupport.')
 }
 function FG3dCamera_doYaw(p){
-   var o = this;
    throw new TFatal(o, 'Unsupport.')
 }
 function FG3dCamera_doRoll(p){
-   var o = this;
    throw new TFatal(o, 'Unsupport.')
 }
 function FG3dCamera_lookAt(x, y, z){
@@ -1085,6 +1158,13 @@ function FG3dCamera_update(){
    d[13] = -ay.dotPoint3(o._position);
    d[14] = -az.dotPoint3(o._position);
    d[15] = 1.0;
+}
+function FG3dCamera_updateFrustum(){
+   var o = this;
+   var m = RMath.matrix;
+   m.assign(o._matrix);
+   m.append(o._projection.matrix());
+   o._planes.updateVision(m.data());
 }
 function FG3dDirectionalLight(o){
    o = RClass.inherits(this, o, FG3dLight);
@@ -1702,6 +1782,7 @@ function FG3dOrthoCamera_projection(){
 }
 function FG3dOrthoCamera_updateFrustum(){
    var o = this;
+   o.__base.FG3dCamera.updateFrustum.call(o);
    var p = o._projection;
    var s = p._size;
    var f = o._frustum;
@@ -1803,6 +1884,7 @@ function FG3dPerspectiveCamera_projection(){
 }
 function FG3dPerspectiveCamera_updateFrustum(){
    var o = this;
+   o.__base.FG3dCamera.updateFrustum.call(o);
    var p = o._projection;
    var s = p._size;
    var f = o._frustum;
@@ -4675,6 +4757,7 @@ function FWglFlatTexture(o){
    o._native    = null;
    o.setup      = FWglFlatTexture_setup;
    o.isValid    = FWglFlatTexture_isValid;
+   o.texture    = FWglFlatTexture_texture;
    o.makeMipmap = FWglFlatTexture_makeMipmap;
    o.uploadData = FWglFlatTexture_uploadData;
    o.upload     = FWglFlatTexture_upload;
@@ -4692,6 +4775,9 @@ function FWglFlatTexture_isValid(){
    var o = this;
    var g = o._graphicContext._native;
    return g.isTexture(o._native);
+}
+function FWglFlatTexture_texture(){
+   return this;
 }
 function FWglFlatTexture_makeMipmap(){
    var o = this;

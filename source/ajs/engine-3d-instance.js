@@ -368,7 +368,7 @@ function FE3dMeshRenderable_bones(p){
 }
 function FE3dMeshRenderable_process(p){
    var o = this;
-   o.__base.FE3dRenderable.process.call(p)
+   o.__base.FE3dRenderable.process.call(o, p)
    var t = o._activeTrack;
    if(t){
       if(o._display._optionPlay){
@@ -379,8 +379,9 @@ function FE3dMeshRenderable_process(p){
       }
    }
 }
-function FE3dMeshRenderable_processDelay(){
+function FE3dMeshRenderable_processDelay(p){
    var o = this;
+   o.__base.FE3dRenderable.processDelay.call(o, p);
 }
 function FE3dMeshRenderable_update(p){
    var o = this;
@@ -2148,7 +2149,11 @@ function FE3dTemplateRenderable_testReady(){
 }
 function FE3dTemplateRenderable_testVisible(p){
    var o = this;
-   return o._visible && o._ready;
+   var r = false;
+   if(o._ready){
+      r = o.__base.FE3dMeshRenderable.testVisible.call(o);
+   }
+   return r;
 }
 function FE3dTemplateRenderable_resource(p){
    return this._resource;

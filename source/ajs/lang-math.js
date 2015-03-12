@@ -95,6 +95,92 @@ function SColor4_toString(){
    var o = this;
    return RFloat.format(o.red) + ',' + RFloat.format(o.green) + ',' + RFloat.format(o.blue) + ',' + RFloat.format(o.alpha);
 }
+function SCorners(){
+   var o = this;
+   o.red          = 0;
+   o.green        = 0;
+   o.blue         = 0;
+   o.alpha        = 1;
+   o.assign       = SCorners_assign;
+   o.assignPower  = SCorners_assignPower;
+   o.set          = SCorners_set;
+   o.serialize    = SCorners_serialize;
+   o.unserialize  = SCorners_unserialize;
+   o.unserialize3 = SCorners_unserialize3;
+   o.saveConfig   = SCorners_saveConfig;
+   o.savePower    = SCorners_savePower;
+   o.copyArray    = SCorners_copyArray;
+   o.toString     = SCorners_toString;
+   return o;
+}
+function SCorners_assign(p){
+   var o = this;
+   o.red = p.red;
+   o.green = p.green;
+   o.blue = p.blue;
+   o.alpha = p.alpha;
+}
+function SCorners_assignPower(p){
+   var o = this;
+   o.red = p.red * p.alpha;
+   o.green = p.green * p.alpha;
+   o.blue = p.blue * p.alpha;
+   o.alpha = p.alpha;
+}
+function SCorners_set(r, g, b, a){
+   var o = this;
+   o.red = r;
+   o.green = g;
+   o.blue = b;
+   o.alpha = a;
+}
+function SCorners_serialize(p){
+   var o = this;
+   p.writeFloat(o.red);
+   p.writeFloat(o.green);
+   p.writeFloat(o.blue);
+   p.writeFloat(o.alpha);
+}
+function SCorners_unserialize(p){
+   var o = this;
+   o.red = p.readFloat();
+   o.green = p.readFloat();
+   o.blue = p.readFloat();
+   o.alpha = p.readFloat();
+}
+function SCorners_unserialize3(p){
+   var o = this;
+   o.red = p.readFloat();
+   o.green = p.readFloat();
+   o.blue = p.readFloat();
+   o.alpha = 1.0;
+}
+function SCorners_saveConfig(p){
+   var o = this;
+   p.setFloat('r', o.red);
+   p.setFloat('g', o.green);
+   p.setFloat('b', o.blue);
+   p.setFloat('a', o.alpha);
+}
+function SCorners_savePower(p){
+   var o = this;
+   p.setFloat('r', o.red);
+   p.setFloat('g', o.green);
+   p.setFloat('b', o.blue);
+   p.setFloat('power', o.alpha);
+}
+function SCorners_copyArray(d, i){
+   var o = this;
+   d[i++] = o.red;
+   d[i++] = o.green;
+   d[i++] = o.blue;
+   d[i++] = o.alpha;
+   return 4;
+}
+function SCorners_toString(){
+   var o = this;
+   return RFloat.format(o.red) + ',' + RFloat.format(o.green) + ',' + RFloat.format(o.blue) + ',' + RFloat.format(o.alpha);
+}
 function SFrustum(){
    var o = this;
    o.center       = new SPoint3();
@@ -331,31 +417,31 @@ function SFrustumPlanes_containsRectangle(cx, cy, cz, sx, sy, sz){
 }
 function SFrustumPlanes_containsCorners(p){
    var o = this;
-   var ps = o.planes;
-   for(var i = 0; i < EFrustumPlane.Count; i++){
-      var p = ps[n];
-      if(p.dot(p[ 0], p[ 1], p[ 2]) >= 0){
+   var s = o.planes;
+   for(var i = EFrustumPlane.Count - 1; i >= 0; i--){
+      var l = s[i];
+      if(l.dot(p[ 0], p[ 1], p[ 2]) >= 0){
          continue;
       }
-      if(p.dot(p[ 3], p[ 4], p[ 5]) >= 0){
+      if(l.dot(p[ 3], p[ 4], p[ 5]) >= 0){
          continue;
       }
-      if(p.dot(p[ 6], p[ 7], p[ 8]) >= 0){
+      if(l.dot(p[ 6], p[ 7], p[ 8]) >= 0){
          continue;
       }
-      if(p.dot(p[ 9], p[10], p[11]) >= 0){
+      if(l.dot(p[ 9], p[10], p[11]) >= 0){
          continue;
       }
-      if(p.dot(p[12], p[13], p[14]) >= 0){
+      if(l.dot(p[12], p[13], p[14]) >= 0){
          continue;
       }
-      if(p.dot(p[15], p[16], p[17]) >= 0){
+      if(l.dot(p[15], p[16], p[17]) >= 0){
          continue;
       }
-      if(p.dot(p[18], p[19], p[20]) >= 0){
+      if(l.dot(p[18], p[19], p[20]) >= 0){
          continue;
       }
-      if(p.dot(p[21], p[22], p[23]) >= 0){
+      if(l.dot(p[21], p[22], p[23]) >= 0){
          continue;
       }
       return false;
@@ -376,40 +462,40 @@ function SFrustumPlanes_updateVision(p){
    var o = this;
    var ps = o.planes;
    var pn = ps[EFrustumPlane.Near];
-   pn.a = p[4 * 0 + 2];
-   pn.b = p[4 * 1 + 2];
-   pn.c = p[4 * 2 + 2];
-   pn.d = p[4 * 3 + 2];
+   pn.a = p[ 0 + 3] + p[ 0 + 2];
+   pn.b = p[ 4 + 3] + p[ 4 + 2];
+   pn.c = p[ 8 + 3] + p[ 8 + 2];
+   pn.d = p[12 + 3] + p[12 + 2];
    pn.normalize();
    var pf = ps[EFrustumPlane.Far];
-   pf.a = p[4 * 0 + 3] - p[4 * 0 + 2];
-   pf.b = p[4 * 1 + 3] - p[4 * 1 + 2];
-   pf.c = p[4 * 2 + 3] - p[4 * 2 + 2];
-   pf.d = p[4 * 3 + 3] - p[4 * 3 + 2];
+   pf.a = p[ 0 + 3] - p[ 0 + 2];
+   pf.b = p[ 4 + 3] - p[ 4 + 2];
+   pf.c = p[ 8 + 3] - p[ 8 + 2];
+   pf.d = p[12 + 3] - p[12 + 2];
    pf.normalize();
    var pl = ps[EFrustumPlane.Left];
-   pl.a = p[4 * 0 + 3] + p[4 * 0 + 0];
-   pl.b = p[4 * 1 + 3] + p[4 * 1 + 0];
-   pl.c = p[4 * 2 + 3] + p[4 * 2 + 0];
-   pl.d = p[4 * 3 + 3] + p[4 * 3 + 0];
+   pl.a = p[ 0 + 3] - p[ 0 + 0];
+   pl.b = p[ 4 + 3] - p[ 4 + 0];
+   pl.c = p[ 8 + 3] - p[ 8 + 0];
+   pl.d = p[12 + 3] - p[12 + 0];
    pl.normalize();
    var pr = ps[EFrustumPlane.Right];
-   pr.a = p[4 * 0 + 3] - p[4 * 0 + 0];
-   pr.b = p[4 * 1 + 3] - p[4 * 1 + 0];
-   pr.c = p[4 * 2 + 3] - p[4 * 2 + 0];
-   pr.d = p[4 * 3 + 3] - p[4 * 3 + 0];
+   pr.a = p[ 0 + 3] + p[ 0 + 0];
+   pr.b = p[ 4 + 3] + p[ 4 + 0];
+   pr.c = p[ 8 + 3] + p[ 8 + 0];
+   pr.d = p[12 + 3] + p[12 + 0];
    pr.normalize();
    var pt = ps[EFrustumPlane.Top];
-   pt.a = p[4 * 0 + 3] - p[4 * 0 + 1];
-   pt.b = p[4 * 1 + 3] - p[4 * 1 + 1];
-   pt.c = p[4 * 2 + 3] - p[4 * 2 + 1];
-   pt.d = p[4 * 3 + 3] - p[4 * 3 + 1];
+   pt.a = p[ 0 + 3] - p[ 0 + 1];
+   pt.b = p[ 4 + 3] - p[ 4 + 1];
+   pt.c = p[ 8 + 3] - p[ 8 + 1];
+   pt.d = p[12 + 3] - p[12 + 1];
    pt.normalize();
    var pb = ps[EFrustumPlane.Bottom];
-   pb.a = p[4 * 0 + 3] + p[4 * 0 + 1];
-   pb.b = p[4 * 1 + 3] + p[4 * 1 + 1];
-   pb.c = p[4 * 2 + 3] + p[4 * 2 + 1];
-   pb.d = p[4 * 3 + 3] + p[4 * 3 + 1];
+   pb.a = p[ 0 + 3] + p[ 0 + 1];
+   pb.b = p[ 4 + 3] + p[ 4 + 1];
+   pb.c = p[ 8 + 3] + p[ 8 + 1];
+   pb.d = p[12 + 3] + p[12 + 1];
    pb.normalize();
 }
 function SMatrix3d(){
@@ -1340,8 +1426,10 @@ function SOutline3(){
    o.max         = new SPoint3();
    o.assign      = SOutline3_assign;
    o.set         = SOutline3_set;
-   o.serialize   = SOutline3_serialize
-   o.unserialize = SOutline3_unserialize
+   o.mergeMin    = SOutline3_mergeMin;
+   o.mergeMax    = SOutline3_mergeMax;
+   o.serialize   = SOutline3_serialize;
+   o.unserialize = SOutline3_unserialize;
    o.toString    = SOutline3_toString;
    return o;
 }
@@ -1354,6 +1442,16 @@ function SOutline3_set(ix, iy, iz, ax, ay, az){
    var o = this;
    o.min.set(ix, iy, iz);
    o.max.set(ax, ay, az);
+}
+function SOutline3_mergeMin(p){
+   var o = this;
+   o.min.mergeMax(p.min);
+   o.max.mergeMin(p.max);
+}
+function SOutline3_mergeMax(p){
+   var o = this;
+   o.min.mergeMin(p.min);
+   o.max.mergeMax(p.max);
 }
 function SOutline3_serialize(p){
    var o = this;
@@ -1368,6 +1466,99 @@ function SOutline3_unserialize(p){
 function SOutline3_toString(){
    var o = this;
    return '(' + o.min + ')-(' + o.max + ')';
+}
+function SOutline3d(){
+   var o = this;
+   SOutline3.call(o);
+   o.center    = new SPoint3();
+   o.radius    = 0;
+   o.points    = new Array(24);
+   o.update    = SOutline3d_update;
+   o.calculate = SOutline3d_calculate;
+   return o;
+}
+function SOutline3d_update(p){
+   var o = this;
+   var vi = o.min;
+   var vix = vi.x;
+   var viy = vi.y;
+   var viz = vi.z;
+   var va = o.max;
+   var vax = va.x;
+   var vay = va.y;
+   var vaz = va.z;
+   var ps = o.points;
+   ps[ 0] = -vix;
+   ps[ 1] =  viy;
+   ps[ 2] =  viz;
+   ps[ 3] =  vix;
+   ps[ 4] =  viy;
+   ps[ 5] =  viz;
+   ps[ 6] =  vix;
+   ps[ 7] = -viy;
+   ps[ 8] =  viz;
+   ps[ 9] = -vix;
+   ps[10] = -viy;
+   ps[11] =  viz;
+   ps[12] = -vax;
+   ps[13] =  vay;
+   ps[14] =  vaz;
+   ps[15] =  vax;
+   ps[16] =  vay;
+   ps[17] =  vaz;
+   ps[18] =  vax;
+   ps[19] = -vay;
+   ps[20] =  vaz;
+   ps[21] = -vax;
+   ps[22] = -vay;
+   ps[23] =  vaz;
+   var c = o.center;
+   c.x = (vix + vax) * 0.5;
+   c.y = (viy + vay) * 0.5;
+   c.z = (viz + vaz) * 0.5;
+   var cx = vax - vix;
+   var cy = vay - viy;
+   var cz = vaz - viz;
+   o.radius = Math.sqrt(cx * cx + cy * cy + cz * cz) * 0.5;
+}
+function SOutline3d_calculate(p){
+   var o = this;
+   var vix = viy = viz = Number.MAX_VALUE;
+   var vax = vay = vaz = -Number.MAX_VALUE;
+   var i = 0;
+   var d = o.points;
+   while(i < 24){
+      var x = d[i++];
+      if(x < vix){
+         vix = x;
+      }
+      if(x > vax){
+         vax = x;
+      }
+      var y = d[i++];
+      if(y < viy){
+         viy = y;
+      }
+      if(y > vay){
+         vay = y;
+      }
+      var z = d[i++];
+      if(z < viz){
+         viz = z;
+      }
+      if(z > vaz){
+         vaz = z;
+      }
+   }
+   o.min.set(vix, viy, viz);
+   o.max.set(vax, vay, vaz);
+   o.center.x = (vix + vax) * 0.5;
+   o.center.y = (viy + vay) * 0.5;
+   o.center.z = (viz + vaz) * 0.5;
+   var cx = vax - vix;
+   var cy = vay - viy;
+   var cz = vaz - viz;
+   o.radius = Math.sqrt(cx * cx + cy * cy + cz * cz) * 0.5;
 }
 function SPadding(l, t, r, b){
    var o = this;
@@ -1528,10 +1719,10 @@ function SPerspectiveMatrix3d_perspectiveFieldOfViewRH(pv, pr, pn, pf){
 }
 function SPlane(o){
    if(!o){o = this;}
-   o.a         = 0.0;
-   o.b         = 0.0;
-   o.c         = 0.0;
-   o.d         = 0.0;
+   o.a         = 0;
+   o.b         = 0;
+   o.c         = 0;
+   o.d         = 0;
    o.assign    = SPlane_assign;
    o.set       = SPlane_set;
    o.normalize = SPlane_normalize;
@@ -1556,7 +1747,7 @@ function SPlane_set(pa, pb, pc, pd){
 }
 function SPlane_normalize(){
    var o = this;
-   var r = 1.0 / Math.sqrt((o.a * o.a) + (o.b * o.b) + (o.c * o.c));
+   var r = 1 / Math.sqrt((o.a * o.a) + (o.b * o.b) + (o.c * o.c));
    o.a *= r;
    o.b *= r;
    o.c *= r;
@@ -1564,7 +1755,7 @@ function SPlane_normalize(){
 }
 function SPlane_dot(x, y, z){
    var o = this;
-   return (x * o.a) + (y * o.b) + (z * o.c ) + d;
+   return (x * o.a) + (y * o.b) + (z * o.c ) + o.d;
 }
 function SPlane_toString(){
    var o = this;
@@ -1632,6 +1823,8 @@ function SPoint3(x, y, z){
    var o = this;
    SValue3.call(o, x, y, z);
    o.conjugate = SPoint3_conjugate;
+   o.mergeMin  = SPoint3_mergeMin;
+   o.mergeMax  = SPoint3_mergeMax;
    o.resize    = SPoint3_resize;
    o.slerp     = SPoint3_slerp;
    return o;
@@ -1648,6 +1841,18 @@ function SPoint3_conjugate(p){
    r.y = -o.y;
    r.z = -o.z;
    return r;
+}
+function SPoint3_mergeMin(p){
+   var o = this;
+   o.x = Math.min(o.x, p.x);
+   o.y = Math.min(o.y, p.y);
+   o.z = Math.min(o.z, p.z);
+}
+function SPoint3_mergeMax(p){
+   var o = this;
+   o.x = Math.max(o.x, p.x);
+   o.y = Math.max(o.y, p.y);
+   o.z = Math.max(o.z, p.z);
 }
 function SPoint3_resize(x, y, z){
    var o = this;

@@ -3073,6 +3073,44 @@ function TSpeed_toString(){
    var o = this;
    return o._span + ' (' + o._spanMin + ' - ' + o._spanMax + ')';
 }
+function TUnsupportError(po, pm, pp){
+   var o = this;
+   var r = new TString();
+   var f = TUnsupportError.caller;
+   var s = new TString();
+   var t = new Array();
+   while(f){
+      if(RArray.contains(t, f)){
+         break;
+      }
+      t.push(f);
+      f = f.caller;
+   }
+   var c = t.length;
+   for(var n = 0; n < c; n++){
+      f = t[n];
+      if(n > 0){
+         s.appendLine();
+      }
+      s.append('   ' + (c - n) + ': ' + RMethod.name(f));
+   }
+   var a = arguments;
+   var c = a.length;
+   for(var n = 2; n < c; n++){
+      var v = a[n];
+      var vs = null;
+      if(typeof(v) == 'function'){
+         vs = RMethod.name(v);
+      }else{
+         vs = v;
+      }
+      pm = pm.replace('{' + (n - 1) + '}', vs);
+   }
+   r.appendLine(pm);
+   r.appendLine('------------------------------------------------------------');
+   r.append(s);
+   throw new Error(r);
+}
 function FConsole(o){
    o = RClass.inherits(this, o, FObject);
    o._scopeCd = EScope.Global;
@@ -5732,6 +5770,92 @@ function SColor4_toString(){
    var o = this;
    return RFloat.format(o.red) + ',' + RFloat.format(o.green) + ',' + RFloat.format(o.blue) + ',' + RFloat.format(o.alpha);
 }
+function SCorners(){
+   var o = this;
+   o.red          = 0;
+   o.green        = 0;
+   o.blue         = 0;
+   o.alpha        = 1;
+   o.assign       = SCorners_assign;
+   o.assignPower  = SCorners_assignPower;
+   o.set          = SCorners_set;
+   o.serialize    = SCorners_serialize;
+   o.unserialize  = SCorners_unserialize;
+   o.unserialize3 = SCorners_unserialize3;
+   o.saveConfig   = SCorners_saveConfig;
+   o.savePower    = SCorners_savePower;
+   o.copyArray    = SCorners_copyArray;
+   o.toString     = SCorners_toString;
+   return o;
+}
+function SCorners_assign(p){
+   var o = this;
+   o.red = p.red;
+   o.green = p.green;
+   o.blue = p.blue;
+   o.alpha = p.alpha;
+}
+function SCorners_assignPower(p){
+   var o = this;
+   o.red = p.red * p.alpha;
+   o.green = p.green * p.alpha;
+   o.blue = p.blue * p.alpha;
+   o.alpha = p.alpha;
+}
+function SCorners_set(r, g, b, a){
+   var o = this;
+   o.red = r;
+   o.green = g;
+   o.blue = b;
+   o.alpha = a;
+}
+function SCorners_serialize(p){
+   var o = this;
+   p.writeFloat(o.red);
+   p.writeFloat(o.green);
+   p.writeFloat(o.blue);
+   p.writeFloat(o.alpha);
+}
+function SCorners_unserialize(p){
+   var o = this;
+   o.red = p.readFloat();
+   o.green = p.readFloat();
+   o.blue = p.readFloat();
+   o.alpha = p.readFloat();
+}
+function SCorners_unserialize3(p){
+   var o = this;
+   o.red = p.readFloat();
+   o.green = p.readFloat();
+   o.blue = p.readFloat();
+   o.alpha = 1.0;
+}
+function SCorners_saveConfig(p){
+   var o = this;
+   p.setFloat('r', o.red);
+   p.setFloat('g', o.green);
+   p.setFloat('b', o.blue);
+   p.setFloat('a', o.alpha);
+}
+function SCorners_savePower(p){
+   var o = this;
+   p.setFloat('r', o.red);
+   p.setFloat('g', o.green);
+   p.setFloat('b', o.blue);
+   p.setFloat('power', o.alpha);
+}
+function SCorners_copyArray(d, i){
+   var o = this;
+   d[i++] = o.red;
+   d[i++] = o.green;
+   d[i++] = o.blue;
+   d[i++] = o.alpha;
+   return 4;
+}
+function SCorners_toString(){
+   var o = this;
+   return RFloat.format(o.red) + ',' + RFloat.format(o.green) + ',' + RFloat.format(o.blue) + ',' + RFloat.format(o.alpha);
+}
 function SFrustum(){
    var o = this;
    o.center       = new SPoint3();
@@ -5968,31 +6092,31 @@ function SFrustumPlanes_containsRectangle(cx, cy, cz, sx, sy, sz){
 }
 function SFrustumPlanes_containsCorners(p){
    var o = this;
-   var ps = o.planes;
-   for(var i = 0; i < EFrustumPlane.Count; i++){
-      var p = ps[n];
-      if(p.dot(p[ 0], p[ 1], p[ 2]) >= 0){
+   var s = o.planes;
+   for(var i = EFrustumPlane.Count - 1; i >= 0; i--){
+      var l = s[i];
+      if(l.dot(p[ 0], p[ 1], p[ 2]) >= 0){
          continue;
       }
-      if(p.dot(p[ 3], p[ 4], p[ 5]) >= 0){
+      if(l.dot(p[ 3], p[ 4], p[ 5]) >= 0){
          continue;
       }
-      if(p.dot(p[ 6], p[ 7], p[ 8]) >= 0){
+      if(l.dot(p[ 6], p[ 7], p[ 8]) >= 0){
          continue;
       }
-      if(p.dot(p[ 9], p[10], p[11]) >= 0){
+      if(l.dot(p[ 9], p[10], p[11]) >= 0){
          continue;
       }
-      if(p.dot(p[12], p[13], p[14]) >= 0){
+      if(l.dot(p[12], p[13], p[14]) >= 0){
          continue;
       }
-      if(p.dot(p[15], p[16], p[17]) >= 0){
+      if(l.dot(p[15], p[16], p[17]) >= 0){
          continue;
       }
-      if(p.dot(p[18], p[19], p[20]) >= 0){
+      if(l.dot(p[18], p[19], p[20]) >= 0){
          continue;
       }
-      if(p.dot(p[21], p[22], p[23]) >= 0){
+      if(l.dot(p[21], p[22], p[23]) >= 0){
          continue;
       }
       return false;
@@ -6013,40 +6137,40 @@ function SFrustumPlanes_updateVision(p){
    var o = this;
    var ps = o.planes;
    var pn = ps[EFrustumPlane.Near];
-   pn.a = p[4 * 0 + 2];
-   pn.b = p[4 * 1 + 2];
-   pn.c = p[4 * 2 + 2];
-   pn.d = p[4 * 3 + 2];
+   pn.a = p[ 0 + 3] + p[ 0 + 2];
+   pn.b = p[ 4 + 3] + p[ 4 + 2];
+   pn.c = p[ 8 + 3] + p[ 8 + 2];
+   pn.d = p[12 + 3] + p[12 + 2];
    pn.normalize();
    var pf = ps[EFrustumPlane.Far];
-   pf.a = p[4 * 0 + 3] - p[4 * 0 + 2];
-   pf.b = p[4 * 1 + 3] - p[4 * 1 + 2];
-   pf.c = p[4 * 2 + 3] - p[4 * 2 + 2];
-   pf.d = p[4 * 3 + 3] - p[4 * 3 + 2];
+   pf.a = p[ 0 + 3] - p[ 0 + 2];
+   pf.b = p[ 4 + 3] - p[ 4 + 2];
+   pf.c = p[ 8 + 3] - p[ 8 + 2];
+   pf.d = p[12 + 3] - p[12 + 2];
    pf.normalize();
    var pl = ps[EFrustumPlane.Left];
-   pl.a = p[4 * 0 + 3] + p[4 * 0 + 0];
-   pl.b = p[4 * 1 + 3] + p[4 * 1 + 0];
-   pl.c = p[4 * 2 + 3] + p[4 * 2 + 0];
-   pl.d = p[4 * 3 + 3] + p[4 * 3 + 0];
+   pl.a = p[ 0 + 3] - p[ 0 + 0];
+   pl.b = p[ 4 + 3] - p[ 4 + 0];
+   pl.c = p[ 8 + 3] - p[ 8 + 0];
+   pl.d = p[12 + 3] - p[12 + 0];
    pl.normalize();
    var pr = ps[EFrustumPlane.Right];
-   pr.a = p[4 * 0 + 3] - p[4 * 0 + 0];
-   pr.b = p[4 * 1 + 3] - p[4 * 1 + 0];
-   pr.c = p[4 * 2 + 3] - p[4 * 2 + 0];
-   pr.d = p[4 * 3 + 3] - p[4 * 3 + 0];
+   pr.a = p[ 0 + 3] + p[ 0 + 0];
+   pr.b = p[ 4 + 3] + p[ 4 + 0];
+   pr.c = p[ 8 + 3] + p[ 8 + 0];
+   pr.d = p[12 + 3] + p[12 + 0];
    pr.normalize();
    var pt = ps[EFrustumPlane.Top];
-   pt.a = p[4 * 0 + 3] - p[4 * 0 + 1];
-   pt.b = p[4 * 1 + 3] - p[4 * 1 + 1];
-   pt.c = p[4 * 2 + 3] - p[4 * 2 + 1];
-   pt.d = p[4 * 3 + 3] - p[4 * 3 + 1];
+   pt.a = p[ 0 + 3] - p[ 0 + 1];
+   pt.b = p[ 4 + 3] - p[ 4 + 1];
+   pt.c = p[ 8 + 3] - p[ 8 + 1];
+   pt.d = p[12 + 3] - p[12 + 1];
    pt.normalize();
    var pb = ps[EFrustumPlane.Bottom];
-   pb.a = p[4 * 0 + 3] + p[4 * 0 + 1];
-   pb.b = p[4 * 1 + 3] + p[4 * 1 + 1];
-   pb.c = p[4 * 2 + 3] + p[4 * 2 + 1];
-   pb.d = p[4 * 3 + 3] + p[4 * 3 + 1];
+   pb.a = p[ 0 + 3] + p[ 0 + 1];
+   pb.b = p[ 4 + 3] + p[ 4 + 1];
+   pb.c = p[ 8 + 3] + p[ 8 + 1];
+   pb.d = p[12 + 3] + p[12 + 1];
    pb.normalize();
 }
 function SMatrix3d(){
@@ -6977,8 +7101,10 @@ function SOutline3(){
    o.max         = new SPoint3();
    o.assign      = SOutline3_assign;
    o.set         = SOutline3_set;
-   o.serialize   = SOutline3_serialize
-   o.unserialize = SOutline3_unserialize
+   o.mergeMin    = SOutline3_mergeMin;
+   o.mergeMax    = SOutline3_mergeMax;
+   o.serialize   = SOutline3_serialize;
+   o.unserialize = SOutline3_unserialize;
    o.toString    = SOutline3_toString;
    return o;
 }
@@ -6991,6 +7117,16 @@ function SOutline3_set(ix, iy, iz, ax, ay, az){
    var o = this;
    o.min.set(ix, iy, iz);
    o.max.set(ax, ay, az);
+}
+function SOutline3_mergeMin(p){
+   var o = this;
+   o.min.mergeMax(p.min);
+   o.max.mergeMin(p.max);
+}
+function SOutline3_mergeMax(p){
+   var o = this;
+   o.min.mergeMin(p.min);
+   o.max.mergeMax(p.max);
 }
 function SOutline3_serialize(p){
    var o = this;
@@ -7005,6 +7141,99 @@ function SOutline3_unserialize(p){
 function SOutline3_toString(){
    var o = this;
    return '(' + o.min + ')-(' + o.max + ')';
+}
+function SOutline3d(){
+   var o = this;
+   SOutline3.call(o);
+   o.center    = new SPoint3();
+   o.radius    = 0;
+   o.points    = new Array(24);
+   o.update    = SOutline3d_update;
+   o.calculate = SOutline3d_calculate;
+   return o;
+}
+function SOutline3d_update(p){
+   var o = this;
+   var vi = o.min;
+   var vix = vi.x;
+   var viy = vi.y;
+   var viz = vi.z;
+   var va = o.max;
+   var vax = va.x;
+   var vay = va.y;
+   var vaz = va.z;
+   var ps = o.points;
+   ps[ 0] = -vix;
+   ps[ 1] =  viy;
+   ps[ 2] =  viz;
+   ps[ 3] =  vix;
+   ps[ 4] =  viy;
+   ps[ 5] =  viz;
+   ps[ 6] =  vix;
+   ps[ 7] = -viy;
+   ps[ 8] =  viz;
+   ps[ 9] = -vix;
+   ps[10] = -viy;
+   ps[11] =  viz;
+   ps[12] = -vax;
+   ps[13] =  vay;
+   ps[14] =  vaz;
+   ps[15] =  vax;
+   ps[16] =  vay;
+   ps[17] =  vaz;
+   ps[18] =  vax;
+   ps[19] = -vay;
+   ps[20] =  vaz;
+   ps[21] = -vax;
+   ps[22] = -vay;
+   ps[23] =  vaz;
+   var c = o.center;
+   c.x = (vix + vax) * 0.5;
+   c.y = (viy + vay) * 0.5;
+   c.z = (viz + vaz) * 0.5;
+   var cx = vax - vix;
+   var cy = vay - viy;
+   var cz = vaz - viz;
+   o.radius = Math.sqrt(cx * cx + cy * cy + cz * cz) * 0.5;
+}
+function SOutline3d_calculate(p){
+   var o = this;
+   var vix = viy = viz = Number.MAX_VALUE;
+   var vax = vay = vaz = -Number.MAX_VALUE;
+   var i = 0;
+   var d = o.points;
+   while(i < 24){
+      var x = d[i++];
+      if(x < vix){
+         vix = x;
+      }
+      if(x > vax){
+         vax = x;
+      }
+      var y = d[i++];
+      if(y < viy){
+         viy = y;
+      }
+      if(y > vay){
+         vay = y;
+      }
+      var z = d[i++];
+      if(z < viz){
+         viz = z;
+      }
+      if(z > vaz){
+         vaz = z;
+      }
+   }
+   o.min.set(vix, viy, viz);
+   o.max.set(vax, vay, vaz);
+   o.center.x = (vix + vax) * 0.5;
+   o.center.y = (viy + vay) * 0.5;
+   o.center.z = (viz + vaz) * 0.5;
+   var cx = vax - vix;
+   var cy = vay - viy;
+   var cz = vaz - viz;
+   o.radius = Math.sqrt(cx * cx + cy * cy + cz * cz) * 0.5;
 }
 function SPadding(l, t, r, b){
    var o = this;
@@ -7165,10 +7394,10 @@ function SPerspectiveMatrix3d_perspectiveFieldOfViewRH(pv, pr, pn, pf){
 }
 function SPlane(o){
    if(!o){o = this;}
-   o.a         = 0.0;
-   o.b         = 0.0;
-   o.c         = 0.0;
-   o.d         = 0.0;
+   o.a         = 0;
+   o.b         = 0;
+   o.c         = 0;
+   o.d         = 0;
    o.assign    = SPlane_assign;
    o.set       = SPlane_set;
    o.normalize = SPlane_normalize;
@@ -7193,7 +7422,7 @@ function SPlane_set(pa, pb, pc, pd){
 }
 function SPlane_normalize(){
    var o = this;
-   var r = 1.0 / Math.sqrt((o.a * o.a) + (o.b * o.b) + (o.c * o.c));
+   var r = 1 / Math.sqrt((o.a * o.a) + (o.b * o.b) + (o.c * o.c));
    o.a *= r;
    o.b *= r;
    o.c *= r;
@@ -7201,7 +7430,7 @@ function SPlane_normalize(){
 }
 function SPlane_dot(x, y, z){
    var o = this;
-   return (x * o.a) + (y * o.b) + (z * o.c ) + d;
+   return (x * o.a) + (y * o.b) + (z * o.c ) + o.d;
 }
 function SPlane_toString(){
    var o = this;
@@ -7269,6 +7498,8 @@ function SPoint3(x, y, z){
    var o = this;
    SValue3.call(o, x, y, z);
    o.conjugate = SPoint3_conjugate;
+   o.mergeMin  = SPoint3_mergeMin;
+   o.mergeMax  = SPoint3_mergeMax;
    o.resize    = SPoint3_resize;
    o.slerp     = SPoint3_slerp;
    return o;
@@ -7285,6 +7516,18 @@ function SPoint3_conjugate(p){
    r.y = -o.y;
    r.z = -o.z;
    return r;
+}
+function SPoint3_mergeMin(p){
+   var o = this;
+   o.x = Math.min(o.x, p.x);
+   o.y = Math.min(o.y, p.y);
+   o.z = Math.min(o.z, p.z);
+}
+function SPoint3_mergeMax(p){
+   var o = this;
+   o.x = Math.max(o.x, p.x);
+   o.y = Math.max(o.y, p.y);
+   o.z = Math.max(o.z, p.z);
 }
 function SPoint3_resize(x, y, z){
    var o = this;
@@ -14475,6 +14718,76 @@ function FG2dContext_dispose(){
    o._native = null;
    o.__base.FGraphicContext.dispose.call(o);
 }
+function FG2dContext(o){
+   o = RClass.inherits(this, o, FGraphicContext);
+   o._size      = null;
+   o.construct  = FG2dContext_construct;
+   o.linkCanvas = FG2dContext_linkCanvas;
+   o.size       = FG2dContext_size;
+   o.dispose    = FG2dContext_dispose;
+   return o;
+}
+function FG2dContext_construct(){
+   var o = this;
+   o.__base.FGraphicContext.construct.call(o);
+   o._size = new SSize2();
+}
+function FG2dContext_linkCanvas(h){
+   var o = this;
+   o._size.set(h.width, h.height);
+}
+function FG2dContext_size(){
+   return this._size;
+}
+function FG2dContext_dispose(){
+   var o = this;
+   o._size = RObject.dispose(o._size);
+   o.__base.FGraphicContext.dispose.call(o);
+}
+function FG2dCanvasContext(o){
+   o = RClass.inherits(this, o, FG2dContext);
+   o._native    = null;
+   o.construct  = FG2dCanvasContext_construct;
+   o.linkCanvas = FG2dCanvasContext_linkCanvas;
+   o.clear      = FG2dCanvasContext_clear;
+   o.drawImage  = FG2dCanvasContext_drawImage;
+   o.toBytes    = FG2dCanvasContext_toBytes;
+   return o;
+}
+function FG2dCanvasContext_construct(){
+   var o = this;
+   o.__base.FG2dContext.construct.call(o);
+}
+function FG2dCanvasContext_linkCanvas(h){
+   var o = this;
+   o.__base.FG2dContext.linkCanvas.call(o, h)
+   o._hCanvas = h;
+   if(h.getContext){
+      var n = h.getContext('2d');
+      if(!n){
+         throw new TError("Current browser can't support Context2D technique.");
+      }
+      o._native = n;
+   }
+}
+function FG2dCanvasContext_clear(r, g, b, a, d){
+   var o = this;
+   var c = o._native;
+}
+function FG2dCanvasContext_drawImage(m){
+   var o = this;
+   var g = o._native;
+   if(RClass.isClass(m, FImage)){
+      g.drawImage(m.image(), 0, 0, o._size.width, o._size.height);
+   }else{
+      throw new TError(o, 'Unknown data type');
+   }
+}
+function FG2dCanvasContext_toBytes(){
+   var o = this;
+   var s = o._size;
+   return o._native.getImageData(0, 0, s.width, s.height);
+}
 var EG3dMaterialMap = new function EG3dMaterialMap(){
    var o = this;
    o.AmbientColor = 0;
@@ -14633,6 +14946,7 @@ function MG3dRegion_prepare(){
    o._changed = false;
    var c = o._camera;
    var cp = c.projection();
+   c.updateFrustum();
    o._cameraPosition.assign(c.position());
    o._cameraDirection.assign(c.direction());
    o._cameraViewMatrix.assign(c.matrix());
@@ -15275,8 +15589,8 @@ function FG3dCamera(o){
    o._centerBack      = 1.0;
    o._focalNear       = 0.1;
    o._focalFar        = 200.0;
-   o._planes          = null;
    o._frustum         = null;
+   o._planes          = null;
    o._viewport        = null;
    o.__axisUp         = null;
    o.__axisX          = null;
@@ -15289,6 +15603,7 @@ function FG3dCamera(o){
    o.direction        = FG3dCamera_direction;
    o.setDirection     = FG3dCamera_setDirection;
    o.frustum          = FG3dCamera_frustum;
+   o.planes           = FG3dCamera_planes;
    o.doWalk           = FG3dCamera_doWalk;
    o.doStrafe         = FG3dCamera_doStrafe;
    o.doFly            = FG3dCamera_doFly;
@@ -15297,6 +15612,7 @@ function FG3dCamera(o){
    o.doRoll           = FG3dCamera_doRoll;
    o.lookAt           = FG3dCamera_lookAt;
    o.update           = FG3dCamera_update;
+   o.updateFrustum    = FG3dCamera_updateFrustum;
    return o;
 }
 function FG3dCamera_construct(){
@@ -15307,8 +15623,8 @@ function FG3dCamera_construct(){
    o._target = new SPoint3();
    o._direction = new SVector3();
    o._directionTarget = new SVector3();
-   o._planes = new Array();
    o._frustum = new SFrustum();
+   o._planes = new SFrustumPlanes();
    o._viewport = RClass.create(FG3dViewport);
    o.__axisUp = new SVector3();
    o.__axisUp.set(0, 1, 0);
@@ -15336,6 +15652,9 @@ function FG3dCamera_setDirection(x, y, z){
 function FG3dCamera_frustum(){
    return this._frustum;
 }
+function FG3dCamera_planes(){
+   return this._planes;
+}
 function FG3dCamera_doWalk(p){
    var o = this;
    o._position.x += o._direction.x * p;
@@ -15351,15 +15670,12 @@ function FG3dCamera_doFly(p){
    o._position.y += p;
 }
 function FG3dCamera_doPitch(p){
-   var o = this;
    throw new TFatal(o, 'Unsupport.')
 }
 function FG3dCamera_doYaw(p){
-   var o = this;
    throw new TFatal(o, 'Unsupport.')
 }
 function FG3dCamera_doRoll(p){
-   var o = this;
    throw new TFatal(o, 'Unsupport.')
 }
 function FG3dCamera_lookAt(x, y, z){
@@ -15399,6 +15715,13 @@ function FG3dCamera_update(){
    d[13] = -ay.dotPoint3(o._position);
    d[14] = -az.dotPoint3(o._position);
    d[15] = 1.0;
+}
+function FG3dCamera_updateFrustum(){
+   var o = this;
+   var m = RMath.matrix;
+   m.assign(o._matrix);
+   m.append(o._projection.matrix());
+   o._planes.updateVision(m.data());
 }
 function FG3dDirectionalLight(o){
    o = RClass.inherits(this, o, FG3dLight);
@@ -16016,6 +16339,7 @@ function FG3dOrthoCamera_projection(){
 }
 function FG3dOrthoCamera_updateFrustum(){
    var o = this;
+   o.__base.FG3dCamera.updateFrustum.call(o);
    var p = o._projection;
    var s = p._size;
    var f = o._frustum;
@@ -16117,6 +16441,7 @@ function FG3dPerspectiveCamera_projection(){
 }
 function FG3dPerspectiveCamera_updateFrustum(){
    var o = this;
+   o.__base.FG3dCamera.updateFrustum.call(o);
    var p = o._projection;
    var s = p._size;
    var f = o._frustum;
@@ -18989,6 +19314,7 @@ function FWglFlatTexture(o){
    o._native    = null;
    o.setup      = FWglFlatTexture_setup;
    o.isValid    = FWglFlatTexture_isValid;
+   o.texture    = FWglFlatTexture_texture;
    o.makeMipmap = FWglFlatTexture_makeMipmap;
    o.uploadData = FWglFlatTexture_uploadData;
    o.upload     = FWglFlatTexture_upload;
@@ -19006,6 +19332,9 @@ function FWglFlatTexture_isValid(){
    var o = this;
    var g = o._graphicContext._native;
    return g.isTexture(o._native);
+}
+function FWglFlatTexture_texture(){
+   return this;
 }
 function FWglFlatTexture_makeMipmap(){
    var o = this;
@@ -20056,17 +20385,11 @@ function FDisplayUiLayer(o){
 }
 function FDrawable(o){
    o = RClass.inherits(this, o, FObject);
-   o._visible        = true;
-   o._drawables      = null;
-   o.testVisible     = FDrawable_testVisible;
-   o.visible         = FDrawable_visible;
-   o.setVisible      = FDrawable_setVisible;
-   o.hasDrawable     = FDrawable_hasDrawable;
-   o.drawables       = FDrawable_drawables;
-   o.pushDrawable    = FDrawable_pushDrawable;
-   o.removeDrawable  = FDrawable_removeDrawable;
-   o.filterDrawables = FDrawable_filterDrawables;
-   o.process         = FDrawable_process;
+   o._visible    = true;
+   o.testVisible = FDrawable_testVisible;
+   o.visible     = FDrawable_visible;
+   o.setVisible  = FDrawable_setVisible;
+   o.process     = RMethod.empty;
    return o;
 }
 function FDrawable_testVisible(){
@@ -20078,11 +20401,26 @@ function FDrawable_visible(){
 function FDrawable_setVisible(p){
    this._visible = p;
 }
-function FDrawable_hasDrawable(){
+function FRegion(o){
+   o = RClass.inherits(this, o, FObject);
+   return o;
+}
+function FRenderable(o){
+   o = RClass.inherits(this, o, FDrawable);
+   o._drawables      = null;
+   o.hasDrawable     = FRenderable_hasDrawable;
+   o.drawables       = FRenderable_drawables;
+   o.pushDrawable    = FRenderable_pushDrawable;
+   o.removeDrawable  = FRenderable_removeDrawable;
+   o.filterDrawables = FRenderable_filterDrawables;
+   o.process         = FRenderable_process;
+   return o;
+}
+function FRenderable_hasDrawable(){
    var s = this._drawables;
    return s ? !s.isEmpty() : false;
 }
-function FDrawable_drawables(){
+function FRenderable_drawables(){
    var o = this;
    var s = o._drawables;
    if(!s){
@@ -20090,19 +20428,19 @@ function FDrawable_drawables(){
    }
    return s;
 }
-function FDrawable_pushDrawable(p){
+function FRenderable_pushDrawable(p){
    var o = this;
    p._parent = o;
    p._drawable = o;
    o.drawables().push(p);
 }
-function FDrawable_removeDrawable(p){
+function FRenderable_removeDrawable(p){
    var s = this._drawables;
    if(s){
       s.remove(p);
    }
 }
-function FDrawable_filterDrawables(p){
+function FRenderable_filterDrawables(p){
    var o = this;
    if(!o.testVisible()){
       return false;
@@ -20119,18 +20457,16 @@ function FDrawable_filterDrawables(p){
       }
    }
 }
-function FDrawable_process(p){
+function FRenderable_process(p){
    var o = this;
+   o.__base.FDrawable.process.call(o, p);
    var s = o._drawables;
    if(s){
-      for(var i = s.count() - 1; i >= 0; i--){
+      var c = s.count();
+      for(var i = 0; i <= 0; i++){
          s.getAt(i).process(p);
       }
    }
-}
-function FRegion(o){
-   o = RClass.inherits(this, o, FObject);
-   return o;
 }
 function FStage(o){
    o = RClass.inherits(this, o, FObject, MListenerEnterFrame, MListenerLeaveFrame);
@@ -20279,6 +20615,58 @@ function RStage_start(v){
    RTimer.setup();
    setInterval('RStage_onProcess()', parseInt(v));
 }
+function FE2dCanvas(o){
+   o = RClass.inherits(this, o, FObject);
+   o._size     = null;
+   o._context  = null;
+   o.onResize  = FE2dCanvas_onResize;
+   o.construct = FE2dCanvas_construct;
+   o.size      = FE2dCanvas_size;
+   o.context   = FE2dCanvas_context;
+   o.build     = FE2dCanvas_build;
+   o.setPanel  = FE2dCanvas_setPanel;
+   o.dispose   = FE2dCanvas_dispose;
+   return o;
+}
+function FE2dCanvas_onResize(p){
+   var o = this;
+}
+function FE2dCanvas_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._size = new SSize2();
+}
+function FE2dCanvas_size(){
+   return this._size;
+}
+function FE2dCanvas_context(){
+   return this._context;
+}
+function FE2dCanvas_build(p){
+   var o = this;
+   var s = o._size;
+   var h = o._hCanvas = RBuilder.create(p, 'CANVAS');
+   h.__linker = o;
+   h.width = s.width;
+   h.height = s.height;
+   var c = o._context = RClass.create(FG2dCanvasContext);
+   c.linkCanvas(h);
+}
+function FE2dCanvas_setPanel(p){
+   var o = this;
+   var c = o._context;
+   var hc = o._hCanvas;
+   o._hPanel = p;
+   p.appendChild(o._hCanvas);
+   o.onResize();
+}
+function FE2dCanvas_dispose(){
+   var o = this;
+   o._context = RObject.dispose(o._context);
+   o._hPanel = RHtml.free(o._hPanel);
+   o._hCanvas = RHtml.free(o._hCanvas);
+   o.__base.FObject.dispose.call(o);
+}
 function FE2dDrawable(o){
    o = RClass.inherits(this, o, FDrawable);
    return o;
@@ -20383,28 +20771,31 @@ function FE3dCanvas_dispose(){
 }
 function FE3dDisplay(o){
    o = RClass.inherits(this, o, FDisplay);
-   o._materials = null;
-   o.construct  = FE3dDisplay_construct;
-   o.materials  = FE3dDisplay_materials;
-   o.dispose    = FE3dDisplay_dispose;
+   o._outline         = null;
+   o._materials       = null;
+   o.construct        = FE3dDisplay_construct;
+   o.materials        = FE3dDisplay_materials;
+   o.calculateOutline = FE3dDisplay_calculateOutline;
+   o.dispose          = FE3dDisplay_dispose;
    return o;
 }
 function FE3dDisplay_construct(){
    var o = this;
    o.__base.FDisplay.construct.call(o);
+   o._outline = new SOutline3();
    o._materials = new TDictionary();
 }
 function FE3dDisplay_materials(){
    return this._materials;
 }
+function FE3dDisplay_calculateOutline(){
+   var o = this;
+   return o._outline;
+}
 function FE3dDisplay_dispose(){
    var o = this;
    o._materials = RObject.free(o._materials);
    o.__base.FDisplay.dispose.call(o);
-}
-function FE3dDrawable(o){
-   o = RClass.inherits(this, o, FDrawable);
-   return o;
 }
 function FE3dRegion(o){
    o = RClass.inherits(this, o, FRegion, MG3dRegion, MGraphicObject);
@@ -20440,8 +20831,10 @@ function FE3dRegion_dispose(){
    o.__base.MG3dRegion.dispose.call(o);
 }
 function FE3dRenderable(o){
-   o = RClass.inherits(this, o, FE3dDrawable, MG3dRenderable, MGraphicObject);
+   o = RClass.inherits(this, o, FRenderable, MG3dRenderable, MGraphicObject);
    o._display         = null;
+   o._outline         = null;
+   o._outlineVisible  = true;
    o._calculateMatrix = null;
    o._vertexCount     = 0;
    o._vertexBuffers   = null;
@@ -20457,23 +20850,29 @@ function FE3dRenderable(o){
    o.vertexBuffers    = FE3dRenderable_vertexBuffers;
    o.indexBuffer      = FE3dRenderable_indexBuffer;
    o.findTexture      = FE3dRenderable_findTexture;
+   o.pushTexture      = FE3dRenderable_pushTexture;
    o.textures         = FE3dRenderable_textures;
    o.bones            = RMethod.empty;
+   o.processDelay     = RMethod.empty;
    o.update           = FE3dRenderable_update;
    o.remove           = FE3dRenderable_remove;
    return o;
 }
 function FE3dRenderable_construct(){
    var o = this;
-   o.__base.FE3dDrawable.construct.call(o);
+   o.__base.FRenderable.construct.call(o);
    o.__base.MG3dRenderable.construct.call(o);
+   o._outline = new SOutline3d();
    o._calculateMatrix = new SMatrix3d();
    o._vertexBuffers = new TDictionary();
 }
 function FE3dRenderable_testVisible(){
    var o = this;
-   var r = o.__base.FE3dDrawable.testVisible.call(o);
+   var r = o.__base.FRenderable.testVisible.call(o);
    if(r){
+      if(!o._outlineVisible){
+         return false;
+      }
       if(RRuntime.isDebug()){
          var m = o.material();
          if(!m.testVisible()){
@@ -20503,6 +20902,14 @@ function FE3dRenderable_indexBuffer(){
 }
 function FE3dRenderable_findTexture(p){
    return this._textures.get(p);
+}
+function FE3dRenderable_pushTexture(p){
+   var o = this;
+   var s = o._textures;
+   if(!s){
+      s = o._textures = new TDictionary();
+   }
+   s.set(p._name, p);
 }
 function FE3dRenderable_textures(){
    return this._textures;
@@ -20759,15 +21166,14 @@ function FE3dStage_allDisplays(){
 }
 function FE3dStageConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._scopeCd     = EScope.Local;
-   o._looper      = null;
-   o._renderables = null;
-   o._thread      = null;
-   o._interval    = 50;
-   o._limit       = 16;
-   o.onProcess   = FE3dStageConsole_onProcess;
-   o.construct   = FE3dStageConsole_construct;
-   o.process     = FE3dStageConsole_process;
+   o._scopeCd  = EScope.Local;
+   o._looper   = null;
+   o._thread   = null;
+   o._interval = 50;
+   o._limit    = 16;
+   o.onProcess = FE3dStageConsole_onProcess;
+   o.construct = FE3dStageConsole_construct;
+   o.process   = FE3dStageConsole_process;
    return o;
 }
 function FE3dStageConsole_onProcess(){
@@ -20777,7 +21183,9 @@ function FE3dStageConsole_onProcess(){
    for(var i = o._limit - 1; i >= 0; i--){
       var r = s.next();
       if(r){
-         r.processDelay();
+         r.processDelay(r._linkRegion);
+      }else{
+         break;
       }
    }
 }
@@ -20792,6 +21200,15 @@ function FE3dStageConsole_construct(){
 }
 function FE3dStageConsole_process(p){
    var o = this;
+   var s = p.allRenderables();
+   for(var i = s.count() - 1; i >= 0; i--){
+      var r = s.getAt(i);
+      if(!r._linkStageLooper){
+         o._looper.push(r);
+         r._linkRegion = p;
+         r._linkStageLooper = o._looper;
+      }
+   }
 }
 function FE3dStageStatistics(o){
    o = RClass.inherits(this, o, FStatistics);
@@ -21396,7 +21813,7 @@ function FE3sMesh(o){
 function FE3sMesh_construct(){
    var o = this;
    o.__base.FE3sObject.construct.call(o);
-   o._outline = new SOutline3();
+   o._outline = new SOutline3d();
 }
 function FE3sMesh_outline(){
    return this._outline;
@@ -21411,6 +21828,7 @@ function FE3sMesh_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
    o._outline.unserialize(p);
+   o._outline.update();
    var c = p.readInt8();
    if(c > 0){
       var ss = o._streams = new TObjects();
@@ -24012,6 +24430,7 @@ function FE3rModelConsole_load(pc, pg){
 }
 function FE3rModelConsole_merge(pe, pg, pi, pc){
    var o = this;
+   return null;
    var f = 'merge';
    var s = pg.renderables();
    for(var i = 0; i < pc; i++){
@@ -24027,6 +24446,7 @@ function FE3rModelConsole_merge(pe, pg, pi, pc){
       }
       m.build();
       o._dynamicMeshs.set(f, m);
+      RLogger.info(o, 'Create merge model. (mesh={1}, renderables={2})', m.meshes().count(), m.renderables().count());
    }
    m.update();
    return m;
@@ -24572,12 +24992,16 @@ function FE3dGalaxyEffect(o){
 function FE3dGalaxyEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._graphicContext;
+   var g = c._native;
    var p = o._program;
+   g.disable(g.DEPTH_TEST);
    var m = pr.material();
    var mi = m.info();
    o.bindMaterial(m);
+   p.setParameter4('vc_rotation', pr._seed, 0, 0, 0);
    p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
    p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
    p.setParameter('fc_ambient_color', mi.ambientColor);
    o.bindAttributes(pr);
@@ -25356,7 +25780,7 @@ function FE3dMeshRenderable_bones(p){
 }
 function FE3dMeshRenderable_process(p){
    var o = this;
-   o.__base.FE3dRenderable.process.call(p)
+   o.__base.FE3dRenderable.process.call(o, p)
    var t = o._activeTrack;
    if(t){
       if(o._display._optionPlay){
@@ -25367,8 +25791,9 @@ function FE3dMeshRenderable_process(p){
       }
    }
 }
-function FE3dMeshRenderable_processDelay(){
+function FE3dMeshRenderable_processDelay(p){
    var o = this;
+   o.__base.FE3dRenderable.processDelay.call(o, p);
 }
 function FE3dMeshRenderable_update(p){
    var o = this;
@@ -27136,7 +27561,11 @@ function FE3dTemplateRenderable_testReady(){
 }
 function FE3dTemplateRenderable_testVisible(p){
    var o = this;
-   return o._visible && o._ready;
+   var r = false;
+   if(o._ready){
+      r = o.__base.FE3dMeshRenderable.testVisible.call(o);
+   }
+   return r;
 }
 function FE3dTemplateRenderable_resource(p){
    return this._resource;
@@ -41596,8 +42025,9 @@ function FTabBar_selectPage(idx, force){
    }
    return oPage;
 }
-function FTabBar_push(o){
-   this.base.FContainer.push.call(this, o);
+function FTabBar_push(p){
+   var o = this;
+   this.base.FContainer.push.call(o, p);
    if(RClass.isClass(o, FTabButton)){
       o.tabBar = this;
       o.index = this.sheets.count;
@@ -41606,7 +42036,7 @@ function FTabBar_push(o){
 }
 function FTabBar_dispose(){
    var o = this;
-   o.base.FContainer.dispose.call();
+   o.base.FContainer.dispose.call(o);
    RMemory.freeHtml(o.hTop);
    RMemory.freeHtml(o.hLine);
    RMemory.freeHtml(o.hBottom);

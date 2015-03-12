@@ -1,23 +1,23 @@
 //==========================================================
-// <T>显示对象。</T>
+// <T>渲染环境。</T>
 //
 // @author maocy
-// @history 150107
+// @history 141230
 //==========================================================
-function FE3dDisplay(o){
-   o = RClass.inherits(this, o, FDisplay);
+function FG2dContext(o){
+   o = RClass.inherits(this, o, FGraphicContext);
    //..........................................................
    // @attribute
-   o._outline         = null;
-   o._materials       = null;
+   o._size      = null;
    //..........................................................
    // @method
-   o.construct        = FE3dDisplay_construct;
+   o.construct  = FG2dContext_construct;
    // @method
-   o.materials        = FE3dDisplay_materials;
-   o.calculateOutline = FE3dDisplay_calculateOutline;
+   o.linkCanvas = FG2dContext_linkCanvas;
    // @method
-   o.dispose          = FE3dDisplay_dispose;
+   o.size       = FG2dContext_size;
+   // @method
+   o.dispose    = FG2dContext_dispose;
    return o;
 }
 
@@ -26,32 +26,32 @@ function FE3dDisplay(o){
 //
 // @method
 //==========================================================
-function FE3dDisplay_construct(){
+function FG2dContext_construct(){
    var o = this;
-   o.__base.FDisplay.construct.call(o);
-   o._outline = new SOutline3();
-   o._materials = new TDictionary();
+   o.__base.FGraphicContext.construct.call(o);
+   // 设置属性
+   o._size = new SSize2();
 }
 
 //==========================================================
-// <T>获得材质。</T>
+// <T>关联页面画布标签。</T>
 //
 // @method
-// @return FG3dMaterial 材质
+// @param h:hCanvas:HtmlCanvasTag 页面画布标签
 //==========================================================
-function FE3dDisplay_materials(){
-   return this._materials;
+function FG2dContext_linkCanvas(h){
+   var o = this;
+   o._size.set(h.width, h.height);
 }
 
 //==========================================================
-// <T>计算轮廓大小。</T>
+// <T>获得尺寸。</T>
 //
 // @method
-// @return FG3dMaterial 材质
+// @return SSize2 尺寸
 //==========================================================
-function FE3dDisplay_calculateOutline(){
-   var o = this;
-   return o._outline;
+function FG2dContext_size(){
+   return this._size;
 }
 
 //==========================================================
@@ -59,9 +59,9 @@ function FE3dDisplay_calculateOutline(){
 //
 // @method
 //==========================================================
-function FE3dDisplay_dispose(){
+function FG2dContext_dispose(){
    var o = this;
-   o._materials = RObject.free(o._materials);
+   o._size = RObject.dispose(o._size);
    // 父处理
-   o.__base.FDisplay.dispose.call(o);
+   o.__base.FGraphicContext.dispose.call(o);
 }

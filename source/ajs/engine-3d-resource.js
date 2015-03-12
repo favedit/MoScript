@@ -538,7 +538,7 @@ function FE3sMesh(o){
 function FE3sMesh_construct(){
    var o = this;
    o.__base.FE3sObject.construct.call(o);
-   o._outline = new SOutline3();
+   o._outline = new SOutline3d();
 }
 function FE3sMesh_outline(){
    return this._outline;
@@ -553,6 +553,7 @@ function FE3sMesh_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
    o._outline.unserialize(p);
+   o._outline.update();
    var c = p.readInt8();
    if(c > 0){
       var ss = o._streams = new TObjects();

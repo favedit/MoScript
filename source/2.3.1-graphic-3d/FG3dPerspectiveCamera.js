@@ -53,6 +53,8 @@ function FG3dPerspectiveCamera_projection(){
 //==========================================================
 function FG3dPerspectiveCamera_updateFrustum(){
    var o = this;
+   o.__base.FG3dCamera.updateFrustum.call(o);
+   // 更新视截体
    var p = o._projection;
    var s = p._size;
    var f = o._frustum;

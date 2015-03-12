@@ -25,14 +25,18 @@ function FE3dGalaxyEffect(o){
 function FE3dGalaxyEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._graphicContext;
+   var g = c._native;
    var p = o._program;
+   g.disable(g.DEPTH_TEST);
    // 绑定材质
    var m = pr.material();
    var mi = m.info();
    o.bindMaterial(m);
    // 绑定所有属性流
+   p.setParameter4('vc_rotation', pr._seed, 0, 0, 0);
    p.setParameter('vc_model_matrix', pr.currentMatrix());
    p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', pg.calculate(EG3dRegionParameter.CameraPosition));
    // 设置材质
    p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
    p.setParameter('fc_ambient_color', mi.ambientColor);

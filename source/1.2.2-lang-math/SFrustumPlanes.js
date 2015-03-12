@@ -136,36 +136,36 @@ function SFrustumPlanes_containsRectangle(cx, cy, cz, sx, sy, sz){
 //============================================================
 // <T>检查长方体是否在视截体内。</T>
 //
-// @param p:corners 顶点集合
+// @param p:corners:Array 顶点集合
 // @return 是否包含
 //============================================================
 function SFrustumPlanes_containsCorners(p){
    var o = this;
-   var ps = o.planes;
-   for(var i = 0; i < EFrustumPlane.Count; i++){
-      var p = ps[n];
-      if(p.dot(p[ 0], p[ 1], p[ 2]) >= 0){
+   var s = o.planes;
+   for(var i = EFrustumPlane.Count - 1; i >= 0; i--){
+      var l = s[i];
+      if(l.dot(p[ 0], p[ 1], p[ 2]) >= 0){
          continue;
       }
-      if(p.dot(p[ 3], p[ 4], p[ 5]) >= 0){
+      if(l.dot(p[ 3], p[ 4], p[ 5]) >= 0){
          continue;
       }
-      if(p.dot(p[ 6], p[ 7], p[ 8]) >= 0){
+      if(l.dot(p[ 6], p[ 7], p[ 8]) >= 0){
          continue;
       }
-      if(p.dot(p[ 9], p[10], p[11]) >= 0){
+      if(l.dot(p[ 9], p[10], p[11]) >= 0){
          continue;
       }
-      if(p.dot(p[12], p[13], p[14]) >= 0){
+      if(l.dot(p[12], p[13], p[14]) >= 0){
          continue;
       }
-      if(p.dot(p[15], p[16], p[17]) >= 0){
+      if(l.dot(p[15], p[16], p[17]) >= 0){
          continue;
       }
-      if(p.dot(p[18], p[19], p[20]) >= 0){
+      if(l.dot(p[18], p[19], p[20]) >= 0){
          continue;
       }
-      if(p.dot(p[21], p[22], p[23]) >= 0){
+      if(l.dot(p[21], p[22], p[23]) >= 0){
          continue;
       }
       return false;
@@ -203,44 +203,44 @@ function SFrustumPlanes_updateVision(p){
    var ps = o.planes;
    // 计算视截体的近平面
    var pn = ps[EFrustumPlane.Near];
-   pn.a = p[4 * 0 + 2];
-   pn.b = p[4 * 1 + 2];
-   pn.c = p[4 * 2 + 2];
-   pn.d = p[4 * 3 + 2];
+   pn.a = p[ 0 + 3] + p[ 0 + 2];
+   pn.b = p[ 4 + 3] + p[ 4 + 2];
+   pn.c = p[ 8 + 3] + p[ 8 + 2];
+   pn.d = p[12 + 3] + p[12 + 2];
    pn.normalize();
    // 计算视截体的远平面
    var pf = ps[EFrustumPlane.Far];
-   pf.a = p[4 * 0 + 3] - p[4 * 0 + 2];
-   pf.b = p[4 * 1 + 3] - p[4 * 1 + 2];
-   pf.c = p[4 * 2 + 3] - p[4 * 2 + 2];
-   pf.d = p[4 * 3 + 3] - p[4 * 3 + 2];
+   pf.a = p[ 0 + 3] - p[ 0 + 2];
+   pf.b = p[ 4 + 3] - p[ 4 + 2];
+   pf.c = p[ 8 + 3] - p[ 8 + 2];
+   pf.d = p[12 + 3] - p[12 + 2];
    pf.normalize();
    // 计算视截体的左平面
    var pl = ps[EFrustumPlane.Left];
-   pl.a = p[4 * 0 + 3] + p[4 * 0 + 0];
-   pl.b = p[4 * 1 + 3] + p[4 * 1 + 0];
-   pl.c = p[4 * 2 + 3] + p[4 * 2 + 0];
-   pl.d = p[4 * 3 + 3] + p[4 * 3 + 0];
+   pl.a = p[ 0 + 3] - p[ 0 + 0];
+   pl.b = p[ 4 + 3] - p[ 4 + 0];
+   pl.c = p[ 8 + 3] - p[ 8 + 0];
+   pl.d = p[12 + 3] - p[12 + 0];
    pl.normalize();
    // 计算视截体的右平面
    var pr = ps[EFrustumPlane.Right];
-   pr.a = p[4 * 0 + 3] - p[4 * 0 + 0];
-   pr.b = p[4 * 1 + 3] - p[4 * 1 + 0];
-   pr.c = p[4 * 2 + 3] - p[4 * 2 + 0];
-   pr.d = p[4 * 3 + 3] - p[4 * 3 + 0];
+   pr.a = p[ 0 + 3] + p[ 0 + 0];
+   pr.b = p[ 4 + 3] + p[ 4 + 0];
+   pr.c = p[ 8 + 3] + p[ 8 + 0];
+   pr.d = p[12 + 3] + p[12 + 0];
    pr.normalize();
    // 计算视截体的顶平面
    var pt = ps[EFrustumPlane.Top];
-   pt.a = p[4 * 0 + 3] - p[4 * 0 + 1];
-   pt.b = p[4 * 1 + 3] - p[4 * 1 + 1];
-   pt.c = p[4 * 2 + 3] - p[4 * 2 + 1];
-   pt.d = p[4 * 3 + 3] - p[4 * 3 + 1];
+   pt.a = p[ 0 + 3] - p[ 0 + 1];
+   pt.b = p[ 4 + 3] - p[ 4 + 1];
+   pt.c = p[ 8 + 3] - p[ 8 + 1];
+   pt.d = p[12 + 3] - p[12 + 1];
    pt.normalize();
    // 计算视截体的底平面
    var pb = ps[EFrustumPlane.Bottom];
-   pb.a = p[4 * 0 + 3] + p[4 * 0 + 1];
-   pb.b = p[4 * 1 + 3] + p[4 * 1 + 1];
-   pb.c = p[4 * 2 + 3] + p[4 * 2 + 1];
-   pb.d = p[4 * 3 + 3] + p[4 * 3 + 1];
+   pb.a = p[ 0 + 3] + p[ 0 + 1];
+   pb.b = p[ 4 + 3] + p[ 4 + 1];
+   pb.c = p[ 8 + 3] + p[ 8 + 1];
+   pb.d = p[12 + 3] + p[12 + 1];
    pb.normalize();
 }

@@ -14,6 +14,8 @@ function SPoint3(x, y, z){
    //..........................................................
    // @method
    o.conjugate = SPoint3_conjugate;
+   o.mergeMin  = SPoint3_mergeMin;
+   o.mergeMax  = SPoint3_mergeMax;
    o.resize    = SPoint3_resize;
    o.slerp     = SPoint3_slerp;
    return o;
@@ -38,6 +40,32 @@ function SPoint3_conjugate(p){
    r.y = -o.y;
    r.z = -o.z;
    return r;
+}
+
+//============================================================
+// <T>合并最小值。</T>
+//
+// @method
+// @param p:value:SPoint3 三维点
+//============================================================
+function SPoint3_mergeMin(p){
+   var o = this;
+   o.x = Math.min(o.x, p.x);
+   o.y = Math.min(o.y, p.y);
+   o.z = Math.min(o.z, p.z);
+}
+
+//============================================================
+// <T>合并最大值。</T>
+//
+// @method
+// @param p:value:SPoint3 三维点
+//============================================================
+function SPoint3_mergeMax(p){
+   var o = this;
+   o.x = Math.max(o.x, p.x);
+   o.y = Math.max(o.y, p.y);
+   o.z = Math.max(o.z, p.z);
 }
 
 //==========================================================

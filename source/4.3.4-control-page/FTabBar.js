@@ -128,8 +128,9 @@ function FTabBar_selectPage(idx, force){
    return oPage;
 }
 // ------------------------------------------------------------
-function FTabBar_push(o){
-   this.base.FContainer.push.call(this, o);
+function FTabBar_push(p){
+   var o = this;
+   this.base.FContainer.push.call(o, p);
    if(RClass.isClass(o, FTabButton)){
       o.tabBar = this;
       o.index = this.sheets.count;
@@ -139,7 +140,7 @@ function FTabBar_push(o){
 // ------------------------------------------------------------
 function FTabBar_dispose(){
    var o = this;
-   o.base.FContainer.dispose.call();
+   o.base.FContainer.dispose.call(o);
    RMemory.freeHtml(o.hTop);
    RMemory.freeHtml(o.hLine);
    RMemory.freeHtml(o.hBottom);

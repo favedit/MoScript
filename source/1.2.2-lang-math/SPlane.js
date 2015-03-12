@@ -9,10 +9,10 @@ function SPlane(o){
    if(!o){o = this;}
    //..........................................................
    // @attribute
-   o.a         = 0.0;
-   o.b         = 0.0;
-   o.c         = 0.0;
-   o.d         = 0.0;
+   o.a         = 0;
+   o.b         = 0;
+   o.c         = 0;
+   o.d         = 0;
    //..........................................................
    // @method
    o.assign    = SPlane_assign;
@@ -62,7 +62,7 @@ function SPlane_set(pa, pb, pc, pd){
 //============================================================
 function SPlane_normalize(){
    var o = this;
-   var r = 1.0 / Math.sqrt((o.a * o.a) + (o.b * o.b) + (o.c * o.c));
+   var r = 1 / Math.sqrt((o.a * o.a) + (o.b * o.b) + (o.c * o.c));
    o.a *= r;
    o.b *= r;
    o.c *= r;
@@ -79,7 +79,7 @@ function SPlane_normalize(){
 //============================================================
 function SPlane_dot(x, y, z){
    var o = this;
-   return (x * o.a) + (y * o.b) + (z * o.c ) + d;
+   return (x * o.a) + (y * o.b) + (z * o.c ) + o.d;
 }
 
 //============================================================

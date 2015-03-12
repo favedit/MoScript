@@ -22,8 +22,8 @@ function FG3dCamera(o){
    o._focalNear       = 0.1;
    o._focalFar        = 200.0;
    // @attribute 视截体
-   o._planes          = null;
    o._frustum         = null;
+   o._planes          = null;
    o._viewport        = null;
    // @attribute 轴线
    o.__axisUp         = null;
@@ -40,6 +40,7 @@ function FG3dCamera(o){
    o.direction        = FG3dCamera_direction;
    o.setDirection     = FG3dCamera_setDirection;
    o.frustum          = FG3dCamera_frustum;
+   o.planes           = FG3dCamera_planes;
    // @method
    o.doWalk           = FG3dCamera_doWalk;
    o.doStrafe         = FG3dCamera_doStrafe;
@@ -50,6 +51,7 @@ function FG3dCamera(o){
    // @method
    o.lookAt           = FG3dCamera_lookAt;
    o.update           = FG3dCamera_update;
+   o.updateFrustum    = FG3dCamera_updateFrustum;
    return o;
 }
 
@@ -68,8 +70,8 @@ function FG3dCamera_construct(){
    o._direction = new SVector3();
    o._directionTarget = new SVector3();
    // 初始化变量
-   o._planes = new Array();
    o._frustum = new SFrustum();
+   o._planes = new SFrustumPlanes();
    o._viewport = RClass.create(FG3dViewport);
    // 初始化变量
    o.__axisUp = new SVector3();
@@ -146,6 +148,16 @@ function FG3dCamera_frustum(){
 }
 
 //==========================================================
+// <T>获得视截面。</T>
+//
+// @method
+// @return SFrustumPlanes 视截面
+//==========================================================
+function FG3dCamera_planes(){
+   return this._planes;
+}
+
+//==========================================================
 // <T>向前/向后移动</T>
 //
 // @method
@@ -187,7 +199,6 @@ function FG3dCamera_doFly(p){
 // @param p:radian:Number 弧度
 //==========================================================
 function FG3dCamera_doPitch(p){
-   var o = this;
    throw new TFatal(o, 'Unsupport.')
 }
 
@@ -198,7 +209,6 @@ function FG3dCamera_doPitch(p){
 // @param p:radian:Number 弧度
 //==========================================================
 function FG3dCamera_doYaw(p){
-   var o = this;
    throw new TFatal(o, 'Unsupport.')
 }
 
@@ -209,7 +219,6 @@ function FG3dCamera_doYaw(p){
 // @param p:radian:Number 弧度
 //==========================================================
 function FG3dCamera_doRoll(p){
-   var o = this;
    throw new TFatal(o, 'Unsupport.')
 }
 
@@ -265,4 +274,17 @@ function FG3dCamera_update(){
    d[13] = -ay.dotPoint3(o._position);
    d[14] = -az.dotPoint3(o._position);
    d[15] = 1.0;
+}
+
+//==========================================================
+// <T>更新相机视截体。</T>
+//
+// @method
+//==========================================================
+function FG3dCamera_updateFrustum(){
+   var o = this;
+   var m = RMath.matrix;
+   m.assign(o._matrix);
+   m.append(o._projection.matrix());
+   o._planes.updateVision(m.data());
 }

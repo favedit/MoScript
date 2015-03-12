@@ -5,11 +5,13 @@
 // @history 150207
 //==========================================================
 function FE3dRenderable(o){
-   o = RClass.inherits(this, o, FE3dDrawable, MG3dRenderable, MGraphicObject);
+   o = RClass.inherits(this, o, FRenderable, MG3dRenderable, MGraphicObject);
    //..........................................................
    // @attribute
    o._display         = null;
    // @attribute
+   o._outline         = null;
+   o._outlineVisible  = true;
    o._calculateMatrix = null;
    o._vertexCount     = 0;
    o._vertexBuffers   = null;
@@ -29,9 +31,11 @@ function FE3dRenderable(o){
    o.vertexBuffers    = FE3dRenderable_vertexBuffers;
    o.indexBuffer      = FE3dRenderable_indexBuffer;
    o.findTexture      = FE3dRenderable_findTexture;
+   o.pushTexture      = FE3dRenderable_pushTexture;
    o.textures         = FE3dRenderable_textures;
    o.bones            = RMethod.empty;
    // @method
+   o.processDelay     = RMethod.empty;
    o.update           = FE3dRenderable_update;
    o.remove           = FE3dRenderable_remove;
    return o;
@@ -44,9 +48,10 @@ function FE3dRenderable(o){
 //==========================================================
 function FE3dRenderable_construct(){
    var o = this;
-   o.__base.FE3dDrawable.construct.call(o);
+   o.__base.FRenderable.construct.call(o);
    o.__base.MG3dRenderable.construct.call(o);
    // 构造变量
+   o._outline = new SOutline3d();
    o._calculateMatrix = new SMatrix3d();
    o._vertexBuffers = new TDictionary();
 }
@@ -59,8 +64,12 @@ function FE3dRenderable_construct(){
 //==========================================================
 function FE3dRenderable_testVisible(){
    var o = this;
-   var r = o.__base.FE3dDrawable.testVisible.call(o);
+   var r = o.__base.FRenderable.testVisible.call(o);
    if(r){
+      // 测试轮廓可见
+      if(!o._outlineVisible){
+         return false;
+      }
       // 测试模式时候，可见性依赖材质
       if(RRuntime.isDebug()){
          var m = o.material();
@@ -142,6 +151,21 @@ function FE3dRenderable_indexBuffer(){
 //==========================================================
 function FE3dRenderable_findTexture(p){
    return this._textures.get(p);
+}
+
+//==========================================================
+// <T>增加一个纹理。</T>
+//
+// @method
+// @param p:texture:FG3dTexture 纹理
+//==========================================================
+function FE3dRenderable_pushTexture(p){
+   var o = this;
+   var s = o._textures;
+   if(!s){
+      s = o._textures = new TDictionary();
+   }
+   s.set(p._name, p);
 }
 
 //==========================================================

@@ -14,6 +14,7 @@ function FWglFlatTexture(o){
    o.setup      = FWglFlatTexture_setup;
    // @method
    o.isValid    = FWglFlatTexture_isValid;
+   o.texture    = FWglFlatTexture_texture;
    o.makeMipmap = FWglFlatTexture_makeMipmap;
    o.uploadData = FWglFlatTexture_uploadData;
    o.upload     = FWglFlatTexture_upload;
@@ -45,6 +46,15 @@ function FWglFlatTexture_isValid(){
    var o = this;
    var g = o._graphicContext._native;
    return g.isTexture(o._native);
+}
+
+//==========================================================
+// <T>获得纹理。</T>
+//
+// @method
+//==========================================================
+function FWglFlatTexture_texture(){
+   return this;
 }
 
 //==========================================================
