@@ -14,8 +14,8 @@ function FE3dStageConsole(o){
    o._looper   = null;
    // @attribute
    o._thread   = null;
-   o._interval = 50;
-   o._limit    = 16;
+   o._interval = 25;
+   o._limit    = 8;
    //..........................................................
    // @event
    o.onProcess = FE3dStageConsole_onProcess;

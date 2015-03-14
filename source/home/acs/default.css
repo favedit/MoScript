@@ -1,0 +1,173 @@
+@import url(http://fonts.googleapis.com/css?family=Oswald|Lobster);
+
+/* ------------------------------------------------------ */
+/* Html                                                   */
+/* ------------------------------------------------------ */
+html{
+   width:100%;
+   height:100%;
+}
+
+/* ------------------------------------------------------ */
+/* Body                                                   */
+/* ------------------------------------------------------ */
+body {
+   margin: 0px;
+   width: 100%;
+   height: 100%;
+   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e9eadc', endColorstr='#adaca2',GradientType=1 );
+   background-repeat: no-repeat;
+   background-attachment: fixed;
+   font-family: "微软雅黑", Arial;
+   text-align: center;
+   font-size:12px;
+   color: #47473c;
+   background-color:#5e5e5e
+}
+
+.head_background{
+   background:url(../ars/headbg.png) no-repeat; background-size:100% 60px;
+   text-align:center;
+}
+
+.head_logo{
+   border: 0px;
+   position:absolute; left:50%; top:50%; margin-left:-80px; margin-top:-25px; float:left; width:160px; height:50px; background:url(../ars/logo.png) no-repeat center; background-size:contain;
+}
+
+.logo a{ display:block; width:140px; height:40px;}
+.ch_title{
+	 position:absolute; left:30%; top:30%;  float:left; height:80%; 
+	}
+
+a {
+  color: #47473c;
+  font-family: Lobster;
+  font-style: normal;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1 {
+  font-family: Lobster;
+  font-weight: normal;
+  margin: 0;
+}
+
+#container {
+margin: 0 auto;
+width: 900px;
+max-width: 1100px;
+-webkit-perspective: 2000px;
+   -moz-perspective: 2000px;
+    -ms-perspective: 2000px;
+     -o-perspective: 2000px;
+        perspective: 2000px;
+}
+  
+  #information {
+    margin-top: 1em;
+    display: block;
+    color: red;
+    font-size: 20px;
+  }
+  
+  #navigation a {
+    display: inline-block;
+    line-height: 2.6em;
+    margin-right: 1em;
+    width: 40px;
+    height: 36px;
+    background: rgba(0,0,0,0.1);
+    color: #fff;
+    border-radius: 40px;
+    -webkit-transition: .3s ease-in;
+       -moz-transition: .3s ease-in;
+        -ms-transition: .3s ease-in;
+         -o-transition: .3s ease-in;
+            transition: .3s ease-in;
+  }
+  
+  #navigation a.selected, #navigation a:hover {
+    background: rgba(0,0,0,.3);
+    text-decoration: none;
+  }
+
+  #portfolio-item {
+    display: none;
+  }
+  
+  #portfolio {
+    margin: 2em 0 1em;
+    -webkit-transform-style: preserve-3d;
+       -moz-transform-style: preserve-3d;
+        -ms-transform-style: preserve-3d;
+         -o-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+  }
+
+  #portfolio div {
+    display: inline-block;
+    position: relative;
+    vertical-align: top;
+    margin: 1em;
+    width: 200px;
+    height: 150px;
+    box-shadow: 0px 0px 25px rgba(0,0,0,.3);
+  }
+  
+    #portfolio div span {
+      text-align: left;
+      position: absolute;
+      color: #fff;
+      background: rgba(0,0,0,0.6);
+      width: 90px;
+      padding: 5px 15px 7px;
+      z-index: 1;
+      left: -10px;
+      bottom: 10px;
+    }
+  
+  .animated {
+    -webkit-transition: .9s ease-out;
+       -moz-transition: .9s ease-out;
+        -ms-transition: .9s ease-out;
+         -o-transition: .9s ease-out;
+            transition: .9s ease-out;
+  }
+  
+  .flipped-horizontal-right {
+    -webkit-transform: rotateY(360deg);
+       -moz-transform: rotateY(360deg);
+        -ms-transform: rotateY(360deg);
+         -o-transform: rotateY(360deg);
+            transform: rotateY(360deg);
+  }
+  
+  .flipped-horizontal-left {
+    -webkit-transform: rotateY(-360deg);
+       -moz-transform: rotateY(-360deg);
+        -ms-transform: rotateY(-360deg);
+         -o-transform: rotateY(-360deg);
+            transform: rotateY(-360deg);
+  }
+  
+  .flipped-vertical-top {
+    -webkit-transform: rotateX(360deg);
+       -moz-transform: rotateX(360deg);
+        -ms-transform: rotateX(360deg);
+         -o-transform: rotateX(360deg);
+            transform: rotateX(360deg);
+  }
+  
+  .flipped-vertical-bottom {
+    -webkit-transform: rotateX(-360deg);
+       -moz-transform: rotateX(-360deg);
+        -ms-transform: rotateX(-360deg);
+         -o-transform: rotateX(-360deg);
+            transform: rotateX(-360deg);
+  }

@@ -50,6 +50,8 @@
      <PathMerger source='/6.2.3-design-material'    target='/ajs/design-material.js'/>
      <PathMerger source='/6.2.4-design-template'    target='/ajs/design-template.js'/>
      <PathMerger source='/6.2.5-design-scene'       target='/ajs/design-scene.js'/>
+
+     <PathMerger source='/7.1.1-demo'               target='/ajs/demo.js'/>
   </PathMergerCollection>
    <!-- 文件合并 -->
   <FileMergerCollection>

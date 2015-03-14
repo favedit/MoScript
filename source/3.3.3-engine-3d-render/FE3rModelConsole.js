@@ -163,7 +163,6 @@ function FE3rModelConsole_load(pc, pg){
 //==========================================================
 function FE3rModelConsole_merge(pe, pg, pi, pc){
    var o = this;
-   return null;
    // 获得代码
    var f = 'merge';
    var s = pg.renderables();

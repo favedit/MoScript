@@ -496,8 +496,8 @@ function FE3dStageConsole(o){
    o._scopeCd  = EScope.Local;
    o._looper   = null;
    o._thread   = null;
-   o._interval = 50;
-   o._limit    = 16;
+   o._interval = 25;
+   o._limit    = 8;
    o.onProcess = FE3dStageConsole_onProcess;
    o.construct = FE3dStageConsole_construct;
    o.process   = FE3dStageConsole_process;

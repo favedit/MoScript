@@ -1,0 +1,41 @@
+1 - Install APR
+------------------------------------------------------------
+download: http://www.apache.org/dist
+tar -zxvf apr-1.5.1.tar.gz
+./configure --prefix=/usr/local/apr
+make
+make install
+
+2 - Install APR-Util
+------------------------------------------------------------
+download: http://www.apache.org/dist
+tar -zxvf apr-util-1.5.4.tar.gz
+./configure --prefix=/usr/local/apr-util --with-apr=/usr/local/apr/bin/apr-1-config
+make
+make install
+
+3 - Install Pcre
+------------------------------------------------------------
+download: http://ftp.exim.llorien.org/pcre/
+tar -zxvf pcre-8.36.tar.gz
+./configure --prefix=/usr/local/pcre
+make
+make install
+
+4 - Install Httpd
+------------------------------------------------------------
+download: http://www.apache.org/dist
+tar -zxvf httpd-2.4.12.tar.gz
+./configure --prefix=/usr/local/apache2 --with-apr=/usr/local/apr --with-apr-util=/usr/local/apr-util --with-pcre=/usr/local/pcre
+make
+make install
+/usr/local/apache2/bin/apachectl start
+
+4 - Install Httpd - mod_jk
+------------------------------------------------------------
+download: http://www.apache.org/dist
+tar -zxvf tomcat-connectors-1.2.40-src.tar.gz
+./configure --with-apxs=/usr/local/apache2/bin/apxs
+make
+cp /studio/software/tomcat-connectors-1.2.40-src/native/apache-2.0/mod_jk.so /usr/local/apache2/modules/
+

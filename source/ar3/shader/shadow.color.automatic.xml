@@ -211,7 +211,146 @@
       //..........................................................
       // 逻辑处理
       void main(void){
-         gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+         vec4 result = vec4(0.0, 0.0, 0.0, 1.0);
+         vec4 lightConvert = vec4(1.0, 1.0 / 64.0, 1.0 / 64.0 / 64.0, 1.0 / 64.0 / 64.0 / 64.0);
+         //............................................................
+         // 计算阴影
+         float shadowRate = 1.0;
+         float viewDepth = dot(v_light_view_position, lightConvert) - 0.01;
+         // 计算影子比率 (0,0)
+         vec4 lightColor = texture2D(fs_light_depth, v_light_position.xy);
+         float lightDepth = dot(lightColor, lightConvert);
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.2;
+         }
+         // 计算影子比率 (-1, 1)
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.zx);
+         lightDepth = dot(lightColor, lightConvert);
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
+         }
+         // 计算影子比率 (-1, 0)
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.zy);
+         lightDepth = dot(lightColor, lightConvert);
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
+         }
+         // 计算影子比率 (-1, -1)
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.zz);
+         lightDepth = dot(lightColor, lightConvert);
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
+         }
+         // 计算影子比率 (0, 1)
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.yx);
+         lightDepth = dot(lightColor, lightConvert);
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
+         }
+         // 计算影子比率 (0, -1)
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.yz);
+         lightDepth = dot(lightColor, lightConvert);
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
+         }
+         // 计算影子比率 ( 1, 1)
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.xx);
+         lightDepth = dot(lightColor, lightConvert);
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
+         }
+         // 计算影子比率 ( 1, 0)
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.xy);
+         lightDepth = dot(lightColor, lightConvert);
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
+         }
+         // 计算影子比率 ( 1,-1)
+         lightColor = texture2D(fs_light_depth, v_light_position.xy + fc_light_depth.xz);
+         lightDepth = dot(lightColor, lightConvert);
+         if(viewDepth > lightDepth){
+            shadowRate -= 0.1;
+         }
+         shadowRate = shadowRate * 0.5 + 0.5;
+         //............................................................
+         // 计算环境颜色
+         <shader:true source='support.ambient'>
+         <shader:true source='support.ambient.sampler'>
+         vec4 color = texture2D(fs_diffuse, v_coord);
+         if(color.a < fc_alpha.x){
+            //discard;
+         }
+         </shader:true>
+         <shader:false source='support.ambient.sampler'>
+         vec4 color = vec4(1.0, 1.0, 1.0, 1.0);
+         </shader:false>
+         result.rgb += color.xyz * fc_ambient_color.rgb * shadowRate * 0.6;
+         </shader:true>
+         //............................................................
+         // 计算散射颜色
+         <shader:true source='support.diffuse'>
+         <shader:true source='support.diffuse.dump'>
+         vec4 normal = texture2D(fs_normal, v_coord);
+         normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
+         float normalFactor = dot(normal.xyz, -v_light_ts);
+         </shader:true>
+         <shader:true source='support.diffuse.normal'>
+         float normalFactor = dot(v_normal, fc_light_direction);
+         </shader:true>
+         normalFactor = max(normalFactor, 0.0);
+         result.rgb += color.rgb * fc_diffuse_color.rgb * normalFactor * shadowRate * 1.6;
+         </shader:true>
+         //............................................................
+         <shader:true source='support.specular|support.environment'>
+         vec3 cameraDirection = normalize(fc_camera_position - v_model_position.xyz);
+         </shader:true>
+         //............................................................
+         // 计算高光颜色
+         <shader:true source='support.specular'>
+         vec3 reflectionDirection = normalize(reflect(fc_light_direction, v_normal));
+         float specularFactor = dot(cameraDirection, reflectionDirection);
+         <shader:true source='support.specular.level'>
+         specularFactor *= normal.w;
+         </shader:true>
+         //specularFactor = specularFactor * shadowRate;
+         specularFactor = max(specularFactor, 0.0);
+         specularFactor = min(specularFactor + 0.05, 1.0);
+         specularFactor = pow(specularFactor, 30.0);
+         //specularFactor = pow(specularFactor, fc_specular.y + 16.0);
+         result.rgb += color.rgb * fc_specular_color.rgb * specularFactor * 1.2;
+         </shader:true>
+         //............................................................
+         <shader:true source='support.environment'>
+         vec3 reflectDirection = normalize(reflect(-cameraDirection, v_normal));
+         vec4 environmentColor = textureCube(fs_environment, reflectDirection);
+         <shader:true source='support.light'>
+         vec4 light = texture2D(fs_light, v_coord);
+         environmentColor *= light.g;
+         </shader:true>
+         result.rgb *= environmentColor.rgb * fc_reflect_color.rgb * 1.5;
+         </shader:true>
+         //............................................................
+         // 计算颜色
+         <shader:true source='vertex.attribute.color'>
+         vec4 vertexColor = min(v_color, fc_color.y) - fc_color.x;
+         vertexColor = vertexColor / (fc_color.y - fc_color.x);
+         vertexColor = (vertexColor - fc_color.w) * fc_color.z;
+         vertexColor += 1.0;
+         result.rgb *= vertexColor.rgb;
+         </shader:true>
+         <shader:true source='support.alpha'>
+         result.a = color.a * fc_alpha.z;
+         </shader:true>
+         //............................................................
+         //gl_FragColor = result;
+         //gl_FragColor = vec4(lightColor.xyz, 1.0);
+         //gl_FragColor = vec4(v_light_view_position.xyz, 1.0);
+         //gl_FragColor = vec4(normalFactor, normalFactor, normalFactor, 1.0);
+         //gl_FragColor = vec4(viewDepth, viewDepth, viewDepth, 1.0);
+         //gl_FragColor = vec4(lightDepth, lightDepth, lightDepth, 1.0);
+         //gl_FragColor = vec4(shadowRate, shadowRate, shadowRate, 1.0);
+         //gl_FragColor = vec4(specularFactor, specularFactor, specularFactor, 1.0);
+         gl_FragColor = vec4(lightColor.xyz, 1.0);
       }
    ]]></Source>
 </Configuration>

@@ -16339,7 +16339,6 @@ function FG3dProgramParameter_define(){
    return this._define;
 }
 function FG3dProgramParameter_attachData(p){
-   return true;
    var o = this;
    var r = false;
    var c = p.constructor;
@@ -20023,8 +20022,8 @@ function FE3dStageConsole(o){
    o._scopeCd  = EScope.Local;
    o._looper   = null;
    o._thread   = null;
-   o._interval = 50;
-   o._limit    = 16;
+   o._interval = 25;
+   o._limit    = 8;
    o.onProcess = FE3dStageConsole_onProcess;
    o.construct = FE3dStageConsole_construct;
    o.process   = FE3dStageConsole_process;
@@ -23284,7 +23283,6 @@ function FE3rModelConsole_load(pc, pg){
 }
 function FE3rModelConsole_merge(pe, pg, pi, pc){
    var o = this;
-   return null;
    var f = 'merge';
    var s = pg.renderables();
    for(var i = 0; i < pc; i++){

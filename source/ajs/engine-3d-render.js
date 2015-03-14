@@ -870,7 +870,6 @@ function FE3rModelConsole_load(pc, pg){
 }
 function FE3rModelConsole_merge(pe, pg, pi, pc){
    var o = this;
-   return null;
    var f = 'merge';
    var s = pg.renderables();
    for(var i = 0; i < pc; i++){

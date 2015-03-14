@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<HEAD>
+  <META charset="UTF-8">
+  <TITLE>CoolLight-3D</TITLE>
+  <META name="description" content="Tutorial: Portfolio Flipping Slider Using jQuery & CSS3">
+  <META name="author" content="Webstuffshare">
+  <LINK rel="stylesheet" href="acs/default.css?v=2">
+  <SCRIPT src="ajs/modernizr.custom.34807.js"></SCRIPT>
+</HEAD>
+<SCRIPT>
+function goPage(p){
+   var c = p.code;
+   var u = null;
+   if(c == 'speed'){
+      u = 'engine/galaxy.html';
+   }else if(c == 'capability'){
+      u = 'engine/capacity.html';
+   }else{
+      u = 'engine/view.html?code=' + c;
+   }
+   window.location = u;
+}
+</SCRIPT>
+<BODY>
+   <TABLE width='100%' height='100%' class='head_background'>
+      <TR>
+         <TD height=60>
+            <TABLE width='100%' height='60px' class='head_background'>
+               <TR>
+                  <TD width='100px'></TD>
+                  <TD><IMG src='ars/logo.png' style='width:240px;height:34px;'></TD>
+                  <TD width='100px'>v0.1.0</TD>
+               </TR>
+            </TABLE>
+         </TD>
+      </TR>
+      <TR>
+         <TD style='color:#999999' height='40px'>
+            HTML5-WEBGL的3D引擎，可以支持PC端Chrome/FireFox/IE11以上浏览器，支持在各种移动设备上运行。<BR>
+            1是演示页面，2是在线设计页面，设计页面暂时未开放。
+         </TD>
+      </TR>
+      <TR>
+         <TD valign='top'>
+            <DIV id="container">
+               <NAV id="navigation" style='padding-top:12px;'>
+                  <A href="#1" class="nav selected" data-page="1">1</A>
+                  <A href="#2" class="nav" data-page="2">2</A>
+               </NAV>
+               <DIV id="portfolio"></div>
+               <UL id="portfolio-item">
+                  <LI><IMG mode='preview' code='pvw.show.item.007' alt='洗水池'/></LI>
+                  <LI><IMG mode='preview' code='pvw.show.item.006' alt='照相机'/></LI>
+                  <LI><IMG mode='preview' code='pvw.show.item.001' alt='陶瓷物件'/></LI>
+                  <LI><IMG mode='preview' code='pvw.show.item.002' alt='金属罐子'/></LI>
+
+                  <LI><IMG mode='preview' code='pvw.show.item.003' alt='金属佛像'/></LI>
+                  <LI><IMG mode='preview' code='pvw.show.item.008' alt='金属古钟'/></LI>
+                  <LI><IMG mode='preview' code='pvw.show.item.009' alt='金属水壶'/></LI>
+                  <LI><IMG mode='preview' code='pvw.sc.house.01.scene' alt='场景-房间设计'/></LI>
+
+                  <LI><IMG mode='preview' code='pvw.sc.car.01.001' alt='汽车1'/></LI>
+                  <LI><IMG mode='preview' code='pvw.sc.car.01.002' alt='汽车2'/></LI>
+                  <LI><IMG mode='preview' code='pvw.sc.car.01.003' alt='汽车3'/></LI>
+                  <LI><IMG mode='preview' code='lbl.scene' alt='场景-展览馆'/></LI>
+
+                  <LI><IMG mode='preview' code='pvw.show.item.004' alt='人物头像'/></LI>
+                  <LI><IMG mode='preview' code='pvw.sc.science.item.002' alt='卡通人物'/></LI>
+                  <LI><IMG mode='preview' code='pvw.show.skeleton.01' alt='游戏角色'/></LI>
+                  <LI><IMG mode='preview' code='pvw.sc.courtyard.scene' alt='场景-四合院'/></LI>
+
+                  <LI><IMG mode='preview' code='lgt.item.01' alt='金蟾蜍'/></LI>
+                  <LI><IMG mode='preview' code='lgt.item.02' alt='石狮子'/></LI>
+                  <LI><IMG mode='preview' code='lgt.item.03' alt='财神像'/></LI>
+                  <LI><IMG mode='preview' code='lgt.scene' alt='场景-古建筑'/></LI>
+
+                  <LI><IMG mode='preview' code='pvw.sc.science.item.001' alt='教育-人体骨骼'/></LI>
+                  <LI><IMG mode='preview' code='pvw.sc.science.item.003' alt='教育-机械设计'/></LI>
+                  <LI><IMG mode='preview' code='speed' alt='测试-执行效率'/></LI>
+                  <LI><IMG mode='preview' code='capability' alt='测试-浏览器信息'/></LI>
+               </UL>
+            </DIV>  
+         </TD>
+      </TR>
+      <TR>
+         <TD height='20'>
+            <TABLE width='100%' height='60px' class='head_background'>
+               <TR>
+                  <TD style='color:#999999'>
+                     浏览器FireFox/Chrome支持，IE浏览器需要IE11以上支持。移动设备上，支持WEBGL的大部分浏览器都可以运行。<BR>
+                     复杂的场景，低配置的浏览器可能无法运行。<BR>
+                     邮箱： <A href='mailto:favedit@hotmail.com' style='color:#AAAAAA'>favedit@hotmail.com</A>
+                  </TD>
+               </TR>
+            </TABLE>
+         </TD>
+      </TR>
+   </TABLE>
+  <SCRIPT>if(!Modernizr.csstransforms3d) document.getElementById('information').style.display = 'block'; </SCRIPT>
+  <SCRIPT>!window.jQuery && document.write(unescape('%3Cscript src="ajs/jquery-1.7.2.min.js"%3E%3C/script%3E'))</SCRIPT>
+  <script src="ajs/demo.js"></SCRIPT>
+</body>
+</HTML>
