@@ -31,11 +31,45 @@ make
 make install
 /usr/local/apache2/bin/apachectl start
 
-4 - Install Httpd - mod_jk
+5 - Install Httpd - mod_jk
 ------------------------------------------------------------
 download: http://www.apache.org/dist
 tar -zxvf tomcat-connectors-1.2.40-src.tar.gz
 ./configure --with-apxs=/usr/local/apache2/bin/apxs
 make
 cp /studio/software/tomcat-connectors-1.2.40-src/native/apache-2.0/mod_jk.so /usr/local/apache2/modules/
+
+5 - Install Php
+------------------------------------------------------------
+download: http://www.php.net
+reference: http://blog.chinaunix.net/uid-21374062-id-2943580.html
+reference: http://www.cnblogs.com/z-ping/archive/2012/06/18/2553929.html
+tar -zxvf php-5.6.6.tar.gz
+yum install -y gcc gcc-c++  make zlib zlib-devel pcre pcre-devel  libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel krb5 krb5-devel openssl openssl-devel openldap openldap-devel nss_ldap openldap-clients openldap-servers
+yum install php-mcrypt libmcrypt libmcrypt-devel
+./configure --prefix=/usr/local/php5 --with-apxs2=/usr/local/apache2/bin/apxs --with-config-file-path=/usr/local/php5/lib --enable-ftp --enable-sockets --with-gd --with-jpeg-dir --with-png-dir --with-freetype-dir --with-zlib-dir --enable-gd-native-ttf  --with-iconv  --enable-mbstring=all  --disable-cgi --with-openssl --with-mcrypt --enable-bcmath --enable-calendar --enable-exif --enable-libxml --enable-sockets=shared  --with-mysql=shared,mysqlnd --with-bz2 --with-curl --with-xmlrpc --with-gettext --disable-cli --disable-debug
+make
+make install
+
+cd /studio/software/php-5.6.6/ext/mysql
+/usr/local/php5/bin/phpize
+./configure --with-php-config=/usr/local/php5/bin/php-config --with-mysql=/usr/bin/mysql_config
+make
+make install
+
+cd /studio/software/php-5.6.6/ext/mysqli
+/usr/local/php5/bin/phpize
+./configure --with-php-config=/usr/local/php5/bin/php-config --with-mysqli=/usr/bin/mysql_config
+make
+make install
+
+cd /studio/software/php-5.6.6/ext/curl
+/usr/local/php5/bin/phpize
+./configure --with-php-config=/usr/local/php5/bin/php-config
+make
+make install
+
+
+
+
 
