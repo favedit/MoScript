@@ -1,3 +1,8 @@
+function SBrowserCapability(){
+   var o = this;
+   o.optionProcess = false;
+   return o;
+}
 var RApplication = new function RApplication(){
    var o = this;
    o._workspaces   = new TDictionary();
@@ -32,6 +37,7 @@ function RApplication_release(){
 }
 var RBrowser = new function RBrowser(){
    var o = this;
+   o._capability    = null;
    o._deviceCd      = EDevice.Unknown;
    o._softwareCd    = ESoftware.Unknown;
    o._typeCd        = EBrowser.Unknown;
@@ -40,6 +46,7 @@ var RBrowser = new function RBrowser(){
    o._contentPath   = '';
    o.onLog          = RBrowser_onLog;
    o.construct      = RBrowser_construct;
+   o.capability     = RBrowser_capability;
    o.supportHtml5   = RBrowser_supportHtml5;
    o.hostPath       = RBrowser_hostPath;
    o.setHostPath    = RBrowser_setHostPath;
@@ -76,7 +83,14 @@ function RBrowser_construct(){
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
+   var c = o._capability = new SBrowserCapability();
+   if(window.Worker){
+      c.optionProcess = true;
+   }
    RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+}
+function RBrowser_capability(){
+   return this._capability;
 }
 function RBrowser_supportHtml5(){
    return this._supportHtml5;

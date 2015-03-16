@@ -88,7 +88,4 @@ function FE3sFrame_unserialize(p){
    o._translation.unserialize(p);
    o._quaternion.unserialize(p);
    o._scale.unserialize(p);
-   if(o._scale.x != 1 && o._scale.y != 1 && o._scale.z != 1){
-      debugger
-   }
 }

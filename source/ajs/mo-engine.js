@@ -1689,9 +1689,6 @@ function FE3sFrame_unserialize(p){
    o._translation.unserialize(p);
    o._quaternion.unserialize(p);
    o._scale.unserialize(p);
-   if(o._scale.x != 1 && o._scale.y != 1 && o._scale.z != 1){
-      debugger
-   }
 }
 function FE3sMaterial(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -3557,27 +3554,38 @@ function FE3sVendor_dispose(){
 }
 function FE3sVendorConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._activeEvent = null;
-   o._events      = null;
-   o._setuped     = false;
-   o._vendors     = null;
-   o._thread      = null;
-   o._interval    = 100;
-   o.onProcess    = FE3sVendorConsole_onProcess;
-   o.onComplete   = FE3sVendorConsole_onComplete;
-   o.construct    = FE3sVendorConsole_construct;
-   o.pushCompress = FE3sVendorConsole_pushCompress;
-   o.createVendor = FE3sVendorConsole_createVendor;
-   o.register     = FE3sVendorConsole_register;
-   o.find         = FE3sVendorConsole_find;
-   o.setup        = FE3sVendorConsole_setup;
+   o._optionProcess = false;
+   o._lzmaWorker    = null;;
+   o._activeEvent   = null;
+   o._events        = null;
+   o._setuped       = false;
+   o._vendors       = null;
+   o._thread        = null;
+   o._interval      = 100;
+   o.onProcess      = FE3sVendorConsole_onProcess;
+   o.onComplete     = FE3sVendorConsole_onComplete;
+   o.construct      = FE3sVendorConsole_construct;
+   o.pushCompress   = FE3sVendorConsole_pushCompress;
+   o.createVendor   = FE3sVendorConsole_createVendor;
+   o.register       = FE3sVendorConsole_register;
+   o.find           = FE3sVendorConsole_find;
+   o.setup          = FE3sVendorConsole_setup;
    return o;
 }
 function FE3sVendorConsole_onProcess(){
    var o = this;
    var s = o._events;
-   if(!o._activeEvent){
-      if(!s.isEmpty()){
+   if(!o._activeEvent && !s.isEmpty()){
+      if(o._optionProcess){
+         var w = o._lzmaWorker;
+         if(!w){
+            var u = RBrowser.contentPath('/ajs/lzma_worker.js');
+            w = o._lzmaWorker = new LZMA(u);
+         }
+         var e = o._activeEvent = s.erase(0);
+         w.decompress(e.data, o.onComplete, null);
+         e.data = null;
+      }else{
          var e = o._activeEvent = s.erase(0);
          LZMA.decompress(e.data, o.onComplete, null);
          e.data = null;
@@ -3601,6 +3609,8 @@ function FE3sVendorConsole_construct(){
    t.setInterval(o._interval);
    t.addProcessListener(o, o.onProcess);
    RConsole.find(FThreadConsole).start(t);
+   var c = RBrowser.capability();
+   o._optionProcess = c.optionProcess;
 }
 function FE3sVendorConsole_pushCompress(w, f, d){
    this._events.push(new SE3sCompressEvent(w, f, d));

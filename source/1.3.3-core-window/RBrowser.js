@@ -9,6 +9,8 @@ var RBrowser = new function RBrowser(){
    var o = this;
    //..........................................................
    // @attribute
+   o._capability    = null;
+   // @attribute
    o._deviceCd      = EDevice.Unknown;
    o._softwareCd    = ESoftware.Unknown;
    o._typeCd        = EBrowser.Unknown;
@@ -22,6 +24,7 @@ var RBrowser = new function RBrowser(){
    // @method
    o.construct      = RBrowser_construct;
    // @method
+   o.capability     = RBrowser_capability;
    o.supportHtml5   = RBrowser_supportHtml5;
    o.hostPath       = RBrowser_hostPath;
    o.setHostPath    = RBrowser_setHostPath;
@@ -73,8 +76,23 @@ function RBrowser_construct(){
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
+   // 设置信息
+   var c = o._capability = new SBrowserCapability();
+   if(window.Worker){
+      c.optionProcess = true;
+   }
    // 输出日志
    RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
+}
+
+//==========================================================
+// <T>获得浏览器环境信息。</T>
+//
+// @method
+// @return 浏览器环境信息
+//==========================================================
+function RBrowser_capability(){
+   return this._capability;
 }
 
 //==========================================================
