@@ -64,45 +64,50 @@ function FE3dSceneCanvas_onEnterFrame(){
    if(!s){
       return;
    }
+   var st = s.timer();
+   var ss = st.spanSecond();
    //..........................................................
    // 按键处理
    var c = s.camera();
-   var d = o._cameraMoveRate;
-   var r = o._cameraKeyRotation;
-   var kw = RKeyboard.isPress(EKeyCode.W);
-   var ks = RKeyboard.isPress(EKeyCode.S);
+   var d = o._cameraMoveRate * ss;
+   var r = o._cameraKeyRotation * ss;
+   // 按键前后移动
+   var kw = RKeyboard.isPress(EStageKey.Forward);
+   var ks = RKeyboard.isPress(EStageKey.Back);
    if((kw && !ks) || o._actionForward){
       c.doWalk(d);
    }
    if((!kw && ks) || o._actionBack){
       c.doWalk(-d);
    }
-   var ka = RKeyboard.isPress(EKeyCode.A);
-   var kd = RKeyboard.isPress(EKeyCode.D);
-   if(ka && !kd){
-      //c.doStrafe(r);
-      c.doYaw(r);
-   }
-   if(!ka && kd){
-      //c.doStrafe(-r);
-      c.doYaw(-r);
-   }
-   var kq = RKeyboard.isPress(EKeyCode.Q);
-   var ke = RKeyboard.isPress(EKeyCode.E);
+   // 按键上下移动
+   var kq = RKeyboard.isPress(EStageKey.Up);
+   var ke = RKeyboard.isPress(EStageKey.Down);
    if((kq && !ke) || o._actionUp){
       c.doFly(d);
    }
    if((!kq && ke) || o._actionDown){
       c.doFly(-d);
    }
-   var kz = RKeyboard.isPress(EKeyCode.Z);
-   var kw = RKeyboard.isPress(EKeyCode.X);
+   // 按键左右旋转
+   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
+   var kd = RKeyboard.isPress(EStageKey.RotationRight);
+   if(ka && !kd){
+      c.doYaw(r);
+   }
+   if(!ka && kd){
+      c.doYaw(-r);
+   }
+   // 按键上下旋转
+   var kz = RKeyboard.isPress(EStageKey.RotationUp);
+   var kw = RKeyboard.isPress(EStageKey.RotationDown);
    if(kz && !kw){
       c.doPitch(r);
    }
    if(!kz && kw){
       c.doPitch(-r);
    }
+   // 更新相机
    c.update();
    //..........................................................
    // 旋转模型
@@ -316,7 +321,7 @@ function FE3dSceneCanvas_load(p){
    // 监听加载完成
    var s = sc.alloc(o._context, p);
    s.addLoadListener(o, o.onSceneLoad);
-   s.selectTechnique(c, FG3dGeneralTechnique);
+   s.selectTechnique(c, FE3dGeneralTechnique);
    //s.selectTechnique(c, FE3dShadowTechnique);
    o._stage = o._activeScene = s;
    RStage.register('stage3d', s);

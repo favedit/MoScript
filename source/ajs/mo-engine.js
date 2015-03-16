@@ -1,3 +1,23 @@
+var EDisplayTransform = new function EDisplayTransform(){
+   var o = this;
+   o.CameraPosition     = 'camera.position';
+   o.CameraDirection    = 'camera.direction';
+   o.BilboardedSphere   = 'bilboarded.sphere';
+   o.BilboardedCylinder = 'bilboarded.cylinder';
+   return o;
+}
+var EStageKey = new function EStageKey(){
+   var o = this;
+   o.Forward       = EKeyCode.W;
+   o.Back          = EKeyCode.S;
+   o.Up            = EKeyCode.Q;
+   o.Down          = EKeyCode.E;
+   o.RotationLeft  = EKeyCode.A;
+   o.RotationRight = EKeyCode.D;
+   o.RotationUp    = EKeyCode.Z;
+   o.RotationDown  = EKeyCode.X;
+   return o;
+}
 function MListenerEnterFrame(o){
    o = RClass.inherits(this, o, MListener);
    o.addEnterFrameListener     = MListenerEnterFrame_addEnterFrameListener;
@@ -231,7 +251,7 @@ function FDisplayContainer_findDisplay(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         var f = s.get(i);
+         var f = s.getAt(i);
          if(f.isName(p)){
             return f;
          }
@@ -245,7 +265,7 @@ function FDisplayContainer_searchDisplay(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         var f = s.get(i);
+         var f = s.getAt(i);
          if(f.isName(p)){
             return f;
          }
@@ -283,7 +303,7 @@ function FDisplayContainer_filterDisplays(p){
       if(s){
          var c = s.count();
          for(var i = 0; i < c; i++){
-            s.get(i).filterDisplays(p);
+            s.getAt(i).filterDisplays(p);
          }
       }
    }
@@ -310,8 +330,7 @@ function FDisplayContainer_process(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         var d = s.get(i);
-         d.process(p);
+         s.getAt(i).process(p);
       }
    }
 }
@@ -320,7 +339,7 @@ function FDisplayContainer_dispose(){
    var v = o._displays;
    if(v){
       for(var i = v.count() - 1; i >= 0; i--){
-         v.get(i).dispose();
+         v.getAt(i).dispose();
       }
       v.dispose();
       o._displays = null;
@@ -454,7 +473,7 @@ function FRenderable_process(p){
    var s = o._drawables;
    if(s){
       var c = s.count();
-      for(var i = 0; i <= 0; i++){
+      for(var i = 0; i < c; i++){
          s.getAt(i).process(p);
       }
    }
@@ -463,8 +482,10 @@ function FStage(o){
    o = RClass.inherits(this, o, FObject, MListenerEnterFrame, MListenerLeaveFrame);
    o._statusActive   = false;
    o._layers         = null;
+   o._timer          = null;
    o.onProcess       = FStage_onProcess;
    o.construct       = FStage_construct;
+   o.timer           = FStage_timer;
    o.registerLayer   = RStage_registerLayer;
    o.unregisterLayer = RStage_unregisterLayer;
    o.layers          = FStage_layers;
@@ -485,7 +506,11 @@ function FStage_onProcess(){
 function FStage_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._timer = RClass.create(FTimer);
    o._layers = new TDictionary();
+}
+function FStage_timer(){
+   return this._timer;
 }
 function RStage_registerLayer(n, l){
    this._layers.set(n, l);
@@ -516,12 +541,19 @@ function FStage_deactive(){
 }
 function FStage_process(){
    var o = this;
+   var t = o._timer;
+   if(!t){
+      t = RClass.create(FTimer);
+      t.setup();
+   }
    o.processEnterFrameListener(o);
    o.onProcess();
    o.processLeaveFrameListener(o);
+   t.update();
 }
 function FStage_dispose(){
    var o = this;
+   o._timer = RObject.dispose(o._timer);
    o._layers = RObject.dispose(o._layers);
    o.__base.MListenerEnterFrame.dispose.call(o);
    o.__base.MListenerLeaveFrame.dispose.call(o);
@@ -663,29 +695,29 @@ function FE2dDrawable(o){
    return o;
 }
 function FE3dCanvas(o){
-   o = RClass.inherits(this, o, FObject, MListenerLoad, MMouseCapture);
-   o._optionAlpha     = true;
-   o._optionAntialias = false;
-   o._context         = null;
-   o._scaleRate       = 1;
-   o._interval        = 1000 / 60;
-   o._hPanel          = null;
-   o._hCanvas         = null;
-   o.onEnterFrame           = RMethod.empty;
-   o.ohTouchStart     = FE3dCanvas_ohTouchStart;
-   o.ohTouchMove      = FE3dCanvas_ohTouchMove;
-   o.ohTouchStop      = FE3dCanvas_ohTouchStop;
+   o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerLoad, MMouseCapture);
+   o._optionAlpha        = true;
+   o._optionAntialias    = false;
+   o._context            = null;
+   o._scaleRate          = 1;
+   o._interval           = 1000 / 60;
+   o._hPanel             = null;
+   o._hCanvas            = null;
+   o.onEnterFrame        = RMethod.empty;
+   o.ohTouchStart        = FE3dCanvas_ohTouchStart;
+   o.ohTouchMove         = FE3dCanvas_ohTouchMove;
+   o.ohTouchStop         = FE3dCanvas_ohTouchStop;
    o.onMouseCaptureStart = RMethod.empty;
    o.onMouseCapture      = RMethod.empty;
    o.onMouseCaptureStop  = RMethod.empty;
-   o.onTouchStart     = RMethod.empty;
-   o.onTouchMove      = RMethod.empty;
-   o.onTouchStop      = RMethod.empty;
-   o.onResize         = FE3dCanvas_onResize;
-   o.construct        = FE3dCanvas_construct;
-   o.build            = FE3dCanvas_build;
-   o.setPanel         = FE3dCanvas_setPanel;
-   o.dispose          = FE3dCanvas_dispose;
+   o.onTouchStart        = RMethod.empty;
+   o.onTouchMove         = RMethod.empty;
+   o.onTouchStop         = RMethod.empty;
+   o.onResize            = FE3dCanvas_onResize;
+   o.construct           = FE3dCanvas_construct;
+   o.build               = FE3dCanvas_build;
+   o.setPanel            = FE3dCanvas_setPanel;
+   o.dispose             = FE3dCanvas_dispose;
    return o;
 }
 function FE3dCanvas_ohTouchStart(p){
@@ -1067,7 +1099,7 @@ function FE3dStage_onProcess(){
    for(var i = 0; i < lc; i++){
       var l = ls.valueAt(i);
       r.reset();
-      l.process();
+      l.process(r);
       l.filterRenderables(r);
       r.update();
    }
@@ -1105,6 +1137,7 @@ function FE3dStage_construct(){
    var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
    l.direction().set(0, -1, 0);
    var r = o._region = o.createRegion();
+   r._timer = o._timer;
    r._camera = c;
    r._directionalLight = l;
 }
@@ -1249,13 +1282,12 @@ function RE3dEngine_onSetup(){
    ec.register('control.control.control', FG3dControlAutomaticEffect);
    ec.register('general.color.control', FG3dControlAutomaticEffect);
    ec.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
-   ec.register('general.color.skeleton', FG3dGeneralColorSkeletonEffect);
-   ec.register('general.color.skeleton.4', FG3dGeneralColorSkeletonEffect);
+   ec.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
+   ec.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
    ec.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
    ec.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
    ec.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
    ec.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
-   ec.register('control.control.galaxy', FE3dGalaxyEffect);
 }
 function RE3dEngine_setup(){
    var o = this;
@@ -1657,6 +1689,9 @@ function FE3sFrame_unserialize(p){
    o._translation.unserialize(p);
    o._quaternion.unserialize(p);
    o._scale.unserialize(p);
+   if(o._scale.x != 1 && o._scale.y != 1 && o._scale.z != 1){
+      debugger
+   }
 }
 function FE3sMaterial(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -1994,6 +2029,7 @@ function FE3sObject(o){
    o._label      = null;
    o.guid        = FE3sObject_guid;
    o.code        = FE3sObject_code;
+   o.setCode     = FE3sObject_setCode;
    o.label       = FE3sObject_label;
    o.setLabel    = FE3sObject_setLabel;
    o.unserialize = FE3sObject_unserialize;
@@ -2005,6 +2041,9 @@ function FE3sObject_guid(){
 }
 function FE3sObject_code(){
    return this._code;
+}
+function FE3sObject_setCode(p){
+   this._code = p;
 }
 function FE3sObject_label(){
    return this._label;
@@ -2196,6 +2235,36 @@ function FE3sScene_saveConfig(p){
       l.saveConfig(xls.create('Layer'));
    }
 }
+function FE3sSceneAnimation(o){
+   o = RClass.inherits(this, o, FE3sObject);
+   o._playRate   = null;
+   o.construct   = FE3sSceneAnimation_construct;
+   o.playRate    = FE3sSceneAnimation_playRate;
+   o.setPlayRate = FE3sSceneAnimation_setPlayRate;
+   o.unserialize = FE3sSceneAnimation_unserialize;
+   o.saveConfig  = FE3sSceneAnimation_saveConfig;
+   return o;
+}
+function FE3sSceneAnimation_construct(){
+   var o = this;
+   o.__base.FE3sObject.construct.call(o);
+}
+function FE3sSceneAnimation_playRate(){
+   return this._playRate;
+}
+function FE3sSceneAnimation_setPlayRate(p){
+   this._playRate = p;
+}
+function FE3sSceneAnimation_unserialize(p){
+   var o = this;
+   o.__base.FE3sObject.unserialize.call(o, p);
+   o._playRate = p.readFloat();
+}
+function FE3sSceneAnimation_saveConfig(p){
+   var o = this;
+   o.__base.FE3sObject.saveConfig.call(o, p);
+   p.set('play_rate', o._playRate);
+}
 function FE3sSceneCamera(o){
    o = RClass.inherits(this, o, FE3sObject);
    o._typeName    = null;
@@ -2284,12 +2353,16 @@ function FE3sSceneDisplay(o){
    o._optionMergeVertex   = null;
    o._optionMergeMaterial = null;
    o._matrix              = null;
+   o._animations          = null;
    o._movies              = null;
    o._materials           = null;
    o._renderables         = null;
    o.construct            = FE3sSceneDisplay_construct;
    o.templateGuid         = FE3sSceneDisplay_templateGuid;
    o.matrix               = FE3sSceneDisplay_matrix;
+   o.findAnimation        = FE3sSceneDisplay_findAnimation;
+   o.syncAnimation        = FE3sSceneDisplay_syncAnimation;
+   o.animations           = FE3sSceneDisplay_animations;
    o.movies               = FE3sSceneDisplay_movies;
    o.materials            = FE3sSceneDisplay_materials;
    o.renderables          = FE3sSceneDisplay_renderables;
@@ -2308,6 +2381,31 @@ function FE3sSceneDisplay_templateGuid(){
 function FE3sSceneDisplay_matrix(){
    return this._matrix;
 }
+function FE3sSceneDisplay_findAnimation(p){
+   var o = this;
+   var s = o._animations;
+   if(s){
+      return s.get(p);
+   }
+   return null;
+}
+function FE3sSceneDisplay_syncAnimation(p){
+   var o = this;
+   var s = o._animations;
+   if(!s){
+      s = o._animations = new TDictionary();
+   }
+   var a = s.get(p);
+   if(!a){
+      a = RClass.create(FE3sSceneAnimation);
+      a._guid = p;
+      s.set(p, a);
+   }
+   return a;
+}
+function FE3sSceneDisplay_animations(){
+   return this._animations;
+}
 function FE3sSceneDisplay_movies(){
    return this._movies;
 }
@@ -2322,6 +2420,15 @@ function FE3sSceneDisplay_unserialize(p){
    o.__base.FE3sObject.unserialize.call(o, p);
    o._templateGuid = p.readString();
    o._matrix.unserialize(p);
+   var c = p.readUint16();
+   if(c > 0){
+      var s = o._animations = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var a = RClass.create(FE3sSceneAnimation);
+         a.unserialize(p);
+         s.set(a.guid(), a);
+      }
+   }
    var c = p.readUint16();
    if(c > 0){
       var s = o._movies = new TObjects();
@@ -2354,22 +2461,48 @@ function FE3sSceneDisplay_saveConfig(p){
    var o = this;
    o.__base.FE3sObject.saveConfig.call(o, p);
    o._matrix.saveConfig(p.create('Matrix'));
-   var xs = p.create('MaterialCollection');
+   var s = o._animations;
+   if(s){
+      var c = s.count();
+      var xs = p.create('AnimationCollection');
+      for(var i = 0; i < c; i++){
+         s.valueAt(i).saveConfig(xs.create('Animation'));
+      }
+   }
    var s = o._materials;
    if(s){
       var c = s.count();
+      var xs = p.create('MaterialCollection');
       for(var i = 0; i < c; i++){
-         s.get(i).saveConfig(xs.create('Material'));
+         s.getAt(i).saveConfig(xs.create('Material'));
       }
    }
 }
 function FE3sSceneLayer(o){
    o = RClass.inherits(this, o, FE3sObject);
-   o._displays   = null;
-   o.displays    = FE3sSceneLayer_displays;
-   o.unserialize = FE3sSceneLayer_unserialize;
-   o.saveConfig  = FE3sSceneLayer_saveConfig;
+   o._typeCd        = null;
+   o._transformCd   = null;
+   o._displays      = null;
+   o.typeCd         = FE3sSceneLayer_typeCd;
+   o.setTypeCd      = FE3sSceneLayer_setTypeCd;
+   o.transformCd    = FE3sSceneLayer_transformCd;
+   o.setTransformCd = FE3sSceneLayer_setTransformCd;
+   o.displays       = FE3sSceneLayer_displays;
+   o.unserialize    = FE3sSceneLayer_unserialize;
+   o.saveConfig     = FE3sSceneLayer_saveConfig;
    return o;
+}
+function FE3sSceneLayer_typeCd(){
+   return this._typeCd;
+}
+function FE3sSceneLayer_setTypeCd(p){
+   this._typeCd = p;
+}
+function FE3sSceneLayer_transformCd(){
+   return this._transformCd;
+}
+function FE3sSceneLayer_setTransformCd(p){
+   this._transformCd = p;
 }
 function FE3sSceneLayer_displays(){
    return this._displays;
@@ -2377,6 +2510,8 @@ function FE3sSceneLayer_displays(){
 function FE3sSceneLayer_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
+   o._typeCd = p.readString();
+   o._transformCd = p.readString();
    var c = p.readUint16();
    if(c > 0){
       var s = o._displays = new TObjects();
@@ -2390,6 +2525,8 @@ function FE3sSceneLayer_unserialize(p){
 function FE3sSceneLayer_saveConfig(p){
    var o = this;
    o.__base.FE3sObject.saveConfig.call(o, p);
+   p.set('type_cd', o._typeCd);
+   p.set('transform_cd', o._transformCd);
    var xds = p.create('DisplayCollection');
    var s = o._displays;
    if(s){
@@ -3651,7 +3788,7 @@ function FE3rAnimation_record(){
    if(o._lastTick == 0){
       o._lastTick = t;
    }
-   o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate * 3.0;
+   o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate;
 }
 function FE3rAnimation_dispose(){
    var o = this;
@@ -4530,10 +4667,10 @@ function FE3rSkeletonAnimation(o){
 function FE3rSkeletonAnimation_process(p){
    var o = this;
    var ct = o._currentTick;
-   var bs = p.bones();
-   var c = bs.count();
+   var s = p.bones();
+   var c = s.count();
    for(var i = 0; i < c; i++){
-      bs.get(i).update(o._playInfo, ct);
+      s.getAt(i).update(o._playInfo, ct);
    }
 }
 function FE3rSkin(o){
@@ -4973,31 +5110,6 @@ function FE3rTrack_dispose(){
    o._resource = null;
    o.__base.FG3dTrack.dispose.call(o);
 }
-function FE3dGalaxyEffect(o){
-   o = RClass.inherits(this, o, FG3dAutomaticEffect);
-   o._code          = 'galaxy.automatic';
-   o.drawRenderable = FE3dGalaxyEffect_drawRenderable;
-   return o;
-}
-function FE3dGalaxyEffect_drawRenderable(pg, pr){
-   var o = this;
-   var c = o._graphicContext;
-   var g = c._native;
-   var p = o._program;
-   var vp = pg.calculate(EG3dRegionParameter.CameraPosition);
-   var m = pr.material();
-   var mi = m.info();
-   o.bindMaterial(m);
-   p.setParameter4('vc_rotation', pr._seed, 0, 0, 0);
-   p.setParameter('vc_model_matrix', pr.currentMatrix());
-   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
-   p.setParameter('vc_camera_position', vp);
-   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
-   p.setParameter('fc_ambient_color', mi.ambientColor);
-   o.bindAttributes(pr);
-   o.bindSamplers(pr);
-   c.drawTriangles(pr.indexBuffer());
-}
 function FE3dGeneralColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    o._code          = 'general.color.automatic';
@@ -5096,6 +5208,83 @@ function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pr, pi, pc){
       }
    }
    o.drawRenderables(pg, pr, pi, pc);
+}
+function FE3dGeneralColorPass(o){
+   o = RClass.inherits(this, o, FG3dTechniquePass);
+   o._code = 'color';
+   return o;
+}
+function FE3dGeneralColorSkeletonEffect(o){
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o._code            = 'general.color.skeleton';
+   o._supportSkeleton = true;
+   o.drawRenderable   = FE3dGeneralColorSkeletonEffect_drawRenderable;
+   return o;
+}
+function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
+   var o = this;
+   var c = o._graphicContext;
+   var p = o._program;
+   var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
+   var vld = pg.calculate(EG3dRegionParameter.LightDirection);
+   var m = pr.material();
+   var mi = m.info();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', vcp);
+   p.setParameter('vc_light_direction', vld);
+   p.setParameter('fc_camera_position', vcp);
+   p.setParameter('fc_light_direction', vld);
+   p.setParameter('fc_color', mi.ambientColor);
+   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
+   p.setParameter('fc_ambient_color', mi.ambientColor);
+   p.setParameter('fc_diffuse_color', mi.diffuseColor);
+   p.setParameter('fc_specular_color', mi.specularColor);
+   p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
+   p.setParameter('fc_specular_view_color', mi.specularViewColor);
+   p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
+   p.setParameter('fc_reflect_color', mi.reflectColor);
+   var bs = pr.bones();
+   if(bs){
+      var bc = pr._boneLimit;
+      var d = RTypeArray.findTemp(EDataType.Float, 16 * bc);
+      for(var i = 0; i < bc; i++){
+         var b = bs.get(i);
+         var m = b.matrix();
+         m.writeData(d, 16 * i);
+      }
+      p.setParameter('vc_bone_matrix', d);
+   }
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
+}
+function FE3dGeneralTechnique(o){
+   o = RClass.inherits(this, o, FG3dTechnique);
+   o._code      = 'general';
+   o._passColor = null;
+   o.setup      = FE3dGeneralTechnique_setup;
+   o.passColor  = FE3dGeneralTechnique_passColor;
+   return o;
+}
+function FE3dGeneralTechnique_setup(){
+   var o = this;
+   o.__base.FG3dTechnique.setup.call(o);
+   o.registerMode(EG3dTechniqueMode.Ambient);
+   o.registerMode(EG3dTechniqueMode.DiffuseLevel);
+   o.registerMode(EG3dTechniqueMode.DiffuseColor);
+   o.registerMode(EG3dTechniqueMode.SpecularLevel);
+   o.registerMode(EG3dTechniqueMode.SpecularColor);
+   o.registerMode(EG3dTechniqueMode.Result);
+   var p = o._passColor = RClass.create(FE3dGeneralColorPass);
+   p.linkGraphicContext(o);
+   p.setup();
+   o._passes.push(p);
+}
+function FE3dGeneralTechnique_passColor(){
+   return this._passColor;
 }
 function FE3dShadowColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
@@ -6238,35 +6427,37 @@ function FE3dSceneCanvas_onEnterFrame(){
    if(!s){
       return;
    }
+   var st = s.timer();
+   var ss = st.spanSecond();
    var c = s.camera();
-   var d = o._cameraMoveRate;
-   var r = o._cameraKeyRotation;
-   var kw = RKeyboard.isPress(EKeyCode.W);
-   var ks = RKeyboard.isPress(EKeyCode.S);
+   var d = o._cameraMoveRate * ss;
+   var r = o._cameraKeyRotation * ss;
+   var kw = RKeyboard.isPress(EStageKey.Forward);
+   var ks = RKeyboard.isPress(EStageKey.Back);
    if((kw && !ks) || o._actionForward){
       c.doWalk(d);
    }
    if((!kw && ks) || o._actionBack){
       c.doWalk(-d);
    }
-   var ka = RKeyboard.isPress(EKeyCode.A);
-   var kd = RKeyboard.isPress(EKeyCode.D);
-   if(ka && !kd){
-      c.doYaw(r);
-   }
-   if(!ka && kd){
-      c.doYaw(-r);
-   }
-   var kq = RKeyboard.isPress(EKeyCode.Q);
-   var ke = RKeyboard.isPress(EKeyCode.E);
+   var kq = RKeyboard.isPress(EStageKey.Up);
+   var ke = RKeyboard.isPress(EStageKey.Down);
    if((kq && !ke) || o._actionUp){
       c.doFly(d);
    }
    if((!kq && ke) || o._actionDown){
       c.doFly(-d);
    }
-   var kz = RKeyboard.isPress(EKeyCode.Z);
-   var kw = RKeyboard.isPress(EKeyCode.X);
+   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
+   var kd = RKeyboard.isPress(EStageKey.RotationRight);
+   if(ka && !kd){
+      c.doYaw(r);
+   }
+   if(!ka && kd){
+      c.doYaw(-r);
+   }
+   var kz = RKeyboard.isPress(EStageKey.RotationUp);
+   var kw = RKeyboard.isPress(EStageKey.RotationDown);
    if(kz && !kw){
       c.doPitch(r);
    }
@@ -6398,7 +6589,7 @@ function FE3dSceneCanvas_load(p){
    }
    var s = sc.alloc(o._context, p);
    s.addLoadListener(o, o.onSceneLoad);
-   s.selectTechnique(c, FG3dGeneralTechnique);
+   s.selectTechnique(c, FE3dGeneralTechnique);
    o._stage = o._activeScene = s;
    RStage.register('stage3d', s);
 }
@@ -6546,6 +6737,7 @@ function FE3dSceneDisplay(o){
    o.construct         = FE3dSceneDisplay_construct;
    o.resourceScene     = FE3dSceneDisplay_resourceScene;
    o.loadSceneResource = FE3dSceneDisplay_loadSceneResource;
+   o.loadAnimations    = FE3dSceneDisplay_loadAnimations;
    o.loadResource      = FE3dSceneDisplay_loadResource;
    o.updateMatrix      = FE3dSceneDisplay_updateMatrix;
    return o;
@@ -6563,6 +6755,17 @@ function FE3dSceneDisplay_loadSceneResource(p){
    var cf = RConsole.find(FE3dSceneConsole).factory();
    o._resourceScene = p;
    o._matrix.assign(p.matrix());
+   var rms = p.movies();
+   if(rms){
+      var c = rms.count();
+      var ms = o._movies = new TObjects();
+      for(var i = 0; i < c; i++){
+         var rm = rms.get(i);
+         var m = RClass.create(FE3dSceneDisplayMovie);
+         m.loadResource(rm);
+         ms.push(m);
+      }
+   }
    var rms = p.materials();
    if(rms){
       var c = rms.count();
@@ -6575,15 +6778,22 @@ function FE3dSceneDisplay_loadSceneResource(p){
          ms.set(rm.groupGuid(), m);
       }
    }
-   var rms = p.movies();
-   if(rms){
-      var c = rms.count();
-      var ms = o._movies = new TObjects();
+}
+function FE3dSceneDisplay_loadAnimations(p){
+   var o = this;
+   o.__base.FE3dTemplate.loadAnimations.call(o, p);
+   var s = o._animations;
+   if(s){
+      var sr = o._resourceScene;
+      var c = s.count();
       for(var i = 0; i < c; i++){
-         var rm = rms.get(i);
-         var m = RClass.create(FE3dSceneDisplayMovie);
-         m.loadResource(rm);
-         ms.push(m);
+         var a = s.valueAt(i);
+         var ar = a.resource();
+         var sar = sr.findAnimation(ar.guid());
+         a._resourceScene = sar;
+         if(sar){
+            a._playRate = sar._playRate;
+         }
       }
    }
 }
@@ -6690,6 +6900,7 @@ function FE3dSceneLayer(o){
    o._resource    = null;
    o.resource     = FE3dSceneLayer_resource;
    o.loadResource = FE3dSceneLayer_loadResource;
+   o.process      = FE3dSceneLayer_process;
    return o;
 }
 function FE3dSceneLayer_resource(){
@@ -6698,6 +6909,18 @@ function FE3dSceneLayer_resource(){
 function FE3dSceneLayer_loadResource(p){
    var o = this;
    o._resource = p;
+}
+function FE3dSceneLayer_process(p){
+   var o = this;
+   o.__base.FDisplayLayer.process.call(o, p)
+   var c = o._resource.transformCd();
+   if(c){
+      if(c == EDisplayTransform.CameraPosition){
+         var cp = p.camera().position();
+         o._matrix.setTranslate(cp.x, cp.y, cp.z);
+         o._matrix.update();
+      }
+   }
 }
 function FE3dSceneMaterial(o){
    o = RClass.inherits(this, o, FG3dMaterial);
@@ -7111,7 +7334,7 @@ function FE3dTemplate_loadSkeletons(p){
    if(c > 0){
       var ks = o.skeletons();
       for(var i = 0; i < c; i++){
-         var r = p.get(i);
+         var r = p.getAt(i);
          var s = RClass.create(FE3rSkeleton);
          s.loadResource(r);
          o.pushSkeleton(s);
@@ -7123,7 +7346,7 @@ function FE3dTemplate_linkAnimation(p){
    var ts = p.tracks();
    var c = ts.count();
    for(var i = 0; i < c; i++){
-      var t = ts.get(i);
+      var t = ts.getAt(i);
       var mc = t._resource._meshCode;
       if(mc){
          var m = o.findMeshByCode(mc);
@@ -7136,7 +7359,7 @@ function FE3dTemplate_loadAnimations(p){
    var c = p.count();
    if(c > 0){
       for(var i = 0; i < c; i++){
-         var r = p.get(i);
+         var r = p.getAt(i);
          var a = o.findAnimation(r.guid());
          if(a){
             continue;
@@ -7147,6 +7370,7 @@ function FE3dTemplate_loadAnimations(p){
          }else{
             a = RClass.create(FE3rMeshAnimation);
          }
+         a._display = o;
          a.loadResource(r);
          o.pushAnimation(a);
       }
@@ -7158,7 +7382,7 @@ function FE3dTemplate_loadResource(p){
    var c = ds.count();
    if(c > 0){
       for(var i = 0; i < c; i++){
-         var d = ds.get(i);
+         var d = ds.getAt(i);
          var r = RClass.create(FE3dTemplateRenderable);
          r._display = o;
          r.linkGraphicContext(o);
@@ -7174,7 +7398,7 @@ function FE3dTemplate_reloadResource(){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         s.get(i).reloadResource();
+         s.getAt(i).reloadResource();
       }
    }
 }
@@ -7184,22 +7408,23 @@ function FE3dTemplate_processLoad(){
       return true;
    }
    if(!o._dataReady){
-      if(!o._resource.testReady()){
+      var r = o._resource;
+      if(!r.testReady()){
          return false;
       }
-      o.loadResource(o._resource);
+      o.loadResource(r);
       o._dataReady = true;
    }
    var s = o._meshRenderables;
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         if(!s.get(i).testReady()){
+         if(!s.getAt(i).testReady()){
             return false;
          }
       }
       for(var i = 0; i < c; i++){
-         s.get(i).load();
+         s.getAt(i).load();
       }
    }
    var as = o._animations;
@@ -7216,13 +7441,13 @@ function FE3dTemplate_processLoad(){
    o.processLoadListener(o);
    return o._ready;
 }
-function FE3dTemplate_process(){
+function FE3dTemplate_process(p){
    var o = this;
    var as = o._animations;
    if(as){
       var c = as.count();
       for(var i = 0; i < c; i++){
-         as.value(i).record();
+         as.valueAt(i).record();
       }
    }
    o.__base.FE3dDisplay.process.call(o);
@@ -7230,7 +7455,7 @@ function FE3dTemplate_process(){
    if(k && as){
       var c = as.count();
       for(var i = 0; i < c; i++){
-         as.value(i).process(k);
+         as.valueAt(i).process(k);
       }
    }
 }

@@ -193,7 +193,7 @@ function FE3dTemplate_loadSkeletons(p){
    if(c > 0){
       var ks = o.skeletons();
       for(var i = 0; i < c; i++){
-         var r = p.get(i);
+         var r = p.getAt(i);
          // 创建骨骼
          var s = RClass.create(FE3rSkeleton);
          s.loadResource(r);
@@ -213,7 +213,7 @@ function FE3dTemplate_linkAnimation(p){
    var ts = p.tracks();
    var c = ts.count();
    for(var i = 0; i < c; i++){
-      var t = ts.get(i);
+      var t = ts.getAt(i);
       var mc = t._resource._meshCode;
       if(mc){
          var m = o.findMeshByCode(mc);
@@ -233,7 +233,7 @@ function FE3dTemplate_loadAnimations(p){
    var c = p.count();
    if(c > 0){
       for(var i = 0; i < c; i++){
-         var r = p.get(i);
+         var r = p.getAt(i);
          // 查找是否存在
          var a = o.findAnimation(r.guid());
          if(a){
@@ -246,6 +246,7 @@ function FE3dTemplate_loadAnimations(p){
          }else{
             a = RClass.create(FE3rMeshAnimation);
          }
+         a._display = o;
          a.loadResource(r);
          o.pushAnimation(a);
       }
@@ -265,7 +266,7 @@ function FE3dTemplate_loadResource(p){
    var c = ds.count();
    if(c > 0){
       for(var i = 0; i < c; i++){
-         var d = ds.get(i);
+         var d = ds.getAt(i);
          var r = RClass.create(FE3dTemplateRenderable);
          r._display = o;
          r.linkGraphicContext(o);
@@ -287,7 +288,7 @@ function FE3dTemplate_reloadResource(){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         s.get(i).reloadResource();
+         s.getAt(i).reloadResource();
       }
    }
 }
@@ -304,25 +305,26 @@ function FE3dTemplate_processLoad(){
    }
    // 加载资源
    if(!o._dataReady){
-      if(!o._resource.testReady()){
+      var r = o._resource;
+      if(!r.testReady()){
          return false;
       }
-      o.loadResource(o._resource);
+      o.loadResource(r);
       o._dataReady = true;
    }
    // 加载渲染对象
    var s = o._meshRenderables;
    if(s){
-      // 测试渲染对象
       var c = s.count();
+      // 测试全部加载完成
       for(var i = 0; i < c; i++){
-         if(!s.get(i).testReady()){
+         if(!s.getAt(i).testReady()){
             return false;
          }
       }
-      // 加载渲染对象
+      // 加载全部渲染对象
       for(var i = 0; i < c; i++){
-         s.get(i).load();
+         s.getAt(i).load();
       }
    }
    // 关联动画
@@ -348,14 +350,14 @@ function FE3dTemplate_processLoad(){
 //
 // @method
 //==========================================================
-function FE3dTemplate_process(){
+function FE3dTemplate_process(p){
    var o = this;
    // 处理动画集合
    var as = o._animations;
    if(as){
       var c = as.count();
       for(var i = 0; i < c; i++){
-         as.value(i).record();
+         as.valueAt(i).record();
       }
    }
    // 父处理
@@ -365,7 +367,7 @@ function FE3dTemplate_process(){
    if(k && as){
       var c = as.count();
       for(var i = 0; i < c; i++){
-         as.value(i).process(k);
+         as.valueAt(i).process(k);
       }
    }
 }

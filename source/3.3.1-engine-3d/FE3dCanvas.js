@@ -5,44 +5,44 @@
 // @history 150130
 //==========================================================
 function FE3dCanvas(o){
-   o = RClass.inherits(this, o, FObject, MListenerLoad, MMouseCapture);
+   o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerLoad, MMouseCapture);
    //..........................................................
    // @attribute
-   o._optionAlpha     = true;
-   o._optionAntialias = false;
+   o._optionAlpha        = true;
+   o._optionAntialias    = false;
    // @attribute
-   o._context         = null;
-   o._scaleRate       = 1;
-   o._interval        = 1000 / 60;
+   o._context            = null;
+   o._scaleRate          = 1;
+   o._interval           = 1000 / 60;
    //..........................................................
    // @html
-   o._hPanel          = null;
-   o._hCanvas         = null;
+   o._hPanel             = null;
+   o._hCanvas            = null;
    //..........................................................
    // @event
-   o.onEnterFrame           = RMethod.empty;
+   o.onEnterFrame        = RMethod.empty;
    // @event
-   o.ohTouchStart     = FE3dCanvas_ohTouchStart;
-   o.ohTouchMove      = FE3dCanvas_ohTouchMove;
-   o.ohTouchStop      = FE3dCanvas_ohTouchStop;
+   o.ohTouchStart        = FE3dCanvas_ohTouchStart;
+   o.ohTouchMove         = FE3dCanvas_ohTouchMove;
+   o.ohTouchStop         = FE3dCanvas_ohTouchStop;
    // @event
    // @event
    o.onMouseCaptureStart = RMethod.empty;
    o.onMouseCapture      = RMethod.empty;
    o.onMouseCaptureStop  = RMethod.empty;
-   o.onTouchStart     = RMethod.empty;
-   o.onTouchMove      = RMethod.empty;
-   o.onTouchStop      = RMethod.empty;
+   o.onTouchStart        = RMethod.empty;
+   o.onTouchMove         = RMethod.empty;
+   o.onTouchStop         = RMethod.empty;
    // @event
-   o.onResize         = FE3dCanvas_onResize;
+   o.onResize            = FE3dCanvas_onResize;
    //..........................................................
    // @method
-   o.construct        = FE3dCanvas_construct;
+   o.construct           = FE3dCanvas_construct;
    // @method
-   o.build            = FE3dCanvas_build;
-   o.setPanel         = FE3dCanvas_setPanel;
+   o.build               = FE3dCanvas_build;
+   o.setPanel            = FE3dCanvas_setPanel;
    // @method
-   o.dispose          = FE3dCanvas_dispose;
+   o.dispose             = FE3dCanvas_dispose;
    return o;
 }
 

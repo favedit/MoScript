@@ -118,7 +118,7 @@ function FE3rAnimation_record(){
    if(o._lastTick == 0){
       o._lastTick = t;
    }
-   o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate * 3.0;
+   o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate;
 }
 
 //==========================================================

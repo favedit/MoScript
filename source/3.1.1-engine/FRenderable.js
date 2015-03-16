@@ -112,7 +112,7 @@ function FRenderable_process(p){
    var s = o._drawables;
    if(s){
       var c = s.count();
-      for(var i = 0; i <= 0; i++){
+      for(var i = 0; i < c; i++){
          s.getAt(i).process(p);
       }
    }

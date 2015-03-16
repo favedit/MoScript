@@ -37,15 +37,13 @@ function RE3dEngine_onSetup(){
    // 通用效果器
    ec.register('general.color.control', FG3dControlAutomaticEffect);
    ec.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
-   ec.register('general.color.skeleton', FG3dGeneralColorSkeletonEffect);
-   ec.register('general.color.skeleton.4', FG3dGeneralColorSkeletonEffect);
+   ec.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
+   ec.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
    // 阴影效果器
    ec.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
    ec.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
    ec.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
    ec.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
-   // 阴影效果器
-   ec.register('control.control.galaxy', FE3dGalaxyEffect);
 }
 
 //==========================================================

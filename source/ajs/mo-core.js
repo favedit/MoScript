@@ -1582,6 +1582,8 @@ function APtyInteger(n, l, v){
    AProperty.call(o, n, l);
    o._value   = RInteger.nvl(v);
    o.build    = APtyInteger_build;
+   o.load     = APtyInteger_load;
+   o.save     = APtyInteger_save;
    o.toString = APtyInteger_toString;
    return o;
 }
@@ -1590,6 +1592,14 @@ function APtyInteger_build(v){
    if(v[o._name] == null){
       v[o._name] = o._value;
    }
+}
+function APtyInteger_load(v, x){
+   var o = this;
+   v[o._name] = RInteger.parse(x.get(o._linker));
+}
+function APtyInteger_save(v, x){
+   var o = this;
+   x.set(o._linker, RInteger.toString(v[o._name]));
 }
 function APtyInteger_toString(){
    var o = this;
@@ -3211,6 +3221,56 @@ function FObjectPool_dispose(){
    }
    o.__base.FObject.dispose.call(o);
 }
+function FTimer(o){
+   o = RClass.inherits(this, o, FObject);
+   o._count      = 0;
+   o._startTime  = 0;
+   o._beginTime  = 0;
+   o._endTime    = 0;
+   o._stopTime   = 0;
+   o._span       = 0;
+   o._spanSecond = 0;
+   o.setup       = FTimer_setup;
+   o.current     = FTimer_current;
+   o.span        = FTimer_span;
+   o.spanSecond  = FTimer_spanSecond;
+   o.rate        = FTimer_rate;
+   o.update      = FTimer_update;
+   return o;
+}
+function FTimer_setup(){
+   var o = this;
+   var n = new Date().getTime();
+   o._startTime = n;
+   o._beginTime = n;
+   o._endTime = n;
+}
+function FTimer_current(){
+   return this._lastTime;
+}
+function FTimer_span(){
+   return this._span;
+}
+function FTimer_spanSecond(){
+   return this._spanSecond;
+}
+function FTimer_rate(){
+   var o = this;
+   if(o._count == 0){
+      return 0;
+   }
+   var t = o._lastTime - o._startTime;
+   var c = o._count * 1000 / t;
+   return parseInt(c);
+}
+function FTimer_update(){
+   var o = this;
+   o._count++;
+   var b = o._beginTime = o._endTime;
+   var e = o._endTime = new Date().getTime();
+   var s = o._span = e - b;
+   o._spanSecond = s / 1000;
+}
 var RArray = new function RArray(){
    var o = this;
    o.array1        = new Array(1);
@@ -4652,6 +4712,7 @@ var RInteger = new function RInteger(){
    o.sum        = RInteger_sum;
    o.calculate  = RInteger_calculate;
    o.copy       = RInteger_copy;
+   o.toString   = RInteger_toString;
    return o;
 }
 function RInteger_isInt(v){
@@ -4672,7 +4733,7 @@ function RInteger_parse(v, d){
    }
    v = RString.trim(v.toString());
    while(true){
-      if('0' != v.charAt(0)){
+      if(v.charAt(0) != '0'){
          break;
       }
       v = v.substr(1);
@@ -4735,6 +4796,9 @@ function RInteger_copy(po, poi, pi, pii, pc){
    for(var i = 0; i < pc; i++){
       po[poi++] = pi[pii++];
    }
+}
+function RInteger_toString(p){
+   return (p == null) ? '0' : p.toString();
 }
 var RLogger = new function RLogger(){
    var o = this;

@@ -17,6 +17,8 @@ function APtyInteger(n, l, v){
    //..........................................................
    // @method
    o.build    = APtyInteger_build;
+   o.load     = APtyInteger_load;
+   o.save     = APtyInteger_save;
    o.toString = APtyInteger_toString;
    return o;
 }
@@ -32,6 +34,30 @@ function APtyInteger_build(v){
    if(v[o._name] == null){
       v[o._name] = o._value;
    }
+}
+
+//============================================================
+// <T>加载属性值。</T>
+//
+// @method
+// @param v:value:Object 对象
+// @param x:config:TNode 节点
+//============================================================
+function APtyInteger_load(v, x){
+   var o = this;
+   v[o._name] = RInteger.parse(x.get(o._linker));
+}
+
+//============================================================
+// <T>存储属性值。</T>
+//
+// @method
+// @param v:value:Object 对象
+// @param x:config:TNode 节点
+//============================================================
+function APtyInteger_save(v, x){
+   var o = this;
+   x.set(o._linker, RInteger.toString(v[o._name]));
 }
 
 //============================================================

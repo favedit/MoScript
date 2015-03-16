@@ -67,7 +67,7 @@ function FE3dStage_onProcess(){
       var l = ls.valueAt(i);
       // 过滤单个层渲染信息
       r.reset();
-      l.process();
+      l.process(r);
       l.filterRenderables(r);
       r.update();
    }
@@ -124,6 +124,7 @@ function FE3dStage_construct(){
    l.direction().set(0, -1, 0);
    // 创建区域
    var r = o._region = o.createRegion();
+   r._timer = o._timer;
    r._camera = c;
    r._directionalLight = l;
 }

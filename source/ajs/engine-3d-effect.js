@@ -1,28 +1,3 @@
-function FE3dGalaxyEffect(o){
-   o = RClass.inherits(this, o, FG3dAutomaticEffect);
-   o._code          = 'galaxy.automatic';
-   o.drawRenderable = FE3dGalaxyEffect_drawRenderable;
-   return o;
-}
-function FE3dGalaxyEffect_drawRenderable(pg, pr){
-   var o = this;
-   var c = o._graphicContext;
-   var g = c._native;
-   var p = o._program;
-   var vp = pg.calculate(EG3dRegionParameter.CameraPosition);
-   var m = pr.material();
-   var mi = m.info();
-   o.bindMaterial(m);
-   p.setParameter4('vc_rotation', pr._seed, 0, 0, 0);
-   p.setParameter('vc_model_matrix', pr.currentMatrix());
-   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
-   p.setParameter('vc_camera_position', vp);
-   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
-   p.setParameter('fc_ambient_color', mi.ambientColor);
-   o.bindAttributes(pr);
-   o.bindSamplers(pr);
-   c.drawTriangles(pr.indexBuffer());
-}
 function FE3dGeneralColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    o._code          = 'general.color.automatic';
@@ -121,6 +96,83 @@ function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pr, pi, pc){
       }
    }
    o.drawRenderables(pg, pr, pi, pc);
+}
+function FE3dGeneralColorPass(o){
+   o = RClass.inherits(this, o, FG3dTechniquePass);
+   o._code = 'color';
+   return o;
+}
+function FE3dGeneralColorSkeletonEffect(o){
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o._code            = 'general.color.skeleton';
+   o._supportSkeleton = true;
+   o.drawRenderable   = FE3dGeneralColorSkeletonEffect_drawRenderable;
+   return o;
+}
+function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
+   var o = this;
+   var c = o._graphicContext;
+   var p = o._program;
+   var vcp = pg.calculate(EG3dRegionParameter.CameraPosition);
+   var vld = pg.calculate(EG3dRegionParameter.LightDirection);
+   var m = pr.material();
+   var mi = m.info();
+   o.bindMaterial(m);
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', vcp);
+   p.setParameter('vc_light_direction', vld);
+   p.setParameter('fc_camera_position', vcp);
+   p.setParameter('fc_light_direction', vld);
+   p.setParameter('fc_color', mi.ambientColor);
+   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
+   p.setParameter('fc_ambient_color', mi.ambientColor);
+   p.setParameter('fc_diffuse_color', mi.diffuseColor);
+   p.setParameter('fc_specular_color', mi.specularColor);
+   p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
+   p.setParameter('fc_specular_view_color', mi.specularViewColor);
+   p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
+   p.setParameter('fc_reflect_color', mi.reflectColor);
+   var bs = pr.bones();
+   if(bs){
+      var bc = pr._boneLimit;
+      var d = RTypeArray.findTemp(EDataType.Float, 16 * bc);
+      for(var i = 0; i < bc; i++){
+         var b = bs.get(i);
+         var m = b.matrix();
+         m.writeData(d, 16 * i);
+      }
+      p.setParameter('vc_bone_matrix', d);
+   }
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
+}
+function FE3dGeneralTechnique(o){
+   o = RClass.inherits(this, o, FG3dTechnique);
+   o._code      = 'general';
+   o._passColor = null;
+   o.setup      = FE3dGeneralTechnique_setup;
+   o.passColor  = FE3dGeneralTechnique_passColor;
+   return o;
+}
+function FE3dGeneralTechnique_setup(){
+   var o = this;
+   o.__base.FG3dTechnique.setup.call(o);
+   o.registerMode(EG3dTechniqueMode.Ambient);
+   o.registerMode(EG3dTechniqueMode.DiffuseLevel);
+   o.registerMode(EG3dTechniqueMode.DiffuseColor);
+   o.registerMode(EG3dTechniqueMode.SpecularLevel);
+   o.registerMode(EG3dTechniqueMode.SpecularColor);
+   o.registerMode(EG3dTechniqueMode.Result);
+   var p = o._passColor = RClass.create(FE3dGeneralColorPass);
+   p.linkGraphicContext(o);
+   p.setup();
+   o._passes.push(p);
+}
+function FE3dGeneralTechnique_passColor(){
+   return this._passColor;
 }
 function FE3dShadowColorAutomaticEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);

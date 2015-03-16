@@ -1,27 +1,27 @@
 function FE3dCanvas(o){
-   o = RClass.inherits(this, o, FObject, MListenerLoad, MMouseCapture);
-   o._optionAlpha     = true;
-   o._optionAntialias = false;
-   o._context         = null;
-   o._scaleRate       = 1;
-   o._interval        = 1000 / 60;
-   o._hPanel          = null;
-   o._hCanvas         = null;
-   o.onEnterFrame           = RMethod.empty;
-   o.ohTouchStart     = FE3dCanvas_ohTouchStart;
-   o.ohTouchMove      = FE3dCanvas_ohTouchMove;
-   o.ohTouchStop      = FE3dCanvas_ohTouchStop;
+   o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerLoad, MMouseCapture);
+   o._optionAlpha        = true;
+   o._optionAntialias    = false;
+   o._context            = null;
+   o._scaleRate          = 1;
+   o._interval           = 1000 / 60;
+   o._hPanel             = null;
+   o._hCanvas            = null;
+   o.onEnterFrame        = RMethod.empty;
+   o.ohTouchStart        = FE3dCanvas_ohTouchStart;
+   o.ohTouchMove         = FE3dCanvas_ohTouchMove;
+   o.ohTouchStop         = FE3dCanvas_ohTouchStop;
    o.onMouseCaptureStart = RMethod.empty;
    o.onMouseCapture      = RMethod.empty;
    o.onMouseCaptureStop  = RMethod.empty;
-   o.onTouchStart     = RMethod.empty;
-   o.onTouchMove      = RMethod.empty;
-   o.onTouchStop      = RMethod.empty;
-   o.onResize         = FE3dCanvas_onResize;
-   o.construct        = FE3dCanvas_construct;
-   o.build            = FE3dCanvas_build;
-   o.setPanel         = FE3dCanvas_setPanel;
-   o.dispose          = FE3dCanvas_dispose;
+   o.onTouchStart        = RMethod.empty;
+   o.onTouchMove         = RMethod.empty;
+   o.onTouchStop         = RMethod.empty;
+   o.onResize            = FE3dCanvas_onResize;
+   o.construct           = FE3dCanvas_construct;
+   o.build               = FE3dCanvas_build;
+   o.setPanel            = FE3dCanvas_setPanel;
+   o.dispose             = FE3dCanvas_dispose;
    return o;
 }
 function FE3dCanvas_ohTouchStart(p){
@@ -403,7 +403,7 @@ function FE3dStage_onProcess(){
    for(var i = 0; i < lc; i++){
       var l = ls.valueAt(i);
       r.reset();
-      l.process();
+      l.process(r);
       l.filterRenderables(r);
       r.update();
    }
@@ -441,6 +441,7 @@ function FE3dStage_construct(){
    var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
    l.direction().set(0, -1, 0);
    var r = o._region = o.createRegion();
+   r._timer = o._timer;
    r._camera = c;
    r._directionalLight = l;
 }
@@ -585,13 +586,12 @@ function RE3dEngine_onSetup(){
    ec.register('control.control.control', FG3dControlAutomaticEffect);
    ec.register('general.color.control', FG3dControlAutomaticEffect);
    ec.register('general.color.automatic', FE3dGeneralColorAutomaticEffect);
-   ec.register('general.color.skeleton', FG3dGeneralColorSkeletonEffect);
-   ec.register('general.color.skeleton.4', FG3dGeneralColorSkeletonEffect);
+   ec.register('general.color.skeleton', FE3dGeneralColorSkeletonEffect);
+   ec.register('general.color.skeleton.4', FE3dGeneralColorSkeletonEffect);
    ec.register('shadow.depth.automatic', FE3dShadowDepthAutomaticEffect);
    ec.register('shadow.depth.skeleton', FE3dShadowDepthSkeletonEffect);
    ec.register('shadow.color.automatic', FE3dShadowColorAutomaticEffect);
    ec.register('shadow.color.skeleton', FE3dShadowColorSkeletonEffect);
-   ec.register('control.control.galaxy', FE3dGalaxyEffect);
 }
 function RE3dEngine_setup(){
    var o = this;

@@ -22,9 +22,9 @@ function FE3rSkeletonAnimation_process(p){
    // 获得间隔
    var ct = o._currentTick;
    // 计算间隔
-   var bs = p.bones();
-   var c = bs.count();
+   var s = p.bones();
+   var c = s.count();
    for(var i = 0; i < c; i++){
-      bs.get(i).update(o._playInfo, ct);
+      s.getAt(i).update(o._playInfo, ct);
    }
 }

@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150119
 //==========================================================
-function FG3dGeneralTechnique(o){
+function FE3dGeneralTechnique(o){
    o = RClass.inherits(this, o, FG3dTechnique);
    //..........................................................
    // @attribute
@@ -13,8 +13,8 @@ function FG3dGeneralTechnique(o){
    o._passColor = null;
    //..........................................................
    // @method
-   o.setup      = FG3dGeneralTechnique_setup;
-   o.passColor  = FG3dGeneralTechnique_passColor;
+   o.setup      = FE3dGeneralTechnique_setup;
+   o.passColor  = FE3dGeneralTechnique_passColor;
    return o;
 }
 
@@ -23,7 +23,7 @@ function FG3dGeneralTechnique(o){
 //
 // @method
 //==========================================================
-function FG3dGeneralTechnique_setup(){
+function FE3dGeneralTechnique_setup(){
    var o = this;
    o.__base.FG3dTechnique.setup.call(o);
    //..........................................................
@@ -36,7 +36,7 @@ function FG3dGeneralTechnique_setup(){
    o.registerMode(EG3dTechniqueMode.Result);
    //..........................................................
    // 创建颜色处理过程
-   var p = o._passColor = RClass.create(FG3dGeneralColorPass);
+   var p = o._passColor = RClass.create(FE3dGeneralColorPass);
    p.linkGraphicContext(o);
    p.setup();
    o._passes.push(p);
@@ -48,6 +48,6 @@ function FG3dGeneralTechnique_setup(){
 // @method
 // @return FG3dGeneralColorPass 颜色渲染过程
 //==========================================================
-function FG3dGeneralTechnique_passColor(){
+function FE3dGeneralTechnique_passColor(){
    return this._passColor;
 }

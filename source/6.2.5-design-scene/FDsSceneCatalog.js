@@ -277,7 +277,7 @@ function FDsSceneCatalog_buildRegion(n, p){
 //
 // @method
 // @param n:node:FTreeNode 父节点
-// @param p:display:FDisplayContainer 显示容器
+// @param p:display:FDisplay 显示对象
 //==========================================================
 function FDsSceneCatalog_buildRenderable(n, p){
    var o = this;
@@ -296,6 +296,23 @@ function FDsSceneCatalog_buildRenderable(n, p){
          dn.dataPropertySet('linker', m);
          o.buildNodeView(dn, true);
          o._materials.push(dn);
+         n.appendNode(dn);
+      }
+   }
+   // 创建动画集合
+   var s = p.animations();
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var m = s.value(i);
+         var mr = m.resource();
+         // 创建节点
+         var dn = o.createNode();
+         dn.setLabel(mr.code());
+         dn.setNote(mr.label());
+         dn.setTypeName('animation');
+         dn.dataPropertySet('linker', m);
+         o.buildNodeView(dn, true);
          n.appendNode(dn);
       }
    }

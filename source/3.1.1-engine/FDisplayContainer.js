@@ -54,7 +54,7 @@ function FDisplayContainer_findDisplay(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         var f = s.get(i);
+         var f = s.getAt(i);
          if(f.isName(p)){
             return f;
          }
@@ -76,7 +76,7 @@ function FDisplayContainer_searchDisplay(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         var f = s.get(i);
+         var f = s.getAt(i);
          // 判断当前节点
          if(f.isName(p)){
             return f;
@@ -146,7 +146,7 @@ function FDisplayContainer_filterDisplays(p){
       if(s){
          var c = s.count();
          for(var i = 0; i < c; i++){
-            s.get(i).filterDisplays(p);
+            s.getAt(i).filterDisplays(p);
          }
       }
    }
@@ -190,8 +190,7 @@ function FDisplayContainer_process(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         var d = s.get(i);
-         d.process(p);
+         s.getAt(i).process(p);
       }
    }
 }
@@ -207,7 +206,7 @@ function FDisplayContainer_dispose(){
    var v = o._displays;
    if(v){
       for(var i = v.count() - 1; i >= 0; i--){
-         v.get(i).dispose();
+         v.getAt(i).dispose();
       }
       v.dispose();
       o._displays = null;

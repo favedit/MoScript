@@ -24,6 +24,7 @@ var RInteger = new function RInteger(){
    o.sum        = RInteger_sum;
    o.calculate  = RInteger_calculate;
    o.copy       = RInteger_copy;
+   o.toString   = RInteger_toString;
    return o;
 }
 
@@ -69,10 +70,11 @@ function RInteger_parse(v, d){
    if(v == ''){
       return d;
    }
+   // 去掉两边不可见字符
    v = RString.trim(v.toString());
    // 去掉左边0字符
    while(true){
-      if('0' != v.charAt(0)){
+      if(v.charAt(0) != '0'){
          break;
       }
       v = v.substr(1);
@@ -185,4 +187,15 @@ function RInteger_copy(po, poi, pi, pii, pc){
    for(var i = 0; i < pc; i++){
       po[poi++] = pi[pii++];
    }
+}
+
+//==========================================================
+// <T>把布尔值转化为字符串。</T>
+//
+// @method
+// @param p:value:Integer 数值
+// @return String 字符串
+//==========================================================
+function RInteger_toString(p){
+   return (p == null) ? '0' : p.toString();
 }

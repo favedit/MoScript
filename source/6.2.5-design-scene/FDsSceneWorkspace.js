@@ -205,6 +205,11 @@ function FDsSceneWorkspace_onCatalogSelected(p, pc){
       var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
       f.show();
       f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3rAnimation)){
+      // 显示属性栏
+      var f = o.findPropertyFrame(EDsFrame.SceneAnimationPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dRenderable)){
       // 选中渲染对象
       if(pc){

@@ -391,6 +391,9 @@ function FE3sFrame_unserialize(p){
    o._translation.unserialize(p);
    o._quaternion.unserialize(p);
    o._scale.unserialize(p);
+   if(o._scale.x != 1 && o._scale.y != 1 && o._scale.z != 1){
+      debugger
+   }
 }
 function FE3sMaterial(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -728,6 +731,7 @@ function FE3sObject(o){
    o._label      = null;
    o.guid        = FE3sObject_guid;
    o.code        = FE3sObject_code;
+   o.setCode     = FE3sObject_setCode;
    o.label       = FE3sObject_label;
    o.setLabel    = FE3sObject_setLabel;
    o.unserialize = FE3sObject_unserialize;
@@ -739,6 +743,9 @@ function FE3sObject_guid(){
 }
 function FE3sObject_code(){
    return this._code;
+}
+function FE3sObject_setCode(p){
+   this._code = p;
 }
 function FE3sObject_label(){
    return this._label;
@@ -930,6 +937,36 @@ function FE3sScene_saveConfig(p){
       l.saveConfig(xls.create('Layer'));
    }
 }
+function FE3sSceneAnimation(o){
+   o = RClass.inherits(this, o, FE3sObject);
+   o._playRate   = null;
+   o.construct   = FE3sSceneAnimation_construct;
+   o.playRate    = FE3sSceneAnimation_playRate;
+   o.setPlayRate = FE3sSceneAnimation_setPlayRate;
+   o.unserialize = FE3sSceneAnimation_unserialize;
+   o.saveConfig  = FE3sSceneAnimation_saveConfig;
+   return o;
+}
+function FE3sSceneAnimation_construct(){
+   var o = this;
+   o.__base.FE3sObject.construct.call(o);
+}
+function FE3sSceneAnimation_playRate(){
+   return this._playRate;
+}
+function FE3sSceneAnimation_setPlayRate(p){
+   this._playRate = p;
+}
+function FE3sSceneAnimation_unserialize(p){
+   var o = this;
+   o.__base.FE3sObject.unserialize.call(o, p);
+   o._playRate = p.readFloat();
+}
+function FE3sSceneAnimation_saveConfig(p){
+   var o = this;
+   o.__base.FE3sObject.saveConfig.call(o, p);
+   p.set('play_rate', o._playRate);
+}
 function FE3sSceneCamera(o){
    o = RClass.inherits(this, o, FE3sObject);
    o._typeName    = null;
@@ -1018,12 +1055,16 @@ function FE3sSceneDisplay(o){
    o._optionMergeVertex   = null;
    o._optionMergeMaterial = null;
    o._matrix              = null;
+   o._animations          = null;
    o._movies              = null;
    o._materials           = null;
    o._renderables         = null;
    o.construct            = FE3sSceneDisplay_construct;
    o.templateGuid         = FE3sSceneDisplay_templateGuid;
    o.matrix               = FE3sSceneDisplay_matrix;
+   o.findAnimation        = FE3sSceneDisplay_findAnimation;
+   o.syncAnimation        = FE3sSceneDisplay_syncAnimation;
+   o.animations           = FE3sSceneDisplay_animations;
    o.movies               = FE3sSceneDisplay_movies;
    o.materials            = FE3sSceneDisplay_materials;
    o.renderables          = FE3sSceneDisplay_renderables;
@@ -1042,6 +1083,31 @@ function FE3sSceneDisplay_templateGuid(){
 function FE3sSceneDisplay_matrix(){
    return this._matrix;
 }
+function FE3sSceneDisplay_findAnimation(p){
+   var o = this;
+   var s = o._animations;
+   if(s){
+      return s.get(p);
+   }
+   return null;
+}
+function FE3sSceneDisplay_syncAnimation(p){
+   var o = this;
+   var s = o._animations;
+   if(!s){
+      s = o._animations = new TDictionary();
+   }
+   var a = s.get(p);
+   if(!a){
+      a = RClass.create(FE3sSceneAnimation);
+      a._guid = p;
+      s.set(p, a);
+   }
+   return a;
+}
+function FE3sSceneDisplay_animations(){
+   return this._animations;
+}
 function FE3sSceneDisplay_movies(){
    return this._movies;
 }
@@ -1056,6 +1122,15 @@ function FE3sSceneDisplay_unserialize(p){
    o.__base.FE3sObject.unserialize.call(o, p);
    o._templateGuid = p.readString();
    o._matrix.unserialize(p);
+   var c = p.readUint16();
+   if(c > 0){
+      var s = o._animations = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var a = RClass.create(FE3sSceneAnimation);
+         a.unserialize(p);
+         s.set(a.guid(), a);
+      }
+   }
    var c = p.readUint16();
    if(c > 0){
       var s = o._movies = new TObjects();
@@ -1088,22 +1163,48 @@ function FE3sSceneDisplay_saveConfig(p){
    var o = this;
    o.__base.FE3sObject.saveConfig.call(o, p);
    o._matrix.saveConfig(p.create('Matrix'));
-   var xs = p.create('MaterialCollection');
+   var s = o._animations;
+   if(s){
+      var c = s.count();
+      var xs = p.create('AnimationCollection');
+      for(var i = 0; i < c; i++){
+         s.valueAt(i).saveConfig(xs.create('Animation'));
+      }
+   }
    var s = o._materials;
    if(s){
       var c = s.count();
+      var xs = p.create('MaterialCollection');
       for(var i = 0; i < c; i++){
-         s.get(i).saveConfig(xs.create('Material'));
+         s.getAt(i).saveConfig(xs.create('Material'));
       }
    }
 }
 function FE3sSceneLayer(o){
    o = RClass.inherits(this, o, FE3sObject);
-   o._displays   = null;
-   o.displays    = FE3sSceneLayer_displays;
-   o.unserialize = FE3sSceneLayer_unserialize;
-   o.saveConfig  = FE3sSceneLayer_saveConfig;
+   o._typeCd        = null;
+   o._transformCd   = null;
+   o._displays      = null;
+   o.typeCd         = FE3sSceneLayer_typeCd;
+   o.setTypeCd      = FE3sSceneLayer_setTypeCd;
+   o.transformCd    = FE3sSceneLayer_transformCd;
+   o.setTransformCd = FE3sSceneLayer_setTransformCd;
+   o.displays       = FE3sSceneLayer_displays;
+   o.unserialize    = FE3sSceneLayer_unserialize;
+   o.saveConfig     = FE3sSceneLayer_saveConfig;
    return o;
+}
+function FE3sSceneLayer_typeCd(){
+   return this._typeCd;
+}
+function FE3sSceneLayer_setTypeCd(p){
+   this._typeCd = p;
+}
+function FE3sSceneLayer_transformCd(){
+   return this._transformCd;
+}
+function FE3sSceneLayer_setTransformCd(p){
+   this._transformCd = p;
 }
 function FE3sSceneLayer_displays(){
    return this._displays;
@@ -1111,6 +1212,8 @@ function FE3sSceneLayer_displays(){
 function FE3sSceneLayer_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
+   o._typeCd = p.readString();
+   o._transformCd = p.readString();
    var c = p.readUint16();
    if(c > 0){
       var s = o._displays = new TObjects();
@@ -1124,6 +1227,8 @@ function FE3sSceneLayer_unserialize(p){
 function FE3sSceneLayer_saveConfig(p){
    var o = this;
    o.__base.FE3sObject.saveConfig.call(o, p);
+   p.set('type_cd', o._typeCd);
+   p.set('transform_cd', o._transformCd);
    var xds = p.create('DisplayCollection');
    var s = o._displays;
    if(s){

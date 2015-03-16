@@ -27,6 +27,8 @@ var EDsFrame = new function EDsFrame(){
    o.SceneLayerPropertyFrame      = 'design3d.scene.property.LayerFrame';
    o.SceneDisplayPropertyFrame    = 'design3d.scene.property.DisplayFrame';
    o.SceneMaterialPropertyFrame   = 'design3d.scene.property.MaterialFrame';
+   o.SceneAnimationPropertyFrame  = 'design3d.scene.property.AnimationFrame';
+   o.SceneMoviePropertyFrame      = 'design3d.scene.property.MovieFrame';
    o.SceneRenderablePropertyFrame = 'design3d.scene.property.RenderableFrame';
    return o;
 }
@@ -1727,6 +1729,70 @@ function FDsTemplateWorkspace_dispose(){
    var o = this;
    o.__base.FUiWorkspace.dispose.call(o);
 }
+function FDsSceneAnimationPropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible       = false;
+   o._workspace     = null;
+   o._animation         = null;
+   o._animationResource = null;
+   o._controlGuid   = null;
+   o._controlCode   = null;
+   o._controlLabel  = null;
+   o.onBuilded      = FDsSceneAnimationPropertyFrame_onBuilded;
+   o.onDataChanged  = FDsSceneAnimationPropertyFrame_onDataChanged;
+   o.construct      = FDsSceneAnimationPropertyFrame_construct;
+   o.loadObject     = FDsSceneAnimationPropertyFrame_loadObject;
+   o.dispose        = FDsSceneAnimationPropertyFrame_dispose;
+   return o;
+}
+function FDsSceneAnimationPropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsSceneAnimationPropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+   o._controlPlayRate.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsSceneAnimationPropertyFrame_onDataChanged(p){
+   var o = this;
+   var a = o._animation;
+   var r = a.resource();
+   var g = r.guid();
+   var d = a._display;
+   var rd = d.resourceScene();
+   var ra = rd.findAnimation(g);
+   if(!ra){
+      ra = rd.syncAnimation(g);
+      ra.setCode(r.code());
+      ra.setLabel(r.label());
+   }
+   r.setCode(o._controlCode.get());
+   r.setLabel(o._controlLabel.get());
+   var pr = o._controlPlayRate.get();
+   ra.setPlayRate(pr);
+   a._playRate = pr;
+}
+function FDsSceneAnimationPropertyFrame_loadObject(s, a){
+   var o = this;
+   var r = a.resource();
+   o._animation = a;
+   var d = a._display;
+   var rd = d.resourceScene();
+   var ra = rd.findAnimation(r.guid());
+   o._controlGuid.set(r.guid());
+   o._controlCode.set(r.code());
+   o._controlLabel.set(r.label());
+   if(ra){
+      o._controlPlayRate.set(ra.playRate());
+   }
+}
+function FDsSceneAnimationPropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
 function FDsSceneCameraFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible          = false;
@@ -1958,35 +2024,37 @@ function FDsSceneCanvas_onEnterFrame(){
    if(!s){
       return;
    }
+   var st = s.timer();
+   var ss = st.spanSecond();
    var c = s.camera();
-   var d = o._cameraMoveRate;
-   var r = o._cameraKeyRotation;
-   var kw = RKeyboard.isPress(EKeyCode.W);
-   var ks = RKeyboard.isPress(EKeyCode.S);
-   if(kw && !ks){
+   var d = o._cameraMoveRate * ss;
+   var r = o._cameraKeyRotation * ss;
+   var kf = RKeyboard.isPress(EStageKey.Forward);
+   var kb = RKeyboard.isPress(EStageKey.Back);
+   if(kf && !kb){
       c.doWalk(d);
    }
-   if(!kw && ks){
+   if(!kf && kb){
       c.doWalk(-d);
    }
-   var ka = RKeyboard.isPress(EKeyCode.A);
-   var kd = RKeyboard.isPress(EKeyCode.D);
-   if(ka && !kd){
-      c.doYaw(r);
-   }
-   if(!ka && kd){
-      c.doYaw(-r);
-   }
-   var kq = RKeyboard.isPress(EKeyCode.Q);
-   var ke = RKeyboard.isPress(EKeyCode.E);
+   var kq = RKeyboard.isPress(EStageKey.Up);
+   var ke = RKeyboard.isPress(EStageKey.Down);
    if(kq && !ke){
       c.doFly(d);
    }
    if(!kq && ke){
       c.doFly(-d);
    }
-   var kz = RKeyboard.isPress(EKeyCode.Z);
-   var kw = RKeyboard.isPress(EKeyCode.X);
+   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
+   var kd = RKeyboard.isPress(EStageKey.RotationRight);
+   if(ka && !kd){
+      c.doYaw(r);
+   }
+   if(!ka && kd){
+      c.doYaw(-r);
+   }
+   var kz = RKeyboard.isPress(EStageKey.RotationUp);
+   var kw = RKeyboard.isPress(EStageKey.RotationDown);
    if(kz && !kw){
       c.doPitch(r);
    }
@@ -2252,7 +2320,7 @@ function FDsSceneCanvas_loadScene(p){
    }
    var s = sc.alloc(o._graphicContext, p);
    s.addLoadListener(o, o.onSceneLoad);
-   s.selectTechnique(c, FG3dGeneralTechnique);
+   s.selectTechnique(c, FE3dGeneralTechnique);
    o._stage = o._activeScene = s;
    RStage.register('stage3d', s);
 }
@@ -2534,6 +2602,21 @@ function FDsSceneCatalog_buildRenderable(n, p){
          n.appendNode(dn);
       }
    }
+   var s = p.animations();
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var m = s.value(i);
+         var mr = m.resource();
+         var dn = o.createNode();
+         dn.setLabel(mr.code());
+         dn.setNote(mr.label());
+         dn.setTypeName('animation');
+         dn.dataPropertySet('linker', m);
+         o.buildNodeView(dn, true);
+         n.appendNode(dn);
+      }
+   }
    var s = p.meshRenderables();
    if(s){
       var c = s.count();
@@ -2747,28 +2830,50 @@ function FDsSceneLayer(o){
 }
 function FDsSceneLayerPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._visible      = false;
-   o._workspace    = null;
-   o._layer        = null;
-   o._controlGuid  = null;
-   o._controlCode  = null;
-   o._controlLabel = null;
-   o.construct     = FDsSceneLayerPropertyFrame_construct;
-   o.loadObject    = FDsSceneLayerPropertyFrame_loadObject;
-   o.dispose       = FDsSceneLayerPropertyFrame_dispose;
+   o._visible       = false;
+   o._workspace     = null;
+   o._layer         = null;
+   o._layerResource = null;
+   o._controlGuid   = null;
+   o._controlCode   = null;
+   o._controlLabel  = null;
+   o.onBuilded      = FDsSceneLayerPropertyFrame_onBuilded;
+   o.onDataChanged  = FDsSceneLayerPropertyFrame_onDataChanged;
+   o.construct      = FDsSceneLayerPropertyFrame_construct;
+   o.loadObject     = FDsSceneLayerPropertyFrame_loadObject;
+   o.dispose        = FDsSceneLayerPropertyFrame_dispose;
    return o;
 }
 function FDsSceneLayerPropertyFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
+function FDsSceneLayerPropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+   o._controlTypeCd.addDataChangedListener(o, o.onDataChanged);
+   o._controlTransformCd.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsSceneLayerPropertyFrame_onDataChanged(p){
+   var o = this;
+   var r = o._layerResource;
+   r.setCode(o._controlCode.get());
+   r.setLabel(o._controlLabel.get());
+   r.setTypeCd(o._controlTypeCd.get());
+   r.setTransformCd(o._controlTransformCd.get());
+}
 function FDsSceneLayerPropertyFrame_loadObject(s, l){
    var o = this;
    var r = l.resource();
    o._layer = l;
+   o._layerResource = r;
    o._controlGuid.set(r.guid());
    o._controlCode.set(r.code());
-   o._controlLabel.set(r._label);
+   o._controlLabel.set(r.label());
+   o._controlTypeCd.set(r.typeCd());
+   o._controlTransformCd.set(r.transformCd());
 }
 function FDsSceneLayerPropertyFrame_dispose(){
    var o = this;
@@ -3546,6 +3651,10 @@ function FDsSceneWorkspace_onCatalogSelected(p, pc){
          o._canvas.selectMaterial(p);
       }
       var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
+      f.show();
+      f.loadObject(s, p);
+   }else if(RClass.isClass(p, FE3rAnimation)){
+      var f = o.findPropertyFrame(EDsFrame.SceneAnimationPropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dRenderable)){

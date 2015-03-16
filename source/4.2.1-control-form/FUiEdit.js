@@ -38,6 +38,9 @@ function FUiEdit(o){
    // @method
    o.construct        = FUiEdit_construct;
    // @method
+   o.formatDisplay    = FUiEdit_formatDisplay;
+   o.formatValue      = FUiEdit_formatValue;
+   // @method
    o.get              = FUiEdit_get;
    o.set              = FUiEdit_set;
    o.refreshValue     = FUiEdit_refreshValue;
@@ -96,6 +99,36 @@ function FUiEdit_construct(){
    var o = this;
    o.__base.FUiEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
+}
+
+//==========================================================
+// <T>格式化显示内容。</T>
+//
+// @method
+// @param p:value:String 数据
+// @return 内容
+//==========================================================
+function FUiEdit_formatDisplay(p){
+   var o = this;
+   var r = RString.nvl(p);
+   //if(ECase.Upper == o.editCase){
+   //   r = RString.toUpper(r);
+   //}else if(ECase.Lower == o.editCase){
+   //   r = RString.toLower(r);
+   //}
+   o._dataDisplay = r;
+   return r;
+}
+
+//==========================================================
+// <T>格式化数据内容。</T>
+//
+// @method
+// @param p:value:String 内容
+// @return 数据
+//==========================================================
+function FUiEdit_formatValue(p){
+   return p;
 }
 
 //==========================================================

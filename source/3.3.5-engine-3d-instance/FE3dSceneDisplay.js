@@ -21,6 +21,7 @@ function FE3dSceneDisplay(o){
    // @method
    o.resourceScene     = FE3dSceneDisplay_resourceScene;
    o.loadSceneResource = FE3dSceneDisplay_loadSceneResource;
+   o.loadAnimations    = FE3dSceneDisplay_loadAnimations;
    o.loadResource      = FE3dSceneDisplay_loadResource;
    o.updateMatrix      = FE3dSceneDisplay_updateMatrix;
    return o;
@@ -59,6 +60,18 @@ function FE3dSceneDisplay_loadSceneResource(p){
    o._resourceScene = p;
    // 设置矩阵
    o._matrix.assign(p.matrix());
+   // 加载动画集合
+   var rms = p.movies();
+   if(rms){
+      var c = rms.count();
+      var ms = o._movies = new TObjects();
+      for(var i = 0; i < c; i++){
+         var rm = rms.get(i);
+         var m = RClass.create(FE3dSceneDisplayMovie);
+         m.loadResource(rm);
+         ms.push(m);
+      }
+   }
    // 设置材质集合
    var rms = p.materials();
    if(rms){
@@ -72,16 +85,30 @@ function FE3dSceneDisplay_loadSceneResource(p){
          ms.set(rm.groupGuid(), m);
       }
    }
-   // 加载动画集合
-   var rms = p.movies();
-   if(rms){
-      var c = rms.count();
-      var ms = o._movies = new TObjects();
+}
+
+//==========================================================
+// <T>加载动画集合。</T>
+//
+// @method
+// @param p:animations:TObjects 动画集合
+//==========================================================
+function FE3dSceneDisplay_loadAnimations(p){
+   var o = this;
+   o.__base.FE3dTemplate.loadAnimations.call(o, p);
+   // 设置动画和场景动画资源关联
+   var s = o._animations;
+   if(s){
+      var sr = o._resourceScene;
+      var c = s.count();
       for(var i = 0; i < c; i++){
-         var rm = rms.get(i);
-         var m = RClass.create(FE3dSceneDisplayMovie);
-         m.loadResource(rm);
-         ms.push(m);
+         var a = s.valueAt(i);
+         var ar = a.resource();
+         var sar = sr.findAnimation(ar.guid());
+         a._resourceScene = sar;
+         if(sar){
+            a._playRate = sar._playRate;
+         }
       }
    }
 }

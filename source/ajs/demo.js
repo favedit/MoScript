@@ -123,3 +123,46 @@ function FE3dGalaxy_setup(p){
    mi.effectCode = 'galaxy';
    mi.ambientColor.set(1, 1, 1, 1);
 }
+function FE3dGalaxyEffect(o){
+   o = RClass.inherits(this, o, FG3dAutomaticEffect);
+   o._code          = 'galaxy.automatic';
+   o.drawRenderable = FE3dGalaxyEffect_drawRenderable;
+   return o;
+}
+function FE3dGalaxyEffect_drawRenderable(pg, pr){
+   var o = this;
+   var c = o._graphicContext;
+   var g = c._native;
+   var p = o._program;
+   var vp = pg.calculate(EG3dRegionParameter.CameraPosition);
+   var m = pr.material();
+   var mi = m.info();
+   o.bindMaterial(m);
+   p.setParameter4('vc_rotation', pr._seed, 0, 0, 0);
+   p.setParameter('vc_model_matrix', pr.currentMatrix());
+   p.setParameter('vc_vp_matrix', pg.calculate(EG3dRegionParameter.CameraViewProjectionMatrix));
+   p.setParameter('vc_camera_position', vp);
+   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
+   p.setParameter('fc_ambient_color', mi.ambientColor);
+   o.bindAttributes(pr);
+   o.bindSamplers(pr);
+   c.drawTriangles(pr.indexBuffer());
+}
+var RE3dDemo = new function RE3dDemo(){
+   var o = this;
+   o._setuped = false;
+   o.onSetup  = RE3dDemo_onSetup;
+   o.setup    = RE3dDemo_setup;
+   return o;
+}
+function RE3dDemo_onSetup(){
+   var ec = RConsole.find(FG3dEffectConsole);
+   ec.register('control.control.galaxy', FE3dGalaxyEffect);
+}
+function RE3dDemo_setup(){
+   var o = this;
+   if(!o._setuped){
+      o.onSetup();
+      o._setuped = true;
+   }
+}

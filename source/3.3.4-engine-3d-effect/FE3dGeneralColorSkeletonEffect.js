@@ -1,17 +1,19 @@
 ﻿//==========================================================
-// <T>通用自动渲染器。</T>
+// <T>通用骨骼渲染器。</T>
 //
 // @author maocy
 // @history 150119
 //==========================================================
-function FG3dGeneralColorAutomaticEffect(o){
+function FE3dGeneralColorSkeletonEffect(o){
    o = RClass.inherits(this, o, FG3dAutomaticEffect);
    //..........................................................
    // @attribute
-   o._code          = 'general.color.automatic';
+   o._code            = 'general.color.skeleton';
+   // @attribute
+   o._supportSkeleton = true;
    //..........................................................
    // @method
-   o.drawRenderable = FG3dGeneralColorAutomaticEffect_drawRenderable;
+   o.drawRenderable   = FE3dGeneralColorSkeletonEffect_drawRenderable;
    return o;
 }
 
@@ -22,7 +24,7 @@ function FG3dGeneralColorAutomaticEffect(o){
 // @param pg:region:FG3dRegion 渲染区域
 // @param pr:renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
+function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    var o = this;
    var c = o._graphicContext;
    var p = o._program;
@@ -41,26 +43,32 @@ function FG3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    p.setParameter('fc_camera_position', vcp);
    p.setParameter('fc_light_direction', vld);
    // 设置材质
-   if(o._supportMaterialMap){
-      var i = pr._materialId;
-      p.setParameter4('fc_material', 1/32, i/512, 0, 0);
-   }else{
-      p.setParameter('fc_ambient_color', mi.ambientColor);
-      p.setParameter('fc_diffuse_color', mi.diffuseColor);
-      p.setParameter('fc_specular_color', mi.specularColor);
-      p.setParameter('fc_reflect_color', mi.reflectColor);
-      p.setParameter('fc_emissive_color', mi.emissiveColor);
-   }
-   p.setParameter4('fc_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
-   if(mi.optionAlpha){
-      p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, 0, 0);
-   }else{
-      p.setParameter4('fc_alpha', 0, 1, 0, 0);
-   }
+   p.setParameter('fc_color', mi.ambientColor);
+   p.setParameter4('fc_vertex_color', mi.colorMin, mi.colorMax, mi.colorRate, mi.colorMerge);
+   p.setParameter4('fc_alpha', mi.alphaBase, mi.alphaRate, mi.alphaLevel, mi.alphaMerge);
+   p.setParameter('fc_ambient_color', mi.ambientColor);
+   p.setParameter('fc_diffuse_color', mi.diffuseColor);
+   p.setParameter('fc_specular_color', mi.specularColor);
    p.setParameter4('fc_specular', mi.specularBase, mi.specularLevel, mi.specularAverage, mi.specularShadow);
-   //p.setParameter('fc_specular_view_color', mi.specularViewColor);
-   //p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
-   p.setParameter4('fc_reflect', 0, 0, 1.0 - mi.reflectMerge, mi.reflectMerge);
+   p.setParameter('fc_specular_view_color', mi.specularViewColor);
+   p.setParameter4('fc_specular_view', mi.specularViewBase, mi.specularViewRate, mi.specularViewAverage, mi.specularViewShadow);
+   p.setParameter('fc_reflect_color', mi.reflectColor);
+   // 设置骨头集合
+   var bs = pr.bones();
+   if(bs){
+      var bc = pr._boneLimit;
+      var d = RTypeArray.findTemp(EDataType.Float, 16 * bc);
+      for(var i = 0; i < bc; i++){
+         var b = bs.get(i);
+         var m = b.matrix();
+         m.writeData(d, 16 * i);
+      }
+      p.setParameter('vc_bone_matrix', d);
+   }
+   // 绑定所有属性流
+   o.bindAttributes(pr);
+   // 绑定所有取样器
+   o.bindSamplers(pr);
    // 绘制处理
-   o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
+   c.drawTriangles(pr.indexBuffer());
 }

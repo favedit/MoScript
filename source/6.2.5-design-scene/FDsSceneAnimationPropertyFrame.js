@@ -1,34 +1,34 @@
 //==========================================================
-// <T>场景相机属性页面。</T>
+// <T>场景动画属性页面。</T>
 //
 // @class
 // @author maocy
-// @history 150210
+// @history 150316
 //==========================================================
-function FDsSceneLayerPropertyFrame(o){
+function FDsSceneAnimationPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
    o._visible       = false;
    // @attribute
    o._workspace     = null;
-   o._layer         = null;
-   o._layerResource = null;
+   o._animation         = null;
+   o._animationResource = null;
    // @attribute
    o._controlGuid   = null;
    o._controlCode   = null;
    o._controlLabel  = null;
    // @event
    //..........................................................
-   o.onBuilded      = FDsSceneLayerPropertyFrame_onBuilded;
-   o.onDataChanged  = FDsSceneLayerPropertyFrame_onDataChanged;
+   o.onBuilded      = FDsSceneAnimationPropertyFrame_onBuilded;
+   o.onDataChanged  = FDsSceneAnimationPropertyFrame_onDataChanged;
    //..........................................................
    // @method
-   o.construct      = FDsSceneLayerPropertyFrame_construct;
+   o.construct      = FDsSceneAnimationPropertyFrame_construct;
    // @method
-   o.loadObject     = FDsSceneLayerPropertyFrame_loadObject;
+   o.loadObject     = FDsSceneAnimationPropertyFrame_loadObject;
    // @method
-   o.dispose        = FDsSceneLayerPropertyFrame_dispose;
+   o.dispose        = FDsSceneAnimationPropertyFrame_dispose;
    return o;
 }
 
@@ -37,7 +37,7 @@ function FDsSceneLayerPropertyFrame(o){
 //
 // @method
 //==========================================================
-function FDsSceneLayerPropertyFrame_construct(){
+function FDsSceneAnimationPropertyFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -49,15 +49,14 @@ function FDsSceneLayerPropertyFrame_construct(){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsSceneLayerPropertyFrame_onBuilded(p){
+function FDsSceneAnimationPropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 关联对象
    o._controlCode.addDataChangedListener(o, o.onDataChanged);
    o._controlLabel.addDataChangedListener(o, o.onDataChanged);
    // 关联对象
-   o._controlTypeCd.addDataChangedListener(o, o.onDataChanged);
-   o._controlTransformCd.addDataChangedListener(o, o.onDataChanged);
+   o._controlPlayRate.addDataChangedListener(o, o.onDataChanged);
 }
 
 //==========================================================
@@ -67,15 +66,27 @@ function FDsSceneLayerPropertyFrame_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSceneLayerPropertyFrame_onDataChanged(p){
+function FDsSceneAnimationPropertyFrame_onDataChanged(p){
    var o = this;
-   var r = o._layerResource;
+   var a = o._animation;
+   var r = a.resource();
+   var g = r.guid();
+   // 获得场景动画资源
+   var d = a._display;
+   var rd = d.resourceScene();
+   var ra = rd.findAnimation(g);
+   if(!ra){
+      ra = rd.syncAnimation(g);
+      ra.setCode(r.code());
+      ra.setLabel(r.label());
+   }
    // 设置参数
    r.setCode(o._controlCode.get());
    r.setLabel(o._controlLabel.get());
    // 设置参数
-   r.setTypeCd(o._controlTypeCd.get());
-   r.setTransformCd(o._controlTransformCd.get());
+   var pr = o._controlPlayRate.get();
+   ra.setPlayRate(pr);
+   a._playRate = pr;
 }
 
 //==========================================================
@@ -83,21 +94,25 @@ function FDsSceneLayerPropertyFrame_onDataChanged(p){
 //
 // @method
 // @param s:scene:FE3dScene 场景
-// @param l:layer:FE3dSceneLayer 场景层
+// @param a:animation:FE3rAnimation 动画对象
 //==========================================================
-function FDsSceneLayerPropertyFrame_loadObject(s, l){
+function FDsSceneAnimationPropertyFrame_loadObject(s, a){
    var o = this;
-   var r = l.resource();
+   var r = a.resource();
    // 设置属性
-   o._layer = l;
-   o._layerResource = r;
+   o._animation = a;
+   // 获得场景动画资源
+   var d = a._display;
+   var rd = d.resourceScene();
+   var ra = rd.findAnimation(r.guid());
    // 设置参数
    o._controlGuid.set(r.guid());
    o._controlCode.set(r.code());
    o._controlLabel.set(r.label());
    // 设置参数
-   o._controlTypeCd.set(r.typeCd());
-   o._controlTransformCd.set(r.transformCd());
+   if(ra){
+      o._controlPlayRate.set(ra.playRate());
+   }
 }
 
 //==========================================================
@@ -105,7 +120,7 @@ function FDsSceneLayerPropertyFrame_loadObject(s, l){
 //
 // @method
 //==========================================================
-function FDsSceneLayerPropertyFrame_dispose(){
+function FDsSceneAnimationPropertyFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

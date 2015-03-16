@@ -15,6 +15,7 @@ function FE3sSceneDisplay(o){
    // @attribute 矩阵
    o._matrix              = null;
    // @attribute 集合
+   o._animations          = null;
    o._movies              = null;
    o._materials           = null;
    o._renderables         = null;
@@ -24,6 +25,9 @@ function FE3sSceneDisplay(o){
    // @method
    o.templateGuid         = FE3sSceneDisplay_templateGuid;
    o.matrix               = FE3sSceneDisplay_matrix;
+   o.findAnimation        = FE3sSceneDisplay_findAnimation;
+   o.syncAnimation        = FE3sSceneDisplay_syncAnimation;
+   o.animations           = FE3sSceneDisplay_animations;
    o.movies               = FE3sSceneDisplay_movies;
    o.materials            = FE3sSceneDisplay_materials;
    o.renderables          = FE3sSceneDisplay_renderables;
@@ -62,6 +66,54 @@ function FE3sSceneDisplay_templateGuid(){
 //==========================================================
 function FE3sSceneDisplay_matrix(){
    return this._matrix;
+}
+
+//==========================================================
+// <T>根据唯一编号查找一个动画集合。</T>
+//
+// @method
+// @param p:guid:String 唯一编号
+// @return FE3sAnimation 动画
+//==========================================================
+function FE3sSceneDisplay_findAnimation(p){
+   var o = this;
+   var s = o._animations;
+   if(s){
+      return s.get(p);
+   }
+   return null;
+}
+
+//==========================================================
+// <T>根据唯一编号同步一个动画集合。</T>
+//
+// @method
+// @param p:guid:String 唯一编号
+// @return FE3sAnimation 动画
+//==========================================================
+function FE3sSceneDisplay_syncAnimation(p){
+   var o = this;
+   var s = o._animations;
+   if(!s){
+      s = o._animations = new TDictionary();
+   }
+   var a = s.get(p);
+   if(!a){
+      a = RClass.create(FE3sSceneAnimation);
+      a._guid = p;
+      s.set(p, a);
+   }
+   return a;
+}
+
+//==========================================================
+// <T>获得动画集合。</T>
+//
+// @method
+// @return TObjects 动画集合
+//==========================================================
+function FE3sSceneDisplay_animations(){
+   return this._animations;
 }
 
 //==========================================================
@@ -110,6 +162,16 @@ function FE3sSceneDisplay_unserialize(p){
    // 读取动画集合
    var c = p.readUint16();
    if(c > 0){
+      var s = o._animations = new TDictionary();
+      for(var i = 0; i < c; i++){
+         var a = RClass.create(FE3sSceneAnimation);
+         a.unserialize(p);
+         s.set(a.guid(), a);
+      }
+   }
+   // 读取动画集合
+   var c = p.readUint16();
+   if(c > 0){
       var s = o._movies = new TObjects();
       for(var i = 0; i < c; i++){
          var m = RClass.create(FE3sSceneMovie);
@@ -151,13 +213,21 @@ function FE3sSceneDisplay_saveConfig(p){
    // 存储属性
    o._matrix.saveConfig(p.create('Matrix'));
    // 存储材质集合
-   var xs = p.create('MaterialCollection');
+   var s = o._animations;
+   if(s){
+      var c = s.count();
+      var xs = p.create('AnimationCollection');
+      for(var i = 0; i < c; i++){
+         s.valueAt(i).saveConfig(xs.create('Animation'));
+      }
+   }
+   // 存储材质集合
    var s = o._materials;
    if(s){
       var c = s.count();
+      var xs = p.create('MaterialCollection');
       for(var i = 0; i < c; i++){
-         s.get(i).saveConfig(xs.create('Material'));
+         s.getAt(i).saveConfig(xs.create('Material'));
       }
    }
 }
-

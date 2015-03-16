@@ -1,3 +1,23 @@
+var EDisplayTransform = new function EDisplayTransform(){
+   var o = this;
+   o.CameraPosition     = 'camera.position';
+   o.CameraDirection    = 'camera.direction';
+   o.BilboardedSphere   = 'bilboarded.sphere';
+   o.BilboardedCylinder = 'bilboarded.cylinder';
+   return o;
+}
+var EStageKey = new function EStageKey(){
+   var o = this;
+   o.Forward       = EKeyCode.W;
+   o.Back          = EKeyCode.S;
+   o.Up            = EKeyCode.Q;
+   o.Down          = EKeyCode.E;
+   o.RotationLeft  = EKeyCode.A;
+   o.RotationRight = EKeyCode.D;
+   o.RotationUp    = EKeyCode.Z;
+   o.RotationDown  = EKeyCode.X;
+   return o;
+}
 function MListenerEnterFrame(o){
    o = RClass.inherits(this, o, MListener);
    o.addEnterFrameListener     = MListenerEnterFrame_addEnterFrameListener;
@@ -231,7 +251,7 @@ function FDisplayContainer_findDisplay(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         var f = s.get(i);
+         var f = s.getAt(i);
          if(f.isName(p)){
             return f;
          }
@@ -245,7 +265,7 @@ function FDisplayContainer_searchDisplay(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         var f = s.get(i);
+         var f = s.getAt(i);
          if(f.isName(p)){
             return f;
          }
@@ -283,7 +303,7 @@ function FDisplayContainer_filterDisplays(p){
       if(s){
          var c = s.count();
          for(var i = 0; i < c; i++){
-            s.get(i).filterDisplays(p);
+            s.getAt(i).filterDisplays(p);
          }
       }
    }
@@ -310,8 +330,7 @@ function FDisplayContainer_process(p){
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
-         var d = s.get(i);
-         d.process(p);
+         s.getAt(i).process(p);
       }
    }
 }
@@ -320,7 +339,7 @@ function FDisplayContainer_dispose(){
    var v = o._displays;
    if(v){
       for(var i = v.count() - 1; i >= 0; i--){
-         v.get(i).dispose();
+         v.getAt(i).dispose();
       }
       v.dispose();
       o._displays = null;
@@ -454,7 +473,7 @@ function FRenderable_process(p){
    var s = o._drawables;
    if(s){
       var c = s.count();
-      for(var i = 0; i <= 0; i++){
+      for(var i = 0; i < c; i++){
          s.getAt(i).process(p);
       }
    }
@@ -463,8 +482,10 @@ function FStage(o){
    o = RClass.inherits(this, o, FObject, MListenerEnterFrame, MListenerLeaveFrame);
    o._statusActive   = false;
    o._layers         = null;
+   o._timer          = null;
    o.onProcess       = FStage_onProcess;
    o.construct       = FStage_construct;
+   o.timer           = FStage_timer;
    o.registerLayer   = RStage_registerLayer;
    o.unregisterLayer = RStage_unregisterLayer;
    o.layers          = FStage_layers;
@@ -485,7 +506,11 @@ function FStage_onProcess(){
 function FStage_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._timer = RClass.create(FTimer);
    o._layers = new TDictionary();
+}
+function FStage_timer(){
+   return this._timer;
 }
 function RStage_registerLayer(n, l){
    this._layers.set(n, l);
@@ -516,12 +541,19 @@ function FStage_deactive(){
 }
 function FStage_process(){
    var o = this;
+   var t = o._timer;
+   if(!t){
+      t = RClass.create(FTimer);
+      t.setup();
+   }
    o.processEnterFrameListener(o);
    o.onProcess();
    o.processLeaveFrameListener(o);
+   t.update();
 }
 function FStage_dispose(){
    var o = this;
+   o._timer = RObject.dispose(o._timer);
    o._layers = RObject.dispose(o._layers);
    o.__base.MListenerEnterFrame.dispose.call(o);
    o.__base.MListenerLeaveFrame.dispose.call(o);

@@ -15,6 +15,7 @@ function FE3sObject(o){
    // @method
    o.guid        = FE3sObject_guid;
    o.code        = FE3sObject_code;
+   o.setCode     = FE3sObject_setCode;
    o.label       = FE3sObject_label;
    o.setLabel    = FE3sObject_setLabel;
    // @method
@@ -41,6 +42,16 @@ function FE3sObject_guid(){
 //==========================================================
 function FE3sObject_code(){
    return this._code;
+}
+
+//==========================================================
+// <T>设置代码。</T>
+//
+// @method
+// @param p:code:String 代码
+//==========================================================
+function FE3sObject_setCode(p){
+   this._code = p;
 }
 
 //==========================================================

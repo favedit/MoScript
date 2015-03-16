@@ -8,7 +8,7 @@
 
 <SCRIPT language='javascript' src='../ejs/lzma-d.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/me.js'></SCRIPT>
-<SCRIPT language='javascript' src='../7.1.1-engine-demo/FE3dGalaxy.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/demo.js'></SCRIPT>
 <SCRIPT>
 var context = null;
 var canvas = null;
@@ -59,6 +59,7 @@ function onLoad(){
    // 环境设置
    RRuntime.setProcessCd(EProcess.Release);
    RApplication.initialize();
+   RE3dDemo.setup();
    RBrowser.setContentPath('..');
    // 设置大小
    var size = new SSize2();

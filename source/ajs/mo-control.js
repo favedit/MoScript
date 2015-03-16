@@ -1079,8 +1079,9 @@ function MPropertyEdit_oeValid(e){
 }
 function MPropertyNumber(o){
    o = RClass.inherits(this, o);
-   o._valueMin = RClass.register(o, new APtyNumber('_valueMin'));
-   o._valueMax = RClass.register(o, new APtyNumber('_valueMax'));
+   o._valueMin       = RClass.register(o, new APtyNumber('_valueMin'));
+   o._valueMax       = RClass.register(o, new APtyNumber('_valueMax'));
+   o._valuePrecision = RClass.register(o, new APtyInteger('_valuePrecision'), 3);
    return o;
 }
 function MPropertySelect(o){
@@ -6730,6 +6731,8 @@ function FUiEdit(o){
    o.onBuildEditValue = FUiEdit_onBuildEditValue;
    o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiEdit_onInputEdit);
    o.construct        = FUiEdit_construct;
+   o.formatDisplay    = FUiEdit_formatDisplay;
+   o.formatValue      = FUiEdit_formatValue;
    o.get              = FUiEdit_get;
    o.set              = FUiEdit_set;
    o.refreshValue     = FUiEdit_refreshValue;
@@ -6761,6 +6764,15 @@ function FUiEdit_construct(){
    var o = this;
    o.__base.FUiEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
+}
+function FUiEdit_formatDisplay(p){
+   var o = this;
+   var r = RString.nvl(p);
+   o._dataDisplay = r;
+   return r;
+}
+function FUiEdit_formatValue(p){
+   return p;
 }
 function FUiEdit_get(){
    var o = this;
@@ -8502,7 +8514,7 @@ function FUiListView_dispose(){
    o.userUk = null;
 }
 function FUiNumber(o){
-   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
+   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged, MPropertyNumber);
    o._inputSize        = RClass.register(o, new APtySize2('_inputSize'));
    o._styleValuePanel  = RClass.register(o, new AStyle('_styleValuePanel'));
    o._styleInput       = RClass.register(o, new AStyle('_styleInput'));
@@ -8518,6 +8530,8 @@ function FUiNumber(o){
    o.onInputKeyPress   = RClass.register(o, new AEventKeyPress('onInputKeyPress'), FUiNumber_onInputKeyPress);
    o.onInputChanged    = RClass.register(o, new AEventInputChanged('onInputChanged'), FUiNumber_onInputChanged);
    o.construct         = FUiNumber_construct;
+   o.formatDisplay     = FUiNumber_formatDisplay;
+   o.formatValue       = FUiNumber_formatValue;
    o.get               = FUiNumber_get;
    o.set               = FUiNumber_set;
    return o;
@@ -8566,12 +8580,20 @@ function FUiNumber_construct(){
    o.__base.FUiEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
 }
+function FUiNumber_formatDisplay(p){
+   var o = this;
+   var r = o._dataDisplay = RFloat.format(p, 0, null, o._valuePrecision, null);
+   return r;
+}
+function FUiNumber_formatValue(p){
+   return p;
+}
 function FUiNumber_get(p){
    var o = this;
    var r = o.__base.FUiEditControl.get.call(o, p);
    var h = o._hInput;
    if(h){
-      r = h.value;
+      r = o.formatValue(h.value);
    }
    return r;
 }
@@ -8581,10 +8603,9 @@ function FUiNumber_set(p){
    var v = RString.nvl(p, '0');
    o._innerOriginValue = v;
    o._innerDataValue = v;
-   o._dataDisplay = RFloat.format(p, 0, null, 3, null);
    var h = o._hInput;
    if(h){
-      h.value = o._dataDisplay;
+      h.value = o.formatDisplay(p);
    }
    o.changeSet(false);
 }
@@ -8605,16 +8626,6 @@ function FUiNumber_onDataKeyDown(s, e){
          }
       }
    }
-}
-function FUiNumber_formatValue(v){
-   var o = this;
-   var r = RString.nvl(v);
-   if(ECase.Upper == o.editCase){
-      r = RString.toUpper(r);
-   }else if(ECase.Lower == o.editCase){
-      r = RString.toLower(r);
-   }
-   return r;
 }
 function FUiNumber_setText(t){
    var o = this;
@@ -8684,15 +8695,6 @@ function FUiNumber_drop(){
          o.finded = t;
       }
    }
-}
-function FUiNumber_clone(){
-   var o = this;
-   var r = o._class.newInstance();
-   GHtml_clone(r, o.hPanel);
-   return r;
-}
-function FUiNumber_link(){
-   var o = this;
 }
 function FUiNumber2(o){
    o = RClass.inherits(this, o, FEditControl);

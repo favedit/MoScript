@@ -20,8 +20,7 @@
 // @version 150131
 //==========================================================
 function FUiNumber(o){
-   //o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit);
-   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
+   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged, MPropertyNumber);
    //..........................................................
    // @property
    o._inputSize        = RClass.register(o, new APtySize2('_inputSize'));
@@ -51,13 +50,11 @@ function FUiNumber(o){
    // @method
    o.construct         = FUiNumber_construct;
    // @method
+   o.formatDisplay     = FUiNumber_formatDisplay;
+   o.formatValue       = FUiNumber_formatValue;
+   // @method
    o.get               = FUiNumber_get;
    o.set               = FUiNumber_set;
-
-
-
-
-
 
 
 
@@ -66,23 +63,14 @@ function FUiNumber(o){
    //o.onKeyUp      = RClass.register(o, new AEventKeyUp('onKeyUp'));
    //o.stUnit        = RClass.register(o, new AStyle('Unit'));
    //..........................................................
-   // @attribute
-   //o.borderStyle   = EUiBorder.Round;
-   //..........................................................
-   // @html
-   //o.hUnit         = null;
-   //..........................................................
    // @event
    //o.onDataKeyDown = FUiNumber_onDataKeyDown;
    //..........................................................
    // @method
-   //o.formatValue   = FUiNumber_formatValue;
    //o.setText       = FUiNumber_setText;
    //o.validText     = FUiNumber_validText;
    //o.findEditor    = FUiNumber_findEditor;
    //o.drop          = FUiNumber_drop;
-   //o.link          = FUiNumber_link;
-   //o.clone         = FUiNumber_clone;
    return o;
 }
 
@@ -179,6 +167,30 @@ function FUiNumber_construct(){
 }
 
 //==========================================================
+// <T>格式化显示内容。</T>
+//
+// @method
+// @param p:value:String 数据
+// @return 内容
+//==========================================================
+function FUiNumber_formatDisplay(p){
+   var o = this;
+   var r = o._dataDisplay = RFloat.format(p, 0, null, o._valuePrecision, null);
+   return r;
+}
+
+//==========================================================
+// <T>格式化数据内容。</T>
+//
+// @method
+// @param p:value:String 内容
+// @return 数据
+//==========================================================
+function FUiNumber_formatValue(p){
+   return p;
+}
+
+//==========================================================
 // <T>获得数据。</T>
 //
 // @method
@@ -190,7 +202,7 @@ function FUiNumber_get(p){
    // 获得显示
    var h = o._hInput;
    if(h){
-      r = h.value;
+      r = o.formatValue(h.value);
    }
    return r;
 }
@@ -208,11 +220,10 @@ function FUiNumber_set(p){
    var v = RString.nvl(p, '0');
    o._innerOriginValue = v;
    o._innerDataValue = v;
-   o._dataDisplay = RFloat.format(p, 0, null, 3, null);
    // 设置显示
    var h = o._hInput;
    if(h){
-      h.value = o._dataDisplay;
+      h.value = o.formatDisplay(p);
    }
    // 设置修改状态
    o.changeSet(false);
@@ -256,24 +267,6 @@ function FUiNumber_onDataKeyDown(s, e){
          }
       }
    }
-}
-
-
-//==========================================================
-// <T>格式化数据。</T>
-//
-// @method
-// @param v:value:String 显示内容
-//==========================================================
-function FUiNumber_formatValue(v){
-   var o = this;
-   var r = RString.nvl(v);
-   if(ECase.Upper == o.editCase){
-      r = RString.toUpper(r);
-   }else if(ECase.Lower == o.editCase){
-      r = RString.toLower(r);
-   }
-   return r;
 }
 
 //==========================================================
@@ -373,26 +366,4 @@ function FUiNumber_drop(){
          o.finded = t;
       }
    }
-}
-
-//==========================================================
-//<T>下拉处理。</T>
-//
-//@method
-//==========================================================
-function FUiNumber_clone(){
-   var o = this;
-   var r = o._class.newInstance();
-   GHtml_clone(r, o.hPanel);
-   return r;
-}
-
-//==========================================================
-//<T>下拉处理。</T>
-//
-//@method
-//==========================================================
-function FUiNumber_link(){
-   var o = this;
-   
 }

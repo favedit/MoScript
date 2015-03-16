@@ -100,7 +100,7 @@ function FE3rAnimation_record(){
    if(o._lastTick == 0){
       o._lastTick = t;
    }
-   o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate * 3.0;
+   o._currentTick = (t - o._lastTick + o._baseTick) * o._playRate;
 }
 function FE3rAnimation_dispose(){
    var o = this;
@@ -979,10 +979,10 @@ function FE3rSkeletonAnimation(o){
 function FE3rSkeletonAnimation_process(p){
    var o = this;
    var ct = o._currentTick;
-   var bs = p.bones();
-   var c = bs.count();
+   var s = p.bones();
+   var c = s.count();
    for(var i = 0; i < c; i++){
-      bs.get(i).update(o._playInfo, ct);
+      s.getAt(i).update(o._playInfo, ct);
    }
 }
 function FE3rSkin(o){

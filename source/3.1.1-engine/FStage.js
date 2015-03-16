@@ -11,6 +11,7 @@ function FStage(o){
    // @attribute
    o._statusActive   = false;
    o._layers         = null;
+   o._timer          = null;
    //..........................................................
    // @event
    o.onProcess       = FStage_onProcess;
@@ -18,6 +19,7 @@ function FStage(o){
    // @method
    o.construct       = FStage_construct;
    // @method
+   o.timer           = FStage_timer;
    o.registerLayer   = RStage_registerLayer;
    o.unregisterLayer = RStage_unregisterLayer;
    o.layers          = FStage_layers;
@@ -53,7 +55,18 @@ function FStage_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    // 设置变量
+   o._timer = RClass.create(FTimer);
    o._layers = new TDictionary();
+}
+
+//==========================================================
+// <T>获得计时器。</T>
+//
+// @method
+// @return FTimer 计时器
+//==========================================================
+function FStage_timer(){
+   return this._timer;
 }
 
 //==========================================================
@@ -128,12 +141,22 @@ function FStage_deactive(){
 //==========================================================
 function FStage_process(){
    var o = this;
+   // 设置计时器
+   var t = o._timer;
+   if(!t){
+      t = RClass.create(FTimer);
+      t.setup();
+   }
+   //..........................................................
    // 前处理
    o.processEnterFrameListener(o);
    // 逻辑处理
    o.onProcess();
    // 后处理
    o.processLeaveFrameListener(o);
+   //..........................................................
+   // 计时器更新
+   t.update();
 }
 
 //==========================================================
@@ -143,7 +166,9 @@ function FStage_process(){
 //==========================================================
 function FStage_dispose(){
    var o = this;
+   o._timer = RObject.dispose(o._timer);
    o._layers = RObject.dispose(o._layers);
+   // 父处理
    o.__base.MListenerEnterFrame.dispose.call(o);
    o.__base.MListenerLeaveFrame.dispose.call(o);
    o.__base.FObject.dispose.call(o);

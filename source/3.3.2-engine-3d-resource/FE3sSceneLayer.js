@@ -7,18 +7,63 @@
 function FE3sSceneLayer(o){
    o = RClass.inherits(this, o, FE3sObject);
    //..........................................................
-   // @attribute 属性
-   //o._name       = null;
-   //o._type       = null;
+   // @attribute 类型
+   o._typeCd        = null;
+   // @attribute 变换类型
+   o._transformCd   = null;
    // @attribute 显示集合
-   o._displays   = null;
+   o._displays      = null;
    //..........................................................
    // @method
-   o.displays    = FE3sSceneLayer_displays;
-   o.unserialize = FE3sSceneLayer_unserialize;
+   o.typeCd         = FE3sSceneLayer_typeCd;
+   o.setTypeCd      = FE3sSceneLayer_setTypeCd;
+   o.transformCd    = FE3sSceneLayer_transformCd;
+   o.setTransformCd = FE3sSceneLayer_setTransformCd;
+   o.displays       = FE3sSceneLayer_displays;
    // @method
-   o.saveConfig  = FE3sSceneLayer_saveConfig;
+   o.unserialize    = FE3sSceneLayer_unserialize;
+   o.saveConfig     = FE3sSceneLayer_saveConfig;
    return o;
+}
+
+//==========================================================
+// <T>获得类型。</T>
+//
+// @method
+// @return String 类型
+//==========================================================
+function FE3sSceneLayer_typeCd(){
+   return this._typeCd;
+}
+
+//==========================================================
+// <T>设置类型。</T>
+//
+// @method
+// @param p:value:String 类型
+//==========================================================
+function FE3sSceneLayer_setTypeCd(p){
+   this._typeCd = p;
+}
+
+//==========================================================
+// <T>获得变换类型。</T>
+//
+// @method
+// @return String 变换类型
+//==========================================================
+function FE3sSceneLayer_transformCd(){
+   return this._transformCd;
+}
+
+//==========================================================
+// <T>设置变换类型。</T>
+//
+// @method
+// @param p:value:String 变换类型
+//==========================================================
+function FE3sSceneLayer_setTransformCd(p){
+   this._transformCd = p;
 }
 
 //==========================================================
@@ -41,7 +86,8 @@ function FE3sSceneLayer_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
    // 读取属性
-   //o._type = p.readString();
+   o._typeCd = p.readString();
+   o._transformCd = p.readString();
    // 读取显示集合
    var c = p.readUint16();
    if(c > 0){
@@ -64,7 +110,8 @@ function FE3sSceneLayer_saveConfig(p){
    var o = this;
    o.__base.FE3sObject.saveConfig.call(o, p);
    // 存储属性
-   //p.set('type', o._type);
+   p.set('type_cd', o._typeCd);
+   p.set('transform_cd', o._transformCd);
    // 存储显示集合
    var xds = p.create('DisplayCollection');
    var s = o._displays;
