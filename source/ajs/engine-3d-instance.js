@@ -824,7 +824,9 @@ function FE3dSceneCanvas(o){
    o.onResize               = FE3dSceneCanvas_onResize;
    o.construct              = FE3dSceneCanvas_construct;
    o.load                   = FE3dSceneCanvas_load;
+   o.testPlay               = FE3dSceneCanvas_testPlay;
    o.switchPlay             = FE3dSceneCanvas_switchPlay;
+   o.testMovie              = FE3dSceneCanvas_testMovie;
    o.switchMovie            = FE3dSceneCanvas_switchMovie;
    o.doAction               = FE3dSceneCanvas_doAction;
    o.dispose                = FE3dSceneCanvas_dispose;
@@ -894,7 +896,7 @@ function FE3dSceneCanvas_onMouseCaptureStart(p){
       return;
    }
    var r = o._activeScene.region();
-   var st = RConsole.find(FG3dTechniqueConsole).find(o._context, FG3dSelectTechnique);
+   var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
    var r = st.test(r, p.offsetX, p.offsetY);
    o._capturePosition.set(p.clientX, p.clientY);
    o._captureCameraRotation.assign(s.camera()._rotation);
@@ -957,7 +959,7 @@ function FE3dSceneCanvas_onTouchStop(p){
 }
 function FE3dSceneCanvas_onSceneLoad(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var s = o._activeScene;
    var cs = c.size();
    var rp = s.camera().projection();
@@ -972,7 +974,7 @@ function FE3dSceneCanvas_onSceneLoad(p){
 function FE3dSceneCanvas_onResize(p){
    var o = this;
    o.__base.FE3dCanvas.onResize.call(o, p);
-   var c = o._context;
+   var c = o._graphicContext;
    var cs = c.size();
    var s = o._activeScene;
    if(s){
@@ -991,16 +993,19 @@ function FE3dSceneCanvas_construct(){
 }
 function FE3dSceneCanvas_load(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var sc = RConsole.find(FE3dSceneConsole);
-   if(o._activeScene != null){
+   if(o._activeScene){
       sc.free(o._activeScene);
    }
-   var s = sc.alloc(o._context, p);
+   var s = sc.alloc(o._graphicContext, p);
    s.addLoadListener(o, o.onSceneLoad);
    s.selectTechnique(c, FE3dGeneralTechnique);
    o._stage = o._activeScene = s;
    RStage.register('stage3d', s);
+}
+function FE3dSceneCanvas_testPlay(){
+   return this._actionPlay;
 }
 function FE3dSceneCanvas_switchPlay(p){
    var o = this;
@@ -1014,6 +1019,9 @@ function FE3dSceneCanvas_switchPlay(p){
       }
    }
    o._actionPlay = p;
+}
+function FE3dSceneCanvas_testMovie(){
+   return this._actionMovie;
 }
 function FE3dSceneCanvas_switchMovie(p){
    var o = this;

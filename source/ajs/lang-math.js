@@ -2236,21 +2236,43 @@ function SRectangle_dump(){
 }
 function SSize2(w, h){
    var o = this;
-   o.width    = RInteger.nvl(w);
-   o.height   = RInteger.nvl(h);
-   o.isEmpty  = SSize2_isEmpty;
-   o.square   = SSize2_square;
-   o.assign   = SSize2_assign;
-   o.set      = SSize2_set;
-   o.parse    = SSize2_parse;
-   o.toString = SSize2_toString;
-   o.dispose  = SSize2_dispose;
-   o.dump     = SSize2_dump;
+   o.width      = RInteger.nvl(w);
+   o.height     = RInteger.nvl(h);
+   o.isEmpty    = SSize2_isEmpty;
+   o.equalsData = SSize2_equalsData;
+   o.equals     = SSize2_equals;
+   o.square     = SSize2_square;
+   o.assign     = SSize2_assign;
+   o.set        = SSize2_set;
+   o.parse      = SSize2_parse;
+   o.toString   = SSize2_toString;
+   o.dispose    = SSize2_dispose;
+   o.dump       = SSize2_dump;
    return o;
 }
 function SSize2_isEmpty(){
    var o = this;
    return (o.width == 0) && (o.height == 0);
+}
+function SSize2_equalsData(w, h){
+   var o = this;
+   if(o.width != w){
+      return false;
+   }
+   if(o.height != h){
+      return false;
+   }
+   return true;
+}
+function SSize2_equals(p){
+   var o = this;
+   if(o.width != p.width){
+      return false;
+   }
+   if(o.height != p.height){
+      return false;
+   }
+   return true;
 }
 function SSize2_square(){
    return this.width * this.height;

@@ -41,6 +41,7 @@ function FDsSceneCanvas(o){
    o.onEnterFrame         = FDsSceneCanvas_onEnterFrame;
    o.onSceneLoad          = FDsSceneCanvas_onSceneLoad;
    //..........................................................
+   o.oeResize             = FDsSceneCanvas_oeResize;
    o.oeRefresh            = FDsSceneCanvas_oeRefresh;
    //..........................................................
    // @method
@@ -323,23 +324,30 @@ function FDsSceneCanvas_onSceneLoad(p){
 //
 // @method
 //==========================================================
-function FDsSceneCanvas_oeRefresh(p){
+function FDsSceneCanvas_oeResize(p){
    var o = this;
-   var c = o._graphicContext;
-   o.__base.FDsCanvas.oeRefresh.call(o, p);
+   o.__base.FDsCanvas.oeResize.call(o, p);
    // 获得大小
-   var w = o._hParent.offsetWidth;
-   var h = o._hParent.offsetHeight - 6;
-   // 设置大小
-   var hc = o._hPanel;
-   hc.width = w;
-   hc.height = h;
+   var hp = o._hPanel;
+   var w = hp.offsetWidth;
+   var h = hp.offsetHeight;
    // 设置投影
-   //var rp = o._activeScene.camera().projection();
-   //rp.size().set(w, h);
-   //rp.update();
+   var s = o._activeScene;
+   if(s){
+      var cp = s.camera().projection();
+      cp.size().set(w, h);
+      cp.update();
+   }
    // 设置范围
-   c.setViewport(0, 0, w, h);
+   return EEventStatus.Stop;
+}
+
+//==========================================================
+// <T>刷新处理。</T>
+//
+// @method
+//==========================================================
+function FDsSceneCanvas_oeRefresh(p){
    return EEventStatus.Stop;
 }
 

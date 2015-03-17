@@ -15,11 +15,14 @@ var RWindow = new function RWindow(){
    o._keyEvent         = new SKeyboardEvent();
    o._resizeEvent      = new SResizeEvent();
    o._orientationEvent = new SEvent();
+   o._disableDeep      = 0;
    //..........................................................
    // @html
    o._hWindow          = null;
    o._hDocument        = null;
    o._hContainer       = null;
+   o._hDisablePanel    = null;
+   o._hDisableImage    = null;
    //..........................................................
    // @listeners
    o.lsnsLoad          = new TListeners();
@@ -48,55 +51,49 @@ var RWindow = new function RWindow(){
    //..........................................................
    // @method
    o.connect           = RWindow_connect;
+   // @method
    o.optionSelect      = RWindow_optionSelect;
    o.setOptionSelect   = RWindow_setOptionSelect;
    o.setCaption        = RWindow_setCaption;
    o.setStatus         = RWindow_setStatus;
-
-
-
-
-   //..........................................................
-   // @attribute
-   o._builder          = null;
-   o._disableDeep      = 0;
-   // @attribute
-   o.panels            = new TMap();
-   o.inDisable         = false;
-   o.inMoving          = false;
-   o.inSizing          = false;
-   //..........................................................
-   // @html
-   o.hDisablePanel     = null;
-   o.hShadow           = null;
-   //..........................................................
-   // @event
-   o.onUnload          = RWindow_onUnload;
-   o.onResize          = RWindow_onResize;
-   //..........................................................
    // @method
-   o.createElement     = RWindow_createElement;
-   o.event             = RWindow_event;
-   o.source            = RWindow_source;
-   o.getElement        = RWindow_getElement;
-   o.getDisablePanel   = RWindow_getDisablePanel;
-   o.findElement       = RWindow_findElement;
-   o.panel             = RWindow_panel;
-   o.screenPos         = RWindow_screenPos;
-   o.clientPos         = RWindow_clientPos;
-   o.offsetPos         = RWindow_offsetPos;
+   o.makeDisablePanel  = RWindow_makeDisablePanel;
    o.windowEnable      = RWindow_windowEnable;
    o.windowDisable     = RWindow_windowDisable;
    o.enable            = RWindow_enable;
    o.disable           = RWindow_disable;
    o.setEnable         = RWindow_setEnable;
-   o.showShadow        = RWindow_showShadow;
-   o.moveCenter        = RWindow_moveCenter;
-   o.appendControl     = RWindow_appendControl;
-   o.appendElement     = RWindow_appendElement;
-   o.appendContainer   = RWindow_appendContainer;
-   o.containerTop      = RWindow_containerTop;
-   o.dispose           = RWindow_dispose;
+
+
+
+
+   //..........................................................
+   // @attribute
+   //o._builder          = null;
+   // @attribute
+   //o.inDisable         = false;
+   //o.inMoving          = false;
+   //o.inSizing          = false;
+   //..........................................................
+   // @html
+   //o._hShadow           = null;
+   //..........................................................
+   // @event
+   //o.onUnload          = RWindow_onUnload;
+   //o.onResize          = RWindow_onResize;
+   //..........................................................
+   // @method
+   //o.panel             = RWindow_panel;
+   //o.screenPos         = RWindow_screenPos;
+   //o.clientPos         = RWindow_clientPos;
+   //o.offsetPos         = RWindow_offsetPos;
+   //o.showShadow        = RWindow_showShadow;
+   //o.moveCenter        = RWindow_moveCenter;
+   //o.appendControl     = RWindow_appendControl;
+   //o.appendElement     = RWindow_appendElement;
+   //o.appendContainer   = RWindow_appendContainer;
+   //o.containerTop      = RWindow_containerTop;
+   //o.dispose           = RWindow_dispose;
    return o;
 }
 
@@ -271,6 +268,7 @@ function RWindow_connect(w){
       hc.onkeyup = o.ohKeyUp;
       hc.onkeypress = o.ohKeyPress;
    }
+   hc.onresize = o.ohResize;
    hc.onselectstart = o.ohSelect;
 }
 
@@ -318,6 +316,105 @@ function RWindow_setStatus(p){
    window.status = RString.nvl(p);
 }
 
+//==========================================================
+// <T>获得系统禁止时的页面层。</T>
+//
+// @method
+// @param f:flag:Boolean 是否显示图片层 true : 不显示图片
+// @return <DIV> 页面层
+//==========================================================
+function RWindow_makeDisablePanel(f){
+   var o = this;
+   // 创建面板
+   var h = o._hDisablePanel;
+   if(!h){
+      h = o._hDisablePanel = RBuilder.createDiv(o._hDocument, 'RWindow_Disable');
+      h.style.zIndex = 5000;
+   }
+   // 创建图片
+   var hi = o._hDisableImage;
+   if(!hi){
+      hi = o._hDisableImage = RBuilder.appendIcon(h);
+      hi.src = RResource.iconPath('control.RWindow_Loading');
+      hi.style.margin = o._hContainer.offsetHeight / 2;
+      hi.style.display = 'none';
+   }
+   RHtml.visibleSet(hi, f);
+   return h;
+}
+
+
+//==========================================================
+// <T>使窗口的变为可用状态。</T>
+//
+// @method
+//==========================================================
+function RWindow_windowDisable(){
+   this._hContainer.disabled = true;
+}
+
+//==========================================================
+// <T>使窗口的变为可用状态。</T>
+//
+// @method
+//==========================================================
+function RWindow_windowEnable(){
+   this._hContainer.disabled = false;
+}
+
+//==========================================================
+// <T>允许窗口操作。</T>
+//
+// @method
+//==========================================================
+function RWindow_enable(){
+   var o = this;
+   o._disableDeep--;
+   if(o._disableDeep == 0){
+      o.setEnable(true);
+   }
+}
+
+//==========================================================
+// <T>禁止窗口操作。</T>
+//
+// @method
+//==========================================================
+function RWindow_disable(){
+   var o = this;
+   if(o._disableDeep == 0){
+      o.setEnable(false);
+   }
+   o._disableDeep++;
+}
+
+//==========================================================
+// <T>设置窗口操作模式。</T>
+//
+// @method
+// @param v:value:Boolean 是否允许操作
+//==========================================================
+function RWindow_setEnable(v, f){
+   var o = this;
+   var h = o.makeDisablePanel(f);
+   var st = h.style;
+   if(!v){
+      var hd = o._hDocument;
+      var s = o._hDisablePanel.style;
+      s.left = '0px';
+      s.top = '0px';
+      s.width = (hd.all ? o._hContainer.scrollWidth : hd.documentElement.scrollWidth) + 'px';
+      s.height = (hd.all ? o._hContainer.scrollHeight : hd.documentElement.scrollHeight) + 'px';
+      o._hContainer.appendChild(h);
+   }else{
+      o.windowEnable();
+      o._hContainer.removeChild(h);
+   }
+}
+
+
+
+
 
 
 
@@ -345,15 +442,15 @@ function RWindow_onUnload(){
 //==========================================================
 function RWindow_onResize(){
    var o = this;
-   var h = o.hDisablePanel;
+   var h = o._hDisablePanel;
    if(h){
       if('block' == h.style.display){
          var s = h.style;
          var hd = o.hDocument;
          s.pixelLeft = 0;
          s.pixelTop = 0
-         s.pixelWidth = hd.all ? o.hBody.scrollWidth : hd.documentElement.scrollWidth;
-         s.pixelHeight = hd.all ? o.hBody.scrollHeight : hd.documentElement.scrollHeight;
+         s.pixelWidth = hd.all ? o._hContainer.scrollWidth : hd.documentElement.scrollWidth;
+         s.pixelHeight = hd.all ? o._hContainer.scrollHeight : hd.documentElement.scrollHeight;
       }
    }
 }
@@ -369,7 +466,7 @@ function RWindow_connect2(w){
    var o = this;
    o.hWindow = w;
    var hd = o.hDocument = w.document;
-   var hb = o.hBody = o.hContainer = hd.body;
+   var hb = o._hContainer = o.hContainer = hd.body;
    // 关联窗口的加载和卸载事件
    //o.processLoad = hb.onload;
    //hb.onload = function(){
@@ -451,106 +548,15 @@ function RWindow_connect2(w){
          e = w.event;
       }
       // 根据窗口大小，不发送重复事件
-      if(o.oldBodyWidth == o.hBody.offsetWidth && o.oldBodyHeight == o.hBody.offsetHeight){
+      if(o.oldBodyWidth == o._hContainer.offsetWidth && o.oldBodyHeight == o._hContainer.offsetHeight){
          return;
       }
-      o.oldBodyWidth = o.hBody.offsetWidth;
-      o.oldBodyHeight = o.hBody.offsetHeight;
+      o.oldBodyWidth = o._hContainer.offsetWidth;
+      o.oldBodyHeight = o._hContainer.offsetHeight;
       // 通知所有控件，窗口改变大小
       o.onResize();
       o.lsnsResize.process(e);
    };
-}
-
-//==========================================================
-// <T>根据元素类型名称，创建一个页面元素。</T>
-//
-// @method
-// @param n:name:String 元素类型名称
-// @return <Html> 页面元素
-//==========================================================
-function RWindow_createElement(n){
-   return this.hDocument.createElement(n);
-}
-
-//==========================================================
-// <T>获得窗口的页面事件对象。</T>
-//
-// @method
-// @return <Event> 页面事件对象
-//==========================================================
-function RWindow_event(){
-   return this.hWindow.event;
-}
-
-//==========================================================
-//
-//==========================================================
-function RWindow_source(h){
-   return h ? h.ownerDocument.parentWindow.event.srcElement : this.hWindow.event.srcElement;
-}
-
-//==========================================================
-// <T>根据元素标识，获得一个页面元素。</T>
-// <P>如果页面元素不存在，则产生例外。</P>
-//
-// @method
-// @param n:name:String 页面元素名称
-// @return <Html> 页面元素
-//==========================================================
-function RWindow_getElement(n){
-   var o = this;
-   var e = o.hDocument.getElementById(n);
-   if(!e){
-      RMessage.fatal(o, null, "Can't get html element. (name={0})", n);
-   }
-   return e;
-}
-
-//==========================================================
-// <T>获得系统禁止时的页面层。</T>
-//
-// @method
-// @param f:flag:Boolean 是否显示图片层 true : 不显示图片
-// @return <DIV> 页面层
-//==========================================================
-function RWindow_getDisablePanel(f){
-   var o = this;
-   var h = o.hDisablePanel;
-   if(!h){
-      var h = o.hDisablePanel = o.builder().newDiv();
-      h.style.backgroundColor = "#CCCCCC";
-      h.style.position = 'absolute';
-      h.style.filter = "progid:DXImageTransform.Microsoft.Alpha(opacity=60)";
-      o.hBody.appendChild(h);
-      // 图片
-      h.style.zIndex = 8000;
-      h.style.display = 'none';
-   }
-   var hImg = o.hImg;
-   if(!hImg){
-      hImg = o.hImg = o.builder().appendImage(h);
-      hImg.src = top.RContext.context('/ats/00/rs/icon/ctl/RWindow_Loading.gif');
-      hImg.style.margin = document.body.offsetHeight / 2;
-      hImg.style.display = 'none';
-   }
-   if(f){
-      hImg.style.display = 'none';
-   }else{
-      hImg.style.display = 'block';
-   }
-   return h;
-}
-
-//==========================================================
-// <T>根据元素标识，查找一个页面元素。</T>
-//
-// @method
-// @param n:name:String 页面元素名称
-// @return <Html> 页面元素
-//==========================================================
-function RWindow_findElement(n){
-   return this.hDocument.getElementById(n);
 }
 
 //==========================================================
@@ -564,9 +570,9 @@ function RWindow_panel(t){
    var o = this;
    if(EPanel.Disable == t){
       // 获得禁止操作的面板
-      var h = o.hDisablePanel;
+      var h = o._hDisablePanel;
       if(!h){
-         h = o.hDisablePanel = RBuilder.append(o.hBody, 'DIV', 'RWindow_Disable');
+         h = o._hDisablePanel = RBuilder.append(o._hContainer, 'DIV', 'RWindow_Disable');
          var hi = RBuilder.append(h, 'IMG')
          hi.src = RRes.iconPath('#ctl.RWindow_Loading');
          hi.style.margin = document.body.offsetHeight / 2;
@@ -616,81 +622,15 @@ function RWindow_offsetPos(p){
 }
 
 //==========================================================
-// <T>使窗口的变为可用状态。</T>
-//
-// @method
-//==========================================================
-function RWindow_windowDisable(){
-   this.hWindow.document.body.disabled = true;
-}
-
-//==========================================================
-// <T>使窗口的变为可用状态。</T>
-//
-// @method
-//==========================================================
-function RWindow_windowEnable(){
-   this.hWindow.document.body.disabled = false;
-}
-
-//==========================================================
-// <T>允许窗口操作。</T>
-//
-// @method
-//==========================================================
-function RWindow_enable(){
-   var o = this;
-   o._disableDeep--;
-   if(0 == o._disableDeep){
-      o.setEnable(true);
-   }
-}
-
-//==========================================================
-// <T>禁止窗口操作。</T>
-//
-// @method
-//==========================================================
-function RWindow_disable(){
-   var o = this;
-   if(0 == o._disableDeep){
-      o.setEnable(false);
-   }
-   o._disableDeep++;
-}
-
-//==========================================================
-// <T>设置窗口操作模式。</T>
-//
-// @method
-// @param v:value:Boolean 是否允许操作
-//==========================================================
-function RWindow_setEnable(v, f){
-   var o = this;
-   var h = o.getDisablePanel(f);
-   var st = h.style;
-   if(!v){
-      var s = o.hDisablePanel.style;
-      s.pixelLeft = 0;
-      s.pixelTop = 0
-      s.pixelWidth = o.hDocument.all ? o.hBody.scrollWidth : o.hDocument.documentElement.scrollWidth;
-      s.pixelHeight = o.hDocument.all ? o.hBody.scrollHeight : o.hDocument.documentElement.scrollHeight;
-      s.display = 'block';
-   }else{
-      o.windowEnable();
-      st.display = 'none';
-   }
-}
-//==========================================================
 // x, y, width, height, flag
 //==========================================================
 function RWindow_showShadow(v, r){
    var o = this;
-   if(!o.hShadow){
-      o.hShadow = RBuilder.append(o.hBody, 'DIV', 'RWindow_Shadow');
-      o.hShadow.style.zIndex = ELayer.Shadow;
+   if(!o._hShadow){
+      o._hShadow = RBuilder.append(o._hContainer, 'DIV', 'RWindow_Shadow');
+      o._hShadow.style.zIndex = ELayer.Shadow;
    }
-   var st = o.hShadow.style;
+   var st = o._hShadow.style;
    if(v == false){
       st.display = 'none';
    }else{
@@ -707,8 +647,8 @@ function RWindow_showShadow(v, r){
 function RWindow_moveCenter(h){
    var o = this;
    if(h){
-      h.style.pixelLeft = Math.max(parseInt((o.hBody.offsetWidth - h.offsetWidth)/2), 0);
-      h.style.pixelTop = Math.max(parseInt((o.hBody.offsetHeight - h.offsetHeight)/2), 0) + o.hBody.scrollTop;
+      h.style.pixelLeft = Math.max(parseInt((o._hContainer.offsetWidth - h.offsetWidth)/2), 0);
+      h.style.pixelTop = Math.max(parseInt((o._hContainer.offsetHeight - h.offsetHeight)/2), 0) + o._hContainer.scrollTop;
    }
 }
 
@@ -716,14 +656,14 @@ function RWindow_moveCenter(h){
 //
 //==========================================================
 function RWindow_appendControl(ctl){
-   this.hBody.appendChild(ctl.hPanel);
+   this._hContainer.appendChild(ctl.hPanel);
 }
 
 //==========================================================
 //
 //==========================================================
 function RWindow_appendElement(h){
-   this.hBody.appendChild(h);
+   this._hContainer.appendChild(h);
 }
 
 //==========================================================
@@ -751,24 +691,22 @@ function RWindow_containerTop(h){
 //==========================================================
 function RWindow_dispose(){
    var o = this;
-   o.hBody.onload = null;
-   o.hBody.onunload = null;
-   o.hBody.onmousedown = null;
-   o.hBody.onmouseup = null;
-   o.hBody.onmousemove = null;
-   o.hBody.onmouseover = null;
-   o.hBody.onmousewheel = null;
-   o.hBody.onkeydown = null;
-   o.hBody.onkeyup = null;
-   o.hBody.onkeypress = null;
-   o.hBody.onresize = null;
-   RMemory.freeHtml(o.hBody);
-   o.panels.release();
-   o.panels = null;
-   o.hWindow = null;
-   o.hDocument = null;
-   o.hBody = null;
-   o.hDisablePanel = null;
-   o.hImg = null;
-   o.hShadow = null;
+   o._hContainer.onload = null;
+   o._hContainer.onunload = null;
+   o._hContainer.onmousedown = null;
+   o._hContainer.onmouseup = null;
+   o._hContainer.onmousemove = null;
+   o._hContainer.onmouseover = null;
+   o._hContainer.onmousewheel = null;
+   o._hContainer.onkeydown = null;
+   o._hContainer.onkeyup = null;
+   o._hContainer.onkeypress = null;
+   o._hContainer.onresize = null;
+   o._hContainer = RHtml.free(o._hContainer);
+   o._hWindow = null;
+   o._hDocument = null;
+   o._hContainer = null;
+   o._hDisablePanel = null;
+   o._hDisableImage = null;
+   o._hShadow = null;
 }

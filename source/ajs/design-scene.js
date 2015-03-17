@@ -152,6 +152,7 @@ function FDsSceneCanvas(o){
    o.onMouseCaptureStop   = FDsSceneCanvas_onMouseCaptureStop;
    o.onEnterFrame         = FDsSceneCanvas_onEnterFrame;
    o.onSceneLoad          = FDsSceneCanvas_onSceneLoad;
+   o.oeResize             = FDsSceneCanvas_oeResize;
    o.oeRefresh            = FDsSceneCanvas_oeRefresh;
    o.construct            = FDsSceneCanvas_construct;
    o.innerSelectDisplay   = FDsSceneCanvas_innerSelectDisplay;
@@ -357,16 +358,21 @@ function FDsSceneCanvas_onSceneLoad(p){
    o.reloadRegion();
    o.processLoadListener(o);
 }
-function FDsSceneCanvas_oeRefresh(p){
+function FDsSceneCanvas_oeResize(p){
    var o = this;
-   var c = o._graphicContext;
-   o.__base.FDsCanvas.oeRefresh.call(o, p);
-   var w = o._hParent.offsetWidth;
-   var h = o._hParent.offsetHeight - 6;
-   var hc = o._hPanel;
-   hc.width = w;
-   hc.height = h;
-   c.setViewport(0, 0, w, h);
+   o.__base.FDsCanvas.oeResize.call(o, p);
+   var hp = o._hPanel;
+   var w = hp.offsetWidth;
+   var h = hp.offsetHeight;
+   var s = o._activeScene;
+   if(s){
+      var cp = s.camera().projection();
+      cp.size().set(w, h);
+      cp.update();
+   }
+   return EEventStatus.Stop;
+}
+function FDsSceneCanvas_oeRefresh(p){
    return EEventStatus.Stop;
 }
 function FDsSceneCanvas_construct(){
@@ -1834,11 +1840,11 @@ function FDsSceneWorkspace_onBuilded(p){
    var f = o._frameStatusBar = o.searchControl('statusFrame');
    f._hPanel.className = o.styleName('Statusbar_Ground');
    var f = o._catalogSplitter = o.searchControl('catalogSpliter');
-   f._alignCd = EUiAlign.Left;
-   f._hSize = o._frameCatalog._hPanel;
+   f.setAlignCd(EUiAlign.Left);
+   f.setSizeHtml(o._frameCatalog._hPanel);
    var f = o._propertySpliter = o.searchControl('propertySpliter');
-   f._alignCd = EUiAlign.Right;
-   f._hSize = o._frameStatusBar._hPanel;
+   f.setAlignCd(EUiAlign.Right);
+   f.setSizeHtml(o._frameProperty._hPanel);
    var c = o._toolbar = RClass.create(FDsSceneMenuBar);
    c._workspace = o;
    c.buildDefine(p);

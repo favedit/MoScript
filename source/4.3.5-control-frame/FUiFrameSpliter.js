@@ -24,10 +24,12 @@ function FUiFrameSpliter(o){
    o._dragPanelY   = 0;
    o._dragSizeX    = 0;
    o._dragSizeY    = 0;
+   o._sizeMin      = 40;
    //..........................................................
    // @html
    o._hDrag        = null;
    o._hSize        = null;
+   o._hIcon        = null;
    //..........................................................
    // @event
    o.onBuildPanel  = FUiFrameSpliter_onBuildPanel
@@ -35,17 +37,21 @@ function FUiFrameSpliter(o){
    // @event
    o.onMouseEnter  = RClass.register(o, new AEventMouseEnter('onMouseEnter'), FUiFrameSpliter_onMouseEnter);
    o.onMouseLeave  = RClass.register(o, new AEventMouseLeave('onMouseLeave'), FUiFrameSpliter_onMouseLeave);
+   o.onDoubleClick = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FUiFrameSpliter_onDoubleClick);
    o.onDragStart   = FUiFrameSpliter_onDragStart;
    o.onDragMove    = FUiFrameSpliter_onDragMove;
    o.onDragStop    = FUiFrameSpliter_onDragStop;
    //..........................................................
    // @method
    o.construct     = FUiFrameSpliter_construct;
+   // @method
+   o.alignCd       = FUiFrameSpliter_alignCd;
+   o.setAlignCd    = FUiFrameSpliter_setAlignCd;
+   o.sizeHtml      = FUiFrameSpliter_sizeHtml;
+   o.setSizeHtml   = FUiFrameSpliter_setSizeHtml;
+   o.changeVisible = FUiFrameSpliter_changeVisible;
+   // @method
    o.dispose       = FUiFrameSpliter_dispose;
-
-   //o.build            = FUiFrameSpliter_build;
-   //o.link             = FUiFrameSpliter_link;
-   //o.click            = FUiFrameSpliter_click;
    return o;
 }
 
@@ -72,29 +78,31 @@ function FUiFrameSpliter_onBuild(p){
    o.__base.FUiControl.onBuild.call(o, p)
    var fs = o._frameset;
    var h = o._hPanel;
+   h.style.zIndex = EUiLayer.Drap;
    h.__linker = o;
    // 创建拖拽对象
    var hd = o._hDrag = RBuilder.createDiv(p, o.styleName('Draging'));
    hd.__linker = o;
    hd.style.position = 'absolute';
    RHtml.displaySet(hd, false);
-   RConsole.find(FDragConsole).register(o);
-   //h.ownerDocument.body.appendChild(hd);
    h.appendChild(hd);
-   //fs._hPanel.appendChild(hd);
    // 设置属性
    h.style.cursor = 'e-resize';
    h._plinker = o;
    o.attachEvent('onMouseEnter', h, o.onMouseEnter);
    o.attachEvent('onMouseLeave', h, o.onMouseLeave);
-   //o.hButtonIcon = RBuilder.appendIcon(hc, 'ctl.FSpliter_Left');
+   o.attachEvent('onDoubleClick', h);
+   // 追加图标
+   o._hIcon = RBuilder.appendIcon(h, null, 'control.FSpliter_Left');
+   // 注册为可拖拽对象
+   RConsole.find(FDragConsole).register(o);
 }
 
 //==========================================================
 // <T>鼠标进入处理。</T>
 //
 // @method
-// @return HtmlTag 页面元素
+// @param p:event:SEvent 事件
 //==========================================================
 function FUiFrameSpliter_onMouseEnter(p){
    var o = this;
@@ -106,12 +114,22 @@ function FUiFrameSpliter_onMouseEnter(p){
 // <T>鼠标离开处理。</T>
 //
 // @method
-// @return HtmlTag 页面元素
+// @param p:event:SEvent 事件
 //==========================================================
 function FUiFrameSpliter_onMouseLeave(p){
    var o = this;
    var hc = o._hPanel;
    hc.className = o.styleName('Normal');
+}
+
+//==========================================================
+// <T>鼠标双击处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FUiFrameSpliter_onDoubleClick(p){
+   this.changeVisible();
 }
 
 //==========================================================
@@ -146,15 +164,9 @@ function FUiFrameSpliter_onDragStart(e){
    hds.width = hc.offsetWidth + 'px';
    hds.height = hc.offsetHeight + 'px';
    RHtml.visibleSet(hd, true);
-   //document.body.disabled = true;
-   // 检查左边是否隐藏
-   //document.onselectstart = new function(){return false;}
-   //var hs = o._hSize;
-   //if(hs){
-      //if(hs.style.display == 'none'){
-      //   return;
-      //}
-   //}
+   // 设置禁止选择内容
+   RWindow.setOptionSelect(false);
+   RWindow.disable();
 }
 
 //==========================================================
@@ -170,13 +182,13 @@ function FUiFrameSpliter_onDragMove(e){
    if(o._directionCd == EUiDirection.Horizontal){
       var x = e.clientX - o._dragClientX;
       var cx = o._dragPanelX + x;
-      if(cx > 40){
+      if(cx > o._sizeMin){
          hd.style.left = cx + 'px';
       }
    }else if(o._directionCd == EUiDirection.Vertical){
       var y = e.clientY - o._dragClientY;
       var cy = o._dragPanelY + y;
-      if(cy > 40){
+      if(cy > o._sizeMin){
          hd.style.top = cy + 'px';
       }
    }else{
@@ -204,7 +216,7 @@ function FUiFrameSpliter_onDragStop(e){
       }else{
          throw new TError(o, 'Unknown align type. (align_cd={1})', o._alignCd);
       }
-      if(cx > 40){
+      if(cx > o._sizeMin){
          o._hSize.style.width = cx + 'px';
       }
    }else if(o._directionCd == EUiDirection.Vertical){
@@ -217,7 +229,7 @@ function FUiFrameSpliter_onDragStop(e){
       }else{
          throw new TError(o, 'Unknown align type. (align_cd={1})', o._alignCd);
       }
-      if(cy > 40){
+      if(cy > o._sizeMin){
          o._hSize.style.width = cy + 'px';
       }
    }else{
@@ -225,6 +237,9 @@ function FUiFrameSpliter_onDragStop(e){
    }
    // 隐藏浮动块
    RHtml.visibleSet(hd, false);
+   // 设置允许选择内容
+   RWindow.enable();
+   RWindow.setOptionSelect(true);
 }
 
 //==========================================================
@@ -235,6 +250,92 @@ function FUiFrameSpliter_onDragStop(e){
 function FUiFrameSpliter_construct(){
    var o = this;
    o.__base.FUiControl.construct.call(o);
+}
+
+//==========================================================
+// <T>获得对齐类型。</T>
+//
+// @method
+// @return EUiAlign 对齐类型
+//==========================================================
+function FUiFrameSpliter_alignCd(){
+   return this._alignCd;
+}
+
+//==========================================================
+// <T>设置对齐类型。</T>
+//
+// @method
+// @param p:alignCd:EUiAlign 对齐类型
+//==========================================================
+function FUiFrameSpliter_setAlignCd(p){
+   var o = this;
+   o._alignCd = p;
+   if(p == EUiAlign.Left){
+      o._hIcon.src = RResource.iconPath('control.FSpliter_Left');
+   }else if(p == EUiAlign.Right){
+      o._hIcon.src = RResource.iconPath('control.FSpliter_Right');
+   }
+}
+
+//==========================================================
+// <T>获得大小页面元素。</T>
+//
+// @method
+// @return HtmlTag 页面元素
+//==========================================================
+function FUiFrameSpliter_sizeHtml(){
+   return this._hSize;
+}
+
+//==========================================================
+// <T>设置大小页面元素。</T>
+//
+// @method
+// @param p:html:HtmlTag 页面元素
+//==========================================================
+function FUiFrameSpliter_setSizeHtml(p){
+   this._hSize = p;
+}
+
+//==========================================================
+// <T>点击处理。</T>
+//
+// @method
+//==========================================================
+function FUiFrameSpliter_changeVisible(){
+   var o = this;
+   // 检查变量
+   var hs = o._hSize;
+   if(!hs){
+      return;
+   }
+   // 设置可见性
+   var c = null;
+   var v = RHtml.visibleGet(hs);
+   if(v){
+      RHtml.visibleSet(hs, false);
+      if(o._alignCd == EUiAlign.Left){
+         c = EUiAlign.Right;
+      }else if(o._alignCd == EUiAlign.Right){
+         c = EUiAlign.Left;
+      }
+   }else{
+      RHtml.visibleSet(hs, true);
+      if(o._alignCd == EUiAlign.Left){
+         c = EUiAlign.Right;
+      }else if(o._alignCd == EUiAlign.Right){
+         c = EUiAlign.Right;
+      }
+   }
+   // 设置图标样式
+   if(c == EUiAlign.Left){
+      o._hIcon.src = RResource.iconPath('control.FSpliter_Left');
+   }else if(c == EUiAlign.Right){
+      o._hIcon.src = RResource.iconPath('control.FSpliter_Right');
+   }
+   // 调整工作台尺寸
+   RConsole.find(FUiWorkspaceConsole).resize();
 }
 
 //==========================================================
@@ -257,71 +358,4 @@ function FUiFrameSpliter_dispose(){
    }
    // 父处理
    o.__base.FUiControl.dispose.call(o);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-// ------------------------------------------------------------
-function FUiFrameSpliter_build(){
-   var o = this;
-   var hf = o.hForm = RBuilder.appendTable(o.hDrag);
-   hf.height = 36;
-   // 建立中间单元格
-   hc = o.hButton = hf.insertRow().insertCell()
-   hc.bgColor = o._dragBackgroundColor;
-   hc.style.cursor = 'hand';
-   o.hButtonIcon = RBuilder.appendIcon(hc, 'ctl.FSpliter_Left');
-   o.attachEvent('onSplitButtonEnter', hc, o.ohDragButtonEnter);
-   o.attachEvent('onSplitButtonLeave', hc, o.ohDragButtonLeave);
-   o.attachEvent('onSplitButtonClick', hc, o.ohDragButtonClick);
-}
-// ------------------------------------------------------------
-function FUiFrameSpliter_link(hDrag, hSize){
-   var o = this;
-   var h = o.hDrag = hDrag;
-   o.attachEvent('onSplitDown', h, o.ohDragStart);
-   o.attachEvent('onSplitMove', h, o.ohDragMove);
-   o.attachEvent('onSplitUp', h, o.ohDragStop);
-   o.attachEvent('onSplitDoubleClick', h, o.ohDragDoubleClick);
-   if(EUiDirection.Vertical == o.direction){
-      h.style.cursor = 'N-resize'
-   }else if(EUiDirection.Horizontal == o.direction){
-      h.style.cursor = 'E-resize'
-   }
-   o.hSize = hSize;
-   // 建立层
-   var h = o.hLayer = RBuilder.append(null, 'DIV');
-   h.style.position = 'absolute';
-   h.style.backgroundColor = '#a5eaea';
-   h.style.border = '1 solid #70eaea';
-   h.style.display = 'none';
-   h.zIndex = 30000;
-   RBuilder.appendEmpty(h, 1, 1);
-}
-// ------------------------------------------------------------
-function FUiFrameSpliter_click(){
-   var o = this;
-   var hs = o.hSize;
-   if(hs){
-      if('none' == hs.style.display){
-         hs.style.display = 'block';
-         if(o.hButtonIcon){
-            o.hButtonIcon.src = RRes.iconPath('ctl.FSpliter_Left');
-         }
-      }else{
-         hs.style.display = 'none';
-         if(o.hButtonIcon){
-            o.hButtonIcon.src = RRes.iconPath('ctl.FSpliter_Right');
-         }
-      }
-   }
 }

@@ -9,8 +9,9 @@ var EUiLayer = new function EUiLayer(){
    var o = this;
    // Attribute
    o.Default = 20000;
-   o.Shadow  =  5000;
+   o.Shadow  =  6000;
    o.Disable =  5000;
+   o.Drap    = 10000;
    o.Window  = 20000;
    o.Drop    = 40000;
    o.Editor  = 10000;

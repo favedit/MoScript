@@ -6,39 +6,34 @@
 <META content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
 <LINK rel="stylesheet" href='../acs/mobile.css' type="text/css" media="all"/>
 
-<SCRIPT language='javascript' src='../ajs/release/lzma.js'></SCRIPT>
-<SCRIPT language='javascript' src='../ajs/release/lzma-d.js'></SCRIPT>
-<SCRIPT language='javascript' src='../ajs/release/mo-engine.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/lzma.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/lzma-d.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/me.js'></SCRIPT>
 <SCRIPT>
 var canvas = null;
-var display = null;
-var movie = false;
-//------------------------------------------------------------
-function onEnterFrame(){
-   if(display){
-      var m = display.matrix();
-      m.ry -= 0.004;
-      m.updateForce();
-   }
-}
+var playing = true;
 //------------------------------------------------------------
 function onSceneLoad(c, s){
-   //s.addEnterFrameListener(null, onEnterFrame);
-   canvas.switchPlay(true);
-   canvas.switchMovie(true);
+   canvas.switchPlay(playing);
+   canvas.switchMovie(playing);
 }
 //------------------------------------------------------------
 function onKeydown(p){
    var e = window.event;
    var c = e.keyCode;
    if(c == EKeyCode.Space){
-      movie = !movie;
-      canvas.switchMovie(movie);
+      playing = !playing;
+      canvas.switchPlay(playing);
+      canvas.switchMovie(playing);
    }
 }
 //------------------------------------------------------------
 function doCanvasAction(p, f){
    canvas.doAction(window.event, p, f);
+}
+//------------------------------------------------------------
+function onResize(){
+   canvas.resize();
 }
 //------------------------------------------------------------
 function onLoad(){
@@ -66,11 +61,10 @@ function onLoad(){
    w.setPanel(document.body);
    w.load(c);
    w.addLoadListener(null, onSceneLoad);
-   //RDump.dump(w, document.body);
 }
 </SCRIPT>
 </HEAD>
-<BODY scroll='no' style='background-color:#000000;overflow:hidden;' onload='onLoad()' onkeydown='onKeydown()'>
+<BODY scroll='no' style='background-color:#000000;overflow:hidden;' onload='onLoad()' onresize='onResize()' onkeydown='onKeydown()'>
    <DIV style='position:absolute; left:1em; top:1em;'>
       <IMG src='../ars/picture/fullscreen.png' style='width:5em; height:5em;' onmousedown='doCanvasAction("fullscreen")' ontouchstart='doCanvasAction("fullscreen")'>
    </DIV>

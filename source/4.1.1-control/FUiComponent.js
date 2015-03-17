@@ -305,12 +305,10 @@ function FUiComponent_process(e){
          var pc = ps.count();
          if(pc){
             for(var i = 0; i < pc; i++){
-               var p = ps.value(i);
-               if(p){
-                  var r = p.process(e);
-                  if(r == EEventStatus.Cancel){
-                     return r;
-                  }
+               var p = ps.valueAt(i);
+               var r = p.process(e);
+               if(r == EEventStatus.Cancel){
+                  return r;
                }
             }
          }

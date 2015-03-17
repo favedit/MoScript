@@ -203,8 +203,9 @@ var EUiLabelPosition = new function EUiLabelPosition(){
 var EUiLayer = new function EUiLayer(){
    var o = this;
    o.Default = 20000;
-   o.Shadow  =  5000;
+   o.Shadow  =  6000;
    o.Disable =  5000;
+   o.Drap    = 10000;
    o.Window  = 20000;
    o.Drop    = 40000;
    o.Editor  = 10000;
@@ -2081,12 +2082,10 @@ function FUiComponent_process(e){
          var pc = ps.count();
          if(pc){
             for(var i = 0; i < pc; i++){
-               var p = ps.value(i);
-               if(p){
-                  var r = p.process(e);
-                  if(r == EEventStatus.Cancel){
-                     return r;
-                  }
+               var p = ps.valueAt(i);
+               var r = p.process(e);
+               if(r == EEventStatus.Cancel){
+                  return r;
                }
             }
          }
@@ -2635,6 +2634,25 @@ function FUiControl_dispose(){
    o.__base.MUiSize.dispose.call(o);
    o.__base.MUiStyle.dispose.call(o);
    o.__base.FUiComponent.dispose.call(o);
+}
+function FUiWorkspace(o){
+   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
+   o._hContainer  = null;
+   o._frames      = null;
+   o.onBuildPanel = FUiWorkspace_onBuildPanel;
+   o.appendChild  = FUiWorkspace_appendChild;
+   return o;
+}
+function FUiWorkspace_onBuildPanel(p){
+   var o = this;
+   o._hContainer = p.hDocument.body;
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+}
+function FUiWorkspace_appendChild(p){
+   var o = this;
+   if(RClass.isClass(p, FUiFrameSet)){
+      o._hContainer.appendChild(p._hPanel);
+   }
 }
 var RControl = new function RControl(){
    var o = this;

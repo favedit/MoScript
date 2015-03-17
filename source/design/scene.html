@@ -62,10 +62,10 @@ function _load(){
    var w = RApplication.findWorkspace(FDsSceneWorkspace);
    w.buildDefine(document.body);
    //w.setPanel(document.body);
-   w.psRefresh();
+   //w.psRefresh();
    w.psResize();
    w.loadScene(c);
-
+   RConsole.find(FUiWorkspaceConsole).active(w);
    //RDump.dump(w, document.body);
 }
 </SCRIPT>

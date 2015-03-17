@@ -822,3 +822,38 @@ function FResultConsole_checkService(config){
    }
    return true;
 }
+function FUiWorkspaceConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd         = EScope.Local;
+   o._activeWorkspace = null;
+   o._workspaces      = null;
+   o.onResize         = FUiWorkspaceConsole_onResize;
+   o.construct        = FUiWorkspaceConsole_construct;
+   o.active           = FUiWorkspaceConsole_active;
+   o.resize           = FUiWorkspaceConsole_resize;
+   o.dispose          = FUiWorkspaceConsole_dispose;
+   return o;
+}
+function FUiWorkspaceConsole_onResize(p){
+   var o = this;
+   var w = o._activeWorkspace;
+   if(w){
+      w.psResize();
+   }
+}
+function FUiWorkspaceConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._workspaces = new TDictionary();
+   RWindow.lsnsResize.register(o, o.onResize);
+}
+function FUiWorkspaceConsole_active(p){
+   this._activeWorkspace = p;
+}
+function FUiWorkspaceConsole_resize(){
+   this.onResize();
+}
+function FUiWorkspaceConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
+}

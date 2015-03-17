@@ -203,8 +203,9 @@ var EUiLabelPosition = new function EUiLabelPosition(){
 var EUiLayer = new function EUiLayer(){
    var o = this;
    o.Default = 20000;
-   o.Shadow  =  5000;
+   o.Shadow  =  6000;
    o.Disable =  5000;
+   o.Drap    = 10000;
    o.Window  = 20000;
    o.Drop    = 40000;
    o.Editor  = 10000;
@@ -2081,12 +2082,10 @@ function FUiComponent_process(e){
          var pc = ps.count();
          if(pc){
             for(var i = 0; i < pc; i++){
-               var p = ps.value(i);
-               if(p){
-                  var r = p.process(e);
-                  if(r == EEventStatus.Cancel){
-                     return r;
-                  }
+               var p = ps.valueAt(i);
+               var r = p.process(e);
+               if(r == EEventStatus.Cancel){
+                  return r;
                }
             }
          }
@@ -2635,6 +2634,25 @@ function FUiControl_dispose(){
    o.__base.MUiSize.dispose.call(o);
    o.__base.MUiStyle.dispose.call(o);
    o.__base.FUiComponent.dispose.call(o);
+}
+function FUiWorkspace(o){
+   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
+   o._hContainer  = null;
+   o._frames      = null;
+   o.onBuildPanel = FUiWorkspace_onBuildPanel;
+   o.appendChild  = FUiWorkspace_appendChild;
+   return o;
+}
+function FUiWorkspace_onBuildPanel(p){
+   var o = this;
+   o._hContainer = p.hDocument.body;
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+}
+function FUiWorkspace_appendChild(p){
+   var o = this;
+   if(RClass.isClass(p, FUiFrameSet)){
+      o._hContainer.appendChild(p._hPanel);
+   }
 }
 var RControl = new function RControl(){
    var o = this;
@@ -3891,6 +3909,41 @@ function FResultConsole_checkService(config){
       RConsole.find(FFocusConsole).restoreFocus();
    }
    return true;
+}
+function FUiWorkspaceConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd         = EScope.Local;
+   o._activeWorkspace = null;
+   o._workspaces      = null;
+   o.onResize         = FUiWorkspaceConsole_onResize;
+   o.construct        = FUiWorkspaceConsole_construct;
+   o.active           = FUiWorkspaceConsole_active;
+   o.resize           = FUiWorkspaceConsole_resize;
+   o.dispose          = FUiWorkspaceConsole_dispose;
+   return o;
+}
+function FUiWorkspaceConsole_onResize(p){
+   var o = this;
+   var w = o._activeWorkspace;
+   if(w){
+      w.psResize();
+   }
+}
+function FUiWorkspaceConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._workspaces = new TDictionary();
+   RWindow.lsnsResize.register(o, o.onResize);
+}
+function FUiWorkspaceConsole_active(p){
+   this._activeWorkspace = p;
+}
+function FUiWorkspaceConsole_resize(){
+   this.onResize();
+}
+function FUiWorkspaceConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
 }
 var ESplitStyle = new function ESplitStyle(){
    var o = this;
@@ -16312,16 +16365,24 @@ function FUiFrameSpliter(o){
    o._dragPanelY   = 0;
    o._dragSizeX    = 0;
    o._dragSizeY    = 0;
+   o._sizeMin      = 40;
    o._hDrag        = null;
    o._hSize        = null;
+   o._hIcon        = null;
    o.onBuildPanel  = FUiFrameSpliter_onBuildPanel
    o.onBuild       = FUiFrameSpliter_onBuild;
    o.onMouseEnter  = RClass.register(o, new AEventMouseEnter('onMouseEnter'), FUiFrameSpliter_onMouseEnter);
    o.onMouseLeave  = RClass.register(o, new AEventMouseLeave('onMouseLeave'), FUiFrameSpliter_onMouseLeave);
+   o.onDoubleClick = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FUiFrameSpliter_onDoubleClick);
    o.onDragStart   = FUiFrameSpliter_onDragStart;
    o.onDragMove    = FUiFrameSpliter_onDragMove;
    o.onDragStop    = FUiFrameSpliter_onDragStop;
    o.construct     = FUiFrameSpliter_construct;
+   o.alignCd       = FUiFrameSpliter_alignCd;
+   o.setAlignCd    = FUiFrameSpliter_setAlignCd;
+   o.sizeHtml      = FUiFrameSpliter_sizeHtml;
+   o.setSizeHtml   = FUiFrameSpliter_setSizeHtml;
+   o.changeVisible = FUiFrameSpliter_changeVisible;
    o.dispose       = FUiFrameSpliter_dispose;
    return o;
 }
@@ -16334,17 +16395,20 @@ function FUiFrameSpliter_onBuild(p){
    o.__base.FUiControl.onBuild.call(o, p)
    var fs = o._frameset;
    var h = o._hPanel;
+   h.style.zIndex = EUiLayer.Drap;
    h.__linker = o;
    var hd = o._hDrag = RBuilder.createDiv(p, o.styleName('Draging'));
    hd.__linker = o;
    hd.style.position = 'absolute';
    RHtml.displaySet(hd, false);
-   RConsole.find(FDragConsole).register(o);
    h.appendChild(hd);
    h.style.cursor = 'e-resize';
    h._plinker = o;
    o.attachEvent('onMouseEnter', h, o.onMouseEnter);
    o.attachEvent('onMouseLeave', h, o.onMouseLeave);
+   o.attachEvent('onDoubleClick', h);
+   o._hIcon = RBuilder.appendIcon(h, null, 'control.FSpliter_Left');
+   RConsole.find(FDragConsole).register(o);
 }
 function FUiFrameSpliter_onMouseEnter(p){
    var o = this;
@@ -16355,6 +16419,9 @@ function FUiFrameSpliter_onMouseLeave(p){
    var o = this;
    var hc = o._hPanel;
    hc.className = o.styleName('Normal');
+}
+function FUiFrameSpliter_onDoubleClick(p){
+   this.changeVisible();
 }
 function FUiFrameSpliter_onDragStart(e){
    var o = this;
@@ -16379,6 +16446,8 @@ function FUiFrameSpliter_onDragStart(e){
    hds.width = hc.offsetWidth + 'px';
    hds.height = hc.offsetHeight + 'px';
    RHtml.visibleSet(hd, true);
+   RWindow.setOptionSelect(false);
+   RWindow.disable();
 }
 function FUiFrameSpliter_onDragMove(e){
    var o = this;
@@ -16386,13 +16455,13 @@ function FUiFrameSpliter_onDragMove(e){
    if(o._directionCd == EUiDirection.Horizontal){
       var x = e.clientX - o._dragClientX;
       var cx = o._dragPanelX + x;
-      if(cx > 40){
+      if(cx > o._sizeMin){
          hd.style.left = cx + 'px';
       }
    }else if(o._directionCd == EUiDirection.Vertical){
       var y = e.clientY - o._dragClientY;
       var cy = o._dragPanelY + y;
-      if(cy > 40){
+      if(cy > o._sizeMin){
          hd.style.top = cy + 'px';
       }
    }else{
@@ -16412,7 +16481,7 @@ function FUiFrameSpliter_onDragStop(e){
       }else{
          throw new TError(o, 'Unknown align type. (align_cd={1})', o._alignCd);
       }
-      if(cx > 40){
+      if(cx > o._sizeMin){
          o._hSize.style.width = cx + 'px';
       }
    }else if(o._directionCd == EUiDirection.Vertical){
@@ -16425,17 +16494,67 @@ function FUiFrameSpliter_onDragStop(e){
       }else{
          throw new TError(o, 'Unknown align type. (align_cd={1})', o._alignCd);
       }
-      if(cy > 40){
+      if(cy > o._sizeMin){
          o._hSize.style.width = cy + 'px';
       }
    }else{
       throw new TError(o, 'Unknown direction type. (direction_cd={1})', o._directionCd);
    }
    RHtml.visibleSet(hd, false);
+   RWindow.enable();
+   RWindow.setOptionSelect(true);
 }
 function FUiFrameSpliter_construct(){
    var o = this;
    o.__base.FUiControl.construct.call(o);
+}
+function FUiFrameSpliter_alignCd(){
+   return this._alignCd;
+}
+function FUiFrameSpliter_setAlignCd(p){
+   var o = this;
+   o._alignCd = p;
+   if(p == EUiAlign.Left){
+      o._hIcon.src = RResource.iconPath('control.FSpliter_Left');
+   }else if(p == EUiAlign.Right){
+      o._hIcon.src = RResource.iconPath('control.FSpliter_Right');
+   }
+}
+function FUiFrameSpliter_sizeHtml(){
+   return this._hSize;
+}
+function FUiFrameSpliter_setSizeHtml(p){
+   this._hSize = p;
+}
+function FUiFrameSpliter_changeVisible(){
+   var o = this;
+   var hs = o._hSize;
+   if(!hs){
+      return;
+   }
+   var c = null;
+   var v = RHtml.visibleGet(hs);
+   if(v){
+      RHtml.visibleSet(hs, false);
+      if(o._alignCd == EUiAlign.Left){
+         c = EUiAlign.Right;
+      }else if(o._alignCd == EUiAlign.Right){
+         c = EUiAlign.Left;
+      }
+   }else{
+      RHtml.visibleSet(hs, true);
+      if(o._alignCd == EUiAlign.Left){
+         c = EUiAlign.Right;
+      }else if(o._alignCd == EUiAlign.Right){
+         c = EUiAlign.Right;
+      }
+   }
+   if(c == EUiAlign.Left){
+      o._hIcon.src = RResource.iconPath('control.FSpliter_Left');
+   }else if(c == EUiAlign.Right){
+      o._hIcon.src = RResource.iconPath('control.FSpliter_Right');
+   }
+   RConsole.find(FUiWorkspaceConsole).resize();
 }
 function FUiFrameSpliter_dispose(){
    var o = this;
@@ -16450,73 +16569,4 @@ function FUiFrameSpliter_dispose(){
       o._hSize = null;
    }
    o.__base.FUiControl.dispose.call(o);
-}
-function FUiFrameSpliter_build(){
-   var o = this;
-   var hf = o.hForm = RBuilder.appendTable(o.hDrag);
-   hf.height = 36;
-   hc = o.hButton = hf.insertRow().insertCell()
-   hc.bgColor = o._dragBackgroundColor;
-   hc.style.cursor = 'hand';
-   o.hButtonIcon = RBuilder.appendIcon(hc, 'ctl.FSpliter_Left');
-   o.attachEvent('onSplitButtonEnter', hc, o.ohDragButtonEnter);
-   o.attachEvent('onSplitButtonLeave', hc, o.ohDragButtonLeave);
-   o.attachEvent('onSplitButtonClick', hc, o.ohDragButtonClick);
-}
-function FUiFrameSpliter_link(hDrag, hSize){
-   var o = this;
-   var h = o.hDrag = hDrag;
-   o.attachEvent('onSplitDown', h, o.ohDragStart);
-   o.attachEvent('onSplitMove', h, o.ohDragMove);
-   o.attachEvent('onSplitUp', h, o.ohDragStop);
-   o.attachEvent('onSplitDoubleClick', h, o.ohDragDoubleClick);
-   if(EUiDirection.Vertical == o.direction){
-      h.style.cursor = 'N-resize'
-   }else if(EUiDirection.Horizontal == o.direction){
-      h.style.cursor = 'E-resize'
-   }
-   o.hSize = hSize;
-   var h = o.hLayer = RBuilder.append(null, 'DIV');
-   h.style.position = 'absolute';
-   h.style.backgroundColor = '#a5eaea';
-   h.style.border = '1 solid #70eaea';
-   h.style.display = 'none';
-   h.zIndex = 30000;
-   RBuilder.appendEmpty(h, 1, 1);
-}
-function FUiFrameSpliter_click(){
-   var o = this;
-   var hs = o.hSize;
-   if(hs){
-      if('none' == hs.style.display){
-         hs.style.display = 'block';
-         if(o.hButtonIcon){
-            o.hButtonIcon.src = RRes.iconPath('ctl.FSpliter_Left');
-         }
-      }else{
-         hs.style.display = 'none';
-         if(o.hButtonIcon){
-            o.hButtonIcon.src = RRes.iconPath('ctl.FSpliter_Right');
-         }
-      }
-   }
-}
-function FUiWorkspace(o){
-   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
-   o._hContainer  = null;
-   o._frames      = null;
-   o.onBuildPanel = FUiWorkspace_onBuildPanel;
-   o.appendChild  = FUiWorkspace_appendChild;
-   return o;
-}
-function FUiWorkspace_onBuildPanel(p){
-   var o = this;
-   o._hContainer = p.hDocument.body;
-   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
-}
-function FUiWorkspace_appendChild(p){
-   var o = this;
-   if(RClass.isClass(p, FUiFrameSet)){
-      o._hContainer.appendChild(p._hPanel);
-   }
 }

@@ -74,11 +74,11 @@ function FDsSceneWorkspace_onBuilded(p){
    f._hPanel.className = o.styleName('Statusbar_Ground');
    // 设置分割
    var f = o._catalogSplitter = o.searchControl('catalogSpliter');
-   f._alignCd = EUiAlign.Left;
-   f._hSize = o._frameCatalog._hPanel;
+   f.setAlignCd(EUiAlign.Left);
+   f.setSizeHtml(o._frameCatalog._hPanel);
    var f = o._propertySpliter = o.searchControl('propertySpliter');
-   f._alignCd = EUiAlign.Right;
-   f._hSize = o._frameStatusBar._hPanel;
+   f.setAlignCd(EUiAlign.Right);
+   f.setSizeHtml(o._frameProperty._hPanel);
    //..........................................................
    // 设置工具栏
    var c = o._toolbar = RClass.create(FDsSceneMenuBar);

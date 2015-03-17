@@ -7994,21 +7994,43 @@ function SRectangle_dump(){
 }
 function SSize2(w, h){
    var o = this;
-   o.width    = RInteger.nvl(w);
-   o.height   = RInteger.nvl(h);
-   o.isEmpty  = SSize2_isEmpty;
-   o.square   = SSize2_square;
-   o.assign   = SSize2_assign;
-   o.set      = SSize2_set;
-   o.parse    = SSize2_parse;
-   o.toString = SSize2_toString;
-   o.dispose  = SSize2_dispose;
-   o.dump     = SSize2_dump;
+   o.width      = RInteger.nvl(w);
+   o.height     = RInteger.nvl(h);
+   o.isEmpty    = SSize2_isEmpty;
+   o.equalsData = SSize2_equalsData;
+   o.equals     = SSize2_equals;
+   o.square     = SSize2_square;
+   o.assign     = SSize2_assign;
+   o.set        = SSize2_set;
+   o.parse      = SSize2_parse;
+   o.toString   = SSize2_toString;
+   o.dispose    = SSize2_dispose;
+   o.dump       = SSize2_dump;
    return o;
 }
 function SSize2_isEmpty(){
    var o = this;
    return (o.width == 0) && (o.height == 0);
+}
+function SSize2_equalsData(w, h){
+   var o = this;
+   if(o.width != w){
+      return false;
+   }
+   if(o.height != h){
+      return false;
+   }
+   return true;
+}
+function SSize2_equals(p){
+   var o = this;
+   if(o.width != p.width){
+      return false;
+   }
+   if(o.height != p.height){
+      return false;
+   }
+   return true;
 }
 function SSize2_square(){
    return this.width * this.height;
@@ -13808,9 +13830,12 @@ var RWindow = new function RWindow(){
    o._keyEvent         = new SKeyboardEvent();
    o._resizeEvent      = new SResizeEvent();
    o._orientationEvent = new SEvent();
+   o._disableDeep      = 0;
    o._hWindow          = null;
    o._hDocument        = null;
    o._hContainer       = null;
+   o._hDisablePanel    = null;
+   o._hDisableImage    = null;
    o.lsnsLoad          = new TListeners();
    o.lsnsUnload        = new TListeners();
    o.lsnsMouseDown     = new TListeners();
@@ -13837,38 +13862,12 @@ var RWindow = new function RWindow(){
    o.setOptionSelect   = RWindow_setOptionSelect;
    o.setCaption        = RWindow_setCaption;
    o.setStatus         = RWindow_setStatus;
-   o._builder          = null;
-   o._disableDeep      = 0;
-   o.panels            = new TMap();
-   o.inDisable         = false;
-   o.inMoving          = false;
-   o.inSizing          = false;
-   o.hDisablePanel     = null;
-   o.hShadow           = null;
-   o.onUnload          = RWindow_onUnload;
-   o.onResize          = RWindow_onResize;
-   o.createElement     = RWindow_createElement;
-   o.event             = RWindow_event;
-   o.source            = RWindow_source;
-   o.getElement        = RWindow_getElement;
-   o.getDisablePanel   = RWindow_getDisablePanel;
-   o.findElement       = RWindow_findElement;
-   o.panel             = RWindow_panel;
-   o.screenPos         = RWindow_screenPos;
-   o.clientPos         = RWindow_clientPos;
-   o.offsetPos         = RWindow_offsetPos;
+   o.makeDisablePanel  = RWindow_makeDisablePanel;
    o.windowEnable      = RWindow_windowEnable;
    o.windowDisable     = RWindow_windowDisable;
    o.enable            = RWindow_enable;
    o.disable           = RWindow_disable;
    o.setEnable         = RWindow_setEnable;
-   o.showShadow        = RWindow_showShadow;
-   o.moveCenter        = RWindow_moveCenter;
-   o.appendControl     = RWindow_appendControl;
-   o.appendElement     = RWindow_appendElement;
-   o.appendContainer   = RWindow_appendContainer;
-   o.containerTop      = RWindow_containerTop;
-   o.dispose           = RWindow_dispose;
    return o;
 }
 function RWindow_ohMouseDown(p){
@@ -13970,6 +13969,7 @@ function RWindow_connect(w){
       hc.onkeyup = o.ohKeyUp;
       hc.onkeypress = o.ohKeyPress;
    }
+   hc.onresize = o.ohResize;
    hc.onselectstart = o.ohSelect;
 }
 function RWindow_optionSelect(){
@@ -13988,20 +13988,74 @@ function RWindow_setCaption(p){
 function RWindow_setStatus(p){
    window.status = RString.nvl(p);
 }
+function RWindow_makeDisablePanel(f){
+   var o = this;
+   var h = o._hDisablePanel;
+   if(!h){
+      h = o._hDisablePanel = RBuilder.createDiv(o._hDocument, 'RWindow_Disable');
+      h.style.zIndex = 5000;
+   }
+   var hi = o._hDisableImage;
+   if(!hi){
+      hi = o._hDisableImage = RBuilder.appendIcon(h);
+      hi.src = RResource.iconPath('control.RWindow_Loading');
+      hi.style.margin = o._hContainer.offsetHeight / 2;
+      hi.style.display = 'none';
+   }
+   RHtml.visibleSet(hi, f);
+   return h;
+}
+function RWindow_windowDisable(){
+   this._hContainer.disabled = true;
+}
+function RWindow_windowEnable(){
+   this._hContainer.disabled = false;
+}
+function RWindow_enable(){
+   var o = this;
+   o._disableDeep--;
+   if(o._disableDeep == 0){
+      o.setEnable(true);
+   }
+}
+function RWindow_disable(){
+   var o = this;
+   if(o._disableDeep == 0){
+      o.setEnable(false);
+   }
+   o._disableDeep++;
+}
+function RWindow_setEnable(v, f){
+   var o = this;
+   var h = o.makeDisablePanel(f);
+   var st = h.style;
+   if(!v){
+      var hd = o._hDocument;
+      var s = o._hDisablePanel.style;
+      s.left = '0px';
+      s.top = '0px';
+      s.width = (hd.all ? o._hContainer.scrollWidth : hd.documentElement.scrollWidth) + 'px';
+      s.height = (hd.all ? o._hContainer.scrollHeight : hd.documentElement.scrollHeight) + 'px';
+      o._hContainer.appendChild(h);
+   }else{
+      o.windowEnable();
+      o._hContainer.removeChild(h);
+   }
+}
 function RWindow_onUnload(){
    RMemory.release();
 }
 function RWindow_onResize(){
    var o = this;
-   var h = o.hDisablePanel;
+   var h = o._hDisablePanel;
    if(h){
       if('block' == h.style.display){
          var s = h.style;
          var hd = o.hDocument;
          s.pixelLeft = 0;
          s.pixelTop = 0
-         s.pixelWidth = hd.all ? o.hBody.scrollWidth : hd.documentElement.scrollWidth;
-         s.pixelHeight = hd.all ? o.hBody.scrollHeight : hd.documentElement.scrollHeight;
+         s.pixelWidth = hd.all ? o._hContainer.scrollWidth : hd.documentElement.scrollWidth;
+         s.pixelHeight = hd.all ? o._hContainer.scrollHeight : hd.documentElement.scrollHeight;
       }
    }
 }
@@ -14009,7 +14063,7 @@ function RWindow_connect2(w){
    var o = this;
    o.hWindow = w;
    var hd = o.hDocument = w.document;
-   var hb = o.hBody = o.hContainer = hd.body;
+   var hb = o._hContainer = o.hContainer = hd.body;
    o.processUnload = hb.onunload;
    hb.onunload = function(e){
       if(!e){
@@ -14077,67 +14131,21 @@ function RWindow_connect2(w){
       if(!e){
          e = w.event;
       }
-      if(o.oldBodyWidth == o.hBody.offsetWidth && o.oldBodyHeight == o.hBody.offsetHeight){
+      if(o.oldBodyWidth == o._hContainer.offsetWidth && o.oldBodyHeight == o._hContainer.offsetHeight){
          return;
       }
-      o.oldBodyWidth = o.hBody.offsetWidth;
-      o.oldBodyHeight = o.hBody.offsetHeight;
+      o.oldBodyWidth = o._hContainer.offsetWidth;
+      o.oldBodyHeight = o._hContainer.offsetHeight;
       o.onResize();
       o.lsnsResize.process(e);
    };
 }
-function RWindow_createElement(n){
-   return this.hDocument.createElement(n);
-}
-function RWindow_event(){
-   return this.hWindow.event;
-}
-function RWindow_source(h){
-   return h ? h.ownerDocument.parentWindow.event.srcElement : this.hWindow.event.srcElement;
-}
-function RWindow_getElement(n){
-   var o = this;
-   var e = o.hDocument.getElementById(n);
-   if(!e){
-      RMessage.fatal(o, null, "Can't get html element. (name={0})", n);
-   }
-   return e;
-}
-function RWindow_getDisablePanel(f){
-   var o = this;
-   var h = o.hDisablePanel;
-   if(!h){
-      var h = o.hDisablePanel = o.builder().newDiv();
-      h.style.backgroundColor = "#CCCCCC";
-      h.style.position = 'absolute';
-      h.style.filter = "progid:DXImageTransform.Microsoft.Alpha(opacity=60)";
-      o.hBody.appendChild(h);
-      h.style.zIndex = 8000;
-      h.style.display = 'none';
-   }
-   var hImg = o.hImg;
-   if(!hImg){
-      hImg = o.hImg = o.builder().appendImage(h);
-      hImg.src = top.RContext.context('/ats/00/rs/icon/ctl/RWindow_Loading.gif');
-      hImg.style.margin = document.body.offsetHeight / 2;
-      hImg.style.display = 'none';
-   }
-   if(f){
-      hImg.style.display = 'none';
-   }else{
-      hImg.style.display = 'block';
-   }
-   return h;
-}
-function RWindow_findElement(n){
-   return this.hDocument.getElementById(n);
-}
 function RWindow_panel(t){
    var o = this;
    if(EPanel.Disable == t){
-      var h = o.hDisablePanel;
+      var h = o._hDisablePanel;
       if(!h){
-         h = o.hDisablePanel = RBuilder.append(o.hBody, 'DIV', 'RWindow_Disable');
+         h = o._hDisablePanel = RBuilder.append(o._hContainer, 'DIV', 'RWindow_Disable');
          var hi = RBuilder.append(h, 'IMG')
          hi.src = RRes.iconPath('#ctl.RWindow_Loading');
          hi.style.margin = document.body.offsetHeight / 2;
@@ -14173,49 +14181,13 @@ function RWindow_offsetPos(p){
    }
    return new TPoint(e.offsetX, e.offsetY);
 }
-function RWindow_windowDisable(){
-   this.hWindow.document.body.disabled = true;
-}
-function RWindow_windowEnable(){
-   this.hWindow.document.body.disabled = false;
-}
-function RWindow_enable(){
-   var o = this;
-   o._disableDeep--;
-   if(0 == o._disableDeep){
-      o.setEnable(true);
-   }
-}
-function RWindow_disable(){
-   var o = this;
-   if(0 == o._disableDeep){
-      o.setEnable(false);
-   }
-   o._disableDeep++;
-}
-function RWindow_setEnable(v, f){
-   var o = this;
-   var h = o.getDisablePanel(f);
-   var st = h.style;
-   if(!v){
-      var s = o.hDisablePanel.style;
-      s.pixelLeft = 0;
-      s.pixelTop = 0
-      s.pixelWidth = o.hDocument.all ? o.hBody.scrollWidth : o.hDocument.documentElement.scrollWidth;
-      s.pixelHeight = o.hDocument.all ? o.hBody.scrollHeight : o.hDocument.documentElement.scrollHeight;
-      s.display = 'block';
-   }else{
-      o.windowEnable();
-      st.display = 'none';
-   }
-}
 function RWindow_showShadow(v, r){
    var o = this;
-   if(!o.hShadow){
-      o.hShadow = RBuilder.append(o.hBody, 'DIV', 'RWindow_Shadow');
-      o.hShadow.style.zIndex = ELayer.Shadow;
+   if(!o._hShadow){
+      o._hShadow = RBuilder.append(o._hContainer, 'DIV', 'RWindow_Shadow');
+      o._hShadow.style.zIndex = ELayer.Shadow;
    }
-   var st = o.hShadow.style;
+   var st = o._hShadow.style;
    if(v == false){
       st.display = 'none';
    }else{
@@ -14229,15 +14201,15 @@ function RWindow_showShadow(v, r){
 function RWindow_moveCenter(h){
    var o = this;
    if(h){
-      h.style.pixelLeft = Math.max(parseInt((o.hBody.offsetWidth - h.offsetWidth)/2), 0);
-      h.style.pixelTop = Math.max(parseInt((o.hBody.offsetHeight - h.offsetHeight)/2), 0) + o.hBody.scrollTop;
+      h.style.pixelLeft = Math.max(parseInt((o._hContainer.offsetWidth - h.offsetWidth)/2), 0);
+      h.style.pixelTop = Math.max(parseInt((o._hContainer.offsetHeight - h.offsetHeight)/2), 0) + o._hContainer.scrollTop;
    }
 }
 function RWindow_appendControl(ctl){
-   this.hBody.appendChild(ctl.hPanel);
+   this._hContainer.appendChild(ctl.hPanel);
 }
 function RWindow_appendElement(h){
-   this.hBody.appendChild(h);
+   this._hContainer.appendChild(h);
 }
 function RWindow_appendContainer(h){
    this.hContainer.appendChild(h);
@@ -14253,26 +14225,24 @@ function RWindow_containerTop(h){
 }
 function RWindow_dispose(){
    var o = this;
-   o.hBody.onload = null;
-   o.hBody.onunload = null;
-   o.hBody.onmousedown = null;
-   o.hBody.onmouseup = null;
-   o.hBody.onmousemove = null;
-   o.hBody.onmouseover = null;
-   o.hBody.onmousewheel = null;
-   o.hBody.onkeydown = null;
-   o.hBody.onkeyup = null;
-   o.hBody.onkeypress = null;
-   o.hBody.onresize = null;
-   RMemory.freeHtml(o.hBody);
-   o.panels.release();
-   o.panels = null;
-   o.hWindow = null;
-   o.hDocument = null;
-   o.hBody = null;
-   o.hDisablePanel = null;
-   o.hImg = null;
-   o.hShadow = null;
+   o._hContainer.onload = null;
+   o._hContainer.onunload = null;
+   o._hContainer.onmousedown = null;
+   o._hContainer.onmouseup = null;
+   o._hContainer.onmousemove = null;
+   o._hContainer.onmouseover = null;
+   o._hContainer.onmousewheel = null;
+   o._hContainer.onkeydown = null;
+   o._hContainer.onkeyup = null;
+   o._hContainer.onkeypress = null;
+   o._hContainer.onresize = null;
+   o._hContainer = RHtml.free(o._hContainer);
+   o._hWindow = null;
+   o._hDocument = null;
+   o._hContainer = null;
+   o._hDisablePanel = null;
+   o._hDisableImage = null;
+   o._hShadow = null;
 }
 var RXml = new function RXml(){
    var o = this;
@@ -20921,8 +20891,8 @@ function FE3dCanvas(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject, MListenerLoad, MMouseCapture);
    o._optionAlpha        = true;
    o._optionAntialias    = false;
-   o._context            = null;
    o._scaleRate          = 1;
+   o._size               = null;
    o._interval           = 1000 / 60;
    o._hPanel             = null;
    o._hCanvas            = null;
@@ -20939,6 +20909,7 @@ function FE3dCanvas(o){
    o.onResize            = FE3dCanvas_onResize;
    o.construct           = FE3dCanvas_construct;
    o.build               = FE3dCanvas_build;
+   o.resize              = FE3dCanvas_resize;
    o.setPanel            = FE3dCanvas_setPanel;
    o.dispose             = FE3dCanvas_dispose;
    return o;
@@ -20955,17 +20926,21 @@ function FE3dCanvas_ohTouchStop(p){
 function FE3dCanvas_onResize(p){
    var o = this;
    var hp = o._hPanel;
-   var w = hp.offsetWidth * o._scaleRate;
-   var h = hp.offsetHeight * o._scaleRate;
+   var w = hp.offsetWidth;
+   var h = hp.offsetHeight;
+   if(o._size.equalsData(w, h)){
+      return;
+   }
+   o._size.set(w, h);
    var hc = o._hCanvas;
-   hc.width = w;
-   hc.height = h;
-   var c = o._context;
-   c.setViewport(0, 0, w, h);
+   var sw = hc.width = w * o._scaleRate;
+   var sh = hc.height = h * o._scaleRate;
+   o._graphicContext.setViewport(0, 0, sw, sh);
 }
 function FE3dCanvas_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
+   o._size = new SSize2();
 }
 function FE3dCanvas_build(p){
    var o = this;
@@ -20973,7 +20948,6 @@ function FE3dCanvas_build(p){
    h.__linker = o;
    h.style.width = '100%';
    h.style.height = '100%';
-   h.style.display = 'block';
    if(!RMethod.isEmpty(o.onTouchStart)){
       h.addEventListener('touchstart', o.ohTouchStart, false);
    }
@@ -20986,16 +20960,19 @@ function FE3dCanvas_build(p){
    var a = new Object();
    a.alpha = o._optionAlpha;
    a.antialias = o._optionAntialias;
-   var c = o._context = REngine3d.createContext(FWglContext, h, a);
+   var c = o._graphicContext = REngine3d.createContext(FWglContext, h, a);
    RStage.lsnsEnterFrame.register(o, o.onEnterFrame);
    RStage.start(o._interval);
    RWindow.lsnsResize.register(o, o.onResize);
    RWindow.lsnsOrientation.register(o, o.onResize);
    RConsole.find(FMouseConsole).register(o);
 }
+function FE3dCanvas_resize(){
+   this.onResize();
+}
 function FE3dCanvas_setPanel(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var hc = o._hCanvas;
    o._hPanel = p;
    p.appendChild(o._hCanvas);
@@ -21010,7 +20987,7 @@ function FE3dCanvas_dispose(){
       h.removeEventListener('touchmove', o.ohTouchMove);
       h.removeEventListener('touchend', o.ohTouchStop);
    }
-   o._context = RObject.dispose(o._context);
+   o._graphicContext = RObject.dispose(o._graphicContext);
    o._hPanel = RHtml.free(o._hPanel);
    o._hCanvas = RHtml.free(o._hCanvas);
    o.__base.FObject.dispose.call(o);
@@ -26616,7 +26593,9 @@ function FE3dSceneCanvas(o){
    o.onResize               = FE3dSceneCanvas_onResize;
    o.construct              = FE3dSceneCanvas_construct;
    o.load                   = FE3dSceneCanvas_load;
+   o.testPlay               = FE3dSceneCanvas_testPlay;
    o.switchPlay             = FE3dSceneCanvas_switchPlay;
+   o.testMovie              = FE3dSceneCanvas_testMovie;
    o.switchMovie            = FE3dSceneCanvas_switchMovie;
    o.doAction               = FE3dSceneCanvas_doAction;
    o.dispose                = FE3dSceneCanvas_dispose;
@@ -26686,7 +26665,7 @@ function FE3dSceneCanvas_onMouseCaptureStart(p){
       return;
    }
    var r = o._activeScene.region();
-   var st = RConsole.find(FG3dTechniqueConsole).find(o._context, FG3dSelectTechnique);
+   var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
    var r = st.test(r, p.offsetX, p.offsetY);
    o._capturePosition.set(p.clientX, p.clientY);
    o._captureCameraRotation.assign(s.camera()._rotation);
@@ -26749,7 +26728,7 @@ function FE3dSceneCanvas_onTouchStop(p){
 }
 function FE3dSceneCanvas_onSceneLoad(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var s = o._activeScene;
    var cs = c.size();
    var rp = s.camera().projection();
@@ -26764,7 +26743,7 @@ function FE3dSceneCanvas_onSceneLoad(p){
 function FE3dSceneCanvas_onResize(p){
    var o = this;
    o.__base.FE3dCanvas.onResize.call(o, p);
-   var c = o._context;
+   var c = o._graphicContext;
    var cs = c.size();
    var s = o._activeScene;
    if(s){
@@ -26783,16 +26762,19 @@ function FE3dSceneCanvas_construct(){
 }
 function FE3dSceneCanvas_load(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var sc = RConsole.find(FE3dSceneConsole);
-   if(o._activeScene != null){
+   if(o._activeScene){
       sc.free(o._activeScene);
    }
-   var s = sc.alloc(o._context, p);
+   var s = sc.alloc(o._graphicContext, p);
    s.addLoadListener(o, o.onSceneLoad);
    s.selectTechnique(c, FE3dGeneralTechnique);
    o._stage = o._activeScene = s;
    RStage.register('stage3d', s);
+}
+function FE3dSceneCanvas_testPlay(){
+   return this._actionPlay;
 }
 function FE3dSceneCanvas_switchPlay(p){
    var o = this;
@@ -26806,6 +26788,9 @@ function FE3dSceneCanvas_switchPlay(p){
       }
    }
    o._actionPlay = p;
+}
+function FE3dSceneCanvas_testMovie(){
+   return this._actionMovie;
 }
 function FE3dSceneCanvas_switchMovie(p){
    var o = this;
@@ -28270,8 +28255,9 @@ var EUiLabelPosition = new function EUiLabelPosition(){
 var EUiLayer = new function EUiLayer(){
    var o = this;
    o.Default = 20000;
-   o.Shadow  =  5000;
+   o.Shadow  =  6000;
    o.Disable =  5000;
+   o.Drap    = 10000;
    o.Window  = 20000;
    o.Drop    = 40000;
    o.Editor  = 10000;
@@ -30148,12 +30134,10 @@ function FUiComponent_process(e){
          var pc = ps.count();
          if(pc){
             for(var i = 0; i < pc; i++){
-               var p = ps.value(i);
-               if(p){
-                  var r = p.process(e);
-                  if(r == EEventStatus.Cancel){
-                     return r;
-                  }
+               var p = ps.valueAt(i);
+               var r = p.process(e);
+               if(r == EEventStatus.Cancel){
+                  return r;
                }
             }
          }
@@ -30702,6 +30686,25 @@ function FUiControl_dispose(){
    o.__base.MUiSize.dispose.call(o);
    o.__base.MUiStyle.dispose.call(o);
    o.__base.FUiComponent.dispose.call(o);
+}
+function FUiWorkspace(o){
+   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
+   o._hContainer  = null;
+   o._frames      = null;
+   o.onBuildPanel = FUiWorkspace_onBuildPanel;
+   o.appendChild  = FUiWorkspace_appendChild;
+   return o;
+}
+function FUiWorkspace_onBuildPanel(p){
+   var o = this;
+   o._hContainer = p.hDocument.body;
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+}
+function FUiWorkspace_appendChild(p){
+   var o = this;
+   if(RClass.isClass(p, FUiFrameSet)){
+      o._hContainer.appendChild(p._hPanel);
+   }
 }
 var RControl = new function RControl(){
    var o = this;
@@ -31958,6 +31961,41 @@ function FResultConsole_checkService(config){
       RConsole.find(FFocusConsole).restoreFocus();
    }
    return true;
+}
+function FUiWorkspaceConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd         = EScope.Local;
+   o._activeWorkspace = null;
+   o._workspaces      = null;
+   o.onResize         = FUiWorkspaceConsole_onResize;
+   o.construct        = FUiWorkspaceConsole_construct;
+   o.active           = FUiWorkspaceConsole_active;
+   o.resize           = FUiWorkspaceConsole_resize;
+   o.dispose          = FUiWorkspaceConsole_dispose;
+   return o;
+}
+function FUiWorkspaceConsole_onResize(p){
+   var o = this;
+   var w = o._activeWorkspace;
+   if(w){
+      w.psResize();
+   }
+}
+function FUiWorkspaceConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._workspaces = new TDictionary();
+   RWindow.lsnsResize.register(o, o.onResize);
+}
+function FUiWorkspaceConsole_active(p){
+   this._activeWorkspace = p;
+}
+function FUiWorkspaceConsole_resize(){
+   this.onResize();
+}
+function FUiWorkspaceConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
 }
 var ESplitStyle = new function ESplitStyle(){
    var o = this;
@@ -44379,16 +44417,24 @@ function FUiFrameSpliter(o){
    o._dragPanelY   = 0;
    o._dragSizeX    = 0;
    o._dragSizeY    = 0;
+   o._sizeMin      = 40;
    o._hDrag        = null;
    o._hSize        = null;
+   o._hIcon        = null;
    o.onBuildPanel  = FUiFrameSpliter_onBuildPanel
    o.onBuild       = FUiFrameSpliter_onBuild;
    o.onMouseEnter  = RClass.register(o, new AEventMouseEnter('onMouseEnter'), FUiFrameSpliter_onMouseEnter);
    o.onMouseLeave  = RClass.register(o, new AEventMouseLeave('onMouseLeave'), FUiFrameSpliter_onMouseLeave);
+   o.onDoubleClick = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FUiFrameSpliter_onDoubleClick);
    o.onDragStart   = FUiFrameSpliter_onDragStart;
    o.onDragMove    = FUiFrameSpliter_onDragMove;
    o.onDragStop    = FUiFrameSpliter_onDragStop;
    o.construct     = FUiFrameSpliter_construct;
+   o.alignCd       = FUiFrameSpliter_alignCd;
+   o.setAlignCd    = FUiFrameSpliter_setAlignCd;
+   o.sizeHtml      = FUiFrameSpliter_sizeHtml;
+   o.setSizeHtml   = FUiFrameSpliter_setSizeHtml;
+   o.changeVisible = FUiFrameSpliter_changeVisible;
    o.dispose       = FUiFrameSpliter_dispose;
    return o;
 }
@@ -44401,17 +44447,20 @@ function FUiFrameSpliter_onBuild(p){
    o.__base.FUiControl.onBuild.call(o, p)
    var fs = o._frameset;
    var h = o._hPanel;
+   h.style.zIndex = EUiLayer.Drap;
    h.__linker = o;
    var hd = o._hDrag = RBuilder.createDiv(p, o.styleName('Draging'));
    hd.__linker = o;
    hd.style.position = 'absolute';
    RHtml.displaySet(hd, false);
-   RConsole.find(FDragConsole).register(o);
    h.appendChild(hd);
    h.style.cursor = 'e-resize';
    h._plinker = o;
    o.attachEvent('onMouseEnter', h, o.onMouseEnter);
    o.attachEvent('onMouseLeave', h, o.onMouseLeave);
+   o.attachEvent('onDoubleClick', h);
+   o._hIcon = RBuilder.appendIcon(h, null, 'control.FSpliter_Left');
+   RConsole.find(FDragConsole).register(o);
 }
 function FUiFrameSpliter_onMouseEnter(p){
    var o = this;
@@ -44422,6 +44471,9 @@ function FUiFrameSpliter_onMouseLeave(p){
    var o = this;
    var hc = o._hPanel;
    hc.className = o.styleName('Normal');
+}
+function FUiFrameSpliter_onDoubleClick(p){
+   this.changeVisible();
 }
 function FUiFrameSpliter_onDragStart(e){
    var o = this;
@@ -44446,6 +44498,8 @@ function FUiFrameSpliter_onDragStart(e){
    hds.width = hc.offsetWidth + 'px';
    hds.height = hc.offsetHeight + 'px';
    RHtml.visibleSet(hd, true);
+   RWindow.setOptionSelect(false);
+   RWindow.disable();
 }
 function FUiFrameSpliter_onDragMove(e){
    var o = this;
@@ -44453,13 +44507,13 @@ function FUiFrameSpliter_onDragMove(e){
    if(o._directionCd == EUiDirection.Horizontal){
       var x = e.clientX - o._dragClientX;
       var cx = o._dragPanelX + x;
-      if(cx > 40){
+      if(cx > o._sizeMin){
          hd.style.left = cx + 'px';
       }
    }else if(o._directionCd == EUiDirection.Vertical){
       var y = e.clientY - o._dragClientY;
       var cy = o._dragPanelY + y;
-      if(cy > 40){
+      if(cy > o._sizeMin){
          hd.style.top = cy + 'px';
       }
    }else{
@@ -44479,7 +44533,7 @@ function FUiFrameSpliter_onDragStop(e){
       }else{
          throw new TError(o, 'Unknown align type. (align_cd={1})', o._alignCd);
       }
-      if(cx > 40){
+      if(cx > o._sizeMin){
          o._hSize.style.width = cx + 'px';
       }
    }else if(o._directionCd == EUiDirection.Vertical){
@@ -44492,17 +44546,67 @@ function FUiFrameSpliter_onDragStop(e){
       }else{
          throw new TError(o, 'Unknown align type. (align_cd={1})', o._alignCd);
       }
-      if(cy > 40){
+      if(cy > o._sizeMin){
          o._hSize.style.width = cy + 'px';
       }
    }else{
       throw new TError(o, 'Unknown direction type. (direction_cd={1})', o._directionCd);
    }
    RHtml.visibleSet(hd, false);
+   RWindow.enable();
+   RWindow.setOptionSelect(true);
 }
 function FUiFrameSpliter_construct(){
    var o = this;
    o.__base.FUiControl.construct.call(o);
+}
+function FUiFrameSpliter_alignCd(){
+   return this._alignCd;
+}
+function FUiFrameSpliter_setAlignCd(p){
+   var o = this;
+   o._alignCd = p;
+   if(p == EUiAlign.Left){
+      o._hIcon.src = RResource.iconPath('control.FSpliter_Left');
+   }else if(p == EUiAlign.Right){
+      o._hIcon.src = RResource.iconPath('control.FSpliter_Right');
+   }
+}
+function FUiFrameSpliter_sizeHtml(){
+   return this._hSize;
+}
+function FUiFrameSpliter_setSizeHtml(p){
+   this._hSize = p;
+}
+function FUiFrameSpliter_changeVisible(){
+   var o = this;
+   var hs = o._hSize;
+   if(!hs){
+      return;
+   }
+   var c = null;
+   var v = RHtml.visibleGet(hs);
+   if(v){
+      RHtml.visibleSet(hs, false);
+      if(o._alignCd == EUiAlign.Left){
+         c = EUiAlign.Right;
+      }else if(o._alignCd == EUiAlign.Right){
+         c = EUiAlign.Left;
+      }
+   }else{
+      RHtml.visibleSet(hs, true);
+      if(o._alignCd == EUiAlign.Left){
+         c = EUiAlign.Right;
+      }else if(o._alignCd == EUiAlign.Right){
+         c = EUiAlign.Right;
+      }
+   }
+   if(c == EUiAlign.Left){
+      o._hIcon.src = RResource.iconPath('control.FSpliter_Left');
+   }else if(c == EUiAlign.Right){
+      o._hIcon.src = RResource.iconPath('control.FSpliter_Right');
+   }
+   RConsole.find(FUiWorkspaceConsole).resize();
 }
 function FUiFrameSpliter_dispose(){
    var o = this;
@@ -44517,75 +44621,6 @@ function FUiFrameSpliter_dispose(){
       o._hSize = null;
    }
    o.__base.FUiControl.dispose.call(o);
-}
-function FUiFrameSpliter_build(){
-   var o = this;
-   var hf = o.hForm = RBuilder.appendTable(o.hDrag);
-   hf.height = 36;
-   hc = o.hButton = hf.insertRow().insertCell()
-   hc.bgColor = o._dragBackgroundColor;
-   hc.style.cursor = 'hand';
-   o.hButtonIcon = RBuilder.appendIcon(hc, 'ctl.FSpliter_Left');
-   o.attachEvent('onSplitButtonEnter', hc, o.ohDragButtonEnter);
-   o.attachEvent('onSplitButtonLeave', hc, o.ohDragButtonLeave);
-   o.attachEvent('onSplitButtonClick', hc, o.ohDragButtonClick);
-}
-function FUiFrameSpliter_link(hDrag, hSize){
-   var o = this;
-   var h = o.hDrag = hDrag;
-   o.attachEvent('onSplitDown', h, o.ohDragStart);
-   o.attachEvent('onSplitMove', h, o.ohDragMove);
-   o.attachEvent('onSplitUp', h, o.ohDragStop);
-   o.attachEvent('onSplitDoubleClick', h, o.ohDragDoubleClick);
-   if(EUiDirection.Vertical == o.direction){
-      h.style.cursor = 'N-resize'
-   }else if(EUiDirection.Horizontal == o.direction){
-      h.style.cursor = 'E-resize'
-   }
-   o.hSize = hSize;
-   var h = o.hLayer = RBuilder.append(null, 'DIV');
-   h.style.position = 'absolute';
-   h.style.backgroundColor = '#a5eaea';
-   h.style.border = '1 solid #70eaea';
-   h.style.display = 'none';
-   h.zIndex = 30000;
-   RBuilder.appendEmpty(h, 1, 1);
-}
-function FUiFrameSpliter_click(){
-   var o = this;
-   var hs = o.hSize;
-   if(hs){
-      if('none' == hs.style.display){
-         hs.style.display = 'block';
-         if(o.hButtonIcon){
-            o.hButtonIcon.src = RRes.iconPath('ctl.FSpliter_Left');
-         }
-      }else{
-         hs.style.display = 'none';
-         if(o.hButtonIcon){
-            o.hButtonIcon.src = RRes.iconPath('ctl.FSpliter_Right');
-         }
-      }
-   }
-}
-function FUiWorkspace(o){
-   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
-   o._hContainer  = null;
-   o._frames      = null;
-   o.onBuildPanel = FUiWorkspace_onBuildPanel;
-   o.appendChild  = FUiWorkspace_appendChild;
-   return o;
-}
-function FUiWorkspace_onBuildPanel(p){
-   var o = this;
-   o._hContainer = p.hDocument.body;
-   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
-}
-function FUiWorkspace_appendChild(p){
-   var o = this;
-   if(RClass.isClass(p, FUiFrameSet)){
-      o._hContainer.appendChild(p._hPanel);
-   }
 }
 function MDataField(o){
    o = RClass.inherits(this, o, MDataValue);
@@ -47041,6 +47076,7 @@ function FDsCanvas(o){
    o.onMouseCapture      = FDsCanvas_onMouseCapture;
    o.onMouseCaptureStop  = FDsCanvas_onMouseCaptureStop;
    o.onEnterFrame        = FDsCanvas_onEnterFrame;
+   o.oeResize            = FDsCanvas_oeResize;
    o.oeRefresh           = FDsCanvas_oeRefresh;
    o.construct           = FDsCanvas_construct;
    o.dispose             = FDsCanvas_dispose;
@@ -47051,6 +47087,8 @@ function FDsCanvas_onBuild(p){
    o.__base.FUiCanvas.onBuild.call(o, p);
    var h = o._hPanel;
    h.__linker = o;
+   h.style.width = '100%';
+   h.style.height = '100%';
    var a = new Object();
    a.alpha = false;
    a.antialias = true;
@@ -47137,16 +47175,18 @@ function FDsCanvas_onEnterFrame(){
    }
    c.update();
 }
-function FDsCanvas_oeRefresh(p){
+function FDsCanvas_oeResize(p){
    var o = this;
-   var c = o._graphicContext;
-   o.__base.FUiCanvas.oeRefresh.call(o, p);
-   var w = o._hParent.offsetWidth;
-   var h = o._hParent.offsetHeight;
-   var hc = o._hPanel;
-   hc.width = w;
-   hc.height = h;
-   c.setViewport(0, 0, w, h);
+   o.__base.FUiCanvas.oeResize.call(o, p);
+   var hp = o._hPanel;
+   var w = hp.offsetWidth;
+   var h = hp.offsetHeight - 6;
+   hp.width = w;
+   hp.height = h;
+   o._graphicContext.setViewport(0, 0, w, h);
+   return EEventStatus.Stop;
+}
+function FDsCanvas_oeRefresh(p){
    return EEventStatus.Stop;
 }
 function FDsCanvas_construct(){
@@ -48725,6 +48765,7 @@ function FDsSceneCanvas(o){
    o.onMouseCaptureStop   = FDsSceneCanvas_onMouseCaptureStop;
    o.onEnterFrame         = FDsSceneCanvas_onEnterFrame;
    o.onSceneLoad          = FDsSceneCanvas_onSceneLoad;
+   o.oeResize             = FDsSceneCanvas_oeResize;
    o.oeRefresh            = FDsSceneCanvas_oeRefresh;
    o.construct            = FDsSceneCanvas_construct;
    o.innerSelectDisplay   = FDsSceneCanvas_innerSelectDisplay;
@@ -48930,16 +48971,21 @@ function FDsSceneCanvas_onSceneLoad(p){
    o.reloadRegion();
    o.processLoadListener(o);
 }
-function FDsSceneCanvas_oeRefresh(p){
+function FDsSceneCanvas_oeResize(p){
    var o = this;
-   var c = o._graphicContext;
-   o.__base.FDsCanvas.oeRefresh.call(o, p);
-   var w = o._hParent.offsetWidth;
-   var h = o._hParent.offsetHeight - 6;
-   var hc = o._hPanel;
-   hc.width = w;
-   hc.height = h;
-   c.setViewport(0, 0, w, h);
+   o.__base.FDsCanvas.oeResize.call(o, p);
+   var hp = o._hPanel;
+   var w = hp.offsetWidth;
+   var h = hp.offsetHeight;
+   var s = o._activeScene;
+   if(s){
+      var cp = s.camera().projection();
+      cp.size().set(w, h);
+      cp.update();
+   }
+   return EEventStatus.Stop;
+}
+function FDsSceneCanvas_oeRefresh(p){
    return EEventStatus.Stop;
 }
 function FDsSceneCanvas_construct(){
@@ -50407,11 +50453,11 @@ function FDsSceneWorkspace_onBuilded(p){
    var f = o._frameStatusBar = o.searchControl('statusFrame');
    f._hPanel.className = o.styleName('Statusbar_Ground');
    var f = o._catalogSplitter = o.searchControl('catalogSpliter');
-   f._alignCd = EUiAlign.Left;
-   f._hSize = o._frameCatalog._hPanel;
+   f.setAlignCd(EUiAlign.Left);
+   f.setSizeHtml(o._frameCatalog._hPanel);
    var f = o._propertySpliter = o.searchControl('propertySpliter');
-   f._alignCd = EUiAlign.Right;
-   f._hSize = o._frameStatusBar._hPanel;
+   f.setAlignCd(EUiAlign.Right);
+   f.setSizeHtml(o._frameProperty._hPanel);
    var c = o._toolbar = RClass.create(FDsSceneMenuBar);
    c._workspace = o;
    c.buildDefine(p);

@@ -931,6 +931,7 @@
 }
 
 .FUiFrameSpliter_Draging{
+   position: absolute;
    background-color: #BBBBBB;
 }
 
@@ -949,7 +950,7 @@
    width: 100%;
    height: 100%;
    position: absolute;
-   background-color: #8E8573;
+   background-color: rgba(210, 210, 210, 0.5);
    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=20, style=0);
 }
 

@@ -22,6 +22,7 @@ function FDsCanvas(o){
    o.onMouseCaptureStop  = FDsCanvas_onMouseCaptureStop;
    o.onEnterFrame        = FDsCanvas_onEnterFrame;
    //..........................................................
+   o.oeResize            = FDsCanvas_oeResize;
    o.oeRefresh           = FDsCanvas_oeRefresh;
    //..........................................................
    // @method
@@ -43,6 +44,9 @@ function FDsCanvas_onBuild(p){
    // 创建渲染环境
    var h = o._hPanel;
    h.__linker = o;
+   h.style.width = '100%';
+   h.style.height = '100%';
+   // 创建渲染环境
    var a = new Object();
    a.alpha = false;
    a.antialias = true;
@@ -198,23 +202,28 @@ function FDsCanvas_onEnterFrame(){
 //
 // @method
 //==========================================================
-function FDsCanvas_oeRefresh(p){
+function FDsCanvas_oeResize(p){
    var o = this;
-   var c = o._graphicContext;
-   o.__base.FUiCanvas.oeRefresh.call(o, p);
+   o.__base.FUiCanvas.oeResize.call(o, p);
    // 获得大小
-   var w = o._hParent.offsetWidth;
-   var h = o._hParent.offsetHeight;
+   var hp = o._hPanel;
+   var w = hp.offsetWidth;
+   var h = hp.offsetHeight - 6;
    // 设置大小
-   var hc = o._hPanel;
-   hc.width = w;
-   hc.height = h;
+   hp.width = w;
+   hp.height = h;
    // 设置投影
-   //var rp = o._activeScene.camera().projection();
-   //rp.size().set(w, h);
-   //rp.update();
+   o._graphicContext.setViewport(0, 0, w, h);
    // 设置范围
-   c.setViewport(0, 0, w, h);
+   return EEventStatus.Stop;
+}
+
+//==========================================================
+// <T>刷新处理。</T>
+//
+// @method
+//==========================================================
+function FDsCanvas_oeRefresh(p){
    return EEventStatus.Stop;
 }
 

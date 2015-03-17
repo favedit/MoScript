@@ -45,7 +45,9 @@ function FE3dSceneCanvas(o){
    o.construct              = FE3dSceneCanvas_construct;
    // @method
    o.load                   = FE3dSceneCanvas_load;
+   o.testPlay               = FE3dSceneCanvas_testPlay;
    o.switchPlay             = FE3dSceneCanvas_switchPlay;
+   o.testMovie              = FE3dSceneCanvas_testMovie;
    o.switchMovie            = FE3dSceneCanvas_switchMovie;
    o.doAction               = FE3dSceneCanvas_doAction;
    // @method
@@ -141,7 +143,7 @@ function FE3dSceneCanvas_onMouseCaptureStart(p){
    }
    // 选取物件
    var r = o._activeScene.region();
-   var st = RConsole.find(FG3dTechniqueConsole).find(o._context, FG3dSelectTechnique);
+   var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
    var r = st.test(r, p.offsetX, p.offsetY);
    o._capturePosition.set(p.clientX, p.clientY);
    o._captureCameraRotation.assign(s.camera()._rotation);
@@ -255,7 +257,7 @@ function FE3dSceneCanvas_onTouchStop(p){
 //==========================================================
 function FE3dSceneCanvas_onSceneLoad(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var s = o._activeScene;
    // 设置投影
    var cs = c.size();
@@ -281,7 +283,7 @@ function FE3dSceneCanvas_onResize(p){
    var o = this;
    o.__base.FE3dCanvas.onResize.call(o, p);
    // 获得相机信息
-   var c = o._context;
+   var c = o._graphicContext;
    var cs = c.size();
    var s = o._activeScene;
    if(s){
@@ -312,19 +314,29 @@ function FE3dSceneCanvas_construct(){
 //==========================================================
 function FE3dSceneCanvas_load(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    // 收集场景
    var sc = RConsole.find(FE3dSceneConsole);
-   if(o._activeScene != null){
+   if(o._activeScene){
       sc.free(o._activeScene);
    }
    // 监听加载完成
-   var s = sc.alloc(o._context, p);
+   var s = sc.alloc(o._graphicContext, p);
    s.addLoadListener(o, o.onSceneLoad);
    s.selectTechnique(c, FE3dGeneralTechnique);
    //s.selectTechnique(c, FE3dShadowTechnique);
    o._stage = o._activeScene = s;
    RStage.register('stage3d', s);
+}
+
+//==========================================================
+// <T>测试是否是播放模式。</T>
+//
+// @method
+// @return Boolean 播放模式
+//==========================================================
+function FE3dSceneCanvas_testPlay(){
+   return this._actionPlay;
 }
 
 //==========================================================
@@ -345,6 +357,16 @@ function FE3dSceneCanvas_switchPlay(p){
       }
    }
    o._actionPlay = p;
+}
+
+//==========================================================
+// <T>测试是否是剪辑模式。</T>
+//
+// @method
+// @return Boolean 剪辑模式
+//==========================================================
+function FE3dSceneCanvas_testMovie(){
+   return this._actionMovie;
 }
 
 //==========================================================
