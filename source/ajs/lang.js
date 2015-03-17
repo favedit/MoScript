@@ -1748,14 +1748,17 @@ function FObject_dump(){
 }
 function FObjectPool(o){
    o = RClass.inherits(this, o, FObject);
-   o._items    = null;
-   o._frees    = null;
-   o.construct = FObjectPool_construct;
-   o.hasFree   = FObjectPool_hasFree;
-   o.alloc     = FObjectPool_alloc;
-   o.free      = FObjectPool_free;
-   o.push      = FObjectPool_push;
-   o.dispose   = FObjectPool_dispose;
+   o._items      = null;
+   o._frees      = null;
+   o._allocCount = 0;
+   o._freeCount  = 0;
+   o.construct   = FObjectPool_construct;
+   o.hasFree     = FObjectPool_hasFree;
+   o.alloc       = FObjectPool_alloc;
+   o.free        = FObjectPool_free;
+   o.push        = FObjectPool_push;
+   o.dispose     = FObjectPool_dispose;
+   o.innerDump   = FObjectPool_innerDump;
    return o;
 }
 function FObjectPool_construct(){
@@ -1767,17 +1770,19 @@ function FObjectPool_construct(){
 function FObjectPool_hasFree(){
    return !this._frees.isEmpty();
 }
-function FObjectPool_alloc(p){
+function FObjectPool_alloc(){
    var o = this;
    var r = null;
    if(!o._frees.isEmpty()){
       r = o._frees.pop();
    }
+   o._allocCount++;
    return r;
 }
 function FObjectPool_free(p){
    var o = this;
    o._frees.push(p);
+   o._freeCount++;
 }
 function FObjectPool_push(p){
    var o = this;
@@ -1786,15 +1791,17 @@ function FObjectPool_push(p){
 }
 function FObjectPool_dispose(){
    var o = this;
-   if(o._items){
-      o._items.dispose();
-      o._items = null;
-   }
-   if(o._frees){
-      o._frees.dispose();
-      o._frees = null;
-   }
+   o._items = RObject.dispose(o._items);
+   o._frees = RObject.dispose(o._frees);
    o.__base.FObject.dispose.call(o);
+}
+function FObjectPool_innerDump(s, l){
+   var o = this;
+   s.append('Pool:');
+   s.append('total=', o._items.count());
+   s.append(', free=', o._frees.count());
+   s.append(', alloc_count=', o._allocCount);
+   s.append(', free_count=', o._freeCount);
 }
 function FTimer(o){
    o = RClass.inherits(this, o, FObject);

@@ -9,19 +9,19 @@ function FPipeline(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._name = null;
+   o._code = null;
    //..........................................................
    // @method
-   o.name  = FPipeline_name;
+   o.code  = FPipeline_code;
    return o;
 }
 
 //==========================================================
-// <T>获得名称。</T>
+// <T>获得代码。</T>
 //
 // @method
-// @return 名称
+// @return String 代码
 //==========================================================
-function FPipeline_name(){
-   return this._name;
+function FPipeline_code(){
+   return this._code;
 }

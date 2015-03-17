@@ -1598,11 +1598,7 @@ function FHttpConnection_setOutputData(){
    var o = this;
    var c = o._connection;
    if(o._contentCd == EHttpContent.Binary){
-      if(RBrowser.isBrowser(EBrowser.Chrome)){
-         o._outputData = c.response;
-      }else{
-         o._outputData = c.response;
-      }
+      o._outputData = c.response;
    }else{
       o._outputData = c.responseText;
    }

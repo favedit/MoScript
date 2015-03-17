@@ -60,19 +60,21 @@ function FE3sTemplateConsole_unserialize(p){
 function FE3sTemplateConsole_loadByGuid(p){
    var o = this;
    var s = o._templates;
-   var t = s.get(p);
-   if(t == null){
+   var r = s.get(p);
+   if(!r){
       // 生成地址
       var v = RConsole.find(FE3sVendorConsole).find('template');
       v.set('guid', p);
       var u = v.makeUrl();
       // 创建主题
-      t = RClass.create(FE3sTemplate);
-      t.setVendor(v);
-      t.load(u);
-      s.set(p, t);
+      r = RClass.create(FE3sTemplate);
+      r.setGuid(p);
+      r.setVendor(v);
+      r.setSourceUrl(u);
+      RConsole.find(FResourceConsole).load(r);
+      s.set(p, r);
    }
-   return t;
+   return r;
 }
 
 //==========================================================
@@ -84,18 +86,22 @@ function FE3sTemplateConsole_loadByGuid(p){
 function FE3sTemplateConsole_loadByCode(p){
    var o = this;
    var s = o._templates;
-   var t = s.get(p);
-   if(t == null){
-      // 生成地址
-      var v = RConsole.find(FE3sVendorConsole).find('template');
-      v.set('code', p);
-      var u = v.makeUrl();
-      // 创建主题
-      t = RClass.create(FE3sTemplate);
-      t.load(u);
-      s.set(p, t);
+   var r = s.get(p);
+   if(r){
+      return r;
    }
-   return t;
+   // 生成地址
+   var v = RConsole.find(FE3sVendorConsole).find('template');
+   v.set('code', p);
+   var u = v.makeUrl();
+   // 创建主题
+   r = RClass.create(FE3sTemplate);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   s.set(p, r);
+   return r;
 }
 
 //==========================================================

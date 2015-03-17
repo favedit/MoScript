@@ -653,6 +653,12 @@ function FE3sModelConsole_construct(){
    o._meshs = new TDictionary();
    o._skeletons = new TDictionary();
    o._animations = new TDictionary();
+   var rc = RConsole.find(FResourceConsole);
+   var rp = RClass.create(FResourcePipeline);
+   var rt = RClass.create(FResourceType);
+   rt.setCode('resource3d.model');
+   rt._pipeline = rp;
+   rc.registerType(rt);
 }
 function FE3sModelConsole_findModel(p){
    return this._models.get(p);
@@ -703,18 +709,20 @@ function FE3sModelConsole_unserialAnimation(m, p){
 function FE3sModelConsole_load(p){
    var o = this;
    var s = o._models;
-   var m = s.get(p);
-   if(!m){
-      var v = RConsole.find(FE3sVendorConsole).find('model');
-      v.set('guid', p);
-      var u = v.makeUrl();
-      m = RClass.create(FE3sModel);
-      m.setGuid(p);
-      m.setVendor(v);
-      m.load(u);
-      s.set(p, m);
+   var r = s.get(p);
+   if(r){
+      return r;
    }
-   return m;
+   var v = RConsole.find(FE3sVendorConsole).find('model');
+   v.set('guid', p);
+   var u = v.makeUrl();
+   r = RClass.create(FE3sModel);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   s.set(p, r);
+   return r;
 }
 function FE3sModelConsole_dispose(){
    var o = this;
@@ -771,7 +779,6 @@ function FE3sResource(o){
    o._lsnsLoad     = null;
    o._vendor       = null;
    o.onComplete    = FE3sResource_onComplete;
-   o.onLoad        = FE3sResource_onLoad;
    o.vendor        = FE3sResource_vendor;
    o.setVendor     = FE3sResource_setVendor;
    o.loadListener  = FE3sResource_loadListener;
@@ -798,11 +805,6 @@ function FE3sResource_onComplete(p){
    if(o._lsnsLoad){
       o._lsnsLoad.process();
    }
-}
-function FE3sResource_onLoad(p){
-   var o = this;
-   var d = p.outputData();
-   RConsole.find(FE3sVendorConsole).pushCompress(o, o.onComplete, new Uint8Array(d));
 }
 function FE3sResource_vendor(){
    return this._vendor;
@@ -1029,15 +1031,18 @@ function FE3sSceneConsole_load(p){
    var o = this;
    var s = o._scenes;
    var r = s.get(p);
-   if(r == null){
-      var v = RConsole.find(FE3sVendorConsole).find(o._venderCode);
-      v.set('code', p);
-      var u = v.makeUrl();
-      r = RClass.create(FE3sScene);
-      r.setVendor(v);
-      r.load(u);
-      s.set(p, r);
+   if(r){
+      return r;
    }
+   var v = RConsole.find(FE3sVendorConsole).find(o._venderCode);
+   v.set('code', p);
+   var u = v.makeUrl();
+   r = RClass.create(FE3sScene);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   s.set(p, r);
    return r;
 }
 function FE3sSceneConsole_update(p){
@@ -1820,31 +1825,37 @@ function FE3sTemplateConsole_unserialize(p){
 function FE3sTemplateConsole_loadByGuid(p){
    var o = this;
    var s = o._templates;
-   var t = s.get(p);
-   if(t == null){
+   var r = s.get(p);
+   if(!r){
       var v = RConsole.find(FE3sVendorConsole).find('template');
       v.set('guid', p);
       var u = v.makeUrl();
-      t = RClass.create(FE3sTemplate);
-      t.setVendor(v);
-      t.load(u);
-      s.set(p, t);
+      r = RClass.create(FE3sTemplate);
+      r.setGuid(p);
+      r.setVendor(v);
+      r.setSourceUrl(u);
+      RConsole.find(FResourceConsole).load(r);
+      s.set(p, r);
    }
-   return t;
+   return r;
 }
 function FE3sTemplateConsole_loadByCode(p){
    var o = this;
    var s = o._templates;
-   var t = s.get(p);
-   if(t == null){
-      var v = RConsole.find(FE3sVendorConsole).find('template');
-      v.set('code', p);
-      var u = v.makeUrl();
-      t = RClass.create(FE3sTemplate);
-      t.load(u);
-      s.set(p, t);
+   var r = s.get(p);
+   if(r){
+      return r;
    }
-   return t;
+   var v = RConsole.find(FE3sVendorConsole).find('template');
+   v.set('code', p);
+   var u = v.makeUrl();
+   r = RClass.create(FE3sTemplate);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   s.set(p, r);
+   return r;
 }
 function FE3sTemplateConsole_update(p){
    var o = this;
@@ -2024,17 +2035,19 @@ function FE3sTextureConsole_unserialize(p){
 function FE3sTextureConsole_load(p){
    var o = this;
    var s = o._textures;
-   var t = s.get(p);
-   if(t){
-      return t;
+   var r = s.get(p);
+   if(r){
+      return r;
    }
    var v = RConsole.find(FE3sVendorConsole).find('texture');
    var u = v.makeUrl(p);
-   t = RClass.create(FE3sTexture);
-   t.setVendor(v);
-   t.load(u);
-   s.set(p, t);
-   return t;
+   r = RClass.create(FE3sTexture);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   s.set(p, r);
+   return r;
 }
 function FE3sTextureConsole_loadBitmap(pg, pc, pf){
    var o = this;
@@ -2256,66 +2269,19 @@ function FE3sVendor_dispose(){
 }
 function FE3sVendorConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._optionProcess = false;
-   o._lzmaWorker    = null;;
-   o._activeEvent   = null;
-   o._events        = null;
-   o._setuped       = false;
-   o._vendors       = null;
-   o._thread        = null;
-   o._interval      = 100;
-   o.onProcess      = FE3sVendorConsole_onProcess;
-   o.onComplete     = FE3sVendorConsole_onComplete;
-   o.construct      = FE3sVendorConsole_construct;
-   o.pushCompress   = FE3sVendorConsole_pushCompress;
-   o.createVendor   = FE3sVendorConsole_createVendor;
-   o.register       = FE3sVendorConsole_register;
-   o.find           = FE3sVendorConsole_find;
-   o.setup          = FE3sVendorConsole_setup;
+   o._setuped     = false;
+   o._vendors     = null;
+   o.construct    = FE3sVendorConsole_construct;
+   o.createVendor = FE3sVendorConsole_createVendor;
+   o.register     = FE3sVendorConsole_register;
+   o.find         = FE3sVendorConsole_find;
+   o.setup        = FE3sVendorConsole_setup;
    return o;
-}
-function FE3sVendorConsole_onProcess(){
-   var o = this;
-   var s = o._events;
-   if(!o._activeEvent && !s.isEmpty()){
-      if(o._optionProcess){
-         var w = o._lzmaWorker;
-         if(!w){
-            var u = RBrowser.contentPath('/ajs/lzma_worker.js');
-            w = o._lzmaWorker = new LZMA(u);
-         }
-         var e = o._activeEvent = s.erase(0);
-         w.decompress(e.data, o.onComplete, null);
-         e.data = null;
-      }else{
-         var e = o._activeEvent = s.erase(0);
-         LZMA.decompress(e.data, o.onComplete, null);
-         e.data = null;
-      }
-   }
-}
-function FE3sVendorConsole_onComplete(p){
-   var o = RConsole.find(FE3sVendorConsole);
-   var e = o._activeEvent;
-   e.process.call(e.owner, p);
-   e.owner = null;
-   e.process = null;
-   o._activeEvent = null;
 }
 function FE3sVendorConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._events = new TObjects();
    o._vendors = new TDictionary();
-   var t = o._thread = RClass.create(FThread);
-   t.setInterval(o._interval);
-   t.addProcessListener(o, o.onProcess);
-   RConsole.find(FThreadConsole).start(t);
-   var c = RBrowser.capability();
-   o._optionProcess = c.optionProcess;
-}
-function FE3sVendorConsole_pushCompress(w, f, d){
-   this._events.push(new SE3sCompressEvent(w, f, d));
 }
 function FE3sVendorConsole_createVendor(c, u){
    var v = RClass.create(c);

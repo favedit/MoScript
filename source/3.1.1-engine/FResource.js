@@ -9,18 +9,49 @@ function FResource(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._guid    = null;
-   o._code    = null;
-   o._label   = null;
+   o._typeCode    = null;
+   o._type        = null;
+   // @attribute
+   o._guid        = null;
+   o._code        = null;
+   o._label       = null;
+   // @attribute
+   o._sourceUrl   = null;
    //..........................................................
    // @method
-   o.guid     = FResource_guid;
-   o.setGuid  = FResource_setGuid;
-   o.code     = FResource_code;
-   o.setCode  = FResource_setCode;
-   o.label    = FResource_label;
-   o.setLabel = FResource_setLabel;
+   o.typeCode     = FResource_typeCode;
+   o.type         = FResource_type;
+   // @method
+   o.guid         = FResource_guid;
+   o.setGuid      = FResource_setGuid;
+   o.code         = FResource_code;
+   o.setCode      = FResource_setCode;
+   o.label        = FResource_label;
+   o.setLabel     = FResource_setLabel;
+   // @method
+   o.sourceUrl    = FResource_sourceUrl;
+   o.setSourceUrl = FResource_setSourceUrl;
    return o;
+}
+
+//==========================================================
+// <T>获得类型代码。</T>
+//
+// @method
+// @return String 唯一编号
+//==========================================================
+function FResource_typeCode(){
+   return this._typeCode;
+}
+
+//==========================================================
+// <T>获得类型。</T>
+//
+// @method
+// @return FResourceType 类型
+//==========================================================
+function FResource_type(){
+   return this._type;
 }
 
 //==========================================================
@@ -81,4 +112,24 @@ function FResource_label(){
 //==========================================================
 function FResource_setLabel(p){
    this._label = p;
+}
+
+//==========================================================
+// <T>获得来源地址。</T>
+//
+// @method
+// @return String 来源地址
+//==========================================================
+function FResource_sourceUrl(){
+   return this._sourceUrl;
+}
+
+//==========================================================
+// <T>设置来源地址。</T>
+//
+// @method
+// @param p:sourceUrl:String 来源地址
+//==========================================================
+function FResource_setSourceUrl(p){
+   this._sourceUrl = p;
 }

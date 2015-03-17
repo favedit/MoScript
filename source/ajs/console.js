@@ -345,16 +345,17 @@ function FHttpConsole(o){
    o.construct = FHttpConsole_construct;
    o.alloc     = FHttpConsole_alloc;
    o.send      = FHttpConsole_send;
+   o.dispose   = FHttpConsole_dispose;
    return o;
+}
+function FHttpConsole_onLoad(p){
+   var o = this;
+   o._pool.free(p);
 }
 function FHttpConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._pool = RClass.create(FObjectPool);
-}
-function FHttpConsole_onLoad(p){
-   var o = this;
-   o._pool.free(p);
 }
 function FHttpConsole_alloc(){
    var o = this;
@@ -374,6 +375,10 @@ function FHttpConsole_send(u){
    var c = o.alloc();
    c.send(u);
    return c;
+}
+function FHttpConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
 }
 function FIdleConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -595,12 +600,12 @@ function FMouseConsole_clear(){
 }
 function FPipeline(o){
    o = RClass.inherits(this, o, FObject);
-   o._name = null;
-   o.name  = FPipeline_name;
+   o._code = null;
+   o.code  = FPipeline_code;
    return o;
 }
-function FPipeline_name(){
-   return this._name;
+function FPipeline_code(){
+   return this._code;
 }
 function FProcess(o){
    o = RClass.inherits(this, o, FObject);
@@ -853,138 +858,6 @@ function FProcessServer_process(){
    var o = this;
    onmessage = o.ohMessage;
    FProcessServer.__linker = o;
-}
-function FResource(o){
-   o = RClass.inherits(this, o, FObject);
-   o._guid    = null;
-   o._code    = null;
-   o._label   = null;
-   o.guid     = FResource_guid;
-   o.setGuid  = FResource_setGuid;
-   o.code     = FResource_code;
-   o.setCode  = FResource_setCode;
-   o.label    = FResource_label;
-   o.setLabel = FResource_setLabel;
-   return o;
-}
-function FResource_guid(){
-   return this._guid;
-}
-function FResource_setGuid(p){
-   this._guid = p;
-}
-function FResource_code(){
-   return this._code;
-}
-function FResource_setCode(p){
-   this._code = p;
-}
-function FResource_label(){
-   return this._label;
-}
-function FResource_setLabel(p){
-   this._label = p;
-}
-function FResourceConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._scopeCd    = EScope.Local;
-   o._resources  = null;
-   o.onLoad      = FResourceConsole_onLoad;
-   o.construct   = FResourceConsole_construct;
-   o.alloc       = FResourceConsole_alloc;
-   o.process     = FResourceConsole_process;
-   o.send        = FResourceConsole_send;
-   return o;
-}
-function FResourceConsole_construct(){
-   var o = this;
-   o.connections = new TObjects();
-}
-function FResourceConsole_onLoad(){
-   var o = this;
-   var e = o.event;
-   e.document = o.document;
-   e.process();
-   o.event = null;
-   o.document = null;
-   o._statusFree = true;
-}
-function FResourceConsole_alloc(){
-   var o = this;
-   var a = null;
-   var cs = o.connections;
-   for(var n = cs.count - 1; n >= 0; n--){
-      var c = cs.get(n);
-      if(c._statusFree){
-         a = c;
-         break;
-      }
-   }
-   if(!a){
-      a = RClass.create(FXmlConnection);
-      cs.push(a);
-      a.onLoad = o.onLoad;
-   }
-   a._statusFree = false;
-   return a;
-}
-function FResourceConsole_process(e){
-   var o = this;
-   var c = o.alloc();
-   c.event = e;
-   switch(e.code){
-      case EXmlEvent.Send:
-         c.send(e.url, e.document);
-         break;
-      case EXmlEvent.Receive:
-         c.receive(e.url, e.document);
-         break;
-      case EXmlEvent.SyncSend:
-         return c.syncSend(e.url, e.document);
-      case EXmlEvent.SyncReceive:
-         return c.syncReceive(e.url, e.document);
-   }
-}
-function FResourceConsole_send(u, d){
-   var o = this;
-   var c = o.alloc();
-   var r = c.syncSend(u, d);
-   c._statusFree = true;
-   return r;
-}
-function FResourceGroup(o){
-   o = RClass.inherits(this, o, FObject);
-   o._name = null;
-   o.name  = FResourceGroup_name;
-   return o;
-}
-function FResourceGroup_name(){
-   return this._name;
-}
-function FResourceType(o){
-   o = RClass.inherits(this, o, FObject);
-   o._name      = null;
-   o._pipeline  = null;
-   o._resources = null;
-   o.construct  = FResourceType_construct;
-   o.name       = FResourceType_name;
-   o.resource   = FResourceType_resource;
-   o.resources  = FResourceType_resources;
-   return o;
-}
-function FResourceType_construct(){
-   var o = this;
-   o.__base.construct.call(o);
-   o._resources = new TDictionary();
-}
-function FResourceType_name(){
-   return this._name;
-}
-function FResourceType_resource(p){
-   return this._resources.get(p);
-}
-function FResourceType_resources(){
-   return this._resources;
 }
 function FStatistics(o){
    o = RClass.inherits(this, o, FObject);

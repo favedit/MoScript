@@ -990,9 +990,11 @@ function TObjects(){
    o.assign     = TObjects_assign;
    o.append     = TObjects_append;
    o.insert     = TObjects_insert;
+   o.shift      = TObjects_shift;
+   o.unshift    = TObjects_unshift;
+   o.pop        = TObjects_pop;
    o.push       = TObjects_push;
    o.pushUnique = TObjects_pushUnique;
-   o.pop        = TObjects_pop;
    o.swap       = TObjects_swap;
    o.sort       = TObjects_sort;
    o.erase      = TObjects_erase;
@@ -1073,6 +1075,18 @@ function TObjects_insert(i, v){
       o._items[i] = v;
    }
 }
+function TObjects_shift(){
+   return this.erase(0);
+}
+function TObjects_unshift(p){
+   return this.insert(0, p);
+}
+function TObjects_pop(){
+   var o = this;
+   if(o._count){
+      return o._items[--o._count];
+   }
+}
 function TObjects_push(v){
    var o = this;
    var n = o._count++;
@@ -1089,12 +1103,6 @@ function TObjects_pushUnique(v){
    var n = o._count++;
    o._items[n] = v;
    return n;
-}
-function TObjects_pop(){
-   var o = this;
-   if(o._count){
-      return o._items[--o._count];
-   }
 }
 function TObjects_swap(l, r){
    var o = this;

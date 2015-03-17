@@ -41,17 +41,20 @@ function FE3sSceneConsole_load(p){
    var o = this;
    var s = o._scenes;
    var r = s.get(p);
-   if(r == null){
-      // 生成地址
-      var v = RConsole.find(FE3sVendorConsole).find(o._venderCode);
-      v.set('code', p);
-      var u = v.makeUrl();
-      // 创建主题
-      r = RClass.create(FE3sScene);
-      r.setVendor(v);
-      r.load(u);
-      s.set(p, r);
+   if(r){
+      return r;
    }
+   // 生成地址
+   var v = RConsole.find(FE3sVendorConsole).find(o._venderCode);
+   v.set('code', p);
+   var u = v.makeUrl();
+   // 创建主题
+   r = RClass.create(FE3sScene);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   s.set(p, r);
    return r;
 }
 

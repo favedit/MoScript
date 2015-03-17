@@ -47,6 +47,8 @@ function FHttpConnection(o){
 
 //==========================================================
 // <T>响应链接发送处理。</T>
+//
+// @method
 //==========================================================
 function FHttpConnection_onConnectionSend(){
    var o = this;
@@ -57,6 +59,8 @@ function FHttpConnection_onConnectionSend(){
 
 //==========================================================
 // <T>响应链接准备处理。</T>
+//
+// @method
 //==========================================================
 function FHttpConnection_onConnectionReady(){
    var o = this._linker;
@@ -75,6 +79,8 @@ function FHttpConnection_onConnectionReady(){
 
 //==========================================================
 // <T>响应链接完成处理。</T>
+//
+// @method
 //==========================================================
 function FHttpConnection_onConnectionComplete(){
    var o = this;
@@ -85,6 +91,8 @@ function FHttpConnection_onConnectionComplete(){
 
 //==========================================================
 // <T>构造处理。</T>
+//
+// @method
 //==========================================================
 function FHttpConnection_construct(){
    var o = this;
@@ -96,12 +104,15 @@ function FHttpConnection_construct(){
 
 //==========================================================
 // <T>设置头信息集合。</T>
+//
+// @method
 //==========================================================
 function FHttpConnection_setHeaders(){
    var o = this;
    var c = o._connection;
    // 传输格式
    if(o._contentCd == EHttpContent.Binary){
+      // 二进制
       if(RBrowser.isBrowser(EBrowser.Explorer)){
          c.setRequestHeader('Accept-Charset', 'x-user-defined');
          c.responseType = 'arraybuffer';
@@ -112,6 +123,7 @@ function FHttpConnection_setHeaders(){
          }
       }
    }else{
+      // 文本
       c.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
    }
    // 数据长度
@@ -125,6 +137,7 @@ function FHttpConnection_setHeaders(){
 //==========================================================
 // <T>获得发送信息。</T>
 //
+// @method
 // @param p:value:String 内容
 //==========================================================
 function FHttpConnection_inputData(){
@@ -134,6 +147,7 @@ function FHttpConnection_inputData(){
 //==========================================================
 // <T>设置发送信息。</T>
 //
+// @method
 // @param p:value:String 内容
 //==========================================================
 function FHttpConnection_setInputData(p){
@@ -143,6 +157,7 @@ function FHttpConnection_setInputData(p){
 //==========================================================
 // <T>获得接收信息。</T>
 //
+// @method
 // @param p:value:String 内容
 //==========================================================
 function FHttpConnection_outputData(){
@@ -151,18 +166,15 @@ function FHttpConnection_outputData(){
 
 //==========================================================
 // <T>设置接收信息。</T>
+//
+// @method
 //==========================================================
 function FHttpConnection_setOutputData(){
    var o = this;
    var c = o._connection;
    // 传输格式
    if(o._contentCd == EHttpContent.Binary){
-      if(RBrowser.isBrowser(EBrowser.Chrome)){
-         o._outputData = c.response;
-      }else{
-         //o._outputData = c.responseBody.toArray();
-         o._outputData = c.response;
-      }
+      o._outputData = c.response;
    }else{
       o._outputData = c.responseText;
    }
@@ -171,6 +183,7 @@ function FHttpConnection_setOutputData(){
 //==========================================================
 // <T>获得内容。</T>
 //
+// @method
 // @return Object 内容
 //==========================================================
 function FHttpConnection_content(){
@@ -179,6 +192,8 @@ function FHttpConnection_content(){
 
 //==========================================================
 // <T>同步发送页面请求。</T>
+//
+// @method
 //==========================================================
 function FHttpConnection_sendSync(){
    var o = this;
@@ -193,6 +208,8 @@ function FHttpConnection_sendSync(){
 
 //==========================================================
 // <T>异步发送页面请求。</T>
+//
+// @method
 //==========================================================
 function FHttpConnection_sendAsync(){
    var o = this;
@@ -206,6 +223,7 @@ function FHttpConnection_sendAsync(){
 //==========================================================
 // <T>发送页面请求。</T>
 //
+// @method
 // @param p:url:String 页面地址
 //==========================================================
 function FHttpConnection_send(p, d){

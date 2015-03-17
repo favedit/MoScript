@@ -17,7 +17,6 @@ function FE3sResource(o){
    //..........................................................
    // @event
    o.onComplete    = FE3sResource_onComplete;
-   o.onLoad        = FE3sResource_onLoad;
    //..........................................................
    // @method
    o.vendor        = FE3sResource_vendor;
@@ -62,21 +61,6 @@ function FE3sResource_onComplete(p){
    if(o._lsnsLoad){
       o._lsnsLoad.process();
    }
-}
-
-//==========================================================
-// <T>从输入流里反序列化信息内容</T>
-//
-// @param p:input:FByteStream 数据流
-// @return 处理结果
-//==========================================================
-function FE3sResource_onLoad(p){
-   var o = this;
-   var d = p.outputData();
-   //var lzma = new LZMA("../ejs/lzma_worker.js");
-   //lzma.decompress(new Uint8Array(d), function(p){o.onComplete(p);}, null);
-   //LZMA.decompress(new Uint8Array(d), function(p){o.onComplete(p);}, null);
-   RConsole.find(FE3sVendorConsole).pushCompress(o, o.onComplete, new Uint8Array(d));
 }
 
 //==========================================================

@@ -60,20 +60,22 @@ function FE3sTextureConsole_load(p){
    var o = this;
    // 获取纹理
    var s = o._textures;
-   var t = s.get(p);
-   if(t){
-      return t;
+   var r = s.get(p);
+   if(r){
+      return r;
    }
    //..........................................................
    // 生成地址
    var v = RConsole.find(FE3sVendorConsole).find('texture');
    var u = v.makeUrl(p);
    // 创建纹理资源
-   t = RClass.create(FE3sTexture);
-   t.setVendor(v);
-   t.load(u);
-   s.set(p, t);
-   return t;
+   r = RClass.create(FE3sTexture);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   s.set(p, r);
+   return r;
 }
 
 //==========================================================

@@ -10,6 +10,7 @@ function FHttpConsole(o){
    //..........................................................
    // @attribute
    o._scopeCd  = EScope.Local;
+   // @attribute
    o._pool     = null;
    //..........................................................
    // @event
@@ -17,20 +18,12 @@ function FHttpConsole(o){
    //..........................................................
    // @method
    o.construct = FHttpConsole_construct;
+   // @method
    o.alloc     = FHttpConsole_alloc;
    o.send      = FHttpConsole_send;
+   // @method
+   o.dispose   = FHttpConsole_dispose;
    return o;
-}
-
-//==========================================================
-// <T>构造处理。</T>
-//
-// @method
-//==========================================================
-function FHttpConsole_construct(){
-   var o = this;
-   o.__base.FConsole.construct.call(o);
-   o._pool = RClass.create(FObjectPool);
 }
 
 //==========================================================
@@ -42,6 +35,18 @@ function FHttpConsole_construct(){
 function FHttpConsole_onLoad(p){
    var o = this;
    o._pool.free(p);
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FHttpConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   // 设置变量
+   o._pool = RClass.create(FObjectPool);
 }
 
 //==========================================================
@@ -78,4 +83,14 @@ function FHttpConsole_send(u){
    var c = o.alloc();
    c.send(u);
    return c;
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FHttpConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
 }

@@ -6,6 +6,12 @@ var EDisplayTransform = new function EDisplayTransform(){
    o.BilboardedCylinder = 'bilboarded.cylinder';
    return o;
 }
+var EResourceCompress = new function EResourceCompress(){
+   var o = this;
+   o.None = 'none';
+   o.Lzma = 'lzma';
+   return o;
+}
 var EStageKey = new function EStageKey(){
    var o = this;
    o.Forward       = EKeyCode.W;
@@ -477,6 +483,303 @@ function FRenderable_process(p){
          s.getAt(i).process(p);
       }
    }
+}
+function FResource(o){
+   o = RClass.inherits(this, o, FObject);
+   o._typeCode    = null;
+   o._type        = null;
+   o._guid        = null;
+   o._code        = null;
+   o._label       = null;
+   o._sourceUrl   = null;
+   o.typeCode     = FResource_typeCode;
+   o.type         = FResource_type;
+   o.guid         = FResource_guid;
+   o.setGuid      = FResource_setGuid;
+   o.code         = FResource_code;
+   o.setCode      = FResource_setCode;
+   o.label        = FResource_label;
+   o.setLabel     = FResource_setLabel;
+   o.sourceUrl    = FResource_sourceUrl;
+   o.setSourceUrl = FResource_setSourceUrl;
+   return o;
+}
+function FResource_typeCode(){
+   return this._typeCode;
+}
+function FResource_type(){
+   return this._type;
+}
+function FResource_guid(){
+   return this._guid;
+}
+function FResource_setGuid(p){
+   this._guid = p;
+}
+function FResource_code(){
+   return this._code;
+}
+function FResource_setCode(p){
+   this._code = p;
+}
+function FResource_label(){
+   return this._label;
+}
+function FResource_setLabel(p){
+   this._label = p;
+}
+function FResource_sourceUrl(){
+   return this._sourceUrl;
+}
+function FResource_setSourceUrl(p){
+   this._sourceUrl = p;
+}
+function FResourceConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd             = EScope.Local;
+   o._factory             = null;
+   o._types               = null;
+   o._resources           = null;
+   o._loadResources       = null;
+   o._loadingResources    = null;
+   o._processResources    = null;
+   o._processingResources = null;
+   o._pipelinePool        = null;
+   o._thread              = null;
+   o._loadLimit           = 12;
+   o._processLimit        = 8;
+   o._interval            = 100;
+   o.onComplete           = FResourceConsole_onComplete;
+   o.onPipelineComplete   = FResourceConsole_onPipelineComplete;
+   o.onLoad               = FResourceConsole_onLoad;
+   o.onProcess            = FResourceConsole_onProcess;
+   o.construct            = FResourceConsole_construct;
+   o.registerType         = FResourceConsole_registerType;
+   o.factory              = FResourceConsole_factory;
+   o.allocPipeline        = FResourceConsole_allocPipeline;
+   o.freePipeline         = FResourceConsole_freePipeline;
+   o.load                 = FResourceConsole_load;
+   return o;
+}
+function FResourceConsole_onComplete(r, d){
+   var o = this;
+   r._data = null;
+   o._loadingResources.remove(r);
+   r.onComplete(d);
+}
+function FResourceConsole_onPipelineComplete(p, r, d){
+   var o = this;
+   o.freePipeline(p);
+   o._processingResources.remove(r);
+   o.onComplete(r, d);
+}
+function FResourceConsole_onLoad(p){
+   var o = this;
+   var d = p.outputData();
+   var r = p._resource;
+   r._data = new Uint8Array(d);
+   o._loadingResources.remove(r);
+   o._processResources.push(r);
+}
+function FResourceConsole_onProcess(){
+   var o = this;
+   var hc = RConsole.find(FHttpConsole);
+   var rs = o._loadResources;
+   var ps = o._loadingResources;
+   var pc = ps.count();
+   if(!rs.isEmpty()){
+      for(var i = o._loadLimit - pc; i > 0; i--){
+         var r = rs.shift();
+         var ru = r.sourceUrl();
+         var c = hc.send(ru);
+         c._resource = r;
+         if(r._dataCompress){
+            c.lsnsLoad.register(o, o.onLoad);
+         }else{
+            c.lsnsLoad.register(o, o.onComplete);
+         }
+         r._dataLoad = true;
+         ps.push(r);
+         if(rs.isEmpty()){
+            break;
+         }
+      }
+   }
+   var rs = o._processResources;
+   var ps = o._processingResources;
+   var pc = ps.count();
+   if(!rs.isEmpty()){
+      for(var i = o._processLimit - pc; i > 0; i--){
+         var r = rs.shift();
+         var l = o.allocPipeline();
+         l.decompress(r);
+         ps.push(r);
+         if(rs.isEmpty()){
+            break;
+         }
+      }
+   }
+}
+function FResourceConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._factory = RClass.create(FClassFactory);
+   o._types = new TDictionary();
+   o._resources = new TDictionary();
+   o._loadResources  = new TObjects();
+   o._loadingResources = new TObjects();
+   o._processResources = new TObjects();
+   o._processingResources = new TObjects();
+   o._pipelinePool  = RClass.create(FObjectPool);
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.addProcessListener(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(t);
+}
+function FResourceConsole_registerType(p){
+   var o = this;
+   var c = p.code();
+   return o._types.set(c, p);;
+}
+function FResourceConsole_factory(){
+   return this._factory;
+}
+function FResourceConsole_allocPipeline(){
+   var o = this;
+   var s = o._pipelinePool;
+   if(!s.hasFree()){
+      var p = RClass.create(FResourceLzmaPipeline);
+      p.setConsole(o);
+      s.push(p);
+   }
+   return s.alloc();
+}
+function FResourceConsole_freePipeline(p){
+   this._pipelinePool.free(p);
+}
+function FResourceConsole_load(p){
+   var o = this;
+   var g = p.guid();
+   var s = o._resources;
+   var r = s.get(g);
+   if(r){
+      throw new TError(o, 'Resource is already loaded. (guid={1})', g);
+   }
+   s.set(g, p);
+   o._loadResources.push(p);
+   p._dataLoad = true;
+}
+function FResourceGroup(o){
+   o = RClass.inherits(this, o, FObject);
+   o._code      = null;
+   o._resources = null;
+   o.code       = FResourceGroup_code;
+   return o;
+}
+function FResourceGroup_code(){
+   return this._code;
+}
+function FResourceLzmaPipeline(o){
+   o = RClass.inherits(this, o, FResourcePipeline);
+   o._worker    = null;
+   o.onComplete = FResourceLzmaPipeline_onComplete;
+   o.construct  = FResourceLzmaPipeline_construct;
+   o.decompress = FResourceLzmaPipeline_decompress;
+   o.dispose    = FResourceLzmaPipeline_dispose;
+   return o;
+}
+function FResourceLzmaPipeline_onComplete(p){
+   var o = this;
+   var r = o._resource;
+   o._console.onPipelineComplete(o, r, p);
+}
+function FResourceLzmaPipeline_construct(){
+   var o = this;
+   o.__base.FResourcePipeline.construct.call(o);
+   var u = RBrowser.contentPath('/ajs/lzma_worker.js');
+   o._worker = new LZMA(u);
+}
+function FResourceLzmaPipeline_decompress(r){
+   var o = this;
+   var d = r._data;
+   o._resource = r;
+   o._worker.decompress(d, function(v){o.onComplete(v);}, null);
+}
+function FResourceLzmaPipeline_dispose(){
+   var o = this;
+   o._worker = null;
+   o.__base.FPipeline.dispose.call(o);
+}
+function FResourcePipeline(o){
+   o = RClass.inherits(this, o, FPipeline);
+   o._console    = null;
+   o._compressCd = null;
+   o._resource   = null;
+   o.console     = FResourcePipeline_console;
+   o.setConsole  = FResourcePipeline_setConsole;
+   o.compressCd  = FResourcePipeline_compressCd;
+   o.resource    = FResourcePipeline_resource;
+   o.setResource = FResourcePipeline_setResource;
+   o.dispose     = FResourcePipeline_dispose;
+   return o;
+}
+function FResourcePipeline_console(){
+   return this._console;
+}
+function FResourcePipeline_setConsole(p){
+   this._console = p;
+}
+function FResourcePipeline_compressCd(){
+   return this._compressCd;
+}
+function FResourcePipeline_resource(){
+   return this._resource;
+}
+function FResourcePipeline_setResource(p){
+   this._resource = p;
+}
+function FResourcePipeline_dispose(){
+   var o = this;
+   o._console = null;
+   o._resource = null;
+   o.__base.FPipeline.dispose.call(o);
+}
+function FResourceType(o){
+   o = RClass.inherits(this, o, FObject);
+   o._code        = null;
+   o._pipeline    = null;
+   o._resources   = null;
+   o.construct    = FResourceType_construct;
+   o.code         = FResourceType_code;
+   o.setCode      = FResourceType_setCode;
+   o.pipeline     = FResourceType_pipeline;
+   o.setPipeline  = FResourceType_setPipeline;
+   o.findResource = FResourceType_findResource;
+   o.resources    = FResourceType_resources;
+   return o;
+}
+function FResourceType_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._resources = new TDictionary();
+}
+function FResourceType_code(){
+   return this._code;
+}
+function FResourceType_setCode(p){
+   this._code = p;
+}
+function FResourceType_pipeline(){
+   return this._pipeline;
+}
+function FResourceType_setPipeline(p){
+   this._pipeline = p;
+}
+function FResourceType_findResource(p){
+   return this._resources.get(p);
+}
+function FResourceType_resources(){
+   return this._resources;
 }
 function FStage(o){
    o = RClass.inherits(this, o, FObject, MListenerEnterFrame, MListenerLeaveFrame);
@@ -1951,6 +2254,12 @@ function FE3sModelConsole_construct(){
    o._meshs = new TDictionary();
    o._skeletons = new TDictionary();
    o._animations = new TDictionary();
+   var rc = RConsole.find(FResourceConsole);
+   var rp = RClass.create(FResourcePipeline);
+   var rt = RClass.create(FResourceType);
+   rt.setCode('resource3d.model');
+   rt._pipeline = rp;
+   rc.registerType(rt);
 }
 function FE3sModelConsole_findModel(p){
    return this._models.get(p);
@@ -2001,18 +2310,20 @@ function FE3sModelConsole_unserialAnimation(m, p){
 function FE3sModelConsole_load(p){
    var o = this;
    var s = o._models;
-   var m = s.get(p);
-   if(!m){
-      var v = RConsole.find(FE3sVendorConsole).find('model');
-      v.set('guid', p);
-      var u = v.makeUrl();
-      m = RClass.create(FE3sModel);
-      m.setGuid(p);
-      m.setVendor(v);
-      m.load(u);
-      s.set(p, m);
+   var r = s.get(p);
+   if(r){
+      return r;
    }
-   return m;
+   var v = RConsole.find(FE3sVendorConsole).find('model');
+   v.set('guid', p);
+   var u = v.makeUrl();
+   r = RClass.create(FE3sModel);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   s.set(p, r);
+   return r;
 }
 function FE3sModelConsole_dispose(){
    var o = this;
@@ -2069,7 +2380,6 @@ function FE3sResource(o){
    o._lsnsLoad     = null;
    o._vendor       = null;
    o.onComplete    = FE3sResource_onComplete;
-   o.onLoad        = FE3sResource_onLoad;
    o.vendor        = FE3sResource_vendor;
    o.setVendor     = FE3sResource_setVendor;
    o.loadListener  = FE3sResource_loadListener;
@@ -2096,11 +2406,6 @@ function FE3sResource_onComplete(p){
    if(o._lsnsLoad){
       o._lsnsLoad.process();
    }
-}
-function FE3sResource_onLoad(p){
-   var o = this;
-   var d = p.outputData();
-   RConsole.find(FE3sVendorConsole).pushCompress(o, o.onComplete, new Uint8Array(d));
 }
 function FE3sResource_vendor(){
    return this._vendor;
@@ -2327,15 +2632,18 @@ function FE3sSceneConsole_load(p){
    var o = this;
    var s = o._scenes;
    var r = s.get(p);
-   if(r == null){
-      var v = RConsole.find(FE3sVendorConsole).find(o._venderCode);
-      v.set('code', p);
-      var u = v.makeUrl();
-      r = RClass.create(FE3sScene);
-      r.setVendor(v);
-      r.load(u);
-      s.set(p, r);
+   if(r){
+      return r;
    }
+   var v = RConsole.find(FE3sVendorConsole).find(o._venderCode);
+   v.set('code', p);
+   var u = v.makeUrl();
+   r = RClass.create(FE3sScene);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   s.set(p, r);
    return r;
 }
 function FE3sSceneConsole_update(p){
@@ -3118,31 +3426,37 @@ function FE3sTemplateConsole_unserialize(p){
 function FE3sTemplateConsole_loadByGuid(p){
    var o = this;
    var s = o._templates;
-   var t = s.get(p);
-   if(t == null){
+   var r = s.get(p);
+   if(!r){
       var v = RConsole.find(FE3sVendorConsole).find('template');
       v.set('guid', p);
       var u = v.makeUrl();
-      t = RClass.create(FE3sTemplate);
-      t.setVendor(v);
-      t.load(u);
-      s.set(p, t);
+      r = RClass.create(FE3sTemplate);
+      r.setGuid(p);
+      r.setVendor(v);
+      r.setSourceUrl(u);
+      RConsole.find(FResourceConsole).load(r);
+      s.set(p, r);
    }
-   return t;
+   return r;
 }
 function FE3sTemplateConsole_loadByCode(p){
    var o = this;
    var s = o._templates;
-   var t = s.get(p);
-   if(t == null){
-      var v = RConsole.find(FE3sVendorConsole).find('template');
-      v.set('code', p);
-      var u = v.makeUrl();
-      t = RClass.create(FE3sTemplate);
-      t.load(u);
-      s.set(p, t);
+   var r = s.get(p);
+   if(r){
+      return r;
    }
-   return t;
+   var v = RConsole.find(FE3sVendorConsole).find('template');
+   v.set('code', p);
+   var u = v.makeUrl();
+   r = RClass.create(FE3sTemplate);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   s.set(p, r);
+   return r;
 }
 function FE3sTemplateConsole_update(p){
    var o = this;
@@ -3322,17 +3636,19 @@ function FE3sTextureConsole_unserialize(p){
 function FE3sTextureConsole_load(p){
    var o = this;
    var s = o._textures;
-   var t = s.get(p);
-   if(t){
-      return t;
+   var r = s.get(p);
+   if(r){
+      return r;
    }
    var v = RConsole.find(FE3sVendorConsole).find('texture');
    var u = v.makeUrl(p);
-   t = RClass.create(FE3sTexture);
-   t.setVendor(v);
-   t.load(u);
-   s.set(p, t);
-   return t;
+   r = RClass.create(FE3sTexture);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   s.set(p, r);
+   return r;
 }
 function FE3sTextureConsole_loadBitmap(pg, pc, pf){
    var o = this;
@@ -3554,66 +3870,19 @@ function FE3sVendor_dispose(){
 }
 function FE3sVendorConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._optionProcess = false;
-   o._lzmaWorker    = null;;
-   o._activeEvent   = null;
-   o._events        = null;
-   o._setuped       = false;
-   o._vendors       = null;
-   o._thread        = null;
-   o._interval      = 100;
-   o.onProcess      = FE3sVendorConsole_onProcess;
-   o.onComplete     = FE3sVendorConsole_onComplete;
-   o.construct      = FE3sVendorConsole_construct;
-   o.pushCompress   = FE3sVendorConsole_pushCompress;
-   o.createVendor   = FE3sVendorConsole_createVendor;
-   o.register       = FE3sVendorConsole_register;
-   o.find           = FE3sVendorConsole_find;
-   o.setup          = FE3sVendorConsole_setup;
+   o._setuped     = false;
+   o._vendors     = null;
+   o.construct    = FE3sVendorConsole_construct;
+   o.createVendor = FE3sVendorConsole_createVendor;
+   o.register     = FE3sVendorConsole_register;
+   o.find         = FE3sVendorConsole_find;
+   o.setup        = FE3sVendorConsole_setup;
    return o;
-}
-function FE3sVendorConsole_onProcess(){
-   var o = this;
-   var s = o._events;
-   if(!o._activeEvent && !s.isEmpty()){
-      if(o._optionProcess){
-         var w = o._lzmaWorker;
-         if(!w){
-            var u = RBrowser.contentPath('/ajs/lzma_worker.js');
-            w = o._lzmaWorker = new LZMA(u);
-         }
-         var e = o._activeEvent = s.erase(0);
-         w.decompress(e.data, o.onComplete, null);
-         e.data = null;
-      }else{
-         var e = o._activeEvent = s.erase(0);
-         LZMA.decompress(e.data, o.onComplete, null);
-         e.data = null;
-      }
-   }
-}
-function FE3sVendorConsole_onComplete(p){
-   var o = RConsole.find(FE3sVendorConsole);
-   var e = o._activeEvent;
-   e.process.call(e.owner, p);
-   e.owner = null;
-   e.process = null;
-   o._activeEvent = null;
 }
 function FE3sVendorConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._events = new TObjects();
    o._vendors = new TDictionary();
-   var t = o._thread = RClass.create(FThread);
-   t.setInterval(o._interval);
-   t.addProcessListener(o, o.onProcess);
-   RConsole.find(FThreadConsole).start(t);
-   var c = RBrowser.capability();
-   o._optionProcess = c.optionProcess;
-}
-function FE3sVendorConsole_pushCompress(w, f, d){
-   this._events.push(new SE3sCompressEvent(w, f, d));
 }
 function FE3sVendorConsole_createVendor(c, u){
    var v = RClass.create(c);

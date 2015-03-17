@@ -43,10 +43,22 @@ function FE3sModelConsole(o){
 function FE3sModelConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
+   // 设置变量
    o._models = new TDictionary();
    o._meshs = new TDictionary();
    o._skeletons = new TDictionary();
    o._animations = new TDictionary();
+   // 注册资源类型
+   var rc = RConsole.find(FResourceConsole);
+
+   var rp = RClass.create(FResourcePipeline);
+
+   var rt = RClass.create(FResourceType);
+   rt.setCode('resource3d.model');
+   rt._pipeline = rp;
+
+   rc.registerType(rt);
+   //rc.factory().register('resource3d.model', FE3sModel);
 }
 
 //==========================================================
@@ -189,21 +201,23 @@ function FE3sModelConsole_unserialAnimation(m, p){
 function FE3sModelConsole_load(p){
    var o = this;
    var s = o._models;
-   var m = s.get(p);
-   if(!m){
-      // 生成地址
-      var v = RConsole.find(FE3sVendorConsole).find('model');
-      v.set('guid', p);
-      var u = v.makeUrl();
-      // 创建模型资源
-      m = RClass.create(FE3sModel);
-      m.setGuid(p);
-      m.setVendor(v);
-      m.load(u);
-      // 存储模型
-      s.set(p, m);
+   var r = s.get(p);
+   if(r){
+      return r;
    }
-   return m;
+   // 生成地址
+   var v = RConsole.find(FE3sVendorConsole).find('model');
+   v.set('guid', p);
+   var u = v.makeUrl();
+   // 创建模型资源
+   r = RClass.create(FE3sModel);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   // 存储模型
+   s.set(p, r);
+   return r;
 }
 
 //==========================================================

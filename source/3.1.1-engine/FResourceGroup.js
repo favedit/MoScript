@@ -9,19 +9,20 @@ function FResourceGroup(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
-   o._name = null;
+   o._code      = null;
+   o._resources = null;
    //..........................................................
    // @method
-   o.name  = FResourceGroup_name;
+   o.code       = FResourceGroup_code;
    return o;
 }
 
 //==========================================================
-// <T>获得名称。</T>
+// <T>获得代码。</T>
 //
 // @method
-// @return 名称
+// @return String 代码
 //==========================================================
-function FResourceGroup_name(){
-   return this._name;
+function FResourceGroup_code(){
+   return this._code;
 }

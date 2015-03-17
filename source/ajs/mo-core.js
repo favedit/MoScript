@@ -990,9 +990,11 @@ function TObjects(){
    o.assign     = TObjects_assign;
    o.append     = TObjects_append;
    o.insert     = TObjects_insert;
+   o.shift      = TObjects_shift;
+   o.unshift    = TObjects_unshift;
+   o.pop        = TObjects_pop;
    o.push       = TObjects_push;
    o.pushUnique = TObjects_pushUnique;
-   o.pop        = TObjects_pop;
    o.swap       = TObjects_swap;
    o.sort       = TObjects_sort;
    o.erase      = TObjects_erase;
@@ -1073,6 +1075,18 @@ function TObjects_insert(i, v){
       o._items[i] = v;
    }
 }
+function TObjects_shift(){
+   return this.erase(0);
+}
+function TObjects_unshift(p){
+   return this.insert(0, p);
+}
+function TObjects_pop(){
+   var o = this;
+   if(o._count){
+      return o._items[--o._count];
+   }
+}
 function TObjects_push(v){
    var o = this;
    var n = o._count++;
@@ -1089,12 +1103,6 @@ function TObjects_pushUnique(v){
    var n = o._count++;
    o._items[n] = v;
    return n;
-}
-function TObjects_pop(){
-   var o = this;
-   if(o._count){
-      return o._items[--o._count];
-   }
 }
 function TObjects_swap(l, r){
    var o = this;
@@ -3173,14 +3181,17 @@ function FObject_dump(){
 }
 function FObjectPool(o){
    o = RClass.inherits(this, o, FObject);
-   o._items    = null;
-   o._frees    = null;
-   o.construct = FObjectPool_construct;
-   o.hasFree   = FObjectPool_hasFree;
-   o.alloc     = FObjectPool_alloc;
-   o.free      = FObjectPool_free;
-   o.push      = FObjectPool_push;
-   o.dispose   = FObjectPool_dispose;
+   o._items      = null;
+   o._frees      = null;
+   o._allocCount = 0;
+   o._freeCount  = 0;
+   o.construct   = FObjectPool_construct;
+   o.hasFree     = FObjectPool_hasFree;
+   o.alloc       = FObjectPool_alloc;
+   o.free        = FObjectPool_free;
+   o.push        = FObjectPool_push;
+   o.dispose     = FObjectPool_dispose;
+   o.innerDump   = FObjectPool_innerDump;
    return o;
 }
 function FObjectPool_construct(){
@@ -3192,17 +3203,19 @@ function FObjectPool_construct(){
 function FObjectPool_hasFree(){
    return !this._frees.isEmpty();
 }
-function FObjectPool_alloc(p){
+function FObjectPool_alloc(){
    var o = this;
    var r = null;
    if(!o._frees.isEmpty()){
       r = o._frees.pop();
    }
+   o._allocCount++;
    return r;
 }
 function FObjectPool_free(p){
    var o = this;
    o._frees.push(p);
+   o._freeCount++;
 }
 function FObjectPool_push(p){
    var o = this;
@@ -3211,15 +3224,17 @@ function FObjectPool_push(p){
 }
 function FObjectPool_dispose(){
    var o = this;
-   if(o._items){
-      o._items.dispose();
-      o._items = null;
-   }
-   if(o._frees){
-      o._frees.dispose();
-      o._frees = null;
-   }
+   o._items = RObject.dispose(o._items);
+   o._frees = RObject.dispose(o._frees);
    o.__base.FObject.dispose.call(o);
+}
+function FObjectPool_innerDump(s, l){
+   var o = this;
+   s.append('Pool:');
+   s.append('total=', o._items.count());
+   s.append(', free=', o._frees.count());
+   s.append(', alloc_count=', o._allocCount);
+   s.append(', free_count=', o._freeCount);
 }
 function FTimer(o){
    o = RClass.inherits(this, o, FObject);
@@ -10041,11 +10056,7 @@ function FHttpConnection_setOutputData(){
    var o = this;
    var c = o._connection;
    if(o._contentCd == EHttpContent.Binary){
-      if(RBrowser.isBrowser(EBrowser.Chrome)){
-         o._outputData = c.response;
-      }else{
-         o._outputData = c.response;
-      }
+      o._outputData = c.response;
    }else{
       o._outputData = c.responseText;
    }
@@ -12546,16 +12557,17 @@ function FHttpConsole(o){
    o.construct = FHttpConsole_construct;
    o.alloc     = FHttpConsole_alloc;
    o.send      = FHttpConsole_send;
+   o.dispose   = FHttpConsole_dispose;
    return o;
+}
+function FHttpConsole_onLoad(p){
+   var o = this;
+   o._pool.free(p);
 }
 function FHttpConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    o._pool = RClass.create(FObjectPool);
-}
-function FHttpConsole_onLoad(p){
-   var o = this;
-   o._pool.free(p);
 }
 function FHttpConsole_alloc(){
    var o = this;
@@ -12575,6 +12587,10 @@ function FHttpConsole_send(u){
    var c = o.alloc();
    c.send(u);
    return c;
+}
+function FHttpConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
 }
 function FIdleConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -12796,12 +12812,12 @@ function FMouseConsole_clear(){
 }
 function FPipeline(o){
    o = RClass.inherits(this, o, FObject);
-   o._name = null;
-   o.name  = FPipeline_name;
+   o._code = null;
+   o.code  = FPipeline_code;
    return o;
 }
-function FPipeline_name(){
-   return this._name;
+function FPipeline_code(){
+   return this._code;
 }
 function FProcess(o){
    o = RClass.inherits(this, o, FObject);
@@ -13054,138 +13070,6 @@ function FProcessServer_process(){
    var o = this;
    onmessage = o.ohMessage;
    FProcessServer.__linker = o;
-}
-function FResource(o){
-   o = RClass.inherits(this, o, FObject);
-   o._guid    = null;
-   o._code    = null;
-   o._label   = null;
-   o.guid     = FResource_guid;
-   o.setGuid  = FResource_setGuid;
-   o.code     = FResource_code;
-   o.setCode  = FResource_setCode;
-   o.label    = FResource_label;
-   o.setLabel = FResource_setLabel;
-   return o;
-}
-function FResource_guid(){
-   return this._guid;
-}
-function FResource_setGuid(p){
-   this._guid = p;
-}
-function FResource_code(){
-   return this._code;
-}
-function FResource_setCode(p){
-   this._code = p;
-}
-function FResource_label(){
-   return this._label;
-}
-function FResource_setLabel(p){
-   this._label = p;
-}
-function FResourceConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._scopeCd    = EScope.Local;
-   o._resources  = null;
-   o.onLoad      = FResourceConsole_onLoad;
-   o.construct   = FResourceConsole_construct;
-   o.alloc       = FResourceConsole_alloc;
-   o.process     = FResourceConsole_process;
-   o.send        = FResourceConsole_send;
-   return o;
-}
-function FResourceConsole_construct(){
-   var o = this;
-   o.connections = new TObjects();
-}
-function FResourceConsole_onLoad(){
-   var o = this;
-   var e = o.event;
-   e.document = o.document;
-   e.process();
-   o.event = null;
-   o.document = null;
-   o._statusFree = true;
-}
-function FResourceConsole_alloc(){
-   var o = this;
-   var a = null;
-   var cs = o.connections;
-   for(var n = cs.count - 1; n >= 0; n--){
-      var c = cs.get(n);
-      if(c._statusFree){
-         a = c;
-         break;
-      }
-   }
-   if(!a){
-      a = RClass.create(FXmlConnection);
-      cs.push(a);
-      a.onLoad = o.onLoad;
-   }
-   a._statusFree = false;
-   return a;
-}
-function FResourceConsole_process(e){
-   var o = this;
-   var c = o.alloc();
-   c.event = e;
-   switch(e.code){
-      case EXmlEvent.Send:
-         c.send(e.url, e.document);
-         break;
-      case EXmlEvent.Receive:
-         c.receive(e.url, e.document);
-         break;
-      case EXmlEvent.SyncSend:
-         return c.syncSend(e.url, e.document);
-      case EXmlEvent.SyncReceive:
-         return c.syncReceive(e.url, e.document);
-   }
-}
-function FResourceConsole_send(u, d){
-   var o = this;
-   var c = o.alloc();
-   var r = c.syncSend(u, d);
-   c._statusFree = true;
-   return r;
-}
-function FResourceGroup(o){
-   o = RClass.inherits(this, o, FObject);
-   o._name = null;
-   o.name  = FResourceGroup_name;
-   return o;
-}
-function FResourceGroup_name(){
-   return this._name;
-}
-function FResourceType(o){
-   o = RClass.inherits(this, o, FObject);
-   o._name      = null;
-   o._pipeline  = null;
-   o._resources = null;
-   o.construct  = FResourceType_construct;
-   o.name       = FResourceType_name;
-   o.resource   = FResourceType_resource;
-   o.resources  = FResourceType_resources;
-   return o;
-}
-function FResourceType_construct(){
-   var o = this;
-   o.__base.construct.call(o);
-   o._resources = new TDictionary();
-}
-function FResourceType_name(){
-   return this._name;
-}
-function FResourceType_resource(p){
-   return this._resources.get(p);
-}
-function FResourceType_resources(){
-   return this._resources;
 }
 function FStatistics(o){
    o = RClass.inherits(this, o, FObject);
