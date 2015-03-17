@@ -68,7 +68,7 @@
 1 - Design - ListView 控件
 1 - Design - Data 数据控件体系
 7 - Engine - 延迟渲染（浮点数纹理方案）
-7 - Demo   - 游戏Demo
+7 - Demo   - 在线游戏（我的世界）
 4 - Design - 设计整体功能（User/Project/Version/Design/Publish）
 
 暂时废弃中
