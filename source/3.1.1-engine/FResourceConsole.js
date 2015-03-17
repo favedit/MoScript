@@ -23,9 +23,9 @@ function FResourceConsole(o){
    o._pipelinePool        = null;
    // @attribute
    o._thread              = null;
-   o._loadLimit           = 12;
+   o._loadLimit           = 8;
    o._processLimit        = 4;
-   o._interval            = 100;
+   o._interval            = 200;
    //..........................................................
    // @event
    o.onComplete           = FResourceConsole_onComplete;
@@ -134,17 +134,18 @@ function FResourceConsole_onProcess(){
          // 单线程处理
          if(ps.isEmpty()){
             var r = rs.shift();
-            p.decompressSingle(r);
             ps.push(r);
+            p.decompressSingle(r);
          }
       }else{
          // 多线程处理
          for(var i = o._processLimit - pc; i > 0; i--){
             var r = rs.shift();
             var l = o.allocPipeline();
-            l.decompress(r);
             // 增加处理中集合
             ps.push(r);
+            // 解压缩处理
+            l.decompress(r);
             // 跳出循环
             if(rs.isEmpty()){
                break;

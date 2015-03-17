@@ -15,6 +15,7 @@ var RTimer = new function RTimer(){
    //..........................................................
    // @method
    o.setup      = RTimer_setup;
+   o.now        = RTimer_now;
    o.current    = RTimer_current;
    o.rate       = RTimer_rate;
    o.update     = RTimer_update;
@@ -31,6 +32,16 @@ function RTimer_setup(){
    var n = new Date().getTime();
    o._startTime = n;
    o._lastTime = n;
+}
+
+//===========================================================
+// <T>获得现在时刻。</T>
+//
+// @method
+// @return Number 时刻
+//===========================================================
+function RTimer_now(){
+   return new Date().getTime();
 }
 
 //===========================================================

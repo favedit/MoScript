@@ -5724,6 +5724,7 @@ var RTimer = new function RTimer(){
    o._lastTime  = 0;
    o._count     = 0;
    o.setup      = RTimer_setup;
+   o.now        = RTimer_now;
    o.current    = RTimer_current;
    o.rate       = RTimer_rate;
    o.update     = RTimer_update;
@@ -5734,6 +5735,9 @@ function RTimer_setup(){
    var n = new Date().getTime();
    o._startTime = n;
    o._lastTime = n;
+}
+function RTimer_now(){
+   return new Date().getTime();
 }
 function RTimer_current(){
    return this._lastTime;

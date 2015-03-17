@@ -796,6 +796,8 @@ function FE3sResource_onComplete(p){
    if(p.constructor == Array){
       var pb = new Uint8Array(p);
       v.link(pb.buffer);
+   }else if(p.constructor == Uint8Array){
+      v.link(p.buffer);
    }else{
       v.link(p.outputData());
    }

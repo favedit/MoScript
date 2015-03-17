@@ -5724,6 +5724,7 @@ var RTimer = new function RTimer(){
    o._lastTime  = 0;
    o._count     = 0;
    o.setup      = RTimer_setup;
+   o.now        = RTimer_now;
    o.current    = RTimer_current;
    o.rate       = RTimer_rate;
    o.update     = RTimer_update;
@@ -5734,6 +5735,9 @@ function RTimer_setup(){
    var n = new Date().getTime();
    o._startTime = n;
    o._lastTime = n;
+}
+function RTimer_now(){
+   return new Date().getTime();
 }
 function RTimer_current(){
    return this._lastTime;
@@ -20429,9 +20433,9 @@ function FResourceConsole(o){
    o._pipeline            = null;
    o._pipelinePool        = null;
    o._thread              = null;
-   o._loadLimit           = 12;
+   o._loadLimit           = 8;
    o._processLimit        = 4;
-   o._interval            = 100;
+   o._interval            = 200;
    o.onComplete           = FResourceConsole_onComplete;
    o.onPipelineComplete   = FResourceConsole_onPipelineComplete;
    o.onLoad               = FResourceConsole_onLoad;
@@ -20496,15 +20500,15 @@ function FResourceConsole_onProcess(){
       if(p){
          if(ps.isEmpty()){
             var r = rs.shift();
-            p.decompressSingle(r);
             ps.push(r);
+            p.decompressSingle(r);
          }
       }else{
          for(var i = o._processLimit - pc; i > 0; i--){
             var r = rs.shift();
             var l = o.allocPipeline();
-            l.decompress(r);
             ps.push(r);
+            l.decompress(r);
             if(rs.isEmpty()){
                break;
             }
@@ -20591,7 +20595,7 @@ function FResourceLzmaPipeline(o){
 function FResourceLzmaPipeline_onComplete(p){
    var o = this;
    var r = o._resource;
-   var t = RTimer.current() - o._startTime;
+   var t = RTimer.now() - o._startTime;
    RLogger.info(o, 'Process resource decompress. (guid={1}, length={2}, tick={3})', r.guid(), o._dataLength, t);
    o._console.onPipelineComplete(o, r, p);
    o._startTime = RTimer.current();
@@ -20617,9 +20621,9 @@ function FResourceLzmaPipeline_decompressSingle(r){
    var o = this;
    var d = r._data;
    o._resource = r;
-   LZMAD.decompress(d, function(v){o.onComplete(v);}, null);
    o._dataLength = d.byteLength;
-   o._startTime = RTimer.current();
+   o._startTime = RTimer.now();
+   LZMAD.decompress(d, function(v){o.onComplete(v);}, null);
 }
 function FResourceLzmaPipeline_dispose(){
    var o = this;
@@ -22313,6 +22317,8 @@ function FE3sResource_onComplete(p){
    if(p.constructor == Array){
       var pb = new Uint8Array(p);
       v.link(pb.buffer);
+   }else if(p.constructor == Uint8Array){
+      v.link(p.buffer);
    }else{
       v.link(p.outputData());
    }

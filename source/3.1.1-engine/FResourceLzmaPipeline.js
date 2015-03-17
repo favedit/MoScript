@@ -34,7 +34,7 @@ function FResourceLzmaPipeline(o){
 function FResourceLzmaPipeline_onComplete(p){
    var o = this;
    var r = o._resource;
-   var t = RTimer.current() - o._startTime;
+   var t = RTimer.now() - o._startTime;
    RLogger.info(o, 'Process resource decompress. (guid={1}, length={2}, tick={3})', r.guid(), o._dataLength, t);
    o._console.onPipelineComplete(o, r, p);
    o._startTime = RTimer.current();
@@ -81,10 +81,14 @@ function FResourceLzmaPipeline_decompressSingle(r){
    var o = this;
    var d = r._data;
    o._resource = r;
-   // 回调工作方式
-   LZMAD.decompress(d, function(v){o.onComplete(v);}, null);
    o._dataLength = d.byteLength;
-   o._startTime = RTimer.current();
+   o._startTime = RTimer.now();
+   // 回调工作方式
+   //var inflate = new Zlib.RawInflate(d);
+   //var inflate = new Zlib.Inflate(d);
+   //var plain = inflate.decompress();
+   LZMAD.decompress(d, function(v){o.onComplete(v);}, null);
+   //o.onComplete(plain);
 }
 
 //==========================================================
