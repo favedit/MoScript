@@ -16,7 +16,7 @@
 /// co    (compression only)
 /// do    (decompression only)
 
-var LZMA = (function () {
+var LZMAD = (function () {
     var 
         /** ds */
         action_decompress = 2,
@@ -1300,10 +1300,10 @@ var LZMA = (function () {
                 if (e && e.data) {
                     
                     /// co:if (e.data.action == action_compress) {
-                    /// co:    LZMA.compress(e.data.data, e.data.mode, e.data.callback_num);
+                    /// co:    LZMAD.compress(e.data.data, e.data.mode, e.data.callback_num);
                     /// co:}
                     if (e.data.action == action_decompress) {
-                        LZMA.decompress(e.data.data, e.data.callback_num);
+                        LZMAD.decompress(e.data.data, e.data.callback_num);
                     }
                 }
             };
@@ -1318,4 +1318,4 @@ var LZMA = (function () {
 }());
 
 /// This is used by browsers that do not support web workers (and possibly Node.js).
-this.LZMA = this.LZMA_WORKER = LZMA;
+this.LZMAD = this.LZMA_WORKER = LZMAD;

@@ -20426,10 +20426,11 @@ function FResourceConsole(o){
    o._loadingResources    = null;
    o._processResources    = null;
    o._processingResources = null;
+   o._pipeline            = null;
    o._pipelinePool        = null;
    o._thread              = null;
    o._loadLimit           = 12;
-   o._processLimit        = 8;
+   o._processLimit        = 4;
    o._interval            = 100;
    o.onComplete           = FResourceConsole_onComplete;
    o.onPipelineComplete   = FResourceConsole_onPipelineComplete;
@@ -20491,13 +20492,22 @@ function FResourceConsole_onProcess(){
    var ps = o._processingResources;
    var pc = ps.count();
    if(!rs.isEmpty()){
-      for(var i = o._processLimit - pc; i > 0; i--){
-         var r = rs.shift();
-         var l = o.allocPipeline();
-         l.decompress(r);
-         ps.push(r);
-         if(rs.isEmpty()){
-            break;
+      var p = o._pipeline;
+      if(p){
+         if(ps.isEmpty()){
+            var r = rs.shift();
+            p.decompressSingle(r);
+            ps.push(r);
+         }
+      }else{
+         for(var i = o._processLimit - pc; i > 0; i--){
+            var r = rs.shift();
+            var l = o.allocPipeline();
+            l.decompress(r);
+            ps.push(r);
+            if(rs.isEmpty()){
+               break;
+            }
          }
       }
    }
@@ -20513,6 +20523,11 @@ function FResourceConsole_construct(){
    o._processResources = new TObjects();
    o._processingResources = new TObjects();
    o._pipelinePool  = RClass.create(FObjectPool);
+   var bc = RBrowser.capability();
+   if(!bc.optionProcess){
+      var p = o._pipeline = RClass.create(FResourceLzmaPipeline);
+      p.setConsole(o);
+   }
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
    t.addProcessListener(o, o.onProcess);
@@ -20563,29 +20578,48 @@ function FResourceGroup_code(){
 }
 function FResourceLzmaPipeline(o){
    o = RClass.inherits(this, o, FResourcePipeline);
-   o._worker    = null;
-   o.onComplete = FResourceLzmaPipeline_onComplete;
-   o.construct  = FResourceLzmaPipeline_construct;
-   o.decompress = FResourceLzmaPipeline_decompress;
-   o.dispose    = FResourceLzmaPipeline_dispose;
+   o._worker          = null;
+   o._dataLength      = 0;
+   o._startTime       = 0;
+   o.onComplete       = FResourceLzmaPipeline_onComplete;
+   o.construct        = FResourceLzmaPipeline_construct;
+   o.decompress       = FResourceLzmaPipeline_decompress;
+   o.decompressSingle = FResourceLzmaPipeline_decompressSingle;
+   o.dispose          = FResourceLzmaPipeline_dispose;
    return o;
 }
 function FResourceLzmaPipeline_onComplete(p){
    var o = this;
    var r = o._resource;
+   var t = RTimer.current() - o._startTime;
+   RLogger.info(o, 'Process resource decompress. (guid={1}, length={2}, tick={3})', r.guid(), o._dataLength, t);
    o._console.onPipelineComplete(o, r, p);
+   o._startTime = RTimer.current();
 }
 function FResourceLzmaPipeline_construct(){
    var o = this;
    o.__base.FResourcePipeline.construct.call(o);
-   var u = RBrowser.contentPath('/ajs/lzma_worker.js');
-   o._worker = new LZMA(u);
 }
 function FResourceLzmaPipeline_decompress(r){
    var o = this;
    var d = r._data;
    o._resource = r;
-   o._worker.decompress(d, function(v){o.onComplete(v);}, null);
+   var w = o._worker;
+   if(!w){
+      var u = RBrowser.contentPath('/ajs/lzma_worker.js');
+      w = o._worker = new LZMA(u);
+   }
+   w.decompress(d, function(v){o.onComplete(v);}, null);
+   o._dataLength = d.byteLength;
+   o._startTime = RTimer.current();
+}
+function FResourceLzmaPipeline_decompressSingle(r){
+   var o = this;
+   var d = r._data;
+   o._resource = r;
+   LZMAD.decompress(d, function(v){o.onComplete(v);}, null);
+   o._dataLength = d.byteLength;
+   o._startTime = RTimer.current();
 }
 function FResourceLzmaPipeline_dispose(){
    var o = this;

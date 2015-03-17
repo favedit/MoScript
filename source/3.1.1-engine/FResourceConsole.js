@@ -19,11 +19,12 @@ function FResourceConsole(o){
    o._loadingResources    = null;
    o._processResources    = null;
    o._processingResources = null;
+   o._pipeline            = null;
    o._pipelinePool        = null;
    // @attribute
    o._thread              = null;
    o._loadLimit           = 12;
-   o._processLimit        = 8;
+   o._processLimit        = 4;
    o._interval            = 100;
    //..........................................................
    // @event
@@ -128,15 +129,26 @@ function FResourceConsole_onProcess(){
    var ps = o._processingResources;
    var pc = ps.count();
    if(!rs.isEmpty()){
-      for(var i = o._processLimit - pc; i > 0; i--){
-         var r = rs.shift();
-         var l = o.allocPipeline();
-         l.decompress(r);
-         // 增加处理中集合
-         ps.push(r);
-         // 跳出循环
-         if(rs.isEmpty()){
-            break;
+      var p = o._pipeline;
+      if(p){
+         // 单线程处理
+         if(ps.isEmpty()){
+            var r = rs.shift();
+            p.decompressSingle(r);
+            ps.push(r);
+         }
+      }else{
+         // 多线程处理
+         for(var i = o._processLimit - pc; i > 0; i--){
+            var r = rs.shift();
+            var l = o.allocPipeline();
+            l.decompress(r);
+            // 增加处理中集合
+            ps.push(r);
+            // 跳出循环
+            if(rs.isEmpty()){
+               break;
+            }
          }
       }
    }
@@ -160,6 +172,12 @@ function FResourceConsole_construct(){
    o._processResources = new TObjects();
    o._processingResources = new TObjects();
    o._pipelinePool  = RClass.create(FObjectPool);
+   // 是否支持多线程
+   var bc = RBrowser.capability();
+   if(!bc.optionProcess){
+      var p = o._pipeline = RClass.create(FResourceLzmaPipeline);
+      p.setConsole(o);
+   }
    // 创建线程
    var t = o._thread = RClass.create(FThread);
    t.setInterval(o._interval);
