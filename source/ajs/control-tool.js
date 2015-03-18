@@ -431,3 +431,63 @@ function FUiToolButtonText(o){
    o = RClass.inherits(this, o, FUiToolButton);
    return o;
 }
+var RUiToolBar = new function RUiToolBar(){
+   var o = this;
+   o.fromNode = RUiToolBar_fromNode;
+   return o;
+}
+function RUiToolBar_mergeNode(xtb, xNode, r){
+   var ns = xNode.nodes;
+   for(var j=0; j<ns.count; j++){
+      var n = ns.get(j);
+      if('ToolBar' == n.name){
+         if(n.nodes){
+            for(var i=0; i<n.nodes.count; i++){
+               xtb.push(n.nodes.get(i));
+            }
+         }
+      }
+   }
+   if(r){
+      for(var j=ns.count-1; j>=0; j--){
+         var n = ns.get(j);
+         if('ToolBar' == n.name){
+            ns.removeItem(n);
+         }
+      }
+   }
+   return xtb;
+}
+function RUiToolBar_fromNode(control, config, panel, r){
+   if(config && config._nodes){
+      var xtb = null;
+      var ns = config._nodes;
+      var jc = ns.count();
+      for(var j = 0; j < jc; j++){
+         var n = ns.getAt(j);
+         if(n.name() == 'ToolBar'){
+            if(!xtb){
+               xtb = n;
+            }else if(n.nodes){
+               var ns = n.nodes();
+               var ic = ns.count();
+               for(var i = 0; i < ic; i++){
+                  xtb.push(ns.getAt(i));
+               }
+            }
+         }
+      }
+      if(r){
+         for(var j = ns.count() - 1; j >= 0; j--){
+            var n = ns.getAt(j);
+            if(n.name() == 'ToolBar'){
+               ns.remove(n);
+               break;
+            }
+         }
+      }
+      if(xtb){
+         RControl.build(control, xtb, null, panel);
+      }
+   }
+}

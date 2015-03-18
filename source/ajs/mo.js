@@ -36673,6 +36673,77 @@ function FUiListView_dispose(){
    o.roleSrc = null;
    o.userUk = null;
 }
+function FUiMemo(o){
+   o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit, MListenerDataChanged);
+   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
+   o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
+   o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
+   o._hValueForm      = null;
+   o._hValueLine      = null;
+   o._hInputPanel     = null;
+   o._hInput          = null;
+   o.onBuildEditValue = FUiMemo_onBuildEditValue;
+   o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiMemo_onInputEdit);
+   o.construct        = FUiMemo_construct;
+   o.formatDisplay    = FUiMemo_formatDisplay;
+   o.formatValue      = FUiMemo_formatValue;
+   o.get              = FUiMemo_get;
+   o.set              = FUiMemo_set;
+   o.refreshValue     = FUiMemo_refreshValue;
+   return o;
+}
+function FUiMemo_onBuildEditValue(p){
+   var o = this;
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = RBuilder.appendTable(hp);
+   hf.width = '100%';
+   var hl = o._hValueLine = RBuilder.appendTableRow(hf);
+   o._hChangePanel = RBuilder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
+   var he = o._hInput = RBuilder.append(hep, 'TEXTAREA', o.styleName('Input'));
+   o.attachEvent('onInputEdit', he, o.onInputEdit);
+   RHtml.setSize(hep, o._inputSize);
+   if(o._editLength){
+      he.maxLength = o._editLength;
+   }
+}
+function FUiMemo_onInputEdit(p){
+   var o = this;
+   var v = o._hInput.value;
+   o.refreshValue();
+}
+function FUiMemo_construct(){
+   var o = this;
+   o.__base.FUiEditControl.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
+}
+function FUiMemo_formatDisplay(p){
+   var o = this;
+   var r = RString.nvl(p);
+   o._dataDisplay = r;
+   return r;
+}
+function FUiMemo_formatValue(p){
+   return p;
+}
+function FUiMemo_get(){
+   var o = this;
+   var r = o.__base.FUiEditControl.get.call(o);
+   var r = o._hInput.value;
+   return r;
+}
+function FUiMemo_set(p){
+   var o = this;
+   o.__base.FUiEditControl.set.call(o, p);
+   o._hInput.value = RString.nvl(p);
+}
+function FUiMemo_refreshValue(){
+   var o = this;
+   o.processDataChangedListener(o);
+}
 function FUiNumber(o){
    o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged, MPropertyNumber);
    o._inputSize        = RClass.register(o, new APtySize2('_inputSize'));
@@ -42280,6 +42351,66 @@ function FUiToolButtonText(o){
    o = RClass.inherits(this, o, FUiToolButton);
    return o;
 }
+var RUiToolBar = new function RUiToolBar(){
+   var o = this;
+   o.fromNode = RUiToolBar_fromNode;
+   return o;
+}
+function RUiToolBar_mergeNode(xtb, xNode, r){
+   var ns = xNode.nodes;
+   for(var j=0; j<ns.count; j++){
+      var n = ns.get(j);
+      if('ToolBar' == n.name){
+         if(n.nodes){
+            for(var i=0; i<n.nodes.count; i++){
+               xtb.push(n.nodes.get(i));
+            }
+         }
+      }
+   }
+   if(r){
+      for(var j=ns.count-1; j>=0; j--){
+         var n = ns.get(j);
+         if('ToolBar' == n.name){
+            ns.removeItem(n);
+         }
+      }
+   }
+   return xtb;
+}
+function RUiToolBar_fromNode(control, config, panel, r){
+   if(config && config._nodes){
+      var xtb = null;
+      var ns = config._nodes;
+      var jc = ns.count();
+      for(var j = 0; j < jc; j++){
+         var n = ns.getAt(j);
+         if(n.name() == 'ToolBar'){
+            if(!xtb){
+               xtb = n;
+            }else if(n.nodes){
+               var ns = n.nodes();
+               var ic = ns.count();
+               for(var i = 0; i < ic; i++){
+                  xtb.push(ns.getAt(i));
+               }
+            }
+         }
+      }
+      if(r){
+         for(var j = ns.count() - 1; j >= 0; j--){
+            var n = ns.getAt(j);
+            if(n.name() == 'ToolBar'){
+               ns.remove(n);
+               break;
+            }
+         }
+      }
+      if(xtb){
+         RControl.build(control, xtb, null, panel);
+      }
+   }
+}
 function FPageBar(o){
    o = RClass.inherits(this, o, FContainer);
    o.tabs         = new TMap();
@@ -45264,6 +45395,11 @@ function FDataSource_dump(s){
    o.dataset.dump(s);
    return s;
 }
+function FUiDataAction(o){
+   o = RClass.inherits(this, o, FUiComponent);
+   o._action = RClass.register(o, new APtyString('_action'));
+   return o;
+}
 function FUiDataEdit(o){
    o = RClass.inherits(this, o, FUiEdit);
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
@@ -45875,6 +46011,10 @@ function FUiDataEditControl_dispose(){
    o.__base.MEditDrop.dispose.call(o);
    o.__base.MEditChange.dispose.call(o);
    o.__base.FUiEditControl.dispose.call(o);
+}
+function FUiDataFrame(o){
+   o = RClass.inherits(this, o, FUiFrame);
+   return o;
 }
 function FUiDataNumber(o){
    o = RClass.inherits(this, o, FEditControl);

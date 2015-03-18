@@ -1,3 +1,8 @@
+function FUiDataAction(o){
+   o = RClass.inherits(this, o, FUiComponent);
+   o._action = RClass.register(o, new APtyString('_action'));
+   return o;
+}
 function FUiDataEdit(o){
    o = RClass.inherits(this, o, FUiEdit);
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
@@ -609,6 +614,10 @@ function FUiDataEditControl_dispose(){
    o.__base.MEditDrop.dispose.call(o);
    o.__base.MEditChange.dispose.call(o);
    o.__base.FUiEditControl.dispose.call(o);
+}
+function FUiDataFrame(o){
+   o = RClass.inherits(this, o, FUiFrame);
+   return o;
 }
 function FUiDataNumber(o){
    o = RClass.inherits(this, o, FEditControl);
