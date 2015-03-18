@@ -1514,6 +1514,37 @@ function AProperty_toString(){
    var o = this;
    return '<' + o._annotationCd + ',linker=' + o._linker + '>';
 }
+function APtyAttributes(n, l, vl, vt, vr, vb){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._left    = RInteger.nvl(vl);
+   o._top     = RInteger.nvl(vt);
+   o._right   = RInteger.nvl(vr);
+   o._bottom  = RInteger.nvl(vb);
+   o.load     = APtyAttributes_load;
+   o.save     = APtyAttributes_save;
+   o.toString = APtyAttributes_toString;
+   return o;
+}
+function APtyAttributes_load(v, x){
+   var o = this;
+   var s = v[o._name];
+   if(!s){
+      s = v[o._name] = new TAttributes();
+   }
+   s.split(x.get(o._linker), '=', ';');
+}
+function APtyAttributes_save(v, x){
+   var o = this;
+   var s = v[o._name];
+   if(!s.isEmpty()){
+      x.set(o._linker, s.join('=', ';'));
+   }
+}
+function APtyAttributes_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom;
+}
 function APtyBoolean(n, l, v){
    var o = this;
    AProperty.call(o, n, l);
@@ -9445,6 +9476,7 @@ function MListener(o){
    o._listeners      = null;
    o.addListener     = MListener_addListener;
    o.removeListener  = MListener_removeListener;
+   o.clearListeners  = MListener_clearListeners;
    o.processListener = MListener_processListener;
    o.dispose         = MListener_dispose;
    return o;
@@ -9467,6 +9499,16 @@ function MListener_removeListener(n, w, m){
    var lss = o._listeners;
    var ls = lss.get(n);
    return ls.unregister(w, m);
+}
+function MListener_clearListeners(n){
+   var o = this;
+   var lss = o._listeners;
+   if(lss){
+      var ls = lss.get(n);
+      if(ls){
+         ls.clear();
+      }
+   }
 }
 function MListener_processListener(n, p1, p2, p3, p4, p5){
    var o = this;
@@ -9492,6 +9534,7 @@ function MListenerLoad(o){
    o = RClass.inherits(this, o, MListener);
    o.addLoadListener     = MListenerLoad_addLoadListener;
    o.removeLoadListener  = MListenerLoad_removeLoadListener;
+   o.clearLoadListeners  = MListenerLoad_clearLoadListeners;
    o.processLoadListener = MListenerLoad_processLoadListener;
    return o;
 }
@@ -9500,6 +9543,9 @@ function MListenerLoad_addLoadListener(w, m){
 }
 function MListenerLoad_removeLoadListener(w, m){
    this.removeListener(EEvent.Load, w, m);
+}
+function MListenerLoad_clearLoadListeners(){
+   this.clearListeners(EEvent.Load);
 }
 function MListenerLoad_processLoadListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.Load, p1, p2, p3, p4, p5);
@@ -9680,13 +9726,6 @@ function SResizeEvent_attachEvent(p){
    if(hs){
       o.source = hs.__linker;
    }
-}
-function SServiceInfo(){
-   var o = this;
-   o.service = null;
-   o.action  = null;
-   o.url     = null;
-   return o;
 }
 function SXmlEvent(){
    var o = this;
@@ -9987,7 +10026,7 @@ function FDataView_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 function FHttpConnection(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MListenerLoad);
    o._asynchronous        = false;
    o._methodCd            = EHttpMethod.Get;
    o._contentCd           = EHttpContent.Binary;
@@ -9999,7 +10038,6 @@ function FHttpConnection(o){
    o._connection          = null;
    o._contentLength       = 0;
    o._statusFree          = true;
-   o.lsnsLoad             = null;
    o.onConnectionSend     = FHttpConnection_onConnectionSend;
    o.onConnectionReady    = FHttpConnection_onConnectionReady;
    o.onConnectionComplete = FHttpConnection_onConnectionComplete;
@@ -10038,11 +10076,10 @@ function FHttpConnection_onConnectionReady(){
 function FHttpConnection_onConnectionComplete(){
    var o = this;
    o._statusFree = true;
-   o.lsnsLoad.process(o);
+   o.processLoadListener(o);
 }
 function FHttpConnection_construct(){
    var o = this;
-   o.lsnsLoad = new TListeners();
    var c = o._connection = RXml.createConnection();
    c._linker = o;
    c.onreadystatechange = o.onConnectionReady;
@@ -10251,7 +10288,7 @@ function FXmlConnection_onConnectionComplete(){
    e.document = d;
    e.root = r;
    e.parameters = o._parameters;
-   o.lsnsLoad.process(e);
+   o.processLoadListener(e);
    e.dispose();
    if(o._asynchronous){
       o._input = null;
@@ -11584,56 +11621,6 @@ function RResource_iconUrlPath(path, type){
 function RResource_imagePath(path, type){
    var o = this;
 }
-var RService = new function RService(){
-   var o = this;
-   o._services = new TDictionary();
-   o.url       = RService_url;
-   o.parse     = RService_parse;
-   return o;
-}
-function RService_url(p){
-   if(RString.startsWith(p, 'http://')){
-      return p;
-   }
-   if(RString.startsWith(p, '#')){
-      return p.substr(1);
-   }
-   if(!RString.startsWith(p, '/')){
-      p = '/' + p;
-   }
-   return p + '.ws';
-}
-function RService_parse(p){
-   var o = this;
-   var s = null;
-   var ss = o._services;
-   if(p){
-      s = ss.get(p);
-      if(s == null){
-         var ps = p.split('@');
-         if(ps.length == 1){
-            if(ps[0]){
-               s = new SServiceInfo();
-               s.service = ps[0];
-               s.action = null;
-               s.url = o.url(ps[0]);
-            }
-         }else if(ps.length == 2){
-            if(ps[0] && ps[1]){
-               s = new SServiceInfo();
-               s.service = ps[1];
-               s.action = ps[0];
-               s.url = o.url(ps[1]) + '?action=' + ps[0];
-            }
-         }
-      }
-      if(s == null){
-         throw new TError(o, 'Unknown service format. (source={1})', p);
-      }
-      ss.set(p, s);
-   }
-   return s;
-}
 var RStyle = new function RStyle(){
    var o = this;
    o._connected = false;
@@ -12604,8 +12591,8 @@ function FHttpConsole_alloc(){
       o._pool.push(c);
    }
    var c = p.alloc();
-   c.lsnsLoad.clear();
-   c.lsnsLoad.register(o, o.onLoad);
+   c.clearLoadListeners();
+   c.addLoadListener(o, o.onLoad);
    return c;
 }
 function FHttpConsole_send(u){
@@ -13310,6 +13297,7 @@ function FXmlConsole_alloc(){
       a.onLoad = o.onLoad;
    }
    a._statusFree = false;
+   a.clearLoadListeners();
    return a;
 }
 function FXmlConsole_send(u, d){
@@ -13350,7 +13338,7 @@ function FXmlConsole_process(p){
    var c = o.alloc();
    c._asynchronous = true;
    c.send(p.url, p.inputDocument);
-   c.lsnsLoad.register(p, p.process);
+   c.addLoadListener(p, p.process);
    return c;
 }
 function SBrowserCapability(){
@@ -14036,10 +14024,16 @@ function RWindow_setEnable(v, f){
       s.top = '0px';
       s.width = (hd.all ? o._hContainer.scrollWidth : hd.documentElement.scrollWidth) + 'px';
       s.height = (hd.all ? o._hContainer.scrollHeight : hd.documentElement.scrollHeight) + 'px';
-      o._hContainer.appendChild(h);
+      if(!h._linked){
+         o._hContainer.appendChild(h);
+         h._linked = true;
+      }
    }else{
       o.windowEnable();
-      o._hContainer.removeChild(h);
+      if(h._linked){
+         o._hContainer.removeChild(h);
+         h._linked = false;
+      }
    }
 }
 function RWindow_onUnload(){

@@ -681,10 +681,16 @@ function RWindow_setEnable(v, f){
       s.top = '0px';
       s.width = (hd.all ? o._hContainer.scrollWidth : hd.documentElement.scrollWidth) + 'px';
       s.height = (hd.all ? o._hContainer.scrollHeight : hd.documentElement.scrollHeight) + 'px';
-      o._hContainer.appendChild(h);
+      if(!h._linked){
+         o._hContainer.appendChild(h);
+         h._linked = true;
+      }
    }else{
       o.windowEnable();
-      o._hContainer.removeChild(h);
+      if(h._linked){
+         o._hContainer.removeChild(h);
+         h._linked = false;
+      }
    }
 }
 function RWindow_onUnload(){

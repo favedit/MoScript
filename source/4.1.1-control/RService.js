@@ -13,6 +13,7 @@ var RService = new function RService(){
    //..........................................................
    // @method
    o.url       = RService_url;
+   o.makeUrl   = RService_makeUrl;
    o.parse     = RService_parse;
    return o;
 }
@@ -36,6 +37,17 @@ function RService_url(p){
    }
    // return RBrowser.contentPath(p + '.ws');
    return p + '.ws';
+}
+
+//==========================================================
+// <T>生成解析服务内容。</T>
+//
+// @method
+// @param p:source:String 来源
+// @return SServiceInfo 服务信息
+//===========================================================
+function RService_makeUrl(s, a){
+   return this.url(s) + '?action=' + a;
 }
 
 //==========================================================

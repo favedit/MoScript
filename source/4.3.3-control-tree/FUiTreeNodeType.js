@@ -9,32 +9,57 @@ function FUiTreeNodeType(o){
    o = RClass.inherits(this, o, FUiComponent);
    //..........................................................
    // @oroperty
-   o._linker   = RClass.register(o, new APtyString('_linker'));
-   o._icon     = RClass.register(o, new APtyString('_icon'));
-   o._service  = RClass.register(o, new APtyString('_service'));
-   o._action   = RClass.register(o, new APtyString('_action'));
-   o._config   = RClass.register(o, new APtyConfig('_config'));
+   o._code       = RClass.register(o, new APtyString('_code'));
+   o._storage    = RClass.register(o, new APtyString('_storage'));
+   o._icon       = RClass.register(o, new APtyString('_icon'));
+   o._service    = RClass.register(o, new APtyString('_service'));
+   o._action     = RClass.register(o, new APtyString('_action'));
+   o._attributes = RClass.register(o, new APtyAttributes('_attributes'));
    //..........................................................
-   o.linker    = FUiTreeNodeType_linker;
-   o.icon      = FUiTreeNodeType_icon;
-   o.service   = FUiTreeNodeType_service;
-   o.action    = FUiTreeNodeType_action;
    // @method
-   o.get       = FUiTreeNodeType_get;
-   o.set       = FUiTreeNodeType_set;
+   o.construct   = FUiTreeNodeType_construct;
    // @method
-   o.innerDump = FUiTreeNodeType_innerDump;
+   o.code        = FUiTreeNodeType_code;
+   o.storage     = FUiTreeNodeType_storage;
+   o.icon        = FUiTreeNodeType_icon;
+   o.service     = FUiTreeNodeType_service;
+   o.action      = FUiTreeNodeType_action;
+   // @method
+   o.get         = FUiTreeNodeType_get;
+   o.set         = FUiTreeNodeType_set;
+   // @method
+   o.innerDump   = FUiTreeNodeType_innerDump;
    return o;
 }
 
 //==========================================================
-// <T>获得关联。</T>
+// <T>构造处理。</T>
 //
 // @method
-// @return String 关联
 //==========================================================
-function FUiTreeNodeType_linker(){
-   return this._linker;
+function FUiTreeNodeType_construct(){
+   var o = this;
+   o.__base.FUiComponent.construct.call(o);
+}
+
+//==========================================================
+// <T>获得代码。</T>
+//
+// @method
+// @return String 代码
+//==========================================================
+function FUiTreeNodeType_code(){
+   return this._code;
+}
+
+//==========================================================
+// <T>获得存储类型。</T>
+//
+// @method
+// @return String 存储类型
+//==========================================================
+function FUiTreeNodeType_storage(){
+   return this._storage;
 }
 
 //==========================================================
@@ -75,8 +100,8 @@ function FUiTreeNodeType_action(){
 // @return EEventStatus 枚举类型
 //==========================================================
 function FUiTreeNodeType_get(n){
-   var o = this;
-   return o._config ? o._config.get(n) : null;
+   var s = this._attributes;
+   return s ? s.get(n) : null;
 }
 
 //==========================================================
@@ -87,9 +112,9 @@ function FUiTreeNodeType_get(n){
 // @return EEventStatus 枚举类型
 //==========================================================
 function FUiTreeNodeType_set(n, v){
-   var o = this;
-   if(o._config){
-      o._config.set(n, v)
+   var s = this._attributes;
+   if(s){
+      s.set(n, v)
    }
 }
 
@@ -103,7 +128,7 @@ function FUiTreeNodeType_set(n, v){
 function FUiTreeNodeType_innerDump(s){
    var o = this;
    s.append(RClass.dump(o));
-   s.append('[linker=',  o._linker);
+   s.append('[code=',  o._code);
    s.append(', icon=',  o._icon);
    s.append(', service=', o._service);
    s.append(', action=', o._action);

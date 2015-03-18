@@ -81,6 +81,37 @@ function AProperty_toString(){
    var o = this;
    return '<' + o._annotationCd + ',linker=' + o._linker + '>';
 }
+function APtyAttributes(n, l, vl, vt, vr, vb){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._left    = RInteger.nvl(vl);
+   o._top     = RInteger.nvl(vt);
+   o._right   = RInteger.nvl(vr);
+   o._bottom  = RInteger.nvl(vb);
+   o.load     = APtyAttributes_load;
+   o.save     = APtyAttributes_save;
+   o.toString = APtyAttributes_toString;
+   return o;
+}
+function APtyAttributes_load(v, x){
+   var o = this;
+   var s = v[o._name];
+   if(!s){
+      s = v[o._name] = new TAttributes();
+   }
+   s.split(x.get(o._linker), '=', ';');
+}
+function APtyAttributes_save(v, x){
+   var o = this;
+   var s = v[o._name];
+   if(!s.isEmpty()){
+      x.set(o._linker, s.join('=', ';'));
+   }
+}
+function APtyAttributes_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom;
+}
 function APtyBoolean(n, l, v){
    var o = this;
    AProperty.call(o, n, l);

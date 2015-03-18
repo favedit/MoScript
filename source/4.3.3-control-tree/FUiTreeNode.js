@@ -925,8 +925,10 @@ function FUiTreeNode_propertySave(x){
    var o = this;
    o.__base.FUiContainer.propertySave.call(o, x);
    // Property
-   x.set('type_name', o._typeName);
-   x.set('attributes', o._attributes.pack());
+   var t = o.type();
+   x.set('type_code', t._code);
+   x.set('storage', t._storage);
+   //x.set('attributes', o._attributes.pack());
 }
 
 //==========================================================

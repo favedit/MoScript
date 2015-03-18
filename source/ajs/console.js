@@ -366,8 +366,8 @@ function FHttpConsole_alloc(){
       o._pool.push(c);
    }
    var c = p.alloc();
-   c.lsnsLoad.clear();
-   c.lsnsLoad.register(o, o.onLoad);
+   c.clearLoadListeners();
+   c.addLoadListener(o, o.onLoad);
    return c;
 }
 function FHttpConsole_send(u){
@@ -1072,6 +1072,7 @@ function FXmlConsole_alloc(){
       a.onLoad = o.onLoad;
    }
    a._statusFree = false;
+   a.clearLoadListeners();
    return a;
 }
 function FXmlConsole_send(u, d){
@@ -1112,6 +1113,6 @@ function FXmlConsole_process(p){
    var c = o.alloc();
    c._asynchronous = true;
    c.send(p.url, p.inputDocument);
-   c.lsnsLoad.register(p, p.process);
+   c.addLoadListener(p, p.process);
    return c;
 }

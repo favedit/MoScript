@@ -14,6 +14,7 @@ function MListener(o){
    // @method
    o.addListener     = MListener_addListener;
    o.removeListener  = MListener_removeListener;
+   o.clearListeners  = MListener_clearListeners;
    // @method
    o.processListener = MListener_processListener;
    // @method
@@ -58,6 +59,23 @@ function MListener_removeListener(n, w, m){
    var lss = o._listeners;
    var ls = lss.get(n);
    return ls.unregister(w, m);
+}
+
+//==========================================================
+// <T>清空一类监听器。</T>
+//
+// @method
+// @param n:name:String 名称
+//==========================================================
+function MListener_clearListeners(n){
+   var o = this;
+   var lss = o._listeners;
+   if(lss){
+      var ls = lss.get(n);
+      if(ls){
+         ls.clear();
+      }
+   }
 }
 
 //==========================================================

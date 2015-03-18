@@ -1613,6 +1613,13 @@ function MUiHorizontal_setVisible(p){
       RHtml.displaySet(h, p);
    }
 }
+function SServiceInfo(){
+   var o = this;
+   o.service = null;
+   o.action  = null;
+   o.url     = null;
+   return o;
+}
 function TDatasetFetchArg(o){
    if(!o){o = this;}
    o.datasets   = new TDictionary();
@@ -3061,6 +3068,60 @@ function REvent_alloc(s, c){
 }
 function REvent_free(e){
    e.inUsing = false;
+}
+var RService = new function RService(){
+   var o = this;
+   o._services = new TDictionary();
+   o.url       = RService_url;
+   o.makeUrl   = RService_makeUrl;
+   o.parse     = RService_parse;
+   return o;
+}
+function RService_url(p){
+   if(RString.startsWith(p, 'http://')){
+      return p;
+   }
+   if(RString.startsWith(p, '#')){
+      return p.substr(1);
+   }
+   if(!RString.startsWith(p, '/')){
+      p = '/' + p;
+   }
+   return p + '.ws';
+}
+function RService_makeUrl(s, a){
+   return this.url(s) + '?action=' + a;
+}
+function RService_parse(p){
+   var o = this;
+   var s = null;
+   var ss = o._services;
+   if(p){
+      s = ss.get(p);
+      if(s == null){
+         var ps = p.split('@');
+         if(ps.length == 1){
+            if(ps[0]){
+               s = new SServiceInfo();
+               s.service = ps[0];
+               s.action = null;
+               s.url = o.url(ps[0]);
+            }
+         }else if(ps.length == 2){
+            if(ps[0] && ps[1]){
+               s = new SServiceInfo();
+               s.service = ps[1];
+               s.action = ps[0];
+               s.url = o.url(ps[1]) + '?action=' + ps[0];
+            }
+         }
+      }
+      if(s == null){
+         throw new TError(o, 'Unknown service format. (source={1})', p);
+      }
+      ss.set(p, s);
+   }
+   return s;
 }
 var RUiLayer = new function RUiLayer(){
    var o = this;

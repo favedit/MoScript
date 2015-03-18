@@ -80,6 +80,7 @@ function FXmlConsole_alloc(){
    }
    // 设置
    a._statusFree = false;
+   a.clearLoadListeners();
    return a;
 }
 
@@ -161,6 +162,6 @@ function FXmlConsole_process(p){
    var c = o.alloc();
    c._asynchronous = true;
    c.send(p.url, p.inputDocument);
-   c.lsnsLoad.register(p, p.process);
+   c.addLoadListener(p, p.process);
    return c;
 }

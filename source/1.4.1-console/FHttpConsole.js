@@ -66,8 +66,8 @@ function FHttpConsole_alloc(){
    }
    // 收集对象
    var c = p.alloc();
-   c.lsnsLoad.clear();
-   c.lsnsLoad.register(o, o.onLoad);
+   c.clearLoadListeners();
+   c.addLoadListener(o, o.onLoad);
    return c;
 }
 

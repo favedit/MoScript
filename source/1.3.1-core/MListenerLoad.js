@@ -11,6 +11,7 @@ function MListenerLoad(o){
    // @method
    o.addLoadListener     = MListenerLoad_addLoadListener;
    o.removeLoadListener  = MListenerLoad_removeLoadListener;
+   o.clearLoadListeners  = MListenerLoad_clearLoadListeners;
    // @method
    o.processLoadListener = MListenerLoad_processLoadListener;
    return o;
@@ -36,6 +37,15 @@ function MListenerLoad_addLoadListener(w, m){
 //==========================================================
 function MListenerLoad_removeLoadListener(w, m){
    this.removeListener(EEvent.Load, w, m);
+}
+
+//==========================================================
+// <T>清空加载监听器。</T>
+//
+// @method
+//==========================================================
+function MListenerLoad_clearLoadListeners(){
+   this.clearListeners(EEvent.Load);
 }
 
 //==========================================================

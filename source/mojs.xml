@@ -43,6 +43,8 @@
      <PathMerger source='/5.1.2-data-core'          target='/ajs/data-core.js'/>
      <PathMerger source='/5.2.1-data-form'          target='/ajs/data-form.js'/>
      <PathMerger source='/5.2.2-data-table'         target='/ajs/data-table.js'/>
+     <PathMerger source='/5.2.3-data-tool'          target='/ajs/data-tool.js'/>
+     <PathMerger source='/5.2.4-data-tree'          target='/ajs/data-tree.js'/>
 
      <PathMerger source='/6.1.1-design'             target='/ajs/design.js'/>
      <PathMerger source='/6.2.1-design-texture'     target='/ajs/design-texture.js'/>
@@ -99,6 +101,7 @@
         <File source='/ajs/data-form.js'/>
         <File source='/ajs/data-table.js'/>
         <File source='/ajs/data-tool.js'/>
+        <File source='/ajs/data-tree.js'/>
      </FileMerger>
      <FileMerger target='/ajs/mo-control.js'>
         <File source='/ajs/mo-base-control.js'/>

@@ -463,7 +463,7 @@ function FUiTreeView_push(p){
    }else if(RClass.isClass(p, FUiTreeLevel)){
       o._nodeLevels.set(p.id(), p);
    }else if(RClass.isClass(p, FUiTreeNodeType)){
-      o._nodeTypes.set(p.linker(), p);
+      o._nodeTypes.set(p.code(), p);
    }else if(RClass.isClass(p, FUiTreeNode)){
       o._nodes.push(p);
       o._allNodes.push(p);

@@ -6,7 +6,7 @@
 // @version 150104
 //==========================================================
 function FHttpConnection(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MListenerLoad);
    //..........................................................
    // @attribute
    o._asynchronous        = false;
@@ -22,9 +22,6 @@ function FHttpConnection(o){
    o._connection          = null;
    o._contentLength       = 0;
    o._statusFree          = true;
-   //..........................................................
-   // @listener
-   o.lsnsLoad             = null;
    //..........................................................
    // @event
    o.onConnectionSend     = FHttpConnection_onConnectionSend;
@@ -86,7 +83,7 @@ function FHttpConnection_onConnectionComplete(){
    var o = this;
    o._statusFree = true;
    // 完成处理
-   o.lsnsLoad.process(o);
+   o.processLoadListener(o);
 }
 
 //==========================================================
@@ -96,7 +93,6 @@ function FHttpConnection_onConnectionComplete(){
 //==========================================================
 function FHttpConnection_construct(){
    var o = this;
-   o.lsnsLoad = new TListeners();
    var c = o._connection = RXml.createConnection();
    c._linker = o;
    c.onreadystatechange = o.onConnectionReady;

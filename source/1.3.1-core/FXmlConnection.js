@@ -85,7 +85,7 @@ function FXmlConnection_onConnectionComplete(){
    e.document = d;
    e.root = r;
    e.parameters = o._parameters;
-   o.lsnsLoad.process(e);
+   o.processLoadListener(e);
    e.dispose();
    // 异步处理后清空属性
    if(o._asynchronous){
