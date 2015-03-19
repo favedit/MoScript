@@ -6,41 +6,41 @@
 // @version 150123
 //==========================================================
 function FUiSplit(o){
-   //o = RClass.inherits(this, o, FControl, MDesign, MDisplay, MUiHorizontal);
-   o = RClass.inherits(this, o, FControl);
+   //o = RClass.inherits(this, o, FUiControl, MDesign, MDisplay, MUiHorizontal);
+   o = RClass.inherits(this, o, FUiControl);
    //..........................................................
    // @property
-   o._dispStyle        = RClass.register(o, new APtyString('_dispStyle', ESplitStyle.Normal));
-   o._icon             = RClass.register(o, new APtyString('_icon'));
-   o._editExtend       = RClass.register(o, new APtyBoolean('_editExtend'), true);
+   //o._dispStyle        = RClass.register(o, new APtyString('_dispStyle', ESplitStyle.Normal));
+   //o._icon             = RClass.register(o, new APtyString('_icon'));
+   //o._editExtend       = RClass.register(o, new APtyBoolean('_editExtend'), true);
    // @style
-   o._styleTitle       = RClass.register(o, new TStyle('Title'));
-   o._iconMinus        = 'ctl.collapse_nor';
-   o._iconPlus         = 'ctl.expand_nor';
+   //o._styleTitle       = RClass.register(o, new AStyle('Title'));
+   //o._iconMinus        = 'ctl.collapse_nor';
+   //o._iconPlus         = 'ctl.expand_nor';
    // @attribute
-   o.__lines           = null;
-   o._esize            = ESize.Horizontal;
-   o.extended          = true;
+   //o.__lines           = null;
+   //o._esize            = ESize.Horizontal;
+   //o.extended          = true;
    // @html
-   o.hImage            = null;
-   o.hIcon             = null;
-   o.hText             = null;
+   //o.hImage            = null;
+   //o.hIcon             = null;
+   //o.hText             = null;
    //..........................................................
    // @event
-   o.onSplitMouseEnter = RClass.register(o, new HMouseEnter('onSplitMouseEnter'), FUiSplit_onSplitMouseEnter); 
-   o.onSplitMouseLeave = RClass.register(o, new HMouseLeave('onSplitMouseLeave'), FUiSplit_onSplitMouseLeave); 
-   o.onMouseDown       = FUiSplit_onMouseDown;
-   o.onBuildPanel      = FUiSplit_onBuildPanel;
+   //o.onSplitMouseEnter = RClass.register(o, new HMouseEnter('onSplitMouseEnter'), FUiSplit_onSplitMouseEnter); 
+   //o.onSplitMouseLeave = RClass.register(o, new HMouseLeave('onSplitMouseLeave'), FUiSplit_onSplitMouseLeave); 
+   //o.onMouseDown       = FUiSplit_onMouseDown;
+   //o.onBuildPanel      = FUiSplit_onBuildPanel;
    //..........................................................
    // @process
-   o.oeBuild           = FUiSplit_oeBuild;
-   o.oeMode            = FUiSplit_oeMode;
+   //o.oeBuild           = FUiSplit_oeBuild;
+   //o.oeMode            = FUiSplit_oeMode;
    //..........................................................
    // @method
-   o.construct         = FUiSplit_construct;
-   o.extend            = FUiSplit_extend;
-   o.pushLine          = FUiSplit_pushLine;
-   o.dispose           = FUiSplit_dispose;
+   //o.construct         = FUiSplit_construct;
+   //o.extend            = FUiSplit_extend;
+   //o.pushLine          = FUiSplit_pushLine;
+   //o.dispose           = FUiSplit_dispose;
    return o;
 }
 
@@ -103,7 +103,7 @@ function FUiSplit_onBuildPanel(){
 //==========================================================
 function FUiSplit_oeBuild(e){
    var o = this;
-   o.base.FControl.oeBuild.call(o, e);
+   o.base.FUiControl.oeBuild.call(o, e);
    o.height = 2;
    // Text
    if(RString.equals(o._dispStyle, ESplitStyle.Normal)){
@@ -147,7 +147,7 @@ function FUiSplit_oeBuild(e){
 //==========================================================
 function FUiSplit_oeMode(e){
    var o = this;
-   var r = o.base.FControl.oeMode.call(o, e);
+   var r = o.base.FUiControl.oeMode.call(o, e);
    o.base.MDisplay.oeMode.call(o, e);
    o.extend(o._editExtend);
    return r;
@@ -210,7 +210,7 @@ function FUiSplit_pushLine(hr){
 //==========================================================
 function FUiSplit_dispose(){
    var o = this;
-   o.base.FControl.dispose.call(o);
+   o.base.FUiControl.dispose.call(o);
    if(o.__lines){
       o.__lines.release();
       o.__lines = null;

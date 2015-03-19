@@ -3880,32 +3880,23 @@ function FUiFrame(o){
    o = RClass.inherits(this, o, FUiLayout);
    return o;
 }
-function FIconPicker(o){
-   o = RClass.inherits(this, o, FEditControl, MEditBorder, MListView);
-   o.iconDefault    = RClass.register(o, new TPtyStr('iconDefault'));
-   o.stIconDefault  = RClass.register(o, new TStyleIcon('Default'));
-   o.hEditIcon      = null;
-   o.borderStyle    = EUiBorder.RoundIcon;
-   o.onEditKeyDown  = FIconPicker_onEditKeyDown;
-   o.onEditKeyPress = FIconPicker_onEditKeyPress;
-   o.onBuildEdit    = FIconPicker_onBuildEdit;
-   o.setText        = FIconPicker_setText;
-   o.dispose        = FIconPicker_dispose;
+function FUiIconPicker(o){
+   o = RClass.inherits(this, o, FUiEdit);
    return o;
 }
-function FIconPicker_onEditKeyDown(e){
+function FUiIconPicker_onEditKeyDown(e){
    var o = this;
-   o.base.FEditControl.onEditKeyDown.call(o,e);
+   o.base.FUiEditControl.onEditKeyDown.call(o,e);
    o.hEditIcon.src = RRes.iconPath(RString.nvl(o.text(), o.styleIcon("Default")));
 }
-function FIconPicker_onEditKeyPress(e){
+function FUiIconPicker_onEditKeyPress(e){
    var o = this;
-   o.base.FEditControl.onEditKeyPress.call(o, e);
+   o.base.FUiEditControl.onEditKeyPress.call(o, e);
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
    }
 }
-function FIconPicker_onBuildEdit(b){
+function FUiIconPicker_onBuildEdit(b){
    var o = this;
    var h = b.hPanel;
    b.hIcon.width = 1;
@@ -3919,14 +3910,14 @@ function FIconPicker_onBuildEdit(b){
       h.maxLength = o.editLength;
    }
 }
-function FIconPicker_setText(t){
+function FUiIconPicker_setText(t){
    var o = this;
-   o.base.FEditControl.setText.call(o, t);
+   o.base.FUiEditControl.setText.call(o, t);
    o.hEditIcon.src = RResource.iconPath(RString.nvl(o.text(), o.styleIcon("Default")));
 }
-function FIconPicker_dispose(){
+function FUiIconPicker_dispose(){
    var o = this;
-   o.base.FEditControl.dispose.call(o);
+   o.base.FUiEditControl.dispose.call(o);
    o.hEditIcon = null;
    o.hEdit = null;
 }
@@ -6400,29 +6391,7 @@ function FUiSlideNumber_refreshValue(){
    o.processDataChangedListener(o);
 }
 function FUiSplit(o){
-   o = RClass.inherits(this, o, FControl);
-   o._dispStyle        = RClass.register(o, new APtyString('_dispStyle', ESplitStyle.Normal));
-   o._icon             = RClass.register(o, new APtyString('_icon'));
-   o._editExtend       = RClass.register(o, new APtyBoolean('_editExtend'), true);
-   o._styleTitle       = RClass.register(o, new TStyle('Title'));
-   o._iconMinus        = 'ctl.collapse_nor';
-   o._iconPlus         = 'ctl.expand_nor';
-   o.__lines           = null;
-   o._esize            = ESize.Horizontal;
-   o.extended          = true;
-   o.hImage            = null;
-   o.hIcon             = null;
-   o.hText             = null;
-   o.onSplitMouseEnter = RClass.register(o, new HMouseEnter('onSplitMouseEnter'), FUiSplit_onSplitMouseEnter);
-   o.onSplitMouseLeave = RClass.register(o, new HMouseLeave('onSplitMouseLeave'), FUiSplit_onSplitMouseLeave);
-   o.onMouseDown       = FUiSplit_onMouseDown;
-   o.onBuildPanel      = FUiSplit_onBuildPanel;
-   o.oeBuild           = FUiSplit_oeBuild;
-   o.oeMode            = FUiSplit_oeMode;
-   o.construct         = FUiSplit_construct;
-   o.extend            = FUiSplit_extend;
-   o.pushLine          = FUiSplit_pushLine;
-   o.dispose           = FUiSplit_dispose;
+   o = RClass.inherits(this, o, FUiControl);
    return o;
 }
 function FUiSplit_onSplitMouseEnter(e){
@@ -6451,7 +6420,7 @@ function FUiSplit_onBuildPanel(){
 }
 function FUiSplit_oeBuild(e){
    var o = this;
-   o.base.FControl.oeBuild.call(o, e);
+   o.base.FUiControl.oeBuild.call(o, e);
    o.height = 2;
    if(RString.equals(o._dispStyle, ESplitStyle.Normal)){
       var hf = o.hForm;
@@ -6485,7 +6454,7 @@ function FUiSplit_oeBuild(e){
 }
 function FUiSplit_oeMode(e){
    var o = this;
-   var r = o.base.FControl.oeMode.call(o, e);
+   var r = o.base.FUiControl.oeMode.call(o, e);
    o.base.MDisplay.oeMode.call(o, e);
    o.extend(o._editExtend);
    return r;
@@ -6517,7 +6486,7 @@ function FUiSplit_pushLine(hr){
 }
 function FUiSplit_dispose(){
    var o = this;
-   o.base.FControl.dispose.call(o);
+   o.base.FUiControl.dispose.call(o);
    if(o.__lines){
       o.__lines.release();
       o.__lines = null;
@@ -6526,4 +6495,76 @@ function FUiSplit_dispose(){
    o.hText = null;
    o.hIcon = null;
    o.hImage = null;
+}
+function FUiTemplate(o){
+   o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit, MListenerDataChanged);
+   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
+   o._unit            = RClass.register(o, new APtyString('_unit'));
+   o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
+   o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
+   o._hValueForm      = null;
+   o._hValueLine      = null;
+   o._hInputPanel     = null;
+   o._hInput          = null;
+   o.onBuildEditValue = FUiTemplate_onBuildEditValue;
+   o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiTemplate_onInputEdit);
+   o.construct        = FUiTemplate_construct;
+   o.formatDisplay    = FUiTemplate_formatDisplay;
+   o.formatValue      = FUiTemplate_formatValue;
+   o.get              = FUiTemplate_get;
+   o.set              = FUiTemplate_set;
+   o.refreshValue     = FUiTemplate_refreshValue;
+   return o;
+}
+function FUiTemplate_onBuildEditValue(p){
+   var o = this;
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = RBuilder.appendTable(hp);
+   hf.width = '100%';
+   var hl = o._hValueLine = RBuilder.appendTableRow(hf);
+   o._hChangePanel = RBuilder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
+   var he = o._hInput = RBuilder.appendEdit(hep, o.styleName('Input'));
+   o.attachEvent('onInputEdit', he, o.onInputEdit);
+   RHtml.setSize(hep, o._inputSize);
+   if(o._editLength){
+      he.maxLength = o._editLength;
+   }
+}
+function FUiTemplate_onInputEdit(p){
+   var o = this;
+   var v = o._hInput.value;
+   o.refreshValue();
+}
+function FUiTemplate_construct(){
+   var o = this;
+   o.__base.FUiEditControl.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
+}
+function FUiTemplate_formatDisplay(p){
+   var o = this;
+   var r = RString.nvl(p);
+   o._dataDisplay = r;
+   return r;
+}
+function FUiTemplate_formatValue(p){
+   return p;
+}
+function FUiTemplate_get(){
+   var o = this;
+   var r = o.__base.FUiEditControl.get.call(o);
+   var r = o._hInput.value;
+   return r;
+}
+function FUiTemplate_set(p){
+   var o = this;
+   o.__base.FUiEditControl.set.call(o, p);
+   o._hInput.value = RString.nvl(p);
+}
+function FUiTemplate_refreshValue(){
+   var o = this;
+   o.processDataChangedListener(o);
 }

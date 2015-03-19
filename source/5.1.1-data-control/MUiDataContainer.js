@@ -55,15 +55,11 @@ function MUiDataContainer_dsDataSave(p){
 //==========================================================
 function MUiDataContainer_dsLoadValue(r, m){
    var o = this;
-   // 设置存储信息
-   if(!r){
-      r = new TRow();
-   }
    // 纷发处理
    var e = new TEventProcess(o, 'oeDataLoadValue', MUiDataValue);
-   e.viewer = o._dsViewer;
+   e.viewer = o._dataViewer;
    e.store = m;
-   e.values = new TRow();
+   e.values = r;
    o.process(e);
 }
 
@@ -81,7 +77,7 @@ function MUiDataContainer_dsSaveValue(r, m){
    }
    // 存储数据内容
    var e = new TEventProcess(o, 'oeDataSaveValue', MUiDataValue);
-   e.viewer = o._dsViewer;
+   e.viewer = o._dataViewer;
    e.store = m;
    e.values = r;
    o.process(e);

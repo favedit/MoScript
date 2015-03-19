@@ -89,13 +89,10 @@ function MUiDataContainer_dsDataSave(p){
 }
 function MUiDataContainer_dsLoadValue(r, m){
    var o = this;
-   if(!r){
-      r = new TRow();
-   }
    var e = new TEventProcess(o, 'oeDataLoadValue', MUiDataValue);
-   e.viewer = o._dsViewer;
+   e.viewer = o._dataViewer;
    e.store = m;
-   e.values = new TRow();
+   e.values = r;
    o.process(e);
 }
 function MUiDataContainer_dsSaveValue(r, m){
@@ -104,7 +101,7 @@ function MUiDataContainer_dsSaveValue(r, m){
       r = new TRow();
    }
    var e = new TEventProcess(o, 'oeDataSaveValue', MUiDataValue);
-   e.viewer = o._dsViewer;
+   e.viewer = o._dataViewer;
    e.store = m;
    e.values = r;
    o.process(e);

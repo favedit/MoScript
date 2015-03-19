@@ -1,51 +1,52 @@
 //==========================================================
 // <T>图标选取控件。</T>
 //
-// @class FEditControl, MEditBorder, MListView
+// @class FUiEditControl, MEditBorder, MListView
 // @history 091111 MAOCY 创建
 //==========================================================
-function FIconPicker(o){
-   o = RClass.inherits(this, o, FEditControl, MEditBorder, MListView);
+function FUiIconPicker(o){
+   //o = RClass.inherits(this, o, FUiEditControl, MEditBorder, MListView);
+   o = RClass.inherits(this, o, FUiEdit);
    //..........................................................
    // @property
-   o.iconDefault    = RClass.register(o, new TPtyStr('iconDefault'));
+   //o.iconDefault    = RClass.register(o, new TPtyStr('iconDefault'));
    //..........................................................
    // @style
-   o.stIconDefault  = RClass.register(o, new TStyleIcon('Default'));
+   //o.stIconDefault  = RClass.register(o, new TStyleIcon('Default'));
    //..........................................................
    // @attribute
-   o.hEditIcon      = null;
-   o.borderStyle    = EUiBorder.RoundIcon;
+   //o.hEditIcon      = null;
+   //o.borderStyle    = EUiBorder.RoundIcon;
    //..........................................................
    // @event
-   o.onEditKeyDown  = FIconPicker_onEditKeyDown;
-   o.onEditKeyPress = FIconPicker_onEditKeyPress;
-   o.onBuildEdit    = FIconPicker_onBuildEdit;
+   //o.onEditKeyDown  = FUiIconPicker_onEditKeyDown;
+   //o.onEditKeyPress = FUiIconPicker_onEditKeyPress;
+   //o.onBuildEdit    = FUiIconPicker_onBuildEdit;
    //..........................................................
    // @method
-   o.setText        = FIconPicker_setText;
-   o.dispose        = FIconPicker_dispose;
+   //o.setText        = FUiIconPicker_setText;
+   //o.dispose        = FUiIconPicker_dispose;
    return o;
 }
 
 //------------------------------------------------------------
-function FIconPicker_onEditKeyDown(e){
+function FUiIconPicker_onEditKeyDown(e){
    var o = this;
-   //alert(FIconPicker_onEditKeyDown);
-   o.base.FEditControl.onEditKeyDown.call(o,e);
+   //alert(FUiIconPicker_onEditKeyDown);
+   o.base.FUiEditControl.onEditKeyDown.call(o,e);
    o.hEditIcon.src = RRes.iconPath(RString.nvl(o.text(), o.styleIcon("Default")));
 }
 
 // ------------------------------------------------------------
-function FIconPicker_onEditKeyPress(e){
+function FUiIconPicker_onEditKeyPress(e){
    var o = this;
-   o.base.FEditControl.onEditKeyPress.call(o, e);
+   o.base.FUiEditControl.onEditKeyPress.call(o, e);
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
    }
 }
 // ------------------------------------------------------------
-function FIconPicker_onBuildEdit(b){
+function FUiIconPicker_onBuildEdit(b){
    var o = this;
    var h = b.hPanel;
    b.hIcon.width = 1;
@@ -65,16 +66,16 @@ function FIconPicker_onBuildEdit(b){
 
 // ------------------------------------------------------------
 // text
-function FIconPicker_setText(t){
+function FUiIconPicker_setText(t){
    var o = this;
-   o.base.FEditControl.setText.call(o, t);
+   o.base.FUiEditControl.setText.call(o, t);
    o.hEditIcon.src = RResource.iconPath(RString.nvl(o.text(), o.styleIcon("Default")));
 }
 // ------------------------------------------------------------
 // text
-function FIconPicker_dispose(){
+function FUiIconPicker_dispose(){
    var o = this;
-   o.base.FEditControl.dispose.call(o);
+   o.base.FUiEditControl.dispose.call(o);
    o.hEditIcon = null;
    o.hEdit = null;
 }

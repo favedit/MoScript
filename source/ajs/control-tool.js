@@ -328,7 +328,7 @@ function FUiToolButtonMenu(o){
    o = RClass.inherits(this, o, FUiToolButton, MUiContainer, MDropable, MUiFocus);
    o.popup         = null;
    o.hDropPanel    = null;
-   o._styleDropHover = RClass.register(o, new AStyleIcon('DropHover'));
+   o._styleDropHover = RClass.register(o, new AStyleIcon('_styleDropHover'));
    o.onBuild       = FUiToolButtonMenu_onBuild;
    o.onEnter       = FUiToolButtonMenu_onEnter;
    o.onLeave       = FUiToolButtonMenu_onLeave;
@@ -343,7 +343,7 @@ function FUiToolButtonMenu(o){
 }
 function FUiToolButtonMenu_onEnter(e){
    var o = this;
-   o.base.FUiToolButton.onEnter.call(o, e);
+   o.__base.FUiToolButton.onEnter.call(o, e);
    if(!o.disabled){
       o.hDropIcon.src = o.styleIconPath('DropHover');
    }
@@ -351,7 +351,7 @@ function FUiToolButtonMenu_onEnter(e){
 function FUiToolButtonMenu_onLeave(e){
    var o = this;
    if(!o.popup.isVisible()){
-      o.base.FUiToolButton.onLeave.call(o, e);
+      o.__base.FUiToolButton.onLeave.call(o, e);
       if(!o.disabled){
          o.hDropIcon.src = o.styleIconPath('Drop');
       }
@@ -370,7 +370,7 @@ function FUiToolButtonMenu_onBlur(e){
 function FUiToolButtonMenu_onButtonClick(){
    var o = this;
    if(!o.disabled){
-      o.base.FUiToolButton.onButtonClick.call(o);
+      o.__base.FUiToolButton.onButtonClick.call(o);
       if(!(o.action || o.page)){
          o.drop();
       }else if(o.action){
@@ -383,8 +383,8 @@ function FUiToolButtonMenu_onDropClick(e){
 }
 function FUiToolButtonMenu_onBuild(e){
    var o = this;
+   return o.__base.FUiToolButton.onBuild.call(o, e);
    if(e.isBefore()){
-      o.base.FUiToolButton.onBuild.call(o, e);
       var h = o.hDropPanel = o.hButtonLine.insertCell();
       h.className = o.style('Drop')
       o.hDropIcon = RBuilder.appendIcon(h, o.styleIcon('Drop'));
@@ -397,15 +397,10 @@ function FUiToolButtonMenu_onBuild(e){
 }
 function FUiToolButtonMenu_construct(){
    var o = this;
-   o.popup = RClass.create(FPopupMenu);
-   o.popup.opener = o;
+   o.__base.FUiToolButton.construct.call(o);
 }
 function FUiToolButtonMenu_push(c){
    var o = this;
-   if(RClass.isClass(c, MMenuButton)){
-      return o.popup.push(c);
-   }
-   o.base.FUiToolButton.push.call(o, c);
 }
 function FUiToolButtonMenu_drop(){
    var o = this;
@@ -415,7 +410,7 @@ function FUiToolButtonMenu_drop(){
 }
 function FUiToolButtonMenu_dispose(){
    var o = this;
-   o.base.FControl.dispose.call(o);
+   o.__base.FControl.dispose.call(o);
    o.hDropIcon = null;
    o.hDropPanel = null;
 }
