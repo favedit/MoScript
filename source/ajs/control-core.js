@@ -222,6 +222,57 @@ function FEditorConsole_lost(e){
    o.leave(e);
    o.blur(e);
 }
+function FEnvironmentConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o.scope       = EScope.Local;
+   o.environment = null;
+   o.connect     = FEnvironmentConsole_connect;
+   o.build       = FEnvironmentConsole_build;
+   o.buildValue  = FEnvironmentConsole_buildValue;
+   o.load        = FEnvironmentConsole_load;
+   o.xml         = FEnvironmentConsole_xml;
+   return o;
+}
+function FEnvironmentConsole_connect(){
+   return;
+   var xData = window.xEnvironment;
+   if(xData){
+      this.environment = RXml.makeNode(xData);
+   }
+}
+function FEnvironmentConsole_build(config){
+   var o = this;
+   if(!o.environment){
+      o.connect()
+   }
+   if(o.environment){
+      var node = config.create('Environment');
+      node.attributes().append(this.environment.attributes());
+   }
+}
+function FEnvironmentConsole_buildValue(){
+   if(!this.environment){
+      this.connect()
+   }
+   if(this.environment){
+      var env = RHtml.get('_environment');
+      if(env){
+         env.value = this.environment.xml();
+      }
+   }
+}
+function FEnvironmentConsole_load(p){
+   this.environment = RXml.makeNode(p);
+}
+function FEnvironmentConsole_xml(){
+   if(!this.environment){
+      this.connect()
+   }
+   if(this.environment){
+      return this.environment.xml();
+   }
+   return null;
+}
 function FFocusConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o.scope              = EScope.Page;

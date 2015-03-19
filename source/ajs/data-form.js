@@ -1,69 +1,46 @@
 function FUiDataAction(o){
-   o = RClass.inherits(this, o, FUiComponent);
-   o._action = RClass.register(o, new APtyString('_action'));
+   o = RClass.inherits(this, o, FUiComponent, MInvoke);
+   o._action        = RClass.register(o, new APtyString('_action'));
+   o._service       = RClass.register(o, new APtyString('_service'));
+   o._execute       = RClass.register(o, new APtyString('_execute'));
+   o._loading       = false;
+   o._dataContainer = null;
+   o.onLoaded       = FUiDataAction_onLoaded;
+   o.invoke         = FUiDataAction_invoke;
+   return o;
+}
+function FUiDataAction_onLoaded(p){
+   var o = this;
+   RWindow.setEnable(true);
+   o._loading = false;
+}
+function FUiDataAction_invoke(p){
+   var o = this;
+   RAssert.debugTrue(RClass.isClass(p, MUiDataContainer));
+   var svc = RService.parse(o._service);
+   if(!svc){
+      throw new TError(o, 'Unknown service.');
+   }
+   RWindow.setEnable(false);
+   var xdocument = new TXmlDocument();
+   var root = xdocument.root();
+   root.set('action', svc.action);
+   RConsole.find(FEnvironmentConsole).build(root);
+   var config = root.create('Data');
+   p.dsSaveValue(config);
+   RLogger.debug(this, xdocument.dump());
+   o._loading = true;
+   o._dataContainer = p;
+   var connection = RConsole.find(FXmlConsole).sendAsync(svc.url, xdocument);
+   connection.addLoadListener(o, o.onLoaded);
+}
+function FUiDataCheck(o){
+   o = RClass.inherits(this, o, FUiCheck, MUiDataField);
    return o;
 }
 function FUiDataEdit(o){
-   o = RClass.inherits(this, o, FUiEdit);
-   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
-   o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
-   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
-   o._hInput          = null;
-   o.onBuildEditValue = FUiDataEdit_onBuildEditValue;
-   o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiDataEdit_onInputEdit);
-   o.construct        = FUiDataEdit_construct;
-   o.get              = FUiDataEdit_get;
-   o.set              = FUiDataEdit_set;
-   o.refreshValue     = FUiDataEdit_refreshValue;
+   o = RClass.inherits(this, o, FUiEdit, MUiDataField);
    return o;
-}
-function FUiDataEdit_oeDataLoad(p){
-   var o = this;
-   return EEventStatus.Stop;
-}
-function FUiDataEdit_oeDataSave(p){
-   var o = this;
-   return EEventStatus.Stop;
-}
-function FUiDataEdit_onBuildEditValue(p){
-   var o = this;
-   var h = o._hValuePanel;
-   h.className = o.styleName('InputPanel');
-   var he = o._hInput = RBuilder.appendEdit(h, o.styleName('Input'));
-   if(o._editLength){
-      he.maxLength = o._editLength;
-   }
-}
-function FUiDataEdit_onInputEdit(p){
-   var o = this;
-   var v = o._hInput.value;
-   o.refreshValue();
-}
-function FUiDataEdit_construct(){
-   var o = this;
-   o.__base.FUiEdit.construct.call(o);
-   o._inputSize = new SSize2(120, 0);
-}
-function FUiDataEdit_get(){
-   var o = this;
-   var r = o.__base.FUiEdit.get.call(o);
-   var h = o._hInput;
-   if(h){
-      r = h.value;
-   }
-   return r;
-}
-function FUiDataEdit_set(p){
-   var o = this;
-   o.__base.FUiEdit.set.call(o, p);
-   var h = o._hInput;
-   if(h){
-      h.value = RString.nvl(p);
-   }
-}
-function FUiDataEdit_refreshValue(){
-   var o = this;
-   o.processDataChangedListener(o);
 }
 function FUiDataEdit_onDataKeyDown(s, e){
    var o = this;
@@ -161,15 +138,6 @@ function FUiDataEdit_drop(){
          o.finded = t;
       }
    }
-}
-function FUiDataEdit_clone(){
-   var o = this;
-   var r = o._class.newInstance();
-   GHtml_clone(r, o.hPanel);
-   return r;
-}
-function FUiDataEdit_link(){
-   var o = this;
 }
 function FUiDataEditControl(o){
    o = RClass.inherits(this, o, FUiEditControl, MDataField, MEditValue, MEditChange, MEditDrop);
@@ -616,7 +584,11 @@ function FUiDataEditControl_dispose(){
    o.__base.FUiEditControl.dispose.call(o);
 }
 function FUiDataFrame(o){
-   o = RClass.inherits(this, o, FUiFrame);
+   o = RClass.inherits(this, o, FUiFrame, MUiDataset, MUiDataContainer, MUiDataAction);
+   return o;
+}
+function FUiDataMemo(o){
+   o = RClass.inherits(this, o, FUiMemo, MUiDataField);
    return o;
 }
 function FUiDataNumber(o){
@@ -840,4 +812,8 @@ function FUiDataNumber_dispose(){
    o.hUpIcon = null;
    o.hDownIcon = null;
    o.hChgIic = null;
+}
+function FUiDataSelect(o){
+   o = RClass.inherits(this, o, FUiSelect, MUiDataField);
+   return o;
 }

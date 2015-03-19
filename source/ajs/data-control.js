@@ -1,36 +1,264 @@
-function MDataField(o){
-   o = RClass.inherits(this, o, MDataValue);
-   o._dataName = RClass.register(o, new APtyString('_dataName'));
+var EUiDataAction = new function EUiDataAction(){
+   var o = this;
+   o.Fetch     = 'fetch';
+   o.Search    = 'search';
+   o.Lov       = 'lov';
+   o.Zoom      = 'zoom';
+   o.Prepare   = 'prepare';
+   o.Insert    = 'insert';
+   o.Update    = 'update';
+   o.Delete    = 'delete';
+   o.First     = 'first';
+   o.Prior     = 'prior';
+   o.Next      = 'next';
+   o.Last      = 'last';
+   o.Action    = 'action';
+   o.FetchLov  = 'fetchLov';
+   o.EndFetch  = 'endfetch';
+   o.EndUpdate = 'endupdate';
+   o.DsChanged = 'dschanged';
+   o.Scalar    = 'scalar';
+   o.Complete  = 'complete';
+   o.Process   = 'process';
    return o;
 }
-function MDataset(o){
-   o = RClass.inherits(this, o, MDataContainer);
+var EUiDataMode = new function EUiDataMode(){
+   var o = this;
+   o.Insert = 'insert';
+   o.Update = 'update';
+   o.Delete = 'delete';
+   return o;
+}
+var EUiDataService = new function EUiDataService(){
+   var o = this;
+   o.Dataset    = 'database.dataset';
+   o.List       = 'design.list';
+   o.WebForm    = 'design.webform';
+   o.Translate  = 'design.translate';
+   o.WebDataset = 'logic.dataset';
+   return o;
+}
+var EUiDataStore = new function EUiDataStore(){
+   var o = this;
+   o.Full     = 0;
+   o.Sort     = 1;
+   o.Config   = 2;
+   o.Value    = 3;
+   o.Name     = 4;
+   o.DataName = 5;
+   o.DataNvl  = 6;
+   o.Reset    = 7;
+   o.Prepare  = 8;
+   return o;
+}
+function MUiDataAction(o){
+   o = RClass.inherits(this, o);
+   o.doAction = MUiDataAction_doAction
+   return o;
+}
+function MUiDataAction_doAction(n){
+   var o = this;
+   var c = o.findComponent(n);
+   if(RClass.isClass(c, MInvoke)){
+      c.invoke(this);
+   }else{
+      throw new TError(o, 'Component is invalid.');
+   }
+}
+function MUiDataContainer(o){
+   o = RClass.inherits(this, o, MUiContainer);
+   o.dsDataLoad = MUiDataContainer_dsDataLoad;
+   o.dsDataSave = MUiDataContainer_dsDataSave;
+   o.dsLoadValue = MUiDataContainer_dsLoadValue;
+   o.dsSaveValue = MUiDataContainer_dsSaveValue;
+   return o;
+}
+function MUiDataContainer_dsDataLoad(p){
+   var o = this;
+   var e = new TEventProcess(null, o, 'oeDataLoad', MDataValue);
+   e.source = p;
+   o.process(e);
+   e.dispose();
+}
+function MUiDataContainer_dsDataSave(p){
+   var o = this;
+   var e = new TEventProcess(null, o, 'oeDataSave', MDataValue);
+   e.source = p;
+   o.process(e);
+   e.dispose();
+}
+function MUiDataContainer_dsLoadValue(r, m){
+   var o = this;
+   if(!r){
+      r = new TRow();
+   }
+   var e = new TEventProcess(o, 'oeDataLoadValue', MUiDataValue);
+   e.viewer = o._dsViewer;
+   e.store = m;
+   e.values = new TRow();
+   o.process(e);
+}
+function MUiDataContainer_dsSaveValue(r, m){
+   var o = this;
+   if(!r){
+      r = new TRow();
+   }
+   var e = new TEventProcess(o, 'oeDataSaveValue', MUiDataValue);
+   e.viewer = o._dsViewer;
+   e.store = m;
+   e.values = r;
+   o.process(e);
+   r.set('_status', o._dataStatusCd);
+   return r;
+}
+function MUiDataField(o){
+   o = RClass.inherits(this, o, MUiValue, MUiDataValue);
+   o._dataName       = RClass.register(o, new APtyString('_dataName'));
+   o.oeDataLoadValue = MUiDataField_oeDataLoadValue;
+   o.oeDataSaveValue = MUiDataField_oeDataSaveValue;
+   return o;
+}
+function MUiDataField_oeDataLoadValue(p){
+   var o = this;
+   var r = p.values;
+   var v = r.get(o._dataName);
+   o.set(v);
+   return EEventStatus.Stop;
+}
+function MUiDataField_oeDataSaveValue(p){
+   var o = this;
+   var v = o.get();
+   var r = p.values;
+   r.set(o._dataName, v);
+   return EEventStatus.Stop;
+}
+function MUiDataset(o){
+   o = RClass.inherits(this, o);
    o._dsDataset         = RClass.register(o, new APtyString('_dsDataset', 'dataset'));
    o._dsPageSize        = RClass.register(o, new APtyInteger('_dsPageSize', 'page_size'), 20);
+   o._dsPageIndex       = 0;
    o._dsInsertAction    = RClass.register(o, new APtyString('_dsInsertAction', 'insert_action'));
    o._dsUpdateAction    = RClass.register(o, new APtyString('_dsUpdateAction', 'update_action'));
    o._dsDeleteAction    = RClass.register(o, new APtyString('_dsDeleteAction', 'delete_action'));
    o._dataSource        = null;
-   o.onDsFetch          = MDataset_onDsFetch;
+   o._dataViewer        = null;
+   o._dataValues        = null;
+   o._dataGlobalSearchs = null;
+   o._dataSearchs       = null;
+   o._dataGlobalOrders  = null;
+   o._dataOrders        = null;
+   o.__progress           = false;
+   o.lsnsUpdateBegin    = null;
+   o.lsnsUpdateEnd      = null;
    o.onDatasetLoadBegin = RMethod.empty;
    o.onDatasetLoad      = RMethod.empty;
    o.onDatasetLoadEnd   = RMethod.empty;
-   o.oeDataLoad         = MDataset_oeDataLoad;
-   o.oeDataSave         = MDataset_oeDataSave;
-   o.oeDatasetLoad      = MDataset_oeDatasetLoad;
-   o.construct          = MDataset_construct;
-   o.loadDataset        = MDataset_loadDataset;
-   o.loadDatasets       = MDataset_loadDatasets;
-   o.dsDatasetLoad      = MDataset_dsDatasetLoad;
-   o.dsFetch            = MDataset_dsFetch;
+   o.onStoreChanged     = RMethod.empty;
+   o.onDsFetchBegin     = RMethod.empty;
+   o.onDsFetchEnd       = RMethod.empty;
+   o.onDsUpdateBegin    = RMethod.empty;
+   o.onDsUpdateEnd      = RMethod.empty;
+   o.onDsFetch          = MUiDataset_onDsFetch;
+   o.onDsPrepareCheck   = RMethod.emptyTrue;
+   o.onDsCopy           = MUiDataset_onDsCopy;
+   o.onDsPrepare        = MUiDataset_onDsPrepare;
+   o.onDsUpdateCheck    = RMethod.emptyTrue;
+   o.onDsUpdate         = MUiDataset_onDsUpdate;
+   o.onDsDoUpdate       = MUiDataset_onDsDoUpdate;
+   o.onDsDeleteCheck    = RMethod.emptyTrue;
+   o.onDsDelete         = MUiDataset_onDsDelete;
+   o.onDsProcess        = MUiDataset_onDsProcess;
+   o.oeDataLoad         = MUiDataset_oeDataLoad;
+   o.oeDataSave         = MUiDataset_oeDataSave;
+   o.oeDatasetLoad      = MUiDataset_oeDatasetLoad;
+   o.construct          = MUiDataset_construct;
+   o.loadDataset        = MUiDataset_loadDataset;
+   o.loadDatasets       = MUiDataset_loadDatasets;
+   o.toDeepAttributes   = MUiDataset_toDeepAttributes;
+   o.dsDatasetLoad      = MUiDataset_dsDatasetLoad;
+   o.dsFetch            = MUiDataset_dsFetch;
+   o.dsInitialize        = MUiDataset_dsInitialize;
+   o.dsShow              = MUiDataset_dsShow;
+   o.dsLoaded            = MUiDataset_dsLoaded;
+   o.dsSearch            = MUiDataset_dsSearch;
+   o.dsCopy              = MUiDataset_dsCopy;
+   o.dsPrepare           = MUiDataset_dsPrepare;
+   o.dsUpdate            = MUiDataset_dsUpdate;
+   o.dsDelete            = MUiDataset_dsDelete;
+   o.dsMode              = MUiDataset_dsMode;
+   o.dsDoUpdate          = MUiDataset_dsDoUpdate;
+   o.dsProcess           = MUiDataset_dsProcess;
+   o.dsProcessCustom     = MUiDataset_dsProcessCustom;
+   o.dsProcessChanged    = MUiDataset_dsProcessChanged;
+   o.dsProcessSelected   = MUiDataset_dsProcessSelected;
+   o.dsProcessAll        = MUiDataset_dsProcessAll;
+   o.psProgress          = MUiDataset_psProgress;
+   o.psValid             = MUiDataset_psValid;
+   o.dsIsChanged         = MUiDataset_dsIsChanged;
+   o.dsCount             = MUiDataset_dsCount;
+   o.dsCurrent           = MUiDataset_dsCurrent;
+   o.dsMove              = MUiDataset_dsMove;
+   o.dsMovePage          = MUiDataset_dsMovePage;
+   o.dsGet               = MUiDataset_dsGet;
+   o.dsSet               = MUiDataset_dsSet;
+   o.dsRefresh           = MUiDataset_dsRefresh;
+   o.doSearch            = MUiDataset_doSearch;
    return o;
 }
-function MDataset_onDsFetch(g){
+function MUiDataset_onDsFetch(g){
    var o = this;
    var ds = g.datasets;
    o.dsDatasetLoad(ds);
 }
-function MDataset_oeDataLoad(p){
+function MUiDataset_onDsCopy(g){
+   var o = this;
+   o.loadDatasets(g.resultDatasets);
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+function MUiDataset_onDsPrepare(g){
+   var o = this;
+   g.resultDatasets.set('/', null);
+   o.loadDatasets(g.resultDatasets);
+   o.doPrepare(g.resultRow);
+   if(g.invokeSuccess()){
+	   return;
+   }
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+function MUiDataset_onDsUpdate(g){
+   var o = this;
+   o.loadDatasets(g.resultDatasets);
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+function MUiDataset_onDsDoUpdate(g){
+   var o = this;
+   if(!g.invokeSuccess()){
+      o.psRefresh();
+   }
+   if(!g.processFinish){
+      o.focus();
+      o.lsnsUpdateEnd.process(g);
+   }
+   o.onLoadDatasetEnd();
+}
+function MUiDataset_onDsDelete(g){
+   var o = this;
+   o.loadDatasets(g.resultDatasets);
+   o.doDelete(g.resultRow);
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+function MUiDataset_onDsProcess(g){
+   var o = this;
+   var cb = g.resultCallback;
+   if(cb){
+      cb.invoke(o, g);
+   }
+}
+function MUiDataset_oeDataLoad(p){
    var o = this;
    if(p.isBefore()){
       var ds = p.source;
@@ -39,7 +267,7 @@ function MDataset_oeDataLoad(p){
    }
    return EEventStatus.Contine;
 }
-function MDataset_oeDataSave(p){
+function MUiDataset_oeDataSave(p){
    var o = this;
    if(p.isBefore()){
       var ds = p.source;
@@ -48,7 +276,7 @@ function MDataset_oeDataSave(p){
    }
    return EEventStatus.Contine;
 }
-function MDataset_oeDatasetLoad(p){
+function MUiDataset_oeDatasetLoad(p){
    var o = this;
    if(p.isBefore()){
       var ds = p.datasets;
@@ -58,16 +286,17 @@ function MDataset_oeDatasetLoad(p){
    }
    return EEventStatus.Contine;
 }
-function MDataset_construct(){
+function MUiDataset_construct(){
    var o = this;
+   o._dataViewer = new TDatasetViewer();
 }
-function MDataset_loadDataset(d){
+function MUiDataset_loadDataset(d){
    var o = this;
    o.dsStore = d;
-   d.saveViewer(o.dsViewer);
+   d.saveViewer(o._dataViewer);
    o.onLoadDataset(d);
 }
-function MDataset_loadDatasets(p){
+function MUiDataset_loadDatasets(p){
    var o = this;
    var c = p.count();
    for(var i = 0; i < c; i++){
@@ -79,59 +308,14 @@ function MDataset_loadDatasets(p){
       dc.loadDataset(d);
    }
 }
-function MDataset_dsDatasetLoad(p){
+function MUiDataset_dsDatasetLoad(p){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeDatasetLoad', MDataset);
+   var e = new TEventProcess(null, o, 'oeDatasetLoad', MUiDataset);
    e.datasets = p;
    o.process(e);
    e.dispose();
 }
-function MDataset_dsFetch(){
-   var o = this;
-   var g = new TDatasetFetchArg();
-   g.owner = o;
-   g.name = o._name;
-   g.callback = o.onDsFetch;
-   RConsole.find(FDatasetConsole).fetch(g);
-}
-function MDataset_onDsPrepare(g){
-   var o = this;
-   g.resultDatasets.set('/', null);
-   o.loadDatasets(g.resultDatasets);
-   o.doPrepare(g.resultRow);
-   if(g.invokeSuccess()){
-	   return;
-   }
-   o.onLoadDatasetEnd();
-   o.focus();
-}
-function MDataset_onDsUpdate(g){
-   var o = this;
-   o.loadDatasets(g.resultDatasets);
-   o.onLoadDatasetEnd();
-   o.focus();
-}
-function MDataset_onDsCopy(g){
-   var o = this;
-   o.loadDatasets(g.resultDatasets);
-   o.onLoadDatasetEnd();
-   o.focus();
-}
-function MDataset_onDsDelete(g){
-   var o = this;
-   o.loadDatasets(g.resultDatasets);
-   o.doDelete(g.resultRow);
-   o.onLoadDatasetEnd();
-   o.focus();
-}
-function MDataset_onDsProcess(g){
-   var o = this;
-   var cb = g.resultCallback;
-   if(cb){
-      cb.invoke(o, g);
-   }
-}
-function MDataset_toDeepAttributes(a, m){
+function MUiDataset_toDeepAttributes(a, m){
    var o = this;
    if(!a){
       a = new TAttributes();
@@ -139,13 +323,13 @@ function MDataset_toDeepAttributes(a, m){
    var ts = new TList();
    var p = o;
    while(p){
-      if(RClass.isClass(p, MDataset)){
+      if(RClass.isClass(p, MUiDataset)){
          ts.push(p);
       }
       if(!p.parent){
          break;
       }
-      p = p.topControl(MDataset);
+      p = p.topControl(MUiDataset);
    }
    for(var n=ts.count; n>=0; n--){
       var p = ts.get(n);
@@ -160,27 +344,24 @@ function MDataset_toDeepAttributes(a, m){
    }
    return a;
 }
-function MDataset_onDsDoUpdate(g){
+function MUiDataset_dsFetch(){
    var o = this;
-   if(!g.invokeSuccess()){
-      o.psRefresh();
-   }
-   if(!g.processFinish){
-      o.focus();
-      o.lsnsUpdateEnd.process(g);
-   }
-   o.onLoadDatasetEnd();
+   var g = new TDatasetFetchArg();
+   g.owner = o;
+   g.name = o._name;
+   g.callback = o.onDsFetch;
+   RConsole.find(FDatasetConsole).fetch(g);
 }
-function MDataset_dsInitialize(){
+function MUiDataset_dsInitialize(){
    this.callEvent('onFormInitialize', this, this.__initializeEvent);
 }
-function MDataset_dsShow(){
+function MUiDataset_dsShow(){
    this.callEvent('onFormShow', this, this.__showEvent);
 }
-function MDataset_dsLoaded(){
+function MUiDataset_dsLoaded(){
    this.callEvent('onDatasetLoaded', this, this.__loadedEvent);
 }
-function MDataset_dsSearch(s){
+function MUiDataset_dsSearch(s){
    var o = this;
    o.psProgress(true);
    var tc = o.topControl();
@@ -190,85 +371,51 @@ function MDataset_dsSearch(s){
    }
    var g = new TDatasetFetchArg(tc.name, tc.formId, o.dsPageSize, 0, true, false, pth);
    g.mode = tc._emode;
-   g.searchs.append(o.dsGlobalSearchs);
-   g.searchs.append(o.dsSearchs);
-   g.orders.append(o.dsGlobalOrders);
-   g.orders.append(o.dsOrders);
+   g.searchs.append(o._dataGlobalSearchs);
+   g.searchs.append(o._dataSearchs);
+   g.orders.append(o._dataGlobalOrders);
+   g.orders.append(o._dataOrders);
    o.toDeepAttributes(g.values);
-   g.values.append(o.dsValues);
+   g.values.append(o._dataValues);
    g.callback = new TInvoke(o, o.onDsFetch);
    RConsole.find(FDatasetConsole).fetch(g);
 }
-function MDataset_dsCopy(r){
+function MUiDataset_dsCopy(r){
    var o = this;
    o.psProgress(true);
    o.psMode(EMode.Insert);
    var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
    g.form = o;
    g.mode = EMode.Insert;
-   o.dsSearchs.clear();
-   o.dsSearchs.push(new TSearchItem('OUID', r.get("OUID")));
-   g.searchs = o.dsSearchs;
+   o._dataSearchs.clear();
+   o._dataSearchs.push(new TSearchItem('OUID', r.get("OUID")));
+   g.searchs = o._dataSearchs;
    g.callback = new TInvoke(o, o.onDsCopy);
    if(o.onDsUpdateCheck(g)){
       RConsole.find(FDatasetConsole).fetch(g);
    }
    return;
 }
-function MDataset_dsPrepare(cb){
+function MUiDataset_dsPrepare(cb){
    var o = this;
    o.psProgress(true);
    o.psMode(EMode.Insert);
    var g = new TDatasetPrepareArg(o.name, o.formId);
    g.form = o;
-   g.values.append(o.dsValues);
+   g.values.append(o._dataValues);
    g.callbackSuccess = cb;
    if(o.onDsPrepareCheck(g)){
       g.callback = new TInvoke(o, o.onDsPrepare);
       RConsole.find(FDatasetConsole).prepare(g);
    }
 }
-function MDataset_dsUpdate(u, v){
+function MUiDataset_dsUpdate(u, v){
    var o = this;
    o.psProgress(true);
    o.psMode(EMode.Update);
    o.dsFetch(true);
 }
-function MDataset_dsDelete(u, v){
-   var o = this;
-   o.psProgress(true);
-   o.psMode(EMode.Delete);
-   var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
-   g.callback = new TInvoke(o, o.onDsDelete);
-   g.form = o;
-   g.mode = EMode.Delete;
-   if(u){
-      g.searchs.push(new TSearchItem('OUID', u));
-   }
-   if(v){
-       g.searchs.push(new TSearchItem('OVER', v));
-   }
-   g.values = o.dsValues;
-   if(o.onDsDeleteCheck(g)){
-      RConsole.find(FDatasetConsole).fetch(g);
-   }
-   return;
-}
-function MDataset_dsMode(m){
-   var o = this;
-   switch(m){
-      case EMode.Insert:
-         o.dsPrepare();
-         break;
-      case EMode.Update:
-         o.dsUpdate();
-         break;
-      case EMode.Delete:
-         o.dsDelete();
-         break;
-   }
-}
-function MDataset_dsDoUpdate(cb, ck){
+function MUiDataset_dsDoUpdate(cb, ck){
    var o = this;
    if(!o.psValid()){
       return;
@@ -287,14 +434,48 @@ function MDataset_dsDoUpdate(cb, ck){
       g.dataset.rows.append(o.getChangedRows());
       if(!ck){
          if(!g.hasData()){
-            return RMessage.warn(o, RContext.get('MDataset:nochange'));
+            return RMessage.warn(o, RContext.get('MUiDataset:nochange'));
          }
       }
    }
    o.psProgress(true);
    RConsole.find(FDatasetConsole).update(g);
 }
-function MDataset_dsProcess(da, cb){
+function MUiDataset_dsDelete(u, v){
+   var o = this;
+   o.psProgress(true);
+   o.psMode(EMode.Delete);
+   var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
+   g.callback = new TInvoke(o, o.onDsDelete);
+   g.form = o;
+   g.mode = EMode.Delete;
+   if(u){
+      g.searchs.push(new TSearchItem('OUID', u));
+   }
+   if(v){
+       g.searchs.push(new TSearchItem('OVER', v));
+   }
+   g.values = o._dataValues;
+   if(o.onDsDeleteCheck(g)){
+      RConsole.find(FDatasetConsole).fetch(g);
+   }
+   return;
+}
+function MUiDataset_dsMode(m){
+   var o = this;
+   switch(m){
+      case EMode.Insert:
+         o.dsPrepare();
+         break;
+      case EMode.Update:
+         o.dsUpdate();
+         break;
+      case EMode.Delete:
+         o.dsDelete();
+         break;
+   }
+}
+function MUiDataset_dsProcess(da, cb){
    var o = this;
    if(!o.psValid()){
       return;
@@ -310,7 +491,7 @@ function MDataset_dsProcess(da, cb){
    g.callback = new TInvoke(o, o.onDsProcess);
    RConsole.find(FFormConsole).process(g);
 }
-function MDataset_dsProcessCustom(pm, da, cb, cc){
+function MUiDataset_dsProcessCustom(pm, da, cb, cc){
 	var o = this;
 	if(!cc){
 	if(!o.psValid()){
@@ -326,14 +507,14 @@ function MDataset_dsProcessCustom(pm, da, cb, cc){
 	g.resultCallback = cb;
 	if(!cc){
 	   if(!g.hasData()){
-	      return RMessage.warn(o, RContext.get('MDataset:nodata'));
+	      return RMessage.warn(o, RContext.get('MUiDataset:nodata'));
 	   }
 	}
 	o.psProgress(true);
 	g.callback = new TInvoke(o, o.onDsProcess);
 	RConsole.find(FFormConsole).process(g);
 }
-function MDataset_dsProcessSelected(da, cb){
+function MUiDataset_dsProcessSelected(da, cb){
 	var o = this;
 	if(!o.psValid()){
 	   return;
@@ -351,10 +532,10 @@ function MDataset_dsProcessSelected(da, cb){
 		  RConsole.find(FFormConsole).process(g);
 		  o.clearSelectRows();
 	   }else{
-	      return RMessage.warn(o, RContext.get('MDataset:norows'));
+	      return RMessage.warn(o, RContext.get('MUiDataset:norows'));
 	   }
 }
-function MDataset_dsProcessChanged(da, cb){
+function MUiDataset_dsProcessChanged(da, cb){
    var o = this;
    if(!o.psValid()){
       return;
@@ -367,13 +548,13 @@ function MDataset_dsProcessChanged(da, cb){
    g.rows = o.getChangedRows();
    g.resultCallback = cb;
    if(!g.hasData()){
-      return RMessage.warn(o, RContext.get('MDataset:nochange'));
+      return RMessage.warn(o, RContext.get('MUiDataset:nochange'));
    }
    o.psProgress(true);
    g.callback = new TInvoke(o, o.onDsProcess);
    RConsole.find(FFormConsole).process(g);
 }
-function MDataset_dsProcessAll(da, cb){
+function MUiDataset_dsProcessAll(da, cb){
    var o = this;
    if(!o.psValid()){
       return;
@@ -389,7 +570,7 @@ function MDataset_dsProcessAll(da, cb){
    g.callback = new TInvoke(o, o.onDsProcess);
    RConsole.find(FFormConsole).process(g);
 }
-function MDataset_psProgress(v){
+function MUiDataset_psProgress(v){
    var o = this;
    if(o.__progress == v){
       return;
@@ -399,7 +580,7 @@ function MDataset_psProgress(v){
    e.enable = v;
    o.process(e);
 }
-function MDataset_psValid(){
+function MUiDataset_psValid(){
    var o = this;
    var e = o.__validProcess;
    var cs = e.controls;
@@ -413,18 +594,18 @@ function MDataset_psValid(){
    }
    return true;
 }
-function MDataset_dsCurrent(){
-   var o = this;
-   var ds = o.dsStore;
-}
-function MDataset_dsIsChanged(){
+function MUiDataset_dsIsChanged(){
    var ds = this.dsStore;
    return ds ? ds.isChanged() : false;
 }
-function MDataset_dsCount(){
+function MUiDataset_dsCount(){
    return this.dsStore ? this.dsStore.count : 0;
 }
-function MDataset_dsMove(p){
+function MUiDataset_dsCurrent(){
+   var o = this;
+   var ds = o.dsStore;
+}
+function MUiDataset_dsMove(p){
    var o = this;
    var ds = o.dsStore;
    if(null == p && !ds){
@@ -449,7 +630,7 @@ function MDataset_dsMove(p){
       o.loadValue(ds.current());
    }
 }
-function MDataset_dsMovePage(p){
+function MUiDataset_dsMovePage(p){
    var o = this;
    var ds = o.dsStore;
    if(!RInt.isInt(p)){
@@ -473,34 +654,34 @@ function MDataset_dsMovePage(p){
    }
    if(p != ds.pageIndex){
       o.psProgress(true);
-      var t = o.topControl(MDataset);
+      var t = o.topControl(MUiDataset);
       var g = new TDatasetFetchArg(t.name, t.formId, o.dsPageSize, p, true);
       g.path =  o.fullPath();
       g.mode = t._emode;
-      g.searchs.append(o.dsGlobalSearchs);
-      g.searchs.append(o.dsSearchs);
-      g.orders.append(o.dsGlobalOrders);
-      g.orders.append(o.dsOrders);
+      g.searchs.append(o._dataGlobalSearchs);
+      g.searchs.append(o._dataSearchs);
+      g.orders.append(o._dataGlobalOrders);
+      g.orders.append(o._dataOrders);
       g.values = o.toDeepAttributes();
-      g.values.append(o.dsValues);
+      g.values.append(o._dataValues);
       g.callback = new TInvoke(o, o.onDsFetch);
       RConsole.find(FDatasetConsole).fetch(g);
    }
 }
-function MDataset_dsGet(n){
+function MUiDataset_dsGet(n){
    return this.dsStore ? this.dsStore.get(n) : '';
 }
-function MDataset_dsSet(n, v){
+function MUiDataset_dsSet(n, v){
    if(this.dsStore){
       this.dsStore.set(n, v);
    }
 }
-function MDataset_dsRefresh(){
-   if(this.dsService){
+function MUiDataset_dsRefresh(){
+   if(this._dsService){
       this.dsMove(this.dsPage, true);
    }
 }
-function MDataset_doSearch(){
+function MUiDataset_doSearch(){
    var o = this;
    var sw = o.dsSearchWindow;
    if(!sw){
@@ -508,4 +689,31 @@ function MDataset_doSearch(){
       sw.linkDsControl(o);
    }
    sw.show();
+}
+function MUiDataValue(o){
+   o = RClass.inherits(this, o);
+   o.oeDataLoadValue = RMethod.empty;
+   o.oeDataSaveValue = RMethod.empty;
+   return o;
+}
+var RUiDataEvent = new function RUiDataEvent(){
+   var o = this;
+   o.clearEvent  = null;
+   o.resetEvent  = null;
+   o.loadEvent   = null;
+   o.saveEvent   = null;
+   o.recordEvent = null;
+   o.codeEvent   = null;
+   o.construct   = RUiDataEvent_construct;
+   o.construct();
+   return o;
+}
+function RUiDataEvent_construct(p){
+   var o = this;
+   o.clearEvent = new TEventProcess(o, 'oeClearValue', MUiDataValue);
+   o.resetEvent = new TEventProcess(o, 'oeResetValue', MUiDataValue);
+   o.loadEvent = new TEventProcess(o, 'oeLoadValue', MUiDataValue);
+   o.saveEvent = new TEventProcess(o, 'oeSaveValue', MUiDataValue);
+   o.recordEvent = new TEventProcess(o, 'oeRecordValue', MUiDataValue);
+   o.codeEvent = new TEventProcess(o, 'oeSaveCode', MUiDataValue);
 }

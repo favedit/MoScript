@@ -18,7 +18,7 @@
 // @version 150102
 //==========================================================
 function FUiEditControl(o){
-   o = RClass.inherits(this, o, FUiControl, MDataField, MEditValue, MEditChange, MEditDrop);
+   o = RClass.inherits(this, o, FUiControl, MEditValue, MEditChange, MEditDrop);
    //..........................................................
    // @property
    o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);

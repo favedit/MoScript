@@ -345,15 +345,16 @@ function TNode_innerDump(dump, node, space){
       space = '';
    }
    dump.append(space, node._name, '(', RClass.name(node), ')');
-   if(node._attributes){
-      var count = node._attributes.count;
+   var attributes = node._attributes;
+   if(attributes){
+      var count = attributes.count();
       dump.append(' [', count, ':');
-      for(var n=0; n<count; n++){
+      for(var n = 0; n < count; n++){
          if(n > 0){
             dump.append(' ');
          }
-         dump.append(node._attributes.name(n), '=', node._attributes.value(n));
-         if(n < count-1){
+         dump.append(attributes.name(n), '=', attributes.value(n));
+         if(n < count - 1){
             dump.append(',');
          }
       }
@@ -365,12 +366,13 @@ function TNode_innerDump(dump, node, space){
          dump.append(' {', value.length, ':', value, '}');
       }
    }
-   if(node._nodes){
-      var count = node._nodes.count;
+   var nodes = node._nodes;
+   if(nodes){
+      var count = nodes.count();
       dump.append('\n');
       for(var n = 0; n < count; n++){
-         node._nodes.get(n).dump(dump, space + '   ');
-         if(n < count-1){
+         nodes.get(n).dump(dump, space + '   ');
+         if(n < count - 1){
             dump.append('\n');
          }
       }
@@ -386,6 +388,5 @@ function TNode_innerDump(dump, node, space){
 // @return String 调试信息
 //==========================================================
 function TNode_dump(d, space){
-   d = RString.nvlStr(d);
-   return this.innerDump(d, this, space);
+   return this.innerDump(RString.nvlString(d), this, space);
 }

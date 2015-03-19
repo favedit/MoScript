@@ -1871,6 +1871,11 @@ function MInstance(o){
    o.instanceRelease = RMethod.empty;
    return o;
 }
+function MInvoke(o){
+   o = RClass.inherits(this, o);
+   o.invoke = RMethod.virtual(o, 'invoke');
+   return o;
+}
 function SArguments(){
    var o = this;
    o.owner = null;
@@ -2136,6 +2141,11 @@ function TContext(n, c, t){
 }
 function TDataset(){
    var o = this;
+   o._code      = null;
+   o._pageSize  = 20;
+   o._pageIndex = 0;
+   o._pageCount = 0;
+   o._total     = 0;
    o._rows      = new TObjects();
    o.isEmpty    = TDataset_isEmpty;
    o.createRow  = TDataset_createRow;
@@ -2197,7 +2207,7 @@ function TDataset_push(r){
 }
 function TDataset_loadConfig(x){
    var o = this;
-   o._name = x.get('name');
+   o._code = x.get('name');
    o._pageSize = RInteger.parse(x.get('page_size', 1000));
    o._pageIndex = RInteger.parse(x.get('page', 0));
    o._pageCount = RInteger.parse(x.get('page_count', 1));
@@ -2247,7 +2257,7 @@ function TDataset_removeRow(r){
 }
 function TDataset_saveViewer(v){
    var o = this;
-   v.datasetName = o._name;
+   v.datasetName = o._code;
    v.datasetId = o.id;
    v.position = 0;
    v.start = 0;
@@ -2267,7 +2277,7 @@ function TDataset_pack(){
 function TDataset_dump(){
    var o = this;
    var r = new TString();
-   r.append(RClass._name(o));
+   r.append(RClass._code(o));
    r.append(' count=', o._count);
    r.append(' fields=', o.fieldCount);
    r.appendLine();
@@ -2282,6 +2292,73 @@ function TDataset_dump(){
       }
    }
    return r.toString();
+}
+function TDatasetViewer(){
+   var o = this;
+   o._datasetId = null;
+   o._position  = 0;
+   o._start     = 0;
+   o._count     = 0;
+   e._values   = null;
+   o._rows      = null;
+   o._ouids     = null;
+   o.isEmpty   = TDatasetViewer_isEmpty;
+   o.count     = TDatasetViewer_count;
+   o.current   = TDatasetViewer_current;
+   o.reset     = TDatasetViewer_reset;
+   o.move      = TDatasetViewer_move;
+   o.moveToRow = TDatasetViewer_moveToRow;
+   o.first     = TDatasetViewer_first;
+   o.prior     = TDatasetViewer_prior;
+   o.next      = TDatasetViewer_next;
+   o.last      = TDatasetViewer_last;
+   return o;
+}
+function TDatasetViewer_isEmpty(){
+   return (this._count == null);
+}
+function TDatasetViewer_count(){
+   return this._count;
+}
+function TDatasetViewer_current(){
+   var o = this;
+   var s = o._rows;
+   return s ? s.get(o._position - o._start) : null;
+}
+function TDatasetViewer_reset(){
+   this._position = -1;
+}
+function TDatasetViewer_move(p){
+   this._position = p;
+}
+function TDatasetViewer_moveToRow(r){
+   var o = this;
+   var p = o._rows.indexOf(r);
+   if(p != -1){
+      o._position = p - o._start;
+   }
+}
+function TDatasetViewer_first(r){
+   this._position = r ? -1 : 0;
+}
+function TDatasetViewer_prior(){
+   var o = this;
+   if(o._position > 0){
+      o._position--;
+      return true;
+   }
+   return false;
+}
+function TDatasetViewer_next(){
+   var o = this;
+   if(o._position < o._count-1){
+      o._position++;
+      return true;
+   }
+   return false;
+}
+function TDatasetViewer_last(){
+   this._position = this._count-1;
 }
 function TDate(date){
    var o = this;
@@ -2970,15 +3047,16 @@ function TNode_innerDump(dump, node, space){
       space = '';
    }
    dump.append(space, node._name, '(', RClass.name(node), ')');
-   if(node._attributes){
-      var count = node._attributes.count;
+   var attributes = node._attributes;
+   if(attributes){
+      var count = attributes.count();
       dump.append(' [', count, ':');
-      for(var n=0; n<count; n++){
+      for(var n = 0; n < count; n++){
          if(n > 0){
             dump.append(' ');
          }
-         dump.append(node._attributes.name(n), '=', node._attributes.value(n));
-         if(n < count-1){
+         dump.append(attributes.name(n), '=', attributes.value(n));
+         if(n < count - 1){
             dump.append(',');
          }
       }
@@ -2990,12 +3068,13 @@ function TNode_innerDump(dump, node, space){
          dump.append(' {', value.length, ':', value, '}');
       }
    }
-   if(node._nodes){
-      var count = node._nodes.count;
+   var nodes = node._nodes;
+   if(nodes){
+      var count = nodes.count();
       dump.append('\n');
       for(var n = 0; n < count; n++){
-         node._nodes.get(n).dump(dump, space + '   ');
-         if(n < count-1){
+         nodes.get(n).dump(dump, space + '   ');
+         if(n < count - 1){
             dump.append('\n');
          }
       }
@@ -3003,8 +3082,7 @@ function TNode_innerDump(dump, node, space){
    return dump;
 }
 function TNode_dump(d, space){
-   d = RString.nvlStr(d);
-   return this.innerDump(d, this, space);
+   return this.innerDump(RString.nvlString(d), this, space);
 }
 function TRow(){
    var o = this;
@@ -3043,7 +3121,7 @@ function TRow_copy(){
    r._statusCd = o._statusCd;
    r._uniqueId = o._uniqueId;
    var c = o.count;
-   for(var n=0; n<c; n++){
+   for(var n = 0; n < c; n++){
       r.set(o.names[n], o.values[n]);
    }
    return r;
@@ -3461,6 +3539,29 @@ function RArray_nameMaxLength(a){
       }
    }
    return r;
+}
+var RAssert = new function RAssert(){
+   var o = this;
+   o.isTrue     = RAssert_isTrue;
+   o.isFalse    = RAssert_isFalse;
+   o.debugBegin = RAssert_empty;
+   o.debug      = RAssert_empty;
+   o.debugEnd   = RAssert_empty;
+   o.debugTrue  = RAssert_isTrue;
+   o.debugFalse = RAssert_isFalse;
+   return o;
+}
+function RAssert_empty(){
+}
+function RAssert_isTrue(p){
+   if(!p){
+      throw new TError(p, 'Assert failure.');
+   }
+}
+function RAssert_isFalse(a){
+   if(p){
+      throw new TError(p, 'Assert failure.');
+   }
 }
 var RBoolean = new function RBoolean(){
    var o = this;
@@ -5261,6 +5362,7 @@ var RString = new function RString(){
    o.findChars    = RString_findChars;
    o.inRange      = RString_inRange;
    o.nvl          = RString_nvl;
+   o.nvlString    = RString_nvlString;
    o.empty        = RString_empty;
    o.firstUpper   = RString_firstUpper;
    o.firstLower   = RString_firstLower;
@@ -5439,6 +5541,12 @@ function RString_nvl(v, d){
       return d;
    }
    return this.EMPTY;
+}
+function RString_nvlString(p){
+   if(p == null){
+      p = new TString();
+   }
+   return p;
 }
 function RString_empty(v){
    if(v != null){
@@ -9850,7 +9958,7 @@ function TXmlDocument_dump(){
    var o = this;
    var r = new TString();
    r.appendLine(RClass.name(o));
-   o.root().innerDump(r);
+   o.root().dump(r);
    return r.flush();
 }
 function TXmlNode(){
@@ -10625,6 +10733,8 @@ var RHtml = new function RHtml(){
    o.toText         = RHtml_toText;
    o.toHtml         = RHtml_toHtml;
    o.eventSource    = RHtml_eventSource;
+   o.get            = RHtml_get;
+   o.parent         = RHtml_parent;
    o.searchLinker   = RHtml_searchLinker;
    o.searchObject   = RHtml_searchObject;
    o.free           = RHtml_free;
@@ -10651,8 +10761,6 @@ var RHtml = new function RHtml(){
    o.hideNodes      = RHtml_hideNodes;
    o.showChildren   = RHtml_showChildren;
    o.hideChildren   = RHtml_hideChildren;
-   o.get            = RHtml_get;
-   o.parent         = RHtml_parent;
    o.posParent      = RHtml_posParent;
    o.form           = RHtml_form;
    o.popup          = RHtml_popup;
@@ -10852,6 +10960,21 @@ function RHtml_toHtml(p){
 }
 function RHtml_eventSource(p){
    return p.srcElement ? p.srcElement : p.target;
+}
+function RHtml_get(name){
+   return document.getElementById(name);
+}
+function RHtml_parent(tag, typeName){
+   if(tag && t){
+      typeName = typeName.toLowerCase();
+      while(tag){
+         if(tag.tagName.toLowerCase() == typeName){
+            return tag;
+         }
+         tag = tag.parentElement;
+      }
+   }
+   return null;
 }
 function RHtml_searchLinker(h, c){
    while(h){
@@ -11190,21 +11313,6 @@ function RHtml_hideChildren(h){
          }
       }
    }
-}
-function RHtml_get(name){
-   return document.getElementById(name);
-}
-function RHtml_parent(o, t){
-   if(o && t){
-      t = t.toLowerCase();
-      while(o){
-         if(o.tagName.toLowerCase() == t){
-            return o;
-         }
-         o = o.parentElement;
-      }
-   }
-   return null;
 }
 function RHtml_posParent(h){
    while(h){
@@ -12414,51 +12522,6 @@ function FDragConsole_unregister(po, pc){
 }
 function FDragConsole_clear(){
    this._dragables.clear();
-}
-function FEnvironmentConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o.scope       = EScope.Local;
-   o.environment = null;
-   o.connect     = FEnvironmentConsole_connect;
-   o.build       = FEnvironmentConsole_build;
-   o.buildValue  = FEnvironmentConsole_buildValue;
-   o.xml         = FEnvironmentConsole_xml;
-   return o;
-}
-function FEnvironmentConsole_connect(){
-   var xData = RHtml.get('xEnvironment');
-   if(xData){
-      this.environment = RXml.makeNode(xData);
-   }
-}
-function FEnvironmentConsole_build(config){
-   if(!this.environment){
-      this.connect()
-   }
-   if(this.environment){
-      var node = config.create('Environment');
-      node.attributes().append(this.environment.attributes());
-   }
-}
-function FEnvironmentConsole_buildValue(){
-   if(!this.environment){
-      this.connect()
-   }
-   if(this.environment){
-      var env = RHtml.get('_environment');
-      if(env){
-         env.value = this.environment.xml();
-      }
-   }
-}
-function FEnvironmentConsole_xml(){
-   if(!this.environment){
-      this.connect()
-   }
-   if(this.environment){
-      return this.environment.xml();
-   }
-   return null;
 }
 function FEvent(o){
    o = RClass.inherits(this, o, FObject);
@@ -13814,6 +13877,7 @@ function RValue_construct(){
 var RWindow = new function RWindow(){
    var o = this;
    o._optionSelect     = true;
+   o._statusEnable     = true;
    o._mouseEvent       = new SMouseEvent();
    o._keyEvent         = new SKeyboardEvent();
    o._resizeEvent      = new SResizeEvent();
@@ -13853,6 +13917,7 @@ var RWindow = new function RWindow(){
    o.makeDisablePanel  = RWindow_makeDisablePanel;
    o.windowEnable      = RWindow_windowEnable;
    o.windowDisable     = RWindow_windowDisable;
+   o.isEnable          = RWindow_isEnable;
    o.enable            = RWindow_enable;
    o.disable           = RWindow_disable;
    o.setEnable         = RWindow_setEnable;
@@ -13999,6 +14064,9 @@ function RWindow_windowDisable(){
 function RWindow_windowEnable(){
    this._hContainer.disabled = false;
 }
+function RWindow_isEnable(){
+   return this._statusEnable;
+}
 function RWindow_enable(){
    var o = this;
    o._disableDeep--;
@@ -14035,6 +14103,7 @@ function RWindow_setEnable(v, f){
          h._linked = false;
       }
    }
+   o._statusEnable = v;
 }
 function RWindow_onUnload(){
    RMemory.release();

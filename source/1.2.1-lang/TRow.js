@@ -74,7 +74,7 @@ function TRow_copy(){
    r._uniqueId = o._uniqueId;
    // 存储行数据
    var c = o.count;
-   for(var n=0; n<c; n++){
+   for(var n = 0; n < c; n++){
       r.set(o.names[n], o.values[n]);
    }
    return r;

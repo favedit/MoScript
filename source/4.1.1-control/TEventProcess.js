@@ -8,8 +8,8 @@
 // @author maocy
 // @version 141231
 //==========================================================
-function TEventProcess(o, po, pm, pc){
-   if(!o){o = this;}
+function TEventProcess(po, pm, pc){
+   var o = this;
    //..........................................................
    // @attribute
    o.owner    = po;

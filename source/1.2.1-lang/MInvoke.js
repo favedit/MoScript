@@ -1,14 +1,14 @@
 //==========================================================
-// <T>数据字段的接口。</T>
+// <T>调用接口。</T>
 //
 // @face
 // @author maocy
-// @version 150124
+// @version 150319
 //==========================================================
-function MDataField(o){
-   o = RClass.inherits(this, o, MDataValue);
+function MInvoke(o){
+   o = RClass.inherits(this, o);
    //..........................................................
-   // @property
-   o._dataName = RClass.register(o, new APtyString('_dataName'));
+   // @method
+   o.invoke = RMethod.virtual(o, 'invoke');
    return o;
 }

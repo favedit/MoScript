@@ -9,16 +9,16 @@
 function TDataset(){
    var o = this;
    //..........................................................
-   // @attribute String 名称
-   //o._name      = null;
+   // @attribute String 代码
+   o._code      = null;
    // @attribute Integer 页面大小
-   //o._pageSize  = 20;
+   o._pageSize  = 20;
    // @attribute Integer 页面索引
-   //o._pageIndex = 0;
+   o._pageIndex = 0;
    // @attribute Integer 页面总数
-   //o._pageCount = 0;
+   o._pageCount = 0;
    // @attribute Integer 记录总数
-   //o._total     = 0;
+   o._total     = 0;
    // @attribute TObjects<TRow> 行记录的列表
    o._rows      = new TObjects();
    //..........................................................
@@ -33,8 +33,6 @@ function TDataset(){
    o.push       = TDataset_push;
    o.loadConfig = TDataset_loadConfig;
    o.clear      = TDataset_clear;
-
-
 
    //o.findIndex  = TDataset_findIndex;
    //o.remove     = TDataset_remove;
@@ -154,7 +152,7 @@ function TDataset_push(r){
 function TDataset_loadConfig(x){
    var o = this;
    // 获得数据集信息
-   o._name = x.get('name');
+   o._code = x.get('name');
    o._pageSize = RInteger.parse(x.get('page_size', 1000));
    o._pageIndex = RInteger.parse(x.get('page', 0));
    o._pageCount = RInteger.parse(x.get('page_count', 1));
@@ -264,7 +262,7 @@ function TDataset_removeRow(r){
 //==========================================================
 function TDataset_saveViewer(v){
    var o = this;
-   v.datasetName = o._name;
+   v.datasetName = o._code;
    v.datasetId = o.id;
    v.position = 0;
    v.start = 0;
@@ -300,7 +298,7 @@ function TDataset_pack(){
 function TDataset_dump(){
    var o = this;
    var r = new TString();
-   r.append(RClass._name(o));
+   r.append(RClass._code(o));
    r.append(' count=', o._count);
    r.append(' fields=', o.fieldCount);
    r.appendLine();

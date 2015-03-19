@@ -9,7 +9,7 @@ function MEditReference(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property
-   o._lovService    = RClass.register(o, new APtyString('_lovService', null, EDataService.WebForm));
+   o._lovService    = RClass.register(o, new APtyString('_lovService'));
    o._lovReference  = RClass.register(o, new APtyString('_lovReference'));
    o._lovFields     = RClass.register(o, new APtyString('_lovFields'));
    o._lovWhere      = RClass.register(o, new APtyString('_lovWhere'));

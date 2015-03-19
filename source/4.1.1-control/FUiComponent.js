@@ -41,6 +41,7 @@ function FUiComponent(o){
    o.isParent      = FUiComponent_isParent;
    o.topComponent  = FUiComponent_topComponent;
    o.hasComponent  = FUiComponent_hasComponent;
+   o.findComponent = FUiComponent_findComponent;
    o.components    = FUiComponent_components;
    o.push          = FUiComponent_push;
    o.remov         = FUiComponent_remove;
@@ -186,8 +187,20 @@ function FUiComponent_topComponent(c){
 // @return Boolean 是否含有
 //==========================================================
 function FUiComponent_hasComponent(){
-   var ps = this._components;
-   return ps ? !ps.isEmpty() : false;
+   var s = this._components;
+   return s ? !s.isEmpty() : false;
+}
+
+//==========================================================
+// <T>根据名称查找子组件。</T>
+//
+// @method
+// @param p:name:String 名称
+// @return String 子组件
+//==========================================================
+function FUiComponent_findComponent(p){
+   var s = this._components;
+   return s ? s.get(p) : null;
 }
 
 //==========================================================
@@ -218,14 +231,14 @@ function FUiComponent_push(p){
    var o = this;
    // 增加组件
    if(RClass.isClass(p, FUiComponent)){
-      var ps = o.components();
+      var s = o.components();
       // 设置子组件名称
       p._parent = o;
       if(p._name == null){
-         p._name = ps.count();
+         p._name = s.count();
       }
       // 存储子组件
-      ps.set(p._name, p);
+      s.set(p._name, p);
    }
 }
 
@@ -337,7 +350,7 @@ function FUiComponent_process(e){
 //==========================================================
 function FUiComponent_psInitialize(){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeInitialize', FUiComponent);
+   var e = new TEventProcess(o, 'oeInitialize', FUiComponent);
    o.process(e);
    e.dispose();
 }
@@ -349,7 +362,7 @@ function FUiComponent_psInitialize(){
 //==========================================================
 function FUiComponent_psRelease(){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeRelease', FUiComponent);
+   var e = new TEventProcess(o, 'oeRelease', FUiComponent);
    o.process(e);
    e.dispose();
 }

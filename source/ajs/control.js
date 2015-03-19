@@ -1,36 +1,3 @@
-var EDataAction = new function EDataAction(){
-   var o = this;
-   o.Fetch     = 'fetch';
-   o.Search    = 'search';
-   o.Lov       = 'lov';
-   o.Zoom      = 'zoom';
-   o.Prepare   = 'prepare';
-   o.Insert    = 'insert';
-   o.Update    = 'update';
-   o.Delete    = 'delete';
-   o.First     = 'first';
-   o.Prior     = 'prior';
-   o.Next      = 'next';
-   o.Last      = 'last';
-   o.Action    = 'action';
-   o.FetchLov  = 'fetchLov';
-   o.EndFetch  = 'endfetch';
-   o.EndUpdate = 'endupdate';
-   o.DsChanged = 'dschanged';
-   o.Scalar    = 'scalar';
-   o.Complete  = 'complete';
-   o.Process   = 'process';
-   return o;
-}
-var EDataService = new function EDataService(){
-   var o = this;
-   o.Dataset    = 'database.dataset';
-   o.List       = 'design.list';
-   o.WebForm    = 'design.webform';
-   o.Translate  = 'design.translate';
-   o.WebDataset = 'logic.dataset';
-   return o;
-}
 var EEditConfig = new function(){
    var o = this;
    o.Search = 'S';
@@ -280,26 +247,6 @@ var EUiSize = new function EUiSize(){
    o.Both       = 3;
    return o;
 }
-function MDataContainer(o){
-   o = RClass.inherits(this, o, MDataValue);
-   o.dsDataLoad = MDataContainer_dsDataLoad;
-   o.dsDataSave = MDataContainer_dsDataSave;
-   return o;
-}
-function MDataContainer_dsDataLoad(p){
-   var o = this;
-   var e = new TEventProcess(null, o, 'oeDataLoad', MDataValue);
-   e.source = p;
-   o.process(e);
-   e.dispose();
-}
-function MDataContainer_dsDataSave(p){
-   var o = this;
-   var e = new TEventProcess(null, o, 'oeDataSave', MDataValue);
-   e.source = p;
-   o.process(e);
-   e.dispose();
-}
 function MDataProperties(o){
    o = RClass.inherits(this, o);
    o._dataProperties = null;
@@ -323,12 +270,6 @@ function MDataProperties_dataPropertyGet(n){
 }
 function MDataProperties_dataPropertySet(n, v){
    this.dataProperties().set(n, v);
-}
-function MDataValue(o){
-   o = RClass.inherits(this, o);
-   o.oeDataLoad = RMethod.empty;
-   o.oeDataSave = RMethod.empty;
-   return o;
 }
 function MDescribeFrame(o){
    o = RClass.inherits(this, o);
@@ -710,7 +651,7 @@ function MEditDrop_dispose(){
 }
 function MEditReference(o){
    o = RClass.inherits(this, o);
-   o._lovService    = RClass.register(o, new APtyString('_lovService', null, EDataService.WebForm));
+   o._lovService    = RClass.register(o, new APtyString('_lovService'));
    o._lovReference  = RClass.register(o, new APtyString('_lovReference'));
    o._lovFields     = RClass.register(o, new APtyString('_lovFields'));
    o._lovWhere      = RClass.register(o, new APtyString('_lovWhere'));
@@ -1601,6 +1542,12 @@ function MUiStyle_styleIcon(n, c){
 function MUiStyle_styleIconPath(n, c){
    return RResource.iconPath(RClass.name(c ? c : this, true) + '_' + n);
 }
+function MUiValue(o){
+   o = RClass.inherits(this, o);
+   o.get = RMethod.empty;
+   o.set = RMethod.empty;
+   return o;
+}
 function MUiVertical(o){
    o = RClass.inherits(this, o);
    o.setVisible = MUiHorizontal_setVisible;
@@ -1674,7 +1621,7 @@ function TEvent_isAfter(){
 function TEvent_process(){
    var o = this;
    if(!o.onProcess){
-      return RMessage.fatal(o, null, 'Process event is null. (owner={0})', RClass.dump(o.owner));
+      return RMessage.fatal(o, null, 'Process event is null. (owner={1})', RClass.dump(o.owner));
    }
    var sp = new TSpeed(o, 'Process event (owner={0}, process={1})', o.owner, RMethod.name(o.onProcess));
    if(o.owner){
@@ -1687,8 +1634,8 @@ function TEvent_process(){
 function TEvent_dump(){
    return RClass.typeOf(this) + ' [' + this.owner + ',' + this.type + '-' + this.code + ']';
 }
-function TEventProcess(o, po, pm, pc){
-   if(!o){o = this;}
+function TEventProcess(po, pm, pc){
+   var o = this;
    o.owner    = po;
    o.invoke   = pm;
    o.clazz    = RClass.name(pc);
@@ -1969,6 +1916,7 @@ function FUiComponent(o){
    o.isParent      = FUiComponent_isParent;
    o.topComponent  = FUiComponent_topComponent;
    o.hasComponent  = FUiComponent_hasComponent;
+   o.findComponent = FUiComponent_findComponent;
    o.components    = FUiComponent_components;
    o.push          = FUiComponent_push;
    o.remov         = FUiComponent_remove;
@@ -2028,8 +1976,12 @@ function FUiComponent_topComponent(c){
    return p;
 }
 function FUiComponent_hasComponent(){
-   var ps = this._components;
-   return ps ? !ps.isEmpty() : false;
+   var s = this._components;
+   return s ? !s.isEmpty() : false;
+}
+function FUiComponent_findComponent(p){
+   var s = this._components;
+   return s ? s.get(p) : null;
 }
 function FUiComponent_components(){
    var o = this;
@@ -2043,12 +1995,12 @@ function FUiComponent_components(){
 function FUiComponent_push(p){
    var o = this;
    if(RClass.isClass(p, FUiComponent)){
-      var ps = o.components();
+      var s = o.components();
       p._parent = o;
       if(p._name == null){
-         p._name = ps.count();
+         p._name = s.count();
       }
-      ps.set(p._name, p);
+      s.set(p._name, p);
    }
 }
 function FUiComponent_remove(p){
@@ -2113,13 +2065,13 @@ function FUiComponent_process(e){
 }
 function FUiComponent_psInitialize(){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeInitialize', FUiComponent);
+   var e = new TEventProcess(o, 'oeInitialize', FUiComponent);
    o.process(e);
    e.dispose();
 }
 function FUiComponent_psRelease(){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeRelease', FUiComponent);
+   var e = new TEventProcess(o, 'oeRelease', FUiComponent);
    o.process(e);
    e.dispose();
 }
@@ -2537,7 +2489,7 @@ function FUiControl_callEvent(n, s, e){
 }
 function FUiControl_psMode(p){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeMode', FUiControl);
+   var e = new TEventProcess(o, 'oeMode', FUiControl);
    e.displayCd = p;
    o.process(e);
    e.dispose();
@@ -2545,7 +2497,7 @@ function FUiControl_psMode(p){
 function FUiControl_psDesign(m, f){
    var o = this;
    RConsole.find(FDesignConsole).setFlag(m, f, o);
-   var e = new TEventProcess(null, o, 'oeDesign', MDesign)
+   var e = new TEventProcess(o, 'oeDesign', MDesign)
    e.mode = m;
    e.flag = f;
    o.process(e);
@@ -2553,27 +2505,27 @@ function FUiControl_psDesign(m, f){
 }
 function FUiControl_psEnable(v){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeEnable', FUiControl)
+   var e = new TEventProcess(o, 'oeEnable', FUiControl)
    e.enable = v;
    o.process(e);
    e.dispose();
 }
 function FUiControl_psVisible(v){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeVisible', FUiControl);
+   var e = new TEventProcess(o, 'oeVisible', FUiControl);
    e.visible = v;
    o.process(e);
    e.dispose();
 }
 function FUiControl_psResize(){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeResize', FUiControl);
+   var e = new TEventProcess(o, 'oeResize', FUiControl);
    o.process(e);
    e.dispose();
 }
 function FUiControl_psRefresh(t){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeRefresh', FUiControl);
+   var e = new TEventProcess(o, 'oeRefresh', FUiControl);
    o.process(e);
    e.dispose();
 }

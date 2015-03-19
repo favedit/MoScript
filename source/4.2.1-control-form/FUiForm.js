@@ -8,27 +8,16 @@
 function FUiForm(o){
    //o = RClass.inherits(this, o, FUiLayout, MForm, MDisplayAble, MValue, MAction);
    //o = RClass.inherits(this, o, FUiLayout, MUiFocus, MDataset);
-   o = RClass.inherits(this, o, FUiLayout, MDataset, MDescribeFrame);
+   o = RClass.inherits(this, o, FUiLayout, MDescribeFrame);
    //..........................................................
    // @event
    o.onMouseDown        = FUiForm_onMouseDown;
    //..........................................................
    // @method
    o.construct          = FUiForm_construct;
-
-
-
-
-
    //..........................................................
    // @attribute
    o._dataStatusCd      = ERowStatus.Update;
-   o._clearEvent        = null;
-   o._resetEvent        = null;
-   o._loadEvent         = null;
-   o._saveEvent         = null;
-   o._recordEvent       = null;
-   o._codeEvent         = null;
    /// @attribute TMap<String, FComponent> 按照数据名称存储的数据组件集合
    o._dataComponents    = null;
    //..........................................................
@@ -120,12 +109,6 @@ function FUiForm_construct(){
    //o.lsnsLoaded = new TListeners();
    //o.lsnsClick = new TListeners();
    // 建立处理器
-   //o._clearEvent = new TEventProcess(o, 'oeClearValue', MEditValue);
-   //o._resetEvent = new TEventProcess(o, 'oeResetValue', MEditValue);
-   //o._loadEvent = new TEventProcess(o, 'oeLoadValue', MEditValue);
-   //o._saveEvent = new TEventProcess(o, 'oeSaveValue', MEditValue);
-   //o._recordEvent = new TEventProcess(o, 'oeRecordValue', MEditValue);
-   //o._codeEvent = new TEventProcess(o, 'oeSaveCode', MEditDescriptor);
    //o._dataComponents = new TMap();
 }
 

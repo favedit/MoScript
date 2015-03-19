@@ -1,12 +1,15 @@
 //==========================================================
-// <T>数据页面。</T>
+// <T>数据内容的接口。</T>
 //
-// @class
+// @face
 // @author maocy
-// @version 150318
+// @version 150124
 //==========================================================
-function FUiDataFrame(o){
-   o = RClass.inherits(this, o, FUiFrame, MUiDataset, MUiDataContainer, MUiDataAction);
+function MUiDataValue(o){
+   o = RClass.inherits(this, o);
    //..........................................................
+   // @process
+   o.oeDataLoadValue = RMethod.empty;
+   o.oeDataSaveValue = RMethod.empty;
    return o;
 }

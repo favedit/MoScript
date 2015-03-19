@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150101
 //==========================================================
-var EDataService = new function EDataService(){
+var EUiDataService = new function EUiDataService(){
    var o = this;
    // Attribute
    o.Dataset    = 'database.dataset';

@@ -43,6 +43,8 @@ var RHtml = new function RHtml(){
    // @method
    o.eventSource    = RHtml_eventSource;
    // @method
+   o.get            = RHtml_get;
+   o.parent         = RHtml_parent;
    o.searchLinker   = RHtml_searchLinker;
    o.searchObject   = RHtml_searchObject;
    // @method
@@ -77,8 +79,6 @@ var RHtml = new function RHtml(){
    o.hideNodes      = RHtml_hideNodes;
    o.showChildren   = RHtml_showChildren;
    o.hideChildren   = RHtml_hideChildren;
-   o.get            = RHtml_get;
-   o.parent         = RHtml_parent;
    o.posParent      = RHtml_posParent;
    o.form           = RHtml_form;
    o.popup          = RHtml_popup;
@@ -465,6 +465,38 @@ function RHtml_eventSource(p){
 }
 
 //==========================================================
+// <T>根据名称获得页面元素。</T>
+//
+// @method
+// @param name:String 名称
+// @return HtmlTag 页面元素
+//==========================================================
+function RHtml_get(name){
+   return document.getElementById(name);
+}
+
+//==========================================================
+// <T>根据名称获得指定类型的页面元素。</T>
+//
+// @method
+// @param name:String 名称
+// @param typeName:String 类型名称
+// @return HtmlTag 页面元素
+//==========================================================
+function RHtml_parent(tag, typeName){
+   if(tag && t){
+      typeName = typeName.toLowerCase();
+      while(tag){
+         if(tag.tagName.toLowerCase() == typeName){
+            return tag;
+         }
+         tag = tag.parentElement;
+      }
+   }
+   return null;
+}
+
+//==========================================================
 // <T>查找关联对象。</T>
 //
 // @method
@@ -513,6 +545,16 @@ function RHtml_searchObject(h, n){
 function RHtml_free(p){
    return null;
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -660,8 +702,6 @@ function RHtml_scrollHeight(h){
    }
    return r;
 }
-
-
 
 //==========================================================
 //
@@ -957,30 +997,6 @@ function RHtml_hideChildren(h){
          }
       }
    }
-}
-
-//==========================================================
-//
-//==========================================================
-function RHtml_get(name){
-   return document.getElementById(name);
-}
-
-//==========================================================
-// object, type
-//
-//==========================================================
-function RHtml_parent(o, t){
-   if(o && t){
-      t = t.toLowerCase();
-      while(o){
-         if(o.tagName.toLowerCase() == t){
-            return o;
-         }
-         o = o.parentElement;
-      }
-   }
-   return null;
 }
 
 //==========================================================

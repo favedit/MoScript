@@ -1,13 +1,13 @@
-/**************************************************************
- * 存储数据的方式
- *
- * @enum
- * @author maochunyang
- * @version 1.0.1
- **************************************************************/
-function EStoreFace(){
+//==========================================================
+// <T>存储数据的方式。</T>
+//
+// @class
+// @author maocy
+// @version 150319
+//==========================================================
+var EUiDataStore = new function EUiDataStore(){
    var o = this;
-   // Attribute
+   // @member
    o.Full     = 0;
    o.Sort     = 1;
    o.Config   = 2;
@@ -24,4 +24,3 @@ function EStoreFace(){
    o.Prepare  = 8;
    return o;
 }
-var EStore = new EStoreFace();

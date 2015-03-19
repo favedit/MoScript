@@ -298,63 +298,12 @@ function FUiToolButton_setEnable(p){
 function FUiToolButton_click(){
    var o = this;
    RLogger.debug(o, 'Mouse button click. (label={1})' + o._label);
-   //if(o.isVisible() && !o._disabled && (EAction.Design != o.inAction)){
-      // 存储当前焦点对象，强制失去焦点
-      //alert('o._disabled='+o._disabled);
-      //var fc = RConsole.find(FFocusConsole);
-      //fc.storeFocus();
-      //fc.blur();
-      // 执行监听信息
-      o.processClickListener(o);
-      // 执行按键操作
-      //if(o._action){
-      //   eval(o._action);
-      //}
-      //if(o._service){
-      //   // 分解service
-      //   var servs = RString.splitTwo(o._service, '@');
-      //   // 找到表单对象
-      //   var f = RConsole.find(FFocusConsole).findClass(MDataset);
-      //   // 构建处理事件对象
-      //   var arg = new TDatasetServiceArg(f.name, o._dataAction);
-      //   arg.callback = new TInvoke(f, f.onDsProcess);
-      //   arg.rows = f.getCurrentRows();
-      //   RConsole.find(FFormConsole).process(arg);
-      //}
-      //if(o._page || o._method){
-         //var form = RHtml.form(o._hButton);
-         //var p = RPage.parse(o._page);
-         //if(o._method){
-         //   p._action = o._method;
-         //}
-         //p.split(o._attributes);
-         //
-         //var f = RConsole.find(FFocusConsole).findClass(MDataset);
-         //if(f){
-            //var as = new TAttributes();
-            //f.saveValue(as);
-            //p.attrs().set('form_pack', as.pack());
-            //if(form && form.form_pack){
-            //   form.form_pack.value = as.pack();
-            //}
-         //}
-         //p.post(form, o._target);
-         /*for(var n = 0;n < p._attributes.count; n++){
-            if(RStr.contains(p._attributes.value(n),'$')){
-               var v = RStr.removeChars(p._attributes.value(n),'$');
-               v = RStr.removeChars(v,'{');
-               v = RStr.removeChars(v,'}');
-               var f = RConsole.find(FFocusConsole).findClass(MDataset);
-               debugger
-               var ctl = f.controls.get(v);
-               if(RClass.checkClass(ctl,MEditValue)){
-                  p.attribues.setValue(n,ctl.get());
-               }
-            }
-         }*/
-      //}
-      //o.processClick();
-   //}
+   // 执行监听信息
+   o.processClickListener(o);
+   // 执行代码命令
+   if(o._action){
+      eval(o._action);
+   }
 }
 
 //==========================================================

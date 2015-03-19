@@ -19,6 +19,7 @@ function FUiEdit(o){
    //..........................................................
    // @property
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
+   o._unit            = RClass.register(o, new APtyString('_unit'));
    //..........................................................
    // @style
    o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));

@@ -18,15 +18,16 @@ function FUiTreeNode(o){
    o = RClass.inherits(this, o, FUiContainer, MDataProperties);
    //..........................................................
    // @property
-   o._valid            = RClass.register(o, new APtyBoolean('_isValid'), true);
-   o._typeName         = RClass.register(o, new APtyString('_typeName', 'type'));
-   o._uuid             = RClass.register(o, new APtyString('_uuid'));
+   o._valid            = RClass.register(o, new APtyBoolean('_valid', 'is_valid'), true);
+   o._child            = RClass.register(o, new APtyBoolean('_child', 'has_child'), false);
+   o._typeCode         = RClass.register(o, new APtyString('_typeCode'));
+   o._guid             = RClass.register(o, new APtyString('_guid'));
+   o._code             = RClass.register(o, new APtyString('_code'));
    o._icon             = RClass.register(o, new APtyString('_icon'));
    o._checked          = RClass.register(o, new APtyBoolean('_checked'), false);
    o._extended         = RClass.register(o, new APtyBoolean('_extended'), false);
-   o._child            = RClass.register(o, new APtyBoolean('_child'), false);
    o._note             = RClass.register(o, new APtyString('_note'));
-   o._tag              = RClass.register(o, new APtyString('_tag'));
+   o._attributes       = RClass.register(o, new APtyAttributes('_attributes'));
    //..........................................................
    // @style
    o._styleNormal      = RClass.register(o, new AStyle('_styleNormal'));
@@ -41,7 +42,6 @@ function FUiTreeNode(o){
    // @attribute
    o._tree             = null;
    o._level            = 0;
-   o._attributes       = null;
    o._nodes            = null;
    o._cells            = null;
    // @attribute
@@ -69,9 +69,13 @@ function FUiTreeNode(o){
    // @method
    o.construct         = FUiTreeNode_construct;
    // @method
+   o.code              = FUiTreeNode_code;
+   o.setCode           = FUiTreeNode_setCode;
+   o.guid              = FUiTreeNode_guid;
+   o.setGuid           = FUiTreeNode_setGuid;
    o.type              = FUiTreeNode_type;
-   o.typeName          = FUiTreeNode_typeName;
-   o.setTypeName       = FUiTreeNode_setTypeName;
+   o.typeCode          = FUiTreeNode_typeCode;
+   o.setTypeCode       = FUiTreeNode_setTypeCode;
    o.setLabel          = FUiTreeNode_setLabel;
    o.setNote           = FUiTreeNode_setNote;
    o.level             = FUiTreeNode_level;
@@ -85,6 +89,7 @@ function FUiTreeNode(o){
    o.get               = FUiTreeNode_get;
    o.set               = FUiTreeNode_set;
    // @method
+   o.isFolder          = FUiTreeNode_isFolder;
    o.hasChild          = FUiTreeNode_hasChild;
    o.topNode           = FUiTreeNode_topNode;
    o.topNodeByType     = FUiTreeNode_topNodeByType;
@@ -109,25 +114,25 @@ function FUiTreeNode(o){
    o.propertyLoad      = FUiTreeNode_propertyLoad;
    o.propertySave      = FUiTreeNode_propertySave;
    o.loadConfig        = FUiTreeNode_loadConfig;
+   // @method
+   o.dispose           = FUiTreeNode_dispose;
+   o.innerDump         = FUiTreeNode_innerDump;
 
 
 
 
    //..........................................................
    // @method
-   o.reload           = FUiTreeNode_reload;
-   o.reloadParent     = FUiTreeNode_reloadParent;
-   o.loadQuery        = FUiTreeNode_loadQuery;
-   o.isFolder         = FUiTreeNode_isFolder;
-   o.dispose          = FUiTreeNode_dispose;
-   o.innerDump        = FUiTreeNode_innerDump;
+   //o.reload           = FUiTreeNode_reload;
+   //o.reloadParent     = FUiTreeNode_reloadParent;
+   //o.loadQuery        = FUiTreeNode_loadQuery;
    //..........................................................
    // @method
-   o.findByName       = FUiTreeNode_findByName;
-   o.findByUuid       = FUiTreeNode_findByUuid;
-   o.checkChanged     = FUiTreeNode_checkChanged;
-   o.pushChanged      = FUiTreeNode_pushChanged;
-   o.getFullPath      = FUiTreeNode_getFullPath;
+   //o.findByName       = FUiTreeNode_findByName;
+   //o.findByUuid       = FUiTreeNode_findByUuid;
+   //o.checkChanged     = FUiTreeNode_checkChanged;
+   //o.pushChanged      = FUiTreeNode_pushChanged;
+   //o.getFullPath      = FUiTreeNode_getFullPath;
    return o;
 }
 
@@ -292,8 +297,46 @@ function FUiTreeNode_onNodeClick(e){
 function FUiTreeNode_construct(){
    var o = this;
    o.__base.FUiContainer.construct.call(o);
-   // 初始化变量
-   o._attributes = new TAttributes();
+}
+
+//==========================================================
+// <T>获取代码。</T>
+//
+// @method
+// @return String 代码
+//==========================================================
+function FUiTreeNode_code(){
+   return this._code;
+}
+
+//==========================================================
+// <T>设置代码。</T>
+//
+// @method
+// @param String 代码
+//==========================================================
+function FUiTreeNode_setCode(p){
+   this._code = p;
+}
+
+//==========================================================
+// <T>获取唯一码。</T>
+//
+// @method
+// @return String 唯一码
+//==========================================================
+function FUiTreeNode_guid(){
+   return this._guid;
+}
+
+//==========================================================
+// <T>设置唯一码。</T>
+//
+// @method
+// @param String 唯一码
+//==========================================================
+function FUiTreeNode_setGuid(p){
+   this._guid = p;
 }
 
 //==========================================================
@@ -305,31 +348,31 @@ function FUiTreeNode_construct(){
 function FUiTreeNode_type(){
    var o = this;
    var t = o._tree;
-   if(RString.isEmpty(o._typeName)){
+   if(RString.isEmpty(o._typeCode)){
       return null;
    }
-   return t.findType(o._typeName);
+   return t.findType(o._typeCode);
 }
 
 //==========================================================
-// <T>获取类型名称。</T>
+// <T>获取类型代码。</T>
 //
 // @method
-// @return String 类型名称
+// @return String 类型代码
 //==========================================================
-function FUiTreeNode_typeName(){
-   return this._typeName;
+function FUiTreeNode_typeCode(){
+   return this._typeCode;
 }
 
 //==========================================================
-// <T>设置类型名称。</T>
+// <T>设置类型代码。</T>
 //
 // @method
-// @param String 类型名称
+// @param String 类型代码
 //==========================================================
-function FUiTreeNode_setTypeName(p){
+function FUiTreeNode_setTypeCode(p){
    var o = this;
-   o._typeName = p;
+   o._typeCode = p;
    o.setIcon();
 }
 
@@ -518,6 +561,18 @@ function FUiTreeNode_set(n, v){
 }
 
 //==========================================================
+// <T>是否是目录。</T>
+// 
+// @method
+// @return Boolean 是否有子节点
+//==========================================================
+function FUiTreeNode_isFolder(){
+   var o = this;
+   var t = o.type();
+   return t.storage() == 'collections';
+}
+
+//==========================================================
 // <T>是否有子节点。</T>
 // 
 //
@@ -544,7 +599,11 @@ function FUiTreeNode_hasChild(){
 function FUiTreeNode_topNode(){
    var r = this;
    while(r._parent){
-      r = r._parent;
+      if(RClass.isClass(r._parent, FUiTreeNode)){
+         r = r._parent;
+      }else{
+         break;
+      }
    }
    return r;
 }
@@ -558,7 +617,7 @@ function FUiTreeNode_topNode(){
 function FUiTreeNode_topNodeByType(t){
    var r = this;
    while(r){
-      if(r._typeName == t){
+      if(r._typeCode == t){
          return r;
       }
       r = r._parent;
@@ -840,8 +899,8 @@ function FUiTreeNode_removeChildren(){
 function FUiTreeNode_reset(){
    var o = this;
    // 获取属性
-   o._typeName = null;
-   o._uuid = null;
+   o._typeCode = null;
+   o._guid = null;
    o._valid = true;
    o._icon = null;
    o._tag = null;
@@ -907,7 +966,7 @@ function FUiTreeNode_propertyLoad(x){
    var o = this;
    var t = o._tree;
    o.__base.FUiContainer.propertyLoad.call(o, x);
-   //o._typeName = RObject.nvl(t._typeNames.get(x.get('type')), this._tree._typeName);
+   //o._typeCode = RObject.nvl(t._typeCodes.get(x.get('type')), this._tree._typeCode);
    o._attributes.append(x.attrs);
    var ap = x.get('attributes')
    if(ap){
@@ -949,6 +1008,53 @@ function FUiTreeNode_loadConfig(x){
    o.setImage();
    o.setIcon(o._icon);
 }
+
+//==========================================================
+// <T>释放对象。</T>
+//
+// @method
+//==========================================================
+function FUiTreeNode_dispose(){
+   var o = this;
+   o._hNodePanel = null;
+   o._hImage = null;
+   o._hIcon = null;
+   o._hCheck = null;
+   o._hLabel = null;
+   o.__base.FUiContainer.dispose.call(o);
+}
+
+//==========================================================
+// <T>获得运行时内部信息。</T>
+//
+// @method
+// @param s:dump:TString 调试内容
+//==========================================================
+function FUiTreeNode_innerDump(s){
+   var o = this;
+   s.append(RClass.name(o));
+   s.append('[level=',  o._level);
+   if(o._typeCode){
+      s.append(' type=',  o._typeCode.name);
+   }
+   s.append(', icon=',  o._icon);
+   s.append(', caption=', o._label);
+   s.append(', child=', o._child);
+   s.append(']');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1014,72 +1120,6 @@ function FUiTreeNode_loadQuery(x){
    }
 }
 
-//==========================================================
-// <T>释放对象。</T>
-//
-// @method
-//==========================================================
-function FUiTreeNode_dispose(){
-   var o = this;
-   o.__base.FUiContainer.dispose.call(o);
-   o._hNodePanel = null;
-   o._hImage = null;
-   o._hIcon = null;
-   o._hCheck = null;
-   o._hLabel = null;
-}
-
-//==========================================================
-// <T>获得运行时内部信息。</T>
-//
-// @method
-// @param s:dump:TString 调试内容
-//==========================================================
-function FUiTreeNode_innerDump(s){
-   var o = this;
-   s.append(RClass._typeNameOf(o));
-   s.append('[level=',  o._level);
-   if(o._typeName){
-      s.append(' type=',  o._typeName.name);
-   }
-   s.append(', icon=',  o._icon);
-   s.append(', caption=', o._label);
-   s.append(', child=', o._child);
-   s.append(']');
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function FUiTreeNode_findByName(n){
    var o = this;
    if(o.name == n){
@@ -1115,7 +1155,7 @@ function FUiTreeNode_findByName(n){
 //==========================================================
 function FUiTreeNode_findByUuid(u){
    var o = this;
-   if(o._uuid == u){
+   if(o._guid == u){
       return o;
    }
    var cs = o.components;
@@ -1123,7 +1163,7 @@ function FUiTreeNode_findByUuid(u){
       for(var n=0; n<cs.count; n++){
          var c = cs.value(n);
          if(c){
-            if(c._uuid == u){
+            if(c._guid == u){
                return c;
             }
             if(c.components){
@@ -1137,8 +1177,6 @@ function FUiTreeNode_findByUuid(u){
    }
    return null;
 }
-
-
 
 //==========================================================
 // 把改变过的节点存放到树的节点里
@@ -1197,9 +1235,3 @@ function FUiTreeNode_getFullPath(){
     return path;
 }
 
-//---------------------------------------------------
-function FUiTreeNode_isFolder(){
-   if(this._typeName){
-       return (this._typeName._typeNameName == 'collections') ? true : false;
-   }
-}

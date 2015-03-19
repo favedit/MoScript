@@ -210,7 +210,10 @@ function FUiToolButton_setEnable(p){
 function FUiToolButton_click(){
    var o = this;
    RLogger.debug(o, 'Mouse button click. (label={1})' + o._label);
-      o.processClickListener(o);
+   o.processClickListener(o);
+   if(o._action){
+      eval(o._action);
+   }
 }
 function FUiToolButton_dispose(){
    var o = this;

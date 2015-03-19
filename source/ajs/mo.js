@@ -1871,6 +1871,11 @@ function MInstance(o){
    o.instanceRelease = RMethod.empty;
    return o;
 }
+function MInvoke(o){
+   o = RClass.inherits(this, o);
+   o.invoke = RMethod.virtual(o, 'invoke');
+   return o;
+}
 function SArguments(){
    var o = this;
    o.owner = null;
@@ -2136,6 +2141,11 @@ function TContext(n, c, t){
 }
 function TDataset(){
    var o = this;
+   o._code      = null;
+   o._pageSize  = 20;
+   o._pageIndex = 0;
+   o._pageCount = 0;
+   o._total     = 0;
    o._rows      = new TObjects();
    o.isEmpty    = TDataset_isEmpty;
    o.createRow  = TDataset_createRow;
@@ -2197,7 +2207,7 @@ function TDataset_push(r){
 }
 function TDataset_loadConfig(x){
    var o = this;
-   o._name = x.get('name');
+   o._code = x.get('name');
    o._pageSize = RInteger.parse(x.get('page_size', 1000));
    o._pageIndex = RInteger.parse(x.get('page', 0));
    o._pageCount = RInteger.parse(x.get('page_count', 1));
@@ -2247,7 +2257,7 @@ function TDataset_removeRow(r){
 }
 function TDataset_saveViewer(v){
    var o = this;
-   v.datasetName = o._name;
+   v.datasetName = o._code;
    v.datasetId = o.id;
    v.position = 0;
    v.start = 0;
@@ -2267,7 +2277,7 @@ function TDataset_pack(){
 function TDataset_dump(){
    var o = this;
    var r = new TString();
-   r.append(RClass._name(o));
+   r.append(RClass._code(o));
    r.append(' count=', o._count);
    r.append(' fields=', o.fieldCount);
    r.appendLine();
@@ -2282,6 +2292,73 @@ function TDataset_dump(){
       }
    }
    return r.toString();
+}
+function TDatasetViewer(){
+   var o = this;
+   o._datasetId = null;
+   o._position  = 0;
+   o._start     = 0;
+   o._count     = 0;
+   e._values   = null;
+   o._rows      = null;
+   o._ouids     = null;
+   o.isEmpty   = TDatasetViewer_isEmpty;
+   o.count     = TDatasetViewer_count;
+   o.current   = TDatasetViewer_current;
+   o.reset     = TDatasetViewer_reset;
+   o.move      = TDatasetViewer_move;
+   o.moveToRow = TDatasetViewer_moveToRow;
+   o.first     = TDatasetViewer_first;
+   o.prior     = TDatasetViewer_prior;
+   o.next      = TDatasetViewer_next;
+   o.last      = TDatasetViewer_last;
+   return o;
+}
+function TDatasetViewer_isEmpty(){
+   return (this._count == null);
+}
+function TDatasetViewer_count(){
+   return this._count;
+}
+function TDatasetViewer_current(){
+   var o = this;
+   var s = o._rows;
+   return s ? s.get(o._position - o._start) : null;
+}
+function TDatasetViewer_reset(){
+   this._position = -1;
+}
+function TDatasetViewer_move(p){
+   this._position = p;
+}
+function TDatasetViewer_moveToRow(r){
+   var o = this;
+   var p = o._rows.indexOf(r);
+   if(p != -1){
+      o._position = p - o._start;
+   }
+}
+function TDatasetViewer_first(r){
+   this._position = r ? -1 : 0;
+}
+function TDatasetViewer_prior(){
+   var o = this;
+   if(o._position > 0){
+      o._position--;
+      return true;
+   }
+   return false;
+}
+function TDatasetViewer_next(){
+   var o = this;
+   if(o._position < o._count-1){
+      o._position++;
+      return true;
+   }
+   return false;
+}
+function TDatasetViewer_last(){
+   this._position = this._count-1;
 }
 function TDate(date){
    var o = this;
@@ -2970,15 +3047,16 @@ function TNode_innerDump(dump, node, space){
       space = '';
    }
    dump.append(space, node._name, '(', RClass.name(node), ')');
-   if(node._attributes){
-      var count = node._attributes.count;
+   var attributes = node._attributes;
+   if(attributes){
+      var count = attributes.count();
       dump.append(' [', count, ':');
-      for(var n=0; n<count; n++){
+      for(var n = 0; n < count; n++){
          if(n > 0){
             dump.append(' ');
          }
-         dump.append(node._attributes.name(n), '=', node._attributes.value(n));
-         if(n < count-1){
+         dump.append(attributes.name(n), '=', attributes.value(n));
+         if(n < count - 1){
             dump.append(',');
          }
       }
@@ -2990,12 +3068,13 @@ function TNode_innerDump(dump, node, space){
          dump.append(' {', value.length, ':', value, '}');
       }
    }
-   if(node._nodes){
-      var count = node._nodes.count;
+   var nodes = node._nodes;
+   if(nodes){
+      var count = nodes.count();
       dump.append('\n');
       for(var n = 0; n < count; n++){
-         node._nodes.get(n).dump(dump, space + '   ');
-         if(n < count-1){
+         nodes.get(n).dump(dump, space + '   ');
+         if(n < count - 1){
             dump.append('\n');
          }
       }
@@ -3003,8 +3082,7 @@ function TNode_innerDump(dump, node, space){
    return dump;
 }
 function TNode_dump(d, space){
-   d = RString.nvlStr(d);
-   return this.innerDump(d, this, space);
+   return this.innerDump(RString.nvlString(d), this, space);
 }
 function TRow(){
    var o = this;
@@ -3043,7 +3121,7 @@ function TRow_copy(){
    r._statusCd = o._statusCd;
    r._uniqueId = o._uniqueId;
    var c = o.count;
-   for(var n=0; n<c; n++){
+   for(var n = 0; n < c; n++){
       r.set(o.names[n], o.values[n]);
    }
    return r;
@@ -3461,6 +3539,29 @@ function RArray_nameMaxLength(a){
       }
    }
    return r;
+}
+var RAssert = new function RAssert(){
+   var o = this;
+   o.isTrue     = RAssert_isTrue;
+   o.isFalse    = RAssert_isFalse;
+   o.debugBegin = RAssert_empty;
+   o.debug      = RAssert_empty;
+   o.debugEnd   = RAssert_empty;
+   o.debugTrue  = RAssert_isTrue;
+   o.debugFalse = RAssert_isFalse;
+   return o;
+}
+function RAssert_empty(){
+}
+function RAssert_isTrue(p){
+   if(!p){
+      throw new TError(p, 'Assert failure.');
+   }
+}
+function RAssert_isFalse(a){
+   if(p){
+      throw new TError(p, 'Assert failure.');
+   }
 }
 var RBoolean = new function RBoolean(){
    var o = this;
@@ -5261,6 +5362,7 @@ var RString = new function RString(){
    o.findChars    = RString_findChars;
    o.inRange      = RString_inRange;
    o.nvl          = RString_nvl;
+   o.nvlString    = RString_nvlString;
    o.empty        = RString_empty;
    o.firstUpper   = RString_firstUpper;
    o.firstLower   = RString_firstLower;
@@ -5439,6 +5541,12 @@ function RString_nvl(v, d){
       return d;
    }
    return this.EMPTY;
+}
+function RString_nvlString(p){
+   if(p == null){
+      p = new TString();
+   }
+   return p;
 }
 function RString_empty(v){
    if(v != null){
@@ -9850,7 +9958,7 @@ function TXmlDocument_dump(){
    var o = this;
    var r = new TString();
    r.appendLine(RClass.name(o));
-   o.root().innerDump(r);
+   o.root().dump(r);
    return r.flush();
 }
 function TXmlNode(){
@@ -10625,6 +10733,8 @@ var RHtml = new function RHtml(){
    o.toText         = RHtml_toText;
    o.toHtml         = RHtml_toHtml;
    o.eventSource    = RHtml_eventSource;
+   o.get            = RHtml_get;
+   o.parent         = RHtml_parent;
    o.searchLinker   = RHtml_searchLinker;
    o.searchObject   = RHtml_searchObject;
    o.free           = RHtml_free;
@@ -10651,8 +10761,6 @@ var RHtml = new function RHtml(){
    o.hideNodes      = RHtml_hideNodes;
    o.showChildren   = RHtml_showChildren;
    o.hideChildren   = RHtml_hideChildren;
-   o.get            = RHtml_get;
-   o.parent         = RHtml_parent;
    o.posParent      = RHtml_posParent;
    o.form           = RHtml_form;
    o.popup          = RHtml_popup;
@@ -10852,6 +10960,21 @@ function RHtml_toHtml(p){
 }
 function RHtml_eventSource(p){
    return p.srcElement ? p.srcElement : p.target;
+}
+function RHtml_get(name){
+   return document.getElementById(name);
+}
+function RHtml_parent(tag, typeName){
+   if(tag && t){
+      typeName = typeName.toLowerCase();
+      while(tag){
+         if(tag.tagName.toLowerCase() == typeName){
+            return tag;
+         }
+         tag = tag.parentElement;
+      }
+   }
+   return null;
 }
 function RHtml_searchLinker(h, c){
    while(h){
@@ -11190,21 +11313,6 @@ function RHtml_hideChildren(h){
          }
       }
    }
-}
-function RHtml_get(name){
-   return document.getElementById(name);
-}
-function RHtml_parent(o, t){
-   if(o && t){
-      t = t.toLowerCase();
-      while(o){
-         if(o.tagName.toLowerCase() == t){
-            return o;
-         }
-         o = o.parentElement;
-      }
-   }
-   return null;
 }
 function RHtml_posParent(h){
    while(h){
@@ -12414,51 +12522,6 @@ function FDragConsole_unregister(po, pc){
 }
 function FDragConsole_clear(){
    this._dragables.clear();
-}
-function FEnvironmentConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o.scope       = EScope.Local;
-   o.environment = null;
-   o.connect     = FEnvironmentConsole_connect;
-   o.build       = FEnvironmentConsole_build;
-   o.buildValue  = FEnvironmentConsole_buildValue;
-   o.xml         = FEnvironmentConsole_xml;
-   return o;
-}
-function FEnvironmentConsole_connect(){
-   var xData = RHtml.get('xEnvironment');
-   if(xData){
-      this.environment = RXml.makeNode(xData);
-   }
-}
-function FEnvironmentConsole_build(config){
-   if(!this.environment){
-      this.connect()
-   }
-   if(this.environment){
-      var node = config.create('Environment');
-      node.attributes().append(this.environment.attributes());
-   }
-}
-function FEnvironmentConsole_buildValue(){
-   if(!this.environment){
-      this.connect()
-   }
-   if(this.environment){
-      var env = RHtml.get('_environment');
-      if(env){
-         env.value = this.environment.xml();
-      }
-   }
-}
-function FEnvironmentConsole_xml(){
-   if(!this.environment){
-      this.connect()
-   }
-   if(this.environment){
-      return this.environment.xml();
-   }
-   return null;
 }
 function FEvent(o){
    o = RClass.inherits(this, o, FObject);
@@ -13814,6 +13877,7 @@ function RValue_construct(){
 var RWindow = new function RWindow(){
    var o = this;
    o._optionSelect     = true;
+   o._statusEnable     = true;
    o._mouseEvent       = new SMouseEvent();
    o._keyEvent         = new SKeyboardEvent();
    o._resizeEvent      = new SResizeEvent();
@@ -13853,6 +13917,7 @@ var RWindow = new function RWindow(){
    o.makeDisablePanel  = RWindow_makeDisablePanel;
    o.windowEnable      = RWindow_windowEnable;
    o.windowDisable     = RWindow_windowDisable;
+   o.isEnable          = RWindow_isEnable;
    o.enable            = RWindow_enable;
    o.disable           = RWindow_disable;
    o.setEnable         = RWindow_setEnable;
@@ -13999,6 +14064,9 @@ function RWindow_windowDisable(){
 function RWindow_windowEnable(){
    this._hContainer.disabled = false;
 }
+function RWindow_isEnable(){
+   return this._statusEnable;
+}
 function RWindow_enable(){
    var o = this;
    o._disableDeep--;
@@ -14035,6 +14103,7 @@ function RWindow_setEnable(v, f){
          h._linked = false;
       }
    }
+   o._statusEnable = v;
 }
 function RWindow_onUnload(){
    RMemory.release();
@@ -28044,39 +28113,6 @@ function FE3dTemplateRenderable_dispose(){
    var o = this;
    o.__base.FE3dMeshRenderable.dispose.call(o);
 }
-var EDataAction = new function EDataAction(){
-   var o = this;
-   o.Fetch     = 'fetch';
-   o.Search    = 'search';
-   o.Lov       = 'lov';
-   o.Zoom      = 'zoom';
-   o.Prepare   = 'prepare';
-   o.Insert    = 'insert';
-   o.Update    = 'update';
-   o.Delete    = 'delete';
-   o.First     = 'first';
-   o.Prior     = 'prior';
-   o.Next      = 'next';
-   o.Last      = 'last';
-   o.Action    = 'action';
-   o.FetchLov  = 'fetchLov';
-   o.EndFetch  = 'endfetch';
-   o.EndUpdate = 'endupdate';
-   o.DsChanged = 'dschanged';
-   o.Scalar    = 'scalar';
-   o.Complete  = 'complete';
-   o.Process   = 'process';
-   return o;
-}
-var EDataService = new function EDataService(){
-   var o = this;
-   o.Dataset    = 'database.dataset';
-   o.List       = 'design.list';
-   o.WebForm    = 'design.webform';
-   o.Translate  = 'design.translate';
-   o.WebDataset = 'logic.dataset';
-   return o;
-}
 var EEditConfig = new function(){
    var o = this;
    o.Search = 'S';
@@ -28326,26 +28362,6 @@ var EUiSize = new function EUiSize(){
    o.Both       = 3;
    return o;
 }
-function MDataContainer(o){
-   o = RClass.inherits(this, o, MDataValue);
-   o.dsDataLoad = MDataContainer_dsDataLoad;
-   o.dsDataSave = MDataContainer_dsDataSave;
-   return o;
-}
-function MDataContainer_dsDataLoad(p){
-   var o = this;
-   var e = new TEventProcess(null, o, 'oeDataLoad', MDataValue);
-   e.source = p;
-   o.process(e);
-   e.dispose();
-}
-function MDataContainer_dsDataSave(p){
-   var o = this;
-   var e = new TEventProcess(null, o, 'oeDataSave', MDataValue);
-   e.source = p;
-   o.process(e);
-   e.dispose();
-}
 function MDataProperties(o){
    o = RClass.inherits(this, o);
    o._dataProperties = null;
@@ -28369,12 +28385,6 @@ function MDataProperties_dataPropertyGet(n){
 }
 function MDataProperties_dataPropertySet(n, v){
    this.dataProperties().set(n, v);
-}
-function MDataValue(o){
-   o = RClass.inherits(this, o);
-   o.oeDataLoad = RMethod.empty;
-   o.oeDataSave = RMethod.empty;
-   return o;
 }
 function MDescribeFrame(o){
    o = RClass.inherits(this, o);
@@ -28756,7 +28766,7 @@ function MEditDrop_dispose(){
 }
 function MEditReference(o){
    o = RClass.inherits(this, o);
-   o._lovService    = RClass.register(o, new APtyString('_lovService', null, EDataService.WebForm));
+   o._lovService    = RClass.register(o, new APtyString('_lovService'));
    o._lovReference  = RClass.register(o, new APtyString('_lovReference'));
    o._lovFields     = RClass.register(o, new APtyString('_lovFields'));
    o._lovWhere      = RClass.register(o, new APtyString('_lovWhere'));
@@ -29647,6 +29657,12 @@ function MUiStyle_styleIcon(n, c){
 function MUiStyle_styleIconPath(n, c){
    return RResource.iconPath(RClass.name(c ? c : this, true) + '_' + n);
 }
+function MUiValue(o){
+   o = RClass.inherits(this, o);
+   o.get = RMethod.empty;
+   o.set = RMethod.empty;
+   return o;
+}
 function MUiVertical(o){
    o = RClass.inherits(this, o);
    o.setVisible = MUiHorizontal_setVisible;
@@ -29720,7 +29736,7 @@ function TEvent_isAfter(){
 function TEvent_process(){
    var o = this;
    if(!o.onProcess){
-      return RMessage.fatal(o, null, 'Process event is null. (owner={0})', RClass.dump(o.owner));
+      return RMessage.fatal(o, null, 'Process event is null. (owner={1})', RClass.dump(o.owner));
    }
    var sp = new TSpeed(o, 'Process event (owner={0}, process={1})', o.owner, RMethod.name(o.onProcess));
    if(o.owner){
@@ -29733,8 +29749,8 @@ function TEvent_process(){
 function TEvent_dump(){
    return RClass.typeOf(this) + ' [' + this.owner + ',' + this.type + '-' + this.code + ']';
 }
-function TEventProcess(o, po, pm, pc){
-   if(!o){o = this;}
+function TEventProcess(po, pm, pc){
+   var o = this;
    o.owner    = po;
    o.invoke   = pm;
    o.clazz    = RClass.name(pc);
@@ -30015,6 +30031,7 @@ function FUiComponent(o){
    o.isParent      = FUiComponent_isParent;
    o.topComponent  = FUiComponent_topComponent;
    o.hasComponent  = FUiComponent_hasComponent;
+   o.findComponent = FUiComponent_findComponent;
    o.components    = FUiComponent_components;
    o.push          = FUiComponent_push;
    o.remov         = FUiComponent_remove;
@@ -30074,8 +30091,12 @@ function FUiComponent_topComponent(c){
    return p;
 }
 function FUiComponent_hasComponent(){
-   var ps = this._components;
-   return ps ? !ps.isEmpty() : false;
+   var s = this._components;
+   return s ? !s.isEmpty() : false;
+}
+function FUiComponent_findComponent(p){
+   var s = this._components;
+   return s ? s.get(p) : null;
 }
 function FUiComponent_components(){
    var o = this;
@@ -30089,12 +30110,12 @@ function FUiComponent_components(){
 function FUiComponent_push(p){
    var o = this;
    if(RClass.isClass(p, FUiComponent)){
-      var ps = o.components();
+      var s = o.components();
       p._parent = o;
       if(p._name == null){
-         p._name = ps.count();
+         p._name = s.count();
       }
-      ps.set(p._name, p);
+      s.set(p._name, p);
    }
 }
 function FUiComponent_remove(p){
@@ -30159,13 +30180,13 @@ function FUiComponent_process(e){
 }
 function FUiComponent_psInitialize(){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeInitialize', FUiComponent);
+   var e = new TEventProcess(o, 'oeInitialize', FUiComponent);
    o.process(e);
    e.dispose();
 }
 function FUiComponent_psRelease(){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeRelease', FUiComponent);
+   var e = new TEventProcess(o, 'oeRelease', FUiComponent);
    o.process(e);
    e.dispose();
 }
@@ -30583,7 +30604,7 @@ function FUiControl_callEvent(n, s, e){
 }
 function FUiControl_psMode(p){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeMode', FUiControl);
+   var e = new TEventProcess(o, 'oeMode', FUiControl);
    e.displayCd = p;
    o.process(e);
    e.dispose();
@@ -30591,7 +30612,7 @@ function FUiControl_psMode(p){
 function FUiControl_psDesign(m, f){
    var o = this;
    RConsole.find(FDesignConsole).setFlag(m, f, o);
-   var e = new TEventProcess(null, o, 'oeDesign', MDesign)
+   var e = new TEventProcess(o, 'oeDesign', MDesign)
    e.mode = m;
    e.flag = f;
    o.process(e);
@@ -30599,27 +30620,27 @@ function FUiControl_psDesign(m, f){
 }
 function FUiControl_psEnable(v){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeEnable', FUiControl)
+   var e = new TEventProcess(o, 'oeEnable', FUiControl)
    e.enable = v;
    o.process(e);
    e.dispose();
 }
 function FUiControl_psVisible(v){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeVisible', FUiControl);
+   var e = new TEventProcess(o, 'oeVisible', FUiControl);
    e.visible = v;
    o.process(e);
    e.dispose();
 }
 function FUiControl_psResize(){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeResize', FUiControl);
+   var e = new TEventProcess(o, 'oeResize', FUiControl);
    o.process(e);
    e.dispose();
 }
 function FUiControl_psRefresh(t){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeRefresh', FUiControl);
+   var e = new TEventProcess(o, 'oeRefresh', FUiControl);
    o.process(e);
    e.dispose();
 }
@@ -31416,6 +31437,57 @@ function FEditorConsole_lost(e){
    var o = this;
    o.leave(e);
    o.blur(e);
+}
+function FEnvironmentConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o.scope       = EScope.Local;
+   o.environment = null;
+   o.connect     = FEnvironmentConsole_connect;
+   o.build       = FEnvironmentConsole_build;
+   o.buildValue  = FEnvironmentConsole_buildValue;
+   o.load        = FEnvironmentConsole_load;
+   o.xml         = FEnvironmentConsole_xml;
+   return o;
+}
+function FEnvironmentConsole_connect(){
+   return;
+   var xData = window.xEnvironment;
+   if(xData){
+      this.environment = RXml.makeNode(xData);
+   }
+}
+function FEnvironmentConsole_build(config){
+   var o = this;
+   if(!o.environment){
+      o.connect()
+   }
+   if(o.environment){
+      var node = config.create('Environment');
+      node.attributes().append(this.environment.attributes());
+   }
+}
+function FEnvironmentConsole_buildValue(){
+   if(!this.environment){
+      this.connect()
+   }
+   if(this.environment){
+      var env = RHtml.get('_environment');
+      if(env){
+         env.value = this.environment.xml();
+      }
+   }
+}
+function FEnvironmentConsole_load(p){
+   this.environment = RXml.makeNode(p);
+}
+function FEnvironmentConsole_xml(){
+   if(!this.environment){
+      this.connect()
+   }
+   if(this.environment){
+      return this.environment.xml();
+   }
+   return null;
 }
 function FFocusConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -34881,6 +34953,7 @@ function FUiDropEditor_dispose(){
 function FUiEdit(o){
    o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit, MListenerDataChanged);
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
+   o._unit            = RClass.register(o, new APtyString('_unit'));
    o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
    o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
@@ -34950,7 +35023,7 @@ function FUiEdit_refreshValue(){
    o.processDataChangedListener(o);
 }
 function FUiEditControl(o){
-   o = RClass.inherits(this, o, FUiControl, MDataField, MEditValue, MEditChange, MEditDrop);
+   o = RClass.inherits(this, o, FUiControl, MEditValue, MEditChange, MEditDrop);
    o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
    o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), EUiLabelPosition.Left);
    o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
@@ -35536,16 +35609,10 @@ function FUiEditor_dispose(){
    o._hEdit = null;
 }
 function FUiForm(o){
-   o = RClass.inherits(this, o, FUiLayout, MDataset, MDescribeFrame);
+   o = RClass.inherits(this, o, FUiLayout, MDescribeFrame);
    o.onMouseDown        = FUiForm_onMouseDown;
    o.construct          = FUiForm_construct;
    o._dataStatusCd      = ERowStatus.Update;
-   o._clearEvent        = null;
-   o._resetEvent        = null;
-   o._loadEvent         = null;
-   o._saveEvent         = null;
-   o._recordEvent       = null;
-   o._codeEvent         = null;
    o._dataComponents    = null;
    o.lsnsLoaded         = null;
    o.lsnsClick          = null;
@@ -42130,7 +42197,10 @@ function FUiToolButton_setEnable(p){
 function FUiToolButton_click(){
    var o = this;
    RLogger.debug(o, 'Mouse button click. (label={1})' + o._label);
-      o.processClickListener(o);
+   o.processClickListener(o);
+   if(o._action){
+      eval(o._action);
+   }
 }
 function FUiToolButton_dispose(){
    var o = this;
@@ -42849,15 +42919,16 @@ function FUiTreeLevel(o){
 }
 function FUiTreeNode(o){
    o = RClass.inherits(this, o, FUiContainer, MDataProperties);
-   o._valid            = RClass.register(o, new APtyBoolean('_isValid'), true);
-   o._typeName         = RClass.register(o, new APtyString('_typeName', 'type'));
-   o._uuid             = RClass.register(o, new APtyString('_uuid'));
+   o._valid            = RClass.register(o, new APtyBoolean('_valid', 'is_valid'), true);
+   o._child            = RClass.register(o, new APtyBoolean('_child', 'has_child'), false);
+   o._typeCode         = RClass.register(o, new APtyString('_typeCode'));
+   o._guid             = RClass.register(o, new APtyString('_guid'));
+   o._code             = RClass.register(o, new APtyString('_code'));
    o._icon             = RClass.register(o, new APtyString('_icon'));
    o._checked          = RClass.register(o, new APtyBoolean('_checked'), false);
    o._extended         = RClass.register(o, new APtyBoolean('_extended'), false);
-   o._child            = RClass.register(o, new APtyBoolean('_child'), false);
    o._note             = RClass.register(o, new APtyString('_note'));
-   o._tag              = RClass.register(o, new APtyString('_tag'));
+   o._attributes       = RClass.register(o, new APtyAttributes('_attributes'));
    o._styleNormal      = RClass.register(o, new AStyle('_styleNormal'));
    o._styleHover       = RClass.register(o, new AStyle('_styleHover'));
    o._styleSelect      = RClass.register(o, new AStyle('_styleSelect'));
@@ -42868,7 +42939,6 @@ function FUiTreeNode(o){
    o._styleCell        = RClass.register(o, new AStyle('_styleCell'));
    o._tree             = null;
    o._level            = 0;
-   o._attributes       = null;
    o._nodes            = null;
    o._cells            = null;
    o._statusLinked     = false;
@@ -42887,9 +42957,13 @@ function FUiTreeNode(o){
    o.onNodeLeave       = RClass.register(o, new AEventMouseLeave('onNodeLeave'), FUiTreeNode_onNodeLeave);
    o.onNodeClick       = RClass.register(o, new AEventClick('onNodeClick'), FUiTreeNode_onNodeClick);
    o.construct         = FUiTreeNode_construct;
+   o.code              = FUiTreeNode_code;
+   o.setCode           = FUiTreeNode_setCode;
+   o.guid              = FUiTreeNode_guid;
+   o.setGuid           = FUiTreeNode_setGuid;
    o.type              = FUiTreeNode_type;
-   o.typeName          = FUiTreeNode_typeName;
-   o.setTypeName       = FUiTreeNode_setTypeName;
+   o.typeCode          = FUiTreeNode_typeCode;
+   o.setTypeCode       = FUiTreeNode_setTypeCode;
    o.setLabel          = FUiTreeNode_setLabel;
    o.setNote           = FUiTreeNode_setNote;
    o.level             = FUiTreeNode_level;
@@ -42902,6 +42976,7 @@ function FUiTreeNode(o){
    o.setIcon           = FUiTreeNode_setIcon;
    o.get               = FUiTreeNode_get;
    o.set               = FUiTreeNode_set;
+   o.isFolder          = FUiTreeNode_isFolder;
    o.hasChild          = FUiTreeNode_hasChild;
    o.topNode           = FUiTreeNode_topNode;
    o.topNodeByType     = FUiTreeNode_topNodeByType;
@@ -42923,17 +42998,8 @@ function FUiTreeNode(o){
    o.propertyLoad      = FUiTreeNode_propertyLoad;
    o.propertySave      = FUiTreeNode_propertySave;
    o.loadConfig        = FUiTreeNode_loadConfig;
-   o.reload           = FUiTreeNode_reload;
-   o.reloadParent     = FUiTreeNode_reloadParent;
-   o.loadQuery        = FUiTreeNode_loadQuery;
-   o.isFolder         = FUiTreeNode_isFolder;
-   o.dispose          = FUiTreeNode_dispose;
-   o.innerDump        = FUiTreeNode_innerDump;
-   o.findByName       = FUiTreeNode_findByName;
-   o.findByUuid       = FUiTreeNode_findByUuid;
-   o.checkChanged     = FUiTreeNode_checkChanged;
-   o.pushChanged      = FUiTreeNode_pushChanged;
-   o.getFullPath      = FUiTreeNode_getFullPath;
+   o.dispose           = FUiTreeNode_dispose;
+   o.innerDump         = FUiTreeNode_innerDump;
    return o;
 }
 function FUiTreeNode_onBuildPanel(p){
@@ -43044,22 +43110,33 @@ function FUiTreeNode_onNodeClick(e){
 function FUiTreeNode_construct(){
    var o = this;
    o.__base.FUiContainer.construct.call(o);
-   o._attributes = new TAttributes();
+}
+function FUiTreeNode_code(){
+   return this._code;
+}
+function FUiTreeNode_setCode(p){
+   this._code = p;
+}
+function FUiTreeNode_guid(){
+   return this._guid;
+}
+function FUiTreeNode_setGuid(p){
+   this._guid = p;
 }
 function FUiTreeNode_type(){
    var o = this;
    var t = o._tree;
-   if(RString.isEmpty(o._typeName)){
+   if(RString.isEmpty(o._typeCode)){
       return null;
    }
-   return t.findType(o._typeName);
+   return t.findType(o._typeCode);
 }
-function FUiTreeNode_typeName(){
-   return this._typeName;
+function FUiTreeNode_typeCode(){
+   return this._typeCode;
 }
-function FUiTreeNode_setTypeName(p){
+function FUiTreeNode_setTypeCode(p){
    var o = this;
-   o._typeName = p;
+   o._typeCode = p;
    o.setIcon();
 }
 function FUiTreeNode_setLabel(p){
@@ -43155,6 +43232,11 @@ function FUiTreeNode_get(n){
 function FUiTreeNode_set(n, v){
    this._attributes.set(n, v);
 }
+function FUiTreeNode_isFolder(){
+   var o = this;
+   var t = o.type();
+   return t.storage() == 'collections';
+}
 function FUiTreeNode_hasChild(){
    var o = this;
    if(o._child){
@@ -43168,14 +43250,18 @@ function FUiTreeNode_hasChild(){
 function FUiTreeNode_topNode(){
    var r = this;
    while(r._parent){
-      r = r._parent;
+      if(RClass.isClass(r._parent, FUiTreeNode)){
+         r = r._parent;
+      }else{
+         break;
+      }
    }
    return r;
 }
 function FUiTreeNode_topNodeByType(t){
    var r = this;
    while(r){
-      if(r._typeName == t){
+      if(r._typeCode == t){
          return r;
       }
       r = r._parent;
@@ -43353,8 +43439,8 @@ function FUiTreeNode_removeChildren(){
 }
 function FUiTreeNode_reset(){
    var o = this;
-   o._typeName = null;
-   o._uuid = null;
+   o._typeCode = null;
+   o._guid = null;
    o._valid = true;
    o._icon = null;
    o._tag = null;
@@ -43422,6 +43508,27 @@ function FUiTreeNode_loadConfig(x){
    o.setImage();
    o.setIcon(o._icon);
 }
+function FUiTreeNode_dispose(){
+   var o = this;
+   o._hNodePanel = null;
+   o._hImage = null;
+   o._hIcon = null;
+   o._hCheck = null;
+   o._hLabel = null;
+   o.__base.FUiContainer.dispose.call(o);
+}
+function FUiTreeNode_innerDump(s){
+   var o = this;
+   s.append(RClass.name(o));
+   s.append('[level=',  o._level);
+   if(o._typeCode){
+      s.append(' type=',  o._typeCode.name);
+   }
+   s.append(', icon=',  o._icon);
+   s.append(', caption=', o._label);
+   s.append(', child=', o._child);
+   s.append(']');
+}
 function FUiTreeNode_reload(t){
    var o = this;
    if(t){
@@ -43452,27 +43559,6 @@ function FUiTreeNode_loadQuery(x){
       o.setVisible(o._statusDisplay);
    }
 }
-function FUiTreeNode_dispose(){
-   var o = this;
-   o.__base.FUiContainer.dispose.call(o);
-   o._hNodePanel = null;
-   o._hImage = null;
-   o._hIcon = null;
-   o._hCheck = null;
-   o._hLabel = null;
-}
-function FUiTreeNode_innerDump(s){
-   var o = this;
-   s.append(RClass._typeNameOf(o));
-   s.append('[level=',  o._level);
-   if(o._typeName){
-      s.append(' type=',  o._typeName.name);
-   }
-   s.append(', icon=',  o._icon);
-   s.append(', caption=', o._label);
-   s.append(', child=', o._child);
-   s.append(']');
-}
 function FUiTreeNode_findByName(n){
    var o = this;
    if(o.name == n){
@@ -43500,7 +43586,7 @@ function FUiTreeNode_findByName(n){
 }
 function FUiTreeNode_findByUuid(u){
    var o = this;
-   if(o._uuid == u){
+   if(o._guid == u){
       return o;
    }
    var cs = o.components;
@@ -43508,7 +43594,7 @@ function FUiTreeNode_findByUuid(u){
       for(var n=0; n<cs.count; n++){
          var c = cs.value(n);
          if(c){
-            if(c._uuid == u){
+            if(c._guid == u){
                return c;
             }
             if(c.components){
@@ -43560,11 +43646,6 @@ function FUiTreeNode_getFullPath(){
        }
     }
     return path;
-}
-function FUiTreeNode_isFolder(){
-   if(this._typeName){
-       return (this._typeName._typeNameName == 'collections') ? true : false;
-   }
 }
 function FUiTreeNodeCell(o){
    o = RClass.inherits(this, o, FUiControl, MListenerClick, MListenerDoubleClick);
@@ -43693,58 +43774,65 @@ function FUiTreeNodeType_innerDump(s){
 }
 function FUiTreeView(o){
    o = RClass.inherits(this, o, FUiContainer);
-   o._optionCheck     = RClass.register(o, new APtyBoolean('_optionCheck'), false);
-   o._indent          = RClass.register(o, new APtyInteger('_indent'), 16);
-   o._stylePanel      = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
-   o._styleNodePanel  = RClass.register(o, new AStyle('_styleNodePanel', 'NodePanel'));
-   o._styleNodeForm   = RClass.register(o, new AStyle('_styleNodeForm', 'NodeForm'));
-   o._attributes      = null;
-   o._nodeTypes       = null;
-   o._nodeColumns     = null;
-   o._nodeLevels      = null;
-   o._nodes           = null;
-   o._allNodes        = null;
-   o._defaultNodeType = null;
-   o._focusNode       = null;
-   o._loadingNode     = null;
-   o._freeNodes       = null;
-   o._iconPlus        = 'control.treeview.plus';
-   o._iconMinus       = 'control.treeview.minus';
-   o._iconNode        = 'control.treeview.node';
-   o._iconLoading     = 'control.treeview.loading';
-   o._hNodePanel      = null;
-   o._hNodeForm       = null;
-   o._hHeadLine       = null;
-   o._hNodeRows       = null;
-   o.lsnsEnter        = new TListeners();
-   o.lsnsLeave        = new TListeners();
-   o.lsnsClick        = new TListeners();
-   o.onBuildPanel     = FUiTreeView_onBuildPanel;
-   o.onBuild          = FUiTreeView_onBuild;
-   o.onNodeCheckClick = RClass.register(o, new AEventClick('onNodeCheckClick'), FUiTreeView_onNodeCheckClick);
-   o.construct        = FUiTreeView_construct;
-   o.attributes       = FUiTreeView_attributes;
-   o.nodeTypes        = FUiTreeView_nodeTypes;
-   o.nodeColumns      = FUiTreeView_nodeColumns;
-   o.nodeLevels       = FUiTreeView_nodeLevels;
-   o.nodes            = FUiTreeView_nodes;
-   o.findType         = FUiTreeView_findType;
-   o.findByName       = FUiTreeView_findByName;
-   o.findByUuid       = FUiTreeView_findByUuid;
-   o.createChild      = FUiTreeView_createChild;
-   o.createNode       = FUiTreeView_createNode;
-   o.appendNode       = FUiTreeView_appendNode;
-   o.selectNode       = FUiTreeView_selectNode;
-   o.push             = FUiTreeView_push;
-   o.freeNode         = FUiTreeView_freeNode;
-   o.calculateHeight  = FUiTreeView_calculateHeight;
-   o.extendAuto       = FUiTreeView_extendAuto;
-   o.extendAll        = FUiTreeView_extendAll;
-   o.loadNode         = RMethod.empty;
-   o.refresh          = FUiTreeView_refresh;
-   o.filterNode       = FUiTreeView_filterNode;
-   o.clear            = FUiTreeView_clear;
-   o.dispose          = FUiTreeView_dispose;
+   o._optionCheck       = RClass.register(o, new APtyBoolean('_optionCheck'), false);
+   o._indent            = RClass.register(o, new APtyInteger('_indent'), 16);
+   o._stylePanel        = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
+   o._styleNodePanel    = RClass.register(o, new AStyle('_styleNodePanel', 'NodePanel'));
+   o._styleNodeForm     = RClass.register(o, new AStyle('_styleNodeForm', 'NodeForm'));
+   o._attributes        = null;
+   o._nodeTypes         = null;
+   o._nodeColumns       = null;
+   o._nodeLevels        = null;
+   o._nodes             = null;
+   o._allNodes          = null;
+   o._defaultNodeType   = null;
+   o._focusNode         = null;
+   o._loadingNode       = null;
+   o._freeNodes         = null;
+   o._iconPlus          = 'control.treeview.plus';
+   o._iconMinus         = 'control.treeview.minus';
+   o._iconNode          = 'control.treeview.node';
+   o._iconLoading       = 'control.treeview.loading';
+   o._hNodePanel        = null;
+   o._hNodeForm         = null;
+   o._hHeadLine         = null;
+   o._hNodeRows         = null;
+   o.lsnsEnter          = new TListeners();
+   o.lsnsLeave          = new TListeners();
+   o.lsnsClick          = new TListeners();
+   o.onBuildPanel       = FUiTreeView_onBuildPanel;
+   o.onBuild            = FUiTreeView_onBuild;
+   o.onNodeCheckClick   = RClass.register(o, new AEventClick('onNodeCheckClick'), FUiTreeView_onNodeCheckClick);
+   o.construct          = FUiTreeView_construct;
+   o.attributes         = FUiTreeView_attributes;
+   o.nodeTypes          = FUiTreeView_nodeTypes;
+   o.nodeColumns        = FUiTreeView_nodeColumns;
+   o.nodeLevels         = FUiTreeView_nodeLevels;
+   o.hasNode            = FUiTreeView_hasNode;
+   o.nodes              = FUiTreeView_nodes;
+   o.findType           = FUiTreeView_findType;
+   o.findByName         = FUiTreeView_findByName;
+   o.findByUuid         = FUiTreeView_findByUuid;
+   o.createChild        = FUiTreeView_createChild;
+   o.createNode         = FUiTreeView_createNode;
+   o.appendChild        = FUiTreeView_appendChild;
+   o.appendNode         = FUiTreeView_appendNode;
+   o.appendNodes        = FUiTreeView_appendNodes;
+   o.selectNode         = FUiTreeView_selectNode;
+   o.push               = FUiTreeView_push;
+   o.removeNode         = FUiTreeView_removeNode;
+   o.removeNodes        = FUiTreeView_removeNodes;
+   o.freeNode           = FUiTreeView_freeNode;
+   o.clearNodes         = FUiTreeView_clearNodes;
+   o.calculateHeight    = FUiTreeView_calculateHeight;
+   o.fetchChangedChecks = FUiTreeView_fetchChangedChecks;
+   o.extendAuto         = FUiTreeView_extendAuto;
+   o.extendAll          = FUiTreeView_extendAll;
+   o.loadNode           = RMethod.empty;
+   o.refresh            = FUiTreeView_refresh;
+   o.filterNode         = FUiTreeView_filterNode;
+   o.clear              = FUiTreeView_clear;
+   o.dispose            = FUiTreeView_dispose;
    return o;
 }
 function FUiTreeView_onBuildPanel(e){
@@ -43836,6 +43924,9 @@ function FUiTreeView_nodeColumns(){
 function FUiTreeView_nodeLevels(){
    return this._nodeLevels;
 }
+function FUiTreeView_hasNode(){
+   return this._rootNode.hasChild();
+}
 function FUiTreeView_nodes(){
    return this._nodes;
 }
@@ -43891,6 +43982,9 @@ function FUiTreeView_createChild(x){
    r._tree = o;
    return r;
 }
+function FUiTreeView_appendChild(child){
+   var o = this;
+}
 function FUiTreeView_createNode(){
    var o = this;
    var n = o._freeNodes.pop();
@@ -43926,6 +44020,38 @@ function FUiTreeView_appendNode(n, p){
       }
       n._statusLinked = true;
    }
+}
+function FUiTreeView_appendNodes(parent, config){
+   parent = RObject.nvl(parent, this.workNode, this.rootNode);
+   if(config && config._nodes){
+      var count = config._nodes.count;
+      if(count > 0){
+         parent.child = true;
+         parent.loaded = true;
+         for(var n = 0; n < count; n++){
+            var nc = config._nodes.get(n);
+            if(nc && (nc.isName('Node') || nc.isName('TreeNode'))){
+               var tn = RClass.create(FUiTreeNode);
+               tn.parent = parent;
+               tn._tree = this;
+               tn.loadConfig(nc);
+               if(nc._nodes){
+                  tn.icon = 'ctl.FBrowser_Folder';
+               }else{
+                  tn.icon = 'ctl.FBrowser_Txt';
+               }
+               tn.build(0);
+               tn.hide();
+               if(nc._nodes){
+                  this.tempAppendNodes(tn, nc);
+               }
+               parent.push(tn);
+               this._allNodes.push(tn);
+            }
+         }
+      }
+   }
+   this.rootNode.extend(true);
 }
 function FUiTreeView_selectNode(n, s){
    var o = this;
@@ -43971,6 +44097,46 @@ function FUiTreeView_push(p){
       o._allNodes.push(p);
    }
 }
+function FUiTreeView_removeNode(oNode){
+   var o = this;
+   if(oNode){
+      var nodes = new Array();
+      var oLoopNode = null;
+      var nCount = this._allNodes.length;
+      for(var n=0; n<nCount; n++){
+         oLoopNode = this._allNodes[n];
+         if(oLoopNode != oNode){
+            nodes[nodes.length] = oLoopNode;
+         }
+      }
+      o._allNodes = nodes;
+      var oParent = oNode.parent;
+      if(oParent){
+         nodes = new Array();
+         nCount = oParent._nodes.length;
+         for(var n=0; n<nCount; n++){
+            oLoopNode = oParent._nodes[n];
+            if(oLoopNode != oNode){
+               nodes[nodes.length] = oLoopNode;
+            }
+         }
+         oParent._nodes = nodes;
+         oNode.parent.childrenHTML.removeChild(oNode.ownerHTML);
+      }
+      if(oParent._nodes.length == 0){
+         oParent.imageHTML.src = o.imgEmpty;
+      }
+      return true;
+   }
+   return false;
+}
+function FUiTreeView_removeNodes(node){
+   node = RObject.nvl(node, this.workNode, this.rootNode);
+   if(node.hasChild()){
+      node.removeChildren();
+   }
+   node.remove();
+}
 function FUiTreeView_freeNode(p){
    var o = this;
    if(p._statusLinked){
@@ -43979,6 +44145,25 @@ function FUiTreeView_freeNode(p){
       o._allNodes.remove(p);
       o._freeNodes.push(p);
    }
+}
+function FUiTreeView_clearNodes(node){
+   if(node){
+      node.removeChildren();
+   }
+   var nodes = new Array();
+   var oLoopNode = null;
+   var nCount = this._allNodes.length;
+   for(var n=0; n<nCount; n++){
+      oLoopNode = this._allNodes[n];
+      if(oLoopNode.parent != oNode){
+         nodes[nodes.length] = oLoopNode;
+      }else{
+      oNode.childrenHTML.removeChild(oLoopNode.ownerHTML);
+      }
+   }
+   oNode.imageHTML.src = this.imgEmpty ;
+   this._allNodes = nodes;
+   return true;
 }
 function FUiTreeView_calculateHeight(){
    var o = this;
@@ -43991,6 +44176,18 @@ function FUiTreeView_calculateHeight(){
       }
    }
    return c * 29;
+}
+function FUiTreeView_fetchChangedChecks(){
+   var o = this;
+   var treeView = new TNode('TreeView');
+   treeView.set('name', o.name);
+   var rnd = RObject.nvl(o.rootNode, o);
+   var cs = rnd.controls;
+   for(var n = 0; n < cs.count; n++){
+      var c = cs.value(n);
+      c.pushChanged(treeView);
+   }
+   return treeView;
 }
 function FUiTreeView_extendAuto(n){
    var o = this;
@@ -44441,39 +44638,267 @@ function FUiFrameSpliter_dispose(){
    }
    o.__base.FUiControl.dispose.call(o);
 }
-function MDataField(o){
-   o = RClass.inherits(this, o, MDataValue);
-   o._dataName = RClass.register(o, new APtyString('_dataName'));
+var EUiDataAction = new function EUiDataAction(){
+   var o = this;
+   o.Fetch     = 'fetch';
+   o.Search    = 'search';
+   o.Lov       = 'lov';
+   o.Zoom      = 'zoom';
+   o.Prepare   = 'prepare';
+   o.Insert    = 'insert';
+   o.Update    = 'update';
+   o.Delete    = 'delete';
+   o.First     = 'first';
+   o.Prior     = 'prior';
+   o.Next      = 'next';
+   o.Last      = 'last';
+   o.Action    = 'action';
+   o.FetchLov  = 'fetchLov';
+   o.EndFetch  = 'endfetch';
+   o.EndUpdate = 'endupdate';
+   o.DsChanged = 'dschanged';
+   o.Scalar    = 'scalar';
+   o.Complete  = 'complete';
+   o.Process   = 'process';
    return o;
 }
-function MDataset(o){
-   o = RClass.inherits(this, o, MDataContainer);
+var EUiDataMode = new function EUiDataMode(){
+   var o = this;
+   o.Insert = 'insert';
+   o.Update = 'update';
+   o.Delete = 'delete';
+   return o;
+}
+var EUiDataService = new function EUiDataService(){
+   var o = this;
+   o.Dataset    = 'database.dataset';
+   o.List       = 'design.list';
+   o.WebForm    = 'design.webform';
+   o.Translate  = 'design.translate';
+   o.WebDataset = 'logic.dataset';
+   return o;
+}
+var EUiDataStore = new function EUiDataStore(){
+   var o = this;
+   o.Full     = 0;
+   o.Sort     = 1;
+   o.Config   = 2;
+   o.Value    = 3;
+   o.Name     = 4;
+   o.DataName = 5;
+   o.DataNvl  = 6;
+   o.Reset    = 7;
+   o.Prepare  = 8;
+   return o;
+}
+function MUiDataAction(o){
+   o = RClass.inherits(this, o);
+   o.doAction = MUiDataAction_doAction
+   return o;
+}
+function MUiDataAction_doAction(n){
+   var o = this;
+   var c = o.findComponent(n);
+   if(RClass.isClass(c, MInvoke)){
+      c.invoke(this);
+   }else{
+      throw new TError(o, 'Component is invalid.');
+   }
+}
+function MUiDataContainer(o){
+   o = RClass.inherits(this, o, MUiContainer);
+   o.dsDataLoad = MUiDataContainer_dsDataLoad;
+   o.dsDataSave = MUiDataContainer_dsDataSave;
+   o.dsLoadValue = MUiDataContainer_dsLoadValue;
+   o.dsSaveValue = MUiDataContainer_dsSaveValue;
+   return o;
+}
+function MUiDataContainer_dsDataLoad(p){
+   var o = this;
+   var e = new TEventProcess(null, o, 'oeDataLoad', MDataValue);
+   e.source = p;
+   o.process(e);
+   e.dispose();
+}
+function MUiDataContainer_dsDataSave(p){
+   var o = this;
+   var e = new TEventProcess(null, o, 'oeDataSave', MDataValue);
+   e.source = p;
+   o.process(e);
+   e.dispose();
+}
+function MUiDataContainer_dsLoadValue(r, m){
+   var o = this;
+   if(!r){
+      r = new TRow();
+   }
+   var e = new TEventProcess(o, 'oeDataLoadValue', MUiDataValue);
+   e.viewer = o._dsViewer;
+   e.store = m;
+   e.values = new TRow();
+   o.process(e);
+}
+function MUiDataContainer_dsSaveValue(r, m){
+   var o = this;
+   if(!r){
+      r = new TRow();
+   }
+   var e = new TEventProcess(o, 'oeDataSaveValue', MUiDataValue);
+   e.viewer = o._dsViewer;
+   e.store = m;
+   e.values = r;
+   o.process(e);
+   r.set('_status', o._dataStatusCd);
+   return r;
+}
+function MUiDataField(o){
+   o = RClass.inherits(this, o, MUiValue, MUiDataValue);
+   o._dataName       = RClass.register(o, new APtyString('_dataName'));
+   o.oeDataLoadValue = MUiDataField_oeDataLoadValue;
+   o.oeDataSaveValue = MUiDataField_oeDataSaveValue;
+   return o;
+}
+function MUiDataField_oeDataLoadValue(p){
+   var o = this;
+   var r = p.values;
+   var v = r.get(o._dataName);
+   o.set(v);
+   return EEventStatus.Stop;
+}
+function MUiDataField_oeDataSaveValue(p){
+   var o = this;
+   var v = o.get();
+   var r = p.values;
+   r.set(o._dataName, v);
+   return EEventStatus.Stop;
+}
+function MUiDataset(o){
+   o = RClass.inherits(this, o);
    o._dsDataset         = RClass.register(o, new APtyString('_dsDataset', 'dataset'));
    o._dsPageSize        = RClass.register(o, new APtyInteger('_dsPageSize', 'page_size'), 20);
+   o._dsPageIndex       = 0;
    o._dsInsertAction    = RClass.register(o, new APtyString('_dsInsertAction', 'insert_action'));
    o._dsUpdateAction    = RClass.register(o, new APtyString('_dsUpdateAction', 'update_action'));
    o._dsDeleteAction    = RClass.register(o, new APtyString('_dsDeleteAction', 'delete_action'));
    o._dataSource        = null;
-   o.onDsFetch          = MDataset_onDsFetch;
+   o._dataViewer        = null;
+   o._dataValues        = null;
+   o._dataGlobalSearchs = null;
+   o._dataSearchs       = null;
+   o._dataGlobalOrders  = null;
+   o._dataOrders        = null;
+   o.__progress           = false;
+   o.lsnsUpdateBegin    = null;
+   o.lsnsUpdateEnd      = null;
    o.onDatasetLoadBegin = RMethod.empty;
    o.onDatasetLoad      = RMethod.empty;
    o.onDatasetLoadEnd   = RMethod.empty;
-   o.oeDataLoad         = MDataset_oeDataLoad;
-   o.oeDataSave         = MDataset_oeDataSave;
-   o.oeDatasetLoad      = MDataset_oeDatasetLoad;
-   o.construct          = MDataset_construct;
-   o.loadDataset        = MDataset_loadDataset;
-   o.loadDatasets       = MDataset_loadDatasets;
-   o.dsDatasetLoad      = MDataset_dsDatasetLoad;
-   o.dsFetch            = MDataset_dsFetch;
+   o.onStoreChanged     = RMethod.empty;
+   o.onDsFetchBegin     = RMethod.empty;
+   o.onDsFetchEnd       = RMethod.empty;
+   o.onDsUpdateBegin    = RMethod.empty;
+   o.onDsUpdateEnd      = RMethod.empty;
+   o.onDsFetch          = MUiDataset_onDsFetch;
+   o.onDsPrepareCheck   = RMethod.emptyTrue;
+   o.onDsCopy           = MUiDataset_onDsCopy;
+   o.onDsPrepare        = MUiDataset_onDsPrepare;
+   o.onDsUpdateCheck    = RMethod.emptyTrue;
+   o.onDsUpdate         = MUiDataset_onDsUpdate;
+   o.onDsDoUpdate       = MUiDataset_onDsDoUpdate;
+   o.onDsDeleteCheck    = RMethod.emptyTrue;
+   o.onDsDelete         = MUiDataset_onDsDelete;
+   o.onDsProcess        = MUiDataset_onDsProcess;
+   o.oeDataLoad         = MUiDataset_oeDataLoad;
+   o.oeDataSave         = MUiDataset_oeDataSave;
+   o.oeDatasetLoad      = MUiDataset_oeDatasetLoad;
+   o.construct          = MUiDataset_construct;
+   o.loadDataset        = MUiDataset_loadDataset;
+   o.loadDatasets       = MUiDataset_loadDatasets;
+   o.toDeepAttributes   = MUiDataset_toDeepAttributes;
+   o.dsDatasetLoad      = MUiDataset_dsDatasetLoad;
+   o.dsFetch            = MUiDataset_dsFetch;
+   o.dsInitialize        = MUiDataset_dsInitialize;
+   o.dsShow              = MUiDataset_dsShow;
+   o.dsLoaded            = MUiDataset_dsLoaded;
+   o.dsSearch            = MUiDataset_dsSearch;
+   o.dsCopy              = MUiDataset_dsCopy;
+   o.dsPrepare           = MUiDataset_dsPrepare;
+   o.dsUpdate            = MUiDataset_dsUpdate;
+   o.dsDelete            = MUiDataset_dsDelete;
+   o.dsMode              = MUiDataset_dsMode;
+   o.dsDoUpdate          = MUiDataset_dsDoUpdate;
+   o.dsProcess           = MUiDataset_dsProcess;
+   o.dsProcessCustom     = MUiDataset_dsProcessCustom;
+   o.dsProcessChanged    = MUiDataset_dsProcessChanged;
+   o.dsProcessSelected   = MUiDataset_dsProcessSelected;
+   o.dsProcessAll        = MUiDataset_dsProcessAll;
+   o.psProgress          = MUiDataset_psProgress;
+   o.psValid             = MUiDataset_psValid;
+   o.dsIsChanged         = MUiDataset_dsIsChanged;
+   o.dsCount             = MUiDataset_dsCount;
+   o.dsCurrent           = MUiDataset_dsCurrent;
+   o.dsMove              = MUiDataset_dsMove;
+   o.dsMovePage          = MUiDataset_dsMovePage;
+   o.dsGet               = MUiDataset_dsGet;
+   o.dsSet               = MUiDataset_dsSet;
+   o.dsRefresh           = MUiDataset_dsRefresh;
+   o.doSearch            = MUiDataset_doSearch;
    return o;
 }
-function MDataset_onDsFetch(g){
+function MUiDataset_onDsFetch(g){
    var o = this;
    var ds = g.datasets;
    o.dsDatasetLoad(ds);
 }
-function MDataset_oeDataLoad(p){
+function MUiDataset_onDsCopy(g){
+   var o = this;
+   o.loadDatasets(g.resultDatasets);
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+function MUiDataset_onDsPrepare(g){
+   var o = this;
+   g.resultDatasets.set('/', null);
+   o.loadDatasets(g.resultDatasets);
+   o.doPrepare(g.resultRow);
+   if(g.invokeSuccess()){
+	   return;
+   }
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+function MUiDataset_onDsUpdate(g){
+   var o = this;
+   o.loadDatasets(g.resultDatasets);
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+function MUiDataset_onDsDoUpdate(g){
+   var o = this;
+   if(!g.invokeSuccess()){
+      o.psRefresh();
+   }
+   if(!g.processFinish){
+      o.focus();
+      o.lsnsUpdateEnd.process(g);
+   }
+   o.onLoadDatasetEnd();
+}
+function MUiDataset_onDsDelete(g){
+   var o = this;
+   o.loadDatasets(g.resultDatasets);
+   o.doDelete(g.resultRow);
+   o.onLoadDatasetEnd();
+   o.focus();
+}
+function MUiDataset_onDsProcess(g){
+   var o = this;
+   var cb = g.resultCallback;
+   if(cb){
+      cb.invoke(o, g);
+   }
+}
+function MUiDataset_oeDataLoad(p){
    var o = this;
    if(p.isBefore()){
       var ds = p.source;
@@ -44482,7 +44907,7 @@ function MDataset_oeDataLoad(p){
    }
    return EEventStatus.Contine;
 }
-function MDataset_oeDataSave(p){
+function MUiDataset_oeDataSave(p){
    var o = this;
    if(p.isBefore()){
       var ds = p.source;
@@ -44491,7 +44916,7 @@ function MDataset_oeDataSave(p){
    }
    return EEventStatus.Contine;
 }
-function MDataset_oeDatasetLoad(p){
+function MUiDataset_oeDatasetLoad(p){
    var o = this;
    if(p.isBefore()){
       var ds = p.datasets;
@@ -44501,16 +44926,17 @@ function MDataset_oeDatasetLoad(p){
    }
    return EEventStatus.Contine;
 }
-function MDataset_construct(){
+function MUiDataset_construct(){
    var o = this;
+   o._dataViewer = new TDatasetViewer();
 }
-function MDataset_loadDataset(d){
+function MUiDataset_loadDataset(d){
    var o = this;
    o.dsStore = d;
-   d.saveViewer(o.dsViewer);
+   d.saveViewer(o._dataViewer);
    o.onLoadDataset(d);
 }
-function MDataset_loadDatasets(p){
+function MUiDataset_loadDatasets(p){
    var o = this;
    var c = p.count();
    for(var i = 0; i < c; i++){
@@ -44522,59 +44948,14 @@ function MDataset_loadDatasets(p){
       dc.loadDataset(d);
    }
 }
-function MDataset_dsDatasetLoad(p){
+function MUiDataset_dsDatasetLoad(p){
    var o = this;
-   var e = new TEventProcess(null, o, 'oeDatasetLoad', MDataset);
+   var e = new TEventProcess(null, o, 'oeDatasetLoad', MUiDataset);
    e.datasets = p;
    o.process(e);
    e.dispose();
 }
-function MDataset_dsFetch(){
-   var o = this;
-   var g = new TDatasetFetchArg();
-   g.owner = o;
-   g.name = o._name;
-   g.callback = o.onDsFetch;
-   RConsole.find(FDatasetConsole).fetch(g);
-}
-function MDataset_onDsPrepare(g){
-   var o = this;
-   g.resultDatasets.set('/', null);
-   o.loadDatasets(g.resultDatasets);
-   o.doPrepare(g.resultRow);
-   if(g.invokeSuccess()){
-	   return;
-   }
-   o.onLoadDatasetEnd();
-   o.focus();
-}
-function MDataset_onDsUpdate(g){
-   var o = this;
-   o.loadDatasets(g.resultDatasets);
-   o.onLoadDatasetEnd();
-   o.focus();
-}
-function MDataset_onDsCopy(g){
-   var o = this;
-   o.loadDatasets(g.resultDatasets);
-   o.onLoadDatasetEnd();
-   o.focus();
-}
-function MDataset_onDsDelete(g){
-   var o = this;
-   o.loadDatasets(g.resultDatasets);
-   o.doDelete(g.resultRow);
-   o.onLoadDatasetEnd();
-   o.focus();
-}
-function MDataset_onDsProcess(g){
-   var o = this;
-   var cb = g.resultCallback;
-   if(cb){
-      cb.invoke(o, g);
-   }
-}
-function MDataset_toDeepAttributes(a, m){
+function MUiDataset_toDeepAttributes(a, m){
    var o = this;
    if(!a){
       a = new TAttributes();
@@ -44582,13 +44963,13 @@ function MDataset_toDeepAttributes(a, m){
    var ts = new TList();
    var p = o;
    while(p){
-      if(RClass.isClass(p, MDataset)){
+      if(RClass.isClass(p, MUiDataset)){
          ts.push(p);
       }
       if(!p.parent){
          break;
       }
-      p = p.topControl(MDataset);
+      p = p.topControl(MUiDataset);
    }
    for(var n=ts.count; n>=0; n--){
       var p = ts.get(n);
@@ -44603,27 +44984,24 @@ function MDataset_toDeepAttributes(a, m){
    }
    return a;
 }
-function MDataset_onDsDoUpdate(g){
+function MUiDataset_dsFetch(){
    var o = this;
-   if(!g.invokeSuccess()){
-      o.psRefresh();
-   }
-   if(!g.processFinish){
-      o.focus();
-      o.lsnsUpdateEnd.process(g);
-   }
-   o.onLoadDatasetEnd();
+   var g = new TDatasetFetchArg();
+   g.owner = o;
+   g.name = o._name;
+   g.callback = o.onDsFetch;
+   RConsole.find(FDatasetConsole).fetch(g);
 }
-function MDataset_dsInitialize(){
+function MUiDataset_dsInitialize(){
    this.callEvent('onFormInitialize', this, this.__initializeEvent);
 }
-function MDataset_dsShow(){
+function MUiDataset_dsShow(){
    this.callEvent('onFormShow', this, this.__showEvent);
 }
-function MDataset_dsLoaded(){
+function MUiDataset_dsLoaded(){
    this.callEvent('onDatasetLoaded', this, this.__loadedEvent);
 }
-function MDataset_dsSearch(s){
+function MUiDataset_dsSearch(s){
    var o = this;
    o.psProgress(true);
    var tc = o.topControl();
@@ -44633,85 +45011,51 @@ function MDataset_dsSearch(s){
    }
    var g = new TDatasetFetchArg(tc.name, tc.formId, o.dsPageSize, 0, true, false, pth);
    g.mode = tc._emode;
-   g.searchs.append(o.dsGlobalSearchs);
-   g.searchs.append(o.dsSearchs);
-   g.orders.append(o.dsGlobalOrders);
-   g.orders.append(o.dsOrders);
+   g.searchs.append(o._dataGlobalSearchs);
+   g.searchs.append(o._dataSearchs);
+   g.orders.append(o._dataGlobalOrders);
+   g.orders.append(o._dataOrders);
    o.toDeepAttributes(g.values);
-   g.values.append(o.dsValues);
+   g.values.append(o._dataValues);
    g.callback = new TInvoke(o, o.onDsFetch);
    RConsole.find(FDatasetConsole).fetch(g);
 }
-function MDataset_dsCopy(r){
+function MUiDataset_dsCopy(r){
    var o = this;
    o.psProgress(true);
    o.psMode(EMode.Insert);
    var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
    g.form = o;
    g.mode = EMode.Insert;
-   o.dsSearchs.clear();
-   o.dsSearchs.push(new TSearchItem('OUID', r.get("OUID")));
-   g.searchs = o.dsSearchs;
+   o._dataSearchs.clear();
+   o._dataSearchs.push(new TSearchItem('OUID', r.get("OUID")));
+   g.searchs = o._dataSearchs;
    g.callback = new TInvoke(o, o.onDsCopy);
    if(o.onDsUpdateCheck(g)){
       RConsole.find(FDatasetConsole).fetch(g);
    }
    return;
 }
-function MDataset_dsPrepare(cb){
+function MUiDataset_dsPrepare(cb){
    var o = this;
    o.psProgress(true);
    o.psMode(EMode.Insert);
    var g = new TDatasetPrepareArg(o.name, o.formId);
    g.form = o;
-   g.values.append(o.dsValues);
+   g.values.append(o._dataValues);
    g.callbackSuccess = cb;
    if(o.onDsPrepareCheck(g)){
       g.callback = new TInvoke(o, o.onDsPrepare);
       RConsole.find(FDatasetConsole).prepare(g);
    }
 }
-function MDataset_dsUpdate(u, v){
+function MUiDataset_dsUpdate(u, v){
    var o = this;
    o.psProgress(true);
    o.psMode(EMode.Update);
    o.dsFetch(true);
 }
-function MDataset_dsDelete(u, v){
-   var o = this;
-   o.psProgress(true);
-   o.psMode(EMode.Delete);
-   var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
-   g.callback = new TInvoke(o, o.onDsDelete);
-   g.form = o;
-   g.mode = EMode.Delete;
-   if(u){
-      g.searchs.push(new TSearchItem('OUID', u));
-   }
-   if(v){
-       g.searchs.push(new TSearchItem('OVER', v));
-   }
-   g.values = o.dsValues;
-   if(o.onDsDeleteCheck(g)){
-      RConsole.find(FDatasetConsole).fetch(g);
-   }
-   return;
-}
-function MDataset_dsMode(m){
-   var o = this;
-   switch(m){
-      case EMode.Insert:
-         o.dsPrepare();
-         break;
-      case EMode.Update:
-         o.dsUpdate();
-         break;
-      case EMode.Delete:
-         o.dsDelete();
-         break;
-   }
-}
-function MDataset_dsDoUpdate(cb, ck){
+function MUiDataset_dsDoUpdate(cb, ck){
    var o = this;
    if(!o.psValid()){
       return;
@@ -44730,14 +45074,48 @@ function MDataset_dsDoUpdate(cb, ck){
       g.dataset.rows.append(o.getChangedRows());
       if(!ck){
          if(!g.hasData()){
-            return RMessage.warn(o, RContext.get('MDataset:nochange'));
+            return RMessage.warn(o, RContext.get('MUiDataset:nochange'));
          }
       }
    }
    o.psProgress(true);
    RConsole.find(FDatasetConsole).update(g);
 }
-function MDataset_dsProcess(da, cb){
+function MUiDataset_dsDelete(u, v){
+   var o = this;
+   o.psProgress(true);
+   o.psMode(EMode.Delete);
+   var g = new TDatasetFetchArg(o.name, o.formId, o.dsPageSize, 0, true);
+   g.callback = new TInvoke(o, o.onDsDelete);
+   g.form = o;
+   g.mode = EMode.Delete;
+   if(u){
+      g.searchs.push(new TSearchItem('OUID', u));
+   }
+   if(v){
+       g.searchs.push(new TSearchItem('OVER', v));
+   }
+   g.values = o._dataValues;
+   if(o.onDsDeleteCheck(g)){
+      RConsole.find(FDatasetConsole).fetch(g);
+   }
+   return;
+}
+function MUiDataset_dsMode(m){
+   var o = this;
+   switch(m){
+      case EMode.Insert:
+         o.dsPrepare();
+         break;
+      case EMode.Update:
+         o.dsUpdate();
+         break;
+      case EMode.Delete:
+         o.dsDelete();
+         break;
+   }
+}
+function MUiDataset_dsProcess(da, cb){
    var o = this;
    if(!o.psValid()){
       return;
@@ -44753,7 +45131,7 @@ function MDataset_dsProcess(da, cb){
    g.callback = new TInvoke(o, o.onDsProcess);
    RConsole.find(FFormConsole).process(g);
 }
-function MDataset_dsProcessCustom(pm, da, cb, cc){
+function MUiDataset_dsProcessCustom(pm, da, cb, cc){
 	var o = this;
 	if(!cc){
 	if(!o.psValid()){
@@ -44769,14 +45147,14 @@ function MDataset_dsProcessCustom(pm, da, cb, cc){
 	g.resultCallback = cb;
 	if(!cc){
 	   if(!g.hasData()){
-	      return RMessage.warn(o, RContext.get('MDataset:nodata'));
+	      return RMessage.warn(o, RContext.get('MUiDataset:nodata'));
 	   }
 	}
 	o.psProgress(true);
 	g.callback = new TInvoke(o, o.onDsProcess);
 	RConsole.find(FFormConsole).process(g);
 }
-function MDataset_dsProcessSelected(da, cb){
+function MUiDataset_dsProcessSelected(da, cb){
 	var o = this;
 	if(!o.psValid()){
 	   return;
@@ -44794,10 +45172,10 @@ function MDataset_dsProcessSelected(da, cb){
 		  RConsole.find(FFormConsole).process(g);
 		  o.clearSelectRows();
 	   }else{
-	      return RMessage.warn(o, RContext.get('MDataset:norows'));
+	      return RMessage.warn(o, RContext.get('MUiDataset:norows'));
 	   }
 }
-function MDataset_dsProcessChanged(da, cb){
+function MUiDataset_dsProcessChanged(da, cb){
    var o = this;
    if(!o.psValid()){
       return;
@@ -44810,13 +45188,13 @@ function MDataset_dsProcessChanged(da, cb){
    g.rows = o.getChangedRows();
    g.resultCallback = cb;
    if(!g.hasData()){
-      return RMessage.warn(o, RContext.get('MDataset:nochange'));
+      return RMessage.warn(o, RContext.get('MUiDataset:nochange'));
    }
    o.psProgress(true);
    g.callback = new TInvoke(o, o.onDsProcess);
    RConsole.find(FFormConsole).process(g);
 }
-function MDataset_dsProcessAll(da, cb){
+function MUiDataset_dsProcessAll(da, cb){
    var o = this;
    if(!o.psValid()){
       return;
@@ -44832,7 +45210,7 @@ function MDataset_dsProcessAll(da, cb){
    g.callback = new TInvoke(o, o.onDsProcess);
    RConsole.find(FFormConsole).process(g);
 }
-function MDataset_psProgress(v){
+function MUiDataset_psProgress(v){
    var o = this;
    if(o.__progress == v){
       return;
@@ -44842,7 +45220,7 @@ function MDataset_psProgress(v){
    e.enable = v;
    o.process(e);
 }
-function MDataset_psValid(){
+function MUiDataset_psValid(){
    var o = this;
    var e = o.__validProcess;
    var cs = e.controls;
@@ -44856,18 +45234,18 @@ function MDataset_psValid(){
    }
    return true;
 }
-function MDataset_dsCurrent(){
-   var o = this;
-   var ds = o.dsStore;
-}
-function MDataset_dsIsChanged(){
+function MUiDataset_dsIsChanged(){
    var ds = this.dsStore;
    return ds ? ds.isChanged() : false;
 }
-function MDataset_dsCount(){
+function MUiDataset_dsCount(){
    return this.dsStore ? this.dsStore.count : 0;
 }
-function MDataset_dsMove(p){
+function MUiDataset_dsCurrent(){
+   var o = this;
+   var ds = o.dsStore;
+}
+function MUiDataset_dsMove(p){
    var o = this;
    var ds = o.dsStore;
    if(null == p && !ds){
@@ -44892,7 +45270,7 @@ function MDataset_dsMove(p){
       o.loadValue(ds.current());
    }
 }
-function MDataset_dsMovePage(p){
+function MUiDataset_dsMovePage(p){
    var o = this;
    var ds = o.dsStore;
    if(!RInt.isInt(p)){
@@ -44916,34 +45294,34 @@ function MDataset_dsMovePage(p){
    }
    if(p != ds.pageIndex){
       o.psProgress(true);
-      var t = o.topControl(MDataset);
+      var t = o.topControl(MUiDataset);
       var g = new TDatasetFetchArg(t.name, t.formId, o.dsPageSize, p, true);
       g.path =  o.fullPath();
       g.mode = t._emode;
-      g.searchs.append(o.dsGlobalSearchs);
-      g.searchs.append(o.dsSearchs);
-      g.orders.append(o.dsGlobalOrders);
-      g.orders.append(o.dsOrders);
+      g.searchs.append(o._dataGlobalSearchs);
+      g.searchs.append(o._dataSearchs);
+      g.orders.append(o._dataGlobalOrders);
+      g.orders.append(o._dataOrders);
       g.values = o.toDeepAttributes();
-      g.values.append(o.dsValues);
+      g.values.append(o._dataValues);
       g.callback = new TInvoke(o, o.onDsFetch);
       RConsole.find(FDatasetConsole).fetch(g);
    }
 }
-function MDataset_dsGet(n){
+function MUiDataset_dsGet(n){
    return this.dsStore ? this.dsStore.get(n) : '';
 }
-function MDataset_dsSet(n, v){
+function MUiDataset_dsSet(n, v){
    if(this.dsStore){
       this.dsStore.set(n, v);
    }
 }
-function MDataset_dsRefresh(){
-   if(this.dsService){
+function MUiDataset_dsRefresh(){
+   if(this._dsService){
       this.dsMove(this.dsPage, true);
    }
 }
-function MDataset_doSearch(){
+function MUiDataset_doSearch(){
    var o = this;
    var sw = o.dsSearchWindow;
    if(!sw){
@@ -44951,6 +45329,33 @@ function MDataset_doSearch(){
       sw.linkDsControl(o);
    }
    sw.show();
+}
+function MUiDataValue(o){
+   o = RClass.inherits(this, o);
+   o.oeDataLoadValue = RMethod.empty;
+   o.oeDataSaveValue = RMethod.empty;
+   return o;
+}
+var RUiDataEvent = new function RUiDataEvent(){
+   var o = this;
+   o.clearEvent  = null;
+   o.resetEvent  = null;
+   o.loadEvent   = null;
+   o.saveEvent   = null;
+   o.recordEvent = null;
+   o.codeEvent   = null;
+   o.construct   = RUiDataEvent_construct;
+   o.construct();
+   return o;
+}
+function RUiDataEvent_construct(p){
+   var o = this;
+   o.clearEvent = new TEventProcess(o, 'oeClearValue', MUiDataValue);
+   o.resetEvent = new TEventProcess(o, 'oeResetValue', MUiDataValue);
+   o.loadEvent = new TEventProcess(o, 'oeLoadValue', MUiDataValue);
+   o.saveEvent = new TEventProcess(o, 'oeSaveValue', MUiDataValue);
+   o.recordEvent = new TEventProcess(o, 'oeRecordValue', MUiDataValue);
+   o.codeEvent = new TEventProcess(o, 'oeSaveCode', MUiDataValue);
 }
 function FDatasetConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -45396,71 +45801,48 @@ function FDataSource_dump(s){
    return s;
 }
 function FUiDataAction(o){
-   o = RClass.inherits(this, o, FUiComponent);
-   o._action = RClass.register(o, new APtyString('_action'));
+   o = RClass.inherits(this, o, FUiComponent, MInvoke);
+   o._action        = RClass.register(o, new APtyString('_action'));
+   o._service       = RClass.register(o, new APtyString('_service'));
+   o._execute       = RClass.register(o, new APtyString('_execute'));
+   o._loading       = false;
+   o._dataContainer = null;
+   o.onLoaded       = FUiDataAction_onLoaded;
+   o.invoke         = FUiDataAction_invoke;
+   return o;
+}
+function FUiDataAction_onLoaded(p){
+   var o = this;
+   RWindow.setEnable(true);
+   o._loading = false;
+}
+function FUiDataAction_invoke(p){
+   var o = this;
+   RAssert.debugTrue(RClass.isClass(p, MUiDataContainer));
+   var svc = RService.parse(o._service);
+   if(!svc){
+      throw new TError(o, 'Unknown service.');
+   }
+   RWindow.setEnable(false);
+   var xdocument = new TXmlDocument();
+   var root = xdocument.root();
+   root.set('action', svc.action);
+   RConsole.find(FEnvironmentConsole).build(root);
+   var config = root.create('Data');
+   p.dsSaveValue(config);
+   RLogger.debug(this, xdocument.dump());
+   o._loading = true;
+   o._dataContainer = p;
+   var connection = RConsole.find(FXmlConsole).sendAsync(svc.url, xdocument);
+   connection.addLoadListener(o, o.onLoaded);
+}
+function FUiDataCheck(o){
+   o = RClass.inherits(this, o, FUiCheck, MUiDataField);
    return o;
 }
 function FUiDataEdit(o){
-   o = RClass.inherits(this, o, FUiEdit);
-   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
-   o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
-   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
-   o._hInput          = null;
-   o.onBuildEditValue = FUiDataEdit_onBuildEditValue;
-   o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiDataEdit_onInputEdit);
-   o.construct        = FUiDataEdit_construct;
-   o.get              = FUiDataEdit_get;
-   o.set              = FUiDataEdit_set;
-   o.refreshValue     = FUiDataEdit_refreshValue;
+   o = RClass.inherits(this, o, FUiEdit, MUiDataField);
    return o;
-}
-function FUiDataEdit_oeDataLoad(p){
-   var o = this;
-   return EEventStatus.Stop;
-}
-function FUiDataEdit_oeDataSave(p){
-   var o = this;
-   return EEventStatus.Stop;
-}
-function FUiDataEdit_onBuildEditValue(p){
-   var o = this;
-   var h = o._hValuePanel;
-   h.className = o.styleName('InputPanel');
-   var he = o._hInput = RBuilder.appendEdit(h, o.styleName('Input'));
-   if(o._editLength){
-      he.maxLength = o._editLength;
-   }
-}
-function FUiDataEdit_onInputEdit(p){
-   var o = this;
-   var v = o._hInput.value;
-   o.refreshValue();
-}
-function FUiDataEdit_construct(){
-   var o = this;
-   o.__base.FUiEdit.construct.call(o);
-   o._inputSize = new SSize2(120, 0);
-}
-function FUiDataEdit_get(){
-   var o = this;
-   var r = o.__base.FUiEdit.get.call(o);
-   var h = o._hInput;
-   if(h){
-      r = h.value;
-   }
-   return r;
-}
-function FUiDataEdit_set(p){
-   var o = this;
-   o.__base.FUiEdit.set.call(o, p);
-   var h = o._hInput;
-   if(h){
-      h.value = RString.nvl(p);
-   }
-}
-function FUiDataEdit_refreshValue(){
-   var o = this;
-   o.processDataChangedListener(o);
 }
 function FUiDataEdit_onDataKeyDown(s, e){
    var o = this;
@@ -45558,15 +45940,6 @@ function FUiDataEdit_drop(){
          o.finded = t;
       }
    }
-}
-function FUiDataEdit_clone(){
-   var o = this;
-   var r = o._class.newInstance();
-   GHtml_clone(r, o.hPanel);
-   return r;
-}
-function FUiDataEdit_link(){
-   var o = this;
 }
 function FUiDataEditControl(o){
    o = RClass.inherits(this, o, FUiEditControl, MDataField, MEditValue, MEditChange, MEditDrop);
@@ -46013,7 +46386,11 @@ function FUiDataEditControl_dispose(){
    o.__base.FUiEditControl.dispose.call(o);
 }
 function FUiDataFrame(o){
-   o = RClass.inherits(this, o, FUiFrame);
+   o = RClass.inherits(this, o, FUiFrame, MUiDataset, MUiDataContainer, MUiDataAction);
+   return o;
+}
+function FUiDataMemo(o){
+   o = RClass.inherits(this, o, FUiMemo, MUiDataField);
    return o;
 }
 function FUiDataNumber(o){
@@ -46237,6 +46614,10 @@ function FUiDataNumber_dispose(){
    o.hUpIcon = null;
    o.hDownIcon = null;
    o.hChgIic = null;
+}
+function FUiDataSelect(o){
+   o = RClass.inherits(this, o, FUiSelect, MUiDataField);
+   return o;
 }
 function FUiDataColumn(o){
    o = RClass.inherits(this, o, FControl, MDataField);
@@ -46708,141 +47089,14 @@ function FUiDataToolBar(o){
    return o;
 }
 function FUiDataToolButton(o){
-   o = RClass.inherits(this, o, FUiControl, MListenerClick);
-   o._icon            = RClass.register(o, new APtyString('_icon'));
-   o._iconDisable     = RClass.register(o, new APtyString('_iconDisable'));
-   o._hotkey          = RClass.register(o, new APtyString('_hotkey'));
-   o._action          = RClass.register(o, new APtyString('_action'));
-   o._styleNormal     = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
-   o._styleHover      = RClass.register(o, new AStyle('_styleHover', 'Hover'));
-   o._stylePress      = RClass.register(o, new AStyle('_stylePress', 'Press'));
-   o._styleDisable    = RClass.register(o, new AStyle('_styleDisable', 'Disable'));
-   o._styleIconPanel  = RClass.register(o, new AStyle('_styleIcon', 'Icon'));
-   o._styleIcon       = RClass.register(o, new AStyle('_styleIcon', 'Icon'));
-   o._styleLabelPanel = RClass.register(o, new AStyle('_styleLabel', 'Label'));
-   o._disabled        = false;
-   o._hIconPanel      = null;
-   o._hIcon           = null;
-   o._hLabelPanel     = null;
-   o.onBuildPanel     = FUiDataToolButton_onBuildPanel;
-   o.onBuild          = FUiDataToolButton_onBuild;
-   o.onEnter          = FUiDataToolButton_onEnter;
-   o.onLeave          = FUiDataToolButton_onLeave;
-   o.onMouseDown      = RClass.register(o, new AEventMouseDown('onMouseDown'), FUiDataToolButton_onMouseDown);
-   o.onMouseUp        = RClass.register(o, new AEventMouseDown('onMouseUp'), FUiDataToolButton_onMouseUp);
-   o.icon             = FUiDataToolButton_icon;
-   o.setIcon          = FUiDataToolButton_setIcon;
-   o.setLabel         = FUiDataToolButton_setLabel;
-   o.setEnable        = FUiDataToolButton_setEnable;
-   o.click            = FUiDataToolButton_click;
-   o.dispose          = FUiDataToolButton_dispose;
+   o = RClass.inherits(this, o, FUiToolButton);
+   o._serviceName     = RClass.register(o, new APtyString('_serviceName'));
    return o;
-}
-function FUiDataToolButton_onBuildPanel(p){
-   var o = this;
-   o._hPanel = RBuilder.createDiv(p, o.styleName('Normal'));
-}
-function FUiDataToolButton_onBuild(p){
-   var o = this;
-   o.__base.FUiControl.onBuild.call(o, p);
-   var h = o._hPanel;
-   o.attachEvent('onMouseDown', h);
-   o.attachEvent('onMouseUp', h);
-   var hf = o._hForm = RBuilder.appendTable(p);
-   var hl = o._hLine = RBuilder.appendTableRow(hf);
-   if(o._icon){
-      var hl = o._hIconPanel = RBuilder.appendTableCell(hl);
-      o._hIcon = RBuilder.appendIcon(hl, o.styleName('Icon'), o._icon);
-   }
-   if(o._label){
-      var hl = o._hLabelPanel = RBuilder.appendTableCell(hl);
-      o.setLabel(o._label);
-   }
-}
-function FUiDataToolButton_onEnter(e){
-   var o = this;
-   if(!o._disabled){
-      o._hPanel.className = o.styleName('Hover');
-   }
-}
-function FUiDataToolButton_onLeave(e){
-   var o = this;
-   if(!o._disabled){
-      o._hPanel.className = o.styleName('Normal');
-   }
-}
-function FUiDataToolButton_onMouseDown(){
-   var o = this;
-   if(!o._disabled){
-      o._hPanel.className = this.styleName('Press');
-      o.click();
-   }
-}
-function FUiDataToolButton_onMouseUp(h){
-   var o = this;
-   if(!o._disabled){
-      o._hPanel.className = o.styleName('Hover');
-   }
-}
-function FUiDataToolButton_icon(){
-   return this._icon;
-}
-function FUiDataToolButton_setIcon(p){
-   this._icon = p;
-}
-function FUiDataToolButton_setLabel(p){
-   var o = this;
-   var s = RString.nvl(p);
-   o._label = s;
-   if(o._hIcon){
-      s = ' ' + o._label;
-   }
-   if(o._hLabel){
-      o._hLabel.innerText = s;
-   }
-}
-function FUiDataToolButton_setEnable(p){
-   var o = this;
-   o.__base.FUiControl.oeEnable.call(o, e);
-   o._disabled = !e.enable;
-   if(e.enable && o._icon){
-      var is = RRes._iconPath(o._icon);
-      if(o._hIcon.src != is){
-         o._hIcon.src = is;
-      }
-   }else if(!e.enable && o._iconDisable){
-      var is = RRes._iconPath(o._iconDisable);
-      if(o._hIcon.src != is){
-         o._hIcon.src = is;
-      }
-   }
-   var css = o.styleName(e.enable ? 'Icon' : 'IconDisable');
-   if(o._hIcon.className != css){
-      o._hIcon.className = css;
-   }
-   var css = o.styleName(e.enable ? 'Button' : 'Disable');
-   if(o._hPanel.className != css){
-      o._hPanel.className = css;
-   }
-   var ci = o.styleIconPath(e.enable ? 'Button' : 'ButtonDisable');
-   if(o._hButton.background != ci){
-      o._hButton.background = ci;
-   }
-   return EEventStatus.Stop;
 }
 function FUiDataToolButton_click(){
    var o = this;
    RLogger.debug(o, 'Mouse button click. (label={1})' + o._label);
       o.processClickListener(o);
-}
-function FUiDataToolButton_dispose(){
-   var o = this;
-   o._hButton = null;
-   o._hButtonLine = null;
-   o._hButtonPanel = null;
-   o._hIcon = null;
-   o._hText = null;
-   o.__base.FUiControl.dispose.call(o);
 }
 function FUiDataToolButton_onShowHint(a){
    var o = this;
@@ -46871,16 +47125,6 @@ function FUiDataTreeView(o){
    o.reloadNode       = FUiDataTreeView_reloadNode;
    o.reload           = FUiDataTreeView_reload;
    o.dispose          = FUiDataTreeView_dispose;
-   o._queryService    = RClass.register(o, new APtyString('_queryService'));
-   o.onQueryLoaded    = FUiDataTreeView_onQueryLoaded;
-   o.doQuery          = FUiDataTreeView_doQuery;
-   o.removeNode       = FUiDataTreeView_removeNode;
-   o.clearNodes       = FUiDataTreeView_clearNodes;
-   o.getChangedChecks = FUiDataTreeView_getChangedChecks;
-   o.fetchExtendsAll  = FUiDataTreeView_fetchExtendsAll;
-   o.tempAppendNodes  = FUiDataTreeView_tempAppendNodes;
-   o.removeNodes      = FUiDataTreeView_removeNodes;
-   o.tempAppendChild  = FUiDataTreeView_tempAppendChild;
    return o;
 }
 function FUiDataTreeView_onLoaded(p){
@@ -47119,61 +47363,6 @@ function FUiDataTreeView_doQuery(){
    e.document = doc;
    RConsole.find(FXmlConsole).process(e);
 }
-function FUiDataTreeView_removeNode(oNode){
-   if(oNode){
-      var nodes = new Array();
-      var oLoopNode = null;
-      var nCount = this._allNodes.length;
-      for(var n=0; n<nCount; n++){
-         oLoopNode = this._allNodes[n];
-         if(oLoopNode != oNode){
-            nodes[nodes.length] = oLoopNode;
-         }
-      }
-      this._allNodes = nodes;
-      var oParent = oNode.parent;
-      if(oParent){
-         nodes = new Array();
-         nCount = oParent._nodes.length;
-         for(var n=0; n<nCount; n++){
-            oLoopNode = oParent._nodes[n];
-            if(oLoopNode != oNode){
-               nodes[nodes.length] = oLoopNode;
-            }
-         }
-         oParent._nodes = nodes;
-         oNode.parent.childrenHTML.removeChild(oNode.ownerHTML);
-      }
-      if(oParent._nodes.length == 0){
-         oParent.imageHTML.src = this.imgEmpty;
-      }
-      return true;
-   }
-   return false;
-}
-function FUiDataTreeView_haveNodes(){
-   return this.rootNode.hasChild();
-}
-function FUiDataTreeView_clearNodes(node){
-   if(node){
-      node.removeChildren();
-   }
-   return true;
-   var nodes = new Array();
-   var oLoopNode = null;
-   var nCount = this._allNodes.length;
-   for(var n=0; n<nCount; n++){
-      oLoopNode = this._allNodes[n];
-      if(oLoopNode.parent != oNode){
-         nodes[nodes.length] = oLoopNode;
-      }else{
-      oNode.childrenHTML.removeChild(oLoopNode.ownerHTML);
-      }
-   }
-   oNode.imageHTML.src = this.imgEmpty ;
-   this._allNodes = nodes;
-   return true;
-}
 function FUiDataTreeView_fetchExtendsAll(s){
    var o = this;
    if(s && RClass.isClass(s, FUiTreeNode)){
@@ -47191,65 +47380,6 @@ function FUiDataTreeView_fetchExtendsAll(s){
          fmMain.submit();
       }
    }else{
-   }
-}
-function FUiDataTreeView_getChangedChecks(){
-   var o = this;
-   var treeView = new TNode('TreeView');
-   treeView.set('name', o.name);
-   var rnd = RObject.nvl(o.rootNode, o);
-   var cs = rnd.controls;
-   for(var n = 0; n < cs.count; n++){
-      var c = cs.value(n);
-      c.pushChanged(treeView);
-   }
-   return treeView;
-}
-function FUiDataTreeView_tempAppendNodes(parent, config){
-   parent = RObject.nvl(parent, this.workNode, this.rootNode);
-   if(config && config._nodes){
-      var count = config._nodes.count;
-      if(count > 0){
-         parent.child = true;
-         parent.loaded = true;
-         for(var n = 0; n < count; n++){
-            var nc = config._nodes.get(n);
-            if(nc && (nc.isName('Node') || nc.isName('TreeNode'))){
-               var tn = RClass.create(FUiTreeNode);
-               tn.parent = parent;
-               tn._tree = this;
-               tn.loadConfig(nc);
-               if(nc._nodes){
-                  tn.icon = 'ctl.FBrowser_Folder';
-               }else{
-                  tn.icon = 'ctl.FBrowser_Txt';
-               }
-               tn.build(0);
-               tn.hide();
-               if(nc._nodes){
-                  this.tempAppendNodes(tn, nc);
-               }
-               parent.push(tn);
-               this._allNodes.push(tn);
-            }
-         }
-      }
-   }
-   this.rootNode.extend(true);
-}
-function FUiDataTreeView_removeNodes(node){
-   node = RObject.nvl(node, this.workNode, this.rootNode);
-   if(node.hasChild()){
-      node.removeChildren();
-   }
-   node.remove();
-}
-function FUiDataTreeView_tempAppendChild(child){
-   var o = this;
-   var hc = o._hHeadLine.insertCell();
-   hc.height = '100%';
-   if(RClass.isClass(child, FTreeColumn)){
-      hc.appendChild(child._hPanel);
    }
 }
 var EDsCanvasDrag = new function EDsCanvasDrag(){

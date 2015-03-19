@@ -1,6 +1,10 @@
-// ============================================================
-// FEnvironmentConsole
-// ============================================================
+//==========================================================
+// <T>环境信息控制台。</T>
+//
+// @console
+// @author maocy
+// @version 150319
+//==========================================================
 function FEnvironmentConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
@@ -12,26 +16,36 @@ function FEnvironmentConsole(o){
    o.connect     = FEnvironmentConsole_connect;
    o.build       = FEnvironmentConsole_build;
    o.buildValue  = FEnvironmentConsole_buildValue;
+   o.load        = FEnvironmentConsole_load;
    o.xml         = FEnvironmentConsole_xml;
    return o;
 }
-// ------------------------------------------------------------
+
+//==========================================================
+// <T>获得环境信息。</T>
+//
+// @method
+//==========================================================
 function FEnvironmentConsole_connect(){
-   var xData = RHtml.get('xEnvironment');
+   return;
+   var xData = window.xEnvironment;
    if(xData){
       this.environment = RXml.makeNode(xData);
    }
 }
+
 // ------------------------------------------------------------
 function FEnvironmentConsole_build(config){
-   if(!this.environment){
-      this.connect()
+   var o = this;
+   if(!o.environment){
+      o.connect()
    }
-   if(this.environment){
+   if(o.environment){
       var node = config.create('Environment');
       node.attributes().append(this.environment.attributes());
    }
 }
+
 // ------------------------------------------------------------
 function FEnvironmentConsole_buildValue(){
    if(!this.environment){
@@ -44,6 +58,18 @@ function FEnvironmentConsole_buildValue(){
       }
    }
 }
+
+//==========================================================
+// <T>环境信息控制台。</T>
+//
+// @console
+// @author maocy
+// @version 150319
+//==========================================================
+function FEnvironmentConsole_load(p){
+   this.environment = RXml.makeNode(p);
+}
+
 // ------------------------------------------------------------
 function FEnvironmentConsole_xml(){
    if(!this.environment){
@@ -54,4 +80,3 @@ function FEnvironmentConsole_xml(){
    }
    return null;
 }
-// ------------------------------------------------------------

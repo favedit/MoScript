@@ -1,15 +1,15 @@
 //==========================================================
-// <T>数据内容的接口。</T>
+// <T>界面数据接口。</T>
 //
 // @face
 // @author maocy
-// @version 150124
+// @version 150319
 //==========================================================
-function MDataValue(o){
+function MUiValue(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @process
-   o.oeDataLoad = RMethod.empty;
-   o.oeDataSave = RMethod.empty;
+   o.get = RMethod.empty;
+   o.set = RMethod.empty;
    return o;
 }

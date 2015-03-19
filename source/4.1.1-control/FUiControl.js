@@ -490,7 +490,7 @@ function FUiControl_callEvent(n, s, e){
 function FUiControl_psMode(p){
    var o = this;
    // 创建事件
-   var e = new TEventProcess(null, o, 'oeMode', FUiControl);
+   var e = new TEventProcess(o, 'oeMode', FUiControl);
    e.displayCd = p;
    // 处理消息
    o.process(e);
@@ -508,7 +508,7 @@ function FUiControl_psDesign(m, f){
    var o = this;
    RConsole.find(FDesignConsole).setFlag(m, f, o);
    // 创建事件
-   var e = new TEventProcess(null, o, 'oeDesign', MDesign)
+   var e = new TEventProcess(o, 'oeDesign', MDesign)
    e.mode = m;
    e.flag = f;
    // 处理消息
@@ -525,7 +525,7 @@ function FUiControl_psDesign(m, f){
 function FUiControl_psEnable(v){
    var o = this;
    // 创建事件
-   var e = new TEventProcess(null, o, 'oeEnable', FUiControl)
+   var e = new TEventProcess(o, 'oeEnable', FUiControl)
    e.enable = v;
    // 处理消息
    o.process(e);
@@ -541,7 +541,7 @@ function FUiControl_psEnable(v){
 function FUiControl_psVisible(v){
    var o = this;
    // 创建事件
-   var e = new TEventProcess(null, o, 'oeVisible', FUiControl);
+   var e = new TEventProcess(o, 'oeVisible', FUiControl);
    e.visible = v;
    // 处理消息
    o.process(e);
@@ -556,7 +556,7 @@ function FUiControl_psVisible(v){
 function FUiControl_psResize(){
    var o = this;
    // 创建事件
-   var e = new TEventProcess(null, o, 'oeResize', FUiControl);
+   var e = new TEventProcess(o, 'oeResize', FUiControl);
    // 处理消息
    o.process(e);
    e.dispose();
@@ -571,7 +571,7 @@ function FUiControl_psResize(){
 function FUiControl_psRefresh(t){
    var o = this;
    // 创建事件
-   var e = new TEventProcess(null, o, 'oeRefresh', FUiControl);
+   var e = new TEventProcess(o, 'oeRefresh', FUiControl);
    // 处理消息
    o.process(e);
    e.dispose();

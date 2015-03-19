@@ -18,16 +18,6 @@ function FUiDataTreeView(o){
    o.reloadNode       = FUiDataTreeView_reloadNode;
    o.reload           = FUiDataTreeView_reload;
    o.dispose          = FUiDataTreeView_dispose;
-   o._queryService    = RClass.register(o, new APtyString('_queryService'));
-   o.onQueryLoaded    = FUiDataTreeView_onQueryLoaded;
-   o.doQuery          = FUiDataTreeView_doQuery;
-   o.removeNode       = FUiDataTreeView_removeNode;
-   o.clearNodes       = FUiDataTreeView_clearNodes;
-   o.getChangedChecks = FUiDataTreeView_getChangedChecks;
-   o.fetchExtendsAll  = FUiDataTreeView_fetchExtendsAll;
-   o.tempAppendNodes  = FUiDataTreeView_tempAppendNodes;
-   o.removeNodes      = FUiDataTreeView_removeNodes;
-   o.tempAppendChild  = FUiDataTreeView_tempAppendChild;
    return o;
 }
 function FUiDataTreeView_onLoaded(p){
@@ -266,61 +256,6 @@ function FUiDataTreeView_doQuery(){
    e.document = doc;
    RConsole.find(FXmlConsole).process(e);
 }
-function FUiDataTreeView_removeNode(oNode){
-   if(oNode){
-      var nodes = new Array();
-      var oLoopNode = null;
-      var nCount = this._allNodes.length;
-      for(var n=0; n<nCount; n++){
-         oLoopNode = this._allNodes[n];
-         if(oLoopNode != oNode){
-            nodes[nodes.length] = oLoopNode;
-         }
-      }
-      this._allNodes = nodes;
-      var oParent = oNode.parent;
-      if(oParent){
-         nodes = new Array();
-         nCount = oParent._nodes.length;
-         for(var n=0; n<nCount; n++){
-            oLoopNode = oParent._nodes[n];
-            if(oLoopNode != oNode){
-               nodes[nodes.length] = oLoopNode;
-            }
-         }
-         oParent._nodes = nodes;
-         oNode.parent.childrenHTML.removeChild(oNode.ownerHTML);
-      }
-      if(oParent._nodes.length == 0){
-         oParent.imageHTML.src = this.imgEmpty;
-      }
-      return true;
-   }
-   return false;
-}
-function FUiDataTreeView_haveNodes(){
-   return this.rootNode.hasChild();
-}
-function FUiDataTreeView_clearNodes(node){
-   if(node){
-      node.removeChildren();
-   }
-   return true;
-   var nodes = new Array();
-   var oLoopNode = null;
-   var nCount = this._allNodes.length;
-   for(var n=0; n<nCount; n++){
-      oLoopNode = this._allNodes[n];
-      if(oLoopNode.parent != oNode){
-         nodes[nodes.length] = oLoopNode;
-      }else{
-      oNode.childrenHTML.removeChild(oLoopNode.ownerHTML);
-      }
-   }
-   oNode.imageHTML.src = this.imgEmpty ;
-   this._allNodes = nodes;
-   return true;
-}
 function FUiDataTreeView_fetchExtendsAll(s){
    var o = this;
    if(s && RClass.isClass(s, FUiTreeNode)){
@@ -338,64 +273,5 @@ function FUiDataTreeView_fetchExtendsAll(s){
          fmMain.submit();
       }
    }else{
-   }
-}
-function FUiDataTreeView_getChangedChecks(){
-   var o = this;
-   var treeView = new TNode('TreeView');
-   treeView.set('name', o.name);
-   var rnd = RObject.nvl(o.rootNode, o);
-   var cs = rnd.controls;
-   for(var n = 0; n < cs.count; n++){
-      var c = cs.value(n);
-      c.pushChanged(treeView);
-   }
-   return treeView;
-}
-function FUiDataTreeView_tempAppendNodes(parent, config){
-   parent = RObject.nvl(parent, this.workNode, this.rootNode);
-   if(config && config._nodes){
-      var count = config._nodes.count;
-      if(count > 0){
-         parent.child = true;
-         parent.loaded = true;
-         for(var n = 0; n < count; n++){
-            var nc = config._nodes.get(n);
-            if(nc && (nc.isName('Node') || nc.isName('TreeNode'))){
-               var tn = RClass.create(FUiTreeNode);
-               tn.parent = parent;
-               tn._tree = this;
-               tn.loadConfig(nc);
-               if(nc._nodes){
-                  tn.icon = 'ctl.FBrowser_Folder';
-               }else{
-                  tn.icon = 'ctl.FBrowser_Txt';
-               }
-               tn.build(0);
-               tn.hide();
-               if(nc._nodes){
-                  this.tempAppendNodes(tn, nc);
-               }
-               parent.push(tn);
-               this._allNodes.push(tn);
-            }
-         }
-      }
-   }
-   this.rootNode.extend(true);
-}
-function FUiDataTreeView_removeNodes(node){
-   node = RObject.nvl(node, this.workNode, this.rootNode);
-   if(node.hasChild()){
-      node.removeChildren();
-   }
-   node.remove();
-}
-function FUiDataTreeView_tempAppendChild(child){
-   var o = this;
-   var hc = o._hHeadLine.insertCell();
-   hc.height = '100%';
-   if(RClass.isClass(child, FTreeColumn)){
-      hc.appendChild(child._hPanel);
    }
 }

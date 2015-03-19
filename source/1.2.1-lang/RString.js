@@ -35,6 +35,7 @@ var RString = new function RString(){
    o.findChars    = RString_findChars;
    o.inRange      = RString_inRange;
    o.nvl          = RString_nvl;
+   o.nvlString    = RString_nvlString;
    o.empty        = RString_empty;
    o.firstUpper   = RString_firstUpper;
    o.firstLower   = RString_firstLower;
@@ -368,6 +369,20 @@ function RString_nvl(v, d){
       return d;
    }
    return this.EMPTY;
+}
+
+//==========================================================
+// <T>返回一个不为空的字符串对象。</T>
+//
+// @method
+// @param p:value:String 字符串对象
+// @return String 非空字符串对象
+//==========================================================
+function RString_nvlString(p){
+   if(p == null){
+      p = new TString();
+   }
+   return p;
 }
 
 //==========================================================

@@ -1,24 +1,29 @@
-﻿//===========================================================
+﻿//==========================================================
 // <T>用来存储页面数据内容的工具类。</T>
 // <P>可以同时存储多个数据页的记录，但同时只有一个页被选中，选中页中只有一条记录被选中。</P>
 // <P>页的索引和记录的索引都是从0开始计数。</P>
 //
 // @tool
 // @author maocy
-// @version 1.0.1
-//===========================================================
+// @version 150319
+//==========================================================
 function TDatasetViewer(){
    var o = this;
-   o.datasetId = null;
-   /// @attribute Integer 索引位置(从0开始计数)
-   o.position  = 0;
-   o.start     = 0;
-   o.count     = 0;
-   /// @attribute TList<TRow> 行记录的列表
-   o.rows      = null;
-   /// @attribute TMap<String, TRow> 行记录的集合
-   o.ouids     = null;
-   // Method
+   //..........................................................
+   // @attribute
+   o._datasetId = null;
+   // @attribute Integer 索引位置(从0开始计数)
+   o._position  = 0;
+   o._start     = 0;
+   o._count     = 0;
+   // @attribute TObjects<TRow> 行记录集合
+   e._values   = null;
+   // @attribute TObjects<TRow> 行记录集合
+   o._rows      = null;
+   // @attribute TDictionary<TRow> 行记录字典
+   o._ouids     = null;
+   //..........................................................
+   // @method
    o.isEmpty   = TDatasetViewer_isEmpty;
    o.count     = TDatasetViewer_count;
    o.current   = TDatasetViewer_current;
@@ -29,7 +34,6 @@ function TDatasetViewer(){
    o.prior     = TDatasetViewer_prior;
    o.next      = TDatasetViewer_next;
    o.last      = TDatasetViewer_last;
-   o.findById  = TDatasetViewer_findById;
    return o;
 }
 
@@ -42,7 +46,7 @@ function TDatasetViewer(){
 //    <L value='false'>没有</L>
 //===========================================================
 function TDatasetViewer_isEmpty(){
-   return (0 == this.count);
+   return (this._count == null);
 }
 
 //===========================================================
@@ -52,7 +56,7 @@ function TDatasetViewer_isEmpty(){
 // @return Integer 数据行数
 //===========================================================
 function TDatasetViewer_count(){
-   return this.count;
+   return this._count;
 }
 
 //===========================================================
@@ -63,8 +67,8 @@ function TDatasetViewer_count(){
 //===========================================================
 function TDatasetViewer_current(){
    var o = this;
-   var rs = o.rows;
-   return rs ? rs.get(o.position - o.start) : null;
+   var s = o._rows;
+   return s ? s.get(o._position - o._start) : null;
 }
 
 //===========================================================
@@ -73,7 +77,7 @@ function TDatasetViewer_current(){
 // @method
 //===========================================================
 function TDatasetViewer_reset(){
-   this.position = -1;
+   this._position = -1;
 }
 
 //===========================================================
@@ -83,7 +87,7 @@ function TDatasetViewer_reset(){
 // @param p:position 索引位置
 //===========================================================
 function TDatasetViewer_move(p){
-   this.position = p;
+   this._position = p;
 }
 
 //===========================================================
@@ -94,9 +98,9 @@ function TDatasetViewer_move(p){
 //===========================================================
 function TDatasetViewer_moveToRow(r){
    var o = this;
-   var p = o.rows.indexOf(r);
-   if(-1 != p){
-      o.position = p - o.start;
+   var p = o._rows.indexOf(r);
+   if(p != -1){
+      o._position = p - o._start;
    }
 }
 
@@ -109,7 +113,7 @@ function TDatasetViewer_moveToRow(r){
 //    <L value='false'>移动到第一条记录上</L>
 //===========================================================
 function TDatasetViewer_first(r){
-   this.position = r ? -1 : 0;
+   this._position = r ? -1 : 0;
 }
 
 //===========================================================
@@ -122,8 +126,8 @@ function TDatasetViewer_first(r){
 //===========================================================
 function TDatasetViewer_prior(){
    var o = this;
-   if(o.position > 0){
-      o.position--;
+   if(o._position > 0){
+      o._position--;
       return true;
    }
    return false;
@@ -139,8 +143,8 @@ function TDatasetViewer_prior(){
 //===========================================================
 function TDatasetViewer_next(){
    var o = this;
-   if(o.position < o.count-1){
-      o.position++;
+   if(o._position < o._count-1){
+      o._position++;
       return true;
    }
    return false;
@@ -152,9 +156,5 @@ function TDatasetViewer_next(){
 // @method
 //===========================================================
 function TDatasetViewer_last(){
-   this.position = this.count-1;
+   this._position = this._count-1;
 }
-
-function TDatasetViewer_findById(id){
-}
-

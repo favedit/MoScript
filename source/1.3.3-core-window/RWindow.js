@@ -11,6 +11,8 @@ var RWindow = new function RWindow(){
    // @attribute
    o._optionSelect     = true;
    // @attribute
+   o._statusEnable     = true;
+   // @attribute
    o._mouseEvent       = new SMouseEvent();
    o._keyEvent         = new SKeyboardEvent();
    o._resizeEvent      = new SResizeEvent();
@@ -60,6 +62,7 @@ var RWindow = new function RWindow(){
    o.makeDisablePanel  = RWindow_makeDisablePanel;
    o.windowEnable      = RWindow_windowEnable;
    o.windowDisable     = RWindow_windowDisable;
+   o.isEnable          = RWindow_isEnable;
    o.enable            = RWindow_enable;
    o.disable           = RWindow_disable;
    o.setEnable         = RWindow_setEnable;
@@ -70,8 +73,6 @@ var RWindow = new function RWindow(){
    //..........................................................
    // @attribute
    //o._builder          = null;
-   // @attribute
-   //o.inDisable         = false;
    //o.inMoving          = false;
    //o.inSizing          = false;
    //..........................................................
@@ -343,7 +344,6 @@ function RWindow_makeDisablePanel(f){
    return h;
 }
 
-
 //==========================================================
 // <T>使窗口的变为可用状态。</T>
 //
@@ -360,6 +360,16 @@ function RWindow_windowDisable(){
 //==========================================================
 function RWindow_windowEnable(){
    this._hContainer.disabled = false;
+}
+
+//==========================================================
+// <T>获得是否允许处理。</T>
+//
+// @method
+// @return 是否允许
+//==========================================================
+function RWindow_isEnable(){
+   return this._statusEnable;
 }
 
 //==========================================================
@@ -416,6 +426,7 @@ function RWindow_setEnable(v, f){
          h._linked = false;
       }
    }
+   o._statusEnable = v;
 }
 
 

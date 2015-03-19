@@ -1335,7 +1335,7 @@ function TXmlDocument_dump(){
    var o = this;
    var r = new TString();
    r.appendLine(RClass.name(o));
-   o.root().innerDump(r);
+   o.root().dump(r);
    return r.flush();
 }
 function TXmlNode(){
@@ -2110,6 +2110,8 @@ var RHtml = new function RHtml(){
    o.toText         = RHtml_toText;
    o.toHtml         = RHtml_toHtml;
    o.eventSource    = RHtml_eventSource;
+   o.get            = RHtml_get;
+   o.parent         = RHtml_parent;
    o.searchLinker   = RHtml_searchLinker;
    o.searchObject   = RHtml_searchObject;
    o.free           = RHtml_free;
@@ -2136,8 +2138,6 @@ var RHtml = new function RHtml(){
    o.hideNodes      = RHtml_hideNodes;
    o.showChildren   = RHtml_showChildren;
    o.hideChildren   = RHtml_hideChildren;
-   o.get            = RHtml_get;
-   o.parent         = RHtml_parent;
    o.posParent      = RHtml_posParent;
    o.form           = RHtml_form;
    o.popup          = RHtml_popup;
@@ -2337,6 +2337,21 @@ function RHtml_toHtml(p){
 }
 function RHtml_eventSource(p){
    return p.srcElement ? p.srcElement : p.target;
+}
+function RHtml_get(name){
+   return document.getElementById(name);
+}
+function RHtml_parent(tag, typeName){
+   if(tag && t){
+      typeName = typeName.toLowerCase();
+      while(tag){
+         if(tag.tagName.toLowerCase() == typeName){
+            return tag;
+         }
+         tag = tag.parentElement;
+      }
+   }
+   return null;
 }
 function RHtml_searchLinker(h, c){
    while(h){
@@ -2675,21 +2690,6 @@ function RHtml_hideChildren(h){
          }
       }
    }
-}
-function RHtml_get(name){
-   return document.getElementById(name);
-}
-function RHtml_parent(o, t){
-   if(o && t){
-      t = t.toLowerCase();
-      while(o){
-         if(o.tagName.toLowerCase() == t){
-            return o;
-         }
-         o = o.parentElement;
-      }
-   }
-   return null;
 }
 function RHtml_posParent(h){
    while(h){

@@ -92,6 +92,6 @@ function TXmlDocument_dump(){
    var o = this;
    var r = new TString();
    r.appendLine(RClass.name(o));
-   o.root().innerDump(r);
+   o.root().dump(r);
    return r.flush();
 }
