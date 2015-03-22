@@ -251,9 +251,9 @@ function TAttributes_split(s, n, v){
       if(ln.length){
          var sb = ln.split(n);
          if(sb.length == 2){
-            o.set(sb[0], sb[1]);
+            o.set(RString.trim(sb[0]), RString.trim(sb[1]));
          }else{
-            o.set(ln, '');
+            o.set(RString.trim(ln), '');
          }
       }
    }

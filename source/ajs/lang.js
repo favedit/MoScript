@@ -99,13 +99,13 @@ function APtyAttributes_load(v, x){
    if(!s){
       s = v[o._name] = new TAttributes();
    }
-   s.split(x.get(o._linker), '=', ';');
+   s.split(x.get(o._linker), '=', '\n');
 }
 function APtyAttributes_save(v, x){
    var o = this;
    var s = v[o._name];
    if(!s.isEmpty()){
-      x.set(o._linker, s.join('=', ';'));
+      x.set(o._linker, s.join('=', '\n'));
    }
 }
 function APtyAttributes_toString(){

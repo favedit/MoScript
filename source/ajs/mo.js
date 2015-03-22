@@ -251,9 +251,9 @@ function TAttributes_split(s, n, v){
       if(ln.length){
          var sb = ln.split(n);
          if(sb.length == 2){
-            o.set(sb[0], sb[1]);
+            o.set(RString.trim(sb[0]), RString.trim(sb[1]));
          }else{
-            o.set(ln, '');
+            o.set(RString.trim(ln), '');
          }
       }
    }
@@ -1532,13 +1532,13 @@ function APtyAttributes_load(v, x){
    if(!s){
       s = v[o._name] = new TAttributes();
    }
-   s.split(x.get(o._linker), '=', ';');
+   s.split(x.get(o._linker), '=', '\n');
 }
 function APtyAttributes_save(v, x){
    var o = this;
    var s = v[o._name];
    if(!s.isEmpty()){
-      x.set(o._linker, s.join('=', ';'));
+      x.set(o._linker, s.join('=', '\n'));
    }
 }
 function APtyAttributes_toString(){
