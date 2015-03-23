@@ -1817,6 +1817,23 @@ var ECharCase = function ECharCase(){
    o.Word  = 'W';
    return o;
 }
+var EDataType = new function EDataType(){
+   var o = this;
+   o.Unknown = 0;
+   o.Int8 = 1;
+   o.Int16 = 2;
+   o.Int32 = 3;
+   o.Int64 = 4;
+   o.Uint8 = 5;
+   o.Uint16 = 6;
+   o.Uint32 = 7;
+   o.Uint64 = 8;
+   o.Float16 = 9;
+   o.Float32 = 10;
+   o.Float64 = 11;
+   o.String = 12;
+   return o;
+}
 var EEndian = new function EEndian(){
    var o = this;
    o.Big    = 0;
@@ -9031,23 +9048,6 @@ var EBrowser = new function EBrowser(){
    o.FireFox = 2;
    o.Chrome = 3;
    o.Safari = 4;
-   return o;
-}
-var EDataType = new function EDataType(){
-   var o = this;
-   o.Unknown =  0;
-   o.Boolean =  1;
-   o.Int8    =  2;
-   o.Int16   =  3;
-   o.Int32   =  4;
-   o.Int64   =  5;
-   o.Uint8   =  6;
-   o.Uint16  =  7;
-   o.Uint32  =  8;
-   o.Uint64  =  9;
-   o.Float   = 10;
-   o.Double  = 11;
-   o.String  = 12;
    return o;
 }
 var EDevice = new function EDevice(){
@@ -23289,6 +23289,7 @@ function FE3sStream(o){
    o._data             = null;
    o._formatCd      = EG3dAttributeFormat.Unknown;
    o.name              = FE3sStream_name;
+   o.elementDataCd     = FE3sStream_elementDataCd;
    o.formatCd          = FE3sStream_formatCd;
    o.unserialize       = FE3sStream_unserialize;
    o.dispose           = FE3sStream_dispose;
@@ -23296,6 +23297,9 @@ function FE3sStream(o){
 }
 function FE3sStream_name(){
    return this._name;
+}
+function FE3sStream_elementDataCd(){
+   return this._elementDataCd;
 }
 function FE3sStream_formatCd(){
    return this._formatCd;
@@ -24560,6 +24564,14 @@ function FE3rMesh_loadResource(p){
       if((rc == 'index16') || (rc == 'index32')){
          var b = o._indexBuffer = c.createIndexBuffer();
          b._resource = rs;
+         var ecd = rs.elementDataCd();
+         if(ecd == EDataType.Uint16){
+            b._strideCd = EG3dIndexStride.Uint16;
+         }else if(ecd == EDataType.Uint32){
+            b._strideCd = EG3dIndexStride.Uint32;
+         }else{
+            throw new TError(o, "Unknown data type.");
+         }
          b.upload(rs._data, 3 * rs._dataCount);
       }else{
          var b = c.createVertexBuffer();
@@ -24587,7 +24599,7 @@ function FE3rMesh_loadResource(p){
                b._formatCd = EG3dAttributeFormat.Byte4Normal;
                break;
             default:
-               throw new TError("Unknown code");
+               throw new TError(o, "Unknown code");
          }
          b.upload(d, rs._dataStride, rs._dataCount);
          o._vertexBuffers.push(b);
@@ -24975,9 +24987,8 @@ function FE3rModelConsole_merge(pe, pg, pi, pc){
    return m;
 }
 function FE3rModelMesh(o){
-   o = RClass.inherits(this, o, FE3rObject);
+   o = RClass.inherits(this, o, FE3rMesh);
    o._ready            = false;
-   o._resource         = null;
    o._vertexCount      = 0;
    o._vertexBuffers    = null;
    o._indexBuffer      = null;
@@ -24999,13 +25010,11 @@ function FE3rModelMesh(o){
    o.findTexture       = FE3rModelMesh_findTexture;
    o.textures          = FE3rModelMesh_textures;
    o.boneIds           = FE3rModelMesh_boneIds;
-   o.resource          = FE3rModelMesh_resource;
-   o.loadResource      = FE3rModelMesh_loadResource;
    return o;
 }
 function FE3rModelMesh_construct(){
    var o = this;
-   o.__base.FE3rObject.construct.call(o);
+   o.__base.FE3rMesh.construct.call(o);
    o._vertexBuffers = new TObjects();
 }
 function FE3rModelMesh_testReady(){
@@ -25071,55 +25080,6 @@ function FE3rModelMesh_textures(){
 }
 function FE3rModelMesh_boneIds(p){
    return this._boneIds;
-}
-function FE3rModelMesh_resource(){
-   return this._resource;
-}
-function FE3rModelMesh_loadResource(p){
-   var o = this;
-   var c = o._graphicContext;
-   o._resource = p;
-   var rss = p.streams();
-   var rsc = rss.count();
-   for(var i = 0; i < rsc; i++){
-      var rs = rss.get(i);
-      var rc = rs._code;
-      if((rc == 'index16') || (rc == 'index32')){
-         var b = o._indexBuffer = c.createIndexBuffer();
-         b._resource = rs;
-         b.upload(rs._data, 3 * rs._dataCount);
-      }else{
-         var b = c.createVertexBuffer();
-         b._name = rc;
-         b._resource = rs;
-         o._vertexCount = rs._dataCount;
-         var d = null;
-         switch(rc){
-            case "position":
-               d = new Float32Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Float3;
-               break;
-            case "coord":
-               d = new Float32Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Float2;
-               break;
-            case "color":
-               d = new Uint8Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Byte4Normal;
-               break;
-            case "normal":
-            case "binormal":
-            case "tangent":
-               d = new Uint8Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Byte4Normal;
-               break;
-            default:
-               throw new TError("Unknown code");
-         }
-         b.upload(d, rs._dataStride, rs._dataCount);
-         o._vertexBuffers.push(b);
-      }
-   }
 }
 function FE3rObject(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);

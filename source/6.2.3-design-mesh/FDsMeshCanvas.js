@@ -687,7 +687,9 @@ function FDsMeshCanvas_loadMeshByCode(p){
    // 收集一个显示模板
    var m = rmc.allocByCode(o, p);
    m.addLoadListener(o, o.onMeshLoad);
-   m.matrix().setScaleAll(0.01);
+   m.matrix().setTranslate(0, 1, 0);
+   m.matrix().setRotation(0, Math.PI, Math.PI);
+   m.matrix().setScaleAll(0.003);
    m.matrix().updateForce();
    o._layer.pushDisplay(m);
    o._activeMesh = m;

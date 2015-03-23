@@ -410,23 +410,6 @@ var EBrowser = new function EBrowser(){
    o.Safari = 4;
    return o;
 }
-var EDataType = new function EDataType(){
-   var o = this;
-   o.Unknown =  0;
-   o.Boolean =  1;
-   o.Int8    =  2;
-   o.Int16   =  3;
-   o.Int32   =  4;
-   o.Int64   =  5;
-   o.Uint8   =  6;
-   o.Uint16  =  7;
-   o.Uint32  =  8;
-   o.Uint64  =  9;
-   o.Float   = 10;
-   o.Double  = 11;
-   o.String  = 12;
-   return o;
-}
 var EDevice = new function EDevice(){
    var o = this;
    o.Unknown = 0;

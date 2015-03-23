@@ -1755,6 +1755,7 @@ function FE3sStream(o){
    o._data             = null;
    o._formatCd      = EG3dAttributeFormat.Unknown;
    o.name              = FE3sStream_name;
+   o.elementDataCd     = FE3sStream_elementDataCd;
    o.formatCd          = FE3sStream_formatCd;
    o.unserialize       = FE3sStream_unserialize;
    o.dispose           = FE3sStream_dispose;
@@ -1762,6 +1763,9 @@ function FE3sStream(o){
 }
 function FE3sStream_name(){
    return this._name;
+}
+function FE3sStream_elementDataCd(){
+   return this._elementDataCd;
 }
 function FE3sStream_formatCd(){
    return this._formatCd;

@@ -1817,6 +1817,23 @@ var ECharCase = function ECharCase(){
    o.Word  = 'W';
    return o;
 }
+var EDataType = new function EDataType(){
+   var o = this;
+   o.Unknown = 0;
+   o.Int8 = 1;
+   o.Int16 = 2;
+   o.Int32 = 3;
+   o.Int64 = 4;
+   o.Uint8 = 5;
+   o.Uint16 = 6;
+   o.Uint32 = 7;
+   o.Uint64 = 8;
+   o.Float16 = 9;
+   o.Float32 = 10;
+   o.Float64 = 11;
+   o.String = 12;
+   return o;
+}
 var EEndian = new function EEndian(){
    var o = this;
    o.Big    = 0;
@@ -9031,23 +9048,6 @@ var EBrowser = new function EBrowser(){
    o.FireFox = 2;
    o.Chrome = 3;
    o.Safari = 4;
-   return o;
-}
-var EDataType = new function EDataType(){
-   var o = this;
-   o.Unknown =  0;
-   o.Boolean =  1;
-   o.Int8    =  2;
-   o.Int16   =  3;
-   o.Int32   =  4;
-   o.Int64   =  5;
-   o.Uint8   =  6;
-   o.Uint16  =  7;
-   o.Uint32  =  8;
-   o.Uint64  =  9;
-   o.Float   = 10;
-   o.Double  = 11;
-   o.String  = 12;
    return o;
 }
 var EDevice = new function EDevice(){

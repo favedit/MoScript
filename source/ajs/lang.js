@@ -384,6 +384,23 @@ var ECharCase = function ECharCase(){
    o.Word  = 'W';
    return o;
 }
+var EDataType = new function EDataType(){
+   var o = this;
+   o.Unknown = 0;
+   o.Int8 = 1;
+   o.Int16 = 2;
+   o.Int32 = 3;
+   o.Int64 = 4;
+   o.Uint8 = 5;
+   o.Uint16 = 6;
+   o.Uint32 = 7;
+   o.Uint64 = 8;
+   o.Float16 = 9;
+   o.Float32 = 10;
+   o.Float64 = 11;
+   o.String = 12;
+   return o;
+}
 var EEndian = new function EEndian(){
    var o = this;
    o.Big    = 0;

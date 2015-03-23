@@ -5,11 +5,10 @@
 // @history 150106
 //==========================================================
 function FE3rModelMesh(o){
-   o = RClass.inherits(this, o, FE3rObject);
+   o = RClass.inherits(this, o, FE3rMesh);
    //..........................................................
    // @attribute
    o._ready            = false;
-   o._resource         = null;
    o._vertexCount      = 0;
    o._vertexBuffers    = null;
    o._indexBuffer      = null;
@@ -35,9 +34,6 @@ function FE3rModelMesh(o){
    o.findTexture       = FE3rModelMesh_findTexture;
    o.textures          = FE3rModelMesh_textures;
    o.boneIds           = FE3rModelMesh_boneIds;
-   // @method
-   o.resource          = FE3rModelMesh_resource;
-   o.loadResource      = FE3rModelMesh_loadResource;
    return o;
 }
 
@@ -48,7 +44,7 @@ function FE3rModelMesh(o){
 //==========================================================
 function FE3rModelMesh_construct(){
    var o = this;
-   o.__base.FE3rObject.construct.call(o);
+   o.__base.FE3rMesh.construct.call(o);
    o._vertexBuffers = new TObjects();
 }
 
@@ -201,70 +197,4 @@ function FE3rModelMesh_textures(){
 //==========================================================
 function FE3rModelMesh_boneIds(p){
    return this._boneIds;
-}
-
-//==========================================================
-// <T>获得资源。</T>
-//
-// @method
-// @return FE3sMesh 资源
-//==========================================================
-function FE3rModelMesh_resource(){
-   return this._resource;
-}
-
-//==========================================================
-// <T>加载资源。</T>
-//
-// @param p:resource:FE3sGeometry 资源
-//==========================================================
-function FE3rModelMesh_loadResource(p){
-   var o = this;
-   var c = o._graphicContext;
-   // 设置属性
-   o._resource = p;
-   // 创建顶点缓冲集合
-   var rss = p.streams();
-   var rsc = rss.count();
-   for(var i = 0; i < rsc; i++){
-      var rs = rss.get(i);
-      var rc = rs._code;
-      if((rc == 'index16') || (rc == 'index32')){
-         // 创建索引缓冲
-         var b = o._indexBuffer = c.createIndexBuffer();
-         b._resource = rs;
-         b.upload(rs._data, 3 * rs._dataCount);
-      }else{
-         // 创建顶点缓冲
-         var b = c.createVertexBuffer();
-         b._name = rc;
-         b._resource = rs;
-         o._vertexCount = rs._dataCount;
-         var d = null;
-         switch(rc){
-            case "position":
-               d = new Float32Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Float3;
-               break;
-            case "coord":
-               d = new Float32Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Float2;
-               break;
-            case "color":
-               d = new Uint8Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Byte4Normal;
-               break;
-            case "normal":
-            case "binormal":
-            case "tangent":
-               d = new Uint8Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Byte4Normal;
-               break;
-            default:
-               throw new TError("Unknown code");
-         }
-         b.upload(d, rs._dataStride, rs._dataCount);
-         o._vertexBuffers.push(b);
-      }
-   }
 }

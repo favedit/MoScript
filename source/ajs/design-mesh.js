@@ -462,6 +462,7 @@ function FDsMeshCanvas_loadMeshByCode(p){
    }
    var m = rmc.allocByCode(o, p);
    m.addLoadListener(o, o.onMeshLoad);
+   m.matrix().setRotation(Math.PI/2, Math.PI, 0);
    m.matrix().setScaleAll(0.01);
    m.matrix().updateForce();
    o._layer.pushDisplay(m);

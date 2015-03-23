@@ -21,6 +21,7 @@ function FE3sStream(o){
    //..........................................................
    // @method
    o.name              = FE3sStream_name;
+   o.elementDataCd     = FE3sStream_elementDataCd;
    o.formatCd          = FE3sStream_formatCd;
    o.unserialize       = FE3sStream_unserialize;
    o.dispose           = FE3sStream_dispose;
@@ -34,6 +35,15 @@ function FE3sStream(o){
 //==========================================================
 function FE3sStream_name(){
    return this._name;
+}
+
+//==========================================================
+// <T>获得元素数据类型。</T>
+//
+// @return String 元素数据类型
+//==========================================================
+function FE3sStream_elementDataCd(){
+   return this._elementDataCd;
 }
 
 //==========================================================

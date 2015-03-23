@@ -217,6 +217,14 @@ function FE3rMesh_loadResource(p){
          // 创建索引缓冲
          var b = o._indexBuffer = c.createIndexBuffer();
          b._resource = rs;
+         var ecd = rs.elementDataCd();
+         if(ecd == EDataType.Uint16){
+            b._strideCd = EG3dIndexStride.Uint16;
+         }else if(ecd == EDataType.Uint32){
+            b._strideCd = EG3dIndexStride.Uint32;
+         }else{
+            throw new TError(o, "Unknown data type.");
+         }
          b.upload(rs._data, 3 * rs._dataCount);
       }else{
          // 创建顶点缓冲
@@ -245,7 +253,7 @@ function FE3rMesh_loadResource(p){
                b._formatCd = EG3dAttributeFormat.Byte4Normal;
                break;
             default:
-               throw new TError("Unknown code");
+               throw new TError(o, "Unknown code");
          }
          b.upload(d, rs._dataStride, rs._dataCount);
          o._vertexBuffers.push(b);
