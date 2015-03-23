@@ -51,8 +51,8 @@ function FDsTemplateCanvas_onBuild(p){
    o.__base.FDsCanvas.onBuild.call(o, p);
    // 创建简单舞台
    var g = o._stage = RClass.create(FE3dSimpleStage);
-   g.backgroundColor().set(0.5, 0.5, 0.5, 1);
-   g.selectTechnique(o, FG3dGeneralTechnique);
+   g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
+   g.selectTechnique(o, FE3dGeneralTechnique);
    var sl = o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    // 设置相机
@@ -299,7 +299,7 @@ function FDsTemplateCanvas_loadTemplate(p){
       rmc.free(o._activeTemplate);
    }
    // 收集一个显示模板
-   var m = rmc.alloc(o._graphicContext, p);
+   var m = rmc.allocByCode(o._graphicContext, p);
    m.addLoadListener(o, o.onTemplateLoad);
    o._layer.pushDisplay(m);
    o._activeTemplate = m;
@@ -313,11 +313,7 @@ function FDsTemplateCanvas_loadTemplate(p){
 function FDsTemplateCanvas_dispose(){
    var o = this;
    // 释放旋转
-   var v = o._rotation;
-   if(v){
-      v.dispose();
-      o._rotation = null;
-   }
-   // 父处理
+  o._rotation = RObject.dispose(o._rotation);
+x   // 父处理
    o.__base.FDsCanvas.dispose.call(o);
 }

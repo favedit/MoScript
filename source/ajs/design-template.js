@@ -29,8 +29,8 @@ function FDsTemplateCanvas_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
    var g = o._stage = RClass.create(FE3dSimpleStage);
-   g.backgroundColor().set(0.5, 0.5, 0.5, 1);
-   g.selectTechnique(o, FG3dGeneralTechnique);
+   g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
+   g.selectTechnique(o, FE3dGeneralTechnique);
    var sl = o._layer = o._stage.spriteLayer();
    RStage.register('stage3d', o._stage);
    var rc = g.camera();
@@ -190,18 +190,15 @@ function FDsTemplateCanvas_loadTemplate(p){
    if(o._activeTemplate != null){
       rmc.free(o._activeTemplate);
    }
-   var m = rmc.alloc(o._graphicContext, p);
+   var m = rmc.allocByCode(o._graphicContext, p);
    m.addLoadListener(o, o.onTemplateLoad);
    o._layer.pushDisplay(m);
    o._activeTemplate = m;
 }
 function FDsTemplateCanvas_dispose(){
    var o = this;
-   var v = o._rotation;
-   if(v){
-      v.dispose();
-      o._rotation = null;
-   }
+  o._rotation = RObject.dispose(o._rotation);
+x   // 父处理
    o.__base.FDsCanvas.dispose.call(o);
 }
 function FDsTemplateCanvasToolBar(o){

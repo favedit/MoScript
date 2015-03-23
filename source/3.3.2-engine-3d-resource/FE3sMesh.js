@@ -5,21 +5,23 @@
 // @history 150128
 //==========================================================
 function FE3sMesh(o){
-   o = RClass.inherits(this, o, FE3sObject);
+   o = RClass.inherits(this, o, FE3sResource);
    //..........................................................
    // @attribute
-   o._outline    = null;
-   o._streams    = null;
-   o._tracks     = null;
+   o._dataCompress = true;
+   // @attribute
+   o._outline      = null;
+   o._streams      = null;
+   o._tracks       = null;
    //..........................................................
    // @method
-   o.construct   = FE3sMesh_construct;
+   o.construct     = FE3sMesh_construct;
    // @method
-   o.outline     = FE3sMesh_outline;
-   o.streams     = FE3sMesh_streams;
-   o.tracks      = FE3sMesh_tracks;
+   o.outline       = FE3sMesh_outline;
+   o.streams       = FE3sMesh_streams;
+   o.tracks        = FE3sMesh_tracks;
    // @method
-   o.unserialize = FE3sMesh_unserialize;
+   o.unserialize   = FE3sMesh_unserialize;
    return o;
 }
 
@@ -30,7 +32,7 @@ function FE3sMesh(o){
 //==========================================================
 function FE3sMesh_construct(){
    var o = this;
-   o.__base.FE3sObject.construct.call(o);
+   o.__base.FE3sResource.construct.call(o);
    o._outline = new SOutline3d();
 }
 
@@ -73,7 +75,7 @@ function FE3sMesh_tracks(){
 //==========================================================
 function FE3sMesh_unserialize(p){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
+   o.__base.FE3sResource.unserialize.call(o, p);
    // 读取属性
    o._outline.unserialize(p);
    o._outline.update();

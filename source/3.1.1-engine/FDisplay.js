@@ -10,7 +10,7 @@ function FDisplay(o){
    // @attribute
    o._parent           = null;
    o._currentMatrix    = null;
-   o._name             = null;
+   o._code             = null;
    o._matrix           = null;
    o._location         = null;
    o._rotation         = null;
@@ -25,9 +25,9 @@ function FDisplay(o){
    // @method
    o.parent            = FDisplay_parent;
    o.setParent         = FDisplay_setParent;
-   o.isName            = FDisplay_isName;
-   o.name              = FDisplay_name;
-   o.setName           = FDisplay_setName;
+   o.isCode            = FDisplay_isCode;
+   o.code              = FDisplay_code;
+   o.setCode           = FDisplay_setCode;
    o.currentMatrix     = FDisplay_currentMatrix;
    o.matrix            = FDisplay_matrix;
    o.location          = FDisplay_location;
@@ -92,33 +92,33 @@ function FDisplay_setParent(p){
 }
 
 //==========================================================
-// <T>判断是否指定名称。</T>
+// <T>判断是否指定代码。</T>
 //
 // @method
-// @param p:name:String 名称
+// @param p:code:String 代码
 //==========================================================
-function FDisplay_isName(p){
-   return this._name == p;
+function FDisplay_isCode(p){
+   return this._code == p;
 }
 
 //==========================================================
-// <T>获得名称。</T>
+// <T>获得代码。</T>
 //
 // @method
-// @return 名称
+// @return String 代码
 //==========================================================
-function FDisplay_name(){
-   return this._name;
+function FDisplay_code(){
+   return this._code;
 }
 
 //==========================================================
-// <T>设置名称。</T>
+// <T>设置代码。</T>
 //
 // @method
-// @param p:value:String 名称
+// @param p:code:String 代码
 //==========================================================
-function FDisplay_setName(p){
-   this._name = p;
+function FDisplay_setCode(p){
+   this._code = p;
 }
 
 //==========================================================

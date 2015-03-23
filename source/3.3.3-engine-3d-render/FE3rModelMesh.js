@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150106
 //==========================================================
-function FE3rMesh(o){
+function FE3rModelMesh(o){
    o = RClass.inherits(this, o, FE3rObject);
    //..........................................................
    // @attribute
@@ -15,26 +15,29 @@ function FE3rMesh(o){
    o._indexBuffer      = null;
    o._resourceMaterial = null;
    o._material         = null;
+   o._skins            = null;
+   o._boneIds          = null;
    o._textures         = null;
    //..........................................................
    // @method
-   o.construct         = FE3rMesh_construct;
+   o.construct         = FE3rModelMesh_construct;
    // @method
-   o.testReady         = FE3rMesh_testReady;
+   o.testReady         = FE3rModelMesh_testReady;
    // @method
-   o.resource          = FE3rMesh_resource;
-   o.setResource       = FE3rMesh_setResource;
-   o.vertexCount       = FE3rMesh_vertexCount;
-   o.findVertexBuffer  = FE3rMesh_findVertexBuffer;
-   o.vertexBuffers     = FE3rMesh_vertexBuffers;
-   o.indexBuffer       = FE3rMesh_indexBuffer;
-   o.material          = FE3rMesh_material;
-   o.findTexture       = FE3rMesh_findTexture;
-   o.textures          = FE3rMesh_textures;
+   o.guid              = FE3rModelMesh_guid;
+   o.vertexCount       = FE3rModelMesh_vertexCount;
+   o.findVertexBuffer  = FE3rModelMesh_findVertexBuffer;
+   o.vertexBuffers     = FE3rModelMesh_vertexBuffers;
+   o.indexBuffer       = FE3rModelMesh_indexBuffer;
+   o.material          = FE3rModelMesh_material;
+   o.skins             = FE3rModelMesh_skins;
+   o.pushSkin          = FE3rModelMesh_pushSkin;
+   o.findTexture       = FE3rModelMesh_findTexture;
+   o.textures          = FE3rModelMesh_textures;
+   o.boneIds           = FE3rModelMesh_boneIds;
    // @method
-   o.resource          = FE3rMesh_resource;
-   o.loadResource      = FE3rMesh_loadResource;
-   o.processLoad       = FE3rMesh_processLoad;
+   o.resource          = FE3rModelMesh_resource;
+   o.loadResource      = FE3rModelMesh_loadResource;
    return o;
 }
 
@@ -43,7 +46,7 @@ function FE3rMesh(o){
 //
 // @method
 //==========================================================
-function FE3rMesh_construct(){
+function FE3rModelMesh_construct(){
    var o = this;
    o.__base.FE3rObject.construct.call(o);
    o._vertexBuffers = new TObjects();
@@ -55,13 +58,9 @@ function FE3rMesh_construct(){
 // @method
 // @return 是否完成
 //==========================================================
-function FE3rMesh_testReady(){
+function FE3rModelMesh_testReady(){
    var o = this;
    if(!o._ready){
-      // 测试资源是否加载完成
-      if(!o._resource.testReady()){
-         return false;
-      }
       // 测试所有位图加载好
       var ts = o._textures;
       if(ts != null){
@@ -74,7 +73,7 @@ function FE3rMesh_testReady(){
          }
       }
       // 加载完成
-      //o._ready = true;
+      o._ready = true;
    }
    return o._ready;
 }
@@ -85,26 +84,8 @@ function FE3rMesh_testReady(){
 // @method
 // @return String 唯一编号
 //==========================================================
-function FE3rMesh_guid(){
+function FE3rModelMesh_guid(){
    return this._resource.guid();
-}
-
-//==========================================================
-// <T>获得资源。</T>
-//
-// @return FE3sModel 资源
-//==========================================================
-function FE3rMesh_resource(){
-   return this._resource;
-}
-
-//==========================================================
-// <T>设置资源。</T>
-//
-// @param p:resource:FE3sModel 资源
-//==========================================================
-function FE3rMesh_setResource(p){
-   this._resource = p;
 }
 
 //==========================================================
@@ -113,7 +94,7 @@ function FE3rMesh_setResource(p){
 // @method
 // @return Integer 顶点总数
 //==========================================================
-function FE3rMesh_vertexCount(){
+function FE3rModelMesh_vertexCount(){
    return this._vertexCount;
 }
 
@@ -123,7 +104,7 @@ function FE3rMesh_vertexCount(){
 // @method
 // @param p:name:String 名称
 //==========================================================
-function FE3rMesh_findVertexBuffer(p){
+function FE3rModelMesh_findVertexBuffer(p){
    var o = this;
    var vs = o._vertexBuffers;
    var c = vs.count();
@@ -142,7 +123,7 @@ function FE3rMesh_findVertexBuffer(p){
 // @method
 // @return TObjects 顶点缓冲集合
 //==========================================================
-function FE3rMesh_vertexBuffers(){
+function FE3rModelMesh_vertexBuffers(){
    return this._vertexBuffers;
 }
 
@@ -152,7 +133,7 @@ function FE3rMesh_vertexBuffers(){
 // @method
 // @return FG3dIndexBuffer 索引缓冲
 //==========================================================
-function FE3rMesh_indexBuffer(){
+function FE3rModelMesh_indexBuffer(){
    return this._indexBuffer;
 }
 
@@ -162,8 +143,33 @@ function FE3rMesh_indexBuffer(){
 // @method
 // @return FRsMaterial 材质
 //==========================================================
-function FE3rMesh_material(){
+function FE3rModelMesh_material(){
    return this._material;
+}
+
+//==========================================================
+// <T>获得渲染蒙皮集合。</T>
+//
+// @method
+// @return TObjects<FE3rSkin> 渲染蒙皮集合
+//==========================================================
+function FE3rModelMesh_skins(){
+   return this._skins;
+}
+
+//==========================================================
+// <T>增加一个蒙皮。</T>
+//
+// @method
+// @return FE3rSkin 蒙皮
+//==========================================================
+function FE3rModelMesh_pushSkin(p){
+   var o = this;
+   var r = o._skins;
+   if(!r){
+      r = o._skins = new TObjects();
+   }
+   r.push(p);
 }
 
 //==========================================================
@@ -173,7 +179,7 @@ function FE3rMesh_material(){
 // @param p:name:String 名称
 // @return FG3dIndexBuffer 纹理
 //==========================================================
-function FE3rMesh_findTexture(p){
+function FE3rModelMesh_findTexture(p){
    return this._textures.get(p);
 }
 
@@ -183,8 +189,18 @@ function FE3rMesh_findTexture(p){
 // @method
 // @return TDictionary 纹理集合
 //==========================================================
-function FE3rMesh_textures(){
+function FE3rModelMesh_textures(){
    return this._textures;
+}
+
+//==========================================================
+// <T>获得骨头集合。</T>
+//
+// @method
+// @return TArray 骨头集合
+//==========================================================
+function FE3rModelMesh_boneIds(p){
+   return this._boneIds;
 }
 
 //==========================================================
@@ -193,7 +209,7 @@ function FE3rMesh_textures(){
 // @method
 // @return FE3sMesh 资源
 //==========================================================
-function FE3rMesh_resource(){
+function FE3rModelMesh_resource(){
    return this._resource;
 }
 
@@ -202,7 +218,7 @@ function FE3rMesh_resource(){
 //
 // @param p:resource:FE3sGeometry 资源
 //==========================================================
-function FE3rMesh_loadResource(p){
+function FE3rModelMesh_loadResource(p){
    var o = this;
    var c = o._graphicContext;
    // 设置属性
@@ -251,25 +267,4 @@ function FE3rMesh_loadResource(p){
          o._vertexBuffers.push(b);
       }
    }
-   o._ready = true;
-}
-
-//==========================================================
-// <T>加载处理。</T>
-//
-// @method
-//==========================================================
-function FE3rMesh_processLoad(){
-   var o = this;
-   // 检查数据已加载
-   if(o._dataReady){
-      return true;
-   }
-   // 检查资源是否准备好
-   if(!o._resource.testReady()){
-      return false;
-   }
-   // 加载资源
-   o.loadResource(o._resource);
-   return true;
 }

@@ -5,7 +5,7 @@
 // @history 150106
 //==========================================================
 function FE3dModel(o){
-   o = RClass.inherits(this, o, FDisplay3d);
+   o = RClass.inherits(this, o, FE3dDisplay);
    //..........................................................
    // @attribute
    o._dataReady     = false;
@@ -86,7 +86,7 @@ function FE3dModel_processLoad(){
 //==========================================================
 function FE3dModel_process(){
    var o = this;
-   o.__base.FDisplay3d.process.call(o);
+   o.__base.FE3dDisplay.process.call(o);
    // 处理动画集合
    if(o._animation){
       o._animation.process();

@@ -8,7 +8,6 @@ function FE3rModel(o){
    o = RClass.inherits(this, o, FE3rObject);
    //..........................................................
    // @attribute
-   o._name                = null;
    o._resource            = null;
    // @attribute
    o._meshes              = null;
@@ -17,11 +16,8 @@ function FE3rModel(o){
    o._dataReady           = false;
    //..........................................................
    // @method
-   o.name                 = FE3rModel_name;
-   o.setName              = FE3rModel_setName;
    o.findMeshByGuid       = FE3rModel_findMeshByGuid;
    o.geometrys            = FE3rModel_geometrys;
-   o.resource             = FE3rModel_resource;
    o.resource             = FE3rModel_resource;
    o.setResource          = FE3rModel_setResource;
    // @method
@@ -33,24 +29,6 @@ function FE3rModel(o){
    // @method
    o.dispose              = FE3rModel_dispose;
    return o;
-}
-
-//==========================================================
-// <T>获得名称。</T>
-//
-// @return String 名称
-//==========================================================
-function FE3rModel_name(){
-   return this._name;
-}
-
-//==========================================================
-// <T>设置名称。</T>
-//
-// @param p:name:String 名称
-//==========================================================
-function FE3rModel_setName(p){
-   this._name = p;
 }
 
 //==========================================================
@@ -149,7 +127,7 @@ function FE3rModel_loadResource(p){
       var c = rgs.count();
       for(var i = 0; i < c; i++){
          var rg = rgs.get(i);
-         var g = RClass.create(FE3rMesh);
+         var g = RClass.create(FE3rModelMesh);
          g.linkGraphicContext(o);
          g.loadResource(rg);
          gs.push(g);

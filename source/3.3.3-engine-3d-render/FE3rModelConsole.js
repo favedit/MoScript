@@ -9,29 +9,31 @@ function FE3rModelConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._scopeCd      = EScope.Local;
+   o._scopeCd       = EScope.Local;
    // @attribute
-   o._loadModels   = null;
-   o._models       = null;
-   o._meshs        = null;
-   o._dynamicMeshs = null;
+   o._loadModels    = null;
+   o._models        = null;
+   o._meshs         = null;
+   o._dynamicMeshs  = null;
    // @attribute
-   o._thread       = null;
-   o._interval     = 200;
+   o._thread        = null;
+   o._interval      = 200;
    //..........................................................
    // @event
-   o.onProcess     = FE3rModelConsole_onProcess;
+   o.onProcess      = FE3rModelConsole_onProcess;
    //..........................................................
    // @method
-   o.construct     = FE3rModelConsole_construct;
+   o.construct      = FE3rModelConsole_construct;
    // @method
-   o.findModel     = FE3rModelConsole_findModel;
-   o.models        = FE3rModelConsole_models;
-   o.findMesh      = FE3rModelConsole_findMesh;
-   o.meshs         = FE3rModelConsole_meshs;
+   o.findModel      = FE3rModelConsole_findModel;
+   o.models         = FE3rModelConsole_models;
+   o.findMesh       = FE3rModelConsole_findMesh;
+   o.meshs          = FE3rModelConsole_meshs;
    // @method
-   o.load          = FE3rModelConsole_load;
-   o.merge         = FE3rModelConsole_merge;
+   o.load           = FE3rModelConsole_load;
+   o.loadMeshByGuid = FE3rModelConsole_loadMeshByGuid;
+   o.loadMeshByCode = FE3rModelConsole_loadMeshByCode;
+   o.merge          = FE3rModelConsole_merge;
    return o;
 }
 
@@ -142,7 +144,89 @@ function FE3rModelConsole_load(pc, pg){
    // 加载模型
    m = RClass.create(FE3rModel);
    m.linkGraphicContext(pc);
-   m.setName(pg);
+   m.setCode(pg);
+   m.setResource(rm);
+   o._models.set(pg, m);
+   // 测试是否已加载
+   if(rm.testReady()){
+      m.loadResource(rm);
+   }else{
+      // 追加到加载队列
+      o._loadModels.push(m);
+   }
+   return m;
+}
+
+//==========================================================
+// <T>加载一个渲染模型。</T>
+//
+// @method
+// @param pc:content:FG3dContext 环境
+// @param pg:guid:String 唯一编号
+// @return FRenderModel 渲染模型
+//==========================================================
+function FE3rModelConsole_loadMeshByGuid(pc, pg){
+   var o = this;
+   // 检查参数
+   if(!RClass.isClass(pc, FGraphicContext)){
+      throw new TError('Graphics context is empty');
+   }
+   if(RString.isEmpty(pg)){
+      throw new TError('Model guid is empty');
+   }
+   // 查找模型
+   var m = o._models.get(pg);
+   if(m){
+      return m;
+   }
+   // 获得路径
+   var rmc = RConsole.find(FE3sModelConsole);
+   var rm = rmc.load(pg);
+   // 加载模型
+   m = RClass.create(FE3rModel);
+   m.linkGraphicContext(pc);
+   m.setCode(pg);
+   m.setResource(rm);
+   o._models.set(pg, m);
+   // 测试是否已加载
+   if(rm.testReady()){
+      m.loadResource(rm);
+   }else{
+      // 追加到加载队列
+      o._loadModels.push(m);
+   }
+   return m;
+}
+
+//==========================================================
+// <T>加载一个渲染模型。</T>
+//
+// @method
+// @param pc:content:FG3dContext 环境
+// @param pg:guid:String 唯一编号
+// @return FRenderModel 渲染模型
+//==========================================================
+function FE3rModelConsole_loadMeshByCode(pc, pg){
+   var o = this;
+   // 检查参数
+   if(!RClass.isClass(pc, FGraphicContext)){
+      throw new TError('Graphics context is empty');
+   }
+   if(RString.isEmpty(pg)){
+      throw new TError('Model guid is empty');
+   }
+   // 查找模型
+   var m = o._models.get(pg);
+   if(m){
+      return m;
+   }
+   // 获得路径
+   var rmc = RConsole.find(FE3sModelConsole);
+   var rm = rmc.load(pg);
+   // 加载模型
+   m = RClass.create(FE3rModel);
+   m.linkGraphicContext(pc);
+   m.setCode(pg);
    m.setResource(rm);
    o._models.set(pg, m);
    // 测试是否已加载

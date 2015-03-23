@@ -1,9 +1,18 @@
-function FDsModelCanvas(o){
+//==========================================================
+// <T>模板画板。</T>
+//
+// @author maocy
+// @history 150130
+//==========================================================
+function FDsMeshCanvas(o){
    o = RClass.inherits(this, o, FDsCanvas);
-   o._graphicContext      = null;
+   //..........................................................
+   // @attribute
+   o._activeScene         = null;
+   o._activeMesh          = null;
+   // @attribute
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
-   o._activeScene         = null;
    o._rotation            = null;
    o._optionRotation      = false;
    o._capturePosition     = null;
@@ -11,10 +20,13 @@ function FDsModelCanvas(o){
    o._captureRotation     = null;
    o._dimensional         = null;
    o._selectObject        = null;
+   o._selectBoundBox      = null;
    o._selectRenderables   = null;
-   o._cameraMoveRate      = 0.8;
-   o._cameraKeyRotation   = 0.03;
+   // @attribute
+   o._cameraMoveRate      = 8;
+   o._cameraKeyRotation   = 3;
    o._cameraMouseRotation = 0.005;
+   // @attribute
    o._templateMatrix      = null;
    o._templateRenderable  = null;
    o._templateFace        = null;
@@ -22,52 +34,103 @@ function FDsModelCanvas(o){
    o._templateRotation    = null;
    o._templateScale       = null;
    o._templateViewScale   = 0.05;
-   o.onBuild              = FDsModelCanvas_onBuild;
-   o.onMouseCaptureStart  = FDsModelCanvas_onMouseCaptureStart;
-   o.onMouseCapture       = FDsModelCanvas_onMouseCapture;
-   o.onMouseCaptureStop   = FDsModelCanvas_onMouseCaptureStop;
-   o.onEnterFrame         = FDsModelCanvas_onEnterFrame;
-   o.onSceneLoad          = FDsModelCanvas_onSceneLoad;
-   o.oeResize             = FDsModelCanvas_oeResize;
-   o.oeRefresh            = FDsModelCanvas_oeRefresh;
-   o.construct            = FDsModelCanvas_construct;
-   o.innerSelectDisplay   = FDsModelCanvas_innerSelectDisplay;
-   o.innerSelectLayer     = FDsModelCanvas_innerSelectLayer;
-   o.selectNone           = FDsModelCanvas_selectNone;
-   o.selectLayers         = FDsModelCanvas_selectLayers;
-   o.selectLayer          = FDsModelCanvas_selectLayer;
-   o.selectDisplay        = FDsModelCanvas_selectDisplay;
-   o.selectMaterial       = FDsModelCanvas_selectMaterial;
-   o.selectRenderable     = FDsModelCanvas_selectRenderable;
-   o.switchMode           = FDsModelCanvas_switchMode;
-   o.switchPlay           = FDsModelCanvas_switchPlay;
-   o.switchMovie          = FDsModelCanvas_switchMovie;
-   o.reloadRegion         = FDsModelCanvas_reloadRegion;
-   o.loadScene            = FDsModelCanvas_loadScene;
-   o.dispose              = FDsModelCanvas_dispose;
+   //..........................................................
+   // @event
+   o.onBuild              = FDsMeshCanvas_onBuild;
+   o.onMouseCaptureStart  = FDsMeshCanvas_onMouseCaptureStart;
+   o.onMouseCapture       = FDsMeshCanvas_onMouseCapture;
+   o.onMouseCaptureStop   = FDsMeshCanvas_onMouseCaptureStop;
+   o.onEnterFrame         = FDsMeshCanvas_onEnterFrame;
+   o.onMeshLoad           = FDsMeshCanvas_onMeshLoad;
+   //..........................................................
+   o.oeResize             = FDsMeshCanvas_oeResize;
+   o.oeRefresh            = FDsMeshCanvas_oeRefresh;
+   //..........................................................
+   // @method
+   o.construct            = FDsMeshCanvas_construct;
+   // @method
+   o.innerSelectDisplay   = FDsMeshCanvas_innerSelectDisplay;
+   o.innerSelectLayer     = FDsMeshCanvas_innerSelectLayer;
+   o.selectNone           = FDsMeshCanvas_selectNone;
+   o.selectLayers         = FDsMeshCanvas_selectLayers;
+   o.selectLayer          = FDsMeshCanvas_selectLayer;
+   o.selectDisplay        = FDsMeshCanvas_selectDisplay;
+   o.selectMaterial       = FDsMeshCanvas_selectMaterial;
+   o.selectRenderable     = FDsMeshCanvas_selectRenderable;
+   o.switchMode           = FDsMeshCanvas_switchMode;
+   o.switchPlay           = FDsMeshCanvas_switchPlay;
+   o.reloadRegion         = FDsMeshCanvas_reloadRegion;
+   o.loadMeshByCode       = FDsMeshCanvas_loadMeshByCode;
+   // @method
+   o.dispose              = FDsMeshCanvas_dispose;
    return o;
 }
-function FDsModelCanvas_onBuild(p){
+
+//==========================================================
+// <T>构建处理。</T>
+//
+// @method
+// @param p:event:TEventProcess 处理事件
+//==========================================================
+function FDsMeshCanvas_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
-   var c = o._graphicContext;
-   var tc = RConsole.find(FE3dTemplateConsole);
-   var t = o._templateTranslation = tc.allocByCode(c, 'com.design.translation');
-   t._optionFace = true;
-   t.hide();
-   var t = o._templateRotation = tc.allocByCode(c, 'com.design.rotation');
-   t._optionFace = true;
-   t.hide();
-   var t = o._templateScale = tc.allocByCode(c, 'com.design.scale');
-   t._optionFace = true;
-   t.hide();
+   // 创建简单舞台
+   var g = o._activeScene = RClass.create(FE3dSimpleStage);
+   g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
+   g.selectTechnique(o, FE3dGeneralTechnique);
+   var sl = o._layer = o._activeScene.spriteLayer();
+   RStage.register('stage3d', o._activeScene);
+   // 设置相机
+   var rc = g.camera();
+   rc.setPosition(0, 3, -10);
+   rc.lookAt(0, 3, 0);
+   rc.update();
+   // 设置投影
+   var h = o._hPanel;
+   var rp = rc.projection();
+   rp.size().set(h.width, h.height);
+   rp._angle = 45;
+   rp.update();
+   // 设置光源
+   var l = g.directionalLight();
+   var lc = l.camera();
+   lc.setPosition(10, 10, 0);
+   lc.lookAt(0, 0, 0);
+   lc.update();
+   // 设置坐标系
+   sl.pushRenderable(o._dimensional);
+
+
+   //var o = this;
+   //o.__base.FDsCanvas.onBuild.call(o, p);
+   // 创建界面控制器
+   //var c = o._graphicContext;
+   //var tc = RConsole.find(FE3dTemplateConsole);
+   //var t = o._templateTranslation = tc.allocByCode(c, 'com.design.translation');
+   //t._optionFace = true;
+   //t.hide();
+   //var t = o._templateRotation = tc.allocByCode(c, 'com.design.rotation');
+   //t._optionFace = true;
+   //t.hide();
+   //var t = o._templateScale = tc.allocByCode(c, 'com.design.scale');
+   //t._optionFace = true;
+   //t.hide();
 }
-function FDsModelCanvas_onMouseCaptureStart(p){
+
+//==========================================================
+// <T>鼠标捕捉开始处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsMeshCanvas_onMouseCaptureStart(p){
    var o = this;
    var s = o._activeScene;
    if(!s){
       return;
    }
+   // 选取物件
    var r = o._activeScene.region();
    var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
    var r = st.test(r, p.offsetX, p.offsetY);
@@ -78,9 +141,11 @@ function FDsModelCanvas_onMouseCaptureStart(p){
       var d = r.display();
       o._captureMatrix.assign(d.matrix());
    }
+   // 记录坐标
    o._templateMatrix.identity();
    if(o._templateFace){
       o._templateFaceMatrix.assign(o._templateFace.matrix());
+      // 记录选中坐标
       var rs = o._selectRenderables;
       for(var i = rs.count() - 1; i >= 0; i--){
          var r = rs.getAt(i);
@@ -91,7 +156,14 @@ function FDsModelCanvas_onMouseCaptureStart(p){
       }
    }
 }
-function FDsModelCanvas_onMouseCapture(p){
+
+//==========================================================
+// <T>鼠标捕捉处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsMeshCanvas_onMouseCapture(p){
    var o = this;
    var s = o._activeScene;
    if(!s){
@@ -103,6 +175,11 @@ function FDsModelCanvas_onMouseCapture(p){
    var mv = o._canvasMoveCd;
    var cm = o._captureMatrix;
    var sm = null;
+   //var sr = o._templateRenderable;
+   //if(sr){
+   //   var sd = sr.display();
+   //   sm = sd.matrix();
+   //}
    var tf = o._templateFace;
    var tm = o._templateMatrix;
    switch(mc){
@@ -153,8 +230,11 @@ function FDsModelCanvas_onMouseCapture(p){
          }
          break;
    }
+   // 移动选中集合
    if(tf){
+      // 移动操作对象
       tf.matrix().merge(o._templateFaceMatrix, tm);
+      // 移动选中对象
       var rs = o._selectRenderables;
       for(var i = rs.count() - 1; i >= 0; i--){
          var r = rs.getAt(i);
@@ -162,9 +242,22 @@ function FDsModelCanvas_onMouseCapture(p){
       }
    }
 }
-function FDsModelCanvas_onMouseCaptureStop(p){
+
+//==========================================================
+// <T>鼠标捕捉结束处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsMeshCanvas_onMouseCaptureStop(p){
 }
-function FDsModelCanvas_onEnterFrame(){
+
+//==========================================================
+// <T>每帧处理。</T>
+//
+// @method
+//==========================================================
+function FDsMeshCanvas_onEnterFrame(){
    var o = this;
    var s = o._activeScene;
    if(!s){
@@ -172,9 +265,12 @@ function FDsModelCanvas_onEnterFrame(){
    }
    var st = s.timer();
    var ss = st.spanSecond();
+   //..........................................................
+   // 按键处理
    var c = s.camera();
    var d = o._cameraMoveRate * ss;
    var r = o._cameraKeyRotation * ss;
+   // 按键前后移动
    var kf = RKeyboard.isPress(EStageKey.Forward);
    var kb = RKeyboard.isPress(EStageKey.Back);
    if(kf && !kb){
@@ -183,6 +279,7 @@ function FDsModelCanvas_onEnterFrame(){
    if(!kf && kb){
       c.doWalk(-d);
    }
+   // 按键上下移动
    var kq = RKeyboard.isPress(EStageKey.Up);
    var ke = RKeyboard.isPress(EStageKey.Down);
    if(kq && !ke){
@@ -191,6 +288,7 @@ function FDsModelCanvas_onEnterFrame(){
    if(!kq && ke){
       c.doFly(-d);
    }
+   // 按键左右旋转
    var ka = RKeyboard.isPress(EStageKey.RotationLeft);
    var kd = RKeyboard.isPress(EStageKey.RotationRight);
    if(ka && !kd){
@@ -199,6 +297,7 @@ function FDsModelCanvas_onEnterFrame(){
    if(!ka && kd){
       c.doYaw(-r);
    }
+   // 按键上下旋转
    var kz = RKeyboard.isPress(EStageKey.RotationUp);
    var kw = RKeyboard.isPress(EStageKey.RotationDown);
    if(kz && !kw){
@@ -207,9 +306,13 @@ function FDsModelCanvas_onEnterFrame(){
    if(!kz && kw){
       c.doPitch(-r);
    }
+   // 更新相机
    c.update();
+   //..........................................................
+   // 旋转模型
    if(o._optionRotation){
       var r = o._rotation;
+      // 旋转所有层
       var ls = s.layers();
       var c = ls.count();
       for(var i = 0; i < c; i++){
@@ -218,40 +321,64 @@ function FDsModelCanvas_onEnterFrame(){
          m.setRotation(0, r.y, 0);
          m.update();
       }
+      // 设置变量
       r.y += 0.01;
    }
 }
-function FDsModelCanvas_onSceneLoad(p){
+
+//==========================================================
+// <T>加载模板处理。</T>
+//
+// @method
+// @param p:template:FTemplate3d 模板
+//==========================================================
+function FDsMeshCanvas_onMeshLoad(p){
    var o = this;
-   var c = o._graphicContext;
-   var s = o._activeScene;
-   var l = RClass.create(FDisplayUiLayer);
-   l.selectTechnique(c, FG3dControlTechnique);
-   l.pushDisplay(o._templateTranslation);
-   l.pushDisplay(o._templateRotation);
-   l.pushDisplay(o._templateScale);
-   s.registerLayer('ui', l);
-   o.reloadRegion();
+   var m = o._activeMesh;
+   var mi = m.renderables().get(0).material().info();
+   mi.ambientColor.set(1.0, 1.0, 1.0);
+   // 加载完成
    o.processLoadListener(o);
 }
-function FDsModelCanvas_oeResize(p){
+
+//==========================================================
+// <T>刷新处理。</T>
+//
+// @method
+//==========================================================
+function FDsMeshCanvas_oeResize(p){
    var o = this;
    o.__base.FDsCanvas.oeResize.call(o, p);
+   // 获得大小
    var hp = o._hPanel;
    var w = hp.offsetWidth;
    var h = hp.offsetHeight;
+   // 设置投影
    var s = o._activeScene;
    if(s){
       var cp = s.camera().projection();
       cp.size().set(w, h);
       cp.update();
    }
+   // 设置范围
    return EEventStatus.Stop;
 }
-function FDsModelCanvas_oeRefresh(p){
+
+//==========================================================
+// <T>刷新处理。</T>
+//
+// @method
+//==========================================================
+function FDsMeshCanvas_oeRefresh(p){
    return EEventStatus.Stop;
 }
-function FDsModelCanvas_construct(){
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FDsMeshCanvas_construct(){
    var o = this;
    o.__base.FDsCanvas.construct.call(o);
    o._capturePosition = new SPoint2();
@@ -262,8 +389,16 @@ function FDsModelCanvas_construct(){
    o._captureRotation = new SVector3();
    o._selectRenderables = new TObjects();
 }
-function FDsModelCanvas_innerSelectDisplay(p){
+
+//==========================================================
+// <T>选中渲染显示对象处理。</T>
+//
+// @method
+// @param p:display:FDisplay 显示对象
+//==========================================================
+function FDsMeshCanvas_innerSelectDisplay(p){
    var o = this;
+   // 选中集合
    var s = p.renderables();
    var c = s.count();
    for(var i = 0; i < c; i++){
@@ -274,8 +409,16 @@ function FDsModelCanvas_innerSelectDisplay(p){
       }
    }
 }
-function FDsModelCanvas_innerSelectLayer(p){
+
+//==========================================================
+// <T>选中渲染显示对象处理。</T>
+//
+// @method
+// @param p:display:FDisplay 显示对象
+//==========================================================
+function FDsMeshCanvas_innerSelectLayer(p){
    var o = this;
+   // 选中集合
    var s = p.displays();
    var c = s.count();
    for(var i = 0; i < c; i++){
@@ -283,9 +426,16 @@ function FDsModelCanvas_innerSelectLayer(p){
       o.innerSelectDisplay(d)
    }
 }
-function FDsModelCanvas_selectNone(){
+
+//==========================================================
+// <T>不选中任何对象。</T>
+//
+// @method
+//==========================================================
+function FDsMeshCanvas_selectNone(){
    var o = this;
    o._selectObject = null;
+   // 取消所有选中对象
    var s = o._selectRenderables;
    var c = s.count();
    for(var i = 0; i < c; i++){
@@ -294,30 +444,69 @@ function FDsModelCanvas_selectNone(){
    }
    o._selectRenderables.clear();
 }
-function FDsModelCanvas_selectLayers(p){
+
+//==========================================================
+// <T>选中渲染层处理。</T>
+//
+// @method
+// @param p:layer:FDisplayLayer 渲染层
+//==========================================================
+function FDsMeshCanvas_selectLayers(p){
    var o = this;
+   // 取消选中
    o.selectNone();
+   // 选中集合
    var s = o._activeScene.layers();
    for(var i = s.count() - 1; i >= 0; i--){
       o.innerSelectLayer(s.valueAt(i));
    }
 }
-function FDsModelCanvas_selectLayer(p){
+
+//==========================================================
+// <T>选中渲染层处理。</T>
+//
+// @method
+// @param p:layer:FDisplayLayer 渲染层
+//==========================================================
+function FDsMeshCanvas_selectLayer(p){
    var o = this;
+   // 取消选中
    o.selectNone();
+   // 选中对象
    o._selectObject = p;
+   // 选中集合
    o.innerSelectLayer(p);
 }
-function FDsModelCanvas_selectDisplay(p){
+
+//==========================================================
+// <T>选中渲染显示对象处理。</T>
+//
+// @method
+// @param p:display:FDisplay 显示对象
+//==========================================================
+function FDsMeshCanvas_selectDisplay(p){
    var o = this;
+   // 取消选中
    o.selectNone();
+   // 选中对象
    o._selectObject = p;
+   // 选中集合
    o.innerSelectDisplay(p);
 }
-function FDsModelCanvas_selectMaterial(p){
+
+//==========================================================
+// <T>选中渲染材质处理。</T>
+//
+// @method
+// @param p:material:FG3dMaterial 渲染材质
+//==========================================================
+function FDsMeshCanvas_selectMaterial(p){
    var o = this;
+   // 取消选中
    o.selectNone();
+   // 选中对象
    o._selectObject = p;
+   // 选中材质
    var d = p._display;
    var s = d.renderables();
    var c = s.count();
@@ -330,8 +519,16 @@ function FDsModelCanvas_selectMaterial(p){
       }
    }
 }
-function FDsModelCanvas_selectRenderable(p){
+
+//==========================================================
+// <T>选中渲染对象处理。</T>
+//
+// @method
+// @param p:renderable:FG3dRenderable 渲染对象
+//==========================================================
+function FDsMeshCanvas_selectRenderable(p){
    var o = this;
+   return;
    var sr = p;
    if(sr){
       var n = sr._renderable._resource._code;
@@ -381,6 +578,7 @@ function FDsModelCanvas_selectRenderable(p){
             o._templateRenderable = null;
       }
    }
+   // 选中当前对象
    o.selectNone();
    if(p){
       o._selectRenderables.push(p);
@@ -388,9 +586,11 @@ function FDsModelCanvas_selectRenderable(p){
       p.showBoundBox();
       o._workspace._catalog.showObject(p);
    }
+   // 设置变量
    var t = o._templateTranslation;
    var r = o._templateRotation;
    var s = o._templateScale;
+   // 模式判定
    var mc = o._canvasModeCd;
    switch(mc){
       case EDsCanvasMode.Drop:
@@ -416,6 +616,7 @@ function FDsModelCanvas_selectRenderable(p){
          o._templateFace = s;
          break;
    }
+   // 设置位置
    var st = o._templateFace;
    if(sr && st){
       var d = sr.display();
@@ -425,12 +626,27 @@ function FDsModelCanvas_selectRenderable(p){
       m.update();
    }
 }
-function FDsModelCanvas_switchMode(p){
+
+//==========================================================
+// <T>切换工作模式。</T>
+//
+// @method
+// @param p:modeCd:Integer 
+//==========================================================
+function FDsMeshCanvas_switchMode(p){
    var o = this;
    o._canvasModeCd = p;
+   // 设置变量
    o.selectRenderable(o._selectRenderable);
 }
-function FDsModelCanvas_switchPlay(p){
+
+//==========================================================
+// <T>切换播放模式。</T>
+//
+// @method
+// @param p:modeCd:Integer 
+//==========================================================
+function FDsMeshCanvas_switchPlay(p){
    var o = this;
    var s = o._activeScene;
    var ds = s.allDisplays();
@@ -442,19 +658,13 @@ function FDsModelCanvas_switchPlay(p){
       }
    }
 }
-function FDsModelCanvas_switchMovie(p, f){
-   var o = this;
-   var s = o._activeScene;
-   var ds = s.allDisplays();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var d = ds.get(i);
-      if(d._movies){
-         d._optionMovie = p;
-      }
-   }
-}
-function FDsModelCanvas_reloadRegion(p){
+
+//==========================================================
+// <T>重新加载区域。</T>
+//
+// @method
+//==========================================================
+function FDsMeshCanvas_reloadRegion(p){
    var o = this;
    var s = o._activeScene;
    var r = s._region._resource;
@@ -462,25 +672,36 @@ function FDsModelCanvas_reloadRegion(p){
    o._cameraKeyRotation = r.rotationKeySpeed();
    o._cameraMouseRotation = r.rotationMouseSpeed();
 }
-function FDsModelCanvas_loadScene(p){
+
+//==========================================================
+// <T>加载模板处理。</T>
+//
+// @method
+//==========================================================
+function FDsMeshCanvas_loadMeshByCode(p){
    var o = this;
-   var c = o._graphicContext;
-   var sc = RConsole.find(FE3dSceneConsole);
-   if(o._activeScene != null){
-      sc.free(o._activeScene);
+   var rmc = RConsole.find(FE3dMeshConsole);
+   if(o._activeMesh != null){
+      rmc.free(o._activeMesh);
    }
-   var s = sc.alloc(o._graphicContext, p);
-   s.addLoadListener(o, o.onSceneLoad);
-   s.selectTechnique(c, FE3dGeneralTechnique);
-   o._stage = o._activeScene = s;
-   RStage.register('stage3d', s);
+   // 收集一个显示模板
+   var m = rmc.allocByCode(o, p);
+   m.addLoadListener(o, o.onMeshLoad);
+   m.matrix().setScaleAll(0.01);
+   m.matrix().updateForce();
+   o._layer.pushDisplay(m);
+   o._activeMesh = m;
 }
-function FDsModelCanvas_dispose(){
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FDsMeshCanvas_dispose(){
    var o = this;
-   var v = o._rotation;
-   if(v){
-      v.dispose();
-      o._rotation = null;
-   }
+   // 释放旋转
+   o._rotation = RObject.dispose(o._rotation);
+x   // 父处理
    o.__base.FDsCanvas.dispose.call(o);
 }

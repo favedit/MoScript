@@ -275,32 +275,32 @@
          // 计算高光颜色
          <shader:true source='option.specular'>
             <shader:true source='vertex.attribute.normal'>
-            vec3 reflectionDirection = normalize(reflect(fc_light_direction, v_normal));
-            float specularFactor = dot(cameraDirection, reflectionDirection);
-            <shader:true source='support.specular.level'>
-               vec4 specularLevel = texture2D(fs_specular, v_coord);
-               specularFactor *= specularLevel.w;
+               vec3 reflectionDirection = normalize(reflect(fc_light_direction, v_normal));
+               float specularFactor = dot(cameraDirection, reflectionDirection);
+               <shader:true source='support.specular.level'>
+                  vec4 specularLevel = texture2D(fs_specular, v_coord);
+                  specularFactor *= specularLevel.w;
+               </shader:true>
+               specularFactor = max(specularFactor, 0.0);
+               specularFactor = min(specularFactor + fc_specular.x, 1.0);
+               specularFactor = pow(specularFactor, fc_specular.y);
+               <shader:true source='option.material.map'>
+                  vec4 specularColor = texture2D(fs_material, vec2(2.0 * fc_material.x, fc_material.y));
+                  vec3 resultSpecular = color.rgb * specularColor.rgb * specularFactor;
+               </shader:true>
+               <shader:false source='option.material.map'>
+                  vec3 resultSpecular = color.rgb * fc_specular_color.rgb * specularFactor;
+               </shader:false>
+               <shader:equals source='technique.mode' value='result'>
+                  result.rgb += resultSpecular;
+               </shader:equals>
+               <shader:equals source='technique.mode' value='specular.level'>
+                  result.rgb = vec3(specularFactor, specularFactor, specularFactor);
+               </shader:equals>
+               <shader:equals source='technique.mode' value='specular.color'>
+                  result.rgb = resultSpecular;
+               </shader:equals>
             </shader:true>
-            specularFactor = max(specularFactor, 0.0);
-            specularFactor = min(specularFactor + fc_specular.x, 1.0);
-            specularFactor = pow(specularFactor, fc_specular.y);
-            <shader:true source='option.material.map'>
-               vec4 specularColor = texture2D(fs_material, vec2(2.0 * fc_material.x, fc_material.y));
-               vec3 resultSpecular = color.rgb * specularColor.rgb * specularFactor;
-            </shader:true>
-            <shader:false source='option.material.map'>
-               vec3 resultSpecular = color.rgb * fc_specular_color.rgb * specularFactor;
-            </shader:false>
-            </shader:true>
-            <shader:equals source='technique.mode' value='result'>
-               result.rgb += resultSpecular;
-            </shader:equals>
-            <shader:equals source='technique.mode' value='specular.level'>
-               result.rgb = vec3(specularFactor, specularFactor, specularFactor);
-            </shader:equals>
-            <shader:equals source='technique.mode' value='specular.color'>
-               result.rgb = resultSpecular;
-            </shader:equals>
          </shader:true>
          //............................................................
          // 计算环境颜色

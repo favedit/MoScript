@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+<TITLE>CoolLight Designer</TITLE>
+<META http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<LINK rel="stylesheet" href='../acs/control.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../acs/design.css' type="text/css" media="all"/>
+<LINK rel="stylesheet" href='../acs/lang_cn.css' type="text/css" media="all"/>
+
+<SCRIPT language='javascript' src='../ajs/lzma.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
+
+<SCRIPT language='javascript' src='../6.2.3-design-mesh/FDsMeshMenuBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.3-design-mesh/FDsMeshCatalog.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.3-design-mesh/FDsMeshCanvasToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.3-design-mesh/FDsMeshCanvas.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.3-design-mesh/FDsMeshWorkspace.js'></SCRIPT>
+
+<SCRIPT>
+// http://localhost:92/script2/design/template.html
+function _load(){
+   RRuntime.setProcessCd(EProcess.Debug);
+   RApplication.initialize();
+   RBrowser.setContentPath('..');
+   // 获得代码
+   var u = window.location.toString();
+   var i = u.indexOf('code=');
+   var c = null;
+   if(i != -1){
+      c = u.substring(i + 5);
+   }
+   if(RString.isEmpty(c)){
+      //c = 'sphere';
+      c = 'person';
+   }
+   // 加载工作区
+   var w = RApplication.findWorkspace(FDsMeshWorkspace);
+   w.buildDefine(document.body);
+   //w.setPanel(document.body);
+   //w.psRefresh();
+   w.psResize();
+   w.loadMeshByCode(c);
+   RConsole.find(FUiWorkspaceConsole).active(w);
+   //RDump.dump(w, document.body);
+}
+</SCRIPT>
+</HEAD>
+<BODY scroll='no' style='background-color:#444444;overflow:hidden;' onload='_load()'></BODY>
+</HTML>

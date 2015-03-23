@@ -77,6 +77,7 @@ function FStage_timer(){
 // @param l:layer:FDisplayLayer 显示层
 //==========================================================
 function RStage_registerLayer(n, l){
+   l.setCode(n);
    this._layers.set(n, l);
 }
 

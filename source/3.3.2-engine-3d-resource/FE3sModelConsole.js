@@ -29,6 +29,8 @@ function FE3sModelConsole(o){
    o.unserialMesh      = FE3sModelConsole_unserialMesh;
    o.unserialSkeleton  = FE3sModelConsole_unserialSkeleton;
    o.unserialAnimation = FE3sModelConsole_unserialAnimation;
+   o.loadMeshByGuid    = FE3sModelConsole_loadMeshByGuid;
+   o.loadMeshByCode    = FE3sModelConsole_loadMeshByCode;
    o.load              = FE3sModelConsole_load;
    // @method
    o.dispose           = FE3sModelConsole_dispose;
@@ -189,6 +191,62 @@ function FE3sModelConsole_unserialAnimation(m, p){
    r._model = m;
    r.unserialize(p);
    o._animations.set(r.guid(), r);
+   return r;
+}
+
+//==========================================================
+// <T>根据唯一编号加载网格资源。</T>
+//
+// @param p:guid:String 唯一编号
+// @return 网格资源
+//==========================================================
+function FE3sModelConsole_loadMeshByGuid(p){
+   var o = this;
+   var s = o._meshs;
+   var r = s.get(p);
+   if(r){
+      return r;
+   }
+   // 生成地址
+   var v = RConsole.find(FE3sVendorConsole).find('mesh');
+   v.set('guid', p);
+   var u = v.makeUrl();
+   // 创建模型资源
+   r = RClass.create(FE3sMesh);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   // 存储模型
+   s.set(p, r);
+   return r;
+}
+
+//==========================================================
+// <T>根据代码加载网格资源。</T>
+//
+// @param p:guid:String 唯一编号
+// @return 网格资源
+//==========================================================
+function FE3sModelConsole_loadMeshByCode(p){
+   var o = this;
+   var s = o._meshs;
+   var r = s.get(p);
+   if(r){
+      return r;
+   }
+   // 生成地址
+   var v = RConsole.find(FE3sVendorConsole).find('mesh');
+   v.set('code', p);
+   var u = v.makeUrl();
+   // 创建模型资源
+   r = RClass.create(FE3sMesh);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   // 存储模型
+   s.set(p, r);
    return r;
 }
 

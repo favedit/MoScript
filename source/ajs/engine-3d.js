@@ -280,7 +280,6 @@ function FE3dSimpleStage(o){
    o._mapLayer       = null;
    o._spriteLayer    = null;
    o._faceLayer      = null;
-   o.onKeyDown       = FE3dSimpleStage_onKeyDown;
    o.construct       = FE3dSimpleStage_construct;
    o.skyLayer        = FE3dSimpleStage_skyLayer;
    o.mapLayer        = FE3dSimpleStage_mapLayer;
@@ -289,33 +288,6 @@ function FE3dSimpleStage(o){
    o.active          = FE3dSimpleStage_active;
    o.deactive        = FE3dSimpleStage_deactive;
    return o;
-}
-function FE3dSimpleStage_onKeyDown(e){
-   var o = this;
-   var c = o._camera;
-   var k = e.keyCode;
-   var r = 0.3;
-   switch(k){
-      case EKeyCode.W:
-         c.doWalk(r);
-         break;
-      case EKeyCode.S:
-         c.doWalk(-r);
-         break;
-      case EKeyCode.A:
-         c.doStrafe(r);
-         break;
-      case EKeyCode.D:
-         c.doStrafe(-r);
-         break;
-      case EKeyCode.Q:
-         c.doFly(r);
-         break;
-      case EKeyCode.E:
-         c.doFly(-r);
-         break;
-   }
-   c.update();
 }
 function FE3dSimpleStage_construct(){
    var o = this;

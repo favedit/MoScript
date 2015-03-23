@@ -108,9 +108,9 @@ function FResourceConsole_onProcess(){
          var c = hc.send(ru);
          c._resource = r;
          if(r._dataCompress){
-            c.lsnsLoad.register(o, o.onLoad);
+            c.addLoadListener(o, o.onLoad);
          }else{
-            c.lsnsLoad.register(o, o.onComplete);
+            c.addLoadListener(o, o.onComplete);
          }
          r._dataLoad = true;
          // 增加加载中集合

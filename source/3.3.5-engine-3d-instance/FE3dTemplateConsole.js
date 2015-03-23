@@ -88,7 +88,7 @@ function FE3dTemplateConsole_allocByGuid(c, n){
    // 创建模板
    var t = RClass.create(FE3dTemplate);
    t.linkGraphicContext(c);
-   t.setName(n);
+   t.setCode(n);
    t._resourceGuid = n;
    t.setResource(r);
    // 加载处理
@@ -119,7 +119,7 @@ function FE3dTemplateConsole_allocByCode(c, n){
    // 创建模板
    var t = RClass.create(FE3dTemplate);
    t.linkGraphicContext(c);
-   t.setName(n);
+   t.setCode(n);
    t._resourceGuid = n;
    t.setResource(r);
    // 加载处理
@@ -142,7 +142,7 @@ function FE3dTemplateConsole_loadByGuid(t, p){
    var r = rc.loadByGuid(p);
    // 创建模板
    t._resourceGuid = p;
-   t.setName(p);
+   t.setCode(p);
    t.setResource(r);
    // 加载处理
    o._loadTemplates.push(t);
@@ -164,7 +164,7 @@ function FE3dTemplateConsole_loadByCode(t, p){
    var r = rc.loadByCode(g, p);
    // 创建模板
    t._resourceGuid = g;
-   t.setName(c);
+   t.setCode(c);
    t.setResource(r);
    // 加载处理
    o._loadTemplates.push(t);

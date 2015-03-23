@@ -524,20 +524,21 @@ function FE3sMaterialTexture_unserialize(p){
    o._bitmapGuid = p.readString();
 }
 function FE3sMesh(o){
-   o = RClass.inherits(this, o, FE3sObject);
-   o._outline    = null;
-   o._streams    = null;
-   o._tracks     = null;
-   o.construct   = FE3sMesh_construct;
-   o.outline     = FE3sMesh_outline;
-   o.streams     = FE3sMesh_streams;
-   o.tracks      = FE3sMesh_tracks;
-   o.unserialize = FE3sMesh_unserialize;
+   o = RClass.inherits(this, o, FE3sResource);
+   o._dataCompress = true;
+   o._outline      = null;
+   o._streams      = null;
+   o._tracks       = null;
+   o.construct     = FE3sMesh_construct;
+   o.outline       = FE3sMesh_outline;
+   o.streams       = FE3sMesh_streams;
+   o.tracks        = FE3sMesh_tracks;
+   o.unserialize   = FE3sMesh_unserialize;
    return o;
 }
 function FE3sMesh_construct(){
    var o = this;
-   o.__base.FE3sObject.construct.call(o);
+   o.__base.FE3sResource.construct.call(o);
    o._outline = new SOutline3d();
 }
 function FE3sMesh_outline(){
@@ -551,7 +552,7 @@ function FE3sMesh_tracks(){
 }
 function FE3sMesh_unserialize(p){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
+   o.__base.FE3sResource.unserialize.call(o, p);
    o._outline.unserialize(p);
    o._outline.update();
    var c = p.readInt8();
@@ -642,6 +643,8 @@ function FE3sModelConsole(o){
    o.unserialMesh      = FE3sModelConsole_unserialMesh;
    o.unserialSkeleton  = FE3sModelConsole_unserialSkeleton;
    o.unserialAnimation = FE3sModelConsole_unserialAnimation;
+   o.loadMeshByGuid    = FE3sModelConsole_loadMeshByGuid;
+   o.loadMeshByCode    = FE3sModelConsole_loadMeshByCode;
    o.load              = FE3sModelConsole_load;
    o.dispose           = FE3sModelConsole_dispose;
    return o;
@@ -704,6 +707,42 @@ function FE3sModelConsole_unserialAnimation(m, p){
    r._model = m;
    r.unserialize(p);
    o._animations.set(r.guid(), r);
+   return r;
+}
+function FE3sModelConsole_loadMeshByGuid(p){
+   var o = this;
+   var s = o._meshs;
+   var r = s.get(p);
+   if(r){
+      return r;
+   }
+   var v = RConsole.find(FE3sVendorConsole).find('mesh');
+   v.set('guid', p);
+   var u = v.makeUrl();
+   r = RClass.create(FE3sMesh);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   s.set(p, r);
+   return r;
+}
+function FE3sModelConsole_loadMeshByCode(p){
+   var o = this;
+   var s = o._meshs;
+   var r = s.get(p);
+   if(r){
+      return r;
+   }
+   var v = RConsole.find(FE3sVendorConsole).find('mesh');
+   v.set('code', p);
+   var u = v.makeUrl();
+   r = RClass.create(FE3sMesh);
+   r.setGuid(p);
+   r.setVendor(v);
+   r.setSourceUrl(u);
+   RConsole.find(FResourceConsole).load(r);
+   s.set(p, r);
    return r;
 }
 function FE3sModelConsole_load(p){
@@ -2307,12 +2346,14 @@ function FE3sVendorConsole_setup(p){
    if(p == 'net'){
       o._vendors.set('texture.bitmap', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.texture.bitmap.wv'), 'guid|code'));
       o._vendors.set('texture', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.texture.wv'), 'guid'));
-      o._vendors.set('model', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.model.wv'), 'guid'));
+      o._vendors.set('mesh', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.mesh.wv'), 'guid|code'));
+      o._vendors.set('model', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.model.wv'), 'guid|code'));
       o._vendors.set('template', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.template.wv'), 'guid|code'));
       o._vendors.set('scene', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.scene.wv'), 'guid|code'));
    }else if(p == 'local'){
       o._vendors.set('texture.bitmap', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/texture/{guid}/{code}.{format}')));
       o._vendors.set('texture', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/texture/{guid}.bin')));
+      o._vendors.set('mesh', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/mesh/{guid}.bin')));
       o._vendors.set('model', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/model/{guid}.bin')));
       o._vendors.set('template', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/template/{guid}.bin')));
       o._vendors.set('scene', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/scene/{guid}.bin')));

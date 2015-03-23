@@ -238,7 +238,7 @@ function FDsSceneCatalog_buildTechnique(n, p){
    // 创建技术节点
    var nt = o.createNode();
    nt.setLabel('Technique');
-   nt.setTypeName('technique');
+   nt.setTypeCode('technique');
    nt.dataPropertySet('linker', p);
    n.appendNode(nt);
 }
@@ -255,19 +255,19 @@ function FDsSceneCatalog_buildRegion(n, p){
    // 新建区域节点
    var nr = o.createNode();
    nr.setLabel('Region');
-   nr.setTypeName('region');
+   nr.setTypeCode('region');
    nr.dataPropertySet('linker', p);
    n.appendNode(nr);
    // 新建区域相机节点
    var nc = o.createNode();
    nc.setLabel('Camera');
-   nc.setTypeName('camera');
+   nc.setTypeCode('camera');
    nc.dataPropertySet('linker', p.camera());
    nr.appendNode(nc);
    // 新建区域光源节点
    var nl = o.createNode();
    nl.setLabel('Light');
-   nl.setTypeName('light');
+   nl.setTypeCode('light');
    nl.dataPropertySet('linker', p.directionalLight());
    nr.appendNode(nl);
 }
@@ -292,7 +292,7 @@ function FDsSceneCatalog_buildRenderable(n, p){
          var dn = o.createNode();
          dn.setLabel(mr.code());
          dn.setNote(mr.label());
-         dn.setTypeName('material');
+         dn.setTypeCode('material');
          dn.dataPropertySet('linker', m);
          o.buildNodeView(dn, true);
          o._materials.push(dn);
@@ -310,7 +310,7 @@ function FDsSceneCatalog_buildRenderable(n, p){
          var dn = o.createNode();
          dn.setLabel(mr.code());
          dn.setNote(mr.label());
-         dn.setTypeName('animation');
+         dn.setTypeCode('animation');
          dn.dataPropertySet('linker', m);
          o.buildNodeView(dn, true);
          n.appendNode(dn);
@@ -328,7 +328,7 @@ function FDsSceneCatalog_buildRenderable(n, p){
          // 创建节点
          var dn = o.createNode();
          dn.setLabel(rm.code());
-         dn.setTypeName('renderable');
+         dn.setTypeCode('renderable');
          dn.dataPropertySet('linker', r);
          o.buildNodeView(dn, true);
          o._renderables.push(dn);
@@ -357,7 +357,7 @@ function FDsSceneCatalog_buildDisplay(n, p){
          var dn = o.createNode();
          dn.setLabel(dr.code());
          dn.setNote(dr.label());
-         dn.setTypeName('display');
+         dn.setTypeCode('display');
          dn.dataPropertySet('linker', d);
          o.buildNodeView(dn, true);
          o._displays.push(dn);
@@ -381,7 +381,7 @@ function FDsSceneCatalog_buildLayer(n, p){
    // 创建显示层集合节点
    var ns = o.createNode();
    ns.setLabel('Layers');
-   ns.setTypeName('layers');
+   ns.setTypeCode('layers');
    ns.dataPropertySet('linker', 'layers');
    o.buildNodeView(ns, true);
    n.appendNode(ns);
@@ -398,7 +398,7 @@ function FDsSceneCatalog_buildLayer(n, p){
       // 创建显示层节点
       var nl = o.createNode();
       nl.setLabel('Layer:' + lr.code());
-      nl.setTypeName('layer');
+      nl.setTypeCode('layer');
       nl.dataPropertySet('linker', l);
       o.buildNodeView(nl, true);
       ns.appendNode(nl);
@@ -420,7 +420,7 @@ function FDsSceneCatalog_buildScene(p){
    var nr = o.createNode();
    nr.setLabel(r.code());
    nr.setNote(r.label());
-   nr.setTypeName('scene');
+   nr.setTypeCode('scene');
    nr.dataPropertySet('linker', p);
    o.appendNode(nr);
    // 创建技术节点

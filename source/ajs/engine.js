@@ -60,7 +60,7 @@ function FDisplay(o){
    o = RClass.inherits(this, o, FObject, MGraphicObject);
    o._parent           = null;
    o._currentMatrix    = null;
-   o._name             = null;
+   o._code             = null;
    o._matrix           = null;
    o._location         = null;
    o._rotation         = null;
@@ -70,9 +70,9 @@ function FDisplay(o){
    o.construct         = FDisplay_construct;
    o.parent            = FDisplay_parent;
    o.setParent         = FDisplay_setParent;
-   o.isName            = FDisplay_isName;
-   o.name              = FDisplay_name;
-   o.setName           = FDisplay_setName;
+   o.isCode            = FDisplay_isCode;
+   o.code              = FDisplay_code;
+   o.setCode           = FDisplay_setCode;
    o.currentMatrix     = FDisplay_currentMatrix;
    o.matrix            = FDisplay_matrix;
    o.location          = FDisplay_location;
@@ -110,14 +110,14 @@ function FDisplay_parent(){
 function FDisplay_setParent(p){
    this._parent = p;
 }
-function FDisplay_isName(p){
-   return this._name == p;
+function FDisplay_isCode(p){
+   return this._code == p;
 }
-function FDisplay_name(){
-   return this._name;
+function FDisplay_code(){
+   return this._code;
 }
-function FDisplay_setName(p){
-   this._name = p;
+function FDisplay_setCode(p){
+   this._code = p;
 }
 function FDisplay_currentMatrix(){
    return this._currentMatrix;
@@ -595,9 +595,9 @@ function FResourceConsole_onProcess(){
          var c = hc.send(ru);
          c._resource = r;
          if(r._dataCompress){
-            c.lsnsLoad.register(o, o.onLoad);
+            c.addLoadListener(o, o.onLoad);
          }else{
-            c.lsnsLoad.register(o, o.onComplete);
+            c.addLoadListener(o, o.onComplete);
          }
          r._dataLoad = true;
          ps.push(r);
@@ -850,6 +850,7 @@ function FStage_timer(){
    return this._timer;
 }
 function RStage_registerLayer(n, l){
+   l.setCode(n);
    this._layers.set(n, l);
 }
 function RStage_unregisterLayer(n){

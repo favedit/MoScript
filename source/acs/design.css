@@ -33,7 +33,42 @@
 }
 
 /* ------------------------------------------------------ */
-/* FDsTemplateWorkspace                                       */
+/* FDsMeshWorkspace                                       */
+/* ------------------------------------------------------ */
+.FDsMeshWorkspace_Toolbar_Ground{
+   background: #AEAEAE;
+   padding-top: 1px;
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #AEAEAE, #999999);
+   background: -moz-linear-gradient(top, #AEAEAE, #999999); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#AEAEAE), to(#999999)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#AEAEAE, endColorStr=#999999);
+}
+
+.FDsMeshWorkspace_Statusbar_Ground{
+   background: #AEAEAE;
+   border-top: 1px solid #999999;
+   background: -ms-linear-gradient(top, #555555, #AEAEAE);
+   background: -moz-linear-gradient(top, #555555, #AEAEAE); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#555555), to(#AEAEAE)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#555555, endColorStr=#AEAEAE);
+}
+
+.FDsMeshWorkspace_Catalog_Ground{
+   padding-top: 4px;
+   background: #FFFFFF;
+}
+
+.FDsMeshWorkspace_Workspace_Ground{
+   background: #666666;
+}
+
+.FDsMeshWorkspace_Property_Ground{;
+   background: #777777;
+}
+
+/* ------------------------------------------------------ */
+/* FDsTemplateWorkspace                                   */
 /* ------------------------------------------------------ */
 .FDsTemplateWorkspace_Toolbar_Ground{
    background: #AEAEAE;
@@ -68,7 +103,7 @@
 }
 
 /* ------------------------------------------------------ */
-/* FDsSceneWorkspace                                       */
+/* FDsSceneWorkspace                                      */
 /* ------------------------------------------------------ */
 .FDsSceneWorkspace_Toolbar_Ground{
    background: #AEAEAE;
