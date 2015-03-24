@@ -13,8 +13,8 @@ function FDsMeshCanvas(o){
    // @attribute
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
-   o._rotation            = null;
    o._optionRotation      = false;
+   o._rotation            = null;
    o._capturePosition     = null;
    o._captureMatrix       = null;
    o._captureRotation     = null;
@@ -57,8 +57,7 @@ function FDsMeshCanvas(o){
    o.selectDisplay        = FDsMeshCanvas_selectDisplay;
    o.selectMaterial       = FDsMeshCanvas_selectMaterial;
    o.selectRenderable     = FDsMeshCanvas_selectRenderable;
-   o.switchMode           = FDsMeshCanvas_switchMode;
-   o.switchPlay           = FDsMeshCanvas_switchPlay;
+   o.switchRotation       = FDsMeshCanvas_switchRotation;
    o.reloadRegion         = FDsMeshCanvas_reloadRegion;
    o.loadMeshByCode       = FDsMeshCanvas_loadMeshByCode;
    // @method
@@ -80,6 +79,7 @@ function FDsMeshCanvas_onBuild(p){
    g.linkGraphicContext(o);
    g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
    g.selectTechnique(o, FE3dGeneralTechnique);
+   //g.addEnterFrameListener(o, o.onEnterFrame);
    var sl = o._layer = o._activeStage.spriteLayer();
    RStage.register('stage3d', o._activeStage);
    // 设置相机
@@ -313,17 +313,12 @@ function FDsMeshCanvas_onEnterFrame(){
    // 旋转模型
    if(o._optionRotation){
       var r = o._rotation;
-      // 旋转所有层
-      var ls = s.layers();
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         var l = ls.value(i);
-         var m = l.matrix();
-         m.setRotation(0, r.y, 0);
-         m.update();
-      }
+      var d = o._activeMesh;
+      var m = d.matrix();
+      m.setRotation(m.rx, m.ry + r.y, m.rz);
+      m.update();
       // 设置变量
-      r.y += 0.01;
+      r.y = 0.01;
    }
 }
 
@@ -336,6 +331,9 @@ function FDsMeshCanvas_onEnterFrame(){
 function FDsMeshCanvas_onMeshLoad(p){
    var o = this;
    var m = o._activeMesh;
+   var rm = m.renderables().getAt(0).matrix();
+   rm.tz = -300;
+   rm.updateForce();
    var mi = m.renderables().get(0).material().info();
    mi.ambientColor.set(1.0, 1.0, 1.0);
    // 加载完成
@@ -647,17 +645,8 @@ function FDsMeshCanvas_switchMode(p){
 // @method
 // @param p:modeCd:Integer 
 //==========================================================
-function FDsMeshCanvas_switchPlay(p){
-   var o = this;
-   var s = o._activeStage;
-   var ds = s.allDisplays();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var d = ds.get(i);
-      if(d._movies){
-         d._optionPlay = p;
-      }
-   }
+function FDsMeshCanvas_switchRotation(p){
+   this._optionRotation = p;
 }
 
 //==========================================================

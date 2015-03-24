@@ -111,7 +111,7 @@ function FDsMeshCanvasToolBar_onModeClick(p){
 //==========================================================
 function FDsMeshCanvasToolBar_onLookClick(p){
    var o = this;
-   o._canvasModeCd = p._canvasModeCd;
+   //o._canvasModeCd = p._canvasModeCd;
 }
 
 //==========================================================
@@ -123,7 +123,7 @@ function FDsMeshCanvasToolBar_onLookClick(p){
 function FDsMeshCanvasToolBar_onPlayClick(p, v){
    var o = this;
    var c = o._workspace._canvas;
-   c.switchPlay(v);
+   //c.switchPlay(v);
 }
 
 //==========================================================
@@ -135,7 +135,7 @@ function FDsMeshCanvasToolBar_onPlayClick(p, v){
 function FDsMeshCanvasToolBar_onRotationClick(p, v){
    var o = this;
    var c = o._workspace._canvas;
-   c.switchMovie(v);
+   c.switchRotation(v);
 }
 
 //==========================================================

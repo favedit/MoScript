@@ -765,8 +765,8 @@ function FDsMeshCanvas(o){
    o._activeMesh          = null;
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
-   o._rotation            = null;
    o._optionRotation      = false;
+   o._rotation            = null;
    o._capturePosition     = null;
    o._captureMatrix       = null;
    o._captureRotation     = null;
@@ -801,8 +801,7 @@ function FDsMeshCanvas(o){
    o.selectDisplay        = FDsMeshCanvas_selectDisplay;
    o.selectMaterial       = FDsMeshCanvas_selectMaterial;
    o.selectRenderable     = FDsMeshCanvas_selectRenderable;
-   o.switchMode           = FDsMeshCanvas_switchMode;
-   o.switchPlay           = FDsMeshCanvas_switchPlay;
+   o.switchRotation       = FDsMeshCanvas_switchRotation;
    o.reloadRegion         = FDsMeshCanvas_reloadRegion;
    o.loadMeshByCode       = FDsMeshCanvas_loadMeshByCode;
    o.dispose              = FDsMeshCanvas_dispose;
@@ -981,15 +980,11 @@ function FDsMeshCanvas_onEnterFrame(){
    c.update();
    if(o._optionRotation){
       var r = o._rotation;
-      var ls = s.layers();
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         var l = ls.value(i);
-         var m = l.matrix();
-         m.setRotation(0, r.y, 0);
-         m.update();
-      }
-      r.y += 0.01;
+      var d = o._activeMesh;
+      var m = d.matrix();
+      m.setRotation(m.rx, m.ry + r.y, m.rz);
+      m.update();
+      r.y = 0.01;
    }
 }
 function FDsMeshCanvas_onMeshLoad(p){
@@ -1196,17 +1191,8 @@ function FDsMeshCanvas_switchMode(p){
    o._canvasModeCd = p;
    o.selectRenderable(o._selectRenderable);
 }
-function FDsMeshCanvas_switchPlay(p){
-   var o = this;
-   var s = o._activeStage;
-   var ds = s.allDisplays();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var d = ds.get(i);
-      if(d._movies){
-         d._optionPlay = p;
-      }
-   }
+function FDsMeshCanvas_switchRotation(p){
+   this._optionRotation = p;
 }
 function FDsMeshCanvas_reloadRegion(p){
    var o = this;
@@ -1297,17 +1283,15 @@ function FDsMeshCanvasToolBar_onModeClick(p){
 }
 function FDsMeshCanvasToolBar_onLookClick(p){
    var o = this;
-   o._canvasModeCd = p._canvasModeCd;
 }
 function FDsMeshCanvasToolBar_onPlayClick(p, v){
    var o = this;
    var c = o._workspace._canvas;
-   c.switchPlay(v);
 }
 function FDsMeshCanvasToolBar_onRotationClick(p, v){
    var o = this;
    var c = o._workspace._canvas;
-   c.switchMovie(v);
+   c.switchRotation(v);
 }
 function FDsMeshCanvasToolBar_construct(){
    var o = this;
