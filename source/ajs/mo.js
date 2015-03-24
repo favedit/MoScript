@@ -21246,13 +21246,13 @@ function FE3dSimpleStage_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
    var l = o._skyLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('sky', l);
+   o.registerLayer('SkyLayer', l);
    var l = o._mapLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('map', l);
+   o.registerLayer('MapLayer', l);
    var l = o._spriteLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('sprite', l);
+   o.registerLayer('SpriteLayer', l);
    var l = o._faceLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('face', l);
+   o.registerLayer('FaceLayer', l);
 }
 function FE3dSimpleStage_skyLayer(){
    return this._skyLayer;
@@ -47848,6 +47848,15 @@ var EDsCanvasMode = new function EDsCanvasMode(){
 }
 var EDsFrame = new function EDsFrame(){
    var o = this;
+   o.MeshPropertyFrame            = 'design3d.mesh.property.SceneFrame';
+   o.MeshTechniquePropertyFrame   = 'design3d.mesh.property.TechniqueFrame';
+   o.MeshRegionPropertyFrame      = 'design3d.mesh.property.RegionFrame';
+   o.MeshCameraPropertyFrame      = 'design3d.mesh.property.CameraFrame';
+   o.MeshLightPropertyFrame       = 'design3d.mesh.property.LightFrame';
+   o.MeshLayerPropertyFrame       = 'design3d.mesh.property.LayerFrame';
+   o.MeshDisplayPropertyFrame     = 'design3d.mesh.property.DisplayFrame';
+   o.MeshMaterialPropertyFrame    = 'design3d.mesh.property.MaterialFrame';
+   o.MeshRenderablePropertyFrame  = 'design3d.mesh.property.RenderableFrame';
    o.ScenePropertyFrame           = 'design3d.scene.property.SceneFrame';
    o.SceneTechniquePropertyFrame  = 'design3d.scene.property.TechniqueFrame';
    o.SceneRegionPropertyFrame     = 'design3d.scene.property.RegionFrame';
@@ -48551,9 +48560,37 @@ function FDsMainWorkspace_dispose(){
 }
 var temp = 0;
 var temp = 0;
+function FDsMeshCameraPropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible          = false;
+   o._workspace        = null;
+   o._camera           = null;
+   o._controlGuid      = null;
+   o._controlCode      = null;
+   o._controlLabel     = null;
+   o._controlPosition  = null;
+   o._controlDirection = null;
+   o.construct         = FDsMeshCameraPropertyFrame_construct;
+   o.loadObject        = FDsMeshCameraPropertyFrame_loadObject;
+   o.dispose           = FDsMeshCameraPropertyFrame_dispose;
+   return o;
+}
+function FDsMeshCameraPropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsMeshCameraPropertyFrame_loadObject(s, c){
+   var o = this;
+   var r = c._resource;
+   o._camera = c;
+}
+function FDsMeshCameraPropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
 function FDsMeshCanvas(o){
    o = RClass.inherits(this, o, FDsCanvas);
-   o._activeScene         = null;
+   o._activeStage         = null;
    o._activeMesh          = null;
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
@@ -48603,11 +48640,12 @@ function FDsMeshCanvas(o){
 function FDsMeshCanvas_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
-   var g = o._activeScene = RClass.create(FE3dSimpleStage);
+   var g = o._activeStage = RClass.create(FE3dSimpleStage);
+   g.linkGraphicContext(o);
    g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
    g.selectTechnique(o, FE3dGeneralTechnique);
-   var sl = o._layer = o._activeScene.spriteLayer();
-   RStage.register('stage3d', o._activeScene);
+   var sl = o._layer = o._activeStage.spriteLayer();
+   RStage.register('stage3d', o._activeStage);
    var rc = g.camera();
    rc.setPosition(0, 3, -10);
    rc.lookAt(0, 3, 0);
@@ -48626,11 +48664,11 @@ function FDsMeshCanvas_onBuild(p){
 }
 function FDsMeshCanvas_onMouseCaptureStart(p){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeStage;
    if(!s){
       return;
    }
-   var r = o._activeScene.region();
+   var r = o._activeStage.region();
    var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
    var r = st.test(r, p.offsetX, p.offsetY);
    o.selectRenderable(r);
@@ -48655,7 +48693,7 @@ function FDsMeshCanvas_onMouseCaptureStart(p){
 }
 function FDsMeshCanvas_onMouseCapture(p){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeStage;
    if(!s){
       return;
    }
@@ -48669,7 +48707,7 @@ function FDsMeshCanvas_onMouseCapture(p){
    var tm = o._templateMatrix;
    switch(mc){
       case EDsCanvasMode.Drop:
-         var c = o._activeScene.camera();
+         var c = o._activeStage.camera();
          var r = c.rotation();
          var cr = o._captureRotation;
          r.x = cr.x - cy * o._cameraMouseRotation;
@@ -48728,7 +48766,7 @@ function FDsMeshCanvas_onMouseCaptureStop(p){
 }
 function FDsMeshCanvas_onEnterFrame(){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeStage;
    if(!s){
       return;
    }
@@ -48796,7 +48834,7 @@ function FDsMeshCanvas_oeResize(p){
    var hp = o._hPanel;
    var w = hp.offsetWidth;
    var h = hp.offsetHeight;
-   var s = o._activeScene;
+   var s = o._activeStage;
    if(s){
       var cp = s.camera().projection();
       cp.size().set(w, h);
@@ -48853,7 +48891,7 @@ function FDsMeshCanvas_selectNone(){
 function FDsMeshCanvas_selectLayers(p){
    var o = this;
    o.selectNone();
-   var s = o._activeScene.layers();
+   var s = o._activeStage.layers();
    for(var i = s.count() - 1; i >= 0; i--){
       o.innerSelectLayer(s.valueAt(i));
    }
@@ -48989,7 +49027,7 @@ function FDsMeshCanvas_switchMode(p){
 }
 function FDsMeshCanvas_switchPlay(p){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeStage;
    var ds = s.allDisplays();
    var c = ds.count();
    for(var i = 0; i < c; i++){
@@ -49001,7 +49039,7 @@ function FDsMeshCanvas_switchPlay(p){
 }
 function FDsMeshCanvas_reloadRegion(p){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeStage;
    var r = s._region._resource;
    o._cameraMoveRate = r.moveSpeed();
    o._cameraKeyRotation = r.rotationKeySpeed();
@@ -49015,8 +49053,9 @@ function FDsMeshCanvas_loadMeshByCode(p){
    }
    var m = rmc.allocByCode(o, p);
    m.addLoadListener(o, o.onMeshLoad);
-   m.matrix().setRotation(Math.PI/2, Math.PI, 0);
-   m.matrix().setScaleAll(0.01);
+   m.matrix().setTranslate(0, 1, 0);
+   m.matrix().setRotation(0, Math.PI, Math.PI);
+   m.matrix().setScaleAll(0.003);
    m.matrix().updateForce();
    o._layer.pushDisplay(m);
    o._activeMesh = m;
@@ -49111,6 +49150,8 @@ function FDsMeshCatalog(o){
    o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
    o._iconView             = 'design3d.mesh.view';
    o._iconViewNot          = 'design3d.mesh.viewno';
+   o._activeStage          = null;
+   o._activeMesh           = null;
    o._displays             = null;
    o._renderables          = null;
    o._materials            = null;
@@ -49121,12 +49162,10 @@ function FDsMeshCatalog(o){
    o.onNodeViewDoubleClick = FDsMeshCatalog_onNodeViewDoubleClick;
    o.lsnsSelect            = null;
    o.construct             = FDsMeshCatalog_construct;
-   o.buildNodeView         = FDsMeshCatalog_buildNodeView;
    o.buildTechnique        = FDsMeshCatalog_buildTechnique;
    o.buildRegion           = FDsMeshCatalog_buildRegion;
    o.buildRenderable       = FDsMeshCatalog_buildRenderable;
    o.buildDisplay          = FDsMeshCatalog_buildDisplay;
-   o.buildLayer            = FDsMeshCatalog_buildLayer;
    o.buildScene            = FDsMeshCatalog_buildScene;
    o.selectObject          = FDsMeshCatalog_selectObject;
    o.showObject            = FDsMeshCatalog_showObject;
@@ -49135,9 +49174,6 @@ function FDsMeshCatalog(o){
 }
 function FDsMeshCatalog_onBuild(p){
    var o = this;
-   var c = RClass.create(FUiTreeColumn);
-   c.setName('view');
-   o.push(c);
    o.__base.FUiDataTreeView.onBuild.call(o, p);
    o.lsnsClick.register(o, o.onNodeClick);
    o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.mesh');
@@ -49245,13 +49281,6 @@ function FDsMeshCatalog_construct(){
    o._renderables = new TObjects();
    o._materials = new TObjects();
 }
-function FDsMeshCatalog_buildNodeView(pn, pv){
-   var o = this;
-   var c = pn.cell('view');
-   c.setIcon(o._iconView);
-   c.addClickListener(o, o.onNodeViewClick);
-   c.addDoubleClickListener(o, o.onNodeViewDoubleClick);
-}
 function FDsMeshCatalog_buildTechnique(n, p){
    var o = this;
    var nt = o.createNode();
@@ -49280,100 +49309,39 @@ function FDsMeshCatalog_buildRegion(n, p){
 }
 function FDsMeshCatalog_buildRenderable(n, p){
    var o = this;
-   var s = p.materials();
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         var mr = m.resource();
-         var dn = o.createNode();
-         dn.setLabel(mr.code());
-         dn.setNote(mr.label());
-         dn.setTypeCode('material');
-         dn.dataPropertySet('linker', m);
-         o.buildNodeView(dn, true);
-         o._materials.push(dn);
-         n.appendNode(dn);
-      }
+   var m = p._renderable._material;
+   if(m){
+      var dn = o.createNode();
+      dn.setLabel('Material');
+      dn.setTypeCode('material');
+      dn.dataPropertySet('linker', m);
+      o._materials.push(dn);
+      n.appendNode(dn);
    }
-   var s = p.animations();
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         var mr = m.resource();
-         var dn = o.createNode();
-         dn.setLabel(mr.code());
-         dn.setNote(mr.label());
-         dn.setTypeCode('animation');
-         dn.dataPropertySet('linker', m);
-         o.buildNodeView(dn, true);
-         n.appendNode(dn);
-      }
-   }
-   var s = p.meshRenderables();
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var r = s.get(i);
-         var rr = r.resource();
-         var rd = rr.model();
-         var rm = rr.mesh();
-         var dn = o.createNode();
-         dn.setLabel(rm.code());
-         dn.setTypeCode('renderable');
-         dn.dataPropertySet('linker', r);
-         o.buildNodeView(dn, true);
-         o._renderables.push(dn);
-         n.appendNode(dn);
-      }
+   var r = p._renderable;
+   if(r){
+      var dn = o.createNode();
+      dn.setLabel('Renderable');
+      dn.setTypeCode('renderable');
+      dn.dataPropertySet('linker', r);
+      o._renderables.push(dn);
+      n.appendNode(dn);
    }
 }
 function FDsMeshCatalog_buildDisplay(n, p){
    var o = this;
-   return;
-   var s = p.displays();
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var d = s.get(i);
-         var dn = o.createNode();
-         dn.setTypeCode('display');
-         dn.dataPropertySet('linker', d);
-         o.buildNodeView(dn, true);
-         o._displays.push(dn);
-         n.appendNode(dn);
-         d.addLoadListener(o, o.onLoadDisplay);
-         d._linkNode = dn;
-      }
-   }
-}
-function FDsMeshCatalog_buildLayer(n, p){
-   var o = this;
-   var ns = o.createNode();
-   ns.setLabel('Layers');
-   ns.setTypeCode('layers');
-   ns.dataPropertySet('linker', 'layers');
-   o.buildNodeView(ns, true);
-   n.appendNode(ns);
-   var ds = p.layers();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var l = ds.value(i);
-      if(RClass.isClass(l, FDisplayUiLayer)){
-         continue;
-      }
-      var nl = o.createNode();
-      nl.setLabel('Layer - ' + l.code());
-      nl.setTypeCode('layer');
-      nl.dataPropertySet('linker', l);
-      o.buildNodeView(nl, true);
-      ns.appendNode(nl);
-      o.buildDisplay(nl, l)
-   }
+   var dn = o.createNode();
+   dn.setLabel('Mesh');
+   dn.setTypeCode('display');
+   dn.dataPropertySet('linker', p);
+   o._displays.push(dn);
+   n.appendNode(dn);
+   o.buildRenderable(dn, p);
 }
 function FDsMeshCatalog_buildScene(ps, pm){
    var o = this;
+   o._activeStage = ps;
+   o._activeMesh = pm;
    var r = pm._renderable._resource;
    var nr = o.createNode();
    nr.setLabel(r.code());
@@ -49383,7 +49351,8 @@ function FDsMeshCatalog_buildScene(ps, pm){
    o.appendNode(nr);
    o.buildTechnique(nr, ps.technique())
    o.buildRegion(nr, ps.region());
-   o.buildLayer(nr, ps);
+   o.buildDisplay(nr, pm);
+   nr.click();
 }
 function FDsMeshCatalog_selectObject(p){
    var o = this;
@@ -49411,6 +49380,329 @@ function FDsMeshCatalog_dispose(){
    o._renderables = RObject.dispose(o._renderables);
    o._materials = RObject.dispose(o._materials);
    o.__base.FUiDataTreeView.dispose.call(o);
+}
+function FDsMeshDisplayPropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible        = false;
+   o._workspace      = null;
+   o._activeDisplay  = null;
+   o._activeResource = null;
+   o._controlGuid    = null;
+   o._controlCode    = null;
+   o._controlLabel   = null;
+   o._displayFrame   = null;
+   o._materialFrame  = null;
+   o.onBuilded       = FDsMeshDisplayPropertyFrame_onBuilded;
+   o.onDataChanged   = FDsMeshDisplayPropertyFrame_onDataChanged;
+   o.construct       = FDsMeshDisplayPropertyFrame_construct;
+   o.loadObject      = FDsMeshDisplayPropertyFrame_loadObject;
+   o.dispose         = FDsMeshDisplayPropertyFrame_dispose;
+   return o;
+}
+function FDsMeshDisplayPropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsMeshDisplayPropertyFrame_onDataChanged(p){
+   var o = this;
+   var r = o._activeResource;
+   r._code = o._controlCode.get();
+   r._label = o._controlLabel.get();
+}
+function FDsMeshDisplayPropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsMeshDisplayPropertyFrame_loadObject(s, d){
+   var o = this;
+   o._activeDisplay = d;
+}
+function FDsMeshDisplayPropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsMeshLightPropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible      = false;
+   o._workspace    = null;
+   o._light        = null;
+   o._controlGuid  = null;
+   o._controlCode  = null;
+   o._controlLabel = null;
+   o.construct     = FDsMeshLightPropertyFrame_construct;
+   o.loadObject    = FDsMeshLightPropertyFrame_loadObject;
+   o.dispose       = FDsMeshLightPropertyFrame_dispose;
+   return o;
+}
+function FDsMeshLightPropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsMeshLightPropertyFrame_loadObject(s, l){
+   var o = this;
+}
+function FDsMeshLightPropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsMeshMaterial1Frame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._scene                 = null;
+   o._material              = null;
+   o._controlOptionDouble   = null;
+   o._controlEffectCode     = null;
+   o._controlOptionAlpha    = null;
+   o._controlAlphaBase      = null;
+   o._controlAlphaRate      = null;
+   o._controlOptionColor    = null;
+   o._controlColorMin       = null;
+   o._controlColorMax       = null;
+   o._controlColorRate      = null;
+   o._controlColorMerge     = null;
+   o._controlOptionAmbient  = null;
+   o._controlAmbientColor   = null;
+   o._controlOptionDiffuse  = null;
+   o._controlDiffuseColor   = null;
+   o._controlOptionSpecular = null;
+   o._controlSpecularColor  = null;
+   o._controlSpecularBase   = null;
+   o._controlSpecularLevel  = null;
+   o._controlOptionReflect  = null;
+   o._controlReflectColor   = null;
+   o._controlReflectMerge   = null;
+   o._controlOptionEmissive = null;
+   o._controlEmissiveColor  = null;
+   o.onBuilded              = FDsMeshMaterial1Frame_onBuilded;
+   o.onOptionChanged        = FDsMeshMaterial1Frame_onOptionChanged;
+   o.onDataChanged          = FDsMeshMaterial1Frame_onDataChanged;
+   o.construct              = FDsMeshMaterial1Frame_construct;
+   o.loadObject             = FDsMeshMaterial1Frame_loadObject;
+   o.dispose                = FDsMeshMaterial1Frame_dispose;
+   return o;
+}
+function FDsMeshMaterial1Frame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlOptionDouble.addDataChangedListener(o, o.onDataChanged);
+   o._controlEffectCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionAlpha.addDataChangedListener(o, o.onDataChanged);
+   o._controlAlphaBase.addDataChangedListener(o, o.onDataChanged);
+   o._controlAlphaRate.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionColor.addDataChangedListener(o, o.onOptionChanged);
+   o._controlColorMin.addDataChangedListener(o, o.onDataChanged);
+   o._controlColorMax.addDataChangedListener(o, o.onDataChanged);
+   o._controlColorRate.addDataChangedListener(o, o.onDataChanged);
+   o._controlColorMerge.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionAmbient.addDataChangedListener(o, o.onOptionChanged);
+   o._controlAmbientColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionDiffuse.addDataChangedListener(o, o.onOptionChanged);
+   o._controlDiffuseColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionSpecular.addDataChangedListener(o, o.onOptionChanged);
+   o._controlSpecularColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlSpecularBase.addDataChangedListener(o, o.onDataChanged);
+   o._controlSpecularLevel.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionReflect.addDataChangedListener(o, o.onOptionChanged);
+   o._controlReflectColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlReflectMerge.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionEmissive.addDataChangedListener(o, o.onOptionChanged);
+   o._controlEmissiveColor.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsMeshMaterial1Frame_onOptionChanged(p){
+   var o = this;
+   var t = o._scene;
+   var m = o._material;
+   var mr = m.resource();
+   var mi = mr.info();
+   mi.optionColor = o._controlOptionColor.get();
+   mi.optionAmbient = o._controlOptionAmbient.get();
+   mi.optionDiffuse = o._controlOptionDiffuse.get();
+   mi.optionSpecular = o._controlOptionSpecular.get();
+   mi.optionReflect = o._controlOptionReflect.get();
+   mi.optionEmissive = o._controlOptionEmissive.get();
+   m.reload();
+   m._display.reloadResource();
+   o._scene.dirty();
+}
+function FDsMeshMaterial1Frame_onDataChanged(p){
+   var o = this;
+   var t = o._scene;
+   var m = o._material;
+   var mr = m.resource();
+   var mi = mr.info();
+   mi.optionDouble = o._controlOptionDouble.get();
+   mi.effectCode = o._controlEffectCode.get();
+   mi.optionAlpha = o._controlOptionAlpha.get();
+   mi.alphaBase = o._controlAlphaBase.get();
+   mi.alphaRate = o._controlAlphaRate.get();
+   mi.colorMin = o._controlColorMin.get();
+   mi.colorMax = o._controlColorMax.get();
+   mi.colorRate = o._controlColorRate.get();
+   mi.colorMerge = o._controlColorMerge.get();
+   mi.ambientColor.assign(o._controlAmbientColor.get());
+   mi.diffuseColor.assign(o._controlDiffuseColor.get());
+   mi.specularColor.assign(o._controlSpecularColor.get());
+   mi.specularBase = o._controlSpecularBase.get();
+   mi.specularLevel = o._controlSpecularLevel.get();
+   mi.reflectColor.assign(o._controlReflectColor.get());
+   mi.reflectMerge = o._controlReflectMerge.get();
+   mi.emissiveColor.assign(o._controlEmissiveColor.get());
+   m.reload();
+   m._display.reloadResource();
+}
+function FDsMeshMaterial1Frame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsMeshMaterial1Frame_loadObject(s, m){
+   var o = this;
+   o._scene = s;
+   o._material = m;
+   var mr = m.resource();
+   var mi = mr.info();
+   o._controlOptionDouble.set(mi.optionDouble);
+   o._controlEffectCode.set(mi.effectCode);
+   o._controlOptionAlpha.set(mi.optionAlpha);
+   o._controlAlphaBase.set(mi.alphaBase);
+   o._controlAlphaRate.set(mi.alphaRate);
+   o._controlOptionColor.set(mi.optionColor);
+   o._controlColorMin.set(mi.colorMin);
+   o._controlColorMax.set(mi.colorMax);
+   o._controlColorRate.set(mi.colorRate);
+   o._controlColorMerge.set(mi.colorMerge);
+   o._controlOptionAmbient.set(mi.optionAmbient);
+   o._controlAmbientColor.set(mi.ambientColor);
+   o._controlOptionDiffuse.set(mi.optionDiffuse);
+   o._controlDiffuseColor.set(mi.diffuseColor);
+   o._controlOptionSpecular.set(mi.optionSpecular);
+   o._controlSpecularColor.set(mi.specularColor);
+   o._controlSpecularBase.set(mi.specularBase);
+   o._controlSpecularLevel.set(mi.specularLevel);
+   o._controlOptionReflect.set(mi.optionReflect);
+   o._controlReflectColor.set(mi.reflectColor);
+   o._controlReflectMerge.set(mi.reflectMerge);
+   o._controlOptionEmissive.set(mi.optionEmissive);
+   o._controlEmissiveColor.set(mi.emissiveColor);
+}
+function FDsMeshMaterial1Frame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsMeshMaterial2Frame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._scene                    = null;
+   o._material                 = null;
+   o._controlDiffuseViewColor  = null;
+   o._controlSpecularViewColor = null;
+   o._controlSpecularViewBase  = null;
+   o._controlSpecularViewLevel = null;
+   o.onBuilded                 = FDsMeshMaterial2Frame_onBuilded;
+   o.onDataChanged             = FDsMeshMaterial2Frame_onDataChanged;
+   o.construct                 = FDsMeshMaterial2Frame_construct;
+   o.loadObject                = FDsMeshMaterial2Frame_loadObject;
+   o.dispose                   = FDsMeshMaterial2Frame_dispose;
+   return o;
+}
+function FDsMeshMaterial2Frame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlOptionView.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionNormalInvert.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionShadow.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionShadowSelf.addDataChangedListener(o, o.onDataChanged);
+   o._controlDiffuseViewColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlSpecularViewColor.addDataChangedListener(o, o.onDataChanged);
+   o._controlSpecularViewBase.addDataChangedListener(o, o.onDataChanged);
+   o._controlSpecularViewLevel.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsMeshMaterial2Frame_onDataChanged(p){
+   var o = this;
+   var t = o._scene;
+   var m = o._material;
+   var mr = m.resource();
+   var mi = mr.info();
+   mi.optionView = o._controlOptionView.get();
+   mi.optionNormalInvert = o._controlOptionNormalInvert.get();
+   mi.optionShadow = o._controlOptionShadow.get();
+   mi.optionShadowSelf = o._controlOptionShadowSelf.get();
+   var v = o._controlDiffuseViewColor.get();
+   mi.diffuseViewColor.assign(v);
+   var v = o._controlSpecularViewColor.get();
+   mi.specularViewColor.assign(v);
+   mi.specularViewBase = o._controlSpecularViewBase.get();
+   mi.specularViewLevel = o._controlSpecularViewLevel.get();
+   m.reload();
+   m._display.reloadResource();
+}
+function FDsMeshMaterial2Frame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsMeshMaterial2Frame_loadObject(s, m){
+   var o = this;
+   o._scene = s;
+   o._material = m;
+   var mr = m.resource();
+   var mi = mr.info();
+   o._controlOptionView.set(mi.optionView);
+   o._controlOptionNormalInvert.set(mi.optionNormalInvert);
+   o._controlOptionShadow.set(mi.optionShadow);
+   o._controlOptionShadowSelf.set(mi.optionShadowSelf);
+   o._controlDiffuseViewColor.set(mi.diffuseViewColor);
+   o._controlSpecularViewColor.set(mi.specularViewColor);
+   o._controlSpecularViewBase.set(mi.specularViewBase);
+   o._controlSpecularViewLevel.set(mi.specularViewLevel);
+}
+function FDsMeshMaterial2Frame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsMeshMaterialPropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible        = false;
+   o._workspace      = null;
+   o._material       = null;
+   o._controlGuid    = null;
+   o._controlCode    = null;
+   o._controlLabel   = null;
+   o._frameMaterial1 = null;
+   o._frameMaterial2 = null;
+   o.onBuilded       = FDsMeshMaterialPropertyFrame_onBuilded;
+   o.onDataChanged   = FDsMeshMaterialPropertyFrame_onDataChanged;
+   o.construct       = FDsMeshMaterialPropertyFrame_construct;
+   o.loadObject      = FDsMeshMaterialPropertyFrame_loadObject;
+   o.dispose         = FDsMeshMaterialPropertyFrame_dispose;
+   return o;
+}
+function FDsMeshMaterialPropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsMeshMaterialPropertyFrame_onDataChanged(p){
+   var o = this;
+   var m = o._material;
+   var mr = m.resource();
+   mr.setLabel(o._controlLabel.get());
+}
+function FDsMeshMaterialPropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsMeshMaterialPropertyFrame_loadObject(s, m){
+   var o = this;
+   var r = m.resource();
+   o._material = m;
+   o._controlGuid.set(r.guid());
+   o._controlCode.set(r.code());
+   o._controlLabel.set(r.label());
+   o._frameMaterial1.loadObject(s, m);
+   o._frameMaterial2.loadObject(s, m);
+}
+function FDsMeshMaterialPropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
 }
 function FDsMeshMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
@@ -49457,6 +49749,222 @@ function FDsMeshMenuBar_dispose(){
    var o = this;
    o.__base.FUiMenuBar.dispose.call(o);
 }
+function FDsMeshRegionPropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible                 = false;
+   o._workspace               = null;
+   o._scene                   = null;
+   o._region                  = null;
+   o._regionResource          = null;
+   o._controlOptionBackground = null;
+   o._controlBackgroundColor  = null;
+   o.onBuilded                = FDsMeshRegionPropertyFrame_onBuilded;
+   o.onDataChanged            = FDsMeshRegionPropertyFrame_onDataChanged;
+   o.construct                = FDsMeshRegionPropertyFrame_construct;
+   o.loadObject               = FDsMeshRegionPropertyFrame_loadObject;
+   o.dispose                  = FDsMeshRegionPropertyFrame_dispose;
+   return o;
+}
+function FDsMeshRegionPropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlMoveSpeed.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotationKeySpeed.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotationMouseSpeed.addDataChangedListener(o, o.onDataChanged);
+   o._controlOptionBackground.addDataChangedListener(o, o.onDataChanged);
+   o._controlBackgroundColor.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsMeshRegionPropertyFrame_onDataChanged(p){
+   var o = this;
+   var r = o._regionResource;
+   r.setOptionBackground(o._controlOptionBackground.get());
+   r.backgroundColor().assign(o._controlBackgroundColor.get());
+   r.setMoveSpeed(o._controlMoveSpeed.get());
+   r.setRotationKeySpeed(o._controlRotationKeySpeed.get());
+   r.setRotationMouseSpeed(o._controlRotationMouseSpeed.get());
+   o._region.reloadResource();
+   o._workspace._canvas.reloadRegion();
+}
+function FDsMeshRegionPropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsMeshRegionPropertyFrame_loadObject(s, t){
+   var o = this;
+   o._scene = s;
+   o._region = t;
+}
+function FDsMeshRegionPropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsMeshRenderablePropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible          = false;
+   o._workspace        = null;
+   o._activeRenderable = null;
+   o._activeMaterial   = null;
+   o._controlGuid      = null;
+   o._controlCode      = null;
+   o._controlLabel     = null;
+   o._frameRenderable  = null;
+   o._frameMaterial1   = null;
+   o._frameMaterial2   = null;
+   o.construct         = FDsMeshRenderablePropertyFrame_construct;
+   o.loadObject        = FDsMeshRenderablePropertyFrame_loadObject;
+   o.dispose           = FDsMeshRenderablePropertyFrame_dispose;
+   return o;
+}
+function FDsMeshRenderablePropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsMeshRenderablePropertyFrame_loadObject(s, r){
+   var o = this;
+}
+function FDsMeshRenderablePropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsMeshScenePropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible        = false;
+   o._frameName      = 'design3d.scene.property.SceneFrame';
+   o._workspace      = null;
+   o._activeScene    = null;
+   o._activeMesh     = null;
+   o._controlGuid    = null;
+   o._controlCode    = null;
+   o._controlLabel   = null;
+   o.onBuilded       = FDsMeshScenePropertyFrame_onBuilded;
+   o.construct       = FDsMeshScenePropertyFrame_construct;
+   o.loadObject      = FDsMeshScenePropertyFrame_loadObject;
+   o.dispose         = FDsMeshScenePropertyFrame_dispose;
+   return o;
+}
+function FDsMeshScenePropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlGuid = o.searchControl('guid');
+   o._controlCode = o.searchControl('code');
+   o._controlLabel = o.searchControl('label');
+}
+function FDsMeshScenePropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsMeshScenePropertyFrame_loadObject(s, m){
+   var o = this;
+   var r = m._renderable._resource;
+   o._activeScene = s;
+   o._activeMesh = m;
+   o._controlGuid.set(r.guid());
+   o._controlCode.set(r.code());
+   o._controlLabel.set(r._label);
+}
+function FDsMeshScenePropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsMeshTechniquePropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible              = false;
+   o._thread               = null;
+   o._interval             = 2000;
+   o._workspace            = null;
+   o._scene                = null;
+   o._technique            = null;
+   o._techniqueResource    = null;
+   o._controlGuid          = null;
+   o._controlCode          = null;
+   o._controlLabel         = null;
+   o._controlTriangleCount = null;
+   o._controlDrawCount     = null;
+   o.onBuilded             = FDsMeshTechniquePropertyFrame_onBuilded;
+   o.onDataChanged         = FDsMeshTechniquePropertyFrame_onDataChanged;
+   o.onModeClick           = FDsMeshTechniquePropertyFrame_onModeClick;
+   o.onRefresh             = FDsMeshTechniquePropertyFrame_onRefresh;
+   o.construct             = FDsMeshTechniquePropertyFrame_construct;
+   o.loadObject            = FDsMeshTechniquePropertyFrame_loadObject;
+   o.dispose               = FDsMeshTechniquePropertyFrame_dispose;
+   return o;
+}
+function FDsMeshTechniquePropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlRenderModes.addClickListener(o, o.onModeClick);
+}
+function FDsMeshTechniquePropertyFrame_onDataChanged(p){
+   var o = this;
+   var r = o._technique;
+   r._code = o._controlCode.get();
+   r._label = o._controlLabel.get();
+   r._techniqueCode = o._controlTechniqueCode.get();
+}
+function FDsMeshTechniquePropertyFrame_onModeClick(ps, pi){
+   var o = this;
+   var m = pi.tag();
+   o._technique._activeMode = m;
+   o._scene.dirty();
+}
+function FDsMeshTechniquePropertyFrame_onRefresh(){
+   var o = this;
+   if(!o._statusVisible){
+      return;
+   }
+   var s = o._scene;
+   var ss = s.statistics();
+   var gs = s._graphicContext.statistics();
+   o._controlFrameTick.set(ss._frame.toString());
+   o._controlProcessTick.set(ss._frameProcess.toString() + ' | ' + ss._frameDrawRenderable.toString());
+   o._controlDrawTick.set(ss._frameDraw.toString() + ' | ' + ss._frameDrawSort.toString());
+   o._controlClearCount.set(gs._frameClearCount);
+   o._controlModeInfo.set(
+      'FIL:' + gs._frameFillModeCount +
+      ' | DEP:' + gs._frameDepthModeCount +
+      ' | CUL:' + gs._frameCullModeCount +
+      ' | BLD:' + gs._frameBlendModeCount);
+   o._controlProgramCount.set(gs._frameProgramCount);
+   o._controlConstInfo.set(gs._frameConstCount + ' : length=' + gs._frameConstLength);
+   o._controlBufferCount.set(gs._frameBufferCount);
+   o._controlTextureCount.set(gs._frameTextureCount);
+   o._controlTargetCount.set(gs._frameTargetCount);
+   o._controlDrawInfo.set(gs._frameDrawCount + ' : triangle=' + gs._frameTriangleCount);
+   o._controlProgramTotal.set(gs._programTotal);
+   o._controlLayoutTotal.set(gs._layoutTotal);
+   o._controlBufferInfo.set('Vertex:' + gs._vertexBufferTotal + ' Index:' + gs._indexBufferTotal);
+   o._controlTextureInfo.set('Flat:' + gs._flatTextureTotal + ' Cube:' + gs._cubeTextureTotal);
+   o._controlTargetTotal.set(gs._targetTotal);
+}
+function FDsMeshTechniquePropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.addProcessListener(o, o.onRefresh);
+   RConsole.find(FThreadConsole).start(t);
+}
+function FDsMeshTechniquePropertyFrame_loadObject(s, t){
+   var o = this;
+   var r = t._resource;
+   o._scene = s;
+   o._technique = t;
+   var cms = o._controlRenderModes;
+   cms.clear();
+   var ms = t.modes();
+   var c = ms.count();
+   for(var i = 0; i < c; i++){
+      var m = ms.getAt(i);
+      var cm = cms.createItem(null, m.code());
+      cm.setTag(m);
+      cms.push(cm);
+   }
+   o.onRefresh();
+}
+function FDsMeshTechniquePropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
 function FDsMeshWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);
    o._frameName            = 'design3d.mesh.Workspace';
@@ -49465,6 +49973,8 @@ function FDsMeshWorkspace(o){
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
    o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+   o._activeStage          = null;
+   o._activeMesh           = null;
    o._framesetMain         = null;
    o._framesetBody         = null;
    o._frameToolBar         = null;
@@ -49528,74 +50038,58 @@ function FDsMeshWorkspace_onBuilded(p){
 }
 function FDsMeshWorkspace_onMeshLoad(p){
    var o = this;
-   o._activeScene = p._activeScene;
+   o._activeStage = p._activeStage;
    o._activeMesh = p._activeMesh;
-   var l = o._activeScene.spriteLayer();
-   o._catalog.buildScene(o._activeScene, p._activeMesh);
+   var l = o._activeStage.spriteLayer();
+   o._catalog.buildScene(o._activeStage, p._activeMesh);
 }
 function FDsMeshWorkspace_onCatalogSelected(p, pc){
    var o = this;
-   var s = o._activeMesh;
+   var s = o._activeStage;
+   var m = o._activeMesh;
    var fs = o._propertyFrames;
    var c = fs.count();
    for(var i = 0; i < c; i++){
       var f = fs.value(i);
       f.hide();
    }
-   if(RClass.isClass(p, FE3dScene)){
-      var f = o.findPropertyFrame(EDsFrame.ScenePropertyFrame);
+   if(RClass.isClass(p, FE3dStage)){
+      var f = o.findPropertyFrame(EDsFrame.MeshPropertyFrame);
       f.show();
-      f.loadObject(s, p);
+      f.loadObject(s, m);
    }else if(RClass.isClass(p, FG3dTechnique)){
-      var f = o.findPropertyFrame(EDsFrame.SceneTechniquePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dRegion)){
-      var f = o.findPropertyFrame(EDsFrame.SceneRegionPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dCamera)){
-      var f = o.findPropertyFrame(EDsFrame.SceneCameraPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FG3dDirectionalLight)){
-      var f = o.findPropertyFrame(EDsFrame.SceneLightPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
       f.show();
       f.loadObject(s, p);
-   }else if(p == 'layers'){
+   }else if(RClass.isClass(p, FE3dMesh)){
       if(pc){
-         o._canvas.selectLayers(p);
       }
-   }else if(RClass.isClass(p, FE3dSceneLayer)){
-      if(pc){
-         o._canvas.selectLayer(p);
-      }
-      var f = o.findPropertyFrame(EDsFrame.SceneLayerPropertyFrame);
-      f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3dSceneDisplay)){
-      if(pc){
-         o._canvas.selectDisplay(p);
-      }
-      var f = o.findPropertyFrame(EDsFrame.SceneDisplayPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dSceneMaterial)){
       if(pc){
          o._canvas.selectMaterial(p);
       }
-      var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
       f.show();
       f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3rAnimation)){
-      var f = o.findPropertyFrame(EDsFrame.SceneAnimationPropertyFrame);
-      f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3dRenderable)){
+   }else if(RClass.isClass(p, FE3rMesh)){
       if(pc){
-         o._canvas.selectRenderable(p);
       }
-      var f = o.findPropertyFrame(EDsFrame.SceneRenderablePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else{
@@ -49620,7 +50114,7 @@ function FDsMeshWorkspace_findPropertyFrame(p){
 }
 function FDsMeshWorkspace_loadMeshByCode(p){
    var o = this;
-   o._sceneCode = p;
+   o._meshCode = p;
    o._canvas.loadMeshByCode(p);
 }
 function FDsMeshWorkspace_dispose(){

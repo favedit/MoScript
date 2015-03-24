@@ -8,7 +8,7 @@ function FDsMeshCanvas(o){
    o = RClass.inherits(this, o, FDsCanvas);
    //..........................................................
    // @attribute
-   o._activeScene         = null;
+   o._activeStage         = null;
    o._activeMesh          = null;
    // @attribute
    o._canvasModeCd        = EDsCanvasMode.Drop;
@@ -76,11 +76,12 @@ function FDsMeshCanvas_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
    // 创建简单舞台
-   var g = o._activeScene = RClass.create(FE3dSimpleStage);
+   var g = o._activeStage = RClass.create(FE3dSimpleStage);
+   g.linkGraphicContext(o);
    g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
    g.selectTechnique(o, FE3dGeneralTechnique);
-   var sl = o._layer = o._activeScene.spriteLayer();
-   RStage.register('stage3d', o._activeScene);
+   var sl = o._layer = o._activeStage.spriteLayer();
+   RStage.register('stage3d', o._activeStage);
    // 设置相机
    var rc = g.camera();
    rc.setPosition(0, 3, -10);
@@ -126,12 +127,12 @@ function FDsMeshCanvas_onBuild(p){
 //==========================================================
 function FDsMeshCanvas_onMouseCaptureStart(p){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeStage;
    if(!s){
       return;
    }
    // 选取物件
-   var r = o._activeScene.region();
+   var r = o._activeStage.region();
    var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
    var r = st.test(r, p.offsetX, p.offsetY);
    o.selectRenderable(r);
@@ -165,7 +166,7 @@ function FDsMeshCanvas_onMouseCaptureStart(p){
 //==========================================================
 function FDsMeshCanvas_onMouseCapture(p){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeStage;
    if(!s){
       return;
    }
@@ -184,7 +185,7 @@ function FDsMeshCanvas_onMouseCapture(p){
    var tm = o._templateMatrix;
    switch(mc){
       case EDsCanvasMode.Drop:
-         var c = o._activeScene.camera();
+         var c = o._activeStage.camera();
          var r = c.rotation();
          var cr = o._captureRotation;
          r.x = cr.x - cy * o._cameraMouseRotation;
@@ -259,7 +260,7 @@ function FDsMeshCanvas_onMouseCaptureStop(p){
 //==========================================================
 function FDsMeshCanvas_onEnterFrame(){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeStage;
    if(!s){
       return;
    }
@@ -354,7 +355,7 @@ function FDsMeshCanvas_oeResize(p){
    var w = hp.offsetWidth;
    var h = hp.offsetHeight;
    // 设置投影
-   var s = o._activeScene;
+   var s = o._activeStage;
    if(s){
       var cp = s.camera().projection();
       cp.size().set(w, h);
@@ -456,7 +457,7 @@ function FDsMeshCanvas_selectLayers(p){
    // 取消选中
    o.selectNone();
    // 选中集合
-   var s = o._activeScene.layers();
+   var s = o._activeStage.layers();
    for(var i = s.count() - 1; i >= 0; i--){
       o.innerSelectLayer(s.valueAt(i));
    }
@@ -648,7 +649,7 @@ function FDsMeshCanvas_switchMode(p){
 //==========================================================
 function FDsMeshCanvas_switchPlay(p){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeStage;
    var ds = s.allDisplays();
    var c = ds.count();
    for(var i = 0; i < c; i++){
@@ -666,7 +667,7 @@ function FDsMeshCanvas_switchPlay(p){
 //==========================================================
 function FDsMeshCanvas_reloadRegion(p){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeStage;
    var r = s._region._resource;
    o._cameraMoveRate = r.moveSpeed();
    o._cameraKeyRotation = r.rotationKeySpeed();

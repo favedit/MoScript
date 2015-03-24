@@ -1327,13 +1327,13 @@ function FE3dSimpleStage_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
    var l = o._skyLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('sky', l);
+   o.registerLayer('SkyLayer', l);
    var l = o._mapLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('map', l);
+   o.registerLayer('MapLayer', l);
    var l = o._spriteLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('sprite', l);
+   o.registerLayer('SpriteLayer', l);
    var l = o._faceLayer = RClass.create(FDisplayLayer);
-   o.registerLayer('face', l);
+   o.registerLayer('FaceLayer', l);
 }
 function FE3dSimpleStage_skyLayer(){
    return this._skyLayer;

@@ -7,6 +7,16 @@
 //==========================================================
 var EDsFrame = new function EDsFrame(){
    var o = this;
+   // @member 模型属性页面
+   o.MeshPropertyFrame            = 'design3d.mesh.property.SceneFrame';
+   o.MeshTechniquePropertyFrame   = 'design3d.mesh.property.TechniqueFrame';
+   o.MeshRegionPropertyFrame      = 'design3d.mesh.property.RegionFrame';
+   o.MeshCameraPropertyFrame      = 'design3d.mesh.property.CameraFrame';
+   o.MeshLightPropertyFrame       = 'design3d.mesh.property.LightFrame';
+   o.MeshLayerPropertyFrame       = 'design3d.mesh.property.LayerFrame';
+   o.MeshDisplayPropertyFrame     = 'design3d.mesh.property.DisplayFrame';
+   o.MeshMaterialPropertyFrame    = 'design3d.mesh.property.MaterialFrame';
+   o.MeshRenderablePropertyFrame  = 'design3d.mesh.property.RenderableFrame';
    // @member 场景属性页面
    o.ScenePropertyFrame           = 'design3d.scene.property.SceneFrame';
    o.SceneTechniquePropertyFrame  = 'design3d.scene.property.TechniqueFrame';

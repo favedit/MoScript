@@ -18,6 +18,9 @@ function FDsMeshWorkspace(o){
    o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
    //..........................................................
    // @attribute
+   o._activeStage          = null;
+   o._activeMesh           = null;
+   // @attribute
    o._framesetMain         = null;
    o._framesetBody         = null;
    // @attribute
@@ -84,18 +87,14 @@ function FDsMeshWorkspace_onBuilded(p){
    var c = o._toolbar = RClass.create(FDsMeshMenuBar);
    c._workspace = o;
    c.buildDefine(p);
-   //c.setPanel(o._frameToolBar._hPanel);
-   //o.push(c);
    o._frameToolBar.push(c);
    //..........................................................
    // 设置目录栏
    var c = o._catalog = RClass.create(FDsMeshCatalog);
    c._workspace = o;
    c.build(p);
-   //c.setPanel(o._frameCatalog._hPanel);
    c.addSelectedListener(o, o.onCatalogSelected);
    o._frameCatalog.push(c);
-   //o.push(c);
    //..........................................................
    // 设置画板工具栏
    var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
@@ -103,9 +102,6 @@ function FDsMeshWorkspace_onBuilded(p){
    c._workspace = o;
    c.buildDefine(p);
    o._canvasToolbarFrame.push(c);
-   //c.build(p);
-   //c.setPanel(f._hPanel);
-   //o.push(c);
    // 设置画板
    var f = o._canvasFrame = o.searchControl('canvasFrame');
    var c = o._canvas = RClass.create(FDsMeshCanvas);
@@ -116,8 +112,6 @@ function FDsMeshWorkspace_onBuilded(p){
    c._hParent.style.backgroundColor = '#000000';
    c.build(p);
    o._canvasFrame.push(c);
-   //c.setPanel(f._hPanel);
-   //o.push(c);
 }
 
 //==========================================================
@@ -128,12 +122,12 @@ function FDsMeshWorkspace_onBuilded(p){
 //==========================================================
 function FDsMeshWorkspace_onMeshLoad(p){
    var o = this;
-   o._activeScene = p._activeScene;
+   o._activeStage = p._activeStage;
    o._activeMesh = p._activeMesh;
    // 设置属性
-   var l = o._activeScene.spriteLayer();
+   var l = o._activeStage.spriteLayer();
    // 加载完成
-   o._catalog.buildScene(o._activeScene, p._activeMesh);
+   o._catalog.buildScene(o._activeStage, p._activeMesh);
    //o.onCatalogSelected(t);
    //o.onCatalogSelected(t.technique());
 }
@@ -146,7 +140,8 @@ function FDsMeshWorkspace_onMeshLoad(p){
 //==========================================================
 function FDsMeshWorkspace_onCatalogSelected(p, pc){
    var o = this;
-   var s = o._activeMesh;
+   var s = o._activeStage;
+   var m = o._activeMesh;
    // 隐藏所有属性面板
    var fs = o._propertyFrames;
    var c = fs.count();
@@ -155,47 +150,33 @@ function FDsMeshWorkspace_onCatalogSelected(p, pc){
       f.hide();
    }
    // 显示选中属性面板
-   if(RClass.isClass(p, FE3dScene)){
-      var f = o.findPropertyFrame(EDsFrame.ScenePropertyFrame);
+   if(RClass.isClass(p, FE3dStage)){
+      var f = o.findPropertyFrame(EDsFrame.MeshPropertyFrame);
       f.show();
-      f.loadObject(s, p);
+      f.loadObject(s, m);
    }else if(RClass.isClass(p, FG3dTechnique)){
-      var f = o.findPropertyFrame(EDsFrame.SceneTechniquePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dRegion)){
-      var f = o.findPropertyFrame(EDsFrame.SceneRegionPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dCamera)){
-      var f = o.findPropertyFrame(EDsFrame.SceneCameraPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FG3dDirectionalLight)){
-      var f = o.findPropertyFrame(EDsFrame.SceneLightPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
       f.show();
       f.loadObject(s, p);
-   }else if(p == 'layers'){
-      // 选中场景所有层
-      if(pc){
-         o._canvas.selectLayers(p);
-      }
-   }else if(RClass.isClass(p, FE3dSceneLayer)){
-      // 选中场景层
-      if(pc){
-         o._canvas.selectLayer(p);
-      }
-      // 显示属性栏
-      var f = o.findPropertyFrame(EDsFrame.SceneLayerPropertyFrame);
-      f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3dSceneDisplay)){
+   }else if(RClass.isClass(p, FE3dMesh)){
       // 选中显示对象
       if(pc){
-         o._canvas.selectDisplay(p);
+         //o._canvas.selectDisplay(p);
       }
       // 显示属性栏
-      var f = o.findPropertyFrame(EDsFrame.SceneDisplayPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FE3dSceneMaterial)){
@@ -204,21 +185,16 @@ function FDsMeshWorkspace_onCatalogSelected(p, pc){
          o._canvas.selectMaterial(p);
       }
       // 显示属性栏
-      var f = o.findPropertyFrame(EDsFrame.SceneMaterialPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
       f.show();
       f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3rAnimation)){
-      // 显示属性栏
-      var f = o.findPropertyFrame(EDsFrame.SceneAnimationPropertyFrame);
-      f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3dRenderable)){
+   }else if(RClass.isClass(p, FE3rMesh)){
       // 选中渲染对象
       if(pc){
-         o._canvas.selectRenderable(p);
+         //o._canvas.selectRenderable(p);
       }
       // 显示属性栏
-      var f = o.findPropertyFrame(EDsFrame.SceneRenderablePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else{
@@ -237,11 +213,6 @@ function FDsMeshWorkspace_construct(){
    o.__base.FUiWorkspace.construct.call(o);
    // 设置属性
    o._propertyFrames = new TDictionary();
-   // 注册场景设置属性
-   //var sf = RConsole.find(FE3dSceneConsole).factory();
-   //sf.register(EE3dScene.Layer, FDsMeshLayer);
-   //sf.register(EE3dScene.Display, FDsMeshDisplay);
-   //sf.register(EE3dScene.Renderable, FDsMeshRenderable);
 }
 
 //==========================================================
@@ -270,7 +241,7 @@ function FDsMeshWorkspace_findPropertyFrame(p){
 //==========================================================
 function FDsMeshWorkspace_loadMeshByCode(p){
    var o = this;
-   o._sceneCode = p;
+   o._meshCode = p;
    o._canvas.loadMeshByCode(p);
 }
 

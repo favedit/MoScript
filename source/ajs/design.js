@@ -19,6 +19,15 @@ var EDsCanvasMode = new function EDsCanvasMode(){
 }
 var EDsFrame = new function EDsFrame(){
    var o = this;
+   o.MeshPropertyFrame            = 'design3d.mesh.property.SceneFrame';
+   o.MeshTechniquePropertyFrame   = 'design3d.mesh.property.TechniqueFrame';
+   o.MeshRegionPropertyFrame      = 'design3d.mesh.property.RegionFrame';
+   o.MeshCameraPropertyFrame      = 'design3d.mesh.property.CameraFrame';
+   o.MeshLightPropertyFrame       = 'design3d.mesh.property.LightFrame';
+   o.MeshLayerPropertyFrame       = 'design3d.mesh.property.LayerFrame';
+   o.MeshDisplayPropertyFrame     = 'design3d.mesh.property.DisplayFrame';
+   o.MeshMaterialPropertyFrame    = 'design3d.mesh.property.MaterialFrame';
+   o.MeshRenderablePropertyFrame  = 'design3d.mesh.property.RenderableFrame';
    o.ScenePropertyFrame           = 'design3d.scene.property.SceneFrame';
    o.SceneTechniquePropertyFrame  = 'design3d.scene.property.TechniqueFrame';
    o.SceneRegionPropertyFrame     = 'design3d.scene.property.RegionFrame';

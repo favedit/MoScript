@@ -12,6 +12,9 @@ function FDsMeshCatalog(o){
    o._iconViewNot          = 'design3d.mesh.viewno';
    //..........................................................
    // @attributes
+   o._activeStage          = null;
+   o._activeMesh           = null;
+   // @attributes
    o._displays             = null;
    o._renderables          = null;
    o._materials            = null;
@@ -30,12 +33,10 @@ function FDsMeshCatalog(o){
    // @method
    o.construct             = FDsMeshCatalog_construct;
    // @method
-   o.buildNodeView         = FDsMeshCatalog_buildNodeView;
    o.buildTechnique        = FDsMeshCatalog_buildTechnique;
    o.buildRegion           = FDsMeshCatalog_buildRegion;
    o.buildRenderable       = FDsMeshCatalog_buildRenderable;
    o.buildDisplay          = FDsMeshCatalog_buildDisplay;
-   o.buildLayer            = FDsMeshCatalog_buildLayer;
    o.buildScene            = FDsMeshCatalog_buildScene;
    // @method
    o.selectObject          = FDsMeshCatalog_selectObject;
@@ -53,10 +54,6 @@ function FDsMeshCatalog(o){
 //==========================================================
 function FDsMeshCatalog_onBuild(p){
    var o = this;
-   // 建立查看列
-   var c = RClass.create(FUiTreeColumn);
-   c.setName('view');
-   o.push(c);
    // 父处理
    o.__base.FUiDataTreeView.onBuild.call(o, p);
    // 注册事件
@@ -212,21 +209,6 @@ function FDsMeshCatalog_construct(){
 }
 
 //==========================================================
-// <T>建立节点可见格子。</T>
-//
-// @method
-// @param pn:node:FTreeNode 节点
-// @param pv:view:Boolean 可见性
-//==========================================================
-function FDsMeshCatalog_buildNodeView(pn, pv){
-   var o = this;
-   var c = pn.cell('view');
-   c.setIcon(o._iconView);
-   c.addClickListener(o, o.onNodeViewClick);
-   c.addDoubleClickListener(o, o.onNodeViewDoubleClick);
-}
-
-//==========================================================
 // <T>建立技术目录。</T>
 //
 // @method
@@ -282,58 +264,32 @@ function FDsMeshCatalog_buildRegion(n, p){
 function FDsMeshCatalog_buildRenderable(n, p){
    var o = this;
    // 创建材质集合
-   var s = p.materials();
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         var mr = m.resource();
-         // 创建节点
-         var dn = o.createNode();
-         dn.setLabel(mr.code());
-         dn.setNote(mr.label());
-         dn.setTypeCode('material');
-         dn.dataPropertySet('linker', m);
-         o.buildNodeView(dn, true);
-         o._materials.push(dn);
-         n.appendNode(dn);
-      }
-   }
-   // 创建动画集合
-   var s = p.animations();
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         var mr = m.resource();
-         // 创建节点
-         var dn = o.createNode();
-         dn.setLabel(mr.code());
-         dn.setNote(mr.label());
-         dn.setTypeCode('animation');
-         dn.dataPropertySet('linker', m);
-         o.buildNodeView(dn, true);
-         n.appendNode(dn);
-      }
+   var m = p._renderable._material;
+   if(m){
+      // 创建节点
+      var dn = o.createNode();
+      dn.setLabel('Material');
+      //dn.setLabel(mr.code());
+      //dn.setNote(mr.label());
+      dn.setTypeCode('material');
+      dn.dataPropertySet('linker', m);
+      o._materials.push(dn);
+      n.appendNode(dn);
    }
    // 创建渲染集合
-   var s = p.meshRenderables();
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var r = s.get(i);
-         var rr = r.resource();
-         var rd = rr.model();
-         var rm = rr.mesh();
-         // 创建节点
-         var dn = o.createNode();
-         dn.setLabel(rm.code());
-         dn.setTypeCode('renderable');
-         dn.dataPropertySet('linker', r);
-         o.buildNodeView(dn, true);
-         o._renderables.push(dn);
-         n.appendNode(dn);
-      }
+   var r = p._renderable;
+   if(r){
+      //var rr = r.resource();
+      //var rd = rr.model();
+      //var rm = rr.mesh();
+      // 创建节点
+      var dn = o.createNode();
+      //dn.setLabel(rm.code());
+      dn.setLabel('Renderable');
+      dn.setTypeCode('renderable');
+      dn.dataPropertySet('linker', r);
+      o._renderables.push(dn);
+      n.appendNode(dn);
    }
 }
 
@@ -346,64 +302,17 @@ function FDsMeshCatalog_buildRenderable(n, p){
 //==========================================================
 function FDsMeshCatalog_buildDisplay(n, p){
    var o = this;
-   return;
-   // 创建显示集合
-   var s = p.displays();
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var d = s.get(i);
-         // 创建节点
-         var dn = o.createNode();
-         //dn.setLabel(d.code());
-         //dn.setNote(d.label());
-         dn.setTypeCode('display');
-         dn.dataPropertySet('linker', d);
-         o.buildNodeView(dn, true);
-         o._displays.push(dn);
-         n.appendNode(dn);
-         // 创建渲染集合
-         d.addLoadListener(o, o.onLoadDisplay);
-         d._linkNode = dn;
-      }
-   }
-}
-
-//==========================================================
-// <T>建立显示层目录。</T>
-//
-// @method
-// @param n:node:FTreeNode 父节点
-// @param p:stage:FStage 舞台对象
-//==========================================================
-function FDsMeshCatalog_buildLayer(n, p){
-   var o = this;
-   // 创建显示层集合节点
-   var ns = o.createNode();
-   ns.setLabel('Layers');
-   ns.setTypeCode('layers');
-   ns.dataPropertySet('linker', 'layers');
-   o.buildNodeView(ns, true);
-   n.appendNode(ns);
-   // 创建显示层集合
-   var ds = p.layers();
-   var c = ds.count();
-   for(var i = 0; i < c; i++){
-      var l = ds.value(i);
-      // 忽略界面层
-      if(RClass.isClass(l, FDisplayUiLayer)){
-         continue;
-      }
-      // 创建显示层节点
-      var nl = o.createNode();
-      nl.setLabel('Layer - ' + l.code());
-      nl.setTypeCode('layer');
-      nl.dataPropertySet('linker', l);
-      o.buildNodeView(nl, true);
-      ns.appendNode(nl);
-      // 创建显示集合
-      o.buildDisplay(nl, l)
-   }
+   // 创建显示节点
+   var dn = o.createNode();
+   //dn.setLabel(d.code());
+   dn.setLabel('Mesh');
+   //dn.setNote(d.label());
+   dn.setTypeCode('display');
+   dn.dataPropertySet('linker', p);
+   o._displays.push(dn);
+   n.appendNode(dn);
+   // 创建材质节点
+   o.buildRenderable(dn, p);
 }
 
 //==========================================================
@@ -414,8 +323,10 @@ function FDsMeshCatalog_buildLayer(n, p){
 //==========================================================
 function FDsMeshCatalog_buildScene(ps, pm){
    var o = this;
-   var r = pm._renderable._resource;
+   o._activeStage = ps;
+   o._activeMesh = pm;
    // 创建场景节点
+   var r = pm._renderable._resource;
    var nr = o.createNode();
    nr.setLabel(r.code());
    nr.setNote(r.label());
@@ -427,9 +338,9 @@ function FDsMeshCatalog_buildScene(ps, pm){
    // 创建区域节点
    o.buildRegion(nr, ps.region());
    // 创建显示层
-   o.buildLayer(nr, ps);
+   o.buildDisplay(nr, pm);
    // 选中根节点
-   //nr.click();
+   nr.click();
 }
 
 //==========================================================
