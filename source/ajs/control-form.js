@@ -1502,6 +1502,7 @@ function FUiCheck(o){
    o.onBuildEditValue = FUiCheck_onBuildEditValue;
    o.onInputClick     = RClass.register(o, new AEventClick('onInputClick'), FUiCheck_onInputClick);
    o.oeSaveValue      = FUiCheck_oeSaveValue;
+   o.construct        = FUiCheck_construct;
    o.get              = FUiCheck_get;
    o.set              = FUiCheck_set;
    o.refreshValue     = FUiCheck_refreshValue;
@@ -1526,11 +1527,20 @@ function FUiCheck_oeSaveValue(e){
    }
    return o.base.FUiEditControl.oeSaveValue.call(o, e);
 }
+function FUiCheck_construct(){
+   var o = this;
+   o.__base.FUiEditControl.construct.call(o);
+   o._editSize.set(60, 20);
+}
 function FUiCheck_get(){
-   return this._hInput.checked;
+   var o = this;
+   var v = o._hInput.checked;
+   return RBoolean.toString(v, o._valueTrue, o._valueFalse);
 }
 function FUiCheck_set(p){
-   this._hInput.checked = RBoolean.parse(p);
+   var o = this;
+   var v = (p == o._valueTrue);
+   o._hInput.checked = v;
 }
 function FUiCheck_refreshValue(){
    var o = this;
@@ -2938,6 +2948,8 @@ function FUiEditControl_onBuildLabelIcon(p){
    var o = this;
    if(o._labelIcon){
       o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, o._labelIcon);
+   }else{
+      o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, 'n', 16, 16);
    }
 }
 function FUiEditControl_onBuildLabelText(p){
@@ -2949,6 +2961,7 @@ function FUiEditControl_onBuildLabel(p){
    var h = o._hLabelForm = RBuilder.appendTable(o._hLabelPanel, o.styleName('LabelPanel'));
    var hr = RBuilder.appendTableRow(h);
    var hip = o._hIconPanel = RBuilder.appendTableCell(hr);
+   hip.width = '20px';
    o.onBuildLabelIcon(p);
    var htp = o._hTextPanel = RBuilder.appendTableCell(hr);
    htp.noWrap = true;
@@ -4157,7 +4170,7 @@ function FUiLayout_appendChild(ctl){
       }
       hCell.appendChild(ctl._hPanel);
       ctl._hLayoutCell = hCell;
-      if(!ctl.nowrap && (o.controls.last() != ctl)){
+      if((ctl.wrapCd() == EUiWrap.NextLine) && (o.controls.last() != ctl)){
          o.innerAppendLine();
       }
    }else{
@@ -4196,7 +4209,7 @@ function FUiLayout_appendChild(ctl){
          o._hPanelLast = hc;
          hc.appendChild(ctl._hPanel);
          ctl._hLayoutCell = hc;
-         if(!ctl.nowrap){
+         if(ctl.wrapCd() == EUiWrap.NextLine){
             o._hPanelLine = null;
          }
       }
@@ -4741,7 +4754,8 @@ function FUiNumber_onInputChanged(p){
 function FUiNumber_construct(){
    var o = this;
    o.__base.FUiEditControl.construct.call(o);
-   o._inputSize = new SSize2(120, 0);
+   o._editSize.set(100, 20);
+   o._inputSize = new SSize2(80, 0);
 }
 function FUiNumber_formatDisplay(p){
    var o = this;
@@ -4860,7 +4874,7 @@ function FUiNumber_drop(){
    }
 }
 function FUiNumber2(o){
-   o = RClass.inherits(this, o, FEditControl);
+   o = RClass.inherits(this, o, FUiEditControl);
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
    o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
@@ -4895,12 +4909,12 @@ function FUiNumber2_onBuildEditValue(p){
 }
 function FUiNumber2_construct(){
    var o = this;
-   o.__base.FEditControl.construct.call(o);
+   o.__base.FUiEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
 }
 function FUiNumber2_get(p){
    var o = this;
-   var r = o.__base.FEditControl.get.call(o, p);
+   var r = o.__base.FUiEditControl.get.call(o, p);
    var h = o._hInput;
    if(h){
       r = h.value;
@@ -4909,7 +4923,7 @@ function FUiNumber2_get(p){
 }
 function FUiNumber2_set(p){
    var o = this;
-   o.__base.FEditControl.set.call(o, p);
+   o.__base.FUiEditControl.set.call(o, p);
    var h = o._hInput;
    if(h){
       h.value = RString.nvl(p);
@@ -4917,7 +4931,7 @@ function FUiNumber2_set(p){
 }
 function FUiNumber2_onDataKeyDown(s, e){
    var o = this;
-   o.__base.FEditControl.onDataKeyDown.call(o, s, e);
+   o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
    }
@@ -4965,7 +4979,7 @@ function FUiNumber2_setText(t){
 }
 function FUiNumber2_validText(t){
    var o = this;
-   var r = o.__base.FEditControl.validText.call(o, t);
+   var r = o.__base.FUiEditControl.validText.call(o, t);
    if(!r){
       if(o.validLenmin){
          if(o.validLenmin > t.length){
@@ -5242,7 +5256,7 @@ function FUiNumber3_link(){
    var o = this;
 }
 function FUiNumber4(o){
-   o = RClass.inherits(this, o, FEditControl);
+   o = RClass.inherits(this, o, FUiEditControl);
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
    o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
@@ -5285,12 +5299,12 @@ function FUiNumber4_onBuildEditValue(p){
 }
 function FUiNumber4_construct(){
    var o = this;
-   o.__base.FEditControl.construct.call(o);
+   o.__base.FUiEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
 }
 function FUiNumber4_get(p){
    var o = this;
-   var r = o.__base.FEditControl.get.call(o, p);
+   var r = o.__base.FUiEditControl.get.call(o, p);
    var h = o._hInput;
    if(h){
       r = h.value;
@@ -5299,7 +5313,7 @@ function FUiNumber4_get(p){
 }
 function FUiNumber4_set(p){
    var o = this;
-   o.__base.FEditControl.set.call(o, p);
+   o.__base.FUiEditControl.set.call(o, p);
    var h = o._hInput;
    if(h){
       h.value = RString.nvl(p);
@@ -5307,7 +5321,7 @@ function FUiNumber4_set(p){
 }
 function FUiNumber4_onDataKeyDown(s, e){
    var o = this;
-   o.__base.FEditControl.onDataKeyDown.call(o, s, e);
+   o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
    }
@@ -5355,7 +5369,7 @@ function FUiNumber4_setText(t){
 }
 function FUiNumber4_validText(t){
    var o = this;
-   var r = o.__base.FEditControl.validText.call(o, t);
+   var r = o.__base.FUiEditControl.validText.call(o, t);
    if(!r){
       if(o.validLenmin){
          if(o.validLenmin > t.length){

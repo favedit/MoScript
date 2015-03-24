@@ -8,28 +8,28 @@ function FUiToolButtonMenu(o){
    o = RClass.inherits(this, o, FUiToolButton, MUiContainer, MDropable, MUiFocus);
    //..........................................................
    // @attribute
-   o.popup         = null;
+   o._popup          = null;
    //..........................................................
    // @html
-   o.hDropPanel    = null;
+   o._hDropPanel     = null;
    //..........................................................
    // @style
    o._styleDropHover = RClass.register(o, new AStyleIcon('_styleDropHover'));
    //..........................................................
    // @event
-   o.onBuild       = FUiToolButtonMenu_onBuild;
+   o.onBuild         = FUiToolButtonMenu_onBuild;
    // @event
-   o.onEnter       = FUiToolButtonMenu_onEnter;
-   o.onLeave       = FUiToolButtonMenu_onLeave;
-   o.onBlur        = FUiToolButtonMenu_onBlur;
-   o.onButtonClick = FUiToolButtonMenu_onButtonClick;
-   o.onDropClick   = FUiToolButtonMenu_onDropClick;
+   o.onEnter         = FUiToolButtonMenu_onEnter;
+   o.onLeave         = FUiToolButtonMenu_onLeave;
+   o.onBlur          = FUiToolButtonMenu_onBlur;
+   o.onButtonClick   = FUiToolButtonMenu_onButtonClick;
+   o.onDropClick     = FUiToolButtonMenu_onDropClick;
    //..........................................................
    // @method
-   o.construct     = FUiToolButtonMenu_construct;
-   o.push          = FUiToolButtonMenu_push;
-   o.drop          = FUiToolButtonMenu_drop;
-   o.dispose       = FUiToolButtonMenu_dispose;
+   o.construct       = FUiToolButtonMenu_construct;
+   o.push            = FUiToolButtonMenu_push;
+   o.drop            = FUiToolButtonMenu_drop;
+   o.dispose         = FUiToolButtonMenu_dispose;
    return o;
 }
 
@@ -41,10 +41,10 @@ function FUiToolButtonMenu(o){
 //==========================================================
 function FUiToolButtonMenu_onEnter(e){
    var o = this;
-   o.__base.FUiToolButton.onEnter.call(o, e);
-   if(!o.disabled){
-      o.hDropIcon.src = o.styleIconPath('DropHover');
-   }
+   //o.__base.FUiToolButton.onEnter.call(o, e);
+   //if(!o._disabled){
+   //   o._hDropIcon.src = o.styleIconPath('DropHover');
+   //}
 }
 
 //==========================================================
@@ -55,12 +55,12 @@ function FUiToolButtonMenu_onEnter(e){
 //==========================================================
 function FUiToolButtonMenu_onLeave(e){
    var o = this;
-   if(!o.popup.isVisible()){
-      o.__base.FUiToolButton.onLeave.call(o, e);
-      if(!o.disabled){
-         o.hDropIcon.src = o.styleIconPath('Drop');
-      }
-   }
+   //if(!o._popup.isVisible()){
+   //   o.__base.FUiToolButton.onLeave.call(o, e);
+   //   if(!o._disabled){
+   //      o._hDropIcon.src = o.styleIconPath('Drop');
+   //   }
+   //}
 }
 
 //==========================================================
@@ -71,13 +71,13 @@ function FUiToolButtonMenu_onLeave(e){
 //==========================================================
 function FUiToolButtonMenu_onBlur(e){
    var o = this;
-   if(e){
-      if(o.popup.testInRange(e)){
-         return false;
-      }
-   }
-   o.hPanel.className = o.style('Button');
-   o.popup.hide();
+   //if(e){
+   //   if(o._popup.testInRange(e)){
+   //      return false;
+   //   }
+   //}
+   //o.hPanel.className = o.style('Button');
+   //o._popup.hide();
 }
 
 //==========================================================
@@ -88,7 +88,7 @@ function FUiToolButtonMenu_onBlur(e){
 //==========================================================
 function FUiToolButtonMenu_onButtonClick(){
    var o = this;
-   if(!o.disabled){
+   if(!o._disabled){
       o.__base.FUiToolButton.onButtonClick.call(o);
       if(!(o.action || o.page)){
          o.drop();
@@ -118,13 +118,13 @@ function FUiToolButtonMenu_onBuild(e){
    var o = this;
    return o.__base.FUiToolButton.onBuild.call(o, e);
    if(e.isBefore()){
-      var h = o.hDropPanel = o.hButtonLine.insertCell();
+      var h = o._hDropPanel = o.hButtonLine.insertCell();
       h.className = o.style('Drop')
-      o.hDropIcon = RBuilder.appendIcon(h, o.styleIcon('Drop'));
+      o._hDropIcon = RBuilder.appendIcon(h, o.styleIcon('Drop'));
       o.attachEvent('onDropClick', h);
    }
    if(e.isAfter()){
-      o.popup.psBuild();
+      o._popup.psBuild();
    }
    return EEventStatus.Continue;
 }
@@ -137,8 +137,8 @@ function FUiToolButtonMenu_onBuild(e){
 function FUiToolButtonMenu_construct(){
    var o = this;
    o.__base.FUiToolButton.construct.call(o);
-   //o.popup = RClass.create(FPopupMenu);
-   //o.popup.opener = o;
+   //o._popup = RClass.create(FPopupMenu);
+   //o._popup.opener = o;
 }
 
 //==========================================================
@@ -150,7 +150,7 @@ function FUiToolButtonMenu_construct(){
 function FUiToolButtonMenu_push(c){
    var o = this;
    //if(RClass.isClass(c, MMenuButton)){
-   //   return o.popup.push(c);
+   //   return o._popup.push(c);
    //}
    //o.__base.FUiToolButton.push.call(o, c);
 }
@@ -162,8 +162,8 @@ function FUiToolButtonMenu_push(c){
 //==========================================================
 function FUiToolButtonMenu_drop(){
    var o = this;
-   if(!o.disabled){
-      o.popup.show(this.hDropPanel, EAlign.BottomRight);
+   if(!o._disabled){
+      o._popup.show(this._hDropPanel, EAlign.BottomRight);
    }
 }
 
@@ -175,6 +175,6 @@ function FUiToolButtonMenu_drop(){
 function FUiToolButtonMenu_dispose(){
    var o = this;
    o.__base.FControl.dispose.call(o);
-   o.hDropIcon = null;
-   o.hDropPanel = null;
+   o._hDropIcon = null;
+   o._hDropPanel = null;
 }

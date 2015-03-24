@@ -17,12 +17,12 @@
 function FUiControl(o){
    o = RClass.inherits(this, o, FUiComponent, MUiStyle, MUiSize, MUiPadding);
    //..........................................................
+   // @property Boolean 是否回行
+   o._wrapCd        = RClass.register(o, new APtyEnum('_wrapCd', null, EUiWrap, EUiWrap.NextLine));
    // @property Boolean 是否禁止
    o._visible       = RClass.register(o, new APtyBoolean('_visible'), true);
    // @property Boolean 是否禁止
    o._disable       = RClass.register(o, new APtyBoolean('_disable'), false);
-   // @property Boolean 是否回行
-   o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap'), false);
    // @property String 提示信息
    o._hint          = RClass.register(o, new APtyString('_hint'));
    //..........................................................
@@ -80,6 +80,9 @@ function FUiControl(o){
    // @method
    o.topControl     = FUiControl_topControl;
    o.panel          = FUiControl_panel;
+   // @method
+   o.wrapCd         = FUiControl_wrapCd;
+   o.setWrapCd      = FUiControl_setWrapCd;
    // @method
    o.isVisible      = FUiControl_isVisible;
    o.setVisible     = FUiControl_setVisible;
@@ -316,6 +319,26 @@ function FUiControl_panel(p){
          return o._hPanel;
    }
    return null;
+}
+
+//==========================================================
+// <T>获得卷行类型。</T>
+//
+// @method
+// @return EUiWrap 卷行类型
+//==========================================================
+function FUiControl_wrapCd(){
+   return this._wrapCd;
+}
+
+//==========================================================
+// <T>设置卷行类型。</T>
+//
+// @method
+// @param wrapCd:EUiWrap 卷行类型
+//==========================================================
+function FUiControl_setWrapCd(wrapCd){
+   this._wrapCd = wrapCd;
 }
 
 //==========================================================
@@ -680,7 +703,7 @@ function FUiControl_dispose(){
    var o = this;
    // 释放属性
    o._disable = null;
-   o._nowrap = null;
+   o._wrapCd = null;
    o._hint = null;
    // 释放属性
    o._styleContainer = null;

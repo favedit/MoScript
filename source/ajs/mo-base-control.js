@@ -247,6 +247,12 @@ var EUiSize = new function EUiSize(){
    o.Both       = 3;
    return o;
 }
+var EUiWrap = new function EUiWrap(){
+   var o = this;
+   o.NextLine = 0;
+   o.SameLine = 1;
+   return o;
+}
 function MDataProperties(o){
    o = RClass.inherits(this, o);
    o._dataProperties = null;
@@ -988,8 +994,8 @@ function MListenerSelected_processSelectedListener(p1, p2, p3, p4, p5){
 }
 function MPropertyCheck(o){
    o = RClass.inherits(this, o);
-   o._valueTrue  = RClass.register(o, new APtyNumber('_valueTrue'));
-   o._valueFalse = RClass.register(o, new APtyNumber('_valueFalse'));
+   o._valueTrue  = RClass.register(o, new APtyString('_valueTrue'), EBoolean.True);
+   o._valueFalse = RClass.register(o, new APtyString('_valueFalse'), EBoolean.False);
    return o;
 }
 function MPropertyEdit(o){
@@ -2277,9 +2283,9 @@ function FUiContainer_dispose(){
 }
 function FUiControl(o){
    o = RClass.inherits(this, o, FUiComponent, MUiStyle, MUiSize, MUiPadding);
+   o._wrapCd        = RClass.register(o, new APtyEnum('_wrapCd', null, EUiWrap, EUiWrap.NextLine));
    o._visible       = RClass.register(o, new APtyBoolean('_visible'), true);
    o._disable       = RClass.register(o, new APtyBoolean('_disable'), false);
-   o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap'), false);
    o._hint          = RClass.register(o, new APtyString('_hint'));
    o._stylePanel    = RClass.register(o, new AStyle('_stylePanel'));
    o._layoutCd      = EUiLayout.Display;
@@ -2304,6 +2310,8 @@ function FUiControl(o){
    o.construct      = FUiControl_construct;
    o.topControl     = FUiControl_topControl;
    o.panel          = FUiControl_panel;
+   o.wrapCd         = FUiControl_wrapCd;
+   o.setWrapCd      = FUiControl_setWrapCd;
    o.isVisible      = FUiControl_isVisible;
    o.setVisible     = FUiControl_setVisible;
    o.show           = FUiControl_show;
@@ -2424,6 +2432,12 @@ function FUiControl_panel(p){
          return o._hPanel;
    }
    return null;
+}
+function FUiControl_wrapCd(){
+   return this._wrapCd;
+}
+function FUiControl_setWrapCd(wrapCd){
+   this._wrapCd = wrapCd;
 }
 function FUiControl_isVisible(){
    return _statusVisible;
@@ -2581,7 +2595,7 @@ function FUiControl_setPanel(h){
 function FUiControl_dispose(){
    var o = this;
    o._disable = null;
-   o._nowrap = null;
+   o._wrapCd = null;
    o._hint = null;
    o._styleContainer = null;
    o._statusVisible = null;
@@ -3802,10 +3816,9 @@ function FKeyConsole(o){
    o.register        = FKeyConsole_register;
    return o;
 }
-function FKeyConsole_onKeyDown(s, e){
-   debugger
+function FKeyConsole_onKeyDown(e){
    var o = this;
-   var k = REnum.tryDecode(EKey, e.keyCode);
+   var k = REnum.tryDecode(EKeyCode, e.keyCode);
    if(k && o._enable){
       var ls = o._listeners[k];
       if(ls){
@@ -3847,6 +3860,7 @@ function FKeyConsole_register(k, w, p){
       if(!s){
          s = ks[k] = new TListeners();
       }
+      s.clear();
       s.register(w, p);
    }
 }
@@ -5513,6 +5527,7 @@ function FUiCheck(o){
    o.onBuildEditValue = FUiCheck_onBuildEditValue;
    o.onInputClick     = RClass.register(o, new AEventClick('onInputClick'), FUiCheck_onInputClick);
    o.oeSaveValue      = FUiCheck_oeSaveValue;
+   o.construct        = FUiCheck_construct;
    o.get              = FUiCheck_get;
    o.set              = FUiCheck_set;
    o.refreshValue     = FUiCheck_refreshValue;
@@ -5537,11 +5552,20 @@ function FUiCheck_oeSaveValue(e){
    }
    return o.base.FUiEditControl.oeSaveValue.call(o, e);
 }
+function FUiCheck_construct(){
+   var o = this;
+   o.__base.FUiEditControl.construct.call(o);
+   o._editSize.set(60, 20);
+}
 function FUiCheck_get(){
-   return this._hInput.checked;
+   var o = this;
+   var v = o._hInput.checked;
+   return RBoolean.toString(v, o._valueTrue, o._valueFalse);
 }
 function FUiCheck_set(p){
-   this._hInput.checked = RBoolean.parse(p);
+   var o = this;
+   var v = (p == o._valueTrue);
+   o._hInput.checked = v;
 }
 function FUiCheck_refreshValue(){
    var o = this;
@@ -6949,6 +6973,8 @@ function FUiEditControl_onBuildLabelIcon(p){
    var o = this;
    if(o._labelIcon){
       o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, o._labelIcon);
+   }else{
+      o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, 'n', 16, 16);
    }
 }
 function FUiEditControl_onBuildLabelText(p){
@@ -6960,6 +6986,7 @@ function FUiEditControl_onBuildLabel(p){
    var h = o._hLabelForm = RBuilder.appendTable(o._hLabelPanel, o.styleName('LabelPanel'));
    var hr = RBuilder.appendTableRow(h);
    var hip = o._hIconPanel = RBuilder.appendTableCell(hr);
+   hip.width = '20px';
    o.onBuildLabelIcon(p);
    var htp = o._hTextPanel = RBuilder.appendTableCell(hr);
    htp.noWrap = true;
@@ -8168,7 +8195,7 @@ function FUiLayout_appendChild(ctl){
       }
       hCell.appendChild(ctl._hPanel);
       ctl._hLayoutCell = hCell;
-      if(!ctl.nowrap && (o.controls.last() != ctl)){
+      if((ctl.wrapCd() == EUiWrap.NextLine) && (o.controls.last() != ctl)){
          o.innerAppendLine();
       }
    }else{
@@ -8207,7 +8234,7 @@ function FUiLayout_appendChild(ctl){
          o._hPanelLast = hc;
          hc.appendChild(ctl._hPanel);
          ctl._hLayoutCell = hc;
-         if(!ctl.nowrap){
+         if(ctl.wrapCd() == EUiWrap.NextLine){
             o._hPanelLine = null;
          }
       }
@@ -8752,7 +8779,8 @@ function FUiNumber_onInputChanged(p){
 function FUiNumber_construct(){
    var o = this;
    o.__base.FUiEditControl.construct.call(o);
-   o._inputSize = new SSize2(120, 0);
+   o._editSize.set(100, 20);
+   o._inputSize = new SSize2(80, 0);
 }
 function FUiNumber_formatDisplay(p){
    var o = this;
@@ -8871,7 +8899,7 @@ function FUiNumber_drop(){
    }
 }
 function FUiNumber2(o){
-   o = RClass.inherits(this, o, FEditControl);
+   o = RClass.inherits(this, o, FUiEditControl);
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
    o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
@@ -8906,12 +8934,12 @@ function FUiNumber2_onBuildEditValue(p){
 }
 function FUiNumber2_construct(){
    var o = this;
-   o.__base.FEditControl.construct.call(o);
+   o.__base.FUiEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
 }
 function FUiNumber2_get(p){
    var o = this;
-   var r = o.__base.FEditControl.get.call(o, p);
+   var r = o.__base.FUiEditControl.get.call(o, p);
    var h = o._hInput;
    if(h){
       r = h.value;
@@ -8920,7 +8948,7 @@ function FUiNumber2_get(p){
 }
 function FUiNumber2_set(p){
    var o = this;
-   o.__base.FEditControl.set.call(o, p);
+   o.__base.FUiEditControl.set.call(o, p);
    var h = o._hInput;
    if(h){
       h.value = RString.nvl(p);
@@ -8928,7 +8956,7 @@ function FUiNumber2_set(p){
 }
 function FUiNumber2_onDataKeyDown(s, e){
    var o = this;
-   o.__base.FEditControl.onDataKeyDown.call(o, s, e);
+   o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
    }
@@ -8976,7 +9004,7 @@ function FUiNumber2_setText(t){
 }
 function FUiNumber2_validText(t){
    var o = this;
-   var r = o.__base.FEditControl.validText.call(o, t);
+   var r = o.__base.FUiEditControl.validText.call(o, t);
    if(!r){
       if(o.validLenmin){
          if(o.validLenmin > t.length){
@@ -9253,7 +9281,7 @@ function FUiNumber3_link(){
    var o = this;
 }
 function FUiNumber4(o){
-   o = RClass.inherits(this, o, FEditControl);
+   o = RClass.inherits(this, o, FUiEditControl);
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
    o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
@@ -9296,12 +9324,12 @@ function FUiNumber4_onBuildEditValue(p){
 }
 function FUiNumber4_construct(){
    var o = this;
-   o.__base.FEditControl.construct.call(o);
+   o.__base.FUiEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
 }
 function FUiNumber4_get(p){
    var o = this;
-   var r = o.__base.FEditControl.get.call(o, p);
+   var r = o.__base.FUiEditControl.get.call(o, p);
    var h = o._hInput;
    if(h){
       r = h.value;
@@ -9310,7 +9338,7 @@ function FUiNumber4_get(p){
 }
 function FUiNumber4_set(p){
    var o = this;
-   o.__base.FEditControl.set.call(o, p);
+   o.__base.FUiEditControl.set.call(o, p);
    var h = o._hInput;
    if(h){
       h.value = RString.nvl(p);
@@ -9318,7 +9346,7 @@ function FUiNumber4_set(p){
 }
 function FUiNumber4_onDataKeyDown(s, e){
    var o = this;
-   o.__base.FEditControl.onDataKeyDown.call(o, s, e);
+   o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
    }
@@ -9366,7 +9394,7 @@ function FUiNumber4_setText(t){
 }
 function FUiNumber4_validText(t){
    var o = this;
-   var r = o.__base.FEditControl.validText.call(o, t);
+   var r = o.__base.FUiEditControl.validText.call(o, t);
    if(!r){
       if(o.validLenmin){
          if(o.validLenmin > t.length){
@@ -14239,50 +14267,33 @@ function FUiToolButtonCheck_dispose(){
 }
 function FUiToolButtonMenu(o){
    o = RClass.inherits(this, o, FUiToolButton, MUiContainer, MDropable, MUiFocus);
-   o.popup         = null;
-   o.hDropPanel    = null;
+   o._popup          = null;
+   o._hDropPanel     = null;
    o._styleDropHover = RClass.register(o, new AStyleIcon('_styleDropHover'));
-   o.onBuild       = FUiToolButtonMenu_onBuild;
-   o.onEnter       = FUiToolButtonMenu_onEnter;
-   o.onLeave       = FUiToolButtonMenu_onLeave;
-   o.onBlur        = FUiToolButtonMenu_onBlur;
-   o.onButtonClick = FUiToolButtonMenu_onButtonClick;
-   o.onDropClick   = FUiToolButtonMenu_onDropClick;
-   o.construct     = FUiToolButtonMenu_construct;
-   o.push          = FUiToolButtonMenu_push;
-   o.drop          = FUiToolButtonMenu_drop;
-   o.dispose       = FUiToolButtonMenu_dispose;
+   o.onBuild         = FUiToolButtonMenu_onBuild;
+   o.onEnter         = FUiToolButtonMenu_onEnter;
+   o.onLeave         = FUiToolButtonMenu_onLeave;
+   o.onBlur          = FUiToolButtonMenu_onBlur;
+   o.onButtonClick   = FUiToolButtonMenu_onButtonClick;
+   o.onDropClick     = FUiToolButtonMenu_onDropClick;
+   o.construct       = FUiToolButtonMenu_construct;
+   o.push            = FUiToolButtonMenu_push;
+   o.drop            = FUiToolButtonMenu_drop;
+   o.dispose         = FUiToolButtonMenu_dispose;
    return o;
 }
 function FUiToolButtonMenu_onEnter(e){
    var o = this;
-   o.__base.FUiToolButton.onEnter.call(o, e);
-   if(!o.disabled){
-      o.hDropIcon.src = o.styleIconPath('DropHover');
-   }
 }
 function FUiToolButtonMenu_onLeave(e){
    var o = this;
-   if(!o.popup.isVisible()){
-      o.__base.FUiToolButton.onLeave.call(o, e);
-      if(!o.disabled){
-         o.hDropIcon.src = o.styleIconPath('Drop');
-      }
-   }
 }
 function FUiToolButtonMenu_onBlur(e){
    var o = this;
-   if(e){
-      if(o.popup.testInRange(e)){
-         return false;
-      }
-   }
-   o.hPanel.className = o.style('Button');
-   o.popup.hide();
 }
 function FUiToolButtonMenu_onButtonClick(){
    var o = this;
-   if(!o.disabled){
+   if(!o._disabled){
       o.__base.FUiToolButton.onButtonClick.call(o);
       if(!(o.action || o.page)){
          o.drop();
@@ -14298,13 +14309,13 @@ function FUiToolButtonMenu_onBuild(e){
    var o = this;
    return o.__base.FUiToolButton.onBuild.call(o, e);
    if(e.isBefore()){
-      var h = o.hDropPanel = o.hButtonLine.insertCell();
+      var h = o._hDropPanel = o.hButtonLine.insertCell();
       h.className = o.style('Drop')
-      o.hDropIcon = RBuilder.appendIcon(h, o.styleIcon('Drop'));
+      o._hDropIcon = RBuilder.appendIcon(h, o.styleIcon('Drop'));
       o.attachEvent('onDropClick', h);
    }
    if(e.isAfter()){
-      o.popup.psBuild();
+      o._popup.psBuild();
    }
    return EEventStatus.Continue;
 }
@@ -14317,15 +14328,15 @@ function FUiToolButtonMenu_push(c){
 }
 function FUiToolButtonMenu_drop(){
    var o = this;
-   if(!o.disabled){
-      o.popup.show(this.hDropPanel, EAlign.BottomRight);
+   if(!o._disabled){
+      o._popup.show(this._hDropPanel, EAlign.BottomRight);
    }
 }
 function FUiToolButtonMenu_dispose(){
    var o = this;
    o.__base.FControl.dispose.call(o);
-   o.hDropIcon = null;
-   o.hDropPanel = null;
+   o._hDropIcon = null;
+   o._hDropPanel = null;
 }
 function FUiToolButtonSplit(o){
    o = RClass.inherits(this, o, FUiToolButton, MUiToolButton);
@@ -14376,24 +14387,19 @@ function RUiToolBar_fromNode(control, config, panel, r){
       var jc = ns.count();
       for(var j = 0; j < jc; j++){
          var n = ns.getAt(j);
-         if(n.name() == 'ToolBar'){
+         if(n.isName('ToolBar')){
             if(!xtb){
                xtb = n;
-            }else if(n.nodes){
-               var ns = n.nodes();
-               var ic = ns.count();
-               for(var i = 0; i < ic; i++){
-                  xtb.push(ns.getAt(i));
-               }
+            }else if(n.hasNode()){
+               xtb.nodes().append(n.nodes());
             }
          }
       }
       if(r){
-         for(var j = ns.count() - 1; j >= 0; j--){
-            var n = ns.getAt(j);
-            if(n.name() == 'ToolBar'){
-               ns.remove(n);
-               break;
+         for(var i = 0; i < ns.count(); i++){
+            var n = ns.getAt(i);
+            if(n.isName('ToolBar')){
+               ns.erase(i--);
             }
          }
       }

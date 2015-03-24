@@ -17,6 +17,7 @@ var RInteger = new function RInteger(){
    //..........................................................
    // @method
    o.isInt      = RInteger_isInt;
+   o.isInteger  = RInteger_isInt;
    o.nvl        = RInteger_nvl;
    o.parse      = RInteger_parse;
    o.format     = RInteger_format;

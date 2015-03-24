@@ -163,7 +163,9 @@ function FUiNumber_onInputChanged(p){
 function FUiNumber_construct(){
    var o = this;
    o.__base.FUiEditControl.construct.call(o);
-   o._inputSize = new SSize2(120, 0);
+   // 设置属性
+   o._editSize.set(100, 20);
+   o._inputSize = new SSize2(80, 0);
 }
 
 //==========================================================

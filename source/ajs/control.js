@@ -247,6 +247,12 @@ var EUiSize = new function EUiSize(){
    o.Both       = 3;
    return o;
 }
+var EUiWrap = new function EUiWrap(){
+   var o = this;
+   o.NextLine = 0;
+   o.SameLine = 1;
+   return o;
+}
 function MDataProperties(o){
    o = RClass.inherits(this, o);
    o._dataProperties = null;
@@ -988,8 +994,8 @@ function MListenerSelected_processSelectedListener(p1, p2, p3, p4, p5){
 }
 function MPropertyCheck(o){
    o = RClass.inherits(this, o);
-   o._valueTrue  = RClass.register(o, new APtyNumber('_valueTrue'));
-   o._valueFalse = RClass.register(o, new APtyNumber('_valueFalse'));
+   o._valueTrue  = RClass.register(o, new APtyString('_valueTrue'), EBoolean.True);
+   o._valueFalse = RClass.register(o, new APtyString('_valueFalse'), EBoolean.False);
    return o;
 }
 function MPropertyEdit(o){
@@ -2277,9 +2283,9 @@ function FUiContainer_dispose(){
 }
 function FUiControl(o){
    o = RClass.inherits(this, o, FUiComponent, MUiStyle, MUiSize, MUiPadding);
+   o._wrapCd        = RClass.register(o, new APtyEnum('_wrapCd', null, EUiWrap, EUiWrap.NextLine));
    o._visible       = RClass.register(o, new APtyBoolean('_visible'), true);
    o._disable       = RClass.register(o, new APtyBoolean('_disable'), false);
-   o._nowrap        = RClass.register(o, new APtyBoolean('_nowrap'), false);
    o._hint          = RClass.register(o, new APtyString('_hint'));
    o._stylePanel    = RClass.register(o, new AStyle('_stylePanel'));
    o._layoutCd      = EUiLayout.Display;
@@ -2304,6 +2310,8 @@ function FUiControl(o){
    o.construct      = FUiControl_construct;
    o.topControl     = FUiControl_topControl;
    o.panel          = FUiControl_panel;
+   o.wrapCd         = FUiControl_wrapCd;
+   o.setWrapCd      = FUiControl_setWrapCd;
    o.isVisible      = FUiControl_isVisible;
    o.setVisible     = FUiControl_setVisible;
    o.show           = FUiControl_show;
@@ -2424,6 +2432,12 @@ function FUiControl_panel(p){
          return o._hPanel;
    }
    return null;
+}
+function FUiControl_wrapCd(){
+   return this._wrapCd;
+}
+function FUiControl_setWrapCd(wrapCd){
+   this._wrapCd = wrapCd;
 }
 function FUiControl_isVisible(){
    return _statusVisible;
@@ -2581,7 +2595,7 @@ function FUiControl_setPanel(h){
 function FUiControl_dispose(){
    var o = this;
    o._disable = null;
-   o._nowrap = null;
+   o._wrapCd = null;
    o._hint = null;
    o._styleContainer = null;
    o._statusVisible = null;

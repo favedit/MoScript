@@ -3604,8 +3604,14 @@ function RBoolean_parse(v){
    }
    return false;
 }
-function RBoolean_toString(v){
-   return v ? EBoolean.True : EBoolean.False;
+function RBoolean_toString(value, valueTrue, valueFalse){
+   if(valueTrue == null){
+      valueTrue = EBoolean.True;
+   }
+   if(valueFalse == null){
+      valueFalse = EBoolean.False;
+   }
+   return value ? valueTrue : valueFalse;
 }
 var RByte = new function RByte(){
    var o = this;
@@ -4869,6 +4875,7 @@ var RInteger = new function RInteger(){
    o.MAX_UINT16 = 65535;
    o.MAX_UINT32 = 4294967295;
    o.isInt      = RInteger_isInt;
+   o.isInteger  = RInteger_isInt;
    o.nvl        = RInteger_nvl;
    o.parse      = RInteger_parse;
    o.format     = RInteger_format;
@@ -5453,7 +5460,7 @@ function RString_isPattern(v, p){
       p = p.replace(/\a/g, o.LOWER);
       p = p.replace(/\A/g, o.UPPER);
       p = p.replace(/\f/g, RFloat.NUMBER);
-      p = p.replace(/\n/g, RInt.NUMBER);
+      p = p.replace(/\n/g, RInteger.NUMBER);
       var c = v.length;
       for(var n = 0; n < c; n++){
          if(p.indexOf(v.charAt(n)) == -1){

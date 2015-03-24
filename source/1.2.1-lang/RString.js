@@ -170,7 +170,7 @@ function RString_isPattern(v, p){
       p = p.replace(/\a/g, o.LOWER);
       p = p.replace(/\A/g, o.UPPER);
       p = p.replace(/\f/g, RFloat.NUMBER);
-      p = p.replace(/\n/g, RInt.NUMBER);
+      p = p.replace(/\n/g, RInteger.NUMBER);
       // 检查匹配
       var c = v.length;
       for(var n = 0; n < c; n++){

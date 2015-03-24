@@ -118,6 +118,8 @@ function FUiEditControl_onBuildLabelIcon(p){
    var o = this;
    if(o._labelIcon){
       o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, o._labelIcon);
+   }else{
+      o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, 'n', 16, 16);
    }
 }
 
@@ -144,6 +146,7 @@ function FUiEditControl_onBuildLabel(p){
    var hr = RBuilder.appendTableRow(h);
    // 建立标签图标
    var hip = o._hIconPanel = RBuilder.appendTableCell(hr);
+   hip.width = '20px';
    o.onBuildLabelIcon(p);
    // 建立标签文字
    var htp = o._hTextPanel = RBuilder.appendTableCell(hr);

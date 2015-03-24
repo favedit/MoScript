@@ -61,27 +61,22 @@ function RUiToolBar_fromNode(control, config, panel, r){
       var jc = ns.count();
       for(var j = 0; j < jc; j++){
          var n = ns.getAt(j);
-         if(n.name() == 'ToolBar'){
+         if(n.isName('ToolBar')){
             if(!xtb){
                // 获得工具栏定义
                xtb = n;
-            }else if(n.nodes){
+            }else if(n.hasNode()){
                // 合并工具栏定义
-               var ns = n.nodes();
-               var ic = ns.count();
-               for(var i = 0; i < ic; i++){
-                  xtb.push(ns.getAt(i));
-               }
+               xtb.nodes().append(n.nodes());
             }
          }
       }
       // 删除工具栏的XML节点
       if(r){
-         for(var j = ns.count() - 1; j >= 0; j--){
-            var n = ns.getAt(j);
-            if(n.name() == 'ToolBar'){
-               ns.remove(n);
-               break;
+         for(var i = 0; i < ns.count(); i++){
+            var n = ns.getAt(i);
+            if(n.isName('ToolBar')){
+               ns.erase(i--);
             }
          }
       }

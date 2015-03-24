@@ -52,9 +52,17 @@ function RBoolean_parse(v){
 // <T>把布尔值转化为字符串。</T>
 //
 // @method
-// @param v:value:Boolean 
+// @param value:Boolean 布尔值
+// @param valueTrue:String 真字符串
+// @param valueFalse:String 假字符串
 // @return String 字符串
 //==========================================================
-function RBoolean_toString(v){
-   return v ? EBoolean.True : EBoolean.False;
+function RBoolean_toString(value, valueTrue, valueFalse){
+   if(valueTrue == null){
+      valueTrue = EBoolean.True;
+   }
+   if(valueFalse == null){
+      valueFalse = EBoolean.False;
+   }
+   return value ? valueTrue : valueFalse;
 }

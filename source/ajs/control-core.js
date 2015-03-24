@@ -701,10 +701,9 @@ function FKeyConsole(o){
    o.register        = FKeyConsole_register;
    return o;
 }
-function FKeyConsole_onKeyDown(s, e){
-   debugger
+function FKeyConsole_onKeyDown(e){
    var o = this;
-   var k = REnum.tryDecode(EKey, e.keyCode);
+   var k = REnum.tryDecode(EKeyCode, e.keyCode);
    if(k && o._enable){
       var ls = o._listeners[k];
       if(ls){
@@ -746,6 +745,7 @@ function FKeyConsole_register(k, w, p){
       if(!s){
          s = ks[k] = new TListeners();
       }
+      s.clear();
       s.register(w, p);
    }
 }

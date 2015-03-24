@@ -334,7 +334,7 @@ function FUiLayout_appendChild(ctl){
       hCell.appendChild(ctl._hPanel);
       ctl._hLayoutCell = hCell;
       // 追加下一行
-      if(!ctl.nowrap && (o.controls.last() != ctl)){
+      if((ctl.wrapCd() == EUiWrap.NextLine) && (o.controls.last() != ctl)){
          o.innerAppendLine();
       }
    }else{
@@ -381,7 +381,7 @@ function FUiLayout_appendChild(ctl){
          hc.appendChild(ctl._hPanel);
          ctl._hLayoutCell = hc;
          // 追加下一行
-         if(!ctl.nowrap){
+         if(ctl.wrapCd() == EUiWrap.NextLine){
             o._hPanelLine = null;
          }
       }

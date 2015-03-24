@@ -1,12 +1,12 @@
 //==========================================================
 // <T>数字输入框。</T>
 //
-// @class FUiNumber, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel
+// @class FUiNumber4, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel
 // @history 091106 MAOCY 创建
 //==========================================================
-function FUiDataNumber(o){
-   //o = RClass.inherits(this, o, FUiNumber, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel);
-   o = RClass.inherits(this, o, FUiNumber);
+function FUiDataNumber4(o){
+   //o = RClass.inherits(this, o, FUiNumber4, MDescNumber, MEditBorder, MListView, MZoom, MMouseWheel);
+   o = RClass.inherits(this, o, FUiNumber4);
    //..........................................................
    // @property
    //o.editAlign         = EAlign.Right;
@@ -15,36 +15,36 @@ function FUiDataNumber(o){
    //o.borderStyle       = EUiBorder.RoundDrop;
    //..........................................................
    // @event
-   //o.onEditFocus       = RClass.register(o, new HFocus('onEditFocus'), FUiDataNumber_onEditFocus);
-   //o.onEditBlur        = RClass.register(o, new HBlur('onEditBlur'), FUiDataNumber_onEditBlur);
-   //o.onBuildEdit       = FUiDataNumber_onBuildEdit;
+   //o.onEditFocus       = RClass.register(o, new HFocus('onEditFocus'), FUiDataNumber4_onEditFocus);
+   //o.onEditBlur        = RClass.register(o, new HBlur('onEditBlur'), FUiDataNumber4_onEditBlur);
+   //o.onBuildEdit       = FUiDataNumber4_onBuildEdit;
    //..........................................................
    // @method
    //o.formatValue       = MDescNumber_formatValue;
    //o.formatText        = MDescNumber_formatText;
    //o.onMouseWheel      = MDescNumber_onMouseWheel;
-   //o.onDataKeyDown     = FUiDataNumber_onDataKeyDown;
-   //o.ohEditKeyUp       = FUiDataNumber_ohEditKeyUp;
+   //o.onDataKeyDown     = FUiDataNumber4_onDataKeyDown;
+   //o.ohEditKeyUp       = FUiDataNumber4_ohEditKeyUp;
    // 创建HTML标签的函数
    // 相应按键弹起事件
-   //o.onEditKeyUp       = FUiDataNumber_onEditKeyUp;
+   //o.onEditKeyUp       = FUiDataNumber4_onEditKeyUp;
    // 相应双击事件 用来做lov用
-   //o.onEditDoubleClick = FUiDataNumber_onEditDoubleClick;
+   //o.onEditDoubleClick = FUiDataNumber4_onEditDoubleClick;
    // 相应鼠标滑动事件
    //..........................................................
    // @method
    // 检查是否符合要求
    // 模式是否符合
-   //o.validPattern      = FUiDataNumber_validPattern;
+   //o.validPattern      = FUiDataNumber4_validPattern;
    // 设置显示格式
-   //o.refreshStyle      = FUiDataNumber_refreshStyle;
+   //o.refreshStyle      = FUiDataNumber4_refreshStyle;
    // 用分割符分割数据
-   //o.splitValue        = FUiDataNumber_splitValue;
+   //o.splitValue        = FUiDataNumber4_splitValue;
    // 去掉分隔符
-   //o.removeSplit       = FUiDataNumber_removeSplit;
-   //o.precisionValue    = FUiDataNumber_precisionValue;
-   //o.dispose           = FUiDataNumber_dispose;
-   //o.setUnitIcon       = FUiDataNumber_setUnitIcon;
+   //o.removeSplit       = FUiDataNumber4_removeSplit;
+   //o.precisionValue    = FUiDataNumber4_precisionValue;
+   //o.dispose           = FUiDataNumber4_dispose;
+   //o.setUnitIcon       = FUiDataNumber4_setUnitIcon;
    return o;
 }
 
@@ -53,7 +53,7 @@ function FUiDataNumber(o){
 //
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FUiDataNumber_onEditFocus(e){
+function FUiDataNumber4_onEditFocus(e){
    var o = this;
    o.setText(o.formatValue(o.text()));
 }
@@ -63,7 +63,7 @@ function FUiDataNumber_onEditFocus(e){
 //
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FUiDataNumber_onEditBlur(e){
+function FUiDataNumber4_onEditBlur(e){
    var o = this;
    o.setText(o.formatText(o.text()));
 }
@@ -73,7 +73,7 @@ function FUiDataNumber_onEditBlur(e){
 //
 // @param b:border:TBorder 边框对象
 //==========================================================
-function FUiDataNumber_onBuildEdit(b){
+function FUiDataNumber4_onBuildEdit(b){
    var o = this;
    // 建立编辑控件
    var htb = RBuilder.appendTable(b.hPanel);
@@ -108,7 +108,7 @@ function FUiDataNumber_onBuildEdit(b){
 //
 //@param b:border:TBorder 边框对象
 //==========================================================
-function FUiDataNumber_setUnitIcon(i){
+function FUiDataNumber4_setUnitIcon(i){
    var o = this;
    var hui = o.hUnit;
    hui.innerHTML = '<IMG src='+i+'>';
@@ -121,7 +121,7 @@ function FUiDataNumber_setUnitIcon(i){
 // @param s:sender 消息发送者
 // @param e:event 事件
 //==========================================================
-function FUiDataNumber_onDataKeyDown(s, e){
+function FUiDataNumber4_onDataKeyDown(s, e){
    var o = this;
    if(o.canEdit){
       if(EKey.Up == e.keyCode){
@@ -130,7 +130,7 @@ function FUiDataNumber_onDataKeyDown(s, e){
          o.adjustValue(false);
       }
    }
-   o.base.FUiNumber.onDataKeyDown.call(o, s, e);
+   o.base.FUiNumber4.onDataKeyDown.call(o, s, e);
 }
 
 //==========================================================
@@ -140,7 +140,7 @@ function FUiDataNumber_onDataKeyDown(s, e){
 // @param s:sender 消息发送者
 // @param e:event 事件
 //==========================================================
-function FUiDataNumber_ohEditKeyUp(s, e){
+function FUiDataNumber4_ohEditKeyUp(s, e){
    var o = this;
    if(EKey.Up == e.keyCode && o.canEdit){
       o.hUpIcon.src = o.styleIconPath('UpSelect');
@@ -151,7 +151,7 @@ function FUiDataNumber_ohEditKeyUp(s, e){
 
 
 //------------------------------------------------------------
-function FUiDataNumber_onEditKeyDown(e) {
+function FUiDataNumber4_onEditKeyDown(e) {
    var o = this;
    if(o.canEdit){
       if (EKey.Up == e.keyCode) {
@@ -164,7 +164,7 @@ function FUiDataNumber_onEditKeyDown(e) {
    }
 }
 //------------------------------------------------------------
-function FUiDataNumber_onEditKeyUp(e) {
+function FUiDataNumber4_onEditKeyUp(e) {
    var o = this;
    if(o.canEdit){
       if (EKey.Up == e.keyCode){
@@ -175,13 +175,13 @@ function FUiDataNumber_onEditKeyUp(e) {
    }
 }
 //------------------------------------------------------------
-function FUiDataNumber_onEditDoubleClick(){
+function FUiDataNumber4_onEditDoubleClick(){
    var o = this;
    this.onListClick();
 }
 // ------------------------------------------------------------
 // s 为没有分隔符的字符串
-function FUiDataNumber_validPattern(s) {
+function FUiDataNumber4_validPattern(s) {
    var o = this;
    var flag = true;
    var s = RString.nvl(s);
@@ -214,16 +214,16 @@ function FUiDataNumber_validPattern(s) {
    return flag;
 }
 //------------------------------------------------------------
-function FUiDataNumber_refreshStyle(){
+function FUiDataNumber4_refreshStyle(){
    var o = this;
-   o.base.FUiNumber.refreshStyle.call(o);
+   o.base.FUiNumber4.refreshStyle.call(o);
    o.hUpIcon.src = o.styleIconPath(o._hover ? 'UpSelect' : 'Up');
    o.hDownIcon.src = o.styleIconPath(o._hover ? 'DownSelect' : 'Down');
 }
 // ------------------------------------------------------------
 // 格式化数字用'号隔开数字
 // 保证是有效数字的前提下
-function FUiDataNumber_splitValue(v){
+function FUiDataNumber4_splitValue(v){
    var o = this;
    var s = RString.nvl(v.toString());
    // 负号位置
@@ -270,7 +270,7 @@ function FUiDataNumber_splitValue(v){
 }
 //------------------------------------------------------------
 // 去掉分隔符
-function FUiDataNumber_removeSplit(s){
+function FUiDataNumber4_removeSplit(s){
    var o = this;
    var s = RString.nvl(s);
    s = RString.removeChars(s,"'");
@@ -278,7 +278,7 @@ function FUiDataNumber_removeSplit(s){
    return s;
 }
 //------------------------------------------------------------
-function FUiDataNumber_precisionValue(v){
+function FUiDataNumber4_precisionValue(v){
    var o = this;
    if(RString.isEmpty(v)){
       return v;
@@ -341,9 +341,9 @@ function FUiDataNumber_precisionValue(v){
    return v;
 }
 //------------------------------------------------------------
-function FUiDataNumber_dispose(){
+function FUiDataNumber4_dispose(){
    var o = this;
-   o.base.FUiNumber.dispose.call(o);
+   o.base.FUiNumber4.dispose.call(o);
    o.hLabel = null;
    o.hUpIcon = null;
    o.hDownIcon = null;

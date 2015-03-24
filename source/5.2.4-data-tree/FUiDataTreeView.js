@@ -212,8 +212,8 @@ function FUiDataTreeView_loadNode(pn, pf){
    x.create('Attributes', o._attributes);
    var fn = pn;
    while(RClass.isClass(fn, FUiTreeNode)){
-      var xc = x.create('TreeNode');
-      fn.propertySave(xc);
+      x = x.create('TreeNode');
+      fn.propertySave(x);
       fn = fn._parent;
    }
    // 展开节点

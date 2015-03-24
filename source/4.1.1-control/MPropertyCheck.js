@@ -9,7 +9,7 @@ function MPropertyCheck(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property
-   o._valueTrue  = RClass.register(o, new APtyNumber('_valueTrue'));
-   o._valueFalse = RClass.register(o, new APtyNumber('_valueFalse'));
+   o._valueTrue  = RClass.register(o, new APtyString('_valueTrue'), EBoolean.True);
+   o._valueFalse = RClass.register(o, new APtyString('_valueFalse'), EBoolean.False);
    return o;
 }

@@ -32,13 +32,11 @@ function FKeyConsole(o){
 // <T>处理按键操作。</T>
 //
 // @method
-// @param s:sender:Obejct 发出者
-// @param e:event:<Event> 事件对象
+// @param e:event:SEvent 事件对象
 //==========================================================
-function FKeyConsole_onKeyDown(s, e){
-   debugger
+function FKeyConsole_onKeyDown(e){
    var o = this;
-   var k = REnum.tryDecode(EKey, e.keyCode);
+   var k = REnum.tryDecode(EKeyCode, e.keyCode);
    if(k && o._enable){
       var ls = o._listeners[k];
       if(ls){
@@ -126,6 +124,8 @@ function FKeyConsole_register(k, w, p){
       if(!s){
          s = ks[k] = new TListeners();
       }
+      // TODO: 暂时只允许单次注册
+      s.clear();
       s.register(w, p);
    }
 }

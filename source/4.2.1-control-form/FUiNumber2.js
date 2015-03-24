@@ -6,8 +6,8 @@
 // @version 150102
 //==========================================================
 function FUiNumber2(o){
-   //o = RClass.inherits(this, o, FEditControl, MPropertyEdit);
-   o = RClass.inherits(this, o, FEditControl);
+   //o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit);
+   o = RClass.inherits(this, o, FUiEditControl);
    //..........................................................
    // @property
    o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
@@ -131,7 +131,7 @@ function FUiNumber2_onBuildEditValue(p){
 //==========================================================
 function FUiNumber2_construct(){
    var o = this;
-   o.__base.FEditControl.construct.call(o);
+   o.__base.FUiEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
 }
 
@@ -143,7 +143,7 @@ function FUiNumber2_construct(){
 //==========================================================
 function FUiNumber2_get(p){
    var o = this;
-   var r = o.__base.FEditControl.get.call(o, p);
+   var r = o.__base.FUiEditControl.get.call(o, p);
    // 获得显示
    var h = o._hInput;
    if(h){
@@ -160,7 +160,7 @@ function FUiNumber2_get(p){
 //==========================================================
 function FUiNumber2_set(p){
    var o = this;
-   o.__base.FEditControl.set.call(o, p);
+   o.__base.FUiEditControl.set.call(o, p);
    // 设置显示
    var h = o._hInput;
    if(h){
@@ -193,7 +193,7 @@ function FUiNumber2_set(p){
 //==========================================================
 function FUiNumber2_onDataKeyDown(s, e){
    var o = this;
-   o.__base.FEditControl.onDataKeyDown.call(o, s, e);
+   o.__base.FUiEditControl.onDataKeyDown.call(o, s, e);
    // 大小写限制
    if(o.editCase){
       RKey.fixCase(e, o.editCase);
@@ -266,7 +266,7 @@ function FUiNumber2_setText(t){
 //==========================================================
 function FUiNumber2_validText(t){
    var o = this;
-   var r = o.__base.FEditControl.validText.call(o, t);
+   var r = o.__base.FUiEditControl.validText.call(o, t);
    if(!r){
       // 最小长度的校验
       if(o.validLenmin){

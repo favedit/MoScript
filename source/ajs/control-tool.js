@@ -326,50 +326,33 @@ function FUiToolButtonCheck_dispose(){
 }
 function FUiToolButtonMenu(o){
    o = RClass.inherits(this, o, FUiToolButton, MUiContainer, MDropable, MUiFocus);
-   o.popup         = null;
-   o.hDropPanel    = null;
+   o._popup          = null;
+   o._hDropPanel     = null;
    o._styleDropHover = RClass.register(o, new AStyleIcon('_styleDropHover'));
-   o.onBuild       = FUiToolButtonMenu_onBuild;
-   o.onEnter       = FUiToolButtonMenu_onEnter;
-   o.onLeave       = FUiToolButtonMenu_onLeave;
-   o.onBlur        = FUiToolButtonMenu_onBlur;
-   o.onButtonClick = FUiToolButtonMenu_onButtonClick;
-   o.onDropClick   = FUiToolButtonMenu_onDropClick;
-   o.construct     = FUiToolButtonMenu_construct;
-   o.push          = FUiToolButtonMenu_push;
-   o.drop          = FUiToolButtonMenu_drop;
-   o.dispose       = FUiToolButtonMenu_dispose;
+   o.onBuild         = FUiToolButtonMenu_onBuild;
+   o.onEnter         = FUiToolButtonMenu_onEnter;
+   o.onLeave         = FUiToolButtonMenu_onLeave;
+   o.onBlur          = FUiToolButtonMenu_onBlur;
+   o.onButtonClick   = FUiToolButtonMenu_onButtonClick;
+   o.onDropClick     = FUiToolButtonMenu_onDropClick;
+   o.construct       = FUiToolButtonMenu_construct;
+   o.push            = FUiToolButtonMenu_push;
+   o.drop            = FUiToolButtonMenu_drop;
+   o.dispose         = FUiToolButtonMenu_dispose;
    return o;
 }
 function FUiToolButtonMenu_onEnter(e){
    var o = this;
-   o.__base.FUiToolButton.onEnter.call(o, e);
-   if(!o.disabled){
-      o.hDropIcon.src = o.styleIconPath('DropHover');
-   }
 }
 function FUiToolButtonMenu_onLeave(e){
    var o = this;
-   if(!o.popup.isVisible()){
-      o.__base.FUiToolButton.onLeave.call(o, e);
-      if(!o.disabled){
-         o.hDropIcon.src = o.styleIconPath('Drop');
-      }
-   }
 }
 function FUiToolButtonMenu_onBlur(e){
    var o = this;
-   if(e){
-      if(o.popup.testInRange(e)){
-         return false;
-      }
-   }
-   o.hPanel.className = o.style('Button');
-   o.popup.hide();
 }
 function FUiToolButtonMenu_onButtonClick(){
    var o = this;
-   if(!o.disabled){
+   if(!o._disabled){
       o.__base.FUiToolButton.onButtonClick.call(o);
       if(!(o.action || o.page)){
          o.drop();
@@ -385,13 +368,13 @@ function FUiToolButtonMenu_onBuild(e){
    var o = this;
    return o.__base.FUiToolButton.onBuild.call(o, e);
    if(e.isBefore()){
-      var h = o.hDropPanel = o.hButtonLine.insertCell();
+      var h = o._hDropPanel = o.hButtonLine.insertCell();
       h.className = o.style('Drop')
-      o.hDropIcon = RBuilder.appendIcon(h, o.styleIcon('Drop'));
+      o._hDropIcon = RBuilder.appendIcon(h, o.styleIcon('Drop'));
       o.attachEvent('onDropClick', h);
    }
    if(e.isAfter()){
-      o.popup.psBuild();
+      o._popup.psBuild();
    }
    return EEventStatus.Continue;
 }
@@ -404,15 +387,15 @@ function FUiToolButtonMenu_push(c){
 }
 function FUiToolButtonMenu_drop(){
    var o = this;
-   if(!o.disabled){
-      o.popup.show(this.hDropPanel, EAlign.BottomRight);
+   if(!o._disabled){
+      o._popup.show(this._hDropPanel, EAlign.BottomRight);
    }
 }
 function FUiToolButtonMenu_dispose(){
    var o = this;
    o.__base.FControl.dispose.call(o);
-   o.hDropIcon = null;
-   o.hDropPanel = null;
+   o._hDropIcon = null;
+   o._hDropPanel = null;
 }
 function FUiToolButtonSplit(o){
    o = RClass.inherits(this, o, FUiToolButton, MUiToolButton);
@@ -463,24 +446,19 @@ function RUiToolBar_fromNode(control, config, panel, r){
       var jc = ns.count();
       for(var j = 0; j < jc; j++){
          var n = ns.getAt(j);
-         if(n.name() == 'ToolBar'){
+         if(n.isName('ToolBar')){
             if(!xtb){
                xtb = n;
-            }else if(n.nodes){
-               var ns = n.nodes();
-               var ic = ns.count();
-               for(var i = 0; i < ic; i++){
-                  xtb.push(ns.getAt(i));
-               }
+            }else if(n.hasNode()){
+               xtb.nodes().append(n.nodes());
             }
          }
       }
       if(r){
-         for(var j = ns.count() - 1; j >= 0; j--){
-            var n = ns.getAt(j);
-            if(n.name() == 'ToolBar'){
-               ns.remove(n);
-               break;
+         for(var i = 0; i < ns.count(); i++){
+            var n = ns.getAt(i);
+            if(n.isName('ToolBar')){
+               ns.erase(i--);
             }
          }
       }

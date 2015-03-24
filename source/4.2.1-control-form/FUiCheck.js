@@ -22,6 +22,8 @@ function FUiCheck(o){
    o.oeSaveValue      = FUiCheck_oeSaveValue;
    //..........................................................
    // @method
+   o.construct        = FUiCheck_construct;
+   // @method
    o.get              = FUiCheck_get;
    o.set              = FUiCheck_set;
    o.refreshValue     = FUiCheck_refreshValue;
@@ -71,13 +73,28 @@ function FUiCheck_oeSaveValue(e){
 }
 
 //==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FUiCheck_construct(){
+   var o = this;
+   // 父处理
+   o.__base.FUiEditControl.construct.call(o);
+   // 设置属性
+   o._editSize.set(60, 20);
+}
+
+//==========================================================
 // <T>获得数据。</T>
 //
 // @method
 // @return String 数据
 //==========================================================
 function FUiCheck_get(){
-   return this._hInput.checked;
+   var o = this;
+   var v = o._hInput.checked;
+   return RBoolean.toString(v, o._valueTrue, o._valueFalse);
 }
 
 //==========================================================
@@ -87,7 +104,9 @@ function FUiCheck_get(){
 // @param p:value:String 数据
 //==========================================================
 function FUiCheck_set(p){
-   this._hInput.checked = RBoolean.parse(p);
+   var o = this;
+   var v = (p == o._valueTrue);
+   o._hInput.checked = v;
 }
 
 //==========================================================
