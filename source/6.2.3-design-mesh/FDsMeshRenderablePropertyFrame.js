@@ -13,8 +13,8 @@ function FDsMeshRenderablePropertyFrame(o){
    // @attribute
    o._workspace        = null;
    // @attribute
-   o._activeRenderable = null;
-   o._activeMaterial   = null;
+   o._activeSpace = null;
+   o._activeRenderable   = null;
    // @attribute
    o._controlGuid      = null;
    o._controlCode      = null;
@@ -47,23 +47,21 @@ function FDsMeshRenderablePropertyFrame_construct(){
 // <T>加载渲染对象信息。</T>
 //
 // @method
-// @param s:scene:FE3dScene 场景
-// @param r:renderable:FE3dSceneRenderable 渲染对象
+// @param space:FE3dSpace 空间
+// @param renderable:FE3dRenderable 渲染对象
 //==========================================================
-function FDsMeshRenderablePropertyFrame_loadObject(s, r){
+function FDsMeshRenderablePropertyFrame_loadObject(space, renderable){
    var o = this;
-   // 获得材质
-   //var m = r.materialReference();
-   //var s = r.renderable().resource();
+   var resource = renderable.resource();
    // 设置属性
-   //o._activeRenderable = r;
-   //o._activeMaterial = m;
+   o._activeSpace = space;
+   o._activeRenderable = renderable;
    // 设置参数
-   //o._controlGuid.set(s.guid());
-   //o._controlCode.set(s.code());
-   //o._controlLabel.set(s.label());
+   o._controlGuid.set(resource.guid());
+   o._controlCode.set(resource.code());
+   o._controlLabel.set(resource.label());
    // 设置参数
-   //o._frameRenderable.loadObject(s, r);
+   o._frameRenderable.loadObject(space, renderable);
    //o._frameMaterial1.loadObject(s, m);
    //o._frameMaterial2.loadObject(s, m);
 }

@@ -4,28 +4,24 @@
 // @author maocy
 // @history 150128
 //==========================================================
-function FE3sMesh(o){
-   o = RClass.inherits(this, o, FE3sSpace);
+function FE3sModelMesh(o){
+   o = RClass.inherits(this, o, FE3sResource);
    //..........................................................
    // @attribute
    o._dataCompress = true;
-   o._typeName     = 'Mesh';
    // @attribute
    o._outline      = null;
    o._streams      = null;
    o._tracks       = null;
-   o._display      = null;
-   o._renderable   = null;
    //..........................................................
    // @method
-   o.construct     = FE3sMesh_construct;
+   o.construct     = FE3sModelMesh_construct;
    // @method
-   o.outline       = FE3sMesh_outline;
-   o.streams       = FE3sMesh_streams;
-   o.tracks        = FE3sMesh_tracks;
+   o.outline       = FE3sModelMesh_outline;
+   o.streams       = FE3sModelMesh_streams;
+   o.tracks        = FE3sModelMesh_tracks;
    // @method
-   o.unserialize   = FE3sMesh_unserialize;
-   o.saveConfig    = FE3sMesh_saveConfig;
+   o.unserialize   = FE3sModelMesh_unserialize;
    return o;
 }
 
@@ -34,11 +30,10 @@ function FE3sMesh(o){
 //
 // @method
 //==========================================================
-function FE3sMesh_construct(){
+function FE3sModelMesh_construct(){
    var o = this;
-   o.__base.FE3sSpace.construct.call(o);
+   o.__base.FE3sResource.construct.call(o);
    o._outline = new SOutline3d();
-   o._display = RClass.create(FE3sMeshDisplay);
 }
 
 //==========================================================
@@ -47,7 +42,7 @@ function FE3sMesh_construct(){
 // @method
 // @return SOutline3 轮廓
 //==========================================================
-function FE3sMesh_outline(){
+function FE3sModelMesh_outline(){
    return this._outline;
 }
 
@@ -57,7 +52,7 @@ function FE3sMesh_outline(){
 // @method
 // @return TObjects 数据流集合
 //==========================================================
-function FE3sMesh_streams(){
+function FE3sModelMesh_streams(){
    return this._streams;
 }
 
@@ -67,7 +62,7 @@ function FE3sMesh_streams(){
 // @method
 // @return TObjects 跟踪集合
 //==========================================================
-function FE3sMesh_tracks(){
+function FE3sModelMesh_tracks(){
    return this._tracks;
 }
 
@@ -78,9 +73,9 @@ function FE3sMesh_tracks(){
 // @param p:input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FE3sMesh_unserialize(p){
+function FE3sModelMesh_unserialize(p){
    var o = this;
-   o.__base.FE3sSpace.unserialize.call(o, p);
+   o.__base.FE3sResource.unserialize.call(o, p);
    // 读取属性
    o._outline.unserialize(p);
    o._outline.update();
@@ -94,20 +89,4 @@ function FE3sMesh_unserialize(p){
          ss.push(s);
       }
    }
-   // 读取渲染信息
-   o._display.unserialize(p);
-   o._renderable = o._display._renderable;
-}
-
-//==========================================================
-// <T>数据内容存储到配置节点中。</T>
-//
-// @method
-// @param p:config:TXmlNode 配置节点
-//==========================================================
-function FE3sMesh_saveConfig(p){
-   var o = this;
-   o.__base.FE3sSpace.saveConfig.call(o, p);
-   // 存储属性
-   o._display.saveConfig(p.create('Display'));
 }

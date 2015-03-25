@@ -24,6 +24,19 @@ var EStageKey = new function EStageKey(){
    o.RotationDown  = EKeyCode.X;
    return o;
 }
+function MLinkerResource(o){
+   o = RClass.inherits(this, o);
+   o._resource   = null;
+   o.resource    = MLinkerResource_resource;
+   o.setResource = MLinkerResource_setResource;
+   return o;
+}
+function MLinkerResource_resource(){
+   return this._resource;
+}
+function MLinkerResource_setResource(resource){
+   this._resource = resource;
+}
 function MListenerEnterFrame(o){
    o = RClass.inherits(this, o, MListener);
    o.addEnterFrameListener     = MListenerEnterFrame_addEnterFrameListener;

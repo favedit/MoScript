@@ -8,10 +8,11 @@ function FE3sSceneConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._scenes     = null;
    o._venderCode = 'scene';
    o._serviceUrl = '/cloud.content.scene.ws'
    o._dataUrl    = '/cloud.content.scene.wv'
+   // @attribute
+   o._scenes     = null;
    //..........................................................
    // @method
    o.construct   = FE3sSceneConsole_construct;

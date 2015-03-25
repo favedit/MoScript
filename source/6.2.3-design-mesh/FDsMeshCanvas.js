@@ -8,8 +8,7 @@ function FDsMeshCanvas(o){
    o = RClass.inherits(this, o, FDsCanvas);
    //..........................................................
    // @attribute
-   o._activeStage         = null;
-   o._activeMesh          = null;
+   o._activeSpace         = null;
    // @attribute
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
@@ -52,8 +51,6 @@ function FDsMeshCanvas(o){
    o.innerSelectDisplay   = FDsMeshCanvas_innerSelectDisplay;
    o.innerSelectLayer     = FDsMeshCanvas_innerSelectLayer;
    o.selectNone           = FDsMeshCanvas_selectNone;
-   o.selectLayers         = FDsMeshCanvas_selectLayers;
-   o.selectLayer          = FDsMeshCanvas_selectLayer;
    o.selectDisplay        = FDsMeshCanvas_selectDisplay;
    o.selectMaterial       = FDsMeshCanvas_selectMaterial;
    o.selectRenderable     = FDsMeshCanvas_selectRenderable;
@@ -75,32 +72,32 @@ function FDsMeshCanvas_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
    // 创建简单舞台
-   var g = o._activeStage = RClass.create(FE3dSimpleStage);
-   g.linkGraphicContext(o);
-   g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
-   g.selectTechnique(o, FE3dGeneralTechnique);
+   //var g = o._activeStage = RClass.create(FE3dSimpleStage);
+   //g.linkGraphicContext(o);
+   //g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
+   //g.selectTechnique(o, FE3dGeneralTechnique);
    //g.addEnterFrameListener(o, o.onEnterFrame);
-   var sl = o._layer = o._activeStage.spriteLayer();
-   RStage.register('stage3d', o._activeStage);
+   //var sl = o._layer = o._activeStage.spriteLayer();
+   //RStage.register('stage3d', o._activeStage);
    // 设置相机
-   var rc = g.camera();
-   rc.setPosition(0, 3, -10);
-   rc.lookAt(0, 3, 0);
-   rc.update();
+   //var rc = g.camera();
+   //rc.setPosition(0, 3, -10);
+   //rc.lookAt(0, 3, 0);
+   //rc.update();
    // 设置投影
-   var h = o._hPanel;
-   var rp = rc.projection();
-   rp.size().set(h.width, h.height);
-   rp._angle = 45;
-   rp.update();
+   //var h = o._hPanel;
+   //var rp = rc.projection();
+   //rp.size().set(h.width, h.height);
+   //rp._angle = 45;
+   //rp.update();
    // 设置光源
-   var l = g.directionalLight();
-   var lc = l.camera();
-   lc.setPosition(10, 10, 0);
-   lc.lookAt(0, 0, 0);
-   lc.update();
+   //var l = g.directionalLight();
+   //var lc = l.camera();
+   //lc.setPosition(10, 10, 0);
+   //lc.lookAt(0, 0, 0);
+   //lc.update();
    // 设置坐标系
-   sl.pushRenderable(o._dimensional);
+   //sl.pushRenderable(o._dimensional);
 
 
    //var o = this;
@@ -127,12 +124,12 @@ function FDsMeshCanvas_onBuild(p){
 //==========================================================
 function FDsMeshCanvas_onMouseCaptureStart(p){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
    // 选取物件
-   var r = o._activeStage.region();
+   var r = o._activeSpace.region();
    var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
    var r = st.test(r, p.offsetX, p.offsetY);
    o.selectRenderable(r);
@@ -166,7 +163,7 @@ function FDsMeshCanvas_onMouseCaptureStart(p){
 //==========================================================
 function FDsMeshCanvas_onMouseCapture(p){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
@@ -185,7 +182,7 @@ function FDsMeshCanvas_onMouseCapture(p){
    var tm = o._templateMatrix;
    switch(mc){
       case EDsCanvasMode.Drop:
-         var c = o._activeStage.camera();
+         var c = o._activeSpace.camera();
          var r = c.rotation();
          var cr = o._captureRotation;
          r.x = cr.x - cy * o._cameraMouseRotation;
@@ -260,7 +257,7 @@ function FDsMeshCanvas_onMouseCaptureStop(p){
 //==========================================================
 function FDsMeshCanvas_onEnterFrame(){
    var o = this;
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
@@ -313,10 +310,10 @@ function FDsMeshCanvas_onEnterFrame(){
    // 旋转模型
    if(o._optionRotation){
       var r = o._rotation;
-      var d = o._activeMesh;
-      var m = d.matrix();
-      m.setRotation(m.rx, m.ry + r.y, m.rz);
-      m.update();
+      var display = o._activeSpace._display;
+      var matrix = display.matrix();
+      matrix.setRotation(matrix.rx, matrix.ry + r.y, matrix.rz);
+      matrix.update();
       // 设置变量
       r.y = 0.01;
    }
@@ -330,12 +327,32 @@ function FDsMeshCanvas_onEnterFrame(){
 //==========================================================
 function FDsMeshCanvas_onMeshLoad(p){
    var o = this;
-   var m = o._activeMesh;
-   var rm = m.renderables().getAt(0).matrix();
-   rm.tz = -300;
-   rm.updateForce();
-   var mi = m.renderables().get(0).material().info();
-   mi.ambientColor.set(1.0, 1.0, 1.0);
+   var m = o._activeSpace;
+   var g = m.region();
+   // 设置相机
+   var rc = g.camera();
+   rc.setPosition(0, 3, -10);
+   rc.lookAt(0, 3, 0);
+   rc.update();
+   // 设置投影
+   var h = o._hPanel;
+   var rp = rc.projection();
+   rp.size().set(h.width, h.height);
+   rp._angle = 45;
+   rp.update();
+   // 设置光源
+   var l = g.directionalLight();
+   var lc = l.camera();
+   lc.setPosition(10, 10, 0);
+   lc.lookAt(0, 0, 0);
+   lc.update();
+
+
+   //var rm = m.renderables().getAt(0).matrix();
+   //rm.tz = -300;
+   //rm.updateForce();
+   //var mi = m.renderables().get(0).material().info();
+   //mi.ambientColor.set(1.0, 1.0, 1.0);
    // 加载完成
    o.processLoadListener(o);
 }
@@ -353,7 +370,7 @@ function FDsMeshCanvas_oeResize(p){
    var w = hp.offsetWidth;
    var h = hp.offsetHeight;
    // 设置投影
-   var s = o._activeStage;
+   var s = o._activeSpace;
    if(s){
       var cp = s.camera().projection();
       cp.size().set(w, h);
@@ -442,39 +459,6 @@ function FDsMeshCanvas_selectNone(){
       r.hideBoundBox();
    }
    o._selectRenderables.clear();
-}
-
-//==========================================================
-// <T>选中渲染层处理。</T>
-//
-// @method
-// @param p:layer:FDisplayLayer 渲染层
-//==========================================================
-function FDsMeshCanvas_selectLayers(p){
-   var o = this;
-   // 取消选中
-   o.selectNone();
-   // 选中集合
-   var s = o._activeStage.layers();
-   for(var i = s.count() - 1; i >= 0; i--){
-      o.innerSelectLayer(s.valueAt(i));
-   }
-}
-
-//==========================================================
-// <T>选中渲染层处理。</T>
-//
-// @method
-// @param p:layer:FDisplayLayer 渲染层
-//==========================================================
-function FDsMeshCanvas_selectLayer(p){
-   var o = this;
-   // 取消选中
-   o.selectNone();
-   // 选中对象
-   o._selectObject = p;
-   // 选中集合
-   o.innerSelectLayer(p);
 }
 
 //==========================================================
@@ -653,14 +637,14 @@ function FDsMeshCanvas_switchRotation(p){
 // <T>重新加载区域。</T>
 //
 // @method
+// @param region:FE3dRegion 区域
 //==========================================================
-function FDsMeshCanvas_reloadRegion(p){
+function FDsMeshCanvas_reloadRegion(region){
    var o = this;
-   var s = o._activeStage;
-   var r = s._region._resource;
-   o._cameraMoveRate = r.moveSpeed();
-   o._cameraKeyRotation = r.rotationKeySpeed();
-   o._cameraMouseRotation = r.rotationMouseSpeed();
+   var resource = region.resource();
+   o._cameraMoveRate = resource.moveSpeed();
+   o._cameraKeyRotation = resource.rotationKeySpeed();
+   o._cameraMouseRotation = resource.rotationMouseSpeed();
 }
 
 //==========================================================
@@ -671,18 +655,21 @@ function FDsMeshCanvas_reloadRegion(p){
 function FDsMeshCanvas_loadMeshByCode(p){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
-   if(o._activeMesh != null){
-      rmc.free(o._activeMesh);
+   if(o._activeSpace != null){
+      rmc.free(o._activeSpace);
    }
    // 收集一个显示模板
-   var m = rmc.allocByCode(o, p);
-   m.addLoadListener(o, o.onMeshLoad);
-   m.matrix().setTranslate(0, 1, 0);
-   m.matrix().setRotation(0, Math.PI, Math.PI);
-   m.matrix().setScaleAll(0.003);
-   m.matrix().updateForce();
-   o._layer.pushDisplay(m);
-   o._activeMesh = m;
+   var space = o._activeSpace = rmc.allocByCode(o, p);
+   space.addLoadListener(o, o.onMeshLoad);
+   // 设置坐标系
+   space._layer.pushRenderable(o._dimensional);
+   // 启动舞台
+   RStage.register('mesh3d', space);
+   //m.matrix().setTranslate(0, 1, 0);
+   //m.matrix().setRotation(0, Math.PI, Math.PI);
+   //m.matrix().setScaleAll(0.003);
+   //m.matrix().updateForce();
+   //o._layer.pushDisplay(m);
 }
 
 //==========================================================

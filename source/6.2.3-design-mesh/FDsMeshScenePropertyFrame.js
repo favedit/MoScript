@@ -14,8 +14,7 @@ function FDsMeshScenePropertyFrame(o){
    // @attribute
    o._workspace      = null;
    // @attribute
-   o._activeScene    = null;
-   o._activeMesh     = null;
+   o._activeSpace    = null;
    // @attribute
    o._controlGuid    = null;
    o._controlCode    = null;
@@ -63,19 +62,18 @@ function FDsMeshScenePropertyFrame_construct(){
 // <T>加载材质信息。</T>
 //
 // @method
-// @param t:template:FTemplate3d 模板
-// @param m:material:FE3sMaterial 材质
+// @param space:FE3dSpace 空间
+// @param select:FObject 选中对象
 //==========================================================
-function FDsMeshScenePropertyFrame_loadObject(s, m){
+function FDsMeshScenePropertyFrame_loadObject(space, select){
    var o = this;
-   var r = m._renderable._resource;
+   var resource = select.resource();
    // 设置属性
-   o._activeScene = s;
-   o._activeMesh = m;
+   o._activeSpace = space;
    // 设置参数
-   o._controlGuid.set(r.guid());
-   o._controlCode.set(r.code());
-   o._controlLabel.set(r._label);
+   o._controlGuid.set(resource.guid());
+   o._controlCode.set(resource.code());
+   o._controlLabel.set(resource.label());
 }
 
 //==========================================================

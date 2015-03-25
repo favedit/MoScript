@@ -8,8 +8,8 @@ function FDsMeshMaterial1Frame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._scene                 = null;
-   o._material              = null;
+   o._activeSpace                 = null;
+   o._activeMaterial              = null;
    // @attribute
    o._controlOptionDouble   = null;
    o._controlEffectCode     = null;
@@ -107,23 +107,23 @@ function FDsMeshMaterial1Frame_onBuilded(p){
 //==========================================================
 function FDsMeshMaterial1Frame_onOptionChanged(p){
    var o = this;
-   var t = o._scene;
-   var m = o._material;
-   var mr = m.resource();
-   var mi = mr.info();
+   //var t = o._activeSpace;
+   //var m = o._activeMaterial;
+   //var mr = m.resource();
+   //var mi = mr.info();
    // 设置效果（修改错误会无法运行）
    // mi.effectCode = o._controlEffectCode.get();
    // 设置配置
-   mi.optionColor = o._controlOptionColor.get();
-   mi.optionAmbient = o._controlOptionAmbient.get();
-   mi.optionDiffuse = o._controlOptionDiffuse.get();
-   mi.optionSpecular = o._controlOptionSpecular.get();
-   mi.optionReflect = o._controlOptionReflect.get();
-   mi.optionEmissive = o._controlOptionEmissive.get();
+   //mi.optionColor = o._controlOptionColor.get();
+   //mi.optionAmbient = o._controlOptionAmbient.get();
+   //mi.optionDiffuse = o._controlOptionDiffuse.get();
+   //mi.optionSpecular = o._controlOptionSpecular.get();
+   //mi.optionReflect = o._controlOptionReflect.get();
+   //mi.optionEmissive = o._controlOptionEmissive.get();
    // 重新加载资源
-   m.reload();
-   m._display.reloadResource();
-   o._scene.dirty();
+   //m.reloadResource();
+   //m._display.reloadResource();
+   //o._activeSpace.dirty();
 }
 
 //==========================================================
@@ -135,8 +135,8 @@ function FDsMeshMaterial1Frame_onOptionChanged(p){
 //==========================================================
 function FDsMeshMaterial1Frame_onDataChanged(p){
    var o = this;
-   var t = o._scene;
-   var m = o._material;
+   var t = o._activeSpace;
+   var m = o._activeMaterial;
    var mr = m.resource();
    var mi = mr.info();
    // 设置效果
@@ -165,8 +165,8 @@ function FDsMeshMaterial1Frame_onDataChanged(p){
    // 设置发光颜色
    mi.emissiveColor.assign(o._controlEmissiveColor.get());
    // 重新加载资源
-   m.reload();
-   m._display.reloadResource();
+   m.reloadResource();
+   //m._display.reloadResource();
 }
 
 //==========================================================
@@ -184,14 +184,14 @@ function FDsMeshMaterial1Frame_construct(){
 // <T>加载材质信息。</T>
 //
 // @method
-// @param s:scene:FE3dScene 场景
-// @param m:material:FE3sMaterial 材质
+// @param space:FE3dSpace 空间
+// @param material:FE3sMaterial 材质
 //==========================================================
-function FDsMeshMaterial1Frame_loadObject(s, m){
+function FDsMeshMaterial1Frame_loadObject(space, material){
    var o = this;
-   o._scene = s;
-   o._material = m;
-   var mr = m.resource();
+   o._activeSpace = space;
+   o._activeMaterial = material;
+   var mr = material.resource();
    var mi = mr.info();
    // 设置参数
    o._controlOptionDouble.set(mi.optionDouble);

@@ -12,9 +12,9 @@ function FDsMeshRegionPropertyFrame(o){
    o._visible                 = false;
    // @attribute
    o._workspace               = null;
-   o._scene                   = null;
-   o._region                  = null;
-   o._regionResource          = null;
+   o._activeSpace                   = null;
+   o._activeRegion                  = null;
+   o._activeRegionResource          = null;
    // @attribute
    o._controlOptionBackground = null;
    o._controlBackgroundColor  = null;
@@ -58,16 +58,17 @@ function FDsMeshRegionPropertyFrame_onBuilded(p){
 //==========================================================
 function FDsMeshRegionPropertyFrame_onDataChanged(p){
    var o = this;
+   var region = o._activeRegion;
+   var resource = region.resource();
    // 获得内容
-   var r = o._regionResource;
-   r.setOptionBackground(o._controlOptionBackground.get());
-   r.backgroundColor().assign(o._controlBackgroundColor.get());
-   r.setMoveSpeed(o._controlMoveSpeed.get());
-   r.setRotationKeySpeed(o._controlRotationKeySpeed.get());
-   r.setRotationMouseSpeed(o._controlRotationMouseSpeed.get());
+   resource.setOptionBackground(o._controlOptionBackground.get());
+   resource.backgroundColor().assign(o._controlBackgroundColor.get());
+   resource.setMoveSpeed(o._controlMoveSpeed.get());
+   resource.setRotationKeySpeed(o._controlRotationKeySpeed.get());
+   resource.setRotationMouseSpeed(o._controlRotationMouseSpeed.get());
    // 重新加载资源
-   o._region.reloadResource();
-   o._workspace._canvas.reloadRegion();
+   region.reloadResource();
+   o._workspace._canvas.reloadRegion(region);
 }
 
 //==========================================================
@@ -84,22 +85,22 @@ function FDsMeshRegionPropertyFrame_construct(){
 // <T>加载材质信息。</T>
 //
 // @method
-// @param s:scene:FE3dScene 场景
-// @param t:technique:FG3dTechnique 技术
+// @param space:FE3dSpace 空间
+// @param region:FE3dRegion 区域
 //==========================================================
-function FDsMeshRegionPropertyFrame_loadObject(s, t){
+function FDsMeshRegionPropertyFrame_loadObject(space, region){
    var o = this;
+   var resource = region.resource();
    // 设置属性
-   o._scene = s;
-   o._region = t;
-   //var r = o._regionResource = t._resource;
+   o._activeSpace = space;
+   o._activeRegion = region;
    // 设置速度
-   //o._controlMoveSpeed.set(r.moveSpeed());
-   //o._controlRotationKeySpeed.set(r.rotationKeySpeed());
-   //o._controlRotationMouseSpeed.set(r.rotationMouseSpeed());
+   o._controlMoveSpeed.set(resource.moveSpeed());
+   o._controlRotationKeySpeed.set(resource.rotationKeySpeed());
+   o._controlRotationMouseSpeed.set(resource.rotationMouseSpeed());
    // 设置背景
-   //o._controlOptionBackground.set(r.optionBackground());
-   //o._controlBackgroundColor.set(r.backgroundColor());
+   o._controlOptionBackground.set(resource.optionBackground());
+   o._controlBackgroundColor.set(resource.backgroundColor());
 }
 
 //==========================================================

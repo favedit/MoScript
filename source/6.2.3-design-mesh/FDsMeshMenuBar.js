@@ -8,7 +8,7 @@ function FDsMeshMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
    // @property
-   o._frameName     = 'design3d.scene.MenuBar';
+   o._frameName     = 'design3d.mesh.MenuBar';
    //..........................................................
    // @attribute
    o._refreshButton = null;
@@ -18,9 +18,7 @@ function FDsMeshMenuBar(o){
    // @event
    o.onBuilded      = FDsMeshMenuBar_onBuilded;
    // @event
-   o.onRefreshClick = FDsMeshMenuBar_onRefreshClick;
    o.onSaveClick    = FDsMeshMenuBar_onSaveClick;
-   o.onRunClick     = FDsMeshMenuBar_onRunClick;
    //..........................................................
    // @method
    o.construct      = FDsMeshMenuBar_construct;
@@ -40,21 +38,7 @@ function FDsMeshMenuBar_onBuilded(p){
    o.__base.FUiMenuBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   o._refreshButton.addClickListener(o, o.onRefreshClick);
    o._saveButton.addClickListener(o, o.onSaveClick);
-   o._runButton.addClickListener(o, o.onRunClick);
-}
-
-//==========================================================
-// <T>刷新按键处理。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FDsMeshMenuBar_onRefreshClick(p){
-   var o = this;
-   //var catalog = o._worksapce._catalog;
-   //catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
 }
 
 //==========================================================
@@ -65,26 +49,13 @@ function FDsMeshMenuBar_onRefreshClick(p){
 //==========================================================
 function FDsMeshMenuBar_onSaveClick(p){
    var o = this;
-   var s = o._workspace._activeScene;
-   var r = s._resource;
+   var space = o._workspace._activeSpace;
+   var resource = space.resource();
    // 存储配置
-   var x = new TXmlNode();
-   r.saveConfig(x);
+   var xconfig = new TXmlNode();
+   resource.saveConfig(xconfig);
    // 更新处理
-   RConsole.find(FE3sSceneConsole).update(x);
-}
-
-//==========================================================
-// <T>保存按键处理。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FDsMeshMenuBar_onRunClick(p){
-   var o = this;
-   var u = '../design/view.html?code=' + o._workspace._sceneCode;
-   //window.open(u);
-   window.location = u;
+   RConsole.find(FE3sMeshConsole).update(xconfig);
 }
 
 //==========================================================

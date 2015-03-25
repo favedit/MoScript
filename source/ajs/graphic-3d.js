@@ -231,6 +231,7 @@ function MG3dRenderable(o){
    o._activeInfo    = null;
    o._infos         = null;
    o.construct      = MG3dRenderable_construct;
+   o.createMaterial = MG3dRenderable_createMaterial;
    o.currentMatrix  = MG3dRenderable_currentMatrix;
    o.matrix         = MG3dRenderable_matrix;
    o.material       = MG3dRenderable_material;
@@ -250,7 +251,10 @@ function MG3dRenderable_construct(){
    var o = this;
    o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
-   o._material = RClass.create(FG3dMaterial);
+   o._material = o.createMaterial();
+}
+function MG3dRenderable_createMaterial(){
+   return RClass.create(FG3dMaterial);
 }
 function MG3dRenderable_currentMatrix(){
    return this._currentMatrix;

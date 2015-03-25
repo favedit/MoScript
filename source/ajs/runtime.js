@@ -1,6 +1,3 @@
-var MO = new function MO(){
-   return this;
-}
 var ELogger = new function ELogger(){
    var o = this;
    o.Debug = 'D';

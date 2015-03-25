@@ -12,11 +12,8 @@ function FDsMeshCatalog(o){
    o._iconViewNot          = 'design3d.mesh.viewno';
    //..........................................................
    // @attributes
-   o._activeStage          = null;
-   o._activeMesh           = null;
+   o._activeSpace          = null;
    // @attributes
-   o._displays             = null;
-   o._renderables          = null;
    o._materials            = null;
    //..........................................................
    // @event
@@ -37,7 +34,7 @@ function FDsMeshCatalog(o){
    o.buildRegion           = FDsMeshCatalog_buildRegion;
    o.buildRenderable       = FDsMeshCatalog_buildRenderable;
    o.buildDisplay          = FDsMeshCatalog_buildDisplay;
-   o.buildScene            = FDsMeshCatalog_buildScene;
+   o.buildSpace            = FDsMeshCatalog_buildSpace;
    // @method
    o.selectObject          = FDsMeshCatalog_selectObject;
    o.showObject            = FDsMeshCatalog_showObject;
@@ -203,7 +200,6 @@ function FDsMeshCatalog_construct(){
    var o = this;
    o.__base.FUiDataTreeView.construct.call(o);
    // 设置属性
-   o._displays = new TObjects();
    o._renderables = new TObjects();
    o._materials = new TObjects();
 }
@@ -263,34 +259,22 @@ function FDsMeshCatalog_buildRegion(n, p){
 //==========================================================
 function FDsMeshCatalog_buildRenderable(n, p){
    var o = this;
-   // 创建材质集合
+   // 创建材质节点
    var m = p._renderable._material;
-   if(m){
-      // 创建节点
-      var dn = o.createNode();
-      dn.setLabel('Material');
-      //dn.setLabel(mr.code());
-      //dn.setNote(mr.label());
-      dn.setTypeCode('material');
-      dn.dataPropertySet('linker', m);
-      o._materials.push(dn);
-      n.appendNode(dn);
-   }
-   // 创建渲染集合
+   var dn = o.createNode();
+   dn.setTypeCode('material');
+   dn.setLabel('Material');
+   dn.dataPropertySet('linker', m);
+   o._materials.push(dn);
+   n.appendNode(dn);
+   // 创建渲染节点
    var r = p._renderable;
-   if(r){
-      //var rr = r.resource();
-      //var rd = rr.model();
-      //var rm = rr.mesh();
-      // 创建节点
-      var dn = o.createNode();
-      //dn.setLabel(rm.code());
-      dn.setLabel('Renderable');
-      dn.setTypeCode('renderable');
-      dn.dataPropertySet('linker', r);
-      o._renderables.push(dn);
-      n.appendNode(dn);
-   }
+   var dn = o.createNode();
+   dn.setTypeCode('renderable');
+   dn.setLabel('Renderable');
+   dn.dataPropertySet('linker', r);
+   o._renderables.push(dn);
+   n.appendNode(dn);
 }
 
 //==========================================================
@@ -303,44 +287,40 @@ function FDsMeshCatalog_buildRenderable(n, p){
 function FDsMeshCatalog_buildDisplay(n, p){
    var o = this;
    // 创建显示节点
-   var dn = o.createNode();
-   //dn.setLabel(d.code());
-   dn.setLabel('Mesh');
-   //dn.setNote(d.label());
-   dn.setTypeCode('display');
-   dn.dataPropertySet('linker', p);
-   o._displays.push(dn);
-   n.appendNode(dn);
+   var node = o.createNode();
+   node.setTypeCode('display');
+   node.setLabel('Mesh');
+   node.dataPropertySet('linker', p);
+   n.appendNode(node);
    // 创建材质节点
-   o.buildRenderable(dn, p);
+   o.buildRenderable(node, p);
 }
 
 //==========================================================
-// <T>建立场景目录。</T>
+// <T>建立空间目录。</T>
 //
 // @method
-// @param p:scene:FE3dScene 渲染场景
+// @param space:FE3dSpace 渲染空间
 //==========================================================
-function FDsMeshCatalog_buildScene(ps, pm){
+function FDsMeshCatalog_buildSpace(space){
    var o = this;
-   o._activeStage = ps;
-   o._activeMesh = pm;
+   var resource = space.resource();
+   o._activeSpace = space;
    // 创建场景节点
-   var r = pm._renderable._resource;
-   var nr = o.createNode();
-   nr.setLabel(r.code());
-   nr.setNote(r.label());
-   nr.setTypeCode('scene');
-   nr.dataPropertySet('linker', ps);
-   o.appendNode(nr);
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel(resource.code());
+   node.setNote(resource.label());
+   node.dataPropertySet('linker', space);
+   o.appendNode(node);
    // 创建技术节点
-   o.buildTechnique(nr, ps.technique())
+   o.buildTechnique(node, space.technique())
    // 创建区域节点
-   o.buildRegion(nr, ps.region());
+   o.buildRegion(node, space.region());
    // 创建显示层
-   o.buildDisplay(nr, pm);
+   o.buildDisplay(node, space._display);
    // 选中根节点
-   nr.click();
+   node.click();
 }
 
 //==========================================================

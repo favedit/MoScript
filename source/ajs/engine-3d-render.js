@@ -741,8 +741,8 @@ function FE3rMeshConsole_loadByGuid(pc, pg){
    if(m){
       return m;
    }
-   var rmc = RConsole.find(FE3sModelConsole);
-   var rm = rmc.loadMeshByGuid(pg);
+   var rmc = RConsole.find(FE3sMeshConsole);
+   var rm = rmc.loadByGuid(pg);
    m = RClass.create(FE3rMesh);
    m.linkGraphicContext(pc);
    m.setName(pg);
@@ -767,8 +767,8 @@ function FE3rMeshConsole_loadByCode(pc, pg){
    if(m){
       return m;
    }
-   var rmc = RConsole.find(FE3sModelConsole);
-   var rm = rmc.loadMeshByCode(pg);
+   var rmc = RConsole.find(FE3sMeshConsole);
+   var rm = rmc.loadByCode(pg);
    m = RClass.create(FE3rMesh);
    m.linkGraphicContext(pc);
    m.setCode(pg);

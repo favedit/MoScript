@@ -6,18 +6,22 @@
 // @history 150303
 //==========================================================
 function FE3dRegion(o){
-   o = RClass.inherits(this, o, FRegion, MG3dRegion, MGraphicObject);
+   o = RClass.inherits(this, o, FRegion, MGraphicObject, MG3dRegion, MLinkerResource);
    //..........................................................
    // @attribute
    o._backgroundColor = null;
    //..........................................................
    // @method
-   o.construct        = FE3dRegion_construct;
+   o.construct       = FE3dRegion_construct;
    // @method
-   o.backgroundColor  = FE3dRegion_backgroundColor;
-   o.prepare          = FE3dRegion_prepare;
+   o.backgroundColor = FE3dRegion_backgroundColor;
    // @method
-   o.dispose          = FE3dRegion_dispose;
+   o.loadResource    = FE3dRegion_loadResource;
+   o.reloadResource  = FE3dRegion_reloadResource;
+   // @method
+   o.prepare         = FE3dRegion_prepare;
+   // @method
+   o.dispose         = FE3dRegion_dispose;
    return o;
 }
 
@@ -45,6 +49,36 @@ function FE3dRegion_construct(){
 //==========================================================
 function FE3dRegion_backgroundColor(){
    return this._backgroundColor;
+}
+
+//==========================================================
+// <T>重新加载资源。</T>
+//
+// @method
+// @param p:resource:FE3sSceneRegion 资源
+//==========================================================
+function FE3dRegion_loadResource(p){
+   var o = this;
+   o._resource = p;
+   o.reloadResource();
+}
+
+//==========================================================
+// <T>重新加载资源。</T>
+//
+// @method
+//==========================================================
+function FE3dRegion_reloadResource(){
+   var o = this;
+   var r = o._resource;
+   // 设置背景颜色
+   var f = r.optionBackground();
+   if(f){
+      o._backgroundColor.assignPower(r.backgroundColor());
+      o._backgroundColor.alpha = 1;
+   }else{
+      o._backgroundColor.set(0, 0, 0, 0);
+   }
 }
 
 //==========================================================

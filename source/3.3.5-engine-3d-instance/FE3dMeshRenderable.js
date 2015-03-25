@@ -5,7 +5,7 @@
 // @history 150202
 //==========================================================
 function FE3dMeshRenderable(o){
-   o = RClass.inherits(this, o, FE3dRenderable);
+   o = RClass.inherits(this, o, FE3dRenderable, MLinkerResource);
    //..........................................................
    // @attribute
    o._renderable      = null;

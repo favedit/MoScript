@@ -18,7 +18,7 @@ function FDsMeshWorkspace(o){
    o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
    //..........................................................
    // @attribute
-   o._activeStage          = null;
+   o._activeSpace          = null;
    o._activeMesh           = null;
    // @attribute
    o._framesetMain         = null;
@@ -122,14 +122,9 @@ function FDsMeshWorkspace_onBuilded(p){
 //==========================================================
 function FDsMeshWorkspace_onMeshLoad(p){
    var o = this;
-   o._activeStage = p._activeStage;
-   o._activeMesh = p._activeMesh;
-   // 设置属性
-   var l = o._activeStage.spriteLayer();
+   o._activeSpace = p._activeSpace;
    // 加载完成
-   o._catalog.buildScene(o._activeStage, p._activeMesh);
-   //o.onCatalogSelected(t);
-   //o.onCatalogSelected(t.technique());
+   o._catalog.buildSpace(o._activeSpace);
 }
 
 //==========================================================
@@ -140,8 +135,7 @@ function FDsMeshWorkspace_onMeshLoad(p){
 //==========================================================
 function FDsMeshWorkspace_onCatalogSelected(p, pc){
    var o = this;
-   var s = o._activeStage;
-   var m = o._activeMesh;
+   var space = o._activeSpace;
    // 隐藏所有属性面板
    var fs = o._propertyFrames;
    var c = fs.count();
@@ -153,50 +147,35 @@ function FDsMeshWorkspace_onCatalogSelected(p, pc){
    if(RClass.isClass(p, FE3dStage)){
       var f = o.findPropertyFrame(EDsFrame.MeshPropertyFrame);
       f.show();
-      f.loadObject(s, m);
+      f.loadObject(space, space);
    }else if(RClass.isClass(p, FG3dTechnique)){
       var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
       f.show();
-      f.loadObject(s, p);
+      f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dRegion)){
       var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
       f.show();
-      f.loadObject(s, p);
+      f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dCamera)){
       var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
       f.show();
-      f.loadObject(s, p);
+      f.loadObject(space, p);
    }else if(RClass.isClass(p, FG3dDirectionalLight)){
       var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
       f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3dMesh)){
-      // 选中显示对象
-      if(pc){
-         //o._canvas.selectDisplay(p);
-      }
-      // 显示属性栏
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dMeshDisplay)){
       var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
       f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3dSceneMaterial)){
-      // 选中材质
-      if(pc){
-         o._canvas.selectMaterial(p);
-      }
-      // 显示属性栏
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FG3dMaterial)){
       var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
       f.show();
-      f.loadObject(s, p);
-   }else if(RClass.isClass(p, FE3rMesh)){
-      // 选中渲染对象
-      if(pc){
-         //o._canvas.selectRenderable(p);
-      }
-      // 显示属性栏
+      f.loadObject(space, p);
+   }else if(RClass.isClass(p, FE3dMeshRenderable)){
       var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
       f.show();
-      f.loadObject(s, p);
+      f.loadObject(space, p);
    }else{
       throw new TError('Unknown select object type. (value={1})', p);
    }

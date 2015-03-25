@@ -5,6 +5,6 @@
 // @author maocy
 // @version 150228
 //==========================================================
-var MO = new function MO(){
-   return this;
-}
+//var MO = new function MO(){
+//   return this;
+//}

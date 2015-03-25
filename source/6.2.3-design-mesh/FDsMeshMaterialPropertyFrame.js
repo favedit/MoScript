@@ -12,7 +12,7 @@ function FDsMeshMaterialPropertyFrame(o){
    o._visible        = false;
    // @attribute
    o._workspace      = null;
-   o._material       = null;
+   o._activeMaterial       = null;
    // @attribute
    o._controlGuid    = null;
    o._controlCode    = null;
@@ -54,7 +54,7 @@ function FDsMeshMaterialPropertyFrame_onBuilded(p){
 //==========================================================
 function FDsMeshMaterialPropertyFrame_onDataChanged(p){
    var o = this;
-   var m = o._material;
+   var m = o._activeMaterial;
    var mr = m.resource();
    // 设置配置
    mr.setLabel(o._controlLabel.get());
@@ -75,21 +75,22 @@ function FDsMeshMaterialPropertyFrame_construct(){
 // <T>加载显示信息。</T>
 //
 // @method
-// @param s:scene:FE3dScene 场景
-// @param m:material:FG3dMaterial 资源
+// @param space:FE3dScene 场景
+// @param material:FG3dMaterial 资源
 //==========================================================
-function FDsMeshMaterialPropertyFrame_loadObject(s, m){
+function FDsMeshMaterialPropertyFrame_loadObject(space, material){
    var o = this;
-   var r = m.resource();
+   var resource = material.resource();
    // 设置属性
-   o._material = m;
+   o._activeSpace = space;
+   o._activeMaterial = material;
    // 设置界面
-   o._controlGuid.set(r.guid());
-   o._controlCode.set(r.code());
-   o._controlLabel.set(r.label());
+   o._controlGuid.set(resource.guid());
+   o._controlCode.set(resource.code());
+   o._controlLabel.set(resource.label());
    // 设置界面
-   o._frameMaterial1.loadObject(s, m);
-   o._frameMaterial2.loadObject(s, m);
+   o._frameMaterial1.loadObject(space, material);
+   o._frameMaterial2.loadObject(space, material);
 }
 
 //==========================================================

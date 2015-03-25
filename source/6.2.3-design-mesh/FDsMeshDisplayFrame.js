@@ -1,37 +1,27 @@
 //==========================================================
-// <T>模板显示属性页面。</T>
+// <T>网格显示页面。</T>
 //
 // @class
 // @author maocy
-// @history 150202
+// @history 150325
 //==========================================================
-function FDsMeshDisplayPropertyFrame(o){
+function FDsMeshDisplayFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._visible        = false;
-   // @attribute
-   o._workspace      = null;
-   // @attribute
-   o._activeDisplay  = null;
-   o._activeResource = null;
-   // @attribute
-   o._controlGuid    = null;
-   o._controlCode    = null;
-   o._controlLabel   = null;
-   o._displayFrame   = null;
-   o._materialFrame  = null;
+   o._activeSpace   = null;
+   o._activeDisplay = null;
    //..........................................................
    // @event
-   o.onBuilded       = FDsMeshDisplayPropertyFrame_onBuilded;
-   o.onDataChanged   = FDsMeshDisplayPropertyFrame_onDataChanged;
+   o.onBuilded      = FDsMeshDisplayFrame_onBuilded;
+   o.onDataChanged  = FDsMeshDisplayFrame_onDataChanged;
    //..........................................................
    // @method
-   o.construct       = FDsMeshDisplayPropertyFrame_construct;
+   o.construct      = FDsMeshDisplayFrame_construct;
    // @method
-   o.loadObject      = FDsMeshDisplayPropertyFrame_loadObject;
+   o.loadObject     = FDsMeshDisplayFrame_loadObject;
    // @method
-   o.dispose         = FDsMeshDisplayPropertyFrame_dispose;
+   o.dispose        = FDsMeshDisplayFrame_dispose;
    return o;
 }
 
@@ -41,12 +31,13 @@ function FDsMeshDisplayPropertyFrame(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsMeshDisplayPropertyFrame_onBuilded(p){
+function FDsMeshDisplayFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
-   // 增加对象
-   o._controlCode.addDataChangedListener(o, o.onDataChanged);
-   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+   // 关联对象
+   o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotation.addDataChangedListener(o, o.onDataChanged);
+   o._controlScale.addDataChangedListener(o, o.onDataChanged);
 }
 
 //==========================================================
@@ -55,12 +46,23 @@ function FDsMeshDisplayPropertyFrame_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsMeshDisplayPropertyFrame_onDataChanged(p){
+function FDsMeshDisplayFrame_onDataChanged(p){
    var o = this;
-   var r = o._activeResource;
-   // 设置属性
-   r._code = o._controlCode.get();
-   r._label = o._controlLabel.get();
+   var display = o._activeDisplay;
+   var resource = display.resource();
+   var matrix = resource.matrix();
+   // 设置环境颜色
+   var value = o._controlTranslate.get();
+   matrix.setTranslate(value.x, value.y, value.z);
+   // 设置散射颜色
+   var value = o._controlRotation.get();
+   matrix.setRotation(value.x, value.y, value.z);
+   // 设置高光颜色
+   var value = o._controlScale.get();
+   matrix.setScale(value.x, value.y, value.z);
+   // 重新计算
+   matrix.update();
+   display.matrix().assign(matrix);
 }
 
 //==========================================================
@@ -68,7 +70,7 @@ function FDsMeshDisplayPropertyFrame_onDataChanged(p){
 //
 // @method
 //==========================================================
-function FDsMeshDisplayPropertyFrame_construct(){
+function FDsMeshDisplayFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -81,18 +83,17 @@ function FDsMeshDisplayPropertyFrame_construct(){
 // @param space:FE3dSpace 空间
 // @param display:FE3dDisplay 显示
 //==========================================================
-function FDsMeshDisplayPropertyFrame_loadObject(space, display){
+function FDsMeshDisplayFrame_loadObject(space, display){
    var o = this;
-   var resource = display._resource;
-   // 设置属性
+   var resource = display.resource();
    o._activeSpace = space;
    o._activeDisplay = display;
+   // 获得矩阵
+   var matrix = resource.matrix();
    // 设置参数
-   o._controlGuid.set(resource.guid());
-   o._controlCode.set(resource.code());
-   o._controlLabel.set(resource.label());
-   // 设置参数
-   o._frameDisplay.loadObject(space, display);
+   o._controlTranslate.set(matrix.tx, matrix.ty, matrix.tz);
+   o._controlRotation.set(matrix.rx, matrix.ry, matrix.rz);
+   o._controlScale.set(matrix.sx, matrix.sy, matrix.sz);
 }
 
 //==========================================================
@@ -100,7 +101,7 @@ function FDsMeshDisplayPropertyFrame_loadObject(space, display){
 //
 // @method
 //==========================================================
-function FDsMeshDisplayPropertyFrame_dispose(){
+function FDsMeshDisplayFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

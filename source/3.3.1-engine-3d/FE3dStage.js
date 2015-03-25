@@ -46,7 +46,13 @@ function FE3dStage(o){
 function FE3dStage_onProcess(){
    var o = this;
    var r = o._region;
+   if(!r){
+      return;
+   }
    var t = o._technique;
+   if(!t){
+      return;
+   }
    var g = t._graphicContext;
    // 统计处理
    var ss = r._statistics = o._statistics;

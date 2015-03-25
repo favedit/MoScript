@@ -89,7 +89,7 @@ function FE3dShadowColorSkeletonEffect_drawRenderable(pr, r){
       if(bc > 32){
          bc = 32;
       }
-      var d = RTypeArray.findTemp(EDataType.Float, 16 * bc);
+      var d = RTypeArray.findTemp(EDataType.Float32, 16 * bc);
       for(var i = 0; i < bc; i++){
          var b = bs.get(i);
          var m = b.matrix();

@@ -110,8 +110,8 @@ function FE3rMeshConsole_loadByGuid(pc, pg){
       return m;
    }
    // 获得路径
-   var rmc = RConsole.find(FE3sModelConsole);
-   var rm = rmc.loadMeshByGuid(pg);
+   var rmc = RConsole.find(FE3sMeshConsole);
+   var rm = rmc.loadByGuid(pg);
    // 加载模型
    m = RClass.create(FE3rMesh);
    m.linkGraphicContext(pc);
@@ -151,8 +151,8 @@ function FE3rMeshConsole_loadByCode(pc, pg){
       return m;
    }
    // 获得路径
-   var rmc = RConsole.find(FE3sModelConsole);
-   var rm = rmc.loadMeshByCode(pg);
+   var rmc = RConsole.find(FE3sMeshConsole);
+   var rm = rmc.loadByCode(pg);
    // 加载模型
    m = RClass.create(FE3rMesh);
    m.linkGraphicContext(pc);

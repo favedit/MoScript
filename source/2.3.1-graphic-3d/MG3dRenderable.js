@@ -22,6 +22,8 @@ function MG3dRenderable(o){
    // @method
    o.construct      = MG3dRenderable_construct;
    // @method
+   o.createMaterial = MG3dRenderable_createMaterial;
+   // @method
    o.currentMatrix  = MG3dRenderable_currentMatrix;
    o.matrix         = MG3dRenderable_matrix;
    o.material       = MG3dRenderable_material;
@@ -51,7 +53,17 @@ function MG3dRenderable_construct(){
    var o = this;
    o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
-   o._material = RClass.create(FG3dMaterial);
+   o._material = o.createMaterial();
+}
+
+//==========================================================
+// <T>创建材质。</T>
+//
+// @method
+// @return FG3dMaterial 材质
+//==========================================================
+function MG3dRenderable_createMaterial(){
+   return RClass.create(FG3dMaterial);
 }
 
 //==========================================================

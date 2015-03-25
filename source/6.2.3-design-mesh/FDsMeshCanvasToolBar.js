@@ -9,7 +9,7 @@ function FDsMeshCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'design3d.scene.CanvasToolBar';
+   o._frameName       = 'design3d.mesh.CanvasToolBar';
    //..........................................................
    // @attribute
    o._canvasModeCd    = EDsCanvasMode.Drop;
@@ -29,8 +29,6 @@ function FDsMeshCanvasToolBar(o){
    o.onBuilded        = FDsMeshCanvasToolBar_onBuilded;
    // @event
    o.onModeClick      = FDsMeshCanvasToolBar_onModeClick;
-   o.onLookClick      = FDsMeshCanvasToolBar_onLookClick;
-   o.onPlayClick      = FDsMeshCanvasToolBar_onPlayClick;
    o.onRotationClick  = FDsMeshCanvasToolBar_onRotationClick;
    //..........................................................
    // @method
@@ -55,37 +53,7 @@ function FDsMeshCanvasToolBar_onBuilded(p){
    b._canvasModeCd = EDsCanvasMode.Drop;
    b.addClickListener(o, o.onModeClick);
    b.check(true);
-   // 建立选择按键
-   var b = o._selectButton = o.searchControl('selectButton');
-   b._canvasModeCd = EDsCanvasMode.Select;
-   b.addClickListener(o, o.onModeClick);
    //..........................................................
-   // 建立移动按键
-   var b = o._translateButton = o.searchControl('translateButton');
-   b._canvasModeCd = EDsCanvasMode.Translate;
-   b.addClickListener(o, o.onModeClick);
-   // 建立旋转按键
-   var b = o._rotationButton = o.searchControl('rotationButton');
-   b._canvasModeCd = EDsCanvasMode.Rotation;
-   b.addClickListener(o, o.onModeClick);
-   // 建立缩放按键
-   var b = o._scaleButton = o.searchControl('scaleButton');
-   b._canvasModeCd = EDsCanvasMode.Scale;
-   b.addClickListener(o, o.onModeClick);
-   //..........................................................
-   // 建立前视角按键
-   var b = o._lookFrontButton = o.searchControl('lookFrontButton');
-   b.addClickListener(o, o.onLookClick);
-   // 建立上视角按键
-   var b = o._lookUpButton = o.searchControl('lookUpButton');
-   b.addClickListener(o, o.onLookClick);
-   // 建立左视角按键
-   var b = o._lookLeftButton = o.searchControl('lookLeftButton');
-   b.addClickListener(o, o.onLookClick);
-   //..........................................................
-   // 建立按键
-   var b = o._playButton = o.searchControl('playButton');
-   b.addClickListener(o, o.onPlayClick);
    // 建立按键
    var b = o._viewButton = o.searchControl('viewButton');
    b.addClickListener(o, o.onRotationClick);
@@ -101,29 +69,6 @@ function FDsMeshCanvasToolBar_onModeClick(p){
    var o = this;
    o._canvasModeCd = p._canvasModeCd;
    o._workspace._canvas.switchMode(p._canvasModeCd);
-}
-
-//==========================================================
-// <T>模式选择。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FDsMeshCanvasToolBar_onLookClick(p){
-   var o = this;
-   //o._canvasModeCd = p._canvasModeCd;
-}
-
-//==========================================================
-// <T>刷新按键处理。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FDsMeshCanvasToolBar_onPlayClick(p, v){
-   var o = this;
-   var c = o._workspace._canvas;
-   //c.switchPlay(v);
 }
 
 //==========================================================

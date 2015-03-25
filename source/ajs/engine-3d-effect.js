@@ -46,7 +46,7 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    if(pr._optionMerge){
       var ms = pr.mergeRenderables();
       var mc = ms.count();
-      var d = RTypeArray.findTemp(EDataType.Float, 16 * mc);
+      var d = RTypeArray.findTemp(EDataType.Float32, 16 * mc);
       for(var i = 0; i < mc; i++){
          var m = ms.getAt(i);
          m.currentMatrix().writeData(d, 16 * i);
@@ -137,7 +137,7 @@ function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    var bs = pr.bones();
    if(bs){
       var bc = pr._boneLimit;
-      var d = RTypeArray.findTemp(EDataType.Float, 16 * bc);
+      var d = RTypeArray.findTemp(EDataType.Float32, 16 * bc);
       for(var i = 0; i < bc; i++){
          var b = bs.get(i);
          var m = b.matrix();
@@ -310,7 +310,7 @@ function FE3dShadowColorSkeletonEffect_drawRenderable(pr, r){
       if(bc > 32){
          bc = 32;
       }
-      var d = RTypeArray.findTemp(EDataType.Float, 16 * bc);
+      var d = RTypeArray.findTemp(EDataType.Float32, 16 * bc);
       for(var i = 0; i < bc; i++){
          var b = bs.get(i);
          var m = b.matrix();
@@ -420,7 +420,7 @@ function FE3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
       if(bc > 32){
          bc = 32;
       }
-      var d = RTypeArray.findTemp(EDataType.Float, 16 * bc);
+      var d = RTypeArray.findTemp(EDataType.Float32, 16 * bc);
       for(var i = 0; i < bc; i++){
          var b = bs.get(i);
          var m = b.matrix();

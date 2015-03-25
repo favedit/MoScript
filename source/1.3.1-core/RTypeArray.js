@@ -76,9 +76,9 @@ function RTypeArray_createArray(t, l){
          return new Uint16Array(l);
       case EDataType.Uint32:
          return new Uint32Array(l);
-      case EDataType.Float:
+      case EDataType.Float32:
          return new Float32Array(l);
-      case EDataType.Double:
+      case EDataType.Float64:
          return new Float64Array(l);
    }
    throw new TError('Create unknown type array. (type={1}, length={2})', t, l);

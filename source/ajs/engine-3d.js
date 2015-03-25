@@ -131,38 +131,15 @@ function FE3dDisplay_dispose(){
    o._materials = RObject.free(o._materials);
    o.__base.FDisplay.dispose.call(o);
 }
-function FE3dRegion(o){
-   o = RClass.inherits(this, o, FRegion, MG3dRegion, MGraphicObject);
-   o._backgroundColor = null;
-   o.construct        = FE3dRegion_construct;
-   o.backgroundColor  = FE3dRegion_backgroundColor;
-   o.prepare          = FE3dRegion_prepare;
-   o.dispose          = FE3dRegion_dispose;
+function FE3dMaterial(o){
+   o = RClass.inherits(this, o, FG3dMaterial, MLinkerResource);
+   o.loadResource = FE3dMaterial_loadResource;
    return o;
 }
-function FE3dRegion_construct(){
+function FE3dMaterial_loadResource(p){
    var o = this;
-   o.__base.FRegion.construct.call(o);
-   o.__base.MG3dRegion.construct.call(o);
-   var c = o._backgroundColor = new SColor4();
-   c.set(0, 0, 0, 1);
-   o._calculateCameraMatrix = new SMatrix3d();
-}
-function FE3dRegion_backgroundColor(){
-   return this._backgroundColor;
-}
-function FE3dRegion_prepare(){
-   var o = this;
-   o.__base.MG3dRegion.prepare.call(o);
-   var r = o._calculateCameraMatrix.attach(o._camera.matrix());
-   if(r){
-      o._changed = true;
-   }
-}
-function FE3dRegion_dispose(){
-   var o = this;
-   o.__base.FRegion.dispose.call(o);
-   o.__base.MG3dRegion.dispose.call(o);
+   o._resource = p;
+   o._info.assign(p.info());
 }
 function FE3dRenderable(o){
    o = RClass.inherits(this, o, FRenderable, MG3dRenderable, MGraphicObject);
@@ -175,6 +152,7 @@ function FE3dRenderable(o){
    o._indexBuffer     = null;
    o._textures        = null;
    o.construct        = FE3dRenderable_construct;
+   o.createMaterial   = FE3dRenderable_createMaterial;
    o.setup            = RMethod.empty;
    o.testVisible      = FE3dRenderable_testVisible;
    o.display          = FE3dRenderable_display;
@@ -199,6 +177,9 @@ function FE3dRenderable_construct(){
    o._outline = new SOutline3d();
    o._calculateMatrix = new SMatrix3d();
    o._vertexBuffers = new TDictionary();
+}
+function FE3dRenderable_createMaterial(){
+   return RClass.create(FE3dMaterial);
 }
 function FE3dRenderable_testVisible(){
    var o = this;
@@ -367,7 +348,13 @@ function FE3dStage(o){
 function FE3dStage_onProcess(){
    var o = this;
    var r = o._region;
+   if(!r){
+      return;
+   }
    var t = o._technique;
+   if(!t){
+      return;
+   }
    var g = t._graphicContext;
    var ss = r._statistics = o._statistics;
    ss.resetFrame();

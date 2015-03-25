@@ -95,7 +95,7 @@ function FE3dMeshConsole_allocByGuid(pc, pn){
    var rm = rmc.loadByGuid(pc, pn);
    // 加载模型
    var m = RClass.create(FModel3d);
-   m._context = pc;
+   m.linkGraphicContext(pc);
    m._name = pn;
    m._modelName = pn;
    m._renderable = rm;
@@ -126,7 +126,7 @@ function FE3dMeshConsole_allocByCode(pc, pn){
    var rm = rmc.loadByCode(pc, pn);
    // 加载模型
    var m = RClass.create(FE3dMesh);
-   m._context = pc;
+   m.linkGraphicContext(pc);
    m._name = pn;
    m._renderable = rm;
    // 增加加载中

@@ -75,8 +75,8 @@ function FDsMeshMaterial2Frame_onDataChanged(p){
    mi.specularViewBase = o._controlSpecularViewBase.get();
    mi.specularViewLevel = o._controlSpecularViewLevel.get();
    // 重新加载资源
-   m.reload();
-   m._display.reloadResource();
+   m.reloadResource();
+   //m._display.reloadResource();
 }
 
 //==========================================================

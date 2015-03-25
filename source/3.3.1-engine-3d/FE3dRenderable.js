@@ -21,6 +21,8 @@ function FE3dRenderable(o){
    // @method
    o.construct        = FE3dRenderable_construct;
    // @method
+   o.createMaterial   = FE3dRenderable_createMaterial;
+   // @method
    o.setup            = RMethod.empty;
    // @method
    o.testVisible      = FE3dRenderable_testVisible;
@@ -54,6 +56,16 @@ function FE3dRenderable_construct(){
    o._outline = new SOutline3d();
    o._calculateMatrix = new SMatrix3d();
    o._vertexBuffers = new TDictionary();
+}
+
+//==========================================================
+// <T>创建材质。</T>
+//
+// @method
+// @return FG3dMaterial 材质
+//==========================================================
+function FE3dRenderable_createMaterial(){
+   return RClass.create(FE3dMaterial);
 }
 
 //==========================================================
