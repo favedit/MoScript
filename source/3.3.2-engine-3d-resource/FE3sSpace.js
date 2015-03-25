@@ -9,6 +9,7 @@ function FE3sSpace(o){
    //..........................................................
    // @attribute
    o._typeName     = null;
+   // @attribute
    o._technique    = null;
    o._region       = null;
    o._layers       = null;

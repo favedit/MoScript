@@ -1,5 +1,5 @@
 //==========================================================
-// <T>模型资源。</T>
+// <T>区域资源。</T>
 //
 // @author maocy
 // @history 150105
@@ -10,9 +10,27 @@ function FE3sRegion(o){
    // @attribute 颜色
    o._optionBackground     = true;
    o._backgroundColor      = null;
+   // @attribute 速率
    o._moveSpeed            = 0.1;
    o._rotationKeySpeed     = 0.005;
    o._rotationMouseSpeed   = 0.003;
+   // @attribute 颜色
+   //o._colorLevel           = null;
+   // @attribute 雾化
+   //o._fogNear              = null;
+   //o._fogFar               = null;
+   //o._fogRate              = null;
+   //o._fogAttenuation       = null;
+   //o._fogColor             = null;
+   // @attribute 边界
+   //o._edgeRate             = null;
+   //o._edgeLevel            = null;
+   //o._edgeWidth            = null;
+   //o._edgeColor            = null;
+   // @attribute 平面
+   //o._faceRange            = null;
+   //o._faceLimit            = null;
+   //o._faceRate             = null;
    // @attribute 相机
    o._camera               = null;
    // @attribute 光源
@@ -47,8 +65,11 @@ function FE3sRegion_construct(){
    var o = this;
    o.__base.FE3sObject.construct.call(o);
    o._backgroundColor = new SColor4();
-   o._camera = RClass.create(FE3sSceneCamera);
-   o._light = RClass.create(FE3sSceneLight);
+   //o._colorLevel = new SColor4();
+   //o._fogColor = new SColor4();
+   //o._edgeColor = new SColor4();
+   o._camera = RClass.create(FE3sCamera);
+   o._light = RClass.create(FE3sLight);
 }
 
 //==========================================================
@@ -176,6 +197,23 @@ function FE3sRegion_unserialize(p){
    o._moveSpeed = p.readFloat();
    o._rotationKeySpeed = p.readFloat();
    o._rotationMouseSpeed = p.readFloat();
+   // 读取颜色级别
+   //o._colorLevel.unserialize(p);
+   // 读取雾化
+   //o._fogNear = p.readFloat();
+   //o._fogFar = p.readFloat();
+   //o._fogRate = p.readFloat();
+   //o._fogAttenuation = p.readFloat();
+   //o._fogColor.unserialize(p);
+   // 读取边界
+   //o._edgeRate = p.readFloat();
+   //o._edgeLevel = p.readFloat();
+   //o._edgeWidth = p.readFloat();
+   //o._edgeColor.unserialize(p);
+   // 读取平面
+   //o._faceRange = p.readFloat();
+   //o._faceLimit = p.readFloat();
+   //o._faceRate = p.readFloat();
    // 读取相机
    o._camera.unserialize(p);
    // 读取光源

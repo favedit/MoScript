@@ -174,7 +174,7 @@ function FE3sSceneDisplay_unserialize(p){
    if(c > 0){
       var s = o._movies = new TObjects();
       for(var i = 0; i < c; i++){
-         var m = RClass.create(FE3sSceneMovie);
+         var m = RClass.create(FE3sMovie);
          m.unserialize(p);
          s.push(m);
       }
@@ -184,7 +184,7 @@ function FE3sSceneDisplay_unserialize(p){
    if(c > 0){
       var s = o._materials = new TObjects();
       for(var i = 0; i < c; i++){
-         var m = RClass.create(FE3sSceneMaterial);
+         var m = RClass.create(FE3sMaterial);
          m.unserialize(p);
          s.push(m);
       }

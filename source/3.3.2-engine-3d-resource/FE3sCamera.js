@@ -9,10 +9,16 @@ function FE3sCamera(o){
    //..........................................................
    // @attribute 属性
    o._typeName    = null;
+   // @attribute 中心
+   //o._centerFront = null;
+   //o._centerBack  = null;
    // @attribute 位置
    o._position    = null;
    // @attribute 方向
    o._direction   = null;
+   // @attribute 焦平面
+   //o._focalNear   = null;
+   //o._focalFar    = null;
    // @attribute 视角
    o._projection  = null;
    //..........................................................
@@ -93,10 +99,16 @@ function FE3sCamera_unserialize(p){
    o.__base.FE3sObject.unserialize.call(o, p);
    // 读取属性
    o._typeName = p.readString();
+   // 读取中心
+   //o._centerFront = p.readFloat();
+   //o._centerBack = p.readFloat();
    // 读取位置
    o._position.unserialize(p);
    // 读取方向
    o._direction.unserialize(p);
+   // 读取焦平面
+   //o._focalNear = p.readFloat();
+   //o._focalFar = p.readFloat();
    // 读取视角
    o._projection.unserialize(p);
 }

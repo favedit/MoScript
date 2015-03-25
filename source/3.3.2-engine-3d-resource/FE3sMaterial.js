@@ -11,6 +11,17 @@ function FE3sMaterial(o){
    o._groupGuid  = null;
    // @attribute
    o._info       = null;
+   // @attribute 高度
+   //o._heightDepth        = null;
+   // @attribute 表面
+   //o._surfaceRate        = null;
+   //o._surfaceReflect     = null;
+   //o._surfaceBright      = null;
+   //o._surfaceBrightLevel = null;
+   //o._surfaceCoarse      = null;
+   //o._surfaceCoarseLevel = null;
+   //o._surfaceMerge       = null;
+   //o._surfacePower       = null;
    // @attribute
    o._textures   = null;
    //..........................................................
@@ -124,26 +135,8 @@ function FE3sMaterial_unserialize(p){
 function FE3sMaterial_saveConfig(p){
    var o = this;
    o.__base.FE3sObject.saveConfig.call(o, p);
+   // 存储属性
+   p.set('group_guid', o._groupGuid);
    // 存储材质
    o._info.saveConfig(p);
-   //var mi = o._info;
-   // 存储属性
-   //p.set('guid', o._guid);
-   //p.set('code', o._code);
-   //p.set('label', o._label);
-   // 存储配置
-   //p.set('option_alpha', mi.optionAlpha);
-   //p.set('option_double', mi.optionDouble);
-   // 存储透明
-   //p.set('alpha_base', mi.alphaBase);
-   //p.set('alpha_rate', mi.alphaRate);
-   // 存储材质
-   //p.set('ambient_color', mi.ambientColor.toString());
-   //p.set('diffuse_color', mi.diffuseColor.toString());
-   //p.set('specular_color', mi.specularColor.toString());
-   //p.set('specular_base', mi.specularBase);
-   //p.set('specular_level', mi.specularLevel);
-   //p.set('reflect_color', mi.reflectColor.toString());
-   //p.set('reflect_merge', mi.reflectMerge);
-   //p.set('emissive_color', mi.emissiveColor.toString());
 }

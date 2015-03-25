@@ -2193,6 +2193,7 @@ function FE3sMaterial_unserialize(p){
 function FE3sMaterial_saveConfig(p){
    var o = this;
    o.__base.FE3sObject.saveConfig.call(o, p);
+   p.set('group_guid', o._groupGuid);
    o._info.saveConfig(p);
 }
 function FE3sMaterialConsole(o){
@@ -2272,6 +2273,7 @@ function FE3sMesh(o){
    o.tracks        = FE3sMesh_tracks;
    o.unserialize   = FE3sMesh_unserialize;
    o.saveConfig    = FE3sMesh_saveConfig;
+   o.dispose       = FE3sMesh_dispose;
    return o;
 }
 function FE3sMesh_construct(){
@@ -2289,27 +2291,33 @@ function FE3sMesh_streams(){
 function FE3sMesh_tracks(){
    return this._tracks;
 }
-function FE3sMesh_unserialize(p){
+function FE3sMesh_unserialize(input){
    var o = this;
-   o.__base.FE3sSpace.unserialize.call(o, p);
-   o._outline.unserialize(p);
+   o.__base.FE3sSpace.unserialize.call(o, input);
+   o._outline.unserialize(input);
    o._outline.update();
-   var c = p.readInt8();
-   if(c > 0){
-      var ss = o._streams = new TObjects();
-      for(var i = 0; i < c; i++){
-         var s = RClass.create(FE3sStream);
-         s.unserialize(p)
-         ss.push(s);
+   var streamCount = input.readInt8();
+   if(streamCount > 0){
+      var streams = o._streams = new TObjects();
+      for(var i = 0; i < streamCount; i++){
+         var stream = RClass.create(FE3sStream);
+         stream.unserialize(input)
+         streams.push(stream);
       }
    }
-   o._display.unserialize(p);
+   o._display.unserialize(input);
    o._renderable = o._display._renderable;
 }
-function FE3sMesh_saveConfig(p){
+function FE3sMesh_saveConfig(config){
    var o = this;
-   o.__base.FE3sSpace.saveConfig.call(o, p);
-   o._display.saveConfig(p.create('Display'));
+   o.__base.FE3sSpace.saveConfig.call(o, config);
+   o._display.saveConfig(config.create('Display'));
+}
+function FE3sMesh_dispose(){
+   var o = this;
+   o._outline = RObject.dispose(o._outline);
+   o._display = RObject.dispose(o._display);
+   o.__base.FE3sSpace.dispose.call(o);
 }
 function FE3sMeshConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -2634,6 +2642,33 @@ function FE3sModelMesh_unserialize(p){
       }
    }
 }
+function FE3sMovie(o){
+   o = RClass.inherits(this, o, FE3sObject);
+   o._interval   = null;
+   o._rotation   = null;
+   o.construct   = FE3sMovie_construct;
+   o.interval    = FE3sMovie_interval;
+   o.rotation    = FE3sMovie_rotation;
+   o.unserialize = FE3sMovie_unserialize;
+   return o;
+}
+function FE3sMovie_construct(){
+   var o = this;
+   o.__base.FE3sObject.construct.call(o);
+   o._rotation = new SVector3();
+}
+function FE3sMovie_interval(){
+   return this._interval;
+}
+function FE3sMovie_rotation(){
+   return this._rotation;
+}
+function FE3sMovie_unserialize(p){
+   var o = this;
+   o.__base.FE3sObject.unserialize.call(o, p);
+   o._interval = p.readInt32();
+   o._rotation.unserialize(p);
+}
 function FE3sObject(o){
    o = RClass.inherits(this, o, FObject);
    o._guid       = null;
@@ -2731,8 +2766,8 @@ function FE3sRegion_construct(){
    var o = this;
    o.__base.FE3sObject.construct.call(o);
    o._backgroundColor = new SColor4();
-   o._camera = RClass.create(FE3sSceneCamera);
-   o._light = RClass.create(FE3sSceneLight);
+   o._camera = RClass.create(FE3sCamera);
+   o._light = RClass.create(FE3sLight);
 }
 function FE3sRegion_optionBackground(){
    return this._optionBackground;
@@ -2897,37 +2932,21 @@ function FE3sResource_dispose(){
    o.__base.FConsole.dispose.call(o);
 }
 function FE3sScene(o){
-   o = RClass.inherits(this, o, FE3sResource);
+   o = RClass.inherits(this, o, FE3sSpace);
    o._dataCompress = true;
+   o._typeName     = 'Scene';
    o._themeGuid    = null;
    o._themeCode    = null;
-   o._technique    = null;
-   o._region       = null;
    o._textures     = null;
    o._templates    = null;
-   o._layers       = null;
    o.construct     = FE3sScene_construct;
-   o.technique     = FE3sScene_technique;
-   o.region        = FE3sScene_region;
-   o.layers        = FE3sScene_layers;
    o.unserialize   = FE3sScene_unserialize;
    o.saveConfig    = FE3sScene_saveConfig;
    return o;
 }
 function FE3sScene_construct(){
    var o = this;
-   o.__base.FE3sResource.construct.call(o);
-   o._technique = RClass.create(FE3sSceneTechnique);
-   o._region = RClass.create(FE3sSceneRegion);
-}
-function FE3sScene_technique(){
-   return this._technique;
-}
-function FE3sScene_region(){
-   return this._region;
-}
-function FE3sScene_layers(){
-   return this._layers;
+   o.__base.FE3sSpace.construct.call(o);
 }
 function FE3sScene_unserialize(p){
    var o = this;
@@ -2966,19 +2985,9 @@ function FE3sScene_unserialize(p){
 }
 function FE3sScene_saveConfig(p){
    var o = this;
-   o.__base.FE3sResource.saveConfig.call(o, p);
-   p.setName('Scene');
+   o.__base.FE3sSpace.saveConfig.call(o, p);
    p.set('theme_guid', o._themeGuid);
    p.set('theme_code', o._themeCode);
-   o._technique.saveConfig(p.create('Technique'));
-   o._region.saveConfig(p.create('Region'));
-   var xls = p.create('LayerCollection');
-   var ls = o._layers;
-   var c = ls.count();
-   for(var i = 0; i < c; i++){
-      var l = ls.value(i);
-      l.saveConfig(xls.create('Layer'));
-   }
 }
 function FE3sSceneAnimation(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -3009,51 +3018,6 @@ function FE3sSceneAnimation_saveConfig(p){
    var o = this;
    o.__base.FE3sObject.saveConfig.call(o, p);
    p.set('play_rate', o._playRate);
-}
-function FE3sSceneCamera(o){
-   o = RClass.inherits(this, o, FE3sObject);
-   o._typeName    = null;
-   o._centerFront = null;
-   o._centerBack  = null;
-   o._position    = null;
-   o._direction   = null;
-   o._focalNear   = null;
-   o._focalFar    = null;
-   o._projection  = null;
-   o.construct    = FE3sSceneCamera_construct;
-   o.typeName     = FE3sSceneCamera_typeName;
-   o.position     = FE3sSceneCamera_position;
-   o.direction    = FE3sSceneCamera_direction;
-   o.projection   = FE3sSceneCamera_projection;
-   o.unserialize  = FE3sSceneCamera_unserialize;
-   return o;
-}
-function FE3sSceneCamera_construct(){
-   var o = this;
-   o.__base.FE3sObject.construct.call(o);
-   o._position = new SPoint3();
-   o._direction = new SVector3();
-   o._projection = RClass.create(FE3sSceneProjection);
-}
-function FE3sSceneCamera_typeName(){
-   return this._typeName;
-}
-function FE3sSceneCamera_position(){
-   return this._position;
-}
-function FE3sSceneCamera_direction(){
-   return this._direction;
-}
-function FE3sSceneCamera_projection(){
-   return this._projection;
-}
-function FE3sSceneCamera_unserialize(p){
-   var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._typeName = p.readString();
-   o._position.unserialize(p);
-   o._direction.unserialize(p);
-   o._projection.unserialize(p);
 }
 function FE3sSceneConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -3181,7 +3145,7 @@ function FE3sSceneDisplay_unserialize(p){
    if(c > 0){
       var s = o._movies = new TObjects();
       for(var i = 0; i < c; i++){
-         var m = RClass.create(FE3sSceneMovie);
+         var m = RClass.create(FE3sMovie);
          m.unserialize(p);
          s.push(m);
       }
@@ -3190,7 +3154,7 @@ function FE3sSceneDisplay_unserialize(p){
    if(c > 0){
       var s = o._materials = new TObjects();
       for(var i = 0; i < c; i++){
-         var m = RClass.create(FE3sSceneMaterial);
+         var m = RClass.create(FE3sMaterial);
          m.unserialize(p);
          s.push(m);
       }
@@ -3284,256 +3248,6 @@ function FE3sSceneLayer_saveConfig(p){
       }
    }
 }
-function FE3sSceneLight(o){
-   o = RClass.inherits(this, o, FE3sObject);
-   o._typeName           = null;
-   o._optionTrack        = null;
-   o._shadow1            = null;
-   o._shadow2            = null;
-   o._shadow3            = null;
-   o._shadowAmbientMin   = null;
-   o._shadowAmbientMax   = null;
-   o._shadowAmbientThick = null;
-   o._shadowAmbientRange = null;
-   o._shadowMerge1Base   = null;
-   o._shadowMerge1Rate   = null;
-   o._shadowMerge2Base   = null;
-   o._shadowMerge2Rate   = null;
-   o._material           = null;
-   o._camera             = null;
-   o.construct           = FE3sSceneLight_construct;
-   o.typeName            = FE3sSceneLight_typeName;
-   o.material            = FE3sSceneLight_material;
-   o.camera              = FE3sSceneLight_camera;
-   o.unserialize         = FE3sSceneLight_unserialize;
-   return o;
-}
-function FE3sSceneLight_construct(){
-   var o = this;
-   o.__base.FE3sObject.construct.call(o);
-   o._shadow1 = new SE3sSceneShadow();
-   o._shadow2 = new SE3sSceneShadow();
-   o._shadow3 = new SE3sSceneShadow();
-   o._material = RClass.create(FE3sSceneMaterial);
-   o._camera = RClass.create(FE3sSceneCamera);
-}
-function FE3sSceneLight_typeName(){
-   return this._typeName;
-}
-function FE3sSceneLight_material(){
-   return this._material;
-}
-function FE3sSceneLight_camera(){
-   return this._camera;
-}
-function FE3sSceneLight_unserialize(p){
-   var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._typeName = p.readString();
-   o._material.unserialize(p);
-   o._camera.unserialize(p);
-}
-function FE3sSceneMap(o){
-   o = RClass.inherits(this, o, FE3sSceneSpace);
-   return o;
-}
-function FE3sSceneMaterial(o){
-   o = RClass.inherits(this, o, FE3sObject);
-   o._groupGuid          = null;
-   o._info               = null;
-   o._heightDepth        = null;
-   o._surfaceRate        = null;
-   o._surfaceReflect     = null;
-   o._surfaceBright      = null;
-   o._surfaceBrightLevel = null;
-   o._surfaceCoarse      = null;
-   o._surfaceCoarseLevel = null;
-   o._surfaceMerge       = null;
-   o._surfacePower       = null;
-   o.construct           = FE3sSceneMaterial_construct;
-   o.groupGuid           = FE3sSceneMaterial_groupGuid;
-   o.info                = FE3sSceneMaterial_info;
-   o.unserialize         = FE3sSceneMaterial_unserialize;
-   o.saveConfig          = FE3sSceneMaterial_saveConfig;
-   return o;
-}
-function FE3sSceneMaterial_construct(){
-   var o = this;
-   o.__base.FE3sObject.construct.call(o);
-   o._info = new SE3sMaterialInfo();
-}
-function FE3sSceneMaterial_groupGuid(){
-   return this._groupGuid;
-}
-function FE3sSceneMaterial_info(){
-   return this._info;
-}
-function FE3sSceneMaterial_unserialize(p){
-   var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._groupGuid = p.readString();
-   o._info.unserialize(p);
-   o._textureCount = p.readInt16();
-}
-function FE3sSceneMaterial_saveConfig(p){
-   var o = this;
-   o.__base.FE3sObject.saveConfig.call(o, p);
-   p.set('group_guid', o._groupGuid);
-   o._info.saveConfig(p);
-}
-function FE3sSceneMovie(o){
-   o = RClass.inherits(this, o, FE3sObject);
-   o._interval   = null;
-   o._rotation   = null;
-   o.construct   = FE3sSceneMovie_construct;
-   o.interval    = FE3sSceneMovie_interval;
-   o.rotation    = FE3sSceneMovie_rotation;
-   o.unserialize = FE3sSceneMovie_unserialize;
-   return o;
-}
-function FE3sSceneMovie_construct(){
-   var o = this;
-   o.__base.FE3sObject.construct.call(o);
-   o._rotation = new SVector3();
-}
-function FE3sSceneMovie_interval(){
-   return this._interval;
-}
-function FE3sSceneMovie_rotation(){
-   return this._rotation;
-}
-function FE3sSceneMovie_unserialize(p){
-   var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._interval = p.readInt32();
-   o._rotation.unserialize(p);
-}
-function FE3sSceneProjection(o){
-   o = RClass.inherits(this, o, FE3sObject);
-   o._angle      = null;
-   o._znear      = null;
-   o._zfar       = null;
-   o.angle       = FE3sSceneProjection_angle;
-   o.znear       = FE3sSceneProjection_znear;
-   o.zfar        = FE3sSceneProjection_zfar;
-   o.unserialize = FE3sSceneProjection_unserialize;
-   return o;
-}
-function FE3sSceneProjection_angle(){
-   return this._angle;
-}
-function FE3sSceneProjection_znear(){
-   return this._znear;
-}
-function FE3sSceneProjection_zfar(){
-   return this._zfar;
-}
-function FE3sSceneProjection_unserialize(p){
-   var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._angle = p.readFloat();
-   o._znear = p.readFloat();
-   o._zfar = p.readFloat();
-}
-function FE3sSceneRegion(o){
-   o = RClass.inherits(this, o, FE3sObject);
-   o._optionBackground     = true;
-   o._backgroundColor      = null;
-   o._moveSpeed            = 0.1;
-   o._rotationKeySpeed     = 0.005;
-   o._rotationMouseSpeed   = 0.003;
-   o._colorLevel           = null;
-   o._fogNear              = null;
-   o._fogFar               = null;
-   o._fogRate              = null;
-   o._fogAttenuation       = null;
-   o._fogColor             = null;
-   o._edgeRate             = null;
-   o._edgeLevel            = null;
-   o._edgeWidth            = null;
-   o._edgeColor            = null;
-   o._faceRange            = null;
-   o._faceLimit            = null;
-   o._faceRate             = null;
-   o._camera               = null;
-   o._light                = null;
-   o.construct             = FE3sSceneRegion_construct;
-   o.optionBackground      = FE3sSceneRegion_optionBackground;
-   o.setOptionBackground   = FE3sSceneRegion_setOptionBackground;
-   o.backgroundColor       = FE3sSceneRegion_backgroundColor;
-   o.moveSpeed             = FE3sSceneRegion_moveSpeed;
-   o.setMoveSpeed          = FE3sSceneRegion_setMoveSpeed;
-   o.rotationKeySpeed      = FE3sSceneRegion_rotationKeySpeed;
-   o.setRotationKeySpeed   = FE3sSceneRegion_setRotationKeySpeed;
-   o.rotationMouseSpeed    = FE3sSceneRegion_rotationMouseSpeed;
-   o.setRotationMouseSpeed = FE3sSceneRegion_setRotationMouseSpeed;
-   o.camera                = FE3sSceneRegion_camera;
-   o.light                 = FE3sSceneRegion_light;
-   o.unserialize           = FE3sSceneRegion_unserialize;
-   o.saveConfig            = FE3sSceneRegion_saveConfig;
-   return o;
-}
-function FE3sSceneRegion_construct(){
-   var o = this;
-   o.__base.FE3sObject.construct.call(o);
-   o._backgroundColor = new SColor4();
-   o._colorLevel = new SColor4();
-   o._fogColor = new SColor4();
-   o._edgeColor = new SColor4();
-   o._camera = RClass.create(FE3sSceneCamera);
-   o._light = RClass.create(FE3sSceneLight);
-}
-function FE3sSceneRegion_optionBackground(){
-   return this._optionBackground;
-}
-function FE3sSceneRegion_setOptionBackground(p){
-   this._optionBackground = p;
-}
-function FE3sSceneRegion_backgroundColor(){
-   return this._backgroundColor;
-}
-function FE3sSceneRegion_moveSpeed(){
-   return this._moveSpeed;
-}
-function FE3sSceneRegion_setMoveSpeed(p){
-   this._moveSpeed = p;
-}
-function FE3sSceneRegion_rotationKeySpeed(){
-   return this._rotationKeySpeed;
-}
-function FE3sSceneRegion_setRotationKeySpeed(p){
-   this._rotationKeySpeed = p;
-}
-function FE3sSceneRegion_rotationMouseSpeed(){
-   return this._rotationMouseSpeed;
-}
-function FE3sSceneRegion_setRotationMouseSpeed(p){
-   this._rotationMouseSpeed = p;
-}
-function FE3sSceneRegion_camera(){
-   return this._camera;
-}
-function FE3sSceneRegion_light(){
-   return this._light;
-}
-function FE3sSceneRegion_unserialize(p){
-   var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._backgroundColor.unserialize(p);
-   o._moveSpeed = p.readFloat();
-   o._rotationKeySpeed = p.readFloat();
-   o._rotationMouseSpeed = p.readFloat();
-   o._camera.unserialize(p);
-   o._light.unserialize(p);
-}
-function FE3sSceneRegion_saveConfig(p){
-   var o = this;
-   o.__base.FE3sObject.saveConfig.call(o, p);
-   p.set('color', o._backgroundColor.toString());
-   p.setFloat('move_speed', o._moveSpeed);
-   p.setFloat('rotation_key_speed', o._rotationKeySpeed);
-   p.setFloat('rotation_mouse_speed', o._rotationMouseSpeed);
-}
 function FE3sSceneRenderable(o){
    o = RClass.inherits(this, o, FE3sObject);
    o.unserialize = FE3sSceneRenderable_unserialize;
@@ -3542,87 +3256,6 @@ function FE3sSceneRenderable(o){
 function FE3sSceneRenderable_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
-}
-function FE3sSceneSky(o){
-   o = RClass.inherits(this, o, FE3sSceneSpace);
-   return o;
-}
-function FE3sSceneSpace(o){
-   o = RClass.inherits(this, o, FObject);
-   o._name       = null;
-   o._type       = null;
-   o._displays   = null;
-   o.displays    = FE3sSceneSpace_displays;
-   o.unserialize = FE3sSceneSpace_unserialize;
-   return o;
-}
-function FE3sSceneSpace_displays(){
-   return this._displays;
-}
-function FE3sSceneSpace_unserialize(p){
-   var o = this;
-   o._name = p.readString();
-   o._type = p.readString();
-   var c = p.readUint16();
-   if(c > 0){
-      var ds = o._displays = new TObjects();
-      for(var i = 0; i < c; i++){
-         var d = RClass.create(FE3sSceneDisplay);
-         d.unserialize(p);
-         ds.push(d);
-      }
-   }
-}
-function FE3sSceneTechnique(o){
-   o = RClass.inherits(this, o, FE3sObject);
-   o._techniqueCode = null;
-   o._passes        = null;
-   o.passes         = FE3sSceneTechnique_passes;
-   o.unserialize    = FE3sSceneTechnique_unserialize;
-   o.saveConfig     = FE3sSceneTechnique_saveConfig;
-   return o;
-}
-function FE3sSceneTechnique_passes(){
-   return this._passes;
-}
-function FE3sSceneTechnique_unserialize(p){
-   var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   var c = p.readInt16();
-   if(c > 0){
-      var ss = o._passes = new TObjects();
-      for(var i = 0; i < c; i++){
-         var s = RClass.create(FE3sSceneTechniquePass);
-         s.unserialize(p);
-         ss.push(s);
-      }
-   }
-}
-function FE3sSceneTechnique_saveConfig(p){
-   var o = this;
-   o.__base.FE3sObject.saveConfig.call(o, p);
-   p.set('technique_code', o._techniqueCode);
-}
-function FE3sSceneTechniquePass(o){
-   o = RClass.inherits(this, o, FE3sObject);
-   o._targetWidth  = null;
-   o._targetHeight = null;
-   o.targetWidth   = FE3sSceneTechniquePass_targetWidth;
-   o.targetHeight  = FE3sSceneTechniquePass_targetHeight;
-   o.unserialize   = FE3sSceneTechniquePass_unserialize;
-   return o;
-}
-function FE3sSceneTechniquePass_targetWidth(){
-   return this._targetWidth;
-}
-function FE3sSceneTechniquePass_targetHeight(){
-   return this._targetHeight;
-}
-function FE3sSceneTechniquePass_unserialize(p){
-   var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._targetWidth = p.readUint16();
-   o._targetHeight = p.readUint16();
 }
 function FE3sSkeleton(o){
    o = RClass.inherits(this, o, FE3sObject);

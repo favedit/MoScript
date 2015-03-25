@@ -9,6 +9,20 @@ function FE3sLight(o){
    //..........................................................
    // @attribute 属性
    o._typeName   = null;
+   // @attribute 配置
+   //o._optionTrack        = null;
+   // @attribute 阴影
+   //o._shadow1            = null;
+   //o._shadow2            = null;
+   //o._shadow3            = null;
+   //o._shadowAmbientMin   = null;
+   //o._shadowAmbientMax   = null;
+   //o._shadowAmbientThick = null;
+   //o._shadowAmbientRange = null;
+   //o._shadowMerge1Base   = null;
+   //o._shadowMerge1Rate   = null;
+   //o._shadowMerge2Base   = null;
+   //o._shadowMerge2Rate   = null;
    // @attribute 材质
    o._material   = null;
    // @attribute 相机
@@ -33,6 +47,9 @@ function FE3sLight_construct(){
    var o = this;
    o.__base.FE3sObject.construct.call(o);
    // 设置变量
+   //o._shadow1 = new SE3sSceneShadow();
+   //o._shadow2 = new SE3sSceneShadow();
+   //o._shadow3 = new SE3sSceneShadow();
    o._material = RClass.create(FE3sMaterial);
    o._camera = RClass.create(FE3sCamera);
 }
@@ -78,6 +95,20 @@ function FE3sLight_unserialize(p){
    o.__base.FE3sObject.unserialize.call(o, p);
    // 读取属性
    o._typeName = p.readString();
+   // 读取配置
+   //o._optionTrack = p.readInt32();
+   // 读取阴影
+   //o._shadow1.unserialize(p);
+   //o._shadow2.unserialize(p);
+   //o._shadow3.unserialize(p);
+   //o._shadowAmbientMin = p.readFloat();
+   //o._shadowAmbientMax = p.readFloat();
+   //o._shadowAmbientThick = p.readFloat();
+   //o._shadowAmbientRange = p.readFloat();
+   //o._shadowMerge1Base = p.readFloat();
+   //o._shadowMerge1Rate = p.readFloat();
+   //o._shadowMerge2Base = p.readFloat();
+   //o._shadowMerge2Rate = p.readFloat();
    // 读取材质
    o._material.unserialize(p);
    // 读取相机
