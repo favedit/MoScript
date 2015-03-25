@@ -150,7 +150,7 @@ function FDragConsole_onMouseDown(p){
    if(!es){
       return;
    }
-   if(!RClass.isClass(es, MDragable)){
+   if(!RClass.isClass(es, MUiDragable)){
       return;
    }
    RWindow.setOptionSelect(false);

@@ -43,7 +43,7 @@ function FDragConsole_onMouseDown(p){
       return;
    }
    // 检查类型
-   if(!RClass.isClass(es, MDragable)){
+   if(!RClass.isClass(es, MUiDragable)){
       return;
    }
    // 拖拽处理
@@ -106,7 +106,7 @@ function FDragConsole_construct(){
 // <T>注册一个可拖拽对象。</T>
 //
 // @method
-// @param p:dragable:MDragable 拖拽对象
+// @param p:dragable:MUiDragable 拖拽对象
 //==========================================================
 function FDragConsole_register(p){
    this._dragables.push(p);
@@ -116,7 +116,7 @@ function FDragConsole_register(p){
 // <T>注销一个可拖拽对象。</T>
 //
 // @method
-// @param p:dragable:MDragable 拖拽对象
+// @param p:dragable:MUiDragable 拖拽对象
 //==========================================================
 function FDragConsole_unregister(po, pc){
    this._dragables.remove(p);
