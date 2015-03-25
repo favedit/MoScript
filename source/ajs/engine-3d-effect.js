@@ -150,7 +150,7 @@ function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    c.drawTriangles(pr.indexBuffer());
 }
 function FE3dGeneralTechnique(o){
-   o = RClass.inherits(this, o, FG3dTechnique);
+   o = RClass.inherits(this, o, FE3dTechnique);
    o._code      = 'general';
    o._passColor = null;
    o.setup      = FE3dGeneralTechnique_setup;
@@ -159,7 +159,7 @@ function FE3dGeneralTechnique(o){
 }
 function FE3dGeneralTechnique_setup(){
    var o = this;
-   o.__base.FG3dTechnique.setup.call(o);
+   o.__base.FE3dTechnique.setup.call(o);
    o.registerMode(EG3dTechniqueMode.Ambient);
    o.registerMode(EG3dTechniqueMode.DiffuseLevel);
    o.registerMode(EG3dTechniqueMode.DiffuseColor);
@@ -433,7 +433,7 @@ function FE3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
    c.drawTriangles(pr.indexBuffer());
 }
 function FE3dShadowTechnique(o){
-   o = RClass.inherits(this, o, FG3dTechnique);
+   o = RClass.inherits(this, o, FE3dTechnique);
    o._code        = 'shadow';
    o._passDepth   = null;
    o._passColor   = null;
@@ -445,7 +445,7 @@ function FE3dShadowTechnique(o){
 }
 function FE3dShadowTechnique_setup(){
    var o = this;
-   o.__base.FG3dTechnique.setup.call(o);
+   o.__base.FE3dTechnique.setup.call(o);
    o.registerMode(EG3dTechniqueMode.Ambient);
    o.registerMode(EG3dTechniqueMode.DiffuseLevel);
    o.registerMode(EG3dTechniqueMode.DiffuseColor);
@@ -470,7 +470,7 @@ function FE3dShadowTechnique_passColor(){
 }
 function FE3dShadowTechnique_updateRegion(p){
    var o = this;
-   o.__base.FG3dTechnique.updateRegion.call(o, p);
+   o.__base.FE3dTechnique.updateRegion.call(o, p);
    var g = o._graphicContext;
    var gs = g.size();
    var c = p.camera();

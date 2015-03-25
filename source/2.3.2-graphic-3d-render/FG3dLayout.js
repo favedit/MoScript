@@ -150,5 +150,5 @@ function FG3dLayout_dispose(){
    o._buffers = RObject.dispose(o._buffers);
    o._samplers = RObject.dispose(o._samplers);
    // 父处理
-   o.__base.FG3dLayout.dispose.call(o);
+   o.__base.FG3dObject.dispose.call(o);
 }

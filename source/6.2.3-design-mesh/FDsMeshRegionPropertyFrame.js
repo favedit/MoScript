@@ -9,26 +9,28 @@ function FDsMeshRegionPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._visible                 = false;
+   o._visible                   = false;
    // @attribute
-   o._workspace               = null;
-   o._activeSpace                   = null;
-   o._activeRegion                  = null;
-   o._activeRegionResource          = null;
+   o._workspace                 = null;
+   o._activeSpace               = null;
+   o._activeRegion              = null;
    // @attribute
-   o._controlOptionBackground = null;
-   o._controlBackgroundColor  = null;
+   o._controlMoveSpeed          = null;
+   o._controlRotationKeySpeed   = null;
+   o._controlRotationMouseSpeed = null;
+   o._controlOptionBackground   = null;
+   o._controlBackgroundColor    = null;
    //..........................................................
    // @event
-   o.onBuilded                = FDsMeshRegionPropertyFrame_onBuilded;
-   o.onDataChanged            = FDsMeshRegionPropertyFrame_onDataChanged;
+   o.onBuilded                  = FDsMeshRegionPropertyFrame_onBuilded;
+   o.onDataChanged              = FDsMeshRegionPropertyFrame_onDataChanged;
    //..........................................................
    // @method
-   o.construct                = FDsMeshRegionPropertyFrame_construct;
+   o.construct                  = FDsMeshRegionPropertyFrame_construct;
    // @method
-   o.loadObject               = FDsMeshRegionPropertyFrame_loadObject;
+   o.loadObject                 = FDsMeshRegionPropertyFrame_loadObject;
    // @method
-   o.dispose                  = FDsMeshRegionPropertyFrame_dispose;
+   o.dispose                    = FDsMeshRegionPropertyFrame_dispose;
    return o;
 }
 

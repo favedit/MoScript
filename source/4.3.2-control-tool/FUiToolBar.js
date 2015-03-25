@@ -11,7 +11,7 @@
 // @history 150121
 //==========================================================
 function FUiToolBar(o){
-   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
+   o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
    //..........................................................
    // @property EUiAlign 对齐枚举
    o._alignCd          = RClass.register(o, new APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));

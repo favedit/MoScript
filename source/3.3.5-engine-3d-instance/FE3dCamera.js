@@ -5,7 +5,7 @@
 // @history 141231
 //==========================================================
 function FE3dCamera(o){
-   o = RClass.inherits(this, o, FG3dPerspectiveCamera);
+   o = RClass.inherits(this, o, FG3dPerspectiveCamera, MLinkerResource);
    //..........................................................
    // 四元数
    o._rotation       = null;
@@ -23,6 +23,7 @@ function FE3dCamera(o){
    o.doPitch         = FE3dCamera_doPitch;
    o.doYaw           = FE3dCamera_doYaw;
    o.doRoll          = FE3dCamera_doRoll;
+   o.loadResource    = FE3dCamera_loadResource;
    // @method
    o.update          = FE3dCamera_update;
    return o;
@@ -83,6 +84,29 @@ function FE3dCamera_doYaw(p){
 //==========================================================
 function FE3dCamera_doRoll(p){
    this._rotation.z += p;
+}
+
+//==========================================================
+// <T>加载资源。</T>
+//
+// @method
+// @param resource:FE3sCamera 资源
+//==========================================================
+function FE3dCamera_loadResource(resource){
+   var o = this;
+   var resourceProjection = resource.projection();
+   o._resource = resource;
+   // 加载设置
+   o.position().assign(resource.position());
+   o.setDirection(resource.direction().x, resource.direction().y, resource.direction().z);
+   o.update();
+   // 设置投影
+   var projection = o.projection();
+   projection._angle = resourceProjection.angle();
+   projection._znear = resourceProjection.znear();
+   projection._zfar = resourceProjection.zfar();
+   projection.update();
+   //cameraProjection.loadResource(rcv);
 }
 
 //==========================================================

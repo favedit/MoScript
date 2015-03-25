@@ -52,9 +52,11 @@ function FE3dMesh_testReady(){
 //==========================================================
 function FE3dMesh_loadRenderable(p){
    var o = this;
-   o.selectTechnique(o, FE3dGeneralTechnique);
-   // 加载资源
    var resource = p.resource();
+   // 加载技术
+   var technique = o.selectTechnique(o, FE3dGeneralTechnique);
+   technique.setResource(resource.technique());
+   // 加载资源
    o.loadResource(p.resource());
    // 创建渲染对象
    var m = RClass.create(FE3dMeshRenderable);

@@ -64,7 +64,6 @@ function FDsSceneAnimationPropertyFrame_dispose(){
 }
 function FDsSceneCameraFrame(o){
    o = RClass.inherits(this, o, FUiForm);
-   o._visible          = false;
    o._workspace        = null;
    o._camera           = null;
    o._controlPosition  = null;
@@ -1488,44 +1487,6 @@ function FDsSceneMenuBar_dispose(){
    var o = this;
    o.__base.FUiMenuBar.dispose.call(o);
 }
-function FDsScenePropertyFrame(o){
-   o = RClass.inherits(this, o, FUiForm);
-   o._visible        = false;
-   o._frameName      = 'design3d.scene.property.SceneFrame';
-   o._workspace      = null;
-   o._renderTemplate = null;
-   o._controlGuid    = null;
-   o._controlCode    = null;
-   o._controlLabel   = null;
-   o.onBuilded       = FDsScenePropertyFrame_onBuilded;
-   o.construct       = FDsScenePropertyFrame_construct;
-   o.loadObject      = FDsScenePropertyFrame_loadObject;
-   o.dispose         = FDsScenePropertyFrame_dispose;
-   return o;
-}
-function FDsScenePropertyFrame_onBuilded(p){
-   var o = this;
-   o.__base.FUiForm.onBuilded.call(o, p);
-   o._controlGuid = o.searchControl('guid');
-   o._controlCode = o.searchControl('code');
-   o._controlLabel = o.searchControl('label');
-}
-function FDsScenePropertyFrame_construct(){
-   var o = this;
-   o.__base.FUiForm.construct.call(o);
-}
-function FDsScenePropertyFrame_loadObject(t){
-   var o = this;
-   var r = t._resource;
-   o._renderTemplate = t;
-   o._controlGuid.set(r.guid());
-   o._controlCode.set(r.code());
-   o._controlLabel.set(r._label);
-}
-function FDsScenePropertyFrame_dispose(){
-   var o = this;
-   o.__base.FUiForm.dispose.call(o);
-}
 function FDsSceneRegionPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible                 = false;
@@ -1691,6 +1652,44 @@ function FDsSceneRenderablePropertyFrame_loadObject(s, r){
    o._frameMaterial2.loadObject(s, m);
 }
 function FDsSceneRenderablePropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsScenePropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible        = false;
+   o._frameName      = 'design3d.scene.property.SceneFrame';
+   o._workspace      = null;
+   o._renderTemplate = null;
+   o._controlGuid    = null;
+   o._controlCode    = null;
+   o._controlLabel   = null;
+   o.onBuilded       = FDsScenePropertyFrame_onBuilded;
+   o.construct       = FDsScenePropertyFrame_construct;
+   o.loadObject      = FDsScenePropertyFrame_loadObject;
+   o.dispose         = FDsScenePropertyFrame_dispose;
+   return o;
+}
+function FDsScenePropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlGuid = o.searchControl('guid');
+   o._controlCode = o.searchControl('code');
+   o._controlLabel = o.searchControl('label');
+}
+function FDsScenePropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsScenePropertyFrame_loadObject(t){
+   var o = this;
+   var r = t._resource;
+   o._renderTemplate = t;
+   o._controlGuid.set(r.guid());
+   o._controlCode.set(r.code());
+   o._controlLabel.set(r._label);
+}
+function FDsScenePropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }

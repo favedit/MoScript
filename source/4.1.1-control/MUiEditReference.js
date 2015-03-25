@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-function MEditReference(o){
+function MUiEditReference(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property
@@ -19,13 +19,13 @@ function MEditReference(o){
    o._listView     = null;
    //..........................................................
    // @event
-   //o.onListClick    = RClass.register(o, new HClick('onListClick'), MEditReference_onListClick);
+   //o.onListClick    = RClass.register(o, new HClick('onListClick'), MUiEditReference_onListClick);
    o.onListSelected = RMethod.empty;
    //..........................................................
    // @method
-   o.canListView    = MEditReference_canListView;
-   o.setLabelStyle  = MEditReference_setLabelStyle;
-   o.doListView     = MEditReference_doListView;
+   o.canListView    = MUiEditReference_canListView;
+   o.setLabelStyle  = MUiEditReference_setLabelStyle;
+   o.doListView     = MUiEditReference_doListView;
    return o;
 }
 
@@ -34,7 +34,7 @@ function MEditReference(o){
 //
 // @method
 //==========================================================
-function MEditReference_onListClick(e){
+function MUiEditReference_onListClick(e){
    var o = this;
    if(o.canListView()){
       o.doListView();
@@ -48,7 +48,7 @@ function MEditReference_onListClick(e){
 //    <L value='true'>允许</L>
 //    <L value='false'>不允许</L>
 //==========================================================
-function MEditReference_canListView(){
+function MUiEditReference_canListView(){
    return !RString.isEmpty(this._lovReference) && this._editable;
 }
 
@@ -57,7 +57,7 @@ function MEditReference_canListView(){
 //
 // @method
 //==========================================================
-function MEditReference_setLabelStyle(){
+function MUiEditReference_setLabelStyle(){
    var o = this;
    if(!RString.isEmpty(o.lovRefer)){
       o.hLabel.style.cursor = 'hand';
@@ -71,7 +71,7 @@ function MEditReference_setLabelStyle(){
 //
 // @method
 //==========================================================
-function MEditReference_doListView(cvs){
+function MUiEditReference_doListView(cvs){
    var o = this;
    // 获取关联的选取窗口
    var v = o._listView;

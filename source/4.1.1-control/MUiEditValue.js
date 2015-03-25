@@ -5,15 +5,15 @@
 // @author maocy
 // @version 150102
 //==========================================================
-function MEditValue(o){
+function MUiEditValue(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property
    o._dataValue = RClass.register(o, new APtyString('_dataValue'));
    //..........................................................
    // @method
-   o.get        = MEditValue_get;
-   o.set        = MEditValue_set;
+   o.get        = MUiEditValue_get;
+   o.set        = MUiEditValue_set;
 
    //..........................................................
    // @attribute
@@ -29,32 +29,32 @@ function MEditValue(o){
    //o._invalidText  = null;
    //..........................................................
    // @process
-   //o.oeClearValue  = MEditValue_oeClearValue;
-   //o.oeResetValue  = MEditValue_oeResetValue;
-   //o.oeLoadValue   = MEditValue_oeLoadValue;
-   //o.oeSaveValue   = MEditValue_oeSaveValue;
-   //o.oeRecordValue = MEditValue_oeRecordValue;
+   //o.oeClearValue  = MUiEditValue_oeClearValue;
+   //o.oeResetValue  = MUiEditValue_oeResetValue;
+   //o.oeLoadValue   = MUiEditValue_oeLoadValue;
+   //o.oeSaveValue   = MUiEditValue_oeSaveValue;
+   //o.oeRecordValue = MUiEditValue_oeRecordValue;
    //o.oeValidValue  = RMethod.empty;
    //..........................................................
    // @method
-   //o.descriptor    = MEditValue_descriptor;
-   //o.isTextChanged = MEditValue_isTextChanged;
-   //o.isDataChanged = MEditValue_isDataChanged;
-   //o.clearValue    = MEditValue_clearValue;
-   //o.resetValue    = MEditValue_resetValue;
-   //o.loadValue     = MEditValue_loadValue;
-   //o.saveValue     = MEditValue_saveValue;
-   //o.recordValue   = MEditValue_recordValue;
-   //o.commitValue   = MEditValue_commitValue;
+   //o.descriptor    = MUiEditValue_descriptor;
+   //o.isTextChanged = MUiEditValue_isTextChanged;
+   //o.isDataChanged = MUiEditValue_isDataChanged;
+   //o.clearValue    = MUiEditValue_clearValue;
+   //o.resetValue    = MUiEditValue_resetValue;
+   //o.loadValue     = MUiEditValue_loadValue;
+   //o.saveValue     = MUiEditValue_saveValue;
+   //o.recordValue   = MUiEditValue_recordValue;
+   //o.commitValue   = MUiEditValue_commitValue;
    //o.validValue    = RMethod.empty;
    //o.text          = RMethod.virtual(o, 'text');
    //o.setText       = RMethod.virtual(o, 'setText');
-   //o.reget         = MEditValue_reget;
-   //o.setInfoPack   = MEditValue_setInfoPack;
-   //o.setInfo       = MEditValue_setInfo;
-   //o.setEditable   = MEditValue_setEditable;
-   //o.doFocus       = MEditValue_doFocus;
-   //o.doBlur        = MEditValue_doBlur;
+   //o.reget         = MUiEditValue_reget;
+   //o.setInfoPack   = MUiEditValue_setInfoPack;
+   //o.setInfo       = MUiEditValue_setInfo;
+   //o.setEditable   = MUiEditValue_setEditable;
+   //o.doFocus       = MUiEditValue_doFocus;
+   //o.doBlur        = MUiEditValue_doBlur;
    //o.refreshStyle  = RMethod.virtual(o, 'refreshStyle');
    return o;
 }
@@ -65,7 +65,7 @@ function MEditValue(o){
 // @method
 // @return String 数据
 //==========================================================
-function MEditValue_get(){
+function MUiEditValue_get(){
    return this._dataValue;
 }
 
@@ -75,7 +75,7 @@ function MEditValue_get(){
 // @method
 // @param p:value:String 数据
 //==========================================================
-function MEditValue_set(p){
+function MUiEditValue_set(p){
    var o = this;
    o._dataValue = RString.nvl(p);
    //o.setText(o.descriptor().formatText(v));
@@ -91,7 +91,7 @@ function MEditValue_set(p){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MEditValue_oeClearValue(e){
+function MUiEditValue_oeClearValue(e){
    var o = this;
    var d = o.descriptor();
    if(!RString.isEmpty(d.dataName)){
@@ -107,7 +107,7 @@ function MEditValue_oeClearValue(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MEditValue_oeResetValue(e){
+function MUiEditValue_oeResetValue(e){
    var o = this;
    var d = o.descriptor();
    if(!RString.isEmpty(d.dataName)){
@@ -123,7 +123,7 @@ function MEditValue_oeResetValue(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MEditValue_oeLoadValue(e){
+function MUiEditValue_oeLoadValue(e){
    var o = this;
    var d = o.descriptor();
    // 加载数据
@@ -156,7 +156,7 @@ function MEditValue_oeLoadValue(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MEditValue_oeSaveValue(e){
+function MUiEditValue_oeSaveValue(e){
    var o = this;
    var d = o.descriptor();
    // 设置数据内容
@@ -172,7 +172,7 @@ function MEditValue_oeSaveValue(e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MEditValue_oeRecordValue(){
+function MUiEditValue_oeRecordValue(){
    var o = this;
    var d = o.descriptor();
    // 设置数据内容
@@ -188,7 +188,7 @@ function MEditValue_oeRecordValue(){
 // @method
 // @return MEditDescriptor 编辑描述器
 //==========================================================
-function MEditValue_descriptor(){
+function MUiEditValue_descriptor(){
    return this;
 }
 
@@ -199,7 +199,7 @@ function MEditValue_descriptor(){
 // @method
 // @return Boolean 是否改变
 //==========================================================
-function MEditValue_isTextChanged(){
+function MUiEditValue_isTextChanged(){
    return RString.nvl(this.text()) != this.__recordText;
 }
 
@@ -209,7 +209,7 @@ function MEditValue_isTextChanged(){
 // @method
 // @return Boolean 是否改变
 //==========================================================
-function MEditValue_isDataChanged(){
+function MUiEditValue_isDataChanged(){
    return RString.nvl(this.reget()) != this.__recordValue;
 }
 
@@ -218,7 +218,7 @@ function MEditValue_isDataChanged(){
 //
 // @method
 //==========================================================
-function MEditValue_clearValue(){
+function MUiEditValue_clearValue(){
    var o = this;
    o.set(RString.EMPTY);
    o.dataValue = RString.EMPTY;
@@ -229,7 +229,7 @@ function MEditValue_clearValue(){
 //
 // @method
 //==========================================================
-function MEditValue_resetValue(){
+function MUiEditValue_resetValue(){
    var o = this;
    var v = RString.nvl(o.descriptor().dataDefault);
    o.set(v);
@@ -241,7 +241,7 @@ function MEditValue_resetValue(){
 //
 // @method
 //==========================================================
-function MEditValue_loadValue(c, t){
+function MUiEditValue_loadValue(c, t){
    var o = this;
    var d = o.descriptor();
    if(EStore.Name == t){
@@ -262,7 +262,7 @@ function MEditValue_loadValue(c, t){
 //
 // @method
 //==========================================================
-function MEditValue_saveValue(c, t){
+function MUiEditValue_saveValue(c, t){
    var o = this;
    var d = o.descriptor();
    if(EStore.Name == t){
@@ -277,7 +277,7 @@ function MEditValue_saveValue(c, t){
 //
 // @method
 //==========================================================
-function MEditValue_recordValue(){
+function MUiEditValue_recordValue(){
    var o = this;
    o.__recordText = RString.nvl(o.text());
    o.__recordValue = RString.nvl(o.reget());
@@ -288,7 +288,7 @@ function MEditValue_recordValue(){
 //
 // @method
 //==========================================================
-function MEditValue_commitValue(){
+function MUiEditValue_commitValue(){
    this.__commitValue = RString.nvl(this.reget());
 }
 
@@ -298,7 +298,7 @@ function MEditValue_commitValue(){
 // @method
 // @return String 数据信息
 //==========================================================
-function MEditValue_reget(){
+function MUiEditValue_reget(){
    return this.descriptor().formatValue(this.text());
 }
 
@@ -308,7 +308,7 @@ function MEditValue_reget(){
 // @method
 // @param v:value:String 打包字符串
 //==========================================================
-function MEditValue_setInfoPack(v){
+function MUiEditValue_setInfoPack(v){
    var o = this;
    // 获得数据信息
    var f = o._info;
@@ -330,7 +330,7 @@ function MEditValue_setInfoPack(v){
 // @method
 // @param f:info:TControlInfo 控件信息对象
 //==========================================================
-function MEditValue_setInfo(f){
+function MUiEditValue_setInfo(f){
    this.set(f.value);
 }
 
@@ -340,7 +340,7 @@ function MEditValue_setInfo(f){
 // @method
 // @param v:value:Boolean 可编辑性
 //==========================================================
-function MEditValue_setEditable(v){
+function MUiEditValue_setEditable(v){
    var o = this;
    o._editable = v;
    o.refreshStyle();
@@ -351,7 +351,7 @@ function MEditValue_setEditable(v){
 //
 // @method
 //==========================================================
-function MEditValue_doFocus(){
+function MUiEditValue_doFocus(){
    var o = this;
    if(o._editable){
       o._editing = true;
@@ -364,7 +364,7 @@ function MEditValue_doFocus(){
 //
 // @method
 //==========================================================
-function MEditValue_doBlur(){
+function MUiEditValue_doBlur(){
    var o = this;
    if(o._editable && o._editing){
       o.descriptor().onDataEditEnd(o);

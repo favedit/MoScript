@@ -5,7 +5,7 @@
 // @param o:object:Object 拥有对象
 // @history 091201 MAOCY 创建
 //==========================================================
-function MEditable(o){
+function MUiEditable(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property
@@ -19,7 +19,7 @@ function MEditable(o){
    //o._editable  = false;
    //..........................................................
    // @method
-   //o.testEdit    = MEditable_testEdit;
+   //o.testEdit    = MUiEditable_testEdit;
    return o;
 }
 
@@ -30,7 +30,7 @@ function MEditable(o){
 // @param m:mode:EMode 模式
 // @return Boolean 可否编辑
 //==========================================================
-function MEditable_testEdit(m){
+function MUiEditable_testEdit(m){
    var o = this;
    switch(RString.nvl(m, o._emode)){
       case EMode.Insert:

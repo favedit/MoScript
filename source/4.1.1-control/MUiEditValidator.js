@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-function MEditValidator(o){
+function MUiEditValidator(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @attribute

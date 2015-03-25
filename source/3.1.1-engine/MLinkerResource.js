@@ -9,11 +9,12 @@ function MLinkerResource(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @attribute
-   o._resource   = null;
+   o._resource    = null;
    //..........................................................
    // @method
-   o.resource    = MLinkerResource_resource;
-   o.setResource = MLinkerResource_setResource;
+   o.resource     = MLinkerResource_resource;
+   o.setResource  = MLinkerResource_setResource;
+   o.loadResource = MLinkerResource_loadResource;
    return o;
 }
 
@@ -34,5 +35,15 @@ function MLinkerResource_resource(){
 // @param resource:FResource 资源
 //==========================================================
 function MLinkerResource_setResource(resource){
+   this._resource = resource;
+}
+
+//==========================================================
+// <T>加载资源。</T>
+//
+// @method
+// @param resource:FResource 资源
+//==========================================================
+function MLinkerResource_loadResource(resource){
    this._resource = resource;
 }

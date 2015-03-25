@@ -2751,7 +2751,7 @@ function FG3dLayout_dispose(){
    var o = this;
    o._buffers = RObject.dispose(o._buffers);
    o._samplers = RObject.dispose(o._samplers);
-   o.__base.FG3dLayout.dispose.call(o);
+   o.__base.FG3dObject.dispose.call(o);
 }
 function FG3dProgram(o){
    o = RClass.inherits(this, o, FG3dObject);

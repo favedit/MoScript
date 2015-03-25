@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150123
 //==========================================================
-function MDesign(o){
+function MUiDesign(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @attribute
@@ -13,13 +13,13 @@ function MDesign(o){
    o._storage       = null;
    //..........................................................
    // @process
-   o.oeDesign      = MDesign_oeDesign;
+   o.oeDesign      = MUiDesign_oeDesign;
    //..........................................................
    // @event
-   o.onDesignEnter = RClass.register(o, new AEventMouseEnter('onDesignEnter'), MDesign_onDesignEnter);
-   o.onDesignLeave = RClass.register(o, new AEventMouseEnter('onDesignLeave'), MDesign_onDesignLeave);
-   o.onDesignBegin = RClass.register(o, new AEventMouseEnter('onDesignBegin'), MDesign_onDesignBegin);
-   o.onDesignEnd   = RClass.register(o, new AEventMouseEnter('onDesignEnd'), MDesign_onDesignEnd);
+   o.onDesignEnter = RClass.register(o, new AEventMouseEnter('onDesignEnter'), MUiDesign_onDesignEnter);
+   o.onDesignLeave = RClass.register(o, new AEventMouseEnter('onDesignLeave'), MUiDesign_onDesignLeave);
+   o.onDesignBegin = RClass.register(o, new AEventMouseEnter('onDesignBegin'), MUiDesign_onDesignBegin);
+   o.onDesignEnd   = RClass.register(o, new AEventMouseEnter('onDesignEnd'), MUiDesign_onDesignEnd);
    return o;
 }
 
@@ -29,7 +29,7 @@ function MDesign(o){
 // @method
 // @param p:process:TEventProcess 事件处理
 //==========================================================
-function MDesign_oeDesign(e){
+function MUiDesign_oeDesign(e){
    if(e.isBefore()){
       switch(e.mode){
          case EDesign.Move:
@@ -72,7 +72,7 @@ function MDesign_oeDesign(e){
 // @method
 // @param p:process:SEvent 事件
 //==========================================================
-function MDesign_onDesignEnter(p){
+function MUiDesign_onDesignEnter(p){
    var o = this;
    o._hPanel.className = o.style('Design');
 }
@@ -83,7 +83,7 @@ function MDesign_onDesignEnter(p){
 // @method
 // @param p:process:SEvent 事件
 //==========================================================
-function MDesign_onDesignLeave(p){
+function MUiDesign_onDesignLeave(p){
 }
 
 //==========================================================
@@ -92,7 +92,7 @@ function MDesign_onDesignLeave(p){
 // @method
 // @param p:process:SEvent 事件
 //==========================================================
-function MDesign_onDesignBegin(p){
+function MUiDesign_onDesignBegin(p){
    var o = this;
    var g = o._storage = RObject.nvlObj(o._storage);
    g.designStyle = o._hPanel.className;
@@ -107,7 +107,7 @@ function MDesign_onDesignBegin(p){
 // @method
 // @param p:process:SEvent 事件
 //==========================================================
-function MDesign_onDesignEnd(p){
+function MUiDesign_onDesignEnd(p){
    var o = this;
    var g = o._storage = RObject.nvlObj(o._storage);
    o._hPanel.className = g.designStyle;

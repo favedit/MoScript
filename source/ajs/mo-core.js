@@ -5263,7 +5263,9 @@ function RObject_free(p){
 }
 function RObject_dispose(p){
    if(p){
-      p.dispose();
+      if(!p.__dispose){
+         p.dispose();
+      }
    }
    return null;
 }
@@ -10728,6 +10730,7 @@ var RHtml = new function RHtml(){
    o.checkSet       = RHtml_checkSet;
    o.radioGet       = RHtml_radioGet;
    o.radioSet       = RHtml_radioSet;
+   o.cursorSet      = RHtml_cursorSet;
    o.linkGet        = RHtml_linkGet;
    o.linkSet        = RHtml_linkSet;
    o.clientPosition = RHtml_clientPosition;
@@ -10747,7 +10750,6 @@ var RHtml = new function RHtml(){
    o.offsetY        = RHtml_offsetY;
    o.scrollWidth    = RHtml_scrollWidth;
    o.scrollHeight   = RHtml_scrollHeight;
-   o.radioSet       = RHtml_radioSet;
    o.point          = RHtml_point;
    o.toPoint        = RHtml_toPoint;
    o.rect           = RHtml_rect;
@@ -10885,6 +10887,11 @@ function RHtml_radioSet(hs, v){
             break;
          }
       }
+   }
+}
+function RHtml_cursorSet(h, v){
+   if(h){
+      h.style.cursor = v;
    }
 }
 function RHtml_linkGet(h, n){

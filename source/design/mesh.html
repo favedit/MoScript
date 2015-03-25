@@ -16,7 +16,7 @@
 <SCRIPT language='javascript' src='../6.2.3-design-mesh/FDsMeshMaterial1Frame.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.2.3-design-mesh/FDsMeshMaterial2Frame.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../6.2.3-design-mesh/FDsMeshScenePropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.3-design-mesh/FDsMeshSpacePropertyFrame.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.2.3-design-mesh/FDsMeshTechniquePropertyFrame.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.2.3-design-mesh/FDsMeshRegionPropertyFrame.js'></SCRIPT>
 <SCRIPT language='javascript' src='../6.2.3-design-mesh/FDsMeshCameraPropertyFrame.js'></SCRIPT>
@@ -32,7 +32,6 @@
 <SCRIPT language='javascript' src='../6.2.3-design-mesh/FDsMeshWorkspace.js'></SCRIPT>
 
 <SCRIPT>
-// http://localhost:92/script2/design/template.html
 function _load(){
    RRuntime.setProcessCd(EProcess.Debug);
    RApplication.initialize();
@@ -45,18 +44,15 @@ function _load(){
       c = u.substring(i + 5);
    }
    if(RString.isEmpty(c)){
-      //c = 'sphere';
       c = 'person-02';
    }
    // 加载工作区
    var w = RApplication.findWorkspace(FDsMeshWorkspace);
    w.buildDefine(document.body);
-   //w.setPanel(document.body);
-   //w.psRefresh();
    w.psResize();
+   //w.psMode();
    w.loadMeshByCode(c);
    RConsole.find(FUiWorkspaceConsole).active(w);
-   //RDump.dump(w, document.body);
 }
 </SCRIPT>
 </HEAD>

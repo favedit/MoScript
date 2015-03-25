@@ -399,17 +399,8 @@ function FE3dStage_construct(){
    o._statistics = RClass.create(FE3dStageStatistics);
    RConsole.find(FStatisticsConsole).register('engine.stage', o._statistics);
    o._allDisplays = new TObjects();
-   var c = o._camera = RClass.create(FE3dCamera);
-   c.position().set(0, 0, -100);
-   c.lookAt(0, 0, 0);
-   c.update();
-   c._projection.update();
-   var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
-   l.direction().set(0, -1, 0);
    var r = o._region = o.createRegion();
    r._timer = o._timer;
-   r._camera = c;
-   r._directionalLight = l;
 }
 function FE3dStage_createRegion(){
    return RClass.create(FE3dRegion);
@@ -424,21 +415,22 @@ function FE3dStage_statistics(){
    return this._statistics;
 }
 function FE3dStage_camera(){
-   return this._camera;
+   return this._region._camera;
 }
 function FE3dStage_projection(){
-   return this._projection;
+   return this._region._camera._projection;
 }
 function FE3dStage_directionalLight(){
-   return this._directionalLight;
+   return this._region._directionalLight;
 }
 function FE3dStage_technique(){
    return this._technique;
 }
 function FE3dStage_selectTechnique(c, p){
    var o = this;
-   var tc = RConsole.find(FG3dTechniqueConsole);
-   o._technique = tc.find(c, p);
+   var techniqueConsole = RConsole.find(FG3dTechniqueConsole);
+   var technique = o._technique = techniqueConsole.find(c, p);
+   return technique;
 }
 function FE3dStage_region(){
    return this._region;
@@ -534,6 +526,10 @@ function FE3dStageStatistics_resetFrame(){
    o._frameDraw.reset();
    o._frameDrawSort.reset();
    o._frameDrawRenderable.reset();
+}
+function FE3dTechnique(o){
+   o = RClass.inherits(this, o, FG3dTechnique, MLinkerResource);
+   return o;
 }
 var RE3dEngine = new function RE3dEngine(){
    var o = this;

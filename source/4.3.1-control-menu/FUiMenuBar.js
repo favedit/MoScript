@@ -11,7 +11,7 @@
 // @history 150121
 //==========================================================
 function FUiMenuBar(o){
-   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
+   o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
    //..........................................................
    // @property EUiMerge 合并枚举
    o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));

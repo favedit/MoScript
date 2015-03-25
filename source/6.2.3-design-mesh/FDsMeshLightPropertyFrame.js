@@ -12,7 +12,8 @@ function FDsMeshLightPropertyFrame(o){
    o._visible      = false;
    // @attribute
    o._workspace    = null;
-   o._light        = null;
+   o._activeSpace  = null;
+   o._activeLight  = null;
    // @attribute
    o._controlGuid  = null;
    o._controlCode  = null;
@@ -39,26 +40,25 @@ function FDsMeshLightPropertyFrame_construct(){
 }
 
 //==========================================================
-// <T>加载材质信息。</T>
+// <T>加载光源信息。</T>
 //
 // @method
-// @param s:scene:FE3dScene 场景
-// @param l:light:FG3dLight 光源
+// @param space:FE3dSpace 空间
+// @param light:FE3dLight 光源
 //==========================================================
-function FDsMeshLightPropertyFrame_loadObject(s, l){
+function FDsMeshLightPropertyFrame_loadObject(space, light){
    var o = this;
-   //var r = l._resource;
-   //var rm = r.material();
-   //var rc = r.camera();
+   var resource = light.resource();
    // 设置属性
-   //o._light = l;
+   o._activeSpace = space;
+   o._activeLight = light;
    // 设置参数
-   //o._controlGuid.set(r.guid());
-   //o._controlCode.set(r.code());
-   //o._controlLabel.set(r._label);
+   o._controlGuid.set(resource.guid());
+   o._controlCode.set(resource.code());
+   o._controlLabel.set(resource.label());
    // 设置参数
-   //o._frameMaterial.loadObject(s, rm);
-   //o._frameCamera.loadObject(s, rc);
+   o._frameCamera.loadObject(space, light.camera());
+   o._frameMaterial1.loadObject(space, light.material());
 }
 
 //==========================================================

@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150121
 //==========================================================
-function MDragable(o){
+function MUiDragable(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @event

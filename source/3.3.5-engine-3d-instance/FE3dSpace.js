@@ -109,24 +109,24 @@ function FE3dSpace_loadRegionResource(p){
    var rc = p.camera();
    var rcv = rc.projection();
    // 加载投影
-   var c = o._camera;
-   c._resource = rc;
-   var cp = c._projection;
-   c.position().assign(rc.position());
-   c.setDirection(rc.direction().x, rc.direction().y, rc.direction().z);
-   c.update();
+   var camera = o.camera();
+   camera.projection().size().assign(o._graphicContext.size());
+   camera.loadResource(rc);
+   //camera.position().assign(rc.position());
+   //camera.setDirection(rc.direction().x, rc.direction().y, rc.direction().z);
+   //camera.update();
    // 设置投影
-   cp.size().assign(o._graphicContext.size());
-   cp._angle = rcv.angle();
-   cp._znear = rcv.znear();
-   cp._zfar = rcv.zfar();
-   cp.update();
+   //cameraProjection.loadResource(rcv);
+   //cameraProjection._angle = rcv.angle();
+   //cameraProjection._znear = rcv.znear();
+   //cameraProjection._zfar = rcv.zfar();
+   //cameraProjection.update();
    //............................................................
    // 设置光源
    var rl = p.light();
    var rlc = rl.camera();
    var rlv = rlc.projection();
-   var l = o._directionalLight
+   var l = o.directionalLight();
    l._resource = rl;
    var lc = l._camera;
    var lp = lc._projection;

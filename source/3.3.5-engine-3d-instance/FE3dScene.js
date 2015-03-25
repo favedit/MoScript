@@ -109,9 +109,9 @@ function FE3dScene_loadRegionResource(p){
    var rc = p.camera();
    var rcv = rc.projection();
    // 加载投影
-   var c = o._camera;
+   var c = o.camera();
    c._resource = rc;
-   var cp = c._projection;
+   var cp = c.projection();
    c.position().assign(rc.position());
    c.setDirection(rc.direction().x, rc.direction().y, rc.direction().z);
    c.update();
@@ -126,7 +126,7 @@ function FE3dScene_loadRegionResource(p){
    var rl = p.light();
    var rlc = rl.camera();
    var rlv = rlc.projection();
-   var l = o._directionalLight
+   var l = o.directionalLight();
    l._resource = rl;
    var lc = l._camera;
    var lp = lc._projection;

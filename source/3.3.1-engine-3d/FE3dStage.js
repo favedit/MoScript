@@ -120,19 +120,19 @@ function FE3dStage_construct(){
    // 创建显示集合
    o._allDisplays = new TObjects();
    // 创建相机
-   var c = o._camera = RClass.create(FE3dCamera);
-   c.position().set(0, 0, -100);
-   c.lookAt(0, 0, 0);
-   c.update();
-   c._projection.update();
+   //var c = o._camera = RClass.create(FE3dCamera);
+   //c.position().set(0, 0, -100);
+   //c.lookAt(0, 0, 0);
+   //c.update();
+   //c._projection.update();
    // 创建方向光源
-   var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
-   l.direction().set(0, -1, 0);
+   //var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
+   //l.direction().set(0, -1, 0);
    // 创建区域
    var r = o._region = o.createRegion();
    r._timer = o._timer;
-   r._camera = c;
-   r._directionalLight = l;
+   //r._camera = c;
+   //r._directionalLight = l;
 }
 
 //==========================================================
@@ -175,7 +175,7 @@ function FE3dStage_statistics(){
 // @return FG3dCamera 相机
 //==========================================================
 function FE3dStage_camera(){
-   return this._camera;
+   return this._region._camera;
 }
 
 //==========================================================
@@ -185,7 +185,7 @@ function FE3dStage_camera(){
 // @return FG3dProjection 投影
 //==========================================================
 function FE3dStage_projection(){
-   return this._projection;
+   return this._region._camera._projection;
 }
 
 //==========================================================
@@ -195,7 +195,7 @@ function FE3dStage_projection(){
 // @return FG3dDirectionalLight 方向光
 //==========================================================
 function FE3dStage_directionalLight(){
-   return this._directionalLight;
+   return this._region._directionalLight;
 }
 
 //==========================================================
@@ -217,8 +217,9 @@ function FE3dStage_technique(){
 //==========================================================
 function FE3dStage_selectTechnique(c, p){
    var o = this;
-   var tc = RConsole.find(FG3dTechniqueConsole);
-   o._technique = tc.find(c, p);
+   var techniqueConsole = RConsole.find(FG3dTechniqueConsole);
+   var technique = o._technique = techniqueConsole.find(c, p);
+   return technique;
 }
 
 //==========================================================

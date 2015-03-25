@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150225
 //==========================================================
-function MDropable(o){
+function MUiDropable(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @style
@@ -21,25 +21,25 @@ function MDropable(o){
    // @event
    //o.onDropEnter       = RClass.register(o, new AEventMouseEnter('onDropEnter'));
    //o.onDropLeave       = RClass.register(o, new AEventMouseLeave('onDropLeave'));
-   //o.onDropClick       = RClass.register(o, new AEventMouseDown('onDropClick'), MDropable_onDropClick);
-   //o.onDropDoubleClick = RClass.register(o, new AEventDoubleClick('onDropDoubleClick'), MDropable_onDropDoubleClick);
+   //o.onDropClick       = RClass.register(o, new AEventMouseDown('onDropClick'), MUiDropable_onDropClick);
+   //o.onDropDoubleClick = RClass.register(o, new AEventDoubleClick('onDropDoubleClick'), MUiDropable_onDropDoubleClick);
    // @event
-   //o.onBuildDrop       = MDropable_onBuildDrop;
+   //o.onBuildDrop       = MUiDropable_onBuildDrop;
    //..........................................................
    // Method
-   //o.canDrop           = MDropable_canDrop;
+   //o.canDrop           = MUiDropable_canDrop;
    //o.drop              = RMethod.virtual(o, 'drop');
    return o;
 }
 // ------------------------------------------------------------
-function MDropable_onDropDoubleClick(){
+function MUiDropable_onDropDoubleClick(){
    var o = this;
    if(o._editable){
       o.drop();
    }
 }
 // ------------------------------------------------------------
-function MDropable_onDropClick(){
+function MUiDropable_onDropClick(){
    var o = this;
    if(o._editable){
       o.drop();
@@ -47,7 +47,7 @@ function MDropable_onDropClick(){
 }
 // ------------------------------------------------------------
 // 建立下拉按钮
-function MDropable_onBuildDrop(){
+function MUiDropable_onBuildDrop(){
    var o = this;
    var h = o.hDrop = RBuilder.newIcon(null, o.styleIcon('Drop'));
    h.style.width =16;
@@ -59,7 +59,7 @@ function MDropable_onBuildDrop(){
    o.attachEvent('onDropClick', h);
 }
 // ------------------------------------------------------------
-function MDropable_canDrop(){
+function MUiDropable_canDrop(){
    var o = this;
    if(RClass.isClass(o, MDesign)){
       return !RConsole.find(FDesignConsole).canDesignMove;

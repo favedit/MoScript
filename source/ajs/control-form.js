@@ -2907,7 +2907,7 @@ function FUiEdit_refreshValue(){
    o.processDataChangedListener(o);
 }
 function FUiEditControl(o){
-   o = RClass.inherits(this, o, FUiControl, MEditValue, MEditChange, MEditDrop);
+   o = RClass.inherits(this, o, FUiControl, MUiEditValue, MUiEditChange, MUiEditDrop);
    o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
    o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), EUiLabelPosition.Left);
    o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
@@ -3180,7 +3180,7 @@ function FUiEditControl_oeProgress(e){
 }
 function FUiEditControl_oeLoadValue(e){
    var o = this;
-   var r = o.__base.MEditValue.oeLoadValue.call(o, e);
+   var r = o.__base.MUiEditValue.oeLoadValue.call(o, e);
    var hci = o.hChangeIcon;
    if(hci){
       hci.style.display = 'none';
@@ -3190,18 +3190,18 @@ function FUiEditControl_oeLoadValue(e){
 function FUiEditControl_doFocus(e){
    var o = this;
    o.__base.MUiFocus.doFocus.call(o, e);
-   o.__base.MEditValue.doFocus.call(o, e);
+   o.__base.MUiEditValue.doFocus.call(o, e);
 }
 function FUiEditControl_doBlur(e){
    var o = this;
    o.__base.MUiFocus.doBlur.call(o, e);
-   o.__base.MEditValue.doBlur.call(o, e);
+   o.__base.MUiEditValue.doBlur.call(o, e);
 }
 function FUiEditControl_construct(){
    var o = this;
    o.__base.FUiControl.construct.call(o);
-   o.__base.MEditChange.construct.call(o);
-   o.__base.MEditDrop.construct.call(o);
+   o.__base.MUiEditChange.construct.call(o);
+   o.__base.MUiEditDrop.construct.call(o);
    o._labelSize = new SSize2(100, 20);
    o._editSize = new SSize2(200, 20);
 }
@@ -3235,7 +3235,7 @@ function FUiEditControl_setText(t){
 }
 function FUiEditControl_setEditable(v){
    var o = this;
-   o.__base.MEditValue.setEditable.call(o, v);
+   o.__base.MUiEditValue.setEditable.call(o, v);
    if(o.hEdit){
       o.hEdit.readOnly = !v;
    }
@@ -3348,8 +3348,8 @@ function FUiEditControl_dispose(){
    o._hValuePanel = null;
    RHtml.free(o._hDropPanel);
    o._hDropPanel = null;
-   o.__base.MEditDrop.dispose.call(o);
-   o.__base.MEditChange.dispose.call(o);
+   o.__base.MUiEditDrop.dispose.call(o);
+   o.__base.MUiEditChange.dispose.call(o);
    o.__base.FUiControl.dispose.call(o);
 }
 function FUiEditor(o){
@@ -3496,7 +3496,7 @@ function FUiEditor_dispose(){
    o._hEdit = null;
 }
 function FUiForm(o){
-   o = RClass.inherits(this, o, FUiLayout, MDescribeFrame);
+   o = RClass.inherits(this, o, FUiLayout, MUiDescribeFrame);
    o.onMouseDown        = FUiForm_onMouseDown;
    o.construct          = FUiForm_construct;
    o._dataStatusCd      = ERowStatus.Update;
@@ -5694,7 +5694,7 @@ function FUiPageSheet_innerSelect(p){
    o._hBottom.className = p ? o.styleName('BottomSelect') : o.styleName('Bottom');
    o._hBottomR.className = p ? o.styleName('BottomSelect') : o.styleName('Bottom');
    o._hRight.className = p ? o.styleName('RightSelect') : (prior ? o.styleName('RightPrior') : o.styleName('Right'));
-   o._hForm.style.display = p ? 'block' : 'none';
+   RHtml.visibleSet(o._hForm, p);
 }
 function FUiPageSheet_select(p){
    var o = this;
@@ -5735,7 +5735,7 @@ function FUiPageSheet_innerDump(s, l){
    s.append('action=', o.action, ']');
 }
 function FUiPanel(o){
-   o = RClass.inherits(this, o, FUiLayout, MDesign, MUiFocus);
+   o = RClass.inherits(this, o, FUiLayout, MUiDesign, MUiFocus);
    o._sizeCd      = EUiSize.Horizontal;
    o._stylePanel  = RClass.register(o, new AStyle('_stylePanel', 'Panel'));
    o._styleLabel  = RClass.register(o, new AStyle('_styleLabel', 'Label'));
@@ -5808,7 +5808,7 @@ function FUiRadio_refreshStyle(){
    h.style.cursor = o._editable? 'hand':'normal';
 }
 function FUiSelect(o){
-   o = RClass.inherits(this, o, FUiEditControl, MUiContainer, MPropertySelect, MDropable, MListenerDataChanged);
+   o = RClass.inherits(this, o, FUiEditControl, MUiContainer, MPropertySelect, MUiDropable, MListenerDataChanged);
    o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
    o._hValueForm      = null;

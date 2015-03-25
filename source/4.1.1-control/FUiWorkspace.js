@@ -6,7 +6,7 @@
 // @version 150120
 //==========================================================
 function FUiWorkspace(o){
-   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
+   o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
    //..........................................................
    // @style
    o._hContainer  = null;

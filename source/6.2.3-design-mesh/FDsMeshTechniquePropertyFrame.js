@@ -11,20 +11,15 @@ function FDsMeshTechniquePropertyFrame(o){
    // @attribute
    o._visible              = false;
    // @attribute
-   o._thread               = null;
-   o._interval             = 2000;
-   // @attribute
    o._workspace            = null;
-   o._scene                = null;
-   o._technique            = null;
-   o._techniqueResource    = null;
-   // @attribute
-   o._controlGuid          = null;
-   o._controlCode          = null;
-   o._controlLabel         = null;
+   o._activeSpace          = null;
+   o._activeTechnique      = null;
    // @attribute
    o._controlTriangleCount = null;
    o._controlDrawCount     = null;
+   // @attribute
+   o._thread               = null;
+   o._interval             = 2000;
    //..........................................................
    // @event
    o.onBuilded             = FDsMeshTechniquePropertyFrame_onBuilded;
@@ -62,10 +57,10 @@ function FDsMeshTechniquePropertyFrame_onBuilded(p){
 //==========================================================
 function FDsMeshTechniquePropertyFrame_onDataChanged(p){
    var o = this;
-   var r = o._technique;
+   var r = o._activeTechnique;
    r._code = o._controlCode.get();
    r._label = o._controlLabel.get();
-   r._techniqueCode = o._controlTechniqueCode.get();
+   r._activeTechniqueCode = o._controlTechniqueCode.get();
 }
 
 //==========================================================
@@ -78,8 +73,8 @@ function FDsMeshTechniquePropertyFrame_onModeClick(ps, pi){
    var o = this;
    var m = pi.tag();
    // 场景脏处理
-   o._technique._activeMode = m;
-   o._scene.dirty();
+   o._activeTechnique._activeMode = m;
+   o._activeSpace.dirty();
 }
 
 //==========================================================
@@ -95,7 +90,7 @@ function FDsMeshTechniquePropertyFrame_onRefresh(){
       return;
    }
    // 设置统计数据
-   var s = o._scene;
+   var s = o._activeSpace;
    var ss = s.statistics();
    var gs = s._graphicContext.statistics();
    // 场景统计
@@ -143,30 +138,24 @@ function FDsMeshTechniquePropertyFrame_construct(){
 // <T>加载材质信息。</T>
 //
 // @method
-// @param s:scene:FE3dScene 场景
-// @param t:technique:FG3dTechnique 技术
+// @param scene:FE3dSpace 空间
+// @param technique:FG3dTechnique 技术
 //==========================================================
-function FDsMeshTechniquePropertyFrame_loadObject(s, t){
+function FDsMeshTechniquePropertyFrame_loadObject(space, technique){
    var o = this;
-   var r = t._resource;
    // 设置属性
-   o._scene = s;
-   o._technique = t;
-   //o._techniqueResource = r;
-   // 设置参数
-   //o._controlGuid.set(r.guid());
-   //o._controlCode.set(r.code());
-   //o._controlLabel.set(r.label());
+   o._activeSpace = space;
+   o._activeTechnique = technique;
    // 设置效果器
-   var cms = o._controlRenderModes;
-   cms.clear();
-   var ms = t.modes();
-   var c = ms.count();
+   var ctlModes = o._controlRenderModes;
+   ctlModes.clear();
+   var modes = technique.modes();
+   var c = modes.count();
    for(var i = 0; i < c; i++){
-      var m = ms.getAt(i);
-      var cm = cms.createItem(null, m.code());
-      cm.setTag(m);
-      cms.push(cm);
+      var mode = modes.getAt(i);
+      var item = ctlModes.createItem(null, mode.code());
+      item.setTag(mode);
+      ctlModes.push(item);
    }
    // 刷新统计数据
    o.onRefresh();

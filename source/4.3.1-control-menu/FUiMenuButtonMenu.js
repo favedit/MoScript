@@ -6,7 +6,6 @@
 // @history 150121
 //==========================================================
 function FUiMenuButtonMenu(o){
-   //o = RClass.inherits(this, o, FUiControl, MEventFocus, MEventClick, MLsnClick);
    o = RClass.inherits(this, o, FUiControl);
    // Property
    o._action       = RClass.register(o, new APtyString('action', null));

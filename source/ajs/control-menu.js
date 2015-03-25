@@ -3,7 +3,7 @@ function MUiMenuButton(o){
    return o;
 }
 function FUiMenuBar(o){
-   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
+   o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
    o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
    o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
    o._styleButtonPanel = RClass.register(o, new AStyle('_styleButtonPanel'));

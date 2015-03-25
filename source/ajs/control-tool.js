@@ -3,7 +3,7 @@ function MUiToolButton(o){
    return o;
 }
 function FUiToolBar(o){
-   o = RClass.inherits(this, o, FUiContainer, MDescribeFrame);
+   o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
    o._alignCd          = RClass.register(o, new APtyEnum('_alignCd', null, EUiAlign, EUiAlign.Left));
    o._directionCd      = RClass.register(o, new APtyEnum('_directionCd', null, EUiDirection, EUiDirection.Horizontal));
    o._mergeCd          = RClass.register(o, new APtyEnum('_mergeCd', null, EUiMerge, EUiMerge.Override));
@@ -325,7 +325,7 @@ function FUiToolButtonCheck_dispose(){
    o.__base.FUiToolButton.dispose.call(o);
 }
 function FUiToolButtonMenu(o){
-   o = RClass.inherits(this, o, FUiToolButton, MUiContainer, MDropable, MUiFocus);
+   o = RClass.inherits(this, o, FUiToolButton, MUiContainer, MUiDropable, MUiFocus);
    o._popup          = null;
    o._hDropPanel     = null;
    o._styleDropHover = RClass.register(o, new AStyleIcon('_styleDropHover'));

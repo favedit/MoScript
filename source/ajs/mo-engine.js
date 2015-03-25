@@ -26,15 +26,19 @@ var EStageKey = new function EStageKey(){
 }
 function MLinkerResource(o){
    o = RClass.inherits(this, o);
-   o._resource   = null;
-   o.resource    = MLinkerResource_resource;
-   o.setResource = MLinkerResource_setResource;
+   o._resource    = null;
+   o.resource     = MLinkerResource_resource;
+   o.setResource  = MLinkerResource_setResource;
+   o.loadResource = MLinkerResource_loadResource;
    return o;
 }
 function MLinkerResource_resource(){
    return this._resource;
 }
 function MLinkerResource_setResource(resource){
+   this._resource = resource;
+}
+function MLinkerResource_loadResource(resource){
    this._resource = resource;
 }
 function MListenerEnterFrame(o){
@@ -1446,17 +1450,8 @@ function FE3dStage_construct(){
    o._statistics = RClass.create(FE3dStageStatistics);
    RConsole.find(FStatisticsConsole).register('engine.stage', o._statistics);
    o._allDisplays = new TObjects();
-   var c = o._camera = RClass.create(FE3dCamera);
-   c.position().set(0, 0, -100);
-   c.lookAt(0, 0, 0);
-   c.update();
-   c._projection.update();
-   var l = o._directionalLight = RClass.create(FG3dDirectionalLight);
-   l.direction().set(0, -1, 0);
    var r = o._region = o.createRegion();
    r._timer = o._timer;
-   r._camera = c;
-   r._directionalLight = l;
 }
 function FE3dStage_createRegion(){
    return RClass.create(FE3dRegion);
@@ -1471,21 +1466,22 @@ function FE3dStage_statistics(){
    return this._statistics;
 }
 function FE3dStage_camera(){
-   return this._camera;
+   return this._region._camera;
 }
 function FE3dStage_projection(){
-   return this._projection;
+   return this._region._camera._projection;
 }
 function FE3dStage_directionalLight(){
-   return this._directionalLight;
+   return this._region._directionalLight;
 }
 function FE3dStage_technique(){
    return this._technique;
 }
 function FE3dStage_selectTechnique(c, p){
    var o = this;
-   var tc = RConsole.find(FG3dTechniqueConsole);
-   o._technique = tc.find(c, p);
+   var techniqueConsole = RConsole.find(FG3dTechniqueConsole);
+   var technique = o._technique = techniqueConsole.find(c, p);
+   return technique;
 }
 function FE3dStage_region(){
    return this._region;
@@ -1581,6 +1577,10 @@ function FE3dStageStatistics_resetFrame(){
    o._frameDraw.reset();
    o._frameDrawSort.reset();
    o._frameDrawRenderable.reset();
+}
+function FE3dTechnique(o){
+   o = RClass.inherits(this, o, FG3dTechnique, MLinkerResource);
+   return o;
 }
 var RE3dEngine = new function RE3dEngine(){
    var o = this;
@@ -1920,8 +1920,8 @@ function FE3sCamera_unserialize(p){
 }
 function FE3sDisplay(o){
    o = RClass.inherits(this, o, FObject);
-   o._template       = null;
    o._typeName       = null;
+   o._template       = null;
    o._modelGuid      = null;
    o._meshGuid       = null;
    o._matrix         = null;
@@ -5996,7 +5996,7 @@ function FE3dGeneralColorSkeletonEffect_drawRenderable(pg, pr){
    c.drawTriangles(pr.indexBuffer());
 }
 function FE3dGeneralTechnique(o){
-   o = RClass.inherits(this, o, FG3dTechnique);
+   o = RClass.inherits(this, o, FE3dTechnique);
    o._code      = 'general';
    o._passColor = null;
    o.setup      = FE3dGeneralTechnique_setup;
@@ -6005,7 +6005,7 @@ function FE3dGeneralTechnique(o){
 }
 function FE3dGeneralTechnique_setup(){
    var o = this;
-   o.__base.FG3dTechnique.setup.call(o);
+   o.__base.FE3dTechnique.setup.call(o);
    o.registerMode(EG3dTechniqueMode.Ambient);
    o.registerMode(EG3dTechniqueMode.DiffuseLevel);
    o.registerMode(EG3dTechniqueMode.DiffuseColor);
@@ -6279,7 +6279,7 @@ function FE3dShadowDepthSkeletonEffect_drawRenderable(pg, pr){
    c.drawTriangles(pr.indexBuffer());
 }
 function FE3dShadowTechnique(o){
-   o = RClass.inherits(this, o, FG3dTechnique);
+   o = RClass.inherits(this, o, FE3dTechnique);
    o._code        = 'shadow';
    o._passDepth   = null;
    o._passColor   = null;
@@ -6291,7 +6291,7 @@ function FE3dShadowTechnique(o){
 }
 function FE3dShadowTechnique_setup(){
    var o = this;
-   o.__base.FG3dTechnique.setup.call(o);
+   o.__base.FE3dTechnique.setup.call(o);
    o.registerMode(EG3dTechniqueMode.Ambient);
    o.registerMode(EG3dTechniqueMode.DiffuseLevel);
    o.registerMode(EG3dTechniqueMode.DiffuseColor);
@@ -6316,7 +6316,7 @@ function FE3dShadowTechnique_passColor(){
 }
 function FE3dShadowTechnique_updateRegion(p){
    var o = this;
-   o.__base.FG3dTechnique.updateRegion.call(o, p);
+   o.__base.FE3dTechnique.updateRegion.call(o, p);
    var g = o._graphicContext;
    var gs = g.size();
    var c = p.camera();
@@ -6438,7 +6438,7 @@ function FE3dBoundBox_upload(){
    o._vertexPositionBuffer.upload(vd, 4 * 3, 32);
 }
 function FE3dCamera(o){
-   o = RClass.inherits(this, o, FG3dPerspectiveCamera);
+   o = RClass.inherits(this, o, FG3dPerspectiveCamera, MLinkerResource);
    o._rotation       = null;
    o._rotationMatrix = null;
    o._quaternion     = null;
@@ -6450,6 +6450,7 @@ function FE3dCamera(o){
    o.doPitch         = FE3dCamera_doPitch;
    o.doYaw           = FE3dCamera_doYaw;
    o.doRoll          = FE3dCamera_doRoll;
+   o.loadResource    = FE3dCamera_loadResource;
    o.update          = FE3dCamera_update;
    return o;
 }
@@ -6474,6 +6475,19 @@ function FE3dCamera_doYaw(p){
 }
 function FE3dCamera_doRoll(p){
    this._rotation.z += p;
+}
+function FE3dCamera_loadResource(resource){
+   var o = this;
+   var resourceProjection = resource.projection();
+   o._resource = resource;
+   o.position().assign(resource.position());
+   o.setDirection(resource.direction().x, resource.direction().y, resource.direction().z);
+   o.update();
+   var projection = o.projection();
+   projection._angle = resourceProjection.angle();
+   projection._znear = resourceProjection.znear();
+   projection._zfar = resourceProjection.zfar();
+   projection.update();
 }
 function FE3dCamera_update(){
    var o = this;
@@ -6655,6 +6669,33 @@ function FE3dDimensional_setup(){
    mi.effectCode = 'control';
    mi.ambientColor.set(1, 1, 1, 1);
 }
+function FE3dDirectionalLight(o){
+   o = RClass.inherits(this, o, FG3dDirectionalLight, MLinkerResource);
+   o._material    = null;
+   o.construct    = FE3dDirectionalLight_construct;
+   o.material     = FE3dDirectionalLight_material;
+   o.loadResource = FE3dDirectionalLight_loadResource;
+   o.dispose      = FE3dDirectionalLight_dispose;
+   return o;
+}
+function FE3dDirectionalLight_construct(){
+   var o = this;
+   o.__base.FG3dDirectionalLight.construct.call(o);
+   o._material = RClass.create(FE3dMaterial);
+}
+function FE3dDirectionalLight_material(){
+   return this._material;
+}
+function FE3dDirectionalLight_loadResource(resource){
+   var o = this;
+   o.__base.MLinkerResource.loadResource.call(o, resource);
+   o._material.loadResource(resource.material());
+}
+function FE3dDirectionalLight_dispose(){
+   var o = this;
+   o._material = RObject.dispose(o._material);
+   o.__base.FG3dDirectionalLight.dispose.call(o);
+}
 function FE3dMaterial(o){
    o = RClass.inherits(this, o, FG3dMaterial, MLinkerResource);
    o.loadResource   = FE3dMaterial_loadResource;
@@ -6696,8 +6737,9 @@ function FE3dMesh_testReady(){
 }
 function FE3dMesh_loadRenderable(p){
    var o = this;
-   o.selectTechnique(o, FE3dGeneralTechnique);
    var resource = p.resource();
+   var technique = o.selectTechnique(o, FE3dGeneralTechnique);
+   technique.setResource(resource.technique());
    o.loadResource(p.resource());
    var m = RClass.create(FE3dMeshRenderable);
    m.setResource(resource._renderable);
@@ -7176,6 +7218,13 @@ function FE3dRegion_construct(){
    var o = this;
    o.__base.FRegion.construct.call(o);
    o.__base.MG3dRegion.construct.call(o);
+   var c = o._camera = RClass.create(FE3dCamera);
+   c.position().set(0, 0, -100);
+   c.lookAt(0, 0, 0);
+   c.update();
+   c._projection.update();
+   var l = o._directionalLight = RClass.create(FE3dDirectionalLight);
+   l.direction().set(0, -1, 0);
    var c = o._backgroundColor = new SColor4();
    c.set(0, 0, 0, 1);
    o._calculateCameraMatrix = new SMatrix3d();
@@ -7186,6 +7235,8 @@ function FE3dRegion_backgroundColor(){
 function FE3dRegion_loadResource(p){
    var o = this;
    o._resource = p;
+   o._camera.loadResource(p.camera());
+   o._directionalLight.loadResource(p.light());
    o.reloadResource();
 }
 function FE3dRegion_reloadResource(){
@@ -7263,9 +7314,9 @@ function FE3dScene_loadRegionResource(p){
    o._region.loadResource(p);
    var rc = p.camera();
    var rcv = rc.projection();
-   var c = o._camera;
+   var c = o.camera();
    c._resource = rc;
-   var cp = c._projection;
+   var cp = c.projection();
    c.position().assign(rc.position());
    c.setDirection(rc.direction().x, rc.direction().y, rc.direction().z);
    c.update();
@@ -7277,7 +7328,7 @@ function FE3dScene_loadRegionResource(p){
    var rl = p.light();
    var rlc = rl.camera();
    var rlv = rlc.projection();
-   var l = o._directionalLight
+   var l = o.directionalLight();
    l._resource = rl;
    var lc = l._camera;
    var lp = lc._projection;
@@ -8260,21 +8311,13 @@ function FE3dSpace_loadRegionResource(p){
    o._region.loadResource(p);
    var rc = p.camera();
    var rcv = rc.projection();
-   var c = o._camera;
-   c._resource = rc;
-   var cp = c._projection;
-   c.position().assign(rc.position());
-   c.setDirection(rc.direction().x, rc.direction().y, rc.direction().z);
-   c.update();
-   cp.size().assign(o._graphicContext.size());
-   cp._angle = rcv.angle();
-   cp._znear = rcv.znear();
-   cp._zfar = rcv.zfar();
-   cp.update();
+   var camera = o.camera();
+   camera.projection().size().assign(o._graphicContext.size());
+   camera.loadResource(rc);
    var rl = p.light();
    var rlc = rl.camera();
    var rlv = rlc.projection();
-   var l = o._directionalLight
+   var l = o.directionalLight();
    l._resource = rl;
    var lc = l._camera;
    var lp = lc._projection;

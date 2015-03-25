@@ -5,7 +5,7 @@
 // @history 150119
 //==========================================================
 function FE3dShadowTechnique(o){
-   o = RClass.inherits(this, o, FG3dTechnique);
+   o = RClass.inherits(this, o, FE3dTechnique);
    //..........................................................
    // @attribute
    o._code        = 'shadow';
@@ -28,7 +28,7 @@ function FE3dShadowTechnique(o){
 //==========================================================
 function FE3dShadowTechnique_setup(){
    var o = this;
-   o.__base.FG3dTechnique.setup.call(o);
+   o.__base.FE3dTechnique.setup.call(o);
    //..........................................................
    // 创建支持模式
    o.registerMode(EG3dTechniqueMode.Ambient);
@@ -81,7 +81,7 @@ function FE3dShadowTechnique_passColor(){
 //==========================================================
 function FE3dShadowTechnique_updateRegion(p){
    var o = this;
-   o.__base.FG3dTechnique.updateRegion.call(o, p);
+   o.__base.FE3dTechnique.updateRegion.call(o, p);
    var g = o._graphicContext;
    var gs = g.size();
    // 更新相机

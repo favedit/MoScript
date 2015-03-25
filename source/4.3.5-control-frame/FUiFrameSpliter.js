@@ -6,8 +6,7 @@
 // @version 150120
 //==========================================================
 function FUiFrameSpliter(o){
-   //o = RClass.inherits(this, o, FUiControl, MLsnClick);
-   o = RClass.inherits(this, o, FUiControl, MDragable);
+   o = RClass.inherits(this, o, FUiControl, MUiDragable);
    //..........................................................
    // @style
    o._styleNormal  = RClass.register(o, new AStyle('_styleNormal', 'Normal'));

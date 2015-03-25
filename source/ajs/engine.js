@@ -26,15 +26,19 @@ var EStageKey = new function EStageKey(){
 }
 function MLinkerResource(o){
    o = RClass.inherits(this, o);
-   o._resource   = null;
-   o.resource    = MLinkerResource_resource;
-   o.setResource = MLinkerResource_setResource;
+   o._resource    = null;
+   o.resource     = MLinkerResource_resource;
+   o.setResource  = MLinkerResource_setResource;
+   o.loadResource = MLinkerResource_loadResource;
    return o;
 }
 function MLinkerResource_resource(){
    return this._resource;
 }
 function MLinkerResource_setResource(resource){
+   this._resource = resource;
+}
+function MLinkerResource_loadResource(resource){
    this._resource = resource;
 }
 function MListenerEnterFrame(o){

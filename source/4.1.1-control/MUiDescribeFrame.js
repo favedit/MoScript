@@ -5,13 +5,13 @@
 // @author maocy
 // @version 150210
 //==========================================================
-function MDescribeFrame(o){
+function MUiDescribeFrame(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @attribute
    o._frameName  = null;
    // @method
-   o.buildDefine = MDescribeFrame_buildDefine;
+   o.buildDefine = MUiDescribeFrame_buildDefine;
    return o;
 }
 
@@ -22,7 +22,7 @@ function MDescribeFrame(o){
 // @param h:hDocument:HtmlTag 页面元素
 // @param n:frameName:String 页面名称
 //==========================================================
-function MDescribeFrame_buildDefine(h, n){
+function MUiDescribeFrame_buildDefine(h, n){
    var o = this;
    // 获得名称
    if(RString.isEmpty(n)){

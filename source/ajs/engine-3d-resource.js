@@ -305,8 +305,8 @@ function FE3sCamera_unserialize(p){
 }
 function FE3sDisplay(o){
    o = RClass.inherits(this, o, FObject);
-   o._template       = null;
    o._typeName       = null;
+   o._template       = null;
    o._modelGuid      = null;
    o._meshGuid       = null;
    o._matrix         = null;

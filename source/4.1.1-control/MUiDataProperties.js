@@ -5,16 +5,16 @@
 // @author maocy
 // @version 150202
 //==========================================================
-function MDataProperties(o){
+function MUiDataProperties(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @attribute
    o._dataProperties = null;
    //..........................................................
    // @method
-   o.dataProperties  = MDataProperties_dataProperties;
-   o.dataPropertyGet = MDataProperties_dataPropertyGet;
-   o.dataPropertySet = MDataProperties_dataPropertySet;
+   o.dataProperties  = MUiDataProperties_dataProperties;
+   o.dataPropertyGet = MUiDataProperties_dataPropertyGet;
+   o.dataPropertySet = MUiDataProperties_dataPropertySet;
    return o;
 }
 
@@ -25,7 +25,7 @@ function MDataProperties(o){
 // @param c:class:TClass 类对象
 // @return String 样式名称
 //==========================================================
-function MDataProperties_dataProperties(n, c){
+function MUiDataProperties_dataProperties(n, c){
    var o = this;
    var d = o._dataProperties;
    if(d == null){
@@ -40,7 +40,7 @@ function MDataProperties_dataProperties(n, c){
 // @param n:name:String 名称
 // @return Object 内容
 //==========================================================
-function MDataProperties_dataPropertyGet(n){
+function MUiDataProperties_dataPropertyGet(n){
    var o = this;
    var d = o._dataProperties;
    return d ? d.get(n) : null;
@@ -52,6 +52,6 @@ function MDataProperties_dataPropertyGet(n){
 // @param n:name:String 名称
 // @param v:value:Object 内容
 //==========================================================
-function MDataProperties_dataPropertySet(n, v){
+function MUiDataProperties_dataPropertySet(n, v){
    this.dataProperties().set(n, v);
 }

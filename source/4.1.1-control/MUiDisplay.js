@@ -4,7 +4,7 @@
 // @manger
 // @history 090805 MAOCY 创建
 //==========================================================
-function MDisplay(o){
+function MUiDisplay(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property
@@ -21,10 +21,10 @@ function MDisplay(o){
    o._visible    = true;
    //..........................................................
    // @process
-   o.oeMode      = MDisplay_oeMode;
+   o.oeMode      = MUiDisplay_oeMode;
    //..........................................................
    // @method
-   o.canVisible  = MDisplay_canVisible;
+   o.canVisible  = MUiDisplay_canVisible;
    return o;
 }
 
@@ -34,11 +34,11 @@ function MDisplay(o){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MDisplay_oeMode(e){
+function MUiDisplay_oeMode(e){
    var o = this;
    if(e.isBefore()){
       var v = true;
-      if(!o.base.MDisplayAble){
+      if(!o.base.MUiDisplayAble){
          v = o.canVisible(e.mode);
       }
       o.setVisible(v);
@@ -52,7 +52,7 @@ function MDisplay_oeMode(e){
 // @param m:mode:EMode 模式
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MDisplay_canVisible(m){
+function MUiDisplay_canVisible(m){
    var o = this;
    switch(RString.nvl(m, o._emode)){
       case EMode.Display:

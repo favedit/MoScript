@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150210
 //==========================================================
-function FDsSceneCameraFrame(o){
+function FDsMeshCameraFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
@@ -16,11 +16,11 @@ function FDsSceneCameraFrame(o){
    o._controlDirection = null;
    //..........................................................
    // @method
-   o.construct         = FDsSceneCameraFrame_construct;
+   o.construct         = FDsMeshCameraFrame_construct;
    // @method
-   o.loadObject        = FDsSceneCameraFrame_loadObject;
+   o.loadObject        = FDsMeshCameraFrame_loadObject;
    // @method
-   o.dispose           = FDsSceneCameraFrame_dispose;
+   o.dispose           = FDsMeshCameraFrame_dispose;
    return o;
 }
 
@@ -29,7 +29,7 @@ function FDsSceneCameraFrame(o){
 //
 // @method
 //==========================================================
-function FDsSceneCameraFrame_construct(){
+function FDsMeshCameraFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -42,7 +42,7 @@ function FDsSceneCameraFrame_construct(){
 // @param s:scene:FE3dScene 场景
 // @param c:technique:FG3dTechnique 技术
 //==========================================================
-function FDsSceneCameraFrame_loadObject(s, c){
+function FDsMeshCameraFrame_loadObject(s, c){
    var o = this;
    var r = c._resource;
    // 设置属性
@@ -57,7 +57,7 @@ function FDsSceneCameraFrame_loadObject(s, c){
 //
 // @method
 //==========================================================
-function FDsSceneCameraFrame_dispose(){
+function FDsMeshCameraFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

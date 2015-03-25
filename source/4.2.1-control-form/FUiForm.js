@@ -6,9 +6,7 @@
 // @version 150122
 //==========================================================
 function FUiForm(o){
-   //o = RClass.inherits(this, o, FUiLayout, MForm, MDisplayAble, MValue, MAction);
-   //o = RClass.inherits(this, o, FUiLayout, MUiFocus, MDataset);
-   o = RClass.inherits(this, o, FUiLayout, MDescribeFrame);
+   o = RClass.inherits(this, o, FUiLayout, MUiDescribeFrame);
    //..........................................................
    // @event
    o.onMouseDown        = FUiForm_onMouseDown;

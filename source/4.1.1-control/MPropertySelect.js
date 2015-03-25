@@ -6,7 +6,7 @@
 // @version 150225
 //==========================================================
 function MPropertySelect(o){
-   o = RClass.inherits(this, o, MEditValidator, MEditReference, MEditZoom);
+   o = RClass.inherits(this, o, MUiEditValidator, MUiEditReference, MUiEditZoom);
    //..........................................................
    // @property
    o._editCaseCd     = RClass.register(o, new APtyString('_editCaseCd'));

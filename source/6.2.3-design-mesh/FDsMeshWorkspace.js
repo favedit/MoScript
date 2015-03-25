@@ -145,7 +145,7 @@ function FDsMeshWorkspace_onCatalogSelected(p, pc){
    }
    // 显示选中属性面板
    if(RClass.isClass(p, FE3dStage)){
-      var f = o.findPropertyFrame(EDsFrame.MeshPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
       f.show();
       f.loadObject(space, space);
    }else if(RClass.isClass(p, FG3dTechnique)){

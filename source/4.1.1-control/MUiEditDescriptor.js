@@ -4,7 +4,7 @@
 // @manger
 // @history 090921 MAOCY 创建
 //==========================================================
-function MEditDescriptor(o){
+function MUiEditDescriptor(o){
    o = RClass.inherits(this, o, MEditable);
    //..........................................................
    // @property
@@ -36,8 +36,8 @@ function MEditDescriptor(o){
    //o._validable        = false;
    //..........................................................
    // @event
-   //o.onDataEnter       = RClass.register(o, new HMouseEnter('onDataEnter'), MEditDescriptor_onDataEnter);
-   //o.onDataLeave       = RClass.register(o, new HMouseLeave('onDataLeave'), MEditDescriptor_onDataLeave);
+   //o.onDataEnter       = RClass.register(o, new HMouseEnter('onDataEnter'), MUiEditDescriptor_onDataEnter);
+   //o.onDataLeave       = RClass.register(o, new HMouseLeave('onDataLeave'), MUiEditDescriptor_onDataLeave);
    //o.onDataMouseOver   = RClass.register(o, new HMouseOver('onDataMouseOver'));
    //o.onDataMouseOut    = RClass.register(o, new HMouseOut('onDataMouseOut'));
    //o.onDataMouseDown   = RClass.register(o, new HMouseDown('onDataMouseDown'));
@@ -46,24 +46,24 @@ function MEditDescriptor(o){
    //o.onDataBlur        = RClass.register(o, new HBlur('onDataBlur'));
    //o.onDataClick       = RClass.register(o, new HClick('onDataClick'));
    //o.onDataDoubleClick = RClass.register(o, new HDoubleClick('onDataDoubleClick'));
-   //o.onDataKeyDown     = RClass.register(o, new HKeyDown('onDataKeyDown'), MEditDescriptor_onDataKeyDown);
+   //o.onDataKeyDown     = RClass.register(o, new HKeyDown('onDataKeyDown'), MUiEditDescriptor_onDataKeyDown);
    //o.onDataKeyPress    = RClass.register(o, new HKeyPress('onDataKeyPress'));
    //o.onDataKeyUp       = RClass.register(o, new HKeyUp('onDataKeyUp'));
-   //o.onDataChange      = RClass.register(o, new HChange('onDataChange'), MEditDescriptor_onDataChange);
+   //o.onDataChange      = RClass.register(o, new HChange('onDataChange'), MUiEditDescriptor_onDataChange);
    //o.onDataChanged     = RMethod.empty;
    //o.onDataEditBegin   = RMethod.empty;
-   //o.onDataEditEnd     = MEditDescriptor_onDataEditEnd;
+   //o.onDataEditEnd     = MUiEditDescriptor_onDataEditEnd;
    //..........................................................
    // @process
-   //o.oeSaveCode        = MEditDescriptor_oeSaveCode;
+   //o.oeSaveCode        = MUiEditDescriptor_oeSaveCode;
    //..........................................................
    // @method
-   //o.canValid          = MEditDescriptor_canValid;
+   //o.canValid          = MUiEditDescriptor_canValid;
    //o.__changedEvent    = new TEvent();
-   //o.formatValue       = MEditDescriptor_formatValue;
-   //o.formatText        = MEditDescriptor_formatText;
+   //o.formatValue       = MUiEditDescriptor_formatValue;
+   //o.formatText        = MUiEditDescriptor_formatText;
    //o.setInfo           = RMethod.empty;
-   //o.validText         = MEditDescriptor_validText;
+   //o.validText         = MUiEditDescriptor_validText;
    return o;
 }
 
@@ -74,7 +74,7 @@ function MEditDescriptor(o){
 // @param s:source:MEditValue 编辑对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MEditDescriptor_onDataEnter(s, e){
+function MUiEditDescriptor_onDataEnter(s, e){
    var o = this;
    // 检查加载中
    if(s.__progress){
@@ -98,7 +98,7 @@ function MEditDescriptor_onDataEnter(s, e){
 // @param s:source:MEditValue 编辑对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MEditDescriptor_onDataLeave(s, e){
+function MUiEditDescriptor_onDataLeave(s, e){
    var o = this;
    // 检查加载中
    if(s.__progress){
@@ -122,7 +122,7 @@ function MEditDescriptor_onDataLeave(s, e){
 // @param s:source:MEditValue 编辑对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MEditDescriptor_onDataKeyDown(s, e){
+function MUiEditDescriptor_onDataKeyDown(s, e){
    var o = this;
    if(s._editable && !s._disabled){
       // 校验数据
@@ -138,7 +138,7 @@ function MEditDescriptor_onDataKeyDown(s, e){
 // @param s:source:MEditValue 编辑对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MEditDescriptor_onDataChange(s, e){
+function MUiEditDescriptor_onDataChange(s, e){
    var o = this;
    if(s._editable && !s._disabled){
       if(s.isTextChanged()){
@@ -168,7 +168,7 @@ function MEditDescriptor_onDataChange(s, e){
 // @param s:source:MEditValue 编辑对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MEditDescriptor_onDataEditEnd(s, e){
+function MUiEditDescriptor_onDataEditEnd(s, e){
    var o = this;
    // 校验数据内容
    var vt = s._invalidText = o.validText(s.text());
@@ -191,7 +191,7 @@ function MEditDescriptor_onDataEditEnd(s, e){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function MEditDescriptor_oeSaveCode(e){
+function MUiEditDescriptor_oeSaveCode(e){
    var o = this;
    if(!RString.isEmpty(o.dataName) && !RString.isEmpty(o.dataCode)){
       e.values.set(o.dataName, o.dataCode);
@@ -206,7 +206,7 @@ function MEditDescriptor_oeSaveCode(e){
 // @param m:mode:EMode 模式
 // @return Boolean 可否校验
 //==========================================================
-function MEditDescriptor_canValid(m){
+function MUiEditDescriptor_canValid(m){
    var o = this;
    switch(RString.nvl(m, o._emode)){
       case EMode.Insert:
@@ -224,7 +224,7 @@ function MEditDescriptor_canValid(m){
 // @method
 // @param v:value:String 数据内容
 //==========================================================
-function MEditDescriptor_formatValue(v){
+function MUiEditDescriptor_formatValue(v){
    return RString.nvl(v);
 }
 
@@ -234,7 +234,7 @@ function MEditDescriptor_formatValue(v){
 // @method
 // @param t:text:String 显示内容
 //==========================================================
-function MEditDescriptor_formatText(t){
+function MUiEditDescriptor_formatText(t){
    return RString.nvl(t);
 }
 
@@ -245,12 +245,12 @@ function MEditDescriptor_formatText(t){
 // @method
 // @param t:text:String 显示内容
 //==========================================================
-function MEditDescriptor_validText(t){
+function MUiEditDescriptor_validText(t){
    var o = this;
    // 必须性检查
    //if(o.validRequire){
       //if(RString.isEmpty(t)){
-         //return RContext.get('MEditDescriptor:Empty');
+         //return RContext.get('MUiEditDescriptor:Empty');
       //}
    //}
 }

@@ -28,6 +28,7 @@ var RHtml = new function RHtml(){
    o.checkSet       = RHtml_checkSet;
    o.radioGet       = RHtml_radioGet;
    o.radioSet       = RHtml_radioSet;
+   o.cursorSet      = RHtml_cursorSet;
    // @method
    o.linkGet        = RHtml_linkGet;
    o.linkSet        = RHtml_linkSet;
@@ -61,7 +62,6 @@ var RHtml = new function RHtml(){
    o.offsetY        = RHtml_offsetY;
    o.scrollWidth    = RHtml_scrollWidth;
    o.scrollHeight   = RHtml_scrollHeight;
-   o.radioSet       = RHtml_radioSet;
    o.point          = RHtml_point;
    o.toPoint        = RHtml_toPoint;
    o.rect           = RHtml_rect;
@@ -299,6 +299,19 @@ function RHtml_radioSet(hs, v){
             break;
          }
       }
+   }
+}
+
+//==========================================================
+// <T>设置鼠标样式。</T>
+//
+// @method
+// @param h:html:HtmlTag 页面元素
+// @param v:value:String 文本内容
+//==========================================================
+function RHtml_cursorSet(h, v){
+   if(h){
+      h.style.cursor = v;
    }
 }
 

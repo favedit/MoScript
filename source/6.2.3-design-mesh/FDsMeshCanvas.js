@@ -153,6 +153,8 @@ function FDsMeshCanvas_onMouseCaptureStart(p){
          r._dragMatrix.assign(r.matrix());
       }
    }
+   // 设置鼠标
+   RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
 }
 
 //==========================================================
@@ -248,6 +250,9 @@ function FDsMeshCanvas_onMouseCapture(p){
 // @param p:event:SEvent 事件
 //==========================================================
 function FDsMeshCanvas_onMouseCaptureStop(p){
+   var o = this;
+   // 设置鼠标
+   RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
 }
 
 //==========================================================

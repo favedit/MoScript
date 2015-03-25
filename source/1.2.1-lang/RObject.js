@@ -140,7 +140,9 @@ function RObject_free(p){
 //==========================================================
 function RObject_dispose(p){
    if(p){
-      p.dispose();
+      if(!p.__dispose){
+         p.dispose();
+      }
    }
    return null;
 }

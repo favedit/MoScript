@@ -33,7 +33,7 @@ function FUiTreeLevel(o){
    return o;
 }
 function FUiTreeNode(o){
-   o = RClass.inherits(this, o, FUiContainer, MDataProperties);
+   o = RClass.inherits(this, o, FUiContainer, MUiDataProperties);
    o._valid            = RClass.register(o, new APtyBoolean('_valid', 'is_valid'), true);
    o._child            = RClass.register(o, new APtyBoolean('_child', 'has_child'), false);
    o._typeCode         = RClass.register(o, new APtyString('_typeCode'));

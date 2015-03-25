@@ -19,7 +19,7 @@ var EDsCanvasMode = new function EDsCanvasMode(){
 }
 var EDsFrame = new function EDsFrame(){
    var o = this;
-   o.MeshPropertyFrame            = 'design3d.mesh.property.SceneFrame';
+   o.MeshSpacePropertyFrame       = 'design3d.mesh.property.SpaceFrame';
    o.MeshTechniquePropertyFrame   = 'design3d.mesh.property.TechniqueFrame';
    o.MeshRegionPropertyFrame      = 'design3d.mesh.property.RegionFrame';
    o.MeshCameraPropertyFrame      = 'design3d.mesh.property.CameraFrame';

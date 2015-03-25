@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150102
 //==========================================================
-function MEditZoom(o){
+function MUiEditZoom(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @property
@@ -13,8 +13,8 @@ function MEditZoom(o){
    o._zoomField     = RClass.register(o, new APtyString('_zoomField'));
    //..........................................................
    // @method
-   o.testZoom   = MEditZoom_testZoom;
-   o.doZoom     = MEditZoom_doZoom;
+   o.testZoom   = MUiEditZoom_testZoom;
+   o.doZoom     = MUiEditZoom_doZoom;
    return o;
 }
 
@@ -24,7 +24,7 @@ function MEditZoom(o){
 // @method
 // @return Boolean 是否允许
 //==========================================================
-function MEditZoom_testZoom(){
+function MUiEditZoom_testZoom(){
    return !RString.isEmpty(this._zoomReference);
 }
 
@@ -34,6 +34,6 @@ function MEditZoom_testZoom(){
 // @method
 // @param p:value:String 数据
 //==========================================================
-function MEditZoom_doZoom(p){
+function MUiEditZoom_doZoom(p){
    RFormSpace.doZoom(this, p);
 }

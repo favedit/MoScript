@@ -18,7 +18,6 @@
 // @version 150102
 //==========================================================
 function FUiDataEditControl(o){
-   //o = RClass.inherits(this, o, FUiEditControl, MEditDescriptor, , MDesign, MUiFocus, MDisplay, MProgress);
    o = RClass.inherits(this, o, FUiEditControl, MDataField, MEditValue, MEditChange, MEditDrop);
    //..........................................................
    // @property

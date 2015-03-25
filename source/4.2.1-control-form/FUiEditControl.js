@@ -18,7 +18,7 @@
 // @version 150102
 //==========================================================
 function FUiEditControl(o){
-   o = RClass.inherits(this, o, FUiControl, MEditValue, MEditChange, MEditDrop);
+   o = RClass.inherits(this, o, FUiControl, MUiEditValue, MUiEditChange, MUiEditDrop);
    //..........................................................
    // @property
    o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
@@ -600,7 +600,7 @@ function FUiEditControl_oeProgress(e){
 //==========================================================
 function FUiEditControl_oeLoadValue(e){
    var o = this;
-   var r = o.__base.MEditValue.oeLoadValue.call(o, e);
+   var r = o.__base.MUiEditValue.oeLoadValue.call(o, e);
    // 设置修改标志为不显示
    var hci = o.hChangeIcon;
    if(hci){
@@ -618,7 +618,7 @@ function FUiEditControl_oeLoadValue(e){
 function FUiEditControl_doFocus(e){
    var o = this;
    o.__base.MUiFocus.doFocus.call(o, e);
-   o.__base.MEditValue.doFocus.call(o, e);
+   o.__base.MUiEditValue.doFocus.call(o, e);
 }
 
 //==========================================================
@@ -630,7 +630,7 @@ function FUiEditControl_doFocus(e){
 function FUiEditControl_doBlur(e){
    var o = this;
    o.__base.MUiFocus.doBlur.call(o, e);
-   o.__base.MEditValue.doBlur.call(o, e);
+   o.__base.MUiEditValue.doBlur.call(o, e);
 }
 
 //==========================================================
@@ -642,8 +642,8 @@ function FUiEditControl_construct(){
    var o = this;
    // 父处理
    o.__base.FUiControl.construct.call(o);
-   o.__base.MEditChange.construct.call(o);
-   o.__base.MEditDrop.construct.call(o);
+   o.__base.MUiEditChange.construct.call(o);
+   o.__base.MUiEditDrop.construct.call(o);
    // 设置属性
    o._labelSize = new SSize2(100, 20);
    o._editSize = new SSize2(200, 20);
@@ -728,7 +728,7 @@ function FUiEditControl_setText(t){
 //==========================================================
 function FUiEditControl_setEditable(v){
    var o = this;
-   o.__base.MEditValue.setEditable.call(o, v);
+   o.__base.MUiEditValue.setEditable.call(o, v);
    if(o.hEdit){
       o.hEdit.readOnly = !v;
    }
@@ -885,7 +885,7 @@ function FUiEditControl_dispose(){
    RHtml.free(o._hDropPanel);
    o._hDropPanel = null;
    // 父处理
-   o.__base.MEditDrop.dispose.call(o);
-   o.__base.MEditChange.dispose.call(o);
+   o.__base.MUiEditDrop.dispose.call(o);
+   o.__base.MUiEditChange.dispose.call(o);
    o.__base.FUiControl.dispose.call(o);
 }

@@ -124,7 +124,7 @@ function FUiFrameSet_dispose(){
    o.__base.FUiContainer.dispose.call(o);
 }
 function FUiFrameSpliter(o){
-   o = RClass.inherits(this, o, FUiControl, MDragable);
+   o = RClass.inherits(this, o, FUiControl, MUiDragable);
    o._styleNormal  = RClass.register(o, new AStyle('_styleNormal', 'Normal'));
    o._styleHover   = RClass.register(o, new AStyle('_styleHover', 'Hover'));
    o._styleDraging = RClass.register(o, new AStyle('_styleDraging', 'Draging'));

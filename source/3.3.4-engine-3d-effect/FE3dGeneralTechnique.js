@@ -5,7 +5,7 @@
 // @history 150119
 //==========================================================
 function FE3dGeneralTechnique(o){
-   o = RClass.inherits(this, o, FG3dTechnique);
+   o = RClass.inherits(this, o, FE3dTechnique);
    //..........................................................
    // @attribute
    o._code      = 'general';
@@ -25,7 +25,7 @@ function FE3dGeneralTechnique(o){
 //==========================================================
 function FE3dGeneralTechnique_setup(){
    var o = this;
-   o.__base.FG3dTechnique.setup.call(o);
+   o.__base.FE3dTechnique.setup.call(o);
    //..........................................................
    // 创建支持模式
    o.registerMode(EG3dTechniqueMode.Ambient);

@@ -12,13 +12,18 @@ function FDsMeshCameraPropertyFrame(o){
    o._visible          = false;
    // @attribute
    o._workspace        = null;
-   o._camera           = null;
+   o._activeSpace      = null;
+   o._activeCamera     = null;
    // @attribute
    o._controlGuid      = null;
    o._controlCode      = null;
    o._controlLabel     = null;
    o._controlPosition  = null;
    o._controlDirection = null;
+   //..........................................................
+   // @event
+   o.onBuilded         = FDsMeshCameraPropertyFrame_onBuilded;
+   o.onDataChanged     = FDsMeshCameraPropertyFrame_onDataChanged;
    //..........................................................
    // @method
    o.construct         = FDsMeshCameraPropertyFrame_construct;
@@ -27,6 +32,37 @@ function FDsMeshCameraPropertyFrame(o){
    // @method
    o.dispose           = FDsMeshCameraPropertyFrame_dispose;
    return o;
+}
+
+//==========================================================
+// <T>构建完成处理。</T>
+//
+// @method
+// @param p:event:TEventProcess 事件处理
+//==========================================================
+function FDsMeshCameraPropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   // 增加对象
+   o._controlPosition.addDataChangedListener(o, o.onDataChanged);
+   o._controlDirection.addDataChangedListener(o, o.onDataChanged);
+}
+
+//==========================================================
+// <T>数据改变处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsMeshCameraPropertyFrame_onDataChanged(p){
+   var o = this;
+   var camera = o._activeCamera;
+   var resource = camera.resource();
+   resource.position().assign(o._controlPosition.get());
+   resource.direction().assign(o._controlDirection.get());
+   camera.position().assign(resource.position());
+   camera.direction().assign(resource.direction());
+   camera.update();
 }
 
 //==========================================================
@@ -41,23 +77,28 @@ function FDsMeshCameraPropertyFrame_construct(){
 }
 
 //==========================================================
-// <T>加载材质信息。</T>
+// <T>加载相机材质信息。</T>
 //
 // @method
-// @param s:scene:FE3dScene 场景
-// @param c:technique:FG3dTechnique 技术
+// @param camera:FE3dSpace 空间
+// @param camera:FE3dCamera 相机
 //==========================================================
-function FDsMeshCameraPropertyFrame_loadObject(s, c){
+function FDsMeshCameraPropertyFrame_loadObject(space, camera){
    var o = this;
-   var r = c._resource;
+   var resource = camera.resource();
    // 设置属性
-   o._camera = c;
+   o._activeSpace = space;
+   o._activeCamera = camera;
    // 设置参数
-   //o._controlGuid.set(r.guid());
-   //o._controlCode.set(r.code());
-   //o._controlLabel.set(r.label());
-   //o._controlPosition.set(c.position());
-   //o._controlDirection.set(c.direction());
+   o._controlGuid.set(resource.guid());
+   o._controlCode.set(resource.code());
+   o._controlLabel.set(resource.label());
+   // 设置数据
+   o._controlPosition.set(camera.position());
+   o._controlDirection.set(camera.direction());
+   // 使用当前数据覆盖资源数据
+   resource.position().assign(camera.position());
+   resource.direction().assign(camera.direction());
 }
 
 //==========================================================

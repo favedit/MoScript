@@ -190,7 +190,7 @@ function FUiPageSheet_innerSelect(p){
    o._hBottomR.className = p ? o.styleName('BottomSelect') : o.styleName('Bottom');
    o._hRight.className = p ? o.styleName('RightSelect') : (prior ? o.styleName('RightPrior') : o.styleName('Right'));
    // Sheet
-   o._hForm.style.display = p ? 'block' : 'none';
+   RHtml.visibleSet(o._hForm, p);
 }
 
 //==========================================================

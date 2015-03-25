@@ -34,6 +34,15 @@ function FE3dRegion_construct(){
    var o = this;
    o.__base.FRegion.construct.call(o);
    o.__base.MG3dRegion.construct.call(o);
+   // 创建相机
+   var c = o._camera = RClass.create(FE3dCamera);
+   c.position().set(0, 0, -100);
+   c.lookAt(0, 0, 0);
+   c.update();
+   c._projection.update();
+   // 创建方向光源
+   var l = o._directionalLight = RClass.create(FE3dDirectionalLight);
+   l.direction().set(0, -1, 0);
    // 创建背景色
    var c = o._backgroundColor = new SColor4();
    c.set(0, 0, 0, 1);
@@ -60,6 +69,8 @@ function FE3dRegion_backgroundColor(){
 function FE3dRegion_loadResource(p){
    var o = this;
    o._resource = p;
+   o._camera.loadResource(p.camera());
+   o._directionalLight.loadResource(p.light());
    o.reloadResource();
 }
 
