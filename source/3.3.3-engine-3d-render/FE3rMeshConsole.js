@@ -115,7 +115,7 @@ function FE3rMeshConsole_loadByGuid(pc, pg){
    // 加载模型
    m = RClass.create(FE3rMesh);
    m.linkGraphicContext(pc);
-   m.setName(pg);
+   m.setCode(pg);
    m.setResource(rm);
    o._meshs.set(pg, m);
    // 测试是否已加载

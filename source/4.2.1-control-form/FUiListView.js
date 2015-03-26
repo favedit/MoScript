@@ -50,7 +50,7 @@ function FUiListView(o){
 function FUiListView_onBuildPanel(p){
    var o = this;
    // 建立编辑控件
-   o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
 }
 
 //==========================================================

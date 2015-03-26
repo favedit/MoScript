@@ -78,6 +78,7 @@ function FUiToolButton(o){
    o._hSpacePanel     = null;
    o._hLabelPanel     = null;
    o.onBuildPanel     = FUiToolButton_onBuildPanel;
+   o.onBuildButton    = FUiToolButton_onBuildButton;
    o.onBuild          = FUiToolButton_onBuild;
    o.onEnter          = FUiToolButton_onEnter;
    o.onLeave          = FUiToolButton_onLeave;
@@ -96,9 +97,8 @@ function FUiToolButton_onBuildPanel(p){
    var o = this;
    o._hPanel = RBuilder.createDiv(p, o.styleName('Normal'));
 }
-function FUiToolButton_onBuild(p){
+function FUiToolButton_onBuildButton(p){
    var o = this;
-   o.__base.FUiControl.onBuild.call(o, p);
    var h = o._hPanel;
    o.attachEvent('onMouseDown', h);
    o.attachEvent('onMouseUp', h);
@@ -122,6 +122,11 @@ function FUiToolButton_onBuild(p){
    if(o._hint){
       o.setHint(o._hint);
    }
+}
+function FUiToolButton_onBuild(p){
+   var o = this;
+   o.__base.FUiControl.onBuild.call(o, p);
+   o.onBuildButton(p);
 }
 function FUiToolButton_onEnter(e){
    var o = this;
@@ -319,6 +324,139 @@ function FUiToolButtonCheck_check(p){
    }
 }
 function FUiToolButtonCheck_dispose(){
+   var o = this;
+   o._statusChecked = null;
+   o._groupName = null;
+   o.__base.FUiToolButton.dispose.call(o);
+}
+function FUiToolButtonEdit(o){
+   o = RClass.inherits(this, o, FUiToolButton);
+   o._editSize       = RClass.register(o, new APtySize2('_editSize'));
+   o._optionChecked  = RClass.register(o, new APtyBoolean('_optionChecked', 'check'));
+   o._groupName      = RClass.register(o, new APtyString('_groupName'));
+   o._groupDefault   = RClass.register(o, new APtyString('_groupDefault'));
+   o._statusChecked  = false;
+   o.onBuildButton   = FUiToolButtonEdit_onBuildButton;
+   o.onEnter         = FUiToolButtonEdit_onEnter;
+   o.onLeave         = FUiToolButtonEdit_onLeave;
+   o.construct       = FUiToolButtonEdit_construct;
+   o.groupName       = FUiToolButtonEdit_groupName;
+   o.setGroupName    = FUiToolButtonEdit_setGroupName;
+   o.groupDefault    = FUiToolButtonEdit_groupDefault;
+   o.setGroupDefault = FUiToolButtonEdit_setGroupDefault;
+   o.innerCheck      = FUiToolButtonEdit_innerCheck;
+   o.check           = FUiToolButtonEdit_check;
+   o.dispose         = FUiToolButtonEdit_dispose;
+   return o;
+}
+function FUiToolButtonEdit_onBuildButton(p){
+   var o = this;
+   var h = o._hPanel;
+   var hf = o._hForm = RBuilder.appendTable(h);
+   var hl = o._hLine = RBuilder.appendTableRow(hf);
+   var hEditPanel = o._hEditPanel = RBuilder.appendTableCell(hl);
+   var hEdit = o._hEdit = RBuilder.appendEdit(hEditPanel);
+   hEdit.style.width = o._editSize.width +  'px';
+   o._hEditSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
+   if(o._icon){
+      var hc = o._hIconPanel = RBuilder.appendTableCell(hl, o.styleName('IconPanel'));
+      o._hIcon = RBuilder.appendIcon(hc, null, o._icon);
+   }
+   if(o._icon && o._label){
+      o._hSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
+   }
+   if(o._label){
+      var hlp = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
+      hlp.noWrap = true;
+      o.setLabel(o._label);
+   }
+   if(o._hotkey){
+      RConsole.find(FKeyConsole).register(o._hotkey, o, o.onMouseDown);
+   }
+   if(o._hint){
+      o.setHint(o._hint);
+   }
+}
+function FUiToolButtonEdit_onEnter(p){
+   var o = this;
+   if(!o._statusChecked){
+      o._hPanel.className = this.styleName('Hover');
+   }
+}
+function FUiToolButtonEdit_onLeave(p){
+   var o = this;
+   if(!o._statusChecked){
+      o._hPanel.className = this.styleName('Normal');
+   }
+}
+function FUiToolButtonEdit_onMouseDown(p){
+   var o = this;
+   o.check(!o._statusChecked);
+   o.processClickListener(o, o._statusChecked);
+}
+function FUiToolButtonEdit_onMouseUp(){
+   var o = this;
+}
+function FUiToolButtonEdit_construct(){
+   var o = this;
+   o.__base.FUiToolButton.construct.call(o);
+   o._editSize = new SSize2();
+}
+function FUiToolButtonEdit_groupName(){
+   return this._groupName;
+}
+function FUiToolButtonEdit_setGroupName(p){
+   this._groupName = p;
+}
+function FUiToolButtonEdit_groupDefault(){
+   return this._groupDefault;
+}
+function FUiToolButtonEdit_setGroupDefault(p){
+   this._groupDefault = p;
+}
+function FUiToolButtonEdit_innerCheck(p){
+   var o = this;
+   if(o._statusChecked != p){
+      o._statusChecked = p;
+      if(p){
+         o._hPanel.className = o.styleName('Press');
+      }else{
+         o._hPanel.className = o.styleName('Normal');
+      }
+   }
+}
+function FUiToolButtonEdit_check(p){
+   var o = this;
+   if(!p){
+      if(o._groupDefault == o){
+         return;
+      }
+   }
+   o.innerCheck(p);
+   if(!o._parent){
+      return;
+   }
+   if(p){
+      if(!RString.isEmpty(o._groupName)){
+         var cs = o._parent.components();
+         for(var i = cs.count() - 1; i >= 0; i--){
+            var c = cs.value(i);
+            if(c != o){
+               if(RClass.isClass(c, FUiToolButtonEdit)){
+                  c.innerCheck(false);
+               }
+            }
+         }
+      }
+   }else{
+      if(!RString.isEmpty(o._groupDefault)){
+         var cs = o._parent.components();
+         var c = cs.get(o._groupDefault);
+         c.innerCheck(true);
+      }
+   }
+}
+function FUiToolButtonEdit_dispose(){
    var o = this;
    o._statusChecked = null;
    o._groupName = null;

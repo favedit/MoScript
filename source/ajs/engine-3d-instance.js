@@ -496,10 +496,9 @@ function FE3dMeshConsole_allocByGuid(pc, pn){
    }
    var rmc = RConsole.find(FE3rMeshConsole);
    var rm = rmc.loadByGuid(pc, pn);
-   var m = RClass.create(FModel3d);
+   var m = RClass.create(FE3dMesh);
    m.linkGraphicContext(pc);
    m._name = pn;
-   m._modelName = pn;
    m._renderable = rm;
    o._loadMeshs.push(m);
    return m;

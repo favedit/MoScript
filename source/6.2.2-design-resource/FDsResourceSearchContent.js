@@ -7,9 +7,6 @@
 function FDsResourceSearchContent(o){
    o = RClass.inherits(this, o, FUiListView);
    //..........................................................
-   // @property
-   o._frameName     = 'design3d.resource.TabBar';
-   //..........................................................
    // @attribute
    o._refreshButton = null;
    o._saveButton    = null;
@@ -23,6 +20,7 @@ function FDsResourceSearchContent(o){
    // @method
    o.construct      = FDsResourceSearchContent_construct;
    // @method
+   o.clickItem      = FDsResourceSearchContent_clickItem;
    o.serviceSearch  = FDsResourceSearchContent_serviceSearch;
    // @method
    o.dispose        = FDsResourceSearchContent_dispose;
@@ -51,6 +49,20 @@ function FDsResourceSearchContent_onBuilded(p){
 //==========================================================
 function FDsResourceSearchContent_onServiceLoad(p){
    var o = this;
+   var xitems = p.root.findNode('ItemCollection');
+   var xnodes = xitems.nodes();
+   var count = xnodes.count();
+   for(var i = 0; i < count; i++){
+      var xnode = xnodes.getAt(i);
+      if(xnode.isName('Item')){
+         var item = RClass.create(FDsResourceSearchItem);
+         item.propertyLoad(xnode);
+         item._guid = xnode.get('guid');
+         item._label = xnode.get('code');
+         item.build(o._hPanel);
+         o.push(item);
+      }
+   }
    return;
 }
 
@@ -66,6 +78,19 @@ function FDsResourceSearchContent_construct(){
 }
 
 //==========================================================
+// <T>点击一个列表项目。</T>
+//
+// @method
+// @param p:item:FUiListItem 列表项目
+//==========================================================
+function FDsResourceSearchContent_clickItem(p){
+   var o = this;
+   // 选中项目
+   var frame = o._workspace._previewContent;
+   frame.loadMeshByGuid(p._guid);
+}
+
+//==========================================================
 // <T>服务搜索处理。</T>
 //
 // @method
@@ -77,7 +102,7 @@ function FDsResourceSearchContent_serviceSearch(typeCd, serach){
    // Disable
    //RWindow.setEnable(false);
    // Build values
-   var url = '/content.design.resource.ws?action=search&serach=' + serach;
+   var url = '/cloud.content.resource.ws?action=search&type=' + typeCd + '&serach=' + serach;
    // 发送数据请求
    var connection = RConsole.find(FXmlConsole).sendAsync(url);
    connection.addLoadListener(o, o.onServiceLoad);

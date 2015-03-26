@@ -745,7 +745,7 @@ function FE3rMeshConsole_loadByGuid(pc, pg){
    var rm = rmc.loadByGuid(pg);
    m = RClass.create(FE3rMesh);
    m.linkGraphicContext(pc);
-   m.setName(pg);
+   m.setCode(pg);
    m.setResource(rm);
    o._meshs.set(pg, m);
    if(rm.testReady()){

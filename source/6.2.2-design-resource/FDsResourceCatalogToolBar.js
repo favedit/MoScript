@@ -5,11 +5,11 @@
 // @author maocy
 // @history 150210
 //==========================================================
-function FDsResourceCanvasToolBar(o){
+function FDsResourceCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'design3d.mesh.CanvasToolBar';
+   o._frameName       = 'design3d.resource.CatalogToolBar';
    //..........................................................
    // @attribute
    o._canvasModeCd    = EDsCanvasMode.Drop;
@@ -26,15 +26,15 @@ function FDsResourceCanvasToolBar(o){
    o._viewButton      = null;
    //..........................................................
    // @event
-   o.onBuilded        = FDsResourceCanvasToolBar_onBuilded;
+   o.onBuilded        = FDsResourceCatalogToolBar_onBuilded;
    // @event
-   o.onModeClick      = FDsResourceCanvasToolBar_onModeClick;
-   o.onRotationClick  = FDsResourceCanvasToolBar_onRotationClick;
+   o.onModeClick      = FDsResourceCatalogToolBar_onModeClick;
+   o.onRotationClick  = FDsResourceCatalogToolBar_onRotationClick;
    //..........................................................
    // @method
-   o.construct        = FDsResourceCanvasToolBar_construct;
+   o.construct        = FDsResourceCatalogToolBar_construct;
    // @method
-   o.dispose          = FDsResourceCanvasToolBar_dispose;
+   o.dispose          = FDsResourceCatalogToolBar_dispose;
    return o;
 }
 
@@ -44,19 +44,19 @@ function FDsResourceCanvasToolBar(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsResourceCanvasToolBar_onBuilded(p){
+function FDsResourceCatalogToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
    // 建立拖拽按键
-   var b = o._dropButton = o.searchControl('dropButton');
-   b._canvasModeCd = EDsCanvasMode.Drop;
-   b.addClickListener(o, o.onModeClick);
-   b.check(true);
+   //var b = o._dropButton = o.searchControl('dropButton');
+   //b._canvasModeCd = EDsCanvasMode.Drop;
+   //b.addClickListener(o, o.onModeClick);
+   //b.check(true);
    //..........................................................
    // 建立按键
-   var b = o._viewButton = o.searchControl('viewButton');
-   b.addClickListener(o, o.onRotationClick);
+   //var b = o._viewButton = o.searchControl('viewButton');
+   //b.addClickListener(o, o.onRotationClick);
 }
 
 //==========================================================
@@ -65,7 +65,7 @@ function FDsResourceCanvasToolBar_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsResourceCanvasToolBar_onModeClick(p){
+function FDsResourceCatalogToolBar_onModeClick(p){
    var o = this;
    o._canvasModeCd = p._canvasModeCd;
    o._workspace._canvas.switchMode(p._canvasModeCd);
@@ -77,7 +77,7 @@ function FDsResourceCanvasToolBar_onModeClick(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsResourceCanvasToolBar_onRotationClick(p, v){
+function FDsResourceCatalogToolBar_onRotationClick(p, v){
    var o = this;
    var c = o._workspace._canvas;
    c.switchRotation(v);
@@ -88,7 +88,7 @@ function FDsResourceCanvasToolBar_onRotationClick(p, v){
 //
 // @method
 //==========================================================
-function FDsResourceCanvasToolBar_construct(){
+function FDsResourceCatalogToolBar_construct(){
    var o = this;
    // 父处理
    o.__base.FUiToolBar.construct.call(o);
@@ -99,7 +99,7 @@ function FDsResourceCanvasToolBar_construct(){
 //
 // @method
 //==========================================================
-function FDsResourceCanvasToolBar_dispose(){
+function FDsResourceCatalogToolBar_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiToolBar.dispose.call(o);

@@ -424,6 +424,64 @@
 }
 
 /* ------------------------------------------------------ */
+/* FUiListViewItem                                        */
+/* ------------------------------------------------------ */
+.FUiListViewItem_Panel{
+   float: left;
+   padding: 6px;
+}
+
+.FUiListViewItem_Normal{
+   width: 100%;
+   height: 100%;
+   cursor: pointer;
+   border:1px solid #999999;
+}
+
+.FUiListViewItem_Hover{
+   width: 100%;
+   height: 100%;
+   cursor: pointer;
+   border:1px solid #0066FF;
+}
+
+.FUiListViewItem_Select{
+   width: 100%;
+   height: 100%;
+   cursor: pointer;
+   border:1px solid #0066FF;
+}
+
+.FUiListViewItem_Content{
+   width: 100%;
+   height: 100%;
+   background:rgba(255, 255, 255, 0.8);
+}
+
+.FUiListViewItem_IconPanel{
+   width: 16px;
+}
+
+.FUiListViewItem_Icon{
+   width: 16px;
+}
+
+.FUiListViewItem_Label{
+   padding: 2px 8px;
+   text-align: right;
+   color: #333333;
+}
+
+/* ------------------------------------------------------ */
+/* FUiListView                                            */
+/* ------------------------------------------------------ */
+.FUiListView_Panel{
+   width: 100%;
+   height: 100%;
+   overflow-y: auto;
+}
+
+/* ------------------------------------------------------ */
 /* FUiCanvas                                              */
 /* ------------------------------------------------------ */
 .FUiCanvas_Canvas{

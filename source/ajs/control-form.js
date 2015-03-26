@@ -4170,7 +4170,7 @@ function FUiListView(o){
 }
 function FUiListView_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createTable(p, o.styleName('Panel'));
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
 }
 function FUiListView_createItem(pi, pl){
    var o = this;
@@ -4216,6 +4216,100 @@ function FUiListView_clear(){
 function FUiListView_dispose(){
    var o = this;
    o.__base.FContainer.dispose.call(o);
+}
+function FUiListViewItem(o){
+   o = RClass.inherits(this, o, FUiControl);
+   o._stylePanel     = RClass.register(o, new AStyle('_stylePanel'));
+   o._styleNormal    = RClass.register(o, new AStyle('_styleNormal'));
+   o._styleHover     = RClass.register(o, new AStyle('_styleHover'));
+   o._styleSelect    = RClass.register(o, new AStyle('_styleSelect'));
+   o._styleContent   = RClass.register(o, new AStyle('_styleContent'));
+   o._styleIconPanel = RClass.register(o, new AStyle('_styleIconPanel'));
+   o._styleIcon      = RClass.register(o, new AStyle('_styleIcon'));
+   o._styleLabel     = RClass.register(o, new AStyle('_styleLabel'));
+   o._checked        = false;
+   o._contentHeight  = 28;
+   o._hPanel         = null;
+   o._hIconPanel     = null;
+   o._hIcon          = null;
+   o._hLabel         = null;
+   o.onBuildPanel    = FUiListViewItem_onBuildPanel;
+   o.onBuild         = FUiListViewItem_onBuild;
+   o.onEnter         = FUiListViewItem_onEnter;
+   o.onLeave         = FUiListViewItem_onLeave;
+   o.onClick         = RClass.register(o, new AEventClick('onClick'), FUiListViewItem_onClick);
+   o.label           = FUiListViewItem_label;
+   o.setLabel        = FUiListViewItem_setLabel;
+   o.setChecked      = FUiListViewItem_setChecked;
+   o.dispose         = FUiListViewItem_dispose;
+   return o;
+}
+function FUiListViewItem_onBuildPanel(p){
+   var o = this;
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+}
+function FUiListViewItem_onBuild(p){
+   var o = this;
+   o.__base.FUiControl.onBuild.call(o, p);
+   var h = o._hPanel;
+   var hBorder = o._hBorder = RBuilder.appendDiv(h, o.styleName('Normal'));
+   var hTable = o._hForm = RBuilder.appendTable(hBorder);
+   hTable.style.width = '100%';
+   hTable.style.height = '100%';
+   var hLine1 = o._hFormLine1 = RBuilder.appendTableRowCell(hTable)
+   var hLine2 = o._hFormLine1 = RBuilder.appendTableRowCell(hTable)
+   hLine2.height = o._contentHeight;
+   var hContentForm = o._hContentForm = RBuilder.appendTable(hLine2, o.styleName('Content'));
+   var hContentLine = o._hContentLine = RBuilder.appendTableRow(hContentForm);
+   o._hIconPanel = RBuilder.appendTableCell(hContentLine, o.styleName('IconPanel'))
+   if(o._icon){
+      o._hIcon = RBuilder.appendIcon(o._hIconPanel, o.styleName('Icon'), o._icon);
+   }
+   o._hLabel = RBuilder.appendTableCell(hContentLine, o.styleName('Label'));
+   if(o._label){
+      o.setLabel(o._label);
+   }
+   o.attachEvent('onClick', h);
+}
+function FUiListViewItem_onEnter(){
+   var o = this;
+   o.__base.FUiControl.onEnter.call(o);
+   o._hBorder.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Hover');
+}
+function FUiListViewItem_onLeave(){
+   var o = this;
+   o._hBorder.className = RBoolean.parse(o._checked) ? o.styleName('Select') : o.styleName('Normal');
+   o.__base.FUiControl.onLeave.call(o);
+}
+function FUiListViewItem_onClick(p){
+   var o = this;
+   o._parent.clickItem(o);
+}
+function FUiListViewItem_label(p){
+   return this._label;
+}
+function FUiListViewItem_setLabel(p){
+   var o = this;
+   o._label = p;
+   o._hLabel.innerHTML = RString.nvl(p);
+}
+function FUiListViewItem_setChecked(p){
+   var o = this;
+   o._checked = p;
+   if(o._hIcon){
+      o._hIcon.style.display = p ? 'block' : 'none';
+   }else{
+      o._hIconPanel.innerHTML = p ? 'O' : '';
+   }
+   o._hPanel.className = p ? o.styleName('Select') : o.styleName('Normal');
+}
+function FUiListViewItem_dispose(){
+   var o = this;
+   o._hPanel = RHtml.free(o._hPanel);
+   o._hIconPanel = RHtml.free(o._hIconPanel);
+   o._hIcon = RHtml.free(o._hIcon);
+   o._hLabel = RHtml.free(o._hLabel);
+   o.__base.FUiControl.dispose.call(o);
 }
 function FUiMemo(o){
    o = RClass.inherits(this, o, FUiEditControl, MPropertyEdit, MListenerDataChanged);

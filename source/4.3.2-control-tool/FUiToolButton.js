@@ -46,6 +46,7 @@ function FUiToolButton(o){
    //..........................................................
    // @event
    o.onBuildPanel     = FUiToolButton_onBuildPanel;
+   o.onBuildButton    = FUiToolButton_onBuildButton;
    o.onBuild          = FUiToolButton_onBuild;
    // @event
    o.onEnter          = FUiToolButton_onEnter;
@@ -76,14 +77,13 @@ function FUiToolButton_onBuildPanel(p){
 }
 
 //==========================================================
-// <T>建立当前控件的显示框架。</T>
+// <T>建立按键布局。</T>
 //
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FUiToolButton_onBuild(p){
+function FUiToolButton_onBuildButton(p){
    var o = this;
-   o.__base.FUiControl.onBuild.call(o, p);
    // 设置面板
    var h = o._hPanel;
    o.attachEvent('onMouseDown', h);
@@ -114,6 +114,19 @@ function FUiToolButton_onBuild(p){
    if(o._hint){
       o.setHint(o._hint);
    }
+}
+
+//==========================================================
+// <T>建立当前控件的显示框架。</T>
+//
+// @method
+// @param p:event:TEventProcess 事件处理
+//==========================================================
+function FUiToolButton_onBuild(p){
+   var o = this;
+   o.__base.FUiControl.onBuild.call(o, p);
+   // 建立面板
+   o.onBuildButton(p);
 }
 
 //==========================================================
