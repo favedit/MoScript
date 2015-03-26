@@ -3,13 +3,13 @@
 //
 // @tool
 // @param po:sender:Object 发送者
-// @param pm:message:String 信息
 // @param pp:parameters:Object[] 参数集合
 // @author maocy
 // @version 150101
 //==========================================================
-function TUnsupportError(po, pm, pp){
+function TUnsupportError(po, pp){
    var o = this;
+   var pm = 'Unsupport method. (name={1})'
    //..........................................................
    // @construct
    var r = new TString();
@@ -35,7 +35,7 @@ function TUnsupportError(po, pm, pp){
    // 建立描述参数信息
    var a = arguments;
    var c = a.length;
-   for(var n = 2; n < c; n++){
+   for(var n = 1; n < c; n++){
       var v = a[n];
       var vs = null;
       if(typeof(v) == 'function'){

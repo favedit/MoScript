@@ -2625,21 +2625,21 @@ function FUiControl_dispose(){
 }
 function FUiWorkspace(o){
    o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
-   o._hContainer  = null;
+   o._stylePanel    = RClass.register(o, new AStyle('_stylePanel'));
    o._frames      = null;
+   o._hContainer  = null;
    o.onBuildPanel = FUiWorkspace_onBuildPanel;
    o.appendChild  = FUiWorkspace_appendChild;
    return o;
 }
 function FUiWorkspace_onBuildPanel(p){
    var o = this;
-   o._hContainer = p.hDocument.body;
    o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
 }
 function FUiWorkspace_appendChild(p){
    var o = this;
    if(RClass.isClass(p, FUiFrameSet)){
-      o._hContainer.appendChild(p._hPanel);
+      o._hPanel.appendChild(p._hPanel);
    }
 }
 var RControl = new function RControl(){

@@ -37,6 +37,17 @@
 
 进行中
 ------------------------------------------------------------
+7 - Engine - 2D画板功能
+7 - Engine - WebGL - Canvas控件
+7 - Engine - WebGL - Bitmap控件
+7 - Engine - WebGL - TextField控件
+7 - Engine - 场景加载进度
+
+1 - Design - 项目管理
+1 - Design - 场景管理
+
+1 - Content - 资源静态化处理
+
 7 - Engine - 动画物件会缩小
 2 - Engine - 天空层不写入深度缓冲。
 2 - Engine - 相机移动为顺滑移动，按照时间计算。

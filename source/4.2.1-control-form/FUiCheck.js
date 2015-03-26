@@ -24,8 +24,12 @@ function FUiCheck(o){
    // @method
    o.construct        = FUiCheck_construct;
    // @method
+   o.formatLoad       = FUiCheck_formatLoad;
+   o.formatSave       = FUiCheck_formatSave;
+   // @method
    o.get              = FUiCheck_get;
    o.set              = FUiCheck_set;
+   // @method
    o.refreshValue     = FUiCheck_refreshValue;
    o.refreshStyle     = FUiCheck_refreshStyle;
    return o;
@@ -86,27 +90,45 @@ function FUiCheck_construct(){
 }
 
 //==========================================================
+// <T>格式化控件数据到存储内容。</T>
+//
+// @method
+// @param value:String 控件数据
+// @return Object 存储内容
+//==========================================================
+function FUiCheck_formatLoad(value){
+   return (value == o._valueTrue);
+}
+
+//==========================================================
+// <T>格式化存储内容到控件数据。</T>
+//
+// @method
+// @param value:Object 控件数据
+// @return String 存储内容
+//==========================================================
+function FUiCheck_formatSave(value){
+   return RBoolean.toString(value, o._valueTrue, o._valueFalse);
+}
+
+//==========================================================
 // <T>获得数据。</T>
 //
 // @method
 // @return String 数据
 //==========================================================
 function FUiCheck_get(){
-   var o = this;
-   var v = o._hInput.checked;
-   return RBoolean.toString(v, o._valueTrue, o._valueFalse);
+   return this._hInput.checked;
 }
 
 //==========================================================
 // <T>设置数据。</T>
 //
 // @method
-// @param p:value:String 数据
+// @param value:String 数据
 //==========================================================
-function FUiCheck_set(p){
-   var o = this;
-   var v = (p == o._valueTrue);
-   o._hInput.checked = v;
+function FUiCheck_set(value){
+   this._hInput.checked = value;
 }
 
 //==========================================================

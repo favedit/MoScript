@@ -64,8 +64,7 @@ function FUiDataAction_invoke(p){
    var root = xdocument.root();
    root.set('action', svc.action);
    RConsole.find(FEnvironmentConsole).build(root);
-   var config = root.create('Data');
-   p.dsSaveValue(config);
+   p.dsSaveValue(root.create('Data'));
    RLogger.debug(this, xdocument.dump());
    o._loading = true;
    o._dataContainer = p;

@@ -1784,8 +1784,9 @@ function TSpeed_toString(){
    var o = this;
    return o._span + ' (' + o._spanMin + ' - ' + o._spanMax + ')';
 }
-function TUnsupportError(po, pm, pp){
+function TUnsupportError(po, pp){
    var o = this;
+   var pm = 'Unsupport method. (name={1})'
    var r = new TString();
    var f = TUnsupportError.caller;
    var s = new TString();
@@ -1807,7 +1808,7 @@ function TUnsupportError(po, pm, pp){
    }
    var a = arguments;
    var c = a.length;
-   for(var n = 2; n < c; n++){
+   for(var n = 1; n < c; n++){
       var v = a[n];
       var vs = null;
       if(typeof(v) == 'function'){

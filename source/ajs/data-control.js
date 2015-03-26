@@ -110,24 +110,34 @@ function MUiDataContainer_dsSaveValue(r, m){
 }
 function MUiDataField(o){
    o = RClass.inherits(this, o, MUiValue, MUiDataValue);
+   o._dataTypeCd     = RClass.register(o, new APtyString('_dataTypeCd'));
+   o._dataRequire    = RClass.register(o, new APtyBoolean('_dataRequire'));
    o._dataName       = RClass.register(o, new APtyString('_dataName'));
    o.oeDataLoadValue = MUiDataField_oeDataLoadValue;
    o.oeDataSaveValue = MUiDataField_oeDataSaveValue;
+   o.formatLoad      = MUiDataField_formatLoad;
+   o.formatSave      = MUiDataField_formatSave;
    return o;
 }
-function MUiDataField_oeDataLoadValue(p){
+function MUiDataField_oeDataLoadValue(dataSource){
    var o = this;
-   var r = p.values;
-   var v = r.get(o._dataName);
-   o.set(v);
+   var values = dataSource.values;
+   var value = values.get(o._dataName);
+   o.set(o.formatLoad(value));
    return EEventStatus.Stop;
 }
 function MUiDataField_oeDataSaveValue(p){
    var o = this;
-   var v = o.get();
-   var r = p.values;
-   r.set(o._dataName, v);
+   var value = o.get();
+   var values = dataSource.values;
+   values.set(o._dataName, o.formatSave(value));
    return EEventStatus.Stop;
+}
+function MUiDataField_formatLoad(value){
+   return value;
+}
+function MUiDataField_formatSave(value){
+   return value;
 }
 function MUiDataset(o){
    o = RClass.inherits(this, o);

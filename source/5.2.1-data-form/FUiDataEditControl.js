@@ -18,26 +18,24 @@
 // @version 150102
 //==========================================================
 function FUiDataEditControl(o){
-   o = RClass.inherits(this, o, FUiEditControl, MDataField, MEditValue, MEditChange, MEditDrop);
+   o = RClass.inherits(this, o, FUiEditControl, MUiEditValue, MUiEditChange, MUiEditDrop);
    //..........................................................
    // @property
-   o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), ELabelMode.All);
-   o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), ELabelPosition.Left);
+   o._labelModeCd      = RClass.register(o, new APtyString('_labelModeCd'), EUiLabelMode.All);
+   o._labelPositionCd  = RClass.register(o, new APtyString('_labelPositionCd'), EUiLabelPosition.Left);
    o._labelSize        = RClass.register(o, new APtySize2('_labelSize'));
-   o._labelAlignCd     = RClass.register(o, new APtyString('_labelAlignCd'), EAlign.Left);
+   o._labelAlignCd     = RClass.register(o, new APtyString('_labelAlignCd'), EUiAlign.Left);
+   o._labelColor       = RClass.register(o, new APtyString('_labelColor'));
+   // @property
    o._editSize         = RClass.register(o, new APtySize2('_editSize'));
-   o._dataTypeCd       = RClass.register(o, new APtyString('_dataTypeCd'));
-   //o.typeAble        = RClass.register(o, new APtyString('typeAble'), EBool.False);
+   o._editColor        = RClass.register(o, new APtyString('_editColor'));
    //..........................................................
    // @style
    o._styleLabelPanel  = RClass.register(o, new AStyle('_styleLabelPanel'));
    o._styleEditPanel   = RClass.register(o, new AStyle('_styleEditPanel'));
    //..........................................................
    // @attribute
-   //o._textColor      = null;
-   //o._foreColor      = null;
-   //o._backColor      = null;
-   //o._progress       = false;
+   o._progressing      = false;
    //..........................................................
    // @html <TD> 标签面板
    o._hLabelPanel      = null;
@@ -61,12 +59,6 @@ function FUiDataEditControl(o){
    //o.hHintIcon       = null;
    //..........................................................
    // @event
-   //o.onDataDoubleClick = FUiDataEditControl_onDataDoubleClick;
-   //o.onDataKeyDown   = FUiDataEditControl_onDataKeyDown;
-   // @event
-   //o.onDesignBegin   = FUiDataEditControl_onDesignBegin;
-   //o.onDesignEnd     = FUiDataEditControl_onDesignEnd;
-   // @event
    o.onBuildLabelIcon  = FUiDataEditControl_onBuildLabelIcon;
    o.onBuildLabelText  = FUiDataEditControl_onBuildLabelText;
    o.onBuildLabel      = FUiDataEditControl_onBuildLabel;
@@ -76,19 +68,8 @@ function FUiDataEditControl(o){
    o.onBuild           = FUiDataEditControl_onBuild;
    //..........................................................
    // @process
-   o.oeDataLoad        = FUiDataEditControl_oeDataLoad;
-   o.oeDataSave        = FUiDataEditControl_oeDataSave;
-   // @process
-   o.oeDesign          = FUiDataEditControl_oeDesign;
    o.oeMode            = FUiDataEditControl_oeMode;
-   //o.oeProgress      = FUiDataEditControl_oeProgress;
-   //o.oeLoadValue     = FUiDataEditControl_oeLoadValue;
-   //o.scalar          = FUiDataEditControl_scalar;
-   //o.onScalar        = FUiDataEditControl_onScalar;
-   //..........................................................
-   // @method
-   //o.doFocus         = FUiDataEditControl_doFocus;
-   //o.doBlur          = FUiDataEditControl_doBlur;
+   o.oeProgress        = FUiDataEditControl_oeProgress;
    //..........................................................
    // @method
    o.construct         = FUiDataEditControl_construct;
@@ -96,15 +77,35 @@ function FUiDataEditControl(o){
    o.panel             = FUiDataEditControl_panel;
    o.label             = FUiDataEditControl_label;
    o.setLabel          = FUiDataEditControl_setLabel;
-   o.getEditRange    = FUiDataEditControl_getEditRange;
-   //o.text            = FUiDataEditControl_text;
-   //o.setText         = FUiDataEditControl_setText;
-   //o.testFocus       = FUiDataEditControl_testFocus;
+   o.text              = FUiDataEditControl_text;
+   o.setText           = FUiDataEditControl_setText;
+   o.getValueRectangle = FUiDataEditControl_getValueRectangle;
+   o.dispose           = FUiDataEditControl_dispose;
+
+
+
+   //..........................................................
+   // @method
+   //o.doFocus         = FUiDataEditControl_doFocus;
+   //o.doBlur          = FUiDataEditControl_doBlur;
    //o.setEditable     = FUiDataEditControl_setEditable;
    //o.setVisible      = FUiDataEditControl_setVisible;
+   //o.testFocus       = FUiDataEditControl_testFocus;
    //o.focus           = FUiDataEditControl_focus;
+   //o.scalar          = FUiDataEditControl_scalar;
    //o.refreshStyle    = FUiDataEditControl_refreshStyle;
-   o.dispose           = FUiDataEditControl_dispose;
+   //o.oeDesign          = FUiDataEditControl_oeDesign;
+   //o.oeLoadValue     = FUiDataEditControl_oeLoadValue;
+   //o.onScalar        = FUiDataEditControl_onScalar;
+   // @process
+   //o.oeDataLoad        = FUiDataEditControl_oeDataLoad;
+   //o.oeDataSave        = FUiDataEditControl_oeDataSave;
+   // @event
+   //o.onDataDoubleClick = FUiDataEditControl_onDataDoubleClick;
+   //o.onDataKeyDown   = FUiDataEditControl_onDataKeyDown;
+   // @event
+   //o.onDesignBegin   = FUiDataEditControl_onDesignBegin;
+   //o.onDesignEnd     = FUiDataEditControl_onDesignEnd;
    return o;
 }
 
@@ -117,7 +118,9 @@ function FUiDataEditControl(o){
 function FUiDataEditControl_onBuildLabelIcon(p){
    var o = this;
    if(o._labelIcon){
-      o._hIcon = RBuilder.appendIcon(o._hIconPanel, o._labelIcon);
+      o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, o._labelIcon);
+   }else{
+      o._hIcon = RBuilder.appendIcon(o._hIconPanel, null, 'n', 16, 16);
    }
 }
 
@@ -144,6 +147,7 @@ function FUiDataEditControl_onBuildLabel(p){
    var hr = RBuilder.appendTableRow(h);
    // 建立标签图标
    var hip = o._hIconPanel = RBuilder.appendTableCell(hr);
+   hip.width = '20px';
    o.onBuildLabelIcon(p);
    // 建立标签文字
    var htp = o._hTextPanel = RBuilder.appendTableCell(hr);
@@ -264,23 +268,23 @@ function FUiDataEditControl_onBuild(p){
    var hlp = null;
    var hep = null;
    var lmc = o._labelModeCd;
-   if(lmc == ELabelMode.Label){
+   if(lmc == EUiLabelMode.Label){
       // 只建立标签的情况
       hlp = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
-   }else if(lmc == ELabelMode.Hidden){
+   }else if(lmc == EUiLabelMode.Hidden){
       // 只建立编辑框的情况
       hep = RBuilder.appendTableCell(RBuilder.appendTableRow(hc));
    }else{
       // 全部建立的情况
       var lpc = o._labelPositionCd;
-      if(lpc == ELabelPosition.Top){
+      if(lpc == EUiLabelPosition.Top){
          hlp = RBuilder.appendTableRowCell(hc);
          hep = RBuilder.appendTableRowCell(hc);
-      }else if(lpc == ELabelPosition.Right){
+      }else if(lpc == EUiLabelPosition.Right){
          var hr = RBuilder.appendTableRow(hc);
          hep = RBuilder.appendTableCell(hr);
          hlp = RBuilder.appendTableCell(hr);
-      }else if(lpc == ELabelPosition.Bottom){
+      }else if(lpc == EUiLabelPosition.Bottom){
          hep = RBuilder.appendTableRowCell(hc);
          hlp = RBuilder.appendTableRowCell(hc);
       }else{
@@ -303,7 +307,7 @@ function FUiDataEditControl_onBuild(p){
       //if(hl){
       //   // 设置必须检查
       //   if(o.validRequire){
-      //      hl.style.color = EColor.Require;
+      //      hl.style.color = EUiColor.Require;
       //   }
       //   // 如果当前控件支持列表接口
       //   if(RClass.isClass(o, MListView)){
@@ -318,22 +322,188 @@ function FUiDataEditControl_onBuild(p){
    }
 }
 
+//==========================================================
+// <T>处理工作模式转换。</T>
+//
+// @method
+// @param p:event:TEventProcess 处理事件
+// @return EEventStatus 处理状态
+//==========================================================
+function FUiDataEditControl_oeMode(e){
+   var o = this;
+   o.__base.FUiEditControl.oeMode.call(o, e);
+   o.__base.MDisplay.oeMode.call(o, e);
+   // 根据工作模式获得设置信息
+   o._editable = o.canEdit(e.mode);
+   o._validable = o.canValid(e.mode);
+   // 如果在加载中不设置工作模式，由加载处理设置信息
+   if(!o._progressing){
+      o.setEditable(o._editable);
+   }
+   // 返回处理结果
+   return EEventStatus.Stop;
+}
 
+//==========================================================
+// <T>处理数据加载中和加载完成处理。</T>
+//
+// @method
+// @param p:event:TEventProcess 处理事件
+// @return EEventStatus 处理状态
+//==========================================================
+function FUiDataEditControl_oeProgress(e){
+   var o = this;
+   // 加载中不做处理
+   if(o._progressing && e.enable){
+      return EEventStatus.Stop;
+   }
+   // 根据状态设置信息
+   o._progressing = e.enable;
+   if(e.enable){
+      var ea = o._editable;
+      o.setEditable(false);
+      o._editable = ea;
+   }else{
+      o.setEditable(o._editable);
+   }
+   return EEventStatus.Stop;
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FUiDataEditControl_construct(){
+   var o = this;
+   // 父处理
+   o.__base.FUiEditControl.construct.call(o);
+   o.__base.MUiEditChange.construct.call(o);
+   o.__base.MUiEditDrop.construct.call(o);
+   // 设置属性
+   o._labelSize = new SSize2(100, 20);
+   o._editSize = new SSize2(200, 20);
+}
+
+//==========================================================
+// <T>获得底板。</T>
+//
+// @method
+// @param t:type:EPanel 类型
+// @return HtmlTag 页面元素
+//==========================================================
+function FUiDataEditControl_panel(t){
+   var o = this;
+   if(EPanel.Edit == t){
+      return o.hEdit;
+   }else if(EPanel.Focus == t){
+      return o.hEdit;
+   }
+   return o.__base.FUiEditControl.panel.call(o, t);
+}
+
+//==========================================================
+// <T>获得标签。</T>
+//
+// @method
+// @return String 标签内容
+//==========================================================
+function FUiDataEditControl_label(p){
+   return this._label;
+}
+
+//==========================================================
+// <T>设置标签。</T>
+//
+// @method
+// @param p:value:String 标签内容
+//==========================================================
+function FUiDataEditControl_setLabel(p){
+   var o = this;
+   o._label = p;
+   if(o._hText){
+      o._hText.innerHTML = RString.nvl(p);
+   }
+}
+
+//==========================================================
+// <T>获得显示内容。</T>
+//
+// @method
+// @return String 显示内容
+//==========================================================
+function FUiDataEditControl_text(){
+   throw new TUnsupportError(o, 'text');
+}
+
+//==========================================================
+// <T>设置显示内容。</T>
+//
+// @method
+// @param value:String 显示内容
+//==========================================================
+function FUiDataEditControl_setText(value){
+   throw new TUnsupportError(o, 'setText');
+}
 
 //==========================================================
 // <T>获得编辑区大小。</T>
 //
 // @method
-// @return TRange 范围对象
+// @param r:rectangle:SRectangle 矩形
+// @return SRectangle 矩形
 //==========================================================
-function FUiDataEditControl_getEditRange(){
+function FUiDataEditControl_getValueRectangle(r){
    var o = this;
-   var hc = o.hEditCell;
-   var p = RHtml.offsetPosition(hc);
-   var w = hc.offsetWidth;
-   var h = hc.offsetHeight;
-   return new TRange(p.x, p.y, w, h);
+   if(!r){
+      r = new SRectangle();
+   }
+   var h = o._hValuePanel;
+   var p = RHtml.clientPosition(h);
+   r.position.assign(p);
+   r.setSize(h.offsetWidth, h.offsetHeight);
+   return r;
 }
+
+//==========================================================
+// <T>释放对象。</T>
+//
+// @method
+//==========================================================
+function FUiDataEditControl_dispose(){
+   var o = this;
+   // 释放属性
+   o._labelModeCd = null;
+   o._labelPositionCd = null;
+   o._labelAlignCd = null;
+   o._dataTypeCd = null;
+   // 释放结构
+   o._labelSize = RObject.dispose(o._labelSize);
+   o._editSize = RObject.dispose(o._editSize);
+   // 释放页面元素
+   o._hLabelPanel = RHtml.free(o._hLabelPanel);
+   o._hLabelForm = RHtml.free(o._hLabelForm);
+   o._hIconPanel = RHtml.free(o._hIconPanel);
+   o._hIcon = RHtml.free(o._hIcon);
+   o._hTextPanel = RHtml.free(o._hTextPanel);
+   o._hText = RHtml.free(o._hText);
+   o._hEditPanel = RHtml.free(o._hEditPanel);
+   o._hEditForm = RHtml.free(o._hEditForm);
+   o._hValuePanel = RHtml.free(o._hValuePanel);
+   o._hDropPanel = RHtml.free(o._hDropPanel);
+   // 父处理
+   o.__base.MUiEditDrop.dispose.call(o);
+   o.__base.MUiEditChange.dispose.call(o);
+   o.__base.FUiEditControl.dispose.call(o);
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -501,10 +671,10 @@ function FUiDataEditControl_oeDesign(p){
                //hlf.style.border = '1 solid #8800FF';
                hlf.cellPadding = 1;
             }
-            if(hef){
+            //if(hef){
                //hef.border = 1;
                //hef.style.border = '1 solid #FF8800';
-            }
+            //}
             if(o.hEdit){
                o.hEdit.disabled = true;
             }
@@ -514,9 +684,9 @@ function FUiDataEditControl_oeDesign(p){
                hlf.border = 0;
                hlf.cellPadding = 0;
             }
-            if(hef){
+            //if(hef){
                //hef.border = 0;
-            }
+            //}
             if(o.hEdit){
                o.hEdit.disabled = false;
             }
@@ -540,53 +710,6 @@ function FUiDataEditControl_oeDesign(p){
 }
 
 //==========================================================
-// <T>处理工作模式转换。</T>
-//
-// @method
-// @param p:event:TEventProcess 处理事件
-// @return EEventStatus 处理状态
-//==========================================================
-function FUiDataEditControl_oeMode(e){
-   var o = this;
-   o.__base.FUiEditControl.oeMode.call(o, e);
-   o.__base.MDisplay.oeMode.call(o, e);
-   // 根据工作模式获得设置信息
-   o._editable = o.canEdit(e.mode);
-   o._validable = o.canValid(e.mode);
-   // 如果在加载中不设置工作模式，由加载处理设置信息
-   if(!o._progress){
-      o.setEditable(o._editable);
-   }
-   // 返回处理结果
-   return EEventStatus.Stop;
-}
-
-//==========================================================
-// <T>处理数据加载中和加载完成处理。</T>
-//
-// @method
-// @param p:event:TEventProcess 处理事件
-// @return EEventStatus 处理状态
-//==========================================================
-function FUiDataEditControl_oeProgress(e){
-   var o = this;
-   // 加载中不做处理
-   if(o._progress && e.enable){
-      return EEventStatus.Stop;
-   }
-   // 根据状态设置信息
-   o._progress = e.enable;
-   if(e.enable){
-      var ea = o._editable;
-      o.setEditable(false);
-      o._editable = ea;
-   }else{
-      o.setEditable(o._editable);
-   }
-   return EEventStatus.Stop;
-}
-
-//==========================================================
 // <T>加载数据事件。</T>
 //
 // @method
@@ -595,7 +718,7 @@ function FUiDataEditControl_oeProgress(e){
 //==========================================================
 function FUiDataEditControl_oeLoadValue(e){
    var o = this;
-   var r = o.__base.MEditValue.oeLoadValue.call(o, e);
+   var r = o.__base.MUiEditValue.oeLoadValue.call(o, e);
    // 设置修改标志为不显示
    var hci = o.hChangeIcon;
    if(hci){
@@ -613,7 +736,7 @@ function FUiDataEditControl_oeLoadValue(e){
 function FUiDataEditControl_doFocus(e){
    var o = this;
    o.__base.MUiFocus.doFocus.call(o, e);
-   o.__base.MEditValue.doFocus.call(o, e);
+   o.__base.MUiEditValue.doFocus.call(o, e);
 }
 
 //==========================================================
@@ -625,64 +748,7 @@ function FUiDataEditControl_doFocus(e){
 function FUiDataEditControl_doBlur(e){
    var o = this;
    o.__base.MUiFocus.doBlur.call(o, e);
-   o.__base.MEditValue.doBlur.call(o, e);
-}
-
-//==========================================================
-// <T>构造处理。</T>
-//
-// @method
-//==========================================================
-function FUiDataEditControl_construct(){
-   var o = this;
-   // 父处理
-   o.__base.FUiEditControl.construct.call(o);
-   o.__base.MEditChange.construct.call(o);
-   o.__base.MEditDrop.construct.call(o);
-   // 设置属性
-   o._labelSize = new SSize2(100, 20);
-   o._editSize = new SSize2(200, 20);
-}
-
-//==========================================================
-// <T>获得底板。</T>
-//
-// @method
-// @param t:type:EPanel 类型
-// @return HtmlTag 页面元素
-//==========================================================
-function FUiDataEditControl_panel(t){
-   var o = this;
-   if(EPanel.Edit == t){
-      return o.hEdit;
-   }else if(EPanel.Focus == t){
-      return o.hEdit;
-   }
-   return o.__base.FUiEditControl.panel.call(o, t);
-}
-
-//==========================================================
-// <T>获得标签。</T>
-//
-// @method
-// @return String 标签内容
-//==========================================================
-function FUiDataEditControl_label(p){
-   return this._label;
-}
-
-//==========================================================
-// <T>设置标签。</T>
-//
-// @method
-// @param p:value:String 标签内容
-//==========================================================
-function FUiDataEditControl_setLabel(p){
-   var o = this;
-   o._label = p;
-   if(o._hText){
-      o._hText.innerHTML = RString.nvl(p);
-   }
+   o.__base.MUiEditValue.doBlur.call(o, e);
 }
 
 //==========================================================
@@ -696,26 +762,6 @@ function FUiDataEditControl_testFocus(){
 }
 
 //==========================================================
-// <T>获得显示内容。</T>
-//
-// @method
-// @return String 显示内容
-//==========================================================
-function FUiDataEditControl_text(){
-   return this.hEdit ? this.hEdit.value : '';
-}
-
-//==========================================================
-// <T>设置显示内容。</T>
-//
-// @method
-// @param t:text:String 显示内容
-//==========================================================
-function FUiDataEditControl_setText(t){
-   this.hEdit.value = t;
-}
-
-//==========================================================
 // <T>设置编辑对象的可编辑性。</T>
 //
 // @method
@@ -723,7 +769,7 @@ function FUiDataEditControl_setText(t){
 //==========================================================
 function FUiDataEditControl_setEditable(v){
    var o = this;
-   o.__base.MEditValue.setEditable.call(o, v);
+   o.__base.MUiEditValue.setEditable.call(o, v);
    if(o.hEdit){
       o.hEdit.readOnly = !v;
    }
@@ -732,7 +778,7 @@ function FUiDataEditControl_setEditable(v){
    if(hl){
       // 设置必须检查
       if(o.validRequire){
-         o.hLabel.style.color = v ? EColor.Require : EColor.Text;
+         o.hLabel.style.color = v ? EUiColor.Require : EUiColor.Text;
       }
       // 如果当前控件支持列表接口
       if(RClass.isClass(o, MListView) && o.canListView()){
@@ -784,13 +830,13 @@ function FUiDataEditControl_refreshStyle(){
       return;
    }
    // 获得前景颜色/背景颜色
-   var tc = EColor.TextReadonly;
-   var bc = EColor.Readonly;
+   var tc = EUiColor.TextReadonly;
+   var bc = EUiColor.Readonly;
    var cr = 'normal';
    // 检查可编辑性
    if(o._editable){
-      tc = EColor.TextEdit;
-      bc = EColor.Edit;
+      tc = EUiColor.TextEdit;
+      bc = EUiColor.Edit;
       cr = 'hand';
       if(!RString.isEmpty(o.editTip) && o.hEdit.innerText == o.editTip){
          tc = '#CCCCCC';
@@ -799,8 +845,8 @@ function FUiDataEditControl_refreshStyle(){
    // 检查有效性
    if(o._invalidText){
       if(!RString.isEmpty(o.text())){
-         tc = EColor.TextInvalid;
-         bc = EColor.Invalid;
+         tc = EUiColor.TextInvalid;
+         bc = EUiColor.Invalid;
       }
    }
    // 记录颜色
@@ -833,54 +879,4 @@ function FUiDataEditControl_refreshStyle(){
       }
       o.setEditBorderStyle(bs, bc);
    }
-}
-
-//==========================================================
-// <T>释放对象。</T>
-//
-// @method
-//==========================================================
-function FUiDataEditControl_dispose(){
-   var o = this;
-   // 释放属性
-   o._labelModeCd = null;
-   o._labelPositionCd = null;
-   o._labelAlignCd = null;
-   o._dataTypeCd = null;
-   // 释放结构
-   var v = o._labelSize;
-   if(v){
-      v.dispose();
-      o._labelSize = null;
-   }
-   var v = o._editSize;
-   if(v){
-      v.dispose();
-      o._editSize = null;
-   }
-   // 释放页面元素
-   RHtml.free(o._hLabelPanel);
-   o._hLabelPanel = null;
-   RHtml.free(o._hLabelForm);
-   o._hLabelForm = null;
-   RHtml.free(o._hIconPanel);
-   o._hIconPanel = null;
-   RHtml.free(o._hIcon);
-   o._hIcon = null;
-   RHtml.free(o._hTextPanel);
-   o._hTextPanel = null;
-   RHtml.free(o._hText);
-   o._hText = null;
-   RHtml.free(o._hEditPanel);
-   o._hEditPanel = null;
-   RHtml.free(o._hEditForm);
-   o._hEditForm = null;
-   RHtml.free(o._hValuePanel);
-   o._hValuePanel = null;
-   RHtml.free(o._hDropPanel);
-   o._hDropPanel = null;
-   // 父处理
-   o.__base.MEditDrop.dispose.call(o);
-   o.__base.MEditChange.dispose.call(o);
-   o.__base.FUiEditControl.dispose.call(o);
 }

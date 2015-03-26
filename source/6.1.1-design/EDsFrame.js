@@ -8,6 +8,8 @@
 var EDsFrame = new function EDsFrame(){
    var o = this;
    // @member 模型属性页面
+   o.ResourcePropertyFrame       = 'design3d.resource.property.SpaceFrame';
+   // @member 模型属性页面
    o.MeshSpacePropertyFrame       = 'design3d.mesh.property.SpaceFrame';
    o.MeshTechniquePropertyFrame   = 'design3d.mesh.property.TechniqueFrame';
    o.MeshRegionPropertyFrame      = 'design3d.mesh.property.RegionFrame';

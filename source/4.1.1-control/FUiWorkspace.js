@@ -9,8 +9,13 @@ function FUiWorkspace(o){
    o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
    //..........................................................
    // @style
-   o._hContainer  = null;
+   o._stylePanel    = RClass.register(o, new AStyle('_stylePanel'));
+   //..........................................................
+   // @attribute
    o._frames      = null;
+   //..........................................................
+   // @html
+   o._hContainer  = null;
    //..........................................................
    // @event
    o.onBuildPanel = FUiWorkspace_onBuildPanel;
@@ -28,7 +33,7 @@ function FUiWorkspace(o){
 //==========================================================
 function FUiWorkspace_onBuildPanel(p){
    var o = this;
-   o._hContainer = p.hDocument.body;
+   //o._hContainer = p.hDocument.body;
    o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
 }
 
@@ -41,7 +46,7 @@ function FUiWorkspace_onBuildPanel(p){
 function FUiWorkspace_appendChild(p){
    var o = this;
    if(RClass.isClass(p, FUiFrameSet)){
-      o._hContainer.appendChild(p._hPanel);
-      //o._hPanel.appendChild(p._hPanel);
+      //o._hContainer.appendChild(p._hPanel);
+      o._hPanel.appendChild(p._hPanel);
    }
 }
