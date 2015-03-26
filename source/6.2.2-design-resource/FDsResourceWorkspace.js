@@ -14,8 +14,13 @@ function FDsResourceWorkspace(o){
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+   o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+   o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
+   o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+   o._stylePreviewGround   = RClass.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
+   o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
    o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    //..........................................................
    // @attribute
    o._activeSpace          = null;
@@ -26,10 +31,10 @@ function FDsResourceWorkspace(o){
    // @attribute
    o._frameToolBar         = null;
    o._frameBody            = null;
-   o._frameProperty        = null;
+   o._framePreview        = null;
    // @attribute
    o._frameCatalog         = null;
-   o._frameWorkspace       = null;
+   o._frameSearch       = null;
    o._frameStatusBar       = null;
    // @attribute
    o._propertyFrames       = null;
@@ -66,53 +71,90 @@ function FDsResourceWorkspace_onBuilded(p){
    // 设置目录区
    var f = o._frameCatalog = o.searchControl('catalogFrame');
    f._hPanel.className = o.styleName('Catalog_Ground');
+   var f = o._frameCatalogToolbar = o.searchControl('catalogToolbarFrame');
+   f._hPanel.className = o.styleName('Catalog_Toolbar');
+   var f = o._frameCatalogContent = o.searchControl('catalogContentFrame');
    // 设置属性区
-   var f = o._frameWorkspace = o.searchControl('spaceFrame');
-   f._hPanel.className = o.styleName('Workspace_Ground');
+   var f = o._frameSearch = o.searchControl('searchFrame');
+   f._hPanel.className = o.styleName('Search_Ground');
+   var f = o._frameSearchToolbar = o.searchControl('searchToolbarFrame');
+   f._hPanel.className = o.styleName('Search_Toolbar');
+   var f = o._frameSearchContent = o.searchControl('searchContentFrame');
    // 设置属性区
-   var f = o._frameProperty = o.searchControl('propertyFrame');
-   f._hPanel.className = o.styleName('Property_Ground');
+   var f = o._framePreview = o.searchControl('previewFrame');
+   f._hPanel.className = o.styleName('Preview_Ground');
+   var f = o._framePreviewToolbar = o.searchControl('previewToolbarFrame');
+   f._hPanel.className = o.styleName('Preview_Toolbar');
    // 设置状态区
    var f = o._frameStatusBar = o.searchControl('statusFrame');
    f._hPanel.className = o.styleName('Statusbar_Ground');
+   //..........................................................
    // 设置分割
    var f = o._catalogSplitter = o.searchControl('catalogSpliter');
    f.setAlignCd(EUiAlign.Left);
    f.setSizeHtml(o._frameCatalog._hPanel);
-   var f = o._propertySpliter = o.searchControl('propertySpliter');
+   var f = o._previewSpliter = o.searchControl('previewSpliter');
    f.setAlignCd(EUiAlign.Right);
-   f.setSizeHtml(o._frameProperty._hPanel);
-   return;
+   f.setSizeHtml(o._framePreview._hPanel);
    //..........................................................
+   var hTable = RBuilder.createTable(p);
+   hTable.width = '100%';
+   var hRow = RBuilder.appendTableRow(hTable);
+   var hCell = RBuilder.appendTableCell(hRow);
    // 设置工具栏
    var c = o._toolbar = RClass.create(FDsResourceMenuBar);
    c._workspace = o;
    c.buildDefine(p);
-   o._frameToolBar.push(c);
+   hCell.appendChild(c._hPanel);
+   // 设置分页栏
+   var c = o._tabBar = RClass.create(FDsResourceTabBar);
+   c._workspace = o;
+   c.buildDefine(p);
+   var hCell = RBuilder.appendTableCell(hRow);
+   hCell.width = '450px';
+   hCell.align = 'right';
+   hCell.vAlign = 'bottom';
+   hCell.appendChild(c._hPanel);
+   //o._frameToolBar.push(c);
+   o._frameToolBar._hPanel.appendChild(hTable);
    //..........................................................
    // 设置目录栏
    var c = o._catalog = RClass.create(FDsResourceCatalog);
    c._workspace = o;
    c.build(p);
    c.addSelectedListener(o, o.onCatalogSelected);
-   o._frameCatalog.push(c);
+   o._frameCatalogContent.push(c);
+   //..........................................................
+   // 设置搜索栏
+   //var c = o._catalog = RClass.create(FDsResourceCatalog);
+   //c._workspace = o;
+   //c.build(p);
+   //c.addSelectedListener(o, o.onCatalogSelected);
+   //o._frameCatalogContent.push(c);
+   // 设置搜索内容
+   var control = o._searchContent = RClass.create(FDsResourceSearchContent);
+   control._workspace = o;
+   control.build(p);
+   o._frameSearchContent.push(c);
    //..........................................................
    // 设置画板工具栏
-   var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
+   var f = o._previewToolbarFrame = o.searchControl('previewToolbarFrame');
    var c = o._canvasToolbar = RClass.create(FDsResourceCanvasToolBar);
    c._workspace = o;
    c.buildDefine(p);
-   o._canvasToolbarFrame.push(c);
+   o._previewToolbarFrame.push(c);
    // 设置画板
-   var f = o._canvasFrame = o.searchControl('canvasFrame');
+   var f = o._previewContentFrame = o.searchControl('previewContentFrame');
    var c = o._canvas = RClass.create(FDsResourceCanvas);
    c._workspace = o;
    c._toolbar = o._canvasToolbar;
    c.addLoadListener(o, o.onMeshLoad);
    c._hParent = f._hPanel;
-   c._hParent.style.backgroundColor = '#000000';
-   c.build(p);
-   o._canvasFrame.push(c);
+   //..........................................................
+   o._searchContent.serviceSearch('mesh', '');
+   //c._hParent.style.backgroundColor = '#FFFFFF';
+   //c.build(p);
+   //o._previewContentFrame.push(c);
 }
 
 //==========================================================
@@ -206,8 +248,8 @@ function FDsResourceWorkspace_findPropertyFrame(p){
    var f = o._propertyFrames.get(p);
    if(!f){
       var fc = RConsole.find(FFrameConsole);
-      //f = fc.get(o, p, o._frameProperty._hPanel);
-      f = fc.get(o, p, o._frameProperty._hContainer);
+      //f = fc.get(o, p, o._framePreview._hPanel);
+      f = fc.get(o, p, o._framePreview._hContainer);
       f._workspace = o;
       o._propertyFrames.set(p, f);
    }

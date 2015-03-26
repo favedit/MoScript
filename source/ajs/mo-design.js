@@ -1287,7 +1287,7 @@ function FDsResourceCatalog_onBuild(p){
    var o = this;
    o.__base.FUiDataTreeView.onBuild.call(o, p);
    o.lsnsClick.register(o, o.onNodeClick);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.mesh');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.resource');
 }
 function FDsResourceCatalog_onLoadDisplay(p){
    var o = this;
@@ -1487,7 +1487,7 @@ function FDsResourceCatalog_dispose(){
 }
 function FDsResourceMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName     = 'design3d.mesh.MenuBar';
+   o._frameName     = 'design3d.resource.MenuBar';
    o._refreshButton = null;
    o._saveButton    = null;
    o._runButton     = null;
@@ -1500,7 +1500,7 @@ function FDsResourceMenuBar(o){
 function FDsResourceMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
-   o._saveButton.addClickListener(o, o.onSaveClick);
+   o._controlSaveButton.addClickListener(o, o.onSaveClick);
 }
 function FDsResourceMenuBar_onSaveClick(p){
    var o = this;
@@ -1518,23 +1518,127 @@ function FDsResourceMenuBar_dispose(){
    var o = this;
    o.__base.FUiMenuBar.dispose.call(o);
 }
+function FDsResourceSearchContent(o){
+   o = RClass.inherits(this, o, FUiListView);
+   o._frameName     = 'design3d.resource.TabBar';
+   o._refreshButton = null;
+   o._saveButton    = null;
+   o._runButton     = null;
+   o.onBuilded      = FDsResourceSearchContent_onBuilded;
+   o.onServiceLoad  = FDsResourceSearchContent_onServiceLoad;
+   o.construct      = FDsResourceSearchContent_construct;
+   o.serviceSearch  = FDsResourceSearchContent_serviceSearch;
+   o.dispose        = FDsResourceSearchContent_dispose;
+   return o;
+}
+function FDsResourceSearchContent_onBuilded(p){
+   var o = this;
+   o.__base.FUiListView.onBuilded.call(o, p);
+}
+function FDsResourceSearchContent_onServiceLoad(p){
+   var o = this;
+   return;
+}
+function FDsResourceSearchContent_construct(){
+   var o = this;
+   o.__base.FUiListView.construct.call(o);
+}
+function FDsResourceSearchContent_serviceSearch(typeCd, serach){
+   var o = this;
+   var url = '/content.design.resource.ws?action=search&serach=' + serach;
+   var connection = RConsole.find(FXmlConsole).sendAsync(url);
+   connection.addLoadListener(o, o.onServiceLoad);
+}
+function FDsResourceSearchContent_dispose(){
+   var o = this;
+   o.__base.FUiListView.dispose.call(o);
+}
+function FDsResourceSearchItem(o){
+   o = RClass.inherits(this, o, FUiListItem);
+   o._frameName     = 'design3d.resource.TabBar';
+   o._refreshButton = null;
+   o._saveButton    = null;
+   o._runButton     = null;
+   o.onBuilded      = FDsResourceSearchItem_onBuilded;
+   o.onSaveClick    = FDsResourceSearchItem_onSaveClick;
+   o.construct      = FDsResourceSearchItem_construct;
+   o.dispose        = FDsResourceSearchItem_dispose;
+   return o;
+}
+function FDsResourceSearchItem_onBuilded(p){
+   var o = this;
+   o.__base.FUiTabBar.onBuilded.call(o, p);
+}
+function FDsResourceSearchItem_onSaveClick(p){
+   var o = this;
+   var space = o._workspace._activeSpace;
+   var resource = space.resource();
+   var xconfig = new TXmlNode();
+   resource.saveConfig(xconfig);
+   RConsole.find(FE3sMeshConsole).update(xconfig);
+}
+function FDsResourceSearchItem_construct(){
+   var o = this;
+   o.__base.FUiTabBar.construct.call(o);
+}
+function FDsResourceSearchItem_dispose(){
+   var o = this;
+   o.__base.FUiTabBar.dispose.call(o);
+}
+function FDsResourceTabBar(o){
+   o = RClass.inherits(this, o, FUiTabBar);
+   o._frameName     = 'design3d.resource.TabBar';
+   o._refreshButton = null;
+   o._saveButton    = null;
+   o._runButton     = null;
+   o.onBuilded      = FDsResourceTabBar_onBuilded;
+   o.onSaveClick    = FDsResourceTabBar_onSaveClick;
+   o.construct      = FDsResourceTabBar_construct;
+   o.dispose        = FDsResourceTabBar_dispose;
+   return o;
+}
+function FDsResourceTabBar_onBuilded(p){
+   var o = this;
+   o.__base.FUiTabBar.onBuilded.call(o, p);
+}
+function FDsResourceTabBar_onSaveClick(p){
+   var o = this;
+   var space = o._workspace._activeSpace;
+   var resource = space.resource();
+   var xconfig = new TXmlNode();
+   resource.saveConfig(xconfig);
+   RConsole.find(FE3sMeshConsole).update(xconfig);
+}
+function FDsResourceTabBar_construct(){
+   var o = this;
+   o.__base.FUiTabBar.construct.call(o);
+}
+function FDsResourceTabBar_dispose(){
+   var o = this;
+   o.__base.FUiTabBar.dispose.call(o);
+}
 function FDsResourceWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);
    o._frameName            = 'design3d.resource.Workspace';
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+   o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
+   o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
+   o._styleSearchToolbar   = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Search_Toolbar'));
+   o._stylePreviewGround   = RClass.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
+   o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
    o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    o._activeSpace          = null;
    o._activeMesh           = null;
    o._framesetMain         = null;
    o._framesetBody         = null;
    o._frameToolBar         = null;
    o._frameBody            = null;
-   o._frameProperty        = null;
+   o._framePreview        = null;
    o._frameCatalog         = null;
-   o._frameWorkspace       = null;
+   o._frameSearch       = null;
    o._frameStatusBar       = null;
    o._propertyFrames       = null;
    o.onBuilded             = FDsResourceWorkspace_onBuilded;
@@ -1553,42 +1657,64 @@ function FDsResourceWorkspace_onBuilded(p){
    f._hPanel.className = o.styleName('Toolbar_Ground');
    var f = o._frameCatalog = o.searchControl('catalogFrame');
    f._hPanel.className = o.styleName('Catalog_Ground');
-   var f = o._frameWorkspace = o.searchControl('spaceFrame');
-   f._hPanel.className = o.styleName('Workspace_Ground');
-   var f = o._frameProperty = o.searchControl('propertyFrame');
-   f._hPanel.className = o.styleName('Property_Ground');
+   var f = o._frameCatalogToolbar = o.searchControl('catalogToolbarFrame');
+   f._hPanel.className = o.styleName('Catalog_Toolbar');
+   var f = o._frameCatalogContent = o.searchControl('catalogContentFrame');
+   var f = o._frameSearch = o.searchControl('searchFrame');
+   f._hPanel.className = o.styleName('Search_Ground');
+   var f = o._frameSearchToolbar = o.searchControl('searchToolbarFrame');
+   f._hPanel.className = o.styleName('Search_Toolbar');
+   var f = o._frameSearchContent = o.searchControl('searchContentFrame');
+   var f = o._framePreview = o.searchControl('previewFrame');
+   f._hPanel.className = o.styleName('Preview_Ground');
+   var f = o._framePreviewToolbar = o.searchControl('previewToolbarFrame');
+   f._hPanel.className = o.styleName('Preview_Toolbar');
    var f = o._frameStatusBar = o.searchControl('statusFrame');
    f._hPanel.className = o.styleName('Statusbar_Ground');
    var f = o._catalogSplitter = o.searchControl('catalogSpliter');
    f.setAlignCd(EUiAlign.Left);
    f.setSizeHtml(o._frameCatalog._hPanel);
-   var f = o._propertySpliter = o.searchControl('propertySpliter');
+   var f = o._previewSpliter = o.searchControl('previewSpliter');
    f.setAlignCd(EUiAlign.Right);
-   f.setSizeHtml(o._frameProperty._hPanel);
-   return;
+   f.setSizeHtml(o._framePreview._hPanel);
+   var hTable = RBuilder.createTable(p);
+   hTable.width = '100%';
+   var hRow = RBuilder.appendTableRow(hTable);
+   var hCell = RBuilder.appendTableCell(hRow);
    var c = o._toolbar = RClass.create(FDsResourceMenuBar);
    c._workspace = o;
    c.buildDefine(p);
-   o._frameToolBar.push(c);
+   hCell.appendChild(c._hPanel);
+   var c = o._tabBar = RClass.create(FDsResourceTabBar);
+   c._workspace = o;
+   c.buildDefine(p);
+   var hCell = RBuilder.appendTableCell(hRow);
+   hCell.width = '450px';
+   hCell.align = 'right';
+   hCell.vAlign = 'bottom';
+   hCell.appendChild(c._hPanel);
+   o._frameToolBar._hPanel.appendChild(hTable);
    var c = o._catalog = RClass.create(FDsResourceCatalog);
    c._workspace = o;
    c.build(p);
    c.addSelectedListener(o, o.onCatalogSelected);
-   o._frameCatalog.push(c);
-   var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
+   o._frameCatalogContent.push(c);
+   var control = o._searchContent = RClass.create(FDsResourceSearchContent);
+   control._workspace = o;
+   control.build(p);
+   o._frameSearchContent.push(c);
+   var f = o._previewToolbarFrame = o.searchControl('previewToolbarFrame');
    var c = o._canvasToolbar = RClass.create(FDsResourceCanvasToolBar);
    c._workspace = o;
    c.buildDefine(p);
-   o._canvasToolbarFrame.push(c);
-   var f = o._canvasFrame = o.searchControl('canvasFrame');
+   o._previewToolbarFrame.push(c);
+   var f = o._previewContentFrame = o.searchControl('previewContentFrame');
    var c = o._canvas = RClass.create(FDsResourceCanvas);
    c._workspace = o;
    c._toolbar = o._canvasToolbar;
    c.addLoadListener(o, o.onMeshLoad);
    c._hParent = f._hPanel;
-   c._hParent.style.backgroundColor = '#000000';
-   c.build(p);
-   o._canvasFrame.push(c);
+   o._searchContent.serviceSearch('mesh', '');
 }
 function FDsResourceWorkspace_onMeshLoad(p){
    var o = this;
@@ -1650,7 +1776,7 @@ function FDsResourceWorkspace_findPropertyFrame(p){
    var f = o._propertyFrames.get(p);
    if(!f){
       var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._frameProperty._hContainer);
+      f = fc.get(o, p, o._framePreview._hContainer);
       f._workspace = o;
       o._propertyFrames.set(p, f);
    }

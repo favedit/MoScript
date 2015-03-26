@@ -4,11 +4,11 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FDsResourceMenuBar(o){
-   o = RClass.inherits(this, o, FUiMenuBar);
+function FDsResourceSearchContent(o){
+   o = RClass.inherits(this, o, FUiListView);
    //..........................................................
    // @property
-   o._frameName     = 'design3d.resource.MenuBar';
+   o._frameName     = 'design3d.resource.TabBar';
    //..........................................................
    // @attribute
    o._refreshButton = null;
@@ -16,14 +16,16 @@ function FDsResourceMenuBar(o){
    o._runButton     = null;
    //..........................................................
    // @event
-   o.onBuilded      = FDsResourceMenuBar_onBuilded;
+   o.onBuilded      = FDsResourceSearchContent_onBuilded;
    // @event
-   o.onSaveClick    = FDsResourceMenuBar_onSaveClick;
+   o.onServiceLoad  = FDsResourceSearchContent_onServiceLoad;
    //..........................................................
    // @method
-   o.construct      = FDsResourceMenuBar_construct;
+   o.construct      = FDsResourceSearchContent_construct;
    // @method
-   o.dispose        = FDsResourceMenuBar_dispose;
+   o.serviceSearch  = FDsResourceSearchContent_serviceSearch;
+   // @method
+   o.dispose        = FDsResourceSearchContent_dispose;
    return o;
 }
 
@@ -33,12 +35,12 @@ function FDsResourceMenuBar(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsResourceMenuBar_onBuilded(p){
+function FDsResourceSearchContent_onBuilded(p){
    var o = this;
-   o.__base.FUiMenuBar.onBuilded.call(o, p);
+   o.__base.FUiListView.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   o._controlSaveButton.addClickListener(o, o.onSaveClick);
+   //o._saveButton.addClickListener(o, o.onSaveClick);
 }
 
 //==========================================================
@@ -47,15 +49,9 @@ function FDsResourceMenuBar_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsResourceMenuBar_onSaveClick(p){
+function FDsResourceSearchContent_onServiceLoad(p){
    var o = this;
-   var space = o._workspace._activeSpace;
-   var resource = space.resource();
-   // 存储配置
-   var xconfig = new TXmlNode();
-   resource.saveConfig(xconfig);
-   // 更新处理
-   RConsole.find(FE3sMeshConsole).update(xconfig);
+   return;
 }
 
 //==========================================================
@@ -63,10 +59,28 @@ function FDsResourceMenuBar_onSaveClick(p){
 //
 // @method
 //==========================================================
-function FDsResourceMenuBar_construct(){
+function FDsResourceSearchContent_construct(){
    var o = this;
    // 父处理
-   o.__base.FUiMenuBar.construct.call(o);
+   o.__base.FUiListView.construct.call(o);
+}
+
+//==========================================================
+// <T>服务搜索处理。</T>
+//
+// @method
+// @param typeCd:String 类型
+// @param search:String 搜索内容
+//==========================================================
+function FDsResourceSearchContent_serviceSearch(typeCd, serach){
+   var o = this;
+   // Disable
+   //RWindow.setEnable(false);
+   // Build values
+   var url = '/content.design.resource.ws?action=search&serach=' + serach;
+   // 发送数据请求
+   var connection = RConsole.find(FXmlConsole).sendAsync(url);
+   connection.addLoadListener(o, o.onServiceLoad);
 }
 
 //==========================================================
@@ -74,8 +88,8 @@ function FDsResourceMenuBar_construct(){
 //
 // @method
 //==========================================================
-function FDsResourceMenuBar_dispose(){
+function FDsResourceSearchContent_dispose(){
    var o = this;
    // 父处理
-   o.__base.FUiMenuBar.dispose.call(o);
+   o.__base.FUiListView.dispose.call(o);
 }

@@ -4,11 +4,11 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FDsResourceMenuBar(o){
-   o = RClass.inherits(this, o, FUiMenuBar);
+function FDsResourceSearchItem(o){
+   o = RClass.inherits(this, o, FUiListItem);
    //..........................................................
    // @property
-   o._frameName     = 'design3d.resource.MenuBar';
+   o._frameName     = 'design3d.resource.TabBar';
    //..........................................................
    // @attribute
    o._refreshButton = null;
@@ -16,14 +16,14 @@ function FDsResourceMenuBar(o){
    o._runButton     = null;
    //..........................................................
    // @event
-   o.onBuilded      = FDsResourceMenuBar_onBuilded;
+   o.onBuilded      = FDsResourceSearchItem_onBuilded;
    // @event
-   o.onSaveClick    = FDsResourceMenuBar_onSaveClick;
+   o.onSaveClick    = FDsResourceSearchItem_onSaveClick;
    //..........................................................
    // @method
-   o.construct      = FDsResourceMenuBar_construct;
+   o.construct      = FDsResourceSearchItem_construct;
    // @method
-   o.dispose        = FDsResourceMenuBar_dispose;
+   o.dispose        = FDsResourceSearchItem_dispose;
    return o;
 }
 
@@ -33,12 +33,12 @@ function FDsResourceMenuBar(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsResourceMenuBar_onBuilded(p){
+function FDsResourceSearchItem_onBuilded(p){
    var o = this;
-   o.__base.FUiMenuBar.onBuilded.call(o, p);
+   o.__base.FUiTabBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   o._controlSaveButton.addClickListener(o, o.onSaveClick);
+   //o._saveButton.addClickListener(o, o.onSaveClick);
 }
 
 //==========================================================
@@ -47,7 +47,7 @@ function FDsResourceMenuBar_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsResourceMenuBar_onSaveClick(p){
+function FDsResourceSearchItem_onSaveClick(p){
    var o = this;
    var space = o._workspace._activeSpace;
    var resource = space.resource();
@@ -63,10 +63,10 @@ function FDsResourceMenuBar_onSaveClick(p){
 //
 // @method
 //==========================================================
-function FDsResourceMenuBar_construct(){
+function FDsResourceSearchItem_construct(){
    var o = this;
    // 父处理
-   o.__base.FUiMenuBar.construct.call(o);
+   o.__base.FUiTabBar.construct.call(o);
 }
 
 //==========================================================
@@ -74,8 +74,8 @@ function FDsResourceMenuBar_construct(){
 //
 // @method
 //==========================================================
-function FDsResourceMenuBar_dispose(){
+function FDsResourceSearchItem_dispose(){
    var o = this;
    // 父处理
-   o.__base.FUiMenuBar.dispose.call(o);
+   o.__base.FUiTabBar.dispose.call(o);
 }

@@ -544,6 +544,7 @@
 .FUiPageSheet_BottomSelect{
    height:1px;
    background-color:#FFFFFF;
+}
 
 /* ------------------------------------------------------ */
 /* FUiPageControl                                         */
@@ -582,6 +583,128 @@
 }
 
 .FUiPageControl_SheetRight{
+   width:1px; background-color:#29bad5;
+}
+
+/* ------------------------------------------------------ */
+/* FUiTabButton                                           */
+/* ------------------------------------------------------ */
+.FUiTabButton_Panel{
+}
+
+.FUiTabButton_Sheet{
+   padding:10px;
+}
+
+.FUiTabButton_Button{
+   padding-left:10px; padding-top:3px; padding-right:10px; padding-bottom:2px;
+   background: -ms-linear-gradient(top, #EEEEEE, #999999);
+   background: -moz-linear-gradient(top, #EEEEEE, #999999); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#EEEEEE), to(#999999)); 
+   filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#EEEEEE, endcolorstr=#999999);
+}
+
+.FUiTabButton_ButtonHover{
+   cursor:pointer;
+   border-top:1 solid #EEEEEE;
+   padding-left:10px; padding-top:3px; padding-right:10px; padding-bottom:2px;
+   background: -ms-linear-gradient(top, #FFFFFF, #DDDDDD);
+   background: -moz-linear-gradient(top, #FFFFFF, #DDDDDD); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#DDDDDD)); 
+   filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#DDDDDD);
+}
+
+.FUiTabButton_ButtonSelect{
+   cursor:pointer;
+   padding-left:10px; padding-top:3px; padding-right:10px; padding-bottom:2px;
+   background: -ms-linear-gradient(top, #BBBBBB, #EEEEEE);
+   background: -moz-linear-gradient(top, #BBBBBB, #EEEEEE); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#BBBBBB), to(#EEEEEE)); 
+   filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#BBBBBB, endcolorstr=#EEEEEE);
+}
+
+.FUiTabButton_ButtonText{
+   white-space:nowrap;
+}
+
+.FUiTabButton_Top{
+   height:1px;
+   background-color:#CCCCCC;
+}
+
+.FUiTabButton_TopSelect{
+   height:1px;
+   background-color:#FFFFFF;
+}
+
+.FUiTabButton_Left{
+   border-top:1 solid #666666;
+   width: 1px;
+   background-color:#CCCCCC;
+}
+
+.FUiTabButton_LeftSelect{
+   width: 1px;
+   background-color:#FFFFFF;
+}
+
+.FUiTabButton_Right{
+   width:1px;
+   background-color:#CCCCCC;
+}
+
+.FUiTabButton_RightSelect{
+   width:1px;
+   background-color:#FFFFFF;
+}
+
+.FUiTabButton_Bottom{
+   height:1px;
+   background-color:#CCCCCC;
+}
+
+.FUiTabButton_BottomSelect{
+   height:1px;
+   background-color:#FFFFFF;
+}
+
+/* ------------------------------------------------------ */
+/* FUiTabBar                                         */
+/* ------------------------------------------------------ */
+.FUiTabBar_Panel{
+   width: 100%;
+}
+
+.FUiTabBar_TitlePanel{
+   height:1px;
+}
+
+.FUiTabBar_TitleForm{
+   width: 100%;
+}
+
+.FUiTabBar_SheetPanel{
+   vertical-align: top;
+   border-left:1 solid #29bad5; border-right:1 solid #29bad5; border-bottom:1 solid #29bad5;
+   padding:6;
+}
+
+.FUiTabBar_Sheets{
+   border:1 solid blue;
+   width:100%; height:100;
+}
+
+.FUiTabBar_RightP{
+   width:1px; border-top:1 solid #29bad5;
+   filter:progid:DXImageTransform.Microsoft.Gradient(gradienttype=0, startcolorstr=#FFFFFF, endcolorstr=#29bad7);
+}
+}
+
+.FUiTabBar_SheetLeft{
+   width:1px; background-color:#29bad5;
+}
+
+.FUiTabBar_SheetRight{
    width:1px; background-color:#29bad5;
 }
 

@@ -6,7 +6,7 @@
 // @history 150202
 //==========================================================
 function FUiButton(o){
-   o = RClass.inherits(this, o, FControl, MDisplay, MDesign);
+   o = RClass.inherits(this, o, FUiControl, MDisplay, MDesign);
    //..........................................................
    // @attribute
    o.labelPosition      = RClass.register(o, new TPtyStr('labelPosition', EPosition.Left));
@@ -171,7 +171,7 @@ function FUiButton_onButtonClick(e){
 //==========================================================
 function FUiButton_oeBuild(e){
    var o = this;
-   o.base.FControl.oeBuild.call(o, e);
+   o.base.FUiControl.oeBuild.call(o, e);
    // 设置底板
    var hp = o.hPanel;
    hp.style.paddingTop = o.padTop ? o.padTop : 10;
@@ -242,7 +242,7 @@ function FUiButton_oeBuild(e){
 //==========================================================
 function FUiButton_oeMode(e){
    var o = this;
-   o.base.FControl.oeMode.call(o, e);
+   o.base.FUiControl.oeMode.call(o, e);
    o.base.MDisplay.oeMode.call(o, e);
    return EEventStatus.Stop;
 }
@@ -347,7 +347,7 @@ function FUiButton_doClick(){
 //==========================================================
 function FUiButton_dispose(){
    var o = this;
-   o.base.FControl.dispose.call(o);
+   o.base.FUiControl.dispose.call(o);
    o.hForm = null;
    o.hFormEnd = null;
    o.hLabel = null;
