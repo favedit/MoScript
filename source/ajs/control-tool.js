@@ -337,11 +337,11 @@ function FUiToolButtonCheck_dispose(){
 function FUiToolButtonEdit(o){
    o = RClass.inherits(this, o, FUiToolButton);
    o._editSize       = RClass.register(o, new APtySize2('_editSize'));
-   o._statusChecked  = false;
    o._hEdit          = null;
    o.onBuildButton   = FUiToolButtonEdit_onBuildButton;
    o.onEnter         = FUiToolButtonEdit_onEnter;
    o.onLeave         = FUiToolButtonEdit_onLeave;
+   o.onKeyDown      = RClass.register(o, new AEventKeyDown('onKeyDown'), FUiToolButtonEdit_onKeyDown);
    o.construct       = FUiToolButtonEdit_construct;
    o.text            = FUiToolButtonEdit_text;
    o.setText         = FUiToolButtonEdit_setText;
@@ -355,6 +355,7 @@ function FUiToolButtonEdit_onBuildButton(p){
    var hEditPanel = o._hEditPanel = RBuilder.appendTableCell(hl);
    var hEdit = o._hEdit = RBuilder.appendEdit(hEditPanel);
    hEdit.style.width = o._editSize.width +  'px';
+   o.attachEvent('onKeyDown', hEdit);
    o._hEditSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
    if(o._icon){
       var hc = o._hIconPanel = RBuilder.appendTableCell(hl, o.styleName('IconPanel'));
@@ -378,15 +379,15 @@ function FUiToolButtonEdit_onBuildButton(p){
    }
 }
 function FUiToolButtonEdit_onEnter(p){
-   var o = this;
-   if(!o._statusChecked){
-      o._hPanel.className = this.styleName('Hover');
-   }
+   this._hPanel.className = this.styleName('Hover');
 }
 function FUiToolButtonEdit_onLeave(p){
+   this._hPanel.className = this.styleName('Normal');
+}
+function FUiToolButtonEdit_onKeyDown(event){
    var o = this;
-   if(!o._statusChecked){
-      o._hPanel.className = this.styleName('Normal');
+   if(event.keyCode == EKeyCode.Enter){
+      o.click();
    }
 }
 function FUiToolButtonEdit_construct(){

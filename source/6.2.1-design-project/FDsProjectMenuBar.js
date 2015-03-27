@@ -4,26 +4,26 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FDsMeshMenuBar(o){
+function FDsProjectMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
    // @property
-   o._frameName            = 'design3d.mesh.MenuBar';
+   o._frameName     = 'design3d.resource.MenuBar';
    //..........................................................
    // @attribute
-   o._controlSaveButton    = null;
-   o._controlCaptureButton = null;
+   o._refreshButton = null;
+   o._saveButton    = null;
+   o._runButton     = null;
    //..........................................................
    // @event
-   o.onBuilded             = FDsMeshMenuBar_onBuilded;
+   o.onBuilded      = FDsProjectMenuBar_onBuilded;
    // @event
-   o.onSaveClick           = FDsMeshMenuBar_onSaveClick;
-   o.onCaptureClick        = FDsMeshMenuBar_onCaptureClick;
+   o.onSaveClick    = FDsProjectMenuBar_onSaveClick;
    //..........................................................
    // @method
-   o.construct             = FDsMeshMenuBar_construct;
+   o.construct      = FDsProjectMenuBar_construct;
    // @method
-   o.dispose               = FDsMeshMenuBar_dispose;
+   o.dispose        = FDsProjectMenuBar_dispose;
    return o;
 }
 
@@ -33,13 +33,12 @@ function FDsMeshMenuBar(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsMeshMenuBar_onBuilded(p){
+function FDsProjectMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
    o._controlSaveButton.addClickListener(o, o.onSaveClick);
-   o._controlCaptureButton.addClickListener(o, o.onCaptureClick);
 }
 
 //==========================================================
@@ -48,7 +47,7 @@ function FDsMeshMenuBar_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsMeshMenuBar_onSaveClick(p){
+function FDsProjectMenuBar_onSaveClick(p){
    var o = this;
    var space = o._workspace._activeSpace;
    var resource = space.resource();
@@ -60,23 +59,11 @@ function FDsMeshMenuBar_onSaveClick(p){
 }
 
 //==========================================================
-// <T>捕捉图像处理。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FDsMeshMenuBar_onCaptureClick(p){
-   var o = this;
-   var canvas = o._workspace._canvas;
-   canvas.capture();
-}
-
-//==========================================================
 // <T>构造处理。</T>
 //
 // @method
 //==========================================================
-function FDsMeshMenuBar_construct(){
+function FDsProjectMenuBar_construct(){
    var o = this;
    // 父处理
    o.__base.FUiMenuBar.construct.call(o);
@@ -87,7 +74,7 @@ function FDsMeshMenuBar_construct(){
 //
 // @method
 //==========================================================
-function FDsMeshMenuBar_dispose(){
+function FDsProjectMenuBar_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiMenuBar.dispose.call(o);

@@ -11,9 +11,6 @@ function FUiToolButtonEdit(o){
    // @property
    o._editSize       = RClass.register(o, new APtySize2('_editSize'));
    //..........................................................
-   // @attribute
-   o._statusChecked  = false;
-   //..........................................................
    // @html
    o._hEdit          = null;
    //..........................................................
@@ -21,6 +18,7 @@ function FUiToolButtonEdit(o){
    o.onBuildButton   = FUiToolButtonEdit_onBuildButton;
    o.onEnter         = FUiToolButtonEdit_onEnter;
    o.onLeave         = FUiToolButtonEdit_onLeave;
+   o.onKeyDown      = RClass.register(o, new AEventKeyDown('onKeyDown'), FUiToolButtonEdit_onKeyDown);
    //..........................................................
    // @method
    o.construct       = FUiToolButtonEdit_construct;
@@ -47,6 +45,7 @@ function FUiToolButtonEdit_onBuildButton(p){
    var hEditPanel = o._hEditPanel = RBuilder.appendTableCell(hl);
    var hEdit = o._hEdit = RBuilder.appendEdit(hEditPanel);
    hEdit.style.width = o._editSize.width +  'px';
+   o.attachEvent('onKeyDown', hEdit);
    o._hEditSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
    // 建立图标
    if(o._icon){
@@ -82,10 +81,7 @@ function FUiToolButtonEdit_onBuildButton(p){
 // @param p:event:SEvent 事件
 //==========================================================
 function FUiToolButtonEdit_onEnter(p){
-   var o = this;
-   if(!o._statusChecked){
-      o._hPanel.className = this.styleName('Hover');
-   }
+   this._hPanel.className = this.styleName('Hover');
 }
 
 //==========================================================
@@ -95,9 +91,19 @@ function FUiToolButtonEdit_onEnter(p){
 // @param p:event:SEvent 事件
 //==========================================================
 function FUiToolButtonEdit_onLeave(p){
+   this._hPanel.className = this.styleName('Normal');
+}
+
+//==========================================================
+// <T>按键落下处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FUiToolButtonEdit_onKeyDown(event){
    var o = this;
-   if(!o._statusChecked){
-      o._hPanel.className = this.styleName('Normal');
+   if(event.keyCode == EKeyCode.Enter){
+      o.click();
    }
 }
 
