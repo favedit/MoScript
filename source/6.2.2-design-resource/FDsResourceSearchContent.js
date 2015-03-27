@@ -50,6 +50,13 @@ function FDsResourceSearchContent_onBuilded(p){
 function FDsResourceSearchContent_onServiceLoad(p){
    var o = this;
    var xitems = p.root.findNode('ItemCollection');
+   // 设置导航
+   var pageSize = xitems.getInteger('page_size');
+   var pageCount = xitems.getInteger('page_count');
+   var page = xitems.getInteger('page');
+   o._workspace._searchToolbar.setNavigator(pageSize, pageCount, page);
+   // 显示项目
+   o.clear();
    var xnodes = xitems.nodes();
    var count = xnodes.count();
    for(var i = 0; i < count; i++){
@@ -63,7 +70,7 @@ function FDsResourceSearchContent_onServiceLoad(p){
          o.push(item);
       }
    }
-   return;
+   RWindow.enable();
 }
 
 //==========================================================
@@ -97,12 +104,11 @@ function FDsResourceSearchContent_clickItem(p){
 // @param typeCd:String 类型
 // @param search:String 搜索内容
 //==========================================================
-function FDsResourceSearchContent_serviceSearch(typeCd, serach){
+function FDsResourceSearchContent_serviceSearch(typeCd, serach, pageSize, page){
    var o = this;
-   // Disable
-   //RWindow.setEnable(false);
+   RWindow.disable();
    // Build values
-   var url = '/cloud.content.resource.ws?action=search&type=' + typeCd + '&serach=' + serach;
+   var url = '/cloud.content.resource.ws?action=fetch&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
    // 发送数据请求
    var connection = RConsole.find(FXmlConsole).sendAsync(url);
    connection.addLoadListener(o, o.onServiceLoad);

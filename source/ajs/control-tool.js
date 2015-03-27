@@ -188,12 +188,12 @@ function FUiToolButton_setEnable(p){
    o.__base.FUiControl.oeEnable.call(o, e);
    o._disabled = !e.enable;
    if(e.enable && o._icon){
-      var is = RRes._iconPath(o._icon);
+      var is = RResource.iconPath(o._icon);
       if(o._hIcon.src != is){
          o._hIcon.src = is;
       }
    }else if(!e.enable && o._iconDisable){
-      var is = RRes._iconPath(o._iconDisable);
+      var is = RResource.iconPath(o._iconDisable);
       if(o._hIcon.src != is){
          o._hIcon.src = is;
       }
@@ -214,8 +214,10 @@ function FUiToolButton_setEnable(p){
 }
 function FUiToolButton_click(){
    var o = this;
-   RLogger.debug(o, 'Mouse button click. (label={1})' + o._label);
-   o.processClickListener(o);
+   RLogger.debug(o, 'Tool button Mouse click. (label={1})' + o._label);
+   var event = new SClickEvent(o);
+   o.processClickListener(event);
+   event.dispose();
    if(o._action){
       eval(o._action);
    }
@@ -332,21 +334,14 @@ function FUiToolButtonCheck_dispose(){
 function FUiToolButtonEdit(o){
    o = RClass.inherits(this, o, FUiToolButton);
    o._editSize       = RClass.register(o, new APtySize2('_editSize'));
-   o._optionChecked  = RClass.register(o, new APtyBoolean('_optionChecked', 'check'));
-   o._groupName      = RClass.register(o, new APtyString('_groupName'));
-   o._groupDefault   = RClass.register(o, new APtyString('_groupDefault'));
    o._statusChecked  = false;
+   o._hEdit          = null;
    o.onBuildButton   = FUiToolButtonEdit_onBuildButton;
    o.onEnter         = FUiToolButtonEdit_onEnter;
    o.onLeave         = FUiToolButtonEdit_onLeave;
    o.construct       = FUiToolButtonEdit_construct;
-   o.groupName       = FUiToolButtonEdit_groupName;
-   o.setGroupName    = FUiToolButtonEdit_setGroupName;
-   o.groupDefault    = FUiToolButtonEdit_groupDefault;
-   o.setGroupDefault = FUiToolButtonEdit_setGroupDefault;
-   o.innerCheck      = FUiToolButtonEdit_innerCheck;
-   o.check           = FUiToolButtonEdit_check;
-   o.dispose         = FUiToolButtonEdit_dispose;
+   o.text            = FUiToolButtonEdit_text;
+   o.setText         = FUiToolButtonEdit_setText;
    return o;
 }
 function FUiToolButtonEdit_onBuildButton(p){
@@ -389,78 +384,16 @@ function FUiToolButtonEdit_onLeave(p){
       o._hPanel.className = this.styleName('Normal');
    }
 }
-function FUiToolButtonEdit_onMouseDown(p){
-   var o = this;
-   o.check(!o._statusChecked);
-   o.processClickListener(o, o._statusChecked);
-}
-function FUiToolButtonEdit_onMouseUp(){
-   var o = this;
-}
 function FUiToolButtonEdit_construct(){
    var o = this;
    o.__base.FUiToolButton.construct.call(o);
    o._editSize = new SSize2();
 }
-function FUiToolButtonEdit_groupName(){
-   return this._groupName;
+function FUiToolButtonEdit_text(){
+   return this._hEdit.value;
 }
-function FUiToolButtonEdit_setGroupName(p){
-   this._groupName = p;
-}
-function FUiToolButtonEdit_groupDefault(){
-   return this._groupDefault;
-}
-function FUiToolButtonEdit_setGroupDefault(p){
-   this._groupDefault = p;
-}
-function FUiToolButtonEdit_innerCheck(p){
-   var o = this;
-   if(o._statusChecked != p){
-      o._statusChecked = p;
-      if(p){
-         o._hPanel.className = o.styleName('Press');
-      }else{
-         o._hPanel.className = o.styleName('Normal');
-      }
-   }
-}
-function FUiToolButtonEdit_check(p){
-   var o = this;
-   if(!p){
-      if(o._groupDefault == o){
-         return;
-      }
-   }
-   o.innerCheck(p);
-   if(!o._parent){
-      return;
-   }
-   if(p){
-      if(!RString.isEmpty(o._groupName)){
-         var cs = o._parent.components();
-         for(var i = cs.count() - 1; i >= 0; i--){
-            var c = cs.value(i);
-            if(c != o){
-               if(RClass.isClass(c, FUiToolButtonEdit)){
-                  c.innerCheck(false);
-               }
-            }
-         }
-      }
-   }else{
-      if(!RString.isEmpty(o._groupDefault)){
-         var cs = o._parent.components();
-         var c = cs.get(o._groupDefault);
-         c.innerCheck(true);
-      }
-   }
-}
-function FUiToolButtonEdit_dispose(){
-   var o = this;
-   o._statusChecked = null;
-   o._groupName = null;
-   o.__base.FUiToolButton.dispose.call(o);
+function FUiToolButtonEdit_setText(text){
+   this._hEdit.value = text;
 }
 function FUiToolButtonMenu(o){
    o = RClass.inherits(this, o, FUiToolButton, MUiContainer, MUiDropable, MUiFocus);

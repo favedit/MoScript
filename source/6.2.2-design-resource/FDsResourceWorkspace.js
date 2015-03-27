@@ -158,7 +158,7 @@ function FDsResourceWorkspace_onBuilded(p){
    //c.addLoadListener(o, o.onMeshLoad);
    o._previewContentFrame.push(c);
    //..........................................................
-   o._searchContent.serviceSearch('mesh', '');
+   o._searchContent.serviceSearch('mesh', '', 40, 0);
 }
 
 //==========================================================

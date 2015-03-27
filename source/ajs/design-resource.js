@@ -810,6 +810,11 @@ function FDsResourceSearchContent_onBuilded(p){
 function FDsResourceSearchContent_onServiceLoad(p){
    var o = this;
    var xitems = p.root.findNode('ItemCollection');
+   var pageSize = xitems.getInteger('page_size');
+   var pageCount = xitems.getInteger('page_count');
+   var page = xitems.getInteger('page');
+   o._workspace._searchToolbar.setNavigator(pageSize, pageCount, page);
+   o.clear();
    var xnodes = xitems.nodes();
    var count = xnodes.count();
    for(var i = 0; i < count; i++){
@@ -823,7 +828,7 @@ function FDsResourceSearchContent_onServiceLoad(p){
          o.push(item);
       }
    }
-   return;
+   RWindow.enable();
 }
 function FDsResourceSearchContent_construct(){
    var o = this;
@@ -834,9 +839,10 @@ function FDsResourceSearchContent_clickItem(p){
    var frame = o._workspace._previewContent;
    frame.loadMeshByGuid(p._guid);
 }
-function FDsResourceSearchContent_serviceSearch(typeCd, serach){
+function FDsResourceSearchContent_serviceSearch(typeCd, serach, pageSize, page){
    var o = this;
-   var url = '/cloud.content.resource.ws?action=search&type=' + typeCd + '&serach=' + serach;
+   RWindow.disable();
+   var url = '/cloud.content.resource.ws?action=fetch&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
    var connection = RConsole.find(FXmlConsole).sendAsync(url);
    connection.addLoadListener(o, o.onServiceLoad);
 }
@@ -861,7 +867,8 @@ function FDsResourceSearchItem_onBuild(p){
 function FDsResourceSearchToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    o._frameName       = 'design3d.resource.SearchToolBar';
-   o._canvasModeCd    = EDsCanvasMode.Drop;
+   o._pageCount       = 0;
+   o._page            = 0;
    o._dropButton      = null;
    o._selectButton    = null;
    o._translateButton = null;
@@ -873,29 +880,69 @@ function FDsResourceSearchToolBar(o){
    o._playButton      = null;
    o._viewButton      = null;
    o.onBuilded        = FDsResourceSearchToolBar_onBuilded;
-   o.onModeClick      = FDsResourceSearchToolBar_onModeClick;
-   o.onRotationClick  = FDsResourceSearchToolBar_onRotationClick;
+   o.onSearchClick    = FDsResourceSearchToolBar_onSearchClick;
+   o.onNavigatorClick = FDsResourceSearchToolBar_onNavigatorClick;
    o.construct        = FDsResourceSearchToolBar_construct;
+   o.setNavigator     = FDsResourceSearchToolBar_setNavigator;
+   o.doNavigator      = FDsResourceSearchToolBar_doNavigator;
    o.dispose          = FDsResourceSearchToolBar_dispose;
    return o;
 }
 function FDsResourceSearchToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
+   o._controlSearchEdit.addClickListener(o, o.onSearchClick);
+   o._controlFirstButton.addClickListener(o, o.onNavigatorClick);
+   o._controlPriorButton.addClickListener(o, o.onNavigatorClick);
+   o._controlNextButton.addClickListener(o, o.onNavigatorClick);
+   o._controlLastButton.addClickListener(o, o.onNavigatorClick);
 }
-function FDsResourceSearchToolBar_onModeClick(p){
+function FDsResourceSearchToolBar_onSearchClick(p){
    var o = this;
    o._canvasModeCd = p._canvasModeCd;
    o._workspace._canvas.switchMode(p._canvasModeCd);
 }
-function FDsResourceSearchToolBar_onRotationClick(p, v){
+function FDsResourceSearchToolBar_onNavigatorClick(event){
    var o = this;
-   var c = o._workspace._canvas;
-   c.switchRotation(v);
+   var sender = event.sender;
+   var name = sender.name();
+   var page = o._page;
+   switch(name){
+      case 'firstButton':
+         page = 0;
+         break;
+      case 'priorButton':
+         page--;
+         break;
+      case 'nextButton':
+         page++;
+         break;
+      case 'lastButton':
+         page = o._pageCount;
+         break;
+   }
+   o.doNavigator(page);
 }
 function FDsResourceSearchToolBar_construct(){
    var o = this;
    o.__base.FUiToolBar.construct.call(o);
+}
+function FDsResourceSearchToolBar_setNavigator(pageSize, pageCount, page){
+   var o = this;
+   o._pageSize = pageSize;
+   o._pageCount = pageCount;
+   o._page = page;
+   o._controlPageEdit.setText(page);
+   if(page == 0){
+   }
+}
+function FDsResourceSearchToolBar_doNavigator(page){
+   var o = this;
+   page = RInteger.toRange(page, 0, o._pageCount);
+   var search = o._controlSearchEdit.text();
+   if(o._page != page){
+      o._workspace._searchContent.serviceSearch('mesh', search, o._pageSize, page)
+   }
 }
 function FDsResourceSearchToolBar_dispose(){
    var o = this;
@@ -1034,7 +1081,7 @@ function FDsResourceWorkspace_onBuilded(p){
    c._hParent = f._hPanel;
    c.build(p);
    o._previewContentFrame.push(c);
-   o._searchContent.serviceSearch('mesh', '');
+   o._searchContent.serviceSearch('mesh', '', 40, 0);
 }
 function FDsResourceWorkspace_onMeshLoad(p){
    var o = this;

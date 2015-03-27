@@ -2908,6 +2908,7 @@ function TNode(){
    o.node         = TNode_node;
    o.nodes        = TNode_nodes;
    o.get          = TNode_get;
+   o.getInteger   = TNode_getInteger;
    o.set          = TNode_set;
    o.setBoolean   = TNode_setBoolean;
    o.setFloat     = TNode_setFloat;
@@ -2969,6 +2970,9 @@ function TNode_nodes(){
 }
 function TNode_get(n, v){
    return this._attributes ? this._attributes.get(n, v) : null;
+}
+function TNode_getInteger(n, v){
+   return RInteger.parse(this.get(n, v));
 }
 function TNode_set(n, v){
    if(v != null){
@@ -4920,20 +4924,20 @@ function RInteger_format(v, l, p){
    }
    return v;
 }
-function RInteger_toRange(v, i, a){
-   if(v == null){
-      v = 0;
+function RInteger_toRange(value, min, max){
+   if(value == null){
+      value = 0;
    }
-   if(isNaN(v)){
-      v = 0;
+   if(isNaN(value)){
+      value = 0;
    }
-   if(v < i){
-      v = i;
+   if(value < min){
+      value = min;
    }
-   if(v > a){
-      v = a;
+   if(value > max){
+      value = max;
    }
-   return v;
+   return value;
 }
 function RInteger_sum(){
    var r = 0;
@@ -9742,9 +9746,16 @@ function MProperty_propertySave(p){
       }
    }
 }
-function SEvent(){
+function SClickEvent(sender){
+   var o = this;
+   SEvent.call(o, sender);
+   return o;
+}
+function SEvent(sender){
    var o = this;
    o.annotation = null;
+   o.listener   = null;
+   o.sender     = sender;
    o.source     = null;
    o.hEvent     = null;
    o.hSender    = null;

@@ -99,8 +99,6 @@ function FDsResourcePreviewContent_onBuild(p){
    //lc.update();
    // 设置坐标系
    //sl.pushRenderable(o._dimensional);
-
-
    //var o = this;
    //o.__base.FDsCanvas.onBuild.call(o, p);
    // 创建界面控制器

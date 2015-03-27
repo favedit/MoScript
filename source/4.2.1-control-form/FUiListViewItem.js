@@ -31,6 +31,10 @@ function FUiListViewItem(o){
    //..........................................................
    // @html
    o._hPanel         = null;
+   o._hBorder        = null;
+   o._hForm          = null;
+   o._hContentForm   = null;
+   o._hContentLine   = null;
    o._hIconPanel     = null;
    o._hIcon          = null;
    o._hLabel         = null;
@@ -75,16 +79,15 @@ function FUiListViewItem_onBuild(p){
    o.__base.FUiControl.onBuild.call(o, p);
    var h = o._hPanel;
    //..........................................................
+   // 建立边框
    var hBorder = o._hBorder = RBuilder.appendDiv(h, o.styleName('Normal'));
-
    var hTable = o._hForm = RBuilder.appendTable(hBorder);
    hTable.style.width = '100%';
    hTable.style.height = '100%';
-
-   var hLine1 = o._hFormLine1 = RBuilder.appendTableRowCell(hTable)
-   var hLine2 = o._hFormLine1 = RBuilder.appendTableRowCell(hTable)
+   var hLine1 = RBuilder.appendTableRowCell(hTable)
+   var hLine2 = RBuilder.appendTableRowCell(hTable)
    hLine2.height = o._contentHeight;
-
+   // 建立内容区域
    var hContentForm = o._hContentForm = RBuilder.appendTable(hLine2, o.styleName('Content'));
    var hContentLine = o._hContentLine = RBuilder.appendTableRow(hContentForm);
    // 建立图标区域
@@ -180,6 +183,10 @@ function FUiListViewItem_setChecked(p){
 function FUiListViewItem_dispose(){
    var o = this;
    o._hPanel = RHtml.free(o._hPanel);
+   o._hBorder = RHtml.free(o._hBorder);
+   o._hForm = RHtml.free(o._hForm);
+   o._hContentForm = RHtml.free(o._hContentForm);
+   o._hContentLine = RHtml.free(o._hContentLine);
    o._hIconPanel = RHtml.free(o._hIconPanel);
    o._hIcon = RHtml.free(o._hIcon);
    o._hLabel = RHtml.free(o._hLabel);

@@ -109,25 +109,25 @@ function RInteger_format(v, l, p){
 // <T>返回范围内的数字化。</T>
 //
 // @method
-// @param v:value:Integer 数字
-// @param i:min:Integer 最小数字
-// @param a:max:Integer 最大数字
+// @param value:Integer 数字
+// @param min:Integer 最小数字
+// @param max:Integer 最大数字
 // @return Integer 数字
 //==========================================================
-function RInteger_toRange(v, i, a){
-   if(v == null){
-      v = 0;
+function RInteger_toRange(value, min, max){
+   if(value == null){
+      value = 0;
    }
-   if(isNaN(v)){
-      v = 0;
+   if(isNaN(value)){
+      value = 0;
    }
-   if(v < i){
-      v = i;
+   if(value < min){
+      value = min;
    }
-   if(v > a){
-      v = a;
+   if(value > max){
+      value = max;
    }
-   return v;
+   return value;
 }
 
 //==========================================================

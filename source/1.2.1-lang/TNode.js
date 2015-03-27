@@ -27,6 +27,7 @@ function TNode(){
    o.node         = TNode_node;
    o.nodes        = TNode_nodes;
    o.get          = TNode_get;
+   o.getInteger   = TNode_getInteger;
    o.set          = TNode_set;
    o.setBoolean   = TNode_setBoolean;
    o.setFloat     = TNode_setFloat;
@@ -173,10 +174,22 @@ function TNode_nodes(){
 // @method
 // @param n:name:String 属性名称
 // @param v:value:String 属性值
-// @return String 返回属性值
+// @return String 字符串内容
 //==========================================================
 function TNode_get(n, v){
    return this._attributes ? this._attributes.get(n, v) : null;
+}
+
+//==========================================================
+// <T>取得属性对应的数字属性值。</T>
+//
+// @method
+// @param n:name:String 属性名称
+// @param v:value:String 属性值
+// @return Integer 数字内容
+//==========================================================
+function TNode_getInteger(n, v){
+   return RInteger.parse(this.get(n, v));
 }
 
 //==========================================================

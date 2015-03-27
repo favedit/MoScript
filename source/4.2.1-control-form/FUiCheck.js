@@ -97,6 +97,7 @@ function FUiCheck_construct(){
 // @return Object 存储内容
 //==========================================================
 function FUiCheck_formatLoad(value){
+   var o = this;
    return (value == o._valueTrue);
 }
 
@@ -108,6 +109,7 @@ function FUiCheck_formatLoad(value){
 // @return String 存储内容
 //==========================================================
 function FUiCheck_formatSave(value){
+   var o = this;
    return RBoolean.toString(value, o._valueTrue, o._valueFalse);
 }
 

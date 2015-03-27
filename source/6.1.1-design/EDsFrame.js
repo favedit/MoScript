@@ -20,7 +20,7 @@ var EDsFrame = new function EDsFrame(){
    o.MeshMaterialPropertyFrame    = 'design3d.mesh.property.MaterialFrame';
    o.MeshRenderablePropertyFrame  = 'design3d.mesh.property.RenderableFrame';
    // @member 场景属性页面
-   o.ScenePropertyFrame           = 'design3d.scene.property.SceneFrame';
+   o.SceneSpacePropertyFrame      = 'design3d.scene.property.SpaceFrame';
    o.SceneTechniquePropertyFrame  = 'design3d.scene.property.TechniqueFrame';
    o.SceneRegionPropertyFrame     = 'design3d.scene.property.RegionFrame';
    o.SceneCameraPropertyFrame     = 'design3d.scene.property.CameraFrame';

@@ -12,7 +12,8 @@ function FDsResourceSearchToolBar(o){
    o._frameName       = 'design3d.resource.SearchToolBar';
    //..........................................................
    // @attribute
-   o._canvasModeCd    = EDsCanvasMode.Drop;
+   o._pageCount       = 0;
+   o._page            = 0;
    // @attribute
    o._dropButton      = null;
    o._selectButton    = null;
@@ -28,11 +29,14 @@ function FDsResourceSearchToolBar(o){
    // @event
    o.onBuilded        = FDsResourceSearchToolBar_onBuilded;
    // @event
-   o.onModeClick      = FDsResourceSearchToolBar_onModeClick;
-   o.onRotationClick  = FDsResourceSearchToolBar_onRotationClick;
+   o.onSearchClick    = FDsResourceSearchToolBar_onSearchClick;
+   o.onNavigatorClick = FDsResourceSearchToolBar_onNavigatorClick;
    //..........................................................
    // @method
    o.construct        = FDsResourceSearchToolBar_construct;
+   // @method
+   o.setNavigator     = FDsResourceSearchToolBar_setNavigator;
+   o.doNavigator      = FDsResourceSearchToolBar_doNavigator;
    // @method
    o.dispose          = FDsResourceSearchToolBar_dispose;
    return o;
@@ -48,15 +52,14 @@ function FDsResourceSearchToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
-   // 建立拖拽按键
-   //var b = o._dropButton = o.searchControl('dropButton');
-   //b._canvasModeCd = EDsCanvasMode.Drop;
-   //b.addClickListener(o, o.onModeClick);
-   //b.check(true);
-   //..........................................................
-   // 建立按键
-   //var b = o._viewButton = o.searchControl('viewButton');
-   //b.addClickListener(o, o.onRotationClick);
+   // 关联查询事件
+   o._controlSearchEdit.addClickListener(o, o.onSearchClick);
+   // 关联导航事件
+   o._controlFirstButton.addClickListener(o, o.onNavigatorClick);
+   o._controlPriorButton.addClickListener(o, o.onNavigatorClick);
+   //o._controlPageEdit.addClickListener(o, o.onNavigatorClick);
+   o._controlNextButton.addClickListener(o, o.onNavigatorClick);
+   o._controlLastButton.addClickListener(o, o.onNavigatorClick);
 }
 
 //==========================================================
@@ -65,22 +68,38 @@ function FDsResourceSearchToolBar_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsResourceSearchToolBar_onModeClick(p){
+function FDsResourceSearchToolBar_onSearchClick(p){
    var o = this;
    o._canvasModeCd = p._canvasModeCd;
    o._workspace._canvas.switchMode(p._canvasModeCd);
 }
 
 //==========================================================
-// <T>刷新按键处理。</T>
+// <T>点击导航事件处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsResourceSearchToolBar_onRotationClick(p, v){
+function FDsResourceSearchToolBar_onNavigatorClick(event){
    var o = this;
-   var c = o._workspace._canvas;
-   c.switchRotation(v);
+   var sender = event.sender;
+   var name = sender.name();
+   var page = o._page;
+   switch(name){
+      case 'firstButton':
+         page = 0;
+         break;
+      case 'priorButton':
+         page--;
+         break;
+      case 'nextButton':
+         page++;
+         break;
+      case 'lastButton':
+         page = o._pageCount;
+         break;
+   }
+   o.doNavigator(page);
 }
 
 //==========================================================
@@ -92,6 +111,41 @@ function FDsResourceSearchToolBar_construct(){
    var o = this;
    // 父处理
    o.__base.FUiToolBar.construct.call(o);
+}
+
+//==========================================================
+// <T>设置导航信息。</T>
+//
+// @method
+// @param pageSize 页大小
+// @param pageCount 页总数
+// @param page 页号
+//==========================================================
+function FDsResourceSearchToolBar_setNavigator(pageSize, pageCount, page){
+   var o = this;
+   o._pageSize = pageSize;
+   o._pageCount = pageCount;
+   o._page = page;
+   o._controlPageEdit.setText(page);
+   if(page == 0){
+      //o._controlFirstButton.disable();
+   }
+}
+
+//==========================================================
+// <T>设置导航信息。</T>
+//
+// @method
+// @param pageCount 页总数
+// @param page 页号
+//==========================================================
+function FDsResourceSearchToolBar_doNavigator(page){
+   var o = this;
+   page = RInteger.toRange(page, 0, o._pageCount);
+   var search = o._controlSearchEdit.text();
+   if(o._page != page){
+      o._workspace._searchContent.serviceSearch('mesh', search, o._pageSize, page)
+   }
 }
 
 //==========================================================

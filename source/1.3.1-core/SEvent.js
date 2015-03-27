@@ -5,12 +5,14 @@
 // @author maocy
 // @version 150113
 //==========================================================
-function SEvent(){
+function SEvent(sender){
    var o = this;
    //..........................................................
    // @attribute
    o.annotation = null;
    // @attribute
+   o.listener   = null;
+   o.sender     = sender;
    o.source     = null;
    // @attribute
    o.hEvent     = null;

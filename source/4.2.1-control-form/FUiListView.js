@@ -26,12 +26,18 @@ function FUiListView(o){
    // @style
    o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
    //..........................................................
+   // @attribute
+   o._itemPool    = null;
+   
+   //..........................................................
    // @html
    o._hForm       = null;
    //..........................................................
    // @event
    o.onBuildPanel = FUiListView_onBuildPanel;
    //..........................................................
+   // @method
+   o.construct    = FUiListView_construct;
    // @method
    o.createItem   = FUiListView_createItem;
    o.appendChild  = FUiListView_appendChild;
@@ -51,6 +57,22 @@ function FUiListView_onBuildPanel(p){
    var o = this;
    // 建立编辑控件
    o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+}
+
+//==========================================================
+// <T>创建一个列表项目。</T>
+//
+// @method
+// @param pi:icon:String 图标
+// @param pl:label:String 标签
+// @return FUiListItem 列表项目
+//==========================================================
+function FUiListView_construct(){
+   var o = this;
+   var c = RClass.create(FUiListItem);
+   c.build(o._hPanel);
+   c.setLabel(pl);
+   return c;
 }
 
 //==========================================================
@@ -115,7 +137,7 @@ function FUiListView_clear(){
       var c = cs.count();
       for(var i = 0; i < c; i++){
          var m = cs.value(i);
-         if(RClass.isClass(m, FUiListItem)){
+         if(RClass.isClass(m, FUiListViewItem)){
             o._hPanel.removeChild(m._hPanel);
          }
          m.dispose();

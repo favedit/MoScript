@@ -10,12 +10,12 @@ function FUiToolButtonEdit(o){
    //..........................................................
    // @property
    o._editSize       = RClass.register(o, new APtySize2('_editSize'));
-   o._optionChecked  = RClass.register(o, new APtyBoolean('_optionChecked', 'check'));
-   o._groupName      = RClass.register(o, new APtyString('_groupName'));
-   o._groupDefault   = RClass.register(o, new APtyString('_groupDefault'));
    //..........................................................
    // @attribute
    o._statusChecked  = false;
+   //..........................................................
+   // @html
+   o._hEdit          = null;
    //..........................................................
    // @event
    o.onBuildButton   = FUiToolButtonEdit_onBuildButton;
@@ -27,13 +27,8 @@ function FUiToolButtonEdit(o){
    // @method
    o.construct       = FUiToolButtonEdit_construct;
    // @method
-   o.groupName       = FUiToolButtonEdit_groupName;
-   o.setGroupName    = FUiToolButtonEdit_setGroupName;
-   o.groupDefault    = FUiToolButtonEdit_groupDefault;
-   o.setGroupDefault = FUiToolButtonEdit_setGroupDefault;
-   o.innerCheck      = FUiToolButtonEdit_innerCheck;
-   o.check           = FUiToolButtonEdit_check;
-   o.dispose         = FUiToolButtonEdit_dispose;
+   o.text            = FUiToolButtonEdit_text;
+   o.setText         = FUiToolButtonEdit_setText;
    return o;
 }
 
@@ -109,33 +104,6 @@ function FUiToolButtonEdit_onLeave(p){
 }
 
 //==========================================================
-// <T>鼠标按下处理。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FUiToolButtonEdit_onMouseDown(p){
-   var o = this;
-   o.check(!o._statusChecked);
-   o.processClickListener(o, o._statusChecked);
-}
-
-//==========================================================
-// <T>鼠标按下处理。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FUiToolButtonEdit_onMouseUp(){
-   var o = this;
-   //o._hPanel.className = o.styleName('Hover');
-   //o.check(!o._statusChecked)
-   //if(o.action){
-      //eval(o.action);
-   //}
-}
-
-//==========================================================
 // <T>获得分组名称。</T>
 //
 // @method
@@ -148,115 +116,21 @@ function FUiToolButtonEdit_construct(){
 }
 
 //==========================================================
-// <T>获得分组名称。</T>
+// <T>获得文本内容。</T>
 //
 // @method
-// @return String 分组名称
+// @return String 文本内容
 //==========================================================
-function FUiToolButtonEdit_groupName(){
-   return this._groupName;
+function FUiToolButtonEdit_text(){
+   return this._hEdit.value;
 }
 
 //==========================================================
-// <T>设置分组名称。</T>
+// <T>设置文本内容。</T>
 //
 // @method
-// @param p:groupName:String 分组名称
+// @param text:String 文本内容
 //==========================================================
-function FUiToolButtonEdit_setGroupName(p){
-   this._groupName = p;
-}
-
-//==========================================================
-// <T>获得分组默认。</T>
-//
-// @method
-// @return String 分组默认
-//==========================================================
-function FUiToolButtonEdit_groupDefault(){
-   return this._groupDefault;
-}
-
-//==========================================================
-// <T>设置分组默认。</T>
-//
-// @method
-// @param p:groupDefault:String 分组默认
-//==========================================================
-function FUiToolButtonEdit_setGroupDefault(p){
-   this._groupDefault = p;
-}
-
-//==========================================================
-// <T>内部选中处理。</T>
-//
-// @method
-// @param p:check:Boolean 选中
-//==========================================================
-function FUiToolButtonEdit_innerCheck(p){
-   var o = this;
-   // 设置状态
-   if(o._statusChecked != p){
-      o._statusChecked = p;
-      if(p){
-         o._hPanel.className = o.styleName('Press');
-      }else{
-         o._hPanel.className = o.styleName('Normal');
-      }
-   }
-}
-
-//==========================================================
-// <T>选中处理。</T>
-//
-// @method
-// @param p:check:Boolean 选中
-//==========================================================
-function FUiToolButtonEdit_check(p){
-   var o = this;
-   // 禁止取消默认按键
-   if(!p){
-      if(o._groupDefault == o){
-         return;
-      }
-   }
-   // 设置状态
-   o.innerCheck(p);
-   // 修改组内其他空间行为
-   if(!o._parent){
-      return;
-   }
-   if(p){
-      // 其他按键改为非选中
-      if(!RString.isEmpty(o._groupName)){
-         var cs = o._parent.components();
-         for(var i = cs.count() - 1; i >= 0; i--){
-            var c = cs.value(i);
-            if(c != o){
-               if(RClass.isClass(c, FUiToolButtonEdit)){
-                  c.innerCheck(false);
-               }
-            }
-         }
-      }
-   }else{
-      // 选中默认按键
-      if(!RString.isEmpty(o._groupDefault)){
-         var cs = o._parent.components();
-         var c = cs.get(o._groupDefault);
-         c.innerCheck(true);
-      }
-   }
-}
-
-//==========================================================
-// <T>释放处理。</T>
-//
-// @method
-//==========================================================
-function FUiToolButtonEdit_dispose(){
-   var o = this;
-   o._statusChecked = null;
-   o._groupName = null;
-   o.__base.FUiToolButton.dispose.call(o);
+function FUiToolButtonEdit_setText(text){
+   this._hEdit.value = text;
 }

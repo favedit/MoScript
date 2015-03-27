@@ -5,12 +5,12 @@
 // @author maocy
 // @history 150202
 //==========================================================
-function FDsScenePropertyFrame(o){
+function FDsSceneSpacePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
    o._visible        = false;
-   o._frameName      = 'design3d.scene.property.SceneFrame';
+   o._frameName      = 'design3d.scene.property.SpaceFrame';
    // @attribute
    o._workspace      = null;
    // @attribute
@@ -21,14 +21,14 @@ function FDsScenePropertyFrame(o){
    o._controlLabel   = null;
    //..........................................................
    // @event
-   o.onBuilded       = FDsScenePropertyFrame_onBuilded;
+   o.onBuilded       = FDsSceneSpacePropertyFrame_onBuilded;
    //..........................................................
    // @method
-   o.construct       = FDsScenePropertyFrame_construct;
+   o.construct       = FDsSceneSpacePropertyFrame_construct;
    // @method
-   o.loadObject      = FDsScenePropertyFrame_loadObject;
+   o.loadObject      = FDsSceneSpacePropertyFrame_loadObject;
    // @method
-   o.dispose         = FDsScenePropertyFrame_dispose;
+   o.dispose         = FDsSceneSpacePropertyFrame_dispose;
    return o;
 }
 
@@ -38,7 +38,7 @@ function FDsScenePropertyFrame(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsScenePropertyFrame_onBuilded(p){
+function FDsSceneSpacePropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 设置关联
@@ -52,7 +52,7 @@ function FDsScenePropertyFrame_onBuilded(p){
 //
 // @method
 //==========================================================
-function FDsScenePropertyFrame_construct(){
+function FDsSceneSpacePropertyFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -65,7 +65,7 @@ function FDsScenePropertyFrame_construct(){
 // @param t:template:FTemplate3d 模板
 // @param m:material:FE3sMaterial 材质
 //==========================================================
-function FDsScenePropertyFrame_loadObject(t){
+function FDsSceneSpacePropertyFrame_loadObject(t){
    var o = this;
    var r = t._resource;
    // 设置属性
@@ -81,7 +81,7 @@ function FDsScenePropertyFrame_loadObject(t){
 //
 // @method
 //==========================================================
-function FDsScenePropertyFrame_dispose(){
+function FDsSceneSpacePropertyFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

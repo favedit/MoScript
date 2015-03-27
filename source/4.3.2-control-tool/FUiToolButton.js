@@ -274,12 +274,12 @@ function FUiToolButton_setEnable(p){
    o._disabled = !e.enable;
    // 设置图标
    if(e.enable && o._icon){
-      var is = RRes._iconPath(o._icon);
+      var is = RResource.iconPath(o._icon);
       if(o._hIcon.src != is){
          o._hIcon.src = is;
       }
    }else if(!e.enable && o._iconDisable){
-      var is = RRes._iconPath(o._iconDisable);
+      var is = RResource.iconPath(o._iconDisable);
       if(o._hIcon.src != is){
          o._hIcon.src = is;
       }
@@ -310,9 +310,11 @@ function FUiToolButton_setEnable(p){
 //==========================================================
 function FUiToolButton_click(){
    var o = this;
-   RLogger.debug(o, 'Mouse button click. (label={1})' + o._label);
+   RLogger.debug(o, 'Tool button Mouse click. (label={1})' + o._label);
    // 执行监听信息
-   o.processClickListener(o);
+   var event = new SClickEvent(o);
+   o.processClickListener(event);
+   event.dispose();
    // 执行代码命令
    if(o._action){
       eval(o._action);

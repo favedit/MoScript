@@ -154,7 +154,7 @@ function FDsSceneWorkspace_onCatalogSelected(p, pc){
    }
    // 显示选中属性面板
    if(RClass.isClass(p, FE3dScene)){
-      var f = o.findPropertyFrame(EDsFrame.ScenePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.SceneSpacePropertyFrame);
       f.show();
       f.loadObject(s, p);
    }else if(RClass.isClass(p, FG3dTechnique)){
