@@ -196,7 +196,7 @@ function FUiTabBar_appendChild(p){
       var hc = p._hButtonPanel = RBuilder.appendTableCell(o._hLine, null, ci + 1);
       p.attachEvent('onButtonEnter', hc);
       p.attachEvent('onButtonLeave', hc);
-      p.attachEvent('onHeadMouseDown', hc);
+      p.attachEvent('onButtonClick', hc);
       hc.width = 1;
       var hb = p._hButton = RBuilder.append(hc, 'DIV', p.styleName('Button'));
       // 建立按键图标

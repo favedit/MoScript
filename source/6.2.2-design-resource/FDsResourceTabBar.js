@@ -8,22 +8,30 @@ function FDsResourceTabBar(o){
    o = RClass.inherits(this, o, FUiTabBar);
    //..........................................................
    // @property
-   o._frameName     = 'design3d.resource.TabBar';
+   o._frameName             = 'design3d.resource.TabBar';
    //..........................................................
    // @attribute
-   o._refreshButton = null;
-   o._saveButton    = null;
-   o._runButton     = null;
+   o._resourceTypeCd        = 'mesh';
+   // @attribute
+   o._controlPictureButton  = null;
+   o._controlSoundButton    = null;
+   o._controlVidioButton    = null;
+   o._controlTextureButton  = null;
+   o._controlMaterialButton = null;
+   o._controlMeshButton     = null;
+   o._controlModelButton    = null;
+   o._controlTemplateButton = null;
+   o._controlSceneButton    = null;
    //..........................................................
    // @event
-   o.onBuilded      = FDsResourceTabBar_onBuilded;
+   o.onBuilded              = FDsResourceTabBar_onBuilded;
    // @event
-   o.onSaveClick    = FDsResourceTabBar_onSaveClick;
+   o.onButtonClick          = FDsResourceTabBar_onButtonClick;
    //..........................................................
    // @method
-   o.construct      = FDsResourceTabBar_construct;
+   o.construct              = FDsResourceTabBar_construct;
    // @method
-   o.dispose        = FDsResourceTabBar_dispose;
+   o.dispose                = FDsResourceTabBar_dispose;
    return o;
 }
 
@@ -38,24 +46,29 @@ function FDsResourceTabBar_onBuilded(p){
    o.__base.FUiTabBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   //o._saveButton.addClickListener(o, o.onSaveClick);
+   o._controlPictureButton.addClickListener(o, o.onButtonClick);
+   o._controlSoundButton.addClickListener(o, o.onButtonClick);
+   o._controlVidioButton.addClickListener(o, o.onButtonClick);
+   o._controlTextureButton.addClickListener(o, o.onButtonClick);
+   o._controlMaterialButton.addClickListener(o, o.onButtonClick);
+   o._controlMeshButton.addClickListener(o, o.onButtonClick);
+   o._controlModelButton.addClickListener(o, o.onButtonClick);
+   o._controlTemplateButton.addClickListener(o, o.onButtonClick);
+   o._controlSceneButton.addClickListener(o, o.onButtonClick);
 }
 
 //==========================================================
-// <T>保存按键处理。</T>
+// <T>按键点击处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsResourceTabBar_onSaveClick(p){
+function FDsResourceTabBar_onButtonClick(event){
    var o = this;
-   var space = o._workspace._activeSpace;
-   var resource = space.resource();
-   // 存储配置
-   var xconfig = new TXmlNode();
-   resource.saveConfig(xconfig);
-   // 更新处理
-   RConsole.find(FE3sMeshConsole).update(xconfig);
+   var sender = event.sender;
+   var name = sender.name();
+   o._resourceTypeCd = name;
+   o._workspace.switchContent(name);
 }
 
 //==========================================================

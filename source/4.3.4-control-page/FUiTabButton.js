@@ -24,8 +24,7 @@
 // @history 150202
 //==========================================================
 function FUiTabButton(o){
-   //o = RClass.inherits(this, o, FUiPanel, MDisplayAble);
-   o = RClass.inherits(this, o, FUiPanel);
+   o = RClass.inherits(this, o, FUiControl, MListenerClick);
    //..........................................................
    // @property
    o._icon              = RClass.register(o, new APtyString('_icon'));
@@ -78,7 +77,7 @@ function FUiTabButton(o){
    // @event
    o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FUiTabButton_onButtonEnter);
    o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FUiTabButton_onButtonLeave);
-   o.onHeadMouseDown    = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FUiTabButton_onHeadMouseDown);
+   o.onButtonClick      = RClass.register(o, new AEventClick('onButtonClick'), FUiTabButton_onButtonClick);
    //..........................................................
    // @method
    o.construct          = FUiTabButton_construct;
@@ -141,9 +140,13 @@ function FUiTabButton_onButtonLeave(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FUiTabButton_onHeadMouseDown(p){
+function FUiTabButton_onButtonClick(p){
    var o = this;
    o._parent.select(o);
+   // 发送事件
+   var e = new SClickEvent(o);
+   o.processClickListener(e);
+   e.dispose();
 }
 
 //==========================================================
@@ -154,7 +157,7 @@ function FUiTabButton_onHeadMouseDown(p){
 function FUiTabButton_construct(){
    var o = this;
    // 父处理
-   o.__base.FUiPanel.construct.call(o);
+   o.__base.FUiControl.construct.call(o);
    // 设置属性
    o.lsnsSelect = new TListeners();
 }
@@ -232,7 +235,7 @@ function FUiTabButton_dispose(){
    o._hBottomR = RMemory.free(o._hBottomR);
    o._hRight = RMemory.free(o._hRight);
    // 父处理
-   o.__base.FUiPanel.dispose.call(o);
+   o.__base.FUiControl.dispose.call(o);
 }
 
 //==========================================================

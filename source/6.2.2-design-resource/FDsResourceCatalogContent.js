@@ -4,7 +4,7 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FDsResourceCatalog(o){
+function FDsResourceCatalogContent(o){
    o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
    //..........................................................
    // @const
@@ -17,29 +17,29 @@ function FDsResourceCatalog(o){
    o._materials            = null;
    //..........................................................
    // @event
-   o.onBuild               = FDsResourceCatalog_onBuild;
+   o.onBuild               = FDsResourceCatalogContent_onBuild;
    // @event
-   o.onLoadDisplay         = FDsResourceCatalog_onLoadDisplay;
-   o.onNodeClick           = FDsResourceCatalog_onNodeClick;
-   o.onNodeViewClick       = FDsResourceCatalog_onNodeViewClick;
-   o.onNodeViewDoubleClick = FDsResourceCatalog_onNodeViewDoubleClick;
+   o.onLoadDisplay         = FDsResourceCatalogContent_onLoadDisplay;
+   o.onNodeClick           = FDsResourceCatalogContent_onNodeClick;
+   o.onNodeViewClick       = FDsResourceCatalogContent_onNodeViewClick;
+   o.onNodeViewDoubleClick = FDsResourceCatalogContent_onNodeViewDoubleClick;
    //..........................................................
    // @listeners
    o.lsnsSelect            = null;
    //..........................................................
    // @method
-   o.construct             = FDsResourceCatalog_construct;
+   o.construct             = FDsResourceCatalogContent_construct;
    // @method
-   o.buildTechnique        = FDsResourceCatalog_buildTechnique;
-   o.buildRegion           = FDsResourceCatalog_buildRegion;
-   o.buildRenderable       = FDsResourceCatalog_buildRenderable;
-   o.buildDisplay          = FDsResourceCatalog_buildDisplay;
-   o.buildSpace            = FDsResourceCatalog_buildSpace;
+   o.buildTechnique        = FDsResourceCatalogContent_buildTechnique;
+   o.buildRegion           = FDsResourceCatalogContent_buildRegion;
+   o.buildRenderable       = FDsResourceCatalogContent_buildRenderable;
+   o.buildDisplay          = FDsResourceCatalogContent_buildDisplay;
+   o.buildSpace            = FDsResourceCatalogContent_buildSpace;
    // @method
-   o.selectObject          = FDsResourceCatalog_selectObject;
-   o.showObject            = FDsResourceCatalog_showObject;
+   o.selectObject          = FDsResourceCatalogContent_selectObject;
+   o.showObject            = FDsResourceCatalogContent_showObject;
    // @method
-   o.dispose               = FDsResourceCatalog_dispose;
+   o.dispose               = FDsResourceCatalogContent_dispose;
    return o;
 }
 
@@ -49,7 +49,7 @@ function FDsResourceCatalog(o){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsResourceCatalog_onBuild(p){
+function FDsResourceCatalogContent_onBuild(p){
    var o = this;
    // 父处理
    o.__base.FUiDataTreeView.onBuild.call(o, p);
@@ -65,7 +65,7 @@ function FDsResourceCatalog_onBuild(p){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsResourceCatalog_onLoadDisplay(p){
+function FDsResourceCatalogContent_onLoadDisplay(p){
    var o = this;
    var n = p._linkNode;
    // 创建渲染集合
@@ -78,7 +78,7 @@ function FDsResourceCatalog_onLoadDisplay(p){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsResourceCatalog_onNodeClick(t, n){
+function FDsResourceCatalogContent_onNodeClick(t, n){
    var o = this;
    var s = n.dataPropertyGet('linker');
    o.selectObject(s);
@@ -90,7 +90,7 @@ function FDsResourceCatalog_onNodeClick(t, n){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsResourceCatalog_onNodeViewClick(p){
+function FDsResourceCatalogContent_onNodeViewClick(p){
    var o = this;
    var c = p.treeNodeCell;
    var s = p.treeNode.dataPropertyGet('linker');
@@ -153,7 +153,7 @@ function FDsResourceCatalog_onNodeViewClick(p){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsResourceCatalog_onNodeViewDoubleClick(p){
+function FDsResourceCatalogContent_onNodeViewDoubleClick(p){
    var o = this;
    var n = p.treeNode;
    var c = p.treeNodeCell;
@@ -196,7 +196,7 @@ function FDsResourceCatalog_onNodeViewDoubleClick(p){
 //
 // @method
 //==========================================================
-function FDsResourceCatalog_construct(){
+function FDsResourceCatalogContent_construct(){
    var o = this;
    o.__base.FUiDataTreeView.construct.call(o);
    // 设置属性
@@ -211,7 +211,7 @@ function FDsResourceCatalog_construct(){
 // @param n:node:FTreeNode 父节点
 // @param p:technique:FG3dTechnique 渲染技术
 //==========================================================
-function FDsResourceCatalog_buildTechnique(n, p){
+function FDsResourceCatalogContent_buildTechnique(n, p){
    var o = this;
    // 创建技术节点
    var nt = o.createNode();
@@ -228,7 +228,7 @@ function FDsResourceCatalog_buildTechnique(n, p){
 // @param n:node:FTreeNode 父节点
 // @param p:theme:FE3sTemplateTheme 模板主题
 //==========================================================
-function FDsResourceCatalog_buildRegion(n, p){
+function FDsResourceCatalogContent_buildRegion(n, p){
    var o = this;
    // 新建区域节点
    var nr = o.createNode();
@@ -257,7 +257,7 @@ function FDsResourceCatalog_buildRegion(n, p){
 // @param n:node:FTreeNode 父节点
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FDsResourceCatalog_buildRenderable(n, p){
+function FDsResourceCatalogContent_buildRenderable(n, p){
    var o = this;
    // 创建材质节点
    var m = p._renderable._material;
@@ -284,7 +284,7 @@ function FDsResourceCatalog_buildRenderable(n, p){
 // @param n:node:FTreeNode 父节点
 // @param p:display:FDisplayContainer 显示容器
 //==========================================================
-function FDsResourceCatalog_buildDisplay(n, p){
+function FDsResourceCatalogContent_buildDisplay(n, p){
    var o = this;
    // 创建显示节点
    var node = o.createNode();
@@ -302,7 +302,7 @@ function FDsResourceCatalog_buildDisplay(n, p){
 // @method
 // @param space:FE3dSpace 渲染空间
 //==========================================================
-function FDsResourceCatalog_buildSpace(space){
+function FDsResourceCatalogContent_buildSpace(space){
    var o = this;
    var resource = space.resource();
    o._activeSpace = space;
@@ -329,7 +329,7 @@ function FDsResourceCatalog_buildSpace(space){
 // @method
 // @param p:value:Object 对象
 //==========================================================
-function FDsResourceCatalog_selectObject(p){
+function FDsResourceCatalogContent_selectObject(p){
    var o = this;
    if(p != null){
       o.processSelectedListener(p, true);
@@ -342,7 +342,7 @@ function FDsResourceCatalog_selectObject(p){
 // @method
 // @param p:value:Object 对象
 //==========================================================
-function FDsResourceCatalog_showObject(p){
+function FDsResourceCatalogContent_showObject(p){
    var o = this;
    if(RClass.isClass(p, FDsSceneRenderable)){
       var s = o._renderables;
@@ -362,7 +362,7 @@ function FDsResourceCatalog_showObject(p){
 //
 // @method
 //==========================================================
-function FDsResourceCatalog_dispose(){
+function FDsResourceCatalogContent_dispose(){
    var o = this;
    o._displays = RObject.dispose(o._displays);
    o._renderables = RObject.dispose(o._renderables);

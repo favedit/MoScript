@@ -56,6 +56,7 @@ function FDsMeshCanvas(o){
    o.selectRenderable     = FDsMeshCanvas_selectRenderable;
    o.switchRotation       = FDsMeshCanvas_switchRotation;
    o.reloadRegion         = FDsMeshCanvas_reloadRegion;
+   o.loadMeshByGuid       = FDsMeshCanvas_loadMeshByGuid;
    o.loadMeshByCode       = FDsMeshCanvas_loadMeshByCode;
    // @method
    o.dispose              = FDsMeshCanvas_dispose;
@@ -657,6 +658,26 @@ function FDsMeshCanvas_reloadRegion(region){
 //
 // @method
 //==========================================================
+function FDsMeshCanvas_loadMeshByGuid(p){
+   var o = this;
+   var rmc = RConsole.find(FE3dMeshConsole);
+   if(o._activeSpace != null){
+      rmc.free(o._activeSpace);
+   }
+   // 收集一个显示模板
+   var space = o._activeSpace = rmc.allocByGuid(o, p);
+   space.addLoadListener(o, o.onMeshLoad);
+   // 设置坐标系
+   space._layer.pushRenderable(o._dimensional);
+   // 启动舞台
+   RStage.register('mesh3d', space);
+}
+
+//==========================================================
+// <T>加载模板处理。</T>
+//
+// @method
+//==========================================================
 function FDsMeshCanvas_loadMeshByCode(p){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
@@ -670,11 +691,6 @@ function FDsMeshCanvas_loadMeshByCode(p){
    space._layer.pushRenderable(o._dimensional);
    // 启动舞台
    RStage.register('mesh3d', space);
-   //m.matrix().setTranslate(0, 1, 0);
-   //m.matrix().setRotation(0, Math.PI, Math.PI);
-   //m.matrix().setScaleAll(0.003);
-   //m.matrix().updateForce();
-   //o._layer.pushDisplay(m);
 }
 
 //==========================================================

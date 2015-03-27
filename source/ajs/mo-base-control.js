@@ -13631,7 +13631,10 @@ function FUiToolButtonCheck_onLeave(p){
 function FUiToolButtonCheck_onMouseDown(p){
    var o = this;
    o.check(!o._statusChecked);
-   o.processClickListener(o, o._statusChecked);
+   var event = new SClickEvent(o);
+   event.checked = o._statusChecked;
+   o.processClickListener(event, o._statusChecked);
+   event.dispose();
 }
 function FUiToolButtonCheck_onMouseUp(){
    var o = this;
@@ -14313,7 +14316,7 @@ function FUiTabBar_appendChild(p){
       var hc = p._hButtonPanel = RBuilder.appendTableCell(o._hLine, null, ci + 1);
       p.attachEvent('onButtonEnter', hc);
       p.attachEvent('onButtonLeave', hc);
-      p.attachEvent('onHeadMouseDown', hc);
+      p.attachEvent('onButtonClick', hc);
       hc.width = 1;
       var hb = p._hButton = RBuilder.append(hc, 'DIV', p.styleName('Button'));
       if(p.icon){
@@ -14383,7 +14386,7 @@ function FUiTabBar_dispose(){
    o.__base.FUiContainer.dispose.call(o);
 }
 function FUiTabButton(o){
-   o = RClass.inherits(this, o, FUiPanel);
+   o = RClass.inherits(this, o, FUiControl, MListenerClick);
    o._icon              = RClass.register(o, new APtyString('_icon'));
    o._formName          = RClass.register(o, new APtyString('_formName'));
    o._formLink          = RClass.register(o, new APtyString('_formLink'));
@@ -14423,7 +14426,7 @@ function FUiTabButton(o){
    o.onBuildPanel       = FUiTabButton_onBuildPanel;
    o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FUiTabButton_onButtonEnter);
    o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FUiTabButton_onButtonLeave);
-   o.onHeadMouseDown    = RClass.register(o, new AEventMouseDown('onHeadMouseDown'), FUiTabButton_onHeadMouseDown);
+   o.onButtonClick      = RClass.register(o, new AEventClick('onButtonClick'), FUiTabButton_onButtonClick);
    o.construct          = FUiTabButton_construct;
    o.innerSelect        = FUiTabButton_innerSelect;
    o.select             = FUiTabButton_select;
@@ -14453,13 +14456,16 @@ function FUiTabButton_onButtonLeave(p){
       o._hButton.className = o.styleName('Button');
    }
 }
-function FUiTabButton_onHeadMouseDown(p){
+function FUiTabButton_onButtonClick(p){
    var o = this;
    o._parent.select(o);
+   var e = new SClickEvent(o);
+   o.processClickListener(e);
+   e.dispose();
 }
 function FUiTabButton_construct(){
    var o = this;
-   o.__base.FUiPanel.construct.call(o);
+   o.__base.FUiControl.construct.call(o);
    o.lsnsSelect = new TListeners();
 }
 function FUiTabButton_innerSelect(p){
@@ -14505,7 +14511,7 @@ function FUiTabButton_dispose(){
    o._hBottom = RMemory.free(o._hBottom);
    o._hBottomR = RMemory.free(o._hBottomR);
    o._hRight = RMemory.free(o._hRight);
-   o.__base.FUiPanel.dispose.call(o);
+   o.__base.FUiControl.dispose.call(o);
 }
 function FUiTabButton_innerDump(s, l){
    var o = this;

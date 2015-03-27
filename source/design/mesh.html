@@ -33,18 +33,24 @@
 
 <SCRIPT>
 function _load(){
+   var url = window.location.toString();
    RRuntime.setProcessCd(EProcess.Debug);
    RApplication.initialize();
    RBrowser.setContentPath('..');
    // 获得代码
-   var u = window.location.toString();
-   var i = u.indexOf('code=');
-   var c = null;
-   if(i != -1){
-      c = u.substring(i + 5);
+   var find = url.indexOf('code=');
+   var code = null;
+   if(find != -1){
+      code = url.substring(find + 5);
    }
-   if(RString.isEmpty(c)){
-      c = 'person-02';
+   if(RString.isEmpty(code)){
+      code = 'person-02';
+   }
+   // 获得唯一编号
+   var find = url.indexOf('guid=');
+   var guid = null;
+   if(find != -1){
+      guid = url.substring(find + 5);
    }
    // 加载工作区
    var w = RApplication.findWorkspace(FDsMeshWorkspace);
@@ -52,7 +58,11 @@ function _load(){
    w.setPanel(document.body);
    w.psResize();
    //w.psMode();
-   w.loadMeshByCode(c);
+   if(!RString.isEmpty(guid)){
+      w.loadMeshByGuid(guid);
+   }else{
+      w.loadMeshByCode(code);
+   }
    RConsole.find(FUiWorkspaceConsole).active(w);
 }
 </SCRIPT>

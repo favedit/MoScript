@@ -44,6 +44,7 @@ function FDsMeshWorkspace(o){
    // @method
    o.findPropertyFrame     = FDsMeshWorkspace_findPropertyFrame;
    // @method
+   o.loadMeshByGuid        = FDsMeshWorkspace_loadMeshByGuid;
    o.loadMeshByCode        = FDsMeshWorkspace_loadMeshByCode;
    // @method
    o.dispose               = FDsMeshWorkspace_dispose;
@@ -211,6 +212,17 @@ function FDsMeshWorkspace_findPropertyFrame(p){
       o._propertyFrames.set(p, f);
    }
    return f;
+}
+
+//==========================================================
+// <T>加载模板处理。</T>
+//
+// @method
+//==========================================================
+function FDsMeshWorkspace_loadMeshByGuid(p){
+   var o = this;
+   o._meshGuid = p;
+   o._canvas.loadMeshByGuid(p);
 }
 
 //==========================================================

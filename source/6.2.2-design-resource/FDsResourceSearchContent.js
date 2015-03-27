@@ -64,8 +64,10 @@ function FDsResourceSearchContent_onServiceLoad(p){
       if(xnode.isName('Item')){
          var item = o.createItem(FDsResourceSearchItem);
          item.propertyLoad(xnode);
+         item._typeCd = xnode.get('type');
          item._guid = xnode.get('guid');
-         item.setLabel(xnode.get('code'));
+         item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+         item.refreshStyle();
          o.push(item);
       }
    }
@@ -94,6 +96,7 @@ function FDsResourceSearchContent_clickItem(p){
    var o = this;
    // 选中项目
    var frame = o._workspace._previewContent;
+   frame._activeItem = p;
    frame.loadMeshByGuid(p._guid);
 }
 

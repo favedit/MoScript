@@ -15,6 +15,7 @@ function FDsResourceSearchToolBar(o){
    o._pageCount       = 0;
    o._page            = 0;
    o._serach          = null;
+   o._resourceTypeCd  = null;
    // @attribute
    o._dropButton      = null;
    o._selectButton    = null;
@@ -142,9 +143,11 @@ function FDsResourceSearchToolBar_doNavigator(page){
    var o = this;
    page = RInteger.toRange(page, 0, o._pageCount);
    var search = o._controlSearchEdit.text();
-   if((o._serach != search) || (o._page != page)){
-      o._workspace._searchContent.serviceSearch('mesh', search, o._pageSize, page)
+   var typeCd = o._workspace._resourceTypeCd;
+   if((o._resourceTypeCd != typeCd) || (o._serach != search) || (o._page != page)){
+      o._workspace._searchContent.serviceSearch(typeCd, search, o._pageSize, page)
    }
+   o._resourceTypeCd = typeCd;
    o._serach = search;
 }
 

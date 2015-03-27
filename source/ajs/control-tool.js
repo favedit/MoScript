@@ -266,7 +266,10 @@ function FUiToolButtonCheck_onLeave(p){
 function FUiToolButtonCheck_onMouseDown(p){
    var o = this;
    o.check(!o._statusChecked);
-   o.processClickListener(o, o._statusChecked);
+   var event = new SClickEvent(o);
+   event.checked = o._statusChecked;
+   o.processClickListener(event, o._statusChecked);
+   event.dispose();
 }
 function FUiToolButtonCheck_onMouseUp(){
    var o = this;

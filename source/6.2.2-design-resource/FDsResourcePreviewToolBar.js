@@ -9,32 +9,26 @@ function FDsResourcePreviewToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'design3d.resource.PreviewToolBar';
+   o._frameName             = 'design3d.resource.PreviewToolBar';
    //..........................................................
    // @attribute
-   o._canvasModeCd    = EDsCanvasMode.Drop;
-   // @attribute
-   o._dropButton      = null;
-   o._selectButton    = null;
-   o._translateButton = null;
-   o._rotationButton  = null;
-   o._scaleButton     = null;
-   o._lookFrontButton = null;
-   o._lookUpButton    = null;
-   o._lookLeftButton  = null;
-   o._playButton      = null;
-   o._viewButton      = null;
+   o._controlInsertButton   = null;
+   o._controlUpdateButton   = null;
+   o._controlDeleteButton   = null;
+   o._controlRotationButton = null;
    //..........................................................
    // @event
-   o.onBuilded        = FDsResourcePreviewToolBar_onBuilded;
+   o.onBuilded              = FDsResourcePreviewToolBar_onBuilded;
    // @event
-   o.onModeClick      = FDsResourcePreviewToolBar_onModeClick;
-   o.onRotationClick  = FDsResourcePreviewToolBar_onRotationClick;
+   o.onInsertClick          = FDsResourcePreviewToolBar_onInsertClick;
+   o.onUpdateClick          = FDsResourcePreviewToolBar_onUpdateClick;
+   o.onDeleteClick          = FDsResourcePreviewToolBar_onDeleteClick;
+   o.onRotationClick        = FDsResourcePreviewToolBar_onRotationClick;
    //..........................................................
    // @method
-   o.construct        = FDsResourcePreviewToolBar_construct;
+   o.construct              = FDsResourcePreviewToolBar_construct;
    // @method
-   o.dispose          = FDsResourcePreviewToolBar_dispose;
+   o.dispose                = FDsResourcePreviewToolBar_dispose;
    return o;
 }
 
@@ -48,39 +42,55 @@ function FDsResourcePreviewToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
-   // 建立拖拽按键
-   //var b = o._dropButton = o.searchControl('dropButton');
-   //b._canvasModeCd = EDsCanvasMode.Drop;
-   //b.addClickListener(o, o.onModeClick);
-   //b.check(true);
-   //..........................................................
-   // 建立按键
-   //var b = o._viewButton = o.searchControl('viewButton');
-   //b.addClickListener(o, o.onRotationClick);
+   // 按键事件关联
+   o._controlInsertButton.addClickListener(o, o.onInsertClick);
+   o._controlUpdateButton.addClickListener(o, o.onUpdateClick);
+   o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
+   o._controlRotationButton.addClickListener(o, o.onRotationClick);
 }
 
 //==========================================================
-// <T>模式选择。</T>
+// <T>新建按键点击处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SClickEvent 点击事件
 //==========================================================
-function FDsResourcePreviewToolBar_onModeClick(p){
-   var o = this;
-   o._canvasModeCd = p._canvasModeCd;
-   o._workspace._canvas.switchMode(p._canvasModeCd);
+function FDsResourcePreviewToolBar_onInsertClick(event){
 }
 
 //==========================================================
-// <T>刷新按键处理。</T>
+// <T>更新按键点击处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SClickEvent 点击事件
 //==========================================================
-function FDsResourcePreviewToolBar_onRotationClick(p, v){
+function FDsResourcePreviewToolBar_onUpdateClick(event){
    var o = this;
-   var c = o._workspace._canvas;
-   c.switchRotation(v);
+   var frame = o._workspace._previewContent;
+   var item = frame._activeItem;
+   var url = '/script/design/mesh.html?guid=' + item._guid;
+   window.open(url, '_blank', '');
+}
+
+//==========================================================
+// <T>删除按键点击处理。</T>
+//
+// @method
+// @param event:SClickEvent 点击事件
+//==========================================================
+function FDsResourcePreviewToolBar_onDeleteClick(event){
+}
+
+//==========================================================
+// <T>旋转按键点击处理。</T>
+//
+// @method
+// @param event:SClickEvent 点击事件
+//==========================================================
+function FDsResourcePreviewToolBar_onRotationClick(event){
+   var o = this;
+   var previewContent = o._workspace._previewContent;
+   previewContent.switchRotation(event.checked);
 }
 
 //==========================================================

@@ -23,19 +23,20 @@ function FDsResourceWorkspace(o){
    o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    //..........................................................
    // @attribute
-   o._activeSpace          = null;
-   o._activeMesh           = null;
-   // @attribute
-   o._framesetMain         = null;
-   o._framesetBody         = null;
+   o._resourceTypeCd       = 'picture';
    // @attribute
    o._frameToolBar         = null;
-   o._frameBody            = null;
-   o._framePreview        = null;
+   o._frameStatusBar       = null;
    // @attribute
    o._frameCatalog         = null;
-   o._frameSearch       = null;
-   o._frameStatusBar       = null;
+   o._frameCatalogToolbar  = null;
+   o._frameCatalogContent  = null;
+   o._frameSearch          = null;
+   o._frameSearchToolbar   = null;
+   o._frameSearchContent   = null;
+   o._framePreview         = null;
+   o._framePreviewToolbar  = null;
+   o._framePreviewContent  = null;
    // @attribute
    o._propertyFrames       = null;
    //..........................................................
@@ -49,6 +50,7 @@ function FDsResourceWorkspace(o){
    // @method
    o.findPropertyFrame     = FDsResourceWorkspace_findPropertyFrame;
    // @method
+   o.switchContent         = FDsResourceWorkspace_switchContent;
    o.load                  = FDsResourceWorkspace_load;
    // @method
    o.dispose               = FDsResourceWorkspace_dispose;
@@ -85,6 +87,7 @@ function FDsResourceWorkspace_onBuilded(p){
    f._hPanel.className = o.styleName('Preview_Ground');
    var f = o._framePreviewToolbar = o.searchControl('previewToolbarFrame');
    f._hPanel.className = o.styleName('Preview_Toolbar');
+   var f = o._framePreviewContent = o.searchControl('previewContentFrame');
    // 设置状态区
    var f = o._frameStatusBar = o.searchControl('statusFrame');
    f._hPanel.className = o.styleName('Statusbar_Ground');
@@ -124,11 +127,11 @@ function FDsResourceWorkspace_onBuilded(p){
    control.buildDefine(p);
    o._frameCatalogToolbar.push(control);
    // 设置目录栏
-   //var c = o._catalog = RClass.create(FDsResourceCatalog);
-   //c._workspace = o;
-   //c.build(p);
-   //c.addSelectedListener(o, o.onCatalogSelected);
-   //o._frameCatalogContent.push(c);
+   var control = o._catalogContent = RClass.create(FDsResourceCatalogContent);
+   control._workspace = o;
+   control.build(p);
+   //control.addSelectedListener(o, o.onCatalogSelected);
+   o._frameCatalogContent.push(control);
    //..........................................................
    // 设置搜索栏
    var control = o._searchToolbar = RClass.create(FDsResourceSearchToolBar);
@@ -142,23 +145,19 @@ function FDsResourceWorkspace_onBuilded(p){
    o._frameSearchContent.push(control);
    //..........................................................
    // 设置画板工具栏
-   var f = o._previewToolbarFrame = o.searchControl('previewToolbarFrame');
-   var c = o._previewToolbar = RClass.create(FDsResourcePreviewToolBar);
-   c._workspace = o;
-   c.buildDefine(p);
-   o._previewToolbarFrame.push(c);
+   var control = o._previewToolbar = RClass.create(FDsResourcePreviewToolBar);
+   control._workspace = o;
+   control.buildDefine(p);
+   o._framePreviewToolbar.push(control);
    // 设置画板
-   var f = o._previewContentFrame = o.searchControl('previewContentFrame');
-   var c = o._previewContent = RClass.create(FDsResourcePreviewContent);
-   c._workspace = o;
-   c._toolbar = o._previewToolbar;
-   c._hParent = f._hPanel;
-   //c._hParent.style.backgroundColor = '#FFFFFF';
-   c.build(p);
-   //c.addLoadListener(o, o.onMeshLoad);
-   o._previewContentFrame.push(c);
+   var control = o._previewContent = RClass.create(FDsResourcePreviewContent);
+   control._workspace = o;
+   control._toolbar = o._previewToolbar;
+   control._hParent = f._hPanel;
+   control.build(p);
+   o._framePreviewContent.push(control);
    //..........................................................
-   o._searchContent.serviceSearch('mesh', '', 40, 0);
+   o.switchContent(o._resourceTypeCd);
 }
 
 //==========================================================
@@ -252,12 +251,23 @@ function FDsResourceWorkspace_findPropertyFrame(p){
    var f = o._propertyFrames.get(p);
    if(!f){
       var fc = RConsole.find(FFrameConsole);
-      //f = fc.get(o, p, o._framePreview._hPanel);
       f = fc.get(o, p, o._framePreview._hContainer);
       f._workspace = o;
       o._propertyFrames.set(p, f);
    }
    return f;
+}
+
+//==========================================================
+// <T>选择内容。</T>
+//
+// @method
+// @param typeCd:String 内容类型
+//==========================================================
+function FDsResourceWorkspace_switchContent(typeCd){
+   var o = this;
+   o._resourceTypeCd = typeCd;
+   o._searchContent.serviceSearch(typeCd, '', 40, 0);
 }
 
 //==========================================================
