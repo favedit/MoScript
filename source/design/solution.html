@@ -11,19 +11,19 @@
 <SCRIPT language='javascript' src='../ajs/mo.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../6.2.3-design-resource/FDsResourceCatalogToolBar.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.2.3-design-resource/FDsResourceCatalog.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-solution/FDsSolutionCatalogToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-solution/FDsSolutionCatalog.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../6.2.3-design-resource/FDsResourceSearchToolBar.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.2.3-design-resource/FDsResourceSearchItem.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.2.3-design-resource/FDsResourceSearchContent.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-solution/FDsSolutionSearchToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-solution/FDsSolutionSearchItem.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-solution/FDsSolutionSearchContent.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../6.2.3-design-resource/FDsResourcePreviewToolBar.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.2.3-design-resource/FDsResourcePreviewContent.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-solution/FDsSolutionPreviewToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-solution/FDsSolutionPreviewContent.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../6.2.3-design-resource/FDsResourceMenuBar.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.2.3-design-resource/FDsResourceTabBar.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.2.3-design-resource/FDsResourceWorkspace.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-solution/FDsSolutionMenuBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-solution/FDsSolutionTabBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-solution/FDsSolutionWorkspace.js'></SCRIPT>
 
 <SCRIPT>
 function _load(){
@@ -31,7 +31,7 @@ function _load(){
    RApplication.initialize();
    RBrowser.setContentPath('..');
    // 加载工作区
-   var w = RApplication.findWorkspace(FDsResourceWorkspace);
+   var w = RApplication.findWorkspace(FDsSolutionWorkspace);
    w.buildDefine(id_workspace);
    w.setPanel(id_workspace);
    w.psResize();
@@ -47,7 +47,7 @@ function _load(){
          <TABLE width='100%' height='100%'>
             <TR height='20px' style='color:#FFFFFF'>
                <TD width='300'>Logo</TD>
-               <TD align='center'>项目名称</TD>
+               <TD align='center'>项目管理</TD>
                <TD width='300' align='right'>
                   用户空间
                   |

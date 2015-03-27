@@ -7,61 +7,55 @@
 <LINK rel="stylesheet" href='../acs/design.css' type="text/css" media="all"/>
 <LINK rel="stylesheet" href='../acs/lang_cn.css' type="text/css" media="all"/>
 
-<SCRIPT language='javascript' src='../ajs/mo-core.js'></SCRIPT>
-<SCRIPT language='javascript' src='../ajs/mo-graphic.js'></SCRIPT>
-<SCRIPT language='javascript' src='../ajs/mo-engine.js'></SCRIPT>
-<SCRIPT language='javascript' src='../ajs/mo-control.js'></SCRIPT>
-<SCRIPT language='javascript' src='../ajs/stage.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/lzma.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/mo.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../4.1.1-control/RControl.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-project/FDsProjectCatalogToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-project/FDsProjectCatalog.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../4.3.5-control-frame/FFrame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../4.3.5-control-frame/FFrameSpliter.js'></SCRIPT>
-<SCRIPT language='javascript' src='../4.3.5-control-frame/FFrameSet.js'></SCRIPT>
-<SCRIPT language='javascript' src='../4.3.5-control-frame/FWorkspace.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-project/FDsProjectSearchToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-project/FDsProjectSearchItem.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-project/FDsProjectSearchContent.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../4.3.3-control-tree/FTreeView.js'></SCRIPT>
-<SCRIPT language='javascript' src='../4.3.3-control-tree/FDataTreeView.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-project/FDsProjectPreviewToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-project/FDsProjectPreviewContent.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../4.3.1-control-menu/MMenuButton.js'></SCRIPT>
-<SCRIPT language='javascript' src='../4.3.1-control-menu/FMenuButton.js'></SCRIPT>
-<SCRIPT language='javascript' src='../4.3.1-control-menu/FMenuButtonSplit.js'></SCRIPT>
-<SCRIPT language='javascript' src='../4.3.1-control-menu/FMenuButtonMenu.js'></SCRIPT>
-<SCRIPT language='javascript' src='../4.3.1-control-menu/FMenuBar.js'></SCRIPT>
-
-<SCRIPT language='javascript' src='../4.3.2-control-tool/FToolButton.js'></SCRIPT>
-<SCRIPT language='javascript' src='../4.3.2-control-tool/FToolButtonCheck.js'></SCRIPT>
-<SCRIPT language='javascript' src='../4.3.2-control-tool/FToolButtonMenu.js'></SCRIPT>
-<SCRIPT language='javascript' src='../4.3.2-control-tool/FToolButtonSplit.js'></SCRIPT>
-<SCRIPT language='javascript' src='../4.3.2-control-tool/FToolBar.js'></SCRIPT>
-
-<SCRIPT language='javascript' src='../6.1.1-design/FDsApplication.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.1.1-design/FDsMainMenuBar.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.1.1-design/FDsMainToolBar.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.1.1-design/FDsMainCatalog.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.1.1-design/FDsMainCanvas.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.1.1-design/FDsMainWorkspace.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-project/FDsProjectMenuBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-project/FDsProjectTabBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.2.1-design-project/FDsProjectWorkspace.js'></SCRIPT>
 
 <SCRIPT>
 function _load(){
-   RRuntime.processCd = EProcess.Debug;
-   RBrowser.construct();
-   //RBrowser.setContentPath('..');
+   RRuntime.setProcessCd(EProcess.Debug);
+   RApplication.initialize();
    RBrowser.setContentPath('..');
-   RWindow.connect(window);
-
-   //var hCanvas = document.getElementById('_canvas');
-   //context = REngine3d.createContext(FWglContext, hCanvas);
-
-   var ws = RClass.create(FDsMainWorkspace);
-   ws.build(document.body);
-   ws.setPanel(document.body);
-   ws.psRefresh();
-
-   //RDump.dump(fs, _dump);
+   // 加载工作区
+   var w = RApplication.findWorkspace(FDsProjectWorkspace);
+   w.buildDefine(id_workspace);
+   w.setPanel(id_workspace);
+   w.psResize();
+   w.load();
+   RConsole.find(FUiWorkspaceConsole).active(w);
 }
 </SCRIPT>
 </HEAD>
-<BODY scroll='no' style='background-color:#444444;' onload='_load()'></BODY>
+<BODY scroll='no' style='background-color:#444444;overflow:hidden;' onload='_load()'>
+<TABLE width='100%' height='100%' border='0px'>
+   <TR height='20px'>
+      <TD>
+         <TABLE width='100%' height='100%'>
+            <TR height='20px' style='color:#FFFFFF'>
+               <TD width='300'>Logo</TD>
+               <TD align='center'>项目名称</TD>
+               <TD width='300' align='right'>用户空间 | 项目管理 | 资源管理 | 发布管理</TD>
+            </TR>
+         </TABLE>
+      </TD>
+   </TR>
+   <TR>
+      <TD id='id_workspace'></TD>
+   </TR>
+</TABLE>
+</BODY>
 </HTML>
