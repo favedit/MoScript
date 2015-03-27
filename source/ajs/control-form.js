@@ -4178,17 +4178,21 @@ function FUiListView_onBuildPanel(p){
 }
 function FUiListView_construct(){
    var o = this;
-   var c = RClass.create(FUiListItem);
-   c.build(o._hPanel);
-   c.setLabel(pl);
-   return c;
+   o.__base.FUiContainer.construct.call(o);
+   o._itemPool = RClass.create(FObjectPool);
 }
-function FUiListView_createItem(pi, pl){
+function FUiListView_createItem(clazz, pi, pl){
    var o = this;
-   var c = RClass.create(FUiListItem);
-   c.build(o._hPanel);
-   c.setLabel(pl);
-   return c;
+   var item = o._itemPool.alloc();
+   if(!item){
+      if(clazz){
+         item = RClass.create(clazz);
+      }else{
+         item = RClass.create(FUiListViewItem);
+      }
+      item.build(o._hPanel);
+   }
+   return item;
 }
 function FUiListView_appendChild(p){
    var o = this;
@@ -4217,8 +4221,10 @@ function FUiListView_clear(){
          var m = cs.value(i);
          if(RClass.isClass(m, FUiListViewItem)){
             o._hPanel.removeChild(m._hPanel);
+            o._itemPool.free(m)
+         }else{
+            m.dispose();
          }
-         m.dispose();
       }
       cs.clear();
       o._controls.clear();

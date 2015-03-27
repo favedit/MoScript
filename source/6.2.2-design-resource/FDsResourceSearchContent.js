@@ -62,14 +62,14 @@ function FDsResourceSearchContent_onServiceLoad(p){
    for(var i = 0; i < count; i++){
       var xnode = xnodes.getAt(i);
       if(xnode.isName('Item')){
-         var item = RClass.create(FDsResourceSearchItem);
+         var item = o.createItem(FDsResourceSearchItem);
          item.propertyLoad(xnode);
          item._guid = xnode.get('guid');
-         item._label = xnode.get('code');
-         item.build(o._hPanel);
+         item.setLabel(xnode.get('code'));
          o.push(item);
       }
    }
+   // 画面允许操作
    RWindow.enable();
 }
 
@@ -106,10 +106,10 @@ function FDsResourceSearchContent_clickItem(p){
 //==========================================================
 function FDsResourceSearchContent_serviceSearch(typeCd, serach, pageSize, page){
    var o = this;
+   // 画面禁止操作
    RWindow.disable();
-   // Build values
-   var url = '/cloud.content.resource.ws?action=fetch&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
    // 发送数据请求
+   var url = '/cloud.content.resource.ws?action=fetch&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
    var connection = RConsole.find(FXmlConsole).sendAsync(url);
    connection.addLoadListener(o, o.onServiceLoad);
 }

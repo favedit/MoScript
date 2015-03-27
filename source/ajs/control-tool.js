@@ -362,6 +362,8 @@ function FUiToolButtonEdit_onBuildButton(p){
    }
    if(o._label){
       var hlp = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
+      o.attachEvent('onMouseDown', hlp);
+      o.attachEvent('onMouseUp', hlp);
       hlp.noWrap = true;
       o.setLabel(o._label);
    }

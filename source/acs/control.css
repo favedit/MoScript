@@ -467,9 +467,12 @@
 }
 
 .FUiListViewItem_Label{
-   padding: 2px 8px;
-   text-align: right;
+   padding: 2px 4px;
    color: #333333;
+   text-align: right;
+   white-space:nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 
 /* ------------------------------------------------------ */

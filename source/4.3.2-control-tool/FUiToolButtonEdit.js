@@ -21,8 +21,6 @@ function FUiToolButtonEdit(o){
    o.onBuildButton   = FUiToolButtonEdit_onBuildButton;
    o.onEnter         = FUiToolButtonEdit_onEnter;
    o.onLeave         = FUiToolButtonEdit_onLeave;
-   //o.onMouseDown     = FUiToolButtonEdit_onMouseDown;
-   //o.onMouseUp       = FUiToolButtonEdit_onMouseUp;
    //..........................................................
    // @method
    o.construct       = FUiToolButtonEdit_construct;
@@ -42,8 +40,6 @@ function FUiToolButtonEdit_onBuildButton(p){
    var o = this;
    // 设置面板
    var h = o._hPanel;
-   //o.attachEvent('onMouseDown', h);
-   //o.attachEvent('onMouseUp', h);
    // 建立表单
    var hf = o._hForm = RBuilder.appendTable(h);
    var hl = o._hLine = RBuilder.appendTableRow(hf);
@@ -64,6 +60,8 @@ function FUiToolButtonEdit_onBuildButton(p){
    // 建立标签
    if(o._label){
       var hlp = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
+      o.attachEvent('onMouseDown', hlp);
+      o.attachEvent('onMouseUp', hlp);
       hlp.noWrap = true;
       o.setLabel(o._label);
    }

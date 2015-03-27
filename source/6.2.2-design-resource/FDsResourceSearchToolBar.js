@@ -14,6 +14,7 @@ function FDsResourceSearchToolBar(o){
    // @attribute
    o._pageCount       = 0;
    o._page            = 0;
+   o._serach          = null;
    // @attribute
    o._dropButton      = null;
    o._selectButton    = null;
@@ -69,9 +70,7 @@ function FDsResourceSearchToolBar_onBuilded(p){
 // @param p:event:SEvent 事件
 //==========================================================
 function FDsResourceSearchToolBar_onSearchClick(p){
-   var o = this;
-   o._canvasModeCd = p._canvasModeCd;
-   o._workspace._canvas.switchMode(p._canvasModeCd);
+   this.doNavigator(0);
 }
 
 //==========================================================
@@ -143,9 +142,10 @@ function FDsResourceSearchToolBar_doNavigator(page){
    var o = this;
    page = RInteger.toRange(page, 0, o._pageCount);
    var search = o._controlSearchEdit.text();
-   if(o._page != page){
+   if((o._serach != search) || (o._page != page)){
       o._workspace._searchContent.serviceSearch('mesh', search, o._pageSize, page)
    }
+   o._serach = search;
 }
 
 //==========================================================

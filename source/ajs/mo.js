@@ -37178,17 +37178,21 @@ function FUiListView_onBuildPanel(p){
 }
 function FUiListView_construct(){
    var o = this;
-   var c = RClass.create(FUiListItem);
-   c.build(o._hPanel);
-   c.setLabel(pl);
-   return c;
+   o.__base.FUiContainer.construct.call(o);
+   o._itemPool = RClass.create(FObjectPool);
 }
-function FUiListView_createItem(pi, pl){
+function FUiListView_createItem(clazz, pi, pl){
    var o = this;
-   var c = RClass.create(FUiListItem);
-   c.build(o._hPanel);
-   c.setLabel(pl);
-   return c;
+   var item = o._itemPool.alloc();
+   if(!item){
+      if(clazz){
+         item = RClass.create(clazz);
+      }else{
+         item = RClass.create(FUiListViewItem);
+      }
+      item.build(o._hPanel);
+   }
+   return item;
 }
 function FUiListView_appendChild(p){
    var o = this;
@@ -37217,8 +37221,10 @@ function FUiListView_clear(){
          var m = cs.value(i);
          if(RClass.isClass(m, FUiListViewItem)){
             o._hPanel.removeChild(m._hPanel);
+            o._itemPool.free(m)
+         }else{
+            m.dispose();
          }
-         m.dispose();
       }
       cs.clear();
       o._controls.clear();
@@ -42681,6 +42687,8 @@ function FUiToolButtonEdit_onBuildButton(p){
    }
    if(o._label){
       var hlp = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
+      o.attachEvent('onMouseDown', hlp);
+      o.attachEvent('onMouseUp', hlp);
       hlp.noWrap = true;
       o.setLabel(o._label);
    }
@@ -50424,11 +50432,10 @@ function FDsResourceSearchContent_onServiceLoad(p){
    for(var i = 0; i < count; i++){
       var xnode = xnodes.getAt(i);
       if(xnode.isName('Item')){
-         var item = RClass.create(FDsResourceSearchItem);
+         var item = o.createItem(FDsResourceSearchItem);
          item.propertyLoad(xnode);
          item._guid = xnode.get('guid');
-         item._label = xnode.get('code');
-         item.build(o._hPanel);
+         item.setLabel(xnode.get('code'));
          o.push(item);
       }
    }
@@ -50473,6 +50480,7 @@ function FDsResourceSearchToolBar(o){
    o._frameName       = 'design3d.resource.SearchToolBar';
    o._pageCount       = 0;
    o._page            = 0;
+   o._serach          = null;
    o._dropButton      = null;
    o._selectButton    = null;
    o._translateButton = null;
@@ -50502,9 +50510,7 @@ function FDsResourceSearchToolBar_onBuilded(p){
    o._controlLastButton.addClickListener(o, o.onNavigatorClick);
 }
 function FDsResourceSearchToolBar_onSearchClick(p){
-   var o = this;
-   o._canvasModeCd = p._canvasModeCd;
-   o._workspace._canvas.switchMode(p._canvasModeCd);
+   this.doNavigator(0);
 }
 function FDsResourceSearchToolBar_onNavigatorClick(event){
    var o = this;
@@ -50544,9 +50550,10 @@ function FDsResourceSearchToolBar_doNavigator(page){
    var o = this;
    page = RInteger.toRange(page, 0, o._pageCount);
    var search = o._controlSearchEdit.text();
-   if(o._page != page){
+   if((o._serach != search) || (o._page != page)){
       o._workspace._searchContent.serviceSearch('mesh', search, o._pageSize, page)
    }
+   o._serach = search;
 }
 function FDsResourceSearchToolBar_dispose(){
    var o = this;
