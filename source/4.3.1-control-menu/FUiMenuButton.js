@@ -256,13 +256,16 @@ function FUiMenuButton_setEnable(p){
 function FUiMenuButton_click(){
    var o = this;
    if(!o._disabled){
+      RConsole.find(FFocusConsole).blur();
+      RLogger.debug(o, 'Menu button click. (label={1})' + o._label);
       // 执行监听信息
-      o.processClickListener(o);
-      //RConsole.find(FFocusConsole).blur();
+      var event = new SClickEvent(o);
+      o.processClickListener(event);
+      event.dispose();
       // 执行脚本
-      //if(o._action){
-         //eval(o._action);
-      //}
+      if(o._action){
+         eval(o._action);
+      }
       // 按键处理
       //if(o._page || o._method){
          //var form = RHtml.form(o._hButton);

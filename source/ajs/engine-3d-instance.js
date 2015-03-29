@@ -7,6 +7,46 @@ var EE3dScene = new function EE3dScene(){
    o.Renderable = 'renderable';
    return o;
 }
+function FE3dBitmap(o){
+   o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
+   o._ready        = false;
+   o._renderable   = null;
+   o.construct     = FE3dBitmap_construct;
+   o.testReady     = FE3dBitmap_testReady;
+   o.renderable    = FE3dBitmap_renderable;
+   o.setRenderable = FE3dBitmap_setRenderable;
+   o.processLoad   = FE3dBitmap_processLoad;
+   o.process       = FE3dBitmap_process;
+   return o;
+}
+function FE3dBitmap_construct(){
+   var o = this;
+   o.__base.FE3dMeshRenderable.construct.call(o);
+}
+function FE3dBitmap_testReady(){
+   return this._ready;
+}
+function FE3dBitmap_renderable(p){
+   return this._renderable;
+}
+function FE3dBitmap_setRenderable(p){
+   var o = this;
+   this._renderable= p;
+   o._ready = true;
+   o.processLoadListener(o);
+}
+function FE3dBitmap_processLoad(){
+   var o = this;
+   if(!o._renderable.testReady()){
+      return false;
+   }
+   o.loadRenderable(o._renderable);
+   return true;
+}
+function FE3dBitmap_process(){
+   var o = this;
+   o.__base.FE3dMeshRenderable.process.call(o);
+}
 function FE3dBoundBox(o){
    o = RClass.inherits(this, o, FE3dRenderable);
    o._outline              = null;

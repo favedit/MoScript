@@ -17,6 +17,7 @@ function FDsSolutionCatalogContent(o){
    o._materials            = null;
    //..........................................................
    // @event
+   o.onLoaded              = FDsSolutionCatalogContent_onLoaded;
    o.onBuild               = FDsSolutionCatalogContent_onBuild;
    // @event
    o.onLoadDisplay         = FDsSolutionCatalogContent_onLoadDisplay;
@@ -30,17 +31,29 @@ function FDsSolutionCatalogContent(o){
    // @method
    o.construct             = FDsSolutionCatalogContent_construct;
    // @method
-   o.buildTechnique        = FDsSolutionCatalogContent_buildTechnique;
-   o.buildRegion           = FDsSolutionCatalogContent_buildRegion;
-   o.buildRenderable       = FDsSolutionCatalogContent_buildRenderable;
-   o.buildDisplay          = FDsSolutionCatalogContent_buildDisplay;
-   o.buildSpace            = FDsSolutionCatalogContent_buildSpace;
+   o.buildPrivate          = FDsSolutionCatalogContent_buildPrivate;
+   o.buildRecommend        = FDsSolutionCatalogContent_buildRecommend;
+   o.buildGroup            = FDsSolutionCatalogContent_buildGroup;
+   o.buildCatalog          = FDsSolutionCatalogContent_buildCatalog;
    // @method
    o.selectObject          = FDsSolutionCatalogContent_selectObject;
    o.showObject            = FDsSolutionCatalogContent_showObject;
    // @method
    o.dispose               = FDsSolutionCatalogContent_dispose;
    return o;
+}
+
+//==========================================================
+// <T>构建树目录。</T>
+//
+// @method
+// @param p:event:TEventProcess 处理事件
+//==========================================================
+function FDsSolutionCatalogContent_onLoaded(p){
+   var o = this;
+   // 父处理
+   o.__base.FUiDataTreeView.onLoaded.call(o, p);
+   this.buildCatalog();
 }
 
 //==========================================================
@@ -56,7 +69,7 @@ function FDsSolutionCatalogContent_onBuild(p){
    // 注册事件
    o.lsnsClick.register(o, o.onNodeClick);
    // 加载定义
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.resource');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.solution');
 }
 
 //==========================================================
@@ -69,7 +82,7 @@ function FDsSolutionCatalogContent_onLoadDisplay(p){
    var o = this;
    var n = p._linkNode;
    // 创建渲染集合
-   o.buildRenderable(n, p);
+   o.buildRecommend(n, p);
 }
 
 //==========================================================
@@ -222,32 +235,29 @@ function FDsSolutionCatalogContent_buildTechnique(n, p){
 }
 
 //==========================================================
-// <T>建立区域目录。</T>
+// <T>建立显示目录。</T>
 //
 // @method
 // @param n:node:FTreeNode 父节点
-// @param p:theme:FE3sTemplateTheme 模板主题
+// @param p:display:FDisplayContainer 显示容器
 //==========================================================
-function FDsSolutionCatalogContent_buildRegion(n, p){
+function FDsSolutionCatalogContent_buildPrivate(parent){
    var o = this;
-   // 新建区域节点
-   var nr = o.createNode();
-   nr.setLabel('Region');
-   nr.setTypeCode('region');
-   nr.dataPropertySet('linker', p);
-   n.appendNode(nr);
-   // 新建区域相机节点
-   var nc = o.createNode();
-   nc.setLabel('Camera');
-   nc.setTypeCode('camera');
-   nc.dataPropertySet('linker', p.camera());
-   nr.appendNode(nc);
-   // 新建区域光源节点
-   var nl = o.createNode();
-   nl.setLabel('Light');
-   nl.setTypeCode('light');
-   nl.dataPropertySet('linker', p.directionalLight());
-   nr.appendNode(nl);
+   // 创建场景节点
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('全部项目');
+   parent.appendNode(node);
+   // 创建场景节点
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('收藏项目');
+   parent.appendNode(node);
+   // 创建场景节点
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('最近使用');
+   parent.appendNode(node);
 }
 
 //==========================================================
@@ -257,43 +267,49 @@ function FDsSolutionCatalogContent_buildRegion(n, p){
 // @param n:node:FTreeNode 父节点
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FDsSolutionCatalogContent_buildRenderable(n, p){
+function FDsSolutionCatalogContent_buildRecommend(parent){
    var o = this;
-   // 创建材质节点
-   var m = p._renderable._material;
-   var dn = o.createNode();
-   dn.setTypeCode('material');
-   dn.setLabel('Material');
-   dn.dataPropertySet('linker', m);
-   o._materials.push(dn);
-   n.appendNode(dn);
-   // 创建渲染节点
-   var r = p._renderable;
-   var dn = o.createNode();
-   dn.setTypeCode('renderable');
-   dn.setLabel('Renderable');
-   dn.dataPropertySet('linker', r);
-   o._renderables.push(dn);
-   n.appendNode(dn);
+   // 创建场景节点
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('本周排行');
+   parent.appendNode(node);
+   // 创建场景节点
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('本月排行');
+   parent.appendNode(node);
+   // 创建场景节点
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('全部排行');
+   parent.appendNode(node);
 }
 
 //==========================================================
-// <T>建立显示目录。</T>
+// <T>建立区域目录。</T>
 //
 // @method
 // @param n:node:FTreeNode 父节点
-// @param p:display:FDisplayContainer 显示容器
+// @param p:theme:FE3sTemplateTheme 模板主题
 //==========================================================
-function FDsSolutionCatalogContent_buildDisplay(n, p){
+function FDsSolutionCatalogContent_buildGroup(parent){
    var o = this;
-   // 创建显示节点
+   // 创建场景节点
    var node = o.createNode();
-   node.setTypeCode('display');
-   node.setLabel('Mesh');
-   node.dataPropertySet('linker', p);
-   n.appendNode(node);
-   // 创建材质节点
-   o.buildRenderable(node, p);
+   node.setTypeCode('space');
+   node.setLabel('汽车');
+   parent.appendNode(node);
+   // 创建场景节点
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('教育');
+   parent.appendNode(node);
+   // 创建场景节点
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('人物');
+   parent.appendNode(node);
 }
 
 //==========================================================
@@ -302,25 +318,26 @@ function FDsSolutionCatalogContent_buildDisplay(n, p){
 // @method
 // @param space:FE3dSpace 渲染空间
 //==========================================================
-function FDsSolutionCatalogContent_buildSpace(space){
+function FDsSolutionCatalogContent_buildCatalog(){
    var o = this;
-   var resource = space.resource();
-   o._activeSpace = space;
    // 创建场景节点
    var node = o.createNode();
    node.setTypeCode('space');
-   node.setLabel(resource.code());
-   node.setNote(resource.label());
-   node.dataPropertySet('linker', space);
+   node.setLabel('我的项目');
    o.appendNode(node);
-   // 创建技术节点
-   o.buildTechnique(node, space.technique())
-   // 创建区域节点
-   o.buildRegion(node, space.region());
-   // 创建显示层
-   o.buildDisplay(node, space._display);
-   // 选中根节点
-   node.click();
+   o.buildPrivate(node);
+   // 创建场景节点
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('推荐项目');
+   o.appendNode(node);
+   o.buildRecommend(node);
+   // 创建场景节点
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('项目分类');
+   o.appendNode(node);
+   o.buildGroup(node)
 }
 
 //==========================================================

@@ -17,5 +17,7 @@ var EUiCursor = new function EUiCursor(){
    o.East      = 'E';
    o.North     = 'N';
    o.Pointer   = 'pointer';
+   o.Cross     = 'crosshair';
+   o.Move      = 'move';
    return o;
 }

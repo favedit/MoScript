@@ -159,6 +159,8 @@ var EUiCursor = new function EUiCursor(){
    o.East      = 'E';
    o.North     = 'N';
    o.Pointer   = 'pointer';
+   o.Cross     = 'crosshair';
+   o.Move      = 'move';
    return o;
 }
 var EUiDirection = new function EUiDirection(){
@@ -237,6 +239,7 @@ var EUiPosition = new function EUiPosition(){
    o.Right  = 'right';
    o.Top    = 'top';
    o.Bottom = 'bottom';
+   o.Center = 'center';
    o.Before     = 1;
    o.After      = 2;
    o.LineBefore = 3;
@@ -1118,6 +1121,61 @@ function MUiHorizontal_setVisible(p){
    if(h){
       RHtml.displaySet(h, p);
    }
+}
+function MUiMargin(o){
+   o = RClass.inherits(this, o);
+   o._margin       = RClass.register(o, new APtyPadding('_margin'));
+   o.construct     = MUiMargin_construct;
+   o.margin        = MUiMargin_margin;
+   o.setMargin     = MUiMargin_setMargin;
+   o.refreshMargin = MUiMargin_refreshMargin;
+   o.dispose       = MUiMargin_dispose;
+   return o;
+}
+function MUiMargin_construct(){
+   var o = this;
+   o._margin = new SPadding();
+}
+function MUiMargin_margin(){
+   return this._margin;
+}
+function MUiMargin_setMargin(l, t, r, b){
+   var o = this;
+   var p = o._margin;
+   var h = o.panel(EPanel.Container);
+   if(l != null){
+      p.left = l;
+      if(h){
+         h.style.marginLeft = (l == 0) ? null : l + 'px';
+      }
+   }
+   if(t != null){
+      p.top = t;
+      if(h){
+         h.style.marginTop = (t == 0) ? null : t + 'px';
+      }
+   }
+   if(r != null){
+      p.right= r;
+      if(h){
+         h.style.marginRight = (r == 0) ? null : r + 'px';
+      }
+   }
+   if(b != null){
+      p.bottom = b;
+      if(h){
+         h.style.marginBottom = (b == 0) ? null : b + 'px';
+      }
+   }
+}
+function MUiMargin_refreshMargin(){
+   var o = this;
+   var p = o._margin;
+   o.setMargin(p.left, p.top, p.right, p.bottom);
+}
+function MUiMargin_dispose(){
+   var o = this;
+   o._margin = RObject.dispose(o._margin);
 }
 function MUiPadding(o){
    o = RClass.inherits(this, o);
@@ -2297,7 +2355,7 @@ function FUiContainer_dispose(){
    o.__base.FUiControl.dispose.call(o);
 }
 function FUiControl(o){
-   o = RClass.inherits(this, o, FUiComponent, MUiStyle, MUiSize, MUiPadding);
+   o = RClass.inherits(this, o, FUiComponent, MUiStyle, MUiSize, MUiPadding, MUiMargin);
    o._wrapCd        = RClass.register(o, new APtyEnum('_wrapCd', null, EUiWrap, EUiWrap.NextLine));
    o._visible       = RClass.register(o, new APtyBoolean('_visible'), true);
    o._disable       = RClass.register(o, new APtyBoolean('_disable'), false);
@@ -2382,6 +2440,7 @@ function FUiControl_onBuild(p){
    o.attachEvent('onLeave', h);
    o.refreshBounds();
    o.refreshPadding();
+   o.refreshMargin();
 }
 function FUiControl_oeMode(e){
    var o = this;
@@ -2414,6 +2473,7 @@ function FUiControl_construct(){
    o.__base.MUiStyle.construct.call(o);
    o.__base.MUiSize.construct.call(o);
    o.__base.MUiPadding.construct.call(o);
+   o.__base.MUiMargin.construct.call(o);
 }
 function FUiControl_topControl(c){
    var r = this;
@@ -2618,6 +2678,7 @@ function FUiControl_dispose(){
    o._statusBuild = null;
    o._hParent = null;
    o._hPanel = RHtml.free(o._hPanel);
+   o.__base.MUiMargin.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);
    o.__base.MUiSize.dispose.call(o);
    o.__base.MUiStyle.dispose.call(o);

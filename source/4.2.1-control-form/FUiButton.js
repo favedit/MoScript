@@ -3,66 +3,110 @@
 //
 // @class
 // @author maocy
-// @history 150202
+// @history 150329
 //==========================================================
 function FUiButton(o){
-   o = RClass.inherits(this, o, FUiControl, MDisplay, MDesign);
+   o = RClass.inherits(this, o, FUiControl, MListenerClick);
    //..........................................................
    // @attribute
-   o.labelPosition      = RClass.register(o, new TPtyStr('labelPosition', EPosition.Left));
-   o.icon               = RClass.register(o, new TPtyStr('icon'));
-   o.type               = RClass.register(o, new TPtyStr('type'));
-   o.action             = RClass.register(o, new TPtyStr('action'));
-   o.dataAction         = RClass.register(o, new TPtyStr('dataAction'));
-   o.service            = RClass.register(o, new TPtyStr('service'));
-   o.target             = RClass.register(o, new TPtyStr('target'));
-   o.page               = RClass.register(o, new TPtyStr('page'));
-   o.method             = RClass.register(o, new TPtyStr('method'));
-   o.iconDisable        = RClass.register(o, new TPtyStr('iconDisable'));
-   o.attributes         = RClass.register(o, new TPtyStr('attributes'));
-   o.editUrl            = RClass.register(o, new TPtyStr('editUrl'));
-   o.editForm           = RClass.register(o, new TPtyStr('editForm'));
+   o._labelPositionCd   = RClass.register(o, new APtyString('_labelPositionCd'), EUiPosition.Left);
+   o._icon              = RClass.register(o, new APtyString('_icon'));
+   o._action            = RClass.register(o, new APtyString('_action'));
+   //o._type              = RClass.register(o, new APtyString('_type'));
+   //o._dataAction        = RClass.register(o, new APtyString('_dataAction'));
+   //o._service           = RClass.register(o, new APtyString('_service'));
+   //o._target            = RClass.register(o, new APtyString('_target'));
+   //o._page              = RClass.register(o, new APtyString('_page'));
+   //o._method            = RClass.register(o, new APtyString('_method'));
+   //o._iconDisable       = RClass.register(o, new APtyString('_iconDisable'));
+   //o._attributes        = RClass.register(o, new APtyString('_attributes'));
+   //o._editUrl           = RClass.register(o, new APtyString('_editUrl'));
+   //o._editForm          = RClass.register(o, new APtyString('_editForm'));
    //..........................................................
    // @css
-   o.stIcon             = RClass.register(o, new TStyle('Icon'));
-   o.stLabel            = RClass.register(o, new TStyle('Label'));
-   o.stForm             = RClass.register(o, new TStyle('Form'));
-   o.stIconPanel        = RClass.register(o, new TStyleIcon('Panel'));
+   o._stylePanel        = RClass.register(o, new AStyle('_stylePanel'));
+   o._styleForm         = RClass.register(o, new AStyle('_styleForm'));
+   o._styleIcon         = RClass.register(o, new AStyle('_styleIcon'));
+   o._styleLabel        = RClass.register(o, new AStyle('_styleLabel'));
+   o._styleIconPanel    = RClass.register(o, new AStyleIcon('_styleIconPanel'));
    //..........................................................
    // @attribute
-   o.__process          = false;
+   //o.__process          = false;
    //..........................................................
    // @listener
-   o.lsnsClick          = new TListeners();
+   //o.lsnsClick          = new TListeners();
    //..........................................................
    // @html
-   o.hForm              = null;
-   o.hLeftButton        = null;
-   o.hMiddleButton      = null;
-   o.hRightButton       = null;
-   o.hLabelPanel        = null;
-   o.hLabel             = null;
+   o._hForm             = null;
+   o._hLeftButton       = null;
+   o._hMiddleButton     = null;
+   o._hRightButton      = null;
+   o._hLabelPanel       = null;
+   o._hLabel            = null;
    //..........................................................
    // @event
-   o.onButtonEnter      = RClass.register(o, new HMouseEnter('onButtonEnter'), FUiButton_onButtonEnter);
-   o.onButtonLeave      = RClass.register(o, new HMouseLeave('onButtonLeave'), FUiButton_onButtonLeave);
-   o.onButtonDown       = RClass.register(o, new HMouseDown('onButtonDown'), FUiButton_onButtonDown);
-   o.onButtonUp         = RClass.register(o, new HMouseUp('onButtonUp'), FUiButton_onButtonUp);
-   o.onButtonClickDelay = FUiButton_onButtonClickDelay;
-   o.onClick            = FUiButton_onClick;
-   o.onButtonClick      = RClass.register(o, new HClick('onButtonClick'), FUiButton_onButtonClick);
+   o.onBuild            = FUiButton_onBuild;
+   // @event
+   o.onClick            = RClass.register(o, new AEventClick('onClick'), FUiButton_onClick);
+   //o.onButtonEnter      = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FUiButton_onButtonEnter);
+   //o.onButtonLeave      = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FUiButton_onButtonLeave);
+   //o.onButtonDown       = RClass.register(o, new AEventMouseDown('onButtonDown'), FUiButton_onButtonDown);
+   //o.onButtonUp         = RClass.register(o, new AEventMouseUp('onButtonUp'), FUiButton_onButtonUp);
+   //o.onButtonClickDelay = FUiButton_onButtonClickDelay;
+   //o.onButtonClick      = RClass.register(o, new AEventClick('onButtonClick'), FUiButton_onButtonClick);
    //..........................................................
    // @process
-   o.oeBuild            = FUiButton_oeBuild;
-   o.oeMode             = FUiButton_oeMode;
+   //o.oeMode             = FUiButton_oeMode;
    //..........................................................
    // @method
-   o.setLabel           = FUiButton_setLabel;
-   o.setLabelColor      = FUiButton_setLabelColor;
-   o.setLabelStyle      = FUiButton_setLabelStyle;
+   //o.setLabel           = FUiButton_setLabel;
+   //o.setLabelColor      = FUiButton_setLabelColor;
+   //o.setLabelStyle      = FUiButton_setLabelStyle;
    o.doClick            = FUiButton_doClick;
-   o.dispose            = FUiButton_dispose;
+   //o.dispose            = FUiButton_dispose;
    return o;
+}
+
+//==========================================================
+// <T>构建按钮，链接相应事件。</T>
+//
+// @method
+// @param e:event:TEvent 事件对象
+// @return EEventStatus 处理状态
+//==========================================================
+function FUiButton_onBuild(e){
+   var o = this;
+   o.__base.FUiControl.onBuild.call(o, e);
+   // 设置底板
+   var hPanel = o._hPanel;
+   o.attachEvent('onClick', hPanel);
+   //o.attachEvent('onButtonEnter', hPanel, o.onButtonEnter);
+   //o.attachEvent('onButtonLeave', hPanel, o.onButtonLeave);
+   //o.attachEvent('onButtonDown', hPanel, o.onButtonDown);
+   //o.attachEvent('onButtonUp', hPanel, o.onButtonUp);
+   //o.attachEvent('onButtonClick', hPanel);
+   // 建立布局
+   var hForm = RBuilder.appendTable(hPanel, o.styleName('Form'));
+   var hLine  = RBuilder.appendTableRow(hForm);
+   // 建立图标
+   if(o._icon){
+      var hCell = RBuilder.appendTableCell(hLine);
+      hCell.width = 16;
+      o._hIcon = RBuilder.appendIcon(hCell, o.styleName('Icon'), o._icon);
+   }
+   // 建立标签
+   if(o.label){
+      var hCell = RBuilder.appendTableCell(hLine);
+      hCell.align = 'center';
+      hCell.noWrap = true;
+      o._hLabel = RBuilder.appendText(hCell, o.styleName('Label'), o._label);
+   }
+   // 创建延时器
+   //o.__process = false;
+   //var ca = o.clickActive = new TActive(o, o.onButtonClickDelay);
+   //ca.interval = 500;
+   //ca.status = EActive.Sleep;
+   //RConsole.find(FActiveConsole).push(ca);
 }
 
 //==========================================================
@@ -75,9 +119,9 @@ function FUiButton(o){
 function FUiButton_onButtonEnter(e){
    var o = this;
    if(!o._disabled){
-	  o.hLeftButton.background = o.styleIconPath('HoverLeft');
-	  o.hMiddleButton.background = o.styleIconPath('HoverMiddle');
-	  o.hRightButton.background = o.styleIconPath('HoverRight');
+	  o._hLeftButton.background = o.styleIconPath('HoverLeft');
+	  o._hMiddleButton.background = o.styleIconPath('HoverMiddle');
+	  o._hRightButton.background = o.styleIconPath('HoverRight');
    }
 }
 
@@ -91,9 +135,9 @@ function FUiButton_onButtonEnter(e){
 function FUiButton_onButtonLeave(e){
    var o = this;
    if(!o._disabled){
-	  o.hLeftButton.background = o.styleIconPath('ButtonLeft');
-	  o.hMiddleButton.background = o.styleIconPath('Button');
-	  o.hRightButton.background = o.styleIconPath('ButtonRight');
+	  o._hLeftButton.background = o.styleIconPath('ButtonLeft');
+	  o._hMiddleButton.background = o.styleIconPath('Button');
+	  o._hRightButton.background = o.styleIconPath('ButtonRight');
    }
 }
 
@@ -108,9 +152,9 @@ function FUiButton_onButtonLeave(e){
 function FUiButton_onButtonDown(e){
    var o = this;
    if(!o._disabled){
-	  o.hLeftButton.background = o.styleIconPath('PressLeft');
-	  o.hMiddleButton.background = o.styleIconPath('PressMiddle');
-	  o.hRightButton.background = o.styleIconPath('PressRight');
+	  o._hLeftButton.background = o.styleIconPath('PressLeft');
+	  o._hMiddleButton.background = o.styleIconPath('PressMiddle');
+	  o._hRightButton.background = o.styleIconPath('PressRight');
    }
 }
 
@@ -124,9 +168,9 @@ function FUiButton_onButtonDown(e){
 function FUiButton_onButtonUp(e){
    var o = this;
    if(!o._disabled){
-	  o.hLeftButton.background = o.styleIconPath('ButtonLeft');
-	  o.hMiddleButton.background = o.styleIconPath('Button');
-	  o.hRightButton.background = o.styleIconPath('ButtonRight');
+	  o._hLeftButton.background = o.styleIconPath('ButtonLeft');
+	  o._hMiddleButton.background = o.styleIconPath('Button');
+	  o._hRightButton.background = o.styleIconPath('ButtonRight');
    }
 }
 
@@ -163,77 +207,6 @@ function FUiButton_onButtonClick(e){
 }
 
 //==========================================================
-// <T>构建按钮，链接相应事件。</T>
-//
-// @method
-// @param e:event:TEvent 事件对象
-// @return EEventStatus 处理状态
-//==========================================================
-function FUiButton_oeBuild(e){
-   var o = this;
-   o.base.FUiControl.oeBuild.call(o, e);
-   // 设置底板
-   var hp = o.hPanel;
-   hp.style.paddingTop = o.padTop ? o.padTop : 10;
-   hp.style.pixelHeight = 26;
-   // Set icon/label
-   // 左圆角
-   var hf = o.hForm = RBuilder.appendTable(hp);
-   var hr = hf.insertRow();
-   hr.height = 22;
-   var hl = o.hLeftButton = hr.insertCell();
-   hl.width = 3;
-   hl.background = o.styleIconPath('ButtonLeft');
-   // 中间部分
-   var hm = o.hMiddleButton = hr.insertCell();
-   hm.background = o.styleIconPath('Button');
-   // 右圆角
-   //hf.background = o.styleIconPath('Button');
-   var hrb = o.hRightButton = hr.insertCell();
-   hrb.width = 3;
-   hrb.background = o.styleIconPath('ButtonRight');
-   hf.style.cursor = 'hand';
-   hf.style.border = 0;
-   o.attachEvent('onButtonEnter', hf, o.onButtonEnter);
-   o.attachEvent('onButtonLeave', hf, o.onButtonLeave);
-   o.attachEvent('onButtonDown', hf, o.onButtonDown);
-   o.attachEvent('onButtonUp', hf, o.onButtonUp);
-   o.attachEvent('onButtonClick', hf);
-   // 左边底板
-   var hTb = RBuilder.appendTable(hm);
-   var hr  = hTb.insertRow();
-   var hc = hr.insertCell();
-   hc.width = 10;
-   // 建立图标
-   if(o.icon){
-      var hc = hr.insertCell();
-      hc.width = 16;
-      o.hIcon = RBuilder.appendIcon(hc, o.icon);
-      hcc = hr.insertCell();
-      hcc.width = 4;
-   }
-   // 建立标签
-   if(o.label){
-      var hc = hr.insertCell();
-      hc.align = 'center';
-      hc.noWrap = true;
-      o.hLabel = RBuilder.appendText(hc, o.label);
-      o.hLabel.style.font = 'icon';
-   }
-   // 右边底板
-   var hc = o.hFormEnd = hr.insertCell();
-   hc.width = 10;
-   // 创建延时器
-   o.__process = false;
-   var ca = o.clickActive = new TActive(o, o.onButtonClickDelay);
-   ca.interval = 500;
-   ca.status = EActive.Sleep;
-   RConsole.find(FActiveConsole).push(ca);
-   // 返回状态
-   return EEventStatus.Stop;
-}
-
-//==========================================================
 // <T>转换模式事件。</T>
 //
 // @method
@@ -242,8 +215,8 @@ function FUiButton_oeBuild(e){
 //==========================================================
 function FUiButton_oeMode(e){
    var o = this;
-   o.base.FUiControl.oeMode.call(o, e);
-   o.base.MDisplay.oeMode.call(o, e);
+   o.__base.FUiControl.oeMode.call(o, e);
+   o.__base.MDisplay.oeMode.call(o, e);
    return EEventStatus.Stop;
 }
 
@@ -256,8 +229,8 @@ function FUiButton_oeMode(e){
 function FUiButton_setLabel(v){
    var o = this;
    o.label = v;
-   o.hLabel.innerText = v;
-   o.hLabel.noWrap = true;
+   o._hLabel.innerText = v;
+   o._hLabel.noWrap = true;
 }
 
 //==========================================================
@@ -268,7 +241,7 @@ function FUiButton_setLabel(v){
 //==========================================================
 function FUiButton_setLabelColor(c){
    var o = this;
-   o.hLabel.style.color = '#FF0000';
+   o._hLabel.style.color = '#FF0000';
 }
 
 //==========================================================
@@ -279,9 +252,9 @@ function FUiButton_setLabelColor(c){
 //==========================================================
 function FUiButton_setLabelStyle(c, w, s){
    var o = this;
-   o.hLabel.style.color = '#FF0000';
-   o.hLabel.style.fontWeight = 'bold';
-   o.hLabel.style.fontSize = '12';
+   o._hLabel.style.color = '#FF0000';
+   o._hLabel.style.fontWeight = 'bold';
+   o._hLabel.style.fontSize = '12';
 }
 
 //==========================================================
@@ -291,53 +264,61 @@ function FUiButton_setLabelStyle(c, w, s){
 //==========================================================
 function FUiButton_doClick(){
    var o = this;
+   if(!o._disabled){
+      RConsole.find(FFocusConsole).blur();
+      RLogger.debug(o, 'Tool button click. (label={1})' + o._label);
+      // 执行监听信息
+      var event = new SClickEvent(o);
+      o.processClickListener(event);
+      event.dispose();
+      // 执行代码命令
+      if(o._action){
+         eval(o._action);
+      }
+   }
    // 检查执行状态
-   if(o.__process){
-      return;
+   //if(o.__process){
+   //   return;
       //return alert(RContext.get('FUiButton:process'));
-   }
+   //}
    // 开始执行
-   o.__process = true;
-   o.clickActive.status = EActive.Active;
-   o.lsnsClick.process(this);
-   // 执行命令
-   if(o.action){
-      eval(o.action);
-   }
+   //o.__process = true;
+   //o.clickActive.status = EActive.Active;
+   //o.lsnsClick.process(this);
    // 执行跳转页面
-   if(o.page){
-      // 获得关联表单
-      var form = RHtml.form(o.hButton);
-      // 获得跳转页面信息
-      var p = RPage.parse(o.page);
-      if(o.method){
-         p.action = o.method;
-      }
-      p.split(o.attributes);
-      // 设置传输内容
-      var f = o.topControl(MDataset);
-      if(f){
-         var as = new TAttributes();
-         f.saveValue(as);
-         if(form && form.form_pack){
-            form.form_pack.value = as.pack();
-         }
-      }
-      // 提交表单
-      p.post(form, RString.nvl(o.target, '_self'));
-   }
+   //if(o._page){
+   //   // 获得关联表单
+   //   var form = RHtml.form(o.hButton);
+   //   // 获得跳转页面信息
+   //   var p = RPage.parse(o._page);
+   //   if(o._method){
+   //      p._action = o._method;
+   //   }
+   //   p.split(o._attributes);
+   //   // 设置传输内容
+   //   var f = o.topControl(MDataset);
+   //   if(f){
+   //      var as = new TAttributes();
+   //      f.saveValue(as);
+   //      if(form && form.form_pack){
+   //         form.form_pack.value = as.pack();
+   //      }
+   //   }
+   //   // 提交表单
+   //   p.post(form, RString.nvl(o._target, '_self'));
+   //}
    // 执行编辑地址
-   if(o.editUrl){
-      var w = RConsole.find(FUiButtonConsole).find();
-      w.linkUrl(o.editUrl);
-      w.show();
-   }
+   //if(o._editUrl){
+   //   var w = RConsole.find(FUiButtonConsole).find();
+   //   w.linkUrl(o._editUrl);
+   //   w.show();
+   //}
    // 弹出指定表单
-   if(o.editForm){
-      var w = RConsole.find(FUiButtonFormConsole).find();
-      w.linkForm(o);
-      w.show();
-   }
+   //if(o._editForm){
+   //   var w = RConsole.find(FUiButtonFormConsole).find();
+   //   w.linkForm(o);
+   //   w.show();
+   //}
 }
 
 //==========================================================
@@ -347,8 +328,8 @@ function FUiButton_doClick(){
 //==========================================================
 function FUiButton_dispose(){
    var o = this;
-   o.base.FUiControl.dispose.call(o);
-   o.hForm = null;
-   o.hFormEnd = null;
-   o.hLabel = null;
+   o.__base.FUiControl.dispose.call(o);
+   o._hForm = null;
+   o._hFormEnd = null;
+   o._hLabel = null;
 }

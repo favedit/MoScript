@@ -15,7 +15,7 @@
 // @version 141231
 //==========================================================
 function FUiControl(o){
-   o = RClass.inherits(this, o, FUiComponent, MUiStyle, MUiSize, MUiPadding);
+   o = RClass.inherits(this, o, FUiComponent, MUiStyle, MUiSize, MUiPadding, MUiMargin);
    //..........................................................
    // @property Boolean 是否回行
    o._wrapCd        = RClass.register(o, new APtyEnum('_wrapCd', null, EUiWrap, EUiWrap.NextLine));
@@ -188,6 +188,7 @@ function FUiControl_onBuild(p){
    // 设置容器位置/大小/空白
    o.refreshBounds();
    o.refreshPadding();
+   o.refreshMargin();
    // 如果父容器是可以容纳控件的，则将自己添加到父容器
    //if(RClass.isClass(o.parent, MContainer)){
    //   o.parent.appendChild(o);
@@ -270,6 +271,7 @@ function FUiControl_construct(){
    o.__base.MUiStyle.construct.call(o);
    o.__base.MUiSize.construct.call(o);
    o.__base.MUiPadding.construct.call(o);
+   o.__base.MUiMargin.construct.call(o);
 }
 
 //==========================================================
@@ -715,6 +717,7 @@ function FUiControl_dispose(){
    o._hParent = null;
    o._hPanel = RHtml.free(o._hPanel);
    // 释放处理
+   o.__base.MUiMargin.dispose.call(o);
    o.__base.MUiPadding.dispose.call(o);
    o.__base.MUiSize.dispose.call(o);
    o.__base.MUiStyle.dispose.call(o);

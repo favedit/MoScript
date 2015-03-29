@@ -1,0 +1,63 @@
+﻿<!-- 项目定义 -->
+<Project guid='1' code='2'>
+   <!-- 属性列表 -->
+   <Properties>
+      <Property name='code' value='test'/>
+      <Property name='version' value='1.0.1'/>
+      <Device width='120' height='200'/>
+   </Properties>
+   <!-- 模板列表 -->
+   <Template>
+      <!-- 精灵定义集合 -->
+      <SpriteCollection>
+         <Sprite type='bitmap' bitmap_guid='001'/>
+         <Sprite type='bitmap' bitmap_guid='002'/>
+         <Sprite type='bitmap' bitmap_guid='003'/>
+         <Sprite type='bitmap' bitmap_guid='004'/>
+         <Sprite type='bitmap' bitmap_guid='005'/>
+         <Sprite guid='asd' type='bitmap' bitmap_guid='006'>
+            <Event>
+               <Trigger type='mouse' code='down'>
+                  <Process type='move' code='left' delay='0.5' speed='1'/>
+                  <Process type='alpha' code='up' delay='0.8' begin='1' end='0.5' interval='0.2'/>
+               </Trigger>
+            </Event>
+            <Event>
+               <Trigger type='mouse' code='down'>
+                  <Process type='move' code='left' delay='0.5' speed='1'/>
+                  <Process type='alpha' code='up' delay='0.8' begin='1' end='0.5' interval='0.2'/>
+               </Trigger>
+            </Event>
+         </Sprite>
+      </SpriteCollection>
+      <!-- 脚本定义集合 -->
+      <ScriptCollection>
+         <Script>
+            <Script>function calculatePosition(){alert(this);}</Script>
+         </Script>
+      </ScriptCollection>
+   </Template>
+   <!-- 场景列表 -->
+   <Stage>
+      <Scene code='001'>
+         <SpriteInstance template='asd'>
+            <Event>
+               <Trigger type='mouse' code='down'>
+                  <Process type='move' code='left' delay='0.5' speed='1'/>
+                  <Process type='alpha' code='up' delay='0.8' begin='1' end='0.5' interval='0.2'/>
+               </Trigger>
+            </Event>
+         </SpriteInstance>
+         <SpriteInstance template='asd2'>
+            <Event>
+               <Trigger type='mouse' code='down'>
+                  <Process type='move' code='left' delay='0.5' speed='1'/>
+                  <Process type='alpha' code='up' delay='0.8' begin='1' end='0.5' interval='0.2'/>
+               </Trigger>
+            </Event>
+         </SpriteInstance>
+      </Scene>
+      <Scene code='001'>
+      </Scene>
+   </Stage>
+</Project>

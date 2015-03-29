@@ -485,6 +485,29 @@
 }
 
 /* ------------------------------------------------------ */
+/* FUiButton                                              */
+/* ------------------------------------------------------ */
+.FUiButton_Panel{
+   border-radius:3px;
+   color: #333333;
+   background-color: #999999;
+   cursor: pointer;
+}
+
+.FUiButton_Form{
+   width: 100%;
+   height: 100%;
+}
+
+.FUiButton_Icon{
+}
+
+.FUiButton_Label{
+   font-family: "Microsoft YaHei"; 
+   font-size: 9pt;
+}
+
+/* ------------------------------------------------------ */
 /* FUiCanvas                                              */
 /* ------------------------------------------------------ */
 .FUiCanvas_Canvas{
@@ -1128,6 +1151,42 @@
 }
 
 /* ------------------------------------------------------ */
+/* FUiWindow                                              */
+/* ------------------------------------------------------ */
+.FUiWindow_Panel{
+   position: absolute;
+   padding: 3px;
+   border-radius:4px;
+   background:rgba(90, 90, 90, 0.4);
+}
+
+.FUiWindow_BodyForm{
+   width:100%;
+   height:100%;
+}
+
+.FUiWindow_TitleForm{
+   width:100%;
+}
+
+.FUiWindow_TitlePanel{
+   height:24px;
+   border-radius:4px 4px 0px 0px;
+   background:#999999;
+}
+
+.FUiWindow_BodyPanel{
+   background: #666666;
+   border:1px solid #333333;
+}
+
+.FUiWindow_StatusPanel{
+   height:24px;
+   border-radius:0px 0px 4px 4px;
+   background:#999999;
+}
+
+/* ------------------------------------------------------ */
 /* FUiWorkspace                                           */
 /* ------------------------------------------------------ */
 .FUiWorkspace_Panel{
@@ -1136,7 +1195,7 @@
 }
 
 /* ------------------------------------------------------ */
-/* RWindow
+/* RWindow                                                */
 /* ------------------------------------------------------ */
 .RWindow_Disable{
    width: 100%;

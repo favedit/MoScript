@@ -779,6 +779,7 @@ function FDsSolutionCatalogContent(o){
    o._iconViewNot          = 'design3d.mesh.viewno';
    o._activeSpace          = null;
    o._materials            = null;
+   o.onLoaded              = FDsSolutionCatalogContent_onLoaded;
    o.onBuild               = FDsSolutionCatalogContent_onBuild;
    o.onLoadDisplay         = FDsSolutionCatalogContent_onLoadDisplay;
    o.onNodeClick           = FDsSolutionCatalogContent_onNodeClick;
@@ -786,26 +787,30 @@ function FDsSolutionCatalogContent(o){
    o.onNodeViewDoubleClick = FDsSolutionCatalogContent_onNodeViewDoubleClick;
    o.lsnsSelect            = null;
    o.construct             = FDsSolutionCatalogContent_construct;
-   o.buildTechnique        = FDsSolutionCatalogContent_buildTechnique;
-   o.buildRegion           = FDsSolutionCatalogContent_buildRegion;
-   o.buildRenderable       = FDsSolutionCatalogContent_buildRenderable;
-   o.buildDisplay          = FDsSolutionCatalogContent_buildDisplay;
-   o.buildSpace            = FDsSolutionCatalogContent_buildSpace;
+   o.buildPrivate          = FDsSolutionCatalogContent_buildPrivate;
+   o.buildRecommend        = FDsSolutionCatalogContent_buildRecommend;
+   o.buildGroup            = FDsSolutionCatalogContent_buildGroup;
+   o.buildCatalog          = FDsSolutionCatalogContent_buildCatalog;
    o.selectObject          = FDsSolutionCatalogContent_selectObject;
    o.showObject            = FDsSolutionCatalogContent_showObject;
    o.dispose               = FDsSolutionCatalogContent_dispose;
    return o;
 }
+function FDsSolutionCatalogContent_onLoaded(p){
+   var o = this;
+   o.__base.FUiDataTreeView.onLoaded.call(o, p);
+   this.buildCatalog();
+}
 function FDsSolutionCatalogContent_onBuild(p){
    var o = this;
    o.__base.FUiDataTreeView.onBuild.call(o, p);
    o.lsnsClick.register(o, o.onNodeClick);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.resource');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.solution');
 }
 function FDsSolutionCatalogContent_onLoadDisplay(p){
    var o = this;
    var n = p._linkNode;
-   o.buildRenderable(n, p);
+   o.buildRecommend(n, p);
 }
 function FDsSolutionCatalogContent_onNodeClick(t, n){
    var o = this;
@@ -912,64 +917,68 @@ function FDsSolutionCatalogContent_buildTechnique(n, p){
    nt.dataPropertySet('linker', p);
    n.appendNode(nt);
 }
-function FDsSolutionCatalogContent_buildRegion(n, p){
+function FDsSolutionCatalogContent_buildPrivate(parent){
    var o = this;
-   var nr = o.createNode();
-   nr.setLabel('Region');
-   nr.setTypeCode('region');
-   nr.dataPropertySet('linker', p);
-   n.appendNode(nr);
-   var nc = o.createNode();
-   nc.setLabel('Camera');
-   nc.setTypeCode('camera');
-   nc.dataPropertySet('linker', p.camera());
-   nr.appendNode(nc);
-   var nl = o.createNode();
-   nl.setLabel('Light');
-   nl.setTypeCode('light');
-   nl.dataPropertySet('linker', p.directionalLight());
-   nr.appendNode(nl);
-}
-function FDsSolutionCatalogContent_buildRenderable(n, p){
-   var o = this;
-   var m = p._renderable._material;
-   var dn = o.createNode();
-   dn.setTypeCode('material');
-   dn.setLabel('Material');
-   dn.dataPropertySet('linker', m);
-   o._materials.push(dn);
-   n.appendNode(dn);
-   var r = p._renderable;
-   var dn = o.createNode();
-   dn.setTypeCode('renderable');
-   dn.setLabel('Renderable');
-   dn.dataPropertySet('linker', r);
-   o._renderables.push(dn);
-   n.appendNode(dn);
-}
-function FDsSolutionCatalogContent_buildDisplay(n, p){
-   var o = this;
-   var node = o.createNode();
-   node.setTypeCode('display');
-   node.setLabel('Mesh');
-   node.dataPropertySet('linker', p);
-   n.appendNode(node);
-   o.buildRenderable(node, p);
-}
-function FDsSolutionCatalogContent_buildSpace(space){
-   var o = this;
-   var resource = space.resource();
-   o._activeSpace = space;
    var node = o.createNode();
    node.setTypeCode('space');
-   node.setLabel(resource.code());
-   node.setNote(resource.label());
-   node.dataPropertySet('linker', space);
+   node.setLabel('全部项目');
+   parent.appendNode(node);
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('收藏项目');
+   parent.appendNode(node);
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('最近使用');
+   parent.appendNode(node);
+}
+function FDsSolutionCatalogContent_buildRecommend(parent){
+   var o = this;
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('本周排行');
+   parent.appendNode(node);
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('本月排行');
+   parent.appendNode(node);
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('全部排行');
+   parent.appendNode(node);
+}
+function FDsSolutionCatalogContent_buildGroup(parent){
+   var o = this;
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('汽车');
+   parent.appendNode(node);
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('教育');
+   parent.appendNode(node);
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('人物');
+   parent.appendNode(node);
+}
+function FDsSolutionCatalogContent_buildCatalog(){
+   var o = this;
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('我的项目');
    o.appendNode(node);
-   o.buildTechnique(node, space.technique())
-   o.buildRegion(node, space.region());
-   o.buildDisplay(node, space._display);
-   node.click();
+   o.buildPrivate(node);
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('推荐项目');
+   o.appendNode(node);
+   o.buildRecommend(node);
+   var node = o.createNode();
+   node.setTypeCode('space');
+   node.setLabel('项目分类');
+   o.appendNode(node);
+   o.buildGroup(node)
 }
 function FDsSolutionCatalogContent_selectObject(p){
    var o = this;
@@ -1048,7 +1057,7 @@ function FDsSolutionMenuBar(o){
    o._saveButton    = null;
    o._runButton     = null;
    o.onBuilded      = FDsSolutionMenuBar_onBuilded;
-   o.onSaveClick    = FDsSolutionMenuBar_onSaveClick;
+   o.onCreateClick  = FDsSolutionMenuBar_onCreateClick;
    o.construct      = FDsSolutionMenuBar_construct;
    o.dispose        = FDsSolutionMenuBar_dispose;
    return o;
@@ -1056,14 +1065,16 @@ function FDsSolutionMenuBar(o){
 function FDsSolutionMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
+   o._controlCreateButton.addClickListener(o, o.onCreateClick);
 }
-function FDsSolutionMenuBar_onSaveClick(p){
+function FDsSolutionMenuBar_onCreateClick(event){
    var o = this;
-   var space = o._workspace._activeSpace;
-   var resource = space.resource();
-   var xconfig = new TXmlNode();
-   resource.saveConfig(xconfig);
-   RConsole.find(FE3sProjectConsole).update(xconfig);
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsSolutionProjectDialog);
+   dialog.showPosition(EUiPosition.Center);
+   var dialog = RClass.create(FDsSolutionProjectDialog);
+   dialog.buildDefine(o._hPanel);
+   dialog.setPanel(window.document.body);
+   dialog.showPosition(EUiPosition.Center);
 }
 function FDsSolutionMenuBar_construct(){
    var o = this;
@@ -1567,6 +1578,50 @@ function FDsSolutionPreviewToolBar_construct(){
 function FDsSolutionPreviewToolBar_dispose(){
    var o = this;
    o.__base.FUiToolBar.dispose.call(o);
+}
+function FDsSolutionProjectDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'design3d.solution.ProjectDialog';
+   o._resourceTypeCd       = 'private';
+   o._controlPrivateButton = null;
+   o._controlTeamButton    = null;
+   o._controlShareButton   = null;
+   o.onBuilded             = FDsSolutionProjectDialog_onBuilded;
+   o.onConfirmClick        = FDsSolutionProjectDialog_onConfirmClick;
+   o.onCancelClick         = FDsSolutionProjectDialog_onCancelClick;
+   o.construct             = FDsSolutionProjectDialog_construct;
+   o.dispose               = FDsSolutionProjectDialog_dispose;
+   return o;
+}
+function FDsSolutionProjectDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
+   o._controlCancelButton.addClickListener(o, o.onCancelClick);
+}
+function FDsSolutionProjectDialog_onConfirmClick(event){
+   var o = this;
+   var code = o._controlCode.get();
+   var label = o._controlLabel.get();
+   var xdocument = new TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'insert');
+   var xdata = xroot.create('Data');
+   xdata.set('code', code);
+   xdata.set('label', label);
+   RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   o.hide();
+}
+function FDsSolutionProjectDialog_onCancelClick(event){
+   this.hide();
+}
+function FDsSolutionProjectDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsSolutionProjectDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
 }
 function FDsSolutionSearchContent(o){
    o = RClass.inherits(this, o, FUiListView);

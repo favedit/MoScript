@@ -18,7 +18,7 @@ function FDsSolutionMenuBar(o){
    // @event
    o.onBuilded      = FDsSolutionMenuBar_onBuilded;
    // @event
-   o.onSaveClick    = FDsSolutionMenuBar_onSaveClick;
+   o.onCreateClick  = FDsSolutionMenuBar_onCreateClick;
    //..........................................................
    // @method
    o.construct      = FDsSolutionMenuBar_construct;
@@ -38,24 +38,25 @@ function FDsSolutionMenuBar_onBuilded(p){
    o.__base.FUiMenuBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   //o._controlSaveButton.addClickListener(o, o.onSaveClick);
+   o._controlCreateButton.addClickListener(o, o.onCreateClick);
 }
 
 //==========================================================
 // <T>保存按键处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsSolutionMenuBar_onSaveClick(p){
+function FDsSolutionMenuBar_onCreateClick(event){
    var o = this;
-   var space = o._workspace._activeSpace;
-   var resource = space.resource();
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsSolutionProjectDialog);
+   dialog.showPosition(EUiPosition.Center);
    // 存储配置
-   var xconfig = new TXmlNode();
-   resource.saveConfig(xconfig);
-   // 更新处理
-   RConsole.find(FE3sProjectConsole).update(xconfig);
+   var dialog = RClass.create(FDsSolutionProjectDialog);
+   dialog.buildDefine(o._hPanel);
+   //dialog.setPanel(o._hPanel);
+   dialog.setPanel(window.document.body);
+   dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================

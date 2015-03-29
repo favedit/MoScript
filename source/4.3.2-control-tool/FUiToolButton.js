@@ -310,14 +310,17 @@ function FUiToolButton_setEnable(p){
 //==========================================================
 function FUiToolButton_click(){
    var o = this;
-   RLogger.debug(o, 'Tool button Mouse click. (label={1})' + o._label);
-   // 执行监听信息
-   var event = new SClickEvent(o);
-   o.processClickListener(event);
-   event.dispose();
-   // 执行代码命令
-   if(o._action){
-      eval(o._action);
+   if(!o._disabled){
+      RConsole.find(FFocusConsole).blur();
+      RLogger.debug(o, 'Tool button click. (label={1})' + o._label);
+      // 执行监听信息
+      var event = new SClickEvent(o);
+      o.processClickListener(event);
+      event.dispose();
+      // 执行代码命令
+      if(o._action){
+         eval(o._action);
+      }
    }
 }
 

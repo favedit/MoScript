@@ -1,63 +1,96 @@
-// ============================================================
-// FWindowConsole
-// ============================================================
-function FWindowConsole(o, create){
-   if(!create){return this;}
-   o = IClass.inherits(this, o, FConsole);
-   // Attribute
-   o.activeWindow = null;
-   o.windows      = null;
-   o.defines      = null;
-   // Method
-   o.construct    = FWindowConsole_construct;
-   o.create       = FWindowConsole_create;
-   o.loadDefine   = FWindowConsole_loadDefine;
-   return o;
-
-   o.focusWinCtl = null;
-   o.activeForm = null;
-   o.activeControl = null;
-   o.maxFlag = false;
-   o.m_oDefinePool = new FList();
-   o.clientWindow = null;
+//==========================================================
+// <T>窗口台控制器。</T>
+//
+// @console
+// @author maocy
+// @history 150329
+//==========================================================
+function FUiWindowConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   //..........................................................
+   // @attribute
+   o._scopeCd      = EScope.Local;
+   //..........................................................
+   // @attribute
+   o._activeWindow = null;
+   o._windows      = null;
+   //..........................................................
+   // @method
+   o.construct    = FUiWindowConsole_construct;
+   // @method
+   o.find         = FUiWindowConsole_find;
+   //o.create       = FUiWindowConsole_create;
+   //o.loadDefine   = FUiWindowConsole_loadDefine;
+   //o.focusWinCtl = null;
+   //o.activeForm = null;
+   //o.activeControl = null;
+   //o.maxFlag = false;
+   //o.m_oDefinePool = new FList();
+   //o.clientWindow = null;
    // Constant
-   o.EVENT_MAX = 101;
-   o.EVENT_CLOSE = 102;
-   o.EVENT_CLOSEALL = 103;
+   //o.EVENT_MAX = 101;
+   //o.EVENT_CLOSE = 102;
+   //o.EVENT_CLOSEALL = 103;
    // Event
-   this.onEventMousedown = FWindowConsole_onEventMousedown;
-   this.onSaveDefineAfter = FWindowConsole_onSaveDefineAfter;
-   this.onEventRelease = FWindowConsole_onEventRelease;
-   this.initialize = FWindowConsole_initialize;
-   this.hasWindow = FWindowConsole_hasWindow;
-   this.focus = FWindowConsole_focus;
-   this.saveDefine = FWindowConsole_saveDefine;
-   this.findWindow = FWindowConsole_findWindow;
-   this.releaseWindowName = FWindowConsole_releaseWindowName;
-   this.releaseWindow = FWindowConsole_releaseWindow;
-   this.doFrameAction = FWindowConsole_doFrameAction;
-   this.setMaxWindow = FWindowConsole_setMaxWindow;
-   this.restore = FWindowConsole_restore;
-   this.doProperties = FWindowConsole_doProperties;
-   this.clear = FWindowConsole_clear;
-   this.hideAll = FWindowConsole_hideAll;
-   this.dump = FWindowConsole_dump;
+   //o.onEventMousedown = FUiWindowConsole_onEventMousedown;
+   //o.onSaveDefineAfter = FUiWindowConsole_onSaveDefineAfter;
+   //o.onEventRelease = FUiWindowConsole_onEventRelease;
+   //o.initialize = FUiWindowConsole_initialize;
+   //o.hasWindow = FUiWindowConsole_hasWindow;
+   //o.focus = FUiWindowConsole_focus;
+   //o.saveDefine = FUiWindowConsole_saveDefine;
+   //o.releaseWindowName = FUiWindowConsole_releaseWindowName;
+   //o.releaseWindow = FUiWindowConsole_releaseWindow;
+   //o.doFrameAction = FUiWindowConsole_doFrameAction;
+   //o.setMaxWindow = FUiWindowConsole_setMaxWindow;
+   //o.restore = FUiWindowConsole_restore;
+   //o.doProperties = FUiWindowConsole_doProperties;
+   //o.clear = FUiWindowConsole_clear;
+   //o.hideAll = FUiWindowConsole_hideAll;
+   //o.dump = FUiWindowConsole_dump;
    return this;
 }
-// ------------------------------------------------------------
-function FWindowConsole_construct(){
-   this.windows = new TList();
-   this.defines = new TNameList();
-}
-// ------------------------------------------------------------
-function FWindowConsole_create(name, hWin){
-   var config = this.loadDefine(name);
 
+//==========================================================
+// <T>构造函数。</T>
+//
+// @method
+//==========================================================
+function FUiWindowConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   // 设置属性
+   o._windows = new TDictionary();
+}
+
+//==========================================================
+// <T>根据类型查找窗口。</T>
+//
+// @method
+//==========================================================
+function FUiWindowConsole_find(clazz){
+   var o = this;
+   var name = RClass.name(clazz);
+   var find = o._windows.get(name);
+   if(find){
+      return find;
+   }
+   // 创建窗口
+   var instance = RClass.create(clazz);
+   instance.buildDefine(RWindow._hDocument);
+   return instance;
+}
+
+
+
+// ------------------------------------------------------------
+function FUiWindowConsole_create(name, hWin){
+   var config = this.loadDefine(name);
    var win = IClass.create(FWindow);
 
    //var win = IControl.create(config);
    
-IDump.dump(_id1, win);
+   IDump.dump(_id1, win);
 
    win.linkHtml(window);
    win.build();
@@ -78,7 +111,7 @@ IDump.dump(_id1, win);
    return oWindow;
 }
 // ------------------------------------------------------------
-function FWindowConsole_loadDefine(name){
+function FUiWindowConsole_loadDefine(name){
    if(name == null){
       return null;
    }
@@ -123,16 +156,16 @@ function FWindowConsole_loadDefine(name){
 
 
 // ------------------------------------------------------------
-function FWindowConsole_dump(){
+function FUiWindowConsole_dump(){
    var sDump = this.className;
    sDump += '\n\nDefine:\n' + this.m_oDefinePool.dump();
    sDump += '\n\nWindow:\n' + this.windowList.dump();
    return sDump;
 }
 // ------------------------------------------------------------
-function FWindowConsole_clear(){
+function FUiWindowConsole_clear(){
    this.focusWinCtl = null;
-   this.activeWindow = null;
+   this._activeWindow = null;
    this.activeForm = null;
    this.activeControl = null;
    this.m_oDefinePool = new FList();
@@ -144,7 +177,7 @@ function FWindowConsole_clear(){
    IEngine.process(this, this.EVENT_CLOSEALL);
 }
 // ------------------------------------------------------------
-function FWindowConsole_hideAll(oExpWin, bDisplay){
+function FUiWindowConsole_hideAll(oExpWin, bDisplay){
    var nSize = this.windowList.size();
    for(var n=nSize-1; n>=0; n--){
       var oWin = this.windowList.value(n);
@@ -154,12 +187,12 @@ function FWindowConsole_hideAll(oExpWin, bDisplay){
    }
 }
 // ------------------------------------------------------------
-function FWindowConsole_setMaxWindow(oWin){
+function FUiWindowConsole_setMaxWindow(oWin){
    this.maxFlag = true;
    this.hideAll(oWin);
 }
 // ------------------------------------------------------------
-function FWindowConsole_restore(){
+function FUiWindowConsole_restore(){
    var nSize = this.windowList.size();
    this.hideAll(null, true);
    for(var n=0; n<nSize; n++){
@@ -171,15 +204,15 @@ function FWindowConsole_restore(){
    this.maxFlag = false;
 }
 // ------------------------------------------------------------
-function FWindowConsole_initialize(oCtWin){
+function FUiWindowConsole_initialize(oCtWin){
    this.clientWindow = oCtWin;
 }
 // ------------------------------------------------------------
-function FWindowConsole_hasWindow(){
+function FUiWindowConsole_hasWindow(){
    return !this.windowList.isEmpty();
 }
 // ------------------------------------------------------------
-function FWindowConsole_focus(oWinCtl){
+function FUiWindowConsole_focus(oWinCtl){
    this.focusWinCtl = oWinCtl;
    if(this.maxFlag){
       oWinCtl.show();
@@ -188,7 +221,7 @@ function FWindowConsole_focus(oWinCtl){
    }
 }
 // ------------------------------------------------------------
-function FWindowConsole_saveDefine(oWinNode, oClientWindow){
+function FUiWindowConsole_saveDefine(oWinNode, oClientWindow){
    if(oClientWindow){this.clientWindow.document.body.disabled = true;}
    if(!oWinNode){
       return LoggerUtil.fatal(this, 'saveDefine', 'Window node is null.');
@@ -208,36 +241,32 @@ function FWindowConsole_saveDefine(oWinNode, oClientWindow){
    oConnect.send();
 }
 // ------------------------------------------------------------
-function FWindowConsole_onEventMousedown(oCWin){
+function FUiWindowConsole_onEventMousedown(oCWin){
 }
 // ------------------------------------------------------------
-function FWindowConsole_onSaveDefineAfter(){
+function FUiWindowConsole_onSaveDefineAfter(){
    ILogger.info(this, 'saveDefine', 'Save Ok.');
    if(this.clientWindow){this.clientWindow.document.body.disabled = false;}
 }
 // ------------------------------------------------------------
-function FWindowConsole_findWindow(sWinName){
-   return this.windowList.nameValue(sWinName);
-}
-// ------------------------------------------------------------
-function FWindowConsole_releaseWindowName(sWinName){
+function FUiWindowConsole_releaseWindowName(sWinName){
    var oWin = this.windowList.removeName(sWinName);
    IEngine.process(this, this.EVENT_CLOSE, oWin);
 }
 // ------------------------------------------------------------
-function FWindowConsole_releaseWindow(oWin){
+function FUiWindowConsole_releaseWindow(oWin){
    this.windowList.removeValue(oWin);
    IEngine.process(this, this.EVENT_CLOSE, oWin);
 }
 // ------------------------------------------------------------
-function FWindowConsole_doFrameAction(sAction){
+function FUiWindowConsole_doFrameAction(sAction){
    if(!this.activeForm){
       return ILogger.fatal(this, 'doFrameAction', 'Not active form!');
    }
    this.activeForm.doAction(sAction);
 }
 // ------------------------------------------------------------
-function FWindowConsole_doProperties(){
+function FUiWindowConsole_doProperties(){
    TrackManager.push(this, 'Do properties.');
    if(!WindowManager.focusWinCtl){return;}
    var arParams = new Array();
@@ -245,7 +274,7 @@ function FWindowConsole_doProperties(){
    window.showModalDialog(SystemManager.actionURL('window'), arParams, 'dialogWidth:500px;dialogHeight:360px;resizable:no;scroll:no;edge:sunken');
 }
 // ------------------------------------------------------------
-function FWindowConsole_onEventRelease(oCWin){
+function FUiWindowConsole_onEventRelease(oCWin){
    if(oCWin){
       var oSubWin = null;
       var oRemoves = new Array();

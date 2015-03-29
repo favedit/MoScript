@@ -183,7 +183,14 @@ function FUiMenuButton_setEnable(p){
 function FUiMenuButton_click(){
    var o = this;
    if(!o._disabled){
-      o.processClickListener(o);
+      RConsole.find(FFocusConsole).blur();
+      RLogger.debug(o, 'Menu button click. (label={1})' + o._label);
+      var event = new SClickEvent(o);
+      o.processClickListener(event);
+      event.dispose();
+      if(o._action){
+         eval(o._action);
+      }
    }
 }
 function FUiMenuButton_dispose(){

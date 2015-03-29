@@ -12,4 +12,4 @@
 @REM ============================================================
 COPY /Y %JS_HOME%\9.1.1-context\*.js %JS_HOME%\ajs\
 
-COPY /Y %JS_HOME%\ajs\*.js %PJ_HOME%\MoCloud\mp-cloud-design\webroot\ajs
+@REM COPY /Y %JS_HOME%\ajs\*.js %PJ_HOME%\MoCloud\mp-cloud-design\webroot\ajs

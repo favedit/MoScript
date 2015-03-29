@@ -12,6 +12,7 @@ var EUiPosition = new function EUiPosition(){
    o.Right  = 'right';
    o.Top    = 'top';
    o.Bottom = 'bottom';
+   o.Center = 'center';
    o.Before     = 1;
    o.After      = 2;
    o.LineBefore = 3;

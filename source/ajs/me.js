@@ -24214,6 +24214,111 @@ function FE3rAnimation_dispose(){
    o._resource = null;
    o.__base.FObject.dispose.call(o);
 }
+function FE3rBitmap(o){
+   o = RClass.inherits(this, o, FE3rObject);
+   o._ready            = false;
+   o._vertexCount      = 4;
+   o._vertexBuffers    = null;
+   o._indexBuffer      = null;
+   o._material         = null;
+   o._textures         = null;
+   o.construct         = FE3rBitmap_construct;
+   o.testReady         = FE3rBitmap_testReady;
+   o.vertexCount       = FE3rBitmap_vertexCount;
+   o.findVertexBuffer  = FE3rBitmap_findVertexBuffer;
+   o.vertexBuffers     = FE3rBitmap_vertexBuffers;
+   o.indexBuffer       = FE3rBitmap_indexBuffer;
+   o.material          = FE3rBitmap_material;
+   o.findTexture       = FE3rBitmap_findTexture;
+   o.textures          = FE3rBitmap_textures;
+   o.setup             = FE3rBitmap_setup;
+   return o;
+}
+function FE3rBitmap_construct(){
+   var o = this;
+   o.__base.FE3rObject.construct.call(o);
+   o._vertexBuffers = new TObjects();
+}
+function FE3rBitmap_testReady(){
+   var o = this;
+   if(!o._ready){
+      if(!o._resource.testReady()){
+         return false;
+      }
+      var ts = o._textures;
+      if(ts != null){
+         var c = ts.count();
+         for(var i = 0; i < c; i++){
+            var t = ts.value(i);
+            if(!t.testReady()){
+               return false;
+            }
+         }
+      }
+   }
+   return o._ready;
+}
+function FE3rBitmap_guid(){
+   return this._resource.guid();
+}
+function FE3rBitmap_resource(){
+   return this._resource;
+}
+function FE3rBitmap_setResource(p){
+   this._resource = p;
+}
+function FE3rBitmap_vertexCount(){
+   return this._vertexCount;
+}
+function FE3rBitmap_findVertexBuffer(p){
+   var o = this;
+   var vs = o._vertexBuffers;
+   var c = vs.count();
+   for(var n = 0; n < c; n++){
+      var v = vs.get(n);
+      if(v.name() == p){
+         return v;
+      }
+   }
+   return null;
+}
+function FE3rBitmap_vertexBuffers(){
+   return this._vertexBuffers;
+}
+function FE3rBitmap_indexBuffer(){
+   return this._indexBuffer;
+}
+function FE3rBitmap_material(){
+   return this._material;
+}
+function FE3rBitmap_findTexture(p){
+   return this._textures.get(p);
+}
+function FE3rBitmap_textures(){
+   return this._textures;
+}
+function FE3rBitmap_setup(){
+   var o = this;
+   var g = o._graphicContext;
+   var data = [
+      -1.0,  1.0, 0.0,
+       1.0,  1.0, 0.0,
+       1.0, -1.0, 0.0,
+      -1.0, -1.0, 0.0 ];
+   var buffer = o._vertexPositionBuffer = g.createVertexBuffer();
+   buffer.upload(data, 4 * 3, 4);
+   var data = [
+      0.0, 1.0, 0.0, 1.0,
+      1.0, 0.0, 0.0, 1.0,
+      1.0, 0.0, 0.0, 1.0,
+      0.0, 0.0, 0.0, 1.0 ];
+   var buffer = o._vertexColorBuffer = g.createVertexBuffer();
+   buffer.upload(data, 4 * 4, 4);
+   var data = [0, 1, 2, 0, 2, 3];
+   var buffer = o._indexBuffer = context.createIndexBuffer();
+   buffer.upload(data, 6);
+   return true;
+}
 function FE3rBitmapConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd  = EScope.Local;
@@ -26277,6 +26382,46 @@ var EE3dScene = new function EE3dScene(){
    o.Material   = 'material';
    o.Renderable = 'renderable';
    return o;
+}
+function FE3dBitmap(o){
+   o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
+   o._ready        = false;
+   o._renderable   = null;
+   o.construct     = FE3dBitmap_construct;
+   o.testReady     = FE3dBitmap_testReady;
+   o.renderable    = FE3dBitmap_renderable;
+   o.setRenderable = FE3dBitmap_setRenderable;
+   o.processLoad   = FE3dBitmap_processLoad;
+   o.process       = FE3dBitmap_process;
+   return o;
+}
+function FE3dBitmap_construct(){
+   var o = this;
+   o.__base.FE3dMeshRenderable.construct.call(o);
+}
+function FE3dBitmap_testReady(){
+   return this._ready;
+}
+function FE3dBitmap_renderable(p){
+   return this._renderable;
+}
+function FE3dBitmap_setRenderable(p){
+   var o = this;
+   this._renderable= p;
+   o._ready = true;
+   o.processLoadListener(o);
+}
+function FE3dBitmap_processLoad(){
+   var o = this;
+   if(!o._renderable.testReady()){
+      return false;
+   }
+   o.loadRenderable(o._renderable);
+   return true;
+}
+function FE3dBitmap_process(){
+   var o = this;
+   o.__base.FE3dMeshRenderable.process.call(o);
 }
 function FE3dBoundBox(o){
    o = RClass.inherits(this, o, FE3dRenderable);
