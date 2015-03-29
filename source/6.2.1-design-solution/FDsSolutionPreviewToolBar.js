@@ -15,15 +15,14 @@ function FDsSolutionPreviewToolBar(o){
    o._controlInsertButton   = null;
    o._controlUpdateButton   = null;
    o._controlDeleteButton   = null;
-   o._controlRotationButton = null;
    //..........................................................
    // @event
    o.onBuilded              = FDsSolutionPreviewToolBar_onBuilded;
    // @event
    o.onInsertClick          = FDsSolutionPreviewToolBar_onInsertClick;
    o.onUpdateClick          = FDsSolutionPreviewToolBar_onUpdateClick;
+   o.onDeleteLoad           = FDsSolutionPreviewToolBar_onDeleteLoad;
    o.onDeleteClick          = FDsSolutionPreviewToolBar_onDeleteClick;
-   o.onRotationClick        = FDsSolutionPreviewToolBar_onRotationClick;
    //..........................................................
    // @method
    o.construct              = FDsSolutionPreviewToolBar_construct;
@@ -46,7 +45,6 @@ function FDsSolutionPreviewToolBar_onBuilded(p){
    //o._controlInsertButton.addClickListener(o, o.onInsertClick);
    o._controlUpdateButton.addClickListener(o, o.onUpdateClick);
    o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
-   o._controlRotationButton.addClickListener(o, o.onRotationClick);
 }
 
 //==========================================================
@@ -73,24 +71,35 @@ function FDsSolutionPreviewToolBar_onUpdateClick(event){
 }
 
 //==========================================================
+// <T>更新按键点击处理。</T>
+//
+// @method
+// @param event:SClickEvent 点击事件
+//==========================================================
+function FDsSolutionPreviewToolBar_onDeleteLoad(event){
+   var o = this;
+   var frame = o._workspace._searchContent;
+   frame.serviceResearch();
+   RWindow.enable();
+}
+
+//==========================================================
 // <T>删除按键点击处理。</T>
 //
 // @method
 // @param event:SClickEvent 点击事件
 //==========================================================
 function FDsSolutionPreviewToolBar_onDeleteClick(event){
-}
-
-//==========================================================
-// <T>旋转按键点击处理。</T>
-//
-// @method
-// @param event:SClickEvent 点击事件
-//==========================================================
-function FDsSolutionPreviewToolBar_onRotationClick(event){
    var o = this;
-   var previewContent = o._workspace._previewContent;
-   previewContent.switchRotation(event.checked);
+   var guid = o._workspace._activeProjectGuid;
+   RWindow.disable();
+   // 加载数据
+   var xdocument = new TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'delete');
+   xroot.set('guid', guid);
+   var connection = RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   connection.addLoadListener(o, o.onDeleteLoad);
 }
 
 //==========================================================

@@ -4078,18 +4078,19 @@ function FUiListItem_dispose(){
    o.__base.FUiControl.dispose.call(o);
 }
 function FUiListView(o){
-   o = RClass.inherits(this, o, FUiContainer, MUiHorizontal, MListenerClick);
-   o._sizeCd      = EUiSize.Horizontal
-   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
-   o._itemPool    = null;
-   o._hForm       = null;
-   o.onBuildPanel = FUiListView_onBuildPanel;
-   o.construct    = FUiListView_construct;
-   o.createItem   = FUiListView_createItem;
-   o.appendChild  = FUiListView_appendChild;
-   o.clickItem    = FUiListView_clickItem;
-   o.clear        = FUiListView_clear;
-   o.dispose      = FUiListView_dispose;
+   o = RClass.inherits(this, o, FUiContainer, MUiHorizontal, MListenerClick, MListenerDoubleClick);
+   o._sizeCd           = EUiSize.Horizontal
+   o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
+   o._itemPool         = null;
+   o._hForm            = null;
+   o.onBuildPanel      = FUiListView_onBuildPanel;
+   o.construct         = FUiListView_construct;
+   o.createItem        = FUiListView_createItem;
+   o.appendChild       = FUiListView_appendChild;
+   o.doClickItem       = FUiListView_doClickItem;
+   o.doDoubleClickItem = FUiListView_doDoubleClickItem;
+   o.clear             = FUiListView_clear;
+   o.dispose           = FUiListView_dispose;
    return o;
 }
 function FUiListView_onBuildPanel(p){
@@ -4118,7 +4119,7 @@ function FUiListView_appendChild(p){
    var o = this;
    o._hPanel.appendChild(p._hPanel);
 }
-function FUiListView_clickItem(p){
+function FUiListView_doClickItem(p){
    var o = this;
    var s = o._components;
    if(s){
@@ -4130,7 +4131,27 @@ function FUiListView_clickItem(p){
          }
       }
    }
-   o.processClickListener(o, p);
+   var e = new SClickEvent(o);
+   e.item = p;
+   o.processClickListener(e);
+   e.dispose();
+}
+function FUiListView_doDoubleClickItem(p){
+   var o = this;
+   var s = o._components;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var m = s.value(i);
+         if(RClass.isClass(m, FUiListItem)){
+            m.setChecked(m == p);
+         }
+      }
+   }
+   var e = new SClickEvent(o);
+   e.item = p;
+   o.processDoubleClickListener(e);
+   e.dispose();
 }
 function FUiListView_clear(){
    var o = this;
@@ -4179,6 +4200,7 @@ function FUiListViewItem(o){
    o.onEnter         = FUiListViewItem_onEnter;
    o.onLeave         = FUiListViewItem_onLeave;
    o.onClick         = RClass.register(o, new AEventClick('onClick'), FUiListViewItem_onClick);
+   o.onDoubleClick   = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FUiListViewItem_onDoubleClick);
    o.label           = FUiListViewItem_label;
    o.setLabel        = FUiListViewItem_setLabel;
    o.setChecked      = FUiListViewItem_setChecked;
@@ -4211,6 +4233,7 @@ function FUiListViewItem_onBuild(p){
       o.setLabel(o._label);
    }
    o.attachEvent('onClick', h);
+   o.attachEvent('onDoubleClick', h);
 }
 function FUiListViewItem_onEnter(){
    var o = this;
@@ -4224,7 +4247,11 @@ function FUiListViewItem_onLeave(){
 }
 function FUiListViewItem_onClick(p){
    var o = this;
-   o._parent.clickItem(o);
+   o._parent.doClickItem(o);
+}
+function FUiListViewItem_onDoubleClick(p){
+   var o = this;
+   o._parent.doDoubleClickItem(o);
 }
 function FUiListViewItem_label(p){
    return this._label;

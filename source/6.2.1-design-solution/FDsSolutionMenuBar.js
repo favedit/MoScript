@@ -50,13 +50,15 @@ function FDsSolutionMenuBar_onBuilded(p){
 function FDsSolutionMenuBar_onCreateClick(event){
    var o = this;
    var dialog = RConsole.find(FUiWindowConsole).find(FDsSolutionProjectDialog);
+   dialog._workspace = o._workspace;
    dialog.showPosition(EUiPosition.Center);
    // 存储配置
-   var dialog = RClass.create(FDsSolutionProjectDialog);
-   dialog.buildDefine(o._hPanel);
+   //var dialog = RClass.create(FDsSolutionProjectDialog);
+   //dialog._workspace = o._workspace;
+   //dialog.buildDefine(o._hPanel);
    //dialog.setPanel(o._hPanel);
-   dialog.setPanel(window.document.body);
-   dialog.showPosition(EUiPosition.Center);
+   //dialog.setPanel(window.document.body);
+   //dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================

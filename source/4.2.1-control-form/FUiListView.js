@@ -18,31 +18,32 @@
 // @history 150224
 //==========================================================
 function FUiListView(o){
-   o = RClass.inherits(this, o, FUiContainer, MUiHorizontal, MListenerClick);
+   o = RClass.inherits(this, o, FUiContainer, MUiHorizontal, MListenerClick, MListenerDoubleClick);
    //..........................................................
    // @property
-   o._sizeCd      = EUiSize.Horizontal
+   o._sizeCd           = EUiSize.Horizontal
    //..........................................................
    // @style
-   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
+   o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
    //..........................................................
    // @attribute
-   o._itemPool    = null;
+   o._itemPool         = null;
    //..........................................................
    // @html
-   o._hForm       = null;
+   o._hForm            = null;
    //..........................................................
    // @event
-   o.onBuildPanel = FUiListView_onBuildPanel;
+   o.onBuildPanel      = FUiListView_onBuildPanel;
    //..........................................................
    // @method
-   o.construct    = FUiListView_construct;
+   o.construct         = FUiListView_construct;
    // @method
-   o.createItem   = FUiListView_createItem;
-   o.appendChild  = FUiListView_appendChild;
-   o.clickItem    = FUiListView_clickItem;
-   o.clear        = FUiListView_clear;
-   o.dispose      = FUiListView_dispose;
+   o.createItem        = FUiListView_createItem;
+   o.appendChild       = FUiListView_appendChild;
+   o.doClickItem       = FUiListView_doClickItem;
+   o.doDoubleClickItem = FUiListView_doDoubleClickItem;
+   o.clear             = FUiListView_clear;
+   o.dispose           = FUiListView_dispose;
    return o;
 }
 
@@ -113,7 +114,7 @@ function FUiListView_appendChild(p){
 // @method
 // @param p:item:FUiListItem 列表项目
 //==========================================================
-function FUiListView_clickItem(p){
+function FUiListView_doClickItem(p){
    var o = this;
    // 选中项目
    var s = o._components;
@@ -127,7 +128,36 @@ function FUiListView_clickItem(p){
       }
    }
    // 事件处理
-   o.processClickListener(o, p);
+   var e = new SClickEvent(o);
+   e.item = p;
+   o.processClickListener(e);
+   e.dispose();
+}
+
+//==========================================================
+// <T>双击一个列表项目。</T>
+//
+// @method
+// @param p:item:FUiListItem 列表项目
+//==========================================================
+function FUiListView_doDoubleClickItem(p){
+   var o = this;
+   // 选中项目
+   var s = o._components;
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var m = s.value(i);
+         if(RClass.isClass(m, FUiListItem)){
+            m.setChecked(m == p);
+         }
+      }
+   }
+   // 事件处理
+   var e = new SClickEvent(o);
+   e.item = p;
+   o.processDoubleClickListener(e);
+   e.dispose();
 }
 
 //==========================================================

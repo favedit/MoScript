@@ -19,7 +19,8 @@ var EDsCanvasMode = new function EDsCanvasMode(){
 }
 var EDsFrame = new function EDsFrame(){
    var o = this;
-   o.ResourcePropertyFrame       = 'design3d.resource.property.SpaceFrame';
+   o.SolutionProjectPropertyFrame = 'design3d.solution.property.ProjectFrame';
+   o.ResourcePropertyFrame        = 'design3d.resource.property.SpaceFrame';
    o.MeshSpacePropertyFrame       = 'design3d.mesh.property.SpaceFrame';
    o.MeshTechniquePropertyFrame   = 'design3d.mesh.property.TechniqueFrame';
    o.MeshRegionPropertyFrame      = 'design3d.mesh.property.RegionFrame';

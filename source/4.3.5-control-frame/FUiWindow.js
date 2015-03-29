@@ -11,8 +11,8 @@ function FUiWindow(o){
    o = RClass.inherits(this, o, FUiLayout, MMouseCapture);
    //..........................................................
    // @property
-   //o._caption            = RClass.register(o, new APtyString('_caption'));
-   o._mousePosition      = null;
+   o._statusVisible      = false;
+   //o._caption          = RClass.register(o, new APtyString('_caption'));
    //..........................................................
    // @style
    o._stylePanel         = RClass.register(o, new AStyle('_stylePanel'));
@@ -23,8 +23,8 @@ function FUiWindow(o){
    o._styleStatusPanel   = RClass.register(o, new AStyle('_styleStatusPanel'));
    //..........................................................
    // @attribute
-   //o._isDialog           = false;
-   //o._type               = null;
+   o._mousePosition      = null;
+   o._mouseControl       = null;
    //..........................................................
    // @event
    o.onBuildPanel        = FUiWindow_onBuildPanel;
@@ -154,6 +154,8 @@ function FUiWindow_construct(){
    // 设置属性
    o._mousePosition = new SPoint2();
    o._mouseControl = new SPoint2();
+   // 注册鼠标拖拽
+   RConsole.find(FMouseConsole).register(o);
 }
 
 //==========================================================

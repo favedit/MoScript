@@ -19,7 +19,8 @@ var EDsCanvasMode = new function EDsCanvasMode(){
 }
 var EDsFrame = new function EDsFrame(){
    var o = this;
-   o.ResourcePropertyFrame       = 'design3d.resource.property.SpaceFrame';
+   o.SolutionProjectPropertyFrame = 'design3d.solution.property.ProjectFrame';
+   o.ResourcePropertyFrame        = 'design3d.resource.property.SpaceFrame';
    o.MeshSpacePropertyFrame       = 'design3d.mesh.property.SpaceFrame';
    o.MeshTechniquePropertyFrame   = 'design3d.mesh.property.TechniqueFrame';
    o.MeshRegionPropertyFrame      = 'design3d.mesh.property.RegionFrame';
@@ -1070,10 +1071,7 @@ function FDsSolutionMenuBar_onBuilded(p){
 function FDsSolutionMenuBar_onCreateClick(event){
    var o = this;
    var dialog = RConsole.find(FUiWindowConsole).find(FDsSolutionProjectDialog);
-   dialog.showPosition(EUiPosition.Center);
-   var dialog = RClass.create(FDsSolutionProjectDialog);
-   dialog.buildDefine(o._hPanel);
-   dialog.setPanel(window.document.body);
+   dialog._workspace = o._workspace;
    dialog.showPosition(EUiPosition.Center);
 }
 function FDsSolutionMenuBar_construct(){
@@ -1538,12 +1536,11 @@ function FDsSolutionPreviewToolBar(o){
    o._controlInsertButton   = null;
    o._controlUpdateButton   = null;
    o._controlDeleteButton   = null;
-   o._controlRotationButton = null;
    o.onBuilded              = FDsSolutionPreviewToolBar_onBuilded;
    o.onInsertClick          = FDsSolutionPreviewToolBar_onInsertClick;
    o.onUpdateClick          = FDsSolutionPreviewToolBar_onUpdateClick;
+   o.onDeleteLoad           = FDsSolutionPreviewToolBar_onDeleteLoad;
    o.onDeleteClick          = FDsSolutionPreviewToolBar_onDeleteClick;
-   o.onRotationClick        = FDsSolutionPreviewToolBar_onRotationClick;
    o.construct              = FDsSolutionPreviewToolBar_construct;
    o.dispose                = FDsSolutionPreviewToolBar_dispose;
    return o;
@@ -1553,7 +1550,6 @@ function FDsSolutionPreviewToolBar_onBuilded(p){
    o.__base.FUiToolBar.onBuilded.call(o, p);
    o._controlUpdateButton.addClickListener(o, o.onUpdateClick);
    o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
-   o._controlRotationButton.addClickListener(o, o.onRotationClick);
 }
 function FDsSolutionPreviewToolBar_onInsertClick(event){
 }
@@ -1564,12 +1560,22 @@ function FDsSolutionPreviewToolBar_onUpdateClick(event){
    var url = '/script/design/mesh.html?guid=' + item._guid;
    window.open(url, '_blank', '');
 }
-function FDsSolutionPreviewToolBar_onDeleteClick(event){
-}
-function FDsSolutionPreviewToolBar_onRotationClick(event){
+function FDsSolutionPreviewToolBar_onDeleteLoad(event){
    var o = this;
-   var previewContent = o._workspace._previewContent;
-   previewContent.switchRotation(event.checked);
+   var frame = o._workspace._searchContent;
+   frame.serviceResearch();
+   RWindow.enable();
+}
+function FDsSolutionPreviewToolBar_onDeleteClick(event){
+   var o = this;
+   var guid = o._workspace._activeProjectGuid;
+   RWindow.disable();
+   var xdocument = new TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'delete');
+   xroot.set('guid', guid);
+   var connection = RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   connection.addLoadListener(o, o.onDeleteLoad);
 }
 function FDsSolutionPreviewToolBar_construct(){
    var o = this;
@@ -1587,6 +1593,7 @@ function FDsSolutionProjectDialog(o){
    o._controlTeamButton    = null;
    o._controlShareButton   = null;
    o.onBuilded             = FDsSolutionProjectDialog_onBuilded;
+   o.onConfirmLoad         = FDsSolutionProjectDialog_onConfirmLoad;
    o.onConfirmClick        = FDsSolutionProjectDialog_onConfirmClick;
    o.onCancelClick         = FDsSolutionProjectDialog_onCancelClick;
    o.construct             = FDsSolutionProjectDialog_construct;
@@ -1599,8 +1606,15 @@ function FDsSolutionProjectDialog_onBuilded(p){
    o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
    o._controlCancelButton.addClickListener(o, o.onCancelClick);
 }
+function FDsSolutionProjectDialog_onConfirmLoad(event){
+   var o = this;
+   var frame = o._workspace._searchContent;
+   frame.serviceResearch();
+   RWindow.enable();
+}
 function FDsSolutionProjectDialog_onConfirmClick(event){
    var o = this;
+   RWindow.disable();
    var code = o._controlCode.get();
    var label = o._controlLabel.get();
    var xdocument = new TXmlDocument();
@@ -1609,7 +1623,8 @@ function FDsSolutionProjectDialog_onConfirmClick(event){
    var xdata = xroot.create('Data');
    xdata.set('code', code);
    xdata.set('label', label);
-   RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   var connection = RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   connection.addLoadListener(o, o.onConfirmLoad);
    o.hide();
 }
 function FDsSolutionProjectDialog_onCancelClick(event){
@@ -1623,17 +1638,77 @@ function FDsSolutionProjectDialog_dispose(){
    var o = this;
    o.__base.FUiDialog.dispose.call(o);
 }
+function FDsSolutionProjectProperty(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible          = false;
+   o._workspace        = null;
+   o._activeSpace      = null;
+   o._activeCamera     = null;
+   o._controlGuid      = null;
+   o._controlCode      = null;
+   o._controlLabel     = null;
+   o._controlPosition  = null;
+   o._controlDirection = null;
+   o.onBuilded         = FDsSolutionProjectProperty_onBuilded;
+   o.onDataChanged     = FDsSolutionProjectProperty_onDataChanged;
+   o.onLoadProject     = FDsSolutionProjectProperty_onLoadProject;
+   o.construct         = FDsSolutionProjectProperty_construct;
+   o.loadObject        = FDsSolutionProjectProperty_loadObject;
+   o.dispose           = FDsSolutionProjectProperty_dispose;
+   return o;
+}
+function FDsSolutionProjectProperty_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+}
+function FDsSolutionProjectProperty_onDataChanged(p){
+   var o = this;
+   var camera = o._activeCamera;
+   var resource = camera.resource();
+   resource.position().assign(o._controlPosition.get());
+   resource.direction().assign(o._controlDirection.get());
+   camera.position().assign(resource.position());
+   camera.direction().assign(resource.direction());
+   camera.update();
+}
+function FDsSolutionProjectProperty_onLoadProject(event){
+   var o = this;
+   var xproject = event.root.findNode('Project');
+   o._controlCode.set(xproject.get('code'));
+   o._controlLabel.set(xproject.get('label'));
+}
+function FDsSolutionProjectProperty_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsSolutionProjectProperty_loadObject(control){
+   var o = this;
+   var guid = control._guid;
+   o._controlGuid.set(guid);
+   var xdocument = new TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'query');
+   xroot.set('guid', guid);
+   var connection = RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   connection.addLoadListener(o, o.onLoadProject);
+}
+function FDsSolutionProjectProperty_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
 function FDsSolutionSearchContent(o){
    o = RClass.inherits(this, o, FUiListView);
-   o._refreshButton = null;
-   o._saveButton    = null;
-   o._runButton     = null;
-   o.onBuilded      = FDsSolutionSearchContent_onBuilded;
-   o.onServiceLoad  = FDsSolutionSearchContent_onServiceLoad;
-   o.construct      = FDsSolutionSearchContent_construct;
-   o.clickItem      = FDsSolutionSearchContent_clickItem;
-   o.serviceSearch  = FDsSolutionSearchContent_serviceSearch;
-   o.dispose        = FDsSolutionSearchContent_dispose;
+   o._refreshButton    = null;
+   o._saveButton       = null;
+   o._runButton        = null;
+   o.onBuilded         = FDsSolutionSearchContent_onBuilded;
+   o.onServiceLoad     = FDsSolutionSearchContent_onServiceLoad;
+   o.construct         = FDsSolutionSearchContent_construct;
+   o.doClickItem       = FDsSolutionSearchContent_doClickItem;
+   o.doDoubleClickItem = FDsSolutionSearchContent_doDoubleClickItem;
+   o.serviceSearch     = FDsSolutionSearchContent_serviceSearch;
+   o.serviceResearch   = FDsSolutionSearchContent_serviceResearch;
+   o.dispose           = FDsSolutionSearchContent_dispose;
    return o;
 }
 function FDsSolutionSearchContent_onBuilded(p){
@@ -1668,18 +1743,30 @@ function FDsSolutionSearchContent_construct(){
    var o = this;
    o.__base.FUiListView.construct.call(o);
 }
-function FDsSolutionSearchContent_clickItem(p){
+function FDsSolutionSearchContent_doClickItem(control){
    var o = this;
-   var frame = o._workspace._previewContent;
-   frame._activeItem = p;
-   frame.loadMeshByGuid(p._guid);
+   o.__base.FUiListView.doClickItem.call(o, control);
+   o._workspace.selectObject(control);
+}
+function FDsSolutionSearchContent_doDoubleClickItem(control){
+   var o = this;
+   o.__base.FUiListView.doDoubleClickItem.call(o, control);
+   window.location = 'Project.wa?do=detail&guid=' + o._workspace._activeProjectGuid;
 }
 function FDsSolutionSearchContent_serviceSearch(typeCd, serach, pageSize, page){
    var o = this;
+   o._typeCd = typeCd;
+   o._serach = serach;
+   o._pageSize = pageSize;
+   o._page = page;
    RWindow.disable();
    var url = '/cloud.solution.project.ws?action=fetch&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
    var connection = RConsole.find(FXmlConsole).sendAsync(url);
    connection.addLoadListener(o, o.onServiceLoad);
+}
+function FDsSolutionSearchContent_serviceResearch(){
+   var o = this;
+   o.serviceSearch(o._typeCd, o._serach, o._pageSize, o._page);
 }
 function FDsSolutionSearchContent_dispose(){
    var o = this;
@@ -1839,6 +1926,7 @@ function FDsSolutionWorkspace(o){
    o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
    o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    o._resourceTypeCd       = 'private';
+   o._activeProjectGuid    = null;
    o._frameToolBar         = null;
    o._frameStatusBar       = null;
    o._frameCatalog         = null;
@@ -1852,10 +1940,9 @@ function FDsSolutionWorkspace(o){
    o._framePreviewContent  = null;
    o._propertyFrames       = null;
    o.onBuilded             = FDsSolutionWorkspace_onBuilded;
-   o.onMeshLoad            = FDsSolutionWorkspace_onMeshLoad;
-   o.onCatalogSelected     = FDsSolutionWorkspace_onCatalogSelected;
    o.construct             = FDsSolutionWorkspace_construct;
    o.findPropertyFrame     = FDsSolutionWorkspace_findPropertyFrame;
+   o.selectObject          = FDsSolutionWorkspace_selectObject;
    o.switchContent         = FDsSolutionWorkspace_switchContent;
    o.load                  = FDsSolutionWorkspace_load;
    o.dispose               = FDsSolutionWorkspace_dispose;
@@ -1880,7 +1967,7 @@ function FDsSolutionWorkspace_onBuilded(p){
    f._hPanel.className = o.styleName('Preview_Ground');
    var f = o._framePreviewToolbar = o.searchControl('previewToolbarFrame');
    f._hPanel.className = o.styleName('Preview_Toolbar');
-   var f = o._framePreviewContent = o.searchControl('previewContentFrame');
+   var f = o._framePreviewProperty = o.searchControl('previewPropertyFrame');
    var f = o._frameStatusBar = o.searchControl('statusFrame');
    f._hPanel.className = o.styleName('Statusbar_Ground');
    var f = o._catalogSplitter = o.searchControl('catalogSpliter');
@@ -1926,63 +2013,7 @@ function FDsSolutionWorkspace_onBuilded(p){
    control._workspace = o;
    control.buildDefine(p);
    o._framePreviewToolbar.push(control);
-   var control = o._previewContent = RClass.create(FDsSolutionPreviewContent);
-   control._workspace = o;
-   control._toolbar = o._previewToolbar;
-   control._hParent = f._hPanel;
-   control.build(p);
-   o._framePreviewContent.push(control);
    o.switchContent(o._resourceTypeCd);
-}
-function FDsSolutionWorkspace_onMeshLoad(p){
-   var o = this;
-   o._activeSpace = p._activeSpace;
-   o._catalog.buildSpace(o._activeSpace);
-}
-function FDsSolutionWorkspace_onCatalogSelected(p, pc){
-   var o = this;
-   var space = o._activeSpace;
-   var fs = o._propertyFrames;
-   var c = fs.count();
-   for(var i = 0; i < c; i++){
-      var f = fs.value(i);
-      f.hide();
-   }
-   if(RClass.isClass(p, FE3dStage)){
-      var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
-      f.show();
-      f.loadObject(space, space);
-   }else if(RClass.isClass(p, FG3dTechnique)){
-      var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dRegion)){
-      var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dCamera)){
-      var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FG3dDirectionalLight)){
-      var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dMeshDisplay)){
-      var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FG3dMaterial)){
-      var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dMeshRenderable)){
-      var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else{
-      throw new TError('Unknown select object type. (value={1})', p);
-   }
 }
 function FDsSolutionWorkspace_construct(){
    var o = this;
@@ -1994,11 +2025,29 @@ function FDsSolutionWorkspace_findPropertyFrame(p){
    var f = o._propertyFrames.get(p);
    if(!f){
       var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._framePreview._hContainer);
+      f = fc.get(o, p, o._framePreviewProperty._hContainer);
       f._workspace = o;
       o._propertyFrames.set(p, f);
    }
    return f;
+}
+function FDsSolutionWorkspace_selectObject(control){
+   var o = this;
+   var space = o._activeSpace;
+   var fs = o._propertyFrames;
+   var c = fs.count();
+   for(var i = 0; i < c; i++){
+      var f = fs.value(i);
+      f.hide();
+   }
+   if(RClass.isClass(control, FDsSolutionSearchItem)){
+      var f = o.findPropertyFrame(EDsFrame.SolutionProjectPropertyFrame);
+      f.show();
+      f.loadObject(control);
+      o._activeProjectGuid = control._guid;
+   }else{
+      throw new TError('Unknown select object type. (value={1})', p);
+   }
 }
 function FDsSolutionWorkspace_switchContent(typeCd){
    var o = this;

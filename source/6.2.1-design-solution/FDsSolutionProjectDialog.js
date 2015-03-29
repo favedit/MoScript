@@ -20,6 +20,7 @@ function FDsSolutionProjectDialog(o){
    // @event
    o.onBuilded             = FDsSolutionProjectDialog_onBuilded;
    // @event
+   o.onConfirmLoad         = FDsSolutionProjectDialog_onConfirmLoad;
    o.onConfirmClick        = FDsSolutionProjectDialog_onConfirmClick;
    o.onCancelClick         = FDsSolutionProjectDialog_onCancelClick;
    //..........................................................
@@ -51,8 +52,23 @@ function FDsSolutionProjectDialog_onBuilded(p){
 // @method
 // @param event:SEvent 事件
 //==========================================================
+function FDsSolutionProjectDialog_onConfirmLoad(event){
+   var o = this;
+   var frame = o._workspace._searchContent;
+   frame.serviceResearch();
+   // 隐藏窗口
+   RWindow.enable();
+}
+
+//==========================================================
+// <T>按键点击处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
 function FDsSolutionProjectDialog_onConfirmClick(event){
    var o = this;
+   RWindow.disable();
    var code = o._controlCode.get();
    var label = o._controlLabel.get();
    // 发送数据
@@ -62,7 +78,8 @@ function FDsSolutionProjectDialog_onConfirmClick(event){
    var xdata = xroot.create('Data');
    xdata.set('code', code);
    xdata.set('label', label);
-   RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   var connection = RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   connection.addLoadListener(o, o.onConfirmLoad);
    // 隐藏窗口
    o.hide();
 }

@@ -45,6 +45,7 @@ function FUiListViewItem(o){
    o.onEnter         = FUiListViewItem_onEnter;
    o.onLeave         = FUiListViewItem_onLeave;
    o.onClick         = RClass.register(o, new AEventClick('onClick'), FUiListViewItem_onClick);
+   o.onDoubleClick   = RClass.register(o, new AEventDoubleClick('onDoubleClick'), FUiListViewItem_onDoubleClick);
    //..........................................................
    // @method
    o.label           = FUiListViewItem_label;
@@ -102,6 +103,7 @@ function FUiListViewItem_onBuild(p){
    }
    // 关联事件
    o.attachEvent('onClick', h);
+   o.attachEvent('onDoubleClick', h);
 }
 
 //==========================================================
@@ -134,7 +136,18 @@ function FUiListViewItem_onLeave(){
 //==========================================================
 function FUiListViewItem_onClick(p){
    var o = this;
-   o._parent.clickItem(o);
+   o._parent.doClickItem(o);
+}
+
+//==========================================================
+// <T>点击事件处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件信息
+//==========================================================
+function FUiListViewItem_onDoubleClick(p){
+   var o = this;
+   o._parent.doDoubleClickItem(o);
 }
 
 //==========================================================

@@ -8,22 +8,24 @@ function FDsSolutionSearchContent(o){
    o = RClass.inherits(this, o, FUiListView);
    //..........................................................
    // @attribute
-   o._refreshButton = null;
-   o._saveButton    = null;
-   o._runButton     = null;
+   o._refreshButton    = null;
+   o._saveButton       = null;
+   o._runButton        = null;
    //..........................................................
    // @event
-   o.onBuilded      = FDsSolutionSearchContent_onBuilded;
+   o.onBuilded         = FDsSolutionSearchContent_onBuilded;
    // @event
-   o.onServiceLoad  = FDsSolutionSearchContent_onServiceLoad;
+   o.onServiceLoad     = FDsSolutionSearchContent_onServiceLoad;
    //..........................................................
    // @method
-   o.construct      = FDsSolutionSearchContent_construct;
+   o.construct         = FDsSolutionSearchContent_construct;
    // @method
-   o.clickItem      = FDsSolutionSearchContent_clickItem;
-   o.serviceSearch  = FDsSolutionSearchContent_serviceSearch;
+   o.doClickItem       = FDsSolutionSearchContent_doClickItem;
+   o.doDoubleClickItem = FDsSolutionSearchContent_doDoubleClickItem;
+   o.serviceSearch     = FDsSolutionSearchContent_serviceSearch;
+   o.serviceResearch   = FDsSolutionSearchContent_serviceResearch;
    // @method
-   o.dispose        = FDsSolutionSearchContent_dispose;
+   o.dispose           = FDsSolutionSearchContent_dispose;
    return o;
 }
 
@@ -92,12 +94,22 @@ function FDsSolutionSearchContent_construct(){
 // @method
 // @param p:item:FUiListItem 列表项目
 //==========================================================
-function FDsSolutionSearchContent_clickItem(p){
+function FDsSolutionSearchContent_doClickItem(control){
    var o = this;
-   // 选中项目
-   var frame = o._workspace._previewContent;
-   frame._activeItem = p;
-   frame.loadMeshByGuid(p._guid);
+   o.__base.FUiListView.doClickItem.call(o, control);
+   o._workspace.selectObject(control);
+}
+
+//==========================================================
+// <T>点击一个列表项目。</T>
+//
+// @method
+// @param p:item:FUiListItem 列表项目
+//==========================================================
+function FDsSolutionSearchContent_doDoubleClickItem(control){
+   var o = this;
+   o.__base.FUiListView.doDoubleClickItem.call(o, control);
+   window.location = 'Project.wa?do=detail&guid=' + o._workspace._activeProjectGuid;
 }
 
 //==========================================================
@@ -109,12 +121,28 @@ function FDsSolutionSearchContent_clickItem(p){
 //==========================================================
 function FDsSolutionSearchContent_serviceSearch(typeCd, serach, pageSize, page){
    var o = this;
+   o._typeCd = typeCd;
+   o._serach = serach;
+   o._pageSize = pageSize;
+   o._page = page;
    // 画面禁止操作
    RWindow.disable();
    // 发送数据请求
    var url = '/cloud.solution.project.ws?action=fetch&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
    var connection = RConsole.find(FXmlConsole).sendAsync(url);
    connection.addLoadListener(o, o.onServiceLoad);
+}
+
+//==========================================================
+// <T>服务搜索处理。</T>
+//
+// @method
+// @param typeCd:String 类型
+// @param search:String 搜索内容
+//==========================================================
+function FDsSolutionSearchContent_serviceResearch(){
+   var o = this;
+   o.serviceSearch(o._typeCd, o._serach, o._pageSize, o._page);
 }
 
 //==========================================================

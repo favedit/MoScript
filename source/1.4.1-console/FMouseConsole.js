@@ -12,7 +12,7 @@ function FMouseConsole(o){
    o._scopeCd       = EScope.Local;
    // @attribute
    o._activeCapture = null;
-   o._captures      = null;
+   //o._captures      = null;
    //..........................................................
    // @event
    o.onMouseDown    = FMouseConsole_onMouseDown;
@@ -96,7 +96,7 @@ function FMouseConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 创建属性
-   o._captures = new TObjects();
+   //o._captures = new TObjects();
    // 注册事件
    RWindow.lsnsMouseDown.register(o, o.onMouseDown);
    RWindow.lsnsMouseMove.register(o, o.onMouseMove);
@@ -159,7 +159,7 @@ function FMouseConsole_captureStop(p){
 // @param p:capture:MMouseCapture 鼠标捕捉
 //==========================================================
 function FMouseConsole_register(p){
-   this._captures.push(p);
+   //this._captures.push(p);
 }
 
 //==========================================================
@@ -169,7 +169,7 @@ function FMouseConsole_register(p){
 // @param p:capture:MMouseCapture 鼠标捕捉
 //==========================================================
 function FMouseConsole_unregister(p){
-   this._captures.remove(p);
+   //this._captures.remove(p);
 }
 
 //==========================================================
@@ -178,5 +178,5 @@ function FMouseConsole_unregister(p){
 // @method
 //==========================================================
 function FMouseConsole_clear(){
-   this._captures.clear();
+   //this._captures.clear();
 }

@@ -24,6 +24,7 @@ function FDsSolutionWorkspace(o){
    //..........................................................
    // @attribute
    o._resourceTypeCd       = 'private';
+   o._activeProjectGuid    = null;
    // @attribute
    o._frameToolBar         = null;
    o._frameStatusBar       = null;
@@ -42,14 +43,13 @@ function FDsSolutionWorkspace(o){
    //..........................................................
    // @process
    o.onBuilded             = FDsSolutionWorkspace_onBuilded;
-   o.onMeshLoad            = FDsSolutionWorkspace_onMeshLoad;
-   o.onCatalogSelected     = FDsSolutionWorkspace_onCatalogSelected;
    //..........................................................
    // @method
    o.construct             = FDsSolutionWorkspace_construct;
    // @method
    o.findPropertyFrame     = FDsSolutionWorkspace_findPropertyFrame;
    // @method
+   o.selectObject          = FDsSolutionWorkspace_selectObject;
    o.switchContent         = FDsSolutionWorkspace_switchContent;
    o.load                  = FDsSolutionWorkspace_load;
    // @method
@@ -87,7 +87,7 @@ function FDsSolutionWorkspace_onBuilded(p){
    f._hPanel.className = o.styleName('Preview_Ground');
    var f = o._framePreviewToolbar = o.searchControl('previewToolbarFrame');
    f._hPanel.className = o.styleName('Preview_Toolbar');
-   var f = o._framePreviewContent = o.searchControl('previewContentFrame');
+   var f = o._framePreviewProperty = o.searchControl('previewPropertyFrame');
    // 设置状态区
    var f = o._frameStatusBar = o.searchControl('statusFrame');
    f._hPanel.className = o.styleName('Statusbar_Ground');
@@ -130,7 +130,7 @@ function FDsSolutionWorkspace_onBuilded(p){
    var control = o._catalogContent = RClass.create(FDsSolutionCatalogContent);
    control._workspace = o;
    control.build(p);
-   //control.addSelectedListener(o, o.onCatalogSelected);
+   //control.addSelectedListener(o, o.selectObject);
    o._frameCatalogContent.push(control);
    //..........................................................
    // 设置搜索栏
@@ -150,81 +150,13 @@ function FDsSolutionWorkspace_onBuilded(p){
    control.buildDefine(p);
    o._framePreviewToolbar.push(control);
    // 设置画板
-   var control = o._previewContent = RClass.create(FDsSolutionPreviewContent);
-   control._workspace = o;
-   control._toolbar = o._previewToolbar;
-   control._hParent = f._hPanel;
-   control.build(p);
-   o._framePreviewContent.push(control);
+   //var control = o._previewProperty = RClass.create(FDsSolutionProjectProperty);
+   //control._workspace = o;
+   //control._toolbar = o._previewToolbar;
+   //control.buildDefine(p);
+   //o._framePreviewProperty.push(control);
    //..........................................................
    o.switchContent(o._resourceTypeCd);
-}
-
-//==========================================================
-// <T>加载模板处理。</T>
-//
-// @method
-// @param p:template:FTemplate3d 模板
-//==========================================================
-function FDsSolutionWorkspace_onMeshLoad(p){
-   var o = this;
-   o._activeSpace = p._activeSpace;
-   // 加载完成
-   o._catalog.buildSpace(o._activeSpace);
-}
-
-//==========================================================
-// <T>目录对象选择处理。</T>
-//
-// @method
-// @param p:value:Object 对象
-//==========================================================
-function FDsSolutionWorkspace_onCatalogSelected(p, pc){
-   var o = this;
-   var space = o._activeSpace;
-   // 隐藏所有属性面板
-   var fs = o._propertyFrames;
-   var c = fs.count();
-   for(var i = 0; i < c; i++){
-      var f = fs.value(i);
-      f.hide();
-   }
-   // 显示选中属性面板
-   if(RClass.isClass(p, FE3dStage)){
-      var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
-      f.show();
-      f.loadObject(space, space);
-   }else if(RClass.isClass(p, FG3dTechnique)){
-      var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dRegion)){
-      var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dCamera)){
-      var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FG3dDirectionalLight)){
-      var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dMeshDisplay)){
-      var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FG3dMaterial)){
-      var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dMeshRenderable)){
-      var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
-      f.show();
-      f.loadObject(space, p);
-   }else{
-      throw new TError('Unknown select object type. (value={1})', p);
-   }
 }
 
 //==========================================================
@@ -251,12 +183,40 @@ function FDsSolutionWorkspace_findPropertyFrame(p){
    var f = o._propertyFrames.get(p);
    if(!f){
       var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._framePreview._hContainer);
+      f = fc.get(o, p, o._framePreviewProperty._hContainer);
       f._workspace = o;
       o._propertyFrames.set(p, f);
    }
    return f;
 }
+
+//==========================================================
+// <T>目录对象选择处理。</T>
+//
+// @method
+// @param p:value:Object 对象
+//==========================================================
+function FDsSolutionWorkspace_selectObject(control){
+   var o = this;
+   var space = o._activeSpace;
+   // 隐藏所有属性面板
+   var fs = o._propertyFrames;
+   var c = fs.count();
+   for(var i = 0; i < c; i++){
+      var f = fs.value(i);
+      f.hide();
+   }
+   // 显示选中属性面板
+   if(RClass.isClass(control, FDsSolutionSearchItem)){
+      var f = o.findPropertyFrame(EDsFrame.SolutionProjectPropertyFrame);
+      f.show();
+      f.loadObject(control);
+      o._activeProjectGuid = control._guid;
+   }else{
+      throw new TError('Unknown select object type. (value={1})', p);
+   }
+}
+
 
 //==========================================================
 // <T>选择内容。</T>

@@ -12825,7 +12825,6 @@ function FMouseConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd       = EScope.Local;
    o._activeCapture = null;
-   o._captures      = null;
    o.onMouseDown    = FMouseConsole_onMouseDown;
    o.onMouseMove    = FMouseConsole_onMouseMove;
    o.onMouseUp      = FMouseConsole_onMouseUp;
@@ -12867,7 +12866,6 @@ function FMouseConsole_onMouseUp(p){
 function FMouseConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._captures = new TObjects();
    RWindow.lsnsMouseDown.register(o, o.onMouseDown);
    RWindow.lsnsMouseMove.register(o, o.onMouseMove);
    RWindow.lsnsMouseUp.register(o, o.onMouseUp);
@@ -12901,13 +12899,10 @@ function FMouseConsole_captureStop(p){
    RWindow.setOptionSelect(true);
 }
 function FMouseConsole_register(p){
-   this._captures.push(p);
 }
 function FMouseConsole_unregister(p){
-   this._captures.remove(p);
 }
 function FMouseConsole_clear(){
-   this._captures.clear();
 }
 function FPipeline(o){
    o = RClass.inherits(this, o, FObject);
