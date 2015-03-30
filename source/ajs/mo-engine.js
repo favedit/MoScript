@@ -8303,7 +8303,7 @@ function FE3dSimpleCanvas_onTouchStop(p){
 }
 function FE3dSimpleCanvas_onSceneLoad(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var s = o._activeStage;
    var cs = c.size();
    var rp = s.camera().projection();
@@ -8318,7 +8318,7 @@ function FE3dSimpleCanvas_onSceneLoad(p){
 function FE3dSimpleCanvas_onResize(p){
    var o = this;
    o.__base.FE3dCanvas.onResize.call(o, p);
-   var c = o._context;
+   var c = o._graphicContext;
    var cs = c.size();
    var s = o._activeStage;
    if(s){

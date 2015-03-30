@@ -71,7 +71,7 @@ function onLoad(){
    //w.setPanel(document.body);
    w.setPanel(id_canvas);
    w.onResize();
-   context = w._context;
+   context = w._graphicContext;
    // 创建舞台
    stage = RClass.create(FE3dSimpleStage);
    stage.linkGraphicContext(context);

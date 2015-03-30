@@ -246,7 +246,7 @@ function FE3dSimpleCanvas_onTouchStop(p){
 //==========================================================
 function FE3dSimpleCanvas_onSceneLoad(p){
    var o = this;
-   var c = o._context;
+   var c = o._graphicContext;
    var s = o._activeStage;
    // 设置投影
    var cs = c.size();
@@ -272,7 +272,7 @@ function FE3dSimpleCanvas_onResize(p){
    var o = this;
    o.__base.FE3dCanvas.onResize.call(o, p);
    // 获得相机信息
-   var c = o._context;
+   var c = o._graphicContext;
    var cs = c.size();
    var s = o._activeStage;
    if(s){
