@@ -1,3 +1,569 @@
+function AEventBlur(n, m){
+   var o = this;
+   AEvent.call(o, n, 'blur', 'onblur');
+   o.attach = AEventBlur_attach;
+   return o;
+}
+function AEventBlur_attach(e, h){
+}
+function AEventChange(n){
+   var o = this;
+   AEvent.call(o, n, 'change', 'onchange');
+   o.attach = AEventChange_attach;
+   return o;
+}
+function AEventChange_attach(e, h){
+}
+function AEventClick(n){
+   var o = this;
+   AEvent.call(o, n, 'click', 'onclick');
+   o.attach = AEventClick_attach;
+   return o;
+}
+function AEventClick_attach(e, h){
+   e.altKey = h.altKey;
+   e.ctrlKey = h.ctrlKey;
+   e.shiftKey = h.shiftKey;
+}
+function AEventDoubleClick(n){
+   var o = this;
+   AEvent.call(o, n, 'dblclick', 'ondblclick');
+   o.attach = AEventDoubleClick_attach;
+   return o;
+}
+function AEventDoubleClick_attach(e, h){
+   e.altKey = h.altKey;
+   e.ctrlKey = h.ctrlKey;
+   e.shiftKey = h.shiftKey;
+}
+function AEventFocus(n){
+   var o = this;
+   AEvent.call(o, n, 'focus', 'onfocus');
+   o.attach = AEventFocus_attach;
+   return o;
+}
+function AEventFocus_attach(e, h){
+}
+function AEventInputChanged(n){
+   var o = this;
+   AEvent.call(o, n, 'input', 'oninput');
+   o.attach = AEventInputChanged_attach;
+   o.bind   = AEventInputChanged_bind;
+   return o;
+}
+function AEventInputChanged_attach(e, h){
+}
+function AEventInputChanged_bind(h, u){
+   var o = this;
+   if(RBrowser.isBrowser(EBrowser.Explorer)){
+      h.onpropertychange = REvent.ohEvent;
+   }else{
+      h.addEventListener('input', REvent.ohEvent);
+   }
+}
+function AEventKeyDown(n){
+   var o = this;
+   AEvent.call(o, n, 'keydown', 'onkeydown');
+   o.attach = AEventKeyDown_attach;
+   return o;
+}
+function AEventKeyDown_attach(e, h){
+   e.altKey = h.altKey;
+   e.shiftKey = h.shiftKey;
+   e.ctrlKey = h.ctrlKey;
+   e.keyCode = h.keyCode;
+}
+function AEventKeyPress(n){
+   var o = this;
+   AEvent.call(o, n, 'keypress', 'onkeypress');
+   o.create = AEventKeyPress_create;
+   o.attach = AEventKeyPress_attach;
+   return o;
+}
+function AEventKeyPress_create(){
+   return new SKeyboardEvent();
+}
+function AEventKeyPress_attach(e, h){
+   e.hEvent = h;
+   e.attachEvent(h);
+}
+function AEventKeyUp(n){
+   var o = this;
+   AEvent.call(o, n, 'keyup', 'onkeyup');
+   o.attach = AEventKeyUp_attach;
+   return o;
+}
+function AEventKeyUp_attach(e, h){
+   e.altKey = h.altKey;
+   e.shiftKey = h.shiftKey;
+   e.ctrlKey = h.ctrlKey;
+   e.keyCode = h.keyCode;
+}
+function AEventLoad(n){
+   var o = this;
+   AEvent.call(o, n, 'load', 'onload');
+   o.attach = AEventLoad_attach;
+   return o;
+}
+function AEventLoad_attach(e, h){
+}
+function AEventMouse(n, l, h){
+   var o = this;
+   AEvent.call(o, n, l, h);
+   o.attach = AEventMouse_attach;
+   return o;
+}
+function AEventMouse_attach(e, h){
+   e.button = h.button;
+   e.mouseLeft = (h.button == EMouseButton.Left);
+   e.mouseMiddle = (h.button == EMouseButton.Middle);
+   e.mouseRight = (h.button == EMouseButton.Right);
+   e.altKey = h.altKey;
+   e.ctrlKey = h.ctrlKey;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      e.x = h.pageX;
+      e.y = h.pageY;
+      e.offsetX = h.layerX;
+      e.offsetY = h.layerY;
+   }else{
+      e.x = h.x;
+      e.y = h.y;
+      e.offsetX = h.offsetX;
+      e.offsetY = h.offsetY;
+   }
+   e.clientX = h.clientX;
+   e.clientY = h.clientY;
+}
+function AEventMouseDown(n){
+   var o = this;
+   AEventMouse.call(o, n, 'mousedown', 'onmousedown');
+   return o;
+}
+function AEventMouseEnter(n){
+   var o = this;
+   AEvent.call(o, n, 'mouseenter', 'onmouseenter');
+   o._logger = false;
+   o.attach  = AEventMouseEnter_attach;
+   return o;
+}
+function AEventMouseEnter_attach(e, h){
+}
+function AEventMouseLeave(n){
+   var o = this;
+   AEvent.call(o, n, 'mouseleave', 'onmouseleave');
+   o._logger = false;
+   o.attach  = AEventMouseLeave_attach;
+   return o;
+}
+function AEventMouseLeave_attach(e, h){
+}
+function AEventMouseMove(n){
+   var o = this;
+   AEventMouse.call(o, n, 'mousemove', 'onmousemove');
+   o._logger = false;
+   return o;
+}
+function AEventMouseOut(n){
+   var o = this;
+   AEvent.call(o, n, 'mouseout', 'onmouseout');
+   o._hSource = null;
+   o._altKey  = null;
+   o._ctrlKey = null;
+   o._x       = null;
+   o._y       = null;
+   o.attach   = AEventMouseOut_attach;
+   return o;
+}
+function AEventMouseOut_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+   o._altKey = p.altKey;
+   o._ctrlKey = p.ctrlKey;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      o._x = p.pageX;
+      o._y = p.pageY;
+   }else{
+      o._x = p.x;
+      o._y = p.y;
+   }
+}
+function AEventMouseOver(n){
+   var o = this;
+   AEvent.call(o, n, 'mouseover', 'onmouseover');
+   o._hSource = null;
+   o._altKey  = null;
+   o._ctrlKey = null;
+   o._x       = null;
+   o._y       = null;
+   o.attach   = AEventMouseOver_attach;
+   return o;
+}
+function AEventMouseOver_attach(p){
+   var o = this;
+   o._hSource = p.srcElement;
+   o._altKey = p.altKey;
+   o._ctrlKey = p.ctrlKey;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      o._x = p.pageX;
+      o._y = p.pageY;
+   }else{
+      o._x = p.x;
+      o._y = p.y;
+   }
+}
+function AEventMouseUp(n){
+   var o = this;
+   AEventMouse.call(o, n, 'mouseup', 'onmouseup');
+   return o;
+}
+function AEventMouseWheel(n){
+   var o = this;
+   AEvent.call(o, n, 'mousewheel', 'onmousewheel');
+   o.attach = AEventMouseWheel_attach;
+   return o;
+}
+function AEventMouseWheel_attach(e, h){
+   e.altKey = h.altKey;
+   e.ctrlKey = h.ctrlKey;
+   e.delta = h.wheelDelta;
+   if(RBrowser.isBrowser(EBrowser.FireFox)){
+      e.x = h.pageX;
+      e.y = h.pageY;
+   }else{
+      e.x = h.x;
+      e.y = h.y;
+   }
+}
+function AEventReadyStateChange(n){
+   var o = this;
+   AEvent.call(o, n, 'readystatechange', 'onreadystatechange');
+   o.attach = AEventReadyStateChange_attach;
+   return o;
+}
+function AEventReadyStateChange_attach(e, h){
+}
+function AEventResize(n){
+   var o = this;
+   AEvent.call(o, n, 'resize', 'onresize');
+   o.attach = AEventResize_attach;
+   return o;
+}
+function AEventResize_attach(e, h){
+   e.x = h.x;
+   e.y = h.y;
+}
+function AEventScroll(n){
+   var o = this;
+   AEvent.call(o, n, 'scroll', 'onscroll');
+   o.attach = AEventScroll_attach;
+   return o;
+}
+function AEventScroll_attach(e, h){
+}
+function AEventTouchEnd(n){
+   var o = this;
+   AEvent.call(o, n, 'touchstart', 'ontouchstart');
+   o.attach = AEventTouchEnd_attach;
+   return o;
+}
+function AEventTouchEnd_attach(e, h){
+}
+function AEventTouchMove(n){
+   var o = this;
+   AEvent.call(o, n, 'touchstart', 'ontouchstart');
+   o.attach = AEventTouchMove_attach;
+   return o;
+}
+function AEventTouchMove_attach(e, h){
+}
+function AEventTouchStart(n){
+   var o = this;
+   AEvent.call(o, n, 'touchstart', 'ontouchstart');
+   o.attach = AEventTouchStart_attach;
+   return o;
+}
+function AEventTouchStart_attach(e, h){
+}
+function APtyAttributes(n, l, vl, vt, vr, vb){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._left    = RInteger.nvl(vl);
+   o._top     = RInteger.nvl(vt);
+   o._right   = RInteger.nvl(vr);
+   o._bottom  = RInteger.nvl(vb);
+   o.load     = APtyAttributes_load;
+   o.save     = APtyAttributes_save;
+   o.toString = APtyAttributes_toString;
+   return o;
+}
+function APtyAttributes_load(v, x){
+   var o = this;
+   var s = v[o._name];
+   if(!s){
+      s = v[o._name] = new TAttributes();
+   }
+   s.split(x.get(o._linker), '=', '\n');
+}
+function APtyAttributes_save(v, x){
+   var o = this;
+   var s = v[o._name];
+   if(!s.isEmpty()){
+      x.set(o._linker, s.join('=', '\n'));
+   }
+}
+function APtyAttributes_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom;
+}
+function APtyBoolean(n, l, v){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._value    = v ? v : false;
+   o.build    = APtyBoolean_build;
+   o.load     = APtyBoolean_load;
+   o.save     = APtyBoolean_save;
+   o.toString = APtyBoolean_toString;
+   return o;
+}
+function APtyBoolean_build(v){
+   var o = this;
+   if(v[o._name] == null){
+      v[o._name] = o._value;
+   }
+}
+function APtyBoolean_load(v, x){
+   var o = this;
+   v[o._name] = RBoolean.parse(x.get(o._linker));
+}
+function APtyBoolean_save(v, x){
+   var o = this;
+   var d = v[o._name];
+   if(d){
+      x.set(o._linker, RBoolean.toString(d));
+   }
+}
+function APtyBoolean_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._value;
+}
+function APtyConfig(n, l){
+   var o = this;
+   AProperty.call(o, n, l);
+   o.force = true;
+   o.load  = APtyConfig_load;
+   o.save  = RMethod.empty;
+   return o;
+}
+function APtyConfig_load(v, x){
+   v[this.name] = x;
+}
+function APtyEnum(n, l, e, d){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._enum    = e;
+   o._default = d;
+   o.build    = APtyEnum_build;
+   o.load     = APtyEnum_load;
+   o.save     = APtyEnum_save;
+   o.toString = APtyEnum_toString;
+   return o;
+}
+function APtyEnum_build(v){
+   var o = this;
+   if(v[o._name] == null){
+      v[o._name] = o._default;
+   }
+}
+function APtyEnum_load(v, x){
+   var o = this;
+   v[o._name] = x.get(o._linker);
+}
+function APtyEnum_save(v, x){
+   var o = this;
+   x.set(o._linker, v[o._name]);
+}
+function APtyEnum_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',enum=' + o._enum + ',default=' + o._default;
+}
+function APtyInteger(n, l, v){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._value   = RInteger.nvl(v);
+   o.build    = APtyInteger_build;
+   o.load     = APtyInteger_load;
+   o.save     = APtyInteger_save;
+   o.toString = APtyInteger_toString;
+   return o;
+}
+function APtyInteger_build(v){
+   var o = this;
+   if(v[o._name] == null){
+      v[o._name] = o._value;
+   }
+}
+function APtyInteger_load(v, x){
+   var o = this;
+   v[o._name] = RInteger.parse(x.get(o._linker));
+}
+function APtyInteger_save(v, x){
+   var o = this;
+   x.set(o._linker, RInteger.toString(v[o._name]));
+}
+function APtyInteger_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._value;
+}
+function APtyNumber(n, l, v){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._value   = RInteger.nvl(v);
+   o.build    = APtyNumber_build;
+   o.toString = APtyNumber_toString;
+   return o;
+}
+function APtyNumber_build(v){
+   var o = this;
+   if(v[o._name] == null){
+      v[o._name] = o._value;
+   }
+}
+function APtyNumber_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._value;
+}
+function APtyPadding(n, l, vl, vt, vr, vb){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._left    = RInteger.nvl(vl);
+   o._top     = RInteger.nvl(vt);
+   o._right   = RInteger.nvl(vr);
+   o._bottom  = RInteger.nvl(vb);
+   o.load     = APtyPadding_load;
+   o.save     = APtyPadding_save;
+   o.toString = APtyPadding_toString;
+   return o;
+}
+function APtyPadding_load(v, x){
+   var o = this;
+   v[o._name].parse(x.get(o._linker));
+}
+function APtyPadding_save(v, x){
+   var o = this;
+   var d = v[o._name];
+   if(!d.isEmpty()){
+      x.set(o._linker, d.toString());
+   }
+}
+function APtyPadding_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._left + ',' + o._top + ',' + o._right + ',' + o._bottom;
+}
+function APtyPoint2(n, l, x, y){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._x       = RInteger.nvl(x);
+   o._y       = RInteger.nvl(y);
+   o.load     = APtyPoint2_load;
+   o.save     = APtyPoint2_save;
+   o.toString = APtyPoint2_toString;
+   return o;
+}
+function APtyPoint2_load(v, x){
+   var o = this;
+   v[o._name].parse(x.get(o._linker));
+}
+function APtyPoint2_save(v, x){
+   var o = this;
+   var d = v[o._name];
+   if(!d.isEmpty()){
+      x.set(o._linker, d.toString());
+   }
+}
+function APtyPoint2_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._x + ',' + o._y;
+}
+function APtySet(n, l, s, v){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._search = s;
+   o._value  = v;
+   o.build    = APtySet_build;
+   o.load     = APtySet_load;
+   o.save     = APtySet_save;
+   o.toString = APtySet_toString;
+   return o;
+}
+function APtySet_build(v){
+   var o = this;
+   if(v[o.name] == null){
+      v[o.name] = o._value;
+   }
+}
+function APtySet_load(v, x){
+   var o = this;
+   v[o.name] = RSet.containsString(x.get(o.linker), o.search);
+}
+function APtySet_save(v, x){
+   var o = this;
+   var n = o.name;
+   var vs = v[n];
+   var xs = x.get(o.linker);
+   var e = RSet.containsString(xs, o._search);
+   if(vs && !e){
+      x.set(n, vs + o._search);
+   }else if(!v && e){
+      x.set(n, RString.remove(vs, o._search));
+   }
+}
+function APtySet_toString(){
+   var o = this;
+   return 'linker=' + o.linker + ',value=' + o._value + ',search=' + o._search;
+}
+function APtySize2(n, l, w, h){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._width   = RInteger.nvl(w);
+   o._height  = RInteger.nvl(h);
+   o.load     = APtySize2_load;
+   o.save     = APtySize2_save;
+   o.toString = APtySize2_toString;
+   return o;
+}
+function APtySize2_load(v, x){
+   var o = this;
+   v[o._name].parse(x.get(o._linker));
+}
+function APtySize2_save(v, x){
+   var o = this;
+   var d = v[o._name];
+   if(!d.isEmpty()){
+      x.set(o._linker, d.toString());
+   }
+}
+function APtySize2_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._width + ',' + o._height;
+}
+function APtyString(n, l, v){
+   var o = this;
+   AProperty.call(o, n, l);
+   o._value    = v ? v : null;
+   o.build    = APtyString_build;
+   o.toString = APtyString_toString;
+   return o;
+}
+function APtyString_build(v){
+   var o = this;
+   if(v[o._name] == null){
+      v[o._name] = o._value;
+   }
+}
+function APtyString_toString(){
+   var o = this;
+   return 'linker=' + o._linker + ',value=' + o._value;
+}
 var EEditConfig = new function EEditConfig(){
    var o = this;
    o.Search = 'S';
