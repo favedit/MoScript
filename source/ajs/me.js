@@ -12991,6 +12991,7 @@ var RBuilder = new function RBuilder(){
    o.createCheck        = RBuilder_createCheck;
    o.createRadio        = RBuilder_createRadio;
    o.createEdit         = RBuilder_createEdit;
+   o.createFile         = RBuilder_createFile;
    o.createSpan         = RBuilder_createSpan;
    o.createDiv          = RBuilder_createDiv;
    o.createTable        = RBuilder_createTable;
@@ -13005,6 +13006,7 @@ var RBuilder = new function RBuilder(){
    o.appendCheck        = RBuilder_appendCheck;
    o.appendRadio        = RBuilder_appendRadio;
    o.appendEdit         = RBuilder_appendEdit;
+   o.appendFile         = RBuilder_appendFile;
    o.appendSpan         = RBuilder_appendSpan;
    o.appendDiv          = RBuilder_appendDiv;
    o.appendTable        = RBuilder_appendTable;
@@ -13078,6 +13080,11 @@ function RBuilder_createEdit(d, s){
    r.type = 'text';
    return r;
 }
+function RBuilder_createFile(d, s){
+   var r = this.create(d, "INPUT", s);
+   r.type = 'file';
+   return r;
+}
 function RBuilder_createSpan(d, s){
    return this.create(d, 'SPAN', s);
 }
@@ -13145,6 +13152,11 @@ function RBuilder_appendRadio(p, s){
 }
 function RBuilder_appendEdit(p, s){
    var r = this.createEdit(p.ownerDocument, s);
+   p.appendChild(r);
+   return r;
+}
+function RBuilder_appendFile(p, s){
+   var r = this.createFile(p.ownerDocument, s);
    p.appendChild(r);
    return r;
 }

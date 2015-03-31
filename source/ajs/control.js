@@ -2564,7 +2564,7 @@ function FUiComponent(o){
    o.findComponent = FUiComponent_findComponent;
    o.components    = FUiComponent_components;
    o.push          = FUiComponent_push;
-   o.remov         = FUiComponent_remove;
+   o.remove        = FUiComponent_remove;
    o.clear         = FUiComponent_clear;
    o.process       = FUiComponent_process;
    o.psInitialize  = FUiComponent_psInitialize;
@@ -2648,16 +2648,16 @@ function FUiComponent_push(p){
       s.set(p._name, p);
    }
 }
-function FUiComponent_remove(p){
+function FUiComponent_remove(component){
    var o = this;
-   if(RClass.isClass(p, FUiComponent)){
-      throw new TError(o, 'Parameter is not componet. (component={1})', p);
+   if(!RClass.isClass(component, FUiComponent)){
+      throw new TError(o, 'Parameter is not componet. (component={1})', component);
    }
-   var s = o._components;
-   if(!s || (s && !s.constanis(p.name()))){
-      throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
+   var components = o._components;
+   if(!components.contains(component.name())){
+      throw new TError(o, 'Parameter component is not in this component. (name={1})', component.name());
    }
-   s.remove(p);
+   components.remove(component);
 }
 function FUiComponent_clear(p){
    var o = this;
@@ -2889,16 +2889,17 @@ function FUiContainer_push(p){
       o.appendChild(p);
    }
 }
-function FUiContainer_remove(p){
+function FUiContainer_remove(component){
    var o = this;
-   if(RClass.isClass(p, FUiControl)){
-      var s = o._controls;
-      if(!s || (s && !s.constanis(p.name()))){
+   if(RClass.isClass(component, FUiControl)){
+      var controls = o._controls;
+      if(!controls.contains(component.name())){
          throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
       }
-      s.remove(p);
+      controls.remove(component);
+      o.removeChild(component);
    }
-   o.__base.FUiControl.remove.call(o, p);
+   o.__base.FUiControl.remove.call(o, component);
 }
 function FUiContainer_clear(){
    var o = this;

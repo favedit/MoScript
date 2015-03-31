@@ -16,6 +16,7 @@ var RBuilder = new function RBuilder(){
    o.createCheck        = RBuilder_createCheck;
    o.createRadio        = RBuilder_createRadio;
    o.createEdit         = RBuilder_createEdit;
+   o.createFile         = RBuilder_createFile;
    o.createSpan         = RBuilder_createSpan;
    o.createDiv          = RBuilder_createDiv;
    o.createTable        = RBuilder_createTable;
@@ -31,6 +32,7 @@ var RBuilder = new function RBuilder(){
    o.appendCheck        = RBuilder_appendCheck;
    o.appendRadio        = RBuilder_appendRadio;
    o.appendEdit         = RBuilder_appendEdit;
+   o.appendFile         = RBuilder_appendFile;
    o.appendSpan         = RBuilder_appendSpan;
    o.appendDiv          = RBuilder_appendDiv;
    o.appendTable        = RBuilder_appendTable;
@@ -173,6 +175,20 @@ function RBuilder_createRadio(d, s){
 function RBuilder_createEdit(d, s){
    var r = this.create(d, "INPUT", s);
    r.type = 'text';
+   return r;
+}
+
+//==========================================================
+// <T>创建一个页面文件框对象。</T>
+//
+// @method
+// @param d:document:HtmlDocument 页面文档对象
+// @param s:style:String 样式名称
+// @return HtmlInputTag 页面编辑框对象
+//==========================================================
+function RBuilder_createFile(d, s){
+   var r = this.create(d, "INPUT", s);
+   r.type = 'file';
    return r;
 }
 
@@ -380,6 +396,20 @@ function RBuilder_appendRadio(p, s){
 //==========================================================
 function RBuilder_appendEdit(p, s){
    var r = this.createEdit(p.ownerDocument, s);
+   p.appendChild(r);
+   return r;
+}
+
+//==========================================================
+// <T>追加一个页面文件框对象，放在父容器里面，并返回这个对象。</T>
+//
+// @method
+// @param p:parent:HtmlTag 页面标签
+// @param s:style:String 样式名称
+// @return HtmlInputTag 页面编辑框对象
+//==========================================================
+function RBuilder_appendFile(p, s){
+   var r = this.createFile(p.ownerDocument, s);
    p.appendChild(r);
    return r;
 }

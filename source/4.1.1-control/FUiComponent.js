@@ -44,7 +44,7 @@ function FUiComponent(o){
    o.findComponent = FUiComponent_findComponent;
    o.components    = FUiComponent_components;
    o.push          = FUiComponent_push;
-   o.remov         = FUiComponent_remove;
+   o.remove        = FUiComponent_remove;
    o.clear         = FUiComponent_clear;
    // @method
    o.process       = FUiComponent_process;
@@ -246,21 +246,21 @@ function FUiComponent_push(p){
 // <T>移除指定子组件。</T>
 // 
 // @method
-// @param p:component:FUiComponent 组件
+// @param component:FUiComponent 组件
 //==========================================================
-function FUiComponent_remove(p){
+function FUiComponent_remove(component){
    var o = this;
    // 检查类型
-   if(RClass.isClass(p, FUiComponent)){
-      throw new TError(o, 'Parameter is not componet. (component={1})', p);
+   if(!RClass.isClass(component, FUiComponent)){
+      throw new TError(o, 'Parameter is not componet. (component={1})', component);
    }
    // 检查存在
-   var s = o._components;
-   if(!s || (s && !s.constanis(p.name()))){
-      throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
+   var components = o._components;
+   if(!components.contains(component.name())){
+      throw new TError(o, 'Parameter component is not in this component. (name={1})', component.name());
    }
    // 移除处理
-   s.remove(p);
+   components.remove(component);
 }
 
 //==========================================================

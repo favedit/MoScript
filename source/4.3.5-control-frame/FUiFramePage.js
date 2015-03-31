@@ -23,6 +23,7 @@ function FUiFramePage(o){
    //..........................................................
    // @method
    o.appendChild     = FUiFramePage_appendChild;
+   o.removeChild     = FUiFramePage_removeChild;
    return o;
 }
 
@@ -82,9 +83,20 @@ function FUiFramePage_oeResize(p){
 // <T>增加一个控件。</T>
 //
 // @method
-// @param p:control:FUiControl 控件
+// @param control:FUiControl 控件
 //==========================================================
-function FUiFramePage_appendChild(p){
+function FUiFramePage_appendChild(control){
    var o = this;
-   o._hContainer.appendChild(p._hPanel);
+   o._hContainer.appendChild(control._hPanel);
+}
+
+//==========================================================
+// <T>移除一个控件。</T>
+//
+// @method
+// @param control:FUiControl 控件
+//==========================================================
+function FUiFramePage_removeChild(control){
+   var o = this;
+   o._hContainer.removeChild(control._hPanel);
 }

@@ -52,13 +52,6 @@ function FDsSolutionMenuBar_onCreateClick(event){
    var dialog = RConsole.find(FUiWindowConsole).find(FDsSolutionProjectDialog);
    dialog._workspace = o._workspace;
    dialog.showPosition(EUiPosition.Center);
-   // 存储配置
-   //var dialog = RClass.create(FDsSolutionProjectDialog);
-   //dialog._workspace = o._workspace;
-   //dialog.buildDefine(o._hPanel);
-   //dialog.setPanel(o._hPanel);
-   //dialog.setPanel(window.document.body);
-   //dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================

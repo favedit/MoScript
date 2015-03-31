@@ -3190,6 +3190,77 @@ function FUiEditor_dispose(){
    o.__base.FUiControl.dispose.call(o);
    o._hEdit = null;
 }
+function FUiFile(o){
+   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
+   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
+   o._unit            = RClass.register(o, new APtyString('_unit'));
+   o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
+   o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
+   o._hValueForm      = null;
+   o._hValueLine      = null;
+   o._hInputPanel     = null;
+   o._hInput          = null;
+   o.onBuildEditValue = FUiFile_onBuildEditValue;
+   o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiFile_onInputEdit);
+   o.construct        = FUiFile_construct;
+   o.formatDisplay    = FUiFile_formatDisplay;
+   o.formatValue      = FUiFile_formatValue;
+   o.get              = FUiFile_get;
+   o.set              = FUiFile_set;
+   o.refreshValue     = FUiFile_refreshValue;
+   return o;
+}
+function FUiFile_onBuildEditValue(p){
+   var o = this;
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = RBuilder.appendTable(hp);
+   hf.width = '100%';
+   var hl = o._hValueLine = RBuilder.appendTableRow(hf);
+   o._hChangePanel = RBuilder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
+   var he = o._hInput = RBuilder.appendFile(hep, o.styleName('Input'));
+   RHtml.setSize(hep, o._inputSize);
+   if(o._editLength){
+      he.maxLength = o._editLength;
+   }
+}
+function FUiFile_onInputEdit(p){
+   var o = this;
+   var v = o._hInput.value;
+   o.refreshValue();
+}
+function FUiFile_construct(){
+   var o = this;
+   o.__base.FUiEditControl.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
+}
+function FUiFile_formatDisplay(p){
+   var o = this;
+   var r = RString.nvl(p);
+   o._dataDisplay = r;
+   return r;
+}
+function FUiFile_formatValue(p){
+   return p;
+}
+function FUiFile_get(){
+   var o = this;
+   var r = o.__base.FUiEditControl.get.call(o);
+   var r = o._hInput.value;
+   return r;
+}
+function FUiFile_set(p){
+   var o = this;
+   o.__base.FUiEditControl.set.call(o, p);
+   o._hInput.value = RString.nvl(p);
+}
+function FUiFile_refreshValue(){
+   var o = this;
+   o.processDataChangedListener(o);
+}
 function FUiForm(o){
    o = RClass.inherits(this, o, FUiLayout, MUiDescribeFrame);
    o.onMouseDown        = FUiForm_onMouseDown;

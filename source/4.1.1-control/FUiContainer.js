@@ -234,22 +234,24 @@ function FUiContainer_push(p){
 // <T>移除指定子控件。</T>
 //
 // @method
-// @param p:component:FComponent 组件对象
+// @param component:FComponent 组件对象
 //==========================================================
-function FUiContainer_remove(p){
+function FUiContainer_remove(component){
    var o = this;
    // 检查类型
-   if(RClass.isClass(p, FUiControl)){
+   if(RClass.isClass(component, FUiControl)){
       // 检查存在
-      var s = o._controls;
-      if(!s || (s && !s.constanis(p.name()))){
+      var controls = o._controls;
+      if(!controls.contains(component.name())){
          throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
       }
       // 移除处理
-      s.remove(p);
+      controls.remove(component);
+      // 移除控件
+      o.removeChild(component);
    }
    // 父处理
-   o.__base.FUiControl.remove.call(o, p);
+   o.__base.FUiControl.remove.call(o, component);
 }
 
 //==========================================================

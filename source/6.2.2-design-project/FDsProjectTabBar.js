@@ -8,24 +8,25 @@ function FDsProjectTabBar(o){
    o = RClass.inherits(this, o, FUiTabBar);
    //..........................................................
    // @property
-   o._frameName            = 'design3d.project.TabBar';
+   o._frameName             = 'design3d.project.TabBar';
    //..........................................................
    // @attribute
-   o._resourceTypeCd       = 'mesh';
+   o._resourceTypeCd        = 'mesh';
    // @attribute
-   o._controlProjectButton = null;
-   o._controlPictureButton = null;
-   o._controlMeshButton    = null;
+   o._controlProjectButton  = null;
+   o._controlResourceButton = null;
+   //o._controlPictureButton = null;
+   //o._controlMeshButton    = null;
    //..........................................................
    // @event
-   o.onBuilded             = FDsProjectTabBar_onBuilded;
+   o.onBuilded              = FDsProjectTabBar_onBuilded;
    // @event
-   o.onButtonClick         = FDsProjectTabBar_onButtonClick;
+   o.onButtonClick          = FDsProjectTabBar_onButtonClick;
    //..........................................................
    // @method
-   o.construct             = FDsProjectTabBar_construct;
+   o.construct              = FDsProjectTabBar_construct;
    // @method
-   o.dispose               = FDsProjectTabBar_dispose;
+   o.dispose                = FDsProjectTabBar_dispose;
    return o;
 }
 
@@ -41,8 +42,9 @@ function FDsProjectTabBar_onBuilded(p){
    //..........................................................
    // 注册事件
    o._controlProjectButton.addClickListener(o, o.onButtonClick);
-   o._controlPictureButton.addClickListener(o, o.onButtonClick);
-   o._controlMeshButton.addClickListener(o, o.onButtonClick);
+   o._controlResourceButton.addClickListener(o, o.onButtonClick);
+   //o._controlPictureButton.addClickListener(o, o.onButtonClick);
+   //o._controlMeshButton.addClickListener(o, o.onButtonClick);
 }
 
 //==========================================================
@@ -57,10 +59,12 @@ function FDsProjectTabBar_onButtonClick(event){
    var name = sender.name();
    if(name == 'project'){
       o._workspace.selectFrameSet(EDsFrameSet.ProjectFrameSet);
-   }else if(name == 'picture'){
-      o._workspace.selectFrameSet(EDsFrameSet.PictureFrameSet);
-   }else if(name == 'mesh'){
-      o._workspace.selectFrameSet(EDsFrameSet.MeshFrameSet);
+   }else if(name == 'resource'){
+      o._workspace.selectFrameSet(EDsFrameSet.ResourceFrameSet);
+   //}else if(name == 'picture'){
+   //   o._workspace.selectFrameSet(EDsFrameSet.PictureFrameSet);
+   //}else if(name == 'mesh'){
+   //   o._workspace.selectFrameSet(EDsFrameSet.MeshFrameSet);
    }
 }
 

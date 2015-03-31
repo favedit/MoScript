@@ -8,22 +8,20 @@ function FDsResourceMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
    // @property
-   o._frameName     = 'design3d.resource.MenuBar';
+   o._frameName               = 'design3d.resource.MenuBar';
    //..........................................................
    // @attribute
-   o._refreshButton = null;
-   o._saveButton    = null;
-   o._runButton     = null;
+   o._controlImportMeshButton = null;
    //..........................................................
    // @event
-   o.onBuilded      = FDsResourceMenuBar_onBuilded;
+   o.onBuilded                = FDsResourceMenuBar_onBuilded;
    // @event
-   o.onSaveClick    = FDsResourceMenuBar_onSaveClick;
+   o.onImportMeshClick        = FDsResourceMenuBar_onImportMeshClick;
    //..........................................................
    // @method
-   o.construct      = FDsResourceMenuBar_construct;
+   o.construct                = FDsResourceMenuBar_construct;
    // @method
-   o.dispose        = FDsResourceMenuBar_dispose;
+   o.dispose                  = FDsResourceMenuBar_dispose;
    return o;
 }
 
@@ -38,24 +36,20 @@ function FDsResourceMenuBar_onBuilded(p){
    o.__base.FUiMenuBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   o._controlSaveButton.addClickListener(o, o.onSaveClick);
+   o._controlImportMeshButton.addClickListener(o, o.onImportMeshClick);
 }
 
 //==========================================================
-// <T>保存按键处理。</T>
+// <T>导入模型按键处理。</T>
 //
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsResourceMenuBar_onSaveClick(p){
+function FDsResourceMenuBar_onImportMeshClick(p){
    var o = this;
-   var space = o._workspace._activeSpace;
-   var resource = space.resource();
-   // 存储配置
-   var xconfig = new TXmlNode();
-   resource.saveConfig(xconfig);
-   // 更新处理
-   RConsole.find(FE3sMeshConsole).update(xconfig);
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceImportDialog);
+   dialog._workspace = o._workspace;
+   dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================

@@ -2564,7 +2564,7 @@ function FUiComponent(o){
    o.findComponent = FUiComponent_findComponent;
    o.components    = FUiComponent_components;
    o.push          = FUiComponent_push;
-   o.remov         = FUiComponent_remove;
+   o.remove        = FUiComponent_remove;
    o.clear         = FUiComponent_clear;
    o.process       = FUiComponent_process;
    o.psInitialize  = FUiComponent_psInitialize;
@@ -2648,16 +2648,16 @@ function FUiComponent_push(p){
       s.set(p._name, p);
    }
 }
-function FUiComponent_remove(p){
+function FUiComponent_remove(component){
    var o = this;
-   if(RClass.isClass(p, FUiComponent)){
-      throw new TError(o, 'Parameter is not componet. (component={1})', p);
+   if(!RClass.isClass(component, FUiComponent)){
+      throw new TError(o, 'Parameter is not componet. (component={1})', component);
    }
-   var s = o._components;
-   if(!s || (s && !s.constanis(p.name()))){
-      throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
+   var components = o._components;
+   if(!components.contains(component.name())){
+      throw new TError(o, 'Parameter component is not in this component. (name={1})', component.name());
    }
-   s.remove(p);
+   components.remove(component);
 }
 function FUiComponent_clear(p){
    var o = this;
@@ -2889,16 +2889,17 @@ function FUiContainer_push(p){
       o.appendChild(p);
    }
 }
-function FUiContainer_remove(p){
+function FUiContainer_remove(component){
    var o = this;
-   if(RClass.isClass(p, FUiControl)){
-      var s = o._controls;
-      if(!s || (s && !s.constanis(p.name()))){
+   if(RClass.isClass(component, FUiControl)){
+      var controls = o._controls;
+      if(!controls.contains(component.name())){
          throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
       }
-      s.remove(p);
+      controls.remove(component);
+      o.removeChild(component);
    }
-   o.__base.FUiControl.remove.call(o, p);
+   o.__base.FUiControl.remove.call(o, component);
 }
 function FUiContainer_clear(){
    var o = this;
@@ -8064,6 +8065,77 @@ function FUiEditor_dispose(){
    var o = this;
    o.__base.FUiControl.dispose.call(o);
    o._hEdit = null;
+}
+function FUiFile(o){
+   o = RClass.inherits(this, o, FUiEditControl, MListenerDataChanged);
+   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
+   o._unit            = RClass.register(o, new APtyString('_unit'));
+   o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
+   o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
+   o._hValueForm      = null;
+   o._hValueLine      = null;
+   o._hInputPanel     = null;
+   o._hInput          = null;
+   o.onBuildEditValue = FUiFile_onBuildEditValue;
+   o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiFile_onInputEdit);
+   o.construct        = FUiFile_construct;
+   o.formatDisplay    = FUiFile_formatDisplay;
+   o.formatValue      = FUiFile_formatValue;
+   o.get              = FUiFile_get;
+   o.set              = FUiFile_set;
+   o.refreshValue     = FUiFile_refreshValue;
+   return o;
+}
+function FUiFile_onBuildEditValue(p){
+   var o = this;
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = RBuilder.appendTable(hp);
+   hf.width = '100%';
+   var hl = o._hValueLine = RBuilder.appendTableRow(hf);
+   o._hChangePanel = RBuilder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
+   var he = o._hInput = RBuilder.appendFile(hep, o.styleName('Input'));
+   RHtml.setSize(hep, o._inputSize);
+   if(o._editLength){
+      he.maxLength = o._editLength;
+   }
+}
+function FUiFile_onInputEdit(p){
+   var o = this;
+   var v = o._hInput.value;
+   o.refreshValue();
+}
+function FUiFile_construct(){
+   var o = this;
+   o.__base.FUiEditControl.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
+}
+function FUiFile_formatDisplay(p){
+   var o = this;
+   var r = RString.nvl(p);
+   o._dataDisplay = r;
+   return r;
+}
+function FUiFile_formatValue(p){
+   return p;
+}
+function FUiFile_get(){
+   var o = this;
+   var r = o.__base.FUiEditControl.get.call(o);
+   var r = o._hInput.value;
+   return r;
+}
+function FUiFile_set(p){
+   var o = this;
+   o.__base.FUiEditControl.set.call(o, p);
+   o._hInput.value = RString.nvl(p);
+}
+function FUiFile_refreshValue(){
+   var o = this;
+   o.processDataChangedListener(o);
 }
 function FUiForm(o){
    o = RClass.inherits(this, o, FUiLayout, MUiDescribeFrame);
@@ -16743,6 +16815,7 @@ function FUiFramePage(o){
    o.onBuild         = FUiFramePage_onBuild;
    o.oeResize        = FUiFramePage_oeResize;
    o.appendChild     = FUiFramePage_appendChild;
+   o.removeChild     = FUiFramePage_removeChild;
    return o;
 }
 function FUiFramePage_onBuildPanel(p){
@@ -16771,9 +16844,13 @@ function FUiFramePage_oeResize(p){
    }
    return EEventStatus.Continue;
 }
-function FUiFramePage_appendChild(p){
+function FUiFramePage_appendChild(control){
    var o = this;
-   o._hContainer.appendChild(p._hPanel);
+   o._hContainer.appendChild(control._hPanel);
+}
+function FUiFramePage_removeChild(control){
+   var o = this;
+   o._hContainer.removeChild(control._hPanel);
 }
 function FUiFrameSet(o){
    o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);

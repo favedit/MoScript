@@ -15,6 +15,7 @@ function FUiFramePage(o){
    o.onBuild         = FUiFramePage_onBuild;
    o.oeResize        = FUiFramePage_oeResize;
    o.appendChild     = FUiFramePage_appendChild;
+   o.removeChild     = FUiFramePage_removeChild;
    return o;
 }
 function FUiFramePage_onBuildPanel(p){
@@ -43,9 +44,13 @@ function FUiFramePage_oeResize(p){
    }
    return EEventStatus.Continue;
 }
-function FUiFramePage_appendChild(p){
+function FUiFramePage_appendChild(control){
    var o = this;
-   o._hContainer.appendChild(p._hPanel);
+   o._hContainer.appendChild(control._hPanel);
+}
+function FUiFramePage_removeChild(control){
+   var o = this;
+   o._hContainer.removeChild(control._hPanel);
 }
 function FUiFrameSet(o){
    o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);

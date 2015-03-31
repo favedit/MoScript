@@ -395,7 +395,7 @@ function FDsProjectFrameSet_dispose(){
 }
 function FDsProjectMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName     = 'design3d.resource.MenuBar';
+   o._frameName     = 'design3d.project.MenuBar';
    o._refreshButton = null;
    o._saveButton    = null;
    o._runButton     = null;
@@ -1090,23 +1090,21 @@ function FDsProjectSearchToolBar_dispose(){
 }
 function FDsProjectTabBar(o){
    o = RClass.inherits(this, o, FUiTabBar);
-   o._frameName            = 'design3d.project.TabBar';
-   o._resourceTypeCd       = 'mesh';
-   o._controlProjectButton = null;
-   o._controlPictureButton = null;
-   o._controlMeshButton    = null;
-   o.onBuilded             = FDsProjectTabBar_onBuilded;
-   o.onButtonClick         = FDsProjectTabBar_onButtonClick;
-   o.construct             = FDsProjectTabBar_construct;
-   o.dispose               = FDsProjectTabBar_dispose;
+   o._frameName             = 'design3d.project.TabBar';
+   o._resourceTypeCd        = 'mesh';
+   o._controlProjectButton  = null;
+   o._controlResourceButton = null;
+   o.onBuilded              = FDsProjectTabBar_onBuilded;
+   o.onButtonClick          = FDsProjectTabBar_onButtonClick;
+   o.construct              = FDsProjectTabBar_construct;
+   o.dispose                = FDsProjectTabBar_dispose;
    return o;
 }
 function FDsProjectTabBar_onBuilded(p){
    var o = this;
    o.__base.FUiTabBar.onBuilded.call(o, p);
    o._controlProjectButton.addClickListener(o, o.onButtonClick);
-   o._controlPictureButton.addClickListener(o, o.onButtonClick);
-   o._controlMeshButton.addClickListener(o, o.onButtonClick);
+   o._controlResourceButton.addClickListener(o, o.onButtonClick);
 }
 function FDsProjectTabBar_onButtonClick(event){
    var o = this;
@@ -1114,10 +1112,8 @@ function FDsProjectTabBar_onButtonClick(event){
    var name = sender.name();
    if(name == 'project'){
       o._workspace.selectFrameSet(EDsFrameSet.ProjectFrameSet);
-   }else if(name == 'picture'){
-      o._workspace.selectFrameSet(EDsFrameSet.PictureFrameSet);
-   }else if(name == 'mesh'){
-      o._workspace.selectFrameSet(EDsFrameSet.MeshFrameSet);
+   }else if(name == 'resource'){
+      o._workspace.selectFrameSet(EDsFrameSet.ResourceFrameSet);
    }
 }
 function FDsProjectTabBar_construct(){
@@ -1153,6 +1149,7 @@ function FDsProjectWorkspace(o){
    o._framePreview         = null;
    o._framePreviewToolbar  = null;
    o._framePreviewContent  = null;
+   o._activeFrameSet       = null;
    o._frameSets            = null;
    o._propertyFrames       = null;
    o.onBuilded             = FDsProjectWorkspace_onBuilded;
@@ -1177,11 +1174,7 @@ function FDsProjectWorkspace_onBuilded(p){
    var hTable = RBuilder.createTable(p);
    hTable.width = '100%';
    var hRow = RBuilder.appendTableRow(hTable);
-   var c = o._toolbar = RClass.create(FDsProjectMenuBar);
-   c._workspace = o;
-   c.buildDefine(p);
-   var hCell = RBuilder.appendTableCell(hRow);
-   hCell.appendChild(c._hPanel);
+   o._hMenuPanel = RBuilder.appendTableCell(hRow);
    var c = o._tabBar = RClass.create(FDsProjectTabBar);
    c._workspace = o;
    c.buildDefine(p);
@@ -1255,26 +1248,35 @@ function FDsProjectWorkspace_selectFrameSet(name){
    if(!frameSet){
       if(name == EDsFrameSet.ProjectFrameSet){
          frameSet = RClass.create(FDsProjectFrameSet);
+         frameSet._workspace = o;
          frameSet.buildDefine(o._hPanel);
-      }else if(name == EDsFrameSet.PictureFrameSet){
-         frameSet = RClass.create(FDsPictureFrameSet);
+         var menuBar = RClass.create(FDsProjectMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         frameSet._menuBar = menuBar;
+      }else if(name == EDsFrameSet.ResourceFrameSet){
+         frameSet = RClass.create(FDsResourceFrameSet);
+         frameSet._workspace = o;
          frameSet.buildDefine(o._hPanel);
-      }else if(name == EDsFrameSet.MeshFrameSet){
-         frameSet = RClass.create(FDsMeshFrameSet);
-         frameSet.buildDefine(o._hPanel);
+         var menuBar = RClass.create(FDsResourceMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         frameSet._menuBar = menuBar;
+      }else{
+         throw new TError('Unknown frameset. (name={1})', name);
       }
-      frameSet._name = name;
       o._frameSets.set(name, frameSet);
    }
-   var count = o._frameSets.count();
-   for(var i = 0; i < count; i++){
-      var frameSet = o._frameSets.valueAt(i);
-      if(frameSet._name == name){
-         o._frameBody.push(frameSet);
-      }else{
-         o._frameBody.remove(frameSet);
+   var activeFrameSet = o._activeFrameSet;
+   if(activeFrameSet != frameSet){
+      if(activeFrameSet){
+         o._hMenuPanel.removeChild(activeFrameSet._menuBar._hPanel);
+         o._frameBody.remove(activeFrameSet);
       }
+      o._hMenuPanel.appendChild(menuBar._hPanel);
+      o._frameBody.push(frameSet);
    }
+   o._activeFrameSet = frameSet;
    return frameSet;
 }
 function FDsProjectWorkspace_findPropertyFrame(p){
