@@ -43,6 +43,13 @@ var EDsFrame = new function EDsFrame(){
    o.SceneRenderablePropertyFrame = 'design3d.scene.property.RenderableFrame';
    return o;
 }
+var EDsFrameSet = new function EDsFrameSet(){
+   var o = this;
+   o.ProjectFrameSet = 'design3d.project.FrameSet';
+   o.PictureFrameSet = 'design3d.picture.FrameSet';
+   o.MeshFrameSet    = 'design3d.mesh.FrameSet';
+   return o;
+}
 function MDsBoundBox(o){
    o = RClass.inherits(this, o);
    o._boundVisible = false;

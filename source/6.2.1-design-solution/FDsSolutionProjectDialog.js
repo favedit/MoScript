@@ -57,6 +57,8 @@ function FDsSolutionProjectDialog_onConfirmLoad(event){
    var frame = o._workspace._searchContent;
    frame.serviceResearch();
    // 隐藏窗口
+   o.hide();
+   // 隐藏窗口
    RWindow.enable();
 }
 
@@ -68,20 +70,18 @@ function FDsSolutionProjectDialog_onConfirmLoad(event){
 //==========================================================
 function FDsSolutionProjectDialog_onConfirmClick(event){
    var o = this;
+   // 画面禁止操作
    RWindow.disable();
+   // 获得参数
    var code = o._controlCode.get();
    var label = o._controlLabel.get();
-   // 发送数据
-   var xdocument = new TXmlDocument();
-   var xroot = xdocument.root();
-   xroot.set('action', 'insert');
-   var xdata = xroot.create('Data');
-   xdata.set('code', code);
-   xdata.set('label', label);
-   var connection = RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   // 发送数据请求
+   var project = RClass.create(FDrProject);
+   project.setCode(code);
+   project.setLabel(label);
+   // 发送请求处理
+   var connection = RConsole.find(FDrProjectConsole).doCreate(project);
    connection.addLoadListener(o, o.onConfirmLoad);
-   // 隐藏窗口
-   o.hide();
 }
 
 //==========================================================

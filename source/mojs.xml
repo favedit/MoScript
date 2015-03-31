@@ -47,20 +47,22 @@
      <PathMerger source='/5.2.4-data-tree'          target='/ajs/data-tree.js'/>
 
      <PathMerger source='/6.1.1-design'             target='/ajs/design.js'/>
-     <PathMerger source='/6.1.2-design-core'        target='/ajs/design-core.js'/>
-     <PathMerger source='/6.1.3-design-frame'       target='/ajs/design-frame.js'/>
+     <PathMerger source='/6.1.2-design-resource'    target='/ajs/design-core-resource.js'/>
+     <PathMerger source='/6.1.3-design-core'        target='/ajs/design-core.js'/>
+     <PathMerger source='/6.1.4-design-frame'       target='/ajs/design-frame.js'/>
 
      <PathMerger source='/6.2.1-design-solution'    target='/ajs/design-solution.js'/>
      <PathMerger source='/6.2.2-design-project'     target='/ajs/design-project.js'/>
      <PathMerger source='/6.2.3-design-resource'    target='/ajs/design-resource.js'/>
      <PathMerger source='/6.2.4-design-publish'     target='/ajs/design-publish.js'/>
 
-     <PathMerger source='/6.2.1-design-texture'     target='/ajs/design-texture.js'/>
-     <PathMerger source='/6.2.2-design-material'    target='/ajs/design-material.js'/>
-     <PathMerger source='/6.2.3-design-mesh'        target='/ajs/design-mesh.js'/>
-     <PathMerger source='/6.2.4-design-model'       target='/ajs/design-model.js'/>
-     <PathMerger source='/6.2.5-design-template'    target='/ajs/design-template.js'/>
-     <PathMerger source='/6.2.6-design-scene'       target='/ajs/design-scene.js'/>
+     <PathMerger source='/6.3.1-design-picture'     target='/ajs/design-picture.js'/>
+     <PathMerger source='/6.3.2-design-texture'     target='/ajs/design-texture.js'/>
+     <PathMerger source='/6.3.3-design-material'    target='/ajs/design-material.js'/>
+     <PathMerger source='/6.3.4-design-mesh'        target='/ajs/design-mesh.js'/>
+     <PathMerger source='/6.3.5-design-model'       target='/ajs/design-model.js'/>
+     <PathMerger source='/6.3.6-design-template'    target='/ajs/design-template.js'/>
+     <PathMerger source='/6.3.7-design-scene'       target='/ajs/design-scene.js'/>
 
      <PathMerger source='/7.1.1-demo'               target='/ajs/demo.js'/>
   </PathMergerCollection>
@@ -118,12 +120,14 @@
      </FileMerger>
      <FileMerger target='/ajs/mo-design.js'>
         <File source='/ajs/design.js'/>
+        <File source='/ajs/design-core-resource.js'/>
         <File source='/ajs/design-core.js'/>
         <File source='/ajs/design-frame.js'/>
         <File source='/ajs/design-solution.js'/>
         <File source='/ajs/design-project.js'/>
         <File source='/ajs/design-resource.js'/>
         <File source='/ajs/design-publish.js'/>
+        <File source='/ajs/design-picture.js'/>
         <File source='/ajs/design-texture.js'/>
         <File source='/ajs/design-material.js'/>
         <File source='/ajs/design-mesh.js'/>

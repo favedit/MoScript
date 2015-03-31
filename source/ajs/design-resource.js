@@ -814,7 +814,7 @@ function FDsResourceSearchContent_onBuilded(p){
 }
 function FDsResourceSearchContent_onServiceLoad(p){
    var o = this;
-   var xitems = p.root.findNode('ItemCollection');
+   var xitems = p.root.findNode('ResourceCollection');
    var pageSize = xitems.getInteger('page_size');
    var pageCount = xitems.getInteger('page_count');
    var page = xitems.getInteger('page');
@@ -824,7 +824,7 @@ function FDsResourceSearchContent_onServiceLoad(p){
    var count = xnodes.count();
    for(var i = 0; i < count; i++){
       var xnode = xnodes.getAt(i);
-      if(xnode.isName('Item')){
+      if(xnode.isName('Resource')){
          var item = o.createItem(FDsResourceSearchItem);
          item.propertyLoad(xnode);
          item._typeCd = xnode.get('type');
@@ -849,7 +849,7 @@ function FDsResourceSearchContent_clickItem(p){
 function FDsResourceSearchContent_serviceSearch(typeCd, serach, pageSize, page){
    var o = this;
    RWindow.disable();
-   var url = '/cloud.content.resource.ws?action=fetch&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
+   var url = '/cloud.content3d.resource.ws?action=list&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
    var connection = RConsole.find(FXmlConsole).sendAsync(url);
    connection.addLoadListener(o, o.onServiceLoad);
 }

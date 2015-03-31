@@ -779,10 +779,8 @@ function FDsSolutionPreviewToolBar_onInsertClick(event){
 }
 function FDsSolutionPreviewToolBar_onUpdateClick(event){
    var o = this;
-   var frame = o._workspace._previewContent;
-   var item = frame._activeItem;
-   var url = '/script/design/mesh.html?guid=' + item._guid;
-   window.open(url, '_blank', '');
+   var guid = o._workspace._activeProjectGuid;
+   window.location = 'Project.wa?do=detail&guid=' + guid;
 }
 function FDsSolutionPreviewToolBar_onDeleteLoad(event){
    var o = this;
@@ -794,11 +792,7 @@ function FDsSolutionPreviewToolBar_onDeleteClick(event){
    var o = this;
    var guid = o._workspace._activeProjectGuid;
    RWindow.disable();
-   var xdocument = new TXmlDocument();
-   var xroot = xdocument.root();
-   xroot.set('action', 'delete');
-   xroot.set('guid', guid);
-   var connection = RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   var connection = RConsole.find(FDrProjectConsole).doDelete(guid);
    connection.addLoadListener(o, o.onDeleteLoad);
 }
 function FDsSolutionPreviewToolBar_construct(){
@@ -834,6 +828,7 @@ function FDsSolutionProjectDialog_onConfirmLoad(event){
    var o = this;
    var frame = o._workspace._searchContent;
    frame.serviceResearch();
+   o.hide();
    RWindow.enable();
 }
 function FDsSolutionProjectDialog_onConfirmClick(event){
@@ -841,15 +836,11 @@ function FDsSolutionProjectDialog_onConfirmClick(event){
    RWindow.disable();
    var code = o._controlCode.get();
    var label = o._controlLabel.get();
-   var xdocument = new TXmlDocument();
-   var xroot = xdocument.root();
-   xroot.set('action', 'insert');
-   var xdata = xroot.create('Data');
-   xdata.set('code', code);
-   xdata.set('label', label);
-   var connection = RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   var project = RClass.create(FDrProject);
+   project.setCode(code);
+   project.setLabel(label);
+   var connection = RConsole.find(FDrProjectConsole).doCreate(project);
    connection.addLoadListener(o, o.onConfirmLoad);
-   o.hide();
 }
 function FDsSolutionProjectDialog_onCancelClick(event){
    this.hide();
@@ -909,11 +900,7 @@ function FDsSolutionProjectProperty_loadObject(control){
    var o = this;
    var guid = control._guid;
    o._controlGuid.set(guid);
-   var xdocument = new TXmlDocument();
-   var xroot = xdocument.root();
-   xroot.set('action', 'query');
-   xroot.set('guid', guid);
-   var connection = RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   var connection = RConsole.find(FDrProjectConsole).doQuery(guid);
    connection.addLoadListener(o, o.onLoadProject);
 }
 function FDsSolutionProjectProperty_dispose(){
@@ -941,17 +928,17 @@ function FDsSolutionSearchContent_onBuilded(p){
 }
 function FDsSolutionSearchContent_onServiceLoad(p){
    var o = this;
-   var xitems = p.root.findNode('ItemCollection');
-   var pageSize = xitems.getInteger('page_size');
-   var pageCount = xitems.getInteger('page_count');
-   var page = xitems.getInteger('page');
+   var xprojects = p.root.findNode('ProjectCollection');
+   var pageSize = xprojects.getInteger('page_size');
+   var pageCount = xprojects.getInteger('page_count');
+   var page = xprojects.getInteger('page');
    o._workspace._searchToolbar.setNavigator(pageSize, pageCount, page);
    o.clear();
-   var xnodes = xitems.nodes();
+   var xnodes = xprojects.nodes();
    var count = xnodes.count();
    for(var i = 0; i < count; i++){
       var xnode = xnodes.getAt(i);
-      if(xnode.isName('Item')){
+      if(xnode.isName('Project')){
          var item = o.createItem(FDsSolutionSearchItem);
          item.propertyLoad(xnode);
          item._typeCd = xnode.get('type');
@@ -984,8 +971,7 @@ function FDsSolutionSearchContent_serviceSearch(typeCd, serach, pageSize, page){
    o._pageSize = pageSize;
    o._page = page;
    RWindow.disable();
-   var url = '/cloud.solution.project.ws?action=fetch&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
-   var connection = RConsole.find(FXmlConsole).sendAsync(url);
+   var connection = RConsole.find(FDrProjectConsole).doList(serach, null, pageSize, page);
    connection.addLoadListener(o, o.onServiceLoad);
 }
 function FDsSolutionSearchContent_serviceResearch(){

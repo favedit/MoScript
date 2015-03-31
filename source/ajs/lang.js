@@ -1200,6 +1200,7 @@ function TNode(){
    o.get          = TNode_get;
    o.getInteger   = TNode_getInteger;
    o.set          = TNode_set;
+   o.setNvl       = TNode_setNvl;
    o.setBoolean   = TNode_setBoolean;
    o.setFloat     = TNode_setFloat;
    o.find         = TNode_find;
@@ -1267,6 +1268,11 @@ function TNode_getInteger(n, v){
 function TNode_set(n, v){
    if(v != null){
       this.attributes().set(n, v);
+   }
+}
+function TNode_setNvl(name, value){
+   if(!RString.isEmpty(value)){
+      this.attributes().set(name, value);
    }
 }
 function TNode_setBoolean(n, v){

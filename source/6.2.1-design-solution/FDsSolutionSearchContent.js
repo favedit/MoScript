@@ -51,19 +51,19 @@ function FDsSolutionSearchContent_onBuilded(p){
 //==========================================================
 function FDsSolutionSearchContent_onServiceLoad(p){
    var o = this;
-   var xitems = p.root.findNode('ItemCollection');
+   var xprojects = p.root.findNode('ProjectCollection');
    // 设置导航
-   var pageSize = xitems.getInteger('page_size');
-   var pageCount = xitems.getInteger('page_count');
-   var page = xitems.getInteger('page');
+   var pageSize = xprojects.getInteger('page_size');
+   var pageCount = xprojects.getInteger('page_count');
+   var page = xprojects.getInteger('page');
    o._workspace._searchToolbar.setNavigator(pageSize, pageCount, page);
    // 显示项目
    o.clear();
-   var xnodes = xitems.nodes();
+   var xnodes = xprojects.nodes();
    var count = xnodes.count();
    for(var i = 0; i < count; i++){
       var xnode = xnodes.getAt(i);
-      if(xnode.isName('Item')){
+      if(xnode.isName('Project')){
          var item = o.createItem(FDsSolutionSearchItem);
          item.propertyLoad(xnode);
          item._typeCd = xnode.get('type');
@@ -128,8 +128,7 @@ function FDsSolutionSearchContent_serviceSearch(typeCd, serach, pageSize, page){
    // 画面禁止操作
    RWindow.disable();
    // 发送数据请求
-   var url = '/cloud.solution.project.ws?action=fetch&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
-   var connection = RConsole.find(FXmlConsole).sendAsync(url);
+   var connection = RConsole.find(FDrProjectConsole).doList(serach, null, pageSize, page);
    connection.addLoadListener(o, o.onServiceLoad);
 }
 

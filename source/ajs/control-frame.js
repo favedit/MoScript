@@ -48,7 +48,7 @@ function FUiFramePage_appendChild(p){
    o._hContainer.appendChild(p._hPanel);
 }
 function FUiFrameSet(o){
-   o = RClass.inherits(this, o, FUiContainer);
+   o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
    o._directionCd  = RClass.register(o, new APtyEnum('_directionCd', null, EUiDirection), EUiDirection.Vertical);
    o._stylePanel   = RClass.register(o, new AStyle('_stylePanel'));
    o._frames       = null;

@@ -105,6 +105,131 @@
 }
 
 /* ------------------------------------------------------ */
+/* FDsProjectWorkspace                                   */
+/* ------------------------------------------------------ */
+.FDsProjectWorkspace_Toolbar_Ground{
+   background: #AEAEAE;
+   padding-top: 1px;
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #AEAEAE, #999999);
+   background: -moz-linear-gradient(top, #AEAEAE, #999999); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#AEAEAE), to(#999999)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#AEAEAE, endColorStr=#999999);
+}
+
+.FDsProjectWorkspace_Statusbar_Ground{
+   background: #AEAEAE;
+   border-top: 1px solid #999999;
+   background: -ms-linear-gradient(top, #555555, #AEAEAE);
+   background: -moz-linear-gradient(top, #555555, #AEAEAE); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#555555), to(#AEAEAE)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#555555, endColorStr=#AEAEAE);
+}
+
+.FDsProjectWorkspace_Catalog_Toolbar{
+   background: #AEAEAE;
+   padding-top: 1px;
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
+   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
+}
+
+.FDsProjectWorkspace_Catalog_Ground{
+   background: #EEEEEE;
+}
+
+.FDsProjectWorkspace_Search_Toolbar{
+   background: #AEAEAE;
+   padding-top: 1px;
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
+   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
+}
+
+.FDsProjectWorkspace_Search_Ground{
+   background: #EEEEEE;
+}
+
+.FDsProjectWorkspace_Preview_Toolbar{
+   background: #AEAEAE;
+   padding-top: 1px;
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
+   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
+}
+
+.FDsProjectWorkspace_Preview_Ground{
+   background: #EEEEEE;
+}
+
+.FDsProjectWorkspace_Workspace_Ground{
+   background: #EEEEEE;
+}
+
+.FDsProjectWorkspace_Property_Ground{;
+   background: #777777;
+}
+
+/* ------------------------------------------------------ */
+/* FDsProjectFrameSet                                   */
+/* ------------------------------------------------------ */
+.FDsProjectFrameSet_Catalog_Toolbar{
+   background: #AEAEAE;
+   padding-top: 1px;
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
+   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
+}
+
+.FDsProjectFrameSet_Catalog_Ground{
+   background: #EEEEEE;
+}
+
+.FDsProjectFrameSet_Search_Toolbar{
+   background: #AEAEAE;
+   padding-top: 1px;
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
+   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
+}
+
+.FDsProjectFrameSet_Search_Ground{
+   background: #EEEEEE;
+}
+
+.FDsProjectFrameSet_Preview_Toolbar{
+   background: #AEAEAE;
+   padding-top: 1px;
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
+   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
+}
+
+.FDsProjectFrameSet_Preview_Ground{
+   background: #EEEEEE;
+}
+
+.FDsProjectFrameSet_FrameSet_Ground{
+   background: #EEEEEE;
+}
+
+.FDsProjectFrameSet_Property_Ground{;
+   background: #777777;
+}
+
+/* ------------------------------------------------------ */
 /* FDsResourceWorkspace                                   */
 /* ------------------------------------------------------ */
 .FDsResourceWorkspace_Toolbar_Ground{
@@ -173,6 +298,59 @@
 }
 
 .FDsResourceWorkspace_Property_Ground{;
+   background: #777777;
+}
+
+/* ------------------------------------------------------ */
+/* FDsPictureFrameSet                                   */
+/* ------------------------------------------------------ */
+.FDsPictureFrameSet_Catalog_Toolbar{
+   background: #AEAEAE;
+   padding-top: 1px;
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
+   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
+}
+
+.FDsPictureFrameSet_Catalog_Ground{
+   background: #EEEE00;
+}
+
+.FDsPictureFrameSet_Search_Toolbar{
+   background: #AEAEAE;
+   padding-top: 1px;
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
+   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
+}
+
+.FDsPictureFrameSet_Search_Ground{
+   background: #EEEEEE;
+}
+
+.FDsPictureFrameSet_Preview_Toolbar{
+   background: #AEAEAE;
+   padding-top: 1px;
+   border-bottom: 1px solid #999999;
+   background: -ms-linear-gradient(top, #CFCFCF, #BBBBBB);
+   background: -moz-linear-gradient(top, #CFCFCF, #BBBBBB); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#CFCFCF), to(#BBBBBB)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
+}
+
+.FDsPictureFrameSet_Preview_Ground{
+   background: #EEEEEE;
+}
+
+.FDsPictureFrameSet_FrameSet_Ground{
+   background: #EEEEEE;
+}
+
+.FDsPictureFrameSet_Property_Ground{;
    background: #777777;
 }
 

@@ -8,30 +8,24 @@ function FDsProjectTabBar(o){
    o = RClass.inherits(this, o, FUiTabBar);
    //..........................................................
    // @property
-   o._frameName             = 'design3d.resource.TabBar';
+   o._frameName            = 'design3d.project.TabBar';
    //..........................................................
    // @attribute
-   o._resourceTypeCd        = 'mesh';
+   o._resourceTypeCd       = 'mesh';
    // @attribute
-   o._controlPictureButton  = null;
-   o._controlSoundButton    = null;
-   o._controlVidioButton    = null;
-   o._controlTextureButton  = null;
-   o._controlMaterialButton = null;
-   o._controlMeshButton     = null;
-   o._controlModelButton    = null;
-   o._controlTemplateButton = null;
-   o._controlSceneButton    = null;
+   o._controlProjectButton = null;
+   o._controlPictureButton = null;
+   o._controlMeshButton    = null;
    //..........................................................
    // @event
-   o.onBuilded              = FDsProjectTabBar_onBuilded;
+   o.onBuilded             = FDsProjectTabBar_onBuilded;
    // @event
-   o.onButtonClick          = FDsProjectTabBar_onButtonClick;
+   o.onButtonClick         = FDsProjectTabBar_onButtonClick;
    //..........................................................
    // @method
-   o.construct              = FDsProjectTabBar_construct;
+   o.construct             = FDsProjectTabBar_construct;
    // @method
-   o.dispose                = FDsProjectTabBar_dispose;
+   o.dispose               = FDsProjectTabBar_dispose;
    return o;
 }
 
@@ -46,15 +40,9 @@ function FDsProjectTabBar_onBuilded(p){
    o.__base.FUiTabBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
+   o._controlProjectButton.addClickListener(o, o.onButtonClick);
    o._controlPictureButton.addClickListener(o, o.onButtonClick);
-   o._controlSoundButton.addClickListener(o, o.onButtonClick);
-   o._controlVidioButton.addClickListener(o, o.onButtonClick);
-   o._controlTextureButton.addClickListener(o, o.onButtonClick);
-   o._controlMaterialButton.addClickListener(o, o.onButtonClick);
    o._controlMeshButton.addClickListener(o, o.onButtonClick);
-   o._controlModelButton.addClickListener(o, o.onButtonClick);
-   o._controlTemplateButton.addClickListener(o, o.onButtonClick);
-   o._controlSceneButton.addClickListener(o, o.onButtonClick);
 }
 
 //==========================================================
@@ -67,8 +55,13 @@ function FDsProjectTabBar_onButtonClick(event){
    var o = this;
    var sender = event.sender;
    var name = sender.name();
-   o._resourceTypeCd = name;
-   o._workspace.switchContent(name);
+   if(name == 'project'){
+      o._workspace.selectFrameSet(EDsFrameSet.ProjectFrameSet);
+   }else if(name == 'picture'){
+      o._workspace.selectFrameSet(EDsFrameSet.PictureFrameSet);
+   }else if(name == 'mesh'){
+      o._workspace.selectFrameSet(EDsFrameSet.MeshFrameSet);
+   }
 }
 
 //==========================================================

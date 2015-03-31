@@ -64,10 +64,8 @@ function FDsSolutionPreviewToolBar_onInsertClick(event){
 //==========================================================
 function FDsSolutionPreviewToolBar_onUpdateClick(event){
    var o = this;
-   var frame = o._workspace._previewContent;
-   var item = frame._activeItem;
-   var url = '/script/design/mesh.html?guid=' + item._guid;
-   window.open(url, '_blank', '');
+   var guid = o._workspace._activeProjectGuid;
+   window.location = 'Project.wa?do=detail&guid=' + guid;
 }
 
 //==========================================================
@@ -93,12 +91,8 @@ function FDsSolutionPreviewToolBar_onDeleteClick(event){
    var o = this;
    var guid = o._workspace._activeProjectGuid;
    RWindow.disable();
-   // 加载数据
-   var xdocument = new TXmlDocument();
-   var xroot = xdocument.root();
-   xroot.set('action', 'delete');
-   xroot.set('guid', guid);
-   var connection = RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   // 发送数据请求
+   var connection = RConsole.find(FDrProjectConsole).doDelete(guid);
    connection.addLoadListener(o, o.onDeleteLoad);
 }
 

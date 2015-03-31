@@ -29,6 +29,7 @@ function TNode(){
    o.get          = TNode_get;
    o.getInteger   = TNode_getInteger;
    o.set          = TNode_set;
+   o.setNvl       = TNode_setNvl;
    o.setBoolean   = TNode_setBoolean;
    o.setFloat     = TNode_setFloat;
    o.find         = TNode_find;
@@ -202,6 +203,19 @@ function TNode_getInteger(n, v){
 function TNode_set(n, v){
    if(v != null){
       this.attributes().set(n, v);
+   }
+}
+
+//==========================================================
+// <T>设置属性对应的非空属性值。</T>
+//
+// @method
+// @param name:String 属性名称
+// @param value:String 属性值
+//==========================================================
+function TNode_setNvl(name, value){
+   if(!RString.isEmpty(value)){
+      this.attributes().set(name, value);
    }
 }
 

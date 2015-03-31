@@ -102,12 +102,8 @@ function FDsSolutionProjectProperty_loadObject(control){
    var guid = control._guid;
    // 设置参数
    o._controlGuid.set(guid);
-   // 加载数据
-   var xdocument = new TXmlDocument();
-   var xroot = xdocument.root();
-   xroot.set('action', 'query');
-   xroot.set('guid', guid);
-   var connection = RConsole.find(FXmlConsole).sendAsync('/cloud.solution.project.ws', xdocument);
+   // 发送数据请求
+   var connection = RConsole.find(FDrProjectConsole).doQuery(guid);
    connection.addLoadListener(o, o.onLoadProject);
 }
 
