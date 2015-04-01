@@ -115,7 +115,7 @@ function FWglContext_linkCanvas(h){
    }
    var g = o._native;
    // 设置状态
-   o.setViewport(h.width, h.height);
+   o.setViewport(0, 0, h.width, h.height);
    o.setDepthMode(true, EG3dDepthMode.LessEqual);
    o.setCullingMode(true, EG3dCullMode.Front);
    // 获得渲染信息

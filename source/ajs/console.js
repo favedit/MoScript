@@ -325,11 +325,11 @@ function FHttpConsole_alloc(){
    c.addLoadListener(o, o.onLoad);
    return c;
 }
-function FHttpConsole_send(u){
+function FHttpConsole_send(url, data){
    var o = this;
-   var c = o.alloc();
-   c.send(u);
-   return c;
+   var connection = o.alloc();
+   connection.send(url, data);
+   return connection;
 }
 function FHttpConsole_dispose(){
    var o = this;

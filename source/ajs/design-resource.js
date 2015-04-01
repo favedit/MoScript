@@ -269,8 +269,6 @@ function FDsResourceCatalogToolBar_dispose(){
 function FDsResourceFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet);
    o._frameName            = 'design3d.resource.FrameSet';
-   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
    o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
    o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
@@ -278,7 +276,6 @@ function FDsResourceFrameSet(o){
    o._stylePreviewGround   = RClass.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
    o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
    o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    o._resourceTypeCd       = 'picture';
    o._frameCatalog         = null;
    o._frameCatalogToolbar  = null;
@@ -325,27 +322,33 @@ function FDsResourceFrameSet_onBuilded(p){
    f.setAlignCd(EUiAlign.Right);
    f.setSizeHtml(o._framePreview._hPanel);
    var control = o._catalogToolbar = RClass.create(FDsResourceCatalogToolBar);
-   control._workspace = o;
+   control._workspace = o._workspace;
+   control._frameSet = o;
    control.buildDefine(p);
    o._frameCatalogToolbar.push(control);
    var control = o._catalogContent = RClass.create(FDsResourceCatalogContent);
-   control._workspace = o;
+   control._workspace = o._workspace;
+   control._frameSet = o;
    control.build(p);
    o._frameCatalogContent.push(control);
    var control = o._searchToolbar = RClass.create(FDsResourceSearchToolBar);
-   control._workspace = o;
+   control._workspace = o._workspace;
+   control._frameSet = o;
    control.buildDefine(p);
    o._frameSearchToolbar.push(control);
    var control = o._searchContent = RClass.create(FDsResourceSearchContent);
-   control._workspace = o;
+   control._workspace = o._workspace;
+   control._frameSet = o;
    control.build(p);
    o._frameSearchContent.push(control);
    var control = o._previewToolbar = RClass.create(FDsResourcePreviewToolBar);
-   control._workspace = o;
+   control._workspace = o._workspace;
+   control._frameSet = o;
    control.buildDefine(p);
    o._framePreviewToolbar.push(control);
    var control = o._previewContent = RClass.create(FDsResourcePreviewContent);
-   control._workspace = o;
+   control._workspace = o._workspace;
+   control._frameSet = o;
    control._toolbar = o._previewToolbar;
    control._hParent = f._hPanel;
    control.build(p);
@@ -424,6 +427,7 @@ function FDsResourceFrameSet_switchContent(typeCd){
 }
 function FDsResourceFrameSet_load(){
    var o = this;
+   o.switchContent('mesh');
 }
 function FDsResourceFrameSet_dispose(){
    var o = this;
@@ -439,6 +443,7 @@ function FDsResourceImportDialog(o){
    o._controlTeamButton    = null;
    o._controlShareButton   = null;
    o.onBuilded             = FDsResourceImportDialog_onBuilded;
+   o.onFileLoaded          = FDsResourceImportDialog_onFileLoaded;
    o.onConfirmLoad         = FDsResourceImportDialog_onConfirmLoad;
    o.onConfirmClick        = FDsResourceImportDialog_onConfirmClick;
    o.onCancelClick         = FDsResourceImportDialog_onCancelClick;
@@ -452,48 +457,28 @@ function FDsResourceImportDialog_onBuilded(p){
    o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
    o._controlCancelButton.addClickListener(o, o.onCancelClick);
 }
+function FDsResourceImportDialog_onFileLoaded(event){
+   var o = this;
+   var reader = o._fileReader;
+   var code = o._controlCode.get();
+   var label = o._controlLabel.get();
+   var url = '/cloud.content.mesh.wv?do=importData&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+   var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+   connection.addLoadListener(o, o.onConfirmLoad);
+   o._fileReader = RObject.dispose(reader);
+}
 function FDsResourceImportDialog_onConfirmLoad(event){
    var o = this;
-   var frame = o._workspace._searchContent;
-   frame.serviceResearch();
    o.hide();
    RWindow.enable();
 }
 function FDsResourceImportDialog_onConfirmClick(event){
    var o = this;
    RWindow.disable();
-   var code = o._controlCode.get();
-   var label = o._controlLabel.get();
    var file = o._controlFile._hInput.files[0];
-   var reader = new FileReader();
-   reader.onloadstart = function() {
-       console.log("onloadstart");
-   }
-    reader.onprogress = function(p) {
-      console.log("onprogress");
-   }
-   reader.onload = function(){
-      console.log('Load file complete');
-   }
-   reader.onloadend = function(){
-      if(reader.error){
-         console.log(reader.error);
-      }else{
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', '/cloud.content.mesh.wv?do=importData&guid=1&code=2&data_length=' + file.size + '&file_name=' + file.name);
-          xhr.overrideMimeType("application/octet-stream");
-          xhr.send(reader.result);
-          xhr.onreadystatechange = function(){
-            if(xhr.readyState == 4){
-               if (xhr.status == 200){
-                  console.log("upload complete");
-                  console.log("response: " + xhr.responseText);
-               }
-            }
-         }
-      }
-   }
-   reader.readAsArrayBuffer(file);
+   var reader = o._fileReader = RClass.create(FFileReader);
+   reader.addLoadListener(o, o.onFileLoaded);
+   reader.loadFile(file);
 }
 function FDsResourceImportDialog_onCancelClick(event){
    this.hide();
@@ -1179,15 +1164,16 @@ function FDsResourcePreviewToolBar_dispose(){
 }
 function FDsResourceSearchContent(o){
    o = RClass.inherits(this, o, FUiListView);
-   o._refreshButton = null;
-   o._saveButton    = null;
-   o._runButton     = null;
-   o.onBuilded      = FDsResourceSearchContent_onBuilded;
-   o.onServiceLoad  = FDsResourceSearchContent_onServiceLoad;
-   o.construct      = FDsResourceSearchContent_construct;
-   o.clickItem      = FDsResourceSearchContent_clickItem;
-   o.serviceSearch  = FDsResourceSearchContent_serviceSearch;
-   o.dispose        = FDsResourceSearchContent_dispose;
+   o._refreshButton    = null;
+   o._saveButton       = null;
+   o._runButton        = null;
+   o.onBuilded         = FDsResourceSearchContent_onBuilded;
+   o.onServiceLoad     = FDsResourceSearchContent_onServiceLoad;
+   o.construct         = FDsResourceSearchContent_construct;
+   o.doClickItem       = FDsResourceSearchContent_doClickItem;
+   o.doDoubleClickItem = FDsResourceSearchContent_doDoubleClickItem;
+   o.serviceSearch     = FDsResourceSearchContent_serviceSearch;
+   o.dispose           = FDsResourceSearchContent_dispose;
    return o;
 }
 function FDsResourceSearchContent_onBuilded(p){
@@ -1200,7 +1186,7 @@ function FDsResourceSearchContent_onServiceLoad(p){
    var pageSize = xitems.getInteger('page_size');
    var pageCount = xitems.getInteger('page_count');
    var page = xitems.getInteger('page');
-   o._workspace._searchToolbar.setNavigator(pageSize, pageCount, page);
+   o._frameSet._searchToolbar.setNavigator(pageSize, pageCount, page);
    o.clear();
    var xnodes = xitems.nodes();
    var count = xnodes.count();
@@ -1222,11 +1208,13 @@ function FDsResourceSearchContent_construct(){
    var o = this;
    o.__base.FUiListView.construct.call(o);
 }
-function FDsResourceSearchContent_clickItem(p){
+function FDsResourceSearchContent_doClickItem(p){
    var o = this;
-   var frame = o._workspace._previewContent;
-   frame._activeItem = p;
-   frame.loadMeshByGuid(p._guid);
+}
+function FDsResourceSearchContent_doDoubleClickItem(item){
+   var o = this;
+   var guid = item._guid;
+   o._workspace.selectFrameSet(EDsFrameSet.MeshFrameSet, guid);
 }
 function FDsResourceSearchContent_serviceSearch(typeCd, serach, pageSize, page){
    var o = this;

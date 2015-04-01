@@ -142,12 +142,12 @@ function FE3dMeshConsole_allocByCode(pc, pn){
 function FE3dMeshConsole_free(p){
    var o = this;
    // 脱离父对象
-   p.remove();
+   p._display.remove();
    // 放到缓冲池
-   var ms = o._meshs.get(n);
-   if(ms == null){
-      ms = new TObjects();
-      o._meshs.set(n, ms);
-   }
-   ms.push(p);
+   //var ms = o._meshs.get(n);
+   //if(ms == null){
+   //   ms = new TObjects();
+   //   o._meshs.set(n, ms);
+   //}
+   //ms.push(p);
 }

@@ -121,8 +121,8 @@ function FDsMeshCanvas(o){
    o.switchRotation       = FDsMeshCanvas_switchRotation;
    o.reloadRegion         = FDsMeshCanvas_reloadRegion;
    o.capture              = FDsMeshCanvas_capture;
-   o.loadMeshByGuid       = FDsMeshCanvas_loadMeshByGuid;
-   o.loadMeshByCode       = FDsMeshCanvas_loadMeshByCode;
+   o.loadByGuid           = FDsMeshCanvas_loadByGuid;
+   o.loadByCode           = FDsMeshCanvas_loadByCode;
    o.dispose              = FDsMeshCanvas_dispose;
    return o;
 }
@@ -447,7 +447,7 @@ function FDsMeshCanvas_selectRenderable(p){
       o._selectRenderables.push(p);
       p._optionSelected = true;
       p.showBoundBox();
-      o._workspace._catalog.showObject(p);
+      o._frameSet._catalog.showObject(p);
    }
    var t = o._templateTranslation;
    var r = o._templateRotation;
@@ -512,7 +512,7 @@ function FDsMeshCanvas_capture(){
    g.readPixels(0, 0, s.width, s.height, g.RGBA, g.UNSIGNED_BYTE, data);
    debugger
 }
-function FDsMeshCanvas_loadMeshByGuid(p){
+function FDsMeshCanvas_loadByGuid(p){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
@@ -521,9 +521,9 @@ function FDsMeshCanvas_loadMeshByGuid(p){
    var space = o._activeSpace = rmc.allocByGuid(o, p);
    space.addLoadListener(o, o.onMeshLoad);
    space._layer.pushRenderable(o._dimensional);
-   RStage.register('mesh3d', space);
+   RStage.register('space', space);
 }
-function FDsMeshCanvas_loadMeshByCode(p){
+function FDsMeshCanvas_loadByCode(p){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
@@ -532,7 +532,7 @@ function FDsMeshCanvas_loadMeshByCode(p){
    var space = o._activeSpace = rmc.allocByCode(o, p);
    space.addLoadListener(o, o.onMeshLoad);
    space._layer.pushRenderable(o._dimensional);
-   RStage.register('mesh3d', space);
+   RStage.register('space', space);
 }
 function FDsMeshCanvas_dispose(){
    var o = this;
@@ -936,8 +936,8 @@ function FDsMeshFrameSet(o){
    o.onCatalogSelected     = FDsMeshFrameSet_onCatalogSelected;
    o.construct             = FDsMeshFrameSet_construct;
    o.findPropertyFrame     = FDsMeshFrameSet_findPropertyFrame;
-   o.loadMeshByGuid        = FDsMeshFrameSet_loadMeshByGuid;
-   o.loadMeshByCode        = FDsMeshFrameSet_loadMeshByCode;
+   o.loadByGuid            = FDsMeshFrameSet_loadByGuid;
+   o.loadByCode            = FDsMeshFrameSet_loadByCode;
    o.dispose               = FDsMeshFrameSet_dispose;
    return o;
 }
@@ -956,25 +956,28 @@ function FDsMeshFrameSet_onBuilded(p){
    var f = o._propertySpliter = o.searchControl('propertySpliter');
    f.setAlignCd(EUiAlign.Right);
    f.setSizeHtml(o._frameProperty._hPanel);
-   var c = o._catalog = RClass.create(FDsMeshCatalog);
-   c._workspace = o;
-   c.build(p);
-   c.addSelectedListener(o, o.onCatalogSelected);
-   o._frameCatalog.push(c);
-   var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
-   var c = o._canvasToolbar = RClass.create(FDsMeshCanvasToolBar);
-   c._workspace = o;
-   c.buildDefine(p);
-   o._canvasToolbarFrame.push(c);
-   var f = o._canvasFrame = o.searchControl('canvasFrame');
-   var c = o._canvas = RClass.create(FDsMeshCanvas);
-   c._workspace = o;
-   c._toolbar = o._canvasToolbar;
-   c.addLoadListener(o, o.onMeshLoad);
-   c._hParent = f._hPanel;
-   c._hParent.style.backgroundColor = '#000000';
-   c.build(p);
-   o._canvasFrame.push(c);
+   var catalog = o._catalog = RClass.create(FDsMeshCatalog);
+   catalog._frameSet = o;
+   catalog._workspace = o._worksapce;
+   catalog.build(p);
+   catalog.addSelectedListener(o, o.onCatalogSelected);
+   o._frameCatalog.push(catalog);
+   var frame = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
+   var toolbar = o._canvasToolbar = RClass.create(FDsMeshCanvasToolBar);
+   toolbar._frameSet = o;
+   toolbar._workspace = o._worksapce;
+   toolbar.buildDefine(p);
+   frame.push(toolbar);
+   var frame = o._canvasFrame = o.searchControl('canvasFrame');
+   var canvas = o._canvas = RClass.create(FDsMeshCanvas);
+   canvas._frameSet = o;
+   canvas._workspace = o._workspace;
+   canvas._toolbar = o._canvasToolbar;
+   canvas.addLoadListener(o, o.onMeshLoad);
+   canvas._hParent = frame._hPanel;
+   canvas._hParent.style.backgroundColor = '#000000';
+   canvas.build(p);
+   frame.push(canvas);
 }
 function FDsMeshFrameSet_onMeshLoad(p){
    var o = this;
@@ -1042,15 +1045,15 @@ function FDsMeshFrameSet_findPropertyFrame(p){
    }
    return f;
 }
-function FDsMeshFrameSet_loadMeshByGuid(p){
+function FDsMeshFrameSet_loadByGuid(guid){
    var o = this;
-   o._meshGuid = p;
-   o._canvas.loadMeshByGuid(p);
+   o._meshGuid = guid;
+   o._canvas.loadByGuid(guid);
 }
-function FDsMeshFrameSet_loadMeshByCode(p){
+function FDsMeshFrameSet_loadByCode(p){
    var o = this;
    o._meshCode = p;
-   o._canvas.loadMeshByCode(p);
+   o._canvas.loadByCode(p);
 }
 function FDsMeshFrameSet_dispose(){
    var o = this;
@@ -1354,7 +1357,7 @@ function FDsMeshMenuBar_onBuilded(p){
 }
 function FDsMeshMenuBar_onSaveClick(p){
    var o = this;
-   var space = o._workspace._activeSpace;
+   var space = o._frameSet._activeSpace;
    var resource = space.resource();
    var xconfig = new TXmlNode();
    resource.saveConfig(xconfig);
@@ -1640,11 +1643,10 @@ function FDsMeshTechniquePropertyFrame_dispose(){
 function FDsMeshWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);
    o._frameName            = 'design3d.mesh.Workspace';
-   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-   o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
    o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
-   o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
+   o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
+   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
    o._activeSpace          = null;
    o._activeMesh           = null;
    o._framesetMain         = null;
@@ -1652,9 +1654,7 @@ function FDsMeshWorkspace(o){
    o._frameToolBar         = null;
    o._frameBody            = null;
    o._frameProperty        = null;
-   o._frameCatalog         = null;
-   o._frameWorkspace       = null;
-   o._frameStatusBar       = null;
+   o._frameSet             = null;
    o._propertyFrames       = null;
    o.onBuilded             = FDsMeshWorkspace_onBuilded;
    o.onMeshLoad            = FDsMeshWorkspace_onMeshLoad;
@@ -1669,45 +1669,21 @@ function FDsMeshWorkspace(o){
 function FDsMeshWorkspace_onBuilded(p){
    var o = this;
    o.__base.FUiWorkspace.onBuilded.call(o, p);
-   var f = o._frameToolBar = o.searchControl('toolbarFrame');
-   f._hPanel.className = o.styleName('Toolbar_Ground');
-   var f = o._frameCatalog = o.searchControl('catalogFrame');
-   f._hPanel.className = o.styleName('Catalog_Ground');
-   var f = o._frameWorkspace = o.searchControl('spaceFrame');
-   f._hPanel.className = o.styleName('Workspace_Ground');
-   var f = o._frameProperty = o.searchControl('propertyFrame');
-   f._hPanel.className = o.styleName('Property_Ground');
-   var f = o._frameStatusBar = o.searchControl('statusFrame');
-   f._hPanel.className = o.styleName('Statusbar_Ground');
-   var f = o._catalogSplitter = o.searchControl('catalogSpliter');
-   f.setAlignCd(EUiAlign.Left);
-   f.setSizeHtml(o._frameCatalog._hPanel);
-   var f = o._propertySpliter = o.searchControl('propertySpliter');
-   f.setAlignCd(EUiAlign.Right);
-   f.setSizeHtml(o._frameProperty._hPanel);
-   var c = o._toolbar = RClass.create(FDsMeshMenuBar);
-   c._workspace = o;
-   c.buildDefine(p);
-   o._frameToolBar.push(c);
-   var c = o._catalog = RClass.create(FDsMeshCatalog);
-   c._workspace = o;
-   c.build(p);
-   c.addSelectedListener(o, o.onCatalogSelected);
-   o._frameCatalog.push(c);
-   var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
-   var c = o._canvasToolbar = RClass.create(FDsMeshCanvasToolBar);
-   c._workspace = o;
-   c.buildDefine(p);
-   o._canvasToolbarFrame.push(c);
-   var f = o._canvasFrame = o.searchControl('canvasFrame');
-   var c = o._canvas = RClass.create(FDsMeshCanvas);
-   c._workspace = o;
-   c._toolbar = o._canvasToolbar;
-   c.addLoadListener(o, o.onMeshLoad);
-   c._hParent = f._hPanel;
-   c._hParent.style.backgroundColor = '#000000';
-   c.build(p);
-   o._canvasFrame.push(c);
+   var frame = o._frameToolBar = o.searchControl('toolbarFrame');
+   frame._hPanel.className = o.styleName('Toolbar_Ground');
+   var frame = o._frameBody = o.searchControl('bodyFrame');
+   frame._hPanel.className = o.styleName('Body_Ground');
+   var frame = o._frameStatusBar = o.searchControl('statusFrame');
+   frame._hPanel.className = o.styleName('Statusbar_Ground');
+   var menuBar = o._toolbar = RClass.create(FDsMeshMenuBar);
+   menuBar._workspace = o;
+   menuBar.buildDefine(p);
+   o._frameToolBar.push(menuBar);
+   var frameSet = o._frameSet = RClass.create(FDsMeshFrameSet);
+   frameSet._workspace = o;
+   frameSet.buildDefine(p);
+   o._frameBody.push(frameSet);
+   menuBar._frameSet = frameSet;
 }
 function FDsMeshWorkspace_onMeshLoad(p){
    var o = this;
@@ -1775,15 +1751,11 @@ function FDsMeshWorkspace_findPropertyFrame(p){
    }
    return f;
 }
-function FDsMeshWorkspace_loadMeshByGuid(p){
-   var o = this;
-   o._meshGuid = p;
-   o._canvas.loadMeshByGuid(p);
+function FDsMeshWorkspace_loadMeshByGuid(guid){
+   this._frameSet.loadByGuid(guid);
 }
-function FDsMeshWorkspace_loadMeshByCode(p){
-   var o = this;
-   o._meshCode = p;
-   o._canvas.loadMeshByCode(p);
+function FDsMeshWorkspace_loadMeshByCode(code){
+   this._frameSet.loadByCode(code);
 }
 function FDsMeshWorkspace_dispose(){
    var o = this;

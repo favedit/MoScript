@@ -11,8 +11,6 @@ function FDsResourceFrameSet(o){
    o._frameName            = 'design3d.resource.FrameSet';
    //..........................................................
    // @style
-   o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
-   o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
    o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
    o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'Search_Ground'));
@@ -20,7 +18,6 @@ function FDsResourceFrameSet(o){
    o._stylePreviewGround   = RClass.register(o, new AStyle('_stylePreviewGround', 'Preview_Ground'));
    o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Preview_Toolbar'));
    o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
-   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    //..........................................................
    // @attribute
    o._resourceTypeCd       = 'picture';
@@ -93,41 +90,45 @@ function FDsResourceFrameSet_onBuilded(p){
    //..........................................................
    // 设置目录工具栏
    var control = o._catalogToolbar = RClass.create(FDsResourceCatalogToolBar);
-   control._workspace = o;
+   control._workspace = o._workspace;
+   control._frameSet = o;
    control.buildDefine(p);
    o._frameCatalogToolbar.push(control);
    // 设置目录栏
    var control = o._catalogContent = RClass.create(FDsResourceCatalogContent);
-   control._workspace = o;
+   control._workspace = o._workspace;
+   control._frameSet = o;
    control.build(p);
    //control.addSelectedListener(o, o.onCatalogSelected);
    o._frameCatalogContent.push(control);
    //..........................................................
    // 设置搜索栏
    var control = o._searchToolbar = RClass.create(FDsResourceSearchToolBar);
-   control._workspace = o;
+   control._workspace = o._workspace;
+   control._frameSet = o;
    control.buildDefine(p);
    o._frameSearchToolbar.push(control);
    // 设置搜索内容
    var control = o._searchContent = RClass.create(FDsResourceSearchContent);
-   control._workspace = o;
+   control._workspace = o._workspace;
+   control._frameSet = o;
    control.build(p);
    o._frameSearchContent.push(control);
    //..........................................................
    // 设置画板工具栏
    var control = o._previewToolbar = RClass.create(FDsResourcePreviewToolBar);
-   control._workspace = o;
+   control._workspace = o._workspace;
+   control._frameSet = o;
    control.buildDefine(p);
    o._framePreviewToolbar.push(control);
    // 设置画板
    var control = o._previewContent = RClass.create(FDsResourcePreviewContent);
-   control._workspace = o;
+   control._workspace = o._workspace;
+   control._frameSet = o;
    control._toolbar = o._previewToolbar;
    control._hParent = f._hPanel;
    control.build(p);
    o._framePreviewContent.push(control);
-   //..........................................................
-   //o.switchContent(o._resourceTypeCd);
 }
 
 //==========================================================
@@ -247,8 +248,7 @@ function FDsResourceFrameSet_switchContent(typeCd){
 //==========================================================
 function FDsResourceFrameSet_load(){
    var o = this;
-   //o._meshCode = p;
-   //o._canvas.load(p);
+   o.switchContent('mesh');
 }
 
 //==========================================================

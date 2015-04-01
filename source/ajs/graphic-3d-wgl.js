@@ -75,7 +75,7 @@ function FWglContext_linkCanvas(h){
       o._contextAttributes = n.getContextAttributes();
    }
    var g = o._native;
-   o.setViewport(h.width, h.height);
+   o.setViewport(0, 0, h.width, h.height);
    o.setDepthMode(true, EG3dDepthMode.LessEqual);
    o.setCullingMode(true, EG3dCullMode.Front);
    var c = o._capability;

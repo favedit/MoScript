@@ -49,8 +49,18 @@ function FHttpConnection(o){
 //==========================================================
 function FHttpConnection_onConnectionSend(){
    var o = this;
-   if(o._inputData){
-      o._contentLength = o._inputData.length;
+   var input = o._input;
+   if(input){
+      var s = null;
+      if(input.constructor == String){
+         o._inputData = input;
+         o._contentLength = input.length;
+      }else if(input.constructor == ArrayBuffer){
+         o._inputData = input;
+         o._contentLength = input.byteLength;
+      }else{
+         throw new TError('Unknown send data type.');
+      }
    }
 }
 
@@ -114,6 +124,7 @@ function FHttpConnection_setHeaders(){
          c.responseType = 'arraybuffer';
       }else{
          c.overrideMimeType('text/plain; charset=x-user-defined');
+         //c.overrideMimeType("application/octet-stream"); 
          if(o._asynchronous){
             c.responseType = 'arraybuffer';
          }
@@ -220,15 +231,16 @@ function FHttpConnection_sendAsync(){
 // <T>发送页面请求。</T>
 //
 // @method
-// @param p:url:String 页面地址
+// @param url:String 发送地址
+// @param data:Object 发送数据
 //==========================================================
-function FHttpConnection_send(p, d){
+function FHttpConnection_send(url, data){
    var o = this;
    // 设置参数
-   o._url = p;
-   o._input = d;
+   o._url = url;
+   o._input = data;
    // 设置状态
-   o._methodCd = (d != null) ? EHttpMethod.Post : EHttpMethod.Get;
+   o._methodCd = (data != null) ? EHttpMethod.Post : EHttpMethod.Get;
    o._statusFree = false;
    // 发送信息
    o.onConnectionSend();

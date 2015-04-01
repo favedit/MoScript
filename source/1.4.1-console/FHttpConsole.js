@@ -75,14 +75,15 @@ function FHttpConsole_alloc(){
 // <T>发送一个页面信息，返回页面信息。</T>
 //
 // @method
-// @param u:url:String 发送地址
+// @param url:String 发送地址
+// @param data:Object 发送数据
 // @return FHttpConnection 链接对象
 //==========================================================
-function FHttpConsole_send(u){
+function FHttpConsole_send(url, data){
    var o = this;
-   var c = o.alloc();
-   c.send(u);
-   return c;
+   var connection = o.alloc();
+   connection.send(url, data);
+   return connection;
 }
 
 //==========================================================

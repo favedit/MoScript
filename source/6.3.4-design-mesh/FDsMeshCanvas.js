@@ -57,8 +57,8 @@ function FDsMeshCanvas(o){
    o.switchRotation       = FDsMeshCanvas_switchRotation;
    o.reloadRegion         = FDsMeshCanvas_reloadRegion;
    o.capture              = FDsMeshCanvas_capture;
-   o.loadMeshByGuid       = FDsMeshCanvas_loadMeshByGuid;
-   o.loadMeshByCode       = FDsMeshCanvas_loadMeshByCode;
+   o.loadByGuid           = FDsMeshCanvas_loadByGuid;
+   o.loadByCode           = FDsMeshCanvas_loadByCode;
    // @method
    o.dispose              = FDsMeshCanvas_dispose;
    return o;
@@ -574,7 +574,7 @@ function FDsMeshCanvas_selectRenderable(p){
       o._selectRenderables.push(p);
       p._optionSelected = true;
       p.showBoundBox();
-      o._workspace._catalog.showObject(p);
+      o._frameSet._catalog.showObject(p);
    }
    // 设置变量
    var t = o._templateTranslation;
@@ -677,7 +677,7 @@ function FDsMeshCanvas_capture(){
 //
 // @method
 //==========================================================
-function FDsMeshCanvas_loadMeshByGuid(p){
+function FDsMeshCanvas_loadByGuid(p){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
@@ -689,7 +689,7 @@ function FDsMeshCanvas_loadMeshByGuid(p){
    // 设置坐标系
    space._layer.pushRenderable(o._dimensional);
    // 启动舞台
-   RStage.register('mesh3d', space);
+   RStage.register('space', space);
 }
 
 //==========================================================
@@ -697,7 +697,7 @@ function FDsMeshCanvas_loadMeshByGuid(p){
 //
 // @method
 //==========================================================
-function FDsMeshCanvas_loadMeshByCode(p){
+function FDsMeshCanvas_loadByCode(p){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
@@ -709,7 +709,7 @@ function FDsMeshCanvas_loadMeshByCode(p){
    // 设置坐标系
    space._layer.pushRenderable(o._dimensional);
    // 启动舞台
-   RStage.register('mesh3d', space);
+   RStage.register('space', space);
 }
 
 //==========================================================

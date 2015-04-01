@@ -1214,6 +1214,88 @@ function FDataView_dispose(){
    o._memory = null;
    o.__base.FObject.dispose.call(o);
 }
+function FFileReader(o){
+   o = RClass.inherits(this, o, FObject, MListenerLoad);
+   o._reader        = null;
+   o._fileName      = null;
+   o._length        = 0;
+   o._data          = null;
+   o._statusLoading = false;
+   o.ohloadStart    = FFileReader_ohLoadStart;
+   o.ohLoad         = FFileReader_ohLoad;
+   o.ohLoadEnd      = FFileReader_ohLoadEnd;
+   o.ohProgress     = FFileReader_ohProgress;
+   o.construct      = FFileReader_construct;
+   o.fileName       = FFileReader_fileName;
+   o.length         = FFileReader_length;
+   o.data           = FFileReader_data;
+   o.loadFile       = FFileReader_loadFile;
+   o.dispose        = FFileReader_dispose;
+   return o;
+}
+function FFileReader_ohLoadStart(){
+   var o = this.__linker;
+}
+function FFileReader_ohLoad(){
+   var o = this.__linker;
+}
+function FFileReader_ohLoadEnd(){
+   var o = this.__linker;
+   var reader = o._reader;
+   o._statusFree = true;
+   if(reader.error){
+      debugger
+      RLogger.error(o, 'Load file failure. (error={1])', reader.error);
+   }else{
+      o._length = reader.result.byteLength;
+      o._data = reader.result;
+      var event = new SEvent(o);
+      o.processLoadListener(event);
+      event.dispose();
+   }
+}
+function FFileReader_ohProgress(){
+}
+function FFileReader_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   var reader = o._reader = new FileReader();
+   reader.__linker = o;
+   reader.onloadstart = o.ohLoadStart;
+   reader.onload = o.ohLoad;
+   reader.onloadend = o.ohLoadEnd;
+   reader.onprogress = o.ohProgress;
+}
+function FFileReader_fileName(){
+   return this._fileName;
+}
+function FFileReader_length(){
+   return this._length;
+}
+function FFileReader_data(){
+   return this._data;
+}
+function FFileReader_loadFile(file){
+   var o = this;
+   o._fileName = file.name;
+   o._length = file.size;
+   var reader = o._reader;
+   reader.readAsArrayBuffer(file);
+}
+function FFileReader_dispose(){
+   var o = this;
+   var reader = o._reader = new FileReader();
+   reader.__linker = null;
+   reader.onloadstart = null;
+   reader.onload = null;
+   reader.onloadend = null;
+   reader.onprogress = null;
+   o._reader = null;
+   o._fileName = null;
+   o._data = null;
+   o.__base.MListenerLoad.dispose.call(o);
+   o.__base.FObject.dispose.call(o);
+}
 function FHttpConnection(o){
    o = RClass.inherits(this, o, FObject, MListenerLoad);
    o._asynchronous        = false;
@@ -1244,8 +1326,18 @@ function FHttpConnection(o){
 }
 function FHttpConnection_onConnectionSend(){
    var o = this;
-   if(o._inputData){
-      o._contentLength = o._inputData.length;
+   var input = o._input;
+   if(input){
+      var s = null;
+      if(input.constructor == String){
+         o._inputData = input;
+         o._contentLength = input.length;
+      }else if(input.constructor == ArrayBuffer){
+         o._inputData = input;
+         o._contentLength = input.byteLength;
+      }else{
+         throw new TError('Unknown send data type.');
+      }
    }
 }
 function FHttpConnection_onConnectionReady(){
@@ -1334,11 +1426,11 @@ function FHttpConnection_sendAsync(){
    c.send(o._inputData);
    RLogger.info(this, 'Send http asynchronous request. (method={1}, url={2})', o._methodCd, o._url);
 }
-function FHttpConnection_send(p, d){
+function FHttpConnection_send(url, data){
    var o = this;
-   o._url = p;
-   o._input = d;
-   o._methodCd = (d != null) ? EHttpMethod.Post : EHttpMethod.Get;
+   o._url = url;
+   o._input = data;
+   o._methodCd = (data != null) ? EHttpMethod.Post : EHttpMethod.Get;
    o._statusFree = false;
    o.onConnectionSend();
    if(o._asynchronous){

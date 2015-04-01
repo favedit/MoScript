@@ -355,9 +355,9 @@
 }
 
 /* ------------------------------------------------------ */
-/* FDsResourceMeshFrameSet                                   */
+/* FDsMeshFrameSet                                   */
 /* ------------------------------------------------------ */
-.FDsResourceMeshFrameSet_Toolbar_Ground{
+.FDsMeshFrameSet_Toolbar_Ground{
    background: #AEAEAE;
    padding-top: 1px;
    border-bottom: 1px solid #999999;
@@ -367,7 +367,7 @@
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#AEAEAE, endColorStr=#999999);
 }
 
-.FDsResourceMeshFrameSet_Statusbar_Ground{
+.FDsMeshFrameSet_Statusbar_Ground{
    background: #AEAEAE;
    border-top: 1px solid #999999;
    background: -ms-linear-gradient(top, #555555, #AEAEAE);
@@ -376,7 +376,7 @@
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#555555, endColorStr=#AEAEAE);
 }
 
-.FDsResourceMeshFrameSet_Catalog_Toolbar{
+.FDsMeshFrameSet_Catalog_Toolbar{
    background: #AEAEAE;
    padding-top: 1px;
    border-bottom: 1px solid #999999;
@@ -386,11 +386,11 @@
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
 }
 
-.FDsResourceMeshFrameSet_Catalog_Ground{
+.FDsMeshFrameSet_Catalog_Ground{
    background: #EEEEEE;
 }
 
-.FDsResourceMeshFrameSet_Search_Toolbar{
+.FDsMeshFrameSet_Search_Toolbar{
    background: #AEAEAE;
    padding-top: 1px;
    border-bottom: 1px solid #999999;
@@ -400,11 +400,11 @@
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
 }
 
-.FDsResourceMeshFrameSet_Search_Ground{
+.FDsMeshFrameSet_Search_Ground{
    background: #EEEEEE;
 }
 
-.FDsResourceMeshFrameSet_Preview_Toolbar{
+.FDsMeshFrameSet_Preview_Toolbar{
    background: #AEAEAE;
    padding-top: 1px;
    border-bottom: 1px solid #999999;
@@ -414,15 +414,15 @@
    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#CFCFCF, endColorStr=#BBBBBB);
 }
 
-.FDsResourceMeshFrameSet_Preview_Ground{
+.FDsMeshFrameSet_Preview_Ground{
    background: #EEEEEE;
 }
 
-.FDsResourceMeshFrameSet_Workspace_Ground{
+.FDsMeshFrameSet_Workspace_Ground{
    background: #EEEEEE;
 }
 
-.FDsResourceMeshFrameSet_Property_Ground{;
+.FDsMeshFrameSet_Property_Ground{;
    background: #777777;
 }
 

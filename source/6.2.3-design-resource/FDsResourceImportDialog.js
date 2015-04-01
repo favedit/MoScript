@@ -20,6 +20,7 @@ function FDsResourceImportDialog(o){
    // @event
    o.onBuilded             = FDsResourceImportDialog_onBuilded;
    // @event
+   o.onFileLoaded          = FDsResourceImportDialog_onFileLoaded;
    o.onConfirmLoad         = FDsResourceImportDialog_onConfirmLoad;
    o.onConfirmClick        = FDsResourceImportDialog_onConfirmClick;
    o.onCancelClick         = FDsResourceImportDialog_onCancelClick;
@@ -47,6 +48,26 @@ function FDsResourceImportDialog_onBuilded(p){
 }
 
 //==========================================================
+// <T>文件加载完成。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsResourceImportDialog_onFileLoaded(event){
+   var o = this;
+   var reader = o._fileReader;
+   // 获得参数
+   var code = o._controlCode.get();
+   var label = o._controlLabel.get();
+   // 上传数据
+   var url = '/cloud.content.mesh.wv?do=importData&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+   var connection = RConsole.find(FHttpConsole).send(url, reader.data());
+   connection.addLoadListener(o, o.onConfirmLoad);
+   // 释放文件
+   o._fileReader = RObject.dispose(reader);
+}
+
+//==========================================================
 // <T>按键点击处理。</T>
 //
 // @method
@@ -54,8 +75,8 @@ function FDsResourceImportDialog_onBuilded(p){
 //==========================================================
 function FDsResourceImportDialog_onConfirmLoad(event){
    var o = this;
-   var frame = o._workspace._searchContent;
-   frame.serviceResearch();
+   //var frame = o._workspace._searchContent;
+   //frame.serviceResearch();
    // 隐藏窗口
    o.hide();
    // 隐藏窗口
@@ -72,53 +93,11 @@ function FDsResourceImportDialog_onConfirmClick(event){
    var o = this;
    // 画面禁止操作
    RWindow.disable();
-   // 获得参数
-   var code = o._controlCode.get();
-   var label = o._controlLabel.get();
-   // 发送数据请求
+   // 加载文件数据
    var file = o._controlFile._hInput.files[0];
-   var reader = new FileReader(); 
-   reader.onloadstart = function() { 
-       console.log("onloadstart"); 
-      //document.getElementById("bytesTotal").textContent = file.size; 
-   } 
-    reader.onprogress = function(p) { 
-      console.log("onprogress"); 
-      //document.getElementById("bytesRead").textContent = p.loaded; 
-   } 
-   reader.onload = function(){
-      console.log('Load file complete');
-   }
-   reader.onloadend = function(){
-      if(reader.error){
-         console.log(reader.error); 
-      }else{
-          var xhr = new XMLHttpRequest(); 
-          xhr.open('POST', '/cloud.content.mesh.wv?do=importData&guid=1&code=2&data_length=' + file.size + '&file_name=' + file.name); 
-          //xhr.open('POST', '/resource3d/mesh/Mesh.wa?do=importData&guid=1&data_length=' + file.size + '&file_name=' + file.name); 
-          xhr.overrideMimeType("application/octet-stream"); 
-          //xhr.sendAsBinary(reader.result); 
-          xhr.send(reader.result); 
-          xhr.onreadystatechange = function(){
-            if(xhr.readyState == 4){
-               if (xhr.status == 200){
-                  console.log("upload complete");
-                  console.log("response: " + xhr.responseText);
-               }
-            }
-         }
-      }
-   }
-   //reader.readAsBinaryString(file);
-   reader.readAsArrayBuffer(file);
-   
-   // 发送数据请求
-   //var project = RClass.create(FDrProject);
-   //project.setCode(code);
-   //project.setLabel(label);
-   // 发送请求处理
-   //var connection = RConsole.find(FDrProjectConsole).doCreate(project);
-   //connection.addLoadListener(o, o.onConfirmLoad);
+   var reader = o._fileReader = RClass.create(FFileReader);
+   reader.addLoadListener(o, o.onFileLoaded);
+   reader.loadFile(file);
 }
 
 //==========================================================

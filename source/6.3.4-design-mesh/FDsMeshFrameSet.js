@@ -44,8 +44,8 @@ function FDsMeshFrameSet(o){
    // @method
    o.findPropertyFrame     = FDsMeshFrameSet_findPropertyFrame;
    // @method
-   o.loadMeshByGuid        = FDsMeshFrameSet_loadMeshByGuid;
-   o.loadMeshByCode        = FDsMeshFrameSet_loadMeshByCode;
+   o.loadByGuid            = FDsMeshFrameSet_loadByGuid;
+   o.loadByCode            = FDsMeshFrameSet_loadByCode;
    // @method
    o.dispose               = FDsMeshFrameSet_dispose;
    return o;
@@ -86,28 +86,31 @@ function FDsMeshFrameSet_onBuilded(p){
    //o._frameToolBar.push(c);
    //..........................................................
    // 设置目录栏
-   var c = o._catalog = RClass.create(FDsMeshCatalog);
-   c._workspace = o;
-   c.build(p);
-   c.addSelectedListener(o, o.onCatalogSelected);
-   o._frameCatalog.push(c);
+   var catalog = o._catalog = RClass.create(FDsMeshCatalog);
+   catalog._frameSet = o;
+   catalog._workspace = o._worksapce;
+   catalog.build(p);
+   catalog.addSelectedListener(o, o.onCatalogSelected);
+   o._frameCatalog.push(catalog);
    //..........................................................
    // 设置画板工具栏
-   var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
-   var c = o._canvasToolbar = RClass.create(FDsMeshCanvasToolBar);
-   c._workspace = o;
-   c.buildDefine(p);
-   o._canvasToolbarFrame.push(c);
+   var frame = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
+   var toolbar = o._canvasToolbar = RClass.create(FDsMeshCanvasToolBar);
+   toolbar._frameSet = o;
+   toolbar._workspace = o._worksapce;
+   toolbar.buildDefine(p);
+   frame.push(toolbar);
    // 设置画板
-   var f = o._canvasFrame = o.searchControl('canvasFrame');
-   var c = o._canvas = RClass.create(FDsMeshCanvas);
-   c._workspace = o;
-   c._toolbar = o._canvasToolbar;
-   c.addLoadListener(o, o.onMeshLoad);
-   c._hParent = f._hPanel;
-   c._hParent.style.backgroundColor = '#000000';
-   c.build(p);
-   o._canvasFrame.push(c);
+   var frame = o._canvasFrame = o.searchControl('canvasFrame');
+   var canvas = o._canvas = RClass.create(FDsMeshCanvas);
+   canvas._frameSet = o;
+   canvas._workspace = o._workspace;
+   canvas._toolbar = o._canvasToolbar;
+   canvas.addLoadListener(o, o.onMeshLoad);
+   canvas._hParent = frame._hPanel;
+   canvas._hParent.style.backgroundColor = '#000000';
+   canvas.build(p);
+   frame.push(canvas);
 }
 
 //==========================================================
@@ -210,14 +213,15 @@ function FDsMeshFrameSet_findPropertyFrame(p){
 }
 
 //==========================================================
-// <T>加载模板处理。</T>
+// <T>根据唯一编码加载网格模板。</T>
 //
 // @method
+// @param guid:String 唯一编码
 //==========================================================
-function FDsMeshFrameSet_loadMeshByGuid(p){
+function FDsMeshFrameSet_loadByGuid(guid){
    var o = this;
-   o._meshGuid = p;
-   o._canvas.loadMeshByGuid(p);
+   o._meshGuid = guid;
+   o._canvas.loadByGuid(guid);
 }
 
 //==========================================================
@@ -225,10 +229,10 @@ function FDsMeshFrameSet_loadMeshByGuid(p){
 //
 // @method
 //==========================================================
-function FDsMeshFrameSet_loadMeshByCode(p){
+function FDsMeshFrameSet_loadByCode(p){
    var o = this;
    o._meshCode = p;
-   o._canvas.loadMeshByCode(p);
+   o._canvas.loadByCode(p);
 }
 
 //==========================================================

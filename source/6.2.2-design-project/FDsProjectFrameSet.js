@@ -44,8 +44,7 @@ function FDsProjectFrameSet(o){
    // @method
    o.findPropertyFrame     = FDsProjectFrameSet_findPropertyFrame;
    // @method
-   o.loadMeshByGuid        = FDsProjectFrameSet_loadMeshByGuid;
-   o.loadMeshByCode        = FDsProjectFrameSet_loadMeshByCode;
+   o.load                  = FDsProjectFrameSet_load;
    // @method
    o.dispose               = FDsProjectFrameSet_dispose;
    return o;
@@ -214,21 +213,7 @@ function FDsProjectFrameSet_findPropertyFrame(p){
 //
 // @method
 //==========================================================
-function FDsProjectFrameSet_loadMeshByGuid(p){
-   var o = this;
-   o._meshGuid = p;
-   o._canvas.loadMeshByGuid(p);
-}
-
-//==========================================================
-// <T>加载模板处理。</T>
-//
-// @method
-//==========================================================
-function FDsProjectFrameSet_loadMeshByCode(p){
-   var o = this;
-   o._meshCode = p;
-   o._canvas.loadMeshByCode(p);
+function FDsProjectFrameSet_load(guid){
 }
 
 //==========================================================

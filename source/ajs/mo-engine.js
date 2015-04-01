@@ -6992,13 +6992,7 @@ function FE3dMeshConsole_allocByCode(pc, pn){
 }
 function FE3dMeshConsole_free(p){
    var o = this;
-   p.remove();
-   var ms = o._meshs.get(n);
-   if(ms == null){
-      ms = new TObjects();
-      o._meshs.set(n, ms);
-   }
-   ms.push(p);
+   p._display.remove();
 }
 function FE3dMeshDisplay(o){
    o = RClass.inherits(this, o, FE3dDisplay, MLinkerResource);

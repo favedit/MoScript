@@ -257,33 +257,44 @@ function FDsProjectWorkspace_construct(){
 // @method
 // @return FUiFrame 页面
 //==========================================================
-function FDsProjectWorkspace_selectFrameSet(name){
+function FDsProjectWorkspace_selectFrameSet(name, guid){
    var o = this;
    // 获得框架
    var frameSet = o._frameSets.get(name);
    if(!frameSet){
       if(name == EDsFrameSet.ProjectFrameSet){
-         frameSet = RClass.create(FDsProjectFrameSet);
-         frameSet._workspace = o;
-         frameSet.buildDefine(o._hPanel);
+         // 创建菜单
          var menuBar = RClass.create(FDsProjectMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet._menuBar = menuBar;
-      }else if(name == EDsFrameSet.ResourceFrameSet){
-         frameSet = RClass.create(FDsResourceFrameSet);
+         // 创建框架
+         frameSet = RClass.create(FDsProjectFrameSet);
          frameSet._workspace = o;
          frameSet.buildDefine(o._hPanel);
+         frameSet._menuBar = menuBar;
+      }else if(name == EDsFrameSet.ResourceFrameSet){
+         // 创建菜单
          var menuBar = RClass.create(FDsResourceMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
+         // 创建框架
+         frameSet = RClass.create(FDsResourceFrameSet);
+         frameSet._workspace = o;
+         frameSet.buildDefine(o._hPanel);
          frameSet._menuBar = menuBar;
       //}else if(name == EDsFrameSet.PictureFrameSet){
       //   frameSet = RClass.create(FDsPictureFrameSet);
       //   frameSet.buildDefine(o._hPanel);
-      //}else if(name == EDsFrameSet.MeshFrameSet){
-      //   frameSet = RClass.create(FDsResourceMeshFrameSet);
-      //   frameSet.buildDefine(o._hPanel);
+      }else if(name == EDsFrameSet.MeshFrameSet){
+         // 创建菜单
+         var menuBar = RClass.create(FDsMeshMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         // 创建框架
+         frameSet = RClass.create(FDsMeshFrameSet);
+         frameSet._workspace = o;
+         frameSet.buildDefine(o._hPanel);
+         frameSet._menuBar = menuBar;
       }else{
          throw new TError('Unknown frameset. (name={1})', name);
       }
@@ -296,10 +307,19 @@ function FDsProjectWorkspace_selectFrameSet(name){
          o._hMenuPanel.removeChild(activeFrameSet._menuBar._hPanel);
          o._frameBody.remove(activeFrameSet);
       }
-      o._hMenuPanel.appendChild(menuBar._hPanel);
+      o._hMenuPanel.appendChild(frameSet._menuBar._hPanel);
       o._frameBody.push(frameSet);
+      frameSet.psResize();
    }
    o._activeFrameSet = frameSet;
+   if(name == EDsFrameSet.ProjectFrameSet){
+   }else if(name == EDsFrameSet.ResourceFrameSet){
+      frameSet.load();
+   }else if(name == EDsFrameSet.MeshFrameSet){
+      frameSet.loadByGuid(guid);
+   }else{
+      throw new TError('Unknown frameset. (name={1})', name);
+   }
    return frameSet;
 }
 

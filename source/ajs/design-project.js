@@ -290,8 +290,7 @@ function FDsProjectFrameSet(o){
    o.onCatalogSelected     = FDsProjectFrameSet_onCatalogSelected;
    o.construct             = FDsProjectFrameSet_construct;
    o.findPropertyFrame     = FDsProjectFrameSet_findPropertyFrame;
-   o.loadMeshByGuid        = FDsProjectFrameSet_loadMeshByGuid;
-   o.loadMeshByCode        = FDsProjectFrameSet_loadMeshByCode;
+   o.load                  = FDsProjectFrameSet_load;
    o.dispose               = FDsProjectFrameSet_dispose;
    return o;
 }
@@ -377,15 +376,7 @@ function FDsProjectFrameSet_findPropertyFrame(p){
    }
    return f;
 }
-function FDsProjectFrameSet_loadMeshByGuid(p){
-   var o = this;
-   o._meshGuid = p;
-   o._canvas.loadMeshByGuid(p);
-}
-function FDsProjectFrameSet_loadMeshByCode(p){
-   var o = this;
-   o._meshCode = p;
-   o._canvas.loadMeshByCode(p);
+function FDsProjectFrameSet_load(guid){
 }
 function FDsProjectFrameSet_dispose(){
    var o = this;
@@ -1242,25 +1233,33 @@ function FDsProjectWorkspace_construct(){
    o._frameSets = new TDictionary();
    o._propertyFrames = new TDictionary();
 }
-function FDsProjectWorkspace_selectFrameSet(name){
+function FDsProjectWorkspace_selectFrameSet(name, guid){
    var o = this;
    var frameSet = o._frameSets.get(name);
    if(!frameSet){
       if(name == EDsFrameSet.ProjectFrameSet){
-         frameSet = RClass.create(FDsProjectFrameSet);
-         frameSet._workspace = o;
-         frameSet.buildDefine(o._hPanel);
          var menuBar = RClass.create(FDsProjectMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet._menuBar = menuBar;
-      }else if(name == EDsFrameSet.ResourceFrameSet){
-         frameSet = RClass.create(FDsResourceFrameSet);
+         frameSet = RClass.create(FDsProjectFrameSet);
          frameSet._workspace = o;
          frameSet.buildDefine(o._hPanel);
+         frameSet._menuBar = menuBar;
+      }else if(name == EDsFrameSet.ResourceFrameSet){
          var menuBar = RClass.create(FDsResourceMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
+         frameSet = RClass.create(FDsResourceFrameSet);
+         frameSet._workspace = o;
+         frameSet.buildDefine(o._hPanel);
+         frameSet._menuBar = menuBar;
+      }else if(name == EDsFrameSet.MeshFrameSet){
+         var menuBar = RClass.create(FDsMeshMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         frameSet = RClass.create(FDsMeshFrameSet);
+         frameSet._workspace = o;
+         frameSet.buildDefine(o._hPanel);
          frameSet._menuBar = menuBar;
       }else{
          throw new TError('Unknown frameset. (name={1})', name);
@@ -1273,10 +1272,19 @@ function FDsProjectWorkspace_selectFrameSet(name){
          o._hMenuPanel.removeChild(activeFrameSet._menuBar._hPanel);
          o._frameBody.remove(activeFrameSet);
       }
-      o._hMenuPanel.appendChild(menuBar._hPanel);
+      o._hMenuPanel.appendChild(frameSet._menuBar._hPanel);
       o._frameBody.push(frameSet);
+      frameSet.psResize();
    }
    o._activeFrameSet = frameSet;
+   if(name == EDsFrameSet.ProjectFrameSet){
+   }else if(name == EDsFrameSet.ResourceFrameSet){
+      frameSet.load();
+   }else if(name == EDsFrameSet.MeshFrameSet){
+      frameSet.loadByGuid(guid);
+   }else{
+      throw new TError('Unknown frameset. (name={1})', name);
+   }
    return frameSet;
 }
 function FDsProjectWorkspace_findPropertyFrame(p){

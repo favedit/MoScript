@@ -50,7 +50,7 @@ function FDsMeshMenuBar_onBuilded(p){
 //==========================================================
 function FDsMeshMenuBar_onSaveClick(p){
    var o = this;
-   var space = o._workspace._activeSpace;
+   var space = o._frameSet._activeSpace;
    var resource = space.resource();
    // 存储配置
    var xconfig = new TXmlNode();

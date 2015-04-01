@@ -8,22 +8,23 @@ function FDsResourceSearchContent(o){
    o = RClass.inherits(this, o, FUiListView);
    //..........................................................
    // @attribute
-   o._refreshButton = null;
-   o._saveButton    = null;
-   o._runButton     = null;
+   o._refreshButton    = null;
+   o._saveButton       = null;
+   o._runButton        = null;
    //..........................................................
    // @event
-   o.onBuilded      = FDsResourceSearchContent_onBuilded;
+   o.onBuilded         = FDsResourceSearchContent_onBuilded;
    // @event
-   o.onServiceLoad  = FDsResourceSearchContent_onServiceLoad;
+   o.onServiceLoad     = FDsResourceSearchContent_onServiceLoad;
    //..........................................................
    // @method
-   o.construct      = FDsResourceSearchContent_construct;
+   o.construct         = FDsResourceSearchContent_construct;
    // @method
-   o.clickItem      = FDsResourceSearchContent_clickItem;
-   o.serviceSearch  = FDsResourceSearchContent_serviceSearch;
+   o.doClickItem       = FDsResourceSearchContent_doClickItem;
+   o.doDoubleClickItem = FDsResourceSearchContent_doDoubleClickItem;
+   o.serviceSearch     = FDsResourceSearchContent_serviceSearch;
    // @method
-   o.dispose        = FDsResourceSearchContent_dispose;
+   o.dispose           = FDsResourceSearchContent_dispose;
    return o;
 }
 
@@ -54,7 +55,7 @@ function FDsResourceSearchContent_onServiceLoad(p){
    var pageSize = xitems.getInteger('page_size');
    var pageCount = xitems.getInteger('page_count');
    var page = xitems.getInteger('page');
-   o._workspace._searchToolbar.setNavigator(pageSize, pageCount, page);
+   o._frameSet._searchToolbar.setNavigator(pageSize, pageCount, page);
    // 显示项目
    o.clear();
    var xnodes = xitems.nodes();
@@ -92,12 +93,24 @@ function FDsResourceSearchContent_construct(){
 // @method
 // @param p:item:FUiListItem 列表项目
 //==========================================================
-function FDsResourceSearchContent_clickItem(p){
+function FDsResourceSearchContent_doClickItem(p){
    var o = this;
    // 选中项目
-   var frame = o._workspace._previewContent;
-   frame._activeItem = p;
-   frame.loadMeshByGuid(p._guid);
+   //var frame = o._frameSet._previewContent;
+   //frame._activeItem = p;
+   //frame.loadMeshByGuid(p._guid);
+}
+
+//==========================================================
+// <T>双击一个列表项目。</T>
+//
+// @method
+// @param p:item:FUiListItem 列表项目
+//==========================================================
+function FDsResourceSearchContent_doDoubleClickItem(item){
+   var o = this;
+   var guid = item._guid;
+   o._workspace.selectFrameSet(EDsFrameSet.MeshFrameSet, guid);
 }
 
 //==========================================================

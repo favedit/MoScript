@@ -352,7 +352,10 @@ function FDsResourcePreviewContent_onMeshLoad(p){
    lc.update();
 
 
-   //var rm = m.renderables().getAt(0).matrix();
+   //var display = m._display;
+   //var matrix = display.matrix();
+   //matrix.setScaleAll(0.01);
+   //matrix.update();
    //rm.tz = -300;
    //rm.updateForce();
    //var mi = m.renderables().get(0).material().info();
