@@ -110,7 +110,7 @@ function FDsResourceSearchContent_doClickItem(p){
 function FDsResourceSearchContent_doDoubleClickItem(item){
    var o = this;
    var guid = item._guid;
-   o._workspace.selectFrameSet(EDsFrameSet.MeshFrameSet, guid);
+   o._frameSet._workspace.selectFrameSet(EDsFrameSet.MeshFrameSet, guid);
 }
 
 //==========================================================

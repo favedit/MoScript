@@ -27,6 +27,7 @@ function FFrameConsole(o){
    // @method
    o.create           = FFrameConsole_create;
    o.find             = FFrameConsole_find;
+   o.findByClass      = FFrameConsole_findByClass;
    o.get              = FFrameConsole_get;
    //o.hiddenAll        = FFrameConsole_hiddenAll;
    //o.process          = FFrameConsole_process;
@@ -115,6 +116,27 @@ function FFrameConsole_create(c, n){
 //==========================================================
 function FFrameConsole_find(n){
    return this._frames.get(n); 
+}
+
+//==========================================================
+// <T>根据类名查找表单实例，如果不存在则使用类创建实例。</T>
+//
+// @method
+// @param control:FUiControl 控件对象
+// @param clazz:Function 类对象
+// @return FUiControl 页面控件
+//==========================================================
+function FFrameConsole_findByClass(control, clazz){
+   var o = this;
+   var className = RClass.name(clazz);
+   var frames = o._frames;
+   var instance = frames.get(className); 
+   if(!instance){
+      instance = RClass.create(clazz);
+      instance.buildDefine(control._hPanel);
+      frames.set(className, instance);
+   }
+   return instance;
 }
 
 //==========================================================

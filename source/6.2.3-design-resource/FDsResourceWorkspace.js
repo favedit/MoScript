@@ -68,37 +68,14 @@ function FDsResourceWorkspace_onBuilded(p){
    o.__base.FUiWorkspace.onBuilded.call(o, p);
    //..........................................................
    // 设置工具区
-   var f = o._frameToolBar = o.searchControl('toolbarFrame');
-   f._hPanel.className = o.styleName('Toolbar_Ground');
+   var frame = o._frameToolBar = o.searchControl('toolbarFrame');
+   frame._hPanel.className = o.styleName('Toolbar_Ground');
    // 设置目录区
-   var f = o._frameCatalog = o.searchControl('catalogFrame');
-   f._hPanel.className = o.styleName('Catalog_Ground');
-   var f = o._frameCatalogToolbar = o.searchControl('catalogToolbarFrame');
-   f._hPanel.className = o.styleName('Catalog_Toolbar');
-   var f = o._frameCatalogContent = o.searchControl('catalogContentFrame');
-   // 设置属性区
-   var f = o._frameSearch = o.searchControl('searchFrame');
-   f._hPanel.className = o.styleName('Search_Ground');
-   var f = o._frameSearchToolbar = o.searchControl('searchToolbarFrame');
-   f._hPanel.className = o.styleName('Search_Toolbar');
-   var f = o._frameSearchContent = o.searchControl('searchContentFrame');
-   // 设置属性区
-   var f = o._framePreview = o.searchControl('previewFrame');
-   f._hPanel.className = o.styleName('Preview_Ground');
-   var f = o._framePreviewToolbar = o.searchControl('previewToolbarFrame');
-   f._hPanel.className = o.styleName('Preview_Toolbar');
-   var f = o._framePreviewContent = o.searchControl('previewContentFrame');
+   var frame = o._frameBody = o.searchControl('bodyFrame');
+   frame._hPanel.className = o.styleName('Catalog_Ground');
    // 设置状态区
-   var f = o._frameStatusBar = o.searchControl('statusFrame');
-   f._hPanel.className = o.styleName('Statusbar_Ground');
-   //..........................................................
-   // 设置分割
-   var f = o._catalogSplitter = o.searchControl('catalogSpliter');
-   f.setAlignCd(EUiAlign.Left);
-   f.setSizeHtml(o._frameCatalog._hPanel);
-   var f = o._previewSpliter = o.searchControl('previewSpliter');
-   f.setAlignCd(EUiAlign.Right);
-   f.setSizeHtml(o._framePreview._hPanel);
+   var frame = o._frameStatusBar = o.searchControl('statusFrame');
+   frame._hPanel.className = o.styleName('Statusbar_Ground');
    //..........................................................
    var hTable = RBuilder.createTable(p);
    hTable.width = '100%';
@@ -121,43 +98,13 @@ function FDsResourceWorkspace_onBuilded(p){
    //o._frameToolBar.push(c);
    o._frameToolBar._hPanel.appendChild(hTable);
    //..........................................................
-   // 设置目录工具栏
-   var control = o._catalogToolbar = RClass.create(FDsResourceCatalogToolBar);
-   control._workspace = o;
-   control.buildDefine(p);
-   o._frameCatalogToolbar.push(control);
-   // 设置目录栏
-   var control = o._catalogContent = RClass.create(FDsResourceCatalogContent);
-   control._workspace = o;
-   control.build(p);
-   //control.addSelectedListener(o, o.onCatalogSelected);
-   o._frameCatalogContent.push(control);
+   // 创建框架
+   var frameSet = o._frameSet = RClass.create(FDsResourceFrameSet);
+   frameSet._workspace = o;
+   frameSet.buildDefine(p);
+   o._frameBody.push(frameSet);
    //..........................................................
-   // 设置搜索栏
-   var control = o._searchToolbar = RClass.create(FDsResourceSearchToolBar);
-   control._workspace = o;
-   control.buildDefine(p);
-   o._frameSearchToolbar.push(control);
-   // 设置搜索内容
-   var control = o._searchContent = RClass.create(FDsResourceSearchContent);
-   control._workspace = o;
-   control.build(p);
-   o._frameSearchContent.push(control);
-   //..........................................................
-   // 设置画板工具栏
-   var control = o._previewToolbar = RClass.create(FDsResourcePreviewToolBar);
-   control._workspace = o;
-   control.buildDefine(p);
-   o._framePreviewToolbar.push(control);
-   // 设置画板
-   var control = o._previewContent = RClass.create(FDsResourcePreviewContent);
-   control._workspace = o;
-   control._toolbar = o._previewToolbar;
-   control._hParent = f._hPanel;
-   control.build(p);
-   o._framePreviewContent.push(control);
-   //..........................................................
-   o.switchContent(o._resourceTypeCd);
+   frameSet.switchContent(o._resourceTypeCd);
 }
 
 //==========================================================
@@ -265,9 +212,7 @@ function FDsResourceWorkspace_findPropertyFrame(p){
 // @param typeCd:String 内容类型
 //==========================================================
 function FDsResourceWorkspace_switchContent(typeCd){
-   var o = this;
-   o._resourceTypeCd = typeCd;
-   o._searchContent.serviceSearch(typeCd, '', 40, 0);
+   this._frameSet.switchContent(typeCd);
 }
 
 //==========================================================

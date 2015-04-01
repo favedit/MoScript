@@ -4208,6 +4208,7 @@ function FFrameConsole(o){
    o.construct        = FFrameConsole_construct;
    o.create           = FFrameConsole_create;
    o.find             = FFrameConsole_find;
+   o.findByClass      = FFrameConsole_findByClass;
    o.get              = FFrameConsole_get;
    return o;
 }
@@ -4224,6 +4225,18 @@ function FFrameConsole_create(c, n){
 }
 function FFrameConsole_find(n){
    return this._frames.get(n);
+}
+function FFrameConsole_findByClass(control, clazz){
+   var o = this;
+   var className = RClass.name(clazz);
+   var frames = o._frames;
+   var instance = frames.get(className);
+   if(!instance){
+      instance = RClass.create(clazz);
+      instance.buildDefine(control._hPanel);
+      frames.set(className, instance);
+   }
+   return instance;
 }
 function FFrameConsole_get(c, n, h){
    var o = this;

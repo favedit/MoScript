@@ -1241,26 +1241,26 @@ function FDsProjectWorkspace_selectFrameSet(name, guid){
          var menuBar = RClass.create(FDsProjectMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RClass.create(FDsProjectFrameSet);
+         frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsProjectFrameSet);
          frameSet._workspace = o;
-         frameSet.buildDefine(o._hPanel);
          frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
       }else if(name == EDsFrameSet.ResourceFrameSet){
          var menuBar = RClass.create(FDsResourceMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RClass.create(FDsResourceFrameSet);
+         frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsResourceFrameSet);
          frameSet._workspace = o;
-         frameSet.buildDefine(o._hPanel);
          frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
       }else if(name == EDsFrameSet.MeshFrameSet){
          var menuBar = RClass.create(FDsMeshMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RClass.create(FDsMeshFrameSet);
+         frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsMeshFrameSet);
          frameSet._workspace = o;
-         frameSet.buildDefine(o._hPanel);
          frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
       }else{
          throw new TError('Unknown frameset. (name={1})', name);
       }
