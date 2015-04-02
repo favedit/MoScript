@@ -362,20 +362,19 @@ function RHtml_linkSet(h, n, v){
 // @param h:html:HtmlTag 页面元素
 // @param t:top:HtmlTag 顶层元素
 //==========================================================
-function RHtml_clientPosition(h, t){
+function RHtml_clientPosition(hTag, hTop){
    var o = this;
-   var p = o._clientPosition;
-   p.set(0, 0);
-   while(h != t){
-      p.x += h.offsetLeft + h.clientLeft - h.scrollLeft;
-      p.y += h.offsetTop + h.clientTop - h.scrollTop;
+   var position = o._clientPosition;
+   position.set(0, 0);
+   while(hTag != hTop){
+      position.x += hTag.offsetLeft + hTag.clientLeft - hTag.scrollLeft;
+      position.y += hTag.offsetTop + hTag.clientTop - hTag.scrollTop;
       //if('absolute' != RHtml.currentStyle(h).position){
-         //debugger;
          //break;
       //}
-      h = h.offsetParent;
+      hTag = hTag.offsetParent;
    }
-   return p;
+   return position;
 }
 
 //==========================================================

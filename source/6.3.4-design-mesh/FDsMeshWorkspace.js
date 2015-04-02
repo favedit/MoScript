@@ -40,8 +40,8 @@ function FDsMeshWorkspace(o){
    // @method
    o.findPropertyFrame     = FDsMeshWorkspace_findPropertyFrame;
    // @method
-   o.loadMeshByGuid        = FDsMeshWorkspace_loadMeshByGuid;
-   o.loadMeshByCode        = FDsMeshWorkspace_loadMeshByCode;
+   o.loadByGuid            = FDsMeshWorkspace_loadByGuid;
+   o.loadByCode            = FDsMeshWorkspace_loadByCode;
    // @method
    o.dispose               = FDsMeshWorkspace_dispose;
    return o;
@@ -68,7 +68,7 @@ function FDsMeshWorkspace_onBuilded(p){
    frame._hPanel.className = o.styleName('Statusbar_Ground');
    //..........................................................
    // 设置工具栏
-   var menuBar = o._toolbar = RClass.create(FDsMeshMenuBar);
+   var menuBar = o._menuBar = RClass.create(FDsMeshMenuBar);
    menuBar._workspace = o;
    menuBar.buildDefine(p);
    o._frameToolBar.push(menuBar);
@@ -186,7 +186,7 @@ function FDsMeshWorkspace_findPropertyFrame(p){
 // @method
 // @param guid 唯一编号
 //==========================================================
-function FDsMeshWorkspace_loadMeshByGuid(guid){
+function FDsMeshWorkspace_loadByGuid(guid){
    this._frameSet.loadByGuid(guid);
 }
 
@@ -196,7 +196,7 @@ function FDsMeshWorkspace_loadMeshByGuid(guid){
 // @method
 // @param code:String 代码
 //==========================================================
-function FDsMeshWorkspace_loadMeshByCode(code){
+function FDsMeshWorkspace_loadByCode(code){
    this._frameSet.loadByCode(code);
 }
 

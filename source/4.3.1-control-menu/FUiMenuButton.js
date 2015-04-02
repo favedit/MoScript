@@ -98,12 +98,13 @@ function FUiMenuButton_onBuild(p){
    }
    // 建立分割
    if(o._icon && o._label){
-      o.hSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
+      o._hSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
    }
    // 建立标签
    if(o._label){
-      var hlp = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
-      hlp.noWrap = true;
+      var hLabelPanel = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
+      hLabelPanel.noWrap = true;
+      // 设置标签
       o.setLabel(o._label);
    }
    // 建立热键
@@ -257,7 +258,7 @@ function FUiMenuButton_click(){
    var o = this;
    if(!o._disabled){
       RConsole.find(FFocusConsole).blur();
-      RLogger.debug(o, 'Menu button click. (label={1})' + o._label);
+      RLogger.debug(o, 'Menu button click. (label={1})', o._label);
       // 执行监听信息
       var event = new SClickEvent(o);
       o.processClickListener(event);
@@ -266,16 +267,6 @@ function FUiMenuButton_click(){
       if(o._action){
          eval(o._action);
       }
-      // 按键处理
-      //if(o._page || o._method){
-         //var form = RHtml.form(o._hButton);
-         //var p = RPage.parse(o._page);
-         //if(o._method){
-         //   p._action = o._method;
-         //}
-         //p.split(o._attributes);
-         //p.post(form, o._target);
-      //}
    }
 }
 

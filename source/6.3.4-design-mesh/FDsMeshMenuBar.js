@@ -67,8 +67,7 @@ function FDsMeshMenuBar_onSaveClick(p){
 //==========================================================
 function FDsMeshMenuBar_onCaptureClick(p){
    var o = this;
-   var canvas = o._workspace._canvas;
-   canvas.capture();
+   o._frameSet._canvas.capture();
 }
 
 //==========================================================

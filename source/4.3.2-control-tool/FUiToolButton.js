@@ -25,6 +25,7 @@ function FUiToolButton(o){
    o._action          = RClass.register(o, new APtyString('_action'));
    //..........................................................
    // @style
+   o._stylePanel      = RClass.register(o, new AStyle('_stylePanel'));
    o._styleNormal     = RClass.register(o, new AStyle('_styleNormal'));
    o._styleHover      = RClass.register(o, new AStyle('_styleHover'));
    o._stylePress      = RClass.register(o, new AStyle('_stylePress'));
@@ -60,7 +61,9 @@ function FUiToolButton(o){
    o.setLabel         = FUiToolButton_setLabel;
    o.setHint          = FUiToolButton_setHint;
    o.setEnable        = FUiToolButton_setEnable;
-   o.click            = FUiToolButton_click;
+   // @method
+   o.doClick          = FUiToolButton_doClick;
+   // @method
    o.dispose          = FUiToolButton_dispose;
    return o;
 }
@@ -73,7 +76,7 @@ function FUiToolButton(o){
 //==========================================================
 function FUiToolButton_onBuildPanel(p){
    var o = this;
-   o._hPanel = RBuilder.createDiv(p, o.styleName('Normal'));
+   o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
 }
 
 //==========================================================
@@ -85,25 +88,26 @@ function FUiToolButton_onBuildPanel(p){
 function FUiToolButton_onBuildButton(p){
    var o = this;
    // 设置面板
-   var h = o._hPanel;
-   o.attachEvent('onMouseDown', h);
-   o.attachEvent('onMouseUp', h);
+   var hPanel = o._hPanel;
+   o.attachEvent('onMouseDown', hPanel);
+   o.attachEvent('onMouseUp', hPanel);
    // 建立表单
-   var hf = o._hForm = RBuilder.appendTable(h);
-   var hl = o._hLine = RBuilder.appendTableRow(hf);
+   var hForm = o._hForm = RBuilder.appendTable(hPanel, o.styleName('Normal'));
+   var hLine = o._hLine = RBuilder.appendTableRow(hForm);
    // 建立图标
    if(o._icon){
-      var hc = o._hIconPanel = RBuilder.appendTableCell(hl, o.styleName('IconPanel'));
+      var hc = o._hIconPanel = RBuilder.appendTableCell(hLine, o.styleName('IconPanel'));
       o._hIcon = RBuilder.appendIcon(hc, null, o._icon);
    }
    // 建立分割
    if(o._icon && o._label){
-      o.hSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
+      o.hSpacePanel = RBuilder.appendTableCell(hLine, o.styleName('SpacePanel'));
    }
    // 建立标签
    if(o._label){
-      var hlp = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
-      hlp.noWrap = true;
+      var hLabelPanel = o._hLabelPanel = RBuilder.appendTableCell(hLine, o.styleName('LabelPanel'));
+      hLabelPanel.noWrap = true;
+      // 设置标签
       o.setLabel(o._label);
    }
    // 建立热键
@@ -149,7 +153,7 @@ function FUiToolButton_onEnter(e){
    //}
    if(!o._disabled){
       // 消息提示
-      o._hPanel.className = o.styleName('Hover');
+      o._hForm.className = o.styleName('Hover');
       //o._hButton.background = o.styleIconPath('ButtonHover', FUiToolButton);
    }
 }
@@ -167,7 +171,7 @@ function FUiToolButton_onLeave(e){
    //   o.hintBox = null;
    //}
    if(!o._disabled){
-      o._hPanel.className = o.styleName('Normal');
+      o._hForm.className = o.styleName('Normal');
       //o._hButton.background = o.styleIconPath('Button', FUiToolButton);
    }
 }
@@ -184,8 +188,8 @@ function FUiToolButton_onMouseDown(){
    //   o.hintBox.hide();
    //}
    if(!o._disabled){
-      o._hPanel.className = this.styleName('Press');
-      o.click();
+      o._hForm.className = this.styleName('Press');
+      o.doClick();
    }
 }
 
@@ -198,7 +202,7 @@ function FUiToolButton_onMouseDown(){
 function FUiToolButton_onMouseUp(h){
    var o = this;
    if(!o._disabled){
-      o._hPanel.className = o.styleName('Hover');
+      o._hForm.className = o.styleName('Hover');
    }
 }
 
@@ -308,11 +312,11 @@ function FUiToolButton_setEnable(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FUiToolButton_click(){
+function FUiToolButton_doClick(){
    var o = this;
    if(!o._disabled){
       RConsole.find(FFocusConsole).blur();
-      RLogger.debug(o, 'Tool button click. (label={1})' + o._label);
+      RLogger.debug(o, 'Tool button click. (label={1})', o._label);
       // 执行监听信息
       var event = new SClickEvent(o);
       o.processClickListener(event);

@@ -886,6 +886,51 @@ function FResultConsole_checkService(config){
    }
    return true;
 }
+function FUiPopupConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd       = EScope.Local;
+   o._activeControl = null;
+   o.onMouseDown    = FUiPopupConsole_onMouseDown;
+   o.onMouseWheel   = FUiPopupConsole_onMouseWheel;
+   o.construct      = FUiPopupConsole_construct;
+   o.show           = FUiPopupConsole_show;
+   o.hide           = FUiPopupConsole_hide;
+   o.dispose        = FUiPopupConsole_dispose;
+   return o;
+}
+function FUiPopupConsole_onMouseDown(p){
+   this.hide();
+}
+function FUiPopupConsole_onMouseWheel(s, e){
+   this.hide();
+}
+function FUiPopupConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   RLogger.info(o, 'Add listener for control popup.');
+   RWindow.lsnsMouseDown.register(o, o.onMouseDown);
+   RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
+}
+function FUiPopupConsole_show(control){
+   var o = this;
+   o.hide();
+   if(RClass.isClass(control, MUiPopup)){
+      o._activeControl = control;
+   }
+}
+function FUiPopupConsole_hide(control){
+   var o = this;
+   if(o._activeControl){
+      var opener = o._activeControl.opener();
+      opener.drop(false);
+   }
+   o._activeControl = null;
+}
+function FUiPopupConsole_dispose(){
+   var o = this;
+   o._activeControl = null;
+   o.__base.FConsole.dispose.call(o);
+}
 function FUiWindowConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd      = EScope.Local;

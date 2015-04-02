@@ -9,61 +9,84 @@ function MUiDropable(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @style
-   //o._styleDrop         = RClass.register(o, new AStyle('Drop'));
-   //o._styleIconDrop     = RClass.register(o, new AStyleIcon('Drop'));
+   o._styleDrop         = RClass.register(o, new AStyle('_styleDrop'));
+   o._styleIconDrop     = RClass.register(o, new AStyleIcon('_styleIconDrop'));
    //..........................................................
-   // @html
    // @html <TD> 下拉面板
-   //o._hDropPanel        = null;
+   o._hDropPanel        = null;
    // @html <TD> 下拉图标
-   //o._hDrop             = null;
+   o._hDrop             = null;
    //..........................................................
    // @event
-   //o.onDropEnter       = RClass.register(o, new AEventMouseEnter('onDropEnter'));
-   //o.onDropLeave       = RClass.register(o, new AEventMouseLeave('onDropLeave'));
-   //o.onDropClick       = RClass.register(o, new AEventMouseDown('onDropClick'), MUiDropable_onDropClick);
-   //o.onDropDoubleClick = RClass.register(o, new AEventDoubleClick('onDropDoubleClick'), MUiDropable_onDropDoubleClick);
+   o.onBuildDrop       = MUiDropable_onBuildDrop;
    // @event
-   //o.onBuildDrop       = MUiDropable_onBuildDrop;
+   o.onDropEnter       = RClass.register(o, new AEventMouseEnter('onDropEnter'));
+   o.onDropLeave       = RClass.register(o, new AEventMouseLeave('onDropLeave'));
+   // @event
+   o.onDropClick       = RClass.register(o, new AEventClick('onDropClick'), MUiDropable_onDropClick);
+   o.onDropDoubleClick = RClass.register(o, new AEventDoubleClick('onDropDoubleClick'), MUiDropable_onDropDoubleClick);
    //..........................................................
    // Method
-   //o.canDrop           = MUiDropable_canDrop;
+   o.canDrop           = MUiDropable_canDrop;
    //o.drop              = RMethod.virtual(o, 'drop');
    return o;
 }
-// ------------------------------------------------------------
-function MUiDropable_onDropDoubleClick(){
+
+//==========================================================
+// <T>建立下拉按钮。</T>
+//
+// @method
+// @param e:event:TEvent 事件对象
+//==========================================================
+function MUiDropable_onBuildDrop(hPanel){
    var o = this;
-   if(o._editable){
-      o.drop();
-   }
+   o._hDropPanel = hPanel;
+   hPanel.className = o.styleName('Drop', MUiDropable);
+   var hDrop = o.hDrop = RBuilder.appendIcon(hPanel, null, 'control.drop');
+   hDrop.style.width =16;
+   hDrop.style.borderLeft = '1 solid #CCCCCC';
+   hDrop.style.cursor = 'hand';
+   //o.attachEvent('onDropEnter', hDrop);
+   //o.attachEvent('onDropLeave', hDrop);
+   //o.attachEvent('onDropClick', hDrop);
 }
-// ------------------------------------------------------------
+
+//==========================================================
+// <T>下拉单击处理。</T>
+//
+// @method
+// @param e:event:TEvent 事件对象
+//==========================================================
 function MUiDropable_onDropClick(){
    var o = this;
    if(o._editable){
       o.drop();
    }
 }
-// ------------------------------------------------------------
-// 建立下拉按钮
-function MUiDropable_onBuildDrop(){
+
+//==========================================================
+// <T>下拉双击处理。</T>
+//
+// @method
+// @param e:event:TEvent 事件对象
+//==========================================================
+function MUiDropable_onDropDoubleClick(){
    var o = this;
-   var h = o.hDrop = RBuilder.newIcon(null, o.styleIcon('Drop'));
-   h.style.width =16;
-   h.style.borderLeft = '1 solid #CCCCCC';
-   h.className = o.style('Drop');
-   h.style.cursor = 'hand';
-   o.attachEvent('onDropEnter', h);
-   o.attachEvent('onDropLeave', h);
-   o.attachEvent('onDropClick', h);
+   if(o._editable){
+      o.drop();
+   }
 }
-// ------------------------------------------------------------
+
+//==========================================================
+// <T>测试是否可以下拉处理。</T>
+//
+// @method
+// @return Boolean 是否可以下拉
+//==========================================================
 function MUiDropable_canDrop(){
    var o = this;
-   if(RClass.isClass(o, MDesign)){
-      return !RConsole.find(FDesignConsole).canDesignMove;
+   if(RClass.isClass(o, MUiDesign)){
+      return !RConsole.find(FUiDesignConsole).canDesignMove;
    }
    return true;
 }
-// ------------------------------------------------------------

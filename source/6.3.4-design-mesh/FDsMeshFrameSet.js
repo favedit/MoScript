@@ -108,7 +108,8 @@ function FDsMeshFrameSet_onBuilded(p){
    canvas._toolbar = o._canvasToolbar;
    canvas.addLoadListener(o, o.onMeshLoad);
    canvas._hParent = frame._hPanel;
-   canvas._hParent.style.backgroundColor = '#000000';
+   canvas._hParent.style.backgroundColor = '#333333';
+   canvas._hParent.style.scroll = 'auto';
    canvas.build(p);
    frame.push(canvas);
 }

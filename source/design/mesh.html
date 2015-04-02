@@ -11,25 +11,25 @@
 <SCRIPT language='javascript' src='../ajs/mo.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/context_cn.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshDisplayFrame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshRenderableFrame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshMaterial1Frame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshMaterial2Frame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshDisplayFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshRenderableFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshMaterial1Frame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshMaterial2Frame.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshSpacePropertyFrame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshTechniquePropertyFrame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshRegionPropertyFrame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshCameraPropertyFrame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshLightPropertyFrame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshDisplayPropertyFrame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshMaterialPropertyFrame.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshRenderablePropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshSpacePropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshTechniquePropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshRegionPropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshCameraPropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshLightPropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshDisplayPropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshMaterialPropertyFrame.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshRenderablePropertyFrame.js'></SCRIPT>
 
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshMenuBar.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshCatalog.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshCanvasToolBar.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshCanvas.js'></SCRIPT>
-<SCRIPT language='javascript' src='../6.3.3-design-mesh/FDsMeshWorkspace.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshMenuBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshCatalog.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshCanvasToolBar.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshCanvas.js'></SCRIPT>
+<SCRIPT language='javascript' src='../6.3.4-design-mesh/FDsMeshWorkspace.js'></SCRIPT>
 
 <SCRIPT>
 function _load(){
@@ -59,9 +59,9 @@ function _load(){
    w.psResize();
    //w.psMode();
    if(!RString.isEmpty(guid)){
-      w.loadMeshByGuid(guid);
+      w.loadByGuid(guid);
    }else{
-      w.loadMeshByCode(code);
+      w.loadByCode(code);
    }
    RConsole.find(FUiWorkspaceConsole).active(w);
 }

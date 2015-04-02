@@ -42,7 +42,7 @@ function FUiToolButtonCheck(o){
 function FUiToolButtonCheck_onEnter(p){
    var o = this;
    if(!o._statusChecked){
-      o._hPanel.className = this.styleName('Hover');
+      o._hForm.className = this.styleName('Hover');
    }
 }
 
@@ -55,7 +55,7 @@ function FUiToolButtonCheck_onEnter(p){
 function FUiToolButtonCheck_onLeave(p){
    var o = this;
    if(!o._statusChecked){
-      o._hPanel.className = this.styleName('Normal');
+      o._hForm.className = this.styleName('Normal');
    }
 }
 
@@ -82,7 +82,7 @@ function FUiToolButtonCheck_onMouseDown(p){
 //==========================================================
 function FUiToolButtonCheck_onMouseUp(){
    var o = this;
-   //o._hPanel.className = o.styleName('Hover');
+   //o._hForm.className = o.styleName('Hover');
    //o.check(!o._statusChecked)
    //if(o.action){
       //eval(o.action);
@@ -141,9 +141,9 @@ function FUiToolButtonCheck_innerCheck(p){
    if(o._statusChecked != p){
       o._statusChecked = p;
       if(p){
-         o._hPanel.className = o.styleName('Press');
+         o._hForm.className = o.styleName('Press');
       }else{
-         o._hPanel.className = o.styleName('Normal');
+         o._hForm.className = o.styleName('Normal');
       }
    }
 }

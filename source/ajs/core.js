@@ -2078,16 +2078,16 @@ function RHtml_linkSet(h, n, v){
    }
    i.set(n, v);
 }
-function RHtml_clientPosition(h, t){
+function RHtml_clientPosition(hTag, hTop){
    var o = this;
-   var p = o._clientPosition;
-   p.set(0, 0);
-   while(h != t){
-      p.x += h.offsetLeft + h.clientLeft - h.scrollLeft;
-      p.y += h.offsetTop + h.clientTop - h.scrollTop;
-      h = h.offsetParent;
+   var position = o._clientPosition;
+   position.set(0, 0);
+   while(hTag != hTop){
+      position.x += hTag.offsetLeft + hTag.clientLeft - hTag.scrollLeft;
+      position.y += hTag.offsetTop + hTag.clientTop - hTag.scrollTop;
+      hTag = hTag.offsetParent;
    }
-   return p;
+   return position;
 }
 function RHtml_clientX(p, t){
    var r = 0;

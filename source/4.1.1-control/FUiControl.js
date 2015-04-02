@@ -350,7 +350,7 @@ function FUiControl_setWrapCd(wrapCd){
 // @return Boolean 是否显示
 //==========================================================
 function FUiControl_isVisible(){
-   return _statusVisible;
+   return this._statusVisible;
 }
 
 //==========================================================

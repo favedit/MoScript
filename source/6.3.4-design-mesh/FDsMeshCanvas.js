@@ -8,6 +8,7 @@ function FDsMeshCanvas(o){
    o = RClass.inherits(this, o, FDsCanvas);
    //..........................................................
    // @attribute
+   o._activeGuid          = null;
    o._activeSpace         = null;
    // @attribute
    o._canvasModeCd        = EDsCanvasMode.Drop;
@@ -54,6 +55,7 @@ function FDsMeshCanvas(o){
    o.selectDisplay        = FDsMeshCanvas_selectDisplay;
    o.selectMaterial       = FDsMeshCanvas_selectMaterial;
    o.selectRenderable     = FDsMeshCanvas_selectRenderable;
+   o.switchSize           = FDsMeshCanvas_switchSize;
    o.switchRotation       = FDsMeshCanvas_switchRotation;
    o.reloadRegion         = FDsMeshCanvas_reloadRegion;
    o.capture              = FDsMeshCanvas_capture;
@@ -631,6 +633,39 @@ function FDsMeshCanvas_switchMode(p){
 }
 
 //==========================================================
+// <T>切换大小。</T>
+//
+// @method
+// @param width:Integer 宽度
+// @param height:Integer 高度
+//==========================================================
+function FDsMeshCanvas_switchSize(width, height){
+   var o = this;
+   // 获得大小
+   var hCanvas = o._hPanel;
+   if(width == '*'){
+      width = hCanvas.offsetWidth;
+   }
+   if(height == '*'){
+      height = hCanvas.offsetHeight - 6;
+   }
+   // 设置大小
+   hCanvas.width = width;
+   hCanvas.style.width = width + 'px';
+   hCanvas.height = height;
+   hCanvas.style.height = height + 'px';
+   // 设置投影
+   o._graphicContext.setViewport(0, 0, width, height);
+   // 设置投影
+   var space = o._activeSpace;
+   if(space){
+      var projection = space.camera().projection();
+      projection.size().set(width, height);
+      projection.update();
+   }
+}
+
+//==========================================================
 // <T>切换播放模式。</T>
 //
 // @method
@@ -662,14 +697,19 @@ function FDsMeshCanvas_reloadRegion(region){
 //==========================================================
 function FDsMeshCanvas_capture(){
    var o = this;
-   debugger;
-   var c = o._graphicContext;
-   var s = c.size();
-   var g = c._native;
-   var l = s.width * s.height;
-   var data = new Uint8Array(4 * l);
-   g.readPixels(0, 0, s.width, s.height, g.RGBA, g.UNSIGNED_BYTE, data);
-   debugger
+   var space = o._activeSpace;
+   var guid = space._resource._guid;
+   // 获得像素
+   var context = o._graphicContext;
+   var size = context.size();
+   var native = context._native;
+   var width = size.width;
+   var height = size.height;
+   var data = new Uint8Array(4 * width * height);
+   native.readPixels(0, 0, width, height, native.RGBA, native.UNSIGNED_BYTE, data);
+   // 上传图片
+   var url = '/cloud.content.resource.preview.wv?do=upload&type_cd=mesh&guid=' + guid + '&width=' + width + '&height=' + height;
+   RConsole.find(FHttpConsole).send(url, data.buffer);
 }
 
 //==========================================================
@@ -677,14 +717,14 @@ function FDsMeshCanvas_capture(){
 //
 // @method
 //==========================================================
-function FDsMeshCanvas_loadByGuid(p){
+function FDsMeshCanvas_loadByGuid(guid){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
       rmc.free(o._activeSpace);
    }
    // 收集一个显示模板
-   var space = o._activeSpace = rmc.allocByGuid(o, p);
+   var space = o._activeSpace = rmc.allocByGuid(o, guid);
    space.addLoadListener(o, o.onMeshLoad);
    // 设置坐标系
    space._layer.pushRenderable(o._dimensional);

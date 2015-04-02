@@ -99,11 +99,11 @@ function FUiMenuButton_onBuild(p){
       o._hIcon = RBuilder.appendIcon(hc, null, o._icon);
    }
    if(o._icon && o._label){
-      o.hSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
+      o._hSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
    }
    if(o._label){
-      var hlp = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
-      hlp.noWrap = true;
+      var hLabelPanel = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
+      hLabelPanel.noWrap = true;
       o.setLabel(o._label);
    }
    if(o._hotkey){
@@ -184,7 +184,7 @@ function FUiMenuButton_click(){
    var o = this;
    if(!o._disabled){
       RConsole.find(FFocusConsole).blur();
-      RLogger.debug(o, 'Menu button click. (label={1})' + o._label);
+      RLogger.debug(o, 'Menu button click. (label={1})', o._label);
       var event = new SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -338,4 +338,97 @@ function FUiToolButtonSplit_onBuild(p){
    var o = this;
    o.__base.FUiControl.onBuild.call(o, p);
    o._hPanel.className = o.styleName('Panel');
+}
+function FUiPopupMenu(o){
+   o = RClass.inherits(this, o, FUiContainer, MUiPopup);
+   o._stylePanel     = RClass.register(o, new AStyle('_stylePanel'));
+   o._styleForm      = RClass.register(o, new AStyle('_styleForm'));
+   o._styleContainer = RClass.register(o, new AStyle('_styleContainer'));
+   o._styleLabel     = RClass.register(o, new AStyle('_styleLabel'));
+   o._styleButton    = RClass.register(o, new AStyle('_styleButton'));
+   o._opener         = null;
+   o._visible        = false;
+   o._statusVisible  = false;
+   o._hContainer     = null;
+   o._hLabel         = null;
+   o._hButtonPanel   = null;
+   o._hIcon          = null;
+   o._hText          = null;
+   o.onBuild         = FUiPopupMenu_onBuild;
+   o.appendChild     = FUiPopupMenu_appendChild;
+   o.show            = FUiPopupMenu_show;
+   o.setVisible      = FUiPopupMenu_setVisible;
+   o.testInRange     = FUiPopupMenu_testInRange;
+   o.doBlur          = FUiPopupMenu_doBlur;
+   o.dispose         = FUiPopupMenu_dispose;
+   return o;
+}
+function FUiPopupMenu_onBuild(event){
+   var o = this;
+   o.__base.FUiContainer.onBuild.call(o, event);
+   var hPanel = o._hPanel;
+   var hForm = o._hForm = RBuilder.appendTable(hPanel, o.styleName('Form'));
+   var hLineTop = o._hLineTop = RBuilder.appendTableCell(hForm);
+   hLineTop.bgColor = '#666666';
+   hLineTop.height = '2px';
+   var hContainerPanel = o._hContainerPanel = RBuilder.appendTableCell(hForm);
+   var hLineBottom = o._hLineBottom = RBuilder.appendTableCell(hForm);
+   hLineBottom.bgColor = '#666666';
+   hLineBottom.height = '2px';
+   var hContainer = o._hContainer = RBuilder.appendTable(hContainerPanel, o.styleName('Container'));
+}
+function FUiPopupMenu_doBlur(){
+   var o = this;
+}
+function FUiPopupMenu_appendChild(control){
+   var o = this;
+   var hButtonPanel = RBuilder.appendTableRowCell(o._hContainer);
+   hButtonPanel.className = o.styleName('Button');
+   hButtonPanel.appendChild(control._hPanel);
+}
+function FUiPopupMenu_show(h, positionCd, v){
+   var o = this;
+   var hPanel = o._hPanel;
+   var opener = o._opener;
+   o.setVisible(true);
+   var hOpener = opener._hPanel;
+   var openerWidth = hOpener.offsetWidth;
+   var openerHeight = hOpener.offsetHeight;
+   var width = hPanel.offsetWidth;
+   var height = hPanel.offsetHeight;
+   var style = hPanel.style;
+   if(width < openerWidth){
+      width = openerWidth;
+   }
+   if(height > 300){
+      o._hFormPanel.style.overflowY = 'scroll';
+      style.height = height + 'px';
+   }
+   style.left = '3px';
+   style.top = (openerHeight + 1) + 'px';
+   style.width = width + 'px';
+   style.zIndex = RUiLayer.next();
+}
+function FUiPopupMenu_setVisible(visible){
+   var o = this;
+   var opener = o._opener;
+   o._statusVisible = visible;
+   var hOpener = opener._hPanelCell;
+   var hPanel = o.panel(EPanel.Container);
+   if(visible){
+      hOpener.appendChild(hPanel);
+   }else{
+      hOpener.removeChild(hPanel);
+   }
+}
+function FUiPopupMenu_testInRange(e){
+   return this == RControl.htmlControl(e.srcElement, FUiPopupMenu);
+}
+function FUiPopupMenu_dispose(e){
+   var o = this;
+   o._hContainer = RMemory.free(o._hContainer);
+   o._hPanel = RMemory.free(o._hPanel);
+   o._hLabel = RMemory.free(o._hLabel);
+   o._hLastRow = RMemory.free(o._hLastRow);
+   o.__base.FUiContainer.dispose.call(o);
 }

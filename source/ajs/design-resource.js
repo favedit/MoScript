@@ -1195,7 +1195,7 @@ function FDsResourceSearchContent_onServiceLoad(p){
       if(xnode.isName('Resource')){
          var item = o.createItem(FDsResourceSearchItem);
          item.propertyLoad(xnode);
-         item._typeCd = xnode.get('type');
+         item._typeCd = xnode.get('type_cd');
          item._guid = xnode.get('guid');
          item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
          item.refreshStyle();

@@ -9,22 +9,22 @@ function FUiToolButtonEdit(o){
    o = RClass.inherits(this, o, FUiToolButton);
    //..........................................................
    // @property
-   o._editSize       = RClass.register(o, new APtySize2('_editSize'));
+   o._editSize     = RClass.register(o, new APtySize2('_editSize'));
    //..........................................................
    // @html
-   o._hEdit          = null;
+   o._hEdit        = null;
    //..........................................................
    // @event
-   o.onBuildButton   = FUiToolButtonEdit_onBuildButton;
-   o.onEnter         = FUiToolButtonEdit_onEnter;
-   o.onLeave         = FUiToolButtonEdit_onLeave;
-   o.onKeyDown      = RClass.register(o, new AEventKeyDown('onKeyDown'), FUiToolButtonEdit_onKeyDown);
+   o.onBuildButton = FUiToolButtonEdit_onBuildButton;
+   o.onEnter       = RMethod.empty;
+   o.onLeave       = RMethod.empty;
+   o.onKeyDown     = RClass.register(o, new AEventKeyDown('onKeyDown'), FUiToolButtonEdit_onKeyDown);
    //..........................................................
    // @method
-   o.construct       = FUiToolButtonEdit_construct;
+   o.construct     = FUiToolButtonEdit_construct;
    // @method
-   o.text            = FUiToolButtonEdit_text;
-   o.setText         = FUiToolButtonEdit_setText;
+   o.text          = FUiToolButtonEdit_text;
+   o.setText       = FUiToolButtonEdit_setText;
    return o;
 }
 
@@ -37,31 +37,31 @@ function FUiToolButtonEdit(o){
 function FUiToolButtonEdit_onBuildButton(p){
    var o = this;
    // 设置面板
-   var h = o._hPanel;
+   var hPanel = o._hPanel;
    // 建立表单
-   var hf = o._hForm = RBuilder.appendTable(h);
-   var hl = o._hLine = RBuilder.appendTableRow(hf);
+   var hForm = o._hForm = RBuilder.appendTable(hPanel);
+   var hLine = o._hLine = RBuilder.appendTableRow(hForm);
    // 建立输入框
-   var hEditPanel = o._hEditPanel = RBuilder.appendTableCell(hl);
+   var hEditPanel = o._hEditPanel = RBuilder.appendTableCell(hLine);
    var hEdit = o._hEdit = RBuilder.appendEdit(hEditPanel);
    hEdit.style.width = o._editSize.width +  'px';
    o.attachEvent('onKeyDown', hEdit);
-   o._hEditSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
+   o._hEditSpacePanel = RBuilder.appendTableCell(hLine, o.styleName('SpacePanel'));
    // 建立图标
    if(o._icon){
-      var hc = o._hIconPanel = RBuilder.appendTableCell(hl, o.styleName('IconPanel'));
+      var hc = o._hIconPanel = RBuilder.appendTableCell(hLine, o.styleName('IconPanel'));
       o._hIcon = RBuilder.appendIcon(hc, null, o._icon);
    }
    // 建立分割
    if(o._icon && o._label){
-      o._hSpacePanel = RBuilder.appendTableCell(hl, o.styleName('SpacePanel'));
+      o._hSpacePanel = RBuilder.appendTableCell(hLine, o.styleName('SpacePanel'));
    }
    // 建立标签
    if(o._label){
-      var hlp = o._hLabelPanel = RBuilder.appendTableCell(hl, o.styleName('LabelPanel'));
-      o.attachEvent('onMouseDown', hlp);
-      o.attachEvent('onMouseUp', hlp);
-      hlp.noWrap = true;
+      var hLabelPanel = o._hLabelPanel = RBuilder.appendTableCell(hLine, o.styleName('LabelPanel'));
+      o.attachEvent('onMouseDown', hLabelPanel);
+      o.attachEvent('onMouseUp', hLabelPanel);
+      hLabelPanel.noWrap = true;
       o.setLabel(o._label);
    }
    // 建立热键
@@ -72,26 +72,6 @@ function FUiToolButtonEdit_onBuildButton(p){
    if(o._hint){
       o.setHint(o._hint);
    }
-}
-
-//==========================================================
-// <T>鼠标进入处理。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FUiToolButtonEdit_onEnter(p){
-   this._hPanel.className = this.styleName('Hover');
-}
-
-//==========================================================
-// <T>鼠标离开处理。</T>
-//
-// @method
-// @param p:event:SEvent 事件
-//==========================================================
-function FUiToolButtonEdit_onLeave(p){
-   this._hPanel.className = this.styleName('Normal');
 }
 
 //==========================================================

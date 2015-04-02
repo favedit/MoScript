@@ -29,6 +29,7 @@ function FDsMeshCanvasToolBar(o){
    o.onBuilded        = FDsMeshCanvasToolBar_onBuilded;
    // @event
    o.onModeClick      = FDsMeshCanvasToolBar_onModeClick;
+   o.onSizeClick      = FDsMeshCanvasToolBar_onSizeClick;
    o.onRotationClick  = FDsMeshCanvasToolBar_onRotationClick;
    //..........................................................
    // @method
@@ -49,14 +50,20 @@ function FDsMeshCanvasToolBar_onBuilded(p){
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
    // 建立拖拽按键
-   var b = o._dropButton = o.searchControl('dropButton');
-   b._canvasModeCd = EDsCanvasMode.Drop;
-   b.addClickListener(o, o.onModeClick);
-   b.check(true);
+   var control = o._controlDrop;
+   control._canvasModeCd = EDsCanvasMode.Drop;
+   control.addClickListener(o, o.onModeClick);
+   control.check(true);
    //..........................................................
    // 建立按键
-   var b = o._viewButton = o.searchControl('viewButton');
-   b.addClickListener(o, o.onRotationClick);
+   o._controlView.addClickListener(o, o.onRotationClick);
+   //..........................................................
+   o._controlSize1.addClickListener(o, o.onSizeClick);
+   o._controlSize2.addClickListener(o, o.onSizeClick);
+   o._controlSize3.addClickListener(o, o.onSizeClick);
+   o._controlSize4.addClickListener(o, o.onSizeClick);
+   o._controlSizeWidth.setText('*');
+   o._controlSizeHeight.setText('*');
 }
 
 //==========================================================
@@ -67,8 +74,33 @@ function FDsMeshCanvasToolBar_onBuilded(p){
 //==========================================================
 function FDsMeshCanvasToolBar_onModeClick(p){
    var o = this;
-   o._canvasModeCd = p._canvasModeCd;
-   o._workspace._canvas.switchMode(p._canvasModeCd);
+   //o._canvasModeCd = p._canvasModeCd;
+   //o._workspace._canvas.switchMode(p._canvasModeCd);
+}
+
+//==========================================================
+// <T>尺寸选择。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsMeshCanvasToolBar_onSizeClick(event){
+   var o = this;
+   var button = event.sender;
+   // 解析尺寸
+   var width = '*';
+   var height = '*';
+   var name = button.name();
+   var label = button.label();
+   if(name != 'sizeAuto'){
+      var size = label.split('x');
+      width = parseInt(size[0]);
+      height = parseInt(size[1]);
+   }
+   o._controlSizeWidth.setText(width);
+   o._controlSizeHeight.setText(height);
+   // 设置大小
+   o._frameSet._canvas.switchSize(width, height);
 }
 
 //==========================================================
@@ -78,9 +110,9 @@ function FDsMeshCanvasToolBar_onModeClick(p){
 // @param p:event:SEvent 事件
 //==========================================================
 function FDsMeshCanvasToolBar_onRotationClick(p, v){
-   var o = this;
-   var c = o._workspace._canvas;
-   c.switchRotation(v);
+   //var o = this;
+   //var c = o._workspace._canvas;
+   //c.switchRotation(v);
 }
 
 //==========================================================
