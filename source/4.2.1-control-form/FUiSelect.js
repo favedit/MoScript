@@ -15,7 +15,8 @@
 // @version 150224
 //==========================================================
 function FUiSelect(o){
-   o = RClass.inherits(this, o, FUiEditControl, MUiContainer, MPropertySelect, MUiDropable, MListenerDataChanged);
+   //o = RClass.inherits(this, o, FUiEditControl, MUiContainer, MPropertySelect, MUiDropable, MListenerDataChanged);
+   o = RClass.inherits(this, o, FUiEditControl, MUiContainer, MPropertySelect, MListenerDataChanged);
    //..........................................................
    // @style
    o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));

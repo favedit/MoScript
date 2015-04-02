@@ -23,6 +23,9 @@ function FDsMeshCanvas(o){
    o._selectBoundBox      = null;
    o._selectRenderables   = null;
    // @attribute
+   o._switchWidth         = '*';
+   o._switchHeight        = '*';
+   // @attribute
    o._cameraMoveRate      = 8;
    o._cameraKeyRotation   = 3;
    o._cameraMouseRotation = 0.005;
@@ -641,13 +644,16 @@ function FDsMeshCanvas_switchMode(p){
 //==========================================================
 function FDsMeshCanvas_switchSize(width, height){
    var o = this;
+   o._switchWidth = width;
+   o._switchHeight = height;
    // 获得大小
    var hCanvas = o._hPanel;
+   var hParent = o._hParent;
    if(width == '*'){
-      width = hCanvas.offsetWidth;
+      width = hParent.offsetWidth;
    }
    if(height == '*'){
-      height = hCanvas.offsetHeight - 6;
+      height = hParent.offsetHeight;
    }
    // 设置大小
    hCanvas.width = width;
@@ -699,6 +705,10 @@ function FDsMeshCanvas_capture(){
    var o = this;
    var space = o._activeSpace;
    var guid = space._resource._guid;
+   var switchWidth = o._switchWidth;
+   var switchHeight = o._switchHeight;
+   o.switchSize(200, 150);
+   RStage.process();
    // 获得像素
    var context = o._graphicContext;
    var size = context.size();
@@ -707,6 +717,9 @@ function FDsMeshCanvas_capture(){
    var height = size.height;
    var data = new Uint8Array(4 * width * height);
    native.readPixels(0, 0, width, height, native.RGBA, native.UNSIGNED_BYTE, data);
+   // 切回原来大小
+   o.switchSize(switchWidth, switchHeight);
+   RStage.process();
    // 上传图片
    var url = '/cloud.content.resource.preview.wv?do=upload&type_cd=mesh&guid=' + guid + '&width=' + width + '&height=' + height;
    RConsole.find(FHttpConsole).send(url, data.buffer);

@@ -6029,6 +6029,8 @@ function FDsMeshCanvas(o){
    o._selectObject        = null;
    o._selectBoundBox      = null;
    o._selectRenderables   = null;
+   o._switchWidth         = '*';
+   o._switchHeight        = '*';
    o._cameraMoveRate      = 8;
    o._cameraKeyRotation   = 3;
    o._cameraMouseRotation = 0.005;
@@ -6430,12 +6432,15 @@ function FDsMeshCanvas_switchMode(p){
 }
 function FDsMeshCanvas_switchSize(width, height){
    var o = this;
+   o._switchWidth = width;
+   o._switchHeight = height;
    var hCanvas = o._hPanel;
+   var hParent = o._hParent;
    if(width == '*'){
-      width = hCanvas.offsetWidth;
+      width = hParent.offsetWidth;
    }
    if(height == '*'){
-      height = hCanvas.offsetHeight - 6;
+      height = hParent.offsetHeight;
    }
    hCanvas.width = width;
    hCanvas.style.width = width + 'px';
@@ -6463,6 +6468,10 @@ function FDsMeshCanvas_capture(){
    var o = this;
    var space = o._activeSpace;
    var guid = space._resource._guid;
+   var switchWidth = o._switchWidth;
+   var switchHeight = o._switchHeight;
+   o.switchSize(200, 150);
+   RStage.process();
    var context = o._graphicContext;
    var size = context.size();
    var native = context._native;
@@ -6470,6 +6479,8 @@ function FDsMeshCanvas_capture(){
    var height = size.height;
    var data = new Uint8Array(4 * width * height);
    native.readPixels(0, 0, width, height, native.RGBA, native.UNSIGNED_BYTE, data);
+   o.switchSize(switchWidth, switchHeight);
+   RStage.process();
    var url = '/cloud.content.resource.preview.wv?do=upload&type_cd=mesh&guid=' + guid + '&width=' + width + '&height=' + height;
    RConsole.find(FHttpConsole).send(url, data.buffer);
 }
