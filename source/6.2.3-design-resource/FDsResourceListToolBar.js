@@ -5,11 +5,11 @@
 // @author maocy
 // @history 150210
 //==========================================================
-function FDsSolutionSearchToolBar(o){
+function FDsResourceListToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'design3d.solution.SearchToolBar';
+   o._frameName       = 'design3d.resource.ListToolBar';
    //..........................................................
    // @attribute
    o._pageCount       = 0;
@@ -29,18 +29,18 @@ function FDsSolutionSearchToolBar(o){
    o._viewButton      = null;
    //..........................................................
    // @event
-   o.onBuilded        = FDsSolutionSearchToolBar_onBuilded;
+   o.onBuilded        = FDsResourceListToolBar_onBuilded;
    // @event
-   o.onSearchClick    = FDsSolutionSearchToolBar_onSearchClick;
-   o.onNavigatorClick = FDsSolutionSearchToolBar_onNavigatorClick;
+   o.onSearchClick    = FDsResourceListToolBar_onSearchClick;
+   o.onNavigatorClick = FDsResourceListToolBar_onNavigatorClick;
    //..........................................................
    // @method
-   o.construct        = FDsSolutionSearchToolBar_construct;
+   o.construct        = FDsResourceListToolBar_construct;
    // @method
-   o.setNavigator     = FDsSolutionSearchToolBar_setNavigator;
-   o.doNavigator      = FDsSolutionSearchToolBar_doNavigator;
+   o.setNavigator     = FDsResourceListToolBar_setNavigator;
+   o.doNavigator      = FDsResourceListToolBar_doNavigator;
    // @method
-   o.dispose          = FDsSolutionSearchToolBar_dispose;
+   o.dispose          = FDsResourceListToolBar_dispose;
    return o;
 }
 
@@ -50,7 +50,7 @@ function FDsSolutionSearchToolBar(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsSolutionSearchToolBar_onBuilded(p){
+function FDsResourceListToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
@@ -70,7 +70,7 @@ function FDsSolutionSearchToolBar_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSolutionSearchToolBar_onSearchClick(p){
+function FDsResourceListToolBar_onSearchClick(p){
    this.doNavigator(0);
 }
 
@@ -80,7 +80,7 @@ function FDsSolutionSearchToolBar_onSearchClick(p){
 // @method
 // @param event:SEvent 事件
 //==========================================================
-function FDsSolutionSearchToolBar_onNavigatorClick(event){
+function FDsResourceListToolBar_onNavigatorClick(event){
    var o = this;
    var sender = event.sender;
    var name = sender.name();
@@ -107,7 +107,7 @@ function FDsSolutionSearchToolBar_onNavigatorClick(event){
 //
 // @method
 //==========================================================
-function FDsSolutionSearchToolBar_construct(){
+function FDsResourceListToolBar_construct(){
    var o = this;
    // 父处理
    o.__base.FUiToolBar.construct.call(o);
@@ -121,7 +121,7 @@ function FDsSolutionSearchToolBar_construct(){
 // @param pageCount 页总数
 // @param page 页号
 //==========================================================
-function FDsSolutionSearchToolBar_setNavigator(pageSize, pageCount, page){
+function FDsResourceListToolBar_setNavigator(pageSize, pageCount, page){
    var o = this;
    o._pageSize = pageSize;
    o._pageCount = pageCount;
@@ -139,7 +139,7 @@ function FDsSolutionSearchToolBar_setNavigator(pageSize, pageCount, page){
 // @param pageCount 页总数
 // @param page 页号
 //==========================================================
-function FDsSolutionSearchToolBar_doNavigator(page){
+function FDsResourceListToolBar_doNavigator(page){
    var o = this;
    page = RInteger.toRange(page, 0, o._pageCount);
    var search = o._controlSearchEdit.text();
@@ -156,7 +156,7 @@ function FDsSolutionSearchToolBar_doNavigator(page){
 //
 // @method
 //==========================================================
-function FDsSolutionSearchToolBar_dispose(){
+function FDsResourceListToolBar_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiToolBar.dispose.call(o);

@@ -54,7 +54,7 @@ function FDsSolutionProjectDialog_onBuilded(p){
 //==========================================================
 function FDsSolutionProjectDialog_onConfirmLoad(event){
    var o = this;
-   var frame = o._workspace._searchContent;
+   var frame = o._frameSet._listContent;
    frame.serviceResearch();
    // 隐藏窗口
    o.hide();

@@ -4,14 +4,14 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FDsResourceSearchItem(o){
+function FDsResourceListItem(o){
    o = RClass.inherits(this, o, FUiListViewItem);
    //..........................................................
    // @event
-   o.onBuild      = FDsResourceSearchItem_onBuild;
+   o.onBuild      = FDsResourceListItem_onBuild;
    //..........................................................
    // @method
-   o.refreshStyle = FDsResourceSearchItem_refreshStyle;
+   o.refreshStyle = FDsResourceListItem_refreshStyle;
    return o;
 }
 
@@ -21,7 +21,7 @@ function FDsResourceSearchItem(o){
 // @method
 // @param p:argements:SArgements 参数集合
 //==========================================================
-function FDsResourceSearchItem_onBuild(p){
+function FDsResourceListItem_onBuild(p){
    var o = this;
    // 建立控件
    o.__base.FUiListViewItem.onBuild.call(o, p);
@@ -38,7 +38,7 @@ function FDsResourceSearchItem_onBuild(p){
 // @method
 // @param p:argements:SArgements 参数集合
 //==========================================================
-function FDsResourceSearchItem_refreshStyle(){
+function FDsResourceListItem_refreshStyle(){
    var o = this;
    // 建立控件
    var url = '/cloud.content.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid;

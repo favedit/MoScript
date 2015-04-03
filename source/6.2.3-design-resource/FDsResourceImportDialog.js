@@ -75,8 +75,8 @@ function FDsResourceImportDialog_onFileLoaded(event){
 //==========================================================
 function FDsResourceImportDialog_onConfirmLoad(event){
    var o = this;
-   //var frame = o._workspace._searchContent;
-   //frame.serviceResearch();
+   var frame = o._frameSet._listContent;
+   frame.serviceResearch();
    // 隐藏窗口
    o.hide();
    // 隐藏窗口

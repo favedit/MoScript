@@ -185,7 +185,7 @@ function FUiListViewItem_setChecked(p){
    }else{
       o._hIconPanel.innerHTML = p ? 'O' : '';
    }
-   o._hPanel.className = p ? o.styleName('Select') : o.styleName('Normal');
+   o._hBorder.className = p ? o.styleName('Select') : o.styleName('Normal');
 }
 
 //==========================================================

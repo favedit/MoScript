@@ -9147,7 +9147,7 @@ function FUiListView_doClickItem(p){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var m = s.value(i);
-         if(RClass.isClass(m, FUiListItem)){
+         if(RClass.isClass(m, FUiListViewItem)){
             m.setChecked(m == p);
          }
       }
@@ -9164,7 +9164,7 @@ function FUiListView_doDoubleClickItem(p){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var m = s.value(i);
-         if(RClass.isClass(m, FUiListItem)){
+         if(RClass.isClass(m, FUiListViewItem)){
             m.setChecked(m == p);
          }
       }
@@ -9290,7 +9290,7 @@ function FUiListViewItem_setChecked(p){
    }else{
       o._hIconPanel.innerHTML = p ? 'O' : '';
    }
-   o._hPanel.className = p ? o.styleName('Select') : o.styleName('Normal');
+   o._hBorder.className = p ? o.styleName('Select') : o.styleName('Normal');
 }
 function FUiListViewItem_dispose(){
    var o = this;

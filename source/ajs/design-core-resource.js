@@ -137,6 +137,7 @@ function FDrResourceConsole(o){
    o._resources   = null;
    o.construct    = FDrResourceConsole_construct;
    o.fetch        = FDrResourceConsole_fetch;
+   o.doDelete     = FDrResourceConsole_doDelete;
    return o;
 }
 function FDrResourceConsole_construct(){
@@ -147,5 +148,10 @@ function FDrResourceConsole_construct(){
 function FDrResourceConsole_fetch(typeCd, search, order, pageSize, page){
    var o = this;
    var url = '/' + o._serviceCode + '.ws?action=fetch&type_cd=' + typeCd + '&serach=' + serach + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
+   return RConsole.find(FXmlConsole).sendAsync(url);
+}
+function FDrResourceConsole_doDelete(typeCd, guid){
+   var o = this;
+   var url = '/' + o._serviceCode + '.ws?action=delete&type_cd=' + typeCd + '&guid=' + guid;
    return RConsole.find(FXmlConsole).sendAsync(url);
 }

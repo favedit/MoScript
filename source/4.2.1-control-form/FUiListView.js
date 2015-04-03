@@ -65,7 +65,7 @@ function FUiListView_onBuildPanel(p){
 // @method
 // @param pi:icon:String 图标
 // @param pl:label:String 标签
-// @return FUiListItem 列表项目
+// @return FUiListViewItem 列表项目
 //==========================================================
 function FUiListView_construct(){
    var o = this;
@@ -79,7 +79,7 @@ function FUiListView_construct(){
 // @method
 // @param pi:icon:String 图标
 // @param pl:label:String 标签
-// @return FUiListItem 列表项目
+// @return FUiListViewItem 列表项目
 //==========================================================
 function FUiListView_createItem(clazz, pi, pl){
    var o = this;
@@ -112,7 +112,7 @@ function FUiListView_appendChild(p){
 // <T>点击一个列表项目。</T>
 //
 // @method
-// @param p:item:FUiListItem 列表项目
+// @param p:item:FUiListViewItem 列表项目
 //==========================================================
 function FUiListView_doClickItem(p){
    var o = this;
@@ -122,7 +122,7 @@ function FUiListView_doClickItem(p){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var m = s.value(i);
-         if(RClass.isClass(m, FUiListItem)){
+         if(RClass.isClass(m, FUiListViewItem)){
             m.setChecked(m == p);
          }
       }
@@ -138,7 +138,7 @@ function FUiListView_doClickItem(p){
 // <T>双击一个列表项目。</T>
 //
 // @method
-// @param p:item:FUiListItem 列表项目
+// @param p:item:FUiListViewItem 列表项目
 //==========================================================
 function FUiListView_doDoubleClickItem(p){
    var o = this;
@@ -148,7 +148,7 @@ function FUiListView_doDoubleClickItem(p){
       var c = s.count();
       for(var i = 0; i < c; i++){
          var m = s.value(i);
-         if(RClass.isClass(m, FUiListItem)){
+         if(RClass.isClass(m, FUiListViewItem)){
             m.setChecked(m == p);
          }
       }

@@ -4,27 +4,31 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FDsResourceSearchContent(o){
+function FDsSolutionListContent(o){
    o = RClass.inherits(this, o, FUiListView);
    //..........................................................
+   // @attribute
+   o._activeControl    = null;
+   o._activeGuid       = null;
    // @attribute
    o._refreshButton    = null;
    o._saveButton       = null;
    o._runButton        = null;
    //..........................................................
    // @event
-   o.onBuilded         = FDsResourceSearchContent_onBuilded;
+   o.onBuilded         = FDsSolutionListContent_onBuilded;
    // @event
-   o.onServiceLoad     = FDsResourceSearchContent_onServiceLoad;
+   o.onServiceLoad     = FDsSolutionListContent_onServiceLoad;
    //..........................................................
    // @method
-   o.construct         = FDsResourceSearchContent_construct;
+   o.construct         = FDsSolutionListContent_construct;
    // @method
-   o.doClickItem       = FDsResourceSearchContent_doClickItem;
-   o.doDoubleClickItem = FDsResourceSearchContent_doDoubleClickItem;
-   o.serviceSearch     = FDsResourceSearchContent_serviceSearch;
+   o.doClickItem       = FDsSolutionListContent_doClickItem;
+   o.doDoubleClickItem = FDsSolutionListContent_doDoubleClickItem;
+   o.serviceSearch     = FDsSolutionListContent_serviceSearch;
+   o.serviceResearch   = FDsSolutionListContent_serviceResearch;
    // @method
-   o.dispose           = FDsResourceSearchContent_dispose;
+   o.dispose           = FDsSolutionListContent_dispose;
    return o;
 }
 
@@ -34,7 +38,7 @@ function FDsResourceSearchContent(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsResourceSearchContent_onBuilded(p){
+function FDsSolutionListContent_onBuilded(p){
    var o = this;
    o.__base.FUiListView.onBuilded.call(o, p);
    //..........................................................
@@ -48,24 +52,24 @@ function FDsResourceSearchContent_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsResourceSearchContent_onServiceLoad(p){
+function FDsSolutionListContent_onServiceLoad(p){
    var o = this;
-   var xitems = p.root.findNode('ResourceCollection');
+   var xprojects = p.root.findNode('ProjectCollection');
    // 设置导航
-   var pageSize = xitems.getInteger('page_size');
-   var pageCount = xitems.getInteger('page_count');
-   var page = xitems.getInteger('page');
-   o._frameSet._searchToolbar.setNavigator(pageSize, pageCount, page);
+   var pageSize = xprojects.getInteger('page_size');
+   var pageCount = xprojects.getInteger('page_count');
+   var page = xprojects.getInteger('page');
+   o._frameSet._listToolbar.setNavigator(pageSize, pageCount, page);
    // 显示项目
    o.clear();
-   var xnodes = xitems.nodes();
+   var xnodes = xprojects.nodes();
    var count = xnodes.count();
    for(var i = 0; i < count; i++){
       var xnode = xnodes.getAt(i);
-      if(xnode.isName('Resource')){
-         var item = o.createItem(FDsResourceSearchItem);
+      if(xnode.isName('Project')){
+         var item = o.createItem(FDsSolutionListItem);
          item.propertyLoad(xnode);
-         item._typeCd = xnode.get('type_cd');
+         item._typeCd = xnode.get('type');
          item._guid = xnode.get('guid');
          item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
          item.refreshStyle();
@@ -81,7 +85,7 @@ function FDsResourceSearchContent_onServiceLoad(p){
 //
 // @method
 //==========================================================
-function FDsResourceSearchContent_construct(){
+function FDsSolutionListContent_construct(){
    var o = this;
    // 父处理
    o.__base.FUiListView.construct.call(o);
@@ -91,26 +95,28 @@ function FDsResourceSearchContent_construct(){
 // <T>点击一个列表项目。</T>
 //
 // @method
-// @param p:item:FUiListItem 列表项目
+// @param control:FUiListViewItem 列表项目
 //==========================================================
-function FDsResourceSearchContent_doClickItem(p){
+function FDsSolutionListContent_doClickItem(control){
    var o = this;
-   // 选中项目
-   //var frame = o._frameSet._previewContent;
-   //frame._activeItem = p;
-   //frame.loadMeshByGuid(p._guid);
+   o.__base.FUiListView.doClickItem.call(o, control);
+   o._activeControl = control;
+   o._activeGuid = control._guid;
+   o._frameSet.selectObject(control);
 }
 
 //==========================================================
 // <T>双击一个列表项目。</T>
 //
 // @method
-// @param p:item:FUiListItem 列表项目
+// @param control:FUiListViewItem 列表项目
 //==========================================================
-function FDsResourceSearchContent_doDoubleClickItem(item){
+function FDsSolutionListContent_doDoubleClickItem(control){
    var o = this;
-   var guid = item._guid;
-   o._frameSet._workspace.selectFrameSet(EDsFrameSet.MeshFrameSet, guid);
+   o.__base.FUiListView.doDoubleClickItem.call(o, control);
+   o._activeControl = control;
+   o._activeGuid = control._guid;
+   //window.location = 'Project.wa?do=detail&guid=' + o._workspace._activeProjectGuid;
 }
 
 //==========================================================
@@ -120,14 +126,29 @@ function FDsResourceSearchContent_doDoubleClickItem(item){
 // @param typeCd:String 类型
 // @param search:String 搜索内容
 //==========================================================
-function FDsResourceSearchContent_serviceSearch(typeCd, serach, pageSize, page){
+function FDsSolutionListContent_serviceSearch(typeCd, serach, pageSize, page){
    var o = this;
+   o._typeCd = typeCd;
+   o._serach = serach;
+   o._pageSize = pageSize;
+   o._page = page;
    // 画面禁止操作
    RWindow.disable();
    // 发送数据请求
-   var url = '/cloud.content3d.resource.ws?action=list&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
-   var connection = RConsole.find(FXmlConsole).sendAsync(url);
+   var connection = RConsole.find(FDrProjectConsole).doList(serach, null, pageSize, page);
    connection.addLoadListener(o, o.onServiceLoad);
+}
+
+//==========================================================
+// <T>服务搜索处理。</T>
+//
+// @method
+// @param typeCd:String 类型
+// @param search:String 搜索内容
+//==========================================================
+function FDsSolutionListContent_serviceResearch(){
+   var o = this;
+   o.serviceSearch(o._typeCd, o._serach, o._pageSize, o._page);
 }
 
 //==========================================================
@@ -135,7 +156,7 @@ function FDsResourceSearchContent_serviceSearch(typeCd, serach, pageSize, page){
 //
 // @method
 //==========================================================
-function FDsResourceSearchContent_dispose(){
+function FDsSolutionListContent_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiListView.dispose.call(o);

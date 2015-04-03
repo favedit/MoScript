@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150130
 //==========================================================
-function FDsSolutionPreviewContent(o){
+function FDsSolutionPropertyContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
    //..........................................................
    // @attribute
@@ -35,31 +35,31 @@ function FDsSolutionPreviewContent(o){
    o._templateViewScale   = 0.05;
    //..........................................................
    // @event
-   o.onBuild              = FDsSolutionPreviewContent_onBuild;
-   o.onMouseCaptureStart  = FDsSolutionPreviewContent_onMouseCaptureStart;
-   o.onMouseCapture       = FDsSolutionPreviewContent_onMouseCapture;
-   o.onMouseCaptureStop   = FDsSolutionPreviewContent_onMouseCaptureStop;
-   o.onEnterFrame         = FDsSolutionPreviewContent_onEnterFrame;
-   o.onMeshLoad           = FDsSolutionPreviewContent_onMeshLoad;
+   o.onBuild              = FDsSolutionPropertyContent_onBuild;
+   o.onMouseCaptureStart  = FDsSolutionPropertyContent_onMouseCaptureStart;
+   o.onMouseCapture       = FDsSolutionPropertyContent_onMouseCapture;
+   o.onMouseCaptureStop   = FDsSolutionPropertyContent_onMouseCaptureStop;
+   o.onEnterFrame         = FDsSolutionPropertyContent_onEnterFrame;
+   o.onMeshLoad           = FDsSolutionPropertyContent_onMeshLoad;
    //..........................................................
-   o.oeResize             = FDsSolutionPreviewContent_oeResize;
-   o.oeRefresh            = FDsSolutionPreviewContent_oeRefresh;
+   o.oeResize             = FDsSolutionPropertyContent_oeResize;
+   o.oeRefresh            = FDsSolutionPropertyContent_oeRefresh;
    //..........................................................
    // @method
-   o.construct            = FDsSolutionPreviewContent_construct;
+   o.construct            = FDsSolutionPropertyContent_construct;
    // @method
-   o.innerSelectDisplay   = FDsSolutionPreviewContent_innerSelectDisplay;
-   o.innerSelectLayer     = FDsSolutionPreviewContent_innerSelectLayer;
-   o.selectNone           = FDsSolutionPreviewContent_selectNone;
-   o.selectDisplay        = FDsSolutionPreviewContent_selectDisplay;
-   o.selectMaterial       = FDsSolutionPreviewContent_selectMaterial;
-   o.selectRenderable     = FDsSolutionPreviewContent_selectRenderable;
-   o.switchRotation       = FDsSolutionPreviewContent_switchRotation;
-   o.reloadRegion         = FDsSolutionPreviewContent_reloadRegion;
-   o.loadMeshByGuid       = FDsSolutionPreviewContent_loadMeshByGuid;
-   o.loadMeshByCode       = FDsSolutionPreviewContent_loadMeshByCode;
+   o.innerSelectDisplay   = FDsSolutionPropertyContent_innerSelectDisplay;
+   o.innerSelectLayer     = FDsSolutionPropertyContent_innerSelectLayer;
+   o.selectNone           = FDsSolutionPropertyContent_selectNone;
+   o.selectDisplay        = FDsSolutionPropertyContent_selectDisplay;
+   o.selectMaterial       = FDsSolutionPropertyContent_selectMaterial;
+   o.selectRenderable     = FDsSolutionPropertyContent_selectRenderable;
+   o.switchRotation       = FDsSolutionPropertyContent_switchRotation;
+   o.reloadRegion         = FDsSolutionPropertyContent_reloadRegion;
+   o.loadMeshByGuid       = FDsSolutionPropertyContent_loadMeshByGuid;
+   o.loadMeshByCode       = FDsSolutionPropertyContent_loadMeshByCode;
    // @method
-   o.dispose              = FDsSolutionPreviewContent_dispose;
+   o.dispose              = FDsSolutionPropertyContent_dispose;
    return o;
 }
 
@@ -69,7 +69,7 @@ function FDsSolutionPreviewContent(o){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsSolutionPreviewContent_onBuild(p){
+function FDsSolutionPropertyContent_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
    // 创建简单舞台
@@ -121,7 +121,7 @@ function FDsSolutionPreviewContent_onBuild(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSolutionPreviewContent_onMouseCaptureStart(p){
+function FDsSolutionPropertyContent_onMouseCaptureStart(p){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -162,7 +162,7 @@ function FDsSolutionPreviewContent_onMouseCaptureStart(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSolutionPreviewContent_onMouseCapture(p){
+function FDsSolutionPropertyContent_onMouseCapture(p){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -248,7 +248,7 @@ function FDsSolutionPreviewContent_onMouseCapture(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSolutionPreviewContent_onMouseCaptureStop(p){
+function FDsSolutionPropertyContent_onMouseCaptureStop(p){
    var o = this;
    // 设置鼠标
    RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
@@ -259,7 +259,7 @@ function FDsSolutionPreviewContent_onMouseCaptureStop(p){
 //
 // @method
 //==========================================================
-function FDsSolutionPreviewContent_onEnterFrame(){
+function FDsSolutionPropertyContent_onEnterFrame(){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -329,7 +329,7 @@ function FDsSolutionPreviewContent_onEnterFrame(){
 // @method
 // @param p:template:FTemplate3d 模板
 //==========================================================
-function FDsSolutionPreviewContent_onMeshLoad(p){
+function FDsSolutionPropertyContent_onMeshLoad(p){
    var o = this;
    var m = o._activeSpace;
    var g = m.region();
@@ -366,7 +366,7 @@ function FDsSolutionPreviewContent_onMeshLoad(p){
 //
 // @method
 //==========================================================
-function FDsSolutionPreviewContent_oeResize(p){
+function FDsSolutionPropertyContent_oeResize(p){
    var o = this;
    o.__base.FDsCanvas.oeResize.call(o, p);
    // 获得大小
@@ -389,7 +389,7 @@ function FDsSolutionPreviewContent_oeResize(p){
 //
 // @method
 //==========================================================
-function FDsSolutionPreviewContent_oeRefresh(p){
+function FDsSolutionPropertyContent_oeRefresh(p){
    return EEventStatus.Stop;
 }
 
@@ -398,7 +398,7 @@ function FDsSolutionPreviewContent_oeRefresh(p){
 //
 // @method
 //==========================================================
-function FDsSolutionPreviewContent_construct(){
+function FDsSolutionPropertyContent_construct(){
    var o = this;
    o.__base.FDsCanvas.construct.call(o);
    o._capturePosition = new SPoint2();
@@ -416,7 +416,7 @@ function FDsSolutionPreviewContent_construct(){
 // @method
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FDsSolutionPreviewContent_innerSelectDisplay(p){
+function FDsSolutionPropertyContent_innerSelectDisplay(p){
    var o = this;
    // 选中集合
    var s = p.renderables();
@@ -436,7 +436,7 @@ function FDsSolutionPreviewContent_innerSelectDisplay(p){
 // @method
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FDsSolutionPreviewContent_innerSelectLayer(p){
+function FDsSolutionPropertyContent_innerSelectLayer(p){
    var o = this;
    // 选中集合
    var s = p.displays();
@@ -452,7 +452,7 @@ function FDsSolutionPreviewContent_innerSelectLayer(p){
 //
 // @method
 //==========================================================
-function FDsSolutionPreviewContent_selectNone(){
+function FDsSolutionPropertyContent_selectNone(){
    var o = this;
    o._selectObject = null;
    // 取消所有选中对象
@@ -471,7 +471,7 @@ function FDsSolutionPreviewContent_selectNone(){
 // @method
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FDsSolutionPreviewContent_selectDisplay(p){
+function FDsSolutionPropertyContent_selectDisplay(p){
    var o = this;
    // 取消选中
    o.selectNone();
@@ -487,7 +487,7 @@ function FDsSolutionPreviewContent_selectDisplay(p){
 // @method
 // @param p:material:FG3dMaterial 渲染材质
 //==========================================================
-function FDsSolutionPreviewContent_selectMaterial(p){
+function FDsSolutionPropertyContent_selectMaterial(p){
    var o = this;
    // 取消选中
    o.selectNone();
@@ -513,7 +513,7 @@ function FDsSolutionPreviewContent_selectMaterial(p){
 // @method
 // @param p:renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FDsSolutionPreviewContent_selectRenderable(p){
+function FDsSolutionPropertyContent_selectRenderable(p){
    var o = this;
    return;
    var sr = p;
@@ -620,7 +620,7 @@ function FDsSolutionPreviewContent_selectRenderable(p){
 // @method
 // @param p:modeCd:Integer 
 //==========================================================
-function FDsSolutionPreviewContent_switchMode(p){
+function FDsSolutionPropertyContent_switchMode(p){
    var o = this;
    o._canvasModeCd = p;
    // 设置变量
@@ -633,7 +633,7 @@ function FDsSolutionPreviewContent_switchMode(p){
 // @method
 // @param p:modeCd:Integer 
 //==========================================================
-function FDsSolutionPreviewContent_switchRotation(p){
+function FDsSolutionPropertyContent_switchRotation(p){
    this._optionRotation = p;
 }
 
@@ -643,7 +643,7 @@ function FDsSolutionPreviewContent_switchRotation(p){
 // @method
 // @param region:FE3dRegion 区域
 //==========================================================
-function FDsSolutionPreviewContent_reloadRegion(region){
+function FDsSolutionPropertyContent_reloadRegion(region){
    var o = this;
    var resource = region.resource();
    o._cameraMoveRate = resource.moveSpeed();
@@ -656,7 +656,7 @@ function FDsSolutionPreviewContent_reloadRegion(region){
 //
 // @method
 //==========================================================
-function FDsSolutionPreviewContent_loadMeshByGuid(p){
+function FDsSolutionPropertyContent_loadMeshByGuid(p){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
@@ -681,7 +681,7 @@ function FDsSolutionPreviewContent_loadMeshByGuid(p){
 //
 // @method
 //==========================================================
-function FDsSolutionPreviewContent_loadMeshByCode(p){
+function FDsSolutionPropertyContent_loadMeshByCode(p){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
@@ -706,7 +706,7 @@ function FDsSolutionPreviewContent_loadMeshByCode(p){
 //
 // @method
 //==========================================================
-function FDsSolutionPreviewContent_dispose(){
+function FDsSolutionPropertyContent_dispose(){
    var o = this;
    // 释放旋转
    o._rotation = RObject.dispose(o._rotation);

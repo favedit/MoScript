@@ -45,6 +45,7 @@ var EDsFrame = new function EDsFrame(){
 }
 var EDsFrameSet = new function EDsFrameSet(){
    var o = this;
+   o.SolutionFrameSet = 'design3d.solution.FrameSet';
    o.ProjectFrameSet  = 'design3d.project.FrameSet';
    o.ResourceFrameSet = 'design3d.resource.FrameSet';
    o.PictureFrameSet  = 'design3d.picture.FrameSet';

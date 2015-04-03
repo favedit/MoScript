@@ -1,10 +1,11 @@
 //==========================================================
 // <T>模板画板。</T>
 //
+// @class
 // @author maocy
 // @history 150130
 //==========================================================
-function FDsResourcePreviewContent(o){
+function FDsResourcePropertyContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
    //..........................................................
    // @attribute
@@ -35,31 +36,31 @@ function FDsResourcePreviewContent(o){
    o._templateViewScale   = 0.05;
    //..........................................................
    // @event
-   o.onBuild              = FDsResourcePreviewContent_onBuild;
-   o.onMouseCaptureStart  = FDsResourcePreviewContent_onMouseCaptureStart;
-   o.onMouseCapture       = FDsResourcePreviewContent_onMouseCapture;
-   o.onMouseCaptureStop   = FDsResourcePreviewContent_onMouseCaptureStop;
-   o.onEnterFrame         = FDsResourcePreviewContent_onEnterFrame;
-   o.onMeshLoad           = FDsResourcePreviewContent_onMeshLoad;
+   o.onBuild              = FDsResourcePropertyContent_onBuild;
+   o.onMouseCaptureStart  = FDsResourcePropertyContent_onMouseCaptureStart;
+   o.onMouseCapture       = FDsResourcePropertyContent_onMouseCapture;
+   o.onMouseCaptureStop   = FDsResourcePropertyContent_onMouseCaptureStop;
+   o.onEnterFrame         = FDsResourcePropertyContent_onEnterFrame;
+   o.onMeshLoad           = FDsResourcePropertyContent_onMeshLoad;
    //..........................................................
-   o.oeResize             = FDsResourcePreviewContent_oeResize;
-   o.oeRefresh            = FDsResourcePreviewContent_oeRefresh;
+   o.oeResize             = FDsResourcePropertyContent_oeResize;
+   o.oeRefresh            = FDsResourcePropertyContent_oeRefresh;
    //..........................................................
    // @method
-   o.construct            = FDsResourcePreviewContent_construct;
+   o.construct            = FDsResourcePropertyContent_construct;
    // @method
-   o.innerSelectDisplay   = FDsResourcePreviewContent_innerSelectDisplay;
-   o.innerSelectLayer     = FDsResourcePreviewContent_innerSelectLayer;
-   o.selectNone           = FDsResourcePreviewContent_selectNone;
-   o.selectDisplay        = FDsResourcePreviewContent_selectDisplay;
-   o.selectMaterial       = FDsResourcePreviewContent_selectMaterial;
-   o.selectRenderable     = FDsResourcePreviewContent_selectRenderable;
-   o.switchRotation       = FDsResourcePreviewContent_switchRotation;
-   o.reloadRegion         = FDsResourcePreviewContent_reloadRegion;
-   o.loadMeshByGuid       = FDsResourcePreviewContent_loadMeshByGuid;
-   o.loadMeshByCode       = FDsResourcePreviewContent_loadMeshByCode;
+   o.innerSelectDisplay   = FDsResourcePropertyContent_innerSelectDisplay;
+   o.innerSelectLayer     = FDsResourcePropertyContent_innerSelectLayer;
+   o.selectNone           = FDsResourcePropertyContent_selectNone;
+   o.selectDisplay        = FDsResourcePropertyContent_selectDisplay;
+   o.selectMaterial       = FDsResourcePropertyContent_selectMaterial;
+   o.selectRenderable     = FDsResourcePropertyContent_selectRenderable;
+   o.switchRotation       = FDsResourcePropertyContent_switchRotation;
+   o.reloadRegion         = FDsResourcePropertyContent_reloadRegion;
+   o.loadMeshByGuid       = FDsResourcePropertyContent_loadMeshByGuid;
+   o.loadMeshByCode       = FDsResourcePropertyContent_loadMeshByCode;
    // @method
-   o.dispose              = FDsResourcePreviewContent_dispose;
+   o.dispose              = FDsResourcePropertyContent_dispose;
    return o;
 }
 
@@ -69,7 +70,7 @@ function FDsResourcePreviewContent(o){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsResourcePreviewContent_onBuild(p){
+function FDsResourcePropertyContent_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
    // 创建简单舞台
@@ -121,7 +122,7 @@ function FDsResourcePreviewContent_onBuild(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsResourcePreviewContent_onMouseCaptureStart(p){
+function FDsResourcePropertyContent_onMouseCaptureStart(p){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -162,7 +163,7 @@ function FDsResourcePreviewContent_onMouseCaptureStart(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsResourcePreviewContent_onMouseCapture(p){
+function FDsResourcePropertyContent_onMouseCapture(p){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -248,7 +249,7 @@ function FDsResourcePreviewContent_onMouseCapture(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsResourcePreviewContent_onMouseCaptureStop(p){
+function FDsResourcePropertyContent_onMouseCaptureStop(p){
    var o = this;
    // 设置鼠标
    RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
@@ -259,7 +260,7 @@ function FDsResourcePreviewContent_onMouseCaptureStop(p){
 //
 // @method
 //==========================================================
-function FDsResourcePreviewContent_onEnterFrame(){
+function FDsResourcePropertyContent_onEnterFrame(){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -329,7 +330,7 @@ function FDsResourcePreviewContent_onEnterFrame(){
 // @method
 // @param p:template:FTemplate3d 模板
 //==========================================================
-function FDsResourcePreviewContent_onMeshLoad(p){
+function FDsResourcePropertyContent_onMeshLoad(p){
    var o = this;
    var m = o._activeSpace;
    var g = m.region();
@@ -369,7 +370,7 @@ function FDsResourcePreviewContent_onMeshLoad(p){
 //
 // @method
 //==========================================================
-function FDsResourcePreviewContent_oeResize(p){
+function FDsResourcePropertyContent_oeResize(p){
    var o = this;
    o.__base.FDsCanvas.oeResize.call(o, p);
    // 获得大小
@@ -392,7 +393,7 @@ function FDsResourcePreviewContent_oeResize(p){
 //
 // @method
 //==========================================================
-function FDsResourcePreviewContent_oeRefresh(p){
+function FDsResourcePropertyContent_oeRefresh(p){
    return EEventStatus.Stop;
 }
 
@@ -401,7 +402,7 @@ function FDsResourcePreviewContent_oeRefresh(p){
 //
 // @method
 //==========================================================
-function FDsResourcePreviewContent_construct(){
+function FDsResourcePropertyContent_construct(){
    var o = this;
    o.__base.FDsCanvas.construct.call(o);
    o._capturePosition = new SPoint2();
@@ -419,7 +420,7 @@ function FDsResourcePreviewContent_construct(){
 // @method
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FDsResourcePreviewContent_innerSelectDisplay(p){
+function FDsResourcePropertyContent_innerSelectDisplay(p){
    var o = this;
    // 选中集合
    var s = p.renderables();
@@ -439,7 +440,7 @@ function FDsResourcePreviewContent_innerSelectDisplay(p){
 // @method
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FDsResourcePreviewContent_innerSelectLayer(p){
+function FDsResourcePropertyContent_innerSelectLayer(p){
    var o = this;
    // 选中集合
    var s = p.displays();
@@ -455,7 +456,7 @@ function FDsResourcePreviewContent_innerSelectLayer(p){
 //
 // @method
 //==========================================================
-function FDsResourcePreviewContent_selectNone(){
+function FDsResourcePropertyContent_selectNone(){
    var o = this;
    o._selectObject = null;
    // 取消所有选中对象
@@ -474,7 +475,7 @@ function FDsResourcePreviewContent_selectNone(){
 // @method
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FDsResourcePreviewContent_selectDisplay(p){
+function FDsResourcePropertyContent_selectDisplay(p){
    var o = this;
    // 取消选中
    o.selectNone();
@@ -490,7 +491,7 @@ function FDsResourcePreviewContent_selectDisplay(p){
 // @method
 // @param p:material:FG3dMaterial 渲染材质
 //==========================================================
-function FDsResourcePreviewContent_selectMaterial(p){
+function FDsResourcePropertyContent_selectMaterial(p){
    var o = this;
    // 取消选中
    o.selectNone();
@@ -516,7 +517,7 @@ function FDsResourcePreviewContent_selectMaterial(p){
 // @method
 // @param p:renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FDsResourcePreviewContent_selectRenderable(p){
+function FDsResourcePropertyContent_selectRenderable(p){
    var o = this;
    return;
    var sr = p;
@@ -623,7 +624,7 @@ function FDsResourcePreviewContent_selectRenderable(p){
 // @method
 // @param p:modeCd:Integer 
 //==========================================================
-function FDsResourcePreviewContent_switchMode(p){
+function FDsResourcePropertyContent_switchMode(p){
    var o = this;
    o._canvasModeCd = p;
    // 设置变量
@@ -636,7 +637,7 @@ function FDsResourcePreviewContent_switchMode(p){
 // @method
 // @param p:modeCd:Integer 
 //==========================================================
-function FDsResourcePreviewContent_switchRotation(p){
+function FDsResourcePropertyContent_switchRotation(p){
    this._optionRotation = p;
 }
 
@@ -646,7 +647,7 @@ function FDsResourcePreviewContent_switchRotation(p){
 // @method
 // @param region:FE3dRegion 区域
 //==========================================================
-function FDsResourcePreviewContent_reloadRegion(region){
+function FDsResourcePropertyContent_reloadRegion(region){
    var o = this;
    var resource = region.resource();
    o._cameraMoveRate = resource.moveSpeed();
@@ -659,7 +660,7 @@ function FDsResourcePreviewContent_reloadRegion(region){
 //
 // @method
 //==========================================================
-function FDsResourcePreviewContent_loadMeshByGuid(p){
+function FDsResourcePropertyContent_loadMeshByGuid(p){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
@@ -684,7 +685,7 @@ function FDsResourcePreviewContent_loadMeshByGuid(p){
 //
 // @method
 //==========================================================
-function FDsResourcePreviewContent_loadMeshByCode(p){
+function FDsResourcePropertyContent_loadMeshByCode(p){
    var o = this;
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
@@ -709,7 +710,7 @@ function FDsResourcePreviewContent_loadMeshByCode(p){
 //
 // @method
 //==========================================================
-function FDsResourcePreviewContent_dispose(){
+function FDsResourcePropertyContent_dispose(){
    var o = this;
    // 释放旋转
    o._rotation = RObject.dispose(o._rotation);
