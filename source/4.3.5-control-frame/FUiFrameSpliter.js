@@ -265,16 +265,18 @@ function FUiFrameSpliter_alignCd(){
 // <T>设置对齐类型。</T>
 //
 // @method
-// @param p:alignCd:EUiAlign 对齐类型
+// @param alignCd:EUiAlign 对齐类型
 //==========================================================
-function FUiFrameSpliter_setAlignCd(p){
+function FUiFrameSpliter_setAlignCd(alignCd){
    var o = this;
-   o._alignCd = p;
-   if(p == EUiAlign.Left){
+   if(alignCd == EUiAlign.Left){
       o._hIcon.src = RResource.iconPath('control.FSpliter_Left');
-   }else if(p == EUiAlign.Right){
+   }else if(alignCd == EUiAlign.Right){
       o._hIcon.src = RResource.iconPath('control.FSpliter_Right');
+   }else{
+      throw new TError(o, 'Align type is invalid.');
    }
+   o._alignCd = alignCd;
 }
 
 //==========================================================
@@ -322,7 +324,7 @@ function FUiFrameSpliter_changeVisible(){
    }else{
       RHtml.visibleSet(hs, true);
       if(o._alignCd == EUiAlign.Left){
-         c = EUiAlign.Right;
+         c = EUiAlign.Left;
       }else if(o._alignCd == EUiAlign.Right){
          c = EUiAlign.Right;
       }

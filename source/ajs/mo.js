@@ -45910,14 +45910,16 @@ function FUiFrameSpliter_construct(){
 function FUiFrameSpliter_alignCd(){
    return this._alignCd;
 }
-function FUiFrameSpliter_setAlignCd(p){
+function FUiFrameSpliter_setAlignCd(alignCd){
    var o = this;
-   o._alignCd = p;
-   if(p == EUiAlign.Left){
+   if(alignCd == EUiAlign.Left){
       o._hIcon.src = RResource.iconPath('control.FSpliter_Left');
-   }else if(p == EUiAlign.Right){
+   }else if(alignCd == EUiAlign.Right){
       o._hIcon.src = RResource.iconPath('control.FSpliter_Right');
+   }else{
+      throw new TError(o, 'Align type is invalid.');
    }
+   o._alignCd = alignCd;
 }
 function FUiFrameSpliter_sizeHtml(){
    return this._hSize;
@@ -45943,7 +45945,7 @@ function FUiFrameSpliter_changeVisible(){
    }else{
       RHtml.visibleSet(hs, true);
       if(o._alignCd == EUiAlign.Left){
-         c = EUiAlign.Right;
+         c = EUiAlign.Left;
       }else if(o._alignCd == EUiAlign.Right){
          c = EUiAlign.Right;
       }
@@ -54003,9 +54005,9 @@ function FDsResourceListContent_doClickItem(control){
    o._activeItem = control;
    o._activeGuid = control._guid;
 }
-function FDsResourceListContent_doDoubleClickItem(item){
+function FDsResourceListContent_doDoubleClickItem(control){
    var o = this;
-   o.__base.FUiListView.doDoubleClickItem.call(o, p)
+   o.__base.FUiListView.doDoubleClickItem.call(o, control)
    var guid = control._guid;
    o._activeItem = control;
    o._activeGuid = control._guid;

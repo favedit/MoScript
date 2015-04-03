@@ -542,9 +542,9 @@ function FDsResourceListContent_doClickItem(control){
    o._activeItem = control;
    o._activeGuid = control._guid;
 }
-function FDsResourceListContent_doDoubleClickItem(item){
+function FDsResourceListContent_doDoubleClickItem(control){
    var o = this;
-   o.__base.FUiListView.doDoubleClickItem.call(o, p)
+   o.__base.FUiListView.doDoubleClickItem.call(o, control)
    var guid = control._guid;
    o._activeItem = control;
    o._activeGuid = control._guid;

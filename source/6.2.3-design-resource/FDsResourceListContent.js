@@ -116,9 +116,9 @@ function FDsResourceListContent_doClickItem(control){
 // @method
 // @param control:FUiListViewItem 列表项目
 //==========================================================
-function FDsResourceListContent_doDoubleClickItem(item){
+function FDsResourceListContent_doDoubleClickItem(control){
    var o = this;
-   o.__base.FUiListView.doDoubleClickItem.call(o, p)
+   o.__base.FUiListView.doDoubleClickItem.call(o, control)
    // 设置属性
    var guid = control._guid;
    o._activeItem = control;
