@@ -6164,6 +6164,9 @@ function FDsMeshCanvas(o){
    o = RClass.inherits(this, o, FDsCanvas);
    o._activeGuid          = null;
    o._activeSpace         = null;
+   o._autoDistance        = null;
+   o._autoOutline         = null;
+   o._autoMatrix          = null;
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
    o._optionRotation      = false;
@@ -6203,7 +6206,9 @@ function FDsMeshCanvas(o){
    o.selectMaterial       = FDsMeshCanvas_selectMaterial;
    o.selectRenderable     = FDsMeshCanvas_selectRenderable;
    o.switchSize           = FDsMeshCanvas_switchSize;
+   o.switchDimensional    = FDsMeshCanvas_switchDimensional;
    o.switchRotation       = FDsMeshCanvas_switchRotation;
+   o.viewAutoSize         = FDsMeshCanvas_viewAutoSize;
    o.reloadRegion         = FDsMeshCanvas_reloadRegion;
    o.capture              = FDsMeshCanvas_capture;
    o.loadByGuid           = FDsMeshCanvas_loadByGuid;
@@ -6392,6 +6397,7 @@ function FDsMeshCanvas_onMeshLoad(p){
    lc.lookAt(0, 0, 0);
    lc.update();
    o.processLoadListener(o);
+   RWindow.enable();
 }
 function FDsMeshCanvas_oeResize(p){
    var o = this;
@@ -6413,6 +6419,9 @@ function FDsMeshCanvas_oeRefresh(p){
 function FDsMeshCanvas_construct(){
    var o = this;
    o.__base.FDsCanvas.construct.call(o);
+   o._autoDistance = new SPoint3(6, 6, 6);
+   o._autoOutline = new SOutline3d();
+   o._autoMatrix = new SMatrix3d();
    o._capturePosition = new SPoint2();
    o._captureMatrix = new SMatrix3d();
    o._templateMatrix = new SMatrix3d();
@@ -6600,8 +6609,72 @@ function FDsMeshCanvas_switchSize(width, height){
       projection.update();
    }
 }
+function FDsMeshCanvas_switchDimensional(visible, width, height){
+   var o = this;
+   o._dimensional.setVisible(visible);
+   var matrix = o._dimensional.matrix();
+   if(width > 0){
+      matrix.sx = width;
+   }
+   if(height > 0){
+      matrix.sz = height;
+   }
+   matrix.updateForce();
+}
 function FDsMeshCanvas_switchRotation(p){
    this._optionRotation = p;
+}
+function FDsMeshCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ){
+   var o = this;
+   var outline = o._autoOutline;
+   var space = o._activeSpace;
+   var display = space._display;
+   var displayResource = display.resource();
+   var displayMatrix = displayResource.matrix();
+   var renderable = display._renderable;
+   var renderableResource = renderable.resource();
+   var renderableMatrix = renderableResource.matrix();
+   if(rotationX){
+      displayMatrix.rx += RConst.PI_2;
+   }
+   if(rotationY){
+      displayMatrix.ry += RConst.PI_2;
+   }
+   if(rotationZ){
+      displayMatrix.rz += RConst.PI_2;
+   }
+   var matrix = o._autoMatrix.identity();
+   matrix.setRotation(displayMatrix.rx, displayMatrix.ry, displayMatrix.rz);
+   matrix.update();
+   var resource = space.resource();
+   var resourceOutline = resource.calculateOutline();
+   outline.calculateFrom(resourceOutline, matrix);
+   if(flipX){
+      displayMatrix.sx = -displayMatrix.sx;
+   }
+   if(flipY){
+      displayMatrix.sy = -displayMatrix.sy;
+   }
+   if(flipZ){
+      displayMatrix.sz = -displayMatrix.sz;
+   }
+   var autoDistance = o._autoDistance;
+   var scaleX = autoDistance.x / outline.distance.x;
+   var scaleY = autoDistance.y / outline.distance.y;
+   var scaleZ = autoDistance.z / outline.distance.z;
+   var scale = RMath.min(scaleX, scaleY, scaleZ);
+   scaleX = scale * RMath.sign(displayMatrix.sx)
+   scaleY = scale * RMath.sign(displayMatrix.sy)
+   scaleZ = scale * RMath.sign(displayMatrix.sz)
+   var x = -outline.center.x * scaleX;
+   var y = -outline.min.y * scaleY;
+   var z = -outline.center.z * scaleZ;
+   displayMatrix.setTranslate(x, y, z);
+   displayMatrix.setScale(scaleX, scaleY, scaleZ);
+   displayMatrix.update();
+   display.reloadResource();
+   renderableMatrix.identity();
+   renderable.reloadResource();
 }
 function FDsMeshCanvas_reloadRegion(region){
    var o = this;
@@ -6632,6 +6705,7 @@ function FDsMeshCanvas_capture(){
 }
 function FDsMeshCanvas_loadByGuid(guid){
    var o = this;
+   RWindow.disable();
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
       rmc.free(o._activeSpace);
@@ -6643,6 +6717,7 @@ function FDsMeshCanvas_loadByGuid(guid){
 }
 function FDsMeshCanvas_loadByCode(p){
    var o = this;
+   RWindow.disable();
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
       rmc.free(o._activeSpace);
@@ -6660,24 +6735,34 @@ x   // 父处理
 }
 function FDsMeshCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName       = 'design3d.mesh.CanvasToolBar';
-   o._canvasModeCd    = EDsCanvasMode.Drop;
-   o._dropButton      = null;
-   o._selectButton    = null;
-   o._translateButton = null;
-   o._rotationButton  = null;
-   o._scaleButton     = null;
-   o._lookFrontButton = null;
-   o._lookUpButton    = null;
-   o._lookLeftButton  = null;
-   o._playButton      = null;
-   o._viewButton      = null;
-   o.onBuilded        = FDsMeshCanvasToolBar_onBuilded;
-   o.onModeClick      = FDsMeshCanvasToolBar_onModeClick;
-   o.onSizeClick      = FDsMeshCanvasToolBar_onSizeClick;
-   o.onRotationClick  = FDsMeshCanvasToolBar_onRotationClick;
-   o.construct        = FDsMeshCanvasToolBar_construct;
-   o.dispose          = FDsMeshCanvasToolBar_dispose;
+   o._frameName                 = 'design3d.mesh.CanvasToolBar';
+   o._canvasModeCd              = EDsCanvasMode.Drop;
+   o._controlDrop               = null;
+   o._controlSize1              = null;
+   o._controlSize2              = null;
+   o._controlSize3              = null;
+   o._controlSize4              = null;
+   o._controlSizeWidth          = null;
+   o._controlSizeHeight         = null;
+   o._controlDimensionalVisible = null;
+   o._controlDimensionalWidth   = null;
+   o._controlDimensionalHeight  = null;
+   o._controlDimensionalAuto    = null;
+   o._controlDimensionalFlipX   = null;
+   o._controlDimensionalFlipY   = null;
+   o._controlDimensionalFlipZ   = null;
+   o._controlDimensionalX       = null;
+   o._controlDimensionalY       = null;
+   o._controlDimensionalZ       = null;
+   o._controlRotation           = null;
+   o.onBuilded                  = FDsMeshCanvasToolBar_onBuilded;
+   o.onModeClick                = FDsMeshCanvasToolBar_onModeClick;
+   o.onSizeClick                = FDsMeshCanvasToolBar_onSizeClick;
+   o.onDimensionalChange        = FDsMeshCanvasToolBar_onDimensionalChange;
+   o.onDimensionalAutoClick     = FDsMeshCanvasToolBar_onDimensionalAutoClick;
+   o.onRotationClick            = FDsMeshCanvasToolBar_onRotationClick;
+   o.construct                  = FDsMeshCanvasToolBar_construct;
+   o.dispose                    = FDsMeshCanvasToolBar_dispose;
    return o;
 }
 function FDsMeshCanvasToolBar_onBuilded(p){
@@ -6687,13 +6772,26 @@ function FDsMeshCanvasToolBar_onBuilded(p){
    control._canvasModeCd = EDsCanvasMode.Drop;
    control.addClickListener(o, o.onModeClick);
    control.check(true);
-   o._controlView.addClickListener(o, o.onRotationClick);
    o._controlSize1.addClickListener(o, o.onSizeClick);
    o._controlSize2.addClickListener(o, o.onSizeClick);
    o._controlSize3.addClickListener(o, o.onSizeClick);
    o._controlSize4.addClickListener(o, o.onSizeClick);
    o._controlSizeWidth.setText('*');
    o._controlSizeHeight.setText('*');
+   o._controlDimensionalVisible.addClickListener(o, o.onDimensionalChange);
+   o._controlDimensionalVisible.check(true);
+   o._controlDimensionalWidth.addDataChangedListener(o, o.onDimensionalChange);
+   o._controlDimensionalWidth.setText(1);
+   o._controlDimensionalHeight.addDataChangedListener(o, o.onDimensionalChange);
+   o._controlDimensionalHeight.setText(1);
+   o._controlDimensionalAuto.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalFlipX.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalFlipY.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalFlipZ.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalX.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalY.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalZ.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlRotation.addClickListener(o, o.onRotationClick);
 }
 function FDsMeshCanvasToolBar_onModeClick(p){
    var o = this;
@@ -6714,7 +6812,55 @@ function FDsMeshCanvasToolBar_onSizeClick(event){
    o._controlSizeHeight.setText(height);
    o._frameSet._canvas.switchSize(width, height);
 }
-function FDsMeshCanvasToolBar_onRotationClick(p, v){
+function FDsMeshCanvasToolBar_onDimensionalChange(event){
+   var o = this;
+   var canvas = o._frameSet._canvas;
+   var visible = o._controlDimensionalVisible.isCheck();
+   var width = RInteger.parse(o._controlDimensionalWidth.text());
+   var height = RInteger.parse(o._controlDimensionalHeight.text());
+   canvas.switchDimensional(visible, width, height);
+}
+function FDsMeshCanvasToolBar_onDimensionalAutoClick(event){
+   var o = this;
+   var sender = event.sender;
+   var name = sender.name();
+   var flipX = false;
+   var flipY = false;
+   var flipZ = false;
+   var rotationX = false;
+   var rotationY = false;
+   var rotationZ = false;
+   switch(name){
+      case 'dimensionalAuto':
+         break;
+      case 'dimensionalFlipX':
+         flipX = true;
+         break;
+      case 'dimensionalFlipY':
+         flipY = true;
+         break;
+      case 'dimensionalFlipZ':
+         flipZ = true;
+         break;
+      case 'dimensionalX':
+         rotationX = true;
+         break;
+      case 'dimensionalY':
+         rotationY = true;
+         break;
+      case 'dimensionalZ':
+         rotationZ = true;
+         break;
+      default:
+         throw new TError(o, 'Unknown command.');
+   }
+   o._frameSet._canvas.viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ);
+}
+function FDsMeshCanvasToolBar_onRotationClick(event, v){
+   var o = this;
+   var button = event.sender;
+   var canvas = o._frameSet._canvas;
+   canvas.switchRotation(button.isCheck());
 }
 function FDsMeshCanvasToolBar_construct(){
    var o = this;

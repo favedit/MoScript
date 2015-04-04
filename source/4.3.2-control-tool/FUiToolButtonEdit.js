@@ -6,25 +6,26 @@
 // @history 150326
 //==========================================================
 function FUiToolButtonEdit(o){
-   o = RClass.inherits(this, o, FUiToolButton);
+   o = RClass.inherits(this, o, FUiToolButton, MListenerDataChanged);
    //..........................................................
    // @property
-   o._editSize     = RClass.register(o, new APtySize2('_editSize'));
+   o._editSize      = RClass.register(o, new APtySize2('_editSize'));
    //..........................................................
    // @html
-   o._hEdit        = null;
+   o._hEdit         = null;
    //..........................................................
    // @event
-   o.onBuildButton = FUiToolButtonEdit_onBuildButton;
-   o.onEnter       = RMethod.empty;
-   o.onLeave       = RMethod.empty;
-   o.onKeyDown     = RClass.register(o, new AEventKeyDown('onKeyDown'), FUiToolButtonEdit_onKeyDown);
+   o.onBuildButton  = FUiToolButtonEdit_onBuildButton;
+   o.onEnter        = RMethod.empty;
+   o.onLeave        = RMethod.empty;
+   o.onInputEdit    = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiToolButtonEdit_onInputEdit);
+   o.onInputKeyDown = RClass.register(o, new AEventKeyDown('onInputKeyDown'), FUiToolButtonEdit_onInputKeyDown);
    //..........................................................
    // @method
-   o.construct     = FUiToolButtonEdit_construct;
+   o.construct      = FUiToolButtonEdit_construct;
    // @method
-   o.text          = FUiToolButtonEdit_text;
-   o.setText       = FUiToolButtonEdit_setText;
+   o.text           = FUiToolButtonEdit_text;
+   o.setText        = FUiToolButtonEdit_setText;
    return o;
 }
 
@@ -45,7 +46,8 @@ function FUiToolButtonEdit_onBuildButton(p){
    var hEditPanel = o._hEditPanel = RBuilder.appendTableCell(hLine);
    var hEdit = o._hEdit = RBuilder.appendEdit(hEditPanel);
    hEdit.style.width = o._editSize.width +  'px';
-   o.attachEvent('onKeyDown', hEdit);
+   o.attachEvent('onInputEdit', hEdit, o.onInputEdit);
+   o.attachEvent('onInputKeyDown', hEdit);
    o._hEditSpacePanel = RBuilder.appendTableCell(hLine, o.styleName('SpacePanel'));
    // 建立图标
    if(o._icon){
@@ -75,12 +77,24 @@ function FUiToolButtonEdit_onBuildButton(p){
 }
 
 //==========================================================
-// <T>按键落下处理。</T>
+// <T>输入框修改处理。</T>
 //
 // @method
 // @param event:SEvent 事件
 //==========================================================
-function FUiToolButtonEdit_onKeyDown(event){
+function FUiToolButtonEdit_onInputEdit(event){
+   var o = this;
+   // 内容改变通知
+   o.processDataChangedListener(o);
+}
+
+//==========================================================
+// <T>输入框按键按下处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FUiToolButtonEdit_onInputKeyDown(event){
    var o = this;
    if(event.keyCode == EKeyCode.Enter){
       o.click();

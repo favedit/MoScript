@@ -28,6 +28,7 @@ function FUiToolButtonCheck(o){
    o.groupDefault    = FUiToolButtonCheck_groupDefault;
    o.setGroupDefault = FUiToolButtonCheck_setGroupDefault;
    o.innerCheck      = FUiToolButtonCheck_innerCheck;
+   o.isCheck         = FUiToolButtonCheck_isCheck;
    o.check           = FUiToolButtonCheck_check;
    o.dispose         = FUiToolButtonCheck_dispose;
    return o;
@@ -146,6 +147,16 @@ function FUiToolButtonCheck_innerCheck(p){
          o._hForm.className = o.styleName('Normal');
       }
    }
+}
+
+//==========================================================
+// <T>获得选中状态。</T>
+//
+// @method
+// @return Boolean 选中状态
+//==========================================================
+function FUiToolButtonCheck_isCheck(){
+   return this._statusChecked;
 }
 
 //==========================================================

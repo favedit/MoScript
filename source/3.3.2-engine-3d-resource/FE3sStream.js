@@ -16,14 +16,18 @@ function FE3sStream(o){
    o._dataCount        = 0;
    o._dataLength       = 0;
    o._data             = null;
-
-   o._formatCd      = EG3dAttributeFormat.Unknown;
+   o._formatCd         = EG3dAttributeFormat.Unknown;
    //..........................................................
    // @method
-   o.name              = FE3sStream_name;
+   o.code              = FE3sStream_code;
    o.elementDataCd     = FE3sStream_elementDataCd;
    o.formatCd          = FE3sStream_formatCd;
+   o.dataStride        = FE3sStream_dataStride;
+   o.dataCount         = FE3sStream_dataCount;
+   o.data              = FE3sStream_data;
+   // @method
    o.unserialize       = FE3sStream_unserialize;
+   // @method
    o.dispose           = FE3sStream_dispose;
    return o;
 }
@@ -33,8 +37,8 @@ function FE3sStream(o){
 //
 // @return String 名称
 //==========================================================
-function FE3sStream_name(){
-   return this._name;
+function FE3sStream_code(){
+   return this._code;
 }
 
 //==========================================================
@@ -56,6 +60,33 @@ function FE3sStream_formatCd(){
 }
 
 //==========================================================
+// <T>获得数据宽度。</T>
+//
+// @return Integer 宽度
+//==========================================================
+function FE3sStream_dataStride(){
+   return this._dataStride;
+}
+
+//==========================================================
+// <T>获得数据个数。</T>
+//
+// @return Integer 个数
+//==========================================================
+function FE3sStream_dataCount(){
+   return this._dataCount;
+}
+
+//==========================================================
+// <T>获得数据。</T>
+//
+// @return ArrayBuffer 数据
+//==========================================================
+function FE3sStream_data(){
+   return this._data;
+}
+
+//==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
 // @param p:input:FByteStream 数据流
@@ -68,12 +99,12 @@ function FE3sStream_unserialize(p){
    o._elementDataCd = p.readUint8();
    o._elementCount = p.readUint8();
    o._elementNormalize = p.readBoolean();
-   var ds = o._dataStride = p.readUint8();
-   var dc = o._dataCount = p.readInt32();
-   var dl = o._dataLength = ds * dc;
+   var dataStride = o._dataStride = p.readUint8();
+   var dataCount = o._dataCount = p.readInt32();
+   var dataLength = o._dataLength = dataStride * dataCount;
    // 读取所有数据
-   var d = o._data = new ArrayBuffer(dl);
-   p.readBytes(d, 0, dl);
+   var data = o._data = new ArrayBuffer(dataLength);
+   p.readBytes(data, 0, dataLength);
 }
 
 //==========================================================

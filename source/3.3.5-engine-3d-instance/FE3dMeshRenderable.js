@@ -22,6 +22,7 @@ function FE3dMeshRenderable(o){
    o.textures         = FE3dMeshRenderable_textures;
    o.bones            = FE3dMeshRenderable_bones;
    // @method
+   o.reloadResource   = FE3dMeshRenderable_reloadResource;
    o.process          = FE3dMeshRenderable_process;
    o.processDelay     = FE3dMeshRenderable_processDelay;
    o.update           = FE3dMeshRenderable_update;
@@ -89,6 +90,16 @@ function FE3dMeshRenderable_textures(){
 //==========================================================
 function FE3dMeshRenderable_bones(p){
    return this._bones;
+}
+
+//==========================================================
+// <T>重新加载资源。</T>
+//
+// @method
+//==========================================================
+function FE3dMeshRenderable_reloadResource(){
+   var o = this;
+   o._matrix.assign(o._resource.matrix());
 }
 
 //==========================================================

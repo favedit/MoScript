@@ -10,6 +10,9 @@ function FDsMeshCanvas(o){
    // @attribute
    o._activeGuid          = null;
    o._activeSpace         = null;
+   o._autoDistance        = null;
+   o._autoOutline         = null;
+   o._autoMatrix          = null;
    // @attribute
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
@@ -59,7 +62,9 @@ function FDsMeshCanvas(o){
    o.selectMaterial       = FDsMeshCanvas_selectMaterial;
    o.selectRenderable     = FDsMeshCanvas_selectRenderable;
    o.switchSize           = FDsMeshCanvas_switchSize;
+   o.switchDimensional    = FDsMeshCanvas_switchDimensional;
    o.switchRotation       = FDsMeshCanvas_switchRotation;
+   o.viewAutoSize         = FDsMeshCanvas_viewAutoSize;
    o.reloadRegion         = FDsMeshCanvas_reloadRegion;
    o.capture              = FDsMeshCanvas_capture;
    o.loadByGuid           = FDsMeshCanvas_loadByGuid;
@@ -358,15 +363,10 @@ function FDsMeshCanvas_onMeshLoad(p){
    lc.setPosition(10, 10, 0);
    lc.lookAt(0, 0, 0);
    lc.update();
-
-
-   //var rm = m.renderables().getAt(0).matrix();
-   //rm.tz = -300;
-   //rm.updateForce();
-   //var mi = m.renderables().get(0).material().info();
-   //mi.ambientColor.set(1.0, 1.0, 1.0);
    // 加载完成
    o.processLoadListener(o);
+   // 窗口允许
+   RWindow.enable();
 }
 
 //==========================================================
@@ -409,6 +409,9 @@ function FDsMeshCanvas_oeRefresh(p){
 function FDsMeshCanvas_construct(){
    var o = this;
    o.__base.FDsCanvas.construct.call(o);
+   o._autoDistance = new SPoint3(6, 6, 6);
+   o._autoOutline = new SOutline3d();
+   o._autoMatrix = new SMatrix3d();
    o._capturePosition = new SPoint2();
    o._captureMatrix = new SMatrix3d();
    o._templateMatrix = new SMatrix3d();
@@ -672,6 +675,25 @@ function FDsMeshCanvas_switchSize(width, height){
 }
 
 //==========================================================
+// <T>切换坐标系模式。</T>
+//
+// @method
+// @param p:modeCd:Integer 
+//==========================================================
+function FDsMeshCanvas_switchDimensional(visible, width, height){
+   var o = this;
+   o._dimensional.setVisible(visible);
+   var matrix = o._dimensional.matrix();
+   if(width > 0){
+      matrix.sx = width;
+   }
+   if(height > 0){
+      matrix.sz = height;
+   }
+   matrix.updateForce();
+}
+
+//==========================================================
 // <T>切换播放模式。</T>
 //
 // @method
@@ -679,6 +701,76 @@ function FDsMeshCanvas_switchSize(width, height){
 //==========================================================
 function FDsMeshCanvas_switchRotation(p){
    this._optionRotation = p;
+}
+
+//==========================================================
+// <T>自动优化大小。</T>
+//
+// @method
+//==========================================================
+function FDsMeshCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ){
+   var o = this;
+   var outline = o._autoOutline;
+   // 获得矩阵
+   var space = o._activeSpace;
+   var display = space._display;
+   var displayResource = display.resource();
+   var displayMatrix = displayResource.matrix();
+   var renderable = display._renderable;
+   var renderableResource = renderable.resource();
+   var renderableMatrix = renderableResource.matrix();
+   // 计算旋转
+   if(rotationX){
+      displayMatrix.rx += RConst.PI_2;
+   }
+   if(rotationY){
+      displayMatrix.ry += RConst.PI_2;
+   }
+   if(rotationZ){
+      displayMatrix.rz += RConst.PI_2;
+   }
+   var matrix = o._autoMatrix.identity();
+   matrix.setRotation(displayMatrix.rx, displayMatrix.ry, displayMatrix.rz);
+   matrix.update();
+   // 计算轮廓
+   var resource = space.resource();
+   var resourceOutline = resource.calculateOutline();
+   outline.calculateFrom(resourceOutline, matrix);
+   // 计算缩放比率
+   if(flipX){
+      displayMatrix.sx = -displayMatrix.sx;
+   }
+   if(flipY){
+      displayMatrix.sy = -displayMatrix.sy;
+   }
+   if(flipZ){
+      displayMatrix.sz = -displayMatrix.sz;
+   }
+   var autoDistance = o._autoDistance;
+   var scaleX = autoDistance.x / outline.distance.x;
+   var scaleY = autoDistance.y / outline.distance.y;
+   var scaleZ = autoDistance.z / outline.distance.z;
+   var scale = RMath.min(scaleX, scaleY, scaleZ);
+   scaleX = scale * RMath.sign(displayMatrix.sx)
+   scaleY = scale * RMath.sign(displayMatrix.sy)
+   scaleZ = scale * RMath.sign(displayMatrix.sz)
+   // 计算坐标
+   var x = -outline.center.x * scaleX;
+   var y = -outline.min.y * scaleY;
+   var z = -outline.center.z * scaleZ;
+   // 设置显示矩阵
+   displayMatrix.setTranslate(x, y, z);
+   displayMatrix.setScale(scaleX, scaleY, scaleZ);
+   displayMatrix.update();
+   display.reloadResource();
+   // 计算位置
+   //matrix.identity();
+   //matrix.addTranslate(-renderableMatrix.tx, -renderableMatrix.ty, -renderableMatrix.tz);
+   //matrix.addScale(scaleX, scaleY, scaleZ);
+   //renderableMatrix.setTranslate(x, y, z);
+   renderableMatrix.identity();
+   renderable.reloadResource();
+   //renderableMatrix.update();
 }
 
 //==========================================================
@@ -732,6 +824,7 @@ function FDsMeshCanvas_capture(){
 //==========================================================
 function FDsMeshCanvas_loadByGuid(guid){
    var o = this;
+   RWindow.disable();
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
       rmc.free(o._activeSpace);
@@ -752,6 +845,7 @@ function FDsMeshCanvas_loadByGuid(guid){
 //==========================================================
 function FDsMeshCanvas_loadByCode(p){
    var o = this;
+   RWindow.disable();
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
       rmc.free(o._activeSpace);

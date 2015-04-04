@@ -4948,7 +4948,7 @@ function FUiWorkspaceConsole_dispose(){
    var o = this;
    o.__base.FConsole.dispose.call(o);
 }
-var ESplitStyle = new function ESplitStyle(){
+var EUiSplitStyle = new function EUiSplitStyle(){
    var o = this;
    o.Normal     = 'N';
    o.BulgeLine  = 'B';
@@ -5401,55 +5401,6 @@ function SUiSlide_changeSlide(p){
    var v = (p / w) * o.range + o.minValue;
    v = RFloat.toRange(v, o.minValue, o.maxValue);
    o.onSlideChange.call(c, v);
-}
-function FListItem(o){
-   o = RClass.inherits(this, o, FControl, MDesign, MUiHorizontal);
-   o.styleForm    = RClass.register(o, new TStyle('Form'));
-   o.styleIcon    = RClass.register(o, new TStyle('Icon'));
-   o.styleLabel   = RClass.register(o, new TStyle('Label'));
-   o.oeBuild      = FListItem_oeBuild;
-   o.onBuildPanel = FListItem_onBuildPanel;
-   o.formatValue  = FListItem_formatValue;
-   o.text         = FListItem_text;
-   o.setText      = FListItem_setText;
-   o.dispose      = FListItem_dispose;
-   return o;
-}
-function FListItem_oeBuild(e){
-   var o = this;
-   o.base.FControl.oeBuild.call(o, e);
-   if(e.isBefore()){
-      var hf = o.hForm = RBuilder.appendTable(o.hPanel, o.style('Form'));
-      var hRow = hf.insertRow();
-      var hc = hRow.insertCell();
-      hc.className = o.style('Icon');
-      hc.width = 20;
-      o.hIcon = RBuilder.appendIcon(hc, 'arrow');
-      var hc = hRow.insertCell();
-      var h = o.hLabel = RBuilder.append(hc, 'SPAN', o.style('Label'));
-      h.innerText = o.label;
-   }
-}
-function FListItem_onBuildPanel(){
-   this.hPanel = RBuilder.create(null, 'DIV');
-}
-function FListItem_formatValue(s){
-   return RString.nvl(s);
-}
-function FListItem_text(){
-   return this.hEdit.value;
-}
-function FListItem_setText(text){
-   this.hEdit.value = text;
-}
-function FListItem_dispose(){
-   var o = this;
-   o.base.FControl.dispose.call(o);
-   o.hForm = null;
-   o.hIcon = null;
-   o.hLabel = null;
-   o.hPanel = null;
-   o.hEdit = null;
 }
 function FUiButton(o){
    o = RClass.inherits(this, o, FUiControl, MListenerClick);
@@ -14293,7 +14244,7 @@ function FUiMenuButtonSplit(o){
    o.onBuild     = FUiMenuButtonSplit_onBuild;
    return o;
 }
-function FUiToolButtonSplit_onBuild(p){
+function FUiMenuButtonSplit_onBuild(p){
    var o = this;
    o.__base.FUiControl.onBuild.call(o, p);
    o._hPanel.className = o.styleName('Panel');
@@ -14644,6 +14595,7 @@ function FUiToolButtonCheck(o){
    o.groupDefault    = FUiToolButtonCheck_groupDefault;
    o.setGroupDefault = FUiToolButtonCheck_setGroupDefault;
    o.innerCheck      = FUiToolButtonCheck_innerCheck;
+   o.isCheck         = FUiToolButtonCheck_isCheck;
    o.check           = FUiToolButtonCheck_check;
    o.dispose         = FUiToolButtonCheck_dispose;
    return o;
@@ -14694,6 +14646,9 @@ function FUiToolButtonCheck_innerCheck(p){
       }
    }
 }
+function FUiToolButtonCheck_isCheck(){
+   return this._statusChecked;
+}
 function FUiToolButtonCheck_check(p){
    var o = this;
    if(!p){
@@ -14732,16 +14687,17 @@ function FUiToolButtonCheck_dispose(){
    o.__base.FUiToolButton.dispose.call(o);
 }
 function FUiToolButtonEdit(o){
-   o = RClass.inherits(this, o, FUiToolButton);
-   o._editSize     = RClass.register(o, new APtySize2('_editSize'));
-   o._hEdit        = null;
-   o.onBuildButton = FUiToolButtonEdit_onBuildButton;
-   o.onEnter       = RMethod.empty;
-   o.onLeave       = RMethod.empty;
-   o.onKeyDown     = RClass.register(o, new AEventKeyDown('onKeyDown'), FUiToolButtonEdit_onKeyDown);
-   o.construct     = FUiToolButtonEdit_construct;
-   o.text          = FUiToolButtonEdit_text;
-   o.setText       = FUiToolButtonEdit_setText;
+   o = RClass.inherits(this, o, FUiToolButton, MListenerDataChanged);
+   o._editSize      = RClass.register(o, new APtySize2('_editSize'));
+   o._hEdit         = null;
+   o.onBuildButton  = FUiToolButtonEdit_onBuildButton;
+   o.onEnter        = RMethod.empty;
+   o.onLeave        = RMethod.empty;
+   o.onInputEdit    = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiToolButtonEdit_onInputEdit);
+   o.onInputKeyDown = RClass.register(o, new AEventKeyDown('onInputKeyDown'), FUiToolButtonEdit_onInputKeyDown);
+   o.construct      = FUiToolButtonEdit_construct;
+   o.text           = FUiToolButtonEdit_text;
+   o.setText        = FUiToolButtonEdit_setText;
    return o;
 }
 function FUiToolButtonEdit_onBuildButton(p){
@@ -14752,7 +14708,8 @@ function FUiToolButtonEdit_onBuildButton(p){
    var hEditPanel = o._hEditPanel = RBuilder.appendTableCell(hLine);
    var hEdit = o._hEdit = RBuilder.appendEdit(hEditPanel);
    hEdit.style.width = o._editSize.width +  'px';
-   o.attachEvent('onKeyDown', hEdit);
+   o.attachEvent('onInputEdit', hEdit, o.onInputEdit);
+   o.attachEvent('onInputKeyDown', hEdit);
    o._hEditSpacePanel = RBuilder.appendTableCell(hLine, o.styleName('SpacePanel'));
    if(o._icon){
       var hc = o._hIconPanel = RBuilder.appendTableCell(hLine, o.styleName('IconPanel'));
@@ -14775,7 +14732,11 @@ function FUiToolButtonEdit_onBuildButton(p){
       o.setHint(o._hint);
    }
 }
-function FUiToolButtonEdit_onKeyDown(event){
+function FUiToolButtonEdit_onInputEdit(event){
+   var o = this;
+   o.processDataChangedListener(o);
+}
+function FUiToolButtonEdit_onInputKeyDown(event){
    var o = this;
    if(event.keyCode == EKeyCode.Enter){
       o.click();

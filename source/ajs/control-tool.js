@@ -251,6 +251,7 @@ function FUiToolButtonCheck(o){
    o.groupDefault    = FUiToolButtonCheck_groupDefault;
    o.setGroupDefault = FUiToolButtonCheck_setGroupDefault;
    o.innerCheck      = FUiToolButtonCheck_innerCheck;
+   o.isCheck         = FUiToolButtonCheck_isCheck;
    o.check           = FUiToolButtonCheck_check;
    o.dispose         = FUiToolButtonCheck_dispose;
    return o;
@@ -301,6 +302,9 @@ function FUiToolButtonCheck_innerCheck(p){
       }
    }
 }
+function FUiToolButtonCheck_isCheck(){
+   return this._statusChecked;
+}
 function FUiToolButtonCheck_check(p){
    var o = this;
    if(!p){
@@ -339,16 +343,17 @@ function FUiToolButtonCheck_dispose(){
    o.__base.FUiToolButton.dispose.call(o);
 }
 function FUiToolButtonEdit(o){
-   o = RClass.inherits(this, o, FUiToolButton);
-   o._editSize     = RClass.register(o, new APtySize2('_editSize'));
-   o._hEdit        = null;
-   o.onBuildButton = FUiToolButtonEdit_onBuildButton;
-   o.onEnter       = RMethod.empty;
-   o.onLeave       = RMethod.empty;
-   o.onKeyDown     = RClass.register(o, new AEventKeyDown('onKeyDown'), FUiToolButtonEdit_onKeyDown);
-   o.construct     = FUiToolButtonEdit_construct;
-   o.text          = FUiToolButtonEdit_text;
-   o.setText       = FUiToolButtonEdit_setText;
+   o = RClass.inherits(this, o, FUiToolButton, MListenerDataChanged);
+   o._editSize      = RClass.register(o, new APtySize2('_editSize'));
+   o._hEdit         = null;
+   o.onBuildButton  = FUiToolButtonEdit_onBuildButton;
+   o.onEnter        = RMethod.empty;
+   o.onLeave        = RMethod.empty;
+   o.onInputEdit    = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiToolButtonEdit_onInputEdit);
+   o.onInputKeyDown = RClass.register(o, new AEventKeyDown('onInputKeyDown'), FUiToolButtonEdit_onInputKeyDown);
+   o.construct      = FUiToolButtonEdit_construct;
+   o.text           = FUiToolButtonEdit_text;
+   o.setText        = FUiToolButtonEdit_setText;
    return o;
 }
 function FUiToolButtonEdit_onBuildButton(p){
@@ -359,7 +364,8 @@ function FUiToolButtonEdit_onBuildButton(p){
    var hEditPanel = o._hEditPanel = RBuilder.appendTableCell(hLine);
    var hEdit = o._hEdit = RBuilder.appendEdit(hEditPanel);
    hEdit.style.width = o._editSize.width +  'px';
-   o.attachEvent('onKeyDown', hEdit);
+   o.attachEvent('onInputEdit', hEdit, o.onInputEdit);
+   o.attachEvent('onInputKeyDown', hEdit);
    o._hEditSpacePanel = RBuilder.appendTableCell(hLine, o.styleName('SpacePanel'));
    if(o._icon){
       var hc = o._hIconPanel = RBuilder.appendTableCell(hLine, o.styleName('IconPanel'));
@@ -382,7 +388,11 @@ function FUiToolButtonEdit_onBuildButton(p){
       o.setHint(o._hint);
    }
 }
-function FUiToolButtonEdit_onKeyDown(event){
+function FUiToolButtonEdit_onInputEdit(event){
+   var o = this;
+   o.processDataChangedListener(o);
+}
+function FUiToolButtonEdit_onInputKeyDown(event){
    var o = this;
    if(event.keyCode == EKeyCode.Enter){
       o.click();

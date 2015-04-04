@@ -22,7 +22,7 @@ function FUiMenuButtonSplit(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FUiToolButtonSplit_onBuild(p){
+function FUiMenuButtonSplit_onBuild(p){
    var o = this;
    o.__base.FUiControl.onBuild.call(o, p);
    o._hPanel.className = o.styleName('Panel');

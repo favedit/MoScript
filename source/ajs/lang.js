@@ -2470,6 +2470,7 @@ function RConsole_release(){
 }
 var RConst = new function RConst(){
    var o = this;
+   o.PI_2         = Math.PI / 2;
    o.PI           = Math.PI;
    o.PI2          = Math.PI * 2;
    o.RADIAN_RATE  = 180 / Math.PI;

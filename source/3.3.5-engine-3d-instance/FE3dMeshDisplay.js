@@ -8,12 +8,13 @@ function FE3dMeshDisplay(o){
    o = RClass.inherits(this, o, FE3dDisplay, MLinkerResource);
    //..........................................................
    // @attribute
-   o._material   = null;
-   o._renderable = null;
+   o._material      = null;
+   o._renderable    = null;
    //..........................................................
    // @method
-   o.renderable  = FE3dMeshDisplay_renderable;
-   o.load        = FE3dMeshDisplay_load;
+   o.renderable     = FE3dMeshDisplay_renderable;
+   o.load           = FE3dMeshDisplay_load;
+   o.reloadResource = FE3dMeshDisplay_reloadResource;
    return o;
 }
 
@@ -28,12 +29,23 @@ function FE3dMeshDisplay_renderable(){
 }
 
 //==========================================================
-// <T>加载渲染对象。</T>
+// <T>加载资源。</T>
 //
-// @param p:renderable:FE3dMesh 渲染对象
+// @method
+// @param resource:FE3sMeshDisplay 网格显示资源
 //==========================================================
 function FE3dMeshDisplay_load(resource){
    var o = this;
    o._resource = resource;
    o._matrix.assign(resource.matrix());
+}
+
+//==========================================================
+// <T>重新加载资源。</T>
+//
+// @method
+//==========================================================
+function FE3dMeshDisplay_reloadResource(){
+   var o = this;
+   o._matrix.assign(o._resource.matrix());
 }

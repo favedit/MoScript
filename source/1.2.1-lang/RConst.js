@@ -9,6 +9,7 @@ var RConst = new function RConst(){
    var o = this;
    //..........................................................
    // @const
+   o.PI_2         = Math.PI / 2;
    o.PI           = Math.PI;
    o.PI2          = Math.PI * 2;
    // @const

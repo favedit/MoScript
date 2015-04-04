@@ -1613,6 +1613,64 @@ function RE3dEngine_setup(){
       o._setuped = true;
    }
 }
+function ME3sGeometry(o){
+   o = RClass.inherits(this, o);
+   o._outline         = null;
+   o._streams         = null;
+   o.construct        = ME3sGeometry_construct;
+   o.outline          = ME3sGeometry_outline;
+   o.findStream       = ME3sGeometry_findStream;
+   o.streams          = ME3sGeometry_streams;
+   o.calculateOutline = ME3sGeometry_calculateOutline;
+   o.dispose          = ME3sGeometry_dispose;
+   return o;
+}
+function ME3sGeometry_construct(){
+   var o = this;
+   o._outline = new SOutline3d();
+}
+function ME3sGeometry_outline(){
+   return this._outline;
+}
+function ME3sGeometry_findStream(code){
+   var o = this;
+   var streams = o._streams;
+   var count = streams.count();
+   for(n = 0; n < count; n++){
+      var stream = streams.getAt(n);
+      if(stream.code() == code){
+         return stream;
+      }
+   }
+   return null;
+}
+function ME3sGeometry_streams(){
+   return this._streams;
+}
+function ME3sGeometry_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      outline.setMin();
+      var stream = o.findStream('position');
+      var dataCount = stream.dataCount();
+      var data = new Float32Array(stream.data())
+      var index = 0;
+      for(var i = 0; i < dataCount; i++){
+         var x = data[index++];
+         var y = data[index++];
+         var z = data[index++];
+         outline.mergePoint(x, y, z);
+      }
+      outline.update();
+   }
+   return outline;
+}
+function ME3sGeometry_dispose(){
+   var o = this;
+   o._outline = RObject.dispose(o._outline);
+   o.__base.FE3sSpace.dispose.call(o);
+}
 function SE3sCompressEvent(w, f, d){
    var o = this;
    o.owner   = w;
@@ -2259,18 +2317,12 @@ function FE3sMaterialTexture_unserialize(p){
    o._bitmapGuid = p.readString();
 }
 function FE3sMesh(o){
-   o = RClass.inherits(this, o, FE3sSpace);
+   o = RClass.inherits(this, o, FE3sSpace, ME3sGeometry);
    o._dataCompress = true;
    o._typeName     = 'Mesh';
-   o._outline      = null;
-   o._streams      = null;
-   o._tracks       = null;
    o._display      = null;
    o._renderable   = null;
    o.construct     = FE3sMesh_construct;
-   o.outline       = FE3sMesh_outline;
-   o.streams       = FE3sMesh_streams;
-   o.tracks        = FE3sMesh_tracks;
    o.unserialize   = FE3sMesh_unserialize;
    o.saveConfig    = FE3sMesh_saveConfig;
    o.dispose       = FE3sMesh_dispose;
@@ -2279,17 +2331,8 @@ function FE3sMesh(o){
 function FE3sMesh_construct(){
    var o = this;
    o.__base.FE3sSpace.construct.call(o);
-   o._outline = new SOutline3d();
+   o.__base.ME3sGeometry.construct.call(o);
    o._display = RClass.create(FE3sMeshDisplay);
-}
-function FE3sMesh_outline(){
-   return this._outline;
-}
-function FE3sMesh_streams(){
-   return this._streams;
-}
-function FE3sMesh_tracks(){
-   return this._tracks;
 }
 function FE3sMesh_unserialize(input){
    var o = this;
@@ -2317,6 +2360,7 @@ function FE3sMesh_dispose(){
    var o = this;
    o._outline = RObject.dispose(o._outline);
    o._display = RObject.dispose(o._display);
+   o.__base.ME3sGeometry.dispose.call(o);
    o.__base.FE3sSpace.dispose.call(o);
 }
 function FE3sMeshConsole(o){
@@ -2601,46 +2645,37 @@ function FE3sModelConsole_dispose(){
    o.__base.FConsole.dispose.call(o);
 }
 function FE3sModelMesh(o){
-   o = RClass.inherits(this, o, FE3sResource);
+   o = RClass.inherits(this, o, FE3sResource, ME3sGeometry);
    o._dataCompress = true;
-   o._outline      = null;
-   o._streams      = null;
-   o._tracks       = null;
    o.construct     = FE3sModelMesh_construct;
-   o.outline       = FE3sModelMesh_outline;
-   o.streams       = FE3sModelMesh_streams;
-   o.tracks        = FE3sModelMesh_tracks;
    o.unserialize   = FE3sModelMesh_unserialize;
+   o.dispose       = FE3sModelMesh_dispose;
    return o;
 }
 function FE3sModelMesh_construct(){
    var o = this;
    o.__base.FE3sResource.construct.call(o);
-   o._outline = new SOutline3d();
+   o.__base.ME3sGeometry.construct.call(o);
 }
-function FE3sModelMesh_outline(){
-   return this._outline;
-}
-function FE3sModelMesh_streams(){
-   return this._streams;
-}
-function FE3sModelMesh_tracks(){
-   return this._tracks;
-}
-function FE3sModelMesh_unserialize(p){
+function FE3sModelMesh_unserialize(input){
    var o = this;
-   o.__base.FE3sResource.unserialize.call(o, p);
-   o._outline.unserialize(p);
+   o.__base.FE3sResource.unserialize.call(o, input);
+   o._outline.unserialize(input);
    o._outline.update();
-   var c = p.readInt8();
+   var streamCount = p.readInt8();
    if(c > 0){
-      var ss = o._streams = new TObjects();
-      for(var i = 0; i < c; i++){
-         var s = RClass.create(FE3sStream);
-         s.unserialize(p)
-         ss.push(s);
+      var streams = o._streams = new TObjects();
+      for(var i = 0; i < streamCount; i++){
+         var stream = RClass.create(FE3sStream);
+         stream.unserialize(p)
+         streams.push(stream);
       }
    }
+}
+function FE3sModelMesh_dispose(){
+   var o = this;
+   o.__base.ME3sGeometry.dispose.call(o);
+   o.__base.FE3sResource.dispose.call(o);
 }
 function FE3sMovie(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -3449,16 +3484,19 @@ function FE3sStream(o){
    o._dataCount        = 0;
    o._dataLength       = 0;
    o._data             = null;
-   o._formatCd      = EG3dAttributeFormat.Unknown;
-   o.name              = FE3sStream_name;
+   o._formatCd         = EG3dAttributeFormat.Unknown;
+   o.code              = FE3sStream_code;
    o.elementDataCd     = FE3sStream_elementDataCd;
    o.formatCd          = FE3sStream_formatCd;
+   o.dataStride        = FE3sStream_dataStride;
+   o.dataCount         = FE3sStream_dataCount;
+   o.data              = FE3sStream_data;
    o.unserialize       = FE3sStream_unserialize;
    o.dispose           = FE3sStream_dispose;
    return o;
 }
-function FE3sStream_name(){
-   return this._name;
+function FE3sStream_code(){
+   return this._code;
 }
 function FE3sStream_elementDataCd(){
    return this._elementDataCd;
@@ -3466,17 +3504,26 @@ function FE3sStream_elementDataCd(){
 function FE3sStream_formatCd(){
    return this._formatCd;
 }
+function FE3sStream_dataStride(){
+   return this._dataStride;
+}
+function FE3sStream_dataCount(){
+   return this._dataCount;
+}
+function FE3sStream_data(){
+   return this._data;
+}
 function FE3sStream_unserialize(p){
    var o = this;
    o._code = p.readString();
    o._elementDataCd = p.readUint8();
    o._elementCount = p.readUint8();
    o._elementNormalize = p.readBoolean();
-   var ds = o._dataStride = p.readUint8();
-   var dc = o._dataCount = p.readInt32();
-   var dl = o._dataLength = ds * dc;
-   var d = o._data = new ArrayBuffer(dl);
-   p.readBytes(d, 0, dl);
+   var dataStride = o._dataStride = p.readUint8();
+   var dataCount = o._dataCount = p.readInt32();
+   var dataLength = o._dataLength = dataStride * dataCount;
+   var data = o._data = new ArrayBuffer(dataLength);
+   p.readBytes(data, 0, dataLength);
 }
 function FE3sStream_dispose(){
    var o = this;
@@ -6996,10 +7043,11 @@ function FE3dMeshConsole_free(p){
 }
 function FE3dMeshDisplay(o){
    o = RClass.inherits(this, o, FE3dDisplay, MLinkerResource);
-   o._material   = null;
-   o._renderable = null;
-   o.renderable  = FE3dMeshDisplay_renderable;
-   o.load        = FE3dMeshDisplay_load;
+   o._material      = null;
+   o._renderable    = null;
+   o.renderable     = FE3dMeshDisplay_renderable;
+   o.load           = FE3dMeshDisplay_load;
+   o.reloadResource = FE3dMeshDisplay_reloadResource;
    return o;
 }
 function FE3dMeshDisplay_renderable(){
@@ -7009,6 +7057,10 @@ function FE3dMeshDisplay_load(resource){
    var o = this;
    o._resource = resource;
    o._matrix.assign(resource.matrix());
+}
+function FE3dMeshDisplay_reloadResource(){
+   var o = this;
+   o._matrix.assign(o._resource.matrix());
 }
 function FE3dMeshRenderable(o){
    o = RClass.inherits(this, o, FE3dRenderable, MLinkerResource);
@@ -7022,6 +7074,7 @@ function FE3dMeshRenderable(o){
    o.findTexture      = FE3dMeshRenderable_findTexture;
    o.textures         = FE3dMeshRenderable_textures;
    o.bones            = FE3dMeshRenderable_bones;
+   o.reloadResource   = FE3dMeshRenderable_reloadResource;
    o.process          = FE3dMeshRenderable_process;
    o.processDelay     = FE3dMeshRenderable_processDelay;
    o.update           = FE3dMeshRenderable_update;
@@ -7045,6 +7098,10 @@ function FE3dMeshRenderable_textures(){
 }
 function FE3dMeshRenderable_bones(p){
    return this._bones;
+}
+function FE3dMeshRenderable_reloadResource(){
+   var o = this;
+   o._matrix.assign(o._resource.matrix());
 }
 function FE3dMeshRenderable_process(p){
    var o = this;

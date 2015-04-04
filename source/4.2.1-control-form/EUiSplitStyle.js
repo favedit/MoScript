@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150123
 //==========================================================
-var ESplitStyle = new function ESplitStyle(){
+var EUiSplitStyle = new function EUiSplitStyle(){
    var o = this;
    // @member
    o.Normal     = 'N';

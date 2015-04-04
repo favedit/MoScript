@@ -15,7 +15,9 @@ function SPoint3(x, y, z){
    // @method
    o.conjugate = SPoint3_conjugate;
    o.mergeMin  = SPoint3_mergeMin;
+   o.mergeMin3 = SPoint3_mergeMin3;
    o.mergeMax  = SPoint3_mergeMax;
+   o.mergeMax3 = SPoint3_mergeMax3;
    o.resize    = SPoint3_resize;
    o.slerp     = SPoint3_slerp;
    return o;
@@ -56,6 +58,21 @@ function SPoint3_mergeMin(p){
 }
 
 //============================================================
+// <T>合并最小值。</T>
+//
+// @method
+// @param x:Number X坐标
+// @param y:Number Y坐标
+// @param z:Number Z坐标
+//============================================================
+function SPoint3_mergeMin3(x, y, z){
+   var o = this;
+   o.x = Math.min(o.x, x);
+   o.y = Math.min(o.y, y);
+   o.z = Math.min(o.z, z);
+}
+
+//============================================================
 // <T>合并最大值。</T>
 //
 // @method
@@ -66,6 +83,21 @@ function SPoint3_mergeMax(p){
    o.x = Math.max(o.x, p.x);
    o.y = Math.max(o.y, p.y);
    o.z = Math.max(o.z, p.z);
+}
+
+//============================================================
+// <T>合并最大值。</T>
+//
+// @method
+// @param x:Number X坐标
+// @param y:Number Y坐标
+// @param z:Number Z坐标
+//============================================================
+function SPoint3_mergeMax3(x, y, z){
+   var o = this;
+   o.x = Math.max(o.x, x);
+   o.y = Math.max(o.y, y);
+   o.z = Math.max(o.z, z);
 }
 
 //==========================================================

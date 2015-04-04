@@ -5,23 +5,17 @@
 // @history 150128
 //==========================================================
 function FE3sModelMesh(o){
-   o = RClass.inherits(this, o, FE3sResource);
+   o = RClass.inherits(this, o, FE3sResource, ME3sGeometry);
    //..........................................................
    // @attribute
    o._dataCompress = true;
-   // @attribute
-   o._outline      = null;
-   o._streams      = null;
-   o._tracks       = null;
    //..........................................................
    // @method
    o.construct     = FE3sModelMesh_construct;
    // @method
-   o.outline       = FE3sModelMesh_outline;
-   o.streams       = FE3sModelMesh_streams;
-   o.tracks        = FE3sModelMesh_tracks;
-   // @method
    o.unserialize   = FE3sModelMesh_unserialize;
+   // @method
+   o.dispose       = FE3sModelMesh_dispose;
    return o;
 }
 
@@ -33,60 +27,41 @@ function FE3sModelMesh(o){
 function FE3sModelMesh_construct(){
    var o = this;
    o.__base.FE3sResource.construct.call(o);
-   o._outline = new SOutline3d();
-}
-
-//==========================================================
-// <T>获得轮廓。</T>
-//
-// @method
-// @return SOutline3 轮廓
-//==========================================================
-function FE3sModelMesh_outline(){
-   return this._outline;
-}
-
-//==========================================================
-// <T>获得数据流集合。</T>
-//
-// @method
-// @return TObjects 数据流集合
-//==========================================================
-function FE3sModelMesh_streams(){
-   return this._streams;
-}
-
-//==========================================================
-// <T>获得跟踪集合。</T>
-//
-// @method
-// @return TObjects 跟踪集合
-//==========================================================
-function FE3sModelMesh_tracks(){
-   return this._tracks;
+   o.__base.ME3sGeometry.construct.call(o);
 }
 
 //==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
 // @method
-// @param p:input:FByteStream 数据流
+// @param input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FE3sModelMesh_unserialize(p){
+function FE3sModelMesh_unserialize(input){
    var o = this;
-   o.__base.FE3sResource.unserialize.call(o, p);
+   o.__base.FE3sResource.unserialize.call(o, input);
    // 读取属性
-   o._outline.unserialize(p);
+   o._outline.unserialize(input);
    o._outline.update();
    // 读取数据流集合
-   var c = p.readInt8();
+   var streamCount = p.readInt8();
    if(c > 0){
-      var ss = o._streams = new TObjects();
-      for(var i = 0; i < c; i++){
-         var s = RClass.create(FE3sStream);
-         s.unserialize(p)
-         ss.push(s);
+      var streams = o._streams = new TObjects();
+      for(var i = 0; i < streamCount; i++){
+         var stream = RClass.create(FE3sStream);
+         stream.unserialize(p)
+         streams.push(stream);
       }
    }
+}
+
+//==========================================================
+// <T>释放处理。</T>
+//
+// @method
+//==========================================================
+function FE3sModelMesh_dispose(){
+   var o = this;
+   o.__base.ME3sGeometry.dispose.call(o);
+   o.__base.FE3sResource.dispose.call(o);
 }

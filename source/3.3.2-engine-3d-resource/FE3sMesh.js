@@ -5,24 +5,17 @@
 // @history 150128
 //==========================================================
 function FE3sMesh(o){
-   o = RClass.inherits(this, o, FE3sSpace);
+   o = RClass.inherits(this, o, FE3sSpace, ME3sGeometry);
    //..........................................................
    // @attribute
    o._dataCompress = true;
    o._typeName     = 'Mesh';
    // @attribute
-   o._outline      = null;
-   o._streams      = null;
-   o._tracks       = null;
    o._display      = null;
    o._renderable   = null;
    //..........................................................
    // @method
    o.construct     = FE3sMesh_construct;
-   // @method
-   o.outline       = FE3sMesh_outline;
-   o.streams       = FE3sMesh_streams;
-   o.tracks        = FE3sMesh_tracks;
    // @method
    o.unserialize   = FE3sMesh_unserialize;
    o.saveConfig    = FE3sMesh_saveConfig;
@@ -39,39 +32,9 @@ function FE3sMesh(o){
 function FE3sMesh_construct(){
    var o = this;
    o.__base.FE3sSpace.construct.call(o);
+   o.__base.ME3sGeometry.construct.call(o);
    // 设置属性
-   o._outline = new SOutline3d();
    o._display = RClass.create(FE3sMeshDisplay);
-}
-
-//==========================================================
-// <T>获得轮廓。</T>
-//
-// @method
-// @return SOutline3 轮廓
-//==========================================================
-function FE3sMesh_outline(){
-   return this._outline;
-}
-
-//==========================================================
-// <T>获得数据流集合。</T>
-//
-// @method
-// @return TObjects 数据流集合
-//==========================================================
-function FE3sMesh_streams(){
-   return this._streams;
-}
-
-//==========================================================
-// <T>获得跟踪集合。</T>
-//
-// @method
-// @return TObjects 跟踪集合
-//==========================================================
-function FE3sMesh_tracks(){
-   return this._tracks;
 }
 
 //==========================================================
@@ -125,5 +88,6 @@ function FE3sMesh_dispose(){
    o._outline = RObject.dispose(o._outline);
    o._display = RObject.dispose(o._display);
    // 父处理
+   o.__base.ME3sGeometry.dispose.call(o);
    o.__base.FE3sSpace.dispose.call(o);
 }

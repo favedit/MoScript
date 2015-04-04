@@ -566,10 +566,11 @@ function FE3dMeshConsole_free(p){
 }
 function FE3dMeshDisplay(o){
    o = RClass.inherits(this, o, FE3dDisplay, MLinkerResource);
-   o._material   = null;
-   o._renderable = null;
-   o.renderable  = FE3dMeshDisplay_renderable;
-   o.load        = FE3dMeshDisplay_load;
+   o._material      = null;
+   o._renderable    = null;
+   o.renderable     = FE3dMeshDisplay_renderable;
+   o.load           = FE3dMeshDisplay_load;
+   o.reloadResource = FE3dMeshDisplay_reloadResource;
    return o;
 }
 function FE3dMeshDisplay_renderable(){
@@ -579,6 +580,10 @@ function FE3dMeshDisplay_load(resource){
    var o = this;
    o._resource = resource;
    o._matrix.assign(resource.matrix());
+}
+function FE3dMeshDisplay_reloadResource(){
+   var o = this;
+   o._matrix.assign(o._resource.matrix());
 }
 function FE3dMeshRenderable(o){
    o = RClass.inherits(this, o, FE3dRenderable, MLinkerResource);
@@ -592,6 +597,7 @@ function FE3dMeshRenderable(o){
    o.findTexture      = FE3dMeshRenderable_findTexture;
    o.textures         = FE3dMeshRenderable_textures;
    o.bones            = FE3dMeshRenderable_bones;
+   o.reloadResource   = FE3dMeshRenderable_reloadResource;
    o.process          = FE3dMeshRenderable_process;
    o.processDelay     = FE3dMeshRenderable_processDelay;
    o.update           = FE3dMeshRenderable_update;
@@ -615,6 +621,10 @@ function FE3dMeshRenderable_textures(){
 }
 function FE3dMeshRenderable_bones(p){
    return this._bones;
+}
+function FE3dMeshRenderable_reloadResource(){
+   var o = this;
+   o._matrix.assign(o._resource.matrix());
 }
 function FE3dMeshRenderable_process(p){
    var o = this;

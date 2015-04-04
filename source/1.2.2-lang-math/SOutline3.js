@@ -13,14 +13,29 @@ function SOutline3(){
    o.max         = new SPoint3();
    //..........................................................
    // @method
+   o.isEmpty     = SOutline3_isEmpty;
    o.assign      = SOutline3_assign;
+   o.setMin      = SOutline3_setMin;
+   o.setMax      = SOutline3_setMax;
    o.set         = SOutline3_set;
    o.mergeMin    = SOutline3_mergeMin;
    o.mergeMax    = SOutline3_mergeMax;
+   o.mergePoint  = SOutline3_mergePoint;
    o.serialize   = SOutline3_serialize;
    o.unserialize = SOutline3_unserialize;
    o.toString    = SOutline3_toString;
    return o;
+}
+
+//============================================================
+// <T>判断是否为空。</T>
+//
+// @method
+// @return Boolean 是否为空
+//============================================================
+function SOutline3_isEmpty(p){
+   var o = this;
+   return o.min.isEmpty() && o.max.isEmpty();
 }
 
 //============================================================
@@ -36,6 +51,28 @@ function SOutline3_assign(p){
 }
 
 //==========================================================
+// <T>设置最小轮廓。</T>
+//
+// @method
+//==========================================================
+function SOutline3_setMin(){
+   var o = this;
+   o.min.setMax();
+   o.max.setMin();
+}
+
+//==========================================================
+// <T>设置最大轮廓。</T>
+//
+// @method
+//==========================================================
+function SOutline3_setMax(){
+   var o = this;
+   o.min.setMin();
+   o.max.setMax();
+}
+
+//==========================================================
 // <T>设置参数。</T>
 //
 // @method
@@ -46,10 +83,10 @@ function SOutline3_assign(p){
 // @param ay:maxY:Number 最大Y坐标
 // @param az:maxZ:Number 最大Z坐标
 //==========================================================
-function SOutline3_set(ix, iy, iz, ax, ay, az){
+function SOutline3_set(minX, minY, minZ, maxX, maxY, maxZ){
    var o = this;
-   o.min.set(ix, iy, iz);
-   o.max.set(ax, ay, az);
+   o.min.set(minX, minY, minZ);
+   o.max.set(maxX, maxY, maxZ);
 }
 
 //==========================================================
@@ -74,6 +111,20 @@ function SOutline3_mergeMax(p){
    var o = this;
    o.min.mergeMin(p.min);
    o.max.mergeMax(p.max);
+}
+
+//==========================================================
+// <T>合并点。</T>
+//
+// @method
+// @param x:Number X坐标
+// @param y:Number Y坐标
+// @param z:Number Z坐标
+//==========================================================
+function SOutline3_mergePoint(x, y, z){
+   var o = this;
+   o.min.mergeMin3(x, y, z);
+   o.max.mergeMax3(x, y, z);
 }
 
 //==========================================================

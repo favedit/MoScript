@@ -1,41 +1,54 @@
 //==========================================================
-// <T>场景画板工具栏。</T>
+// <T>网格画板工具栏。</T>
 //
 // @class
 // @author maocy
-// @history 150210
+// @history 150404
 //==========================================================
 function FDsMeshCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'design3d.mesh.CanvasToolBar';
+   o._frameName                 = 'design3d.mesh.CanvasToolBar';
    //..........................................................
    // @attribute
-   o._canvasModeCd    = EDsCanvasMode.Drop;
+   o._canvasModeCd              = EDsCanvasMode.Drop;
    // @attribute
-   o._dropButton      = null;
-   o._selectButton    = null;
-   o._translateButton = null;
-   o._rotationButton  = null;
-   o._scaleButton     = null;
-   o._lookFrontButton = null;
-   o._lookUpButton    = null;
-   o._lookLeftButton  = null;
-   o._playButton      = null;
-   o._viewButton      = null;
+   o._controlDrop               = null;
+   // @attribute
+   o._controlSize1              = null;
+   o._controlSize2              = null;
+   o._controlSize3              = null;
+   o._controlSize4              = null;
+   o._controlSizeWidth          = null;
+   o._controlSizeHeight         = null;
+   // @attribute
+   o._controlDimensionalVisible = null;
+   o._controlDimensionalWidth   = null;
+   o._controlDimensionalHeight  = null;
+   o._controlDimensionalAuto    = null;
+   o._controlDimensionalFlipX   = null;
+   o._controlDimensionalFlipY   = null;
+   o._controlDimensionalFlipZ   = null;
+   o._controlDimensionalX       = null;
+   o._controlDimensionalY       = null;
+   o._controlDimensionalZ       = null;
+   // @attribute
+   o._controlRotation           = null;
    //..........................................................
    // @event
-   o.onBuilded        = FDsMeshCanvasToolBar_onBuilded;
+   o.onBuilded                  = FDsMeshCanvasToolBar_onBuilded;
    // @event
-   o.onModeClick      = FDsMeshCanvasToolBar_onModeClick;
-   o.onSizeClick      = FDsMeshCanvasToolBar_onSizeClick;
-   o.onRotationClick  = FDsMeshCanvasToolBar_onRotationClick;
+   o.onModeClick                = FDsMeshCanvasToolBar_onModeClick;
+   o.onSizeClick                = FDsMeshCanvasToolBar_onSizeClick;
+   o.onDimensionalChange        = FDsMeshCanvasToolBar_onDimensionalChange;
+   o.onDimensionalAutoClick     = FDsMeshCanvasToolBar_onDimensionalAutoClick;
+   o.onRotationClick            = FDsMeshCanvasToolBar_onRotationClick;
    //..........................................................
    // @method
-   o.construct        = FDsMeshCanvasToolBar_construct;
+   o.construct                  = FDsMeshCanvasToolBar_construct;
    // @method
-   o.dispose          = FDsMeshCanvasToolBar_dispose;
+   o.dispose                    = FDsMeshCanvasToolBar_dispose;
    return o;
 }
 
@@ -49,21 +62,37 @@ function FDsMeshCanvasToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
-   // 建立拖拽按键
+   // 关联拖拽事件
    var control = o._controlDrop;
    control._canvasModeCd = EDsCanvasMode.Drop;
    control.addClickListener(o, o.onModeClick);
    control.check(true);
    //..........................................................
-   // 建立按键
-   o._controlView.addClickListener(o, o.onRotationClick);
-   //..........................................................
+   // 关联按键事件
    o._controlSize1.addClickListener(o, o.onSizeClick);
    o._controlSize2.addClickListener(o, o.onSizeClick);
    o._controlSize3.addClickListener(o, o.onSizeClick);
    o._controlSize4.addClickListener(o, o.onSizeClick);
    o._controlSizeWidth.setText('*');
    o._controlSizeHeight.setText('*');
+   //..........................................................
+   // 关联按键事件
+   o._controlDimensionalVisible.addClickListener(o, o.onDimensionalChange);
+   o._controlDimensionalVisible.check(true);
+   o._controlDimensionalWidth.addDataChangedListener(o, o.onDimensionalChange);
+   o._controlDimensionalWidth.setText(1);
+   o._controlDimensionalHeight.addDataChangedListener(o, o.onDimensionalChange);
+   o._controlDimensionalHeight.setText(1);
+   o._controlDimensionalAuto.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalFlipX.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalFlipY.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalFlipZ.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalX.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalY.addClickListener(o, o.onDimensionalAutoClick);
+   o._controlDimensionalZ.addClickListener(o, o.onDimensionalAutoClick);
+   //..........................................................
+   // 关联按键事件
+   o._controlRotation.addClickListener(o, o.onRotationClick);
 }
 
 //==========================================================
@@ -104,15 +133,74 @@ function FDsMeshCanvasToolBar_onSizeClick(event){
 }
 
 //==========================================================
+// <T>坐标系可见性处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsMeshCanvasToolBar_onDimensionalChange(event){
+   var o = this;
+   var canvas = o._frameSet._canvas;
+   var visible = o._controlDimensionalVisible.isCheck();
+   var width = RInteger.parse(o._controlDimensionalWidth.text());
+   var height = RInteger.parse(o._controlDimensionalHeight.text());
+   canvas.switchDimensional(visible, width, height);
+}
+
+//==========================================================
+// <T>坐标系自动调整处理。</T>
+//
+// @method
+// @param p:event:SEvent 事件
+//==========================================================
+function FDsMeshCanvasToolBar_onDimensionalAutoClick(event){
+   var o = this;
+   var sender = event.sender;
+   var name = sender.name();
+   var flipX = false;
+   var flipY = false;
+   var flipZ = false;
+   var rotationX = false;
+   var rotationY = false;
+   var rotationZ = false;
+   switch(name){
+      case 'dimensionalAuto':
+         break;
+      case 'dimensionalFlipX':
+         flipX = true;
+         break;
+      case 'dimensionalFlipY':
+         flipY = true;
+         break;
+      case 'dimensionalFlipZ':
+         flipZ = true;
+         break;
+      case 'dimensionalX':
+         rotationX = true;
+         break;
+      case 'dimensionalY':
+         rotationY = true;
+         break;
+      case 'dimensionalZ':
+         rotationZ = true;
+         break;
+      default:
+         throw new TError(o, 'Unknown command.');
+   }
+   o._frameSet._canvas.viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ);
+}
+
+//==========================================================
 // <T>刷新按键处理。</T>
 //
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsMeshCanvasToolBar_onRotationClick(p, v){
-   //var o = this;
-   //var c = o._workspace._canvas;
-   //c.switchRotation(v);
+function FDsMeshCanvasToolBar_onRotationClick(event, v){
+   var o = this;
+   var button = event.sender;
+   var canvas = o._frameSet._canvas;
+   canvas.switchRotation(button.isCheck());
 }
 
 //==========================================================

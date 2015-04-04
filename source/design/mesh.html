@@ -53,17 +53,18 @@ function _load(){
       guid = url.substring(find + 5);
    }
    // 加载工作区
-   var w = RApplication.findWorkspace(FDsMeshWorkspace);
-   w.buildDefine(document.body);
-   w.setPanel(document.body);
-   w.psResize();
+   var workspace = RApplication.findWorkspace(FDsMeshWorkspace);
+   workspace.buildDefine(document.body);
+   workspace.setPanel(document.body);
+   workspace.psResize();
    //w.psMode();
+   workspace.loadByGuid('B5D1D344BC1B42309AD51CC07FA5F630');
    if(!RString.isEmpty(guid)){
-      w.loadByGuid(guid);
+      //workspace.loadByGuid(guid);
    }else{
-      w.loadByCode(code);
+      //workspace.loadByCode(code);
    }
-   RConsole.find(FUiWorkspaceConsole).active(w);
+   RConsole.find(FUiWorkspaceConsole).active(workspace);
 }
 </SCRIPT>
 </HEAD>

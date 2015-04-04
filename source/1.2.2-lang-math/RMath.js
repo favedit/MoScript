@@ -30,6 +30,9 @@ var RMath = new function RMath(){
    //..........................................................
    // @method
    o.construct      = RMath_construct;
+   o.min            = RMath_min;
+   o.max            = RMath_max;
+   o.sign           = RMath_sign;
    //..........................................................
    // @construct
    o.construct();
@@ -59,4 +62,64 @@ function RMath_construct(){
    o.vector3 = new SVector3();
    o.rectangle = new SRectangle();
    o.matrix = new SMatrix3d();
+}
+
+//==========================================================
+// <T>计算参数中的最小值。</T>
+//
+// @method
+// @param arguments:Array 数组
+// @return Number 最小值
+//==========================================================
+function RMath_min(){
+   var result = 0;
+   var count = arguments.length;
+   if(count > 1){
+      result = Number.MAX_VALUE;
+      for(var i = 0; i < count; i++){
+         var value = arguments[i];
+         if(value < result){
+            result = value;
+         }
+      }
+   }
+   return result;
+}
+
+//==========================================================
+// <T>计算参数中的最大值。</T>
+//
+// @method
+// @param arguments:Array 数组
+// @return Number 最大值
+//==========================================================
+function RMath_max(){
+   var result = 0;
+   var count = arguments.length;
+   if(count > 1){
+      result = Number.MIN_VALUE;
+      for(var i = 0; i < count; i++){
+         var value = arguments[i];
+         if(value > result){
+            result = value;
+         }
+      }
+   }
+   return result;
+}
+
+//==========================================================
+// <T>计算数值的符号位。</T>
+//
+// @method
+// @param value:Number 数值
+// @return Number 符号
+//==========================================================
+function RMath_sign(value){
+   if(value > 0){
+      return 1;
+   }else if(value < 0){
+      return -1;
+   }
+   return 0;
 }

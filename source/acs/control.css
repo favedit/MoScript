@@ -943,15 +943,15 @@
 .FUiMenuButton_Normal{
    margin:0px 2px 0px 2px;
    padding:2px 8px 2px 8px;
-   color: #EEEEEE;
-   border-radius:2px;
+   border-radius:3px;
    cursor: pointer;
 }
 
 .FUiMenuButton_Hover{
+   background-color: #FFFFFF;
    margin:0px 2px 0px 2px;
    padding:2px 8px 2px 8px;
-   border-radius:2px;
+   border-radius:3px;
    cursor: pointer;
 }
 
@@ -965,7 +965,7 @@
 .FUiMenuButton_Disable{
    margin:0px 2px 0px 2px;
    padding:2px 8px 2px 8px;
-   border-radius:2px;
+   border-radius:3px;
    cursor: pointer;
 }
 
@@ -974,6 +974,7 @@
 }
 
 .FUiMenuButton_LabelPanel{
+   color: #333333;
    white-space: nowrap;
 }
 
@@ -981,8 +982,9 @@
 /* FUiMenuButtonSplit                                     */
 /* ------------------------------------------------------ */
 .FUiMenuButtonSplit_Panel{
-   width: 4px;
-   height: 4px;
+   width: 100%;
+   border-top:1px solid #666666;
+   border-bottom:1px solid #CCCCCC;
 }
 
 /* ------------------------------------------------------ */
@@ -995,7 +997,7 @@
 .FUiPopupMenu_Form{
    width: 100%;
    border-radius:3px;
-   background:#999999;
+   background:#CCCCCC;
    box-shadow:2px 2px 5px #333333;
    -webkit-box-shadow:2px 2px 5px #333333;
    -moz-box-shadow:2px 2px 5px #333333;

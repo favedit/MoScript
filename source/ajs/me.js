@@ -3900,6 +3900,7 @@ function RConsole_release(){
 }
 var RConst = new function RConst(){
    var o = this;
+   o.PI_2         = Math.PI / 2;
    o.PI           = Math.PI;
    o.PI2          = Math.PI * 2;
    o.RADIAN_RATE  = 180 / Math.PI;
@@ -6600,12 +6601,12 @@ function SMatrix4x4(){
    o.assignData      = SMatrix4x4_assignData;
    o.attachData      = SMatrix4x4_attachData;
    o.appendData      = SMatrix4x4_appendData;
-   o.translate       = SMatrix4x4_translate;
-   o.rotationX       = SMatrix4x4_rotationX;
-   o.rotationY       = SMatrix4x4_rotationY;
-   o.rotationZ       = SMatrix4x4_rotationZ;
-   o.rotation        = SMatrix4x4_rotation;
-   o.scale           = SMatrix4x4_scale;
+   o.addTranslate    = SMatrix4x4_addTranslate;
+   o.addRotationX    = SMatrix4x4_addRotationX;
+   o.addRotationY    = SMatrix4x4_addRotationY;
+   o.addRotationZ    = SMatrix4x4_addRotationZ;
+   o.addRotation     = SMatrix4x4_addRotation;
+   o.addScale        = SMatrix4x4_addScale;
    o.invert          = SMatrix4x4_invert;
    o.transform       = SMatrix4x4_transform;
    o.transformPoint3 = SMatrix4x4_transformPoint3;
@@ -6701,7 +6702,7 @@ function SMatrix4x4_appendData(p){
    d[14] = v14;
    d[15] = v15;
 }
-function SMatrix4x4_translate(x, y, z){
+function SMatrix4x4_addTranslate(x, y, z){
    var v = RArray.array16;
    v[ 0] = 1;
    v[ 1] = 0;
@@ -6721,7 +6722,7 @@ function SMatrix4x4_translate(x, y, z){
    v[15] = 1;
    this.appendData(v);
 }
-function SMatrix4x4_rotationX(p){
+function SMatrix4x4_addRotationX(p){
    var rs = Math.sin(p);
    var rc = Math.cos(p);
    var v = RArray.array16;
@@ -6743,7 +6744,7 @@ function SMatrix4x4_rotationX(p){
    v[15] = 1;
    this.appendData(v);
 }
-function SMatrix4x4_rotationY(p){
+function SMatrix4x4_addRotationY(p){
    var rs = Math.sin(p);
    var rc = Math.cos(p);
    var v = RArray.array16;
@@ -6765,7 +6766,7 @@ function SMatrix4x4_rotationY(p){
    v[15] = 1;
    this.appendData(v);
 }
-function SMatrix4x4_rotationZ(p){
+function SMatrix4x4_addRotationZ(p){
    var rs = Math.sin(p);
    var rc = Math.cos(p);
    var v = RArray.array16;
@@ -6787,7 +6788,7 @@ function SMatrix4x4_rotationZ(p){
    v[15] = 1;
    this.appendData(v);
 }
-function SMatrix4x4_rotation(x, y, z){
+function SMatrix4x4_addRotation(x, y, z){
    var rsx = Math.sin(x);
    var rcx = Math.cos(x);
    var rsy = Math.sin(y);
@@ -6813,7 +6814,7 @@ function SMatrix4x4_rotation(x, y, z){
    v[15] = 1;
    this.appendData(v);
 }
-function SMatrix4x4_scale(x, y, z){
+function SMatrix4x4_addScale(x, y, z){
    var v = RArray.array16;
    v[ 0] = x;
    v[ 1] = 0;
@@ -7075,24 +7076,42 @@ function SOutline3(){
    var o = this;
    o.min         = new SPoint3();
    o.max         = new SPoint3();
+   o.isEmpty     = SOutline3_isEmpty;
    o.assign      = SOutline3_assign;
+   o.setMin      = SOutline3_setMin;
+   o.setMax      = SOutline3_setMax;
    o.set         = SOutline3_set;
    o.mergeMin    = SOutline3_mergeMin;
    o.mergeMax    = SOutline3_mergeMax;
+   o.mergePoint  = SOutline3_mergePoint;
    o.serialize   = SOutline3_serialize;
    o.unserialize = SOutline3_unserialize;
    o.toString    = SOutline3_toString;
    return o;
+}
+function SOutline3_isEmpty(p){
+   var o = this;
+   return o.min.isEmpty() && o.max.isEmpty();
 }
 function SOutline3_assign(p){
    var o = this;
    o.min.assign(p.min);
    o.max.assign(p.max);
 }
-function SOutline3_set(ix, iy, iz, ax, ay, az){
+function SOutline3_setMin(){
    var o = this;
-   o.min.set(ix, iy, iz);
-   o.max.set(ax, ay, az);
+   o.min.setMax();
+   o.max.setMin();
+}
+function SOutline3_setMax(){
+   var o = this;
+   o.min.setMin();
+   o.max.setMax();
+}
+function SOutline3_set(minX, minY, minZ, maxX, maxY, maxZ){
+   var o = this;
+   o.min.set(minX, minY, minZ);
+   o.max.set(maxX, maxY, maxZ);
 }
 function SOutline3_mergeMin(p){
    var o = this;
@@ -7103,6 +7122,11 @@ function SOutline3_mergeMax(p){
    var o = this;
    o.min.mergeMin(p.min);
    o.max.mergeMax(p.max);
+}
+function SOutline3_mergePoint(x, y, z){
+   var o = this;
+   o.min.mergeMin3(x, y, z);
+   o.max.mergeMax3(x, y, z);
 }
 function SOutline3_serialize(p){
    var o = this;
@@ -7121,56 +7145,96 @@ function SOutline3_toString(){
 function SOutline3d(){
    var o = this;
    SOutline3.call(o);
-   o.center    = new SPoint3();
-   o.radius    = 0;
-   o.points    = new Array(24);
-   o.update    = SOutline3d_update;
-   o.calculate = SOutline3d_calculate;
+   o.center        = new SPoint3();
+   o.distance      = new SPoint3();
+   o.radius        = 0;
+   o.points        = new Array(24);
+   o.update        = SOutline3d_update;
+   o.calculateFrom = SOutline3d_calculateFrom;
+   o.calculate     = SOutline3d_calculate;
    return o;
 }
-function SOutline3d_update(p){
+function SOutline3d_update(){
    var o = this;
-   var vi = o.min;
-   var vix = vi.x;
-   var viy = vi.y;
-   var viz = vi.z;
-   var va = o.max;
-   var vax = va.x;
-   var vay = va.y;
-   var vaz = va.z;
+   var min = o.min;
+   var minX = min.x;
+   var minY = min.y;
+   var minZ = min.z;
+   var max = o.max;
+   var maxX = max.x;
+   var maxY = max.y;
+   var maxZ = max.z;
    var ps = o.points;
-   ps[ 0] = -vix;
-   ps[ 1] =  viy;
-   ps[ 2] =  viz;
-   ps[ 3] =  vix;
-   ps[ 4] =  viy;
-   ps[ 5] =  viz;
-   ps[ 6] =  vix;
-   ps[ 7] = -viy;
-   ps[ 8] =  viz;
-   ps[ 9] = -vix;
-   ps[10] = -viy;
-   ps[11] =  viz;
-   ps[12] = -vax;
-   ps[13] =  vay;
-   ps[14] =  vaz;
-   ps[15] =  vax;
-   ps[16] =  vay;
-   ps[17] =  vaz;
-   ps[18] =  vax;
-   ps[19] = -vay;
-   ps[20] =  vaz;
-   ps[21] = -vax;
-   ps[22] = -vay;
-   ps[23] =  vaz;
-   var c = o.center;
-   c.x = (vix + vax) * 0.5;
-   c.y = (viy + vay) * 0.5;
-   c.z = (viz + vaz) * 0.5;
-   var cx = vax - vix;
-   var cy = vay - viy;
-   var cz = vaz - viz;
+   ps[ 0] = minX;
+   ps[ 1] = maxY;
+   ps[ 2] = minZ;
+   ps[ 3] = maxX;
+   ps[ 4] = maxY;
+   ps[ 5] = minZ;
+   ps[ 6] = maxX;
+   ps[ 7] = minY;
+   ps[ 8] = minZ;
+   ps[ 9] = minX;
+   ps[10] = minY;
+   ps[11] = minZ;
+   ps[12] = minX;
+   ps[13] = maxY;
+   ps[14] = maxZ;
+   ps[15] = maxX;
+   ps[16] = maxY;
+   ps[17] = maxZ;
+   ps[18] = maxX;
+   ps[19] = minY;
+   ps[20] = maxZ;
+   ps[21] = minX;
+   ps[22] = minY;
+   ps[23] = maxZ;
+   var center = o.center;
+   center.x = (minX + maxX) * 0.5;
+   center.y = (minY + maxY) * 0.5;
+   center.z = (minZ + maxZ) * 0.5;
+   var distance = o.distance;
+   distance.x = maxX - minX;
+   distance.y = maxY - minY;
+   distance.z = maxZ - minZ;
+   var cx = maxX - minX;
+   var cy = maxY - minY;
+   var cz = maxZ - minZ;
    o.radius = Math.sqrt(cx * cx + cy * cy + cz * cz) * 0.5;
+}
+function SOutline3d_calculateFrom(outline, matrix){
+   var o = this;
+   var points = o.points;
+   matrix.transform(points, 0, outline.points, 0, 8);
+   var minX = minY = minZ = Number.MAX_VALUE;
+   var maxX = maxY = maxZ = -Number.MAX_VALUE;
+   var i = 0;
+   while(i < 24){
+      var x = points[i++];
+      if(x < minX){
+         minX = x;
+      }
+      if(x > maxX){
+         maxX = x;
+      }
+      var y = points[i++];
+      if(y < minY){
+         minY = y;
+      }
+      if(y > maxY){
+         maxY = y;
+      }
+      var z = points[i++];
+      if(z < minZ){
+         minZ = z;
+      }
+      if(z > maxZ){
+         maxZ = z;
+      }
+   }
+   o.min.set(minX, minY, minZ);
+   o.max.set(maxX, maxY, maxZ);
+   o.update();
 }
 function SOutline3d_calculate(p){
    var o = this;
@@ -7475,7 +7539,9 @@ function SPoint3(x, y, z){
    SValue3.call(o, x, y, z);
    o.conjugate = SPoint3_conjugate;
    o.mergeMin  = SPoint3_mergeMin;
+   o.mergeMin3 = SPoint3_mergeMin3;
    o.mergeMax  = SPoint3_mergeMax;
+   o.mergeMax3 = SPoint3_mergeMax3;
    o.resize    = SPoint3_resize;
    o.slerp     = SPoint3_slerp;
    return o;
@@ -7499,11 +7565,23 @@ function SPoint3_mergeMin(p){
    o.y = Math.min(o.y, p.y);
    o.z = Math.min(o.z, p.z);
 }
+function SPoint3_mergeMin3(x, y, z){
+   var o = this;
+   o.x = Math.min(o.x, x);
+   o.y = Math.min(o.y, y);
+   o.z = Math.min(o.z, z);
+}
 function SPoint3_mergeMax(p){
    var o = this;
    o.x = Math.max(o.x, p.x);
    o.y = Math.max(o.y, p.y);
    o.z = Math.max(o.z, p.z);
+}
+function SPoint3_mergeMax3(x, y, z){
+   var o = this;
+   o.x = Math.max(o.x, x);
+   o.y = Math.max(o.y, y);
+   o.z = Math.max(o.z, z);
 }
 function SPoint3_resize(x, y, z){
    var o = this;
@@ -8100,7 +8178,10 @@ function SValue3(x, y, z){
    o.x           = RRuntime.nvl(x, 0);
    o.y           = RRuntime.nvl(y, 0);
    o.z           = RRuntime.nvl(z, 0);
+   o.isEmpty     = SValue3_isEmpty;
    o.assign      = SValue3_assign;
+   o.setMin      = SValue3_setMin;
+   o.setMax      = SValue3_setMax;
    o.set         = SValue3_set;
    o.absolute    = SValue3_absolute;
    o.normalize   = SValue3_normalize;
@@ -8111,11 +8192,27 @@ function SValue3(x, y, z){
    o.toString    = SValue3_toString;
    return o;
 }
+function SValue3_isEmpty(p){
+   var o = this;
+   return (o.x == 0) && (o.y == 0) && (o.z == 0);
+}
 function SValue3_assign(p){
    var o = this;
    o.x = p.x;
    o.y = p.y;
    o.z = p.z;
+}
+function SValue3_setMin(){
+   var o = this;
+   o.x = Number.MIN_VALUE;
+   o.y = Number.MIN_VALUE;
+   o.z = Number.MIN_VALUE;
+}
+function SValue3_setMax(){
+   var o = this;
+   o.x = Number.MAX_VALUE;
+   o.y = Number.MAX_VALUE;
+   o.z = Number.MAX_VALUE;
 }
 function SValue3_set(x, y, z){
    var o = this;
@@ -8360,6 +8457,9 @@ var RMath = new function RMath(){
    o.rectangle      = null;
    o.matrix         = null;
    o.construct      = RMath_construct;
+   o.min            = RMath_min;
+   o.max            = RMath_max;
+   o.sign           = RMath_sign;
    o.construct();
    return o;
 }
@@ -8374,6 +8474,42 @@ function RMath_construct(){
    o.vector3 = new SVector3();
    o.rectangle = new SRectangle();
    o.matrix = new SMatrix3d();
+}
+function RMath_min(){
+   var result = 0;
+   var count = arguments.length;
+   if(count > 1){
+      result = Number.MAX_VALUE;
+      for(var i = 0; i < count; i++){
+         var value = arguments[i];
+         if(value < result){
+            result = value;
+         }
+      }
+   }
+   return result;
+}
+function RMath_max(){
+   var result = 0;
+   var count = arguments.length;
+   if(count > 1){
+      result = Number.MIN_VALUE;
+      for(var i = 0; i < count; i++){
+         var value = arguments[i];
+         if(value > result){
+            result = value;
+         }
+      }
+   }
+   return result;
+}
+function RMath_sign(value){
+   if(value > 0){
+      return 1;
+   }else if(value < 0){
+      return -1;
+   }
+   return 0;
 }
 function AEvent(n, l, h){
    var o = this;
@@ -21098,6 +21234,64 @@ function RE3dEngine_setup(){
       o._setuped = true;
    }
 }
+function ME3sGeometry(o){
+   o = RClass.inherits(this, o);
+   o._outline         = null;
+   o._streams         = null;
+   o.construct        = ME3sGeometry_construct;
+   o.outline          = ME3sGeometry_outline;
+   o.findStream       = ME3sGeometry_findStream;
+   o.streams          = ME3sGeometry_streams;
+   o.calculateOutline = ME3sGeometry_calculateOutline;
+   o.dispose          = ME3sGeometry_dispose;
+   return o;
+}
+function ME3sGeometry_construct(){
+   var o = this;
+   o._outline = new SOutline3d();
+}
+function ME3sGeometry_outline(){
+   return this._outline;
+}
+function ME3sGeometry_findStream(code){
+   var o = this;
+   var streams = o._streams;
+   var count = streams.count();
+   for(n = 0; n < count; n++){
+      var stream = streams.getAt(n);
+      if(stream.code() == code){
+         return stream;
+      }
+   }
+   return null;
+}
+function ME3sGeometry_streams(){
+   return this._streams;
+}
+function ME3sGeometry_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      outline.setMin();
+      var stream = o.findStream('position');
+      var dataCount = stream.dataCount();
+      var data = new Float32Array(stream.data())
+      var index = 0;
+      for(var i = 0; i < dataCount; i++){
+         var x = data[index++];
+         var y = data[index++];
+         var z = data[index++];
+         outline.mergePoint(x, y, z);
+      }
+      outline.update();
+   }
+   return outline;
+}
+function ME3sGeometry_dispose(){
+   var o = this;
+   o._outline = RObject.dispose(o._outline);
+   o.__base.FE3sSpace.dispose.call(o);
+}
 function SE3sCompressEvent(w, f, d){
    var o = this;
    o.owner   = w;
@@ -21744,18 +21938,12 @@ function FE3sMaterialTexture_unserialize(p){
    o._bitmapGuid = p.readString();
 }
 function FE3sMesh(o){
-   o = RClass.inherits(this, o, FE3sSpace);
+   o = RClass.inherits(this, o, FE3sSpace, ME3sGeometry);
    o._dataCompress = true;
    o._typeName     = 'Mesh';
-   o._outline      = null;
-   o._streams      = null;
-   o._tracks       = null;
    o._display      = null;
    o._renderable   = null;
    o.construct     = FE3sMesh_construct;
-   o.outline       = FE3sMesh_outline;
-   o.streams       = FE3sMesh_streams;
-   o.tracks        = FE3sMesh_tracks;
    o.unserialize   = FE3sMesh_unserialize;
    o.saveConfig    = FE3sMesh_saveConfig;
    o.dispose       = FE3sMesh_dispose;
@@ -21764,17 +21952,8 @@ function FE3sMesh(o){
 function FE3sMesh_construct(){
    var o = this;
    o.__base.FE3sSpace.construct.call(o);
-   o._outline = new SOutline3d();
+   o.__base.ME3sGeometry.construct.call(o);
    o._display = RClass.create(FE3sMeshDisplay);
-}
-function FE3sMesh_outline(){
-   return this._outline;
-}
-function FE3sMesh_streams(){
-   return this._streams;
-}
-function FE3sMesh_tracks(){
-   return this._tracks;
 }
 function FE3sMesh_unserialize(input){
    var o = this;
@@ -21802,6 +21981,7 @@ function FE3sMesh_dispose(){
    var o = this;
    o._outline = RObject.dispose(o._outline);
    o._display = RObject.dispose(o._display);
+   o.__base.ME3sGeometry.dispose.call(o);
    o.__base.FE3sSpace.dispose.call(o);
 }
 function FE3sMeshConsole(o){
@@ -22086,46 +22266,37 @@ function FE3sModelConsole_dispose(){
    o.__base.FConsole.dispose.call(o);
 }
 function FE3sModelMesh(o){
-   o = RClass.inherits(this, o, FE3sResource);
+   o = RClass.inherits(this, o, FE3sResource, ME3sGeometry);
    o._dataCompress = true;
-   o._outline      = null;
-   o._streams      = null;
-   o._tracks       = null;
    o.construct     = FE3sModelMesh_construct;
-   o.outline       = FE3sModelMesh_outline;
-   o.streams       = FE3sModelMesh_streams;
-   o.tracks        = FE3sModelMesh_tracks;
    o.unserialize   = FE3sModelMesh_unserialize;
+   o.dispose       = FE3sModelMesh_dispose;
    return o;
 }
 function FE3sModelMesh_construct(){
    var o = this;
    o.__base.FE3sResource.construct.call(o);
-   o._outline = new SOutline3d();
+   o.__base.ME3sGeometry.construct.call(o);
 }
-function FE3sModelMesh_outline(){
-   return this._outline;
-}
-function FE3sModelMesh_streams(){
-   return this._streams;
-}
-function FE3sModelMesh_tracks(){
-   return this._tracks;
-}
-function FE3sModelMesh_unserialize(p){
+function FE3sModelMesh_unserialize(input){
    var o = this;
-   o.__base.FE3sResource.unserialize.call(o, p);
-   o._outline.unserialize(p);
+   o.__base.FE3sResource.unserialize.call(o, input);
+   o._outline.unserialize(input);
    o._outline.update();
-   var c = p.readInt8();
+   var streamCount = p.readInt8();
    if(c > 0){
-      var ss = o._streams = new TObjects();
-      for(var i = 0; i < c; i++){
-         var s = RClass.create(FE3sStream);
-         s.unserialize(p)
-         ss.push(s);
+      var streams = o._streams = new TObjects();
+      for(var i = 0; i < streamCount; i++){
+         var stream = RClass.create(FE3sStream);
+         stream.unserialize(p)
+         streams.push(stream);
       }
    }
+}
+function FE3sModelMesh_dispose(){
+   var o = this;
+   o.__base.ME3sGeometry.dispose.call(o);
+   o.__base.FE3sResource.dispose.call(o);
 }
 function FE3sMovie(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -22934,16 +23105,19 @@ function FE3sStream(o){
    o._dataCount        = 0;
    o._dataLength       = 0;
    o._data             = null;
-   o._formatCd      = EG3dAttributeFormat.Unknown;
-   o.name              = FE3sStream_name;
+   o._formatCd         = EG3dAttributeFormat.Unknown;
+   o.code              = FE3sStream_code;
    o.elementDataCd     = FE3sStream_elementDataCd;
    o.formatCd          = FE3sStream_formatCd;
+   o.dataStride        = FE3sStream_dataStride;
+   o.dataCount         = FE3sStream_dataCount;
+   o.data              = FE3sStream_data;
    o.unserialize       = FE3sStream_unserialize;
    o.dispose           = FE3sStream_dispose;
    return o;
 }
-function FE3sStream_name(){
-   return this._name;
+function FE3sStream_code(){
+   return this._code;
 }
 function FE3sStream_elementDataCd(){
    return this._elementDataCd;
@@ -22951,17 +23125,26 @@ function FE3sStream_elementDataCd(){
 function FE3sStream_formatCd(){
    return this._formatCd;
 }
+function FE3sStream_dataStride(){
+   return this._dataStride;
+}
+function FE3sStream_dataCount(){
+   return this._dataCount;
+}
+function FE3sStream_data(){
+   return this._data;
+}
 function FE3sStream_unserialize(p){
    var o = this;
    o._code = p.readString();
    o._elementDataCd = p.readUint8();
    o._elementCount = p.readUint8();
    o._elementNormalize = p.readBoolean();
-   var ds = o._dataStride = p.readUint8();
-   var dc = o._dataCount = p.readInt32();
-   var dl = o._dataLength = ds * dc;
-   var d = o._data = new ArrayBuffer(dl);
-   p.readBytes(d, 0, dl);
+   var dataStride = o._dataStride = p.readUint8();
+   var dataCount = o._dataCount = p.readInt32();
+   var dataLength = o._dataLength = dataStride * dataCount;
+   var data = o._data = new ArrayBuffer(dataLength);
+   p.readBytes(data, 0, dataLength);
 }
 function FE3sStream_dispose(){
    var o = this;
@@ -26481,10 +26664,11 @@ function FE3dMeshConsole_free(p){
 }
 function FE3dMeshDisplay(o){
    o = RClass.inherits(this, o, FE3dDisplay, MLinkerResource);
-   o._material   = null;
-   o._renderable = null;
-   o.renderable  = FE3dMeshDisplay_renderable;
-   o.load        = FE3dMeshDisplay_load;
+   o._material      = null;
+   o._renderable    = null;
+   o.renderable     = FE3dMeshDisplay_renderable;
+   o.load           = FE3dMeshDisplay_load;
+   o.reloadResource = FE3dMeshDisplay_reloadResource;
    return o;
 }
 function FE3dMeshDisplay_renderable(){
@@ -26494,6 +26678,10 @@ function FE3dMeshDisplay_load(resource){
    var o = this;
    o._resource = resource;
    o._matrix.assign(resource.matrix());
+}
+function FE3dMeshDisplay_reloadResource(){
+   var o = this;
+   o._matrix.assign(o._resource.matrix());
 }
 function FE3dMeshRenderable(o){
    o = RClass.inherits(this, o, FE3dRenderable, MLinkerResource);
@@ -26507,6 +26695,7 @@ function FE3dMeshRenderable(o){
    o.findTexture      = FE3dMeshRenderable_findTexture;
    o.textures         = FE3dMeshRenderable_textures;
    o.bones            = FE3dMeshRenderable_bones;
+   o.reloadResource   = FE3dMeshRenderable_reloadResource;
    o.process          = FE3dMeshRenderable_process;
    o.processDelay     = FE3dMeshRenderable_processDelay;
    o.update           = FE3dMeshRenderable_update;
@@ -26530,6 +26719,10 @@ function FE3dMeshRenderable_textures(){
 }
 function FE3dMeshRenderable_bones(p){
    return this._bones;
+}
+function FE3dMeshRenderable_reloadResource(){
+   var o = this;
+   o._matrix.assign(o._resource.matrix());
 }
 function FE3dMeshRenderable_process(p){
    var o = this;

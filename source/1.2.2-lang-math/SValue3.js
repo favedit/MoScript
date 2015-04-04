@@ -17,7 +17,11 @@ function SValue3(x, y, z){
    o.z           = RRuntime.nvl(z, 0);
    //..........................................................
    // @method
+   o.isEmpty     = SValue3_isEmpty;
+   // @method
    o.assign      = SValue3_assign;
+   o.setMin      = SValue3_setMin;
+   o.setMax      = SValue3_setMax;
    o.set         = SValue3_set;
    // @method
    o.absolute    = SValue3_absolute;
@@ -32,6 +36,17 @@ function SValue3(x, y, z){
    return o;
 }
 
+//============================================================
+// <T>判断是否为空。</T>
+//
+// @method
+// @return Boolean 是否为空
+//============================================================
+function SValue3_isEmpty(p){
+   var o = this;
+   return (o.x == 0) && (o.y == 0) && (o.z == 0);
+}
+
 //==========================================================
 // <T>接收数据内容。</T>
 //
@@ -43,6 +58,30 @@ function SValue3_assign(p){
    o.x = p.x;
    o.y = p.y;
    o.z = p.z;
+}
+
+//==========================================================
+// <T>设置最小数据。</T>
+//
+// @method
+//==========================================================
+function SValue3_setMin(){
+   var o = this;
+   o.x = Number.MIN_VALUE;
+   o.y = Number.MIN_VALUE;
+   o.z = Number.MIN_VALUE;
+}
+
+//==========================================================
+// <T>设置最大数据。</T>
+//
+// @method
+//==========================================================
+function SValue3_setMax(){
+   var o = this;
+   o.x = Number.MAX_VALUE;
+   o.y = Number.MAX_VALUE;
+   o.z = Number.MAX_VALUE;
 }
 
 //==========================================================

@@ -22,12 +22,12 @@ function SMatrix4x4(){
    o.attachData      = SMatrix4x4_attachData;
    o.appendData      = SMatrix4x4_appendData;
    // @method
-   o.translate       = SMatrix4x4_translate;
-   o.rotationX       = SMatrix4x4_rotationX;
-   o.rotationY       = SMatrix4x4_rotationY;
-   o.rotationZ       = SMatrix4x4_rotationZ;
-   o.rotation        = SMatrix4x4_rotation;
-   o.scale           = SMatrix4x4_scale;
+   o.addTranslate    = SMatrix4x4_addTranslate;
+   o.addRotationX    = SMatrix4x4_addRotationX;
+   o.addRotationY    = SMatrix4x4_addRotationY;
+   o.addRotationZ    = SMatrix4x4_addRotationZ;
+   o.addRotation     = SMatrix4x4_addRotation;
+   o.addScale        = SMatrix4x4_addScale;
    // @method
    o.invert          = SMatrix4x4_invert;
    o.transform       = SMatrix4x4_transform;
@@ -187,7 +187,7 @@ function SMatrix4x4_appendData(p){
 // @param y:Float Y坐标
 // @param z:Float Z坐标
 //============================================================
-function SMatrix4x4_translate(x, y, z){
+function SMatrix4x4_addTranslate(x, y, z){
    var v = RArray.array16;
    v[ 0] = 1;
    v[ 1] = 0;
@@ -218,7 +218,7 @@ function SMatrix4x4_translate(x, y, z){
 // @method
 // @param p:value:Float 弧度
 //============================================================
-function SMatrix4x4_rotationX(p){
+function SMatrix4x4_addRotationX(p){
    // 计算旋转
    var rs = Math.sin(p);
    var rc = Math.cos(p);
@@ -253,7 +253,7 @@ function SMatrix4x4_rotationX(p){
 // @method
 // @param p:value:Float 弧度
 //============================================================
-function SMatrix4x4_rotationY(p){
+function SMatrix4x4_addRotationY(p){
    // 计算旋转
    var rs = Math.sin(p);
    var rc = Math.cos(p);
@@ -288,7 +288,7 @@ function SMatrix4x4_rotationY(p){
 // @method
 // @param p:value:Float 弧度
 //============================================================
-function SMatrix4x4_rotationZ(p){
+function SMatrix4x4_addRotationZ(p){
    // 计算旋转
    var rs = Math.sin(p);
    var rc = Math.cos(p);
@@ -325,7 +325,7 @@ function SMatrix4x4_rotationZ(p){
 // @param y:Float Y弧度
 // @param z:Float Z弧度
 //============================================================
-function SMatrix4x4_rotation(x, y, z){
+function SMatrix4x4_addRotation(x, y, z){
    // 计算旋转
    var rsx = Math.sin(x);
    var rcx = Math.cos(x);
@@ -362,7 +362,7 @@ function SMatrix4x4_rotation(x, y, z){
 // @param y:Float Y比例
 // @param z:Float Z比例
 //============================================================
-function SMatrix4x4_scale(x, y, z){
+function SMatrix4x4_addScale(x, y, z){
    var v = RArray.array16;
    v[ 0] = x;
    v[ 1] = 0;

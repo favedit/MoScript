@@ -334,7 +334,7 @@ function FUiMenuButtonSplit(o){
    o.onBuild     = FUiMenuButtonSplit_onBuild;
    return o;
 }
-function FUiToolButtonSplit_onBuild(p){
+function FUiMenuButtonSplit_onBuild(p){
    var o = this;
    o.__base.FUiControl.onBuild.call(o, p);
    o._hPanel.className = o.styleName('Panel');
