@@ -22046,11 +22046,10 @@ function FE3sMeshConsole_loadByCode(p){
    s.set(p, r);
    return r;
 }
-function FE3sMeshConsole_update(p){
+function FE3sMeshConsole_update(config){
    var o = this;
-   var u = RBrowser.hostPath(o._serviceUrl + '?action=update&date=' + RDate.format());
-   var xc = RConsole.find(FXmlConsole);
-   var r = xc.send(u, p);
+   var url = RBrowser.hostPath(o._serviceUrl + '?action=update&date=' + RDate.format());
+   return RConsole.find(FXmlConsole).sendAsync(url, config);
 }
 function FE3sMeshConsole_dispose(){
    var o = this;

@@ -262,12 +262,12 @@ function FUiTreeNode_setLabel(p){
       var s = '';
       if(!RString.isEmpty(o._label)){
          s = '&nbsp;' + o._label;
-         if(o._tag){
-            s += '&nbsp;<FONT color=blue>(' + o._tag + ')</FONT>';
-         }
-         if(o._note){
-            s += '&nbsp;<FONT color=green>[ ' + o._note + ' ]</FONT>';
-         }
+      }
+      if(!RString.isEmpty(o._tag)){
+         s += '&nbsp;<FONT color=blue>(' + o._tag + ')</FONT>';
+      }
+      if(!RString.isEmpty(o._note)){
+         s += '&nbsp;<FONT color=green>[ ' + o._note + ' ]</FONT>';
       }
       h.innerHTML = s;
    }

@@ -365,8 +365,8 @@ function FDsMeshCanvas_onMeshLoad(p){
    lc.update();
    // 加载完成
    o.processLoadListener(o);
-   // 窗口允许
-   RWindow.enable();
+   // 隐藏处理
+   RConsole.find(FUiDesktopConsole).hide();
 }
 
 //==========================================================
@@ -814,7 +814,7 @@ function FDsMeshCanvas_capture(){
    RStage.process();
    // 上传图片
    var url = '/cloud.content.resource.preview.wv?do=upload&type_cd=mesh&guid=' + guid + '&width=' + width + '&height=' + height;
-   RConsole.find(FHttpConsole).send(url, data.buffer);
+   return RConsole.find(FHttpConsole).send(url, data.buffer);
 }
 
 //==========================================================
@@ -824,7 +824,9 @@ function FDsMeshCanvas_capture(){
 //==========================================================
 function FDsMeshCanvas_loadByGuid(guid){
    var o = this;
-   RWindow.disable();
+   // 显示加载进度
+   RConsole.find(FUiDesktopConsole).showLoading();
+   // 释放网格
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
       rmc.free(o._activeSpace);
@@ -845,7 +847,9 @@ function FDsMeshCanvas_loadByGuid(guid){
 //==========================================================
 function FDsMeshCanvas_loadByCode(p){
    var o = this;
-   RWindow.disable();
+   // 显示加载进度
+   RConsole.find(FUiDesktopConsole).showLoading();
+   // 释放网格
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
       rmc.free(o._activeSpace);

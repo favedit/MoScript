@@ -121,15 +121,14 @@ function FE3sMeshConsole_loadByCode(p){
 //==========================================================
 // <T>更新处理。</T>
 //
-// @param p:config:TXmlNode 配置节点
+// @param config:TXmlNode 配置节点
 //==========================================================
-function FE3sMeshConsole_update(p){
+function FE3sMeshConsole_update(config){
    var o = this;
    // 生成地址
-   var u = RBrowser.hostPath(o._serviceUrl + '?action=update&date=' + RDate.format());
+   var url = RBrowser.hostPath(o._serviceUrl + '?action=update&date=' + RDate.format());
    // 发送数据
-   var xc = RConsole.find(FXmlConsole);
-   var r = xc.send(u, p);
+   return RConsole.find(FXmlConsole).sendAsync(url, config);
 }
 
 //==========================================================

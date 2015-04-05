@@ -6397,7 +6397,7 @@ function FDsMeshCanvas_onMeshLoad(p){
    lc.lookAt(0, 0, 0);
    lc.update();
    o.processLoadListener(o);
-   RWindow.enable();
+   RConsole.find(FUiDesktopConsole).hide();
 }
 function FDsMeshCanvas_oeResize(p){
    var o = this;
@@ -6701,11 +6701,11 @@ function FDsMeshCanvas_capture(){
    o.switchSize(switchWidth, switchHeight);
    RStage.process();
    var url = '/cloud.content.resource.preview.wv?do=upload&type_cd=mesh&guid=' + guid + '&width=' + width + '&height=' + height;
-   RConsole.find(FHttpConsole).send(url, data.buffer);
+   return RConsole.find(FHttpConsole).send(url, data.buffer);
 }
 function FDsMeshCanvas_loadByGuid(guid){
    var o = this;
-   RWindow.disable();
+   RConsole.find(FUiDesktopConsole).showLoading();
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
       rmc.free(o._activeSpace);
@@ -6717,7 +6717,7 @@ function FDsMeshCanvas_loadByGuid(guid){
 }
 function FDsMeshCanvas_loadByCode(p){
    var o = this;
-   RWindow.disable();
+   RConsole.find(FUiDesktopConsole).showLoading();
    var rmc = RConsole.find(FE3dMeshConsole);
    if(o._activeSpace != null){
       rmc.free(o._activeSpace);
@@ -7625,7 +7625,9 @@ function FDsMeshMenuBar(o){
    o._controlSaveButton    = null;
    o._controlCaptureButton = null;
    o.onBuilded             = FDsMeshMenuBar_onBuilded;
+   o.onSaveLoad            = FDsMeshMenuBar_onSaveLoad;
    o.onSaveClick           = FDsMeshMenuBar_onSaveClick;
+   o.onCaptureLoad         = FDsMeshMenuBar_onCaptureLoad;
    o.onCaptureClick        = FDsMeshMenuBar_onCaptureClick;
    o.construct             = FDsMeshMenuBar_construct;
    o.dispose               = FDsMeshMenuBar_dispose;
@@ -7637,17 +7639,27 @@ function FDsMeshMenuBar_onBuilded(p){
    o._controlSaveButton.addClickListener(o, o.onSaveClick);
    o._controlCaptureButton.addClickListener(o, o.onCaptureClick);
 }
+function FDsMeshMenuBar_onSaveLoad(event){
+   RWindow.enable();
+}
 function FDsMeshMenuBar_onSaveClick(p){
    var o = this;
+   RWindow.disable();
    var space = o._frameSet._activeSpace;
    var resource = space.resource();
    var xconfig = new TXmlNode();
    resource.saveConfig(xconfig);
-   RConsole.find(FE3sMeshConsole).update(xconfig);
+   var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
+   connection.addLoadListener(o, o.onSaveLoad);
 }
-function FDsMeshMenuBar_onCaptureClick(p){
+function FDsMeshMenuBar_onCaptureLoad(event){
+   RWindow.enable();
+}
+function FDsMeshMenuBar_onCaptureClick(event){
    var o = this;
-   o._frameSet._canvas.capture();
+   RWindow.disable();
+   var connection = o._frameSet._canvas.capture();
+   connection.addLoadListener(o, o.onCaptureLoad);
 }
 function FDsMeshMenuBar_construct(){
    var o = this;

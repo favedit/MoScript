@@ -1,0 +1,49 @@
+﻿资源分为2种。
+
+元数据，使用二进制存储，格式不会改变。
+- 流数据 Stream（顶点流/蒙皮数据/索引流等）
+   - 顶点/颜色（含透明度）/纹理1/纹理2/法线/副法线/切线/骨头索引/骨头权重/索引16/索引32 -> 为标准结构
+   - 自定义代码 -> 扩展结构，需要自己在Shader中实现作用
+- 跟踪数据 Track （描述时间段内的空间变换信息）
+
+描述数据，使用XML存储，使用TagName表示类型，type表示自定义类型，但是必须实现TagName类型的接口。
+   (XML使用快速序列化存储。（二进制数据），可以避免客户端再解析。)
+- Bitmap 位图
+   - Image 图片 （品质相关）
+- Texutre 纹理
+   - Bitmap 位图
+- Theme 主题
+   - MaterialGroup 材质组
+      - Material 材质
+- Skeleton 骨骼
+   - Bone 骨头
+- Animation 动画结构
+   - Frames 帧集合
+   - Movie 时间分割
+- Geometry 几何体
+   - Mesh 网格
+- Space，具有可显示的空间结构
+   - Mesh 网格 （单网格结构）
+   - Model 模型 （多网格结构）
+   - Template 模板
+   - Scene 场景 （不含逻辑）
+- Project 项目
+   - Script 脚本
+   - Sprite 精灵
+      - EventListener 事件监听
+      - EventProcessor 事件处理
+   - Scene 场景
+
+
+空间结构
+   Object 对象
+      Component 非现实对象
+         Renderable 可渲染对象
+         Drawable 可绘制对象
+            Display 可显示对象
+               DisplayContainer 可显示容器
+                  DisplayLayer 可显示层
+                     Stage 舞台
+         Region 绘制区域
+      Console 控制台
+         FStageConsole 舞台控制台

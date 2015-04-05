@@ -886,6 +886,132 @@ function FResultConsole_checkService(config){
    }
    return true;
 }
+function FUiDesktopConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd         = EScope.Local;
+   o._maskVisible     = false;
+   o._statusEnable    = true;
+   o._loadingVisible  = false;
+   o._progressVisible = false;
+   o._progressBar     = null;
+   o._hMaskPanel      = null;
+   o.construct        = FUiDesktopConsole_construct;
+   o.getMaskPanel     = FUiDesktopConsole_getMaskPanel;
+   o.getProgressBar   = FUiDesktopConsole_getProgressBar;
+   o.getLoadingPanel  = FUiDesktopConsole_getLoadingPanel;
+   o.setMaskVisible   = FUiDesktopConsole_setMaskVisible;
+   o.isEnable         = FUiDesktopConsole_isEnable;
+   o.enable           = FUiDesktopConsole_enable;
+   o.disable          = FUiDesktopConsole_disable;
+   o.showLoading      = FUiDesktopConsole_showLoading;
+   o.showProgress     = FUiDesktopConsole_showProgress;
+   o.hide             = FUiDesktopConsole_hide;
+   return o;
+}
+function FUiDesktopConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+}
+function FUiDesktopConsole_getMaskPanel(){
+   var o = this;
+   var hDocument = top.RWindow._hDocument;
+   var hPanel = o._hMaskPanel;
+   if(!hPanel){
+      hPanel = o._hMaskPanel = RBuilder.createTable(hDocument, 'FUiDesktopConsole_MaskPanel');
+      hPanel.style.zIndex = 5000;
+      var hInnerPanel = o._hMaskInnerPanel = RBuilder.appendTableRowCell(hPanel);
+      hInnerPanel.align = 'center';
+      hInnerPanel.vAlign = 'middle';
+   }
+   return hPanel;
+}
+function FUiDesktopConsole_getLoadingPanel(){
+   var o = this;
+   var hDocument = top.RWindow._hDocument;
+   var hPanel = o._hLoadingPanel;
+   if(!hPanel){
+      hPanel = o._hLoadingPanel = RBuilder.createTable(hDocument);
+      var hCell = RBuilder.appendTableRowCell(hPanel);
+      var hIcon = o._hLoadingIcon = RBuilder.appendIcon(hCell);
+      hIcon.src = RResource.iconPath('control.RWindow_Loading');
+      var hCell = RBuilder.appendTableRowCell(hPanel);
+      hCell.align = 'center';
+      hCell.style.color = '#FFFFFF';
+      RHtml.textSet(hCell, '正在努力加载中，请稍等 ...');
+   }
+   return hPanel;
+}
+function FUiDesktopConsole_getProgressBar(){
+   var o = this;
+   var progressBar = o._progressBar;
+   if(!progressBar){
+      progressBar = o._progressBar = RClass.create(FUiProgressBar);
+      progressBar.build(top.RWindow._hDocument);
+   }
+   return progressBar;
+}
+function FUiDesktopConsole_setMaskVisible(visible){
+   var o = this;
+   if(o._maskVisible != visible){
+      var hDocument = top.RWindow._hDocument;
+      var hBody = hDocument.body;
+      var hMaskPanel = o.getMaskPanel();
+      if(visible){
+         var hStyle = hMaskPanel.style;
+         hStyle.left = '0px';
+         hStyle.top = '0px';
+         hBody.appendChild(hMaskPanel);
+      }else{
+         hBody.removeChild(hMaskPanel);
+      }
+   }
+   o._maskVisible = visible;
+}
+function FUiDesktopConsole_isEnable(){
+   return this._statusEnable;
+}
+function FUiDesktopConsole_enable(){
+   var o = this;
+   o._disableDeep--;
+   if(o._disableDeep == 0){
+      o.setEnable(true);
+   }
+}
+function FUiDesktopConsole_disable(){
+   var o = this;
+   if(o._disableDeep == 0){
+      o.setEnable(false);
+   }
+   o._disableDeep++;
+}
+function FUiDesktopConsole_showLoading(){
+   var o = this;
+   o.setMaskVisible(true);
+   if(!o._loadingVisible){
+      var hLoadingPanel = o.getLoadingPanel();
+      o._hMaskInnerPanel.appendChild(hLoadingPanel);
+      o._loadingVisible = true;
+   }
+}
+function FUiDesktopConsole_showProgress(rate){
+   var o = this;
+   o.setMaskVisible(true);
+   if(!o._progressVisible){
+      var hMaskPanel = o.getMaskPanel();
+      var progressBar = o.getProgressBar();
+      hMaskPanel.appendChild(progressBar._hPanel);
+      o._progressVisible = true;
+   }
+}
+function FUiDesktopConsole_hide(){
+   var o = this;
+   if(o._loadingVisible){
+      var hLoadingPanel = o.getLoadingPanel();
+      o._hMaskInnerPanel.removeChild(hLoadingPanel);
+      o._loadingVisible  = false;
+   }
+   o.setMaskVisible(false);
+}
 function FUiPopupConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd       = EScope.Local;

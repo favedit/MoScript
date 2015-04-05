@@ -17,7 +17,9 @@ function FDsMeshMenuBar(o){
    // @event
    o.onBuilded             = FDsMeshMenuBar_onBuilded;
    // @event
+   o.onSaveLoad            = FDsMeshMenuBar_onSaveLoad;
    o.onSaveClick           = FDsMeshMenuBar_onSaveClick;
+   o.onCaptureLoad         = FDsMeshMenuBar_onCaptureLoad;
    o.onCaptureClick        = FDsMeshMenuBar_onCaptureClick;
    //..........................................................
    // @method
@@ -43,6 +45,16 @@ function FDsMeshMenuBar_onBuilded(p){
 }
 
 //==========================================================
+// <T>保存按键加载处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsMeshMenuBar_onSaveLoad(event){
+   RWindow.enable();
+}
+
+//==========================================================
 // <T>保存按键处理。</T>
 //
 // @method
@@ -50,24 +62,38 @@ function FDsMeshMenuBar_onBuilded(p){
 //==========================================================
 function FDsMeshMenuBar_onSaveClick(p){
    var o = this;
+   RWindow.disable();
    var space = o._frameSet._activeSpace;
    var resource = space.resource();
    // 存储配置
    var xconfig = new TXmlNode();
    resource.saveConfig(xconfig);
    // 更新处理
-   RConsole.find(FE3sMeshConsole).update(xconfig);
+   var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
+   connection.addLoadListener(o, o.onSaveLoad);
+}
+
+//==========================================================
+// <T>捕捉图像加载处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsMeshMenuBar_onCaptureLoad(event){
+   RWindow.enable();
 }
 
 //==========================================================
 // <T>捕捉图像处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsMeshMenuBar_onCaptureClick(p){
+function FDsMeshMenuBar_onCaptureClick(event){
    var o = this;
-   o._frameSet._canvas.capture();
+   RWindow.disable();
+   var connection = o._frameSet._canvas.capture();
+   connection.addLoadListener(o, o.onCaptureLoad);
 }
 
 //==========================================================

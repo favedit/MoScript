@@ -4660,6 +4660,132 @@ function FResultConsole_checkService(config){
    }
    return true;
 }
+function FUiDesktopConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd         = EScope.Local;
+   o._maskVisible     = false;
+   o._statusEnable    = true;
+   o._loadingVisible  = false;
+   o._progressVisible = false;
+   o._progressBar     = null;
+   o._hMaskPanel      = null;
+   o.construct        = FUiDesktopConsole_construct;
+   o.getMaskPanel     = FUiDesktopConsole_getMaskPanel;
+   o.getProgressBar   = FUiDesktopConsole_getProgressBar;
+   o.getLoadingPanel  = FUiDesktopConsole_getLoadingPanel;
+   o.setMaskVisible   = FUiDesktopConsole_setMaskVisible;
+   o.isEnable         = FUiDesktopConsole_isEnable;
+   o.enable           = FUiDesktopConsole_enable;
+   o.disable          = FUiDesktopConsole_disable;
+   o.showLoading      = FUiDesktopConsole_showLoading;
+   o.showProgress     = FUiDesktopConsole_showProgress;
+   o.hide             = FUiDesktopConsole_hide;
+   return o;
+}
+function FUiDesktopConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+}
+function FUiDesktopConsole_getMaskPanel(){
+   var o = this;
+   var hDocument = top.RWindow._hDocument;
+   var hPanel = o._hMaskPanel;
+   if(!hPanel){
+      hPanel = o._hMaskPanel = RBuilder.createTable(hDocument, 'FUiDesktopConsole_MaskPanel');
+      hPanel.style.zIndex = 5000;
+      var hInnerPanel = o._hMaskInnerPanel = RBuilder.appendTableRowCell(hPanel);
+      hInnerPanel.align = 'center';
+      hInnerPanel.vAlign = 'middle';
+   }
+   return hPanel;
+}
+function FUiDesktopConsole_getLoadingPanel(){
+   var o = this;
+   var hDocument = top.RWindow._hDocument;
+   var hPanel = o._hLoadingPanel;
+   if(!hPanel){
+      hPanel = o._hLoadingPanel = RBuilder.createTable(hDocument);
+      var hCell = RBuilder.appendTableRowCell(hPanel);
+      var hIcon = o._hLoadingIcon = RBuilder.appendIcon(hCell);
+      hIcon.src = RResource.iconPath('control.RWindow_Loading');
+      var hCell = RBuilder.appendTableRowCell(hPanel);
+      hCell.align = 'center';
+      hCell.style.color = '#FFFFFF';
+      RHtml.textSet(hCell, '正在努力加载中，请稍等 ...');
+   }
+   return hPanel;
+}
+function FUiDesktopConsole_getProgressBar(){
+   var o = this;
+   var progressBar = o._progressBar;
+   if(!progressBar){
+      progressBar = o._progressBar = RClass.create(FUiProgressBar);
+      progressBar.build(top.RWindow._hDocument);
+   }
+   return progressBar;
+}
+function FUiDesktopConsole_setMaskVisible(visible){
+   var o = this;
+   if(o._maskVisible != visible){
+      var hDocument = top.RWindow._hDocument;
+      var hBody = hDocument.body;
+      var hMaskPanel = o.getMaskPanel();
+      if(visible){
+         var hStyle = hMaskPanel.style;
+         hStyle.left = '0px';
+         hStyle.top = '0px';
+         hBody.appendChild(hMaskPanel);
+      }else{
+         hBody.removeChild(hMaskPanel);
+      }
+   }
+   o._maskVisible = visible;
+}
+function FUiDesktopConsole_isEnable(){
+   return this._statusEnable;
+}
+function FUiDesktopConsole_enable(){
+   var o = this;
+   o._disableDeep--;
+   if(o._disableDeep == 0){
+      o.setEnable(true);
+   }
+}
+function FUiDesktopConsole_disable(){
+   var o = this;
+   if(o._disableDeep == 0){
+      o.setEnable(false);
+   }
+   o._disableDeep++;
+}
+function FUiDesktopConsole_showLoading(){
+   var o = this;
+   o.setMaskVisible(true);
+   if(!o._loadingVisible){
+      var hLoadingPanel = o.getLoadingPanel();
+      o._hMaskInnerPanel.appendChild(hLoadingPanel);
+      o._loadingVisible = true;
+   }
+}
+function FUiDesktopConsole_showProgress(rate){
+   var o = this;
+   o.setMaskVisible(true);
+   if(!o._progressVisible){
+      var hMaskPanel = o.getMaskPanel();
+      var progressBar = o.getProgressBar();
+      hMaskPanel.appendChild(progressBar._hPanel);
+      o._progressVisible = true;
+   }
+}
+function FUiDesktopConsole_hide(){
+   var o = this;
+   if(o._loadingVisible){
+      var hLoadingPanel = o.getLoadingPanel();
+      o._hMaskInnerPanel.removeChild(hLoadingPanel);
+      o._loadingVisible  = false;
+   }
+   o.setMaskVisible(false);
+}
 function FUiPopupConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd       = EScope.Local;
@@ -7604,6 +7730,460 @@ function FUiColorPower_dispose(t){
    var o = this;
    o.__base.FUiEditControl.dispose.call(o, t);
 }
+function FUiDateTime(o){
+   o = RClass.inherits(this, o, FUiEditControl, MUiDropable);
+   o.editDispMode = RClass.register(o, new APtySet('editDisplay', 'editDate', EDateTimeMode.Display));
+   o.editYear     = RClass.register(o, new APtySet('editYear', 'editDate', EDateTimeMode.Year));
+   o.editMonth    = RClass.register(o, new APtySet('editMonth', 'editDate', EDateTimeMode.Month));
+   o.editDay      = RClass.register(o, new APtySet('editDay', 'editDate', EDateTimeMode.Day));
+   o._date        = null;
+   o.borderStyle  = EUiBorder.RoundDrop;
+   o.lsnEditEnd   = null;
+   o.hYearPanel   = null;
+   o.hYear        = null;
+   o.hMonthPanel  = null;
+   o.hMonth       = null;
+   o.hDayPanel    = null;
+   o.hDay         = null;
+   o.onKeyPress   = FUiDateTime_onKeyPress;
+   o.onEditEnd    = FUiDateTime_onEditEnd;
+   o.onBuildEdit  = FUiDateTime_onBuildEdit;
+   o.oeSaveValue  = FUiDateTime_oeSaveValue;
+   o.construct    = FUiDateTime_construct;
+   o.formatValue  = FUiDateTime_formatValue;
+   o.text         = FUiDateTime_text;
+   o.setText      = FUiDateTime_setText;
+   o.validText    = FUiDateTime_validText;
+   o.setEditable  = FUiDateTime_setEditable;
+   o.refreshStyle = FUiDateTime_refreshStyle;
+   o.drop         = FUiDateTime_drop;
+   o.dispose      = FUiDateTime_dispose;
+   return o;
+}
+function FUiDateTime_onKeyPress(e){
+   if(!RString.inChars(String.fromCharCode(e.keyCode), RDate.Chars)){
+      RKey.eventClear(e);
+   }
+}
+function FUiDateTime_onEditEnd(e){
+   var o = this;
+   if(e){
+      o.set(e.get());
+   }
+   o.onDataEditEnd(o);
+}
+function FUiDateTime_onBuildEdit(b){
+   var o = this;
+   var htb = RBuilder.appendTable(b.hPanel);
+   htb.width = '100%';
+   htb.style.tableLayout = 'fixed';
+   var hr = o.hEdit = htb.insertRow();
+   o.onBuildChange(hr.insertCell())
+   var hc = oonDateDoubleClickPanel = hr.insertCell();
+   hc.width = '40%';
+   hc.style.padding = '0 1';
+   var he = o.hYear = RBuilder.appendEdit(hc);
+   he.maxLength = 4;
+   he.style.border = 0;
+   he.style.width = '100%';
+   he.style.textAlign = 'right';
+   var hc = o.hYearSplit = hr.insertCell();
+   hc.width = 5;
+   hc.innerText = '-';
+   o.hYear.style.display = o.editYear?'block':'none'
+   o.hYearSplit.style.display = o.editYear?'block':'none'
+   var hc = o.hMonthPanel = hr.insertCell();
+   hc.width = '20%';
+   hc.style.padding = '0 1';
+   var he = o.hMonth = RBuilder.appendEdit(hc);
+   he.maxLength = 2;
+   he.style.border = 0;
+   he.style.width = '100%';
+   he.style.textAlign = 'right';
+   var hc = o.hMonthSplit = hr.insertCell();
+   hc.width = 5;
+   hc.innerText = '-';
+   o.hMonth.style.display = o.editMonth?'block':'none';
+   o.hMonthSplit.style.display = o.editDay?'block':'none';
+   var hc = o.hDayPanel = hr.insertCell();
+   hc.width = '20%';
+   hc.style.padding = '0 1'
+   var he = o.hDay = RBuilder.appendEdit(hc);
+   he.maxLength = 2;
+   he.style.border = 0;
+   he.style.width = '100%';
+   he.style.textAlign = 'right';
+   o.hDay.style.display = o.editDay?'block':'none';
+}
+function FUiDateTime_oeSaveValue(e){
+   var o = this;
+   var dn = RString.nvl(o.dataCode, o.dataName);
+   if(!RString.isEmpty(dn)){
+      var vs = e.values;
+      var v = vs.get(dn);
+      if(v){
+         vs.set(dn, o.reget().substring(0, 8) + v.substring(8));
+      }else{
+         vs.set(dn, o.reget());
+      }
+   }
+   return EEventStatus.Stop;
+}
+function FUiDateTime_construct(){
+   var o = this;
+   o.base.FUiEditControl.construct.call(o);
+   o._date = new TDate();
+   o.lsnEditEnd = new TListener(o, o.onEditEnd);
+}
+function FUiDateTime_formatValue(t){
+   if(t){
+      var o = this;
+      if(t.toLowerCase() == '@now'){
+         o._date.now();
+         return RDate.formatDate(o._date);
+      }else{
+         RDate.autoParse(o._date, t);
+         return RDate.formatDate(o._date);
+      }
+   }
+   return RString.nvl(t);
+}
+function FUiDateTime_text(){
+   var o = this;
+   o._date.setYear(o._date.year);
+   o._date.setMonth(o._date.month);
+   o._date.setDay(o._date.day);
+   return RDate.formatDate(o._date);
+}
+function FUiDateTime_setText(t){
+   var o = this;
+   if(t){
+      RDate.autoParse(o._date, t);
+      o.hYear.value = RInteger.format(o._date.year, 4);
+      o.hMonth.value = RInteger.format(o._date.month, 2);
+      o.hDay.value = RInteger.format(o._date.day, 2);
+   }else{
+      o.hYear.value = '';
+      o.hMonth.value = '';
+      o.hDay.value = '';
+   }
+}
+function FUiDateTime_validText(t){
+   return null;
+}
+function FUiDateTime_setEditable(v){
+   var o = this;
+   o.base.FUiEditControl.setEditable.call(o, v);
+   o.hYear.readOnly = !v;
+   o.hMonth.readOnly = !v;
+   o.hDay.readOnly = !v;
+}
+function FUiDateTime_refreshStyle(){
+   var o = this;
+   o.base.FUiEditControl.refreshStyle.call(o);
+   o.hYear.style.color = o._textColor;
+   o.hYear.style.backgroundColor = o._backColor;
+   o.hMonth.style.color = o._textColor;
+   o.hMonth.style.backgroundColor = o._backColor;
+   o.hDay.style.color = o._textColor;
+   o.hDay.style.backgroundColor = o._backColor;
+}
+function FUiDateTime_drop(){
+   var o = this;
+   if(o.canDrop() && o._editable){
+      var e = o.editor = RConsole.find(FEditConsole).focus(o, FUiDateTimeEditor, o.editRefer);
+      e.set(RDate.formatDate(o._date));
+      e.setYearVisible(o.editYear);
+      e.setMonthVisible(o.editMonth);
+      e.setDayVisible(o.editDay);
+      e.lsnEditEnd = o.lsnEditEnd;
+      e.show();
+   }
+}
+function FUiDateTime_dispose(){
+   var o = this;
+   o.base.FUiEditControl.dispose.call(o);
+   o._date = null;
+}
+function FUiDateTimeEditor(o){
+   o = RClass.inherits(this, o, FUiDropEditor);
+   o.date              = null;
+   o.years             = null;
+   o.months            = null;
+   o.days              = null;
+   o.hPanelDay         = null;
+   o.hPanelMonth       = null;
+   o.hPanelYear        = null;
+   o.hTitleDay         = null;
+   o.hTitleMonth       = null;
+   o.hTitleYear        = null;
+   o.onButtonEnter     = RClass.register(o, new AEventMouseEnter('onButtonEnter'), FUiDateTimeEditor_onButtonEnter);
+   o.onButtonLeave     = RClass.register(o, new AEventMouseLeave('onButtonLeave'), FUiDateTimeEditor_onButtonLeave);
+   o.onYearClick       = RClass.register(o, new AEventMouseDown('onYearClick'), FUiDateTimeEditor_onYearClick);
+   o.onMonthClick      = RClass.register(o, new AEventMouseDown('onMonthClick'), FUiDateTimeEditor_onMonthClick);
+   o.onDayClick        = RClass.register(o, new AEventMouseDown('onDayClick'), FUiDateTimeEditor_onDayClick);
+   o.onDateDoubleClick = RClass.register(o, new AEventDoubleClick('onDateDoubleClick'), FUiDateTimeEditor_onDateDoubleClick);
+   o.onNowClick        = RClass.register(o, new AEventMouseDown('onNowClick'), FUiDateTimeEditor_onNowClick);
+   o.onConfirmClick    = RClass.register(o, new AEventMouseDown('onConfirmClick'), FUiDateTimeEditor_onConfirmClick);
+   o.onBuildDrop       = FUiDateTimeEditor_onBuildDrop;
+   o.onBuildButton     = FUiDateTimeEditor_onBuildButton;
+   o.construct         = FUiDateTimeEditor_construct;
+   o.buildTitle        = FUiDateTimeEditor_buildTitle;
+   o.get               = FUiDateTimeEditor_get;
+   o.set               = FUiDateTimeEditor_set;
+   o.resetDay          = FUiDateTimeEditor_resetDay;
+   o.setYearVisible    = FUiDateTimeEditor_setYearVisible;
+   o.setMonthVisible   = FUiDateTimeEditor_setMonthVisible;
+   o.setDayVisible     = FUiDateTimeEditor_setDayVisible;
+   o.selectCell        = FUiDateTimeEditor_selectCell;
+   o.restore           = FUiDateTimeEditor_restore;
+   o.show              = FUiDateTimeEditor_show;
+   o.dispose           = FUiDateTimeEditor_dispose;
+   return o;
+}
+function FUiDateTimeEditor_onButtonEnter(e){
+   if(!e.hSource.isSelect){
+	  if(RString.isEmpty(e.hSource.innerText)){
+         e.hSource.style.backgroundColor = '#CCCCFF';
+	  }
+   }
+}
+function FUiDateTimeEditor_onButtonLeave(e){
+   if(!e.hSource.isSelect){
+      e.hSource.style.backgroundColor = '#FFFFFF';
+   }
+}
+function FUiDateTimeEditor_onYearClick(e){
+   var o = this;
+   o.date.setYear(e.hSource.innerText);
+   o.restore();
+   o.resetDay();
+}
+function FUiDateTimeEditor_onMonthClick(e){
+   var o = this;
+   o.date.setMonth(e.hSource.innerText);
+   o.restore();
+   o.resetDay();
+}
+function FUiDateTimeEditor_onDayClick(e){
+   var o = this;
+   if(!RString.equals(e.hSource.innerText, '.')){
+      o.date.setDay(e.hSource.innerText);
+      o.restore();
+   }
+}
+function FUiDateTimeEditor_onDateDoubleClick(){
+   this.onConfirmClick();
+}
+function FUiDateTimeEditor_onNowClick(){
+   var o = this;
+   o.date = new TDate();
+   o.editEnd();
+}
+function FUiDateTimeEditor_onConfirmClick(){
+   var o = this;
+   o.date.setYear(o.hYear.value);
+   o.date.setMonth(o.hMonth.value);
+   o.date.setDay(o.hDay.value);
+   o.editEnd();
+}
+function FUiDateTimeEditor_onBuildDrop(){
+   var o = this;
+   var hdp = o.hDropPanel;
+   hdp.width = 220;
+   o.attachEvent('onDateDoubleClick', hdp);
+   o.hTitleYear = o.buildTitle('Year', 4);
+   var hp = o.hPanelYear = o.hSelectPanel = RBuilder.appendTable(hdp);
+   hp.width = '100%';
+   for(var m=0; m<4; m++){
+      var hr = hp.insertRow();
+      for(var n=0; n<4; n++){
+         var hc = hr.insertCell();
+         hc.innerText = RInteger.format(2000 + 4*m+n, 2);
+         hc.align = 'center';
+         hc.style.padding = '1 6';
+         hc.style.cursor = 'hand';
+         hc.style.borderBottom = '1 solid #EEEEEE';
+         if(n < 5){
+            hc.style.borderRight = '1 solid #EEEEEE';
+         }
+         o.attachEvent('onButtonEnter', hc);
+         o.attachEvent('onButtonLeave', hc);
+         o.attachEvent('onYearClick', hc);
+         o.years.push(hc);
+      }
+   }
+   o.hTitleMonth = o.buildTitle('Month', 2);
+   var hp = o.hPanelMonth = o.hSelectPanel = RBuilder.appendTable(hdp);
+   hp.width = '100%';
+   for(var m=0; m<2; m++){
+      hr = hp.insertRow();
+      for(var n=0; n<6; n++){
+         var hc = hr.insertCell();
+         hc.innerText = RInteger.format(6*m+n+1, 2);
+         hc.align = 'center';
+         hc.style.cursor = 'hand';
+         hc.style.borderBottom = '1 solid #EEEEEE';
+         if(n < 5){
+            hc.style.borderRight = '1 solid #EEEEEE';
+         }
+         o.attachEvent('onButtonEnter', hc);
+         o.attachEvent('onButtonLeave', hc);
+         o.attachEvent('onMonthClick', hc);
+         o.months.push(hc);
+      }
+   }
+   o.hTitleDay = o.buildTitle('Day', 2);
+   var hp = o.hPanelDay = o.hSelectPanel = RBuilder.appendTable(hdp);
+   hp.width = '100%';
+   for(var m=0; m<5; m++){
+      hr = hp.insertRow();
+      for(var n=0; n<7; n++){
+         var day = 7*m+n+1;
+         if(day > 31){
+            continue;
+         }
+         var hc = hr.insertCell();
+         hc.innerText = RInteger.format(day, 2);
+         hc.align = 'center';
+         hc.style.borderBottom = '1 solid #EEEEEE';
+         hc.style.cursor = 'hand';
+         if(n < 5){
+            hc.style.borderRight = '1 solid #EEEEEE';
+         }
+         o.attachEvent('onButtonEnter', hc);
+         o.attachEvent('onButtonLeave', hc);
+         o.attachEvent('onDayClick', hc);
+         o.days.push(hc);
+      }
+   }
+}
+function FUiDateTimeEditor_onBuildButton(){
+   var o = this;
+   o.base.FUiDropEditor.onBuildButton.call(o);
+   var hf = RBuilder.appendTable(o.hButtonPanel);
+   hf.width = '100%';
+   hf.height = 20;
+   hf.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#EEEEEE', endColorStr='#FFFFFF', gradientType='0')";
+   var hr = hf.insertRow();
+   var hc = hr.insertCell();
+   hc.style.padding = '0 6';
+   var h = o.hNow = RBuilder.append(hc, 'SPAN');
+   h.style.cursor = 'hand';
+   o.attachEvent('onNowClick', h);
+   h.innerText = RContext.get('FDate:Now');
+   var hc = hr.insertCell();
+   hc.style.padding = '0 6';
+   hc.align = 'right';
+   var h = o.hNow = RBuilder.append(hc, 'SPAN');
+   h.style.cursor = 'hand';
+   o.attachEvent('onConfirmClick', h);
+   h.innerText = RContext.get('FDate:Confirm');
+}
+function FUiDateTimeEditor_construct(){
+   var o = this;
+   o.base.FUiDropEditor.construct.call(o);
+   o.date = new TDate();
+   o.years = new TList();
+   o.months = new TList();
+   o.days = new TList();
+}
+function FUiDateTimeEditor_buildTitle(n, ml){
+   var o = this;
+   var hf = RBuilder.appendTable(o.hDropPanel);
+   hf.width = '100%';
+   hf.style.borderBottom = '1 solid #999999';
+   hf.style.filter = "progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF', endColorStr='#E5FAFE', gradientType='0')";
+   hf.style.backgroundColor = '#F8F8F8';
+   hf.style.padding = '2 6';
+   var hr = hf.insertRow();
+   var hc = hr.insertCell();
+   hc.width = 60;
+   var he = o['h' + n] = RBuilder.appendEdit(hc);
+   he.style.width = '100%';
+   he.style.textAlign = 'right';
+   he.style.border = '1 solid #CCCCCC';
+   he.maxLength = ml;
+   var hc = hr.insertCell();
+   hc.innerText = RContext.get('FDate:' + n);
+   return hf;
+}
+function FUiDateTimeEditor_get(){
+   return RDate.formatDate(this.date);
+}
+function FUiDateTimeEditor_set(v){
+   var o = this;
+   RDate.autoParse(o.date, v);
+   o.restore();
+}
+function FUiDateTimeEditor_setYearVisible(v){
+   var o = this;
+   o.hPanelYear.style.display = v? 'block':'none';
+   o.hTitleYear.style.display = v? 'block':'none';
+}
+function FUiDateTimeEditor_setMonthVisible(v){
+   var o = this;
+   o.hPanelMonth.style.display = v? 'block':'none';
+   o.hTitleMonth.style.display = v? 'block':'none';
+}
+function FUiDateTimeEditor_setDayVisible(v){
+   var o = this;
+   o.hPanelDay.style.display = v? 'block':'none';
+   o.hTitleDay.style.display = v? 'block':'none';
+}
+function FUiDateTimeEditor_show(v){
+   var o = this;
+   o.base.FUiDropEditor.show.call(o, v);
+   var hp = o.hPanel;
+   var hbf = o.hBorderForm;
+   var s = o.source;
+   var r = s.getEditRange();
+   hp.style.pixelLeft = r.x;
+   hp.style.pixelTop = r.y + r.height;
+   hp.style.pixelWidth = 220;
+   o.base.MShadow.show.call(o);
+}
+function FUiDateTimeEditor_resetDay(){
+   var o = this;
+   var monthDays = this.date.monthDays();
+   for(var n=0; n<o.days.count; n++){
+      var hd = o.days.get(n);
+      if(n >= monthDays){
+         hd.innerText = '.';
+      }else{
+    	 hd.innerText = RInteger.format(n+1, 2);
+      }
+   }
+}
+function FUiDateTimeEditor_selectCell(ls, v){
+   var c = ls.count;
+   for(var n=0; n<c; n++){
+      var h = ls.get(n);
+      if(h.innerText == v){
+         h.style.color = '#FFFFFF';
+         h.style.backgroundColor = '#9999EE';
+         h.isSelect = true;
+      }else{
+         h.style.color = '#000000';
+         h.style.backgroundColor = '#FFFFFF';
+         h.isSelect = false;
+      }
+   }
+}
+function FUiDateTimeEditor_restore(){
+   var o = this;
+   o.hYear.value = o.date.year;
+   o.hMonth.value = o.date.month;
+   o.hDay.value = o.date.day;
+   o.selectCell(o.years, o.date.year);
+   o.selectCell(o.months, o.date.month);
+   o.selectCell(o.days, o.date.day);
+}
+function FUiDateTimeEditor_dispose(){
+   var o = this;
+   o.base.FUiDropEditor.dispose.call(o);
+   o.hPanel = null;
+}
 function FUiDropEditor(o){
    o = RClass.inherits(this, o, FUiEditor, MUiShadow);
    o._stylePanel       = RClass.register(o, new AStyle('_stylePanel'));
@@ -10098,6 +10678,165 @@ function FUiPanel_onTitleClick(p){
    o._statusBody = s;
    o._hImage.src = RResource.iconPath(s ? o._imageMinus : o._imagePlus);
    RHtml.displaySet(o._hBody, s);
+}
+function FUiPicture(o){
+   o = RClass.inherits(this, o, FEditControl, MEditBorder, MDescEdit);
+   o.storeType         = RClass.register(o, new TPtyStr('storeType'));
+   o.storeCode         = RClass.register(o, new TPtyStr('storeCode'));
+   o.storeName         = RClass.register(o, new TPtyStr('storeName'));
+   o.editAdjust        = RClass.register(o, new TPtyInt('editAdjust'));
+   o.editMaxWidth      = RClass.register(o, new TPtyInt('editMaxWidth'));
+   o.editMaxHeight     = RClass.register(o, new TPtyInt('editMaxHeight'));
+   o.__seed            = 0;
+   o.attributes        = null;
+   o.border            = null;
+   o.borderStyle       = EUiBorder.Round;
+   o.onUploadMouseDown = RClass.register(o, new HMouseDown('onUploadMouseDown'), FUiPicture_onUploadMouseDown);
+   o.onFileUploaded    = FUiPicture_onFileUploaded;
+   o.onBuildEdit       = FUiPicture_onBuildEdit;
+   o.construct         = FUiPicture_construct;
+   o.makeIconPath      = FUiPicture_makeIconPath;
+   o.setText           = FUiPicture_setText;
+   o.setEditable       = FUiPicture_setEditable;
+   o.dispose           = FUiPicture_dispose;
+   return o;
+}
+function FUiPicture_onUploadMouseDown(e){
+   var o = this;
+   if(o._editable && !o._disbaled){
+      var uw = RConsole.find(FUploadConsole).findWindow();
+      uw.lsnsUploaded.register(o, o.onFileUploaded);
+      uw.typeCode = 'P';
+      uw.fileEdit = false;
+      uw.recordCode = o.recordCode;
+      uw.recordGuid = o.recordGuid;
+      uw.recordName = o.recordName;
+      uw.guid = o.guid;
+      uw.adjustWidth = o.editWidth;
+      uw.adjustHeight = o.editHeight;
+      uw.show();
+   }
+}
+function FUiPicture_onFileUploaded(s, g){
+   var o = this;
+   var as = g.attributes;
+   o.guid = as.get('GUID');
+   o.mime = as.get('MIME');
+   o.networkCode = as.get('NETWORK_CODE')
+   o.hImage.src = o.makeIconPath(o.guid, o.mime, o.networkCode) + '?' + RDate.format() + (++o.__seed);
+   o.hImage.style.display = 'block';
+}
+function FUiPicture_onBuildEdit(b){
+   var o = this;
+   var hif = o.hImageForm = o.hEdit = RBuilder.appendTable(b.hPanel);
+   hif.width = '100%';
+   hif.border = 1;
+   hif.height = '100%';
+   var hc = o.hImagePanel = hif.insertRow().insertCell();
+   hc.align = 'center';
+   hc.style.cursor = 'hand';
+   o.attachEvent('onUploadMouseDown', o.hImagePanel);
+   var h = o.hImage = RBuilder.append(hc, 'IMAGE');
+   h.style.border = '1 solid #CCCCCC';
+   h.style.display = 'none';
+   if(o.left>0 && o.top>0){
+      o.hPanel.style.position = 'absolute';
+   }
+}
+function FUiPicture_construct(){
+   var o = this;
+   o.base.FEditControl.construct.call(o);
+   o.attributes = new TAttributes();
+}
+function FUiPicture_makeIconPath(g, m, sc){
+   var o = this;
+   var s = o.recordCode + '/' + o.recordGuid + '/' + g + '.icon.' + m;
+   return top.RContext.context('/svr/' + sc.toLowerCase() + '/sys/' + RString.toLower(s));
+}
+function FUiPicture_setText(t){
+   var o = this;
+   var as = o.attributes;
+   as.clear();
+   var v = false;
+   if(!RString.isEmpty(t)){
+      as.unpack(t);
+      o.networkCode = as.get('nc');
+      o.recordCode = as.get('code');
+      o.recordGuid = as.get('guid');
+      o.recordName = as.get('name');
+      o.guid = as.get('ogid');
+      o.mime = as.get('mime');
+      if(o.guid && o.mime){
+         v = true;
+         o.hImage.src = o.makeIconPath(o.guid, o.mime, o.networkCode);
+      }
+   }
+   o.hImage.style.display = v ? 'block' : 'none';
+}
+function FUiPicture_setEditable(v){
+   var o = this;
+   o.base.FEditControl.setEditable.call(o, v);
+   if(v){
+      o.hImagePanel.style.cursor = 'hand';
+   }else{
+      o.hImagePanel.style.cursor = 'normal';
+   }
+}
+function FUiPicture_dispose(){
+   var o = this;
+   o.base.FEditControl.dispose.call(o);
+   o.hImage = null;
+}
+function FUiProgressBar(o){
+   o = RClass.inherits(this, o, FUiControl);
+   o._stylePanel  = RClass.register(o, new AStyle('_stylePanel'));
+   o._rate        = 0;
+   o._hForm       = null;
+   o.onBuildPanel = FUiProgressBar_onBuildPanel;
+   o.onBuild      = FUiProgressBar_onBuild;
+   o.get          = FUiProgressBar_get;
+   o.set          = FUiProgressBar_set;
+   o.dispose      = FUiProgressBar_dispose;
+   return o;
+}
+function FUiProgressBar_onBuildPanel(event){
+   var o = this;
+   o._hPanel = RBuilder.createTable(event, o.styleName('Panel'));
+}
+function FUiProgressBar_onBuild(event){
+   var o = this;
+   o.__base.FUiControl.onBuild.call(o, event);
+   var hLine = o._hLine = RBuilder.appendTableRow(o._hPanel);
+   o.hProgress = RBuilder.appendTableCell(hLine);
+   o.hEmpty = RBuilder.appendTableCell(hLine);
+}
+function FUiProgressBar_get(){
+   return this._rate;
+}
+function FUiProgressBar_set(value){
+   var o = this;
+   o._rate = value;
+   return;
+   var htb = o.hPanelForm;
+   if(!RString.isEmpty(value)){
+      htb.innerText = '';
+      htb.style.tableLayout  = 'fixed';
+      htb.height = 10;
+      var hr = htb.insertRow();
+      var v = RFloat.parse(RString.nvl(value));
+      v = v * 100;
+      v = v + "%";
+      var hc1 = hr.insertCell();
+      hc1.style.width = v;
+      hc1.style.backgroundColor = '#29BAD5';
+      var hc2 = hr.insertCell();
+      htb.title  = v;
+   }
+}
+function FUiProgressBar_dispose(){
+   var o = this;
+   o._hForm = RHtml.free(o._hForm);
+   o.__base.FUiControl.dispose.call(o);
 }
 function FUiRadio(o){
    o = RClass.inherits(this, o, FEditControl);
@@ -15787,12 +16526,12 @@ function FUiTreeNode_setLabel(p){
       var s = '';
       if(!RString.isEmpty(o._label)){
          s = '&nbsp;' + o._label;
-         if(o._tag){
-            s += '&nbsp;<FONT color=blue>(' + o._tag + ')</FONT>';
-         }
-         if(o._note){
-            s += '&nbsp;<FONT color=green>[ ' + o._note + ' ]</FONT>';
-         }
+      }
+      if(!RString.isEmpty(o._tag)){
+         s += '&nbsp;<FONT color=blue>(' + o._tag + ')</FONT>';
+      }
+      if(!RString.isEmpty(o._note)){
+         s += '&nbsp;<FONT color=green>[ ' + o._note + ' ]</FONT>';
       }
       h.innerHTML = s;
    }

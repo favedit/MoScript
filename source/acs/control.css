@@ -1239,3 +1239,14 @@
    background-color: #666666;
    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=60, style=0);
 }
+
+/* ------------------------------------------------------ */
+/* FUiDesktopConsole                                      */
+/* ------------------------------------------------------ */
+.FUiDesktopConsole_MaskPanel{
+   width: 100%;
+   height: 100%;
+   position: absolute;
+   background-color: rgba(210, 210, 210, 0.6);
+   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=20, style=0);
+}
