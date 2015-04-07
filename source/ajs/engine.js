@@ -970,16 +970,20 @@ function RStage_deactive(){
 function RStage_process(){
    var o = this;
    if(o._active){
-      o.lsnsEnterFrame.process(o);
-      var s = o._stages;
-      if(s){
-         var c = s.count();
-         for(var i = 0; i < c; i++){
-            s.valueAt(i).process();
+      try{
+         o.lsnsEnterFrame.process(o);
+         var s = o._stages;
+         if(s){
+            var c = s.count();
+            for(var i = 0; i < c; i++){
+               s.valueAt(i).process();
+            }
          }
+         o.lsnsLeaveFrame.process(o);
+         RTimer.update();
+      }catch(e){
+         alert(e);
       }
-      o.lsnsLeaveFrame.process(o);
-      RTimer.update();
    }
 }
 function RStage_start(v){

@@ -1,6 +1,7 @@
 function SBrowserCapability(){
    var o = this;
    o.optionProcess = false;
+   o.blobCreate    = false;
    return o;
 }
 var RApplication = new function RApplication(){
@@ -90,6 +91,12 @@ function RBrowser_construct(){
    var c = o._capability = new SBrowserCapability();
    if(window.Worker){
       c.optionProcess = true;
+   }
+   try{
+      new Blob(["Test"], {'type':'text/plain'});
+      c.blobCreate = true;
+   }catch(e){
+      c.blobCreate = false;
    }
    RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }

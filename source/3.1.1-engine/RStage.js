@@ -108,19 +108,23 @@ function RStage_deactive(){
 function RStage_process(){
    var o = this;
    if(o._active){
-      // 前处理
-      o.lsnsEnterFrame.process(o);
-      // 舞台处理
-      var s = o._stages;
-      if(s){
-         var c = s.count();
-         for(var i = 0; i < c; i++){
-            s.valueAt(i).process();
+      try{
+         // 前处理
+         o.lsnsEnterFrame.process(o);
+         // 舞台处理
+         var s = o._stages;
+         if(s){
+            var c = s.count();
+            for(var i = 0; i < c; i++){
+               s.valueAt(i).process();
+            }
          }
+         // 后处理
+         o.lsnsLeaveFrame.process(o);
+         RTimer.update();
+      }catch(e){
+         alert(e);
       }
-      // 后处理
-      o.lsnsLeaveFrame.process(o);
-      RTimer.update();
    }
 }
 

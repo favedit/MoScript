@@ -86,6 +86,12 @@ function RBrowser_construct(){
    if(window.Worker){
       c.optionProcess = true;
    }
+   try{
+      new Blob(["Test"], {'type':'text/plain'});
+      c.blobCreate = true;
+   }catch(e){
+      c.blobCreate = false;
+   }
    // 输出日志
    RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }

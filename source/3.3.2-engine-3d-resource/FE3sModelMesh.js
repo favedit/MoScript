@@ -44,12 +44,12 @@ function FE3sModelMesh_unserialize(input){
    o._outline.unserialize(input);
    o._outline.update();
    // 读取数据流集合
-   var streamCount = p.readInt8();
-   if(c > 0){
+   var streamCount = input.readInt8();
+   if(streamCount > 0){
       var streams = o._streams = new TObjects();
       for(var i = 0; i < streamCount; i++){
          var stream = RClass.create(FE3sStream);
-         stream.unserialize(p)
+         stream.unserialize(input)
          streams.push(stream);
       }
    }

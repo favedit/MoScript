@@ -85,8 +85,6 @@ function FE3sTextureBitmapPack_unserialize(p){
    // 读取数据
    if(o._typeName == 'flat'){
       var c = p.readInt32();
-   //   var d = o._data = new ArrayBuffer(c);
-   //   p.readBytes(d, 0, c);
    }else if(o._typeName == 'cube'){
       o._data = new Array();
       for(var i = 0; i < 6; i++){

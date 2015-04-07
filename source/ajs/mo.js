@@ -13093,6 +13093,7 @@ function FXmlConsole_process(p){
 function SBrowserCapability(){
    var o = this;
    o.optionProcess = false;
+   o.blobCreate    = false;
    return o;
 }
 var RApplication = new function RApplication(){
@@ -13182,6 +13183,12 @@ function RBrowser_construct(){
    var c = o._capability = new SBrowserCapability();
    if(window.Worker){
       c.optionProcess = true;
+   }
+   try{
+      new Blob(["Test"], {'type':'text/plain'});
+      c.blobCreate = true;
+   }catch(e){
+      c.blobCreate = false;
    }
    RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }
@@ -18219,19 +18226,23 @@ function FWglContext_linkCanvas(h){
    }
    var s = c.shader = new Object();
    var sv = s.vertexPrecision = new Object();
-   sv.floatLow = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.LOW_FLOAT);
-   sv.floatMedium = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.MEDIUM_FLOAT);
-   sv.floatHigh = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.HIGH_FLOAT);
-   sv.intLow = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.LOW_INT);
-   sv.intMedium = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.MEDIUM_INT);
-   sv.intHigh = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.HIGH_INT);
+   if(g.getShaderPrecisionFormat){
+      sv.floatLow = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.LOW_FLOAT);
+      sv.floatMedium = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.MEDIUM_FLOAT);
+      sv.floatHigh = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.HIGH_FLOAT);
+      sv.intLow = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.LOW_INT);
+      sv.intMedium = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.MEDIUM_INT);
+      sv.intHigh = g.getShaderPrecisionFormat(g.VERTEX_SHADER, g.HIGH_INT);
+   }
    var sf = s.fragmentPrecision = new Object();
-   sf.floatLow = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.LOW_FLOAT);
-   sf.floatMedium = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.MEDIUM_FLOAT);
-   sf.floatHigh = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_FLOAT);
-   sf.intLow = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.LOW_INT);
-   sf.intMedium = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.MEDIUM_INT);
-   sf.intHigh = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_INT);
+   if(g.getShaderPrecisionFormat){
+      sf.floatLow = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.LOW_FLOAT);
+      sf.floatMedium = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.MEDIUM_FLOAT);
+      sf.floatHigh = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_FLOAT);
+      sf.intLow = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.LOW_INT);
+      sf.intMedium = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.MEDIUM_INT);
+      sf.intHigh = g.getShaderPrecisionFormat(g.FRAGMENT_SHADER, g.HIGH_INT);
+   }
    var e = o._nativeDebugShader = g.getExtension('WEBGL_debug_shaders');
    if(e){
       c.optionShaderSource = true;
@@ -20613,16 +20624,20 @@ function RStage_deactive(){
 function RStage_process(){
    var o = this;
    if(o._active){
-      o.lsnsEnterFrame.process(o);
-      var s = o._stages;
-      if(s){
-         var c = s.count();
-         for(var i = 0; i < c; i++){
-            s.valueAt(i).process();
+      try{
+         o.lsnsEnterFrame.process(o);
+         var s = o._stages;
+         if(s){
+            var c = s.count();
+            for(var i = 0; i < c; i++){
+               s.valueAt(i).process();
+            }
          }
+         o.lsnsLeaveFrame.process(o);
+         RTimer.update();
+      }catch(e){
+         alert(e);
       }
-      o.lsnsLeaveFrame.process(o);
-      RTimer.update();
    }
 }
 function RStage_start(v){
@@ -22304,12 +22319,12 @@ function FE3sModelMesh_unserialize(input){
    o.__base.FE3sResource.unserialize.call(o, input);
    o._outline.unserialize(input);
    o._outline.update();
-   var streamCount = p.readInt8();
-   if(c > 0){
+   var streamCount = input.readInt8();
+   if(streamCount > 0){
       var streams = o._streams = new TObjects();
       for(var i = 0; i < streamCount; i++){
          var stream = RClass.create(FE3sStream);
-         stream.unserialize(p)
+         stream.unserialize(input)
          streams.push(stream);
       }
    }
@@ -25423,6 +25438,7 @@ function FE3rTextureBitmapCubePack_onLoad(p){
    var o = this;
    var c = o._graphicContext;
    var is = o._images;
+   var capability = RBrowser.capability();
    for(var i = 0; i < 6; i++){
       if(!is[i].testReady()){
          return;
@@ -25430,10 +25446,12 @@ function FE3rTextureBitmapCubePack_onLoad(p){
    }
    var t = o._texture = c.createCubeTexture();
    t.upload(is[0], is[1], is[2], is[3], is[4], is[5]);
-   for(var i = 0; i < 6; i++){
-      var m = is[i];
-      window.URL.revokeObjectURL(m.url());
-      is[i] = RObject.dispose(m);
+   if(capability.blobCreate){
+      for(var i = 0; i < 6; i++){
+         var m = is[i];
+         window.URL.revokeObjectURL(m.url());
+         is[i] = RObject.dispose(m);
+      }
    }
    o._images = RObject.dispose(o._images);
    o._dataReady = true;
@@ -25445,15 +25463,23 @@ function FE3rTextureBitmapCubePack_construct(){
 function FE3rTextureBitmapCubePack_loadResource(p){
    var o = this;
    o._resource = p;
+   var texture = p._texture;
+   var capability = RBrowser.capability();
    var d = p.data();
    var t = p._formatName;
    o._images = new TObjects();
    for(var i = 0; i < 6; i++){
-      var b = new Blob([d[i]], {type: 'image/' + t});
-      var u = window.URL.createObjectURL(b);
       var g = o._images[i] = RClass.create(FImage);
+      g._index = i;
       g.setOptionAlpha(false);
-      g.loadUrl(u);
+      if(capability.blobCreate){
+         var blob = new Blob([d[i]], {'type' : 'image/' + t});
+         var url = window.URL.createObjectURL(blob);
+         g.loadUrl(url);
+      }else{
+         var url = RBrowser.hostPath('/cloud.content.texture.bitmap.wv') + '?guid=' + texture._guid + '&code=' + p._code + "&index=" + i;
+         g.loadUrl(url);
+      }
       g.addLoadListener(o, o.onLoad);
    }
 }

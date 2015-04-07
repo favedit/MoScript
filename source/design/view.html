@@ -8,7 +8,7 @@
 
 <SCRIPT language='javascript' src='../ajs/lzma.js'></SCRIPT>
 <SCRIPT language='javascript' src='../ajs/lzma-d.js'></SCRIPT>
-<SCRIPT language='javascript' src='../ajs/me.js'></SCRIPT>
+<SCRIPT language='javascript' src='../ajs/me.js?v16'></SCRIPT>
 <SCRIPT>
 var canvas = null;
 var playing = true;
@@ -66,34 +66,34 @@ function onLoad(){
 </HEAD>
 <BODY scroll='no' style='background-color:#000000;overflow:hidden;' onload='onLoad()' onresize='onResize()' onkeydown='onKeydown()'>
    <DIV style='position:absolute; left:1em; top:1em;'>
-      <IMG src='../ars/picture/fullscreen.png' style='width:5em; height:5em;' onmousedown='doCanvasAction("fullscreen")' ontouchstart='doCanvasAction("fullscreen")'>
+      <IMG src='../ars/picture/fullscreen.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("fullscreen")' ontouchstart='doCanvasAction("fullscreen")'>
    </DIV>
    <DIV style='position:absolute; right:1em; top:1em;'>
-      <IMG src='../ars/picture/play.png' style='width:5em; height:5em;' onmousedown='doCanvasAction("play")' ontouchstart='doCanvasAction("play")'>
+      <IMG src='../ars/picture/play.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("play")' ontouchstart='doCanvasAction("play")'>
    </DIV>
    <DIV style='position:absolute; left:1em; bottom:1em;'>
       <TABLE>
          <TR>
-            <TD><IMG src='../ars/picture/arrow_up.png' style='width:5em; height:5em;' onmousedown='doCanvasAction("up", true)' onmouseup='doCanvasAction("up", false)' ontouchstart='doCanvasAction("up", true)' ontouchend='doCanvasAction("up", false)'></TD>
+            <TD><IMG src='../ars/picture/arrow_up.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("up", true)' onmouseup='doCanvasAction("up", false)' ontouchstart='doCanvasAction("up", true)' ontouchend='doCanvasAction("up", false)'></TD>
          </TR>
          <TR>
             <TD height='0.5em'></TD>
          </TR>
          <TR>
-            <TD><IMG src='../ars/picture/arrow_down.png' style='width:5em; height:5em;' onmousedown='doCanvasAction("down", true)' onmouseup='doCanvasAction("down", false)' ontouchstart='doCanvasAction("down", true)' ontouchend='doCanvasAction("down", false)'></TD>
+            <TD><IMG src='../ars/picture/arrow_down.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("down", true)' onmouseup='doCanvasAction("down", false)' ontouchstart='doCanvasAction("down", true)' ontouchend='doCanvasAction("down", false)'></TD>
          </TR>
       </TABLE>
    </DIV>
    <DIV style='position:absolute; right:1em; bottom:1em;'>
       <TABLE>
          <TR>
-            <TD><IMG src='../ars/picture/arrow_up.png' style='width:5em; height:5em;'onmousedown='doCanvasAction("forward", true)' onmouseup='doCanvasAction("forward", false)' ontouchstart='doCanvasAction("forward", true)' ontouchend='doCanvasAction("forward", false)'></TD>
+            <TD><IMG src='../ars/picture/arrow_up.png' style='width:4em; height:4em;'onmousedown='doCanvasAction("forward", true)' onmouseup='doCanvasAction("forward", false)' ontouchstart='doCanvasAction("forward", true)' ontouchend='doCanvasAction("forward", false)'></TD>
          </TR>
          <TR>
             <TD height='0.5em'></TD>
          </TR>
          <TR>
-            <TD><IMG src='../ars/picture/arrow_down.png' style='width:5em; height:5em;' onmousedown='doCanvasAction("back", true)' onmouseup='doCanvasAction("back", false)' ontouchstart='doCanvasAction("back", true)' ontouchend='doCanvasAction("back", false)'></TD>
+            <TD><IMG src='../ars/picture/arrow_down.png' style='width:4em; height:4em;' onmousedown='doCanvasAction("back", true)' onmouseup='doCanvasAction("back", false)' ontouchstart='doCanvasAction("back", true)' ontouchend='doCanvasAction("back", false)'></TD>
          </TR>
       </TABLE>
    </DIV>
