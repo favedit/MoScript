@@ -26,6 +26,7 @@ function FUiFile(o){
    o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
    o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
+   o._styleBrowser    = RClass.register(o, new AStyle('_styleBrowser'));
    //..........................................................
    // @html
    o._hValueForm      = null;
@@ -36,6 +37,7 @@ function FUiFile(o){
    // @event
    o.onBuildEditValue = FUiFile_onBuildEditValue;
    o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiFile_onInputEdit);
+   o.onBrowserClick   = RClass.register(o, new AEventClick('onBrowserClick'), FUiFile_onBrowserClick);
    //..........................................................
    // @method
    o.construct        = FUiFile_construct;
@@ -69,7 +71,15 @@ function FUiFile_onBuildEditValue(p){
    //..........................................................
    // 建立输入栏
    var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
-   var he = o._hInput = RBuilder.appendFile(hep, o.styleName('Input'));
+   var he = o._hInputEdit = RBuilder.appendEdit(hep, o.styleName('Input'));
+   var he = o._hInput = RBuilder.appendFile(hep);
+   he.style.display = 'none';
+   //..........................................................
+   var hBrowserPanel = o._hBrowserPanel = RBuilder.appendTableCell(o._hEditLine);
+   hBrowserPanel.style.paddingLeft = '4px';
+   var hBrowser = o._hBrowser = RBuilder.appendButton(hBrowserPanel, o.styleName('Browser'));
+   hBrowser.value = '浏览...';
+   o.attachEvent('onBrowserClick', hBrowser);
    //o.attachEvent('onInputEdit', he, o.onInputEdit);
    // 设置大小
    RHtml.setSize(hep, o._inputSize);
@@ -77,6 +87,18 @@ function FUiFile_onBuildEditValue(p){
    if(o._editLength){
       he.maxLength = o._editLength;
    }
+}
+
+//==========================================================
+// <T>浏览点击处理。</T>
+//
+// @method
+// @param event:SEvent 事件信息
+//==========================================================
+function FUiFile_onBrowserClick(event){
+   var o = this;
+   o._hInput.display = 'block';
+   o._hInput.click();
 }
 
 //==========================================================

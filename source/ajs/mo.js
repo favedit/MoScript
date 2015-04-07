@@ -13245,6 +13245,7 @@ var RBuilder = new function RBuilder(){
    o.createIcon         = RBuilder_createIcon;
    o.createImage        = RBuilder_createImage;
    o.createText         = RBuilder_createText;
+   o.createButton       = RBuilder_createButton;
    o.createCheck        = RBuilder_createCheck;
    o.createRadio        = RBuilder_createRadio;
    o.createEdit         = RBuilder_createEdit;
@@ -13260,6 +13261,7 @@ var RBuilder = new function RBuilder(){
    o.appendImage        = RBuilder_appendImage;
    o.appendEmpty        = RBuilder_appendEmpty;
    o.appendText         = RBuilder_appendText;
+   o.appendButton       = RBuilder_appendButton;
    o.appendCheck        = RBuilder_appendCheck;
    o.appendRadio        = RBuilder_appendRadio;
    o.appendEdit         = RBuilder_appendEdit;
@@ -13320,6 +13322,11 @@ function RBuilder_createText(d, s, v){
    if(v){
       r.innerHTML = v;
    }
+   return r;
+}
+function RBuilder_createButton(d, s){
+   var r = this.create(d, "INPUT", s);
+   r.type = 'button';
    return r;
 }
 function RBuilder_createCheck(d, s){
@@ -13394,6 +13401,11 @@ function RBuilder_appendEmpty(p, w, h){
 }
 function RBuilder_appendText(p, s, v){
    var r = this.createText(p.ownerDocument, s, v);
+   p.appendChild(r);
+   return r;
+}
+function RBuilder_appendButton(p, s){
+   var r = this.createButton(p.ownerDocument, s);
    p.appendChild(r);
    return r;
 }
@@ -37569,12 +37581,14 @@ function FUiFile(o){
    o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
    o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
+   o._styleBrowser    = RClass.register(o, new AStyle('_styleBrowser'));
    o._hValueForm      = null;
    o._hValueLine      = null;
    o._hInputPanel     = null;
    o._hInput          = null;
    o.onBuildEditValue = FUiFile_onBuildEditValue;
    o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiFile_onInputEdit);
+   o.onBrowserClick   = RClass.register(o, new AEventClick('onBrowserClick'), FUiFile_onBrowserClick);
    o.construct        = FUiFile_construct;
    o.formatDisplay    = FUiFile_formatDisplay;
    o.formatValue      = FUiFile_formatValue;
@@ -37593,11 +37607,23 @@ function FUiFile_onBuildEditValue(p){
    o._hChangePanel = RBuilder.appendTableCell(hl);
    o.onBuildEditChange(p);
    var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
-   var he = o._hInput = RBuilder.appendFile(hep, o.styleName('Input'));
+   var he = o._hInputEdit = RBuilder.appendEdit(hep, o.styleName('Input'));
+   var he = o._hInput = RBuilder.appendFile(hep);
+   he.style.display = 'none';
+   var hBrowserPanel = o._hBrowserPanel = RBuilder.appendTableCell(o._hEditLine);
+   hBrowserPanel.style.paddingLeft = '4px';
+   var hBrowser = o._hBrowser = RBuilder.appendButton(hBrowserPanel, o.styleName('Browser'));
+   hBrowser.value = '浏览...';
+   o.attachEvent('onBrowserClick', hBrowser);
    RHtml.setSize(hep, o._inputSize);
    if(o._editLength){
       he.maxLength = o._editLength;
    }
+}
+function FUiFile_onBrowserClick(event){
+   var o = this;
+   o._hInput.display = 'block';
+   o._hInput.click();
 }
 function FUiFile_onInputEdit(p){
    var o = this;

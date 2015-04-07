@@ -153,6 +153,7 @@ var RBuilder = new function RBuilder(){
    o.createIcon         = RBuilder_createIcon;
    o.createImage        = RBuilder_createImage;
    o.createText         = RBuilder_createText;
+   o.createButton       = RBuilder_createButton;
    o.createCheck        = RBuilder_createCheck;
    o.createRadio        = RBuilder_createRadio;
    o.createEdit         = RBuilder_createEdit;
@@ -168,6 +169,7 @@ var RBuilder = new function RBuilder(){
    o.appendImage        = RBuilder_appendImage;
    o.appendEmpty        = RBuilder_appendEmpty;
    o.appendText         = RBuilder_appendText;
+   o.appendButton       = RBuilder_appendButton;
    o.appendCheck        = RBuilder_appendCheck;
    o.appendRadio        = RBuilder_appendRadio;
    o.appendEdit         = RBuilder_appendEdit;
@@ -228,6 +230,11 @@ function RBuilder_createText(d, s, v){
    if(v){
       r.innerHTML = v;
    }
+   return r;
+}
+function RBuilder_createButton(d, s){
+   var r = this.create(d, "INPUT", s);
+   r.type = 'button';
    return r;
 }
 function RBuilder_createCheck(d, s){
@@ -302,6 +309,11 @@ function RBuilder_appendEmpty(p, w, h){
 }
 function RBuilder_appendText(p, s, v){
    var r = this.createText(p.ownerDocument, s, v);
+   p.appendChild(r);
+   return r;
+}
+function RBuilder_appendButton(p, s){
+   var r = this.createButton(p.ownerDocument, s);
    p.appendChild(r);
    return r;
 }
