@@ -53,6 +53,10 @@ var RBrowser = new function RBrowser(){
    o.contentPath    = RBrowser_contentPath;
    o.setContentPath = RBrowser_setContentPath;
    o.isBrowser      = RBrowser_isBrowser;
+   o.encode         = RBrowser_encode;
+   o.decode         = RBrowser_decode;
+   o.urlEncode      = RBrowser_urlEncode;
+   o.urlDecode      = RBrowser_urlDecode;
    return o;
 }
 function RBrowser_onLog(s, p){
@@ -117,6 +121,24 @@ function RBrowser_setContentPath(p){
 }
 function RBrowser_isBrowser(p){
    return this._typeCd == p;
+}
+function RBrowser_encode(value){
+   return escape(value);
+}
+function RBrowser_decode(value){
+   return unescape(value);
+}
+function RBrowser_urlEncode(url, flag){
+   if(flag){
+      return encodeURIComponent(url);
+   }
+   return encodeURI(url);
+}
+function RBrowser_urlDecode(url, flag){
+   if(flag){
+      return decodeURIComponent(url);
+   }
+   return decodeURI(url);
 }
 var RBuilder = new function RBuilder(){
    var o = this;

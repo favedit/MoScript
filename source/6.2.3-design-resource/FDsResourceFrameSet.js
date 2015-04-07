@@ -73,19 +73,19 @@ function FDsResourceFrameSet_onBuilded(p){
    frame._hPanel.className = o.styleName('List_Toolbar');
    o._frameSearchContent = o.searchControl('listContentFrame');
    // 设置属性区
-   var frame = o._framePreview = o.searchControl('propertyFrame');
-   frame._hPanel.className = o.styleName('Property_Ground');
-   var frame = o._framePreviewToolbar = o.searchControl('propertyToolbarFrame');
-   frame._hPanel.className = o.styleName('Property_Toolbar');
-   o._framePreviewContent = o.searchControl('propertyContentFrame');
+   //var frame = o._framePreview = o.searchControl('propertyFrame');
+   //frame._hPanel.className = o.styleName('Property_Ground');
+   //var frame = o._framePreviewToolbar = o.searchControl('propertyToolbarFrame');
+   //frame._hPanel.className = o.styleName('Property_Toolbar');
+   //o._framePreviewContent = o.searchControl('propertyContentFrame');
    //..........................................................
    // 设置分割
    var f = o._catalogSplitter = o.searchControl('catalogSpliter');
    f.setAlignCd(EUiAlign.Left);
    f.setSizeHtml(o._frameCatalog._hPanel);
-   var f = o._propertySpliter = o.searchControl('propertySpliter');
-   f.setAlignCd(EUiAlign.Right);
-   f.setSizeHtml(o._framePreview._hPanel);
+   //var f = o._propertySpliter = o.searchControl('propertySpliter');
+   //f.setAlignCd(EUiAlign.Right);
+   //f.setSizeHtml(o._framePreview._hPanel);
    //..........................................................
    // 设置目录工具栏
    var control = o._catalogToolbar = RClass.create(FDsResourceCatalogToolBar);
@@ -115,19 +115,19 @@ function FDsResourceFrameSet_onBuilded(p){
    o._frameSearchContent.push(control);
    //..........................................................
    // 设置画板工具栏
-   var control = o._propertyToolbar = RClass.create(FDsResourcePropertyToolBar);
-   control._workspace = o._workspace;
-   control._frameSet = o;
-   control.buildDefine(p);
-   o._framePreviewToolbar.push(control);
+   //var control = o._propertyToolbar = RClass.create(FDsResourcePropertyToolBar);
+   //control._workspace = o._workspace;
+   //control._frameSet = o;
+   //control.buildDefine(p);
+   //o._framePreviewToolbar.push(control);
    // 设置画板
-   var control = o._propertyContent = RClass.create(FDsResourcePropertyContent);
-   control._workspace = o._workspace;
-   control._frameSet = o;
-   control._toolbar = o._propertyToolbar;
-   control._hParent = f._hPanel;
-   control.build(p);
-   o._framePreviewContent.push(control);
+   //var control = o._propertyContent = RClass.create(FDsResourcePropertyContent);
+   //control._workspace = o._workspace;
+   //control._frameSet = o;
+   //control._toolbar = o._propertyToolbar;
+   //control._hParent = f._hPanel;
+   //control.build(p);
+   //o._framePreviewContent.push(control);
 }
 
 //==========================================================

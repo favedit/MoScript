@@ -320,17 +320,9 @@ function FDsSolutionFrameSet_onBuilded(p){
    var frame = o._frameSearchToolbar = o.searchControl('listToolbarFrame');
    frame._hPanel.className = o.styleName('List_Toolbar');
    var frame = o._frameSearchContent = o.searchControl('listContentFrame');
-   var frame = o._framePreview = o.searchControl('propertyFrame');
-   frame._hPanel.className = o.styleName('Property_Ground');
-   var frame = o._framePreviewToolbar = o.searchControl('propertyToolbarFrame');
-   frame._hPanel.className = o.styleName('Property_Toolbar');
-   var frame = o._framePreviewProperty = o.searchControl('propertyPropertyFrame');
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
    spliter.setAlignCd(EUiAlign.Left);
    spliter.setSizeHtml(o._frameCatalog._hPanel);
-   var spliter = o._propertySpliter = o.searchControl('propertySpliter');
-   spliter.setAlignCd(EUiAlign.Right);
-   spliter.setSizeHtml(o._framePreview._hPanel);
    var control = o._catalogToolbar = RClass.create(FDsSolutionCatalogToolBar);
    control._frameSet = o;
    control.buildDefine(p);
@@ -347,10 +339,6 @@ function FDsSolutionFrameSet_onBuilded(p){
    control._frameSet = o;
    control.build(p);
    o._frameSearchContent.push(control);
-   var control = o._propertyToolbar = RClass.create(FDsSolutionPropertyToolBar);
-   control._frameSet = o;
-   control.buildDefine(p);
-   o._framePreviewToolbar.push(control);
    o.switchContent(o._resourceTypeCd);
 }
 function FDsSolutionFrameSet_construct(){
@@ -1236,6 +1224,8 @@ function FDsSolutionTabBar_onBuilded(p){
    o.__base.FUiTabBar.onBuilded.call(o, p);
    o._controlProjectButton.addClickListener(o, o.onButtonClick);
    o._controlResourceButton.addClickListener(o, o.onButtonClick);
+   o._controlTeamButton.addClickListener(o, o.onButtonClick);
+   o._controlPublishButton.addClickListener(o, o.onButtonClick);
 }
 function FDsSolutionTabBar_onButtonClick(event){
    var o = this;
@@ -1247,6 +1237,8 @@ function FDsSolutionTabBar_onButtonClick(event){
       o._workspace.selectFrameSet(EDsFrameSet.ProjectFrameSet);
    }else if(name == 'resource'){
       o._workspace.selectFrameSet(EDsFrameSet.ResourceFrameSet);
+   }else{
+      alert('功能未开启，请以后关注。');
    }
 }
 function FDsSolutionTabBar_construct(){

@@ -75,19 +75,19 @@ function FDsSolutionFrameSet_onBuilded(p){
    frame._hPanel.className = o.styleName('List_Toolbar');
    var frame = o._frameSearchContent = o.searchControl('listContentFrame');
    // 设置属性区
-   var frame = o._framePreview = o.searchControl('propertyFrame');
-   frame._hPanel.className = o.styleName('Property_Ground');
-   var frame = o._framePreviewToolbar = o.searchControl('propertyToolbarFrame');
-   frame._hPanel.className = o.styleName('Property_Toolbar');
-   var frame = o._framePreviewProperty = o.searchControl('propertyPropertyFrame');
+   //var frame = o._framePreview = o.searchControl('propertyFrame');
+   //frame._hPanel.className = o.styleName('Property_Ground');
+   //var frame = o._framePreviewToolbar = o.searchControl('propertyToolbarFrame');
+   //frame._hPanel.className = o.styleName('Property_Toolbar');
+   //var frame = o._framePreviewProperty = o.searchControl('propertyPropertyFrame');
    //..........................................................
    // 设置分割
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
    spliter.setAlignCd(EUiAlign.Left);
    spliter.setSizeHtml(o._frameCatalog._hPanel);
-   var spliter = o._propertySpliter = o.searchControl('propertySpliter');
-   spliter.setAlignCd(EUiAlign.Right);
-   spliter.setSizeHtml(o._framePreview._hPanel);
+   //var spliter = o._propertySpliter = o.searchControl('propertySpliter');
+   //spliter.setAlignCd(EUiAlign.Right);
+   //spliter.setSizeHtml(o._framePreview._hPanel);
    //..........................................................
    //var hTable = RBuilder.createTable(p);
    //hTable.width = '100%';
@@ -134,10 +134,10 @@ function FDsSolutionFrameSet_onBuilded(p){
    o._frameSearchContent.push(control);
    //..........................................................
    // 设置画板工具栏
-   var control = o._propertyToolbar = RClass.create(FDsSolutionPropertyToolBar);
-   control._frameSet = o;
-   control.buildDefine(p);
-   o._framePreviewToolbar.push(control);
+   //var control = o._propertyToolbar = RClass.create(FDsSolutionPropertyToolBar);
+   //control._frameSet = o;
+   //control.buildDefine(p);
+   //o._framePreviewToolbar.push(control);
    // 设置画板
    //var control = o._propertyProperty = RClass.create(FDsSolutionProjectProperty);
    //control._workspace = o;

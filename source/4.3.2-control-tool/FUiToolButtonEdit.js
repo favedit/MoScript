@@ -97,7 +97,7 @@ function FUiToolButtonEdit_onInputEdit(event){
 function FUiToolButtonEdit_onInputKeyDown(event){
    var o = this;
    if(event.keyCode == EKeyCode.Enter){
-      o.click();
+      o.doClick();
    }
 }
 

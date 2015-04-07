@@ -13145,6 +13145,10 @@ var RBrowser = new function RBrowser(){
    o.contentPath    = RBrowser_contentPath;
    o.setContentPath = RBrowser_setContentPath;
    o.isBrowser      = RBrowser_isBrowser;
+   o.encode         = RBrowser_encode;
+   o.decode         = RBrowser_decode;
+   o.urlEncode      = RBrowser_urlEncode;
+   o.urlDecode      = RBrowser_urlDecode;
    return o;
 }
 function RBrowser_onLog(s, p){
@@ -13209,6 +13213,24 @@ function RBrowser_setContentPath(p){
 }
 function RBrowser_isBrowser(p){
    return this._typeCd == p;
+}
+function RBrowser_encode(value){
+   return escape(value);
+}
+function RBrowser_decode(value){
+   return unescape(value);
+}
+function RBrowser_urlEncode(url, flag){
+   if(flag){
+      return encodeURIComponent(url);
+   }
+   return encodeURI(url);
+}
+function RBrowser_urlDecode(url, flag){
+   if(flag){
+      return decodeURIComponent(url);
+   }
+   return decodeURI(url);
 }
 var RBuilder = new function RBuilder(){
    var o = this;
@@ -33499,6 +33521,8 @@ function FUiDesktopConsole(o){
    o._progressVisible = false;
    o._progressBar     = null;
    o._hMaskPanel      = null;
+   o._hLoadingPanel   = null;
+   o._hLoadingLabel   = null;
    o.construct        = FUiDesktopConsole_construct;
    o.getMaskPanel     = FUiDesktopConsole_getMaskPanel;
    o.getProgressBar   = FUiDesktopConsole_getProgressBar;
@@ -33508,6 +33532,7 @@ function FUiDesktopConsole(o){
    o.enable           = FUiDesktopConsole_enable;
    o.disable          = FUiDesktopConsole_disable;
    o.showLoading      = FUiDesktopConsole_showLoading;
+   o.showUploading    = FUiDesktopConsole_showUploading;
    o.showProgress     = FUiDesktopConsole_showProgress;
    o.hide             = FUiDesktopConsole_hide;
    return o;
@@ -33538,10 +33563,9 @@ function FUiDesktopConsole_getLoadingPanel(){
       var hCell = RBuilder.appendTableRowCell(hPanel);
       var hIcon = o._hLoadingIcon = RBuilder.appendIcon(hCell);
       hIcon.src = RResource.iconPath('control.RWindow_Loading');
-      var hCell = RBuilder.appendTableRowCell(hPanel);
+      var hCell = o._hLoadingLabel = RBuilder.appendTableRowCell(hPanel);
       hCell.align = 'center';
       hCell.style.color = '#FFFFFF';
-      RHtml.textSet(hCell, '正在努力加载中，请稍等 ...');
    }
    return hPanel;
 }
@@ -33593,6 +33617,17 @@ function FUiDesktopConsole_showLoading(){
    o.setMaskVisible(true);
    if(!o._loadingVisible){
       var hLoadingPanel = o.getLoadingPanel();
+      RHtml.textSet(o._hLoadingLabel, '正在努力加载中，请稍等 ...');
+      o._hMaskInnerPanel.appendChild(hLoadingPanel);
+      o._loadingVisible = true;
+   }
+}
+function FUiDesktopConsole_showUploading(){
+   var o = this;
+   o.setMaskVisible(true);
+   if(!o._loadingVisible){
+      var hLoadingPanel = o.getLoadingPanel();
+      RHtml.textSet(o._hLoadingLabel, '正在努力上传中，请稍等 ...');
       o._hMaskInnerPanel.appendChild(hLoadingPanel);
       o._loadingVisible = true;
    }
@@ -44308,7 +44343,7 @@ function FUiToolButtonEdit_onInputEdit(event){
 function FUiToolButtonEdit_onInputKeyDown(event){
    var o = this;
    if(event.keyCode == EKeyCode.Enter){
-      o.click();
+      o.doClick();
    }
 }
 function FUiToolButtonEdit_construct(){
@@ -44828,6 +44863,7 @@ function FUiTabBar_onBuild(p){
    o.__base.FUiContainer.onBuild.call(o, p);
    var h = o._hPanel;
    var hc = RBuilder.appendTableRowCell(h, o.styleName('TitlePanel'));
+   hc.vAlign = 'bottom';
    var hf = o.hTitleForm = RBuilder.appendTable(hc, o.styleName('TitleForm'));
    hf.width = '100%';
    var hr = o._hTop = RBuilder.appendTableRow(hf);
@@ -44840,8 +44876,6 @@ function FUiTabBar_onBuild(p){
    o._hFirst = RBuilder.appendTableCell(o._hLine);
    var hbc = o._hFirstBottom = RBuilder.appendTableCell(o._hBottom);
    hbc.className = o.styleName('Bottom', FUiTabButton);
-   var hc = RBuilder.appendTableRowCell(h);
-   hc.height = 4;
    var hc = o._hLastTop = RBuilder.appendTableCell(o._hTop);
    o._hLast = RBuilder.appendTableCell(o._hLine);
    var hc = o._hLastBottom = RBuilder.appendTableCell(o._hBottom);
@@ -44908,14 +44942,6 @@ function FUiTabBar_appendChild(p){
       var hc = p._hBottomR = RBuilder.appendTableCell(o._hBottom, null, ci + 2);
       hc.width = 1;
       hc.className = p.styleName('Bottom');
-      var hr = RBuilder.appendTableRow(o._hPanel);
-      if(p.index){
-         hr.style.display = 'none';
-      }
-      var hc = RBuilder.appendTableCell(hr);
-      p._hForm = hr;
-      hc.style.verticalAlign = 'top';
-      hc.appendChild(p._hPanel);
       o.selectByIndex(0);
    }
 }
@@ -51973,17 +51999,9 @@ function FDsSolutionFrameSet_onBuilded(p){
    var frame = o._frameSearchToolbar = o.searchControl('listToolbarFrame');
    frame._hPanel.className = o.styleName('List_Toolbar');
    var frame = o._frameSearchContent = o.searchControl('listContentFrame');
-   var frame = o._framePreview = o.searchControl('propertyFrame');
-   frame._hPanel.className = o.styleName('Property_Ground');
-   var frame = o._framePreviewToolbar = o.searchControl('propertyToolbarFrame');
-   frame._hPanel.className = o.styleName('Property_Toolbar');
-   var frame = o._framePreviewProperty = o.searchControl('propertyPropertyFrame');
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
    spliter.setAlignCd(EUiAlign.Left);
    spliter.setSizeHtml(o._frameCatalog._hPanel);
-   var spliter = o._propertySpliter = o.searchControl('propertySpliter');
-   spliter.setAlignCd(EUiAlign.Right);
-   spliter.setSizeHtml(o._framePreview._hPanel);
    var control = o._catalogToolbar = RClass.create(FDsSolutionCatalogToolBar);
    control._frameSet = o;
    control.buildDefine(p);
@@ -52000,10 +52018,6 @@ function FDsSolutionFrameSet_onBuilded(p){
    control._frameSet = o;
    control.build(p);
    o._frameSearchContent.push(control);
-   var control = o._propertyToolbar = RClass.create(FDsSolutionPropertyToolBar);
-   control._frameSet = o;
-   control.buildDefine(p);
-   o._framePreviewToolbar.push(control);
    o.switchContent(o._resourceTypeCd);
 }
 function FDsSolutionFrameSet_construct(){
@@ -52889,6 +52903,8 @@ function FDsSolutionTabBar_onBuilded(p){
    o.__base.FUiTabBar.onBuilded.call(o, p);
    o._controlProjectButton.addClickListener(o, o.onButtonClick);
    o._controlResourceButton.addClickListener(o, o.onButtonClick);
+   o._controlTeamButton.addClickListener(o, o.onButtonClick);
+   o._controlPublishButton.addClickListener(o, o.onButtonClick);
 }
 function FDsSolutionTabBar_onButtonClick(event){
    var o = this;
@@ -52900,6 +52916,8 @@ function FDsSolutionTabBar_onButtonClick(event){
       o._workspace.selectFrameSet(EDsFrameSet.ProjectFrameSet);
    }else if(name == 'resource'){
       o._workspace.selectFrameSet(EDsFrameSet.ResourceFrameSet);
+   }else{
+      alert('功能未开启，请以后关注。');
    }
 }
 function FDsSolutionTabBar_construct(){
@@ -54664,17 +54682,9 @@ function FDsResourceFrameSet_onBuilded(p){
    var frame = o._frameSearchToolbar = o.searchControl('listToolbarFrame');
    frame._hPanel.className = o.styleName('List_Toolbar');
    o._frameSearchContent = o.searchControl('listContentFrame');
-   var frame = o._framePreview = o.searchControl('propertyFrame');
-   frame._hPanel.className = o.styleName('Property_Ground');
-   var frame = o._framePreviewToolbar = o.searchControl('propertyToolbarFrame');
-   frame._hPanel.className = o.styleName('Property_Toolbar');
-   o._framePreviewContent = o.searchControl('propertyContentFrame');
    var f = o._catalogSplitter = o.searchControl('catalogSpliter');
    f.setAlignCd(EUiAlign.Left);
    f.setSizeHtml(o._frameCatalog._hPanel);
-   var f = o._propertySpliter = o.searchControl('propertySpliter');
-   f.setAlignCd(EUiAlign.Right);
-   f.setSizeHtml(o._framePreview._hPanel);
    var control = o._catalogToolbar = RClass.create(FDsResourceCatalogToolBar);
    control._workspace = o._workspace;
    control._frameSet = o;
@@ -54695,18 +54705,6 @@ function FDsResourceFrameSet_onBuilded(p){
    control._frameSet = o;
    control.build(p);
    o._frameSearchContent.push(control);
-   var control = o._propertyToolbar = RClass.create(FDsResourcePropertyToolBar);
-   control._workspace = o._workspace;
-   control._frameSet = o;
-   control.buildDefine(p);
-   o._framePreviewToolbar.push(control);
-   var control = o._propertyContent = RClass.create(FDsResourcePropertyContent);
-   control._workspace = o._workspace;
-   control._frameSet = o;
-   control._toolbar = o._propertyToolbar;
-   control._hParent = f._hPanel;
-   control.build(p);
-   o._framePreviewContent.push(control);
 }
 function FDsResourceFrameSet_onCatalogSelected(p, pc){
    var o = this;
@@ -54812,20 +54810,21 @@ function FDsResourceImportDialog_onFileLoaded(event){
    var code = o._controlCode.get();
    var label = o._controlLabel.get();
    var url = '/cloud.content.mesh.wv?do=importData&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+   url = RBrowser.urlEncode(url);
    var connection = RConsole.find(FHttpConsole).send(url, reader.data());
    connection.addLoadListener(o, o.onConfirmLoad);
    o._fileReader = RObject.dispose(reader);
 }
 function FDsResourceImportDialog_onConfirmLoad(event){
    var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
    var frame = o._frameSet._listContent;
    frame.serviceResearch();
-   o.hide();
-   RWindow.enable();
 }
 function FDsResourceImportDialog_onConfirmClick(event){
    var o = this;
-   RWindow.disable();
+   RConsole.find(FUiDesktopConsole).showUploading();
    var file = o._controlFile._hInput.files[0];
    var reader = o._fileReader = RClass.create(FFileReader);
    reader.addLoadListener(o, o.onFileLoaded);
@@ -54880,12 +54879,13 @@ function FDsResourceListContent_onServiceLoad(p){
          item.propertyLoad(xnode);
          item._typeCd = xnode.get('type_cd');
          item._guid = xnode.get('guid');
+         item._updateDate = xnode.get('update_date');
          item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
          item.refreshStyle();
          o.push(item);
       }
    }
-   RWindow.enable();
+   RConsole.find(FUiDesktopConsole).hide();
 }
 function FDsResourceListContent_construct(){
    var o = this;
@@ -54911,7 +54911,7 @@ function FDsResourceListContent_serviceSearch(typeCd, serach, pageSize, page){
    o._serach = serach;
    o._pageSize = pageSize;
    o._page = page;
-   RWindow.disable();
+   RConsole.find(FUiDesktopConsole).showLoading();
    var url = '/cloud.content3d.resource.ws?action=list&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
    var connection = RConsole.find(FXmlConsole).sendAsync(url);
    connection.addLoadListener(o, o.onServiceLoad);
@@ -54939,7 +54939,7 @@ function FDsResourceListItem_onBuild(p){
 }
 function FDsResourceListItem_refreshStyle(){
    var o = this;
-   var url = '/cloud.content.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid;
+   var url = '/cloud.content.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid + '&update_date=' + o._updateDate;
    o._hForm.style.backgroundImage = 'url("' + url + '")';
 }
 function FDsResourceListToolBar(o){
@@ -55018,9 +55018,9 @@ function FDsResourceListToolBar_doNavigator(page){
    var o = this;
    page = RInteger.toRange(page, 0, o._pageCount);
    var search = o._controlSearchEdit.text();
-   var typeCd = o._workspace._resourceTypeCd;
+   var typeCd = o._frameSet._resourceTypeCd;
    if((o._resourceTypeCd != typeCd) || (o._serach != search) || (o._page != page)){
-      o._workspace._searchContent.serviceSearch(typeCd, search, o._pageSize, page)
+      o._frameSet._listContent.serviceSearch(typeCd, search, o._pageSize, page)
    }
    o._resourceTypeCd = typeCd;
    o._serach = search;
@@ -55052,6 +55052,7 @@ function FDsResourceMenuBar_onBuilded(p){
    o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
 }
 function FDsResourceMenuBar_onImportPictureClick(p){
+   alert('功能未实现。');
 }
 function FDsResourceMenuBar_onImportMeshClick(p){
    var o = this;
@@ -55069,6 +55070,9 @@ function FDsResourceMenuBar_onDeleteLoad(event){
 function FDsResourceMenuBar_onDeleteClick(event){
    var o = this;
    var item = o._frameSet._listContent._activeItem;
+   if(!item){
+      return alert('请选中后再点击删除');
+   }
    var typeCd = item._typeCd;
    var guid = item._guid;
    RWindow.disable();
@@ -58351,24 +58355,24 @@ function FDsMeshMenuBar_onBuilded(p){
    o._controlCaptureButton.addClickListener(o, o.onCaptureClick);
 }
 function FDsMeshMenuBar_onSaveLoad(event){
-   RWindow.enable();
+   RConsole.find(FUiDesktopConsole).hide();
 }
 function FDsMeshMenuBar_onSaveClick(p){
    var o = this;
-   RWindow.disable();
    var space = o._frameSet._activeSpace;
    var resource = space.resource();
+   RConsole.find(FUiDesktopConsole).showUploading();
    var xconfig = new TXmlNode();
    resource.saveConfig(xconfig);
    var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
    connection.addLoadListener(o, o.onSaveLoad);
 }
 function FDsMeshMenuBar_onCaptureLoad(event){
-   RWindow.enable();
+   RConsole.find(FUiDesktopConsole).hide();
 }
 function FDsMeshMenuBar_onCaptureClick(event){
    var o = this;
-   RWindow.disable();
+   RConsole.find(FUiDesktopConsole).showUploading();
    var connection = o._frameSet._canvas.capture();
    connection.addLoadListener(o, o.onCaptureLoad);
 }

@@ -61,6 +61,7 @@ function FDsResourceImportDialog_onFileLoaded(event){
    var label = o._controlLabel.get();
    // 上传数据
    var url = '/cloud.content.mesh.wv?do=importData&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+   url = RBrowser.urlEncode(url);
    var connection = RConsole.find(FHttpConsole).send(url, reader.data());
    connection.addLoadListener(o, o.onConfirmLoad);
    // 释放文件
@@ -75,12 +76,13 @@ function FDsResourceImportDialog_onFileLoaded(event){
 //==========================================================
 function FDsResourceImportDialog_onConfirmLoad(event){
    var o = this;
-   var frame = o._frameSet._listContent;
-   frame.serviceResearch();
+   // 隐藏窗口
+   RConsole.find(FUiDesktopConsole).hide();
    // 隐藏窗口
    o.hide();
-   // 隐藏窗口
-   RWindow.enable();
+   // 刷新搜索内容
+   var frame = o._frameSet._listContent;
+   frame.serviceResearch();
 }
 
 //==========================================================
@@ -92,7 +94,7 @@ function FDsResourceImportDialog_onConfirmLoad(event){
 function FDsResourceImportDialog_onConfirmClick(event){
    var o = this;
    // 画面禁止操作
-   RWindow.disable();
+   RConsole.find(FUiDesktopConsole).showUploading();
    // 加载文件数据
    var file = o._controlFile._hInput.files[0];
    var reader = o._fileReader = RClass.create(FFileReader);

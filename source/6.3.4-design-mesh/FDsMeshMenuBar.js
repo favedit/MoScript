@@ -51,7 +51,8 @@ function FDsMeshMenuBar_onBuilded(p){
 // @param event:SEvent 事件
 //==========================================================
 function FDsMeshMenuBar_onSaveLoad(event){
-   RWindow.enable();
+   // 解除画面锁定
+   RConsole.find(FUiDesktopConsole).hide();
 }
 
 //==========================================================
@@ -62,9 +63,10 @@ function FDsMeshMenuBar_onSaveLoad(event){
 //==========================================================
 function FDsMeshMenuBar_onSaveClick(p){
    var o = this;
-   RWindow.disable();
    var space = o._frameSet._activeSpace;
    var resource = space.resource();
+   // 画面禁止操作
+   RConsole.find(FUiDesktopConsole).showUploading();
    // 存储配置
    var xconfig = new TXmlNode();
    resource.saveConfig(xconfig);
@@ -80,7 +82,8 @@ function FDsMeshMenuBar_onSaveClick(p){
 // @param event:SEvent 事件
 //==========================================================
 function FDsMeshMenuBar_onCaptureLoad(event){
-   RWindow.enable();
+   // 解除画面锁定
+   RConsole.find(FUiDesktopConsole).hide();
 }
 
 //==========================================================
@@ -91,7 +94,9 @@ function FDsMeshMenuBar_onCaptureLoad(event){
 //==========================================================
 function FDsMeshMenuBar_onCaptureClick(event){
    var o = this;
-   RWindow.disable();
+   // 画面禁止操作
+   RConsole.find(FUiDesktopConsole).showUploading();
+   // 上传数据
    var connection = o._frameSet._canvas.capture();
    connection.addLoadListener(o, o.onCaptureLoad);
 }

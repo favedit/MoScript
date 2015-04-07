@@ -42,6 +42,8 @@ function FDsSolutionTabBar_onBuilded(p){
    // 注册事件
    o._controlProjectButton.addClickListener(o, o.onButtonClick);
    o._controlResourceButton.addClickListener(o, o.onButtonClick);
+   o._controlTeamButton.addClickListener(o, o.onButtonClick);
+   o._controlPublishButton.addClickListener(o, o.onButtonClick);
 }
 
 //==========================================================
@@ -60,10 +62,8 @@ function FDsSolutionTabBar_onButtonClick(event){
       o._workspace.selectFrameSet(EDsFrameSet.ProjectFrameSet);
    }else if(name == 'resource'){
       o._workspace.selectFrameSet(EDsFrameSet.ResourceFrameSet);
-   //}else if(name == 'picture'){
-   //   o._workspace.selectFrameSet(EDsFrameSet.PictureFrameSet);
-   //}else if(name == 'mesh'){
-   //   o._workspace.selectFrameSet(EDsFrameSet.MeshFrameSet);
+   }else{
+      alert('功能未开启，请以后关注。');
    }
 }
 

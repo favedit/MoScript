@@ -53,6 +53,7 @@ function FDsResourceMenuBar_onBuilded(p){
 // @param p:event:SEvent 事件
 //==========================================================
 function FDsResourceMenuBar_onImportPictureClick(p){
+   alert('功能未实现。');
 }
 
 //==========================================================
@@ -91,6 +92,9 @@ function FDsResourceMenuBar_onDeleteLoad(event){
 function FDsResourceMenuBar_onDeleteClick(event){
    var o = this;
    var item = o._frameSet._listContent._activeItem;
+   if(!item){
+      return alert('请选中后再点击删除');
+   }
    var typeCd = item._typeCd;
    var guid = item._guid;
    RWindow.disable();

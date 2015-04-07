@@ -1559,24 +1559,24 @@ function FDsMeshMenuBar_onBuilded(p){
    o._controlCaptureButton.addClickListener(o, o.onCaptureClick);
 }
 function FDsMeshMenuBar_onSaveLoad(event){
-   RWindow.enable();
+   RConsole.find(FUiDesktopConsole).hide();
 }
 function FDsMeshMenuBar_onSaveClick(p){
    var o = this;
-   RWindow.disable();
    var space = o._frameSet._activeSpace;
    var resource = space.resource();
+   RConsole.find(FUiDesktopConsole).showUploading();
    var xconfig = new TXmlNode();
    resource.saveConfig(xconfig);
    var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
    connection.addLoadListener(o, o.onSaveLoad);
 }
 function FDsMeshMenuBar_onCaptureLoad(event){
-   RWindow.enable();
+   RConsole.find(FUiDesktopConsole).hide();
 }
 function FDsMeshMenuBar_onCaptureClick(event){
    var o = this;
-   RWindow.disable();
+   RConsole.find(FUiDesktopConsole).showUploading();
    var connection = o._frameSet._canvas.capture();
    connection.addLoadListener(o, o.onCaptureLoad);
 }

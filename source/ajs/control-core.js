@@ -895,6 +895,8 @@ function FUiDesktopConsole(o){
    o._progressVisible = false;
    o._progressBar     = null;
    o._hMaskPanel      = null;
+   o._hLoadingPanel   = null;
+   o._hLoadingLabel   = null;
    o.construct        = FUiDesktopConsole_construct;
    o.getMaskPanel     = FUiDesktopConsole_getMaskPanel;
    o.getProgressBar   = FUiDesktopConsole_getProgressBar;
@@ -904,6 +906,7 @@ function FUiDesktopConsole(o){
    o.enable           = FUiDesktopConsole_enable;
    o.disable          = FUiDesktopConsole_disable;
    o.showLoading      = FUiDesktopConsole_showLoading;
+   o.showUploading    = FUiDesktopConsole_showUploading;
    o.showProgress     = FUiDesktopConsole_showProgress;
    o.hide             = FUiDesktopConsole_hide;
    return o;
@@ -934,10 +937,9 @@ function FUiDesktopConsole_getLoadingPanel(){
       var hCell = RBuilder.appendTableRowCell(hPanel);
       var hIcon = o._hLoadingIcon = RBuilder.appendIcon(hCell);
       hIcon.src = RResource.iconPath('control.RWindow_Loading');
-      var hCell = RBuilder.appendTableRowCell(hPanel);
+      var hCell = o._hLoadingLabel = RBuilder.appendTableRowCell(hPanel);
       hCell.align = 'center';
       hCell.style.color = '#FFFFFF';
-      RHtml.textSet(hCell, '正在努力加载中，请稍等 ...');
    }
    return hPanel;
 }
@@ -989,6 +991,17 @@ function FUiDesktopConsole_showLoading(){
    o.setMaskVisible(true);
    if(!o._loadingVisible){
       var hLoadingPanel = o.getLoadingPanel();
+      RHtml.textSet(o._hLoadingLabel, '正在努力加载中，请稍等 ...');
+      o._hMaskInnerPanel.appendChild(hLoadingPanel);
+      o._loadingVisible = true;
+   }
+}
+function FUiDesktopConsole_showUploading(){
+   var o = this;
+   o.setMaskVisible(true);
+   if(!o._loadingVisible){
+      var hLoadingPanel = o.getLoadingPanel();
+      RHtml.textSet(o._hLoadingLabel, '正在努力上传中，请稍等 ...');
       o._hMaskInnerPanel.appendChild(hLoadingPanel);
       o._loadingVisible = true;
    }

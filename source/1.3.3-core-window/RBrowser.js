@@ -32,6 +32,11 @@ var RBrowser = new function RBrowser(){
    o.setContentPath = RBrowser_setContentPath;
    // @method
    o.isBrowser      = RBrowser_isBrowser;
+   // @method
+   o.encode         = RBrowser_encode;
+   o.decode         = RBrowser_decode;
+   o.urlEncode      = RBrowser_urlEncode;
+   o.urlDecode      = RBrowser_urlDecode;
    return o;
 }
 
@@ -159,4 +164,52 @@ function RBrowser_setContentPath(p){
 //===========================================================
 function RBrowser_isBrowser(p){
    return this._typeCd == p;
+}
+
+//===========================================================
+// <T>参数编码。</T>
+//
+// @param value:String 参数
+// @return 编码字符串
+//===========================================================
+function RBrowser_encode(value){
+   return escape(value);
+}
+
+//===========================================================
+// <T>参数解码。</T>
+//
+// @param value:String 参数
+// @return 解码字符串
+//===========================================================
+function RBrowser_decode(value){
+   return unescape(value);
+}
+
+//===========================================================
+// <T>URL参数编码。</T>
+//
+// @param url:String 网络地址
+// @param flag:Boolean 是否全部
+// @return 编码字符串
+//===========================================================
+function RBrowser_urlEncode(url, flag){
+   if(flag){
+      return encodeURIComponent(url);
+   }
+   return encodeURI(url);
+}
+
+//===========================================================
+// <T>URL参数解码。</T>
+//
+// @param url:String 网络地址
+// @param flag:Boolean 是否全部
+// @return 解码字符串
+//===========================================================
+function RBrowser_urlDecode(url, flag){
+   if(flag){
+      return decodeURIComponent(url);
+   }
+   return decodeURI(url);
 }

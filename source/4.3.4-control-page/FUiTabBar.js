@@ -97,6 +97,7 @@ function FUiTabBar_onBuild(p){
    var h = o._hPanel;
    // 建立标题区
    var hc = RBuilder.appendTableRowCell(h, o.styleName('TitlePanel'));
+   hc.vAlign = 'bottom';
    var hf = o.hTitleForm = RBuilder.appendTable(hc, o.styleName('TitleForm'));
    hf.width = '100%';
    // 创建标题列
@@ -112,9 +113,6 @@ function FUiTabBar_onBuild(p){
    o._hFirst = RBuilder.appendTableCell(o._hLine);
    var hbc = o._hFirstBottom = RBuilder.appendTableCell(o._hBottom);
    hbc.className = o.styleName('Bottom', FUiTabButton);
-   // 建立分隔区
-   var hc = RBuilder.appendTableRowCell(h);
-   hc.height = 4;
    // 建立标题区右边第一列
    var hc = o._hLastTop = RBuilder.appendTableCell(o._hTop);
    //hc.className = o.styleName('Top', FUiTabButton);
@@ -222,15 +220,6 @@ function FUiTabBar_appendChild(p){
       var hc = p._hBottomR = RBuilder.appendTableCell(o._hBottom, null, ci + 2);
       hc.width = 1;
       hc.className = p.styleName('Bottom');
-      // 追加数据信息
-      var hr = RBuilder.appendTableRow(o._hPanel);
-      if(p.index){
-         hr.style.display = 'none';
-      }
-      var hc = RBuilder.appendTableCell(hr);
-      p._hForm = hr;
-      hc.style.verticalAlign = 'top';
-      hc.appendChild(p._hPanel);
       // 选中第一个
       o.selectByIndex(0);
    }

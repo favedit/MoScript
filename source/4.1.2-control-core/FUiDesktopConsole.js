@@ -23,6 +23,8 @@ function FUiDesktopConsole(o){
    //..........................................................
    // @html
    o._hMaskPanel      = null;
+   o._hLoadingPanel   = null;
+   o._hLoadingLabel   = null;
    //..........................................................
    // @method
    o.construct        = FUiDesktopConsole_construct;
@@ -37,6 +39,7 @@ function FUiDesktopConsole(o){
    o.disable          = FUiDesktopConsole_disable;
    // @method
    o.showLoading      = FUiDesktopConsole_showLoading;
+   o.showUploading    = FUiDesktopConsole_showUploading;
    o.showProgress     = FUiDesktopConsole_showProgress;
    o.hide             = FUiDesktopConsole_hide;
    return o;
@@ -100,10 +103,9 @@ function FUiDesktopConsole_getLoadingPanel(){
       var hCell = RBuilder.appendTableRowCell(hPanel);
       var hIcon = o._hLoadingIcon = RBuilder.appendIcon(hCell);
       hIcon.src = RResource.iconPath('control.RWindow_Loading');
-      var hCell = RBuilder.appendTableRowCell(hPanel);
+      var hCell = o._hLoadingLabel = RBuilder.appendTableRowCell(hPanel);
       hCell.align = 'center';
       hCell.style.color = '#FFFFFF';
-      RHtml.textSet(hCell, '正在努力加载中，请稍等 ...');
    }
    return hPanel;
 }
@@ -188,10 +190,9 @@ function FUiDesktopConsole_disable(){
 }
 
 //==========================================================
-// <T>显示进度条。</T>
+// <T>显示加载中。</T>
 //
 // @method
-// @param rate:Number 比率(0~1)
 //==========================================================
 function FUiDesktopConsole_showLoading(){
    var o = this;
@@ -200,6 +201,25 @@ function FUiDesktopConsole_showLoading(){
    // 显示加载中
    if(!o._loadingVisible){
       var hLoadingPanel = o.getLoadingPanel();
+      RHtml.textSet(o._hLoadingLabel, '正在努力加载中，请稍等 ...');
+      o._hMaskInnerPanel.appendChild(hLoadingPanel);
+      o._loadingVisible = true;
+   }
+}
+
+//==========================================================
+// <T>显示上传中。</T>
+//
+// @method
+//==========================================================
+function FUiDesktopConsole_showUploading(){
+   var o = this;
+   // 显示遮挡层
+   o.setMaskVisible(true);
+   // 显示加载中
+   if(!o._loadingVisible){
+      var hLoadingPanel = o.getLoadingPanel();
+      RHtml.textSet(o._hLoadingLabel, '正在努力上传中，请稍等 ...');
       o._hMaskInnerPanel.appendChild(hLoadingPanel);
       o._loadingVisible = true;
    }

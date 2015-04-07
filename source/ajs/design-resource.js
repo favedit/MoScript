@@ -309,17 +309,9 @@ function FDsResourceFrameSet_onBuilded(p){
    var frame = o._frameSearchToolbar = o.searchControl('listToolbarFrame');
    frame._hPanel.className = o.styleName('List_Toolbar');
    o._frameSearchContent = o.searchControl('listContentFrame');
-   var frame = o._framePreview = o.searchControl('propertyFrame');
-   frame._hPanel.className = o.styleName('Property_Ground');
-   var frame = o._framePreviewToolbar = o.searchControl('propertyToolbarFrame');
-   frame._hPanel.className = o.styleName('Property_Toolbar');
-   o._framePreviewContent = o.searchControl('propertyContentFrame');
    var f = o._catalogSplitter = o.searchControl('catalogSpliter');
    f.setAlignCd(EUiAlign.Left);
    f.setSizeHtml(o._frameCatalog._hPanel);
-   var f = o._propertySpliter = o.searchControl('propertySpliter');
-   f.setAlignCd(EUiAlign.Right);
-   f.setSizeHtml(o._framePreview._hPanel);
    var control = o._catalogToolbar = RClass.create(FDsResourceCatalogToolBar);
    control._workspace = o._workspace;
    control._frameSet = o;
@@ -340,18 +332,6 @@ function FDsResourceFrameSet_onBuilded(p){
    control._frameSet = o;
    control.build(p);
    o._frameSearchContent.push(control);
-   var control = o._propertyToolbar = RClass.create(FDsResourcePropertyToolBar);
-   control._workspace = o._workspace;
-   control._frameSet = o;
-   control.buildDefine(p);
-   o._framePreviewToolbar.push(control);
-   var control = o._propertyContent = RClass.create(FDsResourcePropertyContent);
-   control._workspace = o._workspace;
-   control._frameSet = o;
-   control._toolbar = o._propertyToolbar;
-   control._hParent = f._hPanel;
-   control.build(p);
-   o._framePreviewContent.push(control);
 }
 function FDsResourceFrameSet_onCatalogSelected(p, pc){
    var o = this;
@@ -457,20 +437,21 @@ function FDsResourceImportDialog_onFileLoaded(event){
    var code = o._controlCode.get();
    var label = o._controlLabel.get();
    var url = '/cloud.content.mesh.wv?do=importData&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+   url = RBrowser.urlEncode(url);
    var connection = RConsole.find(FHttpConsole).send(url, reader.data());
    connection.addLoadListener(o, o.onConfirmLoad);
    o._fileReader = RObject.dispose(reader);
 }
 function FDsResourceImportDialog_onConfirmLoad(event){
    var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
    var frame = o._frameSet._listContent;
    frame.serviceResearch();
-   o.hide();
-   RWindow.enable();
 }
 function FDsResourceImportDialog_onConfirmClick(event){
    var o = this;
-   RWindow.disable();
+   RConsole.find(FUiDesktopConsole).showUploading();
    var file = o._controlFile._hInput.files[0];
    var reader = o._fileReader = RClass.create(FFileReader);
    reader.addLoadListener(o, o.onFileLoaded);
@@ -525,12 +506,13 @@ function FDsResourceListContent_onServiceLoad(p){
          item.propertyLoad(xnode);
          item._typeCd = xnode.get('type_cd');
          item._guid = xnode.get('guid');
+         item._updateDate = xnode.get('update_date');
          item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
          item.refreshStyle();
          o.push(item);
       }
    }
-   RWindow.enable();
+   RConsole.find(FUiDesktopConsole).hide();
 }
 function FDsResourceListContent_construct(){
    var o = this;
@@ -556,7 +538,7 @@ function FDsResourceListContent_serviceSearch(typeCd, serach, pageSize, page){
    o._serach = serach;
    o._pageSize = pageSize;
    o._page = page;
-   RWindow.disable();
+   RConsole.find(FUiDesktopConsole).showLoading();
    var url = '/cloud.content3d.resource.ws?action=list&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
    var connection = RConsole.find(FXmlConsole).sendAsync(url);
    connection.addLoadListener(o, o.onServiceLoad);
@@ -584,7 +566,7 @@ function FDsResourceListItem_onBuild(p){
 }
 function FDsResourceListItem_refreshStyle(){
    var o = this;
-   var url = '/cloud.content.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid;
+   var url = '/cloud.content.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid + '&update_date=' + o._updateDate;
    o._hForm.style.backgroundImage = 'url("' + url + '")';
 }
 function FDsResourceListToolBar(o){
@@ -663,9 +645,9 @@ function FDsResourceListToolBar_doNavigator(page){
    var o = this;
    page = RInteger.toRange(page, 0, o._pageCount);
    var search = o._controlSearchEdit.text();
-   var typeCd = o._workspace._resourceTypeCd;
+   var typeCd = o._frameSet._resourceTypeCd;
    if((o._resourceTypeCd != typeCd) || (o._serach != search) || (o._page != page)){
-      o._workspace._searchContent.serviceSearch(typeCd, search, o._pageSize, page)
+      o._frameSet._listContent.serviceSearch(typeCd, search, o._pageSize, page)
    }
    o._resourceTypeCd = typeCd;
    o._serach = search;
@@ -697,6 +679,7 @@ function FDsResourceMenuBar_onBuilded(p){
    o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
 }
 function FDsResourceMenuBar_onImportPictureClick(p){
+   alert('功能未实现。');
 }
 function FDsResourceMenuBar_onImportMeshClick(p){
    var o = this;
@@ -714,6 +697,9 @@ function FDsResourceMenuBar_onDeleteLoad(event){
 function FDsResourceMenuBar_onDeleteClick(event){
    var o = this;
    var item = o._frameSet._listContent._activeItem;
+   if(!item){
+      return alert('请选中后再点击删除');
+   }
    var typeCd = item._typeCd;
    var guid = item._guid;
    RWindow.disable();

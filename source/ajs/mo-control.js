@@ -4669,6 +4669,8 @@ function FUiDesktopConsole(o){
    o._progressVisible = false;
    o._progressBar     = null;
    o._hMaskPanel      = null;
+   o._hLoadingPanel   = null;
+   o._hLoadingLabel   = null;
    o.construct        = FUiDesktopConsole_construct;
    o.getMaskPanel     = FUiDesktopConsole_getMaskPanel;
    o.getProgressBar   = FUiDesktopConsole_getProgressBar;
@@ -4678,6 +4680,7 @@ function FUiDesktopConsole(o){
    o.enable           = FUiDesktopConsole_enable;
    o.disable          = FUiDesktopConsole_disable;
    o.showLoading      = FUiDesktopConsole_showLoading;
+   o.showUploading    = FUiDesktopConsole_showUploading;
    o.showProgress     = FUiDesktopConsole_showProgress;
    o.hide             = FUiDesktopConsole_hide;
    return o;
@@ -4708,10 +4711,9 @@ function FUiDesktopConsole_getLoadingPanel(){
       var hCell = RBuilder.appendTableRowCell(hPanel);
       var hIcon = o._hLoadingIcon = RBuilder.appendIcon(hCell);
       hIcon.src = RResource.iconPath('control.RWindow_Loading');
-      var hCell = RBuilder.appendTableRowCell(hPanel);
+      var hCell = o._hLoadingLabel = RBuilder.appendTableRowCell(hPanel);
       hCell.align = 'center';
       hCell.style.color = '#FFFFFF';
-      RHtml.textSet(hCell, '正在努力加载中，请稍等 ...');
    }
    return hPanel;
 }
@@ -4763,6 +4765,17 @@ function FUiDesktopConsole_showLoading(){
    o.setMaskVisible(true);
    if(!o._loadingVisible){
       var hLoadingPanel = o.getLoadingPanel();
+      RHtml.textSet(o._hLoadingLabel, '正在努力加载中，请稍等 ...');
+      o._hMaskInnerPanel.appendChild(hLoadingPanel);
+      o._loadingVisible = true;
+   }
+}
+function FUiDesktopConsole_showUploading(){
+   var o = this;
+   o.setMaskVisible(true);
+   if(!o._loadingVisible){
+      var hLoadingPanel = o.getLoadingPanel();
+      RHtml.textSet(o._hLoadingLabel, '正在努力上传中，请稍等 ...');
       o._hMaskInnerPanel.appendChild(hLoadingPanel);
       o._loadingVisible = true;
    }
@@ -15478,7 +15491,7 @@ function FUiToolButtonEdit_onInputEdit(event){
 function FUiToolButtonEdit_onInputKeyDown(event){
    var o = this;
    if(event.keyCode == EKeyCode.Enter){
-      o.click();
+      o.doClick();
    }
 }
 function FUiToolButtonEdit_construct(){
@@ -15998,6 +16011,7 @@ function FUiTabBar_onBuild(p){
    o.__base.FUiContainer.onBuild.call(o, p);
    var h = o._hPanel;
    var hc = RBuilder.appendTableRowCell(h, o.styleName('TitlePanel'));
+   hc.vAlign = 'bottom';
    var hf = o.hTitleForm = RBuilder.appendTable(hc, o.styleName('TitleForm'));
    hf.width = '100%';
    var hr = o._hTop = RBuilder.appendTableRow(hf);
@@ -16010,8 +16024,6 @@ function FUiTabBar_onBuild(p){
    o._hFirst = RBuilder.appendTableCell(o._hLine);
    var hbc = o._hFirstBottom = RBuilder.appendTableCell(o._hBottom);
    hbc.className = o.styleName('Bottom', FUiTabButton);
-   var hc = RBuilder.appendTableRowCell(h);
-   hc.height = 4;
    var hc = o._hLastTop = RBuilder.appendTableCell(o._hTop);
    o._hLast = RBuilder.appendTableCell(o._hLine);
    var hc = o._hLastBottom = RBuilder.appendTableCell(o._hBottom);
@@ -16078,14 +16090,6 @@ function FUiTabBar_appendChild(p){
       var hc = p._hBottomR = RBuilder.appendTableCell(o._hBottom, null, ci + 2);
       hc.width = 1;
       hc.className = p.styleName('Bottom');
-      var hr = RBuilder.appendTableRow(o._hPanel);
-      if(p.index){
-         hr.style.display = 'none';
-      }
-      var hc = RBuilder.appendTableCell(hr);
-      p._hForm = hr;
-      hc.style.verticalAlign = 'top';
-      hc.appendChild(p._hPanel);
       o.selectByIndex(0);
    }
 }

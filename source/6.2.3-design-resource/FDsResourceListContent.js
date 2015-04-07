@@ -71,13 +71,14 @@ function FDsResourceListContent_onServiceLoad(p){
          item.propertyLoad(xnode);
          item._typeCd = xnode.get('type_cd');
          item._guid = xnode.get('guid');
+         item._updateDate = xnode.get('update_date');
          item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
          item.refreshStyle();
          o.push(item);
       }
    }
    // 画面允许操作
-   RWindow.enable();
+   RConsole.find(FUiDesktopConsole).hide();
 }
 
 //==========================================================
@@ -141,7 +142,7 @@ function FDsResourceListContent_serviceSearch(typeCd, serach, pageSize, page){
    o._pageSize = pageSize;
    o._page = page;
    // 画面禁止操作
-   RWindow.disable();
+   RConsole.find(FUiDesktopConsole).showLoading();
    // 发送数据请求
    var url = '/cloud.content3d.resource.ws?action=list&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
    var connection = RConsole.find(FXmlConsole).sendAsync(url);
