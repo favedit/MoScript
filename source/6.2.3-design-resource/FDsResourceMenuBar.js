@@ -41,7 +41,7 @@ function FDsResourceMenuBar_onBuilded(p){
    o.__base.FUiMenuBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   o._controlImportPictureButton.addClickListener(o, o.onImportPictureClick);
+   //o._controlImportPictureButton.addClickListener(o, o.onImportPictureClick);
    o._controlImportMeshButton.addClickListener(o, o.onImportMeshClick);
    o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
 }

@@ -556,6 +556,7 @@ var RWindow = new function RWindow(){
    o.ohResize          = RWindow_ohResize;
    o.ohSelect          = RWindow_ohSelect;
    o.ohOrientation     = RWindow_ohOrientation;
+   o.ohUnload          = RWindow_ohUnload;
    o.connect           = RWindow_connect;
    o.optionSelect      = RWindow_optionSelect;
    o.setOptionSelect   = RWindow_setOptionSelect;
@@ -568,6 +569,9 @@ var RWindow = new function RWindow(){
    o.enable            = RWindow_enable;
    o.disable           = RWindow_disable;
    o.setEnable         = RWindow_setEnable;
+   o.redirect          = RWindow_redirect;
+   o.historyForward    = RWindow_historyForward;
+   o.historyBack       = RWindow_historyBack;
    return o;
 }
 function RWindow_ohMouseDown(p){
@@ -648,29 +652,32 @@ function RWindow_ohOrientation(p){
    }
    o.lsnsOrientation.process(e);
 }
+function RWindow_ohUnload(event){
+}
 function RWindow_connect(w){
    var o = this;
-   var hw = o._hWindow = w;
-   var hd = o._hDocument = hw.document;
-   var hc = o._hContainer = hd.body;
+   var hWindow = o._hWindow = w;
+   var hDocument = o._hDocument = hWindow.document;
+   var hContainer = o._hContainer = hDocument.body;
    if(RBrowser.supportHtml5()){
-      hc.addEventListener('mousedown', o.ohMouseDown, true);
-      hc.addEventListener('mousemove', o.ohMouseMove, true);
-      hc.addEventListener('mouseup', o.ohMouseUp, true);
-      hc.addEventListener('keydown', o.ohKeyDown, true);
-      hc.addEventListener('keyup', o.ohKeyUp, true);
-      hc.addEventListener('keypress', o.ohKeyPress, true);
-      hw.addEventListener('orientationchange', o.ohOrientation);
+      hContainer.addEventListener('mousedown', o.ohMouseDown, true);
+      hContainer.addEventListener('mousemove', o.ohMouseMove, true);
+      hContainer.addEventListener('mouseup', o.ohMouseUp, true);
+      hContainer.addEventListener('keydown', o.ohKeyDown, true);
+      hContainer.addEventListener('keyup', o.ohKeyUp, true);
+      hContainer.addEventListener('keypress', o.ohKeyPress, true);
+      hWindow.addEventListener('orientationchange', o.ohOrientation);
    }else{
-      hc.onmousedown = o.ohMouseDown;
-      hc.onmousemove = o.ohMouseMove;
-      hc.onmouseup = o.ohMouseUp;
-      hc.onkeydown = o.ohKeyDown;
-      hc.onkeyup = o.ohKeyUp;
-      hc.onkeypress = o.ohKeyPress;
+      hContainer.onmousedown = o.ohMouseDown;
+      hContainer.onmousemove = o.ohMouseMove;
+      hContainer.onmouseup = o.ohMouseUp;
+      hContainer.onkeydown = o.ohKeyDown;
+      hContainer.onkeyup = o.ohKeyUp;
+      hContainer.onkeypress = o.ohKeyPress;
    }
-   hc.onresize = o.ohResize;
-   hc.onselectstart = o.ohSelect;
+   hContainer.onresize = o.ohResize;
+   hContainer.onselectstart = o.ohSelect;
+   hContainer.onunload = o.ohUnload;
 }
 function RWindow_optionSelect(){
    return this._optionSelect;
@@ -751,6 +758,12 @@ function RWindow_setEnable(v, f){
       }
    }
    o._statusEnable = v;
+}
+function RWindow_redirect(){
+}
+function RWindow_historyForward(){
+}
+function RWindow_historyBack(){
 }
 function RWindow_onUnload(){
    RMemory.release();

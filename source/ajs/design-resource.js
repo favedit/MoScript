@@ -417,6 +417,7 @@ function FDsResourceImportDialog(o){
    o._controlTeamButton    = null;
    o._controlShareButton   = null;
    o.onBuilded             = FDsResourceImportDialog_onBuilded;
+   o.onFileChange          = FDsResourceImportDialog_onFileChange;
    o.onFileLoaded          = FDsResourceImportDialog_onFileLoaded;
    o.onConfirmLoad         = FDsResourceImportDialog_onConfirmLoad;
    o.onConfirmClick        = FDsResourceImportDialog_onConfirmClick;
@@ -428,8 +429,20 @@ function FDsResourceImportDialog(o){
 function FDsResourceImportDialog_onBuilded(p){
    var o = this;
    o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlFile.addDataChangedListener(o, o.onFileChange);
    o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
    o._controlCancelButton.addClickListener(o, o.onCancelClick);
+}
+function FDsResourceImportDialog_onFileChange(event){
+   var o = this;
+   var name = o._controlFile.get();
+   var code = RFile.name(name);
+   if(RString.isEmpty(o._controlCode.get())){
+      o._controlCode.set(code);
+   }
+   if(RString.isEmpty(o._controlLabel.get())){
+      o._controlLabel.set(code);
+   }
 }
 function FDsResourceImportDialog_onFileLoaded(event){
    var o = this;
@@ -674,7 +687,6 @@ function FDsResourceMenuBar(o){
 function FDsResourceMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
-   o._controlImportPictureButton.addClickListener(o, o.onImportPictureClick);
    o._controlImportMeshButton.addClickListener(o, o.onImportMeshClick);
    o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
 }
@@ -1381,7 +1393,7 @@ function FDsResourceTabBar_onButtonClick(event){
    var sender = event.sender;
    var name = sender.name();
    o._resourceTypeCd = name;
-   o._workspace.switchContent(name);
+   R
 }
 function FDsResourceTabBar_construct(){
    var o = this;

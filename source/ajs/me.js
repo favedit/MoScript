@@ -4376,15 +4376,15 @@ function REnum_decode(e, v){
    }
    return r;
 }
-var RFile = new function(){
+var RFile = new function RFile(){
    var o = this;
    o.pictures  = ['jpg', 'png', 'gif', 'bmp'];
    o.knowns    = ['jpg', 'png', 'gif', 'bmp', 'doc', 'docx', 'vsd', 'xls', 'xlsx'];
    o.inPicture = RFile_inPicture;
    o.isPicture = RFile_isPicture;
    o.isKnown   = RFile_isKnown;
-   o.extend    = RFile_extend;
-   RMemory.register('RFile', o);
+   o.name      = RFile_name;
+   o.extension = RFile_extension;
    return o;
 }
 function RFile_inPicture(v){
@@ -4399,11 +4399,11 @@ function RFile_inPicture(v){
    }
 }
 function RFile_isPicture(v){
-   return this.inPicture(this.extend(v));
+   return this.inPicture(this.extension(v));
 }
 function RFile_isKnown(v){
    var o = this;
-   v = o.extend(v).toLowerCase();
+   v = o.extension(v).toLowerCase();
    for(var n in o.knowns){
       if(o.knowns[n] == v){
          return true;
@@ -4411,7 +4411,22 @@ function RFile_isKnown(v){
    }
    return false;
 }
-function RFile_extend(v){
+function RFile_name(value){
+   if(value){
+      value = value.replace(/\\/g, '/');
+      var p1 = value.lastIndexOf('/');
+      if(p1 != -1){
+         value = value.substring(p1 + 1);
+      }
+      var p2 = value.lastIndexOf('.');
+      if(p2 != -1){
+         return value.substring(0, p2);
+      }
+      return value;
+   }
+   return '';
+}
+function RFile_extension(v){
    if(v){
       v = v.replace(/\\/g, '/');
       var p1 = v.lastIndexOf('/');
@@ -13648,6 +13663,7 @@ var RWindow = new function RWindow(){
    o.ohResize          = RWindow_ohResize;
    o.ohSelect          = RWindow_ohSelect;
    o.ohOrientation     = RWindow_ohOrientation;
+   o.ohUnload          = RWindow_ohUnload;
    o.connect           = RWindow_connect;
    o.optionSelect      = RWindow_optionSelect;
    o.setOptionSelect   = RWindow_setOptionSelect;
@@ -13660,6 +13676,9 @@ var RWindow = new function RWindow(){
    o.enable            = RWindow_enable;
    o.disable           = RWindow_disable;
    o.setEnable         = RWindow_setEnable;
+   o.redirect          = RWindow_redirect;
+   o.historyForward    = RWindow_historyForward;
+   o.historyBack       = RWindow_historyBack;
    return o;
 }
 function RWindow_ohMouseDown(p){
@@ -13740,29 +13759,32 @@ function RWindow_ohOrientation(p){
    }
    o.lsnsOrientation.process(e);
 }
+function RWindow_ohUnload(event){
+}
 function RWindow_connect(w){
    var o = this;
-   var hw = o._hWindow = w;
-   var hd = o._hDocument = hw.document;
-   var hc = o._hContainer = hd.body;
+   var hWindow = o._hWindow = w;
+   var hDocument = o._hDocument = hWindow.document;
+   var hContainer = o._hContainer = hDocument.body;
    if(RBrowser.supportHtml5()){
-      hc.addEventListener('mousedown', o.ohMouseDown, true);
-      hc.addEventListener('mousemove', o.ohMouseMove, true);
-      hc.addEventListener('mouseup', o.ohMouseUp, true);
-      hc.addEventListener('keydown', o.ohKeyDown, true);
-      hc.addEventListener('keyup', o.ohKeyUp, true);
-      hc.addEventListener('keypress', o.ohKeyPress, true);
-      hw.addEventListener('orientationchange', o.ohOrientation);
+      hContainer.addEventListener('mousedown', o.ohMouseDown, true);
+      hContainer.addEventListener('mousemove', o.ohMouseMove, true);
+      hContainer.addEventListener('mouseup', o.ohMouseUp, true);
+      hContainer.addEventListener('keydown', o.ohKeyDown, true);
+      hContainer.addEventListener('keyup', o.ohKeyUp, true);
+      hContainer.addEventListener('keypress', o.ohKeyPress, true);
+      hWindow.addEventListener('orientationchange', o.ohOrientation);
    }else{
-      hc.onmousedown = o.ohMouseDown;
-      hc.onmousemove = o.ohMouseMove;
-      hc.onmouseup = o.ohMouseUp;
-      hc.onkeydown = o.ohKeyDown;
-      hc.onkeyup = o.ohKeyUp;
-      hc.onkeypress = o.ohKeyPress;
+      hContainer.onmousedown = o.ohMouseDown;
+      hContainer.onmousemove = o.ohMouseMove;
+      hContainer.onmouseup = o.ohMouseUp;
+      hContainer.onkeydown = o.ohKeyDown;
+      hContainer.onkeyup = o.ohKeyUp;
+      hContainer.onkeypress = o.ohKeyPress;
    }
-   hc.onresize = o.ohResize;
-   hc.onselectstart = o.ohSelect;
+   hContainer.onresize = o.ohResize;
+   hContainer.onselectstart = o.ohSelect;
+   hContainer.onunload = o.ohUnload;
 }
 function RWindow_optionSelect(){
    return this._optionSelect;
@@ -13843,6 +13865,12 @@ function RWindow_setEnable(v, f){
       }
    }
    o._statusEnable = v;
+}
+function RWindow_redirect(){
+}
+function RWindow_historyForward(){
+}
+function RWindow_historyBack(){
 }
 function RWindow_onUnload(){
    RMemory.release();

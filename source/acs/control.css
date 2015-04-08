@@ -342,13 +342,7 @@
 }
 
 .FUiFile_InputPanel{
-   padding:0px 2px 0px 2px;
-   border-left:1px solid #333333;
-   border-top:1px solid #333333;
-   border-right:1px solid #666666;
-   border-bottom:1px solid #666666;
-   border-radius:3px;
-   background-color: #777777;
+   position: relative;
 }
 
 .FUiFile_Input{
@@ -357,6 +351,15 @@
    border: 0;
    color: #E0E0E0;
    background-color: #777777;
+}
+
+.FUiFile_File{
+   position:absolute;
+   left:0px;
+   top:0px;
+   width: 100%;
+   filter:alpha(opacity:0);
+   opacity: 0;
 }
 
 .FUiFile_Browser{

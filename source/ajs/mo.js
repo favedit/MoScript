@@ -4376,15 +4376,15 @@ function REnum_decode(e, v){
    }
    return r;
 }
-var RFile = new function(){
+var RFile = new function RFile(){
    var o = this;
    o.pictures  = ['jpg', 'png', 'gif', 'bmp'];
    o.knowns    = ['jpg', 'png', 'gif', 'bmp', 'doc', 'docx', 'vsd', 'xls', 'xlsx'];
    o.inPicture = RFile_inPicture;
    o.isPicture = RFile_isPicture;
    o.isKnown   = RFile_isKnown;
-   o.extend    = RFile_extend;
-   RMemory.register('RFile', o);
+   o.name      = RFile_name;
+   o.extension = RFile_extension;
    return o;
 }
 function RFile_inPicture(v){
@@ -4399,11 +4399,11 @@ function RFile_inPicture(v){
    }
 }
 function RFile_isPicture(v){
-   return this.inPicture(this.extend(v));
+   return this.inPicture(this.extension(v));
 }
 function RFile_isKnown(v){
    var o = this;
-   v = o.extend(v).toLowerCase();
+   v = o.extension(v).toLowerCase();
    for(var n in o.knowns){
       if(o.knowns[n] == v){
          return true;
@@ -4411,7 +4411,22 @@ function RFile_isKnown(v){
    }
    return false;
 }
-function RFile_extend(v){
+function RFile_name(value){
+   if(value){
+      value = value.replace(/\\/g, '/');
+      var p1 = value.lastIndexOf('/');
+      if(p1 != -1){
+         value = value.substring(p1 + 1);
+      }
+      var p2 = value.lastIndexOf('.');
+      if(p2 != -1){
+         return value.substring(0, p2);
+      }
+      return value;
+   }
+   return '';
+}
+function RFile_extension(v){
    if(v){
       v = v.replace(/\\/g, '/');
       var p1 = v.lastIndexOf('/');
@@ -13648,6 +13663,7 @@ var RWindow = new function RWindow(){
    o.ohResize          = RWindow_ohResize;
    o.ohSelect          = RWindow_ohSelect;
    o.ohOrientation     = RWindow_ohOrientation;
+   o.ohUnload          = RWindow_ohUnload;
    o.connect           = RWindow_connect;
    o.optionSelect      = RWindow_optionSelect;
    o.setOptionSelect   = RWindow_setOptionSelect;
@@ -13660,6 +13676,9 @@ var RWindow = new function RWindow(){
    o.enable            = RWindow_enable;
    o.disable           = RWindow_disable;
    o.setEnable         = RWindow_setEnable;
+   o.redirect          = RWindow_redirect;
+   o.historyForward    = RWindow_historyForward;
+   o.historyBack       = RWindow_historyBack;
    return o;
 }
 function RWindow_ohMouseDown(p){
@@ -13740,29 +13759,32 @@ function RWindow_ohOrientation(p){
    }
    o.lsnsOrientation.process(e);
 }
+function RWindow_ohUnload(event){
+}
 function RWindow_connect(w){
    var o = this;
-   var hw = o._hWindow = w;
-   var hd = o._hDocument = hw.document;
-   var hc = o._hContainer = hd.body;
+   var hWindow = o._hWindow = w;
+   var hDocument = o._hDocument = hWindow.document;
+   var hContainer = o._hContainer = hDocument.body;
    if(RBrowser.supportHtml5()){
-      hc.addEventListener('mousedown', o.ohMouseDown, true);
-      hc.addEventListener('mousemove', o.ohMouseMove, true);
-      hc.addEventListener('mouseup', o.ohMouseUp, true);
-      hc.addEventListener('keydown', o.ohKeyDown, true);
-      hc.addEventListener('keyup', o.ohKeyUp, true);
-      hc.addEventListener('keypress', o.ohKeyPress, true);
-      hw.addEventListener('orientationchange', o.ohOrientation);
+      hContainer.addEventListener('mousedown', o.ohMouseDown, true);
+      hContainer.addEventListener('mousemove', o.ohMouseMove, true);
+      hContainer.addEventListener('mouseup', o.ohMouseUp, true);
+      hContainer.addEventListener('keydown', o.ohKeyDown, true);
+      hContainer.addEventListener('keyup', o.ohKeyUp, true);
+      hContainer.addEventListener('keypress', o.ohKeyPress, true);
+      hWindow.addEventListener('orientationchange', o.ohOrientation);
    }else{
-      hc.onmousedown = o.ohMouseDown;
-      hc.onmousemove = o.ohMouseMove;
-      hc.onmouseup = o.ohMouseUp;
-      hc.onkeydown = o.ohKeyDown;
-      hc.onkeyup = o.ohKeyUp;
-      hc.onkeypress = o.ohKeyPress;
+      hContainer.onmousedown = o.ohMouseDown;
+      hContainer.onmousemove = o.ohMouseMove;
+      hContainer.onmouseup = o.ohMouseUp;
+      hContainer.onkeydown = o.ohKeyDown;
+      hContainer.onkeyup = o.ohKeyUp;
+      hContainer.onkeypress = o.ohKeyPress;
    }
-   hc.onresize = o.ohResize;
-   hc.onselectstart = o.ohSelect;
+   hContainer.onresize = o.ohResize;
+   hContainer.onselectstart = o.ohSelect;
+   hContainer.onunload = o.ohUnload;
 }
 function RWindow_optionSelect(){
    return this._optionSelect;
@@ -13843,6 +13865,12 @@ function RWindow_setEnable(v, f){
       }
    }
    o._statusEnable = v;
+}
+function RWindow_redirect(){
+}
+function RWindow_historyForward(){
+}
+function RWindow_historyBack(){
 }
 function RWindow_onUnload(){
    RMemory.release();
@@ -37581,14 +37609,14 @@ function FUiFile(o){
    o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
    o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
+   o._styleFile       = RClass.register(o, new AStyle('_styleFile'));
    o._styleBrowser    = RClass.register(o, new AStyle('_styleBrowser'));
    o._hValueForm      = null;
    o._hValueLine      = null;
    o._hInputPanel     = null;
    o._hInput          = null;
    o.onBuildEditValue = FUiFile_onBuildEditValue;
-   o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiFile_onInputEdit);
-   o.onBrowserClick   = RClass.register(o, new AEventClick('onBrowserClick'), FUiFile_onBrowserClick);
+   o.onFileChange     = RClass.register(o, new AEventChange('onFileChange'), FUiFile_onFileChange);
    o.construct        = FUiFile_construct;
    o.formatDisplay    = FUiFile_formatDisplay;
    o.formatValue      = FUiFile_formatValue;
@@ -37606,29 +37634,29 @@ function FUiFile_onBuildEditValue(p){
    var hl = o._hValueLine = RBuilder.appendTableRow(hf);
    o._hChangePanel = RBuilder.appendTableCell(hl);
    o.onBuildEditChange(p);
-   var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
-   var he = o._hInputEdit = RBuilder.appendEdit(hep, o.styleName('Input'));
-   var he = o._hInput = RBuilder.appendFile(hep);
-   he.style.display = 'none';
+   var hInputPanel = o._hInputPanel = RBuilder.appendTableCell(hl,  o.styleName('InputPanel'));
+   var he = o._hInputEdit = RBuilder.appendEdit(hInputPanel, o.styleName('Input'));
+   var hFile = o._hInput = RBuilder.appendFile(hInputPanel, o.styleName('File'));
+   o.attachEvent('onFileChange', hFile);
    var hBrowserPanel = o._hBrowserPanel = RBuilder.appendTableCell(o._hEditLine);
    hBrowserPanel.style.paddingLeft = '4px';
    var hBrowser = o._hBrowser = RBuilder.appendButton(hBrowserPanel, o.styleName('Browser'));
    hBrowser.value = '浏览...';
-   o.attachEvent('onBrowserClick', hBrowser);
-   RHtml.setSize(hep, o._inputSize);
+   RHtml.setSize(hInputPanel, o._inputSize);
+   RHtml.setSize(hFile, o._inputSize);
    if(o._editLength){
       he.maxLength = o._editLength;
    }
 }
-function FUiFile_onBrowserClick(event){
+function FUiFile_onFileChange(event){
    var o = this;
-   o._hInput.display = 'block';
-   o._hInput.click();
-}
-function FUiFile_onInputEdit(p){
-   var o = this;
-   var v = o._hInput.value;
-   o.refreshValue();
+   var hFile = o._hInput;
+   if(hFile.files){
+      var file = hFile.files[0];
+      var name = file.name;
+      o._hInputEdit.value = name + ' (' + file.size + 'byte)';
+      o.processDataChangedListener(event);
+   }
 }
 function FUiFile_construct(){
    var o = this;
@@ -54842,6 +54870,7 @@ function FDsResourceImportDialog(o){
    o._controlTeamButton    = null;
    o._controlShareButton   = null;
    o.onBuilded             = FDsResourceImportDialog_onBuilded;
+   o.onFileChange          = FDsResourceImportDialog_onFileChange;
    o.onFileLoaded          = FDsResourceImportDialog_onFileLoaded;
    o.onConfirmLoad         = FDsResourceImportDialog_onConfirmLoad;
    o.onConfirmClick        = FDsResourceImportDialog_onConfirmClick;
@@ -54853,8 +54882,20 @@ function FDsResourceImportDialog(o){
 function FDsResourceImportDialog_onBuilded(p){
    var o = this;
    o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlFile.addDataChangedListener(o, o.onFileChange);
    o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
    o._controlCancelButton.addClickListener(o, o.onCancelClick);
+}
+function FDsResourceImportDialog_onFileChange(event){
+   var o = this;
+   var name = o._controlFile.get();
+   var code = RFile.name(name);
+   if(RString.isEmpty(o._controlCode.get())){
+      o._controlCode.set(code);
+   }
+   if(RString.isEmpty(o._controlLabel.get())){
+      o._controlLabel.set(code);
+   }
 }
 function FDsResourceImportDialog_onFileLoaded(event){
    var o = this;
@@ -55099,7 +55140,6 @@ function FDsResourceMenuBar(o){
 function FDsResourceMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
-   o._controlImportPictureButton.addClickListener(o, o.onImportPictureClick);
    o._controlImportMeshButton.addClickListener(o, o.onImportMeshClick);
    o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
 }
@@ -55806,7 +55846,7 @@ function FDsResourceTabBar_onButtonClick(event){
    var sender = event.sender;
    var name = sender.name();
    o._resourceTypeCd = name;
-   o._workspace.switchContent(name);
+   R
 }
 function FDsResourceTabBar_construct(){
    var o = this;

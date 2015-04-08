@@ -2946,15 +2946,15 @@ function REnum_decode(e, v){
    }
    return r;
 }
-var RFile = new function(){
+var RFile = new function RFile(){
    var o = this;
    o.pictures  = ['jpg', 'png', 'gif', 'bmp'];
    o.knowns    = ['jpg', 'png', 'gif', 'bmp', 'doc', 'docx', 'vsd', 'xls', 'xlsx'];
    o.inPicture = RFile_inPicture;
    o.isPicture = RFile_isPicture;
    o.isKnown   = RFile_isKnown;
-   o.extend    = RFile_extend;
-   RMemory.register('RFile', o);
+   o.name      = RFile_name;
+   o.extension = RFile_extension;
    return o;
 }
 function RFile_inPicture(v){
@@ -2969,11 +2969,11 @@ function RFile_inPicture(v){
    }
 }
 function RFile_isPicture(v){
-   return this.inPicture(this.extend(v));
+   return this.inPicture(this.extension(v));
 }
 function RFile_isKnown(v){
    var o = this;
-   v = o.extend(v).toLowerCase();
+   v = o.extension(v).toLowerCase();
    for(var n in o.knowns){
       if(o.knowns[n] == v){
          return true;
@@ -2981,7 +2981,22 @@ function RFile_isKnown(v){
    }
    return false;
 }
-function RFile_extend(v){
+function RFile_name(value){
+   if(value){
+      value = value.replace(/\\/g, '/');
+      var p1 = value.lastIndexOf('/');
+      if(p1 != -1){
+         value = value.substring(p1 + 1);
+      }
+      var p2 = value.lastIndexOf('.');
+      if(p2 != -1){
+         return value.substring(0, p2);
+      }
+      return value;
+   }
+   return '';
+}
+function RFile_extension(v){
    if(v){
       v = v.replace(/\\/g, '/');
       var p1 = v.lastIndexOf('/');

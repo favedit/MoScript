@@ -50,6 +50,7 @@ var RWindow = new function RWindow(){
    o.ohResize          = RWindow_ohResize;
    o.ohSelect          = RWindow_ohSelect;
    o.ohOrientation     = RWindow_ohOrientation;
+   o.ohUnload          = RWindow_ohUnload;
    //..........................................................
    // @method
    o.connect           = RWindow_connect;
@@ -66,6 +67,10 @@ var RWindow = new function RWindow(){
    o.enable            = RWindow_enable;
    o.disable           = RWindow_disable;
    o.setEnable         = RWindow_setEnable;
+   // @method
+   o.redirect          = RWindow_redirect;
+   o.historyForward    = RWindow_historyForward;
+   o.historyBack       = RWindow_historyBack;
 
 
 
@@ -240,6 +245,15 @@ function RWindow_ohOrientation(p){
 }
 
 //==========================================================
+// <T>卸载处理处理。</T>
+//
+// @method
+// @param event:htmlEvent 事件
+//==========================================================
+function RWindow_ohUnload(event){
+}
+
+//==========================================================
 // <T>关联当前窗口。</T>
 // <P>接管当前窗口对象的各种加载，鼠标，键盘的处理事件。</P>
 //
@@ -249,28 +263,29 @@ function RWindow_ohOrientation(p){
 function RWindow_connect(w){
    var o = this;
    // 设置属性
-   var hw = o._hWindow = w;
-   var hd = o._hDocument = hw.document;
-   var hc = o._hContainer = hd.body;
+   var hWindow = o._hWindow = w;
+   var hDocument = o._hDocument = hWindow.document;
+   var hContainer = o._hContainer = hDocument.body;
    // 关联鼠标事件
    if(RBrowser.supportHtml5()){
-      hc.addEventListener('mousedown', o.ohMouseDown, true);
-      hc.addEventListener('mousemove', o.ohMouseMove, true);
-      hc.addEventListener('mouseup', o.ohMouseUp, true);
-      hc.addEventListener('keydown', o.ohKeyDown, true);
-      hc.addEventListener('keyup', o.ohKeyUp, true);
-      hc.addEventListener('keypress', o.ohKeyPress, true);
-      hw.addEventListener('orientationchange', o.ohOrientation);
+      hContainer.addEventListener('mousedown', o.ohMouseDown, true);
+      hContainer.addEventListener('mousemove', o.ohMouseMove, true);
+      hContainer.addEventListener('mouseup', o.ohMouseUp, true);
+      hContainer.addEventListener('keydown', o.ohKeyDown, true);
+      hContainer.addEventListener('keyup', o.ohKeyUp, true);
+      hContainer.addEventListener('keypress', o.ohKeyPress, true);
+      hWindow.addEventListener('orientationchange', o.ohOrientation);
    }else{
-      hc.onmousedown = o.ohMouseDown;
-      hc.onmousemove = o.ohMouseMove;
-      hc.onmouseup = o.ohMouseUp;
-      hc.onkeydown = o.ohKeyDown;
-      hc.onkeyup = o.ohKeyUp;
-      hc.onkeypress = o.ohKeyPress;
+      hContainer.onmousedown = o.ohMouseDown;
+      hContainer.onmousemove = o.ohMouseMove;
+      hContainer.onmouseup = o.ohMouseUp;
+      hContainer.onkeydown = o.ohKeyDown;
+      hContainer.onkeyup = o.ohKeyUp;
+      hContainer.onkeypress = o.ohKeyPress;
    }
-   hc.onresize = o.ohResize;
-   hc.onselectstart = o.ohSelect;
+   hContainer.onresize = o.ohResize;
+   hContainer.onselectstart = o.ohSelect;
+   hContainer.onunload = o.ohUnload;
 }
 
 //==========================================================
@@ -428,6 +443,32 @@ function RWindow_setEnable(v, f){
    }
    o._statusEnable = v;
 }
+
+//==========================================================
+// <T>跳转到指定地址。</T>
+//
+// @method
+// @param url:String 网络地址
+//==========================================================
+function RWindow_redirect(){
+}
+
+//==========================================================
+// <T>历史前进一级。</T>
+//
+// @method
+//==========================================================
+function RWindow_historyForward(){
+}
+
+//==========================================================
+// <T>历史后退一级。</T>
+//
+// @method
+//==========================================================
+function RWindow_historyBack(){
+}
+
 
 
 
@@ -727,3 +768,4 @@ function RWindow_dispose(){
    o._hDisableImage = null;
    o._hShadow = null;
 }
+

@@ -3602,14 +3602,14 @@ function FUiFile(o){
    o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
    o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
+   o._styleFile       = RClass.register(o, new AStyle('_styleFile'));
    o._styleBrowser    = RClass.register(o, new AStyle('_styleBrowser'));
    o._hValueForm      = null;
    o._hValueLine      = null;
    o._hInputPanel     = null;
    o._hInput          = null;
    o.onBuildEditValue = FUiFile_onBuildEditValue;
-   o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiFile_onInputEdit);
-   o.onBrowserClick   = RClass.register(o, new AEventClick('onBrowserClick'), FUiFile_onBrowserClick);
+   o.onFileChange     = RClass.register(o, new AEventChange('onFileChange'), FUiFile_onFileChange);
    o.construct        = FUiFile_construct;
    o.formatDisplay    = FUiFile_formatDisplay;
    o.formatValue      = FUiFile_formatValue;
@@ -3627,29 +3627,29 @@ function FUiFile_onBuildEditValue(p){
    var hl = o._hValueLine = RBuilder.appendTableRow(hf);
    o._hChangePanel = RBuilder.appendTableCell(hl);
    o.onBuildEditChange(p);
-   var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
-   var he = o._hInputEdit = RBuilder.appendEdit(hep, o.styleName('Input'));
-   var he = o._hInput = RBuilder.appendFile(hep);
-   he.style.display = 'none';
+   var hInputPanel = o._hInputPanel = RBuilder.appendTableCell(hl,  o.styleName('InputPanel'));
+   var he = o._hInputEdit = RBuilder.appendEdit(hInputPanel, o.styleName('Input'));
+   var hFile = o._hInput = RBuilder.appendFile(hInputPanel, o.styleName('File'));
+   o.attachEvent('onFileChange', hFile);
    var hBrowserPanel = o._hBrowserPanel = RBuilder.appendTableCell(o._hEditLine);
    hBrowserPanel.style.paddingLeft = '4px';
    var hBrowser = o._hBrowser = RBuilder.appendButton(hBrowserPanel, o.styleName('Browser'));
    hBrowser.value = '浏览...';
-   o.attachEvent('onBrowserClick', hBrowser);
-   RHtml.setSize(hep, o._inputSize);
+   RHtml.setSize(hInputPanel, o._inputSize);
+   RHtml.setSize(hFile, o._inputSize);
    if(o._editLength){
       he.maxLength = o._editLength;
    }
 }
-function FUiFile_onBrowserClick(event){
+function FUiFile_onFileChange(event){
    var o = this;
-   o._hInput.display = 'block';
-   o._hInput.click();
-}
-function FUiFile_onInputEdit(p){
-   var o = this;
-   var v = o._hInput.value;
-   o.refreshValue();
+   var hFile = o._hInput;
+   if(hFile.files){
+      var file = hFile.files[0];
+      var name = file.name;
+      o._hInputEdit.value = name + ' (' + file.size + 'byte)';
+      o.processDataChangedListener(event);
+   }
 }
 function FUiFile_construct(){
    var o = this;

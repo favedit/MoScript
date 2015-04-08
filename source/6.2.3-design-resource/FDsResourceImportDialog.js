@@ -20,6 +20,7 @@ function FDsResourceImportDialog(o){
    // @event
    o.onBuilded             = FDsResourceImportDialog_onBuilded;
    // @event
+   o.onFileChange          = FDsResourceImportDialog_onFileChange;
    o.onFileLoaded          = FDsResourceImportDialog_onFileLoaded;
    o.onConfirmLoad         = FDsResourceImportDialog_onConfirmLoad;
    o.onConfirmClick        = FDsResourceImportDialog_onConfirmClick;
@@ -43,8 +44,28 @@ function FDsResourceImportDialog_onBuilded(p){
    o.__base.FUiDialog.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
+   o._controlFile.addDataChangedListener(o, o.onFileChange);
    o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
    o._controlCancelButton.addClickListener(o, o.onCancelClick);
+}
+
+//==========================================================
+// <T>文件加载完成。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsResourceImportDialog_onFileChange(event){
+   var o = this;
+   var name = o._controlFile.get();
+   // 设置代码和标签
+   var code = RFile.name(name);
+   if(RString.isEmpty(o._controlCode.get())){
+      o._controlCode.set(code);
+   }
+   if(RString.isEmpty(o._controlLabel.get())){
+      o._controlLabel.set(code);
+   }
 }
 
 //==========================================================

@@ -26,6 +26,7 @@ function FUiFile(o){
    o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
    o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
    o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
+   o._styleFile       = RClass.register(o, new AStyle('_styleFile'));
    o._styleBrowser    = RClass.register(o, new AStyle('_styleBrowser'));
    //..........................................................
    // @html
@@ -36,8 +37,7 @@ function FUiFile(o){
    //..........................................................
    // @event
    o.onBuildEditValue = FUiFile_onBuildEditValue;
-   o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiFile_onInputEdit);
-   o.onBrowserClick   = RClass.register(o, new AEventClick('onBrowserClick'), FUiFile_onBrowserClick);
+   o.onFileChange     = RClass.register(o, new AEventChange('onFileChange'), FUiFile_onFileChange);
    //..........................................................
    // @method
    o.construct        = FUiFile_construct;
@@ -70,19 +70,19 @@ function FUiFile_onBuildEditValue(p){
    o.onBuildEditChange(p);
    //..........................................................
    // 建立输入栏
-   var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
-   var he = o._hInputEdit = RBuilder.appendEdit(hep, o.styleName('Input'));
-   var he = o._hInput = RBuilder.appendFile(hep);
-   he.style.display = 'none';
+   var hInputPanel = o._hInputPanel = RBuilder.appendTableCell(hl,  o.styleName('InputPanel'));
+   var he = o._hInputEdit = RBuilder.appendEdit(hInputPanel, o.styleName('Input'));
+   var hFile = o._hInput = RBuilder.appendFile(hInputPanel, o.styleName('File'));
+   o.attachEvent('onFileChange', hFile);
    //..........................................................
    var hBrowserPanel = o._hBrowserPanel = RBuilder.appendTableCell(o._hEditLine);
    hBrowserPanel.style.paddingLeft = '4px';
    var hBrowser = o._hBrowser = RBuilder.appendButton(hBrowserPanel, o.styleName('Browser'));
    hBrowser.value = '浏览...';
-   o.attachEvent('onBrowserClick', hBrowser);
    //o.attachEvent('onInputEdit', he, o.onInputEdit);
    // 设置大小
-   RHtml.setSize(hep, o._inputSize);
+   RHtml.setSize(hInputPanel, o._inputSize);
+   RHtml.setSize(hFile, o._inputSize);
    // 设置可以输入的最大长度
    if(o._editLength){
       he.maxLength = o._editLength;
@@ -95,23 +95,17 @@ function FUiFile_onBuildEditValue(p){
 // @method
 // @param event:SEvent 事件信息
 //==========================================================
-function FUiFile_onBrowserClick(event){
+function FUiFile_onFileChange(event){
    var o = this;
-   o._hInput.display = 'block';
-   o._hInput.click();
-}
-
-//==========================================================
-// <T>编辑控件中数据修改处理。 </T>
-//
-// @param p:event:SEvent 事件对象
-//==========================================================
-function FUiFile_onInputEdit(p){
-   var o = this;
-   // 设置滑动栏
-   var v = o._hInput.value;
-   // 刷新数据
-   o.refreshValue();
+   var hFile = o._hInput;
+   if(hFile.files){
+      var file = hFile.files[0];
+      // 设置文件内容
+      var name = file.name;
+      o._hInputEdit.value = name + ' (' + file.size + 'byte)';
+      // 分发事件
+      o.processDataChangedListener(event);
+   }
 }
 
 //==========================================================
