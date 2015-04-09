@@ -2181,6 +2181,60 @@ function MUiSizeable_startDrag(){
 }
 function MUiSizeable_stopDrag(){
 }
+function MUiStorage(o){
+   o = RClass.inherits(this, o);
+   o._storageCode   = null;
+   o._storageObject = null;
+   o.storageGet     = MUiHorizontal_storageGet;
+   o.storageSet     = MUiHorizontal_storageSet;
+   o.storageUpdate  = MUiHorizontal_storageUpdate;
+   o.dispose        = MUiHorizontal_dispose;
+   return o;
+}
+function MUiHorizontal_storageGet(name, defaultValue){
+   var o = this;
+   if(name == null){
+      throw new TError(o, 'Name is empty.');
+   }
+   var object = o._storageObject;
+   if(!object){
+      var storge = RWindow.storage(EScope.Local);
+      var value = storge.get(o._storageCode);
+      object = o._storageObject = RJson.parse(value, Object);
+   }
+   if(object){
+      var value = object[name];
+      if(value != null){
+         return value;
+      }
+   }
+   return defaultValue;
+}
+function MUiHorizontal_storageSet(name, value){
+   var o = this;
+   if(name == null){
+      throw new TError(o, 'Name is empty.');
+   }
+   var object = o._storageObject;
+   if(!object){
+      object = o._storageObject = new Object();
+   }
+   object[name] = value;
+}
+function MUiHorizontal_storageUpdate(){
+   var o = this;
+   var object = o._storageObject;
+   if(object){
+      var storge = RWindow.storage(EScope.Local);
+      var value = RJson.toString(object);
+      storge.set(o._storageCode, value);
+   }
+}
+function MUiHorizontal_dispose(){
+   var o = this;
+   o._storageCode = null;
+   o._storageObject = null;
+}
 function MUiStyle(o){
    o = RClass.inherits(this, o);
    o.construct     = RMethod.empty;
@@ -15996,8 +16050,8 @@ function FUiTabBar(o){
    o._styleTop        = RClass.register(o, new AStyle('_styleTop'));
    o._styleBottom     = RClass.register(o, new AStyle('_styleBottom'));
    o._styleForm       = RClass.register(o, new AStyle('_styleForm'));
-   o._sheets          = null;
-   o._activeSheet     = null;
+   o._buttons          = null;
+   o._activeButton     = null;
    o._esize           = EUiSize.Both;
    o._hTop             = null;
    o._hLine            = null;
@@ -16007,9 +16061,11 @@ function FUiTabBar(o){
    o.onBuild          = FUiTabBar_onBuild;
    o.oeRefresh        = FUiTabBar_oeRefresh;
    o.construct        = FUiTabBar_construct;
+   o.activeButton      = FUiTabBar_activeButton;
    o.appendChild      = FUiTabBar_appendChild;
    o.select           = FUiTabBar_select;
    o.selectByIndex    = FUiTabBar_selectByIndex;
+   o.selectByName     = FUiTabBar_selectByName;
    o.sheet            = FUiTabBar_sheet;
    o.push             = FUiTabBar_push;
    o.dispose          = FUiTabBar_dispose;
@@ -16047,11 +16103,11 @@ function FUiTabBar_oeRefresh(p){
    var o = this;
    var r = o.__base.FUiContainer.oeRefresh.call(o, p);
    if(p.isBefore()){
-      if(o._sheets.count()){
-         if(o._activeSheet){
-            o._activeSheet.oeRefresh(e);
+      if(o._buttons.count()){
+         if(o._activeButton){
+            o._activeButton.oeRefresh(e);
          }else{
-            var s = o._activeSheet = o._sheets.value(0);
+            var s = o._activeButton = o._buttons.value(0);
             if(s){
                s.innerSelect(true);
             }
@@ -16063,7 +16119,10 @@ function FUiTabBar_oeRefresh(p){
 function FUiTabBar_construct(){
    var o = this;
    o.__base.FUiContainer.construct.call(o);
-   o._sheets = new TDictionary();
+   o._buttons = new TDictionary();
+}
+function FUiTabBar_activeButton(){
+   return this._activeButton;
 }
 function FUiTabBar_appendChild(p){
    var o = this;
@@ -16108,37 +16167,43 @@ function FUiTabBar_appendChild(p){
    }
 }
 function FUiTabBar_sheet(p){
-   return this._sheets.get(p);
+   return this._buttons.get(p);
 }
 function FUiTabBar_select(p){
    var o = this;
-   var ss = o._sheets;
+   var ss = o._buttons;
    var c = ss.count();
-   o._activeSheet = p;
+   o._activeButton = p;
    for(var i = 0; i < c; i++){
-      var s = o._sheets.value(i);
+      var s = o._buttons.value(i);
       if(s != p){
          s.select(false);
       }
    }
    p.select(true);
 }
-function FUiTabBar_selectByIndex(n){
+function FUiTabBar_selectByIndex(index){
    var o = this;
-   var p = o._sheets.value(n);
-   if(p){
-      o.select(p);
+   var sheet = o._buttons.value(index);
+   if(sheet){
+      o.select(sheet);
    }
 }
-function FUiTabBar_push(p){
+function FUiTabBar_selectByName(name){
    var o = this;
-   if(RClass.isClass(p, FUiTabButton)){
-      var ss = o._sheets;
-      p._pageControl = o;
-      p._index = ss.count();
-      ss.set(p.name(), p);
+   var sheet = o.findControl(name);
+   if(sheet){
+      o.select(sheet);
    }
-   o.__base.FUiContainer.push.call(o, p);
+}
+function FUiTabBar_push(component){
+   var o = this;
+   if(RClass.isClass(component, FUiTabButton)){
+      var buttons = o._buttons;
+      component._index = buttons.count();
+      buttons.set(component.name(), component);
+   }
+   o.__base.FUiContainer.push.call(o, component);
 }
 function FUiTabBar_dispose(){
    var o = this;
@@ -16190,6 +16255,7 @@ function FUiTabButton(o){
    o.innerSelect        = FUiTabButton_innerSelect;
    o.select             = FUiTabButton_select;
    o.setVisible         = FUiTabButton_setVisible;
+   o.doClick            = FUiTabButton_doClick;
    o.dispose            = FUiTabButton_dispose
    o.innerDump          = FUiTabButton_innerDump;
    return o;
@@ -16199,9 +16265,6 @@ function FUiTabButton_onBuildPanel(p){
    var hp = o._hContainer = o._hPanel = RBuilder.createDiv(p);
    hp.width = '100%';
    hp.height = '100%';
-   var hf = o._hPanelForm = RBuilder.appendTable(hp);
-   hf.width = '100%';
-   hf.height = '100%';
 }
 function FUiTabButton_onButtonEnter(p){
    var o = this;
@@ -16216,11 +16279,7 @@ function FUiTabButton_onButtonLeave(p){
    }
 }
 function FUiTabButton_onButtonClick(p){
-   var o = this;
-   o._parent.select(o);
-   var e = new SClickEvent(o);
-   o.processClickListener(e);
-   e.dispose();
+   this.doClick();
 }
 function FUiTabButton_construct(){
    var o = this;
@@ -16234,7 +16293,7 @@ function FUiTabButton_innerSelect(p){
       o._hasBuilded = true;
    }
    var first = (o._index == 0);
-   var prior = (b._activeSheet._index - 1 == o._index);
+   var prior = (b._activeButton._index - 1 == o._index);
    if(o._selected != p){
       if(p){
          o.lsnsSelect.process();
@@ -16260,6 +16319,13 @@ function FUiTabButton_select(p){
 function FUiTabButton_setVisible(p){
    var o = this;
    RHtml.displaySet(o._hPanel, p);
+}
+function FUiTabButton_doClick(){
+   var o = this;
+   o._parent.select(o);
+   var e = new SClickEvent(o);
+   o.processClickListener(e);
+   e.dispose();
 }
 function FUiTabButton_dispose(){
    var o = this;

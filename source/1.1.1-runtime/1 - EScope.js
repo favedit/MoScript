@@ -12,6 +12,6 @@ var EScope = new function EScope(){
    // @member 页面内共享空间
    o.Session = 2;
    // @member 全局空间
-   o.Global = 4;
+   o.Global = 3;
    return o;
 }

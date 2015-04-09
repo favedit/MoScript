@@ -17,7 +17,7 @@ var EScope = new function EScope(){
    var o = this;
    o.Local = 1;
    o.Session = 2;
-   o.Global = 4;
+   o.Global = 3;
    return o;
 }
 var RRuntime = new function RRuntime(){

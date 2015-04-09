@@ -14,10 +14,6 @@
 // ││hBottomL<TD>│hBottom<TD>             │hBottomR<TD>││
 // │└------------┴------------------------┴------------┘│
 // └--------------------------------------------------------┘
-//  hDataPanel<TR>
-// ┌--------------------------------------------------------┐
-// │hContainer<DIV>                                         │
-// └--------------------------------------------------------┘
 //
 // @class
 // @author maocy
@@ -86,6 +82,8 @@ function FUiTabButton(o){
    o.select             = FUiTabButton_select;
    o.setVisible         = FUiTabButton_setVisible;
    // @method
+   o.doClick            = FUiTabButton_doClick;
+   // @method
    o.dispose            = FUiTabButton_dispose
    // @method
    o.innerDump          = FUiTabButton_innerDump;
@@ -103,9 +101,6 @@ function FUiTabButton_onBuildPanel(p){
    var hp = o._hContainer = o._hPanel = RBuilder.createDiv(p);
    hp.width = '100%';
    hp.height = '100%';
-   var hf = o._hPanelForm = RBuilder.appendTable(hp);
-   hf.width = '100%';
-   hf.height = '100%';
 }
 
 //==========================================================
@@ -141,12 +136,7 @@ function FUiTabButton_onButtonLeave(p){
 // @param p:event:SEvent 事件
 //==========================================================
 function FUiTabButton_onButtonClick(p){
-   var o = this;
-   o._parent.select(o);
-   // 发送事件
-   var e = new SClickEvent(o);
-   o.processClickListener(e);
-   e.dispose();
+   this.doClick();
 }
 
 //==========================================================
@@ -176,7 +166,7 @@ function FUiTabButton_innerSelect(p){
       o._hasBuilded = true;
    }
    var first = (o._index == 0);
-   var prior = (b._activeSheet._index - 1 == o._index);
+   var prior = (b._activeButton._index - 1 == o._index);
    // Select
    if(o._selected != p){
       if(p){
@@ -218,6 +208,21 @@ function FUiTabButton_select(p){
 function FUiTabButton_setVisible(p){
    var o = this;
    RHtml.displaySet(o._hPanel, p);
+}
+
+//==========================================================
+// <T>点击处理。</T>
+//
+// @method
+//==========================================================
+function FUiTabButton_doClick(){
+   var o = this;
+   // 选中当前按键
+   o._parent.select(o);
+   // 发送事件
+   var e = new SClickEvent(o);
+   o.processClickListener(e);
+   e.dispose();
 }
 
 //==========================================================

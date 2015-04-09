@@ -10,6 +10,8 @@ function SBrowserCapability(){
    //..........................................................
    // @attribute Boolean 支持进程
    o.optionProcess = false;
+   // @attribute Boolean 支持存储
+   o.optionStorage = false;
    // @attribute Boolean 支持创建二进制
    o.blobCreate    = false;
    return o;

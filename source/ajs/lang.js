@@ -1595,8 +1595,8 @@ function FObject_dispose(){
    RObject.free(o);
    o.__dispose = true;
 }
-function FObject_innerDump(s, l){
-   s.append(RClass.dump(this));
+function FObject_innerDump(dump, level){
+   dump.append(RClass.dump(this));
 }
 function FObject_dump(){
    var r = new TString();
@@ -3284,6 +3284,26 @@ function RInteger_copy(po, poi, pi, pii, pc){
 }
 function RInteger_toString(p){
    return (p == null) ? '0' : p.toString();
+}
+var RJson = new function RJson(){
+   var o = this;
+   o.parse    = RJson_parse;
+   o.toString = RJson_toString;
+   return o;
+}
+function RJson_parse(value, clazz){
+   var result = null;
+   try{
+      result = JSON.parse(value)
+   }catch(e){
+      if(clazz){
+         result = new clazz();
+      }
+   }
+   return result;
+}
+function RJson_toString(value){
+   return JSON.stringify(value);
 }
 var RLogger = new function RLogger(){
    var o = this;

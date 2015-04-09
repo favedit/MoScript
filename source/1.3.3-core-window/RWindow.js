@@ -13,6 +13,9 @@ var RWindow = new function RWindow(){
    // @attribute
    o._statusEnable     = true;
    // @attribute
+   o._localStorage     = null;
+   o._sessionStorage   = null;
+   // @attribute
    o._mouseEvent       = new SMouseEvent();
    o._keyEvent         = new SKeyboardEvent();
    o._resizeEvent      = new SResizeEvent();
@@ -59,6 +62,8 @@ var RWindow = new function RWindow(){
    o.setOptionSelect   = RWindow_setOptionSelect;
    o.setCaption        = RWindow_setCaption;
    o.setStatus         = RWindow_setStatus;
+   // @method
+   o.storage           = RWindow_storage;
    // @method
    o.makeDisablePanel  = RWindow_makeDisablePanel;
    o.windowEnable      = RWindow_windowEnable;
@@ -330,6 +335,33 @@ function RWindow_setCaption(p){
 //==========================================================
 function RWindow_setStatus(p){
    window.status = RString.nvl(p);
+}
+
+//==========================================================
+// <T>获得存储对象。</T>
+//
+// @method
+// @param scopeCd:EScope 范围
+//==========================================================
+function RWindow_storage(scopeCd){
+   var o = this;
+   switch(scopeCd){
+      case EScope.Local:
+         var storage = o._localStorage;
+         if(!storage){
+            storage = o._localStorage = RClass.create(FWindowStorage);
+            storage.link(window.localStorage);
+         }
+         return storage;
+      case EScope.Session:
+         var storage = o._sessionStorage;
+         if(!storage){
+            storage = o._sessionStorage = RClass.create(FWindowStorage);
+            storage.link(window.sessionStorage);
+         }
+         return storage;
+   }
+   throw new TError(o, 'Unknown scope. (scope_cd={1})', scopeCd);
 }
 
 //==========================================================

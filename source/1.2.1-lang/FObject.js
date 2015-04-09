@@ -77,11 +77,11 @@ function FObject_dispose(){
 // <T>获取运行信息。</T>
 //
 // @method
-// @param s:dump:TString 字符串
-// @param l:level:Integer 递归层次
+// @param dump:TString 字符串
+// @param level:Integer 递归层次
 //==========================================================
-function FObject_innerDump(s, l){
-   s.append(RClass.dump(this));
+function FObject_innerDump(dump, level){
+   dump.append(RClass.dump(this));
 }
 
 //==========================================================

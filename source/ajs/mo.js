@@ -17,7 +17,7 @@ var EScope = new function EScope(){
    var o = this;
    o.Local = 1;
    o.Session = 2;
-   o.Global = 4;
+   o.Global = 3;
    return o;
 }
 var RRuntime = new function RRuntime(){
@@ -3025,8 +3025,8 @@ function FObject_dispose(){
    RObject.free(o);
    o.__dispose = true;
 }
-function FObject_innerDump(s, l){
-   s.append(RClass.dump(this));
+function FObject_innerDump(dump, level){
+   dump.append(RClass.dump(this));
 }
 function FObject_dump(){
    var r = new TString();
@@ -4714,6 +4714,26 @@ function RInteger_copy(po, poi, pi, pii, pc){
 }
 function RInteger_toString(p){
    return (p == null) ? '0' : p.toString();
+}
+var RJson = new function RJson(){
+   var o = this;
+   o.parse    = RJson_parse;
+   o.toString = RJson_toString;
+   return o;
+}
+function RJson_parse(value, clazz){
+   var result = null;
+   try{
+      result = JSON.parse(value)
+   }catch(e){
+      if(clazz){
+         result = new clazz();
+      }
+   }
+   return result;
+}
+function RJson_toString(value){
+   return JSON.stringify(value);
 }
 var RLogger = new function RLogger(){
    var o = this;
@@ -13108,8 +13128,53 @@ function FXmlConsole_process(p){
 function SBrowserCapability(){
    var o = this;
    o.optionProcess = false;
+   o.optionStorage = false;
    o.blobCreate    = false;
    return o;
+}
+function FWindowStorage(o){
+   o = RClass.inherits(this, o, FObject);
+   o._scopeCd  = null;
+   o._storage  = null;
+   o.scopeCd   = FWindowStorage_scopeCd;
+   o.link      = FWindowStorage_link;
+   o.get       = FWindowStorage_get;
+   o.set       = FWindowStorage_set;
+   o.remove    = FWindowStorage_remove;
+   o.clear     = FWindowStorage_clear;
+   o.innerDump = FWindowStorage_innerDump;
+   return o;
+}
+function FWindowStorage_scopeCd(){
+   return this._scopeCd;
+}
+function FWindowStorage_link(storage){
+   this._storage = storage;
+}
+function FWindowStorage_get(name){
+   return this._storage.getItem(name);
+}
+function FWindowStorage_set(name, value){
+   this._storage.setItem(name, value);
+}
+function FWindowStorage_remove(name){
+   this._storage.removeItem(name);
+}
+function FWindowStorage_clear(){
+   this._storage.clear();
+}
+function FWindowStorage_innerDump(dump, level){
+   var o = this;
+   var storage = o._storage;
+   var count = storage.length;
+   for(var i = 0; i < count; i++){
+      var name = storage.key(i);
+      var value = storage.getItem(name);
+      if(i > 0){
+         dump.append(';');
+      }
+      dump.append(name + '=' + value);
+   }
 }
 var RApplication = new function RApplication(){
    var o = this;
@@ -13192,6 +13257,7 @@ function RBrowser_construct(){
    if(o._typeCd == EBrowser.Chrome){
       RLogger.lsnsOutput.register(o, o.onLog);
    }
+   RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
@@ -13199,13 +13265,15 @@ function RBrowser_construct(){
    if(window.Worker){
       c.optionProcess = true;
    }
+   if(window.localStorage){
+      c.optionStorage = true;
+   }
    try{
       new Blob(["Test"], {'type':'text/plain'});
       c.blobCreate = true;
    }catch(e){
-      c.blobCreate = false;
+      RLogger.warn(o, 'Browser blob not support.');
    }
-   RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }
 function RBrowser_capability(){
    return this._capability;
@@ -13632,6 +13700,8 @@ var RWindow = new function RWindow(){
    var o = this;
    o._optionSelect     = true;
    o._statusEnable     = true;
+   o._localStorage     = null;
+   o._sessionStorage   = null;
    o._mouseEvent       = new SMouseEvent();
    o._keyEvent         = new SKeyboardEvent();
    o._resizeEvent      = new SResizeEvent();
@@ -13669,6 +13739,7 @@ var RWindow = new function RWindow(){
    o.setOptionSelect   = RWindow_setOptionSelect;
    o.setCaption        = RWindow_setCaption;
    o.setStatus         = RWindow_setStatus;
+   o.storage           = RWindow_storage;
    o.makeDisablePanel  = RWindow_makeDisablePanel;
    o.windowEnable      = RWindow_windowEnable;
    o.windowDisable     = RWindow_windowDisable;
@@ -13801,6 +13872,26 @@ function RWindow_setCaption(p){
 }
 function RWindow_setStatus(p){
    window.status = RString.nvl(p);
+}
+function RWindow_storage(scopeCd){
+   var o = this;
+   switch(scopeCd){
+      case EScope.Local:
+         var storage = o._localStorage;
+         if(!storage){
+            storage = o._localStorage = RClass.create(FWindowStorage);
+            storage.link(window.localStorage);
+         }
+         return storage;
+      case EScope.Session:
+         var storage = o._sessionStorage;
+         if(!storage){
+            storage = o._sessionStorage = RClass.create(FWindowStorage);
+            storage.link(window.sessionStorage);
+         }
+         return storage;
+   }
+   throw new TError(o, 'Unknown scope. (scope_cd={1})', scopeCd);
 }
 function RWindow_makeDisablePanel(f){
    var o = this;
@@ -31099,6 +31190,60 @@ function MUiSizeable_startDrag(){
 }
 function MUiSizeable_stopDrag(){
 }
+function MUiStorage(o){
+   o = RClass.inherits(this, o);
+   o._storageCode   = null;
+   o._storageObject = null;
+   o.storageGet     = MUiHorizontal_storageGet;
+   o.storageSet     = MUiHorizontal_storageSet;
+   o.storageUpdate  = MUiHorizontal_storageUpdate;
+   o.dispose        = MUiHorizontal_dispose;
+   return o;
+}
+function MUiHorizontal_storageGet(name, defaultValue){
+   var o = this;
+   if(name == null){
+      throw new TError(o, 'Name is empty.');
+   }
+   var object = o._storageObject;
+   if(!object){
+      var storge = RWindow.storage(EScope.Local);
+      var value = storge.get(o._storageCode);
+      object = o._storageObject = RJson.parse(value, Object);
+   }
+   if(object){
+      var value = object[name];
+      if(value != null){
+         return value;
+      }
+   }
+   return defaultValue;
+}
+function MUiHorizontal_storageSet(name, value){
+   var o = this;
+   if(name == null){
+      throw new TError(o, 'Name is empty.');
+   }
+   var object = o._storageObject;
+   if(!object){
+      object = o._storageObject = new Object();
+   }
+   object[name] = value;
+}
+function MUiHorizontal_storageUpdate(){
+   var o = this;
+   var object = o._storageObject;
+   if(object){
+      var storge = RWindow.storage(EScope.Local);
+      var value = RJson.toString(object);
+      storge.set(o._storageCode, value);
+   }
+}
+function MUiHorizontal_dispose(){
+   var o = this;
+   o._storageCode = null;
+   o._storageObject = null;
+}
 function MUiStyle(o){
    o = RClass.inherits(this, o);
    o.construct     = RMethod.empty;
@@ -44914,8 +45059,8 @@ function FUiTabBar(o){
    o._styleTop        = RClass.register(o, new AStyle('_styleTop'));
    o._styleBottom     = RClass.register(o, new AStyle('_styleBottom'));
    o._styleForm       = RClass.register(o, new AStyle('_styleForm'));
-   o._sheets          = null;
-   o._activeSheet     = null;
+   o._buttons          = null;
+   o._activeButton     = null;
    o._esize           = EUiSize.Both;
    o._hTop             = null;
    o._hLine            = null;
@@ -44925,9 +45070,11 @@ function FUiTabBar(o){
    o.onBuild          = FUiTabBar_onBuild;
    o.oeRefresh        = FUiTabBar_oeRefresh;
    o.construct        = FUiTabBar_construct;
+   o.activeButton      = FUiTabBar_activeButton;
    o.appendChild      = FUiTabBar_appendChild;
    o.select           = FUiTabBar_select;
    o.selectByIndex    = FUiTabBar_selectByIndex;
+   o.selectByName     = FUiTabBar_selectByName;
    o.sheet            = FUiTabBar_sheet;
    o.push             = FUiTabBar_push;
    o.dispose          = FUiTabBar_dispose;
@@ -44965,11 +45112,11 @@ function FUiTabBar_oeRefresh(p){
    var o = this;
    var r = o.__base.FUiContainer.oeRefresh.call(o, p);
    if(p.isBefore()){
-      if(o._sheets.count()){
-         if(o._activeSheet){
-            o._activeSheet.oeRefresh(e);
+      if(o._buttons.count()){
+         if(o._activeButton){
+            o._activeButton.oeRefresh(e);
          }else{
-            var s = o._activeSheet = o._sheets.value(0);
+            var s = o._activeButton = o._buttons.value(0);
             if(s){
                s.innerSelect(true);
             }
@@ -44981,7 +45128,10 @@ function FUiTabBar_oeRefresh(p){
 function FUiTabBar_construct(){
    var o = this;
    o.__base.FUiContainer.construct.call(o);
-   o._sheets = new TDictionary();
+   o._buttons = new TDictionary();
+}
+function FUiTabBar_activeButton(){
+   return this._activeButton;
 }
 function FUiTabBar_appendChild(p){
    var o = this;
@@ -45026,37 +45176,43 @@ function FUiTabBar_appendChild(p){
    }
 }
 function FUiTabBar_sheet(p){
-   return this._sheets.get(p);
+   return this._buttons.get(p);
 }
 function FUiTabBar_select(p){
    var o = this;
-   var ss = o._sheets;
+   var ss = o._buttons;
    var c = ss.count();
-   o._activeSheet = p;
+   o._activeButton = p;
    for(var i = 0; i < c; i++){
-      var s = o._sheets.value(i);
+      var s = o._buttons.value(i);
       if(s != p){
          s.select(false);
       }
    }
    p.select(true);
 }
-function FUiTabBar_selectByIndex(n){
+function FUiTabBar_selectByIndex(index){
    var o = this;
-   var p = o._sheets.value(n);
-   if(p){
-      o.select(p);
+   var sheet = o._buttons.value(index);
+   if(sheet){
+      o.select(sheet);
    }
 }
-function FUiTabBar_push(p){
+function FUiTabBar_selectByName(name){
    var o = this;
-   if(RClass.isClass(p, FUiTabButton)){
-      var ss = o._sheets;
-      p._pageControl = o;
-      p._index = ss.count();
-      ss.set(p.name(), p);
+   var sheet = o.findControl(name);
+   if(sheet){
+      o.select(sheet);
    }
-   o.__base.FUiContainer.push.call(o, p);
+}
+function FUiTabBar_push(component){
+   var o = this;
+   if(RClass.isClass(component, FUiTabButton)){
+      var buttons = o._buttons;
+      component._index = buttons.count();
+      buttons.set(component.name(), component);
+   }
+   o.__base.FUiContainer.push.call(o, component);
 }
 function FUiTabBar_dispose(){
    var o = this;
@@ -45108,6 +45264,7 @@ function FUiTabButton(o){
    o.innerSelect        = FUiTabButton_innerSelect;
    o.select             = FUiTabButton_select;
    o.setVisible         = FUiTabButton_setVisible;
+   o.doClick            = FUiTabButton_doClick;
    o.dispose            = FUiTabButton_dispose
    o.innerDump          = FUiTabButton_innerDump;
    return o;
@@ -45117,9 +45274,6 @@ function FUiTabButton_onBuildPanel(p){
    var hp = o._hContainer = o._hPanel = RBuilder.createDiv(p);
    hp.width = '100%';
    hp.height = '100%';
-   var hf = o._hPanelForm = RBuilder.appendTable(hp);
-   hf.width = '100%';
-   hf.height = '100%';
 }
 function FUiTabButton_onButtonEnter(p){
    var o = this;
@@ -45134,11 +45288,7 @@ function FUiTabButton_onButtonLeave(p){
    }
 }
 function FUiTabButton_onButtonClick(p){
-   var o = this;
-   o._parent.select(o);
-   var e = new SClickEvent(o);
-   o.processClickListener(e);
-   e.dispose();
+   this.doClick();
 }
 function FUiTabButton_construct(){
    var o = this;
@@ -45152,7 +45302,7 @@ function FUiTabButton_innerSelect(p){
       o._hasBuilded = true;
    }
    var first = (o._index == 0);
-   var prior = (b._activeSheet._index - 1 == o._index);
+   var prior = (b._activeButton._index - 1 == o._index);
    if(o._selected != p){
       if(p){
          o.lsnsSelect.process();
@@ -45178,6 +45328,13 @@ function FUiTabButton_select(p){
 function FUiTabButton_setVisible(p){
    var o = this;
    RHtml.displaySet(o._hPanel, p);
+}
+function FUiTabButton_doClick(){
+   var o = this;
+   o._parent.select(o);
+   var e = new SClickEvent(o);
+   o.processClickListener(e);
+   e.dispose();
 }
 function FUiTabButton_dispose(){
    var o = this;
@@ -52035,8 +52192,9 @@ function FDsSolutionCatalogToolBar_dispose(){
    o.__base.FUiToolBar.dispose.call(o);
 }
 function FDsSolutionFrameSet(o){
-   o = RClass.inherits(this, o, FUiFrameSet);
+   o = RClass.inherits(this, o, FUiFrameSet, MUiStorage);
    o._frameName            = 'design3d.solution.FrameSet';
+   o._storageCode          = o._frameName;
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
    o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
    o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'List_Ground'));
@@ -52045,17 +52203,17 @@ function FDsSolutionFrameSet(o){
    o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Property_Toolbar'));
    o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
    o._pageSize             = 40;
-   o._resourceTypeCd       = 'private';
+   o._activeResourceCd     = 'private';
    o._activeProjectGuid    = null;
    o._frameCatalog         = null;
    o._frameCatalogToolbar  = null;
    o._frameCatalogContent  = null;
-   o._frameSearch          = null;
-   o._frameSearchToolbar   = null;
-   o._frameSearchContent   = null;
-   o._framePreview         = null;
-   o._framePreviewToolbar  = null;
-   o._framePreviewContent  = null;
+   o._frameList            = null;
+   o._frameListToolbar     = null;
+   o._frameListContent     = null;
+   o._frameProperty        = null;
+   o._framePropertyToolbar = null;
+   o._framePropertyContent = null;
    o._propertyFrames       = null;
    o.onBuilded             = FDsSolutionFrameSet_onBuilded;
    o.construct             = FDsSolutionFrameSet_construct;
@@ -52074,11 +52232,11 @@ function FDsSolutionFrameSet_onBuilded(p){
    var frame = o._frameCatalogToolbar = o.searchControl('catalogToolbarFrame');
    frame._hPanel.className = o.styleName('Catalog_Toolbar');
    var frame = o._frameCatalogContent = o.searchControl('catalogContentFrame');
-   var frame = o._frameSearch = o.searchControl('listFrame');
+   var frame = o._frameList = o.searchControl('listFrame');
    frame._hPanel.className = o.styleName('List_Ground');
-   var frame = o._frameSearchToolbar = o.searchControl('listToolbarFrame');
+   var frame = o._frameListToolbar = o.searchControl('listToolbarFrame');
    frame._hPanel.className = o.styleName('List_Toolbar');
-   var frame = o._frameSearchContent = o.searchControl('listContentFrame');
+   var frame = o._frameListContent = o.searchControl('listContentFrame');
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
    spliter.setAlignCd(EUiAlign.Left);
    spliter.setSizeHtml(o._frameCatalog._hPanel);
@@ -52093,12 +52251,12 @@ function FDsSolutionFrameSet_onBuilded(p){
    var control = o._listToolbar = RClass.create(FDsSolutionListToolBar);
    control._frameSet = o;
    control.buildDefine(p);
-   o._frameSearchToolbar.push(control);
+   o._frameListToolbar.push(control);
    var control = o._listContent = RClass.create(FDsSolutionListContent);
    control._frameSet = o;
    control.build(p);
-   o._frameSearchContent.push(control);
-   o.switchContent(o._resourceTypeCd);
+   o._frameListContent.push(control);
+   o.switchContent('private');
 }
 function FDsSolutionFrameSet_construct(){
    var o = this;
@@ -52110,7 +52268,7 @@ function FDsSolutionFrameSet_findPropertyFrame(p){
    var f = o._propertyFrames.get(p);
    if(!f){
       var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._framePreviewProperty._hContainer);
+      f = fc.get(o, p, o._framePropertyProperty._hContainer);
       f._workspace = o;
       o._propertyFrames.set(p, f);
    }
@@ -52136,7 +52294,7 @@ function FDsSolutionFrameSet_selectObject(control){
 }
 function FDsSolutionFrameSet_switchContent(typeCd){
    var o = this;
-   o._resourceTypeCd = typeCd;
+   o._activeResourceCd = typeCd;
    o._listContent.serviceSearch(typeCd, '', o._pageSize, 0);
 }
 function FDsSolutionFrameSet_load(){
@@ -53009,13 +53167,14 @@ function FDsSolutionTabBar_dispose(){
    o.__base.FUiTabBar.dispose.call(o);
 }
 function FDsSolutionWorkspace(o){
-   o = RClass.inherits(this, o, FUiWorkspace);
+   o = RClass.inherits(this, o, FUiWorkspace, MUiStorage);
    o._frameName            = 'design3d.solution.Workspace';
+   o._storageCode          = o._frameName;
    o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-   o._resourceTypeCd       = 'private';
+   o._activeFrameSetCode   = null;
    o._activeProjectGuid    = null;
    o._frameToolBar         = null;
    o._frameStatusBar       = null;
@@ -53042,14 +53201,14 @@ function FDsSolutionWorkspace_onBuilded(p){
    hTable.width = '100%';
    var hRow = RBuilder.appendTableRow(hTable);
    o._hMenuPanel = RBuilder.appendTableCell(hRow);
-   var c = o._tabBar = RClass.create(FDsSolutionTabBar);
-   c._workspace = o;
-   c.buildDefine(p);
+   var control = o._tabBar = RClass.create(FDsSolutionTabBar);
+   control._workspace = o;
+   control.buildDefine(p);
    var hCell = RBuilder.appendTableCell(hRow);
    hCell.width = '150px';
    hCell.align = 'right';
    hCell.vAlign = 'bottom';
-   hCell.appendChild(c._hPanel);
+   hCell.appendChild(control._hPanel);
    o._frameToolBar._hPanel.appendChild(hTable);
 }
 function FDsSolutionWorkspace_construct(){
@@ -53125,11 +53284,24 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
       default:
          throw new TError('Unknown frameset. (name={1})', name);
    }
+   o.storageSet('frameset_code', name)
+   o.storageSet('frameset_guid', guid)
+   o.storageUpdate();
    return frameSet;
 }
 function FDsSolutionWorkspace_load(){
    var o = this;
-   o.selectFrameSet(EDsFrameSet.SolutionFrameSet);
+   var code = o._activeFrameSetCode = o.storageGet('frameset_code', EDsFrameSet.SolutionFrameSet);
+   var guid = o._activeFrameSetGuid = o.storageGet('frameset_guid');
+   var button = null;
+   if(code == EDsFrameSet.ProjectFrameSet){
+      button = o._tabBar.findControl('project');
+   }else if(code == EDsFrameSet.ResourceFrameSet){
+      button = o._tabBar.findControl('resource');
+   }else{
+      button = o._tabBar.findControl('solution');
+   }
+   button.doClick();
 }
 function FDsSolutionWorkspace_dispose(){
    var o = this;

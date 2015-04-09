@@ -276,8 +276,9 @@ function FDsSolutionCatalogToolBar_dispose(){
    o.__base.FUiToolBar.dispose.call(o);
 }
 function FDsSolutionFrameSet(o){
-   o = RClass.inherits(this, o, FUiFrameSet);
+   o = RClass.inherits(this, o, FUiFrameSet, MUiStorage);
    o._frameName            = 'design3d.solution.FrameSet';
+   o._storageCode          = o._frameName;
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
    o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
    o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'List_Ground'));
@@ -286,17 +287,17 @@ function FDsSolutionFrameSet(o){
    o._stylePreviewToolbar  = RClass.register(o, new AStyle('_stylePreviewToolbar', 'Property_Toolbar'));
    o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
    o._pageSize             = 40;
-   o._resourceTypeCd       = 'private';
+   o._activeResourceCd     = 'private';
    o._activeProjectGuid    = null;
    o._frameCatalog         = null;
    o._frameCatalogToolbar  = null;
    o._frameCatalogContent  = null;
-   o._frameSearch          = null;
-   o._frameSearchToolbar   = null;
-   o._frameSearchContent   = null;
-   o._framePreview         = null;
-   o._framePreviewToolbar  = null;
-   o._framePreviewContent  = null;
+   o._frameList            = null;
+   o._frameListToolbar     = null;
+   o._frameListContent     = null;
+   o._frameProperty        = null;
+   o._framePropertyToolbar = null;
+   o._framePropertyContent = null;
    o._propertyFrames       = null;
    o.onBuilded             = FDsSolutionFrameSet_onBuilded;
    o.construct             = FDsSolutionFrameSet_construct;
@@ -315,11 +316,11 @@ function FDsSolutionFrameSet_onBuilded(p){
    var frame = o._frameCatalogToolbar = o.searchControl('catalogToolbarFrame');
    frame._hPanel.className = o.styleName('Catalog_Toolbar');
    var frame = o._frameCatalogContent = o.searchControl('catalogContentFrame');
-   var frame = o._frameSearch = o.searchControl('listFrame');
+   var frame = o._frameList = o.searchControl('listFrame');
    frame._hPanel.className = o.styleName('List_Ground');
-   var frame = o._frameSearchToolbar = o.searchControl('listToolbarFrame');
+   var frame = o._frameListToolbar = o.searchControl('listToolbarFrame');
    frame._hPanel.className = o.styleName('List_Toolbar');
-   var frame = o._frameSearchContent = o.searchControl('listContentFrame');
+   var frame = o._frameListContent = o.searchControl('listContentFrame');
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
    spliter.setAlignCd(EUiAlign.Left);
    spliter.setSizeHtml(o._frameCatalog._hPanel);
@@ -334,12 +335,12 @@ function FDsSolutionFrameSet_onBuilded(p){
    var control = o._listToolbar = RClass.create(FDsSolutionListToolBar);
    control._frameSet = o;
    control.buildDefine(p);
-   o._frameSearchToolbar.push(control);
+   o._frameListToolbar.push(control);
    var control = o._listContent = RClass.create(FDsSolutionListContent);
    control._frameSet = o;
    control.build(p);
-   o._frameSearchContent.push(control);
-   o.switchContent(o._resourceTypeCd);
+   o._frameListContent.push(control);
+   o.switchContent('private');
 }
 function FDsSolutionFrameSet_construct(){
    var o = this;
@@ -351,7 +352,7 @@ function FDsSolutionFrameSet_findPropertyFrame(p){
    var f = o._propertyFrames.get(p);
    if(!f){
       var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._framePreviewProperty._hContainer);
+      f = fc.get(o, p, o._framePropertyProperty._hContainer);
       f._workspace = o;
       o._propertyFrames.set(p, f);
    }
@@ -377,7 +378,7 @@ function FDsSolutionFrameSet_selectObject(control){
 }
 function FDsSolutionFrameSet_switchContent(typeCd){
    var o = this;
-   o._resourceTypeCd = typeCd;
+   o._activeResourceCd = typeCd;
    o._listContent.serviceSearch(typeCd, '', o._pageSize, 0);
 }
 function FDsSolutionFrameSet_load(){
@@ -1250,13 +1251,14 @@ function FDsSolutionTabBar_dispose(){
    o.__base.FUiTabBar.dispose.call(o);
 }
 function FDsSolutionWorkspace(o){
-   o = RClass.inherits(this, o, FUiWorkspace);
+   o = RClass.inherits(this, o, FUiWorkspace, MUiStorage);
    o._frameName            = 'design3d.solution.Workspace';
+   o._storageCode          = o._frameName;
    o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleBodyGround      = RClass.register(o, new AStyle('_styleBodyGround', 'Body_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
-   o._resourceTypeCd       = 'private';
+   o._activeFrameSetCode   = null;
    o._activeProjectGuid    = null;
    o._frameToolBar         = null;
    o._frameStatusBar       = null;
@@ -1283,14 +1285,14 @@ function FDsSolutionWorkspace_onBuilded(p){
    hTable.width = '100%';
    var hRow = RBuilder.appendTableRow(hTable);
    o._hMenuPanel = RBuilder.appendTableCell(hRow);
-   var c = o._tabBar = RClass.create(FDsSolutionTabBar);
-   c._workspace = o;
-   c.buildDefine(p);
+   var control = o._tabBar = RClass.create(FDsSolutionTabBar);
+   control._workspace = o;
+   control.buildDefine(p);
    var hCell = RBuilder.appendTableCell(hRow);
    hCell.width = '150px';
    hCell.align = 'right';
    hCell.vAlign = 'bottom';
-   hCell.appendChild(c._hPanel);
+   hCell.appendChild(control._hPanel);
    o._frameToolBar._hPanel.appendChild(hTable);
 }
 function FDsSolutionWorkspace_construct(){
@@ -1366,11 +1368,24 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
       default:
          throw new TError('Unknown frameset. (name={1})', name);
    }
+   o.storageSet('frameset_code', name)
+   o.storageSet('frameset_guid', guid)
+   o.storageUpdate();
    return frameSet;
 }
 function FDsSolutionWorkspace_load(){
    var o = this;
-   o.selectFrameSet(EDsFrameSet.SolutionFrameSet);
+   var code = o._activeFrameSetCode = o.storageGet('frameset_code', EDsFrameSet.SolutionFrameSet);
+   var guid = o._activeFrameSetGuid = o.storageGet('frameset_guid');
+   var button = null;
+   if(code == EDsFrameSet.ProjectFrameSet){
+      button = o._tabBar.findControl('project');
+   }else if(code == EDsFrameSet.ResourceFrameSet){
+      button = o._tabBar.findControl('resource');
+   }else{
+      button = o._tabBar.findControl('solution');
+   }
+   button.doClick();
 }
 function FDsSolutionWorkspace_dispose(){
    var o = this;

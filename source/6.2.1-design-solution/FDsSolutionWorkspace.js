@@ -5,10 +5,11 @@
 // @history 150121
 //==========================================================
 function FDsSolutionWorkspace(o){
-   o = RClass.inherits(this, o, FUiWorkspace);
+   o = RClass.inherits(this, o, FUiWorkspace, MUiStorage);
    //..........................................................
    // @property
    o._frameName            = 'design3d.solution.Workspace';
+   o._storageCode          = o._frameName;
    //..........................................................
    // @style
    o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
@@ -17,7 +18,7 @@ function FDsSolutionWorkspace(o){
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
    //..........................................................
    // @attribute
-   o._resourceTypeCd       = 'private';
+   o._activeFrameSetCode   = null;
    o._activeProjectGuid    = null;
    // @attribute
    o._frameToolBar         = null;
@@ -66,14 +67,14 @@ function FDsSolutionWorkspace_onBuilded(p){
    // 设置工具栏
    o._hMenuPanel = RBuilder.appendTableCell(hRow);
    // 设置分页栏
-   var c = o._tabBar = RClass.create(FDsSolutionTabBar);
-   c._workspace = o;
-   c.buildDefine(p);
+   var control = o._tabBar = RClass.create(FDsSolutionTabBar);
+   control._workspace = o;
+   control.buildDefine(p);
    var hCell = RBuilder.appendTableCell(hRow);
    hCell.width = '150px';
    hCell.align = 'right';
    hCell.vAlign = 'bottom';
-   hCell.appendChild(c._hPanel);
+   hCell.appendChild(control._hPanel);
    //o._frameToolBar.push(c);
    o._frameToolBar._hPanel.appendChild(hTable);
    //..........................................................
@@ -83,8 +84,6 @@ function FDsSolutionWorkspace_onBuilded(p){
    //control._toolbar = o._previewToolbar;
    //control.buildDefine(p);
    //o._framePreviewProperty.push(control);
-   //..........................................................
-   //o.switchContent(o._resourceTypeCd);
 }
 
 //==========================================================
@@ -157,6 +156,7 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
       }
       o._frameSets.set(name, frameSet);
    }
+   //..........................................................
    // 显示选中框架
    var activeFrameSet = o._activeFrameSet;
    if(activeFrameSet != frameSet){
@@ -169,6 +169,8 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
       frameSet.psResize();
    }
    o._activeFrameSet = frameSet;
+   //..........................................................
+   // 初始化操作
    switch(name){
       case EDsFrameSet.SolutionFrameSet:
          frameSet.load();
@@ -184,6 +186,11 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
       default:
          throw new TError('Unknown frameset. (name={1})', name);
    }
+   //..........................................................
+   // 存储选择内容
+   o.storageSet('frameset_code', name)
+   o.storageSet('frameset_guid', guid)
+   o.storageUpdate();
    return frameSet;
 }
 
@@ -194,8 +201,19 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
 //==========================================================
 function FDsSolutionWorkspace_load(){
    var o = this;
-   o.selectFrameSet(EDsFrameSet.SolutionFrameSet);
-   //o.selectFrameSet(name, guid);
+   // 选择开始页面
+   var code = o._activeFrameSetCode = o.storageGet('frameset_code', EDsFrameSet.SolutionFrameSet);
+   var guid = o._activeFrameSetGuid = o.storageGet('frameset_guid');
+   // 点击切换按键
+   var button = null;
+   if(code == EDsFrameSet.ProjectFrameSet){
+      button = o._tabBar.findControl('project');
+   }else if(code == EDsFrameSet.ResourceFrameSet){
+      button = o._tabBar.findControl('resource');
+   }else{
+      button = o._tabBar.findControl('solution');
+   }
+   button.doClick();
 }
 
 //==========================================================

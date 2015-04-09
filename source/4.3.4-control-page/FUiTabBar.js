@@ -42,8 +42,8 @@ function FUiTabBar(o){
    o._styleForm       = RClass.register(o, new AStyle('_styleForm'));
    //..........................................................
    // @attribute
-   o._sheets          = null;
-   o._activeSheet     = null;
+   o._buttons          = null;
+   o._activeButton     = null;
    o._esize           = EUiSize.Both;
    //..........................................................
    // @html
@@ -62,9 +62,11 @@ function FUiTabBar(o){
    // @method
    o.construct        = FUiTabBar_construct;
    // @method
+   o.activeButton      = FUiTabBar_activeButton;
    o.appendChild      = FUiTabBar_appendChild;
    o.select           = FUiTabBar_select;
    o.selectByIndex    = FUiTabBar_selectByIndex;
+   o.selectByName     = FUiTabBar_selectByName;
    o.sheet            = FUiTabBar_sheet;
    o.push             = FUiTabBar_push;
    // @method
@@ -133,16 +135,16 @@ function FUiTabBar_oeRefresh(p){
    var r = o.__base.FUiContainer.oeRefresh.call(o, p);
    if(p.isBefore()){
       // Select first
-      if(o._sheets.count()){
-         /*for(var n=0; n<o._sheets.count; n++){
-            var p = o._sheets.value(n);
+      if(o._buttons.count()){
+         /*for(var n=0; n<o._buttons.count; n++){
+            var p = o._buttons.value(n);
             p.processBuildChildren();
             p.hasBuilded = true;
          }*/
-         if(o._activeSheet){
-            o._activeSheet.oeRefresh(e);
+         if(o._activeButton){
+            o._activeButton.oeRefresh(e);
          }else{
-            var s = o._activeSheet = o._sheets.value(0);
+            var s = o._activeButton = o._buttons.value(0);
             if(s){
                s.innerSelect(true);
             }
@@ -162,7 +164,17 @@ function FUiTabBar_construct(){
    // 父处理
    o.__base.FUiContainer.construct.call(o);
    // 设置属性
-   o._sheets = new TDictionary();
+   o._buttons = new TDictionary();
+}
+
+//==========================================================
+// <T>获得选中的按键。</T>
+//
+// @method
+// @return FUiTabButton 按键
+//==========================================================
+function FUiTabBar_activeButton(){
+   return this._activeButton;
 }
 
 //==========================================================
@@ -233,7 +245,7 @@ function FUiTabBar_appendChild(p){
 // @return FUiTabButton 页面
 //==========================================================
 function FUiTabBar_sheet(p){
-   return this._sheets.get(p);
+   return this._buttons.get(p);
 }
 
 //==========================================================
@@ -244,11 +256,11 @@ function FUiTabBar_sheet(p){
 //==========================================================
 function FUiTabBar_select(p){
    var o = this;
-   var ss = o._sheets;
+   var ss = o._buttons;
    var c = ss.count();
-   o._activeSheet = p;
+   o._activeButton = p;
    for(var i = 0; i < c; i++){
-      var s = o._sheets.value(i);
+      var s = o._buttons.value(i);
       if(s != p){
          s.select(false);
       }
@@ -260,13 +272,27 @@ function FUiTabBar_select(p){
 // <T>根据索引选中页面。</T>
 //
 // @method
-// @param p:index:Integer 索引
+// @param index:Integer 索引
 //==========================================================
-function FUiTabBar_selectByIndex(n){
+function FUiTabBar_selectByIndex(index){
    var o = this;
-   var p = o._sheets.value(n);
-   if(p){
-      o.select(p);
+   var sheet = o._buttons.value(index);
+   if(sheet){
+      o.select(sheet);
+   }
+}
+
+//==========================================================
+// <T>根据名称选中页面。</T>
+//
+// @method
+// @param name:String 名称
+//==========================================================
+function FUiTabBar_selectByName(name){
+   var o = this;
+   var sheet = o.findControl(name);
+   if(sheet){
+      o.select(sheet);
    }
 }
 
@@ -276,17 +302,16 @@ function FUiTabBar_selectByIndex(n){
 // @method
 // @param p:component:FComponent 组件对象
 //==========================================================
-function FUiTabBar_push(p){
+function FUiTabBar_push(component){
    var o = this;
    // 增加处理
-   if(RClass.isClass(p, FUiTabButton)){
-      var ss = o._sheets;
-      p._pageControl = o;
-      p._index = ss.count();
-      ss.set(p.name(), p);
+   if(RClass.isClass(component, FUiTabButton)){
+      var buttons = o._buttons;
+      component._index = buttons.count();
+      buttons.set(component.name(), component);
    }
    // 父处理
-   o.__base.FUiContainer.push.call(o, p);
+   o.__base.FUiContainer.push.call(o, component);
 }
 
 //==========================================================

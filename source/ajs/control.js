@@ -2181,6 +2181,60 @@ function MUiSizeable_startDrag(){
 }
 function MUiSizeable_stopDrag(){
 }
+function MUiStorage(o){
+   o = RClass.inherits(this, o);
+   o._storageCode   = null;
+   o._storageObject = null;
+   o.storageGet     = MUiHorizontal_storageGet;
+   o.storageSet     = MUiHorizontal_storageSet;
+   o.storageUpdate  = MUiHorizontal_storageUpdate;
+   o.dispose        = MUiHorizontal_dispose;
+   return o;
+}
+function MUiHorizontal_storageGet(name, defaultValue){
+   var o = this;
+   if(name == null){
+      throw new TError(o, 'Name is empty.');
+   }
+   var object = o._storageObject;
+   if(!object){
+      var storge = RWindow.storage(EScope.Local);
+      var value = storge.get(o._storageCode);
+      object = o._storageObject = RJson.parse(value, Object);
+   }
+   if(object){
+      var value = object[name];
+      if(value != null){
+         return value;
+      }
+   }
+   return defaultValue;
+}
+function MUiHorizontal_storageSet(name, value){
+   var o = this;
+   if(name == null){
+      throw new TError(o, 'Name is empty.');
+   }
+   var object = o._storageObject;
+   if(!object){
+      object = o._storageObject = new Object();
+   }
+   object[name] = value;
+}
+function MUiHorizontal_storageUpdate(){
+   var o = this;
+   var object = o._storageObject;
+   if(object){
+      var storge = RWindow.storage(EScope.Local);
+      var value = RJson.toString(object);
+      storge.set(o._storageCode, value);
+   }
+}
+function MUiHorizontal_dispose(){
+   var o = this;
+   o._storageCode = null;
+   o._storageObject = null;
+}
 function MUiStyle(o){
    o = RClass.inherits(this, o);
    o.construct     = RMethod.empty;

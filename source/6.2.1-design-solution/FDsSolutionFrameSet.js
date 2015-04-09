@@ -5,10 +5,11 @@
 // @history 150121
 //==========================================================
 function FDsSolutionFrameSet(o){
-   o = RClass.inherits(this, o, FUiFrameSet);
+   o = RClass.inherits(this, o, FUiFrameSet, MUiStorage);
    //..........................................................
    // @property
    o._frameName            = 'design3d.solution.FrameSet';
+   o._storageCode          = o._frameName;
    //..........................................................
    // @style
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
@@ -21,18 +22,18 @@ function FDsSolutionFrameSet(o){
    //..........................................................
    // @attribute
    o._pageSize             = 40;
-   o._resourceTypeCd       = 'private';
+   o._activeResourceCd     = 'private';
    o._activeProjectGuid    = null;
    // @attribute
    o._frameCatalog         = null;
    o._frameCatalogToolbar  = null;
    o._frameCatalogContent  = null;
-   o._frameSearch          = null;
-   o._frameSearchToolbar   = null;
-   o._frameSearchContent   = null;
-   o._framePreview         = null;
-   o._framePreviewToolbar  = null;
-   o._framePreviewContent  = null;
+   o._frameList            = null;
+   o._frameListToolbar     = null;
+   o._frameListContent     = null;
+   o._frameProperty        = null;
+   o._framePropertyToolbar = null;
+   o._framePropertyContent = null;
    // @attribute
    o._propertyFrames       = null;
    //..........................................................
@@ -69,17 +70,17 @@ function FDsSolutionFrameSet_onBuilded(p){
    frame._hPanel.className = o.styleName('Catalog_Toolbar');
    var frame = o._frameCatalogContent = o.searchControl('catalogContentFrame');
    // 设置属性区
-   var frame = o._frameSearch = o.searchControl('listFrame');
+   var frame = o._frameList = o.searchControl('listFrame');
    frame._hPanel.className = o.styleName('List_Ground');
-   var frame = o._frameSearchToolbar = o.searchControl('listToolbarFrame');
+   var frame = o._frameListToolbar = o.searchControl('listToolbarFrame');
    frame._hPanel.className = o.styleName('List_Toolbar');
-   var frame = o._frameSearchContent = o.searchControl('listContentFrame');
+   var frame = o._frameListContent = o.searchControl('listContentFrame');
    // 设置属性区
-   //var frame = o._framePreview = o.searchControl('propertyFrame');
+   //var frame = o._frameProperty = o.searchControl('propertyFrame');
    //frame._hPanel.className = o.styleName('Property_Ground');
-   //var frame = o._framePreviewToolbar = o.searchControl('propertyToolbarFrame');
+   //var frame = o._framePropertyToolbar = o.searchControl('propertyToolbarFrame');
    //frame._hPanel.className = o.styleName('Property_Toolbar');
-   //var frame = o._framePreviewProperty = o.searchControl('propertyPropertyFrame');
+   //var frame = o._framePropertyProperty = o.searchControl('propertyPropertyFrame');
    //..........................................................
    // 设置分割
    var spliter = o._catalogSplitter = o.searchControl('catalogSpliter');
@@ -87,7 +88,7 @@ function FDsSolutionFrameSet_onBuilded(p){
    spliter.setSizeHtml(o._frameCatalog._hPanel);
    //var spliter = o._propertySpliter = o.searchControl('propertySpliter');
    //spliter.setAlignCd(EUiAlign.Right);
-   //spliter.setSizeHtml(o._framePreview._hPanel);
+   //spliter.setSizeHtml(o._frameProperty._hPanel);
    //..........................................................
    //var hTable = RBuilder.createTable(p);
    //hTable.width = '100%';
@@ -126,26 +127,28 @@ function FDsSolutionFrameSet_onBuilded(p){
    var control = o._listToolbar = RClass.create(FDsSolutionListToolBar);
    control._frameSet = o;
    control.buildDefine(p);
-   o._frameSearchToolbar.push(control);
+   o._frameListToolbar.push(control);
    // 设置搜索内容
    var control = o._listContent = RClass.create(FDsSolutionListContent);
    control._frameSet = o;
    control.build(p);
-   o._frameSearchContent.push(control);
+   o._frameListContent.push(control);
    //..........................................................
    // 设置画板工具栏
    //var control = o._propertyToolbar = RClass.create(FDsSolutionPropertyToolBar);
    //control._frameSet = o;
    //control.buildDefine(p);
-   //o._framePreviewToolbar.push(control);
+   //o._framePropertyToolbar.push(control);
    // 设置画板
    //var control = o._propertyProperty = RClass.create(FDsSolutionProjectProperty);
    //control._workspace = o;
    //control._toolbar = o._propertyToolbar;
    //control.buildDefine(p);
-   //o._framePreviewProperty.push(control);
+   //o._framePropertyProperty.push(control);
    //..........................................................
-   o.switchContent(o._resourceTypeCd);
+   //var code = o._activeResourceCd = o.storageGet('frameset_code', 'project');
+   //o.switchContent(code);
+   o.switchContent('private');
 }
 
 //==========================================================
@@ -172,7 +175,7 @@ function FDsSolutionFrameSet_findPropertyFrame(p){
    var f = o._propertyFrames.get(p);
    if(!f){
       var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._framePreviewProperty._hContainer);
+      f = fc.get(o, p, o._framePropertyProperty._hContainer);
       f._workspace = o;
       o._propertyFrames.set(p, f);
    }
@@ -215,7 +218,9 @@ function FDsSolutionFrameSet_selectObject(control){
 //==========================================================
 function FDsSolutionFrameSet_switchContent(typeCd){
    var o = this;
-   o._resourceTypeCd = typeCd;
+   //o.storageSet('frameset_code', 'project')
+   //var code = o._activeResourceCd = o.storageGet('frameset_code', 'project');
+   o._activeResourceCd = typeCd;
    o._listContent.serviceSearch(typeCd, '', o._pageSize, 0);
 }
 

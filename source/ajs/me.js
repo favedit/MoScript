@@ -17,7 +17,7 @@ var EScope = new function EScope(){
    var o = this;
    o.Local = 1;
    o.Session = 2;
-   o.Global = 4;
+   o.Global = 3;
    return o;
 }
 var RRuntime = new function RRuntime(){
@@ -3025,8 +3025,8 @@ function FObject_dispose(){
    RObject.free(o);
    o.__dispose = true;
 }
-function FObject_innerDump(s, l){
-   s.append(RClass.dump(this));
+function FObject_innerDump(dump, level){
+   dump.append(RClass.dump(this));
 }
 function FObject_dump(){
    var r = new TString();
@@ -4714,6 +4714,26 @@ function RInteger_copy(po, poi, pi, pii, pc){
 }
 function RInteger_toString(p){
    return (p == null) ? '0' : p.toString();
+}
+var RJson = new function RJson(){
+   var o = this;
+   o.parse    = RJson_parse;
+   o.toString = RJson_toString;
+   return o;
+}
+function RJson_parse(value, clazz){
+   var result = null;
+   try{
+      result = JSON.parse(value)
+   }catch(e){
+      if(clazz){
+         result = new clazz();
+      }
+   }
+   return result;
+}
+function RJson_toString(value){
+   return JSON.stringify(value);
 }
 var RLogger = new function RLogger(){
    var o = this;
@@ -13108,8 +13128,53 @@ function FXmlConsole_process(p){
 function SBrowserCapability(){
    var o = this;
    o.optionProcess = false;
+   o.optionStorage = false;
    o.blobCreate    = false;
    return o;
+}
+function FWindowStorage(o){
+   o = RClass.inherits(this, o, FObject);
+   o._scopeCd  = null;
+   o._storage  = null;
+   o.scopeCd   = FWindowStorage_scopeCd;
+   o.link      = FWindowStorage_link;
+   o.get       = FWindowStorage_get;
+   o.set       = FWindowStorage_set;
+   o.remove    = FWindowStorage_remove;
+   o.clear     = FWindowStorage_clear;
+   o.innerDump = FWindowStorage_innerDump;
+   return o;
+}
+function FWindowStorage_scopeCd(){
+   return this._scopeCd;
+}
+function FWindowStorage_link(storage){
+   this._storage = storage;
+}
+function FWindowStorage_get(name){
+   return this._storage.getItem(name);
+}
+function FWindowStorage_set(name, value){
+   this._storage.setItem(name, value);
+}
+function FWindowStorage_remove(name){
+   this._storage.removeItem(name);
+}
+function FWindowStorage_clear(){
+   this._storage.clear();
+}
+function FWindowStorage_innerDump(dump, level){
+   var o = this;
+   var storage = o._storage;
+   var count = storage.length;
+   for(var i = 0; i < count; i++){
+      var name = storage.key(i);
+      var value = storage.getItem(name);
+      if(i > 0){
+         dump.append(';');
+      }
+      dump.append(name + '=' + value);
+   }
 }
 var RApplication = new function RApplication(){
    var o = this;
@@ -13192,6 +13257,7 @@ function RBrowser_construct(){
    if(o._typeCd == EBrowser.Chrome){
       RLogger.lsnsOutput.register(o, o.onLog);
    }
+   RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
@@ -13199,13 +13265,15 @@ function RBrowser_construct(){
    if(window.Worker){
       c.optionProcess = true;
    }
+   if(window.localStorage){
+      c.optionStorage = true;
+   }
    try{
       new Blob(["Test"], {'type':'text/plain'});
       c.blobCreate = true;
    }catch(e){
-      c.blobCreate = false;
+      RLogger.warn(o, 'Browser blob not support.');
    }
-   RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }
 function RBrowser_capability(){
    return this._capability;
@@ -13632,6 +13700,8 @@ var RWindow = new function RWindow(){
    var o = this;
    o._optionSelect     = true;
    o._statusEnable     = true;
+   o._localStorage     = null;
+   o._sessionStorage   = null;
    o._mouseEvent       = new SMouseEvent();
    o._keyEvent         = new SKeyboardEvent();
    o._resizeEvent      = new SResizeEvent();
@@ -13669,6 +13739,7 @@ var RWindow = new function RWindow(){
    o.setOptionSelect   = RWindow_setOptionSelect;
    o.setCaption        = RWindow_setCaption;
    o.setStatus         = RWindow_setStatus;
+   o.storage           = RWindow_storage;
    o.makeDisablePanel  = RWindow_makeDisablePanel;
    o.windowEnable      = RWindow_windowEnable;
    o.windowDisable     = RWindow_windowDisable;
@@ -13801,6 +13872,26 @@ function RWindow_setCaption(p){
 }
 function RWindow_setStatus(p){
    window.status = RString.nvl(p);
+}
+function RWindow_storage(scopeCd){
+   var o = this;
+   switch(scopeCd){
+      case EScope.Local:
+         var storage = o._localStorage;
+         if(!storage){
+            storage = o._localStorage = RClass.create(FWindowStorage);
+            storage.link(window.localStorage);
+         }
+         return storage;
+      case EScope.Session:
+         var storage = o._sessionStorage;
+         if(!storage){
+            storage = o._sessionStorage = RClass.create(FWindowStorage);
+            storage.link(window.sessionStorage);
+         }
+         return storage;
+   }
+   throw new TError(o, 'Unknown scope. (scope_cd={1})', scopeCd);
 }
 function RWindow_makeDisablePanel(f){
    var o = this;

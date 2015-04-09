@@ -77,23 +77,26 @@ function RBrowser_construct(){
    if(o._typeCd == EBrowser.Chrome){
       RLogger.lsnsOutput.register(o, o.onLog);
    }
+   // 输出日志
+   RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
    // 是否支持HTML5
    if(window.applicationCache){
       o._supportHtml5 = true;
    }
-   // 设置信息
+   // 设置浏览器能力
    var c = o._capability = new SBrowserCapability();
    if(window.Worker){
       c.optionProcess = true;
+   }
+   if(window.localStorage){
+      c.optionStorage = true;
    }
    try{
       new Blob(["Test"], {'type':'text/plain'});
       c.blobCreate = true;
    }catch(e){
-      c.blobCreate = false;
+      RLogger.warn(o, 'Browser blob not support.');
    }
-   // 输出日志
-   RLogger.info(o, 'Parse browser agent. (type_cd={1})', REnum.decode(EBrowser, o._typeCd));
 }
 
 //==========================================================
