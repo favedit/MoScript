@@ -6,47 +6,44 @@
 // @version 150123
 //==========================================================
 function FUiLabel(o){
-   o = RClass.inherits(this, o, FEditControl);
+   o = RClass.inherits(this, o, FUiControl);
    //..........................................................
    // @event
-   o.onBuildEdit  = FUiLabel_onBuildEdit;
+   o.onBuild = FUiLabel_onBuild;
    //..........................................................
    // @method
-   o.text         = FUiLabel_text;
-   o.setText      = FUiLabel_setText;
-   o.refreshStyle = RMethod.empty;
+   o.get     = FUiLabel_get;
+   o.set     = FUiLabel_set;
    return o;
 }
 
 //==========================================================
-// <T>建立编辑框。</T>
+// <T>构建框架处理。</T>
 //
 // @method
+// @param event:SEvent 事件
 //==========================================================
-function FUiLabel_onBuildEdit(){
+function FUiLabel_onBuild(event){
    var o = this;
-   //o.hEdit = o.hEditCell;
-   //if(o.dataDefault){
-   //   o.hEdit.innerHTML = RString.nvl(o.dataDefault);
-   //}
+   o.__base.FUiControl.onBuild.call(o, event);
 }
 
 //==========================================================
-// <T>获取文本内容。</T>
+// <T>获取内容。</T>
 //
 // @method
-// @return String 文本内容
+// @return String 内容
 //==========================================================
-function FUiLabel_text(){
-   //return this.hEdit.innerText;
+function FUiLabel_get(){
+   return this._hPanel.innerHTML;
 }
 
 //==========================================================
-// <T>设置文本内容。</T>
+// <T>设置内容。</T>
 //
 // @method
-// @param t:text:String 文本内容
+// @param value:String 内容
 //==========================================================
-function FUiLabel_setText(t){
-   //this.hEdit.innerHTML = RString.nvl(t);
+function FUiLabel_set(value){
+   this._hPanel.innerHTML = value;
 }

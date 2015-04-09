@@ -18,8 +18,8 @@ function FUiWindowConsole(o){
    // @method
    o.construct    = FUiWindowConsole_construct;
    // @method
+   o.create       = FUiWindowConsole_create;
    o.find         = FUiWindowConsole_find;
-   //o.create       = FUiWindowConsole_create;
    //o.loadDefine   = FUiWindowConsole_loadDefine;
    //o.focusWinCtl = null;
    //o.activeForm = null;
@@ -64,6 +64,18 @@ function FUiWindowConsole_construct(){
 }
 
 //==========================================================
+// <T>根据类型创建窗口。</T>
+//
+// @method
+//==========================================================
+function FUiWindowConsole_create(clazz){
+   var o = this;
+   var instance = RClass.create(clazz);
+   instance.buildDefine(RWindow._hDocument);
+   return instance;
+}
+
+//==========================================================
 // <T>根据类型查找窗口。</T>
 //
 // @method
@@ -76,40 +88,13 @@ function FUiWindowConsole_find(clazz){
       return find;
    }
    // 创建窗口
-   var instance = RClass.create(clazz);
-   instance.buildDefine(RWindow._hDocument);
+   var instance = o.create(clazz);
+   o._windows.set(name, instance);
    return instance;
 }
 
 
 
-// ------------------------------------------------------------
-function FUiWindowConsole_create(name, hWin){
-   var config = this.loadDefine(name);
-   var win = IClass.create(FWindow);
-
-   //var win = IControl.create(config);
-   
-   IDump.dump(_id1, win);
-
-   win.linkHtml(window);
-   win.build();
-   return win;
-
-   if(this.windowList.isEmpty()){
-      MoveManager.resetPosition();
-   }
-   var oWindow = new FCfgWindowCtl();
-   oWindow.name = sWinName;
-   oWindow.clientWindow = oClientWindow;
-   if(sWinName){
-      oWindow.show();
-      oWindow.focus();
-      if(this.maxFlag){oWindow.max();}
-      this.windowList.add(sWinName, oWindow);
-   }
-   return oWindow;
-}
 // ------------------------------------------------------------
 function FUiWindowConsole_loadDefine(name){
    if(name == null){

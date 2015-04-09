@@ -35,5 +35,7 @@ var EEvent = new function EEvent(){
    o.Selected    = 12;
    // @attribute 数据改变
    o.DataChanged = 13;
+   // @attribute 结果确认
+   o.Result      = 14;
    return o;
 }

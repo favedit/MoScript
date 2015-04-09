@@ -1258,11 +1258,38 @@
 }
 
 /* ------------------------------------------------------ */
+/* FUiInfoDialog                                          */
+/* ------------------------------------------------------ */
+.FUiInfoDialog_Text{
+   padding: 6px 12px;
+   color: #000000;
+}
+
+/* ------------------------------------------------------ */
+/* FUiConfirmDialog                                       */
+/* ------------------------------------------------------ */
+.FUiConfirmDialog_Text{
+   padding: 6px 12px;
+   color: #000000;
+}
+
+/* ------------------------------------------------------ */
 /* FUiWorkspace                                           */
 /* ------------------------------------------------------ */
 .FUiWorkspace_Panel{
    width: 100%;
    height: 100%;
+}
+
+/* ------------------------------------------------------ */
+/* FUiDesktopConsole                                      */
+/* ------------------------------------------------------ */
+.FUiDesktopConsole_MaskPanel{
+   width: 100%;
+   height: 100%;
+   position: absolute;
+   background-color: rgba(210, 210, 210, 0.6);
+   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=20, style=0);
 }
 
 /* ------------------------------------------------------ */
@@ -1280,15 +1307,4 @@
    position: absolute;
    background-color: #666666;
    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=60, style=0);
-}
-
-/* ------------------------------------------------------ */
-/* FUiDesktopConsole                                      */
-/* ------------------------------------------------------ */
-.FUiDesktopConsole_MaskPanel{
-   width: 100%;
-   height: 100%;
-   position: absolute;
-   background-color: rgba(210, 210, 210, 0.6);
-   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=20, style=0);
 }

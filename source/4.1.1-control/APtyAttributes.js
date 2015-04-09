@@ -54,8 +54,10 @@ function APtyAttributes_load(v, x){
 function APtyAttributes_save(v, x){
    var o = this;
    var s = v[o._name];
-   if(!s.isEmpty()){
-      x.set(o._linker, s.join('=', '\n'));
+   if(s){
+      if(!s.isEmpty()){
+         x.set(o._linker, s.join('=', '\n'));
+      }
    }
 }
 

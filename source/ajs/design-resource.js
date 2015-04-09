@@ -1,7 +1,5 @@
 function FDsResourceCatalogContent(o){
    o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
-   o._iconView             = 'design3d.mesh.view';
-   o._iconViewNot          = 'design3d.mesh.viewno';
    o._activeSpace          = null;
    o._materials            = null;
    o.onBuild               = FDsResourceCatalogContent_onBuild;
@@ -11,11 +9,6 @@ function FDsResourceCatalogContent(o){
    o.onNodeViewDoubleClick = FDsResourceCatalogContent_onNodeViewDoubleClick;
    o.lsnsSelect            = null;
    o.construct             = FDsResourceCatalogContent_construct;
-   o.buildTechnique        = FDsResourceCatalogContent_buildTechnique;
-   o.buildRegion           = FDsResourceCatalogContent_buildRegion;
-   o.buildRenderable       = FDsResourceCatalogContent_buildRenderable;
-   o.buildDisplay          = FDsResourceCatalogContent_buildDisplay;
-   o.buildSpace            = FDsResourceCatalogContent_buildSpace;
    o.selectObject          = FDsResourceCatalogContent_selectObject;
    o.showObject            = FDsResourceCatalogContent_showObject;
    o.dispose               = FDsResourceCatalogContent_dispose;
@@ -34,167 +27,18 @@ function FDsResourceCatalogContent_onLoadDisplay(p){
 }
 function FDsResourceCatalogContent_onNodeClick(t, n){
    var o = this;
-   var s = n.dataPropertyGet('linker');
-   o.selectObject(s);
 }
 function FDsResourceCatalogContent_onNodeViewClick(p){
    var o = this;
-   var c = p.treeNodeCell;
-   var s = p.treeNode.dataPropertyGet('linker');
-   if(RClass.isClass(s, FDisplay)){
-      if(p.ctrlKey){
-         var ds = o._displays;
-         for(var i = ds.count() - 1; i >= 0; i--){
-            var nd = ds.get(i);
-            var d = nd.dataPropertyGet('linker');
-            d._visible = false;
-            nd.cell('view').setIcon(o._iconViewNot);
-         }
-         s._visible = true;
-         c.setIcon(o._iconView);
-      }else{
-         s._visible = !s._visible;
-         c.setIcon(s._visible ? o._iconView : o._iconViewNot);
-      }
-   }
-   if(RClass.isClass(s, FDrawable)){
-      if(p.ctrlKey){
-         var rs = o._renderables;
-         for(var i = rs.count() - 1; i >= 0; i--){
-            var nr = rs.get(i);
-            var r = nr.dataPropertyGet('linker');
-            r._visible = false;
-            nr.cell('view').setIcon(o._iconViewNot);
-         }
-         s._visible = true;
-         c.setIcon(o._iconView);
-      }else{
-         s._visible = !s._visible;
-         c.setIcon(s._visible ? o._iconView : o._iconViewNot);
-      }
-   }
-   if(RClass.isClass(s, FG3dMaterial)){
-      if(p.ctrlKey){
-         var ms = o._materials;
-         for(var i = ms.count() - 1; i >= 0; i--){
-            var nm = ms.get(i);
-            var m = nm.dataPropertyGet('linker');
-            m._visible = false;
-            nm.cell('view').setIcon(o._iconViewNot);
-         }
-         s._visible = true;
-         c.setIcon(o._iconView);
-      }else{
-         s._visible = !s._visible;
-         c.setIcon(s._visible ? o._iconView : o._iconViewNot);
-      }
-   }
 }
 function FDsResourceCatalogContent_onNodeViewDoubleClick(p){
    var o = this;
-   var n = p.treeNode;
-   var c = p.treeNodeCell;
-   var s = n.dataPropertyGet('linker');
-   if(RClass.isClass(s, FDisplay)){
-      var s = o._displays;
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i);
-         var d = n.dataPropertyGet('linker');
-         d._visible = true;
-         n.cell('view').setIcon(o._iconView);
-      }
-   }
-   if(RClass.isClass(s, FDrawable)){
-      var s = o._renderables;
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i);
-         var r = n.dataPropertyGet('linker');
-         r._visible = true;
-         n.cell('view').setIcon(o._iconView);
-      }
-   }
-   if(RClass.isClass(s, FG3dMaterial)){
-      var s = o._materials;
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i);
-         var m = n.dataPropertyGet('linker');
-         m._visible = true;
-         n.cell('view').setIcon(o._iconView);
-      }
-   }
 }
 function FDsResourceCatalogContent_construct(){
    var o = this;
    o.__base.FUiDataTreeView.construct.call(o);
    o._renderables = new TObjects();
    o._materials = new TObjects();
-}
-function FDsResourceCatalogContent_buildTechnique(n, p){
-   var o = this;
-   var nt = o.createNode();
-   nt.setLabel('Technique');
-   nt.setTypeCode('technique');
-   nt.dataPropertySet('linker', p);
-   n.appendNode(nt);
-}
-function FDsResourceCatalogContent_buildRegion(n, p){
-   var o = this;
-   var nr = o.createNode();
-   nr.setLabel('Region');
-   nr.setTypeCode('region');
-   nr.dataPropertySet('linker', p);
-   n.appendNode(nr);
-   var nc = o.createNode();
-   nc.setLabel('Camera');
-   nc.setTypeCode('camera');
-   nc.dataPropertySet('linker', p.camera());
-   nr.appendNode(nc);
-   var nl = o.createNode();
-   nl.setLabel('Light');
-   nl.setTypeCode('light');
-   nl.dataPropertySet('linker', p.directionalLight());
-   nr.appendNode(nl);
-}
-function FDsResourceCatalogContent_buildRenderable(n, p){
-   var o = this;
-   var m = p._renderable._material;
-   var dn = o.createNode();
-   dn.setTypeCode('material');
-   dn.setLabel('Material');
-   dn.dataPropertySet('linker', m);
-   o._materials.push(dn);
-   n.appendNode(dn);
-   var r = p._renderable;
-   var dn = o.createNode();
-   dn.setTypeCode('renderable');
-   dn.setLabel('Renderable');
-   dn.dataPropertySet('linker', r);
-   o._renderables.push(dn);
-   n.appendNode(dn);
-}
-function FDsResourceCatalogContent_buildDisplay(n, p){
-   var o = this;
-   var node = o.createNode();
-   node.setTypeCode('display');
-   node.setLabel('Mesh');
-   node.dataPropertySet('linker', p);
-   n.appendNode(node);
-   o.buildRenderable(node, p);
-}
-function FDsResourceCatalogContent_buildSpace(space){
-   var o = this;
-   var resource = space.resource();
-   o._activeSpace = space;
-   var node = o.createNode();
-   node.setTypeCode('space');
-   node.setLabel(resource.code());
-   node.setNote(resource.label());
-   node.dataPropertySet('linker', space);
-   o.appendNode(node);
-   o.buildTechnique(node, space.technique())
-   o.buildRegion(node, space.region());
-   o.buildDisplay(node, space._display);
-   node.click();
 }
 function FDsResourceCatalogContent_selectObject(p){
    var o = this;
@@ -204,59 +48,84 @@ function FDsResourceCatalogContent_selectObject(p){
 }
 function FDsResourceCatalogContent_showObject(p){
    var o = this;
-   if(RClass.isClass(p, FDsSceneRenderable)){
-      var s = o._renderables;
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var nr = s.getAt(i);
-         var r = nr.dataPropertyGet('linker');
-         if(r == p){
-            o.processSelectedListener(p, false);
-         }
-      }
-   }
 }
 function FDsResourceCatalogContent_dispose(){
    var o = this;
-   o._displays = RObject.dispose(o._displays);
-   o._renderables = RObject.dispose(o._renderables);
-   o._materials = RObject.dispose(o._materials);
    o.__base.FUiDataTreeView.dispose.call(o);
 }
 function FDsResourceCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName       = 'design3d.resource.CatalogToolBar';
-   o._canvasModeCd    = EDsCanvasMode.Drop;
-   o._dropButton      = null;
-   o._selectButton    = null;
-   o._translateButton = null;
-   o._rotationButton  = null;
-   o._scaleButton     = null;
-   o._lookFrontButton = null;
-   o._lookUpButton    = null;
-   o._lookLeftButton  = null;
-   o._playButton      = null;
-   o._viewButton      = null;
-   o.onBuilded        = FDsResourceCatalogToolBar_onBuilded;
-   o.onModeClick      = FDsResourceCatalogToolBar_onModeClick;
-   o.onRotationClick  = FDsResourceCatalogToolBar_onRotationClick;
-   o.construct        = FDsResourceCatalogToolBar_construct;
-   o.dispose          = FDsResourceCatalogToolBar_dispose;
+   o._frameName                 = 'design3d.resource.CatalogToolBar';
+   o._controlFolderCreateButton = null;
+   o._controlFolderDeleteButton = null;
+   o._controlFolderOpenButton   = null;
+   o._controlFolderCloseButton  = null;
+   o.onBuilded                  = FDsResourceCatalogToolBar_onBuilded;
+   o.onFolderCreateClick        = FDsResourceCatalogToolBar_onFolderCreateClick;
+   o.onFolderDeleteLoad         = FDsResourceCatalogToolBar_onFolderDeleteLoad;
+   o.onFolderDeleteExcute       = FDsResourceCatalogToolBar_onFolderDeleteExcute;
+   o.onFolderDeleteClick        = FDsResourceCatalogToolBar_onFolderDeleteClick;
+   o.onFolderOpenClick          = FDsResourceCatalogToolBar_onFolderOpenClick;
+   o.onFolderCloseClick         = FDsResourceCatalogToolBar_onFolderCloseClick;
+   o.construct                  = FDsResourceCatalogToolBar_construct;
+   o.dispose                    = FDsResourceCatalogToolBar_dispose;
    return o;
 }
 function FDsResourceCatalogToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
+   o._controlFolderCreateButton.addClickListener(o, o.onFolderCreateClick);
+   o._controlFolderDeleteButton.addClickListener(o, o.onFolderDeleteClick);
+   o._controlFolderOpenButton.addClickListener(o, o.onFolderOpenClick);
+   o._controlFolderCloseButton.addClickListener(o, o.onFolderCloseClick);
 }
-function FDsResourceCatalogToolBar_onModeClick(p){
+function FDsResourceCatalogToolBar_onFolderCreateClick(event){
    var o = this;
-   o._canvasModeCd = p._canvasModeCd;
-   o._workspace._canvas.switchMode(p._canvasModeCd);
+   var parentGuid = null;
+   var parentLabel = null;
+   var catalog = o._frameSet._catalogContent;
+   var node = catalog.focusNode();
+   if(node){
+      parentGuid = node.guid();
+      parentLabel = node.label();
+   }
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceFolderDialog);
+   dialog._workspace = o._workspace;
+   dialog._frameSet = o._frameSet;
+   dialog._parentGuid = parentGuid;
+   dialog.setNodeParentLabel(parentLabel);
+   dialog.setNodeLabel('');
+   dialog.showPosition(EUiPosition.Center);
 }
-function FDsResourceCatalogToolBar_onRotationClick(p, v){
+function FDsResourceCatalogToolBar_onFolderDeleteLoad(event){
    var o = this;
-   var c = o._workspace._canvas;
-   c.switchRotation(v);
+   RConsole.find(FUiDesktopConsole).hide();
+   o._frameSet._catalogContent.reloadService();
+}
+function FDsResourceCatalogToolBar_onFolderDeleteExcute(event){
+   var o = this;
+   if(event.resultCd != EResult.Success){
+      return;
+   }
+   var catalog = o._frameSet._catalogContent;
+   var node = catalog.focusNode();
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
+   connection.addLoadListener(o, o.onFolderDeleteLoad);
+}
+function FDsResourceCatalogToolBar_onFolderDeleteClick(event){
+   var o = this;
+   var catalog = o._frameSet._catalogContent;
+   var node = catalog.focusNode();
+   if(!node){
+      return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+   }
+   var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前目录？');
+   dialog.addResultListener(o, o.onFolderDeleteExcute);
+}
+function FDsResourceCatalogToolBar_onFolderOpenClick(event){
+}
+function FDsResourceCatalogToolBar_onFolderCloseClick(event){
 }
 function FDsResourceCatalogToolBar_construct(){
    var o = this;
@@ -265,6 +134,59 @@ function FDsResourceCatalogToolBar_construct(){
 function FDsResourceCatalogToolBar_dispose(){
    var o = this;
    o.__base.FUiToolBar.dispose.call(o);
+}
+function FDsResourceFolderDialog(o){
+   o = RClass.inherits(this, o, FUiDialog);
+   o._frameName            = 'design3d.resource.FolderDialog';
+   o._controlParentLabel   = null;
+   o._controlLabel         = null;
+   o._controlConfirmButton = null;
+   o._controlCancelButton  = null;
+   o.onBuilded             = FDsResourceFolderDialog_onBuilded;
+   o.onConfirmLoad         = FDsResourceFolderDialog_onConfirmLoad;
+   o.onConfirmClick        = FDsResourceFolderDialog_onConfirmClick;
+   o.onCancelClick         = FDsResourceFolderDialog_onCancelClick;
+   o.construct             = FDsResourceFolderDialog_construct;
+   o.setNodeParentLabel    = FDsResourceFolderDialog_setNodeParentLabel;
+   o.setNodeLabel          = FDsResourceFolderDialog_setNodeLabel;
+   o.dispose               = FDsResourceFolderDialog_dispose;
+   return o;
+}
+function FDsResourceFolderDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
+   o._controlCancelButton.addClickListener(o, o.onCancelClick);
+}
+function FDsResourceFolderDialog_onConfirmLoad(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).hide();
+   o.hide();
+   o._frameSet._catalogContent.reloadService();
+}
+function FDsResourceFolderDialog_onConfirmClick(event){
+   var o = this;
+   RConsole.find(FUiDesktopConsole).showUploading();
+   var label = o._controlLabel.get();
+   var connection = RConsole.find(FDrResourceConsole).doFolderCreate(o._parentGuid, null, label);
+   connection.addLoadListener(o, o.onConfirmLoad);
+}
+function FDsResourceFolderDialog_onCancelClick(event){
+   this.hide();
+}
+function FDsResourceFolderDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FDsResourceFolderDialog_setNodeParentLabel(label){
+   this._controlParentLabel.set(label);
+}
+function FDsResourceFolderDialog_setNodeLabel(label){
+   this._controlLabel.set(label);
+}
+function FDsResourceFolderDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
 }
 function FDsResourceFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet);

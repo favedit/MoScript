@@ -307,8 +307,10 @@ function APtyAttributes_load(v, x){
 function APtyAttributes_save(v, x){
    var o = this;
    var s = v[o._name];
-   if(!s.isEmpty()){
-      x.set(o._linker, s.join('=', '\n'));
+   if(s){
+      if(!s.isEmpty()){
+         x.set(o._linker, s.join('=', '\n'));
+      }
    }
 }
 function APtyAttributes_toString(){
@@ -729,6 +731,14 @@ var EUiCursor = new function EUiCursor(){
    o.Move      = 'move';
    return o;
 }
+var EUiDialog = new function EUiDialog(){
+   var o = this;
+   o.Confirm = 1;
+   o.Info    = 2
+   o.Warn    = 3;
+   o.Error   = 4;
+   return o;
+}
 var EUiDirection = new function EUiDirection(){
    var o = this;
    o.Horizontal = 'H';
@@ -936,6 +946,26 @@ function MListenerLeave_addLeaveListener(w, m){
 }
 function MListenerLeave_processLeaveListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.Leave, p1, p2, p3, p4, p5);
+}
+function MListenerResult(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addResultListener     = MListenerResult_addResultListener;
+   o.removeResultListener  = MListenerResult_removeResultListener;
+   o.processResultListener = MListenerResult_processResultListener;
+   o.clearResultListeners  = MListenerResult_clearResultListeners;
+   return o;
+}
+function MListenerResult_addResultListener(owner, method){
+   return this.addListener(EEvent.Result, owner, method);
+}
+function MListenerResult_removeResultListener(owner, method){
+   return this.removeListener(EEvent.Result, owner, method);
+}
+function MListenerResult_processResultListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Result, p1, p2, p3, p4, p5);
+}
+function MListenerResult_clearResultListeners(){
+   return this.clearListeners(EEvent.Result);
 }
 function MListenerSelected(o){
    o = RClass.inherits(this, o, MListener);
@@ -4590,63 +4620,6 @@ function FKeyConsole_register(k, w, p){
       s.register(w, p);
    }
 }
-function FMessageConsole(o){
-   o = RClass.inherits(this, o, FConsole, MUiStyle);
-   o.scope        = EScope.Global;
-   o.result       = new Array();
-   o.attributes   = new Array();
-   o.messageBox   = null;
-   o.messageWindow = null;
-   o.parse        = FMessageConsole_parse;
-   o.popupMessage = FMessageConsole_popupMessage;
-   o.closeMessage = FMessageConsole_closeMessage;
-   o.checkResult  = FMessageConsole_checkResult;
-   return o;
-}
-function FMessageConsole_parse(config){
-   var msgs = null;
-   var msgsNode = config.find('Messages');
-   if(msgsNode && msgsNode.nodes && msgsNode.nodes.count){
-      msgs = new TMessages();
-      for(var n=0; n<msgsNode.nodes.count; n++){
-         var node = msgsNode.node(n);
-         var msg = new TMessage();
-         msg.loadConfig(msgsNode.node(n));
-         msgs.push(msg);
-      }
-   }
-   return msgs;
-}
-function FMessageConsole_popupMessage(g){
-   var o = this;
-   var w = o.messageWindow;
-   if(!w){
-      w = o.messageWindow = RControl.create('FMessageWindow');
-   }
-   w.loadMessages(g);
-   w.show();
-}
-function FMessageConsole_closeMessage(){
-   RWindow.setEnable(true);
-}
-function FMessageConsole_checkResult(g){
-   var o = this;
-   var ms = g.messages = o.parse(g.config);
-   if(ms){
-      var m = ms.message(EMessage.Fatal);
-      if(m && m.attrType == "session.timeout"){
-         var ss = RString.splitTwo(m.redirect, '@');
-         var s = RContext.context(ss[1] + '?do='+ss[0]);
-         fmMain.action = s;
-         fmMain.target = '_self';
-         fmMain.submit();
-      }else{
-         o.popupMessage(g);
-      }
-      return false;
-   }
-   return true;
-}
 function FResultConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o.scope          = EScope.Page;
@@ -4713,6 +4686,57 @@ function FResultConsole_checkService(config){
       RConsole.find(FFocusConsole).restoreFocus();
    }
    return true;
+}
+function FUiConfirmDialog(o){
+   o = RClass.inherits(this, o, FUiDialog, MListenerResult);
+   o._styleText            = RClass.register(o, new AStyle('_styleText'));
+   o._frameName            = 'system.dialog.ConfirmDialog';
+   o._controlText          = null;
+   o._controlConfirmButton = null;
+   o._controlCancelButton  = null;
+   o.onBuilded             = FUiConfirmDialog_onBuilded;
+   o.onConfirmClick        = FUiConfirmDialog_onConfirmClick;
+   o.onCancelClick         = FUiConfirmDialog_onCancelClick;
+   o.construct             = FUiConfirmDialog_construct;
+   o.setText               = FUiConfirmDialog_setText;
+   o.dispose               = FUiConfirmDialog_dispose;
+   return o;
+}
+function FUiConfirmDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlText._hPanel.className = o.styleName('Text');
+   o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
+   o._controlCancelButton.addClickListener(o, o.onCancelClick);
+}
+function FUiConfirmDialog_onConfirmClick(event){
+   var o = this;
+   var event = new SEvent();
+   event.sender = o;
+   event.resultCd = EResult.Success;
+   o.processResultListener(event);
+   event.dispose();
+   o.hide();
+}
+function FUiConfirmDialog_onCancelClick(event){
+   var o = this;
+   var event = new SEvent();
+   event.sender = o;
+   event.resultCd = EResult.Cancel;
+   o.processResultListener(event);
+   event.dispose();
+   o.hide();
+}
+function FUiConfirmDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FUiConfirmDialog_setText(value){
+   this._controlText.set(value);
+}
+function FUiConfirmDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
 }
 function FUiDesktopConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -4853,6 +4877,403 @@ function FUiDesktopConsole_hide(){
    }
    o.setMaskVisible(false);
 }
+function FUiInfoDialog(o){
+   o = RClass.inherits(this, o, FUiDialog, MListenerResult);
+   o._styleText            = RClass.register(o, new AStyle('_styleText'));
+   o._frameName            = 'system.dialog.InfoDialog';
+   o._controlText          = null;
+   o._controlConfirmButton = null;
+   o._controlCancelButton  = null;
+   o.onBuilded             = FUiInfoDialog_onBuilded;
+   o.onConfirmClick        = FUiInfoDialog_onConfirmClick;
+   o.construct             = FUiInfoDialog_construct;
+   o.setText               = FUiInfoDialog_setText;
+   o.dispose               = FUiInfoDialog_dispose;
+   return o;
+}
+function FUiInfoDialog_onBuilded(p){
+   var o = this;
+   o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlText._hPanel.className = o.styleName('Text');
+   o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
+}
+function FUiInfoDialog_onConfirmClick(event){
+   var o = this;
+   var event = new SEvent();
+   event.sender = o;
+   event.resultCd = EResult.Success;
+   o.processResultListener(event);
+   event.dispose();
+   o.hide();
+}
+function FUiInfoDialog_construct(){
+   var o = this;
+   o.__base.FUiDialog.construct.call(o);
+}
+function FUiInfoDialog_setText(value){
+   this._controlText.set(value);
+}
+function FUiInfoDialog_dispose(){
+   var o = this;
+   o.__base.FUiDialog.dispose.call(o);
+}
+function FUiMessageConsole(o){
+   o = RClass.inherits(this, o, FConsole, MUiStyle);
+   o._scopeCd       = EScope.Global;
+   o._result        = new Array();
+   o._attributes    = new Array();
+   o._messageBox    = null;
+   o._messageWindow = null;
+   o.showInfo       = FUiMessageConsole_showInfo;
+   o.showConfirm    = FUiMessageConsole_showConfirm;
+   o.popup          = FUiMessageConsole_popup;
+   o.close          = FUiMessageConsole_close;
+   o.parse          = FUiMessageConsole_parse;
+   o.check          = FUiMessageConsole_check;
+   return o;
+}
+function FUiMessageConsole_showInfo(text){
+   var dialog = RConsole.find(FUiWindowConsole).find(FUiInfoDialog);
+   dialog.clearResultListeners();
+   dialog.setText(text);
+   dialog.showPosition(EUiPosition.Center);
+   return dialog;
+}
+function FUiMessageConsole_showConfirm(text){
+   var dialog = RConsole.find(FUiWindowConsole).find(FUiConfirmDialog);
+   dialog.clearResultListeners();
+   dialog.setText(text);
+   dialog.showPosition(EUiPosition.Center);
+   return dialog;
+}
+function FUiMessageConsole_popup(g){
+   var o = this;
+   var w = o._messageWindow;
+   if(!w){
+      w = o._messageWindow = RControl.create(FUiMessageWindow);
+   }
+   w.loadMessages(g);
+   w.show();
+}
+function FUiMessageConsole_close(){
+   RWindow.setEnable(true);
+}
+function FUiMessageConsole_parse(config){
+   var msgs = null;
+   var msgsNode = config.find('Messages');
+   if(msgsNode && msgsNode.nodes && msgsNode.nodes.count){
+      msgs = new TMessages();
+      for(var n=0; n<msgsNode.nodes.count; n++){
+         var node = msgsNode.node(n);
+         var msg = new TMessage();
+         msg.loadConfig(msgsNode.node(n));
+         msgs.push(msg);
+      }
+   }
+   return msgs;
+}
+function FUiMessageConsole_check(g){
+   var o = this;
+   var ms = g.messages = o.parse(g.config);
+   if(ms){
+      var m = ms.message(EMessage.Fatal);
+      if(m && m.attrType == "session.timeout"){
+         var ss = RString.splitTwo(m.redirect, '@');
+         var s = RContext.context(ss[1] + '?do='+ss[0]);
+         fmMain.action = s;
+         fmMain.target = '_self';
+         fmMain.submit();
+      }else{
+         o.popupMessage(g);
+      }
+      return false;
+   }
+   return true;
+}
+function FUiMessageDialog(o){
+   o = RClass.inherits(this, o, FUiWindow);
+   o._styleMsgPanel     = RClass.register(o, new AStyle('_styleMsgPanel'));
+   o._styleButtonPanel  = RClass.register(o, new AStyle('_styleButtonPanel'));
+   o._styleItmeForm     = RClass.register(o, new AStyle('_styleItmeForm'));
+   o._styleItemTitle    = RClass.register(o, new AStyle('_styleItemTitle'));
+   o._styleItemBodyForm = RClass.register(o, new AStyle('_styleItemBodyForm'));
+   o._styleRowItem      = RClass.register(o, new AStyle('_styleRowItem'));
+   o._styleDescForm     = RClass.register(o, new AStyle('_styleDescForm'));
+   o._styleDescTitle    = RClass.register(o, new AStyle('_styleDescTitle'));
+   o._styleDescBody     = RClass.register(o, new AStyle('_styleDescBody'));
+   o._type              = null;
+   o._isDialog          = false;
+   o._titleBlur         = false;
+   o._messageArg        = null;
+   o._hMessagePanel     = null;
+   o._hMessages         = null;
+   o._hDescription      = null;
+   o._hButtonPanel      = null;
+   o._hBlank            = null;
+   o.onBuild            = FUiMessageDialog_onBuild;
+   o.onItemOver         = RClass.register(o, new AEventMouseOver('onItemOver'), FUiMessageDialog_onItemOver);
+   o.onItemClick        = RClass.register(o, new AEventClick('onItemClick'), FUiMessageDialog_onItemClick);
+   o.onDescClick        = RClass.register(o, new AEventClick('onDescClick'), FUiMessageDialog_onDescClick);
+   o.onBuildMessages    = FUiMessageDialog_onBuildMessages;
+   o.onBuildButtons     = FUiMessageDialog_onBuildButtons;
+   o.onOk               = FUiMessageDialog_onOk;
+   o.onCancel           = FUiMessageDialog_onCancel;
+   o.onClose            = FUiMessageDialog_onClose;
+   o.loadMessages       = FUiMessageDialog_loadMessages;
+   o.show               = FUiMessageDialog_show;
+   o.hide               = FUiMessageDialog_hide;
+   o.dispose            = FUiMessageDialog_dispose;
+   return o;
+}
+function FUiMessageDialog_onBuild(event){
+   var o = this;
+   o.__base.FUiWindow.oeBuild.call(o, e);
+   return;
+   o.setIcon('Icon');
+   var hTab = RBuilder.appendTable(o.hBodyPanel, 0, 0, 0);
+   hTab.style.vAlign = "top";
+   hTab.width = '100%';
+   hTab.height = '100%';
+   var h1 = o.hTitlePanel = hTab.insertRow().insertCell();
+   h1.style.height = "100%";
+   h1.style.vAlign = "top";
+   var h2 = o.hMsgPanel = hTab.insertRow().insertCell();
+   h2.style.height = "100%";
+   o.onBuildMessages();
+   var h0 = o._hButtonPanel = hTab.insertRow().insertCell();
+   h0.style.align = 'right';
+   o.onBuildButtons();
+   h0.height = 20;
+   RConsole.find(FKeyConsole).register(EKey.Esc, new TListener(o, o.onClose));
+   return r;
+}
+function FUiMessageDialog_onItemOver(e){
+   var o = this;
+   var hf = o.hItemBodyForm;
+   var h = e.hSource;
+   return;
+   h.style.backgroundColor = "BLUE";
+   h.style.cousor = "hand";
+}
+function FUiMessageDialog_onItemClick(e){
+   var o = this;
+   var hf = o.hItemBodyForm;
+   for(var n = 0; n < hf.rows.count; n++){
+   }
+   var h = e.hSource;
+   var idx = h.rowIndex;
+}
+function FUiMessageDialog_onDescClick(e){
+   var o = this;
+   return;
+   var st = o.hDescBody.style.display;
+   if('none' == st){
+      o.hDescBody.style.display = 'block';
+   }else{
+      o.hDescBody.style.display = 'none';
+   }
+}
+function FUiMessageDialog_onBuildMessages(){
+   var o = this;
+   if(!o._type){
+      var hTab1 = o.hItmeForm = RBuilder.appendTable(o.hTitlePanel);
+      hTab1.style.height = "100%";
+      hTab1.style.width = "100%";
+      hTab1.style.vAlign = "top";
+      var hItemTitle = o.hItemTitle = hTab1.insertRow().insertCell();
+      hItemTitle.height = 25;
+      var h = RBuilder.appendTable(hItemTitle);
+      h.height = '100%';
+      h.width = '100%';
+      h.style.backgroundColor = "#F5F5F5";
+      var hr = h.insertRow();
+      var hc1 = hr.insertCell();
+      hc1.width = '20';
+      var hTitleIcon = RBuilder.appendIcon(hc1, null, null, 16, 14);
+      hTitleIcon.style.paddingLeft = 20;
+      hTitleIcon.src = o.styleIconPath('TitleIcon');
+      var hc2 = hr.insertCell();
+      hc2.innerText = ' '+ RContext.get('FUiMessageDialog:MessageContext');
+      var hItemBody  = o.hItemBody = hTab1.insertRow().insertCell();
+      hItemBody.height = 100;
+      o.hItemBody.style.borderBottom = '2 solid #F5F5F5';
+      hItemBody.style.padding = '5';
+      hItemBody.vAlign = "top";
+      var hDiv = RBuilder.appendDiv(hItemBody);
+      hDiv.style.height = '100px';
+      hDiv.style.overflow = "auto";
+      var hItemBodyForm = o.hItemBodyForm = RBuilder.appendTable(hDiv);
+      hItemBodyForm.style.border = '2px solid #FFFFFF';
+      hItemBodyForm.width = "100%";
+      hItemBodyForm.style.vAlign = "top";
+      var hTab2 = o.hDescForm = RBuilder.appendTable(o.hMsgPanel);
+      hTab2.style.tableLayout = "fixed";
+      hTab2.style.border='2px solid #EEEDED';
+      hTab2.style.borderTopWidth = 0;
+   }
+   o.hItmeForm.style.display = 'none';
+   o.hDescForm.style.display = 'none';
+   o.hMsgPanel.style.height = '100%';
+   if(EMessage.Fatal == o._type || EMessage.Error == o._type){
+      o.hItmeForm.style.display = 'block';
+      o.hDescForm.style.display = 'block';
+   }else{
+      o.hItmeForm.style.display = 'block';
+   }
+}
+function FUiMessageDialog_onBuildButtons(t){
+   var o = this;
+   if(!o._type){
+      var hBtnTab = RBuilder.appendTable(o._hButtonPanel, null, 0, 0, 2);
+      var hRow = hBtnTab.insertRow();
+      var hc = o._hBlank = hRow.insertCell();
+      hc.width='72%';
+      var b = o.btnOk = RClass.create(FButton);
+      b.icon = 'tool.ok';
+      b.label = RContext.get('FToolButton:ok');
+      b.width = '100%';
+      b.lsnsClick.register(o, o.onOk);
+      var hoc = hRow.insertCell();
+      hoc.style.align='right';
+      hoc.width='15%';
+      b.psBuild(hoc);
+      var b = o.btnCancel = RClass.create(FButton);
+      b.icon = 'tool.cancel';
+      b.label = RContext.get('FToolButton:cancel');
+      b.width = '100%';
+      b.lsnsClick.register(o, o.onCancel);
+      var hcc = hRow.insertCell();
+      hcc.width='15%';
+      b.psBuild(hcc);
+   }
+   o.btnOk.hPanel.style.display = "none";
+   o.btnCancel.hPanel.style.display = "none";
+   if(EMessage.Warn == o._type){
+      o.btnOk.hPanel.style.display = "block";
+      o.btnCancel.hPanel.style.display = "block";
+      o._hBlank.width = '72%';
+   }else{
+      o.btnOk.hPanel.style.display = "block";
+      o._hBlank.width = '87%';
+   }
+}
+function FUiMessageDialog_onOk(){
+   var o = this;
+   var g = o._messageArg;
+   var cg = g.argument;
+   var type = o.msgs.get(0)._type;
+   if(EMessage.Warn == type){
+      if(cg){
+         cg.checked = EBoolean.True;
+         if('process' == cg.actionType){
+            RConsole.find(FFormConsole).process(cg);
+         }else if('update' == cg.actionType){
+            RConsole.find(FDatasetConsole).update(cg);
+         }
+      }
+   }
+   if(type == EMessage.Info){
+      if(g.invokeCaller){
+         g.invokeParam.messageChecked = true;
+         g.invokeCaller.invoke(g.invokeParam);
+      }
+   }
+   o.hide();
+}
+function FUiMessageDialog_onCancel(){
+   this.hide();
+}
+function FUiMessageDialog_onClose(){
+   this.hide();
+}
+function FUiMessageDialog_loadMessages(g){
+   var o = this;
+   o._messageArg = g;
+   var ms = g.messages;
+   o._type = ms._type();
+   o.onBuildButtons();
+   o.onBuildMessages();
+   RHtml.clear(o.hItemBodyForm);
+   RHtml.clear(o.hDescDiv);
+   var first = true;
+   var msgs = o.msgs = ms.items;
+   var msgType = EMessage.Info;
+   for(var n=0; n<msgs.count; n++){
+      var msg = msgs.get(n);
+      var m = msg.message;
+      var d = msg.description;
+      var t = msg._type;
+      var hr = o.hItemBodyForm.insertRow();
+      hr.height = 12;
+      var hc1 = hr.insertCell();
+      hc1.width = 20;
+      var hIcon =  RBuilder.appendIcon(hc1, null, n, 16, 16);
+      if(EMessage.Error == t){
+    	 o.setIcon('TitleError');
+         hIcon.src = o.styleIconPath('ItemError');
+         msgType = EMessage.Error;
+      }else if(EMessage.Warn == t){
+    	 o.setIcon('TitleWarn');
+         hIcon.src = o.styleIconPath('ItemWarn');
+         msgType = EMessage.Warn;
+      }else if(EMessage.Info == t){
+    	 o.setIcon('TitleInfo');
+         msgType = EMessage.Info;
+         hIcon.src = o.styleIconPath('ItemInfo');
+      }else if(EMessage.Fatal == t){
+         msgType = EMessage.Fatal;
+         hIcon.src = o.styleIconPath('ItemError');
+      }
+      var hc2 = hr.insertCell();
+      hc2.style.textOverflow = 'ellipsis';
+      hc2.style.overflow = 'hidden';
+      hc2.innerText = ' ' + m;
+      hc2.style.cursor = "hand";
+      o.attachEvent('onItemClick', hr);
+      o.attachEvent('onItemOver', hr);
+      if(first){
+         first = false;
+      }
+   }
+   if(EMessage.Error == msgType){
+      o.setCaption(' ' + RContext.get('FUiMessageDialog:Error'));
+   }else if(EMessage.Warn == msgType){
+      o.setCaption(' ' + RContext.get('FUiMessageDialog:Warn'));
+   }else if(EMessage.Info == msgType){
+      o.setCaption(' ' + RContext.get('FUiMessageDialog:Info'));
+   }else if(EMessage.Fatal == msgType){
+      o.setCaption(' ' + RContext.get('FUiMessageDialog:Fatal'));
+   }
+}
+function FUiMessageDialog_show(){
+   var o = this;
+   o.__base.FUiWindow.show.call(o);
+   o.panel().style.zIndex = RLayer.next(ELayer.Message);
+   RWindow.moveCenter(o.panel());
+   o.psMode(EMode.Update);
+   RConsole.find(FFocusConsole).blur();
+   RWindow.setEnable(false, true);
+   o.focus();
+}
+function FUiMessageDialog_hide(){
+   var o = this;
+   o.__base.FUiWindow.hide.call(o);
+   var f = o._messageArg.argument.form;
+   if(RClass.isClass(f, MDataset)){
+      f.psProgress(false);
+   }
+   RWindow.setEnable(true);
+}
+function FUiMessageDialog_dispose(){
+   var o = this;
+   o.__base.FUiWindow.dispose.call(o);
+   o.hItmeForm = null;
+   o.hDescBody = null;
+   o.hDescDiv = null;
+   o.hDescTitle = null;
+   o.hItemBodyForm = null;
+   o._hButtonPanel = null;
+}
 function FUiPopupConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd       = EScope.Local;
@@ -4904,6 +5325,7 @@ function FUiWindowConsole(o){
    o._activeWindow = null;
    o._windows      = null;
    o.construct    = FUiWindowConsole_construct;
+   o.create       = FUiWindowConsole_create;
    o.find         = FUiWindowConsole_find;
    return this;
 }
@@ -4912,6 +5334,12 @@ function FUiWindowConsole_construct(){
    o.__base.FConsole.construct.call(o);
    o._windows = new TDictionary();
 }
+function FUiWindowConsole_create(clazz){
+   var o = this;
+   var instance = RClass.create(clazz);
+   instance.buildDefine(RWindow._hDocument);
+   return instance;
+}
 function FUiWindowConsole_find(clazz){
    var o = this;
    var name = RClass.name(clazz);
@@ -4919,30 +5347,9 @@ function FUiWindowConsole_find(clazz){
    if(find){
       return find;
    }
-   var instance = RClass.create(clazz);
-   instance.buildDefine(RWindow._hDocument);
+   var instance = o.create(clazz);
+   o._windows.set(name, instance);
    return instance;
-}
-function FUiWindowConsole_create(name, hWin){
-   var config = this.loadDefine(name);
-   var win = IClass.create(FWindow);
-   IDump.dump(_id1, win);
-   win.linkHtml(window);
-   win.build();
-   return win;
-   if(this.windowList.isEmpty()){
-      MoveManager.resetPosition();
-   }
-   var oWindow = new FCfgWindowCtl();
-   oWindow.name = sWinName;
-   oWindow.clientWindow = oClientWindow;
-   if(sWinName){
-      oWindow.show();
-      oWindow.focus();
-      if(this.maxFlag){oWindow.max();}
-      this.windowList.add(sWinName, oWindow);
-   }
-   return oWindow;
 }
 function FUiWindowConsole_loadDefine(name){
    if(name == null){
@@ -5704,7 +6111,7 @@ function FUiButton_doClick(){
    var o = this;
    if(!o._disabled){
       RConsole.find(FFocusConsole).blur();
-      RLogger.debug(o, 'Tool button click. (label={1})' + o._label);
+      RLogger.debug(o, 'Tool button click. (label={1})', o._label);
       var event = new SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -9263,19 +9670,21 @@ function FUiIconPicker_dispose(){
    o.hEdit = null;
 }
 function FUiLabel(o){
-   o = RClass.inherits(this, o, FEditControl);
-   o.onBuildEdit  = FUiLabel_onBuildEdit;
-   o.text         = FUiLabel_text;
-   o.setText      = FUiLabel_setText;
-   o.refreshStyle = RMethod.empty;
+   o = RClass.inherits(this, o, FUiControl);
+   o.onBuild = FUiLabel_onBuild;
+   o.get     = FUiLabel_get;
+   o.set     = FUiLabel_set;
    return o;
 }
-function FUiLabel_onBuildEdit(){
+function FUiLabel_onBuild(event){
    var o = this;
+   o.__base.FUiControl.onBuild.call(o, event);
 }
-function FUiLabel_text(){
+function FUiLabel_get(){
+   return this._hPanel.innerHTML;
 }
-function FUiLabel_setText(t){
+function FUiLabel_set(value){
+   this._hPanel.innerHTML = value;
 }
 function FUiLayout(o){
    o = RClass.inherits(this, o, FUiContainer);
@@ -11727,6 +12136,78 @@ function FUiTemplate_set(p){
    o._hInput.value = RString.nvl(p);
 }
 function FUiTemplate_refreshValue(){
+   var o = this;
+   o.processDataChangedListener(o);
+}
+function FUiText(o){
+   o = RClass.inherits(this, o, FUiTextControl, MPropertyEdit, MListenerDataChanged);
+   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
+   o._unit            = RClass.register(o, new APtyString('_unit'));
+   o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
+   o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
+   o._hValueForm      = null;
+   o._hValueLine      = null;
+   o._hInputPanel     = null;
+   o._hInput          = null;
+   o.onBuildEditValue = FUiText_onBuildEditValue;
+   o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiText_onInputEdit);
+   o.construct        = FUiText_construct;
+   o.formatDisplay    = FUiText_formatDisplay;
+   o.formatValue      = FUiText_formatValue;
+   o.get              = FUiText_get;
+   o.set              = FUiText_set;
+   o.refreshValue     = FUiText_refreshValue;
+   return o;
+}
+function FUiText_onBuildEditValue(p){
+   var o = this;
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = RBuilder.appendTable(hp);
+   hf.width = '100%';
+   var hl = o._hValueLine = RBuilder.appendTableRow(hf);
+   o._hChangePanel = RBuilder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
+   var he = o._hInput = RBuilder.appendEdit(hep, o.styleName('Input'));
+   o.attachEvent('onInputEdit', he, o.onInputEdit);
+   RHtml.setSize(hep, o._inputSize);
+   if(o._editLength){
+      he.maxLength = o._editLength;
+   }
+}
+function FUiText_onInputEdit(p){
+   var o = this;
+   var v = o._hInput.value;
+   o.refreshValue();
+}
+function FUiText_construct(){
+   var o = this;
+   o.__base.FUiTextControl.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
+}
+function FUiText_formatDisplay(p){
+   var o = this;
+   var r = RString.nvl(p);
+   o._dataDisplay = r;
+   return r;
+}
+function FUiText_formatValue(p){
+   return p;
+}
+function FUiText_get(){
+   var o = this;
+   var r = o.__base.FUiTextControl.get.call(o);
+   var r = o._hInput.value;
+   return r;
+}
+function FUiText_set(p){
+   var o = this;
+   o.__base.FUiTextControl.set.call(o, p);
+   o._hInput.value = RString.nvl(p);
+}
+function FUiText_refreshValue(){
    var o = this;
    o.processDataChangedListener(o);
 }
@@ -16648,11 +17129,15 @@ function FUiTreeNode_check(){
 function FUiTreeNode_setCheck(p){
    var o = this;
    o._checked = p;
-   if(!RString.isEmpty(o._attributes.get('checked'))){
-     o._checked = RBoolean.isTrue(o._attributes.get('checked'));
-     if(o._hCheck){
-         o._hCheck._checked = o._checked;
-     }
+   var attributes = o._attributes;
+   if(attributes){
+      var value = attributes.get('checked');
+      if(!RString.isEmpty(value)){
+        o._checked = RBoolean.isTrue(value);
+        if(o._hCheck){
+            o._hCheck._checked = o._checked;
+        }
+      }
    }
 }
 function FUiTreeNode_setImage(){
@@ -16852,52 +17337,52 @@ function FUiTreeNode_appendNode(p){
    t.appendNode(p, o);
    o.extend(true);
 }
-function FUiTreeNode_push(c){
+function FUiTreeNode_push(component){
    var o = this;
-   var t = o._tree;
-   o.__base.FUiContainer.push.call(o, c);
-   if(RClass.isClass(c, FUiTreeNode)){
+   var tree = o._tree;
+   o.__base.FUiContainer.push.call(o, component);
+   if(RClass.isClass(component, FUiTreeNode)){
       o._child = true;
       o._statusLoaded = true;
-      var ns = o._nodes;
-      if(!ns){
-         ns = o._nodes = new TObjects();
+      var nodes = o._nodes;
+      if(!nodes){
+         nodes = o._nodes = new TObjects();
       }
-      c._tree = t;
-      c._parent = o;
-      ns.push(c);
-      t._allNodes.pushUnique(c);
+      component._tree = tree;
+      component._parent = o;
+      nodes.push(component);
+      tree._allNodes.pushUnique(component);
    }
-   if(RClass.isClass(c, FUiTreeNodeCell)){
-      var cs = o._cells;
-      if(!cs){
-         cs = o._cells = new TDictionary();
+   if(RClass.isClass(component, FUiTreeNodeCell)){
+      var cells = o._cells;
+      if(!cells){
+         cells = o._cells = new TDictionary();
       }
-      c._parent = o;
-      c._tree = t;
-      c._node = o;
-      cs.set(c._column._name, c);
+      component._parent = o;
+      component._tree = tree;
+      component._node = o;
+      cells.set(component._column._name, component);
    }
 }
 function FUiTreeNode_remove(){
    var o = this;
-   var t = o._tree;
+   var tree = o._tree;
    if(o._statusLinked){
       o.removeChildren();
-      t.freeNode(o);
+      tree.freeNode(o);
    }
 }
 function FUiTreeNode_removeChildren(){
-   var ns = this._nodes;
-   if(ns){
-      var c = ns.count();
-      for(var i = c - 1; i >= 0; i--){
-         var n = ns.get(i);
-         if(n){
-            n.remove();
+   var nodes = this._nodes;
+   if(nodes){
+      var count = nodes.count();
+      for(var i = count - 1; i >= 0; i--){
+         var node = nodes.get(i);
+         if(node){
+            node.remove();
          }
       }
-      ns.clear();
+      nodes.clear();
    }
 }
 function FUiTreeNode_reset(){
@@ -16949,7 +17434,10 @@ function FUiTreeNode_propertyLoad(x){
    var o = this;
    var t = o._tree;
    o.__base.FUiContainer.propertyLoad.call(o, x);
-   o._attributes.append(x.attrs);
+   var attributes = o._attributes;
+   if(attributes){
+      attributes.append(x.attrs);
+   }
    var ap = x.get('attributes')
    if(ap){
       o._attributes.unpack(ap);
@@ -17272,6 +17760,7 @@ function FUiTreeView(o){
    o.nodeColumns        = FUiTreeView_nodeColumns;
    o.nodeLevels         = FUiTreeView_nodeLevels;
    o.hasNode            = FUiTreeView_hasNode;
+   o.focusNode          = FUiTreeView_focusNode;
    o.nodes              = FUiTreeView_nodes;
    o.findType           = FUiTreeView_findType;
    o.findByName         = FUiTreeView_findByName;
@@ -17389,6 +17878,9 @@ function FUiTreeView_nodeLevels(){
 }
 function FUiTreeView_hasNode(){
    return this._rootNode.hasChild();
+}
+function FUiTreeView_focusNode(){
+   return this._focusNode;
 }
 function FUiTreeView_nodes(){
    return this._nodes;
@@ -17600,13 +18092,13 @@ function FUiTreeView_removeNodes(node){
    }
    node.remove();
 }
-function FUiTreeView_freeNode(p){
+function FUiTreeView_freeNode(node){
    var o = this;
-   if(p._statusLinked){
-      p._statusLinked = false;
-      p.hidden();
-      o._allNodes.remove(p);
-      o._freeNodes.push(p);
+   if(node._statusLinked){
+      node._statusLinked = false;
+      o._hNodeRows.removeChild(node._hPanel);
+      o._allNodes.remove(node);
+      o._freeNodes.push(node);
    }
 }
 function FUiTreeView_clearNodes(node){

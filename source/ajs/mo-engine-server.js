@@ -1592,7 +1592,7 @@ var EResult = new function EResult(){
    o.Continue = 1;
    o.Skip     = 2;
    o.Finish   = 3;
-   o.Failure  =  -1;
+   o.Failure  = -1;
    o.Cancel   = -2;
    return o;
 }
@@ -8695,6 +8695,7 @@ var EEvent = new function EEvent(){
    o.ItemClick   = 11;
    o.Selected    = 12;
    o.DataChanged = 13;
+   o.Result      = 14;
    return o;
 }
 var EHttpContent = new function EHttpContent(){

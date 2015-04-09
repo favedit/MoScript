@@ -133,11 +133,14 @@ function FDrResource_classCode(){
 }
 function FDrResourceConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
-   o._serviceCode = 'cloud.content3d.resource';
-   o._resources   = null;
-   o.construct    = FDrResourceConsole_construct;
-   o.fetch        = FDrResourceConsole_fetch;
-   o.doDelete     = FDrResourceConsole_doDelete;
+   o._serviceCode   = 'cloud.content3d.resource';
+   o._resources     = null;
+   o.construct      = FDrResourceConsole_construct;
+   o.fetch          = FDrResourceConsole_fetch;
+   o.doDelete       = FDrResourceConsole_doDelete;
+   o.doFolderCreate = FDrResourceConsole_doFolderCreate;
+   o.doFolderUpdate = FDrResourceConsole_doFolderUpdate;
+   o.doFolderDelete = FDrResourceConsole_doFolderDelete;
    return o;
 }
 function FDrResourceConsole_construct(){
@@ -153,5 +156,32 @@ function FDrResourceConsole_fetch(typeCd, search, order, pageSize, page){
 function FDrResourceConsole_doDelete(typeCd, guid){
    var o = this;
    var url = '/' + o._serviceCode + '.ws?action=delete&type_cd=' + typeCd + '&guid=' + guid;
+   return RConsole.find(FXmlConsole).sendAsync(url);
+}
+function FDrResourceConsole_doFolderCreate(parentGuid, code, label){
+   var o = this;
+   var xdocument = new TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'folderCreate');
+   var xfolder = xroot.create('Folder');
+   xfolder.set('parent_guid', parentGuid);
+   xfolder.set('code', code);
+   xfolder.set('label', label);
+   return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+}
+function FDrResourceConsole_doFolderUpdate(guid, code, label){
+   var o = this;
+   var xdocument = new TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'folderUpdate');
+   var xfolder = xroot.create('Folder');
+   xfolder.set('guid', guid);
+   xfolder.set('code', code);
+   xfolder.set('label', label);
+   return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+}
+function FDrResourceConsole_doFolderDelete(guid){
+   var o = this;
+   var url = '/' + o._serviceCode + '.ws?action=folderDelete&guid=' + guid;
    return RConsole.find(FXmlConsole).sendAsync(url);
 }

@@ -162,7 +162,7 @@ var EResult = new function EResult(){
    o.Continue = 1;
    o.Skip     = 2;
    o.Finish   = 3;
-   o.Failure  =  -1;
+   o.Failure  = -1;
    o.Cancel   = -2;
    return o;
 }

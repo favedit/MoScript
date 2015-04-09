@@ -307,8 +307,10 @@ function APtyAttributes_load(v, x){
 function APtyAttributes_save(v, x){
    var o = this;
    var s = v[o._name];
-   if(!s.isEmpty()){
-      x.set(o._linker, s.join('=', '\n'));
+   if(s){
+      if(!s.isEmpty()){
+         x.set(o._linker, s.join('=', '\n'));
+      }
    }
 }
 function APtyAttributes_toString(){
@@ -729,6 +731,14 @@ var EUiCursor = new function EUiCursor(){
    o.Move      = 'move';
    return o;
 }
+var EUiDialog = new function EUiDialog(){
+   var o = this;
+   o.Confirm = 1;
+   o.Info    = 2
+   o.Warn    = 3;
+   o.Error   = 4;
+   return o;
+}
 var EUiDirection = new function EUiDirection(){
    var o = this;
    o.Horizontal = 'H';
@@ -936,6 +946,26 @@ function MListenerLeave_addLeaveListener(w, m){
 }
 function MListenerLeave_processLeaveListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.Leave, p1, p2, p3, p4, p5);
+}
+function MListenerResult(o){
+   o = RClass.inherits(this, o, MListener);
+   o.addResultListener     = MListenerResult_addResultListener;
+   o.removeResultListener  = MListenerResult_removeResultListener;
+   o.processResultListener = MListenerResult_processResultListener;
+   o.clearResultListeners  = MListenerResult_clearResultListeners;
+   return o;
+}
+function MListenerResult_addResultListener(owner, method){
+   return this.addListener(EEvent.Result, owner, method);
+}
+function MListenerResult_removeResultListener(owner, method){
+   return this.removeListener(EEvent.Result, owner, method);
+}
+function MListenerResult_processResultListener(p1, p2, p3, p4, p5){
+   this.processListener(EEvent.Result, p1, p2, p3, p4, p5);
+}
+function MListenerResult_clearResultListeners(){
+   return this.clearListeners(EEvent.Result);
 }
 function MListenerSelected(o){
    o = RClass.inherits(this, o, MListener);

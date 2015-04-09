@@ -21,7 +21,7 @@ function FUiDataTreeView(o){
    o = RClass.inherits(this, o, FUiTreeView);
    //..........................................................
    // @property
-   o._serviceName     = RClass.register(o, new APtyString('_serviceName', 'service'));
+   o._serviceCode     = RClass.register(o, new APtyString('_serviceCode', 'service'));
    //..........................................................
    // @attribute
    o._statusLoading   = false;
@@ -37,15 +37,19 @@ function FUiDataTreeView(o){
    //..........................................................
    // @method
    o.construct        = FUiDataTreeView_construct;
+   // @method
    o.buildNode        = FUiDataTreeView_buildNode;
+   // @method
+   o.load             = FUiDataTreeView_load;
+   o.reload           = FUiDataTreeView_reload;
+   o.loadService      = FUiDataTreeView_loadService;
+   o.reloadService    = FUiDataTreeView_reloadService;
    o.loadNode         = FUiDataTreeView_loadNode;
+   o.reloadNode       = FUiDataTreeView_reloadNode;
    o.loadUrl          = FUiDataTreeView_loadUrl;
    o.loadNodeUrl      = FUiDataTreeView_loadNodeUrl;
-   o.loadService      = FUiDataTreeView_loadService;
    o.loadNodeService  = FUiDataTreeView_loadNodeService;
-   o.load             = FUiDataTreeView_load;
-   o.reloadNode       = FUiDataTreeView_reloadNode;
-   o.reload           = FUiDataTreeView_reload;
+   // @method
    o.dispose          = FUiDataTreeView_dispose;
 
 
@@ -97,23 +101,23 @@ function FUiDataTreeView_onLoaded(p){
 // <T>加载取回的服务器数据。</T>
 //
 // @method
-// @param p:event:SXmlEvent 事件信息
+// @param event:SXmlEvent 事件信息
 //==========================================================
-function FUiDataTreeView_onNodeLoaded(p){
+function FUiDataTreeView_onNodeLoaded(event){
    var o = this;
-   var x = p.root;
+   var x = event.root;
    if(x == null){
       throw new TError(o, 'Load tree data failure.');
    }
    // 获得事件信息
-   var np = p.connection.parentNode;
+   var np = event.connection.parentNode;
    // 加载完毕
    o._loadingNode.hide();
    o._statusLoading = false;
    // 加载数据节点
    o.buildNode(np, x);
    // 响应事件
-   o.lsnsNodeLoaded.process(p);
+   o.lsnsNodeLoaded.process(event);
    // 全部展开
    //if(o.extendsAll){
    //    o.extendAll();
@@ -165,6 +169,28 @@ function FUiDataTreeView_buildNode(pn, px){
 }
 
 //==========================================================
+// <T>从服务器加载数据。</T>
+//
+// @method
+// @param p:attributes:String 参数
+//==========================================================
+function FUiDataTreeView_load(p){
+   var o = this;
+   o.loadService(o._serviceCode);
+}
+
+//==========================================================
+// <T>重新加载树目录。</T>
+//
+// @method
+//==========================================================
+function FUiDataTreeView_reload(){
+   var o = this;
+   o.clear();
+   o.loadUrl();
+}
+
+//==========================================================
 // <T>加载指定节点的子节点信息。</T>
 //
 // @method
@@ -175,31 +201,35 @@ function FUiDataTreeView_loadNode(pn, pf){
    var o = this;
    o._statusLoading = true;
    // 查找服务名称
-   var nt = null;
-   var fn = pn;
-   var svc = o._serviceName;
-   while(RClass.isClass(fn, FUiTreeNode)){
-      nt = fn.type();
-      if(nt && nt._service){
-         svc = nt._service;
+   var type = null;
+   var findNode = pn;
+   var serviceCode = o._serviceCode;
+   while(RClass.isClass(findNode, FUiTreeNode)){
+      type = findNode.type();
+      if(type && type._service){
+         serviceCode = type._service;
          break;
       }
-      fn = fn._parent;
+      findNode = findNode._parent;
    }
-   if(!svc){
-      throw new TError(o, 'Unknown service name.');
+   if(!serviceCode){
+      throw new TError(o, 'Unknown service code.');
+   }
+   var service = RService.parse(serviceCode);
+   if(!service){
+      throw new TError(o, 'Unknown service.');
    }
    // 查找当前节点向上的第一个命令
-   var fn = pn;
+   var findNode = pn;
    while(RClass.isClass(fn, FUiTreeNode)){
-      nt = fn.type();
-      if(nt && nt._action){
+      type = findNode.type();
+      if(type && type._action){
          break;
       }
-      fn = fn._parent;
+      findNode = findNode._parent;
    }
-   var act = RString.nvl(nt._action, svc.action);
-   if(!act){
+   var action = RString.nvl(type._action, service.action);
+   if(!action){
       throw new TError(o, 'Unknown service action.');
    }
    // 相应加载节点事件
@@ -207,8 +237,8 @@ function FUiDataTreeView_loadNode(pn, pf){
    // 建立节点的发送信息
    var xd = new TXmlDocument();
    var x = xd.root();
-   x.set('action', act);
-   x.set('type', nt._linker);
+   x.set('action', action);
+   x.set('type', type._linker);
    x.create('Attributes', o._attributes);
    var fn = pn;
    while(RClass.isClass(fn, FUiTreeNode)){
@@ -231,15 +261,10 @@ function FUiDataTreeView_loadNode(pn, pf){
    ln.setLevel(pn.level() + 1);
    ln.show();
    // 建立事件对象，发送信息
-   var sv = RService.parse(RString.nvl(svc, o._service));
-   if(!sv){
-      throw new TError(o, 'Unknown service.');
-   }
-   var u = RService.makeUrl(sv.service, act);
-   // 建立事件对象，发送信息
-   var c = RConsole.find(FXmlConsole).sendAsync(u, xd);
-   c.parentNode = pn;
-   c.addLoadListener(o, o.onNodeLoaded);
+   var url = RService.makeUrl(service.service, action);
+   var connection = RConsole.find(FXmlConsole).sendAsync(url, xd);
+   connection.parentNode = pn;
+   connection.addLoadListener(o, o.onNodeLoaded);
 }
 
 //==========================================================
@@ -277,45 +302,59 @@ function FUiDataTreeView_loadNodeUrl(p, n){
 // <T>从服务器获取节点数据。</T>
 //
 // @method
-// @param service:service:String 服务器端的服务名称
+// @param service:String 服务器端的服务名称
+// @param attributes:TAttributes 属性集合
 //==========================================================
-function FUiDataTreeView_loadService(service, attrs){
+function FUiDataTreeView_loadService(serviceCode, attributes){
    var o = this;
-   var svc = RService.parse(RString.nvl(service, this._service));
-   if(!svc){
+   // 获得服务描述
+   if(!serviceCode){
+      serviceCode = o._serviceCode;
+   }
+   var service = RService.parse(serviceCode);
+   if(!service){
       return alert('Unknown service');
    }
-   attrs = RObject.nvl(attrs, o._attributes);
+   attributes = RObject.nvl(attributes, o._attributes);
    // 建立加载数据
-   var xd = new TXmlDocument();
-   var xr = xd.root();
-   xr.set('action', svc.action);
-   RConsole.find(FEnvironmentConsole).build(xr);
-   if(!attrs.isEmpty()){
-      if(RClass.isClass(attrs, TNode)){
-         xr.push(attrs);
-      }if(RClass.isClass(attrs, TAttributes)){
-         xr.create('Tree').attrs = attrs;
-         xr.create('Attributes').attrs = attrs;
+   var xdocument = new TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', service.action);
+   RConsole.find(FEnvironmentConsole).build(xroot);
+   if(!attributes.isEmpty()){
+      if(RClass.isClass(attributes, TNode)){
+         xr.push(attributes);
+      }if(RClass.isClass(attributes, TAttributes)){
+         xr.create('Tree').attributes = attributes;
+         xr.create('Attributes').attributes = attributes;
       }else{
-         xr.create('Tree').value = attrs;
-         xr.create('Attributes').value = attrs;
+         xr.create('Tree').value = attributes;
+         xr.create('Attributes').value = attributes;
       }
    }
    // 显示加载中的节点
-   var ln = o._loadingNode;
+   o._focusNode = null;
+   //var ln = o._loadingNode;
    //RHtml.tableMoveRow(o._hNodeForm, ln._hPanel.rowIndex, 0);
    //ln.setLevel(0);
    //ln.show();
    // 连接服务器
-   var xc = RConsole.find(FXmlConsole);
-   var c = xc.sendAsync(svc.url, xd);
+   var connection = RConsole.find(FXmlConsole).sendAsync(service.url, xdocument);
    //c.parentNode = pn;
-   c.addLoadListener(o, o.onNodeLoaded);
-   //var e = new TEvent(o, EXmlEvent.Send, o.onLoaded);
-   //e.url = svc.url;
-   //e.document = xd;
-   //RConsole.find(FXmlConsole).process(e);
+   connection.addLoadListener(o, o.onNodeLoaded);
+}
+
+//==========================================================
+// <T>从服务器重新获取节点数据。</T>
+//
+// @method
+// @param serviceCode:String 服务代码
+// @param attributes:TAttributes 属性集合
+//==========================================================
+function FUiDataTreeView_reloadService(serviceCode, attributes){
+   var o = this;
+   o.clear();
+   return o.loadService(serviceCode, attributes)
 }
 
 //==========================================================
@@ -362,17 +401,6 @@ function FUiDataTreeView_loadNodeService(ps, pa){
 }
 
 //==========================================================
-// <T>从服务器加载数据。</T>
-//
-// @method
-// @param p:attributes:String 参数
-//==========================================================
-function FUiDataTreeView_load(p){
-   var o = this;
-   o.loadService(o._serviceName);
-}
-
-//==========================================================
 // <T>重新加载节点。</T>
 //
 // @method
@@ -389,17 +417,6 @@ function FUiDataTreeView_reloadNode(n){
    // 展开节点
    n.removeChildren();
    o.loadNode(n);
-}
-
-//==========================================================
-// <T>重新加载树目录。</T>
-//
-// @method
-//==========================================================
-function FUiDataTreeView_reload(){
-   var o = this;
-   o.clear();
-   o.loadUrl();
 }
 
 //==========================================================

@@ -1,6 +1,6 @@
 function FUiDataTreeView(o){
    o = RClass.inherits(this, o, FUiTreeView);
-   o._serviceName     = RClass.register(o, new APtyString('_serviceName', 'service'));
+   o._serviceCode     = RClass.register(o, new APtyString('_serviceCode', 'service'));
    o._statusLoading   = false;
    o.lsnsLoaded       = new TListeners();
    o.lsnsNodeLoad     = new TListeners();
@@ -9,14 +9,15 @@ function FUiDataTreeView(o){
    o.onNodeLoaded     = FUiDataTreeView_onNodeLoaded;
    o.construct        = FUiDataTreeView_construct;
    o.buildNode        = FUiDataTreeView_buildNode;
+   o.load             = FUiDataTreeView_load;
+   o.reload           = FUiDataTreeView_reload;
+   o.loadService      = FUiDataTreeView_loadService;
+   o.reloadService    = FUiDataTreeView_reloadService;
    o.loadNode         = FUiDataTreeView_loadNode;
+   o.reloadNode       = FUiDataTreeView_reloadNode;
    o.loadUrl          = FUiDataTreeView_loadUrl;
    o.loadNodeUrl      = FUiDataTreeView_loadNodeUrl;
-   o.loadService      = FUiDataTreeView_loadService;
    o.loadNodeService  = FUiDataTreeView_loadNodeService;
-   o.load             = FUiDataTreeView_load;
-   o.reloadNode       = FUiDataTreeView_reloadNode;
-   o.reload           = FUiDataTreeView_reload;
    o.dispose          = FUiDataTreeView_dispose;
    return o;
 }
@@ -34,17 +35,17 @@ function FUiDataTreeView_onLoaded(p){
       o.loadNodeService(s);
    }
 }
-function FUiDataTreeView_onNodeLoaded(p){
+function FUiDataTreeView_onNodeLoaded(event){
    var o = this;
-   var x = p.root;
+   var x = event.root;
    if(x == null){
       throw new TError(o, 'Load tree data failure.');
    }
-   var np = p.connection.parentNode;
+   var np = event.connection.parentNode;
    o._loadingNode.hide();
    o._statusLoading = false;
    o.buildNode(np, x);
-   o.lsnsNodeLoaded.process(p);
+   o.lsnsNodeLoaded.process(event);
 }
 function FUiDataTreeView_construct(){
    var o = this;
@@ -74,40 +75,53 @@ function FUiDataTreeView_buildNode(pn, px){
       }
    }
 }
+function FUiDataTreeView_load(p){
+   var o = this;
+   o.loadService(o._serviceCode);
+}
+function FUiDataTreeView_reload(){
+   var o = this;
+   o.clear();
+   o.loadUrl();
+}
 function FUiDataTreeView_loadNode(pn, pf){
    var o = this;
    o._statusLoading = true;
-   var nt = null;
-   var fn = pn;
-   var svc = o._serviceName;
-   while(RClass.isClass(fn, FUiTreeNode)){
-      nt = fn.type();
-      if(nt && nt._service){
-         svc = nt._service;
+   var type = null;
+   var findNode = pn;
+   var serviceCode = o._serviceCode;
+   while(RClass.isClass(findNode, FUiTreeNode)){
+      type = findNode.type();
+      if(type && type._service){
+         serviceCode = type._service;
          break;
       }
-      fn = fn._parent;
+      findNode = findNode._parent;
    }
-   if(!svc){
-      throw new TError(o, 'Unknown service name.');
+   if(!serviceCode){
+      throw new TError(o, 'Unknown service code.');
    }
-   var fn = pn;
+   var service = RService.parse(serviceCode);
+   if(!service){
+      throw new TError(o, 'Unknown service.');
+   }
+   var findNode = pn;
    while(RClass.isClass(fn, FUiTreeNode)){
-      nt = fn.type();
-      if(nt && nt._action){
+      type = findNode.type();
+      if(type && type._action){
          break;
       }
-      fn = fn._parent;
+      findNode = findNode._parent;
    }
-   var act = RString.nvl(nt._action, svc.action);
-   if(!act){
+   var action = RString.nvl(type._action, service.action);
+   if(!action){
       throw new TError(o, 'Unknown service action.');
    }
    o.lsnsNodeLoad.process(o, pn);
    var xd = new TXmlDocument();
    var x = xd.root();
-   x.set('action', act);
-   x.set('type', nt._linker);
+   x.set('action', action);
+   x.set('type', type._linker);
    x.create('Attributes', o._attributes);
    var fn = pn;
    while(RClass.isClass(fn, FUiTreeNode)){
@@ -127,14 +141,10 @@ function FUiDataTreeView_loadNode(pn, pf){
    RHtml.tableMoveRow(o._hNodeForm, ln._hPanel.rowIndex, nr);
    ln.setLevel(pn.level() + 1);
    ln.show();
-   var sv = RService.parse(RString.nvl(svc, o._service));
-   if(!sv){
-      throw new TError(o, 'Unknown service.');
-   }
-   var u = RService.makeUrl(sv.service, act);
-   var c = RConsole.find(FXmlConsole).sendAsync(u, xd);
-   c.parentNode = pn;
-   c.addLoadListener(o, o.onNodeLoaded);
+   var url = RService.makeUrl(service.service, action);
+   var connection = RConsole.find(FXmlConsole).sendAsync(url, xd);
+   connection.parentNode = pn;
+   connection.addLoadListener(o, o.onNodeLoaded);
 }
 function FUiDataTreeView_loadUrl(p){
    var o = this;
@@ -149,32 +159,39 @@ function FUiDataTreeView_loadNodeUrl(p, n){
    c.parentNode = RObject.nvl(n, o._focusNode);
    c.addLoadListener(o, o.onNodeLoaded);
 }
-function FUiDataTreeView_loadService(service, attrs){
+function FUiDataTreeView_loadService(serviceCode, attributes){
    var o = this;
-   var svc = RService.parse(RString.nvl(service, this._service));
-   if(!svc){
+   if(!serviceCode){
+      serviceCode = o._serviceCode;
+   }
+   var service = RService.parse(serviceCode);
+   if(!service){
       return alert('Unknown service');
    }
-   attrs = RObject.nvl(attrs, o._attributes);
-   var xd = new TXmlDocument();
-   var xr = xd.root();
-   xr.set('action', svc.action);
-   RConsole.find(FEnvironmentConsole).build(xr);
-   if(!attrs.isEmpty()){
-      if(RClass.isClass(attrs, TNode)){
-         xr.push(attrs);
-      }if(RClass.isClass(attrs, TAttributes)){
-         xr.create('Tree').attrs = attrs;
-         xr.create('Attributes').attrs = attrs;
+   attributes = RObject.nvl(attributes, o._attributes);
+   var xdocument = new TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', service.action);
+   RConsole.find(FEnvironmentConsole).build(xroot);
+   if(!attributes.isEmpty()){
+      if(RClass.isClass(attributes, TNode)){
+         xr.push(attributes);
+      }if(RClass.isClass(attributes, TAttributes)){
+         xr.create('Tree').attributes = attributes;
+         xr.create('Attributes').attributes = attributes;
       }else{
-         xr.create('Tree').value = attrs;
-         xr.create('Attributes').value = attrs;
+         xr.create('Tree').value = attributes;
+         xr.create('Attributes').value = attributes;
       }
    }
-   var ln = o._loadingNode;
-   var xc = RConsole.find(FXmlConsole);
-   var c = xc.sendAsync(svc.url, xd);
-   c.addLoadListener(o, o.onNodeLoaded);
+   o._focusNode = null;
+   var connection = RConsole.find(FXmlConsole).sendAsync(service.url, xdocument);
+   connection.addLoadListener(o, o.onNodeLoaded);
+}
+function FUiDataTreeView_reloadService(serviceCode, attributes){
+   var o = this;
+   o.clear();
+   return o.loadService(serviceCode, attributes)
 }
 function FUiDataTreeView_loadNodeService(ps, pa){
    var o = this;
@@ -199,10 +216,6 @@ function FUiDataTreeView_loadNodeService(ps, pa){
    c.parentNode = o._focusNode;
    c.addLoadListener(o, o.onNodeLoaded);
 }
-function FUiDataTreeView_load(p){
-   var o = this;
-   o.loadService(o._serviceName);
-}
 function FUiDataTreeView_reloadNode(n){
    var o = this;
    n = RObject.nvl(n, o._focusNode);
@@ -211,11 +224,6 @@ function FUiDataTreeView_reloadNode(n){
    }
    n.removeChildren();
    o.loadNode(n);
-}
-function FUiDataTreeView_reload(){
-   var o = this;
-   o.clear();
-   o.loadUrl();
 }
 function FUiDataTreeView_dispose(){
    var o = this;

@@ -16,7 +16,7 @@ var EResult = new function EResult(){
    // @attribute Integer 停止
    o.Finish   = 3;
    // @attribute Integer 失败
-   o.Failure  =  -1;
+   o.Failure  = -1;
    // @attribute Integer 取消
    o.Cancel   = -2;
    return o;

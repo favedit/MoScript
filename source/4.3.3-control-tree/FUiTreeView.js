@@ -72,6 +72,7 @@ function FUiTreeView(o){
    o.nodeColumns        = FUiTreeView_nodeColumns;
    o.nodeLevels         = FUiTreeView_nodeLevels;
    o.hasNode            = FUiTreeView_hasNode;
+   o.focusNode          = FUiTreeView_focusNode;
    o.nodes              = FUiTreeView_nodes;
    // @method
    o.findType           = FUiTreeView_findType;
@@ -268,6 +269,16 @@ function FUiTreeView_nodeLevels(){
 //==========================================================
 function FUiTreeView_hasNode(){
    return this._rootNode.hasChild();
+}
+
+//==========================================================
+// <T>获得焦点节点。</T>
+//
+// @method
+// @return FTreeNode 焦点节点
+//==========================================================
+function FUiTreeView_focusNode(){
+   return this._focusNode;
 }
 
 //==========================================================
@@ -605,15 +616,17 @@ function FUiTreeView_removeNodes(node){
 // <P>从节点表格移出，但是不释放，用来再创建节点时使用。</P>
 //
 // @method
-// @param p:node:FUiTreeNode 树节点
+// @param node:FUiTreeNode 树节点
 //==========================================================
-function FUiTreeView_freeNode(p){
+function FUiTreeView_freeNode(node){
    var o = this;
-   if(p._statusLinked){
-      p._statusLinked = false;
-      p.hidden();
-      o._allNodes.remove(p);
-      o._freeNodes.push(p);
+   if(node._statusLinked){
+      node._statusLinked = false;
+      // 隐藏处理
+      o._hNodeRows.removeChild(node._hPanel);
+      // 移除处理
+      o._allNodes.remove(node);
+      o._freeNodes.push(node);
    }
 }
 

@@ -9,14 +9,18 @@ function FDrResourceConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
    //..........................................................
    // @attribute
-   o._serviceCode = 'cloud.content3d.resource';
-   o._resources   = null;
+   o._serviceCode   = 'cloud.content3d.resource';
+   o._resources     = null;
    //..........................................................
    // @method
-   o.construct    = FDrResourceConsole_construct;
+   o.construct      = FDrResourceConsole_construct;
    // @method
-   o.fetch        = FDrResourceConsole_fetch;
-   o.doDelete     = FDrResourceConsole_doDelete;
+   o.fetch          = FDrResourceConsole_fetch;
+   o.doDelete       = FDrResourceConsole_doDelete;
+   // @method
+   o.doFolderCreate = FDrResourceConsole_doFolderCreate;
+   o.doFolderUpdate = FDrResourceConsole_doFolderUpdate;
+   o.doFolderDelete = FDrResourceConsole_doFolderDelete;
    return o;
 }
 
@@ -59,5 +63,57 @@ function FDrResourceConsole_fetch(typeCd, search, order, pageSize, page){
 function FDrResourceConsole_doDelete(typeCd, guid){
    var o = this;
    var url = '/' + o._serviceCode + '.ws?action=delete&type_cd=' + typeCd + '&guid=' + guid;
+   return RConsole.find(FXmlConsole).sendAsync(url);
+}
+
+//==========================================================
+// <T>创建资源文件夹。</T>
+//
+// @method
+//==========================================================
+function FDrResourceConsole_doFolderCreate(parentGuid, code, label){
+   var o = this;
+   // 设置数据
+   var xdocument = new TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'folderCreate');
+   // 设置资源数据
+   var xfolder = xroot.create('Folder');
+   xfolder.set('parent_guid', parentGuid);
+   xfolder.set('code', code);
+   xfolder.set('label', label);
+   // 发送数据
+   return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+}
+
+//==========================================================
+// <T>修改资源文件夹。</T>
+//
+// @method
+//==========================================================
+function FDrResourceConsole_doFolderUpdate(guid, code, label){
+   var o = this;
+   // 设置数据
+   var xdocument = new TXmlDocument();
+   var xroot = xdocument.root();
+   xroot.set('action', 'folderUpdate');
+   // 设置资源数据
+   var xfolder = xroot.create('Folder');
+   xfolder.set('guid', guid);
+   xfolder.set('code', code);
+   xfolder.set('label', label);
+   // 发送数据
+   return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+}
+
+//==========================================================
+// <T>删除资源文件夹。</T>
+//
+// @method
+// @param guid:String 唯一编号
+//==========================================================
+function FDrResourceConsole_doFolderDelete(guid){
+   var o = this;
+   var url = '/' + o._serviceCode + '.ws?action=folderDelete&guid=' + guid;
    return RConsole.find(FXmlConsole).sendAsync(url);
 }

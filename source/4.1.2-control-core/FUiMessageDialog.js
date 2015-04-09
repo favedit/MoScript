@@ -1,55 +1,100 @@
-/**************************************************************
- * 消息弹出框
- * 
- * @class
- * @author maochunyang
- * @version 1.0.1
- **************************************************************/
-function FMessageWindow(o){
-   //alert(FMessageWindow);
-   o = RClass.inherits(this, o, FWindow);
-   // Attribute
-   o.type            = null;
-   o.isDialog        = false;
-   o.titleBlur       = false;
-   o.messageArg      = null;
-   // css
-   o.stMsgPanel      = RClass.register(o, new TStyle('MsgPanel'));
-   o.stButtonPanel   = RClass.register(o, new TStyle('ButtonPanel'));
-   o.stItmeForm      = RClass.register(o, new TStyle('ItmeForm'));
-   o.stItemTitle     = RClass.register(o, new TStyle('ItemTitle'));
-   o.stItemBodyForm  = RClass.register(o, new TStyle('ItemBodyForm'));
-   o.stRowItem       = RClass.register(o, new TStyle('RowItem'));
-   o.stDescForm      = RClass.register(o, new TStyle('DescForm'));
-   o.stDescTitle     = RClass.register(o, new TStyle('DescTitle'));
-   o.stDescBody      = RClass.register(o, new TStyle('DescBody'));
-   // Event
-   o.onItemOver      = RClass.register(o, new HMouseOver('onItemOver'), FMessageWindow_onItemOver);
-   o.onItemClick     = RClass.register(o, new HClick('onItemClick'), FMessageWindow_onItemClick);
-   o.onDescClick     = RClass.register(o, new HClick('onDescClick'), FMessageWindow_onDescClick);
-   // Html
-   o.hMessagePanel   = null;
-   o.hMessages       = null;
-   o.hDescription    = null;
-   o.hButtonPanel    = null;
-   o.hBlank          = null;
-   // Process
-   o.oeBuild         = FMessageWindow_oeBuild;
-   // Event
-   o.onBuildMessages = FMessageWindow_onBuildMessages;
-   o.onBuildButtons  = FMessageWindow_onBuildButtons;
-   o.onOk            = FMessageWindow_onOk;
-   o.onCancel        = FMessageWindow_onCancel;
-   o.onClose         = FMessageWindow_onClose;
-   // Method
-   o.loadMessages    = FMessageWindow_loadMessages;
-   o.show            = FMessageWindow_show;
-   o.hide            = FMessageWindow_hide;
-   o.dispose         = FMessageWindow_dispose;
+//==========================================================
+// <T>消息弹出框。</T>
+//
+// @class
+// @author maocy
+// @version 150409
+//==========================================================
+function FUiMessageDialog(o){
+   o = RClass.inherits(this, o, FUiWindow);
+   //..........................................................
+   // @style
+   o._styleMsgPanel     = RClass.register(o, new AStyle('_styleMsgPanel'));
+   o._styleButtonPanel  = RClass.register(o, new AStyle('_styleButtonPanel'));
+   o._styleItmeForm     = RClass.register(o, new AStyle('_styleItmeForm'));
+   o._styleItemTitle    = RClass.register(o, new AStyle('_styleItemTitle'));
+   o._styleItemBodyForm = RClass.register(o, new AStyle('_styleItemBodyForm'));
+   o._styleRowItem      = RClass.register(o, new AStyle('_styleRowItem'));
+   o._styleDescForm     = RClass.register(o, new AStyle('_styleDescForm'));
+   o._styleDescTitle    = RClass.register(o, new AStyle('_styleDescTitle'));
+   o._styleDescBody     = RClass.register(o, new AStyle('_styleDescBody'));
+   //..........................................................
+   // @attribute
+   o._type              = null;
+   o._isDialog          = false;
+   o._titleBlur         = false;
+   o._messageArg        = null;
+   //..........................................................
+   // @html
+   o._hMessagePanel     = null;
+   o._hMessages         = null;
+   o._hDescription      = null;
+   o._hButtonPanel      = null;
+   o._hBlank            = null;
+   //..........................................................
+   // @event
+   o.onBuild            = FUiMessageDialog_onBuild;
+   // @event
+   o.onItemOver         = RClass.register(o, new AEventMouseOver('onItemOver'), FUiMessageDialog_onItemOver);
+   o.onItemClick        = RClass.register(o, new AEventClick('onItemClick'), FUiMessageDialog_onItemClick);
+   o.onDescClick        = RClass.register(o, new AEventClick('onDescClick'), FUiMessageDialog_onDescClick);
+   // @event
+   o.onBuildMessages    = FUiMessageDialog_onBuildMessages;
+   o.onBuildButtons     = FUiMessageDialog_onBuildButtons;
+   o.onOk               = FUiMessageDialog_onOk;
+   o.onCancel           = FUiMessageDialog_onCancel;
+   o.onClose            = FUiMessageDialog_onClose;
+   //..........................................................
+   // @method
+   o.loadMessages       = FUiMessageDialog_loadMessages;
+   o.show               = FUiMessageDialog_show;
+   o.hide               = FUiMessageDialog_hide;
+   o.dispose            = FUiMessageDialog_dispose;
    return o;
 }
+
+//==========================================================
+// <T>建立框架处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FUiMessageDialog_onBuild(event){
+   var o = this;
+   o.__base.FUiWindow.oeBuild.call(o, e);
+   return;
+   o.setIcon('Icon');
+   // Form (1colx2row)
+   //o.hBodyPanel.style.height = 400;
+   var hTab = RBuilder.appendTable(o.hBodyPanel, 0, 0, 0);
+   hTab.style.vAlign = "top";
+   hTab.width = '100%';
+   hTab.height = '100%';
+   //h0.style.backgroundColor = "#CCCCCC";
+   // Message Panel
+   var h1 = o.hTitlePanel = hTab.insertRow().insertCell();
+   //h1.style.border = "2px solid Red";
+   h1.style.height = "100%";
+   h1.style.vAlign = "top";
+   var h2 = o.hMsgPanel = hTab.insertRow().insertCell();
+   //h2.style.border = "2px solid Black";
+   h2.style.height = "100%";
+   //h.className = o.style('MsgPanel');
+   //h.style.border='2px solid Blue';
+   //h.style.tableLayout="fixed";
+   o.onBuildMessages();
+   // Button Panel
+   var h0 = o._hButtonPanel = hTab.insertRow().insertCell();
+   //h.className = o.style('ButtonPanel');
+   //h.style.border='2px solid Blue';
+   h0.style.align = 'right';
+   o.onBuildButtons();
+   h0.height = 20;
+   RConsole.find(FKeyConsole).register(EKey.Esc, new TListener(o, o.onClose));
+   return r;
+}
 // ------------------------------------------------------------
-function FMessageWindow_onItemOver(e){
+function FUiMessageDialog_onItemOver(e){
    var o = this;
    var hf = o.hItemBodyForm;
    var h = e.hSource;
@@ -58,7 +103,7 @@ function FMessageWindow_onItemOver(e){
    h.style.cousor = "hand";
 }
 // ------------------------------------------------------------
-function FMessageWindow_onItemClick(e){
+function FUiMessageDialog_onItemClick(e){
    var o = this;
    var hf = o.hItemBodyForm;
    for(var n = 0; n < hf.rows.count; n++){
@@ -68,7 +113,7 @@ function FMessageWindow_onItemClick(e){
    //o.hDescDiv.innerText = o.msgs.get(idx).description; 
 }
 // ------------------------------------------------------------
-function FMessageWindow_onDescClick(e){
+function FUiMessageDialog_onDescClick(e){
    var o = this;
    return;
    var st = o.hDescBody.style.display;
@@ -79,45 +124,9 @@ function FMessageWindow_onDescClick(e){
    }
 }
 // ------------------------------------------------------------
-function FMessageWindow_oeBuild(e){
+function FUiMessageDialog_onBuildMessages(){
    var o = this;
-   var r = o.base.FWindow.oeBuild.call(o, e);
-   if(e.isAfter()){
-      o.setIcon('Icon');
-      // Form (1colx2row)
-      //o.hBodyPanel.style.height = 400;
-      var hTab = RBuilder.appendTable(o.hBodyPanel, 0, 0, 0);
-      hTab.style.vAlign = "top";
-      hTab.width = '100%';
-      hTab.height = '100%';
-      //h0.style.backgroundColor = "#CCCCCC";
-      // Message Panel
-      var h1 = o.hTitlePanel = hTab.insertRow().insertCell();
-      //h1.style.border = "2px solid Red";
-      h1.style.height = "100%";
-      h1.style.vAlign = "top";
-      var h2 = o.hMsgPanel = hTab.insertRow().insertCell();
-      //h2.style.border = "2px solid Black";
-      h2.style.height = "100%";
-      //h.className = o.style('MsgPanel');
-      //h.style.border='2px solid Blue';
-      //h.style.tableLayout="fixed";
-      o.onBuildMessages();
-      // Button Panel
-      var h0 = o.hButtonPanel = hTab.insertRow().insertCell();
-      //h.className = o.style('ButtonPanel');
-      //h.style.border='2px solid Blue';
-      h0.style.align = 'right';
-      o.onBuildButtons();
-      h0.height = 20;
-      RConsole.find(FKeyConsole).register(EKey.Esc, new TListener(o, o.onClose));
-   }
-   return r;
-}
-// ------------------------------------------------------------
-function FMessageWindow_onBuildMessages(){
-   var o = this;
-   if(!o.type){
+   if(!o._type){
       // 消息条目<table>
       var hTab1 = o.hItmeForm = RBuilder.appendTable(o.hTitlePanel);
       hTab1.style.height = "100%";
@@ -137,7 +146,7 @@ function FMessageWindow_onBuildMessages(){
       hTitleIcon.style.paddingLeft = 20;
       hTitleIcon.src = o.styleIconPath('TitleIcon');
       var hc2 = hr.insertCell();
-      hc2.innerText = ' '+ RContext.get('FMessageWindow:MessageContext');
+      hc2.innerText = ' '+ RContext.get('FUiMessageDialog:MessageContext');
       var hItemBody  = o.hItemBody = hTab1.insertRow().insertCell();
       hItemBody.height = 100;
       o.hItemBody.style.borderBottom = '2 solid #F5F5F5';
@@ -169,7 +178,7 @@ function FMessageWindow_onBuildMessages(){
       var hDescIcon = RBuilder.appendIcon(hc1, null, null, 16, 14);
       hDescIcon.src = o.styleIconPath('DescIcon');
       var hc2 = hr.insertCell();
-      hc2.innerText = ' '+RContext.get('FMessageWindow:MessageDetail');
+      hc2.innerText = ' '+RContext.get('FUiMessageDialog:MessageDetail');
       hc2.style.cursor = 'hand';
       o.attachEvent('onDescClick', hc2);
       var hDescBody = o.hDescBody = hTab2.insertRow().insertCell();
@@ -185,23 +194,23 @@ function FMessageWindow_onBuildMessages(){
    o.hItmeForm.style.display = 'none';
    o.hDescForm.style.display = 'none';
    o.hMsgPanel.style.height = '100%';
-   if(EMessage.Fatal == o.type || EMessage.Error == o.type){
+   if(EMessage.Fatal == o._type || EMessage.Error == o._type){
       o.hItmeForm.style.display = 'block';
       o.hDescForm.style.display = 'block';
    }else{
       o.hItmeForm.style.display = 'block';
      // o.hItmeForm.height = '100%';
    }
-   //o.hItemTitle.innerText = '标题列表:' + o.type;
+   //o.hItemTitle.innerText = '标题列表:' + o._type;
 }
 // ------------------------------------------------------------
-function FMessageWindow_onBuildButtons(t){
+function FUiMessageDialog_onBuildButtons(t){
    var o = this;
-   if(!o.type){
-      var hBtnTab = RBuilder.appendTable(o.hButtonPanel, null, 0, 0, 2);
+   if(!o._type){
+      var hBtnTab = RBuilder.appendTable(o._hButtonPanel, null, 0, 0, 2);
       var hRow = hBtnTab.insertRow();
       // blank
-      var hc = o.hBlank = hRow.insertCell();
+      var hc = o._hBlank = hRow.insertCell();
       hc.width='72%';
       // Ok
       var b = o.btnOk = RClass.create(FButton);
@@ -225,22 +234,22 @@ function FMessageWindow_onBuildButtons(t){
    }
    o.btnOk.hPanel.style.display = "none";
    o.btnCancel.hPanel.style.display = "none";
-   if(EMessage.Warn == o.type){
+   if(EMessage.Warn == o._type){
       o.btnOk.hPanel.style.display = "block";
       o.btnCancel.hPanel.style.display = "block";
-      o.hBlank.width = '72%';
+      o._hBlank.width = '72%';
    }else{
       o.btnOk.hPanel.style.display = "block";
-      o.hBlank.width = '87%';
+      o._hBlank.width = '87%';
    }
 }
 // ------------------------------------------------------------
-function FMessageWindow_onOk(){
+function FUiMessageDialog_onOk(){
    var o = this;
-   var g = o.messageArg;
+   var g = o._messageArg;
    var cg = g.argument;
    // 根据类型决定处理过程
-   var type = o.msgs.get(0).type;
+   var type = o.msgs.get(0)._type;
    if(EMessage.Warn == type){
       if(cg){
          // 警告模式下如果点击确定选项，重新执行操作
@@ -263,21 +272,21 @@ function FMessageWindow_onOk(){
    o.hide();
 }
 // ------------------------------------------------------------
-function FMessageWindow_onCancel(){
+function FUiMessageDialog_onCancel(){
    this.hide();
 }
 // ------------------------------------------------------------
-function FMessageWindow_onClose(){
+function FUiMessageDialog_onClose(){
    this.hide();
 }
 // ------------------------------------------------------------
 // g:argument:TMessageArg
-function FMessageWindow_loadMessages(g){
+function FUiMessageDialog_loadMessages(g){
    var o = this;
-   o.messageArg = g;
+   o._messageArg = g;
    var ms = g.messages;
    //如果sention超时,跳转画面
-   o.type = ms.type();
+   o._type = ms._type();
    o.onBuildButtons();
    o.onBuildMessages();
    RHtml.clear(o.hItemBodyForm);
@@ -289,7 +298,7 @@ function FMessageWindow_loadMessages(g){
       var msg = msgs.get(n);
       var m = msg.message;
       var d = msg.description;
-      var t = msg.type;
+      var t = msg._type;
       var hr = o.hItemBodyForm.insertRow();
       hr.height = 12;
       var hc1 = hr.insertCell();
@@ -327,19 +336,19 @@ function FMessageWindow_loadMessages(g){
    }
    // 设置标题
    if(EMessage.Error == msgType){
-      o.setCaption(' ' + RContext.get('FMessageWindow:Error'));
+      o.setCaption(' ' + RContext.get('FUiMessageDialog:Error'));
    }else if(EMessage.Warn == msgType){
-      o.setCaption(' ' + RContext.get('FMessageWindow:Warn'));
+      o.setCaption(' ' + RContext.get('FUiMessageDialog:Warn'));
    }else if(EMessage.Info == msgType){
-      o.setCaption(' ' + RContext.get('FMessageWindow:Info'));
+      o.setCaption(' ' + RContext.get('FUiMessageDialog:Info'));
    }else if(EMessage.Fatal == msgType){
-      o.setCaption(' ' + RContext.get('FMessageWindow:Fatal'));
+      o.setCaption(' ' + RContext.get('FUiMessageDialog:Fatal'));
    }
 }
 // ------------------------------------------------------------
-function FMessageWindow_show(){
+function FUiMessageDialog_show(){
    var o = this;
-   o.base.FWindow.show.call(o);
+   o.__base.FUiWindow.show.call(o);
    //o.hDescBody.style.display = 'none';
    o.panel().style.zIndex = RLayer.next(ELayer.Message);
    RWindow.moveCenter(o.panel());
@@ -349,11 +358,11 @@ function FMessageWindow_show(){
    o.focus();
 }
 // ------------------------------------------------------------
-function FMessageWindow_hide(){
+function FUiMessageDialog_hide(){
    var o = this;
-   o.base.FWindow.hide.call(o);
+   o.__base.FUiWindow.hide.call(o);
    // 关闭加载状态
-   var f = o.messageArg.argument.form;
+   var f = o._messageArg.argument.form;
    if(RClass.isClass(f, MDataset)){
       f.psProgress(false);
    }
@@ -361,13 +370,13 @@ function FMessageWindow_hide(){
    RWindow.setEnable(true);
 }
 // ------------------------------------------------------------
-function FMessageWindow_dispose(){
+function FUiMessageDialog_dispose(){
    var o = this;
-   o.base.FWindow.dispose.call(o);
+   o.__base.FUiWindow.dispose.call(o);
    o.hItmeForm = null;
    o.hDescBody = null;
    o.hDescDiv = null;
    o.hDescTitle = null;
    o.hItemBodyForm = null;
-   o.hButtonPanel = null;
+   o._hButtonPanel = null;
 }

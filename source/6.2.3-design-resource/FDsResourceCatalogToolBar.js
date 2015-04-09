@@ -1,40 +1,36 @@
 //==========================================================
-// <T>场景画板工具栏。</T>
+// <T>资源目录工具栏。</T>
 //
 // @class
 // @author maocy
-// @history 150210
+// @history 150409
 //==========================================================
 function FDsResourceCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'design3d.resource.CatalogToolBar';
+   o._frameName                 = 'design3d.resource.CatalogToolBar';
    //..........................................................
    // @attribute
-   o._canvasModeCd    = EDsCanvasMode.Drop;
-   // @attribute
-   o._dropButton      = null;
-   o._selectButton    = null;
-   o._translateButton = null;
-   o._rotationButton  = null;
-   o._scaleButton     = null;
-   o._lookFrontButton = null;
-   o._lookUpButton    = null;
-   o._lookLeftButton  = null;
-   o._playButton      = null;
-   o._viewButton      = null;
+   o._controlFolderCreateButton = null;
+   o._controlFolderDeleteButton = null;
+   o._controlFolderOpenButton   = null;
+   o._controlFolderCloseButton  = null;
    //..........................................................
    // @event
-   o.onBuilded        = FDsResourceCatalogToolBar_onBuilded;
+   o.onBuilded                  = FDsResourceCatalogToolBar_onBuilded;
    // @event
-   o.onModeClick      = FDsResourceCatalogToolBar_onModeClick;
-   o.onRotationClick  = FDsResourceCatalogToolBar_onRotationClick;
+   o.onFolderCreateClick        = FDsResourceCatalogToolBar_onFolderCreateClick;
+   o.onFolderDeleteLoad         = FDsResourceCatalogToolBar_onFolderDeleteLoad;
+   o.onFolderDeleteExcute       = FDsResourceCatalogToolBar_onFolderDeleteExcute;
+   o.onFolderDeleteClick        = FDsResourceCatalogToolBar_onFolderDeleteClick;
+   o.onFolderOpenClick          = FDsResourceCatalogToolBar_onFolderOpenClick;
+   o.onFolderCloseClick         = FDsResourceCatalogToolBar_onFolderCloseClick;
    //..........................................................
    // @method
-   o.construct        = FDsResourceCatalogToolBar_construct;
+   o.construct                  = FDsResourceCatalogToolBar_construct;
    // @method
-   o.dispose          = FDsResourceCatalogToolBar_dispose;
+   o.dispose                    = FDsResourceCatalogToolBar_dispose;
    return o;
 }
 
@@ -48,39 +44,111 @@ function FDsResourceCatalogToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
-   // 建立拖拽按键
-   //var b = o._dropButton = o.searchControl('dropButton');
-   //b._canvasModeCd = EDsCanvasMode.Drop;
-   //b.addClickListener(o, o.onModeClick);
-   //b.check(true);
-   //..........................................................
-   // 建立按键
-   //var b = o._viewButton = o.searchControl('viewButton');
-   //b.addClickListener(o, o.onRotationClick);
+   // 注册事件
+   o._controlFolderCreateButton.addClickListener(o, o.onFolderCreateClick);
+   o._controlFolderDeleteButton.addClickListener(o, o.onFolderDeleteClick);
+   o._controlFolderOpenButton.addClickListener(o, o.onFolderOpenClick);
+   o._controlFolderCloseButton.addClickListener(o, o.onFolderCloseClick);
 }
 
 //==========================================================
-// <T>模式选择。</T>
+// <T>文件夹创建点击处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:TEventProcess 事件处理
 //==========================================================
-function FDsResourceCatalogToolBar_onModeClick(p){
+function FDsResourceCatalogToolBar_onFolderCreateClick(event){
    var o = this;
-   o._canvasModeCd = p._canvasModeCd;
-   o._workspace._canvas.switchMode(p._canvasModeCd);
+   var parentGuid = null;
+   var parentLabel = null;
+   // 获得选中节点
+   var catalog = o._frameSet._catalogContent;
+   var node = catalog.focusNode();
+   if(node){
+      parentGuid = node.guid();
+      parentLabel = node.label();
+   }
+   // 显示窗口
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceFolderDialog);
+   dialog._workspace = o._workspace;
+   dialog._frameSet = o._frameSet;
+   dialog._parentGuid = parentGuid;
+   dialog.setNodeParentLabel(parentLabel);
+   dialog.setNodeLabel('');
+   dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================
-// <T>刷新按键处理。</T>
+// <T>文件夹删除加载处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:TEventProcess 事件处理
 //==========================================================
-function FDsResourceCatalogToolBar_onRotationClick(p, v){
+function FDsResourceCatalogToolBar_onFolderDeleteLoad(event){
    var o = this;
-   var c = o._workspace._canvas;
-   c.switchRotation(v);
+   // 隐藏窗口
+   RConsole.find(FUiDesktopConsole).hide();
+   // 刷新目录
+   o._frameSet._catalogContent.reloadService();
+}
+
+//==========================================================
+// <T>文件夹删除点击处理。</T>
+//
+// @method
+// @param event:TEventProcess 事件处理
+//==========================================================
+function FDsResourceCatalogToolBar_onFolderDeleteExcute(event){
+   var o = this;
+   // 检查按键
+   if(event.resultCd != EResult.Success){
+      return;
+   }
+   // 获得选中节点
+   var catalog = o._frameSet._catalogContent;
+   var node = catalog.focusNode();
+   // 画面禁止操作
+   RConsole.find(FUiDesktopConsole).showUploading();
+   // 删除数据处理
+   var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
+   connection.addLoadListener(o, o.onFolderDeleteLoad);
+}
+
+//==========================================================
+// <T>文件夹删除点击处理。</T>
+//
+// @method
+// @param event:TEventProcess 事件处理
+//==========================================================
+function FDsResourceCatalogToolBar_onFolderDeleteClick(event){
+   var o = this;
+   // 获得选中节点
+   var catalog = o._frameSet._catalogContent;
+   var node = catalog.focusNode();
+   if(!node){
+      return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+   }
+   // 删除确认窗口
+   var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前目录？');
+   dialog.addResultListener(o, o.onFolderDeleteExcute);
+}
+
+//==========================================================
+// <T>文件夹打开点击处理。</T>
+//
+// @method
+// @param event:TEventProcess 事件处理
+//==========================================================
+function FDsResourceCatalogToolBar_onFolderOpenClick(event){
+}
+
+//==========================================================
+// <T>文件夹关闭点击处理。</T>
+//
+// @method
+// @param event:TEventProcess 事件处理
+//==========================================================
+function FDsResourceCatalogToolBar_onFolderCloseClick(event){
 }
 
 //==========================================================

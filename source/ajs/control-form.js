@@ -561,7 +561,7 @@ function FUiButton_doClick(){
    var o = this;
    if(!o._disabled){
       RConsole.find(FFocusConsole).blur();
-      RLogger.debug(o, 'Tool button click. (label={1})' + o._label);
+      RLogger.debug(o, 'Tool button click. (label={1})', o._label);
       var event = new SClickEvent(o);
       o.processClickListener(event);
       event.dispose();
@@ -4120,19 +4120,21 @@ function FUiIconPicker_dispose(){
    o.hEdit = null;
 }
 function FUiLabel(o){
-   o = RClass.inherits(this, o, FEditControl);
-   o.onBuildEdit  = FUiLabel_onBuildEdit;
-   o.text         = FUiLabel_text;
-   o.setText      = FUiLabel_setText;
-   o.refreshStyle = RMethod.empty;
+   o = RClass.inherits(this, o, FUiControl);
+   o.onBuild = FUiLabel_onBuild;
+   o.get     = FUiLabel_get;
+   o.set     = FUiLabel_set;
    return o;
 }
-function FUiLabel_onBuildEdit(){
+function FUiLabel_onBuild(event){
    var o = this;
+   o.__base.FUiControl.onBuild.call(o, event);
 }
-function FUiLabel_text(){
+function FUiLabel_get(){
+   return this._hPanel.innerHTML;
 }
-function FUiLabel_setText(t){
+function FUiLabel_set(value){
+   this._hPanel.innerHTML = value;
 }
 function FUiLayout(o){
    o = RClass.inherits(this, o, FUiContainer);
@@ -6584,6 +6586,78 @@ function FUiTemplate_set(p){
    o._hInput.value = RString.nvl(p);
 }
 function FUiTemplate_refreshValue(){
+   var o = this;
+   o.processDataChangedListener(o);
+}
+function FUiText(o){
+   o = RClass.inherits(this, o, FUiTextControl, MPropertyEdit, MListenerDataChanged);
+   o._inputSize       = RClass.register(o, new APtySize2('_inputSize'));
+   o._unit            = RClass.register(o, new APtyString('_unit'));
+   o._styleValuePanel = RClass.register(o, new AStyle('_styleValuePanel'));
+   o._styleInputPanel = RClass.register(o, new AStyle('_styleInputPanel'));
+   o._styleInput      = RClass.register(o, new AStyle('_styleInput'));
+   o._hValueForm      = null;
+   o._hValueLine      = null;
+   o._hInputPanel     = null;
+   o._hInput          = null;
+   o.onBuildEditValue = FUiText_onBuildEditValue;
+   o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiText_onInputEdit);
+   o.construct        = FUiText_construct;
+   o.formatDisplay    = FUiText_formatDisplay;
+   o.formatValue      = FUiText_formatValue;
+   o.get              = FUiText_get;
+   o.set              = FUiText_set;
+   o.refreshValue     = FUiText_refreshValue;
+   return o;
+}
+function FUiText_onBuildEditValue(p){
+   var o = this;
+   var hp = o._hValuePanel;
+   hp.className = o.styleName('ValuePanel');
+   var hf = o._hValueForm = RBuilder.appendTable(hp);
+   hf.width = '100%';
+   var hl = o._hValueLine = RBuilder.appendTableRow(hf);
+   o._hChangePanel = RBuilder.appendTableCell(hl);
+   o.onBuildEditChange(p);
+   var hep = o._hInputPanel = RBuilder.appendTableCell(hl);
+   var he = o._hInput = RBuilder.appendEdit(hep, o.styleName('Input'));
+   o.attachEvent('onInputEdit', he, o.onInputEdit);
+   RHtml.setSize(hep, o._inputSize);
+   if(o._editLength){
+      he.maxLength = o._editLength;
+   }
+}
+function FUiText_onInputEdit(p){
+   var o = this;
+   var v = o._hInput.value;
+   o.refreshValue();
+}
+function FUiText_construct(){
+   var o = this;
+   o.__base.FUiTextControl.construct.call(o);
+   o._inputSize = new SSize2(120, 0);
+}
+function FUiText_formatDisplay(p){
+   var o = this;
+   var r = RString.nvl(p);
+   o._dataDisplay = r;
+   return r;
+}
+function FUiText_formatValue(p){
+   return p;
+}
+function FUiText_get(){
+   var o = this;
+   var r = o.__base.FUiTextControl.get.call(o);
+   var r = o._hInput.value;
+   return r;
+}
+function FUiText_set(p){
+   var o = this;
+   o.__base.FUiTextControl.set.call(o, p);
+   o._hInput.value = RString.nvl(p);
+}
+function FUiText_refreshValue(){
    var o = this;
    o.processDataChangedListener(o);
 }

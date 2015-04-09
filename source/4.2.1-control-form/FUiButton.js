@@ -266,7 +266,7 @@ function FUiButton_doClick(){
    var o = this;
    if(!o._disabled){
       RConsole.find(FFocusConsole).blur();
-      RLogger.debug(o, 'Tool button click. (label={1})' + o._label);
+      RLogger.debug(o, 'Tool button click. (label={1})', o._label);
       // 执行监听信息
       var event = new SClickEvent(o);
       o.processClickListener(event);
