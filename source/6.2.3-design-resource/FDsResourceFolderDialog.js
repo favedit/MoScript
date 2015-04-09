@@ -61,7 +61,13 @@ function FDsResourceFolderDialog_onConfirmLoad(event){
    // 隐藏窗口
    o.hide();
    // 刷新目录
-   o._frameSet._catalogContent.reloadService();
+   var catalog = o._frameSet._catalogContent;
+   if(o._parentGuid){
+      var node = catalog.findByGuid(o._parentGuid);
+      catalog.loadNode(node);
+   }else{
+      catalog.loadService();
+   }
 }
 
 //==========================================================

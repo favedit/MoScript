@@ -246,7 +246,7 @@ function FUiContainer_remove(component){
          throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
       }
       // 移除处理
-      controls.remove(component);
+      controls.removeValue(component);
       // 移除控件
       o.removeChild(component);
    }

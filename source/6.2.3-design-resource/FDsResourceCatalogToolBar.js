@@ -16,6 +16,8 @@ function FDsResourceCatalogToolBar(o){
    o._controlFolderDeleteButton = null;
    o._controlFolderOpenButton   = null;
    o._controlFolderCloseButton  = null;
+   // @attribute
+   o._activeNodeGuid            = null;
    //..........................................................
    // @event
    o.onBuilded                  = FDsResourceCatalogToolBar_onBuilded;
@@ -89,7 +91,13 @@ function FDsResourceCatalogToolBar_onFolderDeleteLoad(event){
    // 隐藏窗口
    RConsole.find(FUiDesktopConsole).hide();
    // 刷新目录
-   o._frameSet._catalogContent.reloadService();
+   var catalog = o._frameSet._catalogContent;
+   var guid = o._activeNodeGuid;
+   if(guid){
+      var node = catalog.findByGuid(guid);
+      node.removeSelf();
+   }
+   o._activeNodeGuid = null;
 }
 
 //==========================================================
@@ -110,6 +118,7 @@ function FDsResourceCatalogToolBar_onFolderDeleteExcute(event){
    // 画面禁止操作
    RConsole.find(FUiDesktopConsole).showUploading();
    // 删除数据处理
+   o._activeNodeGuid = node._guid;
    var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
    connection.addLoadListener(o, o.onFolderDeleteLoad);
 }

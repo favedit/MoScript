@@ -60,6 +60,7 @@ function FDsResourceCatalogToolBar(o){
    o._controlFolderDeleteButton = null;
    o._controlFolderOpenButton   = null;
    o._controlFolderCloseButton  = null;
+   o._activeNodeGuid            = null;
    o.onBuilded                  = FDsResourceCatalogToolBar_onBuilded;
    o.onFolderCreateClick        = FDsResourceCatalogToolBar_onFolderCreateClick;
    o.onFolderDeleteLoad         = FDsResourceCatalogToolBar_onFolderDeleteLoad;
@@ -100,7 +101,13 @@ function FDsResourceCatalogToolBar_onFolderCreateClick(event){
 function FDsResourceCatalogToolBar_onFolderDeleteLoad(event){
    var o = this;
    RConsole.find(FUiDesktopConsole).hide();
-   o._frameSet._catalogContent.reloadService();
+   var catalog = o._frameSet._catalogContent;
+   var guid = o._activeNodeGuid;
+   if(guid){
+      var node = catalog.findByGuid(guid);
+      node.removeSelf();
+   }
+   o._activeNodeGuid = null;
 }
 function FDsResourceCatalogToolBar_onFolderDeleteExcute(event){
    var o = this;
@@ -110,6 +117,7 @@ function FDsResourceCatalogToolBar_onFolderDeleteExcute(event){
    var catalog = o._frameSet._catalogContent;
    var node = catalog.focusNode();
    RConsole.find(FUiDesktopConsole).showUploading();
+   o._activeNodeGuid = node._guid;
    var connection = RConsole.find(FDrResourceConsole).doFolderDelete(node._guid);
    connection.addLoadListener(o, o.onFolderDeleteLoad);
 }
@@ -162,7 +170,13 @@ function FDsResourceFolderDialog_onConfirmLoad(event){
    var o = this;
    RConsole.find(FUiDesktopConsole).hide();
    o.hide();
-   o._frameSet._catalogContent.reloadService();
+   var catalog = o._frameSet._catalogContent;
+   if(o._parentGuid){
+      var node = catalog.findByGuid(o._parentGuid);
+      catalog.loadNode(node);
+   }else{
+      catalog.loadService();
+   }
 }
 function FDsResourceFolderDialog_onConfirmClick(event){
    var o = this;

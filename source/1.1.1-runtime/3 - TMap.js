@@ -394,7 +394,8 @@ function TMap_rebuild(){
    // 重建对照表数据
    var c = o._count;
    for(var n = 0; n < c; n++){
-      t[o._names[n].toLowerCase()] = n;
+      var v = o._names[n] + '';
+      t[v.toLowerCase()] = n;
    }
 }
 

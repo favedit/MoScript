@@ -2757,7 +2757,7 @@ function FUiComponent_remove(component){
    if(!components.contains(component.name())){
       throw new TError(o, 'Parameter component is not in this component. (name={1})', component.name());
    }
-   components.remove(component);
+   components.removeValue(component);
 }
 function FUiComponent_clear(p){
    var o = this;
@@ -2996,7 +2996,7 @@ function FUiContainer_remove(component){
       if(!controls.contains(component.name())){
          throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
       }
-      controls.remove(component);
+      controls.removeValue(component);
       o.removeChild(component);
    }
    o.__base.FUiControl.remove.call(o, component);

@@ -85,6 +85,7 @@ function FUiTreeNode(o){
    o.check             = FUiTreeNode_check;
    o.setCheck          = FUiTreeNode_setCheck;
    o.setImage          = FUiTreeNode_setImage;
+   o.calculateImage    = FUiTreeNode_calculateImage;
    o.setIcon           = FUiTreeNode_setIcon;
    o.get               = FUiTreeNode_get;
    o.set               = FUiTreeNode_set;
@@ -93,6 +94,7 @@ function FUiTreeNode(o){
    o.hasChild          = FUiTreeNode_hasChild;
    o.topNode           = FUiTreeNode_topNode;
    o.topNodeByType     = FUiTreeNode_topNodeByType;
+   o.nodeCount         = FUiTreeNode_nodeCount;
    o.show              = FUiTreeNode_show;
    o.hide              = FUiTreeNode_hide;
    o.select            = FUiTreeNode_select;
@@ -104,6 +106,7 @@ function FUiTreeNode(o){
    o.appendNode        = FUiTreeNode_appendNode;
    o.push              = FUiTreeNode_push;
    o.remove            = FUiTreeNode_remove;
+   o.removeSelf        = FUiTreeNode_removeSelf;
    o.removeChildren    = FUiTreeNode_removeChildren;
    o.reset             = FUiTreeNode_reset;
    // @method
@@ -501,12 +504,29 @@ function FUiTreeNode_setCheck(p){
 //==========================================================
 function FUiTreeNode_setImage(){
    var o = this;
-   var t = o._tree;
-   var h = o._hImage;
-   if(h){
-      var ni = o._child ? t._iconPlus : t._iconNode;
-      h.src = RResource.iconPath(ni);
+   var tree = o._tree;
+   var hImage = o._hImage;
+   var icon = o._child ? tree._iconPlus : tree._iconNode;
+   hImage.src = RResource.iconPath(icon);
+}
+
+//==========================================================
+// <T>计算位图。</T>
+//
+// @method
+//==========================================================
+function FUiTreeNode_calculateImage(){
+   var o = this;
+   var tree = o._tree;
+   var hImage = o._hImage;
+   var icon = null;
+   var count = o.nodeCount();
+   if(count){
+      icon = o._extended ? tree._iconMinus : tree._iconPlus;
+   }else{
+      icon = tree._iconNode;
    }
+   hImage.src = RResource.iconPath(icon);
 }
 
 //==========================================================
@@ -628,6 +648,21 @@ function FUiTreeNode_topNodeByType(t){
       r = r._parent;
    }
    return null;
+}
+
+//==========================================================
+// <T>获得节点数量。</T>
+//
+// @method
+// @return Integer 节点数量
+//==========================================================
+function FUiTreeNode_nodeCount(){
+   var o = this;
+   var nodes = o._nodes
+   if(nodes){
+      return nodes.count();
+   }
+   return 0;
 }
 
 //==========================================================
@@ -861,17 +896,40 @@ function FUiTreeNode_push(component){
    }
 }
 
+
+//==========================================================
+// <T>移除指定子控件。</T>
+//
+// @method
+// @param component:FComponent 组件对象
+//==========================================================
+function FUiTreeNode_remove(component){
+   var o = this;
+   // 检查类型
+   if(RClass.isClass(component, FUiTreeNode)){
+      o._nodes.remove(component);
+   }
+   // 父处理
+   o.__base.FUiContainer.remove.call(o, component);
+}
+
 //==========================================================
 // <T>删除当前节点。</T>
 //
 // @method
 //==========================================================
-function FUiTreeNode_remove(){
+function FUiTreeNode_removeSelf(){
    var o = this;
    var tree = o._tree;
    if(o._statusLinked){
       // 删除所有子节点
       o.removeChildren();
+      // 父节点刷新
+      var parent = o._parent;
+      if(RClass.isClass(parent, FUiTreeNode)){
+         parent.remove(o);
+         parent.calculateImage();
+      }
       // 删除自己
       tree.freeNode(o);
    }
@@ -889,7 +947,7 @@ function FUiTreeNode_removeChildren(){
       for(var i = count - 1; i >= 0; i--){
          var node = nodes.get(i);
          if(node){
-            node.remove();
+            node.removeSelf();
          }
       }
       nodes.clear();
@@ -1242,4 +1300,3 @@ function FUiTreeNode_getFullPath(){
     }
     return path;
 }
-

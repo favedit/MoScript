@@ -62,6 +62,7 @@ function FUiTreeView(o){
    // @event
    o.onBuildPanel       = FUiTreeView_onBuildPanel;
    o.onBuild            = FUiTreeView_onBuild;
+   o.onClick            = RClass.register(o, new AEventClick('onClick'), FUiTreeView_onClick);
    o.onNodeCheckClick   = RClass.register(o, new AEventClick('onNodeCheckClick'), FUiTreeView_onNodeCheckClick);
    //..........................................................
    // @method
@@ -77,7 +78,7 @@ function FUiTreeView(o){
    // @method
    o.findType           = FUiTreeView_findType;
    o.findByName         = FUiTreeView_findByName;
-   o.findByUuid         = FUiTreeView_findByUuid;
+   o.findByGuid         = FUiTreeView_findByGuid;
    // @method
    o.createChild        = FUiTreeView_createChild;
    o.createNode         = FUiTreeView_createNode;
@@ -121,11 +122,14 @@ function FUiTreeView_onBuildPanel(e){
 // <T>构建树目录。</T>
 //
 // @method
-// @param p:event:TEventProcess 处理事件
+// @param event:TEventProcess 处理事件
 //==========================================================
-function FUiTreeView_onBuild(p){
+function FUiTreeView_onBuild(event){
    var o = this;
-   o.__base.FUiContainer.onBuild.call(o, p);
+   o.__base.FUiContainer.onBuild.call(o, event);
+   // 关联事件
+   var hPanel = o._hPanel;
+   o.attachEvent('onClick', hPanel);
    // 构建标题表格
    var hr = RBuilder.appendTableRow(o._hPanel);
    var hc = RBuilder.appendTableCell(hr);
@@ -138,13 +142,13 @@ function FUiTreeView_onBuild(p){
    o._hHeadLine = RBuilder.appendTableRow(hnf);
    o._hNodeRows = hnf.children[0];
    // 构建加载中节点
-   var ln = o._loadingNode = RClass.create(FUiTreeNode);
-   ln._tree = o;
-   ln._label = RContext.get('FUiTreeView:loading');
-   ln._icon = o._iconLoading;
-   ln.build(p);
-   o.appendNode(ln);
-   ln.hide();
+   var node = o._loadingNode = RClass.create(FUiTreeNode);
+   node._tree = o;
+   node._label = RContext.get('FUiTreeView:loading');
+   node._icon = o._iconLoading;
+   node.build(event);
+   //o.appendNode(node);
+   //node.hide();
    // 构建后处理
    var ns = o._nodes;
    if(!ns.isEmpty()){
@@ -155,6 +159,24 @@ function FUiTreeView_onBuild(p){
    }
    o.extendAuto();
    //RConsole.find(FKeyConsole).register(EKey.Esc, new TListener(o, o.clear));
+}
+
+//==========================================================
+// <T>响应鼠标点击树节点复选框处理。</T>
+//
+// @method
+// @param s:source:FControl 源控件
+// @param e:event:TEvent 事件对象
+//==========================================================
+function FUiTreeView_onClick(s, e){
+   var o = this;
+   if(s.hSender == o._hNodePanel){
+      var node = o._focusNode;
+      if(node){
+         node.select(false);
+         o._focusNode = null;
+      }
+   }
 }
 
 //==========================================================
@@ -185,7 +207,7 @@ function FUiTreeView_onNodeCheckClick(s, e){
          }else{
             var pcs = p.controls;
             var pcc = pcs.count;
-            for(var n=0; n<pcc; n++){
+            for(var n = 0; n < pcc; n++){
               var pnd = pcs.value(n);
                if(pnd && RClass.isClass(pnd, FUiTreeNode)){
                   if(pnd.check()){
@@ -327,18 +349,18 @@ function FUiTreeView_findByName(p){
 // <T>查询所有节点中，找到指定标识的节点。</T>
 //
 // @method
-// @param p:uuid:String 节点标识
+// @param guid:String 节点标识
 // @return FUiTreeNode 节点对象
 //==========================================================
-function FUiTreeView_findByUuid(p){
+function FUiTreeView_findByGuid(guid){
    var o = this;
-   var ns = o._allNodes;
-   var c = ns.count();
-   if(c){
-      for(var i = 0; i < c; i++){
-         var n = ns.get(i);
-         if(n._uuid == p){
-            return n;
+   var nodes = o._allNodes;
+   var count = nodes.count();
+   if(count){
+      for(var i = 0; i < count; i++){
+         var node = nodes.getAt(i);
+         if(node._guid == guid){
+            return node;
          }
       }
    }

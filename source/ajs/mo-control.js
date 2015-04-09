@@ -2757,7 +2757,7 @@ function FUiComponent_remove(component){
    if(!components.contains(component.name())){
       throw new TError(o, 'Parameter component is not in this component. (name={1})', component.name());
    }
-   components.remove(component);
+   components.removeValue(component);
 }
 function FUiComponent_clear(p){
    var o = this;
@@ -2996,7 +2996,7 @@ function FUiContainer_remove(component){
       if(!controls.contains(component.name())){
          throw new TError(o, 'Parameter component is not in this component. (name={1})', p.name());
       }
-      controls.remove(component);
+      controls.removeValue(component);
       o.removeChild(component);
    }
    o.__base.FUiControl.remove.call(o, component);
@@ -16917,6 +16917,7 @@ function FUiTreeNode(o){
    o.check             = FUiTreeNode_check;
    o.setCheck          = FUiTreeNode_setCheck;
    o.setImage          = FUiTreeNode_setImage;
+   o.calculateImage    = FUiTreeNode_calculateImage;
    o.setIcon           = FUiTreeNode_setIcon;
    o.get               = FUiTreeNode_get;
    o.set               = FUiTreeNode_set;
@@ -16924,6 +16925,7 @@ function FUiTreeNode(o){
    o.hasChild          = FUiTreeNode_hasChild;
    o.topNode           = FUiTreeNode_topNode;
    o.topNodeByType     = FUiTreeNode_topNodeByType;
+   o.nodeCount         = FUiTreeNode_nodeCount;
    o.show              = FUiTreeNode_show;
    o.hide              = FUiTreeNode_hide;
    o.select            = FUiTreeNode_select;
@@ -16935,6 +16937,7 @@ function FUiTreeNode(o){
    o.appendNode        = FUiTreeNode_appendNode;
    o.push              = FUiTreeNode_push;
    o.remove            = FUiTreeNode_remove;
+   o.removeSelf        = FUiTreeNode_removeSelf;
    o.removeChildren    = FUiTreeNode_removeChildren;
    o.reset             = FUiTreeNode_reset;
    o.click             = FUiTreeNode_click;
@@ -17142,12 +17145,23 @@ function FUiTreeNode_setCheck(p){
 }
 function FUiTreeNode_setImage(){
    var o = this;
-   var t = o._tree;
-   var h = o._hImage;
-   if(h){
-      var ni = o._child ? t._iconPlus : t._iconNode;
-      h.src = RResource.iconPath(ni);
+   var tree = o._tree;
+   var hImage = o._hImage;
+   var icon = o._child ? tree._iconPlus : tree._iconNode;
+   hImage.src = RResource.iconPath(icon);
+}
+function FUiTreeNode_calculateImage(){
+   var o = this;
+   var tree = o._tree;
+   var hImage = o._hImage;
+   var icon = null;
+   var count = o.nodeCount();
+   if(count){
+      icon = o._extended ? tree._iconMinus : tree._iconPlus;
+   }else{
+      icon = tree._iconNode;
    }
+   hImage.src = RResource.iconPath(icon);
 }
 function FUiTreeNode_setIcon(p){
    var o = this;
@@ -17215,6 +17229,14 @@ function FUiTreeNode_topNodeByType(t){
       r = r._parent;
    }
    return null;
+}
+function FUiTreeNode_nodeCount(){
+   var o = this;
+   var nodes = o._nodes
+   if(nodes){
+      return nodes.count();
+   }
+   return 0;
 }
 function FUiTreeNode_show(){
    var o = this;
@@ -17364,11 +17386,23 @@ function FUiTreeNode_push(component){
       cells.set(component._column._name, component);
    }
 }
-function FUiTreeNode_remove(){
+function FUiTreeNode_remove(component){
+   var o = this;
+   if(RClass.isClass(component, FUiTreeNode)){
+      o._nodes.remove(component);
+   }
+   o.__base.FUiContainer.remove.call(o, component);
+}
+function FUiTreeNode_removeSelf(){
    var o = this;
    var tree = o._tree;
    if(o._statusLinked){
       o.removeChildren();
+      var parent = o._parent;
+      if(RClass.isClass(parent, FUiTreeNode)){
+         parent.remove(o);
+         parent.calculateImage();
+      }
       tree.freeNode(o);
    }
 }
@@ -17379,7 +17413,7 @@ function FUiTreeNode_removeChildren(){
       for(var i = count - 1; i >= 0; i--){
          var node = nodes.get(i);
          if(node){
-            node.remove();
+            node.removeSelf();
          }
       }
       nodes.clear();
@@ -17753,6 +17787,7 @@ function FUiTreeView(o){
    o.lsnsClick          = new TListeners();
    o.onBuildPanel       = FUiTreeView_onBuildPanel;
    o.onBuild            = FUiTreeView_onBuild;
+   o.onClick            = RClass.register(o, new AEventClick('onClick'), FUiTreeView_onClick);
    o.onNodeCheckClick   = RClass.register(o, new AEventClick('onNodeCheckClick'), FUiTreeView_onNodeCheckClick);
    o.construct          = FUiTreeView_construct;
    o.attributes         = FUiTreeView_attributes;
@@ -17764,7 +17799,7 @@ function FUiTreeView(o){
    o.nodes              = FUiTreeView_nodes;
    o.findType           = FUiTreeView_findType;
    o.findByName         = FUiTreeView_findByName;
-   o.findByUuid         = FUiTreeView_findByUuid;
+   o.findByGuid         = FUiTreeView_findByGuid;
    o.createChild        = FUiTreeView_createChild;
    o.createNode         = FUiTreeView_createNode;
    o.appendChild        = FUiTreeView_appendChild;
@@ -17791,9 +17826,11 @@ function FUiTreeView_onBuildPanel(e){
    var o = this;
    o._hPanel = RBuilder.createTable(e.hDocument, o.styleName('Panel'));
 }
-function FUiTreeView_onBuild(p){
+function FUiTreeView_onBuild(event){
    var o = this;
-   o.__base.FUiContainer.onBuild.call(o, p);
+   o.__base.FUiContainer.onBuild.call(o, event);
+   var hPanel = o._hPanel;
+   o.attachEvent('onClick', hPanel);
    var hr = RBuilder.appendTableRow(o._hPanel);
    var hc = RBuilder.appendTableCell(hr);
    var hnp = o._hNodePanel = RBuilder.appendDiv(hc, o.styleName('NodePanel'));
@@ -17801,13 +17838,11 @@ function FUiTreeView_onBuild(p){
    hnf.width = '100%';
    o._hHeadLine = RBuilder.appendTableRow(hnf);
    o._hNodeRows = hnf.children[0];
-   var ln = o._loadingNode = RClass.create(FUiTreeNode);
-   ln._tree = o;
-   ln._label = RContext.get('FUiTreeView:loading');
-   ln._icon = o._iconLoading;
-   ln.build(p);
-   o.appendNode(ln);
-   ln.hide();
+   var node = o._loadingNode = RClass.create(FUiTreeNode);
+   node._tree = o;
+   node._label = RContext.get('FUiTreeView:loading');
+   node._icon = o._iconLoading;
+   node.build(event);
    var ns = o._nodes;
    if(!ns.isEmpty()){
       var nc = ns.count();
@@ -17816,6 +17851,16 @@ function FUiTreeView_onBuild(p){
       }
    }
    o.extendAuto();
+}
+function FUiTreeView_onClick(s, e){
+   var o = this;
+   if(s.hSender == o._hNodePanel){
+      var node = o._focusNode;
+      if(node){
+         node.select(false);
+         o._focusNode = null;
+      }
+   }
 }
 function FUiTreeView_onNodeCheckClick(s, e){
    var o = this;
@@ -17838,7 +17883,7 @@ function FUiTreeView_onNodeCheckClick(s, e){
          }else{
             var pcs = p.controls;
             var pcc = pcs.count;
-            for(var n=0; n<pcc; n++){
+            for(var n = 0; n < pcc; n++){
               var pnd = pcs.value(n);
                if(pnd && RClass.isClass(pnd, FUiTreeNode)){
                   if(pnd.check()){
@@ -17901,15 +17946,15 @@ function FUiTreeView_findByName(p){
       }
    }
 }
-function FUiTreeView_findByUuid(p){
+function FUiTreeView_findByGuid(guid){
    var o = this;
-   var ns = o._allNodes;
-   var c = ns.count();
-   if(c){
-      for(var i = 0; i < c; i++){
-         var n = ns.get(i);
-         if(n._uuid == p){
-            return n;
+   var nodes = o._allNodes;
+   var count = nodes.count();
+   if(count){
+      for(var i = 0; i < count; i++){
+         var node = nodes.getAt(i);
+         if(node._guid == guid){
+            return node;
          }
       }
    }
@@ -22188,16 +22233,10 @@ function FUiDataTreeView(o){
    o.onLoaded         = FUiDataTreeView_onLoaded;
    o.onNodeLoaded     = FUiDataTreeView_onNodeLoaded;
    o.construct        = FUiDataTreeView_construct;
-   o.buildNode        = FUiDataTreeView_buildNode;
-   o.load             = FUiDataTreeView_load;
-   o.reload           = FUiDataTreeView_reload;
-   o.loadService      = FUiDataTreeView_loadService;
-   o.reloadService    = FUiDataTreeView_reloadService;
+   o.innerBuildNode   = FUiDataTreeView_innerBuildNode;
    o.loadNode         = FUiDataTreeView_loadNode;
-   o.reloadNode       = FUiDataTreeView_reloadNode;
    o.loadUrl          = FUiDataTreeView_loadUrl;
-   o.loadNodeUrl      = FUiDataTreeView_loadNodeUrl;
-   o.loadNodeService  = FUiDataTreeView_loadNodeService;
+   o.loadService      = FUiDataTreeView_loadService;
    o.dispose          = FUiDataTreeView_dispose;
    return o;
 }
@@ -22210,65 +22249,63 @@ function FUiDataTreeView_onLoaded(p){
    var xt = x.find('TreeView');
    RControl.build(o, xt, null, o._hPanel);
    o.lsnsLoaded.process(p);
-   var s = xt.get('service');
-   if(s){
-      o.loadNodeService(s);
+   var serviceCode = xt.get('service');
+   if(serviceCode){
+      o.loadService(serviceCode);
    }
 }
 function FUiDataTreeView_onNodeLoaded(event){
    var o = this;
-   var x = event.root;
-   if(x == null){
+   var xroot = event.root;
+   if(!xroot){
       throw new TError(o, 'Load tree data failure.');
    }
-   var np = event.connection.parentNode;
-   o._loadingNode.hide();
+   var parentNode = event.connection.parentNode;
+   var ln = o._loadingNode;
+   if(ln._hPanel.parentElement){
+      o._hNodeRows.removeChild(ln._hPanel);
+   }
    o._statusLoading = false;
-   o.buildNode(np, x);
+   o.innerBuildNode(parentNode, xroot);
    o.lsnsNodeLoaded.process(event);
 }
 function FUiDataTreeView_construct(){
    var o = this;
    o.__base.FUiTreeView.construct.call(o);
 }
-function FUiDataTreeView_buildNode(pn, px){
+function FUiDataTreeView_innerBuildNode(parent, xconfig){
    var o = this;
-   var xns = px._nodes;
-   if(xns){
-      var xnc = xns.count();
-      for(var i = 0; i < xnc; i++){
-         var xn = xns.get(i);
-         if(xn.isName('TreeNode')){
-            var n = o.createNode();
-            n.loadConfig(xn);
-            if(pn){
-               pn.push(n);
+   var xnodes = xconfig._nodes;
+   if(xnodes){
+      var count = xnodes.count();
+      for(var i = 0; i < count; i++){
+         var xnode = xnodes.get(i);
+         if(xnode.isName('TreeNode')){
+            var node = o.createNode();
+            node.loadConfig(xnode);
+            if(parent){
+               parent.push(node);
             }else{
-               o.push(n);
+               o.push(node);
             }
-            o.appendNode(n, pn);
-            if(xn.hasNode()){
-               o.buildNode(n, xn);
-               n.extend(false);
+            o.appendNode(node, parent);
+            if(xnode.hasNode()){
+               o.innerBuildNode(node, xnode);
+               node.extend(false);
             }
          }
       }
    }
+   if(parent){
+      parent.calculateImage();
+   }
 }
-function FUiDataTreeView_load(p){
-   var o = this;
-   o.loadService(o._serviceCode);
-}
-function FUiDataTreeView_reload(){
-   var o = this;
-   o.clear();
-   o.loadUrl();
-}
-function FUiDataTreeView_loadNode(pn, pf){
+function FUiDataTreeView_loadNode(node, refresh){
    var o = this;
    o._statusLoading = true;
+   node.removeChildren();
    var type = null;
-   var findNode = pn;
+   var findNode = node;
    var serviceCode = o._serviceCode;
    while(RClass.isClass(findNode, FUiTreeNode)){
       type = findNode.type();
@@ -22285,7 +22322,7 @@ function FUiDataTreeView_loadNode(pn, pf){
    if(!service){
       throw new TError(o, 'Unknown service.');
    }
-   var findNode = pn;
+   var findNode = node;
    while(RClass.isClass(fn, FUiTreeNode)){
       type = findNode.type();
       if(type && type._action){
@@ -22297,50 +22334,41 @@ function FUiDataTreeView_loadNode(pn, pf){
    if(!action){
       throw new TError(o, 'Unknown service action.');
    }
-   o.lsnsNodeLoad.process(o, pn);
+   o.lsnsNodeLoad.process(o, node);
    var xd = new TXmlDocument();
    var x = xd.root();
    x.set('action', action);
    x.set('type', type._linker);
    x.create('Attributes', o._attributes);
-   var fn = pn;
+   var fn = node;
    while(RClass.isClass(fn, FUiTreeNode)){
       x = x.create('TreeNode');
       fn.propertySave(x);
       fn = fn._parent;
    }
-   pn._extended = true;
-   if(pn._child && pn._hImage){
-      pn._hImage.src = RResource.iconPath(o._iconMinus);
+   node._extended = true;
+   if(node._child && node._hImage){
+      node._hImage.src = RResource.iconPath(o._iconMinus);
    }
    var ln = o._loadingNode;
-   var nr = pn._hPanel.rowIndex;
-   if(ln._hPanel.rowIndex > nr){
-      nr++;
-   }
-   RHtml.tableMoveRow(o._hNodeForm, ln._hPanel.rowIndex, nr);
-   ln.setLevel(pn.level() + 1);
-   ln.show();
+   var lastNode = node.searchLast();
+   var nr = lastNode._hPanel.rowIndex;
+   o._hNodeRows.appendChild(ln._hPanel);
+   RHtml.tableMoveRow(o._hNodeForm, ln._hPanel.rowIndex, nr + 1);
+   ln.setLevel(node.level() + 1);
    var url = RService.makeUrl(service.service, action);
    var connection = RConsole.find(FXmlConsole).sendAsync(url, xd);
-   connection.parentNode = pn;
+   connection.parentNode = node;
    connection.addLoadListener(o, o.onNodeLoaded);
 }
-function FUiDataTreeView_loadUrl(p){
+function FUiDataTreeView_loadUrl(url, node){
    var o = this;
-   var xc = RConsole.find(FXmlConsole);
-   var c = xc.sendAsync(p);
-   c.addLoadListener(o, o.onLoaded);
-}
-function FUiDataTreeView_loadNodeUrl(p, n){
-   var o = this;
-   var xc = RConsole.find(FXmlConsole);
-   var c = xc.sendAsync(p);
-   c.parentNode = RObject.nvl(n, o._focusNode);
-   c.addLoadListener(o, o.onNodeLoaded);
+   var connection = RConsole.find(FXmlConsole).sendAsync(url);
+   connection.addLoadListener(o, o.onLoaded);
 }
 function FUiDataTreeView_loadService(serviceCode, attributes){
    var o = this;
+   o.clear();
    if(!serviceCode){
       serviceCode = o._serviceCode;
    }
@@ -22367,6 +22395,26 @@ function FUiDataTreeView_loadService(serviceCode, attributes){
    o._focusNode = null;
    var connection = RConsole.find(FXmlConsole).sendAsync(service.url, xdocument);
    connection.addLoadListener(o, o.onNodeLoaded);
+}
+function FUiDataTreeView_dispose(){
+   var o = this;
+   o.__base.FUiTreeView.dispose.call(o);
+}
+function FUiDataTreeView_load(p){
+   var o = this;
+   o.loadService(o._serviceCode);
+}
+function FUiDataTreeView_reload(){
+   var o = this;
+   o.clear();
+   o.loadUrl();
+}
+function FUiDataTreeView_loadNodeUrl(p, n){
+   var o = this;
+   var xc = RConsole.find(FXmlConsole);
+   var c = xc.sendAsync(p);
+   c.parentNode = RObject.nvl(n, o._focusNode);
+   c.addLoadListener(o, o.onNodeLoaded);
 }
 function FUiDataTreeView_reloadService(serviceCode, attributes){
    var o = this;
@@ -22404,10 +22452,6 @@ function FUiDataTreeView_reloadNode(n){
    }
    n.removeChildren();
    o.loadNode(n);
-}
-function FUiDataTreeView_dispose(){
-   var o = this;
-   o.__base.FUiTreeView.dispose.call(o);
 }
 function FUiDataTreeView_onQueryLoaded(e){
    var o = this;

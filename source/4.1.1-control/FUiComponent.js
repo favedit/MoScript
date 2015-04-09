@@ -260,7 +260,7 @@ function FUiComponent_remove(component){
       throw new TError(o, 'Parameter component is not in this component. (name={1})', component.name());
    }
    // 移除处理
-   components.remove(component);
+   components.removeValue(component);
 }
 
 //==========================================================

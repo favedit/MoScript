@@ -1912,6 +1912,7 @@ var RHtml = new function RHtml(){
    o.parent         = RHtml_parent;
    o.searchLinker   = RHtml_searchLinker;
    o.searchObject   = RHtml_searchObject;
+   o.tableMoveRow   = RHtml_tableMoveRow;
    o.free           = RHtml_free;
    o.offsetPosition = RHtml_offsetPosition;
    o.offsetX        = RHtml_offsetX;
@@ -1943,7 +1944,6 @@ var RHtml = new function RHtml(){
    o.frameHeight    = RHtml_frameHeight;
    o.selectText     = RHtml_selectText;
    o.currentStyle   = RHtml_currentStyle;
-   o.tableMoveRow   = RHtml_tableMoveRow;
    o.clone          = RHtml_clone;
    return o;
 }
@@ -2176,6 +2176,43 @@ function RHtml_searchObject(h, n){
       h = h.parentElement;
    }
    return null;
+}
+function RHtml_tableMoveRow(ph, ps, pt){
+   if(ph.tagName != 'TABLE'){
+      throw new TError('Html table is invalid.');
+   }
+   if(ps == pt){
+      return false;
+   }
+   if(ph.moveRow){
+      ph.moveRow(ps, pt);
+   }else{
+      var hb = ph.getElementsByTagName('tbody')[0];
+      var sr = hb.rows[ps];
+      var tr = hb.rows[pt];
+      if((sr == null) || (tr == null)){
+         return false;
+      }
+      var nr = null;
+      if(ps <= pt){
+         nr = tr;
+         while(nr = nr.nextSibling){
+            if(nr.tagName == 'TR'){
+               break;
+            }
+         }
+      }
+      if(nr == null){
+         hb.insertBefore(sr, tr);
+      }else{
+         if(nr == null){
+            hb.appendChild(sr);
+         }else{
+            hb.insertBefore(sr, nr);
+         }
+      }
+   }
+   return true;
 }
 function RHtml_free(p){
    return null;
@@ -2527,43 +2564,6 @@ function getTRNode(nowTR, sibling) {
       }
    }
    return nowTR;
-}
-function RHtml_tableMoveRow(ph, ps, pt){
-   if(ph.tagName != 'TABLE'){
-      return false;
-   }
-   if(ps == pt){
-      return false;
-   }
-   if(ph.moveRow){
-      ph.moveRow(ps, pt);
-   }else{
-      var hb = ph.getElementsByTagName('tbody')[0];
-      var sr = hb.rows[ps];
-      var tr = hb.rows[pt];
-      if((sr == null) || (tr == null)){
-         return false;
-      }
-      var nr = null;
-      if(ps <= pt){
-         nr = tr;
-         while(nr = nr.nextSibling){
-            if(nr.tagName == 'TR'){
-               break;
-            }
-         }
-      }
-      if(nr == null){
-         hb.insertBefore(sr, tr);
-      }else{
-         if(nr == null){
-            hb.appendChild(sr);
-         }else{
-            hb.insertBefore(sr, nr);
-         }
-      }
-   }
-   return true;
 }
 var RKeyboard = new function RKeyboard(){
    var o = this;

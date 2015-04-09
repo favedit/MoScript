@@ -49,6 +49,8 @@ var RHtml = new function RHtml(){
    o.searchLinker   = RHtml_searchLinker;
    o.searchObject   = RHtml_searchObject;
    // @method
+   o.tableMoveRow   = RHtml_tableMoveRow;
+   // @method
    o.free           = RHtml_free;
 
 
@@ -87,7 +89,6 @@ var RHtml = new function RHtml(){
    o.frameHeight    = RHtml_frameHeight;
    o.selectText     = RHtml_selectText;
    o.currentStyle   = RHtml_currentStyle;
-   o.tableMoveRow   = RHtml_tableMoveRow;
    o.clone          = RHtml_clone;
    return o;
 }
@@ -546,6 +547,55 @@ function RHtml_searchObject(h, n){
       h = h.parentElement;
    }
    return null;
+}
+
+//==========================================================
+// <T>移动表格中的一行。</T>
+//
+// @param ph:hTable
+// @param ps:sourceIndex
+// @param pt:targetIndex
+//==========================================================
+function RHtml_tableMoveRow(ph, ps, pt){
+   // 检查参数
+   if(ph.tagName != 'TABLE'){
+      throw new TError('Html table is invalid.');
+   }
+   if(ps == pt){
+      return false;
+   }
+   // 移动处理
+   if(ph.moveRow){
+      // 原始处理
+      ph.moveRow(ps, pt);
+   }else{
+      // 兼容处理
+      var hb = ph.getElementsByTagName('tbody')[0];
+      var sr = hb.rows[ps];
+      var tr = hb.rows[pt];
+      if((sr == null) || (tr == null)){
+         return false;
+      }
+      var nr = null;
+      if(ps <= pt){
+         nr = tr;
+         while(nr = nr.nextSibling){
+            if(nr.tagName == 'TR'){
+               break;
+            }
+         }
+      }
+      if(nr == null){
+         hb.insertBefore(sr, tr);
+      }else{
+         if(nr == null){
+            hb.appendChild(sr);
+         }else{
+            hb.insertBefore(sr, nr);
+         }
+      }
+   }
+   return true;
 }
 
 //==========================================================
@@ -1062,53 +1112,4 @@ function getTRNode(nowTR, sibling) {
       }
    }
    return nowTR;
-}
-
-//==========================================================
-// <T>移动表格中的一行。</T>
-//
-// @param ph:hTable
-// @param ps:sourceIndex
-// @param pt:targetIndex
-//==========================================================
-function RHtml_tableMoveRow(ph, ps, pt){
-   // 检查参数
-   if(ph.tagName != 'TABLE'){
-      return false;
-   }
-   if(ps == pt){
-      return false;
-   }
-   // 移动处理
-   if(ph.moveRow){
-      // 原始处理
-      ph.moveRow(ps, pt);
-   }else{
-      // 兼容处理
-      var hb = ph.getElementsByTagName('tbody')[0];
-      var sr = hb.rows[ps];
-      var tr = hb.rows[pt];
-      if((sr == null) || (tr == null)){
-         return false;
-      }
-      var nr = null;
-      if(ps <= pt){
-         nr = tr;
-         while(nr = nr.nextSibling){
-            if(nr.tagName == 'TR'){
-               break;
-            }
-         }
-      }
-      if(nr == null){
-         hb.insertBefore(sr, tr);
-      }else{
-         if(nr == null){
-            hb.appendChild(sr);
-         }else{
-            hb.insertBefore(sr, nr);
-         }
-      }
-   }
-   return true;
 }
