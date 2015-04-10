@@ -37,8 +37,8 @@ function AEventInputChanged_attach(e, h){
 function AEventInputChanged_bind(h, u){
    var o = this;
    if(RBrowser.isBrowser(EBrowser.Explorer)){
-      h.onpropertychange = REvent.ohEvent;
+      h.onpropertychange = RUiEvent.ohEvent;
    }else{
-      h.addEventListener('input', REvent.ohEvent);
+      h.addEventListener('input', RUiEvent.ohEvent);
    }
 }

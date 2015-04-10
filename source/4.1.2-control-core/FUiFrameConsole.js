@@ -4,7 +4,7 @@
 // @console
 // @history 091120 MAOCY 创建
 //==========================================================
-function FFrameConsole(o){
+function FUiFrameConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
@@ -20,21 +20,21 @@ function FFrameConsole(o){
    //o.events           = null;
    //..........................................................
    // @event
-   //o.onProcessLoaded  = FFrameConsole_onProcessLoaded;
+   //o.onProcessLoaded  = FUiFrameConsole_onProcessLoaded;
    //..........................................................
    // @method
-   o.construct        = FFrameConsole_construct;
+   o.construct        = FUiFrameConsole_construct;
    // @method
-   o.create           = FFrameConsole_create;
-   o.find             = FFrameConsole_find;
-   o.findByClass      = FFrameConsole_findByClass;
-   o.get              = FFrameConsole_get;
-   //o.hiddenAll        = FFrameConsole_hiddenAll;
-   //o.process          = FFrameConsole_process;
-   //o.loadEvents       = FFrameConsole_loadEvents;
-   //o.processEvent     = FFrameConsole_processEvent;
-   //o.free             = FFrameConsole_free;
-   //o.dispose          = FFrameConsole_dispose;
+   o.create           = FUiFrameConsole_create;
+   o.find             = FUiFrameConsole_find;
+   o.findByClass      = FUiFrameConsole_findByClass;
+   o.get              = FUiFrameConsole_get;
+   //o.hiddenAll        = FUiFrameConsole_hiddenAll;
+   //o.process          = FUiFrameConsole_process;
+   //o.loadEvents       = FUiFrameConsole_loadEvents;
+   //o.processEvent     = FUiFrameConsole_processEvent;
+   //o.free             = FUiFrameConsole_free;
+   //o.dispose          = FUiFrameConsole_dispose;
    return o;
 }
 
@@ -43,7 +43,7 @@ function FFrameConsole(o){
 //
 // @method
 //==========================================================
-function FFrameConsole_construct(){
+function FUiFrameConsole_construct(){
    var o = this;
    o._frames = new TMap();
    //o._formIds = new TMap();
@@ -61,7 +61,7 @@ function FFrameConsole_construct(){
 // @param n:name:String 名称
 // @return FUiFrame 页面控件
 //==========================================================
-function FFrameConsole_create(c, n){
+function FUiFrameConsole_create(c, n){
    var o = this;
    // 检查是否有未使用的表单
    //var fs = o._freeFrames;
@@ -77,10 +77,10 @@ function FFrameConsole_create(c, n){
    //   }
    //}
    // 获得表单定义
-   var dc = RConsole.find(FDescribeFrameConsole);
+   var dc = RConsole.find(FUiDescribeFrameConsole);
    var x = dc.load(n);
    // 构建处理
-   var f = RControl.build(null, x, null, c._hPanel);
+   var f = RUiControl.build(null, x, null, c._hPanel);
    //var fx = fdc.find(n, t);
    //var fd = t + ':' + n;
    //if(!o._framesLoaded.contains(fd)){
@@ -92,7 +92,7 @@ function FFrameConsole_create(c, n){
    //}
    // 创建表单实例
    //var c = RClass.create('F' + fx.name);
-   //RControl.innerCreate(c, fx);
+   //RUiControl.innerCreate(c, fx);
    //c.psInitialize();
    //if(!b){
    //   b = RWindow.builder();
@@ -114,7 +114,7 @@ function FFrameConsole_create(c, n){
 // @param n:name:String 名称
 // @return FUiFrame 页面控件
 //==========================================================
-function FFrameConsole_find(n){
+function FUiFrameConsole_find(n){
    return this._frames.get(n); 
 }
 
@@ -126,7 +126,7 @@ function FFrameConsole_find(n){
 // @param clazz:Function 类对象
 // @return FUiControl 页面控件
 //==========================================================
-function FFrameConsole_findByClass(control, clazz){
+function FUiFrameConsole_findByClass(control, clazz){
    var o = this;
    var className = RClass.name(clazz);
    var frames = o._frames;
@@ -148,7 +148,7 @@ function FFrameConsole_findByClass(control, clazz){
 // @param h:html:HtmlTag 页面元素
 // @return FUiFrame 页面控件
 //==========================================================
-function FFrameConsole_get(c, n, h){
+function FUiFrameConsole_get(c, n, h){
    var o = this;
    var fs = o._frames;
    var f = fs.get(n);
@@ -163,7 +163,7 @@ function FFrameConsole_get(c, n, h){
 }
 
 //==========================================================
-function FFrameConsole_hiddenAll(){
+function FUiFrameConsole_hiddenAll(){
    var o = this;
    var fs = o._frames;
    var fc = fs.count;
@@ -181,7 +181,7 @@ function FFrameConsole_hiddenAll(){
 // @param b:Builder:Builder 构建器
 // @return MForm 表单实例
 //==========================================================
-function FFrameConsole_onProcessLoaded(e){
+function FUiFrameConsole_onProcessLoaded(e){
    var o = this;
    var r = e.document.root();
    var g = e.argument;
@@ -221,7 +221,7 @@ function FFrameConsole_onProcessLoaded(e){
 // @param b:Builder:Builder 构建器
 // @return MForm 表单实例
 //==========================================================
-function FFrameConsole_process(g){
+function FUiFrameConsole_process(g){
    var o = this;
    // 构建XML结构对象
    var doc = new TXmlDocument();
@@ -246,7 +246,7 @@ function FFrameConsole_process(g){
 // @method
 // @param x:config:TNode 事件定义
 //==========================================================
-function FFrameConsole_loadEvents(cfg){
+function FUiFrameConsole_loadEvents(cfg){
    return;
    var o = this;
    if(!(cfg && cfg.nodes)){
@@ -275,7 +275,7 @@ function FFrameConsole_loadEvents(cfg){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FFrameConsole_processEvent(e){
+function FUiFrameConsole_processEvent(e){
    var o = this;
    var es = o.events;
    if(es.isEmpty()){
@@ -311,7 +311,7 @@ function FFrameConsole_processEvent(e){
 // @method
 // @param f:form:FControl 表单对象
 //==========================================================
-function FFrameConsole_free(f){
+function FUiFrameConsole_free(f){
    f.setVisible(false);
    this._freeFrames.push(f);
 }
@@ -325,7 +325,7 @@ function FFrameConsole_free(f){
 // @param b:Builder:Builder 构建器
 // @return MForm 表单实例
 //==========================================================
-function FFrameConsole_dispose(){
+function FUiFrameConsole_dispose(){
    var o = this;
    RMemory.free(o._frames);
    RMemory.free(o._formIds);

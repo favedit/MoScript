@@ -39,11 +39,11 @@ function FUiEdit(o){
    // @method
    o.construct        = FUiEdit_construct;
    // @method
-   o.formatDisplay    = FUiEdit_formatDisplay;
+   o.formatText       = FUiEdit_formatText;
    o.formatValue      = FUiEdit_formatValue;
    // @method
-   o.get              = FUiEdit_get;
-   o.set              = FUiEdit_set;
+   o.text             = FUiEdit_text;
+   o.setText          = FUiEdit_setText;
    o.refreshValue     = FUiEdit_refreshValue;
    return o;
 }
@@ -109,7 +109,7 @@ function FUiEdit_construct(){
 // @param p:value:String 数据
 // @return 内容
 //==========================================================
-function FUiEdit_formatDisplay(p){
+function FUiEdit_formatText(p){
    var o = this;
    var r = RString.nvl(p);
    //if(ECase.Upper == o.editCase){
@@ -125,42 +125,31 @@ function FUiEdit_formatDisplay(p){
 // <T>格式化数据内容。</T>
 //
 // @method
-// @param p:value:String 内容
+// @param value:String 内容
 // @return 数据
 //==========================================================
-function FUiEdit_formatValue(p){
-   return p;
+function FUiEdit_formatValue(value){
+   return value;
 }
 
 //==========================================================
-// <T>获得数据。</T>
+// <T>获得文本内容。</T>
 //
 // @method
-// @return String 数据
+// @return String 显示内容
 //==========================================================
-function FUiEdit_get(){
-   var o = this;
-   var r = o.__base.FUiEditControl.get.call(o);
-   // 获得显示
-   var r = o._hInput.value;
-   return r;
+function FUiEdit_text(){
+   return this._hInput.value;
 }
 
 //==========================================================
-// <T>设置数据。</T>
+// <T>设置文本内容。</T>
 //
 // @method
-// @param p:value:String 数据
+// @param text:String 文本内容
 //==========================================================
-function FUiEdit_set(p){
-   var o = this;
-   o.__base.FUiEditControl.set.call(o, p);
-   // 设置显示
-   o._hInput.value = RString.nvl(p);
-   //o.finded = v;
-   //if(o.hChangeIcon){
-   //   o.hChangeIcon.style.display = 'none';
-   //}
+function FUiEdit_setText(text){
+   this._hInput.value = text;
 }
 
 //==========================================================

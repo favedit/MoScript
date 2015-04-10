@@ -3349,7 +3349,7 @@ function FUiDataTreeView_onLoaded(p){
       throw new TError(o, 'Load tree data failure.');
    }
    var xt = x.find('TreeView');
-   RControl.build(o, xt, null, o._hPanel);
+   RUiControl.build(o, xt, null, o._hPanel);
    o.lsnsLoaded.process(p);
    var serviceCode = xt.get('service');
    if(serviceCode){
@@ -3420,7 +3420,7 @@ function FUiDataTreeView_loadNode(node, refresh){
    if(!serviceCode){
       throw new TError(o, 'Unknown service code.');
    }
-   var service = RService.parse(serviceCode);
+   var service = RUiService.parse(serviceCode);
    if(!service){
       throw new TError(o, 'Unknown service.');
    }
@@ -3458,7 +3458,7 @@ function FUiDataTreeView_loadNode(node, refresh){
    o._hNodeRows.appendChild(ln._hPanel);
    RHtml.tableMoveRow(o._hNodeForm, ln._hPanel.rowIndex, nr + 1);
    ln.setLevel(node.level() + 1);
-   var url = RService.makeUrl(service.service, action);
+   var url = RUiService.makeUrl(service.service, action);
    var connection = RConsole.find(FXmlConsole).sendAsync(url, xd);
    connection.parentNode = node;
    connection.addLoadListener(o, o.onNodeLoaded);
@@ -3474,7 +3474,7 @@ function FUiDataTreeView_loadService(serviceCode, attributes){
    if(!serviceCode){
       serviceCode = o._serviceCode;
    }
-   var service = RService.parse(serviceCode);
+   var service = RUiService.parse(serviceCode);
    if(!service){
       return alert('Unknown service');
    }
@@ -3525,7 +3525,7 @@ function FUiDataTreeView_reloadService(serviceCode, attributes){
 }
 function FUiDataTreeView_loadNodeService(ps, pa){
    var o = this;
-   var svc = RService.parse(RString.nvl(ps, o._service));
+   var svc = RUiService.parse(RString.nvl(ps, o._service));
    if(!svc){
       throw new TError(o, 'Unknown service.');
    }
@@ -3577,7 +3577,7 @@ function FUiDataTreeView_onQueryLoaded(e){
 }
 function FUiDataTreeView_doQuery(){
    var o = this;
-   var svc = RService.parse(o._queryService);
+   var svc = RUiService.parse(o._queryService);
    if(!svc){
       return alert('Unknown query service');
    }

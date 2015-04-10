@@ -1235,16 +1235,15 @@ function FDsMeshFrameSet_construct(){
    o.__base.FUiFrameSet.construct.call(o);
    o._propertyFrames = new TDictionary();
 }
-function FDsMeshFrameSet_findPropertyFrame(p){
+function FDsMeshFrameSet_findPropertyFrame(code){
    var o = this;
-   var f = o._propertyFrames.get(p);
-   if(!f){
-      var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._frameProperty._hContainer);
-      f._workspace = o;
-      o._propertyFrames.set(p, f);
+   var frame = o._propertyFrames.get(code);
+   if(!frame){
+      frame = RConsole.find(FUiFrameConsole).get(o, code, o._frameProperty._hContainer);
+      frame._workspace = o;
+      o._propertyFrames.set(code, frame);
    }
-   return f;
+   return frame;
 }
 function FDsMeshFrameSet_loadByGuid(guid){
    var o = this;

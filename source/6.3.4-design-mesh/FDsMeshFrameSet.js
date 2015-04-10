@@ -198,19 +198,18 @@ function FDsMeshFrameSet_construct(){
 // <T>根据名称获得属性页面。</T>
 //
 // @method
+// @param code:String 代码
 // @return FUiFrame 页面
 //==========================================================
-function FDsMeshFrameSet_findPropertyFrame(p){
+function FDsMeshFrameSet_findPropertyFrame(code){
    var o = this;
-   var f = o._propertyFrames.get(p);
-   if(!f){
-      var fc = RConsole.find(FFrameConsole);
-      //f = fc.get(o, p, o._frameProperty._hPanel);
-      f = fc.get(o, p, o._frameProperty._hContainer);
-      f._workspace = o;
-      o._propertyFrames.set(p, f);
+   var frame = o._propertyFrames.get(code);
+   if(!frame){
+      frame = RConsole.find(FUiFrameConsole).get(o, code, o._frameProperty._hContainer);
+      frame._workspace = o;
+      o._propertyFrames.set(code, frame);
    }
-   return f;
+   return frame;
 }
 
 //==========================================================

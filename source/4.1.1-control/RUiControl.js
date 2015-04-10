@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150120
 //==========================================================
-var RControl = new function RControl(){
+var RUiControl = new function RUiControl(){
    var o = this;
    //..........................................................
    // @property
@@ -14,15 +14,15 @@ var RControl = new function RControl(){
    // @attribute
    //..........................................................
    // @method
-   o.newInstance        = RControl_newInstance;
-   o.attachEvent        = RControl_attachEvent;
+   o.newInstance        = RUiControl_newInstance;
+   o.attachEvent        = RUiControl_attachEvent;
    // @method
-   o.innerCreate        = RControl_innerCreate;
-   o.create             = RControl_create;
-   o.innerbuild         = RControl_innerbuild;
-   o.build              = RControl_build;
+   o.innerCreate        = RUiControl_innerCreate;
+   o.create             = RUiControl_create;
+   o.innerbuild         = RUiControl_innerbuild;
+   o.build              = RUiControl_build;
    // @method
-   o.setStyleScroll     = RControl_setStyleScroll;
+   o.setStyleScroll     = RUiControl_setStyleScroll;
 
 
    //..........................................................
@@ -36,18 +36,18 @@ var RControl = new function RControl(){
    o.controls           = new TMap();
    //..........................................................
    // @member
-   o.linkEvent          = RControl_linkEvent;
-   o.find               = RControl_find;
-   o.fromNode           = RControl_fromNode;
-   o.fromXml            = RControl_fromXml;
-   o.toNode             = RControl_toNode;
-   o.toXml              = RControl_toXml;
-   o.store              = RControl_store;
-   o.htmlControl        = RControl_htmlControl;
-   o.psDesign           = RControl_psDesign;
-   o.psMode             = RControl_psMode;
-   o.isInfo             = RControl_isInfo;
-   o.isGroup            = RControl_isGroup;
+   o.linkEvent          = RUiControl_linkEvent;
+   o.find               = RUiControl_find;
+   o.fromNode           = RUiControl_fromNode;
+   o.fromXml            = RUiControl_fromXml;
+   o.toNode             = RUiControl_toNode;
+   o.toXml              = RUiControl_toXml;
+   o.store              = RUiControl_store;
+   o.htmlControl        = RUiControl_htmlControl;
+   o.psDesign           = RUiControl_psDesign;
+   o.psMode             = RUiControl_psMode;
+   o.isInfo             = RUiControl_isInfo;
+   o.isGroup            = RUiControl_isGroup;
    return o;
 }
 
@@ -58,7 +58,7 @@ var RControl = new function RControl(){
 // @param p:name:String 名称
 // @return FComponent 控件
 //==========================================================
-function RControl_newInstance(p){
+function RUiControl_newInstance(p){
    var o = this;
    var r = null;
    if(p){
@@ -105,7 +105,7 @@ function RControl_newInstance(p){
 // @param m:method:Function 处理函数
 // @param u:capture:Boolean 是否捕捉
 //==========================================================
-function RControl_attachEvent(c, n, h, m, u){
+function RUiControl_attachEvent(c, n, h, m, u){
    var o = this;
    var e = null;
    var p = c[n];
@@ -123,8 +123,8 @@ function RControl_attachEvent(c, n, h, m, u){
       // 设置队列回调事件
       e.onProcess = p;
       // 存储事件
-      e.process = REvent.onProcess;
-      REvent.find(h).push(a.linker(), e);
+      e.process = RUiEvent.onProcess;
+      RUiEvent.find(h).push(a.linker(), e);
       // 关联事件处理到HTML元素上
       RHtml.linkSet(h, '_plink', c);
       a.bind(h, u);
@@ -141,7 +141,7 @@ function RControl_attachEvent(c, n, h, m, u){
 // @param pa:attributes:Object 参数集合
 // @return FUiControl 控件对象
 //===========================================================
-function RControl_innerCreate(pc, px, pa){
+function RUiControl_innerCreate(pc, px, pa){
    var o = this;
    // 检查参数
    if((pc == null) || (px == null)){
@@ -184,14 +184,14 @@ function RControl_innerCreate(pc, px, pa){
 // @param pa:attributes:Object 属性集合
 // @return FUiControl 控件对象
 //===========================================================
-function RControl_create(pc, px, pa){
+function RUiControl_create(pc, px, pa){
    var o = this;
    // 获得控件
    var c = null;
    if(pc){
       c = pc;
    }else{
-      c = RControl.newInstance(px.name());
+      c = RUiControl.newInstance(px.name());
    }
    // 内部创建
    o.innerCreate(c, px, pa);
@@ -199,7 +199,7 @@ function RControl_create(pc, px, pa){
    //   if(x){
    //      // 节点对象(TNode)的处理
    //      if(x.name == 'CellEdit'){
-   //         RControl.newInstance(FCellEdit);
+   //         RUiControl.newInstance(FCellEdit);
    //      }else{
    //          o = RClass.createByName('F' + x.name);
    //          this.innerCreate(o, x, m);
@@ -234,7 +234,7 @@ function RControl_create(pc, px, pa){
 // @param px:config:TXmlNode 配置节点
 // @param pa:attribute:Object 属性集合
 //===========================================================
-function RControl_innerbuild(pr, pc, px, pa, ph){
+function RUiControl_innerbuild(pr, pc, px, pa, ph){
    var o = this;
    // 检查参数
    if((pc == null) || (px == null)){
@@ -299,11 +299,11 @@ function RControl_innerbuild(pr, pc, px, pa, ph){
 // @param a:attribute:Object 属性集合
 // @param h:panel:HtmlTag 页面元素
 //===========================================================
-function RControl_build(c, x, a, h){
+function RUiControl_build(c, x, a, h){
    var o = this;
    // 创建控件对象
    if(!c){
-      c = RControl.newInstance(x);
+      c = RUiControl.newInstance(x);
    }
    // 内部构造
    o.innerbuild(c, c, x, a, h);
@@ -317,7 +317,7 @@ function RControl_build(c, x, a, h){
 // @param h:html:HtmlTag 页面元素
 // @param c:scrollCd:EUiScroll 滚动枚举
 //===========================================================
-function RControl_setStyleScroll(h, c){
+function RUiControl_setStyleScroll(h, c){
    var s = h.style;
    switch(c){
       case EUiScroll.None:
@@ -361,7 +361,7 @@ function RControl_setStyleScroll(h, c){
 // n:name:String 注册过的事件名称
 // h:html:HTML 注册过的事件名称
 // m:method:Function 即时处理函数
-function RControl_linkEvent(tc, sc, n, h, m){
+function RUiControl_linkEvent(tc, sc, n, h, m){
    var o = this;
    var p = tc[n];
    if(!RMethod.isEmpty(p) || m){
@@ -378,17 +378,17 @@ function RControl_linkEvent(tc, sc, n, h, m){
       e.ohProcess = m;
       // 设置队列回调事件
       e.onProcess = p;
-      e.process = REvent.onProcess;
+      e.process = RUiEvent.onProcess;
       // 存储事件
-      REvent.find(h).push(e.type, e);
+      RUiEvent.find(h).push(e.type, e);
       // 关联事件处理到HTML元素上
-      h[e.handle] = REvent.ohEvent;
+      h[e.handle] = RUiEvent.ohEvent;
       RHtml.linkSet(h, '_plink', tc);
       return e;
    }
 }
 // ------------------------------------------------------------
-function RControl_find(c){
+function RUiControl_find(c){
    var o = this;
    var r = null;
    if(c){
@@ -415,7 +415,7 @@ function RControl_find(c){
 // @param hPanel:hPanel:HTML   生成控件后要放置的位置
 // @return Object 控件对象
 //===========================================================
-function RControl_fromNode(x, h){
+function RUiControl_fromNode(x, h){
    if(x){
       return this.create(x, h);
    }
@@ -429,7 +429,7 @@ function RControl_fromNode(x, h){
 // @param hPanel:hPanel:HTML   生成控件后要放置的位置
 // @return Object 控件对象
 //===========================================================
-function RControl_fromXml(xml, hPanel, mode){
+function RUiControl_fromXml(xml, hPanel, mode){
    var c = null;
    var x = RXml.makeNode(xml);
    if(x){
@@ -444,7 +444,7 @@ function RControl_fromXml(xml, hPanel, mode){
 // @method
 // @return TNode 配置节点
 //===========================================================
-function RControl_toNode(){
+function RUiControl_toNode(){
 }
 
 //===========================================================
@@ -453,7 +453,7 @@ function RControl_toNode(){
 // @method
 // @return String 配置字符串
 //===========================================================
-function RControl_toXml(){
+function RUiControl_toXml(){
 }
 
 //===========================================================
@@ -463,7 +463,7 @@ function RControl_toXml(){
 // @author maochunyang
 // @version 1.0.1
 //===========================================================
-function RControl_store(o, type){
+function RUiControl_store(o, type){
    var x = new TNode();
    x.name = RClass.name(o).substr(1);
    if(RClass.isClass(o, FContainer)){
@@ -482,7 +482,7 @@ function RControl_store(o, type){
 // @version 1.0.1
 //===========================================================
 // element, class
-function RControl_htmlControl(e, c){
+function RUiControl_htmlControl(e, c){
    if(c){
       while(e){
          var o = RHtml.linkGet(e, 'control');
@@ -511,7 +511,7 @@ function RControl_htmlControl(e, c){
 // @version 1.0.1
 //===========================================================
 // action
-function RControl_psDesign(action, mode, flag, params){
+function RUiControl_psDesign(action, mode, flag, params){
    var cs = this.instances;
    if(cs && cs.count){
       var l = cs.count;
@@ -521,7 +521,7 @@ function RControl_psDesign(action, mode, flag, params){
    }
 }
 // ------------------------------------------------------------
-function RControl_psMode(action, mode, flag, params){
+function RUiControl_psMode(action, mode, flag, params){
    var cs = this.instances;
    if(cs && cs.count){
       var l = cs.count;
@@ -532,11 +532,11 @@ function RControl_psMode(action, mode, flag, params){
 }
 
 // ------------------------------------------------------------
-function RControl_isInfo(v){
+function RUiControl_isInfo(v){
    return v ? (0 == v.indexOf('C#')) : false;
 }
 
 //------------------------------------------------------------
-function RControl_isGroup(v){
+function RUiControl_isGroup(v){
    return v ? (0 == v.indexOf('G#')) : false;
 }

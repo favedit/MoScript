@@ -3179,10 +3179,10 @@ function FUiEdit(o){
    o.onBuildEditValue = FUiEdit_onBuildEditValue;
    o.onInputEdit      = RClass.register(o, new AEventInputChanged('onInputEdit'), FUiEdit_onInputEdit);
    o.construct        = FUiEdit_construct;
-   o.formatDisplay    = FUiEdit_formatDisplay;
+   o.formatText       = FUiEdit_formatText;
    o.formatValue      = FUiEdit_formatValue;
-   o.get              = FUiEdit_get;
-   o.set              = FUiEdit_set;
+   o.text             = FUiEdit_text;
+   o.setText          = FUiEdit_setText;
    o.refreshValue     = FUiEdit_refreshValue;
    return o;
 }
@@ -3213,25 +3213,20 @@ function FUiEdit_construct(){
    o.__base.FUiEditControl.construct.call(o);
    o._inputSize = new SSize2(120, 0);
 }
-function FUiEdit_formatDisplay(p){
+function FUiEdit_formatText(p){
    var o = this;
    var r = RString.nvl(p);
    o._dataDisplay = r;
    return r;
 }
-function FUiEdit_formatValue(p){
-   return p;
+function FUiEdit_formatValue(value){
+   return value;
 }
-function FUiEdit_get(){
-   var o = this;
-   var r = o.__base.FUiEditControl.get.call(o);
-   var r = o._hInput.value;
-   return r;
+function FUiEdit_text(){
+   return this._hInput.value;
 }
-function FUiEdit_set(p){
-   var o = this;
-   o.__base.FUiEditControl.set.call(o, p);
-   o._hInput.value = RString.nvl(p);
+function FUiEdit_setText(text){
+   this._hInput.value = text;
 }
 function FUiEdit_refreshValue(){
    var o = this;
@@ -3271,8 +3266,6 @@ function FUiEditControl(o){
    o.panel             = FUiEditControl_panel;
    o.label             = FUiEditControl_label;
    o.setLabel          = FUiEditControl_setLabel;
-   o.text              = FUiEditControl_text;
-   o.setText           = FUiEditControl_setText;
    o.getValueRectangle = FUiEditControl_getValueRectangle;
    o.dispose           = FUiEditControl_dispose;
    return o;
@@ -3412,12 +3405,6 @@ function FUiEditControl_setLabel(p){
    if(o._hText){
       o._hText.innerHTML = RString.nvl(p);
    }
-}
-function FUiEditControl_text(){
-   throw new TUnsupportError(o, 'text');
-}
-function FUiEditControl_setText(value){
-   throw new TUnsupportError(o, 'setText');
 }
 function FUiEditControl_getValueRectangle(r){
    var o = this;

@@ -29,8 +29,8 @@ function MUiDescribeFrame_buildDefine(h, n){
       n = o._frameName;
    }
    // 获取页面定义
-   var fc = RConsole.find(FDescribeFrameConsole);
+   var fc = RConsole.find(FUiDescribeFrameConsole);
    var x = fc.load(n);
    // 构建处理
-   RControl.build(o, x, null, h);
+   RUiControl.build(o, x, null, h);
 }

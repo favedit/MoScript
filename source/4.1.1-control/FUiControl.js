@@ -463,7 +463,7 @@ function FUiControl_disable(){
 // @see RControl.attachEvent
 //==========================================================
 function FUiControl_attachEvent(n, h, m, u){
-   return RControl.attachEvent(this, n, h, m, u);
+   return RUiControl.attachEvent(this, n, h, m, u);
 }
 
 //==========================================================
@@ -484,7 +484,7 @@ function FUiControl_attachEvent(n, h, m, u){
 // @see RControl.linkEvent
 //==========================================================
 function FUiControl_linkEvent(t, n, h, m){
-   return RControl.linkEvent(this, t, n, h, m);
+   return RUiControl.linkEvent(this, t, n, h, m);
 }
 
 //==========================================================

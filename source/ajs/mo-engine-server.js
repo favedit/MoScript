@@ -4904,15 +4904,15 @@ function RMethod_isEmpty(v){
 function RMethod_isVirtual(v){
    return (v && v.__virtual);
 }
-function RMethod_name(p){
-   if(p){
-      if(typeof(p) == 'function'){
-         if(p.__name){
-            return p.__name;
+function RMethod_name(value){
+   if(value){
+      if(typeof(value) == 'function'){
+         if(value.__name){
+            return value.__name;
          }
-         var s = p.toString();
-         var n = p.__name = RString.mid(s, 'function ', '(');
-         return n;
+         var source = value.toString();
+         var name = value.__name = RString.mid(source, 'function ', '(');
+         return name;
       }
    }
    return null;
@@ -8546,48 +8546,6 @@ function RMath_sign(value){
       return -1;
    }
    return 0;
-}
-function AEvent(n, l, h){
-   var o = this;
-   AAnnotation.call(o, n);
-   o._annotationCd = EAnnotation.Event;
-   o._inherit      = true;
-   o._logger       = true;
-   o._linker       = l;
-   o._handle       = h;
-   o._process      = null;
-   o.linker        = AEvent_linker;
-   o.handle        = AEvent_handle;
-   o.value         = AEvent_value;
-   o.create        = AEvent_create;
-   o.attach        = RMethod.empty;
-   o.bind          = AEvent_bind;
-   o.toString      = AEvent_toString;
-   return o;
-}
-function AEvent_linker(){
-   return this._linker;
-}
-function AEvent_handle(){
-   return this._handle;
-}
-function AEvent_value(){
-   return this._process;
-}
-function AEvent_create(){
-   return new SEvent();
-}
-function AEvent_bind(h, u){
-   var o = this;
-   if(u){
-      h.addEventListener(o._linker, REvent.ohEvent, true);
-   }else{
-      h[o._handle] = REvent.ohEvent;
-   }
-}
-function AEvent_toString(){
-   var o = this;
-   return 'linker=' + o._linker + ',handle=' + o._handle;
 }
 function AStyle(n, s){
    var o = this;

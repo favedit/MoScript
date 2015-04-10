@@ -7,7 +7,7 @@
 // @version 150102
 //==========================================================
 function MUiEditValue(o){
-   o = RClass.inherits(this, o， MUiEditFormator);
+   o = RClass.inherits(this, o, MUiEditFormator);
    //..........................................................
    // @property
    o._dataValue      = RClass.register(o, new APtyString('_dataValue'));
@@ -25,8 +25,8 @@ function MUiEditValue(o){
    o.isValueChanged  = MUiEditValue_isValueChanged;
    // @method
    o.formator        = MUiEditValue_formator;
-   o.text            = RMethod.virtual(o, 'text');
-   o.setText         = RMethod.virtual(o, 'setText');
+   o.text            = MUiEditValue_text;
+   o.setText         = MUiEditValue_setText;
    o.get             = MUiEditValue_get;
    o.set             = MUiEditValue_set;
    // @method
@@ -99,6 +99,26 @@ function MUiEditValue_formator(){
 }
 
 //==========================================================
+// <T>获得文本内容。</T>
+//
+// @method
+// @return String 显示内容
+//==========================================================
+function MUiEditValue_text(){
+   //throw new TUnsupportError();
+}
+
+//==========================================================
+// <T>设置文本内容。</T>
+//
+// @method
+// @param text:String 文本内容
+//==========================================================
+function MUiEditValue_setText(text){
+   //throw new TUnsupportError();
+}
+
+//==========================================================
 // <T>获取数据。</T>
 //
 // @method
@@ -120,7 +140,7 @@ function MUiEditValue_set(value){
    o._dataValue = RString.nvl(value);
    // 设置文本
    var text = o.formator().formatText(value)
-   o.setText(formator.formatText(v));
+   o.setText(text);
 }
 
 //==========================================================

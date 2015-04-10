@@ -1309,7 +1309,7 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          var menuBar = RClass.create(FDsSolutionMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsSolutionFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSolutionFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
@@ -1317,7 +1317,7 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          var menuBar = RClass.create(FDsProjectMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsProjectFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsProjectFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
@@ -1325,7 +1325,7 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          var menuBar = RClass.create(FDsResourceMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsResourceFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsResourceFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
@@ -1333,7 +1333,7 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          var menuBar = RClass.create(FDsMeshMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsMeshFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsMeshFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;

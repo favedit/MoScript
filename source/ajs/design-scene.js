@@ -1953,14 +1953,13 @@ function FDsSceneWorkspace_construct(){
 }
 function FDsSceneWorkspace_findPropertyFrame(p){
    var o = this;
-   var f = o._propertyFrames.get(p);
-   if(!f){
-      var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._frameProperty._hContainer);
-      f._workspace = o;
-      o._propertyFrames.set(p, f);
+   var frame = o._propertyFrames.get(p);
+   if(!frame){
+      frame = RConsole.find(FUiFrameConsole).get(o, p, o._frameProperty._hContainer);
+      frame._workspace = o;
+      o._propertyFrames.set(p, frame);
    }
-   return f;
+   return frame;
 }
 function FDsSceneWorkspace_loadScene(p){
    var o = this;

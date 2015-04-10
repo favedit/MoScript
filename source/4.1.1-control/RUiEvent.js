@@ -13,23 +13,23 @@
 // @author maocy
 // @version 150120
 //==========================================================
-var REvent = new function(){
+var RUiEvent = new function(){
    var o = this;
    //..........................................................
    // @attribute 存储所有关联过事件的控件
    o._objects  = new Array();
    //..........................................................
    // @event
-   o.ohEvent   = REvent_ohEvent;
+   o.ohEvent   = RUiEvent_ohEvent;
    //..........................................................
    // @event
-   o.onProcess = REvent_onProcess;
+   o.onProcess = RUiEvent_onProcess;
    //..........................................................
    // @method
-   o.find      = REvent_find;
-   o.process   = REvent_process;
+   o.find      = RUiEvent_find;
+   o.process   = RUiEvent_process;
    // @method
-   o.release   = REvent_release;
+   o.release   = RUiEvent_release;
 
 
 
@@ -37,9 +37,9 @@ var REvent = new function(){
    o.current   = 0;
    o.events    = new Array();
    // Method
-   o.nvl       = REvent_nvl;
-   o.alloc     = REvent_alloc;
-   o.free      = REvent_free;
+   o.nvl       = RUiEvent_nvl;
+   o.alloc     = RUiEvent_alloc;
+   o.free      = RUiEvent_free;
    return o;
 }
 
@@ -49,8 +49,8 @@ var REvent = new function(){
 // @method
 // @param e:event:Event 事件对象
 //==========================================================
-function REvent_ohEvent(e){
-   REvent.process(this, e ? e : window.event);
+function RUiEvent_ohEvent(e){
+   RUiEvent.process(this, e ? e : window.event);
 }
 
 //==========================================================
@@ -59,7 +59,7 @@ function REvent_ohEvent(e){
 // @method
 // @param e:event:Event 事件对象
 //==========================================================
-function REvent_onProcess(e){
+function RUiEvent_onProcess(e){
    // 当前this指向EventHandle对象
    var e = this;
    var ea = e.annotation;
@@ -80,7 +80,7 @@ function REvent_onProcess(e){
 // @method
 // @param p:html:HtmlTag 页面元素
 // =========================================================
-function REvent_find(p){
+function RUiEvent_find(p){
    var u = RHtml.uid(p);
    var es = this._objects;
    var e = es[u];
@@ -98,7 +98,7 @@ function REvent_find(p){
 // @param hs:htmlSource:<Html> 发出者对象
 // @param he:htmlEvent:<Event> 事件对象
 // =========================================================
-function REvent_process(hs, he){
+function RUiEvent_process(hs, he){
    var o = this;
    // 检查参数
    if(!hs || !he){
@@ -155,7 +155,7 @@ function REvent_process(hs, he){
 // @param hs:htmlSource:<Html> 发出者对象
 // @param he:htmlEvent:<Event> 事件对象
 // =========================================================
-function REvent_release(){
+function RUiEvent_release(){
    var o = this;
    // 释放对象集合
    var v = o._objects;
@@ -178,7 +178,7 @@ function REvent_release(){
 
 
 // ------------------------------------------------------------
-function REvent_nvl(event, sender, code){
+function RUiEvent_nvl(event, sender, code){
    if(!event){
       event = new TEvent();
    }
@@ -188,7 +188,7 @@ function REvent_nvl(event, sender, code){
 }
 // ------------------------------------------------------------
 // sender, code
-function REvent_alloc(s, c){
+function RUiEvent_alloc(s, c){
    var e = null;
    var es = this.events;
    // 查找一个未被使用的事件对象
@@ -209,6 +209,6 @@ function REvent_alloc(s, c){
    return e;
 }
 // ------------------------------------------------------------
-function REvent_free(e){
+function RUiEvent_free(e){
    e.inUsing = false;
 }

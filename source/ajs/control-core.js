@@ -1,150 +1,3 @@
-function FDescribeFrameConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._scopeCd       = EScope.Global;
-   o._service       = 'cloud.describe.frame';
-   o._defines       = null;
-   o.lsnsLoaded     = null;
-   o.construct      = FDescribeFrameConsole_construct;
-   o.load           = FDescribeFrameConsole_load;
-   o.events         = null;
-   o.formId         = 0;
-   o.createFromName = FDescribeFrameConsole_createFromName;
-   o.loadNode       = FDescribeFrameConsole_loadNode;
-   o.loadService    = FDescribeFrameConsole_loadService;
-   o.nextFormId     = FDescribeFrameConsole_nextFormId;
-   o.get            = FDescribeFrameConsole_get;
-   o.find           = FDescribeFrameConsole_find;
-   o.getLov         = FDescribeFrameConsole_getLov;
-   o.findLov        = FDescribeFrameConsole_findLov;
-   o.getEvents      = FDescribeFrameConsole_getEvents;
-   return o;
-}
-function FDescribeFrameConsole_construct(){
-   var o = this;
-   o._defines = new TDictionary();
-   o.lsnsLoaded = new TListeners();
-}
-function FDescribeFrameConsole_load(n){
-   var o = this;
-   var x = o._defines.get(n);
-   if(x){
-      return x;
-   }
-   var xd = new TXmlDocument();
-   var x = xd.root();
-   x.set('action', 'query');
-   var xf = x.create('Frame');
-   xf.set('name', n);
-   var xc = RConsole.find(FXmlConsole);
-   var xr = xc.send(RService.url(o._service), xd);
-   var rs = xr.nodes();
-   var rc = rs.count();
-   for(var i = 0; i < rc; i++){
-      var rx = rs.get(i);
-      o._defines.set(rx.get('name'), rx);
-   }
-   var x = o._defines.get(n);
-   if(x == null){
-      throw new TError(o, 'Unknown frame. (name={1])', n);
-   }
-   return x;
-}
-function FDescribeFrameConsole_createFromName(name, type){
-   var o = this;
-   var doc = o.loadService(name, type);
-   o.loadNode(doc);
-   if(EForm.Lov == type){
-      return o.getLov(name);
-   }else{
-      return o.get(name);
-   }
-}
-function FDescribeFrameConsole_loadNode(x){
-   var o = this;
-   var nns = x.root();
-   if(nns.hasNode()){
-      var nodes = nns.nodes;
-      var ct = nodes.count;
-      for(var n = 0; n < ct; n++){
-         var node = nodes.get(n);
-         var fn = node.get('name');
-         var tp = node.get('type');
-         if(node.hasNode()){
-            var nfds = node.nodes;
-            for(var k = 0; k < nfds.count; k++){
-               var dd = nfds.get(k);
-               if(dd.isName('Define')){
-                  if(dd.hasNode()){
-                     var fds = dd.nodes;
-                     for(var m = 0; m < fds.count; m++){
-                        var nd = fds.get(m);
-                        var mp = o._defines.get(tp);
-                        mp.set(fn, nd);
-                     }
-                  }
-               }else if(dd.isName('Events')){
-                  o.events.set(fn, dd);
-               }
-            }
-         }
-      }
-   }
-}
-function FDescribeFrameConsole_loadService(n, t){
-   var o = this;
-   if(!t){
-      t = EForm.Form;
-   }
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('action', 'loadDefine');
-   var f = root.create('WebForm');
-   f.set('name', n);
-   f.set('type', t);
-   var url = RService.url('logic.webform');
-   var doc = RConsole.find(FXmlConsole).send(url, doc);
-   var r = doc.root();
-   if(!RConsole.find(FMessageConsole).checkResult(new TMessageArg(r))){
-      return null;
-   }
-   return doc;
-}
-function FDescribeFrameConsole_nextFormId(){
-   return ++this.formId;
-}
-function FDescribeFrameConsole_get(n){
-   return this._defines.get(EForm.Form).get(n);
-}
-function FDescribeFrameConsole_find(n, t){
-   var o = this;
-   if(EForm.Lov == t){
-      return o.findLov(n);
-   }
-   var fc = o.get(n);
-   if(RClass.isMode(ERun.Debug)){
-      RMemory.free(fc);
-      fc = null;
-      o._defines.get(EForm.Form).set(n, null);
-   }
-   if(!fc){
-      fc = o.createFromName(n);
-   }
-   return fc;
-}
-function FDescribeFrameConsole_getLov(n){
-   return this._defines.get(EForm.Lov).get(n);
-}
-function FDescribeFrameConsole_findLov(n){
-   var o = this;
-   var fc = o.getLov(n);
-   if(!fc){
-      fc = o.createFromName(n, EForm.Lov);
-   }
-   return fc;
-}
-function FDescribeFrameConsole_getEvents(n){
-   return this.events.get(n);
-}
 function FEditorConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd     = EScope.Local;
@@ -443,163 +296,6 @@ function FFocusConsole_dispose(){
    o.__base.FConsole.dispose.call(o);
    o._focusClasses = null;
 }
-function FFrameConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._scopeCd         = EScope.Local;
-   o._frames          = null;
-   o.construct        = FFrameConsole_construct;
-   o.create           = FFrameConsole_create;
-   o.find             = FFrameConsole_find;
-   o.findByClass      = FFrameConsole_findByClass;
-   o.get              = FFrameConsole_get;
-   return o;
-}
-function FFrameConsole_construct(){
-   var o = this;
-   o._frames = new TMap();
-}
-function FFrameConsole_create(c, n){
-   var o = this;
-   var dc = RConsole.find(FDescribeFrameConsole);
-   var x = dc.load(n);
-   var f = RControl.build(null, x, null, c._hPanel);
-   return f;
-}
-function FFrameConsole_find(n){
-   return this._frames.get(n);
-}
-function FFrameConsole_findByClass(control, clazz){
-   var o = this;
-   var className = RClass.name(clazz);
-   var frames = o._frames;
-   var instance = frames.get(className);
-   if(!instance){
-      instance = RClass.create(clazz);
-      instance.buildDefine(control._hPanel);
-      frames.set(className, instance);
-   }
-   return instance;
-}
-function FFrameConsole_get(c, n, h){
-   var o = this;
-   var fs = o._frames;
-   var f = fs.get(n);
-   if(!f){
-      f = o.create(c, n);
-      if(h){
-         f.setPanel(h);
-      }
-      fs.set(n, f);
-   }
-   return f;
-}
-function FFrameConsole_hiddenAll(){
-   var o = this;
-   var fs = o._frames;
-   var fc = fs.count;
-   for(var n=0; n<fc; n++){
-      fs.value(n).setVisible(false);
-   }
-}
-function FFrameConsole_onProcessLoaded(e){
-   var o = this;
-   var r = e.document.root();
-   var g = e.argument;
-   if(!e.messageChecked){
-      var m = new TMessageArg();
-      m.argument = g;
-      m.form = g.form;
-      m.config = r;
-      m.invokeCaller = new TInvoke(o, o.onLoaded);
-      m.invokeParam = e;
-      m.event = e;
-      if(!RConsole.find(FMessageConsole).checkResult(m)){
-         return;
-      }
-   }
-   var g = e.argument;
-   var fn = r.find('Form');
-   if(fn){
-      var ds = RDataset.make(fn);
-      g.resultDataset = ds;
-      g.resultRow = ds.rows.get(0);
-   }
-   g.invoke();
-}
-function FFrameConsole_process(g){
-   var o = this;
-   var doc = new TXmlDocument();
-   var root = doc.root();
-   root.set('action', 'process');
-   if(g.checked){
-      root.set('checked', g.checked);
-   }
-   root.push(g.toNode());
-   var e = new TEvent(o, EXmlEvent.Send, o.onProcessLoaded);
-   e.url = RService.url(RString.nvl(g.url, 'logic.webform'));
-   e.action = EDataAction.Process;
-   e.argument = g;
-   e.document = doc;
-   RConsole.find(FXmlConsole).process(e);
-}
-function FFrameConsole_loadEvents(cfg){
-   return;
-   var o = this;
-   if(!(cfg && cfg.nodes)){
-      return;
-   }
-   var ns = cfg.nodes;
-   var l = ns.count;
-   for(var n = 0; n < l; n++){
-      var x = ns.get(n);
-      if(x.isName('Event')){
-         var c = RClass.create(FEvent);
-         c.loadConfig(x);
-         if(RString.isEmpty(c.name) || RString.isEmpty(c.source) || RString.isEmpty(c.form)){
-            RMessage.fatel(o, null, "Event property is invalid. (event={0})", x.xml());
-         }
-         var s = c.name + '@' + c.source + '@' + c.form;
-         o.events.set(s, c);
-      }
-   }
-}
-function FFrameConsole_processEvent(e){
-   var o = this;
-   var es = o.events;
-   if(es.isEmpty()){
-      return;
-   }
-   var se = e.source;
-   if(RClass.isClass(se, FControl)){
-      var p = se.topControl();
-      if(p){
-         var s = RString.nvl(e.name, e.handle) + '@' + se.name + '@' + p.name;
-         var c = es.get(s);
-         var eo = e.caller ? e.caller : se;
-         if(c && c.code){
-            if(c.event){
-               c.event.call(eo, eo, e);
-            }else{
-               c.event = new Function('o', 'e', c.code);
-                  c.event.call(eo, eo, e);
-            }
-         }
-      }
-   }
-}
-function FFrameConsole_free(f){
-   f.setVisible(false);
-   this._freeFrames.push(f);
-}
-function FFrameConsole_dispose(){
-   var o = this;
-   RMemory.free(o._frames);
-   RMemory.free(o._formIds);
-   RMemory.free(o._framesLoaded);
-   o._frames = null;
-   o._formIds = null;
-   o._framesLoaded = null;
-}
 function FFrameEventConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd   = EScope.Local;
@@ -880,6 +576,153 @@ function FUiConfirmDialog_dispose(){
    var o = this;
    o.__base.FUiDialog.dispose.call(o);
 }
+function FUiDescribeFrameConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd       = EScope.Global;
+   o._service       = 'cloud.describe.frame';
+   o._defines       = null;
+   o.lsnsLoaded     = null;
+   o.construct      = FUiDescribeFrameConsole_construct;
+   o.load           = FUiDescribeFrameConsole_load;
+   o.events         = null;
+   o.formId         = 0;
+   o.createFromName = FUiDescribeFrameConsole_createFromName;
+   o.loadNode       = FUiDescribeFrameConsole_loadNode;
+   o.loadService    = FUiDescribeFrameConsole_loadService;
+   o.nextFormId     = FUiDescribeFrameConsole_nextFormId;
+   o.get            = FUiDescribeFrameConsole_get;
+   o.find           = FUiDescribeFrameConsole_find;
+   o.getLov         = FUiDescribeFrameConsole_getLov;
+   o.findLov        = FUiDescribeFrameConsole_findLov;
+   o.getEvents      = FUiDescribeFrameConsole_getEvents;
+   return o;
+}
+function FUiDescribeFrameConsole_construct(){
+   var o = this;
+   o._defines = new TDictionary();
+   o.lsnsLoaded = new TListeners();
+}
+function FUiDescribeFrameConsole_load(n){
+   var o = this;
+   var x = o._defines.get(n);
+   if(x){
+      return x;
+   }
+   var xd = new TXmlDocument();
+   var x = xd.root();
+   x.set('action', 'query');
+   var xf = x.create('Frame');
+   xf.set('name', n);
+   var xc = RConsole.find(FXmlConsole);
+   var xr = xc.send(RUiService.url(o._service), xd);
+   var rs = xr.nodes();
+   var rc = rs.count();
+   for(var i = 0; i < rc; i++){
+      var rx = rs.get(i);
+      o._defines.set(rx.get('name'), rx);
+   }
+   var x = o._defines.get(n);
+   if(x == null){
+      throw new TError(o, 'Unknown frame. (name={1])', n);
+   }
+   return x;
+}
+function FUiDescribeFrameConsole_createFromName(name, type){
+   var o = this;
+   var doc = o.loadService(name, type);
+   o.loadNode(doc);
+   if(EForm.Lov == type){
+      return o.getLov(name);
+   }else{
+      return o.get(name);
+   }
+}
+function FUiDescribeFrameConsole_loadNode(x){
+   var o = this;
+   var nns = x.root();
+   if(nns.hasNode()){
+      var nodes = nns.nodes;
+      var ct = nodes.count;
+      for(var n = 0; n < ct; n++){
+         var node = nodes.get(n);
+         var fn = node.get('name');
+         var tp = node.get('type');
+         if(node.hasNode()){
+            var nfds = node.nodes;
+            for(var k = 0; k < nfds.count; k++){
+               var dd = nfds.get(k);
+               if(dd.isName('Define')){
+                  if(dd.hasNode()){
+                     var fds = dd.nodes;
+                     for(var m = 0; m < fds.count; m++){
+                        var nd = fds.get(m);
+                        var mp = o._defines.get(tp);
+                        mp.set(fn, nd);
+                     }
+                  }
+               }else if(dd.isName('Events')){
+                  o.events.set(fn, dd);
+               }
+            }
+         }
+      }
+   }
+}
+function FUiDescribeFrameConsole_loadService(n, t){
+   var o = this;
+   if(!t){
+      t = EForm.Form;
+   }
+   var doc = new TXmlDocument();
+   var root = doc.root();
+   root.set('action', 'loadDefine');
+   var f = root.create('WebForm');
+   f.set('name', n);
+   f.set('type', t);
+   var url = RUiService.url('logic.webform');
+   var doc = RConsole.find(FXmlConsole).send(url, doc);
+   var r = doc.root();
+   if(!RConsole.find(FMessageConsole).checkResult(new TMessageArg(r))){
+      return null;
+   }
+   return doc;
+}
+function FUiDescribeFrameConsole_nextFormId(){
+   return ++this.formId;
+}
+function FUiDescribeFrameConsole_get(n){
+   return this._defines.get(EForm.Form).get(n);
+}
+function FUiDescribeFrameConsole_find(n, t){
+   var o = this;
+   if(EForm.Lov == t){
+      return o.findLov(n);
+   }
+   var fc = o.get(n);
+   if(RClass.isMode(ERun.Debug)){
+      RMemory.free(fc);
+      fc = null;
+      o._defines.get(EForm.Form).set(n, null);
+   }
+   if(!fc){
+      fc = o.createFromName(n);
+   }
+   return fc;
+}
+function FUiDescribeFrameConsole_getLov(n){
+   return this._defines.get(EForm.Lov).get(n);
+}
+function FUiDescribeFrameConsole_findLov(n){
+   var o = this;
+   var fc = o.getLov(n);
+   if(!fc){
+      fc = o.createFromName(n, EForm.Lov);
+   }
+   return fc;
+}
+function FUiDescribeFrameConsole_getEvents(n){
+   return this.events.get(n);
+}
 function FUiDesktopConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd         = EScope.Local;
@@ -1018,6 +861,163 @@ function FUiDesktopConsole_hide(){
       o._loadingVisible  = false;
    }
    o.setMaskVisible(false);
+}
+function FUiFrameConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd         = EScope.Local;
+   o._frames          = null;
+   o.construct        = FUiFrameConsole_construct;
+   o.create           = FUiFrameConsole_create;
+   o.find             = FUiFrameConsole_find;
+   o.findByClass      = FUiFrameConsole_findByClass;
+   o.get              = FUiFrameConsole_get;
+   return o;
+}
+function FUiFrameConsole_construct(){
+   var o = this;
+   o._frames = new TMap();
+}
+function FUiFrameConsole_create(c, n){
+   var o = this;
+   var dc = RConsole.find(FUiDescribeFrameConsole);
+   var x = dc.load(n);
+   var f = RUiControl.build(null, x, null, c._hPanel);
+   return f;
+}
+function FUiFrameConsole_find(n){
+   return this._frames.get(n);
+}
+function FUiFrameConsole_findByClass(control, clazz){
+   var o = this;
+   var className = RClass.name(clazz);
+   var frames = o._frames;
+   var instance = frames.get(className);
+   if(!instance){
+      instance = RClass.create(clazz);
+      instance.buildDefine(control._hPanel);
+      frames.set(className, instance);
+   }
+   return instance;
+}
+function FUiFrameConsole_get(c, n, h){
+   var o = this;
+   var fs = o._frames;
+   var f = fs.get(n);
+   if(!f){
+      f = o.create(c, n);
+      if(h){
+         f.setPanel(h);
+      }
+      fs.set(n, f);
+   }
+   return f;
+}
+function FUiFrameConsole_hiddenAll(){
+   var o = this;
+   var fs = o._frames;
+   var fc = fs.count;
+   for(var n=0; n<fc; n++){
+      fs.value(n).setVisible(false);
+   }
+}
+function FUiFrameConsole_onProcessLoaded(e){
+   var o = this;
+   var r = e.document.root();
+   var g = e.argument;
+   if(!e.messageChecked){
+      var m = new TMessageArg();
+      m.argument = g;
+      m.form = g.form;
+      m.config = r;
+      m.invokeCaller = new TInvoke(o, o.onLoaded);
+      m.invokeParam = e;
+      m.event = e;
+      if(!RConsole.find(FMessageConsole).checkResult(m)){
+         return;
+      }
+   }
+   var g = e.argument;
+   var fn = r.find('Form');
+   if(fn){
+      var ds = RDataset.make(fn);
+      g.resultDataset = ds;
+      g.resultRow = ds.rows.get(0);
+   }
+   g.invoke();
+}
+function FUiFrameConsole_process(g){
+   var o = this;
+   var doc = new TXmlDocument();
+   var root = doc.root();
+   root.set('action', 'process');
+   if(g.checked){
+      root.set('checked', g.checked);
+   }
+   root.push(g.toNode());
+   var e = new TEvent(o, EXmlEvent.Send, o.onProcessLoaded);
+   e.url = RService.url(RString.nvl(g.url, 'logic.webform'));
+   e.action = EDataAction.Process;
+   e.argument = g;
+   e.document = doc;
+   RConsole.find(FXmlConsole).process(e);
+}
+function FUiFrameConsole_loadEvents(cfg){
+   return;
+   var o = this;
+   if(!(cfg && cfg.nodes)){
+      return;
+   }
+   var ns = cfg.nodes;
+   var l = ns.count;
+   for(var n = 0; n < l; n++){
+      var x = ns.get(n);
+      if(x.isName('Event')){
+         var c = RClass.create(FEvent);
+         c.loadConfig(x);
+         if(RString.isEmpty(c.name) || RString.isEmpty(c.source) || RString.isEmpty(c.form)){
+            RMessage.fatel(o, null, "Event property is invalid. (event={0})", x.xml());
+         }
+         var s = c.name + '@' + c.source + '@' + c.form;
+         o.events.set(s, c);
+      }
+   }
+}
+function FUiFrameConsole_processEvent(e){
+   var o = this;
+   var es = o.events;
+   if(es.isEmpty()){
+      return;
+   }
+   var se = e.source;
+   if(RClass.isClass(se, FControl)){
+      var p = se.topControl();
+      if(p){
+         var s = RString.nvl(e.name, e.handle) + '@' + se.name + '@' + p.name;
+         var c = es.get(s);
+         var eo = e.caller ? e.caller : se;
+         if(c && c.code){
+            if(c.event){
+               c.event.call(eo, eo, e);
+            }else{
+               c.event = new Function('o', 'e', c.code);
+                  c.event.call(eo, eo, e);
+            }
+         }
+      }
+   }
+}
+function FUiFrameConsole_free(f){
+   f.setVisible(false);
+   this._freeFrames.push(f);
+}
+function FUiFrameConsole_dispose(){
+   var o = this;
+   RMemory.free(o._frames);
+   RMemory.free(o._formIds);
+   RMemory.free(o._framesLoaded);
+   o._frames = null;
+   o._formIds = null;
+   o._framesLoaded = null;
 }
 function FUiInfoDialog(o){
    o = RClass.inherits(this, o, FUiDialog, MListenerResult);

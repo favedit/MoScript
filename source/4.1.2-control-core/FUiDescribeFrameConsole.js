@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150124
 //==========================================================
-function FDescribeFrameConsole(o){
+function FUiDescribeFrameConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
@@ -18,23 +18,23 @@ function FDescribeFrameConsole(o){
    o.lsnsLoaded     = null;
    //..........................................................
    // @method
-   o.construct      = FDescribeFrameConsole_construct;
+   o.construct      = FUiDescribeFrameConsole_construct;
    // @method
-   o.load           = FDescribeFrameConsole_load;
+   o.load           = FUiDescribeFrameConsole_load;
 
 
    o.events         = null;
    o.formId         = 0;
    // Method
-   o.createFromName = FDescribeFrameConsole_createFromName;
-   o.loadNode       = FDescribeFrameConsole_loadNode;
-   o.loadService    = FDescribeFrameConsole_loadService;
-   o.nextFormId     = FDescribeFrameConsole_nextFormId;
-   o.get            = FDescribeFrameConsole_get;
-   o.find           = FDescribeFrameConsole_find;
-   o.getLov         = FDescribeFrameConsole_getLov;
-   o.findLov        = FDescribeFrameConsole_findLov;
-   o.getEvents      = FDescribeFrameConsole_getEvents;
+   o.createFromName = FUiDescribeFrameConsole_createFromName;
+   o.loadNode       = FUiDescribeFrameConsole_loadNode;
+   o.loadService    = FUiDescribeFrameConsole_loadService;
+   o.nextFormId     = FUiDescribeFrameConsole_nextFormId;
+   o.get            = FUiDescribeFrameConsole_get;
+   o.find           = FUiDescribeFrameConsole_find;
+   o.getLov         = FUiDescribeFrameConsole_getLov;
+   o.findLov        = FUiDescribeFrameConsole_findLov;
+   o.getEvents      = FUiDescribeFrameConsole_getEvents;
    return o;
 }
 
@@ -43,7 +43,7 @@ function FDescribeFrameConsole(o){
 //
 // @method
 //==========================================================
-function FDescribeFrameConsole_construct(){
+function FUiDescribeFrameConsole_construct(){
    var o = this;
    o._defines = new TDictionary();
    o.lsnsLoaded = new TListeners();
@@ -57,7 +57,7 @@ function FDescribeFrameConsole_construct(){
 // @param n:name:String 名称
 // @return TXmlDocument 节点对象
 //==========================================================
-function FDescribeFrameConsole_load(n){
+function FUiDescribeFrameConsole_load(n){
    var o = this;
    // 查找页面
    var x = o._defines.get(n);
@@ -73,7 +73,7 @@ function FDescribeFrameConsole_load(n){
    xf.set('name', n);
    // 发送内容
    var xc = RConsole.find(FXmlConsole);
-   var xr = xc.send(RService.url(o._service), xd);
+   var xr = xc.send(RUiService.url(o._service), xd);
    // 检查数据结果
    //if(!RConsole.find(FMessageConsole).checkResult(new TMessageArg(r))){
    //   return null;
@@ -110,7 +110,7 @@ function FDescribeFrameConsole_load(n){
 // @param name:FormName:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-function FDescribeFrameConsole_createFromName(name, type){
+function FUiDescribeFrameConsole_createFromName(name, type){
    var o = this;
    var doc = o.loadService(name, type);
    o.loadNode(doc);
@@ -127,7 +127,7 @@ function FDescribeFrameConsole_createFromName(name, type){
 // @method
 // @param x:XML:TXmlDocument XML节点
 //==========================================================
-function FDescribeFrameConsole_loadNode(x){
+function FUiDescribeFrameConsole_loadNode(x){
    var o = this;
    var nns = x.root();
    if(nns.hasNode()){
@@ -168,7 +168,7 @@ function FDescribeFrameConsole_loadNode(x){
 // @param t:type:String 表单类型
 // @return TXmlDocument 节点对象
 //==========================================================
-function FDescribeFrameConsole_loadService(n, t){
+function FUiDescribeFrameConsole_loadService(n, t){
    var o = this;
    if(!t){
       t = EForm.Form;
@@ -179,7 +179,7 @@ function FDescribeFrameConsole_loadService(n, t){
    var f = root.create('WebForm');
    f.set('name', n);
    f.set('type', t);
-   var url = RService.url('logic.webform');
+   var url = RUiService.url('logic.webform');
    var doc = RConsole.find(FXmlConsole).send(url, doc);
    var r = doc.root();
    // 检查数据结果
@@ -195,7 +195,7 @@ function FDescribeFrameConsole_loadService(n, t){
 // @method
 // @return Integer 获得的表单ID
 //==========================================================
-function FDescribeFrameConsole_nextFormId(){
+function FUiDescribeFrameConsole_nextFormId(){
    return ++this.formId;
 }
 
@@ -206,7 +206,7 @@ function FDescribeFrameConsole_nextFormId(){
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-function FDescribeFrameConsole_get(n){
+function FUiDescribeFrameConsole_get(n){
    return this._defines.get(EForm.Form).get(n);
 }
 
@@ -217,7 +217,7 @@ function FDescribeFrameConsole_get(n){
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-function FDescribeFrameConsole_find(n, t){
+function FUiDescribeFrameConsole_find(n, t){
    var o = this;
    if(EForm.Lov == t){
       return o.findLov(n);
@@ -241,7 +241,7 @@ function FDescribeFrameConsole_find(n, t){
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-function FDescribeFrameConsole_getLov(n){
+function FUiDescribeFrameConsole_getLov(n){
    return this._defines.get(EForm.Lov).get(n);
 }
 
@@ -252,7 +252,7 @@ function FDescribeFrameConsole_getLov(n){
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-function FDescribeFrameConsole_findLov(n){
+function FUiDescribeFrameConsole_findLov(n){
    var o = this;
    var fc = o.getLov(n);
    if(!fc){
@@ -268,6 +268,6 @@ function FDescribeFrameConsole_findLov(n){
 // @param n:name:String 表单名称
 // @return TXmlDocument 节点对象
 //==========================================================
-function FDescribeFrameConsole_getEvents(n){
+function FUiDescribeFrameConsole_getEvents(n){
    return this.events.get(n);
 }

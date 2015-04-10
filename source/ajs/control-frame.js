@@ -29,7 +29,7 @@ function FUiFramePage_onBuild(p){
    var h = o._hPanel;
    if(o._scrollCd != EUiScroll.None){
       var hc = o._hContainer = RBuilder.appendDiv(h, o.styleName('Container'));
-      RControl.setStyleScroll(hc, o._scrollCd);
+      RUiControl.setStyleScroll(hc, o._scrollCd);
    }else{
       o._hContainer = h;
    }

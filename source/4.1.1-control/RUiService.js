@@ -5,16 +5,16 @@
 // @author maocy
 // @version 150119
 //===========================================================
-var RService = new function RService(){
+var RUiService = new function RUiService(){
    var o = this;
    //..........................................................
    // @attribute
    o._services = new TDictionary();
    //..........................................................
    // @method
-   o.url       = RService_url;
-   o.makeUrl   = RService_makeUrl;
-   o.parse     = RService_parse;
+   o.url       = RUiService_url;
+   o.makeUrl   = RUiService_makeUrl;
+   o.parse     = RUiService_parse;
    return o;
 }
 
@@ -25,7 +25,7 @@ var RService = new function RService(){
 // @param p:name:String 名称
 // @return String 服务地址
 //===========================================================
-function RService_url(p){
+function RUiService_url(p){
    if(RString.startsWith(p, 'http://')){
       return p;
    }
@@ -46,7 +46,7 @@ function RService_url(p){
 // @param p:source:String 来源
 // @return SServiceInfo 服务信息
 //===========================================================
-function RService_makeUrl(s, a){
+function RUiService_makeUrl(s, a){
    return this.url(s) + '?action=' + a;
 }
 
@@ -57,7 +57,7 @@ function RService_makeUrl(s, a){
 // @param p:source:String 来源
 // @return SServiceInfo 服务信息
 //===========================================================
-function RService_parse(p){
+function RUiService_parse(p){
    var o = this;
    var s = null;
    var ss = o._services;

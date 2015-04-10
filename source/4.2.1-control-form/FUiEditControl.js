@@ -77,8 +77,6 @@ function FUiEditControl(o){
    o.panel             = FUiEditControl_panel;
    o.label             = FUiEditControl_label;
    o.setLabel          = FUiEditControl_setLabel;
-   o.text              = FUiEditControl_text;
-   o.setText           = FUiEditControl_setText;
    o.getValueRectangle = FUiEditControl_getValueRectangle;
    // @method
    o.dispose           = FUiEditControl_dispose;
@@ -400,26 +398,6 @@ function FUiEditControl_setLabel(p){
    if(o._hText){
       o._hText.innerHTML = RString.nvl(p);
    }
-}
-
-//==========================================================
-// <T>获得显示内容。</T>
-//
-// @method
-// @return String 显示内容
-//==========================================================
-function FUiEditControl_text(){
-   throw new TUnsupportError(o, 'text');
-}
-
-//==========================================================
-// <T>设置显示内容。</T>
-//
-// @method
-// @param value:String 显示内容
-//==========================================================
-function FUiEditControl_setText(value){
-   throw new TUnsupportError(o, 'setText');
 }
 
 //==========================================================

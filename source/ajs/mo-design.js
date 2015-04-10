@@ -2281,7 +2281,7 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          var menuBar = RClass.create(FDsSolutionMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsSolutionFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsSolutionFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
@@ -2289,7 +2289,7 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          var menuBar = RClass.create(FDsProjectMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsProjectFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsProjectFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
@@ -2297,7 +2297,7 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          var menuBar = RClass.create(FDsResourceMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsResourceFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsResourceFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
@@ -2305,7 +2305,7 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          var menuBar = RClass.create(FDsMeshMenuBar);
          menuBar._workspace = o;
          menuBar.buildDefine(o._hPanel);
-         frameSet = RConsole.find(FFrameConsole).findByClass(o, FDsMeshFrameSet);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsMeshFrameSet);
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
@@ -7287,16 +7287,15 @@ function FDsMeshFrameSet_construct(){
    o.__base.FUiFrameSet.construct.call(o);
    o._propertyFrames = new TDictionary();
 }
-function FDsMeshFrameSet_findPropertyFrame(p){
+function FDsMeshFrameSet_findPropertyFrame(code){
    var o = this;
-   var f = o._propertyFrames.get(p);
-   if(!f){
-      var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._frameProperty._hContainer);
-      f._workspace = o;
-      o._propertyFrames.set(p, f);
+   var frame = o._propertyFrames.get(code);
+   if(!frame){
+      frame = RConsole.find(FUiFrameConsole).get(o, code, o._frameProperty._hContainer);
+      frame._workspace = o;
+      o._propertyFrames.set(code, frame);
    }
-   return f;
+   return frame;
 }
 function FDsMeshFrameSet_loadByGuid(guid){
    var o = this;
@@ -11476,14 +11475,13 @@ function FDsSceneWorkspace_construct(){
 }
 function FDsSceneWorkspace_findPropertyFrame(p){
    var o = this;
-   var f = o._propertyFrames.get(p);
-   if(!f){
-      var fc = RConsole.find(FFrameConsole);
-      f = fc.get(o, p, o._frameProperty._hContainer);
-      f._workspace = o;
-      o._propertyFrames.set(p, f);
+   var frame = o._propertyFrames.get(p);
+   if(!frame){
+      frame = RConsole.find(FUiFrameConsole).get(o, p, o._frameProperty._hContainer);
+      frame._workspace = o;
+      o._propertyFrames.set(p, frame);
    }
-   return f;
+   return frame;
 }
 function FDsSceneWorkspace_loadScene(p){
    var o = this;

@@ -67,18 +67,18 @@ function RMethod_isVirtual(v){
 // <T>获得函数的字符串名称。</T>
 //
 // @method
-// @param p:value:Function 函数对象
+// @param value:Function 函数对象
 // @return String 字符串名称
 //==========================================================
-function RMethod_name(p){
-   if(p){
-      if(typeof(p) == 'function'){
-         if(p.__name){
-            return p.__name;
+function RMethod_name(value){
+   if(value){
+      if(typeof(value) == 'function'){
+         if(value.__name){
+            return value.__name;
          }
-         var s = p.toString();
-         var n = p.__name = RString.mid(s, 'function ', '(');
-         return n;
+         var source = value.toString();
+         var name = value.__name = RString.mid(source, 'function ', '(');
+         return name;
       }
    }
    return null;
