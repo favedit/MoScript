@@ -1,31 +1,50 @@
 //==========================================================
 // <T>编辑内容的接口。</T>
+// <P>Text指显示内容，Value指数据内容，之间可以通过Formator进行转换。</T>
 //
 // @face
 // @author maocy
 // @version 150102
 //==========================================================
 function MUiEditValue(o){
-   o = RClass.inherits(this, o);
+   o = RClass.inherits(this, o， MUiEditFormator);
    //..........................................................
    // @property
-   o._dataValue = RClass.register(o, new APtyString('_dataValue'));
+   o._dataValue      = RClass.register(o, new APtyString('_dataValue'));
+   //..........................................................
+   // @attribute
+   o._statusEditable = true;
+   o._statusEditing  = false;
+   o._statusInvalid  = true;
+   // @attribute
+   o._recordText     = null;
+   o._recordValue    = null;
    //..........................................................
    // @method
-   o.get        = MUiEditValue_get;
-   o.set        = MUiEditValue_set;
+   o.isTextChanged   = MUiEditValue_isTextChanged;
+   o.isValueChanged  = MUiEditValue_isValueChanged;
+   // @method
+   o.formator        = MUiEditValue_formator;
+   o.text            = RMethod.virtual(o, 'text');
+   o.setText         = RMethod.virtual(o, 'setText');
+   o.get             = MUiEditValue_get;
+   o.set             = MUiEditValue_set;
+   // @method
+   o.clearValue      = MUiEditValue_clearValue;
+   o.resetValue      = MUiEditValue_resetValue;
+   o.loadValue       = MUiEditValue_loadValue;
+   o.saveValue       = MUiEditValue_saveValue;
+   o.recordValue     = MUiEditValue_recordValue;
+   o.validValue      = RMethod.empty;
+   // @method
+   o.setEditable     = MUiEditValue_setEditable;
+   o.doFocus         = MUiEditValue_doFocus;
+   o.doBlur          = MUiEditValue_doBlur;
 
    //..........................................................
    // @attribute
-   //o.__recordValue = null;
-   //o.__recordText  = null;
-   // @attribute
    //o._info         = null;
    //o._hover        = false;
-   //o._editable     = true;
-   //o._editing      = false;
-   //o._disbaled     = false;
-   //o._invalid      = false;
    //o._invalidText  = null;
    //..........................................................
    // @process
@@ -37,26 +56,46 @@ function MUiEditValue(o){
    //o.oeValidValue  = RMethod.empty;
    //..........................................................
    // @method
-   //o.descriptor    = MUiEditValue_descriptor;
-   //o.isTextChanged = MUiEditValue_isTextChanged;
-   //o.isDataChanged = MUiEditValue_isDataChanged;
-   //o.clearValue    = MUiEditValue_clearValue;
-   //o.resetValue    = MUiEditValue_resetValue;
-   //o.loadValue     = MUiEditValue_loadValue;
-   //o.saveValue     = MUiEditValue_saveValue;
-   //o.recordValue   = MUiEditValue_recordValue;
    //o.commitValue   = MUiEditValue_commitValue;
-   //o.validValue    = RMethod.empty;
-   //o.text          = RMethod.virtual(o, 'text');
-   //o.setText       = RMethod.virtual(o, 'setText');
    //o.reget         = MUiEditValue_reget;
    //o.setInfoPack   = MUiEditValue_setInfoPack;
    //o.setInfo       = MUiEditValue_setInfo;
-   //o.setEditable   = MUiEditValue_setEditable;
-   //o.doFocus       = MUiEditValue_doFocus;
-   //o.doBlur        = MUiEditValue_doBlur;
    //o.refreshStyle  = RMethod.virtual(o, 'refreshStyle');
    return o;
+}
+
+//==========================================================
+// <T>判断文本内容是否变更过。</T>
+//
+// @method
+// @return Boolean 是否改变
+//==========================================================
+function MUiEditValue_isTextChanged(){
+   var o = this;
+   var text = o.text();
+   return RString.equals(o._recordText, text);
+}
+
+//==========================================================
+// <T>判断数据内容是否变更过。</T>
+//
+// @method
+// @return Boolean 是否改变
+//==========================================================
+function MUiEditValue_isValueChanged(){
+   var o = this;
+   var value = o.get();
+   return RString.equals(o._recordValue, value);
+}
+
+//==========================================================
+// <T>获得编辑格式化器。</T>
+//
+// @method
+// @return MUiEditFormator 编辑格式化器
+//==========================================================
+function MUiEditValue_formator(){
+   return this;
 }
 
 //==========================================================
@@ -73,13 +112,130 @@ function MUiEditValue_get(){
 // <T>设置数据。</T>
 //
 // @method
-// @param p:value:String 数据
+// @param value:String 数据
 //==========================================================
-function MUiEditValue_set(p){
+function MUiEditValue_set(value){
    var o = this;
-   o._dataValue = RString.nvl(p);
-   //o.setText(o.descriptor().formatText(v));
+   // 设置数据
+   o._dataValue = RString.nvl(value);
+   // 设置文本
+   var text = o.formator().formatText(value)
+   o.setText(formator.formatText(v));
 }
+
+//==========================================================
+// <T>清空数据内容。</T>
+//
+// @method
+//==========================================================
+function MUiEditValue_clearValue(){
+   var o = this;
+   o._dataValue = RString.EMPTY;
+   o.set(RString.EMPTY);
+}
+
+//==========================================================
+// <T>重置数据内容。</T>
+//
+// @method
+//==========================================================
+function MUiEditValue_resetValue(){
+   var o = this;
+   //var v = RString.nvl(o.descriptor().dataDefault);
+   o._dataValue = value;
+   o.set(value);
+}
+
+//==========================================================
+// <T>加载数据内容。</T>
+//
+// @method
+//==========================================================
+function MUiEditValue_loadValue(c, t){
+   var o = this;
+   //var d = o.descriptor();
+   //if(EStore.Name == t){
+   //   o.set(c.get(d.name));
+   //}else if(EStore.DataNvl == t){
+   //   if(c.contains(d.dataName)){
+   //      o.set(c.get(d.dataName));
+   //   }
+   //}else if(EStore.Reset == t){
+   //   o.set(RString.EMPTY);
+   //}else{
+   //   o.set(c.get(d.dataName));
+   //}
+}
+
+//==========================================================
+// <T>保存数据内容。</T>
+//
+// @method
+//==========================================================
+function MUiEditValue_saveValue(c, t){
+   var o = this;
+   //var d = o.descriptor();
+   //if(EStore.Name == t){
+   //   c.set(d.name, o.reget());
+   //}else{
+   //   c.set(d.dataName, o.reget());
+   //}
+}
+
+//==========================================================
+// <T>提交数据到对象内部。</T>
+//
+// @method
+//==========================================================
+function MUiEditValue_recordValue(){
+   var o = this;
+   o._recordText = o.text();
+   o._recordValue = o.get();
+}
+
+//==========================================================
+// <T>设置编辑对象的可编辑性。</T>
+//
+// @method
+// @param flag:Boolean 可编辑性
+//==========================================================
+function MUiEditValue_setEditable(flag){
+   var o = this;
+   o._statusEditable = flag;
+   o.refreshStyle();
+}
+
+//==========================================================
+// <T>当前编辑对象获得焦点的处理。</T>
+//
+// @method
+//==========================================================
+function MUiEditValue_doFocus(){
+   var o = this;
+   if(o._statusEditable){
+      o._statusEditing = true;
+      //o.descriptor().onDataEditBegin(o);
+   }
+}
+
+//==========================================================
+// <T>当前编辑对象失去焦点的处理。</T>
+//
+// @method
+//==========================================================
+function MUiEditValue_doBlur(){
+   var o = this;
+   if(o._statusEditable && o._statusEditing){
+      //o.descriptor().onDataEditEnd(o);
+      o._statusEditing = false;
+   }
+}
+
+
+
+
+
+
 
 
 
@@ -183,107 +339,6 @@ function MUiEditValue_oeRecordValue(){
 }
 
 //==========================================================
-// <T>获得自身编辑对象的编辑描述器。</T>
-//
-// @method
-// @return MEditDescriptor 编辑描述器
-//==========================================================
-function MUiEditValue_descriptor(){
-   return this;
-}
-
-//==========================================================
-// <T>判断文本内容是否变更过。</T>
-// <P>文本内容变更，不一定数据内容也变更过。只有执行过recordValue后，文本内容和数据内容才能确保相同。</P>
-//
-// @method
-// @return Boolean 是否改变
-//==========================================================
-function MUiEditValue_isTextChanged(){
-   return RString.nvl(this.text()) != this.__recordText;
-}
-
-//==========================================================
-// <T>判断数据内容是否变更过。</T>
-//
-// @method
-// @return Boolean 是否改变
-//==========================================================
-function MUiEditValue_isDataChanged(){
-   return RString.nvl(this.reget()) != this.__recordValue;
-}
-
-//==========================================================
-// <T>清空数据内容。</T>
-//
-// @method
-//==========================================================
-function MUiEditValue_clearValue(){
-   var o = this;
-   o.set(RString.EMPTY);
-   o.dataValue = RString.EMPTY;
-}
-
-//==========================================================
-// <T>重置数据内容。</T>
-//
-// @method
-//==========================================================
-function MUiEditValue_resetValue(){
-   var o = this;
-   var v = RString.nvl(o.descriptor().dataDefault);
-   o.set(v);
-   o.dataValue = v;
-}
-
-//==========================================================
-// <T>加载数据内容。</T>
-//
-// @method
-//==========================================================
-function MUiEditValue_loadValue(c, t){
-   var o = this;
-   var d = o.descriptor();
-   if(EStore.Name == t){
-      o.set(c.get(d.name));
-   }else if(EStore.DataNvl == t){
-      if(c.contains(d.dataName)){
-         o.set(c.get(d.dataName));
-      }
-   }else if(EStore.Reset == t){
-      o.set(RString.EMPTY);
-   }else{
-      o.set(c.get(d.dataName));
-   }
-}
-
-//==========================================================
-// <T>保存数据内容。</T>
-//
-// @method
-//==========================================================
-function MUiEditValue_saveValue(c, t){
-   var o = this;
-   var d = o.descriptor();
-   if(EStore.Name == t){
-      c.set(d.name, o.reget());
-   }else{
-      c.set(d.dataName, o.reget());
-   }
-}
-
-//==========================================================
-// <T>提交数据到对象内部。</T>
-//
-// @method
-//==========================================================
-function MUiEditValue_recordValue(){
-   var o = this;
-   o.__recordText = RString.nvl(o.text());
-   o.__recordValue = RString.nvl(o.reget());
-}
-
-//==========================================================
 // <T>记录正确值。</T>
 //
 // @method
@@ -332,42 +387,4 @@ function MUiEditValue_setInfoPack(v){
 //==========================================================
 function MUiEditValue_setInfo(f){
    this.set(f.value);
-}
-
-//==========================================================
-// <T>设置编辑对象的可编辑性。</T>
-//
-// @method
-// @param v:value:Boolean 可编辑性
-//==========================================================
-function MUiEditValue_setEditable(v){
-   var o = this;
-   o._editable = v;
-   o.refreshStyle();
-}
-
-//==========================================================
-// <T>当前编辑对象获得焦点的处理。</T>
-//
-// @method
-//==========================================================
-function MUiEditValue_doFocus(){
-   var o = this;
-   if(o._editable){
-      o._editing = true;
-      o.descriptor().onDataEditBegin(o);
-   }
-}
-
-//==========================================================
-// <T>当前编辑对象失去焦点的处理。</T>
-//
-// @method
-//==========================================================
-function MUiEditValue_doBlur(){
-   var o = this;
-   if(o._editable && o._editing){
-      o.descriptor().onDataEditEnd(o);
-      o._editing = false;
-   }
 }
