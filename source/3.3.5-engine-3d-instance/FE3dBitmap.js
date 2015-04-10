@@ -19,6 +19,7 @@ function FE3dBitmap(o){
    o.setRenderable = FE3dBitmap_setRenderable;
    o.processLoad   = FE3dBitmap_processLoad;
    o.process       = FE3dBitmap_process;
+   o.loadUrl       = FE3dBitmap_loadUrl;
    return o;
 }
 
@@ -85,4 +86,14 @@ function FE3dBitmap_processLoad(){
 function FE3dBitmap_process(){
    var o = this;
    o.__base.FE3dMeshRenderable.process.call(o);
+}
+
+//==========================================================
+// <T>加载位图处理。</T>
+//
+// @method
+//==========================================================
+function FE3dBitmap_loadUrl(context, url){
+   var o = this;
+   o._renderable = RConsole.find(FE3rBitmapConsole).loadUrl(context, url);
 }

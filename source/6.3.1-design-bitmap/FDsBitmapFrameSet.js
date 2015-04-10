@@ -88,12 +88,13 @@ function FDsBitmapFrameSet_onBuilded(p){
    toolbar.buildDefine(p);
    frame.push(toolbar);
    // 设置目录栏
-   var catalog = o._catalog = RClass.create(FDsBitmapCatalog);
-   catalog._frameSet = o;
-   catalog._workspace = o._worksapce;
-   catalog.build(p);
-   catalog.addSelectedListener(o, o.onCatalogSelected);
-   o._frameCatalog.push(catalog);
+   var frame = o._catalogContentFrame = o.searchControl('catalogContentFrame');
+   var catalogContent = o._catalogContent = RClass.create(FDsBitmapCatalogContent);
+   catalogContent._frameSet = o;
+   catalogContent._workspace = o._worksapce;
+   catalogContent.build(p);
+   //catalogContent.addSelectedListener(o, o.onCatalogSelected);
+   frame.push(catalogContent);
    //..........................................................
    // 设置画板工具栏
    var frame = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
@@ -104,12 +105,12 @@ function FDsBitmapFrameSet_onBuilded(p){
    toolbar.buildDefine(p);
    frame.push(toolbar);
    // 设置画板
-   var frame = o._canvasFrame = o.searchControl('canvasFrame');
-   var canvas = o._canvas = RClass.create(FDsBitmapCanvas);
+   var frame = o._canvasContentFrame = o.searchControl('canvasContentFrame');
+   var canvas = o._canvasContent = RClass.create(FDsBitmapCanvasContent);
    canvas._frameSet = o;
    canvas._workspace = o._workspace;
    canvas._toolbar = o._canvasToolbar;
-   canvas.addLoadListener(o, o.onMeshLoad);
+   //canvas.addLoadListener(o, o.onMeshLoad);
    canvas._hParent = frame._hPanel;
    canvas._hParent.style.backgroundColor = '#333333';
    canvas._hParent.style.scroll = 'auto';
@@ -244,8 +245,8 @@ function FDsBitmapFrameSet_findPropertyFrame(code){
 //==========================================================
 function FDsBitmapFrameSet_loadByGuid(guid){
    var o = this;
-   //o._meshGuid = guid;
-   //o._canvas.loadByGuid(guid);
+   o._activeGuid = guid;
+   o._catalogContent.serviceList(guid);
 }
 
 //==========================================================

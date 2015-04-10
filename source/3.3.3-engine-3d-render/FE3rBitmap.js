@@ -14,6 +14,11 @@ function FE3rBitmap(o){
    o._indexBuffer      = null;
    o._material         = null;
    o._textures         = null;
+   // @attribute
+   o._image            = null;
+   //..........................................................
+   // @event
+   o.onImageLoad       = FE3rBitmap_onImageLoad;
    //..........................................................
    // @method
    o.construct         = FE3rBitmap_construct;
@@ -29,7 +34,18 @@ function FE3rBitmap(o){
    o.textures          = FE3rBitmap_textures;
    // @method
    o.setup             = FE3rBitmap_setup;
+   o.loadUrl           = FE3rBitmap_loadUrl;
    return o;
+}
+
+//==========================================================
+// <T>构造处理。</T>
+//
+// @method
+//==========================================================
+function FE3rBitmap_onImageLoad(event){
+   var o = this;
+   debugger
 }
 
 //==========================================================
@@ -188,14 +204,14 @@ function FE3rBitmap_textures(){
 //==========================================================
 function FE3rBitmap_setup(){
    var o = this;
-   var g = o._graphicContext;
+   var context = o._graphicContext;
    // 设置顶点数据
    var data = [
       -1.0,  1.0, 0.0,
        1.0,  1.0, 0.0,
        1.0, -1.0, 0.0,
       -1.0, -1.0, 0.0 ];
-   var buffer = o._vertexPositionBuffer = g.createVertexBuffer();
+   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
    buffer.upload(data, 4 * 3, 4);
    // 设置颜色数据
    var data = [
@@ -203,11 +219,25 @@ function FE3rBitmap_setup(){
       1.0, 0.0, 0.0, 1.0,
       1.0, 0.0, 0.0, 1.0,
       0.0, 0.0, 0.0, 1.0 ];
-   var buffer = o._vertexColorBuffer = g.createVertexBuffer();
+   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
    buffer.upload(data, 4 * 4, 4);
    // 设置索引数据
    var data = [0, 1, 2, 0, 2, 3];
    var buffer = o._indexBuffer = context.createIndexBuffer();
    buffer.upload(data, 6);
    return true;
+}
+
+//==========================================================
+// <T>加载处理。</T>
+//
+// @method
+//==========================================================
+function FE3rBitmap_loadUrl(context, url){
+   var o = this;
+   o.linkGraphicContext(context);
+   o.setup();
+   var image = o._image = RClass.create(FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl(url);
 }

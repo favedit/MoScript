@@ -4326,6 +4326,8 @@ function FE3rBitmap(o){
    o._indexBuffer      = null;
    o._material         = null;
    o._textures         = null;
+   o._image            = null;
+   o.onImageLoad       = FE3rBitmap_onImageLoad;
    o.construct         = FE3rBitmap_construct;
    o.testReady         = FE3rBitmap_testReady;
    o.vertexCount       = FE3rBitmap_vertexCount;
@@ -4336,7 +4338,12 @@ function FE3rBitmap(o){
    o.findTexture       = FE3rBitmap_findTexture;
    o.textures          = FE3rBitmap_textures;
    o.setup             = FE3rBitmap_setup;
+   o.loadUrl           = FE3rBitmap_loadUrl;
    return o;
+}
+function FE3rBitmap_onImageLoad(event){
+   var o = this;
+   debugger
 }
 function FE3rBitmap_construct(){
    var o = this;
@@ -4403,25 +4410,33 @@ function FE3rBitmap_textures(){
 }
 function FE3rBitmap_setup(){
    var o = this;
-   var g = o._graphicContext;
+   var context = o._graphicContext;
    var data = [
       -1.0,  1.0, 0.0,
        1.0,  1.0, 0.0,
        1.0, -1.0, 0.0,
       -1.0, -1.0, 0.0 ];
-   var buffer = o._vertexPositionBuffer = g.createVertexBuffer();
+   var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
    buffer.upload(data, 4 * 3, 4);
    var data = [
       0.0, 1.0, 0.0, 1.0,
       1.0, 0.0, 0.0, 1.0,
       1.0, 0.0, 0.0, 1.0,
       0.0, 0.0, 0.0, 1.0 ];
-   var buffer = o._vertexColorBuffer = g.createVertexBuffer();
+   var buffer = o._vertexColorBuffer = context.createVertexBuffer();
    buffer.upload(data, 4 * 4, 4);
    var data = [0, 1, 2, 0, 2, 3];
    var buffer = o._indexBuffer = context.createIndexBuffer();
    buffer.upload(data, 6);
    return true;
+}
+function FE3rBitmap_loadUrl(context, url){
+   var o = this;
+   o.linkGraphicContext(context);
+   o.setup();
+   var image = o._image = RClass.create(FImage);
+   image.addLoadListener(o, o.onImageLoad);
+   image.loadUrl(url);
 }
 function FE3rBitmapConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -4431,6 +4446,7 @@ function FE3rBitmapConsole(o){
    o.construct = FE3rBitmapConsole_construct;
    o.bitmaps   = FE3rBitmapConsole_bitmaps;
    o.load      = FE3rBitmapConsole_load;
+   o.loadUrl   = FE3rBitmapConsole_loadUrl;
    return o;
 }
 function FE3rBitmapConsole_construct(){
@@ -4459,6 +4475,19 @@ function FE3rBitmapConsole_load(pc, pg, pt){
    t.load(u);
    o._bitmaps.set(pg, t);
    return t;
+}
+function FE3rBitmapConsole_loadUrl(context, url){
+   var o = this;
+   var bitmap = o._bitmaps.get(url);
+   if(bitmap){
+      return bitmap;
+   }
+   var loadUrl = RBrowser.contentPath(url);
+   RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+   var bitmap = RClass.create(FE3rBitmap);
+   bitmap.loadUrl(context, url);
+   o._bitmaps.set(url, bitmap);
+   return bitmap;
 }
 function FE3rBone(o){
    o = RClass.inherits(this, o, FObject);
@@ -6508,6 +6537,7 @@ function FE3dBitmap(o){
    o.setRenderable = FE3dBitmap_setRenderable;
    o.processLoad   = FE3dBitmap_processLoad;
    o.process       = FE3dBitmap_process;
+   o.loadUrl       = FE3dBitmap_loadUrl;
    return o;
 }
 function FE3dBitmap_construct(){
@@ -6537,6 +6567,10 @@ function FE3dBitmap_processLoad(){
 function FE3dBitmap_process(){
    var o = this;
    o.__base.FE3dMeshRenderable.process.call(o);
+}
+function FE3dBitmap_loadUrl(context, url){
+   var o = this;
+   o._renderable = RConsole.find(FE3rBitmapConsole).loadUrl(context, url);
 }
 function FE3dBoundBox(o){
    o = RClass.inherits(this, o, FE3dRenderable);

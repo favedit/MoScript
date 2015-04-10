@@ -17,6 +17,7 @@ function FE3dBitmap(o){
    o.setRenderable = FE3dBitmap_setRenderable;
    o.processLoad   = FE3dBitmap_processLoad;
    o.process       = FE3dBitmap_process;
+   o.loadUrl       = FE3dBitmap_loadUrl;
    return o;
 }
 function FE3dBitmap_construct(){
@@ -46,6 +47,10 @@ function FE3dBitmap_processLoad(){
 function FE3dBitmap_process(){
    var o = this;
    o.__base.FE3dMeshRenderable.process.call(o);
+}
+function FE3dBitmap_loadUrl(context, url){
+   var o = this;
+   o._renderable = RConsole.find(FE3rBitmapConsole).loadUrl(context, url);
 }
 function FE3dBoundBox(o){
    o = RClass.inherits(this, o, FE3dRenderable);

@@ -18,6 +18,7 @@ function FE3rBitmapConsole(o){
    // @method
    o.bitmaps   = FE3rBitmapConsole_bitmaps;
    o.load      = FE3rBitmapConsole_load;
+   o.loadUrl   = FE3rBitmapConsole_loadUrl;
    return o;
 }
 
@@ -72,4 +73,29 @@ function FE3rBitmapConsole_load(pc, pg, pt){
    t.load(u);
    o._bitmaps.set(pg, t);
    return t;
+}
+
+//==========================================================
+// <T>加载一个模型。</T>
+//
+// @method
+// @param context:FRenderContext 渲染上下文
+// @param url:String 网络地址
+// @return FE3rBitmap 渲染位图
+//==========================================================
+function FE3rBitmapConsole_loadUrl(context, url){
+   var o = this;
+   // 查找图片
+   var bitmap = o._bitmaps.get(url);
+   if(bitmap){
+      return bitmap;
+   }
+   // 生成地址
+   var loadUrl = RBrowser.contentPath(url);
+   RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
+   // 创建渲染位图
+   var bitmap = RClass.create(FE3rBitmap);
+   bitmap.loadUrl(context, url);
+   o._bitmaps.set(url, bitmap);
+   return bitmap;
 }

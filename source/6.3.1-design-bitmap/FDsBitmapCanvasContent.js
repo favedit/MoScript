@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150130
 //==========================================================
-function FDsBitmapCanvas(o){
+function FDsBitmapCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
    //..........................................................
    // @attribute
@@ -42,35 +42,34 @@ function FDsBitmapCanvas(o){
    o._templateViewScale   = 0.05;
    //..........................................................
    // @event
-   o.onBuild              = FDsBitmapCanvas_onBuild;
-   o.onMouseCaptureStart  = FDsBitmapCanvas_onMouseCaptureStart;
-   o.onMouseCapture       = FDsBitmapCanvas_onMouseCapture;
-   o.onMouseCaptureStop   = FDsBitmapCanvas_onMouseCaptureStop;
-   o.onEnterFrame         = FDsBitmapCanvas_onEnterFrame;
-   o.onMeshLoad           = FDsBitmapCanvas_onMeshLoad;
+   o.onBuild              = FDsBitmapCanvasContent_onBuild;
+   o.onMouseCaptureStart  = FDsBitmapCanvasContent_onMouseCaptureStart;
+   o.onMouseCapture       = FDsBitmapCanvasContent_onMouseCapture;
+   o.onMouseCaptureStop   = FDsBitmapCanvasContent_onMouseCaptureStop;
+   o.onEnterFrame         = FDsBitmapCanvasContent_onEnterFrame;
+   o.onLoaded             = FDsBitmapCanvasContent_onLoaded;
    //..........................................................
-   o.oeResize             = FDsBitmapCanvas_oeResize;
-   o.oeRefresh            = FDsBitmapCanvas_oeRefresh;
+   o.oeResize             = FDsBitmapCanvasContent_oeResize;
+   o.oeRefresh            = FDsBitmapCanvasContent_oeRefresh;
    //..........................................................
    // @method
-   o.construct            = FDsBitmapCanvas_construct;
+   o.construct            = FDsBitmapCanvasContent_construct;
    // @method
-   o.innerSelectDisplay   = FDsBitmapCanvas_innerSelectDisplay;
-   o.innerSelectLayer     = FDsBitmapCanvas_innerSelectLayer;
-   o.selectNone           = FDsBitmapCanvas_selectNone;
-   o.selectDisplay        = FDsBitmapCanvas_selectDisplay;
-   o.selectMaterial       = FDsBitmapCanvas_selectMaterial;
-   o.selectRenderable     = FDsBitmapCanvas_selectRenderable;
-   o.switchSize           = FDsBitmapCanvas_switchSize;
-   o.switchDimensional    = FDsBitmapCanvas_switchDimensional;
-   o.switchRotation       = FDsBitmapCanvas_switchRotation;
-   o.viewAutoSize         = FDsBitmapCanvas_viewAutoSize;
-   o.reloadRegion         = FDsBitmapCanvas_reloadRegion;
-   o.capture              = FDsBitmapCanvas_capture;
-   o.loadByGuid           = FDsBitmapCanvas_loadByGuid;
-   o.loadByCode           = FDsBitmapCanvas_loadByCode;
+   o.innerSelectDisplay   = FDsBitmapCanvasContent_innerSelectDisplay;
+   o.innerSelectLayer     = FDsBitmapCanvasContent_innerSelectLayer;
+   o.selectNone           = FDsBitmapCanvasContent_selectNone;
+   o.selectDisplay        = FDsBitmapCanvasContent_selectDisplay;
+   o.selectMaterial       = FDsBitmapCanvasContent_selectMaterial;
+   o.selectRenderable     = FDsBitmapCanvasContent_selectRenderable;
+   o.switchSize           = FDsBitmapCanvasContent_switchSize;
+   o.switchDimensional    = FDsBitmapCanvasContent_switchDimensional;
+   o.switchRotation       = FDsBitmapCanvasContent_switchRotation;
+   o.viewAutoSize         = FDsBitmapCanvasContent_viewAutoSize;
+   o.reloadRegion         = FDsBitmapCanvasContent_reloadRegion;
+   o.capture              = FDsBitmapCanvasContent_capture;
+   o.loadByGuid           = FDsBitmapCanvasContent_loadByGuid;
    // @method
-   o.dispose              = FDsBitmapCanvas_dispose;
+   o.dispose              = FDsBitmapCanvasContent_dispose;
    return o;
 }
 
@@ -80,17 +79,17 @@ function FDsBitmapCanvas(o){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsBitmapCanvas_onBuild(p){
+function FDsBitmapCanvasContent_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
    // 创建简单舞台
-   //var g = o._activeStage = RClass.create(FE3dSimpleStage);
-   //g.linkGraphicContext(o);
-   //g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
-   //g.selectTechnique(o, FE3dGeneralTechnique);
+   var space = o._activeSpace = RClass.create(FE3dSimpleStage);
+   space.linkGraphicContext(o);
+   space.selectTechnique(o, FE3dGeneralTechnique);
+   space.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
+   RStage.register('space', space);
    //g.addEnterFrameListener(o, o.onEnterFrame);
-   //var sl = o._layer = o._activeStage.spriteLayer();
-   //RStage.register('stage3d', o._activeStage);
+   //var sl = o._layer = o._activeSpace.spriteLayer();
    // 设置相机
    //var rc = g.camera();
    //rc.setPosition(0, 3, -10);
@@ -110,8 +109,6 @@ function FDsBitmapCanvas_onBuild(p){
    //lc.update();
    // 设置坐标系
    //sl.pushRenderable(o._dimensional);
-
-
    //var o = this;
    //o.__base.FDsCanvas.onBuild.call(o, p);
    // 创建界面控制器
@@ -134,7 +131,7 @@ function FDsBitmapCanvas_onBuild(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsBitmapCanvas_onMouseCaptureStart(p){
+function FDsBitmapCanvasContent_onMouseCaptureStart(p){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -175,7 +172,7 @@ function FDsBitmapCanvas_onMouseCaptureStart(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsBitmapCanvas_onMouseCapture(p){
+function FDsBitmapCanvasContent_onMouseCapture(p){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -261,7 +258,7 @@ function FDsBitmapCanvas_onMouseCapture(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsBitmapCanvas_onMouseCaptureStop(p){
+function FDsBitmapCanvasContent_onMouseCaptureStop(p){
    var o = this;
    // 设置鼠标
    RHtml.cursorSet(o._hPanel, EUiCursor.Auto);
@@ -272,7 +269,7 @@ function FDsBitmapCanvas_onMouseCaptureStop(p){
 //
 // @method
 //==========================================================
-function FDsBitmapCanvas_onEnterFrame(){
+function FDsBitmapCanvasContent_onEnterFrame(){
    var o = this;
    var s = o._activeSpace;
    if(!s){
@@ -342,7 +339,7 @@ function FDsBitmapCanvas_onEnterFrame(){
 // @method
 // @param p:template:FTemplate3d 模板
 //==========================================================
-function FDsBitmapCanvas_onMeshLoad(p){
+function FDsBitmapCanvasContent_onLoaded(p){
    var o = this;
    var m = o._activeSpace;
    var g = m.region();
@@ -374,7 +371,7 @@ function FDsBitmapCanvas_onMeshLoad(p){
 //
 // @method
 //==========================================================
-function FDsBitmapCanvas_oeResize(p){
+function FDsBitmapCanvasContent_oeResize(p){
    var o = this;
    o.__base.FDsCanvas.oeResize.call(o, p);
    // 获得大小
@@ -397,7 +394,7 @@ function FDsBitmapCanvas_oeResize(p){
 //
 // @method
 //==========================================================
-function FDsBitmapCanvas_oeRefresh(p){
+function FDsBitmapCanvasContent_oeRefresh(p){
    return EEventStatus.Stop;
 }
 
@@ -406,7 +403,7 @@ function FDsBitmapCanvas_oeRefresh(p){
 //
 // @method
 //==========================================================
-function FDsBitmapCanvas_construct(){
+function FDsBitmapCanvasContent_construct(){
    var o = this;
    o.__base.FDsCanvas.construct.call(o);
    o._autoDistance = new SPoint3(6, 6, 6);
@@ -427,7 +424,7 @@ function FDsBitmapCanvas_construct(){
 // @method
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FDsBitmapCanvas_innerSelectDisplay(p){
+function FDsBitmapCanvasContent_innerSelectDisplay(p){
    var o = this;
    // 选中集合
    var s = p.renderables();
@@ -447,7 +444,7 @@ function FDsBitmapCanvas_innerSelectDisplay(p){
 // @method
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FDsBitmapCanvas_innerSelectLayer(p){
+function FDsBitmapCanvasContent_innerSelectLayer(p){
    var o = this;
    // 选中集合
    var s = p.displays();
@@ -463,7 +460,7 @@ function FDsBitmapCanvas_innerSelectLayer(p){
 //
 // @method
 //==========================================================
-function FDsBitmapCanvas_selectNone(){
+function FDsBitmapCanvasContent_selectNone(){
    var o = this;
    o._selectObject = null;
    // 取消所有选中对象
@@ -482,7 +479,7 @@ function FDsBitmapCanvas_selectNone(){
 // @method
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FDsBitmapCanvas_selectDisplay(p){
+function FDsBitmapCanvasContent_selectDisplay(p){
    var o = this;
    // 取消选中
    o.selectNone();
@@ -498,7 +495,7 @@ function FDsBitmapCanvas_selectDisplay(p){
 // @method
 // @param p:material:FG3dMaterial 渲染材质
 //==========================================================
-function FDsBitmapCanvas_selectMaterial(p){
+function FDsBitmapCanvasContent_selectMaterial(p){
    var o = this;
    // 取消选中
    o.selectNone();
@@ -524,7 +521,7 @@ function FDsBitmapCanvas_selectMaterial(p){
 // @method
 // @param p:renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FDsBitmapCanvas_selectRenderable(p){
+function FDsBitmapCanvasContent_selectRenderable(p){
    var o = this;
    return;
    var sr = p;
@@ -631,7 +628,7 @@ function FDsBitmapCanvas_selectRenderable(p){
 // @method
 // @param p:modeCd:Integer 
 //==========================================================
-function FDsBitmapCanvas_switchMode(p){
+function FDsBitmapCanvasContent_switchMode(p){
    var o = this;
    o._canvasModeCd = p;
    // 设置变量
@@ -645,7 +642,7 @@ function FDsBitmapCanvas_switchMode(p){
 // @param width:Integer 宽度
 // @param height:Integer 高度
 //==========================================================
-function FDsBitmapCanvas_switchSize(width, height){
+function FDsBitmapCanvasContent_switchSize(width, height){
    var o = this;
    o._switchWidth = width;
    o._switchHeight = height;
@@ -680,7 +677,7 @@ function FDsBitmapCanvas_switchSize(width, height){
 // @method
 // @param p:modeCd:Integer 
 //==========================================================
-function FDsBitmapCanvas_switchDimensional(visible, width, height){
+function FDsBitmapCanvasContent_switchDimensional(visible, width, height){
    var o = this;
    o._dimensional.setVisible(visible);
    var matrix = o._dimensional.matrix();
@@ -699,7 +696,7 @@ function FDsBitmapCanvas_switchDimensional(visible, width, height){
 // @method
 // @param p:modeCd:Integer 
 //==========================================================
-function FDsBitmapCanvas_switchRotation(p){
+function FDsBitmapCanvasContent_switchRotation(p){
    this._optionRotation = p;
 }
 
@@ -708,7 +705,7 @@ function FDsBitmapCanvas_switchRotation(p){
 //
 // @method
 //==========================================================
-function FDsBitmapCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ){
+function FDsBitmapCanvasContent_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, rotationZ){
    var o = this;
    var outline = o._autoOutline;
    // 获得矩阵
@@ -779,7 +776,7 @@ function FDsBitmapCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY,
 // @method
 // @param region:FE3dRegion 区域
 //==========================================================
-function FDsBitmapCanvas_reloadRegion(region){
+function FDsBitmapCanvasContent_reloadRegion(region){
    var o = this;
    var resource = region.resource();
    o._cameraMoveRate = resource.moveSpeed();
@@ -793,7 +790,7 @@ function FDsBitmapCanvas_reloadRegion(region){
 // @method
 // @param region:FE3dRegion 区域
 //==========================================================
-function FDsBitmapCanvas_capture(){
+function FDsBitmapCanvasContent_capture(){
    var o = this;
    var space = o._activeSpace;
    var guid = space._resource._guid;
@@ -822,45 +819,25 @@ function FDsBitmapCanvas_capture(){
 //
 // @method
 //==========================================================
-function FDsBitmapCanvas_loadByGuid(guid){
+function FDsBitmapCanvasContent_loadByGuid(guid){
    var o = this;
    // 显示加载进度
-   RConsole.find(FUiDesktopConsole).showLoading();
+   //RConsole.find(FUiDesktopConsole).showLoading();
    // 释放网格
-   var rmc = RConsole.find(FE3dMeshConsole);
-   if(o._activeSpace != null){
-      rmc.free(o._activeSpace);
-   }
+   var url = '/cloud.content2d.bitmap.image.wv?do=view&guid=' + guid;
+   var bitmap = RClass.create(FE3dBitmap)
+   bitmap.loadUrl(o, url);
+   //var rmc = RConsole.find(FE3dMeshConsole);
+   //if(o._activeSpace != null){
+   //   rmc.free(o._activeSpace);
+   //}
    // 收集一个显示模板
-   var space = o._activeSpace = rmc.allocByGuid(o, guid);
-   space.addLoadListener(o, o.onMeshLoad);
+   //var space = o._activeSpace = rmc.allocByGuid(o, guid);
+   //space.addLoadListener(o, o.onLoaded);
    // 设置坐标系
-   space._layer.pushRenderable(o._dimensional);
+   //space._layer.pushRenderable(o._dimensional);
    // 启动舞台
-   RStage.register('space', space);
-}
-
-//==========================================================
-// <T>加载模板处理。</T>
-//
-// @method
-//==========================================================
-function FDsBitmapCanvas_loadByCode(p){
-   var o = this;
-   // 显示加载进度
-   RConsole.find(FUiDesktopConsole).showLoading();
-   // 释放网格
-   var rmc = RConsole.find(FE3dMeshConsole);
-   if(o._activeSpace != null){
-      rmc.free(o._activeSpace);
-   }
-   // 收集一个显示模板
-   var space = o._activeSpace = rmc.allocByCode(o, p);
-   space.addLoadListener(o, o.onMeshLoad);
-   // 设置坐标系
-   space._layer.pushRenderable(o._dimensional);
-   // 启动舞台
-   RStage.register('space', space);
+   //RStage.register('space', space);
 }
 
 //==========================================================
@@ -868,10 +845,10 @@ function FDsBitmapCanvas_loadByCode(p){
 //
 // @method
 //==========================================================
-function FDsBitmapCanvas_dispose(){
+function FDsBitmapCanvasContent_dispose(){
    var o = this;
    // 释放旋转
    o._rotation = RObject.dispose(o._rotation);
-x   // 父处理
+   // 父处理
    o.__base.FDsCanvas.dispose.call(o);
 }

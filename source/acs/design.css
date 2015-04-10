@@ -411,6 +411,23 @@
 }
 
 /* ------------------------------------------------------ */
+/* FDsBitmapCatalogItem                                   */
+/* ------------------------------------------------------ */
+.FDsBitmapCatalogItem_TypePanel{
+   padding: 4px;
+}
+
+.FDsBitmapCatalogItem_TypeLabel{
+   text-align: left;
+   width: 80px;
+   padding: 2px 8px 2px;
+   color: #CCCCCC;
+   z-index: 1;
+   border: 1px solid #999999;
+   background: rgba(1, 1, 1, 0.6);
+}
+
+/* ------------------------------------------------------ */
 /* FDsBitmapFrameSet                                   */
 /* ------------------------------------------------------ */
 .FDsBitmapFrameSet_ToolBar_Ground{

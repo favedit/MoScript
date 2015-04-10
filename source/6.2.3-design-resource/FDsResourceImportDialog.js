@@ -87,7 +87,14 @@ function FDsResourceImportDialog_onFileLoaded(event){
    var code = o._controlCode.get();
    var label = o._controlLabel.get();
    // 上传数据
-   var url = '/cloud.content.' + o._modeCd + '.wv?do=importData';
+   var url = null;
+   if(o._modeCd == 'picture'){
+      url = '/cloud.content2d.bitmap.wv?do=importData';
+   }else if(o._modeCd == 'mesh'){
+      url = '/cloud.content.mesh.wv?do=importData';
+   }else{
+      throw new TError(o, 'Mode is invalid.');
+   }
    if(o._nodeGuid){
       url += '&node_guid=' + o._nodeGuid;
    }
