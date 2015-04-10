@@ -133,40 +133,22 @@ function FE3rBitmap(o){
 }
 function FE3rBitmap_onImageLoad(event){
    var o = this;
-   debugger
+   var context = o._graphicContext;
+   var image = event.image();
+   var texture = o._imageTexture = context.createFlatTexture();
+   texture.upload(image);
+   o._textures.set('diffuse', texture);
+   o._ready = true;
+   event.dispose();
 }
 function FE3rBitmap_construct(){
    var o = this;
    o.__base.FE3rObject.construct.call(o);
    o._vertexBuffers = new TObjects();
+   o._textures = new TDictionary();
 }
 function FE3rBitmap_testReady(){
-   var o = this;
-   if(!o._ready){
-      if(!o._resource.testReady()){
-         return false;
-      }
-      var ts = o._textures;
-      if(ts != null){
-         var c = ts.count();
-         for(var i = 0; i < c; i++){
-            var t = ts.value(i);
-            if(!t.testReady()){
-               return false;
-            }
-         }
-      }
-   }
-   return o._ready;
-}
-function FE3rBitmap_guid(){
-   return this._resource.guid();
-}
-function FE3rBitmap_resource(){
-   return this._resource;
-}
-function FE3rBitmap_setResource(p){
-   this._resource = p;
+   return this._ready;
 }
 function FE3rBitmap_vertexCount(){
    return this._vertexCount;
@@ -202,23 +184,28 @@ function FE3rBitmap_setup(){
    var o = this;
    var context = o._graphicContext;
    var data = [
-      -1.0,  1.0, 0.0,
-       1.0,  1.0, 0.0,
-       1.0, -1.0, 0.0,
-      -1.0, -1.0, 0.0 ];
+      -1,  1, 0,
+       1,  1, 0,
+       1, -1, 0,
+      -1, -1, 0 ];
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+   buffer._name = 'position';
+   buffer._formatCd = EG3dAttributeFormat.Float3;
    buffer.upload(data, 4 * 3, 4);
+   o._vertexBuffers.push(buffer);
    var data = [
-      0.0, 1.0, 0.0, 1.0,
-      1.0, 0.0, 0.0, 1.0,
-      1.0, 0.0, 0.0, 1.0,
-      0.0, 0.0, 0.0, 1.0 ];
+      0, 1,
+      1, 1,
+      1, 0,
+      0, 0];
    var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-   buffer.upload(data, 4 * 4, 4);
+   buffer._name = 'coord';
+   buffer._formatCd = EG3dAttributeFormat.Float2;
+   buffer.upload(data, 4 * 2, 4);
+   o._vertexBuffers.push(buffer);
    var data = [0, 1, 2, 0, 2, 3];
    var buffer = o._indexBuffer = context.createIndexBuffer();
    buffer.upload(data, 6);
-   return true;
 }
 function FE3rBitmap_loadUrl(context, url){
    var o = this;

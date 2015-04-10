@@ -9,15 +9,20 @@ var EE3dScene = new function EE3dScene(){
 }
 function FE3dBitmap(o){
    o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
-   o._ready        = false;
-   o._renderable   = null;
-   o.construct     = FE3dBitmap_construct;
-   o.testReady     = FE3dBitmap_testReady;
-   o.renderable    = FE3dBitmap_renderable;
-   o.setRenderable = FE3dBitmap_setRenderable;
-   o.processLoad   = FE3dBitmap_processLoad;
-   o.process       = FE3dBitmap_process;
-   o.loadUrl       = FE3dBitmap_loadUrl;
+   o._ready           = false;
+   o._renderable      = null;
+   o.construct        = FE3dBitmap_construct;
+   o.testReady        = FE3dBitmap_testReady;
+   o.renderable       = FE3dBitmap_renderable;
+   o.setRenderable    = FE3dBitmap_setRenderable;
+   o.vertexBuffers    = FE3dBitmap_vertexBuffers;
+   o.indexBuffer      = FE3dBitmap_indexBuffer;
+   o.findVertexBuffer = FE3dBitmap_findVertexBuffer;
+   o.findTexture      = FE3dBitmap_findTexture;
+   o.textures         = FE3dBitmap_textures;
+   o.processLoad      = FE3dBitmap_processLoad;
+   o.process          = FE3dBitmap_process;
+   o.loadUrl          = FE3dBitmap_loadUrl;
    return o;
 }
 function FE3dBitmap_construct(){
@@ -25,7 +30,11 @@ function FE3dBitmap_construct(){
    o.__base.FE3dMeshRenderable.construct.call(o);
 }
 function FE3dBitmap_testReady(){
-   return this._ready;
+   var o = this;
+   if(!o._ready){
+      o._ready = o._renderable.testReady();
+   }
+   return o._ready;
 }
 function FE3dBitmap_renderable(p){
    return this._renderable;
@@ -36,12 +45,23 @@ function FE3dBitmap_setRenderable(p){
    o._ready = true;
    o.processLoadListener(o);
 }
+function FE3dBitmap_vertexBuffers(){
+   return this._renderable.vertexBuffers();
+}
+function FE3dBitmap_indexBuffer(){
+   return this._renderable.indexBuffer();
+}
+function FE3dBitmap_findVertexBuffer(p){
+   return this._renderable.findVertexBuffer(p);
+}
+function FE3dBitmap_findTexture(p){
+   return this._renderable.findTexture(p);
+}
+function FE3dBitmap_textures(){
+   return this._renderable.textures();
+}
 function FE3dBitmap_processLoad(){
    var o = this;
-   if(!o._renderable.testReady()){
-      return false;
-   }
-   o.loadRenderable(o._renderable);
    return true;
 }
 function FE3dBitmap_process(){

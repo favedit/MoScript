@@ -45,7 +45,15 @@ function FE3rBitmap(o){
 //==========================================================
 function FE3rBitmap_onImageLoad(event){
    var o = this;
-   debugger
+   var context = o._graphicContext;
+   var image = event.image();
+   // 创建纹理
+   var texture = o._imageTexture = context.createFlatTexture();
+   texture.upload(image);
+   o._textures.set('diffuse', texture);
+   o._ready = true;
+   // 释放内容
+   event.dispose();
 }
 
 //==========================================================
@@ -57,6 +65,7 @@ function FE3rBitmap_construct(){
    var o = this;
    o.__base.FE3rObject.construct.call(o);
    o._vertexBuffers = new TObjects();
+   o._textures = new TDictionary();
 }
 
 //==========================================================
@@ -66,55 +75,7 @@ function FE3rBitmap_construct(){
 // @return 是否完成
 //==========================================================
 function FE3rBitmap_testReady(){
-   var o = this;
-   if(!o._ready){
-      // 测试资源是否加载完成
-      if(!o._resource.testReady()){
-         return false;
-      }
-      // 测试所有位图加载好
-      var ts = o._textures;
-      if(ts != null){
-         var c = ts.count();
-         for(var i = 0; i < c; i++){
-            var t = ts.value(i);
-            if(!t.testReady()){
-               return false;
-            }
-         }
-      }
-      // 加载完成
-      //o._ready = true;
-   }
-   return o._ready;
-}
-
-//==========================================================
-// <T>获得唯一编号。</T>
-//
-// @method
-// @return String 唯一编号
-//==========================================================
-function FE3rBitmap_guid(){
-   return this._resource.guid();
-}
-
-//==========================================================
-// <T>获得资源。</T>
-//
-// @return FE3sModel 资源
-//==========================================================
-function FE3rBitmap_resource(){
-   return this._resource;
-}
-
-//==========================================================
-// <T>设置资源。</T>
-//
-// @param p:resource:FE3sModel 资源
-//==========================================================
-function FE3rBitmap_setResource(p){
-   this._resource = p;
+   return this._ready;
 }
 
 //==========================================================
@@ -207,25 +168,30 @@ function FE3rBitmap_setup(){
    var context = o._graphicContext;
    // 设置顶点数据
    var data = [
-      -1.0,  1.0, 0.0,
-       1.0,  1.0, 0.0,
-       1.0, -1.0, 0.0,
-      -1.0, -1.0, 0.0 ];
+      -1,  1, 0,
+       1,  1, 0,
+       1, -1, 0,
+      -1, -1, 0 ];
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
+   buffer._name = 'position';
+   buffer._formatCd = EG3dAttributeFormat.Float3;
    buffer.upload(data, 4 * 3, 4);
+   o._vertexBuffers.push(buffer);
    // 设置颜色数据
    var data = [
-      0.0, 1.0, 0.0, 1.0,
-      1.0, 0.0, 0.0, 1.0,
-      1.0, 0.0, 0.0, 1.0,
-      0.0, 0.0, 0.0, 1.0 ];
+      0, 1,
+      1, 1,
+      1, 0,
+      0, 0];
    var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-   buffer.upload(data, 4 * 4, 4);
+   buffer._name = 'coord';
+   buffer._formatCd = EG3dAttributeFormat.Float2;
+   buffer.upload(data, 4 * 2, 4);
+   o._vertexBuffers.push(buffer);
    // 设置索引数据
    var data = [0, 1, 2, 0, 2, 3];
    var buffer = o._indexBuffer = context.createIndexBuffer();
    buffer.upload(data, 6);
-   return true;
 }
 
 //==========================================================

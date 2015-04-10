@@ -475,6 +475,9 @@ function FRenderable_removeDrawable(p){
 }
 function FRenderable_filterDrawables(p){
    var o = this;
+   if(!o.testReady()){
+      return false;
+   }
    if(!o.testVisible()){
       return false;
    }

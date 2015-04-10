@@ -80,6 +80,10 @@ function FRenderable_removeDrawable(p){
 //==========================================================
 function FRenderable_filterDrawables(p){
    var o = this;
+   // 检查准备好
+   if(!o.testReady()){
+      return false;
+   }
    // 检查可见性
    if(!o.testVisible()){
       return false;

@@ -82,6 +82,7 @@ function FDsBitmapCanvasContent(o){
 function FDsBitmapCanvasContent_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
+   var hPanel = o._hPanel;
    // 创建简单舞台
    var space = o._activeSpace = RClass.create(FE3dSimpleStage);
    space.linkGraphicContext(o);
@@ -91,16 +92,15 @@ function FDsBitmapCanvasContent_onBuild(p){
    //g.addEnterFrameListener(o, o.onEnterFrame);
    //var sl = o._layer = o._activeSpace.spriteLayer();
    // 设置相机
-   //var rc = g.camera();
-   //rc.setPosition(0, 3, -10);
-   //rc.lookAt(0, 3, 0);
-   //rc.update();
+   var camera = space.camera();
+   camera.setPosition(0, 0, -10);
+   camera.lookAt(0, 0, 0);
+   camera.update();
    // 设置投影
-   //var h = o._hPanel;
-   //var rp = rc.projection();
-   //rp.size().set(h.width, h.height);
-   //rp._angle = 45;
-   //rp.update();
+   var projection = camera.projection();
+   projection.size().set(hPanel.width, hPanel.height);
+   projection._angle = 45;
+   projection.update();
    // 设置光源
    //var l = g.directionalLight();
    //var lc = l.camera();
@@ -827,6 +827,18 @@ function FDsBitmapCanvasContent_loadByGuid(guid){
    var url = '/cloud.content2d.bitmap.image.wv?do=view&guid=' + guid;
    var bitmap = RClass.create(FE3dBitmap)
    bitmap.loadUrl(o, url);
+   var matrix = bitmap.matrix();
+   matrix.tx = 0;
+   matrix.ty = 0;
+   matrix.tz = 0;
+   matrix.sx = 10;
+   matrix.sy = 10;
+   matrix.sz = 10;
+   matrix.updateForce();
+   // 放入场景
+   var space = o._activeSpace;
+   space.spriteLayer().pushRenderable(bitmap);
+   
    //var rmc = RConsole.find(FE3dMeshConsole);
    //if(o._activeSpace != null){
    //   rmc.free(o._activeSpace);

@@ -108,21 +108,21 @@ function FWglFlatTexture_uploadData(d, w, h){
 // <T>上传图片内容。</T>
 //
 // @method
-// @param p:image:HtmlImgTag 图片
+// @param image:HtmlImgTag 图片
 //==========================================================
-function FWglFlatTexture_upload(p){
+function FWglFlatTexture_upload(image){
    var o = this;
    var c = o._graphicContext;
    var cp = c.capability();
    var g = c._native;
    // 检查参数
-   var m = null;
+   var data = null;
    var f = null;
-   if(p.tagName == 'IMG'){
-      m = p;
-   }else if(RClass.isClass(p, FImage)){
-      m = p.image();
-      if(p.optionAlpha()){
+   if(image.tagName == 'IMG'){
+      data = image;
+   }else if(RClass.isClass(image, FImage)){
+      data = image.image();
+      if(image.optionAlpha()){
          f = cp.samplerCompressRgba;
       }else{
          f = cp.samplerCompressRgb;
@@ -138,7 +138,7 @@ function FWglFlatTexture_upload(p){
    //}else{
       //g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
    //}
-   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
+   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, data);
    // 更新处理
    o.update();
    o._statusLoad = c.checkError("texImage2D", "Upload image failure.");

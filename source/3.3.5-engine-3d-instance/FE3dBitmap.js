@@ -8,18 +8,23 @@ function FE3dBitmap(o){
    o = RClass.inherits(this, o, FE3dMeshRenderable, MListenerLoad);
    //..........................................................
    // @attribute
-   o._ready        = false;
-   o._renderable   = null;
+   o._ready           = false;
+   o._renderable      = null;
    //..........................................................
    // @method
-   o.construct     = FE3dBitmap_construct;
+   o.construct        = FE3dBitmap_construct;
    // @method
-   o.testReady     = FE3dBitmap_testReady;
-   o.renderable    = FE3dBitmap_renderable;
-   o.setRenderable = FE3dBitmap_setRenderable;
-   o.processLoad   = FE3dBitmap_processLoad;
-   o.process       = FE3dBitmap_process;
-   o.loadUrl       = FE3dBitmap_loadUrl;
+   o.testReady        = FE3dBitmap_testReady;
+   o.renderable       = FE3dBitmap_renderable;
+   o.setRenderable    = FE3dBitmap_setRenderable;
+   o.vertexBuffers    = FE3dBitmap_vertexBuffers;
+   o.indexBuffer      = FE3dBitmap_indexBuffer;
+   o.findVertexBuffer = FE3dBitmap_findVertexBuffer;
+   o.findTexture      = FE3dBitmap_findTexture;
+   o.textures         = FE3dBitmap_textures;
+   o.processLoad      = FE3dBitmap_processLoad;
+   o.process          = FE3dBitmap_process;
+   o.loadUrl          = FE3dBitmap_loadUrl;
    return o;
 }
 
@@ -39,7 +44,11 @@ function FE3dBitmap_construct(){
 // @return 是否准备好
 //==========================================================
 function FE3dBitmap_testReady(){
-   return this._ready;
+   var o = this;
+   if(!o._ready){
+      o._ready = o._renderable.testReady();
+   }
+   return o._ready;
 }
 
 //==========================================================
@@ -65,16 +74,67 @@ function FE3dBitmap_setRenderable(p){
 }
 
 //==========================================================
+// <T>获得顶点缓冲集合。</T>
+//
+// @method
+// @return TObjects 顶点缓冲集合
+//==========================================================
+function FE3dBitmap_vertexBuffers(){
+   return this._renderable.vertexBuffers();
+}
+
+//==========================================================
+// <T>获得索引缓冲。</T>
+//
+// @method
+// @return FG3dIndexBuffer 索引缓冲
+//==========================================================
+function FE3dBitmap_indexBuffer(){
+   return this._renderable.indexBuffer();
+}
+
+//==========================================================
+// <T>查找顶点缓冲。</T>
+//
+// @method
+// @param p:name:String 名称
+//==========================================================
+function FE3dBitmap_findVertexBuffer(p){
+   return this._renderable.findVertexBuffer(p);
+}
+
+//==========================================================
+// <T>根据名称查找纹理。</T>
+//
+// @method
+// @param p:name:String 名称
+// @return FRenderIndexBuffer 纹理
+//==========================================================
+function FE3dBitmap_findTexture(p){
+   return this._renderable.findTexture(p);
+}
+
+//==========================================================
+// <T>获得纹理集合。</T>
+//
+// @method
+// @return TDictionary 纹理集合
+//==========================================================
+function FE3dBitmap_textures(){
+   return this._renderable.textures();
+}
+
+//==========================================================
 // <T>加载处理。</T>
 //
 // @method
 //==========================================================
 function FE3dBitmap_processLoad(){
    var o = this;
-   if(!o._renderable.testReady()){
-      return false;
-   }
-   o.loadRenderable(o._renderable);
+   //if(!o._renderable.testReady()){
+   //   return false;
+   //}
+   //o.loadRenderable(o._renderable);
    return true;
 }
 

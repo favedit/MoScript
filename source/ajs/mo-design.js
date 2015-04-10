@@ -5390,11 +5390,20 @@ function FDsBitmapCanvasContent(o){
 function FDsBitmapCanvasContent_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
+   var hPanel = o._hPanel;
    var space = o._activeSpace = RClass.create(FE3dSimpleStage);
    space.linkGraphicContext(o);
    space.selectTechnique(o, FE3dGeneralTechnique);
    space.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
    RStage.register('space', space);
+   var camera = space.camera();
+   camera.setPosition(0, 0, -10);
+   camera.lookAt(0, 0, 0);
+   camera.update();
+   var projection = camera.projection();
+   projection.size().set(hPanel.width, hPanel.height);
+   projection._angle = 45;
+   projection.update();
 }
 function FDsBitmapCanvasContent_onMouseCaptureStart(p){
    var o = this;
@@ -5884,6 +5893,16 @@ function FDsBitmapCanvasContent_loadByGuid(guid){
    var url = '/cloud.content2d.bitmap.image.wv?do=view&guid=' + guid;
    var bitmap = RClass.create(FE3dBitmap)
    bitmap.loadUrl(o, url);
+   var matrix = bitmap.matrix();
+   matrix.tx = 0;
+   matrix.ty = 0;
+   matrix.tz = 0;
+   matrix.sx = 10;
+   matrix.sy = 10;
+   matrix.sz = 10;
+   matrix.updateForce();
+   var space = o._activeSpace;
+   space.spriteLayer().pushRenderable(bitmap);
 }
 function FDsBitmapCanvasContent_dispose(){
    var o = this;
