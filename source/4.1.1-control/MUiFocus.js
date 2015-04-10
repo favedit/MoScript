@@ -29,7 +29,7 @@ function MUiFocus(o){
 // @param e:event:TEvent 事件对象
 //==========================================================
 function MUiFocus_onFocus(e){
-   RConsole.find(FFocusConsole).focus(this, e);
+   RConsole.find(FUiFocusConsole).focus(this, e);
 }
 
 //==========================================================
@@ -38,7 +38,7 @@ function MUiFocus_onFocus(e){
 // @method
 //==========================================================
 function MUiFocus_focus(){
-   RConsole.find(FFocusConsole).focus(this);
+   RConsole.find(FUiFocusConsole).focus(this);
 }
 
 //==========================================================
@@ -47,5 +47,5 @@ function MUiFocus_focus(){
 // @method
 //==========================================================
 function MUiFocus_blur(){
-   RConsole.find(FFocusConsole).blur(this);
+   RConsole.find(FUiFocusConsole).blur(this);
 }

@@ -11,7 +11,7 @@ function FDsResourceImportDialog(o){
    o._frameName            = 'design3d.resource.ImportDialog';
    //..........................................................
    // @attribute
-   o._resourceTypeCd       = 'private';
+   o._nodeGuid             = null;
    // @attribute
    o._controlPrivateButton = null;
    o._controlTeamButton    = null;
@@ -29,6 +29,9 @@ function FDsResourceImportDialog(o){
    // @method
    o.construct             = FDsResourceImportDialog_construct;
    // @method
+   o.setNodeLabel          = FDsResourceImportDialog_setNodeLabel;
+   o.switchMode            = FDsResourceFolderDialog_switchMode;
+   // @method
    o.dispose               = FDsResourceImportDialog_dispose;
    return o;
 }
@@ -42,6 +45,9 @@ function FDsResourceImportDialog(o){
 function FDsResourceImportDialog_onBuilded(p){
    var o = this;
    o.__base.FUiDialog.onBuilded.call(o, p);
+   //..........................................................
+   // 设置属性
+   o._controlNodeLabel.setEditAble(false);
    //..........................................................
    // 注册事件
    o._controlFile.addDataChangedListener(o, o.onFileChange);
@@ -81,8 +87,13 @@ function FDsResourceImportDialog_onFileLoaded(event){
    var code = o._controlCode.get();
    var label = o._controlLabel.get();
    // 上传数据
-   var url = '/cloud.content.mesh.wv?do=importData&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+   var url = '/cloud.content.' + o._modeCd + '.wv?do=importData';
+   if(o._nodeGuid){
+      url += '&node_guid=' + o._nodeGuid;
+   }
+   url += '&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
    url = RBrowser.urlEncode(url);
+   // 发送数据
    var connection = RConsole.find(FHttpConsole).send(url, reader.data());
    connection.addLoadListener(o, o.onConfirmLoad);
    // 释放文件
@@ -142,6 +153,35 @@ function FDsResourceImportDialog_construct(){
    var o = this;
    // 父处理
    o.__base.FUiDialog.construct.call(o);
+}
+
+//==========================================================
+// <T>设置节点标签。</T>
+//
+// @method
+// @param label:String 标签
+//==========================================================
+function FDsResourceImportDialog_setNodeLabel(label){
+   var o = this;
+   o._controlNodeLabel.set(label);
+}
+
+//==========================================================
+// <T>切换数据模式。</T>
+//
+// @method
+// @param modeCd:String 数据模式
+//==========================================================
+function FDsResourceFolderDialog_switchMode(modeCd){
+   var o = this;
+   o._modeCd = modeCd;
+   if(modeCd == 'picture'){
+      o.setLabel('导入图片资源');
+   }else if(modeCd == 'mesh'){
+      o.setLabel('倒入网格资源');
+   }else{
+      throw new TError(o, 'Unknown mode.');
+   }
 }
 
 //==========================================================

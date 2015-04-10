@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150120
 //==========================================================
-function FFrameEventConsole(o){
+function FUiFrameEventConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
@@ -20,23 +20,23 @@ function FFrameEventConsole(o){
    o._listeners = new TAttributes();
    //..........................................................
    // @event
-   o.onProcess  = FFrameEventConsole_onProcess;
+   o.onProcess  = FUiFrameEventConsole_onProcess;
    //..........................................................
    // @method
-   o.construct  = FFrameEventConsole_construct;
+   o.construct  = FUiFrameEventConsole_construct;
    // method
-   o.register   = FFrameEventConsole_register;
-   o.push       = FFrameEventConsole_push;
-   o.clear      = FFrameEventConsole_clear;
+   o.register   = FUiFrameEventConsole_register;
+   o.push       = FUiFrameEventConsole_push;
+   o.clear      = FUiFrameEventConsole_clear;
 
 
 
-   //o.add        = FFrameEventConsole_add;
-   //o.allowEvent = FFrameEventConsole_allowEvent;
-   //o.skipEvent  = FFrameEventConsole_skipEvent;
-   //o.allowAll   = FFrameEventConsole_allowAll;
-   //o.skipAll    = FFrameEventConsole_skipAll;
-   //o.onlyCall   = FFrameEventConsole_onlyCall;
+   //o.add        = FUiFrameEventConsole_add;
+   //o.allowEvent = FUiFrameEventConsole_allowEvent;
+   //o.skipEvent  = FUiFrameEventConsole_skipEvent;
+   //o.allowAll   = FUiFrameEventConsole_allowAll;
+   //o.skipAll    = FUiFrameEventConsole_skipAll;
+   //o.onlyCall   = FUiFrameEventConsole_onlyCall;
    // method
    return o;
 }
@@ -49,7 +49,7 @@ function FFrameEventConsole(o){
 //
 // @method
 //==========================================================
-function FFrameEventConsole_onProcess(){
+function FUiFrameEventConsole_onProcess(){
    var o = this;
    var es = o._events;
    var ec = es.count();
@@ -89,7 +89,7 @@ function FFrameEventConsole_onProcess(){
 //
 // @method
 //==========================================================
-function FFrameEventConsole_construct(){
+function FUiFrameEventConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 创建线程
@@ -107,7 +107,7 @@ function FFrameEventConsole_construct(){
 // @param po:owner:Object 对象
 // @param pc:process:Function 处理
 //==========================================================
-function FFrameEventConsole_register(po, pc){
+function FUiFrameEventConsole_register(po, pc){
    this._events.push(new TEvent(po, null, pc));
 }
 
@@ -117,7 +117,7 @@ function FFrameEventConsole_register(po, pc){
 // @method
 // @param e:event:SEvent 事件对象
 //==========================================================
-function FFrameEventConsole_push(e){
+function FUiFrameEventConsole_push(e){
    var o = this;
    var n = RClass.name(e)
    if(o._allow){
@@ -143,34 +143,34 @@ function FFrameEventConsole_push(e){
 //
 // @method
 //==========================================================
-function FFrameEventConsole_clear(){
+function FUiFrameEventConsole_clear(){
    this._events.clear();
 }
 
 
 
 
-function FFrameEventConsole_add(owner, proc){
+function FUiFrameEventConsole_add(owner, proc){
    this._events.push(new TEvent(owner, null, proc));
 }
-function FFrameEventConsole_allowEvent(c){
+function FUiFrameEventConsole_allowEvent(c){
    this._allows.set(RMethod.name(c), EBool.True);
 }
 // ------------------------------------------------------------
-function FFrameEventConsole_skipEvent(c){
+function FUiFrameEventConsole_skipEvent(c){
    this._allows.set(RMethod.name(c), EBool.False);
 }
 // ------------------------------------------------------------
-function FFrameEventConsole_allowAll(){
+function FUiFrameEventConsole_allowAll(){
    this._allow = true;
 }
 // ------------------------------------------------------------
-function FFrameEventConsole_skipAll(){
+function FUiFrameEventConsole_skipAll(){
    this._allow = false;
 }
 // ------------------------------------------------------------
 // control, method
-function FFrameEventConsole_onlyCall(c, m){
+function FUiFrameEventConsole_onlyCall(c, m){
    var o = this;
    o._allow = false;
    m.call(c);

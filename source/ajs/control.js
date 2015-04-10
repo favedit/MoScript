@@ -698,6 +698,7 @@ var EUiBorderStyle = new function EUiBorderStyle(){
 }
 var EUiColor = new function EUiColor(){
    var o = this;
+   o.ReadonlyBackgroundColor = '#FEFECB';
    o.Normal        = '#FFFFFF';
    o.Select        = '#F8C59A';
    o.Valid         = '#FFCCCC';
@@ -705,7 +706,6 @@ var EUiColor = new function EUiColor(){
    o.Edit          = '#FFFFFF';
    o.EditHover     = '#EBFFFF';
    o.Require       = '#FF0000';
-   o.Readonly      = '#F0F0F0';
    o.Text          = '#000000';
    o.TextEdit      = '#0066FF';
    o.TextReadonly  = '#333333';
@@ -718,42 +718,6 @@ var EUiColor = new function EUiColor(){
    o.RowEdit       = '#FFFFFF';
    o.RowEditSelect = '#FDEBDB';
    o.RowEditHover  = '#F8F8E0';
-   o.RoundReadonly = new Array(
-      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
-      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
-      ['#24C2DB', '#CFF6F6', '#F8F8F8', '#FFFFFF', '#2AD6F0'],
-      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
-      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
-   o.RoundHover = new Array(
-      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
-      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
-      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
-      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
-      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
-   o.RoundEdit = new Array(
-      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
-      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
-      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
-      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
-      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
-   o.RoundDropReadonly = new Array(
-      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
-      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
-      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
-      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
-      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
-   o.RoundDropHover = new Array(
-      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
-      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
-      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
-      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
-      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
-   o.RoundDropEdit = new Array(
-      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
-      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
-      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
-      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
-      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
    return o;
 }
 var EUiCursor = new function EUiCursor(){
@@ -1593,7 +1557,7 @@ function MUiEditValue(o){
    o.saveValue       = MUiEditValue_saveValue;
    o.recordValue     = MUiEditValue_recordValue;
    o.validValue      = RMethod.empty;
-   o.setEditable     = MUiEditValue_setEditable;
+   o.setEditAble     = MUiEditValue_setEditAble;
    o.doFocus         = MUiEditValue_doFocus;
    o.doBlur          = MUiEditValue_doBlur;
    return o;
@@ -1616,7 +1580,10 @@ function MUiEditValue_text(){
 function MUiEditValue_setText(text){
 }
 function MUiEditValue_get(){
-   return this._dataValue;
+   var o = this;
+   var text = o.text();
+   var value = o._dataValue = o.formator().formatValue(text)
+   return value;
 }
 function MUiEditValue_set(value){
    var o = this;
@@ -1645,10 +1612,9 @@ function MUiEditValue_recordValue(){
    o._recordText = o.text();
    o._recordValue = o.get();
 }
-function MUiEditValue_setEditable(flag){
+function MUiEditValue_setEditAble(flag){
    var o = this;
    o._statusEditable = flag;
-   o.refreshStyle();
 }
 function MUiEditValue_doFocus(){
    var o = this;
@@ -1768,13 +1734,13 @@ function MUiFocus(o){
    return o;
 }
 function MUiFocus_onFocus(e){
-   RConsole.find(FFocusConsole).focus(this, e);
+   RConsole.find(FUiFocusConsole).focus(this, e);
 }
 function MUiFocus_focus(){
-   RConsole.find(FFocusConsole).focus(this);
+   RConsole.find(FUiFocusConsole).focus(this);
 }
 function MUiFocus_blur(){
-   RConsole.find(FFocusConsole).blur(this);
+   RConsole.find(FUiFocusConsole).blur(this);
 }
 function MUiHorizontal(o){
    o = RClass.inherits(this, o);
@@ -3141,14 +3107,14 @@ function FUiControl(o){
 }
 function FUiControl_onEnter(e){
    var o = this;
-   RConsole.find(FFocusConsole).enter(o);
+   RConsole.find(FUiFocusConsole).enter(o);
    if(o._hint){
       RWindow.setStatus(o._hint);
    }
 }
 function FUiControl_onLeave(e){
    var o = this;
-   RConsole.find(FFocusConsole).leave(o);
+   RConsole.find(FUiFocusConsole).leave(o);
    if(o._hint){
       RWindow.setStatus();
    }
@@ -3796,7 +3762,7 @@ function RUiEvent_process(hs, he){
                }
                e.ohProcess.call(e.source, e);
             }else if(e.onProcess){
-               RConsole.find(FFrameEventConsole).push(e);
+               RConsole.find(FUiFrameEventConsole).push(e);
             }
          }
          return true;

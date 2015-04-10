@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150319
 //==========================================================
-function FEnvironmentConsole(o){
+function FUiEnvironmentConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
@@ -13,11 +13,11 @@ function FEnvironmentConsole(o){
    o.environment = null;
    //..........................................................
    // @method
-   o.connect     = FEnvironmentConsole_connect;
-   o.build       = FEnvironmentConsole_build;
-   o.buildValue  = FEnvironmentConsole_buildValue;
-   o.load        = FEnvironmentConsole_load;
-   o.xml         = FEnvironmentConsole_xml;
+   o.connect     = FUiEnvironmentConsole_connect;
+   o.build       = FUiEnvironmentConsole_build;
+   o.buildValue  = FUiEnvironmentConsole_buildValue;
+   o.load        = FUiEnvironmentConsole_load;
+   o.xml         = FUiEnvironmentConsole_xml;
    return o;
 }
 
@@ -26,7 +26,7 @@ function FEnvironmentConsole(o){
 //
 // @method
 //==========================================================
-function FEnvironmentConsole_connect(){
+function FUiEnvironmentConsole_connect(){
    return;
    var xData = window.xEnvironment;
    if(xData){
@@ -35,7 +35,7 @@ function FEnvironmentConsole_connect(){
 }
 
 // ------------------------------------------------------------
-function FEnvironmentConsole_build(config){
+function FUiEnvironmentConsole_build(config){
    var o = this;
    if(!o.environment){
       o.connect()
@@ -47,7 +47,7 @@ function FEnvironmentConsole_build(config){
 }
 
 // ------------------------------------------------------------
-function FEnvironmentConsole_buildValue(){
+function FUiEnvironmentConsole_buildValue(){
    if(!this.environment){
       this.connect()
    }
@@ -66,12 +66,12 @@ function FEnvironmentConsole_buildValue(){
 // @author maocy
 // @version 150319
 //==========================================================
-function FEnvironmentConsole_load(p){
+function FUiEnvironmentConsole_load(p){
    this.environment = RXml.makeNode(p);
 }
 
 // ------------------------------------------------------------
-function FEnvironmentConsole_xml(){
+function FUiEnvironmentConsole_xml(){
    if(!this.environment){
       this.connect()
    }

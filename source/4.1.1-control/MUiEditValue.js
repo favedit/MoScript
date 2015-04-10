@@ -37,7 +37,7 @@ function MUiEditValue(o){
    o.recordValue     = MUiEditValue_recordValue;
    o.validValue      = RMethod.empty;
    // @method
-   o.setEditable     = MUiEditValue_setEditable;
+   o.setEditAble     = MUiEditValue_setEditAble;
    o.doFocus         = MUiEditValue_doFocus;
    o.doBlur          = MUiEditValue_doBlur;
 
@@ -125,7 +125,11 @@ function MUiEditValue_setText(text){
 // @return String 数据
 //==========================================================
 function MUiEditValue_get(){
-   return this._dataValue;
+   var o = this;
+   // 设置数据
+   var text = o.text();
+   var value = o._dataValue = o.formator().formatValue(text)
+   return value;
 }
 
 //==========================================================
@@ -219,10 +223,10 @@ function MUiEditValue_recordValue(){
 // @method
 // @param flag:Boolean 可编辑性
 //==========================================================
-function MUiEditValue_setEditable(flag){
+function MUiEditValue_setEditAble(flag){
    var o = this;
    o._statusEditable = flag;
-   o.refreshStyle();
+   //o.refreshStyle();
 }
 
 //==========================================================

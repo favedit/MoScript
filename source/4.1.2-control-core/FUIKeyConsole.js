@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150228
 //==========================================================
-function FKeyConsole(o){
+function FUiKeyConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
@@ -16,15 +16,15 @@ function FKeyConsole(o){
    o._listeners      = new Object();
    o._disableKeys    = new Object();
    // @attribute
-   o.onKeyDown       = FKeyConsole_onKeyDown;
+   o.onKeyDown       = FUiKeyConsole_onKeyDown;
    //..........................................................
    // @method
-   o.construct       = FKeyConsole_construct;
-   o.enable          = FKeyConsole_enable;
-   o.disable         = FKeyConsole_disable;
-   o.enableRegister  = FKeyConsole_enableRegister;
-   o.disableRegister = FKeyConsole_disableRegister;
-   o.register        = FKeyConsole_register;
+   o.construct       = FUiKeyConsole_construct;
+   o.enable          = FUiKeyConsole_enable;
+   o.disable         = FUiKeyConsole_disable;
+   o.enableRegister  = FUiKeyConsole_enableRegister;
+   o.disableRegister = FUiKeyConsole_disableRegister;
+   o.register        = FUiKeyConsole_register;
    return o;
 }
 
@@ -34,7 +34,7 @@ function FKeyConsole(o){
 // @method
 // @param e:event:SEvent 事件对象
 //==========================================================
-function FKeyConsole_onKeyDown(e){
+function FUiKeyConsole_onKeyDown(e){
    var o = this;
    var k = REnum.tryDecode(EKeyCode, e.keyCode);
    if(k && o._enable){
@@ -57,7 +57,7 @@ function FKeyConsole_onKeyDown(e){
 //
 // @method
 //==========================================================
-function FKeyConsole_construct(){
+function FUiKeyConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 禁止一些操作键
@@ -72,7 +72,7 @@ function FKeyConsole_construct(){
 //
 // @method
 //==========================================================
-function FKeyConsole_enable(){
+function FUiKeyConsole_enable(){
    this._enable = true;
 }
 
@@ -81,7 +81,7 @@ function FKeyConsole_enable(){
 //
 // @method
 //==========================================================
-function FKeyConsole_disable(){
+function FUiKeyConsole_disable(){
    this._enable = false;
 }
 
@@ -90,7 +90,7 @@ function FKeyConsole_disable(){
 //
 // @method
 //==========================================================
-function FKeyConsole_enableRegister(){
+function FUiKeyConsole_enableRegister(){
    this._enableRegister = true;
 }
 
@@ -99,7 +99,7 @@ function FKeyConsole_enableRegister(){
 //
 // @method
 //==========================================================
-function FKeyConsole_disableRegister(){
+function FUiKeyConsole_disableRegister(){
    this._enableRegister = false;
 }
 
@@ -111,7 +111,7 @@ function FKeyConsole_disableRegister(){
 // @param w:owner:Object 监听对象
 // @param p:process:Function 监听处理
 //==========================================================
-function FKeyConsole_register(k, w, p){
+function FUiKeyConsole_register(k, w, p){
    var o = this;
    if(o._enableRegister){
       // 如果是数字，则对换成键码

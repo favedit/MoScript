@@ -560,7 +560,7 @@ function FUiButton_setLabelStyle(c, w, s){
 function FUiButton_doClick(){
    var o = this;
    if(!o._disabled){
-      RConsole.find(FFocusConsole).blur();
+      RConsole.find(FUiFocusConsole).blur();
       RLogger.debug(o, 'Tool button click. (label={1})', o._label);
       var event = new SClickEvent(o);
       o.processClickListener(event);
@@ -3183,6 +3183,7 @@ function FUiEdit(o){
    o.formatValue      = FUiEdit_formatValue;
    o.text             = FUiEdit_text;
    o.setText          = FUiEdit_setText;
+   o.setEditAble      = FUiEdit_setEditAble;
    o.refreshValue     = FUiEdit_refreshValue;
    return o;
 }
@@ -3227,6 +3228,11 @@ function FUiEdit_text(){
 }
 function FUiEdit_setText(text){
    this._hInput.value = text;
+}
+function FUiEdit_setEditAble(flag){
+   var o = this;
+   o.__base.FUiEditControl.setEditAble.call(o, flag);
+   o._hInput.readOnly = !flag;
 }
 function FUiEdit_refreshValue(){
    var o = this;
@@ -5932,7 +5938,7 @@ function FUiSelect_refreshValue(){
 function FUiSelect_drop(){
    var o = this;
    if(o.hasComponent()){
-      var e = o._editor = RConsole.find(FEditorConsole).focus(o, FUiSelectEditor, o._name);
+      var e = o._editor = RConsole.find(FUiEditorConsole).focus(o, FUiSelectEditor, o._name);
       e.buildItems(o);
       e.set(o.get());
       e.show();

@@ -41,6 +41,7 @@ function FUiWindow(o){
    o.construct      = FUiWindow_construct;
    // @method
    o.setVisible     = FUiWindow_setVisible;
+   o.setLabel       = FUiWindow_setLabel;
    o.showPosition   = FUiWindow_showPosition;
    //o.panel        = FUiWindow_panel;
    //o.doFocus      = FUiWindow_doFocus;
@@ -84,9 +85,9 @@ function FUiWindow_onBuild(event){
    // 建立标题
    var hTitleForm = o._hTitleForm = RBuilder.appendTable(hTitlePanel, o.styleName('TitleForm'));
    var hTitleLine = RBuilder.appendTableRow(hTitleForm);
-   var hTitle = RBuilder.appendTableCell(hTitleLine);
+   var hTitle = o._hTitle = RBuilder.appendTableCell(hTitleLine);
    hTitle.align = 'center';
-   hTitle.innerText = o._label;
+   RHtml.textSet(hTitle, o._label);
    var hTitleButton = RBuilder.appendTableCell(hTitleLine);
    hTitleButton.width = 20;
    // 建立内容
@@ -174,6 +175,19 @@ function FUiWindow_setVisible(visible){
    }else{
       RWindow._hContainer.removeChild(hPanel);
    }
+}
+
+//==========================================================
+// <T>设置标签。</T>
+//
+// @method
+// @param label:String 标签
+//==========================================================
+function FUiWindow_setLabel(label){
+   var o = this;
+   o.__base.FUiLayout.setLabel.call(o, label)
+   // 设置内容
+   RHtml.textSet(o._hTitle, o._label);
 }
 
 //==========================================================

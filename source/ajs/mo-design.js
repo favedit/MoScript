@@ -876,6 +876,7 @@ function FDrResource_classCode(){
 function FDrResourceConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
    o._serviceCode   = 'cloud.content3d.resource';
+   o._catalogCode   = 'cloud.content3d.resource.catalog';
    o._resources     = null;
    o.construct      = FDrResourceConsole_construct;
    o.fetch          = FDrResourceConsole_fetch;
@@ -904,27 +905,27 @@ function FDrResourceConsole_doFolderCreate(parentGuid, code, label){
    var o = this;
    var xdocument = new TXmlDocument();
    var xroot = xdocument.root();
-   xroot.set('action', 'folderCreate');
+   xroot.set('action', 'create');
    var xfolder = xroot.create('Folder');
    xfolder.set('parent_guid', parentGuid);
    xfolder.set('code', code);
    xfolder.set('label', label);
-   return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+   return RConsole.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
 }
 function FDrResourceConsole_doFolderUpdate(guid, code, label){
    var o = this;
    var xdocument = new TXmlDocument();
    var xroot = xdocument.root();
-   xroot.set('action', 'folderUpdate');
+   xroot.set('action', 'update');
    var xfolder = xroot.create('Folder');
    xfolder.set('guid', guid);
    xfolder.set('code', code);
    xfolder.set('label', label);
-   return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+   return RConsole.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
 }
 function FDrResourceConsole_doFolderDelete(guid){
    var o = this;
-   var url = '/' + o._serviceCode + '.ws?action=folderDelete&guid=' + guid;
+   var url = '/' + o._catalogCode + '.ws?action=delete&guid=' + guid;
    return RConsole.find(FXmlConsole).sendAsync(url);
 }
 var temp = 0;
@@ -3736,21 +3737,23 @@ function FDsResourceCatalogContent_dispose(){
 }
 function FDsResourceCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName                 = 'design3d.resource.CatalogToolBar';
-   o._controlFolderCreateButton = null;
-   o._controlFolderDeleteButton = null;
-   o._controlFolderOpenButton   = null;
-   o._controlFolderCloseButton  = null;
-   o._activeNodeGuid            = null;
-   o.onBuilded                  = FDsResourceCatalogToolBar_onBuilded;
-   o.onFolderCreateClick        = FDsResourceCatalogToolBar_onFolderCreateClick;
-   o.onFolderDeleteLoad         = FDsResourceCatalogToolBar_onFolderDeleteLoad;
-   o.onFolderDeleteExcute       = FDsResourceCatalogToolBar_onFolderDeleteExcute;
-   o.onFolderDeleteClick        = FDsResourceCatalogToolBar_onFolderDeleteClick;
-   o.onFolderOpenClick          = FDsResourceCatalogToolBar_onFolderOpenClick;
-   o.onFolderCloseClick         = FDsResourceCatalogToolBar_onFolderCloseClick;
-   o.construct                  = FDsResourceCatalogToolBar_construct;
-   o.dispose                    = FDsResourceCatalogToolBar_dispose;
+   o._frameName                   = 'design3d.resource.CatalogToolBar';
+   o._controlFolderCreateButton   = null;
+   o._controlFolderDeleteButton   = null;
+   o._controlFolderPropertyButton  = null;
+   o._controlFolderOpenButton     = null;
+   o._controlFolderCloseButton    = null;
+   o._activeNodeGuid              = null;
+   o.onBuilded                    = FDsResourceCatalogToolBar_onBuilded;
+   o.onFolderCreateClick          = FDsResourceCatalogToolBar_onFolderCreateClick;
+   o.onFolderDeleteLoad           = FDsResourceCatalogToolBar_onFolderDeleteLoad;
+   o.onFolderDeleteExcute         = FDsResourceCatalogToolBar_onFolderDeleteExcute;
+   o.onFolderDeleteClick          = FDsResourceCatalogToolBar_onFolderDeleteClick;
+   o.onFolderPropertyClick        = FDsResourceCatalogToolBar_onFolderPropertyClick;
+   o.onFolderOpenClick            = FDsResourceCatalogToolBar_onFolderOpenClick;
+   o.onFolderCloseClick           = FDsResourceCatalogToolBar_onFolderCloseClick;
+   o.construct                    = FDsResourceCatalogToolBar_construct;
+   o.dispose                      = FDsResourceCatalogToolBar_dispose;
    return o;
 }
 function FDsResourceCatalogToolBar_onBuilded(p){
@@ -3758,6 +3761,7 @@ function FDsResourceCatalogToolBar_onBuilded(p){
    o.__base.FUiToolBar.onBuilded.call(o, p);
    o._controlFolderCreateButton.addClickListener(o, o.onFolderCreateClick);
    o._controlFolderDeleteButton.addClickListener(o, o.onFolderDeleteClick);
+   o._controlFolderPropertyButton.addClickListener(o, o.onFolderPropertyClick);
    o._controlFolderOpenButton.addClickListener(o, o.onFolderOpenClick);
    o._controlFolderCloseButton.addClickListener(o, o.onFolderCloseClick);
 }
@@ -3777,6 +3781,7 @@ function FDsResourceCatalogToolBar_onFolderCreateClick(event){
    dialog._parentGuid = parentGuid;
    dialog.setNodeParentLabel(parentLabel);
    dialog.setNodeLabel('');
+   dialog.switchDataMode(EUiDataMode.Insert);
    dialog.showPosition(EUiPosition.Center);
 }
 function FDsResourceCatalogToolBar_onFolderDeleteLoad(event){
@@ -3812,6 +3817,26 @@ function FDsResourceCatalogToolBar_onFolderDeleteClick(event){
    var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前目录？');
    dialog.addResultListener(o, o.onFolderDeleteExcute);
 }
+function FDsResourceCatalogToolBar_onFolderPropertyClick(event){
+   var o = this;
+   var catalog = o._frameSet._catalogContent;
+   var node = catalog.focusNode();
+   if(!node){
+      return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+   }
+   var parentLabel = null;
+   if(node._parent){
+      parentLabel = node._parent.label();
+   }
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceFolderDialog);
+   dialog._workspace = o._workspace;
+   dialog._frameSet = o._frameSet;
+   dialog._nodeGuid = node._guid;
+   dialog.setNodeParentLabel(parentLabel);
+   dialog.setNodeLabel(node.label());
+   dialog.switchDataMode(EUiDataMode.Update);
+   dialog.showPosition(EUiPosition.Center);
+}
 function FDsResourceCatalogToolBar_onFolderOpenClick(event){
 }
 function FDsResourceCatalogToolBar_onFolderCloseClick(event){
@@ -3827,6 +3852,7 @@ function FDsResourceCatalogToolBar_dispose(){
 function FDsResourceFolderDialog(o){
    o = RClass.inherits(this, o, FUiDialog);
    o._frameName            = 'design3d.resource.FolderDialog';
+   o._dataModeCd           = null;
    o._controlParentLabel   = null;
    o._controlLabel         = null;
    o._controlConfirmButton = null;
@@ -3838,12 +3864,14 @@ function FDsResourceFolderDialog(o){
    o.construct             = FDsResourceFolderDialog_construct;
    o.setNodeParentLabel    = FDsResourceFolderDialog_setNodeParentLabel;
    o.setNodeLabel          = FDsResourceFolderDialog_setNodeLabel;
+   o.switchDataMode        = FDsResourceFolderDialog_switchDataMode;
    o.dispose               = FDsResourceFolderDialog_dispose;
    return o;
 }
 function FDsResourceFolderDialog_onBuilded(p){
    var o = this;
    o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlParentLabel.setEditAble(false);
    o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
    o._controlCancelButton.addClickListener(o, o.onCancelClick);
 }
@@ -3852,18 +3880,30 @@ function FDsResourceFolderDialog_onConfirmLoad(event){
    RConsole.find(FUiDesktopConsole).hide();
    o.hide();
    var catalog = o._frameSet._catalogContent;
-   if(o._parentGuid){
-      var node = catalog.findByGuid(o._parentGuid);
-      catalog.loadNode(node);
+   if(o._dataModeCd == EUiDataMode.Insert){
+      if(o._parentGuid){
+         var node = catalog.findByGuid(o._parentGuid);
+         catalog.loadNode(node);
+      }else{
+         catalog.loadService();
+      }
    }else{
-      catalog.loadService();
+      var label = o._controlLabel.get();
+      var node = catalog.focusNode();
+      node.setLabel(label);
    }
 }
 function FDsResourceFolderDialog_onConfirmClick(event){
    var o = this;
    RConsole.find(FUiDesktopConsole).showUploading();
    var label = o._controlLabel.get();
-   var connection = RConsole.find(FDrResourceConsole).doFolderCreate(o._parentGuid, null, label);
+   var resourceConsole = RConsole.find(FDrResourceConsole);
+   var connection = null;
+   if(o._dataModeCd == EUiDataMode.Insert){
+      connection = resourceConsole.doFolderCreate(o._parentGuid, null, label);
+   }else{
+      connection = resourceConsole.doFolderUpdate(o._nodeGuid, null, label);
+   }
    connection.addLoadListener(o, o.onConfirmLoad);
 }
 function FDsResourceFolderDialog_onCancelClick(event){
@@ -3878,6 +3918,15 @@ function FDsResourceFolderDialog_setNodeParentLabel(label){
 }
 function FDsResourceFolderDialog_setNodeLabel(label){
    this._controlLabel.set(label);
+}
+function FDsResourceFolderDialog_switchDataMode(modeCd){
+   var o = this;
+   o._dataModeCd = modeCd;
+   if(modeCd == EUiDataMode.Insert){
+      o.setLabel('新建资源目录');
+   }else if(modeCd == EUiDataMode.Update){
+      o.setLabel('资源目录属性');
+   }
 }
 function FDsResourceFolderDialog_dispose(){
    var o = this;
@@ -4029,7 +4078,7 @@ function FDsResourceFrameSet_dispose(){
 function FDsResourceImportDialog(o){
    o = RClass.inherits(this, o, FUiDialog);
    o._frameName            = 'design3d.resource.ImportDialog';
-   o._resourceTypeCd       = 'private';
+   o._nodeGuid             = null;
    o._controlPrivateButton = null;
    o._controlTeamButton    = null;
    o._controlShareButton   = null;
@@ -4040,12 +4089,15 @@ function FDsResourceImportDialog(o){
    o.onConfirmClick        = FDsResourceImportDialog_onConfirmClick;
    o.onCancelClick         = FDsResourceImportDialog_onCancelClick;
    o.construct             = FDsResourceImportDialog_construct;
+   o.setNodeLabel          = FDsResourceImportDialog_setNodeLabel;
+   o.switchMode            = FDsResourceFolderDialog_switchMode;
    o.dispose               = FDsResourceImportDialog_dispose;
    return o;
 }
 function FDsResourceImportDialog_onBuilded(p){
    var o = this;
    o.__base.FUiDialog.onBuilded.call(o, p);
+   o._controlNodeLabel.setEditAble(false);
    o._controlFile.addDataChangedListener(o, o.onFileChange);
    o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
    o._controlCancelButton.addClickListener(o, o.onCancelClick);
@@ -4066,7 +4118,11 @@ function FDsResourceImportDialog_onFileLoaded(event){
    var reader = o._fileReader;
    var code = o._controlCode.get();
    var label = o._controlLabel.get();
-   var url = '/cloud.content.mesh.wv?do=importData&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
+   var url = '/cloud.content.' + o._modeCd + '.wv?do=importData';
+   if(o._nodeGuid){
+      url += '&node_guid=' + o._nodeGuid;
+   }
+   url += '&code=' + code + '&label=' + label + '&data_length=' + reader.length() + '&file_name=' + reader.fileName();
    url = RBrowser.urlEncode(url);
    var connection = RConsole.find(FHttpConsole).send(url, reader.data());
    connection.addLoadListener(o, o.onConfirmLoad);
@@ -4093,6 +4149,21 @@ function FDsResourceImportDialog_onCancelClick(event){
 function FDsResourceImportDialog_construct(){
    var o = this;
    o.__base.FUiDialog.construct.call(o);
+}
+function FDsResourceImportDialog_setNodeLabel(label){
+   var o = this;
+   o._controlNodeLabel.set(label);
+}
+function FDsResourceFolderDialog_switchMode(modeCd){
+   var o = this;
+   o._modeCd = modeCd;
+   if(modeCd == 'picture'){
+      o.setLabel('导入图片资源');
+   }else if(modeCd == 'mesh'){
+      o.setLabel('倒入网格资源');
+   }else{
+      throw new TError(o, 'Unknown mode.');
+   }
 }
 function FDsResourceImportDialog_dispose(){
    var o = this;
@@ -4296,6 +4367,7 @@ function FDsResourceMenuBar(o){
    o.onImportPictureClick        = FDsResourceMenuBar_onImportPictureClick;
    o.onImportMeshClick           = FDsResourceMenuBar_onImportMeshClick;
    o.onDeleteLoad                = FDsResourceMenuBar_onDeleteLoad;
+   o.onDeleteExecute             = FDsResourceMenuBar_onDeleteExecute;
    o.onDeleteClick               = FDsResourceMenuBar_onDeleteClick;
    o.construct                   = FDsResourceMenuBar_construct;
    o.dispose                     = FDsResourceMenuBar_dispose;
@@ -4304,17 +4376,46 @@ function FDsResourceMenuBar(o){
 function FDsResourceMenuBar_onBuilded(p){
    var o = this;
    o.__base.FUiMenuBar.onBuilded.call(o, p);
+   o._controlImportPictureButton.addClickListener(o, o.onImportPictureClick);
    o._controlImportMeshButton.addClickListener(o, o.onImportMeshClick);
    o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
 }
 function FDsResourceMenuBar_onImportPictureClick(p){
-   alert('功能未实现。');
-}
-function FDsResourceMenuBar_onImportMeshClick(p){
    var o = this;
+   var frameSet = o._workspace._activeFrameSet;
+   var catalog = frameSet._catalogContent;
+   var node = catalog.focusNode();
+   var nodeGuid = null;
+   var nodeLabel = null;
+   if(node){
+      nodeGuid = node.guid();
+      nodeLabel = node.label();
+   }
    var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceImportDialog);
    dialog._frameSet = o._frameSet;
    dialog._workspace = o._workspace;
+   dialog._nodeGuid = nodeGuid;
+   dialog.setNodeLabel(nodeLabel);
+   dialog.switchMode('picture');
+   dialog.showPosition(EUiPosition.Center);
+}
+function FDsResourceMenuBar_onImportMeshClick(p){
+   var o = this;
+   var frameSet = o._workspace._activeFrameSet;
+   var catalog = frameSet._catalogContent;
+   var node = catalog.focusNode();
+   var nodeGuid = null;
+   var nodeLabel = null;
+   if(node){
+      nodeGuid = node.guid();
+      nodeLabel = node.label();
+   }
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceImportDialog);
+   dialog._frameSet = o._frameSet;
+   dialog._workspace = o._workspace;
+   dialog._nodeGuid = nodeGuid;
+   dialog.setNodeLabel(nodeLabel);
+   dialog.switchMode('mesh');
    dialog.showPosition(EUiPosition.Center);
 }
 function FDsResourceMenuBar_onDeleteLoad(event){
@@ -4323,17 +4424,23 @@ function FDsResourceMenuBar_onDeleteLoad(event){
    frame.serviceResearch();
    RWindow.enable();
 }
+function FDsResourceMenuBar_onDeleteExecute(event){
+   var o = this;
+   var item = o._frameSet._listContent._activeItem;
+   var typeCd = item._typeCd;
+   var guid = item._guid;
+   RWindow.disable();
+   var connection = RConsole.find(FDrResourceConsole).doDelete(typeCd, guid);
+   connection.addLoadListener(o, o.onDeleteLoad);
+}
 function FDsResourceMenuBar_onDeleteClick(event){
    var o = this;
    var item = o._frameSet._listContent._activeItem;
    if(!item){
       return alert('请选中后再点击删除');
    }
-   var typeCd = item._typeCd;
-   var guid = item._guid;
-   RWindow.disable();
-   var connection = RConsole.find(FDrResourceConsole).doDelete(typeCd, guid);
-   connection.addLoadListener(o, o.onDeleteLoad);
+   var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前资源？');
+   dialog.addResultListener(o, o.onDeleteExecute);
 }
 function FDsResourceMenuBar_construct(){
    var o = this;

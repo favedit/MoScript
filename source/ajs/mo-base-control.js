@@ -698,6 +698,7 @@ var EUiBorderStyle = new function EUiBorderStyle(){
 }
 var EUiColor = new function EUiColor(){
    var o = this;
+   o.ReadonlyBackgroundColor = '#FEFECB';
    o.Normal        = '#FFFFFF';
    o.Select        = '#F8C59A';
    o.Valid         = '#FFCCCC';
@@ -705,7 +706,6 @@ var EUiColor = new function EUiColor(){
    o.Edit          = '#FFFFFF';
    o.EditHover     = '#EBFFFF';
    o.Require       = '#FF0000';
-   o.Readonly      = '#F0F0F0';
    o.Text          = '#000000';
    o.TextEdit      = '#0066FF';
    o.TextReadonly  = '#333333';
@@ -718,42 +718,6 @@ var EUiColor = new function EUiColor(){
    o.RowEdit       = '#FFFFFF';
    o.RowEditSelect = '#FDEBDB';
    o.RowEditHover  = '#F8F8E0';
-   o.RoundReadonly = new Array(
-      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
-      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
-      ['#24C2DB', '#CFF6F6', '#F8F8F8', '#FFFFFF', '#2AD6F0'],
-      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
-      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
-   o.RoundHover = new Array(
-      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
-      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
-      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
-      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
-      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
-   o.RoundEdit = new Array(
-      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
-      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
-      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
-      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
-      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
-   o.RoundDropReadonly = new Array(
-      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
-      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
-      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
-      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
-      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
-   o.RoundDropHover = new Array(
-      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
-      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
-      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
-      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
-      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
-   o.RoundDropEdit = new Array(
-      ['#DAF8F8', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#24C2DB', '#DAF8F8'],
-      ['#24C2DB', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#CFF6F6', '#2AD6F0'],
-      ['#24C2DB', '#CFF6F6', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#F1FFFF', '#FFFFFF', '#2AD6F0'],
-      ['#24C2DB', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#2AD6F0'],
-      ['#DAF8F8', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#2AD6F0', '#DAF8F8']);
    return o;
 }
 var EUiCursor = new function EUiCursor(){
@@ -1593,7 +1557,7 @@ function MUiEditValue(o){
    o.saveValue       = MUiEditValue_saveValue;
    o.recordValue     = MUiEditValue_recordValue;
    o.validValue      = RMethod.empty;
-   o.setEditable     = MUiEditValue_setEditable;
+   o.setEditAble     = MUiEditValue_setEditAble;
    o.doFocus         = MUiEditValue_doFocus;
    o.doBlur          = MUiEditValue_doBlur;
    return o;
@@ -1616,7 +1580,10 @@ function MUiEditValue_text(){
 function MUiEditValue_setText(text){
 }
 function MUiEditValue_get(){
-   return this._dataValue;
+   var o = this;
+   var text = o.text();
+   var value = o._dataValue = o.formator().formatValue(text)
+   return value;
 }
 function MUiEditValue_set(value){
    var o = this;
@@ -1645,10 +1612,9 @@ function MUiEditValue_recordValue(){
    o._recordText = o.text();
    o._recordValue = o.get();
 }
-function MUiEditValue_setEditable(flag){
+function MUiEditValue_setEditAble(flag){
    var o = this;
    o._statusEditable = flag;
-   o.refreshStyle();
 }
 function MUiEditValue_doFocus(){
    var o = this;
@@ -1768,13 +1734,13 @@ function MUiFocus(o){
    return o;
 }
 function MUiFocus_onFocus(e){
-   RConsole.find(FFocusConsole).focus(this, e);
+   RConsole.find(FUiFocusConsole).focus(this, e);
 }
 function MUiFocus_focus(){
-   RConsole.find(FFocusConsole).focus(this);
+   RConsole.find(FUiFocusConsole).focus(this);
 }
 function MUiFocus_blur(){
-   RConsole.find(FFocusConsole).blur(this);
+   RConsole.find(FUiFocusConsole).blur(this);
 }
 function MUiHorizontal(o){
    o = RClass.inherits(this, o);
@@ -3141,14 +3107,14 @@ function FUiControl(o){
 }
 function FUiControl_onEnter(e){
    var o = this;
-   RConsole.find(FFocusConsole).enter(o);
+   RConsole.find(FUiFocusConsole).enter(o);
    if(o._hint){
       RWindow.setStatus(o._hint);
    }
 }
 function FUiControl_onLeave(e){
    var o = this;
-   RConsole.find(FFocusConsole).leave(o);
+   RConsole.find(FUiFocusConsole).leave(o);
    if(o._hint){
       RWindow.setStatus();
    }
@@ -3796,7 +3762,7 @@ function RUiEvent_process(hs, he){
                }
                e.ohProcess.call(e.source, e);
             }else if(e.onProcess){
-               RConsole.find(FFrameEventConsole).push(e);
+               RConsole.find(FUiFrameEventConsole).push(e);
             }
          }
          return true;
@@ -3917,533 +3883,6 @@ function RUiService_parse(p){
       ss.set(p, s);
    }
    return s;
-}
-function FEditorConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._scopeCd     = EScope.Local;
-   o._hoverEditor = null;
-   o._focusEditor = null;
-   o._editors     = null;
-   o.construct    = FEditorConsole_construct;
-   o.makeName     = FEditorConsole_makeName;
-   o.enter        = FEditorConsole_enter;
-   o.leave        = FEditorConsole_leave;
-   o.focus        = FEditorConsole_focus;
-   o.blur         = FEditorConsole_blur;
-   o.lost         = FEditorConsole_lost;
-   return o;
-}
-function FEditorConsole_construct(){
-   var o = this;
-   o.__base.FConsole.construct.call(o);
-   o._editors = new TDictionary();
-}
-function FEditorConsole_makeName(cls, name){
-   return name ? name + '@' + RClass.name(cls) : RClass.name(cls);
-}
-function FEditorConsole_enter(editable, cls){
-   var name = RClass.name(cls);
-   var editor = this._hoverEditors.get(name);
-   if(!editor){
-      editor = RClass.create(cls);
-      editor.psBuild();
-      this._hoverEditors.set(name, editor);
-   }
-   this._hoverEditor = editor;
-   editor.editable = editable;
-   editor.show();
-   return editor;
-}
-function FEditorConsole_leave(editor){
-   var o = this;
-   if(o._hoverEditor != o._focusEditor){
-      editor = RObject.nvl(editor, o._hoverEditor);
-      o._hoverEditor = null;
-      RLog.debug(o, 'Leave {0}', RClass.dump(editor));
-   }
-}
-function FEditorConsole_focus(c, n, l){
-   var o = this;
-   var name = o.makeName(n, l);
-   var e = o._editors.get(l);
-   if(!e){
-      e = RClass.create(n);
-      e.build(c._hPanel);
-      o._editors.set(l, e);
-   }
-   RLogger.debug(o, 'Focus editor {1} (editable={2}, name={3})', RClass.dump(e), RClass.dump(c), l);
-   e.reset();
-   if(RClass.isClass(e, FUiDropEditor)){
-      e.linkControl(c);
-      o._focusEditor = e;
-   }
-   return e;
-}
-function FEditorConsole_blur(editor){
-   var o = this;
-   if(o._focusEditor){
-      RLogger.debug(o, 'Blur editor {1}', RClass.dump(editor));
-      editor = RObject.nvl(editor, o._focusEditor);
-      if(editor){
-         editor.onEditEnd();
-      }
-      o._focusEditor = null;
-   }
-}
-function FEditorConsole_lost(e){
-   var o = this;
-   o.leave(e);
-   o.blur(e);
-}
-function FEnvironmentConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o.scope       = EScope.Local;
-   o.environment = null;
-   o.connect     = FEnvironmentConsole_connect;
-   o.build       = FEnvironmentConsole_build;
-   o.buildValue  = FEnvironmentConsole_buildValue;
-   o.load        = FEnvironmentConsole_load;
-   o.xml         = FEnvironmentConsole_xml;
-   return o;
-}
-function FEnvironmentConsole_connect(){
-   return;
-   var xData = window.xEnvironment;
-   if(xData){
-      this.environment = RXml.makeNode(xData);
-   }
-}
-function FEnvironmentConsole_build(config){
-   var o = this;
-   if(!o.environment){
-      o.connect()
-   }
-   if(o.environment){
-      var node = config.create('Environment');
-      node.attributes().append(this.environment.attributes());
-   }
-}
-function FEnvironmentConsole_buildValue(){
-   if(!this.environment){
-      this.connect()
-   }
-   if(this.environment){
-      var env = RHtml.get('_environment');
-      if(env){
-         env.value = this.environment.xml();
-      }
-   }
-}
-function FEnvironmentConsole_load(p){
-   this.environment = RXml.makeNode(p);
-}
-function FEnvironmentConsole_xml(){
-   if(!this.environment){
-      this.connect()
-   }
-   if(this.environment){
-      return this.environment.xml();
-   }
-   return null;
-}
-function FFocusConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o.scope              = EScope.Page;
-   o._blurAble          = true;
-   o._focusAble         = true;
-   o._focusClasses      = null;
-   o._storeControl      = null;
-   o._hoverContainer    = null;
-   o._hoverControl      = null;
-   o._focusControl      = null;
-   o._blurControl       = null;
-   o._activeControl     = null;
-   o.lsnsFocus          = null;
-   o.lsnsBlur           = null;
-   o.lsnsFocusClass     = null;
-   o.onMouseDown        = FFocusConsole_onMouseDown;
-   o.onMouseWheel       = FFocusConsole_onMouseWheel;
-   o.construct          = FFocusConsole_construct;
-   o.enter              = FFocusConsole_enter;
-   o.leave              = FFocusConsole_leave;
-   o.isFocus            = FFocusConsole_isFocus;
-   o.focus              = FFocusConsole_focus;
-   o.blur               = FFocusConsole_blur;
-   o.findClass          = FFocusConsole_findClass;
-   o.focusClass         = FFocusConsole_focusClass;
-   o.focusHtml          = FFocusConsole_focusHtml;
-   o.lockBlur           = FFocusConsole_lockBlur;
-   o.unlockBlur         = FFocusConsole_unlockBlur;
-   o.storeFocus         = FFocusConsole_storeFocus;
-   o.restoreFocus       = FFocusConsole_restoreFocus;
-   o.dispose            = FFocusConsole_dispose;
-   return o;
-}
-function FFocusConsole_onMouseDown(p){
-   this.focusHtml(p.hSource);
-}
-function FFocusConsole_onMouseWheel(s, e){
-   var o = this;
-}
-function FFocusConsole_construct(){
-   var o = this;
-   o.__base.FConsole.construct.call(o);
-   o._focusClasses = new Object();
-   o.lsnsFocus = new TListeners();
-   o.lsnsBlur = new TListeners();
-   o.lsnsFocusClass = new TListeners();
-   RLogger.info(o, 'Add listener for window mouse down and wheel.');
-   RWindow.lsnsMouseDown.register(o, o.onMouseDown);
-   RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
-}
-function FFocusConsole_enter(c){
-   var o = this;
-   if(RClass.isClass(c, MUiContainer)){
-      o._hoverContainer = c;
-   }else{
-      o._hoverControl = c;
-   }
-}
-function FFocusConsole_leave(c){
-   var o = this;
-   if(o._hoverContainer == c){
-      o._hoverContainer = null;
-   }
-   if(o._hoverControl == c){
-      o._hoverControl = null;
-   }
-}
-function FFocusConsole_isFocus(c){
-   return (this._focusControl == c);
-}
-function FFocusConsole_focus(c, e){
-   var o = this;
-   if(!RClass.isClass(c, MUiFocus)){
-      return;
-   }
-   var f = o._focusControl;
-   if(f == c){
-      return;
-   }
-   var bc = o._blurControl;
-   if(bc != f){
-      if(o._blurAble && f && f.testBlur(c)){
-         RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
-         o._blurControl = f;
-         f.doBlur(e);
-         o.lsnsBlur.process(f);
-      }
-   }
-   if(o._focusAble){
-      RLogger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
-      c.doFocus(e);
-      o._focusControl = o._activeControl = c;
-      o.lsnsFocus.process(c);
-   }
-}
-function FFocusConsole_blur(c, e){
-   var o = this;
-   var fc = o._focusControl;
-   var bc = o._blurControl;
-   if(fc && c && !fc.testBlur(c)){
-      return;
-   }
-   if(bc != c && RClass.isClass(c, MUiFocus)){
-      RLogger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
-      o._blurControl = c;
-      c.doBlur(e);
-   }
-   if(fc){
-      RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
-      fc.doBlur(e);
-      o._focusControl = null;
-   }
-}
-function FFocusConsole_findClass(c){
-   var o = this;
-   var n = RClass.name(c);
-   if(o._focusClasses[n]){
-      return o._focusClasses[n];
-   }
-   var p = o._activeControl;
-   if(RClass.isClass(p, FEditor)){
-      p = p.source;
-   }
-   if(p){
-      return p.topControl(c);
-   }
-}
-function FFocusConsole_focusClass(c, p){
-   var o = this;
-   var n = RClass.name(c);
-   if(o._focusClasses[n] != p){
-      o._focusClasses[n] = p;
-      RLogger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
-      o.lsnsFocusClass.process(p, c);
-   }
-}
-function FFocusConsole_focusHtml(p){
-   var o = this;
-   var c = RHtml.searchLinker(p, FUiControl);
-   RLogger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
-   if(c){
-      if(o._focusControl != c){
-         o.blur(c, p);
-      }
-   }else{
-      o.blur(null, p);
-   }
-}
-function FFocusConsole_lockBlur(){
-   this._blurAble = false;
-}
-function FFocusConsole_unlockBlur(){
-   this._blurAble = true;
-}
-function FFocusConsole_storeFocus(){
-   var o = this;
-   o._storeControl = o._focusControl;
-}
-function FFocusConsole_restoreFocus(){
-   var o = this;
-   if(o._storeControl){
-      o._storeControl.focus();
-      o._storeControl = null;
-   }
-}
-function FFocusConsole_dispose(){
-   var o = this;
-   o.__base.FConsole.dispose.call(o);
-   o._focusClasses = null;
-}
-function FFrameEventConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._scopeCd   = EScope.Local;
-   o._thread    = null;
-   o._interval  = 20;
-   o._allow     = true;
-   o._allows    = new TAttributes();
-   o._events    = new TObjects();
-   o._listeners = new TAttributes();
-   o.onProcess  = FFrameEventConsole_onProcess;
-   o.construct  = FFrameEventConsole_construct;
-   o.register   = FFrameEventConsole_register;
-   o.push       = FFrameEventConsole_push;
-   o.clear      = FFrameEventConsole_clear;
-   return o;
-}
-function FFrameEventConsole_onProcess(){
-   var o = this;
-   var es = o._events;
-   var ec = es.count();
-   if(ec > 0){
-      while(true){
-         var has = false;
-         for(var n = 0; n < ec; n++){
-            var e = es.get(n);
-            if(e){
-               has = true;
-               e.process();
-               var ls = o._listeners.get(RMethod.name(e));
-               if(ls){
-                  ls.process(e);
-               }
-               es.set(n, null)
-            }
-         }
-         if(!has){
-            break;
-         }
-      }
-      es.clear();
-   }
-}
-function FFrameEventConsole_construct(){
-   var o = this;
-   o.__base.FConsole.construct.call(o);
-   var t = o._thread = RClass.create(FThread);
-   t.setInterval(o._interval);
-   t.addProcessListener(o, o.onProcess);
-   RConsole.find(FThreadConsole).start(t);
-   RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
-}
-function FFrameEventConsole_register(po, pc){
-   this._events.push(new TEvent(po, null, pc));
-}
-function FFrameEventConsole_push(e){
-   var o = this;
-   var n = RClass.name(e)
-   if(o._allow){
-      var a = true;
-      if(o._allows.contains(n)){
-         a = RBoolean.isTrue(o._allows.get(n));
-      }
-      if(a){
-         var es = o._events;
-         var c = es.count();
-         for(var i = 0; i < c; i++){
-            if(es.get(n) == e){
-               es.set(n, null);
-            }
-         }
-         es.push(e);
-      }
-   }
-}
-function FFrameEventConsole_clear(){
-   this._events.clear();
-}
-function FFrameEventConsole_add(owner, proc){
-   this._events.push(new TEvent(owner, null, proc));
-}
-function FFrameEventConsole_allowEvent(c){
-   this._allows.set(RMethod.name(c), EBool.True);
-}
-function FFrameEventConsole_skipEvent(c){
-   this._allows.set(RMethod.name(c), EBool.False);
-}
-function FFrameEventConsole_allowAll(){
-   this._allow = true;
-}
-function FFrameEventConsole_skipAll(){
-   this._allow = false;
-}
-function FFrameEventConsole_onlyCall(c, m){
-   var o = this;
-   o._allow = false;
-   m.call(c);
-   o._allow = true;
-}
-function FKeyConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o._scopeCd        = EScope.Local;
-   o._enable         = true;
-   o._enableRegister = true;
-   o._listeners      = new Object();
-   o._disableKeys    = new Object();
-   o.onKeyDown       = FKeyConsole_onKeyDown;
-   o.construct       = FKeyConsole_construct;
-   o.enable          = FKeyConsole_enable;
-   o.disable         = FKeyConsole_disable;
-   o.enableRegister  = FKeyConsole_enableRegister;
-   o.disableRegister = FKeyConsole_disableRegister;
-   o.register        = FKeyConsole_register;
-   return o;
-}
-function FKeyConsole_onKeyDown(e){
-   var o = this;
-   var k = REnum.tryDecode(EKeyCode, e.keyCode);
-   if(k && o._enable){
-      var ls = o._listeners[k];
-      if(ls){
-         ls.process(o, e);
-         e.keyCode = null;
-         e.returnValue = false;
-      }
-   }
-   if(k && o._disableKeys[k]){
-      e.keyCode = null;
-      e.returnValue = false;
-   }
-}
-function FKeyConsole_construct(){
-   var o = this;
-   o.__base.FConsole.construct.call(o);
-   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
-}
-function FKeyConsole_enable(){
-   this._enable = true;
-}
-function FKeyConsole_disable(){
-   this._enable = false;
-}
-function FKeyConsole_enableRegister(){
-   this._enableRegister = true;
-}
-function FKeyConsole_disableRegister(){
-   this._enableRegister = false;
-}
-function FKeyConsole_register(k, w, p){
-   var o = this;
-   if(o._enableRegister){
-      if(RInteger.isInteger(k)){
-         k = REnum.decode(EKeyCode, k);
-      }
-      var ks = o._listeners;
-      var s = ks[k];
-      if(!s){
-         s = ks[k] = new TListeners();
-      }
-      s.clear();
-      s.register(w, p);
-   }
-}
-function FResultConsole(o){
-   o = RClass.inherits(this, o, FConsole);
-   o.scope          = EScope.Page;
-   o.executeCommand = FResultConsole_executeCommand;
-   o.checkService   = FResultConsole_checkService;
-   return o;
-}
-function FResultConsole_executeCommand(command){
-   var name = command.get('name');
-   if(EResultCommand.TreeReload == name){
-      var tv = RGlobal.get('catalog.tree');
-      if(tv){
-         tv.reload();
-      }
-   }else if(EResultCommand.TreeNodeRefresh == name){
-      var tv = RGlobal.get('catalog.tree');
-      if(tv){
-         var uuid = command.get('uuid');
-         if(uuid){
-            var fn = tv.findByUuid(uuid);
-            if(fn){
-               tv.reloadNode(fn);
-            }else{
-               return alert("Can't find tree node. (uuid="+uuid+")");
-            }
-         }else{
-            tv.reloadNode();
-         }
-      }
-   }else if(EResultCommand.TreeParentRefresh == name){
-      var tv = RGlobal.get('catalog.tree');
-      if(tv){
-         var fn = tv.focusNode;
-         if(fn){
-            tv.reloadNode(fn.parentNode);
-         }
-      }
-   }else if(EResultCommand.PageRedirect == name){
-      var action = command.get('action');
-      var page = top.RContext.context(command.get('page'));
-      if(action){
-         page += '?do=' + action;
-      }
-      fmMain.action = page;
-      fmMain.target = '';
-      fmMain.submit();
-   }
-}
-function FResultConsole_checkService(config){
-   var o = this;
-   if(config){
-      if(!RConsole.find(FMessageConsole).checkResult(new TMessageArg(config))){
-         return false;
-      }
-      var cmdsNode = config.find('Commands');
-      if(cmdsNode && cmdsNode.nodes && cmdsNode.nodes.count){
-         for(var n=0; n<cmdsNode.nodes.count; n++){
-            var node = cmdsNode.node(n);
-            if(node.isName('Command')){
-               o.executeCommand(node);
-            }
-         }
-      }
-      RConsole.find(FFocusConsole).restoreFocus();
-   }
-   return true;
 }
 function FUiConfirmDialog(o){
    o = RClass.inherits(this, o, FUiDialog, MListenerResult);
@@ -4782,6 +4221,304 @@ function FUiDesktopConsole_hide(){
    }
    o.setMaskVisible(false);
 }
+function FUiEditorConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd     = EScope.Local;
+   o._hoverEditor = null;
+   o._focusEditor = null;
+   o._editors     = null;
+   o.construct    = FUiEditorConsole_construct;
+   o.makeName     = FUiEditorConsole_makeName;
+   o.enter        = FUiEditorConsole_enter;
+   o.leave        = FUiEditorConsole_leave;
+   o.focus        = FUiEditorConsole_focus;
+   o.blur         = FUiEditorConsole_blur;
+   o.lost         = FUiEditorConsole_lost;
+   return o;
+}
+function FUiEditorConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._editors = new TDictionary();
+}
+function FUiEditorConsole_makeName(cls, name){
+   return name ? name + '@' + RClass.name(cls) : RClass.name(cls);
+}
+function FUiEditorConsole_enter(editable, cls){
+   var name = RClass.name(cls);
+   var editor = this._hoverEditors.get(name);
+   if(!editor){
+      editor = RClass.create(cls);
+      editor.psBuild();
+      this._hoverEditors.set(name, editor);
+   }
+   this._hoverEditor = editor;
+   editor.editable = editable;
+   editor.show();
+   return editor;
+}
+function FUiEditorConsole_leave(editor){
+   var o = this;
+   if(o._hoverEditor != o._focusEditor){
+      editor = RObject.nvl(editor, o._hoverEditor);
+      o._hoverEditor = null;
+      RLog.debug(o, 'Leave {1}', RClass.dump(editor));
+   }
+}
+function FUiEditorConsole_focus(c, n, l){
+   var o = this;
+   var name = o.makeName(n, l);
+   var e = o._editors.get(l);
+   if(!e){
+      e = RClass.create(n);
+      e.build(c._hPanel);
+      o._editors.set(l, e);
+   }
+   RLogger.debug(o, 'Focus editor {1} (editable={2}, name={3})', RClass.dump(e), RClass.dump(c), l);
+   e.reset();
+   if(RClass.isClass(e, FUiDropEditor)){
+      e.linkControl(c);
+      o._focusEditor = e;
+   }
+   return e;
+}
+function FUiEditorConsole_blur(editor){
+   var o = this;
+   if(o._focusEditor){
+      RLogger.debug(o, 'Blur editor {1}', RClass.dump(editor));
+      editor = RObject.nvl(editor, o._focusEditor);
+      if(editor){
+         editor.onEditEnd();
+      }
+      o._focusEditor = null;
+   }
+}
+function FUiEditorConsole_lost(e){
+   var o = this;
+   o.leave(e);
+   o.blur(e);
+}
+function FUiEnvironmentConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o.scope       = EScope.Local;
+   o.environment = null;
+   o.connect     = FUiEnvironmentConsole_connect;
+   o.build       = FUiEnvironmentConsole_build;
+   o.buildValue  = FUiEnvironmentConsole_buildValue;
+   o.load        = FUiEnvironmentConsole_load;
+   o.xml         = FUiEnvironmentConsole_xml;
+   return o;
+}
+function FUiEnvironmentConsole_connect(){
+   return;
+   var xData = window.xEnvironment;
+   if(xData){
+      this.environment = RXml.makeNode(xData);
+   }
+}
+function FUiEnvironmentConsole_build(config){
+   var o = this;
+   if(!o.environment){
+      o.connect()
+   }
+   if(o.environment){
+      var node = config.create('Environment');
+      node.attributes().append(this.environment.attributes());
+   }
+}
+function FUiEnvironmentConsole_buildValue(){
+   if(!this.environment){
+      this.connect()
+   }
+   if(this.environment){
+      var env = RHtml.get('_environment');
+      if(env){
+         env.value = this.environment.xml();
+      }
+   }
+}
+function FUiEnvironmentConsole_load(p){
+   this.environment = RXml.makeNode(p);
+}
+function FUiEnvironmentConsole_xml(){
+   if(!this.environment){
+      this.connect()
+   }
+   if(this.environment){
+      return this.environment.xml();
+   }
+   return null;
+}
+function FUiFocusConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o.scope              = EScope.Page;
+   o._blurAble          = true;
+   o._focusAble         = true;
+   o._focusClasses      = null;
+   o._storeControl      = null;
+   o._hoverContainer    = null;
+   o._hoverControl      = null;
+   o._focusControl      = null;
+   o._blurControl       = null;
+   o._activeControl     = null;
+   o.lsnsFocus          = null;
+   o.lsnsBlur           = null;
+   o.lsnsFocusClass     = null;
+   o.onMouseDown        = FUiFocusConsole_onMouseDown;
+   o.onMouseWheel       = FUiFocusConsole_onMouseWheel;
+   o.construct          = FUiFocusConsole_construct;
+   o.enter              = FUiFocusConsole_enter;
+   o.leave              = FUiFocusConsole_leave;
+   o.isFocus            = FUiFocusConsole_isFocus;
+   o.focus              = FUiFocusConsole_focus;
+   o.blur               = FUiFocusConsole_blur;
+   o.findClass          = FUiFocusConsole_findClass;
+   o.focusClass         = FUiFocusConsole_focusClass;
+   o.focusHtml          = FUiFocusConsole_focusHtml;
+   o.lockBlur           = FUiFocusConsole_lockBlur;
+   o.unlockBlur         = FUiFocusConsole_unlockBlur;
+   o.storeFocus         = FUiFocusConsole_storeFocus;
+   o.restoreFocus       = FUiFocusConsole_restoreFocus;
+   o.dispose            = FUiFocusConsole_dispose;
+   return o;
+}
+function FUiFocusConsole_onMouseDown(p){
+   this.focusHtml(p.hSource);
+}
+function FUiFocusConsole_onMouseWheel(s, e){
+   var o = this;
+}
+function FUiFocusConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._focusClasses = new Object();
+   o.lsnsFocus = new TListeners();
+   o.lsnsBlur = new TListeners();
+   o.lsnsFocusClass = new TListeners();
+   RLogger.info(o, 'Add listener for window mouse down and wheel.');
+   RWindow.lsnsMouseDown.register(o, o.onMouseDown);
+   RWindow.lsnsMouseWheel.register(o, o.onMouseWheel);
+}
+function FUiFocusConsole_enter(c){
+   var o = this;
+   if(RClass.isClass(c, MUiContainer)){
+      o._hoverContainer = c;
+   }else{
+      o._hoverControl = c;
+   }
+}
+function FUiFocusConsole_leave(c){
+   var o = this;
+   if(o._hoverContainer == c){
+      o._hoverContainer = null;
+   }
+   if(o._hoverControl == c){
+      o._hoverControl = null;
+   }
+}
+function FUiFocusConsole_isFocus(c){
+   return (this._focusControl == c);
+}
+function FUiFocusConsole_focus(c, e){
+   var o = this;
+   if(!RClass.isClass(c, MUiFocus)){
+      return;
+   }
+   var f = o._focusControl;
+   if(f == c){
+      return;
+   }
+   var bc = o._blurControl;
+   if(bc != f){
+      if(o._blurAble && f && f.testBlur(c)){
+         RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', f.name, RClass.dump(f));
+         o._blurControl = f;
+         f.doBlur(e);
+         o.lsnsBlur.process(f);
+      }
+   }
+   if(o._focusAble){
+      RLogger.debug(o, 'Focus control. (name={1}, instance={2})', c.name, RClass.dump(c));
+      c.doFocus(e);
+      o._focusControl = o._activeControl = c;
+      o.lsnsFocus.process(c);
+   }
+}
+function FUiFocusConsole_blur(c, e){
+   var o = this;
+   var fc = o._focusControl;
+   var bc = o._blurControl;
+   if(fc && c && !fc.testBlur(c)){
+      return;
+   }
+   if(bc != c && RClass.isClass(c, MUiFocus)){
+      RLogger.debug(o, 'Blur control. (name={1}, instance={2})', c.name, RClass.dump(c));
+      o._blurControl = c;
+      c.doBlur(e);
+   }
+   if(fc){
+      RLogger.debug(o, 'Blur focus control. (name={1}, instance={2})', fc.name, RClass.dump(fc));
+      fc.doBlur(e);
+      o._focusControl = null;
+   }
+}
+function FUiFocusConsole_findClass(c){
+   var o = this;
+   var n = RClass.name(c);
+   if(o._focusClasses[n]){
+      return o._focusClasses[n];
+   }
+   var p = o._activeControl;
+   if(RClass.isClass(p, FEditor)){
+      p = p.source;
+   }
+   if(p){
+      return p.topControl(c);
+   }
+}
+function FUiFocusConsole_focusClass(c, p){
+   var o = this;
+   var n = RClass.name(c);
+   if(o._focusClasses[n] != p){
+      o._focusClasses[n] = p;
+      RLogger.debug(o, 'Focus class. (name={1}, class={2})', n, RClass.dump(p));
+      o.lsnsFocusClass.process(p, c);
+   }
+}
+function FUiFocusConsole_focusHtml(p){
+   var o = this;
+   var c = RHtml.searchLinker(p, FUiControl);
+   RLogger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
+   if(c){
+      if(o._focusControl != c){
+         o.blur(c, p);
+      }
+   }else{
+      o.blur(null, p);
+   }
+}
+function FUiFocusConsole_lockBlur(){
+   this._blurAble = false;
+}
+function FUiFocusConsole_unlockBlur(){
+   this._blurAble = true;
+}
+function FUiFocusConsole_storeFocus(){
+   var o = this;
+   o._storeControl = o._focusControl;
+}
+function FUiFocusConsole_restoreFocus(){
+   var o = this;
+   if(o._storeControl){
+      o._storeControl.focus();
+      o._storeControl = null;
+   }
+}
+function FUiFocusConsole_dispose(){
+   var o = this;
+   o.__base.FConsole.dispose.call(o);
+   o._focusClasses = null;
+}
 function FUiFrameConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd         = EScope.Local;
@@ -4939,6 +4676,104 @@ function FUiFrameConsole_dispose(){
    o._formIds = null;
    o._framesLoaded = null;
 }
+function FUiFrameEventConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd   = EScope.Local;
+   o._thread    = null;
+   o._interval  = 20;
+   o._allow     = true;
+   o._allows    = new TAttributes();
+   o._events    = new TObjects();
+   o._listeners = new TAttributes();
+   o.onProcess  = FUiFrameEventConsole_onProcess;
+   o.construct  = FUiFrameEventConsole_construct;
+   o.register   = FUiFrameEventConsole_register;
+   o.push       = FUiFrameEventConsole_push;
+   o.clear      = FUiFrameEventConsole_clear;
+   return o;
+}
+function FUiFrameEventConsole_onProcess(){
+   var o = this;
+   var es = o._events;
+   var ec = es.count();
+   if(ec > 0){
+      while(true){
+         var has = false;
+         for(var n = 0; n < ec; n++){
+            var e = es.get(n);
+            if(e){
+               has = true;
+               e.process();
+               var ls = o._listeners.get(RMethod.name(e));
+               if(ls){
+                  ls.process(e);
+               }
+               es.set(n, null)
+            }
+         }
+         if(!has){
+            break;
+         }
+      }
+      es.clear();
+   }
+}
+function FUiFrameEventConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   var t = o._thread = RClass.create(FThread);
+   t.setInterval(o._interval);
+   t.addProcessListener(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(t);
+   RLogger.debug(o, 'Add event thread. (thread={1})', RClass.dump(t));
+}
+function FUiFrameEventConsole_register(po, pc){
+   this._events.push(new TEvent(po, null, pc));
+}
+function FUiFrameEventConsole_push(e){
+   var o = this;
+   var n = RClass.name(e)
+   if(o._allow){
+      var a = true;
+      if(o._allows.contains(n)){
+         a = RBoolean.isTrue(o._allows.get(n));
+      }
+      if(a){
+         var es = o._events;
+         var c = es.count();
+         for(var i = 0; i < c; i++){
+            if(es.get(n) == e){
+               es.set(n, null);
+            }
+         }
+         es.push(e);
+      }
+   }
+}
+function FUiFrameEventConsole_clear(){
+   this._events.clear();
+}
+function FUiFrameEventConsole_add(owner, proc){
+   this._events.push(new TEvent(owner, null, proc));
+}
+function FUiFrameEventConsole_allowEvent(c){
+   this._allows.set(RMethod.name(c), EBool.True);
+}
+function FUiFrameEventConsole_skipEvent(c){
+   this._allows.set(RMethod.name(c), EBool.False);
+}
+function FUiFrameEventConsole_allowAll(){
+   this._allow = true;
+}
+function FUiFrameEventConsole_skipAll(){
+   this._allow = false;
+}
+function FUiFrameEventConsole_onlyCall(c, m){
+   var o = this;
+   o._allow = false;
+   m.call(c);
+   o._allow = true;
+}
 function FUiInfoDialog(o){
    o = RClass.inherits(this, o, FUiDialog, MListenerResult);
    o._styleText            = RClass.register(o, new AStyle('_styleText'));
@@ -4978,6 +4813,70 @@ function FUiInfoDialog_setText(value){
 function FUiInfoDialog_dispose(){
    var o = this;
    o.__base.FUiDialog.dispose.call(o);
+}
+function FUiKeyConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd        = EScope.Local;
+   o._enable         = true;
+   o._enableRegister = true;
+   o._listeners      = new Object();
+   o._disableKeys    = new Object();
+   o.onKeyDown       = FUiKeyConsole_onKeyDown;
+   o.construct       = FUiKeyConsole_construct;
+   o.enable          = FUiKeyConsole_enable;
+   o.disable         = FUiKeyConsole_disable;
+   o.enableRegister  = FUiKeyConsole_enableRegister;
+   o.disableRegister = FUiKeyConsole_disableRegister;
+   o.register        = FUiKeyConsole_register;
+   return o;
+}
+function FUiKeyConsole_onKeyDown(e){
+   var o = this;
+   var k = REnum.tryDecode(EKeyCode, e.keyCode);
+   if(k && o._enable){
+      var ls = o._listeners[k];
+      if(ls){
+         ls.process(o, e);
+         e.keyCode = null;
+         e.returnValue = false;
+      }
+   }
+   if(k && o._disableKeys[k]){
+      e.keyCode = null;
+      e.returnValue = false;
+   }
+}
+function FUiKeyConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+}
+function FUiKeyConsole_enable(){
+   this._enable = true;
+}
+function FUiKeyConsole_disable(){
+   this._enable = false;
+}
+function FUiKeyConsole_enableRegister(){
+   this._enableRegister = true;
+}
+function FUiKeyConsole_disableRegister(){
+   this._enableRegister = false;
+}
+function FUiKeyConsole_register(k, w, p){
+   var o = this;
+   if(o._enableRegister){
+      if(RInteger.isInteger(k)){
+         k = REnum.decode(EKeyCode, k);
+      }
+      var ks = o._listeners;
+      var s = ks[k];
+      if(!s){
+         s = ks[k] = new TListeners();
+      }
+      s.clear();
+      s.register(w, p);
+   }
 }
 function FUiMessageConsole(o){
    o = RClass.inherits(this, o, FConsole, MUiStyle);
@@ -5380,6 +5279,73 @@ function FUiPopupConsole_dispose(){
    var o = this;
    o._activeControl = null;
    o.__base.FConsole.dispose.call(o);
+}
+function FUiResultConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o.scope          = EScope.Page;
+   o.executeCommand = FUiResultConsole_executeCommand;
+   o.checkService   = FUiResultConsole_checkService;
+   return o;
+}
+function FUiResultConsole_executeCommand(command){
+   var name = command.get('name');
+   if(EResultCommand.TreeReload == name){
+      var tv = RGlobal.get('catalog.tree');
+      if(tv){
+         tv.reload();
+      }
+   }else if(EResultCommand.TreeNodeRefresh == name){
+      var tv = RGlobal.get('catalog.tree');
+      if(tv){
+         var uuid = command.get('uuid');
+         if(uuid){
+            var fn = tv.findByUuid(uuid);
+            if(fn){
+               tv.reloadNode(fn);
+            }else{
+               return alert("Can't find tree node. (uuid="+uuid+")");
+            }
+         }else{
+            tv.reloadNode();
+         }
+      }
+   }else if(EResultCommand.TreeParentRefresh == name){
+      var tv = RGlobal.get('catalog.tree');
+      if(tv){
+         var fn = tv.focusNode;
+         if(fn){
+            tv.reloadNode(fn.parentNode);
+         }
+      }
+   }else if(EResultCommand.PageRedirect == name){
+      var action = command.get('action');
+      var page = top.RContext.context(command.get('page'));
+      if(action){
+         page += '?do=' + action;
+      }
+      fmMain.action = page;
+      fmMain.target = '';
+      fmMain.submit();
+   }
+}
+function FUiResultConsole_checkService(config){
+   var o = this;
+   if(config){
+      if(!RConsole.find(FMessageConsole).checkResult(new TMessageArg(config))){
+         return false;
+      }
+      var cmdsNode = config.find('Commands');
+      if(cmdsNode && cmdsNode.nodes && cmdsNode.nodes.count){
+         for(var n=0; n<cmdsNode.nodes.count; n++){
+            var node = cmdsNode.node(n);
+            if(node.isName('Command')){
+               o.executeCommand(node);
+            }
+         }
+      }
+      RConsole.find(FFocusConsole).restoreFocus();
+   }
+   return true;
 }
 function FUiWindowConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -6172,7 +6138,7 @@ function FUiButton_setLabelStyle(c, w, s){
 function FUiButton_doClick(){
    var o = this;
    if(!o._disabled){
-      RConsole.find(FFocusConsole).blur();
+      RConsole.find(FUiFocusConsole).blur();
       RLogger.debug(o, 'Tool button click. (label={1})', o._label);
       var event = new SClickEvent(o);
       o.processClickListener(event);
@@ -8795,6 +8761,7 @@ function FUiEdit(o){
    o.formatValue      = FUiEdit_formatValue;
    o.text             = FUiEdit_text;
    o.setText          = FUiEdit_setText;
+   o.setEditAble      = FUiEdit_setEditAble;
    o.refreshValue     = FUiEdit_refreshValue;
    return o;
 }
@@ -8839,6 +8806,11 @@ function FUiEdit_text(){
 }
 function FUiEdit_setText(text){
    this._hInput.value = text;
+}
+function FUiEdit_setEditAble(flag){
+   var o = this;
+   o.__base.FUiEditControl.setEditAble.call(o, flag);
+   o._hInput.readOnly = !flag;
 }
 function FUiEdit_refreshValue(){
    var o = this;
@@ -11544,7 +11516,7 @@ function FUiSelect_refreshValue(){
 function FUiSelect_drop(){
    var o = this;
    if(o.hasComponent()){
-      var e = o._editor = RConsole.find(FEditorConsole).focus(o, FUiSelectEditor, o._name);
+      var e = o._editor = RConsole.find(FUiEditorConsole).focus(o, FUiSelectEditor, o._name);
       e.buildItems(o);
       e.set(o.get());
       e.show();
@@ -15443,7 +15415,7 @@ function FUiMenuButton_setEnable(p){
 function FUiMenuButton_click(){
    var o = this;
    if(!o._disabled){
-      RConsole.find(FFocusConsole).blur();
+      RConsole.find(FUiFocusConsole).blur();
       RLogger.debug(o, 'Menu button click. (label={1})', o._label);
       var event = new SClickEvent(o);
       o.processClickListener(event);
@@ -15910,7 +15882,7 @@ function FUiToolButton_setEnable(p){
 function FUiToolButton_doClick(){
    var o = this;
    if(!o._disabled){
-      RConsole.find(FFocusConsole).blur();
+      RConsole.find(FUiFocusConsole).blur();
       RLogger.debug(o, 'Tool button click. (label={1})', o._label);
       var event = new SClickEvent(o);
       o.processClickListener(event);
@@ -18316,13 +18288,13 @@ function FUiTreeView_filterNode(pl, pa){
 }
 function FUiTreeView_clear(){
    var o = this;
-   var ns = o._nodes;
-   if(ns){
-      var c = ns.count();
-      for(var i = c - 1; i >= 0; i--){
-         ns.get(i).remove();
+   var nodes = o._nodes;
+   if(nodes){
+      var count = nodes.count();
+      for(var i = count - 1; i >= 0; i--){
+         nodes.get(i).removeSelf();
       }
-      ns.clear();
+      nodes.clear();
    }
    o._allNodes.clear();
 }
@@ -18721,6 +18693,7 @@ function FUiWindow(o){
    o.onMouseCaptureStop  = FUiWindow_onMouseCaptureStop;
    o.construct      = FUiWindow_construct;
    o.setVisible     = FUiWindow_setVisible;
+   o.setLabel       = FUiWindow_setLabel;
    o.showPosition   = FUiWindow_showPosition;
    return o;
 }
@@ -18741,9 +18714,9 @@ function FUiWindow_onBuild(event){
    o._hStatusPanel = RBuilder.appendTableRowCell(hBodyForm, o.styleName('StatusPanel'));
    var hTitleForm = o._hTitleForm = RBuilder.appendTable(hTitlePanel, o.styleName('TitleForm'));
    var hTitleLine = RBuilder.appendTableRow(hTitleForm);
-   var hTitle = RBuilder.appendTableCell(hTitleLine);
+   var hTitle = o._hTitle = RBuilder.appendTableCell(hTitleLine);
    hTitle.align = 'center';
-   hTitle.innerText = o._label;
+   RHtml.textSet(hTitle, o._label);
    var hTitleButton = RBuilder.appendTableCell(hTitleLine);
    hTitleButton.width = 20;
    hBodyPanel.appendChild(o._hPanelForm);
@@ -18786,6 +18759,11 @@ function FUiWindow_setVisible(visible){
    }else{
       RWindow._hContainer.removeChild(hPanel);
    }
+}
+function FUiWindow_setLabel(label){
+   var o = this;
+   o.__base.FUiLayout.setLabel.call(o, label)
+   RHtml.textSet(o._hTitle, o._label);
 }
 function FUiWindow_showPosition(positionCd){
    var o = this;

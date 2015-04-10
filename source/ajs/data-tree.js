@@ -155,7 +155,7 @@ function FUiDataTreeView_loadService(serviceCode, attributes){
    var xdocument = new TXmlDocument();
    var xroot = xdocument.root();
    xroot.set('action', service.action);
-   RConsole.find(FEnvironmentConsole).build(xroot);
+   RConsole.find(FUiEnvironmentConsole).build(xroot);
    if(!attributes.isEmpty()){
       if(RClass.isClass(attributes, TNode)){
          xr.push(attributes);

@@ -123,7 +123,7 @@ function FUiControl(o){
 //==========================================================
 function FUiControl_onEnter(e){
    var o = this;
-   RConsole.find(FFocusConsole).enter(o);
+   RConsole.find(FUiFocusConsole).enter(o);
    if(o._hint){
       RWindow.setStatus(o._hint);
    }
@@ -137,7 +137,7 @@ function FUiControl_onEnter(e){
 //==========================================================
 function FUiControl_onLeave(e){
    var o = this;
-   RConsole.find(FFocusConsole).leave(o);
+   RConsole.find(FUiFocusConsole).leave(o);
    if(o._hint){
       RWindow.setStatus();
    }

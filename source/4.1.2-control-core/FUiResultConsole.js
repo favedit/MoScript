@@ -1,17 +1,17 @@
 // ============================================================
-// FResultConsole
+// FUiResultConsole
 // ============================================================
-function FResultConsole(o){
+function FUiResultConsole(o){
    o = RClass.inherits(this, o, FConsole);
    // Attribute
    o.scope          = EScope.Page;
    // Method
-   o.executeCommand = FResultConsole_executeCommand;
-   o.checkService   = FResultConsole_checkService;
+   o.executeCommand = FUiResultConsole_executeCommand;
+   o.checkService   = FUiResultConsole_checkService;
    return o;
 }
 // ------------------------------------------------------------
-function FResultConsole_executeCommand(command){
+function FUiResultConsole_executeCommand(command){
    var name = command.get('name');
    if(EResultCommand.TreeReload == name){
       var tv = RGlobal.get('catalog.tree');
@@ -54,7 +54,7 @@ function FResultConsole_executeCommand(command){
    }
 }
 // ------------------------------------------------------------
-function FResultConsole_checkService(config){
+function FUiResultConsole_checkService(config){
    var o = this;
    if(config){
       // 检查消息

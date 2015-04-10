@@ -11,6 +11,8 @@ function FDsResourceFolderDialog(o){
    o._frameName            = 'design3d.resource.FolderDialog';
    //..........................................................
    // @attribute
+   o._dataModeCd           = null;
+   // @attribute
    o._controlParentLabel   = null;
    o._controlLabel         = null;
    o._controlConfirmButton = null;
@@ -29,6 +31,8 @@ function FDsResourceFolderDialog(o){
    o.setNodeParentLabel    = FDsResourceFolderDialog_setNodeParentLabel;
    o.setNodeLabel          = FDsResourceFolderDialog_setNodeLabel;
    // @method
+   o.switchDataMode        = FDsResourceFolderDialog_switchDataMode;
+   // @method
    o.dispose               = FDsResourceFolderDialog_dispose;
    return o;
 }
@@ -42,6 +46,9 @@ function FDsResourceFolderDialog(o){
 function FDsResourceFolderDialog_onBuilded(p){
    var o = this;
    o.__base.FUiDialog.onBuilded.call(o, p);
+   //..........................................................
+   // 设置属性
+   o._controlParentLabel.setEditAble(false);
    //..........................................................
    // 注册事件
    o._controlConfirmButton.addClickListener(o, o.onConfirmClick);
@@ -62,11 +69,17 @@ function FDsResourceFolderDialog_onConfirmLoad(event){
    o.hide();
    // 刷新目录
    var catalog = o._frameSet._catalogContent;
-   if(o._parentGuid){
-      var node = catalog.findByGuid(o._parentGuid);
-      catalog.loadNode(node);
+   if(o._dataModeCd == EUiDataMode.Insert){
+      if(o._parentGuid){
+         var node = catalog.findByGuid(o._parentGuid);
+         catalog.loadNode(node);
+      }else{
+         catalog.loadService();
+      }
    }else{
-      catalog.loadService();
+      var label = o._controlLabel.get();
+      var node = catalog.focusNode();
+      node.setLabel(label);
    }
 }
 
@@ -80,9 +93,16 @@ function FDsResourceFolderDialog_onConfirmClick(event){
    var o = this;
    // 画面禁止操作
    RConsole.find(FUiDesktopConsole).showUploading();
-   // 加载文件数据
+   // 获得属性
    var label = o._controlLabel.get();
-   var connection = RConsole.find(FDrResourceConsole).doFolderCreate(o._parentGuid, null, label);
+   // 执行数据处理
+   var resourceConsole = RConsole.find(FDrResourceConsole);
+   var connection = null;
+   if(o._dataModeCd == EUiDataMode.Insert){
+      connection = resourceConsole.doFolderCreate(o._parentGuid, null, label);
+   }else{
+      connection = resourceConsole.doFolderUpdate(o._nodeGuid, null, label);
+   }
    connection.addLoadListener(o, o.onConfirmLoad);
 }
 
@@ -125,6 +145,22 @@ function FDsResourceFolderDialog_setNodeParentLabel(label){
 //==========================================================
 function FDsResourceFolderDialog_setNodeLabel(label){
    this._controlLabel.set(label);
+}
+
+//==========================================================
+// <T>切换数据模式。</T>
+//
+// @method
+// @param modeCd:EUiDataMode 数据模式
+//==========================================================
+function FDsResourceFolderDialog_switchDataMode(modeCd){
+   var o = this;
+   o._dataModeCd = modeCd;
+   if(modeCd == EUiDataMode.Insert){
+      o.setLabel('新建资源目录');
+   }else if(modeCd == EUiDataMode.Update){
+      o.setLabel('资源目录属性');
+   }
 }
 
 //==========================================================

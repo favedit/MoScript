@@ -375,6 +375,7 @@ function FUiWindow(o){
    o.onMouseCaptureStop  = FUiWindow_onMouseCaptureStop;
    o.construct      = FUiWindow_construct;
    o.setVisible     = FUiWindow_setVisible;
+   o.setLabel       = FUiWindow_setLabel;
    o.showPosition   = FUiWindow_showPosition;
    return o;
 }
@@ -395,9 +396,9 @@ function FUiWindow_onBuild(event){
    o._hStatusPanel = RBuilder.appendTableRowCell(hBodyForm, o.styleName('StatusPanel'));
    var hTitleForm = o._hTitleForm = RBuilder.appendTable(hTitlePanel, o.styleName('TitleForm'));
    var hTitleLine = RBuilder.appendTableRow(hTitleForm);
-   var hTitle = RBuilder.appendTableCell(hTitleLine);
+   var hTitle = o._hTitle = RBuilder.appendTableCell(hTitleLine);
    hTitle.align = 'center';
-   hTitle.innerText = o._label;
+   RHtml.textSet(hTitle, o._label);
    var hTitleButton = RBuilder.appendTableCell(hTitleLine);
    hTitleButton.width = 20;
    hBodyPanel.appendChild(o._hPanelForm);
@@ -440,6 +441,11 @@ function FUiWindow_setVisible(visible){
    }else{
       RWindow._hContainer.removeChild(hPanel);
    }
+}
+function FUiWindow_setLabel(label){
+   var o = this;
+   o.__base.FUiLayout.setLabel.call(o, label)
+   RHtml.textSet(o._hTitle, o._label);
 }
 function FUiWindow_showPosition(positionCd){
    var o = this;

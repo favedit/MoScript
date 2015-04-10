@@ -44,6 +44,7 @@ function FUiEdit(o){
    // @method
    o.text             = FUiEdit_text;
    o.setText          = FUiEdit_setText;
+   o.setEditAble      = FUiEdit_setEditAble;
    o.refreshValue     = FUiEdit_refreshValue;
    return o;
 }
@@ -150,6 +151,23 @@ function FUiEdit_text(){
 //==========================================================
 function FUiEdit_setText(text){
    this._hInput.value = text;
+}
+
+//==========================================================
+// <T>设置编辑对象的可编辑性。</T>
+//
+// @method
+// @param flag:Boolean 可编辑性
+//==========================================================
+function FUiEdit_setEditAble(flag){
+   var o = this;
+   o.__base.FUiEditControl.setEditAble.call(o, flag);
+   o._hInput.readOnly = !flag;
+   //if(flag){
+   //}else{
+   //   o._hInput.style.backgroundColor = EUiColor.ReadonlyBackgroundColor;
+   //   o._hValuePanel.style.backgroundColor = EUiColor.ReadonlyBackgroundColor;
+   //}
 }
 
 //==========================================================

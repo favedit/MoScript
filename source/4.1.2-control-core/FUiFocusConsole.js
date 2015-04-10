@@ -6,7 +6,7 @@
 // @author maocy
 // @version 150122
 //==========================================================
-function FFocusConsole(o){
+function FUiFocusConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
@@ -33,29 +33,29 @@ function FFocusConsole(o){
    o.lsnsFocusClass     = null;
    //..........................................................
    // @event
-   o.onMouseDown        = FFocusConsole_onMouseDown;
-   o.onMouseWheel       = FFocusConsole_onMouseWheel;
+   o.onMouseDown        = FUiFocusConsole_onMouseDown;
+   o.onMouseWheel       = FUiFocusConsole_onMouseWheel;
    //..........................................................
    // @method
-   o.construct          = FFocusConsole_construct;
+   o.construct          = FUiFocusConsole_construct;
    // @method
-   o.enter              = FFocusConsole_enter;
-   o.leave              = FFocusConsole_leave;
+   o.enter              = FUiFocusConsole_enter;
+   o.leave              = FUiFocusConsole_leave;
    // @method
-   o.isFocus            = FFocusConsole_isFocus;
-   o.focus              = FFocusConsole_focus;
-   o.blur               = FFocusConsole_blur;
+   o.isFocus            = FUiFocusConsole_isFocus;
+   o.focus              = FUiFocusConsole_focus;
+   o.blur               = FUiFocusConsole_blur;
    // @method
-   o.findClass          = FFocusConsole_findClass;
-   o.focusClass         = FFocusConsole_focusClass;
-   o.focusHtml          = FFocusConsole_focusHtml;
-   o.lockBlur           = FFocusConsole_lockBlur;
-   o.unlockBlur         = FFocusConsole_unlockBlur;
+   o.findClass          = FUiFocusConsole_findClass;
+   o.focusClass         = FUiFocusConsole_focusClass;
+   o.focusHtml          = FUiFocusConsole_focusHtml;
+   o.lockBlur           = FUiFocusConsole_lockBlur;
+   o.unlockBlur         = FUiFocusConsole_unlockBlur;
    // @method
-   o.storeFocus         = FFocusConsole_storeFocus;
-   o.restoreFocus       = FFocusConsole_restoreFocus;
+   o.storeFocus         = FUiFocusConsole_storeFocus;
+   o.restoreFocus       = FUiFocusConsole_restoreFocus;
    // @method
-   o.dispose            = FFocusConsole_dispose;
+   o.dispose            = FUiFocusConsole_dispose;
    return o;
 }
 
@@ -65,7 +65,7 @@ function FFocusConsole(o){
 // @method
 // @param p:event:SEvent 事件对象
 //==========================================================
-function FFocusConsole_onMouseDown(p){
+function FUiFocusConsole_onMouseDown(p){
    this.focusHtml(p.hSource);
 }
 
@@ -75,7 +75,7 @@ function FFocusConsole_onMouseDown(p){
 // @method
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FFocusConsole_onMouseWheel(s, e){
+function FUiFocusConsole_onMouseWheel(s, e){
    var o = this;
    //var c = this._focusControl;
    //if(RClass.isClass(c, MMouseWheel)){
@@ -88,7 +88,7 @@ function FFocusConsole_onMouseWheel(s, e){
 //
 // @method
 //==========================================================
-function FFocusConsole_construct(){
+function FUiFocusConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 构建内部对象
@@ -108,7 +108,7 @@ function FFocusConsole_construct(){
 // @method
 // @param c:control:FControl 对象
 //==========================================================
-function FFocusConsole_enter(c){
+function FUiFocusConsole_enter(c){
    var o = this;
    if(RClass.isClass(c, MUiContainer)){
       o._hoverContainer = c;
@@ -123,7 +123,7 @@ function FFocusConsole_enter(c){
 // @method
 // @param c:control:FControl 对象
 //==========================================================
-function FFocusConsole_leave(c){
+function FUiFocusConsole_leave(c){
    var o = this;
    if(o._hoverContainer == c){
       o._hoverContainer = null;
@@ -140,7 +140,7 @@ function FFocusConsole_leave(c){
 // @param c:control:FControl 控件
 // @return true:是<B/>false:否
 //==========================================================
-function FFocusConsole_isFocus(c){
+function FUiFocusConsole_isFocus(c){
    return (this._focusControl == c);
 }
 
@@ -154,7 +154,7 @@ function FFocusConsole_isFocus(c){
 // @param c:control:FControl 焦点对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FFocusConsole_focus(c, e){
+function FUiFocusConsole_focus(c, e){
    var o = this;
    // 检查传入对象是否可拥有焦点的对象
    if(!RClass.isClass(c, MUiFocus)){
@@ -197,7 +197,7 @@ function FFocusConsole_focus(c, e){
 // @param c:control:FControl 焦点对象
 // @param e:event:TEvent 事件对象
 //==========================================================
-function FFocusConsole_blur(c, e){
+function FUiFocusConsole_blur(c, e){
    var o = this;
    var fc = o._focusControl;
    var bc = o._blurControl;
@@ -226,7 +226,7 @@ function FFocusConsole_blur(c, e){
 // @method
 // @param c:class:Function 类对象
 //==========================================================
-function FFocusConsole_findClass(c){
+function FUiFocusConsole_findClass(c){
    var o = this;
    // 从类对象列表中获得
    var n = RClass.name(c);
@@ -250,7 +250,7 @@ function FFocusConsole_findClass(c){
 // @param c:class:Function 类对象
 // @param p:component:FComponent 组件对象
 //==========================================================
-function FFocusConsole_focusClass(c, p){
+function FUiFocusConsole_focusClass(c, p){
    var o = this;
    var n = RClass.name(c);
    if(o._focusClasses[n] != p){
@@ -268,7 +268,7 @@ function FFocusConsole_focusClass(c, p){
 // @method
 // @param p:element:HtmlTag 页面元素
 //==========================================================
-function FFocusConsole_focusHtml(p){
+function FUiFocusConsole_focusHtml(p){
    var o = this;
    var c = RHtml.searchLinker(p, FUiControl);
    RLogger.debug(o, 'Focus html control. (control={1}, element={2})', RClass.dump(c), p.tagName);
@@ -286,7 +286,7 @@ function FFocusConsole_focusHtml(p){
 //
 // @method
 //==========================================================
-function FFocusConsole_lockBlur(){
+function FUiFocusConsole_lockBlur(){
    this._blurAble = false;
 }
 
@@ -295,7 +295,7 @@ function FFocusConsole_lockBlur(){
 //
 // @method
 //==========================================================
-function FFocusConsole_unlockBlur(){
+function FUiFocusConsole_unlockBlur(){
    this._blurAble = true;
 }
 
@@ -304,7 +304,7 @@ function FFocusConsole_unlockBlur(){
 //
 // @method
 //==========================================================
-function FFocusConsole_storeFocus(){
+function FUiFocusConsole_storeFocus(){
    var o = this;
    o._storeControl = o._focusControl;
 }
@@ -314,7 +314,7 @@ function FFocusConsole_storeFocus(){
 //
 // @method
 //==========================================================
-function FFocusConsole_restoreFocus(){
+function FUiFocusConsole_restoreFocus(){
    var o = this;
    if(o._storeControl){
       o._storeControl.focus();
@@ -327,7 +327,7 @@ function FFocusConsole_restoreFocus(){
 //
 // @method
 //==========================================================
-function FFocusConsole_dispose(){
+function FUiFocusConsole_dispose(){
    var o = this;
    o.__base.FConsole.dispose.call(o);
    o._focusClasses = null;

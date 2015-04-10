@@ -834,13 +834,13 @@ function FUiTreeView_filterNode(pl, pa){
 //==========================================================
 function FUiTreeView_clear(){
    var o = this;
-   var ns = o._nodes;
-   if(ns){
-      var c = ns.count();
-      for(var i = c - 1; i >= 0; i--){
-         ns.get(i).remove();
+   var nodes = o._nodes;
+   if(nodes){
+      var count = nodes.count();
+      for(var i = count - 1; i >= 0; i--){
+         nodes.get(i).removeSelf();
       }
-      ns.clear();
+      nodes.clear();
    }
    o._allNodes.clear();
 }

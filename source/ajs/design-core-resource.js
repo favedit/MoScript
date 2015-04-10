@@ -134,6 +134,7 @@ function FDrResource_classCode(){
 function FDrResourceConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
    o._serviceCode   = 'cloud.content3d.resource';
+   o._catalogCode   = 'cloud.content3d.resource.catalog';
    o._resources     = null;
    o.construct      = FDrResourceConsole_construct;
    o.fetch          = FDrResourceConsole_fetch;
@@ -162,26 +163,26 @@ function FDrResourceConsole_doFolderCreate(parentGuid, code, label){
    var o = this;
    var xdocument = new TXmlDocument();
    var xroot = xdocument.root();
-   xroot.set('action', 'folderCreate');
+   xroot.set('action', 'create');
    var xfolder = xroot.create('Folder');
    xfolder.set('parent_guid', parentGuid);
    xfolder.set('code', code);
    xfolder.set('label', label);
-   return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+   return RConsole.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
 }
 function FDrResourceConsole_doFolderUpdate(guid, code, label){
    var o = this;
    var xdocument = new TXmlDocument();
    var xroot = xdocument.root();
-   xroot.set('action', 'folderUpdate');
+   xroot.set('action', 'update');
    var xfolder = xroot.create('Folder');
    xfolder.set('guid', guid);
    xfolder.set('code', code);
    xfolder.set('label', label);
-   return RConsole.find(FXmlConsole).sendAsync('/' + o._serviceCode + '.ws', xdocument);
+   return RConsole.find(FXmlConsole).sendAsync('/' + o._catalogCode + '.ws', xdocument);
 }
 function FDrResourceConsole_doFolderDelete(guid){
    var o = this;
-   var url = '/' + o._serviceCode + '.ws?action=folderDelete&guid=' + guid;
+   var url = '/' + o._catalogCode + '.ws?action=delete&guid=' + guid;
    return RConsole.find(FXmlConsole).sendAsync(url);
 }

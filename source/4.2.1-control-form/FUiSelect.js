@@ -285,7 +285,7 @@ function FUiSelect_drop(){
       //if(!o._editRefer){
       //   return RMessage.fatal(o, null, 'Edit refer is null.');
       //}
-      var e = o._editor = RConsole.find(FEditorConsole).focus(o, FUiSelectEditor, o._name);
+      var e = o._editor = RConsole.find(FUiEditorConsole).focus(o, FUiSelectEditor, o._name);
       e.buildItems(o);
       e.set(o.get());
       e.show();

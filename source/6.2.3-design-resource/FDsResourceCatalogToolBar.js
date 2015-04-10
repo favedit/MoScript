@@ -9,30 +9,32 @@ function FDsResourceCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName                 = 'design3d.resource.CatalogToolBar';
+   o._frameName                   = 'design3d.resource.CatalogToolBar';
    //..........................................................
    // @attribute
-   o._controlFolderCreateButton = null;
-   o._controlFolderDeleteButton = null;
-   o._controlFolderOpenButton   = null;
-   o._controlFolderCloseButton  = null;
+   o._controlFolderCreateButton   = null;
+   o._controlFolderDeleteButton   = null;
+   o._controlFolderPropertyButton  = null;
+   o._controlFolderOpenButton     = null;
+   o._controlFolderCloseButton    = null;
    // @attribute
-   o._activeNodeGuid            = null;
+   o._activeNodeGuid              = null;
    //..........................................................
    // @event
-   o.onBuilded                  = FDsResourceCatalogToolBar_onBuilded;
+   o.onBuilded                    = FDsResourceCatalogToolBar_onBuilded;
    // @event
-   o.onFolderCreateClick        = FDsResourceCatalogToolBar_onFolderCreateClick;
-   o.onFolderDeleteLoad         = FDsResourceCatalogToolBar_onFolderDeleteLoad;
-   o.onFolderDeleteExcute       = FDsResourceCatalogToolBar_onFolderDeleteExcute;
-   o.onFolderDeleteClick        = FDsResourceCatalogToolBar_onFolderDeleteClick;
-   o.onFolderOpenClick          = FDsResourceCatalogToolBar_onFolderOpenClick;
-   o.onFolderCloseClick         = FDsResourceCatalogToolBar_onFolderCloseClick;
+   o.onFolderCreateClick          = FDsResourceCatalogToolBar_onFolderCreateClick;
+   o.onFolderDeleteLoad           = FDsResourceCatalogToolBar_onFolderDeleteLoad;
+   o.onFolderDeleteExcute         = FDsResourceCatalogToolBar_onFolderDeleteExcute;
+   o.onFolderDeleteClick          = FDsResourceCatalogToolBar_onFolderDeleteClick;
+   o.onFolderPropertyClick        = FDsResourceCatalogToolBar_onFolderPropertyClick;
+   o.onFolderOpenClick            = FDsResourceCatalogToolBar_onFolderOpenClick;
+   o.onFolderCloseClick           = FDsResourceCatalogToolBar_onFolderCloseClick;
    //..........................................................
    // @method
-   o.construct                  = FDsResourceCatalogToolBar_construct;
+   o.construct                    = FDsResourceCatalogToolBar_construct;
    // @method
-   o.dispose                    = FDsResourceCatalogToolBar_dispose;
+   o.dispose                      = FDsResourceCatalogToolBar_dispose;
    return o;
 }
 
@@ -49,6 +51,7 @@ function FDsResourceCatalogToolBar_onBuilded(p){
    // 注册事件
    o._controlFolderCreateButton.addClickListener(o, o.onFolderCreateClick);
    o._controlFolderDeleteButton.addClickListener(o, o.onFolderDeleteClick);
+   o._controlFolderPropertyButton.addClickListener(o, o.onFolderPropertyClick);
    o._controlFolderOpenButton.addClickListener(o, o.onFolderOpenClick);
    o._controlFolderCloseButton.addClickListener(o, o.onFolderCloseClick);
 }
@@ -77,6 +80,7 @@ function FDsResourceCatalogToolBar_onFolderCreateClick(event){
    dialog._parentGuid = parentGuid;
    dialog.setNodeParentLabel(parentLabel);
    dialog.setNodeLabel('');
+   dialog.switchDataMode(EUiDataMode.Insert);
    dialog.showPosition(EUiPosition.Center);
 }
 
@@ -140,6 +144,35 @@ function FDsResourceCatalogToolBar_onFolderDeleteClick(event){
    // 删除确认窗口
    var dialog = RConsole.find(FUiMessageConsole).showConfirm('请确认是否删除当前目录？');
    dialog.addResultListener(o, o.onFolderDeleteExcute);
+}
+
+//==========================================================
+// <T>文件夹属性点击处理。</T>
+//
+// @method
+// @param event:TEventProcess 事件处理
+//==========================================================
+function FDsResourceCatalogToolBar_onFolderPropertyClick(event){
+   var o = this;
+   // 获得选中节点
+   var catalog = o._frameSet._catalogContent;
+   var node = catalog.focusNode();
+   if(!node){
+      return RConsole.find(FUiMessageConsole).showInfo('请选中目录节点后，再点击操作。');
+   }
+   var parentLabel = null;
+   if(node._parent){
+      parentLabel = node._parent.label();
+   }
+   // 显示属性窗口
+   var dialog = RConsole.find(FUiWindowConsole).find(FDsResourceFolderDialog);
+   dialog._workspace = o._workspace;
+   dialog._frameSet = o._frameSet;
+   dialog._nodeGuid = node._guid;
+   dialog.setNodeParentLabel(parentLabel);
+   dialog.setNodeLabel(node.label());
+   dialog.switchDataMode(EUiDataMode.Update);
+   dialog.showPosition(EUiPosition.Center);
 }
 
 //==========================================================

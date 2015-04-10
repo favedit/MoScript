@@ -5,7 +5,7 @@
 // @author maocy
 // @version 150224
 //==========================================================
-function FEditorConsole(o){
+function FUiEditorConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
@@ -16,14 +16,14 @@ function FEditorConsole(o){
    o._editors     = null;
    //..........................................................
    // @method
-   o.construct    = FEditorConsole_construct;
+   o.construct    = FUiEditorConsole_construct;
    // @method
-   o.makeName     = FEditorConsole_makeName;
-   o.enter        = FEditorConsole_enter;
-   o.leave        = FEditorConsole_leave;
-   o.focus        = FEditorConsole_focus;
-   o.blur         = FEditorConsole_blur;
-   o.lost         = FEditorConsole_lost;
+   o.makeName     = FUiEditorConsole_makeName;
+   o.enter        = FUiEditorConsole_enter;
+   o.leave        = FUiEditorConsole_leave;
+   o.focus        = FUiEditorConsole_focus;
+   o.blur         = FUiEditorConsole_blur;
+   o.lost         = FUiEditorConsole_lost;
    return o;
 }
 
@@ -32,7 +32,7 @@ function FEditorConsole(o){
 //
 // @method
 //==========================================================
-function FEditorConsole_construct(){
+function FUiEditorConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    // 初始化属性
@@ -44,7 +44,7 @@ function FEditorConsole_construct(){
 //
 // @method
 //==========================================================
-function FEditorConsole_makeName(cls, name){
+function FUiEditorConsole_makeName(cls, name){
    return name ? name + '@' + RClass.name(cls) : RClass.name(cls);
 }
 
@@ -53,7 +53,7 @@ function FEditorConsole_makeName(cls, name){
 //
 // @method
 //==========================================================
-function FEditorConsole_enter(editable, cls){
+function FUiEditorConsole_enter(editable, cls){
    var name = RClass.name(cls);
    var editor = this._hoverEditors.get(name);
    if(!editor){
@@ -72,12 +72,12 @@ function FEditorConsole_enter(editable, cls){
 //
 // @method
 //==========================================================
-function FEditorConsole_leave(editor){
+function FUiEditorConsole_leave(editor){
    var o = this;
    if(o._hoverEditor != o._focusEditor){
       editor = RObject.nvl(editor, o._hoverEditor);
       o._hoverEditor = null;
-      RLog.debug(o, 'Leave {0}', RClass.dump(editor));
+      RLog.debug(o, 'Leave {1}', RClass.dump(editor));
    }
 }
 
@@ -86,7 +86,7 @@ function FEditorConsole_leave(editor){
 //
 // @method
 //==========================================================
-function FEditorConsole_focus(c, n, l){
+function FUiEditorConsole_focus(c, n, l){
    var o = this;
    // Focus Editor
    var name = o.makeName(n, l);
@@ -110,7 +110,7 @@ function FEditorConsole_focus(c, n, l){
 //
 // @method
 //==========================================================
-function FEditorConsole_blur(editor){
+function FUiEditorConsole_blur(editor){
    var o = this;
    if(o._focusEditor){
       RLogger.debug(o, 'Blur editor {1}', RClass.dump(editor));
@@ -127,7 +127,7 @@ function FEditorConsole_blur(editor){
 //
 // @method
 //==========================================================
-function FEditorConsole_lost(e){
+function FUiEditorConsole_lost(e){
    var o = this;
    o.leave(e);
    o.blur(e);
