@@ -102,7 +102,7 @@ function FDsSolutionListContent_doClickItem(control){
    o.__base.FUiListView.doClickItem.call(o, control);
    o._activeControl = control;
    o._activeGuid = control._guid;
-   o._frameSet.selectObject(control);
+   //o._frameSet.selectObject(control);
 }
 
 //==========================================================
@@ -114,9 +114,11 @@ function FDsSolutionListContent_doClickItem(control){
 function FDsSolutionListContent_doDoubleClickItem(control){
    var o = this;
    o.__base.FUiListView.doDoubleClickItem.call(o, control);
+   var guid = control._guid;
    o._activeControl = control;
-   o._activeGuid = control._guid;
-   //window.location = 'Project.wa?do=detail&guid=' + o._workspace._activeProjectGuid;
+   o._activeGuid = guid;
+   var workspace = o._frameSet._workspace;
+   workspace.selectFrameSet(EDsFrameSet.ProjectFrameSet, guid);
 }
 
 //==========================================================

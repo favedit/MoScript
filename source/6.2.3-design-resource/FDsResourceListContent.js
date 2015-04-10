@@ -69,9 +69,11 @@ function FDsResourceListContent_onServiceLoad(p){
       if(xnode.isName('Resource')){
          var item = o.createItem(FDsResourceListItem);
          item.propertyLoad(xnode);
-         item._typeCd = xnode.get('type_cd');
          item._guid = xnode.get('guid');
+         item._typeCd = xnode.get('type_cd');
+         item._code = xnode.get('code');
          item._updateDate = xnode.get('update_date');
+         item.setTypeLabel(item._typeCd);
          item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
          item.refreshStyle();
          o.push(item);
@@ -125,7 +127,15 @@ function FDsResourceListContent_doDoubleClickItem(control){
    o._activeItem = control;
    o._activeGuid = control._guid;
    // 画面切换
-   o._frameSet._workspace.selectFrameSet(EDsFrameSet.MeshFrameSet, guid);
+   var workspace = o._frameSet._workspace;
+   var typeCd = control._typeCd;
+   if(typeCd == 'Bitmap'){
+      workspace.selectFrameSet(EDsFrameSet.BitmapFrameSet, guid);
+   }else if(typeCd == 'Mesh3d'){
+      workspace.selectFrameSet(EDsFrameSet.MeshFrameSet, guid);
+   }else{
+      throw new TError(o, 'Unsupport format.');
+   }
 }
 
 //==========================================================

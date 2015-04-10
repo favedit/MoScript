@@ -445,13 +445,15 @@ function FDsSolutionListContent_doClickItem(control){
    o.__base.FUiListView.doClickItem.call(o, control);
    o._activeControl = control;
    o._activeGuid = control._guid;
-   o._frameSet.selectObject(control);
 }
 function FDsSolutionListContent_doDoubleClickItem(control){
    var o = this;
    o.__base.FUiListView.doDoubleClickItem.call(o, control);
+   var guid = control._guid;
    o._activeControl = control;
-   o._activeGuid = control._guid;
+   o._activeGuid = guid;
+   var workspace = o._frameSet._workspace;
+   workspace.selectFrameSet(EDsFrameSet.ProjectFrameSet, guid);
 }
 function FDsSolutionListContent_serviceSearch(typeCd, serach, pageSize, page){
    var o = this;
@@ -1329,6 +1331,14 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.BitmapFrameSet){
+         var menuBar = RClass.create(FDsBitmapMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsBitmapFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
       }else if(name == EDsFrameSet.MeshFrameSet){
          var menuBar = RClass.create(FDsMeshMenuBar);
          menuBar._workspace = o;
@@ -1362,6 +1372,9 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
       case EDsFrameSet.ResourceFrameSet:
          frameSet.load();
          break;
+      case EDsFrameSet.BitmapFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
       case EDsFrameSet.MeshFrameSet:
          frameSet.loadByGuid(guid);
          break;
@@ -1378,14 +1391,28 @@ function FDsSolutionWorkspace_load(){
    var code = o._activeFrameSetCode = o.storageGet('frameset_code', EDsFrameSet.SolutionFrameSet);
    var guid = o._activeFrameSetGuid = o.storageGet('frameset_guid');
    var button = null;
-   if(code == EDsFrameSet.ProjectFrameSet){
-      button = o._tabBar.findControl('project');
+   if(code == EDsFrameSet.SolutionFrameSet){
+      button = o._tabBar.findControl('solution');
+      button.doClick();
+   }else if(code == EDsFrameSet.ProjectFrameSet){
+      button = o._tabBar.findControl('solution');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
    }else if(code == EDsFrameSet.ResourceFrameSet){
       button = o._tabBar.findControl('resource');
+      button.doClick();
+   }else if(code == EDsFrameSet.BitmapFrameSet){
+      button = o._tabBar.findControl('resource');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
+   }else if(code == EDsFrameSet.MeshFrameSet){
+      button = o._tabBar.findControl('resource');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
    }else{
       button = o._tabBar.findControl('solution');
+      button.doClick();
    }
-   button.doClick();
 }
 function FDsSolutionWorkspace_dispose(){
    var o = this;

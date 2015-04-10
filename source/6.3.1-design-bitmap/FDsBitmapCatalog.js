@@ -4,7 +4,7 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FDsPictureCatalog(o){
+function FDsBitmapCatalog(o){
    o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
    //..........................................................
    // @const
@@ -17,29 +17,29 @@ function FDsPictureCatalog(o){
    o._materials            = null;
    //..........................................................
    // @event
-   o.onBuild               = FDsPictureCatalog_onBuild;
+   o.onBuild               = FDsBitmapCatalog_onBuild;
    // @event
-   o.onLoadDisplay         = FDsPictureCatalog_onLoadDisplay;
-   o.onNodeClick           = FDsPictureCatalog_onNodeClick;
-   o.onNodeViewClick       = FDsPictureCatalog_onNodeViewClick;
-   o.onNodeViewDoubleClick = FDsPictureCatalog_onNodeViewDoubleClick;
+   o.onLoadDisplay         = FDsBitmapCatalog_onLoadDisplay;
+   o.onNodeClick           = FDsBitmapCatalog_onNodeClick;
+   o.onNodeViewClick       = FDsBitmapCatalog_onNodeViewClick;
+   o.onNodeViewDoubleClick = FDsBitmapCatalog_onNodeViewDoubleClick;
    //..........................................................
    // @listeners
    o.lsnsSelect            = null;
    //..........................................................
    // @method
-   o.construct             = FDsPictureCatalog_construct;
+   o.construct             = FDsBitmapCatalog_construct;
    // @method
-   o.buildTechnique        = FDsPictureCatalog_buildTechnique;
-   o.buildRegion           = FDsPictureCatalog_buildRegion;
-   o.buildRenderable       = FDsPictureCatalog_buildRenderable;
-   o.buildDisplay          = FDsPictureCatalog_buildDisplay;
-   o.buildSpace            = FDsPictureCatalog_buildSpace;
+   o.buildTechnique        = FDsBitmapCatalog_buildTechnique;
+   o.buildRegion           = FDsBitmapCatalog_buildRegion;
+   o.buildRenderable       = FDsBitmapCatalog_buildRenderable;
+   o.buildDisplay          = FDsBitmapCatalog_buildDisplay;
+   o.buildSpace            = FDsBitmapCatalog_buildSpace;
    // @method
-   o.selectObject          = FDsPictureCatalog_selectObject;
-   o.showObject            = FDsPictureCatalog_showObject;
+   o.selectObject          = FDsBitmapCatalog_selectObject;
+   o.showObject            = FDsBitmapCatalog_showObject;
    // @method
-   o.dispose               = FDsPictureCatalog_dispose;
+   o.dispose               = FDsBitmapCatalog_dispose;
    return o;
 }
 
@@ -49,7 +49,7 @@ function FDsPictureCatalog(o){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsPictureCatalog_onBuild(p){
+function FDsBitmapCatalog_onBuild(p){
    var o = this;
    // 父处理
    o.__base.FUiDataTreeView.onBuild.call(o, p);
@@ -65,7 +65,7 @@ function FDsPictureCatalog_onBuild(p){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsPictureCatalog_onLoadDisplay(p){
+function FDsBitmapCatalog_onLoadDisplay(p){
    var o = this;
    var n = p._linkNode;
    // 创建渲染集合
@@ -78,7 +78,7 @@ function FDsPictureCatalog_onLoadDisplay(p){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsPictureCatalog_onNodeClick(t, n){
+function FDsBitmapCatalog_onNodeClick(t, n){
    var o = this;
    var s = n.dataPropertyGet('linker');
    o.selectObject(s);
@@ -90,7 +90,7 @@ function FDsPictureCatalog_onNodeClick(t, n){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsPictureCatalog_onNodeViewClick(p){
+function FDsBitmapCatalog_onNodeViewClick(p){
    var o = this;
    var c = p.treeNodeCell;
    var s = p.treeNode.dataPropertyGet('linker');
@@ -153,7 +153,7 @@ function FDsPictureCatalog_onNodeViewClick(p){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsPictureCatalog_onNodeViewDoubleClick(p){
+function FDsBitmapCatalog_onNodeViewDoubleClick(p){
    var o = this;
    var n = p.treeNode;
    var c = p.treeNodeCell;
@@ -196,7 +196,7 @@ function FDsPictureCatalog_onNodeViewDoubleClick(p){
 //
 // @method
 //==========================================================
-function FDsPictureCatalog_construct(){
+function FDsBitmapCatalog_construct(){
    var o = this;
    o.__base.FUiDataTreeView.construct.call(o);
    // 设置属性
@@ -211,7 +211,7 @@ function FDsPictureCatalog_construct(){
 // @param n:node:FTreeNode 父节点
 // @param p:technique:FG3dTechnique 渲染技术
 //==========================================================
-function FDsPictureCatalog_buildTechnique(n, p){
+function FDsBitmapCatalog_buildTechnique(n, p){
    var o = this;
    // 创建技术节点
    var nt = o.createNode();
@@ -228,7 +228,7 @@ function FDsPictureCatalog_buildTechnique(n, p){
 // @param n:node:FTreeNode 父节点
 // @param p:theme:FE3sTemplateTheme 模板主题
 //==========================================================
-function FDsPictureCatalog_buildRegion(n, p){
+function FDsBitmapCatalog_buildRegion(n, p){
    var o = this;
    // 新建区域节点
    var nr = o.createNode();
@@ -257,7 +257,7 @@ function FDsPictureCatalog_buildRegion(n, p){
 // @param n:node:FTreeNode 父节点
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FDsPictureCatalog_buildRenderable(n, p){
+function FDsBitmapCatalog_buildRenderable(n, p){
    var o = this;
    // 创建材质节点
    var m = p._renderable._material;
@@ -284,7 +284,7 @@ function FDsPictureCatalog_buildRenderable(n, p){
 // @param n:node:FTreeNode 父节点
 // @param p:display:FDisplayContainer 显示容器
 //==========================================================
-function FDsPictureCatalog_buildDisplay(n, p){
+function FDsBitmapCatalog_buildDisplay(n, p){
    var o = this;
    // 创建显示节点
    var node = o.createNode();
@@ -302,7 +302,7 @@ function FDsPictureCatalog_buildDisplay(n, p){
 // @method
 // @param space:FE3dSpace 渲染空间
 //==========================================================
-function FDsPictureCatalog_buildSpace(space){
+function FDsBitmapCatalog_buildSpace(space){
    var o = this;
    var resource = space.resource();
    o._activeSpace = space;
@@ -329,7 +329,7 @@ function FDsPictureCatalog_buildSpace(space){
 // @method
 // @param p:value:Object 对象
 //==========================================================
-function FDsPictureCatalog_selectObject(p){
+function FDsBitmapCatalog_selectObject(p){
    var o = this;
    if(p != null){
       o.processSelectedListener(p, true);
@@ -342,7 +342,7 @@ function FDsPictureCatalog_selectObject(p){
 // @method
 // @param p:value:Object 对象
 //==========================================================
-function FDsPictureCatalog_showObject(p){
+function FDsBitmapCatalog_showObject(p){
    var o = this;
    if(RClass.isClass(p, FDsSceneRenderable)){
       var s = o._renderables;
@@ -362,7 +362,7 @@ function FDsPictureCatalog_showObject(p){
 //
 // @method
 //==========================================================
-function FDsPictureCatalog_dispose(){
+function FDsBitmapCatalog_dispose(){
    var o = this;
    o._displays = RObject.dispose(o._displays);
    o._renderables = RObject.dispose(o._renderables);

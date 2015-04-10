@@ -976,6 +976,7 @@ function FDsMeshCatalog_buildSpace(space){
    var o = this;
    var resource = space.resource();
    o._activeSpace = space;
+   o.clear();
    var node = o.createNode();
    node.setTypeCode('space');
    node.setLabel(resource.code());

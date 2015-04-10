@@ -10244,6 +10244,7 @@ function FUiListViewItem(o){
    o._styleNormal    = RClass.register(o, new AStyle('_styleNormal'));
    o._styleHover     = RClass.register(o, new AStyle('_styleHover'));
    o._styleSelect    = RClass.register(o, new AStyle('_styleSelect'));
+   o._styleForm      = RClass.register(o, new AStyle('_styleForm'));
    o._styleContent   = RClass.register(o, new AStyle('_styleContent'));
    o._styleIconPanel = RClass.register(o, new AStyle('_styleIconPanel'));
    o._styleIcon      = RClass.register(o, new AStyle('_styleIcon'));
@@ -10279,18 +10280,15 @@ function FUiListViewItem_onBuild(p){
    o.__base.FUiControl.onBuild.call(o, p);
    var h = o._hPanel;
    var hBorder = o._hBorder = RBuilder.appendDiv(h, o.styleName('Normal'));
-   var hTable = o._hForm = RBuilder.appendTable(hBorder);
-   hTable.style.width = '100%';
-   hTable.style.height = '100%';
-   var hLine1 = RBuilder.appendTableRowCell(hTable)
-   var hLine2 = RBuilder.appendTableRowCell(hTable)
+   var hTable = o._hForm = RBuilder.appendTable(hBorder, o.styleName('Form'));
+   var hLine1 = o._hLine1 = RBuilder.appendTableRowCell(hTable)
+   var hLine2 = o._hLine2 = RBuilder.appendTableRowCell(hTable)
    hLine2.height = o._contentHeight;
    var hContentForm = o._hContentForm = RBuilder.appendTable(hLine2, o.styleName('Content'));
    var hContentLine = o._hContentLine = RBuilder.appendTableRow(hContentForm);
    o._hIconPanel = RBuilder.appendTableCell(hContentLine, o.styleName('IconPanel'))
-   if(o._icon){
-      o._hIcon = RBuilder.appendIcon(o._hIconPanel, o.styleName('Icon'), o._icon);
-   }
+   o._hIcon = RBuilder.appendIcon(o._hIconPanel, o.styleName('Icon'), RString.nvl(o._icon, 'design3d.tools.select'));
+   RHtml.displaySet(o._hIcon, false);
    o._hLabel = RBuilder.appendTableCell(hContentLine, o.styleName('Label'));
    if(o._label){
       o.setLabel(o._label);
@@ -10339,6 +10337,8 @@ function FUiListViewItem_dispose(){
    o._hPanel = RHtml.free(o._hPanel);
    o._hBorder = RHtml.free(o._hBorder);
    o._hForm = RHtml.free(o._hForm);
+   o._hLine1 = RHtml.free(o._hLine1);
+   o._hLine2 = RHtml.free(o._hLine2);
    o._hContentForm = RHtml.free(o._hContentForm);
    o._hContentLine = RHtml.free(o._hContentLine);
    o._hIconPanel = RHtml.free(o._hIconPanel);

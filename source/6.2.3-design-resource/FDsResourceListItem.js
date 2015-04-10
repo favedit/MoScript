@@ -7,11 +7,15 @@
 function FDsResourceListItem(o){
    o = RClass.inherits(this, o, FUiListViewItem);
    //..........................................................
+   o._styleTypePanel = RClass.register(o, new AStyle('_styleTypePanel'));
+   o._styleTypeLabel = RClass.register(o, new AStyle('_styleTypeLabel'));
+   //..........................................................
    // @event
-   o.onBuild      = FDsResourceListItem_onBuild;
+   o.onBuild         = FDsResourceListItem_onBuild;
    //..........................................................
    // @method
-   o.refreshStyle = FDsResourceListItem_refreshStyle;
+   o.setTypeLabel    = FDsResourceListItem_setTypeLabel;
+   o.refreshStyle    = FDsResourceListItem_refreshStyle;
    return o;
 }
 
@@ -28,8 +32,20 @@ function FDsResourceListItem_onBuild(p){
    var h = o._hPanel;
    h.style.width = '200px';
    h.style.height = '150px';
-   //var hForm = o._hForm;
-   //hForm.style.backgroundImage = 'url("../home/ars/pvw.show.item.009.jpg")';
+   // 建立类型
+   o._hLine1.className = o.styleName('TypePanel');
+   o._hLine1.vAlign = 'top';
+   o._hTypeLabel = RBuilder.appendDiv(o._hLine1, o.styleName('TypeLabel'));
+}
+
+//==========================================================
+// <T>设置类型标签。</T>
+//
+// @method
+// @param label:String 标签
+//==========================================================
+function FDsResourceListItem_setTypeLabel(label){
+   this._hTypeLabel.innerHTML = label;
 }
 
 //==========================================================

@@ -141,6 +141,16 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.BitmapFrameSet){
+         // 创建菜单
+         var menuBar = RClass.create(FDsBitmapMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         // 创建框架
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsBitmapFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
       }else if(name == EDsFrameSet.MeshFrameSet){
          // 创建菜单
          var menuBar = RClass.create(FDsMeshMenuBar);
@@ -180,6 +190,9 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
       case EDsFrameSet.ResourceFrameSet:
          frameSet.load();
          break;
+      case EDsFrameSet.BitmapFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
       case EDsFrameSet.MeshFrameSet:
          frameSet.loadByGuid(guid);
          break;
@@ -206,14 +219,28 @@ function FDsSolutionWorkspace_load(){
    var guid = o._activeFrameSetGuid = o.storageGet('frameset_guid');
    // 点击切换按键
    var button = null;
-   if(code == EDsFrameSet.ProjectFrameSet){
-      button = o._tabBar.findControl('project');
+   if(code == EDsFrameSet.SolutionFrameSet){
+      button = o._tabBar.findControl('solution');
+      button.doClick();
+   }else if(code == EDsFrameSet.ProjectFrameSet){
+      button = o._tabBar.findControl('solution');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
    }else if(code == EDsFrameSet.ResourceFrameSet){
       button = o._tabBar.findControl('resource');
+      button.doClick();
+   }else if(code == EDsFrameSet.BitmapFrameSet){
+      button = o._tabBar.findControl('resource');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
+   }else if(code == EDsFrameSet.MeshFrameSet){
+      button = o._tabBar.findControl('resource');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
    }else{
       button = o._tabBar.findControl('solution');
+      button.doClick();
    }
-   button.doClick();
 }
 
 //==========================================================
