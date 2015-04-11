@@ -1,3 +1,8 @@
+function MCanvasObject(o){
+   o = RClass.inherits(this, o);
+   o.htmlCanvas = RMethod.virtual(o, 'htmlCanvas');
+   return o;
+}
 function MGraphicObject(o){
    o = RClass.inherits(this, o);
    o._graphicContext    = null;
@@ -142,7 +147,9 @@ function FG2dContext_drawText(x, y, t){
    var o = this;
    o._native.fillText(t, x, y);
 }
-function FG2dContext_drawImage(){
+function FG2dContext_drawImage(image, x, y){
+   var o = this;
+   o._native.drawImage(image, 0, 0);
 }
 function FG2dContext_fillRecrangle(x1, y1, x2, y2){
    var o = this;
@@ -189,12 +196,16 @@ function FG2dContext_dispose(){
 }
 function FG2dCanvasContext(o){
    o = RClass.inherits(this, o, FG2dContext);
-   o._native    = null;
-   o.construct  = FG2dCanvasContext_construct;
-   o.linkCanvas = FG2dCanvasContext_linkCanvas;
-   o.clear      = FG2dCanvasContext_clear;
-   o.drawImage  = FG2dCanvasContext_drawImage;
-   o.toBytes    = FG2dCanvasContext_toBytes;
+   o._native       = null;
+   o.construct     = FG2dCanvasContext_construct;
+   o.linkCanvas    = FG2dCanvasContext_linkCanvas;
+   o.clear         = FG2dCanvasContext_clear;
+   o.drawLine      = FG2dCanvasContext_drawLine;
+   o.drawRectangle = FG2dCanvasContext_drawRectangle;
+   o.drawText      = FG2dCanvasContext_drawText;
+   o.drawImage     = FG2dCanvasContext_drawImage;
+   o.fillRectangle = FG2dCanvasContext_fillRectangle;
+   o.toBytes       = FG2dCanvasContext_toBytes;
    return o;
 }
 function FG2dCanvasContext_construct(){
@@ -217,14 +228,46 @@ function FG2dCanvasContext_clear(r, g, b, a, d){
    var o = this;
    var c = o._native;
 }
-function FG2dCanvasContext_drawImage(m){
+function FG2dCanvasContext_drawLine(x1, y1, x2, y2, color, lineWidth){
    var o = this;
    var g = o._native;
-   if(RClass.isClass(m, FImage)){
-      g.drawImage(m.image(), 0, 0, o._size.width, o._size.height);
+   g.strokeStyle = color;
+   g.lineWidth = lineWidth;
+   g.moveTo(x1, y1);
+   g.lineTo(x2, y2);
+   g.stroke();
+}
+function FG2dCanvasContext_drawRectangle(x, y, width, height, color, lineWidth){
+   var o = this;
+   var g = o._native;
+   g.strokeStyle = color;
+   g.lineWidth = lineWidth;
+   g.strokeRect(x, y, width, height);
+}
+function FG2dCanvasContext_drawText(text, x, y, color){
+   var o = this;
+   var g = o._native;
+   g.fillStyle = color;
+   g.fillText(text, x, y);
+}
+function FG2dCanvasContext_drawImage(data, x, y){
+   var o = this;
+   var g = o._native;
+   var pixels = null
+   if(data.tagName == 'IMG'){
+      pixels = data;
+   }else if(RClass.isClass(data, FImage)){
+      pixels = data.image();
    }else{
       throw new TError(o, 'Unknown data type');
    }
+   g.drawImage(pixels, x, y, o._size.width, o._size.height);
+}
+function FG2dCanvasContext_fillRectangle(x, y, width, height, color){
+   var o = this;
+   var g = o._native;
+   g.fillStyle = color;
+   g.fillRect(x, y, width, height);
 }
 function FG2dCanvasContext_toBytes(){
    var o = this;
@@ -1629,7 +1672,7 @@ function FG3dMaterialMap_setup(w, h){
    var c = o._graphicContext;
    var t = o._texture = c.createFlatTexture();
    o.resize(w, h);
-   t.setFilter(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
+   t.setFilterCd(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
    t.uploadData(o._data, w, h);
 }
 function FG3dMaterialMap_resize(w, h){
@@ -2542,14 +2585,9 @@ function SG3dLayoutSampler_dispose(){
    o.texture = null;
 }
 function FG3dBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject);
-   o._name   = null;
-   o.name    = FG3dBuffer_name;
+   o = RClass.inherits(this, o, FG3dObject, MName);
    o.isValid = RMethod.virtual(o, 'isValid');
    return o;
-}
-function FG3dBuffer_name(){
-   return this._name;
 }
 function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
@@ -2641,18 +2679,30 @@ function FG3dTexture_construct(){
 }
 function FG3dFlatTexture(o){
    o = RClass.inherits(this, o, FG3dTexture);
-   o.width      = 0;
-   o.height     = 0;
-   o.construct  = FG3dFlatTexture_construct;
-   o.uploadData = RMethod.virtual(o, 'uploadData');
-   o.upload     = RMethod.virtual(o, 'upload');
-   o.update     = RMethod.empty;
+   o._optionFlipY   = false;
+   o._size          = null;
+   o.construct      = FG3dFlatTexture_construct;
+   o.optionFlipY    = FG3dFlatTexture_optionFlipY;
+   o.setOptionFlipY = FG3dFlatTexture_setOptionFlipY;
+   o.size           = FG3dFlatTexture_size;
+   o.uploadData     = RMethod.virtual(o, 'uploadData');
+   o.upload         = RMethod.virtual(o, 'upload');
+   o.update         = RMethod.empty;
    return o;
 }
 function FG3dFlatTexture_construct(){
    var o = this;
    o.__base.FG3dTexture.construct();
    o._textureCd = EG3dTexture.Flat2d;
+}
+function FG3dFlatTexture_optionFlipY(){
+   return this._optionFlipY;
+}
+function FG3dFlatTexture_setOptionFlipY(flag){
+   this._optionFlipY = flag;
+}
+function FG3dFlatTexture_size(){
+   return this._size;
 }
 function FG3dFragmentShader(o){
    o = RClass.inherits(this, o, FG3dShader);
@@ -3127,10 +3177,10 @@ function FG3dTexture(o){
    o.textureCd    = FG3dTexture_textureCd;
    o.filterMinCd  = FG3dTexture_filterMinCd;
    o.filterMagCd  = FG3dTexture_filterMagCd;
-   o.setFilter    = FG3dTexture_setFilter;
+   o.setFilterCd  = FG3dTexture_setFilterCd;
    o.wrapS        = FG3dTexture_wrapS;
    o.wrapT        = FG3dTexture_wrapT;
-   o.setWrap      = FG3dTexture_setWrap;
+   o.setWrapCd    = FG3dTexture_setWrapCd;
    return o;
 }
 function FG3dTexture_textureCd(){
@@ -3142,10 +3192,10 @@ function FG3dTexture_filterMinCd(){
 function FG3dTexture_filterMagCd(){
    return this._filterMagCd;
 }
-function FG3dTexture_setFilter(pi, pa){
+function FG3dTexture_setFilterCd(minCd, magCd){
    var o = this;
-   o._filterMinCd = pi;
-   o._filterMagCd = pa;
+   o._filterMinCd = minCd;
+   o._filterMagCd = magCd;
 }
 function FG3dTexture_wrapS(){
    return this._wrapS;
@@ -3153,10 +3203,10 @@ function FG3dTexture_wrapS(){
 function FG3dTexture_wrapT(){
    return this._wrapT;
 }
-function FG3dTexture_setWrap(ps, pt){
+function FG3dTexture_setWrapCd(wrapS, wrapT){
    var o = this;
-   o._wrapS = ps;
-   o._wrapT = pt;
+   o._wrapS = wrapS;
+   o._wrapT = wrapT;
 }
 function FG3dVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dBuffer);
@@ -3729,8 +3779,8 @@ function FG3dSelectPass_setup(){
    o.__base.FG3dTechniquePass.setup.call(o);
    var c = o._graphicContext;
    var T = o._texture = c.createFlatTexture();
-   T.setFilter(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
-   T.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
+   T.setFilterCd(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
+   T.setWrapCd(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
    var t = o._renderTarget = c.createRenderTarget();
    t.size().set(1, 1);
    t.textures().push(T);
@@ -4707,27 +4757,26 @@ function FWglFlatTexture_uploadData(d, w, h){
    o._statusLoad = c.checkError("texImage2D", "Upload data failure.");
    o.update();
 }
-function FWglFlatTexture_upload(image){
+function FWglFlatTexture_upload(data){
    var o = this;
    var c = o._graphicContext;
    var cp = c.capability();
    var g = c._native;
-   var data = null;
-   var f = null;
-   if(image.tagName == 'IMG'){
-      data = image;
-   }else if(RClass.isClass(image, FImage)){
-      data = image.image();
-      if(image.optionAlpha()){
-         f = cp.samplerCompressRgba;
-      }else{
-         f = cp.samplerCompressRgb;
-      }
+   var pixels = null;
+   if((data.tagName == 'IMG') || (data.tagName == 'CANVAS')){
+      pixels = data;
+   }else if(RClass.isClass(data, FImage)){
+      pixels = data.image();
+   }else if(RClass.isClass(data, MCanvasObject)){
+      pixels = data.htmlCanvas();
    }else{
       throw new TError('Invalid image format.');
    }
    g.bindTexture(g.TEXTURE_2D, o._native);
-   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, data);
+   if(o._optionFlipY){
+      g.pixelStorei(g.UNPACK_FLIP_Y_WEBGL, true);
+   }
+   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, pixels);
    o.update();
    o._statusLoad = c.checkError("texImage2D", "Upload image failure.");
 }

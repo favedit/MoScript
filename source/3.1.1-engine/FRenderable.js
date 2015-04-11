@@ -29,8 +29,8 @@ function FRenderable(o){
 // @return Boolean 是否含有
 //==========================================================
 function FRenderable_hasDrawable(){
-   var s = this._drawables;
-   return s ? !s.isEmpty() : false;
+   var drawables = this._drawables;
+   return drawables ? !drawables.isEmpty() : false;
 }
 
 //==========================================================
@@ -41,63 +41,56 @@ function FRenderable_hasDrawable(){
 //==========================================================
 function FRenderable_drawables(){
    var o = this;
-   var s = o._drawables;
-   if(!s){
-      s = o._drawables = new TObjects();
+   var drawables = o._drawables;
+   if(!drawables){
+      drawables = o._drawables = new TObjects();
    }
-   return s;
+   return drawables;
 }
 
 //==========================================================
 // <T>增加一个绘制对象。</T>
 //
-// @param p:renderable:FRenderable 绘制对象
+// @param drawable:FDrawable 绘制对象
 //==========================================================
-function FRenderable_pushDrawable(p){
+function FRenderable_pushDrawable(drawable){
    var o = this;
-   p._parent = o;
-   p._drawable = o;
-   o.drawables().push(p);
+   drawable._parent = o;
+   o.drawables().push(drawable);
 }
 
 //==========================================================
 // <T>移除一个绘制对象。</T>
 //
-// @param p:renderable:FRenderable 绘制对象
+// @param drawable:FDrawable 绘制对象
 //==========================================================
-function FRenderable_removeDrawable(p){
-   var s = this._drawables;
-   if(s){
-      s.remove(p);
-   }
+function FRenderable_removeDrawable(drawable){
+   this._drawables.remove(drawable);
 }
 
 //==========================================================
 // <T>过滤渲染集合。</T>
 //
 // @method
-// @param p:region:FRegion 渲染区域
+// @param region:FRegion 渲染区域
 //==========================================================
-function FRenderable_filterDrawables(p){
+function FRenderable_filterDrawables(region){
    var o = this;
-   // 检查准备好
-   if(!o.testReady()){
-      return false;
-   }
    // 检查可见性
    if(!o.testVisible()){
       return false;
    }
    // 增加渲染对象
-   p.pushRenderable(o);
+   region.pushRenderable(o);
+   //..........................................................
    // 处理渲染集合
-   var s = o._drawables;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var r = s.getAt(i);
-         if(r.testVisible()){
-            p.pushRenderable(r);
+   var drawables = o._drawables;
+   if(drawables){
+      var count = drawables.count();
+      for(var i = 0; i < count; i++){
+         var drawable = drawables.getAt(i);
+         if(drawable.testVisible()){
+            region.pushRenderable(drawable);
          }
       }
    }
@@ -107,17 +100,18 @@ function FRenderable_filterDrawables(p){
 // <T>逻辑处理。</T>
 //
 // @method
-// @param p:region:FG3dReigon 区域
+// @param region:FG3dReigon 区域
 //==========================================================
-function FRenderable_process(p){
+function FRenderable_process(region){
    var o = this;
-   o.__base.FDrawable.process.call(o, p);
+   o.__base.FDrawable.process.call(o, region);
    // 处理绘制集合
-   var s = o._drawables;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.getAt(i).process(p);
+   var drawables = o._drawables;
+   if(drawables){
+      var count = drawables.count();
+      for(var i = 0; i < count; i++){
+         var drawable = drawables.getAt(i);
+         drawable.process(region);
       }
    }
 }

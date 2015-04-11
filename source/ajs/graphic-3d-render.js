@@ -211,14 +211,9 @@ function SG3dLayoutSampler_dispose(){
    o.texture = null;
 }
 function FG3dBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject);
-   o._name   = null;
-   o.name    = FG3dBuffer_name;
+   o = RClass.inherits(this, o, FG3dObject, MName);
    o.isValid = RMethod.virtual(o, 'isValid');
    return o;
-}
-function FG3dBuffer_name(){
-   return this._name;
 }
 function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
@@ -310,18 +305,30 @@ function FG3dTexture_construct(){
 }
 function FG3dFlatTexture(o){
    o = RClass.inherits(this, o, FG3dTexture);
-   o.width      = 0;
-   o.height     = 0;
-   o.construct  = FG3dFlatTexture_construct;
-   o.uploadData = RMethod.virtual(o, 'uploadData');
-   o.upload     = RMethod.virtual(o, 'upload');
-   o.update     = RMethod.empty;
+   o._optionFlipY   = false;
+   o._size          = null;
+   o.construct      = FG3dFlatTexture_construct;
+   o.optionFlipY    = FG3dFlatTexture_optionFlipY;
+   o.setOptionFlipY = FG3dFlatTexture_setOptionFlipY;
+   o.size           = FG3dFlatTexture_size;
+   o.uploadData     = RMethod.virtual(o, 'uploadData');
+   o.upload         = RMethod.virtual(o, 'upload');
+   o.update         = RMethod.empty;
    return o;
 }
 function FG3dFlatTexture_construct(){
    var o = this;
    o.__base.FG3dTexture.construct();
    o._textureCd = EG3dTexture.Flat2d;
+}
+function FG3dFlatTexture_optionFlipY(){
+   return this._optionFlipY;
+}
+function FG3dFlatTexture_setOptionFlipY(flag){
+   this._optionFlipY = flag;
+}
+function FG3dFlatTexture_size(){
+   return this._size;
 }
 function FG3dFragmentShader(o){
    o = RClass.inherits(this, o, FG3dShader);
@@ -796,10 +803,10 @@ function FG3dTexture(o){
    o.textureCd    = FG3dTexture_textureCd;
    o.filterMinCd  = FG3dTexture_filterMinCd;
    o.filterMagCd  = FG3dTexture_filterMagCd;
-   o.setFilter    = FG3dTexture_setFilter;
+   o.setFilterCd  = FG3dTexture_setFilterCd;
    o.wrapS        = FG3dTexture_wrapS;
    o.wrapT        = FG3dTexture_wrapT;
-   o.setWrap      = FG3dTexture_setWrap;
+   o.setWrapCd    = FG3dTexture_setWrapCd;
    return o;
 }
 function FG3dTexture_textureCd(){
@@ -811,10 +818,10 @@ function FG3dTexture_filterMinCd(){
 function FG3dTexture_filterMagCd(){
    return this._filterMagCd;
 }
-function FG3dTexture_setFilter(pi, pa){
+function FG3dTexture_setFilterCd(minCd, magCd){
    var o = this;
-   o._filterMinCd = pi;
-   o._filterMagCd = pa;
+   o._filterMinCd = minCd;
+   o._filterMagCd = magCd;
 }
 function FG3dTexture_wrapS(){
    return this._wrapS;
@@ -822,10 +829,10 @@ function FG3dTexture_wrapS(){
 function FG3dTexture_wrapT(){
    return this._wrapT;
 }
-function FG3dTexture_setWrap(ps, pt){
+function FG3dTexture_setWrapCd(wrapS, wrapT){
    var o = this;
-   o._wrapS = ps;
-   o._wrapT = pt;
+   o._wrapS = wrapS;
+   o._wrapT = wrapT;
 }
 function FG3dVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dBuffer);

@@ -1,14 +1,14 @@
 //==========================================================
-// <T>渲染缓冲。</T>
+// <T>画板对象。</T>
 //
-// @class
+// @face
 // @author maocy
-// @history 150305
+// @history 150411
 //==========================================================
-function FG3dBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject, MName);
+function MCanvasObject(o){
+   o = RClass.inherits(this, o);
    //..........................................................
    // @method
-   o.isValid = RMethod.virtual(o, 'isValid');
+   o.htmlCanvas = RMethod.virtual(o, 'htmlCanvas');
    return o;
 }

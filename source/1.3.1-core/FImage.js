@@ -47,7 +47,10 @@ function FImage_ohLoad(){
    var m = o._hImage;
    o._size.set(m.naturalWidth, m.naturalHeight);
    o._ready = true;
-   o.processLoadListener(o);
+   // 处理加载事件
+   var event = new SEvent(o);
+   o.processLoadListener(event);
+   event.dispose();
 }
 
 //==========================================================

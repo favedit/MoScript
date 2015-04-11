@@ -545,8 +545,8 @@ function FG3dSelectPass_setup(){
    o.__base.FG3dTechniquePass.setup.call(o);
    var c = o._graphicContext;
    var T = o._texture = c.createFlatTexture();
-   T.setFilter(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
-   T.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
+   T.setFilterCd(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
+   T.setWrapCd(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
    var t = o._renderTarget = c.createRenderTarget();
    t.size().set(1, 1);
    t.textures().push(T);

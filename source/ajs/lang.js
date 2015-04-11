@@ -180,6 +180,19 @@ function MInvoke(o){
    o.invoke = RMethod.virtual(o, 'invoke');
    return o;
 }
+function MName(o){
+   o = RClass.inherits(this, o);
+   o._name   = null;
+   o.name    = MName_name;
+   o.setName = MName_setName;
+   return o;
+}
+function MName_name(){
+   return this._name;
+}
+function MName_setName(name){
+   this._name = name;
+}
 function SArguments(){
    var o = this;
    o.owner = null;
@@ -1659,6 +1672,56 @@ function FObjectPool_innerDump(s, l){
    s.append(', free=', o._frees.count());
    s.append(', alloc_count=', o._allocCount);
    s.append(', free_count=', o._freeCount);
+}
+function FObjectPools(o){
+   o = RClass.inherits(this, o, FObject);
+   o._pools    = null;
+   o.construct = FObjectPools_construct;
+   o.pool      = FObjectPools_pool;
+   o.alloc     = FObjectPools_alloc;
+   o.free      = FObjectPools_free;
+   o.dispose   = FObjectPools_dispose;
+   return o;
+}
+function FObjectPools_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._pools = new TDictionary();
+}
+function FObjectPools_pool(code){
+   var o = this;
+   var pool = o._pools.get(code);
+   if(!pool){
+      pool = RClass.create(FObjectPool);
+      o._pools.set(code, pool);
+   }
+   return pool;
+}
+function FObjectPools_alloc(code){
+   var o = this;
+   var pool = o.pool(code);
+   return pool.alloc();
+}
+function FObjectPools_free(code, instance){
+   var o = this;
+   var pool = o.pool(code);
+   return pool.free(instance);
+}
+function FObjectPools_push(code, instance){
+   var o = this;
+   var pool = o.pool(code);
+   return pool.push(instance);
+}
+function FObjectPools_dispose(){
+   var o = this;
+   var pools = o._pools;
+   var count = pools.count();
+   for(var i = 0; i < count; i++){
+      var pool = pools.valueAt(i);
+      pool.dispose();
+   }
+   pools.dispose();
+   o.__base.FObject.dispose.call(o);
 }
 function FTimer(o){
    o = RClass.inherits(this, o, FObject);
@@ -3194,6 +3257,7 @@ var RInteger = new function RInteger(){
    o.parse      = RInteger_parse;
    o.format     = RInteger_format;
    o.toRange    = RInteger_toRange;
+   o.pow2       = RInteger_pow2;
    o.sum        = RInteger_sum;
    o.calculate  = RInteger_calculate;
    o.copy       = RInteger_copy;
@@ -3250,6 +3314,36 @@ function RInteger_toRange(value, min, max){
       value = max;
    }
    return value;
+}
+function RInteger_pow2(value){
+   if(value > 4096){
+      return 8192;
+   }else if(value > 2048){
+      return 4096;
+   }else if(value > 1024){
+      return 2048;
+   }else if(value > 512){
+      return 1024;
+   }else if(value > 256){
+      return 512;
+   }else if(value > 128){
+      return 256;
+   }else if(value > 64){
+      return 128;
+   }else if(value > 32){
+      return 64;
+   }else if(value > 16){
+      return 32;
+   }else if(value > 8){
+      return 16;
+   }else if(value > 4){
+      return 8;
+   }else if(value > 2){
+      return 4;
+   }else if(value > 1){
+      return 2;
+   }
+   return 1;
 }
 function RInteger_sum(){
    var r = 0;

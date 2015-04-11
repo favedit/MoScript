@@ -108,37 +108,43 @@ function FWglFlatTexture_uploadData(d, w, h){
 // <T>上传图片内容。</T>
 //
 // @method
-// @param image:HtmlImgTag 图片
+// @param data:Object 数据
 //==========================================================
-function FWglFlatTexture_upload(image){
+function FWglFlatTexture_upload(data){
    var o = this;
    var c = o._graphicContext;
    var cp = c.capability();
    var g = c._native;
    // 检查参数
-   var data = null;
-   var f = null;
-   if(image.tagName == 'IMG'){
-      data = image;
-   }else if(RClass.isClass(image, FImage)){
-      data = image.image();
-      if(image.optionAlpha()){
-         f = cp.samplerCompressRgba;
-      }else{
-         f = cp.samplerCompressRgb;
-      }
+   var pixels = null;
+   //var format = null;
+   if((data.tagName == 'IMG') || (data.tagName == 'CANVAS')){
+      pixels = data;
+   }else if(RClass.isClass(data, FImage)){
+      pixels = data.image();
+      //if(image.optionAlpha()){
+      //   format = cp.samplerCompressRgba;
+      //}else{
+      //   format = cp.samplerCompressRgb;
+      //}
+   }else if(RClass.isClass(data, MCanvasObject)){
+      pixels = data.htmlCanvas();
    }else{
       throw new TError('Invalid image format.');
    }
    // 绑定数据
    g.bindTexture(g.TEXTURE_2D, o._native);
+   // 设置上下反转
+   if(o._optionFlipY){
+      g.pixelStorei(g.UNPACK_FLIP_Y_WEBGL, true);
+   }
    // 上传内容
    //if(f){
       //g.compressedTexImage2D(g.TEXTURE_2D, 0, f, p.size().width, p.size().height, 0, m);
    //}else{
       //g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, m);
    //}
-   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, data);
+   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, pixels);
    // 更新处理
    o.update();
    o._statusLoad = c.checkError("texImage2D", "Upload image failure.");

@@ -1424,7 +1424,9 @@ function FImage_ohLoad(){
    var m = o._hImage;
    o._size.set(m.naturalWidth, m.naturalHeight);
    o._ready = true;
-   o.processLoadListener(o);
+   var event = new SEvent(o);
+   o.processLoadListener(event);
+   event.dispose();
 }
 function FImage_ohError(p){
    var o = this.__linker;

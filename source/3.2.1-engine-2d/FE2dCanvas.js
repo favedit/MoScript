@@ -5,24 +5,28 @@
 // @history 150130
 //==========================================================
 function FE2dCanvas(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MCanvasObject);
    //..........................................................
    // @attribute
-   o._size     = null;
-   o._context  = null;
+   o._size      = null;
+   o._context   = null;
+   //..........................................................
+   // @html
+   o._hCanvas   = null;
    //..........................................................
    // @event
-   o.onResize  = FE2dCanvas_onResize;
+   o.onResize   = FE2dCanvas_onResize;
    //..........................................................
    // @method
-   o.construct = FE2dCanvas_construct;
+   o.construct  = FE2dCanvas_construct;
    // @method
-   o.size      = FE2dCanvas_size;
-   o.context   = FE2dCanvas_context;
-   o.build     = FE2dCanvas_build;
-   o.setPanel  = FE2dCanvas_setPanel;
+   o.htmlCanvas = FE2dCanvas_htmlCanvas;
+   o.size       = FE2dCanvas_size;
+   o.context    = FE2dCanvas_context;
+   o.build      = FE2dCanvas_build;
+   o.setPanel   = FE2dCanvas_setPanel;
    // @method
-   o.dispose   = FE2dCanvas_dispose;
+   o.dispose    = FE2dCanvas_dispose;
    return o;
 }
 
@@ -45,6 +49,16 @@ function FE2dCanvas_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._size = new SSize2();
+}
+
+//==========================================================
+// <T>获得画板。</T>
+//
+// @method
+// @return HtmlCanvasTag 画板
+//==========================================================
+function FE2dCanvas_htmlCanvas(){
+   return this._hCanvas;
 }
 
 //==========================================================
@@ -71,19 +85,24 @@ function FE2dCanvas_context(){
 // <T>构建处理。</T>
 //
 // @method
-// @param p:document:HtmlTag 页面元素
+// @param hDocument:HtmlTag 页面元素
 //==========================================================
-function FE2dCanvas_build(p){
+function FE2dCanvas_build(hDocument){
    var o = this;
-   var s = o._size;
+   var size = o._size;
+   var width = size.width;
+   var height = size.height;
    // 创建画板
-   var h = o._hCanvas = RBuilder.create(p, 'CANVAS');
-   h.__linker = o;
-   h.width = s.width;
-   h.height = s.height;
+   var hCanvas = o._hCanvas = RBuilder.create(hDocument, 'CANVAS');
+   hCanvas.__linker = o;
+   hCanvas.width = width;
+   hCanvas.height = height;
+   var style = hCanvas.style;
+   style.width = width + 'px';
+   style.height = height + 'px';
    // 创建渲染环境
-   var c = o._context = RClass.create(FG2dCanvasContext);
-   c.linkCanvas(h);
+   var context = o._context = RClass.create(FG2dCanvasContext);
+   context.linkCanvas(hCanvas);
 }
 
 //==========================================================

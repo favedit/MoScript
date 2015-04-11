@@ -89,7 +89,7 @@ function FG3dMaterialMap_setup(w, h){
    var c = o._graphicContext;
    var t = o._texture = c.createFlatTexture();
    o.resize(w, h);
-   t.setFilter(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
+   t.setFilterCd(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
    t.uploadData(o._data, w, h);
 }
 

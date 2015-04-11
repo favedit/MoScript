@@ -41,7 +41,9 @@ function FG2dContext_drawText(x, y, t){
    var o = this;
    o._native.fillText(t, x, y);
 }
-function FG2dContext_drawImage(){
+function FG2dContext_drawImage(image, x, y){
+   var o = this;
+   o._native.drawImage(image, 0, 0);
 }
 function FG2dContext_fillRecrangle(x1, y1, x2, y2){
    var o = this;

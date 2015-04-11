@@ -103,7 +103,9 @@ function FG2dContext_drawText(x, y, t){
 // @method
 // @param p:image:FImage 位图
 //==========================================================
-function FG2dContext_drawImage(){
+function FG2dContext_drawImage(image, x, y){
+   var o = this;
+   o._native.drawImage(image, 0, 0);
 }
 
 //==========================================================

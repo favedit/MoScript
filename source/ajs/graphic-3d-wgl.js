@@ -872,27 +872,26 @@ function FWglFlatTexture_uploadData(d, w, h){
    o._statusLoad = c.checkError("texImage2D", "Upload data failure.");
    o.update();
 }
-function FWglFlatTexture_upload(image){
+function FWglFlatTexture_upload(data){
    var o = this;
    var c = o._graphicContext;
    var cp = c.capability();
    var g = c._native;
-   var data = null;
-   var f = null;
-   if(image.tagName == 'IMG'){
-      data = image;
-   }else if(RClass.isClass(image, FImage)){
-      data = image.image();
-      if(image.optionAlpha()){
-         f = cp.samplerCompressRgba;
-      }else{
-         f = cp.samplerCompressRgb;
-      }
+   var pixels = null;
+   if((data.tagName == 'IMG') || (data.tagName == 'CANVAS')){
+      pixels = data;
+   }else if(RClass.isClass(data, FImage)){
+      pixels = data.image();
+   }else if(RClass.isClass(data, MCanvasObject)){
+      pixels = data.htmlCanvas();
    }else{
       throw new TError('Invalid image format.');
    }
    g.bindTexture(g.TEXTURE_2D, o._native);
-   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, data);
+   if(o._optionFlipY){
+      g.pixelStorei(g.UNPACK_FLIP_Y_WEBGL, true);
+   }
+   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, pixels);
    o.update();
    o._statusLoad = c.checkError("texImage2D", "Upload image failure.");
 }

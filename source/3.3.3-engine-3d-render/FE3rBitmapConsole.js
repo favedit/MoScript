@@ -95,7 +95,9 @@ function FE3rBitmapConsole_loadUrl(context, url){
    RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
    // 创建渲染位图
    var bitmap = RClass.create(FE3rBitmap);
-   bitmap.loadUrl(context, url);
+   bitmap.linkGraphicContext(context);
+   bitmap.setup();
+   bitmap.loadUrl(url);
    o._bitmaps.set(url, bitmap);
    return bitmap;
 }

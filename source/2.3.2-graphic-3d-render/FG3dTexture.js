@@ -22,11 +22,11 @@ function FG3dTexture(o){
    // @method
    o.filterMinCd  = FG3dTexture_filterMinCd;
    o.filterMagCd  = FG3dTexture_filterMagCd;
-   o.setFilter    = FG3dTexture_setFilter;
+   o.setFilterCd  = FG3dTexture_setFilterCd;
    // @method
    o.wrapS        = FG3dTexture_wrapS;
    o.wrapT        = FG3dTexture_wrapT;
-   o.setWrap      = FG3dTexture_setWrap;
+   o.setWrapCd    = FG3dTexture_setWrapCd;
    return o;
 }
 
@@ -64,13 +64,13 @@ function FG3dTexture_filterMagCd(){
 // <T>设置取样。</T>
 //
 // @method
-// @param pi:min:EG3dSamplerFilter 最小取样
-// @param pa:mag:EG3dSamplerFilter 最大取样
+// @param minCd:EG3dSamplerFilter 最小取样
+// @param magCd:EG3dSamplerFilter 最大取样
 //==========================================================
-function FG3dTexture_setFilter(pi, pa){
+function FG3dTexture_setFilterCd(minCd, magCd){
    var o = this;
-   o._filterMinCd = pi;
-   o._filterMagCd = pa;
+   o._filterMinCd = minCd;
+   o._filterMagCd = magCd;
 }
 
 //==========================================================
@@ -97,11 +97,11 @@ function FG3dTexture_wrapT(){
 // <T>设置卷动。</T>
 //
 // @method
-// @param ps:wrapS:EG3dSamplerFilter S卷动
-// @param pt:wrapT:EG3dSamplerFilter T卷动
+// @param wrapS:EG3dSamplerFilter S卷动
+// @param wrapT:EG3dSamplerFilter T卷动
 //==========================================================
-function FG3dTexture_setWrap(ps, pt){
+function FG3dTexture_setWrapCd(wrapS, wrapT){
    var o = this;
-   o._wrapS = ps;
-   o._wrapT = pt;
+   o._wrapS = wrapS;
+   o._wrapT = wrapT;
 }

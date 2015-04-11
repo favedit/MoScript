@@ -450,57 +450,51 @@ function FRenderable(o){
    return o;
 }
 function FRenderable_hasDrawable(){
-   var s = this._drawables;
-   return s ? !s.isEmpty() : false;
+   var drawables = this._drawables;
+   return drawables ? !drawables.isEmpty() : false;
 }
 function FRenderable_drawables(){
    var o = this;
-   var s = o._drawables;
-   if(!s){
-      s = o._drawables = new TObjects();
+   var drawables = o._drawables;
+   if(!drawables){
+      drawables = o._drawables = new TObjects();
    }
-   return s;
+   return drawables;
 }
-function FRenderable_pushDrawable(p){
+function FRenderable_pushDrawable(drawable){
    var o = this;
-   p._parent = o;
-   p._drawable = o;
-   o.drawables().push(p);
+   drawable._parent = o;
+   o.drawables().push(drawable);
 }
-function FRenderable_removeDrawable(p){
-   var s = this._drawables;
-   if(s){
-      s.remove(p);
-   }
+function FRenderable_removeDrawable(drawable){
+   this._drawables.remove(drawable);
 }
-function FRenderable_filterDrawables(p){
+function FRenderable_filterDrawables(region){
    var o = this;
-   if(!o.testReady()){
-      return false;
-   }
    if(!o.testVisible()){
       return false;
    }
-   p.pushRenderable(o);
-   var s = o._drawables;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var r = s.getAt(i);
-         if(r.testVisible()){
-            p.pushRenderable(r);
+   region.pushRenderable(o);
+   var drawables = o._drawables;
+   if(drawables){
+      var count = drawables.count();
+      for(var i = 0; i < count; i++){
+         var drawable = drawables.getAt(i);
+         if(drawable.testVisible()){
+            region.pushRenderable(drawable);
          }
       }
    }
 }
-function FRenderable_process(p){
+function FRenderable_process(region){
    var o = this;
-   o.__base.FDrawable.process.call(o, p);
-   var s = o._drawables;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.getAt(i).process(p);
+   o.__base.FDrawable.process.call(o, region);
+   var drawables = o._drawables;
+   if(drawables){
+      var count = drawables.count();
+      for(var i = 0; i < count; i++){
+         var drawable = drawables.getAt(i);
+         drawable.process(region);
       }
    }
 }

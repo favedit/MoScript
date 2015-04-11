@@ -1,3 +1,8 @@
+function MCanvasObject(o){
+   o = RClass.inherits(this, o);
+   o.htmlCanvas = RMethod.virtual(o, 'htmlCanvas');
+   return o;
+}
 function MGraphicObject(o){
    o = RClass.inherits(this, o);
    o._graphicContext    = null;

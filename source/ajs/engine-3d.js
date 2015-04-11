@@ -154,6 +154,7 @@ function FE3dRenderable(o){
    o.construct        = FE3dRenderable_construct;
    o.createMaterial   = FE3dRenderable_createMaterial;
    o.setup            = RMethod.empty;
+   o.testReady        = RMethod.emptyTrue;
    o.testVisible      = FE3dRenderable_testVisible;
    o.display          = FE3dRenderable_display;
    o.setDisplay       = FE3dRenderable_setDisplay;
@@ -183,19 +184,24 @@ function FE3dRenderable_createMaterial(){
 }
 function FE3dRenderable_testVisible(){
    var o = this;
-   var r = o.__base.FRenderable.testVisible.call(o);
-   if(r){
-      if(!o._outlineVisible){
+   var ready = o.testReady();
+   if(!ready){
+      return false;
+   }
+   var visible = o.__base.FRenderable.testVisible.call(o);
+   if(!visible){
+      return false;
+   }
+   if(!o._outlineVisible){
+      return false;
+   }
+   if(RRuntime.isDebug()){
+      var material = o.material();
+      if(!material.testVisible()){
          return false;
       }
-      if(RRuntime.isDebug()){
-         var m = o.material();
-         if(!m.testVisible()){
-            return false;
-         }
-      }
    }
-   return r;
+   return true;
 }
 function FE3dRenderable_display(){
    return this._display;
@@ -297,16 +303,10 @@ function FE3dSimpleStage_faceLayer(){
 function FE3dSimpleStage_active(){
    var o = this;
    o.__base.FE3dStage.active.call(o);
-   if(o._optionKeyboard){
-      RWindow.lsnsKeyDown.register(o, o.onKeyDown);
-   }
 }
 function FE3dSimpleStage_deactive(){
    var o = this;
    o.__base.FE3dStage.deactive.call(o);
-   if(o._optionKeyboard){
-      RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
-   }
 }
 function FE3dSprite(o){
    o = RClass.inherits(this, o, FObject);

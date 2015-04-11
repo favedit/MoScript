@@ -22,6 +22,7 @@ var RInteger = new function RInteger(){
    o.parse      = RInteger_parse;
    o.format     = RInteger_format;
    o.toRange    = RInteger_toRange;
+   o.pow2       = RInteger_pow2;
    o.sum        = RInteger_sum;
    o.calculate  = RInteger_calculate;
    o.copy       = RInteger_copy;
@@ -128,6 +129,44 @@ function RInteger_toRange(value, min, max){
       value = max;
    }
    return value;
+}
+
+//==========================================================
+// <T>计算最接近2的指数的数字。</T>
+//
+// @method
+// @param value:Integer 数字
+// @return Integer 数字
+//==========================================================
+function RInteger_pow2(value){
+   if(value > 4096){
+      return 8192;
+   }else if(value > 2048){
+      return 4096;
+   }else if(value > 1024){
+      return 2048;
+   }else if(value > 512){
+      return 1024;
+   }else if(value > 256){
+      return 512;
+   }else if(value > 128){
+      return 256;
+   }else if(value > 64){
+      return 128;
+   }else if(value > 32){
+      return 64;
+   }else if(value > 16){
+      return 32;
+   }else if(value > 8){
+      return 16;
+   }else if(value > 4){
+      return 8;
+   }else if(value > 2){
+      return 4;
+   }else if(value > 1){
+      return 2;
+   }
+   return 1;
 }
 
 //==========================================================

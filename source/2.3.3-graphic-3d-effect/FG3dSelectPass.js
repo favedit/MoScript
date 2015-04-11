@@ -47,8 +47,8 @@ function FG3dSelectPass_setup(){
    var c = o._graphicContext;
    // 创建平面
    var T = o._texture = c.createFlatTexture();
-   T.setFilter(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
-   T.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
+   T.setFilterCd(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
+   T.setWrapCd(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
    // 创建渲染目标
    var t = o._renderTarget = c.createRenderTarget();
    t.size().set(1, 1);

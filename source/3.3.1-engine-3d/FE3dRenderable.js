@@ -25,6 +25,7 @@ function FE3dRenderable(o){
    // @method
    o.setup            = RMethod.empty;
    // @method
+   o.testReady        = RMethod.emptyTrue;
    o.testVisible      = FE3dRenderable_testVisible;
    o.display          = FE3dRenderable_display;
    o.setDisplay       = FE3dRenderable_setDisplay;
@@ -76,21 +77,28 @@ function FE3dRenderable_createMaterial(){
 //==========================================================
 function FE3dRenderable_testVisible(){
    var o = this;
-   var r = o.__base.FRenderable.testVisible.call(o);
-   if(r){
-      // 测试轮廓可见
-      if(!o._outlineVisible){
+   // 测试准备好
+   var ready = o.testReady();
+   if(!ready){
+      return false;
+   }
+   // 测试可见性
+   var visible = o.__base.FRenderable.testVisible.call(o);
+   if(!visible){
+      return false;
+   }
+   // 测试轮廓可见
+   if(!o._outlineVisible){
+      return false;
+   }
+   // 测试模式时候，可见性依赖材质
+   if(RRuntime.isDebug()){
+      var material = o.material();
+      if(!material.testVisible()){
          return false;
       }
-      // 测试模式时候，可见性依赖材质
-      if(RRuntime.isDebug()){
-         var m = o.material();
-         if(!m.testVisible()){
-            return false;
-         }
-      }
    }
-   return r;
+   return true;
 }
 
 //==========================================================

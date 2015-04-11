@@ -1611,6 +1611,19 @@ function MInvoke(o){
    o.invoke = RMethod.virtual(o, 'invoke');
    return o;
 }
+function MName(o){
+   o = RClass.inherits(this, o);
+   o._name   = null;
+   o.name    = MName_name;
+   o.setName = MName_setName;
+   return o;
+}
+function MName_name(){
+   return this._name;
+}
+function MName_setName(name){
+   this._name = name;
+}
 function SArguments(){
    var o = this;
    o.owner = null;
@@ -3090,6 +3103,56 @@ function FObjectPool_innerDump(s, l){
    s.append(', free=', o._frees.count());
    s.append(', alloc_count=', o._allocCount);
    s.append(', free_count=', o._freeCount);
+}
+function FObjectPools(o){
+   o = RClass.inherits(this, o, FObject);
+   o._pools    = null;
+   o.construct = FObjectPools_construct;
+   o.pool      = FObjectPools_pool;
+   o.alloc     = FObjectPools_alloc;
+   o.free      = FObjectPools_free;
+   o.dispose   = FObjectPools_dispose;
+   return o;
+}
+function FObjectPools_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._pools = new TDictionary();
+}
+function FObjectPools_pool(code){
+   var o = this;
+   var pool = o._pools.get(code);
+   if(!pool){
+      pool = RClass.create(FObjectPool);
+      o._pools.set(code, pool);
+   }
+   return pool;
+}
+function FObjectPools_alloc(code){
+   var o = this;
+   var pool = o.pool(code);
+   return pool.alloc();
+}
+function FObjectPools_free(code, instance){
+   var o = this;
+   var pool = o.pool(code);
+   return pool.free(instance);
+}
+function FObjectPools_push(code, instance){
+   var o = this;
+   var pool = o.pool(code);
+   return pool.push(instance);
+}
+function FObjectPools_dispose(){
+   var o = this;
+   var pools = o._pools;
+   var count = pools.count();
+   for(var i = 0; i < count; i++){
+      var pool = pools.valueAt(i);
+      pool.dispose();
+   }
+   pools.dispose();
+   o.__base.FObject.dispose.call(o);
 }
 function FTimer(o){
    o = RClass.inherits(this, o, FObject);
@@ -4625,6 +4688,7 @@ var RInteger = new function RInteger(){
    o.parse      = RInteger_parse;
    o.format     = RInteger_format;
    o.toRange    = RInteger_toRange;
+   o.pow2       = RInteger_pow2;
    o.sum        = RInteger_sum;
    o.calculate  = RInteger_calculate;
    o.copy       = RInteger_copy;
@@ -4681,6 +4745,36 @@ function RInteger_toRange(value, min, max){
       value = max;
    }
    return value;
+}
+function RInteger_pow2(value){
+   if(value > 4096){
+      return 8192;
+   }else if(value > 2048){
+      return 4096;
+   }else if(value > 1024){
+      return 2048;
+   }else if(value > 512){
+      return 1024;
+   }else if(value > 256){
+      return 512;
+   }else if(value > 128){
+      return 256;
+   }else if(value > 64){
+      return 128;
+   }else if(value > 32){
+      return 64;
+   }else if(value > 16){
+      return 32;
+   }else if(value > 8){
+      return 16;
+   }else if(value > 4){
+      return 8;
+   }else if(value > 2){
+      return 4;
+   }else if(value > 1){
+      return 2;
+   }
+   return 1;
 }
 function RInteger_sum(){
    var r = 0;
@@ -9973,7 +10067,9 @@ function FImage_ohLoad(){
    var m = o._hImage;
    o._size.set(m.naturalWidth, m.naturalHeight);
    o._ready = true;
-   o.processLoadListener(o);
+   var event = new SEvent(o);
+   o.processLoadListener(event);
+   event.dispose();
 }
 function FImage_ohError(p){
    var o = this.__linker;
@@ -14372,6 +14468,11 @@ function RXml_unpack(s, n){
    }
    return n;
 }
+function MCanvasObject(o){
+   o = RClass.inherits(this, o);
+   o.htmlCanvas = RMethod.virtual(o, 'htmlCanvas');
+   return o;
+}
 function MGraphicObject(o){
    o = RClass.inherits(this, o);
    o._graphicContext    = null;
@@ -14516,7 +14617,9 @@ function FG2dContext_drawText(x, y, t){
    var o = this;
    o._native.fillText(t, x, y);
 }
-function FG2dContext_drawImage(){
+function FG2dContext_drawImage(image, x, y){
+   var o = this;
+   o._native.drawImage(image, 0, 0);
 }
 function FG2dContext_fillRecrangle(x1, y1, x2, y2){
    var o = this;
@@ -14563,12 +14666,16 @@ function FG2dContext_dispose(){
 }
 function FG2dCanvasContext(o){
    o = RClass.inherits(this, o, FG2dContext);
-   o._native    = null;
-   o.construct  = FG2dCanvasContext_construct;
-   o.linkCanvas = FG2dCanvasContext_linkCanvas;
-   o.clear      = FG2dCanvasContext_clear;
-   o.drawImage  = FG2dCanvasContext_drawImage;
-   o.toBytes    = FG2dCanvasContext_toBytes;
+   o._native       = null;
+   o.construct     = FG2dCanvasContext_construct;
+   o.linkCanvas    = FG2dCanvasContext_linkCanvas;
+   o.clear         = FG2dCanvasContext_clear;
+   o.drawLine      = FG2dCanvasContext_drawLine;
+   o.drawRectangle = FG2dCanvasContext_drawRectangle;
+   o.drawText      = FG2dCanvasContext_drawText;
+   o.drawImage     = FG2dCanvasContext_drawImage;
+   o.fillRectangle = FG2dCanvasContext_fillRectangle;
+   o.toBytes       = FG2dCanvasContext_toBytes;
    return o;
 }
 function FG2dCanvasContext_construct(){
@@ -14591,14 +14698,46 @@ function FG2dCanvasContext_clear(r, g, b, a, d){
    var o = this;
    var c = o._native;
 }
-function FG2dCanvasContext_drawImage(m){
+function FG2dCanvasContext_drawLine(x1, y1, x2, y2, color, lineWidth){
    var o = this;
    var g = o._native;
-   if(RClass.isClass(m, FImage)){
-      g.drawImage(m.image(), 0, 0, o._size.width, o._size.height);
+   g.strokeStyle = color;
+   g.lineWidth = lineWidth;
+   g.moveTo(x1, y1);
+   g.lineTo(x2, y2);
+   g.stroke();
+}
+function FG2dCanvasContext_drawRectangle(x, y, width, height, color, lineWidth){
+   var o = this;
+   var g = o._native;
+   g.strokeStyle = color;
+   g.lineWidth = lineWidth;
+   g.strokeRect(x, y, width, height);
+}
+function FG2dCanvasContext_drawText(text, x, y, color){
+   var o = this;
+   var g = o._native;
+   g.fillStyle = color;
+   g.fillText(text, x, y);
+}
+function FG2dCanvasContext_drawImage(data, x, y){
+   var o = this;
+   var g = o._native;
+   var pixels = null
+   if(data.tagName == 'IMG'){
+      pixels = data;
+   }else if(RClass.isClass(data, FImage)){
+      pixels = data.image();
    }else{
       throw new TError(o, 'Unknown data type');
    }
+   g.drawImage(pixels, x, y, o._size.width, o._size.height);
+}
+function FG2dCanvasContext_fillRectangle(x, y, width, height, color){
+   var o = this;
+   var g = o._native;
+   g.fillStyle = color;
+   g.fillRect(x, y, width, height);
 }
 function FG2dCanvasContext_toBytes(){
    var o = this;
@@ -16003,7 +16142,7 @@ function FG3dMaterialMap_setup(w, h){
    var c = o._graphicContext;
    var t = o._texture = c.createFlatTexture();
    o.resize(w, h);
-   t.setFilter(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
+   t.setFilterCd(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
    t.uploadData(o._data, w, h);
 }
 function FG3dMaterialMap_resize(w, h){
@@ -16916,14 +17055,9 @@ function SG3dLayoutSampler_dispose(){
    o.texture = null;
 }
 function FG3dBuffer(o){
-   o = RClass.inherits(this, o, FG3dObject);
-   o._name   = null;
-   o.name    = FG3dBuffer_name;
+   o = RClass.inherits(this, o, FG3dObject, MName);
    o.isValid = RMethod.virtual(o, 'isValid');
    return o;
-}
-function FG3dBuffer_name(){
-   return this._name;
 }
 function FG3dContext(o){
    o = RClass.inherits(this, o, FGraphicContext);
@@ -17015,18 +17149,30 @@ function FG3dTexture_construct(){
 }
 function FG3dFlatTexture(o){
    o = RClass.inherits(this, o, FG3dTexture);
-   o.width      = 0;
-   o.height     = 0;
-   o.construct  = FG3dFlatTexture_construct;
-   o.uploadData = RMethod.virtual(o, 'uploadData');
-   o.upload     = RMethod.virtual(o, 'upload');
-   o.update     = RMethod.empty;
+   o._optionFlipY   = false;
+   o._size          = null;
+   o.construct      = FG3dFlatTexture_construct;
+   o.optionFlipY    = FG3dFlatTexture_optionFlipY;
+   o.setOptionFlipY = FG3dFlatTexture_setOptionFlipY;
+   o.size           = FG3dFlatTexture_size;
+   o.uploadData     = RMethod.virtual(o, 'uploadData');
+   o.upload         = RMethod.virtual(o, 'upload');
+   o.update         = RMethod.empty;
    return o;
 }
 function FG3dFlatTexture_construct(){
    var o = this;
    o.__base.FG3dTexture.construct();
    o._textureCd = EG3dTexture.Flat2d;
+}
+function FG3dFlatTexture_optionFlipY(){
+   return this._optionFlipY;
+}
+function FG3dFlatTexture_setOptionFlipY(flag){
+   this._optionFlipY = flag;
+}
+function FG3dFlatTexture_size(){
+   return this._size;
 }
 function FG3dFragmentShader(o){
    o = RClass.inherits(this, o, FG3dShader);
@@ -17501,10 +17647,10 @@ function FG3dTexture(o){
    o.textureCd    = FG3dTexture_textureCd;
    o.filterMinCd  = FG3dTexture_filterMinCd;
    o.filterMagCd  = FG3dTexture_filterMagCd;
-   o.setFilter    = FG3dTexture_setFilter;
+   o.setFilterCd  = FG3dTexture_setFilterCd;
    o.wrapS        = FG3dTexture_wrapS;
    o.wrapT        = FG3dTexture_wrapT;
-   o.setWrap      = FG3dTexture_setWrap;
+   o.setWrapCd    = FG3dTexture_setWrapCd;
    return o;
 }
 function FG3dTexture_textureCd(){
@@ -17516,10 +17662,10 @@ function FG3dTexture_filterMinCd(){
 function FG3dTexture_filterMagCd(){
    return this._filterMagCd;
 }
-function FG3dTexture_setFilter(pi, pa){
+function FG3dTexture_setFilterCd(minCd, magCd){
    var o = this;
-   o._filterMinCd = pi;
-   o._filterMagCd = pa;
+   o._filterMinCd = minCd;
+   o._filterMagCd = magCd;
 }
 function FG3dTexture_wrapS(){
    return this._wrapS;
@@ -17527,10 +17673,10 @@ function FG3dTexture_wrapS(){
 function FG3dTexture_wrapT(){
    return this._wrapT;
 }
-function FG3dTexture_setWrap(ps, pt){
+function FG3dTexture_setWrapCd(wrapS, wrapT){
    var o = this;
-   o._wrapS = ps;
-   o._wrapT = pt;
+   o._wrapS = wrapS;
+   o._wrapT = wrapT;
 }
 function FG3dVertexBuffer(o){
    o = RClass.inherits(this, o, FG3dBuffer);
@@ -18103,8 +18249,8 @@ function FG3dSelectPass_setup(){
    o.__base.FG3dTechniquePass.setup.call(o);
    var c = o._graphicContext;
    var T = o._texture = c.createFlatTexture();
-   T.setFilter(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
-   T.setWrap(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
+   T.setFilterCd(EG3dSamplerFilter.Nearest, EG3dSamplerFilter.Nearest);
+   T.setWrapCd(EG3dSamplerFilter.ClampToEdge, EG3dSamplerFilter.ClampToEdge);
    var t = o._renderTarget = c.createRenderTarget();
    t.size().set(1, 1);
    t.textures().push(T);
@@ -19081,27 +19227,26 @@ function FWglFlatTexture_uploadData(d, w, h){
    o._statusLoad = c.checkError("texImage2D", "Upload data failure.");
    o.update();
 }
-function FWglFlatTexture_upload(image){
+function FWglFlatTexture_upload(data){
    var o = this;
    var c = o._graphicContext;
    var cp = c.capability();
    var g = c._native;
-   var data = null;
-   var f = null;
-   if(image.tagName == 'IMG'){
-      data = image;
-   }else if(RClass.isClass(image, FImage)){
-      data = image.image();
-      if(image.optionAlpha()){
-         f = cp.samplerCompressRgba;
-      }else{
-         f = cp.samplerCompressRgb;
-      }
+   var pixels = null;
+   if((data.tagName == 'IMG') || (data.tagName == 'CANVAS')){
+      pixels = data;
+   }else if(RClass.isClass(data, FImage)){
+      pixels = data.image();
+   }else if(RClass.isClass(data, MCanvasObject)){
+      pixels = data.htmlCanvas();
    }else{
       throw new TError('Invalid image format.');
    }
    g.bindTexture(g.TEXTURE_2D, o._native);
-   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, data);
+   if(o._optionFlipY){
+      g.pixelStorei(g.UNPACK_FLIP_Y_WEBGL, true);
+   }
+   g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, g.RGBA, g.UNSIGNED_BYTE, pixels);
    o.update();
    o._statusLoad = c.checkError("texImage2D", "Upload image failure.");
 }
@@ -20195,57 +20340,51 @@ function FRenderable(o){
    return o;
 }
 function FRenderable_hasDrawable(){
-   var s = this._drawables;
-   return s ? !s.isEmpty() : false;
+   var drawables = this._drawables;
+   return drawables ? !drawables.isEmpty() : false;
 }
 function FRenderable_drawables(){
    var o = this;
-   var s = o._drawables;
-   if(!s){
-      s = o._drawables = new TObjects();
+   var drawables = o._drawables;
+   if(!drawables){
+      drawables = o._drawables = new TObjects();
    }
-   return s;
+   return drawables;
 }
-function FRenderable_pushDrawable(p){
+function FRenderable_pushDrawable(drawable){
    var o = this;
-   p._parent = o;
-   p._drawable = o;
-   o.drawables().push(p);
+   drawable._parent = o;
+   o.drawables().push(drawable);
 }
-function FRenderable_removeDrawable(p){
-   var s = this._drawables;
-   if(s){
-      s.remove(p);
-   }
+function FRenderable_removeDrawable(drawable){
+   this._drawables.remove(drawable);
 }
-function FRenderable_filterDrawables(p){
+function FRenderable_filterDrawables(region){
    var o = this;
-   if(!o.testReady()){
-      return false;
-   }
    if(!o.testVisible()){
       return false;
    }
-   p.pushRenderable(o);
-   var s = o._drawables;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var r = s.getAt(i);
-         if(r.testVisible()){
-            p.pushRenderable(r);
+   region.pushRenderable(o);
+   var drawables = o._drawables;
+   if(drawables){
+      var count = drawables.count();
+      for(var i = 0; i < count; i++){
+         var drawable = drawables.getAt(i);
+         if(drawable.testVisible()){
+            region.pushRenderable(drawable);
          }
       }
    }
 }
-function FRenderable_process(p){
+function FRenderable_process(region){
    var o = this;
-   o.__base.FDrawable.process.call(o, p);
-   var s = o._drawables;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.getAt(i).process(p);
+   o.__base.FDrawable.process.call(o, region);
+   var drawables = o._drawables;
+   if(drawables){
+      var count = drawables.count();
+      for(var i = 0; i < count; i++){
+         var drawable = drawables.getAt(i);
+         drawable.process(region);
       }
    }
 }
@@ -20746,16 +20885,18 @@ function RStage_start(v){
    setInterval('RStage_onProcess()', parseInt(v));
 }
 function FE2dCanvas(o){
-   o = RClass.inherits(this, o, FObject);
-   o._size     = null;
-   o._context  = null;
-   o.onResize  = FE2dCanvas_onResize;
-   o.construct = FE2dCanvas_construct;
-   o.size      = FE2dCanvas_size;
-   o.context   = FE2dCanvas_context;
-   o.build     = FE2dCanvas_build;
-   o.setPanel  = FE2dCanvas_setPanel;
-   o.dispose   = FE2dCanvas_dispose;
+   o = RClass.inherits(this, o, FObject, MCanvasObject);
+   o._size      = null;
+   o._context   = null;
+   o._hCanvas   = null;
+   o.onResize   = FE2dCanvas_onResize;
+   o.construct  = FE2dCanvas_construct;
+   o.htmlCanvas = FE2dCanvas_htmlCanvas;
+   o.size       = FE2dCanvas_size;
+   o.context    = FE2dCanvas_context;
+   o.build      = FE2dCanvas_build;
+   o.setPanel   = FE2dCanvas_setPanel;
+   o.dispose    = FE2dCanvas_dispose;
    return o;
 }
 function FE2dCanvas_onResize(p){
@@ -20766,21 +20907,29 @@ function FE2dCanvas_construct(){
    o.__base.FObject.construct.call(o);
    o._size = new SSize2();
 }
+function FE2dCanvas_htmlCanvas(){
+   return this._hCanvas;
+}
 function FE2dCanvas_size(){
    return this._size;
 }
 function FE2dCanvas_context(){
    return this._context;
 }
-function FE2dCanvas_build(p){
+function FE2dCanvas_build(hDocument){
    var o = this;
-   var s = o._size;
-   var h = o._hCanvas = RBuilder.create(p, 'CANVAS');
-   h.__linker = o;
-   h.width = s.width;
-   h.height = s.height;
-   var c = o._context = RClass.create(FG2dCanvasContext);
-   c.linkCanvas(h);
+   var size = o._size;
+   var width = size.width;
+   var height = size.height;
+   var hCanvas = o._hCanvas = RBuilder.create(hDocument, 'CANVAS');
+   hCanvas.__linker = o;
+   hCanvas.width = width;
+   hCanvas.height = height;
+   var style = hCanvas.style;
+   style.width = width + 'px';
+   style.height = height + 'px';
+   var context = o._context = RClass.create(FG2dCanvasContext);
+   context.linkCanvas(hCanvas);
 }
 function FE2dCanvas_setPanel(p){
    var o = this;
@@ -20796,6 +20945,40 @@ function FE2dCanvas_dispose(){
    o._hPanel = RHtml.free(o._hPanel);
    o._hCanvas = RHtml.free(o._hCanvas);
    o.__base.FObject.dispose.call(o);
+}
+function FE2dCanvasConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd    = EScope.Local;
+   o._pools      = null;
+   o.construct   = FE2dCanvasConsole_construct;
+   o.allocBySize = FE2dCanvasConsole_allocBySize;
+   o.free        = FE2dCanvasConsole_free;
+   return o;
+}
+function FE2dCanvasConsole_construct(){
+   var o = this;
+   o.__base.FConsole.construct.call(o);
+   o._pools = RClass.create(FObjectPools);
+}
+function FE2dCanvasConsole_allocBySize(width, height){
+   var o = this;
+   var pools = o._pools;
+   var code = width + 'x' + height;
+   var canvas = pools.alloc(code);
+   if(canvas){
+      return canvas;
+   }
+   canvas = RClass.create(FE2dCanvas);
+   canvas.size().set(width, height);
+   canvas.build(RWindow._hDocument);
+   return canvas;
+}
+function FE2dCanvasConsole_free(canvas){
+   var o = this;
+   var pools = o._pools;
+   var size = canvas.size();
+   var code = size.width + 'x' + size.height;
+   pools.free(code, canvas);
 }
 function FE2dDrawable(o){
    o = RClass.inherits(this, o, FDrawable);
@@ -20957,6 +21140,7 @@ function FE3dRenderable(o){
    o.construct        = FE3dRenderable_construct;
    o.createMaterial   = FE3dRenderable_createMaterial;
    o.setup            = RMethod.empty;
+   o.testReady        = RMethod.emptyTrue;
    o.testVisible      = FE3dRenderable_testVisible;
    o.display          = FE3dRenderable_display;
    o.setDisplay       = FE3dRenderable_setDisplay;
@@ -20986,19 +21170,24 @@ function FE3dRenderable_createMaterial(){
 }
 function FE3dRenderable_testVisible(){
    var o = this;
-   var r = o.__base.FRenderable.testVisible.call(o);
-   if(r){
-      if(!o._outlineVisible){
+   var ready = o.testReady();
+   if(!ready){
+      return false;
+   }
+   var visible = o.__base.FRenderable.testVisible.call(o);
+   if(!visible){
+      return false;
+   }
+   if(!o._outlineVisible){
+      return false;
+   }
+   if(RRuntime.isDebug()){
+      var material = o.material();
+      if(!material.testVisible()){
          return false;
       }
-      if(RRuntime.isDebug()){
-         var m = o.material();
-         if(!m.testVisible()){
-            return false;
-         }
-      }
    }
-   return r;
+   return true;
 }
 function FE3dRenderable_display(){
    return this._display;
@@ -21100,16 +21289,10 @@ function FE3dSimpleStage_faceLayer(){
 function FE3dSimpleStage_active(){
    var o = this;
    o.__base.FE3dStage.active.call(o);
-   if(o._optionKeyboard){
-      RWindow.lsnsKeyDown.register(o, o.onKeyDown);
-   }
 }
 function FE3dSimpleStage_deactive(){
    var o = this;
    o.__base.FE3dStage.deactive.call(o);
-   if(o._optionKeyboard){
-      RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
-   }
 }
 function FE3dSprite(o){
    o = RClass.inherits(this, o, FObject);
@@ -24075,9 +24258,13 @@ function FE3rBitmap(o){
    o._material         = null;
    o._textures         = null;
    o._image            = null;
+   o._size             = null;
+   o._adjustSize       = null;
    o.onImageLoad       = FE3rBitmap_onImageLoad;
    o.construct         = FE3rBitmap_construct;
    o.testReady         = FE3rBitmap_testReady;
+   o.size              = FE3rBitmap_size;
+   o.adjustSize        = FE3rBitmap_adjustSize;
    o.vertexCount       = FE3rBitmap_vertexCount;
    o.findVertexBuffer  = FE3rBitmap_findVertexBuffer;
    o.vertexBuffers     = FE3rBitmap_vertexBuffers;
@@ -24087,41 +24274,55 @@ function FE3rBitmap(o){
    o.textures          = FE3rBitmap_textures;
    o.setup             = FE3rBitmap_setup;
    o.loadUrl           = FE3rBitmap_loadUrl;
+   o.dispose           = FE3rBitmap_dispose;
    return o;
 }
 function FE3rBitmap_onImageLoad(event){
    var o = this;
    var context = o._graphicContext;
-   var image = event.image();
+   var image = event.sender;
+   var size = image.size();
+   var width = size.width;
+   var height = size.height;
+   var adjustWidth = RInteger.pow2(width);
+   var adjustHeight = RInteger.pow2(height);
+   var canvasConsole = RConsole.find(FE2dCanvasConsole);
+   var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
+   var context2d = canvas.context();
+   context2d.drawImage(image, 0, 0);
+   context2d.drawLine(0, 0, 100, 100, 'red', 1);
+   context2d.drawRectangle(1, 1, 200, 200, 'red', 1);
+   context2d.drawText('测试', 100, 100, '#000000');
    var texture = o._imageTexture = context.createFlatTexture();
-   texture.upload(image);
+   texture.setOptionFlipY(true);
+   texture.upload(canvas);
    o._textures.set('diffuse', texture);
+   canvasConsole.free(canvas);
+   image.dispose();
    o._ready = true;
-   event.dispose();
 }
 function FE3rBitmap_construct(){
    var o = this;
    o.__base.FE3rObject.construct.call(o);
-   o._vertexBuffers = new TObjects();
+   o._size = new SSize2();
+   o._adjustSize = new SSize2();
+   o._vertexBuffers = new TDictionary();
    o._textures = new TDictionary();
 }
 function FE3rBitmap_testReady(){
    return this._ready;
 }
+function FE3rBitmap_size(){
+   return this._size;
+}
+function FE3rBitmap_adjustSize(){
+   return this._adjustSize;
+}
 function FE3rBitmap_vertexCount(){
    return this._vertexCount;
 }
-function FE3rBitmap_findVertexBuffer(p){
-   var o = this;
-   var vs = o._vertexBuffers;
-   var c = vs.count();
-   for(var n = 0; n < c; n++){
-      var v = vs.get(n);
-      if(v.name() == p){
-         return v;
-      }
-   }
-   return null;
+function FE3rBitmap_findVertexBuffer(code){
+   return this._vertexBuffers.get(code);
 }
 function FE3rBitmap_vertexBuffers(){
    return this._vertexBuffers;
@@ -24147,31 +24348,46 @@ function FE3rBitmap_setup(){
        1, -1, 0,
       -1, -1, 0 ];
    var buffer = o._vertexPositionBuffer = context.createVertexBuffer();
-   buffer._name = 'position';
+   buffer.setName('position');
    buffer._formatCd = EG3dAttributeFormat.Float3;
    buffer.upload(data, 4 * 3, 4);
-   o._vertexBuffers.push(buffer);
+   o._vertexBuffers.set(buffer.name(), buffer);
    var data = [
       0, 1,
       1, 1,
       1, 0,
       0, 0];
    var buffer = o._vertexColorBuffer = context.createVertexBuffer();
-   buffer._name = 'coord';
+   buffer.setName('coord');
    buffer._formatCd = EG3dAttributeFormat.Float2;
    buffer.upload(data, 4 * 2, 4);
-   o._vertexBuffers.push(buffer);
+   o._vertexBuffers.set(buffer.name(), buffer);
    var data = [0, 1, 2, 0, 2, 3];
    var buffer = o._indexBuffer = context.createIndexBuffer();
    buffer.upload(data, 6);
 }
-function FE3rBitmap_loadUrl(context, url){
+function FE3rBitmap_loadUrl(url){
    var o = this;
-   o.linkGraphicContext(context);
-   o.setup();
-   var image = o._image = RClass.create(FImage);
+   var texture = o._imageTexture;
+   if(texture){
+      texture.dispose();
+      o._imageTexture = null;
+      o._textures.clear();
+   }
+   var image = RClass.create(FImage);
    image.addLoadListener(o, o.onImageLoad);
    image.loadUrl(url);
+   o._ready = false;
+}
+function FE3rBitmap_dispose(){
+   var o = this;
+   o._size = RObject.dispose(o._size);
+   o._adjustSize = RObject.dispose(o._adjustSize);
+   o._vertexBuffers = RObject.dispose(o._vertexBuffers);
+   o._indexBuffer = RObject.dispose(o._indexBuffer);
+   o._imageTexture = RObject.dispose(o._imageTexture);
+   o._textures = RObject.dispose(o._textures);
+   o.__base.FE3rObject.dispose.call(o);
 }
 function FE3rBitmapConsole(o){
    o = RClass.inherits(this, o, FConsole);
@@ -24220,7 +24436,9 @@ function FE3rBitmapConsole_loadUrl(context, url){
    var loadUrl = RBrowser.contentPath(url);
    RLogger.info(o, 'Load bitmap from url. (url={1})', loadUrl);
    var bitmap = RClass.create(FE3rBitmap);
-   bitmap.loadUrl(context, url);
+   bitmap.linkGraphicContext(context);
+   bitmap.setup();
+   bitmap.loadUrl(url);
    o._bitmaps.set(url, bitmap);
    return bitmap;
 }
@@ -26287,7 +26505,10 @@ function FE3dBitmap_construct(){
 function FE3dBitmap_testReady(){
    var o = this;
    if(!o._ready){
-      o._ready = o._renderable.testReady();
+      var renderable = o._renderable;
+      if(renderable){
+         o._ready = renderable.testReady();
+      }
    }
    return o._ready;
 }
@@ -26323,9 +26544,11 @@ function FE3dBitmap_process(){
    var o = this;
    o.__base.FE3dMeshRenderable.process.call(o);
 }
-function FE3dBitmap_loadUrl(context, url){
+function FE3dBitmap_loadUrl(url){
    var o = this;
+   var context = o._graphicContext;
    o._renderable = RConsole.find(FE3rBitmapConsole).loadUrl(context, url);
+   o._ready = false;
 }
 function FE3dBoundBox(o){
    o = RClass.inherits(this, o, FE3dRenderable);
@@ -56885,20 +57108,17 @@ function FDsBitmapCanvasContent(o){
    o = RClass.inherits(this, o, FDsCanvas);
    o._activeGuid          = null;
    o._activeSpace         = null;
+   o._activeBitmap        = null;
    o._autoDistance        = null;
    o._autoOutline         = null;
    o._autoMatrix          = null;
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
    o._optionRotation      = false;
-   o._rotation            = null;
    o._capturePosition     = null;
    o._captureMatrix       = null;
    o._captureRotation     = null;
    o._dimensional         = null;
-   o._selectObject        = null;
-   o._selectBoundBox      = null;
-   o._selectRenderables   = null;
    o._switchWidth         = '*';
    o._switchHeight        = '*';
    o._cameraMoveRate      = 8;
@@ -56920,18 +57140,10 @@ function FDsBitmapCanvasContent(o){
    o.oeResize             = FDsBitmapCanvasContent_oeResize;
    o.oeRefresh            = FDsBitmapCanvasContent_oeRefresh;
    o.construct            = FDsBitmapCanvasContent_construct;
-   o.innerSelectDisplay   = FDsBitmapCanvasContent_innerSelectDisplay;
-   o.innerSelectLayer     = FDsBitmapCanvasContent_innerSelectLayer;
-   o.selectNone           = FDsBitmapCanvasContent_selectNone;
-   o.selectDisplay        = FDsBitmapCanvasContent_selectDisplay;
-   o.selectMaterial       = FDsBitmapCanvasContent_selectMaterial;
-   o.selectRenderable     = FDsBitmapCanvasContent_selectRenderable;
    o.switchSize           = FDsBitmapCanvasContent_switchSize;
-   o.switchDimensional    = FDsBitmapCanvasContent_switchDimensional;
    o.switchRotation       = FDsBitmapCanvasContent_switchRotation;
    o.viewAutoSize         = FDsBitmapCanvasContent_viewAutoSize;
    o.reloadRegion         = FDsBitmapCanvasContent_reloadRegion;
-   o.capture              = FDsBitmapCanvasContent_capture;
    o.loadByGuid           = FDsBitmapCanvasContent_loadByGuid;
    o.dispose              = FDsBitmapCanvasContent_dispose;
    return o;
@@ -56943,7 +57155,8 @@ function FDsBitmapCanvasContent_onBuild(p){
    var space = o._activeSpace = RClass.create(FE3dSimpleStage);
    space.linkGraphicContext(o);
    space.selectTechnique(o, FE3dGeneralTechnique);
-   space.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
+   space.region().backgroundColor().set(1, 1, 1, 1);
+   space.region().linkGraphicContext(o);
    RStage.register('space', space);
    var camera = space.camera();
    camera.setPosition(0, 0, -10);
@@ -56953,6 +57166,10 @@ function FDsBitmapCanvasContent_onBuild(p){
    projection.size().set(hPanel.width, hPanel.height);
    projection._angle = 45;
    projection.update();
+   var bitmap = o._activeBitmap = RClass.create(FE3dBitmap)
+   bitmap.linkGraphicContext(o);
+   bitmap.setup();
+   space.spriteLayer().pushRenderable(bitmap);
 }
 function FDsBitmapCanvasContent_onMouseCaptureStart(p){
    var o = this;
@@ -56960,27 +57177,11 @@ function FDsBitmapCanvasContent_onMouseCaptureStart(p){
    if(!s){
       return;
    }
-   var r = o._activeSpace.region();
-   var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
-   var r = st.test(r, p.offsetX, p.offsetY);
-   o.selectRenderable(r);
    o._capturePosition.set(p.clientX, p.clientY);
    o._captureRotation.assign(s.camera()._rotation);
-   if(r){
-      var d = r.display();
-      o._captureMatrix.assign(d.matrix());
-   }
    o._templateMatrix.identity();
    if(o._templateFace){
       o._templateFaceMatrix.assign(o._templateFace.matrix());
-      var rs = o._selectRenderables;
-      for(var i = rs.count() - 1; i >= 0; i--){
-         var r = rs.getAt(i);
-         if(!r._dragMatrix){
-            r._dragMatrix = new SMatrix3d();
-         }
-         r._dragMatrix.assign(r.matrix());
-      }
    }
    RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
 }
@@ -57103,14 +57304,6 @@ function FDsBitmapCanvasContent_onEnterFrame(){
       c.doPitch(-r);
    }
    c.update();
-   if(o._optionRotation){
-      var r = o._rotation;
-      var display = o._activeSpace._display;
-      var matrix = display.matrix();
-      matrix.setRotation(matrix.rx, matrix.ry + r.y, matrix.rz);
-      matrix.update();
-      r.y = 0.01;
-   }
 }
 function FDsBitmapCanvasContent_onLoaded(p){
    var o = this;
@@ -57160,41 +57353,7 @@ function FDsBitmapCanvasContent_construct(){
    o._captureMatrix = new SMatrix3d();
    o._templateMatrix = new SMatrix3d();
    o._templateFaceMatrix = new SMatrix3d();
-   o._rotation = new SVector3();
    o._captureRotation = new SVector3();
-   o._selectRenderables = new TObjects();
-}
-function FDsBitmapCanvasContent_innerSelectDisplay(p){
-   var o = this;
-   var s = p.renderables();
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      var r = s.getAt(i);
-      if(RClass.isClass(r, FDsSceneRenderable)){
-         o._selectRenderables.push(r);
-         r.showBoundBox();
-      }
-   }
-}
-function FDsBitmapCanvasContent_innerSelectLayer(p){
-   var o = this;
-   var s = p.displays();
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      var d = s.getAt(i);
-      o.innerSelectDisplay(d)
-   }
-}
-function FDsBitmapCanvasContent_selectNone(){
-   var o = this;
-   o._selectObject = null;
-   var s = o._selectRenderables;
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      var r = s.get(i);
-      r.hideBoundBox();
-   }
-   o._selectRenderables.clear();
 }
 function FDsBitmapCanvasContent_selectDisplay(p){
    var o = this;
@@ -57202,122 +57361,9 @@ function FDsBitmapCanvasContent_selectDisplay(p){
    o._selectObject = p;
    o.innerSelectDisplay(p);
 }
-function FDsBitmapCanvasContent_selectMaterial(p){
-   var o = this;
-   o.selectNone();
-   o._selectObject = p;
-   var d = p._display;
-   var s = d.renderables();
-   var c = s.count();
-   for(var i = 0; i < c; i++){
-      var r = s.get(i);
-      if(r._materialReference == p){
-         o._selectRenderables.push(r);
-         r._optionSelected = true;
-         r.showBoundBox();
-      }
-   }
-}
-function FDsBitmapCanvasContent_selectRenderable(p){
-   var o = this;
-   return;
-   var sr = p;
-   if(sr){
-      var n = sr._renderable._resource._code;
-      switch(n){
-         case 'ms_translation_x':
-            o._canvasMoveCd = EDsCanvasDrag.X;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_translation_y':
-            o._canvasMoveCd = EDsCanvasDrag.Y;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_translation_z':
-            o._canvasMoveCd = EDsCanvasDrag.Z;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_rotation_x':
-            o._canvasMoveCd = EDsCanvasDrag.X;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_rotation_y':
-            o._canvasMoveCd = EDsCanvasDrag.Y;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_rotation_z':
-            o._canvasMoveCd = EDsCanvasDrag.Z;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_scale_x':
-            o._canvasMoveCd = EDsCanvasDrag.X;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_scale_y':
-            o._canvasMoveCd = EDsCanvasDrag.Y;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_scale_z':
-            o._canvasMoveCd = EDsCanvasDrag.Z;
-            o._templateRenderable = sr;
-            return;
-         case 'ms_scale_all':
-            o._canvasMoveCd = EDsCanvasDrag.All;
-            o._templateRenderable = sr;
-            return;
-         default:
-            o._canvasMoveCd = EDsCanvasDrag.Unknown;
-            o._templateRenderable = null;
-      }
-   }
-   o.selectNone();
-   if(p){
-      o._selectRenderables.push(p);
-      p._optionSelected = true;
-      p.showBoundBox();
-      o._frameSet._catalog.showObject(p);
-   }
-   var t = o._templateTranslation;
-   var r = o._templateRotation;
-   var s = o._templateScale;
-   var mc = o._canvasModeCd;
-   switch(mc){
-      case EDsCanvasMode.Drop:
-         break;
-      case EDsCanvasMode.Select:
-         break;
-      case EDsCanvasMode.Translate:
-         t.setVisible(sr != null);
-         r.hide();
-         s.hide();
-         o._templateFace = t;
-         break;
-      case EDsCanvasMode.Rotation:
-         t.hide();
-         r.setVisible(sr != null);
-         s.hide();
-         o._templateFace = r;
-         break;
-      case EDsCanvasMode.Scale:
-         t.hide();
-         r.hide();
-         s.setVisible(sr != null);
-         o._templateFace = s;
-         break;
-   }
-   var st = o._templateFace;
-   if(sr && st){
-      var d = sr.display();
-      var m = st.matrix();
-      m.assign(d.matrix());
-      m.setScaleAll(o._templateViewScale);
-      m.update();
-   }
-}
 function FDsBitmapCanvasContent_switchMode(p){
    var o = this;
    o._canvasModeCd = p;
-   o.selectRenderable(o._selectRenderable);
 }
 function FDsBitmapCanvasContent_switchSize(width, height){
    var o = this;
@@ -57342,18 +57388,6 @@ function FDsBitmapCanvasContent_switchSize(width, height){
       projection.size().set(width, height);
       projection.update();
    }
-}
-function FDsBitmapCanvasContent_switchDimensional(visible, width, height){
-   var o = this;
-   o._dimensional.setVisible(visible);
-   var matrix = o._dimensional.matrix();
-   if(width > 0){
-      matrix.sx = width;
-   }
-   if(height > 0){
-      matrix.sz = height;
-   }
-   matrix.updateForce();
 }
 function FDsBitmapCanvasContent_switchRotation(p){
    this._optionRotation = p;
@@ -57417,45 +57451,22 @@ function FDsBitmapCanvasContent_reloadRegion(region){
    o._cameraKeyRotation = resource.rotationKeySpeed();
    o._cameraMouseRotation = resource.rotationMouseSpeed();
 }
-function FDsBitmapCanvasContent_capture(){
-   var o = this;
-   var space = o._activeSpace;
-   var guid = space._resource._guid;
-   var switchWidth = o._switchWidth;
-   var switchHeight = o._switchHeight;
-   o.switchSize(200, 150);
-   RStage.process();
-   var context = o._graphicContext;
-   var size = context.size();
-   var native = context._native;
-   var width = size.width;
-   var height = size.height;
-   var data = new Uint8Array(4 * width * height);
-   native.readPixels(0, 0, width, height, native.RGBA, native.UNSIGNED_BYTE, data);
-   o.switchSize(switchWidth, switchHeight);
-   RStage.process();
-   var url = '/cloud.content.resource.preview.wv?do=upload&type_cd=mesh&guid=' + guid + '&width=' + width + '&height=' + height;
-   return RConsole.find(FHttpConsole).send(url, data.buffer);
-}
 function FDsBitmapCanvasContent_loadByGuid(guid){
    var o = this;
    var url = '/cloud.content2d.bitmap.image.wv?do=view&guid=' + guid;
-   var bitmap = RClass.create(FE3dBitmap)
-   bitmap.loadUrl(o, url);
+   var bitmap = o._activeBitmap;
+   bitmap.loadUrl(url);
    var matrix = bitmap.matrix();
    matrix.tx = 0;
    matrix.ty = 0;
    matrix.tz = 0;
-   matrix.sx = 10;
-   matrix.sy = 10;
-   matrix.sz = 10;
+   matrix.sx = 5;
+   matrix.sy = 5;
+   matrix.sz = 5;
    matrix.updateForce();
-   var space = o._activeSpace;
-   space.spriteLayer().pushRenderable(bitmap);
 }
 function FDsBitmapCanvasContent_dispose(){
    var o = this;
-   o._rotation = RObject.dispose(o._rotation);
    o.__base.FDsCanvas.dispose.call(o);
 }
 function FDsBitmapCanvasToolBar(o){

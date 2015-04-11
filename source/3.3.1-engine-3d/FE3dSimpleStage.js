@@ -98,9 +98,9 @@ function FE3dSimpleStage_active(){
    var o = this;
    o.__base.FE3dStage.active.call(o);
    // 注册事件
-   if(o._optionKeyboard){
-      RWindow.lsnsKeyDown.register(o, o.onKeyDown);
-   }
+   //if(o._optionKeyboard){
+   //   RWindow.lsnsKeyDown.register(o, o.onKeyDown);
+   //}
 }
 
 //==========================================================
@@ -112,7 +112,7 @@ function FE3dSimpleStage_deactive(){
    var o = this;
    o.__base.FE3dStage.deactive.call(o);
    // 注销事件
-   if(o._optionKeyboard){
-      RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
-   }
+   //if(o._optionKeyboard){
+   //   RWindow.lsnsKeyDown.unregister(o, o.onKeyDown);
+   //}
 }
