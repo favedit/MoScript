@@ -9,6 +9,7 @@ function FUiFrameSet(o){
    o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
    //..........................................................
    // @property String 提示信息
+   o._sizeCd       = EUiSize.Fill;
    o._directionCd  = RClass.register(o, new APtyEnum('_directionCd', null, EUiDirection), EUiDirection.Vertical);
    //..........................................................
    // @style

@@ -54,6 +54,7 @@ function FUiFramePage_removeChild(control){
 }
 function FUiFrameSet(o){
    o = RClass.inherits(this, o, FUiContainer, MUiDescribeFrame);
+   o._sizeCd       = EUiSize.Fill;
    o._directionCd  = RClass.register(o, new APtyEnum('_directionCd', null, EUiDirection), EUiDirection.Vertical);
    o._stylePanel   = RClass.register(o, new AStyle('_stylePanel'));
    o._frames       = null;

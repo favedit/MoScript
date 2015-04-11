@@ -844,7 +844,8 @@ var EUiSize = new function EUiSize(){
    o.Normal     = 0
    o.Horizontal = 1
    o.Vertical   = 2
-   o.Both       = 3;
+   o.Fill       = 3;
+   o.Both       = 4;
    return o;
 }
 var EUiWrap = new function EUiWrap(){

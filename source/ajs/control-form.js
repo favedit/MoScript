@@ -4151,9 +4151,9 @@ function FUiLayout(o){
    o.dispose         = FUiLayout_dispose;
    return o;
 }
-function FUiLayout_onBuildPanel(p){
+function FUiLayout_onBuildPanel(event){
    var o = this;
-   var h = o._hPanel = o._hPanelForm = RBuilder.createTable(p.hDocument, o.styleName('Form'), null, 0, 1);
+   var h = o._hPanel = o._hPanelForm = RBuilder.createTable(event, o.styleName('Form'), null, 0, 1);
    if(o._layoutCd == EUiLayout.Design){
       var hr = RBuilder.appendTableRow(h);
       var hc = RBuilder.appendTableCell(hr);
@@ -4329,47 +4329,50 @@ function FUiLayout_innerAppendLine(){
    }
    return h;
 }
-function FUiLayout_appendChild(ctl){
+function FUiLayout_appendChild(control){
    var o = this;
    if(o._layoutCd == EUiLayout.Design){
       if(!o._hPanelLine){
          o.innerAppendLine();
       }
-      if(RClass.isClass(ctl, MUiHorizontal)){
+      if(RClass.isClass(control, MUiHorizontal)){
          if(o._hPanelTable.rows[0].cells.length == 0){
-            o._hContainer.insertBefore(ctl._hPanel, o._hPanelTable);
+            o._hContainer.insertBefore(control._hPanel, o._hPanelTable);
          }else{
-            o._hContainer.appendChild(ctl._hPanel);
+            o._hContainer.appendChild(control._hPanel);
             o.innerAppendLine();
          }
          return;
       }
       var hCell = RBuilder.appendTableCell(o._hPanelLine);
-      if(!RClass.isClass(ctl, FUiLayout)){
-         ctl._hPanelLine = o._hPanelTable;
+      if(!RClass.isClass(control, FUiLayout)){
+         control._hPanelLine = o._hPanelTable;
       }
-      hCell.appendChild(ctl._hPanel);
-      ctl._hLayoutCell = hCell;
-      if((ctl.wrapCd() == EUiWrap.NextLine) && (o.controls.last() != ctl)){
+      hCell.appendChild(control._hPanel);
+      control._hLayoutCell = hCell;
+      if((control.wrapCd() == EUiWrap.NextLine) && (o.controls.last() != control)){
          o.innerAppendLine();
       }
    }else{
-      ctl._hPanel.style.paddingTop = 2;
-      ctl._hPanel.style.paddingBottom = 2;
-      if(RSet.contains(ctl._sizeCd, EUiSize.Horizontal) || '100%' == ctl.width){
-         if(RClass.isClass(ctl, FUiSplit)){
-            o._lastSplit = ctl;
+      control._hPanel.style.paddingTop = 2;
+      control._hPanel.style.paddingBottom = 2;
+      if(control._sizeCd == EUiSize.Fill){
+         var hCell = RBuilder.appendTableRowCell(o._hPanelForm);
+         hCell.appendChild(control._hPanel);
+      }else if(RSet.contains(control._sizeCd, EUiSize.Horizontal) || '100%' == control.width){
+         if(RClass.isClass(control, FUiSplit)){
+            o._lastSplit = control;
          }
          var hr = RBuilder.appendTableRow(o._hPanelForm);
          var hc = RBuilder.appendTableCell(hr);
          hc.vAlign = 'top';
-         hc.appendChild(ctl._hPanel);
-         ctl._hLayoutRow = hr;
+         hc.appendChild(control._hPanel);
+         control._hLayoutRow = hr;
          o._hPanelLast = hc;
-         if(!RSet.contains(ctl._sizeCd, EUiSize.Vertical)){
+         if(!RSet.contains(control._sizeCd, EUiSize.Vertical)){
             hc.height = 1;
-         }else if(ctl.height){
-            hc.height = ctl.height;
+         }else if(control.height){
+            hc.height = control.height;
          }
          o._hPanelLine = null;
       }else{
@@ -4385,11 +4388,11 @@ function FUiLayout_appendChild(ctl){
             o._hPanelLine = RBuilder.appendTableRow(ht);
          }
          var hc = RBuilder.appendTableCell(o._hPanelLine)
-         ctl._hLayoutRow = o._hPanelLine;
+         control._hLayoutRow = o._hPanelLine;
          o._hPanelLast = hc;
-         hc.appendChild(ctl._hPanel);
-         ctl._hLayoutCell = hc;
-         if(ctl.wrapCd() == EUiWrap.NextLine){
+         hc.appendChild(control._hPanel);
+         control._hLayoutCell = hc;
+         if(control.wrapCd() == EUiWrap.NextLine){
             o._hPanelLine = null;
          }
       }

@@ -46,12 +46,10 @@ function FUiPageControl_onBuild(p){
    var hr = o._hBottom = RBuilder.appendTableRow(hf);
    hr.height = 1;
    var hc = o._hFirstTop = RBuilder.appendTableCell(o._hTop);
-   hc.width = 20;
+   hc.width = 12;
    o._hFirst = RBuilder.appendTableCell(o._hLine);
    var hbc = o._hFirstBottom = RBuilder.appendTableCell(o._hBottom);
    hbc.className = o.styleName('Bottom', FUiPageSheet);
-   var hc = RBuilder.appendTableRowCell(h);
-   hc.height = 4;
    var hc = o._hLastTop = RBuilder.appendTableCell(o._hTop);
    o._hLast = RBuilder.appendTableCell(o._hLine);
    var hc = o._hLastBottom = RBuilder.appendTableCell(o._hBottom);
@@ -147,32 +145,33 @@ function FUiPageControl_select(p){
 }
 function FUiPageControl_selectByIndex(n){
    var o = this;
-   var p = o._sheets.value(n);
-   if(p){
-      o.select(p);
+   var sheet = o._sheets.value(n);
+   if(sheet){
+      o.select(sheet);
    }
 }
-function FUiPageControl_push(p){
+function FUiPageControl_push(component){
    var o = this;
-   if(RClass.isClass(p, FUiPageSheet)){
-      var ss = o._sheets;
-      p._pageControl = o;
-      p._index = ss.count();
-      ss.set(p.name(), p);
+   if(RClass.isClass(component, FUiPageSheet)){
+      var sheets = o._sheets;
+      component._pageControl = o;
+      component._index = sheets.count();
+      sheets.set(component.name(), component);
    }
-   o.__base.FUiContainer.push.call(o, p);
+   o.__base.FUiContainer.push.call(o, component);
 }
 function FUiPageControl_dispose(){
    var o = this;
    o.__base.FUiContainer.dispose.call(o);
 }
 function FUiPageSheet(o){
-   o = RClass.inherits(this, o, FUiPanel);
+   o = RClass.inherits(this, o, FUiLayout);
    o._icon              = RClass.register(o, new APtyString('_icon'));
    o._formName          = RClass.register(o, new APtyString('_formName'));
    o._formLink          = RClass.register(o, new APtyString('_formLink'));
    o._formWhere         = RClass.register(o, new APtyString('_formWhere'));
    o._formOrder         = RClass.register(o, new APtyString('_formOrder'));
+   o._stylePanel        = RClass.register(o, new AStyle('_stylePanel'));
    o._styleTop          = RClass.register(o, new AStyle('_styleTop'));
    o._styleTopSelect    = RClass.register(o, new AStyle('_styleTopSelect'));
    o._styleLeft         = RClass.register(o, new AStyle('_styleLeft'));
@@ -216,14 +215,14 @@ function FUiPageSheet(o){
    o.innerDump          = FUiPageSheet_innerDump;
    return o;
 }
-function FUiPageSheet_onBuildPanel(p){
+function FUiPageSheet_onBuildPanel(event){
    var o = this;
-   var hp = o._hContainer = o._hPanel = RBuilder.createDiv(p);
-   hp.width = '100%';
-   hp.height = '100%';
-   var hf = o._hPanelForm = RBuilder.appendTable(hp);
-   hf.width = '100%';
-   hf.height = '100%';
+   var hPanel = o._hPanel = o._hContainer = RBuilder.createDiv(event, o.styleName('Panel'));
+   hPanel.style.width = '100%';
+   hPanel.style.height = '100%';
+   var hForm = o._hPanelForm = RBuilder.appendTable(hPanel);
+   hForm.style.width = '100%';
+   hForm.style.height = '100%';
 }
 function FUiPageSheet_onButtonEnter(p){
    var o = this;
@@ -243,7 +242,7 @@ function FUiPageSheet_onHeadMouseDown(p){
 }
 function FUiPageSheet_construct(){
    var o = this;
-   o.__base.FUiPanel.construct.call(o);
+   o.__base.FUiLayout.construct.call(o);
    o.lsnsSelect = new TListeners();
 }
 function FUiPageSheet_innerSelect(p){
@@ -283,21 +282,14 @@ function FUiPageSheet_setVisible(p){
 }
 function FUiPageSheet_dispose(){
    var o = this;
-   RMemory.free(o._hButton);
-   o._hButton = null;
-   RMemory.free(o._hTop);
-   o._hTop = null;
-   RMemory.free(o._hLeft);
-   o._hLeft = null;
-   RMemory.free(o._hBottomL);
-   o._hBottomL = null;
-   RMemory.free(o._hBottom);
-   o._hBottom = null;
-   RMemory.free(o._hBottomR);
-   o._hBottomR = null;
-   RMemory.free(o._hRight);
-   o._hRight = null;
-   o.__base.FUiPanel.dispose.call(o);
+   o._hButton = RMemory.free(o._hButton);
+   o._hTop = RMemory.free(o._hTop);
+   o._hLeft = RMemory.free(o._hLeft);
+   o._hBottomL = RMemory.free(o._hBottomL);
+   o._hBottom = RMemory.free(o._hBottom);
+   o._hBottomR = RMemory.free(o._hBottomR);
+   o._hRight = RMemory.free(o._hRight);
+   o.__base.FUiLayout.dispose.call(o);
 }
 function FUiPageSheet_innerDump(s, l){
    var o = this;

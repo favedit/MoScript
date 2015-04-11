@@ -107,14 +107,14 @@ function FUiPageControl_onBuild(p){
    hr.height = 1;
    // 建立标题区左边第一列
    var hc = o._hFirstTop = RBuilder.appendTableCell(o._hTop);
-   hc.width = 20;
+   hc.width = 12;
    //RBuilder.appendEmpty(hc);
    o._hFirst = RBuilder.appendTableCell(o._hLine);
    var hbc = o._hFirstBottom = RBuilder.appendTableCell(o._hBottom);
    hbc.className = o.styleName('Bottom', FUiPageSheet);
    // 建立分隔区
-   var hc = RBuilder.appendTableRowCell(h);
-   hc.height = 4;
+   //var hc = RBuilder.appendTableRowCell(h);
+   //hc.height = 2;
    // 建立标题区右边第一列
    var hc = o._hLastTop = RBuilder.appendTableCell(o._hTop);
    //hc.className = o.styleName('Top', FUiPageSheet);
@@ -222,6 +222,7 @@ function FUiPageControl_appendChild(p){
       var hc = p._hBottomR = RBuilder.appendTableCell(o._hBottom, null, ci + 2);
       hc.width = 1;
       hc.className = p.styleName('Bottom');
+      //..........................................................
       // 追加数据信息
       var hr = RBuilder.appendTableRow(o._hPanel);
       if(p.index){
@@ -275,9 +276,9 @@ function FUiPageControl_select(p){
 //==========================================================
 function FUiPageControl_selectByIndex(n){
    var o = this;
-   var p = o._sheets.value(n);
-   if(p){
-      o.select(p);
+   var sheet = o._sheets.value(n);
+   if(sheet){
+      o.select(sheet);
    }
 }
 
@@ -285,19 +286,19 @@ function FUiPageControl_selectByIndex(n){
 // <T>将子控件放入自己的哈希表中</T>
 //
 // @method
-// @param p:component:FComponent 组件对象
+// @param component:FComponent 组件对象
 //==========================================================
-function FUiPageControl_push(p){
+function FUiPageControl_push(component){
    var o = this;
    // 增加处理
-   if(RClass.isClass(p, FUiPageSheet)){
-      var ss = o._sheets;
-      p._pageControl = o;
-      p._index = ss.count();
-      ss.set(p.name(), p);
+   if(RClass.isClass(component, FUiPageSheet)){
+      var sheets = o._sheets;
+      component._pageControl = o;
+      component._index = sheets.count();
+      sheets.set(component.name(), component);
    }
    // 父处理
-   o.__base.FUiContainer.push.call(o, p);
+   o.__base.FUiContainer.push.call(o, component);
 }
 
 //==========================================================

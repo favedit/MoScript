@@ -8,14 +8,19 @@ function FDsProjectFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet);
    //..........................................................
    // @property
-   o._frameName            = 'design3d.mesh.FrameSet';
+   o._frameName            = 'design3d.project.FrameSet';
    //..........................................................
    // @style
+   o._stylePageControl     = RClass.register(o, new AStyle('_stylePageControl', 'PageControl'));
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
+   // @style
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
-   o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
+   o._styleCatalogContent  = RClass.register(o, new AStyle('_styleCatalogContent', 'Catalog_Content'));
+   o._styleCanvasGround    = RClass.register(o, new AStyle('_styleCanvasGround', 'Canvas_Ground'));
+   o._styleCanvasContent   = RClass.register(o, new AStyle('_styleCanvasContent', 'Canvas_Content'));
    o._stylePropertyGround  = RClass.register(o, new AStyle('_stylePropertyGround', 'Property_Ground'));
+   o._stylePropertyContent = RClass.register(o, new AStyle('_stylePropertyContent', 'Property_Content'));
    //..........................................................
    // @attribute
    o._activeSpace          = null;
@@ -29,7 +34,7 @@ function FDsProjectFrameSet(o){
    o._frameProperty        = null;
    // @attribute
    o._frameCatalog         = null;
-   o._frameWorkspace       = null;
+   o._frameCanvas          = null;
    o._frameStatusBar       = null;
    // @attribute
    o._propertyFrames       = null;
@@ -54,21 +59,39 @@ function FDsProjectFrameSet(o){
 // <T>构建完成处理。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
+// @param event:TEventProcess 事件处理
 //==========================================================
-function FDsProjectFrameSet_onBuilded(p){
+function FDsProjectFrameSet_onBuilded(event){
    var o = this;
-   o.__base.FUiFrameSet.onBuilded.call(o, p);
+   o.__base.FUiFrameSet.onBuilded.call(o, event);
    //..........................................................
    // 设置目录区
-   var f = o._frameCatalog = o.searchControl('catalogFrame');
-   f._hPanel.className = o.styleName('Catalog_Ground');
+   var frame = o._frameCatalog = o.searchControl('catalogFrame');
+   frame._hPanel.className = o.styleName('Catalog_Ground');
+   var control = o._frameCatalogPageControl = o.searchControl('catalogPageControl');
+   control._hPanel.className = o.styleName('PageControl');
+   var frame = o._frameCatalogToolBar = o.searchControl('catalogToolbarFrame');
+   frame._hPanel.className = o.styleName('Toolbar_Ground');
+   var frame = o._frameCatalogContent = o.searchControl('catalogContentFrame');
+   frame._hPanel.className = o.styleName('Catalog_Content');
+   // 设置画板区
+   var frame = o._frameCanvas = o.searchControl('canvasFrame');
+   frame._hPanel.className = o.styleName('Canvas_Ground');
+   var control = o._frameCanvasPageControl = o.searchControl('canvasPageControl');
+   control._hPanel.className = o.styleName('PageControl');
+   var frame = o._frameCanvasToolBar = o.searchControl('canvasToolbarFrame');
+   frame._hPanel.className = o.styleName('Toolbar_Ground');
+   var frame = o._frameCanvasContent = o.searchControl('canvasContentFrame');
+   frame._hPanel.className = o.styleName('Canvas_Content');
    // 设置属性区
-   var f = o._frameWorkspace = o.searchControl('spaceFrame');
-   f._hPanel.className = o.styleName('Workspace_Ground');
-   // 设置属性区
-   var f = o._frameProperty = o.searchControl('propertyFrame');
-   f._hPanel.className = o.styleName('Property_Ground');
+   var frame = o._frameProperty = o.searchControl('propertyFrame');
+   frame._hPanel.className = o.styleName('Property_Ground');
+   var control = o._framePropertyPageControl = o.searchControl('propertyPageControl');
+   control._hPanel.className = o.styleName('PageControl');
+   var frame = o._framePropertyToolBar = o.searchControl('propertyToolbarFrame');
+   frame._hPanel.className = o.styleName('Toolbar_Ground');
+   var frame = o._framePropertyContent = o.searchControl('propertyContentFrame');
+   frame._hPanel.className = o.styleName('Property_Content');
    //..........................................................
    // 设置分割
    var f = o._catalogSplitter = o.searchControl('catalogSpliter');
@@ -79,24 +102,16 @@ function FDsProjectFrameSet_onBuilded(p){
    f.setSizeHtml(o._frameProperty._hPanel);
    //..........................................................
    // 设置工具栏
-   //var c = o._toolbar = RClass.create(FDsMeshMenuBar);
-   //c._workspace = o;
-   //c.buildDefine(p);
-   //o._frameToolBar.push(c);
-   //..........................................................
-   // 设置目录栏
-   //var c = o._catalog = RClass.create(FDsMeshCatalog);
-   //c._workspace = o;
-   //c.build(p);
-   //c.addSelectedListener(o, o.onCatalogSelected);
-   //o._frameCatalog.push(c);
+   var toolbar = o._catalogToolbar = RClass.create(FDsProjectCatalogToolBar);
+   toolbar._workspace = o;
+   toolbar.buildDefine(event);
+   o._frameCatalogToolBar.push(toolbar);
    //..........................................................
    // 设置画板工具栏
-   //var f = o._canvasToolbarFrame = o.searchControl('canvasToolbarFrame');
-   //var c = o._canvasToolbar = RClass.create(FDsMeshCanvasToolBar);
-   //c._workspace = o;
-   //c.buildDefine(p);
-   //o._canvasToolbarFrame.push(c);
+   var toolbar = o._canvasToolbar = RClass.create(FDsProjectCanvasToolBar);
+   toolbar._workspace = o;
+   toolbar.buildDefine(event);
+   o._frameCanvasToolBar.push(toolbar);
    // 设置画板
    //var f = o._canvasFrame = o.searchControl('canvasFrame');
    //var c = o._canvas = RClass.create(FDsMeshCanvas);
@@ -107,6 +122,12 @@ function FDsProjectFrameSet_onBuilded(p){
    //c._hParent.style.backgroundColor = '#000000';
    //c.build(p);
    //o._canvasFrame.push(c);
+   //..........................................................
+   // 设置属性栏
+   var toolbar = o._propertyToolbar = RClass.create(FDsProjectPropertyToolBar);
+   toolbar._workspace = o;
+   toolbar.buildDefine(event);
+   o._framePropertyToolBar.push(toolbar);
 }
 
 //==========================================================

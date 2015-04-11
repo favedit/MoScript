@@ -24,8 +24,8 @@
 // @history 150202
 //==========================================================
 function FUiPageSheet(o){
-   //o = RClass.inherits(this, o, FUiPanel, MDisplayAble);
-   o = RClass.inherits(this, o, FUiPanel);
+   //o = RClass.inherits(this, o, FUiLayout, MDisplayAble);
+   o = RClass.inherits(this, o, FUiLayout);
    //..........................................................
    // @property
    o._icon              = RClass.register(o, new APtyString('_icon'));
@@ -35,6 +35,7 @@ function FUiPageSheet(o){
    o._formOrder         = RClass.register(o, new APtyString('_formOrder'));
    //..........................................................
    // @style
+   o._stylePanel        = RClass.register(o, new AStyle('_stylePanel'));
    o._styleTop          = RClass.register(o, new AStyle('_styleTop'));
    o._styleTopSelect    = RClass.register(o, new AStyle('_styleTopSelect'));
    o._styleLeft         = RClass.register(o, new AStyle('_styleLeft'));
@@ -97,16 +98,16 @@ function FUiPageSheet(o){
 // <T>建立当前控件的显示底板。</T>
 //
 // @method
-// @param p:event:TEventProcess 事件处理
+// @param event:TEventProcess 事件处理
 //==========================================================
-function FUiPageSheet_onBuildPanel(p){
+function FUiPageSheet_onBuildPanel(event){
    var o = this;
-   var hp = o._hContainer = o._hPanel = RBuilder.createDiv(p);
-   hp.width = '100%';
-   hp.height = '100%';
-   var hf = o._hPanelForm = RBuilder.appendTable(hp);
-   hf.width = '100%';
-   hf.height = '100%';
+   var hPanel = o._hPanel = o._hContainer = RBuilder.createDiv(event, o.styleName('Panel'));
+   hPanel.style.width = '100%';
+   hPanel.style.height = '100%';
+   var hForm = o._hPanelForm = RBuilder.appendTable(hPanel);
+   hForm.style.width = '100%';
+   hForm.style.height = '100%';
 }
 
 //==========================================================
@@ -154,7 +155,7 @@ function FUiPageSheet_onHeadMouseDown(p){
 function FUiPageSheet_construct(){
    var o = this;
    // 父处理
-   o.__base.FUiPanel.construct.call(o);
+   o.__base.FUiLayout.construct.call(o);
    // 设置属性
    o.lsnsSelect = new TListeners();
 }
@@ -226,22 +227,15 @@ function FUiPageSheet_setVisible(p){
 //==========================================================
 function FUiPageSheet_dispose(){
    var o = this;
-   RMemory.free(o._hButton);
-   o._hButton = null;
-   RMemory.free(o._hTop);
-   o._hTop = null;
-   RMemory.free(o._hLeft);
-   o._hLeft = null;
-   RMemory.free(o._hBottomL);
-   o._hBottomL = null;
-   RMemory.free(o._hBottom);
-   o._hBottom = null;
-   RMemory.free(o._hBottomR);
-   o._hBottomR = null;
-   RMemory.free(o._hRight);
-   o._hRight = null;
+   o._hButton = RMemory.free(o._hButton);
+   o._hTop = RMemory.free(o._hTop);
+   o._hLeft = RMemory.free(o._hLeft);
+   o._hBottomL = RMemory.free(o._hBottomL);
+   o._hBottom = RMemory.free(o._hBottom);
+   o._hBottomR = RMemory.free(o._hBottomR);
+   o._hRight = RMemory.free(o._hRight);
    // 父处理
-   o.__base.FUiPanel.dispose.call(o);
+   o.__base.FUiLayout.dispose.call(o);
 }
 
 //==========================================================

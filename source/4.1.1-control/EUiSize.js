@@ -13,7 +13,9 @@ var EUiSize = new function EUiSize(){
    o.Horizontal = 1
    // @attribute 纵向自动
    o.Vertical   = 2
+   // @attribute 填充
+   o.Fill       = 3;
    // @attribute 全部自动
-   o.Both       = 3;
+   o.Both       = 4;
    return o;
 }

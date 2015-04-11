@@ -603,6 +603,8 @@
 /* FUiPageSheet                                           */
 /* ------------------------------------------------------ */
 .FUiPageSheet_Panel{
+   width: 100%;
+   height: 100%;
 }
 
 .FUiPageSheet_Sheet{
@@ -689,7 +691,7 @@
 }
 
 .FUiPageControl_TitlePanel{
-   height:1;
+   height: 1px;
 }
 
 .FUiPageControl_TitleForm{

@@ -4,7 +4,7 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FDsProjectSearchContent(o){
+function FDsProjectCanvasContent(o){
    o = RClass.inherits(this, o, FUiListView);
    //..........................................................
    // @attribute
@@ -13,17 +13,17 @@ function FDsProjectSearchContent(o){
    o._runButton     = null;
    //..........................................................
    // @event
-   o.onBuilded      = FDsProjectSearchContent_onBuilded;
+   o.onBuilded      = FDsProjectCanvasContent_onBuilded;
    // @event
-   o.onServiceLoad  = FDsProjectSearchContent_onServiceLoad;
+   o.onServiceLoad  = FDsProjectCanvasContent_onServiceLoad;
    //..........................................................
    // @method
-   o.construct      = FDsProjectSearchContent_construct;
+   o.construct      = FDsProjectCanvasContent_construct;
    // @method
-   o.clickItem      = FDsProjectSearchContent_clickItem;
-   o.serviceSearch  = FDsProjectSearchContent_serviceSearch;
+   o.clickItem      = FDsProjectCanvasContent_clickItem;
+   o.serviceSearch  = FDsProjectCanvasContent_serviceSearch;
    // @method
-   o.dispose        = FDsProjectSearchContent_dispose;
+   o.dispose        = FDsProjectCanvasContent_dispose;
    return o;
 }
 
@@ -33,7 +33,7 @@ function FDsProjectSearchContent(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsProjectSearchContent_onBuilded(p){
+function FDsProjectCanvasContent_onBuilded(p){
    var o = this;
    o.__base.FUiListView.onBuilded.call(o, p);
    //..........................................................
@@ -47,7 +47,7 @@ function FDsProjectSearchContent_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsProjectSearchContent_onServiceLoad(p){
+function FDsProjectCanvasContent_onServiceLoad(p){
    var o = this;
    var xprojects = p.root.findNode('ProjectCollection');
    // 设置导航
@@ -80,7 +80,7 @@ function FDsProjectSearchContent_onServiceLoad(p){
 //
 // @method
 //==========================================================
-function FDsProjectSearchContent_construct(){
+function FDsProjectCanvasContent_construct(){
    var o = this;
    // 父处理
    o.__base.FUiListView.construct.call(o);
@@ -92,7 +92,7 @@ function FDsProjectSearchContent_construct(){
 // @method
 // @param p:item:FUiListItem 列表项目
 //==========================================================
-function FDsProjectSearchContent_clickItem(p){
+function FDsProjectCanvasContent_clickItem(p){
    var o = this;
    // 选中项目
    var frame = o._workspace._previewContent;
@@ -107,7 +107,7 @@ function FDsProjectSearchContent_clickItem(p){
 // @param typeCd:String 类型
 // @param search:String 搜索内容
 //==========================================================
-function FDsProjectSearchContent_serviceSearch(typeCd, serach, pageSize, page){
+function FDsProjectCanvasContent_serviceSearch(typeCd, serach, pageSize, page){
    var o = this;
    // 画面禁止操作
    RWindow.disable();
@@ -121,7 +121,7 @@ function FDsProjectSearchContent_serviceSearch(typeCd, serach, pageSize, page){
 //
 // @method
 //==========================================================
-function FDsProjectSearchContent_dispose(){
+function FDsProjectCanvasContent_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiListView.dispose.call(o);

@@ -63,11 +63,11 @@ function FUiLayout(o){
 // <T>创建一个控件容器。</T>
 //
 // @method
-// @return HtmlTag 页面元素
+// @return event:TProcessEvent 处理事件
 //==========================================================
-function FUiLayout_onBuildPanel(p){
+function FUiLayout_onBuildPanel(event){
    var o = this;
-   var h = o._hPanel = o._hPanelForm = RBuilder.createTable(p.hDocument, o.styleName('Form'), null, 0, 1);
+   var h = o._hPanel = o._hPanelForm = RBuilder.createTable(event, o.styleName('Form'), null, 0, 1);
    // 设计模式
    if(o._layoutCd == EUiLayout.Design){
       var hr = RBuilder.appendTableRow(h);
@@ -306,9 +306,9 @@ function FUiLayout_innerAppendLine(){
 // <T>追加一个控件容器。</T>
 //
 // @method
-// @return ctl:control:FControl 控件
+// @return control:FControl 控件
 //==========================================================
-function FUiLayout_appendChild(ctl){
+function FUiLayout_appendChild(control){
    var o = this;
    // 设计模式时
    if(o._layoutCd == EUiLayout.Design){
@@ -317,46 +317,49 @@ function FUiLayout_appendChild(ctl){
          o.innerAppendLine();
       }
       // 建立分割符
-      if(RClass.isClass(ctl, MUiHorizontal)){
+      if(RClass.isClass(control, MUiHorizontal)){
          if(o._hPanelTable.rows[0].cells.length == 0){
-            o._hContainer.insertBefore(ctl._hPanel, o._hPanelTable);
+            o._hContainer.insertBefore(control._hPanel, o._hPanelTable);
          }else{
-            o._hContainer.appendChild(ctl._hPanel);
+            o._hContainer.appendChild(control._hPanel);
             o.innerAppendLine();
          }
          return;
       }
       // 增加控件
       var hCell = RBuilder.appendTableCell(o._hPanelLine);
-      if(!RClass.isClass(ctl, FUiLayout)){
-         ctl._hPanelLine = o._hPanelTable;
+      if(!RClass.isClass(control, FUiLayout)){
+         control._hPanelLine = o._hPanelTable;
       }
-      hCell.appendChild(ctl._hPanel);
-      ctl._hLayoutCell = hCell;
+      hCell.appendChild(control._hPanel);
+      control._hLayoutCell = hCell;
       // 追加下一行
-      if((ctl.wrapCd() == EUiWrap.NextLine) && (o.controls.last() != ctl)){
+      if((control.wrapCd() == EUiWrap.NextLine) && (o.controls.last() != control)){
          o.innerAppendLine();
       }
    }else{
-      ctl._hPanel.style.paddingTop = 2;
-      ctl._hPanel.style.paddingBottom = 2;
+      control._hPanel.style.paddingTop = 2;
+      control._hPanel.style.paddingBottom = 2;
       // 追加横向对象
-      if(RSet.contains(ctl._sizeCd, EUiSize.Horizontal) || '100%' == ctl.width){
-         if(RClass.isClass(ctl, FUiSplit)){
-            o._lastSplit = ctl;
+      if(control._sizeCd == EUiSize.Fill){
+         var hCell = RBuilder.appendTableRowCell(o._hPanelForm);
+         hCell.appendChild(control._hPanel);
+      }else if(RSet.contains(control._sizeCd, EUiSize.Horizontal) || '100%' == control.width){
+         if(RClass.isClass(control, FUiSplit)){
+            o._lastSplit = control;
          }
          // 追加一个新行
          var hr = RBuilder.appendTableRow(o._hPanelForm);
          var hc = RBuilder.appendTableCell(hr);
          hc.vAlign = 'top';
-         hc.appendChild(ctl._hPanel);
-         ctl._hLayoutRow = hr;
+         hc.appendChild(control._hPanel);
+         control._hLayoutRow = hr;
          o._hPanelLast = hc;
          // 设置行高
-         if(!RSet.contains(ctl._sizeCd, EUiSize.Vertical)){
+         if(!RSet.contains(control._sizeCd, EUiSize.Vertical)){
             hc.height = 1;
-         }else if(ctl.height){
-            hc.height = ctl.height;
+         }else if(control.height){
+            hc.height = control.height;
          }
          o._hPanelLine = null;
       }else{
@@ -376,12 +379,12 @@ function FUiLayout_appendChild(ctl){
          // 追加一个单元格
          var hc = RBuilder.appendTableCell(o._hPanelLine)
          // 追加一般控件
-         ctl._hLayoutRow = o._hPanelLine;
+         control._hLayoutRow = o._hPanelLine;
          o._hPanelLast = hc;
-         hc.appendChild(ctl._hPanel);
-         ctl._hLayoutCell = hc;
+         hc.appendChild(control._hPanel);
+         control._hLayoutCell = hc;
          // 追加下一行
-         if(ctl.wrapCd() == EUiWrap.NextLine){
+         if(control.wrapCd() == EUiWrap.NextLine){
             o._hPanelLine = null;
          }
       }

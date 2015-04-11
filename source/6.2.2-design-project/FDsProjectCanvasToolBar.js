@@ -5,11 +5,11 @@
 // @author maocy
 // @history 150210
 //==========================================================
-function FDsProjectSearchToolBar(o){
+function FDsProjectCanvasToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'design3d.resource.SearchToolBar';
+   o._frameName       = 'design3d.project.CanvasToolBar';
    //..........................................................
    // @attribute
    o._pageCount       = 0;
@@ -29,18 +29,18 @@ function FDsProjectSearchToolBar(o){
    o._viewButton      = null;
    //..........................................................
    // @event
-   o.onBuilded        = FDsProjectSearchToolBar_onBuilded;
+   o.onBuilded        = FDsProjectCanvasToolBar_onBuilded;
    // @event
-   o.onSearchClick    = FDsProjectSearchToolBar_onSearchClick;
-   o.onNavigatorClick = FDsProjectSearchToolBar_onNavigatorClick;
+   o.onSearchClick    = FDsProjectCanvasToolBar_onSearchClick;
+   o.onNavigatorClick = FDsProjectCanvasToolBar_onNavigatorClick;
    //..........................................................
    // @method
-   o.construct        = FDsProjectSearchToolBar_construct;
+   o.construct        = FDsProjectCanvasToolBar_construct;
    // @method
-   o.setNavigator     = FDsProjectSearchToolBar_setNavigator;
-   o.doNavigator      = FDsProjectSearchToolBar_doNavigator;
+   o.setNavigator     = FDsProjectCanvasToolBar_setNavigator;
+   o.doNavigator      = FDsProjectCanvasToolBar_doNavigator;
    // @method
-   o.dispose          = FDsProjectSearchToolBar_dispose;
+   o.dispose          = FDsProjectCanvasToolBar_dispose;
    return o;
 }
 
@@ -50,7 +50,7 @@ function FDsProjectSearchToolBar(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsProjectSearchToolBar_onBuilded(p){
+function FDsProjectCanvasToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
@@ -70,7 +70,7 @@ function FDsProjectSearchToolBar_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsProjectSearchToolBar_onSearchClick(p){
+function FDsProjectCanvasToolBar_onSearchClick(p){
    this.doNavigator(0);
 }
 
@@ -80,7 +80,7 @@ function FDsProjectSearchToolBar_onSearchClick(p){
 // @method
 // @param event:SEvent 事件
 //==========================================================
-function FDsProjectSearchToolBar_onNavigatorClick(event){
+function FDsProjectCanvasToolBar_onNavigatorClick(event){
    var o = this;
    var sender = event.sender;
    var name = sender.name();
@@ -107,7 +107,7 @@ function FDsProjectSearchToolBar_onNavigatorClick(event){
 //
 // @method
 //==========================================================
-function FDsProjectSearchToolBar_construct(){
+function FDsProjectCanvasToolBar_construct(){
    var o = this;
    // 父处理
    o.__base.FUiToolBar.construct.call(o);
@@ -121,7 +121,7 @@ function FDsProjectSearchToolBar_construct(){
 // @param pageCount 页总数
 // @param page 页号
 //==========================================================
-function FDsProjectSearchToolBar_setNavigator(pageSize, pageCount, page){
+function FDsProjectCanvasToolBar_setNavigator(pageSize, pageCount, page){
    var o = this;
    o._pageSize = pageSize;
    o._pageCount = pageCount;
@@ -139,7 +139,7 @@ function FDsProjectSearchToolBar_setNavigator(pageSize, pageCount, page){
 // @param pageCount 页总数
 // @param page 页号
 //==========================================================
-function FDsProjectSearchToolBar_doNavigator(page){
+function FDsProjectCanvasToolBar_doNavigator(page){
    var o = this;
    page = RInteger.toRange(page, 0, o._pageCount);
    var search = o._controlSearchEdit.text();
@@ -156,7 +156,7 @@ function FDsProjectSearchToolBar_doNavigator(page){
 //
 // @method
 //==========================================================
-function FDsProjectSearchToolBar_dispose(){
+function FDsProjectCanvasToolBar_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiToolBar.dispose.call(o);
