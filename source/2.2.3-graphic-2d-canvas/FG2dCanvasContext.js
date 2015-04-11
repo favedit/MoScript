@@ -48,7 +48,7 @@ function FG2dCanvasContext_linkCanvas(hCanvas){
    // 获得环境
    if(hCanvas.getContext){
       // 初始化对象
-      var native = h.getContext('2d');
+      var native = hCanvas.getContext('2d');
       if(!native){
          throw new TError(o, "Current browser can't support Context2D technique.");
       }

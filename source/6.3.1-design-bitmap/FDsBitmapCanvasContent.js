@@ -17,10 +17,8 @@ function FDsBitmapCanvasContent(o){
    // @attribute
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
-   o._optionRotation      = false;
    o._capturePosition     = null;
-   o._captureMatrix       = null;
-   o._captureRotation     = null;
+   o._captureCameraPosition = null;
    o._dimensional         = null;
    // @attribute
    o._switchWidth         = '*';
@@ -28,7 +26,7 @@ function FDsBitmapCanvasContent(o){
    // @attribute
    o._cameraMoveRate      = 8;
    o._cameraKeyRotation   = 3;
-   o._cameraMouseRotation = 0.005;
+   o._cameraMouseMove     = 0.05;
    // @attribute
    o._templateMatrix      = null;
    o._templateRenderable  = null;
@@ -53,7 +51,6 @@ function FDsBitmapCanvasContent(o){
    o.construct            = FDsBitmapCanvasContent_construct;
    // @method
    o.switchSize           = FDsBitmapCanvasContent_switchSize;
-   o.switchRotation       = FDsBitmapCanvasContent_switchRotation;
    o.viewAutoSize         = FDsBitmapCanvasContent_viewAutoSize;
    o.reloadRegion         = FDsBitmapCanvasContent_reloadRegion;
    o.loadByGuid           = FDsBitmapCanvasContent_loadByGuid;
@@ -124,22 +121,17 @@ function FDsBitmapCanvasContent_onBuild(p){
 // <T>鼠标捕捉开始处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsBitmapCanvasContent_onMouseCaptureStart(p){
+function FDsBitmapCanvasContent_onMouseCaptureStart(event){
    var o = this;
-   var s = o._activeSpace;
-   if(!s){
+   var space = o._activeSpace;
+   if(!space){
       return;
    }
    // 选取物件
-   o._capturePosition.set(p.clientX, p.clientY);
-   o._captureRotation.assign(s.camera()._rotation);
-   // 记录坐标
-   o._templateMatrix.identity();
-   if(o._templateFace){
-      o._templateFaceMatrix.assign(o._templateFace.matrix());
-   }
+   o._capturePosition.set(event.clientX, event.clientY);
+   o._captureCameraPosition.assign(space.camera().position());
    // 设置鼠标
    RHtml.cursorSet(o._hPanel, EUiCursor.Pointer);
 }
@@ -150,83 +142,23 @@ function FDsBitmapCanvasContent_onMouseCaptureStart(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsBitmapCanvasContent_onMouseCapture(p){
+function FDsBitmapCanvasContent_onMouseCapture(event){
    var o = this;
-   var s = o._activeSpace;
-   if(!s){
+   var space = o._activeSpace;
+   if(!space){
       return;
    }
-   var cx = p.clientX - o._capturePosition.x;
-   var cy = p.clientY - o._capturePosition.y;
-   var mc = o._canvasModeCd;
+   var cx = event.clientX - o._capturePosition.x;
+   var cy = event.clientY - o._capturePosition.y;
    var mv = o._canvasMoveCd;
    var cm = o._captureMatrix;
-   var sm = null;
-   //var sr = o._templateRenderable;
-   //if(sr){
-   //   var sd = sr.display();
-   //   sm = sd.matrix();
-   //}
-   var tf = o._templateFace;
-   var tm = o._templateMatrix;
-   switch(mc){
+   switch(o._canvasModeCd){
       case EDsCanvasMode.Drop:
-         var c = o._activeSpace.camera();
-         var r = c.rotation();
-         var cr = o._captureRotation;
-         r.x = cr.x - cy * o._cameraMouseRotation;
-         r.y = cr.y - cx * o._cameraMouseRotation;
+         var camera = space.camera();
+         camera.position().x = o._captureCameraPosition.x - cx * o._cameraMouseMove;
+         camera.position().z = o._captureCameraPosition.z - cy * o._cameraMouseMove;
+         camera.update();
          break;
-      case EDsCanvasMode.Select:
-         break;
-      case EDsCanvasMode.Translate:
-         if(tf){
-            if(mv == EDsCanvasDrag.X){
-               tm.tx = cx / 10;
-            }else if(mv == EDsCanvasDrag.Y){
-               tm.ty = -cy / 10;
-            }else if(mv == EDsCanvasDrag.Z){
-               tm.tz = cx / 10;
-            }
-         }
-         break;
-      case EDsCanvasMode.Rotation:
-         if(tf){
-            if(mv == EDsCanvasDrag.X){
-               tm.rx = cx / 10;
-            }else if(mv == EDsCanvasDrag.Y){
-               tm.ry = -cy / 10;
-            }else if(mv == EDsCanvasDrag.Z){
-               tm.rz = cx / 10;
-            }
-         }
-         break;
-      case EDsCanvasMode.Scale:
-         if(tf){
-            if(mv == EDsCanvasDrag.X){
-               tm.sx = cx / 10;
-            }else if(mv == EDsCanvasDrag.Y){
-               tm.sy = -cy / 10;
-            }else if(mv == EDsCanvasDrag.Z){
-               tm.sz = cx / 10;
-            }else if(mv == EDsCanvasDrag.All){
-               tm.sx = cx / 10;
-               tm.sy = cx / 10;
-               tm.sz = cx / 10;
-            }
-         }
-         break;
-   }
-   // 移动选中集合
-   if(tf){
-      // 移动操作对象
-      tf.matrix().merge(o._templateFaceMatrix, tm);
-      // 移动选中对象
-      var rs = o._selectRenderables;
-      for(var i = rs.count() - 1; i >= 0; i--){
-         var r = rs.getAt(i);
-         r._matrix.merge(r._dragMatrix, tm);
-      }
    }
 }
 
@@ -301,34 +233,45 @@ function FDsBitmapCanvasContent_onEnterFrame(){
 }
 
 //==========================================================
-// <T>加载模板处理。</T>
+// <T>加载完成处理。</T>
 //
 // @method
-// @param p:template:FTemplate3d 模板
+// @param event:SEvent 事件信息
 //==========================================================
-function FDsBitmapCanvasContent_onLoaded(p){
+function FDsBitmapCanvasContent_onLoaded(event){
    var o = this;
-   var m = o._activeSpace;
-   var g = m.region();
+   //debugger;
+   //var space = o._activeSpace;
+   //var bitmap = event.sender;
+   //var matrix = bitmap.matrix();
+   //matrix.tx = 0;
+   //matrix.ty = 0;
+   //matrix.tz = 0;
+   //matrix.sx = 5;
+   //matrix.sy = 5;
+   //matrix.sz = 5;
+   //matrix.updateForce();
+
+   //var g = m.region();
    // 设置相机
-   var rc = g.camera();
-   rc.setPosition(0, 3, -10);
-   rc.lookAt(0, 3, 0);
-   rc.update();
+   //var rc = g.camera();
+   //rc.setPosition(0, 3, -10);
+   //rc.lookAt(0, 3, 0);
+   //rc.update();
    // 设置投影
-   var h = o._hPanel;
-   var rp = rc.projection();
-   rp.size().set(h.width, h.height);
-   rp._angle = 45;
-   rp.update();
+   //var h = o._hPanel;
+   //var rp = rc.projection();
+   //rp.size().set(h.width, h.height);
+   //rp._angle = 45;
+   //rp.update();
    // 设置光源
-   var l = g.directionalLight();
-   var lc = l.camera();
-   lc.setPosition(10, 10, 0);
-   lc.lookAt(0, 0, 0);
-   lc.update();
+   //var l = g.directionalLight();
+   //var lc = l.camera();
+   //lc.setPosition(10, 10, 0);
+   //lc.lookAt(0, 0, 0);
+   //lc.update();
    // 加载完成
-   o.processLoadListener(o);
+   //o.processLoadListener(o);
    // 隐藏处理
    RConsole.find(FUiDesktopConsole).hide();
 }
@@ -377,10 +320,7 @@ function FDsBitmapCanvasContent_construct(){
    o._autoOutline = new SOutline3d();
    o._autoMatrix = new SMatrix3d();
    o._capturePosition = new SPoint2();
-   o._captureMatrix = new SMatrix3d();
-   o._templateMatrix = new SMatrix3d();
-   o._templateFaceMatrix = new SMatrix3d();
-   o._captureRotation = new SVector3();
+   o._captureCameraPosition = new SPoint3();
 }
 
 //==========================================================
@@ -444,16 +384,6 @@ function FDsBitmapCanvasContent_switchSize(width, height){
       projection.size().set(width, height);
       projection.update();
    }
-}
-
-//==========================================================
-// <T>切换播放模式。</T>
-//
-// @method
-// @param p:modeCd:Integer 
-//==========================================================
-function FDsBitmapCanvasContent_switchRotation(p){
-   this._optionRotation = p;
 }
 
 //==========================================================
@@ -537,7 +467,7 @@ function FDsBitmapCanvasContent_reloadRegion(region){
    var resource = region.resource();
    o._cameraMoveRate = resource.moveSpeed();
    o._cameraKeyRotation = resource.rotationKeySpeed();
-   o._cameraMouseRotation = resource.rotationMouseSpeed();
+   o._cameraMouseMove = resource.rotationMouseSpeed();
 }
 
 //==========================================================
@@ -548,19 +478,13 @@ function FDsBitmapCanvasContent_reloadRegion(region){
 function FDsBitmapCanvasContent_loadByGuid(guid){
    var o = this;
    // 显示加载进度
-   //RConsole.find(FUiDesktopConsole).showLoading();
+   RConsole.find(FUiDesktopConsole).showLoading();
    // 释放网格
    var url = '/cloud.content2d.bitmap.image.wv?do=view&guid=' + guid;
    var bitmap = o._activeBitmap;
    bitmap.loadUrl(url);
-   var matrix = bitmap.matrix();
-   matrix.tx = 0;
-   matrix.ty = 0;
-   matrix.tz = 0;
-   matrix.sx = 5;
-   matrix.sy = 5;
-   matrix.sz = 5;
-   matrix.updateForce();
+   bitmap.clearLoadListeners();
+   bitmap.addLoadListener(o, o.onLoaded);
 }
 
 //==========================================================

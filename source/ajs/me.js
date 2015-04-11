@@ -14682,21 +14682,23 @@ function FG2dCanvasContext_construct(){
    var o = this;
    o.__base.FG2dContext.construct.call(o);
 }
-function FG2dCanvasContext_linkCanvas(h){
+function FG2dCanvasContext_linkCanvas(hCanvas){
    var o = this;
-   o.__base.FG2dContext.linkCanvas.call(o, h)
-   o._hCanvas = h;
-   if(h.getContext){
-      var n = h.getContext('2d');
-      if(!n){
-         throw new TError("Current browser can't support Context2D technique.");
+   o.__base.FG2dContext.linkCanvas.call(o, hCanvas);
+   if(hCanvas.getContext){
+      var native = hCanvas.getContext('2d');
+      if(!native){
+         throw new TError(o, "Current browser can't support Context2D technique.");
       }
-      o._native = n;
+      o._native = native;
    }
+   o._hCanvas = hCanvas;
 }
 function FG2dCanvasContext_clear(r, g, b, a, d){
    var o = this;
-   var c = o._native;
+   var g = o._native;
+   var size = o._size;
+   g.clearRect(0, 0, size.width, size.height);
 }
 function FG2dCanvasContext_drawLine(x1, y1, x2, y2, color, lineWidth){
    var o = this;
@@ -24284,15 +24286,14 @@ function FE3rBitmap_onImageLoad(event){
    var size = image.size();
    var width = size.width;
    var height = size.height;
+   o._size.set(width, height);
    var adjustWidth = RInteger.pow2(width);
    var adjustHeight = RInteger.pow2(height);
+   o._adjustSize.set(adjustWidth, adjustHeight);
    var canvasConsole = RConsole.find(FE2dCanvasConsole);
    var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
    var context2d = canvas.context();
    context2d.drawImage(image, 0, 0);
-   context2d.drawLine(0, 0, 100, 100, 'red', 1);
-   context2d.drawRectangle(1, 1, 200, 200, 'red', 1);
-   context2d.drawText('测试', 100, 100, '#000000');
    var texture = o._imageTexture = context.createFlatTexture();
    texture.setOptionFlipY(true);
    texture.upload(canvas);
@@ -26508,6 +26509,16 @@ function FE3dBitmap_testReady(){
       var renderable = o._renderable;
       if(renderable){
          o._ready = renderable.testReady();
+         if(o._ready){
+            var size = renderable.size();
+            var adjustSize = renderable.adjustSize();
+            var matrix = o.matrix();
+            matrix.sz = adjustSize.height / size.height;
+            matrix.updateForce();
+            var event = new SEvent(o);
+            o.processLoadListener(event);
+            event.dispose();
+         }
       }
    }
    return o._ready;

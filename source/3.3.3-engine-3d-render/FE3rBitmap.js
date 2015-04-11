@@ -57,8 +57,10 @@ function FE3rBitmap_onImageLoad(event){
    var size = image.size();
    var width = size.width;
    var height = size.height;
+   o._size.set(width, height);
    var adjustWidth = RInteger.pow2(width);
    var adjustHeight = RInteger.pow2(height);
+   o._adjustSize.set(adjustWidth, adjustHeight);
    // 绘制画板
    var canvasConsole = RConsole.find(FE2dCanvasConsole);
    var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);

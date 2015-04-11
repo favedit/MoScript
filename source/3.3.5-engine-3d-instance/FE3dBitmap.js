@@ -49,6 +49,17 @@ function FE3dBitmap_testReady(){
       var renderable = o._renderable;
       if(renderable){
          o._ready = renderable.testReady();
+         if(o._ready){
+            var size = renderable.size();
+            var adjustSize = renderable.adjustSize();
+            var matrix = o.matrix();
+            //matrix.sx = adjustSize.width / size.width;
+            matrix.sz = adjustSize.height / size.height;
+            matrix.updateForce();
+            var event = new SEvent(o);
+            o.processLoadListener(event);
+            event.dispose();
+         }
       }
    }
    return o._ready;

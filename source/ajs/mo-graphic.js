@@ -212,21 +212,23 @@ function FG2dCanvasContext_construct(){
    var o = this;
    o.__base.FG2dContext.construct.call(o);
 }
-function FG2dCanvasContext_linkCanvas(h){
+function FG2dCanvasContext_linkCanvas(hCanvas){
    var o = this;
-   o.__base.FG2dContext.linkCanvas.call(o, h)
-   o._hCanvas = h;
-   if(h.getContext){
-      var n = h.getContext('2d');
-      if(!n){
-         throw new TError("Current browser can't support Context2D technique.");
+   o.__base.FG2dContext.linkCanvas.call(o, hCanvas);
+   if(hCanvas.getContext){
+      var native = hCanvas.getContext('2d');
+      if(!native){
+         throw new TError(o, "Current browser can't support Context2D technique.");
       }
-      o._native = n;
+      o._native = native;
    }
+   o._hCanvas = hCanvas;
 }
 function FG2dCanvasContext_clear(r, g, b, a, d){
    var o = this;
-   var c = o._native;
+   var g = o._native;
+   var size = o._size;
+   g.clearRect(0, 0, size.width, size.height);
 }
 function FG2dCanvasContext_drawLine(x1, y1, x2, y2, color, lineWidth){
    var o = this;

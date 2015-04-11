@@ -143,15 +143,14 @@ function FE3rBitmap_onImageLoad(event){
    var size = image.size();
    var width = size.width;
    var height = size.height;
+   o._size.set(width, height);
    var adjustWidth = RInteger.pow2(width);
    var adjustHeight = RInteger.pow2(height);
+   o._adjustSize.set(adjustWidth, adjustHeight);
    var canvasConsole = RConsole.find(FE2dCanvasConsole);
    var canvas = canvasConsole.allocBySize(adjustWidth, adjustHeight);
    var context2d = canvas.context();
    context2d.drawImage(image, 0, 0);
-   context2d.drawLine(0, 0, 100, 100, 'red', 1);
-   context2d.drawRectangle(1, 1, 200, 200, 'red', 1);
-   context2d.drawText('测试', 100, 100, '#000000');
    var texture = o._imageTexture = context.createFlatTexture();
    texture.setOptionFlipY(true);
    texture.upload(canvas);
