@@ -4573,6 +4573,7 @@ function FUiListView(o){
    o._hForm            = null;
    o.onBuildPanel      = FUiListView_onBuildPanel;
    o.construct         = FUiListView_construct;
+   o.focusItem         = FUiListView_focusItem;
    o.createItem        = FUiListView_createItem;
    o.appendChild       = FUiListView_appendChild;
    o.doClickItem       = FUiListView_doClickItem;
@@ -4589,6 +4590,9 @@ function FUiListView_construct(){
    var o = this;
    o.__base.FUiContainer.construct.call(o);
    o._itemPool = RClass.create(FObjectPool);
+}
+function FUiListView_focusItem(){
+   return this._focusItem;
 }
 function FUiListView_createItem(clazz, pi, pl){
    var o = this;
@@ -4607,7 +4611,7 @@ function FUiListView_appendChild(p){
    var o = this;
    o._hPanel.appendChild(p._hPanel);
 }
-function FUiListView_doClickItem(p){
+function FUiListView_doClickItem(item){
    var o = this;
    var s = o._components;
    if(s){
@@ -4615,16 +4619,17 @@ function FUiListView_doClickItem(p){
       for(var i = 0; i < c; i++){
          var m = s.value(i);
          if(RClass.isClass(m, FUiListViewItem)){
-            m.setChecked(m == p);
+            m.setChecked(m == item);
          }
       }
    }
-   var e = new SClickEvent(o);
-   e.item = p;
-   o.processClickListener(e);
-   e.dispose();
+   o._focusItem = item;
+   var event = new SClickEvent(o);
+   event.item = item;
+   o.processClickListener(event);
+   event.dispose();
 }
-function FUiListView_doDoubleClickItem(p){
+function FUiListView_doDoubleClickItem(item){
    var o = this;
    var s = o._components;
    if(s){
@@ -4632,14 +4637,15 @@ function FUiListView_doDoubleClickItem(p){
       for(var i = 0; i < c; i++){
          var m = s.value(i);
          if(RClass.isClass(m, FUiListViewItem)){
-            m.setChecked(m == p);
+            m.setChecked(m == item);
          }
       }
    }
-   var e = new SClickEvent(o);
-   e.item = p;
-   o.processDoubleClickListener(e);
-   e.dispose();
+   o._focusItem = item;
+   var event = new SClickEvent(o);
+   event.item = item;
+   o.processDoubleClickListener(event);
+   event.dispose();
 }
 function FUiListView_clear(){
    var o = this;

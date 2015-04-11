@@ -49,7 +49,7 @@ function FDsProjectFrameSet(o){
    // @method
    o.findPropertyFrame     = FDsProjectFrameSet_findPropertyFrame;
    // @method
-   o.load                  = FDsProjectFrameSet_load;
+   o.loadByGuid            = FDsProjectFrameSet_loadByGuid;
    // @method
    o.dispose               = FDsProjectFrameSet_dispose;
    return o;
@@ -70,27 +70,41 @@ function FDsProjectFrameSet_onBuilded(event){
    frame._hPanel.className = o.styleName('Catalog_Ground');
    var control = o._frameCatalogPageControl = o.searchControl('catalogPageControl');
    control._hPanel.className = o.styleName('PageControl');
-   var frame = o._frameCatalogToolBar = o.searchControl('catalogToolbarFrame');
+   // 设置场景列表区
+   var frame = o._frameSceneListToolBar = o.searchControl('sceneListToolbarFrame');
    frame._hPanel.className = o.styleName('Toolbar_Ground');
-   var frame = o._frameCatalogContent = o.searchControl('catalogContentFrame');
+   var frame = o._frameSceneListContent = o.searchControl('sceneListContentFrame');
    frame._hPanel.className = o.styleName('Catalog_Content');
+   // 设置场景目录区
+   var frame = o._frameSceneCatalogToolBar = o.searchControl('sceneCatalogToolbarFrame');
+   frame._hPanel.className = o.styleName('Toolbar_Ground');
+   var frame = o._frameSceneCatalogContent = o.searchControl('sceneCatalogContentFrame');
+   frame._hPanel.className = o.styleName('Catalog_Content');
+   //..........................................................
    // 设置画板区
    var frame = o._frameCanvas = o.searchControl('canvasFrame');
    frame._hPanel.className = o.styleName('Canvas_Ground');
    var control = o._frameCanvasPageControl = o.searchControl('canvasPageControl');
    control._hPanel.className = o.styleName('PageControl');
-   var frame = o._frameCanvasToolBar = o.searchControl('canvasToolbarFrame');
+   // 设置画板空间区
+   var frame = o._frameCanvasSpaceToolBar = o.searchControl('canvasSpaceToolbarFrame');
    frame._hPanel.className = o.styleName('Toolbar_Ground');
-   var frame = o._frameCanvasContent = o.searchControl('canvasContentFrame');
+   var frame = o._frameCanvasSpaceContent = o.searchControl('canvasSpaceContentFrame');
    frame._hPanel.className = o.styleName('Canvas_Content');
+   // 设置画板预览区
+   var frame = o._frameCanvasPreviewToolBar = o.searchControl('canvasPreviewToolbarFrame');
+   frame._hPanel.className = o.styleName('Toolbar_Ground');
+   var frame = o._frameCanvasPreviewContent = o.searchControl('canvasPreviewContentFrame');
+   frame._hPanel.className = o.styleName('Canvas_Content');
+   //..........................................................
    // 设置属性区
    var frame = o._frameProperty = o.searchControl('propertyFrame');
    frame._hPanel.className = o.styleName('Property_Ground');
    var control = o._framePropertyPageControl = o.searchControl('propertyPageControl');
    control._hPanel.className = o.styleName('PageControl');
-   var frame = o._framePropertyToolBar = o.searchControl('propertyToolbarFrame');
+   var frame = o._framePropertyAttributeToolBar = o.searchControl('propertyAttributeToolbarFrame');
    frame._hPanel.className = o.styleName('Toolbar_Ground');
-   var frame = o._framePropertyContent = o.searchControl('propertyContentFrame');
+   var frame = o._framePropertyAttributeContent = o.searchControl('propertyAttributeContentFrame');
    frame._hPanel.className = o.styleName('Property_Content');
    //..........................................................
    // 设置分割
@@ -101,17 +115,33 @@ function FDsProjectFrameSet_onBuilded(event){
    f.setAlignCd(EUiAlign.Right);
    f.setSizeHtml(o._frameProperty._hPanel);
    //..........................................................
-   // 设置工具栏
-   var toolbar = o._catalogToolbar = RClass.create(FDsProjectCatalogToolBar);
-   toolbar._workspace = o;
-   toolbar.buildDefine(event);
-   o._frameCatalogToolBar.push(toolbar);
+   // 设置场景列表工具栏
+   var control = o._sceneListToolbar = RClass.create(FDsProjectSceneListToolBar);
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameSceneListToolBar.push(control);
+   // 设置场景列表内容
+   var control = o._sceneListContent = RClass.create(FDsProjectSceneListContent);
+   control._frameSet = o;
+   control.build(event);
+   o._frameSceneListContent.push(control);
    //..........................................................
-   // 设置画板工具栏
-   var toolbar = o._canvasToolbar = RClass.create(FDsProjectCanvasToolBar);
-   toolbar._workspace = o;
-   toolbar.buildDefine(event);
-   o._frameCanvasToolBar.push(toolbar);
+   // 设置场景列表工具栏
+   var control = o._sceneCatalogToolbar = RClass.create(FDsProjectSceneCatalogToolBar);
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameSceneCatalogToolBar.push(control);
+   // 设置场景列表内容
+   var control = o._sceneCatalogContent = RClass.create(FDsProjectSceneCatalogContent);
+   control._frameSet = o;
+   control.build(event);
+   o._frameSceneCatalogContent.push(control);
+   //..........................................................
+   // 设置画板空间工具栏
+   var control = o._canvasSpaceToolbar = RClass.create(FDsProjectCanvasSpaceToolBar);
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCanvasSpaceToolBar.push(control);
    // 设置画板
    //var f = o._canvasFrame = o.searchControl('canvasFrame');
    //var c = o._canvas = RClass.create(FDsMeshCanvas);
@@ -123,11 +153,18 @@ function FDsProjectFrameSet_onBuilded(event){
    //c.build(p);
    //o._canvasFrame.push(c);
    //..........................................................
+   // 设置画板空间工具栏
+   var control = o._canvasPreviewToolbar = RClass.create(FDsProjectCanvasPreviewToolBar);
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._frameCanvasPreviewToolBar.push(control);
+   // 设置画板
+   //..........................................................
    // 设置属性栏
-   var toolbar = o._propertyToolbar = RClass.create(FDsProjectPropertyToolBar);
-   toolbar._workspace = o;
-   toolbar.buildDefine(event);
-   o._framePropertyToolBar.push(toolbar);
+   var control = o._propertyToolbar = RClass.create(FDsProjectPropertyToolBar);
+   control._frameSet = o;
+   control.buildDefine(event);
+   o._framePropertyAttributeToolBar.push(control);
 }
 
 //==========================================================
@@ -230,11 +267,15 @@ function FDsProjectFrameSet_findPropertyFrame(p){
 }
 
 //==========================================================
-// <T>加载模板处理。</T>
+// <T>加载项目信息。</T>
 //
 // @method
+// @paam guid:String 唯一编号
 //==========================================================
-function FDsProjectFrameSet_load(guid){
+function FDsProjectFrameSet_loadByGuid(guid){
+   var o = this;
+   o._activeGuid = guid;
+   o._sceneListContent.serviceList(guid);
 }
 
 //==========================================================

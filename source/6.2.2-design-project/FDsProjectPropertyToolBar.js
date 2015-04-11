@@ -43,10 +43,10 @@ function FDsProjectPropertyToolBar_onBuilded(p){
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
    // 按键事件关联
-   o._controlInsertButton.addClickListener(o, o.onInsertClick);
-   o._controlUpdateButton.addClickListener(o, o.onUpdateClick);
-   o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
-   o._controlRotationButton.addClickListener(o, o.onRotationClick);
+   //o._controlInsertButton.addClickListener(o, o.onInsertClick);
+   //o._controlUpdateButton.addClickListener(o, o.onUpdateClick);
+   //o._controlDeleteButton.addClickListener(o, o.onDeleteClick);
+   //o._controlRotationButton.addClickListener(o, o.onRotationClick);
 }
 
 //==========================================================

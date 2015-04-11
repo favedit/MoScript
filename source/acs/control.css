@@ -1074,33 +1074,33 @@
 /* FUiToolButton                                          */
 /* ------------------------------------------------------ */
 .FUiToolButton_Normal{
-   margin:0px 2px 0px 2px;
+   margin:0px 1px 0px 1px;
    padding:1px 4px 1px 4px;
    cursor: pointer;
-   border-radius: 2px;
-   border:1px solid #CCCCCC;
+   border-radius: 3px;
+   border:1px solid #999999;
    background-color: #DDDDDD;
-   background: -ms-linear-gradient(top, #FFFFFF, #CCCCCC);
-   background: -moz-linear-gradient(top, #FFFFFF, #CCCCCC); 
-   background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#CCCCCC)); 
-   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#FFFFFF, endColorStr=#CCCCCC);
+   background: -ms-linear-gradient(top, #FFFFFF, #BBBBBB);
+   background: -moz-linear-gradient(top, #FFFFFF, #BBBBBB); 
+   background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#BBBBBB)); 
+   filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=1, startColorStr=#FFFFFF, endColorStr=#BBBBBB);
 }
 
 .FUiToolButton_Hover{
-   margin:0px 2px 0px 2px;
+   margin:0px 1px 0px 1px;
    padding:1px 4px 1px 4px;
-   border-radius:2px;
-   border:1px solid #CCCCCC;
+   border-radius:3px;
+   border:1px solid #999999;
    background-color: #FFFFF0;
    cursor: pointer;
 }
 
 .FUiToolButton_Press{
-   margin:0px 2px 0px 2px;
+   margin:0px 1px 0px 1px;
    padding:1px 4px 1px 4px;
    cursor: pointer;
-   border-radius:2px;
-   border:1px solid #CCCCCC;
+   border-radius:3px;
+   border:1px solid #999999;
    background-color: #999999;
    background: -ms-linear-gradient(top, #999999, #FFFFFF);
    background: -moz-linear-gradient(top, #999999, #FFFFFF); 

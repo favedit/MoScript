@@ -1368,6 +1368,7 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          frameSet.load();
          break;
       case EDsFrameSet.ProjectFrameSet:
+         frameSet.loadByGuid(guid);
          break;
       case EDsFrameSet.ResourceFrameSet:
          frameSet.load();

@@ -38,6 +38,8 @@ function FUiListView(o){
    // @method
    o.construct         = FUiListView_construct;
    // @method
+   o.focusItem         = FUiListView_focusItem;
+   // @method
    o.createItem        = FUiListView_createItem;
    o.appendChild       = FUiListView_appendChild;
    o.doClickItem       = FUiListView_doClickItem;
@@ -71,6 +73,16 @@ function FUiListView_construct(){
    var o = this;
    o.__base.FUiContainer.construct.call(o);
    o._itemPool = RClass.create(FObjectPool);
+}
+
+//==========================================================
+// <T>获得焦点项目。</T>
+//
+// @method
+// @return FUiListViewItem 项目
+//==========================================================
+function FUiListView_focusItem(){
+   return this._focusItem;
 }
 
 //==========================================================
@@ -112,9 +124,9 @@ function FUiListView_appendChild(p){
 // <T>点击一个列表项目。</T>
 //
 // @method
-// @param p:item:FUiListViewItem 列表项目
+// @param item:FUiListViewItem 列表项目
 //==========================================================
-function FUiListView_doClickItem(p){
+function FUiListView_doClickItem(item){
    var o = this;
    // 选中项目
    var s = o._components;
@@ -123,15 +135,17 @@ function FUiListView_doClickItem(p){
       for(var i = 0; i < c; i++){
          var m = s.value(i);
          if(RClass.isClass(m, FUiListViewItem)){
-            m.setChecked(m == p);
+            m.setChecked(m == item);
          }
       }
    }
+   // 设置焦点
+   o._focusItem = item;
    // 事件处理
-   var e = new SClickEvent(o);
-   e.item = p;
-   o.processClickListener(e);
-   e.dispose();
+   var event = new SClickEvent(o);
+   event.item = item;
+   o.processClickListener(event);
+   event.dispose();
 }
 
 //==========================================================
@@ -140,7 +154,7 @@ function FUiListView_doClickItem(p){
 // @method
 // @param p:item:FUiListViewItem 列表项目
 //==========================================================
-function FUiListView_doDoubleClickItem(p){
+function FUiListView_doDoubleClickItem(item){
    var o = this;
    // 选中项目
    var s = o._components;
@@ -149,15 +163,17 @@ function FUiListView_doDoubleClickItem(p){
       for(var i = 0; i < c; i++){
          var m = s.value(i);
          if(RClass.isClass(m, FUiListViewItem)){
-            m.setChecked(m == p);
+            m.setChecked(m == item);
          }
       }
    }
+   // 设置焦点
+   o._focusItem = item;
    // 事件处理
-   var e = new SClickEvent(o);
-   e.item = p;
-   o.processDoubleClickListener(e);
-   e.dispose();
+   var event = new SClickEvent(o);
+   event.item = item;
+   o.processDoubleClickListener(event);
+   event.dispose();
 }
 
 //==========================================================

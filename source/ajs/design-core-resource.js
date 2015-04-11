@@ -114,8 +114,15 @@ function FDrObject_saveConfig(xconfig){
 }
 function FDrProject(o){
    o = RClass.inherits(this, o, FDrResource);
-   o._classCode = 'Project';
+   o._classCode   = 'Project';
+   o._projectGuid = null;
+   o.saveConfig   = FDrProject_saveConfig;
    return o;
+}
+function FDrProject_saveConfig(xconfig){
+   var o = this;
+   o.__base.FDrResource.saveConfig.call(o, xconfig);
+   xconfig.setNvl('project_guid', o._projectGuid);
 }
 function FDrProjectConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
@@ -185,4 +192,21 @@ function FDrResourceConsole_doFolderDelete(guid){
    var o = this;
    var url = '/' + o._catalogCode + '.ws?action=delete&guid=' + guid;
    return RConsole.find(FXmlConsole).sendAsync(url);
+}
+function FDrScene(o){
+   o = RClass.inherits(this, o, FDrResource);
+   o._classCode   = 'Scene';
+   o._projectGuid = null;
+   o.saveConfig   = FDrScene_saveConfig;
+   return o;
+}
+function FDrScene_saveConfig(xconfig){
+   var o = this;
+   o.__base.FDrResource.saveConfig.call(o, xconfig);
+   xconfig.setNvl('project_guid', o._projectGuid);
+}
+function FDrSceneConsole(o){
+   o = RClass.inherits(this, o, FDrAbsResourceConsole);
+   o._serviceCode = 'cloud.content.scene';
+   return o;
 }

@@ -1,20 +1,20 @@
 //==========================================================
-// <T>设计项目资源。</T>
+// <T>设计场景资源。</T>
 //
 // @class
 // @author maocy
-// @version 150331
+// @version 150411
 //==========================================================
-function FDrProject(o){
+function FDrScene(o){
    o = RClass.inherits(this, o, FDrResource);
    //..........................................................
    // @attribute
-   o._classCode   = 'Project';
+   o._classCode   = 'Scene';
    // @attribute
    o._projectGuid = null;
    //..........................................................
    // @method
-   o.saveConfig   = FDrProject_saveConfig;
+   o.saveConfig   = FDrScene_saveConfig;
    return o;
 }
 
@@ -23,7 +23,7 @@ function FDrProject(o){
 //
 // @param xconfig:TXmlNode 配置节点
 //==========================================================
-function FDrProject_saveConfig(xconfig){
+function FDrScene_saveConfig(xconfig){
    var o = this;
    o.__base.FDrResource.saveConfig.call(o, xconfig);
    // 存储属性

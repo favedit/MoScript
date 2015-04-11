@@ -5,11 +5,11 @@
 // @author maocy
 // @history 150210
 //==========================================================
-function FDsProjectCanvasToolBar(o){
+function FDsProjectCanvasSpaceToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'design3d.project.CanvasToolBar';
+   o._frameName       = 'design3d.project.CanvasSpaceToolBar';
    //..........................................................
    // @attribute
    o._pageCount       = 0;
@@ -29,18 +29,18 @@ function FDsProjectCanvasToolBar(o){
    o._viewButton      = null;
    //..........................................................
    // @event
-   o.onBuilded        = FDsProjectCanvasToolBar_onBuilded;
+   o.onBuilded        = FDsProjectCanvasSpaceToolBar_onBuilded;
    // @event
-   o.onSearchClick    = FDsProjectCanvasToolBar_onSearchClick;
-   o.onNavigatorClick = FDsProjectCanvasToolBar_onNavigatorClick;
+   o.onSearchClick    = FDsProjectCanvasSpaceToolBar_onSearchClick;
+   o.onNavigatorClick = FDsProjectCanvasSpaceToolBar_onNavigatorClick;
    //..........................................................
    // @method
-   o.construct        = FDsProjectCanvasToolBar_construct;
+   o.construct        = FDsProjectCanvasSpaceToolBar_construct;
    // @method
-   o.setNavigator     = FDsProjectCanvasToolBar_setNavigator;
-   o.doNavigator      = FDsProjectCanvasToolBar_doNavigator;
+   o.setNavigator     = FDsProjectCanvasSpaceToolBar_setNavigator;
+   o.doNavigator      = FDsProjectCanvasSpaceToolBar_doNavigator;
    // @method
-   o.dispose          = FDsProjectCanvasToolBar_dispose;
+   o.dispose          = FDsProjectCanvasSpaceToolBar_dispose;
    return o;
 }
 
@@ -50,18 +50,18 @@ function FDsProjectCanvasToolBar(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsProjectCanvasToolBar_onBuilded(p){
+function FDsProjectCanvasSpaceToolBar_onBuilded(p){
    var o = this;
    o.__base.FUiToolBar.onBuilded.call(o, p);
    //..........................................................
    // 关联查询事件
-   o._controlSearchEdit.addClickListener(o, o.onSearchClick);
+   //o._controlSearchEdit.addClickListener(o, o.onSearchClick);
    // 关联导航事件
-   o._controlFirstButton.addClickListener(o, o.onNavigatorClick);
-   o._controlPriorButton.addClickListener(o, o.onNavigatorClick);
+   //o._controlFirstButton.addClickListener(o, o.onNavigatorClick);
+   //o._controlPriorButton.addClickListener(o, o.onNavigatorClick);
    //o._controlPageEdit.addClickListener(o, o.onNavigatorClick);
-   o._controlNextButton.addClickListener(o, o.onNavigatorClick);
-   o._controlLastButton.addClickListener(o, o.onNavigatorClick);
+   //o._controlNextButton.addClickListener(o, o.onNavigatorClick);
+   //o._controlLastButton.addClickListener(o, o.onNavigatorClick);
 }
 
 //==========================================================
@@ -70,7 +70,7 @@ function FDsProjectCanvasToolBar_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsProjectCanvasToolBar_onSearchClick(p){
+function FDsProjectCanvasSpaceToolBar_onSearchClick(p){
    this.doNavigator(0);
 }
 
@@ -80,7 +80,7 @@ function FDsProjectCanvasToolBar_onSearchClick(p){
 // @method
 // @param event:SEvent 事件
 //==========================================================
-function FDsProjectCanvasToolBar_onNavigatorClick(event){
+function FDsProjectCanvasSpaceToolBar_onNavigatorClick(event){
    var o = this;
    var sender = event.sender;
    var name = sender.name();
@@ -107,7 +107,7 @@ function FDsProjectCanvasToolBar_onNavigatorClick(event){
 //
 // @method
 //==========================================================
-function FDsProjectCanvasToolBar_construct(){
+function FDsProjectCanvasSpaceToolBar_construct(){
    var o = this;
    // 父处理
    o.__base.FUiToolBar.construct.call(o);
@@ -121,7 +121,7 @@ function FDsProjectCanvasToolBar_construct(){
 // @param pageCount 页总数
 // @param page 页号
 //==========================================================
-function FDsProjectCanvasToolBar_setNavigator(pageSize, pageCount, page){
+function FDsProjectCanvasSpaceToolBar_setNavigator(pageSize, pageCount, page){
    var o = this;
    o._pageSize = pageSize;
    o._pageCount = pageCount;
@@ -139,7 +139,7 @@ function FDsProjectCanvasToolBar_setNavigator(pageSize, pageCount, page){
 // @param pageCount 页总数
 // @param page 页号
 //==========================================================
-function FDsProjectCanvasToolBar_doNavigator(page){
+function FDsProjectCanvasSpaceToolBar_doNavigator(page){
    var o = this;
    page = RInteger.toRange(page, 0, o._pageCount);
    var search = o._controlSearchEdit.text();
@@ -156,7 +156,7 @@ function FDsProjectCanvasToolBar_doNavigator(page){
 //
 // @method
 //==========================================================
-function FDsProjectCanvasToolBar_dispose(){
+function FDsProjectCanvasSpaceToolBar_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiToolBar.dispose.call(o);
