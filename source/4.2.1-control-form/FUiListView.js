@@ -34,6 +34,9 @@ function FUiListView(o){
    //..........................................................
    // @event
    o.onBuildPanel      = FUiListView_onBuildPanel;
+   o.onBuild           = FUiListView_onBuild;
+   // @event
+   o.onClick           = RClass.register(o, new AEventClick('onClick'), FUiListView_onClick);
    //..........................................................
    // @method
    o.construct         = FUiListView_construct;
@@ -42,6 +45,7 @@ function FUiListView(o){
    // @method
    o.createItem        = FUiListView_createItem;
    o.appendChild       = FUiListView_appendChild;
+   o.selectItem        = FUiListView_selectItem;
    o.doClickItem       = FUiListView_doClickItem;
    o.doDoubleClickItem = FUiListView_doDoubleClickItem;
    o.clear             = FUiListView_clear;
@@ -59,6 +63,38 @@ function FUiListView_onBuildPanel(p){
    var o = this;
    // 建立编辑控件
    o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+}
+
+//==========================================================
+// <T>构件页面处理。</T>
+//
+// @method
+// @param event:TProcessEvent 处理事件
+//==========================================================
+function FUiListView_onBuild(event){
+   var o = this;
+   o.__base.FUiContainer.onBuild.call(o, event);
+   // 关联事件
+   var hPanel = o._hPanel;
+   o.attachEvent('onClick', hPanel);
+}
+
+//==========================================================
+// <T>响应鼠标点击树节点复选框处理。</T>
+//
+// @method
+// @param s:source:FControl 源控件
+// @param e:event:TEvent 事件对象
+//==========================================================
+function FUiListView_onClick(s, e){
+   var o = this;
+   if(s.hSender == o._hNodePanel){
+      var node = o._focusNode;
+      if(node){
+         node.select(false);
+         o._focusNode = null;
+      }
+   }
 }
 
 //==========================================================
@@ -121,6 +157,29 @@ function FUiListView_appendChild(p){
 }
 
 //==========================================================
+// <T>选中一个列表项目。</T>
+//
+// @method
+// @return item:FUiListViewItem 列表项目
+//==========================================================
+function FUiListView_selectItem(item){
+   var o = this;
+   // 选中项目
+   var components = o._components;
+   if(components){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.valueAt(i);
+         if(RClass.isClass(component, FUiListViewItem)){
+            component.setChecked(component == item);
+         }
+      }
+   }
+   // 设置焦点
+   o._focusItem = item;
+}
+
+//==========================================================
 // <T>点击一个列表项目。</T>
 //
 // @method
@@ -129,18 +188,7 @@ function FUiListView_appendChild(p){
 function FUiListView_doClickItem(item){
    var o = this;
    // 选中项目
-   var s = o._components;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         if(RClass.isClass(m, FUiListViewItem)){
-            m.setChecked(m == item);
-         }
-      }
-   }
-   // 设置焦点
-   o._focusItem = item;
+   o.selectItem(item);
    // 事件处理
    var event = new SClickEvent(o);
    event.item = item;
@@ -157,18 +205,7 @@ function FUiListView_doClickItem(item){
 function FUiListView_doDoubleClickItem(item){
    var o = this;
    // 选中项目
-   var s = o._components;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         if(RClass.isClass(m, FUiListViewItem)){
-            m.setChecked(m == item);
-         }
-      }
-   }
-   // 设置焦点
-   o._focusItem = item;
+   o.selectItem(item);
    // 事件处理
    var event = new SClickEvent(o);
    event.item = item;

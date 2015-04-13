@@ -39398,10 +39398,13 @@ function FUiListView(o){
    o._itemPool         = null;
    o._hForm            = null;
    o.onBuildPanel      = FUiListView_onBuildPanel;
+   o.onBuild           = FUiListView_onBuild;
+   o.onClick           = RClass.register(o, new AEventClick('onClick'), FUiListView_onClick);
    o.construct         = FUiListView_construct;
    o.focusItem         = FUiListView_focusItem;
    o.createItem        = FUiListView_createItem;
    o.appendChild       = FUiListView_appendChild;
+   o.selectItem        = FUiListView_selectItem;
    o.doClickItem       = FUiListView_doClickItem;
    o.doDoubleClickItem = FUiListView_doDoubleClickItem;
    o.clear             = FUiListView_clear;
@@ -39411,6 +39414,22 @@ function FUiListView(o){
 function FUiListView_onBuildPanel(p){
    var o = this;
    o._hPanel = RBuilder.createDiv(p, o.styleName('Panel'));
+}
+function FUiListView_onBuild(event){
+   var o = this;
+   o.__base.FUiContainer.onBuild.call(o, event);
+   var hPanel = o._hPanel;
+   o.attachEvent('onClick', hPanel);
+}
+function FUiListView_onClick(s, e){
+   var o = this;
+   if(s.hSender == o._hNodePanel){
+      var node = o._focusNode;
+      if(node){
+         node.select(false);
+         o._focusNode = null;
+      }
+   }
 }
 function FUiListView_construct(){
    var o = this;
@@ -39437,19 +39456,23 @@ function FUiListView_appendChild(p){
    var o = this;
    o._hPanel.appendChild(p._hPanel);
 }
-function FUiListView_doClickItem(item){
+function FUiListView_selectItem(item){
    var o = this;
-   var s = o._components;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         if(RClass.isClass(m, FUiListViewItem)){
-            m.setChecked(m == item);
+   var components = o._components;
+   if(components){
+      var count = components.count();
+      for(var i = 0; i < count; i++){
+         var component = components.valueAt(i);
+         if(RClass.isClass(component, FUiListViewItem)){
+            component.setChecked(component == item);
          }
       }
    }
    o._focusItem = item;
+}
+function FUiListView_doClickItem(item){
+   var o = this;
+   o.selectItem(item);
    var event = new SClickEvent(o);
    event.item = item;
    o.processClickListener(event);
@@ -39457,17 +39480,7 @@ function FUiListView_doClickItem(item){
 }
 function FUiListView_doDoubleClickItem(item){
    var o = this;
-   var s = o._components;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var m = s.value(i);
-         if(RClass.isClass(m, FUiListViewItem)){
-            m.setChecked(m == item);
-         }
-      }
-   }
-   o._focusItem = item;
+   o.selectItem(item);
    var event = new SClickEvent(o);
    event.item = item;
    o.processDoubleClickListener(event);
