@@ -626,7 +626,7 @@ function FDsModelCanvas_loadByGuid(guid){
    var o = this;
    RConsole.find(FUiDesktopConsole).showLoading();
    var modelConsole = RConsole.find(FE3dModelConsole);
-   if(o._activeSpace != null){
+   if(o._activeSpace){
       modelConsole.free(o._activeSpace);
    }
    var space = o._activeSpace = modelConsole.alloc(o, guid);

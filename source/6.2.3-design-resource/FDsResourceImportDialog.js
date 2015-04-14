@@ -185,10 +185,12 @@ function FDsResourceFolderDialog_switchMode(modeCd){
    if(modeCd == 'picture'){
       o.setLabel('导入图片资源');
    }else if(modeCd == 'mesh'){
-      o.setLabel('倒入网格资源');
+      o.setLabel('导入网格资源');
    }else{
       throw new TError(o, 'Unknown mode.');
    }
+   o._controlCode.set('');
+   o._controlLabel.set('');
 }
 
 //==========================================================

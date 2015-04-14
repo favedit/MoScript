@@ -828,7 +828,7 @@ function FDsModelCanvas_loadByGuid(guid){
    RConsole.find(FUiDesktopConsole).showLoading();
    // 释放模型
    var modelConsole = RConsole.find(FE3dModelConsole);
-   if(o._activeSpace != null){
+   if(o._activeSpace){
       modelConsole.free(o._activeSpace);
    }
    // 收集一个显示模板

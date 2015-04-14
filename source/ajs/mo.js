@@ -56753,10 +56753,12 @@ function FDsResourceFolderDialog_switchMode(modeCd){
    if(modeCd == 'picture'){
       o.setLabel('导入图片资源');
    }else if(modeCd == 'mesh'){
-      o.setLabel('倒入网格资源');
+      o.setLabel('导入网格资源');
    }else{
       throw new TError(o, 'Unknown mode.');
    }
+   o._controlCode.set('');
+   o._controlLabel.set('');
 }
 function FDsResourceImportDialog_dispose(){
    var o = this;
@@ -61553,7 +61555,7 @@ function FDsModelCanvas_loadByGuid(guid){
    var o = this;
    RConsole.find(FUiDesktopConsole).showLoading();
    var modelConsole = RConsole.find(FE3dModelConsole);
-   if(o._activeSpace != null){
+   if(o._activeSpace){
       modelConsole.free(o._activeSpace);
    }
    var space = o._activeSpace = modelConsole.alloc(o, guid);
