@@ -760,57 +760,59 @@ function FE3rMesh_textures(){
 function FE3rMesh_resource(){
    return this._resource;
 }
-function FE3rMesh_loadResource(p){
+function FE3rMesh_loadResource(resource){
    var o = this;
-   var c = o._graphicContext;
-   o._resource = p;
-   var rss = p.streams();
-   var rsc = rss.count();
-   for(var i = 0; i < rsc; i++){
-      var rs = rss.get(i);
-      var rc = rs._code;
-      if((rc == 'index16') || (rc == 'index32')){
-         var b = o._indexBuffer = c.createIndexBuffer();
-         b._resource = rs;
-         var ecd = rs.elementDataCd();
-         if(ecd == EDataType.Uint16){
-            b._strideCd = EG3dIndexStride.Uint16;
-         }else if(ecd == EDataType.Uint32){
-            b._strideCd = EG3dIndexStride.Uint32;
+   var context = o._graphicContext;
+   o._resource = resource;
+   var streamResources = resource.streams();
+   var streamCount = streamResources.count();
+   for(var i = 0; i < streamCount; i++){
+      var streamResource = streamResources.get(i);
+      var code = streamResource._code;
+      var dataCount = streamResource._dataCount;
+      var data = streamResource._data;
+      if((code == 'index16') || (code == 'index32')){
+         var buffer = o._indexBuffer = context.createIndexBuffer();
+         buffer._resource = streamResource;
+         var dataCd = streamResource.elementDataCd();
+         if(dataCd == EDataType.Uint16){
+            buffer._strideCd = EG3dIndexStride.Uint16;
+         }else if(dataCd == EDataType.Uint32){
+            buffer._strideCd = EG3dIndexStride.Uint32;
          }else{
             throw new TError(o, "Unknown data type.");
          }
-         b.upload(rs._data, 3 * rs._dataCount);
+         buffer.upload(data, 3 * dataCount);
       }else{
-         var b = c.createVertexBuffer();
-         b._name = rc;
-         b._resource = rs;
-         o._vertexCount = rs._dataCount;
-         var d = null;
-         switch(rc){
+         var buffer = context.createVertexBuffer();
+         buffer._name = code;
+         buffer._resource = streamResource;
+         buffer._vertexCount = dataCount;
+         var pixels = null;
+         switch(code){
             case "position":
-               d = new Float32Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Float3;
+               pixels = new Float32Array(data);
+               buffer._formatCd = EG3dAttributeFormat.Float3;
                break;
             case "coord":
-               d = new Float32Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Float2;
+               pixels = new Float32Array(data);
+               buffer._formatCd = EG3dAttributeFormat.Float2;
                break;
             case "color":
-               d = new Uint8Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Byte4Normal;
+               pixels = new Uint8Array(data);
+               buffer._formatCd = EG3dAttributeFormat.Byte4Normal;
                break;
             case "normal":
             case "binormal":
             case "tangent":
-               d = new Uint8Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Byte4Normal;
+               pixels = new Uint8Array(data);
+               buffer._formatCd = EG3dAttributeFormat.Byte4Normal;
                break;
             default:
                throw new TError(o, "Unknown code");
          }
-         b.upload(d, rs._dataStride, rs._dataCount);
-         o._vertexBuffers.push(b);
+         buffer.upload(pixels, streamResource._dataStride, dataCount);
+         o._vertexBuffers.push(buffer);
       }
    }
    o._ready = true;
@@ -993,28 +995,28 @@ function FE3rModel_loadSkeletonResource(p){
       }
    }
 }
-function FE3rModel_loadResource(p){
+function FE3rModel_loadResource(resource){
    var o = this;
-   var rmc = RConsole.find(FE3rModelConsole);
-   var rgs = p.meshes();
-   if(rgs){
-      var gs = o._meshes = new TObjects();
-      var c = rgs.count();
-      for(var i = 0; i < c; i++){
-         var rg = rgs.get(i);
-         var g = RClass.create(FE3rModelMesh);
-         g.linkGraphicContext(o);
-         g.loadResource(rg);
-         gs.push(g);
-         rmc.meshs().set(g.guid(), g);
+   var modelConsole = RConsole.find(FE3rModelConsole);
+   var meshResources = resource.meshes();
+   if(meshResources){
+      var meshes = o._meshes = new TObjects();
+      var meshCount = meshResources.count();
+      for(var i = 0; i < meshCount; i++){
+         var meshResource = meshResources.get(i);
+         var mesh = RClass.create(FE3rModelMesh);
+         mesh.linkGraphicContext(o);
+         mesh.loadResource(meshResource);
+         meshes.push(mesh);
+         modelConsole.meshs().set(mesh.guid(), mesh);
       }
    }
-   var rks = p.skeletons();
-   if(rks){
-      var c = rks.count();
-      for(var i = 0; i < c; i++){
-         var rk = rks.get(i);
-         o.loadSkeletonResource(rk);
+   var skeletonResources = resource.skeletons();
+   if(skeletonResources){
+      var skeletonCount = skeletonResources.count();
+      for(var i = 0; i < skeletonCount; i++){
+         var skeletonResource = skeletonResources.get(i);
+         o.loadSkeletonResource(skeletonResource);
       }
    }
    o._dataReady = true;
@@ -1094,9 +1096,30 @@ function FE3rModelConsole_findMesh(p){
 function FE3rModelConsole_meshs(){
    return this._meshs;
 }
-function FE3rModelConsole_load(pc, pg){
+function FE3rModelConsole_load(context, guid){
    var o = this;
-   if(!RClass.isClass(pc, FGraphicContext)){
+   if(!RClass.isClass(context, MGraphicObject)){
+      throw new TError('Graphics context is empty');
+   }
+   if(RString.isEmpty(guid)){
+      throw new TError('Model guid is empty');
+   }
+   var model = o._models.get(guid);
+   if(model){
+      return model;
+   }
+   var resource = RConsole.find(FE3sModelConsole).load(guid);
+   model = RClass.create(FE3rModel);
+   model.linkGraphicContext(context);
+   model.setCode(guid);
+   model.setResource(resource);
+   o._models.set(guid, model);
+   o._loadModels.push(model);
+   return model;
+}
+function FE3rModelConsole_loadMeshByGuid(context, pg){
+   var o = this;
+   if(!RClass.isClass(context, MGraphicObject)){
       throw new TError('Graphics context is empty');
    }
    if(RString.isEmpty(pg)){
@@ -1106,8 +1129,7 @@ function FE3rModelConsole_load(pc, pg){
    if(m){
       return m;
    }
-   var rmc = RConsole.find(FE3sModelConsole);
-   var rm = rmc.load(pg);
+   var resource = RConsole.find(FE3sModelConsole).load(guid);
    m = RClass.create(FE3rModel);
    m.linkGraphicContext(pc);
    m.setCode(pg);
@@ -1120,51 +1142,24 @@ function FE3rModelConsole_load(pc, pg){
    }
    return m;
 }
-function FE3rModelConsole_loadMeshByGuid(pc, pg){
+function FE3rModelConsole_loadMeshByCode(context, pg){
    var o = this;
-   if(!RClass.isClass(pc, FGraphicContext)){
+   if(!RClass.isClass(context, MGraphicObject)){
       throw new TError('Graphics context is empty');
    }
    if(RString.isEmpty(pg)){
       throw new TError('Model guid is empty');
    }
-   var m = o._models.get(pg);
-   if(m){
-      return m;
+   var model = o._models.get(pg);
+   if(model){
+      return model;
    }
-   var rmc = RConsole.find(FE3sModelConsole);
-   var rm = rmc.load(pg);
-   m = RClass.create(FE3rModel);
-   m.linkGraphicContext(pc);
-   m.setCode(pg);
-   m.setResource(rm);
-   o._models.set(pg, m);
-   if(rm.testReady()){
-      m.loadResource(rm);
-   }else{
-      o._loadModels.push(m);
-   }
-   return m;
-}
-function FE3rModelConsole_loadMeshByCode(pc, pg){
-   var o = this;
-   if(!RClass.isClass(pc, FGraphicContext)){
-      throw new TError('Graphics context is empty');
-   }
-   if(RString.isEmpty(pg)){
-      throw new TError('Model guid is empty');
-   }
-   var m = o._models.get(pg);
-   if(m){
-      return m;
-   }
-   var rmc = RConsole.find(FE3sModelConsole);
-   var rm = rmc.load(pg);
-   m = RClass.create(FE3rModel);
-   m.linkGraphicContext(pc);
-   m.setCode(pg);
-   m.setResource(rm);
-   o._models.set(pg, m);
+   var resource = RConsole.find(FE3sModelConsole).load(guid);
+   model = RClass.create(FE3rModel);
+   model.linkGraphicContext(pc);
+   model.setCode(pg);
+   model.setResource(resource);
+   o._models.set(pg, model);
    if(rm.testReady()){
       m.loadResource(rm);
    }else{

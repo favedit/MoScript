@@ -224,7 +224,7 @@ function FDsResourceFrameSet_findPropertyFrame(p){
 function FDsResourceFrameSet_switchContent(typeCd){
    var o = this;
    o._resourceTypeCd = typeCd;
-   o._listContent.serviceSearch(typeCd, '', 40, 0);
+   o._listContent.serviceSearch(typeCd, '', '', 40, 0);
 }
 
 //==========================================================

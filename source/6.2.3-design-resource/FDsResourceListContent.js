@@ -131,8 +131,14 @@ function FDsResourceListContent_doDoubleClickItem(control){
    var typeCd = control._typeCd;
    if(typeCd == 'Bitmap'){
       workspace.selectFrameSet(EDsFrameSet.BitmapFrameSet, guid);
-   }else if(typeCd == 'Mesh3d'){
+   }else if(typeCd == 'Mesh'){
       workspace.selectFrameSet(EDsFrameSet.MeshFrameSet, guid);
+   }else if(typeCd == 'Model'){
+      workspace.selectFrameSet(EDsFrameSet.ModelFrameSet, guid);
+   }else if(typeCd == 'Template'){
+      workspace.selectFrameSet(EDsFrameSet.TemplateFrameSet, guid);
+   }else if(typeCd == 'Scene'){
+      workspace.selectFrameSet(EDsFrameSet.SceneFrameSet, guid);
    }else{
       throw new TError(o, 'Unsupport format.');
    }
@@ -145,17 +151,17 @@ function FDsResourceListContent_doDoubleClickItem(control){
 // @param typeCd:String 类型
 // @param search:String 搜索内容
 //==========================================================
-function FDsResourceListContent_serviceSearch(typeCd, serach, pageSize, page){
+function FDsResourceListContent_serviceSearch(typeCd, search, order, pageSize, page){
    var o = this;
    o._typeCd = typeCd;
-   o._serach = serach;
+   o._search = search;
+   o._order = order;
    o._pageSize = pageSize;
    o._page = page;
    // 画面禁止操作
    RConsole.find(FUiDesktopConsole).showLoading();
    // 发送数据请求
-   var url = '/cloud.content3d.resource.ws?action=list&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
-   var connection = RConsole.find(FXmlConsole).sendAsync(url);
+   var connection = RConsole.find(FDrResourceConsole).doList(typeCd, search, order, pageSize, page);
    connection.addLoadListener(o, o.onServiceLoad);
 }
 
@@ -168,7 +174,7 @@ function FDsResourceListContent_serviceSearch(typeCd, serach, pageSize, page){
 //==========================================================
 function FDsResourceListContent_serviceResearch(){
    var o = this;
-   o.serviceSearch(o._typeCd, o._serach, o._pageSize, o._page);
+   o.serviceSearch(o._typeCd, o._search, o._order, o._pageSize, o._page);
 }
 
 //==========================================================

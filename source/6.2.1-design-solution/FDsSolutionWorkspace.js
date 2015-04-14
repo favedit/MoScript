@@ -161,6 +161,16 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          frameSet._workspace = o;
          frameSet._menuBar = menuBar;
          menuBar._frameSet = frameSet;
+      }else if(name == EDsFrameSet.ModelFrameSet){
+         // 创建菜单
+         var menuBar = RClass.create(FDsModelMenuBar);
+         menuBar._workspace = o;
+         menuBar.buildDefine(o._hPanel);
+         // 创建框架
+         frameSet = RConsole.find(FUiFrameConsole).findByClass(o, FDsModelFrameSet);
+         frameSet._workspace = o;
+         frameSet._menuBar = menuBar;
+         menuBar._frameSet = frameSet;
       }else{
          throw new TError('Unknown frameset. (name={1})', name);
       }
@@ -195,6 +205,15 @@ function FDsSolutionWorkspace_selectFrameSet(name, guid){
          frameSet.loadByGuid(guid);
          break;
       case EDsFrameSet.MeshFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
+      case EDsFrameSet.ModelFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
+      case EDsFrameSet.TemplateFrameSet:
+         frameSet.loadByGuid(guid);
+         break;
+      case EDsFrameSet.SceneFrameSet:
          frameSet.loadByGuid(guid);
          break;
       default:
@@ -235,6 +254,18 @@ function FDsSolutionWorkspace_load(){
       o._tabBar.select(button);
       o.selectFrameSet(code, guid)
    }else if(code == EDsFrameSet.MeshFrameSet){
+      button = o._tabBar.findControl('resource');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
+   }else if(code == EDsFrameSet.ModelFrameSet){
+      button = o._tabBar.findControl('resource');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
+   }else if(code == EDsFrameSet.TemplateFrameSet){
+      button = o._tabBar.findControl('resource');
+      o._tabBar.select(button);
+      o.selectFrameSet(code, guid)
+   }else if(code == EDsFrameSet.SceneFrameSet){
       button = o._tabBar.findControl('resource');
       o._tabBar.select(button);
       o.selectFrameSet(code, guid)

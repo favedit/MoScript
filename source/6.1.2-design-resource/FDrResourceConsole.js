@@ -9,14 +9,14 @@ function FDrResourceConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
    //..........................................................
    // @attribute
-   o._serviceCode   = 'cloud.content3d.resource';
-   o._catalogCode   = 'cloud.content3d.resource.catalog';
+   o._serviceCode   = 'cloud.resource';
+   o._catalogCode   = 'cloud.resource.catalog';
    o._resources     = null;
    //..........................................................
    // @method
    o.construct      = FDrResourceConsole_construct;
    // @method
-   o.fetch          = FDrResourceConsole_fetch;
+   o.doList         = FDrResourceConsole_doList;
    o.doDelete       = FDrResourceConsole_doDelete;
    // @method
    o.doFolderCreate = FDrResourceConsole_doFolderCreate;
@@ -47,10 +47,10 @@ function FDrResourceConsole_construct(){
 // @param pageSize:Integer 分页大小
 // @param page:Integer 分页
 //==========================================================
-function FDrResourceConsole_fetch(typeCd, search, order, pageSize, page){
+function FDrResourceConsole_doList(typeCd, search, order, pageSize, page){
    var o = this;
    // 发送数据请求
-   var url = '/' + o._serviceCode + '.ws?action=fetch&type_cd=' + typeCd + '&serach=' + serach + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
+   var url = '/' + o._serviceCode + '.ws?action=list&type_cd=' + typeCd + '&serach=' + search + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
    return RConsole.find(FXmlConsole).sendAsync(url);
 }
 

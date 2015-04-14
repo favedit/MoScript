@@ -40,6 +40,14 @@
 
 进行中
 ------------------------------------------------------------
+7 - Design - 导入模型(Model)
+7 - Design - 新建模板(Template)
+7 - Design - 新建材质(Material)
+7 - Design - 选择材质纹理(Material)
+7 - Design - 新建纹理(Texture)
+7 - Design - 选择纹理位图(Bitmap)
+
+
 7 - Design - 上传数据过程中，屏幕显示进度条。（临时进度条已经添加）
 7 - Design - 加载数据过程中，屏幕显示进度条。（临时进度条已经添加）
 

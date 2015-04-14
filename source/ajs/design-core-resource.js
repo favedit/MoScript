@@ -140,11 +140,11 @@ function FDrResource_classCode(){
 }
 function FDrResourceConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
-   o._serviceCode   = 'cloud.content3d.resource';
-   o._catalogCode   = 'cloud.content3d.resource.catalog';
+   o._serviceCode   = 'cloud.resource';
+   o._catalogCode   = 'cloud.resource.catalog';
    o._resources     = null;
    o.construct      = FDrResourceConsole_construct;
-   o.fetch          = FDrResourceConsole_fetch;
+   o.doList         = FDrResourceConsole_doList;
    o.doDelete       = FDrResourceConsole_doDelete;
    o.doFolderCreate = FDrResourceConsole_doFolderCreate;
    o.doFolderUpdate = FDrResourceConsole_doFolderUpdate;
@@ -156,9 +156,9 @@ function FDrResourceConsole_construct(){
    o.__base.FDrAbsResourceConsole.construct.call(o);
    o._resources = new TDictionary();
 }
-function FDrResourceConsole_fetch(typeCd, search, order, pageSize, page){
+function FDrResourceConsole_doList(typeCd, search, order, pageSize, page){
    var o = this;
-   var url = '/' + o._serviceCode + '.ws?action=fetch&type_cd=' + typeCd + '&serach=' + serach + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
+   var url = '/' + o._serviceCode + '.ws?action=list&type_cd=' + typeCd + '&serach=' + search + '&order=' + order + '&page_size=' + pageSize + '&page=' + page;
    return RConsole.find(FXmlConsole).sendAsync(url);
 }
 function FDrResourceConsole_doDelete(typeCd, guid){

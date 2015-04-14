@@ -57,6 +57,6 @@ function FDsResourceListItem_setTypeLabel(label){
 function FDsResourceListItem_refreshStyle(){
    var o = this;
    // 建立控件
-   var url = '/cloud.content.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid + '&update_date=' + o._updateDate;
+   var url = '/cloud.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid + '&update_date=' + o._updateDate;
    o._hForm.style.backgroundImage = 'url("' + url + '")';
 }

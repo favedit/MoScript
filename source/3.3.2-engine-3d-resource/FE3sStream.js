@@ -89,22 +89,22 @@ function FE3sStream_data(){
 //==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
-// @param p:input:FByteStream 数据流
+// @param input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FE3sStream_unserialize(p){
+function FE3sStream_unserialize(input){
    var o = this;
    // 读取属性
-   o._code = p.readString();
-   o._elementDataCd = p.readUint8();
-   o._elementCount = p.readUint8();
-   o._elementNormalize = p.readBoolean();
-   var dataStride = o._dataStride = p.readUint8();
-   var dataCount = o._dataCount = p.readInt32();
+   o._code = input.readString();
+   o._elementDataCd = input.readUint8();
+   o._elementCount = input.readUint8();
+   o._elementNormalize = input.readBoolean();
+   var dataStride = o._dataStride = input.readUint8();
+   var dataCount = o._dataCount = input.readInt32();
    var dataLength = o._dataLength = dataStride * dataCount;
    // 读取所有数据
    var data = o._data = new ArrayBuffer(dataLength);
-   p.readBytes(data, 0, dataLength);
+   input.readBytes(data, 0, dataLength);
 }
 
 //==========================================================
@@ -114,5 +114,6 @@ function FE3sStream_unserialize(p){
 //==========================================================
 function FE3sStream_dispose(){
    var o = this;
+   o.data = null;
    o.__base.FObject.dispose.call(o);
 }

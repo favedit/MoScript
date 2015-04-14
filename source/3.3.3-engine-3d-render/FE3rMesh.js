@@ -200,63 +200,65 @@ function FE3rMesh_resource(){
 //==========================================================
 // <T>加载资源。</T>
 //
-// @param p:resource:FE3sGeometry 资源
+// @param resource:FE3sGeometry 资源
 //==========================================================
-function FE3rMesh_loadResource(p){
+function FE3rMesh_loadResource(resource){
    var o = this;
-   var c = o._graphicContext;
+   var context = o._graphicContext;
    // 设置属性
-   o._resource = p;
+   o._resource = resource;
    // 创建顶点缓冲集合
-   var rss = p.streams();
-   var rsc = rss.count();
-   for(var i = 0; i < rsc; i++){
-      var rs = rss.get(i);
-      var rc = rs._code;
-      if((rc == 'index16') || (rc == 'index32')){
+   var streamResources = resource.streams();
+   var streamCount = streamResources.count();
+   for(var i = 0; i < streamCount; i++){
+      var streamResource = streamResources.get(i);
+      var code = streamResource._code;
+      var dataCount = streamResource._dataCount;
+      var data = streamResource._data;
+      if((code == 'index16') || (code == 'index32')){
          // 创建索引缓冲
-         var b = o._indexBuffer = c.createIndexBuffer();
-         b._resource = rs;
-         var ecd = rs.elementDataCd();
-         if(ecd == EDataType.Uint16){
-            b._strideCd = EG3dIndexStride.Uint16;
-         }else if(ecd == EDataType.Uint32){
-            b._strideCd = EG3dIndexStride.Uint32;
+         var buffer = o._indexBuffer = context.createIndexBuffer();
+         buffer._resource = streamResource;
+         var dataCd = streamResource.elementDataCd();
+         if(dataCd == EDataType.Uint16){
+            buffer._strideCd = EG3dIndexStride.Uint16;
+         }else if(dataCd == EDataType.Uint32){
+            buffer._strideCd = EG3dIndexStride.Uint32;
          }else{
             throw new TError(o, "Unknown data type.");
          }
-         b.upload(rs._data, 3 * rs._dataCount);
+         buffer.upload(data, 3 * dataCount);
       }else{
          // 创建顶点缓冲
-         var b = c.createVertexBuffer();
-         b._name = rc;
-         b._resource = rs;
-         o._vertexCount = rs._dataCount;
-         var d = null;
-         switch(rc){
+         var buffer = context.createVertexBuffer();
+         buffer._name = code;
+         buffer._resource = streamResource;
+         buffer._vertexCount = dataCount;
+         var pixels = null;
+         switch(code){
             case "position":
-               d = new Float32Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Float3;
+               pixels = new Float32Array(data);
+               buffer._formatCd = EG3dAttributeFormat.Float3;
                break;
             case "coord":
-               d = new Float32Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Float2;
+               pixels = new Float32Array(data);
+               buffer._formatCd = EG3dAttributeFormat.Float2;
                break;
             case "color":
-               d = new Uint8Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Byte4Normal;
+               pixels = new Uint8Array(data);
+               buffer._formatCd = EG3dAttributeFormat.Byte4Normal;
                break;
             case "normal":
             case "binormal":
             case "tangent":
-               d = new Uint8Array(rs._data);
-               b._formatCd = EG3dAttributeFormat.Byte4Normal;
+               pixels = new Uint8Array(data);
+               buffer._formatCd = EG3dAttributeFormat.Byte4Normal;
                break;
             default:
                throw new TError(o, "Unknown code");
          }
-         b.upload(d, rs._dataStride, rs._dataCount);
-         o._vertexBuffers.push(b);
+         buffer.upload(pixels, streamResource._dataStride, dataCount);
+         o._vertexBuffers.push(buffer);
       }
    }
    o._ready = true;

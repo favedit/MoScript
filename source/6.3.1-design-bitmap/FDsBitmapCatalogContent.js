@@ -139,11 +139,11 @@ function FDsBitmapCatalogContent_doDoubleClickItem(control){
 function FDsBitmapCatalogContent_serviceList(guid){
    var o = this;
    // 画面禁止操作
-   RConsole.find(FUiDesktopConsole).showLoading();
+   //RConsole.find(FUiDesktopConsole).showLoading();
    // 发送数据请求
-   var url = '/cloud.content2d.bitmap.image.ws?action=list&guid=' + guid;
-   var connection = RConsole.find(FXmlConsole).sendAsync(url);
-   connection.addLoadListener(o, o.onServiceLoad);
+   //var url = '/cloud.content2d.bitmap.image.ws?action=list&guid=' + guid;
+   //var connection = RConsole.find(FXmlConsole).sendAsync(url);
+   //connection.addLoadListener(o, o.onServiceLoad);
 }
 
 //==========================================================

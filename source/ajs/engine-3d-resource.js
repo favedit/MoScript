@@ -864,7 +864,7 @@ function FE3sMeshDisplay_saveConfig(p){
    o._renderable.saveConfig(p.create('Renderable'));
 }
 function FE3sModel(o){
-   o = RClass.inherits(this, o, FE3sResource);
+   o = RClass.inherits(this, o, FE3sSpace);
    o._dataCompress  = true;
    o._meshes        = null;
    o._skeletons     = null;
@@ -895,30 +895,33 @@ function FE3sModel_skeletons(){
 function FE3sModel_animations(){
    return this._animations;
 }
-function FE3sModel_unserialize(p){
+function FE3sModel_unserialize(input){
    var o = this;
-   o.__base.FE3sResource.unserialize.call(o, p);
-   var mc = RConsole.find(FE3sModelConsole);
-   mc.models().set(o.guid(), o);
-   var c = p.readInt16();
-   if(c > 0){
-      var s = o._meshes = new TObjects();
-      for(var i = 0; i < c; i++){
-         s.push(mc.unserialMesh(p));
+   o.__base.FE3sSpace.unserialize.call(o, input);
+   var modelConsole = RConsole.find(FE3sModelConsole);
+   modelConsole.models().set(o.guid(), o);
+   var meshCount = input.readInt16();
+   if(meshCount > 0){
+      var meshes = o._meshes = new TObjects();
+      for(var i = 0; i < meshCount; i++){
+         var mesh = modelConsole.unserialMesh(input)
+         meshes.push(mesh);
       }
    }
-   var c = p.readInt16();
-   if(c > 0){
+   var skeletonCount = input.readInt16();
+   if(skeletonCount > 0){
       var s = o._skeletons = new TObjects();
-      for(var i = 0; i < c; i++){
-         s.push(mc.unserialSkeleton(p));
+      for(var i = 0; i < skeletonCount; i++){
+         var skeleton = modelConsole.unserialSkeleton(input)
+         s.push(skeleton);
       }
    }
-   var c = p.readInt16();
-   if(c > 0){
-      var s = o._animations = new TObjects();
-      for(var i = 0; i < c; i++){
-         s.push(mc.unserialAnimation(o, p));
+   var animationCount = input.readInt16();
+   if(animationCount > 0){
+      var animations = o._animations = new TObjects();
+      for(var i = 0; i < animationCount; i++){
+         var animation = modelConsole.unserialAnimation(o, input)
+         animations.push(animation);
       }
    }
    RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
@@ -1005,23 +1008,23 @@ function FE3sModelConsole_unserialAnimation(m, p){
    o._animations.set(r.guid(), r);
    return r;
 }
-function FE3sModelConsole_load(p){
+function FE3sModelConsole_load(guid){
    var o = this;
-   var s = o._models;
-   var r = s.get(p);
-   if(r){
-      return r;
+   var models = o._models;
+   var model = models.get(guid);
+   if(model){
+      return model;
    }
-   var v = RConsole.find(FE3sVendorConsole).find('model');
-   v.set('guid', p);
-   var u = v.makeUrl();
-   r = RClass.create(FE3sModel);
-   r.setGuid(p);
-   r.setVendor(v);
-   r.setSourceUrl(u);
-   RConsole.find(FResourceConsole).load(r);
-   s.set(p, r);
-   return r;
+   var vendor = RConsole.find(FE3sVendorConsole).find('model');
+   vendor.set('guid', guid);
+   var url = vendor.makeUrl();
+   model = RClass.create(FE3sModel);
+   model.setGuid(guid);
+   model.setVendor(vendor);
+   model.setSourceUrl(url);
+   RConsole.find(FResourceConsole).load(model);
+   models.set(guid, model);
+   return model;
 }
 function FE3sModelConsole_dispose(){
    var o = this;
@@ -1897,20 +1900,21 @@ function FE3sStream_dataCount(){
 function FE3sStream_data(){
    return this._data;
 }
-function FE3sStream_unserialize(p){
+function FE3sStream_unserialize(input){
    var o = this;
-   o._code = p.readString();
-   o._elementDataCd = p.readUint8();
-   o._elementCount = p.readUint8();
-   o._elementNormalize = p.readBoolean();
-   var dataStride = o._dataStride = p.readUint8();
-   var dataCount = o._dataCount = p.readInt32();
+   o._code = input.readString();
+   o._elementDataCd = input.readUint8();
+   o._elementCount = input.readUint8();
+   o._elementNormalize = input.readBoolean();
+   var dataStride = o._dataStride = input.readUint8();
+   var dataCount = o._dataCount = input.readInt32();
    var dataLength = o._dataLength = dataStride * dataCount;
    var data = o._data = new ArrayBuffer(dataLength);
-   p.readBytes(data, 0, dataLength);
+   input.readBytes(data, 0, dataLength);
 }
 function FE3sStream_dispose(){
    var o = this;
+   o.data = null;
    o.__base.FObject.dispose.call(o);
 }
 function FE3sTechnique(o){
@@ -2526,15 +2530,13 @@ function FE3sVendorConsole_find(p){
 function FE3sVendorConsole_setup(p){
    var o = this;
    if(p == 'net'){
-      o._vendors.set('texture.bitmap', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.texture.bitmap.wv'), 'guid|code'));
-      o._vendors.set('texture', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.texture.wv'), 'guid'));
-      o._vendors.set('mesh', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.mesh.wv'), 'guid|code'));
-      o._vendors.set('model', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.model.wv'), 'guid|code'));
-      o._vendors.set('template', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.template.wv'), 'guid|code'));
-      o._vendors.set('scene', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.content.scene.wv'), 'guid|code'));
+      o._vendors.set('bitmap', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.bitmap.wv'), 'guid'));
+      o._vendors.set('mesh', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.mesh.wv'), 'guid'));
+      o._vendors.set('model', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.model.wv'), 'guid'));
+      o._vendors.set('template', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.template.wv'), 'guid'));
+      o._vendors.set('scene', o.createVendor(FE3sVendorNet, RBrowser.hostPath('/cloud.resource.scene.wv'), 'guid|code'));
    }else if(p == 'local'){
-      o._vendors.set('texture.bitmap', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/texture/{guid}/{code}.{format}')));
-      o._vendors.set('texture', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/texture/{guid}.bin')));
+      o._vendors.set('bitmap', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/texture/{guid}.bin')));
       o._vendors.set('mesh', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/mesh/{guid}.bin')));
       o._vendors.set('model', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/model/{guid}.bin')));
       o._vendors.set('template', o.createVendor(FE3sVendorLocal, RBrowser.contentPath('/ar3/template/{guid}.bin')));

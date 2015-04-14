@@ -9217,10 +9217,12 @@ function FUiFile_onFileChange(event){
    var o = this;
    var hFile = o._hInput;
    if(hFile.files){
-      var file = hFile.files[0];
-      var name = file.name;
-      o._hInputEdit.value = name + ' (' + file.size + 'byte)';
-      o.processDataChangedListener(event);
+      if(hFile.files.length){
+         var file = hFile.files[0];
+         var name = file.name;
+         o._hInputEdit.value = name + ' (' + file.size + 'byte)';
+         o.processDataChangedListener(event);
+      }
    }
 }
 function FUiFile_construct(){

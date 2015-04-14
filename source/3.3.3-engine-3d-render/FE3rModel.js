@@ -115,32 +115,32 @@ function FE3rModel_loadSkeletonResource(p){
 // <T>加载模型资源。</T>
 //
 // @method
-// @param p:resource:FE3sModel 模型资源
+// @param resource:FE3sModel 模型资源
 //==========================================================
-function FE3rModel_loadResource(p){
+function FE3rModel_loadResource(resource){
    var o = this;
-   var rmc = RConsole.find(FE3rModelConsole);
+   var modelConsole = RConsole.find(FE3rModelConsole);
    // 读取网格集合
-   var rgs = p.meshes();
-   if(rgs){
-      var gs = o._meshes = new TObjects();
-      var c = rgs.count();
-      for(var i = 0; i < c; i++){
-         var rg = rgs.get(i);
-         var g = RClass.create(FE3rModelMesh);
-         g.linkGraphicContext(o);
-         g.loadResource(rg);
-         gs.push(g);
-         rmc.meshs().set(g.guid(), g);
+   var meshResources = resource.meshes();
+   if(meshResources){
+      var meshes = o._meshes = new TObjects();
+      var meshCount = meshResources.count();
+      for(var i = 0; i < meshCount; i++){
+         var meshResource = meshResources.get(i);
+         var mesh = RClass.create(FE3rModelMesh);
+         mesh.linkGraphicContext(o);
+         mesh.loadResource(meshResource);
+         meshes.push(mesh);
+         modelConsole.meshs().set(mesh.guid(), mesh);
       }
    }
    // 读取骨骼集合
-   var rks = p.skeletons();
-   if(rks){
-      var c = rks.count();
-      for(var i = 0; i < c; i++){
-         var rk = rks.get(i);
-         o.loadSkeletonResource(rk);
+   var skeletonResources = resource.skeletons();
+   if(skeletonResources){
+      var skeletonCount = skeletonResources.count();
+      for(var i = 0; i < skeletonCount; i++){
+         var skeletonResource = skeletonResources.get(i);
+         o.loadSkeletonResource(skeletonResource);
       }
    }
    // 加载完成

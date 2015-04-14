@@ -5,7 +5,7 @@
 // @history 150128
 //==========================================================
 function FE3sModel(o){
-   o = RClass.inherits(this, o, FE3sResource);
+   o = RClass.inherits(this, o, FE3sSpace);
    //..........................................................
    // @attribute
    o._dataCompress  = true;
@@ -75,42 +75,45 @@ function FE3sModel_animations(){
 //==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
-// @param p:input:FByteStream 数据流
+// @param input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FE3sModel_unserialize(p){
+function FE3sModel_unserialize(input){
    // 读取父信息
    var o = this;
-   o.__base.FE3sResource.unserialize.call(o, p);
+   o.__base.FE3sSpace.unserialize.call(o, input);
    //..........................................................
    // 存储模型
-   var mc = RConsole.find(FE3sModelConsole);
-   mc.models().set(o.guid(), o);
+   var modelConsole = RConsole.find(FE3sModelConsole);
+   modelConsole.models().set(o.guid(), o);
    //..........................................................
    // 读取几何体集合
-   var c = p.readInt16();
-   if(c > 0){
-      var s = o._meshes = new TObjects();
-      for(var i = 0; i < c; i++){
-         s.push(mc.unserialMesh(p));
+   var meshCount = input.readInt16();
+   if(meshCount > 0){
+      var meshes = o._meshes = new TObjects();
+      for(var i = 0; i < meshCount; i++){
+         var mesh = modelConsole.unserialMesh(input)
+         meshes.push(mesh);
       }
    }
    //..........................................................
    // 读取骨骼集合
-   var c = p.readInt16();
-   if(c > 0){
+   var skeletonCount = input.readInt16();
+   if(skeletonCount > 0){
       var s = o._skeletons = new TObjects();
-      for(var i = 0; i < c; i++){
-         s.push(mc.unserialSkeleton(p));
+      for(var i = 0; i < skeletonCount; i++){
+         var skeleton = modelConsole.unserialSkeleton(input)
+         s.push(skeleton);
       }
    }
    //..........................................................
    // 读取动画集合
-   var c = p.readInt16();
-   if(c > 0){
-      var s = o._animations = new TObjects();
-      for(var i = 0; i < c; i++){
-         s.push(mc.unserialAnimation(o, p));
+   var animationCount = input.readInt16();
+   if(animationCount > 0){
+      var animations = o._animations = new TObjects();
+      for(var i = 0; i < animationCount; i++){
+         var animation = modelConsole.unserialAnimation(o, input)
+         animations.push(animation);
       }
    }
    RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);

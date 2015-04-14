@@ -12,7 +12,7 @@ function FE3dModelConsole(o){
    o._scopeCd    = EScope.Local;
    // @attribute
    o._loadModels = null;
-   o._models     = null;
+   o._pools      = null;
    // @attribute
    o._thread     = null;
    o._interval   = 100;
@@ -22,7 +22,7 @@ function FE3dModelConsole(o){
    //..........................................................
    // @method
    o.construct   = FE3dModelConsole_construct;
-   o.models      = FE3dModelConsole_models;
+   o.pools       = FE3dModelConsole_pools;
    o.alloc       = FE3dModelConsole_alloc;
    o.free        = FE3dModelConsole_free;
    return o;
@@ -35,12 +35,12 @@ function FE3dModelConsole(o){
 //==========================================================
 function FE3dModelConsole_onProcess(){
    var o = this;
-   var ms = o._loadModels;
-   ms.record();
-   while(ms.next()){
-      var m = ms.current();
-      if(m.processLoad()){
-         ms.removeCurrent();
+   var looper = o._loadModels;
+   looper.record();
+   while(looper.next()){
+      var model = looper.current();
+      if(model.processLoad()){
+         looper.removeCurrent();
       }
    }
 }
@@ -54,76 +54,63 @@ function FE3dModelConsole_construct(){
    var o = this;
    // 设置属性
    o._loadModels = new TLooper();
-   o._models = new TDictionary();
+   o._pools = RClass.create(FObjectPools);
    // 创建线程
-   var t = o._thread = RClass.create(FThread);
-   t.setInterval(o._interval);
-   t.addProcessListener(o, o.onProcess);
-   RConsole.find(FThreadConsole).start(t);
+   var thread = o._thread = RClass.create(FThread);
+   thread.setInterval(o._interval);
+   thread.addProcessListener(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(thread);
 }
 
 //==========================================================
-// <T>获得渲染模型集合。</T>
+// <T>获得缓冲池。</T>
 //
 // @method
-// @return TDictionary 渲染模型集合
+// @return FObjectPools 缓冲池
 //==========================================================
-function FE3dModelConsole_models(){
-   return this._models;
+function FE3dModelConsole_pools(){
+   return this._pools;
 }
 
 //==========================================================
 // <T>加载一个模型。</T>
 //
 // @method
-// @param pc:content:FRenderContent 名称
-// @param pn:name:String 名称
-// @return FRenderModel 渲染模型
+// @param context:MGraphicObject 渲染环境
+// @param guid:String 唯一编码
+// @return FE3dModel 渲染模型
 //==========================================================
-function FE3dModelConsole_alloc(pc, pn){
+function FE3dModelConsole_alloc(context, guid){
    var o = this;
    // 尝试从缓冲池中取出
-   var ms = o._models.get(pn);
-   if(ms){
-      if(!ms.isEmpty()){
-         return ms.pop();
-      }
+   var model = o._pools.alloc(guid);
+   if(model){
+      return model;
    }
    // 加载渲染对象
-   var rmc = RConsole.find(FE3rModelConsole);
-   var rm = rmc.load(pc, pn);
+   var renderable = RConsole.find(FE3rModelConsole).load(context, guid);
    // 加载模型
-   var m = RClass.create(FModel3d);
-   m._context = pc;
-   m._name = pn;
-   m._modelName = pn;
-   m._renderable = rm;
-   // 测试是否已加载
-   //if(rm.testReady()){
-   //   m.load(rm);
-   //}else{
-      // 增加加载中
-      o._loadModels.push(m);
-   //}
-   return m;
+   var model = RClass.create(FE3dModel);
+   model.linkGraphicContext(context);
+   model._name = guid;
+   model._poolCode = guid;
+   model._renderable = renderable;
+   // 追加到加载队列
+   o._loadModels.push(model);
+   return model;
 }
 
 //==========================================================
 // <T>释放一个模型。</T>
 //
 // @method
-// @param p:model:FModel3d 模型
+// @param model:FE3dModel 渲染模型
 //==========================================================
-function FE3dModelConsole_free(p){
+function FE3dModelConsole_free(model){
    var o = this;
    // 脱离父对象
-   p.remove();
+   //model.remove();
    // 放到缓冲池
-   var n = p._modelName;
-   var ms = o._models.get(n);
-   if(ms == null){
-      ms = new TObjects();
-      o._models.set(n, ms);
-   }
-   ms.push(p);
+   var code = model._poolCode;
+   o._pools.free(code, model);
 }

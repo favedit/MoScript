@@ -195,29 +195,30 @@ function FE3sModelConsole_unserialAnimation(m, p){
 //==========================================================
 // <T>加载指定代码的模型资源。</T>
 //
-// @param pg:guid:String 唯一编号
+// @param guid:String 唯一编号
 // @return 处理结果
 //==========================================================
-function FE3sModelConsole_load(p){
+function FE3sModelConsole_load(guid){
    var o = this;
-   var s = o._models;
-   var r = s.get(p);
-   if(r){
-      return r;
+   var models = o._models;
+   // 查找模型
+   var model = models.get(guid);
+   if(model){
+      return model;
    }
    // 生成地址
-   var v = RConsole.find(FE3sVendorConsole).find('model');
-   v.set('guid', p);
-   var u = v.makeUrl();
+   var vendor = RConsole.find(FE3sVendorConsole).find('model');
+   vendor.set('guid', guid);
+   var url = vendor.makeUrl();
    // 创建模型资源
-   r = RClass.create(FE3sModel);
-   r.setGuid(p);
-   r.setVendor(v);
-   r.setSourceUrl(u);
-   RConsole.find(FResourceConsole).load(r);
+   model = RClass.create(FE3sModel);
+   model.setGuid(guid);
+   model.setVendor(vendor);
+   model.setSourceUrl(url);
+   RConsole.find(FResourceConsole).load(model);
    // 存储模型
-   s.set(p, r);
-   return r;
+   models.set(guid, model);
+   return model;
 }
 
 //==========================================================

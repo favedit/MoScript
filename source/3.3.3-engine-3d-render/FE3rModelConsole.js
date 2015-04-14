@@ -120,14 +120,49 @@ function FE3rModelConsole_meshs(){
 // <T>加载一个渲染模型。</T>
 //
 // @method
+// @param context:FG3dContext 环境
+// @param guid:String 唯一编号
+// @return FRenderModel 渲染模型
+//==========================================================
+function FE3rModelConsole_load(context, guid){
+   var o = this;
+   // 检查参数
+   if(!RClass.isClass(context, MGraphicObject)){
+      throw new TError('Graphics context is empty');
+   }
+   if(RString.isEmpty(guid)){
+      throw new TError('Model guid is empty');
+   }
+   // 查找模型
+   var model = o._models.get(guid);
+   if(model){
+      return model;
+   }
+   // 获得路径
+   var resource = RConsole.find(FE3sModelConsole).load(guid);
+   // 加载模型
+   model = RClass.create(FE3rModel);
+   model.linkGraphicContext(context);
+   model.setCode(guid);
+   model.setResource(resource);
+   o._models.set(guid, model);
+   // 追加到加载队列
+   o._loadModels.push(model);
+   return model;
+}
+
+//==========================================================
+// <T>加载一个渲染模型。</T>
+//
+// @method
 // @param pc:content:FG3dContext 环境
 // @param pg:guid:String 唯一编号
 // @return FRenderModel 渲染模型
 //==========================================================
-function FE3rModelConsole_load(pc, pg){
+function FE3rModelConsole_loadMeshByGuid(context, pg){
    var o = this;
    // 检查参数
-   if(!RClass.isClass(pc, FGraphicContext)){
+   if(!RClass.isClass(context, MGraphicObject)){
       throw new TError('Graphics context is empty');
    }
    if(RString.isEmpty(pg)){
@@ -139,8 +174,7 @@ function FE3rModelConsole_load(pc, pg){
       return m;
    }
    // 获得路径
-   var rmc = RConsole.find(FE3sModelConsole);
-   var rm = rmc.load(pg);
+   var resource = RConsole.find(FE3sModelConsole).load(guid);
    // 加载模型
    m = RClass.create(FE3rModel);
    m.linkGraphicContext(pc);
@@ -165,70 +199,30 @@ function FE3rModelConsole_load(pc, pg){
 // @param pg:guid:String 唯一编号
 // @return FRenderModel 渲染模型
 //==========================================================
-function FE3rModelConsole_loadMeshByGuid(pc, pg){
+function FE3rModelConsole_loadMeshByCode(context, pg){
    var o = this;
    // 检查参数
-   if(!RClass.isClass(pc, FGraphicContext)){
+   if(!RClass.isClass(context, MGraphicObject)){
       throw new TError('Graphics context is empty');
    }
    if(RString.isEmpty(pg)){
       throw new TError('Model guid is empty');
    }
+   //..........................................................
    // 查找模型
-   var m = o._models.get(pg);
-   if(m){
-      return m;
+   var model = o._models.get(pg);
+   if(model){
+      return model;
    }
-   // 获得路径
-   var rmc = RConsole.find(FE3sModelConsole);
-   var rm = rmc.load(pg);
+   //..........................................................
+   // 获得资源
+   var resource = RConsole.find(FE3sModelConsole).load(guid);
    // 加载模型
-   m = RClass.create(FE3rModel);
-   m.linkGraphicContext(pc);
-   m.setCode(pg);
-   m.setResource(rm);
-   o._models.set(pg, m);
-   // 测试是否已加载
-   if(rm.testReady()){
-      m.loadResource(rm);
-   }else{
-      // 追加到加载队列
-      o._loadModels.push(m);
-   }
-   return m;
-}
-
-//==========================================================
-// <T>加载一个渲染模型。</T>
-//
-// @method
-// @param pc:content:FG3dContext 环境
-// @param pg:guid:String 唯一编号
-// @return FRenderModel 渲染模型
-//==========================================================
-function FE3rModelConsole_loadMeshByCode(pc, pg){
-   var o = this;
-   // 检查参数
-   if(!RClass.isClass(pc, FGraphicContext)){
-      throw new TError('Graphics context is empty');
-   }
-   if(RString.isEmpty(pg)){
-      throw new TError('Model guid is empty');
-   }
-   // 查找模型
-   var m = o._models.get(pg);
-   if(m){
-      return m;
-   }
-   // 获得路径
-   var rmc = RConsole.find(FE3sModelConsole);
-   var rm = rmc.load(pg);
-   // 加载模型
-   m = RClass.create(FE3rModel);
-   m.linkGraphicContext(pc);
-   m.setCode(pg);
-   m.setResource(rm);
-   o._models.set(pg, m);
+   model = RClass.create(FE3rModel);
+   model.linkGraphicContext(pc);
+   model.setCode(pg);
+   model.setResource(resource);
+   o._models.set(pg, model);
    // 测试是否已加载
    if(rm.testReady()){
       m.loadResource(rm);

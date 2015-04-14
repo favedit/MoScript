@@ -57,7 +57,7 @@ function FE3dMesh_loadRenderable(p){
    var technique = o.selectTechnique(o, FE3dGeneralTechnique);
    technique.setResource(resource.technique());
    // 加载资源
-   o.loadResource(p.resource());
+   o.loadResource(resource);
    // 创建渲染对象
    var m = RClass.create(FE3dMeshRenderable);
    m.setResource(resource._renderable);
@@ -77,8 +77,8 @@ function FE3dMesh_loadRenderable(p){
    display.load(resource._display);
    display.pushRenderable(m);
    o._layer.pushDisplay(display);
-   o._ready = true;
    // 加载完成
+   o._ready = true;
    o.processLoadListener(o);
 }
 

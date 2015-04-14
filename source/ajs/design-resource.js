@@ -18,7 +18,7 @@ function FDsResourceCatalogContent_onBuild(p){
    var o = this;
    o.__base.FUiDataTreeView.onBuild.call(o, p);
    o.lsnsClick.register(o, o.onNodeClick);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.resource');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.catalog');
 }
 function FDsResourceCatalogContent_onLoadDisplay(p){
    var o = this;
@@ -381,7 +381,7 @@ function FDsResourceFrameSet_findPropertyFrame(p){
 function FDsResourceFrameSet_switchContent(typeCd){
    var o = this;
    o._resourceTypeCd = typeCd;
-   o._listContent.serviceSearch(typeCd, '', 40, 0);
+   o._listContent.serviceSearch(typeCd, '', '', 40, 0);
 }
 function FDsResourceFrameSet_load(){
    var o = this;
@@ -438,11 +438,11 @@ function FDsResourceImportDialog_onFileLoaded(event){
    var label = o._controlLabel.get();
    var url = null;
    if(o._modeCd == 'picture'){
-      url = '/cloud.content2d.bitmap.wv?do=importData';
+      url = '/cloud.resource.bitmap.wv?do=importData';
    }else if(o._modeCd == 'mesh'){
-      url = '/cloud.content.mesh.wv?do=importData';
+      url = '/cloud.resource.model.wv?do=importData';
    }else{
-      throw new TError(o, 'Mode is invalid.');
+      throw new TError(o, 'Type is invalid.');
    }
    if(o._nodeGuid){
       url += '&node_guid=' + o._nodeGuid;
@@ -562,26 +562,32 @@ function FDsResourceListContent_doDoubleClickItem(control){
    var typeCd = control._typeCd;
    if(typeCd == 'Bitmap'){
       workspace.selectFrameSet(EDsFrameSet.BitmapFrameSet, guid);
-   }else if(typeCd == 'Mesh3d'){
+   }else if(typeCd == 'Mesh'){
       workspace.selectFrameSet(EDsFrameSet.MeshFrameSet, guid);
+   }else if(typeCd == 'Model'){
+      workspace.selectFrameSet(EDsFrameSet.ModelFrameSet, guid);
+   }else if(typeCd == 'Template'){
+      workspace.selectFrameSet(EDsFrameSet.TemplateFrameSet, guid);
+   }else if(typeCd == 'Scene'){
+      workspace.selectFrameSet(EDsFrameSet.SceneFrameSet, guid);
    }else{
       throw new TError(o, 'Unsupport format.');
    }
 }
-function FDsResourceListContent_serviceSearch(typeCd, serach, pageSize, page){
+function FDsResourceListContent_serviceSearch(typeCd, search, order, pageSize, page){
    var o = this;
    o._typeCd = typeCd;
-   o._serach = serach;
+   o._search = search;
+   o._order = order;
    o._pageSize = pageSize;
    o._page = page;
    RConsole.find(FUiDesktopConsole).showLoading();
-   var url = '/cloud.content3d.resource.ws?action=list&type_cd=' + typeCd + '&serach=' + serach + '&page_size=' + pageSize + '&page=' + page;
-   var connection = RConsole.find(FXmlConsole).sendAsync(url);
+   var connection = RConsole.find(FDrResourceConsole).doList(typeCd, search, order, pageSize, page);
    connection.addLoadListener(o, o.onServiceLoad);
 }
 function FDsResourceListContent_serviceResearch(){
    var o = this;
-   o.serviceSearch(o._typeCd, o._serach, o._pageSize, o._page);
+   o.serviceSearch(o._typeCd, o._search, o._order, o._pageSize, o._page);
 }
 function FDsResourceListContent_dispose(){
    var o = this;
@@ -611,7 +617,7 @@ function FDsResourceListItem_setTypeLabel(label){
 }
 function FDsResourceListItem_refreshStyle(){
    var o = this;
-   var url = '/cloud.content.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid + '&update_date=' + o._updateDate;
+   var url = '/cloud.resource.preview.wv?type_cd=' + o._typeCd + '&guid=' + o._guid + '&update_date=' + o._updateDate;
    o._hForm.style.backgroundImage = 'url("' + url + '")';
 }
 function FDsResourceListToolBar(o){

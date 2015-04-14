@@ -57,12 +57,11 @@
      <PathMerger source='/6.2.4-design-publish'     target='/ajs/design-publish.js'/>
 
      <PathMerger source='/6.3.1-design-bitmap'      target='/ajs/design-bitmap.js'/>
-     <PathMerger source='/6.3.2-design-texture'     target='/ajs/design-texture.js'/>
-     <PathMerger source='/6.3.3-design-material'    target='/ajs/design-material.js'/>
-     <PathMerger source='/6.3.4-design-mesh'        target='/ajs/design-mesh.js'/>
-     <PathMerger source='/6.3.5-design-model'       target='/ajs/design-model.js'/>
-     <PathMerger source='/6.3.6-design-template'    target='/ajs/design-template.js'/>
-     <PathMerger source='/6.3.7-design-scene'       target='/ajs/design-scene.js'/>
+     <PathMerger source='/6.3.2-design-material'    target='/ajs/design-material.js'/>
+     <PathMerger source='/6.3.3-design-mesh'        target='/ajs/design-mesh.js'/>
+     <PathMerger source='/6.3.4-design-model'       target='/ajs/design-model.js'/>
+     <PathMerger source='/6.3.5-design-template'    target='/ajs/design-template.js'/>
+     <PathMerger source='/6.3.6-design-scene'       target='/ajs/design-scene.js'/>
 
      <PathMerger source='/7.1.1-demo'               target='/ajs/demo.js'/>
   </PathMergerCollection>
@@ -128,7 +127,6 @@
         <File source='/ajs/design-resource.js'/>
         <File source='/ajs/design-publish.js'/>
         <File source='/ajs/design-bitmap.js'/>
-        <File source='/ajs/design-texture.js'/>
         <File source='/ajs/design-material.js'/>
         <File source='/ajs/design-mesh.js'/>
         <File source='/ajs/design-model.js'/>

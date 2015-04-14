@@ -5,7 +5,7 @@
 // @history 141231
 //==========================================================
 function FE3dModelRenderable(o){
-   o = RClass.inherits(this, o, FG3dRenderable);
+   o = RClass.inherits(this, o, FE3dMeshRenderable);
    //..........................................................
    // @attribute
    o._ready            = false;
@@ -36,7 +36,7 @@ function FE3dModelRenderable(o){
 //==========================================================
 function FE3dModelRenderable_construct(){
    var o = this;
-   o.__base.FG3dRenderable.construct.call(o);
+   o.__base.FE3dMeshRenderable.construct.call(o);
 }
 
 //==========================================================
@@ -47,14 +47,14 @@ function FE3dModelRenderable_construct(){
 //==========================================================
 function FE3dModelRenderable_testVisible(p){
    var o = this;
-   var r = o._ready;
-   if(!r){
-      var d = o._renderable;
-      if(d){
-         r = o._ready = d.testReady();
+   var ready = o._ready;
+   if(!ready){
+      var renderable = o._renderable;
+      if(renderable){
+         ready = o._ready = renderable.testReady();
       }
    }
-   return r;
+   return ready;
 }
 
 //==========================================================
@@ -131,19 +131,19 @@ function FE3dModelRenderable_bones(p){
 //==========================================================
 // <T>加载资源。</T>
 //
-// @param p:resource:FE3sGeometry 资源
+// @param resource:FE3sGeometry 资源
 //==========================================================
-function FE3dModelRenderable_load(p){
+function FE3dModelRenderable_load(renderable){
    var o = this;
    // 获得材质
-   var m = o._material;
-   var mr = o._materialResource = p.material();
-   if(mr){
-      m.assignInfo(mr.info());
+   var material = o._material;
+   var materialResource = o._materialResource = renderable.material();
+   if(materialResource){
+      material.assignInfo(materialResource.info());
    }
    // 设置属性
-   o._effectCode = m.info().effectCode;
-   o._renderable = p;
+   o._effectCode = material.info().effectCode;
+   o._renderable = renderable;
 }
 
 //==========================================================
@@ -179,6 +179,25 @@ function FE3dModelRenderable_build(p){
 //==========================================================
 function FE3dModelRenderable_update(p){
    var o = this;
-   var m = o._display.matrix();
-   o._matrix.assign(m);
+   var d = o._display;
+   var mm = o._matrix;
+   var t = o._activeTrack;
+   // 计算矩阵
+   var m = o._calculateMatrix;
+   if(t){
+      m.assign(t.matrix());
+      m.append(mm);
+   }else{
+      m.assign(mm);
+   }
+   // 计算显示矩阵
+   if(d){
+      var dm = o._display.currentMatrix();
+      m.append(dm);
+   }
+   // 接收数据
+   var c = o._currentMatrix.attachData(m.data());
+   if(c){
+      p.change();
+   }
 }

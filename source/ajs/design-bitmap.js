@@ -459,10 +459,6 @@ function FDsBitmapCatalogContent_doDoubleClickItem(control){
 }
 function FDsBitmapCatalogContent_serviceList(guid){
    var o = this;
-   RConsole.find(FUiDesktopConsole).showLoading();
-   var url = '/cloud.content2d.bitmap.image.ws?action=list&guid=' + guid;
-   var connection = RConsole.find(FXmlConsole).sendAsync(url);
-   connection.addLoadListener(o, o.onServiceLoad);
 }
 function FDsBitmapCatalogContent_dispose(){
    var o = this;

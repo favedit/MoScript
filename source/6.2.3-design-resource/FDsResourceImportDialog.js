@@ -89,11 +89,11 @@ function FDsResourceImportDialog_onFileLoaded(event){
    // 上传数据
    var url = null;
    if(o._modeCd == 'picture'){
-      url = '/cloud.content2d.bitmap.wv?do=importData';
+      url = '/cloud.resource.bitmap.wv?do=importData';
    }else if(o._modeCd == 'mesh'){
-      url = '/cloud.content.mesh.wv?do=importData';
+      url = '/cloud.resource.model.wv?do=importData';
    }else{
-      throw new TError(o, 'Mode is invalid.');
+      throw new TError(o, 'Type is invalid.');
    }
    if(o._nodeGuid){
       url += '&node_guid=' + o._nodeGuid;

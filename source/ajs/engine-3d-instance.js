@@ -495,7 +495,7 @@ function FE3dMesh_loadRenderable(p){
    var resource = p.resource();
    var technique = o.selectTechnique(o, FE3dGeneralTechnique);
    technique.setResource(resource.technique());
-   o.loadResource(p.resource());
+   o.loadResource(resource);
    var m = RClass.create(FE3dMeshRenderable);
    m.setResource(resource._renderable);
    m._material.loadResource(resource._display._material);
@@ -719,41 +719,37 @@ function FE3dMeshRenderable_dispose(){
    o.__base.FE3dRenderable.dispose.call(o);
 }
 function FE3dModel(o){
-   o = RClass.inherits(this, o, FE3dDisplay);
+   o = RClass.inherits(this, o, FE3dSpace, MLinkerResource, MListenerLoad);
    o._dataReady     = false;
    o._renderables   = null;
    o._animation     = null;
    o._geometrys     = null;
    o._renderable    = null;
+   o.construct      = FE3dModel_construct;
    o.testReady      = FE3dModel_testReady;
    o.loadRenderable = FE3dModel_loadRenderable;
    o.processLoad    = FE3dModel_processLoad;
    o.process        = FE3dModel_process;
    return o;
 }
+function FE3dModel_construct(){
+   var o = this;
+   o.__base.FE3dSpace.construct.call(o);
+   var layer = o._layer = RClass.create(FDisplayLayer);
+   o.registerLayer('Layer', layer);
+}
 function FE3dModel_testReady(){
    return this._dataReady;
 }
-function FE3dModel_loadRenderable(p){
+function FE3dModel_loadRenderable(renderable){
    var o = this;
-   var c = o._context;
-   var r = p.resource();
-   var rgs = p.geometrys();
-   if(rgs){
-      var c = rgs.count();
-      if(c > 0){
-         var gs = o._geometrys = new TObjects();
-         var rs = o.renderables();
-         for(var i = 0; i < c; i++){
-            var rg = rgs.get(i);
-            var g = RClass.create(FModelRenderable3d);
-            g._display = o;
-            g.load(rg);
-            gs.push(g);
-            rs.push(g);
-         }
-      }
-   }
+   var resource = renderable.resource();
+   var technique = o.selectTechnique(o, FE3dGeneralTechnique);
+   technique.setResource(resource.technique());
+   o.loadResource(resource);
+   var display = o._display = RClass.create(FE3dModelDisplay);
+   display.load(renderable);
+   o._layer.pushDisplay(display);
    o._dataReady = true;
 }
 function FE3dModel_processLoad(){
@@ -761,15 +757,17 @@ function FE3dModel_processLoad(){
    if(o._dataReady){
       return true;
    }
-   if(!o._renderable.testReady()){
+   var renderable = o._renderable;
+   if(!renderable.testReady()){
       return false;
    }
-   o.loadRenderable(o._renderable);
+   o.loadRenderable(renderable);
+   o.processLoadListener(o);
    return true;
 }
 function FE3dModel_process(){
    var o = this;
-   o.__base.FE3dDisplay.process.call(o);
+   o.__base.FE3dSpace.process.call(o);
    if(o._animation){
       o._animation.process();
    }
@@ -779,70 +777,93 @@ function FE3dModelConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd    = EScope.Local;
    o._loadModels = null;
-   o._models     = null;
+   o._pools      = null;
    o._thread     = null;
    o._interval   = 100;
    o.onProcess   = FE3dModelConsole_onProcess;
    o.construct   = FE3dModelConsole_construct;
-   o.models      = FE3dModelConsole_models;
+   o.pools       = FE3dModelConsole_pools;
    o.alloc       = FE3dModelConsole_alloc;
    o.free        = FE3dModelConsole_free;
    return o;
 }
 function FE3dModelConsole_onProcess(){
    var o = this;
-   var ms = o._loadModels;
-   ms.record();
-   while(ms.next()){
-      var m = ms.current();
-      if(m.processLoad()){
-         ms.removeCurrent();
+   var looper = o._loadModels;
+   looper.record();
+   while(looper.next()){
+      var model = looper.current();
+      if(model.processLoad()){
+         looper.removeCurrent();
       }
    }
 }
 function FE3dModelConsole_construct(){
    var o = this;
    o._loadModels = new TLooper();
-   o._models = new TDictionary();
-   var t = o._thread = RClass.create(FThread);
-   t.setInterval(o._interval);
-   t.addProcessListener(o, o.onProcess);
-   RConsole.find(FThreadConsole).start(t);
+   o._pools = RClass.create(FObjectPools);
+   var thread = o._thread = RClass.create(FThread);
+   thread.setInterval(o._interval);
+   thread.addProcessListener(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(thread);
 }
-function FE3dModelConsole_models(){
-   return this._models;
+function FE3dModelConsole_pools(){
+   return this._pools;
 }
-function FE3dModelConsole_alloc(pc, pn){
+function FE3dModelConsole_alloc(context, guid){
    var o = this;
-   var ms = o._models.get(pn);
-   if(ms){
-      if(!ms.isEmpty()){
-         return ms.pop();
+   var model = o._pools.alloc(guid);
+   if(model){
+      return model;
+   }
+   var renderable = RConsole.find(FE3rModelConsole).load(context, guid);
+   var model = RClass.create(FE3dModel);
+   model.linkGraphicContext(context);
+   model._name = guid;
+   model._poolCode = guid;
+   model._renderable = renderable;
+   o._loadModels.push(model);
+   return model;
+}
+function FE3dModelConsole_free(model){
+   var o = this;
+   var code = model._poolCode;
+   o._pools.free(code, model);
+}
+function FE3dModelDisplay(o){
+   o = RClass.inherits(this, o, FE3dDisplay, MLinkerResource);
+   o.load           = FE3dModelDisplay_load;
+   o.reloadResource = FE3dModelDisplay_reloadResource;
+   return o;
+}
+function FE3dModelDisplay_renderable(){
+   return this._renderable;
+}
+function FE3dModelDisplay_load(renderable){
+   var o = this;
+   var resource = renderable.resource();
+   o._matrix.setScaleAll(0.01);
+   o._matrix.update();
+   var geometryRenderables = renderable.geometrys();
+   if(geometryRenderables){
+      var geometryCount = geometryRenderables.count();
+      var geometrys = o._geometrys = new TObjects();
+      for(var i = 0; i < geometryCount; i++){
+         var geometryRenderable = geometryRenderables.get(i);
+         var renderable = RClass.create(FE3dModelRenderable);
+         renderable._display = o;
+         renderable.load(geometryRenderable);
+         geometrys.push(renderable);
+         o.pushRenderable(renderable);
       }
    }
-   var rmc = RConsole.find(FE3rModelConsole);
-   var rm = rmc.load(pc, pn);
-   var m = RClass.create(FModel3d);
-   m._context = pc;
-   m._name = pn;
-   m._modelName = pn;
-   m._renderable = rm;
-      o._loadModels.push(m);
-   return m;
 }
-function FE3dModelConsole_free(p){
+function FE3dModelDisplay_reloadResource(){
    var o = this;
-   p.remove();
-   var n = p._modelName;
-   var ms = o._models.get(n);
-   if(ms == null){
-      ms = new TObjects();
-      o._models.set(n, ms);
-   }
-   ms.push(p);
+   o._matrix.assign(o._resource.matrix());
 }
 function FE3dModelRenderable(o){
-   o = RClass.inherits(this, o, FG3dRenderable);
+   o = RClass.inherits(this, o, FE3dMeshRenderable);
    o._ready            = false;
    o._renderable       = null;
    o._bones            = null;
@@ -863,18 +884,18 @@ function FE3dModelRenderable(o){
 }
 function FE3dModelRenderable_construct(){
    var o = this;
-   o.__base.FG3dRenderable.construct.call(o);
+   o.__base.FE3dMeshRenderable.construct.call(o);
 }
 function FE3dModelRenderable_testVisible(p){
    var o = this;
-   var r = o._ready;
-   if(!r){
-      var d = o._renderable;
-      if(d){
-         r = o._ready = d.testReady();
+   var ready = o._ready;
+   if(!ready){
+      var renderable = o._renderable;
+      if(renderable){
+         ready = o._ready = renderable.testReady();
       }
    }
-   return r;
+   return ready;
 }
 function FE3dModelRenderable_vertexCount(){
    return this._renderable.vertexCount();
@@ -897,15 +918,15 @@ function FE3dModelRenderable_textures(){
 function FE3dModelRenderable_bones(p){
    return this._bones;
 }
-function FE3dModelRenderable_load(p){
+function FE3dModelRenderable_load(renderable){
    var o = this;
-   var m = o._material;
-   var mr = o._materialResource = p.material();
-   if(mr){
-      m.assignInfo(mr.info());
+   var material = o._material;
+   var materialResource = o._materialResource = renderable.material();
+   if(materialResource){
+      material.assignInfo(materialResource.info());
    }
-   o._effectCode = m.info().effectCode;
-   o._renderable = p;
+   o._effectCode = material.info().effectCode;
+   o._renderable = renderable;
 }
 function FE3dModelRenderable_build(p){
    var o = this;
@@ -926,8 +947,24 @@ function FE3dModelRenderable_build(p){
 }
 function FE3dModelRenderable_update(p){
    var o = this;
-   var m = o._display.matrix();
-   o._matrix.assign(m);
+   var d = o._display;
+   var mm = o._matrix;
+   var t = o._activeTrack;
+   var m = o._calculateMatrix;
+   if(t){
+      m.assign(t.matrix());
+      m.append(mm);
+   }else{
+      m.assign(mm);
+   }
+   if(d){
+      var dm = o._display.currentMatrix();
+      m.append(dm);
+   }
+   var c = o._currentMatrix.attachData(m.data());
+   if(c){
+      p.change();
+   }
 }
 function FE3dPolygon(o){
    o = RClass.inherits(this, o, FE3dRenderable);
