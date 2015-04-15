@@ -10480,18 +10480,24 @@ function FDsModelCatalog_buildRegion(n, p){
 function FDsModelCatalog_buildRenderable(parentNode, geometry){
    var o = this;
    var renderable = geometry._renderable;
+   var resource = renderable.resource();
+   var code = resource.code();
+   var label = resource.label();
    var node = o.createNode();
    node.setTypeCode('renderable');
-   node.setLabel('Renderable');
+   node.setLabel(code);
+   node.setNote(label);
    node.dataPropertySet('linker', renderable);
    parentNode.appendNode(node);
 }
 function FDsModelCatalog_buildDisplay(parent, display){
    var o = this;
    var resource = display.resource();
+   var geometrys = display._geometrys;
+   var count = geometrys.count();
    var displayNode = o.createNode();
    displayNode.setTypeCode('display');
-   displayNode.setLabel('Model');
+   displayNode.setLabel('Model (' + count + ')');
    displayNode.dataPropertySet('linker', display);
    parent.appendNode(displayNode);
    var material = display.material();
@@ -10502,8 +10508,6 @@ function FDsModelCatalog_buildDisplay(parent, display){
    materialNode.dataPropertySet('linker', material);
    materialNode.dataPropertySet('resource', materialResource);
    displayNode.appendNode(materialNode);
-   var geometrys = display._geometrys;
-   var count = geometrys.count();
    for(var i = 0; i < count; i++){
       var geometry = geometrys.get(i);
       o.buildRenderable(displayNode, geometry);
