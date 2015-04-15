@@ -8,6 +8,7 @@ function FE3sObject(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
+   o._typeName   = null;
    o._guid       = null;
    o._code       = null;
    o._label      = null;
@@ -77,13 +78,14 @@ function FE3sObject_setLabel(p){
 //==========================================================
 // <T>从输入流里反序列化数据内容</T>
 //
-// @param p:input:FByteStream 数据流
+// @param input:FByteStream 数据流
 //==========================================================
-function FE3sObject_unserialize(p){
+function FE3sObject_unserialize(input){
    var o = this;
-   o._guid = p.readString();
-   o._code = p.readString();
-   o._label = p.readString();
+   o._typeName = input.readString();
+   o._guid = input.readString();
+   o._code = input.readString();
+   o._label = input.readString();
 }
 
 //==========================================================

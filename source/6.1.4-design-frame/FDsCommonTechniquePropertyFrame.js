@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150202
 //==========================================================
-function FDsModelTechniquePropertyFrame(o){
+function FDsCommonTechniquePropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
@@ -22,17 +22,17 @@ function FDsModelTechniquePropertyFrame(o){
    o._interval             = 2000;
    //..........................................................
    // @event
-   o.onBuilded             = FDsModelTechniquePropertyFrame_onBuilded;
-   o.onDataChanged         = FDsModelTechniquePropertyFrame_onDataChanged;
-   o.onModeClick           = FDsModelTechniquePropertyFrame_onModeClick;
-   o.onRefresh             = FDsModelTechniquePropertyFrame_onRefresh;
+   o.onBuilded             = FDsCommonTechniquePropertyFrame_onBuilded;
+   o.onDataChanged         = FDsCommonTechniquePropertyFrame_onDataChanged;
+   o.onModeClick           = FDsCommonTechniquePropertyFrame_onModeClick;
+   o.onRefresh             = FDsCommonTechniquePropertyFrame_onRefresh;
    //..........................................................
    // @method
-   o.construct             = FDsModelTechniquePropertyFrame_construct;
+   o.construct             = FDsCommonTechniquePropertyFrame_construct;
    // @method
-   o.loadObject            = FDsModelTechniquePropertyFrame_loadObject;
+   o.loadObject            = FDsCommonTechniquePropertyFrame_loadObject;
    // @method
-   o.dispose               = FDsModelTechniquePropertyFrame_dispose;
+   o.dispose               = FDsCommonTechniquePropertyFrame_dispose;
    return o;
 }
 
@@ -42,7 +42,7 @@ function FDsModelTechniquePropertyFrame(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsModelTechniquePropertyFrame_onBuilded(p){
+function FDsCommonTechniquePropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 增加对象
@@ -55,7 +55,7 @@ function FDsModelTechniquePropertyFrame_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsModelTechniquePropertyFrame_onDataChanged(p){
+function FDsCommonTechniquePropertyFrame_onDataChanged(p){
    var o = this;
    var r = o._activeTechnique;
    r._code = o._controlCode.get();
@@ -69,7 +69,7 @@ function FDsModelTechniquePropertyFrame_onDataChanged(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsModelTechniquePropertyFrame_onModeClick(ps, pi){
+function FDsCommonTechniquePropertyFrame_onModeClick(ps, pi){
    var o = this;
    var m = pi.tag();
    // 场景脏处理
@@ -83,7 +83,7 @@ function FDsModelTechniquePropertyFrame_onModeClick(ps, pi){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsModelTechniquePropertyFrame_onRefresh(){
+function FDsCommonTechniquePropertyFrame_onRefresh(){
    var o = this;
    // 检查可见性
    if(!o._statusVisible){
@@ -123,7 +123,7 @@ function FDsModelTechniquePropertyFrame_onRefresh(){
 //
 // @method
 //==========================================================
-function FDsModelTechniquePropertyFrame_construct(){
+function FDsCommonTechniquePropertyFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -141,7 +141,7 @@ function FDsModelTechniquePropertyFrame_construct(){
 // @param scene:FE3dSpace 空间
 // @param technique:FG3dTechnique 技术
 //==========================================================
-function FDsModelTechniquePropertyFrame_loadObject(space, technique){
+function FDsCommonTechniquePropertyFrame_loadObject(space, technique){
    var o = this;
    // 设置属性
    o._activeSpace = space;
@@ -166,7 +166,7 @@ function FDsModelTechniquePropertyFrame_loadObject(space, technique){
 //
 // @method
 //==========================================================
-function FDsModelTechniquePropertyFrame_dispose(){
+function FDsCommonTechniquePropertyFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

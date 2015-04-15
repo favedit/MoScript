@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150210
 //==========================================================
-function FDsModelCameraPropertyFrame(o){
+function FDsCommonCameraPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
@@ -22,15 +22,15 @@ function FDsModelCameraPropertyFrame(o){
    o._controlDirection = null;
    //..........................................................
    // @event
-   o.onBuilded         = FDsModelCameraPropertyFrame_onBuilded;
-   o.onDataChanged     = FDsModelCameraPropertyFrame_onDataChanged;
+   o.onBuilded         = FDsCommonCameraPropertyFrame_onBuilded;
+   o.onDataChanged     = FDsCommonCameraPropertyFrame_onDataChanged;
    //..........................................................
    // @method
-   o.construct         = FDsModelCameraPropertyFrame_construct;
+   o.construct         = FDsCommonCameraPropertyFrame_construct;
    // @method
-   o.loadObject        = FDsModelCameraPropertyFrame_loadObject;
+   o.loadObject        = FDsCommonCameraPropertyFrame_loadObject;
    // @method
-   o.dispose           = FDsModelCameraPropertyFrame_dispose;
+   o.dispose           = FDsCommonCameraPropertyFrame_dispose;
    return o;
 }
 
@@ -40,7 +40,7 @@ function FDsModelCameraPropertyFrame(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsModelCameraPropertyFrame_onBuilded(p){
+function FDsCommonCameraPropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 增加对象
@@ -54,7 +54,7 @@ function FDsModelCameraPropertyFrame_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsModelCameraPropertyFrame_onDataChanged(p){
+function FDsCommonCameraPropertyFrame_onDataChanged(p){
    var o = this;
    var camera = o._activeCamera;
    var resource = camera.resource();
@@ -70,7 +70,7 @@ function FDsModelCameraPropertyFrame_onDataChanged(p){
 //
 // @method
 //==========================================================
-function FDsModelCameraPropertyFrame_construct(){
+function FDsCommonCameraPropertyFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -83,7 +83,7 @@ function FDsModelCameraPropertyFrame_construct(){
 // @param camera:FE3dSpace 空间
 // @param camera:FE3dCamera 相机
 //==========================================================
-function FDsModelCameraPropertyFrame_loadObject(space, camera){
+function FDsCommonCameraPropertyFrame_loadObject(space, camera){
    var o = this;
    var resource = camera.resource();
    // 设置属性
@@ -106,7 +106,7 @@ function FDsModelCameraPropertyFrame_loadObject(space, camera){
 //
 // @method
 //==========================================================
-function FDsModelCameraPropertyFrame_dispose(){
+function FDsCommonCameraPropertyFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

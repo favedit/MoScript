@@ -13,8 +13,6 @@ function FDsModelCatalog(o){
    //..........................................................
    // @attributes
    o._activeSpace          = null;
-   // @attributes
-   o._materials            = null;
    //..........................................................
    // @event
    o.onBuild               = FDsModelCatalog_onBuild;
@@ -128,23 +126,6 @@ function FDsModelCatalog_onNodeViewClick(p){
          c.setIcon(s._visible ? o._iconView : o._iconViewNot);
       }
    }
-   // 测试材质对象
-   if(RClass.isClass(s, FG3dMaterial)){
-      if(p.ctrlKey){
-         var ms = o._materials;
-         for(var i = ms.count() - 1; i >= 0; i--){
-            var nm = ms.get(i);
-            var m = nm.dataPropertyGet('linker');
-            m._visible = false;
-            nm.cell('view').setIcon(o._iconViewNot);
-         }
-         s._visible = true;
-         c.setIcon(o._iconView);
-      }else{
-         s._visible = !s._visible;
-         c.setIcon(s._visible ? o._iconView : o._iconViewNot);
-      }
-   }
 }
 
 //==========================================================
@@ -179,16 +160,6 @@ function FDsModelCatalog_onNodeViewDoubleClick(p){
          n.cell('view').setIcon(o._iconView);
       }
    }
-   // 测试材质对象
-   if(RClass.isClass(s, FG3dMaterial)){
-      var s = o._materials;
-      for(var i = s.count() - 1; i >= 0; i--){
-         var n = s.get(i);
-         var m = n.dataPropertyGet('linker');
-         m._visible = true;
-         n.cell('view').setIcon(o._iconView);
-      }
-   }
 }
 
 //==========================================================
@@ -201,7 +172,6 @@ function FDsModelCatalog_construct(){
    o.__base.FUiDataTreeView.construct.call(o);
    // 设置属性
    o._renderables = new TObjects();
-   o._materials = new TObjects();
 }
 
 //==========================================================
@@ -254,27 +224,18 @@ function FDsModelCatalog_buildRegion(n, p){
 // <T>建立显示目录。</T>
 //
 // @method
-// @param node:FTreeNode 父节点
+// @param parentNode:FTreeNode 父节点
 // @param geometry:FDisplay 显示对象
 //==========================================================
-function FDsModelCatalog_buildRenderable(n, geometry){
+function FDsModelCatalog_buildRenderable(parentNode, geometry){
    var o = this;
-   // 创建材质节点
-   var m = geometry._renderable._material;
-   var dn = o.createNode();
-   dn.setTypeCode('material');
-   dn.setLabel('Material');
-   dn.dataPropertySet('linker', m);
-   o._materials.push(dn);
-   n.appendNode(dn);
    // 创建渲染节点
-   var r = geometry._renderable;
-   var dn = o.createNode();
-   dn.setTypeCode('renderable');
-   dn.setLabel('Renderable');
-   dn.dataPropertySet('linker', r);
-   o._renderables.push(dn);
-   n.appendNode(dn);
+   var renderable = geometry._renderable;
+   var node = o.createNode();
+   node.setTypeCode('renderable');
+   node.setLabel('Renderable');
+   node.dataPropertySet('linker', renderable);
+   parentNode.appendNode(node);
 }
 
 //==========================================================
@@ -286,18 +247,28 @@ function FDsModelCatalog_buildRenderable(n, geometry){
 //==========================================================
 function FDsModelCatalog_buildDisplay(parent, display){
    var o = this;
+   var resource = display.resource();
    // 创建显示节点
-   var node = o.createNode();
-   node.setTypeCode('display');
-   node.setLabel('Model');
-   node.dataPropertySet('linker', display);
-   parent.appendNode(node);
+   var displayNode = o.createNode();
+   displayNode.setTypeCode('display');
+   displayNode.setLabel('Model');
+   displayNode.dataPropertySet('linker', display);
+   parent.appendNode(displayNode);
+   // 创建材质节点
+   var material = display.material();
+   var materialResource = resource.material();
+   var materialNode = o.createNode();
+   materialNode.setTypeCode('material');
+   materialNode.setLabel('Material');
+   materialNode.dataPropertySet('linker', material);
+   materialNode.dataPropertySet('resource', materialResource);
+   displayNode.appendNode(materialNode);
    // 创建材质节点
    var geometrys = display._geometrys;
    var count = geometrys.count();
    for(var i = 0; i < count; i++){
       var geometry = geometrys.get(i);
-      o.buildRenderable(node, geometry);
+      o.buildRenderable(displayNode, geometry);
    }
 }
 

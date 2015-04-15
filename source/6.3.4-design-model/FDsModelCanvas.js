@@ -713,9 +713,10 @@ function FDsModelCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, 
    var outline = o._autoOutline;
    // 获得矩阵
    var space = o._activeSpace;
-   var display = space._display;
+   var display = space.display();
    var displayResource = display.resource();
    var displayMatrix = displayResource.matrix();
+   return;
    var renderable = display._renderable;
    var renderableResource = renderable.resource();
    var renderableMatrix = renderableResource.matrix();
@@ -813,7 +814,7 @@ function FDsModelCanvas_capture(){
    o.switchSize(switchWidth, switchHeight);
    RStage.process();
    // 上传图片
-   var url = '/cloud.content.resource.preview.wv?do=upload&type_cd=mesh&guid=' + guid + '&width=' + width + '&height=' + height;
+   var url = '/cloud.resource.preview.wv?do=upload&type_cd=' + EE3sResource.Model + '&guid=' + guid + '&width=' + width + '&height=' + height;
    return RConsole.find(FHttpConsole).send(url, data.buffer);
 }
 
@@ -824,18 +825,23 @@ function FDsModelCanvas_capture(){
 //==========================================================
 function FDsModelCanvas_loadByGuid(guid){
    var o = this;
-   // 显示加载进度
-   RConsole.find(FUiDesktopConsole).showLoading();
    // 释放模型
+   var space = o._activeSpace;
    var modelConsole = RConsole.find(FE3dModelConsole);
-   if(o._activeSpace){
-      modelConsole.free(o._activeSpace);
+   if(space){
+      RStage.unregister(space);
+      modelConsole.free(space);
    }
    // 收集一个显示模板
-   var space = o._activeSpace = modelConsole.alloc(o, guid);
-   space.addLoadListener(o, o.onDataLoaded);
-   // 设置坐标系
-   space._layer.pushRenderable(o._dimensional);
+   space = o._activeSpace = modelConsole.alloc(o, guid);
+   if(!space._linked){
+      // 显示加载进度
+      RConsole.find(FUiDesktopConsole).showLoading();
+      // 设置坐标系
+      space._layer.pushRenderable(o._dimensional);
+      space.addLoadListener(o, o.onDataLoaded);
+      space._linked = true;
+   }
    // 启动舞台
    RStage.register('space', space);
 }

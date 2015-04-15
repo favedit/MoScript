@@ -725,6 +725,7 @@ function FE3dModel(o){
    o._animation     = null;
    o._geometrys     = null;
    o._renderable    = null;
+   o._display       = null;
    o.construct      = FE3dModel_construct;
    o.testReady      = FE3dModel_testReady;
    o.loadRenderable = FE3dModel_loadRenderable;
@@ -737,6 +738,8 @@ function FE3dModel_construct(){
    o.__base.FE3dSpace.construct.call(o);
    var layer = o._layer = RClass.create(FDisplayLayer);
    o.registerLayer('Layer', layer);
+   var display = o._display = RClass.create(FE3dModelDisplay);
+   layer.pushDisplay(display);
 }
 function FE3dModel_testReady(){
    return this._dataReady;
@@ -747,9 +750,7 @@ function FE3dModel_loadRenderable(renderable){
    var technique = o.selectTechnique(o, FE3dGeneralTechnique);
    technique.setResource(resource.technique());
    o.loadResource(resource);
-   var display = o._display = RClass.create(FE3dModelDisplay);
-   display.load(renderable);
-   o._layer.pushDisplay(display);
+   o._display.load(renderable);
    o._dataReady = true;
 }
 function FE3dModel_processLoad(){
@@ -832,18 +833,28 @@ function FE3dModelConsole_free(model){
 }
 function FE3dModelDisplay(o){
    o = RClass.inherits(this, o, FE3dDisplay, MLinkerResource);
+   o._material      = null;
+   o.construct      = FE3dModelDisplay_construct;
+   o.material       = FE3dModelDisplay_material;
    o.load           = FE3dModelDisplay_load;
    o.reloadResource = FE3dModelDisplay_reloadResource;
+   o.dispose        = FE3dModelDisplay_dispose;
    return o;
 }
-function FE3dModelDisplay_renderable(){
-   return this._renderable;
+function FE3dModelDisplay_construct(){
+   var o = this;
+   o.__base.FE3dDisplay.construct.call(o);
+   o._material = RClass.create(FE3dMaterial);
+}
+function FE3dModelDisplay_material(){
+   return this._material;
 }
 function FE3dModelDisplay_load(renderable){
    var o = this;
-   var resource = renderable.resource();
-   o._matrix.setScaleAll(0.01);
-   o._matrix.update();
+   var modelResource = renderable.resource();
+   var resource = o._resource = modelResource._display;
+   o._matrix.assign(resource.matrix());
+   o._material.loadResource(resource.material());
    var geometryRenderables = renderable.geometrys();
    if(geometryRenderables){
       var geometryCount = geometryRenderables.count();
@@ -852,6 +863,7 @@ function FE3dModelDisplay_load(renderable){
          var geometryRenderable = geometryRenderables.get(i);
          var renderable = RClass.create(FE3dModelRenderable);
          renderable._display = o;
+         renderable._material = o._material;
          renderable.load(geometryRenderable);
          geometrys.push(renderable);
          o.pushRenderable(renderable);
@@ -860,15 +872,23 @@ function FE3dModelDisplay_load(renderable){
 }
 function FE3dModelDisplay_reloadResource(){
    var o = this;
-   o._matrix.assign(o._resource.matrix());
+   var resource = o._resource;
+   o._matrix.assign(resource.matrix());
+   o._material.loadResource(resource.material());
+}
+function FE3dModelDisplay_dispose(){
+   var o = this;
+   o._material = RObject.dispose(o._material);
+   o.__base.FE3dDisplay.dispose.call(o);
 }
 function FE3dModelRenderable(o){
-   o = RClass.inherits(this, o, FE3dMeshRenderable);
+   o = RClass.inherits(this, o, FE3dMeshRenderable, MLinkerResource);
    o._ready            = false;
    o._renderable       = null;
    o._bones            = null;
    o._materialResource = null;
    o.construct         = FE3dModelRenderable_construct;
+   o.createMaterial    = RMethod.empty;
    o.testVisible       = FE3dModelRenderable_testVisible;
    o.vertexCount       = FE3dModelRenderable_vertexCount;
    o.findVertexBuffer  = FE3dModelRenderable_findVertexBuffer;

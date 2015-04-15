@@ -5,7 +5,7 @@
 // @history 141231
 //==========================================================
 function FE3dModelRenderable(o){
-   o = RClass.inherits(this, o, FE3dMeshRenderable);
+   o = RClass.inherits(this, o, FE3dMeshRenderable, MLinkerResource);
    //..........................................................
    // @attribute
    o._ready            = false;
@@ -15,6 +15,8 @@ function FE3dModelRenderable(o){
    //..........................................................
    // @method
    o.construct         = FE3dModelRenderable_construct;
+   o.createMaterial    = RMethod.empty;
+   // @method
    o.testVisible       = FE3dModelRenderable_testVisible;
    o.vertexCount       = FE3dModelRenderable_vertexCount;
    o.findVertexBuffer  = FE3dModelRenderable_findVertexBuffer;

@@ -126,7 +126,8 @@ function FE3rModel_loadResource(resource){
       var meshes = o._meshes = new TObjects();
       var meshCount = meshResources.count();
       for(var i = 0; i < meshCount; i++){
-         var meshResource = meshResources.get(i);
+         var meshResource = meshResources.valueAt(i);
+         // 创建渲染网格
          var mesh = RClass.create(FE3rModelMesh);
          mesh.linkGraphicContext(o);
          mesh.loadResource(meshResource);

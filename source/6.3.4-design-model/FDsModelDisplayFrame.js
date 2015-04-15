@@ -85,9 +85,9 @@ function FDsModelDisplayFrame_construct(){
 //==========================================================
 function FDsModelDisplayFrame_loadObject(space, display){
    var o = this;
-   var resource = display.resource();
    o._activeSpace = space;
    o._activeDisplay = display;
+   var resource = display.resource();
    // 获得矩阵
    var matrix = resource.matrix();
    // 设置参数

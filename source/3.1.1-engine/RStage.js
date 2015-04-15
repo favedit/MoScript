@@ -22,6 +22,7 @@ var RStage = new function RStage(){
    // @method
    o.construct      = RStage_construct;
    o.register       = RStage_register;
+   o.unregister     = RStage_unregister;
    o.active         = RStage_active;
    o.deactive       = RStage_deactive;
    o.process        = RStage_process;
@@ -56,16 +57,26 @@ function RStage_construct(){
 // <T>注册一个舞台。</T>
 //
 // @method
-// @param n:name:String 名称
-// @param s:stage:FStage 舞台
+// @param name:String 名称
+// @param stage:FStage 舞台
 //==========================================================
-function RStage_register(n , s){
+function RStage_register(name, stage){
    var o = this;
-   var ss = o._stages;
-   if(ss == null){
-      ss = o._stages = new TDictionary();
+   var stages = o._stages;
+   if(!stages){
+      stages = o._stages = new TDictionary();
    }
-   ss.set(n , s);
+   stages.set(name , stage);
+}
+
+//==========================================================
+// <T>注销一个舞台。</T>
+//
+// @method
+// @param stage:FStage 舞台
+//==========================================================
+function RStage_unregister(stage){
+   this._stages.removeValue(stage);
 }
 
 //==========================================================
@@ -75,11 +86,11 @@ function RStage_register(n , s){
 //==========================================================
 function RStage_active(){
    var o = this;
-   var ss = o._stages;
-   if(ss != null){
-      var c = ss.count();
+   var stages = o._stages;
+   if(stages != null){
+      var c = stages.count();
       for(var i = 0; i < c; i++){
-         ss.value(i).active();
+         stages.valueAt(i).active();
       }
    }
 }
@@ -91,11 +102,11 @@ function RStage_active(){
 //==========================================================
 function RStage_deactive(){
    var o = this;
-   var ss = o._stages;
-   if(ss != null){
-      var c = ss.count();
+   var stages = o._stages;
+   if(stages != null){
+      var c = stages.count();
       for(var i = 0; i < c; i++){
-         ss.value(i).deactive();
+         stages.valueAt(i).deactive();
       }
    }
 }
@@ -112,11 +123,11 @@ function RStage_process(){
          // 前处理
          o.lsnsEnterFrame.process(o);
          // 舞台处理
-         var s = o._stages;
-         if(s){
-            var c = s.count();
-            for(var i = 0; i < c; i++){
-               s.valueAt(i).process();
+         var stages = o._stages;
+         if(stages){
+            var count = stages.count();
+            for(var i = 0; i < count; i++){
+               stages.valueAt(i).process();
             }
          }
          // 后处理
@@ -132,8 +143,9 @@ function RStage_process(){
 // <T>启动处理。</T>
 //
 // @method
+// @param interval:Integer 执行间隔
 //==========================================================
-function RStage_start(v){
+function RStage_start(interval){
    var o = this;
    // 引擎配置
    RE3dEngine.setup();
@@ -142,9 +154,9 @@ function RStage_start(v){
    // 舞台处理
    o.process();
    // 启动时间处理
-   if(v == null){
-      v = o._interval;
+   if(interval == null){
+      interval = o._interval;
    }
    RTimer.setup();
-   setInterval('RStage_onProcess()', parseInt(v));
+   setInterval('RStage_onProcess()', parseInt(interval));
 }

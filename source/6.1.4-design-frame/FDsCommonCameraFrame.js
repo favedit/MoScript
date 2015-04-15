@@ -1,30 +1,26 @@
 //==========================================================
-// <T>场景光源属性页面。</T>
+// <T>场景相机属性页面。</T>
 //
 // @class
 // @author maocy
 // @history 150210
 //==========================================================
-function FDsModelLightPropertyFrame(o){
+function FDsCommonCameraPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
-   o._visible      = false;
+   o._workspace        = null;
+   o._camera           = null;
    // @attribute
-   o._workspace    = null;
-   o._activeSpace  = null;
-   o._activeLight  = null;
-   // @attribute
-   o._controlGuid  = null;
-   o._controlCode  = null;
-   o._controlLabel = null;
+   o._controlPosition  = null;
+   o._controlDirection = null;
    //..........................................................
    // @method
-   o.construct     = FDsModelLightPropertyFrame_construct;
+   o.construct         = FDsCommonCameraPropertyFrame_construct;
    // @method
-   o.loadObject    = FDsModelLightPropertyFrame_loadObject;
+   o.loadObject        = FDsCommonCameraPropertyFrame_loadObject;
    // @method
-   o.dispose       = FDsModelLightPropertyFrame_dispose;
+   o.dispose           = FDsCommonCameraPropertyFrame_dispose;
    return o;
 }
 
@@ -33,32 +29,27 @@ function FDsModelLightPropertyFrame(o){
 //
 // @method
 //==========================================================
-function FDsModelLightPropertyFrame_construct(){
+function FDsCommonCameraPropertyFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
 }
 
 //==========================================================
-// <T>加载光源信息。</T>
+// <T>加载材质信息。</T>
 //
 // @method
-// @param space:FE3dSpace 空间
-// @param light:FE3dLight 光源
+// @param s:scene:FE3dScene 场景
+// @param c:technique:FG3dTechnique 技术
 //==========================================================
-function FDsModelLightPropertyFrame_loadObject(space, light){
+function FDsCommonCameraPropertyFrame_loadObject(s, c){
    var o = this;
-   var resource = light.resource();
+   var r = c._resource;
    // 设置属性
-   o._activeSpace = space;
-   o._activeLight = light;
+   o._camera = c;
    // 设置参数
-   o._controlGuid.set(resource.guid());
-   o._controlCode.set(resource.code());
-   o._controlLabel.set(resource.label());
-   // 设置参数
-   o._frameCamera.loadObject(space, light.camera());
-   o._frameMaterial1.loadObject(space, light.material());
+   o._controlPosition.set(c.position());
+   o._controlDirection.set(c.direction());
 }
 
 //==========================================================
@@ -66,7 +57,7 @@ function FDsModelLightPropertyFrame_loadObject(space, light){
 //
 // @method
 //==========================================================
-function FDsModelLightPropertyFrame_dispose(){
+function FDsCommonCameraPropertyFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

@@ -14,6 +14,7 @@ function FE3dModel(o){
    // @attribute
    o._geometrys     = null;
    o._renderable    = null;
+   o._display       = null;
    //..........................................................
    // @method
    o.construct      = FE3dModel_construct;
@@ -36,6 +37,9 @@ function FE3dModel_construct(){
    // 创建显示层
    var layer = o._layer = RClass.create(FDisplayLayer);
    o.registerLayer('Layer', layer);
+   // 创建显示对象
+   var display = o._display = RClass.create(FE3dModelDisplay);
+   layer.pushDisplay(display);
 }
 
 //==========================================================
@@ -61,11 +65,7 @@ function FE3dModel_loadRenderable(renderable){
    // 加载资源
    o.loadResource(resource);
    // 创建渲染对象
-   var display = o._display = RClass.create(FE3dModelDisplay);
-   display.load(renderable);
-   //display.load(resource._display);
-   //display.pushRenderable(m);
-   o._layer.pushDisplay(display);
+   o._display.load(renderable);
    // 数据准备完成
    o._dataReady = true;
 }

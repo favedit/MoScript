@@ -921,6 +921,7 @@ var RStage = new function RStage(){
    o.onProcess      = RStage_onProcess;
    o.construct      = RStage_construct;
    o.register       = RStage_register;
+   o.unregister     = RStage_unregister;
    o.active         = RStage_active;
    o.deactive       = RStage_deactive;
    o.process        = RStage_process;
@@ -936,31 +937,34 @@ function RStage_construct(){
    o.lsnsEnterFrame = new TListeners();
    o.lsnsLeaveFrame = new TListeners();
 }
-function RStage_register(n , s){
+function RStage_register(name, stage){
    var o = this;
-   var ss = o._stages;
-   if(ss == null){
-      ss = o._stages = new TDictionary();
+   var stages = o._stages;
+   if(!stages){
+      stages = o._stages = new TDictionary();
    }
-   ss.set(n , s);
+   stages.set(name , stage);
+}
+function RStage_unregister(stage){
+   this._stages.removeValue(stage);
 }
 function RStage_active(){
    var o = this;
-   var ss = o._stages;
-   if(ss != null){
-      var c = ss.count();
+   var stages = o._stages;
+   if(stages != null){
+      var c = stages.count();
       for(var i = 0; i < c; i++){
-         ss.value(i).active();
+         stages.valueAt(i).active();
       }
    }
 }
 function RStage_deactive(){
    var o = this;
-   var ss = o._stages;
-   if(ss != null){
-      var c = ss.count();
+   var stages = o._stages;
+   if(stages != null){
+      var c = stages.count();
       for(var i = 0; i < c; i++){
-         ss.value(i).deactive();
+         stages.valueAt(i).deactive();
       }
    }
 }
@@ -969,11 +973,11 @@ function RStage_process(){
    if(o._active){
       try{
          o.lsnsEnterFrame.process(o);
-         var s = o._stages;
-         if(s){
-            var c = s.count();
-            for(var i = 0; i < c; i++){
-               s.valueAt(i).process();
+         var stages = o._stages;
+         if(stages){
+            var count = stages.count();
+            for(var i = 0; i < count; i++){
+               stages.valueAt(i).process();
             }
          }
          o.lsnsLeaveFrame.process(o);
@@ -983,14 +987,14 @@ function RStage_process(){
       }
    }
 }
-function RStage_start(v){
+function RStage_start(interval){
    var o = this;
    RE3dEngine.setup();
    o.active();
    o.process();
-   if(v == null){
-      v = o._interval;
+   if(interval == null){
+      interval = o._interval;
    }
    RTimer.setup();
-   setInterval('RStage_onProcess()', parseInt(v));
+   setInterval('RStage_onProcess()', parseInt(interval));
 }

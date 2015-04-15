@@ -1,10 +1,10 @@
 //==========================================================
-// <T>主菜单。</T>
+// <T>设置材质基础属性界面。</T>
 //
 // @author maocy
 // @history 141231
 //==========================================================
-function FDsModelMaterial1Frame(o){
+function FDsCommonMaterial1Frame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
@@ -43,16 +43,16 @@ function FDsModelMaterial1Frame(o){
    o._controlEmissiveColor  = null;
    //..........................................................
    // @event
-   o.onBuilded              = FDsModelMaterial1Frame_onBuilded;
-   o.onOptionChanged        = FDsModelMaterial1Frame_onOptionChanged;
-   o.onDataChanged          = FDsModelMaterial1Frame_onDataChanged;
+   o.onBuilded              = FDsCommonMaterial1Frame_onBuilded;
+   o.onOptionChanged        = FDsCommonMaterial1Frame_onOptionChanged;
+   o.onDataChanged          = FDsCommonMaterial1Frame_onDataChanged;
    //..........................................................
    // @method
-   o.construct              = FDsModelMaterial1Frame_construct;
+   o.construct              = FDsCommonMaterial1Frame_construct;
    // @method
-   o.loadObject             = FDsModelMaterial1Frame_loadObject;
+   o.loadObject             = FDsCommonMaterial1Frame_loadObject;
    // @method
-   o.dispose                = FDsModelMaterial1Frame_dispose;
+   o.dispose                = FDsCommonMaterial1Frame_dispose;
    return o;
 }
 
@@ -62,7 +62,7 @@ function FDsModelMaterial1Frame(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsModelMaterial1Frame_onBuilded(p){
+function FDsCommonMaterial1Frame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 关联对象
@@ -105,7 +105,7 @@ function FDsModelMaterial1Frame_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsModelMaterial1Frame_onOptionChanged(p){
+function FDsCommonMaterial1Frame_onOptionChanged(p){
    var o = this;
    //var t = o._activeSpace;
    //var m = o._activeMaterial;
@@ -133,7 +133,7 @@ function FDsModelMaterial1Frame_onOptionChanged(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsModelMaterial1Frame_onDataChanged(p){
+function FDsCommonMaterial1Frame_onDataChanged(p){
    var o = this;
    var t = o._activeSpace;
    var m = o._activeMaterial;
@@ -174,7 +174,7 @@ function FDsModelMaterial1Frame_onDataChanged(p){
 //
 // @method
 //==========================================================
-function FDsModelMaterial1Frame_construct(){
+function FDsCommonMaterial1Frame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -187,7 +187,7 @@ function FDsModelMaterial1Frame_construct(){
 // @param space:FE3dSpace 空间
 // @param material:FE3sMaterial 材质
 //==========================================================
-function FDsModelMaterial1Frame_loadObject(space, material){
+function FDsCommonMaterial1Frame_loadObject(space, material){
    var o = this;
    o._activeSpace = space;
    o._activeMaterial = material;
@@ -231,7 +231,7 @@ function FDsModelMaterial1Frame_loadObject(space, material){
 //
 // @method
 //==========================================================
-function FDsModelMaterial1Frame_dispose(){
+function FDsCommonMaterial1Frame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

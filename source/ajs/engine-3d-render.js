@@ -594,6 +594,166 @@ function FE3rDynamicModel_update(p){
    var o = this;
    o._updateDate = RTimer.current();
 }
+function FE3rGeometry(o){
+   o = RClass.inherits(this, o, FE3rObject);
+   o._ready            = false;
+   o._resource         = null;
+   o._vertexCount      = 0;
+   o._vertexBuffers    = null;
+   o._indexBuffer      = null;
+   o._resourceMaterial = null;
+   o._material         = null;
+   o._textures         = null;
+   o.construct         = FE3rGeometry_construct;
+   o.testReady         = FE3rGeometry_testReady;
+   o.resource          = FE3rGeometry_resource;
+   o.setResource       = FE3rGeometry_setResource;
+   o.vertexCount       = FE3rGeometry_vertexCount;
+   o.findVertexBuffer  = FE3rGeometry_findVertexBuffer;
+   o.vertexBuffers     = FE3rGeometry_vertexBuffers;
+   o.indexBuffer       = FE3rGeometry_indexBuffer;
+   o.material          = FE3rGeometry_material;
+   o.findTexture       = FE3rGeometry_findTexture;
+   o.textures          = FE3rGeometry_textures;
+   o.resource          = FE3rGeometry_resource;
+   o.loadResource      = FE3rGeometry_loadResource;
+   o.processLoad       = FE3rGeometry_processLoad;
+   return o;
+}
+function FE3rGeometry_construct(){
+   var o = this;
+   o.__base.FE3rObject.construct.call(o);
+   o._vertexBuffers = new TObjects();
+}
+function FE3rGeometry_testReady(){
+   var o = this;
+   if(!o._ready){
+      if(!o._resource.testReady()){
+         return false;
+      }
+      var ts = o._textures;
+      if(ts != null){
+         var c = ts.count();
+         for(var i = 0; i < c; i++){
+            var t = ts.value(i);
+            if(!t.testReady()){
+               return false;
+            }
+         }
+      }
+   }
+   return o._ready;
+}
+function FE3rGeometry_guid(){
+   return this._resource.guid();
+}
+function FE3rGeometry_resource(){
+   return this._resource;
+}
+function FE3rGeometry_setResource(p){
+   this._resource = p;
+}
+function FE3rGeometry_vertexCount(){
+   return this._vertexCount;
+}
+function FE3rGeometry_findVertexBuffer(p){
+   var o = this;
+   var vs = o._vertexBuffers;
+   var c = vs.count();
+   for(var n = 0; n < c; n++){
+      var v = vs.get(n);
+      if(v.name() == p){
+         return v;
+      }
+   }
+   return null;
+}
+function FE3rGeometry_vertexBuffers(){
+   return this._vertexBuffers;
+}
+function FE3rGeometry_indexBuffer(){
+   return this._indexBuffer;
+}
+function FE3rGeometry_material(){
+   return this._material;
+}
+function FE3rGeometry_findTexture(p){
+   return this._textures.get(p);
+}
+function FE3rGeometry_textures(){
+   return this._textures;
+}
+function FE3rGeometry_resource(){
+   return this._resource;
+}
+function FE3rGeometry_loadResource(resource){
+   var o = this;
+   var context = o._graphicContext;
+   o._resource = resource;
+   var streamResources = resource.streams();
+   var streamCount = streamResources.count();
+   for(var i = 0; i < streamCount; i++){
+      var streamResource = streamResources.get(i);
+      var code = streamResource._code;
+      var dataCount = streamResource._dataCount;
+      var data = streamResource._data;
+      if((code == 'index16') || (code == 'index32')){
+         var buffer = o._indexBuffer = context.createIndexBuffer();
+         buffer._resource = streamResource;
+         var dataCd = streamResource.elementDataCd();
+         if(dataCd == EDataType.Uint16){
+            buffer._strideCd = EG3dIndexStride.Uint16;
+         }else if(dataCd == EDataType.Uint32){
+            buffer._strideCd = EG3dIndexStride.Uint32;
+         }else{
+            throw new TError(o, "Unknown data type.");
+         }
+         buffer.upload(data, 3 * dataCount);
+      }else{
+         var buffer = context.createVertexBuffer();
+         buffer._name = code;
+         buffer._resource = streamResource;
+         buffer._vertexCount = dataCount;
+         var pixels = null;
+         switch(code){
+            case "position":
+               pixels = new Float32Array(data);
+               buffer._formatCd = EG3dAttributeFormat.Float3;
+               break;
+            case "coord":
+               pixels = new Float32Array(data);
+               buffer._formatCd = EG3dAttributeFormat.Float2;
+               break;
+            case "color":
+               pixels = new Uint8Array(data);
+               buffer._formatCd = EG3dAttributeFormat.Byte4Normal;
+               break;
+            case "normal":
+            case "binormal":
+            case "tangent":
+               pixels = new Uint8Array(data);
+               buffer._formatCd = EG3dAttributeFormat.Byte4Normal;
+               break;
+            default:
+               throw new TError(o, "Unknown code");
+         }
+         buffer.upload(pixels, streamResource._dataStride, dataCount);
+         o._vertexBuffers.push(buffer);
+      }
+   }
+   o._ready = true;
+}
+function FE3rGeometry_processLoad(){
+   var o = this;
+   if(o._dataReady){
+      return true;
+   }
+   if(!o._resource.testReady()){
+      return false;
+   }
+   o.loadResource(o._resource);
+   return true;
+}
 function FE3rInstanceMesh(o){
    o = RClass.inherits(this, o, FE3rMesh);
    o._merges         = null;
@@ -1003,7 +1163,7 @@ function FE3rModel_loadResource(resource){
       var meshes = o._meshes = new TObjects();
       var meshCount = meshResources.count();
       for(var i = 0; i < meshCount; i++){
-         var meshResource = meshResources.get(i);
+         var meshResource = meshResources.valueAt(i);
          var mesh = RClass.create(FE3rModelMesh);
          mesh.linkGraphicContext(o);
          mesh.loadResource(meshResource);
@@ -1190,7 +1350,7 @@ function FE3rModelConsole_merge(pe, pg, pi, pc){
    return m;
 }
 function FE3rModelMesh(o){
-   o = RClass.inherits(this, o, FE3rMesh);
+   o = RClass.inherits(this, o, FE3rGeometry);
    o._ready            = false;
    o._vertexCount      = 0;
    o._vertexBuffers    = null;
@@ -1217,7 +1377,7 @@ function FE3rModelMesh(o){
 }
 function FE3rModelMesh_construct(){
    var o = this;
-   o.__base.FE3rMesh.construct.call(o);
+   o.__base.FE3rGeometry.construct.call(o);
    o._vertexBuffers = new TObjects();
 }
 function FE3rModelMesh_testReady(){

@@ -71,7 +71,7 @@ function FDsModelMenuBar_onSaveClick(p){
    var xconfig = new TXmlNode();
    resource.saveConfig(xconfig);
    // 更新处理
-   var connection = RConsole.find(FE3sMeshConsole).update(xconfig);
+   var connection = RConsole.find(FDrModelConsole).update(xconfig);
    connection.addLoadListener(o, o.onSaveLoad);
 }
 

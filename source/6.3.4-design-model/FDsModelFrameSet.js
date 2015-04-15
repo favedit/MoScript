@@ -145,35 +145,35 @@ function FDsModelFrameSet_onCatalogSelected(p, pc){
    }
    // 显示选中属性面板
    if(RClass.isClass(p, FE3dSpace)){
-      var f = o.findPropertyFrame(EDsFrame.MeshSpacePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.ModelSpacePropertyFrame);
       f.show();
       f.loadObject(space, space);
    }else if(RClass.isClass(p, FG3dTechnique)){
-      var f = o.findPropertyFrame(EDsFrame.MeshTechniquePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonTechniquePropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dRegion)){
-      var f = o.findPropertyFrame(EDsFrame.MeshRegionPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonRegionPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dCamera)){
-      var f = o.findPropertyFrame(EDsFrame.MeshCameraPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonCameraPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FG3dDirectionalLight)){
-      var f = o.findPropertyFrame(EDsFrame.MeshLightPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dModelDisplay)){
-      var f = o.findPropertyFrame(EDsFrame.MeshDisplayPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.ModelDisplayPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FG3dMaterial)){
-      var f = o.findPropertyFrame(EDsFrame.MeshMaterialPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonMaterialPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dModelRenderable)){
-      var f = o.findPropertyFrame(EDsFrame.MeshRenderablePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.ModelRenderablePropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else{

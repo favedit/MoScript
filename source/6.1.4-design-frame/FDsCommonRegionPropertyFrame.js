@@ -1,11 +1,11 @@
 //==========================================================
-// <T>场景区域属性页面。</T>
+// <T>设计区域属性页面。</T>
 //
 // @class
 // @author maocy
-// @history 150509
+// @history 150415
 //==========================================================
-function FDsModelRegionPropertyFrame(o){
+function FDsCommonRegionPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
@@ -22,15 +22,15 @@ function FDsModelRegionPropertyFrame(o){
    o._controlBackgroundColor    = null;
    //..........................................................
    // @event
-   o.onBuilded                  = FDsModelRegionPropertyFrame_onBuilded;
-   o.onDataChanged              = FDsModelRegionPropertyFrame_onDataChanged;
+   o.onBuilded                  = FDsCommonRegionPropertyFrame_onBuilded;
+   o.onDataChanged              = FDsCommonRegionPropertyFrame_onDataChanged;
    //..........................................................
    // @method
-   o.construct                  = FDsModelRegionPropertyFrame_construct;
+   o.construct                  = FDsCommonRegionPropertyFrame_construct;
    // @method
-   o.loadObject                 = FDsModelRegionPropertyFrame_loadObject;
+   o.loadObject                 = FDsCommonRegionPropertyFrame_loadObject;
    // @method
-   o.dispose                    = FDsModelRegionPropertyFrame_dispose;
+   o.dispose                    = FDsCommonRegionPropertyFrame_dispose;
    return o;
 }
 
@@ -40,7 +40,7 @@ function FDsModelRegionPropertyFrame(o){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsModelRegionPropertyFrame_onBuilded(p){
+function FDsCommonRegionPropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 关联对象
@@ -58,7 +58,7 @@ function FDsModelRegionPropertyFrame_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsModelRegionPropertyFrame_onDataChanged(p){
+function FDsCommonRegionPropertyFrame_onDataChanged(p){
    var o = this;
    var region = o._activeRegion;
    var resource = region.resource();
@@ -78,7 +78,7 @@ function FDsModelRegionPropertyFrame_onDataChanged(p){
 //
 // @method
 //==========================================================
-function FDsModelRegionPropertyFrame_construct(){
+function FDsCommonRegionPropertyFrame_construct(){
    var o = this;
    o.__base.FUiForm.construct.call(o);
 }
@@ -90,7 +90,7 @@ function FDsModelRegionPropertyFrame_construct(){
 // @param space:FE3dSpace 空间
 // @param region:FE3dRegion 区域
 //==========================================================
-function FDsModelRegionPropertyFrame_loadObject(space, region){
+function FDsCommonRegionPropertyFrame_loadObject(space, region){
    var o = this;
    var resource = region.resource();
    // 设置属性
@@ -110,7 +110,7 @@ function FDsModelRegionPropertyFrame_loadObject(space, region){
 //
 // @method
 //==========================================================
-function FDsModelRegionPropertyFrame_dispose(){
+function FDsCommonRegionPropertyFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

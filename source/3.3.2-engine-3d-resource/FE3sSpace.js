@@ -8,21 +8,21 @@ function FE3sSpace(o){
    o = RClass.inherits(this, o, FE3sResource);
    //..........................................................
    // @attribute
-   o._typeName     = null;
+   o._typeName   = null;
    // @attribute
-   o._technique    = null;
-   o._region       = null;
-   o._layers       = null;
+   o._technique  = null;
+   o._region     = null;
+   o._layers     = null;
    //..........................................................
    // @method
-   o.construct     = FE3sSpace_construct;
+   o.construct   = FE3sSpace_construct;
    // @method
-   o.technique     = FE3sSpace_technique;
-   o.region        = FE3sSpace_region;
-   o.layers        = FE3sSpace_layers;
+   o.technique   = FE3sSpace_technique;
+   o.region      = FE3sSpace_region;
+   o.layers      = FE3sSpace_layers;
    // @method
-   o.unserialize   = FE3sSpace_unserialize;
-   o.saveConfig    = FE3sSpace_saveConfig;
+   o.unserialize = FE3sSpace_unserialize;
+   o.saveConfig  = FE3sSpace_saveConfig;
    return o;
 }
 

@@ -5,7 +5,7 @@
 // @history 150106
 //==========================================================
 function FE3rModelMesh(o){
-   o = RClass.inherits(this, o, FE3rMesh);
+   o = RClass.inherits(this, o, FE3rGeometry);
    //..........................................................
    // @attribute
    o._ready            = false;
@@ -44,7 +44,7 @@ function FE3rModelMesh(o){
 //==========================================================
 function FE3rModelMesh_construct(){
    var o = this;
-   o.__base.FE3rMesh.construct.call(o);
+   o.__base.FE3rGeometry.construct.call(o);
    o._vertexBuffers = new TObjects();
 }
 

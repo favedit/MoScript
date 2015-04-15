@@ -23,7 +23,6 @@ function FE3sMeshConsole(o){
    // @method
    o.loadByGuid  = FE3sMeshConsole_loadByGuid;
    o.loadByCode  = FE3sMeshConsole_loadByCode;
-   o.update      = FE3sMeshConsole_update;
    // @method
    o.dispose     = FE3sMeshConsole_dispose;
    return o;
@@ -116,19 +115,6 @@ function FE3sMeshConsole_loadByCode(p){
    // 存储模型
    s.set(p, r);
    return r;
-}
-
-//==========================================================
-// <T>更新处理。</T>
-//
-// @param config:TXmlNode 配置节点
-//==========================================================
-function FE3sMeshConsole_update(config){
-   var o = this;
-   // 生成地址
-   var url = RBrowser.hostPath(o._serviceUrl + '?action=update&date=' + RDate.format());
-   // 发送数据
-   return RConsole.find(FXmlConsole).sendAsync(url, config);
 }
 
 //==========================================================

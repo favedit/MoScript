@@ -31,6 +31,8 @@ function FE3sRegion(o){
    //o._faceRange            = null;
    //o._faceLimit            = null;
    //o._faceRate             = null;
+   // @attribute 材质
+   o._material             = null;
    // @attribute 相机
    o._camera               = null;
    // @attribute 光源
@@ -68,6 +70,7 @@ function FE3sRegion_construct(){
    //o._colorLevel = new SColor4();
    //o._fogColor = new SColor4();
    //o._edgeColor = new SColor4();
+   o._material = RClass.create(FE3sMaterial);
    o._camera = RClass.create(FE3sCamera);
    o._light = RClass.create(FE3sLight);
 }
@@ -214,6 +217,8 @@ function FE3sRegion_unserialize(p){
    //o._faceRange = p.readFloat();
    //o._faceLimit = p.readFloat();
    //o._faceRate = p.readFloat();
+   // 读取材质
+   o._material.unserialize(p);
    // 读取相机
    o._camera.unserialize(p);
    // 读取光源

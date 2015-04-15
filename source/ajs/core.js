@@ -277,6 +277,7 @@ function MDataStream(o){
    o._viewer      = null;
    o._endianCd    = false;
    o._position    = 0;
+   o.testString   = FByteStream_testString;
    o.readBoolean  = FByteStream_readBoolean;
    o.readInt8     = FByteStream_readInt8;
    o.readInt16    = FByteStream_readInt16;
@@ -303,6 +304,19 @@ function MDataStream(o){
    o.writeDouble  = FByteStream_writeDouble;
    o.writeString  = FByteStream_writeString;
    return o;
+}
+function FByteStream_testString(){
+   var o = this;
+   var position = o._position;
+   var length = o._viewer.getUint16(position, o._endianCd);
+   position += 2;
+   var result = new TString();
+   for(var i = 0; i < length; i++){
+      var value = o._viewer.getUint16(position, o._endianCd);
+      position += 2;
+      result.push(String.fromCharCode(value));
+   }
+   return result.toString();
 }
 function FByteStream_readBoolean(){
    var o = this;

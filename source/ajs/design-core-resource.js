@@ -68,8 +68,30 @@ function FDrMesh(o){
 }
 function FDrMeshConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
-   o._serviceCode = 'cloud.content3d.mesh';
+   o._serviceCode = 'cloud.resource.mesh';
+   o.update       = FDrMeshConsole_update;
    return o;
+}
+function FDrMeshConsole_update(config){
+   var o = this;
+   var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=update&date=' + RDate.format());
+   return RConsole.find(FXmlConsole).sendAsync(url, config);
+}
+function FDrModel(o){
+   o = RClass.inherits(this, o, FDrResource);
+   o._classCode = 'Model';
+   return o;
+}
+function FDrModelConsole(o){
+   o = RClass.inherits(this, o, FDrAbsResourceConsole);
+   o._serviceCode = 'cloud.resource.model';
+   o.update       = FDrModelConsole_update;
+   return o;
+}
+function FDrModelConsole_update(config){
+   var o = this;
+   var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=updateContent&date=' + RDate.format());
+   return RConsole.find(FXmlConsole).sendAsync(url, config);
 }
 function FDrObject(o){
    o = RClass.inherits(this, o, FObject);

@@ -117,6 +117,7 @@ function FE3sResource_testReady(){
 //==========================================================
 function FE3sResource_unserialize(p){
    var o = this;
+   o._typeName = p.readString();
    o._guid = p.readString();
    o._code = p.readString();
    o._label = p.readString();
