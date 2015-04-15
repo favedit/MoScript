@@ -2043,18 +2043,39 @@ function FE3sComponent(o){
 }
 function FE3sDisplay(o){
    o = RClass.inherits(this, o, FE3sDrawable);
-   o._renderables = null;
-   o.construct    = FE3sDisplay_construct;
-   o.renderables  = FE3sDisplay_renderables;
-   o.unserialize  = FE3sDisplay_unserialize;
+   o._outline         = null;
+   o._renderables     = null;
+   o.construct        = FE3sDisplay_construct;
+   o.renderables      = FE3sDisplay_renderables;
+   o.calculateOutline = FE3sDisplay_calculateOutline;
+   o.unserialize      = FE3sDisplay_unserialize;
    return o;
 }
 function FE3sDisplay_construct(){
    var o = this;
    o.__base.FE3sDrawable.construct.call(o);
+   o._outline = new SOutline3d();
 }
 function FE3sDisplay_renderables(){
    return this._renderables;
+}
+function FE3sDisplay_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      var renderabels = o._renderables;
+      if(renderabels){
+         outline.setMin();
+         var count = renderabels.count();
+         for(var i = 0; i < count; i++){
+            var renderable = renderabels.getAt(i);
+            var renderableOutline = renderable.calculateOutline();
+            outline.mergeMax(renderableOutline);
+         }
+         outline.update();
+      }
+   }
+   return outline;
 }
 function FE3sDisplay_unserialize(input){
    var o = this;
@@ -2574,7 +2595,8 @@ function FE3sModel(o){
 function FE3sModel_construct(){
    var o = this;
    o.__base.FE3sSpace.construct.call(o);
-   o._display = RClass.create(FE3sModelDisplay);
+   var display = o._display = RClass.create(FE3sModelDisplay);
+   display._model = o;
 }
 function FE3sModel_findMeshByCode(p){
    var s = this._meshes;
@@ -2631,12 +2653,14 @@ function FE3sModel_unserialize(input){
    var display = o._display;
    display.unserialize(input);
    var renderables = display.renderables();
-   var renderableCount = renderables.count();
-   for(var i = 0; i < renderableCount; i++){
-      var renderable = renderables.get(i);
-      var meshGuid = renderable.meshGuid();
-      var mesh = meshes.get(meshGuid);
-      renderable.setMesh(mesh);
+   if(renderables){
+      var renderableCount = renderables.count();
+      for(var i = 0; i < renderableCount; i++){
+         var renderable = renderables.get(i);
+         var meshGuid = renderable.meshGuid();
+         var mesh = meshes.get(meshGuid);
+         renderable.setMesh(mesh);
+      }
    }
    RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
 }
@@ -2752,11 +2776,13 @@ function FE3sModelConsole_dispose(){
 }
 function FE3sModelDisplay(o){
    o = RClass.inherits(this, o, FE3sDisplay);
-   o._material   = null;
-   o.construct   = FE3sModelDisplay_construct;
-   o.material    = FE3sModelDisplay_material;
-   o.unserialize = FE3sModelDisplay_unserialize;
-   o.saveConfig  = FE3sModelDisplay_saveConfig;
+   o._model           = null;
+   o._material        = null;
+   o.construct        = FE3sModelDisplay_construct;
+   o.material         = FE3sModelDisplay_material;
+   o.calculateOutline = FE3sModelDisplay_calculateOutline;
+   o.unserialize      = FE3sModelDisplay_unserialize;
+   o.saveConfig       = FE3sModelDisplay_saveConfig;
    return o;
 }
 function FE3sModelDisplay_construct(){
@@ -2766,6 +2792,24 @@ function FE3sModelDisplay_construct(){
 }
 function FE3sModelDisplay_material(){
    return this._material;
+}
+function FE3sModelDisplay_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      var meshes = o._model.meshes();
+      if(meshes){
+         outline.setMin();
+         var count = meshes.count();
+         for(var i = 0; i < count; i++){
+            var mesh = meshes.at(i);
+            var meshOutline = mesh.calculateOutline();
+            outline.mergeMax(meshOutline);
+         }
+         outline.update();
+      }
+   }
+   return outline;
 }
 function FE3sModelDisplay_unserialize(p){
    var o = this;
@@ -5055,7 +5099,7 @@ function FE3rGeometry(o){
 function FE3rGeometry_construct(){
    var o = this;
    o.__base.FE3rObject.construct.call(o);
-   o._vertexBuffers = new TObjects();
+   o._vertexBuffers = new TDictionary();
 }
 function FE3rGeometry_testReady(){
    var o = this;
@@ -5088,17 +5132,8 @@ function FE3rGeometry_setResource(p){
 function FE3rGeometry_vertexCount(){
    return this._vertexCount;
 }
-function FE3rGeometry_findVertexBuffer(p){
-   var o = this;
-   var vs = o._vertexBuffers;
-   var c = vs.count();
-   for(var n = 0; n < c; n++){
-      var v = vs.get(n);
-      if(v.name() == p){
-         return v;
-      }
-   }
-   return null;
+function FE3rGeometry_findVertexBuffer(code){
+   return this._vertexBuffers.get(code);
 }
 function FE3rGeometry_vertexBuffers(){
    return this._vertexBuffers;
@@ -5151,6 +5186,7 @@ function FE3rGeometry_loadResource(resource){
             case "position":
                pixels = new Float32Array(data);
                buffer._formatCd = EG3dAttributeFormat.Float3;
+               o._vertexCount = dataCount;
                break;
             case "coord":
                pixels = new Float32Array(data);
@@ -5170,7 +5206,7 @@ function FE3rGeometry_loadResource(resource){
                throw new TError(o, "Unknown code");
          }
          buffer.upload(pixels, streamResource._dataStride, dataCount);
-         o._vertexBuffers.push(buffer);
+         o._vertexBuffers.set(code, buffer);
       }
    }
    o._ready = true;
@@ -5759,58 +5795,46 @@ function FE3rModelConsole_loadMeshByCode(context, pg){
    }
    return m;
 }
-function FE3rModelConsole_merge(pe, pg, pi, pc){
+function FE3rModelConsole_merge(effect, region, offset, count){
    var o = this;
-   var f = 'merge';
-   var s = pg.renderables();
-   for(var i = 0; i < pc; i++){
-      var r = s.getAt(pi + i);
-      f += '|' + r.hashCode();
+   var flag = 'merge';
+   var renderables = region.renderables();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.getAt(offset + i);
+      flag += '|' + renderable.hashCode();
    }
-   var m = o._dynamicMeshs.get(f);
-   if(!m){
-      m = RClass.create(FE3rDynamicModel);
-      m.linkGraphicContext(pg);
-      for(var i = 0; i < pc; i++){
-         m.pushRenderable(s.getAt(pi + i));
+   var model = o._dynamicMeshs.get(flag);
+   if(!model){
+      model = RClass.create(FE3rDynamicModel);
+      model.linkGraphicContext(region);
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.getAt(offset + i);
+         model.pushRenderable(renderable);
       }
-      m.build();
-      o._dynamicMeshs.set(f, m);
-      RLogger.info(o, 'Create merge model. (mesh={1}, renderables={2})', m.meshes().count(), m.renderables().count());
+      model.build();
+      o._dynamicMeshs.set(flag, model);
+      RLogger.info(o, 'Create merge model. (mesh={1}, renderables={2})', model.meshes().count(), model.renderables().count());
    }
-   m.update();
-   return m;
+   model.update();
+   return model;
 }
 function FE3rModelMesh(o){
    o = RClass.inherits(this, o, FE3rGeometry);
    o._ready            = false;
-   o._vertexCount      = 0;
-   o._vertexBuffers    = null;
-   o._indexBuffer      = null;
    o._resourceMaterial = null;
-   o._material         = null;
    o._skins            = null;
    o._boneIds          = null;
-   o._textures         = null;
    o.construct         = FE3rModelMesh_construct;
    o.testReady         = FE3rModelMesh_testReady;
    o.guid              = FE3rModelMesh_guid;
-   o.vertexCount       = FE3rModelMesh_vertexCount;
-   o.findVertexBuffer  = FE3rModelMesh_findVertexBuffer;
-   o.vertexBuffers     = FE3rModelMesh_vertexBuffers;
-   o.indexBuffer       = FE3rModelMesh_indexBuffer;
-   o.material          = FE3rModelMesh_material;
    o.skins             = FE3rModelMesh_skins;
    o.pushSkin          = FE3rModelMesh_pushSkin;
-   o.findTexture       = FE3rModelMesh_findTexture;
-   o.textures          = FE3rModelMesh_textures;
    o.boneIds           = FE3rModelMesh_boneIds;
    return o;
 }
 function FE3rModelMesh_construct(){
    var o = this;
    o.__base.FE3rGeometry.construct.call(o);
-   o._vertexBuffers = new TObjects();
 }
 function FE3rModelMesh_testReady(){
    var o = this;
@@ -5832,30 +5856,6 @@ function FE3rModelMesh_testReady(){
 function FE3rModelMesh_guid(){
    return this._resource.guid();
 }
-function FE3rModelMesh_vertexCount(){
-   return this._vertexCount;
-}
-function FE3rModelMesh_findVertexBuffer(p){
-   var o = this;
-   var vs = o._vertexBuffers;
-   var c = vs.count();
-   for(var n = 0; n < c; n++){
-      var v = vs.get(n);
-      if(v.name() == p){
-         return v;
-      }
-   }
-   return null;
-}
-function FE3rModelMesh_vertexBuffers(){
-   return this._vertexBuffers;
-}
-function FE3rModelMesh_indexBuffer(){
-   return this._indexBuffer;
-}
-function FE3rModelMesh_material(){
-   return this._material;
-}
 function FE3rModelMesh_skins(){
    return this._skins;
 }
@@ -5866,12 +5866,6 @@ function FE3rModelMesh_pushSkin(p){
       r = o._skins = new TObjects();
    }
    r.push(p);
-}
-function FE3rModelMesh_findTexture(p){
-   return this._textures.get(p);
-}
-function FE3rModelMesh_textures(){
-   return this._textures;
 }
 function FE3rModelMesh_boneIds(p){
    return this._boneIds;
@@ -6509,32 +6503,31 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    }
    o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }
-function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pr, pi, pc){
+function FE3dGeneralColorAutomaticEffect_drawGroup(region, renderables, offset, count){
    var o = this;
-   if(pc > 1){
-      var mc = RConsole.find(FE3rModelConsole);
-      var md = mc.merge(o, pg, pi, pc);
-      if(md){
-         var gc = o._graphicContext;
-         var rs = md.meshes();
-         var c = rs.count();
-         var sn = pg.spaceName();
-         var r = rs.first();
-         var f = r.selectInfo(sn);
-         var e = f.effect;
-         if(!e){
-            e = f.effect = RConsole.find(FG3dEffectConsole).find(gc, pg, r);
+   if(count > 1){
+      var modelConsole = RConsole.find(FE3rModelConsole);
+      var model = modelConsole.merge(o, region, offset, count);
+      if(model){
+         var context = o._graphicContext;
+         var meshes = model.meshes();
+         var meshCount = meshes.count();
+         var spaceName = region.spaceName();
+         var mesh = meshes.first();
+         var info = mesh.selectInfo(spaceName);
+         var effect = info.effect;
+         if(!effect){
+            effect = info.effect = RConsole.find(FG3dEffectConsole).find(context, region, mesh);
          }
-         for(var i = 1; i < c; i++){
-            var r = rs.getAt(i);
-            var f = r.selectInfo(sn);
-            f.effect = e;
+         for(var i = 1; i < meshCount; i++){
+            var mesh = meshes.getAt(i);
+            var info = mesh.selectInfo(spaceName);
+            info.effect = effect;
          }
-         e.drawRenderables(pg, rs, 0, c);
-         return;
+         return effect.drawRenderables(region, meshes, 0, meshCount);
       }
    }
-   o.drawRenderables(pg, pr, pi, pc);
+   o.drawRenderables(region, renderables, offset, count);
 }
 function FE3dGeneralColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);
@@ -7645,6 +7638,7 @@ function FE3dModel(o){
    o._renderable    = null;
    o._display       = null;
    o.construct      = FE3dModel_construct;
+   o.display        = FE3dModel_display;
    o.testReady      = FE3dModel_testReady;
    o.loadRenderable = FE3dModel_loadRenderable;
    o.processLoad    = FE3dModel_processLoad;
@@ -7658,6 +7652,9 @@ function FE3dModel_construct(){
    o.registerLayer('Layer', layer);
    var display = o._display = RClass.create(FE3dModelDisplay);
    layer.pushDisplay(display);
+}
+function FE3dModel_display(){
+   return this._display;
 }
 function FE3dModel_testReady(){
    return this._dataReady;
@@ -9000,6 +8997,7 @@ function FE3dSpace(o){
    o._dirty                = false;
    o.onProcess             = FE3dSpace_onProcess;
    o.construct             = FE3dSpace_construct;
+   o.linkGraphicContext    = FE3dSpace_linkGraphicContext;
    o.createRegion          = FE3dSpace_createRegion;
    o.resource              = FE3dSpace_resource;
    o.loadTechniqueResource = FE3dSpace_loadTechniqueResource;
@@ -9028,6 +9026,11 @@ function FE3dSpace_onProcess(){
 function FE3dSpace_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
+}
+function FE3dSpace_linkGraphicContext(context){
+   var o = this;
+   o.__base.FE3dStage.linkGraphicContext.call(o, context);
+   o._region.linkGraphicContext(context);
 }
 function FE3dSpace_createRegion(){
    return RClass.create(FE3dRegion);

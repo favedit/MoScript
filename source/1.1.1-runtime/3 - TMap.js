@@ -26,6 +26,7 @@ function TMap(){
    o.nameAt        = TMap_nameAt;
    o.name          = TMap_name;
    o.valueAt       = TMap_valueAt;
+   o.at            = TMap_valueAt;
    o.value         = TMap_value;
    o.setValueAt    = TMap_setValueAt;
    o.setValue      = TMap_setValue;

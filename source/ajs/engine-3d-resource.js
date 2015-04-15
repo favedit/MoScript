@@ -379,18 +379,39 @@ function FE3sComponent(o){
 }
 function FE3sDisplay(o){
    o = RClass.inherits(this, o, FE3sDrawable);
-   o._renderables = null;
-   o.construct    = FE3sDisplay_construct;
-   o.renderables  = FE3sDisplay_renderables;
-   o.unserialize  = FE3sDisplay_unserialize;
+   o._outline         = null;
+   o._renderables     = null;
+   o.construct        = FE3sDisplay_construct;
+   o.renderables      = FE3sDisplay_renderables;
+   o.calculateOutline = FE3sDisplay_calculateOutline;
+   o.unserialize      = FE3sDisplay_unserialize;
    return o;
 }
 function FE3sDisplay_construct(){
    var o = this;
    o.__base.FE3sDrawable.construct.call(o);
+   o._outline = new SOutline3d();
 }
 function FE3sDisplay_renderables(){
    return this._renderables;
+}
+function FE3sDisplay_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      var renderabels = o._renderables;
+      if(renderabels){
+         outline.setMin();
+         var count = renderabels.count();
+         for(var i = 0; i < count; i++){
+            var renderable = renderabels.getAt(i);
+            var renderableOutline = renderable.calculateOutline();
+            outline.mergeMax(renderableOutline);
+         }
+         outline.update();
+      }
+   }
+   return outline;
 }
 function FE3sDisplay_unserialize(input){
    var o = this;
@@ -910,7 +931,8 @@ function FE3sModel(o){
 function FE3sModel_construct(){
    var o = this;
    o.__base.FE3sSpace.construct.call(o);
-   o._display = RClass.create(FE3sModelDisplay);
+   var display = o._display = RClass.create(FE3sModelDisplay);
+   display._model = o;
 }
 function FE3sModel_findMeshByCode(p){
    var s = this._meshes;
@@ -967,12 +989,14 @@ function FE3sModel_unserialize(input){
    var display = o._display;
    display.unserialize(input);
    var renderables = display.renderables();
-   var renderableCount = renderables.count();
-   for(var i = 0; i < renderableCount; i++){
-      var renderable = renderables.get(i);
-      var meshGuid = renderable.meshGuid();
-      var mesh = meshes.get(meshGuid);
-      renderable.setMesh(mesh);
+   if(renderables){
+      var renderableCount = renderables.count();
+      for(var i = 0; i < renderableCount; i++){
+         var renderable = renderables.get(i);
+         var meshGuid = renderable.meshGuid();
+         var mesh = meshes.get(meshGuid);
+         renderable.setMesh(mesh);
+      }
    }
    RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);
 }
@@ -1088,11 +1112,13 @@ function FE3sModelConsole_dispose(){
 }
 function FE3sModelDisplay(o){
    o = RClass.inherits(this, o, FE3sDisplay);
-   o._material   = null;
-   o.construct   = FE3sModelDisplay_construct;
-   o.material    = FE3sModelDisplay_material;
-   o.unserialize = FE3sModelDisplay_unserialize;
-   o.saveConfig  = FE3sModelDisplay_saveConfig;
+   o._model           = null;
+   o._material        = null;
+   o.construct        = FE3sModelDisplay_construct;
+   o.material         = FE3sModelDisplay_material;
+   o.calculateOutline = FE3sModelDisplay_calculateOutline;
+   o.unserialize      = FE3sModelDisplay_unserialize;
+   o.saveConfig       = FE3sModelDisplay_saveConfig;
    return o;
 }
 function FE3sModelDisplay_construct(){
@@ -1102,6 +1128,24 @@ function FE3sModelDisplay_construct(){
 }
 function FE3sModelDisplay_material(){
    return this._material;
+}
+function FE3sModelDisplay_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      var meshes = o._model.meshes();
+      if(meshes){
+         outline.setMin();
+         var count = meshes.count();
+         for(var i = 0; i < count; i++){
+            var mesh = meshes.at(i);
+            var meshOutline = mesh.calculateOutline();
+            outline.mergeMax(meshOutline);
+         }
+         outline.update();
+      }
+   }
+   return outline;
 }
 function FE3sModelDisplay_unserialize(p){
    var o = this;

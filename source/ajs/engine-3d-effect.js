@@ -70,32 +70,31 @@ function FE3dGeneralColorAutomaticEffect_drawRenderable(pg, pr){
    }
    o.__base.FG3dAutomaticEffect.drawRenderable.call(o, pg, pr);
 }
-function FE3dGeneralColorAutomaticEffect_drawGroup(pg, pr, pi, pc){
+function FE3dGeneralColorAutomaticEffect_drawGroup(region, renderables, offset, count){
    var o = this;
-   if(pc > 1){
-      var mc = RConsole.find(FE3rModelConsole);
-      var md = mc.merge(o, pg, pi, pc);
-      if(md){
-         var gc = o._graphicContext;
-         var rs = md.meshes();
-         var c = rs.count();
-         var sn = pg.spaceName();
-         var r = rs.first();
-         var f = r.selectInfo(sn);
-         var e = f.effect;
-         if(!e){
-            e = f.effect = RConsole.find(FG3dEffectConsole).find(gc, pg, r);
+   if(count > 1){
+      var modelConsole = RConsole.find(FE3rModelConsole);
+      var model = modelConsole.merge(o, region, offset, count);
+      if(model){
+         var context = o._graphicContext;
+         var meshes = model.meshes();
+         var meshCount = meshes.count();
+         var spaceName = region.spaceName();
+         var mesh = meshes.first();
+         var info = mesh.selectInfo(spaceName);
+         var effect = info.effect;
+         if(!effect){
+            effect = info.effect = RConsole.find(FG3dEffectConsole).find(context, region, mesh);
          }
-         for(var i = 1; i < c; i++){
-            var r = rs.getAt(i);
-            var f = r.selectInfo(sn);
-            f.effect = e;
+         for(var i = 1; i < meshCount; i++){
+            var mesh = meshes.getAt(i);
+            var info = mesh.selectInfo(spaceName);
+            info.effect = effect;
          }
-         e.drawRenderables(pg, rs, 0, c);
-         return;
+         return effect.drawRenderables(region, meshes, 0, meshCount);
       }
    }
-   o.drawRenderables(pg, pr, pi, pc);
+   o.drawRenderables(region, renderables, offset, count);
 }
 function FE3dGeneralColorPass(o){
    o = RClass.inherits(this, o, FG3dTechniquePass);

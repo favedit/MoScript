@@ -37,7 +37,8 @@ function FE3sModel_construct(){
    var o = this;
    o.__base.FE3sSpace.construct.call(o);
    // 设置属性
-   o._display = RClass.create(FE3sModelDisplay);
+   var display = o._display = RClass.create(FE3sModelDisplay);
+   display._model = o;
 }
 
 //==========================================================
@@ -148,12 +149,14 @@ function FE3sModel_unserialize(input){
    var display = o._display;
    display.unserialize(input);
    var renderables = display.renderables();
-   var renderableCount = renderables.count();
-   for(var i = 0; i < renderableCount; i++){
-      var renderable = renderables.get(i);
-      var meshGuid = renderable.meshGuid();
-      var mesh = meshes.get(meshGuid);
-      renderable.setMesh(mesh);
+   if(renderables){
+      var renderableCount = renderables.count();
+      for(var i = 0; i < renderableCount; i++){
+         var renderable = renderables.get(i);
+         var meshGuid = renderable.meshGuid();
+         var mesh = meshes.get(meshGuid);
+         renderable.setMesh(mesh);
+      }
    }
    //..........................................................
    RLogger.info(o, "Unserialize model success. (guid={1}, code={2})", o._guid, o._code);

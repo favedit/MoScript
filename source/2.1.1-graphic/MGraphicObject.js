@@ -34,14 +34,14 @@ function MGraphicObject_graphicContext(){
 // @method
 // @param p:context:FGraphicContext 图形环境
 //==========================================================
-function MGraphicObject_linkGraphicContext(p){
+function MGraphicObject_linkGraphicContext(context){
    var o = this;
-   if(RClass.isClass(p, FGraphicContext)){
-      o._graphicContext = p;
-   }else if(RClass.isClass(p, MGraphicObject)){
-      o._graphicContext = p._graphicContext;
+   if(RClass.isClass(context, FGraphicContext)){
+      o._graphicContext = context;
+   }else if(RClass.isClass(context, MGraphicObject)){
+      o._graphicContext = context._graphicContext;
    }else{
-      throw new TError(o, 'Link graphic context failure. (context={1})', p);
+      throw new TError(o, 'Link graphic context failure. (context={1})', context);
    }
 }
 

@@ -730,6 +730,7 @@ function TMap(){
    o.nameAt        = TMap_nameAt;
    o.name          = TMap_name;
    o.valueAt       = TMap_valueAt;
+   o.at            = TMap_valueAt;
    o.value         = TMap_value;
    o.setValueAt    = TMap_setValueAt;
    o.setValue      = TMap_setValue;
@@ -982,6 +983,7 @@ function TObjects(){
    o.first      = TObjects_first;
    o.last       = TObjects_last;
    o.getAt      = TObjects_getAt;
+   o.at         = TObjects_getAt;
    o.get        = TObjects_get;
    o.setAt      = TObjects_setAt;
    o.set        = TObjects_set;

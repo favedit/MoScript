@@ -46,7 +46,7 @@ function FE3rGeometry(o){
 function FE3rGeometry_construct(){
    var o = this;
    o.__base.FE3rObject.construct.call(o);
-   o._vertexBuffers = new TObjects();
+   o._vertexBuffers = new TDictionary();
 }
 
 //==========================================================
@@ -121,19 +121,10 @@ function FE3rGeometry_vertexCount(){
 // <T>查找顶点缓冲。</T>
 //
 // @method
-// @param p:name:String 名称
+// @param code:String 代码
 //==========================================================
-function FE3rGeometry_findVertexBuffer(p){
-   var o = this;
-   var vs = o._vertexBuffers;
-   var c = vs.count();
-   for(var n = 0; n < c; n++){
-      var v = vs.get(n);
-      if(v.name() == p){
-         return v;
-      }
-   }
-   return null;
+function FE3rGeometry_findVertexBuffer(code){
+   return this._vertexBuffers.get(code);
 }
 
 //==========================================================
@@ -239,6 +230,7 @@ function FE3rGeometry_loadResource(resource){
             case "position":
                pixels = new Float32Array(data);
                buffer._formatCd = EG3dAttributeFormat.Float3;
+               o._vertexCount = dataCount;
                break;
             case "coord":
                pixels = new Float32Array(data);
@@ -258,7 +250,7 @@ function FE3rGeometry_loadResource(resource){
                throw new TError(o, "Unknown code");
          }
          buffer.upload(pixels, streamResource._dataStride, dataCount);
-         o._vertexBuffers.push(buffer);
+         o._vertexBuffers.set(code, buffer);
       }
    }
    o._ready = true;

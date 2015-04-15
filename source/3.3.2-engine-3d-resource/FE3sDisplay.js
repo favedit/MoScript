@@ -8,14 +8,17 @@ function FE3sDisplay(o){
    o = RClass.inherits(this, o, FE3sDrawable);
    //..........................................................
    // @attribute
-   o._renderables = null;
+   o._outline         = null;
+   o._renderables     = null;
    //..........................................................
    // @method
-   o.construct    = FE3sDisplay_construct;
+   o.construct        = FE3sDisplay_construct;
    // @method
-   o.renderables  = FE3sDisplay_renderables;
+   o.renderables      = FE3sDisplay_renderables;
    // @method
-   o.unserialize  = FE3sDisplay_unserialize;
+   o.calculateOutline = FE3sDisplay_calculateOutline;
+   // @method
+   o.unserialize      = FE3sDisplay_unserialize;
    return o;
 }
 
@@ -27,6 +30,8 @@ function FE3sDisplay(o){
 function FE3sDisplay_construct(){
    var o = this;
    o.__base.FE3sDrawable.construct.call(o);
+   // 设置属性
+   o._outline = new SOutline3d();
 }
 
 //==========================================================
@@ -37,6 +42,31 @@ function FE3sDisplay_construct(){
 //==========================================================
 function FE3sDisplay_renderables(){
    return this._renderables;
+}
+
+//==========================================================
+// <T>计算三维轮廓。</T>
+//
+// @method
+// @return SOutline3 三维轮廓
+//==========================================================
+function FE3sDisplay_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      var renderabels = o._renderables;
+      if(renderabels){
+         outline.setMin();
+         var count = renderabels.count();
+         for(var i = 0; i < count; i++){
+            var renderable = renderabels.getAt(i);
+            var renderableOutline = renderable.calculateOutline();
+            outline.mergeMax(renderableOutline);
+         }
+         outline.update();
+      }
+   }
+   return outline;
 }
 
 //==========================================================

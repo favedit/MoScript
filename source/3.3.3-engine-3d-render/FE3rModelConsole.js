@@ -237,29 +237,34 @@ function FE3rModelConsole_loadMeshByCode(context, pg){
 // <T>获得渲染网格集合。</T>
 //
 // @method
-// @return TDictionary 渲染网格集合
+// @param effect:FE3dEffect 渲染器
+// @param region:FE3dRegion 区域
+// @param offset:Integer 开始位置
+// @param count:Integer 总数
+// @return FE3rDynamicModel 动态网格
 //==========================================================
-function FE3rModelConsole_merge(pe, pg, pi, pc){
+function FE3rModelConsole_merge(effect, region, offset, count){
    var o = this;
    // 获得代码
-   var f = 'merge';
-   var s = pg.renderables();
-   for(var i = 0; i < pc; i++){
-      var r = s.getAt(pi + i);
-      f += '|' + r.hashCode();
+   var flag = 'merge';
+   var renderables = region.renderables();
+   for(var i = 0; i < count; i++){
+      var renderable = renderables.getAt(offset + i);
+      flag += '|' + renderable.hashCode();
    }
    // 合并网格
-   var m = o._dynamicMeshs.get(f);
-   if(!m){
-      m = RClass.create(FE3rDynamicModel);
-      m.linkGraphicContext(pg);
-      for(var i = 0; i < pc; i++){
-         m.pushRenderable(s.getAt(pi + i));
+   var model = o._dynamicMeshs.get(flag);
+   if(!model){
+      model = RClass.create(FE3rDynamicModel);
+      model.linkGraphicContext(region);
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.getAt(offset + i);
+         model.pushRenderable(renderable);
       }
-      m.build();
-      o._dynamicMeshs.set(f, m);
-      RLogger.info(o, 'Create merge model. (mesh={1}, renderables={2})', m.meshes().count(), m.renderables().count());
+      model.build();
+      o._dynamicMeshs.set(flag, model);
+      RLogger.info(o, 'Create merge model. (mesh={1}, renderables={2})', model.meshes().count(), model.renderables().count());
    }
-   m.update();
-   return m;
+   model.update();
+   return model;
 }

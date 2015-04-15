@@ -17,6 +17,8 @@ function FE3dSpace(o){
    //..........................................................
    // @method
    o.construct             = FE3dSpace_construct;
+   // @method
+   o.linkGraphicContext    = FE3dSpace_linkGraphicContext;
    o.createRegion          = FE3dSpace_createRegion;
    // @method
    o.resource              = FE3dSpace_resource;
@@ -62,6 +64,18 @@ function FE3dSpace_onProcess(){
 function FE3dSpace_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
+}
+
+//==========================================================
+// <T>关联图形环境。</T>
+//
+// @method
+// @param context:FGraphicContext 图形环境
+//==========================================================
+function FE3dSpace_linkGraphicContext(context){
+   var o = this;
+   o.__base.FE3dStage.linkGraphicContext.call(o, context);
+   o._region.linkGraphicContext(context);
 }
 
 //==========================================================

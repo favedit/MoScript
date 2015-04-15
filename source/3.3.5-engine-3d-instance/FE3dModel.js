@@ -19,6 +19,8 @@ function FE3dModel(o){
    // @method
    o.construct      = FE3dModel_construct;
    // @method
+   o.display        = FE3dModel_display;
+   // @method
    o.testReady      = FE3dModel_testReady;
    o.loadRenderable = FE3dModel_loadRenderable;
    o.processLoad    = FE3dModel_processLoad;
@@ -40,6 +42,15 @@ function FE3dModel_construct(){
    // 创建显示对象
    var display = o._display = RClass.create(FE3dModelDisplay);
    layer.pushDisplay(display);
+}
+
+//==========================================================
+// <T>获得显示对象。</T>
+//
+// @return FE3dModelDisplay 显示对象
+//==========================================================
+function FE3dModel_display(){
+   return this._display;
 }
 
 //==========================================================

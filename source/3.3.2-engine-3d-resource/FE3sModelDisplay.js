@@ -8,15 +8,18 @@ function FE3sModelDisplay(o){
    o = RClass.inherits(this, o, FE3sDisplay);
    //..........................................................
    // @attribute
-   o._material   = null;
+   o._model           = null;
+   o._material        = null;
    //..........................................................
    // @method
-   o.construct   = FE3sModelDisplay_construct;
+   o.construct        = FE3sModelDisplay_construct;
    // @method
-   o.material    = FE3sModelDisplay_material;
+   o.material         = FE3sModelDisplay_material;
    // @method
-   o.unserialize = FE3sModelDisplay_unserialize;
-   o.saveConfig  = FE3sModelDisplay_saveConfig;
+   o.calculateOutline = FE3sModelDisplay_calculateOutline;
+   // @method
+   o.unserialize      = FE3sModelDisplay_unserialize;
+   o.saveConfig       = FE3sModelDisplay_saveConfig;
    return o;
 }
 
@@ -39,6 +42,31 @@ function FE3sModelDisplay_construct(){
 //==========================================================
 function FE3sModelDisplay_material(){
    return this._material;
+}
+
+//==========================================================
+// <T>计算三维轮廓。</T>
+//
+// @method
+// @return SOutline3 三维轮廓
+//==========================================================
+function FE3sModelDisplay_calculateOutline(){
+   var o = this;
+   var outline = o._outline;
+   if(outline.isEmpty()){
+      var meshes = o._model.meshes();
+      if(meshes){
+         outline.setMin();
+         var count = meshes.count();
+         for(var i = 0; i < count; i++){
+            var mesh = meshes.at(i);
+            var meshOutline = mesh.calculateOutline();
+            outline.mergeMax(meshOutline);
+         }
+         outline.update();
+      }
+   }
+   return outline;
 }
 
 //==========================================================

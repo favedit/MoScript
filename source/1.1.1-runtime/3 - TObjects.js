@@ -21,6 +21,7 @@ function TObjects(){
    o.first      = TObjects_first;
    o.last       = TObjects_last;
    o.getAt      = TObjects_getAt;
+   o.at         = TObjects_getAt;
    o.get        = TObjects_get;
    o.setAt      = TObjects_setAt;
    o.set        = TObjects_set;

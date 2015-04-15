@@ -716,10 +716,9 @@ function FDsModelCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, 
    var display = space.display();
    var displayResource = display.resource();
    var displayMatrix = displayResource.matrix();
-   return;
-   var renderable = display._renderable;
-   var renderableResource = renderable.resource();
-   var renderableMatrix = renderableResource.matrix();
+   //var renderable = display._renderable;
+   //var renderableResource = renderable.resource();
+   //var renderableMatrix = renderableResource.matrix();
    // 计算旋转
    if(rotationX){
       displayMatrix.rx += RConst.PI_2;
@@ -734,8 +733,7 @@ function FDsModelCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, 
    matrix.setRotation(displayMatrix.rx, displayMatrix.ry, displayMatrix.rz);
    matrix.update();
    // 计算轮廓
-   var resource = space.resource();
-   var resourceOutline = resource.calculateOutline();
+   var resourceOutline = displayResource.calculateOutline();
    outline.calculateFrom(resourceOutline, matrix);
    // 计算缩放比率
    if(flipX){
@@ -769,8 +767,8 @@ function FDsModelCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, 
    //matrix.addTranslate(-renderableMatrix.tx, -renderableMatrix.ty, -renderableMatrix.tz);
    //matrix.addScale(scaleX, scaleY, scaleZ);
    //renderableMatrix.setTranslate(x, y, z);
-   renderableMatrix.identity();
-   renderable.reloadResource();
+   //renderableMatrix.identity();
+   //renderable.reloadResource();
    //renderableMatrix.update();
 }
 

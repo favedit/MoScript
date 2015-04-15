@@ -727,6 +727,7 @@ function FE3dModel(o){
    o._renderable    = null;
    o._display       = null;
    o.construct      = FE3dModel_construct;
+   o.display        = FE3dModel_display;
    o.testReady      = FE3dModel_testReady;
    o.loadRenderable = FE3dModel_loadRenderable;
    o.processLoad    = FE3dModel_processLoad;
@@ -740,6 +741,9 @@ function FE3dModel_construct(){
    o.registerLayer('Layer', layer);
    var display = o._display = RClass.create(FE3dModelDisplay);
    layer.pushDisplay(display);
+}
+function FE3dModel_display(){
+   return this._display;
 }
 function FE3dModel_testReady(){
    return this._dataReady;
@@ -2082,6 +2086,7 @@ function FE3dSpace(o){
    o._dirty                = false;
    o.onProcess             = FE3dSpace_onProcess;
    o.construct             = FE3dSpace_construct;
+   o.linkGraphicContext    = FE3dSpace_linkGraphicContext;
    o.createRegion          = FE3dSpace_createRegion;
    o.resource              = FE3dSpace_resource;
    o.loadTechniqueResource = FE3dSpace_loadTechniqueResource;
@@ -2110,6 +2115,11 @@ function FE3dSpace_onProcess(){
 function FE3dSpace_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
+}
+function FE3dSpace_linkGraphicContext(context){
+   var o = this;
+   o.__base.FE3dStage.linkGraphicContext.call(o, context);
+   o._region.linkGraphicContext(context);
 }
 function FE3dSpace_createRegion(){
    return RClass.create(FE3dRegion);

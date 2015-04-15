@@ -10108,10 +10108,6 @@ function FDsModelCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, 
    var display = space.display();
    var displayResource = display.resource();
    var displayMatrix = displayResource.matrix();
-   return;
-   var renderable = display._renderable;
-   var renderableResource = renderable.resource();
-   var renderableMatrix = renderableResource.matrix();
    if(rotationX){
       displayMatrix.rx += RConst.PI_2;
    }
@@ -10124,8 +10120,7 @@ function FDsModelCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, 
    var matrix = o._autoMatrix.identity();
    matrix.setRotation(displayMatrix.rx, displayMatrix.ry, displayMatrix.rz);
    matrix.update();
-   var resource = space.resource();
-   var resourceOutline = resource.calculateOutline();
+   var resourceOutline = displayResource.calculateOutline();
    outline.calculateFrom(resourceOutline, matrix);
    if(flipX){
       displayMatrix.sx = -displayMatrix.sx;
@@ -10151,8 +10146,6 @@ function FDsModelCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, 
    displayMatrix.setScale(scaleX, scaleY, scaleZ);
    displayMatrix.update();
    display.reloadResource();
-   renderableMatrix.identity();
-   renderable.reloadResource();
 }
 function FDsModelCanvas_reloadRegion(region){
    var o = this;
