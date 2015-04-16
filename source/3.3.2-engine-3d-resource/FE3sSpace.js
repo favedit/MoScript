@@ -12,6 +12,8 @@ function FE3sSpace(o){
    // @attribute
    o._technique  = null;
    o._region     = null;
+   o._materials  = null;
+   o._displays   = null;
    o._layers     = null;
    //..........................................................
    // @method
@@ -19,6 +21,8 @@ function FE3sSpace(o){
    // @method
    o.technique   = FE3sSpace_technique;
    o.region      = FE3sSpace_region;
+   o.materials   = FE3sSpace_materials;
+   o.displays    = FE3sSpace_displays;
    o.layers      = FE3sSpace_layers;
    // @method
    o.unserialize = FE3sSpace_unserialize;
@@ -59,6 +63,26 @@ function FE3sSpace_region(){
 }
 
 //==========================================================
+// <T>获得材质集合。</T>
+//
+// @method
+// @return TDictionary 材质集合
+//==========================================================
+function FE3sSpace_materials(){
+   return this._materials;
+}
+
+//==========================================================
+// <T>获得显示集合。</T>
+//
+// @method
+// @return TDictionary 显示集合
+//==========================================================
+function FE3sSpace_displays(){
+   return this._displays;
+}
+
+//==========================================================
 // <T>获得层集合。</T>
 //
 // @method
@@ -71,23 +95,44 @@ function FE3sSpace_layers(){
 //==========================================================
 // <T>从输入流里反序列化信息内容。</T>
 //
-// @param p:input:FByteStream 数据流
+// @param input:FByteStream 数据流
 //==========================================================
-function FE3sSpace_unserialize(p){
+function FE3sSpace_unserialize(input){
    var o = this;
-   o.__base.FE3sResource.unserialize.call(o, p);
+   o.__base.FE3sResource.unserialize.call(o, input);
+   var resourceConsole = RConsole.find(FE3sResourceConsole);
+   var materialConsole = RConsole.find(FE3sMaterialConsole);
    // 读取技术
-   o._technique.unserialize(p);
+   o._technique.unserialize(input);
    // 读取区域
-   o._region.unserialize(p);
-   // 读取场景层
-   var c = p.readInt16();
-   if(c > 0){
-      var s = o._layers = new TDictionary();
-      for(var i = 0; i < c; i++){
-         var l = RClass.create(FE3sDisplayLayer);
-         l.unserialize(p);
-         s.set(l.code(), l);
+   o._region.unserialize(input);
+   // 读取材质集合
+   var materialCount = input.readInt16();
+   if(materialCount > 0){
+      var materials = o._materials = new TDictionary();
+      for(var i = 0; i < materialCount; i++){
+         var material = materialConsole.unserialize(input)
+         materials.set(material.guid(), material);
+      }
+   }
+   // 读取显示集合
+   debugger
+   var displayCount = input.readInt16();
+   if(displayCount > 0){
+      var displays = o._displays = new TDictionary();
+      for(var i = 0; i < displayCount; i++){
+         var display = resourceConsole.unserialize(input);
+         displays.set(display.guid(), display);
+      }
+   }
+   // 读取显示层集合
+   var layerCount = input.readInt16();
+   if(layerCount > 0){
+      var layers = o._layers = new TDictionary();
+      for(var i = 0; i < layerCount; i++){
+         var layer = RClass.create(FE3sDisplayLayer);
+         layer.unserialize(input);
+         layers.set(layer.code(), layer);
       }
    }
 }

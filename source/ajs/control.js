@@ -2242,12 +2242,13 @@ function MUiSizeable_stopDrag(){
 }
 function MUiStorage(o){
    o = RClass.inherits(this, o);
-   o._storageCode   = null;
-   o._storageObject = null;
-   o.storageGet     = MUiHorizontal_storageGet;
-   o.storageSet     = MUiHorizontal_storageSet;
-   o.storageUpdate  = MUiHorizontal_storageUpdate;
-   o.dispose        = MUiHorizontal_dispose;
+   o._storageCode      = null;
+   o._storageObject    = null;
+   o.storageGet        = MUiHorizontal_storageGet;
+   o.storageGetBoolean = MUiHorizontal_storageGetBoolean;
+   o.storageSet        = MUiHorizontal_storageSet;
+   o.storageUpdate     = MUiHorizontal_storageUpdate;
+   o.dispose           = MUiHorizontal_dispose;
    return o;
 }
 function MUiHorizontal_storageGet(name, defaultValue){
@@ -2268,6 +2269,11 @@ function MUiHorizontal_storageGet(name, defaultValue){
       }
    }
    return defaultValue;
+}
+function MUiHorizontal_storageGetBoolean(name, defaultValue){
+   var o = this;
+   var value = o.storageGet(name, defaultValue);
+   return RBoolean.parse(value);
 }
 function MUiHorizontal_storageSet(name, value){
    var o = this;

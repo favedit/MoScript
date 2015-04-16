@@ -42,13 +42,13 @@ function FE3sTechniquePass_targetHeight(){
 //==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
-// @param p:input:FByteStream 数据流
-// @return 处理结果
+// @method
+// @param input:FByteStream 数据流
 //==========================================================
-function FE3sTechniquePass_unserialize(p){
+function FE3sTechniquePass_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
+   o.__base.FE3sObject.unserialize.call(o, input);
    // 读取属性
-   o._targetWidth = p.readUint16();
-   o._targetHeight = p.readUint16();
+   o._targetWidth = input.readUint16();
+   o._targetHeight = input.readUint16();
 }

@@ -31,6 +31,8 @@ function FE3sResourceConsole_construct(){
    o.__base.FConsole.construct.call(o);
    // 设置属性
    var factory = o._factory = RClass.create(FClassFactory);
+   factory.register('Shape', FE3sShape);
+   factory.register('Sprite', FE3sSprite);
    factory.register('ModelMesh', FE3sModelMesh);
    factory.register('ModelRenderable', FE3sModelRenderable);
 }

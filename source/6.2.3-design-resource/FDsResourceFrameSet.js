@@ -102,7 +102,7 @@ function FDsResourceFrameSet_onBuilded(p){
    o._frameCatalogContent.push(control);
    //..........................................................
    // 设置搜索栏
-   var control = o._listToolbar = RClass.create(FDsResourceListToolBar);
+   var control = o._listToolBar = RClass.create(FDsResourceListToolBar);
    control._workspace = o._workspace;
    control._frameSet = o;
    control.buildDefine(p);
@@ -234,7 +234,9 @@ function FDsResourceFrameSet_switchContent(typeCd){
 //==========================================================
 function FDsResourceFrameSet_load(){
    var o = this;
-   o.switchContent('mesh');
+   o._listToolBar.storageLoad();
+   //var typeCd = o._listToolBar.storageGet('resource_type_cd', 'All')
+   //o.switchContent(typeCd);
 }
 
 //==========================================================

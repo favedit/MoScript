@@ -8,8 +8,6 @@ function FE3sMaterial(o){
    o = RClass.inherits(this, o, FE3sObject);
    //..........................................................
    // @attribute
-   o._groupGuid  = null;
-   // @attribute
    o._info       = null;
    // @attribute 高度
    //o._heightDepth        = null;
@@ -27,9 +25,6 @@ function FE3sMaterial(o){
    //..........................................................
    // @method
    o.construct   = FE3sMaterial_construct;
-   // @method
-   o.groupGuid   = FE3sMaterial_groupGuid;
-   o.group       = FE3sMaterial_group;
    // @method
    o.effectCode  = FE3sMaterial_effectCode;
    o.info        = FE3sMaterial_info;
@@ -49,26 +44,6 @@ function FE3sMaterial_construct(){
    var o = this;
    o.__base.FE3sObject.construct.call(o);
    o._info = new SE3sMaterialInfo();
-}
-
-//==========================================================
-// <T>获得分组唯一编号。</T>
-//
-// @method
-// @return String 唯一编号
-//==========================================================
-function FE3sMaterial_groupGuid(){
-   return this._groupGuid;
-}
-
-//==========================================================
-// <T>获得材质分组。</T>
-//
-// @method
-// @return FE3sMaterialGroup 材质分组
-//==========================================================
-function FE3sMaterial_group(){
-   return RConsole.find(FE3sMaterialConsole).findGroup(this._groupGuid);
 }
 
 //==========================================================
@@ -110,8 +85,6 @@ function FE3sMaterial_textures(){
 function FE3sMaterial_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
-   // 读取属性
-   o._groupGuid = p.readString();
    // 读取信息
    o._info.unserialize(p);
    // 读取纹理集合
@@ -135,8 +108,6 @@ function FE3sMaterial_unserialize(p){
 function FE3sMaterial_saveConfig(p){
    var o = this;
    o.__base.FE3sObject.saveConfig.call(o, p);
-   // 存储属性
-   p.set('group_guid', o._groupGuid);
    // 存储材质
    o._info.saveConfig(p);
 }

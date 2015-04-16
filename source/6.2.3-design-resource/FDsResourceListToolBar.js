@@ -6,10 +6,11 @@
 // @history 150210
 //==========================================================
 function FDsResourceListToolBar(o){
-   o = RClass.inherits(this, o, FUiToolBar);
+   o = RClass.inherits(this, o, FUiToolBar, MUiStorage);
    //..........................................................
    // @property
    o._frameName       = 'design3d.resource.ListToolBar';
+   o._storageCode     = o._frameName;
    //..........................................................
    // @attribute
    o._pageCount       = 0;
@@ -33,12 +34,14 @@ function FDsResourceListToolBar(o){
    // @event
    o.onSearchClick    = FDsResourceListToolBar_onSearchClick;
    o.onNavigatorClick = FDsResourceListToolBar_onNavigatorClick;
+   o.onTypeClick      = FDsResourceListToolBar_onTypeClick;
    //..........................................................
    // @method
    o.construct        = FDsResourceListToolBar_construct;
    // @method
    o.setNavigator     = FDsResourceListToolBar_setNavigator;
    o.doNavigator      = FDsResourceListToolBar_doNavigator;
+   o.storageLoad      = FDsResourceListToolBar_storageLoad;
    // @method
    o.dispose          = FDsResourceListToolBar_dispose;
    return o;
@@ -62,6 +65,19 @@ function FDsResourceListToolBar_onBuilded(p){
    //o._controlPageEdit.addClickListener(o, o.onNavigatorClick);
    o._controlNextButton.addClickListener(o, o.onNavigatorClick);
    o._controlLastButton.addClickListener(o, o.onNavigatorClick);
+   // 关联选择事件
+   o._controlTypeAll.addClickListener(o, o.onTypeClick);
+   o._controlTypeNone.addClickListener(o, o.onTypeClick);
+   o._controlTypeBitmap.addClickListener(o, o.onTypeClick);
+   o._controlTypeBitmap.check(true);
+   o._controlTypeMaterial.addClickListener(o, o.onTypeClick);
+   o._controlTypeMaterial.check(true);
+   o._controlTypeModel.addClickListener(o, o.onTypeClick);
+   o._controlTypeModel.check(true);
+   o._controlTypeTemplate.addClickListener(o, o.onTypeClick);
+   o._controlTypeTemplate.check(true);
+   o._controlTypeScene.addClickListener(o, o.onTypeClick);
+   o._controlTypeScene.check(true);
 }
 
 //==========================================================
@@ -96,10 +112,84 @@ function FDsResourceListToolBar_onNavigatorClick(event){
          page++;
          break;
       case 'lastButton':
-         page = o._pageCount;
+         page = o._pageCount - 1;
          break;
    }
    o.doNavigator(page);
+}
+
+//==========================================================
+// <T>点击类型事件处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsResourceListToolBar_onTypeClick(event){
+   var o = this;
+   var sender = event.sender;
+   var name = sender.name();
+   var page = o._page;
+   switch(name){
+      case 'typeAll':
+         o._controlTypeBitmap.check(true);
+         o._controlTypeMaterial.check(true);
+         o._controlTypeModel.check(true);
+         o._controlTypeTemplate.check(true);
+         o._controlTypeScene.check(true);
+         break;
+      case 'typeNone':
+         o._controlTypeBitmap.check(false);
+         o._controlTypeMaterial.check(false);
+         o._controlTypeModel.check(false);
+         o._controlTypeTemplate.check(false);
+         o._controlTypeScene.check(false);
+         break;
+      case 'typeBitmap':
+         page = 0;
+         break;
+      case 'typeMaterial':
+         page--;
+         break;
+      case 'typeMesh':
+         page++;
+         break;
+      case 'typeTemplate':
+         page = o._pageCount - 1;
+         break;
+      case 'typeScene':
+         page = o._pageCount - 1;
+         break;
+   }
+   var types = '';
+   if(o._controlTypeBitmap.isCheck()){
+      types += '|Bitmap';
+   }
+   if(o._controlTypeMaterial.isCheck()){
+      types += '|Material';
+   }
+   if(o._controlTypeModel.isCheck()){
+      types += '|Model';
+   }
+   if(o._controlTypeTemplate.isCheck()){
+      types += '|Template';
+   }
+   if(o._controlTypeScene.isCheck()){
+      types += '|Scene';
+   }
+   if(types != ''){
+      types = types.substring(1);
+   }
+   var search = o._controlSearchEdit.text();
+   o._frameSet._listContent.serviceSearch(types, search, '', o._pageSize, 0)
+   //..........................................................
+   // 存储选择内容
+   o.storageSet('resource_type_cd', types);
+   o.storageSet('control_type_bitmap:check', RBoolean.toString(o._controlTypeBitmap.isCheck()))
+   o.storageSet('control_type_material:check', RBoolean.toString(o._controlTypeMaterial.isCheck()))
+   o.storageSet('control_type_model:check', RBoolean.toString(o._controlTypeModel.isCheck()))
+   o.storageSet('control_type_template:check', RBoolean.toString(o._controlTypeTemplate.isCheck()))
+   o.storageSet('control_type_scene:check', RBoolean.toString(o._controlTypeScene.isCheck()))
+   o.storageUpdate();
 }
 
 //==========================================================
@@ -145,10 +235,23 @@ function FDsResourceListToolBar_doNavigator(page){
    var search = o._controlSearchEdit.text();
    var typeCd = o._frameSet._resourceTypeCd;
    if((o._resourceTypeCd != typeCd) || (o._serach != search) || (o._page != page)){
-      o._frameSet._listContent.serviceSearch(typeCd, search, o._pageSize, page)
+      o._frameSet._listContent.serviceSearch(typeCd, search, '', o._pageSize, page)
    }
    o._resourceTypeCd = typeCd;
    o._serach = search;
+}
+
+//==========================================================
+function FDsResourceListToolBar_storageLoad(){
+   var o = this;
+   o._controlTypeBitmap.check(o.storageGetBoolean('control_type_bitmap:check', true));
+   o._controlTypeMaterial.check(o.storageGetBoolean('control_type_material:check', true));
+   o._controlTypeModel.check(o.storageGetBoolean('control_type_model:check', true));
+   o._controlTypeTemplate.check(o.storageGetBoolean('control_type_template:check', true));
+   o._controlTypeScene.check(o.storageGetBoolean('control_type_scene:check', true));
+   var types = o.storageGet('resource_type_cd', 'All');
+   var search = o._controlSearchEdit.text();
+   o._frameSet._listContent.serviceSearch(types, search, '', o._pageSize, 0)
 }
 
 //==========================================================
@@ -161,3 +264,4 @@ function FDsResourceListToolBar_dispose(){
    // 父处理
    o.__base.FUiToolBar.dispose.call(o);
 }
+   

@@ -32,20 +32,20 @@ function FE3sTechnique_passes(){
 //==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
-// @param p:input:FByteStream 数据流
-// @return 处理结果
+// @method
+// @param input:FByteStream 数据流
 //==========================================================
-function FE3sTechnique_unserialize(p){
+function FE3sTechnique_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
+   o.__base.FE3sObject.unserialize.call(o, input);
    // 读取过程集合
-   var c = p.readInt16();
-   if(c > 0){
-      var ss = o._passes = new TObjects();
-      for(var i = 0; i < c; i++){
-         var s = RClass.create(FE3sTechniquePass);
-         s.unserialize(p);
-         ss.push(s);
+   var passCount = input.readInt16();
+   if(passCount > 0){
+      var passes = o._passes = new TObjects();
+      for(var i = 0; i < passCount; i++){
+         var pass = RClass.create(FE3sTechniquePass);
+         pass.unserialize(input);
+         passes.push(pass);
       }
    }
 }

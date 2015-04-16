@@ -9,15 +9,16 @@ function MUiStorage(o){
    o = RClass.inherits(this, o);
    //..........................................................
    // @attribute
-   o._storageCode   = null;
-   o._storageObject = null;
+   o._storageCode      = null;
+   o._storageObject    = null;
    //..........................................................
    // @method
-   o.storageGet     = MUiHorizontal_storageGet;
-   o.storageSet     = MUiHorizontal_storageSet;
-   o.storageUpdate  = MUiHorizontal_storageUpdate;
+   o.storageGet        = MUiHorizontal_storageGet;
+   o.storageGetBoolean = MUiHorizontal_storageGetBoolean;
+   o.storageSet        = MUiHorizontal_storageSet;
+   o.storageUpdate     = MUiHorizontal_storageUpdate;
    // @method
-   o.dispose        = MUiHorizontal_dispose;
+   o.dispose           = MUiHorizontal_dispose;
    return o;
 }
 
@@ -46,6 +47,19 @@ function MUiHorizontal_storageGet(name, defaultValue){
       }
    }
    return defaultValue;
+}
+
+//==========================================================
+// <T>根据名称获得存储内容。</T>
+//
+// @method
+// @param name:String 名称
+// @param defaultValue:Object 缺省内容
+//==========================================================
+function MUiHorizontal_storageGetBoolean(name, defaultValue){
+   var o = this;
+   var value = o.storageGet(name, defaultValue);
+   return RBoolean.parse(value);
 }
 
 //==========================================================

@@ -20924,12 +20924,9 @@ function FE3sLight_unserialize(p){
 }
 function FE3sMaterial(o){
    o = RClass.inherits(this, o, FE3sObject);
-   o._groupGuid  = null;
    o._info       = null;
    o._textures   = null;
    o.construct   = FE3sMaterial_construct;
-   o.groupGuid   = FE3sMaterial_groupGuid;
-   o.group       = FE3sMaterial_group;
    o.effectCode  = FE3sMaterial_effectCode;
    o.info        = FE3sMaterial_info;
    o.textures    = FE3sMaterial_textures;
@@ -20941,12 +20938,6 @@ function FE3sMaterial_construct(){
    var o = this;
    o.__base.FE3sObject.construct.call(o);
    o._info = new SE3sMaterialInfo();
-}
-function FE3sMaterial_groupGuid(){
-   return this._groupGuid;
-}
-function FE3sMaterial_group(){
-   return RConsole.find(FE3sMaterialConsole).findGroup(this._groupGuid);
 }
 function FE3sMaterial_effectCode(){
    return this._info.effectCode;
@@ -20960,7 +20951,6 @@ function FE3sMaterial_textures(){
 function FE3sMaterial_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
-   o._groupGuid = p.readString();
    o._info.unserialize(p);
    var c = p.readInt16();
    if(c > 0){
@@ -20975,45 +20965,30 @@ function FE3sMaterial_unserialize(p){
 function FE3sMaterial_saveConfig(p){
    var o = this;
    o.__base.FE3sObject.saveConfig.call(o, p);
-   p.set('group_guid', o._groupGuid);
    o._info.saveConfig(p);
 }
 function FE3sMaterialConsole(o){
    o = RClass.inherits(this, o, FConsole);
-   o._materialGroups  = null;
-   o._materials       = null;
-   o.construct        = FE3sMaterialConsole_construct;
-   o.findGroup        = FE3sMaterialConsole_findGroup;
-   o.find             = FE3sMaterialConsole_find;
-   o.unserializeGroup = FE3sMaterialConsole_unserializeGroup;
-   o.unserialize      = FE3sMaterialConsole_unserialize;
+   o._materials  = null;
+   o.construct   = FE3sMaterialConsole_construct;
+   o.find        = FE3sMaterialConsole_find;
+   o.unserialize = FE3sMaterialConsole_unserialize;
    return o;
 }
 function FE3sMaterialConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
-   o._materialGroups = new TDictionary();
    o._materials = new TDictionary();
-}
-function FE3sMaterialConsole_findGroup(p){
-   return this._materialGroups.get(p);
 }
 function FE3sMaterialConsole_find(p){
    return this._materials.get(p);
 }
-function FE3sMaterialConsole_unserializeGroup(p){
-   var o = this;
-   var r = RClass.create(FE3sMaterialGroup);
-   r.unserialize(p);
-   o._materialGroups.set(r.guid(), r);
-   return r;
-}
 function FE3sMaterialConsole_unserialize(p){
    var o = this;
-   var r = RClass.create(FE3sMaterial);
-   r.unserialize(p);
-   o._materials.set(r.guid(), r);
-   return r;
+   var material = RClass.create(FE3sMaterial);
+   material.unserialize(p);
+   o._materials.set(material.guid(), material);
+   return material;
 }
 function FE3sMaterialGroup(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -21767,6 +21742,8 @@ function FE3sResourceConsole_construct(){
    var o = this;
    o.__base.FConsole.construct.call(o);
    var factory = o._factory = RClass.create(FClassFactory);
+   factory.register('Shape', FE3sShape);
+   factory.register('Sprite', FE3sSprite);
    factory.register('ModelMesh', FE3sModelMesh);
    factory.register('ModelRenderable', FE3sModelRenderable);
 }
@@ -22113,6 +22090,76 @@ function FE3sSceneRenderable_unserialize(p){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, p);
 }
+function FE3sShape(o){
+   o = RClass.inherits(this, o, FObject);
+   o._typeName       = null;
+   o._template       = null;
+   o._modelGuid      = null;
+   o._meshGuid       = null;
+   o._matrix         = null;
+   o._activeMaterial = null;
+   o._materials      = null;
+   o.construct       = FE3sShape_construct;
+   o.typeName        = FE3sShape_typeName;
+   o.modelGuid       = FE3sShape_modelGuid;
+   o.model           = FE3sShape_model;
+   o.meshGuid        = FE3sShape_meshGuid;
+   o.mesh            = FE3sShape_mesh;
+   o.matrix          = FE3sShape_matrix;
+   o.activeMaterial  = FE3sShape_activeMaterial;
+   o.materials       = FE3sShape_materials;
+   o.unserialize     = FE3sShape_unserialize;
+   return o;
+}
+function FE3sShape_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+   o._matrix = new SMatrix3d();
+}
+function FE3sShape_typeName(){
+   return this._typeName;
+}
+function FE3sShape_modelGuid(){
+   return this._modelGuid;
+}
+function FE3sShape_model(){
+   return RConsole.find(FE3sModelConsole).findModel(this._modelGuid);
+}
+function FE3sShape_meshGuid(){
+   return this._meshGuid;
+}
+function FE3sShape_mesh(){
+   return RConsole.find(FE3sModelConsole).findMesh(this._meshGuid);
+}
+function FE3sShape_matrix(){
+   return this._matrix;
+}
+function FE3sShape_activeMaterial(){
+   return this._activeMaterial;
+}
+function FE3sShape_materials(){
+   return this._materials;
+}
+function FE3sShape_unserialize(p){
+   var o = this;
+   o._typeName = p.readString();
+   o._modelGuid = p.readString();
+   o._meshGuid = p.readString();
+   o._matrix.unserialize(p);
+   var c = p.readUint16();
+   if(c > 0){
+      var s = o._materials = new TObjects();
+      for(var i = 0; i < c; i++){
+         var m = RClass.create(FE3sShapeMaterial);
+         m._template = o._template;
+         m.unserialize(p);
+         s.push(m);
+         if(o._activeMaterial == null){
+            o._activeMaterial = m;
+         }
+      }
+   }
+}
 function FE3sSkeleton(o){
    o = RClass.inherits(this, o, FE3sObject);
    o._bones        = null
@@ -22240,10 +22287,14 @@ function FE3sSpace(o){
    o._typeName   = null;
    o._technique  = null;
    o._region     = null;
+   o._materials  = null;
+   o._displays   = null;
    o._layers     = null;
    o.construct   = FE3sSpace_construct;
    o.technique   = FE3sSpace_technique;
    o.region      = FE3sSpace_region;
+   o.materials   = FE3sSpace_materials;
+   o.displays    = FE3sSpace_displays;
    o.layers      = FE3sSpace_layers;
    o.unserialize = FE3sSpace_unserialize;
    o.saveConfig  = FE3sSpace_saveConfig;
@@ -22261,21 +22312,46 @@ function FE3sSpace_technique(){
 function FE3sSpace_region(){
    return this._region;
 }
+function FE3sSpace_materials(){
+   return this._materials;
+}
+function FE3sSpace_displays(){
+   return this._displays;
+}
 function FE3sSpace_layers(){
    return this._layers;
 }
-function FE3sSpace_unserialize(p){
+function FE3sSpace_unserialize(input){
    var o = this;
-   o.__base.FE3sResource.unserialize.call(o, p);
-   o._technique.unserialize(p);
-   o._region.unserialize(p);
-   var c = p.readInt16();
-   if(c > 0){
-      var s = o._layers = new TDictionary();
-      for(var i = 0; i < c; i++){
-         var l = RClass.create(FE3sDisplayLayer);
-         l.unserialize(p);
-         s.set(l.code(), l);
+   o.__base.FE3sResource.unserialize.call(o, input);
+   var resourceConsole = RConsole.find(FE3sResourceConsole);
+   var materialConsole = RConsole.find(FE3sMaterialConsole);
+   o._technique.unserialize(input);
+   o._region.unserialize(input);
+   var materialCount = input.readInt16();
+   if(materialCount > 0){
+      var materials = o._materials = new TDictionary();
+      for(var i = 0; i < materialCount; i++){
+         var material = materialConsole.unserialize(input)
+         materials.set(material.guid(), material);
+      }
+   }
+   debugger
+   var displayCount = input.readInt16();
+   if(displayCount > 0){
+      var displays = o._displays = new TDictionary();
+      for(var i = 0; i < displayCount; i++){
+         var display = resourceConsole.unserialize(input);
+         displays.set(display.guid(), display);
+      }
+   }
+   var layerCount = input.readInt16();
+   if(layerCount > 0){
+      var layers = o._layers = new TDictionary();
+      for(var i = 0; i < layerCount; i++){
+         var layer = RClass.create(FE3sDisplayLayer);
+         layer.unserialize(input);
+         layers.set(layer.code(), layer);
       }
    }
 }
@@ -22295,7 +22371,7 @@ function FE3sSpace_saveConfig(p){
       }
    }
 }
-function FE3sSpatial(o){
+function FE3sSprite(o){
    o = RClass.inherits(this, o, FObject);
    o._typeName       = null;
    o._template       = null;
@@ -22304,48 +22380,48 @@ function FE3sSpatial(o){
    o._matrix         = null;
    o._activeMaterial = null;
    o._materials      = null;
-   o.construct       = FE3sSpatial_construct;
-   o.typeName        = FE3sSpatial_typeName;
-   o.modelGuid       = FE3sSpatial_modelGuid;
-   o.model           = FE3sSpatial_model;
-   o.meshGuid        = FE3sSpatial_meshGuid;
-   o.mesh            = FE3sSpatial_mesh;
-   o.matrix          = FE3sSpatial_matrix;
-   o.activeMaterial  = FE3sSpatial_activeMaterial;
-   o.materials       = FE3sSpatial_materials;
-   o.unserialize     = FE3sSpatial_unserialize;
+   o.construct       = FE3sSprite_construct;
+   o.typeName        = FE3sSprite_typeName;
+   o.modelGuid       = FE3sSprite_modelGuid;
+   o.model           = FE3sSprite_model;
+   o.meshGuid        = FE3sSprite_meshGuid;
+   o.mesh            = FE3sSprite_mesh;
+   o.matrix          = FE3sSprite_matrix;
+   o.activeMaterial  = FE3sSprite_activeMaterial;
+   o.materials       = FE3sSprite_materials;
+   o.unserialize     = FE3sSprite_unserialize;
    return o;
 }
-function FE3sSpatial_construct(){
+function FE3sSprite_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._matrix = new SMatrix3d();
 }
-function FE3sSpatial_typeName(){
+function FE3sSprite_typeName(){
    return this._typeName;
 }
-function FE3sSpatial_modelGuid(){
+function FE3sSprite_modelGuid(){
    return this._modelGuid;
 }
-function FE3sSpatial_model(){
+function FE3sSprite_model(){
    return RConsole.find(FE3sModelConsole).findModel(this._modelGuid);
 }
-function FE3sSpatial_meshGuid(){
+function FE3sSprite_meshGuid(){
    return this._meshGuid;
 }
-function FE3sSpatial_mesh(){
+function FE3sSprite_mesh(){
    return RConsole.find(FE3sModelConsole).findMesh(this._meshGuid);
 }
-function FE3sSpatial_matrix(){
+function FE3sSprite_matrix(){
    return this._matrix;
 }
-function FE3sSpatial_activeMaterial(){
+function FE3sSprite_activeMaterial(){
    return this._activeMaterial;
 }
-function FE3sSpatial_materials(){
+function FE3sSprite_materials(){
    return this._materials;
 }
-function FE3sSpatial_unserialize(p){
+function FE3sSprite_unserialize(p){
    var o = this;
    o._typeName = p.readString();
    o._modelGuid = p.readString();
@@ -22355,7 +22431,7 @@ function FE3sSpatial_unserialize(p){
    if(c > 0){
       var s = o._materials = new TObjects();
       for(var i = 0; i < c; i++){
-         var m = RClass.create(FE3sSpatialMaterial);
+         var m = RClass.create(FE3sSpriteMaterial);
          m._template = o._template;
          m.unserialize(p);
          s.push(m);
@@ -22433,16 +22509,16 @@ function FE3sTechnique(o){
 function FE3sTechnique_passes(){
    return this._passes;
 }
-function FE3sTechnique_unserialize(p){
+function FE3sTechnique_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   var c = p.readInt16();
-   if(c > 0){
-      var ss = o._passes = new TObjects();
-      for(var i = 0; i < c; i++){
-         var s = RClass.create(FE3sTechniquePass);
-         s.unserialize(p);
-         ss.push(s);
+   o.__base.FE3sObject.unserialize.call(o, input);
+   var passCount = input.readInt16();
+   if(passCount > 0){
+      var passes = o._passes = new TObjects();
+      for(var i = 0; i < passCount; i++){
+         var pass = RClass.create(FE3sTechniquePass);
+         pass.unserialize(input);
+         passes.push(pass);
       }
    }
 }
@@ -22466,68 +22542,16 @@ function FE3sTechniquePass_targetWidth(){
 function FE3sTechniquePass_targetHeight(){
    return this._targetHeight;
 }
-function FE3sTechniquePass_unserialize(p){
+function FE3sTechniquePass_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
-   o._targetWidth = p.readUint16();
-   o._targetHeight = p.readUint16();
+   o.__base.FE3sObject.unserialize.call(o, input);
+   o._targetWidth = input.readUint16();
+   o._targetHeight = input.readUint16();
 }
 function FE3sTemplate(o){
-   o = RClass.inherits(this, o, FE3sResource);
-   o._dataCompress   = true;
-   o._materialGroups = null;
-   o._themes         = null;
-   o._displays       = null;
-   o._activeTheme    = null;
-   o.materialGroups  = FE3sTemplate_materialGroups;
-   o.themes          = FE3sTemplate_themes;
-   o.displays        = FE3sTemplate_displays;
-   o.unserialize     = FE3sTemplate_unserialize;
+   o = RClass.inherits(this, o, FE3sSpace);
+   o._dataCompress = true;
    return o;
-}
-function FE3sTemplate_materialGroups(){
-   return this._materialGroups;
-}
-function FE3sTemplate_themes(){
-   return this._themes;
-}
-function FE3sTemplate_displays(){
-   return this._displays;
-}
-function FE3sTemplate_unserialize(p){
-   var o = this;
-   o.__base.FE3sResource.unserialize.call(o, p);
-   var mc = RConsole.find(FE3sMaterialConsole);
-   var c = p.readUint16();
-   if(c > 0){
-      var s = o._materialGroups = new TDictionary();
-      for(var i = 0; i < c; i++){
-         var g = mc.unserializeGroup(p);
-         s.set(g.guid(), g);
-      }
-   }
-   var c = p.readUint16();
-   if(c > 0){
-      var s = o._themes = new TObjects();
-      for(var i = 0; i < c; i++){
-         var t = RClass.create(FE3sTemplateTheme);
-         t.unserialize(p);
-         s.push(t);
-         if(o._activeTheme == null){
-            o._activeTheme = t;
-         }
-      }
-   }
-   var c = p.readUint16();
-   if(c > 0){
-      var s = o._displays = new TObjects();
-      for(var i = 0; i < c; i++){
-         var d = RClass.create(FE3sDisplay);
-         d._template = o;
-         d.unserialize(p);
-         s.push(d);
-      }
-   }
 }
 function FE3sTemplateConsole(o){
    o = RClass.inherits(this, o, FConsole);

@@ -59,7 +59,7 @@ function FDsResourceListContent_onServiceLoad(p){
    var pageSize = xitems.getInteger('page_size');
    var pageCount = xitems.getInteger('page_count');
    var page = xitems.getInteger('page');
-   o._frameSet._listToolbar.setNavigator(pageSize, pageCount, page);
+   o._frameSet._listToolBar.setNavigator(pageSize, pageCount, page);
    // 显示项目
    o.clear();
    var xnodes = xitems.nodes();
@@ -131,8 +131,8 @@ function FDsResourceListContent_doDoubleClickItem(control){
    var typeCd = control._typeCd;
    if(typeCd == 'Bitmap'){
       workspace.selectFrameSet(EDsFrameSet.BitmapFrameSet, guid);
-   }else if(typeCd == 'Mesh'){
-      workspace.selectFrameSet(EDsFrameSet.MeshFrameSet, guid);
+   }else if(typeCd == 'Material'){
+      workspace.selectFrameSet(EDsFrameSet.MaterialFrameSet, guid);
    }else if(typeCd == 'Model'){
       workspace.selectFrameSet(EDsFrameSet.ModelFrameSet, guid);
    }else if(typeCd == 'Template'){

@@ -4,7 +4,7 @@
 // @author maocy
 // @history 150129
 //==========================================================
-function FE3sSpatial(o){
+function FE3sSprite(o){
    o = RClass.inherits(this, o, FObject);
    //..........................................................
    // @attribute
@@ -17,18 +17,18 @@ function FE3sSpatial(o){
    o._materials      = null;
    //..........................................................
    // @method
-   o.construct       = FE3sSpatial_construct;
+   o.construct       = FE3sSprite_construct;
    // @method
-   o.typeName        = FE3sSpatial_typeName;
-   o.modelGuid       = FE3sSpatial_modelGuid;
-   o.model           = FE3sSpatial_model;
-   o.meshGuid        = FE3sSpatial_meshGuid;
-   o.mesh            = FE3sSpatial_mesh;
-   o.matrix          = FE3sSpatial_matrix;
-   o.activeMaterial  = FE3sSpatial_activeMaterial;
-   o.materials       = FE3sSpatial_materials;
+   o.typeName        = FE3sSprite_typeName;
+   o.modelGuid       = FE3sSprite_modelGuid;
+   o.model           = FE3sSprite_model;
+   o.meshGuid        = FE3sSprite_meshGuid;
+   o.mesh            = FE3sSprite_mesh;
+   o.matrix          = FE3sSprite_matrix;
+   o.activeMaterial  = FE3sSprite_activeMaterial;
+   o.materials       = FE3sSprite_materials;
    // @method
-   o.unserialize     = FE3sSpatial_unserialize;
+   o.unserialize     = FE3sSprite_unserialize;
    return o;
 }
 
@@ -37,7 +37,7 @@ function FE3sSpatial(o){
 //
 // @method
 //==========================================================
-function FE3sSpatial_construct(){
+function FE3sSprite_construct(){
    var o = this;
    o.__base.FObject.construct.call(o);
    o._matrix = new SMatrix3d();
@@ -49,7 +49,7 @@ function FE3sSpatial_construct(){
 // @method
 // @return String 类型名称
 //==========================================================
-function FE3sSpatial_typeName(){
+function FE3sSprite_typeName(){
    return this._typeName;
 }
 
@@ -59,7 +59,7 @@ function FE3sSpatial_typeName(){
 // @method
 // @return String 模型编号
 //==========================================================
-function FE3sSpatial_modelGuid(){
+function FE3sSprite_modelGuid(){
    return this._modelGuid;
 }
 
@@ -69,7 +69,7 @@ function FE3sSpatial_modelGuid(){
 // @method
 // @return FE3sModel 模型
 //==========================================================
-function FE3sSpatial_model(){
+function FE3sSprite_model(){
    return RConsole.find(FE3sModelConsole).findModel(this._modelGuid);
 }
 
@@ -79,7 +79,7 @@ function FE3sSpatial_model(){
 // @method
 // @return String 网格编号
 //==========================================================
-function FE3sSpatial_meshGuid(){
+function FE3sSprite_meshGuid(){
    return this._meshGuid;
 }
 
@@ -89,7 +89,7 @@ function FE3sSpatial_meshGuid(){
 // @method
 // @return FE3sMesh 网格
 //==========================================================
-function FE3sSpatial_mesh(){
+function FE3sSprite_mesh(){
    return RConsole.find(FE3sModelConsole).findMesh(this._meshGuid);
 }
 
@@ -99,7 +99,7 @@ function FE3sSpatial_mesh(){
 // @method
 // @return SMatrix3d 矩阵
 //==========================================================
-function FE3sSpatial_matrix(){
+function FE3sSprite_matrix(){
    return this._matrix;
 }
 
@@ -107,9 +107,9 @@ function FE3sSpatial_matrix(){
 // <T>获得激活材质。</T>
 //
 // @method
-// @return FE3sSpatialMaterial 材质
+// @return FE3sSpriteMaterial 材质
 //==========================================================
-function FE3sSpatial_activeMaterial(){
+function FE3sSprite_activeMaterial(){
    return this._activeMaterial;
 }
 
@@ -119,7 +119,7 @@ function FE3sSpatial_activeMaterial(){
 // @method
 // @return TObjects 材质集合
 //==========================================================
-function FE3sSpatial_materials(){
+function FE3sSprite_materials(){
    return this._materials;
 }
 
@@ -129,7 +129,7 @@ function FE3sSpatial_materials(){
 // @param p:input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FE3sSpatial_unserialize(p){
+function FE3sSprite_unserialize(p){
    // 读取父信息
    var o = this;
    o._typeName = p.readString();
@@ -141,7 +141,7 @@ function FE3sSpatial_unserialize(p){
    if(c > 0){
       var s = o._materials = new TObjects();
       for(var i = 0; i < c; i++){
-         var m = RClass.create(FE3sSpatialMaterial);
+         var m = RClass.create(FE3sSpriteMaterial);
          m._template = o._template;
          m.unserialize(p);
          s.push(m);

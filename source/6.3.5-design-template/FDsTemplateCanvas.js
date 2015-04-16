@@ -34,7 +34,7 @@ function FDsTemplateCanvas(o){
    o.construct           = FDsTemplateCanvas_construct;
    // @method
    o.selectRenderable    = FDsTemplateCanvas_selectRenderable;
-   o.loadTemplate        = FDsTemplateCanvas_loadTemplate;
+   o.loadByGuid          = FDsTemplateCanvas_loadByGuid;
    // @method
    o.dispose             = FDsTemplateCanvas_dispose;
    return o;
@@ -292,17 +292,19 @@ function FDsTemplateCanvas_selectRenderable(p){
 //
 // @method
 //==========================================================
-function FDsTemplateCanvas_loadTemplate(p){
+function FDsTemplateCanvas_loadByGuid(guid){
    var o = this;
    var rmc = RConsole.find(FE3dTemplateConsole);
-   if(o._activeTemplate != null){
-      rmc.free(o._activeTemplate);
+   var template = o._activeTemplate;
+   if(template){
+      rmc.free(template);
    }
    // 收集一个显示模板
-   var m = rmc.allocByCode(o._graphicContext, p);
-   m.addLoadListener(o, o.onTemplateLoad);
-   o._layer.pushDisplay(m);
-   o._activeTemplate = m;
+   //template = rmc.allocByCode(o._graphicContext, p);
+   template = rmc.allocByGuid(o._graphicContext, guid);
+   template.addLoadListener(o, o.onTemplateLoad);
+   //o._layer.pushDisplay(template);
+   o._activeTemplate = template;
 }
 
 //==========================================================
