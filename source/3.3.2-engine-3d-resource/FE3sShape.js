@@ -5,30 +5,27 @@
 // @history 150129
 //==========================================================
 function FE3sShape(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FE3sRenderable);
    //..........................................................
    // @attribute
-   o._typeName       = null;
-   o._template       = null;
-   o._modelGuid      = null;
-   o._meshGuid       = null;
-   o._matrix         = null;
-   o._activeMaterial = null;
-   o._materials      = null;
+   o._modelGuid    = null;
+   o._model        = null;
+   o._meshGuid     = null;
+   o._mesh         = null;
+   o._materialGuid = null;
+   o._material     = null;
    //..........................................................
    // @method
-   o.construct       = FE3sShape_construct;
+   o.construct     = FE3sShape_construct;
    // @method
-   o.typeName        = FE3sShape_typeName;
-   o.modelGuid       = FE3sShape_modelGuid;
-   o.model           = FE3sShape_model;
-   o.meshGuid        = FE3sShape_meshGuid;
-   o.mesh            = FE3sShape_mesh;
-   o.matrix          = FE3sShape_matrix;
-   o.activeMaterial  = FE3sShape_activeMaterial;
-   o.materials       = FE3sShape_materials;
+   o.modelGuid     = FE3sShape_modelGuid;
+   o.model         = FE3sShape_model;
+   o.meshGuid      = FE3sShape_meshGuid;
+   o.mesh          = FE3sShape_mesh;
+   o.materialGuid  = FE3sShape_materialGuid;
+   o.material      = FE3sShape_material;
    // @method
-   o.unserialize     = FE3sShape_unserialize;
+   o.unserialize   = FE3sShape_unserialize;
    return o;
 }
 
@@ -39,18 +36,7 @@ function FE3sShape(o){
 //==========================================================
 function FE3sShape_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
-   o._matrix = new SMatrix3d();
-}
-
-//==========================================================
-// <T>获得类型名称。</T>
-//
-// @method
-// @return String 类型名称
-//==========================================================
-function FE3sShape_typeName(){
-   return this._typeName;
+   o.__base.FE3sRenderable.construct.call(o);
 }
 
 //==========================================================
@@ -70,7 +56,12 @@ function FE3sShape_modelGuid(){
 // @return FE3sModel 模型
 //==========================================================
 function FE3sShape_model(){
-   return RConsole.find(FE3sModelConsole).findModel(this._modelGuid);
+   var o = this;
+   var model = o._model;
+   if(!model){
+      model = o._model = RConsole.find(FE3sModelConsole).findModel(o._modelGuid);
+   }
+   return model;
 }
 
 //==========================================================
@@ -90,64 +81,51 @@ function FE3sShape_meshGuid(){
 // @return FE3sMesh 网格
 //==========================================================
 function FE3sShape_mesh(){
-   return RConsole.find(FE3sModelConsole).findMesh(this._meshGuid);
+   var o = this;
+   var mesh = o._mesh;
+   if(!mesh){
+      mesh = o._mesh = RConsole.find(FE3sModelConsole).findMesh(this._meshGuid);
+   }
+   return mesh;
 }
 
 //==========================================================
-// <T>获得矩阵。</T>
+// <T>获得材质编号。</T>
 //
 // @method
-// @return SMatrix3d 矩阵
+// @return String 材质编号
 //==========================================================
-function FE3sShape_matrix(){
-   return this._matrix;
+function FE3sShape_materialGuid(){
+   return this._materialGuid;
 }
 
 //==========================================================
-// <T>获得激活材质。</T>
+// <T>获得材质。</T>
 //
 // @method
-// @return FE3sShapeMaterial 材质
+// @return FE3sMaterial 材质
 //==========================================================
-function FE3sShape_activeMaterial(){
-   return this._activeMaterial;
-}
-
-//==========================================================
-// <T>获得材质集合。</T>
-//
-// @method
-// @return TObjects 材质集合
-//==========================================================
-function FE3sShape_materials(){
-   return this._materials;
+function FE3sShape_material(){
+   var o = this;
+   var material = o._material;
+   if(!material){
+      material = o._material = RConsole.find(FE3sMaterialConsole).find(this._materialGuid);
+   }
+   return material;
 }
 
 //==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
-// @param p:input:FByteStream 数据流
-// @return 处理结果
+// @method
+// @param input:FByteStream 数据流
 //==========================================================
-function FE3sShape_unserialize(p){
+function FE3sShape_unserialize(input){
    // 读取父信息
    var o = this;
-   o._typeName = p.readString();
-   o._modelGuid = p.readString();
-   o._meshGuid = p.readString();
-   o._matrix.unserialize(p);
-   // 读取主题集合
-   var c = p.readUint16();
-   if(c > 0){
-      var s = o._materials = new TObjects();
-      for(var i = 0; i < c; i++){
-         var m = RClass.create(FE3sShapeMaterial);
-         m._template = o._template;
-         m.unserialize(p);
-         s.push(m);
-         if(o._activeMaterial == null){
-            o._activeMaterial = m;
-         }
-      }
-   }
+   o.__base.FE3sRenderable.unserialize.call(o, input);
+   // 读取属性
+   o._modelGuid = input.readString();
+   o._meshGuid = input.readString();
+   o._materialGuid = input.readString();
 }

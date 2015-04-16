@@ -5,12 +5,10 @@
 // @history 141231
 //==========================================================
 function FDisplay(o){
-   o = RClass.inherits(this, o, FObject, MGraphicObject);
+   o = RClass.inherits(this, o, FComponent, MGraphicObject);
    //..........................................................
    // @attribute
-   o._parent           = null;
    o._currentMatrix    = null;
-   o._code             = null;
    o._matrix           = null;
    o._location         = null;
    o._rotation         = null;
@@ -23,11 +21,6 @@ function FDisplay(o){
    // @method
    o.construct         = FDisplay_construct;
    // @method
-   o.parent            = FDisplay_parent;
-   o.setParent         = FDisplay_setParent;
-   o.isCode            = FDisplay_isCode;
-   o.code              = FDisplay_code;
-   o.setCode           = FDisplay_setCode;
    o.currentMatrix     = FDisplay_currentMatrix;
    o.matrix            = FDisplay_matrix;
    o.location          = FDisplay_location;
@@ -62,63 +55,13 @@ function FDisplay(o){
 //==========================================================
 function FDisplay_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FComponent.construct.call(o);
    o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
    o._location = new SPoint3();
    o._rotation = new SVector3();
    o._scale = new SVector3();
    o._scale.set(1, 1, 1);
-}
-
-//==========================================================
-// <T>获得父对象。</T>
-//
-// @method
-// @return FDisplay 父对象
-//==========================================================
-function FDisplay_parent(){
-   return this._parent;
-}
-
-//==========================================================
-// <T>设置父对象。</T>
-//
-// @method
-// @param p:parent:FDisplay 父对象
-//==========================================================
-function FDisplay_setParent(p){
-   this._parent = p;
-}
-
-//==========================================================
-// <T>判断是否指定代码。</T>
-//
-// @method
-// @param p:code:String 代码
-//==========================================================
-function FDisplay_isCode(p){
-   return this._code == p;
-}
-
-//==========================================================
-// <T>获得代码。</T>
-//
-// @method
-// @return String 代码
-//==========================================================
-function FDisplay_code(){
-   return this._code;
-}
-
-//==========================================================
-// <T>设置代码。</T>
-//
-// @method
-// @param p:code:String 代码
-//==========================================================
-function FDisplay_setCode(p){
-   this._code = p;
 }
 
 //==========================================================
@@ -363,5 +306,5 @@ function FDisplay_dispose(){
    // 释放渲染集合（不释放渲染对象）
    RObject.dispose(o._renderables)
    // 父处理
-   o.__base.FObject.dispose.call(o);
+   o.__base.FComponent.dispose.call(o);
 }

@@ -5,7 +5,7 @@
 // @history 150107
 //==========================================================
 function FGraphicContext(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
    //..........................................................
    // @attribute
    o._hCanvas   = null;

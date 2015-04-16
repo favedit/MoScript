@@ -11,7 +11,7 @@ function FDsTemplateCanvas(o){
    o._context            = null;
    o._stage              = null;
    o._layer              = null;
-   o._activeTemplate     = null;
+   o._activeSpace     = null;
    o._rotation           = null;
    o._rotationAble       = false;
    o._capturePosition    = null;
@@ -22,11 +22,11 @@ function FDsTemplateCanvas(o){
    //..........................................................
    // @event
    o.onBuild             = FDsTemplateCanvas_onBuild;
-   o.onMouseCaptureStart = FDsTemplateCanvas_onMouseCaptureStart;
-   o.onMouseCapture      = FDsTemplateCanvas_onMouseCapture;
-   o.onMouseCaptureStop  = FDsTemplateCanvas_onMouseCaptureStop;
+   //o.onMouseCaptureStart = FDsTemplateCanvas_onMouseCaptureStart;
+   //o.onMouseCapture      = FDsTemplateCanvas_onMouseCapture;
+   //o.onMouseCaptureStop  = FDsTemplateCanvas_onMouseCaptureStop;
    o.onEnterFrame        = FDsTemplateCanvas_onEnterFrame;
-   o.onTemplateLoad      = FDsTemplateCanvas_onTemplateLoad;
+   o.onDataLoaded      = FDsTemplateCanvas_onDataLoaded;
    //..........................................................
    o.oeRefresh           = FDsTemplateCanvas_oeRefresh;
    //..........................................................
@@ -50,30 +50,30 @@ function FDsTemplateCanvas_onBuild(p){
    var o = this;
    o.__base.FDsCanvas.onBuild.call(o, p);
    // 创建简单舞台
-   var g = o._stage = RClass.create(FE3dSimpleStage);
-   g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
-   g.selectTechnique(o, FE3dGeneralTechnique);
-   var sl = o._layer = o._stage.spriteLayer();
-   RStage.register('stage3d', o._stage);
+   //var g = o._stage = RClass.create(FE3dSimpleStage);
+   //g.region().backgroundColor().set(0.5, 0.5, 0.5, 1);
+   //g.selectTechnique(o, FE3dGeneralTechnique);
+   //var sl = o._layer = o._stage.spriteLayer();
+   //RStage.register('stage3d', o._stage);
    // 设置相机
-   var rc = g.camera();
-   rc.setPosition(0, 3, -10);
-   rc.lookAt(0, 3, 0);
-   rc.update();
+   //var rc = g.camera();
+   //rc.setPosition(0, 3, -10);
+   //rc.lookAt(0, 3, 0);
+   //rc.update();
    // 设置投影
-   var h = o._hPanel;
-   var rp = rc.projection();
-   rp.size().set(h.width, h.height);
-   rp._angle = 45;
-   rp.update();
+   //var h = o._hPanel;
+   //var rp = rc.projection();
+   //rp.size().set(h.width, h.height);
+   //rp._angle = 45;
+   //rp.update();
    // 设置光源
-   var l = g.directionalLight();
-   var lc = l.camera();
-   lc.setPosition(10, 10, 0);
-   lc.lookAt(0, 0, 0);
-   lc.update();
+   //var l = g.directionalLight();
+   //var lc = l.camera();
+   //lc.setPosition(10, 10, 0);
+   //lc.lookAt(0, 0, 0);
+   //lc.update();
    // 设置坐标系
-   sl.pushRenderable(o._dimensional);
+   //sl.pushRenderable(o._dimensional);
 }
 
 //==========================================================
@@ -84,16 +84,15 @@ function FDsTemplateCanvas_onBuild(p){
 //==========================================================
 function FDsTemplateCanvas_onMouseCaptureStart(p){
    var o = this;
-   var t = o._activeTemplate;
-   if(!t){
+   var space = o._activeSpace;
+   if(!space){
       return;
    }
-   var d = t.renderables().get(0);
-   o._capturePosition.set(p.clientX, p.clientY);
-   o._captureMatrix.assign(d.matrix());
-
-   var c = o._stage.camera();
-   o._captureRotation.assign(c._rotation);
+   //var d = t.renderables().get(0);
+   //o._capturePosition.set(p.clientX, p.clientY);
+   //o._captureMatrix.assign(d.matrix());
+   var camera = space.camera();
+   o._captureRotation.assign(camera._rotation);
 }
 
 //==========================================================
@@ -104,10 +103,11 @@ function FDsTemplateCanvas_onMouseCaptureStart(p){
 //==========================================================
 function FDsTemplateCanvas_onMouseCapture(p){
    var o = this;
-   var t = o._activeTemplate;
-   if(!t){
+   var space = o._activeSpace;
+   if(!space){
       return;
    }
+   return;
    var cx = p.clientX - o._capturePosition.x;
    var cy = p.clientY - o._capturePosition.y;
    var d = t.renderables().get(0);
@@ -153,69 +153,25 @@ function FDsTemplateCanvas_onMouseCaptureStop(p){
 //
 // @method
 //==========================================================
-function FDsTemplateCanvas_onEnterFrame(){
+function FDsTemplateCanvas_onEnterFrame(event){
    var o = this;
-   // 检查参数
-   var s = o._stage;
-   if(!s){
-      return;
-   }
-   //..........................................................
-   // 按键处理
-   var c = s.camera();
-   var d = 0.5;
-   var r = 0.05;
-   var kw = RKeyboard.isPress(EKeyCode.W);
-   var ks = RKeyboard.isPress(EKeyCode.S);
-   if(kw && !ks){
-      c.doWalk(d);
-   }
-   if(!kw && ks){
-      c.doWalk(-d);
-   }
-   var ka = RKeyboard.isPress(EKeyCode.A);
-   var kd = RKeyboard.isPress(EKeyCode.D);
-   if(ka && !kd){
-      //c.doStrafe(r);
-      c.doYaw(r);
-   }
-   if(!ka && kd){
-      //c.doStrafe(-r);
-      c.doYaw(-r);
-   }
-   var kq = RKeyboard.isPress(EKeyCode.Q);
-   var ke = RKeyboard.isPress(EKeyCode.E);
-   if(kq && !ke){
-      c.doFly(d);
-   }
-   if(!kq && ke){
-      c.doFly(-d);
-   }
-   var kz = RKeyboard.isPress(EKeyCode.Z);
-   var kw = RKeyboard.isPress(EKeyCode.X);
-   if(kz && !kw){
-      c.doPitch(r);
-   }
-   if(!kz && kw){
-      c.doPitch(-r);
-   }
-   c.update();
+   o.__base.FDsCanvas.onEnterFrame.call(o, event);
    //..........................................................
    // 旋转模型
-   var m = o._activeTemplate;
-   if(m){
-      var r = o._rotation;
+   //var m = o._activeSpace;
+   //if(m){
+      //var r = o._rotation;
       //m.location().set(0, -8.0, 0);
       //m.rotation().set(0, r.y, 0);
       //m.scale().set(3.0, 3.0, 3.0);
-      m.scale().set(0.002, 0.002, 0.002); // Car01
+      //m.scale().set(0.002, 0.002, 0.002); // Car01
       //m.scale().set(0.05, 0.05, 0.05);
-      m.update();
+      //m.update();
       // 设置变量
-      if(o._rotationAble){
-         r.y += 0.01;
-      }
-   }
+      //if(o._rotationAble){
+      //   r.y += 0.01;
+      //}
+   //}
 }
 
 //==========================================================
@@ -224,10 +180,33 @@ function FDsTemplateCanvas_onEnterFrame(){
 // @method
 // @param p:template:FTemplate3d 模板
 //==========================================================
-function FDsTemplateCanvas_onTemplateLoad(p){
+function FDsTemplateCanvas_onDataLoaded(p){
    var o = this;
+   var m = o._activeSpace;
+   m.selectTechnique(o, FE3dGeneralTechnique);
+   var g = m.region();
+   // 设置相机
+   var rc = g.camera();
+   rc.setPosition(0, 3, -10);
+   rc.lookAt(0, 3, 0);
+   rc.update();
+   // 设置投影
+   var h = o._hPanel;
+   var rp = rc.projection();
+   rp.size().set(h.width, h.height);
+   rp._angle = 45;
+   rp.update();
+   // 设置光源
+   var l = g.directionalLight();
+   var lc = l.camera();
+   lc.setPosition(10, 10, 0);
+   lc.lookAt(0, 0, 0);
+   lc.update();
+   //space._layers.at(0).pushRenderable(o._dimensional);
    // 加载完成
    o.processLoadListener(o);
+   // 隐藏处理
+   RConsole.find(FUiDesktopConsole).hide();
 }
 
 //==========================================================
@@ -294,17 +273,23 @@ function FDsTemplateCanvas_selectRenderable(p){
 //==========================================================
 function FDsTemplateCanvas_loadByGuid(guid){
    var o = this;
-   var rmc = RConsole.find(FE3dTemplateConsole);
-   var template = o._activeTemplate;
-   if(template){
-      rmc.free(template);
+   var space = o._activeSpace;
+   var templateConsole = RConsole.find(FE3dTemplateConsole);
+   if(space){
+      RStage.unregister(space);
+      templateConsole.free(space);
    }
    // 收集一个显示模板
-   //template = rmc.allocByCode(o._graphicContext, p);
-   template = rmc.allocByGuid(o._graphicContext, guid);
-   template.addLoadListener(o, o.onTemplateLoad);
-   //o._layer.pushDisplay(template);
-   o._activeTemplate = template;
+   space = o._activeSpace = templateConsole.allocByGuid(o._graphicContext, guid);
+   if(!space._linked){
+      // 显示加载进度
+      RConsole.find(FUiDesktopConsole).showLoading();
+      // 设置坐标系
+      space.addLoadListener(o, o.onDataLoaded);
+      space._linked = true;
+   } 
+   // 启动舞台
+   RStage.register('space', space);
 }
 
 //==========================================================

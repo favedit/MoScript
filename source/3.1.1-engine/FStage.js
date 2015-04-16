@@ -6,7 +6,7 @@
 // @history 150106
 //==========================================================
 function FStage(o){
-   o = RClass.inherits(this, o, FObject, MListenerEnterFrame, MListenerLeaveFrame);
+   o = RClass.inherits(this, o, FComponent, MListenerEnterFrame, MListenerLeaveFrame);
    //..........................................................
    // @attribute
    o._statusActive   = false;
@@ -20,8 +20,8 @@ function FStage(o){
    o.construct       = FStage_construct;
    // @method
    o.timer           = FStage_timer;
-   o.registerLayer   = RStage_registerLayer;
-   o.unregisterLayer = RStage_unregisterLayer;
+   o.registerLayer   = FStage_registerLayer;
+   o.unregisterLayer = FStage_unregisterLayer;
    o.layers          = FStage_layers;
    o.active          = FStage_active;
    o.deactive        = FStage_deactive;
@@ -53,7 +53,7 @@ function FStage_onProcess(){
 //==========================================================
 function FStage_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FComponent.construct.call(o);
    // 设置变量
    o._timer = RClass.create(FTimer);
    o._layers = new TDictionary();
@@ -76,7 +76,7 @@ function FStage_timer(){
 // @param n:name:String 名称
 // @param l:layer:FDisplayLayer 显示层
 //==========================================================
-function RStage_registerLayer(n, l){
+function FStage_registerLayer(n, l){
    l.setCode(n);
    this._layers.set(n, l);
 }
@@ -87,7 +87,7 @@ function RStage_registerLayer(n, l){
 // @method
 // @param n:name:String 名称
 //==========================================================
-function RStage_unregisterLayer(n){
+function FStage_unregisterLayer(n){
    this._layers.set(n, null);
 }
 
@@ -172,5 +172,5 @@ function FStage_dispose(){
    // 父处理
    o.__base.MListenerEnterFrame.dispose.call(o);
    o.__base.MListenerLeaveFrame.dispose.call(o);
-   o.__base.FObject.dispose.call(o);
+   o.__base.FComponent.dispose.call(o);
 }

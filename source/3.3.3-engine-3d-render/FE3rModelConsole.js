@@ -127,10 +127,10 @@ function FE3rModelConsole_meshs(){
 function FE3rModelConsole_load(context, guid){
    var o = this;
    // 检查参数
-   if(!RClass.isClass(context, MGraphicObject)){
+   if(!context){
       throw new TError('Graphics context is empty');
    }
-   if(RString.isEmpty(guid)){
+   if(!guid){
       throw new TError('Model guid is empty');
    }
    // 查找模型
@@ -162,10 +162,10 @@ function FE3rModelConsole_load(context, guid){
 function FE3rModelConsole_loadMeshByGuid(context, pg){
    var o = this;
    // 检查参数
-   if(!RClass.isClass(context, MGraphicObject)){
+   if(!context){
       throw new TError('Graphics context is empty');
    }
-   if(RString.isEmpty(pg)){
+   if(!guid){
       throw new TError('Model guid is empty');
    }
    // 查找模型

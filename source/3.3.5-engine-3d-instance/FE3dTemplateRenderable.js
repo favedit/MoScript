@@ -93,32 +93,34 @@ function FE3dTemplateRenderable_resource(p){
 // <T>加载资源。</T>
 //
 // @method
-// @param p:resource:FE3sTemplateRenderable 资源
+// @param resource:FE3sTemplateRenderable 资源
 //==========================================================
-function FE3dTemplateRenderable_loadResource(p){
+function FE3dTemplateRenderable_loadResource(resource){
    var o = this;
    // 设置资源
-   o._resource = p;
+   o._resource = resource;
    //............................................................
    // 设置数据
-   o._matrix.assign(p.matrix());
+   o._matrix.assign(resource.matrix());
    // 加载模型
-   o._model = RConsole.find(FE3rModelConsole).load(o._graphicContext, p.modelGuid());
+   o._model = RConsole.find(FE3rModelConsole).load(o, resource.modelGuid());
+   // 设置资源
+   var materialResource = o._materialResource = RConsole.find(FE3sMaterialConsole).find(resource.materialGuid());
+   var materialGuid = materialResource.guid();
+   o._effectCode = materialResource.info().effectCode;
+   o._material.calculate(materialResource);
    //............................................................
-   // 加载材质
-   var mr = o._materialResource = p._activeMaterial._material;
-   o._effectCode = mr.info().effectCode;
-   o._material.calculate(mr);
    // 加载纹理集合
-   var rs = mr.textures();
-   if(rs){
-      var tc = RConsole.find(FE3rTextureConsole)
-      var ts = o._textures = new TDictionary();
-      var c = rs.count();
-      for(var i = 0; i < c; i++){
-         var r = rs.get(i);
-         var t = tc.loadBitmap(o._graphicContext, r.textureGuid(), r.bitmapGuid());
-         ts.set(r.code(), t);
+   var bitmapResources = materialResource.bitmaps();
+   if(bitmapResources){
+      var count = bitmapResources.count();
+      var textures = o._textures = new TDictionary();
+      var bitmapConsole = RConsole.find(FE3rBitmapConsole)
+      for(var i = 0; i < count; i++){
+         var bitmapResource = bitmapResources.at(i);
+         var bitmapPackResource = bitmapResource.bitmapPack();
+         var bitmap = bitmapConsole.load(o, materialGuid, bitmapPackResource.code());
+         textures.set(bitmapResource.code(), bitmap);
       }
    }
 }
@@ -162,7 +164,7 @@ function FE3dTemplateRenderable_load(){
    var vbs = rd._vertexBuffers;
    var c = vbs.count();
    for(var i = 0; i < c; i++){
-      var vb = vbs.get(i);
+      var vb = vbs.at(i);
       o._vertexBuffers.set(vb._name, vb);
    }
    // 设置蒙皮
@@ -174,7 +176,7 @@ function FE3dTemplateRenderable_load(){
       var ss = k.streams();
       var c = ss.count();
       for(var i = 0; i < c; i++){
-         var s = ss.get(i);
+         var s = ss.at(i);
          var vb = s.buffer();
          o._vertexBuffers.set(vb._name, vb);
       }
@@ -185,7 +187,7 @@ function FE3dTemplateRenderable_load(){
       if(c > 0){
          var bs = o._bones = new TObjects();
          for(var i = 0; i < c; i++){
-            var br = brs.get(i);
+            var br = brs.at(i);
             var b = dk.bones().get(br.index());
             if(b == null){
                throw new TError(o, 'Bone is not exist.');

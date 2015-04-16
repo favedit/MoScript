@@ -74,10 +74,8 @@ function MListenerLeaveFrame_processLeaveFrameListener(p1, p2, p3, p4, p5){
    this.processListener(EEvent.LeaveFrame, p1, p2, p3, p4, p5);
 }
 function FDisplay(o){
-   o = RClass.inherits(this, o, FObject, MGraphicObject);
-   o._parent           = null;
+   o = RClass.inherits(this, o, FComponent, MGraphicObject);
    o._currentMatrix    = null;
-   o._code             = null;
    o._matrix           = null;
    o._location         = null;
    o._rotation         = null;
@@ -85,11 +83,6 @@ function FDisplay(o){
    o._visible          = true;
    o._renderables      = null;
    o.construct         = FDisplay_construct;
-   o.parent            = FDisplay_parent;
-   o.setParent         = FDisplay_setParent;
-   o.isCode            = FDisplay_isCode;
-   o.code              = FDisplay_code;
-   o.setCode           = FDisplay_setCode;
    o.currentMatrix     = FDisplay_currentMatrix;
    o.matrix            = FDisplay_matrix;
    o.location          = FDisplay_location;
@@ -113,28 +106,13 @@ function FDisplay(o){
 }
 function FDisplay_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FComponent.construct.call(o);
    o._currentMatrix = new SMatrix3d();
    o._matrix = new SMatrix3d();
    o._location = new SPoint3();
    o._rotation = new SVector3();
    o._scale = new SVector3();
    o._scale.set(1, 1, 1);
-}
-function FDisplay_parent(){
-   return this._parent;
-}
-function FDisplay_setParent(p){
-   this._parent = p;
-}
-function FDisplay_isCode(p){
-   return this._code == p;
-}
-function FDisplay_code(){
-   return this._code;
-}
-function FDisplay_setCode(p){
-   this._code = p;
 }
 function FDisplay_currentMatrix(){
    return this._currentMatrix;
@@ -244,7 +222,7 @@ function FDisplay_dispose(){
    RObject.dispose(o._direction);
    RObject.dispose(o._scale);
    RObject.dispose(o._renderables)
-   o.__base.FObject.dispose.call(o);
+   o.__base.FComponent.dispose.call(o);
 }
 function FDisplayContainer(o){
    o = RClass.inherits(this, o, FDisplay);
@@ -830,15 +808,15 @@ function FResourceType_resources(){
    return this._resources;
 }
 function FStage(o){
-   o = RClass.inherits(this, o, FObject, MListenerEnterFrame, MListenerLeaveFrame);
+   o = RClass.inherits(this, o, FComponent, MListenerEnterFrame, MListenerLeaveFrame);
    o._statusActive   = false;
    o._layers         = null;
    o._timer          = null;
    o.onProcess       = FStage_onProcess;
    o.construct       = FStage_construct;
    o.timer           = FStage_timer;
-   o.registerLayer   = RStage_registerLayer;
-   o.unregisterLayer = RStage_unregisterLayer;
+   o.registerLayer   = FStage_registerLayer;
+   o.unregisterLayer = FStage_unregisterLayer;
    o.layers          = FStage_layers;
    o.active          = FStage_active;
    o.deactive        = FStage_deactive;
@@ -856,18 +834,18 @@ function FStage_onProcess(){
 }
 function FStage_construct(){
    var o = this;
-   o.__base.FObject.construct.call(o);
+   o.__base.FComponent.construct.call(o);
    o._timer = RClass.create(FTimer);
    o._layers = new TDictionary();
 }
 function FStage_timer(){
    return this._timer;
 }
-function RStage_registerLayer(n, l){
+function FStage_registerLayer(n, l){
    l.setCode(n);
    this._layers.set(n, l);
 }
-function RStage_unregisterLayer(n){
+function FStage_unregisterLayer(n){
    this._layers.set(n, null);
 }
 function FStage_layers(){
@@ -909,7 +887,7 @@ function FStage_dispose(){
    o._layers = RObject.dispose(o._layers);
    o.__base.MListenerEnterFrame.dispose.call(o);
    o.__base.MListenerLeaveFrame.dispose.call(o);
-   o.__base.FObject.dispose.call(o);
+   o.__base.FComponent.dispose.call(o);
 }
 var RStage = new function RStage(){
    var o = this;

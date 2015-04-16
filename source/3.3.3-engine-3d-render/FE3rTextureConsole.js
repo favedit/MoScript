@@ -89,6 +89,39 @@ function FE3rTextureConsole_textures(){
 }
 
 //==========================================================
+// <T>加载一个渲染位图。</T>
+//
+// @method
+// @param context:FGraphicContext 渲染环境
+// @param guid:String 材质唯一编号
+// @param code:String 位图代码
+// @return FE3rBitmap 渲染位图
+//==========================================================
+function FE3rTextureConsole_load(context, guid, code){
+   var o = this;
+   // 查找模型
+   var flag = guid + '|' + code;
+   var texture = o._textures.get(flag);
+   if(texture){
+      return texture;
+   }
+   // 生成地址
+   var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
+   RLogger.info(o, 'Load bitmap. (url={1})', url);
+   // 加载模型
+   if(code == 'environment'){
+      bitmap = RClass.create(FE3rTextureCube);
+   }else{
+      bitmap = RClass.create(FE3rTexture);
+   }
+   t._name = pg;
+   t.linkGraphicContext(pc);
+   t.load(u);
+   o._bitmaps.set(pg, t);
+   return t;
+}
+
+//==========================================================
 // <T>加载一个模型。</T>
 //
 // @method
@@ -96,7 +129,7 @@ function FE3rTextureConsole_textures(){
 // @param pt:textureCode:String 纹理代码
 // @return FE3rTexture 渲染模型
 //==========================================================
-function FE3rTextureConsole_load(pc, pt){
+function FE3rTextureConsole_load2(pc, pt){
    var o = this;
    // 查找纹理
    var s = o._textures;

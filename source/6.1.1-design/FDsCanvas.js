@@ -7,28 +7,38 @@
 function FDsCanvas(o){
    o = RClass.inherits(this, o, FUiCanvas, MGraphicObject, MListenerLoad, MMouseCapture);
    //..........................................................
-   o._stage              = null;
-   o._rotation           = null;
-   o._rotationAble       = false;
-   o._capturePosition    = null;
-   o._captureMatrix      = null;
-   o._captureRotation    = null;
-   o._dimensional        = null;
+   // @attribute
+   o._activeSpace         = null;
+   // @attribute
+   o._canvasModeCd        = EDsCanvasMode.Drop;
+   o._canvasMoveCd        = EDsCanvasDrag.Unknown;
+   // @attribute
+   o._capturePosition     = null;
+   o._captureMatrix       = null;
+   o._captureRotation     = null;
+   // @attribute
+   o._cameraMoveRate      = 8;
+   o._cameraKeyRotation   = 3;
+   o._cameraMouseRotation = 0.005;
+   // @attribute
+   o._dimensional         = null;
+   o._rotation            = null;
+   o._rotationAble        = false;
    //..........................................................
    // @event
-   o.onBuild             = FDsCanvas_onBuild;
-   o.onMouseCaptureStart = FDsCanvas_onMouseCaptureStart;
-   o.onMouseCapture      = FDsCanvas_onMouseCapture;
-   o.onMouseCaptureStop  = FDsCanvas_onMouseCaptureStop;
-   o.onEnterFrame        = FDsCanvas_onEnterFrame;
+   o.onBuild              = FDsCanvas_onBuild;
+   o.onMouseCaptureStart  = FDsCanvas_onMouseCaptureStart;
+   o.onMouseCapture       = FDsCanvas_onMouseCapture;
+   o.onMouseCaptureStop   = FDsCanvas_onMouseCaptureStop;
+   o.onEnterFrame         = FDsCanvas_onEnterFrame;
    //..........................................................
-   o.oeResize            = FDsCanvas_oeResize;
-   o.oeRefresh           = FDsCanvas_oeRefresh;
+   o.oeResize             = FDsCanvas_oeResize;
+   o.oeRefresh            = FDsCanvas_oeRefresh;
    //..........................................................
    // @method
-   o.construct           = FDsCanvas_construct;
+   o.construct            = FDsCanvas_construct;
    // @method
-   o.dispose             = FDsCanvas_dispose;
+   o.dispose              = FDsCanvas_dispose;
    return o;
 }
 
@@ -68,8 +78,14 @@ function FDsCanvas_onBuild(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsCanvas_onMouseCaptureStart(p){
+function FDsCanvas_onMouseCaptureStart(event){
    var o = this;
+   var space = o._activeSpace;
+   if(!space){
+      return;
+   }
+   o._capturePosition.set(event.clientX, event.clientY);
+   o._captureRotation.assign(space.camera()._rotation);
    //var d = t.renderables().get(0);
    //o._capturePosition.set(p.clientX, p.clientY);
    //o._captureMatrix.assign(d.matrix());
@@ -80,26 +96,27 @@ function FDsCanvas_onMouseCaptureStart(p){
 // <T>鼠标捕捉处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsCanvas_onMouseCapture(p){
+function FDsCanvas_onMouseCapture(event){
    var o = this;
-   var s = o._activeScene;
-   if(!s){
+   var space = o._activeSpace;
+   if(!space){
       return;
    }
-   var cx = p.clientX - o._capturePosition.x;
-   var cy = p.clientY - o._capturePosition.y;
+   var cx = event.clientX - o._capturePosition.x;
+   var cy = event.clientY - o._capturePosition.y;
+   var mc = o._canvasModeCd;
    //var d = t.renderables().get(0);
    //var m = d.matrix();
    //var cm = o._captureMatrix;
    switch(o._toolbar._canvasModeCd){
       case EDsCanvasMode.Drop:
-         var c = o._activeScene.camera();
-         var r = c.rotation();
-         var cr = o._captureRotation;
-         r.x = cr.x + cy * 0.003;
-         r.y = cr.y + cx * 0.003;
+         var camera = space.camera();
+         var rotation = camera.rotation();
+         var captureRotation = o._captureRotation;
+         rotation.x = captureRotation.x - cy * o._cameraMouseRotation;
+         rotation.y = captureRotation.y - cx * o._cameraMouseRotation;
          break;
       case EDsCanvasMode.Select:
          break;
@@ -135,51 +152,50 @@ function FDsCanvas_onMouseCaptureStop(p){
 //==========================================================
 function FDsCanvas_onEnterFrame(){
    var o = this;
-   return;
-   var s = o._activeScene;
-   if(!s){
+   var space = o._activeSpace;
+   if(!space){
       return;
    }
    //..........................................................
    // 按键处理
-   var c = s.camera();
+   var camera = space.camera();
    var d = 0.5;
    var r = 0.05;
    var kw = RKeyboard.isPress(EKeyCode.W);
    var ks = RKeyboard.isPress(EKeyCode.S);
    if(kw && !ks){
-      c.doWalk(d);
+      camera.doWalk(d);
    }
    if(!kw && ks){
-      c.doWalk(-d);
+      camera.doWalk(-d);
    }
    var ka = RKeyboard.isPress(EKeyCode.A);
    var kd = RKeyboard.isPress(EKeyCode.D);
    if(ka && !kd){
       //c.doStrafe(r);
-      c.doYaw(r);
+      camera.doYaw(r);
    }
    if(!ka && kd){
       //c.doStrafe(-r);
-      c.doYaw(-r);
+      camera.doYaw(-r);
    }
    var kq = RKeyboard.isPress(EKeyCode.Q);
    var ke = RKeyboard.isPress(EKeyCode.E);
    if(kq && !ke){
-      c.doFly(d);
+      camera.doFly(d);
    }
    if(!kq && ke){
-      c.doFly(-d);
+      camera.doFly(-d);
    }
    var kz = RKeyboard.isPress(EKeyCode.Z);
    var kw = RKeyboard.isPress(EKeyCode.X);
    if(kz && !kw){
-      c.doPitch(r);
+      camera.doPitch(r);
    }
    if(!kz && kw){
-      c.doPitch(-r);
+      camera.doPitch(-r);
    }
-   c.update();
+   camera.update();
    //..........................................................
    // 旋转模型
    //if(s){

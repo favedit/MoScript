@@ -116,13 +116,12 @@ function FE3sSpace_unserialize(input){
       }
    }
    // 读取显示集合
-   debugger
    var displayCount = input.readInt16();
    if(displayCount > 0){
-      var displays = o._displays = new TDictionary();
+      var displays = o._displays = new TObjects();
       for(var i = 0; i < displayCount; i++){
          var display = resourceConsole.unserialize(input);
-         displays.set(display.guid(), display);
+         displays.push(display);
       }
    }
    // 读取显示层集合

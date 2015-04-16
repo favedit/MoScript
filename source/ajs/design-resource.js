@@ -645,6 +645,7 @@ function FDsResourceListToolBar(o){
    o.onNavigatorClick = FDsResourceListToolBar_onNavigatorClick;
    o.onTypeClick      = FDsResourceListToolBar_onTypeClick;
    o.construct        = FDsResourceListToolBar_construct;
+   o.makeTypeCd       = FDsResourceListToolBar_makeTypeCd;
    o.setNavigator     = FDsResourceListToolBar_setNavigator;
    o.doNavigator      = FDsResourceListToolBar_doNavigator;
    o.storageLoad      = FDsResourceListToolBar_storageLoad;
@@ -732,6 +733,23 @@ function FDsResourceListToolBar_onTypeClick(event){
          page = o._pageCount - 1;
          break;
    }
+   var typeCd = o.makeTypeCd();
+   var search = o._controlSearchEdit.text();
+   o._frameSet._listContent.serviceSearch(typeCd, search, '', o._pageSize, 0)
+   o.storageSet('resource_type_cd', typeCd);
+   o.storageSet('control_type_bitmap:check', RBoolean.toString(o._controlTypeBitmap.isCheck()))
+   o.storageSet('control_type_material:check', RBoolean.toString(o._controlTypeMaterial.isCheck()))
+   o.storageSet('control_type_model:check', RBoolean.toString(o._controlTypeModel.isCheck()))
+   o.storageSet('control_type_template:check', RBoolean.toString(o._controlTypeTemplate.isCheck()))
+   o.storageSet('control_type_scene:check', RBoolean.toString(o._controlTypeScene.isCheck()))
+   o.storageUpdate();
+}
+function FDsResourceListToolBar_construct(){
+   var o = this;
+   o.__base.FUiToolBar.construct.call(o);
+}
+function FDsResourceListToolBar_makeTypeCd(){
+   var o = this;
    var types = '';
    if(o._controlTypeBitmap.isCheck()){
       types += '|Bitmap';
@@ -751,19 +769,7 @@ function FDsResourceListToolBar_onTypeClick(event){
    if(types != ''){
       types = types.substring(1);
    }
-   var search = o._controlSearchEdit.text();
-   o._frameSet._listContent.serviceSearch(types, search, '', o._pageSize, 0)
-   o.storageSet('resource_type_cd', types);
-   o.storageSet('control_type_bitmap:check', RBoolean.toString(o._controlTypeBitmap.isCheck()))
-   o.storageSet('control_type_material:check', RBoolean.toString(o._controlTypeMaterial.isCheck()))
-   o.storageSet('control_type_model:check', RBoolean.toString(o._controlTypeModel.isCheck()))
-   o.storageSet('control_type_template:check', RBoolean.toString(o._controlTypeTemplate.isCheck()))
-   o.storageSet('control_type_scene:check', RBoolean.toString(o._controlTypeScene.isCheck()))
-   o.storageUpdate();
-}
-function FDsResourceListToolBar_construct(){
-   var o = this;
-   o.__base.FUiToolBar.construct.call(o);
+   return types;
 }
 function FDsResourceListToolBar_setNavigator(pageSize, pageCount, page){
    var o = this;
@@ -776,9 +782,9 @@ function FDsResourceListToolBar_setNavigator(pageSize, pageCount, page){
 }
 function FDsResourceListToolBar_doNavigator(page){
    var o = this;
-   page = RInteger.toRange(page, 0, o._pageCount);
+   var typeCd = o.makeTypeCd();
    var search = o._controlSearchEdit.text();
-   var typeCd = o._frameSet._resourceTypeCd;
+   page = RInteger.toRange(page, 0, o._pageCount);
    if((o._resourceTypeCd != typeCd) || (o._serach != search) || (o._page != page)){
       o._frameSet._listContent.serviceSearch(typeCd, search, '', o._pageSize, page)
    }

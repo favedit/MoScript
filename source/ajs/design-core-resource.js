@@ -232,3 +232,19 @@ function FDrSceneConsole(o){
    o._serviceCode = 'cloud.content.scene';
    return o;
 }
+function FDrTemplate(o){
+   o = RClass.inherits(this, o, FDrResource);
+   o._classCode = 'Template';
+   return o;
+}
+function FDrTemplateConsole(o){
+   o = RClass.inherits(this, o, FDrAbsResourceConsole);
+   o._serviceCode = 'cloud.resource.template';
+   o.update       = FDrTemplateConsole_update;
+   return o;
+}
+function FDrTemplateConsole_update(config){
+   var o = this;
+   var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=updateContent&date=' + RDate.format());
+   return RConsole.find(FXmlConsole).sendAsync(url, config);
+}

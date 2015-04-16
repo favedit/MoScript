@@ -11,7 +11,7 @@ function FE3rBitmapConsole(o){
    // @attribute
    o._scopeCd  = EScope.Local;
    o._bitmaps  = null;
-   o._dataUrl  = '/cloud.content.texture.bitmap.wv'
+   o._dataUrl  = '/cloud.resource.material.wv'
    //..........................................................
    // @method
    o.construct = FE3rBitmapConsole_construct;
@@ -34,7 +34,7 @@ function FE3rBitmapConsole_construct(){
 }
 
 //==========================================================
-// <T>获得渲染纹理集合。</T>
+// <T>获得渲染位图集合。</T>
 //
 // @method
 // @return TDictionary 渲染纹理集合
@@ -44,35 +44,35 @@ function FE3rBitmapConsole_bitmaps(){
 }
 
 //==========================================================
-// <T>加载一个模型。</T>
+// <T>加载一个渲染位图。</T>
 //
 // @method
-// @param pc:content:FRenderContent 名称
-// @param pt:textureCode:String 纹理代码
-// @param pb:bitmapCode:String 位图代码
-// @return FE3rTexture 渲染模型
+// @param context:FGraphicContext 渲染环境
+// @param guid:String 材质唯一编号
+// @param code:String 位图代码
+// @return FE3rBitmap 渲染位图
 //==========================================================
-function FE3rBitmapConsole_load(pc, pg, pt){
+function FE3rBitmapConsole_load(context, guid, code){
    var o = this;
    // 查找模型
-   var t = o._bitmaps.get(pg);
-   if(t){
-      return t;
+   var flag = guid + '|' + code;
+   var bitmap = o._bitmaps.get(flag);
+   if(bitmap){
+      return bitmap;
    }
    // 生成地址
-   var u = RBrowser.hostPath(o._dataUrl + '?code=' + pg);
-   RLogger.info(o, 'Load texture from bitmap. (url={1})', u);
+   var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
+   RLogger.info(o, 'Load bitmap. (url={1})', url);
    // 加载模型
-   if(RString.toLower(pt) == 'environment'){
-      t = RClass.create(FE3rTextureCube);
+   if(code == 'environment'){
+      bitmap = RClass.create(FE3rBitmapCubePack);
    }else{
-      t = RClass.create(FE3rTexture);
+      bitmap = RClass.create(FE3rBitmapFlatPack);
    }
-   t._name = pg;
-   t.linkGraphicContext(pc);
-   t.load(u);
-   o._bitmaps.set(pg, t);
-   return t;
+   bitmap.linkGraphicContext(context);
+   bitmap.loadUrl(url);
+   o._bitmaps.set(flag, bitmap);
+   return bitmap;
 }
 
 //==========================================================

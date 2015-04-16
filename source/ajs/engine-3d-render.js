@@ -251,7 +251,7 @@ function FE3rBitmapConsole(o){
    o = RClass.inherits(this, o, FConsole);
    o._scopeCd  = EScope.Local;
    o._bitmaps  = null;
-   o._dataUrl  = '/cloud.content.texture.bitmap.wv'
+   o._dataUrl  = '/cloud.resource.material.wv'
    o.construct = FE3rBitmapConsole_construct;
    o.bitmaps   = FE3rBitmapConsole_bitmaps;
    o.load      = FE3rBitmapConsole_load;
@@ -266,24 +266,24 @@ function FE3rBitmapConsole_construct(){
 function FE3rBitmapConsole_bitmaps(){
    return this._bitmaps;
 }
-function FE3rBitmapConsole_load(pc, pg, pt){
+function FE3rBitmapConsole_load(context, guid, code){
    var o = this;
-   var t = o._bitmaps.get(pg);
-   if(t){
-      return t;
+   var flag = guid + '|' + code;
+   var bitmap = o._bitmaps.get(flag);
+   if(bitmap){
+      return bitmap;
    }
-   var u = RBrowser.hostPath(o._dataUrl + '?code=' + pg);
-   RLogger.info(o, 'Load texture from bitmap. (url={1})', u);
-   if(RString.toLower(pt) == 'environment'){
-      t = RClass.create(FE3rTextureCube);
+   var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
+   RLogger.info(o, 'Load bitmap. (url={1})', url);
+   if(code == 'environment'){
+      bitmap = RClass.create(FE3rBitmapCubePack);
    }else{
-      t = RClass.create(FE3rTexture);
+      bitmap = RClass.create(FE3rBitmapFlatPack);
    }
-   t._name = pg;
-   t.linkGraphicContext(pc);
-   t.load(u);
-   o._bitmaps.set(pg, t);
-   return t;
+   bitmap.linkGraphicContext(context);
+   bitmap.loadUrl(url);
+   o._bitmaps.set(flag, bitmap);
+   return bitmap;
 }
 function FE3rBitmapConsole_loadUrl(context, url){
    var o = this;
@@ -299,6 +299,139 @@ function FE3rBitmapConsole_loadUrl(context, url){
    bitmap.loadUrl(url);
    o._bitmaps.set(url, bitmap);
    return bitmap;
+}
+function FE3rBitmapCubePack(o){
+   o = RClass.inherits(this, o, FE3rBitmapPack);
+   o._resource    = null;
+   o._images      = null;
+   o.onLoad       = FE3rBitmapCubePack_onLoad;
+   o.construct    = FE3rBitmapCubePack_construct;
+   o.loadResource = FE3rBitmapCubePack_loadResource;
+   o.dispose      = FE3rBitmapCubePack_dispose;
+   return o;
+}
+function FE3rBitmapCubePack_onLoad(p){
+   var o = this;
+   var c = o._graphicContext;
+   var is = o._images;
+   var capability = RBrowser.capability();
+   for(var i = 0; i < 6; i++){
+      if(!is[i].testReady()){
+         return;
+      }
+   }
+   var t = o._texture = c.createCubeTexture();
+   t.upload(is[0], is[1], is[2], is[3], is[4], is[5]);
+   if(capability.blobCreate){
+      for(var i = 0; i < 6; i++){
+         var m = is[i];
+         window.URL.revokeObjectURL(m.url());
+         is[i] = RObject.dispose(m);
+      }
+   }
+   o._images = RObject.dispose(o._images);
+   o._dataReady = true;
+}
+function FE3rBitmapCubePack_construct(){
+   var o = this;
+   o.__base.FE3rBitmapPack.construct.call(o);
+}
+function FE3rBitmapCubePack_loadResource(p){
+   var o = this;
+   o._resource = p;
+   var texture = p._texture;
+   var capability = RBrowser.capability();
+   var d = p.data();
+   var t = p._formatName;
+   o._images = new TObjects();
+   for(var i = 0; i < 6; i++){
+      var g = o._images[i] = RClass.create(FImage);
+      g._index = i;
+      g.setOptionAlpha(false);
+      if(capability.blobCreate){
+         var blob = new Blob([d[i]], {'type' : 'image/' + t});
+         var url = window.URL.createObjectURL(blob);
+         g.loadUrl(url);
+      }else{
+         var url = RBrowser.hostPath('/cloud.content.texture.bitmap.wv') + '?guid=' + texture._guid + '&code=' + p._code + "&index=" + i;
+         g.loadUrl(url);
+      }
+      g.addLoadListener(o, o.onLoad);
+   }
+}
+function FE3rBitmapCubePack_dispose(){
+   var o = this;
+   o._images = RObject.dispose(o._images);
+   o.__base.FE3rBitmapPack.dispose.call(o);
+}
+function FE3rBitmapFlatPack(o){
+   o = RClass.inherits(this, o, FE3rBitmapPack);
+   o._resource    = null;
+   o._image       = null;
+   o.onLoad       = FE3rBitmapFlatPack_onLoad;
+   o.construct    = FE3rBitmapFlatPack_construct;
+   o.loadUrl      = FE3rBitmapFlatPack_loadUrl;
+   o.dispose      = FE3rBitmapFlatPack_dispose;
+   return o;
+}
+function FE3rBitmapFlatPack_onLoad(event){
+   var o = this;
+   var context = o._graphicContext;
+   var texture = o._texture = context.createFlatTexture();
+   texture.upload(o._image);
+   texture.makeMipmap();
+   o._image = RObject.dispose(o._image);
+   o._dataReady = true;
+}
+function FE3rBitmapFlatPack_construct(){
+   var o = this;
+   o.__base.FE3rBitmapPack.construct.call(o);
+}
+function FE3rBitmapFlatPack_loadUrl(url){
+   var o = this;
+   var image = o._image = RClass.create(FImage);
+   image.addLoadListener(o, o.onLoad);
+   image.loadUrl(url);
+}
+function FE3rBitmapFlatPack_dispose(){
+   var o = this;
+   o._image = RObject.dispose(o._image);
+   o.__base.FE3rBitmapPack.dispose.call(o);
+}
+function FE3rBitmapPack(o){
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
+   o._resource    = null;
+   o._image       = null;
+   o._texture     = null;
+   o._ready       = false;
+   o._dataReady   = false;
+   o.onLoad       = RMethod.virtual(o, 'onLoad');
+   o.construct    = FE3rBitmapPack_construct;
+   o.texture      = FE3rBitmapPack_texture;
+   o.testReady    = FE3rBitmapPack_testReady;
+   o.loadUrl      = RMethod.virtual(o, 'loadUrl');
+   o.dispose      = FE3rBitmapPack_dispose;
+   return o;
+}
+function FE3rBitmapPack_construct(){
+   var o = this;
+   o.__base.FObject.construct.call(o);
+}
+function FE3rBitmapPack_texture(){
+   return this._texture;
+}
+function FE3rBitmapPack_testReady(){
+   var o = this;
+   if(o._dataReady){
+      o._ready = o._texture.isValid();
+   }
+   return o._ready;
+}
+function FE3rBitmapPack_dispose(){
+   var o = this;
+   o._ready = false;
+   o._dataReady = false;
+   o.__base.FObject.dispose.call(o);
 }
 function FE3rBone(o){
    o = RClass.inherits(this, o, FObject);
@@ -1250,10 +1383,10 @@ function FE3rModelConsole_meshs(){
 }
 function FE3rModelConsole_load(context, guid){
    var o = this;
-   if(!RClass.isClass(context, MGraphicObject)){
+   if(!context){
       throw new TError('Graphics context is empty');
    }
-   if(RString.isEmpty(guid)){
+   if(!guid){
       throw new TError('Model guid is empty');
    }
    var model = o._models.get(guid);
@@ -1271,10 +1404,10 @@ function FE3rModelConsole_load(context, guid){
 }
 function FE3rModelConsole_loadMeshByGuid(context, pg){
    var o = this;
-   if(!RClass.isClass(context, MGraphicObject)){
+   if(!context){
       throw new TError('Graphics context is empty');
    }
-   if(RString.isEmpty(pg)){
+   if(!guid){
       throw new TError('Model guid is empty');
    }
    var m = o._models.get(pg);
@@ -1894,7 +2027,27 @@ function FE3rTextureConsole_bitmaps(){
 function FE3rTextureConsole_textures(){
    return this._textures;
 }
-function FE3rTextureConsole_load(pc, pt){
+function FE3rTextureConsole_load(context, guid, code){
+   var o = this;
+   var flag = guid + '|' + code;
+   var texture = o._textures.get(flag);
+   if(texture){
+      return texture;
+   }
+   var url = RBrowser.hostPath(o._dataUrl + '?guid=' + guid + '&code=' + code);
+   RLogger.info(o, 'Load bitmap. (url={1})', url);
+   if(code == 'environment'){
+      bitmap = RClass.create(FE3rTextureCube);
+   }else{
+      bitmap = RClass.create(FE3rTexture);
+   }
+   t._name = pg;
+   t.linkGraphicContext(pc);
+   t.load(u);
+   o._bitmaps.set(pg, t);
+   return t;
+}
+function FE3rTextureConsole_load2(pc, pt){
    var o = this;
    var s = o._textures;
    var t = s.get(pt);

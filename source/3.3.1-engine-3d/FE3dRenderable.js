@@ -92,12 +92,12 @@ function FE3dRenderable_testVisible(){
       return false;
    }
    // 测试模式时候，可见性依赖材质
-   if(RRuntime.isDebug()){
-      var material = o.material();
-      if(!material.testVisible()){
-         return false;
-      }
-   }
+   //if(RRuntime.isDebug()){
+   //   var material = o.material();
+   //   if(!material.testVisible()){
+   //      return false;
+   //   }
+   //}
    return true;
 }
 

@@ -165,7 +165,7 @@ function FDsTemplateFrameSet_onCatalogSelected(p, pc){
       var f = o.findPropertyFrame(EDsFrame.CommonLightPropertyFrame);
       f.show();
       f.loadObject(space, p);
-   }else if(RClass.isClass(p, FE3dModelDisplay)){
+   }else if(RClass.isClass(p, FE3dTemplateDisplay)){
       var f = o.findPropertyFrame(EDsFrame.ModelDisplayPropertyFrame);
       f.show();
       f.loadObject(space, p);

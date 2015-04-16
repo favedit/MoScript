@@ -195,12 +195,6 @@ function FE3dRenderable_testVisible(){
    if(!o._outlineVisible){
       return false;
    }
-   if(RRuntime.isDebug()){
-      var material = o.material();
-      if(!material.testVisible()){
-         return false;
-      }
-   }
    return true;
 }
 function FE3dRenderable_display(){

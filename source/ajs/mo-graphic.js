@@ -88,7 +88,7 @@ function FFloatStream_dispose(){
    o.__base.FObject.dispose.call(o);
 }
 function FGraphicContext(o){
-   o = RClass.inherits(this, o, FObject);
+   o = RClass.inherits(this, o, FObject, MGraphicObject);
    o._hCanvas   = null;
    o.construct  = FGraphicContext_construct;
    o.linkCanvas = RMethod.virtual(o, 'linkCanvas');
