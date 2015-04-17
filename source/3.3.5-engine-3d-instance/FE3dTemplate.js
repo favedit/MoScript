@@ -70,7 +70,7 @@ function FE3dTemplate_construct(){
 // @return 是否准备好
 //==========================================================
 function FE3dTemplate_testReady(){
-   return this._dataReady;
+   return this._ready;
 }
 
 //==========================================================

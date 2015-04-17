@@ -9,7 +9,7 @@ function FDsProjectCanvasPreviewToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'design3d.project.CanvasPreviewToolBar';
+   o._frameName       = 'resource.project.CanvasPreviewToolBar';
    //..........................................................
    // @attribute
    o._pageCount       = 0;

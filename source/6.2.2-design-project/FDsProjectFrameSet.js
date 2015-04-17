@@ -8,7 +8,7 @@ function FDsProjectFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet);
    //..........................................................
    // @property
-   o._frameName            = 'design3d.project.FrameSet';
+   o._frameName            = 'resource.project.FrameSet';
    //..........................................................
    // @style
    o._stylePageControl     = RClass.register(o, new AStyle('_stylePageControl', 'PageControl'));

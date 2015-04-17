@@ -5,7 +5,7 @@
 // @history 150417
 //==========================================================
 function FE3dSprite(o){
-   o = RClass.inherits(this, o, FE3dDisplay, MGraphicObject);
+   o = RClass.inherits(this, o, FE3dDisplayContainer, MGraphicObject);
    //..........................................................
    // @attribute
    o._dataReady       = false;
@@ -38,8 +38,9 @@ function FE3dSprite(o){
    o.loadAnimations   = FE3dSprite_loadAnimations;
    o.loadResource     = FE3dSprite_loadResource;
    o.reloadResource   = FE3dSprite_reloadResource;
-   // @method
    o.load             = FE3dSprite_load;
+   // @method
+   o.updateMatrix     = FE3dSprite_updateMatrix;
    o.process          = FE3dSprite_process;
    // @method
    o.dispose          = FE3dSprite_dispose;
@@ -53,7 +54,7 @@ function FE3dSprite(o){
 //==========================================================
 function FE3dSprite_construct(){
    var o = this;
-   o.__base.FE3dDisplay.construct.call(o);
+   o.__base.FE3dDisplayContainer.construct.call(o);
    o._shapes = new TObjects();
 }
 
@@ -327,28 +328,59 @@ function FE3dSprite_load(){
 }
 
 //==========================================================
-// <T>逻辑处理。</T>
+// <T>构造处理。</T>
 //
 // @method
 //==========================================================
-function FE3dSprite_process(p){
+function FE3dSprite_updateMatrix(){
+   var o = this;
+   // 加载动画集合
+   var matrix = o._currentMatrix.identity();
+   var movies = o._movies;
+   if(movies){
+      if(o._optionMovie){
+         var c = movies.count();
+         for(var i = 0; i < c; i++){
+            var movie = movies.at(i);
+            movie.process(o._movieMatrix);
+         }
+      }
+      matrix.append(o._movieMatrix);
+   }
+   matrix.append(o._matrix);
+   // 计算父矩阵
+   var parent = o._parent;
+   if(parent){
+      o._currentMatrix.append(parent._currentMatrix);
+   }
+}
+
+//==========================================================
+// <T>逻辑处理。</T>
+//
+// @method
+// @param region:FG3dRegion 区域
+//==========================================================
+function FE3dSprite_process(region){
    var o = this;
    // 处理动画集合
-   var as = o._animations;
-   if(as){
-      var c = as.count();
-      for(var i = 0; i < c; i++){
-         as.valueAt(i).record();
+   var animations = o._animations;
+   if(animations){
+      var count = animations.count();
+      for(var i = 0; i < count; i++){
+         var animation = animations.at(i);
+         animation.record();
       }
    }
    // 父处理
-   o.__base.FE3dDisplay.process.call(o);
+   o.__base.FE3dDisplayContainer.process.call(o, region);
    // 处理动画集合
-   var k = o._activeSkeleton;
-   if(k && as){
-      var c = as.count();
-      for(var i = 0; i < c; i++){
-         as.valueAt(i).process(k);
+   var skeleton = o._activeSkeleton;
+   if(skeleton && animations){
+      var count = animations.count();
+      for(var i = 0; i < count; i++){
+         var animation = animations.at(i);
+         animation.process(skeleton);
       }
    }
 }
@@ -361,5 +393,5 @@ function FE3dSprite_process(p){
 function FE3dSprite_dispose(){
    var o = this;
    o._shapes = RObject.dispose(o._shapes);
-   o.__base.FE3dDisplay.dispose.call(o);
+   o.__base.FE3dDisplayContainer.dispose.call(o);
 }

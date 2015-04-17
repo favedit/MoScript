@@ -148,13 +148,33 @@ function RLogger_warn(sf, ms, pm){
 //
 // @method
 //==========================================================
-function RLogger_error(self, method, msg, params){
-   // 检查是否已经弹出过错误
-   if(this._statusError){
-      return;
+function RLogger_error(sf, ms, pm){
+   var o = this;
+   // 获得函数名称
+   var n = RMethod.name(RLogger_error.caller);
+   n = n.replace('_', '.');
+   //..........................................................
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|E [' + RString.rpad(n, o._labelLength) + '] ');
+   // 格式化参数
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a != null){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
    }
-   this._statusError = true;
-   throw new Error(msg);
+   r.append(ms);
+   //..........................................................
+   o.output(sf, r.flush());
 }
 
 //==========================================================
@@ -213,5 +233,6 @@ function RLogger_fatal(sf, er, ms, pm){
    m.appendLine(RString.repeat('-', 60));
    m.appendLine('Stack:');
    m.append(s);
-   alert(m);
+   var text = m.toString();
+   throw new Error(text);
 }

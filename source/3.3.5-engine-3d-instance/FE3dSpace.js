@@ -228,14 +228,16 @@ function FE3dSpace_loadResource(resource){
    // 加载区域资源
    o.loadRegionResource(resource.region());
    // 加载材质集合
-   var materialConsole = RConsole.find(FE3rMaterialConsole);
    var materialResources = resource.materials();
-   var materialCount = materialResources.count();
-   for(var i = 0; i < materialCount; i++){
-      var materialResource = materialResources.at(i);
-      var materialGuid = materialResource.guid();
-      var material = materialConsole.load(o, materialGuid);
-      o._materials.set(materialGuid, material);
+   if(materialResources){
+      var materialCount = materialResources.count();
+      var materialConsole = RConsole.find(FE3rMaterialConsole);
+      for(var i = 0; i < materialCount; i++){
+         var materialResource = materialResources.at(i);
+         var materialGuid = materialResource.guid();
+         var material = materialConsole.load(o, materialGuid);
+         o._materials.set(materialGuid, material);
+      }
    }
    // 加载层集合
    var layers = resource.layers();

@@ -4,7 +4,6 @@ function FDsTemplateCanvas(o){
    o._context            = null;
    o._stage              = null;
    o._layer              = null;
-   o._activeSpace     = null;
    o._rotation           = null;
    o._rotationAble       = false;
    o._capturePosition    = null;
@@ -14,10 +13,11 @@ function FDsTemplateCanvas(o){
    o._selectBoundBox     = null;
    o.onBuild             = FDsTemplateCanvas_onBuild;
    o.onEnterFrame        = FDsTemplateCanvas_onEnterFrame;
-   o.onDataLoaded      = FDsTemplateCanvas_onDataLoaded;
+   o.onDataLoaded        = FDsTemplateCanvas_onDataLoaded;
    o.oeRefresh           = FDsTemplateCanvas_oeRefresh;
    o.construct           = FDsTemplateCanvas_construct;
    o.selectRenderable    = FDsTemplateCanvas_selectRenderable;
+   o.capture             = FDsTemplateCanvas_capture;
    o.loadByGuid          = FDsTemplateCanvas_loadByGuid;
    o.dispose             = FDsTemplateCanvas_dispose;
    return o;
@@ -127,6 +127,26 @@ function FDsTemplateCanvas_selectRenderable(p){
    var r = p.resource();
    var rm = r.mesh();
    var rl = rm.outline();
+}
+function FDsTemplateCanvas_capture(){
+   var o = this;
+   var space = o._activeSpace;
+   var guid = space._resource._guid;
+   var switchWidth = o._switchWidth;
+   var switchHeight = o._switchHeight;
+   o.switchSize(200, 150);
+   RStage.process();
+   var context = o._graphicContext;
+   var size = context.size();
+   var native = context._native;
+   var width = size.width;
+   var height = size.height;
+   var data = new Uint8Array(4 * width * height);
+   native.readPixels(0, 0, width, height, native.RGBA, native.UNSIGNED_BYTE, data);
+   o.switchSize(switchWidth, switchHeight);
+   RStage.process();
+   var url = '/cloud.resource.preview.wv?do=upload&type_cd=' + EE3sResource.Template + '&guid=' + guid + '&width=' + width + '&height=' + height;
+   return RConsole.find(FHttpConsole).send(url, data.buffer);
 }
 function FDsTemplateCanvas_loadByGuid(guid){
    var o = this;
@@ -566,12 +586,11 @@ function FDsTemplateFrameSet_onBuilded(p){
    var frame = o._canvasFrame = o.searchControl('canvasFrame');
    var canvas = o._canvas = RClass.create(FDsTemplateCanvas);
    canvas._frameSet = o;
-   canvas._workspace = o._workspace;
    canvas._toolbar = o._canvasToolbar;
-   canvas.addLoadListener(o, o.onDataLoaded);
    canvas._hParent = frame._hPanel;
    canvas._hParent.style.backgroundColor = '#333333';
    canvas._hParent.style.scroll = 'auto';
+   canvas.addLoadListener(o, o.onDataLoaded);
    canvas.build(p);
    frame.push(canvas);
 }
@@ -779,7 +798,7 @@ function FDsTemplateMaterialPropertyFrame_dispose(){
 }
 function FDsTemplateMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName            = 'design3d.mesh.MenuBar';
+   o._frameName            = 'resource.template.MenuBar';
    o._controlSaveButton    = null;
    o._controlCaptureButton = null;
    o.onBuilded             = FDsTemplateMenuBar_onBuilded;

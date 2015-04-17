@@ -4933,12 +4933,29 @@ function RLogger_warn(sf, ms, pm){
    r.append(ms);
    o.output(sf, r.flush());
 }
-function RLogger_error(self, method, msg, params){
-   if(this._statusError){
-      return;
+function RLogger_error(sf, ms, pm){
+   var o = this;
+   var n = RMethod.name(RLogger_error.caller);
+   n = n.replace('_', '.');
+   var r = new TString();
+   r.append(RDate.format('yymmdd-hh24miss.ms'));
+   r.append('|E [' + RString.rpad(n, o._labelLength) + '] ');
+   var as = arguments;
+   var c = as.length;
+   for(var n = 2; n < c; n++){
+      var a = as[n];
+      var s = '';
+      if(a != null){
+         if(typeof(a) == 'function'){
+            s = RMethod.name(a);
+         }else{
+            s = a.toString();
+         }
+      }
+      ms = ms.replace('{' + (n - 1) + '}', s);
    }
-   this._statusError = true;
-   throw new Error(msg);
+   r.append(ms);
+   o.output(sf, r.flush());
 }
 function RLogger_fatal(sf, er, ms, pm){
    var o = this;
@@ -4984,7 +5001,8 @@ function RLogger_fatal(sf, er, ms, pm){
    m.appendLine(RString.repeat('-', 60));
    m.appendLine('Stack:');
    m.append(s);
-   alert(m);
+   var text = m.toString();
+   throw new Error(text);
 }
 var RMethod = new function RMethod(){
    var o = this;
@@ -10134,7 +10152,8 @@ function FImage_ohLoad(){
 }
 function FImage_ohError(p){
    var o = this.__linker;
-   debugger;
+   var url = o._url;
+   RLogger.error(o, 'Load image failure. (url={1})', url);
 }
 function FImage_construct(){
    var o = this;

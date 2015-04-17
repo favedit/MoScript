@@ -187,7 +187,6 @@ function FE3sSceneDisplay_unserialize(input){
 //==========================================================
 function FE3sSceneDisplay_saveConfig(xconfig){
    var o = this;
-   debugger
    o.__base.FE3sSprite.saveConfig.call(o, xconfig);
    // 存储材质集合
    var animations = o._animations;

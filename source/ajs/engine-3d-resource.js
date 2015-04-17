@@ -1798,7 +1798,6 @@ function FE3sSceneDisplay_unserialize(input){
 }
 function FE3sSceneDisplay_saveConfig(xconfig){
    var o = this;
-   debugger
    o.__base.FE3sSprite.saveConfig.call(o, xconfig);
    var animations = o._animations;
    if(animations){

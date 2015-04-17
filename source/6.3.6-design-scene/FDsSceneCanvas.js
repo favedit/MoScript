@@ -8,10 +8,6 @@ function FDsSceneCanvas(o){
    o = RClass.inherits(this, o, FDsCanvas);
    //..........................................................
    // @attribute
-   o._graphicContext      = null;
-   o._canvasModeCd        = EDsCanvasMode.Drop;
-   o._canvasMoveCd        = EDsCanvasDrag.Unknown;
-   o._activeSpace         = null;
    o._rotation            = null;
    o._optionRotation      = false;
    o._capturePosition     = null;
@@ -20,10 +16,6 @@ function FDsSceneCanvas(o){
    o._dimensional         = null;
    o._selectObject        = null;
    o._selectRenderables   = null;
-   // @attribute
-   o._cameraMoveRate      = 0.8;
-   o._cameraKeyRotation   = 0.03;
-   o._cameraMouseRotation = 0.005;
    // @attribute
    o._templateMatrix      = null;
    o._templateRenderable  = null;
@@ -38,8 +30,7 @@ function FDsSceneCanvas(o){
    o.onMouseCaptureStart  = FDsSceneCanvas_onMouseCaptureStart;
    o.onMouseCapture       = FDsSceneCanvas_onMouseCapture;
    o.onMouseCaptureStop   = FDsSceneCanvas_onMouseCaptureStop;
-   o.onEnterFrame         = FDsSceneCanvas_onEnterFrame;
-   o.onDataLoaded          = FDsSceneCanvas_onDataLoaded;
+   o.onDataLoaded         = FDsSceneCanvas_onDataLoaded;
    //..........................................................
    o.oeResize             = FDsSceneCanvas_oeResize;
    o.oeRefresh            = FDsSceneCanvas_oeRefresh;
@@ -58,6 +49,7 @@ function FDsSceneCanvas(o){
    o.switchMode           = FDsSceneCanvas_switchMode;
    o.switchPlay           = FDsSceneCanvas_switchPlay;
    o.switchMovie          = FDsSceneCanvas_switchMovie;
+   o.capture              = FDsSceneCanvas_capture;
    o.loadByGuid           = FDsSceneCanvas_loadByGuid;
    // @method
    o.dispose              = FDsSceneCanvas_dispose;
@@ -219,80 +211,6 @@ function FDsSceneCanvas_onMouseCapture(p){
 // @param p:event:SEvent 事件
 //==========================================================
 function FDsSceneCanvas_onMouseCaptureStop(p){
-}
-
-//==========================================================
-// <T>每帧处理。</T>
-//
-// @method
-//==========================================================
-function FDsSceneCanvas_onEnterFrame(){
-   var o = this;
-   var s = o._activeSpace;
-   if(!s){
-      return;
-   }
-   var st = s.timer();
-   var ss = st.spanSecond();
-   //..........................................................
-   // 按键处理
-   var c = s.camera();
-   var d = o._cameraMoveRate * ss;
-   var r = o._cameraKeyRotation * ss;
-   // 按键前后移动
-   var kf = RKeyboard.isPress(EStageKey.Forward);
-   var kb = RKeyboard.isPress(EStageKey.Back);
-   if(kf && !kb){
-      c.doWalk(d);
-   }
-   if(!kf && kb){
-      c.doWalk(-d);
-   }
-   // 按键上下移动
-   var kq = RKeyboard.isPress(EStageKey.Up);
-   var ke = RKeyboard.isPress(EStageKey.Down);
-   if(kq && !ke){
-      c.doFly(d);
-   }
-   if(!kq && ke){
-      c.doFly(-d);
-   }
-   // 按键左右旋转
-   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
-   var kd = RKeyboard.isPress(EStageKey.RotationRight);
-   if(ka && !kd){
-      c.doYaw(r);
-   }
-   if(!ka && kd){
-      c.doYaw(-r);
-   }
-   // 按键上下旋转
-   var kz = RKeyboard.isPress(EStageKey.RotationUp);
-   var kw = RKeyboard.isPress(EStageKey.RotationDown);
-   if(kz && !kw){
-      c.doPitch(r);
-   }
-   if(!kz && kw){
-      c.doPitch(-r);
-   }
-   // 更新相机
-   c.update();
-   //..........................................................
-   // 旋转模型
-   if(o._optionRotation){
-      var r = o._rotation;
-      // 旋转所有层
-      var ls = s.layers();
-      var c = ls.count();
-      for(var i = 0; i < c; i++){
-         var l = ls.value(i);
-         var m = l.matrix();
-         m.setRotation(0, r.y, 0);
-         m.update();
-      }
-      // 设置变量
-      r.y += 0.01;
-   }
 }
 
 //==========================================================
@@ -650,6 +568,36 @@ function FDsSceneCanvas_switchMovie(p, f){
          d._optionMovie = p;
       }
    }
+}
+
+//==========================================================
+// <T>捕捉图像数据。</T>
+//
+// @method
+// @param region:FE3dRegion 区域
+//==========================================================
+function FDsSceneCanvas_capture(){
+   var o = this;
+   var space = o._activeSpace;
+   var guid = space._resource._guid;
+   var switchWidth = o._switchWidth;
+   var switchHeight = o._switchHeight;
+   o.switchSize(200, 150);
+   RStage.process();
+   // 获得像素
+   var context = o._graphicContext;
+   var size = context.size();
+   var native = context._native;
+   var width = size.width;
+   var height = size.height;
+   var data = new Uint8Array(4 * width * height);
+   native.readPixels(0, 0, width, height, native.RGBA, native.UNSIGNED_BYTE, data);
+   // 切回原来大小
+   o.switchSize(switchWidth, switchHeight);
+   RStage.process();
+   // 上传图片
+   var url = '/cloud.resource.preview.wv?do=upload&type_cd=' + EE3sResource.Scene + '&guid=' + guid + '&width=' + width + '&height=' + height;
+   return RConsole.find(FHttpConsole).send(url, data.buffer);
 }
 
 //==========================================================

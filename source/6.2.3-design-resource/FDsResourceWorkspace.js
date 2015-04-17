@@ -8,7 +8,7 @@ function FDsResourceWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);
    //..........................................................
    // @property
-   o._frameName            = 'design3d.resource.Workspace';
+   o._frameName            = 'resource.resource.Workspace';
    //..........................................................
    // @style
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));

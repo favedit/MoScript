@@ -8,7 +8,7 @@ function FDsSolutionWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace, MUiStorage);
    //..........................................................
    // @property
-   o._frameName            = 'design3d.solution.Workspace';
+   o._frameName            = 'resource.solution.Workspace';
    o._storageCode          = o._frameName;
    //..........................................................
    // @style

@@ -13,7 +13,6 @@ function FE3dTemplateDisplay(o){
    // @attribute
    o._shapes          = null;
    o._skeletons       = null;
-   o._animations      = null;
    //..........................................................
    // @method
    o.construct        = FE3dTemplateDisplay_construct;
@@ -24,9 +23,6 @@ function FE3dTemplateDisplay(o){
    o.meshRenderables  = FE3dTemplateDisplay_shapes;
    o.skeletons        = FE3dTemplateDisplay_skeletons;
    o.pushSkeleton     = FE3dTemplateDisplay_pushSkeleton;
-   o.findAnimation    = FE3dTemplateDisplay_findAnimation;
-   o.animations       = FE3dTemplateDisplay_animations;
-   o.pushAnimation    = FE3dTemplateDisplay_pushAnimation;
    // @method
    o.loadSkeletons    = FE3dTemplateDisplay_loadSkeletons;
    o.linkAnimation    = FE3dTemplateDisplay_linkAnimation;
@@ -35,7 +31,6 @@ function FE3dTemplateDisplay(o){
    o.reloadResource   = FE3dTemplateDisplay_reloadResource;
    // @method
    o.load             = FE3dTemplateDisplay_load;
-   o.process          = FE3dTemplateDisplay_process;
    // @method
    o.dispose          = FE3dTemplateDisplay_dispose;
    return o;
@@ -129,44 +124,6 @@ function FE3dTemplateDisplay_pushSkeleton(p){
       o._activeSkeleton = p;
    }
    r.set(p._resource.guid(), p);
-}
-
-//==========================================================
-// <T>根据唯一编号查找一个渲染动画。</T>
-//
-// @method
-// @param p:guid:String 唯一编号
-// @return FE3rAnimation 渲染动画
-//==========================================================
-function FE3dTemplateDisplay_findAnimation(p){
-   var s = this._animations;
-   return s ? s.get(p) : null;
-}
-
-//==========================================================
-// <T>获得动画集合。</T>
-//
-// @method
-// @return TDictionary 动画集合
-//==========================================================
-function FE3dTemplateDisplay_animations(){
-   return this._animations;
-}
-
-//==========================================================
-// <T>增加一个渲染动画。</T>
-//
-// @method
-// @param p:animation:FE3rAnimation 渲染动画
-//==========================================================
-function FE3dTemplateDisplay_pushAnimation(p){
-   var o = this;
-   var r = o._animations;
-   if(!r){
-      r = o._animations = new TDictionary();
-   }
-   var pr = p.resource();
-   r.set(pr.guid(), p);
 }
 
 //==========================================================
@@ -298,33 +255,6 @@ function FE3dTemplateDisplay_load(){
       var shapeCount = shapes.count();
       for(var i = 0; i < shapeCount; i++){
          shapes.at(i).load();
-      }
-   }
-}
-
-//==========================================================
-// <T>逻辑处理。</T>
-//
-// @method
-//==========================================================
-function FE3dTemplateDisplay_process(p){
-   var o = this;
-   // 处理动画集合
-   var as = o._animations;
-   if(as){
-      var c = as.count();
-      for(var i = 0; i < c; i++){
-         as.valueAt(i).record();
-      }
-   }
-   // 父处理
-   o.__base.FE3dSprite.process.call(o);
-   // 处理动画集合
-   var k = o._activeSkeleton;
-   if(k && as){
-      var c = as.count();
-      for(var i = 0; i < c; i++){
-         as.valueAt(i).process(k);
       }
    }
 }

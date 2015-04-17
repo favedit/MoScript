@@ -74,7 +74,7 @@ function FDsResourceListContent_onServiceLoad(p){
          item._code = xnode.get('code');
          item._updateDate = xnode.get('update_date');
          item.setTypeLabel(item._typeCd);
-         item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+         item.setLabel(xnode.get('code') + ' - ' + xnode.get('label'));
          item.refreshStyle();
          o.push(item);
       }

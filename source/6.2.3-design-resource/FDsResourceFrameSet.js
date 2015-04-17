@@ -8,7 +8,7 @@ function FDsResourceFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet);
    //..........................................................
    // @property
-   o._frameName            = 'design3d.resource.FrameSet';
+   o._frameName            = 'resource.resource.FrameSet';
    //..........................................................
    // @style
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));

@@ -5,7 +5,7 @@
 // @history 141231
 //==========================================================
 function FDsSceneCatalog(o){
-   o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+   o = RClass.inherits(this, o, FDsCatalog);
    //..........................................................
    // @const
    o._iconView             = 'design3d.scene.view';
@@ -20,7 +20,6 @@ function FDsSceneCatalog(o){
    o.onBuild               = FDsSceneCatalog_onBuild;
    // @event
    o.onLoadDisplay         = FDsSceneCatalog_onLoadDisplay;
-   o.onNodeClick           = FDsSceneCatalog_onNodeClick;
    o.onNodeViewClick       = FDsSceneCatalog_onNodeViewClick;
    o.onNodeViewDoubleClick = FDsSceneCatalog_onNodeViewDoubleClick;
    //..........................................................
@@ -31,8 +30,6 @@ function FDsSceneCatalog(o){
    o.construct             = FDsSceneCatalog_construct;
    // @method
    o.buildNodeView         = FDsSceneCatalog_buildNodeView;
-   o.buildTechnique        = FDsSceneCatalog_buildTechnique;
-   o.buildRegion           = FDsSceneCatalog_buildRegion;
    o.buildRenderable       = FDsSceneCatalog_buildRenderable;
    o.buildDisplay          = FDsSceneCatalog_buildDisplay;
    o.buildLayer            = FDsSceneCatalog_buildLayer;
@@ -58,9 +55,7 @@ function FDsSceneCatalog_onBuild(p){
    c.setName('view');
    o.push(c);
    // 父处理
-   o.__base.FUiDataTreeView.onBuild.call(o, p);
-   // 注册事件
-   o.lsnsClick.register(o, o.onNodeClick);
+   o.__base.FDsCatalog.onBuild.call(o, p);
    // 加载定义
    o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.scene');
 }
@@ -76,18 +71,6 @@ function FDsSceneCatalog_onLoadDisplay(p){
    var n = p._linkNode;
    // 创建渲染集合
    o.buildRenderable(n, p);
-}
-
-//==========================================================
-// <T>节点点击处理。</T>
-//
-// @method
-// @param p:event:TEventProcess 处理事件
-//==========================================================
-function FDsSceneCatalog_onNodeClick(t, n){
-   var o = this;
-   var s = n.dataPropertyGet('linker');
-   o.selectObject(s);
 }
 
 //==========================================================
@@ -204,7 +187,7 @@ function FDsSceneCatalog_onNodeViewDoubleClick(p){
 //==========================================================
 function FDsSceneCatalog_construct(){
    var o = this;
-   o.__base.FUiDataTreeView.construct.call(o);
+   o.__base.FDsCatalog.construct.call(o);
    // 设置属性
    o._displays = new TObjects();
    o._renderables = new TObjects();
@@ -224,52 +207,6 @@ function FDsSceneCatalog_buildNodeView(pn, pv){
    c.setIcon(o._iconView);
    c.addClickListener(o, o.onNodeViewClick);
    c.addDoubleClickListener(o, o.onNodeViewDoubleClick);
-}
-
-//==========================================================
-// <T>建立技术目录。</T>
-//
-// @method
-// @param n:node:FTreeNode 父节点
-// @param p:technique:FG3dTechnique 渲染技术
-//==========================================================
-function FDsSceneCatalog_buildTechnique(n, p){
-   var o = this;
-   // 创建技术节点
-   var nt = o.createNode();
-   nt.setLabel('Technique');
-   nt.setTypeCode('technique');
-   nt.dataPropertySet('linker', p);
-   n.appendNode(nt);
-}
-
-//==========================================================
-// <T>建立区域目录。</T>
-//
-// @method
-// @param n:node:FTreeNode 父节点
-// @param p:theme:FE3sTemplateTheme 模板主题
-//==========================================================
-function FDsSceneCatalog_buildRegion(n, p){
-   var o = this;
-   // 新建区域节点
-   var nr = o.createNode();
-   nr.setLabel('Region');
-   nr.setTypeCode('region');
-   nr.dataPropertySet('linker', p);
-   n.appendNode(nr);
-   // 新建区域相机节点
-   var nc = o.createNode();
-   nc.setLabel('Camera');
-   nc.setTypeCode('camera');
-   nc.dataPropertySet('linker', p.camera());
-   nr.appendNode(nc);
-   // 新建区域光源节点
-   var nl = o.createNode();
-   nl.setLabel('Light');
-   nl.setTypeCode('light');
-   nl.dataPropertySet('linker', p.directionalLight());
-   nr.appendNode(nl);
 }
 
 //==========================================================
@@ -478,5 +415,5 @@ function FDsSceneCatalog_dispose(){
    o._renderables = RObject.dispose(o._renderables);
    o._materials = RObject.dispose(o._materials);
    // 父处理
-   o.__base.FUiDataTreeView.dispose.call(o);
+   o.__base.FDsCatalog.dispose.call(o);
 }

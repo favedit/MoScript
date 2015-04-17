@@ -187,22 +187,23 @@ function FDisplay_update(){
    m.set(o._location, o._rotation, o._scale);
    m.update();
 }
-function FDisplay_updateMatrix(){
+function FDisplay_updateMatrix(region){
    var o = this;
    o._currentMatrix.assign(o._matrix);
-   var t = o._parent;
-   if(t){
-      o._currentMatrix.append(t._currentMatrix);
+   var parent = o._parent;
+   if(parent){
+      o._currentMatrix.append(parent._currentMatrix);
    }
 }
-function FDisplay_process(p){
+function FDisplay_process(region){
    var o = this;
-   o.updateMatrix();
-   var s = o._renderables;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.getAt(i).process(p);
+   o.updateMatrix(region);
+   var renderables = o._renderables;
+   if(renderables){
+      var count = renderables.count();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         renderable.process(region);
       }
    }
 }
@@ -331,7 +332,8 @@ function FDisplayContainer_process(region){
    if(displays){
       var count = displays.count();
       for(var i = 0; i < count; i++){
-         displays.at(i).process(region);
+         var display = displays.at(i);
+         display.process(region);
       }
    }
 }
@@ -1207,6 +1209,34 @@ function FE3dDisplay_dispose(){
    var o = this;
    o._materials = RObject.free(o._materials);
    o.__base.FDisplay.dispose.call(o);
+}
+function FE3dDisplayContainer(o){
+   o = RClass.inherits(this, o, FDisplayContainer);
+   o._outline         = null;
+   o._materials       = null;
+   o.construct        = FE3dDisplayContainer_construct;
+   o.materials        = FE3dDisplayContainer_materials;
+   o.calculateOutline = FE3dDisplayContainer_calculateOutline;
+   o.dispose          = FE3dDisplayContainer_dispose;
+   return o;
+}
+function FE3dDisplayContainer_construct(){
+   var o = this;
+   o.__base.FDisplayContainer.construct.call(o);
+   o._outline = new SOutline3();
+   o._materials = new TDictionary();
+}
+function FE3dDisplayContainer_materials(){
+   return this._materials;
+}
+function FE3dDisplayContainer_calculateOutline(){
+   var o = this;
+   return o._outline;
+}
+function FE3dDisplayContainer_dispose(){
+   var o = this;
+   o._materials = RObject.free(o._materials);
+   o.__base.FDisplayContainer.dispose.call(o);
 }
 function FE3dMaterial(o){
    o = RClass.inherits(this, o, FG3dMaterial, MLinkerResource);
@@ -3433,7 +3463,6 @@ function FE3sSceneDisplay_unserialize(input){
 }
 function FE3sSceneDisplay_saveConfig(xconfig){
    var o = this;
-   debugger
    o.__base.FE3sSprite.saveConfig.call(o, xconfig);
    var animations = o._animations;
    if(animations){
@@ -8714,7 +8743,6 @@ function FE3dSceneDisplay(o){
    o.loadResource      = FE3dSceneDisplay_loadResource;
    o.loadTemplate      = FE3dSceneDisplay_loadTemplate;
    o.processLoad       = FE3dSceneDisplay_processLoad;
-   o.updateMatrix      = FE3dSceneDisplay_updateMatrix;
    return o;
 }
 function FE3dSceneDisplay_construct(){
@@ -8805,13 +8833,13 @@ function FE3dSceneDisplay_loadTemplate(template){
    var count = renderables.count();
    for(var n = 0; n < count; n++){
       var renderable = renderables.at(n);
-      o.pushRenderable(renderable);
       var material = renderable.material();
       var materialGuid = material.guid();
       var displayMaterial = parentMaterials.get(materialGuid);
       displayMaterial._parentMaterial = material;
       displayMaterial.reloadResource();
    }
+   o.pushDisplay(sprite);
 }
 function FE3dSceneDisplay_processLoad(){
    var o = this;
@@ -8826,25 +8854,6 @@ function FE3dSceneDisplay_processLoad(){
    o._ready = true;
    o.processLoadListener(o);
    return true;
-}
-function FE3dSceneDisplay_updateMatrix(p){
-   var o = this;
-   var m = o._currentMatrix.identity();
-   var ms = o._movies;
-   if(ms){
-      if(o._optionMovie){
-         var c = ms.count();
-         for(var i = 0; i < c; i++){
-            ms.get(i).process(o._movieMatrix);
-         }
-      }
-      m.append(o._movieMatrix);
-   }
-   m.append(o._matrix);
-   var t = o._parent;
-   if(t){
-      o._currentMatrix.append(t._currentMatrix);
-   }
 }
 function FE3dSceneDisplayMovie(o){
    o = RClass.inherits(this, o, FObject);
@@ -9363,14 +9372,16 @@ function FE3dSpace_loadResource(resource){
    o._resource = resource;
    o.loadTechniqueResource(resource.technique());
    o.loadRegionResource(resource.region());
-   var materialConsole = RConsole.find(FE3rMaterialConsole);
    var materialResources = resource.materials();
-   var materialCount = materialResources.count();
-   for(var i = 0; i < materialCount; i++){
-      var materialResource = materialResources.at(i);
-      var materialGuid = materialResource.guid();
-      var material = materialConsole.load(o, materialGuid);
-      o._materials.set(materialGuid, material);
+   if(materialResources){
+      var materialCount = materialResources.count();
+      var materialConsole = RConsole.find(FE3rMaterialConsole);
+      for(var i = 0; i < materialCount; i++){
+         var materialResource = materialResources.at(i);
+         var materialGuid = materialResource.guid();
+         var material = materialConsole.load(o, materialGuid);
+         o._materials.set(materialGuid, material);
+      }
    }
    var layers = resource.layers();
    if(layers){
@@ -9405,7 +9416,7 @@ function FE3dSpace_deactive(){
    o.__base.FE3dStage.deactive.call(o);
 }
 function FE3dSprite(o){
-   o = RClass.inherits(this, o, FE3dDisplay, MGraphicObject);
+   o = RClass.inherits(this, o, FE3dDisplayContainer, MGraphicObject);
    o._dataReady       = false;
    o._ready           = false;
    o._resource        = null;
@@ -9430,13 +9441,14 @@ function FE3dSprite(o){
    o.loadResource     = FE3dSprite_loadResource;
    o.reloadResource   = FE3dSprite_reloadResource;
    o.load             = FE3dSprite_load;
+   o.updateMatrix     = FE3dSprite_updateMatrix;
    o.process          = FE3dSprite_process;
    o.dispose          = FE3dSprite_dispose;
    return o;
 }
 function FE3dSprite_construct(){
    var o = this;
-   o.__base.FE3dDisplay.construct.call(o);
+   o.__base.FE3dDisplayContainer.construct.call(o);
    o._shapes = new TObjects();
 }
 function FE3dSprite_testReady(){
@@ -9589,28 +9601,50 @@ function FE3dSprite_load(){
       }
    }
 }
-function FE3dSprite_process(p){
+function FE3dSprite_updateMatrix(){
    var o = this;
-   var as = o._animations;
-   if(as){
-      var c = as.count();
-      for(var i = 0; i < c; i++){
-         as.valueAt(i).record();
+   var matrix = o._currentMatrix.identity();
+   var movies = o._movies;
+   if(movies){
+      if(o._optionMovie){
+         var c = movies.count();
+         for(var i = 0; i < c; i++){
+            var movie = movies.at(i);
+            movie.process(o._movieMatrix);
+         }
+      }
+      matrix.append(o._movieMatrix);
+   }
+   matrix.append(o._matrix);
+   var parent = o._parent;
+   if(parent){
+      o._currentMatrix.append(parent._currentMatrix);
+   }
+}
+function FE3dSprite_process(region){
+   var o = this;
+   var animations = o._animations;
+   if(animations){
+      var count = animations.count();
+      for(var i = 0; i < count; i++){
+         var animation = animations.at(i);
+         animation.record();
       }
    }
-   o.__base.FE3dDisplay.process.call(o);
-   var k = o._activeSkeleton;
-   if(k && as){
-      var c = as.count();
-      for(var i = 0; i < c; i++){
-         as.valueAt(i).process(k);
+   o.__base.FE3dDisplayContainer.process.call(o, region);
+   var skeleton = o._activeSkeleton;
+   if(skeleton && animations){
+      var count = animations.count();
+      for(var i = 0; i < count; i++){
+         var animation = animations.at(i);
+         animation.process(skeleton);
       }
    }
 }
 function FE3dSprite_dispose(){
    var o = this;
    o._shapes = RObject.dispose(o._shapes);
-   o.__base.FE3dDisplay.dispose.call(o);
+   o.__base.FE3dDisplayContainer.dispose.call(o);
 }
 function FE3dTemplate(o){
    o = RClass.inherits(this, o, FE3dSpace, MGraphicObject, MListenerLoad);
@@ -9651,7 +9685,7 @@ function FE3dTemplate_construct(){
    o._sprites = new TObjects();
 }
 function FE3dTemplate_testReady(){
-   return this._dataReady;
+   return this._ready;
 }
 function FE3dTemplate_sprite(){
    return this._sprites.first();
@@ -10110,23 +10144,18 @@ function FE3dTemplateDisplay(o){
    o._ready           = false;
    o._shapes          = null;
    o._skeletons       = null;
-   o._animations      = null;
    o.construct        = FE3dTemplateDisplay_construct;
    o.testReady        = FE3dTemplateDisplay_testReady;
    o.findMeshByCode   = FE3dTemplateDisplay_findMeshByCode;
    o.meshRenderables  = FE3dTemplateDisplay_shapes;
    o.skeletons        = FE3dTemplateDisplay_skeletons;
    o.pushSkeleton     = FE3dTemplateDisplay_pushSkeleton;
-   o.findAnimation    = FE3dTemplateDisplay_findAnimation;
-   o.animations       = FE3dTemplateDisplay_animations;
-   o.pushAnimation    = FE3dTemplateDisplay_pushAnimation;
    o.loadSkeletons    = FE3dTemplateDisplay_loadSkeletons;
    o.linkAnimation    = FE3dTemplateDisplay_linkAnimation;
    o.loadAnimations   = FE3dTemplateDisplay_loadAnimations;
    o.loadResource     = FE3dTemplateDisplay_loadResource;
    o.reloadResource   = FE3dTemplateDisplay_reloadResource;
    o.load             = FE3dTemplateDisplay_load;
-   o.process          = FE3dTemplateDisplay_process;
    o.dispose          = FE3dTemplateDisplay_dispose;
    return o;
 }
@@ -10175,22 +10204,6 @@ function FE3dTemplateDisplay_pushSkeleton(p){
       o._activeSkeleton = p;
    }
    r.set(p._resource.guid(), p);
-}
-function FE3dTemplateDisplay_findAnimation(p){
-   var s = this._animations;
-   return s ? s.get(p) : null;
-}
-function FE3dTemplateDisplay_animations(){
-   return this._animations;
-}
-function FE3dTemplateDisplay_pushAnimation(p){
-   var o = this;
-   var r = o._animations;
-   if(!r){
-      r = o._animations = new TDictionary();
-   }
-   var pr = p.resource();
-   r.set(pr.guid(), p);
 }
 function FE3dTemplateDisplay_loadSkeletons(p){
    var o = this;
@@ -10277,24 +10290,6 @@ function FE3dTemplateDisplay_load(){
       var shapeCount = shapes.count();
       for(var i = 0; i < shapeCount; i++){
          shapes.at(i).load();
-      }
-   }
-}
-function FE3dTemplateDisplay_process(p){
-   var o = this;
-   var as = o._animations;
-   if(as){
-      var c = as.count();
-      for(var i = 0; i < c; i++){
-         as.valueAt(i).record();
-      }
-   }
-   o.__base.FE3dSprite.process.call(o);
-   var k = o._activeSkeleton;
-   if(k && as){
-      var c = as.count();
-      for(var i = 0; i < c; i++){
-         as.valueAt(i).process(k);
       }
    }
 }

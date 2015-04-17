@@ -8,7 +8,7 @@ function FDsSolutionTabBar(o){
    o = RClass.inherits(this, o, FUiTabBar);
    //..........................................................
    // @property
-   o._frameName            = 'design3d.solution.TabBar';
+   o._frameName            = 'resource.solution.TabBar';
    //..........................................................
    // @attribute
    o._resourceTypeCd       = 'private';

@@ -105,12 +105,11 @@ function FDsTemplateFrameSet_onBuilded(p){
    var frame = o._canvasFrame = o.searchControl('canvasFrame');
    var canvas = o._canvas = RClass.create(FDsTemplateCanvas);
    canvas._frameSet = o;
-   canvas._workspace = o._workspace;
    canvas._toolbar = o._canvasToolbar;
-   canvas.addLoadListener(o, o.onDataLoaded);
    canvas._hParent = frame._hPanel;
    canvas._hParent.style.backgroundColor = '#333333';
    canvas._hParent.style.scroll = 'auto';
+   canvas.addLoadListener(o, o.onDataLoaded);
    canvas.build(p);
    frame.push(canvas);
 }

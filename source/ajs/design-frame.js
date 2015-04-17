@@ -177,6 +177,57 @@ function FDsCommonDisplayPropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }
+function FDsCommonLayerPropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible       = false;
+   o._workspace     = null;
+   o._layer         = null;
+   o._layerResource = null;
+   o._controlGuid   = null;
+   o._controlCode   = null;
+   o._controlLabel  = null;
+   o.onBuilded      = FDsCommonLayerPropertyFrame_onBuilded;
+   o.onDataChanged  = FDsCommonLayerPropertyFrame_onDataChanged;
+   o.construct      = FDsCommonLayerPropertyFrame_construct;
+   o.loadObject     = FDsCommonLayerPropertyFrame_loadObject;
+   o.dispose        = FDsCommonLayerPropertyFrame_dispose;
+   return o;
+}
+function FDsCommonLayerPropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsCommonLayerPropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+   o._controlTypeCd.addDataChangedListener(o, o.onDataChanged);
+   o._controlTransformCd.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsCommonLayerPropertyFrame_onDataChanged(p){
+   var o = this;
+   var r = o._layerResource;
+   r.setCode(o._controlCode.get());
+   r.setLabel(o._controlLabel.get());
+   r.setTypeCd(o._controlTypeCd.get());
+   r.setTransformCd(o._controlTransformCd.get());
+}
+function FDsCommonLayerPropertyFrame_loadObject(s, l){
+   var o = this;
+   var r = l.resource();
+   o._layer = l;
+   o._layerResource = r;
+   o._controlGuid.set(r.guid());
+   o._controlCode.set(r.code());
+   o._controlLabel.set(r.label());
+   o._controlTypeCd.set(r.typeCd());
+   o._controlTransformCd.set(r.transformCd());
+}
+function FDsCommonLayerPropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
 function FDsCommonLightPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible      = false;

@@ -8,7 +8,7 @@ function FDsSolutionMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
    // @property
-   o._frameName     = 'design3d.solution.MenuBar';
+   o._frameName     = 'resource.solution.MenuBar';
    //..........................................................
    // @attribute
    o._refreshButton = null;

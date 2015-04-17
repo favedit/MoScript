@@ -9,7 +9,7 @@ function FDsResourcePropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName             = 'design3d.resource.PropertyToolBar';
+   o._frameName             = 'resource.resource.PropertyToolBar';
    //..........................................................
    // @attribute
    o._controlInsertButton   = null;

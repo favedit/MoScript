@@ -187,22 +187,23 @@ function FDisplay_update(){
    m.set(o._location, o._rotation, o._scale);
    m.update();
 }
-function FDisplay_updateMatrix(){
+function FDisplay_updateMatrix(region){
    var o = this;
    o._currentMatrix.assign(o._matrix);
-   var t = o._parent;
-   if(t){
-      o._currentMatrix.append(t._currentMatrix);
+   var parent = o._parent;
+   if(parent){
+      o._currentMatrix.append(parent._currentMatrix);
    }
 }
-function FDisplay_process(p){
+function FDisplay_process(region){
    var o = this;
-   o.updateMatrix();
-   var s = o._renderables;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.getAt(i).process(p);
+   o.updateMatrix(region);
+   var renderables = o._renderables;
+   if(renderables){
+      var count = renderables.count();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         renderable.process(region);
       }
    }
 }
@@ -331,7 +332,8 @@ function FDisplayContainer_process(region){
    if(displays){
       var count = displays.count();
       for(var i = 0; i < count; i++){
-         displays.at(i).process(region);
+         var display = displays.at(i);
+         display.process(region);
       }
    }
 }

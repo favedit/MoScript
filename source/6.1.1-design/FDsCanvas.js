@@ -13,6 +13,9 @@ function FDsCanvas(o){
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
    // @attribute
+   o._switchWidth         = '*';
+   o._switchHeight        = '*';
+   // @attribute
    o._capturePosition     = null;
    o._captureMatrix       = null;
    o._captureRotation     = null;
@@ -38,6 +41,7 @@ function FDsCanvas(o){
    // @method
    o.construct            = FDsCanvas_construct;
    // @method
+   o.switchSize           = FDsCanvas_switchSize;
    o.reloadRegion         = FDsCanvas_reloadRegion;
    // @method
    o.dispose              = FDsCanvas_dispose;
@@ -154,65 +158,72 @@ function FDsCanvas_onMouseCaptureStop(p){
 //==========================================================
 function FDsCanvas_onEnterFrame(){
    var o = this;
-   var space = o._activeSpace;
-   if(!space){
+   var o = this;
+   var s = o._activeSpace;
+   if(!s){
       return;
    }
+   var st = s.timer();
+   var ss = st.spanSecond();
    //..........................................................
    // 按键处理
-   var camera = space.camera();
-   var d = 0.5;
-   var r = 0.05;
-   var kw = RKeyboard.isPress(EKeyCode.W);
-   var ks = RKeyboard.isPress(EKeyCode.S);
-   if(kw && !ks){
-      camera.doWalk(d);
+   var c = s.camera();
+   var d = o._cameraMoveRate * ss;
+   var r = o._cameraKeyRotation * ss;
+   // 按键前后移动
+   var kf = RKeyboard.isPress(EStageKey.Forward);
+   var kb = RKeyboard.isPress(EStageKey.Back);
+   if(kf && !kb){
+      c.doWalk(d);
    }
-   if(!kw && ks){
-      camera.doWalk(-d);
+   if(!kf && kb){
+      c.doWalk(-d);
    }
-   var ka = RKeyboard.isPress(EKeyCode.A);
-   var kd = RKeyboard.isPress(EKeyCode.D);
-   if(ka && !kd){
-      //c.doStrafe(r);
-      camera.doYaw(r);
-   }
-   if(!ka && kd){
-      //c.doStrafe(-r);
-      camera.doYaw(-r);
-   }
-   var kq = RKeyboard.isPress(EKeyCode.Q);
-   var ke = RKeyboard.isPress(EKeyCode.E);
+   // 按键上下移动
+   var kq = RKeyboard.isPress(EStageKey.Up);
+   var ke = RKeyboard.isPress(EStageKey.Down);
    if(kq && !ke){
-      camera.doFly(d);
+      c.doFly(d);
    }
    if(!kq && ke){
-      camera.doFly(-d);
+      c.doFly(-d);
    }
-   var kz = RKeyboard.isPress(EKeyCode.Z);
-   var kw = RKeyboard.isPress(EKeyCode.X);
+   // 按键左右旋转
+   var ka = RKeyboard.isPress(EStageKey.RotationLeft);
+   var kd = RKeyboard.isPress(EStageKey.RotationRight);
+   if(ka && !kd){
+      c.doYaw(r);
+   }
+   if(!ka && kd){
+      c.doYaw(-r);
+   }
+   // 按键上下旋转
+   var kz = RKeyboard.isPress(EStageKey.RotationUp);
+   var kw = RKeyboard.isPress(EStageKey.RotationDown);
    if(kz && !kw){
-      camera.doPitch(r);
+      c.doPitch(r);
    }
    if(!kz && kw){
-      camera.doPitch(-r);
+      c.doPitch(-r);
    }
-   camera.update();
+   // 更新相机
+   c.update();
    //..........................................................
    // 旋转模型
-   //if(s){
-      //var r = o._rotation;
-      //m.location().set(0, -8.0, 0);
-      //m.rotation().set(0, r.y, 0);
-      //m.scale().set(3.0, 3.0, 3.0);
-      //m.scale().set(0.002, 0.002, 0.002);
-      //m.scale().set(0.2, 0.2, 0.2);
-      //m.update();
+   if(o._optionRotation){
+      var r = o._rotation;
+      // 旋转所有层
+      var ls = s.layers();
+      var c = ls.count();
+      for(var i = 0; i < c; i++){
+         var l = ls.value(i);
+         var m = l.matrix();
+         m.setRotation(0, r.y, 0);
+         m.update();
+      }
       // 设置变量
-      //if(o._rotationAble){
-      //   r.y += 0.01;
-      //}
-   //}
+      r.y += 0.01;
+   }
 }
 
 //==========================================================
@@ -257,6 +268,42 @@ function FDsCanvas_construct(){
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
    o._captureRotation = new SVector3();
+}
+
+//==========================================================
+// <T>切换大小。</T>
+//
+// @method
+// @param width:Integer 宽度
+// @param height:Integer 高度
+//==========================================================
+function FDsCanvas_switchSize(width, height){
+   var o = this;
+   o._switchWidth = width;
+   o._switchHeight = height;
+   // 获得大小
+   var hCanvas = o._hPanel;
+   var hParent = o._hParent;
+   if(width == '*'){
+      width = hParent.offsetWidth;
+   }
+   if(height == '*'){
+      height = hParent.offsetHeight;
+   }
+   // 设置大小
+   hCanvas.width = width;
+   hCanvas.style.width = width + 'px';
+   hCanvas.height = height;
+   hCanvas.style.height = height + 'px';
+   // 设置投影
+   o._graphicContext.setViewport(0, 0, width, height);
+   // 设置投影
+   var space = o._activeSpace;
+   if(space){
+      var projection = space.camera().projection();
+      projection.size().set(width, height);
+      projection.update();
+   }
 }
 
 //==========================================================

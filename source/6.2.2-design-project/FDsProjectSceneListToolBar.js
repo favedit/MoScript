@@ -9,7 +9,7 @@ function FDsProjectSceneListToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName           = 'design3d.project.SceneListToolBar';
+   o._frameName           = 'resource.project.SceneListToolBar';
    //..........................................................
    // @attribute
    o._controlSceneCreate  = null;

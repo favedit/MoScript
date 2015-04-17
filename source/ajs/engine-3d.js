@@ -131,6 +131,34 @@ function FE3dDisplay_dispose(){
    o._materials = RObject.free(o._materials);
    o.__base.FDisplay.dispose.call(o);
 }
+function FE3dDisplayContainer(o){
+   o = RClass.inherits(this, o, FDisplayContainer);
+   o._outline         = null;
+   o._materials       = null;
+   o.construct        = FE3dDisplayContainer_construct;
+   o.materials        = FE3dDisplayContainer_materials;
+   o.calculateOutline = FE3dDisplayContainer_calculateOutline;
+   o.dispose          = FE3dDisplayContainer_dispose;
+   return o;
+}
+function FE3dDisplayContainer_construct(){
+   var o = this;
+   o.__base.FDisplayContainer.construct.call(o);
+   o._outline = new SOutline3();
+   o._materials = new TDictionary();
+}
+function FE3dDisplayContainer_materials(){
+   return this._materials;
+}
+function FE3dDisplayContainer_calculateOutline(){
+   var o = this;
+   return o._outline;
+}
+function FE3dDisplayContainer_dispose(){
+   var o = this;
+   o._materials = RObject.free(o._materials);
+   o.__base.FDisplayContainer.dispose.call(o);
+}
 function FE3dMaterial(o){
    o = RClass.inherits(this, o, FG3dMaterial, MLinkerResource);
    o.loadResource = FE3dMaterial_loadResource;

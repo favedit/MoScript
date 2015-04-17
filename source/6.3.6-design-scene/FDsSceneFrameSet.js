@@ -8,7 +8,7 @@ function FDsSceneFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet);
    //..........................................................
    // @property
-   o._frameName            = 'resource.model.FrameSet';
+   o._frameName            = 'resource.scene.FrameSet';
    //..........................................................
    // @style
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));

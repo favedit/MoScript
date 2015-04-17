@@ -9,7 +9,7 @@ function FDsResourceListToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar, MUiStorage);
    //..........................................................
    // @property
-   o._frameName       = 'design3d.resource.ListToolBar';
+   o._frameName       = 'resource.resource.ListToolBar';
    o._storageCode     = o._frameName;
    //..........................................................
    // @attribute

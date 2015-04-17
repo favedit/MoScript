@@ -9,7 +9,7 @@ function FDsResourceCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName                   = 'design3d.resource.CatalogToolBar';
+   o._frameName                   = 'resource.resource.CatalogToolBar';
    //..........................................................
    // @attribute
    o._controlFolderCreateButton   = null;

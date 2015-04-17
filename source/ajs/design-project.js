@@ -61,7 +61,7 @@ function FDsProjectCanvasContent_dispose(){
 }
 function FDsProjectCanvasPreviewToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName       = 'design3d.project.CanvasPreviewToolBar';
+   o._frameName       = 'resource.project.CanvasPreviewToolBar';
    o._pageCount       = 0;
    o._page            = 0;
    o._serach          = null;
@@ -143,7 +143,7 @@ function FDsProjectCanvasPreviewToolBar_dispose(){
 }
 function FDsProjectCanvasSpaceToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName       = 'design3d.project.CanvasSpaceToolBar';
+   o._frameName       = 'resource.project.CanvasSpaceToolBar';
    o._pageCount       = 0;
    o._page            = 0;
    o._serach          = null;
@@ -450,7 +450,7 @@ function FDsProjectCatalogContent_dispose(){
 }
 function FDsProjectCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName       = 'design3d.project.CatalogToolBar';
+   o._frameName       = 'resource.project.CatalogToolBar';
    o._canvasModeCd    = EDsCanvasMode.Drop;
    o._dropButton      = null;
    o._selectButton    = null;
@@ -493,7 +493,7 @@ function FDsProjectCatalogToolBar_dispose(){
 }
 function FDsProjectFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet);
-   o._frameName            = 'design3d.project.FrameSet';
+   o._frameName            = 'resource.project.FrameSet';
    o._stylePageControl     = RClass.register(o, new AStyle('_stylePageControl', 'PageControl'));
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
@@ -1153,7 +1153,7 @@ x   // 父处理
 }
 function FDsProjectPropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName             = 'design3d.project.PropertyToolBar';
+   o._frameName             = 'resource.project.PropertyToolBar';
    o._controlInsertButton   = null;
    o._controlUpdateButton   = null;
    o._controlDeleteButton   = null;
@@ -1465,7 +1465,7 @@ function FDsProjectSceneCatalogToolBar_dispose(){
 }
 function FDsProjectCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName       = 'design3d.project.CatalogToolBar';
+   o._frameName       = 'resource.project.CatalogToolBar';
    o._canvasModeCd    = EDsCanvasMode.Drop;
    o._dropButton      = null;
    o._selectButton    = null;
@@ -1679,7 +1679,7 @@ function FDsProjectSceneListItem_refreshStyle(){
 }
 function FDsProjectSceneListToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName           = 'design3d.project.SceneListToolBar';
+   o._frameName           = 'resource.project.SceneListToolBar';
    o._controlSceneCreate  = null;
    o._controlSceneDelete  = null;
    o.onBuilded            = FDsProjectSceneListToolBar_onBuilded;

@@ -190,7 +190,8 @@ function FDisplayContainer_process(region){
    if(displays){
       var count = displays.count();
       for(var i = 0; i < count; i++){
-         displays.at(i).process(region);
+         var display = displays.at(i);
+         display.process(region);
       }
    }
 }

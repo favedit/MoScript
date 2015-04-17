@@ -9,7 +9,7 @@ function FDsProjectCanvasSpaceToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
    //..........................................................
    // @property
-   o._frameName       = 'design3d.project.CanvasSpaceToolBar';
+   o._frameName       = 'resource.project.CanvasSpaceToolBar';
    //..........................................................
    // @attribute
    o._pageCount       = 0;

@@ -8,7 +8,7 @@ function FDsResourceFolderDialog(o){
    o = RClass.inherits(this, o, FUiDialog);
    //..........................................................
    // @property
-   o._frameName            = 'design3d.resource.FolderDialog';
+   o._frameName            = 'resource.resource.FolderDialog';
    //..........................................................
    // @attribute
    o._dataModeCd           = null;

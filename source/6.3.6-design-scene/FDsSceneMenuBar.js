@@ -8,7 +8,7 @@ function FDsSceneMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
    //..........................................................
    // @property
-   o._frameName     = 'design3d.scene.MenuBar';
+   o._frameName     = 'resource.scene.MenuBar';
    //..........................................................
    // @attribute
    o._refreshButton = null;
@@ -18,9 +18,11 @@ function FDsSceneMenuBar(o){
    // @event
    o.onBuilded      = FDsSceneMenuBar_onBuilded;
    // @event
-   o.onRefreshClick = FDsSceneMenuBar_onRefreshClick;
+   o.onSaveLoad     = FDsSceneMenuBar_onSaveLoad;
    o.onSaveClick    = FDsSceneMenuBar_onSaveClick;
-   o.onRunClick     = FDsSceneMenuBar_onRunClick;
+   o.onCaptureLoad  = FDsSceneMenuBar_onCaptureLoad;
+   o.onCaptureClick = FDsSceneMenuBar_onCaptureClick;
+   o.onExecuteClick = FDsSceneMenuBar_onExecuteClick;
    //..........................................................
    // @method
    o.construct      = FDsSceneMenuBar_construct;
@@ -40,21 +42,20 @@ function FDsSceneMenuBar_onBuilded(p){
    o.__base.FUiMenuBar.onBuilded.call(o, p);
    //..........................................................
    // 注册事件
-   o._refreshButton.addClickListener(o, o.onRefreshClick);
-   o._saveButton.addClickListener(o, o.onSaveClick);
-   o._runButton.addClickListener(o, o.onRunClick);
+   o._controlSave.addClickListener(o, o.onSaveClick);
+   o._controlCapture.addClickListener(o, o.onCaptureClick);
+   o._controlExecute.addClickListener(o, o.onExecuteClick);
 }
 
 //==========================================================
-// <T>刷新按键处理。</T>
+// <T>保存按键加载处理。</T>
 //
 // @method
-// @param p:event:SEvent 事件
+// @param event:SEvent 事件
 //==========================================================
-function FDsSceneMenuBar_onRefreshClick(p){
-   var o = this;
-   //var catalog = o._worksapce._catalog;
-   //catalog.loadUrl('/cloud.describe.tree.ws?action=query&code=resource3d.model');
+function FDsSceneMenuBar_onSaveLoad(event){
+   // 解除画面锁定
+   RConsole.find(FUiDesktopConsole).hide();
 }
 
 //==========================================================
@@ -67,11 +68,40 @@ function FDsSceneMenuBar_onSaveClick(p){
    var o = this;
    var space = o._frameSet._activeSpace;
    var resource = space.resource();
+   // 画面禁止操作
+   RConsole.find(FUiDesktopConsole).showUploading();
    // 存储配置
-   var xspace = new TXmlNode();
-   resource.saveConfig(xspace);
+   var xconfig = new TXmlNode();
+   resource.saveConfig(xconfig);
    // 更新处理
-   RConsole.find(FDrSceneConsole).update(xspace);
+   var connection = RConsole.find(FDrSceneConsole).update(xconfig);
+   connection.addLoadListener(o, o.onSaveLoad);
+}
+
+//==========================================================
+// <T>捕捉图像加载处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsSceneMenuBar_onCaptureLoad(event){
+   // 解除画面锁定
+   RConsole.find(FUiDesktopConsole).hide();
+}
+
+//==========================================================
+// <T>捕捉图像处理。</T>
+//
+// @method
+// @param event:SEvent 事件
+//==========================================================
+function FDsSceneMenuBar_onCaptureClick(event){
+   var o = this;
+   // 画面禁止操作
+   RConsole.find(FUiDesktopConsole).showUploading();
+   // 上传数据
+   var connection = o._frameSet._canvas.capture();
+   connection.addLoadListener(o, o.onCaptureLoad);
 }
 
 //==========================================================
@@ -80,7 +110,7 @@ function FDsSceneMenuBar_onSaveClick(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSceneMenuBar_onRunClick(p){
+function FDsSceneMenuBar_onExecuteClick(p){
    var o = this;
    var u = '../design/view.html?code=' + o._frameSet._sceneCode;
    //window.open(u);

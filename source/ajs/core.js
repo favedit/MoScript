@@ -1476,7 +1476,8 @@ function FImage_ohLoad(){
 }
 function FImage_ohError(p){
    var o = this.__linker;
-   debugger;
+   var url = o._url;
+   RLogger.error(o, 'Load image failure. (url={1})', url);
 }
 function FImage_construct(){
    var o = this;

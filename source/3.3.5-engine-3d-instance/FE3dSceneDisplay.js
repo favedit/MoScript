@@ -27,7 +27,6 @@ function FE3dSceneDisplay(o){
    o.loadResource      = FE3dSceneDisplay_loadResource;
    o.loadTemplate      = FE3dSceneDisplay_loadTemplate;
    o.processLoad       = FE3dSceneDisplay_processLoad;
-   o.updateMatrix      = FE3dSceneDisplay_updateMatrix;
    return o;
 }
 
@@ -166,7 +165,7 @@ function FE3dSceneDisplay_loadTemplate(template){
    for(var n = 0; n < count; n++){
       // 增加渲染对象
       var renderable = renderables.at(n);
-      o.pushRenderable(renderable);
+      //o.pushRenderable(renderable);
       // 设置材质关联
       var material = renderable.material();
       var materialGuid = material.guid();
@@ -174,6 +173,7 @@ function FE3dSceneDisplay_loadTemplate(template){
       displayMaterial._parentMaterial = material;
       displayMaterial.reloadResource();
    }
+   o.pushDisplay(sprite);
 }
 
 //==========================================================
@@ -196,31 +196,4 @@ function FE3dSceneDisplay_processLoad(){
    // 事件处理
    o.processLoadListener(o);
    return true;
-}
-
-//==========================================================
-// <T>构造处理。</T>
-//
-// @method
-//==========================================================
-function FE3dSceneDisplay_updateMatrix(p){
-   var o = this;
-   // 加载动画集合
-   var m = o._currentMatrix.identity();
-   var ms = o._movies;
-   if(ms){
-      if(o._optionMovie){
-         var c = ms.count();
-         for(var i = 0; i < c; i++){
-            ms.get(i).process(o._movieMatrix);
-         }
-      }
-      m.append(o._movieMatrix);
-   }
-   m.append(o._matrix);
-   // 计算父矩阵
-   var t = o._parent;
-   if(t){
-      o._currentMatrix.append(t._currentMatrix);
-   }
 }

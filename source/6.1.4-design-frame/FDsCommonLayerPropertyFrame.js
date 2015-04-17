@@ -5,7 +5,7 @@
 // @author maocy
 // @history 150210
 //==========================================================
-function FDsSceneLayerPropertyFrame(o){
+function FDsCommonLayerPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    //..........................................................
    // @attribute
@@ -20,15 +20,15 @@ function FDsSceneLayerPropertyFrame(o){
    o._controlLabel  = null;
    // @event
    //..........................................................
-   o.onBuilded      = FDsSceneLayerPropertyFrame_onBuilded;
-   o.onDataChanged  = FDsSceneLayerPropertyFrame_onDataChanged;
+   o.onBuilded      = FDsCommonLayerPropertyFrame_onBuilded;
+   o.onDataChanged  = FDsCommonLayerPropertyFrame_onDataChanged;
    //..........................................................
    // @method
-   o.construct      = FDsSceneLayerPropertyFrame_construct;
+   o.construct      = FDsCommonLayerPropertyFrame_construct;
    // @method
-   o.loadObject     = FDsSceneLayerPropertyFrame_loadObject;
+   o.loadObject     = FDsCommonLayerPropertyFrame_loadObject;
    // @method
-   o.dispose        = FDsSceneLayerPropertyFrame_dispose;
+   o.dispose        = FDsCommonLayerPropertyFrame_dispose;
    return o;
 }
 
@@ -37,7 +37,7 @@ function FDsSceneLayerPropertyFrame(o){
 //
 // @method
 //==========================================================
-function FDsSceneLayerPropertyFrame_construct(){
+function FDsCommonLayerPropertyFrame_construct(){
    var o = this;
    // 父处理
    o.__base.FUiForm.construct.call(o);
@@ -49,7 +49,7 @@ function FDsSceneLayerPropertyFrame_construct(){
 // @method
 // @param p:event:TEventProcess 事件处理
 //==========================================================
-function FDsSceneLayerPropertyFrame_onBuilded(p){
+function FDsCommonLayerPropertyFrame_onBuilded(p){
    var o = this;
    o.__base.FUiForm.onBuilded.call(o, p);
    // 关联对象
@@ -67,7 +67,7 @@ function FDsSceneLayerPropertyFrame_onBuilded(p){
 // @method
 // @param p:event:SEvent 事件
 //==========================================================
-function FDsSceneLayerPropertyFrame_onDataChanged(p){
+function FDsCommonLayerPropertyFrame_onDataChanged(p){
    var o = this;
    var r = o._layerResource;
    // 设置参数
@@ -85,7 +85,7 @@ function FDsSceneLayerPropertyFrame_onDataChanged(p){
 // @param s:scene:FE3dScene 场景
 // @param l:layer:FE3dSceneLayer 场景层
 //==========================================================
-function FDsSceneLayerPropertyFrame_loadObject(s, l){
+function FDsCommonLayerPropertyFrame_loadObject(s, l){
    var o = this;
    var r = l.resource();
    // 设置属性
@@ -105,7 +105,7 @@ function FDsSceneLayerPropertyFrame_loadObject(s, l){
 //
 // @method
 //==========================================================
-function FDsSceneLayerPropertyFrame_dispose(){
+function FDsCommonLayerPropertyFrame_dispose(){
    var o = this;
    // 父处理
    o.__base.FUiForm.dispose.call(o);

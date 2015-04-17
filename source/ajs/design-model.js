@@ -1,7 +1,6 @@
 function FDsModelCanvas(o){
    o = RClass.inherits(this, o, FDsCanvas);
    o._activeGuid          = null;
-   o._activeSpace         = null;
    o._autoDistance        = null;
    o._autoOutline         = null;
    o._autoMatrix          = null;
@@ -16,8 +15,6 @@ function FDsModelCanvas(o){
    o._selectObject        = null;
    o._selectBoundBox      = null;
    o._selectRenderables   = null;
-   o._switchWidth         = '*';
-   o._switchHeight        = '*';
    o._cameraMoveRate      = 8;
    o._cameraKeyRotation   = 3;
    o._cameraMouseRotation = 0.005;
@@ -43,7 +40,6 @@ function FDsModelCanvas(o){
    o.selectDisplay        = FDsModelCanvas_selectDisplay;
    o.selectMaterial       = FDsModelCanvas_selectMaterial;
    o.selectRenderable     = FDsModelCanvas_selectRenderable;
-   o.switchSize           = FDsModelCanvas_switchSize;
    o.switchDimensional    = FDsModelCanvas_switchDimensional;
    o.switchRotation       = FDsModelCanvas_switchRotation;
    o.viewAutoSize         = FDsModelCanvas_viewAutoSize;
@@ -422,30 +418,6 @@ function FDsModelCanvas_switchMode(p){
    o._canvasModeCd = p;
    o.selectRenderable(o._selectRenderable);
 }
-function FDsModelCanvas_switchSize(width, height){
-   var o = this;
-   o._switchWidth = width;
-   o._switchHeight = height;
-   var hCanvas = o._hPanel;
-   var hParent = o._hParent;
-   if(width == '*'){
-      width = hParent.offsetWidth;
-   }
-   if(height == '*'){
-      height = hParent.offsetHeight;
-   }
-   hCanvas.width = width;
-   hCanvas.style.width = width + 'px';
-   hCanvas.height = height;
-   hCanvas.style.height = height + 'px';
-   o._graphicContext.setViewport(0, 0, width, height);
-   var space = o._activeSpace;
-   if(space){
-      var projection = space.camera().projection();
-      projection.size().set(width, height);
-      projection.update();
-   }
-}
 function FDsModelCanvas_switchDimensional(visible, width, height){
    var o = this;
    o._dimensional.setVisible(visible);
@@ -701,19 +673,16 @@ function FDsModelCanvasToolBar_dispose(){
    o.__base.FUiToolBar.dispose.call(o);
 }
 function FDsModelCatalog(o){
-   o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
+   o = RClass.inherits(this, o, FDsCatalog);
    o._iconView             = 'design3d.mesh.view';
    o._iconViewNot          = 'design3d.mesh.viewno';
    o._activeSpace          = null;
    o.onBuild               = FDsModelCatalog_onBuild;
    o.onLoadDisplay         = FDsModelCatalog_onLoadDisplay;
-   o.onNodeClick           = FDsModelCatalog_onNodeClick;
    o.onNodeViewClick       = FDsModelCatalog_onNodeViewClick;
    o.onNodeViewDoubleClick = FDsModelCatalog_onNodeViewDoubleClick;
    o.lsnsSelect            = null;
    o.construct             = FDsModelCatalog_construct;
-   o.buildTechnique        = FDsModelCatalog_buildTechnique;
-   o.buildRegion           = FDsModelCatalog_buildRegion;
    o.buildRenderable       = FDsModelCatalog_buildRenderable;
    o.buildDisplay          = FDsModelCatalog_buildDisplay;
    o.buildSpace            = FDsModelCatalog_buildSpace;
@@ -724,19 +693,13 @@ function FDsModelCatalog(o){
 }
 function FDsModelCatalog_onBuild(p){
    var o = this;
-   o.__base.FUiDataTreeView.onBuild.call(o, p);
-   o.lsnsClick.register(o, o.onNodeClick);
+   o.__base.FDsCatalog.onBuild.call(o, p);
    o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.model');
 }
 function FDsModelCatalog_onLoadDisplay(p){
    var o = this;
    var n = p._linkNode;
    o.buildRenderable(n, p);
-}
-function FDsModelCatalog_onNodeClick(t, n){
-   var o = this;
-   var s = n.dataPropertyGet('linker');
-   o.selectObject(s);
 }
 function FDsModelCatalog_onNodeViewClick(p){
    var o = this;
@@ -801,34 +764,8 @@ function FDsModelCatalog_onNodeViewDoubleClick(p){
 }
 function FDsModelCatalog_construct(){
    var o = this;
-   o.__base.FUiDataTreeView.construct.call(o);
+   o.__base.FDsCatalog.construct.call(o);
    o._renderables = new TObjects();
-}
-function FDsModelCatalog_buildTechnique(n, p){
-   var o = this;
-   var nt = o.createNode();
-   nt.setLabel('Technique');
-   nt.setTypeCode('technique');
-   nt.dataPropertySet('linker', p);
-   n.appendNode(nt);
-}
-function FDsModelCatalog_buildRegion(n, p){
-   var o = this;
-   var nr = o.createNode();
-   nr.setLabel('Region');
-   nr.setTypeCode('region');
-   nr.dataPropertySet('linker', p);
-   n.appendNode(nr);
-   var nc = o.createNode();
-   nc.setLabel('Camera');
-   nc.setTypeCode('camera');
-   nc.dataPropertySet('linker', p.camera());
-   nr.appendNode(nc);
-   var nl = o.createNode();
-   nl.setLabel('Light');
-   nl.setTypeCode('light');
-   nl.dataPropertySet('linker', p.directionalLight());
-   nr.appendNode(nl);
 }
 function FDsModelCatalog_buildRenderable(parentNode, geometry){
    var o = this;
@@ -907,7 +844,7 @@ function FDsModelCatalog_dispose(){
    o._displays = RObject.dispose(o._displays);
    o._renderables = RObject.dispose(o._renderables);
    o._materials = RObject.dispose(o._materials);
-   o.__base.FUiDataTreeView.dispose.call(o);
+   o.__base.FDsCatalog.dispose.call(o);
 }
 function FDsModelDisplayFrame(o){
    o = RClass.inherits(this, o, FUiForm);
@@ -1066,12 +1003,11 @@ function FDsModelFrameSet_onBuilded(p){
    var frame = o._canvasFrame = o.searchControl('canvasFrame');
    var canvas = o._canvas = RClass.create(FDsModelCanvas);
    canvas._frameSet = o;
-   canvas._workspace = o._workspace;
    canvas._toolbar = o._canvasToolbar;
-   canvas.addLoadListener(o, o.onDataLoaded);
    canvas._hParent = frame._hPanel;
    canvas._hParent.style.backgroundColor = '#333333';
    canvas._hParent.style.scroll = 'auto';
+   canvas.addLoadListener(o, o.onDataLoaded);
    canvas.build(p);
    frame.push(canvas);
 }
@@ -1135,7 +1071,7 @@ function FDsModelFrameSet_findPropertyFrame(code){
    var frame = o._propertyFrames.get(code);
    if(!frame){
       frame = RConsole.find(FUiFrameConsole).get(o, code, o._frameProperty._hContainer);
-      frame._workspace = o;
+      frame._frameSet = o;
       o._propertyFrames.set(code, frame);
    }
    return frame;

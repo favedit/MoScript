@@ -55,7 +55,7 @@ function FDsResourceCatalogContent_dispose(){
 }
 function FDsResourceCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName                   = 'design3d.resource.CatalogToolBar';
+   o._frameName                   = 'resource.resource.CatalogToolBar';
    o._controlFolderCreateButton   = null;
    o._controlFolderDeleteButton   = null;
    o._controlFolderPropertyButton  = null;
@@ -169,7 +169,7 @@ function FDsResourceCatalogToolBar_dispose(){
 }
 function FDsResourceFolderDialog(o){
    o = RClass.inherits(this, o, FUiDialog);
-   o._frameName            = 'design3d.resource.FolderDialog';
+   o._frameName            = 'resource.resource.FolderDialog';
    o._dataModeCd           = null;
    o._controlParentLabel   = null;
    o._controlLabel         = null;
@@ -252,7 +252,7 @@ function FDsResourceFolderDialog_dispose(){
 }
 function FDsResourceFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet);
-   o._frameName            = 'design3d.resource.FrameSet';
+   o._frameName            = 'resource.resource.FrameSet';
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
    o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
    o._styleSearchGround    = RClass.register(o, new AStyle('_styleSearchGround', 'List_Ground'));
@@ -395,7 +395,7 @@ function FDsResourceFrameSet_dispose(){
 }
 function FDsResourceImportDialog(o){
    o = RClass.inherits(this, o, FUiDialog);
-   o._frameName            = 'design3d.resource.ImportDialog';
+   o._frameName            = 'resource.resource.ImportDialog';
    o._nodeGuid             = null;
    o._controlPrivateButton = null;
    o._controlTeamButton    = null;
@@ -537,7 +537,7 @@ function FDsResourceListContent_onServiceLoad(p){
          item._code = xnode.get('code');
          item._updateDate = xnode.get('update_date');
          item.setTypeLabel(item._typeCd);
-         item.setLabel(RString.nvl(xnode.get('label'), xnode.get('code')));
+         item.setLabel(xnode.get('code') + ' - ' + xnode.get('label'));
          item.refreshStyle();
          o.push(item);
       }
@@ -624,7 +624,7 @@ function FDsResourceListItem_refreshStyle(){
 }
 function FDsResourceListToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar, MUiStorage);
-   o._frameName       = 'design3d.resource.ListToolBar';
+   o._frameName       = 'resource.resource.ListToolBar';
    o._storageCode     = o._frameName;
    o._pageCount       = 0;
    o._page            = 0;
@@ -808,7 +808,7 @@ function FDsResourceListToolBar_dispose(){
 }
 function FDsResourceMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName                  = 'design3d.resource.MenuBar';
+   o._frameName                  = 'resource.resource.MenuBar';
    o._controlImportPictureButton = null;
    o._controlImportMeshButton    = null;
    o._controlDeleteButton        = null;
@@ -1495,7 +1495,7 @@ x   // 父处理
 }
 function FDsResourcePropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName             = 'design3d.resource.PropertyToolBar';
+   o._frameName             = 'resource.resource.PropertyToolBar';
    o._controlInsertButton   = null;
    o._controlUpdateButton   = null;
    o._controlDeleteButton   = null;
@@ -1578,7 +1578,7 @@ function FDsResourceTabBar_dispose(){
 }
 function FDsResourceWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);
-   o._frameName            = 'design3d.resource.Workspace';
+   o._frameName            = 'resource.resource.Workspace';
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));
    o._styleStatusbarGround = RClass.register(o, new AStyle('_styleStatusbarGround', 'Statusbar_Ground'));
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));

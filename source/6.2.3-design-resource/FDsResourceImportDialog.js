@@ -8,7 +8,7 @@ function FDsResourceImportDialog(o){
    o = RClass.inherits(this, o, FUiDialog);
    //..........................................................
    // @property
-   o._frameName            = 'design3d.resource.ImportDialog';
+   o._frameName            = 'resource.resource.ImportDialog';
    //..........................................................
    // @attribute
    o._nodeGuid             = null;

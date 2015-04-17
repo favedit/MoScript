@@ -11,7 +11,6 @@ function FDsTemplateCanvas(o){
    o._context            = null;
    o._stage              = null;
    o._layer              = null;
-   o._activeSpace     = null;
    o._rotation           = null;
    o._rotationAble       = false;
    o._capturePosition    = null;
@@ -26,7 +25,7 @@ function FDsTemplateCanvas(o){
    //o.onMouseCapture      = FDsTemplateCanvas_onMouseCapture;
    //o.onMouseCaptureStop  = FDsTemplateCanvas_onMouseCaptureStop;
    o.onEnterFrame        = FDsTemplateCanvas_onEnterFrame;
-   o.onDataLoaded      = FDsTemplateCanvas_onDataLoaded;
+   o.onDataLoaded        = FDsTemplateCanvas_onDataLoaded;
    //..........................................................
    o.oeRefresh           = FDsTemplateCanvas_oeRefresh;
    //..........................................................
@@ -34,6 +33,7 @@ function FDsTemplateCanvas(o){
    o.construct           = FDsTemplateCanvas_construct;
    // @method
    o.selectRenderable    = FDsTemplateCanvas_selectRenderable;
+   o.capture             = FDsTemplateCanvas_capture;
    o.loadByGuid          = FDsTemplateCanvas_loadByGuid;
    // @method
    o.dispose             = FDsTemplateCanvas_dispose;
@@ -264,6 +264,36 @@ function FDsTemplateCanvas_selectRenderable(p){
    //b.upload();
    //b.remove();
    //p._display.pushRenderable(b);
+}
+
+//==========================================================
+// <T>捕捉图像数据。</T>
+//
+// @method
+// @param region:FE3dRegion 区域
+//==========================================================
+function FDsTemplateCanvas_capture(){
+   var o = this;
+   var space = o._activeSpace;
+   var guid = space._resource._guid;
+   var switchWidth = o._switchWidth;
+   var switchHeight = o._switchHeight;
+   o.switchSize(200, 150);
+   RStage.process();
+   // 获得像素
+   var context = o._graphicContext;
+   var size = context.size();
+   var native = context._native;
+   var width = size.width;
+   var height = size.height;
+   var data = new Uint8Array(4 * width * height);
+   native.readPixels(0, 0, width, height, native.RGBA, native.UNSIGNED_BYTE, data);
+   // 切回原来大小
+   o.switchSize(switchWidth, switchHeight);
+   RStage.process();
+   // 上传图片
+   var url = '/cloud.resource.preview.wv?do=upload&type_cd=' + EE3sResource.Template + '&guid=' + guid + '&width=' + width + '&height=' + height;
+   return RConsole.find(FHttpConsole).send(url, data.buffer);
 }
 
 //==========================================================

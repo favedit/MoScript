@@ -30,7 +30,7 @@ function FDsSolutionCatalogContent_onBuild(p){
    var o = this;
    o.__base.FUiDataTreeView.onBuild.call(o, p);
    o.lsnsClick.register(o, o.onNodeClick);
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.solution');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.solution');
 }
 function FDsSolutionCatalogContent_onLoadDisplay(p){
    var o = this;
@@ -234,7 +234,7 @@ function FDsSolutionCatalogContent_dispose(){
 }
 function FDsSolutionCatalogToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName       = 'design3d.solution.CatalogToolBar';
+   o._frameName       = 'resource.solution.CatalogToolBar';
    o._canvasModeCd    = EDsCanvasMode.Drop;
    o._dropButton      = null;
    o._selectButton    = null;
@@ -277,7 +277,7 @@ function FDsSolutionCatalogToolBar_dispose(){
 }
 function FDsSolutionFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet, MUiStorage);
-   o._frameName            = 'design3d.solution.FrameSet';
+   o._frameName            = 'resource.solution.FrameSet';
    o._storageCode          = o._frameName;
    o._styleCatalogGround   = RClass.register(o, new AStyle('_styleCatalogGround', 'Catalog_Ground'));
    o._styleCatalogToolbar  = RClass.register(o, new AStyle('_styleCatalogToolbar', 'Catalog_Toolbar'));
@@ -493,7 +493,7 @@ function FDsSolutionListItem_refreshStyle(){
 }
 function FDsSolutionListToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName       = 'design3d.solution.ListToolBar';
+   o._frameName       = 'resource.solution.ListToolBar';
    o._pageCount       = 0;
    o._page            = 0;
    o._serach          = null;
@@ -580,7 +580,7 @@ function FDsSolutionListToolBar_dispose(){
 }
 function FDsSolutionMenuBar(o){
    o = RClass.inherits(this, o, FUiMenuBar);
-   o._frameName     = 'design3d.solution.MenuBar';
+   o._frameName     = 'resource.solution.MenuBar';
    o._refreshButton = null;
    o._saveButton    = null;
    o._runButton     = null;
@@ -1181,7 +1181,7 @@ x   // 父处理
 }
 function FDsSolutionPropertyToolBar(o){
    o = RClass.inherits(this, o, FUiToolBar);
-   o._frameName           = 'design3d.solution.PropertyToolBar';
+   o._frameName           = 'resource.solution.PropertyToolBar';
    o._controlInsertButton = null;
    o._controlUpdateButton = null;
    o._controlDeleteButton = null;
@@ -1211,7 +1211,7 @@ function FDsSolutionPropertyToolBar_dispose(){
 }
 function FDsSolutionTabBar(o){
    o = RClass.inherits(this, o, FUiTabBar);
-   o._frameName            = 'design3d.solution.TabBar';
+   o._frameName            = 'resource.solution.TabBar';
    o._resourceTypeCd       = 'private';
    o._controlPrivateButton = null;
    o._controlTeamButton    = null;
@@ -1254,7 +1254,7 @@ function FDsSolutionTabBar_dispose(){
 }
 function FDsSolutionWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace, MUiStorage);
-   o._frameName            = 'design3d.solution.Workspace';
+   o._frameName            = 'resource.solution.Workspace';
    o._storageCode          = o._frameName;
    o._styleWorkspaceGround = RClass.register(o, new AStyle('_styleWorkspaceGround', 'Workspace_Ground'));
    o._styleToolbarGround   = RClass.register(o, new AStyle('_styleToolbarGround', 'Toolbar_Ground'));

@@ -244,15 +244,16 @@ function FDisplay_update(){
 // <T>更新矩阵。</T>
 //
 // @method
+// @param region:FG3dReigon 区域
 //==========================================================
-function FDisplay_updateMatrix(){
+function FDisplay_updateMatrix(region){
    var o = this;
    // 更新矩阵
    o._currentMatrix.assign(o._matrix);
    // 计算父矩阵
-   var t = o._parent;
-   if(t){
-      o._currentMatrix.append(t._currentMatrix);
+   var parent = o._parent;
+   if(parent){
+      o._currentMatrix.append(parent._currentMatrix);
    }
 }
 
@@ -260,18 +261,19 @@ function FDisplay_updateMatrix(){
 // <T>逻辑处理。</T>
 //
 // @method
-// @param p:region:FG3dReigon 区域
+// @param region:FG3dReigon 区域
 //==========================================================
-function FDisplay_process(p){
+function FDisplay_process(region){
    var o = this;
    // 更新矩阵
-   o.updateMatrix();
+   o.updateMatrix(region);
    // 处理渲染集合
-   var s = o._renderables;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.getAt(i).process(p);
+   var renderables = o._renderables;
+   if(renderables){
+      var count = renderables.count();
+      for(var i = 0; i < count; i++){
+         var renderable = renderables.at(i);
+         renderable.process(region);
       }
    }
 }

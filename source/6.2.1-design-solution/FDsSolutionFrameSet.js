@@ -8,7 +8,7 @@ function FDsSolutionFrameSet(o){
    o = RClass.inherits(this, o, FUiFrameSet, MUiStorage);
    //..........................................................
    // @property
-   o._frameName            = 'design3d.solution.FrameSet';
+   o._frameName            = 'resource.solution.FrameSet';
    o._storageCode          = o._frameName;
    //..........................................................
    // @style

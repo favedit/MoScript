@@ -4,42 +4,44 @@
 // @author maocy
 // @history 141231
 //==========================================================
-function FDsSolutionCatalogContent(o){
+function FDsCatalog(o){
    o = RClass.inherits(this, o, FUiDataTreeView, MListenerSelected);
    //..........................................................
    // @const
-   o._iconView             = 'design3d.mesh.view';
-   o._iconViewNot          = 'design3d.mesh.viewno';
+   o._iconView             = 'design3d.scene.view';
+   o._iconViewNot          = 'design3d.scene.viewno';
    //..........................................................
    // @attributes
-   o._activeSpace          = null;
-   // @attributes
+   o._displays             = null;
+   o._renderables          = null;
    o._materials            = null;
    //..........................................................
    // @event
-   o.onLoaded              = FDsSolutionCatalogContent_onLoaded;
-   o.onBuild               = FDsSolutionCatalogContent_onBuild;
+   o.onBuild               = FDsCatalog_onBuild;
    // @event
-   o.onLoadDisplay         = FDsSolutionCatalogContent_onLoadDisplay;
-   o.onNodeClick           = FDsSolutionCatalogContent_onNodeClick;
-   o.onNodeViewClick       = FDsSolutionCatalogContent_onNodeViewClick;
-   o.onNodeViewDoubleClick = FDsSolutionCatalogContent_onNodeViewDoubleClick;
+   o.onLoadDisplay         = FDsCatalog_onLoadDisplay;
+   o.onNodeClick           = FDsCatalog_onNodeClick;
+   o.onNodeViewClick       = FDsCatalog_onNodeViewClick;
+   o.onNodeViewDoubleClick = FDsCatalog_onNodeViewDoubleClick;
    //..........................................................
    // @listeners
    o.lsnsSelect            = null;
    //..........................................................
    // @method
-   o.construct             = FDsSolutionCatalogContent_construct;
+   o.construct             = FDsCatalog_construct;
    // @method
-   o.buildPrivate          = FDsSolutionCatalogContent_buildPrivate;
-   o.buildRecommend        = FDsSolutionCatalogContent_buildRecommend;
-   o.buildGroup            = FDsSolutionCatalogContent_buildGroup;
-   o.buildCatalog          = FDsSolutionCatalogContent_buildCatalog;
+   o.buildNodeView         = FDsCatalog_buildNodeView;
+   o.buildTechnique        = FDsCatalog_buildTechnique;
+   o.buildRegion           = FDsCatalog_buildRegion;
+   o.buildRenderable       = FDsCatalog_buildRenderable;
+   o.buildDisplay          = FDsCatalog_buildDisplay;
+   o.buildLayer            = FDsCatalog_buildLayer;
+   o.buildSpace            = FDsCatalog_buildSpace;
    // @method
-   o.selectObject          = FDsSolutionCatalogContent_selectObject;
-   o.showObject            = FDsSolutionCatalogContent_showObject;
+   o.selectObject          = FDsCatalog_selectObject;
+   o.showObject            = FDsCatalog_showObject;
    // @method
-   o.dispose               = FDsSolutionCatalogContent_dispose;
+   o.dispose               = FDsCatalog_dispose;
    return o;
 }
 
@@ -49,27 +51,12 @@ function FDsSolutionCatalogContent(o){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsSolutionCatalogContent_onLoaded(p){
-   var o = this;
-   // 父处理
-   o.__base.FUiDataTreeView.onLoaded.call(o, p);
-   this.buildCatalog();
-}
-
-//==========================================================
-// <T>构建树目录。</T>
-//
-// @method
-// @param p:event:TEventProcess 处理事件
-//==========================================================
-function FDsSolutionCatalogContent_onBuild(p){
+function FDsCatalog_onBuild(p){
    var o = this;
    // 父处理
    o.__base.FUiDataTreeView.onBuild.call(o, p);
    // 注册事件
    o.lsnsClick.register(o, o.onNodeClick);
-   // 加载定义
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.solution');
 }
 
 //==========================================================
@@ -78,11 +65,11 @@ function FDsSolutionCatalogContent_onBuild(p){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsSolutionCatalogContent_onLoadDisplay(p){
+function FDsCatalog_onLoadDisplay(p){
    var o = this;
    var n = p._linkNode;
    // 创建渲染集合
-   o.buildRecommend(n, p);
+   o.buildRenderable(n, p);
 }
 
 //==========================================================
@@ -91,10 +78,12 @@ function FDsSolutionCatalogContent_onLoadDisplay(p){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsSolutionCatalogContent_onNodeClick(t, n){
+function FDsCatalog_onNodeClick(tree, node){
    var o = this;
-   var s = n.dataPropertyGet('linker');
-   o.selectObject(s);
+   var linker = node.dataPropertyGet('linker');
+   if(linker){
+      o.selectObject(linker);
+   }
 }
 
 //==========================================================
@@ -103,7 +92,7 @@ function FDsSolutionCatalogContent_onNodeClick(t, n){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsSolutionCatalogContent_onNodeViewClick(p){
+function FDsCatalog_onNodeViewClick(p){
    var o = this;
    var c = p.treeNodeCell;
    var s = p.treeNode.dataPropertyGet('linker');
@@ -166,7 +155,7 @@ function FDsSolutionCatalogContent_onNodeViewClick(p){
 // @method
 // @param p:event:TEventProcess 处理事件
 //==========================================================
-function FDsSolutionCatalogContent_onNodeViewDoubleClick(p){
+function FDsCatalog_onNodeViewDoubleClick(p){
    var o = this;
    var n = p.treeNode;
    var c = p.treeNodeCell;
@@ -209,55 +198,74 @@ function FDsSolutionCatalogContent_onNodeViewDoubleClick(p){
 //
 // @method
 //==========================================================
-function FDsSolutionCatalogContent_construct(){
+function FDsCatalog_construct(){
    var o = this;
    o.__base.FUiDataTreeView.construct.call(o);
    // 设置属性
+   o._displays = new TObjects();
    o._renderables = new TObjects();
    o._materials = new TObjects();
 }
 
 //==========================================================
-// <T>建立技术目录。</T>
+// <T>建立节点可见格子。</T>
 //
 // @method
-// @param n:node:FTreeNode 父节点
-// @param p:technique:FG3dTechnique 渲染技术
+// @param pn:node:FTreeNode 节点
+// @param pv:view:Boolean 可见性
 //==========================================================
-function FDsSolutionCatalogContent_buildTechnique(n, p){
+function FDsCatalog_buildNodeView(pn, pv){
    var o = this;
-   // 创建技术节点
-   var nt = o.createNode();
-   nt.setLabel('Technique');
-   nt.setTypeCode('technique');
-   nt.dataPropertySet('linker', p);
-   n.appendNode(nt);
+   var c = pn.cell('view');
+   c.setIcon(o._iconView);
+   c.addClickListener(o, o.onNodeViewClick);
+   c.addDoubleClickListener(o, o.onNodeViewDoubleClick);
 }
 
 //==========================================================
-// <T>建立显示目录。</T>
+// <T>建立渲染技术目录。</T>
 //
 // @method
-// @param n:node:FTreeNode 父节点
-// @param p:display:FDisplayContainer 显示容器
+// @param parentNode:FTreeNode 父节点
+// @param technique:FG3dTechnique 渲染技术
 //==========================================================
-function FDsSolutionCatalogContent_buildPrivate(parent){
+function FDsCatalog_buildTechnique(parentNode, technique){
    var o = this;
-   // 创建场景节点
+   // 创建技术节点
    var node = o.createNode();
-   node.setTypeCode('space');
-   node.setLabel('全部项目');
-   parent.appendNode(node);
-   // 创建场景节点
-   var node = o.createNode();
-   node.setTypeCode('space');
-   node.setLabel('收藏项目');
-   parent.appendNode(node);
-   // 创建场景节点
-   var node = o.createNode();
-   node.setTypeCode('space');
-   node.setLabel('最近使用');
-   parent.appendNode(node);
+   node.setTypeCode('technique');
+   node.setLabel('Technique');
+   node.dataPropertySet('linker', technique);
+   parentNode.appendNode(node);
+}
+
+//==========================================================
+// <T>建立渲染区域目录。</T>
+//
+// @method
+// @param parentNode:FTreeNode 父节点
+// @param region:FE3dRegion 渲染区域
+//==========================================================
+function FDsCatalog_buildRegion(parentNode, region){
+   var o = this;
+   // 新建区域节点
+   var regionNode = o.createNode();
+   regionNode.setTypeCode('Region');
+   regionNode.setLabel('Region');
+   regionNode.dataPropertySet('linker', region);
+   parentNode.appendNode(regionNode);
+   // 新建区域相机节点
+   var cameraNode = o.createNode();
+   cameraNode.setTypeCode('Camera');
+   cameraNode.setLabel('Camera');
+   cameraNode.dataPropertySet('linker', region.camera());
+   regionNode.appendNode(cameraNode);
+   // 新建区域光源节点
+   var lightNode = o.createNode();
+   lightNode.setTypeCode('Light');
+   lightNode.setLabel('Light');
+   lightNode.dataPropertySet('linker', region.directionalLight());
+   regionNode.appendNode(lightNode);
 }
 
 //==========================================================
@@ -267,77 +275,158 @@ function FDsSolutionCatalogContent_buildPrivate(parent){
 // @param n:node:FTreeNode 父节点
 // @param p:display:FDisplay 显示对象
 //==========================================================
-function FDsSolutionCatalogContent_buildRecommend(parent){
+function FDsCatalog_buildRenderable(n, p){
    var o = this;
-   // 创建场景节点
-   var node = o.createNode();
-   node.setTypeCode('space');
-   node.setLabel('本周排行');
-   parent.appendNode(node);
-   // 创建场景节点
-   var node = o.createNode();
-   node.setTypeCode('space');
-   node.setLabel('本月排行');
-   parent.appendNode(node);
-   // 创建场景节点
-   var node = o.createNode();
-   node.setTypeCode('space');
-   node.setLabel('全部排行');
-   parent.appendNode(node);
+   // 创建材质集合
+   var s = p.materials();
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var m = s.value(i);
+         var mr = m.resource();
+         // 创建节点
+         var dn = o.createNode();
+         dn.setLabel(mr.code());
+         dn.setNote(mr.label());
+         dn.setTypeCode('material');
+         dn.dataPropertySet('linker', m);
+         o.buildNodeView(dn, true);
+         o._materials.push(dn);
+         n.appendNode(dn);
+      }
+   }
+   // 创建动画集合
+   var s = p.animations();
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var m = s.value(i);
+         var mr = m.resource();
+         // 创建节点
+         var dn = o.createNode();
+         dn.setLabel(mr.code());
+         dn.setNote(mr.label());
+         dn.setTypeCode('animation');
+         dn.dataPropertySet('linker', m);
+         o.buildNodeView(dn, true);
+         n.appendNode(dn);
+      }
+   }
+   // 创建渲染集合
+   var s = p.meshRenderables();
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var r = s.get(i);
+         var rr = r.resource();
+         var rd = rr.model();
+         var rm = rr.mesh();
+         // 创建节点
+         var dn = o.createNode();
+         dn.setLabel(rm.code());
+         dn.setTypeCode('renderable');
+         dn.dataPropertySet('linker', r);
+         o.buildNodeView(dn, true);
+         o._renderables.push(dn);
+         n.appendNode(dn);
+      }
+   }
 }
 
 //==========================================================
-// <T>建立区域目录。</T>
+// <T>建立显示目录。</T>
 //
 // @method
 // @param n:node:FTreeNode 父节点
-// @param p:theme:FE3sTemplateTheme 模板主题
+// @param p:display:FDisplayContainer 显示容器
 //==========================================================
-function FDsSolutionCatalogContent_buildGroup(parent){
+function FDsCatalog_buildDisplay(n, p){
    var o = this;
-   // 创建场景节点
-   var node = o.createNode();
-   node.setTypeCode('space');
-   node.setLabel('汽车');
-   parent.appendNode(node);
-   // 创建场景节点
-   var node = o.createNode();
-   node.setTypeCode('space');
-   node.setLabel('教育');
-   parent.appendNode(node);
-   // 创建场景节点
-   var node = o.createNode();
-   node.setTypeCode('space');
-   node.setLabel('人物');
-   parent.appendNode(node);
+   // 创建显示集合
+   var s = p.displays();
+   if(s){
+      var c = s.count();
+      for(var i = 0; i < c; i++){
+         var d = s.get(i);
+         var dr = d.resourceScene();
+         // 创建节点
+         var dn = o.createNode();
+         dn.setLabel(dr.code());
+         dn.setNote(dr.label());
+         dn.setTypeCode('display');
+         dn.dataPropertySet('linker', d);
+         o.buildNodeView(dn, true);
+         o._displays.push(dn);
+         n.appendNode(dn);
+         // 创建渲染集合
+         d.addLoadListener(o, o.onLoadDisplay);
+         d._linkNode = dn;
+      }
+   }
 }
 
 //==========================================================
-// <T>建立空间目录。</T>
+// <T>建立显示层目录。</T>
 //
 // @method
-// @param space:FE3dSpace 渲染空间
+// @param n:node:FTreeNode 父节点
+// @param p:stage:FStage 舞台对象
 //==========================================================
-function FDsSolutionCatalogContent_buildCatalog(){
+function FDsCatalog_buildLayer(n, p){
    var o = this;
+   // 创建显示层集合节点
+   var ns = o.createNode();
+   ns.setLabel('Layers');
+   ns.setTypeCode('layers');
+   ns.dataPropertySet('linker', 'layers');
+   o.buildNodeView(ns, true);
+   n.appendNode(ns);
+   // 创建显示层集合
+   var ds = p.layers();
+   var c = ds.count();
+   for(var i = 0; i < c; i++){
+      var l = ds.value(i);
+      // 忽略界面层
+      if(RClass.isClass(l, FDisplayUiLayer)){
+         continue;
+      }
+      var lr = l.resource();
+      // 创建显示层节点
+      var nl = o.createNode();
+      nl.setLabel('Layer:' + lr.code());
+      nl.setTypeCode('layer');
+      nl.dataPropertySet('linker', l);
+      o.buildNodeView(nl, true);
+      ns.appendNode(nl);
+      // 创建显示集合
+      o.buildDisplay(nl, l)
+   }
+}
+
+//==========================================================
+// <T>建立场景目录。</T>
+//
+// @method
+// @param p:scene:FE3dScene 渲染场景
+//==========================================================
+function FDsCatalog_buildSpace(p){
+   var o = this;
+   var r = p._resource;
    // 创建场景节点
-   var node = o.createNode();
-   node.setTypeCode('space');
-   node.setLabel('我的项目');
-   o.appendNode(node);
-   o.buildPrivate(node);
-   // 创建场景节点
-   var node = o.createNode();
-   node.setTypeCode('space');
-   node.setLabel('推荐项目');
-   o.appendNode(node);
-   o.buildRecommend(node);
-   // 创建场景节点
-   var node = o.createNode();
-   node.setTypeCode('space');
-   node.setLabel('项目分类');
-   o.appendNode(node);
-   o.buildGroup(node)
+   var nr = o.createNode();
+   nr.setLabel(r.code());
+   nr.setNote(r.label());
+   nr.setTypeCode('scene');
+   nr.dataPropertySet('linker', p);
+   o.appendNode(nr);
+   // 创建技术节点
+   o.buildTechnique(nr, p.technique())
+   // 创建区域节点
+   o.buildRegion(nr, p.region());
+   // 创建显示层
+   o.buildLayer(nr, p);
+   // 选中根节点
+   nr.click();
 }
 
 //==========================================================
@@ -346,7 +435,7 @@ function FDsSolutionCatalogContent_buildCatalog(){
 // @method
 // @param p:value:Object 对象
 //==========================================================
-function FDsSolutionCatalogContent_selectObject(p){
+function FDsCatalog_selectObject(p){
    var o = this;
    if(p != null){
       o.processSelectedListener(p, true);
@@ -359,7 +448,7 @@ function FDsSolutionCatalogContent_selectObject(p){
 // @method
 // @param p:value:Object 对象
 //==========================================================
-function FDsSolutionCatalogContent_showObject(p){
+function FDsCatalog_showObject(p){
    var o = this;
    if(RClass.isClass(p, FDsSceneRenderable)){
       var s = o._renderables;
@@ -379,7 +468,7 @@ function FDsSolutionCatalogContent_showObject(p){
 //
 // @method
 //==========================================================
-function FDsSolutionCatalogContent_dispose(){
+function FDsCatalog_dispose(){
    var o = this;
    o._displays = RObject.dispose(o._displays);
    o._renderables = RObject.dispose(o._renderables);

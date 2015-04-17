@@ -9,7 +9,6 @@ function FDsModelCanvas(o){
    //..........................................................
    // @attribute
    o._activeGuid          = null;
-   o._activeSpace         = null;
    o._autoDistance        = null;
    o._autoOutline         = null;
    o._autoMatrix          = null;
@@ -25,9 +24,6 @@ function FDsModelCanvas(o){
    o._selectObject        = null;
    o._selectBoundBox      = null;
    o._selectRenderables   = null;
-   // @attribute
-   o._switchWidth         = '*';
-   o._switchHeight        = '*';
    // @attribute
    o._cameraMoveRate      = 8;
    o._cameraKeyRotation   = 3;
@@ -61,7 +57,6 @@ function FDsModelCanvas(o){
    o.selectDisplay        = FDsModelCanvas_selectDisplay;
    o.selectMaterial       = FDsModelCanvas_selectMaterial;
    o.selectRenderable     = FDsModelCanvas_selectRenderable;
-   o.switchSize           = FDsModelCanvas_switchSize;
    o.switchDimensional    = FDsModelCanvas_switchDimensional;
    o.switchRotation       = FDsModelCanvas_switchRotation;
    o.viewAutoSize         = FDsModelCanvas_viewAutoSize;
@@ -635,42 +630,6 @@ function FDsModelCanvas_switchMode(p){
    o._canvasModeCd = p;
    // 设置变量
    o.selectRenderable(o._selectRenderable);
-}
-
-//==========================================================
-// <T>切换大小。</T>
-//
-// @method
-// @param width:Integer 宽度
-// @param height:Integer 高度
-//==========================================================
-function FDsModelCanvas_switchSize(width, height){
-   var o = this;
-   o._switchWidth = width;
-   o._switchHeight = height;
-   // 获得大小
-   var hCanvas = o._hPanel;
-   var hParent = o._hParent;
-   if(width == '*'){
-      width = hParent.offsetWidth;
-   }
-   if(height == '*'){
-      height = hParent.offsetHeight;
-   }
-   // 设置大小
-   hCanvas.width = width;
-   hCanvas.style.width = width + 'px';
-   hCanvas.height = height;
-   hCanvas.style.height = height + 'px';
-   // 设置投影
-   o._graphicContext.setViewport(0, 0, width, height);
-   // 设置投影
-   var space = o._activeSpace;
-   if(space){
-      var projection = space.camera().projection();
-      projection.size().set(width, height);
-      projection.update();
-   }
 }
 
 //==========================================================
