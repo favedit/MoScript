@@ -100,7 +100,7 @@ function FDsSceneCanvasToolBar_onBuilded(p){
 function FDsSceneCanvasToolBar_onModeClick(p){
    var o = this;
    o._canvasModeCd = p._canvasModeCd;
-   o._workspace._canvas.switchMode(p._canvasModeCd);
+   o._frameSet._canvas.switchMode(p._canvasModeCd);
 }
 
 //==========================================================
@@ -122,7 +122,7 @@ function FDsSceneCanvasToolBar_onLookClick(p){
 //==========================================================
 function FDsSceneCanvasToolBar_onPlayClick(p, v){
    var o = this;
-   var c = o._workspace._canvas;
+   var c = o._frameSet._canvas;
    c.switchPlay(v);
 }
 
@@ -134,7 +134,7 @@ function FDsSceneCanvasToolBar_onPlayClick(p, v){
 //==========================================================
 function FDsSceneCanvasToolBar_onRotationClick(p, v){
    var o = this;
-   var c = o._workspace._canvas;
+   var c = o._frameSet._canvas;
    c.switchMovie(v);
 }
 

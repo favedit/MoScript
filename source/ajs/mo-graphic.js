@@ -719,7 +719,7 @@ function SG3dMaterialInfo(o){
    o.optionColor          = null;
    o.colorMin             = 0.0;
    o.colorMax             = 1.0;
-   o.colorRate            = 1.0;
+   o.colorRate            = 0.5;
    o.colorMerge           = 1.0;
    o.optionAmbient        = null;
    o.ambientColor         = new SColor4();
@@ -895,7 +895,7 @@ function SG3dMaterialInfo_reset(){
    o.optionColor = true;
    o.colorMin = 0.0;
    o.colorMax = 1.0;
-   o.colorRate = 1.0;
+   o.colorRate = 0.5;
    o.colorMerge = 1.0;
    o.optionAlpha = false;
    o.alphaBase = 0.2;

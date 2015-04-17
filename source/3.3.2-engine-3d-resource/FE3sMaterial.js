@@ -8,6 +8,7 @@ function FE3sMaterial(o){
    o = RClass.inherits(this, o, FE3sObject);
    //..........................................................
    // @attribute
+   o._parentGuid  = null;
    o._info        = null;
    // @attribute 高度
    //o._heightDepth        = null;
@@ -27,6 +28,7 @@ function FE3sMaterial(o){
    // @method
    o.construct    = FE3sMaterial_construct;
    // @method
+   o.parentGuid   = FE3sMaterial_parentGuid;
    o.effectCode   = FE3sMaterial_effectCode;
    o.info         = FE3sMaterial_info;
    o.bitmaps      = FE3sMaterial_bitmaps;
@@ -46,6 +48,16 @@ function FE3sMaterial_construct(){
    var o = this;
    o.__base.FE3sObject.construct.call(o);
    o._info = new SE3sMaterialInfo();
+}
+
+//==========================================================
+// <T>获得父材质唯一编号。</T>
+//
+// @method
+// @return String 父材质唯一编号
+//==========================================================
+function FE3sMaterial_parentGuid(){
+   return this._parentGuid;
 }
 
 //==========================================================
@@ -98,6 +110,7 @@ function FE3sMaterial_unserialize(input){
    var o = this;
    o.__base.FE3sObject.unserialize.call(o, input);
    // 读取信息
+   o._parentGuid = input.readString();
    o._info.unserialize(input);
    // 读取纹理打包集合
    var packCount = input.readInt16();

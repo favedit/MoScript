@@ -8,16 +8,15 @@ function FE3sSceneConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._venderCode = 'scene';
-   o._serviceUrl = '/cloud.content.scene.ws'
+   o._vendorCode = 'scene';
    o._dataUrl    = '/cloud.content.scene.wv'
    // @attribute
    o._scenes     = null;
    //..........................................................
    // @method
    o.construct   = FE3sSceneConsole_construct;
-   o.load        = FE3sSceneConsole_load;
-   o.update      = FE3sSceneConsole_update;
+   o.loadByGuid  = FE3sSceneConsole_loadByGuid;
+   o.loadByCode  = FE3sSceneConsole_loadByCode;
    return o;
 }
 
@@ -33,42 +32,56 @@ function FE3sSceneConsole_construct(){
 }
 
 //==========================================================
+// <T>根据唯一编号加载资源场景。</T>
+//
+// @param guid:String 唯一编号
+// @return 资源场景
+//==========================================================
+function FE3sSceneConsole_loadByGuid(guid){
+   var o = this;
+   var scenes = o._scenes;
+   // 获得场景
+   var scene = scenes.get(guid);
+   if(scene){
+      return scene;
+   }
+   // 生成地址
+   var vendor = RConsole.find(FE3sVendorConsole).find(o._vendorCode);
+   vendor.set('guid', guid);
+   var url = vendor.makeUrl();
+   // 创建主题
+   scene = RClass.create(FE3sScene);
+   scene.setGuid(guid);
+   scene.setVendor(vendor);
+   scene.setSourceUrl(url);
+   RConsole.find(FResourceConsole).load(scene);
+   scenes.set(guid, scene);
+   return scene;
+}
+
+//==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
 // @param p:input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FE3sSceneConsole_load(p){
+function FE3sSceneConsole_loadByCode(code){
    var o = this;
    var s = o._scenes;
-   var r = s.get(p);
+   var r = s.get(guid);
    if(r){
       return r;
    }
    // 生成地址
-   var v = RConsole.find(FE3sVendorConsole).find(o._venderCode);
-   v.set('code', p);
-   var u = v.makeUrl();
+   var vendor = RConsole.find(FE3sVendorConsole).find(o._vendorCode);
+   vendor.set('guid', p);
+   var url = vendor.makeUrl();
    // 创建主题
-   r = RClass.create(FE3sScene);
-   r.setGuid(p);
-   r.setVendor(v);
-   r.setSourceUrl(u);
+   scene = RClass.create(FE3sScene);
+   scene.setGuid(guid);
+   scene.setVendor(vendor);
+   scene.setSourceUrl(url);
    RConsole.find(FResourceConsole).load(r);
    s.set(p, r);
    return r;
-}
-
-//==========================================================
-// <T>更新处理。</T>
-//
-// @param p:config:TXmlNode 配置节点
-//==========================================================
-function FE3sSceneConsole_update(p){
-   var o = this;
-   // 生成地址
-   var u = RBrowser.hostPath(o._serviceUrl + '?action=updateTheme&date=' + RDate.format());
-   // 发送数据
-   var xc = RConsole.find(FXmlConsole);
-   var r = xc.send(u, p);
 }

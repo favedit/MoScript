@@ -65,13 +65,13 @@ function FDsSceneMenuBar_onRefreshClick(p){
 //==========================================================
 function FDsSceneMenuBar_onSaveClick(p){
    var o = this;
-   var s = o._workspace._activeScene;
-   var r = s._resource;
+   var space = o._frameSet._activeSpace;
+   var resource = space.resource();
    // 存储配置
-   var x = new TXmlNode();
-   r.saveConfig(x);
+   var xspace = new TXmlNode();
+   resource.saveConfig(xspace);
    // 更新处理
-   RConsole.find(FE3sSceneConsole).update(x);
+   RConsole.find(FDrSceneConsole).update(xspace);
 }
 
 //==========================================================
@@ -82,7 +82,7 @@ function FDsSceneMenuBar_onSaveClick(p){
 //==========================================================
 function FDsSceneMenuBar_onRunClick(p){
    var o = this;
-   var u = '../design/view.html?code=' + o._workspace._sceneCode;
+   var u = '../design/view.html?code=' + o._frameSet._sceneCode;
    //window.open(u);
    window.location = u;
 }

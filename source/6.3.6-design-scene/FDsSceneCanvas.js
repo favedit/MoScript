@@ -11,7 +11,7 @@ function FDsSceneCanvas(o){
    o._graphicContext      = null;
    o._canvasModeCd        = EDsCanvasMode.Drop;
    o._canvasMoveCd        = EDsCanvasDrag.Unknown;
-   o._activeScene         = null;
+   o._activeSpace         = null;
    o._rotation            = null;
    o._optionRotation      = false;
    o._capturePosition     = null;
@@ -39,7 +39,7 @@ function FDsSceneCanvas(o){
    o.onMouseCapture       = FDsSceneCanvas_onMouseCapture;
    o.onMouseCaptureStop   = FDsSceneCanvas_onMouseCaptureStop;
    o.onEnterFrame         = FDsSceneCanvas_onEnterFrame;
-   o.onSceneLoad          = FDsSceneCanvas_onSceneLoad;
+   o.onDataLoaded          = FDsSceneCanvas_onDataLoaded;
    //..........................................................
    o.oeResize             = FDsSceneCanvas_oeResize;
    o.oeRefresh            = FDsSceneCanvas_oeRefresh;
@@ -58,8 +58,7 @@ function FDsSceneCanvas(o){
    o.switchMode           = FDsSceneCanvas_switchMode;
    o.switchPlay           = FDsSceneCanvas_switchPlay;
    o.switchMovie          = FDsSceneCanvas_switchMovie;
-   o.reloadRegion         = FDsSceneCanvas_reloadRegion;
-   o.loadScene            = FDsSceneCanvas_loadScene;
+   o.loadByGuid           = FDsSceneCanvas_loadByGuid;
    // @method
    o.dispose              = FDsSceneCanvas_dispose;
    return o;
@@ -77,15 +76,15 @@ function FDsSceneCanvas_onBuild(p){
    // 创建界面控制器
    var c = o._graphicContext;
    var tc = RConsole.find(FE3dTemplateConsole);
-   var t = o._templateTranslation = tc.allocByCode(c, 'com.design.translation');
-   t._optionFace = true;
-   t.hide();
-   var t = o._templateRotation = tc.allocByCode(c, 'com.design.rotation');
-   t._optionFace = true;
-   t.hide();
-   var t = o._templateScale = tc.allocByCode(c, 'com.design.scale');
-   t._optionFace = true;
-   t.hide();
+   //var t = o._templateTranslation = tc.allocByCode(c, 'com.design.translation');
+   //t._optionFace = true;
+   //t.hide();
+   //var t = o._templateRotation = tc.allocByCode(c, 'com.design.rotation');
+   //t._optionFace = true;
+   //t.hide();
+   //var t = o._templateScale = tc.allocByCode(c, 'com.design.scale');
+   //t._optionFace = true;
+   //t.hide();
 }
 
 //==========================================================
@@ -96,12 +95,12 @@ function FDsSceneCanvas_onBuild(p){
 //==========================================================
 function FDsSceneCanvas_onMouseCaptureStart(p){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
    // 选取物件
-   var r = o._activeScene.region();
+   var r = o._activeSpace.region();
    var st = RConsole.find(FG3dTechniqueConsole).find(o._graphicContext, FG3dSelectTechnique);
    var r = st.test(r, p.offsetX, p.offsetY);
    o.selectRenderable(r);
@@ -135,7 +134,7 @@ function FDsSceneCanvas_onMouseCaptureStart(p){
 //==========================================================
 function FDsSceneCanvas_onMouseCapture(p){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
@@ -154,7 +153,7 @@ function FDsSceneCanvas_onMouseCapture(p){
    var tm = o._templateMatrix;
    switch(mc){
       case EDsCanvasMode.Drop:
-         var c = o._activeScene.camera();
+         var c = o._activeSpace.camera();
          var r = c.rotation();
          var cr = o._captureRotation;
          r.x = cr.x - cy * o._cameraMouseRotation;
@@ -229,7 +228,7 @@ function FDsSceneCanvas_onMouseCaptureStop(p){
 //==========================================================
 function FDsSceneCanvas_onEnterFrame(){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeSpace;
    if(!s){
       return;
    }
@@ -302,19 +301,17 @@ function FDsSceneCanvas_onEnterFrame(){
 // @method
 // @param p:template:FTemplate3d 模板
 //==========================================================
-function FDsSceneCanvas_onSceneLoad(p){
+function FDsSceneCanvas_onDataLoaded(p){
    var o = this;
    var c = o._graphicContext;
-   var s = o._activeScene;
+   var s = o._activeSpace;
    // 创建界面层
-   var l = RClass.create(FDisplayUiLayer);
-   l.selectTechnique(c, FG3dControlTechnique);
-   l.pushDisplay(o._templateTranslation);
-   l.pushDisplay(o._templateRotation);
-   l.pushDisplay(o._templateScale);
-   s.registerLayer('ui', l);
-   // 加载区域
-   o.reloadRegion();
+   //var l = RClass.create(FDisplayUiLayer);
+   //l.selectTechnique(c, FG3dControlTechnique);
+   //l.pushDisplay(o._templateTranslation);
+   //l.pushDisplay(o._templateRotation);
+   //l.pushDisplay(o._templateScale);
+   //s.registerLayer('ui', l);
    // 加载完成
    o.processLoadListener(o);
 }
@@ -332,7 +329,7 @@ function FDsSceneCanvas_oeResize(p){
    var w = hp.offsetWidth;
    var h = hp.offsetHeight;
    // 设置投影
-   var s = o._activeScene;
+   var s = o._activeSpace;
    if(s){
       var cp = s.camera().projection();
       cp.size().set(w, h);
@@ -434,7 +431,7 @@ function FDsSceneCanvas_selectLayers(p){
    // 取消选中
    o.selectNone();
    // 选中集合
-   var s = o._activeScene.layers();
+   var s = o._activeSpace.layers();
    for(var i = s.count() - 1; i >= 0; i--){
       o.innerSelectLayer(s.valueAt(i));
    }
@@ -502,11 +499,11 @@ function FDsSceneCanvas_selectMaterial(p){
 // <T>选中渲染对象处理。</T>
 //
 // @method
-// @param p:renderable:FG3dRenderable 渲染对象
+// @param renderable:FG3dRenderable 渲染对象
 //==========================================================
-function FDsSceneCanvas_selectRenderable(p){
+function FDsSceneCanvas_selectRenderable(renderable){
    var o = this;
-   var sr = p;
+   var sr = renderable;
    if(sr){
       var n = sr._renderable._resource._code;
       switch(n){
@@ -557,11 +554,11 @@ function FDsSceneCanvas_selectRenderable(p){
    }
    // 选中当前对象
    o.selectNone();
-   if(p){
-      o._selectRenderables.push(p);
-      p._optionSelected = true;
-      p.showBoundBox();
-      o._workspace._catalog.showObject(p);
+   if(renderable){
+      renderable._optionSelected = true;
+      renderable.showBoundBox();
+      o._selectRenderables.push(renderable);
+      o._frameSet._catalog.showObject(renderable);
    }
    // 设置变量
    var t = o._templateTranslation;
@@ -625,7 +622,7 @@ function FDsSceneCanvas_switchMode(p){
 //==========================================================
 function FDsSceneCanvas_switchPlay(p){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeSpace;
    var ds = s.allDisplays();
    var c = ds.count();
    for(var i = 0; i < c; i++){
@@ -644,7 +641,7 @@ function FDsSceneCanvas_switchPlay(p){
 //==========================================================
 function FDsSceneCanvas_switchMovie(p, f){
    var o = this;
-   var s = o._activeScene;
+   var s = o._activeSpace;
    var ds = s.allDisplays();
    var c = ds.count();
    for(var i = 0; i < c; i++){
@@ -656,38 +653,32 @@ function FDsSceneCanvas_switchMovie(p, f){
 }
 
 //==========================================================
-// <T>重新加载区域。</T>
+// <T>根据唯一编号加载场景处理。</T>
 //
 // @method
+// @param guid:String 唯一编号
 //==========================================================
-function FDsSceneCanvas_reloadRegion(p){
+function FDsSceneCanvas_loadByGuid(guid){
    var o = this;
-   var s = o._activeScene;
-   var r = s._region._resource;
-   o._cameraMoveRate = r.moveSpeed();
-   o._cameraKeyRotation = r.rotationKeySpeed();
-   o._cameraMouseRotation = r.rotationMouseSpeed();
-}
-
-//==========================================================
-// <T>加载模板处理。</T>
-//
-// @method
-//==========================================================
-function FDsSceneCanvas_loadScene(p){
-   var o = this;
-   var c = o._graphicContext;
+   var context = o._graphicContext;
+   var space = o._activeSpace;
+   // 设置实例工厂
+   var sceneConsole = RConsole.find(FE3dInstanceConsole);
+   sceneConsole.register(EE3dInstance.TemplateRenderable, FDsSceneRenderable);
+   sceneConsole.register(EE3dInstance.SceneLayer, FDsSceneLayer);
+   sceneConsole.register(EE3dInstance.SceneDisplay, FDsSceneDisplay);
+   sceneConsole.register(EE3dInstance.SceneRenderable, FDsSceneRenderable);
    // 收集场景
-   var sc = RConsole.find(FE3dSceneConsole);
-   if(o._activeScene != null){
-      sc.free(o._activeScene);
+   var sceneConsole = RConsole.find(FE3dSceneConsole);
+   if(space){
+      RStage.unregister(space);
+      sceneConsole.free(o._activeSpace);
    }
    // 监听加载完成
-   var s = sc.alloc(o._graphicContext, p);
-   s.addLoadListener(o, o.onSceneLoad);
-   s.selectTechnique(c, FE3dGeneralTechnique);
-   o._stage = o._activeScene = s;
-   RStage.register('stage3d', s);
+   var space = sceneConsole.allocByGuid(context, guid);
+   space.addLoadListener(o, o.onDataLoaded);
+   o._activeSpace = space;
+   RStage.register('stage3d', space);
 }
 
 //==========================================================

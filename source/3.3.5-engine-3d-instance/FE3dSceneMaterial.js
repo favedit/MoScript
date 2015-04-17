@@ -5,17 +5,18 @@
 // @history 150106
 //==========================================================
 function FE3dSceneMaterial(o){
-   o = RClass.inherits(this, o, FG3dMaterial);
+   o = RClass.inherits(this, o, FE3rMaterial);
    //..........................................................
    // @attribute
    o._display          = null;
    o._resource         = null;
+   o._parentMaterial   = null;
    //..........................................................
    // @method
    o.groupGuid         = FE3dSceneMaterial_groupGuid
    o.resource          = FE3dSceneMaterial_resource;
    o.loadSceneResource = FE3dSceneMaterial_loadSceneResource;
-   o.reload            = FE3dSceneMaterial_reload;
+   o.reloadResource    = FE3dSceneMaterial_reloadResource;
    return o;
 }
 
@@ -40,23 +41,25 @@ function FE3dSceneMaterial_resource(p){
 }
 
 //==========================================================
-// <T>加载区域资源。</T>
+// <T>加载场景资源。</T>
 //
 // @method
-// @param p:resource:FE3sSceneRegion 区域资源
+// @param resource:FE3sSceneRegion 区域资源
 //==========================================================
-function FE3dSceneMaterial_loadSceneResource(p){
+function FE3dSceneMaterial_loadSceneResource(resource){
    var o = this;
-   o._resource = p;
-   o._info.assign(p.info());
+   o._resource = resource;
+   o._info.assign(resource.info());
 }
 
 //==========================================================
-// <T>重新加载数据。</T>
+// <T>重新加载资源。</T>
 //
 // @method
 //==========================================================
-function FE3dSceneMaterial_reload(p){
+function FE3dSceneMaterial_reloadResource(){
    var o = this;
-   o._info.assign(o._resource.info());
+   var resource = o._resource;
+   o.loadResource(resource);
+   o._parentMaterial.loadResource(resource);
 }

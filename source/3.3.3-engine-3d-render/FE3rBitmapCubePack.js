@@ -16,7 +16,7 @@ function FE3rBitmapCubePack(o){
    // @method
    o.construct    = FE3rBitmapCubePack_construct;
    // @method
-   o.loadResource = FE3rBitmapCubePack_loadResource;
+   o.loadUrl      = FE3rBitmapCubePack_loadUrl;
    // @method
    o.dispose      = FE3rBitmapCubePack_dispose;
    return o;
@@ -72,29 +72,29 @@ function FE3rBitmapCubePack_construct(){
 // @method
 // @param p:resource:FE3sTextureBitmapPack 模型资源
 //==========================================================
-function FE3rBitmapCubePack_loadResource(p){
+function FE3rBitmapCubePack_loadUrl(url){
    var o = this;
-   o._resource = p;
-   var texture = p._texture;
+   //o._resource = p;
+   //var texture = p._texture;
    // 获得浏览器描述
-   var capability = RBrowser.capability();
+   //var capability = RBrowser.capability();
    // 加载二进制数据
-   var d = p.data();
-   var t = p._formatName;
+   //var d = p.data();
+   //var t = p._formatName;
    o._images = new TObjects();
    for(var i = 0; i < 6; i++){
-      var g = o._images[i] = RClass.create(FImage);
-      g._index = i;
-      g.setOptionAlpha(false);
-      if(capability.blobCreate){
-         var blob = new Blob([d[i]], {'type' : 'image/' + t});
-         var url = window.URL.createObjectURL(blob);
-         g.loadUrl(url);
-      }else{
-         var url = RBrowser.hostPath('/cloud.content.texture.bitmap.wv') + '?guid=' + texture._guid + '&code=' + p._code + "&index=" + i;
-         g.loadUrl(url);
-      }
-      g.addLoadListener(o, o.onLoad);
+      var image = o._images[i] = RClass.create(FImage);
+      image._index = i;
+      image.setOptionAlpha(false);
+      //if(capability.blobCreate){
+      //   var blob = new Blob([d[i]], {'type' : 'image/' + t});
+      //   var url = window.URL.createObjectURL(blob);
+      //   g.loadUrl(url);
+      //}else{
+      //var url = RBrowser.hostPath('/cloud.resource.material.wv') + '?guid=' + texture._guid + '&code=' + p._code + "&index=" + i;
+      image.loadUrl(url + "&index=" + i);
+      //}
+      image.addLoadListener(o, o.onLoad);
    }
 }
 

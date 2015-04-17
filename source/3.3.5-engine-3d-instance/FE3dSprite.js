@@ -1,50 +1,48 @@
  //==========================================================
-// <T>渲染模板。</T>
+// <T>渲染精灵。</T>
 //
 // @author maocy
-// @history 150106
+// @history 150417
 //==========================================================
-function FE3dTemplate(o){
-   o = RClass.inherits(this, o, FE3dSpace, MGraphicObject, MListenerLoad);
+function FE3dSprite(o){
+   o = RClass.inherits(this, o, FE3dDisplay, MGraphicObject);
    //..........................................................
    // @attribute
    o._dataReady       = false;
    o._ready           = false;
    o._resource        = null;
    // @attribute
-   o._sprites         = null;
+   o._shapes          = null;
    o._skeletons       = null;
    o._animations      = null;
    // @attribute
    o._resource        = null;
    //..........................................................
    // @method
-   o.construct        = FE3dTemplate_construct;
+   o.construct        = FE3dSprite_construct;
    // @method
-   o.testReady        = FE3dTemplate_testReady;
+   o.testReady        = FE3dSprite_testReady;
    // @method
-   o.sprite           = FE3dTemplate_sprite;
+   o.findMeshByCode   = FE3dSprite_findMeshByCode;
+   o.meshRenderables  = FE3dSprite_shapes;
+   o.skeletons        = FE3dSprite_skeletons;
+   o.pushSkeleton     = FE3dSprite_pushSkeleton;
+   o.findAnimation    = FE3dSprite_findAnimation;
+   o.animations       = FE3dSprite_animations;
+   o.pushAnimation    = FE3dSprite_pushAnimation;
    // @method
-   o.findMeshByCode   = FE3dTemplate_findMeshByCode;
-   o.meshRenderables  = FE3dTemplate_sprites;
-   o.skeletons        = FE3dTemplate_skeletons;
-   o.pushSkeleton     = FE3dTemplate_pushSkeleton;
-   o.findAnimation    = FE3dTemplate_findAnimation;
-   o.animations       = FE3dTemplate_animations;
-   o.pushAnimation    = FE3dTemplate_pushAnimation;
+   o.resource         = FE3dSprite_resource;
+   o.setResource      = FE3dSprite_setResource;
+   o.loadSkeletons    = FE3dSprite_loadSkeletons;
+   o.linkAnimation    = FE3dSprite_linkAnimation;
+   o.loadAnimations   = FE3dSprite_loadAnimations;
+   o.loadResource     = FE3dSprite_loadResource;
+   o.reloadResource   = FE3dSprite_reloadResource;
    // @method
-   o.resource         = FE3dTemplate_resource;
-   o.setResource      = FE3dTemplate_setResource;
-   o.loadSkeletons    = FE3dTemplate_loadSkeletons;
-   o.linkAnimation    = FE3dTemplate_linkAnimation;
-   o.loadAnimations   = FE3dTemplate_loadAnimations;
-   o.loadResource     = FE3dTemplate_loadResource;
-   o.reloadResource   = FE3dTemplate_reloadResource;
+   o.load             = FE3dSprite_load;
+   o.process          = FE3dSprite_process;
    // @method
-   o.processLoad      = FE3dTemplate_processLoad;
-   o.process          = FE3dTemplate_process;
-   // @method
-   o.dispose          = FE3dTemplate_dispose;
+   o.dispose          = FE3dSprite_dispose;
    return o;
 }
 
@@ -53,14 +51,10 @@ function FE3dTemplate(o){
 //
 // @method
 //==========================================================
-function FE3dTemplate_construct(){
+function FE3dSprite_construct(){
    var o = this;
-   o.__base.FE3dSpace.construct.call(o);
-   // 创建显示层
-   var layer = o._layer = RClass.create(FDisplayLayer);
-   o.registerLayer('Layer', layer);
-   // 创建精灵集合
-   o._sprites = new TObjects();
+   o.__base.FE3dDisplay.construct.call(o);
+   o._shapes = new TObjects();
 }
 
 //==========================================================
@@ -69,18 +63,21 @@ function FE3dTemplate_construct(){
 // @method
 // @return 是否准备好
 //==========================================================
-function FE3dTemplate_testReady(){
-   return this._dataReady;
-}
-
-//==========================================================
-// <T>获得精灵。</T>
-//
-// @method
-// @return FE3dSprite 精灵
-//==========================================================
-function FE3dTemplate_sprite(){
-   return this._sprites.first();
+function FE3dSprite_testReady(){
+   var o = this;
+   // 加载渲染对象
+   var shapes = o._shapes;
+   if(shapes){
+      var shapeCount = shapes.count();
+      // 测试全部加载完成
+      for(var i = 0; i < shapeCount; i++){
+         var shape = shapes.at(i);
+         if(!shape.testReady()){
+            return false;
+         }
+      }
+   }
+   return true;
 }
 
 //==========================================================
@@ -90,8 +87,8 @@ function FE3dTemplate_sprite(){
 // @param p:code:String 代码
 // @return FE3sMesh 网格
 //==========================================================
-function FE3dTemplate_findMeshByCode(p){
-   var s = this._sprites;
+function FE3dSprite_findMeshByCode(p){
+   var s = this._shapes;
    for(var i = s.count() - 1; i >= 0; i--){
       var m = s.getAt(i);
       if(m._renderable._resource._code == p){
@@ -107,8 +104,8 @@ function FE3dTemplate_findMeshByCode(p){
 // @method
 // @return TObjects 网格渲染集合
 //==========================================================
-function FE3dTemplate_sprites(){
-   return this._sprites;
+function FE3dSprite_shapes(){
+   return this._shapes;
 }
 
 //==========================================================
@@ -117,7 +114,7 @@ function FE3dTemplate_sprites(){
 // @method
 // @return TDictionary 骨骼集合
 //==========================================================
-function FE3dTemplate_skeletons(){
+function FE3dSprite_skeletons(){
    return this._skeletons;
 }
 
@@ -127,7 +124,7 @@ function FE3dTemplate_skeletons(){
 // @method
 // @param p:skeleton:FE3rSkeleton 渲染骨骼
 //==========================================================
-function FE3dTemplate_pushSkeleton(p){
+function FE3dSprite_pushSkeleton(p){
    var o = this;
    var r = o._skeletons;
    if(!r){
@@ -146,7 +143,7 @@ function FE3dTemplate_pushSkeleton(p){
 // @param p:guid:String 唯一编号
 // @return FE3rAnimation 渲染动画
 //==========================================================
-function FE3dTemplate_findAnimation(p){
+function FE3dSprite_findAnimation(p){
    var s = this._animations;
    return s ? s.get(p) : null;
 }
@@ -157,7 +154,7 @@ function FE3dTemplate_findAnimation(p){
 // @method
 // @return TDictionary 动画集合
 //==========================================================
-function FE3dTemplate_animations(){
+function FE3dSprite_animations(){
    return this._animations;
 }
 
@@ -167,7 +164,7 @@ function FE3dTemplate_animations(){
 // @method
 // @param p:animation:FE3rAnimation 渲染动画
 //==========================================================
-function FE3dTemplate_pushAnimation(p){
+function FE3dSprite_pushAnimation(p){
    var o = this;
    var r = o._animations;
    if(!r){
@@ -183,7 +180,7 @@ function FE3dTemplate_pushAnimation(p){
 // @method
 // @param FE3sTemplate 资源
 //==========================================================
-function FE3dTemplate_resource(p){
+function FE3dSprite_resource(p){
    return this._resource;
 }
 
@@ -193,7 +190,7 @@ function FE3dTemplate_resource(p){
 // @method
 // @param p:resource:FE3sTemplate 资源模板
 //==========================================================
-function FE3dTemplate_setResource(p){
+function FE3dSprite_setResource(p){
    this._resource = p;
 }
 
@@ -203,7 +200,7 @@ function FE3dTemplate_setResource(p){
 // @method
 // @param p:animations:TObjects 骨骼集合
 //==========================================================
-function FE3dTemplate_loadSkeletons(p){
+function FE3dSprite_loadSkeletons(p){
    var o = this;
    var c = p.count();
    if(c > 0){
@@ -224,7 +221,7 @@ function FE3dTemplate_loadSkeletons(p){
 // @method
 // @param p:animation:FE3rAnimation 渲染动画
 //==========================================================
-function FE3dTemplate_linkAnimation(p){
+function FE3dSprite_linkAnimation(p){
    var o = this;
    var ts = p.tracks();
    var c = ts.count();
@@ -244,7 +241,7 @@ function FE3dTemplate_linkAnimation(p){
 // @method
 // @param p:animations:TObjects 动画集合
 //==========================================================
-function FE3dTemplate_loadAnimations(p){
+function FE3dSprite_loadAnimations(p){
    var o = this;
    var c = p.count();
    if(c > 0){
@@ -273,27 +270,26 @@ function FE3dTemplate_loadAnimations(p){
 // <T>加载资源模板。</T>
 //
 // @method
-// @param resource:FE3sTemplate 资源模板
+// @param resource:FE3sSprite 资源模板
 //==========================================================
-function FE3dTemplate_loadResource(resource){
+function FE3dSprite_loadResource(resource){
    var o = this;
-   // 加载技术
-   var technique = o.selectTechnique(o, FE3dGeneralTechnique);
-   technique.setResource(resource.technique());
-   // 父处理
-   o.__base.FE3dSpace.loadResource.call(o, resource);
+   o._resource = resource;
+   // 设置矩阵
+   o._matrix.assign(resource.matrix());
    // 加载资源渲染集合
-   var displayResources = resource.displays();
-   var displayCount = displayResources.count();
-   if(displayCount > 0){
-      for(var i = 0; i < displayCount; i++){
-         var displayResource = displayResources.at(i);
-         var display = RClass.create(FE3dTemplateDisplay);
-         display._parent = o;
-         display.linkGraphicContext(o);
-         display.loadResource(displayResource);
-         o._sprites.push(display);
-         //o.pushRenderable(r);
+   var renderableResources = resource.renderables();
+   var renderableCount = renderableResources.count();
+   if(renderableCount > 0){
+      var shapes = o._shapes;
+      for(var i = 0; i < renderableCount; i++){
+         var renderableResource = renderableResources.at(i);
+         var renderable = RClass.create(FE3dTemplateRenderable);
+         renderable._display = o;
+         renderable.linkGraphicContext(o);
+         renderable.loadResource(renderableResource);
+         shapes.push(renderable);
+         o.pushRenderable(renderable);
       }
    }
 }
@@ -303,9 +299,9 @@ function FE3dTemplate_loadResource(resource){
 //
 // @method
 //==========================================================
-function FE3dTemplate_reloadResource(){
+function FE3dSprite_reloadResource(){
    var o = this;
-   var s = o._sprites;
+   var s = o._shapes;
    if(s){
       var c = s.count();
       for(var i = 0; i < c; i++){
@@ -319,54 +315,15 @@ function FE3dTemplate_reloadResource(){
 //
 // @method
 //==========================================================
-function FE3dTemplate_processLoad(){
+function FE3dSprite_load(){
    var o = this;
-   if(o._ready){
-      return true;
-   }
-   // 加载资源
-   if(!o._dataReady){
-      var resource = o._resource;
-      if(!resource.testReady()){
-         return false;
-      }
-      o.loadResource(resource);
-      o._dataReady = true;
-   }
-   // 加载渲染对象
-   var sprites = o._sprites;
-   if(sprites){
-      var spriteCount = sprites.count();
-      // 测试全部加载完成
-      for(var i = 0; i < spriteCount; i++){
-         var sprite = sprites.at(i);
-         if(!sprite.testReady()){
-            return false;
-         }
-      }
-      // 加载全部渲染对象
-      for(var i = 0; i < spriteCount; i++){
-         var sprite = sprites.at(i);
-         sprite.load();
-         o._layer.pushDisplay(sprite);
+   var shapes = o._shapes;
+   if(shapes){
+      var shapeCount = shapes.count();
+      for(var i = 0; i < shapeCount; i++){
+         shapes.at(i).load();
       }
    }
-   // 关联动画
-   var as = o._animations;
-   if(as){
-      var c = as.count();
-      for(var i = 0; i < c; i++){
-         var a = as.value(i);
-         if(a.resource().skeleton() == null){
-            o.linkAnimation(a);
-         }
-      }
-   }
-   // 加载完成
-   o._ready = true;
-   // 事件发送
-   o.processLoadListener(o);
-   return o._ready;
 }
 
 //==========================================================
@@ -374,26 +331,26 @@ function FE3dTemplate_processLoad(){
 //
 // @method
 //==========================================================
-function FE3dTemplate_process(event){
+function FE3dSprite_process(p){
    var o = this;
    // 处理动画集合
-   //var as = o._animations;
-   //if(as){
-   //   var c = as.count();
-   //   for(var i = 0; i < c; i++){
-   //      as.valueAt(i).record();
-   //   }
-   //}
+   var as = o._animations;
+   if(as){
+      var c = as.count();
+      for(var i = 0; i < c; i++){
+         as.valueAt(i).record();
+      }
+   }
    // 父处理
-   o.__base.FE3dSpace.process.call(o);
+   o.__base.FE3dDisplay.process.call(o);
    // 处理动画集合
-   //var k = o._activeSkeleton;
-   //if(k && as){
-   //   var c = as.count();
-   //   for(var i = 0; i < c; i++){
-   //      as.valueAt(i).process(k);
-   //   }
-   //}
+   var k = o._activeSkeleton;
+   if(k && as){
+      var c = as.count();
+      for(var i = 0; i < c; i++){
+         as.valueAt(i).process(k);
+      }
+   }
 }
 
 //==========================================================
@@ -401,8 +358,8 @@ function FE3dTemplate_process(event){
 //
 // @method
 //==========================================================
-function FE3dTemplate_dispose(){
+function FE3dSprite_dispose(){
    var o = this;
-   o._sprites = RObject.dispose(o._sprites);
-   o.__base.FE3dSpace.dispose.call(o);
+   o._shapes = RObject.dispose(o._shapes);
+   o.__base.FE3dDisplay.dispose.call(o);
 }

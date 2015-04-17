@@ -235,11 +235,6 @@ function FDsSceneWorkspace_construct(){
    o.__base.FUiWorkspace.construct.call(o);
    // 设置属性
    o._propertyFrames = new TDictionary();
-   // 注册场景设置属性
-   var sf = RConsole.find(FE3dSceneConsole).factory();
-   sf.register(EE3dScene.Layer, FDsSceneLayer);
-   sf.register(EE3dScene.Display, FDsSceneDisplay);
-   sf.register(EE3dScene.Renderable, FDsSceneRenderable);
 }
 
 //==========================================================

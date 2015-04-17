@@ -36,7 +36,7 @@ function FDsSceneCatalog(o){
    o.buildRenderable       = FDsSceneCatalog_buildRenderable;
    o.buildDisplay          = FDsSceneCatalog_buildDisplay;
    o.buildLayer            = FDsSceneCatalog_buildLayer;
-   o.buildScene            = FDsSceneCatalog_buildScene;
+   o.buildSpace            = FDsSceneCatalog_buildSpace;
    // @method
    o.selectObject          = FDsSceneCatalog_selectObject;
    o.showObject            = FDsSceneCatalog_showObject;
@@ -62,7 +62,7 @@ function FDsSceneCatalog_onBuild(p){
    // 注册事件
    o.lsnsClick.register(o, o.onNodeClick);
    // 加载定义
-   o.loadUrl('/cloud.describe.tree.ws?action=query&code=design3d.scene');
+   o.loadUrl('/cloud.describe.tree.ws?action=query&code=resource.scene');
 }
 
 //==========================================================
@@ -413,7 +413,7 @@ function FDsSceneCatalog_buildLayer(n, p){
 // @method
 // @param p:scene:FE3dScene 渲染场景
 //==========================================================
-function FDsSceneCatalog_buildScene(p){
+function FDsSceneCatalog_buildSpace(p){
    var o = this;
    var r = p._resource;
    // 创建场景节点

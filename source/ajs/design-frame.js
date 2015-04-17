@@ -277,28 +277,28 @@ function FDsCommonMaterial1Frame_onOptionChanged(p){
 }
 function FDsCommonMaterial1Frame_onDataChanged(p){
    var o = this;
-   var t = o._activeSpace;
-   var m = o._activeMaterial;
-   var mr = m.resource();
-   var mi = mr.info();
-   mi.optionDouble = o._controlOptionDouble.get();
-   mi.effectCode = o._controlEffectCode.get();
-   mi.optionAlpha = o._controlOptionAlpha.get();
-   mi.alphaBase = o._controlAlphaBase.get();
-   mi.alphaRate = o._controlAlphaRate.get();
-   mi.colorMin = o._controlColorMin.get();
-   mi.colorMax = o._controlColorMax.get();
-   mi.colorRate = o._controlColorRate.get();
-   mi.colorMerge = o._controlColorMerge.get();
-   mi.ambientColor.assign(o._controlAmbientColor.get());
-   mi.diffuseColor.assign(o._controlDiffuseColor.get());
-   mi.specularColor.assign(o._controlSpecularColor.get());
-   mi.specularBase = o._controlSpecularBase.get();
-   mi.specularLevel = o._controlSpecularLevel.get();
-   mi.reflectColor.assign(o._controlReflectColor.get());
-   mi.reflectMerge = o._controlReflectMerge.get();
-   mi.emissiveColor.assign(o._controlEmissiveColor.get());
-   m.reloadResource();
+   var space = o._activeSpace;
+   var material = o._activeMaterial;
+   var materialResource = material.resource();
+   var infoResource = materialResource.info();
+   infoResource.optionDouble = o._controlOptionDouble.get();
+   infoResource.effectCode = o._controlEffectCode.get();
+   infoResource.optionAlpha = o._controlOptionAlpha.get();
+   infoResource.alphaBase = o._controlAlphaBase.get();
+   infoResource.alphaRate = o._controlAlphaRate.get();
+   infoResource.colorMin = o._controlColorMin.get();
+   infoResource.colorMax = o._controlColorMax.get();
+   infoResource.colorRate = o._controlColorRate.get();
+   infoResource.colorMerge = o._controlColorMerge.get();
+   infoResource.ambientColor.assign(o._controlAmbientColor.get());
+   infoResource.diffuseColor.assign(o._controlDiffuseColor.get());
+   infoResource.specularColor.assign(o._controlSpecularColor.get());
+   infoResource.specularBase = o._controlSpecularBase.get();
+   infoResource.specularLevel = o._controlSpecularLevel.get();
+   infoResource.reflectColor.assign(o._controlReflectColor.get());
+   infoResource.reflectMerge = o._controlReflectMerge.get();
+   infoResource.emissiveColor.assign(o._controlEmissiveColor.get());
+   material.reloadResource();
 }
 function FDsCommonMaterial1Frame_construct(){
    var o = this;

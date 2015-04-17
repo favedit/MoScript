@@ -5,7 +5,7 @@
 // @history 150115
 //==========================================================
 function FE3sSceneDisplay(o){
-   o = RClass.inherits(this, o, FE3sObject);
+   o = RClass.inherits(this, o, FE3sSprite);
    //..........................................................
    // @attribute 属性
    o._templateGuid        = null;
@@ -44,7 +44,7 @@ function FE3sSceneDisplay(o){
 //==========================================================
 function FE3sSceneDisplay_construct(){
    var o = this;
-   o.__base.FE3sObject.construct.call(o);
+   o.__base.FE3sSprite.construct.call(o);
    o._matrix = new SMatrix3d();
 }
 
@@ -149,54 +149,32 @@ function FE3sSceneDisplay_renderables(){
 //==========================================================
 // <T>从输入流里反序列化信息内容</T>
 //
-// @param p:input:FByteStream 数据流
+// @param input:FByteStream 数据流
 // @return 处理结果
 //==========================================================
-function FE3sSceneDisplay_unserialize(p){
+function FE3sSceneDisplay_unserialize(input){
    var o = this;
-   o.__base.FE3sObject.unserialize.call(o, p);
+   o.__base.FE3sSprite.unserialize.call(o, input);
    // 读取配置
-   o._templateGuid = p.readString();
-   // 读取矩阵
-   o._matrix.unserialize(p);
+   o._templateGuid = input.readString();
    // 读取动画集合
-   var c = p.readUint16();
-   if(c > 0){
-      var s = o._animations = new TDictionary();
-      for(var i = 0; i < c; i++){
-         var a = RClass.create(FE3sSceneAnimation);
-         a.unserialize(p);
-         s.set(a.guid(), a);
+   var animationCount = input.readUint16();
+   if(animationCount > 0){
+      var animations = o._animations = new TDictionary();
+      for(var i = 0; i < animationCount; i++){
+         var animation = RClass.create(FE3sSceneAnimation);
+         animation.unserialize(input);
+         animations.set(animation.guid(), animation);
       }
    }
    // 读取动画集合
-   var c = p.readUint16();
-   if(c > 0){
-      var s = o._movies = new TObjects();
-      for(var i = 0; i < c; i++){
-         var m = RClass.create(FE3sMovie);
-         m.unserialize(p);
-         s.push(m);
-      }
-   }
-   // 读取材质集合
-   var c = p.readUint16();
-   if(c > 0){
-      var s = o._materials = new TObjects();
-      for(var i = 0; i < c; i++){
-         var m = RClass.create(FE3sMaterial);
-         m.unserialize(p);
-         s.push(m);
-      }
-   }
-   // 读取动画集合
-   var c = p.readUint16();
-   if(c > 0){
-      var s = o._renderables = new TObjects();
-      for(var i = 0; i < c; i++){
-         var r = RClass.create(FE3sTemplateRenderable);
-         r.unserialize(p);
-         s.push(r);
+   var movieCount = input.readUint16();
+   if(movieCount > 0){
+      var movies = o._movies = new TObjects();
+      for(var i = 0; i < movieCount; i++){
+         var movie = RClass.create(FE3sMovie);
+         movie.unserialize(input);
+         movies.push(movie);
       }
    }
 }
@@ -205,29 +183,28 @@ function FE3sSceneDisplay_unserialize(p){
 // <T>数据内容存储到配置节点中。</T>
 //
 // @method
-// @param p:config:TXmlNode 配置节点
+// @param xconfig:TXmlNode 配置节点
 //==========================================================
-function FE3sSceneDisplay_saveConfig(p){
+function FE3sSceneDisplay_saveConfig(xconfig){
    var o = this;
-   o.__base.FE3sObject.saveConfig.call(o, p);
-   // 存储属性
-   o._matrix.saveConfig(p.create('Matrix'));
+   debugger
+   o.__base.FE3sSprite.saveConfig.call(o, xconfig);
    // 存储材质集合
-   var s = o._animations;
-   if(s){
-      var c = s.count();
-      var xs = p.create('AnimationCollection');
-      for(var i = 0; i < c; i++){
-         s.valueAt(i).saveConfig(xs.create('Animation'));
+   var animations = o._animations;
+   if(animations){
+      var count = animations.count();
+      var xanimations = xconfig.create('AnimationCollection');
+      for(var i = 0; i < count; i++){
+         animations.at(i).saveConfig(xanimations.create('Animation'));
       }
    }
    // 存储材质集合
-   var s = o._materials;
-   if(s){
-      var c = s.count();
-      var xs = p.create('MaterialCollection');
-      for(var i = 0; i < c; i++){
-         s.getAt(i).saveConfig(xs.create('Material'));
+   var materials = o._materials;
+   if(materials){
+      var count = materials.count();
+      var xmaterials = xconfig.create('MaterialCollection');
+      for(var i = 0; i < count; i++){
+         materials.at(i).saveConfig(xmaterials.create('Material'));
       }
    }
 }

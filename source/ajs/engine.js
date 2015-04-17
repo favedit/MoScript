@@ -262,11 +262,11 @@ function FDisplayContainer_findDisplay(p){
 }
 function FDisplayContainer_searchDisplay(p){
    var o = this;
-   var s = o._displays;
-   if(s){
-      var c = s.count();
+   var displays = o._displays;
+   if(displays){
+      var c = displays.count();
       for(var i = 0; i < c; i++){
-         var f = s.getAt(i);
+         var f = displays.at(i);
          if(f.isName(p)){
             return f;
          }
@@ -280,21 +280,21 @@ function FDisplayContainer_searchDisplay(p){
 }
 function FDisplayContainer_displays(){
    var o = this;
-   var r = o._displays;
-   if(!r){
-      r = o._displays = new TObjects();
+   var displays = o._displays;
+   if(!displays){
+      displays = o._displays = new TObjects();
    }
-   return r;
+   return displays;
 }
-function FDisplayContainer_pushDisplay(p){
+function FDisplayContainer_pushDisplay(display){
    var o = this;
-   p._parent = o;
-   o.displays().push(p);
+   display.setParent(o);
+   o.displays().push(display);
 }
-function FDisplayContainer_removeDisplay(p){
+function FDisplayContainer_removeDisplay(display){
    var o = this;
-   o.displays().remove(p);
-   p._parent = null;
+   o.displays().remove(display);
+   display.setParent(null);
 }
 function FDisplayContainer_filterDisplays(p){
    var o = this;
@@ -304,46 +304,45 @@ function FDisplayContainer_filterDisplays(p){
       if(s){
          var c = s.count();
          for(var i = 0; i < c; i++){
-            s.getAt(i).filterDisplays(p);
+            s.at(i).filterDisplays(p);
          }
       }
    }
 }
-function FDisplayContainer_filterRenderables(p){
+function FDisplayContainer_filterRenderables(region){
    var o = this;
-   o.__base.FDisplay.filterRenderables.call(o, p);
+   o.__base.FDisplay.filterRenderables.call(o, region);
    if(!o._visible){
       return false;
    }
-   var s = o._displays;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.getAt(i).filterRenderables(p);
+   var displays = o._displays;
+   if(displays){
+      var count = displays.count();
+      for(var i = 0; i < count; i++){
+         displays.at(i).filterRenderables(region);
       }
    }
    return true;
 }
-function FDisplayContainer_process(p){
+function FDisplayContainer_process(region){
    var o = this;
-   o.__base.FDisplay.process.call(o, p);
-   var s = o._displays;
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         s.getAt(i).process(p);
+   o.__base.FDisplay.process.call(o, region);
+   var displays = o._displays;
+   if(displays){
+      var count = displays.count();
+      for(var i = 0; i < count; i++){
+         displays.at(i).process(region);
       }
    }
 }
 function FDisplayContainer_dispose(){
    var o = this;
-   var v = o._displays;
-   if(v){
+   var displays = o._displays;
+   if(displays){
       for(var i = v.count() - 1; i >= 0; i--){
-         v.getAt(i).dispose();
+         displays.at(i).dispose();
       }
-      v.dispose();
-      o._displays = null;
+      o._displays = RObject.dispose(displays);
    }
    o.__base.FDisplay.dispose.call(o);
 }

@@ -80,27 +80,27 @@ function FE3sTemplateConsole_loadByGuid(p){
 //==========================================================
 // <T>加载指定模板。</T>
 //
-// @param p:guid:String 唯一编码
+// @param code:String 代码
 // @return FE3sTemplate 模板
 //==========================================================
-function FE3sTemplateConsole_loadByCode(p){
+function FE3sTemplateConsole_loadByCode(code){
    var o = this;
-   var s = o._templates;
-   var r = s.get(p);
-   if(r){
-      return r;
+   var templates = o._templates;
+   var template = templates.get(code);
+   if(template){
+      return template;
    }
    // 生成地址
-   var v = RConsole.find(FE3sVendorConsole).find('template');
-   v.set('code', p);
-   var u = v.makeUrl();
+   var vendor = RConsole.find(FE3sVendorConsole).find('template');
+   vendor.set('code', code);
+   var url = vendor.makeUrl();
    // 创建主题
-   r = RClass.create(FE3sTemplate);
-   r.setGuid(p);
-   r.setVendor(v);
-   r.setSourceUrl(u);
-   RConsole.find(FResourceConsole).load(r);
-   s.set(p, r);
+   template = RClass.create(FE3sTemplate);
+   template.setCode(code);
+   template.setVendor(vendor);
+   template.setSourceUrl(url);
+   RConsole.find(FResourceConsole).load(template);
+   templates.set(code, template);
    return r;
 }
 

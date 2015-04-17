@@ -9,23 +9,27 @@ function FE3dSceneConsole(o){
    o = RClass.inherits(this, o, FConsole);
    //..........................................................
    // @attribute
-   o._scopeCd    = EScope.Local;
-   o._factory    = null;
+   o._scopeCd      = EScope.Local;
    // @attribute
-   o._loadScenes = null;
-   o._scenes     = null;
+   o._loadDisplays = null;
+   o._loadScenes   = null;
+   o._scenes       = null;
    // @attribute
-   o._thread     = null;
-   o._interval   = 100;
+   o._thread       = null;
+   o._interval     = 100;
    //..........................................................
    // @event
-   o.onProcess   = FE3dSceneConsole_onProcess;
+   o.onProcess     = FE3dSceneConsole_onProcess;
    //..........................................................
    // @method
-   o.construct   = FE3dSceneConsole_construct;
-   o.factory     = FE3dSceneConsole_factory;
-   o.scenes      = FE3dSceneConsole_scenes;
-   o.alloc       = FE3dSceneConsole_alloc;
+   o.construct     = FE3dSceneConsole_construct;
+   // @method
+   o.scenes        = FE3dSceneConsole_scenes;
+   // @method
+   o.loadDisplay   = FE3dSceneConsole_loadDisplay;
+   o.allocByGuid   = FE3dSceneConsole_allocByGuid;
+   o.allocByCode   = FE3dSceneConsole_allocByCode;
+   o.free          = FE3dSceneConsole_free;
    return o;
 }
 
@@ -36,12 +40,24 @@ function FE3dSceneConsole(o){
 //==========================================================
 function FE3dSceneConsole_onProcess(){
    var o = this;
-   var s = o._loadScenes;
-   s.record();
-   while(s.next()){
-      var m = s.current();
-      if(m.processLoad()){
-         s.removeCurrent();
+   //..........................................................
+   // 处理加载显示
+   var displays = o._loadDisplays;
+   displays.record();
+   while(displays.next()){
+      var display = displays.current();
+      if(display.processLoad()){
+         displays.removeCurrent();
+      }
+   }
+   //..........................................................
+   // 处理加载场景
+   var scenes = o._loadScenes;
+   scenes.record();
+   while(scenes.next()){
+      var scene = scenes.current();
+      if(scene.processLoad()){
+         scenes.removeCurrent();
       }
    }
 }
@@ -54,30 +70,14 @@ function FE3dSceneConsole_onProcess(){
 function FE3dSceneConsole_construct(){
    var o = this;
    // 设置属性
+   o._loadDisplays = new TLooper();
    o._loadScenes = new TLooper();
    o._scenes = new TDictionary();
-   // 注册默认类
-   var f = o._factory = RClass.create(FClassFactory);
-   f.register(EE3dScene.Scene, FE3dScene);
-   f.register(EE3dScene.Layer, FE3dSceneLayer);
-   f.register(EE3dScene.Display, FE3dSceneDisplay);
-   f.register(EE3dScene.Material, FE3dSceneMaterial);
-   f.register(EE3dScene.Renderable, FE3dSceneDisplayRenderable);
    // 创建线程
-   var t = o._thread = RClass.create(FThread);
-   t.setInterval(o._interval);
-   t.addProcessListener(o, o.onProcess);
-   RConsole.find(FThreadConsole).start(t);
-}
-
-//==========================================================
-// <T>获得类工厂。</T>
-//
-// @method
-// @return FClassFactory 类工厂
-//==========================================================
-function FE3dSceneConsole_factory(){
-   return this._factory;
+   var thread = o._thread = RClass.create(FThread);
+   thread.setInterval(o._interval);
+   thread.addProcessListener(o, o.onProcess);
+   RConsole.find(FThreadConsole).start(thread);
 }
 
 //==========================================================
@@ -91,6 +91,44 @@ function FE3dSceneConsole_scenes(){
 }
 
 //==========================================================
+// <T>加载一个显示对象。</T>
+//
+// @method
+// @param display:FE3dSceneDisplay 显示对象
+//==========================================================
+function FE3dSceneConsole_loadDisplay(display){
+   this._loadDisplays.push(display);
+}
+
+//==========================================================
+// <T>收集一个场景。</T>
+//
+// @method
+// @param context:FGraphicContext 渲染环境
+// @param guid:String 唯一编号
+// @return FE3dScene 渲染模型
+//==========================================================
+function FE3dSceneConsole_allocByGuid(context, guid){
+   var o = this;
+   // 加载渲染对象
+   var resource = RConsole.find(FE3sSceneConsole).loadByGuid(guid);
+   // 加载模型
+   var scene = RClass.create(FE3dScene);
+   scene.linkGraphicContext(context);
+   scene._guid = guid;
+   scene._resource = resource;
+   scene.setup();
+   // 测试是否已加载
+   if(resource.testReady()){
+      scene.load(resource);
+   }else{
+      // 增加加载中
+      o._loadScenes.push(scene);
+   }
+   return scene;
+}
+
+//==========================================================
 // <T>收集一个场景。</T>
 //
 // @method
@@ -98,7 +136,7 @@ function FE3dSceneConsole_scenes(){
 // @param pn:name:String 名称
 // @return FE3dScene 渲染模型
 //==========================================================
-function FE3dSceneConsole_alloc(pc, pn){
+function FE3dSceneConsole_allocByCode(pc, pn){
    var o = this;
    // 加载渲染对象
    var rsc = RConsole.find(FE3sSceneConsole);
@@ -117,4 +155,13 @@ function FE3dSceneConsole_alloc(pc, pn){
       o._loadScenes.push(s);
    }
    return s;
+}
+
+//==========================================================
+// <T>释放一个场景。</T>
+//
+// @method
+// @param scene:FE3dScene 场景
+//==========================================================
+function FE3dSceneConsole_free(scene){
 }

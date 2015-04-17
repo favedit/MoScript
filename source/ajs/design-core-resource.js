@@ -229,8 +229,14 @@ function FDrScene_saveConfig(xconfig){
 }
 function FDrSceneConsole(o){
    o = RClass.inherits(this, o, FDrAbsResourceConsole);
-   o._serviceCode = 'cloud.content.scene';
+   o._serviceCode = 'cloud.resource.scene';
+   o.update       = FDrSceneConsole_update;
    return o;
+}
+function FDrSceneConsole_update(p){
+   var o = this;
+   var url = RBrowser.hostPath('/' + o._serviceCode + '.ws?action=updateContent&date=' + RDate.format());
+   return RConsole.find(FXmlConsole).sendAsync(url, p);
 }
 function FDrTemplate(o){
    o = RClass.inherits(this, o, FDrResource);

@@ -70,9 +70,8 @@ function FE3dModel_testReady(){
 function FE3dModel_loadRenderable(renderable){
    var o = this;
    var resource = renderable.resource();
-   // 加载技术
-   var technique = o.selectTechnique(o, FE3dGeneralTechnique);
-   technique.setResource(resource.technique());
+   // 选择技术
+   o.selectTechnique(o, FE3dGeneralTechnique);
    // 加载资源
    o.loadResource(resource);
    // 创建渲染对象

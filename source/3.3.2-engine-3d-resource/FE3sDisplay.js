@@ -78,8 +78,8 @@ function FE3sDisplay_calculateOutline(){
 function FE3sDisplay_unserialize(input){
    var o = this;
    o.__base.FE3sDrawable.unserialize.call(o, input);
-   var resourceConsole = RConsole.find(FE3sResourceConsole);
    // 读取主题集合
+   var resourceConsole = RConsole.find(FE3sResourceConsole);
    var renderableCount = input.readUint16();
    if(renderableCount > 0){
       var renderables = o._renderables = new TObjects();

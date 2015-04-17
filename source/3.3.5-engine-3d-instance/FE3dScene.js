@@ -5,7 +5,7 @@
 // @history 150106
 //==========================================================
 function FE3dScene(o){
-   o = RClass.inherits(this, o, FE3dStage, MListenerLoad);
+   o = RClass.inherits(this, o, FE3dSpace, MListenerLoad);
    //..........................................................
    // @attribute
    o._dataReady            = false;
@@ -41,7 +41,7 @@ function FE3dScene(o){
 //==========================================================
 function FE3dScene_onProcess(){
    var o = this;
-   o.__base.FE3dStage.onProcess.call(o);
+   o.__base.FE3dSpace.onProcess.call(o);
    //..........................................................
    // 脏处理
    if(o._dirty){
@@ -61,7 +61,7 @@ function FE3dScene_onProcess(){
 //==========================================================
 function FE3dScene_construct(){
    var o = this;
-   o.__base.FE3dStage.construct.call(o);
+   o.__base.FE3dSpace.construct.call(o);
 }
 
 //==========================================================
@@ -154,36 +154,37 @@ function FE3dScene_loadRegionResource(p){
 // @method
 // @param p:resource:FE3sSceneDisplay 显示资源
 //==========================================================
-function FE3dScene_loadDisplayResource(pl, pd){
+function FE3dScene_loadDisplayResource(layer, resource){
    var o = this;
    // 加载场景显示资源
-   var d3 = RConsole.find(FE3dSceneConsole).factory().create(EE3dScene.Display);
-   d3.linkGraphicContext(o);
-   d3.loadSceneResource(pd);
-   RConsole.find(FE3dTemplateConsole).loadByGuid(d3, pd.templateGuid());
+   var display = RConsole.find(FE3dInstanceConsole).create(EE3dInstance.SceneDisplay);
+   display.linkGraphicContext(o);
+   display.loadSceneResource(resource);
+   RConsole.find(FE3dSceneConsole).loadDisplay(display);
    // 放入集合
-   pl.pushDisplay(d3);
+   layer.pushDisplay(display);
 }
 
 //==========================================================
 // <T>加载天空资源。</T>
 //
 // @method
-// @param p:resource:FE3sSceneSky 天空资源
+// @param resource:FE3sSceneSky 天空资源
 //==========================================================
-function FE3dScene_loadLayerResource(p){
+function FE3dScene_loadLayerResource(resource){
    var o = this;
-   var l = RConsole.find(FE3dSceneConsole).factory().create(EE3dScene.Layer);
-   l.loadResource(p);
-   var s = p.displays();
-   if(s){
-      var c = s.count();
-      for(var i = 0; i < c; i++){
-         var d = s.get(i);
-         o.loadDisplayResource(l, d);
+   // 加载场景显示层资源
+   var layer = RConsole.find(FE3dInstanceConsole).create(EE3dInstance.SceneLayer);
+   layer.loadResource(resource);
+   var displays = resource.displays();
+   if(displays){
+      var count = displays.count();
+      for(var i = 0; i < count; i++){
+         var display = displays.at(i);
+         o.loadDisplayResource(layer, display);
       }
    }
-   o.registerLayer(p.code(), l)
+   o.registerLayer(resource.code(), layer)
 }
 
 //==========================================================
@@ -194,16 +195,20 @@ function FE3dScene_loadLayerResource(p){
 //==========================================================
 function FE3dScene_loadResource(p){
    var o = this;
+   // 选择技术
+   o.selectTechnique(o, FE3dGeneralTechnique);
    // 加载技术资源
    o.loadTechniqueResource(p.technique());
    // 加载区域资源
    o.loadRegionResource(p.region());
    // 加载层集合
-   var ls = p.layers();
-   var c = ls.count();
-   for(var i = 0; i < c; i++){
-      var l = ls.value(i);
-      o.loadLayerResource(l);
+   var layers = p.layers();
+   if(layers){
+      var layerCount = layers.count();
+      for(var i = 0; i < layerCount; i++){
+         var layer = layers.at(i);
+         o.loadLayerResource(layer);
+      }
    }
 }
 
@@ -242,7 +247,7 @@ function FE3dScene_processLoad(){
 //==========================================================
 function FE3dScene_active(){
    var o = this;
-   o.__base.FE3dStage.active.call(o);
+   o.__base.FE3dSpace.active.call(o);
 }
 
 //==========================================================
@@ -252,5 +257,5 @@ function FE3dScene_active(){
 //==========================================================
 function FE3dScene_deactive(){
    var o = this;
-   o.__base.FE3dStage.deactive.call(o);
+   o.__base.FE3dSpace.deactive.call(o);
 }

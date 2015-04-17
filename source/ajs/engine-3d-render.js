@@ -306,7 +306,7 @@ function FE3rBitmapCubePack(o){
    o._images      = null;
    o.onLoad       = FE3rBitmapCubePack_onLoad;
    o.construct    = FE3rBitmapCubePack_construct;
-   o.loadResource = FE3rBitmapCubePack_loadResource;
+   o.loadUrl      = FE3rBitmapCubePack_loadUrl;
    o.dispose      = FE3rBitmapCubePack_dispose;
    return o;
 }
@@ -336,27 +336,15 @@ function FE3rBitmapCubePack_construct(){
    var o = this;
    o.__base.FE3rBitmapPack.construct.call(o);
 }
-function FE3rBitmapCubePack_loadResource(p){
+function FE3rBitmapCubePack_loadUrl(url){
    var o = this;
-   o._resource = p;
-   var texture = p._texture;
-   var capability = RBrowser.capability();
-   var d = p.data();
-   var t = p._formatName;
    o._images = new TObjects();
    for(var i = 0; i < 6; i++){
-      var g = o._images[i] = RClass.create(FImage);
-      g._index = i;
-      g.setOptionAlpha(false);
-      if(capability.blobCreate){
-         var blob = new Blob([d[i]], {'type' : 'image/' + t});
-         var url = window.URL.createObjectURL(blob);
-         g.loadUrl(url);
-      }else{
-         var url = RBrowser.hostPath('/cloud.content.texture.bitmap.wv') + '?guid=' + texture._guid + '&code=' + p._code + "&index=" + i;
-         g.loadUrl(url);
-      }
-      g.addLoadListener(o, o.onLoad);
+      var image = o._images[i] = RClass.create(FImage);
+      image._index = i;
+      image.setOptionAlpha(false);
+      image.loadUrl(url + "&index=" + i);
+      image.addLoadListener(o, o.onLoad);
    }
 }
 function FE3rBitmapCubePack_dispose(){

@@ -49,7 +49,7 @@ function SG3dMaterialInfo(o){
    o.optionColor          = null;
    o.colorMin             = 0.0;
    o.colorMax             = 1.0;
-   o.colorRate            = 1.0;
+   o.colorRate            = 0.5;
    o.colorMerge           = 1.0;
    //..........................................................
    // @attribute 设置光信息
@@ -290,7 +290,7 @@ function SG3dMaterialInfo_reset(){
    o.optionColor = true;
    o.colorMin = 0.0;
    o.colorMax = 1.0;
-   o.colorRate = 1.0;
+   o.colorRate = 0.5;
    o.colorMerge = 1.0;
    // 设置属性
    o.optionAlpha = false;

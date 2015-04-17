@@ -135,38 +135,37 @@ function FDsCommonMaterial1Frame_onOptionChanged(p){
 //==========================================================
 function FDsCommonMaterial1Frame_onDataChanged(p){
    var o = this;
-   var t = o._activeSpace;
-   var m = o._activeMaterial;
-   var mr = m.resource();
-   var mi = mr.info();
+   var space = o._activeSpace;
+   var material = o._activeMaterial;
+   var materialResource = material.resource();
+   var infoResource = materialResource.info();
    // 设置效果
-   mi.optionDouble = o._controlOptionDouble.get();
-   mi.effectCode = o._controlEffectCode.get();
+   infoResource.optionDouble = o._controlOptionDouble.get();
+   infoResource.effectCode = o._controlEffectCode.get();
    // 设置透明
-   mi.optionAlpha = o._controlOptionAlpha.get();
-   mi.alphaBase = o._controlAlphaBase.get();
-   mi.alphaRate = o._controlAlphaRate.get();
+   infoResource.optionAlpha = o._controlOptionAlpha.get();
+   infoResource.alphaBase = o._controlAlphaBase.get();
+   infoResource.alphaRate = o._controlAlphaRate.get();
    // 设置颜色
-   mi.colorMin = o._controlColorMin.get();
-   mi.colorMax = o._controlColorMax.get();
-   mi.colorRate = o._controlColorRate.get();
-   mi.colorMerge = o._controlColorMerge.get();
+   infoResource.colorMin = o._controlColorMin.get();
+   infoResource.colorMax = o._controlColorMax.get();
+   infoResource.colorRate = o._controlColorRate.get();
+   infoResource.colorMerge = o._controlColorMerge.get();
    // 设置环境颜色
-   mi.ambientColor.assign(o._controlAmbientColor.get());
+   infoResource.ambientColor.assign(o._controlAmbientColor.get());
    // 设置散射颜色
-   mi.diffuseColor.assign(o._controlDiffuseColor.get());
+   infoResource.diffuseColor.assign(o._controlDiffuseColor.get());
    // 设置高光颜色
-   mi.specularColor.assign(o._controlSpecularColor.get());
-   mi.specularBase = o._controlSpecularBase.get();
-   mi.specularLevel = o._controlSpecularLevel.get();
+   infoResource.specularColor.assign(o._controlSpecularColor.get());
+   infoResource.specularBase = o._controlSpecularBase.get();
+   infoResource.specularLevel = o._controlSpecularLevel.get();
    // 设置反射颜色
-   mi.reflectColor.assign(o._controlReflectColor.get());
-   mi.reflectMerge = o._controlReflectMerge.get();
+   infoResource.reflectColor.assign(o._controlReflectColor.get());
+   infoResource.reflectMerge = o._controlReflectMerge.get();
    // 设置发光颜色
-   mi.emissiveColor.assign(o._controlEmissiveColor.get());
+   infoResource.emissiveColor.assign(o._controlEmissiveColor.get());
    // 重新加载资源
-   m.reloadResource();
-   //m._display.reloadResource();
+   material.reloadResource();
 }
 
 //==========================================================

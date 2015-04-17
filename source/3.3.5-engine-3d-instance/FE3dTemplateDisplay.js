@@ -5,18 +5,15 @@
 // @history 150106
 //==========================================================
 function FE3dTemplateDisplay(o){
-   o = RClass.inherits(this, o, FE3dDisplay, MGraphicObject, MListenerLoad);
+   o = RClass.inherits(this, o, FE3dSprite, MListenerLoad);
    //..........................................................
    // @attribute
    o._dataReady       = false;
    o._ready           = false;
-   o._resource        = null;
    // @attribute
    o._shapes          = null;
    o._skeletons       = null;
    o._animations      = null;
-   // @attribute
-   o._resource        = null;
    //..........................................................
    // @method
    o.construct        = FE3dTemplateDisplay_construct;
@@ -31,8 +28,6 @@ function FE3dTemplateDisplay(o){
    o.animations       = FE3dTemplateDisplay_animations;
    o.pushAnimation    = FE3dTemplateDisplay_pushAnimation;
    // @method
-   o.resource         = FE3dTemplateDisplay_resource;
-   o.setResource      = FE3dTemplateDisplay_setResource;
    o.loadSkeletons    = FE3dTemplateDisplay_loadSkeletons;
    o.linkAnimation    = FE3dTemplateDisplay_linkAnimation;
    o.loadAnimations   = FE3dTemplateDisplay_loadAnimations;
@@ -53,7 +48,7 @@ function FE3dTemplateDisplay(o){
 //==========================================================
 function FE3dTemplateDisplay_construct(){
    var o = this;
-   o.__base.FE3dDisplay.construct.call(o);
+   o.__base.FE3dSprite.construct.call(o);
    o._shapes = new TObjects();
 }
 
@@ -175,26 +170,6 @@ function FE3dTemplateDisplay_pushAnimation(p){
 }
 
 //==========================================================
-// <T>获得资源。</T>
-//
-// @method
-// @param FE3sTemplate 资源
-//==========================================================
-function FE3dTemplateDisplay_resource(p){
-   return this._resource;
-}
-
-//==========================================================
-// <T>设置资源模板。</T>
-//
-// @method
-// @param p:resource:FE3sTemplate 资源模板
-//==========================================================
-function FE3dTemplateDisplay_setResource(p){
-   this._resource = p;
-}
-
-//==========================================================
 // <T>加载骨骼集合。</T>
 //
 // @method
@@ -275,6 +250,7 @@ function FE3dTemplateDisplay_loadAnimations(p){
 function FE3dTemplateDisplay_loadResource(resource){
    var o = this;
    o._resource = resource;
+   var instanceConsole = RConsole.find(FE3dInstanceConsole);
    // 设置矩阵
    o._matrix.assign(resource.matrix());
    // 加载资源渲染集合
@@ -284,7 +260,7 @@ function FE3dTemplateDisplay_loadResource(resource){
       var shapes = o._shapes;
       for(var i = 0; i < renderableCount; i++){
          var renderableResource = renderableResources.at(i);
-         var renderable = RClass.create(FE3dTemplateRenderable);
+         var renderable = instanceConsole.create(EE3dInstance.TemplateRenderable);
          renderable._display = o;
          renderable.linkGraphicContext(o);
          renderable.loadResource(renderableResource);
@@ -342,7 +318,7 @@ function FE3dTemplateDisplay_process(p){
       }
    }
    // 父处理
-   o.__base.FE3dDisplay.process.call(o);
+   o.__base.FE3dSprite.process.call(o);
    // 处理动画集合
    var k = o._activeSkeleton;
    if(k && as){
@@ -361,5 +337,5 @@ function FE3dTemplateDisplay_process(p){
 function FE3dTemplateDisplay_dispose(){
    var o = this;
    o._shapes = RObject.dispose(o._shapes);
-   o.__base.FE3dDisplay.dispose.call(o);
+   o.__base.FE3dSprite.dispose.call(o);
 }
