@@ -171,7 +171,7 @@ function FDsTemplateCanvasToolBar_onLookClick(p){
 //==========================================================
 function FDsTemplateCanvasToolBar_onRotationClick(p, v){
    var o = this;
-   var c = o._workspace._canvas;
+   var c = o._frameSet._canvas;
    c._rotationAble = v;
 }
 

@@ -79,6 +79,104 @@ function FDsCommonCameraPropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }
+function FDsCommonDisplayFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._activeSpace   = null;
+   o._activeDisplay = null;
+   o.onBuilded      = FDsCommonDisplayFrame_onBuilded;
+   o.onDataChanged  = FDsCommonDisplayFrame_onDataChanged;
+   o.construct      = FDsCommonDisplayFrame_construct;
+   o.loadObject     = FDsCommonDisplayFrame_loadObject;
+   o.dispose        = FDsCommonDisplayFrame_dispose;
+   return o;
+}
+function FDsCommonDisplayFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlTranslate.addDataChangedListener(o, o.onDataChanged);
+   o._controlRotation.addDataChangedListener(o, o.onDataChanged);
+   o._controlScale.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsCommonDisplayFrame_onDataChanged(p){
+   var o = this;
+   var display = o._activeDisplay;
+   var resource = display.resource();
+   var matrix = resource.matrix();
+   var value = o._controlTranslate.get();
+   matrix.setTranslate(value.x, value.y, value.z);
+   var value = o._controlRotation.get();
+   matrix.setRotation(value.x, value.y, value.z);
+   var value = o._controlScale.get();
+   matrix.setScale(value.x, value.y, value.z);
+   matrix.update();
+   display.matrix().assign(matrix);
+}
+function FDsCommonDisplayFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsCommonDisplayFrame_loadObject(space, display){
+   var o = this;
+   var resource = display.resource();
+   o._activeSpace = space;
+   o._activeDisplay = display;
+   var matrix = resource.matrix();
+   o._controlTranslate.set(matrix.tx, matrix.ty, matrix.tz);
+   o._controlRotation.set(matrix.rx, matrix.ry, matrix.rz);
+   o._controlScale.set(matrix.sx, matrix.sy, matrix.sz);
+}
+function FDsCommonDisplayFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsCommonDisplayPropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible        = false;
+   o._workspace      = null;
+   o._activeDisplay  = null;
+   o._activeResource = null;
+   o._controlGuid    = null;
+   o._controlCode    = null;
+   o._controlLabel   = null;
+   o._displayFrame   = null;
+   o._materialFrame  = null;
+   o.onBuilded       = FDsCommonDisplayPropertyFrame_onBuilded;
+   o.onDataChanged   = FDsCommonDisplayPropertyFrame_onDataChanged;
+   o.construct       = FDsCommonDisplayPropertyFrame_construct;
+   o.loadObject      = FDsCommonDisplayPropertyFrame_loadObject;
+   o.dispose         = FDsCommonDisplayPropertyFrame_dispose;
+   return o;
+}
+function FDsCommonDisplayPropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlCode.addDataChangedListener(o, o.onDataChanged);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsCommonDisplayPropertyFrame_onDataChanged(p){
+   var o = this;
+   var r = o._activeResource;
+   r._code = o._controlCode.get();
+   r._label = o._controlLabel.get();
+}
+function FDsCommonDisplayPropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsCommonDisplayPropertyFrame_loadObject(space, display){
+   var o = this;
+   var resource = display._resource;
+   o._activeSpace = space;
+   o._activeDisplay = display;
+   o._controlGuid.set(resource.guid());
+   o._controlCode.set(resource.code());
+   o._controlLabel.set(resource.label());
+   o._frameDisplay.loadObject(space, display);
+}
+function FDsCommonDisplayPropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
 function FDsCommonLightPropertyFrame(o){
    o = RClass.inherits(this, o, FUiForm);
    o._visible      = false;
@@ -392,7 +490,7 @@ function FDsCommonRegionPropertyFrame_onDataChanged(p){
    resource.setRotationKeySpeed(o._controlRotationKeySpeed.get());
    resource.setRotationMouseSpeed(o._controlRotationMouseSpeed.get());
    region.reloadResource();
-   o._workspace._canvas.reloadRegion(region);
+   o._frameSet._canvas.reloadRegion(region);
 }
 function FDsCommonRegionPropertyFrame_construct(){
    var o = this;
@@ -410,6 +508,48 @@ function FDsCommonRegionPropertyFrame_loadObject(space, region){
    o._controlBackgroundColor.set(resource.backgroundColor());
 }
 function FDsCommonRegionPropertyFrame_dispose(){
+   var o = this;
+   o.__base.FUiForm.dispose.call(o);
+}
+function FDsCommonSpacePropertyFrame(o){
+   o = RClass.inherits(this, o, FUiForm);
+   o._visible      = false;
+   o._workspace    = null;
+   o._activeSpace  = null;
+   o._controlGuid  = null;
+   o._controlCode  = null;
+   o._controlLabel = null;
+   o.onBuilded     = FDsCommonSpacePropertyFrame_onBuilded;
+   o.onDataChanged = FDsCommonSpacePropertyFrame_onDataChanged;
+   o.construct     = FDsCommonSpacePropertyFrame_construct;
+   o.loadObject    = FDsCommonSpacePropertyFrame_loadObject;
+   o.dispose       = FDsCommonSpacePropertyFrame_dispose;
+   return o;
+}
+function FDsCommonSpacePropertyFrame_onBuilded(p){
+   var o = this;
+   o.__base.FUiForm.onBuilded.call(o, p);
+   o._controlLabel.addDataChangedListener(o, o.onDataChanged);
+}
+function FDsCommonSpacePropertyFrame_onDataChanged(p){
+   var o = this;
+   var space = o._activeSpace;
+   var resource = space.resource();
+   resource.setLabel(o._controlLabel.get());
+}
+function FDsCommonSpacePropertyFrame_construct(){
+   var o = this;
+   o.__base.FUiForm.construct.call(o);
+}
+function FDsCommonSpacePropertyFrame_loadObject(space){
+   var o = this;
+   var resource = space.resource();
+   o._activeSpace = space;
+   o._controlGuid.set(resource.guid());
+   o._controlCode.set(resource.code());
+   o._controlLabel.set(resource.label());
+}
+function FDsCommonSpacePropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
 }

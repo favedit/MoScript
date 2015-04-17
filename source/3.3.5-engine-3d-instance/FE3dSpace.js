@@ -10,6 +10,7 @@ function FE3dSpace(o){
    // @attribute
    o._dataReady            = false;
    o._resource             = null;
+   o._materials            = null;
    o._dirty                = false;
    //..........................................................
    // @event
@@ -22,6 +23,8 @@ function FE3dSpace(o){
    o.createRegion          = FE3dSpace_createRegion;
    // @method
    o.resource              = FE3dSpace_resource;
+   o.materials             = FE3dSpace_materials;
+   // @method
    o.loadTechniqueResource = FE3dSpace_loadTechniqueResource;
    o.loadRegionResource    = FE3dSpace_loadRegionResource;
    o.loadDisplayResource   = FE3dSpace_loadDisplayResource;
@@ -64,6 +67,7 @@ function FE3dSpace_onProcess(){
 function FE3dSpace_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
+   o._materials = new TDictionary();
 }
 
 //==========================================================
@@ -96,6 +100,16 @@ function FE3dSpace_createRegion(){
 //==========================================================
 function FE3dSpace_resource(p){
    return this._resource;
+}
+
+//==========================================================
+// <T>获得材质集合。</T>
+//
+// @method
+// @param FE3rMaterial 材质集合
+//==========================================================
+function FE3dSpace_materials(p){
+   return this._materials;
 }
 
 //==========================================================
@@ -204,21 +218,31 @@ function FE3dSpace_loadLayerResource(p){
 // <T>加载资源。</T>
 //
 // @method
-// @param p:resource:资源
+// @param resource:FE3sSpace 空间资源
 //==========================================================
-function FE3dSpace_loadResource(p){
+function FE3dSpace_loadResource(resource){
    var o = this;
-   o._resource = p;
+   o._resource = resource;
    // 加载技术资源
-   o.loadTechniqueResource(p.technique());
+   o.loadTechniqueResource(resource.technique());
    // 加载区域资源
-   o.loadRegionResource(p.region());
+   o.loadRegionResource(resource.region());
+   // 加载材质集合
+   var materialConsole = RConsole.find(FE3rMaterialConsole);
+   var materialResources = resource.materials();
+   var materialCount = materialResources.count();
+   for(var i = 0; i < materialCount; i++){
+      var materialResource = materialResources.at(i);
+      var materialGuid = materialResource.guid();
+      var material = materialConsole.load(o, materialGuid);
+      o._materials.set(materialGuid, material);
+   }
    // 加载层集合
-   var layers = p.layers();
+   var layers = resource.layers();
    if(layers){
       var layerCount = layers.count();
       for(var i = 0; i < layerCount; i++){
-         var layer = layers.value(i);
+         var layer = layers.at(i);
          o.loadLayerResource(layer);
       }
    }

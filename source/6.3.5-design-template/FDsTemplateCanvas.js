@@ -183,7 +183,7 @@ function FDsTemplateCanvas_onEnterFrame(event){
 function FDsTemplateCanvas_onDataLoaded(p){
    var o = this;
    var m = o._activeSpace;
-   m.selectTechnique(o, FE3dGeneralTechnique);
+   //m.selectTechnique(o, FE3dGeneralTechnique);
    var g = m.region();
    // 设置相机
    var rc = g.camera();

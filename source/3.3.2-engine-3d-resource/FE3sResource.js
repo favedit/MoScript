@@ -126,14 +126,19 @@ function FE3sResource_unserialize(p){
 //==========================================================
 // <T>数据内容存储到配置节点中。</T>
 //
-// @param p:config:TXmlNode 配置节点
+// @method
+// @param xconfig:TXmlNode 配置节点
 //==========================================================
-function FE3sResource_saveConfig(p){
+function FE3sResource_saveConfig(xconfig){
    var o = this;
+   // 设置类型
+   if(!RString.isEmpty(o._typeName)){
+      xconfig.setName(o._typeName);
+   }
    // 存储属性
-   p.set('guid', o._guid);
-   p.set('code', o._code);
-   p.set('label', o._label);
+   xconfig.set('guid', o._guid);
+   xconfig.set('code', o._code);
+   xconfig.set('label', o._label);
 }
 
 //==========================================================

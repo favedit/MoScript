@@ -2083,12 +2083,14 @@ function FE3dSpace(o){
    o = RClass.inherits(this, o, FE3dStage, MListenerLoad);
    o._dataReady            = false;
    o._resource             = null;
+   o._materials            = null;
    o._dirty                = false;
    o.onProcess             = FE3dSpace_onProcess;
    o.construct             = FE3dSpace_construct;
    o.linkGraphicContext    = FE3dSpace_linkGraphicContext;
    o.createRegion          = FE3dSpace_createRegion;
    o.resource              = FE3dSpace_resource;
+   o.materials             = FE3dSpace_materials;
    o.loadTechniqueResource = FE3dSpace_loadTechniqueResource;
    o.loadRegionResource    = FE3dSpace_loadRegionResource;
    o.loadDisplayResource   = FE3dSpace_loadDisplayResource;
@@ -2115,6 +2117,7 @@ function FE3dSpace_onProcess(){
 function FE3dSpace_construct(){
    var o = this;
    o.__base.FE3dStage.construct.call(o);
+   o._materials = new TDictionary();
 }
 function FE3dSpace_linkGraphicContext(context){
    var o = this;
@@ -2126,6 +2129,9 @@ function FE3dSpace_createRegion(){
 }
 function FE3dSpace_resource(p){
    return this._resource;
+}
+function FE3dSpace_materials(p){
+   return this._materials;
 }
 function FE3dSpace_loadTechniqueResource(p){
    var o = this;
@@ -2178,16 +2184,25 @@ function FE3dSpace_loadLayerResource(p){
    }
    o.registerLayer(p.code(), l)
 }
-function FE3dSpace_loadResource(p){
+function FE3dSpace_loadResource(resource){
    var o = this;
-   o._resource = p;
-   o.loadTechniqueResource(p.technique());
-   o.loadRegionResource(p.region());
-   var layers = p.layers();
+   o._resource = resource;
+   o.loadTechniqueResource(resource.technique());
+   o.loadRegionResource(resource.region());
+   var materialConsole = RConsole.find(FE3rMaterialConsole);
+   var materialResources = resource.materials();
+   var materialCount = materialResources.count();
+   for(var i = 0; i < materialCount; i++){
+      var materialResource = materialResources.at(i);
+      var materialGuid = materialResource.guid();
+      var material = materialConsole.load(o, materialGuid);
+      o._materials.set(materialGuid, material);
+   }
+   var layers = resource.layers();
    if(layers){
       var layerCount = layers.count();
       for(var i = 0; i < layerCount; i++){
-         var layer = layers.value(i);
+         var layer = layers.at(i);
          o.loadLayerResource(layer);
       }
    }
@@ -2354,6 +2369,9 @@ function FE3dTemplate_loadAnimations(p){
 }
 function FE3dTemplate_loadResource(resource){
    var o = this;
+   var technique = o.selectTechnique(o, FE3dGeneralTechnique);
+   technique.setResource(resource.technique());
+   o.__base.FE3dSpace.loadResource.call(o, resource);
    var displayResources = resource.displays();
    var displayCount = displayResources.count();
    if(displayCount > 0){
@@ -2725,7 +2743,7 @@ function FE3dTemplateDisplay(o){
    o.loadAnimations   = FE3dTemplateDisplay_loadAnimations;
    o.loadResource     = FE3dTemplateDisplay_loadResource;
    o.reloadResource   = FE3dTemplateDisplay_reloadResource;
-   o.load      = FE3dTemplateDisplay_load;
+   o.load             = FE3dTemplateDisplay_load;
    o.process          = FE3dTemplateDisplay_process;
    o.dispose          = FE3dTemplateDisplay_dispose;
    return o;
@@ -2849,6 +2867,7 @@ function FE3dTemplateDisplay_loadAnimations(p){
 function FE3dTemplateDisplay_loadResource(resource){
    var o = this;
    o._resource = resource;
+   o._matrix.assign(resource.matrix());
    var renderableResources = resource.renderables();
    var renderableCount = renderableResources.count();
    if(renderableCount > 0){
@@ -2908,16 +2927,14 @@ function FE3dTemplateDisplay_dispose(){
    o.__base.FE3dDisplay.dispose.call(o);
 }
 function FE3dTemplateRenderable(o){
-   o = RClass.inherits(this, o, FE3dMeshRenderable);
+   o = RClass.inherits(this, o, FE3dMeshRenderable, MLinkerResource);
    o._ready            = false;
-   o._resource         = null;
    o._model            = null;
    o._materialCode     = null;
    o._materialResource = null;
    o.construct         = FE3dTemplateRenderable_construct;
    o.testReady         = FE3dTemplateRenderable_testReady;
    o.testVisible       = FE3dTemplateRenderable_testVisible;
-   o.resource          = FE3dTemplateRenderable_resource;
    o.loadResource      = FE3dTemplateRenderable_loadResource;
    o.reloadResource    = FE3dTemplateRenderable_reloadResource;
    o.load              = FE3dTemplateRenderable_load;
@@ -2953,18 +2970,14 @@ function FE3dTemplateRenderable_testVisible(p){
    }
    return r;
 }
-function FE3dTemplateRenderable_resource(p){
-   return this._resource;
-}
 function FE3dTemplateRenderable_loadResource(resource){
    var o = this;
    o._resource = resource;
    o._matrix.assign(resource.matrix());
    o._model = RConsole.find(FE3rModelConsole).load(o, resource.modelGuid());
-   var materialResource = o._materialResource = RConsole.find(FE3sMaterialConsole).find(resource.materialGuid());
+   o._material = RConsole.find(FE3rMaterialConsole).load(o, resource.materialGuid());
+   var materialResource = o._material.resource();
    var materialGuid = materialResource.guid();
-   o._effectCode = materialResource.info().effectCode;
-   o._material.calculate(materialResource);
    var bitmapResources = materialResource.bitmaps();
    if(bitmapResources){
       var count = bitmapResources.count();

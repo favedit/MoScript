@@ -47,7 +47,6 @@ function FDsModelCanvas(o){
    o.switchDimensional    = FDsModelCanvas_switchDimensional;
    o.switchRotation       = FDsModelCanvas_switchRotation;
    o.viewAutoSize         = FDsModelCanvas_viewAutoSize;
-   o.reloadRegion         = FDsModelCanvas_reloadRegion;
    o.capture              = FDsModelCanvas_capture;
    o.loadByGuid           = FDsModelCanvas_loadByGuid;
    o.loadByCode           = FDsModelCanvas_loadByCode;
@@ -507,13 +506,6 @@ function FDsModelCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, 
    displayMatrix.setScale(scaleX, scaleY, scaleZ);
    displayMatrix.update();
    display.reloadResource();
-}
-function FDsModelCanvas_reloadRegion(region){
-   var o = this;
-   var resource = region.resource();
-   o._cameraMoveRate = resource.moveSpeed();
-   o._cameraKeyRotation = resource.rotationKeySpeed();
-   o._cameraMouseRotation = resource.rotationMouseSpeed();
 }
 function FDsModelCanvas_capture(){
    var o = this;
@@ -1321,10 +1313,6 @@ function FDsModelRenderablePropertyFrame_loadObject(space, renderable){
 function FDsModelRenderablePropertyFrame_dispose(){
    var o = this;
    o.__base.FUiForm.dispose.call(o);
-}
-function FDsModelSpacePropertyFrame(o){
-   o = RClass.inherits(this, o, FDsSpacePropertyFrame);
-   return o;
 }
 function FDsModelWorkspace(o){
    o = RClass.inherits(this, o, FUiWorkspace);

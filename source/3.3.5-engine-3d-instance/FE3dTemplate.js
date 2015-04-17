@@ -57,6 +57,7 @@ function FE3dTemplate_construct(){
    // 创建显示层
    var layer = o._layer = RClass.create(FDisplayLayer);
    o.registerLayer('Layer', layer);
+   // 创建精灵集合
    o._sprites = new TObjects();
 }
 
@@ -264,6 +265,11 @@ function FE3dTemplate_loadAnimations(p){
 //==========================================================
 function FE3dTemplate_loadResource(resource){
    var o = this;
+   // 加载技术
+   var technique = o.selectTechnique(o, FE3dGeneralTechnique);
+   technique.setResource(resource.technique());
+   // 父处理
+   o.__base.FE3dSpace.loadResource.call(o, resource);
    // 加载资源渲染集合
    var displayResources = resource.displays();
    var displayCount = displayResources.count();

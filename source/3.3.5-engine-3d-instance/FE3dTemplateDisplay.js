@@ -39,7 +39,7 @@ function FE3dTemplateDisplay(o){
    o.loadResource     = FE3dTemplateDisplay_loadResource;
    o.reloadResource   = FE3dTemplateDisplay_reloadResource;
    // @method
-   o.load      = FE3dTemplateDisplay_load;
+   o.load             = FE3dTemplateDisplay_load;
    o.process          = FE3dTemplateDisplay_process;
    // @method
    o.dispose          = FE3dTemplateDisplay_dispose;
@@ -275,6 +275,8 @@ function FE3dTemplateDisplay_loadAnimations(p){
 function FE3dTemplateDisplay_loadResource(resource){
    var o = this;
    o._resource = resource;
+   // 设置矩阵
+   o._matrix.assign(resource.matrix());
    // 加载资源渲染集合
    var renderableResources = resource.renderables();
    var renderableCount = renderableResources.count();

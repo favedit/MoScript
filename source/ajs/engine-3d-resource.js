@@ -989,6 +989,7 @@ function FE3sMeshDisplay_saveConfig(p){
 }
 function FE3sModel(o){
    o = RClass.inherits(this, o, FE3sSpace);
+   o._typeName      = 'Model';
    o._dataCompress  = true;
    o._meshes        = null;
    o._skeletons     = null;
@@ -1336,11 +1337,14 @@ function FE3sObject_unserialize(input){
    o._code = input.readString();
    o._label = input.readString();
 }
-function FE3sObject_saveConfig(p){
+function FE3sObject_saveConfig(xconfig){
    var o = this;
-   p.set('guid', o._guid);
-   p.set('code', o._code);
-   p.set('label', o._label);
+   if(!RString.isEmpty(o._typeName)){
+      xconfig.setName(o._typeName);
+   }
+   xconfig.set('guid', o._guid);
+   xconfig.set('code', o._code);
+   xconfig.set('label', o._label);
 }
 function FE3sProjection(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -1521,11 +1525,14 @@ function FE3sResource_unserialize(p){
    o._code = p.readString();
    o._label = p.readString();
 }
-function FE3sResource_saveConfig(p){
+function FE3sResource_saveConfig(xconfig){
    var o = this;
-   p.set('guid', o._guid);
-   p.set('code', o._code);
-   p.set('label', o._label);
+   if(!RString.isEmpty(o._typeName)){
+      xconfig.setName(o._typeName);
+   }
+   xconfig.set('guid', o._guid);
+   xconfig.set('code', o._code);
+   xconfig.set('label', o._label);
 }
 function FE3sResource_load(u){
    var o = this;
@@ -1582,11 +1589,8 @@ function FE3sResourceConsole_unserialize(input){
 }
 function FE3sScene(o){
    o = RClass.inherits(this, o, FE3sSpace);
-   o._dataCompress = true;
    o._typeName     = 'Scene';
-   o._themeGuid    = null;
-   o._themeCode    = null;
-   o._textures     = null;
+   o._dataCompress = true;
    o._templates    = null;
    o.construct     = FE3sScene_construct;
    o.unserialize   = FE3sScene_unserialize;
@@ -1597,46 +1601,22 @@ function FE3sScene_construct(){
    var o = this;
    o.__base.FE3sSpace.construct.call(o);
 }
-function FE3sScene_unserialize(p){
+function FE3sScene_unserialize(input){
    var o = this;
-   o.__base.FE3sResource.unserialize.call(o, p);
-   o._themeGuid = p.readString();
-   o._themeCode = p.readString();
-   o._technique.unserialize(p);
-   o._region.unserialize(p);
-   var c = p.readInt16();
-   if(c > 0){
-      var tc = RConsole.find(FE3sTextureConsole);
-      var s = o._textures = new TDictionary();
-      for(var i = 0; i < c; i++){
-         var t = tc.unserialize(p);
-         s.set(t.guid(), t);
-      }
-   }
-   var c = p.readInt16();
-   if(c > 0){
-      var tc = RConsole.find(FE3sTemplateConsole);
-      var s = o._templates = new TDictionary();
-      for(var i = 0; i < c; i++){
-         var t = tc.unserialize(p);
-         s.set(t.guid(), t);
-      }
-   }
-   var c = p.readInt16();
-   if(c > 0){
-      var s = o._layers = new TDictionary();
-      for(var i = 0; i < c; i++){
-         var l = RClass.create(FE3sSceneLayer);
-         l.unserialize(p);
-         s.set(l.code(), l);
+   o.__base.FE3sSpace.unserialize.call(o, input);
+   var templateCount = input.readInt16();
+   if(templateCount > 0){
+      var templateConsole = RConsole.find(FE3sTemplateConsole);
+      var templates = o._templates = new TDictionary();
+      for(var i = 0; i < templateCount; i++){
+         var template = templateConsole.unserialize(p);
+         templates.set(ttemplate.guid(), template);
       }
    }
 }
 function FE3sScene_saveConfig(p){
    var o = this;
    o.__base.FE3sSpace.saveConfig.call(o, p);
-   p.set('theme_guid', o._themeGuid);
-   p.set('theme_code', o._themeCode);
 }
 function FE3sSceneAnimation(o){
    o = RClass.inherits(this, o, FE3sObject);
@@ -2165,9 +2145,26 @@ function FE3sSpace_unserialize(input){
 function FE3sSpace_saveConfig(p){
    var o = this;
    o.__base.FE3sResource.saveConfig.call(o, p);
-   p.setName(o._typeName);
    o._technique.saveConfig(p.create('Technique'));
    o._region.saveConfig(p.create('Region'));
+   var materials = o._materials;
+   if(materials){
+      var xmaterials = p.create('MaterialCollection');
+      var materialCount = materials.count();
+      for(var i = 0; i < materialCount; i++){
+         var material = materials.at(i);
+         material.saveConfig(xmaterials.create('Material'));
+      }
+   }
+   var displays = o._displays;
+   if(displays){
+      var xdisplays = p.create('DisplayCollection');
+      var displayCount = displays.count();
+      for(var i = 0; i < displayCount; i++){
+         var display = displays.at(i);
+         display.saveConfig(xdisplays.create('Display'));
+      }
+   }
    var layers = o._layers;
    if(layers){
       var xlayers = p.create('LayerCollection');
@@ -2315,6 +2312,7 @@ function FE3sTechniquePass_unserialize(input){
 }
 function FE3sTemplate(o){
    o = RClass.inherits(this, o, FE3sSpace);
+   o._typeName     = 'Template';
    o._dataCompress = true;
    return o;
 }

@@ -146,7 +146,7 @@ function FDsTemplateFrameSet_onCatalogSelected(p, pc){
    }
    // 显示选中属性面板
    if(RClass.isClass(p, FE3dSpace)){
-      var f = o.findPropertyFrame(EDsFrame.ModelSpacePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
       f.show();
       f.loadObject(space, space);
    }else if(RClass.isClass(p, FG3dTechnique)){
@@ -166,7 +166,7 @@ function FDsTemplateFrameSet_onCatalogSelected(p, pc){
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dTemplateDisplay)){
-      var f = o.findPropertyFrame(EDsFrame.ModelDisplayPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FG3dMaterial)){
@@ -174,7 +174,7 @@ function FDsTemplateFrameSet_onCatalogSelected(p, pc){
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dModelRenderable)){
-      var f = o.findPropertyFrame(EDsFrame.ModelRenderablePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonRenderablePropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else{
@@ -207,7 +207,7 @@ function FDsTemplateFrameSet_findPropertyFrame(code){
    var frame = o._propertyFrames.get(code);
    if(!frame){
       frame = RConsole.find(FUiFrameConsole).get(o, code, o._frameProperty._hContainer);
-      frame._workspace = o;
+      frame._frameSet = o;
       o._propertyFrames.set(code, frame);
    }
    return frame;

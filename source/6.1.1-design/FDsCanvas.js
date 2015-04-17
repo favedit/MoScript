@@ -38,6 +38,8 @@ function FDsCanvas(o){
    // @method
    o.construct            = FDsCanvas_construct;
    // @method
+   o.reloadRegion         = FDsCanvas_reloadRegion;
+   // @method
    o.dispose              = FDsCanvas_dispose;
    return o;
 }
@@ -255,6 +257,20 @@ function FDsCanvas_construct(){
    o._captureMatrix = new SMatrix3d();
    o._rotation = new SVector3();
    o._captureRotation = new SVector3();
+}
+
+//==========================================================
+// <T>重新加载区域。</T>
+//
+// @method
+// @param region:FE3dRegion 区域
+//==========================================================
+function FDsCanvas_reloadRegion(region){
+   var o = this;
+   var resource = region.resource();
+   o._cameraMoveRate = resource.moveSpeed();
+   o._cameraKeyRotation = resource.rotationKeySpeed();
+   o._cameraMouseRotation = resource.rotationMouseSpeed();
 }
 
 //==========================================================

@@ -5,12 +5,11 @@
 // @history 141231
 //==========================================================
 function FE3dTemplateRenderable(o){
-   o = RClass.inherits(this, o, FE3dMeshRenderable);
+   o = RClass.inherits(this, o, FE3dMeshRenderable, MLinkerResource);
    //..........................................................
    // @attribute
    o._ready            = false;
    // @attribute
-   o._resource         = null;
    o._model            = null;
    o._materialCode     = null;
    o._materialResource = null;
@@ -21,7 +20,6 @@ function FE3dTemplateRenderable(o){
    o.testReady         = FE3dTemplateRenderable_testReady;
    o.testVisible       = FE3dTemplateRenderable_testVisible;
    // @method
-   o.resource          = FE3dTemplateRenderable_resource;
    o.loadResource      = FE3dTemplateRenderable_loadResource;
    o.reloadResource    = FE3dTemplateRenderable_reloadResource;
    o.load              = FE3dTemplateRenderable_load;
@@ -80,16 +78,6 @@ function FE3dTemplateRenderable_testVisible(p){
 }
 
 //==========================================================
-// <T>获得资源。</T>
-//
-// @method
-// @return FE3sTemplateRenderable 资源
-//==========================================================
-function FE3dTemplateRenderable_resource(p){
-   return this._resource;
-}
-
-//==========================================================
 // <T>加载资源。</T>
 //
 // @method
@@ -105,12 +93,11 @@ function FE3dTemplateRenderable_loadResource(resource){
    // 加载模型
    o._model = RConsole.find(FE3rModelConsole).load(o, resource.modelGuid());
    // 设置资源
-   var materialResource = o._materialResource = RConsole.find(FE3sMaterialConsole).find(resource.materialGuid());
-   var materialGuid = materialResource.guid();
-   o._effectCode = materialResource.info().effectCode;
-   o._material.calculate(materialResource);
+   o._material = RConsole.find(FE3rMaterialConsole).load(o, resource.materialGuid());
    //............................................................
    // 加载纹理集合
+   var materialResource = o._material.resource();
+   var materialGuid = materialResource.guid();
    var bitmapResources = materialResource.bitmaps();
    if(bitmapResources){
       var count = bitmapResources.count();

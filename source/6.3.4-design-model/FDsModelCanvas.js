@@ -65,7 +65,6 @@ function FDsModelCanvas(o){
    o.switchDimensional    = FDsModelCanvas_switchDimensional;
    o.switchRotation       = FDsModelCanvas_switchRotation;
    o.viewAutoSize         = FDsModelCanvas_viewAutoSize;
-   o.reloadRegion         = FDsModelCanvas_reloadRegion;
    o.capture              = FDsModelCanvas_capture;
    o.loadByGuid           = FDsModelCanvas_loadByGuid;
    o.loadByCode           = FDsModelCanvas_loadByCode;
@@ -770,20 +769,6 @@ function FDsModelCanvas_viewAutoSize(flipX, flipY, flipZ, rotationX, rotationY, 
    //renderableMatrix.identity();
    //renderable.reloadResource();
    //renderableMatrix.update();
-}
-
-//==========================================================
-// <T>重新加载区域。</T>
-//
-// @method
-// @param region:FE3dRegion 区域
-//==========================================================
-function FDsModelCanvas_reloadRegion(region){
-   var o = this;
-   var resource = region.resource();
-   o._cameraMoveRate = resource.moveSpeed();
-   o._cameraKeyRotation = resource.rotationKeySpeed();
-   o._cameraMouseRotation = resource.rotationMouseSpeed();
 }
 
 //==========================================================

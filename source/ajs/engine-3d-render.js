@@ -898,60 +898,55 @@ function FE3rInstanceMesh_mergeRenderable(p){
 function FE3rInstanceMesh_build(){
 }
 function FE3rMaterial(o){
-   o = RClass.inherits(this, o, FG3dObject);
-   o._vertexBuffers   = null;
-   o._indexBuffer     = null;
-   o._material        = null;
-   o.construct        = FE3rMaterial_construct;
-   o.findVertexBuffer = FE3rMaterial_findVertexBuffer;
-   o.indexBuffer      = FE3rMaterial_indexBuffer;
-   o.loadResource     = FE3rMaterial_loadResource;
+   o = RClass.inherits(this, o, FG3dMaterial, MGuid, MGraphicObject, MLinkerResource);
+   o.loadResource   = FE3rMaterial_loadResource;
+   o.reloadResource = FE3rMaterial_reloadResource;
    return o;
 }
-function FE3rMaterial_construct(){
+function FE3rMaterial_loadResource(resource){
    var o = this;
-   o.__base.FG3dObject.construct.call(o);
-   o._vertexBuffers = new TObjects();
+   o._resource = resource;
+   o._info.calculate(resource.info());
+   o._dirty = true;
 }
-function FE3rMaterial_findVertexBuffer(p){
+function FE3rMaterial_reloadResource(){
    var o = this;
-   var vs = o._vertexBuffers;
-   var c = vs.count();
-   for(var n = 0; n < c; n++){
-      var v = vs.get(n);
-      if(v.name() == p){
-         return v;
-      }
-   }
-   return null;
+   o._info.calculate(o._resource.info());
+   o._dirty = true;
 }
-function FE3rMaterial_indexBuffer(){
-   return this._indexBuffer;
+function FE3rMaterialConsole(o){
+   o = RClass.inherits(this, o, FConsole);
+   o._scopeCd   = EScope.Local;
+   o._materials = null;
+   o.construct  = FE3rMaterialConsole_construct;
+   o.load       = FE3rMaterialConsole_load;
+   return o;
 }
-function FE3rMaterial_loadResource(p){
+function FE3rMaterialConsole_construct(){
    var o = this;
-   var c = o._context;
-   var rvs = p.vertexBuffers();
-   var rvc = rvs.count();
-   for(var n = 0; n < rvc; n++){
-      var rv = rvs.get(n);
-      var vb = context.createVertexBuffer();
-      vb._name = rv.name();
-      vb._formatCd = rv.formatCd();
-      vb.upload(new Float32Array(rv._data), rv._stride, rv._vertexCount);
-      o._vertexBuffers.push(vb);
+   o.__base.FConsole.construct.call(o);
+   o._materials = new TDictionary();
+}
+function FE3rMaterialConsole_load(context, guid){
+   var o = this;
+   if(!context){
+      throw new TError('Graphics context is empty');
    }
-   var rib = p.indexBuffer();
-   var ib = o._indexBuffer = c.createIndexBuffer();
-   ib.upload(rib.data(), rib.count());
-   var materialCode = p.materialCode();
-   var themeConsole = RConsole.find(FE3sThemeConsole);
-   var material = o._material = themeConsole.find(materialCode);
-   var textures = material.textures();
-   var textureCount = textures.count();
-   for(var n = 0; n < textureCount; n++){
-      var texture = textures.get(n);
+   if(!guid){
+      throw new TError('Material guid is empty');
    }
+   var material = o._materials.get(guid);
+   if(material){
+      return material;
+   }
+   var resource = RConsole.find(FE3sMaterialConsole).find(guid);
+   material = RClass.create(FE3rMaterial);
+   material.linkGraphicContext(context);
+   material.setGuid(guid);
+   material.setResource(resource);
+   material.calculate(resource);
+   o._materials.set(guid, material);
+   return material;
 }
 function FE3rMesh(o){
    o = RClass.inherits(this, o, FE3rObject);

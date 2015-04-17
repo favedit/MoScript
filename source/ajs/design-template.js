@@ -81,7 +81,6 @@ function FDsTemplateCanvas_onEnterFrame(event){
 function FDsTemplateCanvas_onDataLoaded(p){
    var o = this;
    var m = o._activeSpace;
-   m.selectTechnique(o, FE3dGeneralTechnique);
    var g = m.region();
    var rc = g.camera();
    rc.setPosition(0, 3, -10);
@@ -265,7 +264,7 @@ function FDsTemplateCanvasToolBar_onLookClick(p){
 }
 function FDsTemplateCanvasToolBar_onRotationClick(p, v){
    var o = this;
-   var c = o._workspace._canvas;
+   var c = o._frameSet._canvas;
    c._rotationAble = v;
 }
 function FDsTemplateCanvasToolBar_construct(){
@@ -331,12 +330,14 @@ function FDsTemplateCatalog_buildRegion(n, p){
    nl.dataPropertySet('linker', p.directionalLight());
    nr.appendNode(nl);
 }
-function FDsTemplateCatalog_buildMaterial(parentNode, resource){
+function FDsTemplateCatalog_buildMaterial(parentNode, material){
    var o = this;
+   var resource = material.resource();
    var node = o.createNode();
    node.setTypeCode('Material');
    node.setLabel(resource.code());
    node.setNote(resource.label());
+   node.dataPropertySet('linker', material);
    parentNode.appendNode(node);
 }
 function FDsTemplateCatalog_buildDisplay(parentNode, display){
@@ -344,7 +345,7 @@ function FDsTemplateCatalog_buildDisplay(parentNode, display){
    var resource = display.resource();
    var node = o.createNode();
    node.setTypeCode('Display');
-   node.setLabel(resource.code());
+   node.setLabel(RString.nvl(resource.code(), 'Display'));
    node.setNote(resource.label());
    node.dataPropertySet('linker', display);
    parentNode.appendNode(node);
@@ -368,7 +369,7 @@ function FDsTemplateCatalog_buildSpace(space){
    var resource = space.resource();
    o._activeSpace = space;
    var node = o.createNode();
-   node.setTypeCode('template');
+   node.setTypeCode('Space');
    node.setLabel(resource.code());
    node.setNote(resource.label());
    node.dataPropertySet('linker', space);
@@ -379,11 +380,11 @@ function FDsTemplateCatalog_buildSpace(space){
    materialsNode.setTypeCode('Region');
    materialsNode.setLabel('Materials');
    node.appendNode(materialsNode);
-   var materialResources = resource.materials();
-   var materialCount = materialResources.count();
+   var materials = space.materials();
+   var materialCount = materials.count();
    for(var i = 0; i < materialCount; i++){
-      var materialResource = materialResources.at(i);
-      o.buildMaterial(materialsNode, materialResource);
+      var material = materials.at(i);
+      o.buildMaterial(materialsNode, material);
    }
    var displaysNode = o.createNode();
    displaysNode.setTypeCode('Region');
@@ -589,7 +590,7 @@ function FDsTemplateFrameSet_onCatalogSelected(p, pc){
       f.hide();
    }
    if(RClass.isClass(p, FE3dSpace)){
-      var f = o.findPropertyFrame(EDsFrame.ModelSpacePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonSpacePropertyFrame);
       f.show();
       f.loadObject(space, space);
    }else if(RClass.isClass(p, FG3dTechnique)){
@@ -609,7 +610,7 @@ function FDsTemplateFrameSet_onCatalogSelected(p, pc){
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dTemplateDisplay)){
-      var f = o.findPropertyFrame(EDsFrame.ModelDisplayPropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonDisplayPropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FG3dMaterial)){
@@ -617,7 +618,7 @@ function FDsTemplateFrameSet_onCatalogSelected(p, pc){
       f.show();
       f.loadObject(space, p);
    }else if(RClass.isClass(p, FE3dModelRenderable)){
-      var f = o.findPropertyFrame(EDsFrame.ModelRenderablePropertyFrame);
+      var f = o.findPropertyFrame(EDsFrame.CommonRenderablePropertyFrame);
       f.show();
       f.loadObject(space, p);
    }else{
@@ -634,7 +635,7 @@ function FDsTemplateFrameSet_findPropertyFrame(code){
    var frame = o._propertyFrames.get(code);
    if(!frame){
       frame = RConsole.find(FUiFrameConsole).get(o, code, o._frameProperty._hContainer);
-      frame._workspace = o;
+      frame._frameSet = o;
       o._propertyFrames.set(code, frame);
    }
    return frame;

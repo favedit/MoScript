@@ -1599,6 +1599,19 @@ var EResult = new function EResult(){
    o.Cancel   = -2;
    return o;
 }
+function MGuid(o){
+   o = RClass.inherits(this, o);
+   o._guid   = null;
+   o.guid    = MGuid_guid;
+   o.setGuid = MGuid_setGuid;
+   return o;
+}
+function MGuid_guid(){
+   return this._guid;
+}
+function MGuid_setGuid(guid){
+   this._guid = guid;
+}
 function MInstance(o){
    o = RClass.inherits(this, o);
    o.__free          = false;

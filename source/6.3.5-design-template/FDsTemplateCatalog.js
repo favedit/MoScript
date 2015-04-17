@@ -111,18 +111,22 @@ function FDsTemplateCatalog_buildRegion(n, p){
 }
 
 //==========================================================
-// <T>根据模板主题建立目录。</T>
+// <T>建立材质目录。</T>
 //
 // @method
-// @param r:node:FTreeNode 父节点
-// @param t:theme:FE3sTemplateTheme 模板主题
+// @param parentNode:FTreeNode 父节点
+// @param material:FE3rMaterial 材质
 //==========================================================
-function FDsTemplateCatalog_buildMaterial(parentNode, resource){
+function FDsTemplateCatalog_buildMaterial(parentNode, material){
    var o = this;
+   // 获得资源
+   var resource = material.resource();
+   // 设置节点
    var node = o.createNode();
    node.setTypeCode('Material');
    node.setLabel(resource.code());
    node.setNote(resource.label());
+   node.dataPropertySet('linker', material);
    parentNode.appendNode(node);
 }
 
@@ -139,7 +143,7 @@ function FDsTemplateCatalog_buildDisplay(parentNode, display){
    var resource = display.resource();
    var node = o.createNode();
    node.setTypeCode('Display');
-   node.setLabel(resource.code());
+   node.setLabel(RString.nvl(resource.code(), 'Display'));
    node.setNote(resource.label());
    node.dataPropertySet('linker', display);
    parentNode.appendNode(node);
@@ -173,7 +177,7 @@ function FDsTemplateCatalog_buildSpace(space){
    o._activeSpace = space;
    // 新建模板节点
    var node = o.createNode();
-   node.setTypeCode('template');
+   node.setTypeCode('Space');
    node.setLabel(resource.code());
    node.setNote(resource.label());
    node.dataPropertySet('linker', space);
@@ -187,11 +191,11 @@ function FDsTemplateCatalog_buildSpace(space){
    materialsNode.setTypeCode('Region');
    materialsNode.setLabel('Materials');
    node.appendNode(materialsNode);
-   var materialResources = resource.materials();
-   var materialCount = materialResources.count();
+   var materials = space.materials();
+   var materialCount = materials.count();
    for(var i = 0; i < materialCount; i++){
-      var materialResource = materialResources.at(i);
-      o.buildMaterial(materialsNode, materialResource);
+      var material = materials.at(i);
+      o.buildMaterial(materialsNode, material);
    }
    // 新建显示集合节点
    var displaysNode = o.createNode();

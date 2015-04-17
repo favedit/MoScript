@@ -70,7 +70,7 @@ function FDsCommonRegionPropertyFrame_onDataChanged(p){
    resource.setRotationMouseSpeed(o._controlRotationMouseSpeed.get());
    // 重新加载资源
    region.reloadResource();
-   o._workspace._canvas.reloadRegion(region);
+   o._frameSet._canvas.reloadRegion(region);
 }
 
 //==========================================================

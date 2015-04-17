@@ -8,6 +8,7 @@ function FE3sModel(o){
    o = RClass.inherits(this, o, FE3sSpace);
    //..........................................................
    // @attribute
+   o._typeName      = 'Model';
    o._dataCompress  = true;
    // @attribute
    o._meshes        = null;
